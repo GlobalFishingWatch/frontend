@@ -43,4 +43,8 @@ export class FourwingsTileLayer extends CompositeLayer<FourwingsTileLayerProps> 
       // bounds: [west, south, east, north],
     })
   }
+
+  getTileData() {
+    return this.data
+  }
 }

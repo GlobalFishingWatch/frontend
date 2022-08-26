@@ -7,7 +7,7 @@ import { aggregateCell } from 'layers/fourwings/FourwingsTileLayer'
 import { VALUE_MULTIPLIER } from 'loaders/constants'
 import { useHighlightTimerange, useTimerange } from 'features/timebar/timebar.hooks'
 import { VESSEL_IDS } from 'data/vessels'
-import { MapLayerType, useMapLayers } from 'features/map/layers.hooks'
+import { MapLayer, MapLayerType, useMapLayers } from 'features/map/layers.hooks'
 import { VesselsLayer } from '../../layers/vessel/VesselsLayer'
 
 const INITIAL_VIEW_STATE = {
@@ -47,12 +47,12 @@ const MapWrapper = (): React.ReactElement => {
   const highlightStartTime = dateToMs(highlightTimerange?.start)
   const highlightEndTime = dateToMs(highlightTimerange?.end)
 
-  const setMapLayerInstances = useCallback(
-    (id: MapLayerType, instance) => {
+  const setMapLayerProperty = useCallback(
+    (id: MapLayerType, property: keyof MapLayer, value) => {
       setMapLayers((layers) =>
         layers.map((l) => {
           if (l.id === id) {
-            return { ...l, instance }
+            return { ...l, [property]: value }
           }
           return l
         })
@@ -71,13 +71,13 @@ const MapWrapper = (): React.ReactElement => {
         highlightStartTime,
         highlightEndTime,
       })
-      setMapLayerInstances('vessel', vesselsLayer)
+      setMapLayerProperty('vessel', 'instance', vesselsLayer)
     } else {
-      setMapLayerInstances('vessel', null)
+      setMapLayerProperty('vessel', 'instance', null)
     }
   }, [
     vesselLayerVisible,
-    setMapLayerInstances,
+    setMapLayerProperty,
     startTime,
     endTime,
     highlightStartTime,
@@ -90,12 +90,15 @@ const MapWrapper = (): React.ReactElement => {
       const fourwingsLayer = new FourwingsLayer({
         minFrame: startTime,
         maxFrame: endTime,
+        onViewportLoad: (tiles) => {
+          setMapLayerProperty('fourwings', 'loaded', true)
+        },
       })
-      setMapLayerInstances('fourwings', fourwingsLayer)
+      setMapLayerProperty('fourwings', 'instance', fourwingsLayer)
     } else {
-      setMapLayerInstances('fourwings', null)
+      setMapLayerProperty('fourwings', 'instance', null)
     }
-  }, [fourwingsLayerVisible, setMapLayerInstances, startTime, endTime])
+  }, [fourwingsLayerVisible, setMapLayerProperty, startTime, endTime])
 
   const layers = useMemo(() => {
     return [basemap, ...mapLayers.flatMap((l) => l.instance)]

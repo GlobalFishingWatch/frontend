@@ -1,6 +1,6 @@
 import { GeoBoundingBox } from '@deck.gl/geo-layers/typed'
 import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
-import { FourwingsTileData } from 'loaders/fourwings/fourwingsLayerLoader'
+import { CellTimeseries, FourwingsTileData } from 'loaders/fourwings/fourwingsLayerLoader'
 
 export type BBox = [number, number, number, number]
 
@@ -51,7 +51,11 @@ const getLastDigit = (num: number) => parseInt(num.toString().slice(-1))
 export const generateUniqueId = (x: number, y: number, cellId: number) =>
   parseInt([getLastDigit(x) + 1, getLastDigit(y) + 1, cellId].join(''))
 
-export const getTileCells = (tile: Tile2DHeader, data: FourwingsTileData) => {
+export type TileCell = {
+  timeseries: CellTimeseries[]
+  coordinates: [number[]]
+}
+export const getTileCells = (tile: Tile2DHeader, data: FourwingsTileData): TileCell[] => {
   if (!data.cells?.length) {
     return []
   }
