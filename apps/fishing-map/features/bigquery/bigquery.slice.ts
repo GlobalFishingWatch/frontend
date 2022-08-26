@@ -16,6 +16,7 @@ export type CreateBigQueryDataset = {
   query: string
   visualisationMode: BigQueryVisualisation
   name: string
+  unit?: string
   ttl?: number
   createAsPublic?: boolean
 }
@@ -56,7 +57,7 @@ export type CreateBigQueryDatasetResponse = {
 export const createBigQueryDatasetThunk = createAsyncThunk(
   'bigQuery/createDataset',
   async (
-    { query, name, createAsPublic = true, visualisationMode }: CreateBigQueryDataset,
+    { query, name, unit, createAsPublic = true, visualisationMode }: CreateBigQueryDataset,
     { dispatch, rejectWithValue }
   ) => {
     try {
@@ -64,7 +65,7 @@ export const createBigQueryDatasetThunk = createAsyncThunk(
         `/${visualisationMode}/bq/create-temporal-dataset`,
         {
           method: 'POST',
-          body: { query, name: kebabCase(name), public: createAsPublic } as any,
+          body: { query, name: kebabCase(name), unit, public: createAsPublic } as any,
         }
       )
       const dataset = await dispatch(fetchDatasetByIdThunk(id))
