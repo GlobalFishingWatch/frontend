@@ -1781,6 +1781,26 @@
       "firstTransmissionDate": "crwdns10019:0crwdne10019:0"
     }
   },
+  "public-global-loitering-events": {
+    "name": "crwdns26776:0crwdne26776:0",
+    "description": "crwdns26778:0crwdne26778:0",
+    "schema": {
+      "fields": "crwdns26780:0crwdne26780:0",
+      "event_id": "crwdns26782:0crwdne26782:0",
+      "event_end": "crwdns26784:0crwdne26784:0",
+      "vessel_id": "crwdns26786:0crwdne26786:0",
+      "event_info": "crwdns26788:0crwdne26788:0",
+      "event_type": {
+        "keyword": "crwdns26790:0crwdne26790:0",
+        "enum": {
+          "port": "crwdns26792:0crwdne26792:0"
+        }
+      },
+      "event_start": "crwdns26794:0crwdne26794:0",
+      "event_vessels": "crwdns26796:0crwdne26796:0",
+      "event_mean_position": "crwdns26798:0crwdne26798:0"
+    }
+  },
   "public-global-presence": {
     "name": "crwdns25804:0crwdne25804:0",
     "description": "crwdns26360:0crwdne26360:0",
