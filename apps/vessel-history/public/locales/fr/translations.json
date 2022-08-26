@@ -45,6 +45,7 @@
     "authStatus": "Statut d'autorisation",
     "avgDuration": "Durée moyenne",
     "avgSpeed": "Vitesse moyenne",
+    "avgEstSpeed": "Avg est speed",
     "confidence": "Confiance",
     "confidenceHelp": {
       "help2": "Bas confiance. Seul un arrêt du port ou un gap a été identifié sur la base de la transmission AIS.",
@@ -56,6 +57,7 @@
       "portStop": "Arrêt DU PORT : début: vitesse < 0.2 noeuds ; fin : vitesse > 0.5 noeuds"
     },
     "diffHours": "{{ diff }} heures",
+    "disabledDistance": "Distance between transmissions",
     "distance": "Distance",
     "distancePort": "Distance du port",
     "distanceShore": "Distance de la côte",
@@ -76,6 +78,8 @@
     "fishingGroup_plural": "{{ count }} événements de pêche en {{ regionName }}",
     "formatDistanceKm": "{{value}} km",
     "formatSpeedKnots": "{{value}} noeuds",
+    "gapEnd": "End of “off” event",
+    "gapStart": "start of “off” event",
     "hourAbbreviated": "{{count}}h",
     "hourAbbreviated_one": "{{count}}h",
     "hourAbbreviated_other": "{{count}}h",
@@ -106,6 +110,8 @@
     "psma": "PSMA",
     "psmaIncluded": "Inclus depuis {{value}}",
     "psmaNotIncluded": "Non inclus",
+    "regionsTransmissionOffInvolved": "location of “off” event",
+    "regionsTransmissionOnInvolved": "location of “on” event",
     "start": "Début",
     "startDistancePort": "Départ - Distance du port",
     "startDistanceShore": "Départ - Distance de la côte",
@@ -116,15 +122,17 @@
     "activityEventsDescription": "Toutes les données d'activité sont estimées à l'aide d'algorithmes de Global Fishing Watch (GFW). ",
     "activityHighlights": "Faits saillants de l'activité",
     "aisCoverage": "AIS Coverage",
-    "aisCoverageDescription": "The coverage metric is an estimate of how well a vessel's activities, i.e. where it traveled and what it did, can be captured by AIS data. To calculate it, all voyages linked to a vessel in the last year (i.e. 12 months) are segmented into one hour blocks and the total number of blocks with at least one AIS transmission are counted. The coverage metric is a percentage representing the proportion of one hour blocks a vessel is in a voyage and has at least one AIS transmission. <1>All Data caveats can be found in the FAQ here</1>",
+    "aisCoverageDescription": "The coverage metric is an estimate of how well a vessel's activities, i.e. where it traveled and what it did, can be captured by AIS data. To calculate it, all voyages linked to a vessel in the last year (i.e. 12 months) are segmented into one hour blocks and the total number of blocks with at least one AIS transmission are counted. The coverage metric is a percentage representing the proportion of one hour blocks a vessel is in a voyage and has at least one AIS transmission. <1>All Data caveats can be found in the FAQ here</1>. Unknown refers to situations where there is no AIS activity detected during the previous 12 months.",
     "byTypeEncounterTitle": "{{count}} encounters",
     "byTypeFishingTitle": "{{count}} fishing hours",
     "byTypeLoiteringTitle": "{{count}} loitering events",
     "byTypePortVisitTitle": "{{count}} port visits",
+    "byTypeGapTitle": "{{count}} likely disabling events",
     "encounterEvents": "Rencontres",
     "encounterEventsDescription": "Les rencontres peuvent indiquer une activité de transbordement potentielle entre deux navires qui apparaissent tous les deux sur l'AIS. Les rencontres sont estimées à l'aide des données AIS, y compris la distance entre les deux navires, la vitesse des navires et la durée dans une zone donnée. <1></1>Une rencontre est définie comme lorsque deux navires, un navire transporteur et un navire de pêche rencontré, sont détectés sur les données AIS à moins de 500 mètres pendant au moins deux heures et voyageant à une vitesse médiane &lt;2 nœuds, tandis que à au moins 10 km d'un mouillage côtier.",
     "fishingEvents": "Événements de pêche",
     "fishingEventsDescription": "Lorsqu'il existe une série cohérente de points AIS estimés comme indiquant une activité de pêche apparente, les points sont regroupés en « événements de pêche ». <1></1>Nous analysons les données du système d'identification automatique (AIS) collectées à partir des navires que notre recherche a identifiés comme des navires de pêche commerciale connus ou possibles, et appliquons un algorithme de détection de pêche pour déterminer « l'activité de pêche apparente » en fonction des changements de vitesse et direction du navire.<3></3>L'algorithme classe chaque point de données de diffusion AIS pour ces navires en tant que « apparemment en train de pêcher » ou « ne pas pêcher » et affiche le premier sur notre carte thermique d'activité de pêche. Vous pouvez trouver plus de détails dans notre page Technologie : <6>https://globalfishingwatch.org/our-technology/</6> et page Dataset : <10>https://globalfishingwatch.org/datasets-and-code/ </10>.",
+    "gapEvents": "Likely disabling events",
     "highlitingSettings": "paramètres",
     "loadingEncounterEvents": "loading encounters",
     "loadingFishingEvents": "loading fishing events",
@@ -247,6 +255,10 @@
     "fishingEvents": {
       "shortTitle": "Pêche",
       "title": "Événements de pêche"
+    },
+    "gapEvents": {
+      "shortTitle": "Likely disabling",
+      "title": "Likely disabling events"
     },
     "greaterThan": "Supérieure à",
     "helpRange": "Should be a value between {{min}} and {{max}}, the value is not required",

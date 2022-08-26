@@ -45,6 +45,7 @@
     "authStatus": "Authorization status",
     "avgDuration": "Avg Duration",
     "avgSpeed": "Avg Speed",
+    "avgEstSpeed": "Avg est speed",
     "confidence": "Confidence",
     "confidenceHelp": {
       "help2": "Low confidence. Only a port stop OR gap was identified based on AIS transmission.",
@@ -56,6 +57,7 @@
       "portStop": "PORT STOP: begin: speed < 0.2 knots; end: speed > 0.5 knots"
     },
     "diffHours": "{{ diff }} hours",
+    "disabledDistance": "Distance between transmissions",
     "distance": "Distance",
     "distancePort": "Distance from port",
     "distanceShore": "Distance from shore",
@@ -76,6 +78,8 @@
     "fishingGroup_plural": "{{ count }} Fishing events in {{ regionName }}",
     "formatDistanceKm": "{{value}} km",
     "formatSpeedKnots": "{{value}} knots",
+    "gapEnd": "End of “off” event",
+    "gapStart": "start of “off” event",
     "hourAbbreviated": "{{count}}h",
     "hourAbbreviated_one": "{{count}}h",
     "hourAbbreviated_other": "{{count}}h",
@@ -106,6 +110,8 @@
     "psma": "PSMA",
     "psmaIncluded": "Included Since {{value}}",
     "psmaNotIncluded": "Not included",
+    "regionsTransmissionOffInvolved": "location of “off” event",
+    "regionsTransmissionOnInvolved": "location of “on” event",
     "start": "Start",
     "startDistancePort": "Start distance from port",
     "startDistanceShore": "Start distance from shore",
@@ -116,15 +122,17 @@
     "activityEventsDescription": "All activity data is estimated through algorithms by Global Fishing Watch (GFW). Data caveats can be found in the FAQ here",
     "activityHighlights": "Activity Highlights",
     "aisCoverage": "AIS Coverage",
-    "aisCoverageDescription": "The coverage metric is an estimate of how well a vessel's activities, i.e. where it traveled and what it did, can be captured by AIS data. To calculate it, all voyages linked to a vessel in the last year (i.e. 12 months) are segmented into one hour blocks and the total number of blocks with at least one AIS transmission are counted. The coverage metric is a percentage representing the proportion of one hour blocks a vessel is in a voyage and has at least one AIS transmission. <1>All Data caveats can be found in the FAQ here</1>",
+    "aisCoverageDescription": "The coverage metric is an estimate of how well a vessel's activities, i.e. where it traveled and what it did, can be captured by AIS data. To calculate it, all voyages linked to a vessel in the last year (i.e. 12 months) are segmented into one hour blocks and the total number of blocks with at least one AIS transmission are counted. The coverage metric is a percentage representing the proportion of one hour blocks a vessel is in a voyage and has at least one AIS transmission. <1>All Data caveats can be found in the FAQ here</1>. Unknown refers to situations where there is no AIS activity detected during the previous 12 months.",
     "byTypeEncounterTitle": "{{count}} encounters",
     "byTypeFishingTitle": "{{count}} fishing hours",
     "byTypeLoiteringTitle": "{{count}} loitering events",
     "byTypePortVisitTitle": "{{count}} port visits",
+    "byTypeGapTitle": "{{count}} likely disabling events",
     "encounterEvents": "Encounter Events",
     "encounterEventsDescription": "Encounters may indicate potential transshipment activity between two vessels that both appear on AIS. Encounters are estimated using AIS data, including distance between the two vessels, vessel speeds, and duration in a given area. <1></1>An encounter is defined as when two vessels, a carrier vessel and encountered fishing vessel, are detected on AIS data as within 500 meters for at least two hours and traveling at a median speed &lt;2 knots, while at least 10 km from a coastal anchorage.",
     "fishingEvents": "Fishing Events",
     "fishingEventsDescription": "When there is a consistent series of AIS points estimated as indicating apparent fishing activity the points are grouped into 'Fishing Events'. <1></1>We analyze the automatic identification system (AIS) data collected from vessels that our research has identified as known or possible commercial fishing vessels, and apply a fishing detection algorithm to determine “apparent fishing activity” based on changes in vessel speed and direction.<3></3>The algorithm classifies each AIS broadcast data point for these vessels as either “apparently fishing” or “not fishing” and shows the former on our fishing activity heat map. You can find more detail in our Technology page: <6>https://globalfishingwatch.org/our-technology/</6> and Dataset page: <10>https://globalfishingwatch.org/datasets-and-code/</10>.",
+    "gapEvents": "Likely disabling events",
     "highlitingSettings": "settings",
     "loadingEncounterEvents": "loading encounters",
     "loadingFishingEvents": "loading fishing events",
@@ -247,6 +255,10 @@
     "fishingEvents": {
       "shortTitle": "Fishing",
       "title": "Fishing Events"
+    },
+    "gapEvents": {
+      "shortTitle": "Likely disabling",
+      "title": "Likely disabling events"
     },
     "greaterThan": "Greater than",
     "helpRange": "Should be a value between {{min}} and {{max}}, the value is not required",
