@@ -45,6 +45,7 @@
     "authStatus": "crwdns7693:0crwdne7693:0",
     "avgDuration": "crwdns6818:0crwdne6818:0",
     "avgSpeed": "crwdns6820:0crwdne6820:0",
+    "avgEstSpeed": "crwdns26754:0crwdne26754:0",
     "confidence": "crwdns7805:0crwdne7805:0",
     "confidenceHelp": {
       "help2": "crwdns8739:0crwdne8739:0",
@@ -56,6 +57,7 @@
       "portStop": "crwdns8751:0crwdne8751:0"
     },
     "diffHours": "crwdns6822:0{{ diff }}crwdne6822:0",
+    "disabledDistance": "crwdns26756:0crwdne26756:0",
     "distance": "crwdns6824:0crwdne6824:0",
     "distancePort": "crwdns7747:0crwdne7747:0",
     "distanceShore": "crwdns7749:0crwdne7749:0",
@@ -76,6 +78,8 @@
     "fishingGroup_plural": "crwdns6836:0{{ count }}crwdnd6836:0{{ regionName }}crwdne6836:0",
     "formatDistanceKm": "crwdns7703:0{{value}}crwdne7703:0",
     "formatSpeedKnots": "crwdns7705:0{{value}}crwdne7705:0",
+    "gapEnd": "crwdns26758:0crwdne26758:0",
+    "gapStart": "crwdns26760:0crwdne26760:0",
     "hourAbbreviated": "crwdns7707:0{{count}}crwdne7707:0",
     "hourAbbreviated_one": "crwdns26174:0{{count}}crwdne26174:0",
     "hourAbbreviated_other": "crwdns26176:0{{count}}crwdne26176:0",
@@ -106,6 +110,8 @@
     "psma": "crwdns7811:0crwdne7811:0",
     "psmaIncluded": "crwdns7813:0{{value}}crwdne7813:0",
     "psmaNotIncluded": "crwdns7815:0crwdne7815:0",
+    "regionsTransmissionOffInvolved": "crwdns26762:0crwdne26762:0",
+    "regionsTransmissionOnInvolved": "crwdns26764:0crwdne26764:0",
     "start": "crwdns7755:0crwdne7755:0",
     "startDistancePort": "crwdns6846:0crwdne6846:0",
     "startDistanceShore": "crwdns6848:0crwdne6848:0",
@@ -116,15 +122,17 @@
     "activityEventsDescription": "crwdns11031:0crwdne11031:0",
     "activityHighlights": "crwdns8555:0crwdne8555:0",
     "aisCoverage": "crwdns26712:0crwdne26712:0",
-    "aisCoverageDescription": "crwdns26714:0crwdne26714:0",
+    "aisCoverageDescription": "crwdns26774:0crwdne26774:0",
     "byTypeEncounterTitle": "crwdns26682:0{{count}}crwdne26682:0",
     "byTypeFishingTitle": "crwdns26684:0{{count}}crwdne26684:0",
     "byTypeLoiteringTitle": "crwdns26686:0{{count}}crwdne26686:0",
     "byTypePortVisitTitle": "crwdns26688:0{{count}}crwdne26688:0",
+    "byTypeGapTitle": "crwdns26766:0{{count}}crwdne26766:0",
     "encounterEvents": "crwdns11033:0crwdne11033:0",
     "encounterEventsDescription": "crwdns11035:0crwdne11035:0",
     "fishingEvents": "crwdns11037:0crwdne11037:0",
     "fishingEventsDescription": "crwdns11039:0crwdne11039:0",
+    "gapEvents": "crwdns26768:0crwdne26768:0",
     "highlitingSettings": "crwdns8557:0crwdne8557:0",
     "loadingEncounterEvents": "crwdns26690:0crwdne26690:0",
     "loadingFishingEvents": "crwdns26692:0crwdne26692:0",
@@ -247,6 +255,10 @@
     "fishingEvents": {
       "shortTitle": "crwdns11147:0crwdne11147:0",
       "title": "crwdns6516:0crwdne6516:0"
+    },
+    "gapEvents": {
+      "shortTitle": "crwdns26770:0crwdne26770:0",
+      "title": "crwdns26772:0crwdne26772:0"
     },
     "greaterThan": "crwdns11155:0crwdne11155:0",
     "helpRange": "crwdns26244:0{{min}}crwdnd26244:0{{max}}crwdne26244:0",
