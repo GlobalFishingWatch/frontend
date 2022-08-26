@@ -30,7 +30,7 @@ const thunk = async (
   dispatch: Dispatch<AppActions | NavigationAction>,
   getState: StateGetter<AppState>
 ) => {
-  initializeDataviews(dispatch)
+  initializeDataviews(dispatch, getState)
 }
 
 const thunkRegions = async (
