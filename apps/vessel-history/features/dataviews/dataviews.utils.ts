@@ -101,10 +101,7 @@ export const getDatasetByDataview = (
   )
 }
 
-export const initializeDataviews = async (dispatch: AppDispatch, getState: () => RootState) => {
-  const userLogged = selectUserLogged(getState())
-  if (!userLogged) return
-
+export const initializeDataviews = async (dispatch: AppDispatch) => {
   let dataviews: Dataview[] = []
   const dataviewIds = Array.from(
     new Set([...dataviewInstances.map((instance) => instance.dataviewId), ...vesselDataviewIds])

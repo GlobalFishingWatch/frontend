@@ -11,6 +11,7 @@ import {
 } from 'data/config'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { initializeDataviews } from 'features/dataviews/dataviews.utils'
 import { useWorkspace } from 'features/workspace/workspace.hook'
 import { WorkspaceProfileViewParam } from 'types'
 import {
@@ -72,9 +73,15 @@ export const useUser = () => {
   }, [dispatch])
 
   useEffect(() => {
-    if (!logged && (token || refreshToken || accessToken)) {
-      dispatch(fetchUserThunk())
+    const fetchUser = async () => {
+      if (!logged && (token || refreshToken || accessToken)) {
+        const action = await dispatch(fetchUserThunk())
+        if (fetchUserThunk.fulfilled.match(action)) {
+          initializeDataviews(dispatch)
+        }
+      }
     }
+    fetchUser()
   }, [accessToken, dispatch, logged, refreshToken, token])
 
   return {
