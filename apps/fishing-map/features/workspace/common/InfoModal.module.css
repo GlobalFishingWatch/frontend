@@ -1,5 +1,6 @@
-div.modalContent {
+div.modalContentWide {
   padding: 0;
+  height: calc(100% - 6.1rem);
 }
 
 .content {
@@ -22,4 +23,11 @@ div.modalContent {
 .subtitle {
   font: var(--font-S);
   text-transform: uppercase;
+}
+
+.wide {
+  width: calc(100vw - 10rem);
+  height: calc(100vh - 10rem);
+  max-width: 110rem;
+  overflow: hidden;
 }

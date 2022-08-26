@@ -103,7 +103,7 @@ const InfoModal = ({
       />
     ) : null
   }
-  const hasLongTitleTab = tabs.some((tab) => tab.title.length > 30)
+  // const hasLongTitleTab = tabs.some((tab) => tab.title.length > 30)
   return (
     <Fragment>
       <IconButton
@@ -116,7 +116,7 @@ const InfoModal = ({
         tooltipPlacement="top"
         onClick={handleClick}
       />
-      {tabs && tabs.length > 0 && modalInfoOpen && (
+      {/* {tabs && tabs.length > 0 && modalInfoOpen && (
         <Modal
           appSelector={ROOT_DOM_ELEMENT}
           title={isSingleTab ? tabs[0].title : dataview.name}
@@ -135,7 +135,24 @@ const InfoModal = ({
             />
           )}
         </Modal>
-      )}
+      )} */}
+      <Modal
+        appSelector={ROOT_DOM_ELEMENT}
+        title={isSingleTab ? tabs[0].title : dataview.name}
+        isOpen={modalInfoOpen}
+        onClose={onModalClose}
+        contentClassName={styles.modalContentWide}
+        className={styles.wide}
+      >
+        <iframe
+          style={{
+            width: '100%',
+            height: '100%',
+          }}
+          title="info-iframe"
+          src="https://globalfishingwatch.org/map-and-data/dataset-info-test-en/"
+        ></iframe>
+      </Modal>
     </Fragment>
   )
 }
