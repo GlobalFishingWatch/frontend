@@ -1,4 +1,5 @@
 import { LayerSpecification } from "@globalfishingwatch/maplibre-gl"
+import { NSLABELS_ENDOPOINT } from "data/config"
 
 const style = {
   version: 8,
@@ -20,7 +21,7 @@ const style = {
     },
     location_labels: {
       type: 'raster',
-      tiles: ['https://gtiles.api.dev.globalfishingwatch.org/v1/tileset/nslabels/tile?x={x}&y={y}&z={z}'],
+      tiles: [NSLABELS_ENDOPOINT],
       tileSize: 256
     },
     bathymetry: {

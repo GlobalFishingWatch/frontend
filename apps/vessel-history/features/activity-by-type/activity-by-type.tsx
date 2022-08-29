@@ -2,8 +2,10 @@ import { Suspense, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
-import { Modal, Spinner } from '@globalfishingwatch/ui-components'
-import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
+import { useTranslation } from 'react-i18next'
+import { DateTime } from 'luxon'
+import { Button, Modal, Spinner } from '@globalfishingwatch/ui-components'
+import { DEFAULT_VESSEL_MAP_ZOOM, RISK_SUMMARY_SETTINGS } from 'data/config'
 import {
   RenderedEvent,
   selectHighlightEventIds,
@@ -14,6 +16,10 @@ import useViewport from 'features/map/map-viewport.hooks'
 import ActivityGroup from 'features/profile/components/activity/ActivityGroup'
 import AisCoverage from 'features/profile/components/activity/AisCoverage'
 import useRiskIndicator from 'features/risk-indicator/risk-indicator.hook'
+import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
+import ActivityDataAndTerminology from 'features/profile/components/activity/ActivityDataAndTerminology'
+import FiltersLabel from 'features/filters-label/filters-label'
+import { Filters } from 'features/event-filters/filters.slice'
 import ActivityItem from '../profile/components/activity/ActivityItem'
 import ActivityModalContent from '../profile/components/activity/ActivityModalContent'
 import { useActivityByType } from './activity-by-type.hook'
@@ -24,6 +30,8 @@ export interface ActivityByTypeProps {
 }
 
 export function ActivityByType({ onMoveToMap = () => { } }: ActivityByTypeProps) {
+  const { t } = useTranslation()
+
   const { events, toggleEventType } = useActivityByType()
 
   const [isModalOpen, setIsOpen] = useState(false)
@@ -32,9 +40,7 @@ export function ActivityByType({ onMoveToMap = () => { } }: ActivityByTypeProps)
     setSelectedEvent(event)
     setIsOpen(true)
   }, [])
-  const {
-    coverage,
-  } = useRiskIndicator()
+  const { coverage, eventsLoading } = useRiskIndicator()
   const closeModal = useCallback(() => setIsOpen(false), [])
   const { highlightEvent, highlightVoyage } = useMapEvents()
   const { viewport, setMapCoordinates } = useViewport()
@@ -61,6 +67,13 @@ export function ActivityByType({ onMoveToMap = () => { } }: ActivityByTypeProps)
     [highlightEvent, highlightVoyage, onMoveToMap, setMapCoordinates, viewport.zoom]
   )
 
+  const endDate = DateTime.now()
+  const startDate = endDate.minus(RISK_SUMMARY_SETTINGS.timeRange)
+  const filters: Partial<Filters> = {
+    start: startDate.toUTC().toISO(),
+    end: endDate.toUTC().toISO(),
+  }
+
   return (
     <div className={styles.activityContainer}>
       <Suspense fallback={<Spinner className={styles.spinnerFull} />}>
@@ -72,7 +85,24 @@ export function ActivityByType({ onMoveToMap = () => { } }: ActivityByTypeProps)
         >
           {selectedEvent && <ActivityModalContent event={selectedEvent}></ActivityModalContent>}
         </Modal>
-        <AisCoverage value={coverage?.percentage} />
+
+        <div className={styles.heading}>
+          <AisCoverage value={eventsLoading ? null : coverage?.percentage} />
+          <div className={styles.headingButtons}>
+            <DataAndTerminology
+              containerClassName={styles.dataAndTerminologyContainer}
+              size="medium"
+              type="solid"
+              title={t('common.dataAndTerminology', 'Data and Terminology')}
+            >
+              <ActivityDataAndTerminology />
+            </DataAndTerminology>
+
+            <Button type="secondary" className={styles.filterBtn}>
+              <FiltersLabel filters={filters} />
+            </Button>
+          </div>
+        </div>
         <div className={styles.activityContainer}>
           <AutoSizer disableWidth={true}>
             {({ width, height }) => (

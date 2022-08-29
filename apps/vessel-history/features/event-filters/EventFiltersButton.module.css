@@ -3,9 +3,3 @@ button.filterBtn {
   border-radius: 1.6rem;
   text-transform: none;
 }
-button.filterBtn span {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  width: 100%;
-  overflow: hidden;
-}

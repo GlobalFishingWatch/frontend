@@ -3,31 +3,11 @@ import { featureCollection, point } from "@turf/helpers"
 import buffer from "@turf/buffer"
 import concave from "@turf/concave"
 import { flags } from "@globalfishingwatch/i18n-labels"
-import { selectCountry, selectMapData, selectSelectedPoints } from "features/labeler/labeler.slice"
+import { getFixedColorForUnknownLabel } from 'utils/colors'
+import { selectCountry, selectCountryColors, selectMapData, selectSelectedPoints } from "features/labeler/labeler.slice"
 import { AreaGeneratorConfig, PortPosition, PortPositionFeature, PortPositionsGeneratorConfig } from "types"
 import { groupBy } from "utils/group-by"
 import { selectPortPointsByCountry, selectPortValuesByCountry, selectSubareaColors, selectSubareaValuesByCountry } from "features/labeler/labeler.selectors"
-
-// Return the list of countries that are present in the json input
-export const selectCountries = createSelector([selectMapData],
-  (data) => {
-    if (!data) {
-      return []
-    }
-    const countriesDuplicated: string[] = data.map(e => {
-      return e.iso3
-    })
-    const countries = [...new Set(countriesDuplicated)];
-
-    return countries.map(e => {
-      return {
-        id: e,
-        label: flags[e] ?? e,
-      }
-    }).sort((a, b) => a.label > b.label ? 1 : -1)
-  }
-)
-
 
 /**
  * Creates a custom features for the port points
@@ -36,9 +16,11 @@ export const selectPortPointsFeatures = createSelector([
   selectSelectedPoints,
   selectPortPointsByCountry,
   selectSubareaColors,
-  selectSubareaValuesByCountry]
+  selectSubareaValuesByCountry,
+  selectCountry,
+  selectCountryColors]
   ,
-  (selectedPoints, countryPoints, colors, subareaValues): PortPositionFeature[] => {
+  (selectedPoints, countryPoints, colors, subareaValues, country, countryColors): PortPositionFeature[] => {
     const points: PortPositionFeature[] = countryPoints?.map((point) => {
       return {
         type: 'Feature',
@@ -48,7 +30,7 @@ export const selectPortPointsFeatures = createSelector([
         },
         properties: {
           id: point.s2id,
-          color: colors[subareaValues[point.s2id]] ?? '#ffffff',
+          color: country ? (colors[subareaValues[point.s2id]] ?? '#ffffff') : countryColors[point.iso3],
           selected: selectedPoints.indexOf(point.s2id) !== -1
         },
         id: parseInt(point.s2id, 16),
@@ -60,8 +42,9 @@ export const selectPortPointsFeatures = createSelector([
 )
 
 // Return the points grouped by ports (this is to generate the port layers)
-export const selectPointsByPort = createSelector([selectPortPointsByCountry, selectPortValuesByCountry],
-  (countryPoints, portValues): PortPosition[][] => {
+export const selectPointsByPort = createSelector([selectPortPointsByCountry, selectPortValuesByCountry, selectCountry],
+  (countryPoints, portValues, country): PortPosition[][] => {
+    if (!country) return []
     const areas = groupBy(countryPoints, portValues, 'label')
     const areaNames = Object.keys(areas)
     return areaNames.map(areaName => {
@@ -135,12 +118,12 @@ export const selectSubareaFeatures = createSelector([selectPointsByPortAndSubare
  * Using the custom Mapbox GL features, it return the layer needed to render the polygons
  */
 export const selectAreaLayer = createSelector(
-  [selectPortAreaFeatures, selectSubareaFeatures],
-  (areas, subareas): AreaGeneratorConfig => {
+  [selectPortAreaFeatures, selectSubareaFeatures, selectCountry],
+  (areas, subareas, country): AreaGeneratorConfig => {
     return {
       type: 'geojson',
       data: {
-        features: [...areas, ...subareas],
+        features: country ? [...areas, ...subareas] : [],
         type: 'FeatureCollection',
       },
     }

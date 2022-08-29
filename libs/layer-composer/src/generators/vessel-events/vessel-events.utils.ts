@@ -14,6 +14,7 @@ export const EVENTS_COLORS: Dictionary<string> = {
   port: '#99EEFF',
   port_visit: '#99EEFF',
   fishing: '#ffffff',
+  gap: '#f7b500',
 }
 
 export const EVENTS_COLORS_OUTLINE: Dictionary<string> = {
@@ -24,6 +25,7 @@ export const EVENTS_COLORS_OUTLINE: Dictionary<string> = {
   port: '#99EEFF',
   port_visit: '#99EEFF',
   fishing: '#ffffff',
+  gap: '#f7b500',
 }
 
 export const SHAPE_BY_TYPE: Record<EventType, string> = {
@@ -52,7 +54,8 @@ const getDateTimeDate = (date: string | number) => {
 }
 
 const filterEventByTimerange = (startMs: number, endMs: number, feature: Feature) =>
-  feature.properties && feature.properties.startMs < endMs && feature.properties.endMs > startMs
+  feature.properties && feature.properties.startMs <= endMs && feature.properties.endMs >= startMs
+
 
 export const getVesselEventsGeojson = (
   trackEvents: RawEvent[] | null,

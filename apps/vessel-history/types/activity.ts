@@ -1,4 +1,4 @@
-import { ApiEvent, EventAuthorization, EventType, EventTypes } from '@globalfishingwatch/api-types'
+import { ApiEvent, EventAuthorization, EventType, EventTypes, Regions } from '@globalfishingwatch/api-types'
 import { GroupRegions } from 'features/regions/regions.slice'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 
@@ -13,12 +13,6 @@ export interface EventVessel {
 export interface Position {
   lat: number
   lon: number
-}
-
-export interface Regions {
-  eez: string[]
-  rfmo: string[]
-  mpa: any[]
 }
 
 export interface Distances {

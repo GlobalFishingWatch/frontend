@@ -46,3 +46,7 @@
   flex-shrink: 0;
   line-height: 1;
 }
+
+.countrySelector {
+  width: 150px;
+}

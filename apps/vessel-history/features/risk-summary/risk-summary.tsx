@@ -141,7 +141,9 @@ export function RiskSummary(props: RiskSummaryProps) {
         title={t('events.aisCoverage', 'AIS')}
         titleInfo={<TerminologyAISCoverage />}
       >
-        <ProgressBar value={coverage?.percentage} />
+        <ProgressBar value={eventsLoading ? null : coverage?.percentage}
+          disabled={coverage?.percentage === 0}
+          disabledText={t('common.unknown', 'Unknown')} />
         <br />
       </RiskSection>
       {hasIUUIndicators && (

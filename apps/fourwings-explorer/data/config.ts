@@ -1,3 +1,4 @@
+export const APP_VERSION = '0.0.3'
 export const ROOT_DOM_ELEMENT = '__next'
 
 export const IS_PRODUCTION = process.env.NODE_ENV === 'production'

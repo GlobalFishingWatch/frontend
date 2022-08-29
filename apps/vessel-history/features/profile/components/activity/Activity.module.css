@@ -1,3 +1,9 @@
+.heading {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-S) var(--space-S) var(--space-XS) var(--space-S);
+}
+
 .activityContainer {
   display: flex;
   flex-direction: column;
@@ -184,6 +190,10 @@
   background-color: #9ef;
 }
 
+.eventIcon.gap {
+  background-color: #f7b500;
+}
+
 .highlightsContainer {
   border-top: var(--border);
   margin-top: var(--space-S);
@@ -259,4 +269,12 @@ button.settingsLink {
 .aisCoverageContainer {
   padding-left: var(--space-M);
   padding-bottom: var(--space-S);
+}
+
+@media only screen and (max-width: 1280px) {
+  .heading {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column-reverse;
+  }
 }

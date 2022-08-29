@@ -12,7 +12,10 @@ const AisCoverage: React.FC<AisCoverageProps> = ({
   const { t } = useTranslation()
   return (
     <div className={styles.aisCoverageContainer}>
-      <ProgressBar value={value} label={t('events.aisCoverage', 'AIS Coverage') as string}
+      <ProgressBar value={value}
+        disabled={value === 0}
+        disabledText={t('common.unknown', 'Unknown')}
+        label={t('events.aisCoverage', 'AIS Coverage') as string}
         helpText={
           <Trans i18nKey="events.aisCoverageDescription">
             The coverage metric is an estimate of how well a vessel's activities,
@@ -29,6 +32,7 @@ const AisCoverage: React.FC<AisCoverageProps> = ({
             >
               All Data caveats can be found in the FAQ here.
             </a>
+            Unknown refers to situations where there is no AIS activity detected during the previous 12 months.
           </Trans>
         } />
     </div>

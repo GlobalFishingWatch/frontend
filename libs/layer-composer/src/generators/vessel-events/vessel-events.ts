@@ -126,6 +126,10 @@ class VesselsEventsGenerator {
           ],
           'circle-stroke-color': [...activeFilter, activeStrokeColor, strokeColor],
           'circle-radius': [...activeFilter, 8 * activeIconsSize, 4 * inactiveIconsSize],
+
+        },
+        layout: {
+          'circle-sort-key': [...activeFilter, 1000, 500]
         },
         metadata: {
           group: Group.Point,
@@ -146,6 +150,7 @@ class VesselsEventsGenerator {
           'icon-allow-overlap': true,
           'icon-image': ['get', 'icon'],
           'icon-size': [...activeFilter, 1 * iconsSize, 0],
+          'symbol-sort-key': [...activeFilter, 1000, 500]
         },
         metadata: {
           group: Group.Point,

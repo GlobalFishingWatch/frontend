@@ -48,7 +48,8 @@ steps:
       - |-
         apt-get update -y && \
         apt-get install -y zip && \
-        zip -r dist.zip dist/apps/fourwings-explorer/exported/* && \
+        cd dist/apps/fourwings-explorer/exported && \
+        zip -r dist.zip * && \
         gsutil cp ./dist.zip gs://geotemporal-data-explorer-releases/ui/latest.zip
 
 timeout: 1800s
