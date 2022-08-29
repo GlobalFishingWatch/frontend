@@ -165,12 +165,12 @@ const AnalysisEvolutionGraph: React.FC<{
   const domainPadding = (dataMax - dataMin) / 8
   const paddedDomain: [number, number] = [
     Math.max(0, Math.floor(dataMin - domainPadding)),
-    Math.ceil(dataMax + domainPadding),
+    dataMax + domainPadding,
   ]
 
   return (
     <div className={styles.graph}>
-      <ResponsiveContainer width="100%" height={240}>
+      <ResponsiveContainer width="100%" height={500}>
         <ComposedChart data={dataFormated} margin={{ top: 15, right: 20, left: -20, bottom: -10 }}>
           <CartesianGrid vertical={false} />
           <XAxis
@@ -179,7 +179,7 @@ const AnalysisEvolutionGraph: React.FC<{
             interval="preserveStartEnd"
             tickFormatter={(tick: number) => formatDateTicks(tick, interval)}
             axisLine={paddedDomain[0] === 0}
-            // scale={'time'}
+            scale={'time'}
             type={'number'}
           />
           <YAxis
@@ -189,7 +189,7 @@ const AnalysisEvolutionGraph: React.FC<{
             tickFormatter={tickFormatter}
             axisLine={false}
             tickLine={false}
-            tickCount={4}
+            tickCount={10}
           />
           <Tooltip content={<AnalysisGraphTooltip timeChunkInterval={interval} />} />
           <Line
