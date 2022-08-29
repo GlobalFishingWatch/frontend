@@ -8,6 +8,7 @@ import {
   FLRM_PERMISSION,
   INSURER_PERMISSION,
   APP_PROFILE_VIEWS,
+  RISK_SUMMARY_IDENTITY_INDICATORS_PERMISSION,
 } from 'data/config'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -50,6 +51,13 @@ export const useUser = () => {
     return user && checkExistPermissionInList(user.permissions, FLRM_PERMISSION)
   }, [user])
 
+  const authorizedIdentityIndicators = useMemo(() => {
+    return (
+      user &&
+      checkExistPermissionInList(user.permissions, RISK_SUMMARY_IDENTITY_INDICATORS_PERMISSION)
+    )
+  }, [user])
+
   const availableViews = useMemo(() => {
     return APP_PROFILE_VIEWS.filter(
       (view) => user && checkExistPermissionInList(user?.permissions, view.required_permission)
@@ -86,6 +94,7 @@ export const useUser = () => {
 
   return {
     authorized: authorizedInspector || authorizedInsurer,
+    authorizedIdentityIndicators,
     authorizedInspector,
     authorizedInsurer,
     authorizedFLRM,

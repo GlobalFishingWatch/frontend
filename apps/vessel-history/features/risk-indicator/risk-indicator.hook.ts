@@ -63,7 +63,7 @@ export interface UseRiskIndicator {
   uniqueOwners: string[]
 }
 
-export function useRiskIndicator(): UseRiskIndicator {
+export function useRiskIndicator(showIdentityIndicators: boolean): UseRiskIndicator {
   const dispatch = useAppDispatch()
   const idData = useSelector(selectCurrentMergedVesselsId)
   const indicatorsStatus = useSelector(selectIndicatorsStatus)
@@ -122,8 +122,11 @@ export function useRiskIndicator(): UseRiskIndicator {
         fishingInRFMOWithoutAuthorization.length +
         loiteringInMPA.length +
         Math.max(0, uniqueFlags.length - 1) +
-        Math.max(0, uniqueOperators.length - 1) +
-        Math.max(0, uniqueOwners.length - 1) +
+        (showIdentityIndicators
+          ? Math.max(0, uniqueOperators.length - 1) +
+            Math.max(0, uniqueOwners.length - 1) +
+            Math.max(0, uniqueNames.length - 1)
+          : 0) +
         portVisitsToNonPSMAPortState.length +
         vesselFlagsOnMOU.length +
         (gapsIntentionalDisabling?.length ?? 0) +
@@ -149,9 +152,9 @@ export function useRiskIndicator(): UseRiskIndicator {
     ownersHistory,
     portVisitsToNonPSMAPortState,
     uniqueFlags,
-    uniqueNames,
-    uniqueOperators,
-    uniqueOwners,
+    uniqueNames: showIdentityIndicators ? uniqueNames : [],
+    uniqueOperators: showIdentityIndicators ? uniqueOperators : [],
+    uniqueOwners: showIdentityIndicators ? uniqueOwners : [],
     vessel,
     vesselFlagsOnMOU,
   }

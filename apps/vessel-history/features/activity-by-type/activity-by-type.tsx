@@ -20,6 +20,7 @@ import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology
 import ActivityDataAndTerminology from 'features/profile/components/activity/ActivityDataAndTerminology'
 import FiltersLabel from 'features/filters-label/filters-label'
 import { Filters } from 'features/event-filters/filters.slice'
+import { useUser } from 'features/user/user.hooks'
 import ActivityItem from '../profile/components/activity/ActivityItem'
 import ActivityModalContent from '../profile/components/activity/ActivityModalContent'
 import { useActivityByType } from './activity-by-type.hook'
@@ -29,7 +30,7 @@ export interface ActivityByTypeProps {
   onMoveToMap?: () => void
 }
 
-export function ActivityByType({ onMoveToMap = () => { } }: ActivityByTypeProps) {
+export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) {
   const { t } = useTranslation()
 
   const { events, toggleEventType } = useActivityByType()
@@ -40,7 +41,8 @@ export function ActivityByType({ onMoveToMap = () => { } }: ActivityByTypeProps)
     setSelectedEvent(event)
     setIsOpen(true)
   }, [])
-  const { coverage, eventsLoading } = useRiskIndicator()
+  const { authorizedIdentityIndicators } = useUser()
+  const { coverage, eventsLoading } = useRiskIndicator(authorizedIdentityIndicators)
   const closeModal = useCallback(() => setIsOpen(false), [])
   const { highlightEvent, highlightVoyage } = useMapEvents()
   const { viewport, setMapCoordinates } = useViewport()
