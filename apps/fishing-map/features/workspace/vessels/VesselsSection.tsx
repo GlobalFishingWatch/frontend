@@ -64,7 +64,7 @@ function VesselsSection(): React.ReactElement {
       {hasVesselsWithNoTrack && (
         <p className={styles.disclaimer}>
           <Trans i18nKey="vessel.trackLogin">
-            One of your selected sources requires you to{' '}
+            One of your selected sources requires you to
             <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink> to see
             vessel tracks and events
           </Trans>
