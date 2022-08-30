@@ -357,7 +357,7 @@
     "saveForOfflineView": "save vessel for offline view",
     "source": "source",
     "transmission_plural": "transmissions",
-    "transmissionDescription": "Transmissions refer to AIS transmissions. AIS stands for Automatic Identification Systems and is a GPS-like device that large ships use to broadcast their position in order to avoid collisions. The number is the number and time range of AIS transmissions we have on record, that we were able to match to a vessel. For more information, please see our FAQs.",
+    "transmissionDescription": "AIS stands for Automatic Identification Systems. AIS is a GPS-like device that large ships use to broadcast their position in order to avoid collisions. The positions listed in the vessel search results refer to the number of vessel positions broadcast over AIS that we have processed and matched to the search result, over a period of time. For more information on how AIS data is processed and caveats of our algorithms, please see our FAQs.",
     "transmissionRange": "{{transmissions}} AIS transmissions from {{start}} to {{end}}",
     "type": "vessel type",
     "type_plural": "types",
