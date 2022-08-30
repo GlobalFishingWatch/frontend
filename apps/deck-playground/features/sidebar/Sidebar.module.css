@@ -18,3 +18,8 @@
 .switch {
   margin-right: 0.5rem;
 }
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+}

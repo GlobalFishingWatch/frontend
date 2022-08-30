@@ -1,4 +1,6 @@
 import { VesselsLayer } from 'layers/vessel/VesselsLayer'
+import { useMemo } from 'react'
+import { FourwingsLayer } from 'layers/fourwings/FourwingsLayer'
 import { Button, Switch } from '@globalfishingwatch/ui-components'
 import { VESSEL_IDS } from 'data/vessels'
 import { MapLayer, useMapLayers } from 'features/map/layers.hooks'
@@ -8,6 +10,10 @@ import SidebarHeader from './SidebarHeader'
 function Sidebar() {
   const [layers, setMapLayers] = useMapLayers()
 
+  const fourwingsLayerInstance = useMemo(() => {
+    return layers.find((l) => l.id === 'fourwings')?.instance as FourwingsLayer
+  }, [layers])
+
   const getFirstVesselData = () => {
     const vesselsLayerInstance = layers.find((l) => l.id === 'vessel')?.instance as VesselsLayer
     console.log('First Vessel Data')
@@ -15,10 +21,11 @@ function Sidebar() {
   }
 
   const getFourwingsData = () => {
-    const fourwingsLayerInstance: any = layers.find((l) => l.id === 'fourwings')?.instance
-    const data = fourwingsLayerInstance.getDataFilteredByViewport()
-    console.log('Fourwings viewport data')
-    console.log(data)
+    if (fourwingsLayerInstance) {
+      const data = fourwingsLayerInstance.getDataFilteredByViewport()
+      console.log('Fourwings viewport data')
+      console.log(data)
+    }
   }
 
   const onLayerVisibilityClick = (layer: MapLayer) => {
@@ -67,6 +74,16 @@ function Sidebar() {
                   onClick={() => onLayerVisibilityClick(layer)}
                 />
                 <div>4wings layer</div>
+              </div>
+              <div>
+                <label>Steps</label>
+                {fourwingsLayerInstance && (
+                  <ul className={styles.list}>
+                    {fourwingsLayerInstance.getColorDomain()?.map((step) => (
+                      <li key={step}>{step},</li>
+                    ))}
+                  </ul>
+                )}
               </div>
               {layer.visible && (
                 <div>

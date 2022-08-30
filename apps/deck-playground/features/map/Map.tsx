@@ -1,10 +1,11 @@
 import { Fragment, useEffect, useCallback, useMemo } from 'react'
-import { DeckGL } from '@deck.gl/react'
+import { DeckGL } from '@deck.gl/react/typed'
 import { BitmapLayer } from '@deck.gl/layers'
 import { TileLayer } from '@deck.gl/geo-layers'
 import { FourwingsLayer, FOURWINGS_LAYER_ID } from 'layers/fourwings/FourwingsLayer'
 import { aggregateCell } from 'layers/fourwings/FourwingsTileLayer'
 import { VALUE_MULTIPLIER } from 'loaders/constants'
+import { values } from 'lodash'
 import { useHighlightTimerange, useTimerange } from 'features/timebar/timebar.hooks'
 import { VESSEL_IDS } from 'data/vessels'
 import { MapLayer, MapLayerType, useMapLayers } from 'features/map/layers.hooks'
@@ -84,31 +85,31 @@ const MapWrapper = (): React.ReactElement => {
     highlightEndTime,
   ])
 
+  const onViewportLoad = useCallback(() => {
+    setMapLayerProperty('fourwings', 'loaded', true)
+  }, [setMapLayerProperty])
+
   const fourwingsLayerVisible = mapLayers.find((l) => l.id === 'fourwings')?.visible
   useEffect(() => {
     if (fourwingsLayerVisible) {
       const fourwingsLayer = new FourwingsLayer({
         minFrame: startTime,
         maxFrame: endTime,
-        onViewportLoad: (tiles) => {
-          setMapLayerProperty('fourwings', 'loaded', true)
-        },
+        onViewportLoad: onViewportLoad,
       })
       setMapLayerProperty('fourwings', 'instance', fourwingsLayer)
     } else {
       setMapLayerProperty('fourwings', 'instance', null)
     }
-  }, [fourwingsLayerVisible, setMapLayerProperty, startTime, endTime])
+  }, [fourwingsLayerVisible, setMapLayerProperty, onViewportLoad, startTime, endTime])
 
   const layers = useMemo(() => {
     return [basemap, ...mapLayers.flatMap((l) => l.instance)]
   }, [mapLayers])
 
   const getTooltip = (tooltip) => {
-    if (tooltip.sourceLayer?.id === FOURWINGS_LAYER_ID && tooltip.object) {
-      const { minFrame, maxFrame } = tooltip.layer.props
-      const value = aggregateCell(tooltip.object, { minFrame, maxFrame })
-      return (value / VALUE_MULTIPLIER).toString()
+    if (tooltip.object?.value) {
+      return tooltip.object.value.toString()
     }
     return
   }
@@ -120,6 +121,7 @@ const MapWrapper = (): React.ReactElement => {
         initialViewState={INITIAL_VIEW_STATE}
         layers={layers}
         getTooltip={getTooltip}
+        onViewStateChange={(v) => console.log(v.viewState.zoom)}
       />
     </Fragment>
   )
