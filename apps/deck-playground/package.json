@@ -14,11 +14,12 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "dependencies": {
-    "@deck.gl/core": "^8.8.6",
-    "@deck.gl/extensions": "^8.8.6",
-    "@deck.gl/geo-layers": "^8.8.6",
-    "@deck.gl/layers": "^8.8.6",
-    "@deck.gl/react": "^8.8.6",
+    "@deck.gl/core": "^8.8.9",
+    "@deck.gl/aggregation-layers": "^8.8.9",
+    "@deck.gl/extensions": "^8.8.9",
+    "@deck.gl/geo-layers": "^8.8.9",
+    "@deck.gl/layers": "^8.8.9",
+    "@deck.gl/react": "^8.8.9",
     "@loaders.gl/core": "^3.2.7",
     "@loaders.gl/loader-utils": "^3.2.7",
     "@loaders.gl/mvt": "^3.2.7",

@@ -7,13 +7,16 @@ import {
   UpdateParameters,
 } from '@deck.gl/core/typed'
 // import { Layer } from '@deck.gl/core/typed'
-import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
+import { GeoBoundingBox, TileLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
 import { fourwingsLayerLoader } from 'loaders/fourwings/fourwingsLayerLoader'
 import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
 import { aggregateCell, FourwingsTileLayer } from 'layers/fourwings/FourwingsTileLayer'
 import { filterCellsByBounds } from 'layers/fourwings/fourwings.utils'
 import { debounce } from 'lodash'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
+import GPUGridLayer from 'layers/fourwings-gpu/gpu-grid-layer'
+import { BBox, fourwingsGPULoader } from 'layers/fourwings-gpu/FourwingsGPULoader'
+import { getCellWidth, getTileCellsCoordinates } from 'layers/fourwings-gpu/fourwingsTileParser'
 
 export type FourwingsLayerProps = {
   minFrame: number
@@ -21,14 +24,28 @@ export type FourwingsLayerProps = {
   onViewportLoad: TileLayerProps['onViewportLoad']
 }
 
-export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
+export class FourwingsGPULayer extends CompositeLayer<FourwingsLayerProps> {
   state: {
     colorDomain?: number[]
     colorRange?: Color[]
   }
 
   initializeState(context: LayerContext): void {
-    this.setState({ colorDomain: undefined, colorRange: undefined })
+    this.setState({
+      colorDomain: [8, 51, 85, 142, 193, 249, 381, 485, 690, 768],
+      colorRange: [
+        [255, 0, 255, 25.5],
+        [255, 0, 255, 51],
+        [255, 0, 255, 76.5],
+        [255, 0, 255, 102],
+        [255, 0, 255, 127.5],
+        [255, 0, 255, 153],
+        [255, 0, 255, 178.5],
+        [255, 0, 255, 204],
+        [255, 0, 255, 229.5],
+        [255, 0, 255, 255],
+      ],
+    })
   }
 
   updateRampScale() {
@@ -51,8 +68,6 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
       const opacity = ((i + 1) / COLOR_RAMP_DEFAULT_NUM_STEPS) * 255
       return [255, 0, 255, opacity]
     })
-    console.log(colorRange)
-    console.log(steps)
     this.setState({ colorDomain: steps, colorRange })
   }
 
@@ -61,7 +76,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
   }, 600)
 
   onViewportLoad: TileLayerProps['onViewportLoad'] = (tiles) => {
-    this.debouncedUpdateRampScale()
+    // this.debouncedUpdateRampScale()
     return this.props.onViewportLoad(tiles)
   }
 
@@ -73,8 +88,39 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
   //   }
   // }
 
+  // renderLayersOld() {
+  //   const TileLayerClass = this.getSubLayerClass('tiles', TileLayer)
+  //   return [
+  //     new TileLayerClass(
+  //       this.props,
+  //       this.getSubLayerProps({
+  //         id: 'tile',
+  //         data: 'https://gateway.api.dev.globalfishingwatch.org/v2/4wings/tile/heatmap/{z}/{x}/{y}?interval=day&date-range=2022-07-01,2022-08-25&format=intArray&temporal-aggregation=false&proxy=true&datasets[0]=public-global-fishing-effort:v20201001',
+  //         minZoom: 0,
+  //         maxZoom: 8,
+  //         tileSize: 256,
+  //         zoomOffset: -1,
+  //         opacity: 1,
+  //         loaders: [fourwingsLayerLoader],
+  //         loadOptions: { worker: false },
+  //         onViewportLoad: this.onViewportLoad,
+  //         renderSubLayers: (props) => {
+  //           const { maxFrame, minFrame } = this.props
+  //           return new FourwingsTileLayer({
+  //             maxFrame,
+  //             minFrame,
+  //             colorDomain: this.state.colorDomain,
+  //             colorRange: this.state.colorRange,
+  //             ...props,
+  //           })
+  //         },
+  //       })
+  //     ),
+  //   ]
+  // }
+
   renderLayers() {
-    const TileLayerClass = this.getSubLayerClass('tiles', TileLayer)
+    const TileLayerClass = this.getSubLayerClass('layer', TileLayer)
     return [
       new TileLayerClass(
         this.props,
@@ -86,17 +132,26 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
           tileSize: 256,
           zoomOffset: -1,
           opacity: 1,
-          loaders: [fourwingsLayerLoader],
+          loaders: [fourwingsGPULoader],
           loadOptions: { worker: false },
           onViewportLoad: this.onViewportLoad,
           renderSubLayers: (props) => {
-            const { maxFrame, minFrame } = this.props
-            return new FourwingsTileLayer({
-              maxFrame,
-              minFrame,
-              colorDomain: this.state.colorDomain,
+            // const GPUGridLayerClass = this.getSubLayerClass('tile', GPUGridLayer)
+            // const data = getTileCellsCoordinates(props.tile, props.data)
+            const { west, south, east, north } = props.tile.bbox as GeoBoundingBox
+            const bbox: BBox = [west, south, east, north]
+            // * 111139 to convert degrees to meters
+            const width = getCellWidth(bbox, props.data.cols) * 111139
+            return new GPUGridLayer({
+              id: props.tile.id,
+              cellSize: width,
+              data: props.data,
+              colorAggregation: 'SUM',
+              pickable: true,
+              getPosition: (d) => d.coordinates,
+              getColorWeight: (d) => d.value,
+              colorDomain: [this.state.colorDomain[0], this.state.colorDomain[9]],
               colorRange: this.state.colorRange,
-              ...props,
             })
           },
         })
@@ -105,9 +160,10 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
   }
 
   getData() {
-    return (this.getSubLayers()[0] as TileLayer)
-      .getSubLayers()
-      .flatMap((l: FourwingsTileLayer) => l.getTileData())
+    return []
+    // return (this.getSubLayers()[0] as TileLayer)
+    //   .getSubLayers()
+    //   .flatMap((l: FourwingsTileLayer) => l.getTileData())
   }
 
   getColorDomain() {

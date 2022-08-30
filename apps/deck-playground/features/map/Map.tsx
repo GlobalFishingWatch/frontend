@@ -10,6 +10,8 @@ import { useHighlightTimerange, useTimerange } from 'features/timebar/timebar.ho
 import { VESSEL_IDS } from 'data/vessels'
 import { MapLayer, MapLayerType, useMapLayers } from 'features/map/layers.hooks'
 import { VesselsLayer } from '../../layers/vessel/VesselsLayer'
+import GPUGridLayer from 'layers/fourwings-gpu/gpu-grid-layer'
+import { FourwingsGPULayer } from 'layers/fourwings-gpu/FourwingsGPULayer'
 
 const INITIAL_VIEW_STATE = {
   longitude: -2,
@@ -92,7 +94,7 @@ const MapWrapper = (): React.ReactElement => {
   const fourwingsLayerVisible = mapLayers.find((l) => l.id === 'fourwings')?.visible
   useEffect(() => {
     if (fourwingsLayerVisible) {
-      const fourwingsLayer = new FourwingsLayer({
+      const fourwingsLayer = new FourwingsGPULayer({
         minFrame: startTime,
         maxFrame: endTime,
         onViewportLoad: onViewportLoad,
@@ -104,12 +106,47 @@ const MapWrapper = (): React.ReactElement => {
   }, [fourwingsLayerVisible, setMapLayerProperty, onViewportLoad, startTime, endTime])
 
   const layers = useMemo(() => {
+    // return [
+    //   new GPUGridLayer({
+    //     id: 'GPUGridLayer',
+    //     data: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/sf-bike-parking.json',
+
+    //     /* props from GPUGridLayer class */
+
+    //     cellSize: 200,
+    //     // colorAggregation: 'SUM',
+    //     // colorDomain: null,
+    //     // colorRange: [[255, 255, 178], [254, 217, 118], [254, 178, 76], [253, 141, 60], [240, 59, 32], [189, 0, 38]],
+    //     // coverage: 1,
+    //     // elevationAggregation: 'SUM',
+    //     // elevationDomain: null,
+    //     // elevationRange: [0, 1000],
+    //     // elevationScale: 4,
+    //     // extruded: false,
+    //     // getColorWeight: 1,
+    //     // getElevationWeight: 1,
+    //     getPosition: (d) => d.COORDINATES,
+    //     // material: true,
+
+    //     /* props inherited from Layer class */
+
+    //     // autoHighlight: false,
+    //     // coordinateOrigin: [0, 0, 0],
+    //     // coordinateSystem: COORDINATE_SYSTEM.LNGLAT,
+    //     // highlightColor: [0, 0, 128, 128],
+    //     // modelMatrix: null,
+    //     // opacity: 1,
+    //     pickable: true,
+    //     // visible: true,
+    //     // wrapLongitude: false,
+    //   }),
+    // ]
     return [basemap, ...mapLayers.flatMap((l) => l.instance)]
   }, [mapLayers])
 
   const getTooltip = (tooltip) => {
-    if (tooltip.object?.value) {
-      return tooltip.object.value.toString()
+    if (tooltip.object?.colorValue) {
+      return tooltip.object.colorValue.toString()
     }
     return
   }
@@ -121,7 +158,7 @@ const MapWrapper = (): React.ReactElement => {
         initialViewState={INITIAL_VIEW_STATE}
         layers={layers}
         getTooltip={getTooltip}
-        onViewStateChange={(v) => console.log(v.viewState.zoom)}
+        // onViewStateChange={(v) => console.log(v.viewState.zoom)}
       />
     </Fragment>
   )
