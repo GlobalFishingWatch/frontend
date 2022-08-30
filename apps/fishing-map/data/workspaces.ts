@@ -9,9 +9,6 @@ export const WORKSPACE_ENV =
   (process.env.NEXT_PUBLIC_WORKSPACE_ENV as WorkspaceEnv) ||
   (process.env.NODE_ENV as WorkspaceEnv) ||
   'production'
-console.log('WORKSPACE ENV')
-console.log(process.env.NEXT_PUBLIC_WORKSPACE_ENV)
-console.log(process.env.NODE_ENV)
 
 export function getWorkspaceEnv(): WorkspaceEnv {
   return WORKSPACE_ENV
@@ -86,6 +83,10 @@ export const GLOBAL_WATER_TEMPERATURE_DATAVIEW_ID =
 export const GLOBAL_SALINITY_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 298 : undefined
 export const GLOBAL_CHLOROPHYL_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 299 : undefined
 
-export const DEFAULT_DATAVIEW_IDS = [...PRESENCE_DATAVIEWS, ...TEMPLATE_DATAVIEW_IDS]
+export const DEFAULT_DATAVIEW_IDS = [
+  FISHING_DATAVIEW_ID,
+  ...PRESENCE_DATAVIEWS,
+  ...TEMPLATE_DATAVIEW_IDS,
+]
 
 export const ONLY_GFW_STAFF_DATAVIEWS = [BASEMAP_LABELS_DATAVIEW_ID]
