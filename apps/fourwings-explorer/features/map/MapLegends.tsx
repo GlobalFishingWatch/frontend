@@ -2,7 +2,6 @@ import cx from 'classnames'
 import { createPortal } from 'react-dom'
 import { Fragment } from 'react'
 import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { LegendLayer, LegendLayerBivariate } from '@globalfishingwatch/react-hooks'
 import styles from './MapLegends.module.css'
 
@@ -16,15 +15,15 @@ const MapLegendWrapper: React.FC<{ legend: AnyLegend }> = ({ legend }) => {
     <MapLegend
       layer={legend}
       className={styles.legend}
-      roundValues={legend.category !== DataviewCategory.Environment}
+      roundValues={false}
       currentValueClassName={styles.currentValue}
       labelComponent={
         legend.label?.includes('²') ? (
           <Tooltip content={'Approximated grid cell area at the Equator'}>
-            <span className={cx(styles.legendLabel, styles.help)}>{legend.label}</span>
+            <span className={cx(styles.legendLabel, styles.help)}>{legend.unit}</span>
           </Tooltip>
         ) : (
-          <span className={styles.legendLabel}>{legend.label}</span>
+          <span className={styles.legendLabel}>{legend.unit}</span>
         )
       }
     />

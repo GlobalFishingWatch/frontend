@@ -1,10 +1,11 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, Component } from 'react'
 import { AppProps } from 'next/app'
 import { RecoilURLSyncJSONNext } from 'recoil-sync-next'
 import { RecoilRoot } from 'recoil'
 import { MapProvider } from 'react-map-gl'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import dynamic from 'next/dynamic'
+import { useRouter } from 'next/router'
 import { SplitView } from '@globalfishingwatch/ui-components'
 import useMapInstance from 'features/map/map-context.hooks'
 import Modals from 'features/modals/Modals'
@@ -18,7 +19,7 @@ import { APP_VERSION } from 'data/config'
 
 const queryClient = new QueryClient()
 
-class ErrorBoundary extends React.Component<{ children: any }, { hasError: boolean }> {
+class ErrorBoundary extends Component<{ children: any }, { hasError: boolean }> {
   constructor(props) {
     super(props)
     this.state = { hasError: false }
@@ -56,6 +57,7 @@ const Timebar = dynamic(
 
 function CustomApp({ Component, pageProps }: AppProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const router = useRouter()
   const map = useMapInstance()
 
   const onToggle = useCallback(() => {
@@ -67,7 +69,7 @@ function CustomApp({ Component, pageProps }: AppProps) {
     }
   }, [sidebarOpen, map])
 
-  const asideWidth = '32rem'
+  const asideWidth = router.route === '/analysis' ? '50%' : '34rem'
 
   useEffect(() => {
     console.log(APP_VERSION)

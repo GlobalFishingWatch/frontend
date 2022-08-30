@@ -26,7 +26,7 @@
 }
 
 .properties {
-  padding: var(--space-S);
+  padding: var(--space-XS) var(--space-S) var(--space-M) var(--space-S);
 }
 
 .dragger {
@@ -95,7 +95,7 @@
 
 .filters {
   display: none;
-  padding: var(--space-S);
+  padding: var(--space-XS) var(--space-S);
 }
 
 .filter:not(:last-of-type) {

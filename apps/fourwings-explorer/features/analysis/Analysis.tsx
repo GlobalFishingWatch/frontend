@@ -6,6 +6,7 @@ import AnalysisEvolutionGraph from 'features/analysis/AnalysisEvolutionGraph'
 import { useTimerange } from 'features/timebar/timebar.hooks'
 import { useFilteredTimeSeries } from 'features/analysis/analysis.hooks'
 import { useAnalysisArea } from 'features/analysis/analysis.area.hooks'
+import { useGeoTemporalLayers } from 'features/layers/layers.hooks'
 import styles from './Analysis.module.css'
 
 const Analysis = () => {
@@ -15,6 +16,7 @@ const Analysis = () => {
   const layersTimeseries = useFilteredTimeSeries(areaFeature)
   const { layersTimeseriesFiltered, loading } = layersTimeseries
   const [{ start, end }] = useTimerange()
+  const geoTemporalLayers = useGeoTemporalLayers()
 
   return (
     <div className={cx('scrollContainer', styles.container)}>
@@ -26,15 +28,19 @@ const Analysis = () => {
             query: rest,
           }}
         >
-          <IconButton icon="close" />
+          <IconButton icon="close" type="border" />
         </Link>
       </div>
       {layersTimeseriesFiltered?.length > 0 && (
-        <ul className={styles.graphsContainer}>
+        <ul>
           {layersTimeseriesFiltered.map((layerGraph) => {
+            const layer = geoTemporalLayers.find((l) => l.id === layerGraph.layer.id)
             return (
-              <li>
-                <label>{layerGraph.layer.id}</label>
+              <li className={styles.graphContainer} key={layerGraph.layer.id}>
+                <h2 className={styles.name}>
+                  {layer.dataset.name}
+                  <span className={styles.unit}>{layer.dataset.unit}</span>
+                </h2>
                 {loading ? (
                   <Spinner />
                 ) : (
