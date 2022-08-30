@@ -271,13 +271,13 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
                   infoDataset = action.payload
                 }
               }
-              return (infoDataset || []) as Dataset
+              return infoDataset
             })
           )
         })
       )
 
-      const infoDatasets = allInfoDatasets.flatMap((d) => d || [])
+      const infoDatasets = allInfoDatasets.flatMap((datasets) => datasets.flatMap((d) => d || []))
       const topActivityVesselIds = topActivityVessels.map(({ id, vessel_id }) => id)
       const vesselsInfo = await fetchVesselInfo(infoDatasets, topActivityVesselIds, signal)
 
