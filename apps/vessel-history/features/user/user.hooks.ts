@@ -8,9 +8,11 @@ import {
   FLRM_PERMISSION,
   INSURER_PERMISSION,
   APP_PROFILE_VIEWS,
+  RISK_SUMMARY_IDENTITY_INDICATORS_PERMISSION,
 } from 'data/config'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { initializeDataviews } from 'features/dataviews/dataviews.utils'
 import { useWorkspace } from 'features/workspace/workspace.hook'
 import { WorkspaceProfileViewParam } from 'types'
 import {
@@ -49,6 +51,13 @@ export const useUser = () => {
     return user && checkExistPermissionInList(user.permissions, FLRM_PERMISSION)
   }, [user])
 
+  const authorizedIdentityIndicators = useMemo(() => {
+    return (
+      user &&
+      checkExistPermissionInList(user.permissions, RISK_SUMMARY_IDENTITY_INDICATORS_PERMISSION)
+    )
+  }, [user])
+
   const availableViews = useMemo(() => {
     return APP_PROFILE_VIEWS.filter(
       (view) => user && checkExistPermissionInList(user?.permissions, view.required_permission)
@@ -72,13 +81,20 @@ export const useUser = () => {
   }, [dispatch])
 
   useEffect(() => {
-    if (!logged && (token || refreshToken || accessToken)) {
-      dispatch(fetchUserThunk())
+    const fetchUser = async () => {
+      if (!logged && (token || refreshToken || accessToken)) {
+        const action = await dispatch(fetchUserThunk())
+        if (fetchUserThunk.fulfilled.match(action)) {
+          initializeDataviews(dispatch)
+        }
+      }
     }
+    fetchUser()
   }, [accessToken, dispatch, logged, refreshToken, token])
 
   return {
     authorized: authorizedInspector || authorizedInsurer,
+    authorizedIdentityIndicators,
     authorizedInspector,
     authorizedInsurer,
     authorizedFLRM,

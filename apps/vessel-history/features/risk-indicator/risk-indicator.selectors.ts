@@ -53,7 +53,7 @@ const selectEventsForRiskSummary = createSelector(
         ...(indicators?.loitering?.eventsInMPA || []),
         ...(indicators?.loitering?.eventsInRFMO || []),
         ...(indicators?.portVisits?.nonPSMAPortState || []),
-        ...(indicators?.gaps.intentionalDisabling || [])
+        ...(indicators?.gaps?.intentionalDisabling || [])
       ])
     )
     return events.filter((event) => indicatorsEvents.includes(event.id))

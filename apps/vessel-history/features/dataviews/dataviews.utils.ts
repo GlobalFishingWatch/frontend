@@ -7,8 +7,9 @@ import {
 } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { AppDispatch } from 'store'
+import { AppDispatch, RootState } from 'store'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
+import { selectUserLogged } from 'features/user/user.slice'
 import { fetchDataviewsByIdsThunk } from './dataviews.slice'
 import {
   dataviewInstances,

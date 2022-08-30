@@ -54,14 +54,14 @@ const ActivityModalContentDetails: React.FC<ActivityModalContentProps> = (
           label={props.startLabel ? props.startLabel : t('event.start', 'Start')}
           value={<I18nDate date={event.start} format={DateTime.DATETIME_FULL} />}
         />
-        <ActivityModalContentField
+        {!!event.end && <ActivityModalContentField
           label={props.endLabel ? props.endLabel : t('event.end', 'End')}
           value={<I18nDate date={event.end} format={DateTime.DATETIME_FULL} />}
-        />
-        <ActivityModalContentField
+        />}
+        {event.durationDescription && <ActivityModalContentField
           label={t('event.duration', 'Duration')}
           value={event.durationDescription}
-        />
+        />}
       </div>
       <div className={styles.row}>
         <ActivityModalContentField

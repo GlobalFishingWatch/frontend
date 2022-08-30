@@ -78,7 +78,7 @@ export const EVENTS_COLORS: Record<string, string> = {
   port_visit: '#99EEFF',
   fishing: '#fff',
   fishingLabels: '#163f89',
-  gap: '#f7b500'
+  gap: '#f7b500',
 }
 
 export const DEFAULT_EMPTY_VALUE = ' --- '
@@ -102,6 +102,13 @@ export const FLRM_PERMISSION = {
   value: 'forced-labour',
   action: 'read',
 }
+
+export const RISK_SUMMARY_IDENTITY_INDICATORS_PERMISSION = {
+  type: 'vessel-info',
+  value: 'risk-summary.identity.indicators',
+  action: 'read',
+}
+
 export const GOOGLE_UNIVERSAL_ANALYTICS_ID =
   process.env.NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID || 'UA-56517380-5'
 export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions = IS_PRODUCTION
