@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useMemo } from 'react'
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
@@ -50,7 +50,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
 
   const dispatch = useDispatch()
   const { logout, logged, authorized } = useUser()
-
+  const [typing, setTyping] = useState(true)
   const { onVesselClick, selectedVessels, setSelectedVessels } = useSearchResultsConnect()
   const { fetchResults } = useSearchConnect({ onNewSearch: () => setSelectedVessels([]) })
   const { dispatchLocation } = useLocationConnect()
@@ -267,7 +267,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         </div>
       </header>
       <div className={styles.search}>
-        {hasAccess && <AdvancedSearch />}
+        {hasAccess && <AdvancedSearch onTyping={(isTyping) => setTyping(isTyping)} />}
         {!hasSearch && (
           <div className={styles.content}>
             <h2 className={styles.offlineTitle}>{t('common.offlineAccess', 'OFFLINE ACCESS')}</h2>
@@ -347,7 +347,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                   <Spinner className={styles.loader}></Spinner>
                 </div>
               )}
-              {!searching && vesselsLength >= 0 && (
+              {!typing && !searching && vesselsLength >= 0 && (
                 <SearchNoResultsState
                   contactUsLink={contactUsLink}
                   onContactUsClick={onContactUsClick}
