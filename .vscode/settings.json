@@ -24,5 +24,6 @@
   },
   "jest.enableInlineErrorMessages": true,
   "jest.showCoverageOnLoad": true,
-  "jest.runAllTestsFirst": false
+  "jest.runAllTestsFirst": false,
+  "docwriter.hotkey.mac": "⌥ + ."
 }

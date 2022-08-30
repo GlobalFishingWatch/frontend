@@ -43,8 +43,19 @@
   margin-right: 0;
 }
 
-.emptyState {
+.emptyState,
+.disclaimer {
   font: var(--font-S);
   opacity: var(--opacity-secondary);
   padding: 0 var(--space-S);
+}
+
+.disclaimer {
+  background-color: var(--color-help-yellow);
+  padding: 0 var(--space-XS);
+  margin: 0 var(--space-XS);
+}
+
+.link {
+  text-decoration: underline;
 }

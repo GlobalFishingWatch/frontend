@@ -3,17 +3,16 @@ import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
 import { useSelector } from 'react-redux'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
+import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
+import { aggregateFeatures, ChunkFeature } from '@globalfishingwatch/features-aggregate'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectActiveNonTrackEnvironmentalDataviews } from 'features/dataviews/dataviews.selectors'
 import {
   DataviewFeature,
   areDataviewsFeatureLoaded,
   useMapDataviewFeatures,
-  DataviewChunkFeature,
 } from 'features/map/map-sources.hooks'
-import { aggregateFeatures } from 'features/workspace/environmental/environmental.utils'
 import { useMapBounds } from 'features/map/map-viewport.hooks'
-import { filterByViewport } from 'features/map/map.utils'
 
 export const useEnvironmentalBreaksUpdate = () => {
   const dataviews = useSelector(selectActiveNonTrackEnvironmentalDataviews)
@@ -26,9 +25,9 @@ export const useEnvironmentalBreaksUpdate = () => {
     (dataviewFeatures: DataviewFeature[], bounds: MiniglobeBounds) => {
       const dataviewInstances = dataviewFeatures?.flatMap(
         ({ chunksFeatures, dataviewsId, metadata }) => {
-          const { features } = chunksFeatures?.[0] || ({} as DataviewChunkFeature)
+          const { features } = chunksFeatures?.[0] || ({} as ChunkFeature)
           if (features && features.length) {
-            const filteredFeatures = filterByViewport(features, bounds)
+            const filteredFeatures = filterFeaturesByBounds(features, bounds)
             const data = aggregateFeatures(filteredFeatures, metadata)
 
             if (data && data.length) {

@@ -1,0 +1,73 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/features-aggregate/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "start": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/features-aggregate",
+        "tsConfig": "libs/features-aggregate/tsconfig.lib.json",
+        "project": "libs/features-aggregate/package.json",
+        "entryFile": "libs/features-aggregate/src/index.ts",
+        "external": ["react/jsx-runtime"],
+        "watch": true,
+        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "assets": [
+          {
+            "glob": "libs/features-aggregate/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/features-aggregate",
+        "tsConfig": "libs/features-aggregate/tsconfig.lib.json",
+        "project": "libs/features-aggregate/package.json",
+        "entryFile": "libs/features-aggregate/src/index.ts",
+        "external": ["react/jsx-runtime"],
+        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "assets": [
+          {
+            "glob": "libs/features-aggregate/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      },
+      "configurations": {
+        "local": {
+          "outputPath": "libs/features-aggregate/dist"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/features-aggregate/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/features-aggregate"],
+      "options": {
+        "jestConfig": "libs/features-aggregate/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
+      }
+    }
+  }
+}

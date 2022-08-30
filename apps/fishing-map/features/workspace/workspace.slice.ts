@@ -6,9 +6,16 @@ import {
   Dataview,
   WorkspaceUpsert,
   DataviewInstance,
+  DataviewCategory,
+  EndpointId,
+  Dataset,
+  DatasetTypes,
 } from '@globalfishingwatch/api-types'
 import { GFWAPI, FetchOptions, parseAPIError } from '@globalfishingwatch/api-client'
-import { parseLegacyDataviewInstanceEndpoint } from '@globalfishingwatch/dataviews-client'
+import {
+  parseLegacyDataviewInstanceEndpoint,
+  UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_TIME_RANGE } from 'data/config'
 import { WorkspaceState } from 'types'
 import { RootState } from 'store'
@@ -20,7 +27,7 @@ import {
   selectUrlDataviewInstances,
 } from 'routes/routes.selectors'
 import { HOME, WORKSPACE } from 'routes/routes'
-import { cleanQueryLocation, updateLocation } from 'routes/routes.actions'
+import { cleanQueryLocation, updateLocation, updateQueryParam } from 'routes/routes.actions'
 import { selectDaysFromLatest } from 'features/app/app.selectors'
 import {
   BASEMAP_LABELS_DATAVIEW_ID,
@@ -33,6 +40,8 @@ import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { isGFWUser, isGuestUser } from 'features/user/user.slice'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
+import { getVesselDataviewInstanceDatasetConfig } from 'features/dataviews/dataviews.utils'
+import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
 import { selectWorkspaceStatus } from './workspace.selectors'
 
 type LastWorkspaceVisited = { type: string; payload: any; query: any }
@@ -77,7 +86,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const gfwUser = isGFWUser(state)
 
     try {
-      let workspace = workspaceId
+      let workspace: Workspace<WorkspaceState> = workspaceId
         ? await GFWAPI.fetch<Workspace<WorkspaceState>>(`/workspaces/${workspaceId}`, {
             signal,
           })
@@ -141,18 +150,57 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       }
 
       if (!signal.aborted) {
-        const dataviewInstances = [
-          ...dataviews,
+        const dataviewInstances: UrlDataviewInstance[] = [
           ...(workspace.dataviewInstances || []),
           ...(urlDataviewInstances || []),
         ]
-        const datasets = getDatasetsInDataviews(dataviewInstances, guestUser)
-        const fetchDatasetsAction: any = dispatch(fetchDatasetsByIdsThunk(datasets))
+        const datasetsIds = getDatasetsInDataviews([...dataviews, ...dataviewInstances], guestUser)
+        const fetchDatasetsAction: any = dispatch(fetchDatasetsByIdsThunk(datasetsIds))
         signal.addEventListener('abort', fetchDatasetsAction.abort)
-        const { error, payload } = await fetchDatasetsAction
+        const { error, payload: datasets } = await fetchDatasetsAction
+
+        // Try to add track for for VMS vessels in case it is logged using the full- datasets
+        const vesselDataviewsWithoutTrack = dataviewInstances.filter((dataviewInstance) => {
+          const dataview = dataviews.find(({ id }) => dataviewInstance.dataviewId === id)
+          const isVesselDataview = dataview?.category === DataviewCategory.Vessels
+          const hasTrackDatasetConfig = dataviewInstance.datasetsConfig?.some(
+            (datasetConfig) => datasetConfig.endpoint === EndpointId.Tracks
+          )
+          return isVesselDataview && !hasTrackDatasetConfig
+        })
+        const vesselDataviewsWithTrack = vesselDataviewsWithoutTrack.flatMap((dataviewInstance) => {
+          const infoDatasetConfig = dataviewInstance?.datasetsConfig?.find(
+            (dsc) => dsc.endpoint === EndpointId.Vessel
+          )
+          const infoDataset: Dataset = datasets.find((d) => d.id === infoDatasetConfig?.datasetId)
+          const trackDatasetId = infoDataset?.relatedDatasets.find(
+            (rld) => rld.type === DatasetTypes.Tracks
+          )?.id
+          if (trackDatasetId) {
+            const vesselId = infoDatasetConfig.params.find((p) => p.id === 'vesselId')
+              ?.value as string
+            const trackDatasetConfig = getVesselDataviewInstanceDatasetConfig(vesselId, {
+              trackDatasetId,
+            })
+            return {
+              id: dataviewInstance.id,
+              datasetsConfig: [...dataviewInstance.datasetsConfig, ...trackDatasetConfig],
+            } as UrlDataviewInstance
+          }
+          return []
+        })
+        // Update the dataviewInstances with the track config in case it was found
+        if (vesselDataviewsWithTrack?.length) {
+          const dataviewInstancesToUpsert = mergeDataviewIntancesToUpsert(
+            vesselDataviewsWithTrack,
+            urlDataviewInstances
+          )
+          dispatch(updateQueryParam({ dataviewInstances: dataviewInstancesToUpsert }))
+        }
+
         if (error) {
           console.warn(error)
-          return rejectWithValue({ workspace, error: payload })
+          return rejectWithValue({ workspace, error: datasets })
         }
       }
 

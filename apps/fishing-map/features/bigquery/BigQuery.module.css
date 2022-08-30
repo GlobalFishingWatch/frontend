@@ -15,10 +15,6 @@
   flex: 1;
 }
 
-.inputShort {
-  flex: 0.45;
-}
-
 .inputLabel {
   margin-bottom: var(--space-S);
 }

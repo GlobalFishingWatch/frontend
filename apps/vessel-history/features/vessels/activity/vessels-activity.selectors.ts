@@ -8,7 +8,7 @@ import {
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
 } from '@globalfishingwatch/dataviews-client'
-import { DatasetTypes, EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
+import { DatasetTypes, EventTypes, GapEvent, GapPosition, Regions, ResourceStatus } from '@globalfishingwatch/api-types'
 import { GeoJSONSourceSpecification } from '@globalfishingwatch/maplibre-gl'
 import { APP_PROFILE_VIEWS, DEFAULT_WORKSPACE, EVENTS_COLORS } from 'data/config'
 import { selectFilters } from 'features/event-filters/filters.slice'
@@ -17,7 +17,7 @@ import {
   selectActiveTrackDataviews,
   selectTrackDatasetConfigsCallback,
 } from 'features/dataviews/dataviews.selectors'
-import { ActivityEvent, Regions } from 'types/activity'
+import { ActivityEvent } from 'types/activity'
 import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.selectors'
 import { getEEZName } from 'utils/region-name-transform'
 import { Region } from 'features/regions/regions.slice'
@@ -32,7 +32,7 @@ export interface RenderedEvent extends ActivityEvent {
   description: string
   descriptionGeneric: string
   regionDescription: string
-  durationDescription: string
+  durationDescription?: string
   duration: number
 }
 
@@ -49,7 +49,7 @@ export const selectTrackResources = createSelector(
 
       if (
         !hasTrackData ||
-        !tracksResourceResolved //||
+        !tracksResourceResolved
       ) {
         return { dataview, data: [] }
       }
@@ -112,11 +112,44 @@ export const selectEventsForTracks = createSelector(
   }
 )
 
+// This selet will split the gaps in two events before add the rendering data
+export const selectEventsWithGapsSplit = createSelector([selectEventsForTracks], (events) => {
+  return events // I dont know if this change is temporaly
+  const eventsWithGapsSplit = events.map(({ dataview, data }) => {
+    const updatedGaps = (data || []).reduce((newListEvents, event) => {
+      if (event.type === EventTypes.Gap) {
+        return [...newListEvents, {
+          ...event,
+          timestamp: event.start,
+          gap: {
+            ...event.gap,
+            isEventStart: true
+          } as GapEvent
+        }, {
+          ...event,
+          timestamp: event.end,
+          gap: {
+            ...event.gap,
+            isEventEnd: true
+          } as GapEvent
+        }]
+      }
+      return [...newListEvents, event]
+    }, [])
+
+    return {
+      dataview,
+      data: updatedGaps
+    }
+  })
+  return eventsWithGapsSplit
+})
+
 export const selectEventsWithRenderingInfo = createSelector(
-  [selectEventsForTracks, selectEEZs, selectRFMOs, selectMPAs],
+  [selectEventsWithGapsSplit, selectEEZs, selectRFMOs, selectMPAs],
   (eventsForTrack, eezs = [], rfmos = [], mpas = []) => {
     const eventsWithRenderingInfo: RenderedEvent[][] = eventsForTrack.map(({ dataview, data }) => {
-      return (data || []).map((event: ActivityEvent, index) => {
+      return (data || []).map((event: ActivityEvent) => {
         const regionDescription = getEventRegionDescription(event, eezs, rfmos, mpas)
         let description = ''
         let descriptionGeneric = ''
@@ -125,20 +158,20 @@ export const selectEventsWithRenderingInfo = createSelector(
             if (event.encounter) {
               description = regionDescription
                 ? t(
-                    'event.encounterActionWith',
-                    'had an encounter with {{vessel}} in {{regionName}}',
-                    {
-                      vessel:
-                        event.encounter.vessel.name ??
-                        t('event.encounterAnotherVessel', 'another vessel'),
-                      regionName: regionDescription,
-                    }
-                  )
-                : t('event.encounterActionWithNoRegion', 'Encounter with {{vessel}}', {
+                  'event.encounterActionWith',
+                  'had an encounter with {{vessel}} in {{regionName}}',
+                  {
                     vessel:
                       event.encounter.vessel.name ??
                       t('event.encounterAnotherVessel', 'another vessel'),
-                  })
+                    regionName: regionDescription,
+                  }
+                )
+                : t('event.encounterActionWithNoRegion', 'Encounter with {{vessel}}', {
+                  vessel:
+                    event.encounter.vessel.name ??
+                    t('event.encounterAnotherVessel', 'another vessel'),
+                })
             }
             descriptionGeneric = t('event.encounter')
             break
@@ -173,6 +206,19 @@ export const selectEventsWithRenderingInfo = createSelector(
             })
             descriptionGeneric = t('event.fishing')
             break
+          case EventTypes.Gap:
+            /*
+            Will split the gaps? 
+            description = event.gap.isEventStart ? t('event.gapStart', 'Gap start in {{regionName}}', {
+              regionName: regionDescription,
+            }) : t('event.gapEnd', 'Gap end in {{regionName}}', {
+              regionName: regionDescription,
+            }) */
+            description = t('event.gapAction', 'Likely Disabling in {{regionName}}', {
+              regionName: regionDescription
+            })
+            descriptionGeneric = t('event.gap', 'Likely Disabling')
+            break
           default:
             description = t('event.unknown', 'Unknown event')
             descriptionGeneric = t('event.unknown', 'Unknown event')
@@ -184,16 +230,16 @@ export const selectEventsWithRenderingInfo = createSelector(
 
         const duration = durationDiff.toObject()
 
-        const durationDescription = [
+        const durationDescription = event.end > event.start ? [
           duration.hours && duration.hours > 0
             ? t('event.hourAbbreviated', '{{count}}h', { count: duration.hours })
             : '',
           duration.minutes && duration.minutes > 0
             ? t('event.minuteAbbreviated', '{{count}}m', {
-                count: Math.round(duration.minutes as number),
-              })
+              count: Math.round(duration.minutes as number),
+            })
             : '',
-        ].join(' ')
+        ].join(' ') : null
 
         let colorKey = event.type as string
         if (event.type === 'encounter' && dataview.config?.showAuthorizationStatus) {
@@ -232,8 +278,8 @@ export const selectHighlightEventIds = createSelector(
   }
 )
 
-const getEventRegionDescription = (
-  event: ActivityEvent,
+export const getEventRegionDescription = (
+  event: ActivityEvent | GapPosition,
   eezs: Region[],
   rfmos: Region[],
   mpas: Region[]
@@ -262,8 +308,7 @@ const getEventRegionDescription = (
 
   const regionsDescription = (['mpa', 'eez', 'rfmo'] as (keyof Regions)[])
     // use only regions with values
-    .filter((regionType) => event?.regions && event?.regions[regionType].length > 0)
-
+    .filter((regionType) => event?.regions && event?.regions[regionType]?.length > 0)
     // retrieve its corresponding names
     .map(
       (regionType) =>
@@ -330,6 +375,9 @@ export const selectFilteredEvents = createSelector(
       if (event.type === 'port_visit') {
         return filters.portVisits
       }
+      if (event.type === 'gap') {
+        return filters.gapEvents
+      }
 
       return true
     })
@@ -349,9 +397,9 @@ export const selectVesselLastPositionGEOJson = createSelector(
     if (!lastPosition) return
     const course = prevPosition
       ? bearing(
-          [prevPosition.longitude, prevPosition.latitude],
-          [lastPosition.longitude, lastPosition.latitude]
-        )
+        [prevPosition.longitude, prevPosition.latitude],
+        [lastPosition.longitude, lastPosition.latitude]
+      )
       : 0
 
     return {

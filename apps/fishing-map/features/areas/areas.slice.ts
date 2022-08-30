@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import bbox from '@turf/bbox'
 import { memoize } from 'lodash'
-import { ContextAreaGeometry, ContextAreaGeometryGeom } from '@globalfishingwatch/api-types'
+import { ContextAreaFeature, ContextAreaFeatureGeom } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { RootState } from 'store'
@@ -12,7 +12,7 @@ export interface Area {
   key: string
   id: string
   status: AsyncReducerStatus
-  geometry: ContextAreaGeometryGeom | undefined
+  geometry: ContextAreaFeatureGeom | undefined
   bounds: Bbox | undefined
   name: string
 }
@@ -31,7 +31,7 @@ export const fetchAreaThunk = createAsyncThunk(
     { datasetId, areaId, areaName }: FetchAreaThunkParam = {} as FetchAreaThunkParam,
     { signal }
   ) => {
-    const area = await GFWAPI.fetch<ContextAreaGeometry>(
+    const area = await GFWAPI.fetch<ContextAreaFeature>(
       `/datasets/${datasetId}/user-context-layer-v1/${areaId}`,
       {
         signal,

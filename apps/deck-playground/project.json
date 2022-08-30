@@ -1,0 +1,114 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/deck-playground",
+  "projectType": "application",
+  "targets": {
+    "changelog": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["./changelog.sh deck-playground \"Map\""],
+        "parallel": false
+      }
+    },
+    "deploy": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["nx build deck-playground --parallel", "nx docker-prepare deck-playground"],
+        "parallel": false
+      }
+    },
+    "docker-prepare": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": [
+          "cp config/entrypoint.sh dist/apps/deck-playground",
+          "cp apps/deck-playground/nginx.conf dist/apps/deck-playground"
+        ]
+      }
+    },
+    "zip": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": ["zip -r dist.zip dist/apps/deck-playground/exported/*"]
+      }
+    },
+    "compile": {
+      "executor": "@nrwl/next:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "root": "apps/deck-playground",
+        "outputPath": "dist/apps/deck-playground"
+      },
+      "configurations": {
+        "production": {}
+      }
+    },
+    "clean-locales": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": ["rm -rf dist/apps/deck-playground/public/locales"]
+      }
+    },
+    "start": {
+      "executor": "@nrwl/next:server",
+      "options": {
+        "buildTarget": "deck-playground:compile",
+        "dev": true,
+        "port": 3000
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "deck-playground:compile:production",
+          "dev": false
+        }
+      }
+    },
+    "build": {
+      "executor": "@nrwl/next:export",
+      "options": {
+        "buildTarget": "deck-playground:compile:production"
+      }
+    },
+    "rename-export": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "rm -rf dist/apps/deck-playground/map",
+          "mv dist/apps/deck-playground/exported dist/apps/deck-playground/map"
+        ],
+        "parallel": false
+      }
+    },
+    "serve:export": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "nx build deck-playground --parallel",
+          "nx rename-export deck-playground",
+          "serve dist/apps/deck-playground"
+        ],
+        "parallel": false
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/deck-playground"],
+      "options": {
+        "jestConfig": "apps/deck-playground/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/deck-playground/**/*.{ts,tsx,js,jsx}"]
+      }
+    }
+  },
+  "tags": []
+}

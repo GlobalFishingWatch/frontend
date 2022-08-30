@@ -24,3 +24,7 @@ export const DEFAULT_VIEWPORT = {
   latitude: 19,
   longitude: 26,
 }
+
+export const NSLABELS_ENDOPOINT = process.env.NEXT_PUBLIC_API_GATEWAY + '/v1/tileset/nslabels/tile?x={x}&y={y}&z={z}'
+
+

@@ -13,6 +13,7 @@ import { Range } from 'types'
 import { Voyage } from 'types/voyage'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import { resetFilters } from 'features/event-filters/filters.slice'
+import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectHighlightedEvent,
   selectMapVoyageTime,
@@ -29,6 +30,7 @@ export default function useMapEvents() {
   const { getVoyageByEvent, getLastEventInVoyage } = useVoyagesConnect()
   const { viewport, setMapCoordinates } = useViewport()
   const [findEventVoyage, setFindEventVoyage] = useState<RenderedEvent>()
+  const { dispatchQueryParams } = useLocationConnect()
 
   const selectVesselEventOnClick = useCallback(
     (event: InteractionEvent | null) => {
@@ -87,11 +89,13 @@ export default function useMapEvents() {
       }
 
       dispatch(setVoyageTime(voyageTimes))
+      dispatchQueryParams({ start: voyageTimes.start, end: voyageTimes.end })
     },
     [
       currentVoyageTime?.end,
       currentVoyageTime?.start,
       dispatch,
+      dispatchQueryParams,
       getLastEventInVoyage,
       setMapCoordinates,
       viewport.zoom,
@@ -116,11 +120,13 @@ export default function useMapEvents() {
       return
 
     dispatch(setVoyageTime(voyageTimes))
+    dispatchQueryParams({ start: voyageTimes.start, end: voyageTimes.end })
     setFindEventVoyage(undefined)
   }, [
     currentVoyageTime?.end,
     currentVoyageTime?.start,
     dispatch,
+    dispatchQueryParams,
     findEventVoyage,
     getVoyageByEvent,
   ])

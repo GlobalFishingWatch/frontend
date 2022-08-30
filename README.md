@@ -142,22 +142,23 @@ cp apps/fishing-map/.build.env.sample apps/fishing-map/.build.env
 # Edit apps/fishing-map/.build.env and save your changes
 cp apps/vessel-history/.build.env.sample apps/vessel-history/.build.env
 # Edit apps/vessel-history/.build.env and save your changes
-cp apps/vessel-history/.build.env.sample apps/api-portal/.build.env
+cp apps/api-portal/.build.env.sample apps/api-portal/.build.env
 # Edit apps/api-portal/.build.env and save your changes
+cp apps/fourwings-explorer/.build.env.sample apps/fourwings-explorer/.build.env
+# Edit apps/fourwings-explorer/.build.env and save your changes
 ```
 
 3. Build the apps:
 
 ```bash
 npx env-cmd -f apps/fishing-map/.build.env nx build fishing-map --parallel
-nx run fishing-map:docker-prepare
 npx env-cmd -f apps/vessel-history/.build.env nx build vessel-history --parallel
-nx run vessel-history:docker-prepare
 npx env-cmd -f apps/api-portal/.build.env nx build api-portal --parallel
-nx run api-portal:docker-prepare
+npx env-cmd -f apps/fourwings-explorer/.build.env nx build fourwings-explorer --parallel
+nx run-many --target=docker-prepare --all
 ```
 
-4. Spin up docker compose:
+1. Spin up docker compose:
 
 ```bash
 docker-compose up -d

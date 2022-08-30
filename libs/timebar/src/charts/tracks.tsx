@@ -64,7 +64,7 @@ const Tracks = ({ data }: { data: TimebarChartData }) => {
         if (track.status === ResourceStatus.Error) return null
         return (
           <div key={i}>
-            {track.status === ResourceStatus.Finished ? (
+            {track.status === ResourceStatus.Finished && (
               <Fragment>
                 {track.chunks.map((chunk, i) => (
                   <div
@@ -82,7 +82,8 @@ const Tracks = ({ data }: { data: TimebarChartData }) => {
                   />
                 ))}
               </Fragment>
-            ) : (
+            )}
+            {track.status === ResourceStatus.Loading && (
               <div
                 style={{
                   top: track.props?.segmentsOffsetY ? (track.y || 0) + i : track.y,

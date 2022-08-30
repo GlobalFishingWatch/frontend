@@ -3,7 +3,6 @@ import { memoize } from 'lodash'
 import { DateTime } from 'luxon'
 import { Feature, FeatureCollection, LineString } from 'geojson'
 import {
-  Field,
   mergeTrackChunks,
   trackValueArrayToSegments,
   wrapFeaturesLongitudes,
@@ -16,6 +15,7 @@ import {
   ApiEvent,
   ApiEvents,
   DataviewDatasetConfig,
+  Field,
 } from '@globalfishingwatch/api-types'
 
 export type ResourcesState = Record<any, Resource>

@@ -19,7 +19,7 @@ export const FLY_EFFECTS = {
   fly: 2, // nice fly to moving the camera
 }
 // enable / disable the effect for switch events in the map
-export const ENABLE_FLYTO = FLY_EFFECTS.softFly //maybe we can move this to the settings
+export const ENABLE_FLYTO = FLY_EFFECTS.noFly //maybe we can move this to the settings
 export const DEBUG_MODE =
   ((process.env.NEXT_PUBLIC_DEBUG_MODE ?? false) as boolean) ||
   (WORKSPACE_ENV === 'production' ? false : true)
@@ -78,6 +78,7 @@ export const EVENTS_COLORS: Record<string, string> = {
   port_visit: '#99EEFF',
   fishing: '#fff',
   fishingLabels: '#163f89',
+  gap: '#f7b500',
 }
 
 export const DEFAULT_EMPTY_VALUE = ' --- '
@@ -101,6 +102,13 @@ export const FLRM_PERMISSION = {
   value: 'forced-labour',
   action: 'read',
 }
+
+export const RISK_SUMMARY_IDENTITY_INDICATORS_PERMISSION = {
+  type: 'vessel-info',
+  value: 'risk-summary.identity.indicators',
+  action: 'read',
+}
+
 export const GOOGLE_UNIVERSAL_ANALYTICS_ID =
   process.env.NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID || 'UA-56517380-5'
 export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions = IS_PRODUCTION

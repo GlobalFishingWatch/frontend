@@ -1,6 +1,6 @@
 import { featureCollection, point, Position } from '@turf/helpers'
 import bbox from '@turf/bbox'
-import { Segment } from '../track-value-array-to-segments'
+import { Segment } from '@globalfishingwatch/api-types'
 import { BBox } from './types'
 
 export function segmentsToBbox(segments: Segment[]): BBox {

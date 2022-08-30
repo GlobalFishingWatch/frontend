@@ -1,4 +1,3 @@
-import React from 'react'
 import cx from 'classnames'
 import { useTranslation, Trans } from 'react-i18next'
 import vesselImage from 'assets/images/vessel@2x.png'

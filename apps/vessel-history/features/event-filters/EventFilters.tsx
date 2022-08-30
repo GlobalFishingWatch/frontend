@@ -24,6 +24,7 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
   const isFishingEventsActive = useSelector(selectFilter('fishingEvents'))
   const isEncountersActive = useSelector(selectFilter('encounters'))
   const isLoiteringEventsActive = useSelector(selectFilter('loiteringEvents'))
+  const isGapEventsActive = useSelector(selectFilter('gapEvents'))
   const start = useSelector(selectStart)?.slice(0, 10)
   const end = useSelector(selectEnd)?.slice(0, 10)
 
@@ -94,6 +95,14 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
           active={isLoiteringEventsActive}
         ></Switch>
         {t(`settings.loiteringEvents.title` as any, 'Loitering Events')}
+      </div>
+      <div className={styles.filterSelector}>
+        <Switch
+          className={styles.filterSwitch}
+          onClick={() => trackAndSetFilter('gapEvents', !isGapEventsActive)}
+          active={isGapEventsActive}
+        ></Switch>
+        {t(`settings.gapvents.title` as any, 'Likely disabling events')}
       </div>
       <br />
       <InputDate

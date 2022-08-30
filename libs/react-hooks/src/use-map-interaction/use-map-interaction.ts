@@ -102,9 +102,22 @@ const getExtendedFeatures = (
         if (debug) {
           console.log(properties.rawValues)
         }
-
         // Clean values with 0 for sum aggregation and with NaN for avg aggregation layers
-        if (!values || !values.filter((v: number) => v !== 0 && !isNaN(v)).length) return []
+        if (
+          !values ||
+          !values.filter((v: number) => {
+            const matchesMin =
+              generatorMetadata?.minVisibleValue !== undefined
+                ? v >= generatorMetadata?.minVisibleValue
+                : true
+            const matchesMax =
+              generatorMetadata?.maxVisibleValue !== undefined
+                ? v <= generatorMetadata?.maxVisibleValue
+                : true
+            return v !== 0 && !isNaN(v) && matchesMin && matchesMax
+          }).length
+        )
+          return []
         const visibleSublayers = generatorMetadata?.visibleSublayers as boolean[]
         const sublayers = generatorMetadata?.sublayers
         return values.flatMap((value: any, i: number) => {
@@ -253,12 +266,13 @@ export const useMapHover = (
   hoverCallbackImmediate?: InteractionEventCallback,
   hoverCallback?: InteractionEventCallback,
   map?: Map,
-  metadata?: ExtendedStyleMeta,
+  styleMetadata?: ExtendedStyleMeta,
   config?: MapHoverConfig
 ) => {
   const { debounced = 300 } = config || ({} as MapHoverConfig)
   // Keep a list of active feature state sources, so that we can turn them off when hovering away
   const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
+  const metadata = styleMetadata || (map?.getStyle()?.metadata as ExtendedStyleMeta)
 
   const hoverCallbackDebounced = useRef<any>(null)
   useEffect(() => {

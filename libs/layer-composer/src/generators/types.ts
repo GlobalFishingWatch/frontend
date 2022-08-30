@@ -4,9 +4,8 @@ import {
   LayerSpecification,
   GeoJSONSourceSpecification,
 } from '@globalfishingwatch/maplibre-gl'
-import { Segment } from '@globalfishingwatch/data-transforms'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
-import { Locale } from '@globalfishingwatch/api-types'
+import { Segment, Locale } from '@globalfishingwatch/api-types'
 import { Group } from '..'
 import { Interval } from './heatmap/types'
 
@@ -64,6 +63,7 @@ export interface GeneratorLegend {
 
 export interface GeneratorMetadata {
   legend?: GeneratorLegend
+  interactive?: boolean
   [key: string]: any
 }
 
@@ -72,8 +72,10 @@ export interface GeneratorConfig {
   data?: AnyData
   type: GeneratorType | string
   visible?: boolean
+  color?: string
   opacity?: number
   metadata?: GeneratorMetadata
+  attribution?: string
 }
 
 /**
@@ -156,10 +158,6 @@ export interface ContextGeneratorConfig extends GeneratorConfig {
    * Id for API dataset in case you need to fetch geometries by gfw_id
    */
   datasetId?: string
-  /**
-   * Contains the attribution to be displayed when the map is showing the layer.
-   */
-  attribution?: string
   /**
    * Url to grab the tiles from, internally using https://docs.mapbox.com/mapbox-gl-js/style-spec/sources/#vector-tiles
    */
@@ -376,6 +374,8 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   availableIntervals?: Interval[]
   aggregationOperation?: AggregationOperation
   breaksMultiplier?: number
+  minVisibleValue?: number
+  maxVisibleValue?: number
 }
 
 export type AnyGeneratorConfig =
@@ -461,7 +461,7 @@ export interface HeatmapAnimatedGeneratorSublayer {
   id: string
   datasets: string[]
   filter?: string
-  vesselGroups: string
+  vesselGroups?: string
   colorRamp: ColorRampsIds
   colorRampWhiteEnd?: boolean
   visible?: boolean

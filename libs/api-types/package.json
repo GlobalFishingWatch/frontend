@@ -12,7 +12,6 @@
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
   "peerDependencies": {
-    "@globalfishingwatch/data-transforms": "1.x",
     "geojson": "0.5.0"
   }
 }

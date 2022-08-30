@@ -18,7 +18,7 @@ export const trackDatasetConfigsCallback = (
   timebarGraph
 ) => {
   return ([info, track, ...events]) => {
-    if (track.endpoint === EndpointId.Tracks) {
+    if (track?.endpoint === EndpointId.Tracks) {
       const thinningQuery = Object.entries(thinningConfig?.config || []).map(([id, value]) => ({
         id,
         value,

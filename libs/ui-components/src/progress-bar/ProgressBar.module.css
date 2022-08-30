@@ -48,6 +48,10 @@
   animation: loading 2s infinite;
 }
 
+.disabled {
+  filter: grayscale(1);
+}
+
 @keyframes loading {
   0%,
   100% {

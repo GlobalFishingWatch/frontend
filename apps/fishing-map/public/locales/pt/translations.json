@@ -503,6 +503,7 @@
     "loading": "Carregando rota da embarcação",
     "loadingInfo": "Carregando informações da embarcação",
     "login": "Você precisa <1>login</1> para ver mais detalhes",
+    "trackLogin": "One of your selected sources requires you to <1>login</1> to see vessel tracks and events",
     "mainGear": "Petrecho pricipal",
     "matched": "Encontrado",
     "matricula": "Matrícula",

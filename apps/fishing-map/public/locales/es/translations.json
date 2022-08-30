@@ -503,6 +503,7 @@
     "loading": "Cargando la trayectoria de la embarcación",
     "loadingInfo": "Cargando información de la embarcación",
     "login": "Necesita <1>iniciar sesión</1> para ver más detalles (gratis y toma 2 minutos)",
+    "trackLogin": "One of your selected sources requires you to <1>login</1> to see vessel tracks and events",
     "mainGear": "Equipo principal",
     "matched": "Coincidencia con AIS",
     "matricula": "Matrícula",

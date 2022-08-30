@@ -12,31 +12,9 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
 import { selectWorkspaceDataviewInstances } from './workspace.selectors'
 
-const getNextColor = (
-  colorCyclingType: ColorCyclingType,
-  currentDataviews: UrlDataviewInstance[] | undefined
-) => {
-  const palette = colorCyclingType === 'fill' ? FillColorBarOptions : LineColorBarOptions
-  if (!currentDataviews) {
-    return palette[0]
-  }
-  const currentColors = currentDataviews.map((dv) => dv.config?.color).filter(Boolean)
-  let minRepeat = Number.POSITIVE_INFINITY
-  const availableColors: (ColorBarOption & { num: number })[] = palette.map((color) => {
-    const num = currentColors.filter((c) => c === color.value).length
-    if (num < minRepeat) minRepeat = num
-    return {
-      ...color,
-      num,
-    }
-  })
-  const nextColor = availableColors.find((c) => c.num === minRepeat) || availableColors[0]
-  return nextColor
-}
-
 const createDataviewsInstances = (
   newDataviewInstances: Partial<UrlDataviewInstance>[],
-  currentDataviewInstances: UrlDataviewInstance[] | undefined
+  currentDataviewInstances: UrlDataviewInstance[] = []
 ): UrlDataviewInstance[] => {
   return newDataviewInstances.map((dataview) => {
     if (dataview.config?.colorCyclingType) {
@@ -59,6 +37,63 @@ const createDataviewsInstances = (
   })
 }
 
+export const mergeDataviewIntancesToUpsert = (
+  newDataviewInstance: Partial<UrlDataviewInstance>[] | Partial<UrlDataviewInstance>,
+  urlDataviewInstances: UrlDataviewInstance[],
+  allDataviewInstances?: UrlDataviewInstance[]
+) => {
+  const newDataviewInstances = Array.isArray(newDataviewInstance)
+    ? newDataviewInstance
+    : [newDataviewInstance]
+  let dataviewInstances = urlDataviewInstances || []
+  newDataviewInstances.forEach((dataviewInstance) => {
+    const currentDataviewInstance = urlDataviewInstances?.find(
+      (urlDataviewInstance) => urlDataviewInstance.id === dataviewInstance.id
+    )
+    if (currentDataviewInstance) {
+      dataviewInstances = dataviewInstances.map((urlDataviewInstance) => {
+        if (urlDataviewInstance.id !== dataviewInstance.id) return urlDataviewInstance
+        return {
+          ...urlDataviewInstance,
+          ...dataviewInstance,
+          config: {
+            ...urlDataviewInstance.config,
+            ...dataviewInstance.config,
+          },
+        }
+      })
+    } else {
+      dataviewInstances = [
+        ...createDataviewsInstances([dataviewInstance], allDataviewInstances),
+        ...dataviewInstances,
+      ]
+    }
+  })
+  return dataviewInstances
+}
+
+const getNextColor = (
+  colorCyclingType: ColorCyclingType,
+  currentDataviews: UrlDataviewInstance[] | undefined
+) => {
+  const palette = colorCyclingType === 'fill' ? FillColorBarOptions : LineColorBarOptions
+  if (!currentDataviews) {
+    return palette[0]
+  }
+  const currentColors = currentDataviews.map((dv) => dv.config?.color).filter(Boolean)
+  let minRepeat = Number.POSITIVE_INFINITY
+  const availableColors: (ColorBarOption & { num: number })[] = palette.map((color) => {
+    const num = currentColors.filter((c) => c === color.value).length
+    if (num < minRepeat) minRepeat = num
+    return {
+      ...color,
+      num,
+    }
+  })
+  const nextColor = availableColors.find((c) => c.num === minRepeat) || availableColors[0]
+  return nextColor
+}
+
 export const useDataviewInstancesConnect = () => {
   const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
   const allDataviews = useSelector(selectDataviewInstancesResolved)
@@ -75,34 +110,12 @@ export const useDataviewInstancesConnect = () => {
   )
 
   const upsertDataviewInstance = useCallback(
-    (dataviewInstance: Partial<UrlDataviewInstance>[] | Partial<UrlDataviewInstance>) => {
-      const newDataviewInstances = Array.isArray(dataviewInstance)
-        ? dataviewInstance
-        : [dataviewInstance]
-      let dataviewInstances = urlDataviewInstances || []
-      newDataviewInstances.forEach((dataviewInstance) => {
-        const currentDataviewInstance = urlDataviewInstances?.find(
-          (urlDataviewInstance) => urlDataviewInstance.id === dataviewInstance.id
-        )
-        if (currentDataviewInstance) {
-          dataviewInstances = dataviewInstances.map((urlDataviewInstance) => {
-            if (urlDataviewInstance.id !== dataviewInstance.id) return urlDataviewInstance
-            return {
-              ...urlDataviewInstance,
-              ...dataviewInstance,
-              config: {
-                ...urlDataviewInstance.config,
-                ...dataviewInstance.config,
-              },
-            }
-          })
-        } else {
-          dataviewInstances = [
-            ...createDataviewsInstances([dataviewInstance], allDataviews),
-            ...dataviewInstances,
-          ]
-        }
-      })
+    (newDataviewInstance: Partial<UrlDataviewInstance>[] | Partial<UrlDataviewInstance>) => {
+      const dataviewInstances = mergeDataviewIntancesToUpsert(
+        newDataviewInstance,
+        urlDataviewInstances,
+        allDataviews
+      )
       dispatchQueryParams({ dataviewInstances })
     },
     [dispatchQueryParams, urlDataviewInstances, allDataviews]

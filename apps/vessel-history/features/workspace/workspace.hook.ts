@@ -130,7 +130,11 @@ export const useDataviewInstancesConnect = () => {
         (dataviewInstance) => dataviewInstance.id === id
       )
       if (workspaceDataviewInstance) {
-        dataviewInstances.push({ id, deleted: true })
+        dataviewInstances.push({
+          id,
+          deleted: true,
+          config: undefined
+        })
       }
       dispatchQueryParams({ dataviewInstances })
     },
