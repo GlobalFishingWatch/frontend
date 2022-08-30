@@ -357,6 +357,7 @@
     "saveForOfflineView": "guardar buque para vista offline",
     "source": "fuente",
     "transmission_plural": "transmisiones",
+    "transmissionDescription": "AIS stands for Automatic Identification Systems. AIS is a GPS-like device that large ships use to broadcast their position in order to avoid collisions. The positions listed in the vessel search results refer to the number of vessel positions broadcast over AIS that we have processed and matched to the search result, over a period of time. For more information on how AIS data is processed and caveats of our algorithms, please see our FAQs.",
     "transmissionRange": "{{transmissions}} AIS transmissions from {{start}} to {{end}}",
     "type": "vessel type",
     "type_plural": "tipos",
