@@ -18,3 +18,21 @@
 .none {
   border-left: 0.5em solid var(--color-primary-gray);
 }
+
+.sectionLabel {
+  display: flex;
+  align-items: center;
+}
+
+.categoryIcon {
+  position: relative;
+  width: 31px;
+  margin: 0 9px 0 0;
+  height: 31px;
+  border: 1px solid rgba(34, 68, 126, 0.1);
+  border-radius: 15.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
