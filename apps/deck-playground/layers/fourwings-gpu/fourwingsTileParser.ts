@@ -1,7 +1,6 @@
 import { GeoBoundingBox } from '@deck.gl/geo-layers/typed'
 import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
 import { FourwingsGPUTileData, GPUCell } from 'layers/fourwings-gpu/FourwingsGPULoader'
-import { CellTimeseries, FourwingsTileData } from 'loaders/fourwings/fourwingsLayerLoader'
 
 export type BBox = [number, number, number, number]
 
@@ -41,17 +40,10 @@ export const getCellCoordinates = ({ tileBBox, cell, numCols, numRows }: Feature
   const squareMinY = minY + (row / numRows) * height
   const squareMaxX = minX + ((col + 1) / numCols) * width
   const squareMaxY = minY + ((row + 1) / numRows) * height
+  const centerX = squareMaxX - (squareMaxX - squareMinX) / 2
+  const centerY = squareMaxY - (squareMaxY - squareMinY) / 2
 
-  return [squareMinX, squareMinY]
-  // return [
-  //   [
-  //     [squareMinX, squareMinY],
-  //     [squareMaxX, squareMinY],
-  //     [squareMaxX, squareMaxY],
-  //     [squareMinX, squareMaxY],
-  //     [squareMinX, squareMinY],
-  //   ],
-  // ]
+  return [centerX, centerY]
 }
 
 const getLastDigit = (num: number) => parseInt(num.toString().slice(-1))

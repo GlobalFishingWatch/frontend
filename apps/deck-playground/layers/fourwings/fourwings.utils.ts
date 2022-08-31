@@ -14,8 +14,8 @@ export const filterCellsByBounds = (cells: TileCell[], bounds: Bounds) => {
   const { north, east, south, west } = bounds
   const rightWorldCopy = east >= 180
   const leftWorldCopy = west <= -180
-  return cells.filter((c) => {
-    const [lon, lat] = (c.coordinates as any)[0][0]
+  const filteredCells = cells.filter((c) => {
+    const [lon, lat] = c.coordinates as any
     if (lat < south || lat > north) {
       return false
     }
@@ -28,4 +28,5 @@ export const filterCellsByBounds = (cells: TileCell[], bounds: Bounds) => {
     const rightOffset = rightWorldCopy && !leftWorldCopy && featureInRightCopy ? 360 : 0
     return lon + leftOffset + rightOffset > west && lon + leftOffset + rightOffset < east
   })
+  return filteredCells
 }

@@ -1,21 +1,10 @@
-import {
-  Color,
-  CompositeLayer,
-  CompositeLayerProps,
-  Layer,
-  LayerContext,
-  UpdateParameters,
-} from '@deck.gl/core/typed'
-// import { Layer } from '@deck.gl/core/typed'
-import { GeoBoundingBox, TileLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
-import { fourwingsLayerLoader } from 'loaders/fourwings/fourwingsLayerLoader'
+import { Color, CompositeLayer, LayerContext } from '@deck.gl/core/typed'
+import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
 import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
 import { aggregateCell, FourwingsTileLayer } from 'layers/fourwings/FourwingsTileLayer'
 import { filterCellsByBounds } from 'layers/fourwings/fourwings.utils'
-import { debounce } from 'lodash'
 import GPUGridLayer from 'layers/fourwings-gpu/gpu-grid-layer'
-import { BBox, fourwingsGPULoader } from 'layers/fourwings-gpu/FourwingsGPULoader'
-import { getCellWidth, getTileCellsCoordinates } from 'layers/fourwings-gpu/fourwingsTileParser'
+import { fourwingsGPULoader } from 'layers/fourwings-gpu/FourwingsGPULoader'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 
 export type FourwingsLayerProps = {
@@ -69,15 +58,15 @@ export class FourwingsGPULayer extends CompositeLayer<FourwingsLayerProps> {
       const opacity = ((i + 1) / COLOR_RAMP_DEFAULT_NUM_STEPS) * 255
       return [255, 0, 255, opacity]
     })
-    // this.setState({ colorDomain: steps, colorRange })
+    this.setState({ colorDomain: steps, colorRange })
   }
 
-  debouncedUpdateRampScale = debounce(() => {
-    this.updateRampScale()
-  }, 600)
+  // debouncedUpdateRampScale = debounce(() => {
+  //   this.updateRampScale()
+  // }, 600)
 
   onViewportLoad: TileLayerProps['onViewportLoad'] = (tiles) => {
-    this.debouncedUpdateRampScale()
+    // this.debouncedUpdateRampScale()
     return this.props.onViewportLoad(tiles)
   }
 
@@ -139,16 +128,13 @@ export class FourwingsGPULayer extends CompositeLayer<FourwingsLayerProps> {
           renderSubLayers: (props) => {
             // const GPUGridLayerClass = this.getSubLayerClass('tile', GPUGridLayer)
             // const data = getTileCellsCoordinates(props.tile, props.data)
-            const { west, south, east, north } = props.tile.bbox as GeoBoundingBox
-            const bbox: BBox = [west, south, east, north]
             // * 111139 to convert degrees to meters
             if (!props.data) {
               return null
             }
-            const width = getCellWidth(bbox, props.data.cols) * 111139
             return new GPUGridLayer({
               id: props.tile.id,
-              cellSize: width,
+              cellSize: props.data.width,
               data: props.data.cells,
               colorAggregation: 'SUM',
               pickable: true,
@@ -182,7 +168,7 @@ export class FourwingsGPULayer extends CompositeLayer<FourwingsLayerProps> {
     const { viewport } = this.context
     const [west, north] = viewport.unproject([0, 0])
     const [east, south] = viewport.unproject([viewport.width, viewport.height])
-    // const filter = filterCellsByBounds(data, { north, west, south, east })
-    return data
+    const filter = filterCellsByBounds(data, { north, west, south, east })
+    return filter
   }
 }

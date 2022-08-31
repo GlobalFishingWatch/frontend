@@ -1,11 +1,4 @@
-import {
-  Color,
-  CompositeLayer,
-  CompositeLayerProps,
-  Layer,
-  LayerContext,
-  UpdateParameters,
-} from '@deck.gl/core/typed'
+import { Color, CompositeLayer, LayerContext } from '@deck.gl/core/typed'
 // import { Layer } from '@deck.gl/core/typed'
 import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
 import { fourwingsLayerLoader } from 'loaders/fourwings/fourwingsLayerLoader'

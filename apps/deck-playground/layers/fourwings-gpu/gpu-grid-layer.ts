@@ -235,11 +235,11 @@ export default class GPUGridLayer<DataT = any, ExtraPropsT = {}> extends GridAgg
         pixelIndex: index,
         ...gpuGridAggregator.getData('color'),
       })
-      const elevationInfo = GPUGridAggregator.getAggregationData({
-        pixelIndex: index,
-        ...gpuGridAggregator.getData('elevation'),
-      })
-      console.log(elevationInfo)
+      // const elevationInfo = GPUGridAggregator.getAggregationData({
+      //   pixelIndex: index,
+      //   ...gpuGridAggregator.getData('elevation'),
+      // })
+      // console.log(elevationInfo)
 
       object = {
         colorValue: colorInfo.cellWeight,

@@ -3,6 +3,7 @@ import {
   FeatureParams,
   generateUniqueId,
   getCellCoordinates,
+  getCellWidth,
 } from 'layers/fourwings-gpu/fourwingsTileParser'
 import Pbf from 'pbf'
 import {
@@ -105,9 +106,6 @@ const getCellArrays = (intArray, sublayerCount = 1, params: GetCellArayParams) =
     indexInCell++
     if (i === endIndex - 1) {
       indexInCell = 0
-      // const padded = new Array(delta * sublayerCount).fill(padValue)
-      // original[FEATURE_CELLS_START_INDEX] = endFrame + delta
-      // const merged = original.concat(padded)
       const values = intArray.slice(startIndex + CELL_VALUES_START_INDEX, endIndex)
       const timeseries = getTimeseries(startFrame, values)
       for (let i = 0; i < timeseries.length; i++) {
@@ -117,7 +115,6 @@ const getCellArrays = (intArray, sublayerCount = 1, params: GetCellArayParams) =
           cell: cellNum,
           id: generateUniqueId(params.tileIndex[1], params.tileIndex[2], cellNum),
         })
-
         cells.push({
           cellIndex: cellNum,
           value,
@@ -148,6 +145,7 @@ export type GPUCell = {
 export type FourwingsGPUTileData = {
   cols: number
   rows: number
+  width: number
   cells: GPUCell[]
 }
 
@@ -158,6 +156,7 @@ const parseFourWings = (
   const data = new Pbf(arrayBuffer).readFields(readData, [])[0]
   const rows = data[0]
   const cols = data[1]
+  const width = getCellWidth(bbox, cols) * 111139
   const params: GetCellArayParams = {
     numCols: cols,
     numRows: rows,
@@ -168,6 +167,7 @@ const parseFourWings = (
   return {
     cols,
     rows,
+    width,
     cells,
   }
 }
