@@ -80,15 +80,17 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
   const onMainQueryChange = useCallback(
     (e) => {
       setQueryParam(e, 'q')
+      onTyping(true)
     },
-    [setQueryParam]
+    [setQueryParam, onTyping]
   )
 
   const onFlagChange = useCallback(
     (flags) => {
       setQueryParam(null, 'flags', flags ? flags.map((f: MultiSelectOption) => f.id).join(',') : '')
+      onTyping(true)
     },
-    [setQueryParam]
+    [setQueryParam, onTyping]
   )
 
   return (
