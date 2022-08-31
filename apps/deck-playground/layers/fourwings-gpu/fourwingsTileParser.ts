@@ -33,7 +33,7 @@ export const getCellProperties = (tileBBox: BBox, cell: number, numCols: number)
   }
 }
 
-const getCellCoordinates = ({ tileBBox, cell, numCols, numRows }: FeatureParams): any => {
+export const getCellCoordinates = ({ tileBBox, cell, numCols, numRows }: FeatureParams): any => {
   const [minX, minY] = tileBBox
   const { col, row, width, height } = getCellProperties(tileBBox, cell, numCols)
 

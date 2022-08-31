@@ -18,6 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default `\
 #version 300 es
 #define SHADER_NAME gpu-grid-cell-layer-fragment-shader
@@ -25,11 +26,16 @@ export default `\
 precision highp float;
 
 in vec4 vColor;
+flat in int vVisible;
 
 out vec4 fragColor;
 
 void main(void) {
+  if(vVisible <= 0) {
+    discard;
+  }
+
   fragColor = vColor;
   fragColor = picking_filterColor(fragColor);
 }
-`;
+`

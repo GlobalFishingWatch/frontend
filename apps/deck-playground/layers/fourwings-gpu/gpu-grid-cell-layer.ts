@@ -37,17 +37,11 @@ import vs from './gpu-grid-cell-layer-vertex.glsl'
 import fs from './gpu-grid-cell-layer-fragment.glsl'
 
 const COLOR_DATA_UBO_INDEX = 0
-const ELEVATION_DATA_UBO_INDEX = 1
 
 const defaultProps: DefaultProps<_GPUGridCellLayerProps & LayerProps> = {
   // color
   colorDomain: null,
   colorRange: defaultColorRange,
-
-  // elevation
-  elevationDomain: null,
-  elevationRange: [0, 1000],
-  elevationScale: { type: 'number', min: 0, value: 1 },
 
   // grid
   gridSize: { type: 'array', value: [1, 1] },
@@ -57,9 +51,6 @@ const defaultProps: DefaultProps<_GPUGridCellLayerProps & LayerProps> = {
   cellSize: { type: 'number', min: 0, max: 1000, value: 1000 },
   offset: { type: 'array', value: [1, 1] },
   coverage: { type: 'number', min: 0, max: 1, value: 1 },
-  extruded: true,
-
-  material: true, // Use lighting module defaults
 }
 
 type _GPUGridCellLayerProps = _GPUGridLayerProps<any> & {
@@ -68,7 +59,6 @@ type _GPUGridCellLayerProps = _GPUGridLayerProps<any> & {
   gridOrigin: number[]
   gridOffset: number[]
   colorMaxMinBuffer: Buffer
-  elevationMaxMinBuffer: Buffer
 }
 
 export default class GPUGridCellLayer extends Layer<_GPUGridCellLayerProps> {
@@ -113,30 +103,28 @@ export default class GPUGridCellLayer extends Layer<_GPUGridCellLayerProps> {
     const {
       cellSize,
       offset,
-      extruded,
-      elevationScale,
       coverage,
       gridSize,
       gridOrigin,
       gridOffset,
-      elevationRange,
       colorMaxMinBuffer,
-      elevationMaxMinBuffer,
+      minFrame,
+      maxFrame,
     } = this.props
 
     const gridOriginLow = [fp64LowPart(gridOrigin[0]), fp64LowPart(gridOrigin[1])]
     const gridOffsetLow = [fp64LowPart(gridOffset[0]), fp64LowPart(gridOffset[1])]
     const domainUniforms = this.getDomainUniforms()
     const colorRange = colorRangeToFlatArray(this.props.colorRange)
-    this.bindUniformBuffers(colorMaxMinBuffer, elevationMaxMinBuffer)
+    this.bindUniformBuffers(colorMaxMinBuffer)
     this.state.model
       .setUniforms(uniforms)
       .setUniforms(domainUniforms)
       .setUniforms({
+        minFrame,
+        maxFrame,
         cellSize,
         offset,
-        extruded,
-        elevationScale,
         coverage,
         gridSize,
         gridOrigin,
@@ -144,36 +132,27 @@ export default class GPUGridCellLayer extends Layer<_GPUGridCellLayerProps> {
         gridOffset,
         gridOffsetLow,
         colorRange,
-        elevationRange,
       })
       .draw()
-    this.unbindUniformBuffers(colorMaxMinBuffer, elevationMaxMinBuffer)
+    this.unbindUniformBuffers(colorMaxMinBuffer)
   }
 
-  bindUniformBuffers(colorMaxMinBuffer, elevationMaxMinBuffer) {
+  bindUniformBuffers(colorMaxMinBuffer) {
     colorMaxMinBuffer.bind({ target: GL.UNIFORM_BUFFER, index: COLOR_DATA_UBO_INDEX })
-    elevationMaxMinBuffer.bind({ target: GL.UNIFORM_BUFFER, index: ELEVATION_DATA_UBO_INDEX })
   }
 
-  unbindUniformBuffers(colorMaxMinBuffer, elevationMaxMinBuffer) {
+  unbindUniformBuffers(colorMaxMinBuffer) {
     colorMaxMinBuffer.unbind({ target: GL.UNIFORM_BUFFER, index: COLOR_DATA_UBO_INDEX })
-    elevationMaxMinBuffer.unbind({ target: GL.UNIFORM_BUFFER, index: ELEVATION_DATA_UBO_INDEX })
   }
 
   getDomainUniforms() {
-    const { colorDomain, elevationDomain } = this.props
+    const { colorDomain } = this.props
     const domainUniforms: Record<string, any> = {}
     if (colorDomain !== null) {
       domainUniforms.colorDomainValid = true
       domainUniforms.colorDomain = colorDomain
     } else {
       domainUniforms.colorDomainValid = false
-    }
-    if (elevationDomain !== null) {
-      domainUniforms.elevationDomainValid = true
-      domainUniforms.elevationDomain = elevationDomain
-    } else {
-      domainUniforms.elevationDomainValid = false
     }
     return domainUniforms
   }
@@ -183,8 +162,6 @@ export default class GPUGridCellLayer extends Layer<_GPUGridCellLayerProps> {
     const programHandle = model.program.handle
 
     const colorIndex = gl.getUniformBlockIndex(programHandle, 'ColorData')
-    const elevationIndex = gl.getUniformBlockIndex(programHandle, 'ElevationData')
     gl.uniformBlockBinding(programHandle, colorIndex, COLOR_DATA_UBO_INDEX)
-    gl.uniformBlockBinding(programHandle, elevationIndex, ELEVATION_DATA_UBO_INDEX)
   }
 }

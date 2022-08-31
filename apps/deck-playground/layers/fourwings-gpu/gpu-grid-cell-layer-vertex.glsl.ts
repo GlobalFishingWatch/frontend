@@ -20,6 +20,7 @@
 
 // Inspired by screen-grid-layer vertex shader in deck.gl
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default `\
 #version 300 es
 #define SHADER_NAME gpu-grid-cell-layer-vertex-shader
@@ -34,11 +35,11 @@ in vec3 instancePickingColors;
 
 // Custom uniforms
 uniform vec2 offset;
-uniform bool extruded;
+uniform float minFrame;
+uniform float maxFrame;
 uniform float cellSize;
 uniform float coverage;
 uniform float opacity;
-uniform float elevationScale;
 
 uniform ivec2 gridSize;
 uniform vec2 gridOrigin;
@@ -46,28 +47,22 @@ uniform vec2 gridOriginLow;
 uniform vec2 gridOffset;
 uniform vec2 gridOffsetLow;
 uniform vec4 colorRange[RANGE_COUNT];
-uniform vec2 elevationRange;
 
 // Domain uniforms
 uniform vec2 colorDomain;
 uniform bool colorDomainValid;
-uniform vec2 elevationDomain;
-uniform bool elevationDomainValid;
 
 layout(std140) uniform;
 uniform ColorData
 {
   vec4 maxMinCount;
 } colorData;
-uniform ElevationData
-{
-  vec4 maxMinCount;
-} elevationData;
 
 #define EPSILON 0.00001
 
 // Result
 out vec4 vColor;
+flat out int vVisible;
 
 vec4 quantizeScale(vec2 domain, vec4 range[RANGE_COUNT], float value) {
   vec4 outColor = vec4(0., 0., 0., 0.);
@@ -98,16 +93,9 @@ void main(void) {
   vec2 clrDomain = colorDomainValid ? colorDomain : vec2(colorData.maxMinCount.a, colorData.maxMinCount.r);
   vec4 color = quantizeScale(clrDomain, colorRange, colors.r);
 
-  float elevation = 0.0;
+  // if aggregated color is 0 do not render
+  float shouldRender = float(color.r > 0.0);
 
-  if (extruded) {
-    vec2 elvDomain = elevationDomainValid ? elevationDomain : vec2(elevationData.maxMinCount.a, elevationData.maxMinCount.r);
-    elevation = linearScale(elvDomain, elevationRange, elevations.r);
-    elevation = elevation  * (positions.z + 1.0) / 2.0 * elevationScale;
-  }
-
-  // if aggregated color or elevation is 0 do not render
-  float shouldRender = float(color.r > 0.0 && elevations.r >= 0.0);
   float dotRadius = cellSize / 2. * coverage * shouldRender;
 
   int yIndex = (gl_InstanceID / gridSize[0]);
@@ -118,7 +106,7 @@ void main(void) {
   vec2 instancePositionYFP64 = mul_fp64(vec2(gridOffset[1], gridOffsetLow[1]), vec2(float(yIndex), 0.));
   instancePositionYFP64 = sum_fp64(instancePositionYFP64, vec2(gridOrigin[1], gridOriginLow[1]));
 
-  vec3 centroidPosition = vec3(instancePositionXFP64[0], instancePositionYFP64[0], elevation);
+  vec3 centroidPosition = vec3(instancePositionXFP64[0], instancePositionYFP64[0], 0.0);
   vec3 centroidPosition64Low = vec3(instancePositionXFP64[1], instancePositionYFP64[1], 0.0);
   geometry.worldPosition = centroidPosition;
   vec3 pos = vec3(project_size(positions.xy + offset) * dotRadius, 0.);
@@ -133,11 +121,10 @@ void main(void) {
 
   vec3 normals_commonspace = project_normal(normals);
 
-   if (extruded) {
-    vec3 lightColor = lighting_getLightColor(color.rgb, project_uCameraPosition, geometry.position.xyz, normals_commonspace);
-    vColor = vec4(lightColor, color.a * opacity) / 255.;
-  } else {
-    vColor = vec4(color.rgb, color.a * opacity) / 255.;
-  }
+  vColor = vec4(color.rgb, color.a * opacity) / 255.;
+  // vVisible = timestamp >= minFrame && timestamp <= maxFrame ? 1 : 0;
+  float elevation = elevations.r;
+  vVisible = elevation >= minFrame  && elevation <= maxFrame ? 1 : 0;
+  // vVisible = 1;
 }
-`;
+`
