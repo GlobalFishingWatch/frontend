@@ -29,10 +29,10 @@ import { HOME, WORKSPACE } from 'routes/routes'
 import { cleanQueryLocation, updateLocation, updateQueryParam } from 'routes/routes.actions'
 import { selectDaysFromLatest } from 'features/app/app.selectors'
 import {
-  DEFAULT_DATAVIEW_IDS,
-  getWorkspaceEnv,
+  DEFAULT_DATAVIEW_SLUGS,
   ONLY_GFW_STAFF_DATAVIEWS,
-  VESSEL_PRESENCE_DATAVIEW_ID,
+  getWorkspaceEnv,
+  VESSEL_PRESENCE_DATAVIEW_SLUG,
   WorkspaceCategories,
 } from 'data/workspaces'
 import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
@@ -130,8 +130,8 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           : getUTCDateTime(workspace.startAt || DEFAULT_TIME_RANGE.start)
 
       const defaultWorkspaceDataviews = gfwUser
-        ? [...DEFAULT_DATAVIEW_IDS, VESSEL_PRESENCE_DATAVIEW_ID] // Only for gfw users as includes the private-global-presence-tracks dataset
-        : DEFAULT_DATAVIEW_IDS
+        ? [...DEFAULT_DATAVIEW_SLUGS, VESSEL_PRESENCE_DATAVIEW_SLUG] // Only for gfw users as includes the private-global-presence-tracks dataset
+        : DEFAULT_DATAVIEW_SLUGS
 
       const dataviewIds = [
         ...defaultWorkspaceDataviews,

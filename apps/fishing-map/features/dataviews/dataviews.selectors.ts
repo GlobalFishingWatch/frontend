@@ -9,7 +9,7 @@ import {
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
-import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID, DEFAULT_DATAVIEW_IDS } from 'data/workspaces'
+import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID, DEFAULT_DATAVIEW_SLUGS } from 'data/workspaces'
 import { RootState } from 'store'
 import {
   selectActiveVesselsDataviews,
@@ -247,7 +247,7 @@ export const selectAllDataviewsInWorkspace = createSelector(
   ],
   (dataviews = [], workspaceDataviewInstances, datasets) => {
     const allWorkspaceDataviews = dataviews?.filter((dataview) => {
-      if (DEFAULT_DATAVIEW_IDS.includes(dataview.id)) {
+      if (DEFAULT_DATAVIEW_SLUGS.includes(dataview.slug)) {
         return true
       }
       if (workspaceDataviewInstances?.some((d) => d.dataviewId === dataview.id)) {
