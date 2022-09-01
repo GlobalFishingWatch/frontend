@@ -1963,7 +1963,7 @@
     "@math.gl/core" "^3.5.1"
     "@math.gl/geospatial" "^3.5.1"
 
-"@loaders.gl/core@^3.2.5":
+"@loaders.gl/core@^3.2.5", "@loaders.gl/core@^3.2.7":
   version "3.2.7"
   resolved "https://registry.yarnpkg.com/@loaders.gl/core/-/core-3.2.7.tgz#fae277f182157f319823cc8dea20e81e8f859a47"
   integrity sha512-+1/wgO9JzF6Xh/rRbLQ6Av2k+Y7qoXgQnUbTaAhu4iERLRnXmbUceoH0xeS/A4Jr9o8rUpa616cqPJJTCWPCJA==
@@ -2013,7 +2013,7 @@
   dependencies:
     "@loaders.gl/loader-utils" "3.2.7"
 
-"@loaders.gl/loader-utils@3.2.7", "@loaders.gl/loader-utils@^3.2.5":
+"@loaders.gl/loader-utils@3.2.7", "@loaders.gl/loader-utils@^3.2.5", "@loaders.gl/loader-utils@^3.2.7":
   version "3.2.7"
   resolved "https://registry.yarnpkg.com/@loaders.gl/loader-utils/-/loader-utils-3.2.7.tgz#2ccb4f6fefa2fb0b537b8f86c8f37d2d9af3a5df"
   integrity sha512-jvEdM6TSKNkWy7wakPnUIZiUoVVcVCUE6NuYfk9iL+CFsA5bCCthjkVpGm5cFX2cRZ2dphTtD54WC4iEilmBLQ==
@@ -2031,7 +2031,7 @@
     "@loaders.gl/loader-utils" "3.2.7"
     "@math.gl/core" "^3.5.1"
 
-"@loaders.gl/mvt@^3.2.5", "@loaders.gl/mvt@^3.2.6":
+"@loaders.gl/mvt@^3.2.5", "@loaders.gl/mvt@^3.2.7":
   version "3.2.7"
   resolved "https://registry.yarnpkg.com/@loaders.gl/mvt/-/mvt-3.2.7.tgz#0e6b0edb71a86e4dd09d2bc2bcc02b7db0732716"
   integrity sha512-4PHd6ZrW3aoD2PaitJ8pmlij2J4j9CQ/BhmbuKvrJikpdWOvOMDt1S/1KCakmyQLFiWmr2lkVnWJUlxG92IkhA==

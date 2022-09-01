@@ -1,58 +1,47 @@
 import cx from 'classnames'
-import {
-  HighlighterCallbackFn,
-  HighlighterCallbackFnArgs,
-  TimebarStackedActivity,
-} from '@globalfishingwatch/timebar'
-import { useStackedActivity } from 'features/timebar/TimebarActivityGraph.hooks'
-import { useGeoTemporalLayers } from 'features/layers/layers.hooks'
+import { useMemo } from 'react'
+import { TimebarStackedActivity, Timeseries } from '@globalfishingwatch/timebar'
+import { useMapFourwingsLayer } from 'features/map/layers.hooks'
 import styles from './Timebar.module.css'
 
 const TimebarActivityGraph = () => {
-  const layers = useGeoTemporalLayers()
+  const fourwingsLayer = useMapFourwingsLayer()
+  const { visible, loaded, instance } = fourwingsLayer || {}
 
-  const { loading, stackedActivity, error } = useStackedActivity(layers)
+  const dataviews = useMemo(() => {
+    return [fourwingsLayer]
+  }, [fourwingsLayer])
 
-  // const style = useMapStyle()
-  // const mapLegends = useMapLegend(style, activeDataviews)
+  const stackedActivity: Timeseries = useMemo(() => {
+    if (loaded && instance) {
+      const data = instance.getDataFilteredByViewport()
+      console.log('CALCULATING TIMEBAR TIMESERIES')
+      const timeseries = data.flatMap((data) => {
+        return data.timeseries.map((timeseries) => ({
+          0: timeseries.value,
+          frame: timeseries.frame,
+          date: timeseries.frame,
+        }))
+      })
+      return timeseries
+    }
+    return []
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loaded])
 
-  // const getActivityHighlighterLabel: HighlighterCallbackFn = useCallback(
-  //   ({ chunk, value, item }: HighlighterCallbackFnArgs) => {
-  //     if (loading) return t('map.loading', 'Loading')
-  //     if (!value || !value.value) return ''
-  //     const dataviewId = item.props?.dataviewId
-  //     const unit = mapLegends.find((l) => l.id === getLegendId(dataviewId))?.unit || ''
-  //     const maxHighlighterFractionDigits =
-  //       visualisation === TimebarVisualisations.Environment ? 2 : undefined
-  //     const labels = [
-  //       formatNumber(value.value, maxHighlighterFractionDigits),
-  //       unit,
-  //       t('common.onScreen', 'on screen'),
-  //     ]
-  //     if (visualisation === TimebarVisualisations.Environment) {
-  //       labels.push(t('common.averageAbbreviated', 'avg.'))
-  //     }
+  if (!stackedActivity || !stackedActivity.length || !fourwingsLayer || !visible) return null
 
-  //     return labels.join(' ')
-  //   },
-  //   [loading, mapLegends, visualisation]
-  // )
+  const loading = instance
+    ? instance.layer.getSubLayers().every((l: any) => l.props.tile._isLoaded)
+    : false
 
-  if (error) {
-    return (
-      <div className={styles.error}>
-        There was a problem loading the data, please try refreshing the page
-      </div>
-    )
-  }
-  if (!stackedActivity || !stackedActivity.length || !layers?.length) return null
-
+  // TODO: check performance issues on mouser hover
   return (
     <div className={cx({ [styles.loading]: loading })}>
       <TimebarStackedActivity
         key="stackedActivity"
         timeseries={stackedActivity}
-        dataviews={layers}
+        dataviews={dataviews}
         // highlighterCallback={getActivityHighlighterLabel}
         highlighterIconCallback="heatmap"
       />

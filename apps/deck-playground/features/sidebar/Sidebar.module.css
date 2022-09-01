@@ -2,3 +2,24 @@
   display: flex;
   height: 100%;
 }
+
+.row {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 1rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.switch {
+  margin-right: 0.5rem;
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+}
