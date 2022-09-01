@@ -70,7 +70,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
     const prevTimeRangeDuration = params.oldProps.maxFrame - params.oldProps.minFrame
     const newTimeRangeDuration = params.props.maxFrame - params.props.minFrame
     if (prevTimeRangeDuration !== newTimeRangeDuration) {
-      this.debouncedUpdateRampScale()
+      // this.updateRampScale()
     }
   }
 
@@ -117,10 +117,10 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
 
   getDataFilteredByViewport() {
     const data = this.getData()
-    const { viewport } = this.context
-    const [west, north] = viewport.unproject([0, 0])
-    const [east, south] = viewport.unproject([viewport.width, viewport.height])
-    const filter = filterCellsByBounds(data, { north, west, south, east })
-    return filter
+    // const { viewport } = this.context
+    // const [west, north] = viewport.unproject([0, 0])
+    // const [east, south] = viewport.unproject([viewport.width, viewport.height])
+    // const filter = filterCellsByBounds(data, { north, west, south, east })
+    return data
   }
 }

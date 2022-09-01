@@ -1,9 +1,9 @@
 import { Color, CompositeLayer, GetPickingInfoParams, PickingInfo } from '@deck.gl/core/typed'
-import { PolygonLayer } from '@deck.gl/layers/typed'
-import { getTileCells, TileCell } from 'loaders/fourwings/fourwingsTileParser'
+import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
 import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
 import { FourwingsLayerProps } from 'layers/fourwings/FourwingsLayer'
 import { Cell } from 'loaders/fourwings/fourwingsLayerLoader'
+import FourwingsTileCellLayer from 'layers/fourwings/FourwingsTileCellLayer'
 
 export type FourwingsTileLayerProps = FourwingsLayerProps & {
   id: string
@@ -14,6 +14,7 @@ export type FourwingsTileLayerProps = FourwingsLayerProps & {
 }
 
 export const aggregateCell = (cell: Cell | TileCell, { minFrame, maxFrame }) => {
+  if (!cell) return 0
   return cell.timeseries
     .filter(({ frame }) => frame >= minFrame && frame <= maxFrame)
     .reduce((acc, next) => acc + next.value, 0)
@@ -48,23 +49,29 @@ export class FourwingsTileLayer extends CompositeLayer<FourwingsTileLayerProps> 
     }
     return info
   }
-  // data = getTileCells(this.props.tile, this.props.data)
+
   renderLayers() {
-    const { colorDomain, colorRange, maxFrame, minFrame } = this.props
-    return new PolygonLayer(this.props, {
-      id: `fourwings-tile-${this.props.tile.id}`,
-      data: this.props.data.cells,
-      pickable: true,
-      stroked: false,
-      // loaders: [fourwingsTileLoader(this.props.tile)],
-      getPolygon: (d) => d.coordinates,
-      getFillColor: (cell) => getFillColor(cell, { minFrame, maxFrame, colorDomain, colorRange }),
-      updateTriggers: {
-        // This tells deck.gl to recalculate radius when `currentYear` changes
-        getFillColor: [minFrame, maxFrame, colorDomain, colorRange],
-      },
-      // bounds: [west, south, east, north],
-    })
+    const { data, colorDomain, colorRange, maxFrame, minFrame } = this.props
+    if (!data) {
+      return
+    }
+    const FourwingsTileCellLayerClass = this.getSubLayerClass('cell', FourwingsTileCellLayer)
+    return new FourwingsTileCellLayerClass(
+      this.props,
+      this.getSubLayerProps({
+        id: `fourwings-tile-${this.props.tile.id}`,
+        data: data.cells,
+        numCols: data.cols,
+        numRows: data.rows,
+        pickable: true,
+        stroked: false,
+        getFillColor: (cell) => getFillColor(cell, { minFrame, maxFrame, colorDomain, colorRange }),
+        updateTriggers: {
+          // This tells deck.gl to recalculate fillColor on changes
+          getFillColor: [minFrame, maxFrame, colorDomain, colorRange],
+        },
+      })
+    )
   }
 
   getTileData() {

@@ -1,12 +1,15 @@
-import { GeoBoundingBox } from '@deck.gl/geo-layers/typed'
-import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
-import { CellTimeseries, FourwingsTileData } from 'loaders/fourwings/fourwingsLayerLoader'
+import { CellTimeseries } from 'loaders/fourwings/fourwingsLayerLoader'
 
 export type BBox = [number, number, number, number]
 
-export type FeatureParams = {
+export type TileCell = {
+  timeseries: CellTimeseries[]
+  coordinates: [number[]]
+}
+
+export type GetCellCoordinatesParams = {
   tileBBox: BBox
-  cell: number
+  cellIndex: number
   numCols: number
   numRows: number
   id: number
@@ -26,52 +29,34 @@ const getCellProperties = (tileBBox: BBox, cell: number, numCols: number) => {
   }
 }
 
-export const getCellCoordinates = ({ tileBBox, cell, numCols, numRows }: FeatureParams): any => {
+export const getCellCoordinates = ({
+  tileBBox,
+  cellIndex,
+  numCols,
+  numRows,
+}: GetCellCoordinatesParams): any => {
   const [minX, minY] = tileBBox
-  const { col, row, width, height } = getCellProperties(tileBBox, cell, numCols)
+  const { col, row, width, height } = getCellProperties(tileBBox, cellIndex, numCols)
 
   const squareMinX = minX + (col / numCols) * width
   const squareMinY = minY + (row / numRows) * height
   const squareMaxX = minX + ((col + 1) / numCols) * width
   const squareMaxY = minY + ((row + 1) / numRows) * height
-
-  return [
-    [
-      [squareMinX, squareMinY],
-      [squareMaxX, squareMinY],
-      [squareMaxX, squareMaxY],
-      [squareMinX, squareMaxY],
-      [squareMinX, squareMinY],
-    ],
-  ]
+  const result = new Float64Array(10)
+  result[0] = squareMinX
+  result[1] = squareMinY
+  result[2] = squareMaxX
+  result[3] = squareMinY
+  result[4] = squareMaxX
+  result[5] = squareMaxY
+  result[6] = squareMinX
+  result[7] = squareMaxY
+  result[8] = squareMinX
+  result[9] = squareMinY
+  return result
 }
 
 const getLastDigit = (num: number) => parseInt(num.toString().slice(-1))
 
 export const generateUniqueId = (x: number, y: number, cellId: number) =>
   parseInt([getLastDigit(x) + 1, getLastDigit(y) + 1, cellId].join(''))
-
-export type TileCell = {
-  timeseries: CellTimeseries[]
-  coordinates: [number[]]
-}
-export const getTileCells = (tile: Tile2DHeader, data: FourwingsTileData): TileCell[] => {
-  if (!data.cells?.length) {
-    return []
-  }
-  const { west, south, east, north } = tile.bbox as GeoBoundingBox
-  return data.cells?.map(({ cellIndex, timeseries }) => {
-    const uniqueId = generateUniqueId(tile.index.x, tile.index.y, cellIndex)
-    const params: FeatureParams = {
-      id: uniqueId,
-      cell: cellIndex,
-      numCols: data.cols,
-      numRows: data.rows,
-      tileBBox: [west, south, east, north],
-    }
-    return {
-      timeseries,
-      coordinates: getCellCoordinates(params),
-    }
-  })
-}

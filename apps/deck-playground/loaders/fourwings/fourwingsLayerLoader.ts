@@ -1,9 +1,4 @@
 import { LoaderWithParser } from '@loaders.gl/loader-utils'
-import {
-  FeatureParams,
-  generateUniqueId,
-  getCellCoordinates,
-} from 'loaders/fourwings/fourwingsTileParser'
 import Pbf from 'pbf'
 import {
   CELL_END_INDEX,
@@ -74,10 +69,14 @@ const getDate = (day) => {
   return day * 1000 * 60 * 60 * 24
 }
 const getTimeseries = (startFrame, values) => {
-  return values.map((v, i) => ({
-    value: v,
-    frame: getDate(i + startFrame),
-  }))
+  return values.flatMap((v, i) => {
+    return v > 0
+      ? {
+          value: v,
+          frame: getDate(i + startFrame),
+        }
+      : []
+  })
 }
 
 const getCellArrays = (
@@ -112,22 +111,9 @@ const getCellArrays = (
       // original[FEATURE_CELLS_START_INDEX] = endFrame + delta
       // const merged = original.concat(padded)
       const values = intArray.slice(startIndex + CELL_VALUES_START_INDEX, endIndex)
-
-      const uniqueId = generateUniqueId(tileIndex[1], tileIndex[2], cellNum)
-      const params: FeatureParams = {
-        id: uniqueId,
-        cell: cellNum,
-        numCols: intArray[FEATURE_COL_INDEX],
-        numRows: intArray[FEATURE_ROW_INDEX],
-        tileBBox: tileBbox,
-      }
-      const coordinates = getCellCoordinates(params)
       cells.push({
         timeseries: getTimeseries(startFrame, values),
-        cellIndex: cellNum,
-        startFrame,
-        endFrame,
-        coordinates,
+        index: cellNum,
       })
       if (startFrame < domainX[0]) domainX[0] = startFrame
       if (endFrame > domainX[1]) domainX[1] = endFrame
@@ -148,11 +134,8 @@ export type CellTimeseries = {
 }
 
 export type Cell = {
-  cellIndex: number
-  startFrame: number
-  endFrame: number
+  index: number
   timeseries: CellTimeseries[]
-  coordinates: [number[]]
 }
 
 export type FourwingsTileData = {

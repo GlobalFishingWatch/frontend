@@ -121,7 +121,7 @@ const MapWrapper = (): React.ReactElement => {
         initialViewState={INITIAL_VIEW_STATE}
         layers={layers}
         getTooltip={getTooltip}
-        onViewStateChange={(v) => console.log(v.viewState.zoom)}
+        // onViewStateChange={(v) => console.log(v.viewState.zoom)}
       />
     </Fragment>
   )
