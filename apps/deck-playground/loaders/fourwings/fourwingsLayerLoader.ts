@@ -11,6 +11,8 @@ import {
   CELL_START_INDEX,
   CELL_VALUES_START_INDEX,
   FEATURE_CELLS_START_INDEX,
+  FEATURE_COL_INDEX,
+  FEATURE_ROW_INDEX,
 } from '../constants'
 
 function sinh(arg) {
@@ -115,8 +117,8 @@ const getCellArrays = (
       const params: FeatureParams = {
         id: uniqueId,
         cell: cellNum,
-        numCols: intArray[0],
-        numRows: intArray[1],
+        numCols: intArray[FEATURE_COL_INDEX],
+        numRows: intArray[FEATURE_ROW_INDEX],
         tileBBox: tileBbox,
       }
       const coordinates = getCellCoordinates(params)
@@ -163,8 +165,8 @@ const parseFourWings = (arrayBuffer, params: GetCellArraysParams): FourwingsTile
   var data = new Pbf(arrayBuffer).readFields(readData, [])[0]
   const { cells } = getCellArrays(data, 1, params)
 
-  const rows = data[0]
-  const cols = data[1]
+  const rows = data[FEATURE_ROW_INDEX]
+  const cols = data[FEATURE_COL_INDEX]
   return {
     cols,
     rows,

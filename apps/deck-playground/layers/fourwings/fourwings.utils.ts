@@ -8,13 +8,14 @@ export interface Bounds {
 }
 
 export const filterCellsByBounds = (cells: TileCell[], bounds: Bounds) => {
-  if (!bounds) {
+  if (!bounds || cells?.length === 0) {
     return []
   }
   const { north, east, south, west } = bounds
   const rightWorldCopy = east >= 180
   const leftWorldCopy = west <= -180
   return cells.filter((c) => {
+    if (!c) return false
     const [lon, lat] = (c.coordinates as any)[0][0]
     if (lat < south || lat > north) {
       return false
