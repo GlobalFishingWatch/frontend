@@ -5,7 +5,7 @@ import { APIPagination, Dataview } from '@globalfishingwatch/api-types'
 import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { APP_NAME, DEFAULT_PAGINATION_PARAMS } from 'data/config'
-import { BASEMAP_DATAVIEW_ID, TEMPLATE_DATAVIEW_IDS } from 'data/workspaces'
+import { BASEMAP_DATAVIEW_SLUG, TEMPLATE_DATAVIEW_SLUGS } from 'data/workspaces'
 
 interface EditorState {
   active: boolean
@@ -39,8 +39,10 @@ export const fetchEditorDataviewsThunk = createAsyncThunk<
       `/dataviews?${stringify(dataviewsParams, { arrayFormat: 'comma' })}`
     )
     const filteredDataviews = dataviews.entries.filter(
-      ({ id, category }) =>
-        !TEMPLATE_DATAVIEW_IDS.includes(id) && id !== BASEMAP_DATAVIEW_ID && category !== 'vessels'
+      ({ id, slug, category }) =>
+        !TEMPLATE_DATAVIEW_SLUGS.includes(slug) &&
+        slug !== BASEMAP_DATAVIEW_SLUG &&
+        category !== 'vessels'
     )
     return filteredDataviews
   } catch (e: any) {
