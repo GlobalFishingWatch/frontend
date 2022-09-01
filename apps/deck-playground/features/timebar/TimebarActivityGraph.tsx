@@ -32,7 +32,7 @@ const TimebarActivityGraph = () => {
   if (!stackedActivity || !stackedActivity.length || !fourwingsLayer || !visible) return null
 
   const loading = instance
-    ? instance.layer.getSubLayers().every((l: any) => l.props.tile._isLoaded)
+    ? instance?.getSubLayers().every((l: any) => l.props.tile._isLoaded)
     : false
 
   // TODO: check performance issues on mouser hover
