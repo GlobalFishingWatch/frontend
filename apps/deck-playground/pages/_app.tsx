@@ -80,7 +80,7 @@ function CustomApp({ Component, pageProps }: AppProps) {
             showMainLabel="Map"
             className="split-container"
           />
-          <FpsView bottom="0" left="0" top="auto" />
+          {typeof window !== 'undefined' && <FpsView bottom="0" left="0" top="auto" />}
         </ErrorBoundary>
       </QueryClientProvider>
       {/* </RecoilURLSyncJSONNext> */}
