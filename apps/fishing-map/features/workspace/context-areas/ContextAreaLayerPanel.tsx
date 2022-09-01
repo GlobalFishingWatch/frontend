@@ -127,7 +127,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           dataview={dataview}
           onToggle={onToggle}
         />
-        {ONLY_GFW_STAFF_DATAVIEWS.includes(dataview.dataviewId) && (
+        {ONLY_GFW_STAFF_DATAVIEWS.includes(dataview.dataviewId as string) && (
           <GFWOnly type="only-icon" style={{ transform: 'none' }} className={styles.gfwIcon} />
         )}
         {title && title.length > 30 ? (
