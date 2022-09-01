@@ -64,13 +64,15 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
     return this.props.onViewportLoad(tiles)
   }
 
-  // updateState(
-  //   params: UpdateParameters<Layer<FourwingsLayerProps & Required<CompositeLayerProps<any>>>>
-  // ): void {
-  //   if (params.changeFlags.propsChanged) {
-  //     this.debouncedUpdateRampScale()
-  //   }
-  // }
+  updateState(
+    params: UpdateParameters<Layer<FourwingsLayerProps & Required<CompositeLayerProps<any>>>>
+  ): void {
+    const prevTimeRangeDuration = params.oldProps.maxFrame - params.oldProps.minFrame
+    const newTimeRangeDuration = params.props.maxFrame - params.props.minFrame
+    if (prevTimeRangeDuration !== newTimeRangeDuration) {
+      this.debouncedUpdateRampScale()
+    }
+  }
 
   renderLayers() {
     const TileLayerClass = this.getSubLayerClass('tiles', TileLayer)
