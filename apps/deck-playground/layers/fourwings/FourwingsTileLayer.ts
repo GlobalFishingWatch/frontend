@@ -48,12 +48,12 @@ export class FourwingsTileLayer extends CompositeLayer<FourwingsTileLayerProps> 
     }
     return info
   }
-  data = getTileCells(this.props.tile, this.props.data)
+  // data = getTileCells(this.props.tile, this.props.data)
   renderLayers() {
     const { colorDomain, colorRange, maxFrame, minFrame } = this.props
     return new PolygonLayer(this.props, {
       id: `fourwings-tile-${this.props.tile.id}`,
-      data: this.data,
+      data: this.props.data.cells,
       pickable: true,
       stroked: false,
       // loaders: [fourwingsTileLoader(this.props.tile)],
@@ -61,13 +61,13 @@ export class FourwingsTileLayer extends CompositeLayer<FourwingsTileLayerProps> 
       getFillColor: (cell) => getFillColor(cell, { minFrame, maxFrame, colorDomain, colorRange }),
       updateTriggers: {
         // This tells deck.gl to recalculate radius when `currentYear` changes
-        getFillColor: [minFrame, maxFrame],
+        getFillColor: [minFrame, maxFrame, colorDomain, colorRange],
       },
       // bounds: [west, south, east, north],
     })
   }
 
   getTileData() {
-    return this.data
+    return this.props.data
   }
 }

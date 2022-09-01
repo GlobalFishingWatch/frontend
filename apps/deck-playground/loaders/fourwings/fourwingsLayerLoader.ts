@@ -1,4 +1,9 @@
 import { LoaderWithParser } from '@loaders.gl/loader-utils'
+import {
+  FeatureParams,
+  generateUniqueId,
+  getCellCoordinates,
+} from 'loaders/fourwings/fourwingsTileParser'
 import Pbf from 'pbf'
 import {
   CELL_END_INDEX,
@@ -7,6 +12,34 @@ import {
   CELL_VALUES_START_INDEX,
   FEATURE_CELLS_START_INDEX,
 } from '../constants'
+
+function sinh(arg) {
+  return (Math.exp(arg) - Math.exp(-arg)) / 2
+}
+
+function tileToLng(x, z) {
+  return (x * 360) / Math.pow(2, z) - 180
+}
+
+function tileToLat(y, z) {
+  return Math.atan(sinh(Math.PI - (y * 2 * Math.PI) / Math.pow(2, z))) * (180 / Math.PI)
+}
+
+function getTileIndex(url: string) {
+  return url
+    .split('/')
+    .slice(-3)
+    .map((i) => parseInt(i)) as [number, number, number]
+}
+
+function getTileBBox(url: string): BBox {
+  const [z, x, y] = getTileIndex(url)
+  const north = tileToLat(y, z)
+  const west = tileToLng(x, z)
+  const south = tileToLat(y + 1, z)
+  const east = tileToLng(x + 1, z)
+  return [west, south, east, north]
+}
 
 export const fourwingsLayerLoader: LoaderWithParser = {
   name: 'fourwings',
@@ -17,8 +50,16 @@ export const fourwingsLayerLoader: LoaderWithParser = {
   extensions: ['pbf'],
   mimeTypes: ['application/x-protobuf', 'application/octet-stream'],
   worker: false,
-  parse: async (arrayBuffer) => parseFourWings(arrayBuffer),
-  parseSync: async (arrayBuffer) => parseFourWings(arrayBuffer),
+  parse: async (arrayBuffer, { baseUri }) => {
+    const tileBbox = getTileBBox(baseUri)
+    const tileIndex = getTileIndex(baseUri)
+    return parseFourWings(arrayBuffer, { tileBbox, tileIndex })
+  },
+  parseSync: async (arrayBuffer, { baseUri }) => {
+    const tileBbox = getTileBBox(baseUri)
+    const tileIndex = getTileIndex(baseUri)
+    return parseFourWings(arrayBuffer, { tileBbox, tileIndex })
+  },
 }
 
 function readData(_, data, pbf) {
@@ -37,7 +78,11 @@ const getTimeseries = (startFrame, values) => {
   }))
 }
 
-const getCellArrays = (intArray, sublayerCount = 1) => {
+const getCellArrays = (
+  intArray,
+  sublayerCount = 1,
+  { tileBbox, tileIndex }: GetCellArraysParams
+) => {
   const cells: Cell[] = []
   let cellNum = 0
   let startFrame = 0
@@ -65,11 +110,22 @@ const getCellArrays = (intArray, sublayerCount = 1) => {
       // original[FEATURE_CELLS_START_INDEX] = endFrame + delta
       // const merged = original.concat(padded)
       const values = intArray.slice(startIndex + CELL_VALUES_START_INDEX, endIndex)
+
+      const uniqueId = generateUniqueId(tileIndex[1], tileIndex[2], cellNum)
+      const params: FeatureParams = {
+        id: uniqueId,
+        cell: cellNum,
+        numCols: intArray[0],
+        numRows: intArray[1],
+        tileBBox: tileBbox,
+      }
+      const coordinates = getCellCoordinates(params)
       cells.push({
         timeseries: getTimeseries(startFrame, values),
         cellIndex: cellNum,
         startFrame,
         endFrame,
+        coordinates,
       })
       if (startFrame < domainX[0]) domainX[0] = startFrame
       if (endFrame > domainX[1]) domainX[1] = endFrame
@@ -94,6 +150,7 @@ export type Cell = {
   startFrame: number
   endFrame: number
   timeseries: CellTimeseries[]
+  coordinates: [number[]]
 }
 
 export type FourwingsTileData = {
@@ -101,10 +158,11 @@ export type FourwingsTileData = {
   rows: number
   cells: Cell[]
 }
-
-const parseFourWings = (arrayBuffer): FourwingsTileData => {
+type GetCellArraysParams = { tileBbox: BBox; tileIndex: [number, number, number] }
+const parseFourWings = (arrayBuffer, params: GetCellArraysParams): FourwingsTileData => {
   var data = new Pbf(arrayBuffer).readFields(readData, [])[0]
-  const { cells } = getCellArrays(data, 1)
+  const { cells } = getCellArrays(data, 1, params)
+
   const rows = data[0]
   const cols = data[1]
   return {

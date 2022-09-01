@@ -51,6 +51,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
       const opacity = ((i + 1) / COLOR_RAMP_DEFAULT_NUM_STEPS) * 255
       return [255, 0, 255, opacity]
     })
+
     this.setState({ colorDomain: steps, colorRange })
   }
 
@@ -78,7 +79,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
         this.props,
         this.getSubLayerProps({
           id: 'tile',
-          data: 'https://gateway.api.dev.globalfishingwatch.org/v2/4wings/tile/heatmap/{z}/{x}/{y}?interval=day&date-range=2022-07-01,2022-08-25&format=intArray&temporal-aggregation=false&proxy=true&datasets[0]=public-global-fishing-effort:v20201001',
+          data: 'https://gateway.api.dev.globalfishingwatch.org/v2/4wings/tile/heatmap/{z}/{x}/{y}?interval=day&date-range=2022-01-01,2022-08-25&format=intArray&temporal-aggregation=false&proxy=true&datasets[0]=public-global-fishing-effort:v20201001',
           minZoom: 0,
           maxZoom: 8,
           tileSize: 256,
@@ -105,7 +106,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
   getData() {
     return (this.getSubLayers()[0] as TileLayer)
       .getSubLayers()
-      .flatMap((l: FourwingsTileLayer) => l.getTileData())
+      .flatMap((l: FourwingsTileLayer) => l.getTileData().cells)
   }
 
   getColorDomain() {
