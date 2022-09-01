@@ -108,13 +108,14 @@ const getCellArrays = (intArray, sublayerCount = 1, params: GetCellArayParams) =
       indexInCell = 0
       const values = intArray.slice(startIndex + CELL_VALUES_START_INDEX, endIndex)
       const timeseries = getTimeseries(startFrame, values)
+      const coordinates = getCellCoordinates({
+        ...params,
+        cell: cellNum,
+        id: generateUniqueId(params.tileIndex[1], params.tileIndex[2], cellNum),
+      })
+
       for (let i = 0; i < timeseries.length; i++) {
         const { value, timestamp } = timeseries[i]
-        const coordinates = getCellCoordinates({
-          ...params,
-          cell: cellNum,
-          id: generateUniqueId(params.tileIndex[1], params.tileIndex[2], cellNum),
-        })
         cells.push({
           cellIndex: cellNum,
           value,
