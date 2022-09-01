@@ -1,13 +1,14 @@
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { FISHING_DATAVIEW_ID, PRESENCE_DATAVIEW_ID } from 'data/workspaces'
+import { FISHING_DATAVIEW_SLUG, PRESENCE_DATAVIEW_SLUG } from 'data/workspaces'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 
 export const isActivityDataview = (dataview: UrlDataviewInstance) =>
-  dataview.dataviewId === FISHING_DATAVIEW_ID || dataview.category === DataviewCategory.Activity
+  dataview.dataviewId === FISHING_DATAVIEW_SLUG || dataview.category === DataviewCategory.Activity
 
 export const isDetectionsDataview = (dataview: UrlDataviewInstance) =>
-  dataview.dataviewId === PRESENCE_DATAVIEW_ID || dataview.category === DataviewCategory.Detections
+  dataview.dataviewId === PRESENCE_DATAVIEW_SLUG ||
+  dataview.category === DataviewCategory.Detections
 
 export const getSourcesOptionsInDataview = (
   dataview: UrlDataviewInstance,

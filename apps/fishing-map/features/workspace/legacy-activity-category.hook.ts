@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
 import { selectActivityCategory } from 'features/app/app.selectors'
-import { FISHING_DATAVIEW_ID, PRESENCE_DATAVIEW_ID, VIIRS_MATCH_DATAVIEW_ID } from 'data/workspaces'
+import {
+  FISHING_DATAVIEW_SLUG,
+  PRESENCE_DATAVIEW_SLUG,
+  VIIRS_MATCH_DATAVIEW_SLUG,
+} from 'data/workspaces'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
 export const useHideLegacyActivityCategoryDataviews = () => {
@@ -22,13 +26,13 @@ export const useHideLegacyActivityCategoryDataviews = () => {
         if (activityCategory === 'fishing') {
           dataviewInstancesToUpdate = dataviewInstancesResolved.filter((dataviewInstance) => {
             return (
-              dataviewInstance.dataviewId === PRESENCE_DATAVIEW_ID ||
-              dataviewInstance.dataviewId === VIIRS_MATCH_DATAVIEW_ID
+              dataviewInstance.dataviewId === PRESENCE_DATAVIEW_SLUG ||
+              dataviewInstance.dataviewId === VIIRS_MATCH_DATAVIEW_SLUG
             )
           })
         }
         dataviewInstancesToUpdate = dataviewInstancesResolved.filter((dataviewInstance) => {
-          return dataviewInstance.dataviewId === FISHING_DATAVIEW_ID
+          return dataviewInstance.dataviewId === FISHING_DATAVIEW_SLUG
         })
       }
       if (dataviewInstancesToUpdate.length) {
