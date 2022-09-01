@@ -30,10 +30,10 @@ import { HOME, WORKSPACE } from 'routes/routes'
 import { cleanQueryLocation, updateLocation, updateQueryParam } from 'routes/routes.actions'
 import { selectDaysFromLatest } from 'features/app/app.selectors'
 import {
-  BASEMAP_LABELS_DATAVIEW_ID,
-  DEFAULT_DATAVIEW_IDS,
+  BASEMAP_LABELS_DATAVIEW_SLUG,
+  DEFAULT_DATAVIEW_SLUGS,
   getWorkspaceEnv,
-  VESSEL_PRESENCE_DATAVIEW_ID,
+  VESSEL_PRESENCE_DATAVIEW_SLUG,
   WorkspaceCategories,
 } from 'data/workspaces'
 import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
@@ -100,7 +100,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
             config: {
               visible: false,
             },
-            dataviewId: BASEMAP_LABELS_DATAVIEW_ID,
+            dataviewId: BASEMAP_LABELS_DATAVIEW_SLUG,
           })
         }
       }
@@ -128,8 +128,8 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           : DateTime.fromISO(workspace.startAt).toUTC()
 
       const defaultWorkspaceDataviews = gfwUser
-        ? [...DEFAULT_DATAVIEW_IDS, VESSEL_PRESENCE_DATAVIEW_ID] // Only for gfw users as includes the private-global-presence-tracks dataset
-        : DEFAULT_DATAVIEW_IDS
+        ? [...DEFAULT_DATAVIEW_SLUGS, VESSEL_PRESENCE_DATAVIEW_SLUG] // Only for gfw users as includes the private-global-presence-tracks dataset
+        : DEFAULT_DATAVIEW_SLUGS
 
       const dataviewIds = [
         ...defaultWorkspaceDataviews,
@@ -315,7 +315,7 @@ const workspaceSlice = createSlice({
     },
     removeLocationLabelsDataview: (state) => {
       state.data.dataviewInstances = state.data.dataviewInstances.filter(
-        (d) => d.dataviewId !== BASEMAP_LABELS_DATAVIEW_ID
+        (d) => d.dataviewId !== BASEMAP_LABELS_DATAVIEW_SLUG
       )
     },
   },
