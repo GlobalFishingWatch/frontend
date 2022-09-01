@@ -24,7 +24,7 @@ export function RiskSection({
   return (
     <div className={cx(styles['container'], styles[severity], className)}>
       <label className={styles.sectionLabel}>
-        {icon && <span className={styles.categoryIcon}><Icon icon={icon} /></span>}
+        {icon && <span className={cx(styles.categoryIcon, styles[icon])}><Icon icon={icon} /></span>}
         {title}
         {titleInfo && (
           <DataAndTerminology size="tiny" type="default" title={title}>

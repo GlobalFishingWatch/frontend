@@ -36,3 +36,23 @@
   justify-content: center;
   flex: none;
 }
+
+.categoryIcon.event-port-visit {
+  background-color: #9ef;
+}
+
+.categoryIcon.transmissions-off {
+  background-color: #f7b500;
+}
+
+.categoryIcon.event-fishing {
+  background-color: #fff;
+}
+
+.categoryIcon.event-encounter {
+  background-color: #fae9a0;
+}
+
+.categoryIcon.event-loitering {
+  background-color: #ddbef0;
+}
