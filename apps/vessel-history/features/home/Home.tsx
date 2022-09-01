@@ -11,7 +11,7 @@ import { RESULTS_PER_PAGE, TMT_CONTACT_US_URL } from 'data/constants'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
 import { selectAllOfflineVessels } from 'features/vessels/offline-vessels.slice'
-import SearchPlaceholder, { SearchNoResultsState } from 'features/search/SearchPlaceholders'
+import SearchPlaceholder, { SearchErrorState, SearchNoResultsState } from 'features/search/SearchPlaceholders'
 import {
   selectAdvancedSearchFields,
   selectHasSearch,
@@ -22,6 +22,7 @@ import {
   selectSearchResults,
   selectSearchTotalResults,
   selectSearching,
+  selectSearchError,
 } from 'features/search/search.selectors'
 import AdvancedSearch from 'features/search/AdvancedSearch'
 import { useUser } from 'features/user/user.hooks'
@@ -59,6 +60,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const vessels = useSelector(selectSearchResults)
   const offset = useSelector(selectSearchOffset)
   const totalResults = useSelector(selectSearchTotalResults)
+  const searchError = useSelector(selectSearchError)
   const offlineVessels = useSelector(selectAllOfflineVessels)
   const { dispatchFetchOfflineVessels, dispatchDeleteOfflineVessel } = useOfflineVesselsAPI()
   const { online } = useNavigatorOnline()
@@ -162,7 +164,6 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
     },
     [dispatchDeleteOfflineVessel]
   )
-
   useEffect(() => {
     setSelectedVessels([])
   }, [setSelectedVessels, vessels])
@@ -347,12 +348,15 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                   <Spinner className={styles.loader}></Spinner>
                 </div>
               )}
-              {!typing && !searching && vesselsLength >= 0 && (
+              {!searchError && !typing && !searching && vesselsLength >= 0 && (
                 <SearchNoResultsState
                   contactUsLink={contactUsLink}
                   onContactUsClick={onContactUsClick}
                 />
               )}
+              {searchError && !typing &&
+                <SearchErrorState error={searchError}></SearchErrorState>
+              }
               <Partners />
             </div>
           </Fragment>

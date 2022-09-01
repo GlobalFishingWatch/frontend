@@ -10,6 +10,10 @@ export type CachedVesselSearch = {
   total: number | null
   vessels: RelatedVesselSearchMerged[]
 }
+export type HttpError = {
+  message: string,
+  status: number
+}
 
 const searchInitialState = {
   vessels: [],
@@ -22,12 +26,14 @@ export type CachedQuerySearch = {
 
 export type SearchSlice = {
   status: AsyncReducerStatus
+  error?: HttpError
   queries: CachedQuerySearch
 }
 
 const initialState: SearchSlice = {
   status: AsyncReducerStatus.Idle,
   queries: {},
+  error: null
 }
 
 const slice = createSlice({
@@ -41,6 +47,7 @@ const slice = createSlice({
         action.meta.arg.query,
         action.meta.arg.advancedSearch
       )
+      state.error = null
       if (serializedQuery) {
         if (!state.queries[serializedQuery]) {
           state.queries[serializedQuery] = {
@@ -79,6 +86,7 @@ const slice = createSlice({
         action.meta.arg.query,
         action.meta.arg.advancedSearch
       )
+      state.error = action.payload as HttpError
       if (state.queries[serializedQuery]) {
         state.queries[serializedQuery].searching = false
       }

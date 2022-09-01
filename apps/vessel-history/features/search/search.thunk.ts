@@ -71,6 +71,8 @@ export const fetchData = async (
     .then((json: any) => {
       const resultVessels: Array<VesselSearch> = json.entries
       return {
+        success: true,
+        error: null,
         vessels: resultVessels,
         query,
         offset: json.offset,
@@ -79,7 +81,15 @@ export const fetchData = async (
       }
     })
     .catch((error) => {
-      return null
+      return {
+        success: false,
+        error,
+        vessels: [],
+        query,
+        offset: 0,
+        total: 0,
+        searching: false,
+      }
     })
 }
 const getSearchNeedsFetch = (
@@ -138,10 +148,12 @@ const trackData = (query: any, results: SearchResults | null, actualResults: num
 
 export const fetchVesselSearchThunk = createAsyncThunk(
   'search/vessels',
-  async ({ query, offset, advancedSearch }: VesselSearchThunk, { signal }) => {
+  async ({ query, offset, advancedSearch }: VesselSearchThunk, { signal, rejectWithValue }) => {
     const searchData = await fetchData(query, offset, signal, advancedSearch)
+    if (!searchData.success) {
+      return rejectWithValue(searchData.error);
+    }
     trackData({ query: query, ...advancedSearch }, searchData, 5)
-
     return searchData
   },
   {
