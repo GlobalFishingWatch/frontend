@@ -1667,6 +1667,11 @@
       "firstTransmissionDate": "crwdns9857:0crwdne9857:0"
     }
   },
+  "public-global-chlorophyl": {
+    "name": "crwdns26802:0crwdne26802:0",
+    "description": "crwdns26804:0crwdne26804:0",
+    "schema": {}
+  },
   "public-global-encounters-events-carriers-fishing": {
     "name": "crwdns9859:0crwdne9859:0",
     "description": "crwdns9861:0crwdne9861:0",
@@ -1905,6 +1910,16 @@
       },
       "timestamp": "crwdns17661:0crwdne17661:0"
     }
+  },
+  "public-global-water-salinity": {
+    "name": "crwdns26806:0crwdne26806:0",
+    "description": "crwdns26808:0crwdne26808:0",
+    "schema": {}
+  },
+  "public-global-water-temperature": {
+    "name": "crwdns26810:0crwdne26810:0",
+    "description": "crwdns26812:0crwdne26812:0",
+    "schema": {}
   },
   "public-graticules": {
     "name": "crwdns25572:0crwdne25572:0",
