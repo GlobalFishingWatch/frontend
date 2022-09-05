@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { Fragment, useMemo } from 'react'
 import cx from 'classnames'
 import { Trans, useTranslation } from 'react-i18next'
 import { RiskLevel, RiskOutput, VesselWithHistory } from 'types'
@@ -87,7 +87,21 @@ const ForcedLabor: React.FC<ForcedLaborProps> = (props): React.ReactElement => {
             </p>
           </DataAndTerminology>
         </div>
-        <div>{t('risk.reportedCases', 'Reported Cases')}</div>
+        <div>
+          {t('risk.reportedCases', 'Reported Cases')}
+          <DataAndTerminology size="tiny" type="default"
+            title={t('risk.reportedCases', 'Reported Cases')}>
+            <Fragment>
+              {t('vessel.forcedLaborCasesDescription', 'Reported cases are based a survey of a global set of reports and newspapers using multiple languages including grey literature reports, media sources, and government reports, and that included at least one of the following criteria:')}
+              <ul className={styles.reportedCasesTerms}>
+                <li>{t('vessel.forcedLaborCasesDescriptionItem1', 'witnesses or testimonies from victims;')}</li>
+                <li>{t('vessel.forcedLaborCasesDescriptionItem2', 'prosecutions (either with companies/individuals being charged as guilty, or mentions of investigations in place); or')}</li>
+                <li>{t('vessel.forcedLaborCasesDescriptionItem3', 'arrests or detentions of vessels under suspicion of forced labour behaviour from official bodies.')}</li>
+              </ul>
+            </Fragment>
+          </DataAndTerminology>
+
+        </div>
       </div>
 
       {riskModel.map(risk =>
