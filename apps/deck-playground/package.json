@@ -19,11 +19,14 @@
     "@deck.gl/geo-layers": "^8.8.6",
     "@deck.gl/layers": "^8.8.6",
     "@deck.gl/react": "^8.8.6",
-    "@loaders.gl/mvt": "^3.2.6",
+    "@loaders.gl/core": "^3.2.7",
+    "@loaders.gl/loader-utils": "^3.2.7",
+    "@loaders.gl/mvt": "^3.2.7",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
     "deck.gl": "^8.8.6",
+    "d3-scale": "^4.0.2",
     "@recoiljs/refine": "^0.1.0",
     "@tanstack/react-query": "^4.0.10",
     "classnames": "2.3.1",
@@ -36,6 +39,7 @@
     "recoil": "0.7.5",
     "recoil-sync": "^0.1.0",
     "recoil-sync-next": "^0.0.2",
+    "simple-statistics": "^7.7.6",
     "typescript": "4.7.4"
   },
   "devDependencies": {

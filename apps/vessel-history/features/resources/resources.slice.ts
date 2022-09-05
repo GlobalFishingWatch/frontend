@@ -25,6 +25,9 @@ export const selectResources = createSelector([originalSelectResource], (resourc
   return Object.keys(resources)
     .map((url) => {
       const resource = resources[url]
+      // We remove gaps where there is non intentional disabling
+      const excludeNonIntentionalDisablingGaps = (event) => event.type !== EventTypes.Gap || event.gap.intentionalDisabling === true
+
       const portExitEvents =
         Array.isArray(resource.data) &&
         (resource.data as any[])
@@ -43,7 +46,7 @@ export const selectResources = createSelector([originalSelectResource], (resourc
       const gapsEnds =
         Array.isArray(resource.data) &&
         (resource.data as any[])
-          .filter((event) => event.type === EventTypes.Gap)
+          .filter((event) => event.type === EventTypes.Gap && event.gap.intentionalDisabling === true)
           .map((event) => ({
             ...event,
             timestamp: event.end as number,
@@ -59,7 +62,8 @@ export const selectResources = createSelector([originalSelectResource], (resourc
         {
           ...resource,
           data: Array.isArray(resource.data)
-            ? (resource.data as any[])?.concat(portExitEvents)//.concat(gapsEnds)
+            ? (resource.data as any[])?.filter(excludeNonIntentionalDisablingGaps)
+              .concat(portExitEvents)//.concat(gapsEnds)
             : resource.data,
         } as Resource,
       ]

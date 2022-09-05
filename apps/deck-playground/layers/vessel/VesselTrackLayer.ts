@@ -1,11 +1,11 @@
 import type { NumericArray } from '@math.gl/core'
 import { AccessorFunction, DefaultProps } from '@deck.gl/core/typed'
 import { PathLayer, PathLayerProps } from '@deck.gl/layers/typed'
-import { Segment } from '@globalfishingwatch/data-transforms'
+import { Segment } from '@globalfishingwatch/api-types'
 
 const defaultProps: DefaultProps<VesselTrackLayerProps> = {
-  startTime: { type: 'number', value: 0, min: 0 },
   endTime: { type: 'number', value: 0, min: 0 },
+  startTime: { type: 'number', value: 0, min: 0 },
   getTimestamps: { type: 'accessor', value: (d) => d.timestamps },
 }
 
@@ -14,7 +14,7 @@ export type VesselTrackLayerProps<DataT = any> = _VesselTrackLayerProps<DataT> &
   PathLayerProps<DataT>
 
 /** Properties added by VesselTrackLayer. */
-type _VesselTrackLayerProps<DataT = any> = {
+export type _VesselTrackLayerProps<DataT = any> = {
   /**
    * The start time of the track in milliseconds
    * @default 0
@@ -26,13 +26,23 @@ type _VesselTrackLayerProps<DataT = any> = {
    */
   endTime?: number
   /**
+   * The start time to highlight the track in milliseconds
+   * @default 0
+   */
+  highlightStartTime?: number
+  /**
+   * The end time to highlight the track in milliseconds
+   * @default 0
+   */
+  highlightEndTime?: number
+  /**
    * Timestamp accessor.
    */
   getTimestamps?: AccessorFunction<DataT, NumericArray>
 }
 
 /** Render paths that represent vessel trips. */
-export default class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
+export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
   DataT,
   Required<_VesselTrackLayerProps> & ExtraProps
 > {

@@ -513,8 +513,28 @@
       "firstTransmissionDate": "firstTransmissionDate"
     }
   },
+  "private-indonesia-aruna-fishing-effort": {
+    "name": "Aruna (Fishing Effort)",
+    "description": "Indonesia Aruna Fishing Effort",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      },
+      "vessel_id": "vessel_id"
+    }
+  },
   "private-indonesia-aruna-presence": {
-    "name": "Aruna",
+    "name": "Aruna (Presence)",
     "description": "Aruna Presence",
     "schema": {
       "lat": "lat",
@@ -584,8 +604,28 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "private-indonesia-ipnlf-fishing-effort": {
+    "name": "AP2HI-IPNLF (Fishing Effort)",
+    "description": "Indonesia AP2HI-IPNLF Fishing Effort",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      },
+      "vessel_id": "vessel_id"
+    }
+  },
   "private-indonesia-ipnlf-presence": {
-    "name": "AP2HI-IPNLF",
+    "name": "AP2HI-IPNLF (Presence)",
     "description": "AP2HI-IPNLF Presence",
     "schema": {
       "lat": "lat",
@@ -682,8 +722,28 @@
       "vessel_id": "vessel_id"
     }
   },
+  "private-indonesia-rare-fishing-effort": {
+    "name": "Rare (Fishing Effort)",
+    "description": "Indonesia Rare Fishing Effort",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      },
+      "vessel_id": "vessel_id"
+    }
+  },
   "private-indonesia-rare-presence": {
-    "name": "Rare",
+    "name": "Rare (Presence)",
     "description": "Rare Presence",
     "schema": {
       "lat": "lat",
