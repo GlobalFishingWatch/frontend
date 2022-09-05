@@ -2,12 +2,14 @@ import { useEffect, useState, useCallback } from 'react'
 import { debounce } from 'lodash'
 import { useDebounce, useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { Timeseries } from '@globalfishingwatch/timebar'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { getDatasetsExtent, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import { getTimeseriesFromFeatures } from '@globalfishingwatch/features-aggregate'
 import { checkEqualBounds, useMapBounds } from 'features/map/map-viewport.hooks'
+import { getActiveActivityDatasetsInDataview } from 'features/datasets/datasets.utils'
 import {
   areDataviewsFeatureLoaded,
+  DataviewFeature,
   hasDataviewsFeatureError,
   useMapDataviewFeatures,
 } from 'features/map/map-sources.hooks'
@@ -26,13 +28,19 @@ export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSetStackedActivity = useCallback(
-    debounce((dataviewFeatures, bounds) => {
-      const dataviewFeaturesFiltered = dataviewFeatures.map((dataview) => {
+    debounce((dataviewFeatures: DataviewFeature[], bounds) => {
+      const dataviewFeaturesFiltered = dataviewFeatures.map((dataviewFeature) => {
+        const dataview = dataviews.find((d) => d.id === dataviewFeature.dataviewsId[0])
+        const activeDataviewDatasets = getActiveActivityDatasetsInDataview(dataview)
+        const { extentStart, extentEnd } = getDatasetsExtent(activeDataviewDatasets, 'timestamp')
+
         return {
-          ...dataview,
-          chunksFeatures: dataview.chunksFeatures?.map((chunk) => {
+          ...dataviewFeature,
+          chunksFeatures: dataviewFeature.chunksFeatures?.map((chunk) => {
             return {
               ...chunk,
+              startDataTimestamp: extentStart,
+              endDataTimestamp: extentEnd,
               features: chunk.features ? filterFeaturesByBounds(chunk.features, bounds) : [],
             }
           }),

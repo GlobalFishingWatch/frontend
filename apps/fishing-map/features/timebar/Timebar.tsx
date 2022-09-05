@@ -29,7 +29,7 @@ import {
 import { DEFAULT_WORKSPACE, LAST_DATA_UPDATE } from 'data/config'
 import { TimebarVisualisations } from 'types'
 import useViewport from 'features/map/map-viewport.hooks'
-import { selectTimebarGraph } from 'features/app/app.selectors'
+import { selectTimebarGraph, selectTimebarVisualisation } from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { upperFirst } from 'utils/info'
 import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
@@ -40,6 +40,8 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { formatI18nDate, UTC_SUFFIX } from 'features/i18n/i18nDate'
 import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-groups.selectors'
+import { useActivityDataviewsExtent } from 'features/map/map-sources.hooks'
+import { selectActiveActivityDataviewsByVisualisation } from 'features/dataviews/dataviews.selectors'
 import { setHighlightedTime, selectHighlightedTime, Range } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import { selectTracksData, selectTracksGraphData, selectTracksEvents } from './timebar.selectors'
@@ -50,6 +52,9 @@ const ZOOM_LEVEL_TO_FOCUS_EVENT = 5
 
 const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents }) => {
   // const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
+  const timebarVisualisation = useSelector(selectTimebarVisualisation)
+  const dataviews = useSelector(selectActiveActivityDataviewsByVisualisation(timebarVisualisation))
+  const dataviewsExtent = useActivityDataviewsExtent(dataviews)
   const highlightedTime = useSelector(selectHighlightedTime)
   const onHighlightChunks = useCallback(
     (chunks: HighlightedChunks) => {
@@ -78,8 +83,16 @@ const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents }) => {
           return formatI18nDate(timestamp, { showUTCLabel: true })
         } else if (interval === '10days') {
           const frame = CONFIG_BY_INTERVAL['10days'].getRawFrame(timestamp)
-          const start = CONFIG_BY_INTERVAL['10days'].getDate(Math.floor(frame)).getTime()
-          const end = CONFIG_BY_INTERVAL['10days'].getDate(Math.ceil(frame)).getTime()
+          const intervalStart = CONFIG_BY_INTERVAL['10days'].getDate(Math.floor(frame)).getTime()
+          const intervalEnd = CONFIG_BY_INTERVAL['10days'].getDate(Math.ceil(frame)).getTime()
+          const start =
+            intervalStart < dataviewsExtent.extentStart
+              ? dataviewsExtent.extentStart
+              : intervalStart
+          const end =
+            dataviewsExtent.extentEnd > intervalStart && dataviewsExtent.extentEnd < intervalEnd
+              ? dataviewsExtent.extentEnd
+              : intervalEnd
           return [formatI18nDate(start), formatI18nDate(end)].join(' - ') + ` ${UTC_SUFFIX}`
         } else if (interval === 'month') {
           // TODO
@@ -87,9 +100,8 @@ const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents }) => {
       }
       return dateLabel
     },
-    [metadata]
+    [metadata, dataviewsExtent]
   )
-  const { timebarVisualisation } = useTimebarVisualisationConnect()
   const formatDate =
     timebarVisualisation !== TimebarVisualisations.HeatmapActivity &&
     timebarVisualisation !== TimebarVisualisations.HeatmapDetections

@@ -24,6 +24,8 @@ export type ChunkFeature = {
   state: TilesSourceState
   features: GeoJSONFeature<TimeseriesFeatureProps>[]
   quantizeOffset: number
+  startDataTimestamp?: number
+  endDataTimestamp?: number
 }
 
 export type LayerFeature = {
@@ -51,43 +53,70 @@ export const getChunksTimeseries = ({
   aggregationOperation,
   multiplier,
 }: TimeseriesParams) => {
-  const allChunksValues = chunksFeatures?.flatMap(({ features, quantizeOffset }) => {
-    if (features?.length > 0) {
-      const { values } = getTimeSeries(features, numSublayers, quantizeOffset, aggregationOperation)
-
-      const finalValues = values.map((frameValues) => {
-        // Ideally we don't have the features not visible in 4wings but we have them
-        // so this needs to be filtered by the current active ones
-        const activeFrameValues = Object.fromEntries(
-          Object.entries(frameValues).map(([key, value]) => {
-            const cleanValue =
-              key === 'frame' || visibleSublayers[parseInt(key)] === true ? value : 0
-            const realValue = getRealValue(cleanValue, { multiplier })
-            return [key, realValue]
-          })
-        ) as TimeSeriesFrame
-        return {
-          ...activeFrameValues,
-          date: quantizeOffsetToDate(frameValues.frame, interval).getTime(),
-        }
-      })
-      if (aggregationOperation === AggregationOperation.Avg) {
-        const lastItem = finalValues[finalValues.length - 1]
-        const month = DateTime.fromMillis(lastItem.date)
-        const plus = interval === '10days' ? { day: 10 } : { [interval]: 1 }
-        const nextMonth = DateTime.fromMillis(lastItem.date).plus(plus)
-        const millisOffset = nextMonth.diff(month).milliseconds
-        return finalValues.concat({
-          ...lastItem,
-          frame: lastItem.frame + 1,
-          date: lastItem.date + millisOffset,
+  const allChunksValues = chunksFeatures?.flatMap(
+    ({ features, quantizeOffset, startDataTimestamp, endDataTimestamp }) => {
+      if (features?.length > 0) {
+        const { values } = getTimeSeries({
+          features,
+          numSublayers,
+          quantizeOffset,
+          aggregationOperation,
         })
+
+        const finalValues = values.map((frameValues) => {
+          // Ideally we don't have the features not visible in 4wings but we have them
+          // so this needs to be filtered by the current active ones
+          const activeFrameValues = Object.fromEntries(
+            Object.entries(frameValues).map(([key, value]) => {
+              const cleanValue =
+                key === 'frame' || visibleSublayers[parseInt(key)] === true ? value : 0
+              const realValue = getRealValue(cleanValue, { multiplier })
+              return [key, realValue]
+            })
+          ) as TimeSeriesFrame
+          return {
+            ...activeFrameValues,
+            date: quantizeOffsetToDate(frameValues.frame, interval).getTime(),
+          }
+        })
+        if (aggregationOperation === AggregationOperation.Avg) {
+          const lastItem = finalValues[finalValues.length - 1]
+          const month = DateTime.fromMillis(lastItem.date)
+          const plus = interval === '10days' ? { day: 10 } : { [interval]: 1 }
+          const nextMonth = DateTime.fromMillis(lastItem.date).plus(plus)
+          const millisOffset = nextMonth.diff(month).milliseconds
+          return finalValues.concat({
+            ...lastItem,
+            frame: lastItem.frame + 1,
+            date: lastItem.date + millisOffset,
+          })
+        }
+        // Replace the initial and the last date with the dataset extend instead of the interval
+        if (startDataTimestamp) {
+          const closestStartIndex = finalValues.findIndex((v) => v.date > startDataTimestamp) - 1
+          if (closestStartIndex >= 0) {
+            const startData = Object.fromEntries([
+              ...[...Array(numSublayers).keys()].map((i) => {
+                return [i, 0]
+              }),
+              ['frame', finalValues[closestStartIndex].frame],
+              ['date', startDataTimestamp],
+            ])
+            finalValues[closestStartIndex] = startData
+          }
+        }
+        if (endDataTimestamp) {
+          const closestEndIndex = finalValues.findIndex((v) => v.date > endDataTimestamp) - 1
+          if (closestEndIndex >= 0) {
+            finalValues[closestEndIndex].date = endDataTimestamp
+          }
+        }
+        return finalValues
+      } else {
+        return []
       }
-      return finalValues
-    } else {
-      return []
     }
-  })
+  )
   return allChunksValues
 }
 

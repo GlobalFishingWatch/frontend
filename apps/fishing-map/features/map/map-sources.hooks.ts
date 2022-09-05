@@ -8,6 +8,7 @@ import {
   TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
 } from '@globalfishingwatch/layer-composer'
 import {
+  getDatasetsExtent,
   isDetectionsDataview,
   isHeatmapAnimatedDataview,
   isMergedAnimatedGenerator,
@@ -26,6 +27,7 @@ import {
   BIG_QUERY_EVENTS_PREFIX,
   ENCOUNTER_EVENTS_SOURCE_ID,
 } from 'features/dataviews/dataviews.utils'
+import { getActiveActivityDatasetsInDataview } from 'features/datasets/datasets.utils'
 
 type SourcesHookInput = string | string[]
 // TODO: move this to fork and include sourceId in the event for tiles loaded
@@ -168,6 +170,15 @@ type DataviewMetadata = {
   generatorSourceId: string
   dataviewsId: string[]
   filter?: string[]
+}
+
+export const useActivityDataviewsExtent = (dataviews: UrlDataviewInstance[]) => {
+  const extents = toArray(dataviews || []).flatMap((dataview) => {
+    const activeDataviewDatasets = getActiveActivityDatasetsInDataview(dataview)
+    const { extentStart, extentEnd } = getDatasetsExtent(activeDataviewDatasets, 'timestamp')
+    return [extentStart as number, extentEnd as number]
+  })
+  return { extentStart: Math.min(...extents), extentEnd: Math.max(...extents) }
 }
 
 export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDataviewInstance[]) => {

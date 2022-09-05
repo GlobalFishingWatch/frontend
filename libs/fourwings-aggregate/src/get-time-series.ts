@@ -21,12 +21,18 @@ export type TimeSeries = {
   maxFrame: number
 }
 
-export const getTimeSeries = (
-  features: GeoJSONFeature<TimeseriesFeatureProps>[],
-  numSublayers: number,
+export type GetTimeseriesParams = {
+  features: GeoJSONFeature<TimeseriesFeatureProps>[]
+  numSublayers: number
+  quantizeOffset?: number
+  aggregationOperation?: AggregationOperation
+}
+export const getTimeSeries = ({
+  features,
+  numSublayers,
   quantizeOffset = 0,
-  aggregationOperation = AggregationOperation.Sum
-): TimeSeries => {
+  aggregationOperation = AggregationOperation.Sum,
+}: GetTimeseriesParams): TimeSeries => {
   let minFrame = Number.POSITIVE_INFINITY
   let maxFrame = Number.NEGATIVE_INFINITY
 
