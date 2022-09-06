@@ -513,26 +513,6 @@
       "firstTransmissionDate": "firstTransmissionDate"
     }
   },
-  "private-indonesia-aruna-fishing-effort": {
-    "name": "Aruna (Fishing Effort)",
-    "description": "Indonesia Aruna Fishing Effort",
-    "schema": {
-      "lat": "lat",
-      "lon": "lon",
-      "flag": "flag",
-      "geartype": {
-        "keyword": "geartype",
-        "enum": {
-          "gillnets": "gillnets",
-          "longline": "longline",
-          "traps": "traps",
-          "purse seine": "purse seine",
-          "Handline": "Handline"
-        }
-      },
-      "vessel_id": "vessel_id"
-    }
-  },
   "private-indonesia-aruna-presence": {
     "name": "Aruna",
     "description": "Aruna Presence",
@@ -602,26 +582,6 @@
       "elevation_m": "elevation_m",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
-    }
-  },
-  "private-indonesia-ipnlf-fishing-effort": {
-    "name": "AP2HI-IPNLF (Fishing Effort)",
-    "description": "Indonesia AP2HI-IPNLF Fishing Effort",
-    "schema": {
-      "lat": "lat",
-      "lon": "lon",
-      "flag": "flag",
-      "geartype": {
-        "keyword": "geartype",
-        "enum": {
-          "gillnets": "gillnets",
-          "longline": "longline",
-          "traps": "traps",
-          "purse seine": "purse seine",
-          "Handline": "Handline"
-        }
-      },
-      "vessel_id": "vessel_id"
     }
   },
   "private-indonesia-ipnlf-presence": {
@@ -717,26 +677,6 @@
           "Oceanic gillnet": "Oceanic gillnet",
           "Fish net/dragnet": "Fish net/dragnet",
           "Squid hooking": "Squid hooking"
-        }
-      },
-      "vessel_id": "vessel_id"
-    }
-  },
-  "private-indonesia-rare-fishing-effort": {
-    "name": "Rare (Fishing Effort)",
-    "description": "Indonesia Rare Fishing Effort",
-    "schema": {
-      "lat": "lat",
-      "lon": "lon",
-      "flag": "flag",
-      "geartype": {
-        "keyword": "geartype",
-        "enum": {
-          "gillnets": "gillnets",
-          "longline": "longline",
-          "traps": "traps",
-          "purse seine": "purse seine",
-          "Handline": "Handline"
         }
       },
       "vessel_id": "vessel_id"
@@ -2036,15 +1976,6 @@
       "elevation_m": "elevation_m",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
-    }
-  },
-  "public-indonesia-pelagic-fishing-effort": {
-    "name": "Pelagic",
-    "description": "Indonesia Pelagic Fishing Effort Public Data",
-    "schema": {
-      "lat": "lat",
-      "lon": "lon",
-      "flag": "flag"
     }
   },
   "public-indonesia-pelagic-presence": {
