@@ -514,7 +514,7 @@
     }
   },
   "private-indonesia-aruna-fishing-effort": {
-    "name": "Aruna (Fishing Effort)",
+    "name": "Apparent fishing effort",
     "description": "Indonesia Aruna Fishing Effort",
     "schema": {
       "lat": "lat",
@@ -534,7 +534,7 @@
     }
   },
   "private-indonesia-aruna-presence": {
-    "name": "Aruna",
+    "name": "Vessel presence",
     "description": "Aruna Presence",
     "schema": {
       "lat": "lat",
@@ -605,7 +605,7 @@
     }
   },
   "private-indonesia-ipnlf-fishing-effort": {
-    "name": "AP2HI-IPNLF (Fishing Effort)",
+    "name": "Apparent fishing effort",
     "description": "Indonesia AP2HI-IPNLF Fishing Effort",
     "schema": {
       "lat": "lat",
@@ -625,7 +625,7 @@
     }
   },
   "private-indonesia-ipnlf-presence": {
-    "name": "AP2HI-IPNLF",
+    "name": "Vessel presence",
     "description": "AP2HI-IPNLF Presence",
     "schema": {
       "lat": "lat",
@@ -723,7 +723,7 @@
     }
   },
   "private-indonesia-rare-fishing-effort": {
-    "name": "Rare (Fishing Effort)",
+    "name": "Apparent fishing effort",
     "description": "Indonesia Rare Fishing Effort",
     "schema": {
       "lat": "lat",
@@ -743,7 +743,7 @@
     }
   },
   "private-indonesia-rare-presence": {
-    "name": "Rare",
+    "name": "Vessel presence",
     "description": "Rare Presence",
     "schema": {
       "lat": "lat",
@@ -2039,7 +2039,7 @@
     }
   },
   "public-indonesia-pelagic-fishing-effort": {
-    "name": "Pelagic",
+    "name": "Apparent fishing effort",
     "description": "Indonesia Pelagic Fishing Effort Public Data",
     "schema": {
       "lat": "lat",
@@ -2048,7 +2048,7 @@
     }
   },
   "public-indonesia-pelagic-presence": {
-    "name": "Coastal Fisheries - New Devices",
+    "name": "Vessel presence",
     "description": "This layer of Global Fishing Watch uses data provided by Rare, Aruna and AP2HI. The data is collected using Pelagic devices that tracks location and speed. The information shown represents the vessel presence. The presence is determined by taking one position per hour transmitted by the vessel's tracking device.",
     "schema": {
       "lat": "lat",
