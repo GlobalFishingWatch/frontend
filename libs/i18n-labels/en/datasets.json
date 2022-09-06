@@ -626,7 +626,7 @@
   },
   "private-indonesia-ipnlf-presence": {
     "name": "Vessel presence",
-    "description": "IPNLF Presence",
+    "description": "AP2HI-IPNLF Presence",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -2049,7 +2049,7 @@
   },
   "public-indonesia-pelagic-presence": {
     "name": "Vessel presence",
-    "description": "Pelagic Presence",
+    "description": "This layer of Global Fishing Watch uses data provided by Rare, Aruna and AP2HI. The data is collected using Pelagic devices that tracks location and speed. The information shown represents the vessel presence. The presence is determined by taking one position per hour transmitted by the vessel's tracking device.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
