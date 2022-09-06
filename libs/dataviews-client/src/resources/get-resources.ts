@@ -82,7 +82,7 @@ export const getResources = (
       if (!dataset) return []
       const url = resolveEndpoint(dataset, datasetConfig)
       if (!url) return []
-      return [{ dataset, datasetConfig, url, dataviewId: dataview.dataviewId as number }]
+      return [{ dataset, datasetConfig, url, dataviewId: dataview.dataviewId as string }]
     })
   })
 

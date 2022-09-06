@@ -198,7 +198,7 @@ export const selectAllDataviewsInWorkspace = createSelector(
       if (DEFAULT_DATAVIEW_SLUGS.includes(dataview.slug)) {
         return true
       }
-      if (workspaceDataviewInstances?.some((d) => d.dataviewId === dataview.id)) {
+      if (workspaceDataviewInstances?.some((d) => d.dataviewId === dataview.slug)) {
         return true
       }
       return false

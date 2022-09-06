@@ -55,7 +55,7 @@ const WorkspaceEditor = ({ onEditClick }: WorkspaceEditorProps) => {
     return <p>There are no dataviews yet</p>
   }
 
-  const isDataviewAdded = (dataviewId: number) => {
+  const isDataviewAdded = (dataviewId: string) => {
     return workspaceDataviewInstances.find(
       (dataviewInstance) => dataviewId === dataviewInstance.dataviewId && !dataviewInstance.deleted
     )
@@ -77,10 +77,10 @@ const WorkspaceEditor = ({ onEditClick }: WorkspaceEditorProps) => {
   }
 
   const onDataviewClick = (dataview: Dataview) => {
-    const alreadyInWorkspace = isDataviewAdded(dataview.id)
+    const alreadyInWorkspace = isDataviewAdded(dataview.slug)
     if (alreadyInWorkspace) {
       const dataviewInstance = workspaceDataviewInstances.find(
-        (dataviewInstance) => dataviewInstance.dataviewId === dataview.id
+        (dataviewInstance) => dataviewInstance.dataviewId === dataview.slug
       )
       if (dataviewInstance) {
         deleteDataviewInstance(dataviewInstance.id)
@@ -106,7 +106,7 @@ const WorkspaceEditor = ({ onEditClick }: WorkspaceEditorProps) => {
                 <ul>
                   {sortDataviews.length > 0 &&
                     sortDataviews.map((dataview) => {
-                      const alreadyInWorkspace = isDataviewAdded(dataview.id)
+                      const alreadyInWorkspace = isDataviewAdded(dataview.slug)
                       return (
                         <li
                           key={dataview.id}

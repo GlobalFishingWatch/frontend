@@ -108,6 +108,12 @@ export function getGeneratorConfig(
   }
 
   switch (dataview.config?.type) {
+    case GeneratorType.Basemap: {
+      return {
+        ...generator,
+        basemap: dataview.config.basemap || dataview.config.layers?.[0]?.id,
+      }
+    }
     case GeneratorType.TileCluster: {
       const { dataset: tileClusterDataset, url: tileClusterUrl } = resolveDataviewDatasetResource(
         dataview,

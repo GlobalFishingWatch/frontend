@@ -99,7 +99,7 @@ export interface Dataview<Type = any, Category = DataviewCategory> {
 export interface DataviewInstance<Type = any>
   extends Partial<Omit<Dataview<Type>, 'id' | 'config'>> {
   id: string
-  dataviewId: Dataview['id'] | Dataview['slug']
+  dataviewId: Dataview['slug']
   config?: DataviewConfig<Type>
   datasetsConfig?: DataviewDatasetConfig[]
 }
