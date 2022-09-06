@@ -645,8 +645,8 @@
     }
   },
   "private-indonesia-ipnlf-vessels": {
-    "name": "Indonesia AP2HI-IPNLF (Vessels)",
-    "description": "Vessels (Indonesia AP2HI-IPNLF)",
+    "name": "Indonesia IPNLF (Vessels)",
+    "description": "Vessels (Indonesia IPNLF)",
     "schema": {
       "id": "id",
       "flag": "flag",
