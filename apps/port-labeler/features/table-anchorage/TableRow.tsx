@@ -158,7 +158,6 @@ function TableRow({
           className={styles.actionButton}
         >{flags[record.iso3] ?? record.iso3}</span>
       </div>}
-
     </div>
   )
 }
