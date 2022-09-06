@@ -514,7 +514,7 @@
     }
   },
   "private-indonesia-aruna-fishing-effort": {
-    "name": "crwdns26916:0crwdne26916:0",
+    "name": "crwdns26998:0crwdne26998:0",
     "description": "crwdns26918:0crwdne26918:0",
     "schema": {
       "lat": "crwdns26920:0crwdne26920:0",
@@ -534,7 +534,7 @@
     }
   },
   "private-indonesia-aruna-presence": {
-    "name": "crwdns26368:0crwdne26368:0",
+    "name": "crwdns27000:0crwdne27000:0",
     "description": "crwdns26370:0crwdne26370:0",
     "schema": {
       "lat": "crwdns26372:0crwdne26372:0",
@@ -605,7 +605,7 @@
     }
   },
   "private-indonesia-ipnlf-fishing-effort": {
-    "name": "crwdns26940:0crwdne26940:0",
+    "name": "crwdns27002:0crwdne27002:0",
     "description": "crwdns26942:0crwdne26942:0",
     "schema": {
       "lat": "crwdns26944:0crwdne26944:0",
@@ -625,7 +625,7 @@
     }
   },
   "private-indonesia-ipnlf-presence": {
-    "name": "crwdns26412:0crwdne26412:0",
+    "name": "crwdns27004:0crwdne27004:0",
     "description": "crwdns26414:0crwdne26414:0",
     "schema": {
       "lat": "crwdns26416:0crwdne26416:0",
@@ -723,7 +723,7 @@
     }
   },
   "private-indonesia-rare-fishing-effort": {
-    "name": "crwdns26964:0crwdne26964:0",
+    "name": "crwdns27006:0crwdne27006:0",
     "description": "crwdns26966:0crwdne26966:0",
     "schema": {
       "lat": "crwdns26968:0crwdne26968:0",
@@ -743,7 +743,7 @@
     }
   },
   "private-indonesia-rare-presence": {
-    "name": "crwdns26456:0crwdne26456:0",
+    "name": "crwdns27008:0crwdne27008:0",
     "description": "crwdns26458:0crwdne26458:0",
     "schema": {
       "lat": "crwdns26460:0crwdne26460:0",
@@ -2039,7 +2039,7 @@
     }
   },
   "public-indonesia-pelagic-fishing-effort": {
-    "name": "crwdns26988:0crwdne26988:0",
+    "name": "crwdns27010:0crwdne27010:0",
     "description": "crwdns26990:0crwdne26990:0",
     "schema": {
       "lat": "crwdns26992:0crwdne26992:0",
@@ -2048,7 +2048,7 @@
     }
   },
   "public-indonesia-pelagic-presence": {
-    "name": "crwdns18200:0crwdne18200:0",
+    "name": "crwdns27012:0crwdne27012:0",
     "description": "crwdns18202:0crwdne18202:0",
     "schema": {
       "lat": "crwdns18068:0crwdne18068:0",
