@@ -1,14 +1,17 @@
 import { VesselsLayer } from 'layers/vessel/VesselsLayer'
 import { useMemo } from 'react'
 import { FourwingsLayer } from 'layers/fourwings/FourwingsLayer'
+import { getFourwingsMode } from 'layers/fourwings/fourwings.utils'
 import { Button, Switch } from '@globalfishingwatch/ui-components'
 import { VESSEL_IDS } from 'data/vessels'
 import { MapLayer, useMapLayers } from 'features/map/layers.hooks'
+import { useViewport } from 'features/map/map-viewport.hooks'
 import styles from './Sidebar.module.css'
 import SidebarHeader from './SidebarHeader'
 
 function Sidebar() {
   const [layers, setMapLayers] = useMapLayers()
+  const { viewState } = useViewport()
 
   const fourwingsLayerInstance = useMemo(() => {
     return layers.find((l) => l.id === 'fourwings')?.instance as FourwingsLayer
@@ -22,8 +25,8 @@ function Sidebar() {
 
   const getFourwingsData = () => {
     if (fourwingsLayerInstance) {
-      const data = fourwingsLayerInstance.getDataFilteredByViewport()
-      console.log('Fourwings viewport data')
+      const data = fourwingsLayerInstance.getData()
+      console.log('Fourwings data')
       console.log(data)
     }
   }
@@ -65,6 +68,7 @@ function Sidebar() {
               </div>
             )
           }
+          const fourwingsMode = getFourwingsMode(viewState.zoom)
           return (
             <div key={layer.id} className={styles.row}>
               <div className={styles.header}>
@@ -73,20 +77,25 @@ function Sidebar() {
                   active={layer.visible}
                   onClick={() => onLayerVisibilityClick(layer)}
                 />
-                <div>4wings layer</div>
-              </div>
-              <div>
-                <label>Steps</label>
-                {fourwingsLayerInstance && (
-                  <ul className={styles.list}>
-                    {fourwingsLayerInstance.getColorDomain()?.map((step) => (
-                      <li key={step}>{step},</li>
-                    ))}
-                  </ul>
-                )}
+                <div>
+                  4wings layer
+                  <label>Mode: {fourwingsMode}</label>
+                </div>
               </div>
               {layer.visible && (
                 <div>
+                  {fourwingsMode === 'heatmap' && (
+                    <div>
+                      <label>Steps</label>
+                      {fourwingsLayerInstance && (
+                        <ul className={styles.list}>
+                          {fourwingsLayerInstance.getColorDomain()?.map((step) => (
+                            <li key={step}>{step},</li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  )}
                   <Button
                     size="small"
                     onClick={getFourwingsData}
