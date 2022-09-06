@@ -95,7 +95,7 @@ export const getDatasetTitleByDataview = (
 ): string => {
   const dataviewInstance = {
     ...dataview,
-    dataviewId: (dataview as UrlDataviewInstance).dataviewId || dataview.id,
+    dataviewId: (dataview as UrlDataviewInstance).dataviewId || dataview.slug,
   }
   const hasDatasetsConfig = dataview.config?.datasets?.length > 0
   const activeDatasets = hasDatasetsConfig

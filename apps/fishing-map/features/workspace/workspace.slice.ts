@@ -136,7 +136,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       const dataviewIds = [
         ...defaultWorkspaceDataviews,
         ...(workspace.dataviewInstances || []).map(({ dataviewId }) => dataviewId),
-        ...(urlDataviewInstances || []).map(({ dataviewId }) => dataviewId as number),
+        ...(urlDataviewInstances || []).map(({ dataviewId }) => dataviewId),
       ].filter(Boolean)
 
       const uniqDataviewIds = uniq(dataviewIds)
@@ -163,7 +163,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
 
         // Try to add track for for VMS vessels in case it is logged using the full- datasets
         const vesselDataviewsWithoutTrack = dataviewInstances.filter((dataviewInstance) => {
-          const dataview = dataviews.find(({ id }) => dataviewInstance.dataviewId === id)
+          const dataview = dataviews.find(({ slug }) => dataviewInstance.dataviewId === slug)
           const isVesselDataview = dataview?.category === DataviewCategory.Vessels
           const hasTrackDatasetConfig = dataviewInstance.datasetsConfig?.some(
             (datasetConfig) => datasetConfig.endpoint === EndpointId.Tracks

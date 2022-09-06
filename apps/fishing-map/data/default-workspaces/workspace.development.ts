@@ -19,7 +19,6 @@ import {
   PROTECTED_SEAS_DATAVIEW_SLUG,
   MPA_DATAVIEW_INSTANCE_ID,
   EEZ_DATAVIEW_INSTANCE,
-  BASEMAP_LABELS_DATAVIEW_ID,
   BASEMAP_LABELS_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
@@ -158,7 +157,7 @@ const workspace: Workspace<WorkspaceState> = {
       config: {
         visible: false,
       },
-      dataviewId: PROTECTED_SEAS_DATAVIEW_ID,
+      dataviewId: PROTECTED_SEAS_DATAVIEW_SLUG,
     },
     {
       id: 'basemap-labels',
