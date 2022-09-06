@@ -195,7 +195,7 @@ export const parseLegacyDataviewInstanceEndpoint = (
 }
 
 const parseDataviewInstance = (dataview: UrlDataviewInstance) => {
-  const dataviewId = parseInt((dataview.dataviewId as number)?.toString())
+  const dataviewId = dataview.dataviewId?.toString()
   const breaks = dataview.config?.breaks?.map((b: string) => parseFloat(b))
   const vesselGroups = dataview.config?.['vessel-groups']?.map((vg: any) => parseInt(vg as any))
 

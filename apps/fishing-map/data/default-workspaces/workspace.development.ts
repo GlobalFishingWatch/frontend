@@ -150,13 +150,13 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: HIGH_SEAS_DATAVIEW_SLUG,
     },
-    {
-      id: 'context-layer-protected-seas',
-      config: {
-        visible: false,
-      },
-      dataviewId: PROTECTED_SEAS_DATAVIEW_SLUG,
-    },
+    // {
+    //   id: 'context-layer-protected-seas',
+    //   config: {
+    //     visible: false,
+    //   },
+    //   dataviewId: PROTECTED_SEAS_DATAVIEW_SLUG,
+    // },
   ],
 }
 

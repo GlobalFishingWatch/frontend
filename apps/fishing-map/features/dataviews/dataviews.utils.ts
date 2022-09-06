@@ -197,7 +197,7 @@ export const getContextDataviewInstance = (datasetId: string): DataviewInstance<
 export const getDataviewInstanceFromDataview = (dataview: Dataview) => {
   return {
     id: `${kebabCase(dataview.name)}-${Date.now()}`,
-    dataviewId: dataview.id,
+    dataviewId: dataview.slug,
   }
 }
 
