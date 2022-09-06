@@ -534,7 +534,7 @@
     }
   },
   "private-indonesia-aruna-presence": {
-    "name": "Aruna (Presence)",
+    "name": "Aruna",
     "description": "Aruna Presence",
     "schema": {
       "lat": "lat",
@@ -625,7 +625,7 @@
     }
   },
   "private-indonesia-ipnlf-presence": {
-    "name": "AP2HI-IPNLF (Presence)",
+    "name": "AP2HI-IPNLF",
     "description": "AP2HI-IPNLF Presence",
     "schema": {
       "lat": "lat",
@@ -743,7 +743,7 @@
     }
   },
   "private-indonesia-rare-presence": {
-    "name": "Rare (Presence)",
+    "name": "Rare",
     "description": "Rare Presence",
     "schema": {
       "lat": "lat",
@@ -2036,6 +2036,15 @@
       "elevation_m": "elevation_m",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "public-indonesia-pelagic-fishing-effort": {
+    "name": "Pelagic",
+    "description": "Indonesia Pelagic Fishing Effort Public Data",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag"
     }
   },
   "public-indonesia-pelagic-presence": {
