@@ -513,8 +513,28 @@
       "firstTransmissionDate": "primeira data de transmissão"
     }
   },
+  "private-indonesia-aruna-fishing-effort": {
+    "name": "Apparent fishing effort",
+    "description": "Indonesia Aruna Fishing Effort",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      },
+      "vessel_id": "vessel_id"
+    }
+  },
   "private-indonesia-aruna-presence": {
-    "name": "Aruna",
+    "name": "Vessel presence",
     "description": "Aruna Presence",
     "schema": {
       "lat": "lat",
@@ -584,8 +604,28 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "private-indonesia-ipnlf-fishing-effort": {
+    "name": "Apparent fishing effort",
+    "description": "Indonesia AP2HI-IPNLF Fishing Effort",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      },
+      "vessel_id": "vessel_id"
+    }
+  },
   "private-indonesia-ipnlf-presence": {
-    "name": "AP2HI-IPNLF",
+    "name": "Vessel presence",
     "description": "AP2HI-IPNLF Presence",
     "schema": {
       "lat": "lat",
@@ -682,8 +722,28 @@
       "vessel_id": "vessel_id"
     }
   },
+  "private-indonesia-rare-fishing-effort": {
+    "name": "Apparent fishing effort",
+    "description": "Indonesia Rare Fishing Effort",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      },
+      "vessel_id": "vessel_id"
+    }
+  },
   "private-indonesia-rare-presence": {
-    "name": "Rare",
+    "name": "Vessel presence",
     "description": "Rare Presence",
     "schema": {
       "lat": "lat",
@@ -1667,6 +1727,11 @@
       "firstTransmissionDate": "primeira data de transmissão"
     }
   },
+  "public-global-chlorophyl": {
+    "name": "Chlorophyll-a concentration",
+    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
+    "schema": {}
+  },
   "public-global-encounters-events-carriers-fishing": {
     "name": "Encounter Events for Carriers-Fishing Vessels (AIS)",
     "description": "The dataset contains encounter events for AIS (Carriers-Fishing)",
@@ -1906,6 +1971,16 @@
       "timestamp": "timestamp"
     }
   },
+  "public-global-water-salinity": {
+    "name": "Global Salinity",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
+    "schema": {}
+  },
+  "public-global-water-temperature": {
+    "name": "Sea surface temperature",
+    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM",
+    "schema": {}
+  },
   "public-graticules": {
     "name": "Graticules",
     "description": "Grids at 1, 5, 10, and 30° intervals. <a href='https://www.naturalearthdata.com/downloads/110m-physical-vectors/110m-graticules' target='_blank'>Source</a>",
@@ -1963,8 +2038,17 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "public-indonesia-pelagic-fishing-effort": {
+    "name": "Apparent fishing effort",
+    "description": "Indonesia Pelagic Fishing Effort Public Data",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag"
+    }
+  },
   "public-indonesia-pelagic-presence": {
-    "name": "Pelagic",
+    "name": "Vessel presence",
     "description": "Pelagic Presence",
     "schema": {
       "lat": "lat",

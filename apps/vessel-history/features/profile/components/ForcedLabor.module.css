@@ -52,3 +52,8 @@
   margin-top: var(--space-M);
   color: var(--color-danger-red);
 }
+
+.reportedCasesTerms {
+  margin: var(--space-M);
+  list-style: disc;
+}
