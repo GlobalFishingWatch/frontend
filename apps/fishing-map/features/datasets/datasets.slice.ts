@@ -22,11 +22,7 @@ import {
   AsyncReducerStatus,
 } from 'utils/async-slice'
 import { RootState } from 'store'
-import {
-  DEFAULT_PAGINATION_PARAMS,
-  LATEST_CARRIER_DATASET_ID,
-  PUBLIC_SUFIX,
-} from 'data/config'
+import { DEFAULT_PAGINATION_PARAMS, LATEST_CARRIER_DATASET_ID, PUBLIC_SUFIX } from 'data/config'
 
 export const PRESENCE_DATASET_ID = 'public-global-presence'
 export const PRESENCE_TRACKS_DATASET_ID = 'private-global-presence-tracks'
@@ -61,9 +57,7 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
   }
 >('datasets/fetchById', async (id: string, { rejectWithValue }) => {
   try {
-    const dataset = await GFWAPI.fetch<Dataset>(
-      `/datasets/${id}?include=endpoints&cache=false`
-    )
+    const dataset = await GFWAPI.fetch<Dataset>(`/datasets/${id}?include=endpoints&cache=false`)
     return parsePOCsDatasets(dataset)
   } catch (e: any) {
     console.warn(e)
@@ -227,7 +221,9 @@ export const fetchLastestCarrierDatasetThunk = createAsyncThunk<
   }
 >('datasets/fetchLatestCarrier', async (_, { rejectWithValue }) => {
   try {
-    const dataset = await GFWAPI.fetch<Dataset>(`/datasets/${LATEST_CARRIER_DATASET_ID}`, { version: '' })
+    const dataset = await GFWAPI.fetch<Dataset>(`/datasets/${LATEST_CARRIER_DATASET_ID}`, {
+      version: '',
+    })
     return dataset
   } catch (e: any) {
     console.warn(e)
