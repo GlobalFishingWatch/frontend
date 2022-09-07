@@ -338,6 +338,7 @@
     "editPolygonHint": "Click on polygon corners to adjust their coordinates",
     "filterClose": "Close filters",
     "filterOpen": "Open filters",
+    "filterValues": "Filter values",
     "flagState": "Flag State",
     "flagState_one": "Flag State",
     "flagState_other": "Flag States",
