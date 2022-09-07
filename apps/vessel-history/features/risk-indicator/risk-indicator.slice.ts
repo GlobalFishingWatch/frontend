@@ -26,7 +26,7 @@ type FetchIds = {
 
 export const getMergedVesselsUniqueId = (idData: FetchIds[]) => {
   return idData
-    .map((v) => [v.datasetId, v.vesselId].join('|'))
+    .map((v) => [v.datasetId, v.vesselId, v.tmtId].join('|'))
     .sort((a, b) => (a < b ? -1 : 1))
     .join(',')
 }
@@ -46,11 +46,11 @@ export const fetchIndicatorsByIdThunk = createAsyncThunk(
         .join('&')
       const indicator = await GFWAPI.fetch<Indicator>(`/prototype/vessels/indicators?${query}`, {
         method: 'POST',
-          body: idData.map(({ datasetId, vesselId, tmtId: vesselHistoryId }) => ({
-              ...(datasetId !== NOT_AVAILABLE && { datasetId }),
-              ...(vesselId !== NOT_AVAILABLE && { vesselId }),
-              ...(vesselHistoryId !== NOT_AVAILABLE && { vesselHistoryId }),
-          })) as any,
+        body: idData.map(({ datasetId, vesselId, tmtId: vesselHistoryId }) => ({
+          ...(datasetId !== NOT_AVAILABLE && { datasetId }),
+          ...(vesselId !== NOT_AVAILABLE && { vesselId }),
+          ...(vesselHistoryId !== NOT_AVAILABLE && { vesselHistoryId }),
+        })) as any,
         version: '',
       })
       indicator.id = getMergedVesselsUniqueId(idData)
@@ -62,7 +62,8 @@ export const fetchIndicatorsByIdThunk = createAsyncThunk(
   {
     condition: (idData: FetchIds[], { getState, extra }) => {
       const state = getState() as RootState
-      const indicators = selectById(state, getMergedVesselsUniqueId(idData))
+      const mergedVesselsUniqueId = getMergedVesselsUniqueId(idData)
+      const indicators = selectById(state, mergedVesselsUniqueId)
       const fetchStatus = selectIndicatorsStatus(state)
       if (indicators !== undefined || fetchStatus === AsyncReducerStatus.LoadingItem) {
         // Already fetched or in progress, don't need to re-fetch
