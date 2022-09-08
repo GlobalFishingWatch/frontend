@@ -144,6 +144,7 @@ export function RiskSummary(props: RiskSummaryProps) {
         <ProgressBar
           value={eventsLoading ? null : coverage?.percentage}
           disabled={coverage?.percentage === 0}
+          presition={0}
           disabledText={t('common.unknown', 'Unknown')}
         />
         <br />

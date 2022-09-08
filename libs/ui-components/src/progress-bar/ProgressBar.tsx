@@ -32,7 +32,7 @@ export function ProgressBar(props: ProgressBarProps) {
 
   const percent = useMemo(() => {
     // avoid NaN values
-    const divider = presition >= 0 ? (presition * 10) : 1
+    const divider = presition > 0 ? Math.pow(10, presition) : 1
     if (value === undefined || value === null || typeof value === 'string') {
       return 0
     }

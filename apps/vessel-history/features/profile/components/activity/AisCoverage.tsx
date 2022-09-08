@@ -14,6 +14,7 @@ const AisCoverage: React.FC<AisCoverageProps> = ({
     <div className={styles.aisCoverageContainer}>
       <ProgressBar value={value}
         disabled={value === 0}
+        presition={0}
         disabledText={t('common.unknown', 'Unknown')}
         label={t('events.aisCoverage', 'AIS Coverage') as string}
         helpText={
