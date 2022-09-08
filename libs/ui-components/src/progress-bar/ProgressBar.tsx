@@ -7,7 +7,7 @@ interface ProgressBarProps {
   value?: number | string
   label?: string
   className?: string
-  presition?: number,
+  precision?: number,
   helpText?: React.ReactNode
   disabled?: boolean
   disabledText?: string
@@ -19,7 +19,7 @@ export function ProgressBar(props: ProgressBarProps) {
     className,
     disabled = false,
     disabledText = '',
-    presition = 1,
+    precision = 1,
     helpText
   } = props
 
@@ -32,13 +32,13 @@ export function ProgressBar(props: ProgressBarProps) {
 
   const percent = useMemo(() => {
     // avoid NaN values
-    const divider = presition > 0 ? Math.pow(10, presition) : 1
+    const divider = precision > 0 ? Math.pow(10, precision) : 1
     if (value === undefined || value === null || typeof value === 'string') {
       return 0
     }
 
     return Math.round((value + Number.EPSILON) * divider) / divider
-  }, [value, presition])
+  }, [value, precision])
 
   return (
     <div className={cx(styles.barContainer, className, { [styles.disabled]: disabled })}>
