@@ -1,12 +1,13 @@
-import { Trans } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
+import { t } from 'features/i18n/i18n'
 
 /* eslint-disable-next-line */
-export interface TerminologyFishingEventsProps {}
+export interface TerminologyFishingEventsProps { }
 
 export function TerminologyFishingEvents(props: TerminologyFishingEventsProps) {
   return (
     <p>
-      <Trans i18nKey="events.fishingEventsDescription">
+      <Trans i18nKey="events.fishingEventsDescription" values={{ link: 'world' }}>
         When there is a consistent series of AIS points estimated as indicating apparent fishing
         activity the points are grouped into 'Fishing Events'. <br />
         We analyze the automatic identification system (AIS) data collected from vessels that our
@@ -32,7 +33,14 @@ export function TerminologyFishingEvents(props: TerminologyFishingEventsProps) {
         >
           https://globalfishingwatch.org/datasets-and-code/
         </a>
-        .
+        and FAQs:
+        <a
+          href={t('events.fishingEventsFaqsLink')}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          https://drive.google.com/file/d/1N4YRJ_yxAObEIWbaYM8l-YDPHS0bKe2N/view?usp=sharing/
+        </a>
       </Trans>
     </p>
   )
