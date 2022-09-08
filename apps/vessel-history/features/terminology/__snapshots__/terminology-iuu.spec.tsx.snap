@@ -3,7 +3,7 @@
 exports[`TerminologyIuu should render successfully 1`] = `
 <body>
   <div>
-    <p
+    <div
       class="container"
     >
       Illegal, unreported and unregulated (IUU) listing status according to official RFMO IUU vessel lists. There are two statuses:
@@ -16,7 +16,7 @@ exports[`TerminologyIuu should render successfully 1`] = `
           vessel is not currently listed: when a vessel is not currently listed on an RFMO IUU list. This includes if a vessel was previously on an RFMO IUU list but has since been removed.
         </li>
       </ol>
-    </p>
+    </div>
   </div>
 </body>
 `;

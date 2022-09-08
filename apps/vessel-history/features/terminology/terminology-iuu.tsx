@@ -2,11 +2,11 @@ import { Trans } from 'react-i18next'
 import styles from './terminology.module.css'
 
 /* eslint-disable-next-line */
-export interface TerminologyIuuProps {}
+export interface TerminologyIuuProps { }
 
 export function TerminologyIuu(props: TerminologyIuuProps) {
   return (
-    <p className={styles.container}>
+    <div className={styles.container}>
       <Trans i18nKey="risk.iuuStatusDescription">
         Illegal, unreported and unregulated (IUU) listing status according to official RFMO IUU
         vessel lists. There are two statuses:{' '}
@@ -19,7 +19,7 @@ export function TerminologyIuu(props: TerminologyIuuProps) {
           </li>
         </ol>
       </Trans>
-    </p>
+    </div>
   )
 }
 
