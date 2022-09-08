@@ -1,4 +1,4 @@
-import { Trans, useTranslation } from 'react-i18next'
+import { Trans } from 'react-i18next'
 import { t } from 'features/i18n/i18n'
 
 /* eslint-disable-next-line */
