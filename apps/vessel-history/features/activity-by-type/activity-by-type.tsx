@@ -83,7 +83,7 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
       start: startDate.toUTC().toISO(),
       end: endDate.toUTC().toISO(),
     }
-  }, [offlineVessel.savedOn, online])
+  }, [offlineVessel?.savedOn, online])
 
   return (
     <div className={styles.activityContainer}>
