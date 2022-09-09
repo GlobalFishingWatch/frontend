@@ -1,5 +1,6 @@
-import { useState, useCallback, Component } from 'react'
+import { useState, useCallback, Component, useEffect } from 'react'
 import { AppProps } from 'next/app'
+import { FpsView } from 'react-fps'
 import { RecoilURLSyncJSONNext } from 'recoil-sync-next'
 import { RecoilRoot } from 'recoil'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -50,7 +51,10 @@ const Timebar = dynamic(
 )
 
 function CustomApp({ Component, pageProps }: AppProps) {
+  const [showFps, setShowFps] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(true)
+
+  useEffect(() => setShowFps(true), [])
 
   const onToggle = useCallback(() => {
     setSidebarOpen(!sidebarOpen)
@@ -79,6 +83,7 @@ function CustomApp({ Component, pageProps }: AppProps) {
             showMainLabel="Map"
             className="split-container"
           />
+          {showFps && <FpsView bottom="0" left="0" top="auto" />}
         </ErrorBoundary>
       </QueryClientProvider>
       {/* </RecoilURLSyncJSONNext> */}

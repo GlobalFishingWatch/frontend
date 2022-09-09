@@ -312,6 +312,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                       key={index}
                       vessel={vessel}
                       index={index}
+                      showLabelsHelp={true}
                       onVesselClick={onVesselClick(index)}
                       selected={selectedVessels.includes(index)}
                     />

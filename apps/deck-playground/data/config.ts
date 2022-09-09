@@ -8,13 +8,13 @@ export const DEFAULT_VIEWPORT = {
   longitude: 26,
 }
 
-export const FIRST_YEAR_OF_DATA = 2012
-export const LAST_YEAR_OF_DATA = 2030
+export const FIRST_YEAR_OF_DATA = 2021
+export const LAST_YEAR_OF_DATA = 2022
 export const CURRENT_YEAR = new Date().getFullYear()
 
 export const DEFAULT_WORKSPACE = {
   ...DEFAULT_VIEWPORT,
-  start: '2017-01-01T00:00:00.000Z',
+  start: '2022-01-01T00:00:00.000Z',
   end: new Date().toISOString(),
   availableStart: new Date(Date.UTC(FIRST_YEAR_OF_DATA, 0, 1)).toISOString(),
   availableEnd: new Date(

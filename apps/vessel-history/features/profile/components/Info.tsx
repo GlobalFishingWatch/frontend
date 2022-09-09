@@ -33,7 +33,6 @@ import Highlights from './Highlights'
 import AuthorizationsField from './AuthorizationsField'
 import ForcedLabor from './ForcedLabor'
 
-
 interface InfoProps {
   vessel: VesselWithHistory | null
   lastPosition: any
@@ -154,10 +153,17 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
     })
   }, [vesselId, vesselTmtId])
 
+  const builtYear = useMemo(
+    () =>
+      vessel.builtYear && /\d{4}/.test(vessel.builtYear)
+        ? `${vessel.builtYear}`.slice(0, 4)
+        : vessel.builtYear,
+    [vessel.builtYear]
+  )
+
   return (
     <Fragment>
       <div className={styles.infoContainer}>
-
         {vessel && (
           <Fragment>
             <div className={styles.imageAndFields}>
@@ -188,8 +194,8 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                   helpText={
                     <Trans i18nKey="vessel.vesselTypeDescription">
                       For vessel type sourced from Global Fishing Watch additional research and
-                      analysis is conducted in addition to using the original AIS data to identify the
-                      most likely value. Vessel types from GFW include fishing vessels, carrier
+                      analysis is conducted in addition to using the original AIS data to identify
+                      the most likely value. Vessel types from GFW include fishing vessels, carrier
                       vessels, and support vessels. The vessel classification for fishing vessel is
                       estimated using known registry information in combination with a convolutional
                       neural network used to estimate vessel class. The vessel classifcation for
@@ -233,9 +239,9 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                   helpText={
                     <Trans i18nKey="vessel.geartypeDescription">
                       Likely gear type of vessel as defined by Global Fishing Watch. The vessel
-                      classification for fishing vessel is estimated using known registry information
-                      in combination with a convolutional neural network used to estimate vessel
-                      class, see more information here:
+                      classification for fishing vessel is estimated using known registry
+                      information in combination with a convolutional neural network used to
+                      estimate vessel class, see more information here:
                       <a
                         href="https://globalfishingwatch.org/datasets-and-code-vessel-identity/"
                         rel="noopener noreferrer"
@@ -279,7 +285,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                   vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                   label={VesselFieldLabel.builtYear}
                   hideTMTDate={true}
-                  value={vessel.builtYear}
+                  value={builtYear}
                 ></InfoField>
                 <InfoField
                   vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
@@ -326,9 +332,9 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                     value={
                       vessel.iuuStatus !== undefined
                         ? t(
-                          `vessel.iuuStatusOptions.${vessel.iuuStatus}` as any,
-                          vessel.iuuStatus.toString()
-                        )
+                            `vessel.iuuStatusOptions.${vessel.iuuStatus}` as any,
+                            vessel.iuuStatus.toString()
+                          )
                         : DEFAULT_EMPTY_VALUE
                     }
                     valuesHistory={[]}
@@ -340,7 +346,6 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                   ></InfoField>
                 )}
               </div>
-
             </div>
             {authorizedFLRM && <ForcedLabor vessel={vessel} />}
           </Fragment>

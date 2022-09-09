@@ -136,7 +136,10 @@ export const selectDataviewsForResourceQuerying = createDeepEqualSelector(
     }
 
     return dataviewInstances.map((dataview) => {
-      const config = dataview.category === DataviewCategory.Context ? dataview.datasetsConfig : getDatasetsConfig(dataview)
+      const config =
+        dataview.category === DataviewCategory.Context
+          ? dataview.datasetsConfig
+          : getDatasetsConfig(dataview)
       const result = {
         ...dataview,
         // Use the same datasets config used to get resources in

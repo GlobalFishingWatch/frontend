@@ -37,7 +37,9 @@ const DataAndTerminology: React.FC<ModalProps> = ({
         size={size}
         type={type}
         className={cx(styles.infoButton, className)}
-        onClick={() => setShowModal(true)}
+        onClick={(e) => {
+          setShowModal(true)
+        }}
       />
       <Modal
         appSelector="__next"

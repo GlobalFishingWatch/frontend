@@ -1,6 +1,6 @@
 import React, { Fragment, useCallback, useState } from 'react'
 import cx from 'classnames'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { Button, IconButton, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
 import { RelatedVesselSearchMerged, VesselSearch as Vessel } from '@globalfishingwatch/api-types'
@@ -10,6 +10,7 @@ import { getFlagById } from 'utils/flags'
 import { getVesselAPISource } from 'utils/vessel'
 import { SHOW_VESSEL_API_SOURCE } from 'data/constants'
 import { formatI18nDate } from 'features/i18n/i18nDate'
+import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
 import RelatedVesselListItem from './components/RelatedVesselListItem'
 import styles from './VesselListItem.module.css'
 
@@ -18,6 +19,7 @@ interface ListItemProps {
   vessel: RelatedVesselSearchMerged
   selected?: boolean
   index: number
+  showLabelsHelp?: boolean
   onDeleteClick?: () => void
   onVesselClick?: (vessel: Vessel) => void
 }
@@ -69,7 +71,19 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
               </div>
             )}
             <div className={styles.transmissionField}>
-              <label>{t('vessel.transmission_plural', 'transmissions')}</label>
+              <label>{t('vessel.transmission_plural', 'transmissions')}
+                {props.showLabelsHelp &&
+                  <DataAndTerminology size="tiny" type="default" title={t('vessel.transmission_plural', 'transmissions')}>
+                    <Trans i18nKey="vessel.transmissionDescription">
+                      AIS stands for Automatic Identification Systems. AIS is a GPS-like device that large ships use to
+                      broadcast their position in order to avoid collisions. The positions listed in the vessel search
+                      results refer to the number of vessel positions broadcast over AIS that we have processed and matched
+                      to the search result, over a period of time.
+                      For more information on how AIS data is processed and caveats of our algorithms, please see our FAQs.
+                    </Trans>
+                  </DataAndTerminology>
+                }
+              </label>
               {vessel.firstTransmissionDate || vessel.lastTransmissionDate ? (
                 <Fragment>
                   {t('vessel.transmissionRange', '{{transmissions}} AIS transmissions from {{start}} to {{end}}', {
