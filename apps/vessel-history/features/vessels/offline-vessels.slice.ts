@@ -125,6 +125,9 @@ const { slice: vesselsSlice, entityAdapter } = createAsyncSlice<OfflineVesselSta
     updateThunk: updateOfflineVesselThunk,
     fetchByIdThunk: fetchOfflineVesselByIdThunk,
   },
+  createEntityAdapterOptions: {
+    selectId: (vessel) => vessel.profileId,
+  },
 })
 
 export const { selectById, selectAll, selectEntities, selectTotal } =
