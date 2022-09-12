@@ -513,28 +513,8 @@
       "firstTransmissionDate": "firstTransmissionDate"
     }
   },
-  "private-indonesia-aruna-fishing-effort": {
-    "name": "Apparent fishing effort",
-    "description": "Indonesia Aruna Fishing Effort",
-    "schema": {
-      "lat": "lat",
-      "lon": "lon",
-      "flag": "flag",
-      "geartype": {
-        "keyword": "geartype",
-        "enum": {
-          "gillnets": "gillnets",
-          "longline": "longline",
-          "traps": "traps",
-          "purse seine": "purse seine",
-          "Handline": "Handline"
-        }
-      },
-      "vessel_id": "vessel_id"
-    }
-  },
   "private-indonesia-aruna-presence": {
-    "name": "Vessel presence",
+    "name": "Aruna",
     "description": "Aruna Presence",
     "schema": {
       "lat": "lat",
@@ -604,28 +584,8 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
-  "private-indonesia-ipnlf-fishing-effort": {
-    "name": "Apparent fishing effort",
-    "description": "Indonesia AP2HI-IPNLF Fishing Effort",
-    "schema": {
-      "lat": "lat",
-      "lon": "lon",
-      "flag": "flag",
-      "geartype": {
-        "keyword": "geartype",
-        "enum": {
-          "gillnets": "gillnets",
-          "longline": "longline",
-          "traps": "traps",
-          "purse seine": "purse seine",
-          "Handline": "Handline"
-        }
-      },
-      "vessel_id": "vessel_id"
-    }
-  },
   "private-indonesia-ipnlf-presence": {
-    "name": "Vessel presence",
+    "name": "IPNLF",
     "description": "AP2HI-IPNLF Presence",
     "schema": {
       "lat": "lat",
@@ -645,8 +605,8 @@
     }
   },
   "private-indonesia-ipnlf-vessels": {
-    "name": "Indonesia IPNLF (Vessels)",
-    "description": "Vessels (Indonesia IPNLF)",
+    "name": "Indonesia AP2HI-IPNLF (Vessels)",
+    "description": "Vessels (Indonesia AP2HI-IPNLF)",
     "schema": {
       "id": "id",
       "flag": "flag",
@@ -722,28 +682,8 @@
       "vessel_id": "vessel_id"
     }
   },
-  "private-indonesia-rare-fishing-effort": {
-    "name": "Apparent fishing effort",
-    "description": "Indonesia Rare Fishing Effort",
-    "schema": {
-      "lat": "lat",
-      "lon": "lon",
-      "flag": "flag",
-      "geartype": {
-        "keyword": "geartype",
-        "enum": {
-          "gillnets": "gillnets",
-          "longline": "longline",
-          "traps": "traps",
-          "purse seine": "purse seine",
-          "Handline": "Handline"
-        }
-      },
-      "vessel_id": "vessel_id"
-    }
-  },
   "private-indonesia-rare-presence": {
-    "name": "Vessel presence",
+    "name": "Rare",
     "description": "Rare Presence",
     "schema": {
       "lat": "lat",
@@ -2038,17 +1978,8 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
-  "public-indonesia-pelagic-fishing-effort": {
-    "name": "Apparent fishing effort",
-    "description": "Indonesia Pelagic Fishing Effort Public Data",
-    "schema": {
-      "lat": "lat",
-      "lon": "lon",
-      "flag": "flag"
-    }
-  },
   "public-indonesia-pelagic-presence": {
-    "name": "Vessel presence",
+    "name": "Pelagic",
     "description": "This layer of Global Fishing Watch uses data provided by Rare, Aruna and AP2HI. The data is collected using Pelagic devices that tracks location and speed. The information shown represents the vessel presence. The presence is determined by taking one position per hour transmitted by the vessel's tracking device.",
     "schema": {
       "lat": "lat",
