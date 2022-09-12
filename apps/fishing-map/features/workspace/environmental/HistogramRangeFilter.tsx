@@ -86,6 +86,7 @@ function HistogramRangeFilter({ dataview }: HistogramRangeFilterProps) {
         config={sliderConfig}
         onChange={onSliderChange}
         histogram={false}
+        thumbsSize="small"
       />
     </div>
   )
