@@ -23,7 +23,6 @@ export const getLayerDatasetRange = (dataset: Dataset) => {
     scale = 1,
     offset = 0,
   } = dataset?.configuration as EnviromentalDatasetConfiguration
-  console.log(dataset?.configuration)
 
   // Using Math.max to ensure we don't show negative values as 4wings doesn't support them yet
   const cleanMin = Math.max(0, Math.floor(min * scale + offset))
@@ -51,6 +50,7 @@ function HistogramRangeFilter({ dataview }: HistogramRangeFilterProps) {
     min: minSliderValue,
     max: maxSliderValue,
   }
+  // console.log(sliderConfig)
 
   const onSliderChange = useCallback(
     (rangeSelected) => {
