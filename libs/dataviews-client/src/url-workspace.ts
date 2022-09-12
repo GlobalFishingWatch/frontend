@@ -203,6 +203,12 @@ const parseDataviewInstance = (dataview: UrlDataviewInstance) => {
   if (breaks) {
     config.breaks = breaks
   }
+  if (dataview.config?.maxVisibleValue !== undefined) {
+    config.maxVisibleValue = parseFloat(dataview.config?.maxVisibleValue)
+  }
+  if (dataview.config?.minVisibleValue !== undefined) {
+    config.minVisibleValue = parseFloat(dataview.config?.minVisibleValue)
+  }
   if (vesselGroups) {
     config['vessel-groups'] = vesselGroups
   }

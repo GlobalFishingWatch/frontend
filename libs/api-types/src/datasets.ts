@@ -94,6 +94,10 @@ export interface DatasetConfiguration {
 }
 
 export interface EnviromentalDatasetConfiguration extends DatasetConfiguration {
+  min: number
+  max: number
+  offset: number
+  scale: number
   propertyToInclude: string
   propertyToIncludeRange: { min: number; max: number }
 }

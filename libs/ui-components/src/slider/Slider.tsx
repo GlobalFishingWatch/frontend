@@ -1,10 +1,12 @@
 import React, { useMemo, useCallback, useState } from 'react'
+import cx from 'classnames'
 import { Range, getTrackBackground } from 'react-range'
 import { format } from 'd3-format'
 import { scaleLinear } from 'd3-scale'
 import styles from './slider.module.css'
 
 export type SliderRange = number[]
+export type SliderThumbsSize = 'default' | 'small'
 type SliderConfig = {
   // step: number
   steps: number[]
@@ -13,6 +15,7 @@ type SliderConfig = {
 }
 interface SliderProps {
   label: string
+  thumbsSize?: SliderThumbsSize
   initialRange: SliderRange
   config: SliderConfig
   onChange: (range: SliderRange) => void
@@ -44,7 +47,15 @@ export const formatNumber = (num: number): string => {
 }
 
 export function Slider(props: SliderProps) {
-  const { initialRange, label, config = {}, onChange, className, histogram } = props
+  const {
+    initialRange,
+    label,
+    config = {},
+    onChange,
+    className,
+    histogram,
+    thumbsSize = 'default',
+  } = props
   const { min = MIN, max = MAX, steps } = config as SliderConfig
   const scale = useMemo(() => {
     return scaleLinear()
@@ -124,7 +135,7 @@ export function Slider(props: SliderProps) {
             return (
               <div
                 {...props}
-                className={styles.sliderThumb}
+                className={cx(styles.sliderThumb, styles[`${thumbsSize}Size`])}
                 style={{
                   ...props.style,
                 }}
