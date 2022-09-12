@@ -338,6 +338,7 @@
     "editPolygonHint": "Cliquez sur les coins du polygone pour ajuster leurs coordonnées",
     "filterClose": "Fermer les filtres",
     "filterOpen": "Ouvrir les filtres",
+    "filterValues": "Filter values",
     "flagState": "Pavillon",
     "flagState_one": "Pavillon",
     "flagState_other": "Pavillons",
