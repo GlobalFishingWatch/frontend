@@ -198,8 +198,6 @@ Object {
   "shipname": "MARIA MARIA 2",
   "type": "some vessel type",
   "vesselType": "some vessel type",
-  "years": Array [
-    undefined,
-  ],
+  "years": Array [],
 }
 `;
