@@ -90,7 +90,7 @@ const Settings: React.FC = (): React.ReactElement => {
           <li className={styles.switchRow}>
             <SwitchRow active={settings.enabled} onClick={function (event: SwitchEvent): void {
               setFiltersStatus(!settings.enabled)
-            }} label={t('settings.enable', 'enable activity highlights filter')}></SwitchRow>
+            }} label={t('settings.enable', 'Enable activity highlights')}></SwitchRow>
           </li>
           {options.map((option: string) => (
             <li key={option} onClick={() => setSelectedOption(option as SettingEventSectionName)}>
