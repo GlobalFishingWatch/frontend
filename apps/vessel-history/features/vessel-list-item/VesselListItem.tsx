@@ -11,12 +11,13 @@ import { getVesselAPISource } from 'utils/vessel'
 import { SHOW_VESSEL_API_SOURCE } from 'data/constants'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
+import { OfflineVessel } from 'types/vessel'
 import RelatedVesselListItem from './components/RelatedVesselListItem'
 import styles from './VesselListItem.module.css'
 
 interface ListItemProps {
   saved?: string
-  vessel: RelatedVesselSearchMerged
+  vessel: OfflineVessel
   selected?: boolean
   index: number
   showLabelsHelp?: boolean
@@ -40,7 +41,10 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
     <div className={cx([styles.vesselItemWrapper, selected ? styles.selected : {}])}>
       <div className={styles.vesselItemDetails}>
         <div className={styles.vesselItem} onClick={onClick}>
-          <h3>{vessel?.shipname ?? DEFAULT_EMPTY_VALUE}</h3>
+          <h3>
+            {vessel?.shipname ?? DEFAULT_EMPTY_VALUE}
+            {props.saved && vessel.aka && vessel.aka.length && <span> ({vessel.aka.length + 1} vessels merged)</span>}
+          </h3>
           <div className={styles.identifiers}>
             <div>
               <label>{t('vessel.flag', 'flag')}</label>

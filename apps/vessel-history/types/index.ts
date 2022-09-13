@@ -220,6 +220,7 @@ export type GFWDetail = {
   geartype: string
   normalized_shipname: string
   vesselType: string
+  years: number[]
 }
 
 export enum Locale {

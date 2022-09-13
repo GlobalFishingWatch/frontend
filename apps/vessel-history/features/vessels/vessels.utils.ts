@@ -106,20 +106,30 @@ export const mergeVesselFromSources = (
   )
   if (allFields.length) {
     const result = allFields.reduce((acc, key) => {
+      if (key.toString() === 'years') {
+        return {
+          ...acc,
+          years: vesselData
+            .filter(data => data.source === VesselAPISource.GFW)
+            .map((data) => {
+              return data.vessel[key] as number[]
+            }).flatMap(data => data),
+        }
+      }
       const value =
         key.toString() === 'history'
           ? mergeHistoryFields(
-              key,
-              vesselData.map((data) => ({
-                source: data.source,
-                value: data.vessel[key] as VesselFieldsHistory,
-                vessel: data.vessel,
-              }))
-            )
+            key,
+            vesselData.map((data) => ({
+              source: data.source,
+              value: data.vessel[key] as VesselFieldsHistory,
+              vessel: data.vessel,
+            }))
+          )
           : priorityzeFieldValue(
-              key,
-              vesselData.map((data) => ({ source: data.source, value: data.vessel[key] }))
-            )
+            key,
+            vesselData.map((data) => ({ source: data.source, value: data.vessel[key] }))
+          )
       return {
         ...acc,
         [key]: value,

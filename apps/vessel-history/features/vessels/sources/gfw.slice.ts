@@ -23,6 +23,7 @@ const getHistoryField = (data: GFWDetail, field: string, byCount: any[] = []) =>
 })
 
 export const toVessel: (data: GFWDetail) => VesselWithHistory = (data: GFWDetail) => {
+
   return {
     id: data.id,
     flag: data.flag,
@@ -31,6 +32,7 @@ export const toVessel: (data: GFWDetail) => VesselWithHistory = (data: GFWDetail
     lastTransmissionDate: data.lastTransmissionDate,
     imo: data.imo,
     mmsi: data.mmsi,
+    years: data.years,
     callsign: data.callsign,
     geartype: data.geartype,
     type: data.vesselType,
