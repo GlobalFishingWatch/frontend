@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { back } from 'redux-first-router'
 import { useTranslation } from 'react-i18next'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton, Switch, SwitchEvent, SwitchRow } from '@globalfishingwatch/ui-components'
 import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
 import { selectSettings, SettingEventSectionName } from './settings.slice'
 import FishingEvents from './components/FishingEvents'
@@ -11,6 +11,7 @@ import EncounterEvents from './components/EncounterEvents'
 import PortVisits from './components/PortVisits'
 import ActivityEventDataAndTerminology from './components/ActivityEventDataAndTerminology'
 import styles from './Settings.module.css'
+import { useSettingsConnect } from './settings.hooks'
 
 interface SettingsOption {
   title: string
@@ -23,6 +24,7 @@ interface SettingsOptions {
 const Settings: React.FC = (): React.ReactElement => {
   const settings = useSelector(selectSettings)
   const { t } = useTranslation()
+  const { setFiltersStatus } = useSettingsConnect()
   const options: SettingEventSectionName[] = [
     'fishingEvents',
     'encounters',
@@ -82,8 +84,14 @@ const Settings: React.FC = (): React.ReactElement => {
           </DataAndTerminology>
         )}
       </header>
+
       {!selectedOption && (
         <ul>
+          <li className={styles.switchRow}>
+            <SwitchRow active={settings.enabled} onClick={function (event: SwitchEvent): void {
+              setFiltersStatus(!settings.enabled)
+            }} label={t('settings.enable', 'enable activity highlights filter')}></SwitchRow>
+          </li>
           {options.map((option: string) => (
             <li key={option} onClick={() => setSelectedOption(option as SettingEventSectionName)}>
               {optionsData[option].title}
@@ -92,6 +100,7 @@ const Settings: React.FC = (): React.ReactElement => {
           ))}
         </ul>
       )}
+
       {selectedOption === 'fishingEvents' && (
         <FishingEvents settings={settings.fishingEvents} section="fishingEvents"></FishingEvents>
       )}
