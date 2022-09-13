@@ -63,7 +63,7 @@ export const createAsyncSlice = <T, U>({
   }
   createEntityAdapterOptions?: {
     selectId?: IdSelector<U>
-    sorUComparer?: false | Comparer<U>
+    sortComparer?: false | Comparer<U>
   }
 }) => {
   const { fetchThunk, fetchByIdThunk, createThunk, updateThunk, deleteThunk } = thunks
@@ -149,7 +149,7 @@ export const createAsyncSlice = <T, U>({
         builder.addCase(deleteThunk.fulfilled, (state: any, action) => {
           state.status = 'finished'
           state.statusId = null
-          entityAdapter.removeOne(state, action.payload.id)
+          entityAdapter.removeOne(state, entityAdapter.selectId(action.payload))
         })
         builder.addCase(deleteThunk.rejected, (state: any, action) => {
           state.status = 'error'
