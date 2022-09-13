@@ -43,7 +43,9 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
         <div className={styles.vesselItem} onClick={onClick}>
           <h3>
             {vessel?.shipname ?? DEFAULT_EMPTY_VALUE}
-            {props.saved && vessel.aka && vessel.aka.length && <span> ({vessel.aka.length + 1} vessels merged)</span>}
+            {props.saved && vessel.aka && vessel.aka.length && <span> ({t('vessel.nVesselsMerged', '{{count}} merged', {
+              count: vessel.aka.length + 1,
+            })})</span>}
           </h3>
           <div className={styles.identifiers}>
             <div>
