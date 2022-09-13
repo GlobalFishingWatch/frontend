@@ -110,10 +110,17 @@ export const mergeVesselFromSources = (
         return {
           ...acc,
           years: vesselData
-            .filter(data => data.source === VesselAPISource.GFW)
             .map((data) => {
               return data.vessel[key] as number[]
             }).flatMap(data => data),
+        }
+      }
+      if (key.toString() === 'posCount') {
+        return {
+          ...acc,
+          posCount: vesselData.reduce((sum, data) => {
+            return sum + ((data.vessel[key] ?? 0) as number)
+          }, 0)
         }
       }
       const value =

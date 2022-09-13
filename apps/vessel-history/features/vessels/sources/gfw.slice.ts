@@ -33,6 +33,7 @@ export const toVessel: (data: GFWDetail) => VesselWithHistory = (data: GFWDetail
     imo: data.imo,
     mmsi: data.mmsi,
     years: data.years,
+    posCount: data.posCount,
     callsign: data.callsign,
     geartype: data.geartype,
     type: data.vesselType,
