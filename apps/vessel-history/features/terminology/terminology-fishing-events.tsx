@@ -7,7 +7,7 @@ export interface TerminologyFishingEventsProps { }
 export function TerminologyFishingEvents(props: TerminologyFishingEventsProps) {
   return (
     <p>
-      <Trans i18nKey="events.fishingEventsDescription" values={{ link: 'world' }}>
+      <Trans i18nKey="events.fishingEventsDescription">
         When there is a consistent series of AIS points estimated as indicating apparent fishing
         activity the points are grouped into 'Fishing Events'. <br />
         We analyze the automatic identification system (AIS) data collected from vessels that our
