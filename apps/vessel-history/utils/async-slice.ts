@@ -5,6 +5,8 @@ import {
   ActionReducerMapBuilder,
   createEntityAdapter,
   Dictionary,
+  IdSelector,
+  Comparer,
 } from '@reduxjs/toolkit'
 
 export enum AsyncReducerStatus {
@@ -46,6 +48,7 @@ export const createAsyncSlice = <T, U>({
   reducers = {},
   extraReducers,
   thunks = {},
+  createEntityAdapterOptions,
 }: {
   name: string
   initialState?: T
@@ -58,9 +61,13 @@ export const createAsyncSlice = <T, U>({
     updateThunk?: any
     deleteThunk?: any
   }
+  createEntityAdapterOptions?: {
+    selectId?: IdSelector<U>
+    sortComparer?: false | Comparer<U>
+  }
 }) => {
   const { fetchThunk, fetchByIdThunk, createThunk, updateThunk, deleteThunk } = thunks
-  const entityAdapter = createEntityAdapter<U>()
+  const entityAdapter = createEntityAdapter<U>(createEntityAdapterOptions)
   const slice = createSlice({
     name,
     initialState: entityAdapter.getInitialState({
@@ -142,7 +149,7 @@ export const createAsyncSlice = <T, U>({
         builder.addCase(deleteThunk.fulfilled, (state: any, action) => {
           state.status = 'finished'
           state.statusId = null
-          entityAdapter.removeOne(state, action.payload.id)
+          entityAdapter.removeOne(state, entityAdapter.selectId(action.payload))
         })
         builder.addCase(deleteThunk.rejected, (state: any, action) => {
           state.status = 'error'
