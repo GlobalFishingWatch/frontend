@@ -71,7 +71,7 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
               </div>
             )}
             <div className={styles.transmissionField}>
-              <label>{t('vessel.transmission_plural', 'transmissions')}
+              <div className={styles.label}>{t('vessel.transmission_plural', 'transmissions')}
                 {props.showLabelsHelp &&
                   <DataAndTerminology size="tiny" type="default" title={t('vessel.transmission_plural', 'transmissions')}>
                     <Trans i18nKey="vessel.transmissionDescription">
@@ -83,7 +83,7 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
                     </Trans>
                   </DataAndTerminology>
                 }
-              </label>
+              </div>
               {vessel.firstTransmissionDate || vessel.lastTransmissionDate ? (
                 <Fragment>
                   {t('vessel.transmissionRange', '{{transmissions}} AIS transmissions from {{start}} to {{end}}', {
