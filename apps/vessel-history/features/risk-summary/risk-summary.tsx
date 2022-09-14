@@ -1,6 +1,6 @@
 import { Fragment, useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Modal, ProgressBar, Spinner } from '@globalfishingwatch/ui-components'
+import { Modal, Spinner } from '@globalfishingwatch/ui-components'
 import { useUser } from 'features/user/user.hooks'
 import RiskSection from 'features/risk-section/risk-section'
 import RiskIndicator from 'features/risk-indicator/risk-indicator'
@@ -10,7 +10,6 @@ import useMapEvents from 'features/map/map-events.hooks'
 import { EventTypeVoyage, Voyage } from 'types/voyage'
 import useViewport from 'features/map/map-viewport.hooks'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
-import TerminologyAISCoverage from 'features/terminology/terminology-ais-coverage'
 import TerminologyEncounterEvents from 'features/terminology/terminology-encounter-events'
 import TerminologyFishingEvents from 'features/terminology/terminology-fishing-events'
 import TerminologyIuu from 'features/terminology/terminology-iuu'
@@ -23,6 +22,7 @@ import RiskIdentityIndicator from 'features/risk-identity-indicator/risk-identit
 import { VesselFieldLabel } from 'types/vessel'
 import TerminologyAisDisabling from 'features/terminology/terminology-ais-disabling'
 import DateRangeLabel from 'features/date-range-label/date-range-label'
+import AisCoverage from 'features/profile/components/activity/AisCoverage'
 import styles from './risk-summary.module.css'
 
 export interface RiskSummaryProps {
@@ -137,17 +137,11 @@ export function RiskSummary(props: RiskSummaryProps) {
 
   return (
     <div className={styles['container']}>
-      <RiskSection
-        severity={coverageLevel}
-        title={t('events.aisCoverage', 'AIS')}
-        titleInfo={<TerminologyAISCoverage />}
-      >
+      <RiskSection severity={coverageLevel}>
         <div className={styles.heading}>
-          <ProgressBar
+          <AisCoverage
             value={eventsLoading ? null : coverage?.percentage}
-            disabled={coverage?.percentage === 0}
-            precision={0}
-            disabledText={t('common.unknown', 'Unknown')}
+            className={styles.aisCoverage}
           />
           <div className={styles.headingButtons}>
             <DateRangeLabel type="secondary" className={styles.filterBtn} />
