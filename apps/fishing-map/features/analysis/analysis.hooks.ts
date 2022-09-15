@@ -92,9 +92,13 @@ export const useFilteredTimeSeries = () => {
   }
   const computeTimeseries = useCallback(
     (layersWithFeatures: DataviewFeature[], geometry: Polygon | MultiPolygon) => {
-      const features = layersWithFeatures.map(({ chunksFeatures }) =>
-        chunksFeatures.flatMap(({ active, features }) => (active && features ? features : []))
-      )
+      const features = layersWithFeatures
+        .map(({ chunksFeatures }) =>
+          chunksFeatures
+            ? chunksFeatures.flatMap(({ active, features }) => (active && features ? features : []))
+            : []
+        )
+        .filter((features) => features.length > 0)
       const filteredFeatures = filterByPolygon(features, geometry)
       const timeseries = featuresToTimeseries(filteredFeatures, {
         layersWithFeatures,
