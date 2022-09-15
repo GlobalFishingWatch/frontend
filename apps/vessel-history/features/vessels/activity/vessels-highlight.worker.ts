@@ -93,10 +93,10 @@ const filterPortEvent = (event: RenderedEvent, filter: SettingsPortVisits) =>
 
 export function filterActivityHighlightEvents(events: RenderedEvent[], settings: Settings) {
   const filterByEventType: Record<EventTypes, ((event: RenderedEvent) => boolean) | undefined> = {
-    encounter: (event) => filterActivityEvent(event, settings.enabled ? settings.encounters : null),
-    fishing: (event) => filterActivityEvent(event, settings.enabled ? settings.fishingEvents : null),
-    loitering: (event) => filterActivityEvent(event, settings.enabled ? settings.loiteringEvents : null),
-    port_visit: (event) => filterPortEvent(event, settings.enabled ? settings.portVisits : null),
+    encounter: (event) => settings.enabled && filterActivityEvent(event, settings.encounters),
+    fishing: (event) => settings.enabled && filterActivityEvent(event, settings.fishingEvents),
+    loitering: (event) => settings.enabled && filterActivityEvent(event, settings.loiteringEvents),
+    port_visit: (event) => settings.enabled && filterPortEvent(event, settings.portVisits),
     gap: undefined,
   }
   return events
