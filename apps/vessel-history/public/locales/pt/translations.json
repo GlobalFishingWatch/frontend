@@ -248,6 +248,7 @@
       "description": "Destacar todos os eventos de {{eventType}} que possam ter ocorrido dentro de uma ZEE. Nós calculamos um polígono para o local do evento com base nas coordenadas mínimas e máximas e verificamos se ele se sobrepõe ao polígoo da ZEE. Por exemplo, se você selecionar a ZEE da Argentina e a ZEE do Chile sob os eventos de {{eventType}} realçados, você verá todos os eventos de {{eventType}} onde o polígiono criado por coordenadas mínimas e máximas dos eventos sobrepostos com as coordenadas mínimas e máximas da ZEE da Argentina OU da ZEE do Chile. Uma vez que um método de polígono é usado, é possível que as coordenadas da rota da embarcação não se sobreponham à ZEE. Por favor, investigue os eventos destacados mais adiante no mapa.",
       "label": "Eventos nestas ZEEs"
     },
+    "enable": "Enable activity highlights",
     "encounters": {
       "shortTitle": "Encontro",
       "title": "Eventos de encontro"
