@@ -338,6 +338,7 @@
     "editPolygonHint": "Haga clic en las esquinas del polígono para ajustar sus coordenadas",
     "filterClose": "Cerrar los filtros",
     "filterOpen": "Abrir los filtros",
+    "filterValues": "Filter values",
     "flagState": "Estado de bandera",
     "flagState_one": "Estado de bandera",
     "flagState_other": "Estados de bandera",
