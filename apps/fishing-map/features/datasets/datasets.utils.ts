@@ -101,12 +101,26 @@ export const getDatasetTitleByDataview = (
     : dataview.datasets
 
   let datasetTitle = dataview.name || ''
-  if (dataviewInstance.dataviewId === FISHING_DATAVIEW_ID) {
+  if (
+    dataviewInstance.datasets[0].category === DatasetCategory.Activity &&
+    dataviewInstance.datasets[0].subcategory === 'fishing'
+  ) {
     datasetTitle = t(`common.apparentFishing`, 'Apparent Fishing Effort')
-  } else if (dataviewInstance.dataviewId === PRESENCE_DATAVIEW_ID) {
+  } else if (
+    dataviewInstance.datasets[0].category === DatasetCategory.Activity &&
+    dataviewInstance.datasets[0].subcategory === 'presence'
+  ) {
     datasetTitle = t(`common.presence`, 'Vessel presence')
-  } else if (dataviewInstance.dataviewId === VIIRS_MATCH_DATAVIEW_ID) {
+  } else if (
+    dataviewInstance.datasets[0].category === DatasetCategory.Detections &&
+    dataviewInstance.datasets[0].subcategory === 'viirs'
+  ) {
     datasetTitle = t(`common.viirs`, 'Night light detections (VIIRS)')
+  } else if (
+    dataviewInstance.datasets[0].category === DatasetCategory.Detections &&
+    dataviewInstance.datasets[0].subcategory === 'sar'
+  ) {
+    datasetTitle = t(`common.sar`, 'Radar detections (SAR)')
   } else if (activeDatasets) {
     if (hasDatasetsConfig && activeDatasets?.length !== 1) {
       return datasetTitle
