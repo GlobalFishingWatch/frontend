@@ -248,6 +248,7 @@
       "description": "Faits saillants tous les {{eventType}} qui peuvent avoir eu lieu à l'intérieur d'une zone économique exclusive ou d'une ZEE. Nous calculons un cadre de délimitation pour l'emplacement de l'événement sur la base des coordonnées minimales et maximales et vérifions s'il chevauche le cadre de délimitation de la ZEE. Par exemple, si vous sélectionnez la ZEE argentine et la ZEE chilienne sous {{eventType}}, vous verrez tous les {{eventType}} où la zone de délimitation créée par les coordonnées minimales et maximales des événements chevauche les coordonnées minimales et maximales de la ZEE argentine OU la ZEE du Chili. Étant donné qu'une méthode de boîte englobante est utilisée, il est possible que les coordonnées réelles de la trajectoire du navire ne chevauchent pas la ZEE. Veuillez étudier les événements faits saillants plus loin sur la carte.",
       "label": "Événements dans ces ZEEs"
     },
+    "enable": "Enable activity highlights",
     "encounters": {
       "shortTitle": "Rencontre",
       "title": "Rencontres"
