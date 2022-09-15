@@ -33,6 +33,7 @@ import { selectUserData } from 'features/user/user.slice'
 import { useApp } from 'features/app/app.hooks'
 import Partners from 'features/partners/Partners'
 import ViewSelector from 'features/view-selector/view-selector'
+import { OfflineVessel } from 'types/vessel'
 import styles from './Home.module.css'
 import LanguageToggle from './LanguageToggle'
 
@@ -105,7 +106,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   }, [vessels, selectedVessels])
 
   const onOpenVesselProfile = useCallback(
-    (vessel) => () => openVesselProfile(vessel),
+    (vessel) => () => openVesselProfile(vessel, vessel.aka),
     [openVesselProfile]
   )
 
@@ -310,7 +311,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                   {vessels.map((vessel: RelatedVesselSearchMerged, index) => (
                     <VesselListItem
                       key={index}
-                      vessel={vessel}
+                      vessel={vessel as OfflineVessel}
                       index={index}
                       showLabelsHelp={true}
                       onVesselClick={onVesselClick(index)}
