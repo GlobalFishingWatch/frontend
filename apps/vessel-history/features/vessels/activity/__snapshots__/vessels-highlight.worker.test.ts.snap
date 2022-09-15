@@ -5985,6 +5985,8 @@ Array [
 ]
 `;
 
+exports[`filterActivityHighlightEvents highlights "port visit events with disabled configuration" 1`] = `Array []`;
+
 exports[`filterActivityHighlightEvents highlights "port visit events with duration > 4" 1`] = `
 Array [
   Object {
