@@ -115,6 +115,32 @@ export const mergeVesselFromSources = (
             }).flatMap(data => data),
         }
       }
+      if (key.toString() === 'firstTransmissionDate') {
+        return {
+          ...acc,
+          firstTransmissionDate: vesselData.reduce((lastDate, data) => {
+            if (data.vessel.firstTransmissionDate) {
+              if (!lastDate || lastDate.localeCompare(data.vessel.firstTransmissionDate) === 1) {
+                return data.vessel.firstTransmissionDate
+              }
+            }
+            return lastDate
+          }, '')
+        }
+      }
+      if (key.toString() === 'lastTransmissionDate') {
+        return {
+          ...acc,
+          lastTransmissionDate: vesselData.reduce((lastDate, data) => {
+            if (data.vessel.lastTransmissionDate) {
+              if (!lastDate || lastDate.localeCompare(data.vessel.lastTransmissionDate) === -1) {
+                return data.vessel.lastTransmissionDate
+              }
+            }
+            return lastDate
+          }, '')
+        }
+      }
       if (key.toString() === 'posCount') {
         return {
           ...acc,
