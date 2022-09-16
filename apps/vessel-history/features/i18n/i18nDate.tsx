@@ -55,11 +55,11 @@ const I18nDate = ({ date, format = DateTime.DATE_MED }: Dates) => {
 
 export const I18nSpecialDate = ({ date, format = DateTime.DATE_MED }: TMTDate) => {
   let parsedDate, tokensFormat
-  if (date.toString().match(/^\d{4}0{4}$/)) {
-    parsedDate = date.toString().replace(/(\d{4})(0{2})(0{2})$/, '$1-01-01')
+  if (date.toString().match(/^\d{4}(00|99){1,2}$/)) {
+    parsedDate = date.toString().replace(/(\d{4})(00|99){1,2}$/, '$1-01-01')
     tokensFormat = 'yyyy'
-  } else if (date.toString().match(/^\d{6}0{2}$/)) {
-    parsedDate = date.toString().replace(/(\d{4})(\d{2})(0{2})$/, '$1-$2-01')
+  } else if (date.toString().match(/^\d{6}(00|99)$/)) {
+    parsedDate = date.toString().replace(/(\d{4})(\d{2})(00|99)$/, '$1-$2-01')
     tokensFormat = 'LLL, yyyy'
   } else if (date.toString().match(/^\d{4}-\d{2}-9{2}$/)) {
     // Converts 2016-02-99 dates to 2016-02-01 and formats it as Feb, 2016
