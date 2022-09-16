@@ -122,7 +122,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
         binary: false,
         minZoom: 8,
         renderSubLayers: (props) => {
-          return new VesselPositionsLayer({ id: props.tile.id, data: props.data })
+          return new VesselPositionsLayer(props)
         },
       })
     )

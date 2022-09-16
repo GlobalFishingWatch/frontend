@@ -115,8 +115,13 @@ const MapWrapper = (): React.ReactElement => {
   }, [mapLayers])
 
   const getTooltip = (tooltip) => {
+    // Heatmap
     if (tooltip.object?.value) {
       return tooltip.object.value.toString()
+    }
+    // Vessel position
+    if (tooltip.object?.properties?.vesselId) {
+      return tooltip.object?.properties?.vesselId.toString()
     }
     return
   }

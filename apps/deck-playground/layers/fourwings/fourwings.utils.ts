@@ -9,7 +9,7 @@ export interface Bounds {
 }
 
 export function getFourwingsMode(zoom: number): FourwingsLayerMode {
-  return zoom <= 8 ? 'heatmap' : 'positions'
+  return zoom <= 9 ? 'heatmap' : 'positions'
 }
 
 export const filterCellsByBounds = (cells: TileCell[], bounds: Bounds) => {
