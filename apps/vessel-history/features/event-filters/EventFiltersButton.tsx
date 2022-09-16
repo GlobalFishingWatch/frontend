@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next'
 import { Button, Icon, IconButton, ButtonType } from '@globalfishingwatch/ui-components'
 import { selectFilterUpdated } from 'features/event-filters/filters.selectors'
 import FiltersLabel from 'features/filters-label/filters-label'
+import { selectCurrentUserProfileHasInsurerPermission } from 'features/profile/profile.selectors'
+import DateRangeLabel from 'features/date-range-label/date-range-label'
 import { selectFilters } from './filters.slice'
 import styles from './EventFiltersButton.module.css'
 
@@ -18,10 +20,12 @@ const EventFiltersButton: React.FC<ButtonProps> = ({ className, ...props }): Rea
   const { t } = useTranslation()
   const filtersApplied = useSelector(selectFilterUpdated)
   const filters = useSelector(selectFilters)
+  const currentProfileIsInsurer = useSelector(selectCurrentUserProfileHasInsurerPermission)
 
   return (
     <Fragment>
-      {!filtersApplied && (
+      {currentProfileIsInsurer && <DateRangeLabel type={props.type} className={className} />}
+      {!currentProfileIsInsurer && !filtersApplied && (
         <IconButton
           type={props?.type === 'default' ? 'map-tool' : 'solid'}
           icon={'filter-off'}
@@ -30,7 +34,7 @@ const EventFiltersButton: React.FC<ButtonProps> = ({ className, ...props }): Rea
           onClick={props?.onClick ?? (() => void 0)}
         />
       )}
-      {filtersApplied && (
+      {!currentProfileIsInsurer && filtersApplied && (
         <Button {...props} className={cx(styles.filterBtn, className)}>
           <Icon type="default" icon={filtersApplied ? 'filter-on' : 'filter-off'} />
           <FiltersLabel filters={filters} />
