@@ -72,6 +72,7 @@ const Profile: React.FC = (props): React.ReactElement => {
     () => akaVesselProfileIds && akaVesselProfileIds.length > 0,
     [akaVesselProfileIds]
   )
+
   const { online } = useNavigatorOnline()
   const currentProfileIsInsurer = useSelector(selectCurrentUserProfileHasInsurerPermission)
   useEffect(() => {

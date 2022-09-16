@@ -123,10 +123,18 @@ export type DatasetSchema = {
 
 export enum DatasetCategory {
   Event = 'event',
+  Detections = 'detection',
   Context = 'context',
   Environment = 'environment',
   Activity = 'activity',
   Vessel = 'vessel',
+}
+
+export enum DatasetSubCategory {
+  Fishing = 'fishing',
+  Presence = 'presence',
+  Viirs = 'viirs',
+  Sar = 'sar',
 }
 
 export interface Dataset {

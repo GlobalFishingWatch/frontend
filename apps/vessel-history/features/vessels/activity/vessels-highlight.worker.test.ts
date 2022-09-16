@@ -228,6 +228,18 @@ describe('filterActivityHighlightEvents', () => {
       },
       6,
     ],
+    [
+      'port visit events with disabled configuration',
+      [...loiteringAndEncounterEvents, ...portVisitEvents, ...fishingEvents] as any,
+      {
+        ...emptySettings,
+        enabled: false,
+        portVisits: {
+          duration: 4,
+        },
+      },
+      0,
+    ],
   ]
 
   afterEach(() => {

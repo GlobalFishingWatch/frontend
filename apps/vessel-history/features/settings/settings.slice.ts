@@ -22,6 +22,7 @@ export type SettingEventSectionName =
   | 'portVisits'
 
 export type Settings = {
+  enabled: boolean
   fishingEvents: SettingsEvents
   encounters: SettingsEvents
   loiteringEvents: SettingsEvents
@@ -33,6 +34,7 @@ export type SettingsSlice = {
 }
 const initialState: SettingsSlice = {
   settings: {
+    enabled: true,
     fishingEvents: {},
     encounters: {},
     loiteringEvents: {},

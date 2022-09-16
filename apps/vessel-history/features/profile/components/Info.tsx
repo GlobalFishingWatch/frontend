@@ -32,6 +32,7 @@ import 'react-image-gallery/styles/css/image-gallery.css'
 import Highlights from './Highlights'
 import AuthorizationsField from './AuthorizationsField'
 import ForcedLabor from './ForcedLabor'
+import { selectAllOfflineVessels } from 'features/vessels/offline-vessels.slice'
 
 interface InfoProps {
   vessel: VesselWithHistory | null
@@ -45,15 +46,13 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   const vesselId = useSelector(selectVesselId)
-  const eventsForTracks = useSelector(selectEventsForTracks)
-  const activities = useMemo(() => eventsForTracks.map((e) => e.data).flat(), [eventsForTracks])
   const vesselTmtId = useSelector(selectTmtId)
   const vesselDataset = useSelector(selectDataset)
   const vesselProfileId = useSelector(selectVesselProfileId)
   const akaVesselProfileIds = useSelector(selectUrlAkaVesselQuery)
   const { authorizedFLRM } = useUser()
   const offlineVessel = useSelector(selectCurrentOfflineVessel)
-  const { dispatchCreateOfflineVessel, dispatchDeleteOfflineVessel, dispatchFetchOfflineVessel } =
+  const { dispatchCreateOfflineVessel, dispatchDeleteOfflineVessel, dispatchFetchOfflineVessels } =
     useOfflineVesselsAPI()
   const isMergedVesselsView = useMemo(
     () => akaVesselProfileIds && akaVesselProfileIds.length > 0,
@@ -64,10 +63,10 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   )
 
   useEffect(() => {
-    if (!isMergedVesselsView) dispatchFetchOfflineVessel(vesselProfileId)
-  }, [vesselProfileId, dispatchFetchOfflineVessel, isMergedVesselsView])
+    dispatchFetchOfflineVessels()
+  }, [])
 
-  const onDeleteClick = async (data: OfflineVessel) => {
+  const onDeleteClick = useCallback((data: OfflineVessel) => {
     const now = DateTime.now()
     const savedOn = DateTime.fromISO(data.savedOn)
     const i = Interval.fromDateTimes(savedOn, now)
@@ -78,9 +77,10 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
       value: Math.floor(i.length('days')),
     })
     setLoading(true)
-    await dispatchDeleteOfflineVessel(data)
+    dispatchDeleteOfflineVessel(data)
+    dispatchFetchOfflineVessels()
     setLoading(false)
-  }
+  }, [dispatchDeleteOfflineVessel, dispatchDeleteOfflineVessel])
 
   const onSaveClick = async (data: VesselWithHistory) => {
     setLoading(true)
@@ -100,7 +100,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
         dataset: vesselDataset,
         vesselMatchId: vesselTmtId,
         source: '',
-        activities: activities,
+        aka: akaVesselProfileIds,
         savedOn: DateTime.utc().toISO(),
         relatedVessels: [],
       },
@@ -332,9 +332,9 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                     value={
                       vessel.iuuStatus !== undefined
                         ? t(
-                            `vessel.iuuStatusOptions.${vessel.iuuStatus}` as any,
-                            vessel.iuuStatus.toString()
-                          )
+                          `vessel.iuuStatusOptions.${vessel.iuuStatus}` as any,
+                          vessel.iuuStatus.toString()
+                        )
                         : DEFAULT_EMPTY_VALUE
                     }
                     valuesHistory={[]}
@@ -369,7 +369,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
               />
             </Fragment>
           )}
-          {vessel && !isMergedVesselsView && !offlineVessel && (
+          {vessel && !offlineVessel && (
             <Button
               className={styles.saveButton}
               type="secondary"
@@ -377,14 +377,6 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
               onClick={() => onSaveClick(vessel)}
             >
               {t('vessel.saveForOfflineView', 'SAVE VESSEL FOR OFFLINE VIEW')}
-            </Button>
-          )}
-          {isMergedVesselsView && (
-            <Button className={styles.saveButton} type="secondary" disabled={true}>
-              {t(
-                'vessel.offlineStillNotAllowedOnMergedVessels',
-                'OFFLINE VIEW NOT ALLOWED ON MERGED VESSELS'
-              )}
             </Button>
           )}
         </div>

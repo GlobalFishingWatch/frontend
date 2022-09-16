@@ -41,6 +41,7 @@ const getVesselFromSourceAPI: (source: VesselAPISource) => VesselAPIThunk = (
     [VesselAPISource.GFW]: gfwThunk,
     [VesselAPISource.TMT]: tmtThunk,
   }
+
   return thunks[source]
 }
 
@@ -111,6 +112,7 @@ export const fetchVesselByIdThunk = createAsyncThunk(
           return undefined
         })
       )
+
       return {
         ...mergeVesselFromSources(vessels.filter((v) => v)),
         id: [id, ...(idData.akas ?? [])].join('|'),

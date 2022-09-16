@@ -7,6 +7,7 @@ export type VesselSourceId = {
 
 export interface OfflineVessel extends RelatedVesselSearchMerged {
   profileId: string
+  aka?: string[]
   activities?: ActivityEvent[]
   savedOn: string
 }

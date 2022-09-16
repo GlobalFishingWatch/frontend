@@ -62,7 +62,7 @@ export const useSettingsConnect = () => {
   const setSettingOptions = (section: string, field: string, values: Region[]) => {
     const key = section as keyof Settings
     const newSettings = {
-      ...settings[key],
+      ...settings[key] as SettingsEvents,
       [field]: values.map((v) => v.id),
     }
     mergeSettings(section, newSettings)
@@ -70,16 +70,25 @@ export const useSettingsConnect = () => {
 
   const setSetting = (section: string, field: string, value: number) => {
     const key = section as keyof Settings
-    const newSettings = {
-      ...settings[key],
+    const newSettings: SettingsEvents = {
+      ...settings[key] as SettingsEvents,
       [field]: value >= 0 ? value : undefined,
     }
     mergeSettings(section, newSettings)
   }
 
+  const setFiltersStatus = (status: boolean) => {
+    const newSettings: Settings = {
+      ...settings,
+      enabled: status,
+    }
+    dispatch(updateSettings(newSettings))
+  }
+
   return {
     setSetting,
     setSettingOptions,
+    setFiltersStatus,
   }
 }
 
@@ -111,15 +120,15 @@ export const useSettingsRegionsConnect = (section: SettingEventSectionName) => {
       currentSelected: MultiSelectOption<string, string>[],
       field: string
     ) => {
-      selected === anyOption
-        ? // when ANY is selected the rest are deselected
-          setSettingOptions(section, field, [selected])
-        : // when other than ANY is selected
-          setSettingOptions(section, field, [
-            // then ANY should be deselected
-            ...currentSelected.filter((option) => option !== anyOption),
-            selected,
-          ])
+      selected === anyOption ?
+        // when ANY is selected the rest are deselected
+        setSettingOptions(section, field, [selected]) :
+        // when other than ANY is selected
+        setSettingOptions(section, field, [
+          // then ANY should be deselected
+          ...currentSelected.filter((option) => option !== anyOption),
+          selected,
+        ])
     },
     [section, setSettingOptions, anyOption]
   )

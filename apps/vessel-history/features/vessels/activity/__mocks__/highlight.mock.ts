@@ -1,6 +1,7 @@
 import { Settings } from 'features/settings/settings.slice'
 
 export const emptySettings: Settings = {
+  enabled: true,
   fishingEvents: {},
   encounters: {},
   loiteringEvents: {},
@@ -535,5 +536,3 @@ export const fishingEvents = [
     duration: 11,
   },
 ]
-const module = { settings, fishingEvents }
-export default module
