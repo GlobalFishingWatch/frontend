@@ -814,6 +814,22 @@
       "firstTransmissionDate": "crwdns9291:0crwdne9291:0"
     }
   },
+  "private-panama-presence": {
+    "name": "crwdns27028:0crwdne27028:0",
+    "description": "crwdns27030:0crwdne27030:0",
+    "schema": {
+      "flag": "crwdns27032:0crwdne27032:0",
+      "shiptype": {
+        "keyword": "crwdns27034:0crwdne27034:0",
+        "enum": {
+          "carrier": "crwdns27036:0crwdne27036:0",
+          "fishing": "crwdns27038:0crwdne27038:0",
+          "oil_tanker": "crwdns27040:0crwdne27040:0"
+        }
+      },
+      "vessel_id": "crwdns27042:0crwdne27042:0"
+    }
+  },
   "private-peru-fishing-effort": {
     "name": "crwdns9293:0crwdne9293:0",
     "description": "crwdns9295:0crwdne9295:0",
