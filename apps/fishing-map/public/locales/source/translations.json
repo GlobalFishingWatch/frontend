@@ -137,6 +137,7 @@
     "vessel_other": "Vessels",
     "view_layer": "View the layer",
     "viirs": "Night light detections (VIIRS)",
+    "sar": "Radar detections (SAR)",
     "welcomePopupDisable": "Don't show again",
     "whatsNew": "What's new?"
   },
