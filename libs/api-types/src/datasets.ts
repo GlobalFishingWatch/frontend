@@ -123,7 +123,7 @@ export type DatasetSchema = {
 
 export enum DatasetCategory {
   Event = 'event',
-  Detections = 'detections',
+  Detections = 'detection',
   Context = 'context',
   Environment = 'environment',
   Activity = 'activity',
