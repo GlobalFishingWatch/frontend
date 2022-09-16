@@ -34,7 +34,7 @@ import { WorkspaceCategories } from 'data/workspaces'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { BivariateDataviews } from 'types'
 import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
-import { getTimeRangeDuration } from 'utils/dates'
+// import { getTimeRangeDuration } from 'utils/dates'
 
 type GetGeneratorConfigParams = {
   dataviews: UrlDataviewInstance[] | undefined
@@ -58,22 +58,22 @@ const getGeneratorsConfig = ({
   bivariateDataviews,
   showTimeComparison,
 }: GetGeneratorConfigParams) => {
-  const duration = getTimeRangeDuration(timeRange, 'days')
-  const hasVesselGroupsSelected = dataviews.some(
-    (d) => d.config?.filters?.['vessel-groups']?.length > 0
-  )
+  // const duration = getTimeRangeDuration(timeRange, 'days')
+  // const hasVesselGroupsSelected = dataviews.some(
+  //   (d) => d.config?.filters?.['vessel-groups']?.length > 0
+  // )
   // Removes the HeatmapAnimated dataviews that won't work with the current
   // vessel-groups timerange limitation to avoid requesting known error tiles
-  const dataviewsFiltered = dataviews.filter((dataview) => {
-    const isHeatmap = dataview.config?.type === GeneratorType.HeatmapAnimated
-    return isHeatmap && hasVesselGroupsSelected ? duration?.days <= 31 : true
-  })
+  // const dataviewsFiltered = dataviews.filter((dataview) => {
+  //   const isHeatmap = dataview.config?.type === GeneratorType.HeatmapAnimated
+  //   return isHeatmap && hasVesselGroupsSelected ? duration?.days <= 31 : true
+  // })
 
-  const animatedHeatmapDataviews = dataviewsFiltered.filter((dataview) => {
+  const animatedHeatmapDataviews = dataviews.filter((dataview) => {
     return dataview.config?.type === GeneratorType.HeatmapAnimated
   })
 
-  const visibleDataviewIds = dataviewsFiltered.map(({ id }) => id)
+  const visibleDataviewIds = dataviews.map(({ id }) => id)
   const bivariateVisible =
     bivariateDataviews?.filter((dataviewId) => visibleDataviewIds.includes(dataviewId))?.length ===
     2
@@ -90,7 +90,7 @@ const getGeneratorsConfig = ({
     heatmapAnimatedMode = HeatmapAnimatedMode.TimeCompare
   }
 
-  const trackDataviews = dataviewsFiltered.filter((d) => d.config.type === GeneratorType.Track)
+  const trackDataviews = dataviews.filter((d) => d.config.type === GeneratorType.Track)
   const singleTrack = trackDataviews.length === 1
 
   const generatorOptions: DataviewsGeneratorConfigsParams = {
@@ -106,11 +106,7 @@ const getGeneratorsConfig = ({
   }
 
   try {
-    let generatorsConfig = getDataviewsGeneratorConfigs(
-      dataviewsFiltered,
-      generatorOptions,
-      resources
-    )
+    let generatorsConfig = getDataviewsGeneratorConfigs(dataviews, generatorOptions, resources)
     // In time comparison mode, exclude any heatmap layer that is not activity
     if (showTimeComparison) {
       generatorsConfig = generatorsConfig.filter((config) => {
