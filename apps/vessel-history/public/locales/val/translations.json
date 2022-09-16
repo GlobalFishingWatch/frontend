@@ -248,6 +248,7 @@
       "description": "crwdns11059:0{{eventType}}crwdnd11059:0{{eventType}}crwdnd11059:0{{eventType}}crwdne11059:0",
       "label": "crwdns6386:0crwdne6386:0"
     },
+    "enable": "crwdns27024:0crwdne27024:0",
     "encounters": {
       "shortTitle": "crwdns11145:0crwdne11145:0",
       "title": "crwdns6514:0crwdne6514:0"

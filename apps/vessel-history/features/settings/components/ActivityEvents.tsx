@@ -52,30 +52,35 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
   const eezPlaceholder = useMemo(
     () =>
       !eez.selected?.length
-        ? (t('selects.none', 'None') as string)
-        : eez.selected.length > 1
-        ? t('event.nSelected', '{{count}} selected', { count: eez.selected.length })
-        : eez.selected[0].label.toString(),
+        ? (t('selects.none', 'None') as string) :
+        (
+          eez.selected.length > 1 ?
+            t('event.nSelected', '{{count}} selected', { count: eez.selected.length }) :
+            eez.selected[0].label.toString()
+        ),
     [eez.selected, t]
   )
 
   const rfmoPlaceholder = useMemo(
     () =>
-      !rfmo.selected?.length
-        ? (t('selects.none', 'None') as string)
-        : rfmo.selected.length > 1
-        ? t('event.nSelected', '{{count}} selected', { count: rfmo.selected.length })
-        : rfmo.selected[0].label.toString(),
+      !rfmo.selected?.length ?
+        (t('selects.none', 'None') as string) :
+        (
+          rfmo.selected.length > 1 ?
+            t('event.nSelected', '{{count}} selected', { count: rfmo.selected.length }) :
+            rfmo.selected[0].label.toString()
+        ),
     [rfmo.selected, t]
   )
 
   const mpaAutocomplete: MpaAutocompleteProps = useMemo(
     () => ({
-      placeholder: !mpa.selected?.length
-        ? (t(`common.typeToSearch`, 'Type to search') as string)
-        : mpa.selected.length > 1
-        ? t('event.nSelected', '{{count}} selected', { count: mpa.selected.length })
-        : mpa.selected[0].label.toString(),
+      placeholder: !mpa.selected?.length ?
+        (t(`common.typeToSearch`, 'Type to search') as string) :
+        (mpa.selected.length > 1 ?
+          t('event.nSelected', '{{count}} selected', { count: mpa.selected.length }) :
+          mpa.selected[0].label.toString()
+        ),
 
       onFilterOptions: (allOptions, filteredOptions, filter) => {
         if (filter && filter?.length >= 3) {

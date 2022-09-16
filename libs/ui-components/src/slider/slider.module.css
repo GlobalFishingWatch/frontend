@@ -25,8 +25,6 @@
 }
 
 .sliderThumb {
-  height: 3.6rem;
-  width: 3.6rem;
   border-radius: 50%;
   background-color: var(--color-off-white);
   display: flex;
@@ -38,4 +36,14 @@
 
 .sliderThumbCounter {
   color: var(--color-brand);
+}
+
+.defaultSize {
+  width: var(--size-M);
+  height: var(--size-M);
+}
+
+.smallSize {
+  width: 3.2rem;
+  height: 3.2rem;
 }

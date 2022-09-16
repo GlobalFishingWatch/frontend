@@ -33,7 +33,7 @@ function DatasetFilterSource({ dataview, hideColor }: DatasetFilterSourceProps) 
     ]
   }
 
-  if (!sourcesSelected?.length || sourcesOptions?.length <= 1) {
+  if (!sourcesSelected?.length) {
     return null
   }
 

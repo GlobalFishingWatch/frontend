@@ -17,6 +17,7 @@ export const gfwVessel: GFWDetail = {
   otherImos: [],
   otherShipnames: [],
   vesselType: 'some vessel type',
+  years: []
 }
 
 export const tmtVessel: TMTDetail = {

@@ -137,6 +137,7 @@
     "vessel_other": "crwdns8949:0crwdne8949:0",
     "view_layer": "crwdns18876:0crwdne18876:0",
     "viirs": "crwdns7913:0crwdne7913:0",
+    "sar": "crwdns27026:0crwdne27026:0",
     "welcomePopupDisable": "crwdns6914:0crwdne6914:0",
     "whatsNew": "crwdns17183:0crwdne17183:0"
   },
@@ -338,6 +339,7 @@
     "editPolygonHint": "crwdns11141:0crwdne11141:0",
     "filterClose": "crwdns1532:0crwdne1532:0",
     "filterOpen": "crwdns1534:0crwdne1534:0",
+    "filterValues": "crwdns27014:0crwdne27014:0",
     "flagState": "crwdns18478:0crwdne18478:0",
     "flagState_one": "crwdns18480:0crwdne18480:0",
     "flagState_other": "crwdns8963:0crwdne8963:0",

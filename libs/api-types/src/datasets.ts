@@ -94,6 +94,10 @@ export interface DatasetConfiguration {
 }
 
 export interface EnviromentalDatasetConfiguration extends DatasetConfiguration {
+  min: number
+  max: number
+  offset: number
+  scale: number
   propertyToInclude: string
   propertyToIncludeRange: { min: number; max: number }
 }
@@ -119,10 +123,18 @@ export type DatasetSchema = {
 
 export enum DatasetCategory {
   Event = 'event',
+  Detections = 'detection',
   Context = 'context',
   Environment = 'environment',
   Activity = 'activity',
   Vessel = 'vessel',
+}
+
+export enum DatasetSubCategory {
+  Fishing = 'fishing',
+  Presence = 'presence',
+  Viirs = 'viirs',
+  Sar = 'sar',
 }
 
 export interface Dataset {

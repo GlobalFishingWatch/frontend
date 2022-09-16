@@ -1,10 +1,11 @@
-import { Suspense, useCallback, useState } from 'react'
+import { Suspense, useCallback, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { Button, Modal, Spinner } from '@globalfishingwatch/ui-components'
+import { useNavigatorOnline } from '@globalfishingwatch/react-hooks'
 import { DEFAULT_VESSEL_MAP_ZOOM, RISK_SUMMARY_SETTINGS } from 'data/config'
 import {
   RenderedEvent,
@@ -21,6 +22,7 @@ import ActivityDataAndTerminology from 'features/profile/components/activity/Act
 import FiltersLabel from 'features/filters-label/filters-label'
 import { Filters } from 'features/event-filters/filters.slice'
 import { useUser } from 'features/user/user.hooks'
+import { selectCurrentOfflineVessel } from 'features/vessels/offline-vessels.selectors'
 import ActivityItem from '../profile/components/activity/ActivityItem'
 import ActivityModalContent from '../profile/components/activity/ActivityModalContent'
 import { useActivityByType } from './activity-by-type.hook'
@@ -47,6 +49,8 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
   const { highlightEvent, highlightVoyage } = useMapEvents()
   const { viewport, setMapCoordinates } = useViewport()
   const highlightsIds = useSelector(selectHighlightEventIds)
+  const { online } = useNavigatorOnline()
+  const offlineVessel = useSelector(selectCurrentOfflineVessel)
 
   const selectEventOnMap = useCallback(
     (event: RenderedEvent | Voyage) => {
@@ -69,12 +73,17 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
     [highlightEvent, highlightVoyage, onMoveToMap, setMapCoordinates, viewport.zoom]
   )
 
-  const endDate = DateTime.now()
-  const startDate = endDate.minus(RISK_SUMMARY_SETTINGS.timeRange)
-  const filters: Partial<Filters> = {
-    start: startDate.toUTC().toISO(),
-    end: endDate.toUTC().toISO(),
-  }
+  const filters: Partial<Filters> = useMemo(() => {
+    const endDate =
+      (!online && offlineVessel?.savedOn && DateTime.fromISO(offlineVessel.savedOn)) ||
+      DateTime.now()
+    const startDate = endDate.minus(RISK_SUMMARY_SETTINGS.timeRange)
+
+    return {
+      start: startDate.toUTC().toISO(),
+      end: endDate.toUTC().toISO(),
+    }
+  }, [offlineVessel?.savedOn, online])
 
   return (
     <div className={styles.activityContainer}>

@@ -137,6 +137,7 @@
     "vessel_other": "Kapal",
     "view_layer": "lihat lapisan",
     "viirs": "Deteksi cahaya malam (VIIRS)",
+    "sar": "Radar detections (SAR)",
     "welcomePopupDisable": "Jangan tampilkan lagi",
     "whatsNew": "Apa yang baru?"
   },
@@ -338,6 +339,7 @@
     "editPolygonHint": "Click on polygon corners to adjust their coordinates",
     "filterClose": "Tutup filter",
     "filterOpen": "Buka filter",
+    "filterValues": "Filter values",
     "flagState": "Flag State",
     "flagState_one": "Flag State",
     "flagState_other": "Flag States",
