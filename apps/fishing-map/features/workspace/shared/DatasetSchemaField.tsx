@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
-import cx from 'classnames'
-import { useSelector } from 'react-redux'
+// import cx from 'classnames'
+// import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { formatNumber, TagList } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -12,8 +12,8 @@ import {
   SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
-import { selectTimeRange } from 'features/app/app.selectors'
-import { getTimeRangeDuration } from 'utils/dates'
+// import { selectTimeRange } from 'features/app/app.selectors'
+// import { getTimeRangeDuration } from 'utils/dates'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -24,8 +24,8 @@ type LayerPanelProps = {
 function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const vesselGroupsOptions = useVesselGroupsOptions()
-  const timeRange = useSelector(selectTimeRange)
-  const duration = getTimeRangeDuration(timeRange, 'days')
+  // const timeRange = useSelector(selectTimeRange)
+  // const duration = getTimeRangeDuration(timeRange, 'days')
   const filterOperation = getSchemaFilterOperationInDataview(dataview, field)
   let valuesSelected = getSchemaFieldsSelectedInDataview(dataview, field, vesselGroupsOptions).sort(
     (a, b) => a.label - b.label
@@ -54,7 +54,7 @@ function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.
             {filterOperation === EXCLUDE_FILTER_ID && (
               <span> ({t('common.excluded', 'Excluded')})</span>
             )}
-            {field === 'vessel-groups' && duration?.days > 31 && (
+            {/* {field === 'vessel-groups' && duration?.days > 31 && (
               <span className={cx(styles.dataWarning, styles.error)}>
                 {' '}
                 {t(
@@ -62,7 +62,7 @@ function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.
                   'Supported only for time ranges shorter than 30 days'
                 )}
               </span>
-            )}
+            )} */}
           </label>
 
           <TagList
