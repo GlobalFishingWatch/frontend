@@ -7,7 +7,6 @@ import {
   DataviewCategory,
   DataviewConfig,
   EndpointId,
-  DatasetCategory,
 } from '@globalfishingwatch/api-types'
 import {
   Button,
