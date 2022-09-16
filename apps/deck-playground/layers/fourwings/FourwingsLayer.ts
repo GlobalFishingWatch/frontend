@@ -4,18 +4,25 @@ import {
   CompositeLayerProps,
   Layer,
   LayerContext,
+  LayersList,
   UpdateParameters,
 } from '@deck.gl/core/typed'
 // import { Layer } from '@deck.gl/core/typed'
-import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
+import { MVTLayer, TileLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
 import { fourwingsLayerLoader } from 'loaders/fourwings/fourwingsLayerLoader'
 import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
 import { aggregateCell, FourwingsTileLayer } from 'layers/fourwings/FourwingsTileLayer'
 import { filterCellsByBounds } from 'layers/fourwings/fourwings.utils'
 import { debounce } from 'lodash'
+import { VesselPositionsLayer } from 'layers/fourwings/VesselPositionsLayer'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 
+const HEATMAP_ID = 'heatmap'
+const POSITIONS_ID = 'positions'
+export type FourwingsLayerMode = typeof HEATMAP_ID | typeof POSITIONS_ID
+
 export type FourwingsLayerProps = {
+  mode?: FourwingsLayerMode
   minFrame: number
   maxFrame: number
   onViewportLoad: TileLayerProps['onViewportLoad']
@@ -34,25 +41,27 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
   updateRampScale() {
     const { maxFrame, minFrame } = this.props
     const viewportData = this.getDataFilteredByViewport()
-    const cells = viewportData.map((cell) => aggregateCell(cell, { minFrame, maxFrame }))
-    const dataSampled = cells.length > 1000 ? sample(cells, 1000, Math.random) : cells
-    // filter data to 2 standard deviations from mean to remove outliers
-    const meanValue = mean(dataSampled)
-    const standardDeviationValue = standardDeviation(dataSampled)
-    const upperCut = meanValue + standardDeviationValue * 2
-    const lowerCut = meanValue - standardDeviationValue * 2
-    const dataFiltered = dataSampled.filter((a) => a >= lowerCut && a <= upperCut)
-    const stepsNum = Math.min(dataFiltered.length, COLOR_RAMP_DEFAULT_NUM_STEPS)
-    // using ckmeans as jenks
-    const steps = ckmeans(dataFiltered, stepsNum).map(([clusterFirst]) =>
-      parseFloat(clusterFirst.toFixed(3))
-    )
-    const colorRange = steps.map((s, i) => {
-      const opacity = ((i + 1) / COLOR_RAMP_DEFAULT_NUM_STEPS) * 255
-      return [255, 0, 255, opacity]
-    })
+    if (viewportData) {
+      const cells = viewportData.map((cell) => aggregateCell(cell, { minFrame, maxFrame }))
+      const dataSampled = cells.length > 1000 ? sample(cells, 1000, Math.random) : cells
+      // filter data to 2 standard deviations from mean to remove outliers
+      const meanValue = mean(dataSampled)
+      const standardDeviationValue = standardDeviation(dataSampled)
+      const upperCut = meanValue + standardDeviationValue * 2
+      const lowerCut = meanValue - standardDeviationValue * 2
+      const dataFiltered = dataSampled.filter((a) => a >= lowerCut && a <= upperCut)
+      const stepsNum = Math.min(dataFiltered.length, COLOR_RAMP_DEFAULT_NUM_STEPS)
+      // using ckmeans as jenks
+      const steps = ckmeans(dataFiltered, stepsNum).map(([clusterFirst]) =>
+        parseFloat(clusterFirst.toFixed(3))
+      )
+      const colorRange = steps.map((s, i) => {
+        const opacity = ((i + 1) / COLOR_RAMP_DEFAULT_NUM_STEPS) * 255
+        return [255, 0, 255, opacity]
+      })
 
-    this.setState({ colorDomain: steps, colorRange })
+      this.setState({ colorDomain: steps, colorRange })
+    }
   }
 
   debouncedUpdateRampScale = debounce(() => {
@@ -74,13 +83,13 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
     }
   }
 
-  renderLayers() {
-    const TileLayerClass = this.getSubLayerClass('tiles', TileLayer)
+  _getHeatmapLayer() {
+    const TileLayerClass = this.getSubLayerClass(HEATMAP_ID, TileLayer)
     return [
       new TileLayerClass(
         this.props,
         this.getSubLayerProps({
-          id: 'tile',
+          id: HEATMAP_ID,
           data: 'https://gateway.api.dev.globalfishingwatch.org/v2/4wings/tile/heatmap/{z}/{x}/{y}?interval=day&date-range=2022-01-01,2022-08-25&format=intArray&temporal-aggregation=false&proxy=true&datasets[0]=public-global-fishing-effort:v20201001',
           minZoom: 0,
           maxZoom: 8,
@@ -104,11 +113,50 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
       ),
     ]
   }
+  _getVesselPositionsLayer() {
+    const MVTLayerClass = this.getSubLayerClass('positions', MVTLayer)
+    return new MVTLayerClass(
+      this.getSubLayerProps({
+        id: 'positions',
+        data: 'http://gateway.api.dev.globalfishingwatch.org/v2/4wings/tile/position/{z}/{x}/{y}?datasets[0]=public-global-fishing-effort%3Av20201001&date-range=2022-01-01,2022-02-02',
+        binary: false,
+        minZoom: 8,
+        renderSubLayers: (props) => {
+          return new VesselPositionsLayer(props)
+        },
+      })
+    )
+  }
+
+  renderLayers(): Layer<{}> | LayersList {
+    const { mode = 'heatmap' } = this.props
+    if (mode === 'heatmap') {
+      return this._getHeatmapLayer()
+    }
+    this.debouncedUpdateRampScale.cancel()
+    return this._getVesselPositionsLayer()
+  }
+
+  getHeatmapData() {
+    const layer = this.getSubLayers().find(
+      (l) => l.id === `FourwingsLayer-${HEATMAP_ID}`
+    ) as TileLayer
+    if (layer) {
+      return layer.getSubLayers().flatMap((l: FourwingsTileLayer) => l.getTileData().cells)
+    }
+  }
+
+  getPositionsData() {
+    const layer = this.getSubLayers().find(
+      (l) => l.id === `FourwingsLayer-${POSITIONS_ID}`
+    ) as MVTLayer
+    if (layer) {
+      return layer.getSubLayers().flatMap((l: FourwingsTileLayer) => l.getTileData())
+    }
+  }
 
   getData() {
-    return (this.getSubLayers()[0] as TileLayer)
-      .getSubLayers()
-      .flatMap((l: FourwingsTileLayer) => l.getTileData().cells)
+    return this.props.mode === 'heatmap' ? this.getHeatmapData() : this.getPositionsData()
   }
 
   getColorDomain() {

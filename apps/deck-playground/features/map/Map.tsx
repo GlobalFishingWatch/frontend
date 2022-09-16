@@ -1,20 +1,24 @@
-import { Fragment, useEffect, useCallback, useMemo } from 'react'
+import { Fragment, useEffect, useCallback, useMemo, useState } from 'react'
 import { DeckGL } from '@deck.gl/react/typed'
 import { BitmapLayer } from '@deck.gl/layers'
 import { TileLayer } from '@deck.gl/geo-layers'
-import { FourwingsLayer } from 'layers/fourwings/FourwingsLayer'
+import { FourwingsLayer, FourwingsLayerMode } from 'layers/fourwings/FourwingsLayer'
 import { aggregateCell } from 'layers/fourwings/FourwingsTileLayer'
 import { VALUE_MULTIPLIER } from 'loaders/constants'
 import { values } from 'lodash'
+import { getFourwingsMode } from 'layers/fourwings/fourwings.utils'
 import { useHighlightTimerange, useTimerange } from 'features/timebar/timebar.hooks'
 import { VESSEL_IDS } from 'data/vessels'
 import { MapLayer, MapLayerType, useMapLayers } from 'features/map/layers.hooks'
+import { useViewport } from 'features/map/map-viewport.hooks'
 import { VesselsLayer } from '../../layers/vessel/VesselsLayer'
 
 const INITIAL_VIEW_STATE = {
-  longitude: -2,
-  latitude: 40,
-  zoom: 5,
+  // longitude: -2,
+  // latitude: 40,
+  latitude: 44.00079038236199,
+  longitude: -8.153310241289587,
+  zoom: 9,
 }
 
 const basemap = new TileLayer({
@@ -47,6 +51,8 @@ const MapWrapper = (): React.ReactElement => {
   const endTime = dateToMs(timerange.end)
   const highlightStartTime = dateToMs(highlightTimerange?.start)
   const highlightEndTime = dateToMs(highlightTimerange?.end)
+  const { viewState, onViewportStateChange } = useViewport()
+  const activityMode: FourwingsLayerMode = getFourwingsMode(viewState.zoom)
 
   const setMapLayerProperty = useCallback(
     (id: MapLayerType, property: keyof MapLayer, value) => {
@@ -96,20 +102,26 @@ const MapWrapper = (): React.ReactElement => {
         minFrame: startTime,
         maxFrame: endTime,
         onViewportLoad: onViewportLoad,
+        mode: activityMode,
       })
       setMapLayerProperty('fourwings', 'instance', fourwingsLayer)
     } else {
       setMapLayerProperty('fourwings', 'instance', null)
     }
-  }, [fourwingsLayerVisible, setMapLayerProperty, onViewportLoad, startTime, endTime])
+  }, [activityMode, fourwingsLayerVisible, setMapLayerProperty, onViewportLoad, startTime, endTime])
 
   const layers = useMemo(() => {
     return [basemap, ...mapLayers.flatMap((l) => l.instance)]
   }, [mapLayers])
 
   const getTooltip = (tooltip) => {
+    // Heatmap
     if (tooltip.object?.value) {
       return tooltip.object.value.toString()
+    }
+    // Vessel position
+    if (tooltip.object?.properties?.vesselId) {
+      return tooltip.object?.properties?.vesselId.toString()
     }
     return
   }
@@ -118,10 +130,10 @@ const MapWrapper = (): React.ReactElement => {
     <Fragment>
       <DeckGL
         controller={true}
-        initialViewState={INITIAL_VIEW_STATE}
+        viewState={viewState}
         layers={layers}
         getTooltip={getTooltip}
-        // onViewStateChange={(v) => console.log(v.viewState.zoom)}
+        onViewStateChange={onViewportStateChange}
       />
     </Fragment>
   )
