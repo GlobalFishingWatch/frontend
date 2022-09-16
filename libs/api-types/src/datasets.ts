@@ -130,6 +130,13 @@ export enum DatasetCategory {
   Vessel = 'vessel',
 }
 
+export enum DatasetSubCategory {
+  Fishing = 'fishing',
+  Presence = 'presence',
+  Viirs = 'viirs',
+  Sar = 'sar',
+}
+
 export interface Dataset {
   id: string
   type: DatasetTypes

@@ -14,6 +14,7 @@ import {
   DatasetGeometryType,
   FilterOperator,
   INCLUDE_FILTER_ID,
+  DatasetSubCategory,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
@@ -22,7 +23,6 @@ import { capitalize, sortFields } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
 import { PUBLIC_SUFIX, FULL_SUFIX, PRIVATE_SUFIX } from 'data/config'
 import { getDatasetNameTranslated } from 'features/i18n/utils'
-import { FISHING_DATAVIEW_ID, PRESENCE_DATAVIEW_ID, VIIRS_MATCH_DATAVIEW_ID } from 'data/workspaces'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { FileType } from 'features/common/FileDropzone'
 import styles from '../vessel-groups/VesselGroupModal.module.css'
@@ -101,25 +101,14 @@ export const getDatasetTitleByDataview = (
     : dataview.datasets
 
   let datasetTitle = dataview.name || ''
-  if (
-    dataviewInstance.datasets[0].category === DatasetCategory.Activity &&
-    dataviewInstance.datasets[0].subcategory === 'fishing'
-  ) {
+  const { category, subcategory } = dataviewInstance.datasets?.[0] || {}
+  if (category === DatasetCategory.Activity && subcategory === DatasetSubCategory.Fishing) {
     datasetTitle = t(`common.apparentFishing`, 'Apparent Fishing Effort')
-  } else if (
-    dataviewInstance.datasets[0].category === DatasetCategory.Activity &&
-    dataviewInstance.datasets[0].subcategory === 'presence'
-  ) {
+  } else if (category === DatasetCategory.Activity && subcategory === DatasetSubCategory.Presence) {
     datasetTitle = t(`common.presence`, 'Vessel presence')
-  } else if (
-    dataviewInstance.datasets[0].category === DatasetCategory.Detections &&
-    dataviewInstance.datasets[0].subcategory === 'viirs'
-  ) {
+  } else if (category === DatasetCategory.Detections && subcategory === DatasetSubCategory.Viirs) {
     datasetTitle = t(`common.viirs`, 'Night light detections (VIIRS)')
-  } else if (
-    dataviewInstance.datasets[0].category === DatasetCategory.Detections &&
-    dataviewInstance.datasets[0].subcategory === 'sar'
-  ) {
+  } else if (category === DatasetCategory.Detections && subcategory === DatasetSubCategory.Sar) {
     datasetTitle = t(`common.sar`, 'Radar detections (SAR)')
   } else if (activeDatasets) {
     if (hasDatasetsConfig && activeDatasets?.length !== 1) {
