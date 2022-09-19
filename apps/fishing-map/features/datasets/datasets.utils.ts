@@ -89,7 +89,7 @@ export const getDatasetIcon = (dataset: Dataset): IconType => {
 
 export const getDatasetTitleByDataview = (
   dataview: Dataview | UrlDataviewInstance,
-  { showPrivateIcon = true } = {}
+  { showPrivateIcon = true, withSources = false } = {}
 ): string => {
   const dataviewInstance = {
     ...dataview,
@@ -118,7 +118,15 @@ export const getDatasetTitleByDataview = (
       ? getDatasetLabel(activeDatasets[0])
       : getDatasetNameTranslated(activeDatasets[0])
   }
-  return datasetTitle
+  if (!withSources) {
+    return datasetTitle
+  }
+  const sources =
+    dataview.datasets.length > 1
+      ? `(${dataview.datasets.length} ${t('common.sources', 'Sources')})`
+      : `(${getDatasetNameTranslated(dataview.datasets[0])})`
+
+  return datasetTitle + ' ' + sources
 }
 
 export const getDatasetsInDataviews = (
