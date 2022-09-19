@@ -106,20 +106,63 @@ export const mergeVesselFromSources = (
   )
   if (allFields.length) {
     const result = allFields.reduce((acc, key) => {
+      if (key.toString() === 'years') {
+        return {
+          ...acc,
+          years: vesselData
+            .map((data) => {
+              return data.vessel[key] as number[]
+            }).flatMap(data => data),
+        }
+      }
+      if (key.toString() === 'firstTransmissionDate') {
+        return {
+          ...acc,
+          firstTransmissionDate: vesselData.reduce((lastDate, data) => {
+            if (data.vessel.firstTransmissionDate) {
+              if (!lastDate || lastDate.localeCompare(data.vessel.firstTransmissionDate) === 1) {
+                return data.vessel.firstTransmissionDate
+              }
+            }
+            return lastDate
+          }, '')
+        }
+      }
+      if (key.toString() === 'lastTransmissionDate') {
+        return {
+          ...acc,
+          lastTransmissionDate: vesselData.reduce((lastDate, data) => {
+            if (data.vessel.lastTransmissionDate) {
+              if (!lastDate || lastDate.localeCompare(data.vessel.lastTransmissionDate) === -1) {
+                return data.vessel.lastTransmissionDate
+              }
+            }
+            return lastDate
+          }, '')
+        }
+      }
+      if (key.toString() === 'posCount') {
+        return {
+          ...acc,
+          posCount: vesselData.reduce((sum, data) => {
+            return sum + ((data.vessel[key] ?? 0) as number)
+          }, 0)
+        }
+      }
       const value =
         key.toString() === 'history'
           ? mergeHistoryFields(
-              key,
-              vesselData.map((data) => ({
-                source: data.source,
-                value: data.vessel[key] as VesselFieldsHistory,
-                vessel: data.vessel,
-              }))
-            )
+            key,
+            vesselData.map((data) => ({
+              source: data.source,
+              value: data.vessel[key] as VesselFieldsHistory,
+              vessel: data.vessel,
+            }))
+          )
           : priorityzeFieldValue(
-              key,
-              vesselData.map((data) => ({ source: data.source, value: data.vessel[key] }))
-            )
+            key,
+            vesselData.map((data) => ({ source: data.source, value: data.vessel[key] }))
+          )
       return {
         ...acc,
         [key]: value,

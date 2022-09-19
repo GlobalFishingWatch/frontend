@@ -194,8 +194,10 @@ Object {
   "operator": undefined,
   "origin": undefined,
   "owner": undefined,
+  "posCount": 0,
   "shipname": "MARIA MARIA 2",
   "type": "some vessel type",
   "vesselType": "some vessel type",
+  "years": Array [],
 }
 `;

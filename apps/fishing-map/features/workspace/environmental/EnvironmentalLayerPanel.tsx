@@ -15,6 +15,7 @@ import ActivityFilters from 'features/workspace/activity/ActivityFilters'
 import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
 import DatasetFlagField from 'features/workspace/shared/DatasetFlagsField'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
+import HistogramRangeFilter from 'features/workspace/environmental/HistogramRangeFilter'
 import { SupportedEnvDatasetSchema } from 'features/datasets/datasets.utils'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import DatasetNotFound from '../shared/DatasetNotFound'
@@ -185,6 +186,9 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
             [styles.dragging]: isSorting && activeIndex > -1,
           })}
         >
+          <div className={cx(styles.filters, { [styles.active]: layerActive })}>
+            <HistogramRangeFilter dataview={dataview} />
+          </div>
           <div id={`legend_${dataview.id}`}></div>
         </div>
       )}

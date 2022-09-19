@@ -248,6 +248,7 @@
       "description": "Highlight all {{eventType}} events that may have occured inside an EEZ. We calculate a bounding box for the event location based on the minimum and maximum coordinates and verify if it overlaps with the bounding box of the EEZ. For example, if you select Argentina EEZ and Chile EEZ under the {{eventType}} Events activity highlights, you will see all {{eventType}} events where the bounding box created by minimum and maximum coordinates of the events overlapped with the minimum and maximum coordinates of the Argentina EEZ OR the Chile EEZ. Because a bounding box method is used, it is possible the actual track coordinates do not overlap with the EEZ. Please investigate the highlighted events further on the map.",
       "label": "Events in these EEZs"
     },
+    "enable": "Enable activity highlights",
     "encounters": {
       "shortTitle": "Encounter",
       "title": "Encounter Events"

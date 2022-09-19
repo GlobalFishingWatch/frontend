@@ -136,7 +136,8 @@
     "vessel_one": "Vessel",
     "vessel_other": "Vessels",
     "view_layer": "View the layer",
-    "viirs": "Night light detections (VIIRS)",
+    "viirs": "Night light detections",
+    "sar": "Radar detections (SAR)",
     "welcomePopupDisable": "Don't show again",
     "whatsNew": "What's new?"
   },
@@ -338,6 +339,7 @@
     "editPolygonHint": "Click on polygon corners to adjust their coordinates",
     "filterClose": "Close filters",
     "filterOpen": "Open filters",
+    "filterValues": "Filter values",
     "flagState": "Flag State",
     "flagState_one": "Flag State",
     "flagState_other": "Flag States",

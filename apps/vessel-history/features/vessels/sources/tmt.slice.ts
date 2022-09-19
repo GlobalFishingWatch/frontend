@@ -73,6 +73,8 @@ export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail
     iuuStatus: iuuStatus,
     firstTransmissionDate: '',
     lastTransmissionDate: '',
+    years: [],
+    posCount: 0,
     origin: '',
     history: {
       ...vesselHistory,

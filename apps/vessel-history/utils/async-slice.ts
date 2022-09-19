@@ -128,7 +128,7 @@ export const createAsyncSlice = <T, U>({
       if (updateThunk) {
         builder.addCase(updateThunk.pending, (state: any, action) => {
           state.status = AsyncReducerStatus.LoadingUpdate
-          state.statusId = action.meta.arg.id
+          state.statusId = action.meta.arg
         })
         builder.addCase(updateThunk.fulfilled, (state: any, action) => {
           state.status = 'finished'

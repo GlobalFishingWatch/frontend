@@ -136,7 +136,8 @@
     "vessel_one": "Embarcación",
     "vessel_other": "Embarcaciones",
     "view_layer": "Ver la capa",
-    "viirs": "Detección de luz nocturna (VIIRS)",
+    "viirs": "Detección de luz nocturna",
+    "sar": "Radar detections (SAR)",
     "welcomePopupDisable": "No volver a mostrar",
     "whatsNew": "Novedades"
   },
@@ -338,6 +339,7 @@
     "editPolygonHint": "Haga clic en las esquinas del polígono para ajustar sus coordenadas",
     "filterClose": "Cerrar los filtros",
     "filterOpen": "Abrir los filtros",
+    "filterValues": "Filter values",
     "flagState": "Estado de bandera",
     "flagState_one": "Estado de bandera",
     "flagState_other": "Estados de bandera",

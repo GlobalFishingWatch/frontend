@@ -1,3 +1,4 @@
+import { FourwingsLayerMode } from 'layers/fourwings/FourwingsLayer'
 import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
 
 export interface Bounds {
@@ -5,6 +6,10 @@ export interface Bounds {
   south: number
   west: number
   east: number
+}
+
+export function getFourwingsMode(zoom: number): FourwingsLayerMode {
+  return zoom <= 9 ? 'heatmap' : 'positions'
 }
 
 export const filterCellsByBounds = (cells: TileCell[], bounds: Bounds) => {

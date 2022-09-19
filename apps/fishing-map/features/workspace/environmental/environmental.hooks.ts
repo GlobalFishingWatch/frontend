@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
+import { EnviromentalDatasetConfiguration } from '@globalfishingwatch/api-types'
 import { aggregateFeatures, ChunkFeature } from '@globalfishingwatch/features-aggregate'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectActiveNonTrackEnvironmentalDataviews } from 'features/dataviews/dataviews.selectors'
@@ -19,6 +20,9 @@ export const useEnvironmentalBreaksUpdate = () => {
   const { bounds } = useMapBounds()
   const dataviewFeatures = useMapDataviewFeatures(dataviews)
   const sourcesLoaded = areDataviewsFeatureLoaded(dataviewFeatures)
+  const layersFilterHash = dataviews
+    .flatMap(({ config }) => `${config.minVisibleValue}-${config.maxVisibleValue}`)
+    .join(',')
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   const updateBreaksByViewportValues = useCallback(
@@ -27,8 +31,17 @@ export const useEnvironmentalBreaksUpdate = () => {
         ({ chunksFeatures, dataviewsId, metadata }) => {
           const { features } = chunksFeatures?.[0] || ({} as ChunkFeature)
           if (features && features.length) {
+            const config = dataviews.find(({ id }) => dataviewsId.includes(id))
+              ?.config as EnviromentalDatasetConfiguration
             const filteredFeatures = filterFeaturesByBounds(features, bounds)
-            const data = aggregateFeatures(filteredFeatures, metadata)
+            const rawData = aggregateFeatures(filteredFeatures, metadata)
+            const data = rawData.filter((d) => {
+              const matchesMin =
+                config?.minVisibleValue !== undefined ? d >= config?.minVisibleValue : true
+              const matchesMax =
+                config?.maxVisibleValue !== undefined ? d <= config?.maxVisibleValue : true
+              return matchesMin && matchesMax
+            })
 
             if (data && data.length) {
               const dataSampled = data.length > 1000 ? sample(data, 1000, Math.random) : data
@@ -71,7 +84,7 @@ export const useEnvironmentalBreaksUpdate = () => {
         upsertDataviewInstance(dataviewInstances)
       }
     },
-    [upsertDataviewInstance]
+    [dataviews, upsertDataviewInstance]
   )
 
   useEffect(() => {
@@ -79,5 +92,5 @@ export const useEnvironmentalBreaksUpdate = () => {
       updateBreaksByViewportValues(dataviewFeatures, bounds)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sourcesLoaded])
+  }, [sourcesLoaded, layersFilterHash])
 }
