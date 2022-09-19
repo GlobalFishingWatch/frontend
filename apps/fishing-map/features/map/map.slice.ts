@@ -22,7 +22,7 @@ import {
   selectActiveTemporalgridDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
-import { isGuestUser, selectUserLogged } from 'features/user/user.slice'
+import { isGuestUser } from 'features/user/user.slice'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 
 export const MAX_TOOLTIP_LIST = 5
@@ -199,7 +199,6 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
   'map/fetchFishingActivityInteraction',
   async ({ fishingActivityFeatures, activityProperties }, { getState, signal, dispatch }) => {
     const state = getState() as RootState
-    const userLogged = selectUserLogged(state)
     const guestUser = isGuestUser(state)
     const temporalgridDataviews = selectActiveTemporalgridDataviews(state) || []
     if (!fishingActivityFeatures.length) {
@@ -310,7 +309,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
                 const trackDatasetId = getRelatedDatasetByType(
                   trackFromRelatedDataset,
                   DatasetTypes.Tracks,
-                  userLogged
+                  !guestUser
                 )?.id
                 // if (vesselInfo && !trackDatasetId) {
                 //   console.warn('No track dataset found for dataset:', trackFromRelatedDataset)
