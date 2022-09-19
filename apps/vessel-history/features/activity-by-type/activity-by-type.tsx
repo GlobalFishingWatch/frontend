@@ -1,12 +1,9 @@
-import { Suspense, useCallback, useMemo, useState } from 'react'
+import { Suspense, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
-import { useTranslation } from 'react-i18next'
-import { DateTime } from 'luxon'
-import { Button, Modal, Spinner } from '@globalfishingwatch/ui-components'
-import { useNavigatorOnline } from '@globalfishingwatch/react-hooks'
-import { DEFAULT_VESSEL_MAP_ZOOM, RISK_SUMMARY_SETTINGS } from 'data/config'
+import { Modal, Spinner } from '@globalfishingwatch/ui-components'
+import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import {
   RenderedEvent,
   selectHighlightEventIds,
@@ -17,12 +14,8 @@ import useViewport from 'features/map/map-viewport.hooks'
 import ActivityGroup from 'features/profile/components/activity/ActivityGroup'
 import AisCoverage from 'features/profile/components/activity/AisCoverage'
 import useRiskIndicator from 'features/risk-indicator/risk-indicator.hook'
-import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
-import ActivityDataAndTerminology from 'features/profile/components/activity/ActivityDataAndTerminology'
-import FiltersLabel from 'features/filters-label/filters-label'
-import { Filters } from 'features/event-filters/filters.slice'
 import { useUser } from 'features/user/user.hooks'
-import { selectCurrentOfflineVessel } from 'features/vessels/offline-vessels.selectors'
+import DateRangeLabel from 'features/date-range-label/date-range-label'
 import ActivityItem from '../profile/components/activity/ActivityItem'
 import ActivityModalContent from '../profile/components/activity/ActivityModalContent'
 import { useActivityByType } from './activity-by-type.hook'
@@ -33,8 +26,6 @@ export interface ActivityByTypeProps {
 }
 
 export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) {
-  const { t } = useTranslation()
-
   const { events, toggleEventType } = useActivityByType()
 
   const [isModalOpen, setIsOpen] = useState(false)
@@ -49,8 +40,6 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
   const { highlightEvent, highlightVoyage } = useMapEvents()
   const { viewport, setMapCoordinates } = useViewport()
   const highlightsIds = useSelector(selectHighlightEventIds)
-  const { online } = useNavigatorOnline()
-  const offlineVessel = useSelector(selectCurrentOfflineVessel)
 
   const selectEventOnMap = useCallback(
     (event: RenderedEvent | Voyage) => {
@@ -73,18 +62,6 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
     [highlightEvent, highlightVoyage, onMoveToMap, setMapCoordinates, viewport.zoom]
   )
 
-  const filters: Partial<Filters> = useMemo(() => {
-    const endDate =
-      (!online && offlineVessel?.savedOn && DateTime.fromISO(offlineVessel.savedOn)) ||
-      DateTime.now()
-    const startDate = endDate.minus(RISK_SUMMARY_SETTINGS.timeRange)
-
-    return {
-      start: startDate.toUTC().toISO(),
-      end: endDate.toUTC().toISO(),
-    }
-  }, [offlineVessel?.savedOn, online])
-
   return (
     <div className={styles.activityContainer}>
       <Suspense fallback={<Spinner className={styles.spinnerFull} />}>
@@ -100,18 +77,7 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
         <div className={styles.heading}>
           <AisCoverage value={eventsLoading ? null : coverage?.percentage} />
           <div className={styles.headingButtons}>
-            <DataAndTerminology
-              containerClassName={styles.dataAndTerminologyContainer}
-              size="medium"
-              type="solid"
-              title={t('common.dataAndTerminology', 'Data and Terminology')}
-            >
-              <ActivityDataAndTerminology />
-            </DataAndTerminology>
-
-            <Button type="secondary" className={styles.filterBtn}>
-              <FiltersLabel filters={filters} />
-            </Button>
+            <DateRangeLabel type="secondary" className={styles.filterBtn} />
           </div>
         </div>
         <div className={styles.activityContainer}>

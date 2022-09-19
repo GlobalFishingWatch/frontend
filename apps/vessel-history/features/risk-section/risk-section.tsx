@@ -8,7 +8,7 @@ export interface RiskSectionProps {
   children?: ReactNode
   className?: string
   severity?: 'high' | 'medium' | 'low' | 'none'
-  title: string
+  title?: string
   titleInfo?: ReactNode
   icon?: IconType
 }
@@ -19,19 +19,25 @@ export function RiskSection({
   severity,
   title,
   titleInfo,
-  icon
+  icon,
 }: RiskSectionProps) {
   return (
     <div className={cx(styles['container'], styles[severity], className)}>
-      <label className={styles.sectionLabel}>
-        {icon && <span className={cx(styles.categoryIcon, styles[icon])}><Icon icon={icon} /></span>}
-        {title}
-        {titleInfo && (
-          <DataAndTerminology size="tiny" type="default" title={title}>
-            {titleInfo}
-          </DataAndTerminology>
-        )}
-      </label>
+      {title && (
+        <label className={styles.sectionLabel}>
+          {icon && (
+            <span className={cx(styles.categoryIcon, styles[icon])}>
+              <Icon icon={icon} />
+            </span>
+          )}
+          {title}
+          {titleInfo && (
+            <DataAndTerminology size="tiny" type="default" title={title}>
+              {titleInfo}
+            </DataAndTerminology>
+          )}
+        </label>
+      )}
       {children}
     </div>
   )

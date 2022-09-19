@@ -100,3 +100,10 @@
   font: var(--font-S);
   color: var(--color-secondary-blue);
 }
+
+.label {
+  color: var(--color-secondary-blue);
+  font: var(--font-S);
+  text-transform: uppercase;
+  display: block;
+}

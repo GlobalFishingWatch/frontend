@@ -1,7 +1,8 @@
 import { Trans } from 'react-i18next'
+import { t } from 'features/i18n/i18n'
 
 /* eslint-disable-next-line */
-export interface TerminologyFishingEventsProps {}
+export interface TerminologyFishingEventsProps { }
 
 export function TerminologyFishingEvents(props: TerminologyFishingEventsProps) {
   return (
@@ -32,7 +33,14 @@ export function TerminologyFishingEvents(props: TerminologyFishingEventsProps) {
         >
           https://globalfishingwatch.org/datasets-and-code/
         </a>
-        .
+        and FAQs:
+        <a
+          href={t('events.fishingEventsFaqsLink')}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          https://drive.google.com/file/d/1N4YRJ_yxAObEIWbaYM8l-YDPHS0bKe2N/view?usp=sharing/
+        </a>
       </Trans>
     </p>
   )

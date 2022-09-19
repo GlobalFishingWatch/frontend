@@ -11,7 +11,7 @@
 .heading {
   display: flex;
   justify-content: space-between;
-  padding: var(--space-S) var(--space-S) var(--space-XS) var(--space-S);
+  padding: var(--space-S) var(--space-S) var(--space-XS) var(--space-M);
 }
 
 .dataAndTerminologyContainer {
@@ -38,5 +38,9 @@ button.filterBtn {
     display: flex;
     justify-content: flex-start;
     flex-direction: column-reverse;
+  }
+
+  .headingButtons > * {
+    margin-left: 0;
   }
 }
