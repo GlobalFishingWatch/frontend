@@ -10,7 +10,7 @@ import { selectVesselsDataviews } from 'features/dataviews/dataviews.slice'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { selectHasTracksWithNoData } from 'features/timebar/timebar.selectors'
 import { isBasicSearchAllowed } from 'features/search/search.selectors'
-import { selectUserLogged } from 'features/user/user.slice'
+import { isGuestUser } from 'features/user/user.slice'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import VesselEventsLegend from './VesselEventsLegend'
 import VesselLayerPanel from './VesselLayerPanel'
@@ -19,7 +19,7 @@ function VesselsSection(): React.ReactElement {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const dataviews = useSelector(selectVesselsDataviews)
-  const userLogged = useSelector(selectUserLogged)
+  const guestUser = useSelector(isGuestUser)
   const hasVesselsWithNoTrack = useSelector(selectHasTracksWithNoData)
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
   const searchAllowed = useSelector(isBasicSearchAllowed)
@@ -63,7 +63,7 @@ function VesselsSection(): React.ReactElement {
           </div>
         )}
       </SortableContext>
-      {hasVesselsWithNoTrack && !userLogged && (
+      {hasVesselsWithNoTrack && guestUser && (
         <p className={styles.disclaimer}>
           <Trans i18nKey="vessel.trackLogin">
             One of your selected sources requires you to
