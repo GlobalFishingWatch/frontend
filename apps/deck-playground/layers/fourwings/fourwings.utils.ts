@@ -35,3 +35,17 @@ export const filterCellsByBounds = (cells: TileCell[], bounds: Bounds) => {
     return lon + leftOffset + rightOffset > west && lon + leftOffset + rightOffset < east
   })
 }
+
+export const aggregateCellTimeseries = (cells: TileCell[]) => {
+  const timeseries = cells.reduce((acc, { timeseries }) => {
+    timeseries.forEach(({ frame, value }) => {
+      if (acc[frame]) {
+        acc[frame] += value
+      } else {
+        acc[frame] = value
+      }
+    })
+    return acc
+  }, {} as Record<number, number>)
+  return timeseries
+}

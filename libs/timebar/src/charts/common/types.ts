@@ -70,4 +70,4 @@ export type TimebarChartsData = Record<ChartType, { data: TimebarChartData<void>
 
 export type HighlightedChunks = Partial<Record<ChartType, string[]>>
 
-export type Timeseries = { frame: number; date: number; [key: number]: number }[]
+export type Timeseries = { frame?: number; date: number; [key: number]: number }[]

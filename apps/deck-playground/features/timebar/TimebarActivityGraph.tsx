@@ -9,21 +9,18 @@ const TimebarActivityGraph = () => {
   const { visible, loaded, instance } = fourwingsLayer || {}
 
   const dataviews = useMemo(() => {
-    return [fourwingsLayer]
-  }, [fourwingsLayer])
+    return [{ id, visible }]
+  }, [id, visible])
 
   const stackedActivity: Timeseries = useMemo(() => {
-    if (loaded && instance) {
-      const data = instance.getDataFilteredByViewport()
-      console.log('CALCULATING TIMEBAR TIMESERIES')
-      const timeseries = data.flatMap((data) => {
-        return data.timeseries.map((timeseries) => ({
-          0: timeseries.value,
-          frame: timeseries.frame,
-          date: timeseries.frame,
-        }))
-      })
-      return timeseries
+    if (loaded && fourwingsLayerInstance) {
+      const data = fourwingsLayerInstance.getHeatmapTimeseries()
+      const dataArray = Object.keys(data)
+        .map((key) => {
+          return { date: parseInt(key), 0: data[key] }
+        })
+        .sort((a, b) => a.date - b.date)
+      return dataArray
     }
     return []
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -31,9 +28,10 @@ const TimebarActivityGraph = () => {
 
   if (!stackedActivity || !stackedActivity.length || !fourwingsLayer || !visible) return null
 
-  const loading = instance
-    ? instance?.getSubLayers().every((l: any) => l.props.tile._isLoaded)
-    : false
+  // const loading = instance
+  //   ? instance?.getSubLayers().every((l: any) => l.props.tile._isLoaded)
+  //   : false
+  const loading = false
 
   // TODO: check performance issues on mouser hover
   return (
