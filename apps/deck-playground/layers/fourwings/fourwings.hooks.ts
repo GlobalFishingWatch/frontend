@@ -1,4 +1,3 @@
-import { Color } from '@deck.gl/core/typed'
 import { getFourwingsMode } from 'layers/fourwings/fourwings.utils'
 import {
   FourwingsColorRamp,
@@ -16,6 +15,7 @@ const dateToMs = (date: string) => {
 }
 
 type FourwingsAtom = {
+  highlightedVesselId?: string
   colorRamp: FourwingsColorRamp
   instance?: FourwingsLayer
   loaded: boolean
@@ -33,6 +33,7 @@ export const fourwingsLayerAtom = atom<FourwingsAtom>({
 export function useFourwingsLayer() {
   const [
     {
+      highlightedVesselId,
       colorRamp: { colorDomain, colorRange },
       instance,
     },
@@ -43,39 +44,38 @@ export function useFourwingsLayer() {
   const startTime = dateToMs(timerange.start)
   const endTime = dateToMs(timerange.end)
   const { viewState } = useViewport()
-  const activityMode: FourwingsLayerMode = getFourwingsMode(viewState.zoom)
+  const activityMode: FourwingsLayerMode = getFourwingsMode(viewState.zoom, timerange)
 
   const fourwingsMapLayerVisible = mapLayers.find((l) => l.id === 'fourwings')?.visible
 
-  const setLayerLoaded = useCallback(
-    (loaded) => updateFourwingsAtom((state) => ({ ...state, loaded })),
-    [updateFourwingsAtom]
-  )
-  const setLayerColorRamp = useCallback(
-    (colorRamp) => updateFourwingsAtom((state) => ({ ...state, colorRamp })),
-    [updateFourwingsAtom]
-  )
-  const setLayerInstance = useCallback(
-    (instance) => updateFourwingsAtom((state) => ({ ...state, instance })),
+  const setAtomProperty = useCallback(
+    (property) => updateFourwingsAtom((state) => ({ ...state, ...property })),
     [updateFourwingsAtom]
   )
 
   const onTileLoad = useCallback(() => {
-    setLayerLoaded(false)
-  }, [setLayerLoaded])
+    setAtomProperty({ loaded: false })
+  }, [setAtomProperty])
 
   const onViewportLoad = useCallback(() => {
-    setLayerLoaded(true)
-  }, [setLayerLoaded])
+    setAtomProperty({ loaded: true })
+  }, [setAtomProperty])
+
+  const onVesselHighlight = useCallback(
+    (id) => {
+      setAtomProperty({ highlightedVesselId: id })
+    },
+    [setAtomProperty]
+  )
 
   const onColorRampUpdate = useCallback(
     (colorRamp: FourwingsColorRamp) => {
       if (colorRamp) {
         console.log('updates ramp', colorRamp)
-        setLayerColorRamp(colorRamp)
+        setAtomProperty({ colorRamp })
       }
     },
-    [setLayerColorRamp]
+    [setAtomProperty]
   )
 
   useEffect(() => {
@@ -85,14 +85,16 @@ export function useFourwingsLayer() {
         maxFrame: endTime,
         colorDomain,
         colorRange,
+        mode: activityMode,
         onTileLoad: onTileLoad,
         onViewportLoad: onViewportLoad,
+        highlightedVesselId: highlightedVesselId,
+        onVesselHighlight: onVesselHighlight,
         onColorRampUpdate: onColorRampUpdate,
-        mode: activityMode,
       })
-      setLayerInstance(fourwingsLayer)
+      setAtomProperty({ instance: fourwingsLayer })
     } else {
-      setLayerInstance(undefined)
+      setAtomProperty({ instance: undefined })
     }
   }, [
     fourwingsMapLayerVisible,
@@ -105,7 +107,9 @@ export function useFourwingsLayer() {
     onTileLoad,
     onViewportLoad,
     onColorRampUpdate,
-    setLayerInstance,
+    setAtomProperty,
+    onVesselHighlight,
+    highlightedVesselId,
   ])
 
   return instance

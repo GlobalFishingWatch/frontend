@@ -1,18 +1,10 @@
-import {
-  Color,
-  CompositeLayer,
-  CompositeLayerProps,
-  Layer,
-  LayerContext,
-  LayersList,
-  UpdateParameters,
-} from '@deck.gl/core/typed'
+import { Color, CompositeLayer, Layer, LayersList } from '@deck.gl/core/typed'
 // import { Layer } from '@deck.gl/core/typed'
 import { MVTLayer, TileLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
 import { fourwingsLayerLoader } from 'loaders/fourwings/fourwingsLayerLoader'
 import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
 import { aggregateCell, FourwingsTileLayer } from 'layers/fourwings/FourwingsTileLayer'
-import { aggregateCellTimeseries } from 'layers/fourwings/fourwings.utils'
+import { aggregateCellTimeseries, getRoundedDateFromTS } from 'layers/fourwings/fourwings.utils'
 import { debounce } from 'lodash'
 import { VesselPositionsLayer } from 'layers/fourwings/VesselPositionsLayer'
 import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
@@ -32,7 +24,9 @@ export type FourwingsLayerProps = {
   maxFrame: number
   colorDomain: number[]
   colorRange: Color[]
+  highlightedVesselId?: string
   onColorRampUpdate: (colorRamp: FourwingsColorRamp) => void
+  onVesselHighlight?: (vesselId: string) => void
 }
 
 export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLayerProps> {
@@ -93,6 +87,12 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   //   }
   // }
 
+  _getDateRangeParam = () => {
+    return `date-range=${getRoundedDateFromTS(this.props.minFrame)},${getRoundedDateFromTS(
+      this.props.maxFrame
+    )}`
+  }
+
   _getHeatmapLayer() {
     const TileLayerClass = this.getSubLayerClass(HEATMAP_ID, TileLayer)
     return new TileLayerClass(
@@ -116,21 +116,22 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
       })
     )
   }
+
   _getVesselPositionsLayer() {
     const MVTLayerClass = this.getSubLayerClass('positions', MVTLayer)
-    return new MVTLayerClass(
-      this.getSubLayerProps({
-        id: 'positions',
-        data: 'https://gateway.api.dev.globalfishingwatch.org/v2/4wings/tile/position/{z}/{x}/{y}?datasets[0]=public-global-fishing-effort%3Av20201001&date-range=2022-01-01,2022-02-02',
-        binary: false,
-        minZoom: 8,
-        onTileLoad: this.props.onTileLoad,
-        onViewportLoad: this.props.onViewportLoad,
-        renderSubLayers: (props) => {
-          return new VesselPositionsLayer(props)
-        },
-      })
-    )
+    return new MVTLayerClass({
+      id: 'positions',
+      data: `https://gateway.api.dev.globalfishingwatch.org/v2/4wings/tile/position/{z}/{x}/{y}?datasets[0]=public-global-fishing-effort%3Av20201001&${this._getDateRangeParam()}`,
+      binary: false,
+      minZoom: 8,
+      onVesselHighlight: this.props.onVesselHighlight,
+      highlightedVesselId: this.props.highlightedVesselId,
+      onTileLoad: this.props.onTileLoad,
+      onViewportLoad: this.props.onViewportLoad,
+      renderSubLayers: (props) => {
+        return new VesselPositionsLayer(this.getSubLayerProps(props))
+      },
+    })
   }
 
   renderLayers(): Layer<{}> | LayersList {
