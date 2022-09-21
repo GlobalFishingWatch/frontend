@@ -1,7 +1,10 @@
 import { VesselsLayer } from 'layers/vessel/VesselsLayer'
 import { useMemo } from 'react'
 import { getFourwingsMode } from 'layers/fourwings/fourwings.utils'
-import { useFourwingsLayerInstance } from 'layers/fourwings/fourwings.hooks'
+import {
+  useFourwingsLayerInstance,
+  useFourwingsLayerLoaded,
+} from 'layers/fourwings/fourwings.hooks'
 import { Button, Switch } from '@globalfishingwatch/ui-components'
 import { VESSEL_IDS } from 'data/vessels'
 import { MapLayer, useMapLayers } from 'features/map/layers.hooks'
@@ -13,6 +16,7 @@ function Sidebar() {
   const [layers, setMapLayers] = useMapLayers()
   const { viewState } = useViewport()
   const fourwingsLayerInstance = useFourwingsLayerInstance()
+  const fourwingsLayerLoaded = useFourwingsLayerLoaded()
 
   // const getFirstVesselData = () => {
   //   const vesselsLayerInstance = layers.find((l) => l.id === 'vessel')?.instance as VesselsLayer
@@ -96,8 +100,8 @@ function Sidebar() {
                   <Button
                     size="small"
                     onClick={getFourwingsData}
-                    loading={!layer.loaded}
-                    disabled={!layer.loaded}
+                    loading={!fourwingsLayerLoaded}
+                    disabled={!fourwingsLayerLoaded}
                   >
                     LOG LOADED 4WINGS DATA
                   </Button>
