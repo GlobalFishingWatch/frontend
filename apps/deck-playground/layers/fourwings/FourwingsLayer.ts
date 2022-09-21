@@ -32,7 +32,7 @@ export type FourwingsLayerProps = {
   maxFrame: number
   colorDomain: number[]
   colorRange: Color[]
-  onColorRampUpdate: (FourwingsColorRamp) => void
+  onColorRampUpdate: (colorRamp: FourwingsColorRamp) => void
 }
 
 export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLayerProps> {
@@ -66,9 +66,9 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   }, 200)
 
   onViewportLoad: TileLayerProps['onViewportLoad'] = (tiles) => {
-    if (this.props.onColorRampUpdate) {
-      this.debouncedOnColorRampUpdate()
-    }
+    // if (this.props.onColorRampUpdate) {
+    //   this.debouncedOnColorRampUpdate()
+    // }
     if (this.props.onViewportLoad) {
       return this.props.onViewportLoad(tiles)
     }
