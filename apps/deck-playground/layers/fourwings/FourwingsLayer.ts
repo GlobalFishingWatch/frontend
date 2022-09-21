@@ -103,8 +103,8 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
           data: 'https://gateway.api.dev.globalfishingwatch.org/v2/4wings/tile/heatmap/{z}/{x}/{y}?interval=day&date-range=2022-01-01,2022-08-25&format=intArray&temporal-aggregation=false&proxy=true&datasets[0]=public-global-fishing-effort:v20201001',
           minZoom: 0,
           maxZoom: 8,
-          tileSize: 256,
-          zoomOffset: -1,
+          // tileSize: 256,
+          // zoomOffset: -1,
           // maxCacheSize: 0,
           opacity: 1,
           loaders: [fourwingsLayerLoader],
@@ -123,7 +123,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
     return new MVTLayerClass(
       this.getSubLayerProps({
         id: 'positions',
-        data: 'http://gateway.api.dev.globalfishingwatch.org/v2/4wings/tile/position/{z}/{x}/{y}?datasets[0]=public-global-fishing-effort%3Av20201001&date-range=2022-01-01,2022-02-02',
+        data: 'https://gateway.api.dev.globalfishingwatch.org/v2/4wings/tile/position/{z}/{x}/{y}?datasets[0]=public-global-fishing-effort%3Av20201001&date-range=2022-01-01,2022-02-02',
         binary: false,
         minZoom: 8,
         renderSubLayers: (props) => {

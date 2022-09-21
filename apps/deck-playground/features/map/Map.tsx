@@ -22,7 +22,7 @@ const basemap = new TileLayer({
   data: 'https://gateway.api.dev.globalfishingwatch.org/v2/tileset/sat/tile?x={x}&y={y}&z={z}',
   minZoom: 0,
   maxZoom: 12,
-  tileSize: 256,
+  // tileSize: 256,
   renderSubLayers: (props) => {
     const {
       bbox: { west, south, east, north },
