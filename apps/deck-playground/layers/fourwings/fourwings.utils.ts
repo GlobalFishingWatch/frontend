@@ -37,8 +37,14 @@ export const filterCellsByBounds = (cells: TileCell[], bounds: Bounds) => {
 }
 
 export const aggregateCellTimeseries = (cells: TileCell[]) => {
-  const timeseries = cells.reduce((acc, { timeseries }) => {
-    timeseries.forEach(({ frame, value }) => {
+  if (!cells) {
+    return []
+  }
+  const timeseries = cells.reduce((acc, cell) => {
+    if (!cell) {
+      return acc
+    }
+    cell.timeseries.forEach(({ frame, value }) => {
       if (acc[frame]) {
         acc[frame] += value
       } else {

@@ -18,12 +18,14 @@ const dateToMs = (date: string) => {
 type FourwingsAtom = {
   colorRamp: FourwingsColorRamp
   instance?: FourwingsLayer
+  loaded: boolean
 }
 
 export const fourwingsLayerAtom = atom<FourwingsAtom>({
   key: 'fourwingsLayer',
   dangerouslyAllowMutability: true,
   default: {
+    loaded: false,
     colorRamp: { colorDomain: [], colorRange: [] },
   },
 })
@@ -45,14 +47,35 @@ export function useFourwingsLayer() {
 
   const fourwingsMapLayerVisible = mapLayers.find((l) => l.id === 'fourwings')?.visible
 
+  const setLayerLoaded = useCallback(
+    (loaded) => updateFourwingsAtom((state) => ({ ...state, loaded })),
+    [updateFourwingsAtom]
+  )
+  const setLayerColorRamp = useCallback(
+    (colorRamp) => updateFourwingsAtom((state) => ({ ...state, colorRamp })),
+    [updateFourwingsAtom]
+  )
+  const setLayerInstance = useCallback(
+    (instance) => updateFourwingsAtom((state) => ({ ...state, instance })),
+    [updateFourwingsAtom]
+  )
+
+  const onTileLoad = useCallback(() => {
+    setLayerLoaded(false)
+  }, [setLayerLoaded])
+
+  const onViewportLoad = useCallback(() => {
+    setLayerLoaded(true)
+  }, [setLayerLoaded])
+
   const onColorRampUpdate = useCallback(
     (colorRamp: FourwingsColorRamp) => {
       if (colorRamp) {
         console.log('updates ramp', colorRamp)
-        updateFourwingsAtom(({ instance }) => ({ instance, colorRamp }))
+        setLayerColorRamp(colorRamp)
       }
     },
-    [updateFourwingsAtom]
+    [setLayerColorRamp]
   )
 
   useEffect(() => {
@@ -62,15 +85,15 @@ export function useFourwingsLayer() {
         maxFrame: endTime,
         colorDomain,
         colorRange,
-        // onViewportLoad: onViewportLoad,
+        onTileLoad: onTileLoad,
+        onViewportLoad: onViewportLoad,
         onColorRampUpdate: onColorRampUpdate,
         mode: activityMode,
       })
-      updateFourwingsAtom(({ colorRamp }) => ({ colorRamp, instance: fourwingsLayer }))
+      setLayerInstance(fourwingsLayer)
     } else {
-      updateFourwingsAtom(({ colorRamp }) => ({ colorRamp, instance: undefined }))
+      setLayerInstance(undefined)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     fourwingsMapLayerVisible,
     startTime,
@@ -79,6 +102,10 @@ export function useFourwingsLayer() {
     colorRange,
     updateFourwingsAtom,
     activityMode,
+    onTileLoad,
+    onViewportLoad,
+    onColorRampUpdate,
+    setLayerInstance,
   ])
 
   return instance
@@ -94,6 +121,19 @@ const fourwingsInstanceAtomSelector = selector({
 export function useFourwingsLayerInstance() {
   const instance = useRecoilValue(fourwingsInstanceAtomSelector)
   return instance
+}
+
+const fourwingsLoadedAtomSelector = selector({
+  key: 'fourwingsLoadedAtomSelector',
+  dangerouslyAllowMutability: true,
+  get: ({ get }) => {
+    return get(fourwingsLayerAtom)?.loaded
+  },
+})
+
+export function useFourwingsLayerLoaded() {
+  const loaded = useRecoilValue(fourwingsLoadedAtomSelector)
+  return loaded
 }
 
 const fourwingsColorRampAtomSelector = selector({

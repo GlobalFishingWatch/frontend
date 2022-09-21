@@ -32,22 +32,11 @@ export type FourwingsLayerProps = {
   maxFrame: number
   colorDomain: number[]
   colorRange: Color[]
-  onViewportLoad: TileLayerProps['onViewportLoad']
-  onColorRampUpdate: (FourwingsColorRamp) => void
+  onColorRampUpdate: (colorRamp: FourwingsColorRamp) => void
 }
 
-export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
-  // state: {
-  //   colorDomain?: number[]
-  //   colorRange?: Color[]
-  // }
-
-  // initializeState(context: LayerContext): void {
-  //   this.setState({ colorDomain: undefined, colorRange: undefined })
-  // }
-
+export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLayerProps> {
   getHeatmapColorRamp() {
-    console.log('calculating ramp')
     const { maxFrame, minFrame } = this.props
     const viewportData = this.getDataFilteredByViewport()
     if (viewportData?.length > 0) {
@@ -74,20 +63,25 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
 
   debouncedOnColorRampUpdate = debounce(() => {
     return this.props.onColorRampUpdate(this.getHeatmapColorRamp())
-  }, 400)
+  }, 200)
 
   onViewportLoad: TileLayerProps['onViewportLoad'] = (tiles) => {
-    if (this.props.onColorRampUpdate) {
-      this.debouncedOnColorRampUpdate()
-    }
+    // if (this.props.onColorRampUpdate) {
+    //   this.debouncedOnColorRampUpdate()
+    // }
     if (this.props.onViewportLoad) {
       return this.props.onViewportLoad(tiles)
     }
   }
 
-  // onTileLoad: TileLayerProps['onTileLoad'] = (tile) => {
-  //   this.debouncedUpdateRampScale()
-  // }
+  onTileLoad: TileLayerProps['onTileLoad'] = (tile) => {
+    if (this.props.onColorRampUpdate) {
+      this.debouncedOnColorRampUpdate()
+    }
+    if (this.props.onTileLoad) {
+      return this.props.onTileLoad(tile)
+    }
+  }
 
   // updateState(
   //   params: UpdateParameters<Layer<FourwingsLayerProps & Required<CompositeLayerProps<any>>>>
@@ -116,7 +110,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
           loaders: [fourwingsLayerLoader],
           loadOptions: { worker: false },
           onViewportLoad: this.onViewportLoad,
-          // onTileLoad: this.onTileLoad,
+          onTileLoad: this.onTileLoad,
           renderSubLayers: (props) => {
             return new FourwingsTileLayer(props)
           },

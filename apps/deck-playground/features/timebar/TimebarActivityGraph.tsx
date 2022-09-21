@@ -1,20 +1,24 @@
 import cx from 'classnames'
 import { useMemo } from 'react'
-import { useFourwingsLayerInstance } from 'layers/fourwings/fourwings.hooks'
+import {
+  useFourwingsLayerInstance,
+  useFourwingsLayerLoaded,
+} from 'layers/fourwings/fourwings.hooks'
 import { TimebarStackedActivity, Timeseries } from '@globalfishingwatch/timebar'
 import { useMapFourwingsLayer } from 'features/map/layers.hooks'
 import styles from './Timebar.module.css'
 
 const TimebarActivityGraph = () => {
   const fourwingsLayerInstance = useFourwingsLayerInstance()
-  const { id, visible, loaded } = useMapFourwingsLayer()
+  const fourwingsLayerLoaded = useFourwingsLayerLoaded()
+  const { id, visible } = useMapFourwingsLayer()
 
   const dataviews = useMemo(() => {
     return [{ id, visible }]
   }, [id, visible])
 
   const stackedActivity: Timeseries = useMemo(() => {
-    if (loaded && fourwingsLayerInstance) {
+    if (fourwingsLayerLoaded) {
       const data = fourwingsLayerInstance.getHeatmapTimeseries()
       const dataArray = Object.keys(data)
         .map((key) => {
@@ -25,7 +29,7 @@ const TimebarActivityGraph = () => {
     }
     return []
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loaded])
+  }, [fourwingsLayerLoaded])
 
   if (!stackedActivity || !stackedActivity.length || !fourwingsLayerInstance || !visible)
     return null
