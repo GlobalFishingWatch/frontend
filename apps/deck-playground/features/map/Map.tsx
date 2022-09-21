@@ -5,7 +5,7 @@ import { TileLayer } from '@deck.gl/geo-layers'
 import { useHighlightTimerange, useTimerange } from 'features/timebar/timebar.hooks'
 import { VESSEL_IDS } from 'data/vessels'
 import { MapLayer, MapLayerType, useMapLayers } from 'features/map/layers.hooks'
-import { useViewport } from 'features/map/map-viewport.hooks'
+import { useURLViewport, useViewport } from 'features/map/map-viewport.hooks'
 import { useFourwingsLayer } from '../../layers/fourwings/fourwings.hooks'
 import { VesselsLayer } from '../../layers/vessel/VesselsLayer'
 
@@ -40,6 +40,7 @@ const dateToMs = (date: string) => {
 }
 
 const MapWrapper = (): React.ReactElement => {
+  useURLViewport()
   const [timerange] = useTimerange()
   const [mapLayers, setMapLayers] = useMapLayers()
   const [highlightTimerange] = useHighlightTimerange()

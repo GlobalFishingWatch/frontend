@@ -6,7 +6,7 @@ import {
   TimebarRange,
   useHighlightTimerange,
   useTimerange,
-  // useURLTimerange,
+  useURLTimerange,
 } from 'features/timebar/timebar.hooks'
 // import { useMapInstanceStyle } from 'features/map/map-context.hooks'
 import { formatI18nDate } from 'utils/i18n'
@@ -50,7 +50,7 @@ const TimebarHighlighterWrapper = () => {
 }
 
 const TimebarWrapper = () => {
-  // useURLTimerange()
+  useURLTimerange()
   const [timerange, setTimerange] = useTimerange()
   const setHighlightTimerange = useHighlightTimerange()[1]
 

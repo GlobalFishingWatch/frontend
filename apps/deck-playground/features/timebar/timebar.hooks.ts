@@ -9,20 +9,20 @@ const DEFAULT_TIMERANGE = { start: DEFAULT_WORKSPACE.start, end: DEFAULT_WORKSPA
 
 export type TimebarRange = { start: string; end: string }
 
-// const timebarChecker = object({
-//   start: string(),
-//   end: string(),
-// })
+const timebarChecker = object({
+  start: string(),
+  end: string(),
+})
 
-// export const URLTimeRangeAtom = atom<TimebarRange | null>({
-//   key: 'timerange',
-//   default: DEFAULT_TIMERANGE,
-//   effects: [urlSyncEffect({ refine: timebarChecker, history: 'replace', syncDefault: true })],
-// })
+export const URLTimeRangeAtom = atom<TimebarRange | null>({
+  key: 'timerange',
+  default: DEFAULT_TIMERANGE,
+  effects: [urlSyncEffect({ refine: timebarChecker, history: 'replace', syncDefault: true })],
+})
 
 export const TimeRangeAtom = atom<TimebarRange | null>({
   key: 'localTimerange',
-  default: DEFAULT_TIMERANGE /*URLTimeRangeAtom*/,
+  default: URLTimeRangeAtom,
   effects: [],
 })
 
@@ -40,12 +40,12 @@ export const useHighlightTimerange = () => {
   return useRecoilState(HighlightedTimeRangeAtom)
 }
 
-// export const useURLTimerange = () => {
-//   const timerange = useRecoilValue(TimeRangeAtom)
-//   const setURLTimerange = useSetRecoilState(URLTimeRangeAtom)
-//   const debouncedTimerange = useDebounce(timerange, DEFAULT_URL_DEBOUNCE)
+export const useURLTimerange = () => {
+  const timerange = useRecoilValue(TimeRangeAtom)
+  const setURLTimerange = useSetRecoilState(URLTimeRangeAtom)
+  const debouncedTimerange = useDebounce(timerange, DEFAULT_URL_DEBOUNCE)
 
-//   useEffect(() => {
-//     setURLTimerange(debouncedTimerange)
-//   }, [debouncedTimerange, setURLTimerange])
-// }
+  useEffect(() => {
+    setURLTimerange(debouncedTimerange)
+  }, [debouncedTimerange, setURLTimerange])
+}
