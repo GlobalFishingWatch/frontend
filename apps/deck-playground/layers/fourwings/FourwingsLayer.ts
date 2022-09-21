@@ -95,28 +95,26 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
 
   _getHeatmapLayer() {
     const TileLayerClass = this.getSubLayerClass(HEATMAP_ID, TileLayer)
-    return [
-      new TileLayerClass(
-        this.props,
-        this.getSubLayerProps({
-          id: HEATMAP_ID,
-          data: 'https://gateway.api.dev.globalfishingwatch.org/v2/4wings/tile/heatmap/{z}/{x}/{y}?interval=day&date-range=2022-01-01,2022-08-25&format=intArray&temporal-aggregation=false&proxy=true&datasets[0]=public-global-fishing-effort:v20201001',
-          minZoom: 0,
-          maxZoom: 8,
-          // tileSize: 256,
-          // zoomOffset: -1,
-          // maxCacheSize: 0,
-          opacity: 1,
-          loaders: [fourwingsLayerLoader],
-          loadOptions: { worker: false },
-          onViewportLoad: this.onViewportLoad,
-          onTileLoad: this.onTileLoad,
-          renderSubLayers: (props) => {
-            return new FourwingsTileLayer(props)
-          },
-        })
-      ),
-    ]
+    return new TileLayerClass(
+      this.props,
+      this.getSubLayerProps({
+        id: HEATMAP_ID,
+        data: 'https://gateway.api.dev.globalfishingwatch.org/v2/4wings/tile/heatmap/{z}/{x}/{y}?interval=day&date-range=2022-01-01,2022-08-25&format=intArray&temporal-aggregation=false&proxy=true&datasets[0]=public-global-fishing-effort:v20201001',
+        minZoom: 0,
+        maxZoom: 8,
+        // tileSize: 256,
+        // zoomOffset: -1,
+        // maxCacheSize: 0,
+        opacity: 1,
+        loaders: [fourwingsLayerLoader],
+        loadOptions: { worker: false },
+        onViewportLoad: this.onViewportLoad,
+        onTileLoad: this.onTileLoad,
+        renderSubLayers: (props) => {
+          return new FourwingsTileLayer(props)
+        },
+      })
+    )
   }
   _getVesselPositionsLayer() {
     const MVTLayerClass = this.getSubLayerClass('positions', MVTLayer)
@@ -126,6 +124,8 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
         data: 'https://gateway.api.dev.globalfishingwatch.org/v2/4wings/tile/position/{z}/{x}/{y}?datasets[0]=public-global-fishing-effort%3Av20201001&date-range=2022-01-01,2022-02-02',
         binary: false,
         minZoom: 8,
+        onTileLoad: this.props.onTileLoad,
+        onViewportLoad: this.props.onViewportLoad,
         renderSubLayers: (props) => {
           return new VesselPositionsLayer(props)
         },
@@ -171,6 +171,10 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
     return this.props?.colorDomain
   }
 
+  getMode() {
+    return this.props?.mode
+  }
+
   getDataFilteredByViewport() {
     const data = this.getData()
     // const { viewport } = this.context
@@ -181,8 +185,13 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   }
 
   getHeatmapTimeseries() {
-    const data = this.getData()
+    const data = this.getHeatmapData()
     const cells = aggregateCellTimeseries(data)
     return cells
+  }
+
+  getVesselPositions() {
+    const data = this.getPositionsData()
+    return data
   }
 }

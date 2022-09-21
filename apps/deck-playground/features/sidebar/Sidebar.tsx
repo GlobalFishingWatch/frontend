@@ -8,13 +8,11 @@ import {
 import { Button, Switch } from '@globalfishingwatch/ui-components'
 import { VESSEL_IDS } from 'data/vessels'
 import { MapLayer, useMapLayers } from 'features/map/layers.hooks'
-import { useViewport } from 'features/map/map-viewport.hooks'
 import styles from './Sidebar.module.css'
 import SidebarHeader from './SidebarHeader'
 
 function Sidebar() {
   const [layers, setMapLayers] = useMapLayers()
-  const { viewState } = useViewport()
   const fourwingsLayerInstance = useFourwingsLayerInstance()
   const fourwingsLayerLoaded = useFourwingsLayerLoaded()
 
@@ -25,11 +23,11 @@ function Sidebar() {
   // }
 
   const getFourwingsData = () => {
-    if (fourwingsLayerInstance) {
-      const data = fourwingsLayerInstance.getHeatmapTimeseries()
-      console.log('Fourwings timeseries')
-      console.log(data)
-    }
+    const data =
+      fourwingsLayerInstance?.getMode() === 'heatmap'
+        ? fourwingsLayerInstance.getHeatmapTimeseries()
+        : fourwingsLayerInstance.getVesselPositions()
+    console.log(data)
   }
 
   const onLayerVisibilityClick = (layer: MapLayer) => {
@@ -42,7 +40,7 @@ function Sidebar() {
       })
     )
   }
-
+  const fourwingsMode = fourwingsLayerInstance?.getMode()
   return (
     <div className={styles.container}>
       <div className="scrollContainer">
@@ -69,7 +67,6 @@ function Sidebar() {
               </div>
             )
           }
-          const fourwingsMode = getFourwingsMode(viewState.zoom)
           return (
             <div key={layer.id} className={styles.row}>
               <div className={styles.header}>
@@ -80,7 +77,7 @@ function Sidebar() {
                 />
                 <div>
                   4wings layer
-                  <label>Mode: {fourwingsMode}</label>
+                  {fourwingsMode && <label>Mode: {fourwingsMode}</label>}
                 </div>
               </div>
               {layer.visible && (
@@ -103,7 +100,7 @@ function Sidebar() {
                     loading={!fourwingsLayerLoaded}
                     disabled={!fourwingsLayerLoaded}
                   >
-                    LOG LOADED 4WINGS DATA
+                    {fourwingsMode === 'heatmap' ? 'LOG 4WINGS DATA' : 'LOG VESSEL POSITIONS'}
                   </Button>
                 </div>
               )}
