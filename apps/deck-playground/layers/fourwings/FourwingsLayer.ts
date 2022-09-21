@@ -21,6 +21,10 @@ import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer
 const HEATMAP_ID = 'heatmap'
 const POSITIONS_ID = 'positions'
 export type FourwingsLayerMode = typeof HEATMAP_ID | typeof POSITIONS_ID
+export type FourwingsColorRamp = {
+  colorDomain: number[]
+  colorRange: Color[]
+}
 
 export type FourwingsLayerProps = {
   mode?: FourwingsLayerMode
@@ -29,6 +33,7 @@ export type FourwingsLayerProps = {
   colorDomain: number[]
   colorRange: Color[]
   onViewportLoad: TileLayerProps['onViewportLoad']
+  onColorRampUpdate: (FourwingsColorRamp) => void
 }
 
 export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
@@ -45,7 +50,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
     console.log('calculating ramp')
     const { maxFrame, minFrame } = this.props
     const viewportData = this.getDataFilteredByViewport()
-    if (viewportData) {
+    if (viewportData?.length > 0) {
       const cells = viewportData.map((cell) => aggregateCell(cell, { minFrame, maxFrame }))
       const dataSampled = cells.length > 1000 ? sample(cells, 1000, Math.random) : cells
       // filter data to 2 standard deviations from mean to remove outliers
@@ -67,16 +72,18 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
     }
   }
 
-  // debouncedUpdateRampScale = debounce(() => {
-  //   this.getHeatmapColorRamp()
-  // }, 400)
+  debouncedOnColorRampUpdate = debounce(() => {
+    return this.props.onColorRampUpdate(this.getHeatmapColorRamp())
+  }, 400)
 
-  // onViewportLoad: TileLayerProps['onViewportLoad'] = (tiles) => {
-  //   console.log(tiles)
-  //   debugger
-  //   this.debouncedUpdateRampScale()
-  //   return this.props.onViewportLoad(tiles)
-  // }
+  onViewportLoad: TileLayerProps['onViewportLoad'] = (tiles) => {
+    if (this.props.onColorRampUpdate) {
+      this.debouncedOnColorRampUpdate()
+    }
+    if (this.props.onViewportLoad) {
+      return this.props.onViewportLoad(tiles)
+    }
+  }
 
   // onTileLoad: TileLayerProps['onTileLoad'] = (tile) => {
   //   this.debouncedUpdateRampScale()
@@ -108,7 +115,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
           opacity: 1,
           loaders: [fourwingsLayerLoader],
           loadOptions: { worker: false },
-          // onViewportLoad: this.onViewportLoad,
+          onViewportLoad: this.onViewportLoad,
           // onTileLoad: this.onTileLoad,
           renderSubLayers: (props) => {
             return new FourwingsTileLayer(props)

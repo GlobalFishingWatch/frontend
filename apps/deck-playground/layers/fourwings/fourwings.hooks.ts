@@ -1,6 +1,10 @@
 import { Color } from '@deck.gl/core/typed'
 import { getFourwingsMode } from 'layers/fourwings/fourwings.utils'
-import { FourwingsLayer, FourwingsLayerMode } from 'layers/fourwings/FourwingsLayer'
+import {
+  FourwingsColorRamp,
+  FourwingsLayer,
+  FourwingsLayerMode,
+} from 'layers/fourwings/FourwingsLayer'
 import { useCallback, useEffect } from 'react'
 import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
 import { useTimerange } from 'features/timebar/timebar.hooks'
@@ -12,10 +16,7 @@ const dateToMs = (date: string) => {
 }
 
 type FourwingsAtom = {
-  colorRamp: {
-    colorDomain: number[]
-    colorRange: Color[]
-  }
+  colorRamp: FourwingsColorRamp
   instance?: FourwingsLayer
 }
 
@@ -44,13 +45,15 @@ export function useFourwingsLayer() {
 
   const fourwingsMapLayerVisible = mapLayers.find((l) => l.id === 'fourwings')?.visible
 
-  const onViewportLoad = useCallback(() => {
-    if (instance) {
-      const ramp = instance.getHeatmapColorRamp()
-      console.log('updates ramp', ramp)
-      updateFourwingsAtom(({ instance }) => ({ instance, colorRamp: ramp }))
-    }
-  }, [instance, updateFourwingsAtom])
+  const onColorRampUpdate = useCallback(
+    (colorRamp: FourwingsColorRamp) => {
+      if (colorRamp) {
+        console.log('updates ramp', colorRamp)
+        updateFourwingsAtom(({ instance }) => ({ instance, colorRamp }))
+      }
+    },
+    [updateFourwingsAtom]
+  )
 
   useEffect(() => {
     if (fourwingsMapLayerVisible) {
@@ -59,7 +62,8 @@ export function useFourwingsLayer() {
         maxFrame: endTime,
         colorDomain,
         colorRange,
-        onViewportLoad: onViewportLoad,
+        // onViewportLoad: onViewportLoad,
+        onColorRampUpdate: onColorRampUpdate,
         mode: activityMode,
       })
       updateFourwingsAtom(({ colorRamp }) => ({ colorRamp, instance: fourwingsLayer }))
@@ -82,6 +86,7 @@ export function useFourwingsLayer() {
 
 const fourwingsInstanceAtomSelector = selector({
   key: 'fourwingsInstanceAtomSelector',
+  dangerouslyAllowMutability: true,
   get: ({ get }) => {
     return get(fourwingsLayerAtom)?.instance
   },
@@ -93,6 +98,7 @@ export function useFourwingsLayerInstance() {
 
 const fourwingsColorRampAtomSelector = selector({
   key: 'fourwingsColorRampAtomSelector',
+  dangerouslyAllowMutability: true,
   get: ({ get }) => {
     return get(fourwingsLayerAtom)?.colorRamp
   },

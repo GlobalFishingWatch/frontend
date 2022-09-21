@@ -19,7 +19,6 @@ export const mapLayersAtom = atom<MapLayer[]>({
 
 const mapFourwingsLayer = selector({
   key: 'mapFourwingsLayer',
-  dangerouslyAllowMutability: true,
   get: ({ get }) => {
     const layers = get(mapLayersAtom)
     return layers.find((l) => l.id === 'fourwings')

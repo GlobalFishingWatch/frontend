@@ -65,8 +65,8 @@ const MapWrapper = (): React.ReactElement => {
 
   const fourwingsLayer = useFourwingsLayer()
   const layers = useMemo(() => {
-    return [basemap]
-  }, [])
+    return [basemap, fourwingsLayer]
+  }, [fourwingsLayer])
 
   const getTooltip = (tooltip) => {
     // Heatmap
