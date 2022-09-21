@@ -1,8 +1,5 @@
 import { AccessorFunction, DefaultProps } from '@deck.gl/core'
-import { GeoBoundingBox } from '@deck.gl/geo-layers/typed'
-import GeoCellLayer, {
-  GeoCellLayerProps,
-} from '@deck.gl/geo-layers/typed/geo-cell-layer/GeoCellLayer'
+import { _GeoCellLayer, GeoBoundingBox, _GeoCellLayerProps } from '@deck.gl/geo-layers/typed'
 import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
 import {
   GetCellCoordinatesParams,
@@ -16,7 +13,7 @@ const defaultProps: DefaultProps<FourwingsTileCellLayerProps> = {
 
 /** All properties supported by FourwingsTileCellLayer. */
 export type FourwingsTileCellLayerProps<DataT = any> = _FourwingsTileCellLayerProps<DataT> &
-  GeoCellLayerProps<DataT>
+  _GeoCellLayerProps<DataT>
 
 /** Properties added by FourwingsTileCellLayer. */
 type _FourwingsTileCellLayerProps<DataT> = {
@@ -32,14 +29,14 @@ type _FourwingsTileCellLayerProps<DataT> = {
 }
 
 /** Render filled and/or stroked polygons based on the fourwings indexing system. */
-export default class FourwingsTileCellLayer<DataT = any, ExtraProps = {}> extends GeoCellLayer<
+export default class FourwingsTileCellLayer<DataT = any, ExtraProps = {}> extends _GeoCellLayer<
   DataT,
   Required<_FourwingsTileCellLayerProps<DataT>> & ExtraProps
 > {
   static layerName = 'FourwingsTileCellLayer'
   static defaultProps = defaultProps
 
-  indexToBounds(): Partial<GeoCellLayer['props']> | null {
+  indexToBounds(): Partial<_GeoCellLayer['props']> | null {
     const { data, getIndex, tile, numCols, numRows } = this.props
     return {
       data,
