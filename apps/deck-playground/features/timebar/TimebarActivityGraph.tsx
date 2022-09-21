@@ -1,12 +1,13 @@
 import cx from 'classnames'
 import { useMemo } from 'react'
+import { useFourwingsLayerInstance } from 'layers/fourwings/fourwings.hooks'
 import { TimebarStackedActivity, Timeseries } from '@globalfishingwatch/timebar'
 import { useMapFourwingsLayer } from 'features/map/layers.hooks'
 import styles from './Timebar.module.css'
 
 const TimebarActivityGraph = () => {
-  const fourwingsLayer = useMapFourwingsLayer()
-  const { visible, loaded, instance } = fourwingsLayer || {}
+  const fourwingsLayerInstance = useFourwingsLayerInstance()
+  const { id, visible, loaded } = useMapFourwingsLayer()
 
   const dataviews = useMemo(() => {
     return [{ id, visible }]
@@ -26,7 +27,8 @@ const TimebarActivityGraph = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded])
 
-  if (!stackedActivity || !stackedActivity.length || !fourwingsLayer || !visible) return null
+  if (!stackedActivity || !stackedActivity.length || !fourwingsLayerInstance || !visible)
+    return null
 
   // const loading = instance
   //   ? instance?.getSubLayers().every((l: any) => l.props.tile._isLoaded)

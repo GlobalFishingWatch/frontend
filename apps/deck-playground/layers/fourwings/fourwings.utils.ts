@@ -1,4 +1,4 @@
-import { FourwingsLayerMode } from 'layers/fourwings/FourwingsLayer'
+import type { FourwingsLayerMode } from 'layers/fourwings/FourwingsLayer'
 import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
 
 export interface Bounds {

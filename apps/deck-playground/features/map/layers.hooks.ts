@@ -1,19 +1,15 @@
-import { FourwingsLayer } from 'layers/fourwings/FourwingsLayer'
-import { VesselsLayer } from 'layers/vessel/VesselsLayer'
 import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
 
 export type MapLayerType = 'vessel' | 'fourwings'
 
-export type MapLayer<Instance = VesselsLayer | FourwingsLayer> = {
+export type MapLayer = {
   id: MapLayerType
   visible?: boolean
-  instance?: Instance
   loaded?: boolean
 }
 
 export const mapLayersAtom = atom<MapLayer[]>({
   key: 'mapLayers',
-  dangerouslyAllowMutability: true,
   default: [
     { id: 'fourwings', visible: true },
     { id: 'vessel', visible: false },
@@ -23,10 +19,9 @@ export const mapLayersAtom = atom<MapLayer[]>({
 
 const mapFourwingsLayer = selector({
   key: 'mapFourwingsLayer',
-  dangerouslyAllowMutability: true,
   get: ({ get }) => {
     const layers = get(mapLayersAtom)
-    return layers.find((l) => l.id === 'fourwings') as MapLayer<FourwingsLayer>
+    return layers.find((l) => l.id === 'fourwings')
   },
 })
 
