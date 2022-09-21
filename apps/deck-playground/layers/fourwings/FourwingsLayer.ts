@@ -12,36 +12,45 @@ import { MVTLayer, TileLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
 import { fourwingsLayerLoader } from 'loaders/fourwings/fourwingsLayerLoader'
 import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
 import { aggregateCell, FourwingsTileLayer } from 'layers/fourwings/FourwingsTileLayer'
-import { filterCellsByBounds } from 'layers/fourwings/fourwings.utils'
+import { aggregateCellTimeseries } from 'layers/fourwings/fourwings.utils'
 import { debounce } from 'lodash'
 import { VesselPositionsLayer } from 'layers/fourwings/VesselPositionsLayer'
+import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 
 const HEATMAP_ID = 'heatmap'
 const POSITIONS_ID = 'positions'
 export type FourwingsLayerMode = typeof HEATMAP_ID | typeof POSITIONS_ID
+export type FourwingsColorRamp = {
+  colorDomain: number[]
+  colorRange: Color[]
+}
 
 export type FourwingsLayerProps = {
   mode?: FourwingsLayerMode
   minFrame: number
   maxFrame: number
+  colorDomain: number[]
+  colorRange: Color[]
   onViewportLoad: TileLayerProps['onViewportLoad']
+  onColorRampUpdate: (FourwingsColorRamp) => void
 }
 
 export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
-  state: {
-    colorDomain?: number[]
-    colorRange?: Color[]
-  }
+  // state: {
+  //   colorDomain?: number[]
+  //   colorRange?: Color[]
+  // }
 
-  initializeState(context: LayerContext): void {
-    this.setState({ colorDomain: undefined, colorRange: undefined })
-  }
+  // initializeState(context: LayerContext): void {
+  //   this.setState({ colorDomain: undefined, colorRange: undefined })
+  // }
 
-  updateRampScale() {
+  getHeatmapColorRamp() {
+    console.log('calculating ramp')
     const { maxFrame, minFrame } = this.props
     const viewportData = this.getDataFilteredByViewport()
-    if (viewportData) {
+    if (viewportData?.length > 0) {
       const cells = viewportData.map((cell) => aggregateCell(cell, { minFrame, maxFrame }))
       const dataSampled = cells.length > 1000 ? sample(cells, 1000, Math.random) : cells
       // filter data to 2 standard deviations from mean to remove outliers
@@ -57,31 +66,38 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
       )
       const colorRange = steps.map((s, i) => {
         const opacity = ((i + 1) / COLOR_RAMP_DEFAULT_NUM_STEPS) * 255
-        return [255, 0, 255, opacity]
+        return [255, 0, 255, opacity] as Color
       })
-
-      this.setState({ colorDomain: steps, colorRange })
+      return { colorDomain: steps, colorRange }
     }
   }
 
-  debouncedUpdateRampScale = debounce(() => {
-    this.updateRampScale()
-  }, 600)
+  debouncedOnColorRampUpdate = debounce(() => {
+    return this.props.onColorRampUpdate(this.getHeatmapColorRamp())
+  }, 400)
 
   onViewportLoad: TileLayerProps['onViewportLoad'] = (tiles) => {
-    this.debouncedUpdateRampScale()
-    return this.props.onViewportLoad(tiles)
-  }
-
-  updateState(
-    params: UpdateParameters<Layer<FourwingsLayerProps & Required<CompositeLayerProps<any>>>>
-  ): void {
-    const prevTimeRangeDuration = params.oldProps.maxFrame - params.oldProps.minFrame
-    const newTimeRangeDuration = params.props.maxFrame - params.props.minFrame
-    if (prevTimeRangeDuration !== newTimeRangeDuration) {
-      // this.updateRampScale()
+    if (this.props.onColorRampUpdate) {
+      this.debouncedOnColorRampUpdate()
+    }
+    if (this.props.onViewportLoad) {
+      return this.props.onViewportLoad(tiles)
     }
   }
+
+  // onTileLoad: TileLayerProps['onTileLoad'] = (tile) => {
+  //   this.debouncedUpdateRampScale()
+  // }
+
+  // updateState(
+  //   params: UpdateParameters<Layer<FourwingsLayerProps & Required<CompositeLayerProps<any>>>>
+  // ): void {
+  //   const prevTimeRangeDuration = params.oldProps.maxFrame - params.oldProps.minFrame
+  //   const newTimeRangeDuration = params.props.maxFrame - params.props.minFrame
+  //   if (prevTimeRangeDuration !== newTimeRangeDuration) {
+  //     // this.updateRampScale()
+  //   }
+  // }
 
   _getHeatmapLayer() {
     const TileLayerClass = this.getSubLayerClass(HEATMAP_ID, TileLayer)
@@ -95,19 +111,14 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
           maxZoom: 8,
           tileSize: 256,
           zoomOffset: -1,
+          // maxCacheSize: 0,
           opacity: 1,
           loaders: [fourwingsLayerLoader],
           loadOptions: { worker: false },
           onViewportLoad: this.onViewportLoad,
+          // onTileLoad: this.onTileLoad,
           renderSubLayers: (props) => {
-            const { maxFrame, minFrame } = this.props
-            return new FourwingsTileLayer({
-              maxFrame,
-              minFrame,
-              colorDomain: this.state.colorDomain,
-              colorRange: this.state.colorRange,
-              ...props,
-            })
+            return new FourwingsTileLayer(props)
           },
         })
       ),
@@ -133,7 +144,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
     if (mode === 'heatmap') {
       return this._getHeatmapLayer()
     }
-    this.debouncedUpdateRampScale.cancel()
+    // this.debouncedUpdateRampScale.cancel()
     return this._getVesselPositionsLayer()
   }
 
@@ -142,7 +153,10 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
       (l) => l.id === `FourwingsLayer-${HEATMAP_ID}`
     ) as TileLayer
     if (layer) {
-      return layer.getSubLayers().flatMap((l: FourwingsTileLayer) => l.getTileData().cells)
+      const zoom = Math.round(this.context.viewport.zoom)
+      return layer.getSubLayers().flatMap((l: FourwingsTileLayer) => {
+        return l.props.tile.zoom === zoom ? (l.getTileData().cells as TileCell[]) : []
+      })
     }
   }
 
@@ -160,7 +174,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
   }
 
   getColorDomain() {
-    return this.state?.colorDomain
+    return this.props?.colorDomain
   }
 
   getDataFilteredByViewport() {
@@ -170,5 +184,11 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps> {
     // const [east, south] = viewport.unproject([viewport.width, viewport.height])
     // const filter = filterCellsByBounds(data, { north, west, south, east })
     return data
+  }
+
+  getHeatmapTimeseries() {
+    const data = this.getData()
+    const cells = aggregateCellTimeseries(data)
+    return cells
   }
 }

@@ -1,7 +1,7 @@
 import { VesselsLayer } from 'layers/vessel/VesselsLayer'
 import { useMemo } from 'react'
-import { FourwingsLayer } from 'layers/fourwings/FourwingsLayer'
 import { getFourwingsMode } from 'layers/fourwings/fourwings.utils'
+import { useFourwingsLayerInstance } from 'layers/fourwings/fourwings.hooks'
 import { Button, Switch } from '@globalfishingwatch/ui-components'
 import { VESSEL_IDS } from 'data/vessels'
 import { MapLayer, useMapLayers } from 'features/map/layers.hooks'
@@ -12,21 +12,18 @@ import SidebarHeader from './SidebarHeader'
 function Sidebar() {
   const [layers, setMapLayers] = useMapLayers()
   const { viewState } = useViewport()
+  const fourwingsLayerInstance = useFourwingsLayerInstance()
 
-  const fourwingsLayerInstance = useMemo(() => {
-    return layers.find((l) => l.id === 'fourwings')?.instance as FourwingsLayer
-  }, [layers])
-
-  const getFirstVesselData = () => {
-    const vesselsLayerInstance = layers.find((l) => l.id === 'vessel')?.instance as VesselsLayer
-    console.log('First Vessel Data')
-    console.log(vesselsLayerInstance.getVesselsLayer()?.[0].getTrackLayer().getSegments())
-  }
+  // const getFirstVesselData = () => {
+  //   const vesselsLayerInstance = layers.find((l) => l.id === 'vessel')?.instance as VesselsLayer
+  //   console.log('First Vessel Data')
+  //   console.log(vesselsLayerInstance.getVesselsLayer()?.[0].getTrackLayer().getSegments())
+  // }
 
   const getFourwingsData = () => {
     if (fourwingsLayerInstance) {
-      const data = fourwingsLayerInstance.getData()
-      console.log('Fourwings data')
+      const data = fourwingsLayerInstance.getHeatmapTimeseries()
+      console.log('Fourwings timeseries')
       console.log(data)
     }
   }
@@ -60,9 +57,9 @@ function Sidebar() {
                 </div>
                 {layer.visible && (
                   <div>
-                    <Button size="small" onClick={getFirstVesselData}>
+                    {/* <Button size="small" onClick={getFirstVesselData}>
                       LOG FIRST VESSEL DATA
-                    </Button>
+                    </Button> */}
                   </div>
                 )}
               </div>

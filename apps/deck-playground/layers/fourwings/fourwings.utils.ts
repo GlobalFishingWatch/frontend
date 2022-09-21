@@ -1,4 +1,4 @@
-import { FourwingsLayerMode } from 'layers/fourwings/FourwingsLayer'
+import type { FourwingsLayerMode } from 'layers/fourwings/FourwingsLayer'
 import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
 
 export interface Bounds {
@@ -34,4 +34,18 @@ export const filterCellsByBounds = (cells: TileCell[], bounds: Bounds) => {
     const rightOffset = rightWorldCopy && !leftWorldCopy && featureInRightCopy ? 360 : 0
     return lon + leftOffset + rightOffset > west && lon + leftOffset + rightOffset < east
   })
+}
+
+export const aggregateCellTimeseries = (cells: TileCell[]) => {
+  const timeseries = cells.reduce((acc, { timeseries }) => {
+    timeseries.forEach(({ frame, value }) => {
+      if (acc[frame]) {
+        acc[frame] += value
+      } else {
+        acc[frame] = value
+      }
+    })
+    return acc
+  }, {} as Record<number, number>)
+  return timeseries
 }

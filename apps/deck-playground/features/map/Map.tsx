@@ -1,16 +1,12 @@
-import { Fragment, useEffect, useCallback, useMemo, useState } from 'react'
+import { Fragment, useEffect, useCallback, useMemo, useState, useRef } from 'react'
 import { DeckGL } from '@deck.gl/react/typed'
 import { BitmapLayer } from '@deck.gl/layers'
 import { TileLayer } from '@deck.gl/geo-layers'
-import { FourwingsLayer, FourwingsLayerMode } from 'layers/fourwings/FourwingsLayer'
-import { aggregateCell } from 'layers/fourwings/FourwingsTileLayer'
-import { VALUE_MULTIPLIER } from 'loaders/constants'
-import { values } from 'lodash'
-import { getFourwingsMode } from 'layers/fourwings/fourwings.utils'
 import { useHighlightTimerange, useTimerange } from 'features/timebar/timebar.hooks'
 import { VESSEL_IDS } from 'data/vessels'
 import { MapLayer, MapLayerType, useMapLayers } from 'features/map/layers.hooks'
 import { useViewport } from 'features/map/map-viewport.hooks'
+import { useFourwingsLayer } from '../../layers/fourwings/fourwings.hooks'
 import { VesselsLayer } from '../../layers/vessel/VesselsLayer'
 
 const INITIAL_VIEW_STATE = {
@@ -52,7 +48,6 @@ const MapWrapper = (): React.ReactElement => {
   const highlightStartTime = dateToMs(highlightTimerange?.start)
   const highlightEndTime = dateToMs(highlightTimerange?.end)
   const { viewState, onViewportStateChange } = useViewport()
-  const activityMode: FourwingsLayerMode = getFourwingsMode(viewState.zoom)
 
   const setMapLayerProperty = useCallback(
     (id: MapLayerType, property: keyof MapLayer, value) => {
@@ -68,51 +63,10 @@ const MapWrapper = (): React.ReactElement => {
     [setMapLayers]
   )
 
-  const vesselLayerVisible = mapLayers.find((l) => l.id === 'vessel')?.visible
-  useEffect(() => {
-    if (vesselLayerVisible) {
-      const vesselsLayer = new VesselsLayer({
-        ids: VESSEL_IDS,
-        startTime,
-        endTime,
-        highlightStartTime,
-        highlightEndTime,
-      })
-      setMapLayerProperty('vessel', 'instance', vesselsLayer)
-    } else {
-      setMapLayerProperty('vessel', 'instance', null)
-    }
-  }, [
-    vesselLayerVisible,
-    setMapLayerProperty,
-    startTime,
-    endTime,
-    highlightStartTime,
-    highlightEndTime,
-  ])
-
-  const onViewportLoad = useCallback(() => {
-    setMapLayerProperty('fourwings', 'loaded', true)
-  }, [setMapLayerProperty])
-
-  const fourwingsLayerVisible = mapLayers.find((l) => l.id === 'fourwings')?.visible
-  useEffect(() => {
-    if (fourwingsLayerVisible) {
-      const fourwingsLayer = new FourwingsLayer({
-        minFrame: startTime,
-        maxFrame: endTime,
-        onViewportLoad: onViewportLoad,
-        mode: activityMode,
-      })
-      setMapLayerProperty('fourwings', 'instance', fourwingsLayer)
-    } else {
-      setMapLayerProperty('fourwings', 'instance', null)
-    }
-  }, [activityMode, fourwingsLayerVisible, setMapLayerProperty, onViewportLoad, startTime, endTime])
-
+  const fourwingsLayer = useFourwingsLayer()
   const layers = useMemo(() => {
-    return [basemap, ...mapLayers.flatMap((l) => l.instance)]
-  }, [mapLayers])
+    return [basemap, fourwingsLayer]
+  }, [fourwingsLayer])
 
   const getTooltip = (tooltip) => {
     // Heatmap
