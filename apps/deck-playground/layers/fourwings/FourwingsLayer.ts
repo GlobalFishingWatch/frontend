@@ -13,6 +13,7 @@ import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer
 const HEATMAP_ID = 'heatmap'
 const POSITIONS_ID = 'positions'
 export type FourwingsLayerMode = typeof HEATMAP_ID | typeof POSITIONS_ID
+export type FourwingsLayerResolution = 'default' | 'high'
 export type FourwingsColorRamp = {
   colorDomain: number[]
   colorRange: Color[]
@@ -20,6 +21,7 @@ export type FourwingsColorRamp = {
 
 export type FourwingsLayerProps = {
   mode?: FourwingsLayerMode
+  resolution?: FourwingsLayerResolution
   minFrame: number
   maxFrame: number
   colorDomain: number[]
@@ -95,15 +97,17 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
 
   _getHeatmapLayer() {
     const TileLayerClass = this.getSubLayerClass(HEATMAP_ID, TileLayer)
+    console.log(this.props.resolution)
+
     return new TileLayerClass(
       this.props,
       this.getSubLayerProps({
         id: HEATMAP_ID,
-        data: 'https://gateway.api.dev.globalfishingwatch.org/v2/4wings/tile/heatmap/{z}/{x}/{y}?interval=day&date-range=2022-01-01,2022-08-25&format=intArray&temporal-aggregation=false&proxy=true&datasets[0]=public-global-fishing-effort:v20201001',
+        data: 'https://gateway.api.dev.globalfishingwatch.org/v2/4wings/tile/heatmap/{z}/{x}/{y}?interval=day&date-range=2021-01-01,2022-09-15&format=intArray&temporal-aggregation=false&proxy=true&datasets[0]=public-global-fishing-effort:v20201001',
         minZoom: 0,
         maxZoom: 8,
         // tileSize: 256,
-        // zoomOffset: -1,
+        zoomOffset: this.props.resolution === 'high' ? 1 : 0,
         // maxCacheSize: 0,
         opacity: 1,
         loaders: [fourwingsLayerLoader],
@@ -149,8 +153,9 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
     ) as TileLayer
     if (layer) {
       const zoom = Math.round(this.context.viewport.zoom)
+      const offset = this.props.resolution === 'high' ? 1 : 0
       return layer.getSubLayers().flatMap((l: FourwingsTileLayer) => {
-        return l.props.tile.zoom === zoom ? (l.getTileData().cells as TileCell[]) : []
+        return l.props.tile.zoom === zoom + offset ? (l.getTileData().cells as TileCell[]) : []
       })
     }
   }
@@ -174,6 +179,10 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
 
   getMode() {
     return this.props?.mode
+  }
+
+  getResolution() {
+    return this.props?.resolution
   }
 
   getDataFilteredByViewport() {

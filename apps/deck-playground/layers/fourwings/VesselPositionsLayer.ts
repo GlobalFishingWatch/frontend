@@ -80,8 +80,7 @@ export class VesselPositionsLayer<ExtraProps = {}> extends CompositeLayer<
         }
         return d.geometry.coordinates
       },
-      getSize: (d) => 21,
-      getColor: (d) => [255, 140, 0],
+      getSize: 21,
       updateTriggers: {
         getIcon: [this.props.highlightedVesselId],
         getPosition: [this.props.highlightedVesselId],
