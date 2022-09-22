@@ -30,6 +30,8 @@ export type FourwingsLayerProps = {
 }
 
 export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLayerProps> {
+  static layerName = 'FourwingsLayer'
+
   getHeatmapColorRamp() {
     const { maxFrame, minFrame } = this.props
     const viewportData = this.getDataFilteredByViewport()
@@ -145,7 +147,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
 
   getHeatmapData() {
     const layer = this.getSubLayers().find(
-      (l) => l.id === `FourwingsLayer-${HEATMAP_ID}`
+      (l) => l.id === `${FourwingsLayer.layerName}-${HEATMAP_ID}`
     ) as TileLayer
     if (layer) {
       const zoom = Math.round(this.context.viewport.zoom)
@@ -157,7 +159,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
 
   getPositionsData() {
     const layer = this.getSubLayers().find(
-      (l) => l.id === `FourwingsLayer-${POSITIONS_ID}`
+      (l) => l.id === `${FourwingsLayer.layerName}-${POSITIONS_ID}`
     ) as MVTLayer
     if (layer) {
       return layer.getSubLayers().flatMap((l: FourwingsTileLayer) => l.getTileData())
