@@ -2,6 +2,7 @@ import { Fragment, useEffect, useCallback, useMemo, useState, useRef } from 'rea
 import { DeckGL } from '@deck.gl/react/typed'
 import { BitmapLayer } from '@deck.gl/layers'
 import { TileLayer } from '@deck.gl/geo-layers'
+import { MapView } from '@deck.gl/core/typed'
 import { useHighlightTimerange, useTimerange } from 'features/timebar/timebar.hooks'
 import { VESSEL_IDS } from 'data/vessels'
 import { MapLayer, MapLayerType, useMapLayers } from 'features/map/layers.hooks'
@@ -30,6 +31,7 @@ const basemap = new TileLayer({
     return new BitmapLayer(props, {
       data: null,
       image: props.data,
+      tintColor: [21, 93, 206],
       bounds: [west, south, east, north],
     })
   },
@@ -38,6 +40,8 @@ const basemap = new TileLayer({
 const dateToMs = (date: string) => {
   return new Date(date).getTime()
 }
+
+const mapView = new MapView({ repeat: true })
 
 const MapWrapper = (): React.ReactElement => {
   useURLViewport()
@@ -67,6 +71,7 @@ const MapWrapper = (): React.ReactElement => {
   const fourwingsLayer = useFourwingsLayer()
   const layers = useMemo(() => {
     return [basemap, fourwingsLayer]
+    // return [fourwingsLayer]
   }, [fourwingsLayer])
 
   const getTooltip = (tooltip) => {
@@ -84,6 +89,7 @@ const MapWrapper = (): React.ReactElement => {
   return (
     <Fragment>
       <DeckGL
+        views={mapView}
         controller={true}
         viewState={viewState}
         layers={layers}

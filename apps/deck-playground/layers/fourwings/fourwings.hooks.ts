@@ -47,6 +47,7 @@ export function useFourwingsLayer() {
   const activityMode: FourwingsLayerMode = getFourwingsMode(viewState.zoom, timerange)
 
   const fourwingsMapLayerVisible = mapLayers.find((l) => l.id === 'fourwings')?.visible
+  const fourwingsMapLayerResolution = mapLayers.find((l) => l.id === 'fourwings')?.resolution
 
   const setAtomProperty = useCallback(
     (property) => updateFourwingsAtom((state) => ({ ...state, ...property })),
@@ -88,8 +89,9 @@ export function useFourwingsLayer() {
         mode: activityMode,
         onTileLoad: onTileLoad,
         onViewportLoad: onViewportLoad,
-        highlightedVesselId: highlightedVesselId,
+        highlightedVesselId,
         onVesselHighlight: onVesselHighlight,
+        resolution: fourwingsMapLayerResolution,
         onColorRampUpdate: onColorRampUpdate,
       })
       setAtomProperty({ instance: fourwingsLayer })
@@ -110,6 +112,7 @@ export function useFourwingsLayer() {
     setAtomProperty,
     onVesselHighlight,
     highlightedVesselId,
+    fourwingsMapLayerResolution,
   ])
 
   return instance

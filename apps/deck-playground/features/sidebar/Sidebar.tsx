@@ -30,6 +30,20 @@ function Sidebar() {
     console.log(data)
   }
 
+  const changeFourwingsResolution = () => {
+    setMapLayers((layers) =>
+      layers.map((l) => {
+        if (l.id === 'fourwings') {
+          return {
+            ...l,
+            resolution: l.resolution === 'high' ? 'default' : 'high',
+          }
+        }
+        return l
+      })
+    )
+  }
+
   const onLayerVisibilityClick = (layer: MapLayer) => {
     setMapLayers((layers) =>
       layers.map((l) => {
@@ -41,6 +55,7 @@ function Sidebar() {
     )
   }
   const fourwingsMode = fourwingsLayerInstance?.getMode()
+  const fourwingsResolution = fourwingsLayerInstance?.getResolution()
   return (
     <div className={styles.container}>
       <div className="scrollContainer">
@@ -84,7 +99,7 @@ function Sidebar() {
                 <div>
                   {fourwingsMode === 'heatmap' && (
                     <div>
-                      <label>Steps</label>
+                      <label>Color breaks</label>
                       {fourwingsLayerInstance && (
                         <ul className={styles.list}>
                           {fourwingsLayerInstance.getColorDomain()?.map((step) => (
@@ -102,6 +117,11 @@ function Sidebar() {
                   >
                     {fourwingsMode === 'heatmap' ? 'LOG 4WINGS DATA' : 'LOG VESSEL POSITIONS'}
                   </Button>
+                  {fourwingsMode === 'heatmap' && fourwingsLayerLoaded && (
+                    <Button size="small" onClick={changeFourwingsResolution}>
+                      {fourwingsResolution === 'high' ? 'lower def' : 'higher def'}
+                    </Button>
+                  )}
                 </div>
               )}
             </div>

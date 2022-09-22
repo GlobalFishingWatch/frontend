@@ -1,20 +1,24 @@
+import { mixed } from '@recoiljs/refine'
+import { FourwingsLayerResolution } from 'layers/fourwings/FourwingsLayer'
 import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
+import { urlSyncEffect } from 'recoil-sync'
 
 export type MapLayerType = 'vessel' | 'fourwings'
 
 export type MapLayer = {
   id: MapLayerType
   visible?: boolean
+  resolution?: FourwingsLayerResolution
   loaded?: boolean
 }
 
 export const mapLayersAtom = atom<MapLayer[]>({
   key: 'mapLayers',
   default: [
-    { id: 'fourwings', visible: true },
+    { id: 'fourwings', visible: true, resolution: 'default' },
     { id: 'vessel', visible: false },
   ],
-  // effects: [urlSyncEffect({ refine: mixed(), history: 'replace' })],
+  effects: [urlSyncEffect({ refine: mixed(), history: 'replace' })],
 })
 
 const mapFourwingsLayer = selector({
