@@ -23,3 +23,5 @@ export const DEFAULT_WORKSPACE = {
 }
 
 export const DEFAULT_URL_DEBOUNCE = 600
+
+export const API_TOKEN = ''

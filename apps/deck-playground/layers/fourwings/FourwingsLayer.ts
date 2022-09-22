@@ -4,14 +4,20 @@ import { MVTLayer, TileLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
 import { fourwingsLayerLoader } from 'loaders/fourwings/fourwingsLayerLoader'
 import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
 import { aggregateCell, FourwingsTileLayer } from 'layers/fourwings/FourwingsTileLayer'
-import { aggregateCellTimeseries, getRoundedDateFromTS } from 'layers/fourwings/fourwings.utils'
+import {
+  ACTIVITY_SWITCH_ZOOM_LEVEL,
+  aggregateCellTimeseries,
+  getRoundedDateFromTS,
+} from 'layers/fourwings/fourwings.utils'
 import { debounce } from 'lodash'
 import { VesselPositionsLayer } from 'layers/fourwings/VesselPositionsLayer'
 import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
+import { API_TOKEN } from 'data/config'
 
 const HEATMAP_ID = 'heatmap'
 const POSITIONS_ID = 'positions'
+
 export type FourwingsLayerMode = typeof HEATMAP_ID | typeof POSITIONS_ID
 export type FourwingsLayerResolution = 'default' | 'high'
 export type FourwingsColorRamp = {
@@ -29,6 +35,7 @@ export type FourwingsLayerProps = {
   highlightedVesselId?: string
   onColorRampUpdate: (colorRamp: FourwingsColorRamp) => void
   onVesselHighlight?: (vesselId: string) => void
+  onVesselClick?: (vesselId: string) => void
 }
 
 export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLayerProps> {
@@ -36,7 +43,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
 
   getHeatmapColorRamp() {
     const { maxFrame, minFrame } = this.props
-    const viewportData = this.getDataFilteredByViewport()
+    const viewportData = this.getHeatmapData()
     if (viewportData?.length > 0) {
       const cells = viewportData.map((cell) => aggregateCell(cell, { minFrame, maxFrame }))
       const dataSampled = cells.length > 1000 ? sample(cells, 1000, Math.random) : cells
@@ -59,23 +66,49 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
     }
   }
 
+  getPositionsColorRamp() {
+    const data = this.getPositionsData()
+    if (data?.length > 0) {
+      const hours = data.map((d) => d.properties.value)
+      const dataSampled = hours.length > 1000 ? sample(hours, 1000, Math.random) : hours
+      // filter data to 2 standard deviations from mean to remove outliers
+      const meanValue = mean(dataSampled)
+      const standardDeviationValue = standardDeviation(dataSampled)
+      const upperCut = meanValue + standardDeviationValue * 2
+      const lowerCut = meanValue - standardDeviationValue * 2
+      const dataFiltered = dataSampled.filter((a) => a >= lowerCut && a <= upperCut)
+      const stepsNum = Math.min(dataFiltered.length, COLOR_RAMP_DEFAULT_NUM_STEPS)
+      // using ckmeans as jenks
+      const steps = ckmeans(dataFiltered, stepsNum).map(([clusterFirst]) =>
+        parseFloat(clusterFirst.toFixed(3))
+      )
+      const colorRange = steps.map((s, i) => {
+        const opacity = ((i + 1) / COLOR_RAMP_DEFAULT_NUM_STEPS) * 255
+        return [255, 0, 255, opacity] as Color
+      })
+      return { colorDomain: steps, colorRange }
+    }
+  }
+
   debouncedOnColorRampUpdate = debounce(() => {
-    return this.props.onColorRampUpdate(this.getHeatmapColorRamp())
+    const colorRamp =
+      this.props.mode === 'heatmap' ? this.getHeatmapColorRamp() : this.getPositionsColorRamp()
+    return this.props.onColorRampUpdate(colorRamp)
   }, 200)
 
   onViewportLoad: TileLayerProps['onViewportLoad'] = (tiles) => {
-    // if (this.props.onColorRampUpdate) {
-    //   this.debouncedOnColorRampUpdate()
-    // }
+    if (this.props.onColorRampUpdate) {
+      this.debouncedOnColorRampUpdate()
+    }
     if (this.props.onViewportLoad) {
       return this.props.onViewportLoad(tiles)
     }
   }
 
   onTileLoad: TileLayerProps['onTileLoad'] = (tile) => {
-    if (this.props.onColorRampUpdate) {
-      this.debouncedOnColorRampUpdate()
-    }
+    // if (this.props.onColorRampUpdate) {
+    //   this.debouncedOnColorRampUpdate()
+    // }
     if (this.props.onTileLoad) {
       return this.props.onTileLoad(tile)
     }
@@ -99,21 +132,26 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
 
   _getHeatmapLayer() {
     const TileLayerClass = this.getSubLayerClass(HEATMAP_ID, TileLayer)
-    console.log(this.props.resolution)
-
     return new TileLayerClass(
       this.props,
       this.getSubLayerProps({
         id: HEATMAP_ID,
         data: 'https://gateway.api.dev.globalfishingwatch.org/v2/4wings/tile/heatmap/{z}/{x}/{y}?interval=day&date-range=2021-01-01,2022-09-15&format=intArray&temporal-aggregation=false&proxy=true&datasets[0]=public-global-fishing-effort:v20201001',
         minZoom: 0,
-        maxZoom: 8,
+        maxZoom: ACTIVITY_SWITCH_ZOOM_LEVEL,
         // tileSize: 256,
         zoomOffset: this.props.resolution === 'high' ? 1 : 0,
         // maxCacheSize: 0,
         opacity: 1,
         loaders: [fourwingsLayerLoader],
-        loadOptions: { worker: false },
+        loadOptions: {
+          worker: false,
+          fetch: {
+            headers: {
+              Authorization: `Bearer ${API_TOKEN}`,
+            },
+          },
+        },
         onViewportLoad: this.onViewportLoad,
         onTileLoad: this.onTileLoad,
         renderSubLayers: (props) => {
@@ -129,11 +167,22 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
       id: 'positions',
       data: `https://gateway.api.dev.globalfishingwatch.org/v2/4wings/tile/position/{z}/{x}/{y}?datasets[0]=public-global-fishing-effort%3Av20201001&${this._getDateRangeParam()}`,
       binary: false,
-      minZoom: 8,
+      minZoom: ACTIVITY_SWITCH_ZOOM_LEVEL,
+      maxZoom: 12,
+      loadOptions: {
+        fetch: {
+          headers: {
+            Authorization: `Bearer ${API_TOKEN}`,
+          },
+        },
+      },
       onVesselHighlight: this.props.onVesselHighlight,
+      onVesselClick: this.props.onVesselClick,
       highlightedVesselId: this.props.highlightedVesselId,
       onTileLoad: this.props.onTileLoad,
-      onViewportLoad: this.props.onViewportLoad,
+      onViewportLoad: this.onViewportLoad,
+      colorDomain: this.props.colorDomain,
+      colorRange: this.props.colorRange,
       renderSubLayers: (props) => {
         return new VesselPositionsLayer(this.getSubLayerProps(props))
       },
@@ -163,9 +212,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   }
 
   getPositionsData() {
-    const layer = this.getSubLayers().find(
-      (l) => l.id === `${FourwingsLayer.layerName}-${POSITIONS_ID}`
-    ) as MVTLayer
+    const layer = this.getSubLayers().find((l) => l.id === POSITIONS_ID) as MVTLayer
     if (layer) {
       return layer.getSubLayers().flatMap((l: FourwingsTileLayer) => l.getTileData())
     }

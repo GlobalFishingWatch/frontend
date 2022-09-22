@@ -3,6 +3,7 @@ import { DeckGL } from '@deck.gl/react/typed'
 import { BitmapLayer } from '@deck.gl/layers'
 import { TileLayer } from '@deck.gl/geo-layers'
 import { MapView } from '@deck.gl/core/typed'
+import { useVesselsLayer } from 'layers/vessel/vessels.hooks'
 import { useHighlightTimerange, useTimerange } from 'features/timebar/timebar.hooks'
 import { VESSEL_IDS } from 'data/vessels'
 import { MapLayer, MapLayerType, useMapLayers } from 'features/map/layers.hooks'
@@ -47,11 +48,6 @@ const MapWrapper = (): React.ReactElement => {
   useURLViewport()
   const [timerange] = useTimerange()
   const [mapLayers, setMapLayers] = useMapLayers()
-  const [highlightTimerange] = useHighlightTimerange()
-  const startTime = dateToMs(timerange.start)
-  const endTime = dateToMs(timerange.end)
-  const highlightStartTime = dateToMs(highlightTimerange?.start)
-  const highlightEndTime = dateToMs(highlightTimerange?.end)
   const { viewState, onViewportStateChange } = useViewport()
 
   const setMapLayerProperty = useCallback(
@@ -69,10 +65,10 @@ const MapWrapper = (): React.ReactElement => {
   )
 
   const fourwingsLayer = useFourwingsLayer()
+  const vesselsLayer = useVesselsLayer()
   const layers = useMemo(() => {
-    return [basemap, fourwingsLayer]
-    // return [fourwingsLayer]
-  }, [fourwingsLayer])
+    return [basemap, fourwingsLayer, vesselsLayer]
+  }, [fourwingsLayer, vesselsLayer])
 
   const getTooltip = (tooltip) => {
     // Heatmap

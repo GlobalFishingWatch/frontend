@@ -14,11 +14,13 @@ export function getRoundedDateFromTS(ts: number) {
   return DateTime.fromMillis(ts).toUTC().toISODate()
 }
 
+export const ACTIVITY_SWITCH_ZOOM_LEVEL = 9
+
 export function getFourwingsMode(zoom: number, timerange: TimebarRange): FourwingsLayerMode {
   const duration = DateTime.fromISO(timerange?.end)
     .toUTC()
     .diff(DateTime.fromISO(timerange?.start).toUTC(), 'days')
-  return zoom > 9 && duration.days < 30 ? 'positions' : 'heatmap'
+  return zoom >= ACTIVITY_SWITCH_ZOOM_LEVEL && duration.days < 30 ? 'positions' : 'heatmap'
 }
 
 export const filterCellsByBounds = (cells: TileCell[], bounds: Bounds) => {

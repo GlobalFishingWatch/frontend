@@ -6,6 +6,7 @@ import {
 } from 'layers/fourwings/FourwingsLayer'
 import { useCallback, useEffect } from 'react'
 import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
+import { useAddVesselInLayer } from 'layers/vessel/vessels.hooks'
 import { useTimerange } from 'features/timebar/timebar.hooks'
 import { useViewport } from 'features/map/map-viewport.hooks'
 import { useMapLayers } from 'features/map/layers.hooks'
@@ -45,9 +46,11 @@ export function useFourwingsLayer() {
   const endTime = dateToMs(timerange.end)
   const { viewState } = useViewport()
   const activityMode: FourwingsLayerMode = getFourwingsMode(viewState.zoom, timerange)
+  const addVesselLayer = useAddVesselInLayer()
 
-  const fourwingsMapLayerVisible = mapLayers.find((l) => l.id === 'fourwings')?.visible
-  const fourwingsMapLayerResolution = mapLayers.find((l) => l.id === 'fourwings')?.resolution
+  const fourwingsMapLayer = mapLayers.find((l) => l.id === 'fourwings')
+  const fourwingsMapLayerVisible = fourwingsMapLayer?.visible
+  const fourwingsMapLayerResolution = fourwingsMapLayer?.resolution
 
   const setAtomProperty = useCallback(
     (property) => updateFourwingsAtom((state) => ({ ...state, ...property })),
@@ -67,6 +70,13 @@ export function useFourwingsLayer() {
       setAtomProperty({ highlightedVesselId: id })
     },
     [setAtomProperty]
+  )
+
+  const onVesselClick = useCallback(
+    (id) => {
+      addVesselLayer(id)
+    },
+    [addVesselLayer]
   )
 
   const onColorRampUpdate = useCallback(
@@ -91,6 +101,7 @@ export function useFourwingsLayer() {
         onViewportLoad: onViewportLoad,
         highlightedVesselId,
         onVesselHighlight: onVesselHighlight,
+        onVesselClick: onVesselClick,
         resolution: fourwingsMapLayerResolution,
         onColorRampUpdate: onColorRampUpdate,
       })
@@ -113,6 +124,7 @@ export function useFourwingsLayer() {
     onVesselHighlight,
     highlightedVesselId,
     fourwingsMapLayerResolution,
+    onVesselClick,
   ])
 
   return instance

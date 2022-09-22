@@ -5,8 +5,8 @@ import {
   useFourwingsLayerInstance,
   useFourwingsLayerLoaded,
 } from 'layers/fourwings/fourwings.hooks'
-import { Button, Switch } from '@globalfishingwatch/ui-components'
-import { VESSEL_IDS } from 'data/vessels'
+import { useRemoveVesselInLayer, useVesselsLayerIds } from 'layers/vessel/vessels.hooks'
+import { Button, IconButton, Switch } from '@globalfishingwatch/ui-components'
 import { MapLayer, useMapLayers } from 'features/map/layers.hooks'
 import styles from './Sidebar.module.css'
 import SidebarHeader from './SidebarHeader'
@@ -15,6 +15,8 @@ function Sidebar() {
   const [layers, setMapLayers] = useMapLayers()
   const fourwingsLayerInstance = useFourwingsLayerInstance()
   const fourwingsLayerLoaded = useFourwingsLayerLoaded()
+  const vesselIds = useVesselsLayerIds()
+  const removeVesselId = useRemoveVesselInLayer()
 
   // const getFirstVesselData = () => {
   //   const vesselsLayerInstance = layers.find((l) => l.id === 'vessel')?.instance as VesselsLayer
@@ -70,14 +72,26 @@ function Sidebar() {
                     active={layer.visible}
                     onClick={() => onLayerVisibilityClick(layer)}
                   />
-                  <div>Vessels ({VESSEL_IDS.length} loaded)</div>
+                  <div>Vessels ({vesselIds?.length} loaded)</div>
                 </div>
                 {layer.visible && (
-                  <div>
-                    {/* <Button size="small" onClick={getFirstVesselData}>
-                      LOG FIRST VESSEL DATA
-                    </Button> */}
-                  </div>
+                  <ul>
+                    {vesselIds?.length > 0 &&
+                      vesselIds.map((vessel) => (
+                        <li>
+                          {vessel}{' '}
+                          <IconButton
+                            icon="delete"
+                            onClick={() => removeVesselId(vessel)}
+                          ></IconButton>
+                        </li>
+                      ))}
+                  </ul>
+                  // <div>
+                  //   <Button size="small" onClick={getFirstVesselData}>
+                  //     LOG FIRST VESSEL DATA
+                  //   </Button>
+                  // </div>
                 )}
               </div>
             )
@@ -97,18 +111,16 @@ function Sidebar() {
               </div>
               {layer.visible && (
                 <div>
-                  {fourwingsMode === 'heatmap' && (
-                    <div>
-                      <label>Color breaks</label>
-                      {fourwingsLayerInstance && (
-                        <ul className={styles.list}>
-                          {fourwingsLayerInstance.getColorDomain()?.map((step) => (
-                            <li key={step}>{step},</li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  )}
+                  <div>
+                    <label>Color breaks</label>
+                    {fourwingsLayerInstance && (
+                      <ul className={styles.list}>
+                        {fourwingsLayerInstance.getColorDomain()?.map((step) => (
+                          <li key={step}>{step},</li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                   <Button
                     size="small"
                     onClick={getFourwingsData}

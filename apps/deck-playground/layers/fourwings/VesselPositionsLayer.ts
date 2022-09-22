@@ -1,20 +1,33 @@
 import { CompositeLayer, DefaultProps, Layer, LayerProps, LayersList } from '@deck.gl/core/typed'
 import { IconLayer } from '@deck.gl/layers/typed'
 
-function createSVGIcon(d, highlightedVesselId) {
-  let fill = 'rgba(255,0,555,1)'
+function getFillColor(value, { colorDomain, colorRange }) {
+  const colorIndex = colorDomain.findIndex((d, i) => {
+    if (colorDomain[i + 1]) {
+      return value > d && value <= colorDomain[i + 1]
+    }
+    return i
+  })
+  return colorIndex >= 0 ? colorRange[colorIndex] : [0, 0, 0, 0]
+}
+
+function createSVGIcon(d, props) {
+  let [r, g, b, a] = getFillColor(d.properties?.value, props)
+  let fill = `rgba(${r}, ${g}, ${b}, ${a / 255})`
+  let opacity = 1
   let stroke = 'none'
-  if (highlightedVesselId) {
-    if (d.properties.vesselId === highlightedVesselId) {
-      fill = 'rgba(255,0,555,1)'
+  if (props.highlightedVesselId) {
+    if (d.properties.vesselId === props.highlightedVesselId) {
       stroke = '#FFFFFF'
     } else {
-      fill = 'rgba(255,0,555,0.3)'
+      opacity = 0.3
     }
   }
   return `
     <svg width="12" height="21" xmlns="http://www.w3.org/2000/svg">
-      <path d="m6 .7 5.5 5.5v14L6 17.43.5 20.2V6.21L6 .7Z" stroke-width="2" stroke="${stroke}" fill="${fill}"/>
+      <g opacity="${opacity}">
+        <path d="m6 .7 5.5 5.5v14L6 17.43.5 20.2V6.21L6 .7Z" stroke-width="2" stroke="${stroke}" fill="${fill}"/>
+      </g>
     </svg>
   `
 }
@@ -28,6 +41,7 @@ function svgToDataURL(svg) {
 export type VesselPositionsLayerProps<DataT = any> = LayerProps & {
   highlightedVesselId?: string
   onVesselHighlight?: (vesselId: string) => void
+  onVesselClick?: (vesselId: string) => void
 }
 
 const defaultProps: DefaultProps<VesselPositionsLayerProps> = {
@@ -41,10 +55,14 @@ export class VesselPositionsLayer<ExtraProps = {}> extends CompositeLayer<
   static layerName = 'VesselPositionsLayer'
   static defaultProps = defaultProps
 
-  getPickingInfo({ info }) {
+  getPickingInfo({ info, mode }) {
     const vesselId = info.object?.properties?.vesselId
     if (vesselId) {
       this.props.onVesselHighlight(vesselId)
+      if (mode === 'query') {
+        console.log(info.object?.properties)
+        this.props.onVesselClick(vesselId)
+      }
     } else if (this.props.highlightedVesselId) {
       this.props.onVesselHighlight(undefined)
     }
@@ -68,7 +86,7 @@ export class VesselPositionsLayer<ExtraProps = {}> extends CompositeLayer<
       getPickingInfo: this.getPickingInfo,
       getIcon: (d) => {
         return {
-          url: svgToDataURL(createSVGIcon(d, this.props.highlightedVesselId)),
+          url: svgToDataURL(createSVGIcon(d, this.props)),
           width: 12,
           height: 21,
         }
@@ -79,6 +97,9 @@ export class VesselPositionsLayer<ExtraProps = {}> extends CompositeLayer<
           return { ...d.geometry.coordinates, 2: 1 }
         }
         return d.geometry.coordinates
+      },
+      getAngle: (d) => {
+        return d?.properties.bearing
       },
       getSize: 21,
       updateTriggers: {
