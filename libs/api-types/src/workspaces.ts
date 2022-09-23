@@ -1,4 +1,4 @@
-import { DataviewInstance } from '.'
+import { DataviewInstance, DataviewInstanceV2 } from '.'
 
 export type ApiAppName = 'fishing-map' | 'marine-manager'
 
@@ -19,7 +19,7 @@ export interface Workspace<State = unknown, Category = string> {
   startAt: string
   endAt: string
   state?: State
-  dataviewInstances: DataviewInstance[]
+  dataviewInstances: DataviewInstance[] | DataviewInstanceV2[]
   ownerId: number
   ownerType?: string
   createdAt?: string

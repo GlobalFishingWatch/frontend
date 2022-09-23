@@ -2,18 +2,17 @@ import { uniq } from 'lodash'
 import {
   Dataview,
   DataviewDatasetConfig,
-  DataviewInstance,
+  DataviewInstanceV2,
   EndpointId,
 } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { AppDispatch, RootState } from 'store'
+import { AppDispatch } from 'store'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
-import { selectUserLogged } from 'features/user/user.slice'
 import { fetchDataviewsByIdsThunk } from './dataviews.slice'
 import {
   dataviewInstances,
-  vesselDataviewIds,
+  vesselDataviewSlugs,
   DEFAULT_TRACK_COLOR,
   MAP_BACKGROUND_COLOR,
 } from './dataviews.config'
@@ -29,12 +28,12 @@ type VesselInstanceDatasets = {
 export const getVesselDataviewInstanceId = (vesselId: string) => `${VESSEL_LAYER_PREFIX}${vesselId}`
 
 export const getVesselDataviewInstanceFactory =
-  (defaultVesselDataviewId: number, startDate?: string) =>
+  (defaultVesselDataview: string, startDate?: string) =>
   (
     vessel: { id: string },
     { trackDatasetId, infoDatasetId, eventsDatasetsId }: VesselInstanceDatasets,
     akaVessels: { id: string }[] = []
-  ): DataviewInstance<GeneratorType> => {
+  ): DataviewInstanceV2<GeneratorType> => {
     // Build list of unique vessel ids to merge
     // sorted alphabetically so that regardless of the order
     // in which the user selected the vessels
@@ -71,7 +70,7 @@ export const getVesselDataviewInstanceFactory =
     }
     const vesselDataviewInstance = {
       id: getVesselDataviewInstanceId(vessel.id),
-      dataviewId: defaultVesselDataviewId,
+      slug: defaultVesselDataview,
       config: {
         type: GeneratorType.Track,
         color: DEFAULT_TRACK_COLOR,
@@ -91,7 +90,7 @@ export const getVesselDataviewInstanceFactory =
   }
 
 export const getDatasetByDataview = (
-  dataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[]
+  dataviews: (Dataview | DataviewInstanceV2 | UrlDataviewInstance)[]
 ) => {
   return uniq(
     dataviews?.flatMap((dataviews) => {
@@ -103,10 +102,10 @@ export const getDatasetByDataview = (
 
 export const initializeDataviews = async (dispatch: AppDispatch) => {
   let dataviews: Dataview[] = []
-  const dataviewIds = Array.from(
-    new Set([...dataviewInstances.map((instance) => instance.dataviewId), ...vesselDataviewIds])
+  const dataviewSlugs = Array.from(
+    new Set([...dataviewInstances.map((instance) => instance.slug), ...vesselDataviewSlugs])
   )
-  const action = await dispatch(fetchDataviewsByIdsThunk(dataviewIds))
+  const action = await dispatch(fetchDataviewsByIdsThunk(dataviewSlugs))
   if (fetchDataviewsByIdsThunk.fulfilled.match(action as any)) {
     dataviews = action.payload as Dataview[]
     const datasets = getDatasetByDataview(dataviews)

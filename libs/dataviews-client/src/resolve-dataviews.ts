@@ -257,7 +257,10 @@ export function resolveDataviews(
         return []
       }
 
-      const dataview = dataviews?.find((dataview) => dataview.id === dataviewInstance.dataviewId)
+      const dataview = dataviews?.find(
+        (dataview) =>
+          dataview.id === dataviewInstance.dataviewId || dataview.slug === dataviewInstance.slug
+      )
       if (!dataview) {
         console.warn(
           `DataviewInstance id: ${dataviewInstance.id} doesn't have a valid dataview (${dataviewInstance.dataviewId})`

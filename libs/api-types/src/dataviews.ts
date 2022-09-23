@@ -103,3 +103,9 @@ export interface DataviewInstance<Type = any>
   config?: DataviewConfig<Type>
   datasetsConfig?: DataviewDatasetConfig[]
 }
+
+export interface DataviewInstanceV2<Type = any>
+  extends Partial<Omit<DataviewInstance<Type>, 'dataviewId'>> {
+  dataviewId?: number
+  slug: string
+}

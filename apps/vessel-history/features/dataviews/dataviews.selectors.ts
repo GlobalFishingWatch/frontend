@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { DatasetTypes, DataviewCategory, DataviewInstance } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory, DataviewInstanceV2 } from '@globalfishingwatch/api-types'
 import {
   resolveDataviews,
   UrlDataviewInstance,
@@ -65,7 +65,7 @@ export const selectDefaultBasemapGenerator = createSelector(
 export const selectDataviewInstancesMerged = createDeepEqualSelector(
   [selectVesselDataview, selectWorkspaceDataviewInstances, selectUrlDataviewInstances],
   (vesselDataview, dataviews, urlDataviewInstances) => {
-    const dataviewsToMerge: DataviewInstance<any>[] = vesselDataview
+    const dataviewsToMerge: DataviewInstanceV2<any>[] = vesselDataview
       ? [...dataviews, vesselDataview]
       : dataviews
     return mergeWorkspaceUrlDataviewInstances(dataviewsToMerge, urlDataviewInstances)
