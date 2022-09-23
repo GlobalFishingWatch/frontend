@@ -33,6 +33,7 @@ import Highlights from './Highlights'
 import AuthorizationsField from './AuthorizationsField'
 import ForcedLabor from './ForcedLabor'
 import { selectAllOfflineVessels } from 'features/vessels/offline-vessels.slice'
+import { getYearFromTmtDate } from 'utils/shared'
 
 interface InfoProps {
   vessel: VesselWithHistory | null
@@ -331,13 +332,18 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                     label={VesselFieldLabel.iuuStatus}
                     value={
                       vessel.iuuStatus !== undefined
-                        ? t(
-                          `vessel.iuuStatusOptions.${vessel.iuuStatus}` as any,
-                          vessel.iuuStatus.toString()
+                        ? (
+                          t(
+                            `vessel.iuuStatusOptions.${vessel.iuuStatus}` as any,
+                            vessel.iuuStatus.toString()
+                          ) + (vessel.iuuListing ? (
+                            ' - ' + vessel.iuuListing.source + ' ' +
+                            getYearFromTmtDate(vessel.iuuListing.originalStartDate)) :
+                            '')
                         )
                         : DEFAULT_EMPTY_VALUE
                     }
-                    valuesHistory={[]}
+                    valuesHistory={vessel.history.iuuListing.byDate}
                     helpText={
                       <Trans i18nKey="vessel.iuuStatusDescription">
                         [TDB] IUU status description to be defined

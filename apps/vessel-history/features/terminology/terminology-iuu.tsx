@@ -1,8 +1,11 @@
+import { Children } from 'react'
 import { Trans } from 'react-i18next'
 import styles from './terminology.module.css'
 
 /* eslint-disable-next-line */
-export interface TerminologyIuuProps { }
+export interface TerminologyIuuProps {
+  children?: React.ReactNode
+}
 
 export function TerminologyIuu(props: TerminologyIuuProps) {
   return (
@@ -19,6 +22,10 @@ export function TerminologyIuu(props: TerminologyIuuProps) {
           </li>
         </ol>
       </Trans>
+      {props?.children && <div>
+        <br />
+        {props.children}
+      </div>}
     </div>
   )
 }

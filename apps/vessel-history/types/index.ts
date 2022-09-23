@@ -99,6 +99,7 @@ export interface VesselFieldsHistory {
   grossTonnage: VesselFieldHistory<string>
   vesselType: VesselFieldHistory<string>
   operator: VesselFieldHistory<string>
+  iuuListing: VesselFieldHistory<string>
 }
 
 export interface ForcedLaborRisk {
@@ -122,9 +123,24 @@ export interface RiskOutput {
   highestRisk: RiskLevel
 }
 
+export enum IuuStatus {
+  notListed = 0,
+  previouslyListed = 1,
+  currentlyListed = 2,
+}
+
+export interface Iuu {
+  source: string;
+  startDate: string;
+  endDate?: string;
+  originalStartDate: number;
+  originalEndDate?: number;
+}
+
 export interface VesselWithHistory extends Vessel {
   history: VesselFieldsHistory
   iuuStatus?: number
+  iuuListing?: Iuu
   vesselType?: string
   forcedLabour?: ForcedLaborRisk[]
 }
@@ -191,6 +207,7 @@ export interface TMTDetail {
   vesselMatchId: string
   valueList: ValueList
   iuuStatus: number
+  iuuListing: Iuu[]
   relationList: RelationList
   authorisationList: Authorization[]
   imageList: string[]
