@@ -10,8 +10,9 @@ export const BASE_DATASET =
 export const SHOW_VESSEL_API_SOURCE = true
 
 export const API_GATEWAY = process.env.NEXT_PUBLIC_API_GATEWAY
-export const LANDMASS_OFFLINE_GEOJSON = `${process.env.NEXT_PUBLIC_URL ?? ''
-  }/data/ne_10m_admin_0_countries_gj.geojson`
+export const LANDMASS_OFFLINE_GEOJSON = `${
+  process.env.NEXT_PUBLIC_URL ?? ''
+}/data/ne_10m_admin_0_countries_gj.geojson`
 
 export const TMT_CONTACT_US_URL = process.env.NEXT_PUBLIC_TMT_CONTACT_US_URL
 
@@ -20,7 +21,7 @@ export const ENCOUNTERS_MAX_DURATION = 99
 export const FISHING_EVENTS_MIN_DURATION = 0
 export const FISHING_EVENTS_MAX_DURATION = 999
 export const GAP_EVENTS_MIN_DURATION = 1
-export const GAP_EVENTS_MAX_DURATION = 99
+export const GAP_EVENTS_MAX_DURATION = 87600
 export const LOITERING_EVENTS_MIN_DURATION = 1
 export const LOITERING_EVENTS_MAX_DURATION = 99
 export const PORTVISIT_EVENTS_MIN_DURATION = 3
@@ -31,7 +32,7 @@ export const ENCOUNTERS_MAX_DISTANCE = 99
 export const FISHING_EVENTS_MIN_DISTANCE = 0
 export const FISHING_EVENTS_MAX_DISTANCE = 99
 export const GAP_EVENTS_MIN_DISTANCE = 0
-export const GAP_EVENTS_MAX_DISTANCE = 99
+export const GAP_EVENTS_MAX_DISTANCE = 12000
 export const LOITERING_EVENTS_MIN_DISTANCE = 0
 export const LOITERING_EVENTS_MAX_DISTANCE = 99
 export const PORTVISIT_EVENTS_MIN_DISTANCE = 0
