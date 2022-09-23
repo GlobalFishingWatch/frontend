@@ -257,10 +257,10 @@ export function resolveDataviews(
         return []
       }
 
-      const dataview = dataviews?.find(
-        (dataview) =>
-          dataview.id === dataviewInstance.dataviewId ||
-          dataview.slug === dataviewInstance.dataviewId
+      const dataview = dataviews?.find((dataview) =>
+        ([dataview.id, dataview.slug] as Dataview['slug'][]).includes(
+          dataviewInstance.dataviewId as Dataview['slug']
+        )
       )
       if (!dataview) {
         console.warn(
