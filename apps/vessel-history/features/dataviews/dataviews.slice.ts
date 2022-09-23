@@ -5,12 +5,12 @@ import { APIPagination, Dataview } from '@globalfishingwatch/api-types'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { AsyncReducer, AsyncReducerStatus, createAsyncSlice } from 'utils/async-slice'
 import { RootState } from 'store'
-import { API_VERSION, DEFAULT_PAGINATION_PARAMS } from 'data/config'
+import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 
 export const fetchDataviewsByIdsThunk = createAsyncThunk(
   'dataviews/fetch',
-  async (ids: number[], { signal, rejectWithValue, getState }) => {
-    const existingIds = selectIds(getState() as RootState) as string[]
+  async (ids: Dataview['slug'][], { signal, rejectWithValue, getState }) => {
+    const existingIds = selectIds(getState() as RootState) as Dataview['slug'][]
     const uniqIds = Array.from(new Set([...ids, ...existingIds]))
     try {
       const dataviewsParams = {
@@ -38,10 +38,13 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
   },
   {
     // IMPORTANT to prevent re fetching records that are already in our store
-    condition: (ids: number[], { getState }) => {
+    condition: (ids: Dataview['slug'][], { getState }) => {
       const { dataviews } = getState() as RootState
       const fetchStatus = dataviews.status
-      const allRecordsLoaded = ids.every((id) => dataviews.ids.includes(id))
+      const slugs = Object.entries(dataviews.entities).map(([_, dataview]) => dataview.slug)
+      const allRecordsLoaded = (ids as string[]).every(
+        (id) => dataviews.ids.includes(id) || slugs.includes(id)
+      )
       if (
         (fetchStatus === AsyncReducerStatus.Finished && allRecordsLoaded) ||
         fetchStatus === AsyncReducerStatus.Loading
