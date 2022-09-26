@@ -28,7 +28,7 @@ const InfoFieldHistoryTable: React.FC<ListItemProps> = ({
 }): React.ReactElement => {
   const { t } = useTranslation()
   const { formatSource } = useVesselsConnect(label)
-  console.log(history)
+
   return (
     <Fragment>
       {history.length > 0 && (
