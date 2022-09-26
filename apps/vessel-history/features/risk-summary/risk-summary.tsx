@@ -9,7 +9,7 @@ import ActivityModalContent from 'features/profile/components/activity/ActivityM
 import useMapEvents from 'features/map/map-events.hooks'
 import { EventTypeVoyage, Voyage } from 'types/voyage'
 import useViewport from 'features/map/map-viewport.hooks'
-import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
+import { DEFAULT_EMPTY_VALUE, DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import TerminologyEncounterEvents from 'features/terminology/terminology-encounter-events'
 import TerminologyFishingEvents from 'features/terminology/terminology-fishing-events'
 import TerminologyIuu from 'features/terminology/terminology-iuu'
@@ -25,6 +25,7 @@ import DateRangeLabel from 'features/date-range-label/date-range-label'
 import AisCoverage from 'features/profile/components/activity/AisCoverage'
 import { getYearFromTmtDate } from 'utils/shared'
 import InfoFieldHistoryTable from 'features/profile/components/InfoFieldHistoryTable'
+import RiskIuuIndicator from 'features/risk-iuu-indicator/risk-iuu-indicator'
 import styles from './risk-summary.module.css'
 
 export interface RiskSummaryProps {
@@ -152,26 +153,20 @@ export function RiskSummary(props: RiskSummaryProps) {
       </RiskSection>
       {hasIUUIndicators && (
         <RiskSection severity="high" title={t('event.iuu', 'iuu')} titleInfo={
-          <TerminologyIuu>
-            <InfoFieldHistoryTable
-              history={vessel.history.iuuListing.byDate}
-              label={VesselFieldLabel.iuuStatus}
-              columnHeaders={null}
-              hideTMTDate={false} />
-          </TerminologyIuu>
+          <TerminologyIuu />
         }>
-          <RiskIndicator
+          <RiskIuuIndicator
             title={
               t(
                 'risk.currentlyPresentOnARfmoIUUList',
-                'Vessel is currently present on an RFMO IUU blacklist ({{rmfo}})',
-                {
-                  rmfo: vessel.iuuListing.source + ' ' + getYearFromTmtDate(vessel.iuuListing.originalStartDate)
-                }
+                'Vessel is currently present on an RFMO IUU blacklist'
               ) as string
             }
-            subtitle={' '}
-          ></RiskIndicator>
+            subtitle={`(${vessel.iuuListing.source + ' ' + getYearFromTmtDate(vessel.iuuListing.originalStartDate)})`}
+            history={vessel.history.iuuListing.byDate}
+            field={VesselFieldLabel.iuuStatus}
+            vesselName={vessel.shipname} />
+
         </RiskSection>
       )}
       {hasGapsIntentionalDisabling && (

@@ -39,7 +39,7 @@ const getIuuHistory = (historyField: Iuu[]): VesselFieldHistory<any> => ({
     value: field.source,
     source: VesselAPISource.TMT,
     firstSeen: field.startDate,
-    endDate: field.endDate
+    originalFirstSeen: field.originalStartDate,
   })),
 })
 
@@ -60,7 +60,7 @@ export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail
     depth: getHistoryField(valueList.depth),
     flag: getHistoryField(valueList.flag),
     imo: getHistoryField(valueList.imo),
-    iuuListing: getIuuHistory(iuuListing),
+    iuuListing: getIuuHistory(iuuListing.sort(sortIuu).reverse()),
     geartype: getHistoryField(valueList.gear),
     grossTonnage: getHistoryField(valueList.gt),
     shipname: getHistoryField(valueList.name),

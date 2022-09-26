@@ -34,6 +34,7 @@ import AuthorizationsField from './AuthorizationsField'
 import ForcedLabor from './ForcedLabor'
 import { selectAllOfflineVessels } from 'features/vessels/offline-vessels.slice'
 import { getYearFromTmtDate } from 'utils/shared'
+import HistoryDate from './HistoryDate'
 
 interface InfoProps {
   vessel: VesselWithHistory | null
@@ -109,6 +110,11 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
     setLoading(false)
   }
 
+  const datesTemplate = (firstSeen, originalFirstSeen) =>
+    <HistoryDate
+      date={firstSeen}
+      originalDate={originalFirstSeen}
+    />
   const imageList = useMemo(
     () => (vessel?.imageList ?? []).map((url) => ({ original: url })),
     [vessel]
@@ -330,6 +336,14 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                   <InfoField
                     vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                     label={VesselFieldLabel.iuuStatus}
+                    modalTitle={t('vessel.iuuStatusModalTitle', 'RFMO blancklist presence for {{vesselName}}', {
+                      vesselName: vessel.shipname ?? DEFAULT_EMPTY_VALUE
+                    })}
+                    columnHeaders={{
+                      field: t('common.rmfo', 'RMFO'),
+                      dates: t('common.listedOn', 'Listed on'),
+                    }}
+                    datesTemplate={datesTemplate}
                     value={
                       vessel.iuuStatus !== undefined
                         ? (

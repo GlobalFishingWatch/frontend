@@ -15,18 +15,20 @@ interface ListItemProps {
     dates?: ReactNode
     source?: ReactNode
   }
+  datesTemplate?: (firstSeen, originalFirstSeen) => JSX.Element
   hideTMTDate: boolean
 }
 
 const InfoFieldHistoryTable: React.FC<ListItemProps> = ({
   history,
   label,
+  datesTemplate,
   columnHeaders,
   hideTMTDate,
 }): React.ReactElement => {
   const { t } = useTranslation()
   const { formatSource } = useVesselsConnect(label)
-
+  console.log(history)
   return (
     <Fragment>
       {history.length > 0 && (
@@ -50,7 +52,12 @@ const InfoFieldHistoryTable: React.FC<ListItemProps> = ({
               <div className={styles.identifierField}>
                 {historyValue.value ? historyValue.value : DEFAULT_EMPTY_VALUE}
               </div>
-              {!hideTMTDate && (
+              {!hideTMTDate && datesTemplate && (
+                <div className={styles.identifierField}>
+                  {datesTemplate(historyValue.firstSeen, historyValue.originalFirstSeen)}
+                </div>
+              )}
+              {!hideTMTDate && !datesTemplate && (
                 <div className={styles.identifierField}>
                   <div>
                     <HistoryDate

@@ -159,7 +159,7 @@
   "risk": {
     "aisDisabling": "AIS Disabling",
     "aisDisablingDescription": "A likely disabling event is indicated where a vessel may have intentionally turned off its AIS device, i.e. where a vessel has 'gone dark.' These events are gaps in AIS transmissions that our models predict are the result of intentional disabling rather than poor signal or similar factors.",
-    "currentlyPresentOnARfmoIUUList": "Vessel is currently present on an RFMO IUU blacklist ({{rmfo}})",
+    "currentlyPresentOnARfmoIUUList": "Vessel is currently present on an RFMO IUU blacklist",
     "encounterEventInForeignEEZ_one": "{{count}} encounter in a foreign EEZ",
     "encounterEventInForeignEEZ_other": "{{count}} encounters in a foreign EEZ",
     "encounterEventInMPA_one": "{{count}} encounter in MPAs",

@@ -64,4 +64,55 @@ export const tmtVessel: TMTDetail = {
   authorisationList: [],
   imageList: [],
   iuuStatus: 0,
+  iuuListing: [
+    {
+      "source": "ICCAT",
+      "startDate": "2015-10-02T00:00:00.000Z",
+      "endDate": null,
+      "originalStartDate": 20151002,
+      "originalEndDate": null
+    },
+    {
+      "source": "CCAMLR",
+      "startDate": "2004-11-05T00:00:00.000Z",
+      "endDate": null,
+      "originalStartDate": 20041105,
+      "originalEndDate": null
+    },
+    {
+      "source": "CCSBT",
+      "startDate": "2020-02-26T00:00:00.000Z",
+      "endDate": null,
+      "originalStartDate": 20200226,
+      "originalEndDate": null
+    },
+    {
+      "source": "INTERPOL",
+      "startDate": "2015-01-21T00:00:00.000Z",
+      "endDate": null,
+      "originalStartDate": 20150121,
+      "originalEndDate": null
+    },
+    {
+      "source": "SEAFO",
+      "startDate": "2007-10-31T00:00:00.000Z",
+      "endDate": null,
+      "originalStartDate": 20071031,
+      "originalEndDate": null
+    },
+    {
+      "source": "GFCM",
+      "startDate": null,
+      "endDate": null,
+      "originalStartDate": 20140500,
+      "originalEndDate": null
+    },
+    {
+      "source": "IOTC",
+      "startDate": "2015-05-01T00:00:00.000Z",
+      "endDate": null,
+      "originalStartDate": 20150501,
+      "originalEndDate": null
+    }
+  ]
 }

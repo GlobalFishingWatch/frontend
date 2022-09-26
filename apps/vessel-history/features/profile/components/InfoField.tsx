@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { ReactNode, useCallback, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
@@ -13,13 +13,20 @@ import Faq from './Faq'
 
 interface ListItemProps {
   label: VesselFieldLabel
+  modalTitle?: string
   value?: string
   className?: string
   valuesHistory?: ValueItem[]
   vesselName: string
+  columnHeaders?: {
+    field?: ReactNode
+    dates?: ReactNode
+    source?: ReactNode
+  }
   hideTMTDate?: boolean
   includeFaq?: boolean
   helpText?: React.ReactNode
+  datesTemplate?: (firstSeen, originalFirstSeen) => JSX.Element
 }
 
 const InfoField: React.FC<ListItemProps> = ({
@@ -28,6 +35,9 @@ const InfoField: React.FC<ListItemProps> = ({
   className = '',
   valuesHistory = [],
   vesselName,
+  columnHeaders,
+  modalTitle = null,
+  datesTemplate,
   hideTMTDate = false,
   includeFaq = false,
   helpText,
@@ -75,11 +85,14 @@ const InfoField: React.FC<ListItemProps> = ({
         )}
         <InfoFieldHistory
           label={label}
+          modalTitle={modalTitle}
           history={valuesHistory}
           isOpen={modalOpen}
           hideTMTDate={hideTMTDate}
           onClose={closeModal}
+          datesTemplate={datesTemplate}
           vesselName={vesselName}
+          columnHeaders={columnHeaders}
         ></InfoFieldHistory>
       </div>
     </div>

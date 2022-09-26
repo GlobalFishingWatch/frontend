@@ -9,11 +9,13 @@ interface ListItemProps {
   history: ValueItem[]
   isOpen: boolean
   label: VesselFieldLabel
+  modalTitle?: string
   columnHeaders?: {
     field?: ReactNode
     dates?: ReactNode
     source?: ReactNode
   }
+  datesTemplate?: (firstSeen, originalFirstSeen) => JSX.Element
   hideTMTDate: boolean
   vesselName: string
   onClose?: () => void
@@ -23,7 +25,9 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
   history,
   isOpen,
   label,
+  modalTitle,
   columnHeaders,
+  datesTemplate,
   hideTMTDate,
   vesselName,
   onClose = () => { },
@@ -40,7 +44,7 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
       {history.length > 0 && (
         <Modal
           appSelector="__next"
-          title={t('vessel.historyLabelByField', defaultTitle, {
+          title={modalTitle ?? t('vessel.historyLabelByField', defaultTitle, {
             label: t(`vessel.${label}` as any, label),
             vesselName,
           })}
@@ -50,6 +54,7 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
           <InfoFieldHistoryTable
             history={history}
             label={label}
+            datesTemplate={datesTemplate}
             columnHeaders={columnHeaders}
             hideTMTDate={hideTMTDate} />
         </Modal>

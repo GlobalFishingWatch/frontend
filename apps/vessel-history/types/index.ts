@@ -99,7 +99,7 @@ export interface VesselFieldsHistory {
   grossTonnage: VesselFieldHistory<string>
   vesselType: VesselFieldHistory<string>
   operator: VesselFieldHistory<string>
-  iuuListing: VesselFieldHistory<string>
+  iuuListing?: VesselFieldHistory<string>
 }
 
 export interface ForcedLaborRisk {
