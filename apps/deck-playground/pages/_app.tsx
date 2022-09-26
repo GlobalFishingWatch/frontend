@@ -63,30 +63,30 @@ function CustomApp({ Component, pageProps }: AppProps) {
   const asideWidth = '32rem'
   return (
     <RecoilRoot>
-      {/* <RecoilURLSyncJSONNext location={{ part: 'queryParams' }}> */}
-      <QueryClientProvider client={queryClient}>
-        <ErrorBoundary>
-          <SplitView
-            showToggle
-            isOpen={sidebarOpen}
-            onToggle={onToggle}
-            aside={<Component {...pageProps} />}
-            main={
-              <div className={styles.main}>
-                <div className={styles.mapContainer}>
-                  <Map />
+      <RecoilURLSyncJSONNext location={{ part: 'queryParams' }}>
+        <QueryClientProvider client={queryClient}>
+          <ErrorBoundary>
+            <SplitView
+              showToggle
+              isOpen={sidebarOpen}
+              onToggle={onToggle}
+              aside={<Component {...pageProps} />}
+              main={
+                <div className={styles.main}>
+                  <div className={styles.mapContainer}>
+                    <Map />
+                  </div>
+                  <Timebar />
                 </div>
-                <Timebar />
-              </div>
-            }
-            asideWidth={asideWidth}
-            showMainLabel="Map"
-            className="split-container"
-          />
-          {showFps && <FpsView bottom="0" left="0" top="auto" />}
-        </ErrorBoundary>
-      </QueryClientProvider>
-      {/* </RecoilURLSyncJSONNext> */}
+              }
+              asideWidth={asideWidth}
+              showMainLabel="Map"
+              className="split-container"
+            />
+            {showFps && <FpsView bottom="0" left="0" top="auto" />}
+          </ErrorBoundary>
+        </QueryClientProvider>
+      </RecoilURLSyncJSONNext>
     </RecoilRoot>
   )
 }

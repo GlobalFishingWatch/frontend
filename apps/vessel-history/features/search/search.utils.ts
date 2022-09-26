@@ -19,7 +19,7 @@ export const mergeSearchVessels = (vessels: VesselSearch[], mergedField = 'vesse
   vessels.forEach((vessel: VesselSearch) => {
     const existingIndex = vessel[mergedField] ? mergedVessels.findIndex(vesselToFind => vesselToFind[mergedField] === vessel[mergedField]) : -1
     // If there is already a merged vessel with the same value in the mergedField
-    if (existingIndex && existingIndex !== -1) {
+    if (existingIndex !== -1) {
       // merge it with the current 
       mergedVessels[existingIndex] = getMergedVessel(vessel, mergedVessels[existingIndex])
     } else {
@@ -28,5 +28,6 @@ export const mergeSearchVessels = (vessels: VesselSearch[], mergedField = 'vesse
     }
 
   });
+
   return mergedVessels
 }

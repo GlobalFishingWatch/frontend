@@ -8,7 +8,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 const IS_PRODUCTION =
   process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'production' || process.env.NODE_ENV === 'production'
 
-const BASE_PATH = process.env.NEXT_PUBLIC_URL || IS_PRODUCTION ? '/data-explorer' : ''
+const BASE_PATH = process.env.NEXT_PUBLIC_URL || IS_PRODUCTION ? '' : ''
 
 /**
  * @type {import('@nrwl/next/plugins/with-nx').WithNxOptions}

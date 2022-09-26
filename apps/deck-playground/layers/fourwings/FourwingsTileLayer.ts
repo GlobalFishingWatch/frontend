@@ -1,7 +1,7 @@
 import { Color, CompositeLayer, GetPickingInfoParams, PickingInfo } from '@deck.gl/core/typed'
 import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
 import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
-import { FourwingsLayerProps } from 'layers/fourwings/FourwingsLayer'
+import type { FourwingsLayerProps } from 'layers/fourwings/FourwingsLayer'
 import { Cell } from 'loaders/fourwings/fourwingsLayerLoader'
 import FourwingsTileCellLayer from 'layers/fourwings/FourwingsTileCellLayer'
 

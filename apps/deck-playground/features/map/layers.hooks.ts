@@ -1,32 +1,31 @@
-import { FourwingsLayer } from 'layers/fourwings/FourwingsLayer'
-import { VesselsLayer } from 'layers/vessel/VesselsLayer'
+import { mixed } from '@recoiljs/refine'
+import { FourwingsLayerResolution } from 'layers/fourwings/FourwingsLayer'
 import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
+import { urlSyncEffect } from 'recoil-sync'
 
 export type MapLayerType = 'vessel' | 'fourwings'
 
-export type MapLayer<Instance = VesselsLayer | FourwingsLayer> = {
+export type MapLayer = {
   id: MapLayerType
   visible?: boolean
-  instance?: Instance
+  resolution?: FourwingsLayerResolution
   loaded?: boolean
 }
 
 export const mapLayersAtom = atom<MapLayer[]>({
   key: 'mapLayers',
-  dangerouslyAllowMutability: true,
   default: [
-    { id: 'fourwings', visible: true },
+    { id: 'fourwings', visible: true, resolution: 'default' },
     { id: 'vessel', visible: false },
   ],
-  // effects: [urlSyncEffect({ refine: mixed(), history: 'replace' })],
+  effects: [urlSyncEffect({ refine: mixed(), history: 'replace' })],
 })
 
 const mapFourwingsLayer = selector({
   key: 'mapFourwingsLayer',
-  dangerouslyAllowMutability: true,
   get: ({ get }) => {
     const layers = get(mapLayersAtom)
-    return layers.find((l) => l.id === 'fourwings') as MapLayer<FourwingsLayer>
+    return layers.find((l) => l.id === 'fourwings')
   },
 })
 

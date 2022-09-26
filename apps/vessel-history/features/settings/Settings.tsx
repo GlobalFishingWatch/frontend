@@ -12,6 +12,7 @@ import PortVisits from './components/PortVisits'
 import ActivityEventDataAndTerminology from './components/ActivityEventDataAndTerminology'
 import styles from './Settings.module.css'
 import { useSettingsConnect } from './settings.hooks'
+import GapEvents from './components/GapEvents'
 
 interface SettingsOption {
   title: string
@@ -30,6 +31,7 @@ const Settings: React.FC = (): React.ReactElement => {
     'encounters',
     'loiteringEvents',
     'portVisits',
+    'gapEvents',
   ]
   const optionsData: SettingsOptions = {
     fishingEvents: {
@@ -43,6 +45,9 @@ const Settings: React.FC = (): React.ReactElement => {
     },
     portVisits: {
       title: t('settings.portVisits.title', 'Port Visits'),
+    },
+    gapEvents: {
+      title: t('settings.gapEvents.title', 'Likely Disabling Events'),
     },
   }
   const [selectedOption, setSelectedOption] = useState<SettingEventSectionName>()
@@ -88,9 +93,13 @@ const Settings: React.FC = (): React.ReactElement => {
       {!selectedOption && (
         <ul>
           <li className={styles.switchRow}>
-            <SwitchRow active={settings.enabled} onClick={function (event: SwitchEvent): void {
-              setFiltersStatus(!settings.enabled)
-            }} label={t('settings.enable', 'Enable activity highlights')}></SwitchRow>
+            <SwitchRow
+              active={settings.enabled}
+              onClick={function (event: SwitchEvent): void {
+                setFiltersStatus(!settings.enabled)
+              }}
+              label={t('settings.enable', 'Enable activity highlights')}
+            ></SwitchRow>
           </li>
           {options.map((option: string) => (
             <li key={option} onClick={() => setSelectedOption(option as SettingEventSectionName)}>
@@ -115,6 +124,9 @@ const Settings: React.FC = (): React.ReactElement => {
       )}
       {selectedOption === 'portVisits' && (
         <PortVisits settings={settings.portVisits} section="portVisits"></PortVisits>
+      )}
+      {selectedOption === 'gapEvents' && (
+        <GapEvents settings={settings.gapEvents} section="gapEvents"></GapEvents>
       )}
     </div>
   )

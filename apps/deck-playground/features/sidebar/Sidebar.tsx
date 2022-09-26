@@ -1,34 +1,49 @@
 import { VesselsLayer } from 'layers/vessel/VesselsLayer'
 import { useMemo } from 'react'
-import { FourwingsLayer } from 'layers/fourwings/FourwingsLayer'
 import { getFourwingsMode } from 'layers/fourwings/fourwings.utils'
-import { Button, Switch } from '@globalfishingwatch/ui-components'
-import { VESSEL_IDS } from 'data/vessels'
+import {
+  useFourwingsLayerInstance,
+  useFourwingsLayerLoaded,
+} from 'layers/fourwings/fourwings.hooks'
+import { useRemoveVesselInLayer, useVesselsLayerIds } from 'layers/vessel/vessels.hooks'
+import { Button, IconButton, Switch } from '@globalfishingwatch/ui-components'
 import { MapLayer, useMapLayers } from 'features/map/layers.hooks'
-import { useViewport } from 'features/map/map-viewport.hooks'
 import styles from './Sidebar.module.css'
 import SidebarHeader from './SidebarHeader'
 
 function Sidebar() {
   const [layers, setMapLayers] = useMapLayers()
-  const { viewState } = useViewport()
+  const fourwingsLayerInstance = useFourwingsLayerInstance()
+  const fourwingsLayerLoaded = useFourwingsLayerLoaded()
+  const vesselIds = useVesselsLayerIds()
+  const removeVesselId = useRemoveVesselInLayer()
 
-  const fourwingsLayerInstance = useMemo(() => {
-    return layers.find((l) => l.id === 'fourwings')?.instance as FourwingsLayer
-  }, [layers])
-
-  const getFirstVesselData = () => {
-    const vesselsLayerInstance = layers.find((l) => l.id === 'vessel')?.instance as VesselsLayer
-    console.log('First Vessel Data')
-    console.log(vesselsLayerInstance.getVesselsLayer()?.[0].getTrackLayer().getSegments())
-  }
+  // const getFirstVesselData = () => {
+  //   const vesselsLayerInstance = layers.find((l) => l.id === 'vessel')?.instance as VesselsLayer
+  //   console.log('First Vessel Data')
+  //   console.log(vesselsLayerInstance.getVesselsLayer()?.[0].getTrackLayer().getSegments())
+  // }
 
   const getFourwingsData = () => {
-    if (fourwingsLayerInstance) {
-      const data = fourwingsLayerInstance.getData()
-      console.log('Fourwings data')
-      console.log(data)
-    }
+    const data =
+      fourwingsLayerInstance?.getMode() === 'heatmap'
+        ? fourwingsLayerInstance.getHeatmapTimeseries()
+        : fourwingsLayerInstance.getVesselPositions()
+    console.log(data)
+  }
+
+  const changeFourwingsResolution = () => {
+    setMapLayers((layers) =>
+      layers.map((l) => {
+        if (l.id === 'fourwings') {
+          return {
+            ...l,
+            resolution: l.resolution === 'high' ? 'default' : 'high',
+          }
+        }
+        return l
+      })
+    )
   }
 
   const onLayerVisibilityClick = (layer: MapLayer) => {
@@ -41,7 +56,8 @@ function Sidebar() {
       })
     )
   }
-
+  const fourwingsMode = fourwingsLayerInstance?.getMode()
+  const fourwingsResolution = fourwingsLayerInstance?.getResolution()
   return (
     <div className={styles.container}>
       <div className="scrollContainer">
@@ -56,19 +72,30 @@ function Sidebar() {
                     active={layer.visible}
                     onClick={() => onLayerVisibilityClick(layer)}
                   />
-                  <div>Vessels ({VESSEL_IDS.length} loaded)</div>
+                  <div>Vessels ({vesselIds?.length} loaded)</div>
                 </div>
                 {layer.visible && (
-                  <div>
-                    <Button size="small" onClick={getFirstVesselData}>
-                      LOG FIRST VESSEL DATA
-                    </Button>
-                  </div>
+                  <ul>
+                    {vesselIds?.length > 0 &&
+                      vesselIds.map((vessel) => (
+                        <li>
+                          {vessel}{' '}
+                          <IconButton
+                            icon="delete"
+                            onClick={() => removeVesselId(vessel)}
+                          ></IconButton>
+                        </li>
+                      ))}
+                  </ul>
+                  // <div>
+                  //   <Button size="small" onClick={getFirstVesselData}>
+                  //     LOG FIRST VESSEL DATA
+                  //   </Button>
+                  // </div>
                 )}
               </div>
             )
           }
-          const fourwingsMode = getFourwingsMode(viewState.zoom)
           return (
             <div key={layer.id} className={styles.row}>
               <div className={styles.header}>
@@ -79,31 +106,34 @@ function Sidebar() {
                 />
                 <div>
                   4wings layer
-                  <label>Mode: {fourwingsMode}</label>
+                  {fourwingsMode && <label>Mode: {fourwingsMode}</label>}
                 </div>
               </div>
               {layer.visible && (
                 <div>
-                  {fourwingsMode === 'heatmap' && (
-                    <div>
-                      <label>Steps</label>
-                      {fourwingsLayerInstance && (
-                        <ul className={styles.list}>
-                          {fourwingsLayerInstance.getColorDomain()?.map((step) => (
-                            <li key={step}>{step},</li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  )}
+                  <div>
+                    <label>Color breaks</label>
+                    {fourwingsLayerInstance && (
+                      <ul className={styles.list}>
+                        {fourwingsLayerInstance.getColorDomain()?.map((step) => (
+                          <li key={step}>{step},</li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                   <Button
                     size="small"
                     onClick={getFourwingsData}
-                    loading={!layer.loaded}
-                    disabled={!layer.loaded}
+                    loading={!fourwingsLayerLoaded}
+                    disabled={!fourwingsLayerLoaded}
                   >
-                    LOG LOADED 4WINGS DATA
+                    {fourwingsMode === 'heatmap' ? 'LOG 4WINGS DATA' : 'LOG VESSEL POSITIONS'}
                   </Button>
+                  {fourwingsMode === 'heatmap' && fourwingsLayerLoaded && (
+                    <Button size="small" onClick={changeFourwingsResolution}>
+                      {fourwingsResolution === 'high' ? 'lower def' : 'higher def'}
+                    </Button>
+                  )}
                 </div>
               )}
             </div>

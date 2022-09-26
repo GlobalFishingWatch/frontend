@@ -6,11 +6,11 @@ import {
   TimebarRange,
   useHighlightTimerange,
   useTimerange,
-  // useURLTimerange,
+  useURLTimerange,
 } from 'features/timebar/timebar.hooks'
 // import { useMapInstanceStyle } from 'features/map/map-context.hooks'
 import { formatI18nDate } from 'utils/i18n'
-// import TimebarActivityGraph from './TimebarActivityGraph'
+import TimebarActivityGraph from './TimebarActivityGraph'
 import styles from './Timebar.module.css'
 
 const TimebarHighlighterWrapper = () => {
@@ -50,7 +50,7 @@ const TimebarHighlighterWrapper = () => {
 }
 
 const TimebarWrapper = () => {
-  // useURLTimerange()
+  useURLTimerange()
   const [timerange, setTimerange] = useTimerange()
   const setHighlightTimerange = useHighlightTimerange()[1]
 
@@ -102,7 +102,7 @@ const TimebarWrapper = () => {
         displayWarningWhenInFuture={false}
         showLastUpdate={false}
       >
-        {/* <TimebarActivityGraph /> */}
+        <TimebarActivityGraph />
         <TimebarHighlighterWrapper />
       </Timebar>
     </div>

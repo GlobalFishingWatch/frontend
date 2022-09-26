@@ -1,5 +1,7 @@
-import { FourwingsLayerMode } from 'layers/fourwings/FourwingsLayer'
+import type { FourwingsLayerMode } from 'layers/fourwings/FourwingsLayer'
 import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
+import { DateTime } from 'luxon'
+import { TimebarRange } from 'features/timebar/timebar.hooks'
 
 export interface Bounds {
   north: number
@@ -8,8 +10,17 @@ export interface Bounds {
   east: number
 }
 
-export function getFourwingsMode(zoom: number): FourwingsLayerMode {
-  return zoom <= 9 ? 'heatmap' : 'positions'
+export function getRoundedDateFromTS(ts: number) {
+  return DateTime.fromMillis(ts).toUTC().toISODate()
+}
+
+export const ACTIVITY_SWITCH_ZOOM_LEVEL = 9
+
+export function getFourwingsMode(zoom: number, timerange: TimebarRange): FourwingsLayerMode {
+  const duration = DateTime.fromISO(timerange?.end)
+    .toUTC()
+    .diff(DateTime.fromISO(timerange?.start).toUTC(), 'days')
+  return zoom >= ACTIVITY_SWITCH_ZOOM_LEVEL && duration.days < 30 ? 'positions' : 'heatmap'
 }
 
 export const filterCellsByBounds = (cells: TileCell[], bounds: Bounds) => {
@@ -34,4 +45,24 @@ export const filterCellsByBounds = (cells: TileCell[], bounds: Bounds) => {
     const rightOffset = rightWorldCopy && !leftWorldCopy && featureInRightCopy ? 360 : 0
     return lon + leftOffset + rightOffset > west && lon + leftOffset + rightOffset < east
   })
+}
+
+export const aggregateCellTimeseries = (cells: TileCell[]) => {
+  if (!cells) {
+    return []
+  }
+  const timeseries = cells.reduce((acc, cell) => {
+    if (!cell) {
+      return acc
+    }
+    cell.timeseries.forEach(({ frame, value }) => {
+      if (acc[frame]) {
+        acc[frame] += value
+      } else {
+        acc[frame] = value
+      }
+    })
+    return acc
+  }, {} as Record<number, number>)
+  return timeseries
 }
