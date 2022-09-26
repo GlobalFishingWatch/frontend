@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
@@ -123,14 +123,6 @@ const BigQueryMenu: React.FC = () => {
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
-        <InputText
-          className={styles.input}
-          labelClassName={styles.inputLabel}
-          inputSize="small"
-          label="unit"
-          value={unit}
-          onChange={(e) => setUnit(e.target.value)}
-        />
         <Select
           label={t('bigQuery.visualiationMode', 'Visualisation mode')}
           placeholder={t('selects.placeholder', 'Select an option')}
@@ -142,16 +134,26 @@ const BigQueryMenu: React.FC = () => {
           }}
         />
         {visualisationMode === '4wings' && (
-          <Select
-            label={t('bigQuery.aggregationMode', 'Aggregation mode *')}
-            placeholder={t('selects.placeholder', 'Select an option')}
-            options={AggregationOptions}
-            containerClassName={styles.input}
-            selectedOption={AggregationOptions.find(({ id }) => id === aggregationOperation)}
-            onSelect={(selected) => {
-              setAggregationOperation(selected.id)
-            }}
-          />
+          <Fragment>
+            <Select
+              label={t('bigQuery.aggregationMode', 'Aggregation mode *')}
+              placeholder={t('selects.placeholder', 'Select an option')}
+              options={AggregationOptions}
+              containerClassName={styles.input}
+              selectedOption={AggregationOptions.find(({ id }) => id === aggregationOperation)}
+              onSelect={(selected) => {
+                setAggregationOperation(selected.id)
+              }}
+            />
+            <InputText
+              className={styles.input}
+              labelClassName={styles.inputLabel}
+              inputSize="small"
+              label="unit"
+              value={unit}
+              onChange={(e) => setUnit(e.target.value)}
+            />
+          </Fragment>
         )}
       </div>
       <div className={styles.row}>
