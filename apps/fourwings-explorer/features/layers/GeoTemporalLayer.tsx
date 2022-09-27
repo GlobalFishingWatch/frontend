@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import cx from 'classnames'
 import { Tooltip, ColorBarOption, IconButton, Slider } from '@globalfishingwatch/ui-components'
 import { ColorRampId } from '@globalfishingwatch/layer-composer'
@@ -101,14 +101,18 @@ function GeoTemporalLayer({ layer, onToggle }: LayerPanelProps): React.ReactElem
           )}
         </div>
       </div>
-      <div className={cx(styles.filters, { [styles.active]: layerActive })}>
-        <HistogramRangeFilter layer={layer} />
-      </div>
-      <div className={styles.properties}>
-        <div className={styles.legendContainer}>
-          <div className={styles.legend} id={`legend_${layer.id}`}></div>
-        </div>
-      </div>
+      {layerActive && (
+        <Fragment>
+          <div className={cx(styles.filters, { [styles.active]: layerActive })}>
+            <HistogramRangeFilter layer={layer} />
+          </div>
+          <div className={styles.properties}>
+            <div className={styles.legendContainer}>
+              <div className={styles.legend} id={`legend_${layer.id}`}></div>
+            </div>
+          </div>
+        </Fragment>
+      )}
     </div>
   )
 }
