@@ -129,18 +129,10 @@ export enum IuuStatus {
   currentlyListed = 2,
 }
 
-export interface Iuu {
-  source: string;
-  startDate: string;
-  endDate?: string;
-  originalStartDate: number;
-  originalEndDate?: number;
-}
-
 export interface VesselWithHistory extends Vessel {
   history: VesselFieldsHistory
   iuuStatus?: number
-  iuuListing?: Iuu
+  iuuListing?: ValueItem
   vesselType?: string
   forcedLabour?: ForcedLaborRisk[]
 }
@@ -167,6 +159,7 @@ export type Irc = ValueItem
 export type VesselType = ValueItem
 export type Depth = ValueItem
 export type Mmsi = ValueItem
+export type Iuu = ValueItem
 
 export type AnyValueList =
   | BuiltYear

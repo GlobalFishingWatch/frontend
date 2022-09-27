@@ -23,7 +23,7 @@ const extractValue: (valueItem: ValueItem[]) => string | undefined = (valueItem:
 const sortAuthorization = (a: Authorization, b: Authorization) =>
   a.originalStartDate > b.originalStartDate ? 1 : -1
 
-const sortIuu = (a: Iuu, b: Iuu) => (a.originalStartDate > b.originalStartDate ? 1 : -1)
+const sortIuu = (a: Iuu, b: Iuu) => (a.originalFirstSeen > b.originalFirstSeen ? 1 : -1)
 
 const getHistoryField = (historyField: AnyValueList[]): VesselFieldHistory<any> => ({
   byCount: [],
@@ -34,13 +34,25 @@ const getIuuHistory = (historyField: Iuu[]): VesselFieldHistory<any> => ({
   byCount: [],
   byDate: historyField.map((field: Iuu) => ({
     ...field,
-    value: field.source,
     source: VesselAPISource.TMT,
-    firstSeen: field.startDate,
-    originalFirstSeen: field.originalStartDate,
   })),
 })
 
+const transformIuuListing: (data: any) => TMTDetail = (data: any) => {
+  return {
+    ...data,
+    iuuListing:
+      data.iuuListing.map((iuu) => {
+        console.log(iuu)
+        return {
+          ...iuu,
+          value: iuu.source,
+          firstSeen: iuu.startDate,
+          originalFirstSeen: iuu.originalStartDate,
+        }
+      }) || [],
+  }
+}
 export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail) => {
   const {
     vesselMatchId,
@@ -110,6 +122,7 @@ const vesselThunk: VesselAPIThunk = {
     const url = `/vessel-histories/${id}`
 
     return await GFWAPI.fetch<TMTDetail>(url)
+      .then(transformIuuListing)
       .then(toVessel)
       .catch((error) => {
         console.error(error)

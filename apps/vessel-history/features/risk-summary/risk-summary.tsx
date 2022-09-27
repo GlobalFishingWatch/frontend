@@ -163,8 +163,8 @@ export function RiskSummary(props: RiskSummaryProps) {
               vessel.iuuListing.source +
               ' ' +
               formatI18nSpecialDate({
-                date: vessel.iuuListing.originalStartDate,
-                forcedTokensFormat: 'yyyy',
+                date: vessel.iuuListing.originalFirstSeen,
+                format: { year: 'numeric' },
               })
             })`}
             history={vessel.history.iuuListing.byDate}

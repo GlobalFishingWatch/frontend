@@ -354,11 +354,11 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                           ) +
                           (vessel.iuuListing
                             ? ' - ' +
-                              vessel.iuuListing.source +
+                              vessel.iuuListing.value +
                               ' ' +
                               formatI18nSpecialDate({
-                                date: vessel.iuuListing.originalStartDate,
-                                forcedTokensFormat: 'yyyy',
+                                date: vessel.iuuListing.originalFirstSeen,
+                                format: { year: 'numeric' },
                               })
                             : '')
                         : DEFAULT_EMPTY_VALUE
