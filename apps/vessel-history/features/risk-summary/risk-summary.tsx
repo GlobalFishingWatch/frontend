@@ -23,6 +23,8 @@ import { VesselFieldLabel } from 'types/vessel'
 import TerminologyAisDisabling from 'features/terminology/terminology-ais-disabling'
 import DateRangeLabel from 'features/date-range-label/date-range-label'
 import AisCoverage from 'features/profile/components/activity/AisCoverage'
+import RiskIuuIndicator from 'features/risk-iuu-indicator/risk-iuu-indicator'
+import { formatI18nSpecialDate } from 'features/i18n/i18nDate'
 import styles from './risk-summary.module.css'
 
 export interface RiskSummaryProps {
@@ -150,15 +152,25 @@ export function RiskSummary(props: RiskSummaryProps) {
       </RiskSection>
       {hasIUUIndicators && (
         <RiskSection severity="high" title={t('event.iuu', 'iuu')} titleInfo={<TerminologyIuu />}>
-          <RiskIndicator
+          <RiskIuuIndicator
             title={
               t(
                 'risk.currentlyPresentOnARfmoIUUList',
                 'Vessel is currently present on an RFMO IUU blacklist'
               ) as string
             }
-            subtitle={' '}
-          ></RiskIndicator>
+            subtitle={`(${
+              vessel.iuuListing.source +
+              ' ' +
+              formatI18nSpecialDate({
+                date: vessel.iuuListing.originalFirstSeen,
+                format: { year: 'numeric' },
+              })
+            })`}
+            history={vessel.history.iuuListing.byDate}
+            field={VesselFieldLabel.iuuStatus}
+            vesselName={vessel.shipname}
+          />
         </RiskSection>
       )}
       {hasGapsIntentionalDisabling && (

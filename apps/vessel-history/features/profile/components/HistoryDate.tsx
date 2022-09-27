@@ -5,7 +5,7 @@ import styles from './Info.module.css'
 interface HistoryDateProps {
   date?: string
   originalDate?: number
-  label: string
+  label?: string
   className?: string
   labelClassName?: string
 }
@@ -19,7 +19,7 @@ const HistoryDate: React.FC<HistoryDateProps> = ({
     <Fragment>
       {(date || originalDate) && (
         <div>
-          <span className={styles.rangeLabel}>{label}: </span>
+          {label && <span className={styles.rangeLabel}>{label}: </span>}
           <span className={styles.rangeValue}>
             <I18nSpecialDate date={date ?? originalDate ?? ''} />
           </span>
