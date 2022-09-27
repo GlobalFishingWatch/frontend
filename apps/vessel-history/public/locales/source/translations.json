@@ -336,7 +336,7 @@
     "imo": "imo",
     "iuuStatus": "IUU Status",
     "iuuStatusDescription": "[TDB] IUU status description to be defined",
-    "iuuStatusModalTitle": "RFMO blancklist presence for {{vesselName}}",
+    "iuuStatusModalTitle": "RFMO blacklist presence for {{vesselName}}",
     "iuuStatusOptions": {
       "0": "Not listed",
       "1": "previously listed",

@@ -60,7 +60,7 @@ const InfoField: React.FC<ListItemProps> = ({
   const since = useMemo(() => valuesHistory.slice(0, 1)?.shift()?.firstSeen, [valuesHistory])
   return (
     <div className={cx(styles.identifierField, styles[className])}>
-      <label className={styles.infoLabel} >
+      <label className={styles.infoLabel}>
         {t(`vessel.${label}` as any, label)}
         {helpText && (
           <DataAndTerminology size="tiny" type="default" title={t(`vessel.${label}` as any, label)}>

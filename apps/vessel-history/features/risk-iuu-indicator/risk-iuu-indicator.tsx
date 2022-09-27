@@ -5,6 +5,7 @@ import InfoFieldHistory from 'features/profile/components/InfoFieldHistory'
 import { ValueItem } from 'types'
 import { VesselFieldLabel } from 'types/vessel'
 import { getUniqueHistoryValues } from 'features/vessels/activity/vessels-activity.utils'
+import HistoryDate from 'features/profile/components/HistoryDate'
 import styles from '../risk-identity-indicator/risk-identity-indicator.module.css'
 
 export interface RiskIuuIndicatorProps {
@@ -33,6 +34,9 @@ export function RiskIuuIndicator({
   }, [uniqueValues, subtitle])
   const hasHistory = history.length > 0
 
+  const datesTemplate = (firstSeen, originalFirstSeen) => (
+    <HistoryDate date={firstSeen} originalDate={originalFirstSeen} />
+  )
   const openModal = useCallback(() => {
     if (hasHistory) {
       setModalOpen(true)
@@ -60,14 +64,19 @@ export function RiskIuuIndicator({
           history={history}
           isOpen={modalOpen}
           hideTMTDate={hideTMTDate}
-          modalTitle={t('vessel.iuuStatusModalTitle', 'RFMO blancklist presence for {{vesselName}}', {
-            vesselName: vesselName
-          })}
+          modalTitle={t(
+            'vessel.iuuStatusModalTitle',
+            'RFMO blacklist presence for {{vesselName}}',
+            {
+              vesselName: vesselName,
+            }
+          )}
           columnHeaders={{
             field: t('common.rmfo', 'RMFO'),
             dates: t('common.listedOn', 'Listed on'),
           }}
           onClose={closeModal}
+          datesTemplate={datesTemplate}
           vesselName={vesselName}
         ></InfoFieldHistory>
       )}

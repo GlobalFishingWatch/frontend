@@ -8,7 +8,7 @@ import { DateTime, Interval } from 'luxon'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { VesselWithHistory } from 'types'
-import I18nDate from 'features/i18n/i18nDate'
+import I18nDate, { formatI18nSpecialDate } from 'features/i18n/i18nDate'
 import { selectCurrentOfflineVessel } from 'features/vessels/offline-vessels.selectors'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
 import { OfflineVessel, VesselFieldLabel } from 'types/vessel'
@@ -22,7 +22,6 @@ import {
   selectVesselProfileId,
 } from 'routes/routes.selectors'
 import { useUser } from 'features/user/user.hooks'
-import { selectEventsForTracks } from 'features/vessels/activity/vessels-activity.selectors'
 import { TMT_CONTACT_US_URL } from 'data/constants'
 import { selectUserData } from 'features/user/user.slice'
 import { selectCurrentUserProfileHasPortInspectorPermission } from '../profile.selectors'
@@ -32,8 +31,6 @@ import 'react-image-gallery/styles/css/image-gallery.css'
 import Highlights from './Highlights'
 import AuthorizationsField from './AuthorizationsField'
 import ForcedLabor from './ForcedLabor'
-import { selectAllOfflineVessels } from 'features/vessels/offline-vessels.slice'
-import { getYearFromTmtDate } from 'utils/shared'
 import HistoryDate from './HistoryDate'
 
 interface InfoProps {
@@ -68,21 +65,24 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
     dispatchFetchOfflineVessels()
   }, [])
 
-  const onDeleteClick = useCallback((data: OfflineVessel) => {
-    const now = DateTime.now()
-    const savedOn = DateTime.fromISO(data.savedOn)
-    const i = Interval.fromDateTimes(savedOn, now)
-    uaEvent({
-      category: 'Offline Access',
-      action: 'Remove saved vessel for offline view',
-      label: JSON.stringify({ page: 'vessel detail' }),
-      value: Math.floor(i.length('days')),
-    })
-    setLoading(true)
-    dispatchDeleteOfflineVessel(data)
-    dispatchFetchOfflineVessels()
-    setLoading(false)
-  }, [dispatchDeleteOfflineVessel, dispatchDeleteOfflineVessel])
+  const onDeleteClick = useCallback(
+    (data: OfflineVessel) => {
+      const now = DateTime.now()
+      const savedOn = DateTime.fromISO(data.savedOn)
+      const i = Interval.fromDateTimes(savedOn, now)
+      uaEvent({
+        category: 'Offline Access',
+        action: 'Remove saved vessel for offline view',
+        label: JSON.stringify({ page: 'vessel detail' }),
+        value: Math.floor(i.length('days')),
+      })
+      setLoading(true)
+      dispatchDeleteOfflineVessel(data)
+      dispatchFetchOfflineVessels()
+      setLoading(false)
+    },
+    [dispatchDeleteOfflineVessel, dispatchDeleteOfflineVessel]
+  )
 
   const onSaveClick = async (data: VesselWithHistory) => {
     setLoading(true)
@@ -110,11 +110,9 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
     setLoading(false)
   }
 
-  const datesTemplate = (firstSeen, originalFirstSeen) =>
-    <HistoryDate
-      date={firstSeen}
-      originalDate={originalFirstSeen}
-    />
+  const datesTemplate = (firstSeen, originalFirstSeen) => (
+    <HistoryDate date={firstSeen} originalDate={originalFirstSeen} />
+  )
   const imageList = useMemo(
     () => (vessel?.imageList ?? []).map((url) => ({ original: url })),
     [vessel]
@@ -336,9 +334,13 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                   <InfoField
                     vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                     label={VesselFieldLabel.iuuStatus}
-                    modalTitle={t('vessel.iuuStatusModalTitle', 'RFMO blancklist presence for {{vesselName}}', {
-                      vesselName: vessel.shipname ?? DEFAULT_EMPTY_VALUE
-                    })}
+                    modalTitle={t(
+                      'vessel.iuuStatusModalTitle',
+                      'RFMO blancklist presence for {{vesselName}}',
+                      {
+                        vesselName: vessel.shipname ?? DEFAULT_EMPTY_VALUE,
+                      }
+                    )}
                     columnHeaders={{
                       field: t('common.rmfo', 'RMFO'),
                       dates: t('common.listedOn', 'Listed on'),
@@ -346,15 +348,19 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                     datesTemplate={datesTemplate}
                     value={
                       vessel.iuuStatus !== undefined
-                        ? (
-                          t(
+                        ? t(
                             `vessel.iuuStatusOptions.${vessel.iuuStatus}` as any,
                             vessel.iuuStatus.toString()
-                          ) + (vessel.iuuListing ? (
-                            ' - ' + vessel.iuuListing.source + ' ' +
-                            getYearFromTmtDate(vessel.iuuListing.originalStartDate)) :
-                            '')
-                        )
+                          ) +
+                          (vessel.iuuListing
+                            ? ' - ' +
+                              vessel.iuuListing.source +
+                              ' ' +
+                              formatI18nSpecialDate({
+                                date: vessel.iuuListing.originalStartDate,
+                                forcedTokensFormat: 'yyyy',
+                              })
+                            : '')
                         : DEFAULT_EMPTY_VALUE
                     }
                     valuesHistory={vessel.history.iuuListing.byDate}

@@ -14,5 +14,3 @@ export const toFixed = (value: number, decimals = 2) => {
 export const sortByDate = (a: string, b: string) => {
   return new Date(a).getTime() - new Date(b).getTime()
 }
-
-export const getYearFromTmtDate = (date: number) => date.toString().substring(0, 4)

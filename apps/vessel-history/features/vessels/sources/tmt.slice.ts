@@ -1,6 +1,5 @@
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { Authorization } from '@globalfishingwatch/api-types'
-import { API_VERSION } from 'data/config'
 import {
   AnyValueList,
   Iuu,
@@ -24,8 +23,7 @@ const extractValue: (valueItem: ValueItem[]) => string | undefined = (valueItem:
 const sortAuthorization = (a: Authorization, b: Authorization) =>
   a.originalStartDate > b.originalStartDate ? 1 : -1
 
-const sortIuu = (a: Iuu, b: Iuu) =>
-  a.originalStartDate > b.originalStartDate ? 1 : -1
+const sortIuu = (a: Iuu, b: Iuu) => (a.originalStartDate > b.originalStartDate ? 1 : -1)
 
 const getHistoryField = (historyField: AnyValueList[]): VesselFieldHistory<any> => ({
   byCount: [],
@@ -34,7 +32,7 @@ const getHistoryField = (historyField: AnyValueList[]): VesselFieldHistory<any> 
 
 const getIuuHistory = (historyField: Iuu[]): VesselFieldHistory<any> => ({
   byCount: [],
-  byDate: historyField.reverse().map((field: Iuu) => ({
+  byDate: historyField.map((field: Iuu) => ({
     ...field,
     value: field.source,
     source: VesselAPISource.TMT,
@@ -60,7 +58,7 @@ export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail
     depth: getHistoryField(valueList.depth),
     flag: getHistoryField(valueList.flag),
     imo: getHistoryField(valueList.imo),
-    iuuListing: getIuuHistory(iuuListing.sort(sortIuu).reverse()),
+    iuuListing: getIuuHistory(iuuListing.sort(sortIuu)),
     geartype: getHistoryField(valueList.gear),
     grossTonnage: getHistoryField(valueList.gt),
     shipname: getHistoryField(valueList.name),
