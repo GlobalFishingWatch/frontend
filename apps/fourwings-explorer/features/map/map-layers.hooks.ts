@@ -89,7 +89,10 @@ export function getLayerGeneratorConfig(layer: DatasetLayer) {
 }
 
 const getLayersGeneratorConfig = (layers: DatasetLayer[]): AnyGeneratorConfig[] => {
-  return layers.map((layer) => getLayerGeneratorConfig(layer))
+  return layers.flatMap((layer) => {
+    const visible = layer.config?.visible
+    return visible ? getLayerGeneratorConfig(layer) : []
+  })
 }
 
 const useGlobalGeneratorConfig = () => {
