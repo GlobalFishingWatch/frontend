@@ -1,42 +1,49 @@
 import cx from 'classnames'
+import { useCallback, useMemo } from 'react'
 import {
   HighlighterCallbackFn,
   HighlighterCallbackFnArgs,
   TimebarStackedActivity,
 } from '@globalfishingwatch/timebar'
 import { useStackedActivity } from 'features/timebar/TimebarActivityGraph.hooks'
-import { useGeoTemporalLayers } from 'features/layers/layers.hooks'
+import { useVisibleGeoTemporalLayers } from 'features/layers/layers.hooks'
+import { useSelectedTimebarLayerId } from 'features/timebar/timebar.hooks'
 import styles from './Timebar.module.css'
 
-const TimebarActivityGraph = () => {
-  const layers = useGeoTemporalLayers()
+export const formatNumber = (num: string | number, maximumFractionDigits?: number) => {
+  const number = typeof num === 'string' ? parseFloat(num) : num
+  return number.toLocaleString(undefined, {
+    maximumFractionDigits: maximumFractionDigits || (number < 10 ? 2 : 0),
+  })
+}
 
-  const { loading, stackedActivity, error } = useStackedActivity(layers)
+const TimebarActivityGraph = () => {
+  const layers = useVisibleGeoTemporalLayers()
+  const [selectedLayerId] = useSelectedTimebarLayerId()
+  const layer = useMemo(() => {
+    if (selectedLayerId) {
+      return layers.filter((l) => l.id === selectedLayerId)
+    }
+    return layers.length > 0 ? [layers[0]] : []
+  }, [layers, selectedLayerId])
+
+  const { loading, stackedActivity, error } = useStackedActivity(layer)
 
   // const style = useMapStyle()
   // const mapLegends = useMapLegend(style, activeDataviews)
 
-  // const getActivityHighlighterLabel: HighlighterCallbackFn = useCallback(
-  //   ({ chunk, value, item }: HighlighterCallbackFnArgs) => {
-  //     if (loading) return t('map.loading', 'Loading')
-  //     if (!value || !value.value) return ''
-  //     const dataviewId = item.props?.dataviewId
-  //     const unit = mapLegends.find((l) => l.id === getLegendId(dataviewId))?.unit || ''
-  //     const maxHighlighterFractionDigits =
-  //       visualisation === TimebarVisualisations.Environment ? 2 : undefined
-  //     const labels = [
-  //       formatNumber(value.value, maxHighlighterFractionDigits),
-  //       unit,
-  //       t('common.onScreen', 'on screen'),
-  //     ]
-  //     if (visualisation === TimebarVisualisations.Environment) {
-  //       labels.push(t('common.averageAbbreviated', 'avg.'))
-  //     }
+  const getActivityHighlighterLabel: HighlighterCallbackFn = useCallback(
+    ({ chunk, value, item }: HighlighterCallbackFnArgs) => {
+      if (loading) return 'Loading'
+      if (!value || !value.value) return ''
+      const layer = layers.find((l) => l.id === item.props?.dataviewId)
+      const unit = layer.dataset?.unit || ''
+      const labels = [formatNumber(value.value, 2), unit, 'on screen avg.']
 
-  //     return labels.join(' ')
-  //   },
-  //   [loading, mapLegends, visualisation]
-  // )
+      return labels.join(' ')
+    },
+    [loading, layers]
+  )
 
   if (error) {
     return (
@@ -52,8 +59,8 @@ const TimebarActivityGraph = () => {
       <TimebarStackedActivity
         key="stackedActivity"
         timeseries={stackedActivity}
-        dataviews={layers}
-        // highlighterCallback={getActivityHighlighterLabel}
+        dataviews={layer}
+        highlighterCallback={getActivityHighlighterLabel}
         highlighterIconCallback="heatmap"
       />
     </div>
