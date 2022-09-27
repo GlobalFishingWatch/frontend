@@ -513,8 +513,28 @@
       "firstTransmissionDate": "firstTransmissionDate"
     }
   },
+  "private-indonesia-aruna-fishing-effort": {
+    "name": "Indonesia Pelagic (Aruna)",
+    "description": "Indonesia Aruna Fishing Effort",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      },
+      "vessel_id": "vessel_id"
+    }
+  },
   "private-indonesia-aruna-presence": {
-    "name": "Aruna",
+    "name": "Indonesia Pelagic (Aruna)",
     "description": "Aruna Presence",
     "schema": {
       "lat": "lat",
@@ -584,9 +604,29 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "private-indonesia-ipnlf-fishing-effort": {
+    "name": "Indonesia Pelagic (IPNLF-AP2HI)",
+    "description": "Indonesia AP2HI-IPNLF Fishing Effort",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      },
+      "vessel_id": "vessel_id"
+    }
+  },
   "private-indonesia-ipnlf-presence": {
-    "name": "IPNLF",
-    "description": "AP2HI-IPNLF Presence",
+    "name": "Indonesia Pelagic (IPNLF-AP2HI)",
+    "description": "IPNLF-AP2HI Presence",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -619,7 +659,7 @@
     }
   },
   "private-indonesia-pelagic-presence": {
-    "name": "Pelagic",
+    "name": "Indonesia Pelagic",
     "description": "Pelagic Presence",
     "schema": {
       "lat": "lat",
@@ -682,8 +722,28 @@
       "vessel_id": "vessel_id"
     }
   },
+  "private-indonesia-rare-fishing-effort": {
+    "name": "Indonesia Pelagic (Rare)",
+    "description": "Indonesia Rare Fishing Effort",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      },
+      "vessel_id": "vessel_id"
+    }
+  },
   "private-indonesia-rare-presence": {
-    "name": "Rare",
+    "name": "Indonesia Pelagic (Rare)",
     "description": "Rare Presence",
     "schema": {
       "lat": "lat",
@@ -717,7 +777,7 @@
     }
   },
   "private-indonesia-zebrax-presence": {
-    "name": "Coastal Fisheries Indonesia",
+    "name": "Indonesia Zebrax (Private)",
     "description": "This layer of Global Fishing Watch uses data provided by Rare, Aruna and AP2HI. The data is collected using devices from different providers that tracks location and speed. The information shown represents the vessel presence. The presence is determined by taking all positions transmitted by the vessel's tracking device.",
     "schema": {
       "lat": "lat",
@@ -1994,8 +2054,17 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "public-indonesia-pelagic-fishing-effort": {
+    "name": "Indonesia Pelagic",
+    "description": "Indonesia Pelagic Fishing Effort Public Data",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag"
+    }
+  },
   "public-indonesia-pelagic-presence": {
-    "name": "Pelagic",
+    "name": "Indonesia Pelagic",
     "description": "This layer of Global Fishing Watch uses data provided by Rare, Aruna and AP2HI. The data is collected using Pelagic devices that tracks location and speed. The information shown represents the vessel presence. The presence is determined by taking one position per hour transmitted by the vessel's tracking device.",
     "schema": {
       "lat": "lat",
@@ -2015,7 +2084,7 @@
     }
   },
   "public-indonesia-zebrax-presence": {
-    "name": "Coastal Fisheries Indonesia",
+    "name": "Indonesia Zebrax",
     "description": "This layer of Global Fishing Watch uses data provided by Rare, Aruna and AP2HI. The data is collected using devices from different providers that tracks location and speed. The information shown represents the vessel presence. The presence is determined by taking all positions transmitted by the vessel's tracking device.",
     "schema": {
       "lat": "lat",
