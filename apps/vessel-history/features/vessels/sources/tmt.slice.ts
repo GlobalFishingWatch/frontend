@@ -43,7 +43,6 @@ const transformIuuListing: (data: any) => TMTDetail = (data: any) => {
     ...data,
     iuuListing:
       data.iuuListing.map((iuu) => {
-        console.log(iuu)
         return {
           ...iuu,
           value: iuu.source,

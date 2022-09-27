@@ -132,7 +132,7 @@ export enum IuuStatus {
 export interface VesselWithHistory extends Vessel {
   history: VesselFieldsHistory
   iuuStatus?: number
-  iuuListing?: ValueItem
+  iuuListing?: Iuu
   vesselType?: string
   forcedLabour?: ForcedLaborRisk[]
 }
