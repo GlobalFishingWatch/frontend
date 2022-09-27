@@ -10,11 +10,6 @@ export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
 export const IS_PRODUCTION =
   process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'production' || process.env.NODE_ENV === 'production'
 
-export const VESSEL_GROUPS_DAYS_LIMIT =
-  typeof process.env.NEXT_PUBLIC_VESSEL_GROUPS_DAYS_LIMIT !== 'undefined'
-    ? parseInt(process.env.NEXT_PUBLIC_VESSEL_GROUPS_DAYS_LIMIT)
-    : 0
-
 // Never actually used?
 export const API_GATEWAY = process.env.API_GATEWAY || process.env.NEXT_PUBLIC_API_GATEWAY || ''
 export const CARRIER_PORTAL_URL =
