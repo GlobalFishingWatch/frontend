@@ -272,9 +272,9 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
       return data
     })
     return dataviewsFeature
-    // Runs only when source tiles load change to avoid unu
+    // Runs only when source tiles load change or metadata changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, sourceTilesLoaded])
+  }, [map, sourceTilesLoaded, dataviewsMetadata])
 
   return dataviewFeatures
 }

@@ -41,6 +41,8 @@ type TimeseriesParams = {
   visibleSublayers: boolean[]
   aggregationOperation: AggregationOperation
   multiplier?: number
+  minVisibleValue?: number
+  maxVisibleValue?: number
 }
 
 export const getChunksTimeseries = ({
@@ -50,11 +52,19 @@ export const getChunksTimeseries = ({
   visibleSublayers,
   aggregationOperation,
   multiplier,
+  minVisibleValue,
+  maxVisibleValue,
 }: TimeseriesParams) => {
   const allChunksValues = chunksFeatures?.flatMap(({ features, quantizeOffset }) => {
     if (features?.length > 0) {
-      const { values } = getTimeSeries(features, numSublayers, quantizeOffset, aggregationOperation)
-
+      const { values } = getTimeSeries({
+        features,
+        numSublayers,
+        quantizeOffset,
+        aggregationOperation,
+        minVisibleValue,
+        maxVisibleValue,
+      })
       const finalValues = values.map((frameValues) => {
         // Ideally we don't have the features not visible in 4wings but we have them
         // so this needs to be filtered by the current active ones
@@ -107,6 +117,8 @@ export const getTimeseriesFromFeatures = (layerFeatures: LayerFeature[]) => {
       visibleSublayers: metadata.visibleSublayers,
       aggregationOperation: metadata.aggregationOperation,
       multiplier: metadata.multiplier,
+      minVisibleValue: metadata.minVisibleValue,
+      maxVisibleValue: metadata.maxVisibleValue,
     })
     return timeseries
   })

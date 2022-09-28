@@ -1,5 +1,5 @@
 import { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
-import { CELL_VALUES_START_INDEX } from './constants'
+import { CELL_VALUES_START_INDEX, VALUE_MULTIPLIER } from './constants'
 import { AggregationOperation } from './types'
 import { getCellValues } from './util'
 
@@ -21,12 +21,23 @@ export type TimeSeries = {
   maxFrame: number
 }
 
-export const getTimeSeries = (
-  features: GeoJSONFeature<TimeseriesFeatureProps>[],
-  numSublayers: number,
+export type GetTimeseriesParams = {
+  features: GeoJSONFeature<TimeseriesFeatureProps>[]
+  numSublayers: number
+  quantizeOffset: number
+  aggregationOperation: AggregationOperation
+  minVisibleValue?: number
+  maxVisibleValue?: number
+}
+
+export const getTimeSeries = ({
+  features,
+  numSublayers,
   quantizeOffset = 0,
-  aggregationOperation = AggregationOperation.Sum
-): TimeSeries => {
+  aggregationOperation = AggregationOperation.Sum,
+  minVisibleValue,
+  maxVisibleValue,
+}: GetTimeseriesParams): TimeSeries => {
   let minFrame = Number.POSITIVE_INFINITY
   let maxFrame = Number.NEGATIVE_INFINITY
 
@@ -42,13 +53,18 @@ export const getTimeSeries = (
   features.forEach((feature) => {
     const rawValues: string = feature.properties.rawValues
     const { values, minCellOffset } = getCellValues(rawValues)
+
     if (minCellOffset < minFrame) minFrame = minCellOffset
     let currentFrameIndex = minCellOffset
     let offsetedCurrentFrameIndex = minCellOffset - quantizeOffset
     for (let i = CELL_VALUES_START_INDEX; i < values.length; i++) {
       const sublayerIndex = (i - CELL_VALUES_START_INDEX) % numSublayers
       const rawValue = values[i]
-      if (rawValue !== null && !isNaN(rawValue)) {
+      const matchesMin =
+        minVisibleValue !== undefined ? rawValue >= minVisibleValue * VALUE_MULTIPLIER : true
+      const matchesMax =
+        maxVisibleValue !== undefined ? rawValue <= maxVisibleValue * VALUE_MULTIPLIER : true
+      if (rawValue !== null && !isNaN(rawValue) && matchesMin && matchesMax) {
         if (currentFrameIndex > maxFrame) maxFrame = currentFrameIndex
         if (!valuesByFrame[offsetedCurrentFrameIndex]) {
           valuesByFrame[offsetedCurrentFrameIndex] = {
@@ -70,6 +86,7 @@ export const getTimeSeries = (
   })
 
   const numValues = maxFrame - minFrame
+
   const finalValues = new Array(numValues)
   for (let i = 0; i <= numValues; i++) {
     const frame = minFrame + i
