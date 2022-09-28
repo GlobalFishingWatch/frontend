@@ -514,7 +514,7 @@
     }
   },
   "private-indonesia-aruna-fishing-effort": {
-    "name": "crwdns27046:0crwdne27046:0",
+    "name": "crwdns27166:0crwdne27166:0",
     "description": "crwdns27048:0crwdne27048:0",
     "schema": {
       "lat": "crwdns27050:0crwdne27050:0",
@@ -534,7 +534,7 @@
     }
   },
   "private-indonesia-aruna-presence": {
-    "name": "crwdns27070:0crwdne27070:0",
+    "name": "crwdns27168:0crwdne27168:0",
     "description": "crwdns26370:0crwdne26370:0",
     "schema": {
       "lat": "crwdns26372:0crwdne26372:0",
@@ -723,7 +723,7 @@
     }
   },
   "private-indonesia-rare-fishing-effort": {
-    "name": "crwdns27102:0crwdne27102:0",
+    "name": "crwdns27170:0crwdne27170:0",
     "description": "crwdns27104:0crwdne27104:0",
     "schema": {
       "lat": "crwdns27106:0crwdne27106:0",
@@ -743,7 +743,7 @@
     }
   },
   "private-indonesia-rare-presence": {
-    "name": "crwdns27126:0crwdne27126:0",
+    "name": "crwdns27172:0crwdne27172:0",
     "description": "crwdns26458:0crwdne26458:0",
     "schema": {
       "lat": "crwdns26460:0crwdne26460:0",
