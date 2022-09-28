@@ -514,7 +514,7 @@
     }
   },
   "private-indonesia-aruna-fishing-effort": {
-    "name": "Indonesia Pelagic (Aruna)",
+    "name": "Aruna: Indonesia Pelagic",
     "description": "Indonesia Aruna Fishing Effort",
     "schema": {
       "lat": "lat",
@@ -534,7 +534,7 @@
     }
   },
   "private-indonesia-aruna-presence": {
-    "name": "Indonesia Pelagic (Aruna)",
+    "name": "Aruna: Indonesia Pelagic",
     "description": "Aruna Presence",
     "schema": {
       "lat": "lat",
@@ -723,7 +723,7 @@
     }
   },
   "private-indonesia-rare-fishing-effort": {
-    "name": "Indonesia Pelagic (Rare)",
+    "name": "Rare: Indonesia Pelagic",
     "description": "Indonesia Rare Fishing Effort",
     "schema": {
       "lat": "lat",
@@ -743,7 +743,7 @@
     }
   },
   "private-indonesia-rare-presence": {
-    "name": "Indonesia Pelagic (Rare)",
+    "name": "Rare: Indonesia Pelagic",
     "description": "Rare Presence",
     "schema": {
       "lat": "lat",
@@ -2060,7 +2060,17 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag"
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      }
     }
   },
   "public-indonesia-pelagic-presence": {
