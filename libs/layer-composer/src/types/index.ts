@@ -122,6 +122,8 @@ export interface HeatmapLayerMeta {
   sublayers: HeatmapAnimatedGeneratorSublayer[]
   temporalgrid: true
   timeChunks: TimeChunks
+  minVisibleValue?: number
+  maxVisibleValue?: number
   visibleSublayers: boolean[]
   sourceLayer?: string
 }
