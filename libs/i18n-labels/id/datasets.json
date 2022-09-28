@@ -2060,7 +2060,17 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag"
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      }
     }
   },
   "public-indonesia-pelagic-presence": {
