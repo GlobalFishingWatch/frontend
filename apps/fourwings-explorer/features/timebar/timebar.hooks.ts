@@ -11,7 +11,7 @@ const DEFAULT_TIMERANGE = {
   selectedLayerId: '',
 }
 
-export type TimebarRange = { start: string; end: string; selectedLayerId?: string }
+export type TimebarRange = { start: string; end: string; selectedLayerId?: any }
 
 const timebarChecker = object({
   start: string(),
