@@ -17,7 +17,7 @@ const IMAGES_BY_ID = {
   'public-global-climate-projections-tasmin:v20220801': AirTemperatureProjectionsMin,
   'public-global-climate-projections-pr:v20220801': PrecipitationProjections,
   'public-global-terra-atmosphere': AerosolOpticalThickness,
-  'public-global-fishing-effort:v20201001': ApparentFishingEffort,
+  'public-global-fishing-effort:latest': ApparentFishingEffort,
 }
 
 const getDatasets = async () => {

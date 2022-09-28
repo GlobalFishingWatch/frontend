@@ -10,7 +10,9 @@ import {
 } from 'features/timebar/timebar.hooks'
 // import { useMapInstanceStyle } from 'features/map/map-context.hooks'
 import { formatI18nDate } from 'utils/i18n'
+import { useAllMapSourceTilesLoaded } from 'features/map/map-sources.hooks'
 import TimebarActivityGraph from './TimebarActivityGraph'
+import TimebarSettings from './TimebarSettings'
 import styles from './Timebar.module.css'
 
 const TimebarHighlighterWrapper = () => {
@@ -53,6 +55,7 @@ const TimebarWrapper = () => {
   useURLTimerange()
   const [timerange, setTimerange] = useTimerange()
   const setHighlightTimerange = useHighlightTimerange()[1]
+  const allSourcesLoaded = useAllMapSourceTilesLoaded()
 
   const onTimebarChange = useCallback(
     ({ start, end }: TimebarRange) => {
@@ -105,6 +108,7 @@ const TimebarWrapper = () => {
         <TimebarActivityGraph />
         <TimebarHighlighterWrapper />
       </Timebar>
+      <TimebarSettings />
     </div>
   )
 }

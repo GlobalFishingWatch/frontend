@@ -12,7 +12,7 @@ import {
 } from 'features/map/map-sources.hooks'
 import { DatasetLayer } from 'features/layers/layers.hooks'
 
-export const useStackedActivity = (layers: DatasetLayer[]) => {
+export const useStackedActivity = (layers: DatasetLayer | DatasetLayer[]) => {
   const [generatingStackedActivity, setGeneratingStackedActivity] = useState(false)
   const [stackedActivity, setStackedActivity] = useState<Timeseries>()
   const isSmallScreen = useSmallScreen()
