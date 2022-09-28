@@ -98,9 +98,12 @@ export const getTimeSeries = ({
     if (frameValues) {
       sublayersValues = frameValues.sublayersValues
       if (aggregationOperation === AggregationOperation.Avg) {
-        sublayersValues = sublayersValues.map(
-          (sublayerValue) => sublayerValue / frameValues.numValues
-        )
+        sublayersValues = sublayersValues.map((sublayerValue) => {
+          if (sublayerValue === 0 || frameValues.numValues === 0) {
+            return 0
+          }
+          return sublayerValue / frameValues.numValues
+        })
       }
     }
     finalValues[i] = {
