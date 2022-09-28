@@ -85,12 +85,12 @@ export const featuresToTimeseries = (
     const sourceActiveTimeChunk = pickActiveTimeChunk(sourceMetadata.timeChunks)
     const sourceQuantizeOffset = sourceActiveTimeChunk.quantizeOffset
     const sourceInterval = sourceMetadata.timeChunks.interval
-    const { values: valuesContainedRaw } = getTimeSeries(
-      (filteredFeatures.contained || []) as any,
-      sourceNumSublayers,
-      sourceQuantizeOffset,
-      sourceMetadata.aggregationOperation
-    )
+    const { values: valuesContainedRaw } = getTimeSeries({
+      features: filteredFeatures.contained || ([] as any),
+      numSublayers: sourceNumSublayers,
+      quantizeOffset: sourceQuantizeOffset,
+      aggregationOperation: sourceMetadata.aggregationOperation,
+    })
 
     const valuesContained = frameTimeseriesToDateTimeseries(
       valuesContainedRaw,
@@ -102,12 +102,12 @@ export const featuresToTimeseries = (
       ...(filteredFeatures.contained || []),
       ...(filteredFeatures.overlapping || []),
     ]
-    const { values: valuesContainedAndOverlappingRaw } = getTimeSeries(
-      featuresContainedAndOverlapping as any,
-      sourceNumSublayers,
-      sourceQuantizeOffset,
-      sourceMetadata.aggregationOperation
-    )
+    const { values: valuesContainedAndOverlappingRaw } = getTimeSeries({
+      features: featuresContainedAndOverlapping as any,
+      numSublayers: sourceNumSublayers,
+      quantizeOffset: sourceQuantizeOffset,
+      aggregationOperation: sourceMetadata.aggregationOperation,
+    })
 
     const valuesContainedAndOverlapping = frameTimeseriesToDateTimeseries(
       valuesContainedAndOverlappingRaw,

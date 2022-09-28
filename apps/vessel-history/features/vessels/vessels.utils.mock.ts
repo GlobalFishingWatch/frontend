@@ -17,7 +17,7 @@ export const gfwVessel: GFWDetail = {
   otherImos: [],
   otherShipnames: [],
   vesselType: 'some vessel type',
-  years: []
+  years: [],
 }
 
 export const tmtVessel: TMTDetail = {
@@ -64,4 +64,55 @@ export const tmtVessel: TMTDetail = {
   authorisationList: [],
   imageList: [],
   iuuStatus: 0,
+  iuuListing: [
+    {
+      value: 'ICCAT',
+      firstSeen: '2015-10-02T00:00:00.000Z',
+      endDate: null,
+      originalFirstSeen: 20151002,
+      originalEndDate: null,
+    },
+    {
+      value: 'CCAMLR',
+      firstSeen: '2004-11-05T00:00:00.000Z',
+      endDate: null,
+      originalFirstSeen: 20041105,
+      originalEndDate: null,
+    },
+    {
+      value: 'CCSBT',
+      firstSeen: '2020-02-26T00:00:00.000Z',
+      endDate: null,
+      originalFirstSeen: 20200226,
+      originalEndDate: null,
+    },
+    {
+      value: 'INTERPOL',
+      firstSeen: '2015-01-21T00:00:00.000Z',
+      endDate: null,
+      originalFirstSeen: 20150121,
+      originalEndDate: null,
+    },
+    {
+      value: 'SEAFO',
+      firstSeen: '2007-10-31T00:00:00.000Z',
+      endDate: null,
+      originalFirstSeen: 20071031,
+      originalEndDate: null,
+    },
+    {
+      value: 'GFCM',
+      firstSeen: null,
+      endDate: null,
+      originalFirstSeen: 20140500,
+      originalEndDate: null,
+    },
+    {
+      value: 'IOTC',
+      firstSeen: '2015-05-01T00:00:00.000Z',
+      endDate: null,
+      originalFirstSeen: 20150501,
+      originalEndDate: null,
+    },
+  ],
 }

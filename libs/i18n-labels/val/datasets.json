@@ -513,8 +513,28 @@
       "firstTransmissionDate": "crwdns11189:0crwdne11189:0"
     }
   },
+  "private-indonesia-aruna-fishing-effort": {
+    "name": "crwdns27046:0crwdne27046:0",
+    "description": "crwdns27048:0crwdne27048:0",
+    "schema": {
+      "lat": "crwdns27050:0crwdne27050:0",
+      "lon": "crwdns27052:0crwdne27052:0",
+      "flag": "crwdns27054:0crwdne27054:0",
+      "geartype": {
+        "keyword": "crwdns27056:0crwdne27056:0",
+        "enum": {
+          "gillnets": "crwdns27058:0crwdne27058:0",
+          "longline": "crwdns27060:0crwdne27060:0",
+          "traps": "crwdns27062:0crwdne27062:0",
+          "purse seine": "crwdns27064:0crwdne27064:0",
+          "Handline": "crwdns27066:0crwdne27066:0"
+        }
+      },
+      "vessel_id": "crwdns27068:0crwdne27068:0"
+    }
+  },
   "private-indonesia-aruna-presence": {
-    "name": "crwdns27016:0crwdne27016:0",
+    "name": "crwdns27070:0crwdne27070:0",
     "description": "crwdns26370:0crwdne26370:0",
     "schema": {
       "lat": "crwdns26372:0crwdne26372:0",
@@ -584,9 +604,29 @@
       "distance_from_shore_m": "crwdns9175:0crwdne9175:0"
     }
   },
+  "private-indonesia-ipnlf-fishing-effort": {
+    "name": "crwdns27072:0crwdne27072:0",
+    "description": "crwdns27074:0crwdne27074:0",
+    "schema": {
+      "lat": "crwdns27076:0crwdne27076:0",
+      "lon": "crwdns27078:0crwdne27078:0",
+      "flag": "crwdns27080:0crwdne27080:0",
+      "geartype": {
+        "keyword": "crwdns27082:0crwdne27082:0",
+        "enum": {
+          "gillnets": "crwdns27084:0crwdne27084:0",
+          "longline": "crwdns27086:0crwdne27086:0",
+          "traps": "crwdns27088:0crwdne27088:0",
+          "purse seine": "crwdns27090:0crwdne27090:0",
+          "Handline": "crwdns27092:0crwdne27092:0"
+        }
+      },
+      "vessel_id": "crwdns27094:0crwdne27094:0"
+    }
+  },
   "private-indonesia-ipnlf-presence": {
-    "name": "crwdns27018:0crwdne27018:0",
-    "description": "crwdns26414:0crwdne26414:0",
+    "name": "crwdns27096:0crwdne27096:0",
+    "description": "crwdns27098:0crwdne27098:0",
     "schema": {
       "lat": "crwdns26416:0crwdne26416:0",
       "lon": "crwdns26418:0crwdne26418:0",
@@ -619,7 +659,7 @@
     }
   },
   "private-indonesia-pelagic-presence": {
-    "name": "crwdns24890:0crwdne24890:0",
+    "name": "crwdns27100:0crwdne27100:0",
     "description": "crwdns24892:0crwdne24892:0",
     "schema": {
       "lat": "crwdns18026:0crwdne18026:0",
@@ -682,8 +722,28 @@
       "vessel_id": "crwdns9219:0crwdne9219:0"
     }
   },
+  "private-indonesia-rare-fishing-effort": {
+    "name": "crwdns27102:0crwdne27102:0",
+    "description": "crwdns27104:0crwdne27104:0",
+    "schema": {
+      "lat": "crwdns27106:0crwdne27106:0",
+      "lon": "crwdns27108:0crwdne27108:0",
+      "flag": "crwdns27110:0crwdne27110:0",
+      "geartype": {
+        "keyword": "crwdns27112:0crwdne27112:0",
+        "enum": {
+          "gillnets": "crwdns27114:0crwdne27114:0",
+          "longline": "crwdns27116:0crwdne27116:0",
+          "traps": "crwdns27118:0crwdne27118:0",
+          "purse seine": "crwdns27120:0crwdne27120:0",
+          "Handline": "crwdns27122:0crwdne27122:0"
+        }
+      },
+      "vessel_id": "crwdns27124:0crwdne27124:0"
+    }
+  },
   "private-indonesia-rare-presence": {
-    "name": "crwdns27020:0crwdne27020:0",
+    "name": "crwdns27126:0crwdne27126:0",
     "description": "crwdns26458:0crwdne26458:0",
     "schema": {
       "lat": "crwdns26460:0crwdne26460:0",
@@ -717,7 +777,7 @@
     }
   },
   "private-indonesia-zebrax-presence": {
-    "name": "crwdns17441:0crwdne17441:0",
+    "name": "crwdns27128:0crwdne27128:0",
     "description": "crwdns17443:0crwdne17443:0",
     "schema": {
       "lat": "crwdns17445:0crwdne17445:0",
@@ -1994,8 +2054,17 @@
       "distance_from_shore_m": "crwdns10173:0crwdne10173:0"
     }
   },
+  "public-indonesia-pelagic-fishing-effort": {
+    "name": "crwdns27130:0crwdne27130:0",
+    "description": "crwdns27132:0crwdne27132:0",
+    "schema": {
+      "lat": "crwdns27134:0crwdne27134:0",
+      "lon": "crwdns27136:0crwdne27136:0",
+      "flag": "crwdns27138:0crwdne27138:0"
+    }
+  },
   "public-indonesia-pelagic-presence": {
-    "name": "crwdns27022:0crwdne27022:0",
+    "name": "crwdns27140:0crwdne27140:0",
     "description": "crwdns18202:0crwdne18202:0",
     "schema": {
       "lat": "crwdns18068:0crwdne18068:0",
@@ -2015,7 +2084,7 @@
     }
   },
   "public-indonesia-zebrax-presence": {
-    "name": "crwdns10175:0crwdne10175:0",
+    "name": "crwdns27142:0crwdne27142:0",
     "description": "crwdns10177:0crwdne10177:0",
     "schema": {
       "lat": "crwdns10179:0crwdne10179:0",

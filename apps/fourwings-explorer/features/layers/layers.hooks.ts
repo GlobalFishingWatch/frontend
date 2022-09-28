@@ -65,6 +65,7 @@ const defaultLayers: DatasetLayerConfig[] = [
   {
     id: BASEMAP_LAYER_ID,
     config: {
+      visible: true,
       type: GeneratorType.Basemap,
       basemap: BasemapType.Default,
     } as BasemapGeneratorConfig,
@@ -144,6 +145,11 @@ export const useGeoTemporalLayers = () => {
     FourwingsAPIDataset,
     FourwingsLayerConfig
   >[]
+}
+
+export const useVisibleGeoTemporalLayers = () => {
+  const layers = useGeoTemporalLayers()
+  return layers.filter((l) => l.config.visible)
 }
 
 export const useContexLayers = () => {
