@@ -514,7 +514,7 @@
     }
   },
   "private-indonesia-aruna-fishing-effort": {
-    "name": "crwdns27046:0crwdne27046:0",
+    "name": "crwdns27166:0crwdne27166:0",
     "description": "crwdns27048:0crwdne27048:0",
     "schema": {
       "lat": "crwdns27050:0crwdne27050:0",
@@ -534,7 +534,7 @@
     }
   },
   "private-indonesia-aruna-presence": {
-    "name": "crwdns27070:0crwdne27070:0",
+    "name": "crwdns27168:0crwdne27168:0",
     "description": "crwdns26370:0crwdne26370:0",
     "schema": {
       "lat": "crwdns26372:0crwdne26372:0",
@@ -605,7 +605,7 @@
     }
   },
   "private-indonesia-ipnlf-fishing-effort": {
-    "name": "crwdns27072:0crwdne27072:0",
+    "name": "crwdns27174:0crwdne27174:0",
     "description": "crwdns27074:0crwdne27074:0",
     "schema": {
       "lat": "crwdns27076:0crwdne27076:0",
@@ -625,7 +625,7 @@
     }
   },
   "private-indonesia-ipnlf-presence": {
-    "name": "crwdns27096:0crwdne27096:0",
+    "name": "crwdns27176:0crwdne27176:0",
     "description": "crwdns27098:0crwdne27098:0",
     "schema": {
       "lat": "crwdns26416:0crwdne26416:0",
@@ -723,7 +723,7 @@
     }
   },
   "private-indonesia-rare-fishing-effort": {
-    "name": "crwdns27102:0crwdne27102:0",
+    "name": "crwdns27170:0crwdne27170:0",
     "description": "crwdns27104:0crwdne27104:0",
     "schema": {
       "lat": "crwdns27106:0crwdne27106:0",
@@ -743,7 +743,7 @@
     }
   },
   "private-indonesia-rare-presence": {
-    "name": "crwdns27126:0crwdne27126:0",
+    "name": "crwdns27172:0crwdne27172:0",
     "description": "crwdns26458:0crwdne26458:0",
     "schema": {
       "lat": "crwdns26460:0crwdne26460:0",
@@ -2060,7 +2060,17 @@
     "schema": {
       "lat": "crwdns27134:0crwdne27134:0",
       "lon": "crwdns27136:0crwdne27136:0",
-      "flag": "crwdns27138:0crwdne27138:0"
+      "flag": "crwdns27138:0crwdne27138:0",
+      "geartype": {
+        "keyword": "crwdns27154:0crwdne27154:0",
+        "enum": {
+          "gillnets": "crwdns27156:0crwdne27156:0",
+          "longline": "crwdns27158:0crwdne27158:0",
+          "traps": "crwdns27160:0crwdne27160:0",
+          "purse seine": "crwdns27162:0crwdne27162:0",
+          "Handline": "crwdns27164:0crwdne27164:0"
+        }
+      }
     }
   },
   "public-indonesia-pelagic-presence": {

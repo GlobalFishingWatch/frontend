@@ -1,8 +1,6 @@
 import { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { t } from 'features/i18n/i18n'
 
-export const MAX_YEARS_TO_ALLOW_DOWNLOAD = 3
-
 export enum Format {
   GeoTIFF = 'tif',
   Csv = 'csv',

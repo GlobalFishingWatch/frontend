@@ -59,25 +59,28 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileLoaded, fileTypes, cl
   })
 
   return (
-    <div className={cx(styles.dropFiles, className)} {...(getRootProps() as any)}>
-      <div className={styles.icons}>{fileTypesConfigs.map(({ icon }) => icon)}</div>
-      <input {...getInputProps()} />
-      {acceptedFiles.length ? (
-        <p className={styles.fileText}>{`File: ${acceptedFiles[0].name}`}</p>
-      ) : isDragActive ? (
-        <p className={styles.fileText}>Drop the file here ...</p>
-      ) : (
-        <p className={styles.fileText}>
-          {`Drag and drop a ${fileTypesConfigs
-            .map(({ id }) => id)
-            .join(', ')} here or click to select it`}
-        </p>
-      )}
-      {fileRejections.length > 0 && (
-        <p className={cx(styles.fileText, styles.warning)}>
-          {`(Only ${filesAcceptedExtensions.join(', ')} files are allowed)`}
-        </p>
-      )}
+    <div className={cx(styles.container)}>
+      <label>New dataset</label>
+      <div className={cx(styles.dropFiles, className)} {...(getRootProps() as any)}>
+        <div className={styles.icons}>{fileTypesConfigs.map(({ icon }) => icon)}</div>
+        <input {...getInputProps()} />
+        {acceptedFiles.length ? (
+          <p className={styles.fileText}>{`File: ${acceptedFiles[0].name}`}</p>
+        ) : isDragActive ? (
+          <p className={styles.fileText}>Drop the file here ...</p>
+        ) : (
+          <p className={styles.fileText}>
+            {`Drag and drop a ${fileTypesConfigs
+              .map(({ id }) => id)
+              .join(', ')} here or click to select it`}
+          </p>
+        )}
+        {fileRejections.length > 0 && (
+          <p className={cx(styles.fileText, styles.warning)}>
+            {`(Only ${filesAcceptedExtensions.join(', ')} files are allowed)`}
+          </p>
+        )}
+      </div>
     </div>
   )
 }
