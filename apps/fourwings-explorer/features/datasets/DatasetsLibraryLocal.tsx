@@ -32,34 +32,39 @@ const LocalDatasetsLibrary = ({ datasets }: { datasets: APIDataset[] }) => {
     setIsOpen(false)
   }
   return datasets && datasets.length ? (
-    <ul className={styles.dataset}>
-      {datasets.map((dataset) => {
-        const disabled = layers.some((l) => l.id === dataset.id)
-        return (
-          <li key={dataset.id} className={cx(styles.dataset, { [styles.disabled]: disabled })}>
-            {dataset.image && <Image className={styles.image} src={dataset.image}></Image>}
-            <h3 className={styles.name}>{dataset.name}</h3>
-            <p className={styles.description}>{dataset.description}</p>
-            <IconButton
-              size="small"
-              icon="delete"
-              loading={deleteDataset.isLoading}
-              disabled={disabled}
-              onClick={disabled ? undefined : () => onRemoveClick(dataset)}
-              tooltip="Remove dataset"
-            />
-            <Button
-              size="small"
-              disabled={disabled}
-              onClick={disabled ? undefined : () => onLayerClick(dataset)}
-              type="secondary"
-            >
-              Add to map
-            </Button>
-          </li>
-        )
-      })}
-    </ul>
+    <div className={styles.column}>
+      <label>Your datasets</label>
+      <ul>
+        {datasets.map((dataset) => {
+          const disabled = layers.some((l) => l.id === dataset.id)
+          return (
+            <li key={dataset.id} className={cx(styles.dataset, { [styles.disabled]: disabled })}>
+              {dataset.image && <Image className={styles.image} src={dataset.image}></Image>}
+              <h3 className={styles.name}>{dataset.name}</h3>
+              {dataset.description && <p className={styles.description}>{dataset.description}</p>}
+              <div className={styles.buttons}>
+                <IconButton
+                  size="small"
+                  icon="delete"
+                  loading={deleteDataset.isLoading}
+                  disabled={disabled}
+                  onClick={disabled ? undefined : () => onRemoveClick(dataset)}
+                  tooltip="Remove dataset"
+                />
+                <Button
+                  size="small"
+                  disabled={disabled}
+                  onClick={disabled ? undefined : () => onLayerClick(dataset)}
+                  type="secondary"
+                >
+                  Add to map
+                </Button>
+              </div>
+            </li>
+          )
+        })}
+      </ul>
+    </div>
   ) : null
 }
 

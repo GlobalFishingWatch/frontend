@@ -2,12 +2,23 @@
   border-radius: 4px;
 }
 
+.column {
+  flex: 1 1;
+}
+
 .container {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 75vh;
   padding: 0;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+  gap: 1rem;
 }
 
 .sidebar {
@@ -63,14 +74,12 @@
   gap: 3rem 2rem;
 }
 
-.datasets {
-  display: flex;
-}
-
 .dataset {
   display: flex;
   flex-direction: column;
   cursor: pointer;
+  border-bottom: var(--border);
+  padding-bottom: 1rem;
 }
 
 .disabled {

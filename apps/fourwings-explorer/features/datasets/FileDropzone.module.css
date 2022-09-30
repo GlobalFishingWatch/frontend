@@ -1,3 +1,9 @@
+.container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
 .dropFiles {
   flex: 1;
   display: flex;
@@ -11,7 +17,7 @@
   color: var(--color-secondary-blue);
   font: var(--font-S);
   border-radius: 16px;
-  margin-bottom: var(--space-L);
+  margin-bottom: var(--space-M);
   cursor: pointer;
 }
 
