@@ -17,14 +17,13 @@ import {
   selectDownloadActivityFinished,
   selectDownloadActivityError,
   DateRange,
-  selectDownloadActivityAreaKey,
 } from 'features/download/downloadActivity.slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
-import { ROOT_DOM_ELEMENT } from 'data/config'
+import { REPORT_DAYS_LIMIT, ROOT_DOM_ELEMENT } from 'data/config'
 import { selectUserData } from 'features/user/user.slice'
 import {
   checkDatasetReportPermission,
@@ -47,7 +46,6 @@ import {
   MAX_AREA_FOR_HIGH_SPATIAL_RESOLUTION,
   SPATIAL_RESOLUTION_OPTIONS,
   FORMAT_OPTIONS,
-  MAX_YEARS_TO_ALLOW_DOWNLOAD,
 } from './downloadActivity.config'
 
 const fallbackDataviews = []
@@ -113,7 +111,11 @@ function DownloadActivityModal() {
     if (start && end) {
       const startDateTime = DateTime.fromISO(start)
       const endDateTime = DateTime.fromISO(end)
-      return endDateTime.diff(startDateTime, ['years', 'months'])
+      return {
+        years: endDateTime.diff(startDateTime, ['years']).years,
+        months: endDateTime.diff(startDateTime, ['months']).months,
+        days: endDateTime.diff(startDateTime, ['days']).days,
+      }
     }
   }, [end, start])
 
@@ -149,7 +151,6 @@ function DownloadActivityModal() {
     filteredTemporalResolutionOptions[0].id as TemporalResolution
   )
 
-  const areaKey = useSelector(selectDownloadActivityAreaKey)
   const downloadModalOpen = useSelector(selectDownloadActivityModalOpen)
   const downloadArea = useSelector(selectDownloadActivityArea)
   const downloadAreaName = downloadArea?.name
@@ -337,13 +338,11 @@ function DownloadActivityModal() {
           <Button
             onClick={onDownloadClick}
             loading={downloadLoading || downloadAreaLoading}
-            disabled={
-              !duration || duration.years > MAX_YEARS_TO_ALLOW_DOWNLOAD || downloadAreaLoading
-            }
+            disabled={!duration || duration.days > REPORT_DAYS_LIMIT || downloadAreaLoading}
             tooltip={
-              duration && duration.years > MAX_YEARS_TO_ALLOW_DOWNLOAD
-                ? t('download.timerangeTooLong', 'The maximum time range is {{count}} years', {
-                    count: MAX_YEARS_TO_ALLOW_DOWNLOAD,
+              duration && duration.days > REPORT_DAYS_LIMIT
+                ? t('download.timerangeTooLong', 'The maximum time range is 1 year', {
+                    count: REPORT_DAYS_LIMIT,
                   })
                 : ''
             }
