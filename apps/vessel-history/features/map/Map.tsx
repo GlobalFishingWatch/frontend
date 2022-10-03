@@ -6,6 +6,7 @@ import { useLayerComposer, useMapClick, useMemoCompare } from '@globalfishingwat
 import { ExtendedStyleMeta, GeneratorType } from '@globalfishingwatch/layer-composer'
 import {
   BaseUrlWorkspace,
+  parseWorkspace,
   stringifyWorkspace,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
@@ -71,6 +72,32 @@ const MapWrapper: React.FC = (): React.ReactElement => {
         id: 'vms',
         config: {
           visible: false,
+        },
+      },
+      {
+        id: 'basemap-labels',
+        config: {
+          visible: true,
+          locale: 'en',
+        },
+      },
+
+      {
+        id: 'context-layer-rfmo',
+        config: {
+          visible: true,
+        },
+      },
+      {
+        id: 'context-layer-mpa',
+        config: {
+          visible: true,
+        },
+      },
+      {
+        id: 'context-layer-eez',
+        config: {
+          visible: true,
         },
       },
     ]
