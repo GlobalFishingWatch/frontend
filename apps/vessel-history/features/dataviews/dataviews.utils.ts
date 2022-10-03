@@ -16,10 +16,12 @@ import {
   vesselDataviewIds,
   DEFAULT_TRACK_COLOR,
   MAP_BACKGROUND_COLOR,
+  TEMPLATE_VESSEL_DATAVIEW_ID,
 } from './dataviews.config'
 
 // used in workspaces with encounter events layers
 export const VESSEL_LAYER_PREFIX = 'vessel-'
+export const VESSEL_DATAVIEW_INSTANCE_PREFIX = 'vessel-'
 
 type VesselInstanceDatasets = {
   trackDatasetId: string
@@ -112,4 +114,48 @@ export const initializeDataviews = async (dispatch: AppDispatch) => {
     const datasets = getDatasetByDataview(dataviews)
     dispatch(fetchDatasetsByIdsThunk(datasets))
   }
+}
+
+export const getVesselDataviewInstanceDatasetConfig = (
+  vesselId: string,
+  { trackDatasetId, infoDatasetId, eventsDatasetsId }: VesselInstanceDatasets
+) => {
+  const datasetsConfig: DataviewDatasetConfig[] = []
+  if (infoDatasetId) {
+    datasetsConfig.push({
+      datasetId: infoDatasetId,
+      params: [{ id: 'vesselId', value: vesselId }],
+      endpoint: EndpointId.Vessel,
+    })
+  }
+  if (trackDatasetId) {
+    datasetsConfig.push({
+      datasetId: trackDatasetId,
+      params: [{ id: 'vesselId', value: vesselId }],
+      endpoint: EndpointId.Tracks,
+    })
+  }
+  if (eventsDatasetsId) {
+    eventsDatasetsId.forEach((eventDatasetId) => {
+      datasetsConfig.push({
+        datasetId: eventDatasetId,
+        query: [{ id: 'vessels', value: vesselId }],
+        params: [],
+        endpoint: EndpointId.Events,
+      })
+    })
+  }
+  return datasetsConfig
+}
+
+export const getVesselDataviewInstance = (
+  vessel: { id: string },
+  datasets: VesselInstanceDatasets
+): DataviewInstance<GeneratorType> => {
+  const vesselDataviewInstance = {
+    id: `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
+    dataviewId: TEMPLATE_VESSEL_DATAVIEW_ID,
+    datasetsConfig: getVesselDataviewInstanceDatasetConfig(vessel.id, datasets),
+  }
+  return vesselDataviewInstance
 }

@@ -3,14 +3,20 @@ import { useSelector } from 'react-redux'
 import { Map, MapboxStyle } from 'react-map-gl'
 import maplibregl from '@globalfishingwatch/maplibre-gl'
 import { useLayerComposer, useMapClick, useMemoCompare } from '@globalfishingwatch/react-hooks'
-import { ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
+import { ExtendedStyleMeta, GeneratorType } from '@globalfishingwatch/layer-composer'
+import {
+  BaseUrlWorkspace,
+  stringifyWorkspace,
+  UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { selectResourcesLoading } from 'features/resources/resources.slice'
 import { selectActiveVesselsDataviews } from 'features/dataviews/dataviews.selectors'
 import { selectVesselById } from 'features/vessels/vessels.slice'
 import Info from 'features/map/info/Info'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
-import { DEFAULT_VESSEL_MAP_ZOOM, ENABLE_FLYTO, FLY_EFFECTS } from 'data/config'
-import { selectMergedVesselId } from 'routes/routes.selectors'
+import { DEFAULT_VESSEL_MAP_ZOOM, DEFAULT_WORKSPACE, ENABLE_FLYTO, FLY_EFFECTS } from 'data/config'
+import { selectAllGFWIds, selectMergedVesselId, selectUrlTimeRange } from 'routes/routes.selectors'
 import useVoyagesConnect from 'features/vessels/voyages/voyages.hook'
 import { EventTypeVoyage } from 'types/voyage'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -23,6 +29,12 @@ import useMapEvents from './map-events.hooks'
 import { selectHighlightedEvent } from './map.slice'
 import styles from './Map.module.css'
 import '@globalfishingwatch/maplibre-gl/dist/maplibre-gl.css'
+import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
+import { selectDatasets } from 'features/datasets/datasets.slice'
+import {
+  getRelatedDatasetByType,
+  getRelatedDatasetsByType,
+} from 'features/datasets/datasets.selectors'
 
 const mapStyles = {
   width: '100%',
@@ -34,6 +46,8 @@ const MapWrapper: React.FC = (): React.ReactElement => {
   const dispatch = useAppDispatch()
   const flying = useRef(false)
   const highlightedEvent = useSelector(selectHighlightedEvent)
+  const datasets = useSelector(selectDatasets)
+  const allGFWIds = useSelector(selectAllGFWIds)
   const { selectVesselEventOnClick, highlightEvent, onFiltersChanged } = useMapEvents()
   const { generatorsConfig, globalConfig, styleTransformations } = useGeneratorsConnect()
   const { viewport, onViewportChange, setMapCoordinates } = useViewport()
@@ -43,12 +57,70 @@ const MapWrapper: React.FC = (): React.ReactElement => {
     globalConfig,
     styleTransformations
   )
-  const styleUpdated = useMemo(() => {
-    return {
-      ...style,
+  const openMainMap = useCallback(() => {
+    // colors used in the map
+    const colors = ['#f4511f', '#33b679', '#f09300', '#ffea00', '#9ca4ff']
+    const presenceDataviews = [
+      {
+        id: 'fishing-ais',
+        config: {
+          visible: false,
+        },
+      },
+      {
+        id: 'vms',
+        config: {
+          visible: false,
+        },
+      },
+    ]
 
+    const instances: UrlDataviewInstance<GeneratorType>[] = allGFWIds.map((GFWId, index) => {
+      const vesselDataset = decodeURIComponent(GFWId[0])
+      const infoDataset = datasets.find((dataset) => dataset.id === vesselDataset)
+      const trackDataset = getRelatedDatasetByType(infoDataset, DatasetTypes.Tracks)
+      const eventsRelatedDatasets = getRelatedDatasetsByType(infoDataset, DatasetTypes.Events)
+
+      const eventsDatasetsId =
+        eventsRelatedDatasets && eventsRelatedDatasets?.length
+          ? eventsRelatedDatasets.map((d) => d.id)
+          : []
+
+      if (infoDataset || trackDataset) {
+        const vesselDataviewInstance = {
+          ...getVesselDataviewInstance(
+            { id: GFWId[1] },
+            {
+              trackDatasetId: trackDataset?.id,
+              infoDatasetId: infoDataset?.id,
+
+              ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
+            }
+          ),
+          ...{
+            config: {
+              color: colors[index],
+            },
+          },
+        }
+        return vesselDataviewInstance
+      }
+      return null
+    })
+
+    const urlJson: BaseUrlWorkspace = {
+      latitude: viewport.latitude,
+      longitude: viewport.longitude,
+      zoom: viewport.zoom,
+      start: DEFAULT_WORKSPACE.availableStart,
+      end: DEFAULT_WORKSPACE.availableEnd,
+      dataviewInstances: [...presenceDataviews, ...instances],
     }
-  }, [])
+
+    const url = stringifyWorkspace(urlJson)
+    window.open('https://fishing-map.dev.globalfishingwatch.org/map/?' + url, '_blank').focus()
+  }, [datasets, allGFWIds])
+
   const interactiveLayerIds = useMemoCompare(style?.metadata?.interactiveLayerIds)
   const { eventsLoading, events } = useVoyagesConnect()
 
@@ -68,7 +140,7 @@ const MapWrapper: React.FC = (): React.ReactElement => {
 
   useEffect(() => {
     if (!vesselLoaded || !vesselDataviewLoaded || eventsLoading || highlightedEvent) return
-
+    openMainMap()
     const lastEvent =
       (events.find((event) => event.type !== EventTypeVoyage.Voyage) as RenderedEvent) || undefined
     if (lastEvent) {
@@ -84,6 +156,7 @@ const MapWrapper: React.FC = (): React.ReactElement => {
   }, [
     dispatch,
     events,
+    openMainMap,
     eventsLoading,
     highlightEvent,
     highlightedEvent,
