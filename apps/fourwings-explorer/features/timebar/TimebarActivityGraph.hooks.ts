@@ -38,7 +38,9 @@ export const useStackedActivity = (layers: DatasetLayer | DatasetLayer[]) => {
           }),
         }
       })
-      const stackedActivity = getTimeseriesFromFeatures(layerFeaturesFiltered)
+      const stackedActivity = getTimeseriesFromFeatures(layerFeaturesFiltered).sort(
+        (a, b) => a.date - b.date
+      )
       setStackedActivity(stackedActivity)
       setGeneratingStackedActivity(false)
     }, 400),
