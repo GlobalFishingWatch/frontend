@@ -11,7 +11,10 @@ export function TerminologyIuu(props: TerminologyIuuProps) {
         Illegal, unreported and unregulated (IUU) listing status according to official RFMO IUU
         vessel lists. A vessel is defined as “present on an RFMO blacklist” if the vessel is
         currently listed.” For more information, please see the{' '}
-        <a href="https://drive.google.com/drive/folders/1njcl_iDFiaLALTT-bK_wdlil7ldIntU8">FAQs</a>.
+        <a href="https://docs.google.com/document/d/1Qq9s_Gp0DrmSczUZdG6D3yktoJVq9EIeuGToKLq1l3Q/edit?usp=sharing">
+          FAQs
+        </a>
+        .
       </Trans>
     </div>
   )
