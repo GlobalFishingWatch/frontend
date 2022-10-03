@@ -12,7 +12,7 @@ type Dates = {
 type TMTDate = {
   date: string | number
   format?: DateTimeFormatOptions
-  forcedTokensFormat?: string
+  doNotModifyFormat?: boolean
 }
 
 type formatI18DateParams = {
@@ -54,7 +54,11 @@ const I18nDate = ({ date, format = DateTime.DATE_MED }: Dates) => {
   return <Fragment>{dateFormatted}</Fragment>
 }
 
-export const formatI18nSpecialDate = ({ date, format = DateTime.DATE_MED }: TMTDate) => {
+export const formatI18nSpecialDate = ({
+  date,
+  format = DateTime.DATE_MED,
+  doNotModifyFormat = false,
+}: TMTDate) => {
   let parsedDate, tokensFormat
   if (date.toString().match(/^\d{4}(00|99){1,2}$/)) {
     parsedDate = date.toString().replace(/(\d{4})(00|99){1,2}$/, '$1-01-01')
@@ -70,10 +74,11 @@ export const formatI18nSpecialDate = ({ date, format = DateTime.DATE_MED }: TMTD
   } else if (date.toString().match(/^\d{8}$/)) {
     parsedDate = date.toString().replace(/(\d{4})(\d{2})(\d{2})$/, '$1-$2-$3')
   }
+
   return formatI18nDate(parsedDate ?? date, {
     format,
     locale: i18n.language as Locale,
-    tokensFormat: tokensFormat,
+    tokensFormat: doNotModifyFormat ? null : tokensFormat,
   })
 }
 

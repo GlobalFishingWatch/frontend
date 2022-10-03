@@ -352,14 +352,21 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                             `vessel.iuuStatusOptions.${vessel.iuuStatus}` as any,
                             vessel.iuuStatus.toString()
                           ) +
-                          (vessel.iuuListing
+                          (vessel.history.iuuListing.byDate.length
                             ? ' - ' +
-                              vessel.iuuListing.value +
-                              ' ' +
-                              formatI18nSpecialDate({
-                                date: vessel.iuuListing.originalFirstSeen,
-                                format: { year: 'numeric' },
-                              })
+                              vessel.history.iuuListing.byDate
+                                .map((iuu) => {
+                                  return (
+                                    iuu.value +
+                                    ' ' +
+                                    formatI18nSpecialDate({
+                                      date: iuu.originalFirstSeen,
+                                      format: { year: 'numeric' },
+                                      doNotModifyFormat: true,
+                                    })
+                                  )
+                                })
+                                .join(' - ')
                             : '')
                         : DEFAULT_EMPTY_VALUE
                     }
