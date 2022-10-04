@@ -167,7 +167,7 @@ export function RiskSummary(props: RiskSummaryProps) {
                 format: { year: 'numeric' },
               })
             })`}
-            history={vessel.history.iuuListing.byDate}
+            history={vessel.history.iuuListing?.byDate}
             field={VesselFieldLabel.iuuStatus}
             vesselName={vessel.shipname}
           />

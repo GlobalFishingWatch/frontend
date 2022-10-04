@@ -363,7 +363,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                             : '')
                         : DEFAULT_EMPTY_VALUE
                     }
-                    valuesHistory={vessel.history.iuuListing.byDate}
+                    valuesHistory={vessel.history.iuuListing?.byDate}
                     helpText={
                       <Trans i18nKey="vessel.iuuStatusDescription">
                         [TDB] IUU status description to be defined
