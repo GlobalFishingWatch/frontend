@@ -2,6 +2,7 @@ import { Suspense, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
+import { useTranslation } from 'react-i18next'
 import { Modal, Spinner } from '@globalfishingwatch/ui-components'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import {
@@ -16,6 +17,8 @@ import AisCoverage from 'features/profile/components/activity/AisCoverage'
 import useRiskIndicator from 'features/risk-indicator/risk-indicator.hook'
 import { useUser } from 'features/user/user.hooks'
 import DateRangeLabel from 'features/date-range-label/date-range-label'
+import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
+import ActivityDataAndTerminology from 'features/profile/components/activity/ActivityDataAndTerminology'
 import ActivityItem from '../profile/components/activity/ActivityItem'
 import ActivityModalContent from '../profile/components/activity/ActivityModalContent'
 import { useActivityByType } from './activity-by-type.hook'
@@ -27,6 +30,7 @@ export interface ActivityByTypeProps {
 
 export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) {
   const { events, toggleEventType } = useActivityByType()
+  const { t } = useTranslation()
 
   const [isModalOpen, setIsOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent>()
@@ -77,6 +81,14 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
         <div className={styles.heading}>
           <AisCoverage value={eventsLoading ? null : coverage?.percentage} />
           <div className={styles.headingButtons}>
+            <DataAndTerminology
+              containerClassName={styles.dataAndTerminologyContainer}
+              size="medium"
+              type="solid"
+              title={t('common.dataAndTerminology', 'Data and Terminology')}
+            >
+              <ActivityDataAndTerminology />
+            </DataAndTerminology>
             <DateRangeLabel type="secondary" className={styles.filterBtn} />
           </div>
         </div>
