@@ -156,7 +156,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         const uniqSearchResults = gfwUser
           ? searchResults.entries
           : uniqBy(searchResults.entries, 'id')
-        console.log(uniqSearchResults)
+
         const vesselsWithDataset = uniqSearchResults.flatMap((vessel) => {
           if (!vessel) return []
 
