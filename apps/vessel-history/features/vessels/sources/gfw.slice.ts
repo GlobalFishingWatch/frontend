@@ -10,20 +10,19 @@ interface GFWVesselSourceId extends VesselSourceId {
 
 const getHistoryField = (data: GFWDetail, field: string, byCount: any[] = []) => ({
   byCount: byCount,
-  byDate: data[field] ?
-    [
-      {
-        value: data[field],
-        endDate: data.lastTransmissionDate,
-        firstSeen: data.firstTransmissionDate,
-        source: VesselAPISource.GFW,
-      }
-    ]
+  byDate: data[field]
+    ? [
+        {
+          value: data[field],
+          endDate: data.lastTransmissionDate,
+          firstSeen: data.firstTransmissionDate,
+          source: VesselAPISource.GFW,
+        },
+      ]
     : [],
 })
 
 export const toVessel: (data: GFWDetail) => VesselWithHistory = (data: GFWDetail) => {
-
   return {
     id: data.id,
     flag: data.flag,
