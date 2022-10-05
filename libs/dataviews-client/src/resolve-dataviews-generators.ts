@@ -256,7 +256,9 @@ export function getGeneratorConfig(
       const dataset = dataview.datasets?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
       if (isEnvironmentLayer) {
         const datasetsIds =
-          dataview.config.datasets || dataview.datasetsConfig?.map((dc) => dc.datasetId)
+          dataview.config.datasets?.length > 0
+            ? dataview.config.datasets
+            : dataview.datasetsConfig?.map((dc) => dc.datasetId)
         const sublayers: HeatmapAnimatedGeneratorSublayer[] = [
           {
             id: generator.id,
