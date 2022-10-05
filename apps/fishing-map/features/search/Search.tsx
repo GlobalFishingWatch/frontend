@@ -149,6 +149,7 @@ function Search() {
               filters,
               datasets: sources,
               offset,
+              gfwUser,
             })
           )
           // TODO: Find a better approach to sync query
@@ -379,7 +380,7 @@ function Search() {
                     searchSuggestion &&
                     searchSuggestion !== searchQuery &&
                     !searchSuggestionClicked && (
-                      <li className={cx(styles.searchSuggestion)}>
+                      <li key="suggestion" className={cx(styles.searchSuggestion)}>
                         {t('search.suggestion', 'Did you mean')}{' '}
                         <button onClick={onSuggestionClick} className={styles.suggestion}>
                           {' '}
@@ -418,7 +419,7 @@ function Search() {
                           [styles.inWorkspace]: isInWorkspace,
                           [styles.selected]: isSelected,
                         })}
-                        key={id}
+                        key={`${id}-${index}`}
                       >
                         <div className={styles.name}>
                           {formatInfoField(shipname, 'name') || EMPTY_FIELD_PLACEHOLDER}
@@ -520,7 +521,7 @@ function Search() {
                     )
                   })}
                   {hasMoreResults && (
-                    <li className={styles.spinner} ref={ref}>
+                    <li key="spinner" className={styles.spinner} ref={ref}>
                       <Spinner inline size="small" />
                     </li>
                   )}
@@ -554,6 +555,7 @@ function Search() {
                   <li
                     className={cx(styles.groupOption, styles.groupOptionNew)}
                     onClick={() => onAddToVesselGroup()}
+                    key="new-group"
                   >
                     {t('vesselGroup.createNewGroup', 'Create new group')}
                   </li>
