@@ -12,7 +12,7 @@ export const API_URL = LOCAL_API_URL + LOCAL_API_VERSION
 export const LOCALE = 'en'
 export const TIMEBAR_HEIGHT = 72
 
-export const FIRST_YEAR_OF_DATA = 2012
+export const FIRST_YEAR_OF_DATA = 2001
 export const LAST_YEAR_OF_DATA = 2030
 export const CURRENT_YEAR = new Date().getFullYear()
 export const DEFAULT_WORKSPACE = {
