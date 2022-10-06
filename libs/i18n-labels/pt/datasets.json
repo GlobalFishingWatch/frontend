@@ -605,7 +605,7 @@
     }
   },
   "private-indonesia-ipnlf-fishing-effort": {
-    "name": "IPNLF-AP2HI: Indonesia Pelagic",
+    "name": "AP2HI-IPNLF: Indonesia Pelagic",
     "description": "Indonesia AP2HI-IPNLF Fishing Effort",
     "schema": {
       "lat": "lat",
@@ -625,8 +625,8 @@
     }
   },
   "private-indonesia-ipnlf-presence": {
-    "name": "IPNLF-AP2HI: Indonesia Pelagic",
-    "description": "IPNLF-AP2HI Presence",
+    "name": "AP2HI-IPNLF: Indonesia Pelagic",
+    "description": "AP2HI-IPNLF Presence",
     "schema": {
       "lat": "lat",
       "lon": "lon",
