@@ -40,7 +40,7 @@ const getVisibleStartFrame = (rawFrame: number) => {
   return Math.floor(rawFrame)
 }
 
-const INTERVAL_ORDER: Interval[] = ['hour', 'day', '10days', 'month']
+const INTERVAL_ORDER: Interval[] = ['hour', 'day', '10days', 'month', 'year']
 
 export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
   hour: {
@@ -89,6 +89,9 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
     },
   },
   '10days': {
+    isValid: (duration: Duration): boolean => {
+      return duration.as('months') <= 3
+    },
     getRawFrame: (start: number) => {
       return start / 1000 / 60 / 60 / 24 / 10
     },
@@ -97,6 +100,9 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
     },
   },
   month: {
+    isValid: (duration: Duration): boolean => {
+      return Math.floor(duration.as('months')) <= 12
+    },
     getRawFrame: (start: number, POC = false) => {
       if (POC) {
         const dt = DateTime.fromMillis(start, { zone: 'utc' })
@@ -114,6 +120,17 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
       const year = baseYear + yearOffset
       const month = frame % 12
       return new Date(Date.UTC(year, month, 1))
+    },
+  },
+  year: {
+    getRawFrame: (start: number) => {
+      return LuxonInterval.fromDateTimes(
+        DateTime.fromMillis(0).toUTC(),
+        DateTime.fromMillis(start).toUTC()
+      ).toDuration('year').years
+    },
+    getDate: (frame: number) => {
+      return new Date(Date.UTC(frame, 0, 1))
     },
   },
 }
@@ -319,6 +336,24 @@ export const getActiveTimeChunks = (
     const chunk: TimeChunk = {
       quantizeOffset: 0,
       id: 'heatmapchunk_month',
+      frame,
+      active: true,
+    }
+    chunk.sourceId = getSourceId(baseId, chunk)
+    timeChunks.chunks = [chunk]
+    timeChunks.activeSourceId = chunk.sourceId
+    timeChunks.activeChunkFrame = frame
+    return timeChunks
+  } else if (timeChunks.interval === 'year') {
+    const frame = toQuantizedFrame(
+      activeStart,
+      0,
+      timeChunks.interval,
+      baseId === 'mergedAnimatedHeatmap'
+    )
+    const chunk: TimeChunk = {
+      quantizeOffset: 0,
+      id: 'heatmapchunk_year',
       frame,
       active: true,
     }
