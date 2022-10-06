@@ -8,6 +8,9 @@ import AirTemperatureProjectionsMin from 'assets/images/datasets/air-surface-tem
 import PrecipitationProjections from 'assets/images/datasets/precipitation-projections.jpg'
 import AerosolOpticalThickness from 'assets/images/datasets/aerosol-optical-thickness.jpg'
 import ApparentFishingEffort from 'assets/images/datasets/apparent-fishing-effort.jpg'
+import FootprintStructure from 'assets/images/datasets/footprint-structure.jpg'
+import FootprintLandUse from 'assets/images/datasets/footprint-land-use.jpg'
+import FootprintDensity from 'assets/images/datasets/footprint-density.jpg'
 import Presence from 'assets/images/datasets/presence.jpg'
 import { API_URL } from 'data/config'
 
@@ -20,6 +23,9 @@ const IMAGES_BY_ID = {
   'public-global-terra-atmosphere': AerosolOpticalThickness,
   'public-global-fishing-effort:latest': ApparentFishingEffort,
   'public-global-presence:latest': Presence,
+  'public-human-footprint-population-density': FootprintDensity,
+  'public-human-footprint-land-use': FootprintLandUse,
+  'public-human-footprint-infrastructure': FootprintStructure,
 }
 
 const getDatasets = async () => {
