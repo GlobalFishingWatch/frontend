@@ -13,7 +13,7 @@ const calculateQuantity = {
   [EventTypes.Fishing]: (events: RenderedEvent[]) =>
     events?.reduce((p, c) => p + c.duration ?? 0, 0) ?? 0,
   [EventTypes.Loitering]: (events: RenderedEvent[]) => events.length ?? 0,
-  [EventTypes.Port]: (events: RenderedEvent[]) => events.length ?? 0,
+  [EventTypes.Port]: (events: RenderedEvent[]) => Math.ceil((events.length ?? 0) / 2),
   [EventTypes.Gap]: (events: RenderedEvent[]) => events.length ?? 0,
 }
 
@@ -24,7 +24,13 @@ export const useActivityByType = () => {
 
   const eventsByType = useMemo(
     (): EventGroup[] =>
-      [EventTypes.Encounter, EventTypes.Fishing, EventTypes.Loitering, EventTypes.Port, EventTypes.Gap]
+      [
+        EventTypes.Encounter,
+        EventTypes.Fishing,
+        EventTypes.Loitering,
+        EventTypes.Port,
+        EventTypes.Gap,
+      ]
         .map((type) => ({ type, events: eventsList.filter((e) => e.type === type) }))
         .map(({ type, events }) => ({
           group: true,
