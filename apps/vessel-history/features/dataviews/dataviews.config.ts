@@ -75,7 +75,7 @@ export const dataviewInstances: DataviewInstance<GeneratorType>[] = [
     dataviewId: DEFAULT_EEZ_DATAVIEW_ID,
   },
   {
-    id: 'public-wdpa-may-2021-marine',
+    id: 'public-mpa-all',
     config: {
       color: '#1AFF6B',
       visible: true,

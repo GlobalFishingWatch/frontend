@@ -605,7 +605,7 @@
     }
   },
   "private-indonesia-ipnlf-fishing-effort": {
-    "name": "crwdns27174:0crwdne27174:0",
+    "name": "crwdns27184:0crwdne27184:0",
     "description": "crwdns27074:0crwdne27074:0",
     "schema": {
       "lat": "crwdns27076:0crwdne27076:0",
@@ -625,8 +625,8 @@
     }
   },
   "private-indonesia-ipnlf-presence": {
-    "name": "crwdns27176:0crwdne27176:0",
-    "description": "crwdns27098:0crwdne27098:0",
+    "name": "crwdns27186:0crwdne27186:0",
+    "description": "crwdns27188:0crwdne27188:0",
     "schema": {
       "lat": "crwdns26416:0crwdne26416:0",
       "lon": "crwdns26418:0crwdne26418:0",
