@@ -11,7 +11,7 @@ import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { selectUserId } from 'features/user/user.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAddDataset, useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
-import { isGuestUser } from 'features/user/user.slice'
+import { isGFWUser, isGuestUser } from 'features/user/user.slice'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import GFWOnly from 'features/user/GFWOnly'
@@ -36,6 +36,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const [colorOpen, setColorOpen] = useState(false)
+  const gfwUser = useSelector(isGFWUser)
   const userId = useSelector(selectUserId)
   const [modalDataWarningOpen, setModalDataWarningOpen] = useState(false)
   const onDataWarningModalClose = useCallback(() => {
@@ -145,7 +146,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
             />
           )}
           {!isBasemapLabelsDataview && <InfoModal dataview={dataview} />}
-          {isUserLayer && <Remove dataview={dataview} />}
+          {(isUserLayer || gfwUser) && <Remove dataview={dataview} />}
           {items.length > 1 && (
             <IconButton
               size="small"
