@@ -53,7 +53,6 @@
     "visualisationEventsHint": "(Ensure event_id, event_start, event_end and geom are all present)"
   },
   "common": {
-    "back": "back",
     "active_after": "Active after",
     "active_before": "Active Before",
     "activity": "Activity",
@@ -62,15 +61,15 @@
     "apparentFishing": "Apparent Fishing Effort",
     "average": "average",
     "averageAbbreviated": "avg.",
+    "back": "back",
     "cancel": "Cancel",
     "category": "Category",
     "comingSoon": "coming soon!",
     "confirm": "Confirm",
-    "continue": "Continue",
     "context_area_other": "Context areas",
+    "continue": "Continue",
     "copiedToClipboard": "The link to share this view has been copied to your clipboard.",
     "country_other": "countries",
-    "detections": "Detections",
     "date": "Date",
     "date_one": "Date",
     "date_other": "Dates",
@@ -82,11 +81,12 @@
     "detection": "Detection",
     "detection_one": "Detection",
     "detection_other": "Detections",
+    "detections": "Detections",
     "dismiss": "Dismiss",
     "environment": "Environment",
+    "events": "Events",
     "exclude": "Exclude",
     "excluded": "Excluded",
-    "events": "Events",
     "feedback": "Feedback",
     "fishing": "Fishing",
     "from": "from",
@@ -126,9 +126,11 @@
     "presence": "Presence",
     "report": "Report",
     "resetHelpHints": "Show again all help hints",
+    "sar": "Radar detections (SAR)",
     "save": "Save",
     "seeDefault": "See default view",
     "share": "Share the current view",
+    "sources": "Sources",
     "unknown": "Unknown",
     "unknownVessel": "Unknown vessel",
     "update": "Update",
@@ -137,7 +139,6 @@
     "vessel_other": "Vessels",
     "view_layer": "View the layer",
     "viirs": "Night light detections (VIIRS)",
-    "sar": "Radar detections (SAR)",
     "welcomePopupDisable": "Don't show again",
     "whatsNew": "What's new?"
   },
@@ -182,13 +183,18 @@
     "typePolygonsDescription": "Display one or multiple areas coloured by any quantitative value in your dataset.",
     "typeTracks": " Tracks",
     "typeTracksDescription": "Display the movement of one or multiple animals or vessels.",
-    "uploadLogin": "You need to <1>login</1> to upload datasets",
+    "uploadLogin": "<0>Register</0> or <2>login</2>to upload datasets (free, 2 minutes)",
     "uploadNewContext": "Upload new context areas",
     "uploadNewEnviroment": "Upload new environment dataset",
     "uploadPublic": "Allow other users to see this dataset when you share a workspace",
     "uploadYourOwn": "Upload your own"
   },
   "dataview": {
+    "basemap-labels": {
+      "dataWarning": "This platform uses location labels from Google Maps.",
+      "dataWarningDetail": "This platform uses location labels from Google Maps. <a target='_blank' href='https://developers.google.com/maps/documentation/tile/overview'> Learn more.</a>",
+      "title": "Locations"
+    },
     "context-layer-eez": {
       "dataWarning": "This platform uses EEZ reference layers from Marine Regions",
       "dataWarningDetail": "This platform uses reference layers (shapefiles) from Marine Regions for exclusive economic zones and boundaries. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. To see the original reference layers, please visit <a href='http://www.marineregions.org'>www.marineregions.org</a>. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw or upload your own reference layer using the '+' icon in the left sidebar. Learn more on our <a href='https://globalfishingwatch.org/tutorials/'>tutorials</a> and <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
@@ -196,11 +202,6 @@
     "context-layer-mpa": {
       "dataWarning": "This platform uses MPA reference layers from World Database on Protected Areas.",
       "dataWarningDetail": "This platform uses reference layers (shapefiles) from the World Database on Protected Areas for marine protected areas. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. To see the original reference layers, please visit <a href='http://www.protectedplanet.net'>www.protectedplanet.net</a>. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw oro upload your own reference layer using the '+' icon in the left sidebar. Learn more on our <a href='https://globalfishingwatch.org/tutorials/'>tutorials</a> and <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
-    },
-    "basemap-labels": {
-      "title": "Locations",
-      "dataWarning": "This platform uses location labels from Google Maps.",
-      "dataWarningDetail": "This platform uses location labels from Google Maps. <a target='_blank' href='https://developers.google.com/maps/documentation/tile/overview'> Learn more.</a>"
     }
   },
   "download": {
@@ -246,17 +247,17 @@
     "showError": "Show error",
     "switchAccount": "Switch account",
     "trackLoading": "There was an error loading the vessel track",
+    "uploadCsv": "Error reading CSV file: {{error}}",
     "uploadError": "There was an error uploading your dataset",
+    "uploadGeojson": "Error reading GeoJSON file: {{error}}",
+    "uploadShapefile": "Error reading shapefile: {{error}}",
+    "uploadShapefileComponents": "Error reading shapefile: must contain files with *.shp, *.shx, *.dbf and *.prj extensions.",
     "vesselLoading": "There was an error loading the vessel details track",
     "workspaceCreate": "There was an error creating the workspace, please try again later",
     "workspaceDuplicatedName": "There is already a workspace with this name",
     "workspaceLoad": "There was an error loading the workspace, please try again later",
     "workspaceMissingName": "Workspace name is needed",
-    "workspaceNotFound": "The view you request was not found",
-    "uploadShapefile": "Error reading shapefile: {{error}}",
-    "uploadShapefileComponents": "Error reading shapefile: must contain files with *.shp, *.shx, *.dbf and *.prj extensions.",
-    "uploadGeojson": "Error reading GeoJSON file: {{error}}",
-    "uploadCsv": "Error reading CSV file: {{error}}"
+    "workspaceNotFound": "The view you request was not found"
   },
   "event": {
     "dayAbbreviated": "{{count}}d",
@@ -330,6 +331,7 @@
     "supportBy": "Supported by"
   },
   "layer": {
+    "activity_fit_bounds": "Center view on activity",
     "add": "Add layer",
     "color_change": "Change color",
     "drawPolygon": "Draw a layer",
@@ -364,14 +366,13 @@
     "source_other": "Sources",
     "statsHelp": "The number of vessels and flag states is calculated for your current filters and time range globally. Some double counting may occur.",
     "statsHelpDetection": "The number of detections is calculated for your current filters and time range globally. Some double counting may occur.",
-    "type": "Type",
     "toggleCombinationMode": {
       "combine": "Combine layers",
       "split": "Split layers"
     },
     "toggleVisibility": "Toggle layer visibility",
+    "type": "Type",
     "vessel_fit_bounds": "Center view on vessel track",
-    "activity_fit_bounds": "Center view on activity",
     "vessel_fit_bounds_out_of_timerange": "The track has no activity in your selected timerange. Change timerange to fit this track?"
   },
   "map": {
@@ -442,9 +443,9 @@
   "user": {
     "groupMissing": "Do you belong to a user group that doesn’t appear here? <2>Request access</2>",
     "groups": "User Groups",
+    "info": "User Info",
     "profile": "User profile",
-    "title": "User",
-    "info": "User Info"
+    "title": "User"
   },
   "vessel": {
     "addToWorkspace": "Add vessel to view",
@@ -503,7 +504,6 @@
     "loading": "Loading vessel track",
     "loadingInfo": "Loading vessel info",
     "login": "You need to <1>login</1> to see more details",
-    "trackLogin": "One of your selected sources requires you to <1>login</1> to see vessel tracks and events",
     "mainGear": "Main gear",
     "matched": "Match",
     "matricula": "Matricula",
@@ -514,17 +514,18 @@
     "registeredGearType": "Registered Gear Type",
     "shiptype": "Vessel type",
     "source": "Source",
-    "ssvid": "Ssvid",
     "source_short": "Source",
+    "ssvid": "Ssvid",
     "target_species": "Target species",
     "targetSpecies": "Target species",
+    "trackLogin": "One of your selected sources requires you to <1>login</1> to see vessel tracks and events",
     "transmission_other": "Transmissions",
+    "transmissionDates": "Transmission dates",
     "unkwownVesselByGeartype": "Unknown {{gearType}}",
     "unmatched": "unmatched",
     "vessel_type": "Vessel type",
     "vesselType_other": "Vessel types",
-    "widthRange": "Width range",
-    "transmissionDates": "Transmission dates"
+    "widthRange": "Width range"
   },
   "vesselGroup": {
     "add": "Add to vessel group",
@@ -541,11 +542,11 @@
     "label": "{{name}} ({{count}} IDs)",
     "missingName": "Vessel group name is mandatory",
     "new": "New vessel group",
-    "uploadPublic": "Allow other users to see this vessel group when you share a workspace",
     "remove": "Remove vessel group",
     "removeVessel": "Remove vessel from group",
     "timeRangeLimit": "Supported only for time ranges shorter than 1 year",
     "tooManyVessels": "Maximum number of vessels is {{count}}",
+    "uploadPublic": "Allow other users to see this vessel group when you share a workspace",
     "vesselGroup": "Vessel group",
     "vesselGroups": "Vessel groups"
   },
@@ -560,8 +561,8 @@
     "emptyStateVessels": "The vessels selected in the search or by clicking on activity grid cells will appear here.",
     "nameInput": "Workspace name",
     "new": "New Workspace",
-    "noVesselInFilters": "No vessels match your current filters",
     "noDetectionInFilters": "No detections match your current filters",
+    "noVesselInFilters": "No vessels match your current filters",
     "privateTitle_other": "Private workspaces",
     "remove": "Remove workspace",
     "save": "Save the current view",
@@ -574,9 +575,9 @@
       "marine-manager": "Marine Manager is a new technology portal to support the effective design, management and monitoring of protected areas."
     },
     "title_other": "Workspaces",
-    "user": "User workspace",
     "update": "Update",
     "uploadPublic": "Allow other users to see this workspace",
-    "uploadPublicDisabled": "This workspace can't be shared publicly because it contains private datasets"
+    "uploadPublicDisabled": "This workspace can't be shared publicly because it contains private datasets",
+    "user": "User workspace"
   }
 }

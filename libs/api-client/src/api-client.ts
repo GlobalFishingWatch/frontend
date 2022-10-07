@@ -20,6 +20,7 @@ export const API_VERSION = process.env.NEXT_PUBLIC_API_VERSION || 'v2'
 const DEBUG_API_REQUESTS: boolean = process.env.NEXT_PUBLIC_DEBUG_API_REQUESTS === 'true'
 
 const AUTH_PATH = 'auth'
+const REGISTER_PATH = 'registration'
 export const GUEST_USER_TYPE = 'guest'
 
 export interface V2MessageError {
@@ -140,6 +141,14 @@ export class GFW_API_CLASS {
 
   getStatus() {
     return this.status
+  }
+
+  getRegisterUrl({ locale = '' } = {}) {
+    const fallbackLocale =
+      locale ||
+      (typeof localStorage !== 'undefined' ? localStorage.getItem('i18nextLng') : '') ||
+      'en'
+    return this.generateUrl(`/v2/${AUTH_PATH}/${REGISTER_PATH}?locale=${fallbackLocale}`, '', true)
   }
 
   getLoginUrl(callbackUrl: string, { client = 'gfw', locale = '' } = {}) {

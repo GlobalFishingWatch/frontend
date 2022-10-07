@@ -182,7 +182,7 @@
     "typePolygonsDescription": "Display one or multiple areas coloured by any quantitative value in your dataset.",
     "typeTracks": " Tracks",
     "typeTracksDescription": "Display the movement of one or multiple animals or vessels.",
-    "uploadLogin": "Register and <1>login</1> to upload datasets (free, 2 minutes)",
+    "uploadLogin": "<0>Register</0> or <2>login</2> to upload datasets (free, 2 minutes)",
     "uploadNewContext": "Upload new reference layer",
     "uploadNewEnviroment": "Upload new environment dataset",
     "uploadPublic": "Allow other users to see this dataset when you share a workspace",
