@@ -10,13 +10,9 @@ import 'dayjs/locale/es'
 import 'dayjs/locale/fr'
 import 'dayjs/locale/id'
 import { RecoilRoot } from 'recoil'
+import { CONFIG_BY_INTERVAL } from '@globalfishingwatch/layer-composer'
 import ImmediateContext from './immediateContext'
-import {
-  getTime,
-  clampToAbsoluteBoundaries,
-  getDeltaDays,
-  isMoreThanADay,
-} from './utils/internal-utils'
+import { getTime } from './utils/internal-utils'
 // import './timebar-settings.css'
 import styles from './timebar.module.css'
 import TimeRangeSelector from './components/timerange-selector'
@@ -26,9 +22,7 @@ import Playback from './components/playback'
 import { ReactComponent as IconTimeRange } from './icons/timeRange.svg'
 import { ReactComponent as IconBookmark } from './icons/bookmark.svg'
 import { ReactComponent as IconBookmarkFilled } from './icons/bookmarkFilled.svg'
-import { ReactComponent as IconMinus } from './icons/minus.svg'
-import { ReactComponent as IconPlus } from './icons/plus.svg'
-import { EVENT_SOURCE } from './constants'
+import { EVENT_SOURCE, EVENT_INTERVAL_SOURCE } from './constants'
 
 dayjs.extend(relativeTime)
 dayjs.extend(utc)
@@ -127,67 +121,14 @@ class Timebar extends Component {
   }
 
   onIntervalClick = (interval) => {
-    const { start, end, absoluteStart, absoluteEnd } = this.props
-    const delta = Math.round(getDeltaDays(start, end))
-
-    let steps
-    let nextDelta
-    let nextUnit = 'day'
-
-    let source
-
-    if (zoom === 'in') {
-      source = EVENT_SOURCE.ZOOM_IN_BUTTON
-      steps = [365, 32, 30, 7, 1]
-      for (let s = 0; s < steps.length; s += 1) {
-        const step = steps[s]
-        if (delta > step) {
-          nextDelta = step
-          break
-        }
-      }
-      // sub-day situation
-      if (nextDelta === undefined) {
-        nextDelta = 23.9
-        nextUnit = 'hour'
-      }
-    } else if (zoom === 'out') {
-      source = EVENT_SOURCE.ZOOM_OUT_BUTTON
-      steps = [1, 7, 30, 32, 365]
-      for (let s = 0; s < steps.length; s += 1) {
-        const step = steps[s]
-        // if (delta > step) {
-        if (delta < step) {
-          nextDelta = step
-          break
-        }
-      }
-
-      // more than 1 year situation
-      if (nextDelta === undefined) {
-        this.notifyChange(absoluteStart, absoluteEnd, source)
-        return
-      }
+    const { start, end } = this.props
+    const intervalConfig = CONFIG_BY_INTERVAL[interval]
+    if (intervalConfig) {
+      const middleMs = getTime(start) + (getTime(end) - getTime(start)) / 2
+      const newStart = intervalConfig.getFirstChunkStart(middleMs)
+      const newEnd = intervalConfig.getChunkDataEnd(newStart)
+      this.notifyChange(newStart.toISODate(), newEnd.toISODate(), EVENT_INTERVAL_SOURCE[interval])
     }
-
-    const unitOffsetMs = nextUnit === 'hour' ? ONE_DAY_MS / 24 : ONE_DAY_MS
-    const middleMs = getTime(start) + (getTime(end) - getTime(start)) / 2
-    const offsetMs = (nextDelta * unitOffsetMs) / 2
-    const newStartMs = middleMs - offsetMs
-
-    const mNewStart = dayjs(newStartMs).utc().startOf(nextUnit)
-    const newEnd = mNewStart.add(nextDelta, nextUnit).toISOString()
-
-    const deltaMs = nextDelta * unitOffsetMs
-    const { newStartClamped, newEndClamped } = clampToAbsoluteBoundaries(
-      mNewStart.toISOString(),
-      newEnd,
-      deltaMs,
-      absoluteStart,
-      absoluteEnd
-    )
-
-    this.notifyChange(newStartClamped, newEndClamped, source)
   }
 
   notifyChange = (start, end, source, clampToEnd = false) => {
@@ -306,8 +247,9 @@ class Timebar extends Component {
             <div className={cx('print-hidden', styles.timeActions)}>
               <IntervalSelector
                 intervals={intervals}
+                labels={labels.intervals}
                 currentInterval={currentInterval}
-                onIntervalClick={onIntervalClick}
+                onIntervalClick={this.onIntervalClick}
               />
             </div>
 
@@ -363,13 +305,13 @@ Timebar.propTypes = {
       deleteBookmark: PropTypes.string,
     }),
     lastUpdate: PropTypes.string,
-    day: PropTypes.string,
-    year: PropTypes.string,
-    month: PropTypes.string,
-    hour: PropTypes.string,
+    intervals: {
+      hour: PropTypes.string,
+      day: PropTypes.string,
+      month: PropTypes.string,
+      year: PropTypes.string,
+    },
     setBookmark: PropTypes.string,
-    zoomIn: PropTypes.string,
-    zoomOut: PropTypes.string,
     zoomTo: PropTypes.string,
     timeRange: PropTypes.string,
   }),
@@ -429,13 +371,12 @@ Timebar.defaultProps = {
     dragLabel: 'Drag to change the time range',
     lastUpdate: 'Last update',
     setBookmark: 'Bookmark current time range',
-    day: 'day',
-    year: 'year',
-    month: 'month',
-    hour: 'hour',
-    zoomIn: 'Zoom in',
-    zoomTo: 'Zoom to',
-    zoomOut: 'Zoom out',
+    intervals: {
+      hour: 'hour',
+      day: 'day',
+      month: 'month',
+      year: 'year',
+    },
   },
   bookmarkStart: null,
   bookmarkEnd: null,

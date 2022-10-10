@@ -213,10 +213,6 @@ const TimebarWrapper = () => {
   const [internalRange, setInternalRange] = useState<Range | null>(null)
   const onChange = useCallback(
     (e) => {
-      if (e.source === 'ZOOM_OUT_MOVE') {
-        setInternalRange({ ...e })
-        return
-      }
       const gaActions: Record<string, string> = {
         TIME_RANGE_SELECTOR: 'Configure timerange using calendar option',
         ZOOM_IN_BUTTON: 'Zoom In timerange',

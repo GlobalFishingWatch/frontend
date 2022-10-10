@@ -121,6 +121,12 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
       const month = frame % 12
       return new Date(Date.UTC(year, month, 1))
     },
+    getFirstChunkStart: (bufferedActiveStart: number): DateTime => {
+      return DateTime.fromMillis(bufferedActiveStart).toUTC().startOf('month')
+    },
+    getChunkDataEnd: (chunkStart: DateTime): DateTime => {
+      return chunkStart.plus({ month: 3 })
+    },
   },
   year: {
     getRawFrame: (start: number) => {

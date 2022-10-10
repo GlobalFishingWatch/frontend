@@ -1,4 +1,3 @@
-import { useCallback } from 'react'
 import cx from 'classnames'
 import { intersection } from 'lodash'
 import { INTERVAL_ORDER, Interval } from '@globalfishingwatch/layer-composer'
@@ -8,22 +7,27 @@ type IntervalSelectorProps = {
   intervals: Interval[]
   currentInterval?: Interval
   labels?: { [key in Interval]?: string }
+  onIntervalClick: (interval: Interval) => void
 }
 
 const defaultProps: IntervalSelectorProps = {
   intervals: [],
+  onIntervalClick: () => {},
   labels: {
     hour: 'hour',
     day: 'day',
     month: 'month',
+    year: 'year',
   },
 }
 
-function IntervalSelector({ intervals, currentInterval, labels }: IntervalSelectorProps) {
+function IntervalSelector({
+  intervals,
+  currentInterval,
+  labels,
+  onIntervalClick,
+}: IntervalSelectorProps) {
   const intervalsSorted = intersection(INTERVAL_ORDER, intervals)?.reverse()
-  const onIntervalClick = useCallback((interval: Interval) => {
-    console.log(interval)
-  }, [])
   return (
     <ul className={styles.intervalContainer}>
       {intervalsSorted?.length > 0 &&
