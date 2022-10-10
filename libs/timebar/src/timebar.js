@@ -20,6 +20,7 @@ import {
 // import './timebar-settings.css'
 import styles from './timebar.module.css'
 import TimeRangeSelector from './components/timerange-selector'
+import IntervalSelector from './components/interval-selector'
 import Timeline from './components/timeline'
 import Playback from './components/playback'
 import { ReactComponent as IconTimeRange } from './icons/timeRange.svg'
@@ -125,7 +126,7 @@ class Timebar extends Component {
     })
   }
 
-  zoom = (zoom) => {
+  onIntervalClick = (interval) => {
     const { start, end, absoluteStart, absoluteEnd } = this.props
     const delta = Math.round(getDeltaDays(start, end))
 
@@ -232,6 +233,8 @@ class Timebar extends Component {
       maximumRangeUnit,
       stickToUnit,
       displayWarningWhenInFuture,
+      intervals,
+      currentInterval,
     } = this.props
     const { immediate } = this.state
 
@@ -241,11 +244,6 @@ class Timebar extends Component {
 
     this.maximumRangeMs = this.getMaximumRangeMs(maximumRange, maximumRangeUnit)
     this.minimumRangeMs = this.getMinimumRangeMs(minimumRange, minimumRangeUnit)
-
-    const canZoomIn = isMoreThanADay(start, end)
-    const deltaDays = getDeltaDays(start, end)
-    const absoluteDeltaDays = getDeltaDays(absoluteStart, absoluteEnd)
-    const canZoomOut = deltaDays <= absoluteDeltaDays - 1
 
     const hasBookmark =
       bookmarkStart !== undefined &&
@@ -286,17 +284,15 @@ class Timebar extends Component {
                   latestAvailableDataDate={this.props.latestAvailableDataDate}
                 />
               )}
-              <div className={cx('print-hidden', styles.timeRangeContainer)}>
-                <button
-                  type="button"
-                  title={labels.timerange.title}
-                  className={cx(styles.uiButton, styles.timeRange)}
-                  disabled={immediate}
-                  onClick={this.toggleTimeRangeSelector}
-                >
-                  <IconTimeRange />
-                </button>
-              </div>
+              <button
+                type="button"
+                title={labels.timerange.title}
+                className={cx(styles.uiButton)}
+                disabled={immediate}
+                onClick={this.toggleTimeRangeSelector}
+              >
+                <IconTimeRange />
+              </button>
               <button
                 type="button"
                 title={labels.setBookmark}
@@ -306,30 +302,13 @@ class Timebar extends Component {
               >
                 {hasBookmark ? <IconBookmarkFilled /> : <IconBookmark />}
               </button>
-              <div className={cx('print-hidden', styles.timeScale)}>
-                <button
-                  type="button"
-                  title={labels.zoomOut}
-                  disabled={immediate || canZoomOut === false}
-                  onClick={() => {
-                    this.zoom('out')
-                  }}
-                  className={cx(styles.uiButton, styles.out)}
-                >
-                  <IconMinus />
-                </button>
-                <button
-                  type="button"
-                  title={labels.zoomIn}
-                  disabled={immediate || canZoomIn === false}
-                  onClick={() => {
-                    this.zoom('in')
-                  }}
-                  className={cx(styles.uiButton, styles.in)}
-                >
-                  <IconPlus />
-                </button>
-              </div>
+            </div>
+            <div className={cx('print-hidden', styles.timeActions)}>
+              <IntervalSelector
+                intervals={intervals}
+                currentInterval={currentInterval}
+                onIntervalClick={onIntervalClick}
+              />
             </div>
 
             <Timeline
@@ -417,6 +396,8 @@ Timebar.propTypes = {
   showLastUpdate: PropTypes.bool,
   // val is used to live edit translations in crowdin
   locale: PropTypes.oneOf(['en', 'es', 'fr', 'id', 'pt', 'val']),
+  intervals: PropTypes.array,
+  currentInterval: PropTypes.string,
   displayWarningWhenInFuture: PropTypes.bool,
 }
 

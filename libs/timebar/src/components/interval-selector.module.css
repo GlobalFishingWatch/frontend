@@ -1,0 +1,23 @@
+.intervalContainer {
+  background-color: var(--timebar-ui-btn-color);
+}
+
+.intervalBtn {
+  border: none;
+  padding: 0 1rem;
+  border-radius: 0;
+  cursor: pointer;
+  width: 100%;
+  color: var(--timebar-white-faded);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--timebar-hover-transition);
+  text-transform: uppercase;
+}
+
+.intervalBtn:hover,
+.intervalBtnActive {
+  color: var(--timebar-white);
+  background-color: var(--timebar-ui-btn-color-hover);
+}
