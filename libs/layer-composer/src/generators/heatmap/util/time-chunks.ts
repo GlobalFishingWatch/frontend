@@ -89,9 +89,6 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
     },
   },
   '10days': {
-    isValid: (duration: Duration): boolean => {
-      return duration.as('months') <= 3
-    },
     getRawFrame: (start: number) => {
       return start / 1000 / 60 / 60 / 24 / 10
     },
@@ -100,9 +97,6 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
     },
   },
   month: {
-    isValid: (duration: Duration): boolean => {
-      return Math.floor(duration.as('months')) <= 12
-    },
     getRawFrame: (start: number, POC = false) => {
       if (POC) {
         const dt = DateTime.fromMillis(start, { zone: 'utc' })
