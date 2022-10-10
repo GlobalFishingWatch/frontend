@@ -96,12 +96,12 @@ export const selectDetectionsDataviews = createSelector(
 
 export const selectActiveActivityDataviews = createSelector(
   [selectActivityDataviews],
-  (dataviews) => dataviews?.filter((d) => d.config?.visible)
+  (dataviews): UrlDataviewInstance[] => dataviews?.filter((d) => d.config?.visible)
 )
 
 export const selectActiveDetectionsDataviews = createSelector(
   [selectDetectionsDataviews],
-  (dataviews) => dataviews?.filter((d) => d.config?.visible)
+  (dataviews): UrlDataviewInstance[] => dataviews?.filter((d) => d.config?.visible)
 )
 
 export const selectActiveHeatmapDataviews = createSelector(
@@ -119,7 +119,7 @@ export const selectEnvironmentalDataviews = createSelector(
 
 export const selectActiveEnvironmentalDataviews = createSelector(
   [selectDataviewInstancesByCategory(DataviewCategory.Environment)],
-  (dataviews) => dataviews?.filter((d) => d.config?.visible)
+  (dataviews): UrlDataviewInstance[] => dataviews?.filter((d) => d.config?.visible)
 )
 
 export const selectActiveNonTrackEnvironmentalDataviews = createSelector(

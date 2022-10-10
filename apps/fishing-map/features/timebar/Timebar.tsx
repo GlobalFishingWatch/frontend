@@ -15,7 +15,10 @@ import {
   HighlightedChunks,
 } from '@globalfishingwatch/timebar'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { CONFIG_BY_INTERVAL, getTimeChunksInterval } from '@globalfishingwatch/layer-composer'
+import {
+  getTimeChunksInterval,
+  HeatmapAnimatedGeneratorConfig,
+} from '@globalfishingwatch/layer-composer'
 import { ResourceStatus } from '@globalfishingwatch/api-types'
 import { isMergedAnimatedGenerator } from '@globalfishingwatch/dataviews-client'
 import {
@@ -38,12 +41,17 @@ import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
 import { useGeneratorsConnect } from 'features/map/map.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
-import { formatI18nDate, UTC_SUFFIX } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-groups.selectors'
 import { getUTCDateTime } from 'utils/dates'
 import { setHighlightedTime, selectHighlightedTime, Range } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
-import { selectTracksData, selectTracksGraphData, selectTracksEvents } from './timebar.selectors'
+import {
+  selectTracksData,
+  selectTracksGraphData,
+  selectTracksEvents,
+  selectAvailableIntervals,
+} from './timebar.selectors'
 import TimebarActivityGraph from './TimebarActivityGraph'
 import styles from './Timebar.module.css'
 
@@ -122,27 +130,30 @@ const TimebarWrapper = () => {
   const { timebarSelectedEnvId } = useTimebarEnvironmentConnect()
   const { generatorsConfig } = useGeneratorsConnect()
 
+  const heatmapConfig =
+    timebarVisualisation === TimebarVisualisations.HeatmapActivity ||
+    timebarVisualisation === TimebarVisualisations.HeatmapDetections
+      ? generatorsConfig.find((c) => isMergedAnimatedGenerator(c.id))
+      : generatorsConfig.find((c) => c.id === timebarSelectedEnvId)
+  const availableIntervals = useSelector(selectAvailableIntervals)
+  const interval = getTimeChunksInterval(
+    heatmapConfig as HeatmapAnimatedGeneratorConfig,
+    start,
+    end
+  )
+
   const stickToUnit = useCallback(
     (start, end) => {
-      const heatmapConfig = generatorsConfig.find((c) => isMergedAnimatedGenerator(c.id))
-      if (
-        heatmapConfig &&
-        (timebarVisualisation === TimebarVisualisations.HeatmapActivity ||
-          timebarVisualisation === TimebarVisualisations.HeatmapDetections)
-      ) {
-        const interval = getTimeChunksInterval(heatmapConfig as any, start, end)
+      if (heatmapConfig) {
+        const interval = getTimeChunksInterval(
+          heatmapConfig as HeatmapAnimatedGeneratorConfig,
+          start,
+          end
+        )
         return interval === '10days' ? 'day' : interval
-      } else if (timebarVisualisation === TimebarVisualisations.Environment) {
-        // TODO decide interval for stick unit depending on available intervals when env layers have interval < month
-        const heatmapConfig = generatorsConfig.find((c) => c.id === timebarSelectedEnvId)
-        if (heatmapConfig) {
-          const interval = getTimeChunksInterval(heatmapConfig as any, start, end)
-          return interval === '10days' ? 'day' : interval
-        }
-        return 'month'
       }
     },
-    [generatorsConfig, timebarSelectedEnvId, timebarVisualisation]
+    [heatmapConfig]
   )
 
   const dispatch = useAppDispatch()
@@ -341,6 +352,8 @@ const TimebarWrapper = () => {
         minimumRange={1}
         // TODO: set this by current active activity dataviews
         // minimumRangeUnit={activityCategory === 'fishing' ? 'hour' : 'day'}
+        intervals={availableIntervals}
+        currentInterval={interval}
         stickToUnit={stickToUnit}
         trackGraphOrientation={trackGraphOrientation}
         locale={i18n.language}
