@@ -305,12 +305,12 @@ Timebar.propTypes = {
       deleteBookmark: PropTypes.string,
     }),
     lastUpdate: PropTypes.string,
-    intervals: {
+    intervals: PropTypes.shape({
       hour: PropTypes.string,
       day: PropTypes.string,
       month: PropTypes.string,
       year: PropTypes.string,
-    },
+    }),
     setBookmark: PropTypes.string,
     zoomTo: PropTypes.string,
     timeRange: PropTypes.string,
