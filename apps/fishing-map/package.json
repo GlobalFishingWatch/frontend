@@ -35,7 +35,7 @@
     "classnames": "2.3.1",
     "countryflag": "^4.1.2",
     "d3-format": "3.1.0",
-    "d3-scale": "^3.3.0",
+    "d3-scale": "^4.0.2",
     "dayjs": "1.11.2",
     "downshift": "6.1.7",
     "file-saver": "2.0.5",
