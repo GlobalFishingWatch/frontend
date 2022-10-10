@@ -151,10 +151,17 @@ export const getInterval = (
 
   // Get intervals that are common to all dataset (initial array provided to ensure order from smallest to largest)
   const commonIntervals = intersection(INTERVAL_ORDER, ...availableIntervals)
+  const fallbackOption = commonIntervals.length
+    ? commonIntervals[commonIntervals.length - 1]
+    : 'day'
   const intervals = commonIntervals.filter((interval) => !omitIntervals.includes(interval))
   if (!intervals.length) {
-    console.warn('no common interval found, fallback to day', availableIntervals, omitIntervals)
-    return 'day'
+    console.warn(
+      `no common interval found, using the largest available option (${fallbackOption}) as fallback to avoid memory crashes`,
+      availableIntervals,
+      omitIntervals
+    )
+    return fallbackOption
   }
 
   const duration = Duration.fromMillis(deltaMs)
@@ -170,9 +177,12 @@ export const getInterval = (
     if (!omitIntervals?.length) {
       // Warn only needed when no omitedIntervals becuase anaylis mode needs to fallback
       // to day when out of range for hours
-      console.warn('no valid intervals found, fallback to day', validIntervals)
+      console.warn(
+        `no valid interval found, using the largest available option (${fallbackOption}) as fallback to avoid memory crashes`,
+        validIntervals
+      )
     }
-    return 'day'
+    return fallbackOption
   }
 
   let selectedInterval: Interval
