@@ -136,11 +136,9 @@ const TimebarWrapper = () => {
       ? generatorsConfig.find((c) => isMergedAnimatedGenerator(c.id))
       : generatorsConfig.find((c) => c.id === timebarSelectedEnvId)
   const availableIntervals = useSelector(selectAvailableIntervals)
-  const interval = getTimeChunksInterval(
-    heatmapConfig as HeatmapAnimatedGeneratorConfig,
-    start,
-    end
-  )
+  const interval = heatmapConfig
+    ? getTimeChunksInterval(heatmapConfig as HeatmapAnimatedGeneratorConfig, start, end)
+    : undefined
 
   const stickToUnit = useCallback(
     (start, end) => {
