@@ -3,6 +3,7 @@ import { GeneratorType, TileClusterGeneratorConfig, MergedGeneratorConfig } from
 import { isUrlAbsolute } from '../../utils'
 import { API_GATEWAY } from '../../config'
 import { Group } from '../../types'
+import { DEFAULT_POINTS_SOURCE_LAYER } from './config'
 
 const MAX_ZOOM_TO_CLUSTER_POINTS = 4
 
@@ -55,7 +56,7 @@ class TileClusterGenerator {
         id: `${config.id}-clusters`,
         type: 'circle',
         source: config.id,
-        'source-layer': 'points',
+        'source-layer': DEFAULT_POINTS_SOURCE_LAYER,
         filter: ['>', ['get', 'count'], config.duplicatedEventsWorkaround ? 2 : 1],
         paint: {
           'circle-radius': [
@@ -81,7 +82,7 @@ class TileClusterGenerator {
         id: `${config.id}-cluster_count`,
         type: 'symbol',
         source: config.id,
-        'source-layer': 'points',
+        'source-layer': DEFAULT_POINTS_SOURCE_LAYER,
         filter: ['>', ['get', 'count'], config.duplicatedEventsWorkaround ? 2 : 1],
         layout: {
           'text-size': 14,
@@ -104,7 +105,7 @@ class TileClusterGenerator {
         id: `${config.id}-unclustered_point`,
         type: 'symbol',
         source: config.id,
-        'source-layer': 'points',
+        'source-layer': DEFAULT_POINTS_SOURCE_LAYER,
         filter: ['<=', ['get', 'count'], config.duplicatedEventsWorkaround ? 2 : 1],
         layout: {
           'icon-allow-overlap': true,
