@@ -21,28 +21,35 @@ const defaultProps: IntervalSelectorProps = {
   },
 }
 
+const INTERVAL_OPTIONS = INTERVAL_ORDER.filter(
+  (interval) => interval !== '10days' && interval !== 'year'
+).reverse()
+
 function IntervalSelector({
   intervals,
   currentInterval,
   labels,
   onIntervalClick,
 }: IntervalSelectorProps) {
-  const intervalsSorted = intersection(INTERVAL_ORDER, intervals)?.reverse()
   return (
     <ul className={styles.intervalContainer}>
-      {intervalsSorted?.length > 0 &&
-        intervalsSorted.map((interval) => (
+      {INTERVAL_OPTIONS.map((interval) => {
+        const disabled = !intervals.includes(interval)
+        return (
           <li key={interval}>
             <button
               className={cx(styles.intervalBtn, {
                 [styles.intervalBtnActive]: currentInterval === interval,
+                [styles.intervalBtnDisabled]: disabled,
               })}
+              disabled={disabled}
               onClick={() => onIntervalClick(interval)}
             >
               {labels?.[interval] ? labels[interval] : interval}
             </button>
           </li>
-        ))}
+        )
+      })}
     </ul>
   )
 }

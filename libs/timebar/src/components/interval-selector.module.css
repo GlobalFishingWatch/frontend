@@ -1,5 +1,8 @@
 .intervalContainer {
   background-color: var(--timebar-ui-btn-color);
+  width: 7rem;
+  height: 100%;
+  overflow: auto;
 }
 
 .intervalBtn {
@@ -16,8 +19,12 @@
   text-transform: uppercase;
 }
 
-.intervalBtn:hover,
-.intervalBtnActive {
+:not(.intervalBtnDisabled).intervalBtn:hover,
+:not(.intervalBtnDisabled).intervalBtnActive {
   color: var(--timebar-white);
   background-color: var(--timebar-ui-btn-color-hover);
+}
+
+.intervalBtnDisabled {
+  cursor: not-allowed;
 }

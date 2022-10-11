@@ -157,7 +157,7 @@ export const getInterval = (
   const intervals = commonIntervals.filter((interval) => !omitIntervals.includes(interval))
   if (!intervals.length) {
     console.warn(
-      `no common interval found, using the largest available option (${fallbackOption}) as fallback to avoid memory crashes`,
+      `no common interval found, using the largest available option (${fallbackOption})`,
       availableIntervals,
       omitIntervals
     )
@@ -178,7 +178,7 @@ export const getInterval = (
       // Warn only needed when no omitedIntervals becuase anaylis mode needs to fallback
       // to day when out of range for hours
       console.warn(
-        `no valid interval found, using the largest available option (${fallbackOption}) as fallback to avoid memory crashes`,
+        `no valid interval found, using the largest available option (${fallbackOption})`,
         validIntervals
       )
     }
