@@ -51,6 +51,8 @@ class TileClusterGenerator {
 
   _getStyleLayers = (config: GlobalTileClusterGeneratorConfig): LayerSpecification[] => {
     const activeFilter = ['case', ['==', ['get', 'event_id'], config.currentEventId || null]]
+    const breaks = config.breaks || [50, 400, 5000]
+    const breaksRadius = [12, 16, 24]
     const layers = [
       {
         id: `${config.id}-clusters`,
@@ -63,12 +65,7 @@ class TileClusterGenerator {
             'interpolate',
             ['exponential', 0.9],
             ['get', 'count'],
-            50,
-            12,
-            400,
-            16,
-            5000,
-            24,
+            ...breaks.flatMap((b, i) => [b, breaksRadius[i]]),
           ],
           'circle-color': config.color || '#FAE9A0',
         },

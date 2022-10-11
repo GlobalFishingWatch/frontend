@@ -4,6 +4,7 @@ import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { useEventsDynamicRamp } from 'features/workspace/events/events.hooks'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import LayerSwitch from '../common/LayerSwitch'
@@ -15,6 +16,7 @@ type LayerPanelProps = {
 }
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
+  useEventsDynamicRamp(dataview)
   const layerActive = dataview?.config?.visible ?? true
   const { items, attributes, listeners, setNodeRef, setActivatorNodeRef, style } =
     useLayerPanelDataviewSort(dataview.id)
