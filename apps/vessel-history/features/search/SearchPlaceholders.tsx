@@ -56,14 +56,13 @@ export function SearchNoResultsState({
 
 export function SearchNoResultsFromTmtState({
   className = '',
-  onContactUsClick = () => { },
 }: SearchNoResultsStateProps) {
   return (
     <SearchPlaceholder className={className}>
       <img src={vesselNoResultsImage.src} alt="vessel" className={styles.noResultsImage} />
       <p>
         <Trans i18nKey="search.noTmtResults">
-        A vessel with these criteria could not be found, due to a timeout in the search function. Please try again.
+          A vessel with these criteria could not be found, due to a timeout in the search function. Please try again.
         </Trans>
       </p>
     </SearchPlaceholder>

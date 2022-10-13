@@ -357,10 +357,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                 />
               )}
               {!searchError && !typing && !searching && vesselsLength >= 0 && searchSources.length < 2 && (
-                <SearchNoResultsFromTmtState
-                  contactUsLink={contactUsLink}
-                  onContactUsClick={onContactUsClick}
-                />
+                <SearchNoResultsFromTmtState />
               )}
               {searchError && !typing &&
                 <SearchErrorState error={searchError}></SearchErrorState>
