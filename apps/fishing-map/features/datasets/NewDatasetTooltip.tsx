@@ -54,7 +54,12 @@ function NewDatasetTooltip({ onSelect, datasetCategory }: NewDatasetTooltipProps
         <div className={styles.contentPlaceholder}>
           <p>
             <Trans i18nKey="dataset.uploadLogin">
-              <a className={styles.link} href={GFWAPI.getRegisterUrl()}>
+              <a
+                className={styles.link}
+                href={GFWAPI.getRegisterUrl(
+                  typeof window !== 'undefined' ? window.location.toString() : ''
+                )}
+              >
                 Register
               </a>
               or

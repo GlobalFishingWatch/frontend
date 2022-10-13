@@ -143,18 +143,24 @@ export class GFW_API_CLASS {
     return this.status
   }
 
-  getRegisterUrl({ locale = '' } = {}) {
+  getRegisterUrl(callbackUrl: string, { client = 'gfw', locale = '' } = {}) {
     const fallbackLocale =
       locale ||
-      (typeof localStorage !== 'undefined' ? localStorage.getItem('i18nextLng') : '') ||
+      (typeof localStorage !== 'undefined' ? localStorage.getItem('i18nextLng') : 'en') ||
       'en'
-    return this.generateUrl(`/v2/${AUTH_PATH}/${REGISTER_PATH}?locale=${fallbackLocale}`, '', true)
+    return this.generateUrl(
+      `/v2/${AUTH_PATH}/${REGISTER_PATH}?client=${client}&callback=${encodeURIComponent(
+        callbackUrl
+      )}&locale=${fallbackLocale}`,
+      '',
+      true
+    )
   }
 
   getLoginUrl(callbackUrl: string, { client = 'gfw', locale = '' } = {}) {
     const fallbackLocale =
       locale ||
-      (typeof localStorage !== 'undefined' ? localStorage.getItem('i18nextLng') : '') ||
+      (typeof localStorage !== 'undefined' ? localStorage.getItem('i18nextLng') : 'en') ||
       'en'
     const callbackUrlEncoded = encodeURIComponent(callbackUrl)
     return this.generateUrl(
