@@ -9,7 +9,7 @@ import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectUserId } from 'features/user/user.selectors'
 import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
-import { isGuestUser } from 'features/user/user.slice'
+import { isGFWUser, isGuestUser } from 'features/user/user.slice'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import ActivityFilters from 'features/workspace/activity/ActivityFilters'
 import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
@@ -36,6 +36,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const userId = useSelector(selectUserId)
   const guestUser = useSelector(isGuestUser)
+  const gfwUser = useSelector(isGFWUser)
   const [colorOpen, setColorOpen] = useState(false)
   const {
     items,
@@ -157,7 +158,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
             />
           )}
           <InfoModal dataview={dataview} />
-          {isCustomUserLayer && <Remove dataview={dataview} />}
+          {(isCustomUserLayer || gfwUser) && <Remove dataview={dataview} />}
           {items.length > 1 && (
             <IconButton
               size="small"
