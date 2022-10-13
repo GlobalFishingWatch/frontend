@@ -3,9 +3,7 @@ import { GeneratorType, TileClusterGeneratorConfig, MergedGeneratorConfig } from
 import { isUrlAbsolute } from '../../utils'
 import { API_GATEWAY } from '../../config'
 import { Group } from '../../types'
-import { DEFAULT_POINTS_SOURCE_LAYER } from './config'
-
-const MAX_ZOOM_TO_CLUSTER_POINTS = 4
+import { DEFAULT_POINTS_SOURCE_LAYER, MAX_ZOOM_TO_CLUSTER_POINTS } from './config'
 
 export type GlobalTileClusterGeneratorConfig = Required<
   MergedGeneratorConfig<TileClusterGeneratorConfig>
@@ -51,9 +49,27 @@ class TileClusterGenerator {
 
   _getStyleLayers = (config: GlobalTileClusterGeneratorConfig): LayerSpecification[] => {
     const activeFilter = ['case', ['==', ['get', 'event_id'], config.currentEventId || null]]
-    const breaks = config.breaks || [50, 400, 5000]
-    const breaksRadius = [12, 16, 24]
+    const breaks = config.breaks?.length ? config.breaks.slice(0, 3) : [50, 400, 5000]
+    const breaksRadius = [12, 20, 28]
     const layers = [
+      {
+        id: `${config.id}-unclustered_point`,
+        type: 'symbol',
+        source: config.id,
+        'source-layer': DEFAULT_POINTS_SOURCE_LAYER,
+        filter: ['<=', ['get', 'count'], config.duplicatedEventsWorkaround ? 2 : 1],
+        layout: {
+          'icon-allow-overlap': true,
+          'icon-size': [...activeFilter, 1.5, 1],
+          'icon-image': [...activeFilter, 'encounter-highlight', 'encounter'],
+        },
+        metadata: {
+          interactive: true,
+          generatorId: config.id,
+          uniqueFeatureInteraction: true,
+          group: Group.Cluster,
+        },
+      },
       {
         id: `${config.id}-clusters`,
         type: 'circle',
@@ -63,7 +79,7 @@ class TileClusterGenerator {
         paint: {
           'circle-radius': [
             'interpolate',
-            ['exponential', 0.9],
+            ['linear'],
             ['get', 'count'],
             ...breaks.flatMap((b, i) => [b, breaksRadius[i]]),
           ],
@@ -95,24 +111,6 @@ class TileClusterGenerator {
         },
         metadata: {
           generatorId: config.id,
-          group: Group.Cluster,
-        },
-      },
-      {
-        id: `${config.id}-unclustered_point`,
-        type: 'symbol',
-        source: config.id,
-        'source-layer': DEFAULT_POINTS_SOURCE_LAYER,
-        filter: ['<=', ['get', 'count'], config.duplicatedEventsWorkaround ? 2 : 1],
-        layout: {
-          'icon-allow-overlap': true,
-          'icon-size': [...activeFilter, 1.5, 1],
-          'icon-image': [...activeFilter, 'encounter-highlight', 'encounter'],
-        },
-        metadata: {
-          interactive: true,
-          generatorId: config.id,
-          uniqueFeatureInteraction: true,
           group: Group.Cluster,
         },
       },
