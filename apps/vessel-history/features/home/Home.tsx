@@ -11,7 +11,7 @@ import { RESULTS_PER_PAGE, TMT_CONTACT_US_URL } from 'data/constants'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
 import { selectAllOfflineVessels } from 'features/vessels/offline-vessels.slice'
-import SearchPlaceholder, { SearchErrorState, SearchNoResultsState } from 'features/search/SearchPlaceholders'
+import SearchPlaceholder, { SearchErrorState, SearchNoResultsFromTmtState, SearchNoResultsState } from 'features/search/SearchPlaceholders'
 import {
   selectAdvancedSearchFields,
   selectHasSearch,
@@ -23,6 +23,7 @@ import {
   selectSearchTotalResults,
   selectSearching,
   selectSearchError,
+  selectSearchSources,
 } from 'features/search/search.selectors'
 import AdvancedSearch from 'features/search/AdvancedSearch'
 import { useUser } from 'features/user/user.hooks'
@@ -61,6 +62,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const offset = useSelector(selectSearchOffset)
   const totalResults = useSelector(selectSearchTotalResults)
   const searchError = useSelector(selectSearchError)
+  const searchSources = useSelector(selectSearchSources)
   const offlineVessels = useSelector(selectAllOfflineVessels)
   const { dispatchFetchOfflineVessels, dispatchDeleteOfflineVessel } = useOfflineVesselsAPI()
   const { online } = useNavigatorOnline()
@@ -348,8 +350,14 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                   <Spinner className={styles.loader}></Spinner>
                 </div>
               )}
-              {!searchError && !typing && !searching && vesselsLength >= 0 && (
+              {!searchError && !typing && !searching && vesselsLength >= 0 && searchSources.length === 2 && (
                 <SearchNoResultsState
+                  contactUsLink={contactUsLink}
+                  onContactUsClick={onContactUsClick}
+                />
+              )}
+              {!searchError && !typing && !searching && vesselsLength >= 0 && searchSources.length < 2 && (
+                <SearchNoResultsFromTmtState
                   contactUsLink={contactUsLink}
                   onContactUsClick={onContactUsClick}
                 />

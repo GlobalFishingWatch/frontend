@@ -28,12 +28,14 @@ export type SearchSlice = {
   status: AsyncReducerStatus
   error?: HttpError
   queries: CachedQuerySearch
+  sources: string[]
 }
 
 const initialState: SearchSlice = {
   status: AsyncReducerStatus.Idle,
   queries: {},
-  error: null
+  error: null,
+  sources: []
 }
 
 const slice = createSlice({
@@ -48,6 +50,7 @@ const slice = createSlice({
         action.meta.arg.advancedSearch
       )
       state.error = null
+      state.sources = []
       if (serializedQuery) {
         if (!state.queries[serializedQuery]) {
           state.queries[serializedQuery] = {
@@ -70,6 +73,7 @@ const slice = createSlice({
         action.meta.arg.advancedSearch
       )
       if (action.payload) {
+        state.sources = action.payload.sources
         state.queries[serializedQuery] = {
           ...action.payload,
           vessels:

@@ -78,6 +78,7 @@ export const fetchData = async (
         offset: json.offset,
         total: json.total,
         searching: false,
+        sources: json.metadata.sources
       }
     })
     .catch((error) => {
@@ -89,6 +90,7 @@ export const fetchData = async (
         offset: 0,
         total: 0,
         searching: false,
+        sources: [],
       }
     })
 }
