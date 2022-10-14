@@ -84,8 +84,9 @@ export const getChunksTimeseries = ({
       if (aggregationOperation === AggregationOperation.Avg) {
         const lastItem = finalValues[finalValues.length - 1]
         const month = DateTime.fromMillis(lastItem.date, { zone: 'utc' })
-        const plus = interval === '10days' ? { day: 10 } : { [interval]: 1 }
-        const nextMonth = DateTime.fromMillis(lastItem.date, { zone: 'utc' }).plus(plus)
+        const nextMonth = DateTime.fromMillis(lastItem.date, { zone: 'utc' }).plus({
+          [interval]: 1,
+        })
         const millisOffset = nextMonth.diff(month).milliseconds
         return finalValues.concat({
           ...lastItem,

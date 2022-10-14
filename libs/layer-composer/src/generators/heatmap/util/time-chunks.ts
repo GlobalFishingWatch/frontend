@@ -40,7 +40,7 @@ const getVisibleStartFrame = (rawFrame: number) => {
   return Math.floor(rawFrame)
 }
 
-export const INTERVAL_ORDER: Interval[] = ['hour', 'day', '10days', 'month', 'year']
+export const INTERVAL_ORDER: Interval[] = ['hour', 'day', 'month', 'year']
 
 export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
   hour: {
