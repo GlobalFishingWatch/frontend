@@ -11,6 +11,8 @@
   border-radius: 0;
   cursor: pointer;
   width: 100%;
+  font-size: var(--timebar-small-font-size);
+  line-height: 1.5;
   color: var(--timebar-white-faded);
   display: flex;
   align-items: center;
@@ -19,12 +21,13 @@
   text-transform: uppercase;
 }
 
-:not(.intervalBtnDisabled).intervalBtn:hover,
-:not(.intervalBtnDisabled).intervalBtnActive {
+.intervalBtnActive {
+  pointer-events: none;
   color: var(--timebar-white);
   background-color: var(--timebar-ui-btn-color-hover);
 }
 
-.intervalBtnDisabled {
-  cursor: not-allowed;
+.intervalBtn:hover {
+  color: var(--timebar-white);
+  background-color: var(--timebar-ui-btn-color-hover);
 }

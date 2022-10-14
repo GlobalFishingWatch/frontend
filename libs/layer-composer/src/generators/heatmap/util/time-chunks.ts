@@ -1,4 +1,4 @@
-import { DateTime, Duration, Interval as LuxonInterval } from 'luxon'
+import { DateTime, Duration, DurationLikeObject, Interval as LuxonInterval } from 'luxon'
 import { intersection } from 'lodash'
 import { Interval } from '../types'
 import { getSourceId } from '.'
@@ -41,11 +41,37 @@ const getVisibleStartFrame = (rawFrame: number) => {
 }
 
 export const INTERVAL_ORDER: Interval[] = ['hour', 'day', 'month', 'year']
+export const LIMITS_BY_INTERVAL: Record<
+  Interval,
+  { unit: keyof DurationLikeObject; value: number } | undefined
+> = {
+  hour: {
+    unit: 'days',
+    value: 3,
+  },
+  day: {
+    unit: 'months',
+    value: 3,
+  },
+  month: {
+    unit: 'year',
+    value: 1,
+  },
+  year: undefined,
+}
+
+const checkValidInterval = (interval: Interval, duration: Duration) => {
+  const intervalLimit = LIMITS_BY_INTERVAL[interval]
+  if (intervalLimit) {
+    return Math.round(duration.as(intervalLimit.unit)) <= intervalLimit.value
+  }
+  return true
+}
 
 export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
   hour: {
     isValid: (duration: Duration): boolean => {
-      return duration.as('days') <= 2
+      return checkValidInterval('hour', duration)
     },
     getFirstChunkStart: (bufferedActiveStart: number): DateTime => {
       return DateTime.fromMillis(bufferedActiveStart, { zone: 'utc' }).startOf('week')
@@ -66,7 +92,7 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
   },
   day: {
     isValid: (duration: Duration): boolean => {
-      return duration.as('days') <= 31
+      return checkValidInterval('day', duration)
     },
     getFirstChunkStart: (bufferedActiveStart: number): DateTime => {
       const monthStart = DateTime.fromMillis(bufferedActiveStart, { zone: 'utc' }).startOf('month')
@@ -88,15 +114,10 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
       return new Date(frame * 1000 * 60 * 60 * 24)
     },
   },
-  '10days': {
-    getRawFrame: (start: number) => {
-      return start / 1000 / 60 / 60 / 24 / 10
-    },
-    getDate: (frame: number) => {
-      return new Date(frame * 1000 * 60 * 60 * 24 * 10)
-    },
-  },
   month: {
+    isValid: (duration: Duration): boolean => {
+      return checkValidInterval('month', duration)
+    },
     getRawFrame: (start: number, POC = false) => {
       if (POC) {
         const dt = DateTime.fromMillis(start, { zone: 'utc' })
@@ -118,11 +139,17 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
     getFirstChunkStart: (bufferedActiveStart: number): DateTime => {
       return DateTime.fromMillis(bufferedActiveStart).toUTC().startOf('month')
     },
+    getChunkViewEnd: (chunkStart: DateTime): DateTime => {
+      return chunkStart.plus({ months: 3 })
+    },
     getChunkDataEnd: (chunkStart: DateTime): DateTime => {
-      return chunkStart.plus({ month: 3 })
+      return chunkStart.plus({ month: 2 })
     },
   },
   year: {
+    isValid: (duration: Duration): boolean => {
+      return checkValidInterval('year', duration)
+    },
     getRawFrame: (start: number) => {
       return LuxonInterval.fromDateTimes(
         DateTime.fromMillis(0).toUTC(),
@@ -165,14 +192,10 @@ export const getInterval = (
   }
 
   const duration = Duration.fromMillis(deltaMs)
-
   const validIntervals = intervals.filter((interval) => {
-    const valid =
-      CONFIG_BY_INTERVAL[interval] &&
-      (!CONFIG_BY_INTERVAL[interval].isValid || CONFIG_BY_INTERVAL[interval].isValid(duration))
+    const valid = CONFIG_BY_INTERVAL[interval].isValid(duration)
     return valid
   })
-
   if (!validIntervals?.length) {
     if (!omitIntervals?.length) {
       // Warn only needed when no omitedIntervals becuase anaylis mode needs to fallback
@@ -184,22 +207,7 @@ export const getInterval = (
     }
     return fallbackOption
   }
-
-  let selectedInterval: Interval
-
-  // if only available intervals are 10days and month, favor month
-  if (
-    validIntervals.includes('10days') &&
-    validIntervals.includes('month') &&
-    validIntervals.length === 2
-  ) {
-    selectedInterval = 'month'
-  } else {
-    // else, use smallest interval
-    selectedInterval = validIntervals[0]
-  }
-
-  return selectedInterval
+  return validIntervals[0]
 }
 
 /**
@@ -322,21 +330,8 @@ export const getActiveTimeChunks = (
     visibleEndFrame,
   }
 
-  // ignore any start/end time chunk calculation as for the '10 days' interval the entire tileset is loaded
-  if (timeChunks.interval === '10days') {
-    const frame = toQuantizedFrame(activeStart, 0, timeChunks.interval)
-    const chunk: TimeChunk = {
-      quantizeOffset: 0,
-      id: 'heatmapchunk_10days',
-      frame,
-      active: true,
-    }
-    chunk.sourceId = getSourceId(baseId, chunk)
-    timeChunks.chunks = [chunk]
-    timeChunks.activeSourceId = chunk.sourceId
-    timeChunks.activeChunkFrame = frame
-    return timeChunks
-  } else if (timeChunks.interval === 'month') {
+  // ignore any start/end time chunk calculation as for the 'month' interval the entire tileset is loaded
+  if (timeChunks.interval === 'month') {
     const frame = toQuantizedFrame(
       activeStart,
       0,

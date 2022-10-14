@@ -10,7 +10,8 @@ import 'dayjs/locale/es'
 import 'dayjs/locale/fr'
 import 'dayjs/locale/id'
 import { RecoilRoot } from 'recoil'
-import { CONFIG_BY_INTERVAL } from '@globalfishingwatch/layer-composer'
+import { DateTime } from 'luxon'
+import { CONFIG_BY_INTERVAL, LIMITS_BY_INTERVAL } from '@globalfishingwatch/layer-composer'
 import ImmediateContext from './immediateContext'
 import { getTime } from './utils/internal-utils'
 // import './timebar-settings.css'
@@ -121,13 +122,20 @@ class Timebar extends Component {
   }
 
   onIntervalClick = (interval) => {
-    const { start, end } = this.props
+    const { start, end, absoluteStart, absoluteEnd } = this.props
     const intervalConfig = CONFIG_BY_INTERVAL[interval]
     if (intervalConfig) {
-      const middleMs = getTime(start) + (getTime(end) - getTime(start)) / 2
-      const newStart = intervalConfig.getFirstChunkStart(middleMs)
-      const newEnd = intervalConfig.getChunkDataEnd(newStart)
-      this.notifyChange(newStart.toISODate(), newEnd.toISODate(), EVENT_INTERVAL_SOURCE[interval])
+      const middleDate = DateTime.fromMillis(
+        getTime(start) + (getTime(end) - getTime(start)) / 2
+      ).toUTC()
+      const intervalLimit = LIMITS_BY_INTERVAL[interval]
+      if (intervalLimit) {
+        const newStart = middleDate.startOf(intervalLimit.unit)
+        const newEnd = newStart.plus({ [intervalLimit.unit]: 1 })
+        this.notifyChange(newStart.toISODate(), newEnd.toISODate(), EVENT_INTERVAL_SOURCE[interval])
+      } else {
+        this.notifyChange(absoluteStart, absoluteEnd, EVENT_INTERVAL_SOURCE[interval])
+      }
     }
   }
 
@@ -175,7 +183,7 @@ class Timebar extends Component {
       stickToUnit,
       displayWarningWhenInFuture,
       intervals,
-      currentInterval,
+      getCurrentInterval,
     } = this.props
     const { immediate } = this.state
 
@@ -245,12 +253,18 @@ class Timebar extends Component {
               </button>
             </div>
             <div className={cx('print-hidden', styles.timeActions)}>
-              <IntervalSelector
-                intervals={intervals}
-                labels={labels.intervals}
-                currentInterval={currentInterval}
-                onIntervalClick={this.onIntervalClick}
-              />
+              {
+                intervals && getCurrentInterval ? (
+                  <IntervalSelector
+                    intervals={intervals}
+                    getCurrentInterval={getCurrentInterval}
+                    labels={labels.intervals}
+                    start={start}
+                    end={end}
+                    onIntervalClick={this.onIntervalClick}
+                  />
+                ) : null // TODO restore + and - buttons as fallback
+              }
             </div>
 
             <Timeline
@@ -339,7 +353,7 @@ Timebar.propTypes = {
   // val is used to live edit translations in crowdin
   locale: PropTypes.oneOf(['en', 'es', 'fr', 'id', 'pt', 'val']),
   intervals: PropTypes.array,
-  currentInterval: PropTypes.string,
+  getCurrentInterval: PropTypes.func,
   displayWarningWhenInFuture: PropTypes.bool,
 }
 
@@ -372,10 +386,10 @@ Timebar.defaultProps = {
     lastUpdate: 'Last update',
     setBookmark: 'Bookmark current time range',
     intervals: {
-      hour: 'hour',
-      day: 'day',
-      month: 'month',
-      year: 'year',
+      hour: 'hours',
+      day: 'days',
+      month: 'months',
+      year: 'years',
     },
   },
   bookmarkStart: null,

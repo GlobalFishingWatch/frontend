@@ -262,14 +262,3 @@ export const selectTracksEvents = createSelector(
     return tracksEvents
   }
 )
-
-export const selectAvailableIntervals = createSelector(
-  [selectActiveHeatmapDataviews, selectActiveEnvironmentalDataviews],
-  (heatmapDataviews = [], environmentalDataviews = []) => {
-    const availableIntervals = [...heatmapDataviews, ...environmentalDataviews].flatMap(
-      (dataview) => getDataviewAvailableIntervals(dataview)
-    )
-
-    return intersection(INTERVAL_ORDER, availableIntervals)
-  }
-)
