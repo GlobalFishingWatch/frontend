@@ -5,7 +5,7 @@ import { getSerializedQuery } from './search.thunk'
 
 export const selectVesselsFound = (state: RootState) => state.search.queries
 export const selectSearchError = (state: RootState) => state.search.error
-export const selectSearchSources = (state: RootState) => ['AIS']
+export const selectSearchSources = (state: RootState) => state.search.sources
 
 export const selectSearchMetadata = createSelector(
   [selectVesselsFound, selectQueryParam('q'), selectAdvancedSearchFields],
