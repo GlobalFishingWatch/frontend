@@ -6,14 +6,17 @@ import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { IconButton, Modal, Tooltip } from '@globalfishingwatch/ui-components'
 import { DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
+import {
+  getRelatedDatasetsByType,
+  getVesselDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getDetectionsTimestamps } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
   getPresenceVesselDataviewInstance,
-  getVesselDataviewInstance,
   getVesselInWorkspace,
 } from 'features/dataviews/dataviews.utils'
-import { getDatasetLabel, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import I18nNumber from 'features/i18n/i18nNumber'
 import {
   ActivityProperty,
@@ -32,6 +35,7 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { TimeRangeDates } from 'features/map/controls/MapInfo'
 import GFWOnly from 'features/user/GFWOnly'
 import DatasetLabel from 'features/datasets/DatasetLabel'
+import { TEMPLATE_VESSEL_DATAVIEW_ID } from 'data/workspaces'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
   TooltipEventFeature,
@@ -171,11 +175,15 @@ function VesselsTable({
           ? vesselEventsDatasets.map((d) => d.id)
           : []
 
-      vesselDataviewInstance = getVesselDataviewInstance(vessel, {
-        trackDatasetId: vessel.trackDataset?.id,
-        infoDatasetId: vessel.infoDataset?.id,
-        ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
-      })
+      vesselDataviewInstance = getVesselDataviewInstance(
+        vessel,
+        {
+          trackDatasetId: vessel.trackDataset?.id,
+          infoDatasetId: vessel.infoDataset?.id,
+          ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
+        },
+        TEMPLATE_VESSEL_DATAVIEW_ID
+      )
     }
 
     upsertDataviewInstance(vesselDataviewInstance)

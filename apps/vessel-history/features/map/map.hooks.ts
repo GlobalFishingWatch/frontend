@@ -3,8 +3,19 @@ import {
   StyleTransformation,
   sort,
   getInteractiveLayerIds,
+  GeneratorType,
 } from '@globalfishingwatch/layer-composer'
-import { LAST_POSITION_LAYERS_PREFIX } from 'data/config'
+import {
+  BaseUrlWorkspace,
+  getRelatedDatasetByType,
+  getRelatedDatasetsByType,
+  getVesselDataviewInstance,
+  stringifyWorkspace,
+  UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { DEFAULT_WORKSPACE, FISHING_MAP_URL, LAST_POSITION_LAYERS_PREFIX } from 'data/config'
+import { TEMPLATE_VESSEL_DATAVIEW_ID } from 'features/dataviews/dataviews.config'
 import { selectDefaultMapGeneratorsConfig, selectGlobalGeneratorsConfig } from './map.selectors'
 import { updateGenerator, UpdateGeneratorPayload } from './map.slice'
 
@@ -52,4 +63,94 @@ export interface Viewport extends LatLon {
   latitude: number
   longitude: number
   zoom: number
+}
+
+export const openFishingMap = (datasets, allGFWIds, viewport) => {
+  // colors used in the map
+  const colors = ['#f4511f', '#33b679', '#f09300', '#ffea00', '#9ca4ff']
+  const presenceDataviews = [
+    {
+      id: 'fishing-ais',
+      config: {
+        visible: false,
+      },
+    },
+    {
+      id: 'vms',
+      config: {
+        visible: false,
+      },
+    },
+    {
+      id: 'basemap-labels',
+      config: {
+        visible: true,
+        locale: 'en',
+      },
+    },
+
+    {
+      id: 'context-layer-rfmo',
+      config: {
+        visible: true,
+      },
+    },
+    {
+      id: 'context-layer-mpa',
+      config: {
+        visible: true,
+      },
+    },
+    {
+      id: 'context-layer-eez',
+      config: {
+        visible: true,
+      },
+    },
+  ]
+
+  const instances: UrlDataviewInstance<GeneratorType>[] = allGFWIds.map((GFWId, index) => {
+    const vesselDataset = decodeURIComponent(GFWId[0])
+    const infoDataset = datasets.find((dataset) => dataset.id === vesselDataset)
+    const trackDataset = getRelatedDatasetByType(infoDataset, DatasetTypes.Tracks)
+    const eventsRelatedDatasets = getRelatedDatasetsByType(infoDataset, DatasetTypes.Events)
+
+    const eventsDatasetsId =
+      eventsRelatedDatasets && eventsRelatedDatasets?.length
+        ? eventsRelatedDatasets.map((d) => d.id)
+        : []
+
+    if (infoDataset || trackDataset) {
+      const vesselDataviewInstance = {
+        ...getVesselDataviewInstance(
+          { id: GFWId[1] },
+          {
+            trackDatasetId: trackDataset?.id,
+            infoDatasetId: infoDataset?.id,
+
+            ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
+          },
+          TEMPLATE_VESSEL_DATAVIEW_ID
+        ),
+
+        config: {
+          color: colors[index],
+        },
+      }
+      return vesselDataviewInstance
+    }
+    return null
+  })
+
+  const urlJson: BaseUrlWorkspace = {
+    latitude: viewport.latitude,
+    longitude: viewport.longitude,
+    zoom: viewport.zoom,
+    start: DEFAULT_WORKSPACE.availableStart,
+    end: DEFAULT_WORKSPACE.availableEnd,
+    dataviewInstances: [...presenceDataviews, ...instances],
+  }
+
+  const url = stringifyWorkspace(urlJson)
+  window.open(FISHING_MAP_URL + '?' + url, '_blank').focus()
 }

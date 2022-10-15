@@ -7,7 +7,7 @@ import {
   AdvancedSearchQueryFieldKey,
   parseAPIError,
 } from '@globalfishingwatch/api-client'
-import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
+import { getRelatedDatasetByType, resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import {
   Dataset,
   DatasetTypes,
@@ -20,7 +20,7 @@ import { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
-import { getRelatedDatasetByType, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
+import { SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 
 export const RESULTS_PER_PAGE = 20
 
@@ -149,7 +149,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
       const url = resolveEndpoint(dataset, datasetConfig)
       if (url) {
         const searchResults = await GFWAPI.fetch<APIPagination<VesselSearch>>(url, {
-          signal
+          signal,
         })
         const uniqSearchResults = uniqBy(searchResults.entries, 'id')
         const vesselsWithDataset = uniqSearchResults.flatMap((vessel) => {

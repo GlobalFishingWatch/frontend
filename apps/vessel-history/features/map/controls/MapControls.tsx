@@ -17,9 +17,11 @@ import styles from './MapControls.module.css'
 const MapControls = ({
   mapLoading = false,
   onMouseEnter = () => {},
+  onOpenFishingMap = () => {},
 }: {
   mapLoading?: boolean
   onMouseEnter?: () => void
+  onOpenFishingMap: () => void
 }): React.ReactElement => {
   const { t } = useTranslation()
   const domElement = useRef<HTMLElement>()
@@ -142,6 +144,16 @@ const MapControls = ({
                 </Modal>
               )}
               {/* <Rulers /> */}
+              <IconButton
+                type="map-tool"
+                icon="external-link"
+                size="medium"
+                onClick={onOpenFishingMap}
+                tooltip={t(
+                  'map.openFishingMap',
+                  'Click HERE to see the vessel’s track on the main Global Fishing Watch map'
+                )}
+              />
               <IconButton
                 type="map-tool"
                 size="medium"

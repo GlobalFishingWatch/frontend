@@ -5,6 +5,10 @@ import { useSelector } from 'react-redux'
 import { IconButton, Spinner, Tabs, Tab } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { useNavigatorOnline } from '@globalfishingwatch/react-hooks'
+import {
+  getRelatedDatasetByType,
+  getRelatedDatasetsByType,
+} from '@globalfishingwatch/dataviews-client'
 import { VesselAPISource } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
 import {
@@ -23,10 +27,6 @@ import {
   upsertVesselDataview,
 } from 'features/vessels/vessels.slice'
 import Map from 'features/map/Map'
-import {
-  getRelatedDatasetByType,
-  getRelatedDatasetsByType,
-} from 'features/datasets/datasets.selectors'
 import {
   selectDataviewsResources,
   selectGetVesselDataviewInstance,

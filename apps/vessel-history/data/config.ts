@@ -8,6 +8,9 @@ import { TimebarGraphs } from 'types'
 export type WorkspaceEnv = 'development' | 'production'
 export const API_VERSION = 'v2'
 
+export const FISHING_MAP_URL =
+  process.env.NEXT_PUBLIC_FISHING_MAP_URL || 'https://globalfishingwatch.org/map'
+
 export const WORKSPACE_ENV =
   (process.env.NEXT_PUBLIC_WORKSPACE_ENV as WorkspaceEnv) ||
   (process.env.NODE_ENV as WorkspaceEnv) ||
@@ -24,7 +27,6 @@ export const DEBUG_MODE =
   ((process.env.NEXT_PUBLIC_DEBUG_MODE ?? false) as boolean) ||
   (WORKSPACE_ENV === 'production' ? false : true)
 
-export const FULL_SUFIX = 'full'
 export const WORKSPACE_START_DATE = new Date()
 WORKSPACE_START_DATE.setMonth(WORKSPACE_START_DATE.getMonth() - 6)
 

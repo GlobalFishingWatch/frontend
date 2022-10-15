@@ -4,11 +4,14 @@ import {
   Dataset,
   Dataview,
   DataviewCategory,
-  DataviewDatasetConfig,
   DataviewInstance,
   EndpointId,
+  VesselInstanceDatasets,
 } from '@globalfishingwatch/api-types'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import {
+  getVesselDataviewInstance,
+  UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
 import {
@@ -16,7 +19,6 @@ import {
   TEMPLATE_ENVIRONMENT_DATAVIEW_ID,
   TEMPLATE_CONTEXT_DATAVIEW_ID,
   FISHING_DATAVIEW_ID,
-  TEMPLATE_VESSEL_DATAVIEW_ID,
   TEMPLATE_USER_TRACK_ID,
   VESSEL_PRESENCE_DATAVIEW_ID,
   TEMPLATE_POINTS_DATAVIEW_ID,
@@ -35,77 +37,11 @@ export const ENVIRONMENTAL_LAYER_PREFIX = 'environment-'
 export const CONTEXT_LAYER_PREFIX = 'context-'
 export const VESSEL_DATAVIEW_INSTANCE_PREFIX = 'vessel-'
 
-type VesselInstanceDatasets = {
-  trackDatasetId?: string
-  infoDatasetId?: string
-  eventsDatasetsId?: string[]
-}
-
-export const getVesselDataviewInstanceDatasetConfig = (
-  vesselId: string,
-  { trackDatasetId, infoDatasetId, eventsDatasetsId }: VesselInstanceDatasets
-) => {
-  const datasetsConfig: DataviewDatasetConfig[] = []
-  if (infoDatasetId) {
-    datasetsConfig.push({
-      datasetId: infoDatasetId,
-      params: [{ id: 'vesselId', value: vesselId }],
-      endpoint: EndpointId.Vessel,
-    })
-  }
-  if (trackDatasetId) {
-    datasetsConfig.push({
-      datasetId: trackDatasetId,
-      params: [{ id: 'vesselId', value: vesselId }],
-      endpoint: EndpointId.Tracks,
-    })
-  }
-  if (eventsDatasetsId) {
-    eventsDatasetsId.forEach((eventDatasetId) => {
-      datasetsConfig.push({
-        datasetId: eventDatasetId,
-        query: [{ id: 'vessels', value: vesselId }],
-        params: [],
-        endpoint: EndpointId.Events,
-      })
-    })
-  }
-  return datasetsConfig
-}
-
-const vesselDataviewInstanceTemplate = (dataviewId: number) => {
-  return {
-    // TODO find the way to use different vessel dataviews, for example
-    // panama and peru doesn't show events and needed a workaround to work with this
-    dataviewId,
-    config: {
-      colorCyclingType: 'line' as ColorCyclingType,
-    },
-  }
-}
-
-export const getVesselDataviewInstance = (
-  vessel: { id: string },
-  datasets: VesselInstanceDatasets
-): DataviewInstance<GeneratorType> => {
-  const vesselDataviewInstance = {
-    id: `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
-    ...vesselDataviewInstanceTemplate(TEMPLATE_VESSEL_DATAVIEW_ID),
-    datasetsConfig: getVesselDataviewInstanceDatasetConfig(vessel.id, datasets),
-  }
-  return vesselDataviewInstance
-}
-
 export const getPresenceVesselDataviewInstance = (
   vessel: { id: string },
   datasets: VesselInstanceDatasets
 ): DataviewInstance<GeneratorType> => {
-  const vesselDataviewInstance = {
-    id: `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
-    ...vesselDataviewInstanceTemplate(VESSEL_PRESENCE_DATAVIEW_ID),
-    datasetsConfig: getVesselDataviewInstanceDatasetConfig(vessel.id, datasets),
-  }
-  return vesselDataviewInstance
+  return getVesselDataviewInstance(vessel, datasets, VESSEL_PRESENCE_DATAVIEW_ID)
 }
 
 export const getFishingDataviewInstance = (): DataviewInstance<GeneratorType> => {

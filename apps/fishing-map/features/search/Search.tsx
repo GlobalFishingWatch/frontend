@@ -18,11 +18,14 @@ import {
   TransmissionsTimeline,
 } from '@globalfishingwatch/ui-components'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
+import {
+  getRelatedDatasetsByType,
+  getVesselDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
-import { getVesselDataviewInstance, VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
-import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
+import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import I18nDate from 'features/i18n/i18nDate'
 import LocalStorageLoginLink from 'routes/LoginLink'
@@ -41,6 +44,7 @@ import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hoo
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { isGFWUser } from 'features/user/user.slice'
+import { TEMPLATE_VESSEL_DATAVIEW_ID } from 'data/workspaces'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
@@ -283,11 +287,15 @@ function Search() {
         eventsRelatedDatasets && eventsRelatedDatasets?.length
           ? eventsRelatedDatasets.map((d) => d.id)
           : []
-      const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
-        trackDatasetId: vessel.trackDatasetId as string,
-        infoDatasetId: vessel.dataset.id,
-        ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
-      })
+      const vesselDataviewInstance = getVesselDataviewInstance(
+        vessel,
+        {
+          trackDatasetId: vessel.trackDatasetId as string,
+          infoDatasetId: vessel.dataset.id,
+          ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
+        },
+        TEMPLATE_VESSEL_DATAVIEW_ID
+      )
       return vesselDataviewInstance
     })
     addNewDataviewInstances(instances)

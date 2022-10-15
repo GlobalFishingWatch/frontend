@@ -13,6 +13,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import { GFWAPI, FetchOptions, parseAPIError } from '@globalfishingwatch/api-client'
 import {
+  getVesselDataviewInstanceDatasetConfig,
   parseLegacyDataviewInstanceEndpoint,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
@@ -40,7 +41,6 @@ import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { isGFWUser, isGuestUser } from 'features/user/user.slice'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
-import { getVesselDataviewInstanceDatasetConfig } from 'features/dataviews/dataviews.utils'
 import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
 import { selectWorkspaceStatus } from './workspace.selectors'
 

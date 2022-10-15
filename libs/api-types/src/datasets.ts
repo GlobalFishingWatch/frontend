@@ -171,3 +171,9 @@ export interface ThinningConfig {
   'change-speed-transit'?: number
   'min-accuracy-transit'?: number
 }
+
+export type VesselInstanceDatasets = {
+  trackDatasetId: string
+  infoDatasetId?: string
+  eventsDatasetsId?: string[]
+}

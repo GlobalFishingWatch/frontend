@@ -158,6 +158,7 @@
   "map": {
     "filters": "Filter events",
     "loading": "Map loading",
+    "openFishingMap": "Click HERE to see the vessel’s track on the main Global Fishing Watch map",
     "toggleLayers": "Toggle layers"
   },
   "risk": {

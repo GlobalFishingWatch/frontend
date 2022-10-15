@@ -4,12 +4,16 @@ import { useTranslation } from 'react-i18next'
 import { stringify } from 'qs'
 import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { DatasetTypes, EventVessel } from '@globalfishingwatch/api-types'
+import {
+  getRelatedDatasetByType,
+  getRelatedDatasetsByType,
+  getVesselDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import I18nDate from 'features/i18n/i18nDate'
 import {
   ENCOUNTER_EVENTS_SOURCE_ID,
-  getVesselDataviewInstance,
   getVesselInWorkspace,
 } from 'features/dataviews/dataviews.utils'
 import { formatInfoField } from 'utils/info'
@@ -19,7 +23,7 @@ import { CARRIER_PORTAL_URL } from 'data/config'
 import { useCarrierLatestConnect } from 'features/datasets/datasets.hook'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
-import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
+import { TEMPLATE_VESSEL_DATAVIEW_ID } from 'data/workspaces'
 import useViewport from '../map-viewport.hooks'
 import { ExtendedEventVessel, ExtendedFeatureEvent } from '../map.slice'
 import styles from './Popup.module.css'
@@ -86,7 +90,8 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
           trackDatasetId: trackDataset?.id,
           infoDatasetId: infoDataset?.id,
           ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
-        }
+        },
+        TEMPLATE_VESSEL_DATAVIEW_ID
       )
       upsertDataviewInstance(vesselDataviewInstance)
     }

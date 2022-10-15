@@ -3,7 +3,12 @@ import { uniqBy } from 'lodash'
 import { DateTime } from 'luxon'
 import { InteractionEvent, ExtendedFeature } from '@globalfishingwatch/react-hooks'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { resolveEndpoint, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import {
+  getRelatedDatasetByType,
+  getRelatedDatasetsByType,
+  resolveEndpoint,
+  UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
 import {
   DataviewDatasetConfig,
   Dataset,
@@ -23,7 +28,6 @@ import {
 } from 'features/dataviews/dataviews.selectors'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { isGuestUser } from 'features/user/user.slice'
-import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 
 export const MAX_TOOLTIP_LIST = 5
 export const MAX_VESSELS_LOAD = 150
