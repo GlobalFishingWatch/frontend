@@ -49,11 +49,11 @@ export default function gridded(
 
     const visibilityOffset = 0.0000001
     const minVisibleExpression =
-      config.minVisibleValue !== undefined
+      config.minVisibleValue !== undefined && config.minVisibleValue !== config.maxVisibleValue
         ? [0, config.minVisibleValue - visibilityOffset, 1, config.minVisibleValue]
         : []
     const maxVisibleExpression =
-      config.maxVisibleValue !== undefined
+      config.maxVisibleValue !== undefined && config.minVisibleValue !== config.maxVisibleValue
         ? [1, config.maxVisibleValue, 0, config.maxVisibleValue + visibilityOffset]
         : []
     const visibleValuesExpression =

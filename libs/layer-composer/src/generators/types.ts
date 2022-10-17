@@ -175,6 +175,10 @@ export type TileClusterEventType = 'encounter' | 'loitering' | 'port'
 export interface TileClusterGeneratorConfig extends GeneratorConfig {
   type: 'TILE_CLUSTER'
   /**
+   * Defines the 3 steps for the circle radius
+   */
+  breaks?: number[]
+  /**
    * Defines the maximum zoom that returns clusters
    */
   maxZoomCluster?: number

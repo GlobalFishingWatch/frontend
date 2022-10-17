@@ -341,9 +341,7 @@ function DownloadActivityModal() {
             disabled={!duration || duration.days > REPORT_DAYS_LIMIT || downloadAreaLoading}
             tooltip={
               duration && duration.days > REPORT_DAYS_LIMIT
-                ? t('download.timerangeTooLong', 'The maximum time range is 1 year', {
-                    count: REPORT_DAYS_LIMIT,
-                  })
+                ? t('download.timerangeTooLong', 'The maximum time range is 1 year')
                 : ''
             }
           >

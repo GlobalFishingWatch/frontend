@@ -25,7 +25,6 @@ export const useAnalytics = () => {
   useEffect(() => {
     if (userData && GOOGLE_UNIVERSAL_ANALYTICS_ID) {
       uaSet({
-        dimension1: `${userData.id}`,
         dimension3: `${JSON.stringify(userData.groups)}` ?? '',
         dimension4: userData.organizationType ?? '',
         dimension5: userData.organization ?? '',
@@ -34,7 +33,6 @@ export const useAnalytics = () => {
       })
       uaSet({
         userProperties: {
-          userId: userData.id,
           userGroup: userData.groups,
           userOrgType: userData.organizationType,
           userOrganization: userData.organization,

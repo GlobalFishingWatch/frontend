@@ -386,8 +386,7 @@ export function isDetectionsDataview(dataview: UrlDataviewInstance) {
 
 export function isTrackDataview(dataview: UrlDataviewInstance) {
   return (
-    dataview.category === DataviewCategory.Vessels &&
-    dataview.config?.type === GeneratorType.Track
+    dataview.category === DataviewCategory.Vessels && dataview.config?.type === GeneratorType.Track
   )
 }
 
@@ -472,8 +471,8 @@ export function getMergedHeatmapAnimatedDataview(
       // apply the minimum max zoom level (the most restrictive approach)
       ...(maxZoomLevels &&
         maxZoomLevels.length > 0 && {
-        maxZoom: Math.min(...maxZoomLevels),
-      }),
+          maxZoom: Math.min(...maxZoomLevels),
+        }),
     },
   }
   dataviewsFiltered.push(mergedActivityDataview)
@@ -538,45 +537,46 @@ export function getDataviewsGeneratorConfigs(
   params: DataviewsGeneratorConfigsParams,
   resources?: Record<string, Resource>
 ) {
-  const { activityDataviews, detectionDataviews, trackDataviews, otherDataviews } = dataviews.reduce(
-    (acc, dataview) => {
-      if (isActivityDataview(dataview)) {
-        acc.activityDataviews.push(dataview)
-      } else if (isDetectionsDataview(dataview)) {
-        acc.detectionDataviews.push(dataview)
-      } else if (isTrackDataview(dataview)) {
-        acc.trackDataviews.push(dataview)
-      } else {
-        acc.otherDataviews.push(dataview)
+  const { activityDataviews, detectionDataviews, trackDataviews, otherDataviews } =
+    dataviews.reduce(
+      (acc, dataview) => {
+        if (isActivityDataview(dataview)) {
+          acc.activityDataviews.push(dataview)
+        } else if (isDetectionsDataview(dataview)) {
+          acc.detectionDataviews.push(dataview)
+        } else if (isTrackDataview(dataview)) {
+          acc.trackDataviews.push(dataview)
+        } else {
+          acc.otherDataviews.push(dataview)
+        }
+        return acc
+      },
+      {
+        activityDataviews: [] as UrlDataviewInstance[],
+        detectionDataviews: [] as UrlDataviewInstance[],
+        trackDataviews: [] as UrlDataviewInstance[],
+        otherDataviews: [] as UrlDataviewInstance[],
       }
-      return acc
-    },
-    {
-      activityDataviews: [] as UrlDataviewInstance[],
-      detectionDataviews: [] as UrlDataviewInstance[],
-      trackDataviews: [] as UrlDataviewInstance[],
-      otherDataviews: [] as UrlDataviewInstance[],
-    }
-  )
+    )
 
   // If activity heatmap animated generators found, merge them into one generator with multiple sublayers
   const mergedActivityDataview = activityDataviews?.length
     ? getMergedHeatmapAnimatedDataview(activityDataviews, {
-      ...params,
-      mergedHeatmapGeneratorId: MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
-    })
+        ...params,
+        mergedHeatmapGeneratorId: MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
+      })
     : []
   const mergedDetectionsDataview = detectionDataviews.length
     ? getMergedHeatmapAnimatedDataview(detectionDataviews, {
-      ...params,
-      mergedHeatmapGeneratorId: MERGED_DETECTIONS_ANIMATED_HEATMAP_GENERATOR_ID,
-    })
+        ...params,
+        mergedHeatmapGeneratorId: MERGED_DETECTIONS_ANIMATED_HEATMAP_GENERATOR_ID,
+      })
     : []
   const generatorsConfig = [
     ...mergedActivityDataview,
     ...mergedDetectionsDataview,
     ...trackDataviews,
-    ...otherDataviews
+    ...otherDataviews,
   ].flatMap((dataview) => {
     return getGeneratorConfig(dataview, params, resources)
   })

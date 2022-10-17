@@ -1,50 +1,50 @@
-import { CompositeLayer, DefaultProps, Layer, LayerProps, LayersList } from '@deck.gl/core/typed'
+import {
+  Color,
+  CompositeLayer,
+  CompositeLayerProps,
+  DefaultProps,
+  Layer,
+  LayerProps,
+  LayersList,
+  UpdateParameters,
+} from '@deck.gl/core/typed'
 import { IconLayer } from '@deck.gl/layers/typed'
 
-function getFillColor(value, { colorDomain, colorRange }) {
-  const colorIndex = colorDomain.findIndex((d, i) => {
+function getFillColor(
+  d,
+  { colorDomain, colorRange, highlightedVesselId }: VesselPositionsLayerProps
+) {
+  const colorIndex = colorDomain.findIndex((domain, i) => {
     if (colorDomain[i + 1]) {
-      return value > d && value <= colorDomain[i + 1]
+      return d.properties?.value > domain && d.properties?.value <= colorDomain[i + 1]
     }
     return i
   })
-  return colorIndex >= 0 ? colorRange[colorIndex] : [0, 0, 0, 0]
-}
-
-function createSVGIcon(d, props) {
-  let [r, g, b, a] = getFillColor(d.properties?.value, props)
-  let fill = `rgba(${r}, ${g}, ${b}, ${a / 255})`
-  let opacity = 1
-  let stroke = 'none'
-  if (props.highlightedVesselId) {
-    if (d.properties.vesselId === props.highlightedVesselId) {
-      stroke = '#FFFFFF'
-    } else {
-      opacity = 0.3
-    }
+  const color = colorIndex >= 0 ? colorRange[colorIndex] : [0, 0, 0, 0]
+  if (!highlightedVesselId) {
+    return color
+  } else if (d.properties.vesselId !== highlightedVesselId) {
+    return [color[0], color[1], color[2], 0]
   }
-  return `
-    <svg width="12" height="21" xmlns="http://www.w3.org/2000/svg">
-      <g opacity="${opacity}">
-        <path d="m6 .7 5.5 5.5v14L6 17.43.5 20.2V6.21L6 .7Z" stroke-width="2" stroke="${stroke}" fill="${fill}"/>
-      </g>
-    </svg>
-  `
+  return color
 }
 
-// Note that a xml string cannot be directly embedded in a data URL
-// it has to be either escaped or converted to base64.
-function svgToDataURL(svg) {
-  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`
+const ICON_MAPPING = {
+  vessel: { x: 0, y: 0, width: 22, height: 40, mask: true },
+  vesselHighlight: { x: 24, y: 0, width: 22, height: 40, mask: false },
 }
 
 export type VesselPositionsLayerProps<DataT = any> = LayerProps & {
+  data: any[]
+  colorDomain: number[]
+  colorRange: Color[]
   highlightedVesselId?: string
   onVesselHighlight?: (vesselId: string) => void
   onVesselClick?: (vesselId: string) => void
 }
 
 const defaultProps: DefaultProps<VesselPositionsLayerProps> = {
+  highlightedVesselId: { type: 'data', value: '' },
   onVesselHighlight: { type: 'accessor', value: (d) => d },
 }
 
@@ -69,45 +69,66 @@ export class VesselPositionsLayer<ExtraProps = {}> extends CompositeLayer<
     return info
   }
 
+  updateState(
+    params: UpdateParameters<
+      Layer<
+        LayerProps<any> &
+          VesselPositionsLayerProps &
+          ExtraProps &
+          Required<CompositeLayerProps<any>>
+      >
+    >
+  ): void {
+    const highlightVessels = params.props.data.filter(
+      (d) => d.properties.vesselId === this.props.highlightedVesselId
+    )
+    this.setState({ highlightVessels })
+  }
+
   renderLayers(): Layer<{}> | LayersList {
     const IconLayerClass = this.getSubLayerClass('icons', IconLayer)
-    return new IconLayerClass(this.props, {
-      // data: this.props.data,
-      // TODO: once the api returns the proper position remove this mock
-      // data: [
-      //   {
-      //     type: 'Feature',
-      //     geometry: { coordinates: [-7.767333984374999, 43.77629983898068] },
-      //     properties: { vesselId: '12345654323' },
-      //   },
-      // ],
-      id: `icons-${this.props.id}`,
-      pickable: true,
-      getPickingInfo: this.getPickingInfo,
-      getIcon: (d) => {
-        return {
-          url: svgToDataURL(createSVGIcon(d, this.props)),
-          width: 12,
-          height: 21,
-        }
-      },
-      sizeScale: 1,
-      getPosition: (d) => {
-        if (d.properties.vesselId === this.props.highlightedVesselId) {
-          return { ...d.geometry.coordinates, 2: 1 }
-        }
-        return d.geometry.coordinates
-      },
-      getAngle: (d) => {
-        return d?.properties.bearing
-      },
-      getSize: 21,
-      updateTriggers: {
-        getIcon: [this.props.highlightedVesselId],
-        getPosition: [this.props.highlightedVesselId],
-      },
-      // getAngle: (d) => d.properties.c,
-    })
+    console.log(this.state.highlightVessels)
+
+    return [
+      new IconLayerClass(this.props, {
+        id: `icons-${this.props.id}`,
+        // data: this.props.data,
+        pickable: true,
+        iconAtlas: '/vessel-sprite.png',
+        iconMapping: ICON_MAPPING,
+        getPickingInfo: this.getPickingInfo,
+        getIcon: () => 'vessel',
+        sizeScale: 1,
+        getPosition: (d) => ({ ...d.geometry.coordinates, 2: 1 }),
+        getAngle: (d) => d?.properties.bearing,
+        getColor: (d) => getFillColor(d, this.props),
+        getSize: 21,
+        updateTriggers: {
+          getColor: [this.props.colorDomain, this.props.colorRange, this.props.highlightedVesselId],
+        },
+      }),
+      new IconLayerClass(this.props, {
+        id: `icons-highlight-${this.props.id}`,
+        pickable: true,
+        data: this.state.highlightVessels,
+        iconAtlas: '/vessel-sprite.png',
+        iconMapping: ICON_MAPPING,
+        getPickingInfo: this.getPickingInfo,
+        getIcon: () => 'vesselHighlight',
+        sizeScale: 1,
+        getPosition: (d) => d.geometry.coordinates,
+        getAngle: (d) => d?.properties.bearing,
+        // getColor: (d) => {
+        //   return getFillColor(d.properties?.value, this.props)
+        // },
+        getSize: 25,
+        // updateTriggers: {
+        //   getIcon: [this.props.highlightedVesselId],
+        //   getPosition: [this.props.highlightedVesselId],
+        // },
+        // getAngle: (d) => d.properties.c,
+      }),
+    ]
   }
 
   getTileData() {
