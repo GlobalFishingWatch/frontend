@@ -183,7 +183,7 @@
     "typePolygonsDescription": "Exiba uma ou várias áreas com cores representadas por qualquer valor quantitativo no seu conjunto de dados.",
     "typeTracks": " Rotas",
     "typeTracksDescription": "Exibir o movimento de um ou vários animais ou embarcações.",
-    "uploadLogin": "<0>Register</0> or <2>login</2>to upload datasets (free, 2 minutes)",
+    "uploadLogin": "<0>Registre-se</0> ou <2>faça login</2> para enviar conjuntos de dados (gratuito, 2 minutos)",
     "uploadNewContext": "Carregar nova camada de referência",
     "uploadNewEnviroment": "Carregar novo conjunto de dados no ambiente",
     "uploadPublic": "Permitir que outros usuários vejam este conjunto de dados quando você compartilha uma área de trabalho",
