@@ -11,7 +11,8 @@ const calculateQuantity = {
   [EventTypes.Fishing]: (events: RenderedEvent[]) =>
     events?.reduce((p, c) => p + c.duration ?? 0, 0) ?? 0,
   [EventTypes.Loitering]: (events: RenderedEvent[]) => events.length ?? 0,
-  [EventTypes.Port]: (events: RenderedEvent[]) => Math.ceil((events.length ?? 0) / 3),
+  [EventTypes.Port]: (events: RenderedEvent[]) =>
+    Math.ceil(events.filter((event) => !event?.portVisitSubEvent).length ?? 0),
   [EventTypes.Gap]: (events: RenderedEvent[]) => events.length ?? 0,
 }
 
