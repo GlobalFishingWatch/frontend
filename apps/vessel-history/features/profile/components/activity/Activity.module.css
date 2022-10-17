@@ -42,6 +42,12 @@
   left: calc(var(--space-XS) * -1);
 }
 
+.displayPortVisitsAsOneEvent .eventIcon.port_visit_exited,
+.displayPortVisitsAsOneEvent .eventIcon.port_visit_entered,
+.displayPortVisitsAsOneEvent:not(.port_visit_entered) .divider {
+  opacity: 0;
+}
+
 .divider::before {
   margin-right: 9px;
   background: #fff url('../../../../assets/icons/vessel.svg') no-repeat 1.25rem;
@@ -76,6 +82,11 @@
   white-space: nowrap;
   overflow: hidden;
   flex: 1;
+}
+
+.displayPortVisitsAsOneEvent.port_visit_entered .description,
+.displayPortVisitsAsOneEvent.port_visit_exited .description {
+  color: var(--color-secondary-blue);
 }
 
 .voyage,

@@ -126,6 +126,7 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
                           highlighted={highlightsIds[event.id]}
                           onMapClick={selectEventOnMap}
                           onInfoClick={openModal}
+                          options={{ displayPortVisitsAsOneEvent: true }}
                         />
                       </div>
                     )
