@@ -183,7 +183,7 @@
     "typePolygonsDescription": "Affichez des polygones dont la couleur est corrélée à n'importe quelle valeur quantitative de votre jeu de données.",
     "typeTracks": "Trajectoires",
     "typeTracksDescription": "Afficher le mouvement d'un ou de plusieurs animaux ou navires.",
-    "uploadLogin": "<0>Register</0> or <2>login</2>to upload datasets (free, 2 minutes)",
+    "uploadLogin": "<0>Inscrivez-vous</0> et <2>connectez-vous</2> pour télécharger des jeux de données (gratuit, 2 minutes)",
     "uploadNewContext": "Ajouter de nouveux calques de référence",
     "uploadNewEnviroment": "Ajouter un nouveau jeu de données d'environnement",
     "uploadPublic": "Autoriser d'autres utilisateurs à voir ce jeu de données lorsque vous partagez un espace de travail",
