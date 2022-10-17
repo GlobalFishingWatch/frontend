@@ -66,6 +66,15 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
     [highlightEvent, highlightVoyage, onMoveToMap, setMapCoordinates, viewport.zoom]
   )
 
+  const getRowHeight = useCallback(
+    (index: number) => {
+      const event = events[index]
+      const height = !event.group && event?.type === 'port_visit' ? (event?.subEvent ? 40 : 44) : 60
+      return height
+    },
+    [events]
+  )
+
   return (
     <div className={styles.activityContainer}>
       <Suspense fallback={<Spinner className={styles.spinnerFull} />}>
@@ -96,11 +105,17 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
           <AutoSizer disableWidth={true}>
             {({ width, height }) => (
               <List
+                /**
+                 * The `key` prop is needed here to force the List clear the cache of row heigths
+                 * when the length of the events changes (eg: collapsing/expanding events groups)
+                 * otherwise the variable row heights are not recalculated inside VariableSizeList
+                 */
+                key={`${events.length}-list`}
                 width={width}
                 height={height}
                 itemCount={events.length}
                 itemData={events}
-                itemSize={() => 60}
+                itemSize={getRowHeight}
               >
                 {({ index, style }) => {
                   const event = events[index]

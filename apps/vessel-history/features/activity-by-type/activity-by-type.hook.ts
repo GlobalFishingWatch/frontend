@@ -77,6 +77,7 @@ const buildEventsListByType = {
         ...event,
         id: isPortEntry ? `${id}-entry` : event.id,
         durationDescription: null,
+        subEvent: true,
       }
 
       return [...previous, ...portVisitEvent, portVisitSubEvent]

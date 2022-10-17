@@ -36,8 +36,6 @@ const ActivityEventPortVisit: React.FC<EventProps> = ({
   const isPortVisit = !isPortExit && !isPortEntry
   const portType = isPortVisit ? null : isPortExit ? 'exited' : 'entered'
 
-  console.log(event, { isPortExit, isPortEntry, isPortVisit })
-
   return (
     <Fragment>
       {isPortVisit && displayPortVisitsAsOneEvent && (

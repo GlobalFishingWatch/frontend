@@ -42,10 +42,18 @@
   left: calc(var(--space-XS) * -1);
 }
 
+.displayPortVisitsAsOneEvent .event {
+  height: auto;
+}
+
 .displayPortVisitsAsOneEvent .eventIcon.port_visit_exited,
 .displayPortVisitsAsOneEvent .eventIcon.port_visit_entered,
 .displayPortVisitsAsOneEvent:not(.port_visit_entered) .divider {
   opacity: 0;
+}
+
+.displayPortVisitsAsOneEvent.port_visit_entered .divider {
+  margin: 0;
 }
 
 .divider::before {
