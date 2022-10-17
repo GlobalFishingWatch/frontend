@@ -183,7 +183,7 @@
     "typePolygonsDescription": "Mostrar una o varias áreas coloreadas por cualquier valor cuantitativo en sus datos.",
     "typeTracks": " Pistas",
     "typeTracksDescription": "Mostrar el movimiento de uno o varios animales o embarcaciones.",
-    "uploadLogin": "<0>Register</0> or <2>login</2>to upload datasets (free, 2 minutes)",
+    "uploadLogin": "<0>Registrar</0> o <2>iniciar sesión</2>para subir datos (gratis, 2 minutos)",
     "uploadNewContext": "Subir nuevas capas de referencia",
     "uploadNewEnviroment": "Subir un nuevo dato ambiental",
     "uploadPublic": "Permitir a otros usuarios ver estos datos cuando comparta un espacio de trabajo",
