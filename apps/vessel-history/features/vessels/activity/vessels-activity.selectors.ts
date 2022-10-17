@@ -24,7 +24,7 @@ import {
   selectActiveTrackDataviews,
   selectTrackDatasetConfigsCallback,
 } from 'features/dataviews/dataviews.selectors'
-import { ActivityEvent } from 'types/activity'
+import { ActivityEvent, PortVisitSubEvent } from 'types/activity'
 import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.selectors'
 import { getEEZName } from 'utils/region-name-transform'
 import { Region } from 'features/regions/regions.slice'
@@ -41,6 +41,7 @@ export interface RenderedEvent extends ActivityEvent {
   regionDescription: string
   durationDescription?: string
   duration: number
+  portVisitSubEvent?: PortVisitSubEvent
 }
 
 export const selectTrackResources = createSelector(

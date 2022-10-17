@@ -3,9 +3,11 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { capitalize } from 'lodash'
+import { EventTypes } from '@globalfishingwatch/api-types'
 import { Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
+import { PortVisitSubEvent } from 'types/activity'
 import ActivityDate from './ActivityDate'
 import styles from './Activity.module.css'
 
@@ -29,11 +31,11 @@ const ActivityEventPortVisit: React.FC<EventProps> = ({
   options: { displayPortVisitsAsOneEvent } = { displayPortVisitsAsOneEvent: false },
 }): React.ReactElement => {
   const { t } = useTranslation()
-  if (event.type !== 'port_visit') return
+  if (event.type !== EventTypes.Port) return
 
-  const isPortExit = event.id.endsWith('-exit')
-  const isPortEntry = event.id.endsWith('-entry')
-  const isPortVisit = !isPortExit && !isPortEntry
+  const isPortEntry = event?.portVisitSubEvent === PortVisitSubEvent.Entry
+  const isPortExit = event?.portVisitSubEvent === PortVisitSubEvent.Exit
+  const isPortVisit = !event?.portVisitSubEvent
   const portType = isPortVisit ? null : isPortExit ? 'exited' : 'entered'
 
   return (
