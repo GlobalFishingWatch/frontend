@@ -22,7 +22,7 @@ export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
   const error = hasDataviewsFeatureError(dataviewFeatures)
   const boundsChanged = !checkEqualBounds(bounds, debouncedBounds)
   const layersFilterHash = dataviewFeatures
-    .flatMap(({ metadata }) => `${metadata.minVisibleValue}-${metadata.maxVisibleValue}`)
+    .flatMap(({ metadata }) => `${metadata?.minVisibleValue}-${metadata?.maxVisibleValue}`)
     .join(',')
   const loading =
     boundsChanged || !areDataviewsFeatureLoaded(dataviewFeatures) || generatingStackedActivity

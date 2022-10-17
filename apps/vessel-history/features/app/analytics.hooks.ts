@@ -36,7 +36,6 @@ export const useAnalytics = () => {
   useEffect(() => {
     if (user && GOOGLE_UNIVERSAL_ANALYTICS_ID && trackLogin) {
       uaSet({
-        dimension1: `${user.id}`,
         dimension3: `${JSON.stringify(user.groups)}` ?? '',
         dimension4: user.organizationType ?? '',
         dimension5: user.organization ?? '',
@@ -45,7 +44,6 @@ export const useAnalytics = () => {
       })
       uaSet({
         userProperties: {
-          userId: user.id,
           userGroup: user.groups,
           userOrgType: user.organizationType,
           userOrganization: user.organization,

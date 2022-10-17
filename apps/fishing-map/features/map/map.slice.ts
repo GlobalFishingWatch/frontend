@@ -298,8 +298,8 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
                   if (entry.years?.length && startYear && endYear) {
                     return (
                       entry.id === vessel.id &&
-                      (entry.years.some((year) => year > startYear) ||
-                        entry.years.some((year) => year < endYear))
+                      (entry.years.some((year) => year >= startYear) ||
+                        entry.years.some((year) => year <= endYear))
                     )
                   }
                   return entry.id === vessel.id

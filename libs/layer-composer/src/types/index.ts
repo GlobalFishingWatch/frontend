@@ -1,6 +1,5 @@
 import type {
   SourceSpecification,
-  HeatmapLayerSpecification,
   LayerSpecification,
   StyleSpecification,
 } from '@globalfishingwatch/maplibre-gl'
