@@ -183,7 +183,7 @@
     "typePolygonsDescription": "Tampilkan satu atau beberapa area yang diwarnai oleh nilai kuantitatif apa pun dalam kumpulan data Anda.",
     "typeTracks": " Trek",
     "typeTracksDescription": "Menampilkan pergerakan satu atau beberapa hewan atau kapal.",
-    "uploadLogin": "<0>Register</0> or <2>login</2>to upload datasets (free, 2 minutes)",
+    "uploadLogin": "<0>Anda perlu</0> <2> masuk </2> untuk mengunggah dataset (gratis, 2 menit)",
     "uploadNewContext": "Unggah layer referensi baru",
     "uploadNewEnviroment": "Unggah dataset lingkungan baru",
     "uploadPublic": "Izinkan pengguna lain untuk melihat dataset ini saat Anda berbagi ruang kerja",
