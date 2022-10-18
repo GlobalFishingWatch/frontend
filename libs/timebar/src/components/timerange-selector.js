@@ -10,7 +10,7 @@ import styles from './timerange-selector.module.css'
 class TimeRangeSelector extends Component {
   constructor(props) {
     super(props)
-    const { start, end, labels } = props
+    const { start, end, labels, intervals, getCurrentInterval } = props
     this.lastXOptions = [
       {
         id: 'last30days',
@@ -61,7 +61,7 @@ class TimeRangeSelector extends Component {
       startValid: true,
       endValid: true,
       currentLastXSelectedOption: this.lastXOptions[0],
-      resolution: 'day',
+      resolution: getCurrentInterval(start, end, [intervals]),
     }
   }
 
