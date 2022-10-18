@@ -32,6 +32,10 @@
   margin: 0 0 2rem;
 }
 
+.resolutionContainer {
+  margin-bottom: 2rem;
+}
+
 .selectorsContainer {
   display: flex;
   margin-bottom: 4rem;
@@ -45,8 +49,13 @@
 }
 
 .selectorLabel {
-  width: 100%;
-  text-transform: uppercase;
+  color: var(--timebar-white-faded);
+}
+
+.resolutionMaxRange {
+  margin-top: 0.5rem;
+  color: var(--timebar-white-faded);
+  text-transform: unset;
 }
 
 .input {
@@ -59,6 +68,10 @@
   justify-content: space-between;
 }
 
+.actions label {
+  margin: 0;
+}
+
 .cta {
   display: block;
   border: none;
@@ -66,7 +79,7 @@
   cursor: pointer;
   width: 15rem;
   height: 3.6rem;
-  background: var(--timebar-cta-btn-color);
+  background: var(--timebar-ui-btn-color);
   color: var(--timebar-white);
   font-size: var(--timebar-font-size);
   transition: var(--timebar-hover-transition);
@@ -81,9 +94,9 @@
 
 .lastX {
   display: flex;
+  line-height: 3.6rem;
   background: transparent;
-  border: 0.1rem solid var(--timebar-cta-btn-color);
-  margin-right: 0.5rem;
+  border: 0.1rem solid #fff5;
 }
 
 .lastX path {
@@ -95,7 +108,7 @@
   color: white;
   background: rgba(255, 255, 255, 0.05);
   outline: none;
-  border: 0.1rem solid var(--timebar-cta-btn-color);
+  border: 0.1rem solid var(--timebar-white);
 }
 
 .disabled {
@@ -131,4 +144,9 @@
   .secondary {
     display: none;
   }
+}
+
+.choice {
+  mix-blend-mode: screen;
+  filter: brightness(10);
 }

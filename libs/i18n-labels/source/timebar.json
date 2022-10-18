@@ -9,6 +9,19 @@
   },
   "timerange": {
     "title": "Select a time range",
+    "resolution": "Resolution",
+    "resolutionOptions": {
+      "year": "Yearly",
+      "month": "Monthly",
+      "day": "Daily",
+      "hour": "Hourly"
+    },
+    "resolutionMaxRange": {
+      "year": "",
+      "month": "Select up to 60 months",
+      "day": "Select up to 100 days",
+      "hour": "Select up to 72 hours"
+    },
     "start": "start",
     "end": "end",
     "last30days": "Last 30 days",

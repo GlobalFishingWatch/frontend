@@ -221,18 +221,18 @@ class Timebar extends Component {
             )}
 
             <div className={cx('print-hidden', styles.timeActions)}>
-              {showTimeRangeSelector && (
-                <TimeRangeSelector
-                  labels={labels.timerange}
-                  start={start}
-                  end={end}
-                  absoluteStart={absoluteStart}
-                  absoluteEnd={absoluteEnd}
-                  onSubmit={this.onTimeRangeSelectorSubmit}
-                  onDiscard={this.toggleTimeRangeSelector}
-                  latestAvailableDataDate={this.props.latestAvailableDataDate}
-                />
-              )}
+              {/* {showTimeRangeSelector && ( */}
+              <TimeRangeSelector
+                labels={labels.timerange}
+                start={start}
+                end={end}
+                absoluteStart={absoluteStart}
+                absoluteEnd={absoluteEnd}
+                onSubmit={this.onTimeRangeSelectorSubmit}
+                onDiscard={this.toggleTimeRangeSelector}
+                latestAvailableDataDate={this.props.latestAvailableDataDate}
+              />
+              {/* )} */}
               <button
                 type="button"
                 title={labels.timerange.title}
