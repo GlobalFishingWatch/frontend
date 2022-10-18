@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { DateTime } from 'luxon'
 import { Geometry } from 'geojson'
 import { stringify } from 'qs'
 import { saveAs } from 'file-saver'
@@ -8,6 +7,7 @@ import { DownloadActivity } from '@globalfishingwatch/api-types'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
+import { getUTCDateTime } from 'utils/dates'
 import { Format, GroupBy, SpatialResolution, TemporalResolution } from './downloadActivity.config'
 
 export type DateRange = {
@@ -59,8 +59,8 @@ export const downloadActivityThunk = createAsyncThunk<
         temporalResolution,
         groupBy,
       } = params
-      const fromDate = DateTime.fromISO(dateRange.start).toUTC()
-      const toDate = DateTime.fromISO(dateRange.end).toUTC()
+      const fromDate = getUTCDateTime(dateRange.start)
+      const toDate = getUTCDateTime(dateRange.end)
 
       const downloadActivityParams = {
         format,

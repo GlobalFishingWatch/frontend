@@ -13,6 +13,7 @@ import { AnalysisGraphProps, AnalysisSublayerGraph } from 'features/analysis/Ana
 import { FilteredPolygons } from 'features/analysis/analysis-geo.utils'
 import { DateTimeSeries } from 'features/analysis/analysis.hooks'
 import { DataviewFeature } from 'features/map/map-sources.hooks'
+import { getUTCDateTime } from 'utils/dates'
 
 export const removeTimeseriesPadding = (timeseries?: AnalysisGraphProps[]) => {
   return timeseries?.map((timeserie) => {
@@ -30,13 +31,13 @@ export const filterTimeseriesByTimerange = (
   start: string,
   end: string
 ) => {
-  const startDate = DateTime.fromISO(start)
-  const endDate = DateTime.fromISO(end)
+  const startDate = getUTCDateTime(start)
+  const endDate = getUTCDateTime(end)
   return timeseries?.map((layerTimeseries) => {
     return {
       ...layerTimeseries,
       timeseries: layerTimeseries?.timeseries.filter((current: any) => {
-        const currentDate = DateTime.fromISO(current.date)
+        const currentDate = getUTCDateTime(current.dat)
         return currentDate >= startDate && currentDate < endDate
       }),
     }
