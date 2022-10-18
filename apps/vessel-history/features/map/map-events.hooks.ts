@@ -66,8 +66,8 @@ export default function useMapEvents() {
     (voyage: Voyage) => {
       if (!voyage) return
       const voyageTimes = {
-        start: DateTime.fromMillis(voyage.start).toUTC().toISO(),
-        end: DateTime.fromMillis(voyage.end).toUTC().toISO(),
+        start: DateTime.fromMillis(voyage.start, { zone: 'utc' }).toUTC().toISO(),
+        end: DateTime.fromMillis(voyage.end, { zone: 'utc' }).toUTC().toISO(),
       } as Range
       if (
         voyageTimes.start === currentVoyageTime?.start &&
@@ -110,8 +110,8 @@ export default function useMapEvents() {
     const voyage = getVoyageByEvent(findEventVoyage)
     if (!voyage) return
     const voyageTimes = {
-      start: DateTime.fromMillis(voyage.start).toUTC().toISO(),
-      end: DateTime.fromMillis(voyage.end).toUTC().toISO(),
+      start: DateTime.fromMillis(voyage.start, { zone: 'utc' }).toUTC().toISO(),
+      end: DateTime.fromMillis(voyage.end, { zone: 'utc' }).toUTC().toISO(),
     } as Range
     if (
       voyageTimes.start === currentVoyageTime?.start &&

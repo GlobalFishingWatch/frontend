@@ -84,8 +84,12 @@ export const selectFilteredEventsByVoyages = createSelector(
     const filteredVoyages: Voyage[] = voyages
       .filter((voyage) => {
         if (
-          !interval.contains(DateTime.fromMillis((voyage.start ?? 0) as number)) &&
-          !interval.contains(DateTime.fromMillis((voyage.end ?? new Date().getTime()) as number))
+          !interval.contains(DateTime.fromMillis((voyage.start ?? 0) as number, { zone: 'utc' })) &&
+          !interval.contains(
+            DateTime.fromMillis((voyage.end ?? new Date().getTime()) as number, {
+              zone: 'utc',
+            })
+          )
         ) {
           return false
         }

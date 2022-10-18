@@ -14,8 +14,8 @@ const selectEventsForRiskSummaryInPeriod = createSelector([selectEvents], (event
   const interval = Interval.fromDateTimes(startDate, endDate)
   return events.filter((event: RenderedEvent) => {
     if (
-      !interval.contains(DateTime.fromMillis(event.start as number)) &&
-      !interval.contains(DateTime.fromMillis(event.end as number))
+      !interval.contains(DateTime.fromMillis(event.start as number, { zone: 'utc' })) &&
+      !interval.contains(DateTime.fromMillis(event.end as number, { zone: 'utc' }))
     ) {
       return false
     }
@@ -53,7 +53,7 @@ const selectEventsForRiskSummary = createSelector(
         ...(indicators?.loitering?.eventsInMPA || []),
         ...(indicators?.loitering?.eventsInRFMO || []),
         ...(indicators?.portVisits?.nonPSMAPortState || []),
-        ...(indicators?.gaps?.intentionalDisabling || [])
+        ...(indicators?.gaps?.intentionalDisabling || []),
       ])
     )
     return events.filter((event) => indicatorsEvents.includes(event.id))

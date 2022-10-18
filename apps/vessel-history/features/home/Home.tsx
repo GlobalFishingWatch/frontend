@@ -151,7 +151,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const trackRemoveOffline = useCallback(
     (offlineVessel) => {
       const now = DateTime.now()
-      const savedOn = DateTime.fromISO(offlineVessel.savedOn)
+      const savedOn = DateTime.fromISO(offlineVessel.savedOn, { zone: 'utc' })
       const i = Interval.fromDateTimes(savedOn, now)
       uaEvent({
         category: 'Offline Access',

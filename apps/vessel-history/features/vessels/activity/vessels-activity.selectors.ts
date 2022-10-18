@@ -8,7 +8,14 @@ import {
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
 } from '@globalfishingwatch/dataviews-client'
-import { DatasetTypes, EventTypes, GapEvent, GapPosition, Regions, ResourceStatus } from '@globalfishingwatch/api-types'
+import {
+  DatasetTypes,
+  EventTypes,
+  GapEvent,
+  GapPosition,
+  Regions,
+  ResourceStatus,
+} from '@globalfishingwatch/api-types'
 import { GeoJSONSourceSpecification } from '@globalfishingwatch/maplibre-gl'
 import { APP_PROFILE_VIEWS, DEFAULT_WORKSPACE, EVENTS_COLORS } from 'data/config'
 import { selectFilters } from 'features/event-filters/filters.slice'
@@ -47,10 +54,7 @@ export const selectTrackResources = createSelector(
       const tracksResourceResolved =
         tracksUrl && resources[tracksUrl]?.status === ResourceStatus.Finished
 
-      if (
-        !hasTrackData ||
-        !tracksResourceResolved
-      ) {
+      if (!hasTrackData || !tracksResourceResolved) {
         return { dataview, data: [] }
       }
 
@@ -118,28 +122,32 @@ export const selectEventsWithGapsSplit = createSelector([selectEventsForTracks],
   const eventsWithGapsSplit = events.map(({ dataview, data }) => {
     const updatedGaps = (data || []).reduce((newListEvents, event) => {
       if (event.type === EventTypes.Gap) {
-        return [...newListEvents, {
-          ...event,
-          timestamp: event.start,
-          gap: {
-            ...event.gap,
-            isEventStart: true
-          } as GapEvent
-        }, {
-          ...event,
-          timestamp: event.end,
-          gap: {
-            ...event.gap,
-            isEventEnd: true
-          } as GapEvent
-        }]
+        return [
+          ...newListEvents,
+          {
+            ...event,
+            timestamp: event.start,
+            gap: {
+              ...event.gap,
+              isEventStart: true,
+            } as GapEvent,
+          },
+          {
+            ...event,
+            timestamp: event.end,
+            gap: {
+              ...event.gap,
+              isEventEnd: true,
+            } as GapEvent,
+          },
+        ]
       }
       return [...newListEvents, event]
     }, [])
 
     return {
       dataview,
-      data: updatedGaps
+      data: updatedGaps,
     }
   })
   return eventsWithGapsSplit
@@ -158,20 +166,20 @@ export const selectEventsWithRenderingInfo = createSelector(
             if (event.encounter) {
               description = regionDescription
                 ? t(
-                  'event.encounterActionWith',
-                  'had an encounter with {{vessel}} in {{regionName}}',
-                  {
+                    'event.encounterActionWith',
+                    'had an encounter with {{vessel}} in {{regionName}}',
+                    {
+                      vessel:
+                        event.encounter.vessel.name ??
+                        t('event.encounterAnotherVessel', 'another vessel'),
+                      regionName: regionDescription,
+                    }
+                  )
+                : t('event.encounterActionWithNoRegion', 'Encounter with {{vessel}}', {
                     vessel:
                       event.encounter.vessel.name ??
                       t('event.encounterAnotherVessel', 'another vessel'),
-                    regionName: regionDescription,
-                  }
-                )
-                : t('event.encounterActionWithNoRegion', 'Encounter with {{vessel}}', {
-                  vessel:
-                    event.encounter.vessel.name ??
-                    t('event.encounterAnotherVessel', 'another vessel'),
-                })
+                  })
             }
             descriptionGeneric = t('event.encounter')
             break
@@ -208,14 +216,14 @@ export const selectEventsWithRenderingInfo = createSelector(
             break
           case EventTypes.Gap:
             /*
-            Will split the gaps? 
+            Will split the gaps?
             description = event.gap.isEventStart ? t('event.gapStart', 'Gap start in {{regionName}}', {
               regionName: regionDescription,
             }) : t('event.gapEnd', 'Gap end in {{regionName}}', {
               regionName: regionDescription,
             }) */
             description = t('event.gapAction', 'Likely Disabling in {{regionName}}', {
-              regionName: regionDescription
+              regionName: regionDescription,
             })
             descriptionGeneric = t('event.gap', 'Likely Disabling')
             break
@@ -223,23 +231,26 @@ export const selectEventsWithRenderingInfo = createSelector(
             description = t('event.unknown', 'Unknown event')
             descriptionGeneric = t('event.unknown', 'Unknown event')
         }
-        const durationDiff = DateTime.fromMillis(event.end as number).diff(
-          DateTime.fromMillis(event.start as number),
+        const durationDiff = DateTime.fromMillis(event.end as number, { zone: 'utc' }).diff(
+          DateTime.fromMillis(event.start as number, { zone: 'utc' }),
           ['hours', 'minutes']
         )
 
         const duration = durationDiff.toObject()
 
-        const durationDescription = event.end > event.start ? [
-          duration.hours && duration.hours > 0
-            ? t('event.hourAbbreviated', '{{count}}h', { count: duration.hours })
-            : '',
-          duration.minutes && duration.minutes > 0
-            ? t('event.minuteAbbreviated', '{{count}}m', {
-              count: Math.round(duration.minutes as number),
-            })
-            : '',
-        ].join(' ') : null
+        const durationDescription =
+          event.end > event.start
+            ? [
+                duration.hours && duration.hours > 0
+                  ? t('event.hourAbbreviated', '{{count}}h', { count: duration.hours })
+                  : '',
+                duration.minutes && duration.minutes > 0
+                  ? t('event.minuteAbbreviated', '{{count}}m', {
+                      count: Math.round(duration.minutes as number),
+                    })
+                  : '',
+              ].join(' ')
+            : null
 
         let colorKey = event.type as string
         if (event.type === 'encounter' && dataview.config?.showAuthorizationStatus) {
@@ -358,8 +369,8 @@ export const selectFilteredEvents = createSelector(
 
     return events.filter((event: RenderedEvent) => {
       if (
-        !interval.contains(DateTime.fromMillis(event.start as number)) &&
-        !interval.contains(DateTime.fromMillis(event.end as number))
+        !interval.contains(DateTime.fromMillis(event.start as number, { zone: 'utc' })) &&
+        !interval.contains(DateTime.fromMillis(event.end as number, { zone: 'utc' }))
       ) {
         return false
       }
@@ -397,9 +408,9 @@ export const selectVesselLastPositionGEOJson = createSelector(
     if (!lastPosition) return
     const course = prevPosition
       ? bearing(
-        [prevPosition.longitude, prevPosition.latitude],
-        [lastPosition.longitude, lastPosition.latitude]
-      )
+          [prevPosition.longitude, prevPosition.latitude],
+          [lastPosition.longitude, lastPosition.latitude]
+        )
       : 0
 
     return {

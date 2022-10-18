@@ -21,7 +21,9 @@ export function DateRangeLabel({ className, type }: DateRangeLabelProps) {
 
   const filters: Partial<Filters> = useMemo(() => {
     const endDate =
-      (!online && offlineVessel?.savedOn && DateTime.fromISO(offlineVessel.savedOn)) ||
+      (!online &&
+        offlineVessel?.savedOn &&
+        DateTime.fromISO(offlineVessel.savedOn, { zone: 'utc' })) ||
       DateTime.now()
     const startDate = endDate.minus(RISK_SUMMARY_SETTINGS.timeRange)
 

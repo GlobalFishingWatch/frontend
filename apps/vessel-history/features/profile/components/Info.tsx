@@ -68,7 +68,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const onDeleteClick = useCallback(
     (data: OfflineVessel) => {
       const now = DateTime.now()
-      const savedOn = DateTime.fromISO(data.savedOn)
+      const savedOn = DateTime.fromISO(data.savedOn, { zone: 'utc' })
       const i = Interval.fromDateTimes(savedOn, now)
       uaEvent({
         category: 'Offline Access',
@@ -81,7 +81,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
       dispatchFetchOfflineVessels()
       setLoading(false)
     },
-    [dispatchDeleteOfflineVessel, dispatchDeleteOfflineVessel]
+    [dispatchDeleteOfflineVessel, dispatchFetchOfflineVessels]
   )
 
   const onSaveClick = async (data: VesselWithHistory) => {

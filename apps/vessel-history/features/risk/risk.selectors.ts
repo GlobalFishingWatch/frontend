@@ -10,8 +10,8 @@ const selectEventsForRiskSummary = createSelector([selectEvents], (events) => {
   const interval = Interval.fromDateTimes(startDate, endDate)
   return events.filter((event: RenderedEvent) => {
     if (
-      !interval.contains(DateTime.fromMillis(event.start as number)) &&
-      !interval.contains(DateTime.fromMillis(event.end as number))
+      !interval.contains(DateTime.fromMillis(event.start as number, { zone: 'utc' })) &&
+      !interval.contains(DateTime.fromMillis(event.end as number, { zone: 'utc' }))
     ) {
       return false
     }

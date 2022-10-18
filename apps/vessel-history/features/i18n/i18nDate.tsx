@@ -30,10 +30,11 @@ export const formatI18nDate = (
   }: formatI18DateParams = {}
 ) => {
   const dateTimeDate = (
-    typeof date === 'number' ? DateTime.fromMillis(date) : DateTime.fromISO(date)
-  )
-    .toUTC()
-    .setLocale(locale)
+    typeof date === 'number'
+      ? DateTime.fromMillis(date, { zone: 'utc' })
+      : DateTime.fromISO(date, { zone: 'utc' })
+  ).setLocale(locale)
+  // console.log(new Date().getTime() - DateTime.now().toUTC().toMillis())
   const formattedDate = tokensFormat
     ? dateTimeDate.toFormat(tokensFormat)
     : dateTimeDate.toLocaleString(format)
