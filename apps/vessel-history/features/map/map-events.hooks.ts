@@ -14,6 +14,7 @@ import { Voyage } from 'types/voyage'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import { resetFilters } from 'features/event-filters/filters.slice'
 import { useLocationConnect } from 'routes/routes.hook'
+import { getUTCDateTime } from 'utils/dates'
 import {
   selectHighlightedEvent,
   selectMapVoyageTime,
@@ -66,8 +67,8 @@ export default function useMapEvents() {
     (voyage: Voyage) => {
       if (!voyage) return
       const voyageTimes = {
-        start: DateTime.fromMillis(voyage.start, { zone: 'utc' }).toUTC().toISO(),
-        end: DateTime.fromMillis(voyage.end, { zone: 'utc' }).toUTC().toISO(),
+        start: getUTCDateTime(voyage.start).toISO(),
+        end: getUTCDateTime(voyage.end).toISO(),
       } as Range
       if (
         voyageTimes.start === currentVoyageTime?.start &&
@@ -110,8 +111,8 @@ export default function useMapEvents() {
     const voyage = getVoyageByEvent(findEventVoyage)
     if (!voyage) return
     const voyageTimes = {
-      start: DateTime.fromMillis(voyage.start, { zone: 'utc' }).toUTC().toISO(),
-      end: DateTime.fromMillis(voyage.end, { zone: 'utc' }).toUTC().toISO(),
+      start: getUTCDateTime(voyage.start).toISO(),
+      end: getUTCDateTime(voyage.end).toISO(),
     } as Range
     if (
       voyageTimes.start === currentVoyageTime?.start &&

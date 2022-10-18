@@ -32,6 +32,7 @@ import { selectResources } from 'features/resources/resources.slice'
 import { selectSettings } from 'features/settings/settings.slice'
 import { TrackPosition } from 'types'
 import { selectWorkspaceProfileView } from 'features/workspace/workspace.selectors'
+import { getUTCDateTime } from 'utils/dates'
 import { filterActivityHighlightEvents } from './vessels-highlight.worker'
 
 export interface RenderedEvent extends ActivityEvent {
@@ -231,8 +232,8 @@ export const selectEventsWithRenderingInfo = createSelector(
             description = t('event.unknown', 'Unknown event')
             descriptionGeneric = t('event.unknown', 'Unknown event')
         }
-        const durationDiff = DateTime.fromMillis(event.end as number, { zone: 'utc' }).diff(
-          DateTime.fromMillis(event.start as number, { zone: 'utc' }),
+        const durationDiff = getUTCDateTime(event.end as number).diff(
+          getUTCDateTime(event.start as number),
           ['hours', 'minutes']
         )
 
@@ -352,25 +353,20 @@ export const selectFilteredEvents = createSelector(
     // Need to parse the timerange start and end dates in UTC
     // to not exclude events in the boundaries of the range
     // if the user setting the filter is in a timezone with offset != 0
-    const startDate = DateTime.fromISO(
-      datasetStartDate ?? filters.start ?? DEFAULT_WORKSPACE.availableStart,
-      {
-        zone: 'utc',
-      }
+    const startDate = getUTCDateTime(
+      datasetStartDate ?? filters.start ?? DEFAULT_WORKSPACE.availableStart
     )
 
     // Setting the time to 23:59:59.99 so the events in that same day
     //  are also displayed
-    const endDateUTC = DateTime.fromISO(filters.end ?? DEFAULT_WORKSPACE.availableEnd, {
-      zone: 'utc',
-    }).toISODate()
-    const endDate = DateTime.fromISO(`${endDateUTC}T23:59:59.999Z`, { zone: 'utc' })
+    const endDateUTC = getUTCDateTime(filters.end ?? DEFAULT_WORKSPACE.availableEnd).toISODate()
+    const endDate = getUTCDateTime(`${endDateUTC}T23:59:59.999Z`)
     const interval = Interval.fromDateTimes(startDate, endDate)
 
     return events.filter((event: RenderedEvent) => {
       if (
-        !interval.contains(DateTime.fromMillis(event.start as number, { zone: 'utc' })) &&
-        !interval.contains(DateTime.fromMillis(event.end as number, { zone: 'utc' }))
+        !interval.contains(getUTCDateTime(event.start as number)) &&
+        !interval.contains(getUTCDateTime(event.end as number))
       ) {
         return false
       }

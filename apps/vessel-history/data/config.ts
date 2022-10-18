@@ -141,7 +141,7 @@ export const APP_PROFILE_VIEWS = [
     required_permission: INSURER_PERMISSION,
     propagate_events_query_params: ['confidences'],
     events_query_params: {
-      start_date: DateTime.now().toUTC().minus({ months: 12 }).toISO(),
+      start_date: DateTime.utc().minus({ months: 12 }).toISO(),
     },
   },
 ]

@@ -8,6 +8,7 @@ import { RISK_SUMMARY_SETTINGS } from 'data/config'
 import { Filters } from 'features/event-filters/filters.slice'
 import FiltersLabel from 'features/filters-label/filters-label'
 import { selectCurrentOfflineVessel } from 'features/vessels/offline-vessels.selectors'
+import { getUTCDateTime } from 'utils/dates'
 import styles from './date-range-label.module.css'
 
 export interface DateRangeLabelProps {
@@ -21,10 +22,7 @@ export function DateRangeLabel({ className, type }: DateRangeLabelProps) {
 
   const filters: Partial<Filters> = useMemo(() => {
     const endDate =
-      (!online &&
-        offlineVessel?.savedOn &&
-        DateTime.fromISO(offlineVessel.savedOn, { zone: 'utc' })) ||
-      DateTime.now()
+      (!online && offlineVessel?.savedOn && getUTCDateTime(offlineVessel.savedOn)) || DateTime.utc()
     const startDate = endDate.minus(RISK_SUMMARY_SETTINGS.timeRange)
 
     return {

@@ -14,6 +14,7 @@ import {
 } from 'routes/routes.selectors'
 import { DEFAULT_WORKSPACE, THINNING_LEVEL_BY_ZOOM, THINNING_LEVEL_ZOOMS } from 'data/config'
 import { isGuestUser } from 'features/user/user.slice'
+import { getUTCDateTime } from 'utils/dates'
 
 export {
   fetchResourceThunk,
@@ -101,8 +102,8 @@ export const selectTrackChunksConfig = createSelector(
   [selectUrlStartQuery, selectUrlEndQuery],
   (start, end) => {
     if (!start || !end) return null
-    const startDT = DateTime.fromISO(start, { zone: 'utc' }).toUTC()
-    const endDT = DateTime.fromISO(end, { zone: 'utc' }).toUTC()
+    const startDT = getUTCDateTime(start)
+    const endDT = getUTCDateTime(end)
 
     const delta = Duration.fromMillis(+endDT - +startDT)
 
