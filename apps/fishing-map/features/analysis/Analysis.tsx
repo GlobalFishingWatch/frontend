@@ -3,7 +3,6 @@ import cx from 'classnames'
 import { Trans, useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import { batch, useSelector } from 'react-redux'
-import { DateTime } from 'luxon'
 import {
   Button,
   IconButton,
@@ -36,6 +35,7 @@ import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { getUTCDateTime } from 'utils/dates'
 import styles from './Analysis.module.css'
 import AnalysisEvolution from './AnalysisEvolution'
 import { useAnalysisArea, useFilteredTimeSeries } from './analysis.hooks'
@@ -92,8 +92,8 @@ function Analysis() {
 
   useEffect(() => {
     if (start && end) {
-      const startDateTime = DateTime.fromISO(start)
-      const endDateTime = DateTime.fromISO(end)
+      const startDateTime = getUTCDateTime(start)
+      const endDateTime = getUTCDateTime(end)
       const duration = endDateTime.diff(startDateTime, 'years')
       setTimeRangeTooLong(duration.years > 1)
     }

@@ -243,7 +243,9 @@ class HeatmapAnimatedGenerator {
       }
 
       const getDateForInterval = (date: string) =>
-        timeChunks.interval === 'hour' ? date : DateTime.fromISO(date as string).toISODate()
+        timeChunks.interval === 'hour'
+          ? date
+          : DateTime.fromISO(date as string, { zone: 'utc' }).toISODate()
 
       if (
         config.mode === HeatmapAnimatedMode.TimeCompare &&

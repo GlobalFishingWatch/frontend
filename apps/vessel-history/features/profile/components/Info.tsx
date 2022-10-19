@@ -32,6 +32,7 @@ import Highlights from './Highlights'
 import AuthorizationsField from './AuthorizationsField'
 import ForcedLabor from './ForcedLabor'
 import HistoryDate from './HistoryDate'
+import { getUTCDateTime } from 'utils/dates'
 
 interface InfoProps {
   vessel: VesselWithHistory | null
@@ -47,7 +48,6 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const vesselId = useSelector(selectVesselId)
   const vesselTmtId = useSelector(selectTmtId)
   const vesselDataset = useSelector(selectDataset)
-  const vesselProfileId = useSelector(selectVesselProfileId)
   const akaVesselProfileIds = useSelector(selectUrlAkaVesselQuery)
   const { authorizedFLRM } = useUser()
   const offlineVessel = useSelector(selectCurrentOfflineVessel)
@@ -63,12 +63,12 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
 
   useEffect(() => {
     dispatchFetchOfflineVessels()
-  }, [])
+  }, [dispatchFetchOfflineVessels])
 
   const onDeleteClick = useCallback(
     (data: OfflineVessel) => {
-      const now = DateTime.now()
-      const savedOn = DateTime.fromISO(data.savedOn)
+      const now = DateTime.utc()
+      const savedOn = getUTCDateTime(data.savedOn)
       const i = Interval.fromDateTimes(savedOn, now)
       uaEvent({
         category: 'Offline Access',
@@ -81,7 +81,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
       dispatchFetchOfflineVessels()
       setLoading(false)
     },
-    [dispatchDeleteOfflineVessel, dispatchDeleteOfflineVessel]
+    [dispatchDeleteOfflineVessel, dispatchFetchOfflineVessels]
   )
 
   const onSaveClick = async (data: VesselWithHistory) => {

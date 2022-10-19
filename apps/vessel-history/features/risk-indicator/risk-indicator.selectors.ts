@@ -6,16 +6,17 @@ import { RISK_SUMMARY_SETTINGS } from 'data/config'
 import { RenderedEvent, selectEvents } from 'features/vessels/activity/vessels-activity.selectors'
 import { MOU, VesselIdentityIndicators } from 'types/risk-indicator'
 import { ValueItem, VesselAPISource } from 'types'
+import { getUTCDateTime } from 'utils/dates'
 import { getMergedVesselsUniqueId, selectIndicators } from './risk-indicator.slice'
 
 const selectEventsForRiskSummaryInPeriod = createSelector([selectEvents], (events) => {
-  const endDate = DateTime.now()
+  const endDate = DateTime.utc()
   const startDate = endDate.minus(RISK_SUMMARY_SETTINGS.timeRange)
   const interval = Interval.fromDateTimes(startDate, endDate)
   return events.filter((event: RenderedEvent) => {
     if (
-      !interval.contains(DateTime.fromMillis(event.start as number)) &&
-      !interval.contains(DateTime.fromMillis(event.end as number))
+      !interval.contains(getUTCDateTime(event.start as number)) &&
+      !interval.contains(getUTCDateTime(event.end as number))
     ) {
       return false
     }
@@ -53,7 +54,7 @@ const selectEventsForRiskSummary = createSelector(
         ...(indicators?.loitering?.eventsInMPA || []),
         ...(indicators?.loitering?.eventsInRFMO || []),
         ...(indicators?.portVisits?.nonPSMAPortState || []),
-        ...(indicators?.gaps?.intentionalDisabling || [])
+        ...(indicators?.gaps?.intentionalDisabling || []),
       ])
     )
     return events.filter((event) => indicatorsEvents.includes(event.id))

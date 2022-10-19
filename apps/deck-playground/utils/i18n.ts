@@ -1,5 +1,6 @@
 import { DateTime, DateTimeFormatOptions } from 'luxon'
 import { LOCALE } from 'data/config'
+import { getUTCDateTime } from './dates'
 
 export const UTC_SUFFIX = 'UTC'
 
@@ -12,8 +13,8 @@ export const formatI18nDate = (
   date: string | number,
   { format = DateTime.DATE_MED, locale = LOCALE, showUTCLabel = false }: formatI18DateParams = {}
 ) => {
-  const dateTimeDate = typeof date === 'number' ? DateTime.fromMillis(date) : DateTime.fromISO(date)
-  return `${dateTimeDate.toUTC().setLocale(locale).toLocaleString(format)}${
+  const dateTimeDate = getUTCDateTime(date)
+  return `${dateTimeDate.setLocale(locale).toLocaleString(format)}${
     format === DateTime.DATETIME_MED || showUTCLabel ? ` ${UTC_SUFFIX}` : ''
   }`
 }

@@ -41,8 +41,8 @@ const parseEvent = (event: ApiEvent, eventKey: string): ApiEvent => {
   return {
     ...event,
     key: eventKey,
-    start: DateTime.fromISO(event.start as string).toMillis(),
-    end: DateTime.fromISO(event.end as string).toMillis(),
+    start: DateTime.fromISO(event.start as string, { zone: 'utc' }).toMillis(),
+    end: DateTime.fromISO(event.end as string, { zone: 'utc' }).toMillis(),
   }
 }
 

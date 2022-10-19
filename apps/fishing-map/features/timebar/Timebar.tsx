@@ -40,6 +40,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { formatI18nDate, UTC_SUFFIX } from 'features/i18n/i18nDate'
 import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-groups.selectors'
+import { getUTCDateTime } from 'utils/dates'
 import { setHighlightedTime, selectHighlightedTime, Range } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import { selectTracksData, selectTracksGraphData, selectTracksEvents } from './timebar.selectors'
@@ -183,8 +184,8 @@ const TimebarWrapper = () => {
         try {
           const start = scale(clientX - 10).toISOString()
           const end = scale(clientX + 10).toISOString()
-          const startDateTime = DateTime.fromISO(start)
-          const endDateTime = DateTime.fromISO(end)
+          const startDateTime = getUTCDateTime(start)
+          const endDateTime = getUTCDateTime(end)
           const diff = endDateTime.diff(startDateTime, 'hours')
           if (diff.hours < 1) {
             // To ensure at least 1h range is highlighted
