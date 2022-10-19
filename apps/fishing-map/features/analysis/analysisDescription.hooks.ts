@@ -13,6 +13,7 @@ import {
 } from 'features/datasets/datasets.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectAnalysisTimeComparison, selectAnalysisTypeQuery } from 'features/app/app.selectors'
+import { getDatasetNameTranslated } from 'features/i18n/utils'
 import { AnalysisGraphProps } from './AnalysisEvolutionGraph'
 import { selectShowTimeComparison } from './analysis.selectors'
 
@@ -77,7 +78,9 @@ const getCommonProperties = (dataviews?: UrlDataviewInstance[], showTimeComparis
         dataviews[0].config?.datasets?.includes(d.id)
       )
       if (datasets?.length) {
-        titleChunks.push({ label: ` (${datasets?.map((d) => d.name).join(', ')})` })
+        titleChunks.push({
+          label: ` (${datasets?.map((d) => getDatasetNameTranslated(d)).join(', ')})`,
+        })
       }
     }
 
