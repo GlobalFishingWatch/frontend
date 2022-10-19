@@ -1,70 +1,100 @@
-import { CompositeLayer } from '@deck.gl/core/typed'
+import { CompositeLayer, Layer, LayersList } from '@deck.gl/core/typed'
 import { VesselTrackLayer, _VesselTrackLayerProps } from 'layers/vessel/VesselTrackLayer'
+import { VesselEventsLayer } from 'layers/vessel/VesselEventsLayer'
 import { trackLoader } from 'loaders/trackLoader'
+import {DataFilterExtension} from '@deck.gl/extensions'
 import { API_TOKEN } from 'data/config'
 
 export type VesselLayerProps = _VesselTrackLayerProps
 
+
 export class VesselLayer extends CompositeLayer<VesselLayerProps> {
-  trackLayer = new VesselTrackLayer(
-    this.getSubLayerProps({
-      id: `vessel-layer-${this.props.id}`,
-      data: `https://gateway.api.dev.globalfishingwatch.org/v2/vessels/${this.props.id}/tracks?binary=true&fields=lonlat%2Ctimestamp&format=valueArray&distance-fishing=0&bearing-val-fishing=0&change-speed-fishing=0&min-accuracy-fishing=0&distance-transit=0&bearing-val-transit=0&change-speed-transit=0&min-accuracy-transit=0&datasets=public-global-fishing-tracks%3Av20201001`,
-      loaders: [trackLoader],
-      getPath: (d) => {
-        return d.waypoints.map((p) => p.coordinates)
-      },
-      getTimestamps: (d) => {
-        // console.log('timestamps', d.waypoints.map(p => p.timestamp - 1465864039000));
-        // deduct start timestamp from each data point to avoid overflow
-        return d.waypoints.map((p) => p.timestamp)
-      },
-      widthUnits: 'pixels',
-      widthScale: 1,
-      wrapLongitude: true,
-      jointRounded: true,
-      capRounded: true,
-      loadOptions: {
-        worker: false,
-        fetch: {
-          headers: {
-            Authorization: `Bearer ${API_TOKEN}`,
+  _getVesselTrackLayer() {
+    return new VesselTrackLayer(
+      this.getSubLayerProps({
+        id: `vessel-layer-${this.props.id}`,
+        data: `https://gateway.api.dev.globalfishingwatch.org/v2/vessels/${this.props.id}/tracks?binary=true&fields=lonlat%2Ctimestamp&format=valueArray&distance-fishing=0&bearing-val-fishing=0&change-speed-fishing=0&min-accuracy-fishing=0&distance-transit=0&bearing-val-transit=0&change-speed-transit=0&min-accuracy-transit=0&datasets=public-global-fishing-tracks%3Av20201001`,
+        loaders: [trackLoader],
+        getPath: (d) => {
+          return d.waypoints.map((p) => p.coordinates)
+        },
+        getTimestamps: (d) => {
+          // console.log('timestamps', d.waypoints.map(p => p.timestamp - 1465864039000));
+          // deduct start timestamp from each data point to avoid overflow
+          return d.waypoints.map((p) => p.timestamp)
+        },
+        widthUnits: 'pixels',
+        widthScale: 1,
+        wrapLongitude: true,
+        jointRounded: true,
+        capRounded: true,
+        loadOptions: {
+          worker: false,
+          fetch: {
+            headers: {
+              Authorization: `Bearer ${API_TOKEN}`,
+            },
           },
         },
-      },
-      // pickable: true,
-      getColor: (d) => {
-        return d.waypoints.map((p) => {
-          if (
-            p.timestamp >= this.props.highlightStartTime &&
-            p.timestamp <= this.props.highlightEndTime
-          ) {
-            return [255, 0, 0, 100]
-          }
-          return [255, 255, 255, 100]
-        })
-      },
-      // getWidth: (d) => {
-      //   return d.waypoints.map((p) =>
-      //     p.timestamp >= minHighlightedFrame &&
-      //     p.timestamp <= maxHighlightedFrame
-      //       ? 2
-      //       : 1
-      //   );
-      // },
-      getWidth: 3,
-      updateTriggers: {
-        getColor: [this.props.highlightStartTime, this.props.highlightEndTime],
-        // getWidth: [minHighlightedFrame, maxHighlightedFrame],
-      },
-      startTime: this.props.startTime,
-      endTime: this.props.endTime,
-    })
-  )
-  renderLayers(): VesselTrackLayer {
-    return this.trackLayer
+        // pickable: true,
+        getColor: (d) => {
+          return d.waypoints.map((p) => {
+            if (
+              p.timestamp >= this.props.highlightStartTime &&
+              p.timestamp <= this.props.highlightEndTime
+            ) {
+              return [255, 0, 0, 100]
+            }
+            return [255, 255, 255, 100]
+          })
+        },
+        // getWidth: (d) => {
+        //   return d.waypoints.map((p) =>
+        //     p.timestamp >= minHighlightedFrame &&
+        //     p.timestamp <= maxHighlightedFrame
+        //       ? 2
+        //       : 1
+        //   );
+        // },
+        getWidth: 3,
+        updateTriggers: {
+          getColor: [this.props.highlightStartTime, this.props.highlightEndTime],
+          // getWidth: [minHighlightedFrame, maxHighlightedFrame],
+        },
+        startTime: this.props.startTime,
+        endTime: this.props.endTime,
+      })
+    )
+  }
+
+  _getVesselEventsLayer() {
+    return new VesselEventsLayer(
+      this.getSubLayerProps({
+        id: `events-layer-${this.props.id}`,
+        // data: `https://gateway.api.dev.globalfishingwatch.org/v2/events?limit=99999&offset=0&vessels=${this.props.id}&summary=true&confidences=4&datasets=public-global-port-visits-c2-events%3Av20201001`,
+        data: `https://gateway.api.dev.globalfishingwatch.org/v2/events?limit=99999&offset=0&vessels=${this.props.id}&summary=true&datasets=public-global-fishing-events%3Av20201001`,
+        loadOptions: {
+          fetch: {
+            headers: {
+              Authorization: `Bearer ${API_TOKEN}`,
+            },
+          },
+        },
+        startTime: this.props.startTime,
+        endTime: this.props.endTime,
+        extensions: [new DataFilterExtension({filterSize: 1})],
+        filterRange: [0, 1000],
+      })
+    )
+  }
+
+  renderLayers(): Layer<{}> | LayersList {
+    return [
+      this._getVesselEventsLayer(),
+      this._getVesselTrackLayer(),
+    ]
   }
   getTrackLayer() {
-    return this.trackLayer
+    return this._getVesselTrackLayer()
   }
 }

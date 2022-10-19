@@ -1,15 +1,13 @@
-import { Fragment, useEffect, useCallback, useMemo, useState, useRef } from 'react'
+import { Fragment, useCallback, useMemo } from 'react'
 import { DeckGL } from '@deck.gl/react/typed'
 import { BitmapLayer } from '@deck.gl/layers'
 import { TileLayer } from '@deck.gl/geo-layers'
 import { MapView } from '@deck.gl/core/typed'
 import { useVesselsLayer } from 'layers/vessel/vessels.hooks'
-import { useHighlightTimerange, useTimerange } from 'features/timebar/timebar.hooks'
-import { VESSEL_IDS } from 'data/vessels'
+import { useTimerange } from 'features/timebar/timebar.hooks'
 import { MapLayer, MapLayerType, useMapLayers } from 'features/map/layers.hooks'
 import { useURLViewport, useViewport } from 'features/map/map-viewport.hooks'
 import { useFourwingsLayer } from '../../layers/fourwings/fourwings.hooks'
-import { VesselsLayer } from '../../layers/vessel/VesselsLayer'
 
 const INITIAL_VIEW_STATE = {
   // longitude: -2,
@@ -38,10 +36,6 @@ const basemap = new TileLayer({
   },
 })
 
-const dateToMs = (date: string) => {
-  return new Date(date).getTime()
-}
-
 const mapView = new MapView({ repeat: true })
 
 const MapWrapper = (): React.ReactElement => {
@@ -64,6 +58,7 @@ const MapWrapper = (): React.ReactElement => {
     [setMapLayers]
   )
 
+
   const fourwingsLayer = useFourwingsLayer()
   const vesselsLayer = useVesselsLayer()
   const layers = useMemo(() => {
@@ -78,6 +73,10 @@ const MapWrapper = (): React.ReactElement => {
     // Vessel position
     if (tooltip.object?.properties?.vesselId) {
       return tooltip.object?.properties?.vesselId.toString()
+    }
+    // Vessel event
+    if (tooltip?.object?.type) {
+      return tooltip.object.type
     }
     return
   }
