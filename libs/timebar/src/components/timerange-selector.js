@@ -133,7 +133,7 @@ class TimeRangeSelector extends Component {
         <div className={styles.inner}>
           <h2 className={styles.title}>{labels.title}</h2>
           <div className={styles.resolutionContainer}>
-            <label className={styles.selectorLabel}>{labels.resolution || 'resolution'}</label>
+            <label className={styles.selectorLabel}>{labels.resolution}</label>
             <Choice
               size="small"
               className={styles.choice}
@@ -142,7 +142,7 @@ class TimeRangeSelector extends Component {
               onOptionClick={this.onResolutionChange}
             />
             <label className={styles.resolutionMaxRange}>
-              {labels.resolutionMaxRange?.[resolution] || 'See up to [number] [units]'}
+              {labels.resolutionMaxRange?.[resolution]}
             </label>
           </div>
 

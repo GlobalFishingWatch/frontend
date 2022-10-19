@@ -17,7 +17,7 @@
       "hour": "Hourly"
     },
     "resolutionMaxRange": {
-      "year": "",
+      "year": "Select your years of interest",
       "month": "Select up to 60 months",
       "day": "Select up to 100 days",
       "hour": "Select up to 72 hours"
