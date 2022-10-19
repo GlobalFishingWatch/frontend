@@ -1,7 +1,8 @@
 import React, { Fragment } from 'react'
-import { DateTime, DateTimeFormatOptions } from 'luxon'
+import { DateTime, DateTimeFormatOptions, Zone } from 'luxon'
 import { useTranslation } from 'react-i18next'
 import { Locale } from 'types'
+import { getUTCDateTime } from 'utils/dates'
 import i18n from './i18n'
 
 type Dates = {
@@ -29,11 +30,20 @@ export const formatI18nDate = (
     tokensFormat,
   }: formatI18DateParams = {}
 ) => {
-  const dateTimeDate = (
-    typeof date === 'number' ? DateTime.fromMillis(date) : DateTime.fromISO(date)
-  )
-    .toUTC()
-    .setLocale(locale)
+  const dateTimeDate = getUTCDateTime(date).setLocale(locale)
+  // console.log(
+  //   (() => {
+  //     const a = DateTime.fromISO('20200101').setZone('utc', { keepLocalTime: true })
+  //     const b = DateTime.fromISO('2020-01-01T00:00:00', { zone: 'utc' })
+  //     const c = DateTime.fromISO('2020-01-01T00:00:00')
+  //     return {
+  //       a: a.toISO(),
+  //       b: b.toISO(),
+  //       c: c.toUTC().toISO(),
+  //     }
+  //   })()
+  // )
+  // console.log(new Date().getTime() - DateTime.now().toUTC().toMillis())
   const formattedDate = tokensFormat
     ? dateTimeDate.toFormat(tokensFormat)
     : dateTimeDate.toLocaleString(format)

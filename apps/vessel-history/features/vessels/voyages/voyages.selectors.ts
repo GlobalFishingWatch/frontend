@@ -1,10 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { DateTime, Interval } from 'luxon'
+import { Interval } from 'luxon'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { selectFilters } from 'features/event-filters/filters.slice'
 import { ActivityEvent } from 'types/activity'
 import { Voyage, EventTypeVoyage } from 'types/voyage'
 import { DEFAULT_WORKSPACE } from 'data/config'
+import { getUTCDateTime } from 'utils/dates'
 import {
   RenderedEvent,
   selectEventsForTracks,
@@ -69,23 +70,19 @@ export const selectFilteredEventsByVoyages = createSelector(
     // Need to parse the timerange start and end dates in UTC
     // to not exclude events in the boundaries of the range
     // if the user setting the filter is in a timezone with offset != 0
-    const startDate = DateTime.fromISO(filters.start ?? DEFAULT_WORKSPACE.availableStart, {
-      zone: 'utc',
-    })
+    const startDate = getUTCDateTime(filters.start ?? DEFAULT_WORKSPACE.availableStart)
 
     // Setting the time to 23:59:59.99 so the events in that same day
     //  are also displayed
-    const endDateUTC = DateTime.fromISO(filters.end ?? DEFAULT_WORKSPACE.availableEnd, {
-      zone: 'utc',
-    }).toISODate()
-    const endDate = DateTime.fromISO(`${endDateUTC}T23:59:59.999Z`, { zone: 'utc' })
+    const endDateUTC = getUTCDateTime(filters.end ?? DEFAULT_WORKSPACE.availableEnd).toISODate()
+    const endDate = getUTCDateTime(`${endDateUTC}T23:59:59.999Z`)
     const interval = Interval.fromDateTimes(startDate, endDate)
 
     const filteredVoyages: Voyage[] = voyages
       .filter((voyage) => {
         if (
-          !interval.contains(DateTime.fromMillis((voyage.start ?? 0) as number)) &&
-          !interval.contains(DateTime.fromMillis((voyage.end ?? new Date().getTime()) as number))
+          !interval.contains(getUTCDateTime((voyage.start ?? 0) as number)) &&
+          !interval.contains(getUTCDateTime((voyage.end ?? new Date().getTime()) as number))
         ) {
           return false
         }

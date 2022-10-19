@@ -28,7 +28,7 @@ export type TimeChunks = {
   visibleEndFrame: number
 }
 
-export const toDT = (dateISO: string) => DateTime.fromISO(dateISO).toUTC()
+export const toDT = (dateISO: string) => DateTime.fromISO(dateISO, { zone: 'utc' })
 
 export const pickActiveTimeChunk = (timeChunks: TimeChunks) =>
   timeChunks.chunks.find((t) => t.active) || timeChunks.chunks[0]
@@ -48,7 +48,7 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
       return duration.as('days') <= 2
     },
     getFirstChunkStart: (bufferedActiveStart: number): DateTime => {
-      return DateTime.fromMillis(bufferedActiveStart).toUTC().startOf('week')
+      return DateTime.fromMillis(bufferedActiveStart, { zone: 'utc' }).startOf('week')
     },
     getChunkViewEnd: (chunkStart: DateTime): DateTime => {
       return chunkStart.plus({ days: 7 })
@@ -69,7 +69,7 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
       return duration.as('days') <= 31
     },
     getFirstChunkStart: (bufferedActiveStart: number): DateTime => {
-      const monthStart = DateTime.fromMillis(bufferedActiveStart).toUTC().startOf('month')
+      const monthStart = DateTime.fromMillis(bufferedActiveStart, { zone: 'utc' }).startOf('month')
       const monthStartMonth = monthStart.get('month')
       const chunkStart = monthStart.set({ month: monthStartMonth - ((monthStartMonth - 1) % 2) })
 
@@ -99,12 +99,12 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
   month: {
     getRawFrame: (start: number, POC = false) => {
       if (POC) {
-        const dt = DateTime.fromMillis(start)
+        const dt = DateTime.fromMillis(start, { zone: 'utc' })
         return dt.year * 12 + dt.month - 1
       }
       return LuxonInterval.fromDateTimes(
-        DateTime.fromMillis(0).toUTC(),
-        DateTime.fromMillis(start).toUTC()
+        DateTime.fromMillis(0, { zone: 'utc' }),
+        DateTime.fromMillis(start, { zone: 'utc' })
       ).toDuration('month').months
     },
     getDate: (frame: number) => {
@@ -362,7 +362,7 @@ const toQuantizedFrame = (
   POC = false
 ) => {
   const config = CONFIG_BY_INTERVAL[interval]
-  const ms = DateTime.fromISO(date).toUTC().toMillis()
+  const ms = DateTime.fromISO(date, { zone: 'utc' }).toMillis()
   const frame = getVisibleStartFrame(config.getRawFrame(ms, POC))
   return frame - quantizeOffset
 }

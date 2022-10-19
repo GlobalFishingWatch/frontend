@@ -32,6 +32,7 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { TimeRangeDates } from 'features/map/controls/MapInfo'
 import GFWOnly from 'features/user/GFWOnly'
 import DatasetLabel from 'features/datasets/DatasetLabel'
+import { getUTCDateTime } from 'utils/dates'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
   TooltipEventFeature,
@@ -60,13 +61,11 @@ export const VesselDetectionTimestamps = ({ vessel }: { vessel: ExtendedFeatureV
   const hasMultipleDetectionsTimestamps = hasDetectionsTimestamps && detectionsTimestamps.length > 1
 
   const start = hasDetectionsTimestamps
-    ? DateTime.fromISO(detectionsTimestamps[0], { zone: 'utc' }).startOf('day').toISO()
+    ? getUTCDateTime(detectionsTimestamps[0]).startOf('day').toISO()
     : ''
 
   const end = hasDetectionsTimestamps
-    ? DateTime.fromISO(detectionsTimestamps[detectionsTimestamps.length - 1], {
-        zone: 'utc',
-      })
+    ? getUTCDateTime(detectionsTimestamps[detectionsTimestamps.length - 1])
         .endOf('day')
         .toISO()
     : ''
@@ -94,7 +93,7 @@ export const VesselDetectionTimestamps = ({ vessel }: { vessel: ExtendedFeatureV
         onClick={() => {
           setTimerange({
             start,
-            end: DateTime.fromISO(start, { zone: 'utc' }).endOf('day').toISO(),
+            end: getUTCDateTime(start).endOf('day').toISO(),
           })
         }}
       >

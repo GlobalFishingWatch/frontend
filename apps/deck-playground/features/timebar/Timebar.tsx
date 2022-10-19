@@ -1,5 +1,4 @@
 import { memo, useCallback } from 'react'
-import { DateTime } from 'luxon'
 import { Timebar, TimebarHighlighter } from '@globalfishingwatch/timebar'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import {
@@ -10,6 +9,7 @@ import {
 } from 'features/timebar/timebar.hooks'
 // import { useMapInstanceStyle } from 'features/map/map-context.hooks'
 import { formatI18nDate } from 'utils/i18n'
+import { getUTCDateTime } from 'utils/dates'
 import TimebarActivityGraph from './TimebarActivityGraph'
 import styles from './Timebar.module.css'
 
@@ -68,8 +68,8 @@ const TimebarWrapper = () => {
         try {
           const start = scale(clientX - 10).toISOString()
           const end = scale(clientX + 10).toISOString()
-          const startDateTime = DateTime.fromISO(start)
-          const endDateTime = DateTime.fromISO(end)
+          const startDateTime = getUTCDateTime(start)
+          const endDateTime = getUTCDateTime(end)
           const diff = endDateTime.diff(startDateTime, 'hours')
           if (diff.hours < 1) {
             // To ensure at least 1h range is highlighted

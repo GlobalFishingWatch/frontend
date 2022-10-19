@@ -34,6 +34,7 @@ import { useApp } from 'features/app/app.hooks'
 import Partners from 'features/partners/Partners'
 import ViewSelector from 'features/view-selector/view-selector'
 import { OfflineVessel } from 'types/vessel'
+import { getUTCDateTime } from 'utils/dates'
 import styles from './Home.module.css'
 import LanguageToggle from './LanguageToggle'
 
@@ -150,8 +151,8 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
 
   const trackRemoveOffline = useCallback(
     (offlineVessel) => {
-      const now = DateTime.now()
-      const savedOn = DateTime.fromISO(offlineVessel.savedOn)
+      const now = DateTime.utc()
+      const savedOn = getUTCDateTime(offlineVessel.savedOn)
       const i = Interval.fromDateTimes(savedOn, now)
       uaEvent({
         category: 'Offline Access',

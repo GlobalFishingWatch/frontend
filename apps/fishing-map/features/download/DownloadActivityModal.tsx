@@ -3,7 +3,6 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
-import { DateTime } from 'luxon'
 import area from '@turf/area'
 import type { Placement } from 'tippy.js'
 import { Geometry } from 'geojson'
@@ -37,6 +36,7 @@ import {
 } from 'features/download/download.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import DatasetLabel from 'features/datasets/DatasetLabel'
+import { getUTCDateTime } from 'utils/dates'
 import styles from './DownloadModal.module.css'
 import {
   Format,
@@ -109,8 +109,8 @@ function DownloadActivityModal() {
 
   const duration = useMemo(() => {
     if (start && end) {
-      const startDateTime = DateTime.fromISO(start)
-      const endDateTime = DateTime.fromISO(end)
+      const startDateTime = getUTCDateTime(start)
+      const endDateTime = getUTCDateTime(end)
       return {
         years: endDateTime.diff(startDateTime, ['years']).years,
         months: endDateTime.diff(startDateTime, ['months']).months,
@@ -341,9 +341,7 @@ function DownloadActivityModal() {
             disabled={!duration || duration.days > REPORT_DAYS_LIMIT || downloadAreaLoading}
             tooltip={
               duration && duration.days > REPORT_DAYS_LIMIT
-                ? t('download.timerangeTooLong', 'The maximum time range is 1 year', {
-                    count: REPORT_DAYS_LIMIT,
-                  })
+                ? t('download.timerangeTooLong', 'The maximum time range is 1 year')
                 : ''
             }
           >
