@@ -63,7 +63,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
 
   useEffect(() => {
     dispatchFetchOfflineVessels()
-  })
+  }, [dispatchFetchOfflineVessels])
 
   const onDeleteClick = useCallback(
     (data: OfflineVessel) => {
