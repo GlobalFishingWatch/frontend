@@ -118,21 +118,14 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
     isValid: (duration: Duration): boolean => {
       return checkValidInterval('month', duration)
     },
-    getRawFrame: (start: number, POC = false) => {
-      if (POC) {
-        const dt = DateTime.fromMillis(start, { zone: 'utc' })
-        return dt.year * 12 + dt.month - 1
-      }
+    getRawFrame: (start: number) => {
       return LuxonInterval.fromDateTimes(
-        DateTime.fromMillis(0, { zone: 'utc' }),
+        DateTime.fromMillis(0, { zone: 'utc' }).minus({ years: 1970 }),
         DateTime.fromMillis(start, { zone: 'utc' })
       ).toDuration('month').months
     },
     getDate: (frame: number) => {
-      const yearOffset = Math.floor(frame / 12)
-      // TODO This logic only needed for PresenceBQ POC, we have to decide on an offset mechanism with monthly interval
-      const baseYear = yearOffset > 2000 ? 0 : 1970
-      const year = baseYear + yearOffset
+      const year = Math.floor(frame / 12)
       const month = frame % 12
       return new Date(Date.UTC(year, month, 1))
     },
@@ -152,8 +145,8 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
     },
     getRawFrame: (start: number) => {
       return LuxonInterval.fromDateTimes(
-        DateTime.fromMillis(0).toUTC(),
-        DateTime.fromMillis(start).toUTC()
+        DateTime.fromMillis(0, { zone: 'utc' }).minus({ years: 1970 }),
+        DateTime.fromMillis(start, { zone: 'utc' })
       ).toDuration('year').years
     },
     getDate: (frame: number) => {
@@ -332,12 +325,7 @@ export const getActiveTimeChunks = (
 
   // ignore any start/end time chunk calculation as for the 'month' interval the entire tileset is loaded
   if (timeChunks.interval === 'month') {
-    const frame = toQuantizedFrame(
-      activeStart,
-      0,
-      timeChunks.interval,
-      baseId === 'mergedAnimatedHeatmap'
-    )
+    const frame = toQuantizedFrame(activeStart, 0, timeChunks.interval)
     const chunk: TimeChunk = {
       quantizeOffset: 0,
       id: 'heatmapchunk_month',
@@ -350,12 +338,7 @@ export const getActiveTimeChunks = (
     timeChunks.activeChunkFrame = frame
     return timeChunks
   } else if (timeChunks.interval === 'year') {
-    const frame = toQuantizedFrame(
-      activeStart,
-      0,
-      timeChunks.interval,
-      baseId === 'mergedAnimatedHeatmap'
-    )
+    const frame = toQuantizedFrame(activeStart, 0, timeChunks.interval)
     const chunk: TimeChunk = {
       quantizeOffset: 0,
       id: 'heatmapchunk_year',
@@ -395,15 +378,10 @@ export const getActiveTimeChunks = (
   return timeChunks
 }
 
-const toQuantizedFrame = (
-  date: string,
-  quantizeOffset: number,
-  interval: Interval,
-  POC = false
-) => {
+const toQuantizedFrame = (date: string, quantizeOffset: number, interval: Interval) => {
   const config = CONFIG_BY_INTERVAL[interval]
   const ms = DateTime.fromISO(date, { zone: 'utc' }).toMillis()
-  const frame = getVisibleStartFrame(config.getRawFrame(ms, POC))
+  const frame = getVisibleStartFrame(config.getRawFrame(ms))
   return frame - quantizeOffset
 }
 

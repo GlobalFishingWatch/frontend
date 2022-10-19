@@ -119,12 +119,12 @@ class TimeRangeSelector extends Component {
     }
 
     const bounds = {
-      min: dayjs(getTime(absoluteStart)).toISOString().slice(0, 10),
-      max: dayjs(getTime(absoluteEnd)).toISOString().slice(0, 10),
+      min: dayjs.utc(getTime(absoluteStart)).toISOString().slice(0, 10),
+      max: dayjs.utc(getTime(absoluteEnd)).toISOString().slice(0, 10),
     }
 
-    const mStart = dayjs(start).utc()
-    const mEnd = dayjs(end).utc()
+    const mStart = dayjs.utc(start)
+    const mEnd = dayjs.utc(end)
     const disabled = !startValid || !endValid
 
     return (
