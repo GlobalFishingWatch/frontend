@@ -147,6 +147,34 @@ class TimeRangeSelector extends Component {
           </div>
 
           <div className={styles.selectorsContainer}>
+            {resolution === 'year' && (
+              <Fragment>
+                <div className={styles.selectorGroup}>
+                  <label className={styles.selectorLabel}>{labels.start}</label>
+                  <input
+                    type="number"
+                    min={bounds.min.slice(0, 4)}
+                    max={bounds.max.slice(0, 4)}
+                    value={mStart.toISOString().slice(0, 4)}
+                    onChange={(e) => this.onStartChange(e, end)}
+                    step={'1'}
+                    className={styles.input}
+                  />
+                </div>
+                <div className={styles.selectorGroup}>
+                  <label className={styles.selectorLabel}>{labels.end}</label>
+                  <input
+                    type="number"
+                    min={bounds.min.slice(0, 4)}
+                    max={(parseInt(bounds.max.slice(0, 4)) + 1).toString()}
+                    value={mEnd.toISOString().slice(0, 4)}
+                    onChange={(e) => this.onEndChange(e, start)}
+                    step={'1'}
+                    className={styles.input}
+                  />
+                </div>
+              </Fragment>
+            )}
             {resolution === 'month' && (
               <Fragment>
                 <div className={styles.selectorGroup}>
