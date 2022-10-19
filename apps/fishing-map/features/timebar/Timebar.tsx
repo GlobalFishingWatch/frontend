@@ -71,11 +71,33 @@ const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents }) => {
       if (metadata) {
         const interval = metadata.timeChunks.interval
         if (interval === 'hour') {
-          return dateLabel
+          const HOUR_FORMAT = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            weekday: 'long',
+            hour: 'numeric',
+          }
+          return formatI18nDate(timestamp, { format: HOUR_FORMAT, showUTCLabel: true })
         } else if (interval === 'day') {
-          return formatI18nDate(timestamp, { showUTCLabel: true })
+          const DAY_FORMAT = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            weekday: 'long',
+          }
+          return formatI18nDate(timestamp, { format: DAY_FORMAT })
         } else if (interval === 'month') {
-          // TODO
+          const MONTH_FORMAT = {
+            year: 'numeric',
+            month: 'long',
+          }
+          return formatI18nDate(timestamp, { format: MONTH_FORMAT })
+        } else if (interval === 'year') {
+          const YEAR_FORMAT = {
+            year: 'numeric',
+          }
+          return formatI18nDate(timestamp, { format: YEAR_FORMAT })
         }
       }
       return dateLabel
