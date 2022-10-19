@@ -76,6 +76,8 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
     [events]
   )
 
+  const displayOptions = { displayPortVisitsAsOneEvent: true }
+
   return (
     <div className={styles.activityContainer}>
       <Suspense fallback={<Spinner className={styles.spinnerFull} />}>
@@ -142,7 +144,7 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
                           highlighted={highlightsIds[event.id]}
                           onMapClick={selectEventOnMap}
                           onInfoClick={openModal}
-                          options={{ displayPortVisitsAsOneEvent: true }}
+                          options={displayOptions}
                         />
                       </div>
                     )

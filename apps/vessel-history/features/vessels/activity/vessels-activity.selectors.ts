@@ -41,7 +41,7 @@ export interface RenderedEvent extends ActivityEvent {
   regionDescription: string
   durationDescription?: string
   duration: number
-  portVisitSubEvent?: PortVisitSubEvent
+  subEvent?: PortVisitSubEvent
 }
 
 export const selectTrackResources = createSelector(

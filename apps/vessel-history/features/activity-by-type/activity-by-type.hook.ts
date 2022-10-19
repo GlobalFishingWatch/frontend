@@ -12,7 +12,7 @@ const calculateQuantity = {
     events?.reduce((p, c) => p + c.duration ?? 0, 0) ?? 0,
   [EventTypes.Loitering]: (events: RenderedEvent[]) => events.length ?? 0,
   [EventTypes.Port]: (events: RenderedEvent[]) =>
-    Math.ceil(events.filter((event) => !event?.portVisitSubEvent).length ?? 0),
+    Math.ceil(events.filter((event) => !event?.subEvent).length ?? 0),
   [EventTypes.Gap]: (events: RenderedEvent[]) => events.length ?? 0,
 }
 
@@ -34,7 +34,7 @@ export const useActivityByType = () => {
         .map(({ type, events }) => ({
           group: true,
           type,
-          events: events,
+          events,
           quantity: calculateQuantity[type](events),
           loading: eventsLoading.includes(type),
           status: expandedGroups.includes(type) ? 'expanded' : 'collapsed',

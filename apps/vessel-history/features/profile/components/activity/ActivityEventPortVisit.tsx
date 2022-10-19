@@ -33,9 +33,9 @@ const ActivityEventPortVisit: React.FC<EventProps> = ({
   const { t } = useTranslation()
   if (event.type !== EventTypes.Port) return
 
-  const isPortEntry = event?.portVisitSubEvent === PortVisitSubEvent.Entry
-  const isPortExit = event?.portVisitSubEvent === PortVisitSubEvent.Exit
-  const isPortVisit = !event?.portVisitSubEvent
+  const isPortEntry = event?.subEvent === PortVisitSubEvent.Entry
+  const isPortExit = event?.subEvent === PortVisitSubEvent.Exit
+  const isPortVisit = !event?.subEvent
   const portType = isPortVisit ? null : isPortExit ? 'exited' : 'entered'
 
   return (

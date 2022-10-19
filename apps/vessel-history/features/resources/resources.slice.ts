@@ -38,7 +38,7 @@ export const selectResources = createSelector([originalSelectResource], (resourc
           .map((event) => ({
             ...event,
             id: `${event.id}-${PortVisitSubEvent.Entry}`,
-            portVisitSubEvent: PortVisitSubEvent.Entry,
+            subEvent: PortVisitSubEvent.Entry,
           }))
 
       const portExitEvents =
@@ -53,7 +53,7 @@ export const selectResources = createSelector([originalSelectResource], (resourc
             //  filter events when highlightTime is set
             start: event.end as number,
             id: `${event.id}-${PortVisitSubEvent.Exit}`,
-            portVisitSubEvent: PortVisitSubEvent.Exit,
+            subEvent: PortVisitSubEvent.Exit,
           }))
       /*
       TODO: I don't know if we will keep this
