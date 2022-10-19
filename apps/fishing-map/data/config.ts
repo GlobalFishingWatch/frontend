@@ -3,6 +3,7 @@ import { DateTime } from 'luxon'
 import { DataviewCategory, ThinningConfig } from '@globalfishingwatch/api-types'
 import { ThinningLevels, THINNING_LEVELS } from '@globalfishingwatch/api-client'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
+import { getUTCDateTime } from 'utils/dates'
 
 export const ROOT_DOM_ELEMENT = '__next'
 
@@ -48,7 +49,7 @@ export const DEFAULT_VIEWPORT = {
   longitude: 26,
 }
 export const DEFAULT_TIME_RANGE = {
-  start: DateTime.fromISO(LAST_DATA_UPDATE).minus({ months: 3 }).toISO(),
+  start: getUTCDateTime(LAST_DATA_UPDATE).minus({ months: 3 }).toISO(),
   end: LAST_DATA_UPDATE,
 }
 

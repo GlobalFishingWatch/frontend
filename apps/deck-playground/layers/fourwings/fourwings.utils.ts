@@ -1,7 +1,7 @@
 import type { FourwingsLayerMode } from 'layers/fourwings/FourwingsLayer'
 import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
-import { DateTime } from 'luxon'
 import { TimebarRange } from 'features/timebar/timebar.hooks'
+import { getUTCDateTime } from 'utils/dates'
 
 export interface Bounds {
   north: number
@@ -11,15 +11,13 @@ export interface Bounds {
 }
 
 export function getRoundedDateFromTS(ts: number) {
-  return DateTime.fromMillis(ts).toUTC().toISODate()
+  return getUTCDateTime(ts).toISODate()
 }
 
 export const ACTIVITY_SWITCH_ZOOM_LEVEL = 9
 
 export function getFourwingsMode(zoom: number, timerange: TimebarRange): FourwingsLayerMode {
-  const duration = DateTime.fromISO(timerange?.end)
-    .toUTC()
-    .diff(DateTime.fromISO(timerange?.start).toUTC(), 'days')
+  const duration = getUTCDateTime(timerange?.end).diff(getUTCDateTime(timerange?.start), 'days')
   return zoom >= ACTIVITY_SWITCH_ZOOM_LEVEL && duration.days < 30 ? 'positions' : 'heatmap'
 }
 

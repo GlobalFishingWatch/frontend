@@ -50,16 +50,16 @@ const getEncounterAuthColor = (authorizationStatus: AuthorizationOptions) => {
 }
 
 const getDateTimeDate = (date: string | number) => {
-  return typeof date === 'number' ? DateTime.fromMillis(date) : DateTime.fromISO(date)
+  return typeof date === 'number'
+    ? DateTime.fromMillis(date, { zone: 'utc' })
+    : DateTime.fromISO(date, { zone: 'utc' })
 }
 
 const filterEventByTimerange = (startMs: number, endMs: number, feature: Feature) =>
   feature.properties &&
   ((feature.properties.startMs && feature.properties.startMs <= endMs) ||
     !feature.properties.startMs) &&
-  ((feature.properties.endMs && feature.properties.endMs >= startMs) ||
-    !feature.properties.endMs)
-
+  ((feature.properties.endMs && feature.properties.endMs >= startMs) || !feature.properties.endMs)
 
 export const getVesselEventsGeojson = (
   trackEvents: RawEvent[] | null,

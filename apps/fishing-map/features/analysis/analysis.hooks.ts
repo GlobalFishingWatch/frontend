@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Polygon, MultiPolygon } from 'geojson'
 import { useSelector } from 'react-redux'
-import { DateTime } from 'luxon'
 import simplify from '@turf/simplify'
 import bbox from '@turf/bbox'
 import { atom, selector, useRecoilState } from 'recoil'
@@ -38,6 +37,7 @@ import {
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { Area, fetchAreaThunk, FetchAreaThunkParam } from 'features/areas/areas.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { getUTCDateTime } from 'utils/dates'
 import { filterByPolygon } from './analysis-geo.utils'
 import { AnalysisGraphProps } from './AnalysisEvolutionGraph'
 import { selectAnalysisArea, selectShowTimeComparison } from './analysis.selectors'
@@ -86,8 +86,8 @@ export const useFilteredTimeSeries = () => {
 
   let compareDeltaMillis: number | undefined = undefined
   if (showTimeComparison && timeComparison) {
-    const startMillis = DateTime.fromISO(timeComparison.start).toUTC().toMillis()
-    const compareStartMillis = DateTime.fromISO(timeComparison.compareStart).toUTC().toMillis()
+    const startMillis = getUTCDateTime(timeComparison.start).toMillis()
+    const compareStartMillis = getUTCDateTime(timeComparison.compareStart).toMillis()
     compareDeltaMillis = compareStartMillis - startMillis
   }
   const computeTimeseries = useCallback(
