@@ -56,7 +56,7 @@
     "d3-collection": "^1.0.7",
     "d3-ease": "3.0.1",
     "d3-geo": "3.0.1",
-    "d3-scale": "^4.0.2",
+    "d3-scale": "^3.3.0",
     "d3-shape": "3.1.0",
     "downshift": "6.1.7",
     "file-saver": "2.0.5",
@@ -167,7 +167,6 @@
   },
   "resolutions": {
     "@popperjs/core": "2.10.2",
-    "d3-color": "3.1.0",
     "gl-matrix": "3.3.0",
     "minimist": "^1.2.6",
     "mkdirp": "^1.0.4",
