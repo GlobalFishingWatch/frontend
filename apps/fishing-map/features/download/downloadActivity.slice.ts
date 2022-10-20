@@ -34,9 +34,10 @@ export type DownloadActivityParams = {
   geometry: Geometry
   areaName: string
   format: Format
-  spatialResolution: SpatialResolution
-  temporalResolution: TemporalResolution
-  groupBy: GroupBy
+  spatialAggregation?: boolean
+  spatialResolution?: SpatialResolution
+  temporalResolution?: TemporalResolution
+  groupBy?: GroupBy
 }
 
 export const downloadActivityThunk = createAsyncThunk<
@@ -50,6 +51,7 @@ export const downloadActivityThunk = createAsyncThunk<
   async (params: DownloadActivityParams, { getState, rejectWithValue }) => {
     try {
       const {
+        spatialAggregation,
         dateRange,
         dataviews,
         geometry,
@@ -68,6 +70,7 @@ export const downloadActivityThunk = createAsyncThunk<
         filters: dataviews.map(({ filter }) => filter),
         'vessel-groups': dataviews.map((dv) => dv['vessel-groups']),
         'date-range': [fromDate, toDate].join(','),
+        'spatial-aggregation': spatialAggregation,
         'spatial-resolution': spatialResolution,
         'temporal-resolution': temporalResolution,
         'group-by': groupBy,

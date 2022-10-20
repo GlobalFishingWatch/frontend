@@ -1,13 +1,23 @@
-.container {
+.modalContent {
   display: flex;
   flex-direction: column;
   gap: var(--space-S);
+  height: 100%;
   min-height: 100%;
+  padding: 0;
+}
+
+.container {
+  padding: var(--space-M);
 }
 
 .info {
   display: flex;
   gap: var(--space-S);
+}
+
+.downloadBtn {
+  margin-top: var(--space-M);
 }
 
 .footer {

@@ -1,20 +1,28 @@
 import { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { t } from 'features/i18n/i18n'
 
+export enum Downloads {
+  ByVessel = 'byVessel',
+  Gridded = 'gridded',
+}
+
 export enum Format {
   GeoTIFF = 'tif',
+  Json = 'json',
   Csv = 'csv',
   NetCDF = 'netcdf',
 }
 
 export enum GroupBy {
   Vessel = 'vessel_id',
+  MMSI = 'mmsi',
   GearType = 'gearType',
   Flag = 'flag',
   FlagAndGearType = 'flagAndGearType',
 }
 
 export enum TemporalResolution {
+  Full = 'entire',
   Daily = 'daily',
   Monthly = 'monthly',
   Yearly = 'yearly',
@@ -23,12 +31,28 @@ export enum TemporalResolution {
 export enum SpatialResolution {
   Low = 'low',
   High = 'high',
+  VeryHigh = 'very-high',
 }
 
-export const FORMAT_OPTIONS: ChoiceOption[] = [
+export const GRIDDED_FORMAT_OPTIONS: ChoiceOption[] = [
   {
     id: Format.Csv,
     title: 'csv',
+  },
+  {
+    id: Format.Json,
+    title: 'json',
+  },
+]
+
+export const VESSEL_FORMAT_OPTIONS: ChoiceOption[] = [
+  {
+    id: Format.Csv,
+    title: 'csv',
+  },
+  {
+    id: Format.Json,
+    title: 'json',
   },
   {
     id: Format.GeoTIFF,
@@ -51,6 +75,10 @@ export const SPATIAL_RESOLUTION_OPTIONS: ChoiceOption[] = [
   {
     id: SpatialResolution.High,
     title: '0.01º',
+  },
+  {
+    id: SpatialResolution.VeryHigh,
+    title: '0.001º',
   },
 ]
 
