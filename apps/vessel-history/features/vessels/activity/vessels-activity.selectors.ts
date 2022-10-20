@@ -445,7 +445,7 @@ export const countFilteredEventsHighlighted = createSelector(
   }
 )
 
-// t('events.eenteredPortAt', 'Entered Port {{port}}')
-// t('events.exitedPortAt', 'Exited Port {{port}}')
-// t('events.eenteredPortAction', 'Entered Port')
-// t('events.exitedPortAction', 'Exited Port')
+// t('event.enteredPortAt', 'Entered Port {{port}}')
+// t('event.exitedPortAt', 'Exited Port {{port}}')
+// t('event.enteredPortAction', 'Entered Port')
+// t('event.exitedPortAction', 'Exited Port')

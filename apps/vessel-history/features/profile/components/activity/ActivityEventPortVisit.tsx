@@ -90,11 +90,11 @@ const ActivityEventPortVisit: React.FC<EventProps> = ({
               </div>
               <div className={styles.eventData}>
                 {displayPortVisitsAsOneEvent && (
-                    <div className={styles.description}>
-                      {t(`event.${portType}On`, `${capitalize(portType)} on {{date}}`, {
-                        date: formatI18nDate(event.timestamp, { format: DateTime.DATETIME_SHORT }),
-                      })}{' '}
-                    </div>
+                  <div className={styles.description}>
+                    {t(`event.${portType}PortOn`, `${capitalize(portType)} on {{date}}`, {
+                      date: formatI18nDate(event.timestamp, { format: DateTime.DATETIME_SHORT }),
+                    })}
+                  </div>
                 )}
                 {!displayPortVisitsAsOneEvent && (
                   <Fragment>
@@ -128,5 +128,5 @@ const ActivityEventPortVisit: React.FC<EventProps> = ({
 
 export default ActivityEventPortVisit
 
-// t('events.eenteredPortOn', 'Entered on {{date}}')
-// t('events.exitedPortOn', 'Exited on {{date}}')
+// t('event.enteredPortOn', 'Entered on {{date}}')
+// t('event.exitedPortOn', 'Exited on {{date}}')
