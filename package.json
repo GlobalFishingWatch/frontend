@@ -167,7 +167,6 @@
   },
   "resolutions": {
     "@popperjs/core": "2.10.2",
-    "d3-color": "3.1.0",
     "gl-matrix": "3.3.0",
     "minimist": "^1.2.6",
     "mkdirp": "^1.0.4",
