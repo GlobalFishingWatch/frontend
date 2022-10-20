@@ -122,16 +122,28 @@ class Timebar extends Component {
   }
 
   onIntervalClick = (interval) => {
-    const { start, end, absoluteStart, absoluteEnd } = this.props
+    const { start, end, absoluteStart, absoluteEnd, latestAvailableDataDate } = this.props
     const intervalConfig = CONFIG_BY_INTERVAL[interval]
     if (intervalConfig) {
-      const middleDate = DateTime.fromMillis(
-        getTime(start) + (getTime(end) - getTime(start)) / 2
-      ).toUTC()
       const intervalLimit = LIMITS_BY_INTERVAL[interval]
       if (intervalLimit) {
-        const newStart = middleDate.startOf(intervalLimit.unit)
-        const newEnd = newStart.plus({ [intervalLimit.unit]: 1 })
+        let newStart
+        let newEnd
+        if (
+          latestAvailableDataDate.slice(0, start.length) >= start &&
+          latestAvailableDataDate.slice(0, start.length) <= end
+        ) {
+          newEnd = DateTime.fromISO(latestAvailableDataDate, { zone: 'utc' })
+            .endOf(interval)
+            .plus({ millisecond: 1 })
+          newStart = newEnd.minus({ [intervalLimit.unit]: 1 })
+        } else {
+          // if present day is out of range we choose the middle point in the timebar
+          newStart = DateTime.fromMillis(getTime(start) + (getTime(end) - getTime(start)) / 2, {
+            zone: 'utc',
+          }).startOf(intervalLimit.unit)
+          newEnd = newStart.plus({ [intervalLimit.unit]: 1 })
+        }
         this.notifyChange(newStart.toISODate(), newEnd.toISODate(), EVENT_INTERVAL_SOURCE[interval])
       } else {
         this.notifyChange(absoluteStart, absoluteEnd, EVENT_INTERVAL_SOURCE[interval])
@@ -360,7 +372,7 @@ Timebar.propTypes = {
 }
 
 Timebar.defaultProps = {
-  latestAvailableDataDate: new Date().toISOString(),
+  latestAvailableDataDate: DateTime.utc().toISO(),
   labels: {
     playback: {
       playAnimation: 'Play animation',
