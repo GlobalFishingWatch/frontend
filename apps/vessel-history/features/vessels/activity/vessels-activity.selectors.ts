@@ -24,7 +24,7 @@ import {
   selectActiveTrackDataviews,
   selectTrackDatasetConfigsCallback,
 } from 'features/dataviews/dataviews.selectors'
-import { ActivityEvent } from 'types/activity'
+import { ActivityEvent, PortVisitSubEvent } from 'types/activity'
 import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.selectors'
 import { getEEZName } from 'utils/region-name-transform'
 import { Region } from 'features/regions/regions.slice'
@@ -42,6 +42,7 @@ export interface RenderedEvent extends ActivityEvent {
   regionDescription: string
   durationDescription?: string
   duration: number
+  subEvent?: PortVisitSubEvent
 }
 
 export const selectTrackResources = createSelector(
@@ -199,7 +200,7 @@ export const selectEventsWithRenderingInfo = createSelector(
                 port: portLabel,
               })
             } else {
-              description = t(`event.${portType}portAction`, `${upperFirst(portType)} Port`)
+              description = t(`event.${portType}PortAction`, `${upperFirst(portType)} Port`)
             }
             descriptionGeneric = t('event.port')
             break
@@ -443,3 +444,8 @@ export const countFilteredEventsHighlighted = createSelector(
     return events.length
   }
 )
+
+// t('event.enteredPortAt', 'Entered Port {{port}}')
+// t('event.exitedPortAt', 'Exited Port {{port}}')
+// t('event.enteredPortAction', 'Entered Port')
+// t('event.exitedPortAction', 'Exited Port')

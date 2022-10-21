@@ -14,6 +14,7 @@ import {
 } from 'routes/routes.selectors'
 import { DEFAULT_WORKSPACE, THINNING_LEVEL_BY_ZOOM, THINNING_LEVEL_ZOOMS } from 'data/config'
 import { isGuestUser } from 'features/user/user.slice'
+import { PortVisitSubEvent } from 'types/activity'
 import { getUTCDateTime } from 'utils/dates'
 
 export {
@@ -29,6 +30,17 @@ export const selectResources = createSelector([originalSelectResource], (resourc
       // We remove gaps where there is non intentional disabling
       const excludeNonIntentionalDisablingGaps = (event) =>
         event.type !== EventTypes.Gap || event.gap.intentionalDisabling === true
+      const excludePortVisits = (event) => event.type !== EventTypes.Port
+
+      const portEntryEvents =
+        Array.isArray(resource.data) &&
+        (resource.data as any[])
+          .filter((event) => event.type === EventTypes.Port)
+          .map((event) => ({
+            ...event,
+            id: `${event.id}-${PortVisitSubEvent.Entry}`,
+            subEvent: PortVisitSubEvent.Entry,
+          }))
 
       const portExitEvents =
         Array.isArray(resource.data) &&
@@ -41,7 +53,8 @@ export const selectResources = createSelector([originalSelectResource], (resourc
             // to override start timestamp because that's used to
             //  filter events when highlightTime is set
             start: event.end as number,
-            id: `${event.id}-exit`,
+            id: `${event.id}-${PortVisitSubEvent.Exit}`,
+            subEvent: PortVisitSubEvent.Exit,
           }))
       /*
       TODO: I don't know if we will keep this
@@ -66,6 +79,8 @@ export const selectResources = createSelector([originalSelectResource], (resourc
           data: Array.isArray(resource.data)
             ? (resource.data as any[])
                 ?.filter(excludeNonIntentionalDisablingGaps)
+                .filter(excludePortVisits)
+                .concat(portEntryEvents)
                 .concat(portExitEvents) //.concat(gapsEnds)
             : resource.data,
         } as Resource,
