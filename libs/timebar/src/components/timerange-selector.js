@@ -1,8 +1,8 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import dayjs from 'dayjs'
 import classNames from 'classnames'
-import { Choice, InputDate, Select } from '@globalfishingwatch/ui-components'
+import { Select } from '@globalfishingwatch/ui-components'
 import { getTime } from '../utils/internal-utils'
 import { getLastX } from '../utils'
 import styles from './timerange-selector.module.css'
@@ -10,7 +10,7 @@ import styles from './timerange-selector.module.css'
 class TimeRangeSelector extends Component {
   constructor(props) {
     super(props)
-    const { start, end, labels, intervals, getCurrentInterval } = props
+    const { start, end, labels } = props
     this.lastXOptions = [
       {
         id: 'last30days',
@@ -37,37 +37,18 @@ class TimeRangeSelector extends Component {
         unit: 'year',
       },
     ]
-    this.resolutionOptions = [
-      {
-        id: 'year',
-        title: labels.resolutionOptions?.year || 'Yearly',
-      },
-      {
-        id: 'month',
-        title: labels.resolutionOptions?.month || 'Monthly',
-      },
-      {
-        id: 'day',
-        title: labels.resolutionOptions?.day || 'Daily',
-      },
-      {
-        id: 'hour',
-        title: labels.resolutionOptions?.hour || 'Hourly',
-      },
-    ]
     this.state = {
-      start,
-      end,
+      startDate: dayjs.utc(start),
+      endDate: dayjs.utc(end),
       startValid: true,
       endValid: true,
       currentLastXSelectedOption: this.lastXOptions[0],
-      resolution: getCurrentInterval(start, end, [intervals]),
     }
   }
 
   componentDidMount() {
     const { start, end } = this.props
-    this.setState({ start, end })
+    this.setState({ startDate: dayjs.utc(start), endDate: dayjs.utc(end) })
   }
 
   submit(start, end) {
@@ -86,24 +67,36 @@ class TimeRangeSelector extends Component {
     this.setState({ start, end })
   }
 
-  onStartChange = (e, end) => {
+  onStartChange = (e, property, endDate) => {
     if (!e.target?.value || e.target?.value === '') return
-    const ISORest = this.state.resolution === 'hour' ? ':00.000Z' : 'T00:00:00.000Z'
-    const start = dayjs([e.target.value, ISORest].join('')).utc().toISOString()
+    const { startDate } = this.state
+    const start = dayjs.utc({
+      year: startDate.year(),
+      month: startDate.month(),
+      date: startDate.date(),
+      hour: startDate.hour(),
+      [property]: property === 'month' ? e.target.value - 1 : e.target.value,
+    })
     const valid = e.target.validity.valid
-    const startBeforeEnd = start < end
+    const startBeforeEnd = start.toISOString() < endDate.toISOString()
     this.setState({ startValid: valid && startBeforeEnd, endValid: startBeforeEnd })
-    this.setState({ start })
+    this.setState({ startDate: start })
   }
 
-  onEndChange = (e, start) => {
+  onEndChange = (e, property, startDate) => {
     if (!e.target?.value || e.target?.value === '') return
-    const ISORest = this.state.resolution === 'hour' ? ':00.000Z' : 'T00:00:00.000Z'
-    const end = dayjs([e.target.value, ISORest].join('')).utc().toISOString()
+    const { endDate } = this.state
+    const end = dayjs.utc({
+      year: endDate.year(),
+      month: endDate.month(),
+      date: endDate.date(),
+      hour: endDate.hour(),
+      [property]: property === 'month' ? e.target.value - 1 : e.target.value,
+    })
     const valid = e.target.validity.valid
-    const startBeforeEnd = start < end
-    this.setState({ endValid: valid && startBeforeEnd, startValid: startBeforeEnd })
-    this.setState({ end })
+    const startBeforeEnd = startDate.toISOString() < end.toISOString()
+    this.setState({ startValid: startBeforeEnd, endValid: valid && startBeforeEnd })
+    this.setState({ endDate: end })
   }
 
   onResolutionChange = (option) => {
@@ -111,10 +104,10 @@ class TimeRangeSelector extends Component {
   }
 
   render() {
-    const { start, end, startValid, endValid, currentLastXSelectedOption, resolution } = this.state
+    const { startDate, endDate, startValid, endValid, currentLastXSelectedOption } = this.state
     const { labels, absoluteStart, absoluteEnd } = this.props
 
-    if (start === undefined) {
+    if (startDate === undefined) {
       return null
     }
 
@@ -122,9 +115,6 @@ class TimeRangeSelector extends Component {
       min: dayjs.utc(getTime(absoluteStart)).toISOString().slice(0, 10),
       max: dayjs.utc(getTime(absoluteEnd)).toISOString().slice(0, 10),
     }
-
-    const mStart = dayjs.utc(start)
-    const mEnd = dayjs.utc(end)
     const disabled = !startValid || !endValid
 
     return (
@@ -132,137 +122,113 @@ class TimeRangeSelector extends Component {
         <div className={styles.veil} onClick={this.props.onDiscard} />
         <div className={styles.inner}>
           <h2 className={styles.title}>{labels.title}</h2>
-          <div className={styles.resolutionContainer}>
-            <label className={styles.selectorLabel}>{labels.resolution}</label>
-            <Choice
-              size="small"
-              className={styles.choice}
-              options={this.resolutionOptions}
-              activeOption={resolution}
-              onOptionClick={this.onResolutionChange}
-            />
-            <label className={styles.resolutionMaxRange}>
-              {labels.resolutionMaxRange?.[resolution]}
-            </label>
-          </div>
-
-          <div className={styles.selectorsContainer}>
-            {resolution === 'year' && (
-              <Fragment>
+          <div className={styles.datesContainer}>
+            <div className={styles.dateContainer}>
+              <label className={styles.dateLabel}>{labels.start}</label>
+              <div className={styles.selectorsContainer}>
                 <div className={styles.selectorGroup}>
-                  <label className={styles.selectorLabel}>{labels.start}</label>
+                  <label className={styles.selectorLabel}>{labels.year || 'year'}</label>
                   <input
                     type="number"
                     min={bounds.min.slice(0, 4)}
                     max={bounds.max.slice(0, 4)}
-                    value={mStart.toISOString().slice(0, 4)}
-                    onChange={(e) => this.onStartChange(e, end)}
+                    value={startDate.year().toString()}
+                    onChange={(e) => this.onStartChange(e, 'year', endDate)}
                     step={'1'}
                     className={styles.input}
                   />
                 </div>
                 <div className={styles.selectorGroup}>
-                  <label className={styles.selectorLabel}>{labels.end}</label>
+                  <label className={styles.selectorLabel}>{labels.month || 'month'}</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="12"
+                    value={(startDate.month() + 1).toString()}
+                    onChange={(e) => this.onStartChange(e, 'month', endDate)}
+                    step={'1'}
+                    className={styles.input}
+                  />
+                </div>
+                <div className={styles.selectorGroup}>
+                  <label className={styles.selectorLabel}>{labels.day || 'day'}</label>
+                  <input
+                    type="number"
+                    min={'1'}
+                    max={'31'}
+                    value={startDate.date().toString()}
+                    onChange={(e) => this.onStartChange(e, 'date', endDate)}
+                    step={'1'}
+                    className={styles.input}
+                  />
+                </div>
+                <div className={styles.selectorGroup}>
+                  <label className={styles.selectorLabel}>{labels.hour || 'hour'}</label>
+                  <input
+                    type="number"
+                    min={'0'}
+                    max={'23'}
+                    value={startDate.hour().toString()}
+                    onChange={(e) => this.onStartChange(e, 'hour', endDate)}
+                    step={'1'}
+                    className={styles.input}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className={styles.dateContainer}>
+              <label className={styles.dateLabel}>{labels.end}</label>
+              <div className={styles.selectorsContainer}>
+                <div className={styles.selectorGroup}>
+                  <label className={styles.selectorLabel}>{labels.year || 'year'}</label>
                   <input
                     type="number"
                     min={bounds.min.slice(0, 4)}
-                    max={(parseInt(bounds.max.slice(0, 4)) + 1).toString()}
-                    value={mEnd.toISOString().slice(0, 4)}
-                    onChange={(e) => this.onEndChange(e, start)}
+                    max={bounds.max.slice(0, 4)}
+                    value={endDate.year().toString()}
+                    onChange={(e) => this.onEndChange(e, 'year', startDate)}
                     step={'1'}
                     className={styles.input}
                   />
                 </div>
-              </Fragment>
-            )}
-            {resolution === 'month' && (
-              <Fragment>
                 <div className={styles.selectorGroup}>
-                  <label className={styles.selectorLabel}>{labels.start}</label>
-                  <InputDate
-                    type="month"
-                    value={mStart.toISOString().slice(0, 7)}
-                    invalid={!startValid}
-                    onChange={(e) => this.onStartChange(e, end)}
-                    min={bounds.min}
-                    max={bounds.max}
+                  <label className={styles.selectorLabel}>{labels.month || 'month'}</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="12"
+                    value={(endDate.month() + 1).toString()}
+                    onChange={(e) => this.onEndChange(e, 'month', startDate)}
+                    step={'1'}
                     className={styles.input}
-                    required
                   />
                 </div>
                 <div className={styles.selectorGroup}>
-                  <label className={styles.selectorLabel}>{labels.end}</label>
-                  <InputDate
-                    type="month"
-                    value={mEnd.toISOString().slice(0, 7)}
-                    invalid={!endValid}
-                    onChange={(e) => this.onEndChange(e, start)}
-                    min={bounds.min}
-                    max={bounds.max}
+                  <label className={styles.selectorLabel}>{labels.day || 'day'}</label>
+                  <input
+                    type="number"
+                    min={'1'}
+                    max={'31'}
+                    value={endDate.date().toString()}
+                    onChange={(e) => this.onEndChange(e, 'date', startDate)}
+                    step={'1'}
                     className={styles.input}
-                    required
-                  />
-                </div>
-              </Fragment>
-            )}
-            {resolution === 'day' && (
-              <Fragment>
-                <div className={styles.selectorGroup}>
-                  <label className={styles.selectorLabel}>{labels.start}</label>
-                  <InputDate
-                    value={mStart.toISOString().slice(0, 10)}
-                    invalid={!startValid}
-                    onChange={(e) => this.onStartChange(e, end)}
-                    min={bounds.min}
-                    max={bounds.max}
-                    className={styles.input}
-                    required
                   />
                 </div>
                 <div className={styles.selectorGroup}>
-                  <label className={styles.selectorLabel}>{labels.end}</label>
-                  <InputDate
-                    value={mEnd.toISOString().slice(0, 10)}
-                    invalid={!endValid}
-                    onChange={(e) => this.onEndChange(e, start)}
-                    min={bounds.min}
-                    max={bounds.max}
+                  <label className={styles.selectorLabel}>{labels.hour || 'hour'}</label>
+                  <input
+                    type="number"
+                    min={'0'}
+                    max={'23'}
+                    value={endDate.hour().toString()}
+                    onChange={(e) => this.onEndChange(e, 'hour', startDate)}
+                    step={'1'}
                     className={styles.input}
-                    required
                   />
                 </div>
-              </Fragment>
-            )}
-            {resolution === 'hour' && (
-              <Fragment>
-                <div className={styles.selectorGroup}>
-                  <label className={styles.selectorLabel}>{labels.start}</label>
-                  <InputDate
-                    type="datetime-local"
-                    value={mStart.toISOString().slice(0, 16)}
-                    invalid={!startValid}
-                    onChange={(e) => this.onStartChange(e, end)}
-                    min={bounds.min}
-                    max={bounds.max}
-                    className={styles.input}
-                    required
-                  />
-                </div>
-                <div className={styles.selectorGroup}>
-                  <label className={styles.selectorLabel}>{labels.end}</label>
-                  <InputDate
-                    type="datetime-local"
-                    value={mEnd.toISOString().slice(0, 16)}
-                    invalid={!endValid}
-                    onChange={(e) => this.onEndChange(e, start)}
-                    min={bounds.min}
-                    max={bounds.max}
-                    className={styles.input}
-                    required
-                  />
-                </div>
-              </Fragment>
-            )}
+              </div>
+            </div>
           </div>
           <div className={styles.actions}>
             <Select
@@ -280,7 +246,7 @@ class TimeRangeSelector extends Component {
               disabled={disabled}
               className={classNames(styles.cta, { [styles.disabled]: disabled })}
               onClick={() => {
-                this.submit(start, end)
+                this.submit(startDate.toISOString(), endDate.toISOString())
               }}
             >
               {labels.done}
@@ -302,8 +268,8 @@ TimeRangeSelector.propTypes = {
   onDiscard: PropTypes.func.isRequired,
   labels: PropTypes.shape({
     title: PropTypes.string,
-    start: PropTypes.string,
-    end: PropTypes.string,
+    startDate: PropTypes.object,
+    endDate: PropTypes.object,
     last30days: PropTypes.string,
     last3months: PropTypes.string,
     last6months: PropTypes.string,
@@ -315,8 +281,8 @@ TimeRangeSelector.propTypes = {
 TimeRangeSelector.defaultProps = {
   labels: {
     title: 'Select a time range',
-    start: 'start',
-    end: 'end',
+    startDate: 'startDate',
+    endDate: 'endDate',
     last30days: 'Last 30 days',
     last3months: 'Last 3 months',
     last6months: 'Last 6 months',

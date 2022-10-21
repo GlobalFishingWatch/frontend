@@ -4,6 +4,7 @@ import cx from 'classnames'
 import dayjs from 'dayjs'
 import memoize from 'memoize-one'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import objectSupport from 'dayjs/plugin/objectSupport'
 import utc from 'dayjs/plugin/utc'
 import 'dayjs/locale/en'
 import 'dayjs/locale/es'
@@ -26,6 +27,7 @@ import { ReactComponent as IconBookmarkFilled } from './icons/bookmarkFilled.svg
 import { EVENT_SOURCE, EVENT_INTERVAL_SOURCE } from './constants'
 
 dayjs.extend(relativeTime)
+dayjs.extend(objectSupport)
 dayjs.extend(utc)
 
 const ONE_DAY_MS = 1000 * 60 * 60 * 24
@@ -243,8 +245,6 @@ class Timebar extends Component {
                   onSubmit={this.onTimeRangeSelectorSubmit}
                   onDiscard={this.toggleTimeRangeSelector}
                   latestAvailableDataDate={this.props.latestAvailableDataDate}
-                  intervals={intervals}
-                  getCurrentInterval={getCurrentInterval}
                 />
               )}
               <button
