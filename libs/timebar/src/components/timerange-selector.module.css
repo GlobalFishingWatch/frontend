@@ -2,10 +2,7 @@
   position: absolute;
   bottom: var(--timebar-size);
   left: 0;
-  width: 70rem;
   max-width: 100vw;
-  background: var(--timebar-main-background-color);
-  border: 1px solid rgba(255, 255, 255, 0.3);
   box-sizing: border-box;
   z-index: var(--timebar-z-date-selector);
   box-shadow: 0 0 28px 5px rgba(0, 0, 0, 0.8);
@@ -20,10 +17,12 @@
   left: 0;
   background: var(--timebar-main-background-color);
   opacity: 0.7;
-  z-index: -1;
+  z-index: -2;
 }
 
 .inner {
+  color: var(--color-primary-blue);
+  background: white;
   padding: 3.5rem 3rem 3rem;
 }
 
@@ -42,21 +41,19 @@
 .selectorsContainer {
   display: flex;
   margin-bottom: 4rem;
-  justify-content: space-between;
+  gap: 0.5rem;
 }
 
 .selectorGroup {
-  display: flex;
-  flex-wrap: wrap;
-  flex: 0 0 calc(25% - 0.5rem);
+  width: 6rem;
+}
+
+.long {
+  width: 7rem;
 }
 
 .dateLabel {
-  color: var(--timebar-white);
-}
-
-.selectorLabel {
-  color: var(--timebar-white-faded);
+  color: var(--color-primary-blue);
 }
 
 .resolutionMaxRange {
@@ -66,20 +63,25 @@
 }
 
 .input {
-  background: white;
   width: 100%;
-}
-
-.input[type='number'] {
   padding: 0.5rem;
   font: 400 1.6rem/2.4rem var(--timebar-font-family);
   color: rgb(22, 63, 137);
   height: 4rem;
   margin: 0;
-  border-bottom: 1px solid var(--timebar-main-background-color);
+  border-bottom: var(--border);
+}
+
+.input:focus {
+  border-bottom: 1px solid var(--color-primary-blue);
+}
+
+.input[type='number']::-webkit-inner-spin-button {
+  opacity: 0.5;
 }
 
 .actions {
+  width: 100%;
   display: flex;
   justify-content: space-between;
 }
@@ -109,19 +111,15 @@
 }
 
 .lastX {
+  color: var(--color-primary-blue);
   display: flex;
   line-height: 3.6rem;
   background: transparent;
-  border: 0.1rem solid #fff5;
-}
-
-.lastX path {
-  fill: white;
+  border: var(--border);
 }
 
 .lastX:hover,
 .lastX:focus {
-  color: white;
   background: rgba(255, 255, 255, 0.05);
   outline: none;
   border: 0.1rem solid var(--timebar-white);
@@ -160,9 +158,4 @@
   .secondary {
     display: none;
   }
-}
-
-.choice {
-  mix-blend-mode: screen;
-  filter: brightness(10);
 }

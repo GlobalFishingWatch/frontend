@@ -1,4 +1,7 @@
 :root {
+  /* BASE COLORS */
+  --primary-blue-rgb: 22, 63, 137; /* rgb(22, 63, 137) */
+
   /* COLORS */
   --timebar-main-background-color: #021236;
   --timebar-main-border-color: #1e365a;
@@ -15,6 +18,7 @@
   --timebar-track-default: #fe81eb;
   --timebar-white: #fff;
   --timebar-white-faded: rgba(255, 255, 255, 0.6);
+  --color-primary-blue: rgb(22, 63, 137);
 
   /* TYPE */
   --timebar-font-family: 'Roboto', sans-serif;
@@ -33,6 +37,11 @@
   /* OTHER */
   --timebar-hover-transition: all 150ms linear;
   --timebar-size: 7.2rem;
+
+  /* UTILS */
+  --opacity-border: 0.15;
+  --color-border: rgba(var(--primary-blue-rgb), var(--opacity-border));
+  --border: 1px solid var(--color-border);
 }
 
 @media only screen and (max-width: 768px) {
