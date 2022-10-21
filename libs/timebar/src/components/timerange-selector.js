@@ -14,25 +14,25 @@ class TimeRangeSelector extends Component {
     this.lastXOptions = [
       {
         id: 'last30days',
-        label: labels.last30days || TimeRangeSelector.defaultProps.labels.last30days,
+        label: labels.last30days,
         num: 30,
         unit: 'day',
       },
       {
         id: 'last3months',
-        label: labels.last3months || TimeRangeSelector.defaultProps.labels.last3months,
+        label: labels.last3months,
         num: 3,
         unit: 'month',
       },
       {
         id: 'last6months',
-        label: labels.last6months || TimeRangeSelector.defaultProps.labels.last6months,
+        label: labels.last6months,
         num: 6,
         unit: 'month',
       },
       {
         id: 'lastYear',
-        label: labels.lastYear || TimeRangeSelector.defaultProps.labels.lastYear,
+        label: labels.lastYear,
         num: 1,
         unit: 'year',
       },
@@ -145,7 +145,7 @@ class TimeRangeSelector extends Component {
                 <label className={styles.dateLabel}>{labels.start}</label>
                 <div className={styles.selectorsContainer}>
                   <div className={classNames(styles.selectorGroup, styles.long)}>
-                    <label className={styles.selectorLabel}>{labels.year || 'year'}</label>
+                    <label className={styles.selectorLabel}>{labels.year}</label>
                     <input
                       autoFocus
                       name="start year"
@@ -155,11 +155,11 @@ class TimeRangeSelector extends Component {
                       value={startDate.year().toString()}
                       onChange={(e) => this.onStartChange(e, 'year', endDate)}
                       step={'1'}
-                      className={styles.input}
+                      className={classNames(styles.input, { [styles.error]: disabled })}
                     />
                   </div>
                   <div className={styles.selectorGroup}>
-                    <label className={styles.selectorLabel}>{labels.month || 'month'}</label>
+                    <label className={styles.selectorLabel}>{labels.month}</label>
                     <input
                       name="start month"
                       type="number"
@@ -168,11 +168,11 @@ class TimeRangeSelector extends Component {
                       value={(startDate.month() + 1).toString()}
                       onChange={(e) => this.onStartChange(e, 'month', endDate)}
                       step={'1'}
-                      className={styles.input}
+                      className={classNames(styles.input, { [styles.error]: disabled })}
                     />
                   </div>
                   <div className={styles.selectorGroup}>
-                    <label className={styles.selectorLabel}>{labels.day || 'day'}</label>
+                    <label className={styles.selectorLabel}>{labels.day}</label>
                     <input
                       name="start day"
                       type="number"
@@ -181,7 +181,7 @@ class TimeRangeSelector extends Component {
                       value={startDate.date().toString()}
                       onChange={(e) => this.onStartChange(e, 'date', endDate)}
                       step={'1'}
-                      className={styles.input}
+                      className={classNames(styles.input, { [styles.error]: disabled })}
                     />
                   </div>
                 </div>
@@ -190,7 +190,7 @@ class TimeRangeSelector extends Component {
                 <label className={styles.dateLabel}>{labels.end}</label>
                 <div className={styles.selectorsContainer}>
                   <div className={classNames(styles.selectorGroup, styles.long)}>
-                    <label className={styles.selectorLabel}>{labels.year || 'year'}</label>
+                    <label className={styles.selectorLabel}>{labels.year}</label>
                     <input
                       name="end year"
                       type="number"
@@ -199,11 +199,11 @@ class TimeRangeSelector extends Component {
                       value={endDate.year().toString()}
                       onChange={(e) => this.onEndChange(e, 'year', startDate)}
                       step={'1'}
-                      className={styles.input}
+                      className={classNames(styles.input, { [styles.error]: disabled })}
                     />
                   </div>
                   <div className={styles.selectorGroup}>
-                    <label className={styles.selectorLabel}>{labels.month || 'month'}</label>
+                    <label className={styles.selectorLabel}>{labels.month}</label>
                     <input
                       name="end month"
                       type="number"
@@ -212,11 +212,11 @@ class TimeRangeSelector extends Component {
                       value={(endDate.month() + 1).toString()}
                       onChange={(e) => this.onEndChange(e, 'month', startDate)}
                       step={'1'}
-                      className={styles.input}
+                      className={classNames(styles.input, { [styles.error]: disabled })}
                     />
                   </div>
                   <div className={styles.selectorGroup}>
-                    <label className={styles.selectorLabel}>{labels.day || 'day'}</label>
+                    <label className={styles.selectorLabel}>{labels.day}</label>
                     <input
                       name="end day"
                       type="number"
@@ -225,7 +225,7 @@ class TimeRangeSelector extends Component {
                       value={endDate.date().toString()}
                       onChange={(e) => this.onEndChange(e, 'date', startDate)}
                       step={'1'}
-                      className={styles.input}
+                      className={classNames(styles.input, { [styles.error]: disabled })}
                     />
                   </div>
                 </div>
@@ -269,8 +269,11 @@ TimeRangeSelector.propTypes = {
   onDiscard: PropTypes.func.isRequired,
   labels: PropTypes.shape({
     title: PropTypes.string,
-    startDate: PropTypes.object,
-    endDate: PropTypes.object,
+    start: PropTypes.string,
+    end: PropTypes.string,
+    year: PropTypes.string,
+    month: PropTypes.string,
+    day: PropTypes.string,
     last30days: PropTypes.string,
     last3months: PropTypes.string,
     last6months: PropTypes.string,
@@ -282,8 +285,11 @@ TimeRangeSelector.propTypes = {
 TimeRangeSelector.defaultProps = {
   labels: {
     title: 'Select a time range',
-    startDate: 'startDate',
-    endDate: 'endDate',
+    start: 'start',
+    end: 'end',
+    year: 'year',
+    month: 'month',
+    day: 'day',
     last30days: 'Last 30 days',
     last3months: 'Last 3 months',
     last6months: 'Last 6 months',

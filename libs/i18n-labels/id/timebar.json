@@ -9,6 +9,9 @@
   },
   "timerange": {
     "title": "Pilih rentang waktu",
+    "year": "Tahun",
+    "month": "Bulan",
+    "day": "Hari",
     "start": "mulai",
     "end": "akhir",
     "last30days": "30 hari terakhir",

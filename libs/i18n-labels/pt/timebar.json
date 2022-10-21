@@ -9,6 +9,9 @@
   },
   "timerange": {
     "title": "Selecione um intervalo de tempo",
+    "year": "Ano",
+    "month": "Mês",
+    "day": "Dia",
     "start": "Início",
     "end": "fim",
     "last30days": "Últimos 30 dias",

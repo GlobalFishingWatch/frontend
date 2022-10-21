@@ -19,6 +19,7 @@
   --timebar-white: #fff;
   --timebar-white-faded: rgba(255, 255, 255, 0.6);
   --color-primary-blue: rgb(22, 63, 137);
+  --color-danger-red: rgb(360, 62, 98);
 
   /* TYPE */
   --timebar-font-family: 'Roboto', sans-serif;
