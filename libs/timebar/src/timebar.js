@@ -245,7 +245,6 @@ class Timebar extends Component {
                   onSubmit={this.onTimeRangeSelectorSubmit}
                   onDiscard={this.toggleTimeRangeSelector}
                   latestAvailableDataDate={this.props.latestAvailableDataDate}
-                  intervals={intervals}
                 />
               )}
               <button

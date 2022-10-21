@@ -16,6 +16,8 @@
     "end": "fin",
     "selectAValidDate": "Sélectionnez une date valide",
     "endBeforeStart": "La date de fin doit être postérieure à la date de début",
+    "tooLongForMonths": "Your timerange is too long to see individual months",
+    "tooLongForDays": "Your timerange is too long to see individual days",
     "last30days": "Les 30 derniers jours",
     "last3months": "Last 3 months",
     "last6months": "Last 6 months",

@@ -62,6 +62,10 @@
   text-transform: unset;
 }
 
+.faded {
+  opacity: 0.3;
+}
+
 .input {
   width: 100%;
   padding: 0.5rem;
@@ -70,6 +74,11 @@
   height: 4rem;
   margin: 0;
   border-bottom: var(--border);
+}
+
+.input:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
 }
 
 .input:not(.error):focus {
@@ -164,7 +173,7 @@
   }
 
   .selectorLabel {
-    width: 6rem;
+    width: 100%;
   }
 
   .secondary {
