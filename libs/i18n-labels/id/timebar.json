@@ -14,6 +14,8 @@
     "day": "Hari",
     "start": "mulai",
     "end": "akhir",
+    "selectAValidDate": "Silakan pilih tanggal yang valid",
+    "endBeforeStart": "Tanggal akhir harus setelah tanggal mulai",
     "last30days": "30 hari terakhir",
     "last3months": "3 bulan terakhir",
     "last6months": "6 bulan terakhir",

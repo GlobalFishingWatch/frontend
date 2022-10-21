@@ -14,25 +14,25 @@ class TimeRangeSelector extends Component {
     this.lastXOptions = [
       {
         id: 'last30days',
-        label: labels.last30days,
+        label: labels.last30days || TimeRangeSelector.defaultProps.labels.last30days,
         num: 30,
         unit: 'day',
       },
       {
         id: 'last3months',
-        label: labels.last3months,
+        label: labels.last3months || TimeRangeSelector.defaultProps.labels.last3months,
         num: 3,
         unit: 'month',
       },
       {
         id: 'last6months',
-        label: labels.last6months,
+        label: labels.last6months || TimeRangeSelector.defaultProps.labels.last6months,
         num: 6,
         unit: 'month',
       },
       {
         id: 'lastYear',
-        label: labels.lastYear,
+        label: labels.lastYear || TimeRangeSelector.defaultProps.labels.lastYear,
         num: 1,
         unit: 'year',
       },
@@ -42,6 +42,7 @@ class TimeRangeSelector extends Component {
       endDate: dayjs.utc(end),
       startValid: true,
       endValid: true,
+      startBeforeEnd: true,
       currentLastXSelectedOption: this.lastXOptions[0],
     }
   }
@@ -84,8 +85,8 @@ class TimeRangeSelector extends Component {
       [property]: property === 'month' ? e.target.value - 1 : e.target.value,
     })
     const valid = e.target.validity.valid
-    const startBeforeEnd = start.toISOString() < endDate.toISOString()
-    this.setState({ startValid: valid && startBeforeEnd, endValid: startBeforeEnd })
+    this.setState({ startValid: valid })
+    this.setState({ startBeforeEnd: valid && start.toISOString() < endDate.toISOString() })
     this.setState({ startDate: start })
   }
 
@@ -106,8 +107,8 @@ class TimeRangeSelector extends Component {
       [property]: property === 'month' ? e.target.value - 1 : e.target.value,
     })
     const valid = e.target.validity.valid
-    const startBeforeEnd = startDate.toISOString() < end.toISOString()
-    this.setState({ startValid: startBeforeEnd, endValid: valid && startBeforeEnd })
+    this.setState({ endValid: valid })
+    this.setState({ startBeforeEnd: valid && startDate.toISOString() < end.toISOString() })
     this.setState({ endDate: end })
   }
 
@@ -116,7 +117,8 @@ class TimeRangeSelector extends Component {
   }
 
   render() {
-    const { startDate, endDate, startValid, endValid, currentLastXSelectedOption } = this.state
+    const { startDate, endDate, startValid, endValid, startBeforeEnd, currentLastXSelectedOption } =
+      this.state
     const { labels, absoluteStart, absoluteEnd } = this.props
 
     if (startDate === undefined) {
@@ -127,7 +129,15 @@ class TimeRangeSelector extends Component {
       min: dayjs.utc(getTime(absoluteStart)).toISOString().slice(0, 10),
       max: dayjs.utc(getTime(absoluteEnd)).toISOString().slice(0, 10),
     }
-    const disabled = !startValid || !endValid
+
+    let errorMessage = ''
+    if (!startValid || !endValid) {
+      errorMessage = `${labels.selectAValidDate}: ${bounds.min.slice(0, 4)} - ${(
+        parseInt(bounds.max.slice(0, 4)) + 1
+      ).toString()}`
+    } else if (!startBeforeEnd) {
+      errorMessage = labels.endBeforeStart
+    }
 
     return (
       <div className={styles.TimeRangeSelector}>
@@ -155,7 +165,9 @@ class TimeRangeSelector extends Component {
                       value={startDate.year().toString()}
                       onChange={(e) => this.onStartChange(e, 'year', endDate)}
                       step={'1'}
-                      className={classNames(styles.input, { [styles.error]: disabled })}
+                      className={classNames(styles.input, {
+                        [styles.error]: !startValid || !startBeforeEnd,
+                      })}
                     />
                   </div>
                   <div className={styles.selectorGroup}>
@@ -168,7 +180,9 @@ class TimeRangeSelector extends Component {
                       value={(startDate.month() + 1).toString()}
                       onChange={(e) => this.onStartChange(e, 'month', endDate)}
                       step={'1'}
-                      className={classNames(styles.input, { [styles.error]: disabled })}
+                      className={classNames(styles.input, {
+                        [styles.error]: !startValid || !startBeforeEnd,
+                      })}
                     />
                   </div>
                   <div className={styles.selectorGroup}>
@@ -181,7 +195,9 @@ class TimeRangeSelector extends Component {
                       value={startDate.date().toString()}
                       onChange={(e) => this.onStartChange(e, 'date', endDate)}
                       step={'1'}
-                      className={classNames(styles.input, { [styles.error]: disabled })}
+                      className={classNames(styles.input, {
+                        [styles.error]: !startValid || !startBeforeEnd,
+                      })}
                     />
                   </div>
                 </div>
@@ -199,7 +215,9 @@ class TimeRangeSelector extends Component {
                       value={endDate.year().toString()}
                       onChange={(e) => this.onEndChange(e, 'year', startDate)}
                       step={'1'}
-                      className={classNames(styles.input, { [styles.error]: disabled })}
+                      className={classNames(styles.input, {
+                        [styles.error]: !endValid || !startBeforeEnd,
+                      })}
                     />
                   </div>
                   <div className={styles.selectorGroup}>
@@ -212,7 +230,9 @@ class TimeRangeSelector extends Component {
                       value={(endDate.month() + 1).toString()}
                       onChange={(e) => this.onEndChange(e, 'month', startDate)}
                       step={'1'}
-                      className={classNames(styles.input, { [styles.error]: disabled })}
+                      className={classNames(styles.input, {
+                        [styles.error]: !endValid || !startBeforeEnd,
+                      })}
                     />
                   </div>
                   <div className={styles.selectorGroup}>
@@ -225,12 +245,15 @@ class TimeRangeSelector extends Component {
                       value={endDate.date().toString()}
                       onChange={(e) => this.onEndChange(e, 'date', startDate)}
                       step={'1'}
-                      className={classNames(styles.input, { [styles.error]: disabled })}
+                      className={classNames(styles.input, {
+                        [styles.error]: !endValid || !startBeforeEnd,
+                      })}
                     />
                   </div>
                 </div>
               </div>
             </div>
+            <span className={styles.errorMessage}>{errorMessage}</span>
             <div className={styles.actions}>
               <Select
                 className={classNames(styles.cta, styles.lastX)}
@@ -243,8 +266,8 @@ class TimeRangeSelector extends Component {
               />
               <button
                 type="submit"
-                disabled={disabled}
-                className={classNames(styles.cta, { [styles.disabled]: disabled })}
+                disabled={!startValid || !endValid || !startBeforeEnd}
+                className={styles.cta}
                 onClick={() => {
                   this.submit(startDate.toISOString(), endDate.toISOString())
                 }}
@@ -274,6 +297,8 @@ TimeRangeSelector.propTypes = {
     year: PropTypes.string,
     month: PropTypes.string,
     day: PropTypes.string,
+    selectAValidDate: PropTypes.string,
+    endBeforeStart: PropTypes.string,
     last30days: PropTypes.string,
     last3months: PropTypes.string,
     last6months: PropTypes.string,
@@ -290,6 +315,8 @@ TimeRangeSelector.defaultProps = {
     year: 'year',
     month: 'month',
     day: 'day',
+    selectAValidDate: 'Please select a valid date',
+    endBeforeStart: 'The end needs to be after the start',
     last30days: 'Last 30 days',
     last3months: 'Last 3 months',
     last6months: 'Last 6 months',

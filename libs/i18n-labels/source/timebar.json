@@ -14,6 +14,8 @@
     "day": "Day",
     "start": "start",
     "end": "end",
+    "selectAValidDate": "Please select a valid date",
+    "endBeforeStart": "The end needs to be after the start",
     "last30days": "Last 30 days",
     "last3months": "Last 3 months",
     "last6months": "Last 6 months",
