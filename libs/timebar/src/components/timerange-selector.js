@@ -70,11 +70,17 @@ class TimeRangeSelector extends Component {
   onStartChange = (e, property, endDate) => {
     if (!e.target?.value || e.target?.value === '') return
     const { startDate } = this.state
+    const currentMonthDays = dayjs
+      .utc({
+        year: property === 'year' ? e.target.value : startDate.year(),
+        month: property === 'month' ? e.target.value - 1 : startDate.month(),
+      })
+      .daysInMonth()
+    const dateHigherThanDaysInMonth = startDate.date() > currentMonthDays
     const start = dayjs.utc({
       year: startDate.year(),
       month: startDate.month(),
-      date: startDate.date(),
-      hour: startDate.hour(),
+      date: dateHigherThanDaysInMonth ? currentMonthDays : startDate.date(),
       [property]: property === 'month' ? e.target.value - 1 : e.target.value,
     })
     const valid = e.target.validity.valid
@@ -86,11 +92,17 @@ class TimeRangeSelector extends Component {
   onEndChange = (e, property, startDate) => {
     if (!e.target?.value || e.target?.value === '') return
     const { endDate } = this.state
+    const currentMonthDays = dayjs
+      .utc({
+        year: property === 'year' ? e.target.value : endDate.year(),
+        month: property === 'month' ? e.target.value - 1 : endDate.month(),
+      })
+      .daysInMonth()
+    const dateHigherThanDaysInMonth = endDate.date() > currentMonthDays
     const end = dayjs.utc({
       year: endDate.year(),
       month: endDate.month(),
-      date: endDate.date(),
-      hour: endDate.hour(),
+      date: dateHigherThanDaysInMonth ? currentMonthDays : endDate.date(),
       [property]: property === 'month' ? e.target.value - 1 : e.target.value,
     })
     const valid = e.target.validity.valid
@@ -121,137 +133,126 @@ class TimeRangeSelector extends Component {
       <div className={styles.TimeRangeSelector}>
         <div className={styles.veil} onClick={this.props.onDiscard} />
         <div className={styles.inner}>
-          <h2 className={styles.title}>{labels.title}</h2>
-          <div className={styles.datesContainer}>
-            <div className={styles.dateContainer}>
-              <label className={styles.dateLabel}>{labels.start}</label>
-              <div className={styles.selectorsContainer}>
-                <div className={styles.selectorGroup}>
-                  <label className={styles.selectorLabel}>{labels.year || 'year'}</label>
-                  <input
-                    type="number"
-                    min={bounds.min.slice(0, 4)}
-                    max={bounds.max.slice(0, 4)}
-                    value={startDate.year().toString()}
-                    onChange={(e) => this.onStartChange(e, 'year', endDate)}
-                    step={'1'}
-                    className={styles.input}
-                  />
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              this.submit(startDate.toISOString(), endDate.toISOString())
+            }}
+          >
+            <h2 className={styles.title}>{labels.title}</h2>
+            <div className={styles.datesContainer}>
+              <div className={styles.dateContainer}>
+                <label className={styles.dateLabel}>{labels.start}</label>
+                <div className={styles.selectorsContainer}>
+                  <div className={classNames(styles.selectorGroup, styles.long)}>
+                    <label className={styles.selectorLabel}>{labels.year || 'year'}</label>
+                    <input
+                      autoFocus
+                      name="start year"
+                      type="number"
+                      min={bounds.min.slice(0, 4)}
+                      max={bounds.max.slice(0, 4)}
+                      value={startDate.year().toString()}
+                      onChange={(e) => this.onStartChange(e, 'year', endDate)}
+                      step={'1'}
+                      className={styles.input}
+                    />
+                  </div>
+                  <div className={styles.selectorGroup}>
+                    <label className={styles.selectorLabel}>{labels.month || 'month'}</label>
+                    <input
+                      name="start month"
+                      type="number"
+                      min="1"
+                      max="12"
+                      value={(startDate.month() + 1).toString()}
+                      onChange={(e) => this.onStartChange(e, 'month', endDate)}
+                      step={'1'}
+                      className={styles.input}
+                    />
+                  </div>
+                  <div className={styles.selectorGroup}>
+                    <label className={styles.selectorLabel}>{labels.day || 'day'}</label>
+                    <input
+                      name="start day"
+                      type="number"
+                      min={'1'}
+                      max={startDate.daysInMonth()}
+                      value={startDate.date().toString()}
+                      onChange={(e) => this.onStartChange(e, 'date', endDate)}
+                      step={'1'}
+                      className={styles.input}
+                    />
+                  </div>
                 </div>
-                <div className={styles.selectorGroup}>
-                  <label className={styles.selectorLabel}>{labels.month || 'month'}</label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="12"
-                    value={(startDate.month() + 1).toString()}
-                    onChange={(e) => this.onStartChange(e, 'month', endDate)}
-                    step={'1'}
-                    className={styles.input}
-                  />
-                </div>
-                <div className={styles.selectorGroup}>
-                  <label className={styles.selectorLabel}>{labels.day || 'day'}</label>
-                  <input
-                    type="number"
-                    min={'1'}
-                    max={'31'}
-                    value={startDate.date().toString()}
-                    onChange={(e) => this.onStartChange(e, 'date', endDate)}
-                    step={'1'}
-                    className={styles.input}
-                  />
-                </div>
-                <div className={styles.selectorGroup}>
-                  <label className={styles.selectorLabel}>{labels.hour || 'hour'}</label>
-                  <input
-                    type="number"
-                    min={'0'}
-                    max={'23'}
-                    value={startDate.hour().toString()}
-                    onChange={(e) => this.onStartChange(e, 'hour', endDate)}
-                    step={'1'}
-                    className={styles.input}
-                  />
+              </div>
+              <div className={styles.dateContainer}>
+                <label className={styles.dateLabel}>{labels.end}</label>
+                <div className={styles.selectorsContainer}>
+                  <div className={classNames(styles.selectorGroup, styles.long)}>
+                    <label className={styles.selectorLabel}>{labels.year || 'year'}</label>
+                    <input
+                      name="end year"
+                      type="number"
+                      min={bounds.min.slice(0, 4)}
+                      max={(parseInt(bounds.max.slice(0, 4)) + 1).toString()}
+                      value={endDate.year().toString()}
+                      onChange={(e) => this.onEndChange(e, 'year', startDate)}
+                      step={'1'}
+                      className={styles.input}
+                    />
+                  </div>
+                  <div className={styles.selectorGroup}>
+                    <label className={styles.selectorLabel}>{labels.month || 'month'}</label>
+                    <input
+                      name="end month"
+                      type="number"
+                      min="1"
+                      max="12"
+                      value={(endDate.month() + 1).toString()}
+                      onChange={(e) => this.onEndChange(e, 'month', startDate)}
+                      step={'1'}
+                      className={styles.input}
+                    />
+                  </div>
+                  <div className={styles.selectorGroup}>
+                    <label className={styles.selectorLabel}>{labels.day || 'day'}</label>
+                    <input
+                      name="end day"
+                      type="number"
+                      min={'1'}
+                      max={endDate.daysInMonth()}
+                      value={endDate.date().toString()}
+                      onChange={(e) => this.onEndChange(e, 'date', startDate)}
+                      step={'1'}
+                      className={styles.input}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-            <div className={styles.dateContainer}>
-              <label className={styles.dateLabel}>{labels.end}</label>
-              <div className={styles.selectorsContainer}>
-                <div className={styles.selectorGroup}>
-                  <label className={styles.selectorLabel}>{labels.year || 'year'}</label>
-                  <input
-                    type="number"
-                    min={bounds.min.slice(0, 4)}
-                    max={bounds.max.slice(0, 4)}
-                    value={endDate.year().toString()}
-                    onChange={(e) => this.onEndChange(e, 'year', startDate)}
-                    step={'1'}
-                    className={styles.input}
-                  />
-                </div>
-                <div className={styles.selectorGroup}>
-                  <label className={styles.selectorLabel}>{labels.month || 'month'}</label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="12"
-                    value={(endDate.month() + 1).toString()}
-                    onChange={(e) => this.onEndChange(e, 'month', startDate)}
-                    step={'1'}
-                    className={styles.input}
-                  />
-                </div>
-                <div className={styles.selectorGroup}>
-                  <label className={styles.selectorLabel}>{labels.day || 'day'}</label>
-                  <input
-                    type="number"
-                    min={'1'}
-                    max={'31'}
-                    value={endDate.date().toString()}
-                    onChange={(e) => this.onEndChange(e, 'date', startDate)}
-                    step={'1'}
-                    className={styles.input}
-                  />
-                </div>
-                <div className={styles.selectorGroup}>
-                  <label className={styles.selectorLabel}>{labels.hour || 'hour'}</label>
-                  <input
-                    type="number"
-                    min={'0'}
-                    max={'23'}
-                    value={endDate.hour().toString()}
-                    onChange={(e) => this.onEndChange(e, 'hour', startDate)}
-                    step={'1'}
-                    className={styles.input}
-                  />
-                </div>
-              </div>
+            <div className={styles.actions}>
+              <Select
+                className={classNames(styles.cta, styles.lastX)}
+                direction="top"
+                options={this.lastXOptions}
+                selectedOption={currentLastXSelectedOption}
+                onSelect={(selected) => {
+                  this.onLastXSelect(selected)
+                }}
+              />
+              <button
+                type="submit"
+                disabled={disabled}
+                className={classNames(styles.cta, { [styles.disabled]: disabled })}
+                onClick={() => {
+                  this.submit(startDate.toISOString(), endDate.toISOString())
+                }}
+              >
+                {labels.done}
+              </button>
             </div>
-          </div>
-          <div className={styles.actions}>
-            <Select
-              className={classNames(styles.cta, styles.lastX)}
-              direction="top"
-              options={this.lastXOptions}
-              selectedOption={currentLastXSelectedOption}
-              onSelect={(selected) => {
-                this.onLastXSelect(selected)
-              }}
-            />
-
-            <button
-              type="button"
-              disabled={disabled}
-              className={classNames(styles.cta, { [styles.disabled]: disabled })}
-              onClick={() => {
-                this.submit(startDate.toISOString(), endDate.toISOString())
-              }}
-            >
-              {labels.done}
-            </button>
-          </div>
+          </form>
         </div>
       </div>
     )
