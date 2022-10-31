@@ -10,6 +10,7 @@ interface TabsProps {
   activeTab?: string
   onTabClick?: (tab: Tab, e: React.MouseEvent) => void
   mountAllTabsOnLoad?: boolean
+  tabClassName?: string
   buttonSize?: ButtonSize
 }
 
@@ -18,6 +19,7 @@ export function Tabs({
   tabs,
   onTabClick,
   mountAllTabsOnLoad = false,
+  tabClassName = '',
   buttonSize = 'default',
 }: TabsProps) {
   const activeTabId = activeTab || tabs?.[0]?.id
@@ -61,7 +63,7 @@ export function Tabs({
               id={tab.id}
               role="tabpanel"
               aria-expanded={tabSelected}
-              className={cx(styles.content, { [styles.contentActive]: tabSelected })}
+              className={cx(styles.content, tabClassName, { [styles.contentActive]: tabSelected })}
             >
               {tab.content}
             </div>
