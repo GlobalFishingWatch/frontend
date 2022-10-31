@@ -76,7 +76,9 @@ export const downloadActivityThunk = createAsyncThunk<
         'group-by': groupBy,
       }
 
-      const fileName = `${areaName} - ${downloadActivityParams['date-range']}.zip`
+      const fileName = `${areaName} - ${downloadActivityParams['date-range']}.${
+        format === Format.Json ? 'json' : 'zip'
+      }`
       const downloadUrl = `/4wings/report?${stringify(downloadActivityParams, {
         arrayFormat: 'indices',
       })}`

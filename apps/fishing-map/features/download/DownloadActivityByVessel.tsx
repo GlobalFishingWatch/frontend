@@ -1,4 +1,4 @@
-import { Fragment, useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
@@ -36,6 +36,7 @@ import {
   Format,
   GroupBy,
   TemporalResolution,
+  GROUP_BY_OPTIONS,
   VESSEL_FORMAT_OPTIONS,
 } from './downloadActivity.config'
 
@@ -55,33 +56,7 @@ function DownloadActivityByVessel() {
   const downloadError = useSelector(selectDownloadActivityError)
   const downloadFinished = useSelector(selectDownloadActivityFinished)
   const [format, setFormat] = useState(VESSEL_FORMAT_OPTIONS[0].id as Format)
-
-  const groupByOptions: ChoiceOption[] = useMemo(
-    () => [
-      {
-        id: GroupBy.Vessel,
-        title: t('common.vessel', 'Vessel'),
-      },
-      {
-        id: GroupBy.MMSI,
-        title: t('vessel.mmsi', 'MMSI'),
-      },
-      {
-        id: GroupBy.Flag,
-        title: t('vessel.flag', 'Flag'),
-      },
-      {
-        id: GroupBy.GearType,
-        title: t('vessel.geartype', 'Gear Type'),
-      },
-      {
-        id: GroupBy.FlagAndGearType,
-        title: `${t('vessel.flag', 'Flag')} + ${t('vessel.geartype', 'Gear Type')}`,
-      },
-    ],
-    [t]
-  )
-  const [groupBy, setGroupBy] = useState(groupByOptions[0].id as GroupBy)
+  const [groupBy, setGroupBy] = useState(GROUP_BY_OPTIONS[0].id as GroupBy)
 
   const temporalResolutionOptions: ChoiceOption[] = useMemo(
     () => [
@@ -208,6 +183,7 @@ function DownloadActivityByVessel() {
       dataviews: downloadDataviews,
       format,
       temporalResolution,
+      spatialAggregation: true,
       groupBy,
     }
     await dispatch(downloadActivityThunk(downloadParams))
@@ -250,28 +226,24 @@ function DownloadActivityByVessel() {
           onOptionClick={(option) => setFormat(option.id as Format)}
         />
       </div>
-      {(format === Format.Csv || format === Format.Json) && (
-        <Fragment>
-          <div>
-            <label>{t('download.groupActivityBy', 'Group activity by')}</label>
-            <Choice
-              options={groupByOptions}
-              size="small"
-              activeOption={groupBy}
-              onOptionClick={(option) => setGroupBy(option.id as GroupBy)}
-            />
-          </div>
-          <div>
-            <label>{t('download.temporalResolution', 'Temporal Resolution')}</label>
-            <Choice
-              options={filteredTemporalResolutionOptions}
-              size="small"
-              activeOption={temporalResolution}
-              onOptionClick={(option) => setTemporalResolution(option.id as TemporalResolution)}
-            />
-          </div>
-        </Fragment>
-      )}
+      <div>
+        <label>{t('download.groupActivityBy', 'Group activity by')}</label>
+        <Choice
+          options={GROUP_BY_OPTIONS}
+          size="small"
+          activeOption={groupBy}
+          onOptionClick={(option) => setGroupBy(option.id as GroupBy)}
+        />
+      </div>
+      <div>
+        <label>{t('download.temporalResolution', 'Temporal Resolution')}</label>
+        <Choice
+          options={filteredTemporalResolutionOptions}
+          size="small"
+          activeOption={temporalResolution}
+          onOptionClick={(option) => setTemporalResolution(option.id as TemporalResolution)}
+        />
+      </div>
       <div className={styles.footer}>
         {datasetsDownloadNotSupported.length > 0 && (
           <p className={styles.footerLabel}>

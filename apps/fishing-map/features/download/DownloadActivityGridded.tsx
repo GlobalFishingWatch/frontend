@@ -40,6 +40,7 @@ import {
   MAX_AREA_FOR_HIGH_SPATIAL_RESOLUTION,
   SPATIAL_RESOLUTION_OPTIONS,
   GRIDDED_FORMAT_OPTIONS,
+  TemporalResolution,
 } from './downloadActivity.config'
 
 const fallbackDataviews = []
@@ -135,8 +136,9 @@ function DownloadActivityByVessel() {
       areaName: downloadAreaName,
       dataviews: downloadDataviews,
       format,
-      spatialAggregation: true,
+      spatialAggregation: false,
       spatialResolution,
+      temporalResolution: TemporalResolution.Full,
     }
     await dispatch(downloadActivityThunk(downloadParams))
 

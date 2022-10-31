@@ -36,12 +36,15 @@ export enum SpatialResolution {
 
 export const GRIDDED_FORMAT_OPTIONS: ChoiceOption[] = [
   {
-    id: Format.Csv,
-    title: 'csv',
+    id: Format.GeoTIFF,
+    title: 'geotiff',
   },
   {
-    id: Format.Json,
-    title: 'json',
+    id: Format.NetCDF,
+    title: 'netcdf',
+    disabled: true,
+    tooltip: t('common.comingSoon', 'Coming Soon!'),
+    tooltipPlacement: 'top',
   },
 ]
 
@@ -54,16 +57,28 @@ export const VESSEL_FORMAT_OPTIONS: ChoiceOption[] = [
     id: Format.Json,
     title: 'json',
   },
+]
+
+export const GROUP_BY_OPTIONS: ChoiceOption[] = [
   {
-    id: Format.GeoTIFF,
-    title: 'geotiff',
+    id: GroupBy.Vessel,
+    title: t('common.vessel', 'Vessel'),
   },
   {
-    id: Format.NetCDF,
-    title: 'netcdf',
-    disabled: true,
-    tooltip: t('common.comingSoon', 'Coming Soon!'),
-    tooltipPlacement: 'top',
+    id: GroupBy.MMSI,
+    title: t('vessel.mmsi', 'MMSI'),
+  },
+  {
+    id: GroupBy.Flag,
+    title: t('vessel.flag', 'Flag'),
+  },
+  {
+    id: GroupBy.GearType,
+    title: t('vessel.geartype', 'Gear Type'),
+  },
+  {
+    id: GroupBy.FlagAndGearType,
+    title: `${t('vessel.flag', 'Flag')} + ${t('vessel.geartype', 'Gear Type')}`,
   },
 ]
 
@@ -79,6 +94,9 @@ export const SPATIAL_RESOLUTION_OPTIONS: ChoiceOption[] = [
   {
     id: SpatialResolution.VeryHigh,
     title: '0.001º',
+    disabled: true,
+    tooltip: t('common.comingSoon', 'Coming Soon!'),
+    tooltipPlacement: 'top',
   },
 ]
 
