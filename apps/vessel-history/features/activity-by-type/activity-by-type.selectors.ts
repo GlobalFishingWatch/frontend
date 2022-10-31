@@ -27,9 +27,17 @@ export const selectFilteredEventsWithMainPortVisit = createSelector(
         )
         const duration = durationDiff.toObject()
 
-        const { name, flag } = event.port_visit?.intermediateAnchorage ??
-          event.port_visit?.startAnchorage ??
-          event.port_visit?.endAnchorage ?? { name: undefined, flag: undefined }
+        const { name, flag } = [
+          event.port_visit?.intermediateAnchorage,
+          event.port_visit?.startAnchorage,
+          event.port_visit?.endAnchorage,
+        ].reduce(
+          (prev, curr) => ({
+            name: prev.name ? prev.name : curr.name,
+            flag: prev.name ? prev.flag : curr.flag,
+          }),
+          { name: undefined, flag: undefined }
+        )
 
         const portLabel = name
           ? [name, ...(flag ? [t(`flags:${flag}` as any, flag.toLocaleUpperCase())] : [])].join(

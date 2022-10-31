@@ -186,9 +186,17 @@ export const selectEventsWithRenderingInfo = createSelector(
             descriptionGeneric = t('event.encounter')
             break
           case EventTypes.Port:
-            const { name, flag } = event.port_visit?.intermediateAnchorage ??
-              event.port_visit?.startAnchorage ??
-              event.port_visit?.endAnchorage ?? { name: undefined, flag: undefined }
+            const { name, flag } = [
+              event.port_visit?.intermediateAnchorage,
+              event.port_visit?.startAnchorage,
+              event.port_visit?.endAnchorage,
+            ].reduce(
+              (prev, curr) => ({
+                name: prev.name ? prev.name : curr.name,
+                flag: prev.name ? prev.flag : curr.flag,
+              }),
+              { name: undefined, flag: undefined }
+            )
 
             const portType = event.id.endsWith('-exit') ? 'exited' : 'entered'
             if (name) {
