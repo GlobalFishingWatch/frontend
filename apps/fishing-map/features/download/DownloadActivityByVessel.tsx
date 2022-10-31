@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import cx from 'classnames'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { Geometry } from 'geojson'
@@ -257,11 +257,26 @@ function DownloadActivityByVessel() {
           </p>
         )}
 
-        {downloadError && (
+        {downloadError ? (
           <p className={cx(styles.footerLabel, styles.error)}>
             {`${t('analysis.errorMessage', 'Something went wrong')} 🙈`}
           </p>
-        )}
+        ) : format === Format.Json ? (
+          <p className={styles.footerLabel}>
+            <Trans i18nKey="analysis.apiDisclaimer">
+              Are you looking to use GFW data in your application, find our API documentation
+              <a
+                href="https://globalfishingwatch.org/our-apis/documentation"
+                className={styles.link}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {' '}
+                here
+              </a>
+            </Trans>
+          </p>
+        ) : null}
         <Button
           onClick={onDownloadClick}
           loading={downloadLoading || downloadAreaLoading}

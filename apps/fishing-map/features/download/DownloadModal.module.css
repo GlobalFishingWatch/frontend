@@ -11,13 +11,13 @@
   gap: var(--space-S);
 }
 
+.link {
+  text-decoration: underline;
+}
+
 .info {
   display: flex;
   gap: var(--space-S);
-}
-
-.downloadBtn {
-  margin-top: var(--space-M);
 }
 
 .footer {
@@ -31,6 +31,7 @@
 .footerLabel {
   flex: 1;
   font: var(--font-S);
+  line-height: 1;
   opacity: var(--opacity-secondary);
 }
 

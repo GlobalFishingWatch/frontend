@@ -1,6 +1,7 @@
 {
   "analysis": {
     "activityChange": "Activity change",
+    "apiDisclaimer": "Are you looking to use GFW data in your application, find our API documentation <1>here.</1>",
     "beforeAfter": "before/after",
     "beforeAfterDate": "date",
     "beforeAfterDuration": "duration",
