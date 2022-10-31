@@ -9,6 +9,9 @@ interface EventProps {
   onInfoClick?: (event: RenderedEvent) => void
   onMapClick?: (event: RenderedEvent | Voyage) => void
   onToggleClick?: (event: RenderedVoyage) => void
+  options?: {
+    displayPortVisitsAsOneEvent: boolean
+  }
 }
 
 const ActivityItem: React.FC<EventProps> = ({
@@ -17,6 +20,7 @@ const ActivityItem: React.FC<EventProps> = ({
   onInfoClick = () => {},
   onMapClick = () => {},
   onToggleClick = () => {},
+  options = { displayPortVisitsAsOneEvent: false },
 }): React.ReactElement => {
   return (
     <Fragment>
@@ -33,7 +37,8 @@ const ActivityItem: React.FC<EventProps> = ({
           highlighted={highlighted}
           onMapClick={onMapClick}
           onInfoClick={onInfoClick}
-          ></ActivityEvent>
+          options={options}
+        ></ActivityEvent>
       )}
     </Fragment>
   )

@@ -20,7 +20,7 @@
     "abortcontroller-polyfill": "^1.4.0",
     "color-blend": "^3.0.1",
     "color-convert": "^2.0.1",
-    "d3-scale": "^4.0.2",
+    "d3-scale": "^3.3.0",
     "geojson-vt": "^3.2.1",
     "memoize-one": "^6.0.0",
     "pbf": "^3.2.1",
@@ -30,7 +30,7 @@
   "devDependencies": {
     "@types/color-convert": "^2.0.0",
     "@types/d3": "^5.7.2",
-    "@types/d3-scale": "^4.0.2",
+    "@types/d3-scale": "^3.2.2",
     "@types/geojson": "^7946.0.7",
     "@types/luxon": "^1.27.1",
     "@types/node": "^14.14.37"
