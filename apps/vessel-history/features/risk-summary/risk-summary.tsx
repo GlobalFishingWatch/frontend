@@ -33,7 +33,7 @@ export interface RiskSummaryProps {
 
 export function RiskSummary(props: RiskSummaryProps) {
   const { t } = useTranslation()
-  const { authorizedIdentityIndicators: showIdentityIndicators, authorizedInsurer } = useUser()
+  const { authorizedIdentityIndicators: showIdentityIndicators } = useUser()
   const {
     coverage,
     encountersInForeignEEZ,
@@ -131,7 +131,6 @@ export function RiskSummary(props: RiskSummaryProps) {
 
   const hasIUUIndicators = iuuBlacklisted
 
-  if (!authorizedInsurer) return <Fragment />
   if (eventsLoading || indicatorsLoading) return <Spinner className={styles.spinnerFull} />
   const hasEncountersIndicators =
     hasEncountersInMPAs || hasEncountersInForeignEEZs || hasEncountersInRFMOWithoutAuthorization
