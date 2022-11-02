@@ -288,7 +288,7 @@ const Profile: React.FC = (props): React.ReactElement => {
     () =>
       currentProfileIsInsurer
         ? [riskSummaryTab, infoTab, activityByTypeTab, mapTab]
-        : [infoTab, activityTab, mapTab],
+        : [infoTab, activityTab, mapTab, riskSummaryTab],
     [currentProfileIsInsurer, riskSummaryTab, infoTab, activityTab, mapTab, activityByTypeTab]
   )
 
