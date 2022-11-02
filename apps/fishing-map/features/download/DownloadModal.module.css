@@ -28,6 +28,33 @@
   justify-content: flex-end;
 }
 
+.downloadFooter {
+  background-image: url('../../assets/images/download-popup.jpg');
+  background-size: cover;
+  height: 11rem;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-S) var(--space-M);
+}
+
+.downloadLabel {
+  margin-top: 0;
+  margin-bottom: var(--space-XS);
+  font: var(--font-XL);
+  color: var(--color-white);
+}
+
+/* .modalContent .downloadFooter needed for specifity to override the ui-component */
+.modalContent .downloadFooter .downloadBtn {
+  background-color: var(--color-white);
+  color: var(--default-color-blue);
+  max-width: 24rem;
+}
+
+.modalContent .downloadFooter .downloadBtn:hover {
+  background-color: var(--color-white);
+}
+
 .footerLabel {
   flex: 1;
   font: var(--font-S);

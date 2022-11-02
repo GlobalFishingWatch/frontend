@@ -19,7 +19,6 @@ import { TimelineDatesRange } from 'features/map/controls/MapInfo'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
-import { REPORT_DAYS_LIMIT } from 'data/config'
 import { selectUserData } from 'features/user/user.slice'
 import {
   checkDatasetReportPermission,
@@ -39,6 +38,7 @@ import {
   GROUP_BY_OPTIONS,
   VESSEL_FORMAT_OPTIONS,
 } from './downloadActivity.config'
+import { getDownloadReportSupported } from './download.utils'
 
 const fallbackDataviews = []
 function DownloadActivityByVessel() {
@@ -91,6 +91,7 @@ function DownloadActivityByVessel() {
       }
     }
   }, [end, start])
+  const isDownloadReportSupported = getDownloadReportSupported(start, end)
 
   const filteredTemporalResolutionOptions: ChoiceOption[] = useMemo(
     () =>
@@ -256,7 +257,11 @@ function DownloadActivityByVessel() {
           </p>
         )}
 
-        {downloadError ? (
+        {!isDownloadReportSupported ? (
+          <p className={cx(styles.footerLabel, styles.error)}>
+            {t('download.timerangeTooLong', 'The maximum time range is 1 year')}
+          </p>
+        ) : downloadError ? (
           <p className={cx(styles.footerLabel, styles.error)}>
             {`${t('analysis.errorMessage', 'Something went wrong')} 🙈`}
           </p>
@@ -280,12 +285,7 @@ function DownloadActivityByVessel() {
           onClick={onDownloadClick}
           loading={downloadLoading || downloadAreaLoading}
           className={styles.downloadBtn}
-          disabled={!duration || duration.days > REPORT_DAYS_LIMIT || downloadAreaLoading}
-          tooltip={
-            duration && duration.days > REPORT_DAYS_LIMIT
-              ? t('download.timerangeTooLong', 'The maximum time range is 1 year')
-              : ''
-          }
+          disabled={!isDownloadReportSupported || downloadAreaLoading}
         >
           {downloadFinished ? <Icon icon="tick" /> : t('download.title', 'Download')}
         </Button>

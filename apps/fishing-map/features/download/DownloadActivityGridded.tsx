@@ -21,7 +21,6 @@ import { TimelineDatesRange } from 'features/map/controls/MapInfo'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
-import { REPORT_DAYS_LIMIT } from 'data/config'
 import { selectUserData } from 'features/user/user.slice'
 import {
   checkDatasetReportPermission,
@@ -32,7 +31,6 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDownloadActivityArea } from 'features/download/download.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import DatasetLabel from 'features/datasets/DatasetLabel'
-import { getUTCDateTime } from 'utils/dates'
 import styles from './DownloadModal.module.css'
 import {
   Format,
@@ -42,6 +40,7 @@ import {
   GRIDDED_FORMAT_OPTIONS,
   TemporalResolution,
 } from './downloadActivity.config'
+import { getDownloadReportSupported } from './download.utils'
 
 const fallbackDataviews = []
 function DownloadActivityByVessel() {
@@ -158,17 +157,7 @@ function DownloadActivityByVessel() {
     }, 1500)
   }
 
-  const duration = useMemo(() => {
-    if (start && end) {
-      const startDateTime = getUTCDateTime(start)
-      const endDateTime = getUTCDateTime(end)
-      return {
-        years: endDateTime.diff(startDateTime, ['years']).years,
-        months: endDateTime.diff(startDateTime, ['months']).months,
-        days: endDateTime.diff(startDateTime, ['days']).days,
-      }
-    }
-  }, [end, start])
+  const isDownloadReportSupported = getDownloadReportSupported(start, end)
 
   return (
     <div className={styles.container}>
@@ -215,21 +204,20 @@ function DownloadActivityByVessel() {
           </p>
         )}
 
-        {downloadError && (
+        {!isDownloadReportSupported ? (
+          <p className={cx(styles.footerLabel, styles.error)}>
+            {t('download.timerangeTooLong', 'The maximum time range is 1 year')}
+          </p>
+        ) : downloadError ? (
           <p className={cx(styles.footerLabel, styles.error)}>
             {`${t('analysis.errorMessage', 'Something went wrong')} 🙈`}
           </p>
-        )}
+        ) : null}
         <Button
           onClick={onDownloadClick}
           loading={downloadLoading || downloadAreaLoading}
           className={styles.downloadBtn}
-          disabled={!duration || duration.days > REPORT_DAYS_LIMIT || downloadAreaLoading}
-          tooltip={
-            duration && duration.days > REPORT_DAYS_LIMIT
-              ? t('download.timerangeTooLong', 'The maximum time range is 1 year')
-              : ''
-          }
+          disabled={!isDownloadReportSupported || downloadAreaLoading}
         >
           {downloadFinished ? <Icon icon="tick" /> : t('download.title', 'Download')}
         </Button>
