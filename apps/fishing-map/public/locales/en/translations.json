@@ -1,6 +1,7 @@
 {
   "analysis": {
     "activityChange": "Activity change",
+    "apiDisclaimer": "Are you looking to use GFW data in your application, find our API documentation <1>here.</1>",
     "beforeAfter": "before/after",
     "beforeAfterDate": "date",
     "beforeAfterDuration": "duration",
@@ -212,7 +213,7 @@
     "daily": "Daily",
     "datasetsNotAllowed": "You don't have permissions to download the following datasets:",
     "format": "Format",
-    "groupActivityBy": "Group activity by",
+    "groupActivityBy": "Group activity by vessel property",
     "highResNotAvailable": "Your area is too big",
     "monthly": "Monthly",
     "monthlyNotAvailable": "Your time range is shorter than 1 month",

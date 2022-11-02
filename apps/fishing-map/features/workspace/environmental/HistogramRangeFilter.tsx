@@ -50,7 +50,6 @@ function HistogramRangeFilter({ dataview }: HistogramRangeFilterProps) {
     min: minSliderValue,
     max: maxSliderValue,
   }
-  // console.log(sliderConfig)
 
   const onSliderChange = useCallback(
     (rangeSelected) => {

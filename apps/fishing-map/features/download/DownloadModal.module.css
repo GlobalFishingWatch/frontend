@@ -1,8 +1,18 @@
+.modalContent {
+  height: 100%;
+  padding: 0;
+}
+
 .container {
+  padding: var(--space-M);
+  min-height: 40rem;
   display: flex;
   flex-direction: column;
   gap: var(--space-S);
-  min-height: 100%;
+}
+
+.link {
+  text-decoration: underline;
 }
 
 .info {
@@ -18,9 +28,37 @@
   justify-content: flex-end;
 }
 
+.downloadFooter {
+  background-image: url('../../assets/images/download-popup.jpg');
+  background-size: cover;
+  height: 11rem;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-S) var(--space-M);
+}
+
+.downloadLabel {
+  margin-top: 0;
+  margin-bottom: var(--space-XS);
+  font: var(--font-XL);
+  color: var(--color-white);
+}
+
+/* .modalContent .downloadFooter needed for specifity to override the ui-component */
+.modalContent .downloadFooter .downloadBtn {
+  background-color: var(--color-white);
+  color: var(--default-color-blue);
+  max-width: 24rem;
+}
+
+.modalContent .downloadFooter .downloadBtn:hover {
+  background-color: var(--color-white);
+}
+
 .footerLabel {
   flex: 1;
   font: var(--font-S);
+  line-height: 1;
   opacity: var(--opacity-secondary);
 }
 
