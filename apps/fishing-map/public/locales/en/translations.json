@@ -213,7 +213,7 @@
     "daily": "Daily",
     "datasetsNotAllowed": "You don't have permissions to download the following datasets:",
     "format": "Format",
-    "groupActivityBy": "Group activity by",
+    "groupActivityBy": "Group activity by vessel property",
     "highResNotAvailable": "Your area is too big",
     "monthly": "Monthly",
     "monthlyNotAvailable": "Your time range is shorter than 1 month",

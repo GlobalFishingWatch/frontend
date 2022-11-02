@@ -40,6 +40,14 @@ export const GRIDDED_FORMAT_OPTIONS: ChoiceOption[] = [
     title: 'geotiff',
   },
   {
+    id: Format.Csv,
+    title: 'csv',
+  },
+  {
+    id: Format.Json,
+    title: 'json',
+  },
+  {
     id: Format.NetCDF,
     title: 'netcdf',
     disabled: true,
@@ -62,7 +70,7 @@ export const VESSEL_FORMAT_OPTIONS: ChoiceOption[] = [
 export const GROUP_BY_OPTIONS: ChoiceOption[] = [
   {
     id: GroupBy.Vessel,
-    title: t('common.vessel', 'Vessel'),
+    title: t('common.vesselId', 'Vessel id'),
   },
   {
     id: GroupBy.MMSI,

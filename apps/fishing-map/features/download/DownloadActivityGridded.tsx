@@ -136,15 +136,15 @@ function DownloadActivityByVessel() {
       areaName: downloadAreaName,
       dataviews: downloadDataviews,
       format,
-      spatialAggregation: false,
       spatialResolution,
+      spatialAggregation: false,
       temporalResolution: TemporalResolution.Full,
     }
     await dispatch(downloadActivityThunk(downloadParams))
 
     uaEvent({
-      category: 'Download',
-      action: `Activity download`,
+      category: 'Data downloads',
+      action: `Download GeoTIFF file`,
       label: getEventLabel([
         downloadAreaName,
         ...downloadDataviews

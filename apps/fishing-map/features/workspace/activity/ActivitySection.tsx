@@ -124,7 +124,6 @@ function ActivitySection(): React.ReactElement {
       }
       return option
     })
-    // console.log(options)
     return options.sort((a, b) => a.label.localeCompare(b.label))
   }, [activityDataviews])
 

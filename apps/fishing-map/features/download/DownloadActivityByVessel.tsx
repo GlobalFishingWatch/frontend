@@ -123,7 +123,6 @@ function DownloadActivityByVessel() {
   const [temporalResolution, setTemporalResolution] = useState(
     filteredTemporalResolutionOptions[0].id as TemporalResolution
   )
-  console.log(filteredTemporalResolutionOptions)
 
   const downloadArea = useSelector(selectDownloadActivityArea)
   const downloadAreaName = downloadArea?.name
@@ -227,7 +226,7 @@ function DownloadActivityByVessel() {
         />
       </div>
       <div>
-        <label>{t('download.groupActivityBy', 'Group activity by')}</label>
+        <label>{t('download.groupActivityBy', 'Group activity by vessel property')}</label>
         <Choice
           options={GROUP_BY_OPTIONS}
           size="small"
@@ -266,7 +265,7 @@ function DownloadActivityByVessel() {
             <Trans i18nKey="analysis.apiDisclaimer">
               Are you looking to use GFW data in your application, find our API documentation
               <a
-                href="https://globalfishingwatch.org/our-apis/documentation"
+                href="https://globalfishingwatch.org/our-apis/documentation#create-a-report-of-a-specified-region"
                 className={styles.link}
                 target="_blank"
                 rel="noreferrer"
