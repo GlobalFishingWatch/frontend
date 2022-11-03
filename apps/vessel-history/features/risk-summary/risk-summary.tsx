@@ -320,7 +320,7 @@ export function RiskSummary(props: RiskSummaryProps) {
                 'risk.portVisitsToNonPSMAPortState',
                 '{{count}} visits to a port in a country that has not ratified the PSMA state',
                 {
-                  count: portVisitsToNonPSMAPortState.length,
+                  count: portVisitsToNonPSMAPortState.length / 3,
                 }
               ) as string
             }

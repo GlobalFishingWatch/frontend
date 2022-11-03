@@ -127,7 +127,8 @@ export function useRiskIndicator(showIdentityIndicators: boolean): UseRiskIndica
             Math.max(0, uniqueOwners.length - 1) +
             Math.max(0, uniqueNames.length - 1)
           : 0) +
-        portVisitsToNonPSMAPortState.length +
+        // Port visits have also two sub events (entry and exit)
+        portVisitsToNonPSMAPortState.length / 3 +
         vesselFlagsOnMOU.length +
         (gapsIntentionalDisabling?.length ?? 0) +
         0,
