@@ -28,10 +28,19 @@
   justify-content: flex-end;
 }
 
-.downloadFooter {
+.downloadFooterContainer {
+  height: 0;
+  overflow: hidden;
   background-image: url('../../assets/images/download-popup.jpg');
   background-size: cover;
+  transition: height 300ms ease-in-out;
+}
+
+.downloadFooterContainer.open {
   height: 11rem;
+}
+
+.downloadFooter {
   display: flex;
   flex-direction: column;
   padding: var(--space-S) var(--space-M);
