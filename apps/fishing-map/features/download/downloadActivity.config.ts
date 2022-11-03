@@ -1,20 +1,28 @@
 import { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { t } from 'features/i18n/i18n'
 
+export enum Downloads {
+  ByVessel = 'byVessel',
+  Gridded = 'gridded',
+}
+
 export enum Format {
   GeoTIFF = 'tif',
+  Json = 'json',
   Csv = 'csv',
   NetCDF = 'netcdf',
 }
 
 export enum GroupBy {
   Vessel = 'vessel_id',
+  MMSI = 'mmsi',
   GearType = 'gearType',
   Flag = 'flag',
   FlagAndGearType = 'flagAndGearType',
 }
 
 export enum TemporalResolution {
+  Full = 'entire',
   Daily = 'daily',
   Monthly = 'monthly',
   Yearly = 'yearly',
@@ -23,16 +31,21 @@ export enum TemporalResolution {
 export enum SpatialResolution {
   Low = 'low',
   High = 'high',
+  VeryHigh = 'very-high',
 }
 
-export const FORMAT_OPTIONS: ChoiceOption[] = [
+export const GRIDDED_FORMAT_OPTIONS: ChoiceOption[] = [
+  {
+    id: Format.GeoTIFF,
+    title: 'geotiff',
+  },
   {
     id: Format.Csv,
     title: 'csv',
   },
   {
-    id: Format.GeoTIFF,
-    title: 'geotiff',
+    id: Format.Json,
+    title: 'json',
   },
   {
     id: Format.NetCDF,
@@ -40,6 +53,40 @@ export const FORMAT_OPTIONS: ChoiceOption[] = [
     disabled: true,
     tooltip: t('common.comingSoon', 'Coming Soon!'),
     tooltipPlacement: 'top',
+  },
+]
+
+export const VESSEL_FORMAT_OPTIONS: ChoiceOption[] = [
+  {
+    id: Format.Csv,
+    title: 'csv',
+  },
+  {
+    id: Format.Json,
+    title: 'json',
+  },
+]
+
+export const GROUP_BY_OPTIONS: ChoiceOption[] = [
+  {
+    id: GroupBy.Vessel,
+    title: t('common.vesselId', 'Vessel id'),
+  },
+  {
+    id: GroupBy.MMSI,
+    title: t('vessel.mmsi', 'MMSI'),
+  },
+  {
+    id: GroupBy.Flag,
+    title: t('vessel.flag', 'Flag'),
+  },
+  {
+    id: GroupBy.GearType,
+    title: t('vessel.geartype', 'Gear Type'),
+  },
+  {
+    id: GroupBy.FlagAndGearType,
+    title: `${t('vessel.flag', 'Flag')} + ${t('vessel.geartype', 'Gear Type')}`,
   },
 ]
 
@@ -51,6 +98,13 @@ export const SPATIAL_RESOLUTION_OPTIONS: ChoiceOption[] = [
   {
     id: SpatialResolution.High,
     title: '0.01º',
+  },
+  {
+    id: SpatialResolution.VeryHigh,
+    title: '0.001º',
+    disabled: true,
+    tooltip: t('common.comingSoon', 'Coming Soon!'),
+    tooltipPlacement: 'top',
   },
 ]
 
