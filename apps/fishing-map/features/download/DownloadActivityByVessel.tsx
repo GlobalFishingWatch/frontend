@@ -62,19 +62,19 @@ function DownloadActivityByVessel() {
     () => [
       {
         id: TemporalResolution.Full,
-        title: t('download.fullTimeRange', 'Full time range'),
+        title: t('download.fullTimeRange', 'Selected time range'),
       },
       {
         id: TemporalResolution.Daily,
-        title: t('download.daily', 'Daily'),
+        title: t('download.daily', 'Day'),
       },
       {
         id: TemporalResolution.Monthly,
-        title: t('download.monthly', 'Monthly'),
+        title: t('download.monthly', 'Month'),
       },
       {
         id: TemporalResolution.Yearly,
-        title: t('download.yearly', 'Yearly'),
+        title: t('download.yearly', 'Year'),
       },
     ],
     [t]
@@ -236,7 +236,7 @@ function DownloadActivityByVessel() {
         />
       </div>
       <div>
-        <label>{t('download.temporalResolution', 'Temporal Resolution')}</label>
+        <label>{t('download.temporalResolution', 'Group time by')}</label>
         <Choice
           options={filteredTemporalResolutionOptions}
           size="small"

@@ -24,12 +24,12 @@ function DownloadActivityModal() {
     return [
       {
         id: Downloads.ByVessel,
-        title: t('download.byVessel', 'Data per vessel'),
+        title: t('download.byVessel', 'Active vessels'),
         content: <DownloadActivityByVessel />,
       },
       {
         id: Downloads.Gridded,
-        title: t('download.gridded', 'Data per grid cell'),
+        title: t('download.gridded', 'Gridded activity'),
         content: <DownloadActivityGridded />,
       },
     ]
