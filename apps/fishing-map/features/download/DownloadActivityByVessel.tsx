@@ -1,6 +1,6 @@
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState, Fragment } from 'react'
 import cx from 'classnames'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { Geometry } from 'geojson'
@@ -27,6 +27,7 @@ import {
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDownloadActivityArea } from 'features/download/download.selectors'
+import DownloadActivityProductsBanner from 'features/download/DownloadActivityProductsBanner'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getUTCDateTime } from 'utils/dates'
@@ -204,93 +205,81 @@ function DownloadActivityByVessel() {
     }, 1500)
   }
   return (
-    <div className={styles.container}>
-      <div className={styles.info}>
-        <div>
-          <label>{t('download.area', 'Area')}</label>
-          <Tag>{downloadAreaName || EMPTY_FIELD_PLACEHOLDER}</Tag>
+    <Fragment>
+      <div className={styles.container}>
+        <div className={styles.info}>
+          <div>
+            <label>{t('download.area', 'Area')}</label>
+            <Tag>{downloadAreaName || EMPTY_FIELD_PLACEHOLDER}</Tag>
+          </div>
+          <div>
+            <label>{t('download.timeRange', 'Time Range')}</label>
+            <Tag>
+              <TimelineDatesRange />
+            </Tag>
+          </div>
         </div>
         <div>
-          <label>{t('download.timeRange', 'Time Range')}</label>
-          <Tag>
-            <TimelineDatesRange />
-          </Tag>
+          <label>{t('download.format', 'Format')}</label>
+          <Choice
+            options={VESSEL_FORMAT_OPTIONS}
+            size="small"
+            activeOption={format}
+            onOptionClick={(option) => setFormat(option.id as Format)}
+          />
         </div>
-      </div>
-      <div>
-        <label>{t('download.format', 'Format')}</label>
-        <Choice
-          options={VESSEL_FORMAT_OPTIONS}
-          size="small"
-          activeOption={format}
-          onOptionClick={(option) => setFormat(option.id as Format)}
-        />
-      </div>
-      <div>
-        <label>{t('download.groupActivityBy', 'Group activity by vessel property')}</label>
-        <Choice
-          options={GROUP_BY_OPTIONS}
-          size="small"
-          activeOption={groupBy}
-          onOptionClick={(option) => setGroupBy(option.id as GroupBy)}
-        />
-      </div>
-      <div>
-        <label>{t('download.temporalResolution', 'Group time by')}</label>
-        <Choice
-          options={filteredTemporalResolutionOptions}
-          size="small"
-          activeOption={temporalResolution}
-          onOptionClick={(option) => setTemporalResolution(option.id as TemporalResolution)}
-        />
-      </div>
-      <div className={styles.footer}>
-        {datasetsDownloadNotSupported.length > 0 && (
-          <p className={styles.footerLabel}>
-            {t(
-              'download.datasetsNotAllowed',
-              "You don't have permissions to download the following datasets:"
-            )}{' '}
-            {datasetsDownloadNotSupported.map((dataset) => (
-              <DatasetLabel key={dataset} dataset={{ id: dataset }} />
-            ))}
-          </p>
-        )}
+        <div>
+          <label>{t('download.groupActivityBy', 'Group activity by vessel property')}</label>
+          <Choice
+            options={GROUP_BY_OPTIONS}
+            size="small"
+            activeOption={groupBy}
+            onOptionClick={(option) => setGroupBy(option.id as GroupBy)}
+          />
+        </div>
+        <div>
+          <label>{t('download.temporalResolution', 'Group time by')}</label>
+          <Choice
+            options={filteredTemporalResolutionOptions}
+            size="small"
+            activeOption={temporalResolution}
+            onOptionClick={(option) => setTemporalResolution(option.id as TemporalResolution)}
+          />
+        </div>
+        <div className={styles.footer}>
+          {datasetsDownloadNotSupported.length > 0 && (
+            <p className={styles.footerLabel}>
+              {t(
+                'download.datasetsNotAllowed',
+                "You don't have permissions to download the following datasets:"
+              )}{' '}
+              {datasetsDownloadNotSupported.map((dataset) => (
+                <DatasetLabel key={dataset} dataset={{ id: dataset }} />
+              ))}
+            </p>
+          )}
 
-        {!isDownloadReportSupported ? (
-          <p className={cx(styles.footerLabel, styles.error)}>
-            {t('download.timerangeTooLong', 'The maximum time range is 1 year')}
-          </p>
-        ) : downloadError ? (
-          <p className={cx(styles.footerLabel, styles.error)}>
-            {`${t('analysis.errorMessage', 'Something went wrong')} 🙈`}
-          </p>
-        ) : format === Format.Json ? (
-          <p className={styles.footerLabel}>
-            <Trans i18nKey="analysis.apiDisclaimer">
-              Are you looking to use GFW data in your application, find our API documentation
-              <a
-                href="https://globalfishingwatch.org/our-apis/documentation#create-a-report-of-a-specified-region"
-                className={styles.link}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {' '}
-                here
-              </a>
-            </Trans>
-          </p>
-        ) : null}
-        <Button
-          onClick={onDownloadClick}
-          loading={downloadLoading || downloadAreaLoading}
-          className={styles.downloadBtn}
-          disabled={!isDownloadReportSupported || downloadAreaLoading}
-        >
-          {downloadFinished ? <Icon icon="tick" /> : t('download.title', 'Download')}
-        </Button>
+          {!isDownloadReportSupported ? (
+            <p className={cx(styles.footerLabel, styles.error)}>
+              {t('download.timerangeTooLong', 'The maximum time range is 1 year')}
+            </p>
+          ) : downloadError ? (
+            <p className={cx(styles.footerLabel, styles.error)}>
+              {`${t('analysis.errorMessage', 'Something went wrong')} 🙈`}
+            </p>
+          ) : null}
+          <Button
+            onClick={onDownloadClick}
+            loading={downloadLoading || downloadAreaLoading}
+            className={styles.downloadBtn}
+            disabled={!isDownloadReportSupported || downloadAreaLoading}
+          >
+            {downloadFinished ? <Icon icon="tick" /> : t('download.title', 'Download')}
+          </Button>
+        </div>
       </div>
-    </div>
+      <DownloadActivityProductsBanner format={format} />
+    </Fragment>
   )
 }
 
