@@ -57,7 +57,11 @@ const selectEventsForRiskSummary = createSelector(
         ...(indicators?.gaps?.intentionalDisabling || []),
       ])
     )
-    return events.filter((event) => indicatorsEvents.includes(event.id))
+    // Given that por visits ids have suffixes now we should check only the start of it
+    return events.filter(
+      (event) =>
+        indicatorsEvents.filter((indicatorEvent) => event.id.startsWith(indicatorEvent)).length > 0
+    )
   }
 )
 
@@ -94,8 +98,12 @@ export const selectCoverage = createSelector(
 export const selectPortVisitsToNonPSMAPortState = createSelector(
   [selectCurrentMergedVesselsIndicators, selectEventsForRiskSummary],
   (indicators, events) => {
-    return events.filter((event) =>
-      (indicators?.portVisits?.nonPSMAPortState || []).includes(event.id)
+    return events.filter(
+      // Given that por visits ids have suffixes now we should check only the start of it
+      (event) =>
+        (indicators?.portVisits?.nonPSMAPortState || []).filter((indicatorEvent) =>
+          event.id.startsWith(indicatorEvent)
+        ).length > 0
     )
   }
 )
