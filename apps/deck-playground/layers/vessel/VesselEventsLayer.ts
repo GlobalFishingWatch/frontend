@@ -1,6 +1,7 @@
 import { CompositeLayer, DefaultProps, Layer, LayerProps, LayersList } from '@deck.gl/core/typed'
 import { ScatterplotLayer } from '@deck.gl/layers/typed'
 import {DataFilterExtension} from '@deck.gl/extensions'
+import VesselPortVisitsLayer from './VesselPortVisitsLayer'
 
 export type VesselEventsLayerProps<DataT = any> = LayerProps & {
   highlightedVesselId?: string
@@ -25,31 +26,38 @@ export class VesselEventsLayer<ExtraProps = {}> extends CompositeLayer<
   }
 
   parseData(data) {
-    return data.entries.map(vessel => {
-      const { position, start, end, ...attributes } = vessel
+    const shapeIndex = {
+      'port_visit': 0,
+      fishing: 1,
+      encounter: 2
+    }
+    return data?.entries?.map(vessel => {
+      const { position, start, end, type, ...attributes } = vessel
       return {
         ...attributes,
         coordinates: [vessel.position.lon, vessel.position.lat],
-        startTime: new Date(start).getTime(),
-        endTime: new Date(end).getTime()
+        start: new Date(start).getTime(),
+        endTime: new Date(end).getTime(),
+        shapeIndex: shapeIndex[type] || 0
       }
     })
   }
 
   renderLayers(): Layer<{}> | LayersList {
-    return new ScatterplotLayer({
+    return new VesselPortVisitsLayer({
       id: `dots-${this.props.id}`,
       data: this.parseData(this.props.data),
       pickable: true,
       opacity: 0.8,
       stroked: false,
       filled: true,
-      radiusScale: 6,
-      radiusMinPixels: 3,
-      radiusMaxPixels: 100,
+      radiusScale: 30,
+      radiusMinPixels: 5,
+      radiusMaxPixels: 10,
       lineWidthMinPixels: 1,
+      getShape: d => d.shapeIndex,
       getPosition: d => d.coordinates,
-      getFilterValue: d => d.startTime,
+      getFilterValue: d => d.start,
       getFillColor: d => [255, 140, 0],
       getLineColor: d => [0, 0, 0],
       getPickingInfo: this.getPickingInfo,

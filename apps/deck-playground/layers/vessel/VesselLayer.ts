@@ -2,7 +2,6 @@ import { CompositeLayer, Layer, LayersList } from '@deck.gl/core/typed'
 import { VesselTrackLayer, _VesselTrackLayerProps } from 'layers/vessel/VesselTrackLayer'
 import { VesselEventsLayer } from 'layers/vessel/VesselEventsLayer'
 import { trackLoader } from 'loaders/trackLoader'
-import {DataFilterExtension} from '@deck.gl/extensions'
 import { API_TOKEN } from 'data/config'
 
 export type VesselLayerProps = _VesselTrackLayerProps
@@ -62,16 +61,15 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps> {
           // getWidth: [minHighlightedFrame, maxHighlightedFrame],
         },
         startTime: this.props.startTime,
-        endTime: this.props.endTime,
+        endTime: this.props.endTime
       })
     )
   }
 
-  _getVesselEventsLayer() {
+  _getVesselFishingEventsLayer() {
     return new VesselEventsLayer(
       this.getSubLayerProps({
-        id: `events-layer-${this.props.id}`,
-        // data: `https://gateway.api.dev.globalfishingwatch.org/v2/events?limit=99999&offset=0&vessels=${this.props.id}&summary=true&confidences=4&datasets=public-global-port-visits-c2-events%3Av20201001`,
+        id: `fishing-${this.props.id}`,
         data: `https://gateway.api.dev.globalfishingwatch.org/v2/events?limit=99999&offset=0&vessels=${this.props.id}&summary=true&datasets=public-global-fishing-events%3Av20201001`,
         loadOptions: {
           fetch: {
@@ -82,15 +80,51 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps> {
         },
         startTime: this.props.startTime,
         endTime: this.props.endTime,
-        extensions: [new DataFilterExtension({filterSize: 1})],
-        filterRange: [0, 1000],
+      })
+    )
+  }
+
+  _getVesselPortVisitEventsLayer() {
+    return new VesselEventsLayer(
+      this.getSubLayerProps({
+        id: `port-visits-${this.props.id}`,
+        data: `https://gateway.api.dev.globalfishingwatch.org/v2/events?limit=99999&offset=0&vessels=${this.props.id}&summary=true&confidences=4&datasets=public-global-port-visits-c2-events%3Av20201001`,
+        loadOptions: {
+          fetch: {
+            headers: {
+              Authorization: `Bearer ${API_TOKEN}`,
+            },
+          },
+        },
+        startTime: this.props.startTime,
+        endTime: this.props.endTime,
+      })
+    )
+  }
+
+  _getVesselEncounterEventsLayer() {
+    return new VesselEventsLayer(
+      this.getSubLayerProps({
+        id: `encounters-${this.props.id}`,
+        data: `https://gateway.api.dev.globalfishingwatch.org/v2/events?limit=99999&offset=0&vessels=${this.props.id}&summary=true&datasets=public-global-encounters-events%3Av20201001`,
+        loadOptions: {
+          fetch: {
+            headers: {
+              Authorization: `Bearer ${API_TOKEN}`,
+            },
+          },
+        },
+        startTime: this.props.startTime,
+        endTime: this.props.endTime,
       })
     )
   }
 
   renderLayers(): Layer<{}> | LayersList {
     return [
-      this._getVesselEventsLayer(),
+      this._getVesselFishingEventsLayer(),
+      this._getVesselPortVisitEventsLayer(),
+      this._getVesselEncounterEventsLayer(),
       this._getVesselTrackLayer(),
     ]
   }
