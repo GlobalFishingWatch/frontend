@@ -36,7 +36,7 @@ import {
   Format,
   GroupBy,
   TemporalResolution,
-  GROUP_BY_OPTIONS,
+  VESSEL_GROUP_BY_OPTIONS,
   VESSEL_FORMAT_OPTIONS,
 } from './downloadActivity.config'
 import { getDownloadReportSupported } from './download.utils'
@@ -57,7 +57,7 @@ function DownloadActivityByVessel() {
   const downloadError = useSelector(selectDownloadActivityError)
   const downloadFinished = useSelector(selectDownloadActivityFinished)
   const [format, setFormat] = useState(VESSEL_FORMAT_OPTIONS[0].id as Format)
-  const [groupBy, setGroupBy] = useState(GROUP_BY_OPTIONS[0].id as GroupBy)
+  const [groupBy, setGroupBy] = useState(VESSEL_GROUP_BY_OPTIONS[0].id as GroupBy)
 
   const temporalResolutionOptions: ChoiceOption[] = useMemo(
     () => [
@@ -231,7 +231,7 @@ function DownloadActivityByVessel() {
         <div>
           <label>{t('download.groupActivityBy', 'Group activity by vessel property')}</label>
           <Choice
-            options={GROUP_BY_OPTIONS}
+            options={VESSEL_GROUP_BY_OPTIONS}
             size="small"
             activeOption={groupBy}
             onOptionClick={(option) => setGroupBy(option.id as GroupBy)}

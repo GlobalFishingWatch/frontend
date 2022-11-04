@@ -14,6 +14,7 @@ export enum Format {
 }
 
 export enum GroupBy {
+  None = 'none',
   Vessel = 'vessel_id',
   MMSI = 'mmsi',
   GearType = 'gearType',
@@ -67,7 +68,7 @@ export const VESSEL_FORMAT_OPTIONS: ChoiceOption[] = [
   },
 ]
 
-export const GROUP_BY_OPTIONS: ChoiceOption[] = [
+export const VESSEL_GROUP_BY_OPTIONS: ChoiceOption[] = [
   {
     id: GroupBy.Vessel,
     title: t('common.vesselId', 'Vessel id'),
@@ -88,6 +89,14 @@ export const GROUP_BY_OPTIONS: ChoiceOption[] = [
     id: GroupBy.FlagAndGearType,
     title: `${t('vessel.flag', 'Flag')} + ${t('vessel.geartype', 'Gear Type')}`,
   },
+]
+
+export const GRIDDED_GROUP_BY_OPTIONS: ChoiceOption[] = [
+  {
+    id: GroupBy.None,
+    title: t('common.none', 'None'),
+  },
+  ...VESSEL_GROUP_BY_OPTIONS,
 ]
 
 export const SPATIAL_RESOLUTION_OPTIONS: ChoiceOption[] = [

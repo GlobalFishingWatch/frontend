@@ -40,6 +40,8 @@ import {
   SPATIAL_RESOLUTION_OPTIONS,
   GRIDDED_FORMAT_OPTIONS,
   TemporalResolution,
+  GRIDDED_GROUP_BY_OPTIONS,
+  GroupBy,
 } from './downloadActivity.config'
 import { getDownloadReportSupported } from './download.utils'
 
@@ -59,6 +61,7 @@ function DownloadActivityByVessel() {
   const downloadError = useSelector(selectDownloadActivityError)
   const downloadFinished = useSelector(selectDownloadActivityFinished)
   const [format, setFormat] = useState(GRIDDED_FORMAT_OPTIONS[0].id as Format)
+  const [groupBy, setGroupBy] = useState(GRIDDED_GROUP_BY_OPTIONS[0].id as GroupBy)
 
   const downloadArea = useSelector(selectDownloadActivityArea)
   const downloadAreaName = downloadArea?.name
@@ -136,6 +139,7 @@ function DownloadActivityByVessel() {
       areaName: downloadAreaName,
       dataviews: downloadDataviews,
       format,
+      ...(groupBy !== GroupBy.None && { groupBy }),
       spatialResolution,
       spatialAggregation: false,
       temporalResolution: TemporalResolution.Full,
@@ -184,6 +188,17 @@ function DownloadActivityByVessel() {
             onOptionClick={(option) => setFormat(option.id as Format)}
           />
         </div>
+        {(format === Format.Csv || format === Format.Json) && (
+          <div>
+            <label>{t('download.groupActivityBy', 'Group activity by vessel property')}</label>
+            <Choice
+              options={GRIDDED_GROUP_BY_OPTIONS}
+              size="small"
+              activeOption={groupBy}
+              onOptionClick={(option) => setGroupBy(option.id as GroupBy)}
+            />
+          </div>
+        )}
         <div>
           <label>{t('download.spatialResolution', 'Spatial Resolution')}</label>
           <Choice
