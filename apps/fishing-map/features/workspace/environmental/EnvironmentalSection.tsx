@@ -57,7 +57,9 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={styles.header}>
-        <h2 className={styles.sectionTitle}>{t('common.environment', 'Environment')}</h2>
+        <h2 className={cx('print-hidden', styles.sectionTitle)}>
+          {t('common.environment', 'Environment')}
+        </h2>
         {!readOnly && (
           <TooltipContainer
             visible={newDatasetOpen}
