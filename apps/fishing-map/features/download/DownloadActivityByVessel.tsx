@@ -30,16 +30,15 @@ import { selectDownloadActivityArea } from 'features/download/download.selectors
 import DownloadActivityProductsBanner from 'features/download/DownloadActivityProductsBanner'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import DatasetLabel from 'features/datasets/DatasetLabel'
-import { getUTCDateTime } from 'utils/dates'
 import styles from './DownloadModal.module.css'
 import {
   Format,
   GroupBy,
   TemporalResolution,
-  GROUP_BY_OPTIONS,
+  VESSEL_GROUP_BY_OPTIONS,
   VESSEL_FORMAT_OPTIONS,
 } from './downloadActivity.config'
-import { getDownloadReportSupported } from './download.utils'
+import { getDownloadReportSupported, getSupportedTemporalResolutions } from './download.utils'
 
 const fallbackDataviews = []
 function DownloadActivityByVessel() {
@@ -57,69 +56,12 @@ function DownloadActivityByVessel() {
   const downloadError = useSelector(selectDownloadActivityError)
   const downloadFinished = useSelector(selectDownloadActivityFinished)
   const [format, setFormat] = useState(VESSEL_FORMAT_OPTIONS[0].id as Format)
-  const [groupBy, setGroupBy] = useState(GROUP_BY_OPTIONS[0].id as GroupBy)
-
-  const temporalResolutionOptions: ChoiceOption[] = useMemo(
-    () => [
-      {
-        id: TemporalResolution.Full,
-        title: t('download.fullTimeRange', 'Selected time range'),
-      },
-      {
-        id: TemporalResolution.Daily,
-        title: t('download.daily', 'Day'),
-      },
-      {
-        id: TemporalResolution.Monthly,
-        title: t('download.monthly', 'Month'),
-      },
-      {
-        id: TemporalResolution.Yearly,
-        title: t('download.yearly', 'Year'),
-      },
-    ],
-    [t]
-  )
-
-  const duration = useMemo(() => {
-    if (start && end) {
-      const startDateTime = getUTCDateTime(start)
-      const endDateTime = getUTCDateTime(end)
-      return {
-        years: endDateTime.diff(startDateTime, ['years']).years,
-        months: endDateTime.diff(startDateTime, ['months']).months,
-        days: endDateTime.diff(startDateTime, ['days']).days,
-      }
-    }
-  }, [end, start])
+  const [groupBy, setGroupBy] = useState(VESSEL_GROUP_BY_OPTIONS[0].id as GroupBy)
   const isDownloadReportSupported = getDownloadReportSupported(start, end)
 
   const filteredTemporalResolutionOptions: ChoiceOption[] = useMemo(
-    () =>
-      temporalResolutionOptions.map((option) => {
-        if (option.id === TemporalResolution.Yearly && duration?.years < 1) {
-          return {
-            ...option,
-            disabled: true,
-            tooltip: t('download.yearlyNotAvailable', 'Your time range is shorter than 1 year'),
-            tooltipPlacement: 'top',
-          }
-        }
-        if (
-          option.id === TemporalResolution.Monthly &&
-          duration?.years < 1 &&
-          duration?.months < 1
-        ) {
-          return {
-            ...option,
-            disabled: true,
-            tooltip: t('download.monthlyNotAvailable', 'Your time range is shorter than 1 month'),
-            tooltipPlacement: 'top',
-          }
-        }
-        return option
-      }),
-    [duration, t, temporalResolutionOptions]
+    () => getSupportedTemporalResolutions(start, end),
+    [start, end]
   )
 
   const [temporalResolution, setTemporalResolution] = useState(
@@ -231,7 +173,7 @@ function DownloadActivityByVessel() {
         <div>
           <label>{t('download.groupActivityBy', 'Group activity by vessel property')}</label>
           <Choice
-            options={GROUP_BY_OPTIONS}
+            options={VESSEL_GROUP_BY_OPTIONS}
             size="small"
             activeOption={groupBy}
             onOptionClick={(option) => setGroupBy(option.id as GroupBy)}

@@ -37,7 +37,7 @@ function DownloadActivityProductsBanner({ format }: DownloadActivityProductsBann
       ) : format === Format.Json ? (
         <div className={styles.downloadFooter}>
           <p className={styles.downloadLabel}>
-            {t('download.doYouNeedAnAPI', 'Your application need constantly updated data?')}
+            {t('download.doYouNeedAnAPI', 'Does your application need continuous data?')}
           </p>
           <Button
             className={styles.downloadBtn}

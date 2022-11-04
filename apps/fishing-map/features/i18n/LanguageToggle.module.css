@@ -28,6 +28,7 @@
   background-color: var(--color-white);
   filter: var(--filter-drop-shadow);
   width: max-content;
+  border: var(--border);
 }
 
 .bottomRight {

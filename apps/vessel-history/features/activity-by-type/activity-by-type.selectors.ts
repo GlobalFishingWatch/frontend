@@ -31,10 +31,11 @@ export const getEventsWithMainPortVisit = (events): RenderedEvent[] =>
         event.port_visit?.startAnchorage,
         event.port_visit?.endAnchorage,
       ].reduce(
-        (prev, curr) => ({
-          name: prev.name ? prev.name : curr.name,
-          flag: prev.name ? prev.flag : curr.flag,
-        }),
+        (prev, curr) => {
+          if (prev.name && prev.flag) return prev
+          if (curr?.name && curr?.flag) return { name: curr.name, flag: curr.flag }
+          return prev
+        },
         { name: undefined, flag: undefined }
       )
 
