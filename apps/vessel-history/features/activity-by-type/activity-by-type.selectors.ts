@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { DateTime } from 'luxon'
+import { DateTime, Duration } from 'luxon'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { t } from 'features/i18n/i18n'
 import {
@@ -8,28 +8,26 @@ import {
 } from 'features/vessels/activity/vessels-activity.selectors'
 import { PortVisitSubEvent } from 'types/activity'
 
-export const getEventsWithMainPortVisit = (events): RenderedEvent[] =>
-  events.reduce((previous, event) => {
-    const isPortExit = event.type === EventTypes.Port && event.subEvent === PortVisitSubEvent.Exit
-    const isPortEntry = event.type === EventTypes.Port && event.subEvent === PortVisitSubEvent.Entry
+export const getEventsWithMainPortVisit = (events: RenderedEvent[]): RenderedEvent[] =>
+  // Get unique list of event ids
+  (Array.from(new Set(events.map((event) => event.id.split('-').shift()))) as string[]).reduce(
+    (previous, id) => {
+      const event = events.find((ev) => ev.id === id)
+      // when an event exists with the same exact id and it's not a
+      // port visit, then we'll just add it to the array
+      if (event && event.type !== EventTypes.Port) {
+        previous.push(event)
+        return previous
+      }
 
-    if (isPortExit) {
-      // If it's a port exit then build the single port visit event from it
-      const id = event.id.split('-').shift()
-      const portEntry =
-        (isPortEntry && event) || events.find((ev) => ev.id === `${id}-${PortVisitSubEvent.Entry}`)
-      const portExit = event
-
-      const durationDiff = DateTime.fromMillis(portExit.end as number).diff(
-        DateTime.fromMillis(portEntry.start as number),
-        ['hours', 'minutes']
-      )
-      const duration = durationDiff.toObject()
+      const portExit = events.find((ev) => ev.id === `${id}-${PortVisitSubEvent.Exit}`)
+      const portEntry = events.find((ev) => ev.id === `${id}-${PortVisitSubEvent.Entry}`)
+      const portVisitEvent: RenderedEvent = { ...(portExit ?? portEntry) }
 
       const { name, flag } = [
-        event.port_visit?.intermediateAnchorage,
-        event.port_visit?.startAnchorage,
-        event.port_visit?.endAnchorage,
+        portVisitEvent.port_visit?.intermediateAnchorage,
+        portVisitEvent.port_visit?.startAnchorage,
+        portVisitEvent.port_visit?.endAnchorage,
       ].reduce(
         (prev, curr) => {
           if (prev.name && prev.flag) return prev
@@ -43,11 +41,23 @@ export const getEventsWithMainPortVisit = (events): RenderedEvent[] =>
         ? [name, ...(flag ? [t(`flags:${flag}` as any, flag.toLocaleUpperCase())] : [])].join(', ')
         : undefined
 
+      const duration = portVisitEvent.port_visit?.durationHrs
+        ? Duration.fromMillis(portVisitEvent.port_visit?.durationHrs * 60 * 60 * 1000)
+            .shiftTo('hours', 'minutes')
+            .toObject()
+        : portExit?.end > portEntry?.start
+        ? DateTime.fromMillis(portExit?.end as number)
+            .diff(DateTime.fromMillis(portEntry?.start as number), ['hours', 'minutes'])
+            .toObject()
+        : null
+
+      console.log(duration)
+      // Include main port visit event
       previous.push({
-        ...event,
+        ...portVisitEvent,
         description: `${t('event.port', 'Port')} ${portLabel ?? t('event.unknown', 'Unknown')}`,
         durationDescription:
-          portExit.end > portEntry.start
+          portEntry?.durationDescription ?? portExit?.durationDescription ?? duration
             ? [
                 duration.hours && duration.hours > 0
                   ? t('event.hourAbbreviated', '{{count}}h', { count: duration.hours })
@@ -60,21 +70,22 @@ export const getEventsWithMainPortVisit = (events): RenderedEvent[] =>
               ].join(' ')
             : null,
         id,
-        start: portEntry.start,
-        timestamp: portEntry.timestamp,
-        end: portExit.end,
+        start: portEntry?.start ?? portExit?.start,
+        timestamp: portEntry?.timestamp ?? portExit?.timestamp,
+        end: portExit?.end ?? portEntry?.end,
         subEvent: null,
       })
-    }
 
-    if (isPortEntry || isPortExit) {
-      event.durationDescription = null
-    }
+      // Include exit port visit event only if exists
+      portExit && previous.push({ ...portExit, durationDescription: null })
 
-    previous.push(event)
+      // Include entry port visit event only if exists
+      portEntry && previous.push({ ...portEntry, durationDescription: null })
 
-    return previous
-  }, [])
+      return previous
+    },
+    []
+  )
 
 export const selectFilteredEventsWithMainPortVisit = createSelector(
   [selectFilteredEvents],
