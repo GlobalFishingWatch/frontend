@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 import area from '@turf/area'
 import type { Placement } from 'tippy.js'
 import { Geometry } from 'geojson'
-import { Icon, Button, Choice, Tag } from '@globalfishingwatch/ui-components'
+import { Icon, Button, Choice, Tag, ChoiceOption } from '@globalfishingwatch/ui-components'
 import {
   DownloadActivityParams,
   downloadActivityThunk,
@@ -40,8 +40,10 @@ import {
   SPATIAL_RESOLUTION_OPTIONS,
   GRIDDED_FORMAT_OPTIONS,
   TemporalResolution,
+  GRIDDED_GROUP_BY_OPTIONS,
+  GroupBy,
 } from './downloadActivity.config'
-import { getDownloadReportSupported } from './download.utils'
+import { getDownloadReportSupported, getSupportedTemporalResolutions } from './download.utils'
 
 const fallbackDataviews = []
 function DownloadActivityByVessel() {
@@ -59,6 +61,7 @@ function DownloadActivityByVessel() {
   const downloadError = useSelector(selectDownloadActivityError)
   const downloadFinished = useSelector(selectDownloadActivityFinished)
   const [format, setFormat] = useState(GRIDDED_FORMAT_OPTIONS[0].id as Format)
+  const [groupBy, setGroupBy] = useState(GRIDDED_GROUP_BY_OPTIONS[0].id as GroupBy)
 
   const downloadArea = useSelector(selectDownloadActivityArea)
   const downloadAreaName = downloadArea?.name
@@ -82,6 +85,14 @@ function DownloadActivityByVessel() {
   })
   const [spatialResolution, setSpatialResolution] = useState(
     filteredSpatialResolutionOptions[0].id as SpatialResolution
+  )
+
+  const filteredTemporalResolutionOptions: ChoiceOption[] = useMemo(
+    () => getSupportedTemporalResolutions(start, end),
+    [start, end]
+  )
+  const [temporalResolution, setTemporalResolution] = useState(
+    filteredTemporalResolutionOptions[0].id as TemporalResolution
   )
 
   const onDownloadClick = async () => {
@@ -116,13 +127,15 @@ function DownloadActivityByVessel() {
         }),
       })
     }
-    if (format === Format.Csv) {
+    if (format === Format.Csv || format === Format.Json) {
       uaEvent({
         category: 'Data downloads',
         action: `Download CSV file`,
         label: JSON.stringify({
           regionName: downloadAreaName || EMPTY_FIELD_PLACEHOLDER,
           spatialResolution,
+          groupBy,
+          temporalResolution,
           sourceNames: dataviews.flatMap((dataview) =>
             getSourcesSelectedInDataview(dataview).map((source) => source.label)
           ),
@@ -136,9 +149,10 @@ function DownloadActivityByVessel() {
       areaName: downloadAreaName,
       dataviews: downloadDataviews,
       format,
+      ...(groupBy !== GroupBy.None && { groupBy }),
       spatialResolution,
       spatialAggregation: false,
-      temporalResolution: TemporalResolution.Full,
+      temporalResolution,
     }
     await dispatch(downloadActivityThunk(downloadParams))
 
@@ -184,6 +198,28 @@ function DownloadActivityByVessel() {
             onOptionClick={(option) => setFormat(option.id as Format)}
           />
         </div>
+        {(format === Format.Csv || format === Format.Json) && (
+          <Fragment>
+            <div>
+              <label>{t('download.groupActivityBy', 'Group activity by vessel property')}</label>
+              <Choice
+                options={GRIDDED_GROUP_BY_OPTIONS}
+                size="small"
+                activeOption={groupBy}
+                onOptionClick={(option) => setGroupBy(option.id as GroupBy)}
+              />
+            </div>
+            <div>
+              <label>{t('download.temporalResolution', 'Group time by')}</label>
+              <Choice
+                options={filteredTemporalResolutionOptions}
+                size="small"
+                activeOption={temporalResolution}
+                onOptionClick={(option) => setTemporalResolution(option.id as TemporalResolution)}
+              />
+            </div>
+          </Fragment>
+        )}
         <div>
           <label>{t('download.spatialResolution', 'Spatial Resolution')}</label>
           <Choice

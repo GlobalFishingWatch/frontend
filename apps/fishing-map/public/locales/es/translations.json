@@ -221,7 +221,7 @@
     "fullDataset": "Do you need the full dataset?",
     "fullTimeRange": "Full time range",
     "gridded": "Data per grid cell",
-    "groupActivityBy": "Group activity by vessel property vessel property",
+    "groupActivityBy": "Group activity by vessel property",
     "highResNotAvailable": "Tu área es demasiado grande",
     "monthly": "Month",
     "monthlyNotAvailable": "Su intervalo de tiempo es menor de 1 mes",

@@ -14,6 +14,7 @@ export enum Format {
 }
 
 export enum GroupBy {
+  None = 'none',
   Vessel = 'vessel_id',
   MMSI = 'mmsi',
   GearType = 'gearType',
@@ -67,7 +68,7 @@ export const VESSEL_FORMAT_OPTIONS: ChoiceOption[] = [
   },
 ]
 
-export const GROUP_BY_OPTIONS: ChoiceOption[] = [
+export const VESSEL_GROUP_BY_OPTIONS: ChoiceOption[] = [
   {
     id: GroupBy.Vessel,
     title: t('common.vesselId', 'Vessel id'),
@@ -90,6 +91,14 @@ export const GROUP_BY_OPTIONS: ChoiceOption[] = [
   },
 ]
 
+export const GRIDDED_GROUP_BY_OPTIONS: ChoiceOption[] = [
+  {
+    id: GroupBy.None,
+    title: t('common.none', 'None'),
+  },
+  ...VESSEL_GROUP_BY_OPTIONS,
+]
+
 export const SPATIAL_RESOLUTION_OPTIONS: ChoiceOption[] = [
   {
     id: SpatialResolution.Low,
@@ -105,6 +114,25 @@ export const SPATIAL_RESOLUTION_OPTIONS: ChoiceOption[] = [
     disabled: true,
     tooltip: t('common.comingSoon', 'Coming Soon!'),
     tooltipPlacement: 'top',
+  },
+]
+
+export const TEMPORAL_RESOLUTION_OPTIONS: ChoiceOption[] = [
+  {
+    id: TemporalResolution.Full,
+    title: t('download.fullTimeRange', 'Selected time range'),
+  },
+  {
+    id: TemporalResolution.Daily,
+    title: t('download.daily', 'Day'),
+  },
+  {
+    id: TemporalResolution.Monthly,
+    title: t('download.monthly', 'Month'),
+  },
+  {
+    id: TemporalResolution.Yearly,
+    title: t('download.yearly', 'Year'),
   },
 ]
 
