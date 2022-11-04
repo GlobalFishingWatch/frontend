@@ -10,7 +10,7 @@
 }
 
 .links {
-  display: flex;
+  display: none;
   position: absolute;
   padding: var(--space-S) 0;
   z-index: 1;
