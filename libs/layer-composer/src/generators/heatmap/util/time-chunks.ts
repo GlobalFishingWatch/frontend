@@ -55,7 +55,7 @@ export const LIMITS_BY_INTERVAL: Record<
   },
   month: {
     unit: 'year',
-    value: 1,
+    value: 6,
   },
   year: undefined,
 }
@@ -77,7 +77,7 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
       return DateTime.fromMillis(bufferedActiveStart, { zone: 'utc' }).startOf('week')
     },
     getChunkViewEnd: (chunkStart: DateTime): DateTime => {
-      return chunkStart.plus({ days: 7 })
+      return chunkStart.plus({ days: 14 })
     },
     getChunkDataEnd: (chunkViewEnd: DateTime): DateTime => {
       return chunkViewEnd.plus({ days: 2 })
@@ -102,7 +102,7 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
       return chunkStart
     },
     getChunkViewEnd: (chunkStart: DateTime): DateTime => {
-      return chunkStart.plus({ months: 2 })
+      return chunkStart.plus({ months: 5 })
     },
     getChunkDataEnd: (chunkViewEnd: DateTime): DateTime => {
       return chunkViewEnd.plus({ months: 1 })
