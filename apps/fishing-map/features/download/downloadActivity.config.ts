@@ -117,4 +117,23 @@ export const SPATIAL_RESOLUTION_OPTIONS: ChoiceOption[] = [
   },
 ]
 
+export const TEMPORAL_RESOLUTION_OPTIONS: ChoiceOption[] = [
+  {
+    id: TemporalResolution.Full,
+    title: t('download.fullTimeRange', 'Selected time range'),
+  },
+  {
+    id: TemporalResolution.Daily,
+    title: t('download.daily', 'Day'),
+  },
+  {
+    id: TemporalResolution.Monthly,
+    title: t('download.monthly', 'Month'),
+  },
+  {
+    id: TemporalResolution.Yearly,
+    title: t('download.yearly', 'Year'),
+  },
+]
+
 export const MAX_AREA_FOR_HIGH_SPATIAL_RESOLUTION = 25000000000000 //Bigger than the biggest EEZ (Russia)
