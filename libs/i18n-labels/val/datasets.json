@@ -80,6 +80,11 @@
       "firstTransmissionDate": "crwdns9081:0crwdne9081:0"
     }
   },
+  "private-before-after-class-b": {
+    "name": "crwdns27196:0crwdne27196:0",
+    "description": "crwdns27198:0crwdne27198:0",
+    "schema": {}
+  },
   "private-belize-fishing-effort": {
     "name": "crwdns26210:0crwdne26210:0",
     "description": "crwdns25916:0crwdne25916:0",
