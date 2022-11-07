@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import classNames from 'classnames'
-import { string, func, array, shape } from 'prop-types'
+import { string, func, shape } from 'prop-types'
 import dayjs from 'dayjs'
-import { LIMITS_BY_INTERVAL } from '@globalfishingwatch/layer-composer'
+import { LIMITS_BY_INTERVAL, getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
 import { Select, Tooltip } from '@globalfishingwatch/ui-components'
 import { getTime } from '../utils/internal-utils'
 import { getLastX } from '../utils'
@@ -84,7 +84,11 @@ class TimeRangeSelector extends Component {
   onLastXSelect = (option) => {
     const { latestAvailableDataDate } = this.props
     const { start, end } = getLastX(option.num, option.unit, latestAvailableDataDate)
-    this.submit(dayjs.utc(start), dayjs.utc(end))
+    const interval = getInterval(start, end, [INTERVAL_ORDER])
+    this.submit(
+      dayjs.utc(start).endOf(interval).add(1, 'millisecond'),
+      dayjs.utc(end).endOf(interval).add(1, 'millisecond')
+    )
   }
 
   checkIntervals = () => {
