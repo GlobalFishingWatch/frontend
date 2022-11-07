@@ -84,8 +84,7 @@ class TimeRangeSelector extends Component {
   onLastXSelect = (option) => {
     const { latestAvailableDataDate } = this.props
     const { start, end } = getLastX(option.num, option.unit, latestAvailableDataDate)
-    this.setState({ currentLastXSelectedOption: option })
-    this.setState({ start, end })
+    this.submit(dayjs.utc(start), dayjs.utc(end))
   }
 
   checkIntervals = () => {
