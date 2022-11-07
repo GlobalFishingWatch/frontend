@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react'
 import { debounce } from 'lodash'
+import { DateTime } from 'luxon'
 import { useDebounce, useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { Timeseries } from '@globalfishingwatch/timebar'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -11,6 +12,7 @@ import {
   hasDataviewsFeatureError,
   useMapDataviewFeatures,
 } from 'features/map/map-sources.hooks'
+import { LAST_DATA_UPDATE } from 'data/config'
 
 export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
   const [generatingStackedActivity, setGeneratingStackedActivity] = useState(false)
@@ -42,7 +44,14 @@ export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
         }
       })
       const stackedActivity = getTimeseriesFromFeatures(dataviewFeaturesFiltered)
-      setStackedActivity(stackedActivity)
+      const stackedActivityToLastDate = stackedActivity.map((activity) => ({
+        ...activity,
+        date:
+          DateTime.fromMillis(activity.date, { zone: 'UTC' }).toISO() < LAST_DATA_UPDATE
+            ? activity.date
+            : DateTime.fromISO(LAST_DATA_UPDATE, { zone: 'UTC' }).toMillis(),
+      }))
+      setStackedActivity(stackedActivityToLastDate)
       setGeneratingStackedActivity(false)
     }, 400),
     [setStackedActivity]
