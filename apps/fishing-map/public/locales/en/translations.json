@@ -218,7 +218,7 @@
     "daily": "Day",
     "dataPortal": "See data download portal",
     "datasetsNotAllowed": "You don't have permissions to download the following datasets:",
-    "doYouNeedAnAPI": "Your application need constantly updated data?",
+    "doYouNeedAnAPI": "Does your application need continuous data?",
     "format": "Format",
     "fullDataset": "Do you need the full dataset?",
     "fullTimeRange": "Full time range",
