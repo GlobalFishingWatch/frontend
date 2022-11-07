@@ -51,7 +51,6 @@ export const getEventsWithMainPortVisit = (events: RenderedEvent[]): RenderedEve
             .toObject()
         : null
 
-      console.log(duration)
       // Include main port visit event
       previous.push({
         ...portVisitEvent,
