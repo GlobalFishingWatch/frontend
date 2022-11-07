@@ -151,6 +151,11 @@ const AnalysisEvolutionGraph: React.FC<{
       })
   }, [timeseries])
 
+  const domain = useMemo(
+    () => [new Date(start).getTime(), new Date(cleanEnd).getTime()],
+    [start, cleanEnd]
+  )
+
   if (!dataFormated) return null
 
   const dataMin: number = dataFormated.length
@@ -172,7 +177,7 @@ const AnalysisEvolutionGraph: React.FC<{
         <ComposedChart data={dataFormated} margin={{ top: 15, right: 20, left: -20, bottom: -10 }}>
           <CartesianGrid vertical={false} />
           <XAxis
-            domain={[new Date(start).getTime(), new Date(cleanEnd).getTime()]}
+            domain={domain}
             dataKey="date"
             interval="preserveStartEnd"
             tickFormatter={(tick: number) => formatDateTicks(tick, interval)}
