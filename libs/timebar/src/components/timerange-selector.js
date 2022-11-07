@@ -367,7 +367,6 @@ TimeRangeSelector.propTypes = {
   absoluteEnd: string.isRequired,
   latestAvailableDataDate: string.isRequired,
   onDiscard: func.isRequired,
-  intervals: array.isRequired,
   labels: shape({
     title: string,
     start: string,
