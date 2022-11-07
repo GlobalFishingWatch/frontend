@@ -5,7 +5,7 @@ import styles from './interval-selector.module.css'
 type IntervalSelectorProps = {
   start: string
   end: string
-  labels?: { [key in Interval]?: string }
+  labels?: any
   intervals: Interval[]
   getCurrentInterval: (start: string, end: string, intervals: Interval[][]) => Interval
   onIntervalClick: (interval: Interval) => void
@@ -46,6 +46,7 @@ function IntervalSelector({
                 [styles.intervalBtnActive]: active,
               })}
               onClick={() => onIntervalClick(interval)}
+              title={labels?.[`${interval}Tooltip`]}
             >
               {labels?.[interval] ? labels[interval] : interval}
             </button>

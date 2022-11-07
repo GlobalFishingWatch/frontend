@@ -40,9 +40,13 @@
   "setBookmark": "Bookmark current time range",
   "intervals": {
     "hour": "hour",
+    "hourTooltip": "See hourly data",
     "day": "day",
+    "dayTooltip": "See daily data",
     "month": "month",
-    "year": "year"
+    "monthTooltip": "See monthly data",
+    "year": "year",
+    "yearTooltip": "See yearly data"
   },
   "zoomTo": "Zoom to"
 }
