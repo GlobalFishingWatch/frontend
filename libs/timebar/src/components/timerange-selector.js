@@ -11,7 +11,13 @@ import styles from './timerange-selector.module.css'
 class TimeRangeSelector extends Component {
   constructor(props) {
     super(props)
-    const { start, end, labels } = props
+    const { start, end, labels, absoluteStart, absoluteEnd } = props
+    const startDate = dayjs.utc(start)
+    const endDate = dayjs.utc(end)
+    this.bounds = {
+      min: dayjs.utc(getTime(absoluteStart)).toISOString().slice(0, 10),
+      max: dayjs.utc(getTime(absoluteEnd)).toISOString().slice(0, 10),
+    }
     this.lastXOptions = [
       {
         id: 'last30days',
@@ -41,25 +47,33 @@ class TimeRangeSelector extends Component {
     this.state = {
       startDate: dayjs.utc(start),
       endDate: dayjs.utc(end),
-      startValid: true,
-      endValid: true,
-      disabledFields: {
-        month: false,
-        day: false,
+      startInputValues: {
+        year: startDate.year(),
+        month: startDate.month() + 1,
+        date: startDate.date(),
       },
-      startBeforeEnd: true,
+      endInputValues: {
+        year: endDate.year(),
+        month: endDate.month() + 1,
+        date: endDate.date(),
+      },
+      startInputValids: {
+        year: true,
+        month: true,
+        date: true,
+      },
+      endInputValids: {
+        year: true,
+        month: true,
+        date: true,
+      },
       currentLastXSelectedOption: this.lastXOptions[0],
     }
   }
 
-  componentDidMount() {
-    const { start, end } = this.props
-    this.setState({ startDate: dayjs.utc(start), endDate: dayjs.utc(end) }, this.checkIntervals)
-  }
-
   submit(start, end) {
     const { onSubmit } = this.props
-    const { disabledFields } = this.state
+    const disabledFields = this.getDisabledFields(start, end)
     // on release, "stick" to day/hour
 
     const newStart = dayjs
@@ -91,24 +105,23 @@ class TimeRangeSelector extends Component {
     )
   }
 
-  checkIntervals = () => {
-    const { startDate, endDate } = this.state
+  getDisabledFields = (startDate, endDate) => {
     const intervalsToCheck = ['month', 'day']
-    intervalsToCheck.forEach((limit) => {
+    return intervalsToCheck.reduce((acc, limit) => {
       const limitConfig = LIMITS_BY_INTERVAL[limit]
       const duration = endDate.diff(startDate, limitConfig.unit)
-      this.setState((prevState) => ({
-        disabledFields: {
-          ...prevState.disabledFields,
-          [limit]: Math.floor(duration) > limitConfig.value,
-        },
-      }))
-    })
+      return {
+        ...acc,
+        [limit]: Math.floor(duration) > limitConfig.value,
+      }
+    }, {})
   }
 
-  onStartChange = (e, property, endDate) => {
-    if (!e.target?.value || e.target?.value === '') return
-    const { startDate } = this.state
+  onStartChange = (e, property) => {
+    const startDate = dayjs.utc({
+      ...this.state.startInputValues,
+      month: this.state.startInputValues.month - 1,
+    })
     const currentMonthDays = dayjs
       .utc({
         year: property === 'year' ? e.target.value : startDate.year(),
@@ -116,21 +129,24 @@ class TimeRangeSelector extends Component {
       })
       .daysInMonth()
     const dateHigherThanDaysInMonth = startDate.date() > currentMonthDays
-    const start = dayjs.utc({
-      year: startDate.year(),
-      month: startDate.month(),
-      date: dateHigherThanDaysInMonth ? currentMonthDays : startDate.date(),
-      [property]: property === 'month' ? e.target.value - 1 : e.target.value,
-    })
-    const valid = e.target.validity.valid
-    this.setState({ startValid: valid })
-    this.setState({ startBeforeEnd: valid && start.toISOString() < endDate.toISOString() })
-    this.setState({ startDate: start }, this.checkIntervals)
+    this.setState((state) => ({
+      startInputValues: {
+        ...state.startInputValues,
+        date: dateHigherThanDaysInMonth ? currentMonthDays : startDate.date(),
+        [property]: e.target.value,
+      },
+      startInputValids: {
+        ...state.startInputValids,
+        [property]: e.target.validity.valid,
+      },
+    }))
   }
 
-  onEndChange = (e, property, startDate) => {
-    if (!e.target?.value || e.target?.value === '') return
-    const { endDate } = this.state
+  onEndChange = (e, property) => {
+    const endDate = dayjs.utc({
+      ...this.state.endInputValues,
+      month: this.state.endInputValues.month - 1,
+    })
     const currentMonthDays = dayjs
       .utc({
         year: property === 'year' ? e.target.value : endDate.year(),
@@ -138,16 +154,17 @@ class TimeRangeSelector extends Component {
       })
       .daysInMonth()
     const dateHigherThanDaysInMonth = endDate.date() > currentMonthDays
-    const end = dayjs.utc({
-      year: endDate.year(),
-      month: endDate.month(),
-      date: dateHigherThanDaysInMonth ? currentMonthDays : endDate.date(),
-      [property]: property === 'month' ? e.target.value - 1 : e.target.value,
-    })
-    const valid = e.target.validity.valid
-    this.setState({ endValid: valid })
-    this.setState({ startBeforeEnd: valid && startDate.toISOString() < end.toISOString() })
-    this.setState({ endDate: end }, this.checkIntervals)
+    this.setState((state) => ({
+      endInputValues: {
+        ...state.endInputValues,
+        date: dateHigherThanDaysInMonth ? currentMonthDays : endDate.date(),
+        [property]: e.target.value,
+      },
+      endInputValids: {
+        ...state.endInputValids,
+        [property]: e.target.validity.valid,
+      },
+    }))
   }
 
   onResolutionChange = (option) => {
@@ -156,33 +173,43 @@ class TimeRangeSelector extends Component {
 
   render() {
     const {
-      startDate,
-      endDate,
-      startValid,
-      endValid,
-      startBeforeEnd,
+      startInputValues,
+      endInputValues,
+      startInputValids,
+      endInputValids,
       currentLastXSelectedOption,
-      disabledFields,
     } = this.state
-    const { labels, absoluteStart, absoluteEnd } = this.props
+    const { labels } = this.props
 
-    if (startDate === undefined) {
-      return null
-    }
-
-    const bounds = {
-      min: dayjs.utc(getTime(absoluteStart)).toISOString().slice(0, 10),
-      max: dayjs.utc(getTime(absoluteEnd)).toISOString().slice(0, 10),
-    }
+    const startDate = dayjs.utc({
+      ...startInputValues,
+      month: startInputValues.month - 1,
+    })
+    const startValid =
+      Object.values(startInputValids).every((valid) => valid) &&
+      Object.values(startInputValues).every((value) => !!value) &&
+      startDate.isValid()
+    const endDate = dayjs.utc({
+      ...endInputValues,
+      month: endInputValues.month - 1,
+    })
+    const endValid =
+      Object.values(endInputValids).every((valid) => valid) &&
+      Object.values(endInputValues).every((value) => !!value) &&
+      endDate.isValid()
+    const startBeforeEnd =
+      startValid && endValid ? startDate.toISOString() < endDate.toISOString() : false
 
     let errorMessage = ''
     if (!startValid || !endValid) {
-      errorMessage = `${labels.selectAValidDate}: ${bounds.min.slice(0, 4)} - ${(
-        parseInt(bounds.max.slice(0, 4)) + 1
+      errorMessage = `${labels.selectAValidDate}: ${this.bounds.min.slice(0, 4)} - ${(
+        parseInt(this.bounds.max.slice(0, 4)) + 1
       ).toString()}`
     } else if (!startBeforeEnd) {
       errorMessage = labels.endBeforeStart
     }
+
+    const disabledFields = this.getDisabledFields(startDate, endDate)
 
     return (
       <div className={styles.TimeRangeSelector}>
@@ -191,7 +218,9 @@ class TimeRangeSelector extends Component {
           <form
             onSubmit={(e) => {
               e.preventDefault()
-              this.submit(startDate.toISOString(), endDate.toISOString())
+              if (startValid && endValid) {
+                this.submit(startDate.toISOString(), endDate.toISOString())
+              }
             }}
           >
             <h2 className={styles.title}>{labels.title}</h2>
@@ -205,11 +234,11 @@ class TimeRangeSelector extends Component {
                       autoFocus
                       name="start year"
                       type="number"
-                      min={bounds.min.slice(0, 4)}
-                      max={bounds.max.slice(0, 4)}
-                      value={startDate.year().toString()}
-                      onChange={(e) => this.onStartChange(e, 'year', endDate)}
-                      step={'1'}
+                      min={this.bounds.min.slice(0, 4)}
+                      max={this.bounds.max.slice(0, 4)}
+                      value={startInputValues.year}
+                      onChange={(e) => this.onStartChange(e, 'year')}
+                      step="1"
                       className={classNames(styles.input, {
                         [styles.error]: !startValid || !startBeforeEnd,
                       })}
@@ -229,8 +258,8 @@ class TimeRangeSelector extends Component {
                         type="number"
                         min="1"
                         max="12"
-                        value={(startDate.month() + 1).toString()}
-                        onChange={(e) => this.onStartChange(e, 'month', endDate)}
+                        value={startInputValues.month}
+                        onChange={(e) => this.onStartChange(e, 'month')}
                         step={'1'}
                         disabled={disabledFields.month}
                         className={classNames(styles.input, {
@@ -253,8 +282,8 @@ class TimeRangeSelector extends Component {
                         type="number"
                         min={'1'}
                         max={startDate.daysInMonth()}
-                        value={startDate.date().toString()}
-                        onChange={(e) => this.onStartChange(e, 'date', endDate)}
+                        value={startInputValues.date}
+                        onChange={(e) => this.onStartChange(e, 'date')}
                         step={'1'}
                         disabled={disabledFields.day}
                         className={classNames(styles.input, {
@@ -273,10 +302,10 @@ class TimeRangeSelector extends Component {
                     <input
                       name="end year"
                       type="number"
-                      min={bounds.min.slice(0, 4)}
-                      max={(parseInt(bounds.max.slice(0, 4)) + 1).toString()}
-                      value={endDate.year().toString()}
-                      onChange={(e) => this.onEndChange(e, 'year', startDate)}
+                      min={this.bounds.min.slice(0, 4)}
+                      max={(parseInt(this.bounds.max.slice(0, 4)) + 1).toString()}
+                      value={endInputValues.year}
+                      onChange={(e) => this.onEndChange(e, 'year')}
                       step={'1'}
                       className={classNames(styles.input, {
                         [styles.error]: !endValid || !startBeforeEnd,
@@ -297,8 +326,8 @@ class TimeRangeSelector extends Component {
                         type="number"
                         min="1"
                         max="12"
-                        value={(endDate.month() + 1).toString()}
-                        onChange={(e) => this.onEndChange(e, 'month', startDate)}
+                        value={endInputValues.month}
+                        onChange={(e) => this.onEndChange(e, 'month')}
                         step={'1'}
                         disabled={disabledFields.month}
                         className={classNames(styles.input, {
@@ -321,8 +350,8 @@ class TimeRangeSelector extends Component {
                         type="number"
                         min={'1'}
                         max={endDate.daysInMonth()}
-                        value={endDate.date().toString()}
-                        onChange={(e) => this.onEndChange(e, 'date', startDate)}
+                        value={endInputValues.date}
+                        onChange={(e) => this.onEndChange(e, 'date')}
                         step={'1'}
                         disabled={disabledFields.day}
                         className={classNames(styles.input, {
@@ -350,7 +379,9 @@ class TimeRangeSelector extends Component {
                 disabled={!startValid || !endValid || !startBeforeEnd}
                 className={styles.cta}
                 onClick={() => {
-                  this.submit(startDate, endDate)
+                  if (startValid && endValid) {
+                    this.submit(startDate, endDate)
+                  }
                 }}
               >
                 {labels.done}
