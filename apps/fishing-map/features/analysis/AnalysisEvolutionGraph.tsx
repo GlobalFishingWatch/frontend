@@ -11,7 +11,7 @@ import {
 } from 'recharts'
 import { min, max } from 'lodash'
 import { DateTime } from 'luxon'
-import { Interval } from '@globalfishingwatch/layer-composer'
+import { getInterval, Interval } from '@globalfishingwatch/layer-composer'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import i18n from 'features/i18n/i18n'
 import { toFixed } from 'utils/shared'
@@ -132,7 +132,9 @@ const AnalysisEvolutionGraph: React.FC<{
 }> = (props) => {
   const { start, end } = props
   const { timeseries, interval, sublayers } = props.graphData
-
+  const cleanEnd = DateTime.fromISO(end, { zone: 'utc' })
+    .minus({ [interval]: 1 })
+    .toISO()
   const dataFormated = useMemo(() => {
     return timeseries
       ?.map(({ date, min, max }) => {
@@ -170,7 +172,7 @@ const AnalysisEvolutionGraph: React.FC<{
         <ComposedChart data={dataFormated} margin={{ top: 15, right: 20, left: -20, bottom: -10 }}>
           <CartesianGrid vertical={false} />
           <XAxis
-            domain={[new Date(start).getTime(), new Date(end).getTime()]}
+            domain={[new Date(start).getTime(), new Date(cleanEnd).getTime()]}
             dataKey="date"
             interval="preserveStartEnd"
             tickFormatter={(tick: number) => formatDateTicks(tick, interval)}
