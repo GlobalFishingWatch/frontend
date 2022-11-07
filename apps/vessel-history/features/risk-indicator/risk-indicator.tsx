@@ -24,6 +24,7 @@ export function RiskIndicator({
   const [expanded, setExpanded] = useState(false)
   const hasEvents = events && events.length > 0
   const onToggle = useCallback(() => setExpanded(!expanded), [expanded])
+  const displayOptions = { displayPortVisitsAsOneEvent: true }
 
   return (
     <div className={styles['container']}>
@@ -49,11 +50,12 @@ export function RiskIndicator({
         expanded &&
         events.map((event, index) => (
           <ActivityEvent
-            classname={styles.event}
+            classname={cx(styles.event, styles[`${event.type}_${event.subEvent}`])}
             key={index}
             event={event}
             onMapClick={onEventMapClick}
             onInfoClick={onEventInfoClick}
+            options={displayOptions}
           />
         ))}
     </div>
