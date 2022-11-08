@@ -124,14 +124,15 @@ function ActivitySection(): React.ReactElement {
       }
       return option
     })
-    // console.log(options)
     return options.sort((a, b) => a.label.localeCompare(b.label))
   }, [activityDataviews])
 
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={styles.header}>
-        <h2 className={styles.sectionTitle}>{t('common.activity', 'Activity')}</h2>
+        <h2 className={cx('print-hidden', styles.sectionTitle)}>
+          {t('common.activity', 'Activity')}
+        </h2>
         {!readOnly && (
           <div className={cx('print-hidden', styles.sectionButtons)}>
             {activityOptions &&

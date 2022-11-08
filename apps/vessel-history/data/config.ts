@@ -118,6 +118,7 @@ export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions 
 export const FEEDBACK_EN = process.env.NEXT_PUBLIC_FEEDBACK_FORM_EN
 export const FEEDBACK_FR = process.env.NEXT_PUBLIC_FEEDBACK_FORM_FR
 
+export const AIS_DATA_DELAY_DAYS = 3
 export const RISK_SUMMARY_SETTINGS = {
   // Time range to use when calculating indicators
   timeRange: { years: 1 },
