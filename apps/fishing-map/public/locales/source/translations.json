@@ -144,7 +144,8 @@
     "view_layer": "View the layer",
     "viirs": "Night light detections (VIIRS)",
     "welcomePopupDisable": "Don't show again",
-    "whatsNew": "What's new?"
+    "whatsNew": "What's new?",
+    "whatsNewWithNewVersion": "We've made some changes since you last visited the map. Click to learn more"
   },
   "dataset": {
     "addContext": "Add context dataset",
