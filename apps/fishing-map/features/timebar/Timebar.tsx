@@ -27,7 +27,7 @@ import {
 import { DEFAULT_WORKSPACE, LAST_DATA_UPDATE } from 'data/config'
 import { TimebarVisualisations } from 'types'
 import useViewport from 'features/map/map-viewport.hooks'
-import { selectTimebarGraph } from 'features/app/app.selectors'
+import { selectTimebarGraph, selectTimebarVisualisation } from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { upperFirst } from 'utils/info'
 import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
@@ -48,6 +48,7 @@ const ZOOM_LEVEL_TO_FOCUS_EVENT = 5
 
 const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents }) => {
   // const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
+  const timebarVisualisation = useSelector(selectTimebarVisualisation)
   const highlightedTime = useSelector(selectHighlightedTime)
   const onHighlightChunks = useCallback(
     (chunks: HighlightedChunks) => {
@@ -104,7 +105,6 @@ const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents }) => {
     },
     [metadata]
   )
-  const { timebarVisualisation } = useTimebarVisualisationConnect()
   const formatDate =
     timebarVisualisation !== TimebarVisualisations.HeatmapActivity &&
     timebarVisualisation !== TimebarVisualisations.HeatmapDetections

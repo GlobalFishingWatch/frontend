@@ -1,18 +1,20 @@
 import { useEffect, useState, useCallback } from 'react'
 import { debounce } from 'lodash'
-import { DateTime } from 'luxon'
 import { useDebounce, useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { Timeseries } from '@globalfishingwatch/timebar'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
+import { TimeseriesFeatureProps } from '@globalfishingwatch/fourwings-aggregate'
+import { getDatasetsExtent, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import { getTimeseriesFromFeatures } from '@globalfishingwatch/features-aggregate'
 import { checkEqualBounds, useMapBounds } from 'features/map/map-viewport.hooks'
+import { getActiveActivityDatasetsInDataview } from 'features/datasets/datasets.utils'
 import {
   areDataviewsFeatureLoaded,
+  DataviewFeature,
   hasDataviewsFeatureError,
   useMapDataviewFeatures,
 } from 'features/map/map-sources.hooks'
-import { LAST_DATA_UPDATE } from 'data/config'
 
 export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
   const [generatingStackedActivity, setGeneratingStackedActivity] = useState(false)
@@ -31,30 +33,36 @@ export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSetStackedActivity = useCallback(
-    debounce((dataviewFeatures, bounds) => {
-      const dataviewFeaturesFiltered = dataviewFeatures.map((dataview) => {
+    debounce((dataviewFeatures: DataviewFeature[], bounds) => {
+      const dataviewFeaturesFiltered = dataviewFeatures.map((dataviewFeature) => {
+        // const dataviews = dataviews.find((d) => d.id === dataviewFeature.dataviewsId[0])
+        const activeDataviewDatasets = getActiveActivityDatasetsInDataview(dataviews)
+        const { extentStart, extentEnd } = getDatasetsExtent(activeDataviewDatasets, {
+          format: 'timestamp',
+        })
+
         return {
-          ...dataview,
-          chunksFeatures: dataview.chunksFeatures?.map((chunk) => {
+          ...dataviewFeature,
+          chunksFeatures: dataviewFeature.chunksFeatures?.map((chunk) => {
             return {
               ...chunk,
-              features: chunk.features ? filterFeaturesByBounds(chunk.features, bounds) : [],
+              startDataTimestamp: extentStart,
+              endDataTimestamp: extentEnd,
+              features: chunk.features
+                ? (filterFeaturesByBounds(
+                    chunk.features,
+                    bounds
+                  ) as GeoJSONFeature<TimeseriesFeatureProps>[])
+                : [],
             }
           }),
         }
       })
       const stackedActivity = getTimeseriesFromFeatures(dataviewFeaturesFiltered)
-      const stackedActivityToLastDate = stackedActivity.map((activity) => ({
-        ...activity,
-        date:
-          DateTime.fromMillis(activity.date, { zone: 'UTC' }).toISO() < LAST_DATA_UPDATE
-            ? activity.date
-            : DateTime.fromISO(LAST_DATA_UPDATE, { zone: 'UTC' }).toMillis(),
-      }))
-      setStackedActivity(stackedActivityToLastDate)
+      setStackedActivity(stackedActivity)
       setGeneratingStackedActivity(false)
     }, 400),
-    [setStackedActivity]
+    [dataviews, setStackedActivity]
   )
 
   useEffect(() => {

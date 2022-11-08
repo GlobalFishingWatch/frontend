@@ -102,15 +102,24 @@ const getUTCDate = (timestamp: number) => {
   )
 }
 
-const getDatasetsExtent = (datasets: Dataset[] | undefined) => {
+export const getDatasetsExtent = (
+  datasets: Dataset[] | undefined,
+  { format }: { format: 'isoString' | 'timestamp' } = { format: 'isoString' }
+) => {
   const startRanges = datasets?.flatMap((d) =>
     d?.startDate ? new Date(d.startDate).getTime() : []
   )
   const endRanges = datasets?.flatMap((d) => (d?.endDate ? new Date(d.endDate).getTime() : []))
-  const extentStart = startRanges?.length
-    ? getUTCDate(Math.min(...startRanges)).toISOString()
-    : undefined
-  const extentEnd = endRanges?.length ? getUTCDate(Math.max(...endRanges)).toISOString() : undefined
+  const extentStartDate = startRanges?.length ? getUTCDate(Math.min(...startRanges)) : undefined
+  let extentStart
+  if (extentStartDate) {
+    extentStart = format === 'isoString' ? extentStartDate.toISOString() : extentStartDate.getTime()
+  }
+  const extentEndDate = endRanges?.length ? getUTCDate(Math.max(...endRanges)) : undefined
+  let extentEnd
+  if (extentEndDate) {
+    extentEnd = format === 'isoString' ? extentEndDate.toISOString() : extentEndDate.getTime()
+  }
 
   return { extentStart, extentEnd }
 }
