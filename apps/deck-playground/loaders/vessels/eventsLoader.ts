@@ -28,6 +28,7 @@ function parseEvents(events) {
     const { position, start, end, type, ...attributes } = event
     return {
       ...attributes,
+      type,
       coordinates: [event.position.lon, event.position.lat],
       start: new Date(start).getTime(),
       endTime: new Date(end).getTime(),
