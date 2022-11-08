@@ -20,8 +20,6 @@
   height: 40px;
   display: flex;
   align-items: center;
-
-  /* border-top: var(--border); */
   padding: 0 var(--space-S);
   position: relative;
 }
@@ -42,14 +40,26 @@
   left: calc(var(--space-XS) * -1);
 }
 
-.displayPortVisitsAsOneEvent .event {
-  height: auto;
+.highlightsListContainer .event {
+  margin: 0;
+  padding: 0;
+}
+
+.displayPortVisitsAsOneEvent.port_visit_exited .event,
+.displayPortVisitsAsOneEvent.port_visit_entered .event {
+  height: 35px;
+}
+
+.displayPortVisitsAsOneEvent:not(.port_visit_entered):not(.port_visit_exited) .event {
+  height: 44px;
 }
 
 .displayPortVisitsAsOneEvent .eventIcon.port_visit_exited,
 .displayPortVisitsAsOneEvent .eventIcon.port_visit_entered,
 .displayPortVisitsAsOneEvent:not(.port_visit_entered) .divider {
   opacity: 0;
+  height: 0;
+  margin-top: 0;
 }
 
 .displayPortVisitsAsOneEvent.port_visit_entered .divider {
@@ -232,11 +242,6 @@
 
 .highlightsListContainer .event .eventData .description {
   width: calc(100vw - var(--size-S) * 5.7);
-}
-
-.highlightsListContainer .event {
-  margin: 0;
-  padding: 0;
 }
 
 .highlights {

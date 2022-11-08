@@ -29,6 +29,7 @@
 
 .port_visit_entry {
   border-bottom: var(--border);
+  margin-bottom: var(--space-XS);
 }
 
 .subtitle {

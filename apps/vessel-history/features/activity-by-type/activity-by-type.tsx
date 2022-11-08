@@ -69,8 +69,7 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
   const getRowHeight = useCallback(
     (index: number) => {
       const event = events[index]
-      const height =
-        !event.group && event?.type === 'port_visit' ? (event?.portVisitSubEvent ? 40 : 44) : 60
+      const height = !event.group && event?.type === 'port_visit' ? (event?.subEvent ? 35 : 44) : 60
       return height
     },
     [events]
