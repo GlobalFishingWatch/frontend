@@ -98,6 +98,7 @@
       },
       "vessel_id": "crwdns18508:0crwdne18508:0",
       "elevation_m": "crwdns18510:0crwdne18510:0",
+      "vessel-groups": "crwdns27267:0crwdne27267:0",
       "distance_from_port_m": "crwdns18512:0crwdne18512:0",
       "distance_from_shore_m": "crwdns18514:0crwdne18514:0"
     }
@@ -168,6 +169,7 @@
       },
       "vessel_id": "crwdns25346:0crwdne25346:0",
       "elevation_m": "crwdns25348:0crwdne25348:0",
+      "vessel-groups": "crwdns27269:0crwdne27269:0",
       "distance_from_port_m": "crwdns25350:0crwdne25350:0",
       "distance_from_shore_m": "crwdns25352:0crwdne25352:0"
     }
@@ -400,7 +402,8 @@
       "lat": "crwdns9087:0crwdne9087:0",
       "lon": "crwdns9089:0crwdne9089:0",
       "flag": "crwdns9091:0crwdne9091:0",
-      "vessel_id": "crwdns9093:0crwdne9093:0"
+      "vessel_id": "crwdns9093:0crwdne9093:0",
+      "vessel-groups": "crwdns27271:0crwdne27271:0"
     }
   },
   "private-costa-rica-fishing-effort": {
@@ -442,6 +445,7 @@
       },
       "vessel_id": "crwdns26270:0crwdne26270:0",
       "elevation_m": "crwdns26272:0crwdne26272:0",
+      "vessel-groups": "crwdns27273:0crwdne27273:0",
       "distance_from_port_m": "crwdns26274:0crwdne26274:0",
       "distance_from_shore_m": "crwdns26276:0crwdne26276:0"
     }
@@ -486,6 +490,7 @@
       },
       "vessel_id": "crwdns26302:0crwdne26302:0",
       "elevation_m": "crwdns26304:0crwdne26304:0",
+      "vessel-groups": "crwdns27275:0crwdne27275:0",
       "distance_from_port_m": "crwdns26306:0crwdne26306:0",
       "distance_from_shore_m": "crwdns26308:0crwdne26308:0"
     }
@@ -530,7 +535,8 @@
           "Handline": "crwdns27066:0crwdne27066:0"
         }
       },
-      "vessel_id": "crwdns27068:0crwdne27068:0"
+      "vessel_id": "crwdns27068:0crwdne27068:0",
+      "vessel-groups": "crwdns27277:0crwdne27277:0"
     }
   },
   "private-indonesia-aruna-presence": {
@@ -550,7 +556,8 @@
           "Handline": "crwdns26388:0crwdne26388:0"
         }
       },
-      "vessel_id": "crwdns26390:0crwdne26390:0"
+      "vessel_id": "crwdns26390:0crwdne26390:0",
+      "vessel-groups": "crwdns27279:0crwdne27279:0"
     }
   },
   "private-indonesia-aruna-vessels": {
@@ -600,6 +607,7 @@
       },
       "vessel_id": "crwdns9169:0crwdne9169:0",
       "elevation_m": "crwdns9171:0crwdne9171:0",
+      "vessel-groups": "crwdns27281:0crwdne27281:0",
       "distance_from_port_m": "crwdns9173:0crwdne9173:0",
       "distance_from_shore_m": "crwdns9175:0crwdne9175:0"
     }
@@ -621,7 +629,8 @@
           "Handline": "crwdns27092:0crwdne27092:0"
         }
       },
-      "vessel_id": "crwdns27094:0crwdne27094:0"
+      "vessel_id": "crwdns27094:0crwdne27094:0",
+      "vessel-groups": "crwdns27283:0crwdne27283:0"
     }
   },
   "private-indonesia-ipnlf-presence": {
@@ -641,7 +650,8 @@
           "Handline": "crwdns26432:0crwdne26432:0"
         }
       },
-      "vessel_id": "crwdns26434:0crwdne26434:0"
+      "vessel_id": "crwdns26434:0crwdne26434:0",
+      "vessel-groups": "crwdns27285:0crwdne27285:0"
     }
   },
   "private-indonesia-ipnlf-vessels": {
@@ -675,7 +685,8 @@
           "Handline": "crwdns25944:0crwdne25944:0"
         }
       },
-      "vessel_id": "crwdns18042:0crwdne18042:0"
+      "vessel_id": "crwdns18042:0crwdne18042:0",
+      "vessel-groups": "crwdns27287:0crwdne27287:0"
     }
   },
   "private-indonesia-pelagic-vessels": {
@@ -719,7 +730,8 @@
           "Squid hooking": "crwdns9217:0crwdne9217:0"
         }
       },
-      "vessel_id": "crwdns9219:0crwdne9219:0"
+      "vessel_id": "crwdns9219:0crwdne9219:0",
+      "vessel-groups": "crwdns27289:0crwdne27289:0"
     }
   },
   "private-indonesia-rare-fishing-effort": {
@@ -739,7 +751,8 @@
           "Handline": "crwdns27122:0crwdne27122:0"
         }
       },
-      "vessel_id": "crwdns27124:0crwdne27124:0"
+      "vessel_id": "crwdns27124:0crwdne27124:0",
+      "vessel-groups": "crwdns27291:0crwdne27291:0"
     }
   },
   "private-indonesia-rare-presence": {
@@ -759,7 +772,8 @@
           "Handline": "crwdns26476:0crwdne26476:0"
         }
       },
-      "vessel_id": "crwdns26478:0crwdne26478:0"
+      "vessel_id": "crwdns26478:0crwdne26478:0",
+      "vessel-groups": "crwdns27293:0crwdne27293:0"
     }
   },
   "private-indonesia-rare-vessels": {
@@ -792,7 +806,8 @@
           "purse seine": "crwdns17459:0crwdne17459:0"
         }
       },
-      "vessel_id": "crwdns17461:0crwdne17461:0"
+      "vessel_id": "crwdns17461:0crwdne17461:0",
+      "vessel-groups": "crwdns27295:0crwdne27295:0"
     }
   },
   "private-indonesia-zebrax-vessels": {
@@ -824,6 +839,7 @@
       "hours": "crwdns18166:0crwdne18166:0",
       "vessel_id": "crwdns18168:0crwdne18168:0",
       "elevation_m": "crwdns18170:0crwdne18170:0",
+      "vessel-groups": "crwdns27297:0crwdne27297:0",
       "distance_from_port_m": "crwdns18172:0crwdne18172:0",
       "distance_from_shore_m": "crwdns18174:0crwdne18174:0"
     }
@@ -887,7 +903,8 @@
           "oil_tanker": "crwdns27040:0crwdne27040:0"
         }
       },
-      "vessel_id": "crwdns27042:0crwdne27042:0"
+      "vessel_id": "crwdns27042:0crwdne27042:0",
+      "vessel-groups": "crwdns27299:0crwdne27299:0"
     }
   },
   "private-peru-fishing-effort": {
@@ -1125,6 +1142,7 @@
       },
       "vessel_id": "crwdns18634:0crwdne18634:0",
       "elevation_m": "crwdns18636:0crwdne18636:0",
+      "vessel-groups": "crwdns27301:0crwdne27301:0",
       "distance_from_port_m": "crwdns18638:0crwdne18638:0",
       "distance_from_shore_m": "crwdns18640:0crwdne18640:0"
     }
@@ -1293,7 +1311,8 @@
       "lat": "crwdns9505:0crwdne9505:0",
       "lon": "crwdns9507:0crwdne9507:0",
       "flag": "crwdns9509:0crwdne9509:0",
-      "vessel_id": "crwdns9511:0crwdne9511:0"
+      "vessel_id": "crwdns9511:0crwdne9511:0",
+      "vessel-groups": "crwdns27303:0crwdne27303:0"
     }
   },
   "public-chile-all-vessels": {
@@ -1486,6 +1505,7 @@
       },
       "vessel_id": "crwdns26334:0crwdne26334:0",
       "elevation_m": "crwdns26336:0crwdne26336:0",
+      "vessel-groups": "crwdns27305:0crwdne27305:0",
       "distance_from_port_m": "crwdns26338:0crwdne26338:0",
       "distance_from_shore_m": "crwdns26340:0crwdne26340:0"
     }
@@ -2050,6 +2070,7 @@
       },
       "vessel_id": "crwdns10167:0crwdne10167:0",
       "elevation_m": "crwdns10169:0crwdne10169:0",
+      "vessel-groups": "crwdns27307:0crwdne27307:0",
       "distance_from_port_m": "crwdns10171:0crwdne10171:0",
       "distance_from_shore_m": "crwdns10173:0crwdne10173:0"
     }
@@ -2070,7 +2091,8 @@
           "purse seine": "crwdns27162:0crwdne27162:0",
           "Handline": "crwdns27164:0crwdne27164:0"
         }
-      }
+      },
+      "vessel-groups": "crwdns27309:0crwdne27309:0"
     }
   },
   "public-indonesia-pelagic-presence": {
@@ -2090,7 +2112,8 @@
           "Handline": "crwdns25988:0crwdne25988:0"
         }
       },
-      "vessel_id": "crwdns18084:0crwdne18084:0"
+      "vessel_id": "crwdns18084:0crwdne18084:0",
+      "vessel-groups": "crwdns27311:0crwdne27311:0"
     }
   },
   "public-indonesia-zebrax-presence": {
@@ -2109,7 +2132,8 @@
           "purse seine": "crwdns17535:0crwdne17535:0"
         }
       },
-      "vessel_id": "crwdns10185:0crwdne10185:0"
+      "vessel_id": "crwdns10185:0crwdne10185:0",
+      "vessel-groups": "crwdns27313:0crwdne27313:0"
     }
   },
   "public-inshore-fishing-zone-1618837176535": {
@@ -2138,6 +2162,7 @@
       },
       "vessel_id": "crwdns10211:0crwdne10211:0",
       "elevation_m": "crwdns10213:0crwdne10213:0",
+      "vessel-groups": "crwdns27315:0crwdne27315:0",
       "distance_from_port_m": "crwdns10215:0crwdne10215:0",
       "distance_from_shore_m": "crwdns10217:0crwdne10217:0"
     }
@@ -2176,6 +2201,7 @@
       },
       "vessel_id": "crwdns10263:0crwdne10263:0",
       "elevation_m": "crwdns10265:0crwdne10265:0",
+      "vessel-groups": "crwdns27317:0crwdne27317:0",
       "distance_from_port_m": "crwdns10267:0crwdne10267:0",
       "distance_from_shore_m": "crwdns10269:0crwdne10269:0"
     }
