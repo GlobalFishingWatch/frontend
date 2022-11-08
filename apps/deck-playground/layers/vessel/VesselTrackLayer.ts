@@ -3,16 +3,6 @@ import { AccessorFunction, DefaultProps } from '@deck.gl/core/typed'
 import { PathLayer, PathLayerProps } from '@deck.gl/layers/typed'
 import { Segment } from '@globalfishingwatch/api-types'
 
-const defaultProps: DefaultProps<VesselTrackLayerProps> = {
-  endTime: { type: 'number', value: 0, min: 0 },
-  startTime: { type: 'number', value: 0, min: 0 },
-  getTimestamps: { type: 'accessor', value: (d) => d.timestamps },
-}
-
-/** All properties supported by VesselTrackLayer. */
-export type VesselTrackLayerProps<DataT = any> = _VesselTrackLayerProps<DataT> &
-  PathLayerProps<DataT>
-
 /** Properties added by VesselTrackLayer. */
 export type _VesselTrackLayerProps<DataT = any> = {
   /**
@@ -40,6 +30,16 @@ export type _VesselTrackLayerProps<DataT = any> = {
    */
   getTimestamps?: AccessorFunction<DataT, NumericArray>
 }
+
+const defaultProps: DefaultProps<VesselTrackLayerProps> = {
+  endTime: { type: 'number', value: 0, min: 0 },
+  startTime: { type: 'number', value: 0, min: 0 },
+  getTimestamps: { type: 'accessor', value: (d) => d.timestamps },
+}
+
+/** All properties supported by VesselTrackLayer. */
+export type VesselTrackLayerProps<DataT = any> = _VesselTrackLayerProps<DataT> &
+  PathLayerProps<DataT>
 
 /** Render paths that represent vessel trips. */
 export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<

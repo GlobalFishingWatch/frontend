@@ -1,18 +1,22 @@
+import { DataFilterExtension } from '@deck.gl/extensions'
 import { CompositeLayer, Layer, LayersList } from '@deck.gl/core/typed'
-import { VesselTrackLayer, _VesselTrackLayerProps } from 'layers/vessel/VesselTrackLayer'
+// Layers
 import { VesselEventsLayer } from 'layers/vessel/VesselEventsLayer'
-import { trackLoader } from 'loaders/trackLoader'
+import { VesselTrackLayer, _VesselTrackLayerProps } from 'layers/vessel/VesselTrackLayer'
+// Loaders
+import { trackLoader } from 'loaders/vessels/trackLoader'
+import { vesselEventsLoader } from 'loaders/vessels/eventsLoader'
 import { API_TOKEN } from 'data/config'
 
 export type VesselLayerProps = _VesselTrackLayerProps
 
-
 export class VesselLayer extends CompositeLayer<VesselLayerProps> {
+
   _getVesselTrackLayer() {
     return new VesselTrackLayer(
       this.getSubLayerProps({
         id: `vessel-layer-${this.props.id}`,
-        data: `https://gateway.api.dev.globalfishingwatch.org/v2/vessels/${this.props.id}/tracks?binary=true&fields=lonlat%2Ctimestamp&format=valueArray&distance-fishing=0&bearing-val-fishing=0&change-speed-fishing=0&min-accuracy-fishing=0&distance-transit=0&bearing-val-transit=0&change-speed-transit=0&min-accuracy-transit=0&datasets=public-global-fishing-tracks%3Av20201001`,
+        data: `https://gateway.api.dev.globalfishingwatch.org/v2/vessels/${this.props.id}/tracks?binary=true&fields=lonlat%2Ctimestamp&format=valueArray&distance-fishing=500&bearing-val-fishing=1&change-speed-fishing=200&min-accuracy-fishing=30&distance-transit=500&bearing-val-transit=1&change-speed-transit=200&min-accuracy-transit=30&datasets=public-global-fishing-tracks%3Av20201001`,
         loaders: [trackLoader],
         getPath: (d) => {
           return d.waypoints.map((p) => p.coordinates)
@@ -35,7 +39,6 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps> {
             },
           },
         },
-        // pickable: true,
         getColor: (d) => {
           return d.waypoints.map((p) => {
             if (
@@ -47,21 +50,13 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps> {
             return [255, 255, 255, 100]
           })
         },
-        // getWidth: (d) => {
-        //   return d.waypoints.map((p) =>
-        //     p.timestamp >= minHighlightedFrame &&
-        //     p.timestamp <= maxHighlightedFrame
-        //       ? 2
-        //       : 1
-        //   );
-        // },
         getWidth: 3,
         updateTriggers: {
           getColor: [this.props.highlightStartTime, this.props.highlightEndTime],
           // getWidth: [minHighlightedFrame, maxHighlightedFrame],
         },
         startTime: this.props.startTime,
-        endTime: this.props.endTime
+        endTime: this.props.endTime,
       })
     )
   }
@@ -71,6 +66,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps> {
       this.getSubLayerProps({
         id: `fishing-${this.props.id}`,
         data: `https://gateway.api.dev.globalfishingwatch.org/v2/events?limit=99999&offset=0&vessels=${this.props.id}&summary=true&datasets=public-global-fishing-events%3Av20201001`,
+        loaders: [vesselEventsLoader],
+        pickable: true,
         loadOptions: {
           fetch: {
             headers: {
@@ -80,6 +77,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps> {
         },
         startTime: this.props.startTime,
         endTime: this.props.endTime,
+        filterRange: [this.props.startTime, this.props.endTime],
+        extensions: [new DataFilterExtension({ filterSize: 1 })],
       })
     )
   }
@@ -89,6 +88,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps> {
       this.getSubLayerProps({
         id: `port-visits-${this.props.id}`,
         data: `https://gateway.api.dev.globalfishingwatch.org/v2/events?limit=99999&offset=0&vessels=${this.props.id}&summary=true&confidences=4&datasets=public-global-port-visits-c2-events%3Av20201001`,
+        loaders: [vesselEventsLoader],
+        pickable: true,
         loadOptions: {
           fetch: {
             headers: {
@@ -98,6 +99,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps> {
         },
         startTime: this.props.startTime,
         endTime: this.props.endTime,
+        filterRange: [this.props.startTime, this.props.endTime],
+        extensions: [new DataFilterExtension({ filterSize: 1 })],
       })
     )
   }
@@ -107,6 +110,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps> {
       this.getSubLayerProps({
         id: `encounters-${this.props.id}`,
         data: `https://gateway.api.dev.globalfishingwatch.org/v2/events?limit=99999&offset=0&vessels=${this.props.id}&summary=true&datasets=public-global-encounters-events%3Av20201001`,
+        loaders: [vesselEventsLoader],
+        pickable: true,
         loadOptions: {
           fetch: {
             headers: {
@@ -116,6 +121,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps> {
         },
         startTime: this.props.startTime,
         endTime: this.props.endTime,
+        filterRange: [this.props.startTime, this.props.endTime],
+        extensions: [new DataFilterExtension({ filterSize: 1 })],
       })
     )
   }
