@@ -8,6 +8,7 @@ import {
 } from '@globalfishingwatch/layer-composer'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
+import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID, DEFAULT_DATAVIEW_IDS } from 'data/workspaces'
 import { RootState } from 'store'
 import {
@@ -110,6 +111,26 @@ export const selectActiveHeatmapDataviews = createSelector(
     ...activityDataviews,
     ...detectionsDataviews,
   ]
+)
+
+export const selectActiveHeatmapVesselDatasets = createSelector(
+  [selectActiveHeatmapDataviews, (state: RootState) => selectAllDatasets(state)],
+  (heatmapDataviews = [], datasets = []) => {
+    const vesselDatasetIds = Array.from(
+      new Set(
+        heatmapDataviews.flatMap((dataview) => {
+          const activeDatasets = dataview.config?.datasets
+          return dataview.datasets.flatMap((dataset) => {
+            if (activeDatasets.includes(dataset.id)) {
+              return getRelatedDatasetByType(dataset, DatasetTypes.Vessels)?.id || []
+            }
+            return []
+          })
+        })
+      )
+    )
+    return datasets.filter((dataset) => vesselDatasetIds.includes(dataset.id))
+  }
 )
 
 export const selectEnvironmentalDataviews = createSelector(
