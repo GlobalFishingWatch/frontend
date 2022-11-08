@@ -33,13 +33,16 @@ export const getSourceMetadata = (style: ExtendedStyle, dataview: UrlDataviewIns
     const metadata = getHeatmapSourceMetadata(style, generatorSourceId)
     return { metadata, generatorSourceId }
   }
+  const environmentMetadata = getHeatmapSourceMetadata(style, dataview.id)
   return {
-    metadata: {
-      sourceLayer:
-        dataview.config?.type === GeneratorType.TileCluster
-          ? DEFAULT_POINTS_SOURCE_LAYER
-          : DEFAULT_CONTEXT_SOURCE_LAYER,
-    } as HeatmapLayerMeta,
+    metadata: environmentMetadata
+      ? environmentMetadata
+      : ({
+          sourceLayer:
+            dataview.config?.type === GeneratorType.TileCluster
+              ? DEFAULT_POINTS_SOURCE_LAYER
+              : DEFAULT_CONTEXT_SOURCE_LAYER,
+        } as HeatmapLayerMeta),
     generatorSourceId: dataview.id,
   }
 }
