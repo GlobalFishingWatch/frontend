@@ -8,7 +8,7 @@ import { getDatasetsExtent, UrlDataviewInstance } from '@globalfishingwatch/data
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import { getTimeseriesFromFeatures } from '@globalfishingwatch/features-aggregate'
 import { checkEqualBounds, useMapBounds } from 'features/map/map-viewport.hooks'
-import { getActiveActivityDatasetsInDataview } from 'features/datasets/datasets.utils'
+import { getActiveActivityDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import {
   areDataviewsFeatureLoaded,
   DataviewFeature,
@@ -35,19 +35,20 @@ export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
   const debouncedSetStackedActivity = useCallback(
     debounce((dataviewFeatures: DataviewFeature[], bounds) => {
       const dataviewFeaturesFiltered = dataviewFeatures.map((dataviewFeature) => {
-        // const dataviews = dataviews.find((d) => d.id === dataviewFeature.dataviewsId[0])
-        const activeDataviewDatasets = getActiveActivityDatasetsInDataview(dataviews)
-        const { extentStart, extentEnd } = getDatasetsExtent(activeDataviewDatasets, {
-          format: 'timestamp',
-        })
+        const activeDataviewDatasets = getActiveActivityDatasetsInDataviews(dataviews)
+        const dataviewExtents = activeDataviewDatasets.map((dataviewDatasets) =>
+          getDatasetsExtent(dataviewDatasets, {
+            format: 'timestamp',
+          })
+        )
 
         return {
           ...dataviewFeature,
           chunksFeatures: dataviewFeature.chunksFeatures?.map((chunk) => {
             return {
               ...chunk,
-              startDataTimestamp: extentStart,
-              endDataTimestamp: extentEnd,
+              startDataTimestamps: dataviewExtents.map((d) => d.extentStart),
+              endDataTimestamps: dataviewExtents.map((d) => d.extentEnd),
               features: chunk.features
                 ? (filterFeaturesByBounds(
                     chunk.features,
@@ -72,13 +73,7 @@ export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
       debouncedSetStackedActivity(dataviewFeatures, debouncedBounds)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    dataviewFeatures,
-    debouncedBounds,
-    debouncedSetStackedActivity,
-    isSmallScreen,
-    layersFilterHash,
-  ])
+  }, [dataviewFeatures, debouncedBounds, isSmallScreen, layersFilterHash])
 
   return { loading, error, stackedActivity }
 }

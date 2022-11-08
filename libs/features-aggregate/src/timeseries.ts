@@ -24,8 +24,8 @@ export type ChunkFeature = {
   state: TilesSourceState
   features: GeoJSONFeature<TimeseriesFeatureProps>[]
   quantizeOffset: number
-  startDataTimestamp?: number
-  endDataTimestamp?: number
+  startDataTimestamps?: number[]
+  endDataTimestamps?: number[]
 }
 
 export type LayerFeature = {
@@ -58,7 +58,7 @@ export const getChunksTimeseries = ({
   maxVisibleValue,
 }: TimeseriesParams) => {
   const allChunksValues = chunksFeatures?.flatMap(
-    ({ features, quantizeOffset, startDataTimestamp, endDataTimestamp }) => {
+    ({ features, quantizeOffset, startDataTimestamps, endDataTimestamps }) => {
       if (features?.length > 0) {
         const { values } = getTimeSeries({
           features,
@@ -99,31 +99,33 @@ export const getChunksTimeseries = ({
           })
         }
         // Replace the initial and the last date with the dataset extend instead of the interval
-        if (startDataTimestamp) {
-          const closestStartIndex = finalValues.findIndex((v) => v.date >= startDataTimestamp) - 1
-          if (closestStartIndex >= 0) {
-            // Use the initial date as a new element with all values 0
-            const initialStartDate = finalValues[closestStartIndex].date
-            const startData = Object.fromEntries([
-              ...[Array.from(Array(numSublayers).keys())].map((i) => {
-                return [i, 0]
-              }),
-              ['frame', finalValues[closestStartIndex].frame],
-              ['date', initialStartDate],
-            ])
-            finalValues.splice(closestStartIndex, 0, startData)
-            // And replace the original first element with the dataset start extent
-            finalValues[closestStartIndex + 1].date = startDataTimestamp
-          }
+        if (startDataTimestamps && startDataTimestamps?.length) {
+          startDataTimestamps.forEach((startDataTimestamp, index) => {
+            const closestStartIndex = finalValues.findIndex((v) => v.date >= startDataTimestamp) - 1
+            if (closestStartIndex >= 0) {
+              // Use the initial date as a new element with all values 0
+              const initialStartDate = finalValues[closestStartIndex].date
+              const startData = {
+                ...finalValues[closestStartIndex],
+                date: initialStartDate,
+                [index]: 0,
+              }
+              finalValues.splice(closestStartIndex, 0, startData)
+              // And replace the original first element with the dataset start extent
+              finalValues[closestStartIndex + 1].date = startDataTimestamp
+            }
+          })
         }
-        if (endDataTimestamp) {
-          const closestEndIndex = finalValues.findIndex((v) => v.date > endDataTimestamp)
-          if (closestEndIndex >= 0) {
-            finalValues.splice(closestEndIndex, 0, {
-              ...finalValues[closestEndIndex],
-              date: endDataTimestamp,
-            })
-          }
+        if (endDataTimestamps && endDataTimestamps?.length) {
+          endDataTimestamps.forEach((endDataTimestamp) => {
+            const closestEndIndex = finalValues.findIndex((v) => v.date > endDataTimestamp)
+            if (closestEndIndex >= 0) {
+              finalValues.splice(closestEndIndex, 0, {
+                ...finalValues[closestEndIndex],
+                date: endDataTimestamp,
+              })
+            }
+          })
         }
         return finalValues
       } else {
