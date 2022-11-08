@@ -1,9 +1,12 @@
+import { useRef, useEffect } from 'react'
 import cx from 'classnames'
-import { useTranslation } from 'react-i18next'
 import packageJson from 'package.json'
-import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
+import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import styles from './WhatsNew.module.css'
+
+const GFW_LAST_VERSION_SEEN_KEY = 'GFW_LAST_VERSION_SEEN'
 
 const parseVersion = (version: string) => {
   //return only first two numbers to check only major and minor changes
@@ -12,26 +15,27 @@ const parseVersion = (version: string) => {
 
 function WhatsNew() {
   const { t } = useTranslation()
-  const lastVersionSeen = parseVersion(localStorage.getItem('lastVersionSeen') || '')
+  const [lastVersionSeen, setLastVersionSeen] = useLocalStorage(GFW_LAST_VERSION_SEEN_KEY, '')
   const currentVersion = parseVersion(packageJson.version)
-  const [hintSeen, setHintSeen] = useState(false)
   const newVersionSinceLastVisit = useRef(
     lastVersionSeen === '' || currentVersion > lastVersionSeen
   )
 
   useEffect(() => {
-    // set version to current
-    localStorage.setItem('lastVersionSeen', currentVersion)
+    // We want to hide the icon automatically for following visits
+    setLastVersionSeen(currentVersion)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const dismissNewVersionHint = () => {
     // remove hint if user visits the platform updates page
-    setHintSeen(true)
+    setLastVersionSeen(currentVersion)
+    newVersionSinceLastVisit.current = false
   }
 
   return (
     <a
-      className={cx({ [styles.newVersionHint]: !hintSeen && newVersionSinceLastVisit.current })}
+      className={cx({ [styles.newVersionHint]: newVersionSinceLastVisit.current })}
       href="https://globalfishingwatch.org/platform-updates"
       target="_blank"
       rel="noreferrer"
