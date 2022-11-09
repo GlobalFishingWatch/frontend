@@ -227,7 +227,6 @@
     "highResNotAvailable": "Your area is too big",
     "monthly": "Month",
     "monthlyNotAvailable": "Your time range is shorter than 1 month",
-    "mmsiNotSupported": "The datasets selected don't support grouping by MMSI",
     "spatialResolution": "Spatial resolution",
     "temporalResolution": "Group time by",
     "timeRange": "Time Range",
