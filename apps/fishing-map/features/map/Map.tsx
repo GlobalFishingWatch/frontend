@@ -282,6 +282,7 @@ const MapWrapper = () => {
           latitude={viewport.latitude}
           longitude={viewport.longitude}
           pitch={debugOptions.extruded ? 40 : 0}
+          bearing={0}
           onMove={isAnalyzing && !hasTimeseries ? undefined : onViewportChange}
           mapStyle={style as MapboxStyle}
           transformRequest={transformRequest}
