@@ -1,8 +1,9 @@
 import { t } from 'i18next'
 import { ChoiceOption } from '@globalfishingwatch/ui-components'
+import { Dataset } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from 'utils/dates'
 import { REPORT_DAYS_LIMIT } from 'data/config'
-import { TemporalResolution, TEMPORAL_RESOLUTION_OPTIONS } from './downloadActivity.config'
+import { GroupBy, TemporalResolution, TEMPORAL_RESOLUTION_OPTIONS } from './downloadActivity.config'
 
 export function getDownloadReportSupported(start: string, end: string) {
   if (!start || !end) {
@@ -12,6 +13,33 @@ export function getDownloadReportSupported(start: string, end: string) {
   const endDateTime = getUTCDateTime(end)
 
   return endDateTime.diff(startDateTime, ['days']).days <= REPORT_DAYS_LIMIT
+}
+
+export function getSupportedGroupByOptions(
+  options: ChoiceOption[],
+  vesselDatasets: Dataset[]
+): ChoiceOption[] {
+  if (!options?.length) {
+    return []
+  }
+  const mmsiSupported = vesselDatasets.every((dataset) => {
+    return dataset.schema.mmsi !== undefined
+  })
+
+  return options.map((option) => {
+    if (option.id === GroupBy.MMSI && !mmsiSupported) {
+      return {
+        ...option,
+        disabled: true,
+        tooltip: t(
+          'download.mmsiNotSupported',
+          "The datasets selected don't support grouping by MMSI"
+        ),
+        tooltipPlacement: 'top',
+      }
+    }
+    return option
+  })
 }
 
 export function getSupportedTemporalResolutions(start: string, end: string): ChoiceOption[] {
