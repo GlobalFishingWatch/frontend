@@ -1,6 +1,7 @@
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { WorkspaceCategories } from 'data/workspaces'
 import { selectLocationCategory } from 'routes/routes.selectors'
 import LogoDonaBertarelli from 'assets/images/partner-logos/dona-bertarelli@2x.png'
@@ -53,11 +54,11 @@ const FooterPartners = ({ smallScreen }: FooterPartnersProps) => {
 }
 
 function Footer(): React.ReactElement {
-  const smallScreen = window.innerWidth < 500
-  const copyright = smallScreen ? '© GFW ' : '© Global Fishing Watch '
+  const isSmallScreen = useSmallScreen(500)
+  const copyright = isSmallScreen ? '© GFW ' : '© Global Fishing Watch '
   return (
     <footer className={cx('print-hidden', styles.footer)}>
-      <FooterPartners smallScreen={smallScreen} />
+      <FooterPartners smallScreen={isSmallScreen} />
       <span className={styles.text}>
         {copyright}
         {new Date().getFullYear()}
