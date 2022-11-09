@@ -80,11 +80,6 @@
       "firstTransmissionDate": "firstTransmissionDate"
     }
   },
-  "private-before-after-class-b": {
-    "name": "before-after-class-b",
-    "description": "",
-    "schema": {}
-  },
   "private-belize-fishing-effort": {
     "name": "VMS de Belize",
     "description": "Vessel monitoring system (VMS) data is provided by the Belize High Seas Fisheries Unit (BHSFU). Data is collected using Belize's vessel monitoring system via satellites and is published on a three-day delay containing information on vessels’ location, speed, course, and movement. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing presence algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques.",
@@ -103,6 +98,7 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
@@ -173,6 +169,7 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
@@ -405,7 +402,8 @@
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "private-costa-rica-fishing-effort": {
@@ -447,6 +445,7 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
@@ -491,6 +490,7 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
@@ -535,7 +535,8 @@
           "Handline": "Handline"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "private-indonesia-aruna-presence": {
@@ -555,7 +556,8 @@
           "Handline": "Handline"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "private-indonesia-aruna-vessels": {
@@ -605,6 +607,7 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
@@ -626,7 +629,8 @@
           "Handline": "Handline"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "private-indonesia-ipnlf-presence": {
@@ -646,7 +650,8 @@
           "Handline": "Handline"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "private-indonesia-ipnlf-vessels": {
@@ -680,7 +685,8 @@
           "Handline": "Handline"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "private-indonesia-pelagic-vessels": {
@@ -724,7 +730,8 @@
           "Squid hooking": "Squid hooking"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "private-indonesia-rare-fishing-effort": {
@@ -744,7 +751,8 @@
           "Handline": "Handline"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "private-indonesia-rare-presence": {
@@ -764,7 +772,8 @@
           "Handline": "Handline"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "private-indonesia-rare-vessels": {
@@ -797,7 +806,8 @@
           "purse seine": "purse seine"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "private-indonesia-zebrax-vessels": {
@@ -829,6 +839,7 @@
       "hours": "hours",
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
@@ -892,7 +903,8 @@
           "oil_tanker": "oil_tanker"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "private-peru-fishing-effort": {
@@ -1130,6 +1142,7 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
@@ -1298,7 +1311,8 @@
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "public-chile-all-vessels": {
@@ -1491,6 +1505,7 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
@@ -2055,6 +2070,7 @@
       },
       "vessel_id": "i_id",
       "elevation_m": "altitud_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distancia_de_puerto_m",
       "distance_from_shore_m": "distancia_de_oro_m"
     }
@@ -2075,7 +2091,8 @@
           "purse seine": "purse seine",
           "Handline": "Handline"
         }
-      }
+      },
+      "vessel-groups": "vessel-groups"
     }
   },
   "public-indonesia-pelagic-presence": {
@@ -2095,7 +2112,8 @@
           "Handline": "Handline"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "public-indonesia-zebrax-presence": {
@@ -2114,7 +2132,8 @@
           "purse seine": "purse seine"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "public-inshore-fishing-zone-1618837176535": {
@@ -2143,6 +2162,7 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
@@ -2181,6 +2201,7 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
