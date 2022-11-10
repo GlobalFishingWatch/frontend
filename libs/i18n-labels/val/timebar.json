@@ -9,8 +9,15 @@
   },
   "timerange": {
     "title": "crwdns10979:0crwdne10979:0",
+    "year": "crwdns27323:0crwdne27323:0",
+    "month": "crwdns27325:0crwdne27325:0",
+    "day": "crwdns27327:0crwdne27327:0",
     "start": "crwdns10981:0crwdne10981:0",
     "end": "crwdns10983:0crwdne10983:0",
+    "selectAValidDate": "crwdns27329:0crwdne27329:0",
+    "endBeforeStart": "crwdns27331:0crwdne27331:0",
+    "tooLongForMonths": "crwdns27333:0crwdne27333:0",
+    "tooLongForDays": "crwdns27335:0crwdne27335:0",
     "last30days": "crwdns10985:0crwdne10985:0",
     "last3months": "crwdns18470:0crwdne18470:0",
     "last6months": "crwdns18472:0crwdne18472:0",
@@ -31,11 +38,15 @@
   "dragLabel": "crwdns11003:0crwdne11003:0",
   "lastUpdate": "crwdns11005:0crwdne11005:0",
   "setBookmark": "crwdns11007:0crwdne11007:0",
-  "day": "crwdns11009:0crwdne11009:0",
-  "year": "crwdns11011:0crwdne11011:0",
-  "month": "crwdns11013:0crwdne11013:0",
-  "hour": "crwdns11015:0crwdne11015:0",
-  "zoomIn": "crwdns11017:0crwdne11017:0",
-  "zoomTo": "crwdns11019:0crwdne11019:0",
-  "zoomOut": "crwdns11021:0crwdne11021:0"
+  "intervals": {
+    "hour": "crwdns27337:0crwdne27337:0",
+    "hourTooltip": "crwdns27339:0crwdne27339:0",
+    "day": "crwdns27341:0crwdne27341:0",
+    "dayTooltip": "crwdns27343:0crwdne27343:0",
+    "month": "crwdns27345:0crwdne27345:0",
+    "monthTooltip": "crwdns27347:0crwdne27347:0",
+    "year": "crwdns27349:0crwdne27349:0",
+    "yearTooltip": "crwdns27351:0crwdne27351:0"
+  },
+  "zoomTo": "crwdns11019:0crwdne11019:0"
 }
