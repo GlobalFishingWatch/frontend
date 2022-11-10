@@ -9,13 +9,13 @@
   },
   "timerange": {
     "title": "Sélectionnez une plage de temps",
-    "year": "An",
-    "month": "Mois",
-    "day": "Jour",
+    "year": "Year",
+    "month": "Month",
+    "day": "Day",
     "start": "Début",
     "end": "fin",
-    "selectAValidDate": "Sélectionnez une date valide",
-    "endBeforeStart": "La date de fin doit être postérieure à la date de début",
+    "selectAValidDate": "Please select a valid date",
+    "endBeforeStart": "The end needs to be after the start",
     "tooLongForMonths": "Your timerange is too long to see individual months",
     "tooLongForDays": "Your timerange is too long to see individual days",
     "last30days": "Les 30 derniers jours",
@@ -38,11 +38,15 @@
   "dragLabel": "Faites glisser pour modifier la plage de temps",
   "lastUpdate": "Dernière mise à jour",
   "setBookmark": "Mettre en favori la plage de temps actuelle",
-  "day": "jour",
-  "year": "Année",
-  "month": "mois",
-  "hour": "heure",
-  "zoomIn": "Zoom",
-  "zoomTo": "Zoom sur",
-  "zoomOut": "Zoom arrière"
+  "intervals": {
+    "hour": "hour",
+    "hourTooltip": "See hourly data",
+    "day": "day",
+    "dayTooltip": "See daily data",
+    "month": "month",
+    "monthTooltip": "See monthly data",
+    "year": "year",
+    "yearTooltip": "See yearly data"
+  },
+  "zoomTo": "Zoom sur"
 }
