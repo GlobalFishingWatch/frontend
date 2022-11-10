@@ -144,7 +144,8 @@
     "view_layer": "View the layer",
     "viirs": "Night light detections (VIIRS)",
     "welcomePopupDisable": "Don't show again",
-    "whatsNew": "What's new?"
+    "whatsNew": "What's new?",
+    "whatsNewWithNewVersion": "We've made some changes since you last visited the map. Click to learn more"
   },
   "dataset": {
     "addContext": "Add context dataset",
@@ -227,6 +228,7 @@
     "highResNotAvailable": "Your area is too big",
     "monthly": "Month",
     "monthlyNotAvailable": "Your time range is shorter than 1 month",
+    "mmsiNotSupported": "The datasets selected don't support grouping by MMSI",
     "spatialResolution": "Spatial resolution",
     "temporalResolution": "Group time by",
     "timeRange": "Time Range",
