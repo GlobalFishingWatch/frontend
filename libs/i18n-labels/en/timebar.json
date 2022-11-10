@@ -38,11 +38,15 @@
   "dragLabel": "Drag to change the time range",
   "lastUpdate": "Last update",
   "setBookmark": "Bookmark current time range",
-  "day": "Day",
-  "year": "Year",
-  "month": "Month",
-  "hour": "Hour",
-  "zoomIn": "Zoom in",
-  "zoomTo": "Zoom to",
-  "zoomOut": "Zoom out"
+  "intervals": {
+    "hour": "hour",
+    "hourTooltip": "See hourly data",
+    "day": "day",
+    "dayTooltip": "See daily data",
+    "month": "month",
+    "monthTooltip": "See monthly data",
+    "year": "year",
+    "yearTooltip": "See yearly data"
+  },
+  "zoomTo": "Zoom to"
 }
