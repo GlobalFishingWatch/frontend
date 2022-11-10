@@ -95,12 +95,6 @@ const AnalysisGraphTooltip = (props: any) => {
       case 'month':
         formattedLabel = date.toFormat('LLLL y')
         break
-      case '10days': {
-        const timeRangeStart = date.toLocaleString(DateTime.DATE_MED)
-        const timeRangeEnd = date.plus({ days: 9 }).toLocaleString(DateTime.DATE_MED)
-        formattedLabel = `${timeRangeStart} - ${timeRangeEnd}`
-        break
-      }
       case 'day':
         formattedLabel = date.toLocaleString(DateTime.DATE_MED)
         break

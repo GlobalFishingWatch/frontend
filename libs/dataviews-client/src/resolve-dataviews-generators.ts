@@ -55,6 +55,26 @@ const getDatasetAvailableIntervals = (dataset?: Dataset) =>
 const getDatasetAttribution = (dataset?: Dataset) =>
   dataset?.source && dataset?.source !== 'user' ? dataset?.source : undefined
 
+export const getDataviewAvailableIntervals = (
+  dataview: UrlDataviewInstance,
+  defaultIntervals = DEFAULT_HEATMAP_INTERVALS
+): Interval[] => {
+  const dataset = dataview.datasets?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
+  const dataviewInterval = dataview.config?.interval
+  const dataviewIntervals = dataview.config?.intervals
+  const datasetIntervals = getDatasetAvailableIntervals(dataset)
+  let availableIntervals = defaultIntervals
+
+  if (dataviewInterval) {
+    availableIntervals = [dataviewInterval]
+  } else if (dataviewIntervals && dataviewIntervals.length > 0) {
+    availableIntervals = dataviewIntervals
+  } else if (datasetIntervals && datasetIntervals.length > 0) {
+    availableIntervals = datasetIntervals
+  }
+  return availableIntervals
+}
+
 type TimeRange = { start: string; end: string }
 export type DataviewsGeneratorConfigsParams = {
   debug?: boolean
@@ -82,15 +102,24 @@ const getUTCDate = (timestamp: number) => {
   )
 }
 
-const getDatasetsExtent = (datasets: Dataset[] | undefined) => {
+export const getDatasetsExtent = (
+  datasets: Dataset[] | undefined,
+  { format }: { format: 'isoString' | 'timestamp' } = { format: 'isoString' }
+) => {
   const startRanges = datasets?.flatMap((d) =>
     d?.startDate ? new Date(d.startDate).getTime() : []
   )
   const endRanges = datasets?.flatMap((d) => (d?.endDate ? new Date(d.endDate).getTime() : []))
-  const extentStart = startRanges?.length
-    ? getUTCDate(Math.min(...startRanges)).toISOString()
-    : undefined
-  const extentEnd = endRanges?.length ? getUTCDate(Math.max(...endRanges)).toISOString() : undefined
+  const extentStartDate = startRanges?.length ? getUTCDate(Math.min(...startRanges)) : undefined
+  let extentStart
+  if (extentStartDate) {
+    extentStart = format === 'isoString' ? extentStartDate.toISOString() : extentStartDate.getTime()
+  }
+  const extentEndDate = endRanges?.length ? getUTCDate(Math.max(...endRanges)) : undefined
+  let extentEnd
+  if (extentEndDate) {
+    extentEnd = format === 'isoString' ? extentEndDate.toISOString() : extentEndDate.getTime()
+  }
 
   return { extentStart, extentEnd }
 }
@@ -240,17 +269,10 @@ export function getGeneratorConfig(
         ]
 
         const { url: tilesAPI } = resolveDataviewDatasetResource(dataview, DatasetTypes.Fourwings)
-        const dataviewInterval = dataview.config?.interval
-        const dataviewIntervals = dataview.config?.intervals
-        const datasetIntervals = getDatasetAvailableIntervals(dataset)
-        let availableIntervals = DEFAULT_ENVIRONMENT_INTERVALS
-        if (dataviewInterval) {
-          availableIntervals = [dataviewInterval]
-        } else if (dataviewIntervals && dataviewIntervals.length > 0) {
-          availableIntervals = dataviewIntervals
-        } else if (datasetIntervals && datasetIntervals.length > 0) {
-          availableIntervals = datasetIntervals
-        }
+        const availableIntervals = getDataviewAvailableIntervals(
+          dataview,
+          DEFAULT_ENVIRONMENT_INTERVALS
+        )
 
         environmentalConfig = {
           sublayers,
@@ -414,7 +436,6 @@ export function getMergedHeatmapAnimatedDataview(
       return []
     }
     const datasets = config.datasets || datasetsConfig.map((dc) => dc.datasetId)
-    const dataset = dataview.datasets?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
 
     const activeDatasets = dataview.datasets.filter((dataset) =>
       dataview?.config?.datasets?.includes(dataset.id)
@@ -432,10 +453,7 @@ export function getMergedHeatmapAnimatedDataview(
       )
     }
     const interactionType = interactionTypes[0]
-
-    const datasetIntervals = getDatasetAvailableIntervals(dataset)
-    const availableIntervals =
-      datasetIntervals && datasetIntervals.length > 0 ? datasetIntervals : DEFAULT_HEATMAP_INTERVALS
+    const availableIntervals = getDataviewAvailableIntervals(dataview)
 
     const sublayer: HeatmapAnimatedGeneratorSublayer = {
       id: dataview.id,

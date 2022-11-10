@@ -11,7 +11,7 @@ import {
 } from 'recharts'
 import { min, max } from 'lodash'
 import { DateTime } from 'luxon'
-import { Interval } from '@globalfishingwatch/layer-composer'
+import { getInterval, Interval } from '@globalfishingwatch/layer-composer'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import i18n from 'features/i18n/i18n'
 import { toFixed } from 'utils/shared'
@@ -97,12 +97,6 @@ const AnalysisGraphTooltip = (props: any) => {
       case 'month':
         formattedLabel = date.toFormat('LLLL y')
         break
-      case '10days': {
-        const timeRangeStart = date.toLocaleString(DateTime.DATE_MED)
-        const timeRangeEnd = date.plus({ days: 9 }).toLocaleString(DateTime.DATE_MED)
-        formattedLabel = `${timeRangeStart} - ${timeRangeEnd}`
-        break
-      }
       case 'day':
         formattedLabel = date.toLocaleString(DateTime.DATE_MED)
         break
@@ -138,7 +132,9 @@ const AnalysisEvolutionGraph: React.FC<{
 }> = (props) => {
   const { start, end } = props
   const { timeseries, interval, sublayers } = props.graphData
-
+  const cleanEnd = DateTime.fromISO(end, { zone: 'utc' })
+    .minus({ [interval]: 1 })
+    .toISO()
   const dataFormated = useMemo(() => {
     return timeseries
       ?.map(({ date, min, max }) => {
@@ -154,6 +150,11 @@ const AnalysisEvolutionGraph: React.FC<{
         return !isNaN(d.avg[0])
       })
   }, [timeseries])
+
+  const domain = useMemo(
+    () => [new Date(start).getTime(), new Date(cleanEnd).getTime()],
+    [start, cleanEnd]
+  )
 
   if (!dataFormated) return null
 
@@ -176,7 +177,7 @@ const AnalysisEvolutionGraph: React.FC<{
         <ComposedChart data={dataFormated} margin={{ top: 15, right: 20, left: -20, bottom: -10 }}>
           <CartesianGrid vertical={false} />
           <XAxis
-            domain={[new Date(start).getTime(), new Date(end).getTime()]}
+            domain={domain}
             dataKey="date"
             interval="preserveStartEnd"
             tickFormatter={(tick: number) => formatDateTicks(tick, interval)}

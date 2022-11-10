@@ -42,7 +42,7 @@ export const getDefaultFormat = (start: string, end: string) =>
 export const stickToClosestUnit = (date: string, unit: OpUnitType) => {
   const mDate = dayjs(date).utc()
   const mStartOf = mDate.startOf(unit)
-  const mEndOf = mDate.endOf(unit)
+  const mEndOf = mDate.endOf(unit).add(1, 'millisecond')
   const startDeltaMs = getTime(date) - mStartOf.valueOf()
   const endDeltaMs = mEndOf.valueOf() - getTime(date)
   const mClosest = startDeltaMs > endDeltaMs ? mEndOf : mStartOf

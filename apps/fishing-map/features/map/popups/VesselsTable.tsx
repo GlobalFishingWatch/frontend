@@ -41,16 +41,6 @@ import styles from './VesselsTable.module.css'
 
 export const getVesselTableTitle = (feature: TooltipEventFeature) => {
   let title = feature.title
-  if (feature.temporalgrid && feature.temporalgrid.interval === '10days') {
-    title = [
-      title,
-      t('common.dateRange', {
-        start: formatI18nDate(feature.temporalgrid.visibleStartDate),
-        end: formatI18nDate(feature.temporalgrid.visibleEndDate),
-        defaultValue: 'between {{start}} and {{end}}',
-      }),
-    ].join(' ')
-  }
   return title
 }
 

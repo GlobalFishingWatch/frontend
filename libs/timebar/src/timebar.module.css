@@ -45,9 +45,13 @@
 
 .timeActions {
   position: relative;
-  width: var(--timebar-size);
   display: flex;
-  flex-wrap: wrap;
+  flex-flow: column wrap;
+  border-right: 0.1rem solid var(--timebar-main-background-color);
+}
+
+.timeActions > button:not(:last-of-type) {
+  border-bottom: 0.1rem solid var(--timebar-main-background-color);
 }
 
 .timeRange {
@@ -60,10 +64,6 @@
 
 .timeScale .uiButton {
   height: 3.5rem;
-}
-
-.timeRangeContainer {
-  position: relative;
 }
 
 @media only screen and (max-width: 768px) {

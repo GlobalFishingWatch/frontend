@@ -1,0 +1,33 @@
+.intervalContainer {
+  background-color: var(--timebar-ui-btn-color);
+  width: 7rem;
+  height: 100%;
+  overflow: auto;
+}
+
+.intervalBtn {
+  border: none;
+  padding: 0 1rem;
+  border-radius: 0;
+  cursor: pointer;
+  width: 100%;
+  font-size: var(--timebar-small-font-size);
+  line-height: 1.5;
+  color: var(--timebar-white-faded);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--timebar-hover-transition);
+  text-transform: uppercase;
+}
+
+.intervalBtnActive {
+  pointer-events: none;
+  color: var(--timebar-white);
+  background-color: var(--timebar-ui-btn-color-hover);
+}
+
+.intervalBtn:hover {
+  color: var(--timebar-white);
+  background-color: var(--timebar-ui-btn-color-hover);
+}

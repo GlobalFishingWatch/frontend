@@ -244,6 +244,15 @@ export const getDatasetsDownloadNotSupported = (
   return dataviewDatasets.filter((dataset) => !datasetsDownloadSupported.includes(dataset))
 }
 
+export const getActiveActivityDatasetsInDataviews = (dataviews: UrlDataviewInstance[]) => {
+  return dataviews.map((dataview) => {
+    const activeDatasets = (dataview?.config?.datasets || []) as string[]
+    return dataview.datasets.filter((dataset) => {
+      return activeDatasets.includes(dataset.id)
+    })
+  })
+}
+
 export const getEventsDatasetsInDataview = (dataview: UrlDataviewInstance) => {
   const datasetsConfigured = dataview.datasetsConfig
     ?.filter((datasetConfig) =>

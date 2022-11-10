@@ -13,7 +13,7 @@ export const getCellValues = (rawValues: string | number[]) => {
         .slice(1, -1)
         .split(',')
         .map((v) => parseInt(v))
-  // First two values for a cell are the overall start and end time offsets for all the cell values (in days/hours/10days from start of time)
+  // First two values for a cell are the overall start and end time offsets for all the cell values (in days/hours from start of time)
   const minCellOffset = values[CELL_START_INDEX]
   const maxCellOffset = values[CELL_END_INDEX]
 

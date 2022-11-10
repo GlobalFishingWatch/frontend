@@ -46,7 +46,6 @@ const heatmapTypesOptions = [dynamicHeatmapOption, staticHeatmapOption]
 
 const temporalResolutionOptions = [
   { id: 'month', label: 'Month' },
-  { id: '10days', label: '10days' },
   { id: 'day', label: 'Day' },
   { id: 'hour', label: 'Hour' },
 ]

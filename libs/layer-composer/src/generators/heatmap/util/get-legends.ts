@@ -56,7 +56,7 @@ export const getSublayersBreaks = (config: FetchBreaksParams, breaks: Breaks | u
   const end = toDT(config.end)
   // uses 'years' as breaks request a year with temporal-aggregation true
   const directApiBreaks = isDirectAPIBreaks(config)
-  let deltaInterval = end.diff(start, 'days').days / 10
+  let deltaInterval = end.diff(start, 'days').days / 30
   let baseMultiplier = config.mode === HeatmapAnimatedMode.TimeCompare ? 1 / 10 : 1 / 4
   if (directApiBreaks && (config.interval === 'day' || config.interval === 'hour')) {
     deltaInterval =

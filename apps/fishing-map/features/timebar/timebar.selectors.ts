@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { intersection } from 'lodash'
 import {
   DatasetTypes,
   Resource,
@@ -10,6 +11,7 @@ import {
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
   pickTrackResource,
+  getDataviewAvailableIntervals,
 } from '@globalfishingwatch/dataviews-client'
 import { geoJSONToSegments } from '@globalfishingwatch/data-transforms'
 import {
@@ -20,6 +22,7 @@ import {
   TrackEventChunkProps,
   HighlighterCallbackFnArgs,
 } from '@globalfishingwatch/timebar'
+import { INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
 import { selectTimebarGraph, selectVisibleEvents } from 'features/app/app.selectors'
 import { t } from 'features/i18n/i18n'
 import { selectResources } from 'features/resources/resources.slice'
@@ -29,6 +32,10 @@ import {
 } from 'features/dataviews/dataviews.slice'
 import { getVesselLabel } from 'utils/info'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
+import {
+  selectActiveEnvironmentalDataviews,
+  selectActiveHeatmapDataviews,
+} from 'features/dataviews/dataviews.selectors'
 
 const getUserTrackHighlighterLabel = ({ chunk }: HighlighterCallbackFnArgs) => {
   return chunk.props?.id || null
