@@ -7,7 +7,7 @@ import { Spinner } from '@globalfishingwatch/ui-components'
 import { isValidLocationCategory, selectLocationCategory } from 'routes/routes.selectors'
 import { HOME, WORKSPACE } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import useViewport from 'features/map/map-viewport.hooks'
 import { Locale } from 'types'
 import styles from './WorkspacesList.module.css'
@@ -16,6 +16,7 @@ import {
   selectCurrentHighlightedWorkspaces,
 } from './workspaces-list.selectors'
 import { selectHighlightedWorkspacesStatus } from './workspaces-list.slice'
+import WorkspaceWizard from './WorkspaceWizard'
 
 function WorkspacesList() {
   const { t, i18n } = useTranslation()
@@ -48,6 +49,7 @@ function WorkspacesList() {
 
   return (
     <div className={styles.container}>
+      {locationCategory === WorkspaceCategories.MarineManager && <WorkspaceWizard />}
       {highlightedWorkspacesStatus === AsyncReducerStatus.Loading ? (
         <Spinner size="small" />
       ) : (
