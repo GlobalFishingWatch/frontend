@@ -144,7 +144,8 @@
     "view_layer": "crwdns18876:0crwdne18876:0",
     "viirs": "crwdns7913:0crwdne7913:0",
     "welcomePopupDisable": "crwdns6914:0crwdne6914:0",
-    "whatsNew": "crwdns17183:0crwdne17183:0"
+    "whatsNew": "crwdns17183:0crwdne17183:0",
+    "whatsNewWithNewVersion": "crwdns27319:0crwdne27319:0"
   },
   "dataset": {
     "addContext": "crwdns3476:0crwdne3476:0",
@@ -227,6 +228,7 @@
     "highResNotAvailable": "crwdns8921:0crwdne8921:0",
     "monthly": "crwdns27245:0crwdne27245:0",
     "monthlyNotAvailable": "crwdns8919:0crwdne8919:0",
+    "mmsiNotSupported": "crwdns27321:0crwdne27321:0",
     "spatialResolution": "crwdns8915:0crwdne8915:0",
     "temporalResolution": "crwdns27247:0crwdne27247:0",
     "timeRange": "crwdns8899:0crwdne8899:0",

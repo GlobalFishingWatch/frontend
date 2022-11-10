@@ -144,7 +144,8 @@
     "view_layer": "Voir le calque",
     "viirs": "Détection de lumière de nuit (VIIRS)",
     "welcomePopupDisable": "Ne plus afficher",
-    "whatsNew": "Quoi de neuf ?"
+    "whatsNew": "Quoi de neuf ?",
+    "whatsNewWithNewVersion": "We've made some changes since you last visited the map. Click to learn more"
   },
   "dataset": {
     "addContext": "Ajouter un calque de référence",
@@ -227,6 +228,7 @@
     "highResNotAvailable": "Votre zone est trop grande",
     "monthly": "Month",
     "monthlyNotAvailable": "Votre plage de temps est inférieure à 1 mois",
+    "mmsiNotSupported": "The datasets selected don't support grouping by MMSI",
     "spatialResolution": "Résolution spatiale",
     "temporalResolution": "Group time by",
     "timeRange": "Plage de temps",

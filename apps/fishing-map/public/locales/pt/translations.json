@@ -144,7 +144,8 @@
     "view_layer": "View the layer",
     "viirs": "Detecção de luz noturna (VIIRS)",
     "welcomePopupDisable": "Não mostrar novamente",
-    "whatsNew": "O que há de novo?"
+    "whatsNew": "O que há de novo?",
+    "whatsNewWithNewVersion": "We've made some changes since you last visited the map. Click to learn more"
   },
   "dataset": {
     "addContext": "Adicionar conjunto de dados de contexto",
@@ -227,6 +228,7 @@
     "highResNotAvailable": "Sua área é muito grande",
     "monthly": "Month",
     "monthlyNotAvailable": "Seu intervalo de tempo é menor que 1 mês",
+    "mmsiNotSupported": "The datasets selected don't support grouping by MMSI",
     "spatialResolution": "Resolução espacial",
     "temporalResolution": "Group time by",
     "timeRange": "Intervalo de tempo",

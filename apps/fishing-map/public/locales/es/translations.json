@@ -144,7 +144,8 @@
     "view_layer": "Ver la capa",
     "viirs": "Detección de luz nocturna",
     "welcomePopupDisable": "No volver a mostrar",
-    "whatsNew": "Novedades"
+    "whatsNew": "Novedades",
+    "whatsNewWithNewVersion": "We've made some changes since you last visited the map. Click to learn more"
   },
   "dataset": {
     "addContext": "Añadir una capa de referencia",
@@ -227,6 +228,7 @@
     "highResNotAvailable": "Tu área es demasiado grande",
     "monthly": "Mes",
     "monthlyNotAvailable": "Su intervalo de tiempo es menor de 1 mes",
+    "mmsiNotSupported": "The datasets selected don't support grouping by MMSI",
     "spatialResolution": "Resolución espacial",
     "temporalResolution": "Agrupar tiempo por",
     "timeRange": "Rango de tiempo",

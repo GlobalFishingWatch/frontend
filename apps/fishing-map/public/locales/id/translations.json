@@ -144,7 +144,8 @@
     "view_layer": "lihat lapisan",
     "viirs": "Deteksi cahaya malam (VIIRS)",
     "welcomePopupDisable": "Jangan tampilkan lagi",
-    "whatsNew": "Apa yang baru?"
+    "whatsNew": "Apa yang baru?",
+    "whatsNewWithNewVersion": "We've made some changes since you last visited the map. Click to learn more"
   },
   "dataset": {
     "addContext": "Menambah layer referensi",
@@ -227,6 +228,7 @@
     "highResNotAvailable": "Area Anda terlalu besar",
     "monthly": "Month",
     "monthlyNotAvailable": "Rentang waktu Anda lebih pendek dari 1 bulan",
+    "mmsiNotSupported": "The datasets selected don't support grouping by MMSI",
     "spatialResolution": "Resolusi spasial",
     "temporalResolution": "Group time by",
     "timeRange": "Rentang Waktu",
