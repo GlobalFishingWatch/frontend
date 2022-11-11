@@ -173,7 +173,7 @@ export const selectAreaById = memoize((id: string) =>
 )
 
 export const selectDatasetAreasById = memoize((id: string) =>
-  createSelector([selectAreas], (areas) => areas?.[id])
+  createSelector([selectAreaById(id)], (area): DatasetAreaList => area?.list)
 )
 
 export default areasSlice.reducer
