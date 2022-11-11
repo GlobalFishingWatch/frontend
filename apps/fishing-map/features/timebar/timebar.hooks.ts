@@ -85,7 +85,7 @@ export const useTimerangeConnect = () => {
   const isAnalyzing = useSelector(selectIsAnalyzing)
   const fitMapBounds = useMapFitBounds()
   const dispatch = useAppDispatch()
-  const analysisAreaBounds = useSelector(selectAnalysisArea)?.bounds
+  const analysisAreaBounds = useSelector(selectAnalysisArea)?.data.bounds
 
   const onTimebarChange = useCallback(
     (start: string, end: string) => {
