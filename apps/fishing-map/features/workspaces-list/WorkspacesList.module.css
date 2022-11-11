@@ -2,13 +2,6 @@
   padding: var(--space-M);
 }
 
-.wizardContainer {
-  padding: var(--space-M);
-  background-color: var(--color-help-yellow);
-  border-radius: 8px;
-  box-shadow: var(--box-shadow);
-}
-
 .placeholder {
   height: calc(100% - 5.2rem);
   flex: 1;
@@ -87,9 +80,4 @@ a.linkButton,
   text-transform: uppercase;
   flex: none;
   margin-top: auto;
-}
-
-.disclaimer {
-  display: flex;
-  align-items: center;
 }

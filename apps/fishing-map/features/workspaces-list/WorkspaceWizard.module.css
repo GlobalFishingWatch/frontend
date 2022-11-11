@@ -1,0 +1,36 @@
+.wizardContainer {
+  padding: var(--space-M);
+  background-color: var(--color-help-yellow);
+  border-radius: 8px;
+  box-shadow: var(--box-shadow);
+}
+
+.inputContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.search {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-XS);
+  padding: var(--space-S) 0;
+}
+
+.hint {
+  font: var(--font-S);
+  display: flex;
+  align-items: center;
+}
+
+.highlighted {
+  background-color: var(--color-terthiary-blue);
+}
