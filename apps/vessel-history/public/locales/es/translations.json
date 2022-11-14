@@ -235,6 +235,7 @@
     "MMSI": "MMSI",
     "noMore": "No hay más resultados",
     "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or Call Sign or <2>contact us</2> if you still can’t find it.",
+    "noTmtResults": "A vessel with these criteria could not be found, due to a timeout in the search function. Please try again.",
     "notAllowed": "Los conjuntos de datos disponibles no permiten la búsqueda de buques",
     "placeholder": "Search vessels by name, MMSI, IMO",
     "seeVessel": "See Vessel",
