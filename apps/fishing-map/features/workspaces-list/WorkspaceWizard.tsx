@@ -14,7 +14,11 @@ import {
   fetchDatasetAreasThunk,
   selectDatasetAreasById,
 } from 'features/areas/areas.slice'
+import { MARINE_MANAGER_DATAVIEWS } from 'data/default-workspaces/marine-manager'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
+import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
+import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from './WorkspaceWizard.module.css'
 
@@ -61,6 +65,20 @@ function WorkspaceWizard() {
   const onConfirmClick = useCallback((e) => {
     console.log('TODO: save workspsace')
   }, [])
+
+  useEffect(() => {
+    const fetchMarineManagerData = async () => {
+      const marineManagerDataviews = MARINE_MANAGER_DATAVIEWS.map((d) => d.dataviewId)
+      const { payload } = await dispatch(fetchDataviewsByIdsThunk(marineManagerDataviews))
+      if (payload) {
+        const datasetsIds = getDatasetsInDataviews(payload)
+        if (datasetsIds?.length) {
+          dispatch(fetchDatasetsByIdsThunk(datasetsIds))
+        }
+      }
+    }
+    fetchMarineManagerData()
+  }, [dispatch])
 
   useEffect(() => {
     if (!datasetAreas?.data || !debouncedQuery) {

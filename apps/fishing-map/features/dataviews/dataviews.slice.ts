@@ -40,6 +40,7 @@ import {
 } from 'features/resources/resources.slice'
 import { RootState } from 'store'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
+import { MARINE_MANAGER_DATAVIEWS } from 'data/default-workspaces/marine-manager'
 import { trackDatasetConfigsCallback } from '../resources/resources.utils'
 
 export const fetchDataviewByIdThunk = createAsyncThunk(
@@ -210,6 +211,19 @@ export const selectAllDataviewInstancesResolved = createSelector(
   (dataviewInstances, dataviews, datasets): UrlDataviewInstance[] | undefined => {
     if (!dataviewInstances) return
     const dataviewInstancesResolved = resolveDataviews(dataviewInstances, dataviews, datasets)
+    return dataviewInstancesResolved
+  }
+)
+
+export const selectMarineManagerDataviewInstanceResolved = createSelector(
+  [selectAllDataviews, selectAllDatasets],
+  (dataviews, datasets): UrlDataviewInstance[] | undefined => {
+    if (!dataviews.length || !datasets.length) return []
+    const dataviewInstancesResolved = resolveDataviews(
+      MARINE_MANAGER_DATAVIEWS,
+      dataviews,
+      datasets
+    )
     return dataviewInstancesResolved
   }
 )
