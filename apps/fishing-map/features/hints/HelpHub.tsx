@@ -32,8 +32,8 @@ function HelpHub() {
   }
 
   const getUserGuideLink = () => {
-    if (i18n.language === 'es') return 'https://globalfishingwatch.org/user-guide-es'
-    return 'https://globalfishingwatch.org/user-guide-en'
+    if (i18n.language === 'es') return 'https://globalfishingwatch.org/es/guia-de-usuario/'
+    return 'https://globalfishingwatch.org/user-guide'
   }
 
   const getFAQsLink = () => {
