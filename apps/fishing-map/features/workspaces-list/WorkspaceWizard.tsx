@@ -31,9 +31,8 @@ function WorkspaceWizard() {
   const datasetAreas = useSelector(selectDatasetAreasById(WIZARD_AREAS_DATASET))
   const debouncedQuery = useDebounce(query, 300)
 
-  const onIsOpenChange = (isOpen) => {
+  const fetchDatasetAreas = () => {
     if (
-      isOpen &&
       datasetAreas?.status !== AsyncReducerStatus.Finished &&
       datasetAreas?.status !== AsyncReducerStatus.Loading &&
       !datasetAreas?.data?.length
@@ -87,7 +86,6 @@ function WorkspaceWizard() {
     items: areasMatching,
     itemToString: (item: DatasetArea | null): string => (item ? item.label : ''),
     onInputValueChange: onInputChange,
-    onIsOpenChange: onIsOpenChange,
     onSelectedItemChange: onSelectResult,
   })
 
@@ -101,6 +99,7 @@ function WorkspaceWizard() {
           {...getInputProps({ ref: inputRef })}
           className={styles.input}
           placeholder={t('map.search', 'Search areas')}
+          onFocus={fetchDatasetAreas}
           value={inputValue}
         />
         <IconButton
