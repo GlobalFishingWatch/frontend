@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import bbox from '@turf/bbox'
 import { memoize } from 'lodash'
-import { Polygon } from 'geojson'
 import { ContextAreaFeature, ContextAreaFeatureGeom } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
@@ -12,7 +11,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 export interface DatasetArea {
   id: string
   label: string
-  bbox?: Polygon
+  bbox?: Bbox
 }
 export interface DatasetAreaList {
   status: AsyncReducerStatus

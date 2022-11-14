@@ -2,12 +2,15 @@ import { useCallback, useState, useEffect, useRef } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useCombobox, UseComboboxStateChange } from 'downshift'
-import bbox from '@turf/bbox'
 import { matchSorter } from 'match-sorter'
 import { useSelector } from 'react-redux'
-import { useDebounce } from '@globalfishingwatch/react-hooks'
+import { useDebounce, useFeatureState } from '@globalfishingwatch/react-hooks'
 import { Button, Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
-import { Bbox, wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
+import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
+import {
+  DEFAULT_CONTEXT_SOURCE_LAYER,
+  getContextSourceId,
+} from '@globalfishingwatch/layer-composer'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import {
   DatasetArea,
@@ -19,6 +22,8 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
+import useMapInstance from 'features/map/map-context.hooks'
+import { selectMarineManagerGenerators } from 'features/map/map.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from './WorkspaceWizard.module.css'
 
@@ -29,10 +34,14 @@ function WorkspaceWizard() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const fitBounds = useMapFitBounds()
+
+  const map = useMapInstance()
+  const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [query, setQuery] = useState<string>('')
   const [areasMatching, setAreasMatching] = useState<DatasetArea[]>([])
   const datasetAreas = useSelector(selectDatasetAreasById(WIZARD_AREAS_DATASET))
+  const marineManagerGenerators = useSelector(selectMarineManagerGenerators)
   const debouncedQuery = useDebounce(query, 300)
 
   const fetchDatasetAreas = () => {
@@ -45,26 +54,43 @@ function WorkspaceWizard() {
     }
   }
 
-  const onInputChange = ({ type, inputValue }: UseComboboxStateChange<DatasetArea>) => {
-    if (type === '__item_click__' || type === '__input_keydown_enter__' || !inputValue) {
-      setQuery('')
+  const onInputChange = ({
+    type,
+    inputValue,
+    selectedItem,
+  }: UseComboboxStateChange<DatasetArea>) => {
+    if (type === '__item_click__' || type === '__input_keydown_enter__') {
+      setQuery(selectedItem.label)
       setAreasMatching([])
     } else {
       setQuery(inputValue)
+      cleanFeatureState('highlight')
     }
   }
 
   const onSelectResult = ({ selectedItem }: UseComboboxStateChange<DatasetArea>) => {
-    const bounds = selectedItem?.bbox
-    if (bounds) {
-      const wrappedBounds = wrapBBoxLongitudes(bbox(bounds) as Bbox)
-      fitBounds(wrappedBounds)
+    const id = selectedItem?.id
+    const mpaSourceId = getContextSourceId(
+      marineManagerGenerators.find((g) => g.datasetId === WIZARD_AREAS_DATASET)
+    )
+    if (mpaSourceId) {
+      const featureState = {
+        source: mpaSourceId,
+        sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
+        id,
+      }
+      updateFeatureState([featureState], 'highlight')
     }
   }
 
-  const onConfirmClick = useCallback((e) => {
-    console.log('TODO: save workspsace')
-  }, [])
+  const onHighlightedIndexChange = ({ highlightedIndex }: UseComboboxStateChange<DatasetArea>) => {
+    const highlightedArea = areasMatching[highlightedIndex]
+    const bounds = highlightedArea?.bbox
+    if (bounds) {
+      const wrappedBounds = wrapBBoxLongitudes(bounds)
+      fitBounds(wrappedBounds)
+    }
+  }
 
   useEffect(() => {
     const fetchMarineManagerData = async () => {
@@ -80,17 +106,6 @@ function WorkspaceWizard() {
     fetchMarineManagerData()
   }, [dispatch])
 
-  useEffect(() => {
-    if (!datasetAreas?.data || !debouncedQuery) {
-      setAreasMatching([])
-    } else {
-      const matchingAreas = matchSorter(datasetAreas?.data, debouncedQuery, {
-        keys: ['label'],
-      }).slice(0, MAX_RESULTS_NUMBER)
-      setAreasMatching(matchingAreas)
-    }
-  }, [datasetAreas?.data, debouncedQuery])
-
   const {
     getComboboxProps,
     getMenuProps,
@@ -98,6 +113,7 @@ function WorkspaceWizard() {
     getItemProps,
     highlightedIndex,
     inputValue,
+    selectedItem,
     isOpen,
   } = useCombobox({
     inputValue: query,
@@ -105,7 +121,23 @@ function WorkspaceWizard() {
     itemToString: (item: DatasetArea | null): string => (item ? item.label : ''),
     onInputValueChange: onInputChange,
     onSelectedItemChange: onSelectResult,
+    onHighlightedIndexChange: onHighlightedIndexChange,
   })
+
+  useEffect(() => {
+    if (!selectedItem || !datasetAreas?.data || !debouncedQuery) {
+      setAreasMatching([])
+    } else {
+      const matchingAreas = matchSorter(datasetAreas?.data, debouncedQuery, {
+        keys: ['label'],
+      }).slice(0, MAX_RESULTS_NUMBER)
+      setAreasMatching(matchingAreas)
+    }
+  }, [datasetAreas?.data, debouncedQuery, selectedItem])
+
+  const onConfirmClick = useCallback((e) => {
+    console.log('TODO: save workspsace', selectedItem)
+  }, [])
 
   return (
     <div className={styles.wizardContainer} {...getComboboxProps()}>
@@ -118,7 +150,7 @@ function WorkspaceWizard() {
           className={styles.input}
           placeholder={t('map.search', 'Search areas')}
           onFocus={fetchDatasetAreas}
-          value={inputValue}
+          value={inputValue || ''}
         />
         <IconButton
           icon="search"

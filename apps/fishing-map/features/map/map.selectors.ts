@@ -257,25 +257,23 @@ export const selectWorkspacesListGenerator = createSelector(
   }
 )
 
-export const selectMapWorkspacesListGenerators = createSelector(
-  [
-    selectDefaultBasemapGenerator,
-    isMarineManagerLocation,
-    selectMarineManagerDataviewInstanceResolved,
-    selectWorkspacesListGenerator,
-  ],
-  (
-    basemapGenerator,
-    marineManagerLocation,
-    marineManagerDataviewInstances,
-    workspaceGenerator
-  ): AnyGeneratorConfig[] => {
-    const generators: AnyGeneratorConfig[] = [basemapGenerator]
+export const selectMarineManagerGenerators = createSelector(
+  [isMarineManagerLocation, selectMarineManagerDataviewInstanceResolved],
+  (marineManagerLocation, marineManagerDataviewInstances) => {
     if (marineManagerLocation && marineManagerDataviewInstances?.length) {
       const mpaGeneratorConfig = getDataviewsGeneratorConfigs(marineManagerDataviewInstances)
       if (mpaGeneratorConfig) {
-        generators.push(...mpaGeneratorConfig)
+        return mpaGeneratorConfig
       }
+    }
+  }
+)
+export const selectMapWorkspacesListGenerators = createSelector(
+  [selectDefaultBasemapGenerator, selectWorkspacesListGenerator, selectMarineManagerGenerators],
+  (basemapGenerator, workspaceGenerator, marineManagerGenerators): AnyGeneratorConfig[] => {
+    const generators: AnyGeneratorConfig[] = [basemapGenerator]
+    if (marineManagerGenerators?.length) {
+      generators.push(...marineManagerGenerators)
     }
     if (workspaceGenerator) generators.push(workspaceGenerator)
     return generators
