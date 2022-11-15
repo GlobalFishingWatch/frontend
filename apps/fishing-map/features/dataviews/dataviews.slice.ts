@@ -28,6 +28,7 @@ import {
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
 import {
+  selectIsMarineManagerLocation,
   selectUrlDataviewInstances,
   selectUrlDataviewInstancesOrder,
 } from 'routes/routes.selectors'
@@ -254,6 +255,18 @@ export const selectDataviewInstancesResolved = createSelector(
     return dataviewsResources.dataviews || defaultDataviewResolved
   }
 )
+
+export const selectCurrentDataviewInstancesResolved = createSelector(
+  [
+    selectDataviewInstancesResolved,
+    selectIsMarineManagerLocation,
+    selectMarineManagerDataviewInstanceResolved,
+  ],
+  (dataviewsInstances = [], isMarineManagerLocation, marineManagerDataviewInstances = []) => {
+    return isMarineManagerLocation ? marineManagerDataviewInstances : dataviewsInstances
+  }
+)
+
 export const selectDataviewInstancesByType = (type: GeneratorType) => {
   return createSelector([selectDataviewInstancesResolved], (dataviews) => {
     return dataviews?.filter((dataview) => dataview.config?.type === type)

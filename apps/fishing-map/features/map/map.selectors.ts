@@ -30,7 +30,7 @@ import {
 } from 'features/timebar/timebar.slice'
 import { selectBivariateDataviews, selectTimeRange } from 'features/app/app.selectors'
 import { selectMarineManagerDataviewInstanceResolved } from 'features/dataviews/dataviews.slice'
-import { isMarineManagerLocation, isWorkspaceLocation } from 'routes/routes.selectors'
+import { selectIsMarineManagerLocation, isWorkspaceLocation } from 'routes/routes.selectors'
 import { WorkspaceCategories } from 'data/workspaces'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { BivariateDataviews } from 'types'
@@ -258,9 +258,9 @@ export const selectWorkspacesListGenerator = createSelector(
 )
 
 export const selectMarineManagerGenerators = createSelector(
-  [isMarineManagerLocation, selectMarineManagerDataviewInstanceResolved],
-  (marineManagerLocation, marineManagerDataviewInstances) => {
-    if (marineManagerLocation && marineManagerDataviewInstances?.length) {
+  [selectIsMarineManagerLocation, selectMarineManagerDataviewInstanceResolved],
+  (isMarineManagerLocation, marineManagerDataviewInstances) => {
+    if (isMarineManagerLocation && marineManagerDataviewInstances?.length) {
       const mpaGeneratorConfig = getDataviewsGeneratorConfigs(marineManagerDataviewInstances)
       if (mpaGeneratorConfig) {
         return mpaGeneratorConfig

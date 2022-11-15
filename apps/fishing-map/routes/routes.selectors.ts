@@ -49,7 +49,7 @@ export const isValidLocationCategory = createSelector(
   (locationCategory) => Object.values(WorkspaceCategories).includes(locationCategory)
 )
 
-export const isMarineManagerLocation = createSelector(
+export const selectIsMarineManagerLocation = createSelector(
   [selectLocationCategory],
   (category) => category === WorkspaceCategories.MarineManager
 )
