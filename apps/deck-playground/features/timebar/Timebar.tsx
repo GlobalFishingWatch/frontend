@@ -11,6 +11,7 @@ import {
 // import { useMapInstanceStyle } from 'features/map/map-context.hooks'
 import { formatI18nDate } from 'utils/i18n'
 import TimebarActivityGraph from './TimebarActivityGraph'
+import TimebarEventsGraph from './TimebarEventsGraph'
 import styles from './Timebar.module.css'
 
 const TimebarHighlighterWrapper = () => {
@@ -104,6 +105,7 @@ const TimebarWrapper = () => {
       >
         <TimebarActivityGraph />
         <TimebarHighlighterWrapper />
+        <TimebarEventsGraph />
       </Timebar>
     </div>
   )
