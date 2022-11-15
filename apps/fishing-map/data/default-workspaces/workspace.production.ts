@@ -16,6 +16,7 @@ import {
   GRATICULES_DATAVIEW_ID,
   FAO_AREAS_DATAVIEW_ID,
   SAR_DATAVIEW_ID,
+  MPA_DATAVIEW_INSTANCE_ID,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 // This id is used for highlighting the dataview with a popup on the right
@@ -109,7 +110,7 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: EEZ_DATAVIEW_ID,
     },
     {
-      id: 'context-layer-mpa',
+      id: MPA_DATAVIEW_INSTANCE_ID,
       config: {
         color: '#1AFF6B',
         visible: false,

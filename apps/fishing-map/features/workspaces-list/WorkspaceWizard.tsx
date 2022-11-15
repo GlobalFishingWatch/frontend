@@ -24,6 +24,7 @@ import {
   GLOBAL_CHLOROPHYL_DATAVIEW_ID,
   GLOBAL_SALINITY_DATAVIEW_ID,
   GLOBAL_WATER_TEMPERATURE_DATAVIEW_ID,
+  MPA_DATAVIEW_INSTANCE_ID,
   WorkspaceCategories,
 } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -151,6 +152,12 @@ function WorkspaceWizard() {
         zoom,
         daysFromLatest: 90,
         dataviewInstances: [
+          {
+            id: MPA_DATAVIEW_INSTANCE_ID,
+            config: {
+              visible: true,
+            },
+          },
           {
             id: 'water-temp',
             config: {
