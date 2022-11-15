@@ -1,5 +1,5 @@
 import { DataFilterExtension } from '@deck.gl/extensions'
-import { CompositeLayer, Layer, LayersList } from '@deck.gl/core/typed'
+import { CompositeLayer, Layer, LayersList, LayerProps } from '@deck.gl/core/typed'
 // Layers
 import { VesselEventsLayer } from 'layers/vessel/VesselEventsLayer'
 import { VesselTrackLayer, _VesselTrackLayerProps } from 'layers/vessel/VesselTrackLayer'
@@ -10,7 +10,13 @@ import { API_TOKEN } from 'data/config'
 
 export type VesselLayerProps = _VesselTrackLayerProps
 
-export class VesselLayer extends CompositeLayer<VesselLayerProps> {
+export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
+
+  onDataLoad: LayerProps['onDataLoad'] = (data, context) => {
+    if (this.props.onDataLoad) {
+      return this.props.onDataLoad(data, context)
+    }
+  }
 
   _getVesselTrackLayer() {
     return new VesselTrackLayer(
@@ -77,6 +83,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps> {
         },
         startTime: this.props.startTime,
         endTime: this.props.endTime,
+        onDataLoad: this.onDataLoad,
         filterRange: [this.props.startTime, this.props.endTime],
         extensions: [new DataFilterExtension({ filterSize: 1 })],
       })
@@ -99,6 +106,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps> {
         },
         startTime: this.props.startTime,
         endTime: this.props.endTime,
+        onDataLoad: this.onDataLoad,
         filterRange: [this.props.startTime, this.props.endTime],
         extensions: [new DataFilterExtension({ filterSize: 1 })],
       })
@@ -121,6 +129,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps> {
         },
         startTime: this.props.startTime,
         endTime: this.props.endTime,
+        onDataLoad: this.onDataLoad,
         filterRange: [this.props.startTime, this.props.endTime],
         extensions: [new DataFilterExtension({ filterSize: 1 })],
       })
@@ -135,7 +144,24 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps> {
       this._getVesselTrackLayer(),
     ]
   }
+
   getTrackLayer() {
     return this._getVesselTrackLayer()
   }
+
+  getVesselsData() {
+    return this.getSubLayers().map(l => l.props.data)
+  }
+
+  getVesselsEventsData() {
+    const events = this.getSubLayers().reduce((acc, l) => {
+      const events = l.events ? l.events : []
+      return [...acc, events]
+    }, [])
+    const sortedEvents = events.flat().sort((a, b) => a.start - b.start)
+    console.log(sortedEvents)
+    return sortedEvents
+  }
+
+
 }
