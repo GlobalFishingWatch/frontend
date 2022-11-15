@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import bbox from '@turf/bbox'
-import { memoize } from 'lodash'
+import { kebabCase, memoize, uniqBy } from 'lodash'
 import { ContextAreaFeature, ContextAreaFeatureGeom } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
@@ -90,7 +90,8 @@ export const fetchDatasetAreasThunk = createAsyncThunk(
       }`,
       { signal }
     )
-    return datasetAreas
+    const areasWithSlug = datasetAreas.map((area) => ({ ...area, slug: kebabCase(area.label) }))
+    return uniqBy(areasWithSlug, 'slug')
   },
   {
     condition: ({ datasetId }: FetchDatasetAreasThunkParam, { getState }) => {
