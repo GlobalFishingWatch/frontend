@@ -17,7 +17,7 @@ export class VesselsLayer extends CompositeLayer<VesselsLayerProps> {
   renderLayers(): VesselLayer[] {
     return this.vesselLayers
   }
-  getVesselsLayer() {
+  getVesselsLayers() {
     return this.vesselLayers
   }
   getVesselLayer(id: string) {

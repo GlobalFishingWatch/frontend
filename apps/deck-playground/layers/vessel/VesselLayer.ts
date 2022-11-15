@@ -159,7 +159,6 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       return [...acc, events]
     }, [])
     const sortedEvents = events.flat().sort((a, b) => a.start - b.start)
-    console.log(sortedEvents)
     return sortedEvents
   }
 

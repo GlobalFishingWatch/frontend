@@ -1,7 +1,9 @@
 import { AccessorFunction, DefaultProps } from '@deck.gl/core/typed'
 import { ScatterplotLayer, ScatterplotLayerProps } from '@deck.gl/layers/typed'
+import { Eve } from '@globalfishingwatch/api-types'
 
 export type _VesselEventsLayerProps<DataT = any> = {
+  events?: [],
   getShape?: AccessorFunction<DataT, number>,
   getPosition?: AccessorFunction<DataT, number>,
   getFilterValue?: AccessorFunction<DataT, number>,
@@ -34,6 +36,7 @@ export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends Scatterplot
 
   initializeState() {
     super.initializeState()
+    this.events = []
     this.getAttributeManager().addInstanced({
       instanceShapes: {
         size: 1,
@@ -76,4 +79,14 @@ export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends Scatterplot
       },
     }
   }
+
+  getEvents() {
+    return this.events
+  }
+
+  updateState(param) {
+    super.updateState(param)
+    this.events = param.props.data
+  }
+
 }
