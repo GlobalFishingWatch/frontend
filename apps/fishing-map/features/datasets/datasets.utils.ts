@@ -136,7 +136,7 @@ export const getDatasetsInDataviews = (
   return uniq(
     dataviews?.flatMap((dataviews) => {
       if (!dataviews.datasetsConfig) return []
-      const datasetIds = dataviews.datasetsConfig.map(({ datasetId }) => datasetId)
+      const datasetIds = dataviews.datasetsConfig.map(({ datasetId }) => datasetId || [])
       return guestUser
         ? datasetIds.filter((d) => !d.includes(PRIVATE_SUFIX) && !d.includes(FULL_SUFIX))
         : datasetIds
