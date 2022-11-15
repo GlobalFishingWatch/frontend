@@ -1,11 +1,9 @@
-import { VesselsLayer } from 'layers/vessel/VesselsLayer'
-import { useMemo } from 'react'
-import { getFourwingsMode } from 'layers/fourwings/fourwings.utils'
+import { Fragment } from 'react'
 import {
   useFourwingsLayerInstance,
   useFourwingsLayerLoaded,
 } from 'layers/fourwings/fourwings.hooks'
-import { useRemoveVesselInLayer, useVesselsLayerIds } from 'layers/vessel/vessels.hooks'
+import { useRemoveVesselInLayer, useVesselsLayerIds, useVesselsLayerInstance } from 'layers/vessel/vessels.hooks'
 import { Button, IconButton, Switch } from '@globalfishingwatch/ui-components'
 import { MapLayer, useMapLayers } from 'features/map/layers.hooks'
 import styles from './Sidebar.module.css'
@@ -14,15 +12,15 @@ import SidebarHeader from './SidebarHeader'
 function Sidebar() {
   const [layers, setMapLayers] = useMapLayers()
   const fourwingsLayerInstance = useFourwingsLayerInstance()
+  const vesselsLayerInstance = useVesselsLayerInstance()
   const fourwingsLayerLoaded = useFourwingsLayerLoaded()
   const vesselIds = useVesselsLayerIds()
   const removeVesselId = useRemoveVesselInLayer()
 
-  // const getFirstVesselData = () => {
-  //   const vesselsLayerInstance = layers.find((l) => l.id === 'vessel')?.instance as VesselsLayer
-  //   console.log('First Vessel Data')
-  //   console.log(vesselsLayerInstance.getVesselsLayer()?.[0].getTrackLayer().getSegments())
-  // }
+  const getVesselsEventsData = () => {
+    const vesselsEvents = vesselsLayerInstance.getVesselsLayers().reduce((acc, l) => [...acc, l.getVesselsEventsData()], [])
+    console.log(vesselsEvents)
+  }
 
   const getFourwingsData = () => {
     const data =
@@ -75,23 +73,25 @@ function Sidebar() {
                   <div>Vessels ({vesselIds?.length} loaded)</div>
                 </div>
                 {layer.visible && (
-                  <ul>
-                    {vesselIds?.length > 0 &&
-                      vesselIds.map((vessel) => (
-                        <li>
-                          {vessel}{' '}
-                          <IconButton
-                            icon="delete"
-                            onClick={() => removeVesselId(vessel)}
-                          ></IconButton>
-                        </li>
-                      ))}
-                  </ul>
-                  // <div>
-                  //   <Button size="small" onClick={getFirstVesselData}>
-                  //     LOG FIRST VESSEL DATA
-                  //   </Button>
-                  // </div>
+                  <Fragment>
+                    <ul>
+                      {vesselIds?.length > 0 &&
+                        vesselIds.map((vessel) => (
+                          <li>
+                            {vessel}{' '}
+                            <IconButton
+                              icon="delete"
+                              onClick={() => removeVesselId(vessel)}
+                            ></IconButton>
+                          </li>
+                        ))}
+                    </ul>
+                    <div>
+                      <Button size="small" onClick={getVesselsEventsData}>
+                        LOG VESSELS EVENTS DATA
+                      </Button>
+                    </div>
+                  </Fragment>
                 )}
               </div>
             )
