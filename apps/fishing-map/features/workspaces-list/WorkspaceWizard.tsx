@@ -1,23 +1,30 @@
-import { useCallback, useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import cx from 'classnames'
+import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import { useCombobox, UseComboboxStateChange } from 'downshift'
 import { matchSorter } from 'match-sorter'
 import { useSelector } from 'react-redux'
-import { useDebounce, useFeatureState } from '@globalfishingwatch/react-hooks'
-import { Button, Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
+import { useFeatureState } from '@globalfishingwatch/react-hooks'
+import { Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import {
   DEFAULT_CONTEXT_SOURCE_LAYER,
   getContextSourceId,
 } from '@globalfishingwatch/layer-composer'
-import { useMapFitBounds } from 'features/map/map-viewport.hooks'
+import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-viewport.hooks'
 import {
   DatasetArea,
   fetchDatasetAreasThunk,
   selectDatasetAreasById,
 } from 'features/areas/areas.slice'
+import { HOME } from 'routes/routes'
 import { MARINE_MANAGER_DATAVIEWS } from 'data/default-workspaces/marine-manager'
+import {
+  GLOBAL_CHLOROPHYL_DATAVIEW_ID,
+  GLOBAL_SALINITY_DATAVIEW_ID,
+  GLOBAL_WATER_TEMPERATURE_DATAVIEW_ID,
+} from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
@@ -34,7 +41,6 @@ function WorkspaceWizard() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const fitBounds = useMapFitBounds()
-
   const map = useMapInstance()
   const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
   const inputRef = useRef<HTMLInputElement | null>(null)
@@ -42,7 +48,6 @@ function WorkspaceWizard() {
   const [areasMatching, setAreasMatching] = useState<DatasetArea[]>([])
   const datasetAreas = useSelector(selectDatasetAreasById(WIZARD_AREAS_DATASET))
   const marineManagerGenerators = useSelector(selectMarineManagerGenerators)
-  const debouncedQuery = useDebounce(query, 300)
 
   const fetchDatasetAreas = () => {
     if (
@@ -64,6 +69,12 @@ function WorkspaceWizard() {
       setAreasMatching([])
     } else {
       setQuery(inputValue)
+      const matchingAreas = inputValue
+        ? matchSorter(datasetAreas?.data, inputValue, {
+            keys: ['label'],
+          }).slice(0, MAX_RESULTS_NUMBER)
+        : []
+      setAreasMatching(matchingAreas)
       cleanFeatureState('highlight')
     }
   }
@@ -124,20 +135,47 @@ function WorkspaceWizard() {
     onHighlightedIndexChange: onHighlightedIndexChange,
   })
 
-  useEffect(() => {
-    if (!selectedItem || !datasetAreas?.data || !debouncedQuery) {
-      setAreasMatching([])
-    } else {
-      const matchingAreas = matchSorter(datasetAreas?.data, debouncedQuery, {
-        keys: ['label'],
-      }).slice(0, MAX_RESULTS_NUMBER)
-      setAreasMatching(matchingAreas)
+  const linkTo = useMemo(() => {
+    if (!selectedItem) {
+      return {}
     }
-  }, [datasetAreas?.data, debouncedQuery, selectedItem])
 
-  const onConfirmClick = useCallback((e) => {
-    console.log('TODO: save workspsace', selectedItem)
-  }, [])
+    const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(map, selectedItem?.bbox)
+    return {
+      type: HOME,
+      payload: {},
+      query: {
+        latitude,
+        longitude,
+        zoom,
+        daysFromLatest: 90,
+        dataviewInstances: [
+          {
+            id: 'water-temp',
+            config: {
+              visible: false,
+            },
+            dataviewId: GLOBAL_WATER_TEMPERATURE_DATAVIEW_ID,
+          },
+          {
+            id: 'salinity',
+            config: {
+              visible: false,
+            },
+            dataviewId: GLOBAL_SALINITY_DATAVIEW_ID,
+          },
+          {
+            id: 'chlorophyl',
+            config: {
+              visible: false,
+            },
+            dataviewId: GLOBAL_CHLOROPHYL_DATAVIEW_ID,
+          },
+        ],
+      },
+      replaceQuery: true,
+    }
+  }, [map, selectedItem])
 
   return (
     <div className={styles.wizardContainer} {...getComboboxProps()}>
@@ -174,7 +212,13 @@ function WorkspaceWizard() {
           <Icon icon="magic" />
           {t('workspace.wizard.help', 'You can move the map and update your workspace later')}
         </p>
-        <Button onClick={onConfirmClick}>{t('common.confirm', 'Confirm')}</Button>
+        <Link
+          to={linkTo}
+          target="_self"
+          className={cx(styles.confirmBtn, { [styles.disabled]: !selectedItem })}
+        >
+          {t('common.confirm', 'Confirm')}
+        </Link>
       </div>
     </div>
   )
