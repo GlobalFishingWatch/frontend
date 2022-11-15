@@ -18,12 +18,13 @@ import {
   fetchDatasetAreasThunk,
   selectDatasetAreasById,
 } from 'features/areas/areas.slice'
-import { HOME } from 'routes/routes'
+import { HOME, WORKSPACES_LIST } from 'routes/routes'
 import { MARINE_MANAGER_DATAVIEWS } from 'data/default-workspaces/marine-manager'
 import {
   GLOBAL_CHLOROPHYL_DATAVIEW_ID,
   GLOBAL_SALINITY_DATAVIEW_ID,
   GLOBAL_WATER_TEMPERATURE_DATAVIEW_ID,
+  WorkspaceCategories,
 } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
@@ -137,7 +138,7 @@ function WorkspaceWizard() {
 
   const linkTo = useMemo(() => {
     if (!selectedItem) {
-      return {}
+      return { type: WORKSPACES_LIST, payload: { category: WorkspaceCategories.MarineManager } }
     }
 
     const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(map, selectedItem?.bbox)
@@ -216,6 +217,9 @@ function WorkspaceWizard() {
           to={linkTo}
           target="_self"
           className={cx(styles.confirmBtn, { [styles.disabled]: !selectedItem })}
+          onClick={(e) => {
+            if (!selectedItem) e.preventDefault()
+          }}
         >
           {t('common.confirm', 'Confirm')}
         </Link>
