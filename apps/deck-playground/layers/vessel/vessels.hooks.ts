@@ -19,6 +19,7 @@ const dateToMs = (date: string) => {
 }
 
 type VesselsAtom = {
+  loaded: boolean
   ids: string[]
   instance?: VesselsLayer
 }
@@ -27,8 +28,9 @@ export const vesselsLayerAtom = atom<VesselsAtom>({
   key: 'vesselsLayer',
   dangerouslyAllowMutability: true,
   default: {
+    loaded: false,
     ids: [],
-  },
+  }
   // effects: [
   //   urlSyncEffect({
   //     refine: mixed(),
@@ -63,13 +65,20 @@ export function useVesselsLayer() {
   const layerVisible = layer?.visible
 
   const setAtomProperty = useCallback(
-    (property) => updateAtom((state) => ({ ...state, ...property })),
+    (property) => updateAtom((state) => {console.log(state); return { ...state, ...property }}),
     [updateAtom]
   )
 
   const onVesselHighlight = useCallback(
     (id) => {
       setAtomProperty({ highlightedVesselId: id })
+    },
+    [setAtomProperty]
+  )
+
+  const onDataLoad = useCallback(
+    () => {
+      setAtomProperty({ loaded: true })
     },
     [setAtomProperty]
   )
@@ -92,6 +101,7 @@ export function useVesselsLayer() {
         endTime,
         highlightStartTime,
         highlightEndTime,
+        onDataLoad: onDataLoad
       })
       setAtomProperty({ instance: vesselsLayer })
     } else {
@@ -108,6 +118,7 @@ export function useVesselsLayer() {
     ids,
     highlightStartTime,
     highlightEndTime,
+    onDataLoad
   ])
 
   return instance
@@ -137,6 +148,20 @@ const vesselsLayerIdsAtomSelector = selector({
 export function useVesselsLayerIds() {
   const instance = useRecoilValue(vesselsLayerIdsAtomSelector)
   return instance
+}
+
+const vesselsLayerLoadedAtomSelector = selector({
+  key: 'vesselsLayerLoadedAtomSelector',
+  dangerouslyAllowMutability: true,
+  get: ({ get }) => {
+    console.log(get(vesselsLayerAtom))
+    return get(vesselsLayerAtom)?.loaded
+  },
+})
+
+export function useVesselsLayerLoaded() {
+  const loaded = useRecoilValue(vesselsLayerLoadedAtomSelector)
+  return loaded
 }
 
 export function useAddVesselInLayer() {
