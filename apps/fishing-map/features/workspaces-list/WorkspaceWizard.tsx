@@ -84,6 +84,7 @@ function WorkspaceWizard() {
     if (inputValue === '') {
       setSelectedItem(null)
       setWorkspaceName('')
+      fitBounds([-90, -180, 90, 180])
     }
   }
 
