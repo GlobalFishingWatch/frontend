@@ -151,6 +151,7 @@ function WorkspaceWizard() {
     onHighlightedIndexChange: onHighlightedIndexChange,
   })
 
+  console.log('isOpen', isOpen)
   const onConfirmClick = async () => {
     setCreateWorkspaceLoading(true)
     const viewport = getMapCoordinatesFromBounds(map, selectedItem?.bbox)
@@ -193,7 +194,10 @@ function WorkspaceWizard() {
   }
 
   const linkDisabled = !selectedItem || workspaceName.length < 3
-
+  const inputProps = getInputProps({ ref: inputRef })
+  console.log('inputProps', inputProps)
+  const menuProps = getMenuProps()
+  console.log('menuProps', menuProps)
   return (
     <div className={styles.wizardContainer} {...getComboboxProps()}>
       <div className={cx(styles.inputContainer, { [styles.open]: areasMatching.length > 0 })}>
@@ -201,7 +205,7 @@ function WorkspaceWizard() {
           {t('workspace.wizard.title', 'Setup a marine manager workspace for any area globally')}
         </label>
         <InputText
-          {...getInputProps({ ref: inputRef })}
+          {...inputProps}
           className={styles.input}
           placeholder={t('map.search', 'Search areas')}
           onFocus={fetchDatasetAreas}
@@ -212,7 +216,7 @@ function WorkspaceWizard() {
           loading={datasetAreas?.status === AsyncReducerStatus.Loading}
           className={cx(styles.search, { [styles.active]: isOpen })}
         ></IconButton>
-        <ul {...getMenuProps()} className={styles.results}>
+        <ul {...menuProps} className={styles.results}>
           {areasMatching?.map((item, index) => (
             <li
               {...getItemProps({ item, index })}
