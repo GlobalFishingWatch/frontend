@@ -48,6 +48,8 @@ function WorkspaceWizard() {
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [query, setQuery] = useState<string>('')
   const [areasMatching, setAreasMatching] = useState<DatasetArea[]>([])
+  const [selectedItem, setSelectedItem] = useState<DatasetArea>(null)
+  const [workspaceName, setWorkspaceName] = useState<string>('')
   const datasetAreas = useSelector(selectDatasetAreasById(WIZARD_AREAS_DATASET))
   const marineManagerGenerators = useSelector(selectMarineManagerGenerators)
 
@@ -61,7 +63,7 @@ function WorkspaceWizard() {
     }
   }
 
-  const onInputChange = ({
+  const onSearchInputChange = ({
     type,
     inputValue,
     selectedItem,
@@ -79,9 +81,17 @@ function WorkspaceWizard() {
       setAreasMatching(matchingAreas)
       cleanFeatureState('highlight')
     }
+    if (inputValue === '') {
+      setSelectedItem(null)
+    }
+  }
+
+  const onNameInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setWorkspaceName(e.target.value)
   }
 
   const onSelectResult = ({ selectedItem }: UseComboboxStateChange<DatasetArea>) => {
+    setSelectedItem(selectedItem)
     const id = selectedItem?.id
     const mpaSourceId = getContextSourceId(
       marineManagerGenerators.find((g) => g.datasetId === WIZARD_AREAS_DATASET)
@@ -126,13 +136,13 @@ function WorkspaceWizard() {
     getItemProps,
     highlightedIndex,
     inputValue,
-    selectedItem,
     isOpen,
   } = useCombobox({
     inputValue: query,
     items: areasMatching,
+    selectedItem: selectedItem,
     itemToString: (item: DatasetArea | null): string => (item ? item.label : ''),
-    onInputValueChange: onInputChange,
+    onInputValueChange: onSearchInputChange,
     onSelectedItemChange: onSelectResult,
     onHighlightedIndexChange: onHighlightedIndexChange,
   })
@@ -185,6 +195,8 @@ function WorkspaceWizard() {
     }
   }, [map, selectedItem])
 
+  const linkDisabled = !selectedItem || workspaceName.length < 3
+
   return (
     <div className={styles.wizardContainer} {...getComboboxProps()}>
       <div className={cx(styles.inputContainer, { [styles.open]: areasMatching.length > 0 })}>
@@ -215,6 +227,18 @@ function WorkspaceWizard() {
           ))}
         </ul>
       </div>
+      <div className={styles.inputContainer}>
+        {selectedItem && (
+          <InputText
+            label={t('workspace.wizard.name', 'Give a name to your workspace')}
+            placeholder={t('common.name', 'Name')}
+            className={styles.input}
+            value={workspaceName}
+            onChange={onNameInputChange}
+            autoFocus
+          />
+        )}
+      </div>
       <div className={styles.actions}>
         <p className={styles.hint}>
           <Icon icon="magic" />
@@ -223,7 +247,7 @@ function WorkspaceWizard() {
         <Link
           to={linkTo}
           target="_self"
-          className={cx(styles.confirmBtn, { [styles.disabled]: !selectedItem })}
+          className={cx(styles.confirmBtn, { [styles.disabled]: linkDisabled })}
           onClick={(e) => {
             if (!selectedItem) e.preventDefault()
           }}

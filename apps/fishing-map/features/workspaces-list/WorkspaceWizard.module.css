@@ -11,10 +11,14 @@
   flex-direction: column;
 }
 
+.inputContainer:not(:first-child) {
+  margin-top: var(--space-S);
+}
+
 .input input,
 .input input:placeholder-shown {
   border-radius: 2rem;
-  padding-inline: 1rem;
+  padding-inline: 1.5rem;
   background: var(--color-terthiary-blue);
   border-bottom: none;
 }
@@ -60,6 +64,7 @@
   width: 100%;
   background: var(--color-white);
   box-shadow: var(--box-shadow);
+  z-index: 1;
 }
 
 .result {

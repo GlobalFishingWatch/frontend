@@ -595,6 +595,7 @@
     "user": "User workspace",
     "wizard": {
       "title": "Setup a marine manager workspace for any area globally",
+      "name": "Give a name to your workspace",
       "help": "You can move the map and update your workspace later"
     }
   }
