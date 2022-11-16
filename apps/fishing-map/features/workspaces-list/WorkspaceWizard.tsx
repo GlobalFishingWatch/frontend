@@ -201,32 +201,34 @@ function WorkspaceWizard() {
         <label>
           {t('workspace.wizard.title', 'Setup a marine manager workspace for any area globally')}
         </label>
-        <InputText
-          {...getInputProps({ ref: inputRef })}
-          className={styles.input}
-          placeholder={t('map.search', 'Search areas')}
-          onFocus={fetchDatasetAreas}
-          value={inputValue || ''}
-        />
-        <IconButton
-          icon="search"
-          loading={datasetAreas?.status === AsyncReducerStatus.Loading}
-          className={cx(styles.search, { [styles.active]: isOpen })}
-        ></IconButton>
-        <ul {...getMenuProps()} className={styles.results}>
-          {showAreasMatching &&
-            areasMatching?.map((item, index) => (
-              <li
-                {...getItemProps({ item, index })}
-                key={`${item}${index}`}
-                className={cx(styles.result, {
-                  [styles.highlighted]: highlightedIndex === index,
-                })}
-              >
-                {item.label}
-              </li>
-            ))}
-        </ul>
+        <div className={styles.comboContainer}>
+          <InputText
+            {...getInputProps({ ref: inputRef })}
+            className={styles.input}
+            placeholder={t('map.search', 'Search areas')}
+            onFocus={fetchDatasetAreas}
+            value={inputValue || ''}
+          />
+          <IconButton
+            icon="search"
+            loading={datasetAreas?.status === AsyncReducerStatus.Loading}
+            className={cx(styles.search, { [styles.active]: isOpen })}
+          ></IconButton>
+          <ul {...getMenuProps()} className={styles.results}>
+            {showAreasMatching &&
+              areasMatching?.map((item, index) => (
+                <li
+                  {...getItemProps({ item, index })}
+                  key={`${item}${index}`}
+                  className={cx(styles.result, {
+                    [styles.highlighted]: highlightedIndex === index,
+                  })}
+                >
+                  {item.label}
+                </li>
+              ))}
+          </ul>
+        </div>
       </div>
       <div className={styles.inputContainer}>
         {selectedItem && (

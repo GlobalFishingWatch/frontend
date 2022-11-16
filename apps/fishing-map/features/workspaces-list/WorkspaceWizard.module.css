@@ -23,6 +23,10 @@
   border-bottom: none;
 }
 
+.input label {
+  margin-bottom: 0;
+}
+
 .open .input {
   background: var(--color-white);
   box-shadow: var(--box-shadow);
@@ -63,9 +67,13 @@
   background-color: var(--color-terthiary-blue);
 }
 
+.comboContainer {
+  position: relative;
+}
+
 .results {
   position: absolute;
-  top: 6.2rem;
+  top: 4rem;
   width: 100%;
   background: var(--color-white);
   box-shadow: var(--box-shadow);
