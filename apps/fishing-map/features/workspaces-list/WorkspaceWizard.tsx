@@ -98,7 +98,7 @@ function WorkspaceWizard() {
     setSelectedItem(selectedItem)
     const id = selectedItem?.id
     const mpaSourceId = getContextSourceId(
-      marineManagerGenerators.find((g) => g.datasetId === WIZARD_AREAS_DATASET)
+      marineManagerGenerators?.find((g) => g.datasetId === WIZARD_AREAS_DATASET)
     )
     if (mpaSourceId) {
       const featureState = {
@@ -151,7 +151,6 @@ function WorkspaceWizard() {
     onHighlightedIndexChange: onHighlightedIndexChange,
   })
 
-  console.log('isOpen', isOpen)
   const onConfirmClick = async () => {
     setCreateWorkspaceLoading(true)
     const viewport = getMapCoordinatesFromBounds(map, selectedItem?.bbox)
@@ -194,18 +193,16 @@ function WorkspaceWizard() {
   }
 
   const linkDisabled = !selectedItem || workspaceName.length < 3
-  const inputProps = getInputProps({ ref: inputRef })
-  console.log('inputProps', inputProps)
-  const menuProps = getMenuProps()
-  console.log('menuProps', menuProps)
+  const showAreasMatching = !selectedItem && areasMatching.length > 0
+
   return (
     <div className={styles.wizardContainer} {...getComboboxProps()}>
-      <div className={cx(styles.inputContainer, { [styles.open]: areasMatching.length > 0 })}>
+      <div className={cx(styles.inputContainer, { [styles.open]: showAreasMatching })}>
         <label>
           {t('workspace.wizard.title', 'Setup a marine manager workspace for any area globally')}
         </label>
         <InputText
-          {...inputProps}
+          {...getInputProps({ ref: inputRef })}
           className={styles.input}
           placeholder={t('map.search', 'Search areas')}
           onFocus={fetchDatasetAreas}
@@ -216,16 +213,19 @@ function WorkspaceWizard() {
           loading={datasetAreas?.status === AsyncReducerStatus.Loading}
           className={cx(styles.search, { [styles.active]: isOpen })}
         ></IconButton>
-        <ul {...menuProps} className={styles.results}>
-          {areasMatching?.map((item, index) => (
-            <li
-              {...getItemProps({ item, index })}
-              key={`${item}${index}`}
-              className={cx(styles.result, { [styles.highlighted]: highlightedIndex === index })}
-            >
-              {item.label}
-            </li>
-          ))}
+        <ul {...getMenuProps()} className={styles.results}>
+          {showAreasMatching &&
+            areasMatching?.map((item, index) => (
+              <li
+                {...getItemProps({ item, index })}
+                key={`${item}${index}`}
+                className={cx(styles.result, {
+                  [styles.highlighted]: highlightedIndex === index,
+                })}
+              >
+                {item.label}
+              </li>
+            ))}
         </ul>
       </div>
       <div className={styles.inputContainer}>
