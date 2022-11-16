@@ -83,6 +83,7 @@ function WorkspaceWizard() {
     }
     if (inputValue === '') {
       setSelectedItem(null)
+      setWorkspaceName('')
     }
   }
 
