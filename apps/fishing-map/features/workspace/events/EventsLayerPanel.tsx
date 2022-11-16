@@ -1,21 +1,26 @@
 import cx from 'classnames'
+import { useSelector } from 'react-redux'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { useEventsDynamicRamp } from 'features/workspace/events/events.hooks'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
+import Remove from 'features/workspace/common/Remove'
+import { isGFWUser } from 'features/user/user.slice'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import LayerSwitch from '../common/LayerSwitch'
 import Title from '../common/Title'
 import InfoModal from '../common/InfoModal'
 
-type LayerPanelProps = {
+type EventsLayerPanelProps = {
   dataview: UrlDataviewInstance
 }
 
-function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
+function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactElement {
   const layerActive = dataview?.config?.visible ?? true
+  const gfwUser = useSelector(isGFWUser)
   const { items, attributes, listeners, setNodeRef, setActivatorNodeRef, style } =
     useLayerPanelDataviewSort(dataview.id)
 
@@ -53,6 +58,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
           <InfoModal dataview={dataview} />
+          {gfwUser && <Remove dataview={dataview} />}
           {items.length > 1 && (
             <IconButton
               size="small"
@@ -68,4 +74,4 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   )
 }
 
-export default LayerPanel
+export default EventsLayerPanel

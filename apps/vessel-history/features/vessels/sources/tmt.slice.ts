@@ -1,8 +1,8 @@
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { Authorization } from '@globalfishingwatch/api-types'
-import { API_VERSION } from 'data/config'
 import {
   AnyValueList,
+  Iuu,
   TMTDetail,
   ValueItem,
   VesselAPISource,
@@ -23,15 +23,41 @@ const extractValue: (valueItem: ValueItem[]) => string | undefined = (valueItem:
 const sortAuthorization = (a: Authorization, b: Authorization) =>
   a.originalStartDate > b.originalStartDate ? 1 : -1
 
+const sortIuu = (a: Iuu, b: Iuu) => (a.originalFirstSeen > b.originalFirstSeen ? 1 : -1)
+
 const getHistoryField = (historyField: AnyValueList[]): VesselFieldHistory<any> => ({
   byCount: [],
   byDate: historyField.reverse().map((field) => ({ ...field, source: VesselAPISource.TMT })),
 })
+
+const getIuuHistory = (historyField: Iuu[]): VesselFieldHistory<any> => ({
+  byCount: [],
+  byDate: historyField.map((field: Iuu) => ({
+    ...field,
+    source: VesselAPISource.TMT,
+  })),
+})
+
+const transformIuuListing: (data: any) => TMTDetail = (data: any) => {
+  return {
+    ...data,
+    iuuListing:
+      data.iuuListing.map((iuu) => {
+        return {
+          ...iuu,
+          value: iuu.source,
+          firstSeen: iuu.startDate,
+          originalFirstSeen: iuu.originalStartDate,
+        }
+      }) || [],
+  }
+}
 export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail) => {
   const {
     vesselMatchId,
     valueList,
     iuuStatus,
+    iuuListing,
     relationList: { vesselOperations, vesselOwnership },
     authorisationList,
     imageList,
@@ -43,6 +69,7 @@ export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail
     depth: getHistoryField(valueList.depth),
     flag: getHistoryField(valueList.flag),
     imo: getHistoryField(valueList.imo),
+    iuuListing: getIuuHistory(iuuListing.sort(sortIuu)),
     geartype: getHistoryField(valueList.gear),
     grossTonnage: getHistoryField(valueList.gt),
     shipname: getHistoryField(valueList.name),
@@ -71,6 +98,7 @@ export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail
     builtYear: extractValue(vesselHistory.builtYear.byDate),
     authorizations: authorisationList ? authorisationList.sort(sortAuthorization) : [],
     iuuStatus: iuuStatus,
+    iuuListing: iuuListing ? iuuListing.sort(sortIuu)[0] : null,
     firstTransmissionDate: '',
     lastTransmissionDate: '',
     years: [],
@@ -93,6 +121,7 @@ const vesselThunk: VesselAPIThunk = {
     const url = `/vessel-histories/${id}`
 
     return await GFWAPI.fetch<TMTDetail>(url)
+      .then(transformIuuListing)
       .then(toVessel)
       .catch((error) => {
         console.error(error)

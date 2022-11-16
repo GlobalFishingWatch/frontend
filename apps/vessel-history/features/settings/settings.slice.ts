@@ -18,6 +18,7 @@ export type SettingsPortVisits = {
 export type SettingEventSectionName =
   | 'fishingEvents'
   | 'encounters'
+  | 'gapEvents'
   | 'loiteringEvents'
   | 'portVisits'
 
@@ -25,6 +26,7 @@ export type Settings = {
   enabled: boolean
   fishingEvents: SettingsEvents
   encounters: SettingsEvents
+  gapEvents: SettingsEvents
   loiteringEvents: SettingsEvents
   portVisits: SettingsPortVisits
 }
@@ -39,6 +41,7 @@ const initialState: SettingsSlice = {
     encounters: {},
     loiteringEvents: {},
     portVisits: {},
+    gapEvents: {},
     ...(typeof localStorage !== 'undefined' && localStorage.getItem('settings') !== null
       ? JSON.parse(localStorage.getItem('settings') as string)
       : {}),

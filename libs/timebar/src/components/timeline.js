@@ -7,6 +7,7 @@ import dayjs from 'dayjs'
 import { throttle } from 'lodash'
 import { animated, Spring } from 'react-spring'
 import ResizeObserver from 'resize-observer-polyfill'
+import { getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
 import ImmediateContext from '../immediateContext'
 import {
   getTime,
@@ -293,8 +294,9 @@ class Timeline extends PureComponent {
       }
     }
     // on release, "stick" to day/hour
-    const stickedToUnit = stickToUnit ? stickToUnit(newStart, newEnd) : null
-    const stickUnit = stickedToUnit || (isMoreThanADay(newStart, newEnd) ? 'day' : 'hour')
+    const stickUnit = stickToUnit
+      ? stickToUnit(newStart, newEnd)
+      : getInterval(start, end, [INTERVAL_ORDER])
     newStart = stickToClosestUnit(newStart, stickUnit)
     newEnd = stickToClosestUnit(newEnd, stickUnit)
     if (newStart === newEnd) {

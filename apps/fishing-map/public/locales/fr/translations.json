@@ -1,6 +1,7 @@
 {
   "analysis": {
     "activityChange": "Évolution activité",
+    "apiDisclaimer": "Are you looking to use GFW data in your application, find our API documentation <1>here.</1>",
     "beforeAfter": "Avant/après",
     "beforeAfterDate": "date",
     "beforeAfterDuration": "durée",
@@ -53,7 +54,6 @@
     "visualisationEventsHint": "(Ensure event_id, event_start, event_end and geom are all present)"
   },
   "common": {
-    "back": "back",
     "active_after": "Actif après",
     "active_before": "Actif avant",
     "activity": "Activité",
@@ -62,15 +62,15 @@
     "apparentFishing": "Effort de pêche apparent",
     "average": "moyenne",
     "averageAbbreviated": "moy.",
+    "back": "back",
     "cancel": "Annuler",
     "category": "Catégorie",
     "comingSoon": "à venir!",
     "confirm": "Valider",
-    "continue": "Continue",
     "context_area_other": "Calques de référence",
+    "continue": "Continue",
     "copiedToClipboard": "Le lien pour partager cette vue a été copié dans votre presse-papiers.",
     "country_other": "pays",
-    "detections": "Detections",
     "date": "Date",
     "date_one": "Date",
     "date_other": "Dates",
@@ -82,11 +82,13 @@
     "detection": "Détection",
     "detection_one": "Détection",
     "detection_other": "Détections",
+    "detections": "Detections",
     "dismiss": "Ignorer",
     "environment": "Environnement",
+    "events": "Évènements",
     "exclude": "Exclude",
     "excluded": "Excluded",
-    "events": "Évènements",
+    "faq": "FAQs",
     "feedback": "Vos commentaires",
     "fishing": "Pêche",
     "from": "de",
@@ -126,20 +128,24 @@
     "presence": "Présence",
     "report": "Rapporter",
     "resetHelpHints": "Afficher à nouveau toutes les astuces",
+    "sar": "Radar detections (SAR)",
     "save": "Enregistrer",
     "seeDefault": "Voir la vue par défaut",
     "share": "Partager la vue actuelle",
+    "sources": "Sources",
     "unknown": "Inconnu",
     "unknownVessel": "Navire inconnu",
     "update": "Mise à jour",
+    "userGuide": "User guide",
     "vessel": "Navire",
     "vessel_one": "Navire",
     "vessel_other": "Navires",
+    "vesselId": "Vessel id",
     "view_layer": "Voir le calque",
     "viirs": "Détection de lumière de nuit (VIIRS)",
-    "sar": "Radar detections (SAR)",
     "welcomePopupDisable": "Ne plus afficher",
-    "whatsNew": "Quoi de neuf ?"
+    "whatsNew": "Quoi de neuf ?",
+    "whatsNewWithNewVersion": "We've made some changes since you last visited the map. Click to learn more"
   },
   "dataset": {
     "addContext": "Ajouter un calque de référence",
@@ -182,13 +188,18 @@
     "typePolygonsDescription": "Affichez des polygones dont la couleur est corrélée à n'importe quelle valeur quantitative de votre jeu de données.",
     "typeTracks": "Trajectoires",
     "typeTracksDescription": "Afficher le mouvement d'un ou de plusieurs animaux ou navires.",
-    "uploadLogin": "Inscrivez-vous et  <1>connectez-vous</1> pour télécharger des jeux de données (gratuit, 2 minutes)",
+    "uploadLogin": "<0>Inscrivez-vous</0> et <2>connectez-vous</2> pour télécharger des jeux de données (gratuit, 2 minutes)",
     "uploadNewContext": "Ajouter de nouveux calques de référence",
     "uploadNewEnviroment": "Ajouter un nouveau jeu de données d'environnement",
     "uploadPublic": "Autoriser d'autres utilisateurs à voir ce jeu de données lorsque vous partagez un espace de travail",
     "uploadYourOwn": "Uploadez le votre"
   },
   "dataview": {
+    "basemap-labels": {
+      "dataWarning": "This platform uses location labels from Google Maps.",
+      "dataWarningDetail": "This platform uses location labels from Google Maps. <a target='_blank' href='https://developers.google.com/maps/documentation/tile/overview'> Learn more.</a>",
+      "title": "Locations"
+    },
     "context-layer-eez": {
       "dataWarning": "Cette plateforme utilise des calques de référence EEZ de Marine Regions",
       "dataWarningDetail": "This platform uses reference layers (shapefiles) from Marine Regions for exclusive economic zones and boundaries. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. To see the original reference layers, please visit <a href='http://www.marineregions.org'>www.marineregions.org</a>. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw or upload your own reference layer using the '+' icon in the left sidebar. Learn more on our <a href='https://globalfishingwatch.org/tutorials/'>tutorials</a> and <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
@@ -196,11 +207,6 @@
     "context-layer-mpa": {
       "dataWarning": "Cette plateforme utilise des calques de référence MPA de World Database on Protected Areas.",
       "dataWarningDetail": "This platform uses reference layers (shapefiles) from the World Database on Protected Areas for marine protected areas. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. To see the original reference layers, please visit <a href='http://www.protectedplanet.net'>www.protectedplanet.net</a>. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw oro upload your own reference layer using the '+' icon in the left sidebar. Learn more on our <a href='https://globalfishingwatch.org/tutorials/'>tutorials</a> and <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
-    },
-    "basemap-labels": {
-      "title": "Locations",
-      "dataWarning": "This platform uses location labels from Google Maps.",
-      "dataWarningDetail": "This platform uses location labels from Google Maps. <a target='_blank' href='https://developers.google.com/maps/documentation/tile/overview'> Learn more.</a>"
     }
   },
   "download": {
@@ -208,25 +214,31 @@
     "activityAction": "Télécharger les calques d'activité visibles pour cette zone",
     "activityLogin": "S'inscrire et se connecter pour télécharger l'activité (gratuit, 2 minutes)",
     "area": "Zone",
-    "daily": "Quotidien",
+    "apiPortal": "See our APIs here",
+    "byVessel": "Active vessels",
+    "daily": "Day",
+    "dataPortal": "See data download portal",
     "datasetsNotAllowed": "Vous n'avez pas la permission de télécharger les jeux de données suivants :",
+    "doYouNeedAnAPI": "Does your application need continuous data?",
     "format": "Format",
-    "groupActivityBy": "Grouper l'activité par",
+    "fullDataset": "Do you need the full dataset?",
+    "fullTimeRange": "Full time range",
+    "gridded": "Gridded activity",
+    "groupActivityBy": "Group activity by vessel property",
     "highResNotAvailable": "Votre zone est trop grande",
-    "monthly": "Mensuel",
+    "monthly": "Month",
     "monthlyNotAvailable": "Votre plage de temps est inférieure à 1 mois",
+    "mmsiNotSupported": "The datasets selected don't support grouping by MMSI",
     "spatialResolution": "Résolution spatiale",
-    "temporalResolution": "Résolution temporelle",
+    "temporalResolution": "Group time by",
     "timeRange": "Plage de temps",
-    "timerangeTooLong": "La plage de temps maximale est de {{count}} années",
-    "timerangeTooLong_one": "La plage de temps maximale est de {{count}} années",
-    "timerangeTooLong_other": "La plage de temps maximale est de {{count}} années",
+    "timerangeTooLong": "The maximum time range is 1 year",
     "title": "Télécharger",
     "track": "Trajectoires de navire",
     "trackAction": "Télécharger la trajectoires du navire",
     "trackNotAllowed": "Vous n'avez pas la permission de télécharger des trajectoires à partir de cette source",
     "vesselTrackLogin": "Inscrivez-vous et connectez-vous pour télécharger des trajectoires de navires (gratuit, 2 minutes)",
-    "yearly": "Annuel",
+    "yearly": "Year",
     "yearlyNotAvailable": "Votre plage de temps est inférieure à 1 an"
   },
   "errors": {
@@ -248,17 +260,17 @@
     "showError": "Afficher l'erreur",
     "switchAccount": "Changer de compte",
     "trackLoading": "Une erreur s'est produite lors du chargement de la trajectoire du navire",
+    "uploadCsv": "Error reading CSV file: {{error}}",
     "uploadError": "Il y a eu une erreur lors du téléchargement de votre jeu de données",
+    "uploadGeojson": "Error reading GeoJSON file: {{error}}",
+    "uploadShapefile": "Error reading shapefile: {{error}}",
+    "uploadShapefileComponents": "Error reading shapefile: must contain files with *.shp, *.shx, *.dbf and *.prj extensions.",
     "vesselLoading": "Une erreur s'est produite lors du chargement des détails du vaisseau",
     "workspaceCreate": "Une erreur s'est produite lors de la création de l'espace de travail. Veuillez réessayer ",
     "workspaceDuplicatedName": "Il existe déjà un espace de travail portant ce nom",
     "workspaceLoad": "Une erreur a été rencontrée lors du chargement de l'espace de travail. Veuillez réessayer.",
     "workspaceMissingName": "Le nom de l'espace de travail est requis",
-    "workspaceNotFound": "La vue demandée n'a pas été trouvée",
-    "uploadShapefile": "Error reading shapefile: {{error}}",
-    "uploadShapefileComponents": "Error reading shapefile: must contain files with *.shp, *.shx, *.dbf and *.prj extensions.",
-    "uploadGeojson": "Error reading GeoJSON file: {{error}}",
-    "uploadCsv": "Error reading CSV file: {{error}}"
+    "workspaceNotFound": "La vue demandée n'a pas été trouvée"
   },
   "event": {
     "dayAbbreviated": "{{count}}j",
@@ -332,6 +344,7 @@
     "supportBy": "Avec le soutien de"
   },
   "layer": {
+    "activity_fit_bounds": "Center view on activity",
     "add": "Ajouter un calque",
     "color_change": "Modifier la couleur",
     "drawPolygon": "Dessiner un calque",
@@ -366,14 +379,13 @@
     "source_other": "Sources",
     "statsHelp": "The number of vessels and flag states is calculated for your current filters and time range globally. Some double counting may occur.",
     "statsHelpDetection": "The number of detections is calculated for your current filters and time range globally. Some double counting may occur.",
-    "type": "Type",
     "toggleCombinationMode": {
       "combine": "Combiner les calques",
       "split": "Séparer les calques"
     },
     "toggleVisibility": "Afficher/cacher calque",
+    "type": "Type",
     "vessel_fit_bounds": "Centrer la carte sur la trajectoire du navire",
-    "activity_fit_bounds": "Center view on activity",
     "vessel_fit_bounds_out_of_timerange": "La piste n'a aucune activité dans la plage temporelle sélectionnée. Changer la plage temporelle pour l'ajuster à cette trajectoire ?"
   },
   "map": {
@@ -444,9 +456,9 @@
   "user": {
     "groupMissing": "Appartenez-vous à un groupe d’utilisateurs qui n’apparaît pas ici ? <2>Demander l'accès</2>",
     "groups": "Groupes",
+    "info": "User Info",
     "profile": "Profil",
-    "title": "Utilisateur",
-    "info": "User Info"
+    "title": "Utilisateur"
   },
   "vessel": {
     "addToWorkspace": "Ajouter un navire à la vue",
@@ -505,7 +517,6 @@
     "loading": "Chargement de la trajectoire du navire",
     "loadingInfo": "Chargement des informations du navire",
     "login": "Vous devez <1>vous connecter</1> pour voir plus de détails (gratuit, 2 minutes)",
-    "trackLogin": "One of your selected sources requires you to <1>login</1> to see vessel tracks and events",
     "mainGear": "Équipement principal",
     "matched": "Match",
     "matricula": "Matricula",
@@ -516,17 +527,18 @@
     "registeredGearType": "Type d'équipement enregistré",
     "shiptype": "Types de navires",
     "source": "Source",
-    "ssvid": "Ssvid",
     "source_short": "Source",
+    "ssvid": "Ssvid",
     "target_species": "Espèces pêchées",
     "targetSpecies": "Espèces pêchées",
+    "trackLogin": "One of your selected sources requires you to <1>login</1> to see vessel tracks and events",
     "transmission_other": "Transmissions",
+    "transmissionDates": "Transmission dates",
     "unkwownVesselByGeartype": "{{gearType}} inconnu",
     "unmatched": "unmatched",
     "vessel_type": "Vessel type",
     "vesselType_other": "Types de navires",
-    "widthRange": "Plage de largeur",
-    "transmissionDates": "Transmission dates"
+    "widthRange": "Plage de largeur"
   },
   "vesselGroup": {
     "add": "Add to vessel group",
@@ -543,11 +555,11 @@
     "label": "{{name}} ({{count}} IDs)",
     "missingName": "Vessel group name is mandatory",
     "new": "New vessel group",
-    "uploadPublic": "Allow other users to see this vessel group when you share a workspace",
     "remove": "Remove vessel group",
     "removeVessel": "Remove vessel from group",
-    "timeRangeLimit": "Supported only for time ranges shorter than 30 days",
+    "timeRangeLimit": "Supported only for time ranges shorter than 1 year",
     "tooManyVessels": "Maximum number of vessels is {{count}}",
+    "uploadPublic": "Allow other users to see this vessel group when you share a workspace",
     "vesselGroup": "Vessel group",
     "vesselGroups": "Vessel groups"
   },
@@ -555,14 +567,15 @@
     "confirmRemove": "Êtes-vous sûr de vouloir supprimer définitivement cet espace de travail ?",
     "create": "Créer comme nouveau",
     "createNeeded": "Changer la visibilité de l'espace de travail nécessite d'en créer un nouveau",
+    "edit": "Edit workspace",
     "editName": "Modifier le nom de la vue",
     "emptyState": "Vos vues apparaîtront ici",
     "emptyStateEnvironment": "Chargez des jeux de données personnalisés comme la télémétrie animale, en cliquant sur l'icône plus.",
     "emptyStateVessels": "Les navires sélectionnés dans la recherche ou en cliquant sur la carte de chaleur apparaîtront ici.",
     "nameInput": "Nom de la vue",
     "new": "Nouvelle vue",
-    "noVesselInFilters": "No vessels match your current filters",
     "noDetectionInFilters": "No detections match your current filters",
+    "noVesselInFilters": "No vessels match your current filters",
     "privateTitle_other": "Espace de travail privé",
     "remove": "Supprimer la vue",
     "save": "Enregistrer la vue actuelle",
@@ -575,9 +588,9 @@
       "marine-manager": "Marine Manager is a new technology portal to support the effective design, management and monitoring of protected areas."
     },
     "title_other": "Espaces de travail",
-    "user": "User workspace",
     "update": "Mise à jour",
     "uploadPublic": "Autoriser d'autres utilisateurs à voir cet espace de travail",
-    "uploadPublicDisabled": "Cet espace de travail ne peut pas être partagé publiquement car il contient des jeux de données privés"
+    "uploadPublicDisabled": "Cet espace de travail ne peut pas être partagé publiquement car il contient des jeux de données privés",
+    "user": "User workspace"
   }
 }

@@ -136,7 +136,9 @@ export const getDatasetsInDataviews = (
   return uniq(
     dataviews?.flatMap((dataviews) => {
       if (!dataviews.datasetsConfig) return []
-      const datasetIds = dataviews.datasetsConfig.map(({ datasetId }) => datasetId)
+      const datasetIds: string[] = dataviews.datasetsConfig.flatMap(
+        ({ datasetId }) => datasetId || []
+      )
       return guestUser
         ? datasetIds.filter((d) => !d.includes(PRIVATE_SUFIX) && !d.includes(FULL_SUFIX))
         : datasetIds
@@ -242,6 +244,15 @@ export const getDatasetsDownloadNotSupported = (
   const dataviewDatasets = getActiveDatasetsInActivityDataviews(dataviews)
   const datasetsDownloadSupported = getActivityDatasetsDownloadSupported(dataviews, permissions)
   return dataviewDatasets.filter((dataset) => !datasetsDownloadSupported.includes(dataset))
+}
+
+export const getActiveActivityDatasetsInDataviews = (dataviews: UrlDataviewInstance[]) => {
+  return dataviews.map((dataview) => {
+    const activeDatasets = (dataview?.config?.datasets || []) as string[]
+    return dataview.datasets.filter((dataset) => {
+      return activeDatasets.includes(dataset.id)
+    })
+  })
 }
 
 export const getEventsDatasetsInDataview = (dataview: UrlDataviewInstance) => {

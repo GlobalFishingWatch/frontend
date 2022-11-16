@@ -2,6 +2,7 @@ import { Fragment } from 'react'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { TooltipEventFeature } from 'features/map/map.hooks'
+import { toFixed } from 'utils/shared'
 import styles from './Popup.module.css'
 
 type ContextTooltipRowProps = {
@@ -11,10 +12,10 @@ type ContextTooltipRowProps = {
 
 function parseEnvironmentalValue(value: any) {
   if (typeof value === 'number') {
-    return value
+    return toFixed(value, 2)
   }
   if (typeof value === 'string') {
-    return parseFloat(value)
+    return toFixed(parseFloat(value), 2)
   }
   return value as number
 }

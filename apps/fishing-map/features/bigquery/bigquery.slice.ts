@@ -65,7 +65,12 @@ export const createBigQueryDatasetThunk = createAsyncThunk(
         `/${visualisationMode}/bq/create-temporal-dataset`,
         {
           method: 'POST',
-          body: { query, name: kebabCase(name), unit, public: createAsPublic } as any,
+          body: {
+            query,
+            name: kebabCase(name),
+            ...(unit && { unit }),
+            public: createAsPublic,
+          } as any,
         }
       )
       const dataset = await dispatch(fetchDatasetByIdThunk(id))

@@ -37,10 +37,12 @@ const Analysis = () => {
             const layer = geoTemporalLayers.find((l) => l.id === layerGraph.layer.id)
             return (
               <li className={styles.graphContainer} key={layerGraph.layer.id}>
-                <h2 className={styles.name}>
-                  {layer.dataset.name}
-                  <span className={styles.unit}>{layer.dataset.unit}</span>
-                </h2>
+                {layer?.dataset?.name && (
+                  <h2 className={styles.name}>
+                    {layer.dataset?.name}
+                    <span className={styles.unit}>{layer.dataset.unit}</span>
+                  </h2>
+                )}
                 {loading ? (
                   <Spinner />
                 ) : (

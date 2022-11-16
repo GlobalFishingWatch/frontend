@@ -15,7 +15,7 @@ export const aggregateCell = ({
   if (!rawValues) return null
   const { values, minCellOffset, maxCellOffset } = getCellValues(rawValues)
 
-  // When we should start counting in terms of days/hours/10days from start of time
+  // When we should start counting in terms of days/hours from start of time
   const startOffset = quantizeOffset + frame
   const endOffset = startOffset + delta
 

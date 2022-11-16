@@ -29,7 +29,7 @@ const AnalysisBeforeAfter: React.FC<AnalysisTypeProps> = (props) => {
     MAX_DATE,
   } = useAnalysisTimeCompareConnect('beforeAfter')
   const dataviewsIds = useMemo(() => {
-    if (!layersTimeseriesFiltered) return []
+    if (!layersTimeseriesFiltered?.[0]?.sublayers) return []
     return layersTimeseriesFiltered[0].sublayers.map((s) => s.id)
   }, [layersTimeseriesFiltered])
   const dataviews = useSelector(selectDataviewInstancesByIds(dataviewsIds))

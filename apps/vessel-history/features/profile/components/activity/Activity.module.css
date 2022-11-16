@@ -20,8 +20,6 @@
   height: 40px;
   display: flex;
   align-items: center;
-
-  /* border-top: var(--border); */
   padding: 0 var(--space-S);
   position: relative;
 }
@@ -40,6 +38,32 @@
 .highlightsContainer .divider {
   width: 100%;
   left: calc(var(--space-XS) * -1);
+}
+
+.highlightsListContainer .event {
+  margin: 0;
+  padding: 0;
+}
+
+.displayPortVisitsAsOneEvent.port_visit_exited .event,
+.displayPortVisitsAsOneEvent.port_visit_entered .event {
+  height: 35px;
+}
+
+.displayPortVisitsAsOneEvent:not(.port_visit_entered):not(.port_visit_exited) .event {
+  height: 44px;
+}
+
+.displayPortVisitsAsOneEvent .eventIcon.port_visit_exited,
+.displayPortVisitsAsOneEvent .eventIcon.port_visit_entered,
+.displayPortVisitsAsOneEvent:not(.port_visit_entered) .divider {
+  opacity: 0;
+  height: 0;
+  margin-top: 0;
+}
+
+.displayPortVisitsAsOneEvent.port_visit_entered .divider {
+  margin: 0;
 }
 
 .divider::before {
@@ -76,6 +100,11 @@
   white-space: nowrap;
   overflow: hidden;
   flex: 1;
+}
+
+.displayPortVisitsAsOneEvent.port_visit_entered .description,
+.displayPortVisitsAsOneEvent.port_visit_exited .description {
+  color: var(--color-secondary-blue);
 }
 
 .voyage,
@@ -213,11 +242,6 @@
 
 .highlightsListContainer .event .eventData .description {
   width: calc(100vw - var(--size-S) * 5.7);
-}
-
-.highlightsListContainer .event {
-  margin: 0;
-  padding: 0;
 }
 
 .highlights {

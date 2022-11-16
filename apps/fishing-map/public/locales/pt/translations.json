@@ -1,6 +1,7 @@
 {
   "analysis": {
     "activityChange": "Mudança de atividade",
+    "apiDisclaimer": "Are you looking to use GFW data in your application, find our API documentation <1>here.</1>",
     "beforeAfter": "antes/depois",
     "beforeAfterDate": "data",
     "beforeAfterDuration": "duração",
@@ -53,7 +54,6 @@
     "visualisationEventsHint": "(Ensure event_id, event_start, event_end and geom are all present)"
   },
   "common": {
-    "back": "back",
     "active_after": "Ativo depois de",
     "active_before": "Ativo antes de",
     "activity": "Atividade",
@@ -62,15 +62,15 @@
     "apparentFishing": "Esforço de pesca aparente",
     "average": "average",
     "averageAbbreviated": "avg.",
+    "back": "back",
     "cancel": "Cancelar",
     "category": "Categoria",
     "comingSoon": "Em breve!",
     "confirm": "Confirmar",
-    "continue": "Continue",
     "context_area_other": "Áreas de contexto",
+    "continue": "Continue",
     "copiedToClipboard": "O link para compartilhar este modo de exibição foi copiado para a área de transferência.",
     "country_other": "países",
-    "detections": "Detections",
     "date": "Date",
     "date_one": "Date",
     "date_other": "Dates",
@@ -82,11 +82,13 @@
     "detection": "Detecção",
     "detection_one": "Detecção",
     "detection_other": "Detecções",
+    "detections": "Detections",
     "dismiss": "Ignorar",
     "environment": "Ambiente",
+    "events": "Eventos",
     "exclude": "Exclude",
     "excluded": "Excluded",
-    "events": "Eventos",
+    "faq": "FAQs",
     "feedback": "Retorno",
     "fishing": "Pesca",
     "from": "from",
@@ -126,20 +128,24 @@
     "presence": "Presença",
     "report": "Relatório",
     "resetHelpHints": "Mostrar novamente todas as dicas de ajuda",
+    "sar": "Radar detections (SAR)",
     "save": "Salvar",
     "seeDefault": "Ver visualização padrão",
     "share": "Compartilhar a visão atual",
+    "sources": "Sources",
     "unknown": "Desconhecido",
     "unknownVessel": "Embarcação desconhecida",
     "update": "Atualizar",
+    "userGuide": "User guide",
     "vessel": "Embarcação",
     "vessel_one": "Embarcação",
     "vessel_other": "Embarcações",
+    "vesselId": "Vessel id",
     "view_layer": "View the layer",
     "viirs": "Detecção de luz noturna (VIIRS)",
-    "sar": "Radar detections (SAR)",
     "welcomePopupDisable": "Não mostrar novamente",
-    "whatsNew": "O que há de novo?"
+    "whatsNew": "O que há de novo?",
+    "whatsNewWithNewVersion": "We've made some changes since you last visited the map. Click to learn more"
   },
   "dataset": {
     "addContext": "Adicionar conjunto de dados de contexto",
@@ -182,13 +188,18 @@
     "typePolygonsDescription": "Exiba uma ou várias áreas com cores representadas por qualquer valor quantitativo no seu conjunto de dados.",
     "typeTracks": " Rotas",
     "typeTracksDescription": "Exibir o movimento de um ou vários animais ou embarcações.",
-    "uploadLogin": "Você precisa <1>login</1> para enviar conjuntos de dados",
+    "uploadLogin": "<0>Registre-se</0> ou <2>faça login</2> para enviar conjuntos de dados (gratuito, 2 minutos)",
     "uploadNewContext": "Carregar nova camada de referência",
     "uploadNewEnviroment": "Carregar novo conjunto de dados no ambiente",
     "uploadPublic": "Permitir que outros usuários vejam este conjunto de dados quando você compartilha uma área de trabalho",
     "uploadYourOwn": "Upload your own"
   },
   "dataview": {
+    "basemap-labels": {
+      "dataWarning": "This platform uses location labels from Google Maps.",
+      "dataWarningDetail": "This platform uses location labels from Google Maps. <a target='_blank' href='https://developers.google.com/maps/documentation/tile/overview'> Learn more.</a>",
+      "title": "Locations"
+    },
     "context-layer-eez": {
       "dataWarning": "This platform uses EEZ reference layers from Marine Regions",
       "dataWarningDetail": "This platform uses reference layers (shapefiles) from Marine Regions for exclusive economic zones and boundaries. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. To see the original reference layers, please visit <a href='http://www.marineregions.org'>www.marineregions.org</a>. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw or upload your own reference layer using the '+' icon in the left sidebar. Learn more on our <a href='https://globalfishingwatch.org/tutorials/'>tutorials</a> and <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
@@ -196,11 +207,6 @@
     "context-layer-mpa": {
       "dataWarning": "This platform uses MPA reference layers from World Database on Protected Areas.",
       "dataWarningDetail": "This platform uses reference layers (shapefiles) from the World Database on Protected Areas for marine protected areas. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. To see the original reference layers, please visit <a href='http://www.protectedplanet.net'>www.protectedplanet.net</a>. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw oro upload your own reference layer using the '+' icon in the left sidebar. Learn more on our <a href='https://globalfishingwatch.org/tutorials/'>tutorials</a> and <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
-    },
-    "basemap-labels": {
-      "title": "Locations",
-      "dataWarning": "This platform uses location labels from Google Maps.",
-      "dataWarningDetail": "This platform uses location labels from Google Maps. <a target='_blank' href='https://developers.google.com/maps/documentation/tile/overview'> Learn more.</a>"
     }
   },
   "download": {
@@ -208,25 +214,31 @@
     "activityAction": "Baixar camadas de atividade para esta área",
     "activityLogin": "Registre-se e faça login para baixar a atividade (anômino, 2 minutos)",
     "area": "Área",
-    "daily": "Diário",
+    "apiPortal": "See our APIs here",
+    "byVessel": "Active vessels",
+    "daily": "Day",
+    "dataPortal": "See data download portal",
     "datasetsNotAllowed": "Você não tem permissão para baixar os seguintes conjuntos de dados:",
+    "doYouNeedAnAPI": "Does your application need continuous data?",
     "format": "Formato",
-    "groupActivityBy": "Agrupar atividade por",
+    "fullDataset": "Do you need the full dataset?",
+    "fullTimeRange": "Full time range",
+    "gridded": "Gridded activity",
+    "groupActivityBy": "Group activity by vessel property",
     "highResNotAvailable": "Sua área é muito grande",
-    "monthly": "Mensal",
+    "monthly": "Month",
     "monthlyNotAvailable": "Seu intervalo de tempo é menor que 1 mês",
+    "mmsiNotSupported": "The datasets selected don't support grouping by MMSI",
     "spatialResolution": "Resolução espacial",
-    "temporalResolution": "Resolução temporal",
+    "temporalResolution": "Group time by",
     "timeRange": "Intervalo de tempo",
-    "timerangeTooLong": "O intervalo de tempo máximo é de {{count}} anos",
-    "timerangeTooLong_one": "O intervalo de tempo máximo é de {{count}} anos",
-    "timerangeTooLong_other": "O intervalo de tempo máximo é de {{count}} anos",
+    "timerangeTooLong": "The maximum time range is 1 year",
     "title": "Baixar",
     "track": "Rota da embarcação",
     "trackAction": "Baixar rota da embarcação",
     "trackNotAllowed": "Você não tem permissão para baixar rotas desta fonte",
     "vesselTrackLogin": "Registre-se e faça login para baixar a atividade (anômino, 2 minutos)",
-    "yearly": "Anual",
+    "yearly": "Year",
     "yearlyNotAvailable": "Seu intervalo de tempo é menor que 1 ano"
   },
   "errors": {
@@ -248,17 +260,17 @@
     "showError": "Mostrar erros",
     "switchAccount": "Alterar conta",
     "trackLoading": "Ocorreu um erro ao carregar a rota da embarcação",
+    "uploadCsv": "Error reading CSV file: {{error}}",
     "uploadError": "Houve um erro ao carregar seus dados",
+    "uploadGeojson": "Error reading GeoJSON file: {{error}}",
+    "uploadShapefile": "Error reading shapefile: {{error}}",
+    "uploadShapefileComponents": "Error reading shapefile: must contain files with *.shp, *.shx, *.dbf and *.prj extensions.",
     "vesselLoading": "Ocorreu um erro ao carregar os detalhes da rota da embarcação",
     "workspaceCreate": "Ocorreu um erro ao criar o espaço de trabalho. Por favor, tente novamente mais tarde",
     "workspaceDuplicatedName": "Já existe um espaço de trabalho com esse nome",
     "workspaceLoad": "Ocorreu um erro ao carregar o espaço de trabalho. Por favor, tente novamente mais tarde",
     "workspaceMissingName": "É necessário incluir o nome do espaço de trabalho",
-    "workspaceNotFound": "A visualização solicitada não foi encontrada",
-    "uploadShapefile": "Error reading shapefile: {{error}}",
-    "uploadShapefileComponents": "Error reading shapefile: must contain files with *.shp, *.shx, *.dbf and *.prj extensions.",
-    "uploadGeojson": "Error reading GeoJSON file: {{error}}",
-    "uploadCsv": "Error reading CSV file: {{error}}"
+    "workspaceNotFound": "A visualização solicitada não foi encontrada"
   },
   "event": {
     "dayAbbreviated": "{{count}}d",
@@ -332,6 +344,7 @@
     "supportBy": "Apoiado por"
   },
   "layer": {
+    "activity_fit_bounds": "Center view on activity",
     "add": "Adicionar camada",
     "color_change": "Alterar cor",
     "drawPolygon": "Desenhe uma camada",
@@ -366,14 +379,13 @@
     "source_other": "Fontes",
     "statsHelp": "The number of vessels and flag states is calculated for your current filters and time range globally. Some double counting may occur.",
     "statsHelpDetection": "The number of detections is calculated for your current filters and time range globally. Some double counting may occur.",
-    "type": "Type",
     "toggleCombinationMode": {
       "combine": "Combinar camadas",
       "split": "Separar camadas"
     },
     "toggleVisibility": "Alterar visibilidade de camada",
+    "type": "Type",
     "vessel_fit_bounds": "Centralizar visualização na rota da embarcação",
-    "activity_fit_bounds": "Center view on activity",
     "vessel_fit_bounds_out_of_timerange": "A rota não tem nenhuma atividade no intervalo de tempo selecionado. Mude o intervalo de tempo para se adequar a esta rota?"
   },
   "map": {
@@ -444,9 +456,9 @@
   "user": {
     "groupMissing": "Você pertence a um grupo de usuários que não aparece aqui? <2>Solicitar acesso</2>",
     "groups": "Grupos de usuários",
+    "info": "User Info",
     "profile": "Perfil do usuário",
-    "title": "Usuário",
-    "info": "User Info"
+    "title": "Usuário"
   },
   "vessel": {
     "addToWorkspace": "Adicionar embarcação na visualização",
@@ -505,7 +517,6 @@
     "loading": "Carregando rota da embarcação",
     "loadingInfo": "Carregando informações da embarcação",
     "login": "Você precisa <1>login</1> para ver mais detalhes",
-    "trackLogin": "One of your selected sources requires you to <1>login</1> to see vessel tracks and events",
     "mainGear": "Petrecho pricipal",
     "matched": "Encontrado",
     "matricula": "Matrícula",
@@ -516,17 +527,18 @@
     "registeredGearType": "Tipo de petrecho registrado",
     "shiptype": "Tipos de embarcação",
     "source": "Fonte",
-    "ssvid": "Ssvid",
     "source_short": "Fonte",
+    "ssvid": "Ssvid",
     "target_species": "Espécie alvo",
     "targetSpecies": "Espécie alvo",
+    "trackLogin": "One of your selected sources requires you to <1>login</1> to see vessel tracks and events",
     "transmission_other": "Transmissões",
+    "transmissionDates": "Transmission dates",
     "unkwownVesselByGeartype": "{{gearType}} desconhecido",
     "unmatched": "não encontrado",
     "vessel_type": "Vessel type",
     "vesselType_other": "Tipos de embarcação",
-    "widthRange": "Intervalo de largura",
-    "transmissionDates": "Transmission dates"
+    "widthRange": "Intervalo de largura"
   },
   "vesselGroup": {
     "add": "Add to vessel group",
@@ -543,11 +555,11 @@
     "label": "{{name}} ({{count}} IDs)",
     "missingName": "Vessel group name is mandatory",
     "new": "New vessel group",
-    "uploadPublic": "Allow other users to see this vessel group when you share a workspace",
     "remove": "Remove vessel group",
     "removeVessel": "Remove vessel from group",
-    "timeRangeLimit": "Supported only for time ranges shorter than 30 days",
+    "timeRangeLimit": "Supported only for time ranges shorter than 1 year",
     "tooManyVessels": "Maximum number of vessels is {{count}}",
+    "uploadPublic": "Allow other users to see this vessel group when you share a workspace",
     "vesselGroup": "Vessel group",
     "vesselGroups": "Vessel groups"
   },
@@ -555,14 +567,15 @@
     "confirmRemove": "Tem certeza de que deseja excluir permanentemente este espaço de trabalho?",
     "create": "Criar como novo",
     "createNeeded": "Alterar a visibilidade do espaço de trabalho requer a criação de um novo",
+    "edit": "Edit workspace",
     "editName": "Editar nome do espaço de trabalho",
     "emptyState": "Seus espaços de trabalho aparecerão aqui",
     "emptyStateEnvironment": "Carregue espaços de trabalho personalizados como telemetria animal clicando no ícone de 'mais'.",
     "emptyStateVessels": "As embarcações selecionadas na busca ou clicando nas células grid de atividade aparecerão aqui.",
     "nameInput": "Nome do espaço de trabalho",
     "new": "Novo espaço de trabalho",
-    "noVesselInFilters": "No vessels match your current filters",
     "noDetectionInFilters": "No detections match your current filters",
+    "noVesselInFilters": "No vessels match your current filters",
     "privateTitle_other": "Espaço de trabalho privado",
     "remove": "Remover espaço de trabalho",
     "save": "Salvar visualização atual",
@@ -575,9 +588,9 @@
       "marine-manager": "Marine Manager is a new technology portal to support the effective design, management and monitoring of protected areas."
     },
     "title_other": "Espaços de Trabalho",
-    "user": "User workspace",
     "update": "Atualizar",
     "uploadPublic": "Permitir que outros usuários vejam este espaço de trabalho",
-    "uploadPublicDisabled": "Este espaço de trabalho não pode ser compartilhado publicamente porque contém dados privados"
+    "uploadPublicDisabled": "Este espaço de trabalho não pode ser compartilhado publicamente porque contém dados privados",
+    "user": "User workspace"
   }
 }

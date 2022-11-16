@@ -4,15 +4,11 @@ import { GeoJSONFeature, MapDataEvent } from '@globalfishingwatch/maplibre-gl'
 import {
   ExtendedStyle,
   HeatmapLayerMeta,
-  DEFAULT_CONTEXT_SOURCE_LAYER,
   TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
 } from '@globalfishingwatch/layer-composer'
 import {
-  isDetectionsDataview,
   isHeatmapAnimatedDataview,
   isMergedAnimatedGenerator,
-  MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
-  MERGED_DETECTIONS_ANIMATED_HEATMAP_GENERATOR_ID,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import { TimeseriesFeatureProps } from '@globalfishingwatch/fourwings-aggregate'
@@ -21,7 +17,11 @@ import { ChunkFeature, LayerFeature } from '@globalfishingwatch/features-aggrega
 import useMapInstance from 'features/map/map-context.hooks'
 import { useMapStyle } from 'features/map/map-style.hooks'
 import { mapTilesAtom, TilesAtomSourceState } from 'features/map/map-sources.atom'
-import { getHeatmapSourceMetadata, isInteractionSource } from 'features/map/map-sources.utils'
+import {
+  getHeatmapSourceMetadata,
+  getSourceMetadata,
+  isInteractionSource,
+} from 'features/map/map-sources.utils'
 import {
   BIG_QUERY_EVENTS_PREFIX,
   ENCOUNTER_EVENTS_SOURCE_ID,
@@ -187,24 +187,16 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
     }
     const dataviewsMetadata: DataviewMetadata[] = dataviewsArray.reduce((acc, dataview) => {
       const activityDataview = isHeatmapAnimatedDataview(dataview)
-      const animatedMergedId = isDetectionsDataview(dataview)
-        ? MERGED_DETECTIONS_ANIMATED_HEATMAP_GENERATOR_ID
-        : MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID
+      const { metadata, generatorSourceId } = getSourceMetadata(style, dataview)
       if (activityDataview) {
         const existingMergedAnimatedDataviewIndex = acc.findIndex(
-          (d) => d.generatorSourceId === animatedMergedId
+          (d) => d.generatorSourceId === generatorSourceId
         )
         if (existingMergedAnimatedDataviewIndex >= 0) {
           acc[existingMergedAnimatedDataviewIndex].dataviewsId.push(dataview.id)
           return acc
         }
       }
-      const generatorSourceId = activityDataview ? animatedMergedId : dataview.id
-
-      const metadata =
-        getHeatmapSourceMetadata(style, generatorSourceId) ||
-        ({ sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER } as HeatmapLayerMeta)
-
       const sourcesId =
         metadata?.timeChunks?.chunks.flatMap(({ sourceId }) => sourceId) || dataview?.id
       return acc.concat({
@@ -272,9 +264,9 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
       return data
     })
     return dataviewsFeature
-    // Runs only when source tiles load change to avoid unu
+    // Runs only when source tiles load change or metadata changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, sourceTilesLoaded])
+  }, [map, sourceTilesLoaded, dataviewsMetadata])
 
   return dataviewFeatures
 }

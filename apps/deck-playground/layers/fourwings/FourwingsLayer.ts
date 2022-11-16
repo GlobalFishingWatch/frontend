@@ -178,7 +178,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
       },
       onVesselHighlight: this.props.onVesselHighlight,
       onVesselClick: this.props.onVesselClick,
-      highlightedVesselId: this.props.highlightedVesselId,
+      highlightedVesselId: this.props.highlightedVesselId || '',
       onTileLoad: this.props.onTileLoad,
       onViewportLoad: this.onViewportLoad,
       colorDomain: this.props.colorDomain,

@@ -1,6 +1,5 @@
 import type {
   SourceSpecification,
-  HeatmapLayerSpecification,
   LayerSpecification,
   StyleSpecification,
 } from '@globalfishingwatch/maplibre-gl'
@@ -122,6 +121,8 @@ export interface HeatmapLayerMeta {
   sublayers: HeatmapAnimatedGeneratorSublayer[]
   temporalgrid: true
   timeChunks: TimeChunks
+  minVisibleValue?: number
+  maxVisibleValue?: number
   visibleSublayers: boolean[]
   sourceLayer?: string
 }

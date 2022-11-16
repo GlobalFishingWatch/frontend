@@ -1,4 +1,10 @@
-import { ApiEvent, EventAuthorization, EventType, EventTypes, Regions } from '@globalfishingwatch/api-types'
+import {
+  ApiEvent,
+  EventAuthorization,
+  EventType,
+  EventTypes,
+  Regions,
+} from '@globalfishingwatch/api-types'
 import { GroupRegions } from 'features/regions/regions.slice'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 
@@ -64,4 +70,9 @@ export interface EventGroup {
   quantity?: number
   status: ExpandableStatus
   type: EventType
+}
+
+export enum PortVisitSubEvent {
+  Exit = 'exit',
+  Entry = 'entry',
 }

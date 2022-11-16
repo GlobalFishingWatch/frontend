@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { DateTime } from 'luxon'
 import { useSelector } from 'react-redux'
 import { SelectOption } from '@globalfishingwatch/ui-components'
 import { t } from 'features/i18n/i18n'
@@ -9,6 +8,7 @@ import { selectAnalysisQuery, selectAnalysisTimeComparison } from 'features/app/
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
+import { getUTCDateTime } from 'utils/dates'
 
 export const DURATION_TYPES_OPTIONS: SelectOption[] = [
   {
@@ -20,10 +20,6 @@ export const DURATION_TYPES_OPTIONS: SelectOption[] = [
     label: t('common.months_other'),
   },
 ]
-
-const parseFullISODate = (d: string) => DateTime.fromISO(d).toUTC()
-
-const parseYYYYMMDDDate = (d: string) => DateTime.fromISO(d).setZone('utc', { keepLocalTime: true })
 
 const MIN_DATE = DEFAULT_WORKSPACE.availableStart.slice(0, 10)
 const MAX_DATE = DEFAULT_WORKSPACE.availableEnd.slice(0, 10)
@@ -44,7 +40,7 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
     if (timeComparison) {
       if (analysisType === 'beforeAfter') {
         // make sure start is properly recalculated again in beforeAfter mode when coming from another mode
-        const newStart = parseFullISODate(timeComparison.compareStart)
+        const newStart = getUTCDateTime(timeComparison.compareStart)
           .minus({ [timeComparison.durationType]: timeComparison.duration })
           .toISO()
         dispatchQueryParams({
@@ -58,7 +54,7 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
     }
     const baseStart = timebarStart || DEFAULT_WORKSPACE.availableStart
     const baseEnd = timebarEnd || DEFAULT_WORKSPACE.availableEnd
-    const initialDuration = DateTime.fromISO(baseEnd).diff(DateTime.fromISO(baseStart), [
+    const initialDuration = getUTCDateTime(baseEnd).diff(getUTCDateTime(baseStart), [
       'days',
       'months',
     ])
@@ -72,7 +68,7 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
       analysisType === 'periodComparison'
         ? { years: 1 }
         : { [initialDurationType]: initialDurationValue }
-    const initialStart = parseFullISODate(baseStart).minus(baseStartMinusOffset).toISO()
+    const initialStart = getUTCDateTime(baseStart).minus(baseStartMinusOffset).toISO()
     const initialCompareStart = baseStart
 
     dispatchQueryParams({
@@ -88,14 +84,14 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
 
   const update = useCallback(
     ({ newStart, newCompareStart, newDuration, newDurationType, error }: any) => {
-      const compareStart = newCompareStart
-        ? parseYYYYMMDDDate(newCompareStart).toISO()
-        : parseFullISODate(timeComparison.compareStart as string).toISO()
+      const compareStart = getUTCDateTime(
+        newCompareStart ? newCompareStart : (timeComparison.compareStart as string)
+      ).toISO()
 
       const duration = newDuration || timeComparison.duration
       const durationType = newDurationType || timeComparison.durationType
 
-      const startFromCompareStart = parseFullISODate(compareStart).minus({
+      const startFromCompareStart = getUTCDateTime(compareStart).minus({
         [durationType]: duration,
       })
 
@@ -104,14 +100,12 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
         // In before/after mode, start of 1st period is calculated automatically depending on start of 2nd period (compareStart)
         start = startFromCompareStart.toISO()
       } else {
-        start = newStart
-          ? parseYYYYMMDDDate(newStart).toISO()
-          : parseFullISODate(timeComparison.start).toISO()
+        start = getUTCDateTime(newStart ? newStart : timeComparison.start).toISO()
 
         // If new duration is set, make sure there delta from start to compareStart is >= of new duration
         if (
           newDuration &&
-          startFromCompareStart.toMillis() - parseFullISODate(timeComparison.start).toMillis() <= 0
+          startFromCompareStart.toMillis() - getUTCDateTime(timeComparison.start).toMillis() <= 0
         ) {
           start = startFromCompareStart.toISO()
         }

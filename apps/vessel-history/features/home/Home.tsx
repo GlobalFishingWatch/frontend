@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useMemo } from 'react'
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
@@ -11,7 +11,7 @@ import { RESULTS_PER_PAGE, TMT_CONTACT_US_URL } from 'data/constants'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
 import { selectAllOfflineVessels } from 'features/vessels/offline-vessels.slice'
-import SearchPlaceholder, { SearchNoResultsState } from 'features/search/SearchPlaceholders'
+import SearchPlaceholder, { SearchErrorState, SearchNoResultsFromTmtState, SearchNoResultsState } from 'features/search/SearchPlaceholders'
 import {
   selectAdvancedSearchFields,
   selectHasSearch,
@@ -22,6 +22,8 @@ import {
   selectSearchResults,
   selectSearchTotalResults,
   selectSearching,
+  selectSearchError,
+  selectSearchSources,
 } from 'features/search/search.selectors'
 import AdvancedSearch from 'features/search/AdvancedSearch'
 import { useUser } from 'features/user/user.hooks'
@@ -34,6 +36,7 @@ import { useApp } from 'features/app/app.hooks'
 import Partners from 'features/partners/Partners'
 import ViewSelector from 'features/view-selector/view-selector'
 import { OfflineVessel } from 'types/vessel'
+import { getUTCDateTime } from 'utils/dates'
 import styles from './Home.module.css'
 import LanguageToggle from './LanguageToggle'
 
@@ -51,7 +54,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
 
   const dispatch = useDispatch()
   const { logout, logged, authorized } = useUser()
-
+  const [typing, setTyping] = useState(true)
   const { onVesselClick, selectedVessels, setSelectedVessels } = useSearchResultsConnect()
   const { fetchResults } = useSearchConnect({ onNewSearch: () => setSelectedVessels([]) })
   const { dispatchLocation } = useLocationConnect()
@@ -60,6 +63,8 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const vessels = useSelector(selectSearchResults)
   const offset = useSelector(selectSearchOffset)
   const totalResults = useSelector(selectSearchTotalResults)
+  const searchError = useSelector(selectSearchError)
+  const searchSources = useSelector(selectSearchSources)
   const offlineVessels = useSelector(selectAllOfflineVessels)
   const { dispatchFetchOfflineVessels, dispatchDeleteOfflineVessel } = useOfflineVesselsAPI()
   const { online } = useNavigatorOnline()
@@ -150,8 +155,8 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
 
   const trackRemoveOffline = useCallback(
     (offlineVessel) => {
-      const now = DateTime.now()
-      const savedOn = DateTime.fromISO(offlineVessel.savedOn)
+      const now = DateTime.utc()
+      const savedOn = getUTCDateTime(offlineVessel.savedOn)
       const i = Interval.fromDateTimes(savedOn, now)
       uaEvent({
         category: 'Offline Access',
@@ -163,7 +168,6 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
     },
     [dispatchDeleteOfflineVessel]
   )
-
   useEffect(() => {
     setSelectedVessels([])
   }, [setSelectedVessels, vessels])
@@ -268,7 +272,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         </div>
       </header>
       <div className={styles.search}>
-        {hasAccess && <AdvancedSearch />}
+        {hasAccess && <AdvancedSearch onTyping={(isTyping) => setTyping(isTyping)} />}
         {!hasSearch && (
           <div className={styles.content}>
             <h2 className={styles.offlineTitle}>{t('common.offlineAccess', 'OFFLINE ACCESS')}</h2>
@@ -349,12 +353,18 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                   <Spinner className={styles.loader}></Spinner>
                 </div>
               )}
-              {!searching && vesselsLength >= 0 && (
+              {!searchError && !typing && !searching && vesselsLength >= 0 && searchSources.length === 2 && (
                 <SearchNoResultsState
                   contactUsLink={contactUsLink}
                   onContactUsClick={onContactUsClick}
                 />
               )}
+              {!searchError && !typing && !searching && vesselsLength >= 0 && searchSources.length < 2 && (
+                <SearchNoResultsFromTmtState />
+              )}
+              {searchError && !typing &&
+                <SearchErrorState error={searchError}></SearchErrorState>
+              }
               <Partners />
             </div>
           </Fragment>

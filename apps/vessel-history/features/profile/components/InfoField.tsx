@@ -1,10 +1,10 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { ReactNode, useCallback, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import I18nDate from 'features/i18n/i18nDate'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
-import { ValueItem } from 'types'
+import { Iuu, ValueItem } from 'types'
 import { VesselFieldLabel } from 'types/vessel'
 import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
 import InfoFieldHistory from './InfoFieldHistory'
@@ -13,13 +13,20 @@ import Faq from './Faq'
 
 interface ListItemProps {
   label: VesselFieldLabel
+  modalTitle?: string
   value?: string
   className?: string
   valuesHistory?: ValueItem[]
   vesselName: string
+  columnHeaders?: {
+    field?: ReactNode
+    dates?: ReactNode
+    source?: ReactNode
+  }
   hideTMTDate?: boolean
   includeFaq?: boolean
   helpText?: React.ReactNode
+  datesTemplate?: (firstSeen, originalFirstSeen) => JSX.Element
 }
 
 const InfoField: React.FC<ListItemProps> = ({
@@ -28,6 +35,9 @@ const InfoField: React.FC<ListItemProps> = ({
   className = '',
   valuesHistory = [],
   vesselName,
+  columnHeaders,
+  modalTitle = null,
+  datesTemplate,
   hideTMTDate = false,
   includeFaq = false,
   helpText,
@@ -50,7 +60,7 @@ const InfoField: React.FC<ListItemProps> = ({
   const since = useMemo(() => valuesHistory.slice(0, 1)?.shift()?.firstSeen, [valuesHistory])
   return (
     <div className={cx(styles.identifierField, styles[className])}>
-      <label className={styles.infoLabel} >
+      <label className={styles.infoLabel}>
         {t(`vessel.${label}` as any, label)}
         {helpText && (
           <DataAndTerminology size="tiny" type="default" title={t(`vessel.${label}` as any, label)}>
@@ -75,11 +85,14 @@ const InfoField: React.FC<ListItemProps> = ({
         )}
         <InfoFieldHistory
           label={label}
+          modalTitle={modalTitle}
           history={valuesHistory}
           isOpen={modalOpen}
           hideTMTDate={hideTMTDate}
           onClose={closeModal}
+          datesTemplate={datesTemplate}
           vesselName={vesselName}
+          columnHeaders={columnHeaders}
         ></InfoFieldHistory>
       </div>
     </div>

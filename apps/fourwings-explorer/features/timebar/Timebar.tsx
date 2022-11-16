@@ -10,7 +10,9 @@ import {
 } from 'features/timebar/timebar.hooks'
 // import { useMapInstanceStyle } from 'features/map/map-context.hooks'
 import { formatI18nDate } from 'utils/i18n'
+import { useAllMapSourceTilesLoaded } from 'features/map/map-sources.hooks'
 import TimebarActivityGraph from './TimebarActivityGraph'
+import TimebarSettings from './TimebarSettings'
 import styles from './Timebar.module.css'
 
 const TimebarHighlighterWrapper = () => {
@@ -28,11 +30,6 @@ const TimebarHighlighterWrapper = () => {
     //     return dateLabel
     //   } else if (interval === 'day') {
     //     return formatI18nDate(timestamp, { showUTCLabel: true })
-    //   } else if (interval === '10days') {
-    //     const frame = CONFIG_BY_INTERVAL['10days'].getRawFrame(timestamp)
-    //     const start = CONFIG_BY_INTERVAL['10days'].getDate(Math.floor(frame)).getTime()
-    //     const end = CONFIG_BY_INTERVAL['10days'].getDate(Math.ceil(frame)).getTime()
-    //     return [formatI18nDate(start), formatI18nDate(end)].join(' - ') + ` ${UTC_SUFFIX}`
     //   } else if (interval === 'month') {
     //     // TODO
     //   }
@@ -53,6 +50,7 @@ const TimebarWrapper = () => {
   useURLTimerange()
   const [timerange, setTimerange] = useTimerange()
   const setHighlightTimerange = useHighlightTimerange()[1]
+  const allSourcesLoaded = useAllMapSourceTilesLoaded()
 
   const onTimebarChange = useCallback(
     ({ start, end }: TimebarRange) => {
@@ -105,6 +103,7 @@ const TimebarWrapper = () => {
         <TimebarActivityGraph />
         <TimebarHighlighterWrapper />
       </Timebar>
+      <TimebarSettings />
     </div>
   )
 }

@@ -41,7 +41,8 @@ function HistogramRangeFilter({ dataview }: HistogramRangeFilterProps) {
     (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.Context
   )
   const { max, min } = dataset?.configuration
-  const showRange = max !== undefined && min !== undefined
+  const showRange =
+    max !== undefined && min !== undefined && max !== null && min !== null && max !== 0 && min !== 0
   const layerRange = getLayerDatasetRange(dataset)
   const minSliderValue = dataview.config?.minVisibleValue ?? layerRange.min
   const maxSliderValue = dataview.config?.maxVisibleValue ?? layerRange.max
@@ -50,7 +51,6 @@ function HistogramRangeFilter({ dataview }: HistogramRangeFilterProps) {
     min: minSliderValue,
     max: maxSliderValue,
   }
-  // console.log(sliderConfig)
 
   const onSliderChange = useCallback(
     (rangeSelected) => {

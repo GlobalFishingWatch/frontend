@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { uniq } from 'lodash'
-import { DateTime } from 'luxon'
 import {
   Workspace,
   Dataview,
@@ -42,6 +41,7 @@ import { isGFWUser, isGuestUser } from 'features/user/user.slice'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { getVesselDataviewInstanceDatasetConfig } from 'features/dataviews/dataviews.utils'
 import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
+import { getUTCDateTime } from 'utils/dates'
 import { selectWorkspaceStatus } from './workspace.selectors'
 
 type LastWorkspaceVisited = { type: string; payload: any; query: any }
@@ -120,12 +120,12 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         selectDaysFromLatest(state) || workspace.state?.daysFromLatest || undefined
       const endAt =
         daysFromLatest !== undefined
-          ? DateTime.fromISO(DEFAULT_TIME_RANGE.end).toUTC()
-          : DateTime.fromISO(workspace.endAt).toUTC()
+          ? getUTCDateTime(DEFAULT_TIME_RANGE.end)
+          : getUTCDateTime(workspace.endAt)
       const startAt =
         daysFromLatest !== undefined
           ? endAt.minus({ days: daysFromLatest })
-          : DateTime.fromISO(workspace.startAt).toUTC()
+          : getUTCDateTime(workspace.startAt)
 
       const defaultWorkspaceDataviews = gfwUser
         ? [...DEFAULT_DATAVIEW_SLUGS, VESSEL_PRESENCE_DATAVIEW_SLUG] // Only for gfw users as includes the private-global-presence-tracks dataset

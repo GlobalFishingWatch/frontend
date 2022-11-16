@@ -98,6 +98,7 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
@@ -168,6 +169,7 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
@@ -400,7 +402,8 @@
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "private-costa-rica-fishing-effort": {
@@ -442,6 +445,7 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
@@ -486,6 +490,7 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
@@ -513,8 +518,29 @@
       "firstTransmissionDate": "firstTransmissionDate"
     }
   },
+  "private-indonesia-aruna-fishing-effort": {
+    "name": "Aruna: Indonesia Pelagic",
+    "description": "Indonesia Aruna Fishing Effort",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
+    }
+  },
   "private-indonesia-aruna-presence": {
-    "name": "Aruna",
+    "name": "Aruna: Indonesia Pelagic",
     "description": "Aruna Presence",
     "schema": {
       "lat": "lat",
@@ -530,7 +556,8 @@
           "Handline": "Handline"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "private-indonesia-aruna-vessels": {
@@ -580,12 +607,34 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "private-indonesia-ipnlf-fishing-effort": {
+    "name": "AP2HI-IPNLF: Indonesia Pelagic",
+    "description": "Indonesia AP2HI-IPNLF Fishing Effort",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
+    }
+  },
   "private-indonesia-ipnlf-presence": {
-    "name": "IPNLF",
+    "name": "AP2HI-IPNLF: Indonesia Pelagic",
     "description": "AP2HI-IPNLF Presence",
     "schema": {
       "lat": "lat",
@@ -601,7 +650,8 @@
           "Handline": "Handline"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "private-indonesia-ipnlf-vessels": {
@@ -619,7 +669,7 @@
     }
   },
   "private-indonesia-pelagic-presence": {
-    "name": "Pelagic",
+    "name": "Indonesia Pelagic",
     "description": "Pelagic Presence",
     "schema": {
       "lat": "lat",
@@ -635,7 +685,8 @@
           "Handline": "Handline"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "private-indonesia-pelagic-vessels": {
@@ -679,11 +730,33 @@
           "Squid hooking": "Squid hooking"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
+    }
+  },
+  "private-indonesia-rare-fishing-effort": {
+    "name": "Rare: Indonesia Pelagic",
+    "description": "Indonesia Rare Fishing Effort",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "private-indonesia-rare-presence": {
-    "name": "Rare",
+    "name": "Rare: Indonesia Pelagic",
     "description": "Rare Presence",
     "schema": {
       "lat": "lat",
@@ -699,7 +772,8 @@
           "Handline": "Handline"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "private-indonesia-rare-vessels": {
@@ -717,7 +791,7 @@
     }
   },
   "private-indonesia-zebrax-presence": {
-    "name": "Perikanan Pesisir Indonesia",
+    "name": "Indonesia Zebrax (Private)",
     "description": "Lapisan Global Fishing Watch ini menggunakan data yang disediakan oleh Rare, Aruna dan AP2HI. Data dikumpulkan menggunakan perangkat ZebraX yang melacak lokasi dan kecepatan. Informasi yang ditampilkan mewakili keberadaan kapal.",
     "schema": {
       "lat": "lat",
@@ -732,7 +806,8 @@
           "purse seine": "purse seine"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "private-indonesia-zebrax-vessels": {
@@ -764,6 +839,7 @@
       "hours": "hours",
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
@@ -827,7 +903,8 @@
           "oil_tanker": "oil_tanker"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "private-peru-fishing-effort": {
@@ -1065,6 +1142,7 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
@@ -1233,7 +1311,8 @@
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "public-chile-all-vessels": {
@@ -1426,6 +1505,7 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
@@ -1990,12 +2070,33 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "public-indonesia-pelagic-fishing-effort": {
+    "name": "Indonesia Pelagic",
+    "description": "Indonesia Pelagic Fishing Effort Public Data",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      },
+      "vessel-groups": "vessel-groups"
+    }
+  },
   "public-indonesia-pelagic-presence": {
-    "name": "Pelagic",
+    "name": "Indonesia Pelagic",
     "description": "Pelagic Presence",
     "schema": {
       "lat": "lat",
@@ -2011,11 +2112,12 @@
           "Handline": "Handline"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "public-indonesia-zebrax-presence": {
-    "name": "Perikanan Pesisir Indonesia",
+    "name": "Indonesia Zebrax",
     "description": "Lapisan Global Fishing Watch ini menggunakan data yang disediakan oleh Rare, Aruna dan AP2HI. Data dikumpulkan menggunakan perangkat ZebraX yang melacak lokasi dan kecepatan. Informasi yang ditampilkan mewakili keberadaan kapal.",
     "schema": {
       "lat": "lat",
@@ -2030,7 +2132,8 @@
           "purse seine": "purse seine"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "public-inshore-fishing-zone-1618837176535": {
@@ -2059,6 +2162,7 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
@@ -2097,6 +2201,7 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }

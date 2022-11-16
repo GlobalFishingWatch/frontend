@@ -16,8 +16,9 @@ import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/wo
 import useViewport from 'features/map/map-viewport.hooks'
 // import HelpModal from 'features/help/HelpModal'
 import LanguageToggle from 'features/i18n/LanguageToggle'
+import WhatsNew from 'features/sidebar/WhatsNew'
 import LocalStorageLoginLink from 'routes/LoginLink'
-import HintsHub from 'features/hints/HintsHub'
+import HelpHub from 'features/hints/HelpHub'
 import { selectFeedbackModalOpen, setModalOpen } from 'features/modals/modals.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import styles from './CategoryTabs.module.css'
@@ -102,20 +103,10 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
         ))}
         <li className={styles.separator} aria-hidden></li>
         <li className={cx(styles.tab, styles.secondary)}>
-          <a
-            href="https://globalfishingwatch.org/platform-updates"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <IconButton
-              icon="sparks"
-              tooltip={t('common.whatsNew', "What's new?")}
-              tooltipPlacement="right"
-            />
-          </a>
+          <WhatsNew />
         </li>
         <li className={cx(styles.tab, styles.secondary)}>
-          <HintsHub />
+          <HelpHub />
         </li>
         <li className={cx(styles.tab, styles.secondary)}>
           <IconButton
