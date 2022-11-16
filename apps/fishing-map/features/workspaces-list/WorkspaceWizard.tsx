@@ -65,6 +65,15 @@ function WorkspaceWizard() {
     }
   }
 
+  const updateMatchingAreas = (areas: DatasetArea[], inputValue: string) => {
+    const matchingAreas = inputValue
+      ? matchSorter(areas, inputValue, {
+          keys: ['label'],
+        }).slice(0, MAX_RESULTS_NUMBER)
+      : []
+    setAreasMatching(matchingAreas)
+  }
+
   const onSearchInputChange = ({
     type,
     inputValue,
@@ -75,12 +84,7 @@ function WorkspaceWizard() {
       setAreasMatching([])
     } else {
       setQuery(inputValue)
-      const matchingAreas = inputValue
-        ? matchSorter(datasetAreas?.data, inputValue, {
-            keys: ['label'],
-          }).slice(0, MAX_RESULTS_NUMBER)
-        : []
-      setAreasMatching(matchingAreas)
+      updateMatchingAreas(datasetAreas?.data, inputValue)
       cleanFeatureState('highlight')
     }
     if (inputValue === '') {
@@ -118,6 +122,15 @@ function WorkspaceWizard() {
       fitBounds(wrappedBounds)
     }
   }
+
+  useEffect(() => {
+    if (query) {
+      updateMatchingAreas(datasetAreas?.data, inputValue)
+    }
+    // Only needed to ensure the areas are updated when the request resolves
+    // and already has an input text to filter by
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [datasetAreas?.data])
 
   useEffect(() => {
     const fetchMarineManagerData = async () => {
