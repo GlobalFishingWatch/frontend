@@ -594,9 +594,10 @@
     "uploadPublicDisabled": "This workspace can't be shared publicly because it contains private datasets",
     "user": "User workspace",
     "wizard": {
-      "title": "Setup a marine manager workspace for any area globally",
+      "error": "There was an error creating the workspace",
       "name": "Give a name to your workspace",
-      "help": "You can move the map and update your workspace later"
+      "help": "You can move the map and update your workspace later",
+      "title": "Setup a marine manager workspace for any area globally"
     }
   }
 }

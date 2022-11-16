@@ -20,7 +20,7 @@ export interface Workspace<State = unknown, Category = string> {
   endAt: string
   state?: State
   dataviewInstances: DataviewInstance[]
-  ownerId: number
+  ownerId?: number
   ownerType?: string
   createdAt?: string
 }

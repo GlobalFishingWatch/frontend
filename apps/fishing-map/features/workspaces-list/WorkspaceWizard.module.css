@@ -54,6 +54,11 @@
   align-items: center;
 }
 
+.error {
+  font: var(--font-S);
+  color: var(--color-danger-red);
+}
+
 .highlighted {
   background-color: var(--color-terthiary-blue);
 }
