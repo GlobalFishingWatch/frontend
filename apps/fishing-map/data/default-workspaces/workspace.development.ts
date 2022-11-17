@@ -8,12 +8,14 @@ import {
   RFMO_DATAVIEW_SLUG,
   HIGH_SEAS_DATAVIEW_SLUG,
   BASEMAP_DATAVIEW_SLUG,
-  BASEMAP_LABELS_DATAVIEW_SLUG,
   FISHING_DATAVIEW_SLUG,
   PRESENCE_DATAVIEW_SLUG,
   VIIRS_MATCH_DATAVIEW_SLUG,
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
+  GRATICULES_DATAVIEW_SLUG,
+  FAO_AREAS_DATAVIEW_SLUG,
+  SAR_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
@@ -145,13 +147,6 @@ const workspace: Workspace<WorkspaceState> = {
         visible: false,
       },
       dataviewId: HIGH_SEAS_DATAVIEW_SLUG,
-    },
-    {
-      id: 'context-layer-protected-seas',
-      config: {
-        visible: false,
-      },
-      dataviewId: PROTECTED_SEAS_DATAVIEW_SLUG,
     },
     // {
     //   id: 'context-layer-protected-seas',
