@@ -235,6 +235,7 @@
     "MMSI": "crwdns8543:0crwdne8543:0",
     "noMore": "crwdns5342:0crwdne5342:0",
     "noResults": "crwdns11211:0crwdne11211:0",
+    "noTmtResults": "crwdns27353:0crwdne27353:0",
     "notAllowed": "crwdns4244:0crwdne4244:0",
     "placeholder": "crwdns8539:0crwdne8539:0",
     "seeVessel": "crwdns8755:0crwdne8755:0",

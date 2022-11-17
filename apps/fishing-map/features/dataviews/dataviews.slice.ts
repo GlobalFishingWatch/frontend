@@ -63,6 +63,7 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
   async (ids: (Dataview['id'] | Dataview['slug'])[], { signal, rejectWithValue, getState }) => {
     const state = getState() as RootState
     const existingIds = selectIds(state) as ((number | string) | string)[]
+    const existingIds = selectIds(state) as (number | string)[]
     const uniqIds = ids.filter((id) => !existingIds.includes(id))
 
     if (!uniqIds?.length) {

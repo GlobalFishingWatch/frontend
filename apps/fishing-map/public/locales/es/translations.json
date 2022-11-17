@@ -145,7 +145,7 @@
     "viirs": "Detección de luz nocturna",
     "welcomePopupDisable": "No volver a mostrar",
     "whatsNew": "Novedades",
-    "whatsNewWithNewVersion": "We've made some changes since you last visited the map. Click to learn more"
+    "whatsNewWithNewVersion": "Hemos realizado algunos cambios desde la última vez que visitaste el mapa. Haz clic para saber más"
   },
   "dataset": {
     "addContext": "Añadir una capa de referencia",
@@ -225,10 +225,11 @@
     "fullTimeRange": "Rango de tiempo completo",
     "gridded": "Actividad por cuadrículas",
     "groupActivityBy": "Agrupar actividad por propiedad de embarcación",
+    "groupVesselsBy": "Group vessels by",
     "highResNotAvailable": "Tu área es demasiado grande",
     "monthly": "Mes",
     "monthlyNotAvailable": "Su intervalo de tiempo es menor de 1 mes",
-    "mmsiNotSupported": "The datasets selected don't support grouping by MMSI",
+    "mmsiNotSupported": "Los datos seleccionados no soportan agrupación por MMSI",
     "spatialResolution": "Resolución espacial",
     "temporalResolution": "Agrupar tiempo por",
     "timeRange": "Rango de tiempo",

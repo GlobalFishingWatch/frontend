@@ -68,11 +68,7 @@ export const VESSEL_FORMAT_OPTIONS: ChoiceOption[] = [
   },
 ]
 
-export const VESSEL_GROUP_BY_OPTIONS: ChoiceOption[] = [
-  {
-    id: GroupBy.Vessel,
-    title: t('common.vesselId', 'Vessel id'),
-  },
+const BASE_GROUP_BY_OPTIONS: ChoiceOption[] = [
   {
     id: GroupBy.MMSI,
     title: t('vessel.mmsi', 'MMSI'),
@@ -90,13 +86,20 @@ export const VESSEL_GROUP_BY_OPTIONS: ChoiceOption[] = [
     title: `${t('vessel.flag', 'Flag')} + ${t('vessel.geartype', 'Gear Type')}`,
   },
 ]
+export const VESSEL_GROUP_BY_OPTIONS: ChoiceOption[] = [
+  {
+    id: GroupBy.Vessel,
+    title: t('common.none', 'None'),
+  },
+  ...BASE_GROUP_BY_OPTIONS,
+]
 
 export const GRIDDED_GROUP_BY_OPTIONS: ChoiceOption[] = [
   {
     id: GroupBy.None,
     title: t('common.none', 'None'),
   },
-  ...VESSEL_GROUP_BY_OPTIONS,
+  ...BASE_GROUP_BY_OPTIONS,
 ]
 
 export const SPATIAL_RESOLUTION_OPTIONS: ChoiceOption[] = [

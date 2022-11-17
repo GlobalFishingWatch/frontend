@@ -235,6 +235,7 @@
     "MMSI": "MMSI",
     "noMore": "Não há mais resultados",
     "noResults": "Não encontrou o navio que você está procurando? Tente usar MMSI, IMO ou Call Sign, ou <2>entre em contato</2> se ainda não conseguir encontrá-lo.",
+    "noTmtResults": "A vessel with these criteria could not be found, due to a timeout in the search function. Please try again.",
     "notAllowed": "Pesquisa não permitida",
     "placeholder": "Procurar embarcações por nome, MMSI, IMO",
     "seeVessel": "Ver embarcação",

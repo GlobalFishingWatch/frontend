@@ -182,7 +182,7 @@ function DownloadActivityByVessel() {
           />
         </div>
         <div>
-          <label>{t('download.groupActivityBy', 'Group activity by vessel property')}</label>
+          <label>{t('download.groupVesselsBy', 'Group vessels by')}</label>
           <Choice
             options={filteredGroupByOptions}
             size="small"
