@@ -6,6 +6,8 @@ import {
   GLOBAL_WATER_TEMPERATURE_DATAVIEW_ID,
 } from 'data/workspaces'
 
+export const WIZARD_TEMPLATE_ID = 'wizard_template-public'
+
 export const MARINE_MANAGER_DATAVIEWS = [
   {
     id: MPA_DATAVIEW_INSTANCE_ID,

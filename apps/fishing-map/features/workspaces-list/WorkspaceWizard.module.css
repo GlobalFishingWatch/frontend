@@ -81,9 +81,8 @@
 }
 
 .result {
-  line-height: var(--size-M);
-  padding-inline: 1rem;
   cursor: pointer;
+  padding: 0.8rem;
 }
 
 .result:not(:last-child) {
