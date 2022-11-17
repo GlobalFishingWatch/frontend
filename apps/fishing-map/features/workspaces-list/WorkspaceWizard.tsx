@@ -44,7 +44,6 @@ function WorkspaceWizard() {
   const map = useMapInstance()
   const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
   const inputRef = useRef<HTMLInputElement | null>(null)
-  const [query, setQuery] = useState<string>('')
   const [areasMatching, setAreasMatching] = useState<DatasetArea[]>([])
   const [selectedItem, setSelectedItem] = useState<DatasetArea>(null)
   const datasetAreas = useSelector(selectDatasetAreasById(WIZARD_AREAS_DATASET))
@@ -68,28 +67,20 @@ function WorkspaceWizard() {
       : []
     setAreasMatching(matchingAreas)
   }
-
-  const onSearchInputChange = ({
-    type,
-    inputValue,
-    selectedItem,
-  }: UseComboboxStateChange<DatasetArea>) => {
-    if (type === '__item_click__' || type === '__input_keydown_enter__') {
-      setQuery(selectedItem.label)
-      setAreasMatching([])
-    } else {
-      setQuery(inputValue)
-      updateMatchingAreas(datasetAreas?.data, inputValue)
-      cleanFeatureState('highlight')
-    }
+  const onInputChange = ({ inputValue }: UseComboboxStateChange<DatasetArea>) => {
     if (inputValue === '') {
       setSelectedItem(null)
+      setAreasMatching([])
       fitBounds([-90, -180, 90, 180])
+    } else {
+      updateMatchingAreas(datasetAreas?.data, inputValue)
+      cleanFeatureState('highlight')
     }
   }
 
   const onSelectResult = ({ selectedItem }: UseComboboxStateChange<DatasetArea>) => {
     setSelectedItem(selectedItem)
+    setAreasMatching([])
     const id = selectedItem?.id
     const mpaSourceId = getContextSourceId(
       marineManagerGenerators?.find((g) => g.datasetId === WIZARD_AREAS_DATASET)
@@ -114,15 +105,6 @@ function WorkspaceWizard() {
   }
 
   useEffect(() => {
-    if (query) {
-      updateMatchingAreas(datasetAreas?.data, inputValue)
-    }
-    // Only needed to ensure the areas are updated when the request resolves
-    // and already has an input text to filter by
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [datasetAreas?.data])
-
-  useEffect(() => {
     const fetchMarineManagerData = async () => {
       const marineManagerDataviews = MARINE_MANAGER_DATAVIEWS.map((d) => d.dataviewId)
       const { payload } = await dispatch(fetchDataviewsByIdsThunk(marineManagerDataviews))
@@ -145,14 +127,29 @@ function WorkspaceWizard() {
     inputValue,
     isOpen,
   } = useCombobox({
-    inputValue: query,
+    selectedItem,
     items: areasMatching,
-    selectedItem: selectedItem,
     itemToString: (item: DatasetArea | null): string => (item ? item.label : ''),
-    onInputValueChange: onSearchInputChange,
+    onInputValueChange: onInputChange,
     onSelectedItemChange: onSelectResult,
     onHighlightedIndexChange: onHighlightedIndexChange,
   })
+
+  useEffect(() => {
+    if (inputValue) {
+      updateMatchingAreas(datasetAreas?.data, inputValue)
+    }
+    // Only needed to ensure the areas are updated when the request resolves
+    // and already has an input text to filter by
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [datasetAreas?.data])
+
+  const onInputBlur = () => {
+    if (inputValue !== selectedItem?.label) {
+      setSelectedItem(null)
+      setAreasMatching([])
+    }
+  }
 
   const linkTo = useMemo(() => {
     if (!selectedItem) {
@@ -181,11 +178,12 @@ function WorkspaceWizard() {
   }, [map, selectedItem])
 
   const linkDisabled = !selectedItem
-  const showAreasMatching = linkDisabled && areasMatching.length > 0
 
   return (
     <div className={styles.wizardContainer} {...getComboboxProps()}>
-      <div className={cx(styles.inputContainer, { [styles.open]: showAreasMatching })}>
+      <div
+        className={cx(styles.inputContainer, { [styles.open]: isOpen && areasMatching.length > 0 })}
+      >
         <label>
           {t('workspace.wizard.title', 'Setup a marine manager workspace for any area globally')}
         </label>
@@ -194,8 +192,8 @@ function WorkspaceWizard() {
             {...getInputProps({ ref: inputRef })}
             className={styles.input}
             placeholder={t('map.search', 'Search areas')}
+            onBlur={onInputBlur}
             onFocus={fetchDatasetAreas}
-            value={inputValue || ''}
           />
           <IconButton
             icon="search"
@@ -203,7 +201,7 @@ function WorkspaceWizard() {
             className={cx(styles.search, { [styles.active]: isOpen })}
           ></IconButton>
           <ul {...getMenuProps()} className={styles.results}>
-            {showAreasMatching &&
+            {isOpen &&
               areasMatching?.map((item, index) => (
                 <li
                   {...getItemProps({ item, index })}
