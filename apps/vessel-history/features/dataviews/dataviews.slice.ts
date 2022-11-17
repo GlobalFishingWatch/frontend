@@ -9,9 +9,9 @@ import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 
 export const fetchDataviewsByIdsThunk = createAsyncThunk(
   'dataviews/fetch',
-  async (ids: Dataview['slug'][], { signal, rejectWithValue, getState }) => {
+  async (ids: (Dataview['id'] | Dataview['slug'])[], { signal, rejectWithValue, getState }) => {
     const existingIds = selectIds(getState() as RootState) as Dataview['slug'][]
-    const uniqIds = Array.from(new Set([...ids, ...existingIds]))
+    const uniqIds = Array.from(new Set([...(ids as string[]), ...existingIds]))
     try {
       const dataviewsParams = {
         ids: uniqIds,
