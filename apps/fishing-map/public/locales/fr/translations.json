@@ -225,6 +225,7 @@
     "fullTimeRange": "Full time range",
     "gridded": "Gridded activity",
     "groupActivityBy": "Group activity by vessel property",
+    "groupVesselsBy": "Group vessels by",
     "highResNotAvailable": "Votre zone est trop grande",
     "monthly": "Month",
     "monthlyNotAvailable": "Votre plage de temps est inférieure à 1 mois",
