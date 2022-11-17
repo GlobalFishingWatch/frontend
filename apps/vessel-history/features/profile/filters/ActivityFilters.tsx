@@ -7,7 +7,13 @@ import EventFiltersButton from 'features/event-filters/EventFiltersButton'
 import ActivityDataAndTerminology from '../components/activity/ActivityDataAndTerminology'
 import styles from './ActivityFilters.module.css'
 
-const ActivityFilters: React.FC = (): React.ReactElement => {
+interface ActivityFiltersProps {
+  onDownloadCsv?: () => void
+}
+
+const ActivityFilters: React.FC<ActivityFiltersProps> = ({
+  onDownloadCsv,
+}: ActivityFiltersProps): React.ReactElement => {
   const { t } = useTranslation()
   const [isModalOpen, setIsOpen] = useState(false)
   const setModalOpen = useCallback((isOpen) => {
@@ -38,6 +44,7 @@ const ActivityFilters: React.FC = (): React.ReactElement => {
         <EventFiltersButton
           type="secondary"
           onClick={() => setModalOpen(true)}
+          onDownloadCsv={onDownloadCsv}
         ></EventFiltersButton>
       </div>
     </Fragment>

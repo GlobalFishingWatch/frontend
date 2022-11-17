@@ -14,6 +14,7 @@ interface ButtonProps {
   className?: string
   type?: ButtonType
   onClick?: () => void
+  onDownloadCsv?: () => void
 }
 
 const EventFiltersButton: React.FC<ButtonProps> = ({ className, ...props }): React.ReactElement => {
@@ -39,6 +40,15 @@ const EventFiltersButton: React.FC<ButtonProps> = ({ className, ...props }): Rea
           <Icon type="default" icon={filtersApplied ? 'filter-on' : 'filter-off'} />
           <FiltersLabel filters={filters} />
         </Button>
+      )}
+      {!currentProfileIsInsurer && props.onDownloadCsv !== undefined && (
+        <IconButton
+          type={props?.type === 'default' ? 'map-tool' : 'solid'}
+          icon={'download'}
+          size="medium"
+          tooltip={t('events.downloadEvents', 'Download events')}
+          onClick={props.onDownloadCsv}
+        />
       )}
     </Fragment>
   )

@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useState } from 'react'
+import { Fragment, useCallback, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
@@ -19,6 +19,7 @@ import useViewport from 'features/map/map-viewport.hooks'
 import ActivityItem from './ActivityItem'
 import ActivityModalContent from './ActivityModalContent'
 import styles from './Activity.module.css'
+
 interface ActivityProps {
   vessel: VesselWithHistory | null
   lastPosition: any
@@ -27,7 +28,8 @@ interface ActivityProps {
 }
 
 const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
-  const { eventsLoading, events, toggleVoyage } = useVoyagesConnect()
+  const { downloadingStatus, downloadFilteredEvents, eventsLoading, events, toggleVoyage } =
+    useVoyagesConnect()
   const [isModalOpen, setIsOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent>()
   const openModal = useCallback((event: RenderedEvent) => {
@@ -63,7 +65,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
 
   return (
     <div className={styles.activityContainer}>
-      <ActivityFilters></ActivityFilters>
+      <ActivityFilters onDownloadCsv={downloadFilteredEvents}></ActivityFilters>
       {eventsLoading && <Spinner className={styles.spinnerFull} />}
       {!eventsLoading && (
         <Fragment>
