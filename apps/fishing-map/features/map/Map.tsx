@@ -247,7 +247,14 @@ const MapWrapper = () => {
       return 'grabbing'
     }
     return 'grab'
-  }, [isMapDrawing, hoveredTooltipEvent, map, dataviews, tilesClusterLoaded])
+  }, [
+    isMapDrawing,
+    isMarineManagerLocation,
+    hoveredTooltipEvent,
+    map,
+    dataviews,
+    tilesClusterLoaded,
+  ])
 
   useEffect(() => {
     if (map) {

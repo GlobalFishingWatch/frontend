@@ -50,8 +50,10 @@ export const isValidLocationCategory = createSelector(
 )
 
 export const selectIsMarineManagerLocation = createSelector(
-  [selectLocationCategory],
-  (category) => category === WorkspaceCategories.MarineManager
+  [selectLocationCategory, selectWorkspaceId],
+  (category, workspaceId) => {
+    return category === WorkspaceCategories.MarineManager && !workspaceId
+  }
 )
 
 export const selectUrlMapZoomQuery = selectQueryParam<number>('zoom')
