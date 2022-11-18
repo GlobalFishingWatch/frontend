@@ -11,9 +11,12 @@ import oceanAreasLocales from './data/locales'
 import sourceLocales from './data/locales/source.json'
 
 export type OceanAreaLocaleKey = keyof typeof sourceLocales
+export type OceanAreaType = 'ocean' | 'eez' | 'mpa'
+
 export interface OceanAreaProperties {
-  type: string
+  type: OceanAreaType
   name: string
+  /* Extension of the area in kilometers */
   area?: number
   mrgid?: string
   bounds?: BBox
