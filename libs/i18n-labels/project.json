@@ -1,4 +1,5 @@
 {
+  "name": "i18n-labels",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/i18n-labels",
   "projectType": "library",
@@ -11,7 +12,7 @@
       }
     },
     "build": {
-      "executor": "@nrwl/web:rollup",
+      "executor": "@nrwl/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/i18n-labels",
@@ -73,7 +74,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/i18n-labels"],
+      "outputs": ["{workspaceRoot}/coverage/libs/i18n-labels"],
       "options": {
         "jestConfig": "libs/i18n-labels/jest.config.ts",
         "passWithNoTests": true
@@ -86,7 +87,7 @@
       }
     },
     "publish:stable": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": [
           "export LATEST=`npm dist-tag ls @globalfishingwatch/i18n-labels | grep -Ew 'latest: (.*)' | sed -n 's/latest: //p'`;npm dist-tag add @globalfishingwatch/i18n-labels@$LATEST stable"
@@ -95,21 +96,21 @@
       }
     },
     "purge": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": ["PACKAGE_TAG=latest ./libs/i18n-labels/purge_jsdelivr.sh"],
         "parallel": false
       }
     },
     "purge:stable": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": ["PACKAGE_TAG=stable ./libs/i18n-labels/purge_jsdelivr.sh"],
         "parallel": false
       }
     },
     "deploy": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": ["nx i18n-labels:publish", "nx i18n-labels:purge"],
         "parallel": false

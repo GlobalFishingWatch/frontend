@@ -1,11 +1,12 @@
 {
+  "name": "ui-components",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/ui-components/src",
   "projectType": "library",
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nrwl/web:rollup",
+      "executor": "@nrwl/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/ui-components",
@@ -34,7 +35,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/ui-components"],
+      "outputs": ["{workspaceRoot}/coverage/libs/ui-components"],
       "options": {
         "jestConfig": "libs/ui-components/jest.config.ts",
         "passWithNoTests": true
