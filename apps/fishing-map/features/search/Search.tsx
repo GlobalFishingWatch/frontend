@@ -29,6 +29,7 @@ import LocalStorageLoginLink from 'routes/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { selectVesselsDataviews } from 'features/dataviews/dataviews.slice'
+import { selectUserGroupsPermissions } from 'features/user/user.selectors'
 import I18nFlag from 'features/i18n/i18nFlag'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -81,6 +82,7 @@ function Search() {
   const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
   const debouncedQuery = useDebounce(searchQuery, 600)
   const { dispatchQueryParams } = useLocationConnect()
+  const hasUserGroupsPermissions = useSelector(selectUserGroupsPermissions)
   const basicSearchAllowed = useSelector(isBasicSearchAllowed)
   const vesselGroupOptions = useVesselGroupsOptions()
   const advancedSearchAllowed = useSelector(isAdvancedSearchAllowed)
@@ -581,7 +583,7 @@ function Search() {
               }
             >
               <div>
-                {gfwUser && vesselsSelected.length > 0 && (
+                {hasUserGroupsPermissions && vesselsSelected.length > 0 && (
                   <Button
                     type="secondary"
                     className={styles.footerAction}
