@@ -38,6 +38,9 @@ const nextConfig = {
   productionBrowserSourceMaps:
     process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'development' ||
     process.env.NODE_ENV === 'development',
+
+  // to deploy on a node server
+  output: 'standalone',
 }
 
 const withPWA = withPWAConstructor({
