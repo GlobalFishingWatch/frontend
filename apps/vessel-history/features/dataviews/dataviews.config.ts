@@ -1,4 +1,3 @@
-import { ThinningLevels } from '@globalfishingwatch/api-client'
 import { DataviewInstance } from '@globalfishingwatch/api-types'
 import {
   GeneratorType,
@@ -63,10 +62,6 @@ export const DEFAULT_RFMO_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 95 : 1
 
 export const dataviewInstances: DataviewInstance<GeneratorType>[] = [
   {
-    id: 'basemap',
-    dataviewId: DEFAULT_BASEMAP_DATAVIEW_ID,
-  },
-  {
     id: 'public-eez-areas',
     config: {
       color: '#069688',
@@ -89,6 +84,10 @@ export const dataviewInstances: DataviewInstance<GeneratorType>[] = [
       visible: true,
     },
     dataviewId: DEFAULT_RFMO_DATAVIEW_ID,
+  },
+  {
+    id: 'basemap',
+    dataviewId: DEFAULT_BASEMAP_DATAVIEW_ID,
   },
 ]
 
