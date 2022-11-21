@@ -44,10 +44,6 @@
   right: 0;
 }
 
-.disabled {
-  pointer-events: none;
-}
-
 .actions {
   display: flex;
   align-items: center;

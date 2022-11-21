@@ -22,7 +22,11 @@ import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import useMapInstance from 'features/map/map-context.hooks'
-import { MPA_DATAVIEW_INSTANCE_ID, WorkspaceCategories } from 'data/workspaces'
+import {
+  EEZ_DATAVIEW_INSTANCE,
+  MPA_DATAVIEW_INSTANCE_ID,
+  WorkspaceCategories,
+} from 'data/workspaces'
 import { WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import styles from './WorkspaceWizard.module.css'
 
@@ -150,6 +154,7 @@ function WorkspaceWizard() {
       map,
       selectedItem?.properties?.bounds
     )
+
     return {
       type: WORKSPACE,
       payload: {
@@ -162,7 +167,14 @@ function WorkspaceWizard() {
         zoom,
         daysFromLatest: 90,
         dataviewInstances: [
-          { id: MPA_DATAVIEW_INSTANCE_ID, config: { visible: true } },
+          {
+            id: EEZ_DATAVIEW_INSTANCE,
+            config: { visible: selectedItem?.properties?.type === 'eez' },
+          },
+          {
+            id: MPA_DATAVIEW_INSTANCE_ID,
+            config: { visible: selectedItem?.properties?.type === 'mpa' },
+          },
           ...MARINE_MANAGER_DATAVIEWS_INSTANCES,
         ],
       },
@@ -170,7 +182,9 @@ function WorkspaceWizard() {
     }
   }, [map, selectedItem])
 
-  const linkDisabled = !selectedItem
+  const linkLabel = selectedItem
+    ? t('workspace.wizard.exploreArea', 'Explore area')
+    : t('workspace.wizard.exploreGlobal', 'Explore global')
 
   return (
     <div className={styles.wizardContainer} {...getComboboxProps()}>
@@ -218,12 +232,12 @@ function WorkspaceWizard() {
         <Link
           to={linkTo}
           target="_self"
-          className={cx(styles.confirmBtn, { [styles.disabled]: linkDisabled })}
+          className={cx(styles.confirmBtn)}
           onClick={(e) => {
             if (!selectedItem) e.preventDefault()
           }}
         >
-          {t('common.confirm', 'Confirm')}
+          {linkLabel}
         </Link>
       </div>
     </div>

@@ -601,6 +601,8 @@
       "error": "There was an error creating the workspace",
       "name": "Give a name to your workspace",
       "help": "You can move the map and update your workspace later",
+      "exploreArea": "See area",
+      "exploreGlobal": "See global",
       "title": "Setup a marine manager workspace for any area globally"
     }
   }
