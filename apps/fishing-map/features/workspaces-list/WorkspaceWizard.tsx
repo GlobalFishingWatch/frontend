@@ -3,21 +3,15 @@ import cx from 'classnames'
 import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import { useCombobox, UseComboboxStateChange } from 'downshift'
-import { matchSorter } from 'match-sorter'
-import { useSelector } from 'react-redux'
-import { useFeatureState } from '@globalfishingwatch/react-hooks'
+import type {
+  searchOceanAreas as searchOceanAreasType,
+  OceanAreaLocale,
+  OceanArea,
+} from '@globalfishingwatch/ocean-areas'
 import { Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
-import {
-  DEFAULT_CONTEXT_SOURCE_LAYER,
-  getContextSourceId,
-} from '@globalfishingwatch/layer-composer'
+import { t as trans } from 'features/i18n/i18n'
 import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-viewport.hooks'
-import {
-  DatasetArea,
-  fetchDatasetAreasThunk,
-  selectDatasetAreasById,
-} from 'features/areas/areas.slice'
 import {
   MARINE_MANAGER_DATAVIEWS,
   MARINE_MANAGER_DATAVIEWS_INSTANCES,
@@ -28,76 +22,81 @@ import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import useMapInstance from 'features/map/map-context.hooks'
-import { selectMarineManagerGenerators } from 'features/map/map.selectors'
 import { MPA_DATAVIEW_INSTANCE_ID, WorkspaceCategories } from 'data/workspaces'
-import { AsyncReducerStatus } from 'utils/async-slice'
 import { WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import styles from './WorkspaceWizard.module.css'
 
 const MAX_RESULTS_NUMBER = 10
-const WIZARD_AREAS_DATASET = 'public-mpa-all'
+
+const getItemLabel = (item: OceanArea | null) => {
+  if (!item) return ''
+  if (item.properties?.type === 'ocean') {
+    return item.properties?.name
+  }
+  return `${item.properties?.name} (${trans(
+    `layer.areas.${item.properties?.type}` as any,
+    item.properties?.type.toUpperCase()
+  )})`
+}
 
 function WorkspaceWizard() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const fitBounds = useMapFitBounds()
   const map = useMapInstance()
-  const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
   const inputRef = useRef<HTMLInputElement | null>(null)
-  const [areasMatching, setAreasMatching] = useState<DatasetArea[]>([])
-  const [selectedItem, setSelectedItem] = useState<DatasetArea>(null)
-  const datasetAreas = useSelector(selectDatasetAreasById(WIZARD_AREAS_DATASET))
-  const marineManagerGenerators = useSelector(selectMarineManagerGenerators)
+  const [areasMatching, setAreasMatching] = useState<OceanArea[]>([])
+  const [selectedItem, setSelectedItem] = useState<OceanArea>(null)
+  const searchOceanAreas = useRef<typeof searchOceanAreasType>()
+  const [loadingOceanAreas, setLoadingOceanAreas] = useState(false)
 
-  const fetchDatasetAreas = () => {
-    if (
-      datasetAreas?.status !== AsyncReducerStatus.Finished &&
-      datasetAreas?.status !== AsyncReducerStatus.Loading &&
-      !datasetAreas?.data?.length
-    ) {
-      dispatch(fetchDatasetAreasThunk({ datasetId: WIZARD_AREAS_DATASET }))
+  const loadOceanAreas = async () => {
+    if (!searchOceanAreas.current) {
+      setLoadingOceanAreas(true)
+      searchOceanAreas.current = await import('@globalfishingwatch/ocean-areas').then(
+        (module) => module.searchOceanAreas
+      )
+      setLoadingOceanAreas(false)
     }
   }
 
-  const updateMatchingAreas = (areas: DatasetArea[], inputValue: string) => {
-    const matchingAreas = inputValue
-      ? matchSorter(areas, inputValue, {
-          keys: ['label'],
-        }).slice(0, MAX_RESULTS_NUMBER)
-      : []
+  const updateMatchingAreas = (inputValue: string) => {
+    const matchingAreas = searchOceanAreas
+      .current(inputValue, {
+        locale: i18n.language as OceanAreaLocale,
+      })
+      .slice(0, MAX_RESULTS_NUMBER)
     setAreasMatching(matchingAreas)
   }
-  const onInputChange = ({ inputValue }: UseComboboxStateChange<DatasetArea>) => {
+
+  const onInputChange = ({ inputValue }: UseComboboxStateChange<OceanArea>) => {
     if (inputValue === '') {
       setSelectedItem(null)
       setAreasMatching([])
       fitBounds([-90, -180, 90, 180])
     } else {
-      updateMatchingAreas(datasetAreas?.data, inputValue)
-      cleanFeatureState('highlight')
+      updateMatchingAreas(inputValue)
     }
   }
 
-  const onSelectResult = ({ selectedItem }: UseComboboxStateChange<DatasetArea>) => {
+  const onSelectResult = ({ selectedItem }: UseComboboxStateChange<OceanArea>) => {
     setSelectedItem(selectedItem)
     setAreasMatching([])
-    const id = selectedItem?.id
-    const mpaSourceId = getContextSourceId(
-      marineManagerGenerators?.find((g) => g.datasetId === WIZARD_AREAS_DATASET)
-    )
-    if (mpaSourceId) {
-      const featureState = {
-        source: mpaSourceId,
-        sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
-        id,
+  }
+
+  const onSearchClick = () => {
+    if (selectedItem) {
+      const bounds = selectedItem?.properties.bounds
+      if (bounds) {
+        const wrappedBounds = wrapBBoxLongitudes(bounds)
+        fitBounds(wrappedBounds)
       }
-      updateFeatureState([featureState], 'highlight')
     }
   }
 
-  const onHighlightedIndexChange = ({ highlightedIndex }: UseComboboxStateChange<DatasetArea>) => {
+  const onHighlightedIndexChange = ({ highlightedIndex }: UseComboboxStateChange<OceanArea>) => {
     const highlightedArea = areasMatching[highlightedIndex]
-    const bounds = highlightedArea?.bbox
+    const bounds = highlightedArea?.properties.bounds
     if (bounds) {
       const wrappedBounds = wrapBBoxLongitudes(bounds)
       fitBounds(wrappedBounds)
@@ -129,23 +128,14 @@ function WorkspaceWizard() {
   } = useCombobox({
     selectedItem,
     items: areasMatching,
-    itemToString: (item: DatasetArea | null): string => (item ? item.label : ''),
+    itemToString: getItemLabel,
     onInputValueChange: onInputChange,
     onSelectedItemChange: onSelectResult,
     onHighlightedIndexChange: onHighlightedIndexChange,
   })
 
-  useEffect(() => {
-    if (inputValue) {
-      updateMatchingAreas(datasetAreas?.data, inputValue)
-    }
-    // Only needed to ensure the areas are updated when the request resolves
-    // and already has an input text to filter by
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [datasetAreas?.data])
-
   const onInputBlur = () => {
-    if (inputValue !== selectedItem?.label) {
+    if (inputValue !== getItemLabel(selectedItem)) {
       setSelectedItem(null)
       setAreasMatching([])
     }
@@ -156,7 +146,10 @@ function WorkspaceWizard() {
       return { type: WORKSPACES_LIST, payload: { category: WorkspaceCategories.MarineManager } }
     }
 
-    const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(map, selectedItem?.bbox)
+    const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(
+      map,
+      selectedItem?.properties?.bounds
+    )
     return {
       type: WORKSPACE,
       payload: {
@@ -193,12 +186,13 @@ function WorkspaceWizard() {
             className={styles.input}
             placeholder={t('map.search', 'Search areas')}
             onBlur={onInputBlur}
-            onFocus={fetchDatasetAreas}
+            onFocus={loadOceanAreas}
           />
           <IconButton
             icon="search"
-            loading={datasetAreas?.status === AsyncReducerStatus.Loading}
-            className={cx(styles.search, { [styles.active]: isOpen })}
+            loading={loadingOceanAreas}
+            className={cx(styles.search, { [styles.disabled]: isOpen })}
+            onClick={onSearchClick}
           ></IconButton>
           <ul {...getMenuProps()} className={styles.results}>
             {isOpen &&
@@ -210,7 +204,7 @@ function WorkspaceWizard() {
                     [styles.highlighted]: highlightedIndex === index,
                   })}
                 >
-                  {item.label}
+                  {getItemLabel(item)}
                 </li>
               ))}
           </ul>

@@ -1606,22 +1606,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [-12.35, 42.25],
-            [-11.167, 42.25],
-            [-11.167, 43.279],
-            [-12.35, 43.279],
-            [-12.35, 42.25],
-          ],
-        ],
-      },
-      properties: { name: 'Banco de Galicia', type: 'mpa', area: 10235 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [-6.807, 36.588],
             [-7.281, 36.697],
             [-7.478, 35.844],
@@ -1695,22 +1679,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Sur de Almería - Seco de los Olivos', type: 'mpa', area: 2839 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-8.586, 43.332],
-            [-8.919, 43.782],
-            [-9.824, 43.114],
-            [-9.492, 42.664],
-            [-8.586, 43.332],
-          ],
-        ],
-      },
-      properties: { name: 'Espacio marino de la Costa da Morte', type: 'mpa', area: 3162 },
     },
     {
       type: 'Feature',
@@ -2342,54 +2310,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [2.524, 56.096],
-            [2.52, 56.617],
-            [1.826, 56.611],
-            [1.831, 56.09],
-            [2.524, 56.096],
-          ],
-        ],
-      },
-      properties: { name: 'Fulmar', type: 'mpa', area: 2431 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-8.2, 50.5],
-            [-8.2, 50.077],
-            [-7.362, 50.077],
-            [-7.362, 50.5],
-            [-8.2, 50.5],
-          ],
-        ],
-      },
-      properties: { name: 'Greater Haig Fras', type: 'mpa', area: 2039 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-4.154, 49.476],
-            [-4.213, 49.732],
-            [-5.55, 49.427],
-            [-5.491, 49.17],
-            [-4.154, 49.476],
-          ],
-        ],
-      },
-      properties: { name: 'Western Channel', type: 'mpa', area: 1612 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [-114.98, 18.497],
             [-114.766, 17.611],
             [-110.45, 18.651],
@@ -2519,38 +2439,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Banco Gorringe', type: 'mpa', area: 22914 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [21.205, 57.758],
-            [21.249, 57.421],
-            [22.82, 57.63],
-            [22.775, 57.967],
-            [21.205, 57.758],
-          ],
-        ],
-      },
-      properties: { name: 'Irbes saurums', type: 'mpa', area: 1719 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [23.516, 56.886],
-            [23.687, 57.101],
-            [22.704, 57.882],
-            [22.533, 57.667],
-            [23.516, 56.886],
-          ],
-        ],
-      },
-      properties: { name: 'Rigas lica rietumu piekraste', type: 'mpa', area: 1318 },
     },
     {
       type: 'Feature',
@@ -2706,22 +2594,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [-87.631, 17.946],
-            [-85.488, 17.697],
-            [-85.062, 21.361],
-            [-87.205, 21.61],
-            [-87.631, 17.946],
-          ],
-        ],
-      },
-      properties: { name: 'Caribe Mexicano Profundo', type: 'mpa', area: 19471 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [-93.174, 11.731],
             [-91.933, 18.304],
             [-116.912, 23.02],
@@ -2731,22 +2603,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Pacífico Mexicano Profundo', type: 'mpa', area: 315793 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-93.3, 13.633],
-            [-92.708, 19.768],
-            [-117.28, 22.14],
-            [-117.872, 16.005],
-            [-93.3, 13.633],
-          ],
-        ],
-      },
-      properties: { name: 'Pacífico Mexicano Profundo', type: 'mpa', area: 122333 },
     },
     {
       type: 'Feature',
@@ -2822,22 +2678,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [4.08, 53.743],
-            [4.219, 53.409],
-            [5.372, 53.889],
-            [5.233, 54.222],
-            [4.08, 53.743],
-          ],
-        ],
-      },
-      properties: { name: 'Friese Front', type: 'mpa', area: 2877 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [163, -62.5],
             [168, -62.5],
             [168, -60],
@@ -2847,38 +2687,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Ross Sea Region Marine Protected Area', type: 'mpa', area: 74473 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [150, -69.667],
-            [160, -69.667],
-            [160, -62.5],
-            [150, -62.5],
-            [150, -69.667],
-          ],
-        ],
-      },
-      properties: { name: 'Ross Sea Region Marine Protected Area', type: 'mpa', area: 331891 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-164, -76.5],
-            [-164, -73.5],
-            [-180, -73.5],
-            [-180, -76.5],
-            [-164, -76.5],
-          ],
-        ],
-      },
-      properties: { name: 'Ross Sea Region Marine Protected Area', type: 'mpa', area: 109516 },
     },
     {
       type: 'Feature',
@@ -3942,26 +3750,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [-129.017, 51.025],
-            [-128.656, 51.326],
-            [-130.562, 53.61],
-            [-130.924, 53.308],
-            [-129.017, 51.025],
-          ],
-        ],
-      },
-      properties: {
-        name: 'Hecate Strait and Queen Charlotte Sound Glass Sponge Reefs Marine Protected Areas',
-        type: 'mpa',
-        area: 2410,
-      },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [-70.705, 48.396],
             [-70.735, 47.68],
             [-69.316, 47.62],
@@ -4094,22 +3882,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [-82.123, -30.014],
-            [-86.02, -33.638],
-            [-80.774, -39.28],
-            [-76.876, -35.656],
-            [-82.123, -30.014],
-          ],
-        ],
-      },
-      properties: { name: 'Mar de Juan Fernández', type: 'mpa', area: 264960 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [-73.581, -54.865],
             [-74.595, -58.702],
             [-67.63, -60.542],
@@ -4135,22 +3907,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Kawésqar', type: 'mpa', area: 27890 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-74.971, -49.834],
-            [-76.428, -51.371],
-            [-72.383, -55.203],
-            [-70.926, -53.666],
-            [-74.971, -49.834],
-          ],
-        ],
-      },
-      properties: { name: 'Kawésqar', type: 'mpa', area: 26194 },
     },
     {
       type: 'Feature',
@@ -4210,22 +3966,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [-61.75, -55.5],
-            [-60.75, -55.5],
-            [-60.75, -54.432],
-            [-61.75, -54.432],
-            [-61.75, -55.5],
-          ],
-        ],
-      },
-      properties: { name: 'Namuncurá - Banco Burdwood II', type: 'mpa', area: 6078 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [-64, -55.5],
             [-67.267, -55.5],
             [-67.267, -58.388],
@@ -4235,38 +3975,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Yaganes', type: 'mpa', area: 47273 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-64, -55.016],
-            [-67.267, -55.016],
-            [-67.267, -58.388],
-            [-64, -58.388],
-            [-64, -55.016],
-          ],
-        ],
-      },
-      properties: { name: 'Yaganes', type: 'mpa', area: 58284 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-63.793, -55.362],
-            [-64.57, -54.197],
-            [-67.731, -56.304],
-            [-66.954, -57.469],
-            [-63.793, -55.362],
-          ],
-        ],
-      },
-      properties: { name: 'Yaganes', type: 'mpa', area: 11011 },
     },
     {
       type: 'Feature',
@@ -4299,22 +4007,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Grands dauphins du golfe du Lion', type: 'mpa', area: 4915 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-2.679, 44.576],
-            [-1.54, 47.011],
-            [-8.861, 50.435],
-            [-10, 48],
-            [-2.679, 44.576],
-          ],
-        ],
-      },
-      properties: { name: 'Mers Celtiques - Talus du golfe de Gascogne', type: 'mpa', area: 71661 },
     },
     {
       type: 'Feature',
@@ -4811,22 +4503,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'mpa',
         area: 12713,
       },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-80.955, 24.769],
-            [-80.187, 25.183],
-            [-80.769, 26.263],
-            [-81.538, 25.849],
-            [-80.955, 24.769],
-          ],
-        ],
-      },
-      properties: { name: 'Everglades', type: 'mpa', area: 6202 },
     },
     {
       type: 'Feature',
@@ -5447,22 +5123,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Namuncurá - Banco Burdwood I', type: 'mpa', area: 5898 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-56.156, -54.843],
-            [-56.154, -53.755],
-            [-60.747, -53.744],
-            [-60.75, -54.832],
-            [-56.156, -54.843],
-          ],
-        ],
-      },
-      properties: { name: 'Namuncurá - Banco Burdwood I', type: 'mpa', area: 24708 },
     },
     {
       type: 'Feature',
@@ -6614,102 +6274,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [6.604, 53.559],
-            [6.393, 54.018],
-            [4.33, 53.069],
-            [4.541, 52.611],
-            [6.604, 53.559],
-          ],
-        ],
-      },
-      properties: { name: 'Noordzeekustzone', type: 'mpa', area: 1442 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [6.833, 55.624],
-            [6.778, 55.297],
-            [8.042, 55.084],
-            [8.097, 55.411],
-            [6.833, 55.624],
-          ],
-        ],
-      },
-      properties: { name: 'Sydlige Nordsø', type: 'mpa', area: 2467 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [23.516, 56.886],
-            [23.687, 57.101],
-            [22.704, 57.882],
-            [22.533, 57.667],
-            [23.516, 56.886],
-          ],
-        ],
-      },
-      properties: { name: 'Rigas lica rietumu piekraste', type: 'mpa', area: 1318 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [16.29, 56.097],
-            [16.654, 55.223],
-            [18.956, 56.179],
-            [18.593, 57.053],
-            [16.29, 56.097],
-          ],
-        ],
-      },
-      properties: { name: 'Hoburgs bank och Midsjbankarna', type: 'mpa', area: 10485 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [12.112, 56.609],
-            [12.075, 56.158],
-            [12.862, 56.093],
-            [12.899, 56.544],
-            [12.112, 56.609],
-          ],
-        ],
-      },
-      properties: { name: 'Nordvstra Sknes havsomrde', type: 'mpa', area: 1339 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [20.577, 63.466],
-            [20.583, 62.789],
-            [22.131, 62.802],
-            [22.125, 63.479],
-            [20.577, 63.466],
-          ],
-        ],
-      },
-      properties: { name: 'Merenkurkun saaristo', type: 'mpa', area: 1274 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [15.226, 79.51],
             [15.15, 79.036],
             [16.667, 78.794],
@@ -7050,22 +6614,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [148.752, -40.421],
-            [148.964, -41.147],
-            [154.003, -39.677],
-            [153.791, -38.95],
-            [148.752, -40.421],
-          ],
-        ],
-      },
-      properties: { name: 'Flinders', type: 'mpa', area: 25845 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [152.813, -41.067],
             [148.638, -41.173],
             [148.7, -43.583],
@@ -7114,22 +6662,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [158.588, -53.783],
-            [158.588, -58.449],
-            [164.691, -58.449],
-            [164.691, -53.783],
-            [158.588, -53.783],
-          ],
-        ],
-      },
-      properties: { name: 'Macquarie Island', type: 'mpa', area: 104493 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [137.937, -37.814],
             [136.7, -37.403],
             [135.933, -39.708],
@@ -7139,22 +6671,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Murray', type: 'mpa', area: 12769 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [139.166, -35.787],
-            [137.887, -34.924],
-            [136.366, -37.178],
-            [137.645, -38.04],
-            [139.166, -35.787],
-          ],
-        ],
-      },
-      properties: { name: 'Murray', type: 'mpa', area: 13079 },
     },
     {
       type: 'Feature',
@@ -8546,22 +8062,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [-180, -34.68],
-            [-174.021, -34.68],
-            [-174.021, -25.902],
-            [-180, -25.902],
-            [-180, -34.68],
-          ],
-        ],
-      },
-      properties: { name: 'Kermadec', type: 'mpa', area: 460101 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [-173, -46.999],
             [-171.201, -46.999],
             [-171.201, -41.356],
@@ -8858,22 +8358,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [6.604, 53.559],
-            [6.393, 54.018],
-            [4.33, 53.069],
-            [4.541, 52.611],
-            [6.604, 53.559],
-          ],
-        ],
-      },
-      properties: { name: 'Noordzeekustzone', type: 'mpa', area: 1442 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [5.259, 53.192],
             [4.988, 52.868],
             [5.503, 52.438],
@@ -8899,38 +8383,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Mayotte', type: 'mpa', area: 68801 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-180, -43.473],
-            [-180.043, -43.801],
-            [-179.417, -43.883],
-            [-179.374, -43.556],
-            [-180, -43.473],
-          ],
-        ],
-      },
-      properties: { name: 'Mid Chatham Rise', type: 'mpa', area: 1737 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-180, -52.966],
-            [-176.43, -52.966],
-            [-176.43, -48.5],
-            [-180, -48.5],
-            [-180, -52.966],
-          ],
-        ],
-      },
-      properties: { name: 'Antipodes Transect', type: 'mpa', area: 56630 },
     },
     {
       type: 'Feature',
@@ -9035,22 +8487,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'mpa',
         area: 4515,
       },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [4.598, 55.213],
-            [4.748, 55.548],
-            [3.786, 55.98],
-            [3.636, 55.645],
-            [4.598, 55.213],
-          ],
-        ],
-      },
-      properties: { name: 'Doggerbank', type: 'mpa', area: 1692 },
     },
     {
       type: 'Feature',
@@ -9270,26 +8706,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [24.438, 39.36],
-            [24.037, 39.663],
-            [23.622, 39.113],
-            [24.023, 38.81],
-            [24.438, 39.36],
-          ],
-        ],
-      },
-      properties: {
-        name: 'ETHNIKO THALASSIO PARKO ALONNISOU – VOREION SPORADON, ANATOLIKI SKOPELOS',
-        type: 'mpa',
-        area: 2497,
-      },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [20.093, 39.532],
             [19.889, 39.243],
             [20.554, 38.774],
@@ -9399,54 +8815,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Vlaamse Banken', type: 'mpa', area: 1106 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [7.211, 53.232],
-            [7.145, 53.683],
-            [4.666, 53.318],
-            [4.733, 52.867],
-            [7.211, 53.232],
-          ],
-        ],
-      },
-      properties: { name: 'Waddenzee', type: 'mpa', area: 2643 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [4.26, 55.365],
-            [3.902, 55.909],
-            [2.405, 54.923],
-            [2.763, 54.379],
-            [4.26, 55.365],
-          ],
-        ],
-      },
-      properties: { name: 'Doggersbank', type: 'mpa', area: 4763 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [2.783, 54.292],
-            [2.783, 53.848],
-            [3.318, 53.848],
-            [3.318, 54.292],
-            [2.783, 54.292],
-          ],
-        ],
-      },
-      properties: { name: 'Klaverbank', type: 'mpa', area: 1536 },
     },
     {
       type: 'Feature',
@@ -9610,22 +8978,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [23.983, 58.418],
-            [24.012, 59.063],
-            [22.525, 59.128],
-            [22.496, 58.483],
-            [23.983, 58.418],
-          ],
-        ],
-      },
-      properties: { name: 'Väinamere', type: 'mpa', area: 2724 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [24.545, 58.08],
             [24.538, 58.408],
             [23.667, 58.391],
@@ -9658,22 +9010,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [21.051, 60.151],
-            [21.038, 59.647],
-            [22.804, 59.599],
-            [22.818, 60.104],
-            [21.051, 60.151],
-          ],
-        ],
-      },
-      properties: { name: 'Saaristomeri', type: 'mpa', area: 1616 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [1.029, 49.944],
             [0.94, 50.204],
             [-0.146, 49.832],
@@ -9683,22 +9019,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Littoral seino-marin', type: 'mpa', area: 1796 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [1.777, 51.303],
-            [1.781, 51.028],
-            [2.546, 51.04],
-            [2.542, 51.316],
-            [1.777, 51.303],
-          ],
-        ],
-      },
-      properties: { name: 'Bancs des Flandres', type: 'mpa', area: 1163 },
     },
     {
       type: 'Feature',
@@ -9751,22 +9071,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Tte de Canyon du Cap Ferret', type: 'mpa', area: 3654 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [4.905, 43.121],
-            [4.957, 43.667],
-            [4.256, 43.734],
-            [4.204, 43.187],
-            [4.905, 43.121],
-          ],
-        ],
-      },
-      properties: { name: 'Camargue', type: 'mpa', area: 2204 },
     },
     {
       type: 'Feature',
@@ -9858,22 +9162,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [-8.654, 37.838],
-            [-9.016, 37.9],
-            [-9.176, 36.963],
-            [-8.814, 36.901],
-            [-8.654, 37.838],
-          ],
-        ],
-      },
-      properties: { name: 'Costa Sudoeste', type: 'mpa', area: 1009 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [28.624, 44.318],
             [29.897, 44.895],
             [29.398, 45.997],
@@ -9899,38 +9187,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Marea Neagră', type: 'mpa', area: 1490 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [7.211, 53.232],
-            [7.145, 53.683],
-            [4.666, 53.318],
-            [4.733, 52.867],
-            [7.211, 53.232],
-          ],
-        ],
-      },
-      properties: { name: 'Waddenzee', type: 'mpa', area: 2712 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [5.259, 53.192],
-            [4.988, 52.868],
-            [5.503, 52.438],
-            [5.774, 52.762],
-            [5.259, 53.192],
-          ],
-        ],
-      },
-      properties: { name: 'IJsselmeer', type: 'mpa', area: 1131 },
     },
     {
       type: 'Feature',
@@ -10082,22 +9338,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [16.212, 54.296],
-            [16.111, 54.78],
-            [14.187, 54.378],
-            [14.288, 53.894],
-            [16.212, 54.296],
-          ],
-        ],
-      },
-      properties: { name: 'Zatoka Pomorska', type: 'mpa', area: 3111 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [18.645, 54.844],
             [18.582, 55.133],
             [16.098, 54.595],
@@ -10139,22 +9379,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Kura Kurk', type: 'mpa', area: 1988 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [24.544, 58.078],
-            [24.539, 58.408],
-            [23.667, 58.393],
-            [23.672, 58.064],
-            [24.544, 58.078],
-          ],
-        ],
-      },
-      properties: { name: 'Pärnu lahe', type: 'mpa', area: 1147 },
     },
     {
       type: 'Feature',
@@ -10310,22 +9534,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [-4.268, 47.985],
-            [-4.268, 48.518],
-            [-5.452, 48.517],
-            [-5.452, 47.984],
-            [-4.268, 47.985],
-          ],
-        ],
-      },
-      properties: { name: 'Iroise', type: 'mpa', area: 3429 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [-26.483, 40.667],
             [-27.25, 40.667],
             [-27.25, 40.1],
@@ -10419,22 +9627,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Oceânica Do Faial', type: 'mpa', area: 2608 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-5.267, 43.883],
-            [-4.433, 43.883],
-            [-4.433, 44.2],
-            [-5.267, 44.2],
-            [-5.267, 43.883],
-          ],
-        ],
-      },
-      properties: { name: 'El Cachucho', type: 'mpa', area: 2351 },
     },
     {
       type: 'Feature',
@@ -10638,22 +9830,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [133.727, -32.836],
-            [134.011, -32.28],
-            [132.527, -31.519],
-            [132.243, -32.075],
-            [133.727, -32.836],
-          ],
-        ],
-      },
-      properties: { name: 'Nuyts Archipelago', type: 'mpa', area: 1805 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [136.762, -34.302],
             [136.089, -34.302],
             [136.089, -34.857],
@@ -10670,22 +9846,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [136.089, -34.857],
-            [136.517, -34.857],
-            [136.517, -34.302],
-            [136.089, -34.302],
-            [136.089, -34.857],
-          ],
-        ],
-      },
-      properties: { name: 'Sir Joseph Banks Group', type: 'mpa', area: 1245 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [136.781, -35.574],
             [137.46, -35.574],
             [137.46, -34.809],
@@ -10695,22 +9855,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Southern Spencer Gulf', type: 'mpa', area: 1270 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [136.781, -35.702],
-            [137.312, -35.702],
-            [137.312, -34.809],
-            [136.781, -34.809],
-            [136.781, -35.702],
-          ],
-        ],
-      },
-      properties: { name: 'Southern Spencer Gulf', type: 'mpa', area: 1569 },
     },
     {
       type: 'Feature',
@@ -10743,54 +9887,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Great Barrier Reef Coast', type: 'mpa', area: 15887 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [142.753, -10.481],
-            [140.375, -12.706],
-            [152.065, -25.199],
-            [154.443, -22.974],
-            [142.753, -10.481],
-          ],
-        ],
-      },
-      properties: { name: 'Great Barrier Reef Coast', type: 'mpa', area: 42677 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [143.009, -11.401],
-            [141.527, -12.525],
-            [151.064, -25.093],
-            [152.546, -23.969],
-            [143.009, -11.401],
-          ],
-        ],
-      },
-      properties: { name: 'Great Barrier Reef Coast', type: 'mpa', area: 4106 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [153.067, -26.07],
-            [153.902, -25.502],
-            [152.841, -23.945],
-            [152.006, -24.513],
-            [153.067, -26.07],
-          ],
-        ],
-      },
-      properties: { name: 'Great Sandy', type: 'mpa', area: 6030 },
     },
     {
       type: 'Feature',
@@ -10942,38 +10038,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [112.305, -28.78],
-            [113.121, -29.133],
-            [113.889, -27.353],
-            [113.073, -27.001],
-            [112.305, -28.78],
-          ],
-        ],
-      },
-      properties: { name: 'Abrolhos', type: 'mpa', area: 2557 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [114.391, -29.374],
-            [114.722, -26.745],
-            [109.301, -26.061],
-            [108.97, -28.691],
-            [114.391, -29.374],
-          ],
-        ],
-      },
-      properties: { name: 'Abrolhos', type: 'mpa', area: 62511 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [134.835, -9.415],
             [133.813, -8.191],
             [131.758, -9.905],
@@ -10999,22 +10063,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Argo-Rowley Terrace', type: 'mpa', area: 110578 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [120.333, -15.167],
-            [120.333, -13.243],
-            [117.25, -13.243],
-            [117.25, -15.167],
-            [120.333, -15.167],
-          ],
-        ],
-      },
-      properties: { name: 'Argo-Rowley Terrace', type: 'mpa', area: 36263 },
     },
     {
       type: 'Feature',
@@ -11054,22 +10102,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [120.1, -34.077],
-            [119.6, -34.077],
-            [119.6, -35.2],
-            [120.1, -35.2],
-            [120.1, -34.077],
-          ],
-        ],
-      },
-      properties: { name: 'Bremer', type: 'mpa', area: 3180 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [110.6, -23.317],
             [110.6, -24],
             [111.4, -24],
@@ -11102,22 +10134,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [155.8, -31.2],
-            [156.633, -31.2],
-            [156.633, -30.283],
-            [155.8, -30.283],
-            [155.8, -31.2],
-          ],
-        ],
-      },
-      properties: { name: 'Central Eastern', type: 'mpa', area: 8136 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [150.805, -18.392],
             [149.193, -21.548],
             [155.363, -24.701],
@@ -11127,38 +10143,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Coral Sea', type: 'mpa', area: 66810 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [159.034, -15.212],
-            [146.362, -8.615],
-            [141.486, -17.983],
-            [154.157, -24.58],
-            [159.034, -15.212],
-          ],
-        ],
-      },
-      properties: { name: 'Coral Sea', type: 'mpa', area: 239756 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [156.284, -26.589],
-            [162.014, -20.738],
-            [147.518, -6.541],
-            [141.787, -12.393],
-            [156.284, -26.589],
-          ],
-        ],
-      },
-      properties: { name: 'Coral Sea', type: 'mpa', area: 688689 },
     },
     {
       type: 'Feature',
@@ -11198,38 +10182,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [124.397, -33.616],
-            [123.542, -33.474],
-            [122.849, -37.632],
-            [123.704, -37.775],
-            [124.397, -33.616],
-          ],
-        ],
-      },
-      properties: { name: 'Eastern Recherche', type: 'mpa', area: 15598 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [118.844, -19.517],
-            [119.054, -20.202],
-            [121.757, -19.37],
-            [121.547, -18.686],
-            [118.844, -19.517],
-          ],
-        ],
-      },
-      properties: { name: 'Eighty Mile Beach', type: 'mpa', area: 10842 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [111.917, -21.5],
             [111.917, -20.7],
             [110.242, -20.7],
@@ -11239,70 +10191,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Gascoyne', type: 'mpa', area: 9177 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [113.379, -23.892],
-            [115.155, -22.522],
-            [112.693, -19.33],
-            [110.917, -20.7],
-            [113.379, -23.892],
-          ],
-        ],
-      },
-      properties: { name: 'Gascoyne', type: 'mpa', area: 33818 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [113.381, -24.051],
-            [114.166, -22.144],
-            [110.583, -20.67],
-            [109.799, -22.576],
-            [113.381, -24.051],
-          ],
-        ],
-      },
-      properties: { name: 'Gascoyne', type: 'mpa', area: 39171 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [131.325, -36.965],
-            [133.904, -35.708],
-            [131.4, -30.572],
-            [128.821, -31.83],
-            [131.325, -36.965],
-          ],
-        ],
-      },
-      properties: { name: 'Great Australian Bight', type: 'mpa', area: 38191 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [130.367, -32.467],
-            [131.235, -32.467],
-            [131.235, -31.516],
-            [130.367, -31.516],
-            [130.367, -32.467],
-          ],
-        ],
-      },
-      properties: { name: 'Great Australian Bight', type: 'mpa', area: 7751 },
     },
     {
       type: 'Feature',
@@ -11326,22 +10214,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [140.757, -16.7],
-            [140.757, -15],
-            [138.502, -15],
-            [138.502, -16.7],
-            [140.757, -16.7],
-          ],
-        ],
-      },
-      properties: { name: 'Gulf of Carpentaria', type: 'mpa', area: 20263 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [152.296, -32.333],
             [152.296, -32.683],
             [153.058, -32.683],
@@ -11351,22 +10223,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Hunter', type: 'mpa', area: 1744 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [152.9, -32.017],
-            [152.9, -32.683],
-            [153.7, -32.683],
-            [153.7, -32.017],
-            [152.9, -32.017],
-          ],
-        ],
-      },
-      properties: { name: 'Hunter', type: 'mpa', area: 4532 },
     },
     {
       type: 'Feature',
@@ -11438,38 +10294,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [122.35, -16.317],
-            [123.469, -16.317],
-            [123.469, -15.283],
-            [122.35, -15.283],
-            [122.35, -16.317],
-          ],
-        ],
-      },
-      properties: { name: 'Kimberley', type: 'mpa', area: 5698 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [122.269, -15.699],
-            [122.508, -16.288],
-            [124.367, -15.534],
-            [124.129, -14.946],
-            [122.269, -15.699],
-          ],
-        ],
-      },
-      properties: { name: 'Kimberley', type: 'mpa', area: 6429 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [135.669, -15],
             [135.669, -15.361],
             [136.3, -15.361],
@@ -11495,38 +10319,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Lord Howe', type: 'mpa', area: 61356 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [158.2, -31.283],
-            [159.9, -31.283],
-            [159.9, -28.883],
-            [158.2, -28.883],
-            [158.2, -31.283],
-          ],
-        ],
-      },
-      properties: { name: 'Lord Howe', type: 'mpa', area: 39794 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [159.9, -29.35],
-            [158.8, -29.35],
-            [158.8, -32.333],
-            [159.9, -32.333],
-            [159.9, -29.35],
-          ],
-        ],
-      },
-      properties: { name: 'Lord Howe', type: 'mpa', area: 9302 },
     },
     {
       type: 'Feature',
@@ -11582,38 +10374,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [167.667, -29.75],
-            [168.333, -29.75],
-            [168.333, -28.633],
-            [167.667, -28.633],
-            [167.667, -29.75],
-          ],
-        ],
-      },
-      properties: { name: 'Norfolk', type: 'mpa', area: 8015 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [168.967, -27.6],
-            [168.967, -25.845],
-            [166.65, -25.845],
-            [166.65, -27.6],
-            [168.967, -27.6],
-          ],
-        ],
-      },
-      properties: { name: 'Norfolk', type: 'mpa', area: 41827 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [129.258, -11.75],
             [130.1, -11.75],
             [130.1, -10.833],
@@ -11630,22 +10390,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [125.592, -11.718],
-            [126.451, -13.496],
-            [131.787, -10.919],
-            [130.928, -9.141],
-            [125.592, -11.718],
-          ],
-        ],
-      },
-      properties: { name: 'Oceanic Shoals', type: 'mpa', area: 64808 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [114, -31.7],
             [114, -32.4],
             [115.133, -32.4],
@@ -11655,38 +10399,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Perth Canyon', type: 'mpa', area: 4365 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [114.5, -32.3],
-            [114.934, -32.3],
-            [114.934, -31.7],
-            [114.5, -31.7],
-            [114.5, -32.3],
-          ],
-        ],
-      },
-      properties: { name: 'Perth Canyon', type: 'mpa', area: 1244 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [114.5, -32.4],
-            [115.25, -32.4],
-            [115.25, -31.9],
-            [114.5, -31.9],
-            [114.5, -32.4],
-          ],
-        ],
-      },
-      properties: { name: 'Perth Canyon', type: 'mpa', area: 1822 },
     },
     {
       type: 'Feature',
@@ -11726,38 +10438,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [110.99, -33.275],
-            [110.69, -38.072],
-            [121.871, -38.77],
-            [122.17, -33.973],
-            [110.99, -33.275],
-          ],
-        ],
-      },
-      properties: { name: 'South-west Corner', type: 'mpa', area: 54959 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [111.713, -33.295],
-            [111.407, -38.132],
-            [121.938, -38.797],
-            [122.243, -33.961],
-            [111.713, -33.295],
-          ],
-        ],
-      },
-      properties: { name: 'South-west Corner', type: 'mpa', area: 122154 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [125.8, -33.1],
             [126.44, -33.1],
             [126.44, -32.294],
@@ -11767,22 +10447,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Twilight', type: 'mpa', area: 3615 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [126.44, -32.605],
-            [126.44, -32.298],
-            [125.8, -32.298],
-            [125.8, -32.605],
-            [126.44, -32.605],
-          ],
-        ],
-      },
-      properties: { name: 'Twilight', type: 'mpa', area: 1039 },
     },
     {
       type: 'Feature',
@@ -11806,22 +10470,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [136.979, -12.431],
-            [137.362, -12.386],
-            [137.198, -10.967],
-            [136.815, -11.011],
-            [136.979, -12.431],
-          ],
-        ],
-      },
-      properties: { name: 'Wessel', type: 'mpa', area: 3835 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [142.001, -11.169],
             [142.235, -10.479],
             [140.757, -9.977],
@@ -11831,38 +10479,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'West Cape York', type: 'mpa', area: 3350 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [141.7, -11.7],
-            [142.093, -11.7],
-            [142.093, -11.067],
-            [141.7, -11.067],
-            [141.7, -11.7],
-          ],
-        ],
-      },
-      properties: { name: 'West Cape York', type: 'mpa', area: 2585 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [141.7, -11.7],
-            [141.7, -10.667],
-            [139.996, -10.667],
-            [139.996, -11.7],
-            [141.7, -11.7],
-          ],
-        ],
-      },
-      properties: { name: 'West Cape York', type: 'mpa', area: 10178 },
     },
     {
       type: 'Feature',
@@ -11886,22 +10502,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [134.464, -33.141],
-            [133.232, -33.23],
-            [133.667, -39.261],
-            [134.9, -39.171],
-            [134.464, -33.141],
-          ],
-        ],
-      },
-      properties: { name: 'Western Eyre', type: 'mpa', area: 17467 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [136.9, -36.217],
             [136.9, -35.664],
             [136.1, -35.664],
@@ -11911,22 +10511,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Western Kangaroo Island', type: 'mpa', area: 2220 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [10.99, 56.501],
-            [11.008, 57.266],
-            [10.438, 57.28],
-            [10.419, 56.515],
-            [10.99, 56.501],
-          ],
-        ],
-      },
-      properties: { name: 'Ålborg Bugt, østlige del', type: 'mpa', area: 1776 },
     },
     {
       type: 'Feature',
@@ -11950,22 +10534,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [1.777, 51.303],
-            [1.781, 51.033],
-            [2.538, 51.045],
-            [2.533, 51.315],
-            [1.777, 51.303],
-          ],
-        ],
-      },
-      properties: { name: 'Bancs des Flandres', type: 'mpa', area: 1121 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [17.994, 74.705],
             [17.999, 74.126],
             [20.017, 74.144],
@@ -11975,22 +10543,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Bjørnøya', type: 'mpa', area: 2790 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [10.7, 58.267],
-            [10.7, 58.583],
-            [10.029, 58.583],
-            [10.029, 58.267],
-            [10.7, 58.267],
-          ],
-        ],
-      },
-      properties: { name: 'Bratten', type: 'mpa', area: 1205 },
     },
     {
       type: 'Feature',
@@ -12030,22 +10582,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [4.598, 55.213],
-            [4.748, 55.548],
-            [3.786, 55.98],
-            [3.636, 55.645],
-            [4.598, 55.213],
-          ],
-        ],
-      },
-      properties: { name: 'Doggerbank', type: 'mpa', area: 1692 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [-13.862, 56.568],
             [-12.553, 56.966],
             [-13.165, 58.979],
@@ -12055,22 +10591,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'East Rockall Bank', type: 'mpa', area: 3687 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-5.267, 44.21],
-            [-5.267, 43.883],
-            [-4.443, 43.883],
-            [-4.443, 44.21],
-            [-5.267, 44.21],
-          ],
-        ],
-      },
-      properties: { name: 'El Cachucho', type: 'mpa', area: 2396 },
     },
     {
       type: 'Feature',
@@ -12126,38 +10646,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [-7.269, 70.924],
-            [-7.385, 71.528],
-            [-9.727, 71.077],
-            [-9.61, 70.473],
-            [-7.269, 70.924],
-          ],
-        ],
-      },
-      properties: { name: 'Jan Mayen', type: 'mpa', area: 4296 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [2.806, 54.202],
-            [2.805, 53.834],
-            [3.318, 53.832],
-            [3.319, 54.201],
-            [2.806, 54.202],
-          ],
-        ],
-      },
-      properties: { name: 'Klaverbank', type: 'mpa', area: 1237 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [-2.929, 53.481],
             [-3.093, 53.996],
             [-4.346, 53.599],
@@ -12199,22 +10687,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Niedersächsisches Wattenmeer', type: 'mpa', area: 2741 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [6.607, 53.56],
-            [6.396, 54.019],
-            [4.33, 53.069],
-            [4.541, 52.61],
-            [6.607, 53.56],
-          ],
-        ],
-      },
-      properties: { name: 'Noordzeekustzone', type: 'mpa', area: 1413 },
     },
     {
       type: 'Feature',
@@ -12315,22 +10787,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Pertuis charentais', type: 'mpa', area: 4561 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-2.671, 46.428],
-            [-2.668, 45.64],
-            [-1.087, 45.647],
-            [-1.091, 46.434],
-            [-2.671, 46.428],
-          ],
-        ],
-      },
-      properties: { name: 'Pertuis charentais - Rochebonne', type: 'mpa', area: 8193 },
     },
     {
       type: 'Feature',
@@ -12450,22 +10906,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [6.833, 55.624],
-            [6.778, 55.297],
-            [8.042, 55.084],
-            [8.097, 55.411],
-            [6.833, 55.624],
-          ],
-        ],
-      },
-      properties: { name: 'Sydlige Nordsø', type: 'mpa', area: 2467 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [6.39, 55.362],
             [6.274, 54.632],
             [8.161, 54.332],
@@ -12491,26 +10931,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'The Wash and North Norfolk Coast', type: 'mpa', area: 1042 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [8.48, 54.8],
-            [8.866, 55.05],
-            [8.376, 55.806],
-            [7.99, 55.556],
-            [8.48, 54.8],
-          ],
-        ],
-      },
-      properties: {
-        name: 'Vadehavet med Ribe Å, Tved Å og Varde Å vest for Varde',
-        type: 'mpa',
-        area: 1135,
-      },
     },
     {
       type: 'Feature',
@@ -12575,22 +10995,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Charlie-Gibbs North High Seas MPA', type: 'mpa', area: 177300 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [4.26, 55.366],
-            [3.934, 55.861],
-            [2.436, 54.874],
-            [2.762, 54.378],
-            [4.26, 55.366],
-          ],
-        ],
-      },
-      properties: { name: 'Doggerbank', type: 'mpa', area: 4687 },
     },
     {
       type: 'Feature',
@@ -12710,22 +11114,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [-0.02, 55.999],
-            [-0.019, 55.499],
-            [1.342, 55.501],
-            [1.341, 56.001],
-            [-0.02, 55.999],
-          ],
-        ],
-      },
-      properties: { name: 'Swallow Sand', type: 'mpa', area: 4735 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [5.975, 43.127],
             [6.016, 42.865],
             [6.822, 42.989],
@@ -12838,22 +11226,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [-1.523, 61.26],
-            [-1.639, 61.569],
-            [-4.553, 60.479],
-            [-4.437, 60.169],
-            [-1.523, 61.26],
-          ],
-        ],
-      },
-      properties: { name: 'Faroe-Shetland Sponge Belt', type: 'mpa', area: 5256 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [-8.608, 58.019],
             [-8.506, 58.343],
             [-9.696, 58.718],
@@ -12863,22 +11235,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Geikie Slide And Hebridean Slope', type: 'mpa', area: 2212 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-16.648, 57.85],
-            [-16.141, 57.85],
-            [-16.141, 58.25],
-            [-16.648, 58.25],
-            [-16.648, 57.85],
-          ],
-        ],
-      },
-      properties: { name: 'Hatton-Rockall Basin', type: 'mpa', area: 1254 },
     },
     {
       type: 'Feature',
@@ -12911,22 +11267,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'The Barra Fan And Hebrides Terrace Seamount', type: 'mpa', area: 4377 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-3.953, 59.508],
-            [-4.016, 59.923],
-            [-6.119, 59.604],
-            [-6.056, 59.189],
-            [-3.953, 59.508],
-          ],
-        ],
-      },
-      properties: { name: 'West Shetland Shelf', type: 'mpa', area: 4082 },
     },
     {
       type: 'Feature',
@@ -13302,22 +11642,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [-80.977, 24.78],
-            [-80.331, 25.116],
-            [-80.889, 26.187],
-            [-81.534, 25.851],
-            [-80.977, 24.78],
-          ],
-        ],
-      },
-      properties: { name: 'Everglades National Park', type: 'mpa', area: 5853 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [118.405, -33.883],
             [118.879, -34.895],
             [120.664, -34.059],
@@ -13343,22 +11667,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'North-East Greenland', type: 'mpa', area: 958745 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [119.79, -8.831],
-            [119.827, -8.418],
-            [119.352, -8.375],
-            [119.315, -8.788],
-            [119.79, -8.831],
-          ],
-        ],
-      },
-      properties: { name: 'Komodo', type: 'mpa', area: 1717 },
     },
     {
       type: 'Feature',
@@ -13439,54 +11747,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Great Barrier Reef', type: 'mpa', area: 348233 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [144.116, -10.137],
-            [141.15, -12.541],
-            [152.094, -26.044],
-            [155.059, -23.641],
-            [144.116, -10.137],
-          ],
-        ],
-      },
-      properties: { name: 'Great Barrier Reef', type: 'mpa', area: 114930 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [143.13, -11.286],
-            [141.295, -12.819],
-            [152.132, -25.798],
-            [153.967, -24.265],
-            [143.13, -11.286],
-          ],
-        ],
-      },
-      properties: { name: 'Great Barrier Reef', type: 'mpa', area: 15106 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [144.099, -9.496],
-            [140.957, -11.885],
-            [151.632, -25.919],
-            [154.774, -23.529],
-            [144.099, -9.496],
-          ],
-        ],
-      },
-      properties: { name: 'Great Barrier Reef', type: 'mpa', area: 214901 },
     },
     {
       type: 'Feature',
@@ -13679,22 +11939,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Lord Howe Island Group', type: 'mpa', area: 1465 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-71.685, 18.103],
-            [-71.961, 17.662],
-            [-71.509, 17.379],
-            [-71.233, 17.82],
-            [-71.685, 18.103],
-          ],
-        ],
-      },
-      properties: { name: 'Jaragua', type: 'mpa', area: 1542 },
     },
     {
       type: 'Feature',
@@ -13990,22 +12234,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [6.561, 53.773],
-            [6.64, 53.16],
-            [8.746, 53.433],
-            [8.667, 54.046],
-            [6.561, 53.773],
-          ],
-        ],
-      },
-      properties: { name: 'Niedersächsisches Wattenmeer', type: 'mpa', area: 3450 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [130.613, -2.232],
             [130.616, -1.961],
             [130.157, -1.957],
@@ -14127,22 +12355,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Punta de Manabique', type: 'mpa', area: 1392 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-83.727, 13.549],
-            [-82.594, 13.335],
-            [-82.311, 14.832],
-            [-83.444, 15.046],
-            [-83.727, 13.549],
-          ],
-        ],
-      },
-      properties: { name: 'Cayos Miskitos y Franja Costera Inmediata', type: 'mpa', area: 8567 },
     },
     {
       type: 'Feature',
@@ -14538,38 +12750,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [113.652, -26.688],
-            [114.381, -26.515],
-            [113.981, -24.836],
-            [113.253, -25.009],
-            [113.652, -26.688],
-          ],
-        ],
-      },
-      properties: { name: 'Shark Bay', type: 'mpa', area: 1537 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [113.639, -26.709],
-            [114.369, -26.091],
-            [113.485, -25.048],
-            [112.755, -25.667],
-            [113.639, -26.709],
-          ],
-        ],
-      },
-      properties: { name: 'Shark Bay', type: 'mpa', area: 5265 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [8.618, 53.697],
             [9.25, 53.958],
             [8.736, 55.201],
@@ -14647,22 +12827,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Laguna de Karataska', type: 'mpa', area: 1337 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-81.212, 21.723],
-            [-80.846, 22.257],
-            [-81.807, 22.917],
-            [-82.173, 22.383],
-            [-81.212, 21.723],
-          ],
-        ],
-      },
-      properties: { name: 'Ciénaga de Zapata', type: 'mpa', area: 4201 },
     },
     {
       type: 'Feature',
@@ -14775,22 +12939,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Jubail Marine Wildlife Sanctuary', type: 'mpa', area: 2383 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [114.368, -21.734],
-            [113.922, -21.583],
-            [113.123, -23.948],
-            [113.569, -24.099],
-            [114.368, -21.734],
-          ],
-        ],
-      },
-      properties: { name: 'Ningaloo', type: 'mpa', area: 1693 },
     },
     {
       type: 'Feature',
@@ -14962,22 +13110,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [8.217, 55.835],
-            [7.877, 55.416],
-            [8.73, 54.722],
-            [9.071, 55.142],
-            [8.217, 55.835],
-          ],
-        ],
-      },
-      properties: { name: 'Vadehavet', type: 'mpa', area: 1508 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [-51.059, 68.298],
             [-51.094, 68.667],
             [-52.518, 68.529],
@@ -15066,22 +13198,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [28.706, 44.321],
-            [29.875, 44.91],
-            [29.304, 46.043],
-            [28.135, 45.453],
-            [28.706, 44.321],
-          ],
-        ],
-      },
-      properties: { name: 'Danube Delta', type: 'mpa', area: 6278 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [32.448, 67.178],
             [32.313, 66.717],
             [33.975, 66.23],
@@ -15114,22 +13230,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [-16.834, 13.59],
-            [-16.351, 13.589],
-            [-16.35, 14.355],
-            [-16.833, 14.356],
-            [-16.834, 13.59],
-          ],
-        ],
-      },
-      properties: { name: 'Delta du Saloum', type: 'mpa', area: 3206 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [-162.103, 55.156],
             [-162.165, 55.583],
             [-163.37, 55.411],
@@ -15139,22 +13239,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Izembek Lagoon National Wildlife Refuge', type: 'mpa', area: 2183 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-80.984, 24.778],
-            [-80.334, 25.112],
-            [-80.886, 26.184],
-            [-81.535, 25.85],
-            [-80.984, 24.778],
-          ],
-        ],
-      },
-      properties: { name: 'Everglades National Park', type: 'mpa', area: 5741 },
     },
     {
       type: 'Feature',
@@ -15350,26 +13434,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         name: 'Alto Golfo de California y Delta del Río Colorado',
         type: 'mpa',
         area: 1656,
-      },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-113.598, 31.343],
-            [-113.865, 32.426],
-            [-115.246, 32.085],
-            [-114.979, 31.001],
-            [-113.598, 31.343],
-          ],
-        ],
-      },
-      properties: {
-        name: 'Alto Golfo de California y Delta del Río Colorado',
-        type: 'mpa',
-        area: 7727,
       },
     },
     {
@@ -15774,22 +13838,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [159.381, -54.251],
-            [158.659, -54.019],
-            [158.272, -55.222],
-            [158.993, -55.454],
-            [159.381, -54.251],
-          ],
-        ],
-      },
-      properties: { name: 'Macquarie Island', type: 'mpa', area: 5560 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [89.94, 21.768],
             [89.875, 22.102],
             [89.01, 21.936],
@@ -15954,22 +14002,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [17.994, 74.705],
-            [17.999, 74.126],
-            [20.017, 74.144],
-            [20.012, 74.723],
-            [17.994, 74.705],
-          ],
-        ],
-      },
-      properties: { name: 'Bjørnøya', type: 'mpa', area: 2966 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [-85.236, 10.752],
             [-85.345, 11.15],
             [-86.041, 10.96],
@@ -15995,54 +14027,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'iSimangaliso Wetland Park', type: 'mpa', area: 3216 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-88.638, 16.13],
-            [-88.798, 15.893],
-            [-88.322, 15.572],
-            [-88.162, 15.809],
-            [-88.638, 16.13],
-          ],
-        ],
-      },
-      properties: { name: 'Punta de Manabique', type: 'mpa', area: 1315 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-80.94, 21.539],
-            [-80.525, 22.148],
-            [-81.764, 22.994],
-            [-82.18, 22.384],
-            [-80.94, 21.539],
-          ],
-        ],
-      },
-      properties: { name: 'Ciénaga de Zapata', type: 'mpa', area: 6503 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-78.544, 22.606],
-            [-78.957, 22.988],
-            [-79.461, 22.443],
-            [-79.048, 22.061],
-            [-78.544, 22.606],
-          ],
-        ],
-      },
-      properties: { name: 'Buenavista', type: 'mpa', area: 3152 },
     },
     {
       type: 'Feature',
@@ -16223,38 +14207,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Península de Zapata', type: 'mpa', area: 7227 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-78.548, 22.612],
-            [-79.002, 22.999],
-            [-79.478, 22.442],
-            [-79.024, 22.054],
-            [-78.548, 22.612],
-          ],
-        ],
-      },
-      properties: { name: 'Buenavista', type: 'mpa', area: 3163 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-85.087, 22.059],
-            [-85.093, 21.749],
-            [-84.172, 21.73],
-            [-84.166, 22.041],
-            [-85.087, 22.059],
-          ],
-        ],
-      },
-      properties: { name: 'Peninsula de Guanahacabibes', type: 'mpa', area: 1604 },
     },
     {
       type: 'Feature',
@@ -16586,38 +14538,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [153.511, -26.745],
-            [152.948, -26.832],
-            [153.125, -27.989],
-            [153.688, -27.903],
-            [153.511, -26.745],
-          ],
-        ],
-      },
-      properties: { name: 'Moreton Bay', type: 'mpa', area: 2634 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [-175.822, -6.48],
-            [-169.691, -6.463],
-            [-169.706, -0.983],
-            [-175.837, -0.999],
-            [-175.822, -6.48],
-          ],
-        ],
-      },
-      properties: { name: 'Phoenix Islands Protected Area', type: 'mpa', area: 400099 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [-122.627, 48.396],
             [-122.714, 48.882],
             [-123.336, 48.771],
@@ -16647,22 +14567,6 @@ const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
         ],
       },
       properties: { name: 'Elba', type: 'mpa', area: 30517 },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [10.917, -4.014],
-            [11.429, -4.512],
-            [12.045, -3.879],
-            [11.533, -3.381],
-            [10.917, -4.014],
-          ],
-        ],
-      },
-      properties: { name: 'Conkouati-Douli', type: 'mpa', area: 5169 },
     },
     {
       type: 'Feature',

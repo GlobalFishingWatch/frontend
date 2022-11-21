@@ -1,20 +1,24 @@
 import fs from 'fs/promises'
 import path from 'path'
+import { uniqBy } from 'lodash'
 import mpaData from '../data/source/top1000mpa.json'
 
 async function start() {
   try {
-    const mpas = mpaData.features.map((f) => {
-      return {
-        type: 'Feature',
-        geometry: f.geometry,
-        properties: {
-          name: f.properties.NAME,
-          type: 'mpa',
-          area: Math.round(f.properties.GIS_AREA),
-        },
-      }
-    })
+    const mpas = uniqBy(
+      mpaData.features.map((f) => {
+        return {
+          type: 'Feature',
+          geometry: f.geometry,
+          properties: {
+            name: f.properties.NAME,
+            type: 'mpa',
+            area: Math.round(f.properties.GIS_AREA),
+          },
+        }
+      }),
+      'properties.name'
+    )
     const mpasAreasString = `
     import { FeatureCollection } from 'geojson'
     import { OceanAreaProperties } from '../ocean-areas'
