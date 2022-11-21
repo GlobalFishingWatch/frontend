@@ -125,6 +125,7 @@
     "onScreen": "on screen",
     "optional": "Opcional",
     "or": "ou",
+    "partnerSites": "Partner sites",
     "presence": "Presença",
     "report": "Relatório",
     "resetHelpHints": "Mostrar novamente todas as dicas de ajuda",
@@ -345,6 +346,10 @@
     "supportBy": "Apoiado por"
   },
   "layer": {
+    "areas": {
+      "mpa": "MPA",
+      "eez": "EEZ"
+    },
     "activity_fit_bounds": "Center view on activity",
     "add": "Adicionar camada",
     "color_change": "Alterar cor",
@@ -399,7 +404,7 @@
     "rulers_add": "Adicionar réguas",
     "rulers_remove": "Remover todas as réguas",
     "runningExpensiveVesselQuery": "Executar essa query custará em torno de {{cost}} $. Tem certeza de que quer executá-la?",
-    "search": "Localizar áreas",
+    "search": "Search ocean and sea areas, MPAs or EEZs",
     "zoom_in": "Aumentar zoom",
     "zoom_out": "Diminuir zoom"
   },
@@ -592,6 +597,14 @@
     "update": "Atualizar",
     "uploadPublic": "Permitir que outros usuários vejam este espaço de trabalho",
     "uploadPublicDisabled": "Este espaço de trabalho não pode ser compartilhado publicamente porque contém dados privados",
-    "user": "User workspace"
+    "user": "User workspace",
+    "wizard": {
+      "error": "There was an error creating the workspace",
+      "name": "Give a name to your workspace",
+      "help": "You can move the map and update your workspace later",
+      "exploreArea": "See area",
+      "exploreGlobal": "See global",
+      "title": "Setup a marine manager workspace for any area globally"
+    }
   }
 }
