@@ -48,6 +48,7 @@ import { ReactComponent as Info } from '../assets/icons/info.svg'
 import { ReactComponent as Language } from '../assets/icons/language.svg'
 import { ReactComponent as Layers } from '../assets/icons/layers.svg'
 import { ReactComponent as Logout } from '../assets/icons/logout.svg'
+import { ReactComponent as Magic } from '../assets/icons/magic.svg'
 import { ReactComponent as Menu } from '../assets/icons/menu.svg'
 import { ReactComponent as Minus } from '../assets/icons/minus.svg'
 import { ReactComponent as More } from '../assets/icons/more.svg'
@@ -133,6 +134,7 @@ export const IconComponents = {
   language: Language,
   layers: Layers,
   logout: Logout,
+  magic: Magic,
   menu: Menu,
   minus: Minus,
   more: More,

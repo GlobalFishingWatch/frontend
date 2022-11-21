@@ -7,6 +7,7 @@ import { DownloadActivity } from '@globalfishingwatch/api-types'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
+import { AreaKeys } from 'features/areas/areas.slice'
 import { getUTCDateTime } from 'utils/dates'
 import { Format, GroupBy, SpatialResolution, TemporalResolution } from './downloadActivity.config'
 
@@ -16,12 +17,12 @@ export type DateRange = {
 }
 
 export interface DownloadActivityState {
-  areaKey: string
+  areaKey: AreaKeys | undefined
   status: AsyncReducerStatus
 }
 
 const initialState: DownloadActivityState = {
-  areaKey: '',
+  areaKey: undefined,
   status: AsyncReducerStatus.Idle,
 }
 
@@ -106,14 +107,14 @@ const downloadActivitySlice = createSlice({
   name: 'downloadActivity',
   initialState,
   reducers: {
-    setDownloadActivityAreaKey: (state, action: PayloadAction<string>) => {
+    setDownloadActivityAreaKey: (state, action: PayloadAction<AreaKeys>) => {
       state.areaKey = action.payload
     },
     resetDownloadActivityStatus: (state) => {
       state.status = AsyncReducerStatus.Idle
     },
     resetDownloadActivityState: (state) => {
-      state.areaKey = ''
+      state.areaKey = undefined
       state.status = AsyncReducerStatus.Idle
     },
   },
