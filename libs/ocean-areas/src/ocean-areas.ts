@@ -1,4 +1,4 @@
-import { BBox, Feature, FeatureCollection, Geometry } from 'geojson'
+import { Feature, FeatureCollection, Geometry } from 'geojson'
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
 import explode from '@turf/explode'
 import nearest from '@turf/nearest-point'
@@ -11,12 +11,16 @@ import oceanAreasLocales from './data/locales'
 import sourceLocales from './data/locales/source.json'
 
 export type OceanAreaLocaleKey = keyof typeof sourceLocales
+export type OceanAreaType = 'ocean' | 'eez' | 'mpa'
+export type OceanAreaBBox = [number, number, number, number]
+
 export interface OceanAreaProperties {
-  type: string
+  type: OceanAreaType
   name: string
+  /* Extension of the area in kilometers */
   area?: number
   mrgid?: string
-  bounds?: BBox
+  bounds?: OceanAreaBBox
 }
 
 export type OceanArea = Feature<Geometry, OceanAreaProperties>
@@ -74,7 +78,7 @@ const searchOceanAreas = (
     ...feature,
     properties: {
       ...feature.properties,
-      bounds: bbox(feature as any),
+      bounds: bbox(feature as any) as OceanAreaBBox,
     },
   }))
   return areas

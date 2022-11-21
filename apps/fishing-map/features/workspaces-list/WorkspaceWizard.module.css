@@ -19,6 +19,7 @@
 .input input:placeholder-shown {
   border-radius: 2rem;
   padding-inline: 1.5rem;
+  padding-right: var(--size-M);
   background: var(--color-terthiary-blue);
   border-bottom: none;
 }
@@ -41,6 +42,10 @@
   position: absolute;
   bottom: 0;
   right: 0;
+}
+
+.disabled {
+  pointer-events: none;
 }
 
 .actions {
