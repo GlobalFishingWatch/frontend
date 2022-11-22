@@ -11,14 +11,11 @@ import { API_GATEWAY } from '../../config'
 import LAYERS, { HIGHLIGHT_SUFIX } from './context-layers'
 import {
   DEFAULT_LINE_COLOR,
+  getContextSourceId,
   getFillPaintWithFeatureState,
   getLinePaintWithFeatureState,
 } from './context.utils'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from './config'
-
-const getSourceId = (config: ContextGeneratorConfig) => {
-  return `${config.id}-${config.layer}`
-}
 
 const getPaintPropertyByType = (layer: LayerSpecification, config: any) => {
   const opacity = config.opacity !== undefined ? config.opacity : 1
@@ -74,7 +71,7 @@ class ContextGenerator {
       : API_GATEWAY + config.tilesUrl
     return [
       {
-        id: getSourceId(config),
+        id: getContextSourceId(config),
         type: 'vector',
         promoteId: 'gfw_id',
         tiles: [tilesUrl.replace(/{{/g, '{').replace(/}}/g, '}')],
@@ -95,7 +92,7 @@ class ContextGenerator {
       return {
         ...baseLayer,
         id: baseLayer.id + config.id,
-        source: getSourceId(config),
+        source: getContextSourceId(config),
         'source-layer': DEFAULT_CONTEXT_SOURCE_LAYER,
         layout: {
           ...baseLayer.layout,

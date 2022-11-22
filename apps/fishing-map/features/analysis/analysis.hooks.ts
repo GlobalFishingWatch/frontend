@@ -35,7 +35,11 @@ import {
   selectContextAreasDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { Area, fetchAreaThunk, FetchAreaThunkParam } from 'features/areas/areas.slice'
+import {
+  DatasetAreaDetail,
+  fetchAreaDetailThunk,
+  FetchAreaDetailThunkParam,
+} from 'features/areas/areas.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getUTCDateTime } from 'utils/dates'
 import { filterByPolygon } from './analysis-geo.utils'
@@ -64,7 +68,7 @@ export type DateTimeSeries = {
 export const useFilteredTimeSeries = () => {
   const [timeseries, setTimeseries] = useRecoilState(mapTimeseriesAtom)
   const [blur, setBlur] = useState(false)
-  const analysisAreaGeometry = useSelector(selectAnalysisArea)?.geometry
+  const analysisAreaGeometry = useSelector(selectAnalysisArea)?.data?.geometry
   const analysisType = useSelector(selectAnalysisTypeQuery)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparison = useSelector(selectAnalysisTimeComparison)
@@ -178,8 +182,8 @@ export const useAnalysisArea = () => {
   const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
   const contextDataviews = useSelector(selectContextAreasDataviews)
   const { areaId, sourceId, datasetId } = useSelector(selectAnalysisQuery)
-  const analysisArea = useSelector(selectAnalysisArea) || ({} as Area)
-  const { status, bounds } = analysisArea
+  const analysisArea = useSelector(selectAnalysisArea)
+  const { status, data: { bounds } = {} } = analysisArea || ({} as DatasetAreaDetail)
 
   const setHighlightedArea = useCallback(() => {
     cleanFeatureState('highlight')
@@ -200,8 +204,8 @@ export const useAnalysisArea = () => {
   )
 
   const fetchAnalysisArea = useCallback(
-    (fetchParams: FetchAreaThunkParam) => {
-      dispatch(fetchAreaThunk(fetchParams))
+    (fetchParams: FetchAreaDetailThunkParam) => {
+      dispatch(fetchAreaDetailThunk(fetchParams))
     },
     [dispatch]
   )

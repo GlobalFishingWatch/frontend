@@ -29,7 +29,8 @@ import {
   Range,
 } from 'features/timebar/timebar.slice'
 import { selectBivariateDataviews, selectTimeRange } from 'features/app/app.selectors'
-import { isWorkspaceLocation } from 'routes/routes.selectors'
+import { selectMarineManagerDataviewInstanceResolved } from 'features/dataviews/dataviews.slice'
+import { selectIsMarineManagerLocation, isWorkspaceLocation } from 'routes/routes.selectors'
 import { WorkspaceCategories } from 'data/workspaces'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { BivariateDataviews } from 'types'
@@ -256,11 +257,26 @@ export const selectWorkspacesListGenerator = createSelector(
   }
 )
 
+export const selectMarineManagerGenerators = createSelector(
+  [selectIsMarineManagerLocation, selectMarineManagerDataviewInstanceResolved],
+  (isMarineManagerLocation, marineManagerDataviewInstances) => {
+    if (isMarineManagerLocation && marineManagerDataviewInstances?.length) {
+      const mpaGeneratorConfig = getDataviewsGeneratorConfigs(marineManagerDataviewInstances)
+      if (mpaGeneratorConfig) {
+        return mpaGeneratorConfig
+      }
+    }
+  }
+)
 export const selectMapWorkspacesListGenerators = createSelector(
-  [selectDefaultBasemapGenerator, selectWorkspacesListGenerator],
-  (basemapGenerator, workspaceGenerator): AnyGeneratorConfig[] => {
-    if (!workspaceGenerator) return [basemapGenerator]
-    return [basemapGenerator, workspaceGenerator]
+  [selectDefaultBasemapGenerator, selectWorkspacesListGenerator, selectMarineManagerGenerators],
+  (basemapGenerator, workspaceGenerator, marineManagerGenerators): AnyGeneratorConfig[] => {
+    const generators: AnyGeneratorConfig[] = [basemapGenerator]
+    if (marineManagerGenerators?.length) {
+      generators.push(...marineManagerGenerators)
+    }
+    if (workspaceGenerator) generators.push(workspaceGenerator)
+    return generators
   }
 )
 

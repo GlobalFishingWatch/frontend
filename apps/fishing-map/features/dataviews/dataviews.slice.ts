@@ -28,6 +28,7 @@ import {
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
 import {
+  selectIsMarineManagerLocation,
   selectUrlDataviewInstances,
   selectUrlDataviewInstancesOrder,
 } from 'routes/routes.selectors'
@@ -40,6 +41,7 @@ import {
 } from 'features/resources/resources.slice'
 import { RootState } from 'store'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
+import { MARINE_MANAGER_DATAVIEWS } from 'data/default-workspaces/marine-manager'
 import { trackDatasetConfigsCallback } from '../resources/resources.utils'
 
 export const fetchDataviewByIdThunk = createAsyncThunk(
@@ -214,6 +216,19 @@ export const selectAllDataviewInstancesResolved = createSelector(
   }
 )
 
+export const selectMarineManagerDataviewInstanceResolved = createSelector(
+  [selectAllDataviews, selectAllDatasets],
+  (dataviews, datasets): UrlDataviewInstance[] | undefined => {
+    if (!dataviews.length || !datasets.length) return []
+    const dataviewInstancesResolved = resolveDataviews(
+      MARINE_MANAGER_DATAVIEWS,
+      dataviews,
+      datasets
+    )
+    return dataviewInstancesResolved
+  }
+)
+
 /**
  * Calls getResources to prepare track dataviews' datasetConfigs.
  * Injects app-specific logic by using getResources's callback
@@ -240,6 +255,18 @@ export const selectDataviewInstancesResolved = createSelector(
     return dataviewsResources.dataviews || defaultDataviewResolved
   }
 )
+
+export const selectCurrentDataviewInstancesResolved = createSelector(
+  [
+    selectDataviewInstancesResolved,
+    selectIsMarineManagerLocation,
+    selectMarineManagerDataviewInstanceResolved,
+  ],
+  (dataviewsInstances = [], isMarineManagerLocation, marineManagerDataviewInstances = []) => {
+    return isMarineManagerLocation ? marineManagerDataviewInstances : dataviewsInstances
+  }
+)
+
 export const selectDataviewInstancesByType = (type: GeneratorType) => {
   return createSelector([selectDataviewInstancesResolved], (dataviews) => {
     return dataviews?.filter((dataview) => dataview.config?.type === type)

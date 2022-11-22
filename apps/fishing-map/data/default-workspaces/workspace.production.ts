@@ -16,6 +16,8 @@ import {
   GRATICULES_DATAVIEW_SLUG,
   FAO_AREAS_DATAVIEW_SLUG,
   SAR_DATAVIEW_SLUG,
+  MPA_DATAVIEW_INSTANCE_ID,
+  EEZ_DATAVIEW_INSTANCE,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 // This id is used for highlighting the dataview with a popup on the right
@@ -101,7 +103,7 @@ const workspace: Workspace<WorkspaceState> = {
       },
     },
     {
-      id: 'context-layer-eez',
+      id: EEZ_DATAVIEW_INSTANCE,
       config: {
         color: '#069688',
         visible: false,
@@ -109,7 +111,7 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: EEZ_DATAVIEW_SLUG,
     },
     {
-      id: 'context-layer-mpa',
+      id: MPA_DATAVIEW_INSTANCE_ID,
       config: {
         color: '#1AFF6B',
         visible: false,

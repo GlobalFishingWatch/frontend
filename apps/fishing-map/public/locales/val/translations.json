@@ -125,6 +125,7 @@
     "onScreen": "crwdns18448:0crwdne18448:0",
     "optional": "crwdns5412:0crwdne5412:0",
     "or": "crwdns17125:0crwdne17125:0",
+    "partnerSites": "crwdns27357:0crwdne27357:0",
     "presence": "crwdns5338:0crwdne5338:0",
     "report": "crwdns3586:0crwdne3586:0",
     "resetHelpHints": "crwdns11199:0crwdne11199:0",
@@ -345,6 +346,10 @@
     "supportBy": "crwdns4548:0crwdne4548:0"
   },
   "layer": {
+    "areas": {
+      "mpa": "crwdns27359:0crwdne27359:0",
+      "eez": "crwdns27361:0crwdne27361:0"
+    },
     "activity_fit_bounds": "crwdns26586:0crwdne26586:0",
     "add": "crwdns1386:0crwdne1386:0",
     "color_change": "crwdns1158:0crwdne1158:0",
@@ -399,7 +404,7 @@
     "rulers_add": "crwdns1180:0crwdne1180:0",
     "rulers_remove": "crwdns1182:0crwdne1182:0",
     "runningExpensiveVesselQuery": "crwdns8531:0{{cost}}crwdne8531:0",
-    "search": "crwdns1460:0crwdne1460:0",
+    "search": "crwdns27363:0crwdne27363:0",
     "zoom_in": "crwdns1186:0crwdne1186:0",
     "zoom_out": "crwdns1188:0crwdne1188:0"
   },
@@ -592,6 +597,14 @@
     "update": "crwdns8883:0crwdne8883:0",
     "uploadPublic": "crwdns8885:0crwdne8885:0",
     "uploadPublicDisabled": "crwdns8887:0crwdne8887:0",
-    "user": "crwdns26350:0crwdne26350:0"
+    "user": "crwdns26350:0crwdne26350:0",
+    "wizard": {
+      "error": "crwdns27365:0crwdne27365:0",
+      "name": "crwdns27367:0crwdne27367:0",
+      "help": "crwdns27369:0crwdne27369:0",
+      "exploreArea": "crwdns27371:0crwdne27371:0",
+      "exploreGlobal": "crwdns27373:0crwdne27373:0",
+      "title": "crwdns27375:0crwdne27375:0"
+    }
   }
 }

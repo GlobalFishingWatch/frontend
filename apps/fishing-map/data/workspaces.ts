@@ -28,7 +28,9 @@ export enum WorkspaceCategories {
 export const BASEMAP_DATAVIEW_SLUG = 'basemap'
 export const BASEMAP_LABELS_DATAVIEW_SLUG = '305' // TODO ADD IN PRODUCTION
 export const EEZ_DATAVIEW_SLUG = 'eez'
+export const EEZ_DATAVIEW_INSTANCE = 'context-layer-eez'
 export const MPA_DATAVIEW_SLUG = 'mpa'
+export const MPA_DATAVIEW_INSTANCE_ID = 'context-layer-mpa'
 export const RFMO_DATAVIEW_SLUG = 'tuna-rfmo-areas'
 export const HIGH_SEAS_DATAVIEW_SLUG = 'high-seas'
 export const PROTECTED_SEAS_DATAVIEW_SLUG = ''

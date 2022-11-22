@@ -125,6 +125,7 @@
     "onScreen": "en pantalla",
     "optional": "Opcional",
     "or": "o",
+    "partnerSites": "Sitios asociados",
     "presence": "Presencia",
     "report": "Informe",
     "resetHelpHints": "Mostrar de nuevo los puntos de ayuda",
@@ -225,7 +226,7 @@
     "fullTimeRange": "Rango de tiempo completo",
     "gridded": "Actividad por cuadrículas",
     "groupActivityBy": "Agrupar actividad por propiedad de embarcación",
-    "groupVesselsBy": "Group vessels by",
+    "groupVesselsBy": "Agrupar buques por",
     "highResNotAvailable": "Tu área es demasiado grande",
     "monthly": "Mes",
     "monthlyNotAvailable": "Su intervalo de tiempo es menor de 1 mes",
@@ -345,6 +346,10 @@
     "supportBy": "Apoyado por"
   },
   "layer": {
+    "areas": {
+      "mpa": "AMP",
+      "eez": "EEZ"
+    },
     "activity_fit_bounds": "Centrar mapa en la actividad",
     "add": "Añadir capa",
     "color_change": "Cambiar el color",
@@ -399,7 +404,7 @@
     "rulers_add": "Mide distancias",
     "rulers_remove": "Eliminar todas las distancias medidas",
     "runningExpensiveVesselQuery": "Ejecutar esta consulta costará alrededor de {{cost}} $. ¿Estás seguro de ejecutarla?",
-    "search": "Buscar áreas",
+    "search": "Buscar áreas oceánicas y marinas, AMPs o ZEEs",
     "zoom_in": "Acercarse",
     "zoom_out": "Alejarse"
   },
@@ -592,6 +597,14 @@
     "update": "Actualizar",
     "uploadPublic": "Permitir a otros usuarios ver este espacio de trabajo",
     "uploadPublicDisabled": "Este espacio de trabajo no puede ser compartido públicamente porque contiene datos privados",
-    "user": "Espacios de trabajo del usuario"
+    "user": "Espacios de trabajo del usuario",
+    "wizard": {
+      "error": "Ocurrió un error al crear el workspace",
+      "name": "Pon nombre a tu area de trabajo",
+      "help": "Puedes mover el mapa y actualizar tu área de trabajo más tarde",
+      "exploreArea": "Explorar el área",
+      "exploreGlobal": "Explorar globalmente",
+      "title": "Configurar un área de trabajo de gestión marina para cualquier área globalmente"
+    }
   }
 }

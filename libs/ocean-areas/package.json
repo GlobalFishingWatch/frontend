@@ -1,12 +1,16 @@
 {
   "name": "@globalfishingwatch/ocean-areas",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "description": "",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
+  "scripts": {
+    "mpas": "ts-node -P tsconfig.node.json src/scripts/mpas.ts",
+    "locales": "ts-node -P tsconfig.node.json src/scripts/names.ts"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
@@ -23,6 +27,7 @@
     "geojson": "^0.5.0"
   },
   "devDependencies": {
-    "geojson": "^0.5.0"
+    "geojson": "^0.5.0",
+    "ts-node": "^10.9.1"
   }
 }

@@ -71,12 +71,12 @@ function Analysis() {
   const dataviews = useSelector(selectActiveHeatmapDataviews)
   const userData = useSelector(selectUserData)
   const analysisType = useSelector(selectAnalysisTypeQuery)
-  const { bounds } = useSelector(selectAnalysisQuery)
+  const { bounds, areaId, datasetId } = useSelector(selectAnalysisQuery)
   const timeComparison = useSelector(selectAnalysisTimeComparison)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
 
   const analysisArea = useAnalysisArea()
-  const analysisAreaName = analysisArea?.name
+  const analysisAreaName = analysisArea?.data?.name
   const analysisAreaError = analysisArea.status === AsyncReducerStatus.Error
   const analysisAreaLoading = analysisArea.status === AsyncReducerStatus.Loading
 
@@ -112,7 +112,7 @@ function Analysis() {
   }
 
   const onDownloadClick = async () => {
-    dispatch(setDownloadActivityAreaKey(analysisArea.key))
+    dispatch(setDownloadActivityAreaKey({ areaId, datasetId }))
   }
 
   const { error, blur, loading, layersTimeseriesFiltered } = useFilteredTimeSeries()

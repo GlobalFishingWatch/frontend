@@ -80,8 +80,8 @@ function DownloadActivityByVessel() {
   )
 
   const downloadArea = useSelector(selectDownloadActivityArea)
-  const downloadAreaName = downloadArea?.name
-  const downloadAreaGeometry = downloadArea?.geometry
+  const downloadAreaName = downloadArea?.data?.name
+  const downloadAreaGeometry = downloadArea?.data?.geometry
   const downloadAreaLoading = downloadArea?.status === AsyncReducerStatus.Loading
 
   const onDownloadClick = async () => {
