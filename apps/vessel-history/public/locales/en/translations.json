@@ -374,9 +374,9 @@
     "savedOn": "saved on",
     "saveForOfflineView": "save vessel for offline view",
     "source": "source",
-    "transmission_plural": "transmissions",
+    "transmission_plural": "positions",
     "transmissionDescription": "AIS stands for Automatic Identification Systems. AIS is a GPS-like device that large ships use to broadcast their position in order to avoid collisions. The positions listed in the vessel search results refer to the number of vessel positions broadcast over AIS that we have processed and matched to the search result, over a period of time. For more information on how AIS data is processed and caveats of our algorithms, please see our FAQs.",
-    "transmissionRange": "{{transmissions}} AIS transmissions from {{start}} to {{end}}",
+    "transmissionRange": "{{transmissions}} AIS positions from {{start}} to {{end}}",
     "type": "vessel type",
     "type_plural": "types",
     "vesselTypeDescription": "For vessel type sourced from Global Fishing Watch, additional research and analysis is conducted in addition to using the original AIS data to identify the most likely value. Vessel types from GFW include fishing vessels, carrier vessels, and support vessels. The vessel classification for fishing vessel is estimated using known registry information in combination with a convolutional neural network used to estimate vessel class. The vessel classification for carrier vessels is estimated using a cumulation of known registry information, manual review, and vessel class. All support vessels in the vessel viewer are considered purse seine support vessels based on internal review. \nVessel type from \"other\" is taken from RFMO authorized vessel lists and other sources of vessel data. Where multiple values are given, this reflects conflicting information or variation in terms used in original sources."
