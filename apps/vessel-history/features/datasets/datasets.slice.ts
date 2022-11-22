@@ -16,7 +16,7 @@ import {
   AsyncReducerStatus,
 } from 'utils/async-slice'
 import { RootState } from 'store'
-import { API_VERSION, DEFAULT_PAGINATION_PARAMS } from 'data/config'
+import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 
 export const fetchDatasetByIdThunk = createAsyncThunk<
   Dataset,
@@ -60,11 +60,11 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
       // if no ids are specified, then do not get all the datasets
       const relatedDatasets = relatedWorkspaceParams.ids
         ? await GFWAPI.fetch<APIPagination<Dataset>>(
-          `/datasets?${stringify(relatedWorkspaceParams, {
-            arrayFormat: 'comma',
-          })}`,
-          { signal }
-        ).then((d) => d.entries)
+            `/datasets?${stringify(relatedWorkspaceParams, {
+              arrayFormat: 'comma',
+            })}`,
+            { signal }
+          ).then((d) => d.entries)
         : []
       let datasets = uniqBy([...initialDatasets, ...relatedDatasets], 'id')
 
@@ -153,7 +153,7 @@ export const selectAll = createSelector([baseSelectAll], (datasets) => {
     .map((d) => ({
       ...d,
       relatedDatasets: [
-        ...d.relatedDatasets,
+        ...(d.relatedDatasets ?? []),
         ...vesselInfo.map((vi) => ({ id: vi.id, type: vi.type } as RelatedDataset)),
       ],
     }))

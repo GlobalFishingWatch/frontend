@@ -15,7 +15,7 @@ import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { resolveEndpoint } from './resolve-endpoint'
 
 export type UrlDataviewInstance<T = GeneratorType> = Omit<DataviewInstance<T>, 'dataviewId'> & {
-  dataviewId?: Dataview['slug'] // making this optional as sometimes we just need to reference the id
+  dataviewId?: Dataview['id'] | Dataview['slug'] // making this optional as sometimes we just need to reference the id
   deleted?: boolean // needed when you want to override from url an existing workspace config
 }
 
@@ -257,7 +257,11 @@ export function resolveDataviews(
         return []
       }
 
-      const dataview = dataviews?.find((dataview) => dataview.slug === dataviewInstance.dataviewId)
+      const dataview = dataviews?.find((dataview) =>
+        ([dataview.id, dataview.slug] as Dataview['slug'][]).includes(
+          dataviewInstance.dataviewId as Dataview['slug']
+        )
+      )
       if (!dataview) {
         console.warn(
           `DataviewInstance id: ${dataviewInstance.id} doesn't have a valid dataview (${dataviewInstance.dataviewId})`

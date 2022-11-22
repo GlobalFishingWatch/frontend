@@ -229,7 +229,7 @@ export const selectEventDatasetsConfigQueryParams = (state) => {
     state.dataviews &&
     state.dataviews.entities &&
     state.dataviews.entities[DEFAULT_VESSEL_DATAVIEWS[profileView]]
-  return (vesselDataview.datasetsConfig ?? [])
+  return (vesselDataview?.datasetsConfig ?? [])
     .filter((config) => config.endpoint === 'events')
     .flatMap((config) => config.query ?? {})
     .filter(
