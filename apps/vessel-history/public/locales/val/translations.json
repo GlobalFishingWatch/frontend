@@ -374,9 +374,9 @@
     "savedOn": "crwdns4320:0crwdne4320:0",
     "saveForOfflineView": "crwdns4258:0crwdne4258:0",
     "source": "crwdns4316:0crwdne4316:0",
-    "transmission_plural": "crwdns4318:0crwdne4318:0",
+    "transmission_plural": "crwdns29135:0crwdne29135:0",
     "transmissionDescription": "crwdns26800:0crwdne26800:0",
-    "transmissionRange": "crwdns11073:0{{transmissions}}crwdnd11073:0{{start}}crwdnd11073:0{{end}}crwdne11073:0",
+    "transmissionRange": "crwdns29137:0{{transmissions}}crwdnd29137:0{{start}}crwdnd29137:0{{end}}crwdne29137:0",
     "type": "crwdns8519:0crwdne8519:0",
     "type_plural": "crwdns4344:0crwdne4344:0",
     "vesselTypeDescription": "crwdns11071:0crwdne11071:0"
