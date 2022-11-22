@@ -7,8 +7,8 @@ import {
   BasemapType,
 } from '@globalfishingwatch/layer-composer'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
+import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID, DEFAULT_DATAVIEW_SLUGS } from 'data/workspaces'
 import { RootState } from 'store'
 import {
