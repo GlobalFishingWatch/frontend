@@ -11,7 +11,10 @@ import type {
 import { Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { t as trans } from 'features/i18n/i18n'
-import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-viewport.hooks'
+import useViewport, {
+  getMapCoordinatesFromBounds,
+  useMapFitBounds,
+} from 'features/map/map-viewport.hooks'
 import {
   MARINE_MANAGER_DATAVIEWS,
   MARINE_MANAGER_DATAVIEWS_INSTANCES,
@@ -27,7 +30,7 @@ import {
   MPA_DATAVIEW_INSTANCE_ID,
   WorkspaceCategories,
 } from 'data/workspaces'
-import { WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
+import { WORKSPACE } from 'routes/routes'
 import styles from './WorkspaceWizard.module.css'
 
 const MAX_RESULTS_NUMBER = 10
@@ -48,6 +51,7 @@ function WorkspaceWizard() {
   const dispatch = useAppDispatch()
   const fitBounds = useMapFitBounds()
   const map = useMapInstance()
+  const { viewport } = useViewport()
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [areasMatching, setAreasMatching] = useState<OceanArea[]>([])
   const [selectedItem, setSelectedItem] = useState<OceanArea>(null)
@@ -146,14 +150,9 @@ function WorkspaceWizard() {
   }
 
   const linkTo = useMemo(() => {
-    if (!selectedItem) {
-      return { type: WORKSPACES_LIST, payload: { category: WorkspaceCategories.MarineManager } }
-    }
-
-    const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(
-      map,
-      selectedItem?.properties?.bounds
-    )
+    const linkViewport = selectedItem
+      ? getMapCoordinatesFromBounds(map, selectedItem.properties?.bounds)
+      : viewport
 
     return {
       type: WORKSPACE,
@@ -162,9 +161,7 @@ function WorkspaceWizard() {
         workspaceId: WIZARD_TEMPLATE_ID,
       },
       query: {
-        latitude,
-        longitude,
-        zoom,
+        ...linkViewport,
         daysFromLatest: 90,
         dataviewInstances: [
           {
@@ -180,7 +177,7 @@ function WorkspaceWizard() {
       },
       replaceQuery: true,
     }
-  }, [map, selectedItem])
+  }, [viewport, map, selectedItem])
 
   const linkLabel = selectedItem
     ? t('workspace.wizard.exploreArea', 'Explore area')
@@ -229,14 +226,7 @@ function WorkspaceWizard() {
           <Icon icon="magic" />
           {t('workspace.wizard.help', 'You can move the map and update your workspace later')}
         </p>
-        <Link
-          to={linkTo}
-          target="_self"
-          className={cx(styles.confirmBtn)}
-          onClick={(e) => {
-            if (!selectedItem) e.preventDefault()
-          }}
-        >
+        <Link to={linkTo} target="_self" className={cx(styles.confirmBtn)}>
           {linkLabel}
         </Link>
       </div>
