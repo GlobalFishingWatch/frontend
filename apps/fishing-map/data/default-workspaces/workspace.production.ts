@@ -17,7 +17,7 @@ import {
   FAO_AREAS_DATAVIEW_SLUG,
   SAR_DATAVIEW_SLUG,
   MPA_DATAVIEW_INSTANCE_ID,
-  EEZ_DATAVIEW_INSTANCE,
+  EEZ_DATAVIEW_INSTANCE_ID,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 // This id is used for highlighting the dataview with a popup on the right
@@ -103,7 +103,7 @@ const workspace: Workspace<WorkspaceState> = {
       },
     },
     {
-      id: EEZ_DATAVIEW_INSTANCE,
+      id: EEZ_DATAVIEW_INSTANCE_ID,
       config: {
         color: '#069688',
         visible: false,

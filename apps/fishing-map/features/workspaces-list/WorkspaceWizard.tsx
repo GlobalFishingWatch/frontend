@@ -26,7 +26,7 @@ import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import useMapInstance from 'features/map/map-context.hooks'
 import {
-  EEZ_DATAVIEW_INSTANCE,
+  EEZ_DATAVIEW_INSTANCE_ID,
   MPA_DATAVIEW_INSTANCE_ID,
   WorkspaceCategories,
 } from 'data/workspaces'
@@ -165,7 +165,7 @@ function WorkspaceWizard() {
         daysFromLatest: 90,
         dataviewInstances: [
           {
-            id: EEZ_DATAVIEW_INSTANCE,
+            id: EEZ_DATAVIEW_INSTANCE_ID,
             config: { visible: selectedItem?.properties?.type === 'eez' },
           },
           {

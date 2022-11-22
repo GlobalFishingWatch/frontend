@@ -18,7 +18,7 @@ import {
   SAR_DATAVIEW_SLUG,
   PROTECTED_SEAS_DATAVIEW_SLUG,
   MPA_DATAVIEW_INSTANCE_ID,
-  EEZ_DATAVIEW_INSTANCE,
+  EEZ_DATAVIEW_INSTANCE_ID,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
@@ -107,7 +107,7 @@ const workspace: Workspace<WorkspaceState> = {
       },
     },
     {
-      id: EEZ_DATAVIEW_INSTANCE,
+      id: EEZ_DATAVIEW_INSTANCE_ID,
       config: {
         color: '#069688',
         visible: false,
