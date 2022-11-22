@@ -125,7 +125,7 @@
     "onScreen": "en pantalla",
     "optional": "Opcional",
     "or": "o",
-    "partnerSites": "Partner sites",
+    "partnerSites": "Sitios asociados",
     "presence": "Presencia",
     "report": "Informe",
     "resetHelpHints": "Mostrar de nuevo los puntos de ayuda",
@@ -226,7 +226,7 @@
     "fullTimeRange": "Rango de tiempo completo",
     "gridded": "Actividad por cuadrículas",
     "groupActivityBy": "Agrupar actividad por propiedad de embarcación",
-    "groupVesselsBy": "Group vessels by",
+    "groupVesselsBy": "Agrupar buques por",
     "highResNotAvailable": "Tu área es demasiado grande",
     "monthly": "Mes",
     "monthlyNotAvailable": "Su intervalo de tiempo es menor de 1 mes",
@@ -347,7 +347,7 @@
   },
   "layer": {
     "areas": {
-      "mpa": "MPA",
+      "mpa": "AMP",
       "eez": "EEZ"
     },
     "activity_fit_bounds": "Centrar mapa en la actividad",
@@ -404,7 +404,7 @@
     "rulers_add": "Mide distancias",
     "rulers_remove": "Eliminar todas las distancias medidas",
     "runningExpensiveVesselQuery": "Ejecutar esta consulta costará alrededor de {{cost}} $. ¿Estás seguro de ejecutarla?",
-    "search": "Search ocean and sea areas, MPAs or EEZs",
+    "search": "Buscar áreas oceánicas y marinas, AMPs o ZEEs",
     "zoom_in": "Acercarse",
     "zoom_out": "Alejarse"
   },
@@ -599,12 +599,12 @@
     "uploadPublicDisabled": "Este espacio de trabajo no puede ser compartido públicamente porque contiene datos privados",
     "user": "Espacios de trabajo del usuario",
     "wizard": {
-      "error": "There was an error creating the workspace",
-      "name": "Give a name to your workspace",
-      "help": "You can move the map and update your workspace later",
-      "exploreArea": "See area",
-      "exploreGlobal": "See global",
-      "title": "Setup a marine manager workspace for any area globally"
+      "error": "Ocurrió un error al crear el workspace",
+      "name": "Pon nombre a tu area de trabajo",
+      "help": "Puedes mover el mapa y actualizar tu área de trabajo más tarde",
+      "exploreArea": "Explorar el área",
+      "exploreGlobal": "Explorar globalmente",
+      "title": "Configurar un área de trabajo de gestión marina para cualquier área globalmente"
     }
   }
 }
