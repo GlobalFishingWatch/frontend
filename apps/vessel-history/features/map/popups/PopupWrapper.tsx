@@ -15,10 +15,6 @@ type PopupWrapperProps = {
 function PopupWrapper({ layers, className = '', latitude = 0, longitude = 0 }: PopupWrapperProps) {
   const getLayerColor = useCallback(
     (datasetId: string) => {
-      if (datasetId.includes('public-eez')) {
-        return dataviewInstances.find((layerConfig) => layerConfig.id === 'public-eez-areas')
-          ?.config.color
-      }
       return dataviewInstances.find((layerConfig) => layerConfig.id === datasetId)?.config.color
     },
     [dataviewInstances]

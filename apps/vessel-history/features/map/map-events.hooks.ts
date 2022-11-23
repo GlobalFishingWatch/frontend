@@ -39,7 +39,11 @@ export default function useMapEvents() {
       const vesselFeature = features.find(
         (feature) => feature.generatorType === GeneratorType.VesselEvents
       )
-      setCursorLayers(features.filter((feature) => feature.generatorType === GeneratorType.Context))
+      setCursorLayers(
+        !vesselFeature
+          ? features.filter((feature) => feature.generatorType === GeneratorType.Context)
+          : null
+      )
       const highlightEvent: { id: string } | undefined = { id: vesselFeature?.properties.id }
 
       if (highlightEvent && highlightedEvent?.id !== highlightEvent.id) {
