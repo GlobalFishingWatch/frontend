@@ -23,6 +23,7 @@ import LayerSwitch from '../common/LayerSwitch'
 import InfoModal from '../common/InfoModal'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
+import { getDatasetNameTranslated } from '../../i18n/utils'
 import { getLayerDatasetRange } from './HistogramRangeFilter'
 
 type LayerPanelProps = {
@@ -96,7 +97,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
     return <DatasetNotFound dataview={dataview} />
   }
 
-  const title = t(`datasets:${dataset?.id}.name` as any, dataset?.name || dataset?.id)
+  const title = getDatasetNameTranslated(dataset)
   const showFilters =
     dataset.fieldsAllowed?.length > 0 || (gfwUser && isHistogramDataviewSupported(dataview))
 
