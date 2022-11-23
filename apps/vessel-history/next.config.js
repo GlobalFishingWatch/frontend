@@ -20,15 +20,16 @@ const nextConfig = {
       },
     ]
   },
-  webpack: function (config) {
-    config.resolve.fallback = {
-      ...config.resolve.fallback,
-      child_process: false,
-      fs: false,
-      net: false,
-      tls: false,
+  webpack: function (config, { isServer }) {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        child_process: false,
+        fs: false,
+        net: false,
+        tls: false,
+      }
     }
-    config.externals = [...config.externals, 'mapbox-gl']
     return config
   },
 
@@ -41,6 +42,8 @@ const nextConfig = {
 
   // to deploy on a node server
   output: 'standalone',
+  outputFileTracing: true,
+  cleanDistDir: true,
 }
 
 const withPWA = withPWAConstructor({
