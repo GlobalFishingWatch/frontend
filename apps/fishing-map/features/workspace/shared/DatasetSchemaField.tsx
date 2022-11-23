@@ -14,7 +14,7 @@ import {
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { selectTimeRange } from 'features/app/app.selectors'
 import { getTimeRangeDuration } from 'utils/dates'
-import { REPORT_DAYS_LIMIT } from 'data/config'
+import { VESSEL_GROUPS_DAYS_LIMIT } from 'data/config'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -55,14 +55,14 @@ function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.
             {filterOperation === EXCLUDE_FILTER_ID && (
               <span> ({t('common.excluded', 'Excluded')})</span>
             )}
-            {REPORT_DAYS_LIMIT > 0 &&
+            {VESSEL_GROUPS_DAYS_LIMIT > 0 &&
               field === 'vessel-groups' &&
-              duration?.days > REPORT_DAYS_LIMIT && (
+              duration?.days > VESSEL_GROUPS_DAYS_LIMIT && (
                 <span className={cx(styles.dataWarning, styles.error)}>
                   {' '}
                   {t(
                     'vesselGroup.timeRangeLimit',
-                    'Supported only for time ranges shorter than 1 year'
+                    'Supported only for time ranges shorter than 3 months'
                   )}
                 </span>
               )}
