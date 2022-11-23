@@ -14,6 +14,7 @@ import {
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { selectTimeRange } from 'features/app/app.selectors'
 import { getTimeRangeDuration } from 'utils/dates'
+import { toFixed } from 'utils/shared'
 import { VESSEL_GROUPS_DAYS_LIMIT } from 'data/config'
 
 type LayerPanelProps = {
@@ -28,9 +29,13 @@ function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.
   const duration = getTimeRangeDuration(timeRange, 'days')
   const vesselGroupsOptions = useVesselGroupsOptions()
   const filterOperation = getSchemaFilterOperationInDataview(dataview, field)
-  let valuesSelected = getSchemaFieldsSelectedInDataview(dataview, field, vesselGroupsOptions).sort(
-    (a, b) => a.label - b.label
-  )
+  let valuesSelected =
+    field !== 'minVisibleValue' && field !== 'maxVisibleValue'
+      ? getSchemaFieldsSelectedInDataview(dataview, field, vesselGroupsOptions).sort(
+          (a, b) => a.label - b.label
+        )
+      : [{ id: dataview.config?.[field], label: toFixed(dataview.config?.[field], 1) }]
+
   const valuesAreRangeOfNumbers =
     valuesSelected.length > 1 && valuesSelected.every((value) => Number(value.label))
 
