@@ -41,7 +41,6 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
   }, [])
   const onToggleEventType = useCallback(
     (event) => {
-      console.log(event)
       toggleEventType(event)
       uaEvent({
         category: 'Vessel Detail ACTIVITY BY TYPE Tab',
