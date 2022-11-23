@@ -14,8 +14,6 @@ import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import ActivityFilters, {
   isHistogramDataviewSupported,
 } from 'features/workspace/activity/ActivityFilters'
-import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
-import DatasetFlagField from 'features/workspace/shared/DatasetFlagsField'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import { SupportedEnvDatasetSchema } from 'features/datasets/datasets.utils'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
@@ -25,6 +23,8 @@ import LayerSwitch from '../common/LayerSwitch'
 import InfoModal from '../common/InfoModal'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
+import { getDatasetNameTranslated } from '../../i18n/utils'
+import { getLayerDatasetRange } from './HistogramRangeFilter'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -97,8 +97,9 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
     return <DatasetNotFound dataview={dataview} />
   }
 
-  const title = t(`datasets:${dataset?.id}.name` as any, dataset?.name || dataset?.id)
-  const showFilters = dataset.fieldsAllowed?.length > 0 || isHistogramDataviewSupported(dataview)
+  const title = getDatasetNameTranslated(dataset)
+  const showFilters =
+    dataset.fieldsAllowed?.length > 0 || (gfwUser && isHistogramDataviewSupported(dataview))
 
   const TitleComponent = (
     <Title
@@ -109,6 +110,16 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
       onToggle={onToggle}
     />
   )
+
+  const layerRange = getLayerDatasetRange(dataset)
+  const showMinVisibleFilter =
+    dataview.config?.minVisibleValue !== undefined
+      ? dataview.config?.minVisibleValue !== layerRange.min
+      : false
+  const showMaxVisibleFilter =
+    dataview.config?.maxVisibleValue !== undefined
+      ? dataview.config?.maxVisibleValue !== layerRange.max
+      : false
 
   return (
     <div
@@ -179,17 +190,33 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
           )}
         </div>
       </div>
-      <div className={styles.properties}>
-        <div className={styles.filters}>
+      {layerActive && (
+        <div className={styles.properties}>
           <div className={styles.filters}>
-            <DatasetFilterSource dataview={dataview} />
-            <DatasetFlagField dataview={dataview} />
-            {datasetFields.map(({ field, label }) => (
-              <DatasetSchemaField key={field} dataview={dataview} field={field} label={label} />
-            ))}
+            <div className={styles.filters}>
+              {datasetFields.map(({ field, label }) => (
+                <DatasetSchemaField key={field} dataview={dataview} field={field} label={label} />
+              ))}
+              {showMinVisibleFilter && (
+                <DatasetSchemaField
+                  key={'min'}
+                  dataview={dataview}
+                  field={'minVisibleValue'}
+                  label={t('common.min', 'Min')}
+                />
+              )}
+              {showMaxVisibleFilter && (
+                <DatasetSchemaField
+                  key={'max'}
+                  dataview={dataview}
+                  field={'maxVisibleValue'}
+                  label={t('common.max', 'Max')}
+                />
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      )}
       {layerActive && gfwUser && (
         <div
           className={cx(styles.properties, styles.drag, {

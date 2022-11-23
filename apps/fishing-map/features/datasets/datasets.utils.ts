@@ -44,6 +44,8 @@ export type SupportedActivityDatasetSchema =
   | 'target_species' // between camelCase or snake_case
   | 'license_category'
   | 'vessel-groups'
+  | 'minVisibleValue'
+  | 'maxVisibleValue'
 
 export type SupportedEnvDatasetSchema = 'type'
 
