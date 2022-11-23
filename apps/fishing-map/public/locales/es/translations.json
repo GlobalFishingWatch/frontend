@@ -564,7 +564,7 @@
     "new": "Nuevo grupo de embarcaciones",
     "remove": "Eliminar este grupo",
     "removeVessel": "Eliminar embarcación del grupo",
-    "timeRangeLimit": "Soportado sólo para rangos de tiempo menores de 3 meses",
+    "timeRangeLimit": "Supported only for time ranges shorter than 3 months",
     "tooManyVessels": "El número máximo de embarcaciones es {{count}}",
     "uploadPublic": "Permitir a otros usuarios ver este grupo de embarcaciones cuando comparta un espacio de trabajo",
     "vesselGroup": "Grupo de embarcaciones",
