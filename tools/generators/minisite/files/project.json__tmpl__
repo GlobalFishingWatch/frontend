@@ -75,5 +75,6 @@
       }
     }
   },
-  "tags": []
+  "tags": [],
+  "name": "tools-generators-minisite-files"
 }

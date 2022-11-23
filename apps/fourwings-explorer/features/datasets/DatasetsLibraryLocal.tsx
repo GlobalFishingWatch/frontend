@@ -1,5 +1,4 @@
 import cx from 'classnames'
-import Image from 'next/image'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
 import { ColorRampId } from '@globalfishingwatch/layer-composer'
 import { useDatasetLayers, useLayersConfig } from 'features/layers/layers.hooks'
@@ -39,7 +38,13 @@ const LocalDatasetsLibrary = ({ datasets }: { datasets: APIDataset[] }) => {
           const disabled = layers.some((l) => l.id === dataset.id)
           return (
             <li key={dataset.id} className={cx(styles.dataset, { [styles.disabled]: disabled })}>
-              {dataset.image && <Image className={styles.image} src={dataset.image}></Image>}
+              {dataset.image && (
+                <img
+                  alt={`dataset ${dataset.name}`}
+                  className={styles.image}
+                  src={dataset.image.src}
+                ></img>
+              )}
               <h3 className={styles.name}>{dataset.name}</h3>
               {dataset.description && <p className={styles.description}>{dataset.description}</p>}
               <div className={styles.buttons}>
