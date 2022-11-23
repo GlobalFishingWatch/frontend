@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useTransition } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -11,11 +11,12 @@ import { selectUserId } from 'features/user/user.selectors'
 import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
 import { isGFWUser, isGuestUser } from 'features/user/user.slice'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
-import ActivityFilters from 'features/workspace/activity/ActivityFilters'
+import ActivityFilters, {
+  isHistogramDataviewSupported,
+} from 'features/workspace/activity/ActivityFilters'
 import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
 import DatasetFlagField from 'features/workspace/shared/DatasetFlagsField'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
-import HistogramRangeFilter from 'features/workspace/environmental/HistogramRangeFilter'
 import { SupportedEnvDatasetSchema } from 'features/datasets/datasets.utils'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import DatasetNotFound from '../shared/DatasetNotFound'
@@ -31,6 +32,7 @@ type LayerPanelProps = {
 }
 
 function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
+  const [isPending, startTransition] = useTransition()
   const [filterOpen, setFiltersOpen] = useState(false)
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -76,7 +78,13 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   }
 
   const onToggleFilterOpen = () => {
-    setFiltersOpen(!filterOpen)
+    if (!filterOpen) {
+      startTransition(() => {
+        setFiltersOpen(true)
+      })
+    } else {
+      setFiltersOpen(false)
+    }
   }
 
   const dataset = dataview.datasets?.find(
@@ -90,7 +98,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   }
 
   const title = t(`datasets:${dataset?.id}.name` as any, dataset?.name || dataset?.id)
-  const showFilters = dataset.fieldsAllowed?.length > 0
+  const showFilters = dataset.fieldsAllowed?.length > 0 || isHistogramDataviewSupported(dataview)
 
   const TitleComponent = (
     <Title
@@ -135,6 +143,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
               <div className={styles.filterButtonWrapper}>
                 <IconButton
                   icon={filterOpen ? 'filter-on' : 'filter-off'}
+                  loading={isPending}
                   size="small"
                   onClick={onToggleFilterOpen}
                   tooltip={
@@ -187,9 +196,6 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
             [styles.dragging]: isSorting && activeIndex > -1,
           })}
         >
-          <div className={cx(styles.filters, { [styles.active]: layerActive })}>
-            <HistogramRangeFilter dataview={dataview} />
-          </div>
           <div id={`legend_${dataview.id}`}></div>
         </div>
       )}
