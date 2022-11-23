@@ -77,8 +77,8 @@ function Analysis() {
 
   const analysisArea = useAnalysisArea()
   const analysisAreaName = analysisArea?.data?.name
-  const analysisAreaError = analysisArea.status === AsyncReducerStatus.Error
-  const analysisAreaLoading = analysisArea.status === AsyncReducerStatus.Loading
+  const analysisAreaError = analysisArea?.status === AsyncReducerStatus.Error
+  const analysisAreaLoading = analysisArea?.status === AsyncReducerStatus.Loading
 
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
   const datasetsReportAllowed = getActivityDatasetsDownloadSupported(
