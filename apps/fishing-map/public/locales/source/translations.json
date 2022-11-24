@@ -22,6 +22,7 @@
     "errorTimeComparisonDataviews": "At least one activity layer must be enabled",
     "errorTimeComparisonFilters": "Several layers with filters are not supported",
     "evolution": "evolution",
+    "excluding": "Excluding",
     "experimental": "Experimental",
     "filteredBy": "filtered by",
     "noData": "No data available",
