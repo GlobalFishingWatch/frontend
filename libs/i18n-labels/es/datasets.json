@@ -1511,7 +1511,7 @@
     }
   },
   "public-eez-areas": {
-    "name": "Areas geometries for eez",
+    "name": "ZEE",
     "description": "Instituto Marino de Flandes (2019). Geobase de datos de Límites Marítimos: Límites Marítimos y Zonas Económicas Exclusivas (200MN), versión 11. Fuente: marineregions.org",
     "schema": {}
   },
