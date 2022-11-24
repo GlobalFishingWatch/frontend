@@ -22,6 +22,7 @@
     "errorTimeComparisonDataviews": "crwdns17145:0crwdne17145:0",
     "errorTimeComparisonFilters": "crwdns17143:0crwdne17143:0",
     "evolution": "crwdns11313:0crwdne11313:0",
+    "excluding": "crwdns29145:0crwdne29145:0",
     "experimental": "crwdns6370:0crwdne6370:0",
     "filteredBy": "crwdns6944:0crwdne6944:0",
     "noData": "crwdns6372:0crwdne6372:0",
@@ -34,7 +35,8 @@
     "periodComparisonRange": "crwdns17111:0{{duration}}crwdnd17111:0{{compareStart}}crwdnd17111:0{{duration}}crwdnd17111:0{{start}}crwdne17111:0",
     "timeRangeTooLong": "crwdns3710:0crwdne3710:0",
     "title": "crwdns3628:0crwdne3628:0",
-    "vesselFlags": "crwdns4538:0crwdne4538:0"
+    "vesselFlags": "crwdns4538:0crwdne4538:0",
+    "vesselFlagsExclude": "crwdns29147:0crwdne29147:0"
   },
   "bigQuery": {
     "aggregateAvg": "crwdns18114:0crwdne18114:0",
@@ -125,6 +127,7 @@
     "onScreen": "crwdns18448:0crwdne18448:0",
     "optional": "crwdns5412:0crwdne5412:0",
     "or": "crwdns17125:0crwdne17125:0",
+    "partnerSites": "crwdns27357:0crwdne27357:0",
     "presence": "crwdns5338:0crwdne5338:0",
     "report": "crwdns3586:0crwdne3586:0",
     "resetHelpHints": "crwdns11199:0crwdne11199:0",
@@ -133,6 +136,7 @@
     "seeDefault": "crwdns1476:0crwdne1476:0",
     "share": "crwdns3572:0crwdne3572:0",
     "sources": "crwdns27190:0crwdne27190:0",
+    "tutorials": "crwdns29139:0crwdne29139:0",
     "unknown": "crwdns3656:0crwdne3656:0",
     "unknownVessel": "crwdns8717:0crwdne8717:0",
     "update": "crwdns3330:0crwdne3330:0",
@@ -143,6 +147,7 @@
     "vesselId": "crwdns27215:0crwdne27215:0",
     "view_layer": "crwdns18876:0crwdne18876:0",
     "viirs": "crwdns7913:0crwdne7913:0",
+    "visibleValues": "crwdns29143:0crwdne29143:0",
     "welcomePopupDisable": "crwdns6914:0crwdne6914:0",
     "whatsNew": "crwdns17183:0crwdne17183:0",
     "whatsNewWithNewVersion": "crwdns27319:0crwdne27319:0"
@@ -345,6 +350,10 @@
     "supportBy": "crwdns4548:0crwdne4548:0"
   },
   "layer": {
+    "areas": {
+      "mpa": "crwdns27359:0crwdne27359:0",
+      "eez": "crwdns27361:0crwdne27361:0"
+    },
     "activity_fit_bounds": "crwdns26586:0crwdne26586:0",
     "add": "crwdns1386:0crwdne1386:0",
     "color_change": "crwdns1158:0crwdne1158:0",
@@ -399,7 +408,7 @@
     "rulers_add": "crwdns1180:0crwdne1180:0",
     "rulers_remove": "crwdns1182:0crwdne1182:0",
     "runningExpensiveVesselQuery": "crwdns8531:0{{cost}}crwdne8531:0",
-    "search": "crwdns1460:0crwdne1460:0",
+    "search": "crwdns27363:0crwdne27363:0",
     "zoom_in": "crwdns1186:0crwdne1186:0",
     "zoom_out": "crwdns1188:0crwdne1188:0"
   },
@@ -558,7 +567,7 @@
     "new": "crwdns26528:0crwdne26528:0",
     "remove": "crwdns26530:0crwdne26530:0",
     "removeVessel": "crwdns26560:0crwdne26560:0",
-    "timeRangeLimit": "crwdns27180:0crwdne27180:0",
+    "timeRangeLimit": "crwdns29141:0crwdne29141:0",
     "tooManyVessels": "crwdns26594:0{{count}}crwdne26594:0",
     "uploadPublic": "crwdns26546:0crwdne26546:0",
     "vesselGroup": "crwdns26536:0crwdne26536:0",
@@ -592,6 +601,14 @@
     "update": "crwdns8883:0crwdne8883:0",
     "uploadPublic": "crwdns8885:0crwdne8885:0",
     "uploadPublicDisabled": "crwdns8887:0crwdne8887:0",
-    "user": "crwdns26350:0crwdne26350:0"
+    "user": "crwdns26350:0crwdne26350:0",
+    "wizard": {
+      "error": "crwdns27365:0crwdne27365:0",
+      "name": "crwdns27367:0crwdne27367:0",
+      "help": "crwdns27369:0crwdne27369:0",
+      "exploreArea": "crwdns27371:0crwdne27371:0",
+      "exploreGlobal": "crwdns27373:0crwdne27373:0",
+      "title": "crwdns27375:0crwdne27375:0"
+    }
   }
 }

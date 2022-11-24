@@ -1,11 +1,12 @@
 {
+  "name": "pbf",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/pbf-decoders",
   "projectType": "library",
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nrwl/web:rollup",
+      "executor": "@nrwl/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/pbf-decoders",
@@ -37,7 +38,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/pbf-decoders"],
+      "outputs": ["{workspaceRoot}/coverage/libs/pbf-decoders"],
       "options": {
         "jestConfig": "libs/pbf-decoders/jest.config.ts",
         "passWithNoTests": true

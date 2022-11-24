@@ -31,14 +31,19 @@ function HelpHub() {
     dispatch(resetHints())
   }
 
-  const getUserGuideLink = () => {
-    if (i18n.language === 'es') return 'https://globalfishingwatch.org/es/guia-de-usuario/'
-    return 'https://globalfishingwatch.org/user-guide'
-  }
+  // const getUserGuideLink = () => {
+  //   if (i18n.language === 'es') return 'https://globalfishingwatch.org/es/guia-de-usuario/'
+  //   return 'https://globalfishingwatch.org/user-guide'
+  // }
 
   const getFAQsLink = () => {
     if (i18n.language === 'es') return 'https://globalfishingwatch.org/es/ayuda-faqs/'
     return 'https://globalfishingwatch.org/help-faqs/'
+  }
+
+  const getVideoTutorialsLink = () => {
+    if (i18n.language === 'es') return 'https://globalfishingwatch.org/tutoriales'
+    return 'https://globalfishingwatch.org/tutorials'
   }
 
   return (
@@ -67,9 +72,19 @@ function HelpHub() {
             </span>
           )}
         </li>
-        <li>
+        {/* <li>
           <a href={getUserGuideLink()} target="_blank" rel="noreferrer" className={cx(styles.link)}>
             {t('common.userGuide', 'User guide')}
+          </a>
+        </li> */}
+        <li>
+          <a
+            href={getVideoTutorialsLink()}
+            target="_blank"
+            rel="noreferrer"
+            className={cx(styles.link)}
+          >
+            {t('common.tutorials', 'Tutorials')}
           </a>
         </li>
         <li>

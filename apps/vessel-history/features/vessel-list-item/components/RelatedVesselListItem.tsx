@@ -3,7 +3,11 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { Button, IconButton, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
-import { RelatedVesselSearchMerged, VesselSearch as Vessel, VesselSearch } from '@globalfishingwatch/api-types'
+import {
+  RelatedVesselSearchMerged,
+  VesselSearch as Vessel,
+  VesselSearch,
+} from '@globalfishingwatch/api-types'
 import { DEFAULT_EMPTY_VALUE, FIRST_YEAR_OF_DATA } from 'data/config'
 import { useVesselsConnect } from 'features/vessels/vessels.hook'
 import { getFlagById } from 'utils/flags'
@@ -22,20 +26,18 @@ interface RelatedVesselListItem {
 
 const RelatedVesselListItem: React.FC<RelatedVesselListItem> = (props): React.ReactElement => {
   const { t } = useTranslation()
-  const { vessel, onDeleteClick, onVesselClick = () => { }, selected = false } = props
+  const { vessel, onDeleteClick, onVesselClick = () => {}, selected = false } = props
   const onClick = useCallback(() => onVesselClick(vessel), [onVesselClick, vessel])
 
   if (!vessel) {
     return <div></div>
   }
 
-
   return (
-    <div >
+    <div>
       <div className={styles.vesselItemDetails}>
         <div className={styles.relatedVesselItem} onClick={onClick}>
           <h3>{vessel?.shipname ?? DEFAULT_EMPTY_VALUE}</h3>
-
         </div>
         <div className={styles.vesselItemActions}>
           {props.saved && onDeleteClick && (
@@ -60,14 +62,22 @@ const RelatedVesselListItem: React.FC<RelatedVesselListItem> = (props): React.Re
           {vessel.firstTransmissionDate && vessel.lastTransmissionDate && (
             <Fragment>
               <div className={styles.transmissionField}>
-                <label>{t('vessel.transmission_plural', 'transmissions')}</label>
+                <label>{t('vessel.transmission_plural', 'positions')}</label>
                 {vessel.firstTransmissionDate || vessel.lastTransmissionDate ? (
                   <Fragment>
-                    {t('vessel.transmissionRange', '{{transmissions}} AIS transmissions from {{start}} to {{end}}', {
-                      transmissions: vessel.posCount,
-                      start: vessel.firstTransmissionDate ? formatI18nDate(vessel.firstTransmissionDate) : DEFAULT_EMPTY_VALUE,
-                      end: vessel.lastTransmissionDate ? formatI18nDate(vessel.lastTransmissionDate) : DEFAULT_EMPTY_VALUE,
-                    })}
+                    {t(
+                      'vessel.transmissionRange',
+                      '{{transmissions}} AIS positions from {{start}} to {{end}}',
+                      {
+                        transmissions: vessel.posCount,
+                        start: vessel.firstTransmissionDate
+                          ? formatI18nDate(vessel.firstTransmissionDate)
+                          : DEFAULT_EMPTY_VALUE,
+                        end: vessel.lastTransmissionDate
+                          ? formatI18nDate(vessel.lastTransmissionDate)
+                          : DEFAULT_EMPTY_VALUE,
+                      }
+                    )}
                   </Fragment>
                 ) : (
                   DEFAULT_EMPTY_VALUE
@@ -83,7 +93,6 @@ const RelatedVesselListItem: React.FC<RelatedVesselListItem> = (props): React.Re
 
           {props.saved && (
             <div>
-
               <label>{t('vessel.savedOn', 'saved on')}</label>
               {`${formatI18nDate(props.saved, { format: DateTime.DATETIME_MED })}`}
             </div>

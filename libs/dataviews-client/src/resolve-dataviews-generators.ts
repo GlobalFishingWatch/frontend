@@ -552,7 +552,7 @@ export function getMergedHeatmapAnimatedDataview(
 
 export function getDataviewsGeneratorConfigs(
   dataviews: UrlDataviewInstance[],
-  params: DataviewsGeneratorConfigsParams,
+  params: DataviewsGeneratorConfigsParams = {},
   resources?: Record<string, Resource>
 ) {
   const { activityDataviews, detectionDataviews, trackDataviews, otherDataviews } =

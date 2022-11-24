@@ -13,7 +13,7 @@
   background-color: var(--color-white);
   top: 0;
   right: 5rem;
-  width: 32rem;
+  min-width: 36rem;
 }
 
 .searchContainer::after {

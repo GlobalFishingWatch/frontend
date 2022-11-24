@@ -1,17 +1,18 @@
 {
+  "name": "port-labeler",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/port-labeler",
   "projectType": "application",
   "targets": {
     "deploy": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": ["nx build port-labeler --parallel", "nx docker-prepare port-labeler"],
         "parallel": false
       }
     },
     "docker-prepare": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "outputs": [],
       "options": {
         "commands": [
@@ -33,7 +34,7 @@
       }
     },
     "start": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": [
           "nx clean-locales port-labeler",
@@ -44,7 +45,7 @@
       }
     },
     "clean-locales": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "outputs": [],
       "options": {
         "commands": ["rm -rf dist/apps/port-labeler/public/locales"]
@@ -79,7 +80,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/port-labeler"],
+      "outputs": ["{workspaceRoot}/coverage/apps/port-labeler"],
       "options": {
         "jestConfig": "apps/port-labeler/jest.config.ts",
         "passWithNoTests": true

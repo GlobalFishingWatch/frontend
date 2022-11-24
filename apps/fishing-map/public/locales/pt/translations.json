@@ -22,6 +22,7 @@
     "errorTimeComparisonDataviews": "Pelo menos uma camada de atividade deve estar habilitada",
     "errorTimeComparisonFilters": "Várias camadas com filtros não são compatíveis",
     "evolution": "evolução",
+    "excluding": "Excluding",
     "experimental": "Experimental",
     "filteredBy": "filtrado por",
     "noData": "dados não disponíveis",
@@ -34,7 +35,8 @@
     "periodComparisonRange": "no {{duration}} que se seguem {{compareStart}} comparado ao baseline nos {{duration}} seguintes {{start}}",
     "timeRangeTooLong": "Relatórios só estão disponíveis para intervalos de tempo de até um ano",
     "title": "Análise",
-    "vesselFlags": "por embarcações de bandeira"
+    "vesselFlags": "por embarcações de bandeira",
+    "vesselFlagsExclude": "by all vessels except the ones flagged by"
   },
   "bigQuery": {
     "aggregateAvg": "Average",
@@ -125,6 +127,7 @@
     "onScreen": "on screen",
     "optional": "Opcional",
     "or": "ou",
+    "partnerSites": "Partner sites",
     "presence": "Presença",
     "report": "Relatório",
     "resetHelpHints": "Mostrar novamente todas as dicas de ajuda",
@@ -133,6 +136,7 @@
     "seeDefault": "Ver visualização padrão",
     "share": "Compartilhar a visão atual",
     "sources": "Sources",
+    "tutorials": "Tutorials",
     "unknown": "Desconhecido",
     "unknownVessel": "Embarcação desconhecida",
     "update": "Atualizar",
@@ -143,6 +147,7 @@
     "vesselId": "Vessel id",
     "view_layer": "View the layer",
     "viirs": "Detecção de luz noturna (VIIRS)",
+    "visibleValues": "Visible values",
     "welcomePopupDisable": "Não mostrar novamente",
     "whatsNew": "O que há de novo?",
     "whatsNewWithNewVersion": "We've made some changes since you last visited the map. Click to learn more"
@@ -345,6 +350,10 @@
     "supportBy": "Apoiado por"
   },
   "layer": {
+    "areas": {
+      "mpa": "MPA",
+      "eez": "EEZ"
+    },
     "activity_fit_bounds": "Center view on activity",
     "add": "Adicionar camada",
     "color_change": "Alterar cor",
@@ -399,7 +408,7 @@
     "rulers_add": "Adicionar réguas",
     "rulers_remove": "Remover todas as réguas",
     "runningExpensiveVesselQuery": "Executar essa query custará em torno de {{cost}} $. Tem certeza de que quer executá-la?",
-    "search": "Localizar áreas",
+    "search": "Search ocean and sea areas, MPAs or EEZs",
     "zoom_in": "Aumentar zoom",
     "zoom_out": "Diminuir zoom"
   },
@@ -558,7 +567,7 @@
     "new": "New vessel group",
     "remove": "Remove vessel group",
     "removeVessel": "Remove vessel from group",
-    "timeRangeLimit": "Supported only for time ranges shorter than 1 year",
+    "timeRangeLimit": "Supported only for time ranges shorter than 3 months",
     "tooManyVessels": "Maximum number of vessels is {{count}}",
     "uploadPublic": "Allow other users to see this vessel group when you share a workspace",
     "vesselGroup": "Vessel group",
@@ -592,6 +601,14 @@
     "update": "Atualizar",
     "uploadPublic": "Permitir que outros usuários vejam este espaço de trabalho",
     "uploadPublicDisabled": "Este espaço de trabalho não pode ser compartilhado publicamente porque contém dados privados",
-    "user": "User workspace"
+    "user": "User workspace",
+    "wizard": {
+      "error": "There was an error creating the workspace",
+      "name": "Give a name to your workspace",
+      "help": "You can move the map and update your workspace later",
+      "exploreArea": "See area",
+      "exploreGlobal": "See global",
+      "title": "Setup a marine manager workspace for any area globally"
+    }
   }
 }

@@ -1,24 +1,25 @@
 {
+  "name": "deck-playground",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/deck-playground",
   "projectType": "application",
   "targets": {
     "changelog": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": ["./changelog.sh deck-playground \"Map\""],
         "parallel": false
       }
     },
     "deploy": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": ["nx build deck-playground --parallel", "nx docker-prepare deck-playground"],
         "parallel": false
       }
     },
     "docker-prepare": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "outputs": [],
       "options": {
         "commands": [
@@ -28,7 +29,7 @@
       }
     },
     "zip": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "outputs": [],
       "options": {
         "commands": ["zip -r dist.zip dist/apps/deck-playground/exported/*"]
@@ -47,7 +48,7 @@
       }
     },
     "clean-locales": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "outputs": [],
       "options": {
         "commands": ["rm -rf dist/apps/deck-playground/public/locales"]
@@ -74,7 +75,7 @@
       }
     },
     "rename-export": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": [
           "rm -rf dist/apps/deck-playground/map",
@@ -84,7 +85,7 @@
       }
     },
     "serve:export": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": [
           "nx build deck-playground --parallel",
@@ -96,7 +97,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/deck-playground"],
+      "outputs": ["{workspaceRoot}/coverage/apps/deck-playground"],
       "options": {
         "jestConfig": "apps/deck-playground/jest.config.ts",
         "passWithNoTests": true

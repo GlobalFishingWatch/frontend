@@ -2,7 +2,7 @@
 export default {
   displayName: 'pbf-decoders',
   transform: {
-    '^.+\\.[tj]sx?$': 'babel-jest',
+    '^.+\\.[tj]sx?$': ['babel-jest', { presets: ['@nrwl/react/babel'] }],
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/libs/pbf-decoders',

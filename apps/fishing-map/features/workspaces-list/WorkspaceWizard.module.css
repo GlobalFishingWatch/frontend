@@ -1,0 +1,113 @@
+.wizardContainer {
+  padding: var(--space-M);
+  background-color: var(--color-help-yellow);
+  border-radius: 8px;
+  box-shadow: var(--box-shadow);
+}
+
+.inputContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.inputContainer:not(:first-child) {
+  margin-top: var(--space-S);
+}
+
+.input input,
+.input input:placeholder-shown {
+  border-radius: 2rem;
+  padding-inline: 1.5rem;
+  padding-right: var(--size-M);
+  background: var(--color-terthiary-blue);
+  border-bottom: none;
+}
+
+.input label {
+  margin-bottom: 0;
+}
+
+.open .input {
+  background: var(--color-white);
+  box-shadow: var(--box-shadow);
+}
+
+.open .input input {
+  border-bottom: 1px solid var(--color-primary-blue);
+  border-radius: 0;
+}
+
+.search {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-XS);
+  padding-top: var(--space-S);
+}
+
+.hint {
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+  display: flex;
+  align-items: center;
+}
+
+.error {
+  font: var(--font-S);
+  color: var(--color-danger-red);
+}
+
+.highlighted {
+  background-color: var(--color-terthiary-blue);
+}
+
+.comboContainer {
+  position: relative;
+}
+
+.results {
+  position: absolute;
+  top: 4rem;
+  width: 100%;
+  background: var(--color-white);
+  box-shadow: var(--box-shadow);
+  z-index: 1;
+}
+
+.result {
+  cursor: pointer;
+  padding: 0.8rem;
+}
+
+.result:not(:last-child) {
+  border-bottom: var(--border);
+}
+
+.confirmBtn,
+.confirmBtn:visited {
+  height: var(--size-M);
+  color: var(--color-white);
+  background-color: var(--color-primary-blue);
+  font: var(--font-S);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  text-transform: uppercase;
+  min-width: 150px;
+  line-height: 1;
+}
+
+.confirmBtn.disabled {
+  color: var(--color-secondary-blue);
+  background-color: var(--color-terthiary-blue);
+  cursor: not-allowed;
+}

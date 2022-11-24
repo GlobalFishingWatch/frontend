@@ -1,5 +1,6 @@
 import { Suspense, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { event as uaEvent } from 'react-ga'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
 import { useTranslation } from 'react-i18next'
@@ -38,6 +39,17 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
     setSelectedEvent(event)
     setIsOpen(true)
   }, [])
+  const onToggleEventType = useCallback(
+    (event) => {
+      toggleEventType(event)
+      uaEvent({
+        category: 'Vessel Detail ACTIVITY BY TYPE Tab',
+        action: 'View list of events by activity type',
+        label: JSON.stringify({ type: event }),
+      })
+    },
+    [toggleEventType]
+  )
   const { authorizedIdentityIndicators } = useUser()
   const { coverage, eventsLoading } = useRiskIndicator(authorizedIdentityIndicators)
   const closeModal = useCallback(() => setIsOpen(false), [])
@@ -128,7 +140,7 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
                           key={index}
                           eventType={event.type}
                           loading={event.loading}
-                          onToggleClick={toggleEventType}
+                          onToggleClick={onToggleEventType}
                           quantity={event.quantity}
                           status={event.status}
                         ></ActivityGroup>

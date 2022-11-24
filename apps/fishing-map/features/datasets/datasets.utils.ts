@@ -18,7 +18,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
-import { IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
+import { formatSliderNumber, IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { capitalize, sortFields } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
 import { PUBLIC_SUFIX, FULL_SUFIX, PRIVATE_SUFIX } from 'data/config'
@@ -44,6 +44,7 @@ export type SupportedActivityDatasetSchema =
   | 'target_species' // between camelCase or snake_case
   | 'license_category'
   | 'vessel-groups'
+  | 'visibleValues'
 
 export type SupportedEnvDatasetSchema = 'type'
 
@@ -434,6 +435,24 @@ export const getSchemaOptionsSelectedInDataview = (
       id: o.toString(),
       label: o.toString(),
     }))
+  }
+  if (
+    schema === 'visibleValues' &&
+    (dataview.config?.minVisibleValue || dataview.config?.maxVisibleValue)
+  ) {
+    const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
+    const min = dataview.config?.minVisibleValue || dataset?.configuration?.min
+    const max = dataview.config?.maxVisibleValue || dataset?.configuration?.max
+    return [
+      {
+        id: min.toString(),
+        label: formatSliderNumber(min),
+      },
+      {
+        id: max.toString(),
+        label: formatSliderNumber(max),
+      },
+    ]
   }
 
   return options?.filter((option) =>

@@ -1,17 +1,18 @@
 {
+  "name": "fourwings-explorer",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/fourwings-explorer",
   "projectType": "application",
   "targets": {
     "changelog": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": ["./changelog.sh fourwings-explorer \"Map\""],
         "parallel": false
       }
     },
     "deploy": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": [
           "nx build fourwings-explorer --parallel",
@@ -21,7 +22,7 @@
       }
     },
     "docker-prepare": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "outputs": [],
       "options": {
         "commands": [
@@ -31,7 +32,7 @@
       }
     },
     "zip": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "outputs": [],
       "options": {
         "commands": ["zip -r dist.zip dist/apps/fourwings-explorer/exported/*"]
@@ -50,7 +51,7 @@
       }
     },
     "clean-locales": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "outputs": [],
       "options": {
         "commands": ["rm -rf dist/apps/fourwings-explorer/public/locales"]
@@ -77,7 +78,7 @@
       }
     },
     "rename-export": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": [
           "rm -rf dist/apps/fourwings-explorer/map",
@@ -87,7 +88,7 @@
       }
     },
     "serve:export": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": [
           "nx build fourwings-explorer --parallel",
@@ -99,7 +100,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/fourwings-explorer"],
+      "outputs": ["{workspaceRoot}/coverage/apps/fourwings-explorer"],
       "options": {
         "jestConfig": "apps/fourwings-explorer/jest.config.ts",
         "passWithNoTests": true

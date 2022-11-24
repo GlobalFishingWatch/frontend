@@ -1,4 +1,5 @@
 {
+  "name": "fourwings-aggregate",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/fourwings-aggregate/src",
   "projectType": "library",
@@ -25,7 +26,7 @@
       }
     },
     "build": {
-      "executor": "@nrwl/web:rollup",
+      "executor": "@nrwl/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/fourwings-aggregate",
@@ -58,7 +59,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/fourwings-aggregate"],
+      "outputs": ["{workspaceRoot}/coverage/libs/fourwings-aggregate"],
       "options": {
         "jestConfig": "libs/fourwings-aggregate/jest.config.ts",
         "passWithNoTests": true
