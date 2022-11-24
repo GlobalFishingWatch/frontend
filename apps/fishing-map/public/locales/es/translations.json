@@ -22,6 +22,7 @@
     "errorTimeComparisonDataviews": "Al menos una capa de actividad debe estar habilitada",
     "errorTimeComparisonFilters": "No se admiten varias capas con filtros",
     "evolution": "evolución",
+    "excluding": "Excluding",
     "experimental": "Experimental",
     "filteredBy": "filtrado por",
     "noData": "No hay datos disponibles",
@@ -34,7 +35,8 @@
     "periodComparisonRange": "{{duration}} siguiente {{compareStart}} comparado con la línea de referencia {{duration}} siguiente {{start}}",
     "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año",
     "title": "Análisis",
-    "vesselFlags": "de embarcaciones abanderadas con"
+    "vesselFlags": "de embarcaciones abanderadas con",
+    "vesselFlagsExclude": "by all vessels except the ones flagged by"
   },
   "bigQuery": {
     "aggregateAvg": "Promedio",
