@@ -94,7 +94,13 @@ const getCommonProperties = (dataviews?: UrlDataviewInstance[], showTimeComparis
       commonProperties.push('flag')
       const flags = getFlagsByIds(dataviews[0].config?.filters?.flag || [])
       if (firstDataviewFlags) {
-        titleChunks.push({ label: t('analysis.vesselFlags', 'by vessels flagged by') })
+        if (dataviews[0].config?.filterOperators?.flag === 'include') {
+          titleChunks.push({ label: t('analysis.vesselFlags', 'by vessels flagged by') })
+        } else {
+          titleChunks.push({
+            label: t('analysis.vesselFlagsExclude', 'by all vessels except the ones flagged by'),
+          })
+        }
         titleChunks.push({ label: `${flags?.map((d) => d.label).join(', ')}`, strong: true })
       }
     }

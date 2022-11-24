@@ -34,7 +34,8 @@
     "periodComparisonRange": "in the {{duration}} following {{compareStart}} compared to baseline in the {{duration}} following {{start}}",
     "timeRangeTooLong": "Reports are only allowed for time ranges up to one year",
     "title": "Analysis",
-    "vesselFlags": "by vessels flagged by"
+    "vesselFlags": "by vessels flagged by",
+    "vesselFlagsExclude": "by all vessels except the ones flagged by"
   },
   "bigQuery": {
     "aggregateAvg": "Average",
