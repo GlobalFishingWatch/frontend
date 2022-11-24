@@ -22,6 +22,7 @@
     "errorTimeComparisonDataviews": "Setidaknya satu lapisan aktivitas harus diaktifkan",
     "errorTimeComparisonFilters": "Beberapa lapisan dengan filter tidak didukung",
     "evolution": "evolusi",
+    "excluding": "Excluding",
     "experimental": "Eksperimen",
     "filteredBy": "filter berdasarkan",
     "noData": "Data tidak tersedia",
@@ -34,7 +35,8 @@
     "periodComparisonRange": "dalam {{duration}} setelah {{compareStart}} dibandingkan dengan acuan dasar dalam {{duration}} setelah {{start}}",
     "timeRangeTooLong": "Laporan hanya diizinkan untuk rentang waktu hingga satu tahun",
     "title": "Analisis",
-    "vesselFlags": "oleh kapal berbendera oleh"
+    "vesselFlags": "oleh kapal berbendera oleh",
+    "vesselFlagsExclude": "by all vessels except the ones flagged by"
   },
   "bigQuery": {
     "aggregateAvg": "Rata-rata",

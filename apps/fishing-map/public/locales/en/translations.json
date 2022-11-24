@@ -22,6 +22,7 @@
     "errorTimeComparisonDataviews": "At least one activity layer must be enabled",
     "errorTimeComparisonFilters": "Several layers with filters are not supported",
     "evolution": "evolution",
+    "excluding": "Excluding",
     "experimental": "Experimental",
     "filteredBy": "filtered by",
     "noData": "No data available",
@@ -34,7 +35,8 @@
     "periodComparisonRange": "in the {{duration}} following {{compareStart}} compared to baseline in the {{duration}} following {{start}}",
     "timeRangeTooLong": "Reports are only supported for time spans up to one year.",
     "title": "Analysis",
-    "vesselFlags": "for vessels flagged by"
+    "vesselFlags": "for vessels flagged by",
+    "vesselFlagsExclude": "by all vessels except those flagged to"
   },
   "bigQuery": {
     "aggregateAvg": "Average",

@@ -22,6 +22,7 @@
     "errorTimeComparisonDataviews": "Pelo menos uma camada de atividade deve estar habilitada",
     "errorTimeComparisonFilters": "Várias camadas com filtros não são compatíveis",
     "evolution": "evolução",
+    "excluding": "Excluding",
     "experimental": "Experimental",
     "filteredBy": "filtrado por",
     "noData": "dados não disponíveis",
@@ -34,7 +35,8 @@
     "periodComparisonRange": "no {{duration}} que se seguem {{compareStart}} comparado ao baseline nos {{duration}} seguintes {{start}}",
     "timeRangeTooLong": "Relatórios só estão disponíveis para intervalos de tempo de até um ano",
     "title": "Análise",
-    "vesselFlags": "por embarcações de bandeira"
+    "vesselFlags": "por embarcações de bandeira",
+    "vesselFlagsExclude": "by all vessels except the ones flagged by"
   },
   "bigQuery": {
     "aggregateAvg": "Average",
