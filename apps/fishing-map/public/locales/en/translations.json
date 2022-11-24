@@ -36,7 +36,7 @@
     "timeRangeTooLong": "Reports are only supported for time spans up to one year.",
     "title": "Analysis",
     "vesselFlags": "for vessels flagged by",
-    "vesselFlagsExclude": "by all vessels except the ones flagged by"
+    "vesselFlagsExclude": "by all vessels except those flagged to"
   },
   "bigQuery": {
     "aggregateAvg": "Average",
