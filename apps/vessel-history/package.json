@@ -51,7 +51,7 @@
   },
   "devDependencies": {
     "@globalfishingwatch/linting": "2.0.2",
-    "@types/json2csv": "^5.0.7",
+    "@types/json2csv": "^5.0.3",
     "@types/lodash": "^4.14.161",
     "@types/luxon": "^2.3.2",
     "@types/qs": "^6.9.5",
