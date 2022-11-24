@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useRef, useState } from 'react'
+import { Fragment, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
@@ -28,15 +28,7 @@ interface ActivityProps {
 }
 
 const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
-  const {
-    downloadingStatus,
-    downloadAllEvents,
-    downloadFilteredEvents,
-    eventsLoading,
-    events,
-    toggleVoyage,
-    viewReadme,
-  } = useVoyagesConnect()
+  const { eventsLoading, events, toggleVoyage } = useVoyagesConnect()
   const [isModalOpen, setIsOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent>()
   const openModal = useCallback((event: RenderedEvent) => {
@@ -72,11 +64,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
 
   return (
     <div className={styles.activityContainer}>
-      <ActivityFilters
-        onDownloadAllActivityCsv={downloadAllEvents}
-        onDownloadFilteredActivityCsv={downloadFilteredEvents}
-        onReadmeClick={viewReadme}
-      ></ActivityFilters>
+      <ActivityFilters></ActivityFilters>
       {eventsLoading && <Spinner className={styles.spinnerFull} />}
       {!eventsLoading && (
         <Fragment>
