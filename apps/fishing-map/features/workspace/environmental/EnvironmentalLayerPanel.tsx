@@ -120,6 +120,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
     dataview.config?.maxVisibleValue !== undefined
       ? dataview.config?.maxVisibleValue !== layerRange.max
       : false
+  const showVisibleFilterValues = showMinVisibleFilter || showMaxVisibleFilter
 
   return (
     <div
@@ -197,20 +198,12 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
               {datasetFields.map(({ field, label }) => (
                 <DatasetSchemaField key={field} dataview={dataview} field={field} label={label} />
               ))}
-              {showMinVisibleFilter && (
+              {showVisibleFilterValues && (
                 <DatasetSchemaField
-                  key={'min'}
+                  key={'visibleValues'}
                   dataview={dataview}
-                  field={'minVisibleValue'}
-                  label={t('common.min', 'Min')}
-                />
-              )}
-              {showMaxVisibleFilter && (
-                <DatasetSchemaField
-                  key={'max'}
-                  dataview={dataview}
-                  field={'maxVisibleValue'}
-                  label={t('common.max', 'Max')}
+                  field={'visibleValues'}
+                  label={t('common.visibleValues', 'Visible values')}
                 />
               )}
             </div>

@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { formatNumber, TagList } from '@globalfishingwatch/ui-components'
+import { formatSliderNumber, TagList } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
@@ -14,7 +14,6 @@ import {
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { selectTimeRange } from 'features/app/app.selectors'
 import { getTimeRangeDuration } from 'utils/dates'
-import { toFixed } from 'utils/shared'
 import { VESSEL_GROUPS_DAYS_LIMIT } from 'data/config'
 
 type LayerPanelProps = {
@@ -29,18 +28,15 @@ function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.
   const duration = getTimeRangeDuration(timeRange, 'days')
   const vesselGroupsOptions = useVesselGroupsOptions()
   const filterOperation = getSchemaFilterOperationInDataview(dataview, field)
-  let valuesSelected =
-    field !== 'minVisibleValue' && field !== 'maxVisibleValue'
-      ? getSchemaFieldsSelectedInDataview(dataview, field, vesselGroupsOptions).sort(
-          (a, b) => a.label - b.label
-        )
-      : [{ id: dataview.config?.[field], label: toFixed(dataview.config?.[field], 1) }]
+  let valuesSelected = getSchemaFieldsSelectedInDataview(dataview, field, vesselGroupsOptions).sort(
+    (a, b) => a.label - b.label
+  )
 
   const valuesAreRangeOfNumbers =
     valuesSelected.length > 1 && valuesSelected.every((value) => Number(value.label))
 
   if (valuesAreRangeOfNumbers) {
-    const range = `${formatNumber(valuesSelected[0].label)} - ${formatNumber(
+    const range = `${formatSliderNumber(valuesSelected[0].label)} - ${formatSliderNumber(
       valuesSelected[valuesSelected.length - 1].label
     )}`
     valuesSelected = [
