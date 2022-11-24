@@ -9,10 +9,15 @@ import styles from './ActivityFilters.module.css'
 
 interface ActivityFiltersProps {
   onDownloadCsv?: () => void
+  onDownloadAllActivityCsv?: () => void
+  onDownloadFilteredActivityCsv?: () => void
+  onReadmeClick?: () => void
 }
 
 const ActivityFilters: React.FC<ActivityFiltersProps> = ({
-  onDownloadCsv,
+  onDownloadAllActivityCsv,
+  onDownloadFilteredActivityCsv,
+  onReadmeClick,
 }: ActivityFiltersProps): React.ReactElement => {
   const { t } = useTranslation()
   const [isModalOpen, setIsOpen] = useState(false)
@@ -44,7 +49,9 @@ const ActivityFilters: React.FC<ActivityFiltersProps> = ({
         <EventFiltersButton
           type="secondary"
           onClick={() => setModalOpen(true)}
-          onDownloadCsv={onDownloadCsv}
+          onDownloadAllActivityCsv={onDownloadAllActivityCsv}
+          onDownloadFilteredActivityCsv={onDownloadFilteredActivityCsv}
+          onReadmeClick={onReadmeClick}
         ></EventFiltersButton>
       </div>
     </Fragment>

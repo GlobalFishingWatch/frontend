@@ -28,8 +28,15 @@ interface ActivityProps {
 }
 
 const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
-  const { downloadingStatus, downloadFilteredEvents, eventsLoading, events, toggleVoyage } =
-    useVoyagesConnect()
+  const {
+    downloadingStatus,
+    downloadAllEvents,
+    downloadFilteredEvents,
+    eventsLoading,
+    events,
+    toggleVoyage,
+    viewReadme,
+  } = useVoyagesConnect()
   const [isModalOpen, setIsOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent>()
   const openModal = useCallback((event: RenderedEvent) => {
@@ -65,7 +72,11 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
 
   return (
     <div className={styles.activityContainer}>
-      <ActivityFilters onDownloadCsv={downloadFilteredEvents}></ActivityFilters>
+      <ActivityFilters
+        onDownloadAllActivityCsv={downloadAllEvents}
+        onDownloadFilteredActivityCsv={downloadFilteredEvents}
+        onReadmeClick={viewReadme}
+      ></ActivityFilters>
       {eventsLoading && <Spinner className={styles.spinnerFull} />}
       {!eventsLoading && (
         <Fragment>

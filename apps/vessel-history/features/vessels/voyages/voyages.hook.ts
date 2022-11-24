@@ -14,7 +14,7 @@ import {
   VoyagesState,
 } from '../vessels.slice'
 import { selectCurrentVesselVoyagesState } from '../vessels.selectors'
-import { selectFilteredEventsByVoyages } from './voyages.selectors'
+import { selectAllEventsByVoyages, selectFilteredEventsByVoyages } from './voyages.selectors'
 
 function useVoyagesConnect() {
   const dispatch = useAppDispatch()
@@ -113,65 +113,89 @@ function useVoyagesConnect() {
 
   const CSVParser = useRef<any>(null)
   const [downloadingStatus, setDownloadingStatus] = useState(false)
-  const downloadFilteredEvents = useCallback(async () => {
-    setDownloadingStatus(true)
-    const date = DateTime.now().toFormat('yyyyLLddHHmm')
-    const fileName = `vessel-activity-${date}.csv`
-    try {
-      if (!CSVParser.current) {
-        const node = await import('json2csv')
-        CSVParser.current = node
-      }
-      const data = (eventsList as any[])
-        .filter((event) => event.type !== EventTypeVoyage.Voyage)
-        .map(
-          ({
-            id,
-            key,
-            type,
-            subEvent,
-            timestamp,
-            position,
-            start,
-            end,
-            color,
-            colorLabels,
-            description,
-            descriptionGeneric,
-            regionDescription,
-            durationDescription,
-            duration,
-            vessel,
-            ...rest
-          }) => ({
-            timestamp: getUTCDateTime(timestamp).toISO(),
-            type,
-            subType: subEvent,
-            latitude: position.lat,
-            longitude: position.lon,
-            start: getUTCDateTime(start).toISO(),
-            end: getUTCDateTime(end).toISO(),
-            description,
-            regionDescription,
-            durationDescription,
-            duration,
-            vessel,
-            ...rest,
-            eventId: id,
-          })
-        )
-      const { parse, transforms } = CSVParser.current
-      const csv = parse(data, {
-        transforms: [transforms.flatten({ objects: true, arrays: true })],
-      })
-      FileSaver(new Blob([csv], { type: 'text/plain;charset=utf-8' }), fileName)
-    } catch (e) {
-      console.warn(e)
-    }
-    setDownloadingStatus(false)
-  }, [eventsList])
 
+  const downloadEvents = useCallback(
+    async (events: (RenderedEvent | Voyage)[], filename: string) => {
+      setDownloadingStatus(true)
+      try {
+        if (!CSVParser.current) {
+          const node = await import('json2csv')
+          CSVParser.current = node
+        }
+        const data = (events as any[])
+          .filter((event) => event.type !== EventTypeVoyage.Voyage)
+          .map(
+            ({
+              id,
+              key,
+              type,
+              subEvent,
+              timestamp,
+              position,
+              start,
+              end,
+              color,
+              colorLabels,
+              description,
+              descriptionGeneric,
+              regionDescription,
+              durationDescription,
+              duration,
+              vessel,
+              ...rest
+            }) => ({
+              timestamp: getUTCDateTime(timestamp).toISO(),
+              type,
+              subType: subEvent,
+              latitude: position.lat,
+              longitude: position.lon,
+              start: getUTCDateTime(start).toISO(),
+              end: getUTCDateTime(end).toISO(),
+              description,
+              regionDescription,
+              durationDescription,
+              duration,
+              vessel,
+              ...rest,
+              eventId: id,
+            })
+          )
+        const { parse, transforms } = CSVParser.current
+        const csv = parse(data, {
+          transforms: [transforms.flatten({ objects: true, arrays: true })],
+        })
+        FileSaver(new Blob([csv], { type: 'text/plain;charset=utf-8' }), filename)
+      } catch (e) {
+        console.warn(e)
+      }
+      setDownloadingStatus(false)
+    },
+    []
+  )
+
+  const allEvents = useSelector(selectAllEventsByVoyages)
+  const downloadAllEvents = useCallback(async () => {
+    // TODO Customize filename
+    const date = DateTime.now().toFormat('yyyyLLddHHmm')
+    const fileName = `vessel-activity-all-${date}.csv`
+    downloadEvents(allEvents, fileName)
+  }, [allEvents, downloadEvents])
+
+  const downloadFilteredEvents = useCallback(async () => {
+    // TODO Customize filename
+    const date = DateTime.now().toFormat('yyyyLLddHHmm')
+    const fileName = `vessel-activity-filtered-${date}.csv`
+    downloadEvents(eventsList, fileName)
+  }, [downloadEvents, eventsList])
+
+  // TODO define approach to display readme file
+  const viewReadme = useCallback(
+    () =>
+      'https://github.com/GlobalFishingWatch/frontend/blob/develop/apps/vessel-history/feature/download-activity-csv/README.md',
+    []
+  )
   return {
+    downloadAllEvents,
     downloadFilteredEvents,
     downloadingStatus,
     eventsLoading,
@@ -179,6 +203,7 @@ function useVoyagesConnect() {
     getLastEventInVoyage,
     getVoyageByEvent,
     toggleVoyage,
+    viewReadme,
   }
 }
 
