@@ -1520,14 +1520,9 @@
     "description": "crwdns25374:0crwdne25374:0",
     "schema": {}
   },
-  "public-eez-land": {
-    "name": "crwdns9663:0crwdne9663:0",
-    "description": "crwdns9665:0crwdne9665:0",
-    "schema": {}
-  },
-  "public-fao-areas-major-subareas": {
-    "name": "crwdns18192:0crwdne18192:0",
-    "description": "crwdns25014:0crwdne25014:0",
+  "public-fao": {
+    "name": "crwdns29149:0crwdne29149:0",
+    "description": "crwdns29151:0crwdne29151:0",
     "schema": {}
   },
   "public-fd-chlorophyl-ascension-v3": {
