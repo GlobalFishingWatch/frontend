@@ -1,7 +1,7 @@
 import { Fragment, useCallback, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { ButtonType, IconButton, Modal } from '@globalfishingwatch/ui-components'
+import { ButtonType, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
 import styles from './download-activity.module.css'
 import useDownloadActivity from './download-activity.hook'
 
@@ -55,74 +55,84 @@ export function DownloadActivity(props: DownloadActivityCsvProps) {
 
   return (
     <Fragment>
-      <IconButton
-        type={props?.type === 'default' ? 'map-tool' : 'solid'}
-        icon={showDownloadPopup ? 'close' : 'download'}
-        size="medium"
-        onClick={() => setShowDownloadPopup(!showDownloadPopup)}
-      />
+      {!downloadingStatus && (
+        <Fragment>
+          <IconButton
+            type={props?.type === 'default' ? 'map-tool' : 'solid'}
+            icon={showDownloadPopup ? 'close' : 'download'}
+            size="medium"
+            onClick={() => setShowDownloadPopup(!showDownloadPopup)}
+          />
 
-      {showDownloadPopup && (
-        <Modal
-          appSelector="__next"
-          className={styles.modalContentWrapper}
-          closeButtonClassName={styles.modalCloseButton}
-          contentClassName={styles.modalContainer}
-          header={false}
-          isOpen={showDownloadPopup}
-          onClose={handleCloseDownloadPopup}
-          overlayClassName={styles.modalOverlay}
-          portalClassName={styles.modalPortal}
-          shouldCloseOnEsc={true}
-        >
-          <ul className={styles.items}>
-            <li className={styles.itemContainer}>
-              <button onClick={handleDownloadAllActivityCsv}>
-                {t('events.downloadAllActivity', 'Download entire vessel activity')}
-              </button>
-              <IconButton
-                className={styles.icon}
-                icon="download"
-                onClick={handleDownloadAllActivityCsv}
-                size="small"
-                tooltip={t('common.download', 'Download')}
-                tooltipPlacement="left"
-                type="default"
-              />
-            </li>
-            {filtersApplied && (
-              <li className={cx(styles.itemContainer)}>
-                <button onClick={handleDownloadFilteredActivityCsv}>
-                  {t(
-                    'events.downloadCurrentActivityFiltered',
-                    'Download current vessel activity filtered'
-                  )}
-                </button>
-                <IconButton
-                  className={styles.icon}
-                  icon="download"
-                  onClick={handleDownloadFilteredActivityCsv}
-                  size="small"
-                  type="default"
-                />
-              </li>
-            )}
-            {readmeUrl !== undefined && (
-              <li className={styles.itemContainer}>
-                <a href={readmeUrl} target="_blank" rel="noreferrer" onClick={handleReadmeClick}>
-                  <span>{t('events.csvReadmeFile', 'README.md')}</span>
+          {showDownloadPopup && (
+            <Modal
+              appSelector="__next"
+              className={styles.modalContentWrapper}
+              closeButtonClassName={styles.modalCloseButton}
+              contentClassName={styles.modalContainer}
+              header={false}
+              isOpen={showDownloadPopup}
+              onClose={handleCloseDownloadPopup}
+              overlayClassName={styles.modalOverlay}
+              portalClassName={styles.modalPortal}
+              shouldCloseOnEsc={true}
+            >
+              <ul className={styles.items}>
+                <li className={styles.itemContainer}>
+                  <button onClick={handleDownloadAllActivityCsv}>
+                    {t('events.downloadAllActivity', 'Download entire vessel activity')}
+                  </button>
                   <IconButton
-                    icon="external-link"
-                    type="default"
-                    size="small"
                     className={styles.icon}
+                    icon="download"
+                    onClick={handleDownloadAllActivityCsv}
+                    size="small"
+                    tooltip={t('common.download', 'Download')}
+                    tooltipPlacement="left"
+                    type="default"
                   />
-                </a>
-              </li>
-            )}
-          </ul>
-        </Modal>
+                </li>
+                {filtersApplied && (
+                  <li className={cx(styles.itemContainer)}>
+                    <button onClick={handleDownloadFilteredActivityCsv}>
+                      {t(
+                        'events.downloadCurrentActivityFiltered',
+                        'Download current vessel activity filtered'
+                      )}
+                    </button>
+                    <IconButton
+                      className={styles.icon}
+                      icon="download"
+                      onClick={handleDownloadFilteredActivityCsv}
+                      size="small"
+                      type="default"
+                    />
+                  </li>
+                )}
+                {readmeUrl !== undefined && (
+                  <li className={styles.itemContainer}>
+                    <a
+                      href={readmeUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={handleReadmeClick}
+                    >
+                      <span>{t('events.csvReadmeFile', 'README.md')}</span>
+                      <IconButton
+                        icon="external-link"
+                        type="default"
+                        size="small"
+                        className={styles.icon}
+                      />
+                    </a>
+                  </li>
+                )}
+              </ul>
+            </Modal>
+          )}
+        </Fragment>
       )}
+      {downloadingStatus && <Spinner size="small" className={styles.spinnerIcon} />}
     </Fragment>
   )
 }

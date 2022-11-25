@@ -58,3 +58,8 @@
 .disabled {
   opacity: var(--opacity-secondary);
 }
+
+.spinnerIcon {
+  width: 38px;
+  height: 38px;
+}
