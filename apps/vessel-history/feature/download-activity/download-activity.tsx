@@ -35,20 +35,23 @@ export function DownloadActivity(props: DownloadActivityCsvProps) {
     if (onDownloadAllActivityCsv !== undefined) {
       onDownloadAllActivityCsv()
     }
-  }, [downloadAllEvents, onDownloadAllActivityCsv])
+    handleCloseDownloadPopup()
+  }, [downloadAllEvents, handleCloseDownloadPopup, onDownloadAllActivityCsv])
 
   const handleDownloadFilteredActivityCsv = useCallback(() => {
     downloadFilteredEvents()
     if (onDownloadFilteredActivityCsv !== undefined) {
       onDownloadFilteredActivityCsv()
     }
-  }, [downloadFilteredEvents, onDownloadFilteredActivityCsv])
+    handleCloseDownloadPopup()
+  }, [downloadFilteredEvents, handleCloseDownloadPopup, onDownloadFilteredActivityCsv])
 
   const handleReadmeClick = useCallback(() => {
     if (onReadmeClick !== undefined) {
       onReadmeClick()
     }
-  }, [onReadmeClick])
+    handleCloseDownloadPopup()
+  }, [handleCloseDownloadPopup, onReadmeClick])
 
   return (
     <Fragment>
@@ -87,24 +90,23 @@ export function DownloadActivity(props: DownloadActivityCsvProps) {
                 type="default"
               />
             </li>
-            <li className={cx(styles.itemContainer, !filtersApplied && styles.disabled)}>
-              <button onClick={handleDownloadFilteredActivityCsv} disabled={!filtersApplied}>
-                {t(
-                  'events.downloadCurrentActivityFiltered',
-                  'Download current vessel activity filtered'
-                )}
-              </button>
-              <IconButton
-                className={styles.icon}
-                disabled={!filtersApplied}
-                icon="download"
-                onClick={handleDownloadFilteredActivityCsv}
-                size="small"
-                tooltip={t('common.download', 'Download')}
-                tooltipPlacement="left"
-                type="default"
-              />
-            </li>
+            {filtersApplied && (
+              <li className={cx(styles.itemContainer)}>
+                <button onClick={handleDownloadFilteredActivityCsv}>
+                  {t(
+                    'events.downloadCurrentActivityFiltered',
+                    'Download current vessel activity filtered'
+                  )}
+                </button>
+                <IconButton
+                  className={styles.icon}
+                  icon="download"
+                  onClick={handleDownloadFilteredActivityCsv}
+                  size="small"
+                  type="default"
+                />
+              </li>
+            )}
             {readmeUrl !== undefined && (
               <li className={styles.itemContainer}>
                 <a href={readmeUrl} target="_blank" rel="noreferrer" onClick={handleReadmeClick}>
@@ -114,8 +116,6 @@ export function DownloadActivity(props: DownloadActivityCsvProps) {
                     type="default"
                     size="small"
                     className={styles.icon}
-                    tooltipPlacement="left"
-                    tooltip={t('common.viewReadme', 'View README.md')}
                   />
                 </a>
               </li>
