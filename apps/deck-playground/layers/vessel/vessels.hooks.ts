@@ -30,7 +30,7 @@ export const vesselsLayerAtom = atom<VesselsAtom>({
   default: {
     loaded: false,
     ids: [],
-  }
+  },
   // effects: [
   //   urlSyncEffect({
   //     refine: mixed(),
@@ -65,28 +65,24 @@ export function useVesselsLayer() {
   const layerVisible = layer?.visible
 
   const setAtomProperty = useCallback(
-    (property) => updateAtom((state) => {console.log(state); return { ...state, ...property }}),
+    (property) => updateAtom((state) => ({ ...state, ...property })),
     [updateAtom]
   )
 
   const onVesselHighlight = useCallback(
     (id) => {
-      setAtomProperty({ highlightedVesselId: id })
+      setAtomProperty({ highlightedVesselId: id, loaded: true })
     },
     [setAtomProperty]
   )
 
-  const onDataLoad = useCallback(
-    () => {
-      setAtomProperty({ loaded: true })
-    },
-    [setAtomProperty]
-  )
+  const onDataLoad = useCallback(() => {
+    setAtomProperty({ loaded: true })
+  }, [setAtomProperty])
 
   const onColorRampUpdate = useCallback(
     (colorRamp: FourwingsColorRamp) => {
       if (colorRamp) {
-        console.log('updates ramp', colorRamp)
         setAtomProperty({ colorRamp })
       }
     },
@@ -101,11 +97,11 @@ export function useVesselsLayer() {
         endTime,
         highlightStartTime,
         highlightEndTime,
-        onDataLoad: onDataLoad
+        onDataLoad: onDataLoad,
       })
-      setAtomProperty({ instance: vesselsLayer })
+      setAtomProperty({ instance: vesselsLayer, loaded: false })
     } else {
-      setAtomProperty({ instance: undefined })
+      setAtomProperty({ instance: undefined, loaded: false })
     }
   }, [
     startTime,
@@ -118,7 +114,7 @@ export function useVesselsLayer() {
     ids,
     highlightStartTime,
     highlightEndTime,
-    onDataLoad
+    onDataLoad,
   ])
 
   return instance
@@ -154,7 +150,6 @@ const vesselsLayerLoadedAtomSelector = selector({
   key: 'vesselsLayerLoadedAtomSelector',
   dangerouslyAllowMutability: true,
   get: ({ get }) => {
-    console.log(get(vesselsLayerAtom))
     return get(vesselsLayerAtom)?.loaded
   },
 })

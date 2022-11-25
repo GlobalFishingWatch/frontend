@@ -1,20 +1,22 @@
 import { DataFilterExtension } from '@deck.gl/extensions'
 import { CompositeLayer, Layer, LayersList, LayerProps } from '@deck.gl/core/typed'
 // Layers
-import { VesselEventsLayer } from 'layers/vessel/VesselEventsLayer'
+import { VesselEventsLayer, _VesselEventsLayerProps } from 'layers/vessel/VesselEventsLayer'
 import { VesselTrackLayer, _VesselTrackLayerProps } from 'layers/vessel/VesselTrackLayer'
 // Loaders
 import { trackLoader } from 'loaders/vessels/trackLoader'
 import { vesselEventsLoader } from 'loaders/vessels/eventsLoader'
-import { API_TOKEN } from 'data/config'
 
-export type VesselLayerProps = _VesselTrackLayerProps
+export type VesselLayerProps = _VesselTrackLayerProps & _VesselEventsLayerProps
 
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
+  layersLoaded: string[] = []
 
   onDataLoad: LayerProps['onDataLoad'] = (data, context) => {
-    if (this.props.onDataLoad) {
-      return this.props.onDataLoad(data, context)
+    this.layersLoaded = [...this.layersLoaded, 'loaded']
+    const eventsLayersArray = this.getVesselEventsLayers()
+    if (this.layersLoaded.length === eventsLayersArray.length) {
+      this.props.onDataLoad(data, context)
     }
   }
 
@@ -37,14 +39,14 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         wrapLongitude: true,
         jointRounded: true,
         capRounded: true,
-        loadOptions: {
-          worker: false,
-          fetch: {
-            headers: {
-              Authorization: `Bearer ${API_TOKEN}`,
-            },
-          },
-        },
+        // loadOptions: {
+        //   worker: false,
+        //   fetch: {
+        //     headers: {
+        //       Authorization: `Bearer ${API_TOKEN}`,
+        //     },
+        //   },
+        // },
         getColor: (d) => {
           return d.waypoints.map((p) => {
             if (
@@ -73,17 +75,11 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         id: `fishing-${this.props.id}`,
         data: `https://gateway.api.dev.globalfishingwatch.org/v2/events?limit=99999&offset=0&vessels=${this.props.id}&summary=true&datasets=public-global-fishing-events%3Av20201001`,
         loaders: [vesselEventsLoader],
+        eventType: 'fishing',
         pickable: true,
-        loadOptions: {
-          fetch: {
-            headers: {
-              Authorization: `Bearer ${API_TOKEN}`,
-            },
-          },
-        },
         startTime: this.props.startTime,
         endTime: this.props.endTime,
-        onDataLoad: this.onDataLoad,
+        onEventsDataLoad: this.onDataLoad,
         filterRange: [this.props.startTime, this.props.endTime],
         extensions: [new DataFilterExtension({ filterSize: 1 })],
       })
@@ -96,17 +92,11 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         id: `port-visits-${this.props.id}`,
         data: `https://gateway.api.dev.globalfishingwatch.org/v2/events?limit=99999&offset=0&vessels=${this.props.id}&summary=true&confidences=4&datasets=public-global-port-visits-c2-events%3Av20201001`,
         loaders: [vesselEventsLoader],
+        eventType: 'port-visit',
         pickable: true,
-        loadOptions: {
-          fetch: {
-            headers: {
-              Authorization: `Bearer ${API_TOKEN}`,
-            },
-          },
-        },
         startTime: this.props.startTime,
         endTime: this.props.endTime,
-        onDataLoad: this.onDataLoad,
+        onEventsDataLoad: this.onDataLoad,
         filterRange: [this.props.startTime, this.props.endTime],
         extensions: [new DataFilterExtension({ filterSize: 1 })],
       })
@@ -119,17 +109,11 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         id: `encounters-${this.props.id}`,
         data: `https://gateway.api.dev.globalfishingwatch.org/v2/events?limit=99999&offset=0&vessels=${this.props.id}&summary=true&datasets=public-global-encounters-events%3Av20201001`,
         loaders: [vesselEventsLoader],
+        eventType: 'encounters',
         pickable: true,
-        loadOptions: {
-          fetch: {
-            headers: {
-              Authorization: `Bearer ${API_TOKEN}`,
-            },
-          },
-        },
         startTime: this.props.startTime,
         endTime: this.props.endTime,
-        onDataLoad: this.onDataLoad,
+        onEventsDataLoad: this.onDataLoad,
         filterRange: [this.props.startTime, this.props.endTime],
         extensions: [new DataFilterExtension({ filterSize: 1 })],
       })
@@ -150,17 +134,32 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   getVesselsData() {
-    return this.getSubLayers().map(l => l.props.data)
+    return this.getSubLayers().map((l) => l.props.data)
   }
 
-  getVesselsEventsData() {
+  getVesselEventsLayers() {
+    return [
+      this._getVesselFishingEventsLayer(),
+      this._getVesselPortVisitEventsLayer(),
+      this._getVesselEncounterEventsLayer(),
+    ]
+  }
+
+  getVesselEventsData() {
     const events = this.getSubLayers().reduce((acc, l) => {
-      const events = l.events ? l.events : []
+      const events = l.props.eventType ? l.props.data : []
       return [...acc, events]
     }, [])
     const sortedEvents = events.flat().sort((a, b) => a.start - b.start)
     return sortedEvents
   }
 
-
+  getVesselTrackData() {
+    return this.getSubLayers().reduce((acc, l) => {
+      if (!l.props.eventType) {
+        return [...acc, l.props.data]
+      }
+      return acc
+    }, [])[0]
+  }
 }
