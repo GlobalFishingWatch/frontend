@@ -30,13 +30,25 @@ const ActivityFilters: React.FC<ActivityFiltersProps> = (
   const currentProfileIsInsurer = useSelector(selectCurrentUserProfileHasInsurerPermission)
 
   const onDownloadAllActivityCsv = useCallback(() => {
-    // TODO: Add google analytics tracking for this event
+    uaEvent({
+      category: 'Vessel Detail ACTIVITY or MAP Tab',
+      action: 'Click ‘download entire vessel activity‘ option',
+      label: JSON.stringify({ tab: 'ACTIVITY' }),
+    })
   }, [])
   const onDownloadFilteredActivityCsv = useCallback(() => {
-    // TODO: Add google analytics tracking for this event
+    uaEvent({
+      category: 'Vessel Detail ACTIVITY or MAP Tab',
+      action: 'Click ‘download filtered vessel activity‘ option',
+      label: JSON.stringify({ tab: 'ACTIVITY' }),
+    })
   }, [])
   const onReadmeClick = useCallback(() => {
-    // TODO: Add google analytics tracking for this event
+    uaEvent({
+      category: 'Vessel Detail ACTIVITY or MAP Tab',
+      action: 'Click ‘view readme.md file‘ option',
+      label: JSON.stringify({ tab: 'ACTIVITY' }),
+    })
   }, [])
 
   return (
