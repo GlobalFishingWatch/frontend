@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 import EventFilters from 'features/event-filters/EventFilters'
 import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
 import EventFiltersButton from 'features/event-filters/EventFiltersButton'
-import { selectFilterUpdated } from 'features/event-filters/filters.selectors'
+import { selectIsFilterUpdated } from 'features/event-filters/filters.selectors'
 import ActivityDataAndTerminology from '../components/activity/ActivityDataAndTerminology'
 import { selectCurrentUserProfileHasInsurerPermission } from '../profile.selectors'
 import styles from './ActivityFilters.module.css'
@@ -26,7 +26,7 @@ const ActivityFilters: React.FC<ActivityFiltersProps> = (
     })
     setIsOpen(isOpen)
   }, [])
-  const filtersApplied = useSelector(selectFilterUpdated)
+  const filtersApplied = useSelector(selectIsFilterUpdated)
   const currentProfileIsInsurer = useSelector(selectCurrentUserProfileHasInsurerPermission)
 
   const onDownloadAllActivityCsv = useCallback(() => {

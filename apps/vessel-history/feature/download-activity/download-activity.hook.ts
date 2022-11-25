@@ -2,7 +2,7 @@ import { useCallback, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import FileSaver from 'file-saver'
-// import { selectResourcesLoading } from 'features/resources/resources.slice'
+import { useTranslation } from 'react-i18next'
 import { EventTypeVoyage, Voyage } from 'types/voyage'
 import { getUTCDateTime } from 'utils/dates'
 import {
@@ -12,12 +12,17 @@ import {
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { selectMergedVesselId } from 'routes/routes.selectors'
 import { selectVesselById } from 'features/vessels/vessels.slice'
+import { Filters, selectFilters } from 'features/event-filters/filters.slice'
+import { selectFiltersUpdated } from 'features/event-filters/filters.selectors'
 
 function useDownloadActivity() {
+  const { t } = useTranslation()
   const eventsList = useSelector(selectFilteredEventsByVoyages)
   const allEvents = useSelector(selectAllEventsByVoyages)
   const mergedVesselId = useSelector(selectMergedVesselId)
   const vessel = useSelector(selectVesselById(mergedVesselId))
+  const filters = useSelector(selectFilters)
+  const filtersUpdated = useSelector(selectFiltersUpdated)
 
   const CSVParser = useRef<any>(null)
   const [downloadingStatus, setDownloadingStatus] = useState(false)
@@ -82,20 +87,46 @@ function useDownloadActivity() {
   )
 
   const downloadAllEvents = useCallback(async () => {
-    // TODO Customize filename
-    const date = DateTime.now().toFormat('yyyyLLddHHmm')
-    const fileName = `vessel-activity-all-${date}.csv`
+    const downloadDate = DateTime.now().toFormat('yyyyLLddHHmm')
+    const fileName =
+      `vessel-viewer-activity_${vessel.shipname}_${vessel.imo}` +
+      `_${downloadDate}` +
+      `_all activity` +
+      `.csv`
     downloadEvents(allEvents, fileName)
-  }, [allEvents, downloadEvents])
+  }, [allEvents, downloadEvents, vessel.imo, vessel.shipname])
 
   const downloadFilteredEvents = useCallback(async () => {
-    // TODO Customize filename
-    const date = DateTime.now().toFormat('yyyyLLddHHmm')
-    // vessel_viewer_activity_[vessel name]_[IMO (if available)]_[date of export]_[all activity/filtered activity (depending on which it is)]_[date range (whether all or filtered)]_[event types (if filtered by event)]
-    const fileName = `/tmp/vessel-viewer-activity-${date}.csv`
+    const downloadDate = DateTime.now().toFormat('yyyyLLddHHmm')
+    const dateRange =
+      filters.end && filters.start
+        ? `_${filters.start}_${filters.end}`
+        : filters.start
+        ? `_since_${filters.start}`
+        : filters.end
+        ? `_until_${filters.end}`
+        : ''
+    const currentFilters: string =
+      (filtersUpdated as string[]).filter((filter) => !['start', 'end'].includes(filter)).length > 0
+        ? '_' +
+          (Object.keys(filters) as (keyof Filters)[])
+            // Exclude filters without value or false
+            .filter((key) => !!filters[key] && !['start', 'end'].includes(key as string))
+            .map((filter) =>
+              (t(`settings.${filter}.shortTitle` as any, filter) as string).toLocaleLowerCase()
+            )
+            .join(',')
+        : ''
+    const fileName =
+      `vessel-viewer-activity_${vessel.shipname}_${vessel.imo}` +
+      `_${downloadDate}` +
+      `_filtered activity` +
+      `${dateRange}` +
+      `${currentFilters}` +
+      `.csv`
 
     downloadEvents(eventsList, fileName)
-  }, [downloadEvents, eventsList])
+  }, [downloadEvents, eventsList, filters, filtersUpdated, t, vessel.imo, vessel.shipname])
 
   // TODO define approach to display readme file
   const viewReadme = useCallback(
@@ -103,6 +134,7 @@ function useDownloadActivity() {
       'https://github.com/GlobalFishingWatch/frontend/blob/develop/apps/vessel-history/feature/download-activity/README.md',
     []
   )
+
   return {
     downloadAllEvents,
     downloadFilteredEvents,
