@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import FileSaver from 'file-saver'
@@ -14,9 +14,10 @@ import { selectMergedVesselId } from 'routes/routes.selectors'
 import { selectVesselById } from 'features/vessels/vessels.slice'
 import { Filters, selectFilters } from 'features/event-filters/filters.slice'
 import { selectFiltersUpdated } from 'features/event-filters/filters.selectors'
+import { BASE_URL } from 'data/constants'
 
 function useDownloadActivity() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const eventsList = useSelector(selectFilteredEventsByVoyages)
   const allEvents = useSelector(selectAllEventsByVoyages)
   const mergedVesselId = useSelector(selectMergedVesselId)
@@ -129,17 +130,16 @@ function useDownloadActivity() {
   }, [downloadEvents, eventsList, filters, filtersUpdated, t, vessel.imo, vessel.shipname])
 
   // TODO define approach to display readme file
-  const viewReadme = useCallback(
-    () =>
-      'https://github.com/GlobalFishingWatch/frontend/blob/develop/apps/vessel-history/feature/download-activity/README.md',
-    []
+  const readmeUrl = useMemo(
+    () => `${BASE_URL}/readme.csv.activity.${i18n.language}.pdf`,
+    [i18n.language]
   )
 
   return {
     downloadAllEvents,
     downloadFilteredEvents,
     downloadingStatus,
-    viewReadme,
+    readmeUrl,
   }
 }
 

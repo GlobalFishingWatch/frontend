@@ -18,13 +18,8 @@ export function DownloadActivity(props: DownloadActivityCsvProps) {
   const { filtersApplied, onDownloadAllActivityCsv, onDownloadFilteredActivityCsv, onReadmeClick } =
     props
   const [showDownloadPopup, setShowDownloadPopup] = useState(false)
-  const { downloadAllEvents, downloadFilteredEvents, downloadingStatus, viewReadme } =
+  const { downloadAllEvents, downloadFilteredEvents, downloadingStatus, readmeUrl } =
     useDownloadActivity()
-
-  const readmeUrl = useMemo(
-    () => (viewReadme !== undefined ? (viewReadme() as any) : undefined),
-    [viewReadme]
-  )
 
   const handleCloseDownloadPopup = useCallback(() => {
     setShowDownloadPopup(false)
@@ -114,10 +109,10 @@ export function DownloadActivity(props: DownloadActivityCsvProps) {
                     <a
                       href={readmeUrl}
                       target="_blank"
-                      rel="noreferrer"
+                      rel="noopener noreferrer"
                       onClick={handleReadmeClick}
                     >
-                      <span>{t('events.csvReadmeFile', 'README.md')}</span>
+                      <span>{t('events.csvReadmeFile', 'README')}</span>
                       <IconButton
                         icon="external-link"
                         type="default"

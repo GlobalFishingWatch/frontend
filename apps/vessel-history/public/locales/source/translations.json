@@ -140,7 +140,7 @@
     "byTypeGapTitle": "{{count}} likely disabling events",
     "byTypeLoiteringTitle": "{{count}} loitering events",
     "byTypePortVisitTitle": "{{count}} port visits",
-    "csvReadmeFile": "README.md",
+    "csvReadmeFile": "README",
     "download": "Download",
     "downloadAllActivity": "Download entire vessel activity",
     "downloadCurrentActivityFiltered": "Download current vessel activity filtered",
