@@ -19,7 +19,6 @@ import useViewport from 'features/map/map-viewport.hooks'
 import ActivityItem from './ActivityItem'
 import ActivityModalContent from './ActivityModalContent'
 import styles from './Activity.module.css'
-
 interface ActivityProps {
   vessel: VesselWithHistory | null
   lastPosition: any

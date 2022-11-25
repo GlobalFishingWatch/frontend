@@ -11,11 +11,7 @@ import ActivityDataAndTerminology from '../components/activity/ActivityDataAndTe
 import { selectCurrentUserProfileHasInsurerPermission } from '../profile.selectors'
 import styles from './ActivityFilters.module.css'
 
-interface ActivityFiltersProps {}
-
-const ActivityFilters: React.FC<ActivityFiltersProps> = (
-  props: ActivityFiltersProps
-): React.ReactElement => {
+const ActivityFilters: React.FC = (): React.ReactElement => {
   const { t } = useTranslation()
   const [isModalOpen, setIsOpen] = useState(false)
   const setModalOpen = useCallback((isOpen) => {
