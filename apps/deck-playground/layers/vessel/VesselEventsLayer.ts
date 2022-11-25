@@ -1,13 +1,13 @@
 import { AccessorFunction, DefaultProps } from '@deck.gl/core/typed'
 import { ScatterplotLayer, ScatterplotLayerProps } from '@deck.gl/layers/typed'
-import { Eve } from '@globalfishingwatch/api-types'
 
 export type _VesselEventsLayerProps<DataT = any> = {
-  events?: [],
-  getShape?: AccessorFunction<DataT, number>,
-  getPosition?: AccessorFunction<DataT, number>,
-  getFilterValue?: AccessorFunction<DataT, number>,
-  getPickingInfo?: AccessorFunction<DataT, string>,
+  eventType?: string
+  getShape?: AccessorFunction<DataT, number>
+  getPosition?: AccessorFunction<DataT, number>
+  getFilterValue?: AccessorFunction<DataT, number>
+  getPickingInfo?: AccessorFunction<DataT, string>
+  onEventsDataLoad?: AccessorFunction<DataT, void>
 }
 
 export type VesselEventsLayerProps<DataT = any> = _VesselEventsLayerProps<DataT> &
@@ -24,7 +24,7 @@ const defaultProps: DefaultProps<VesselEventsLayerProps> = {
   getShape: { type: 'accessor', value: (d) => d.shapeIndex },
   getFilterValue: { type: 'accessor', value: (d) => d.start },
   getPosition: { type: 'accessor', value: (d) => d.coordinates },
-  getPickingInfo: { type: 'accessor', value: ({info}) => info}
+  getPickingInfo: { type: 'accessor', value: ({ info }) => info },
 }
 
 export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends ScatterplotLayer<
@@ -36,13 +36,24 @@ export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends Scatterplot
 
   initializeState() {
     super.initializeState()
-    this.events = []
     this.getAttributeManager().addInstanced({
       instanceShapes: {
         size: 1,
         accessor: 'getShape',
       },
     })
+  }
+
+  updateState(param) {
+    super.updateState(param)
+    if (
+      param.changeFlags.dataChanged === 'A new data container was supplied' ||
+      param.changeFlags.propsChanged === 'props.onEventsDataLoad changed shallowly' ||
+      param.changeFlags.propsChanged === 'props.startTime changed shallowly' ||
+      param.changeFlags.propsChanged === 'props.endTime changed shallowly'
+    ) {
+      this.props.onEventsDataLoad(this.props, null)
+    }
   }
 
   getShaders() {
@@ -79,14 +90,4 @@ export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends Scatterplot
       },
     }
   }
-
-  getEvents() {
-    return this.events
-  }
-
-  updateState(param) {
-    super.updateState(param)
-    this.events = param.props.data
-  }
-
 }
