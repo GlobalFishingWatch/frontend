@@ -17,22 +17,10 @@ export const selectFiltersUpdated = createSelector(
   }
 )
 
-export const selectIsFilterUpdated = createSelector([selectFilters], (filters) => {
-  const keys1 = Object.keys(initialState.filters)
-  const keys2 = Object.keys(filters).filter((key) => filters[key as keyof Filters] !== undefined)
-  if (keys1.length !== keys2.length) {
-    return true
-  }
-
-  for (const key of keys1) {
-    const filterKey = key as keyof Filters
-    if (initialState.filters[filterKey] !== filters[filterKey]) {
-      return true
-    }
-  }
-
-  return false
-})
+export const selectIsFilterUpdated = createSelector(
+  [selectFiltersUpdated],
+  (filtersUpdated) => filtersUpdated && filtersUpdated.length > 0
+)
 
 export const selectVisibleEvents = createSelector([selectFilters], (filters) => {
   const filtersToEventTypes: Partial<Record<keyof Filters, EventType>> = {
