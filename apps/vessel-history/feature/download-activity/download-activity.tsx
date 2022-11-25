@@ -1,11 +1,11 @@
-import { Fragment, useCallback, useMemo, useState } from 'react'
+import { Fragment, useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { ButtonType, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
 import styles from './download-activity.module.css'
 import useDownloadActivity from './download-activity.hook'
 
-export interface DownloadActivityCsvProps {
+export interface DownloadActivityProps {
   filtersApplied: boolean
   onDownloadAllActivityCsv?: () => void
   onDownloadFilteredActivityCsv?: () => void
@@ -13,12 +13,12 @@ export interface DownloadActivityCsvProps {
   type?: ButtonType
 }
 
-export function DownloadActivity(props: DownloadActivityCsvProps) {
+export function DownloadActivity(props: DownloadActivityProps) {
   const { t } = useTranslation()
   const { filtersApplied, onDownloadAllActivityCsv, onDownloadFilteredActivityCsv, onReadmeClick } =
     props
   const [showDownloadPopup, setShowDownloadPopup] = useState(false)
-  const { downloadAllEvents, downloadFilteredEvents, downloadingStatus, readmeUrl } =
+  const { downloadAllEvents, downloadFilteredEvents, downloadingStatus, noEvents, readmeUrl } =
     useDownloadActivity()
 
   const handleCloseDownloadPopup = useCallback(() => {
@@ -73,21 +73,23 @@ export function DownloadActivity(props: DownloadActivityCsvProps) {
               shouldCloseOnEsc={true}
             >
               <ul className={styles.items}>
-                <li className={styles.itemContainer}>
-                  <button onClick={handleDownloadAllActivityCsv}>
-                    {t('events.downloadAllActivity', 'Download entire vessel activity')}
-                  </button>
-                  <IconButton
-                    className={styles.icon}
-                    icon="download"
-                    onClick={handleDownloadAllActivityCsv}
-                    size="small"
-                    tooltip={t('common.download', 'Download')}
-                    tooltipPlacement="left"
-                    type="default"
-                  />
-                </li>
-                {filtersApplied && (
+                {!noEvents && (
+                  <li className={styles.itemContainer}>
+                    <button onClick={handleDownloadAllActivityCsv}>
+                      {t('events.downloadAllActivity', 'Download entire vessel activity')}
+                    </button>
+                    <IconButton
+                      className={styles.icon}
+                      icon="download"
+                      onClick={handleDownloadAllActivityCsv}
+                      size="small"
+                      tooltip={t('common.download', 'Download')}
+                      tooltipPlacement="left"
+                      type="default"
+                    />
+                  </li>
+                )}
+                {!noEvents && filtersApplied && (
                   <li className={cx(styles.itemContainer)}>
                     <button onClick={handleDownloadFilteredActivityCsv}>
                       {t(
@@ -101,6 +103,20 @@ export function DownloadActivity(props: DownloadActivityCsvProps) {
                       onClick={handleDownloadFilteredActivityCsv}
                       size="small"
                       type="default"
+                    />
+                  </li>
+                )}
+                {noEvents && (
+                  <li className={cx(styles.itemContainer)}>
+                    <span>
+                      {t('events.noEventsToDownload', 'No vessel activity to download') as string}
+                    </span>
+
+                    <IconButton
+                      icon="warning"
+                      type="default"
+                      size="small"
+                      className={styles.icon}
                     />
                   </li>
                 )}

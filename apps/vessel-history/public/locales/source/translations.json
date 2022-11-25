@@ -158,6 +158,7 @@
     "loiteringEvents": "Loitering Events",
     "loiteringEventsDescription": "Loitering is when a single vessel exhibits behavior indicative of a potential encounter event. Loitering is also estimated using AIS data, including vessel speed, duration in a given location, and distance from shore. <1></1>Loitering occurs when a carrier vessel travels at average speed of &lt;2 knots.<3></3>Due to the individual definitions of loitering events and encounter events, it is possible for a loitering event to overlap with encounter events and to encompass one or more encounter events.",
     "noData": "There are no events for this vessel since data is coming only from the source = “Other”. Try searching using MMSI to match also with AIS source.",
+    "noEventsToDownload": "No vessel activity to download",
     "noHighlights": "No events found for your highlighting criteria",
     "noHighlitingSettingsMessage": "You've not defined the highlight settings yet. Please click Settings to configure the activity of interest.",
     "noResults": "No events found. Try changing the current filters.",
