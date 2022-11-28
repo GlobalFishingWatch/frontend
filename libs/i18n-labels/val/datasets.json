@@ -2506,6 +2506,11 @@
       "vessel_id": "crwdns18442:0crwdne18442:0"
     }
   },
+  "public-rfmo": {
+    "name": "crwdns25624:0crwdne25624:0",
+    "description": "crwdns25626:0crwdne25626:0",
+    "schema": {}
+  },
   "public-tristan-seamounts-200-1618586314138": {
     "name": "crwdns25612:0crwdne25612:0",
     "description": "crwdns25614:0crwdne25614:0",

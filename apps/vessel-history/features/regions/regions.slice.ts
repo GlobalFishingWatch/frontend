@@ -59,7 +59,7 @@ export const fetchRegionsThunk = createAsyncThunk(
         options
       )
       const rfmos = await GFWAPI.fetch<Region[]>(
-        `${apiUrl}/public-tuna-rfmo/user-context-layer-v1`,
+        `${apiUrl}/public-rfmo/user-context-layer-v1`,
         options
       )
       const result: Regions[] = [
