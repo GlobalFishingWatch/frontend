@@ -18,7 +18,7 @@ export function DownloadActivity(props: DownloadActivityProps) {
   const { filtersApplied, onDownloadAllActivityCsv, onDownloadFilteredActivityCsv, onReadmeClick } =
     props
   const [showDownloadPopup, setShowDownloadPopup] = useState(false)
-  const { downloadAllEvents, downloadFilteredEvents, downloadingStatus, noEvents, readmeUrl } =
+  const { downloadAllEvents, downloadFilteredEvents, downloadingStatus, hasEvents, readmeUrl } =
     useDownloadActivity()
 
   const handleCloseDownloadPopup = useCallback(() => {
@@ -73,7 +73,7 @@ export function DownloadActivity(props: DownloadActivityProps) {
               shouldCloseOnEsc={true}
             >
               <ul className={styles.items}>
-                {!noEvents && (
+                {hasEvents && (
                   <li className={styles.itemContainer}>
                     <button onClick={handleDownloadAllActivityCsv}>
                       {t('events.downloadAllActivity', 'Download entire vessel activity')}
@@ -89,7 +89,7 @@ export function DownloadActivity(props: DownloadActivityProps) {
                     />
                   </li>
                 )}
-                {!noEvents && filtersApplied && (
+                {hasEvents && filtersApplied && (
                   <li className={cx(styles.itemContainer)}>
                     <button onClick={handleDownloadFilteredActivityCsv}>
                       {t(
@@ -106,7 +106,7 @@ export function DownloadActivity(props: DownloadActivityProps) {
                     />
                   </li>
                 )}
-                {noEvents && (
+                {!hasEvents && (
                   <li className={cx(styles.itemContainer)}>
                     <span>
                       {t('events.noEventsToDownload', 'No vessel activity to download') as string}

@@ -139,7 +139,7 @@ function useDownloadActivity() {
     downloadAllEvents,
     downloadFilteredEvents,
     downloadingStatus,
-    noEvents: allEvents.length === 0,
+    hasEvents: allEvents.length > 0,
     readmeUrl,
   }
 }
