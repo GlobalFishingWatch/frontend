@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Button, Icon, IconButton, ButtonType } from '@globalfishingwatch/ui-components'
-import { selectFilterUpdated } from 'features/event-filters/filters.selectors'
+import { selectIsFilterUpdated } from 'features/event-filters/filters.selectors'
 import FiltersLabel from 'features/filters-label/filters-label'
 import { selectCurrentUserProfileHasInsurerPermission } from 'features/profile/profile.selectors'
 import DateRangeLabel from 'features/date-range-label/date-range-label'
@@ -18,7 +18,7 @@ interface ButtonProps {
 
 const EventFiltersButton: React.FC<ButtonProps> = ({ className, ...props }): React.ReactElement => {
   const { t } = useTranslation()
-  const filtersApplied = useSelector(selectFilterUpdated)
+  const filtersApplied = useSelector(selectIsFilterUpdated)
   const filters = useSelector(selectFilters)
   const currentProfileIsInsurer = useSelector(selectCurrentUserProfileHasInsurerPermission)
 

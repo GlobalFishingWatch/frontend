@@ -108,7 +108,13 @@ function useVoyagesConnect() {
     [eventsList]
   )
 
-  return { eventsLoading, events, getLastEventInVoyage, getVoyageByEvent, toggleVoyage }
+  return {
+    eventsLoading,
+    events,
+    getLastEventInVoyage,
+    getVoyageByEvent,
+    toggleVoyage,
+  }
 }
 
 export default useVoyagesConnect
