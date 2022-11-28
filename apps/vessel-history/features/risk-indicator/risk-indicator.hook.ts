@@ -72,7 +72,9 @@ export function useRiskIndicator(showIdentityIndicators: boolean): UseRiskIndica
   const vessel = useSelector(selectVesselById(mergedVesselId))
 
   useEffect(() => {
-    dispatch(fetchIndicatorsByIdThunk(idData))
+    ;['encounter', 'fishing', 'port-visit', 'gap', 'vessel-identity', 'coverage'].forEach(
+      (indicator) => dispatch(fetchIndicatorsByIdThunk({ idData, indicator }))
+    )
   }, [dispatch, idData])
 
   const encountersInMPA = useSelector(selectEncountersInMPA)
@@ -104,9 +106,13 @@ export function useRiskIndicator(showIdentityIndicators: boolean): UseRiskIndica
     [operatorsHistory]
   )
   const uniqueOwners = useMemo(() => getUniqueHistoryValues(ownersHistory), [ownersHistory])
-  const {
-    vesselIdentity: { iuuListed: iuuBlacklisted },
-  } = useSelector(selectCurrentMergedVesselsIndicators) ?? { vesselIdentity: { iuuListed: null } }
+
+  const mergedIndicators = useSelector(selectCurrentMergedVesselsIndicators)
+
+  const iuuBlacklisted = useMemo(
+    () => mergedIndicators?.vesselIdentity?.iuuListed,
+    [mergedIndicators]
+  )
 
   /** Migration to API pengding */
   const loiteringInMPA = useSelector(selectEventsInsideMPAByType(EventTypes.Loitering))

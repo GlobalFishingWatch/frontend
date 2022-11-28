@@ -35,37 +35,49 @@ export const parseMergedVesselsUniqueId = (id: string): FetchIds[] =>
     const [datasetId, vesselId, tmtId] = x.split('|')
     return { datasetId, vesselId, tmtId }
   })
+
+type ThunkParameters = {
+  idData: FetchIds[]
+  indicator: string
+}
 export const fetchIndicatorsByIdThunk = createAsyncThunk(
   'indicators/fetchById',
-  async (idData: FetchIds[], { getState, rejectWithValue }) => {
+  async (params: ThunkParameters, { getState, rejectWithValue }) => {
+    const { idData, indicator } = params
     try {
       const state = getState() as RootState
       const queryParams = selectEventDatasetsConfigQueryParams(state)
       const query = queryParams
         .map((query) => `${query.id}=${encodeURIComponent(query.value)}`)
         .join('&')
-      const indicator = await GFWAPI.fetch<Indicator>(`/prototype/vessels/indicators?${query}`, {
-        method: 'POST',
-        body: idData.map(({ datasetId, vesselId, tmtId: vesselHistoryId }) => ({
-          ...(datasetId !== NOT_AVAILABLE && { datasetId }),
-          ...(vesselId !== NOT_AVAILABLE && { vesselId }),
-          ...(vesselHistoryId !== NOT_AVAILABLE && { vesselHistoryId }),
-        })) as any,
-        version: '',
-      })
-      indicator.id = getMergedVesselsUniqueId(idData)
-      return indicator
+
+      const result = await GFWAPI.fetch<Indicator>(
+        `/prototype/vessels/indicators?includes=${indicator}&${query}`,
+        {
+          method: 'POST',
+          body: idData.map(({ datasetId, vesselId, tmtId: vesselHistoryId }) => ({
+            ...(datasetId !== NOT_AVAILABLE && { datasetId }),
+            ...(vesselId !== NOT_AVAILABLE && { vesselId }),
+            ...(vesselHistoryId !== NOT_AVAILABLE && { vesselHistoryId }),
+          })) as any,
+          version: '',
+        }
+      )
+
+      result.id = getMergedVesselsUniqueId(idData)
+      return result
     } catch (e: any) {
       return rejectWithValue(parseAPIError(e))
     }
   },
   {
-    condition: (idData: FetchIds[], { getState, extra }) => {
+    condition: (params: ThunkParameters, { getState, extra }) => {
+      const { idData, indicator } = params
       const state = getState() as RootState
       const mergedVesselsUniqueId = getMergedVesselsUniqueId(idData)
       const indicators = selectById(state, mergedVesselsUniqueId)
-      const fetchStatus = selectIndicatorsStatus(state)
-      if (indicators !== undefined || fetchStatus === AsyncReducerStatus.LoadingItem) {
+
+      if (indicators !== undefined && Object.keys(indicators).length >= 6) {
         // Already fetched or in progress, don't need to re-fetch
         return false
       }
