@@ -2506,11 +2506,6 @@
       "vessel_id": "vessel_id"
     }
   },
-  "public-rfmo": {
-    "name": "OROPs (Fuente: FAO)",
-    "description": "Regional fisheries management organizations (RFMOs) description TDB",
-    "schema": {}
-  },
   "public-tristan-seamounts-200-1618586314138": {
     "name": "Depth: -200 m",
     "description": "",
