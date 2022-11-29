@@ -4,10 +4,6 @@
   z-index: 2;
 }
 
-.popup.click {
-  pointer-events: all;
-}
-
 .hover .content {
   transform: translate(var(--space-XS), var(--space-S));
   background: var(--color-primary-blue);
@@ -57,71 +53,6 @@
 
 .hover .row:last-child {
   margin-bottom: 0;
-}
-
-.click .row:last-child {
-  margin-bottom: 0;
-}
-
-.btnLarge {
-  width: 100%;
-}
-
-.centered {
-  display: flex;
-  align-items: center;
-  min-height: 2rem;
-}
-
-.rowTitle {
-  font: var(--font-XS);
-  text-transform: uppercase;
-  color: var(--color-secondary-blue);
-}
-
-.viirsTable {
-  width: 100%;
-}
-
-.viirsTable,
-.viirsTable th,
-.viirsTable td {
-  border-spacing: 0;
-  margin: 0;
-  padding: 0;
-}
-
-.viirsTable th {
-  font: var(--font-XS);
-  text-transform: uppercase;
-  color: var(--color-secondary-blue);
-  text-align: left;
-}
-
-.viirsTable th:last-child,
-.viirsTable td:last-child {
-  text-align: right;
-}
-
-.rowText {
-  line-height: 1.2;
-}
-
-.rowActions {
-  display: flex;
-  flex-wrap: nowrap;
-  margin-left: var(--space-S);
-}
-
-.secondary {
-  color: var(--color-secondary-blue);
-}
-
-.flex {
-  margin-top: var(--space-S);
-  display: flex;
-  column-gap: var(--space-M);
-  flex-wrap: wrap;
 }
 
 .hover:global(.mapboxgl-popup .mapboxgl-popup-content) {

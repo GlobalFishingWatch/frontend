@@ -62,7 +62,7 @@ export const DEFAULT_RFMO_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 95 : 1
 
 export const dataviewInstances: DataviewInstance<GeneratorType>[] = [
   {
-    id: 'public-eez-land',
+    id: 'public-eez-areas',
     config: {
       color: '#069688',
       visible: true,
