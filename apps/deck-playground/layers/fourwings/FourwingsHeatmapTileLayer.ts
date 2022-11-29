@@ -11,11 +11,12 @@ import {
 import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
 import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
 import { TileIndex } from '@deck.gl/geo-layers/typed/tile-layer/types'
-import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
+import { COLOR_RAMP_DEFAULT_NUM_STEPS, Interval } from '@globalfishingwatch/layer-composer'
 import { FourwingsColorRamp, HEATMAP_ID } from './FourwingsLayer'
 
 export type FourwingsLayerResolution = 'default' | 'high'
 export type FourwingsHeatmapTileLayerProps<DataT = any> = {
+  interval: Interval
   resolution?: FourwingsLayerResolution
   minFrame: number
   maxFrame: number
@@ -85,8 +86,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   _getTileData: TileLayerProps['getTileData'] = async (tile) => {
-    const promises = [2021, 2022].map(async (year) => {
-      const response = await fetch(getDataUrlByYear(tile, year), { signal: tile.signal })
+    const promises = this._getChunks().map(async ({ id }) => {
+      const response = await fetch(getDataUrlByYear(tile, id), { signal: tile.signal })
       if (tile.signal?.aborted || !response.ok) {
         throw new Error()
       }
@@ -98,7 +99,17 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     return { cols: data[0]?.cols, rows: data[0]?.rows, cells: data.flatMap((d) => d.cells) }
   }
 
+  _getChunks() {
+    const { interval, minFrame, maxFrame } = this.props
+    // when minFrame is lower than 2021 trigger the re-render
+    if (minFrame < 1609459200000) {
+      return [{ id: 2020 }, { id: 2021 }]
+    }
+    return [{ id: 2021 }, { id: 2022 }]
+  }
+
   renderLayers(): Layer<{}> | LayersList {
+    const chunks = this._getChunks()
     const TileLayerClass = this.getSubLayerClass(HEATMAP_ID, TileLayer)
     return new TileLayerClass(
       this.props,
@@ -110,6 +121,10 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         zoomOffset: this.props.resolution === 'high' ? 1 : 0,
         opacity: 1,
         getTileData: this._getTileData,
+        chunks: this._getChunks(),
+        updateTriggers: {
+          getTileData: [chunks.map((chunk) => chunk.id).join(',')],
+        },
         onViewportLoad: this._onViewportLoad,
         renderSubLayers: (props: any) => {
           return new FourwingsHeatmapLayer({
