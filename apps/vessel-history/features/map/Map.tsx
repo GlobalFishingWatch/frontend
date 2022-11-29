@@ -34,7 +34,7 @@ const MapWrapper: React.FC = (): React.ReactElement => {
   const dispatch = useAppDispatch()
   const flying = useRef(false)
   const highlightedEvent = useSelector(selectHighlightedEvent)
-  const { cursorLayers, selectVesselEventOnClick, highlightEvent, onFiltersChanged } =
+  const { clickedLayers, selectVesselEventOnClick, highlightEvent, onFiltersChanged } =
     useMapEvents()
   const { generatorsConfig, globalConfig, styleTransformations } = useGeneratorsConnect()
   const { viewport, onViewportChange, setMapCoordinates } = useViewport()
@@ -191,10 +191,10 @@ const MapWrapper: React.FC = (): React.ReactElement => {
           interactiveLayerIds={interactiveLayerIds}
           customAttribution={'© Copyright Global Fishing Watch 2020'}
         >
-          {cursorLayers && clickCoordinates && (
+          {clickedLayers && clickCoordinates && (
             <PopupWrapper
               key={Math.random()}
-              layers={cursorLayers}
+              layers={clickedLayers}
               latitude={clickCoordinates.latitude}
               longitude={clickCoordinates.longitude}
             />

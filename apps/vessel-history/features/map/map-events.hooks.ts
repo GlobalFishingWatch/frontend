@@ -31,7 +31,7 @@ export default function useMapEvents() {
   const { viewport, setMapCoordinates } = useViewport()
   const [findEventVoyage, setFindEventVoyage] = useState<RenderedEvent>()
   const { dispatchQueryParams } = useLocationConnect()
-  const [cursorLayers, setCursorLayers] = useState<ExtendedFeature[] | null>()
+  const [clickedLayers, setClickedLayers] = useState<ExtendedFeature[] | null>()
 
   const selectVesselEventOnClick = useCallback(
     (event: InteractionEvent | null) => {
@@ -39,7 +39,7 @@ export default function useMapEvents() {
       const vesselFeature = features.find(
         (feature) => feature.generatorType === GeneratorType.VesselEvents
       )
-      setCursorLayers(!vesselFeature ? features : null)
+      setClickedLayers(!vesselFeature ? features : null)
       const highlightEvent: { id: string } | undefined = { id: vesselFeature?.properties.id }
 
       if (highlightEvent && highlightedEvent?.id !== highlightEvent.id) {
@@ -153,7 +153,7 @@ export default function useMapEvents() {
   }, [events, findEventVoyage, highlightEvent, highlightedEvent, setMapCoordinates, viewport.zoom])
 
   return {
-    cursorLayers,
+    clickedLayers,
     highlightEvent,
     highlightVoyage,
     selectVesselEventOnClick,
