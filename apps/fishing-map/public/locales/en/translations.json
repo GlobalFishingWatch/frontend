@@ -604,7 +604,7 @@
     "user": "User workspace",
     "wizard": {
       "error": "There was an error creating the workspace",
-      "name": "Give a name to your workspace",
+      "name": "Name your workspace",
       "help": "You can move the map and update your workspace later",
       "exploreArea": "See area",
       "exploreGlobal": "See global",
