@@ -10,8 +10,8 @@ export type TileCell = {
 export type GetCellCoordinatesParams = {
   tileBBox: BBox
   cellIndex: number
-  numCols: number
-  numRows: number
+  cols: number
+  rows: number
   id: number
 }
 
@@ -32,16 +32,16 @@ const getCellProperties = (tileBBox: BBox, cell: number, numCols: number) => {
 export const getCellCoordinates = ({
   tileBBox,
   cellIndex,
-  numCols,
-  numRows,
+  cols,
+  rows,
 }: GetCellCoordinatesParams): any => {
   const [minX, minY] = tileBBox
-  const { col, row, width, height } = getCellProperties(tileBBox, cellIndex, numCols)
+  const { col, row, width, height } = getCellProperties(tileBBox, cellIndex, cols)
 
-  const squareMinX = minX + (col / numCols) * width
-  const squareMinY = minY + (row / numRows) * height
-  const squareMaxX = minX + ((col + 1) / numCols) * width
-  const squareMaxY = minY + ((row + 1) / numRows) * height
+  const squareMinX = minX + (col / cols) * width
+  const squareMinY = minY + (row / rows) * height
+  const squareMaxX = minX + ((col + 1) / cols) * width
+  const squareMaxY = minY + ((row + 1) / rows) * height
   const result = new Float64Array(10)
   result[0] = squareMinX
   result[1] = squareMinY

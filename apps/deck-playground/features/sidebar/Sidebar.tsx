@@ -56,7 +56,7 @@ function Sidebar() {
       })
     )
   }
-  console.log(fourwingsLayerInstance)
+
   const fourwingsMode = fourwingsLayerInstance?.getMode()
   const fourwingsResolution = fourwingsLayerInstance?.getResolution()
   return (

@@ -19,7 +19,9 @@ export type FourwingsColorRamp = {
 }
 
 export type FourwingsLayerProps<DataT = any> = FourwingsPositionsTileLayerProps<DataT> &
-  FourwingsHeatmapTileLayerProps<DataT> & { mode: FourwingsLayerMode }
+  FourwingsHeatmapTileLayerProps<DataT> & {
+    mode: FourwingsLayerMode
+  }
 
 export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLayerProps> {
   static layerName = 'FourwingsLayer'
@@ -27,7 +29,6 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
 
   renderLayers(): Layer<{}> | LayersList {
     const { mode = 'heatmap' } = this.props
-    console.log(mode)
     this.layer =
       mode === 'heatmap'
         ? new FourwingsHeatmapTileLayer(this.props)

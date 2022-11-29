@@ -10,18 +10,28 @@ import {
 } from 'layers/fourwings/fourwings.utils'
 import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
 import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
+import { TileIndex } from '@deck.gl/geo-layers/typed/tile-layer/types'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
-import { HEATMAP_ID } from './FourwingsLayer'
+import { FourwingsColorRamp, HEATMAP_ID } from './FourwingsLayer'
 
 export type FourwingsLayerResolution = 'default' | 'high'
 export type FourwingsHeatmapTileLayerProps<DataT = any> = {
   resolution?: FourwingsLayerResolution
   minFrame: number
   maxFrame: number
-  onDataLoad?: (data: DataT) => void
+  colorRange: FourwingsColorRamp['colorRange']
+  colorDomain: FourwingsColorRamp['colorDomain']
+  onViewportLoad?: (tiles: Tile2DHeader[]) => void
+  onColorRampUpdate?: (colorRamp: FourwingsColorRamp) => void
 }
 
-function getDataUrlByYear(tile: Tile2DHeader, year) {
+function getDataUrlByYear(
+  tile: {
+    index: TileIndex
+    id: string
+  },
+  year
+) {
   const url = `https://gateway.api.dev.globalfishingwatch.org/v2/4wings/tile/heatmap/{z}/{x}/{y}?interval=day&date-range=${year}-01-01,${
     year + 1
   }-01-01&format=intArray&temporal-aggregation=false&proxy=true&datasets[0]=public-global-fishing-effort:v20201001`
@@ -33,10 +43,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   FourwingsHeatmapTileLayerProps & TileLayerProps
 > {
   static layerName = 'FourwingsHeatmapTileLayer'
-  colorRamp = { colorDomain: [], colorRange: [] }
-  tilesLoaded: Record<string, boolean> = {}
 
-  updateColorRamp = () => {
+  getColorRamp = () => {
     const { maxFrame, minFrame } = this.props
     const viewportData = this.getData()
     if (viewportData?.length > 0) {
@@ -58,47 +66,36 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         return [255, 0, 255, opacity] as Color
       })
       // this.colorRampUpdated = true
-      this.colorRamp = { colorDomain: steps, colorRange }
+      return { colorDomain: steps, colorRange }
     }
   }
 
   getColorDomain = () => {
-    return this.colorRamp.colorDomain
+    return this.props.colorDomain
   }
 
-  onDataLoad = (data, tile) => {
-    this.tilesLoaded[tile.id] = true
-    const allTilesLoaded = Object.values(this.tilesLoaded).every((loaded) => loaded === true)
-    if (allTilesLoaded) {
-      this.updateColorRamp()
-      this.getTilesLayers().forEach((layer) => layer.setState({ ...this.colorRamp }))
-      if (this.props.onDataLoad) {
-        return this.props.onDataLoad(data)
-      }
+  _onViewportLoad = (tiles) => {
+    if (this.props.onColorRampUpdate) {
+      const colorRamp = this.getColorRamp()
+      this.props.onColorRampUpdate(colorRamp)
+    }
+    if (this.props.onViewportLoad) {
+      return this.props.onViewportLoad(tiles)
     }
   }
 
-  onTileLoad = (tile) => {
-    this.tilesLoaded[tile.id] = false
-  }
-
-  onTileUnload = (tile) => {
-    delete this.tilesLoaded[tile.id]
-  }
-
-  async *_fetchHeatmapData(tile: Tile2DHeader) {
-    const years = [2021, 2022]
-    for (let i = 0; i < years.length; i++) {
-      const year = years[i]
-      const response = await fetch(getDataUrlByYear(tile, year))
-      // const tileBbox = tile.bbox
-      // const tileIndex = tile.index
-      if (response.ok) {
-        yield parseFourWings(await response.arrayBuffer())
-      } else {
-        yield []
+  _getTileData: TileLayerProps['getTileData'] = async (tile) => {
+    const promises = [2021, 2022].map(async (year) => {
+      const response = await fetch(getDataUrlByYear(tile, year), { signal: tile.signal })
+      if (tile.signal?.aborted || !response.ok) {
+        throw new Error()
       }
-    }
+      return parseFourWings(await response.arrayBuffer())
+    })
+    const data = (await Promise.allSettled(promises)).flatMap((d) =>
+      d.status === 'fulfilled' ? d.value : []
+    )
+    return { cols: data[0]?.cols, rows: data[0]?.rows, cells: data.flatMap((d) => d.cells) }
   }
 
   renderLayers(): Layer<{}> | LayersList {
@@ -112,38 +109,35 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         maxZoom: ACTIVITY_SWITCH_ZOOM_LEVEL,
         zoomOffset: this.props.resolution === 'high' ? 1 : 0,
         opacity: 1,
-        onTileLoad: this.onTileLoad,
-        onTileUnload: this.onTileUnload,
+        getTileData: this._getTileData,
+        onViewportLoad: this._onViewportLoad,
         renderSubLayers: (props: any) => {
           return new FourwingsHeatmapLayer({
             ...props,
-            data: this._fetchHeatmapData(props.tile),
-            onDataLoad: (data) => this.onDataLoad(data, props.tile),
+            cols: props.data?.cols,
+            rows: props.data?.rows,
+            data: props.data?.cells,
           })
         },
       })
     )
   }
 
-  getTilesLayers() {
-    const layer = this.getSubLayers().find(
+  getLayerInstance() {
+    return this.getSubLayers().find(
       (l) => l.id === `${FourwingsHeatmapTileLayer.layerName}-${HEATMAP_ID}`
     ) as TileLayer
-    if (layer) {
-      return layer.state.tileset.tiles.flatMap((t) => t.layers || [])
-    }
   }
 
-  getData(): TileCell[] {
-    const data = this.getTilesLayers().flatMap((l) =>
-      (l.props.data || []).flatMap((d) => d.cells || [])
-    )
-    return data
-    // const zoom = Math.round(this.context.viewport.zoom)
-    // const offset = this.props.resolution === 'high' ? 1 : 0
-    // return layer.getSubLayers().flatMap((l: FourwingsTileLayer) => {
-    //   return l.props.tile.zoom === zoom + offset ? (l.getTileData().cells as TileCell[]) : []
-    // })
+  getData() {
+    const layer = this.getLayerInstance()
+    if (layer) {
+      const zoom = Math.round(this.context.viewport.zoom)
+      const offset = this.props.resolution === 'high' ? 1 : 0
+      return layer.getSubLayers().flatMap((l: FourwingsHeatmapLayer) => {
+        return l.props.tile.zoom === zoom + offset ? (l.getData() as TileCell[]) : []
+      })
+    }
   }
 
   getTimeseries() {

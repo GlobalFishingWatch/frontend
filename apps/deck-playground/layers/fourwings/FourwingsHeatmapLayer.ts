@@ -1,10 +1,4 @@
-import {
-  Color,
-  CompositeLayer,
-  GetPickingInfoParams,
-  LayerContext,
-  PickingInfo,
-} from '@deck.gl/core/typed'
+import { Color, CompositeLayer, GetPickingInfoParams, PickingInfo } from '@deck.gl/core/typed'
 import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
 import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
 import { Cell } from 'loaders/fourwings/fourwingsLayerLoader'
@@ -46,15 +40,6 @@ export const getFillColor = (
 }
 
 export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
-  initializeState(context: LayerContext) {
-    super.initializeState(context)
-    this.state = { colorDomain: [], colorRange: [] }
-  }
-
-  updateColorRamp = ({ colorDomain, colorRange }) => {
-    this.setState({ colorDomain, colorRange })
-  }
-
   getPickingInfo({ info }: GetPickingInfoParams): PickingInfo {
     const { minFrame, maxFrame } = this.props
     if (info.object) {
@@ -68,8 +53,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
   }
 
   renderLayers() {
-    const { colorDomain, colorRange } = this.state
-    const { data, maxFrame, minFrame } = this.props
+    const { data, maxFrame, minFrame, rows, cols, colorDomain, colorRange } = this.props
     if (!data || !colorDomain || !colorRange) {
       return
     }
@@ -79,11 +63,8 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       this.getSubLayerProps({
         id: `fourwings-tile-${this.props.tile.id}`,
         data: data,
-        dataTransform: (data: any) => {
-          return data.flatMap((d) => d.cells)
-        },
-        numCols: data[0]?.cols,
-        numRows: data[0]?.rows,
+        cols,
+        rows,
         pickable: true,
         stroked: false,
         getFillColor: (cell) => getFillColor(cell, { minFrame, maxFrame, colorDomain, colorRange }),
@@ -95,7 +76,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     )
   }
 
-  getTileData() {
+  getData() {
     return this.props.data
   }
 }

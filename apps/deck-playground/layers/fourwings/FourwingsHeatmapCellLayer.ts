@@ -23,8 +23,8 @@ type _FourwingsHeatmapCellLayerProps<DataT> = {
    * By default, it reads `token` property of data object.
    */
   getIndex?: AccessorFunction<DataT, string>
-  numCols: number
-  numRows: number
+  cols: number
+  rows: number
   tile: Tile2DHeader
 }
 
@@ -37,7 +37,7 @@ export default class FourwingsHeatmapCellLayer<DataT = any, ExtraProps = {}> ext
   static defaultProps = defaultProps
 
   indexToBounds(): Partial<_GeoCellLayer['props']> | null {
-    const { data, getIndex, tile, numCols, numRows } = this.props
+    const { data, getIndex, tile, cols, rows } = this.props
     return {
       data,
       _normalize: false,
@@ -48,8 +48,8 @@ export default class FourwingsHeatmapCellLayer<DataT = any, ExtraProps = {}> ext
         const params: GetCellCoordinatesParams = {
           id: uniqueId,
           cellIndex,
-          numCols,
-          numRows,
+          cols,
+          rows,
           tileBBox: [
             (tile.bbox as GeoBoundingBox).west,
             (tile.bbox as GeoBoundingBox).south,
