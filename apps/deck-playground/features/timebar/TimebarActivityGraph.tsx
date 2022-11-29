@@ -19,7 +19,7 @@ const TimebarActivityGraph = () => {
 
   const stackedActivity: Timeseries = useMemo(() => {
     if (fourwingsLayerLoaded && fourwingsLayerInstance?.getMode() === 'heatmap') {
-      const data = fourwingsLayerInstance.getHeatmapTimeseries()
+      const data = fourwingsLayerInstance.getTimeseries()
       const dataArray = Object.keys(data)
         .map((key) => {
           return { date: parseInt(key), 0: data[key] }

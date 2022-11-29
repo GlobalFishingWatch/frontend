@@ -1,14 +1,22 @@
-import { Color, CompositeLayer, GetPickingInfoParams, PickingInfo } from '@deck.gl/core/typed'
+import {
+  Color,
+  CompositeLayer,
+  GetPickingInfoParams,
+  LayerContext,
+  PickingInfo,
+} from '@deck.gl/core/typed'
 import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
 import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
-import type { FourwingsLayerProps } from 'layers/fourwings/FourwingsLayer'
 import { Cell } from 'loaders/fourwings/fourwingsLayerLoader'
-import FourwingsTileCellLayer from 'layers/fourwings/FourwingsTileCellLayer'
+import FourwingsTileCellLayer from 'layers/fourwings/FourwingsHeatmapCellLayer'
+import { FourwingsLayerProps } from './FourwingsLayer'
 
-export type FourwingsTileLayerProps = FourwingsLayerProps & {
+export type FourwingsHeatmapLayerProps = FourwingsLayerProps & {
   id: string
   tile: Tile2DHeader
   data: any
+  cols: number
+  rows: number
   colorDomain?: number[]
   colorRange?: Color[]
 }
@@ -37,7 +45,16 @@ export const getFillColor = (
   return colorIndex >= 0 ? colorRange[colorIndex] : [0, 0, 0, 0]
 }
 
-export class FourwingsTileLayer extends CompositeLayer<FourwingsTileLayerProps> {
+export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
+  initializeState(context: LayerContext) {
+    super.initializeState(context)
+    this.state = { colorDomain: [], colorRange: [] }
+  }
+
+  updateColorRamp = ({ colorDomain, colorRange }) => {
+    this.setState({ colorDomain, colorRange })
+  }
+
   getPickingInfo({ info }: GetPickingInfoParams): PickingInfo {
     const { minFrame, maxFrame } = this.props
     if (info.object) {
@@ -51,8 +68,9 @@ export class FourwingsTileLayer extends CompositeLayer<FourwingsTileLayerProps> 
   }
 
   renderLayers() {
-    const { data, colorDomain, colorRange, maxFrame, minFrame } = this.props
-    if (!data) {
+    const { colorDomain, colorRange } = this.state
+    const { data, maxFrame, minFrame } = this.props
+    if (!data || !colorDomain || !colorRange) {
       return
     }
     const FourwingsTileCellLayerClass = this.getSubLayerClass('cell', FourwingsTileCellLayer)
@@ -60,9 +78,12 @@ export class FourwingsTileLayer extends CompositeLayer<FourwingsTileLayerProps> 
       this.props,
       this.getSubLayerProps({
         id: `fourwings-tile-${this.props.tile.id}`,
-        data: data.cells,
-        numCols: data.cols,
-        numRows: data.rows,
+        data: data,
+        dataTransform: (data: any) => {
+          return data.flatMap((d) => d.cells)
+        },
+        numCols: data[0]?.cols,
+        numRows: data[0]?.rows,
         pickable: true,
         stroked: false,
         getFillColor: (cell) => getFillColor(cell, { minFrame, maxFrame, colorDomain, colorRange }),

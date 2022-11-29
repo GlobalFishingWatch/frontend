@@ -1,15 +1,13 @@
 import { getFourwingsMode } from 'layers/fourwings/fourwings.utils'
-import {
-  FourwingsColorRamp,
-  FourwingsLayer,
-  FourwingsLayerMode,
-} from 'layers/fourwings/FourwingsLayer'
 import { useCallback, useEffect } from 'react'
 import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
 import { useAddVesselInLayer } from 'layers/vessel/vessels.hooks'
+import { Color } from '@deck.gl/core/typed'
+import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 import { useTimerange } from 'features/timebar/timebar.hooks'
 import { useViewport } from 'features/map/map-viewport.hooks'
 import { useMapLayers } from 'features/map/layers.hooks'
+import { FourwingsColorRamp, FourwingsLayer, FourwingsLayerMode } from './FourwingsLayer'
 
 const dateToMs = (date: string) => {
   return new Date(date).getTime()
@@ -27,7 +25,13 @@ export const fourwingsLayerAtom = atom<FourwingsAtom>({
   dangerouslyAllowMutability: true,
   default: {
     loaded: false,
-    colorRamp: { colorDomain: [], colorRange: [] },
+    // colorRamp: { colorDomain: [], colorRange: [] },
+    colorRamp: {
+      colorDomain: Array.from(Array(COLOR_RAMP_DEFAULT_NUM_STEPS).keys()).map((i) => i * 100),
+      colorRange: Array.from(Array(COLOR_RAMP_DEFAULT_NUM_STEPS).keys()).map(
+        (i) => [255, 0, 255, i * 20] as Color
+      ),
+    },
   },
 })
 
@@ -54,56 +58,40 @@ export function useFourwingsLayer() {
 
   const setAtomProperty = useCallback(
     (property) => updateFourwingsAtom((state) => ({ ...state, ...property })),
-    [updateFourwingsAtom]
+    []
   )
 
   const onTileLoad = useCallback(() => {
     setAtomProperty({ loaded: false })
-  }, [setAtomProperty])
+  }, [])
 
-  const onViewportLoad = useCallback(() => {
+  const onDataLoad = useCallback(() => {
     setAtomProperty({ loaded: true })
-  }, [setAtomProperty])
+  }, [])
 
-  const onVesselHighlight = useCallback(
-    (id) => {
-      setAtomProperty({ highlightedVesselId: id })
-    },
-    [setAtomProperty]
-  )
+  const onVesselHighlight = useCallback((id) => {
+    setAtomProperty({ highlightedVesselId: id })
+  }, [])
 
-  const onVesselClick = useCallback(
-    (id) => {
-      addVesselLayer(id)
-    },
-    [addVesselLayer]
-  )
-
-  const onColorRampUpdate = useCallback(
-    (colorRamp: FourwingsColorRamp) => {
-      if (colorRamp) {
-        console.log('updates ramp', colorRamp)
-        setAtomProperty({ colorRamp })
-      }
-    },
-    [setAtomProperty]
-  )
+  const onVesselClick = useCallback((id) => {
+    addVesselLayer(id)
+  }, [])
 
   useEffect(() => {
     if (fourwingsMapLayerVisible) {
       const fourwingsLayer = new FourwingsLayer({
         minFrame: startTime,
         maxFrame: endTime,
-        colorDomain,
-        colorRange,
+        // colorDomain,
+        // colorRange,
         mode: activityMode,
         onTileLoad: onTileLoad,
-        onViewportLoad: onViewportLoad,
+        onDataLoad: onDataLoad,
         highlightedVesselId,
-        onVesselHighlight: onVesselHighlight,
-        onVesselClick: onVesselClick,
+        // onVesselHighlight: onVesselHighlight,
+        // onVesselClick: onVesselClick,
         resolution: fourwingsMapLayerResolution,
-        onColorRampUpdate: onColorRampUpdate,
+        // onColorRampUpdate: onColorRampUpdate,
       })
       setAtomProperty({ instance: fourwingsLayer })
     } else {
@@ -115,16 +103,9 @@ export function useFourwingsLayer() {
     endTime,
     colorDomain,
     colorRange,
-    updateFourwingsAtom,
     activityMode,
-    onTileLoad,
-    onViewportLoad,
-    onColorRampUpdate,
-    setAtomProperty,
-    onVesselHighlight,
     highlightedVesselId,
     fourwingsMapLayerResolution,
-    onVesselClick,
   ])
 
   return instance

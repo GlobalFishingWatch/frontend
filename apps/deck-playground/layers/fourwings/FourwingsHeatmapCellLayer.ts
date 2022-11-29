@@ -7,16 +7,16 @@ import {
   getCellCoordinates,
 } from 'loaders/fourwings/fourwingsTileParser'
 
-const defaultProps: DefaultProps<FourwingsTileCellLayerProps> = {
+const defaultProps: DefaultProps<FourwingsHeatmapCellLayerProps> = {
   getIndex: { type: 'accessor', value: (d) => d.index },
 }
 
-/** All properties supported by FourwingsTileCellLayer. */
-export type FourwingsTileCellLayerProps<DataT = any> = _FourwingsTileCellLayerProps<DataT> &
+/** All properties supported by FourwingsHeatmapCellLayer. */
+export type FourwingsHeatmapCellLayerProps<DataT = any> = _FourwingsHeatmapCellLayerProps<DataT> &
   _GeoCellLayerProps<DataT>
 
-/** Properties added by FourwingsTileCellLayer. */
-type _FourwingsTileCellLayerProps<DataT> = {
+/** Properties added by FourwingsHeatmapCellLayer. */
+type _FourwingsHeatmapCellLayerProps<DataT> = {
   /**
    * Called for each data object to retrieve the quadkey string identifier.
    *
@@ -29,11 +29,11 @@ type _FourwingsTileCellLayerProps<DataT> = {
 }
 
 /** Render filled and/or stroked polygons based on the fourwings indexing system. */
-export default class FourwingsTileCellLayer<DataT = any, ExtraProps = {}> extends _GeoCellLayer<
+export default class FourwingsHeatmapCellLayer<DataT = any, ExtraProps = {}> extends _GeoCellLayer<
   DataT,
-  Required<_FourwingsTileCellLayerProps<DataT>> & ExtraProps
+  Required<_FourwingsHeatmapCellLayerProps<DataT>> & ExtraProps
 > {
-  static layerName = 'FourwingsTileCellLayer'
+  static layerName = 'FourwingsHeatmapCellLayer'
   static defaultProps = defaultProps
 
   indexToBounds(): Partial<_GeoCellLayer['props']> | null {

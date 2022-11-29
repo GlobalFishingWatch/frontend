@@ -1,4 +1,3 @@
-import { FourwingsColorRamp } from 'layers/fourwings/FourwingsLayer'
 import { useCallback, useEffect } from 'react'
 import {
   atom,
@@ -13,6 +12,7 @@ import { urlSyncEffect, WriteAtomInterface } from 'recoil-sync'
 import { mixed } from '@recoiljs/refine'
 import { useMapLayers } from 'features/map/layers.hooks'
 import { useHighlightTimerange, useTimerange } from 'features/timebar/timebar.hooks'
+import { FourwingsColorRamp } from '../fourwings/FourwingsLayer'
 
 const dateToMs = (date: string) => {
   return new Date(date).getTime()
@@ -77,7 +77,6 @@ export function useVesselsLayer() {
   const onColorRampUpdate = useCallback(
     (colorRamp: FourwingsColorRamp) => {
       if (colorRamp) {
-        console.log('updates ramp', colorRamp)
         setAtomProperty({ colorRamp })
       }
     },

@@ -4,6 +4,7 @@ import {
   CompositeLayerProps,
   DefaultProps,
   Layer,
+  LayerContext,
   LayerProps,
   LayersList,
   UpdateParameters,
@@ -12,7 +13,7 @@ import { IconLayer } from '@deck.gl/layers/typed'
 
 function getFillColor(
   d,
-  { colorDomain, colorRange, highlightedVesselId }: VesselPositionsLayerProps
+  { colorDomain, colorRange, highlightedVesselId }: FourwingsPositionsLayerProps
 ) {
   const colorIndex = colorDomain.findIndex((domain, i) => {
     if (colorDomain[i + 1]) {
@@ -34,7 +35,7 @@ const ICON_MAPPING = {
   vesselHighlight: { x: 24, y: 0, width: 22, height: 40, mask: false },
 }
 
-export type VesselPositionsLayerProps<DataT = any> = LayerProps & {
+export type FourwingsPositionsLayerProps<DataT = any> = LayerProps & {
   data: any[]
   colorDomain: number[]
   colorRange: Color[]
@@ -43,16 +44,16 @@ export type VesselPositionsLayerProps<DataT = any> = LayerProps & {
   onVesselClick?: (vesselId: string) => void
 }
 
-const defaultProps: DefaultProps<VesselPositionsLayerProps> = {
+const defaultProps: DefaultProps<FourwingsPositionsLayerProps> = {
   highlightedVesselId: { type: 'data', value: '' },
   onVesselHighlight: { type: 'accessor', value: (d) => d },
 }
 
 /** Render individual positions of the vessel as points. */
-export class VesselPositionsLayer<ExtraProps = {}> extends CompositeLayer<
-  VesselPositionsLayerProps & ExtraProps
+export class FourwingsPositionsLayer<ExtraProps = {}> extends CompositeLayer<
+  FourwingsPositionsLayerProps & ExtraProps
 > {
-  static layerName = 'VesselPositionsLayer'
+  static layerName = 'FourwingsPositionsLayer'
   static defaultProps = defaultProps
 
   getPickingInfo({ info, mode }) {
@@ -69,11 +70,16 @@ export class VesselPositionsLayer<ExtraProps = {}> extends CompositeLayer<
     return info
   }
 
+  initializeState(context: LayerContext): void {
+    super.initializeState(context)
+    this.state = { highlightVessels: [] }
+  }
+
   updateState(
     params: UpdateParameters<
       Layer<
         LayerProps<any> &
-          VesselPositionsLayerProps &
+          FourwingsPositionsLayerProps &
           ExtraProps &
           Required<CompositeLayerProps<any>>
       >
@@ -87,8 +93,6 @@ export class VesselPositionsLayer<ExtraProps = {}> extends CompositeLayer<
 
   renderLayers(): Layer<{}> | LayersList {
     const IconLayerClass = this.getSubLayerClass('icons', IconLayer)
-    console.log(this.state.highlightVessels)
-
     return [
       new IconLayerClass(this.props, {
         id: `icons-${this.props.id}`,
