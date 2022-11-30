@@ -365,7 +365,7 @@ function MapDraw() {
           <SwitchRow
             className={styles.saveAsPublic}
             label={t(
-              'dataset.uploadPublic' as any,
+              'dataset.uploadPublic',
               'Allow other users to see this dataset when you share a workspace'
             )}
             active={createAsPublic}

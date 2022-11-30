@@ -23,7 +23,7 @@ function ActivityFitBounds({ stats, loading }: ActivityFitBoundsProps): React.Re
   return statsBbox ? (
     <IconButton
       icon="target"
-      tooltip={t('layer.activity_fit_bounds', 'Center view on activity')}
+      tooltip={t('layer.activityFitBounds', 'Center view on activity')}
       loading={loading}
       tooltipPlacement="top"
       size="small"
