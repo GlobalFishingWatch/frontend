@@ -182,4 +182,5 @@ _Pending: Add `https://localhost` (or a more meaningful hostname) to the list of
 
 ## Generating release notes for github releases
 
-To generate the release notes you can run `nx changelog <app_or_lib_name>`. Note that such output is still not filtered by app or lib so you'll have to filter the list before using it in the release notes.
+To generate the release notes you can run `nx changelog <app_or_lib_name>`.
+This feature makes use of [Github REST API](https://docs.github.com/es/rest) to identify Pull Requests labeled with the `<app_or_lib_name>` label to include them in the changelog `What's Changed` section. The rest of PRs that are not identified, will be listed in the `Other changes not labeled with <app_or_lib_name>` section for you to review. It's recommended that you [create a Github Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) and set it to the `GH_PAT` environment variable so it can be used by this tool to have higher rate limits.
