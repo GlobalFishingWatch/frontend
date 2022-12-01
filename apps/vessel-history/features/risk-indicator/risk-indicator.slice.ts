@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
+import { v5 as uuidv5 } from 'uuid'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import {
   asyncInitialState,
@@ -40,6 +41,18 @@ type ThunkParameters = {
   idData: FetchIds[]
   indicator: string
 }
+const indicatorsIdGenerator = (args: ThunkParameters) =>
+  uuidv5(`${args.indicator}.${getMergedVesselsUniqueId(args.idData)}`, uuidv5.DNS)
+
+const mapIndicatorToResponseKey = {
+  coverage: 'coverage',
+  encounter: 'encounters',
+  fishing: 'fishing',
+  gap: 'gaps',
+  'port-visit': 'portVisits',
+  'vessel-identity': 'vesselIdentity',
+}
+
 export const fetchIndicatorsByIdThunk = createAsyncThunk(
   'indicators/fetchById',
   async (params: ThunkParameters, { getState, rejectWithValue }) => {
@@ -71,13 +84,23 @@ export const fetchIndicatorsByIdThunk = createAsyncThunk(
     }
   },
   {
+    idGenerator: indicatorsIdGenerator,
     condition: (params: ThunkParameters, { getState, extra }) => {
       const { idData, indicator } = params
       const state = getState() as RootState
       const mergedVesselsUniqueId = getMergedVesselsUniqueId(idData)
       const indicators = selectById(state, mergedVesselsUniqueId)
+      const fetchStatus = selectIndicatorsStatus(state)
+      const requestId = indicatorsIdGenerator(params)
+      const sameRequestIsInProgress =
+        fetchStatus === AsyncReducerStatus.LoadingItem &&
+        state.indicators.currentRequestIds.includes(requestId)
 
-      if (indicators !== undefined && Object.keys(indicators).length >= 6) {
+      const responseKey = mapIndicatorToResponseKey[indicator]
+      if (
+        (indicators !== undefined && indicators[responseKey] !== undefined) ||
+        sameRequestIsInProgress
+      ) {
         // Already fetched or in progress, don't need to re-fetch
         return false
       }
@@ -105,5 +128,6 @@ export const selectIndicatorById = memoize((id: string) =>
 )
 export const selectIndicatorsStatus = (state: RootState) => state.indicators.status
 export const selectIndicators = (state: RootState) => state.indicators.entities
+export const selectIndicatorsRequests = (state: RootState) => state.indicators.currentRequestIds
 export const indicatorEntityAdapter = entityAdapter
 export default indicatorSlice.reducer
