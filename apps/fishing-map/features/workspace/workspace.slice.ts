@@ -30,7 +30,7 @@ import { cleanQueryLocation, updateLocation, updateQueryParam } from 'routes/rou
 import { selectDaysFromLatest } from 'features/app/app.selectors'
 import {
   DEFAULT_DATAVIEW_SLUGS,
-  ONLY_GFW_STAFF_DATAVIEWS,
+  ONLY_GFW_STAFF_DATAVIEW_SLUGS,
   getWorkspaceEnv,
   VESSEL_PRESENCE_DATAVIEW_SLUG,
   WorkspaceCategories,
@@ -93,9 +93,9 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         : null
       if (!workspace && locationType === HOME) {
         workspace = await getDefaultWorkspace()
-        if (gfwUser && ONLY_GFW_STAFF_DATAVIEWS.length) {
+        if (gfwUser && ONLY_GFW_STAFF_DATAVIEW_SLUGS.length) {
           // Inject dataviews for gfw staff only
-          ONLY_GFW_STAFF_DATAVIEWS.forEach((id) => {
+          ONLY_GFW_STAFF_DATAVIEW_SLUGS.forEach((id) => {
             workspace.dataviewInstances.push({
               id: `${id}-instance`,
               config: {
@@ -316,9 +316,9 @@ const workspaceSlice = createSlice({
       state.lastVisited = action.payload
     },
     removeGFWStaffOnlyDataviews: (state) => {
-      if (ONLY_GFW_STAFF_DATAVIEWS.length) {
+      if (ONLY_GFW_STAFF_DATAVIEW_SLUGS.length) {
         state.data.dataviewInstances = state.data.dataviewInstances.filter((d) =>
-          ONLY_GFW_STAFF_DATAVIEWS.includes(d.dataviewId)
+          ONLY_GFW_STAFF_DATAVIEW_SLUGS.includes(d.dataviewId as number)
         )
       }
     },

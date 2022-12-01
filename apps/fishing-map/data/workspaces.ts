@@ -91,4 +91,4 @@ export const DEFAULT_DATAVIEW_SLUGS = [
   ...TEMPLATE_DATAVIEW_SLUGS,
 ]
 
-export const ONLY_GFW_STAFF_DATAVIEWS: number[] = []
+export const ONLY_GFW_STAFF_DATAVIEW_SLUGS: number[] = []
