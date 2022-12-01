@@ -18,6 +18,7 @@ import {
   SAR_DATAVIEW_ID,
   MPA_DATAVIEW_INSTANCE_ID,
   EEZ_DATAVIEW_INSTANCE,
+  BASEMAP_LABELS_DATAVIEW_ID,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 // This id is used for highlighting the dataview with a popup on the right
@@ -103,6 +104,13 @@ const workspace: Workspace<WorkspaceState> = {
       },
     },
     {
+      id: 'context-layer-graticules',
+      config: {
+        visible: true,
+      },
+      dataviewId: GRATICULES_DATAVIEW_ID,
+    },
+    {
       id: EEZ_DATAVIEW_INSTANCE,
       config: {
         color: '#069688',
@@ -134,18 +142,18 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: RFMO_DATAVIEW_ID,
     },
     {
-      id: 'context-layer-graticules',
-      config: {
-        visible: true,
-      },
-      dataviewId: GRATICULES_DATAVIEW_ID,
-    },
-    {
       id: 'context-layer-high-seas',
       config: {
         visible: false,
       },
       dataviewId: HIGH_SEAS_DATAVIEW_ID,
+    },
+    {
+      id: 'basemap-labels',
+      config: {
+        visible: false,
+      },
+      dataviewId: BASEMAP_LABELS_DATAVIEW_ID,
     },
   ],
 }
