@@ -1,8 +1,11 @@
-import type { ActivityLayerMode } from 'layers/fourwings/FourwingsLayer'
+import { stringify } from 'qs'
 import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
 import { TileIndex } from '@deck.gl/geo-layers/typed/tile-layer/types'
+import { DateTime } from 'luxon'
 import { TimebarRange } from 'features/timebar/timebar.hooks'
 import { getUTCDateTime } from 'utils/dates'
+import { Chunk } from './fourwings.config'
+import { FourwingsLayerMode } from './FourwingsLayer'
 
 function stringHash(s: string): number {
   return Math.abs(s.split('').reduce((a, b) => ((a << 5) - a + b.charCodeAt(0)) | 0, 0))
@@ -38,6 +41,33 @@ export function getURLFromTemplate(
   return url
 }
 
+const API_BASE_URL =
+  'https://gateway.api.dev.globalfishingwatch.org/v2/4wings/tile/heatmap/{z}/{x}/{y}'
+export const getDataUrlByChunk = (
+  tile: {
+    index: TileIndex
+    id: string
+  },
+  chunk: Chunk
+) => {
+  const params = {
+    interval: chunk.interval,
+    format: 'intArray',
+    'temporal-aggregation': false,
+    proxy: true,
+    'date-range': [
+      DateTime.fromMillis(chunk.start).toISODate(),
+      DateTime.fromMillis(chunk.end).toISODate(),
+    ].join(','),
+    datasets: ['public-global-fishing-effort:v20201001'],
+  }
+  const url = `${API_BASE_URL}?${stringify(params, {
+    arrayFormat: 'indices',
+  })}`
+
+  return getURLFromTemplate(url, tile)
+}
+
 export interface Bounds {
   north: number
   south: number
@@ -55,7 +85,7 @@ export const getDateRangeParam = (minFrame: number, maxFrame: number) => {
 
 export const ACTIVITY_SWITCH_ZOOM_LEVEL = 9
 
-export function getFourwingsMode(zoom: number, timerange: TimebarRange): ActivityLayerMode {
+export function getFourwingsMode(zoom: number, timerange: TimebarRange): FourwingsLayerMode {
   const duration = getUTCDateTime(timerange?.end).diff(getUTCDateTime(timerange?.start), 'days')
   return zoom >= ACTIVITY_SWITCH_ZOOM_LEVEL && duration.days < 30 ? 'positions' : 'heatmap'
 }

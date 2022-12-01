@@ -6,13 +6,13 @@ import { aggregateCell, FourwingsHeatmapLayer } from 'layers/fourwings/Fourwings
 import {
   ACTIVITY_SWITCH_ZOOM_LEVEL,
   aggregateCellTimeseries,
-  getURLFromTemplate,
+  getDataUrlByChunk,
 } from 'layers/fourwings/fourwings.utils'
 import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
 import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
-import { TileIndex } from '@deck.gl/geo-layers/typed/tile-layer/types'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS, Interval } from '@globalfishingwatch/layer-composer'
 import { FourwingsColorRamp, HEATMAP_ID } from './FourwingsLayer'
+import { getChunksByInterval, getInterval } from './fourwings.config'
 
 export type FourwingsLayerResolution = 'default' | 'high'
 export type FourwingsHeatmapTileLayerProps<DataT = any> = {
@@ -24,20 +24,6 @@ export type FourwingsHeatmapTileLayerProps<DataT = any> = {
   colorDomain: FourwingsColorRamp['colorDomain']
   onViewportLoad?: (tiles: Tile2DHeader[]) => void
   onColorRampUpdate?: (colorRamp: FourwingsColorRamp) => void
-}
-
-function getDataUrlByYear(
-  tile: {
-    index: TileIndex
-    id: string
-  },
-  year
-) {
-  const url = `https://gateway.api.dev.globalfishingwatch.org/v2/4wings/tile/heatmap/{z}/{x}/{y}?interval=day&date-range=${year}-01-01,${
-    year + 1
-  }-01-01&format=intArray&temporal-aggregation=false&proxy=true&datasets[0]=public-global-fishing-effort:v20201001`
-
-  return getURLFromTemplate(url, tile)
 }
 
 export class FourwingsHeatmapTileLayer extends CompositeLayer<
@@ -86,8 +72,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   _getTileData: TileLayerProps['getTileData'] = async (tile) => {
-    const promises = this._getChunks().map(async ({ id }) => {
-      const response = await fetch(getDataUrlByYear(tile, id), { signal: tile.signal })
+    const promises = this._getChunks().map(async (chunk) => {
+      const response = await fetch(getDataUrlByChunk(tile, chunk), { signal: tile.signal })
       if (tile.signal?.aborted || !response.ok) {
         throw new Error()
       }
@@ -100,12 +86,10 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   _getChunks() {
-    const { interval, minFrame, maxFrame } = this.props
-    // when minFrame is lower than 2021 trigger the re-render
-    if (minFrame < 1609459200000) {
-      return [{ id: 2020 }, { id: 2021 }]
-    }
-    return [{ id: 2021 }, { id: 2022 }]
+    const { minFrame, maxFrame } = this.props
+    const interval = getInterval(minFrame, maxFrame)
+    const chunks = getChunksByInterval(minFrame, maxFrame, interval)
+    return chunks
   }
 
   renderLayers(): Layer<{}> | LayersList {
