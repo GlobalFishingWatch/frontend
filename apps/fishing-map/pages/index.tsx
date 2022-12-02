@@ -1,6 +1,6 @@
 import path from 'path'
 import dynamic from 'next/dynamic'
-path.resolve('../next.config.js')
+path.resolve('./next.config.js')
 
 const MapProvider = dynamic(() => import('react-map-gl').then((module) => module.MapProvider), {
   ssr: false,
