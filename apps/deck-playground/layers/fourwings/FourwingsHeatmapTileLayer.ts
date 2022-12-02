@@ -1,4 +1,4 @@
-import { Color, CompositeLayer, Layer, LayersList } from '@deck.gl/core/typed'
+import { Color, CompositeLayer, Layer, LayerContext, LayersList } from '@deck.gl/core/typed'
 import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
 import { parseFourWings } from 'loaders/fourwings/fourwingsLayerLoader'
 import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
@@ -12,7 +12,7 @@ import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
 import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS, Interval } from '@globalfishingwatch/layer-composer'
 import { FourwingsColorRamp, HEATMAP_ID } from './FourwingsLayer'
-import { getChunksByInterval, getInterval } from './fourwings.config'
+import { Chunk, getChunksByInterval, getInterval } from './fourwings.config'
 
 export type FourwingsLayerResolution = 'default' | 'high'
 export type FourwingsHeatmapTileLayerProps<DataT = any> = {
@@ -30,6 +30,11 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   FourwingsHeatmapTileLayerProps & TileLayerProps
 > {
   static layerName = 'FourwingsHeatmapTileLayer'
+
+  initializeState(context: LayerContext): void {
+    super.initializeState(context)
+    this.state = { cacheStart: undefined, cacheEnd: undefined }
+  }
 
   getColorRamp = () => {
     const { maxFrame, minFrame } = this.props
@@ -72,42 +77,64 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   _getTileData: TileLayerProps['getTileData'] = async (tile) => {
-    const promises = this._getChunks().map(async (chunk) => {
-      const response = await fetch(getDataUrlByChunk(tile, chunk), { signal: tile.signal })
-      if (tile.signal?.aborted || !response.ok) {
-        throw new Error()
+    const promises = this._getChunks(this.props.minFrame, this.props.maxFrame).map(
+      async (chunk) => {
+        // if (cache[chunk]) {
+        //   return Promise.resolve(cache[chunk])
+        // }
+        const response = await fetch(getDataUrlByChunk(tile, chunk), { signal: tile.signal })
+        if (tile.signal?.aborted || !response.ok) {
+          throw new Error()
+        }
+        return parseFourWings(await response.arrayBuffer())
       }
-      return parseFourWings(await response.arrayBuffer())
-    })
+    )
     const data = (await Promise.allSettled(promises)).flatMap((d) =>
       d.status === 'fulfilled' ? d.value : []
     )
     return { cols: data[0]?.cols, rows: data[0]?.rows, cells: data.flatMap((d) => d.cells) }
   }
 
-  _getChunks() {
-    const { minFrame, maxFrame } = this.props
+  _getChunks(minFrame: number, maxFrame: number) {
     const interval = getInterval(minFrame, maxFrame)
     const chunks = getChunksByInterval(minFrame, maxFrame, interval)
     return chunks
   }
 
+  _getTileDataCacheKey = (start: number, end: number, chunks: Chunk[]): 'cache' | 'no-cache' => {
+    const isStartOutRange = start <= this.state.cacheStart
+    const isEndOutRange = end >= this.state.cacheEnd
+    if (!this.state.cacheStart || !this.state.cacheEnd || isStartOutRange || isEndOutRange) {
+      this.setState({
+        // Using the first chunk index to invalidate cache when the timebar is about to end the buffer
+        cacheStart: chunks[1].start,
+        cacheEnd: chunks[chunks.length - 2].end,
+      })
+      return 'no-cache'
+    }
+    return 'cache'
+  }
+
   renderLayers(): Layer<{}> | LayersList {
-    const chunks = this._getChunks()
     const TileLayerClass = this.getSubLayerClass(HEATMAP_ID, TileLayer)
+    const { minFrame, maxFrame } = this.props
+    const chunks = this._getChunks(minFrame, maxFrame)
+    const cacheKey = this._getTileDataCacheKey(minFrame, maxFrame, chunks)
+    if (cacheKey === 'no-cache') {
+      console.log(chunks)
+    }
     return new TileLayerClass(
       this.props,
       this.getSubLayerProps({
         id: HEATMAP_ID,
-        // tileSize: 256,
+        // tileSize: 512,
         minZoom: 0,
         maxZoom: ACTIVITY_SWITCH_ZOOM_LEVEL,
         zoomOffset: this.props.resolution === 'high' ? 1 : 0,
         opacity: 1,
         getTileData: this._getTileData,
-        chunks: this._getChunks(),
         updateTriggers: {
-          getTileData: [chunks.map((chunk) => chunk.id).join(',')],
+          getTileData: [cacheKey],
         },
         onViewportLoad: this._onViewportLoad,
         renderSubLayers: (props: any) => {

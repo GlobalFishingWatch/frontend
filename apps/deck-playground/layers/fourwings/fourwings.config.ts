@@ -36,17 +36,45 @@ export type Chunk = {
   end: number
 }
 
+// TODO: validate if worth to make this dynamic for the playback
+export const CHUNKS_BUFFER = 1
 export const getChunksByInterval = (start: number, end: number, interval: Interval): Chunk[] => {
-  const startDate = DateTime.fromMillis(start).startOf(interval)
+  const intervalUnit = LIMITS_BY_INTERVAL[interval]?.unit
+  if (!intervalUnit) {
+    return [{ id: 'full-time-range', interval, start, end }]
+  }
+  const startDate = DateTime.fromMillis(start).startOf(intervalUnit as any)
+  const endDate = DateTime.fromMillis(end).endOf(intervalUnit as any)
   // TODO review if more than the interval units return an offset or calculates the total amount
-  const chunksNumber = Math.floor(Duration.fromMillis(end - start).as(interval))
-  const chunks: Chunk[] = Array.from(Array(chunksNumber).keys()).map((chunkIndex) => {
+  const chunksNumber = Math.round(
+    Duration.fromMillis(endDate.toMillis() - startDate.toMillis()).as(intervalUnit)
+  )
+  const preBufferChunkStart = startDate.minus({ [intervalUnit]: CHUNKS_BUFFER })
+  const preBufferChunk = Array.from(Array(CHUNKS_BUFFER).keys()).map((buffer) => ({
+    id: `${intervalUnit}-pre-buffer-${buffer}`,
+    interval,
+    start: preBufferChunkStart.plus({ [intervalUnit]: buffer }).toMillis(),
+    end: preBufferChunkStart.plus({ [intervalUnit]: buffer + 1 }).toMillis(),
+  }))
+  const dataChunks: Chunk[] = Array.from(Array(chunksNumber).keys()).map((chunkIndex) => {
     return {
-      id: `${interval}-${chunkIndex}`,
+      id: `${intervalUnit}-${chunkIndex + 1}`,
       interval,
-      start: startDate.plus({ [interval]: chunkIndex }).toMillis(),
-      end: startDate.plus({ [interval]: chunkIndex + 1 }).toMillis(),
+      start: startDate.plus({ [intervalUnit]: chunkIndex }).toMillis(),
+      end: startDate.plus({ [intervalUnit]: chunkIndex + 1 }).toMillis(),
     }
   })
-  return chunks
+  const postBufferChunkDate = DateTime.fromMillis(dataChunks[dataChunks.length - 1].end)
+  const postBufferChunk = Array.from(Array(CHUNKS_BUFFER).keys()).map((buffer) => ({
+    id: `${intervalUnit}-post-buffer-${buffer}`,
+    interval,
+    start: postBufferChunkDate.plus({ [intervalUnit]: buffer }).toMillis(),
+    end: postBufferChunkDate.plus({ [intervalUnit]: buffer + 1 }).toMillis(),
+  }))
+  const data = [...preBufferChunk, ...dataChunks, ...postBufferChunk].map((c) => ({
+    ...c,
+    startISO: DateTime.fromMillis(c.start).toISODate(),
+    endISO: DateTime.fromMillis(c.end).toISODate(),
+  }))
+  return data
 }
