@@ -10,6 +10,7 @@ import {
 } from 'layers/fourwings/fourwings.utils'
 import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
 import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
+import { GeoJsonLayer } from '@deck.gl/layers/typed'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS, Interval } from '@globalfishingwatch/layer-composer'
 import { FourwingsColorRamp, HEATMAP_ID } from './FourwingsLayer'
 import { Chunk, getChunksByInterval, getInterval } from './fourwings.config'
@@ -123,6 +124,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     if (cacheKey === 'no-cache') {
       console.log(chunks)
     }
+
     return new TileLayerClass(
       this.props,
       this.getSubLayerProps({

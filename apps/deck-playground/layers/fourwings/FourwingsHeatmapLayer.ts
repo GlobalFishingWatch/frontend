@@ -3,6 +3,7 @@ import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
 import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
 import { Cell } from 'loaders/fourwings/fourwingsLayerLoader'
 import FourwingsTileCellLayer from 'layers/fourwings/FourwingsHeatmapCellLayer'
+import { PathLayer, TextLayer } from '@deck.gl/layers/typed'
 import { FourwingsLayerProps } from './FourwingsLayer'
 
 export type FourwingsHeatmapLayerProps = FourwingsLayerProps & {
@@ -58,22 +59,59 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       return
     }
     const FourwingsTileCellLayerClass = this.getSubLayerClass('cell', FourwingsTileCellLayer)
-    return new FourwingsTileCellLayerClass(
-      this.props,
-      this.getSubLayerProps({
-        id: `fourwings-tile-${this.props.tile.id}`,
-        data: data,
-        cols,
-        rows,
-        pickable: true,
-        stroked: false,
-        getFillColor: (cell) => getFillColor(cell, { minFrame, maxFrame, colorDomain, colorRange }),
-        updateTriggers: {
-          // This tells deck.gl to recalculate fillColor on changes
-          getFillColor: [minFrame, maxFrame, colorDomain, colorRange],
-        },
-      })
-    )
+    const { west, east, north, south } = this.props.tile.bbox
+
+    return [
+      new FourwingsTileCellLayerClass(
+        this.props,
+        this.getSubLayerProps({
+          id: `fourwings-tile-${this.props.tile.id}`,
+          data: data,
+          cols,
+          rows,
+          pickable: true,
+          stroked: false,
+          getFillColor: (cell) =>
+            getFillColor(cell, { minFrame, maxFrame, colorDomain, colorRange }),
+          updateTriggers: {
+            // This tells deck.gl to recalculate fillColor on changes
+            getFillColor: [minFrame, maxFrame, colorDomain, colorRange],
+          },
+        })
+      ),
+      new PathLayer({
+        id: `tile-boundary-${this.props.tile.id}`,
+        data: [
+          {
+            path: [
+              [west, north],
+              [west, south],
+              [east, south],
+              [east, north],
+              [west, north],
+            ],
+          },
+        ],
+        getPath: (d) => d.path,
+        widthMinPixels: 1,
+        getColor: [255, 0, 0, 100],
+      }),
+      new TextLayer({
+        id: `tile-id-${this.props.tile.id}`,
+        data: [
+          {
+            text: this.props.tile.id,
+          },
+        ],
+        getText: (d) => d.text,
+        getPosition: [west, north],
+        getColor: [255, 255, 255],
+        getSize: 12,
+        getAngle: 0,
+        getTextAnchor: 'start',
+        getAlignmentBaseline: 'top',
+      }),
+    ]
   }
 
   getData() {
