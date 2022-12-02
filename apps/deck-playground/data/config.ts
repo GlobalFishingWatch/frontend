@@ -8,7 +8,7 @@ export const DEFAULT_VIEWPORT = {
   longitude: 26,
 }
 
-export const FIRST_YEAR_OF_DATA = 2021
+export const FIRST_YEAR_OF_DATA = 2020
 export const LAST_YEAR_OF_DATA = 2022
 export const CURRENT_YEAR = new Date().getFullYear()
 

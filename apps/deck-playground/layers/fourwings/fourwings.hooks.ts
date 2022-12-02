@@ -1,15 +1,11 @@
 import { getFourwingsMode } from 'layers/fourwings/fourwings.utils'
-import {
-  FourwingsColorRamp,
-  FourwingsLayer,
-  FourwingsLayerMode,
-} from 'layers/fourwings/FourwingsLayer'
 import { useCallback, useEffect } from 'react'
 import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
 import { useAddVesselInLayer } from 'layers/vessel/vessels.hooks'
 import { useTimerange } from 'features/timebar/timebar.hooks'
 import { useViewport } from 'features/map/map-viewport.hooks'
 import { useMapLayers } from 'features/map/layers.hooks'
+import { FourwingsColorRamp, FourwingsLayer, FourwingsLayerMode } from './FourwingsLayer'
 
 const dateToMs = (date: string) => {
   return new Date(date).getTime()
@@ -80,9 +76,8 @@ export function useFourwingsLayer() {
   )
 
   const onColorRampUpdate = useCallback(
-    (colorRamp: FourwingsColorRamp) => {
+    (colorRamp) => {
       if (colorRamp) {
-        console.log('updates ramp', colorRamp)
         setAtomProperty({ colorRamp })
       }
     },
@@ -100,8 +95,8 @@ export function useFourwingsLayer() {
         onTileLoad: onTileLoad,
         onViewportLoad: onViewportLoad,
         highlightedVesselId,
-        onVesselHighlight: onVesselHighlight,
-        onVesselClick: onVesselClick,
+        // onVesselHighlight: onVesselHighlight,
+        // onVesselClick: onVesselClick,
         resolution: fourwingsMapLayerResolution,
         onColorRampUpdate: onColorRampUpdate,
       })
@@ -115,16 +110,9 @@ export function useFourwingsLayer() {
     endTime,
     colorDomain,
     colorRange,
-    updateFourwingsAtom,
     activityMode,
-    onTileLoad,
-    onViewportLoad,
-    onColorRampUpdate,
-    setAtomProperty,
-    onVesselHighlight,
     highlightedVesselId,
     fourwingsMapLayerResolution,
-    onVesselClick,
   ])
 
   return instance
