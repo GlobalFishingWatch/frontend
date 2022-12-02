@@ -23,8 +23,8 @@
       "outputs": [],
       "options": {
         "commands": [
-          "cp config/entrypoint.sh dist/apps/fishing-map",
-          "cp apps/fishing-map/nginx.conf dist/apps/fishing-map"
+          "cp config/entrypoint.sh apps/fishing-map/dist",
+          "cp apps/fishing-map/nginx.conf apps/fishing-map/dist"
         ]
       }
     },
@@ -34,7 +34,7 @@
       "defaultConfiguration": "production",
       "options": {
         "root": "apps/fishing-map",
-        "outputPath": "dist/apps/fishing-map"
+        "outputPath": "apps/fishing-map/dist"
       },
       "configurations": {
         "production": {}
@@ -55,7 +55,7 @@
       "executor": "nx:run-commands",
       "outputs": [],
       "options": {
-        "commands": ["rm -rf dist/apps/fishing-map/public/locales"]
+        "commands": ["rm -rf apps/fishing-map/dist/public/locales"]
       }
     },
     "serve": {
@@ -82,8 +82,8 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "rm -rf dist/apps/fishing-map/map",
-          "mv dist/apps/fishing-map/exported dist/apps/fishing-map/map"
+          "rm -rf apps/fishing-map/dist/map",
+          "mv apps/fishing-map/dist/exported apps/fishing-map/dist/map"
         ],
         "parallel": false
       }
@@ -94,7 +94,7 @@
         "commands": [
           "nx build fishing-map --parallel",
           "nx rename-export fishing-map",
-          "serve dist/apps/fishing-map"
+          "serve apps/fishing-map/dist"
         ],
         "parallel": false
       }

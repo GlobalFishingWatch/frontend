@@ -1,24 +1,33 @@
 #################################################################################
-# Generate htpasswd file
-#################################################################################
-FROM appsoa/docker-alpine-htpasswd as htpasswd
-ARG BASIC_AUTH_USER=gfw
-ARG BASIC_AUTH_PASS=default
-ENV BASIC_AUTH_USER $BASIC_AUTH_USER
-ENV BASIC_AUTH_PASS $BASIC_AUTH_PASS
-RUN htpasswd -Bbn "$BASIC_AUTH_USER" "$BASIC_AUTH_PASS" > /home/.htpasswd
-
-#################################################################################
 # Actual application to run
 #################################################################################
-# Using stable version that uses alpine 3.14 to fix build errors
-# https://github.com/alpinelinux/docker-alpine/issues/182
-FROM nginx:stable-alpine as production
 
-COPY ./nginx.conf /etc/nginx/nginx.template
-COPY --from=htpasswd /home/.htpasswd /home/.htpasswd
-RUN cat /home/.htpasswd >> /etc/nginx/.htpasswd
-COPY ./entrypoint.sh entrypoint.sh
-COPY ./exported /usr/share/nginx/www/
-ENTRYPOINT ["./entrypoint.sh"]
+# Production image, copy all the files and run next
+FROM node:16-alpine AS production
+WORKDIR /app
 
+ENV NODE_ENV production
+# Uncomment the following line in case you want to disable telemetry during runtime.
+# ENV NEXT_TELEMETRY_DISABLED 1
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+COPY ./public ./public
+
+# Automatically leverage output traces to reduce image size
+# https://nextjs.org/docs/advanced-features/output-file-tracing
+COPY --chown=nextjs:nodejs ./.next/standalone ./
+COPY --chown=nextjs:nodejs ./.next/static ./.next/static
+
+# COPY --chown=nextjs:nodejs ./node_modules ./node_modules
+# RUN mv /app/dist/apps/fishing-map/.next ./.next
+# RUN mv apps/fishing-map/* .
+
+USER nextjs
+
+EXPOSE 3000
+
+ENV PORT 3000
+
+CMD ["node", "server.js"]

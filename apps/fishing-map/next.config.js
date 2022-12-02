@@ -4,6 +4,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
 // const CircularDependencyPlugin = require('circular-dependency-plugin')
+const { join } = require('path')
 
 // const { i18n } = require('./next-i18next.config')
 
@@ -37,7 +38,7 @@ const nextConfig = {
       tls: false,
     }
     config.externals = [...config.externals, 'mapbox-gl']
-    // config.optimization.minimize = false
+    config.optimization.minimize = false
     // config.plugins.push(
     //   new CircularDependencyPlugin({
     //     // exclude detection of files based on a RegExp
@@ -57,6 +58,13 @@ const nextConfig = {
   // i18n,
   basePath: process.env.NEXT_PUBLIC_URL || IS_PRODUCTION ? '/map' : '',
   productionBrowserSourceMaps: !IS_PRODUCTION,
+  // to deploy on a node server
+  output: 'standalone',
+  outputFileTracing: true,
+  experimental: {
+    outputFileTracingRoot: join(__dirname, '../../'),
+  },
+  cleanDistDir: true,
 }
 
 module.exports = withBundleAnalyzer(withNx(nextConfig))

@@ -8,8 +8,8 @@ steps:
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
-    name: gcr.io/cloud-builders/yarn:latest
-    entrypoint: bash
+    name: node:16-alpine
+    entrypoint: sh
     args:
       - '-c'
       # if dependencies cache is not found then install all deps
@@ -29,7 +29,7 @@ steps:
 
   - id: 'build-app'
     waitFor: ['install-yarn']
-    name: gcr.io/cloud-builders/yarn:latest
+    name: node:16-alpine
     entrypoint: yarn
     args: ['nx', 'build', 'fishing-map', '--parallel']
     env:
@@ -52,7 +52,7 @@ steps:
 
   - id: 'docker-prepare'
     waitFor: ['build-app']
-    name: node:14
+    name: node:16-alpine
     entrypoint: yarn
     args: ['nx', 'docker-prepare', 'fishing-map']
 
@@ -72,7 +72,7 @@ steps:
         '-f',
         './apps/fishing-map/Dockerfile',
         '-c',
-        './dist/apps/fishing-map',
+        './apps/fishing-map/dist',
       ]
 
   # Deploy to the appropriate environment
