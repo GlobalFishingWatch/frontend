@@ -64,6 +64,8 @@ steps:
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA',
         '--cache=true',
         '--build-arg',
+        'APP_NAME=fishing-map',
+        '--build-arg',
         'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
         '--build-arg',
         'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
@@ -72,7 +74,7 @@ steps:
         '-f',
         './apps/fishing-map/Dockerfile',
         '-c',
-        './apps/fishing-map/dist',
+        './dist/apps/fishing-map',
       ]
 
   # Deploy to the appropriate environment

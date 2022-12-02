@@ -38,7 +38,7 @@ const nextConfig = {
       tls: false,
     }
     config.externals = [...config.externals, 'mapbox-gl']
-    config.optimization.minimize = false
+    // config.optimization.minimize = false
     // config.plugins.push(
     //   new CircularDependencyPlugin({
     //     // exclude detection of files based on a RegExp
@@ -65,6 +65,7 @@ const nextConfig = {
     outputFileTracingRoot: join(__dirname, '../../'),
   },
   cleanDistDir: true,
+  distDir: '.next',
 }
 
 module.exports = withBundleAnalyzer(withNx(nextConfig))
