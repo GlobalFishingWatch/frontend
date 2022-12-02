@@ -36,6 +36,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-fps": "^1.0.6",
+    "next-react-memory-stats": "^1.0.2",
     "recoil": "0.7.5",
     "recoil-sync": "^0.1.0",
     "recoil-sync-next": "^0.0.2",

@@ -13976,6 +13976,11 @@ next-pwa@^5.6.0:
     workbox-webpack-plugin "^6.5.4"
     workbox-window "^6.5.4"
 
+next-react-memory-stats@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/next-react-memory-stats/-/next-react-memory-stats-1.0.2.tgz#54a0c0325d2325e9d9d778dc6fb0b6d56676fb8f"
+  integrity sha512-CDf3RchKaEe3WES3d4fXgJPDNFsiR88BihcZPQ85NQPiLrdUMSbHx0ZNDDbkRZM5FNovK4eQYMTz19FxwNfsTQ==
+
 next@13.0.0:
   version "13.0.0"
   resolved "https://registry.yarnpkg.com/next/-/next-13.0.0.tgz#6f07064a4f374562cf58677bef4dd06326ca648b"
