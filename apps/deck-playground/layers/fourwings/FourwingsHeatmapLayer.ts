@@ -4,6 +4,7 @@ import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
 import { Cell } from 'loaders/fourwings/fourwingsLayerLoader'
 import FourwingsTileCellLayer from 'layers/fourwings/FourwingsHeatmapCellLayer'
 import { PathLayer, TextLayer } from '@deck.gl/layers/typed'
+import { GeoBoundingBox } from '@deck.gl/geo-layers/typed'
 import { FourwingsLayerProps } from './FourwingsLayer'
 
 export type FourwingsHeatmapLayerProps = FourwingsLayerProps & {
@@ -59,7 +60,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       return
     }
     const FourwingsTileCellLayerClass = this.getSubLayerClass('cell', FourwingsTileCellLayer)
-    const { west, east, north, south } = this.props.tile.bbox
+    const { west, east, north, south } = this.props.tile.bbox as GeoBoundingBox
 
     return [
       new FourwingsTileCellLayerClass(
