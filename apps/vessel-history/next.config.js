@@ -1,5 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { cwd } = require('process')
+const { join } = require('path')
 const withNx = require('@nrwl/next/plugins/with-nx')
 const withPWAConstructor = require('next-pwa')
 const runtimeCaching = require('next-pwa/cache')
@@ -11,15 +12,15 @@ const getStaticPrecacheEntries = require('./utils/staticprecache')
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
-  async rewrites() {
-    return [
-      // Rewrite everything to `pages/index`
-      {
-        source: '/:any*',
-        destination: '/',
-      },
-    ]
-  },
+  // async rewrites() {
+  //   return [
+  //     // Rewrite everything to `pages/index`
+  //     {
+  //       source: '/:any*',
+  //       destination: '/',
+  //     },
+  //   ]
+  // },
   webpack: function (config, { isServer }) {
     if (!isServer) {
       config.resolve.fallback = {
@@ -43,7 +44,17 @@ const nextConfig = {
   // to deploy on a node server
   output: 'standalone',
   outputFileTracing: true,
+  experimental: {
+    outputFileTracingRoot: join(__dirname, '../../'),
+  },
   cleanDistDir: true,
+  distDir: '.next',
+
+  nx: {
+    // Set this to true if you would like to to use SVGR
+    // See: https://github.com/gregberge/svgr
+    svgr: true,
+  },
 }
 
 const withPWA = withPWAConstructor({
@@ -71,13 +82,4 @@ const withPWA = withPWAConstructor({
   ],
 })
 
-module.exports = withPWA(
-  withNx({
-    ...nextConfig,
-    nx: {
-      // Set this to true if you would like to to use SVGR
-      // See: https://github.com/gregberge/svgr
-      svgr: true,
-    },
-  })
-)
+module.exports = withPWA(withNx(nextConfig))

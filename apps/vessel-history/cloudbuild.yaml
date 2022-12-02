@@ -56,6 +56,8 @@ steps:
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',
         '--cache=true',
         '--build-arg',
+        'APP_NAME=vessel-history',
+        '--build-arg',
         'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
         '--build-arg',
         'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
