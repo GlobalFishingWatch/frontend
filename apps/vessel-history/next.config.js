@@ -12,15 +12,15 @@ const getStaticPrecacheEntries = require('./utils/staticprecache')
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
-  // async rewrites() {
-  //   return [
-  //     // Rewrite everything to `pages/index`
-  //     {
-  //       source: '/:any*',
-  //       destination: '/',
-  //     },
-  //   ]
-  // },
+  async rewrites() {
+    return [
+      // Rewrite everything to `pages/index`
+      {
+        source: '/:any*',
+        destination: '/',
+      },
+    ]
+  },
   webpack: function (config, { isServer }) {
     if (!isServer) {
       config.resolve.fallback = {
