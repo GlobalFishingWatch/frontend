@@ -18,11 +18,16 @@ COPY ./public ./public
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --chown=nextjs:nodejs ./.next/standalone ./
-COPY --chown=nextjs:nodejs ./.next/static ./.next/static
 
-# COPY --chown=nextjs:nodejs ./node_modules ./node_modules
-# RUN mv /app/dist/apps/fishing-map/.next ./.next
-# RUN mv apps/fishing-map/* .
+# Had to change the dest dir to ./dist/.next/static since
+# it's there where the server looks for the files
+COPY --chown=nextjs:nodejs ./.next/static ./dist/.next/static
+
+# For some reason the nextjs server build files
+# are placed in apps/fishing-map inside the standalone folder
+# so we need to include them too
+COPY --chown=nextjs:nodejs ./.next/standalone/apps/fishing-map ./
+
 
 USER nextjs
 
