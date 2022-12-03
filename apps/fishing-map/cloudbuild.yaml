@@ -65,10 +65,6 @@ steps:
         '--cache=true',
         '--build-arg',
         'APP_NAME=fishing-map',
-        '--build-arg',
-        'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
-        '--build-arg',
-        'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
         '--target',
         'production',
         '-f',
@@ -102,6 +98,10 @@ steps:
         --platform managed \
         --set-env-vars \
         BASIC_AUTH=$_BASIC_AUTH \
+        --set-env-vars \
+        BASIC_AUTH_USER=$_BASIC_AUTH_USER \
+        --set-env-vars \
+        BASIC_AUTH_PASS=$_BASIC_AUTH_PASS \
         --allow-unauthenticated
 
   - id: 'i18n-labels publish stable'
