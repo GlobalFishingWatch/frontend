@@ -6,7 +6,7 @@
 FROM node:16-alpine AS production
 WORKDIR /app
 
-ARG APP_NAME=foo
+ARG APP_NAME=fishing-map
 ENV APP_NAME $APP_NAME
 
 ENV NODE_ENV production
