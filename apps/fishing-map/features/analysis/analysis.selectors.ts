@@ -4,7 +4,7 @@ import {
   selectAnalysisTimeComparison,
   selectAnalysisTypeQuery,
 } from 'features/app/app.selectors'
-import { Area, getAreaKey, selectAreas } from 'features/areas/areas.slice'
+import { DatasetAreaDetail, selectAreas } from 'features/areas/areas.slice'
 import { getUTCDateTime } from 'utils/dates'
 
 export const selectIsAnalyzing = createSelector([selectAnalysisQuery], (analysisQuery) => {
@@ -13,11 +13,10 @@ export const selectIsAnalyzing = createSelector([selectAnalysisQuery], (analysis
 
 export const selectAnalysisArea = createSelector(
   [selectAnalysisQuery, selectAreas],
-  (analysisQuery, areas): Area => {
+  (analysisQuery, areas): DatasetAreaDetail => {
     if (!analysisQuery) return
     const { areaId, datasetId } = analysisQuery
-    const areaKey = getAreaKey({ areaId, datasetId })
-    return areas[areaKey]
+    return areas[datasetId]?.detail?.[areaId]
   }
 )
 

@@ -1521,8 +1521,8 @@
     "schema": {}
   },
   "public-eez-land": {
-    "name": "ZEE (Sumber: Marine Regions)",
-    "description": "Zona ekonomi eksklusif (ZEE) membentang hingga 200 mil laut dari pantai suatu negara. Flanders Marine Institute (2019). Batas Maritim Geodatabase: Batas Maritim dan Zona Ekonomi Eksklusif (200NM), versi 11. Sumber: marineregions.org.",
+    "name": "EEZ (marineregions.org)",
+    "description": "Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org",
     "schema": {}
   },
   "public-fao-areas-major-subareas": {

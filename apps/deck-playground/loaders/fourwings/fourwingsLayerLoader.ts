@@ -1,4 +1,5 @@
-import { LoaderWithParser } from '@loaders.gl/loader-utils'
+// import { TileBoundingBox, TileIndex } from '@deck.gl/geo-layers/typed/tile-layer/types'
+// import { LoaderWithParser } from '@loaders.gl/loader-utils'
 import Pbf from 'pbf'
 import {
   CELL_END_INDEX,
@@ -10,54 +11,54 @@ import {
   FEATURE_ROW_INDEX,
 } from '../constants'
 
-function sinh(arg) {
-  return (Math.exp(arg) - Math.exp(-arg)) / 2
-}
+// function sinh(arg) {
+//   return (Math.exp(arg) - Math.exp(-arg)) / 2
+// }
 
-function tileToLng(x, z) {
-  return (x * 360) / Math.pow(2, z) - 180
-}
+// function tileToLng(x, z) {
+//   return (x * 360) / Math.pow(2, z) - 180
+// }
 
-function tileToLat(y, z) {
-  return Math.atan(sinh(Math.PI - (y * 2 * Math.PI) / Math.pow(2, z))) * (180 / Math.PI)
-}
+// function tileToLat(y, z) {
+//   return Math.atan(sinh(Math.PI - (y * 2 * Math.PI) / Math.pow(2, z))) * (180 / Math.PI)
+// }
 
-function getTileIndex(url: string) {
-  return url
-    .split('/')
-    .slice(-3)
-    .map((i) => parseInt(i)) as [number, number, number]
-}
+// function getTileIndex(url: string) {
+//   return url
+//     .split('/')
+//     .slice(-3)
+//     .map((i) => parseInt(i)) as [number, number, number]
+// }
 
-function getTileBBox(url: string): BBox {
-  const [z, x, y] = getTileIndex(url)
-  const north = tileToLat(y, z)
-  const west = tileToLng(x, z)
-  const south = tileToLat(y + 1, z)
-  const east = tileToLng(x + 1, z)
-  return [west, south, east, north]
-}
+// function getTileBBox(url: string): BBox {
+//   const [z, x, y] = getTileIndex(url)
+//   const north = tileToLat(y, z)
+//   const west = tileToLng(x, z)
+//   const south = tileToLat(y + 1, z)
+//   const east = tileToLng(x + 1, z)
+//   return [west, south, east, north]
+// }
 
-export const fourwingsLayerLoader: LoaderWithParser = {
-  name: 'fourwings',
-  module: 'fourwings',
-  options: {},
-  id: '4Wings-pbf',
-  version: 'latest',
-  extensions: ['pbf'],
-  mimeTypes: ['application/x-protobuf', 'application/octet-stream'],
-  worker: false,
-  parse: async (arrayBuffer, { baseUri }) => {
-    const tileBbox = getTileBBox(baseUri)
-    const tileIndex = getTileIndex(baseUri)
-    return parseFourWings(arrayBuffer, { tileBbox, tileIndex })
-  },
-  parseSync: async (arrayBuffer, { baseUri }) => {
-    const tileBbox = getTileBBox(baseUri)
-    const tileIndex = getTileIndex(baseUri)
-    return parseFourWings(arrayBuffer, { tileBbox, tileIndex })
-  },
-}
+// export const fourwingsLayerLoader: LoaderWithParser = {
+//   name: 'fourwings',
+//   module: 'fourwings',
+//   options: {},
+//   id: '4Wings-pbf',
+//   version: 'latest',
+//   extensions: ['pbf'],
+//   mimeTypes: ['application/x-protobuf', 'application/octet-stream'],
+//   worker: false,
+//   parse: async (arrayBuffer, { baseUri }) => {
+//     const tileBbox = getTileBBox(baseUri)
+//     const tileIndex = getTileIndex(baseUri)
+//     return parseFourWings(arrayBuffer, { tileBbox, tileIndex })
+//   },
+//   parseSync: async (arrayBuffer, { baseUri }) => {
+//     const tileBbox = getTileBBox(baseUri)
+//     const tileIndex = getTileIndex(baseUri)
+//     return parseFourWings(arrayBuffer, { tileBbox, tileIndex })
+//   },
+// }
 
 function readData(_, data, pbf) {
   data.push(pbf.readPackedVarint())
@@ -79,11 +80,7 @@ const getTimeseries = (startFrame, values) => {
   })
 }
 
-const getCellArrays = (
-  intArray,
-  sublayerCount = 1,
-  { tileBbox, tileIndex }: GetCellArraysParams
-) => {
+const getCellArrays = (intArray, sublayerCount = 1) => {
   const cells: Cell[] = []
   let cellNum = 0
   let startFrame = 0
@@ -143,13 +140,14 @@ export type FourwingsTileData = {
   rows: number
   cells: Cell[]
 }
-type GetCellArraysParams = { tileBbox: BBox; tileIndex: [number, number, number] }
-const parseFourWings = (arrayBuffer, params: GetCellArraysParams): FourwingsTileData => {
+
+export const parseFourWings = (arrayBuffer): FourwingsTileData => {
   var data = new Pbf(arrayBuffer).readFields(readData, [])[0]
-  const { cells } = getCellArrays(data, 1, params)
+  const { cells } = getCellArrays(data, 1)
 
   const rows = data[FEATURE_ROW_INDEX]
   const cols = data[FEATURE_COL_INDEX]
+
   return {
     cols,
     rows,

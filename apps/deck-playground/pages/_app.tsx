@@ -1,6 +1,7 @@
 import { useState, useCallback, Component, useEffect } from 'react'
 import { AppProps } from 'next/app'
 import { FpsView } from 'react-fps'
+import MemoryStatsComponent from 'next-react-memory-stats'
 import { RecoilURLSyncJSONNext } from 'recoil-sync-next'
 import { RecoilRoot } from 'recoil'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -84,6 +85,7 @@ function CustomApp({ Component, pageProps }: AppProps) {
               className="split-container"
             />
             {showFps && <FpsView bottom="0" left="0" top="auto" />}
+            {showFps && <MemoryStatsComponent />}
           </ErrorBoundary>
         </QueryClientProvider>
       </RecoilURLSyncJSONNext>

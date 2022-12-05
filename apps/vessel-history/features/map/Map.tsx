@@ -22,7 +22,6 @@ import MapControls from './controls/MapControls'
 import useMapEvents from './map-events.hooks'
 import { selectHighlightedEvent } from './map.slice'
 import styles from './Map.module.css'
-import '@globalfishingwatch/maplibre-gl/dist/maplibre-gl.css'
 
 const mapStyles = {
   width: '100%',
@@ -43,12 +42,7 @@ const MapWrapper: React.FC = (): React.ReactElement => {
     globalConfig,
     styleTransformations
   )
-  const styleUpdated = useMemo(() => {
-    return {
-      ...style,
 
-    }
-  }, [])
   const interactiveLayerIds = useMemoCompare(style?.metadata?.interactiveLayerIds)
   const { eventsLoading, events } = useVoyagesConnect()
 

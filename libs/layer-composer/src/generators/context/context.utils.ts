@@ -3,10 +3,15 @@ import {
   FillLayerSpecification,
   CircleLayerSpecification,
 } from '@globalfishingwatch/maplibre-gl'
+import { ContextGeneratorConfig } from '../types'
 
 export const DEFAULT_LINE_COLOR = 'white'
 export const HIGHLIGHT_LINE_COLOR = 'white'
 export const HIGHLIGHT_FILL_COLOR = 'rgba(0, 0, 0, 0.3)'
+
+export const getContextSourceId = (config: ContextGeneratorConfig) => {
+  return `${config?.id}-${config?.layer}`
+}
 
 export const getLinePaintWithFeatureState = (
   color = DEFAULT_LINE_COLOR,

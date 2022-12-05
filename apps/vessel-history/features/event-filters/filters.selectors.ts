@@ -3,22 +3,24 @@ import { EventType, EventTypes } from '@globalfishingwatch/api-types'
 import { Filters, initialState, selectFilters } from 'features/event-filters/filters.slice'
 import { VisibleEvents } from 'types'
 
-export const selectFilterUpdated = createSelector([selectFilters], (filters) => {
-  const keys1 = Object.keys(initialState.filters)
-  const keys2 = Object.keys(filters).filter((key) => filters[key as keyof Filters] !== undefined)
-  if (keys1.length !== keys2.length) {
-    return true
-  }
+export const selectFiltersUpdated = createSelector(
+  [selectFilters],
+  (filters): (keyof Filters)[] => {
+    const keys1 = Object.keys(initialState.filters) as (keyof Filters)[]
+    const keys2 = (Object.keys(filters) as (keyof Filters)[]).filter(
+      (key) => filters[key as keyof Filters] !== undefined
+    )
 
-  for (const key of keys1) {
-    const filterKey = key as keyof Filters
-    if (initialState.filters[filterKey] !== filters[filterKey]) {
-      return true
-    }
-  }
+    const uniqueKeys = Array.from(new Set(keys1.concat(keys2)))
 
-  return false
-})
+    return uniqueKeys.filter((key) => initialState.filters[key] !== filters[key])
+  }
+)
+
+export const selectIsFilterUpdated = createSelector(
+  [selectFiltersUpdated],
+  (filtersUpdated) => filtersUpdated && filtersUpdated.length > 0
+)
 
 export const selectVisibleEvents = createSelector([selectFilters], (filters) => {
   const filtersToEventTypes: Partial<Record<keyof Filters, EventType>> = {

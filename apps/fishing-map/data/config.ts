@@ -14,7 +14,12 @@ export const IS_PRODUCTION =
 export const REPORT_DAYS_LIMIT =
   typeof process.env.NEXT_PUBLIC_REPORT_DAYS_LIMIT !== 'undefined'
     ? parseInt(process.env.NEXT_PUBLIC_REPORT_DAYS_LIMIT)
-    : 366
+    : 366 // 1 year
+
+export const VESSEL_GROUPS_DAYS_LIMIT =
+  typeof process.env.VESSEL_GROUPS_DAYS_LIMIT !== 'undefined'
+    ? parseInt(process.env.VESSEL_GROUPS_DAYS_LIMIT)
+    : 93 // 3 months
 
 // Never actually used?
 export const API_GATEWAY = process.env.API_GATEWAY || process.env.NEXT_PUBLIC_API_GATEWAY || ''

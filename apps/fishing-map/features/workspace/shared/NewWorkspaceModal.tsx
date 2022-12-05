@@ -172,13 +172,13 @@ function NewWorkspaceModal({
       />
       {workspace?.id && (
         <SwitchRow
-          label={t('workspace.uploadPublic' as any, 'Allow other users to see this workspace')}
+          label={t('workspace.uploadPublic', 'Allow other users to see this workspace')}
           active={createAsPublic}
           disabled={containsPrivateDatasets}
           tooltip={
             containsPrivateDatasets
               ? `${t(
-                  'workspace.uploadPublicDisabled' as any,
+                  'workspace.uploadPublicDisabled',
                   "This workspace can't be shared publicly because it contains private datasets"
                 )}: ${privateDatasets.join(', ')}`
               : ''

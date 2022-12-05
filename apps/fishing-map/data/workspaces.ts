@@ -28,7 +28,9 @@ export enum WorkspaceCategories {
 export const BASEMAP_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 90 : 173
 export const BASEMAP_LABELS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 295 : 305
 export const EEZ_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 94 : 177
+export const EEZ_DATAVIEW_INSTANCE = 'context-layer-eez'
 export const MPA_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 98 : 176
+export const MPA_DATAVIEW_INSTANCE_ID = 'context-layer-mpa'
 export const RFMO_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 95 : 175
 export const HIGH_SEAS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 97 : 174
 export const PROTECTED_SEAS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 292 : undefined
@@ -75,6 +77,7 @@ export const CONTEXT_LAYERS_DATAVIEWS = [
   PROTECTED_SEAS_DATAVIEW_ID,
   GRATICULES_DATAVIEW_ID,
   FAO_AREAS_DATAVIEW_ID,
+  BASEMAP_LABELS_DATAVIEW_ID,
 ]
 
 // Global environmental dataviews
@@ -89,4 +92,4 @@ export const DEFAULT_DATAVIEW_IDS = [
   ...TEMPLATE_DATAVIEW_IDS,
 ]
 
-export const ONLY_GFW_STAFF_DATAVIEWS = [BASEMAP_LABELS_DATAVIEW_ID]
+export const ONLY_GFW_STAFF_DATAVIEWS: number[] = []

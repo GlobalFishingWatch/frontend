@@ -266,7 +266,7 @@ function VesselGroupModal(): React.ReactElement {
           <SwitchRow
             className={styles.row}
             label={t(
-              'vesselGroup.uploadPublic' as any,
+              'vesselGroup.uploadPublic',
               'Allow other users to see this vessel group when you share a workspace'
             )}
             active={createAsPublic}
