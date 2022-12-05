@@ -14,18 +14,8 @@
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx build fishing-map --parallel", "nx docker-prepare fishing-map"],
+        "commands": ["nx build fishing-map --parallel"],
         "parallel": false
-      }
-    },
-    "docker-prepare": {
-      "executor": "nx:run-commands",
-      "outputs": [],
-      "options": {
-        "commands": [
-          "cp config/entrypoint.sh dist/apps/fishing-map",
-          "cp apps/fishing-map/nginx.conf dist/apps/fishing-map"
-        ]
       }
     },
     "compile": {

@@ -50,15 +50,9 @@ steps:
       - 'NEXT_PUBLIC_REPORT_DAYS_LIMIT=$_NEXT_PUBLIC_REPORT_DAYS_LIMIT'
       - 'NEXT_PUBLIC_WORKSPACES_SPREADSHEET_ID=$_NEXT_PUBLIC_WORKSPACES_SPREADSHEET_ID'
 
-  - id: 'docker-prepare'
-    waitFor: ['build-app']
-    name: node:16-alpine
-    entrypoint: yarn
-    args: ['nx', 'docker-prepare', 'fishing-map']
-
   - name: 'gcr.io/kaniko-project/executor:v1.6.0'
     id: 'build-image'
-    waitFor: ['docker-prepare']
+    waitFor: ['build-app']
     args:
       [
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA',
