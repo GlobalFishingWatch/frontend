@@ -42,15 +42,9 @@ steps:
       - 'NEXT_PUBLIC_FEEDBACK_FORM_EN=$_NEXT_PUBLIC_FEEDBACK_FORM_EN'
       - 'NEXT_PUBLIC_FEEDBACK_FORM_FR=$_NEXT_PUBLIC_FEEDBACK_FORM_FR'
 
-  - id: 'docker-prepare'
-    waitFor: ['build-app']
-    name: node:16-alpine
-    entrypoint: yarn
-    args: ['nx', 'docker-prepare', 'vessel-history']
-
   - name: 'gcr.io/kaniko-project/executor:v1.6.0'
     id: 'build-image'
-    waitFor: ['docker-prepare']
+    waitFor: ['build-app']
     args:
       [
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',

@@ -14,18 +14,8 @@
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx build vessel-history", "nx docker-prepare vessel-history"],
+        "commands": ["nx build vessel-history"],
         "parallel": false
-      }
-    },
-    "docker-prepare": {
-      "executor": "nx:run-commands",
-      "outputs": [],
-      "options": {
-        "commands": [
-          "cp config/entrypoint.sh dist/apps/vessel-history",
-          "cp apps/vessel-history/nginx.conf dist/apps/vessel-history"
-        ]
       }
     },
     "compile": {
