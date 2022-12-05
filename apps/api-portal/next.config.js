@@ -1,4 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
+const { join } = require('path')
 const withNx = require('@nrwl/next/plugins/with-nx')
 // const CircularDependencyPlugin = require('circular-dependency-plugin')
 
@@ -32,6 +33,15 @@ const nextConfig = {
   productionBrowserSourceMaps:
     process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'development' ||
     process.env.NODE_ENV === 'development',
+
+  // to deploy on a node server
+  output: 'standalone',
+  outputFileTracing: true,
+  experimental: {
+    outputFileTracingRoot: join(__dirname, '../../'),
+  },
+  cleanDistDir: true,
+  distDir: '.next',
 }
 
 module.exports = withNx(nextConfig)

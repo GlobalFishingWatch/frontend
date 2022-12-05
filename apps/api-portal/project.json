@@ -18,16 +18,6 @@
         "parallel": false
       }
     },
-    "docker-prepare": {
-      "executor": "nx:run-commands",
-      "outputs": [],
-      "options": {
-        "commands": [
-          "cp config/entrypoint.sh dist/apps/api-portal",
-          "cp apps/api-portal/nginx.conf dist/apps/api-portal"
-        ]
-      }
-    },
     "compile": {
       "executor": "@nrwl/next:build",
       "outputs": ["{options.outputPath}"],
