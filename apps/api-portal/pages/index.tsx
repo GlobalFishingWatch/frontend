@@ -1,3 +1,4 @@
+import path from 'path'
 import type { NextPage } from 'next'
 // import Layout from 'components/layout'
 import dynamic from 'next/dynamic'
@@ -5,6 +6,8 @@ import AccessTokenList from 'components/access-token/access-token-list/access-to
 import AccessTokenCreate from 'components/access-token/access-token-create/access-token-create'
 import RequireAdditionalInfo from 'components/require-additional-info/require-additional-info'
 import styles from '../styles/index.module.css'
+
+path.resolve('./next.config.js')
 
 const Layout = dynamic(() => import('components/layout'), {
   ssr: false,
