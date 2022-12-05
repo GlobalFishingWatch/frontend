@@ -7,18 +7,8 @@
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx build port-labeler --parallel", "nx docker-prepare port-labeler"],
+        "commands": ["nx build port-labeler --parallel"],
         "parallel": false
-      }
-    },
-    "docker-prepare": {
-      "executor": "nx:run-commands",
-      "outputs": [],
-      "options": {
-        "commands": [
-          "cp config/entrypoint.sh dist/apps/port-labeler",
-          "cp apps/port-labeler/nginx.conf dist/apps/port-labeler"
-        ]
       }
     },
     "compile": {

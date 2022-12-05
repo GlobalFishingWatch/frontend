@@ -8,8 +8,8 @@ steps:
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
-    name: gcr.io/cloud-builders/yarn:latest
-    entrypoint: bash
+    name: node:16-alpine
+    entrypoint: sh
     args:
       - '-c'
       # if dependencies cache is not found then install all deps
@@ -29,7 +29,7 @@ steps:
 
   - id: 'build-app'
     waitFor: ['install-yarn']
-    name: gcr.io/cloud-builders/yarn:latest
+    name: node:16-alpine
     entrypoint: yarn
     args: ['nx', 'build', 'port-labeler', '--parallel']
     env:
@@ -41,23 +41,15 @@ steps:
       # - 'NEXT_PUBLIC_GOOGLE_TAG_MANAGER_KEY=$_NEXT_PUBLIC_GOOGLE_TAG_MANAGER_KEY'
       # - 'NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID=$_NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID'
 
-  - id: 'docker-prepare'
-    waitFor: ['build-app']
-    name: node:14
-    entrypoint: yarn
-    args: ['nx', 'docker-prepare', 'port-labeler']
-
   - name: 'gcr.io/kaniko-project/executor:v1.6.0'
     id: 'build-image'
-    waitFor: ['docker-prepare']
+    waitFor: ['build-app']
     args:
       [
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/port-labeler:$COMMIT_SHA',
         '--cache=true',
         '--build-arg',
-        'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
-        '--build-arg',
-        'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
+        'APP_NAME=port-labeler',
         '--target',
         'production',
         '-f',
@@ -91,6 +83,10 @@ steps:
         --platform managed \
         --set-env-vars \
         BASIC_AUTH=$_BASIC_AUTH \
+        --set-env-vars \
+        BASIC_AUTH_USER=$_BASIC_AUTH_USER \
+        --set-env-vars \
+        BASIC_AUTH_PASS=$_BASIC_AUTH_PASS \
         --allow-unauthenticated
 
 timeout: 1800s
