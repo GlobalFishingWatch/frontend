@@ -15,6 +15,7 @@ steps:
       # if dependencies cache is not found then install all deps
       - |
         if [ ! -d "node_modules" ]; then
+          apk add git
           yarn install --frozen-lockfile
         fi
 
