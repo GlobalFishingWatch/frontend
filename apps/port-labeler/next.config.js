@@ -4,6 +4,8 @@ const withNx = require('@nrwl/next/plugins/with-nx')
 // const CircularDependencyPlugin = require('circular-dependency-plugin')
 
 // const { i18n } = require('./next-i18next.config')
+const basePath =
+  process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/port-labeler' : '')
 
 /**
  * @type {import('@nrwl/next/plugins/with-nx').WithNxOptions}
@@ -16,6 +18,21 @@ const nextConfig = {
         source: '/:any*',
         destination: '/',
       },
+    ]
+  },
+  async redirects() {
+    return [
+      // Redirect everything in / root to basePath if defined
+      ...(basePath !== ''
+        ? [
+            {
+              source: '/',
+              destination: basePath,
+              basePath: false,
+              permanent: false,
+            },
+          ]
+        : []),
     ]
   },
   nx: {
@@ -38,8 +55,7 @@ const nextConfig = {
     return config
   },
   // productionBrowserSourceMaps: true,
-  basePath:
-    process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/port-labeler' : ''),
+  basePath,
   productionBrowserSourceMaps:
     process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'development' ||
     process.env.NODE_ENV === 'development',
