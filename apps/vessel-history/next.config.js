@@ -7,6 +7,8 @@ const runtimeCaching = require('next-pwa/cache')
 const getStaticPrecacheEntries = require('./utils/staticprecache')
 
 // const { i18n } = require('./next-i18next.config')
+const basePath =
+  process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/vessel-viewer' : '')
 
 /**
  * @type {import('next').NextConfig}
@@ -19,6 +21,21 @@ const nextConfig = {
         source: '/:any*',
         destination: '/',
       },
+    ]
+  },
+  async redirects() {
+    return [
+      // Redirect everything in / root to basePath if defined
+      ...(basePath !== ''
+        ? [
+            {
+              source: '/',
+              destination: basePath,
+              basePath: false,
+              permanent: false,
+            },
+          ]
+        : []),
     ]
   },
   webpack: function (config, { isServer }) {
@@ -35,8 +52,7 @@ const nextConfig = {
   },
 
   // i18n,
-  basePath:
-    process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/vessel-viewer' : ''),
+  basePath,
   productionBrowserSourceMaps:
     process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'development' ||
     process.env.NODE_ENV === 'development',
