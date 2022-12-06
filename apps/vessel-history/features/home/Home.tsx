@@ -11,7 +11,11 @@ import { RESULTS_PER_PAGE, TMT_CONTACT_US_URL } from 'data/constants'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
 import { selectAllOfflineVessels } from 'features/vessels/offline-vessels.slice'
-import SearchPlaceholder, { SearchErrorState, SearchNoResultsFromTmtState, SearchNoResultsState } from 'features/search/SearchPlaceholders'
+import SearchPlaceholder, {
+  SearchErrorState,
+  SearchNoResultsFromTmtState,
+  SearchNoResultsState,
+} from 'features/search/SearchPlaceholders'
 import {
   selectAdvancedSearchFields,
   selectHasSearch,
@@ -353,18 +357,22 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                   <Spinner className={styles.loader}></Spinner>
                 </div>
               )}
-              {!searchError && !typing && !searching && vesselsLength >= 0 && searchSources.length === 2 && (
-                <SearchNoResultsState
-                  contactUsLink={contactUsLink}
-                  onContactUsClick={onContactUsClick}
-                />
-              )}
-              {!searchError && !typing && !searching && vesselsLength >= 0 && searchSources.length < 2 && (
-                <SearchNoResultsFromTmtState />
-              )}
-              {searchError && !typing &&
-                <SearchErrorState error={searchError}></SearchErrorState>
-              }
+              {!searchError &&
+                !typing &&
+                !searching &&
+                vesselsLength >= 0 &&
+                (searchSources?.length === 2 || !searchSources) && (
+                  <SearchNoResultsState
+                    contactUsLink={contactUsLink}
+                    onContactUsClick={onContactUsClick}
+                  />
+                )}
+              {!searchError &&
+                !typing &&
+                !searching &&
+                vesselsLength >= 0 &&
+                searchSources?.length < 2 && <SearchNoResultsFromTmtState />}
+              {searchError && !typing && <SearchErrorState error={searchError}></SearchErrorState>}
               <Partners />
             </div>
           </Fragment>
