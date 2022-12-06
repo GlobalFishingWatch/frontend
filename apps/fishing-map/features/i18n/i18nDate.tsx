@@ -11,7 +11,7 @@ type Dates = {
 }
 
 type formatI18DateParams = {
-  format?: DateTimeFormatOptions
+  format?: DateTimeFormatOptions | Object
   locale?: Locale
   showUTCLabel?: boolean
 }

@@ -94,7 +94,13 @@ const getCommonProperties = (dataviews?: UrlDataviewInstance[], showTimeComparis
       commonProperties.push('flag')
       const flags = getFlagsByIds(dataviews[0].config?.filters?.flag || [])
       if (firstDataviewFlags) {
-        titleChunks.push({ label: t('analysis.vesselFlags', 'by vessels flagged by') })
+        if (dataviews[0].config?.filterOperators?.flag === 'exclude') {
+          titleChunks.push({
+            label: t('analysis.vesselFlagsExclude', 'by all vessels except the ones flagged by'),
+          })
+        } else {
+          titleChunks.push({ label: t('analysis.vesselFlags', 'by vessels flagged by') })
+        }
         titleChunks.push({ label: `${flags?.map((d) => d.label).join(', ')}`, strong: true })
       }
     }
@@ -106,6 +112,7 @@ const getCommonProperties = (dataviews?: UrlDataviewInstance[], showTimeComparis
         : []
 
     const genericFilters: Record<string, string>[] = []
+    const genericExcludedFilters: Record<string, string>[] = []
     firstDataviewGenericFilterKeys.forEach((filterKey) => {
       const firstDataviewGenericFilterFields = getSerializedFilterFields(dataviews[0], filterKey)
       if (
@@ -125,10 +132,18 @@ const getCommonProperties = (dataviews?: UrlDataviewInstance[], showTimeComparis
         )
           .map((f) => f.label.toLocaleLowerCase())
           .join(', ')
-        genericFilters.push({
-          keyLabel,
-          valuesLabel,
-        })
+
+        if (dataviews[0].config?.filterOperators[filterKey] === 'exclude') {
+          genericExcludedFilters.push({
+            keyLabel,
+            valuesLabel,
+          })
+        } else {
+          genericFilters.push({
+            keyLabel,
+            valuesLabel,
+          })
+        }
         commonProperties.push(filterKey)
       }
     })
@@ -137,6 +152,18 @@ const getCommonProperties = (dataviews?: UrlDataviewInstance[], showTimeComparis
       titleChunks.push({ label: t('analysis.filteredBy', 'filtered by') })
       titleChunks.push({
         label: genericFilters
+          .map((genericFilter) => `${genericFilter.keyLabel}: ${genericFilter.valuesLabel}`)
+          .join('; '),
+        strong: true,
+      })
+    }
+    if (genericFilters.length && genericExcludedFilters.length) {
+      titleChunks.push({ label: t('common.and', 'and') })
+    }
+    if (genericExcludedFilters.length) {
+      titleChunks.push({ label: t('analysis.excluding', 'excluding') })
+      titleChunks.push({
+        label: genericExcludedFilters
           .map((genericFilter) => `${genericFilter.keyLabel}: ${genericFilter.valuesLabel}`)
           .join('; '),
         strong: true,

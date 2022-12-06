@@ -369,10 +369,22 @@ const Profile: React.FC = (props): React.ReactElement => {
           activeTab={activeTab?.id as string}
           onTabClick={(tab: Tab) => {
             setActiveTab(tab)
-            if (tab.id === 'activity') {
+            if (tab.id === 'activity' && !currentProfileIsInsurer) {
               uaEvent({
                 category: 'Vessel Detail ACTIVITY Tab',
                 action: 'See Activity Tab',
+              })
+            }
+            if (tab.id === 'activity' && currentProfileIsInsurer) {
+              uaEvent({
+                category: 'Vessel Detail ACTIVITY BY TYPE Tab',
+                action: 'See ACTIVITY BY TYPE Tab',
+              })
+            }
+            if (tab.id === 'risk') {
+              uaEvent({
+                category: 'Vessel Detail RISK SUMMARY Tab',
+                action: 'See RISK SUMMARY Tab',
               })
             }
             if (tab.id === 'map') {

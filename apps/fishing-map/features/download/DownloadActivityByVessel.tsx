@@ -17,7 +17,10 @@ import {
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
+import {
+  selectActiveHeatmapDataviews,
+  selectActiveHeatmapVesselDatasets,
+} from 'features/dataviews/dataviews.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
 import { selectUserData } from 'features/user/user.slice'
 import {
@@ -38,14 +41,18 @@ import {
   VESSEL_GROUP_BY_OPTIONS,
   VESSEL_FORMAT_OPTIONS,
 } from './downloadActivity.config'
-import { getDownloadReportSupported, getSupportedTemporalResolutions } from './download.utils'
+import {
+  getDownloadReportSupported,
+  getSupportedGroupByOptions,
+  getSupportedTemporalResolutions,
+} from './download.utils'
 
-const fallbackDataviews = []
 function DownloadActivityByVessel() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const userData = useSelector(selectUserData)
-  const dataviews = useSelector(selectActiveHeatmapDataviews) || fallbackDataviews
+  const dataviews = useSelector(selectActiveHeatmapDataviews)
+  const vesselDatasets = useSelector(selectActiveHeatmapVesselDatasets)
   const timeoutRef = useRef<NodeJS.Timeout>()
   const { start, end, timerange } = useTimerangeConnect()
   const datasetsDownloadNotSupported = getDatasetsDownloadNotSupported(
@@ -56,21 +63,25 @@ function DownloadActivityByVessel() {
   const downloadError = useSelector(selectDownloadActivityError)
   const downloadFinished = useSelector(selectDownloadActivityFinished)
   const [format, setFormat] = useState(VESSEL_FORMAT_OPTIONS[0].id as Format)
-  const [groupBy, setGroupBy] = useState(VESSEL_GROUP_BY_OPTIONS[0].id as GroupBy)
   const isDownloadReportSupported = getDownloadReportSupported(start, end)
+
+  const filteredGroupByOptions: ChoiceOption[] = useMemo(
+    () => getSupportedGroupByOptions(VESSEL_GROUP_BY_OPTIONS, vesselDatasets),
+    [vesselDatasets]
+  )
+  const [groupBy, setGroupBy] = useState(filteredGroupByOptions[0]?.id as GroupBy)
 
   const filteredTemporalResolutionOptions: ChoiceOption[] = useMemo(
     () => getSupportedTemporalResolutions(start, end),
     [start, end]
   )
-
   const [temporalResolution, setTemporalResolution] = useState(
     filteredTemporalResolutionOptions[0].id as TemporalResolution
   )
 
   const downloadArea = useSelector(selectDownloadActivityArea)
-  const downloadAreaName = downloadArea?.name
-  const downloadAreaGeometry = downloadArea?.geometry
+  const downloadAreaName = downloadArea?.data?.name
+  const downloadAreaGeometry = downloadArea?.data?.geometry
   const downloadAreaLoading = downloadArea?.status === AsyncReducerStatus.Loading
 
   const onDownloadClick = async () => {
@@ -171,9 +182,9 @@ function DownloadActivityByVessel() {
           />
         </div>
         <div>
-          <label>{t('download.groupActivityBy', 'Group activity by vessel property')}</label>
+          <label>{t('download.groupVesselsBy', 'Group vessels by')}</label>
           <Choice
-            options={VESSEL_GROUP_BY_OPTIONS}
+            options={filteredGroupByOptions}
             size="small"
             activeOption={groupBy}
             onOptionClick={(option) => setGroupBy(option.id as GroupBy)}

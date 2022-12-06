@@ -22,6 +22,7 @@
     "errorTimeComparisonDataviews": "Al menos una capa de actividad debe estar habilitada",
     "errorTimeComparisonFilters": "No se admiten varias capas con filtros",
     "evolution": "evolución",
+    "excluding": "Excluding",
     "experimental": "Experimental",
     "filteredBy": "filtrado por",
     "noData": "No hay datos disponibles",
@@ -34,7 +35,8 @@
     "periodComparisonRange": "{{duration}} siguiente {{compareStart}} comparado con la línea de referencia {{duration}} siguiente {{start}}",
     "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año",
     "title": "Análisis",
-    "vesselFlags": "de embarcaciones abanderadas con"
+    "vesselFlags": "de embarcaciones abanderadas con",
+    "vesselFlagsExclude": "by all vessels except the ones flagged by"
   },
   "bigQuery": {
     "aggregateAvg": "Promedio",
@@ -125,6 +127,7 @@
     "onScreen": "en pantalla",
     "optional": "Opcional",
     "or": "o",
+    "partnerSites": "Sitios asociados",
     "presence": "Presencia",
     "report": "Informe",
     "resetHelpHints": "Mostrar de nuevo los puntos de ayuda",
@@ -133,6 +136,7 @@
     "seeDefault": "Ver la vista por defecto",
     "share": "Comparte el mapa actual",
     "sources": "Fuentes",
+    "tutorials": "Tutoriales",
     "unknown": "Desconocido",
     "unknownVessel": "Buque desconocido",
     "update": "Actualizar",
@@ -143,8 +147,10 @@
     "vesselId": "Identificador de embarcación",
     "view_layer": "Ver la capa",
     "viirs": "Detección de luz nocturna",
+    "visibleValues": "Visible values",
     "welcomePopupDisable": "No volver a mostrar",
-    "whatsNew": "Novedades"
+    "whatsNew": "Novedades",
+    "whatsNewWithNewVersion": "Hemos realizado algunos cambios desde la última vez que visitaste el mapa. Haz clic para saber más"
   },
   "dataset": {
     "addContext": "Añadir una capa de referencia",
@@ -222,11 +228,13 @@
     "format": "Formato",
     "fullDataset": "¿Necesita los datos completos?",
     "fullTimeRange": "Rango de tiempo completo",
-    "gridded": "Gridded activity",
+    "gridded": "Actividad por cuadrículas",
     "groupActivityBy": "Agrupar actividad por propiedad de embarcación",
+    "groupVesselsBy": "Agrupar buques por",
     "highResNotAvailable": "Tu área es demasiado grande",
     "monthly": "Mes",
     "monthlyNotAvailable": "Su intervalo de tiempo es menor de 1 mes",
+    "mmsiNotSupported": "Los datos seleccionados no soportan agrupación por MMSI",
     "spatialResolution": "Resolución espacial",
     "temporalResolution": "Agrupar tiempo por",
     "timeRange": "Rango de tiempo",
@@ -342,6 +350,10 @@
     "supportBy": "Apoyado por"
   },
   "layer": {
+    "areas": {
+      "mpa": "AMP",
+      "eez": "EEZ"
+    },
     "activity_fit_bounds": "Centrar mapa en la actividad",
     "add": "Añadir capa",
     "color_change": "Cambiar el color",
@@ -396,7 +408,7 @@
     "rulers_add": "Mide distancias",
     "rulers_remove": "Eliminar todas las distancias medidas",
     "runningExpensiveVesselQuery": "Ejecutar esta consulta costará alrededor de {{cost}} $. ¿Estás seguro de ejecutarla?",
-    "search": "Buscar áreas",
+    "search": "Buscar áreas oceánicas y marinas, AMPs o ZEEs",
     "zoom_in": "Acercarse",
     "zoom_out": "Alejarse"
   },
@@ -555,7 +567,7 @@
     "new": "Nuevo grupo de embarcaciones",
     "remove": "Eliminar este grupo",
     "removeVessel": "Eliminar embarcación del grupo",
-    "timeRangeLimit": "Soportado sólo para rangos de tiempo menores de 1 año",
+    "timeRangeLimit": "Soportado sólo para rangos de tiempo menores de 3 meses",
     "tooManyVessels": "El número máximo de embarcaciones es {{count}}",
     "uploadPublic": "Permitir a otros usuarios ver este grupo de embarcaciones cuando comparta un espacio de trabajo",
     "vesselGroup": "Grupo de embarcaciones",
@@ -589,6 +601,14 @@
     "update": "Actualizar",
     "uploadPublic": "Permitir a otros usuarios ver este espacio de trabajo",
     "uploadPublicDisabled": "Este espacio de trabajo no puede ser compartido públicamente porque contiene datos privados",
-    "user": "Espacios de trabajo del usuario"
+    "user": "Espacios de trabajo del usuario",
+    "wizard": {
+      "error": "Ocurrió un error al crear el workspace",
+      "name": "Pon nombre a tu area de trabajo",
+      "help": "Puedes mover el mapa y actualizar tu área de trabajo más tarde",
+      "exploreArea": "Explorar el área",
+      "exploreGlobal": "Explorar globalmente",
+      "title": "Configurar un área de trabajo de gestión marina para cualquier área globalmente"
+    }
   }
 }

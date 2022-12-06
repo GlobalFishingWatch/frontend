@@ -22,6 +22,7 @@
     "errorTimeComparisonDataviews": "At least one activity layer must be enabled",
     "errorTimeComparisonFilters": "Several layers with filters are not supported",
     "evolution": "evolution",
+    "excluding": "Excluding",
     "experimental": "Experimental",
     "filteredBy": "filtered by",
     "noData": "No data available",
@@ -34,7 +35,8 @@
     "periodComparisonRange": "in the {{duration}} following {{compareStart}} compared to baseline in the {{duration}} following {{start}}",
     "timeRangeTooLong": "Reports are only supported for time spans up to one year.",
     "title": "Analysis",
-    "vesselFlags": "for vessels flagged by"
+    "vesselFlags": "for vessels flagged by",
+    "vesselFlagsExclude": "by all vessels except those flagged to"
   },
   "bigQuery": {
     "aggregateAvg": "Average",
@@ -125,6 +127,7 @@
     "onScreen": "on screen",
     "optional": "Optional",
     "or": "or",
+    "partnerSites": "Partner sites",
     "presence": "Vessel presence",
     "report": "Report",
     "resetHelpHints": "Show all help hints again",
@@ -133,6 +136,7 @@
     "seeDefault": "See default workspace",
     "share": "Share map",
     "sources": "Sources",
+    "tutorials": "Tutorials",
     "unknown": "Other",
     "unknownVessel": "Unknown vessel",
     "update": "Update",
@@ -143,8 +147,10 @@
     "vesselId": "Vessel id",
     "view_layer": "View the layer",
     "viirs": "Night light detections",
+    "visibleValues": "Visible values",
     "welcomePopupDisable": "Don't show again",
-    "whatsNew": "What's new?"
+    "whatsNew": "What's new?",
+    "whatsNewWithNewVersion": "We've made some changes since you last visited the map. Click to learn more"
   },
   "dataset": {
     "addContext": "Add reference layer",
@@ -224,9 +230,11 @@
     "fullTimeRange": "Full time range",
     "gridded": "Gridded activity",
     "groupActivityBy": "Group activity by vessel property",
+    "groupVesselsBy": "Group vessels by",
     "highResNotAvailable": "Your area is too big",
     "monthly": "Month",
     "monthlyNotAvailable": "Your time range is shorter than 1 month",
+    "mmsiNotSupported": "The datasets selected don't support grouping by MMSI",
     "spatialResolution": "Spatial resolution",
     "temporalResolution": "Group time by",
     "timeRange": "Time Range",
@@ -342,6 +350,10 @@
     "supportBy": "Supported by"
   },
   "layer": {
+    "areas": {
+      "mpa": "MPA",
+      "eez": "EEZ"
+    },
     "activity_fit_bounds": "Center view on activity",
     "add": "Add layer",
     "color_change": "Change color",
@@ -396,7 +408,7 @@
     "rulers_add": "Measure distance",
     "rulers_remove": "Remove measured distances",
     "runningExpensiveVesselQuery": "Running this query will cost around {{cost}} $. Are you sure to run it?",
-    "search": "Search areas",
+    "search": "Search ocean and sea areas, MPAs or EEZs",
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out"
   },
@@ -555,7 +567,7 @@
     "new": "New vessel group",
     "remove": "Remove vessel group",
     "removeVessel": "Remove vessel from group",
-    "timeRangeLimit": "Supported only for time ranges shorter than 1 year",
+    "timeRangeLimit": "Supported only for time ranges shorter than 3 months",
     "tooManyVessels": "Maximum number of vessels is {{count}}",
     "uploadPublic": "Allow other users to see this vessel group when you share a workspace",
     "vesselGroup": "Vessel group",
@@ -589,6 +601,14 @@
     "update": "Update workspace",
     "uploadPublic": "Allow other users to see this workspace",
     "uploadPublicDisabled": "This workspace can't be shared publicly because it contains private datasets",
-    "user": "User workspace"
+    "user": "User workspace",
+    "wizard": {
+      "error": "There was an error creating the workspace",
+      "name": "Give a name to your workspace",
+      "help": "You can move the map and update your workspace later",
+      "exploreArea": "See area",
+      "exploreGlobal": "See global",
+      "title": "Setup a marine manager workspace for any area globally"
+    }
   }
 }

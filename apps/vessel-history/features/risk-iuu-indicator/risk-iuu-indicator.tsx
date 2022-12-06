@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { event as uaEvent } from 'react-ga'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import InfoFieldHistory from 'features/profile/components/InfoFieldHistory'
 import { ValueItem } from 'types'
@@ -39,6 +40,11 @@ export function RiskIuuIndicator({
   )
   const openModal = useCallback(() => {
     if (hasHistory) {
+      uaEvent({
+        category: 'Vessel Detail RISK SUMMARY Tab',
+        action: `View list of events or details of a risk indicator`,
+        label: JSON.stringify({ section: 'iuu' }),
+      })
       setModalOpen(true)
     }
   }, [hasHistory])

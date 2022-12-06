@@ -4,32 +4,30 @@ import cx from 'classnames'
 import dayjs from 'dayjs'
 import memoize from 'memoize-one'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import objectSupport from 'dayjs/plugin/objectSupport'
 import utc from 'dayjs/plugin/utc'
 import 'dayjs/locale/en'
 import 'dayjs/locale/es'
 import 'dayjs/locale/fr'
 import 'dayjs/locale/id'
 import { RecoilRoot } from 'recoil'
+import { DateTime } from 'luxon'
+import { CONFIG_BY_INTERVAL, LIMITS_BY_INTERVAL } from '@globalfishingwatch/layer-composer'
 import ImmediateContext from './immediateContext'
-import {
-  getTime,
-  clampToAbsoluteBoundaries,
-  getDeltaDays,
-  isMoreThanADay,
-} from './utils/internal-utils'
+import { getTime } from './utils/internal-utils'
 // import './timebar-settings.css'
 import styles from './timebar.module.css'
 import TimeRangeSelector from './components/timerange-selector'
+import IntervalSelector from './components/interval-selector'
 import Timeline from './components/timeline'
 import Playback from './components/playback'
 import { ReactComponent as IconTimeRange } from './icons/timeRange.svg'
 import { ReactComponent as IconBookmark } from './icons/bookmark.svg'
 import { ReactComponent as IconBookmarkFilled } from './icons/bookmarkFilled.svg'
-import { ReactComponent as IconMinus } from './icons/minus.svg'
-import { ReactComponent as IconPlus } from './icons/plus.svg'
-import { EVENT_SOURCE } from './constants'
+import { EVENT_SOURCE, EVENT_INTERVAL_SOURCE } from './constants'
 
 dayjs.extend(relativeTime)
+dayjs.extend(objectSupport)
 dayjs.extend(utc)
 
 const ONE_DAY_MS = 1000 * 60 * 60 * 24
@@ -125,68 +123,34 @@ class Timebar extends Component {
     })
   }
 
-  zoom = (zoom) => {
-    const { start, end, absoluteStart, absoluteEnd } = this.props
-    const delta = Math.round(getDeltaDays(start, end))
-
-    let steps
-    let nextDelta
-    let nextUnit = 'day'
-
-    let source
-
-    if (zoom === 'in') {
-      source = EVENT_SOURCE.ZOOM_IN_BUTTON
-      steps = [365, 32, 30, 7, 1]
-      for (let s = 0; s < steps.length; s += 1) {
-        const step = steps[s]
-        if (delta > step) {
-          nextDelta = step
-          break
+  onIntervalClick = (interval) => {
+    const { start, end, absoluteStart, absoluteEnd, latestAvailableDataDate } = this.props
+    const intervalConfig = CONFIG_BY_INTERVAL[interval]
+    if (intervalConfig) {
+      const intervalLimit = LIMITS_BY_INTERVAL[interval]
+      if (intervalLimit) {
+        let newStart
+        let newEnd
+        if (
+          latestAvailableDataDate.slice(0, start.length) >= start &&
+          latestAvailableDataDate.slice(0, start.length) <= end
+        ) {
+          newEnd = DateTime.fromISO(latestAvailableDataDate, { zone: 'utc' })
+            .endOf(interval)
+            .plus({ millisecond: 1 })
+          newStart = newEnd.minus({ [intervalLimit.unit]: 1 })
+        } else {
+          // if present day is out of range we choose the middle point in the timebar
+          newStart = DateTime.fromMillis(getTime(start) + (getTime(end) - getTime(start)) / 2, {
+            zone: 'utc',
+          }).startOf(intervalLimit.unit)
+          newEnd = newStart.plus({ [intervalLimit.unit]: 1 })
         }
-      }
-      // sub-day situation
-      if (nextDelta === undefined) {
-        nextDelta = 23.9
-        nextUnit = 'hour'
-      }
-    } else if (zoom === 'out') {
-      source = EVENT_SOURCE.ZOOM_OUT_BUTTON
-      steps = [1, 7, 30, 32, 365]
-      for (let s = 0; s < steps.length; s += 1) {
-        const step = steps[s]
-        // if (delta > step) {
-        if (delta < step) {
-          nextDelta = step
-          break
-        }
-      }
-
-      // more than 1 year situation
-      if (nextDelta === undefined) {
-        this.notifyChange(absoluteStart, absoluteEnd, source)
-        return
+        this.notifyChange(newStart.toISODate(), newEnd.toISODate(), EVENT_INTERVAL_SOURCE[interval])
+      } else {
+        this.notifyChange(absoluteStart, absoluteEnd, EVENT_INTERVAL_SOURCE[interval])
       }
     }
-
-    const unitOffsetMs = nextUnit === 'hour' ? ONE_DAY_MS / 24 : ONE_DAY_MS
-    const middleMs = getTime(start) + (getTime(end) - getTime(start)) / 2
-    const offsetMs = (nextDelta * unitOffsetMs) / 2
-    const newStartMs = middleMs - offsetMs
-
-    const mNewStart = dayjs(newStartMs).utc().startOf(nextUnit)
-    const newEnd = mNewStart.add(nextDelta, nextUnit).toISOString()
-
-    const deltaMs = nextDelta * unitOffsetMs
-    const { newStartClamped, newEndClamped } = clampToAbsoluteBoundaries(
-      mNewStart.toISOString(),
-      newEnd,
-      deltaMs,
-      absoluteStart,
-      absoluteEnd
-    )
-
-    this.notifyChange(newStartClamped, newEndClamped, source)
   }
 
   notifyChange = (start, end, source, clampToEnd = false) => {
@@ -232,6 +196,8 @@ class Timebar extends Component {
       maximumRangeUnit,
       stickToUnit,
       displayWarningWhenInFuture,
+      intervals,
+      getCurrentInterval,
     } = this.props
     const { immediate } = this.state
 
@@ -241,11 +207,6 @@ class Timebar extends Component {
 
     this.maximumRangeMs = this.getMaximumRangeMs(maximumRange, maximumRangeUnit)
     this.minimumRangeMs = this.getMinimumRangeMs(minimumRange, minimumRangeUnit)
-
-    const canZoomIn = isMoreThanADay(start, end)
-    const deltaDays = getDeltaDays(start, end)
-    const absoluteDeltaDays = getDeltaDays(absoluteStart, absoluteEnd)
-    const canZoomOut = deltaDays <= absoluteDeltaDays - 1
 
     const hasBookmark =
       bookmarkStart !== undefined &&
@@ -286,17 +247,15 @@ class Timebar extends Component {
                   latestAvailableDataDate={this.props.latestAvailableDataDate}
                 />
               )}
-              <div className={cx('print-hidden', styles.timeRangeContainer)}>
-                <button
-                  type="button"
-                  title={labels.timerange.title}
-                  className={cx(styles.uiButton, styles.timeRange)}
-                  disabled={immediate}
-                  onClick={this.toggleTimeRangeSelector}
-                >
-                  <IconTimeRange />
-                </button>
-              </div>
+              <button
+                type="button"
+                title={labels.timerange.title}
+                className={cx(styles.uiButton)}
+                disabled={immediate}
+                onClick={this.toggleTimeRangeSelector}
+              >
+                <IconTimeRange />
+              </button>
               <button
                 type="button"
                 title={labels.setBookmark}
@@ -306,30 +265,20 @@ class Timebar extends Component {
               >
                 {hasBookmark ? <IconBookmarkFilled /> : <IconBookmark />}
               </button>
-              <div className={cx('print-hidden', styles.timeScale)}>
-                <button
-                  type="button"
-                  title={labels.zoomOut}
-                  disabled={immediate || canZoomOut === false}
-                  onClick={() => {
-                    this.zoom('out')
-                  }}
-                  className={cx(styles.uiButton, styles.out)}
-                >
-                  <IconMinus />
-                </button>
-                <button
-                  type="button"
-                  title={labels.zoomIn}
-                  disabled={immediate || canZoomIn === false}
-                  onClick={() => {
-                    this.zoom('in')
-                  }}
-                  className={cx(styles.uiButton, styles.in)}
-                >
-                  <IconPlus />
-                </button>
-              </div>
+            </div>
+            <div className={cx('print-hidden', styles.timeActions)}>
+              {
+                intervals && getCurrentInterval ? (
+                  <IntervalSelector
+                    intervals={intervals}
+                    getCurrentInterval={getCurrentInterval}
+                    labels={labels.intervals}
+                    start={start}
+                    end={end}
+                    onIntervalClick={this.onIntervalClick}
+                  />
+                ) : null // TODO restore + and - buttons as fallback
+              }
             </div>
 
             <Timeline
@@ -384,13 +333,13 @@ Timebar.propTypes = {
       deleteBookmark: PropTypes.string,
     }),
     lastUpdate: PropTypes.string,
-    day: PropTypes.string,
-    year: PropTypes.string,
-    month: PropTypes.string,
-    hour: PropTypes.string,
+    intervals: PropTypes.shape({
+      hour: PropTypes.string,
+      day: PropTypes.string,
+      month: PropTypes.string,
+      year: PropTypes.string,
+    }),
     setBookmark: PropTypes.string,
-    zoomIn: PropTypes.string,
-    zoomOut: PropTypes.string,
     zoomTo: PropTypes.string,
     timeRange: PropTypes.string,
   }),
@@ -417,11 +366,13 @@ Timebar.propTypes = {
   showLastUpdate: PropTypes.bool,
   // val is used to live edit translations in crowdin
   locale: PropTypes.oneOf(['en', 'es', 'fr', 'id', 'pt', 'val']),
+  intervals: PropTypes.array,
+  getCurrentInterval: PropTypes.func,
   displayWarningWhenInFuture: PropTypes.bool,
 }
 
 Timebar.defaultProps = {
-  latestAvailableDataDate: new Date().toISOString(),
+  latestAvailableDataDate: DateTime.utc().toISO(),
   labels: {
     playback: {
       playAnimation: 'Play animation',
@@ -448,13 +399,12 @@ Timebar.defaultProps = {
     dragLabel: 'Drag to change the time range',
     lastUpdate: 'Last update',
     setBookmark: 'Bookmark current time range',
-    day: 'day',
-    year: 'year',
-    month: 'month',
-    hour: 'hour',
-    zoomIn: 'Zoom in',
-    zoomTo: 'Zoom to',
-    zoomOut: 'Zoom out',
+    intervals: {
+      hour: 'hours',
+      day: 'days',
+      month: 'months',
+      year: 'years',
+    },
   },
   bookmarkStart: null,
   bookmarkEnd: null,

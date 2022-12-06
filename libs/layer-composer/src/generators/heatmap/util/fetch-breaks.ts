@@ -131,7 +131,7 @@ export default function fetchBreaks(config: FetchBreaksParams): Promise<Breaks> 
   breaksUrl.searchParams.set('temporal-aggregation', 'false')
   breaksUrl.searchParams.set('num-bins', getNumBins(config).toString())
   const groups = getVesselGroupsQuery(config)
-  breaksUrl.searchParams.set('interval', groups ? config.interval : '10days')
+  breaksUrl.searchParams.set('interval', groups ? config.interval : 'month')
   if (groups && config.start && config.end) {
     // TODO debounce the request when this changes
     breaksUrl.searchParams.set('date-range', [config.start, config.end].join(','))

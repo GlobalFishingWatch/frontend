@@ -235,6 +235,7 @@
     "MMSI": "MMSI",
     "noMore": "Aucun résultat supplémentaire",
     "noResults": "Vous ne trouvez pas le vaisseau que vous cherchez? Essayez d'utiliser MMSI, IMO ou Signal d'appel ou <2>contactez-nous</2> si vous ne le trouvez pas.",
+    "noTmtResults": "A vessel with these criteria could not be found, due to a timeout in the search function. Please try again.",
     "notAllowed": "Recherche non autorisée",
     "placeholder": "Recherche par Nom, OMI, Indicatif ou MMSI",
     "seeVessel": "Voir le navire",
@@ -375,7 +376,7 @@
     "source": "source",
     "transmission_plural": "positions",
     "transmissionDescription": "AIS stands for Automatic Identification Systems. AIS is a GPS-like device that large ships use to broadcast their position in order to avoid collisions. The positions listed in the vessel search results refer to the number of vessel positions broadcast over AIS that we have processed and matched to the search result, over a period of time. For more information on how AIS data is processed and caveats of our algorithms, please see our FAQs.",
-    "transmissionRange": "{{transmissions}} transmissions AIS de {{start}} à {{end}}",
+    "transmissionRange": "{{transmissions}} AIS positions from {{start}} to {{end}}",
     "type": "types de navires",
     "type_plural": "types",
     "vesselTypeDescription": "Pour le type de navire provenant de Global Fishing Watch, des recherches et des analyses supplémentaires sont menées en plus de l'utilisation des données AIS d'origine pour identifier la valeur la plus probable. Les types de navires de GFW comprennent les navires de pêche, les navires transporteurs et les navires de soutien. La classification des navires pour navire de pêche est estimé à l'aide des informations connues du registre en combinaison avec un réseau de neurones convolutifs utilisé pour estimer la classe des vaisseaux. La classification des navires pour les navires transporteurs est estimée à l'aide d'un cumul des informations de registre connues, d'un examen manuel et de la classe de navire. Tous les navires de soutien dans le visualiseur de navires sont considérés comme des navires de soutien à senne coulissante sur la base d'un examen interne. Le type de navire de « « autre » » est tiré des listes de navires autorisés des ORGP et d'autres sources de données sur les navires. Lorsque plusieurs valeurs sont données, cela reflète des informations contradictoires ou des variations dans les termes utilisés dans les sources originales."

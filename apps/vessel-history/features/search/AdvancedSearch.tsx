@@ -24,7 +24,13 @@ import { DEFAULT_WORKSPACE } from 'data/config'
 import { useSearchConnect } from './search.hooks'
 import styles from './AdvancedSearch.module.css'
 
-const AdvancedSearch: React.FC = () => {
+interface AdvancedSearchProps {
+  onTyping: (isTiping: boolean) => void
+}
+
+const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
+  onTyping
+}) => {
   const { t } = useTranslation()
 
   const { query, fetchResults } = useSearchConnect()
@@ -44,11 +50,12 @@ const AdvancedSearch: React.FC = () => {
 
   const setQueryParam = useCallback(
     (e, key?, value?) => {
+      onTyping(true)
       dispatchQueryParams({
         [key || e.target.id]: value ?? e.target.value,
       })
     },
-    [dispatchQueryParams]
+    [dispatchQueryParams, onTyping]
   )
 
   const onResetClick = useCallback(() => {
@@ -59,27 +66,31 @@ const AdvancedSearch: React.FC = () => {
     setQueryParam(null, 'flags', '')
     setQueryParam(null, 'lastTransmissionDate', '')
     setQueryParam(null, 'firstTransmissionDate', '')
-  }, [setQueryParam])
+    onTyping(false)
+  }, [setQueryParam, onTyping])
 
   const onSearchClick = useCallback(
     (e) => {
       fetchResults()
+      onTyping(false)
     },
-    [fetchResults]
+    [fetchResults, onTyping]
   )
 
   const onMainQueryChange = useCallback(
     (e) => {
       setQueryParam(e, 'q')
+      onTyping(true)
     },
-    [setQueryParam]
+    [setQueryParam, onTyping]
   )
 
   const onFlagChange = useCallback(
     (flags) => {
       setQueryParam(null, 'flags', flags ? flags.map((f: MultiSelectOption) => f.id).join(',') : '')
+      onTyping(true)
     },
-    [setQueryParam]
+    [setQueryParam, onTyping]
   )
 
   return (

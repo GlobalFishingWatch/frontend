@@ -22,6 +22,7 @@
     "errorTimeComparisonDataviews": "Au moins un calque d'activité doit être activé",
     "errorTimeComparisonFilters": "Plusieurs calques avec filtres ne sont pas pris en charge",
     "evolution": "Évolution",
+    "excluding": "Excluding",
     "experimental": "Expérimental",
     "filteredBy": "filtré par",
     "noData": "Aucune donnée disponible",
@@ -34,7 +35,8 @@
     "periodComparisonRange": "durant {{duration}} suivant {{compareStart}} comparé à la référence durant {{duration}} suivant {{start}}",
     "timeRangeTooLong": "Les rapports ne sont autorisés que pour les intervalles de temps maximal  d'un an. ",
     "title": "Analyse",
-    "vesselFlags": "pour les navires battant le pavillon de"
+    "vesselFlags": "pour les navires battant le pavillon de",
+    "vesselFlagsExclude": "by all vessels except the ones flagged by"
   },
   "bigQuery": {
     "aggregateAvg": "Moyenne",
@@ -125,6 +127,7 @@
     "onScreen": "à l'écran",
     "optional": "Optionnel",
     "or": "ou",
+    "partnerSites": "Partner sites",
     "presence": "Présence",
     "report": "Rapporter",
     "resetHelpHints": "Afficher à nouveau toutes les astuces",
@@ -133,6 +136,7 @@
     "seeDefault": "Voir la vue par défaut",
     "share": "Partager la vue actuelle",
     "sources": "Sources",
+    "tutorials": "Tutorials",
     "unknown": "Inconnu",
     "unknownVessel": "Navire inconnu",
     "update": "Mise à jour",
@@ -143,8 +147,10 @@
     "vesselId": "Vessel id",
     "view_layer": "Voir le calque",
     "viirs": "Détection de lumière de nuit (VIIRS)",
+    "visibleValues": "Visible values",
     "welcomePopupDisable": "Ne plus afficher",
-    "whatsNew": "Quoi de neuf ?"
+    "whatsNew": "Quoi de neuf ?",
+    "whatsNewWithNewVersion": "We've made some changes since you last visited the map. Click to learn more"
   },
   "dataset": {
     "addContext": "Ajouter un calque de référence",
@@ -224,9 +230,11 @@
     "fullTimeRange": "Full time range",
     "gridded": "Gridded activity",
     "groupActivityBy": "Group activity by vessel property",
+    "groupVesselsBy": "Group vessels by",
     "highResNotAvailable": "Votre zone est trop grande",
     "monthly": "Month",
     "monthlyNotAvailable": "Votre plage de temps est inférieure à 1 mois",
+    "mmsiNotSupported": "The datasets selected don't support grouping by MMSI",
     "spatialResolution": "Résolution spatiale",
     "temporalResolution": "Group time by",
     "timeRange": "Plage de temps",
@@ -342,6 +350,10 @@
     "supportBy": "Avec le soutien de"
   },
   "layer": {
+    "areas": {
+      "mpa": "MPA",
+      "eez": "EEZ"
+    },
     "activity_fit_bounds": "Center view on activity",
     "add": "Ajouter un calque",
     "color_change": "Modifier la couleur",
@@ -396,7 +408,7 @@
     "rulers_add": "Mesurer des distances",
     "rulers_remove": "Supprimer toutes les mesures",
     "runningExpensiveVesselQuery": "L'exécution de cette requête coûtera environ {{cost}} $. Êtes-vous sûr de vouloir l'exécuter ?",
-    "search": "Rechercher des zones",
+    "search": "Search ocean and sea areas, MPAs or EEZs",
     "zoom_in": "Zoomer",
     "zoom_out": "Dézoomer"
   },
@@ -555,7 +567,7 @@
     "new": "New vessel group",
     "remove": "Remove vessel group",
     "removeVessel": "Remove vessel from group",
-    "timeRangeLimit": "Supported only for time ranges shorter than 1 year",
+    "timeRangeLimit": "Supported only for time ranges shorter than 3 months",
     "tooManyVessels": "Maximum number of vessels is {{count}}",
     "uploadPublic": "Allow other users to see this vessel group when you share a workspace",
     "vesselGroup": "Vessel group",
@@ -589,6 +601,14 @@
     "update": "Mise à jour",
     "uploadPublic": "Autoriser d'autres utilisateurs à voir cet espace de travail",
     "uploadPublicDisabled": "Cet espace de travail ne peut pas être partagé publiquement car il contient des jeux de données privés",
-    "user": "User workspace"
+    "user": "User workspace",
+    "wizard": {
+      "error": "There was an error creating the workspace",
+      "name": "Give a name to your workspace",
+      "help": "You can move the map and update your workspace later",
+      "exploreArea": "See area",
+      "exploreGlobal": "See global",
+      "title": "Setup a marine manager workspace for any area globally"
+    }
   }
 }

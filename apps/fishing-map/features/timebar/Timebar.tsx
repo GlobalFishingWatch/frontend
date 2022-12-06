@@ -15,30 +15,27 @@ import {
   HighlightedChunks,
 } from '@globalfishingwatch/timebar'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { CONFIG_BY_INTERVAL, getTimeChunksInterval } from '@globalfishingwatch/layer-composer'
 import { ResourceStatus } from '@globalfishingwatch/api-types'
-import { isMergedAnimatedGenerator } from '@globalfishingwatch/dataviews-client'
+import { getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
 import {
   useTimerangeConnect,
   useTimebarVisualisation,
   useTimebarVisualisationConnect,
   useDisableHighlightTimeConnect,
   useActivityMetadata,
-  useTimebarEnvironmentConnect,
 } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE, LAST_DATA_UPDATE } from 'data/config'
 import { TimebarVisualisations } from 'types'
 import useViewport from 'features/map/map-viewport.hooks'
-import { selectTimebarGraph } from 'features/app/app.selectors'
+import { selectTimebarGraph, selectTimebarVisualisation } from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { upperFirst } from 'utils/info'
 import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
 import Hint from 'features/hints/Hint'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
-import { useGeneratorsConnect } from 'features/map/map.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
-import { formatI18nDate, UTC_SUFFIX } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-groups.selectors'
 import { getUTCDateTime } from 'utils/dates'
 import { setHighlightedTime, selectHighlightedTime, Range } from './timebar.slice'
@@ -51,6 +48,7 @@ const ZOOM_LEVEL_TO_FOCUS_EVENT = 5
 
 const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents }) => {
   // const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
+  const timebarVisualisation = useSelector(selectTimebarVisualisation)
   const highlightedTime = useSelector(selectHighlightedTime)
   const onHighlightChunks = useCallback(
     (chunks: HighlightedChunks) => {
@@ -74,23 +72,39 @@ const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents }) => {
       if (metadata) {
         const interval = metadata.timeChunks.interval
         if (interval === 'hour') {
-          return dateLabel
+          const HOUR_FORMAT = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            weekday: 'long',
+            hour: 'numeric',
+          }
+          return formatI18nDate(timestamp, { format: HOUR_FORMAT, showUTCLabel: true })
         } else if (interval === 'day') {
-          return formatI18nDate(timestamp, { showUTCLabel: true })
-        } else if (interval === '10days') {
-          const frame = CONFIG_BY_INTERVAL['10days'].getRawFrame(timestamp)
-          const start = CONFIG_BY_INTERVAL['10days'].getDate(Math.floor(frame)).getTime()
-          const end = CONFIG_BY_INTERVAL['10days'].getDate(Math.ceil(frame)).getTime()
-          return [formatI18nDate(start), formatI18nDate(end)].join(' - ') + ` ${UTC_SUFFIX}`
+          const DAY_FORMAT = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            weekday: 'long',
+          }
+          return formatI18nDate(timestamp, { format: DAY_FORMAT })
         } else if (interval === 'month') {
-          // TODO
+          const MONTH_FORMAT = {
+            year: 'numeric',
+            month: 'long',
+          }
+          return formatI18nDate(timestamp, { format: MONTH_FORMAT })
+        } else if (interval === 'year') {
+          const YEAR_FORMAT = {
+            year: 'numeric',
+          }
+          return formatI18nDate(timestamp, { format: YEAR_FORMAT })
         }
       }
       return dateLabel
     },
     [metadata]
   )
-  const { timebarVisualisation } = useTimebarVisualisationConnect()
   const formatDate =
     timebarVisualisation !== TimebarVisualisations.HeatmapActivity &&
     timebarVisualisation !== TimebarVisualisations.HeatmapDetections
@@ -124,32 +138,6 @@ const TimebarWrapper = () => {
   const { isMapDrawing } = useMapDrawConnect()
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const vesselGroupsFiltering = useSelector(selectIsVessselGroupsFiltering)
-  const { timebarSelectedEnvId } = useTimebarEnvironmentConnect()
-  const { generatorsConfig } = useGeneratorsConnect()
-
-  const stickToUnit = useCallback(
-    (start, end) => {
-      const heatmapConfig = generatorsConfig.find((c) => isMergedAnimatedGenerator(c.id))
-      if (
-        heatmapConfig &&
-        (timebarVisualisation === TimebarVisualisations.HeatmapActivity ||
-          timebarVisualisation === TimebarVisualisations.HeatmapDetections)
-      ) {
-        const interval = getTimeChunksInterval(heatmapConfig as any, start, end)
-        return interval === '10days' ? 'day' : interval
-      } else if (timebarVisualisation === TimebarVisualisations.Environment) {
-        // TODO decide interval for stick unit depending on available intervals when env layers have interval < month
-        const heatmapConfig = generatorsConfig.find((c) => c.id === timebarSelectedEnvId)
-        if (heatmapConfig) {
-          const interval = getTimeChunksInterval(heatmapConfig as any, start, end)
-          return interval === '10days' ? 'day' : interval
-        }
-        return 'month'
-      }
-    },
-    [generatorsConfig, timebarSelectedEnvId, timebarVisualisation]
-  )
-
   const dispatch = useAppDispatch()
 
   const [bookmark, setBookmark] = useState<{ start: string; end: string } | null>(null)
@@ -207,10 +195,6 @@ const TimebarWrapper = () => {
   const [internalRange, setInternalRange] = useState<Range | null>(null)
   const onChange = useCallback(
     (e) => {
-      if (e.source === 'ZOOM_OUT_MOVE') {
-        setInternalRange({ ...e })
-        return
-      }
       const gaActions: Record<string, string> = {
         TIME_RANGE_SELECTOR: 'Configure timerange using calendar option',
         ZOOM_IN_BUTTON: 'Zoom In timerange',
@@ -346,7 +330,8 @@ const TimebarWrapper = () => {
         minimumRange={1}
         // TODO: set this by current active activity dataviews
         // minimumRangeUnit={activityCategory === 'fishing' ? 'hour' : 'day'}
-        stickToUnit={stickToUnit}
+        intervals={INTERVAL_ORDER}
+        getCurrentInterval={getInterval}
         trackGraphOrientation={trackGraphOrientation}
         locale={i18n.language}
       >

@@ -83,7 +83,7 @@ export const dataviewInstances: DataviewInstance<GeneratorType>[] = [
     dataviewId: DEFAULT_MPA_DATAVIEW_ID,
   },
   {
-    id: 'public-tuna-rfmo',
+    id: 'public-rfmo',
     config: {
       color: '#6b67e5',
       visible: true,

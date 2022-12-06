@@ -39,6 +39,7 @@ import DetectionsSection from 'features/workspace/detections/DetectionsSection'
 import { selectWorkspaceVessselGroupsIds } from 'features/vessel-groups/vessel-groups.selectors'
 import { useHideLegacyActivityCategoryDataviews } from 'features/workspace/legacy-activity-category.hook'
 import { updateWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
+import { WIZARD_TEMPLATE_ID } from 'data/default-workspaces/marine-manager'
 import {
   fetchWorkspaceVesselGroupsThunk,
   selectWorkspaceVesselGroupsError,
@@ -253,6 +254,7 @@ function Workspace() {
       {(locationCategory === WorkspaceCategories.MarineManager ||
         locationCategory === WorkspaceCategories.FishingActivity) &&
         workspace?.name &&
+        workspace?.id !== WIZARD_TEMPLATE_ID &&
         !readOnly && (
           <div className={styles.header}>
             {isUserWorkspace && (

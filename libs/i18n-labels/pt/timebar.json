@@ -9,8 +9,15 @@
   },
   "timerange": {
     "title": "Selecione um intervalo de tempo",
+    "year": "Year",
+    "month": "Month",
+    "day": "Day",
     "start": "Início",
     "end": "fim",
+    "selectAValidDate": "Please select a valid date",
+    "endBeforeStart": "The end needs to be after the start",
+    "tooLongForMonths": "Your timerange is too long to see individual months",
+    "tooLongForDays": "Your timerange is too long to see individual days",
     "last30days": "Últimos 30 dias",
     "last3months": "Last 3 months",
     "last6months": "Last 6 months",
@@ -31,11 +38,15 @@
   "dragLabel": "Arraste para alterar o intervalo de tempo",
   "lastUpdate": "Última atualização",
   "setBookmark": "Marcar intervalo de tempo atual",
-  "day": "dia",
-  "year": "ano",
-  "month": "mês",
-  "hour": "hora",
-  "zoomIn": "Aumentar zoom",
-  "zoomTo": "Ampliar para",
-  "zoomOut": "Diminuir zoom"
+  "intervals": {
+    "hour": "hour",
+    "hourTooltip": "See hourly data",
+    "day": "day",
+    "dayTooltip": "See daily data",
+    "month": "month",
+    "monthTooltip": "See monthly data",
+    "year": "year",
+    "yearTooltip": "See yearly data"
+  },
+  "zoomTo": "Ampliar para"
 }

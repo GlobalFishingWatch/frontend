@@ -30,11 +30,6 @@ const TimebarHighlighterWrapper = () => {
     //     return dateLabel
     //   } else if (interval === 'day') {
     //     return formatI18nDate(timestamp, { showUTCLabel: true })
-    //   } else if (interval === '10days') {
-    //     const frame = CONFIG_BY_INTERVAL['10days'].getRawFrame(timestamp)
-    //     const start = CONFIG_BY_INTERVAL['10days'].getDate(Math.floor(frame)).getTime()
-    //     const end = CONFIG_BY_INTERVAL['10days'].getDate(Math.ceil(frame)).getTime()
-    //     return [formatI18nDate(start), formatI18nDate(end)].join(' - ') + ` ${UTC_SUFFIX}`
     //   } else if (interval === 'month') {
     //     // TODO
     //   }

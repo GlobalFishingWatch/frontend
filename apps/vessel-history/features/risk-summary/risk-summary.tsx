@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Modal, Spinner } from '@globalfishingwatch/ui-components'
 import { useUser } from 'features/user/user.hooks'
@@ -190,6 +190,7 @@ export function RiskSummary(props: RiskSummaryProps) {
               ) as string
             }
             subtitle={' '}
+            section="gaps"
             events={gapsIntentionalDisabling}
             onEventInfoClick={openModal}
             onEventMapClick={onEventMapClick}
@@ -214,6 +215,7 @@ export function RiskSummary(props: RiskSummaryProps) {
                   }
                 ) as string
               }
+              section="fishing-rmfo"
               // The list of regions will be visible once the dataset (proto)
               // that includes events authorizations is used to get the resources
               subtitle={!!fishingRFMOsWithoutAuth && `(${fishingRFMOsWithoutAuth})`}
@@ -229,6 +231,7 @@ export function RiskSummary(props: RiskSummaryProps) {
                   count: fishingInMPA.length,
                 }) as string
               }
+              section="fishing-mpa"
               events={fishingInMPA}
               onEventInfoClick={openModal}
               onEventMapClick={onEventMapClick}
@@ -254,6 +257,7 @@ export function RiskSummary(props: RiskSummaryProps) {
                   }
                 ) as string
               }
+              section="encounters"
               // The list of regions will be visible once the dataset (proto)
               // that includes events authorizations is used to get the resources
               subtitle={!!encountersRFMOsWithoutAuth && `(${encountersRFMOsWithoutAuth})`}
@@ -269,6 +273,7 @@ export function RiskSummary(props: RiskSummaryProps) {
                   count: encountersInMPA.length,
                 }) as string
               }
+              section="encounters-mpa"
               events={encountersInMPA}
               onEventInfoClick={openModal}
               onEventMapClick={onEventMapClick}
@@ -281,6 +286,7 @@ export function RiskSummary(props: RiskSummaryProps) {
                   count: encountersInForeignEEZ.length,
                 }) as string
               }
+              section="encounters-eez"
               events={encountersInForeignEEZ}
               onEventInfoClick={openModal}
               onEventMapClick={onEventMapClick}
@@ -301,6 +307,7 @@ export function RiskSummary(props: RiskSummaryProps) {
                 count: loiteringInMPA.length,
               }) as string
             }
+            section="loitering-mpa"
             events={loiteringInMPA}
             onEventInfoClick={openModal}
             onEventMapClick={onEventMapClick}
@@ -324,6 +331,7 @@ export function RiskSummary(props: RiskSummaryProps) {
                 }
               ) as string
             }
+            section="port-visits"
             events={portVisitsToNonPSMAPortState}
             onEventInfoClick={openModal}
             onEventMapClick={onEventMapClick}

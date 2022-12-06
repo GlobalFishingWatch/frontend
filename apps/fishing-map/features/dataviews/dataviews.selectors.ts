@@ -8,6 +8,7 @@ import {
 } from '@globalfishingwatch/layer-composer'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
+import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID, DEFAULT_DATAVIEW_IDS } from 'data/workspaces'
 import { RootState } from 'store'
 import {
@@ -16,6 +17,8 @@ import {
   selectDataviewInstancesResolved,
   selectAllDataviews,
 } from 'features/dataviews/dataviews.slice'
+import { TimebarVisualisations } from 'types'
+import { selectTimebarSelectedEnvId } from 'features/app/app.selectors'
 
 const defaultBasemapDataview = {
   id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
@@ -96,12 +99,12 @@ export const selectDetectionsDataviews = createSelector(
 
 export const selectActiveActivityDataviews = createSelector(
   [selectActivityDataviews],
-  (dataviews) => dataviews?.filter((d) => d.config?.visible)
+  (dataviews): UrlDataviewInstance[] => dataviews?.filter((d) => d.config?.visible)
 )
 
 export const selectActiveDetectionsDataviews = createSelector(
   [selectDetectionsDataviews],
-  (dataviews) => dataviews?.filter((d) => d.config?.visible)
+  (dataviews): UrlDataviewInstance[] => dataviews?.filter((d) => d.config?.visible)
 )
 
 export const selectActiveHeatmapDataviews = createSelector(
@@ -112,6 +115,26 @@ export const selectActiveHeatmapDataviews = createSelector(
   ]
 )
 
+export const selectActiveHeatmapVesselDatasets = createSelector(
+  [selectActiveHeatmapDataviews, (state: RootState) => selectAllDatasets(state)],
+  (heatmapDataviews = [], datasets = []) => {
+    const vesselDatasetIds = Array.from(
+      new Set(
+        heatmapDataviews.flatMap((dataview) => {
+          const activeDatasets = dataview.config?.datasets
+          return dataview.datasets.flatMap((dataset) => {
+            if (activeDatasets.includes(dataset.id)) {
+              return getRelatedDatasetByType(dataset, DatasetTypes.Vessels)?.id || []
+            }
+            return []
+          })
+        })
+      )
+    )
+    return datasets.filter((dataset) => vesselDatasetIds.includes(dataset.id))
+  }
+)
+
 export const selectEnvironmentalDataviews = createSelector(
   [selectDataviewInstancesByCategory(DataviewCategory.Environment)],
   (dataviews) => dataviews
@@ -119,7 +142,7 @@ export const selectEnvironmentalDataviews = createSelector(
 
 export const selectActiveEnvironmentalDataviews = createSelector(
   [selectDataviewInstancesByCategory(DataviewCategory.Environment)],
-  (dataviews) => dataviews?.filter((d) => d.config?.visible)
+  (dataviews): UrlDataviewInstance[] => dataviews?.filter((d) => d.config?.visible)
 )
 
 export const selectActiveNonTrackEnvironmentalDataviews = createSelector(
@@ -148,6 +171,31 @@ export const selectActiveEventsDataviews = createSelector(
   [selectDataviewInstancesByCategory(DataviewCategory.Events)],
   (dataviews) => dataviews?.filter((d) => d.config?.visible)
 )
+
+export const selectActiveActivityDataviewsByVisualisation = (
+  timebarVisualisation: TimebarVisualisations
+) =>
+  createSelector(
+    [
+      selectActiveActivityDataviews,
+      selectActiveDetectionsDataviews,
+      selectActiveNonTrackEnvironmentalDataviews,
+      selectTimebarSelectedEnvId,
+    ],
+    (activityDataviews, detectionsDataviews, environmentDataviews, timebarSelectedEnvId) => {
+      if (timebarVisualisation === TimebarVisualisations.HeatmapActivity) {
+        return activityDataviews
+      }
+      if (timebarVisualisation === TimebarVisualisations.HeatmapDetections) {
+        return detectionsDataviews
+      }
+      const selectedEnvDataview =
+        timebarSelectedEnvId && environmentDataviews.find((d) => d.id === timebarSelectedEnvId)
+
+      if (selectedEnvDataview) return [selectedEnvDataview]
+      else if (environmentDataviews[0]) return [environmentDataviews[0]]
+    }
+  )
 
 export const selectHasAnalysisLayersVisible = createSelector(
   [selectActivityDataviews, selectDetectionsDataviews, selectEnvironmentalDataviews],

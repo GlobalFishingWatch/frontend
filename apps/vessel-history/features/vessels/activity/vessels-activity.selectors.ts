@@ -310,7 +310,13 @@ export const getEventRegionDescription = (
     switch (regionType) {
       case 'eez':
         return values
-          .map((eezId) => getEEZName(eezs.find((eez) => eez.id.toString() === eezId)))
+          .map((eezId) =>
+            getEEZName(
+              eezs.find((eez) => {
+                return eez.id?.toString() === eezId
+              })
+            )
+          )
           .filter((value) => value.length > 0)
           .join(', ')
       case 'rfmo':

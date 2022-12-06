@@ -86,5 +86,6 @@
       }
     }
   },
-  "tags": []
+  "tags": [],
+  "name": "tools-generators-app-files"
 }

@@ -22,6 +22,7 @@
     "errorTimeComparisonDataviews": "Setidaknya satu lapisan aktivitas harus diaktifkan",
     "errorTimeComparisonFilters": "Beberapa lapisan dengan filter tidak didukung",
     "evolution": "evolusi",
+    "excluding": "Excluding",
     "experimental": "Eksperimen",
     "filteredBy": "filter berdasarkan",
     "noData": "Data tidak tersedia",
@@ -34,7 +35,8 @@
     "periodComparisonRange": "dalam {{duration}} setelah {{compareStart}} dibandingkan dengan acuan dasar dalam {{duration}} setelah {{start}}",
     "timeRangeTooLong": "Laporan hanya diizinkan untuk rentang waktu hingga satu tahun",
     "title": "Analisis",
-    "vesselFlags": "oleh kapal berbendera oleh"
+    "vesselFlags": "oleh kapal berbendera oleh",
+    "vesselFlagsExclude": "by all vessels except the ones flagged by"
   },
   "bigQuery": {
     "aggregateAvg": "Rata-rata",
@@ -125,6 +127,7 @@
     "onScreen": "pada layar",
     "optional": "Opsional",
     "or": "atau",
+    "partnerSites": "Partner sites",
     "presence": "Kehadiran",
     "report": "Laporan",
     "resetHelpHints": "Tampilkan kembali semua pentunjuk bantuan",
@@ -133,6 +136,7 @@
     "seeDefault": "Lihat tampilan default",
     "share": "Bagikan tampilan saat ini",
     "sources": "Sources",
+    "tutorials": "Tutorials",
     "unknown": "Tidak diketahui",
     "unknownVessel": "Kapal tidak dikenal",
     "update": "Memperbarui",
@@ -143,8 +147,10 @@
     "vesselId": "Vessel id",
     "view_layer": "lihat lapisan",
     "viirs": "Deteksi cahaya malam (VIIRS)",
+    "visibleValues": "Visible values",
     "welcomePopupDisable": "Jangan tampilkan lagi",
-    "whatsNew": "Apa yang baru?"
+    "whatsNew": "Apa yang baru?",
+    "whatsNewWithNewVersion": "We've made some changes since you last visited the map. Click to learn more"
   },
   "dataset": {
     "addContext": "Menambah layer referensi",
@@ -224,9 +230,11 @@
     "fullTimeRange": "Full time range",
     "gridded": "Gridded activity",
     "groupActivityBy": "Group activity by vessel property",
+    "groupVesselsBy": "Group vessels by",
     "highResNotAvailable": "Area Anda terlalu besar",
     "monthly": "Month",
     "monthlyNotAvailable": "Rentang waktu Anda lebih pendek dari 1 bulan",
+    "mmsiNotSupported": "The datasets selected don't support grouping by MMSI",
     "spatialResolution": "Resolusi spasial",
     "temporalResolution": "Group time by",
     "timeRange": "Rentang Waktu",
@@ -342,6 +350,10 @@
     "supportBy": "Didukung oleh"
   },
   "layer": {
+    "areas": {
+      "mpa": "MPA",
+      "eez": "EEZ"
+    },
     "activity_fit_bounds": "Center view on activity",
     "add": "Tambahkan layer",
     "color_change": "Ganti warna",
@@ -396,7 +408,7 @@
     "rulers_add": "Tambahkan penggaris",
     "rulers_remove": "Hapus semua penggaris",
     "runningExpensiveVesselQuery": "Running this query will cost around {{cost}} $. Are you sure to run it?",
-    "search": "Area pencarian",
+    "search": "Search ocean and sea areas, MPAs or EEZs",
     "zoom_in": "Perbesar",
     "zoom_out": "Perkecil"
   },
@@ -555,7 +567,7 @@
     "new": "New vessel group",
     "remove": "Remove vessel group",
     "removeVessel": "Remove vessel from group",
-    "timeRangeLimit": "Supported only for time ranges shorter than 1 year",
+    "timeRangeLimit": "Supported only for time ranges shorter than 3 months",
     "tooManyVessels": "Maximum number of vessels is {{count}}",
     "uploadPublic": "Allow other users to see this vessel group when you share a workspace",
     "vesselGroup": "Vessel group",
@@ -589,6 +601,14 @@
     "update": "Update",
     "uploadPublic": "Allow other users to see this workspace",
     "uploadPublicDisabled": "This workspace can't be shared publicly because it contains private datasets",
-    "user": "User workspace"
+    "user": "User workspace",
+    "wizard": {
+      "error": "There was an error creating the workspace",
+      "name": "Give a name to your workspace",
+      "help": "You can move the map and update your workspace later",
+      "exploreArea": "See area",
+      "exploreGlobal": "See global",
+      "title": "Setup a marine manager workspace for any area globally"
+    }
   }
 }
