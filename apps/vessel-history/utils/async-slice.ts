@@ -116,7 +116,6 @@ export const createAsyncSlice = <T, U>({
       if (fetchByIdThunk) {
         builder.addCase(fetchByIdThunk.pending, (state: any, action) => {
           state.status = AsyncReducerStatus.LoadingItem
-          console.log(['pending', action.meta])
           state.currentRequestIds = getRequestIdsOnStart(state.currentRequestIds, action)
           state.statusId = action.meta.arg
         })
@@ -125,7 +124,6 @@ export const createAsyncSlice = <T, U>({
           if (state.currentRequestIds.length === 0) {
             state.status = AsyncReducerStatus.Finished
           }
-          console.log(['finished', action.meta])
           state.statusId = null
           entityAdapter.upsertOne(state, action.payload)
         })
