@@ -32,7 +32,7 @@
     "timeRangeTooLong": "Les rapports ne sont autorisés que pour les intervalles de temps maximal  d'un an. ",
     "title": "Analyse",
     "vesselFlags": "pour les navires battant le pavillon de",
-    "vesselFlagsExclude": "by all vessels except the ones flagged by"
+    "vesselFlagsExclude": "par tous les navires, sauf ceux battant pavillon de"
   },
   "bigQuery": {
     "aggregateAvg": "Moyenne",
