@@ -98,8 +98,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   }
 
   const title = getDatasetNameTranslated(dataset)
-  const showFilters =
-    dataset.fieldsAllowed?.length > 0 || (gfwUser && isHistogramDataviewSupported(dataview))
+  const showFilters = dataset.fieldsAllowed?.length > 0 || isHistogramDataviewSupported(dataview)
 
   const TitleComponent = (
     <Title

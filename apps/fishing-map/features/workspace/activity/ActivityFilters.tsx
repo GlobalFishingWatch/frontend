@@ -297,7 +297,7 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
     })
   }
 
-  const showHistogramFilter = gfwUser && isHistogramDataviewSupported(dataview)
+  const showHistogramFilter = isHistogramDataviewSupported(dataview)
   const showSchemaFilters =
     showHistogramFilter || showSourceFilter || schemaFilters.some(showSchemaFilter)
 
