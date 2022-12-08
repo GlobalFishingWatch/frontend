@@ -25,6 +25,7 @@ import { PUBLIC_SUFIX, FULL_SUFIX, PRIVATE_SUFIX } from 'data/config'
 import { getDatasetNameTranslated } from 'features/i18n/utils'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { FileType } from 'features/common/FileDropzone'
+import { getLayerDatasetRange } from 'features/workspace/environmental/HistogramRangeFilter'
 import styles from '../vessel-groups/VesselGroupModal.module.css'
 
 export type SupportedDatasetSchema = SupportedActivityDatasetSchema | SupportedEnvDatasetSchema
@@ -441,8 +442,9 @@ export const getSchemaOptionsSelectedInDataview = (
     (dataview.config?.minVisibleValue || dataview.config?.maxVisibleValue)
   ) {
     const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
-    const min = dataview.config?.minVisibleValue || dataset?.configuration?.min
-    const max = dataview.config?.maxVisibleValue || dataset?.configuration?.max
+    const layerRange = getLayerDatasetRange(dataset)
+    const min = dataview.config?.minVisibleValue || layerRange?.min
+    const max = dataview.config?.maxVisibleValue || layerRange?.max
     return [
       {
         id: min.toString(),
