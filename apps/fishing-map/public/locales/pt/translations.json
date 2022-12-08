@@ -522,7 +522,7 @@
     "shiptype": "Tipos de embarcação",
     "source": "Fonte",
     "source_short": "Fonte",
-    "ssvid": "ssvid",
+    "ssvid": "Ssvid",
     "target_species": "Espécie alvo",
     "targetSpecies": "Espécie alvo",
     "trackLogin": "Uma das fontes selecionadas requer que você esteja <1>login</1> para ver o rastreamento e eventos da embarcação",
