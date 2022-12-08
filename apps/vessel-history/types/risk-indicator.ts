@@ -64,3 +64,12 @@ export type Indicator = {
   vesselIdentity: VesselIdentityIndicators
   gaps: GapsIndicators
 }
+
+export enum IndicatorType {
+  coverage = 'coverage',
+  encounter = 'encounter',
+  fishing = 'fishing',
+  gap = 'gap',
+  portVisit = 'port-visit',
+  vesselIdentity = 'vessel-identity',
+}

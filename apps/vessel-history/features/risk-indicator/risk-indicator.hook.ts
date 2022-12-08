@@ -6,7 +6,7 @@ import { selectResourcesLoading } from 'features/resources/resources.slice'
 import { selectEventsInsideMPAByType } from 'features/risk/risk.selectors'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { AISCoverage, FlagOnMOU } from 'types/risk-indicator'
+import { AISCoverage, FlagOnMOU, IndicatorType } from 'types/risk-indicator'
 import { selectMergedVesselId } from 'routes/routes.selectors'
 import { selectVesselById } from 'features/vessels/vessels.slice'
 import { ValueItem, VesselWithHistory } from 'types'
@@ -76,7 +76,14 @@ export function useRiskIndicator(showIdentityIndicators: boolean): UseRiskIndica
   const mergedVesselId = useSelector(selectMergedVesselId)
   const vessel = useSelector(selectVesselById(mergedVesselId))
   const indicatorsKeys = useMemo(
-    () => ['encounter', 'fishing', 'port-visit', 'gap', 'vessel-identity', 'coverage'],
+    () => [
+      IndicatorType.encounter,
+      IndicatorType.fishing,
+      IndicatorType.portVisit,
+      IndicatorType.gap,
+      IndicatorType.vesselIdentity,
+      IndicatorType.coverage,
+    ],
     []
   )
 

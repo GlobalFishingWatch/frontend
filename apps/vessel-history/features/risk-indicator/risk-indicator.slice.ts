@@ -42,7 +42,7 @@ type ThunkParameters = {
   indicator: string
 }
 const indicatorsIdGenerator = (args: ThunkParameters) =>
-  uuidv5(`${args.indicator}.${getMergedVesselsUniqueId(args.idData)}`, uuidv5.DNS)
+  args.indicator + '-' + uuidv5(`${getMergedVesselsUniqueId(args.idData)}`, uuidv5.DNS)
 
 const mapIndicatorToResponseKey = {
   coverage: 'coverage',
