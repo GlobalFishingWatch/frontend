@@ -1,7 +1,7 @@
 {
   "analysis": {
     "activityChange": "Évolution activité",
-    "beforeAfter": "Avant/après",
+    "beforeAfter": "avant/après",
     "beforeAfterDate": "date",
     "beforeAfterRange": "entre {{duration}} avant et après {{compareStart}}",
     "change": "Évolution",
@@ -61,7 +61,7 @@
     "apparentFishing": "Effort de pêche apparent",
     "average": "moyenne",
     "averageAbbreviated": "moy.",
-    "back": "Précédent",
+    "back": "précédent",
     "cancel": "Annuler",
     "category": "Catégorie",
     "comingSoon": "à venir!",
