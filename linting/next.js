@@ -3,6 +3,7 @@ module.exports = {
   ...lint,
   extends: [...lint.extends, 'plugin:@next/next/recommended'],
   rules: {
+    ...lint.rules,
     'import/no-unresolved': 0,
     '@next/next/no-html-link-for-pages': 0,
   },
