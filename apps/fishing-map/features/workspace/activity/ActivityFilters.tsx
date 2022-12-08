@@ -26,7 +26,6 @@ import ActivitySchemaFilter, {
 import HistogramRangeFilter from 'features/workspace/environmental/HistogramRangeFilter'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { selectVessselGroupsAllowed } from 'features/vessel-groups/vessel-groups.selectors'
-import { isGFWUser } from 'features/user/user.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   setCurrentDataviewId,
@@ -84,7 +83,6 @@ export const isHistogramDataviewSupported = (dataview: UrlDataviewInstance) => {
 
 function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): React.ReactElement {
   const { t } = useTranslation()
-  const gfwUser = useSelector(isGFWUser)
 
   const [newDataviewInstanceConfig, setNewDataviewInstanceConfig] = useState<
     UrlDataviewInstance | undefined

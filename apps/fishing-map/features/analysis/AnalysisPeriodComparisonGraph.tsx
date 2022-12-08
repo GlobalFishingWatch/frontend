@@ -10,7 +10,7 @@ import {
   Area,
   ReferenceLine,
 } from 'recharts'
-import { DateTime, Interval as TimeInterval } from 'luxon'
+import { Interval as TimeInterval } from 'luxon'
 import { useSelector } from 'react-redux'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import i18n, { t } from 'features/i18n/i18n'

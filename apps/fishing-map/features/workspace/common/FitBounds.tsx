@@ -77,7 +77,7 @@ const FitBounds = ({ className, trackResource, hasError, infoResource }: FitBoun
         }
       }
     }
-  }, [fitBounds, trackResource, start, end, t, setTimerange])
+  }, [trackResource?.data, start, end, fitBounds, infoResource, t, setTimerange])
 
   return (
     <IconButton
