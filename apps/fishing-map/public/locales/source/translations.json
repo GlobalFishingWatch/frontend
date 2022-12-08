@@ -177,6 +177,7 @@
     "notUploadedYet": "No context layers uploaded yet",
     "notUploadedYetEnvironment": "No environment layers uploaded yet",
     "onlyFileFormatAllowed": "(Only {{formats}} files are allowed)",
+    "outOfTimerange": "Dataset bounds ({{bounds}}) are out of current timerange selection",
     "pointsNameField": "Field to name each point",
     "remove": "Remove dataset",
     "requiredFields": "Required fields {{fields}}",
