@@ -24,6 +24,7 @@ export const SHARED_LABELS_PATH =
 
 export const PACKAGE_NAMESPACES = ['flags', 'datasets', 'timebar']
 
+// eslint-disable-next-line import/no-named-as-default-member
 i18n
   // load translation using http -> see /public/locales
   // learn more: https://github.com/i18next/i18next-http-backend
@@ -70,6 +71,7 @@ i18n.on('languageChanged', (lng) => {
   }
 })
 
+// eslint-disable-next-line import/no-named-as-default-member
 const t = i18n.t.bind(i18n)
 
 export { t }

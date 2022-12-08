@@ -5,7 +5,6 @@ import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import { aggregateFeatures, ChunkFeature } from '@globalfishingwatch/features-aggregate'
-import { EnviromentalDatasetConfiguration } from '@globalfishingwatch/api-types'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectActiveNonTrackEnvironmentalDataviews } from 'features/dataviews/dataviews.selectors'
 import {
