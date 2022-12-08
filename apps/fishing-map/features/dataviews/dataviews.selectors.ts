@@ -152,7 +152,9 @@ export const selectActiveNonTrackEnvironmentalDataviews = createSelector(
   }
 )
 
-export const selectActiveTemporalgridDataviews = createSelector(
+export const selectActiveTemporalgridDataviews: (
+  state: any
+) => UrlDataviewInstance<GeneratorType>[] = createSelector(
   [
     selectActiveActivityDataviews,
     selectActiveDetectionsDataviews,
@@ -163,10 +165,12 @@ export const selectActiveTemporalgridDataviews = createSelector(
   }
 )
 
-export const selectEventsDataviews = createSelector(
-  [selectDataviewInstancesByCategory(DataviewCategory.Events)],
-  (dataviews) => dataviews
-)
+export const selectEventsDataviews: (state: any) => UrlDataviewInstance<GeneratorType>[] =
+  createSelector(
+    [selectDataviewInstancesByCategory(DataviewCategory.Events)],
+    (dataviews) => dataviews
+  )
+
 export const selectActiveEventsDataviews = createSelector(
   [selectDataviewInstancesByCategory(DataviewCategory.Events)],
   (dataviews) => dataviews?.filter((d) => d.config?.visible)
