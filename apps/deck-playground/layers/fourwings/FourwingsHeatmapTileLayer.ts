@@ -10,9 +10,8 @@ import {
 } from 'layers/fourwings/fourwings.utils'
 import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
 import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
-import { GeoJsonLayer } from '@deck.gl/layers/typed'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS, Interval } from '@globalfishingwatch/layer-composer'
-import { FourwingsColorRamp, HEATMAP_ID } from './FourwingsLayer'
+import { HEATMAP_ID } from './FourwingsLayer'
 import { Chunk, getChunksByInterval, getInterval } from './fourwings.config'
 
 export type FourwingsLayerResolution = 'default' | 'high'
@@ -21,10 +20,7 @@ export type FourwingsHeatmapTileLayerProps<DataT = any> = {
   resolution?: FourwingsLayerResolution
   minFrame: number
   maxFrame: number
-  colorRange: FourwingsColorRamp['colorRange']
-  colorDomain: FourwingsColorRamp['colorDomain']
   onViewportLoad?: (tiles: Tile2DHeader[]) => void
-  onColorRampUpdate?: (colorRamp: FourwingsColorRamp) => void
 }
 
 export class FourwingsHeatmapTileLayer extends CompositeLayer<
@@ -34,10 +30,14 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 
   initializeState(context: LayerContext): void {
     super.initializeState(context)
-    this.state = { cacheStart: undefined, cacheEnd: undefined }
+    this.state = {
+      cacheStart: undefined,
+      cacheEnd: undefined,
+      colorScale: { colorRamp: [], colorDomain: [] },
+    }
   }
 
-  getColorRamp = () => {
+  getColorScale = () => {
     const { maxFrame, minFrame } = this.props
     const viewportData = this.getData()
     if (viewportData?.length > 0) {
@@ -58,20 +58,19 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         const opacity = ((i + 1) / COLOR_RAMP_DEFAULT_NUM_STEPS) * 255
         return [255, 0, 255, opacity] as Color
       })
-      // this.colorRampUpdated = true
       return { colorDomain: steps, colorRange }
     }
   }
 
   getColorDomain = () => {
-    return this.props.colorDomain
+    return this.state.colorScale.colorDomain
   }
 
   _onViewportLoad = (tiles) => {
-    if (this.props.onColorRampUpdate) {
-      const colorRamp = this.getColorRamp()
-      this.props.onColorRampUpdate(colorRamp)
-    }
+    const colorScale = this.getColorScale()
+    requestAnimationFrame(() => {
+      this.setState({ colorScale })
+    })
     if (this.props.onViewportLoad) {
       return this.props.onViewportLoad(tiles)
     }
@@ -119,6 +118,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   renderLayers(): Layer<{}> | LayersList {
     const TileLayerClass = this.getSubLayerClass(HEATMAP_ID, TileLayer)
     const { minFrame, maxFrame } = this.props
+    const { colorDomain, colorRange } = this.state.colorScale
     const chunks = this._getChunks(minFrame, maxFrame)
     const cacheKey = this._getTileDataCacheKey(minFrame, maxFrame, chunks)
     if (cacheKey === 'no-cache') {
@@ -142,6 +142,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         renderSubLayers: (props: any) => {
           return new FourwingsHeatmapLayer({
             ...props,
+            colorDomain,
+            colorRange,
             cols: props.data?.cols,
             rows: props.data?.rows,
             data: props.data?.cells,

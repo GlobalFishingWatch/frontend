@@ -116,15 +116,17 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         lastPositions.push(...vesselPositions.slice(-1))
       })
     const colorScale = this.getColorRamp(allPositions)
-    this.setState({
-      allPositions,
-      lastPositions,
-      colorScale,
+    requestAnimationFrame(() => {
+      this.setState({
+        allPositions,
+        lastPositions,
+        colorScale,
+      })
     })
   }
 
   renderLayers(): Layer<{}> | LayersList {
-    const { allPositions, lastPositions, colorScale } = this.state
+    const { allPositions, lastPositions } = this.state
     return [
       new MVTLayer(this.props, {
         id: 'position-tiles',
@@ -147,11 +149,8 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         getLineColor: [0, 0, 0, 25],
         radiusMinPixels: 3,
         lineWidthMinPixels: 1,
-        updateTriggers: {
-          getFillColor: [colorScale.colorDomain, allPositions],
-        },
         pickable: true,
-        getPickingInfo: this.getPickingInfo,
+        // getPickingInfo: this.getPickingInfo,
       }),
       new IconLayer(this.props, {
         id: 'lastPositions',
@@ -164,9 +163,6 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         getAngle: (d) => d.properties.bearing,
         getColor: [255, 255, 255, 255],
         getSize: 21,
-        updateTriggers: {
-          getFillColor: [colorScale.colorDomain.join('-'), lastPositions],
-        },
       }),
       new IconLayer(this.props, {
         id: 'lastPositionsOver',
@@ -179,11 +175,8 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         getAngle: (d) => d.properties.bearing,
         getColor: (d) => this.getFillColor(d),
         getSize: 19,
-        updateTriggers: {
-          getColor: [colorScale.colorDomain, lastPositions],
-        },
         pickable: true,
-        getPickingInfo: this.getPickingInfo,
+        // getPickingInfo: this.getPickingInfo,
       }),
     ]
   }
@@ -201,11 +194,11 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   getColorDomain() {
-    return this.state.colorScale.colorDomain
+    return this.state.colorScale?.colorDomain
   }
 
   getColorRange() {
-    return this.state.colorScale.colorRange
+    return this.state.colorScale?.colorRange
   }
 
   getTimeseries() {
