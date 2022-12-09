@@ -135,6 +135,9 @@ export const getDatasetsInDataviews = (
   dataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[],
   guestUser = false
 ) => {
+  if (!dataviews?.length) {
+    return []
+  }
   return uniq(
     dataviews?.flatMap((dataviews) => {
       if (!dataviews.datasetsConfig) return []
