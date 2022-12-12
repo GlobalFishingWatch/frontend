@@ -11,11 +11,13 @@ import { MVTLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
 import { IconLayer, ScatterplotLayer } from '@deck.gl/layers/typed'
 import { MVTWorkerLoader } from '@loaders.gl/mvt'
 import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
-import { ACTIVITY_SWITCH_ZOOM_LEVEL, getDateRangeParam } from 'layers/fourwings/fourwings.utils'
+import {
+  ACTIVITY_SWITCH_ZOOM_LEVEL,
+  aggregatePositionsTimeseries,
+  getDateRangeParam,
+} from 'layers/fourwings/fourwings.utils'
 import { groupBy, orderBy } from 'lodash'
 import { Feature } from 'geojson'
-import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
-import { BinaryFeatures } from '@loaders.gl/schema'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 import { FourwingsColorRamp } from './FourwingsLayer'
 
@@ -29,6 +31,7 @@ export type FourwingsPositionsTileLayerProps<DataT = any> = {
   onColorRampUpdate: (colorRamp: FourwingsColorRamp) => void
   onVesselHighlight?: (vesselId: string) => void
   onVesselClick?: (vesselId: string) => void
+  onViewportLoad?: (tiles) => void
 }
 
 const ICON_MAPPING = {
@@ -153,6 +156,9 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         lastPositions,
         colorScale,
       })
+      if (this.props.onViewportLoad) {
+        return this.props.onViewportLoad(tiles)
+      }
     })
   }
 
@@ -241,6 +247,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   getTimeseries() {
-    return []
+    const positions = this.getPositionsData()
+    return aggregatePositionsTimeseries(positions)
   }
 }

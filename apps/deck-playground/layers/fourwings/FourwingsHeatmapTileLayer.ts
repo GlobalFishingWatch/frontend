@@ -15,7 +15,7 @@ import { HEATMAP_ID } from './FourwingsLayer'
 import { Chunk, getChunksByInterval, getInterval } from './fourwings.config'
 
 export type FourwingsLayerResolution = 'default' | 'high'
-export type FourwingsHeatmapTileLayerProps<DataT = any> = {
+export type FourwingsHeatmapTileLayerProps = {
   interval: Interval
   resolution?: FourwingsLayerResolution
   minFrame: number
@@ -121,9 +121,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     const { colorDomain, colorRange } = this.state.colorScale
     const chunks = this._getChunks(minFrame, maxFrame)
     const cacheKey = this._getTileDataCacheKey(minFrame, maxFrame, chunks)
-    if (cacheKey === 'no-cache') {
-      console.log(chunks)
-    }
 
     return new TileLayerClass(
       this.props,
