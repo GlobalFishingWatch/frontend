@@ -1,10 +1,21 @@
-import { Color, CompositeLayer, Layer, LayerContext, LayersList } from '@deck.gl/core/typed'
+import {
+  Color,
+  CompositeLayer,
+  GetPickingInfoParams,
+  Layer,
+  LayerContext,
+  LayersList,
+  PickingInfo,
+} from '@deck.gl/core/typed'
 import { MVTLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
 import { IconLayer, ScatterplotLayer } from '@deck.gl/layers/typed'
-import { MVTLoader } from '@loaders.gl/mvt'
+import { MVTWorkerLoader } from '@loaders.gl/mvt'
 import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
 import { ACTIVITY_SWITCH_ZOOM_LEVEL, getDateRangeParam } from 'layers/fourwings/fourwings.utils'
 import { groupBy, orderBy } from 'lodash'
+import { Feature } from 'geojson'
+import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
+import { BinaryFeatures } from '@loaders.gl/schema'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 import { FourwingsColorRamp } from './FourwingsLayer'
 
@@ -39,11 +50,11 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       },
       allPositions: [],
       lastPositions: [],
-      highlightVessels: [],
+      highlightedVesselId: undefined,
     }
   }
 
-  getColorRamp(positions) {
+  getColorRamp(positions: Feature[]) {
     if (positions?.length > 0) {
       const hours = positions.map((d) => d?.properties?.value).filter(Number)
       const dataSampled = hours.length > 1000 ? sample(hours, 1000, Math.random) : hours
@@ -66,8 +77,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     }
   }
 
-  getFillColor(d) {
-    const { highlightedVesselId } = this.props
+  getFillColor(d: Feature): Color {
     const { colorDomain, colorRange } = this.state.colorScale
     const colorIndex = colorDomain.findIndex((domain, i) => {
       if (colorDomain[i + 1]) {
@@ -76,15 +86,34 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       return i
     })
     const color = colorIndex >= 0 ? colorRange[colorIndex] : [0, 0, 0, 0]
-    if (!highlightedVesselId) {
-      return color
-    } else if (d.properties.vesselId !== highlightedVesselId) {
-      return [color[0], color[1], color[2], 0]
-    }
     return color
   }
 
-  getPickingInfo({ info, mode }) {
+  getHighlightColor(d: Feature): Color {
+    const { highlightedVesselId } = this.state
+    if (highlightedVesselId) {
+      if (d.properties.vesselId === highlightedVesselId) return [255, 255, 255, 255]
+      else return [0, 0, 0, 0]
+    }
+    return [0, 0, 0, 25]
+  }
+
+  getLineColor(d: Feature): Color {
+    const { highlightedVesselId } = this.state
+    return highlightedVesselId && d.properties.vesselId === highlightedVesselId
+      ? [255, 255, 255, 255]
+      : [0, 0, 0, 0]
+  }
+
+  getRadius(d: Feature): number {
+    const { highlightedVesselId } = this.state
+    return highlightedVesselId && d.properties.vesselId === highlightedVesselId ? 5 : 3
+  }
+
+  getPickingInfo({ info, mode }: GetPickingInfoParams): PickingInfo {
+    this.setState({
+      highlightedVesselId: info.object?.properties?.vesselId,
+    })
     if (this.props.onVesselHighlight) {
       const vesselId = info.object?.properties?.vesselId
       if (vesselId) {
@@ -103,19 +132,21 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   onViewportLoad = (tiles) => {
-    const allPositions = orderBy(
+    const positions = orderBy(
       tiles.flatMap((tile) => tile.dataInWGS84),
       'properties.htime'
     ).filter(Boolean)
-    const positionsByVessel = groupBy(allPositions, 'properties.vesselId')
+    const positionsByVessel = groupBy(positions, 'properties.vesselId')
+    const allPositions = []
     const lastPositions = []
     Object.keys(positionsByVessel)
       .filter((p) => p !== 'undefined')
       .forEach((vesselId) => {
         const vesselPositions = positionsByVessel[vesselId]
+        allPositions.push(...vesselPositions.slice(0, -1))
         lastPositions.push(...vesselPositions.slice(-1))
       })
-    const colorScale = this.getColorRamp(allPositions)
+    const colorScale = this.getColorRamp(positions)
     requestAnimationFrame(() => {
       this.setState({
         allPositions,
@@ -126,17 +157,19 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   renderLayers(): Layer<{}> | LayersList {
+    const { minFrame, maxFrame } = this.props
     const { allPositions, lastPositions } = this.state
+    const highlightedVesselId = this.props.highlightedVesselId || this.state.highlightedVesselId
     return [
       new MVTLayer(this.props, {
         id: 'position-tiles',
         data: `https://gateway.api.dev.globalfishingwatch.org/v2/4wings/tile/position/{z}/{x}/{y}?datasets[0]=public-global-fishing-effort%3Av20201001&${getDateRangeParam(
-          this.props.minFrame,
-          this.props.maxFrame
+          minFrame,
+          maxFrame
         )}`,
         minZoom: ACTIVITY_SWITCH_ZOOM_LEVEL,
         maxZoom: ACTIVITY_SWITCH_ZOOM_LEVEL,
-        loaders: [MVTLoader],
+        loaders: [MVTWorkerLoader],
         onViewportLoad: this.onViewportLoad,
       }),
       new ScatterplotLayer(this.props, {
@@ -146,23 +179,30 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         filled: true,
         stroked: true,
         getFillColor: (d) => this.getFillColor(d),
-        getLineColor: [0, 0, 0, 25],
-        radiusMinPixels: 3,
+        getRadius: (d) => this.getRadius(d),
+        getLineColor: (d) => this.getLineColor(d),
+        radiusUnits: 'pixels',
         lineWidthMinPixels: 1,
         pickable: true,
-        // getPickingInfo: this.getPickingInfo,
+        getPickingInfo: this.getPickingInfo,
+        updateTriggers: {
+          getRadius: [highlightedVesselId],
+          getLineColor: [highlightedVesselId],
+        },
       }),
       new IconLayer(this.props, {
         id: 'lastPositions',
         data: lastPositions,
         iconAtlas: '/vessel-sprite.png',
         iconMapping: ICON_MAPPING,
-        getIcon: () => 'vessel',
-        sizeScale: 1,
+        getIcon: () => 'vesselHighlight',
         getPosition: (d) => d.geometry.coordinates,
         getAngle: (d) => d.properties.bearing,
-        getColor: [255, 255, 255, 255],
+        getColor: (d) => this.getHighlightColor(d),
         getSize: 21,
+        updateTriggers: {
+          getColor: [highlightedVesselId],
+        },
       }),
       new IconLayer(this.props, {
         id: 'lastPositionsOver',
@@ -170,13 +210,12 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         iconAtlas: '/vessel-sprite.png',
         iconMapping: ICON_MAPPING,
         getIcon: () => 'vessel',
-        sizeScale: 1,
+        getSize: 19,
         getPosition: (d) => d.geometry.coordinates,
         getAngle: (d) => d.properties.bearing,
         getColor: (d) => this.getFillColor(d),
-        getSize: 19,
         pickable: true,
-        // getPickingInfo: this.getPickingInfo,
+        getPickingInfo: this.getPickingInfo,
       }),
     ]
   }
