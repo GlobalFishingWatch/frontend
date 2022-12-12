@@ -18,7 +18,7 @@
         "parallel": false
       }
     },
-    "compile": {
+    "build": {
       "executor": "@nrwl/next:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
@@ -40,21 +40,21 @@
     "serve": {
       "executor": "@nrwl/next:server",
       "options": {
-        "buildTarget": "api-portal:compile",
+        "buildTarget": "api-portal:build",
         "dev": true,
         "port": 3003
       },
       "configurations": {
         "production": {
-          "buildTarget": "api-portal:compile:production",
+          "buildTarget": "api-portal:build:production",
           "dev": false
         }
       }
     },
-    "build": {
+    "export": {
       "executor": "@nrwl/next:export",
       "options": {
-        "buildTarget": "api-portal:compile:production"
+        "buildTarget": "api-portal:build:production"
       }
     },
     "lint": {

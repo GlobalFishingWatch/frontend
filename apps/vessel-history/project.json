@@ -18,7 +18,7 @@
         "parallel": false
       }
     },
-    "compile": {
+    "build": {
       "executor": "@nrwl/next:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
@@ -51,21 +51,21 @@
     "serve": {
       "executor": "@nrwl/next:server",
       "options": {
-        "buildTarget": "vessel-history:compile",
+        "buildTarget": "vessel-history:build",
         "dev": true,
         "port": 3000
       },
       "configurations": {
         "production": {
-          "buildTarget": "vessel-history:compile:production",
+          "buildTarget": "vessel-history:build:production",
           "dev": false
         }
       }
     },
-    "build": {
+    "export": {
       "executor": "@nrwl/next:export",
       "options": {
-        "buildTarget": "vessel-history:compile:production"
+        "buildTarget": "vessel-history:build:production"
       }
     },
     "test": {

@@ -11,7 +11,7 @@
         "parallel": false
       }
     },
-    "compile": {
+    "build": {
       "executor": "@nrwl/next:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
@@ -44,21 +44,21 @@
     "serve": {
       "executor": "@nrwl/next:server",
       "options": {
-        "buildTarget": "port-labeler:compile",
+        "buildTarget": "port-labeler:build",
         "dev": true,
         "port": 3003
       },
       "configurations": {
         "production": {
-          "buildTarget": "port-labeler:compile:production",
+          "buildTarget": "port-labeler:build:production",
           "dev": false
         }
       }
     },
-    "build": {
+    "export": {
       "executor": "@nrwl/next:export",
       "options": {
-        "buildTarget": "port-labeler:compile:production"
+        "buildTarget": "port-labeler:build:production"
       }
     },
     "lint": {
