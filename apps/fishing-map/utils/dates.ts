@@ -1,9 +1,14 @@
 import { DateTime, DurationUnits } from 'luxon'
 
-export const getUTCDateTime = (d: string | number) =>
-  typeof d === 'string'
+export const getUTCDateTime = (d: string | number) => {
+  if (!d) {
+    console.warn('Not a valid date', d)
+    return
+  }
+  return typeof d === 'string'
     ? DateTime.fromISO(d, { zone: 'utc' })
     : DateTime.fromMillis(d, { zone: 'utc' })
+}
 
 export const getTimeRangeDuration = (
   timeRange: { start: string; end: string },
