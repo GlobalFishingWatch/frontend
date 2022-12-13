@@ -29,14 +29,20 @@ const OutOfTimerangeDisclaimer = ({ dataview }: OutOfTimerangeDisclaimerProps) =
   }
 
   const { startDate, endDate } = dataviewDatasets[0]
+  if (!startDate || !endDate) {
+    return null
+  }
+
   const datasetInTimerange =
     (start >= startDate && start <= endDate) || (end >= startDate && end <= endDate)
 
   return datasetInTimerange ? null : (
     <span className={cx(styles.dataWarning, styles.error)}>
-      {t('dataset.outOfTimerange', {
-        bounds: [formatI18nDate(startDate), formatI18nDate(endDate)].join(' - '),
-        defaultValue: 'Dataset bounds ({{bounds}}) are out of current timerange selection',
+      {t('dataset.noDataForTimerange', 'No data for current timerange')}.
+      <br />
+      {t('dataset.extent', {
+        extent: [formatI18nDate(startDate), formatI18nDate(endDate)].join(' - '),
+        defaultValue: 'Dataset extent: {{ extent }}',
       })}
     </span>
   )
