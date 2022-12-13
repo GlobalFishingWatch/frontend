@@ -160,6 +160,7 @@
     "edit": "Ubah dataset",
     "emptyFilters": "Tidak tersedia filter",
     "emptyState": "Dataset Anda akan muncul di sini",
+    "extent": "Dataset extent: {{extent}}",
     "featuresNameField": "Bidang untuk memberi nama setiap area",
     "file": "Berkas",
     "formats": {
@@ -174,6 +175,7 @@
     "login": "Ini adalah dataset pribadi, masuk untuk melihatnya",
     "longitudeNameField": "Bidang bujur",
     "new": "Dataset baru",
+    "noDataForTimerange": "There is no data for the current timerange",
     "notUploadedYet": "Belum ada layer referensi yang diunggah",
     "notUploadedYetEnvironment": "Belum ada lapisan lingkungan yang diunggah",
     "onlyFileFormatAllowed": "(Hanya {{formats}} file yang diizinkan)",
