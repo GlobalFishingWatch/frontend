@@ -35,6 +35,7 @@ import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
 import InfoModal from '../common/InfoModal'
+import OutOfTimerangeDisclaimer from '../common/OutOfBoundsDisclaimer'
 import Filters from './ActivityFilters'
 import { isActivityDataview, isDetectionsDataview } from './activity.utils'
 import activityStyles from './ActivitySection.module.css'
@@ -307,6 +308,7 @@ function ActivityLayerPanel({
               )}
               <div className={styles.filters}>
                 <div className={styles.filters}>
+                  <OutOfTimerangeDisclaimer dataview={dataview} />
                   <DatasetFilterSource dataview={dataview} />
                   <DatasetFlagField dataview={dataview} />
                   {datasetFields.map(({ field, label }) => (

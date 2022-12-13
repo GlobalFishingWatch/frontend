@@ -160,6 +160,7 @@
     "edit": "Edit dataset",
     "emptyFilters": "No filters available",
     "emptyState": "Your datasets will appear here",
+    "extent": "Dataset extent: {{extent}}",
     "featuresNameField": "Field to name each area",
     "file": "File",
     "formats": {
@@ -174,6 +175,7 @@
     "login": "This is a private dataset, login to see it",
     "longitudeNameField": "Longitude field",
     "new": "New dataset",
+    "noDataForTimerange": "There is no data for the current timerange",
     "notUploadedYet": "No context layers uploaded yet",
     "notUploadedYetEnvironment": "No environment layers uploaded yet",
     "onlyFileFormatAllowed": "(Only {{formats}} files are allowed)",
