@@ -1511,7 +1511,7 @@
     }
   },
   "public-eez-areas": {
-    "name": "EEZ",
+    "name": "EEZs",
     "description": "Exclusive economic zones (EEZs) extend up to 200 nautical miles from a country's coast. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org.",
     "schema": {}
   },
@@ -1521,7 +1521,7 @@
     "schema": {}
   },
   "public-eez-land": {
-    "name": "EEZ (marineregions.org)",
+    "name": "EEZs",
     "description": "Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org",
     "schema": {}
   },
