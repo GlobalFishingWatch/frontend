@@ -19,6 +19,7 @@ import {
   PROTECTED_SEAS_DATAVIEW_ID,
   MPA_DATAVIEW_INSTANCE_ID,
   EEZ_DATAVIEW_INSTANCE,
+  BASEMAP_LABELS_DATAVIEW_ID,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
@@ -107,6 +108,13 @@ const workspace: Workspace<WorkspaceState> = {
       },
     },
     {
+      id: 'context-layer-graticules',
+      config: {
+        visible: true,
+      },
+      dataviewId: GRATICULES_DATAVIEW_ID,
+    },
+    {
       id: EEZ_DATAVIEW_INSTANCE,
       config: {
         color: '#069688',
@@ -138,13 +146,6 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: RFMO_DATAVIEW_ID,
     },
     {
-      id: 'context-layer-graticules',
-      config: {
-        visible: false,
-      },
-      dataviewId: GRATICULES_DATAVIEW_ID,
-    },
-    {
       id: 'context-layer-high-seas',
       config: {
         visible: false,
@@ -157,6 +158,13 @@ const workspace: Workspace<WorkspaceState> = {
         visible: false,
       },
       dataviewId: PROTECTED_SEAS_DATAVIEW_ID,
+    },
+    {
+      id: 'basemap-labels',
+      config: {
+        visible: false,
+      },
+      dataviewId: BASEMAP_LABELS_DATAVIEW_ID,
     },
   ],
 }

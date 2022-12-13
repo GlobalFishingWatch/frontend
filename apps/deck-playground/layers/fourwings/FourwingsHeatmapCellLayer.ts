@@ -7,37 +7,37 @@ import {
   getCellCoordinates,
 } from 'loaders/fourwings/fourwingsTileParser'
 
-const defaultProps: DefaultProps<FourwingsTileCellLayerProps> = {
+const defaultProps: DefaultProps<FourwingsHeatmapCellLayerProps> = {
   getIndex: { type: 'accessor', value: (d) => d.index },
 }
 
-/** All properties supported by FourwingsTileCellLayer. */
-export type FourwingsTileCellLayerProps<DataT = any> = _FourwingsTileCellLayerProps<DataT> &
+/** All properties supported by FourwingsHeatmapCellLayer. */
+export type FourwingsHeatmapCellLayerProps<DataT = any> = _FourwingsHeatmapCellLayerProps<DataT> &
   _GeoCellLayerProps<DataT>
 
-/** Properties added by FourwingsTileCellLayer. */
-type _FourwingsTileCellLayerProps<DataT> = {
+/** Properties added by FourwingsHeatmapCellLayer. */
+type _FourwingsHeatmapCellLayerProps<DataT> = {
   /**
    * Called for each data object to retrieve the quadkey string identifier.
    *
    * By default, it reads `token` property of data object.
    */
   getIndex?: AccessorFunction<DataT, string>
-  numCols: number
-  numRows: number
+  cols: number
+  rows: number
   tile: Tile2DHeader
 }
 
 /** Render filled and/or stroked polygons based on the fourwings indexing system. */
-export default class FourwingsTileCellLayer<DataT = any, ExtraProps = {}> extends _GeoCellLayer<
+export default class FourwingsHeatmapCellLayer<DataT = any, ExtraProps = {}> extends _GeoCellLayer<
   DataT,
-  Required<_FourwingsTileCellLayerProps<DataT>> & ExtraProps
+  Required<_FourwingsHeatmapCellLayerProps<DataT>> & ExtraProps
 > {
-  static layerName = 'FourwingsTileCellLayer'
+  static layerName = 'FourwingsHeatmapCellLayer'
   static defaultProps = defaultProps
 
   indexToBounds(): Partial<_GeoCellLayer['props']> | null {
-    const { data, getIndex, tile, numCols, numRows } = this.props
+    const { data, getIndex, tile, cols, rows } = this.props
     return {
       data,
       _normalize: false,
@@ -48,8 +48,8 @@ export default class FourwingsTileCellLayer<DataT = any, ExtraProps = {}> extend
         const params: GetCellCoordinatesParams = {
           id: uniqueId,
           cellIndex,
-          numCols,
-          numRows,
+          cols,
+          rows,
           tileBBox: [
             (tile.bbox as GeoBoundingBox).west,
             (tile.bbox as GeoBoundingBox).south,

@@ -1,4 +1,4 @@
-import React from 'react'
+import { Children, isValidElement, cloneElement } from 'react'
 import { Placement } from 'tippy.js'
 import { useSelector } from 'react-redux'
 import { IconButtonProps, ButtonProps } from '@globalfishingwatch/ui-components'
@@ -22,12 +22,12 @@ const LoginButtonWrapper = ({
     return children
   }
 
-  const childrenWithoutAction = React.Children.map(
+  const childrenWithoutAction = Children.map(
     children,
     (child: React.ReactElement<IconButtonProps | ButtonProps>) => {
       // Checking isValidElement is the safe way and avoids a typescript error too.
-      if (React.isValidElement(child)) {
-        return React.cloneElement(child, {
+      if (isValidElement(child)) {
+        return cloneElement(child, {
           onClick: undefined,
           tooltip,
           tooltipPlacement,

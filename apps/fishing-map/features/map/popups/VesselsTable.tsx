@@ -27,7 +27,7 @@ import { PRESENCE_DATASET_ID, PRESENCE_TRACKS_DATASET_ID } from 'features/datase
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { t } from 'features/i18n/i18n'
-import I18nDate, { formatI18nDate } from 'features/i18n/i18nDate'
+import I18nDate from 'features/i18n/i18nDate'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { TimeRangeDates } from 'features/map/controls/MapInfo'
 import GFWOnly from 'features/user/GFWOnly'

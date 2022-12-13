@@ -214,9 +214,9 @@ function App(): React.ReactElement {
 
   let asideWidth = '50%'
   if (readOnly) {
-    asideWidth = analysisQuery ? '45%' : '32rem'
+    asideWidth = analysisQuery ? '45%' : '34rem'
   } else if (narrowSidebar) {
-    asideWidth = '37rem'
+    asideWidth = '39rem'
   }
 
   if (!i18n.ready) {

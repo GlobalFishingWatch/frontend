@@ -1511,7 +1511,7 @@
     }
   },
   "public-eez-areas": {
-    "name": "crwdns25370:0crwdne25370:0",
+    "name": "crwdns29193:0crwdne29193:0",
     "description": "crwdns9657:0crwdne9657:0",
     "schema": {}
   },
@@ -1520,9 +1520,19 @@
     "description": "crwdns25374:0crwdne25374:0",
     "schema": {}
   },
-  "public-fao": {
-    "name": "crwdns29149:0crwdne29149:0",
-    "description": "crwdns29151:0crwdne29151:0",
+  "public-eez-land": {
+    "name": "crwdns29171:0crwdne29171:0",
+    "description": "crwdns29173:0crwdne29173:0",
+    "schema": {}
+  },
+  "public-fao-major": {
+    "name": "crwdns29195:0crwdne29195:0",
+    "description": "crwdns29197:0crwdne29197:0",
+    "schema": {}
+  },
+  "public-fao-areas-major-subareas": {
+    "name": "crwdns29175:0crwdne29175:0",
+    "description": "crwdns29177:0crwdne29177:0",
     "schema": {}
   },
   "public-fd-chlorophyl-ascension-v3": {

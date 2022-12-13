@@ -102,7 +102,8 @@
   justify-content: center;
   transition: var(--transition);
   text-transform: uppercase;
-  min-width: 150px;
+  white-space: nowrap;
+  padding-inline: 1rem;
   line-height: 1;
 }
 
