@@ -83,9 +83,9 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
                     linkHref = TunaRfmoLinksById[feature.value]
                     break
                   case ContextLayerType.EEZ:
-                    const { MRGID } = feature.properties
-                    id = `${MRGID}-${gfw_id}`
-                    linkHref = `https://www.marineregions.org/eezdetails.php?mrgid=${MRGID}`
+                    const { MRGID_EEZ } = feature.properties
+                    id = `${MRGID_EEZ}-${gfw_id}`
+                    linkHref = `https://www.marineregions.org/eezdetails.php?mrgid=${MRGID_EEZ}`
                     break
                   case ContextLayerType.ProtectedSeas:
                     const { site_id } = feature.properties
