@@ -1511,8 +1511,13 @@
     }
   },
   "public-eez-areas": {
-    "name": "crwdns29193:0crwdne29193:0",
+    "name": "crwdns29203:0crwdne29203:0",
     "description": "crwdns9657:0crwdne9657:0",
+    "schema": {}
+  },
+  "public-eez-areas-12nm": {
+    "name": "crwdns29205:0crwdne29205:0",
+    "description": "crwdns29207:0crwdne29207:0",
     "schema": {}
   },
   "public-eez-boundaries": {
@@ -1525,14 +1530,19 @@
     "description": "crwdns29173:0crwdne29173:0",
     "schema": {}
   },
-  "public-fao-major": {
-    "name": "crwdns29195:0crwdne29195:0",
-    "description": "crwdns29197:0crwdne29197:0",
+  "public-fao": {
+    "name": "crwdns29209:0crwdne29209:0",
+    "description": "crwdns29211:0crwdne29211:0",
     "schema": {}
   },
   "public-fao-areas-major-subareas": {
     "name": "crwdns29175:0crwdne29175:0",
     "description": "crwdns29177:0crwdne29177:0",
+    "schema": {}
+  },
+  "public-fao-major": {
+    "name": "crwdns29213:0crwdne29213:0",
+    "description": "crwdns29215:0crwdne29215:0",
     "schema": {}
   },
   "public-fd-chlorophyl-ascension-v3": {
@@ -2022,11 +2032,6 @@
     "description": "crwdns26906:0crwdne26906:0",
     "schema": {}
   },
-  "public-graticules": {
-    "name": "crwdns25572:0crwdne25572:0",
-    "description": "crwdns25574:0crwdne25574:0",
-    "schema": {}
-  },
   "public-gs-as-simplified": {
     "name": "crwdns25576:0crwdne25576:0",
     "description": "crwdns25578:0crwdne25578:0",
@@ -2038,7 +2043,7 @@
     "schema": {}
   },
   "public-high-seas": {
-    "name": "crwdns25584:0crwdne25584:0",
+    "name": "crwdns29217:0crwdne29217:0",
     "description": "crwdns10115:0crwdne10115:0",
     "schema": {}
   },
@@ -2212,13 +2217,18 @@
     }
   },
   "public-mpa-all": {
-    "name": "crwdns25598:0crwdne25598:0",
-    "description": "crwdns25600:0crwdne25600:0",
+    "name": "crwdns29219:0crwdne29219:0",
+    "description": "crwdns29221:0crwdne29221:0",
     "schema": {}
   },
   "public-mpa-no-take": {
-    "name": "crwdns25602:0crwdne25602:0",
+    "name": "crwdns29223:0crwdne29223:0",
     "description": "crwdns10277:0crwdne10277:0",
+    "schema": {}
+  },
+  "public-mpa-no-take-partial": {
+    "name": "crwdns29225:0crwdne29225:0",
+    "description": "crwdns29227:0crwdne29227:0",
     "schema": {}
   },
   "public-mpa-restricted": {
@@ -2515,6 +2525,11 @@
       "timestamp": "crwdns18440:0crwdne18440:0",
       "vessel_id": "crwdns18442:0crwdne18442:0"
     }
+  },
+  "public-rfmo": {
+    "name": "crwdns29229:0crwdne29229:0",
+    "description": "crwdns29231:0crwdne29231:0",
+    "schema": {}
   },
   "public-tristan-seamounts-200-1618586314138": {
     "name": "crwdns25612:0crwdne25612:0",
