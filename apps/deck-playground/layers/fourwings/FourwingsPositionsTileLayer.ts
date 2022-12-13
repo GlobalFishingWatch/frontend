@@ -18,6 +18,8 @@ import {
 } from 'layers/fourwings/fourwings.utils'
 import { groupBy, orderBy } from 'lodash'
 import { Feature } from 'geojson'
+import bboxPolygon from '@turf/bbox-polygon'
+import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 import { FourwingsColorRamp } from './FourwingsLayer'
 
@@ -248,6 +250,11 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
 
   getTimeseries() {
     const positions = this.getPositionsData()
-    return aggregatePositionsTimeseries(positions)
+    const viewportBounds = this.context.viewport.getBounds()
+    const viewportPolygon = bboxPolygon(viewportBounds)
+    const positionsInViewport = positions.filter((position) =>
+      booleanPointInPolygon(position, viewportPolygon)
+    )
+    return aggregatePositionsTimeseries(positionsInViewport)
   }
 }
