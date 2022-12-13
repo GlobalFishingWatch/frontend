@@ -160,6 +160,7 @@
     "edit": "Modificar los datos",
     "emptyFilters": "No hay filtros disponibles",
     "emptyState": "Sus datos aparecerán aquí",
+    "extent": "Dataset extent: {{extent}}",
     "featuresNameField": "Campo para nombrar cada área",
     "file": "Archivo",
     "formats": {
@@ -174,6 +175,7 @@
     "login": "Conjunto de datos privado, inicie sesión para verlo",
     "longitudeNameField": "Campo de longitud",
     "new": "Nuevos datos",
+    "noDataForTimerange": "There is no data for the current timerange",
     "notUploadedYet": "No hay capas de referencia subidas aún",
     "notUploadedYetEnvironment": "No hay capas de entorno subidas aún",
     "onlyFileFormatAllowed": "(Sólo se permiten archivos {{formats}})",
