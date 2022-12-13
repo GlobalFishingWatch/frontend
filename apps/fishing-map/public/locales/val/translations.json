@@ -160,6 +160,7 @@
     "edit": "crwdns3336:0crwdne3336:0",
     "emptyFilters": "crwdns8513:0crwdne8513:0",
     "emptyState": "crwdns3386:0crwdne3386:0",
+    "extent": "crwdns29199:0{{extent}}crwdne29199:0",
     "featuresNameField": "crwdns17115:0crwdne17115:0",
     "file": "crwdns3338:0crwdne3338:0",
     "formats": {
@@ -174,6 +175,7 @@
     "login": "crwdns17411:0crwdne17411:0",
     "longitudeNameField": "crwdns5562:0crwdne5562:0",
     "new": "crwdns3342:0crwdne3342:0",
+    "noDataForTimerange": "crwdns29201:0crwdne29201:0",
     "notUploadedYet": "crwdns3646:0crwdne3646:0",
     "notUploadedYetEnvironment": "crwdns6942:0crwdne6942:0",
     "onlyFileFormatAllowed": "crwdns17135:0{{formats}}crwdne17135:0",
