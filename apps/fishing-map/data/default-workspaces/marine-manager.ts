@@ -25,21 +25,21 @@ export const MARINE_MANAGER_DATAVIEWS = [
 
 export const MARINE_MANAGER_DATAVIEWS_INSTANCES = [
   {
-    id: 'water-temp',
+    id: 'global-sea-surface-temperature',
     config: {
       visible: false,
     },
     dataviewId: GLOBAL_WATER_TEMPERATURE_DATAVIEW_ID,
   },
   {
-    id: 'salinity',
+    id: 'global-water-salinity',
     config: {
       visible: false,
     },
     dataviewId: GLOBAL_SALINITY_DATAVIEW_ID,
   },
   {
-    id: 'chlorophyl',
+    id: 'global-chlorophyl',
     config: {
       visible: false,
     },
