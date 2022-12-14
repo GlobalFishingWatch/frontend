@@ -142,6 +142,21 @@ class TimeRangeSelector extends Component {
     }))
   }
 
+  onStartBlur = (e, property) => {
+    if (e.target.value === '') {
+      this.setState((state) => ({
+        startInputValues: {
+          ...state.startInputValues,
+          [property]: property === 'year' ? this.bounds.min.slice(0, 4) : 1,
+        },
+        startInputValids: {
+          ...state.startInputValids,
+          [property]: true,
+        },
+      }))
+    }
+  }
+
   onEndChange = (e, property) => {
     const endDate = dayjs.utc({
       ...this.state.endInputValues,
@@ -165,6 +180,21 @@ class TimeRangeSelector extends Component {
         [property]: e.target.validity.valid,
       },
     }))
+  }
+
+  onEndBlur = (e, property) => {
+    if (e.target.value === '') {
+      this.setState((state) => ({
+        endInputValues: {
+          ...state.endInputValues,
+          [property]: property === 'year' ? parseInt(this.bounds.max.slice(0, 4)) + 1 : 1,
+        },
+        endInputValids: {
+          ...state.endInputValids,
+          [property]: true,
+        },
+      }))
+    }
   }
 
   onResolutionChange = (option) => {
@@ -238,6 +268,7 @@ class TimeRangeSelector extends Component {
                       max={this.bounds.max.slice(0, 4)}
                       value={startInputValues.year}
                       onChange={(e) => this.onStartChange(e, 'year')}
+                      onBlur={(e) => this.onStartBlur(e, 'year')}
                       step="1"
                       className={classNames(styles.input, {
                         [styles.error]: !startValid || !startBeforeEnd,
@@ -260,6 +291,7 @@ class TimeRangeSelector extends Component {
                         max="12"
                         value={startInputValues.month}
                         onChange={(e) => this.onStartChange(e, 'month')}
+                        onBlur={(e) => this.onStartBlur(e, 'month')}
                         step={'1'}
                         disabled={disabledFields.month}
                         className={classNames(styles.input, {
@@ -284,6 +316,7 @@ class TimeRangeSelector extends Component {
                         max={startDate.daysInMonth()}
                         value={startInputValues.date}
                         onChange={(e) => this.onStartChange(e, 'date')}
+                        onBlur={(e) => this.onStartBlur(e, 'date')}
                         step={'1'}
                         disabled={disabledFields.day}
                         className={classNames(styles.input, {
@@ -306,6 +339,7 @@ class TimeRangeSelector extends Component {
                       max={(parseInt(this.bounds.max.slice(0, 4)) + 1).toString()}
                       value={endInputValues.year}
                       onChange={(e) => this.onEndChange(e, 'year')}
+                      onBlur={(e) => this.onEndBlur(e, 'year')}
                       step={'1'}
                       className={classNames(styles.input, {
                         [styles.error]: !endValid || !startBeforeEnd,
@@ -328,6 +362,7 @@ class TimeRangeSelector extends Component {
                         max="12"
                         value={endInputValues.month}
                         onChange={(e) => this.onEndChange(e, 'month')}
+                        onBlur={(e) => this.onEndBlur(e, 'month')}
                         step={'1'}
                         disabled={disabledFields.month}
                         className={classNames(styles.input, {
@@ -352,6 +387,7 @@ class TimeRangeSelector extends Component {
                         max={endDate.daysInMonth()}
                         value={endInputValues.date}
                         onChange={(e) => this.onEndChange(e, 'date')}
+                        onBlur={(e) => this.onEndBlur(e, 'date')}
                         step={'1'}
                         disabled={disabledFields.day}
                         className={classNames(styles.input, {
