@@ -247,7 +247,7 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
       delete newDataviewConfig.filterOperators[filterKey]
     }
 
-    upsertDataviewInstance({
+    onDataviewFilterChange({
       id: dataview.id,
       config: newDataviewConfig,
     })
@@ -284,7 +284,7 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
       : {}
     delete filters[filterKey]
     delete filterOperators[filterKey]
-    upsertDataviewInstance({
+    onDataviewFilterChange({
       id: dataview.id,
       config: { filters, filterOperators },
     })
