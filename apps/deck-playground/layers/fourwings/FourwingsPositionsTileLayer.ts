@@ -39,6 +39,7 @@ export type FourwingsPositionsTileLayerProps<DataT = any> = {
 const ICON_MAPPING = {
   vessel: { x: 0, y: 0, width: 22, height: 40, mask: true },
   vesselHighlight: { x: 24, y: 0, width: 22, height: 40, mask: false },
+  rect: { x: 6, y: 0, width: 10, height: 30, mask: true },
 }
 
 export class FourwingsPositionsTileLayer extends CompositeLayer<
@@ -83,6 +84,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   getFillColor(d: Feature): Color {
+    const { highlightedVesselId } = this.state
     const { colorDomain, colorRange } = this.state.colorScale
     const colorIndex = colorDomain.findIndex((domain, i) => {
       if (colorDomain[i + 1]) {
@@ -91,6 +93,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       return i
     })
     const color = colorIndex >= 0 ? colorRange[colorIndex] : [0, 0, 0, 0]
+    if (highlightedVesselId) {
+      if (d.properties.vesselId === highlightedVesselId) return color
+      else return [color[0], color[1], color[2], 0]
+    }
     return color
   }
 
@@ -98,9 +104,9 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     const { highlightedVesselId } = this.state
     if (highlightedVesselId) {
       if (d.properties.vesselId === highlightedVesselId) return [255, 255, 255, 255]
-      else return [0, 0, 0, 0]
+      else return [255, 255, 255, 0]
     }
-    return [0, 0, 0, 25]
+    return [255, 255, 255, 120]
   }
 
   getLineColor(d: Feature): Color {
@@ -113,6 +119,11 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   getRadius(d: Feature): number {
     const { highlightedVesselId } = this.state
     return highlightedVesselId && d.properties.vesselId === highlightedVesselId ? 5 : 3
+  }
+
+  getSize(d: Feature): number {
+    const { highlightedVesselId } = this.state
+    return highlightedVesselId && d.properties.vesselId === highlightedVesselId ? 15 : 8
   }
 
   getPickingInfo({ info, mode }: GetPickingInfoParams): PickingInfo {
@@ -132,6 +143,20 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     }
     if (mode === 'query') {
       console.log(info.object?.properties)
+    }
+    if (info.object) {
+      const allVesselPositions: Feature[] = this.state.allPositions.filter(
+        (p) => p.properties.vesselId === info.object?.properties?.vesselId
+      )
+      const latestVesselPosition: Feature = this.state.lastPositions.find(
+        (p) => p.properties.vesselId === info.object?.properties?.vesselId
+      )
+      const vesselHours = allVesselPositions.reduce((acc, next) => acc + next.properties.value, 0)
+      info.object.value = `${info.object?.properties?.vesselId} \n  ${Math.round(
+        vesselHours
+      )} hours \n latest position: ${latestVesselPosition.geometry?.coordinates?.map((c) =>
+        c.toFixed(4)
+      )}`
     }
     return info
   }
@@ -180,22 +205,41 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         loaders: [MVTWorkerLoader],
         onViewportLoad: this.onViewportLoad,
       }),
-      new ScatterplotLayer(this.props, {
+      // CIRCLES
+      // new ScatterplotLayer(this.props, {
+      //   id: 'allPositions',
+      //   data: allPositions,
+      //   getPosition: (d) => d.geometry.coordinates,
+      //   filled: true,
+      //   stroked: true,
+      //   getFillColor: (d) => this.getFillColor(d),
+      //   getRadius: (d) => this.getRadius(d),
+      //   getLineColor: (d) => this.getLineColor(d),
+      //   radiusUnits: 'pixels',
+      //   lineWidthMinPixels: 1,
+      //   pickable: true,
+      //   getPickingInfo: this.getPickingInfo,
+      //   updateTriggers: {
+      //     getRadius: [highlightedVesselId],
+      //     getLineColor: [highlightedVesselId],
+      //   },
+      // }),
+      // LINES
+      new IconLayer(this.props, {
         id: 'allPositions',
         data: allPositions,
+        iconAtlas: '/vessel-sprite.png',
+        iconMapping: ICON_MAPPING,
+        getIcon: () => 'rect',
         getPosition: (d) => d.geometry.coordinates,
-        filled: true,
-        stroked: true,
-        getFillColor: (d) => this.getFillColor(d),
-        getRadius: (d) => this.getRadius(d),
-        getLineColor: (d) => this.getLineColor(d),
-        radiusUnits: 'pixels',
-        lineWidthMinPixels: 1,
+        getColor: (d) => this.getFillColor(d),
+        getSize: (d) => this.getSize(d),
+        getAngle: (d) => d.properties.bearing,
         pickable: true,
         getPickingInfo: this.getPickingInfo,
         updateTriggers: {
-          getRadius: [highlightedVesselId],
-          getLineColor: [highlightedVesselId],
+          getColor: [highlightedVesselId],
+          getSize: [highlightedVesselId],
         },
       }),
       new IconLayer(this.props, {
@@ -224,6 +268,9 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         getColor: (d) => this.getFillColor(d),
         pickable: true,
         getPickingInfo: this.getPickingInfo,
+        updateTriggers: {
+          getColor: [highlightedVesselId],
+        },
       }),
     ]
   }
