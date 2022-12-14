@@ -17,7 +17,7 @@ import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import { getDatasetTitleByDataview, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import Hint from 'features/hints/Hint'
-import { setHintDismissed } from 'features/hints/hints.slice'
+import { selectHintsDismissed, setHintDismissed } from 'features/hints/hints.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { isGuestUser } from 'features/user/user.slice'
@@ -62,6 +62,7 @@ function ActivityLayerPanel({
   const { dispatchQueryParams } = useLocationConnect()
   const urlTimeRange = useSelector(selectUrlTimeRange)
   const bivariateDataviews = useSelector(selectBivariateDataviews)
+  const hintsDismissed = useSelector(selectHintsDismissed)
   const guestUser = useSelector(isGuestUser)
   const readOnly = useSelector(selectReadOnly)
   const layerActive = dataview?.config?.visible ?? true
@@ -118,7 +119,9 @@ function ActivityLayerPanel({
 
   const onToggleFilterOpen = () => {
     setFiltersOpen(!filterOpen)
-    dispatch(setHintDismissed('filterActivityLayers'))
+    if (!hintsDismissed.filterActivityLayers) {
+      dispatch(setHintDismissed('filterActivityLayers'))
+    }
   }
 
   const changeColor = (color: ColorBarOption) => {
