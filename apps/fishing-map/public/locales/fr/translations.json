@@ -160,7 +160,7 @@
     "edit": "Modifier le jeu de données",
     "emptyFilters": "Aucun filtre disponible",
     "emptyState": "Vos jeux de données apparaîtront ici",
-    "extent": "Dataset extent: {{extent}}",
+    "extent": "Étendue de l'ensemble des données: {{extent}}",
     "featuresNameField": "Champ pour nommer chaque zone",
     "file": "Fichier",
     "formats": {
@@ -175,7 +175,7 @@
     "login": "Jeu de données privé, connectez-vous pour le voir",
     "longitudeNameField": "Champ de longitude",
     "new": "Nouveau jeu de données",
-    "noDataForTimerange": "There is no data for the current timerange",
+    "noDataForTimerange": "Il n’y a pas de données pour la plage de temps",
     "notUploadedYet": "Aucun calque de référence ajouté pour le moment",
     "notUploadedYetEnvironment": "Aucun calque d'environnement ajouté pour le moment",
     "onlyFileFormatAllowed": "(Seuls les fichiers au format {{formats}} sont autorisés)",
