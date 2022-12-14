@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import Layout from '../components/next-auth/layout'
 import AccessDenied from '../components/next-auth/access-denied'
+import { PATH_BASENAME } from '../components/data/config'
 
 export default function Page() {
   const { data: session, status } = useSession()
@@ -11,7 +12,7 @@ export default function Page() {
   // Fetch content from protected route
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch('/api/examples/protected')
+      const res = await fetch(`${PATH_BASENAME}/api/examples/protected`)
       const json = await res.json()
       if (json.content) {
         setContent(json.content)
@@ -39,6 +40,9 @@ export default function Page() {
       <p>
         <strong>{content || '\u00a0'}</strong>
       </p>
+      <h2>GFW AUTH ME</h2>
+      <p>/api/user/me</p>
+      <iframe src="api/user/me" />
     </Layout>
   )
 }

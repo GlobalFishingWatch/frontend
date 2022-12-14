@@ -2,21 +2,29 @@ import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { useMemo } from 'react'
 import { useRouter } from 'next/router'
+import { signOut, useSession } from 'next-auth/react'
+import { ApiError } from 'next/dist/server/api-utils'
 import {
   getAccessTokenFromUrl,
   GFWAPI,
   removeAccessTokenFromUrl,
 } from '@globalfishingwatch/api-client'
 import { UserApiAdditionalInformation, UserPermission } from '@globalfishingwatch/api-types'
+import { PATH_BASENAME } from 'components/data/config'
+import useAuthedQuery from 'hooks/authed-query.hooks'
 
-const fetchUser = async (accessToken) => {
-  if (accessToken) {
-    removeAccessTokenFromUrl()
+const fetchUser = async () => {
+  const response = await fetch(`${PATH_BASENAME}/api/user/me`)
+  const data = await response.json()
+  if (!response.ok) {
+    throw new ApiError(response.status, data?.error ?? 'Could not retrieve user data')
   }
+  return data
 
-  return await GFWAPI.login({ accessToken }).catch((error) => {
-    return null
-  })
+  // .then((response) => response.json())
+  // .catch((error) => {
+  //   return null
+  // })
 }
 type UserAction = 'read' | 'create' | 'delete'
 export const checkUserApplicationPermission = (
@@ -28,25 +36,33 @@ export const checkUserApplicationPermission = (
 }
 
 const logoutUser = async () => {
-  await GFWAPI.logout()
+  await signOut()
 }
 
 export const useUser = () => {
-  const accessToken = typeof window === 'undefined' ? null : getAccessTokenFromUrl()
-  const queryResult = useQuery(['user'], () => fetchUser(accessToken), {})
+  const queryClient = useQueryClient()
+  const queryResult = useAuthedQuery(['user'], () => fetchUser(), {})
   const token = GFWAPI.getToken()
   const refreshToken = GFWAPI.getRefreshToken()
+
   const { data: user } = queryResult
 
+  const {
+    // data: session,
+    status,
+  } = useSession()
+  const authenticated = status === 'authenticated'
+  const loading = status === 'loading'
+
   const authorized = useMemo(() => {
-    return user && checkUserApplicationPermission('read', user.permissions)
+    return (
+      user &&
+      user.permissions &&
+      authenticated &&
+      checkUserApplicationPermission('read', user.permissions)
+    )
   }, [user])
 
-  const loginLink = GFWAPI.getLoginUrl(
-    typeof window === 'undefined' ? '' : window.location.toString()
-  )
-
-  const queryClient = useQueryClient()
   const logout = useMutation(logoutUser, {
     onSuccess: () => {
       queryClient.invalidateQueries(['user'])
@@ -62,7 +78,6 @@ export const useUser = () => {
     ...queryResult,
     authorized,
     isUserApplicationsRequiredInfoCompleted,
-    loginLink,
     logout,
     refreshToken,
     token,

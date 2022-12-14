@@ -5,6 +5,8 @@ import { FieldValidationError } from 'lib/types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { APIPagination, UserApplication } from '@globalfishingwatch/api-types'
 import useUser, { checkUserApplicationPermission } from 'features/user/user'
+import useAuthedQuery from 'hooks/authed-query.hooks'
+import { PATH_BASENAME } from 'components/data/config'
 
 export type UserApplicationCreateArguments = Omit<
   UserApplication,
@@ -17,15 +19,18 @@ async function fetchUserApplications(userId: number, limit = 0, offset = 0) {
     ...((limit && { limit }) || {}),
     ...((offset && { offset }) || {}),
   })
-  const url = `/auth/user-applications?${query}`
-  const data = await GFWAPI.fetch<APIPagination<UserApplication>>(url).catch((error) => {
-    return null
-  })
+  const url = `${PATH_BASENAME}/api/user/applications?${query}`
+  const data = await fetch(url)
+    .then((response) => response.json())
+    .catch((error) => {
+      return null
+    })
+
   return data
 }
 
 export const useUserApplications = (userId) =>
-  useQuery(['user-applications', userId], () => fetchUserApplications(userId), {})
+  useAuthedQuery(['user-applications', userId], () => fetchUserApplications(userId), {})
 
 async function deleteUserApplication(id: number) {
   const url = `/auth/user-applications/${id}`

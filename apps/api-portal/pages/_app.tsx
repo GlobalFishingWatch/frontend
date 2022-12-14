@@ -13,6 +13,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       // Provider options are not required but can be useful in situations where
       // you have a short session maxAge time. Shown here with default values.
       session={pageProps.session}
+      basePath={`${process.env.NEXT_PUBLIC_URL}/api/auth`}
     >
       <QueryClientProvider client={queryClient}>
         <Component {...pageProps} />

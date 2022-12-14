@@ -12,72 +12,58 @@ import { GFWAPI } from '@globalfishingwatch/api-client'
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
 
-const GFW_API_GATEWAY = GFWAPI.getBaseUrl()
+const NEXT_PUBLIC_API_GATEWAY = GFWAPI.getBaseUrl()
 
 export default async function auth(req: NextApiRequest, res: NextApiResponse) {
-  console.log(req)
-  // const [authMethod, authValue] = (req.headers.get('authorization') ?? '').split(' ')
+  const callbackUrl = new URL(req.cookies['next-auth.callback-url'] ?? 'http://localhost:3000')
 
-  // res.setHeader('WWW-authenticate', 'Basic realm="Secure Area"')
-  // res.statusCode = 401
-  // res.end(`Auth Required.`)
-
-  return await NextAuth({
+  return await NextAuth(req, res, {
     // https://next-auth.js.org/configuration/providers
     providers: [
       {
-        id: 'gfw-sso',
-        name: 'GlobalFishingWatch SO',
+        id: 'gfw',
+        name: 'GlobalFishingWatch SSO',
         type: 'oauth',
-        authorization: `${GFW_API_GATEWAY}/auth`,
-        token: `${GFW_API_GATEWAY}/v2/auth/tokens`,
-        userinfo: `$¿${GFW_API_GATEWAY}/v2/auth/me`,
+        clientId: 'gfw',
+        authorization: {
+          url: `${NEXT_PUBLIC_API_GATEWAY}/auth`,
+          params: {
+            client: 'gfw',
+            callback: `${callbackUrl.protocol}//${callbackUrl.host}/${process.env.NEXT_PUBLIC_URL}/api/auth/callback/gfw`,
+          },
+        },
+        idToken: true,
+        token: {
+          url: `${NEXT_PUBLIC_API_GATEWAY}/auth/token`,
+          async request(context) {
+            const access_token = req.query['access-token']
+            const tokenUrl = `${NEXT_PUBLIC_API_GATEWAY}/auth/token?access-token=${access_token}`
+            const response = await fetch(tokenUrl)
+            const json = await response.json()
+            const tokens = {
+              access_token: json?.token,
+              refresh_token: json?.refreshToken,
+              id_token: json?.token,
+            }
+            return { tokens }
+          },
+        },
+        userinfo: `${NEXT_PUBLIC_API_GATEWAY}/auth/me`,
         profile(profile) {
+          console.log(profile)
           return {
-            id: profile.id,
-            name: profile.kakao_account?.profile.nickname,
-            email: profile.kakao_account?.email,
-            image: profile.kakao_account?.profile.profile_image_url,
+            id: profile.data.id,
+            name: profile.data.name,
+            email: profile.data.email,
+            image: profile.data.photo,
           }
         },
+        // requestTokenUrl:
       },
-      // EmailProvider({
-      //   server: process.env.EMAIL_SERVER,
-      //   from: process.env.EMAIL_FROM,
-      // }),
-      // AppleProvider({
-      //   clientId: process.env.APPLE_ID,
-      //   clientSecret: {
-      //     appleId: process.env.APPLE_ID,
-      //     teamId: process.env.APPLE_TEAM_ID,
-      //     privateKey: process.env.APPLE_PRIVATE_KEY,
-      //     keyId: process.env.APPLE_KEY_ID,
-      //   },
-      // }),
-      // Auth0Provider({
-      //   clientId: process.env.AUTH0_ID,
-      //   clientSecret: process.env.AUTH0_SECRET,
-      //   // @ts-ignore
-      //   domain: process.env.AUTH0_DOMAIN,
-      // }),
-      // FacebookProvider({
-      //   clientId: process.env.FACEBOOK_ID,
-      //   clientSecret: process.env.FACEBOOK_SECRET,
-      // }),
-      // GithubProvider({
-      //   clientId: process.env.GITHUB_ID,
-      //   clientSecret: process.env.GITHUB_SECRET,
-      //   // https://docs.github.com/en/developers/apps/building-oauth-apps/scopes-for-oauth-apps
-      //   // @ts-ignore
-      //   scope: 'read:user',
-      // }),
+
       // GoogleProvider({
       //   clientId: process.env.GOOGLE_ID,
       //   clientSecret: process.env.GOOGLE_SECRET,
-      // }),
-      // TwitterProvider({
-      //   clientId: process.env.TWITTER_ID,
-      //   clientSecret: process.env.TWITTER_SECRET,
       // }),
     ],
     // Database optional. MySQL, Maria DB, Postgres and MongoDB are supported.
@@ -139,10 +125,47 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     // when an action is performed.
     // https://next-auth.js.org/configuration/callbacks
     callbacks: {
+      // async signIn({ user, account, profile, email, credentials }) {
+      // 	console.log('signIn')
+      //   console.log({ user, account, profile, email, credentials })
+      // 	return true
+      // },
+      // // async redirect(url, baseUrl) { return baseUrl },
+      // async session({ session, token, user }) {
+      // 	console.log('session')
+      // 	console.log({ session, token, user })
+      // 	return session
+      // },
       // async signIn({ user, account, profile, email, credentials }) { return true },
       // async redirect({ url, baseUrl }) { return baseUrl },
+      // async redirect({ url, baseUrl }) {
+      //   // Allows relative callback URLs
+      //   if (url.startsWith("/")) return `${baseUrl}${url}`
+      //   // Allows callback URLs on the same origin
+      //   else if (new URL(url).origin === baseUrl) return url
+      //   return baseUrl
+      // }
       // async session({ session, token, user }) { return session },
-      // async jwt({ token, user, account, profile, isNewUser }) { return token }
+
+      async jwt({ token, user, account = {}, profile, isNewUser }) {
+        const result: any = token
+
+        if (account?.provider) {
+          if (!result[account.provider]) {
+            result[account.provider] = {}
+          }
+
+          if (account?.access_token) {
+            result[account.provider].accessToken = account.access_token
+          }
+
+          if (account?.refresh_token) {
+            result[account.provider].refreshToken = account.refresh_token
+          }
+        }
+
+        return result
+      },
     },
 
     // Events are useful for logging
