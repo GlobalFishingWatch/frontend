@@ -133,7 +133,7 @@ const getCommonProperties = (dataviews?: UrlDataviewInstance[], showTimeComparis
           .map((f) => f.label.toLocaleLowerCase())
           .join(', ')
 
-        if (dataviews[0].config?.filterOperators[filterKey] === 'exclude') {
+        if (dataviews[0].config?.filterOperators?.[filterKey] === 'exclude') {
           genericExcludedFilters.push({
             keyLabel,
             valuesLabel,
