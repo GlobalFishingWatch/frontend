@@ -1542,7 +1542,7 @@
   },
   "public-fao-major": {
     "name": "crwdns29237:0crwdne29237:0",
-    "description": "crwdns29239:0crwdne29239:0",
+    "description": "crwdns29251:0crwdne29251:0",
     "schema": {}
   },
   "public-fisheries-restricted-areas": {
@@ -1821,7 +1821,7 @@
   },
   "public-graticules": {
     "name": "crwdns29241:0crwdne29241:0",
-    "description": "crwdns29243:0crwdne29243:0",
+    "description": "crwdns29253:0crwdne29253:0",
     "schema": {}
   },
   "public-gs-as-simplified": {
@@ -2014,7 +2014,7 @@
     "schema": {}
   },
   "public-mpa-no-take": {
-    "name": "crwdns29223:0crwdne29223:0",
+    "name": "crwdns29255:0crwdne29255:0",
     "description": "crwdns10277:0crwdne10277:0",
     "schema": {}
   },
@@ -2320,7 +2320,7 @@
   },
   "public-rfmo": {
     "name": "crwdns29229:0crwdne29229:0",
-    "description": "crwdns29231:0crwdne29231:0",
+    "description": "crwdns29257:0crwdne29257:0",
     "schema": {}
   },
   "public-tristan-seamounts-200-1618586314138": {
