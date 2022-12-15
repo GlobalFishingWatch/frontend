@@ -61,7 +61,7 @@ function InputDateComponent(props: InputDateProps, forwardedRef: Ref<HTMLInputEl
       {labelContent && <label htmlFor={inputProps.id}>{labelContent}</label>}
       <input
         type={type}
-        value={value}
+        value={yymmddDate}
         className={cx(styles.input, { [styles.invalid]: isInvalid })}
         ref={inputRef}
         {...inputProps}
