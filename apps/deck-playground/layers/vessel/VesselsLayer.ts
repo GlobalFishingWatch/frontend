@@ -12,7 +12,7 @@ export class VesselsLayer extends CompositeLayer<VesselsLayerProps> {
         endTime: this.props.endTime,
         highlightStartTime: this.props.highlightStartTime,
         highlightEndTime: this.props.highlightEndTime,
-        onDataLoad: this.props.onDataLoad
+        onDataLoad: this.props.onDataLoad,
       })
   )
   renderLayers(): VesselLayer[] {

@@ -1,6 +1,7 @@
 import type { NumericArray } from '@math.gl/core'
 import { AccessorFunction, DefaultProps } from '@deck.gl/core/typed'
 import { PathLayer, PathLayerProps } from '@deck.gl/layers/typed'
+import { getPathDefaultAccessor, getTimestampsDefaultAccessor } from 'layers/vessel/vessels.utils'
 import { Segment } from '@globalfishingwatch/api-types'
 
 /** Properties added by VesselTrackLayer. */
@@ -26,6 +27,10 @@ export type _VesselTrackLayerProps<DataT = any> = {
    */
   highlightEndTime?: number
   /**
+   * Path accessor.
+   */
+  getPath?: AccessorFunction<DataT, NumericArray>
+  /**
    * Timestamp accessor.
    */
   getTimestamps?: AccessorFunction<DataT, NumericArray>
@@ -34,7 +39,9 @@ export type _VesselTrackLayerProps<DataT = any> = {
 const defaultProps: DefaultProps<VesselTrackLayerProps> = {
   endTime: { type: 'number', value: 0, min: 0 },
   startTime: { type: 'number', value: 0, min: 0 },
-  getTimestamps: { type: 'accessor', value: (d) => d.timestamps },
+  getPath: { type: 'accessor', value: getPathDefaultAccessor },
+  getColor: { type: 'accessor', value: () => [255, 255, 255, 100] },
+  getTimestamps: { type: 'accessor', value: getTimestampsDefaultAccessor },
 }
 
 /** All properties supported by VesselTrackLayer. */
@@ -81,9 +88,9 @@ if(vTime < startTime || vTime > endTime) {
     return this.segments
   }
 
-  updateState(param) {
-    super.updateState(param)
-    this.segments = param.props.data
+  updateState(params) {
+    super.updateState(params)
+    this.segments = params.props.data
   }
 
   initializeState() {

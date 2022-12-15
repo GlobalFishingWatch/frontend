@@ -10,12 +10,12 @@ import { vesselEventsLoader } from 'loaders/vessels/eventsLoader'
 export type VesselLayerProps = _VesselTrackLayerProps & _VesselEventsLayerProps
 
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
-  layersLoaded: string[] = []
+  layersLoaded: Layer[] = []
 
   onDataLoad: LayerProps['onDataLoad'] = (data, context) => {
-    this.layersLoaded = [...this.layersLoaded, 'loaded']
-    const eventsLayersArray = this.getVesselEventsLayers()
-    if (this.layersLoaded.length === eventsLayersArray.length) {
+    this.layersLoaded = [...this.layersLoaded, context.layer]
+    const layersArray = [...this.getVesselEventsLayers(), this.getTrackLayer()]
+    if (this.layersLoaded.length === layersArray.length) {
       this.props.onDataLoad(data, context)
     }
   }
@@ -26,27 +26,12 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         id: `vessel-layer-${this.props.id}`,
         data: `https://gateway.api.dev.globalfishingwatch.org/v2/vessels/${this.props.id}/tracks?binary=true&fields=lonlat%2Ctimestamp&format=valueArray&distance-fishing=500&bearing-val-fishing=1&change-speed-fishing=200&min-accuracy-fishing=30&distance-transit=500&bearing-val-transit=1&change-speed-transit=200&min-accuracy-transit=30&datasets=public-global-fishing-tracks%3Av20201001`,
         loaders: [trackLoader],
-        getPath: (d) => {
-          return d.waypoints.map((p) => p.coordinates)
-        },
-        getTimestamps: (d) => {
-          // console.log('timestamps', d.waypoints.map(p => p.timestamp - 1465864039000));
-          // deduct start timestamp from each data point to avoid overflow
-          return d.waypoints.map((p) => p.timestamp)
-        },
         widthUnits: 'pixels',
         widthScale: 1,
         wrapLongitude: true,
         jointRounded: true,
         capRounded: true,
-        // loadOptions: {
-        //   worker: false,
-        //   fetch: {
-        //     headers: {
-        //       Authorization: `Bearer ${API_TOKEN}`,
-        //     },
-        //   },
-        // },
+        onDataLoad: this.onDataLoad,
         getColor: (d) => {
           return d.waypoints.map((p) => {
             if (
@@ -61,7 +46,6 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         getWidth: 3,
         updateTriggers: {
           getColor: [this.props.highlightStartTime, this.props.highlightEndTime],
-          // getWidth: [minHighlightedFrame, maxHighlightedFrame],
         },
         startTime: this.props.startTime,
         endTime: this.props.endTime,
@@ -79,7 +63,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         pickable: true,
         startTime: this.props.startTime,
         endTime: this.props.endTime,
-        onEventsDataLoad: this.onDataLoad,
+        onDataLoad: this.onDataLoad,
         filterRange: [this.props.startTime, this.props.endTime],
         extensions: [new DataFilterExtension({ filterSize: 1 })],
       })
@@ -96,7 +80,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         pickable: true,
         startTime: this.props.startTime,
         endTime: this.props.endTime,
-        onEventsDataLoad: this.onDataLoad,
+        onDataLoad: this.onDataLoad,
         filterRange: [this.props.startTime, this.props.endTime],
         extensions: [new DataFilterExtension({ filterSize: 1 })],
       })
@@ -113,7 +97,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         pickable: true,
         startTime: this.props.startTime,
         endTime: this.props.endTime,
-        onEventsDataLoad: this.onDataLoad,
+        onDataLoad: this.onDataLoad,
         filterRange: [this.props.startTime, this.props.endTime],
         extensions: [new DataFilterExtension({ filterSize: 1 })],
       })
@@ -155,11 +139,10 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   getVesselTrackData() {
-    return this.getSubLayers().reduce((acc, l) => {
-      if (!l.props.eventType) {
-        return [...acc, l.props.data]
-      }
-      return acc
-    }, [])[0]
+    const layersTracks = this.getSubLayers().reduce((acc, l) => {
+      const layerTracks = l.props.eventType ? [] : l.props.data
+      return [...acc, layerTracks]
+    }, [])
+    return layersTracks.flat()
   }
 }
