@@ -21,8 +21,8 @@ async function parse(arrayBuffer: ArrayBuffer) {
 function parseEvents(events) {
   const shapeIndex = {
     port_visit: 0,
-    fishing: 1,
-    encounter: 2,
+    encounter: 1,
+    fishing: 2,
   }
   return events?.map((event) => {
     const { position, start, end, type, ...attributes } = event
