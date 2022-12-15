@@ -3,7 +3,11 @@ import {
   useFourwingsLayerInstance,
   useFourwingsLayerLoaded,
 } from 'layers/fourwings/fourwings.hooks'
-import { useRemoveVesselInLayer, useVesselsLayerIds, useVesselsLayerInstance } from 'layers/vessel/vessels.hooks'
+import {
+  useRemoveVesselInLayer,
+  useVesselsLayerIds,
+  useVesselsLayerInstance,
+} from 'layers/vessel/vessels.hooks'
 import { Button, IconButton, Switch } from '@globalfishingwatch/ui-components'
 import { MapLayer, useMapLayers } from 'features/map/layers.hooks'
 import styles from './Sidebar.module.css'
@@ -18,7 +22,9 @@ function Sidebar() {
   const removeVesselId = useRemoveVesselInLayer()
 
   const getVesselsEventsData = () => {
-    const vesselsEvents = vesselsLayerInstance.getVesselsLayers().reduce((acc, l) => [...acc, l.getVesselsEventsData()], [])
+    const vesselsEvents = vesselsLayerInstance
+      .getVesselsLayers()
+      .reduce((acc, l) => [...acc, l.getVesselEventsData()], [])
     console.log(vesselsEvents)
   }
 
