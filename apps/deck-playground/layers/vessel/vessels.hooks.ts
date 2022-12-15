@@ -1,16 +1,7 @@
 import { FourwingsColorRamp } from 'layers/fourwings/FourwingsLayer'
 import { useCallback, useEffect } from 'react'
-import {
-  atom,
-  DefaultValue,
-  selector,
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
-} from 'recoil'
+import { atom, selector, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { VesselsLayer } from 'layers/vessel/VesselsLayer'
-import { urlSyncEffect, WriteAtomInterface } from 'recoil-sync'
-import { mixed } from '@recoiljs/refine'
 import { useMapLayers } from 'features/map/layers.hooks'
 import { useHighlightTimerange, useTimerange } from 'features/timebar/timebar.hooks'
 
@@ -31,24 +22,6 @@ export const vesselsLayerAtom = atom<VesselsAtom>({
     loaded: false,
     ids: [],
   },
-  // effects: [
-  //   urlSyncEffect({
-  //     refine: mixed(),
-  //     history: 'replace',
-  //     read: ({ read }: WriteAtomInterface) => {
-  //       return { ids: read('ids') }
-  //     },
-  //     write: ({ write, reset }: WriteAtomInterface, newValue: VesselsAtom) => {
-  //       if (newValue instanceof DefaultValue) {
-  //         reset('ids')
-  //       } else {
-  //         delete newValue.instance
-  //         write('ids', newValue.ids)
-  //       }
-  //       delete newValue.instance
-  //     },
-  //   }),
-  // ],
 })
 
 export function useVesselsLayer() {
@@ -71,7 +44,7 @@ export function useVesselsLayer() {
 
   const onVesselHighlight = useCallback(
     (id) => {
-      setAtomProperty({ highlightedVesselId: id, loaded: true })
+      setAtomProperty({ highlightedVesselId: id })
     },
     [setAtomProperty]
   )
@@ -99,7 +72,7 @@ export function useVesselsLayer() {
         highlightEndTime,
         onDataLoad: onDataLoad,
       })
-      setAtomProperty({ instance: vesselsLayer, loaded: false })
+      setAtomProperty({ instance: vesselsLayer })
     } else {
       setAtomProperty({ instance: undefined, loaded: false })
     }
@@ -164,7 +137,7 @@ export function useAddVesselInLayer() {
   const addVesselLayer = useCallback(
     (id: string) => {
       setVesselLayer((atom) => {
-        return { ...atom, ids: Array.from(new Set([...atom.ids, id])) }
+        return { ...atom, ids: Array.from(new Set([...atom.ids, id])), loaded: false }
       })
     },
     [setVesselLayer]
