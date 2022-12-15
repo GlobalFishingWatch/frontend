@@ -34,7 +34,9 @@ const OutOfTimerangeDisclaimer = ({ dataview }: OutOfTimerangeDisclaimerProps) =
   }
 
   const datasetInTimerange =
-    (start >= startDate && start <= endDate) || (end >= startDate && end <= endDate)
+    (start >= startDate && start <= endDate) ||
+    (end >= startDate && end <= endDate) ||
+    (start <= startDate && end >= endDate)
 
   return datasetInTimerange ? null : (
     <span className={cx(styles.dataWarning, styles.error)}>
