@@ -1,40 +1,45 @@
 import { useMemo } from 'react'
-import { useVesselsLayerInstance, useVesselsLayerLoaded } from 'layers/vessel/vessels.hooks'
+import {
+  useVesselsLayerInstance,
+  useVesselsLayerLoaded,
+  useVesselsLayerIds,
+} from 'layers/vessel/vessels.hooks'
 import { TimebarTracks, TimebarChartChunk, TimebarChartValue } from '@globalfishingwatch/timebar'
-import { ResourceStatus } from '../../../../libs/api-types/src/resources'
+import { ResourceStatus } from '@globalfishingwatch/api-types'
 
 const TimebarVesselsEvents = () => {
   const vesselsLayerInstance = useVesselsLayerInstance()
   const vesselsLayerLoaded = useVesselsLayerLoaded()
+  const ids = useVesselsLayerIds()
 
-  const getTrackChunks = (segments): TimebarChartChunk[] => {
-    return segments.map((segment) => {
-      const { waypoints } = segment
-      return {
-        start: waypoints[0].timestamp || Number.POSITIVE_INFINITY,
-        end: waypoints[waypoints.length - 1].timestamp || Number.NEGATIVE_INFINITY,
-        values: waypoints as TimebarChartValue[],
-        props: {
-          id: waypoints[0]?.id,
-          color: waypoints[0]?.color ? waypoints[0]?.color : undefined,
-        },
-      }
-    })
+  const getTrackChunk = (segment): TimebarChartChunk => {
+    const { waypoints } = segment
+    return {
+      start: waypoints[0].timestamp || Number.POSITIVE_INFINITY,
+      end: waypoints[waypoints.length - 1].timestamp || Number.NEGATIVE_INFINITY,
+      values: waypoints as TimebarChartValue[],
+    }
   }
 
   const tracksData = useMemo(() => {
-    if (vesselsLayerLoaded && vesselsLayerInstance) {
+    if (vesselsLayerLoaded) {
       return vesselsLayerInstance
         .getVesselsLayers()
-        .map((l) => l.getVesselTrackData())
-        .map((segments) => ({
-          status: ResourceStatus.Finished,
-          chunks: getTrackChunks(segments),
-          color: '#f00',
-        }))
+        .filter((l) => ids.includes(l.id))
+        .reduce((acc, l) => {
+          return [
+            ...acc,
+            {
+              status: ResourceStatus.Finished,
+              chunks: l.getVesselTrackData().map((segment) => getTrackChunk(segment)),
+              color: '#f00',
+            },
+          ]
+        }, [])
     }
     return []
-  }, [vesselsLayerLoaded, vesselsLayerInstance])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vesselsLayerLoaded, ids])
 
   return <TimebarTracks data={tracksData} />
 }

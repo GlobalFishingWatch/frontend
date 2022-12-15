@@ -1,22 +1,30 @@
 import { useMemo } from 'react'
-import { useVesselsLayerInstance, useVesselsLayerLoaded } from 'layers/vessel/vessels.hooks'
+import {
+  useVesselsLayerInstance,
+  useVesselsLayerLoaded,
+  useVesselsLayerIds,
+} from 'layers/vessel/vessels.hooks'
 import { TimebarTracksEvents } from '@globalfishingwatch/timebar'
 import { useViewport } from 'features/map/map-viewport.hooks'
 
 const TimebarVesselsEvents = () => {
   const vesselsLayerInstance = useVesselsLayerInstance()
   const vesselsLayerLoaded = useVesselsLayerLoaded()
+  const ids = useVesselsLayerIds()
   const { setMapCoordinates } = useViewport()
 
   const eventsData = useMemo(() => {
-    if (vesselsLayerLoaded && vesselsLayerInstance) {
-      const vesselsEvents = vesselsLayerInstance.getVesselsLayers().reduce((acc, l) => {
-        return [...acc, { chunks: l.getVesselEventsData(), color: '#f00' }]
-      }, [])
-      return vesselsEvents
+    if (vesselsLayerLoaded) {
+      return vesselsLayerInstance
+        .getVesselsLayers()
+        .filter((l) => ids.includes(l.id))
+        .reduce((acc, l) => {
+          return [...acc, { chunks: l.getVesselEventsData(), color: '#f00' }]
+        }, [])
     }
     return []
-  }, [vesselsLayerLoaded, vesselsLayerInstance])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vesselsLayerLoaded, ids])
 
   const handleEventClick = (e) => {
     const { coordinates } = e
