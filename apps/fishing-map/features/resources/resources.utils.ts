@@ -1,11 +1,12 @@
 import { FeatureCollection } from 'geojson'
 import { maxBy, minBy } from 'lodash'
 import {
+  Dataset,
   DataviewDatasetConfigParam,
   EndpointId,
   ThinningConfig,
 } from '@globalfishingwatch/api-types'
-import { getTracksChunkSetId } from '@globalfishingwatch/dataviews-client'
+import { getTracksChunkSetId, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
 import { hasDatasetConfigVesselData } from 'features/datasets/datasets.utils'
 import { TimebarGraphs } from 'types'
@@ -17,7 +18,7 @@ export const trackDatasetConfigsCallback = (
   chunks: { start: string; end: string }[],
   timebarGraph
 ) => {
-  return ([info, track, ...events]) => {
+  return ([info, track, ...events], dataview: UrlDataviewInstance) => {
     if (track?.endpoint === EndpointId.Tracks) {
       const thinningQuery = Object.entries(thinningConfig?.config || []).map(([id, value]) => ({
         id,
@@ -70,7 +71,21 @@ export const trackDatasetConfigsCallback = (
 
       if (chunks) {
         const chunkSetId = getTracksChunkSetId(trackWithThinning)
-        allTracks = chunks.map((chunk) => {
+        const dataset: Dataset = dataview.datasets.find((d) => d.id === trackWithThinning.datasetId)
+        // Workaround to avoid showing tracks outside the dataset bounds as the AIS data is changing at the end of 2022
+        const chunksWithDatasetBounds = chunks.flatMap((chunk) => {
+          if (dataset?.endDate && chunk.start >= dataset?.endDate) {
+            return []
+          }
+          return {
+            start:
+              dataset?.startDate && chunk.start <= dataset?.startDate
+                ? dataset?.startDate
+                : chunk.start,
+            end: dataset?.endDate && chunk.end >= dataset?.endDate ? dataset?.endDate : chunk.end,
+          }
+        })
+        allTracks = chunksWithDatasetBounds.map((chunk) => {
           const trackChunk = {
             ...trackWithThinning,
             query: [
