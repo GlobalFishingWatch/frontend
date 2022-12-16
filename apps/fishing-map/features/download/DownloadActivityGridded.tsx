@@ -144,7 +144,7 @@ function DownloadActivityByVessel() {
     if (format === Format.Csv || format === Format.Json) {
       uaEvent({
         category: 'Data downloads',
-        action: `Download CSV file`,
+        action: `Download ${format} file`,
         label: JSON.stringify({
           regionName: downloadAreaName || EMPTY_FIELD_PLACEHOLDER,
           spatialResolution,
@@ -172,7 +172,7 @@ function DownloadActivityByVessel() {
 
     uaEvent({
       category: 'Data downloads',
-      action: `Download GeoTIFF file`,
+      action: `Activity download`,
       label: getEventLabel([
         downloadAreaName,
         ...downloadDataviews
