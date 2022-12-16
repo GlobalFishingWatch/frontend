@@ -68,7 +68,7 @@ export function RiskSummary(props: RiskSummaryProps) {
   } = useRiskIndicator(showIdentityIndicators)
   const { highlightEvent } = useMapEvents()
   const { viewport, setMapCoordinates } = useViewport()
-
+  console.log(loiteringInMPA)
   const [isModalOpen, setIsOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent>()
   const openModal = useCallback((event: RenderedEvent) => {
@@ -320,7 +320,7 @@ export function RiskSummary(props: RiskSummaryProps) {
           severity="medium"
           title={t('event.loitering', 'loitering')}
           titleInfo={<TerminologyLoiteringEvents />}
-          loading={true}
+          loading={eventsLoading}
         >
           <RiskIndicator
             title={
@@ -495,7 +495,7 @@ export function RiskSummary(props: RiskSummaryProps) {
               className={styles.naSubSection}
               icon="event-fishing"
               title={t('event.fishing', 'fishing')}
-              loading={false}
+              loading={isSectionLoading(IndicatorType.fishing) || eventsLoading}
             >
               {!hasFishingInRFMOWithoutAuthorization && (
                 <RiskIndicator
@@ -529,7 +529,7 @@ export function RiskSummary(props: RiskSummaryProps) {
               icon="event-encounter"
               className={styles.naSubSection}
               title={t('event.encounter', 'encounter', { count: 2 })}
-              loading={false}
+              loading={isSectionLoading(IndicatorType.encounter) || eventsLoading}
             >
               {!hasEncountersInRFMOWithoutAuthorization && (
                 <RiskIndicator
@@ -574,7 +574,7 @@ export function RiskSummary(props: RiskSummaryProps) {
               icon="event-loitering"
               className={styles.naSubSection}
               title={t('event.loitering', 'loitering')}
-              loading={false}
+              loading={eventsLoading}
             >
               <RiskIndicator
                 title={
@@ -591,7 +591,7 @@ export function RiskSummary(props: RiskSummaryProps) {
               icon="event-port-visit"
               className={styles.naSubSection}
               title={t('event.portVisitEvents', 'Port Visits')}
-              loading={false}
+              loading={isSectionLoading(IndicatorType.portVisit) || eventsLoading}
             >
               <RiskIndicator
                 title={
@@ -613,7 +613,7 @@ export function RiskSummary(props: RiskSummaryProps) {
             <RiskSection
               className={styles.naSubSection}
               title={t('risk.identity', 'Identity')}
-              loading={false}
+              loading={isSectionLoading(IndicatorType.vesselIdentity)}
             >
               {!hasVesselFlagsOnMOU && (
                 <RiskIndicator
