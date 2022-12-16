@@ -8,14 +8,10 @@ import {
   PickingInfo,
 } from '@deck.gl/core/typed'
 import { MVTLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
-import { IconLayer, ScatterplotLayer } from '@deck.gl/layers/typed'
+import { IconLayer } from '@deck.gl/layers/typed'
 import { MVTWorkerLoader } from '@loaders.gl/mvt'
 import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
-import {
-  ACTIVITY_SWITCH_ZOOM_LEVEL,
-  aggregatePositionsTimeseries,
-  getDateRangeParam,
-} from 'layers/fourwings/fourwings.utils'
+import { ACTIVITY_SWITCH_ZOOM_LEVEL, getDateRangeParam } from 'layers/fourwings/fourwings.utils'
 import { groupBy, orderBy } from 'lodash'
 import { Feature } from 'geojson'
 import bboxPolygon from '@turf/bbox-polygon'
@@ -302,6 +298,6 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     const positionsInViewport = positions.filter((position) =>
       booleanPointInPolygon(position, viewportPolygon)
     )
-    return aggregatePositionsTimeseries(positionsInViewport)
+    return positionsInViewport
   }
 }
