@@ -122,6 +122,7 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
 
   const onDataviewFilterChange = useCallback(
     (dataviewInstance: UrlDataviewInstance) => {
+      console.log(newDataviewInstanceConfig)
       if (!newDataviewInstanceConfig) {
         setNewDataviewInstanceConfig(dataviewInstance)
       } else {

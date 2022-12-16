@@ -41,6 +41,7 @@ import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hoo
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { isGFWUser } from 'features/user/user.slice'
+import { getEventLabel } from 'utils/analytics'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
@@ -231,6 +232,14 @@ function Search() {
         batch(() => {
           if (vesselGroupId) {
             dispatch(setVesselGroupEditId(vesselGroupId))
+            uaEvent({
+              category: 'Vessel groups',
+              action: `Use the 'add to vessel group' functionality from search`,
+              label: getEventLabel([
+                vessels.length.toString(),
+                ...vessels.map((vessel) => vessel.id),
+              ]),
+            })
           }
           dispatch(setNewVesselGroupSearchVessels(vessels))
           dispatch(setVesselGroupsModalOpen(true))
