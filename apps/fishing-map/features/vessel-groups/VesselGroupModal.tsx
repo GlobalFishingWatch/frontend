@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { event as uaEvent } from 'react-ga'
 import { VesselGroupVessel } from '@globalfishingwatch/api-types'
 import {
   Modal,
@@ -23,6 +24,7 @@ import {
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { getEventLabel } from 'utils/analytics'
 import {
   IdField,
   resetVesselGroup,
@@ -199,6 +201,14 @@ function VesselGroupModal(): React.ReactElement {
       addVesselGroupToDataviewInstance(dispatchedAction.payload.id)
       close()
     }
+    uaEvent({
+      category: 'Vessel groups',
+      action: `Create new vessel group`,
+      label: getEventLabel([
+        vessels.length.toString(),
+        ...vessels.map((vessel) => vessel.vesselId),
+      ]),
+    })
   }, [
     vesselGroupSearchVessels,
     editingVesselGroupId,
