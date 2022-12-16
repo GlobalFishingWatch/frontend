@@ -292,7 +292,6 @@ class Timebar extends Component {
               absoluteStart={absoluteStart}
               absoluteEnd={absoluteEnd}
               onBookmarkChange={this.props.onBookmarkChange}
-              onIntervalClick={this.props.onIntervalClick}
               bookmarkStart={bookmarkStart}
               bookmarkEnd={bookmarkEnd}
               bookmarkPlacement={bookmarkPlacement}

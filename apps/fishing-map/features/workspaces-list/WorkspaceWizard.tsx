@@ -95,7 +95,7 @@ function WorkspaceWizard() {
     uaEvent({
       category: 'Workspace Management',
       action: 'Uses marine manager workspace wizard',
-      label: getEventLabel([inputValue, selectedItem.properties.name]),
+      label: getEventLabel([inputSearch, selectedItem.properties.name]),
     })
     setSelectedItem(selectedItem)
     setAreasMatching([])
