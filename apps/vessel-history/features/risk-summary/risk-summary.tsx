@@ -68,7 +68,7 @@ export function RiskSummary(props: RiskSummaryProps) {
   } = useRiskIndicator(showIdentityIndicators)
   const { highlightEvent } = useMapEvents()
   const { viewport, setMapCoordinates } = useViewport()
-  console.log(loiteringInMPA)
+
   const [isModalOpen, setIsOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent>()
   const openModal = useCallback((event: RenderedEvent) => {
