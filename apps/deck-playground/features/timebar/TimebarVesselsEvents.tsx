@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import {
   useVesselsLayerInstance,
   useVesselsLayerLoaded,
@@ -26,11 +26,14 @@ const TimebarVesselsEvents = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vesselsLayerLoaded, ids])
 
-  const handleEventClick = (e) => {
-    const { coordinates } = e
-    const [longitude, latitude] = coordinates
-    setMapCoordinates({ latitude, longitude, zoom: 9 })
-  }
+  const handleEventClick = useCallback(
+    (e) => {
+      const { coordinates } = e
+      const [longitude, latitude] = coordinates
+      setMapCoordinates({ latitude, longitude, zoom: 9 })
+    },
+    [setMapCoordinates]
+  )
 
   return <TimebarTracksEvents data={eventsData} onEventClick={handleEventClick} />
 }

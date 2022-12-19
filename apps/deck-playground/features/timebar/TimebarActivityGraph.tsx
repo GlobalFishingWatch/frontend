@@ -26,7 +26,7 @@ const TimebarActivityGraph = () => {
   }, [id, visible])
 
   const formattedData = useMemo(() => {
-    if (fourwingsLayerLoaded) {
+    if (fourwingsLayerInstance && fourwingsLayerLoaded) {
       const data = fourwingsLayerInstance.getTimeseries()
       if (mode === 'heatmap') {
         const dataArray = Object.keys(data)

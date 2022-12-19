@@ -84,7 +84,7 @@ function Sidebar() {
                     <ul>
                       {vesselIds?.length > 0 &&
                         vesselIds.map((vessel) => (
-                          <li>
+                          <li key={vessel}>
                             {vessel}{' '}
                             <IconButton
                               icon="delete"
