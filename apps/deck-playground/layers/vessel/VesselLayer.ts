@@ -6,24 +6,28 @@ import { VesselTrackLayer, _VesselTrackLayerProps } from 'layers/vessel/VesselTr
 // Loaders
 import { trackLoader } from 'loaders/vessels/trackLoader'
 import { vesselEventsLoader } from 'loaders/vessels/eventsLoader'
+import { Segment } from '@globalfishingwatch/api-types'
 
 export type VesselLayerProps = _VesselTrackLayerProps & _VesselEventsLayerProps
 
+export const TRACK_LAYER_PREFIX = 'track'
+export const EVENTS_LAYER_PREFIX = 'events'
+
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   layersLoaded: Layer[] = []
+  layers: Layer[] = []
 
   onDataLoad: LayerProps['onDataLoad'] = (data, context) => {
     this.layersLoaded = [...this.layersLoaded, context.layer]
-    const layersArray = [...this.getVesselEventsLayers(), this.getTrackLayer()]
-    if (this.layersLoaded.length === layersArray.length) {
+    if (this.layersLoaded.length === this.layers.length) {
       this.props.onDataLoad(data, context)
     }
   }
 
   _getVesselTrackLayer() {
-    return new VesselTrackLayer(
+    return new VesselTrackLayer<Segment[]>(
       this.getSubLayerProps({
-        id: `vessel-layer-${this.props.id}`,
+        id: `${TRACK_LAYER_PREFIX}-vessel-layer-${this.props.id}`,
         data: `https://gateway.api.dev.globalfishingwatch.org/v2/vessels/${this.props.id}/tracks?binary=true&fields=lonlat%2Ctimestamp&format=valueArray&distance-fishing=500&bearing-val-fishing=1&change-speed-fishing=200&min-accuracy-fishing=30&distance-transit=500&bearing-val-transit=1&change-speed-transit=200&min-accuracy-transit=30&datasets=public-global-fishing-tracks%3Av20201001`,
         loaders: [trackLoader],
         widthUnits: 'pixels',
@@ -56,7 +60,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   _getVesselFishingEventsLayer() {
     return new VesselEventsLayer(
       this.getSubLayerProps({
-        id: `fishing-${this.props.id}`,
+        id: `${EVENTS_LAYER_PREFIX}-fishing-${this.props.id}`,
         data: `https://gateway.api.dev.globalfishingwatch.org/v2/events?limit=99999&offset=0&vessels=${this.props.id}&summary=true&datasets=public-global-fishing-events%3Av20201001`,
         loaders: [vesselEventsLoader],
         eventType: 'fishing',
@@ -73,7 +77,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   _getVesselPortVisitEventsLayer() {
     return new VesselEventsLayer(
       this.getSubLayerProps({
-        id: `port-visits-${this.props.id}`,
+        id: `${EVENTS_LAYER_PREFIX}-port-visits-${this.props.id}`,
         data: `https://gateway.api.dev.globalfishingwatch.org/v2/events?limit=99999&offset=0&vessels=${this.props.id}&summary=true&confidences=4&datasets=public-global-port-visits-c2-events%3Av20201001`,
         loaders: [vesselEventsLoader],
         eventType: 'port-visit',
@@ -90,7 +94,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   _getVesselEncounterEventsLayer() {
     return new VesselEventsLayer(
       this.getSubLayerProps({
-        id: `encounters-${this.props.id}`,
+        id: `${EVENTS_LAYER_PREFIX}-encounters-${this.props.id}`,
         data: `https://gateway.api.dev.globalfishingwatch.org/v2/events?limit=99999&offset=0&vessels=${this.props.id}&summary=true&datasets=public-global-encounters-events%3Av20201001`,
         loaders: [vesselEventsLoader],
         eventType: 'encounters',
@@ -105,16 +109,20 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   renderLayers(): Layer<{}> | LayersList {
-    return [
-      this._getVesselFishingEventsLayer(),
-      this._getVesselPortVisitEventsLayer(),
-      this._getVesselEncounterEventsLayer(),
-      this._getVesselTrackLayer(),
-    ]
+    this.layers = [...this.getVesselEventsLayers(), this._getVesselTrackLayer()]
+    return this.layers
   }
 
   getTrackLayer() {
-    return this._getVesselTrackLayer()
+    return this.getSubLayers().find((l) => l.id.includes(TRACK_LAYER_PREFIX)) as VesselTrackLayer<
+      Segment[]
+    >
+  }
+
+  getEventLayers() {
+    return this.getSubLayers().filter((l) =>
+      l.id.includes(EVENTS_LAYER_PREFIX)
+    ) as VesselEventsLayer[]
   }
 
   getVesselsData() {
@@ -130,7 +138,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   getVesselEventsData() {
-    const events = this.getSubLayers().reduce((acc, l) => {
+    const events = this.getEventLayers().reduce((acc, l: VesselEventsLayer) => {
       const events = l.props.eventType ? l.props.data : []
       return [...acc, events]
     }, [])
@@ -139,10 +147,6 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   getVesselTrackData() {
-    const layersTracks = this.getSubLayers().reduce((acc, l) => {
-      const layerTracks = l.props.eventType ? [] : l.props.data
-      return [...acc, layerTracks]
-    }, [])
-    return layersTracks.flat()
+    return this.getTrackLayer()?.getSegments()
   }
 }
