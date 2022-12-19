@@ -13,7 +13,7 @@ import { MVTWorkerLoader } from '@loaders.gl/mvt'
 import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
 import { ACTIVITY_SWITCH_ZOOM_LEVEL, getDateRangeParam } from 'layers/fourwings/fourwings.utils'
 import { groupBy, orderBy } from 'lodash'
-import { Feature } from 'geojson'
+import { Feature, Point } from 'geojson'
 import bboxPolygon from '@turf/bbox-polygon'
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
@@ -144,7 +144,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       const allVesselPositions: Feature[] = this.state.allPositions.filter(
         (p) => p.properties.vesselId === info.object?.properties?.vesselId
       )
-      const latestVesselPosition: Feature = this.state.lastPositions.find(
+      const latestVesselPosition: Feature<Point> = this.state.lastPositions.find(
         (p) => p.properties.vesselId === info.object?.properties?.vesselId
       )
       const vesselHours = allVesselPositions.reduce((acc, next) => acc + next.properties.value, 0)
@@ -189,6 +189,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     const { minFrame, maxFrame } = this.props
     const { allPositions, lastPositions } = this.state
     const highlightedVesselId = this.props.highlightedVesselId || this.state.highlightedVesselId
+    const IconLayerClass = this.getSubLayerClass('icons', IconLayer)
     return [
       new MVTLayer(this.props, {
         id: 'position-tiles',
@@ -221,7 +222,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       //   },
       // }),
       // LINES
-      new IconLayer(this.props, {
+      new IconLayerClass(this.props, {
         id: 'allPositions',
         data: allPositions,
         iconAtlas: '/vessel-sprite.png',
@@ -252,7 +253,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           getColor: [highlightedVesselId],
         },
       }),
-      new IconLayer(this.props, {
+      new IconLayerClass(this.props, {
         id: 'lastPositionsOver',
         data: lastPositions,
         iconAtlas: '/vessel-sprite.png',

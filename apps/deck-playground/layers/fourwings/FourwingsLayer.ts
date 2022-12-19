@@ -19,7 +19,7 @@ export type FourwingsColorRamp = {
 }
 
 export type FourwingsLayerProps<DataT = any> = FourwingsPositionsTileLayerProps<DataT> &
-  FourwingsHeatmapTileLayerProps<DataT> & {
+  FourwingsHeatmapTileLayerProps & {
     mode: FourwingsLayerMode
   }
 
