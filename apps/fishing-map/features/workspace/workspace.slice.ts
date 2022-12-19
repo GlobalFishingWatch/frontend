@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { uniq } from 'lodash'
-import { DateTime } from 'luxon'
 import {
   Workspace,
   Dataview,
@@ -30,9 +29,9 @@ import { HOME, WORKSPACE } from 'routes/routes'
 import { cleanQueryLocation, updateLocation, updateQueryParam } from 'routes/routes.actions'
 import { selectDaysFromLatest } from 'features/app/app.selectors'
 import {
-  BASEMAP_LABELS_DATAVIEW_ID,
   DEFAULT_DATAVIEW_IDS,
   getWorkspaceEnv,
+  ONLY_GFW_STAFF_DATAVIEWS,
   VESSEL_PRESENCE_DATAVIEW_ID,
   WorkspaceCategories,
 } from 'data/workspaces'
@@ -42,6 +41,7 @@ import { isGFWUser, isGuestUser } from 'features/user/user.slice'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { getVesselDataviewInstanceDatasetConfig } from 'features/dataviews/dataviews.utils'
 import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
+import { getUTCDateTime } from 'utils/dates'
 import { selectWorkspaceStatus } from './workspace.selectors'
 
 type LastWorkspaceVisited = { type: string; payload: any; query: any }
@@ -93,14 +93,16 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         : null
       if (!workspace && locationType === HOME) {
         workspace = await getDefaultWorkspace()
-        if (gfwUser) {
-          // Labels only available for gfw staff for now
-          workspace.dataviewInstances.push({
-            id: 'basemap-labels',
-            config: {
-              visible: false,
-            },
-            dataviewId: BASEMAP_LABELS_DATAVIEW_ID,
+        if (gfwUser && ONLY_GFW_STAFF_DATAVIEWS.length) {
+          // Inject dataviews for gfw staff only
+          ONLY_GFW_STAFF_DATAVIEWS.forEach((id) => {
+            workspace.dataviewInstances.push({
+              id: `${id}-instance`,
+              config: {
+                visible: false,
+              },
+              dataviewId: id,
+            })
           })
         }
       }
@@ -120,12 +122,12 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         selectDaysFromLatest(state) || workspace.state?.daysFromLatest || undefined
       const endAt =
         daysFromLatest !== undefined
-          ? DateTime.fromISO(DEFAULT_TIME_RANGE.end).toUTC()
-          : DateTime.fromISO(workspace.endAt).toUTC()
+          ? getUTCDateTime(DEFAULT_TIME_RANGE.end)
+          : getUTCDateTime(workspace.endAt || DEFAULT_TIME_RANGE.end)
       const startAt =
         daysFromLatest !== undefined
           ? endAt.minus({ days: daysFromLatest })
-          : DateTime.fromISO(workspace.startAt).toUTC()
+          : getUTCDateTime(workspace.startAt || DEFAULT_TIME_RANGE.start)
 
       const defaultWorkspaceDataviews = gfwUser
         ? [...DEFAULT_DATAVIEW_IDS, VESSEL_PRESENCE_DATAVIEW_ID] // Only for gfw users as includes the private-global-presence-tracks dataset
@@ -313,10 +315,12 @@ const workspaceSlice = createSlice({
     setLastWorkspaceVisited: (state, action: PayloadAction<LastWorkspaceVisited | undefined>) => {
       state.lastVisited = action.payload
     },
-    removeLocationLabelsDataview: (state) => {
-      state.data.dataviewInstances = state.data.dataviewInstances.filter(
-        (d) => d.dataviewId !== BASEMAP_LABELS_DATAVIEW_ID
-      )
+    removeGFWStaffOnlyDataviews: (state) => {
+      if (ONLY_GFW_STAFF_DATAVIEWS.length) {
+        state.data.dataviewInstances = state.data.dataviewInstances.filter((d) =>
+          ONLY_GFW_STAFF_DATAVIEWS.includes(d.dataviewId)
+        )
+      }
     },
   },
   extraReducers: (builder) => {
@@ -372,7 +376,7 @@ const workspaceSlice = createSlice({
   },
 })
 
-export const { setLastWorkspaceVisited, cleanCurrentWorkspaceData, removeLocationLabelsDataview } =
+export const { setLastWorkspaceVisited, cleanCurrentWorkspaceData, removeGFWStaffOnlyDataviews } =
   workspaceSlice.actions
 
 export default workspaceSlice.reducer

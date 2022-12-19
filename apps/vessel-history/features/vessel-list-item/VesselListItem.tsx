@@ -27,7 +27,7 @@ interface ListItemProps {
 
 const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
   const { t } = useTranslation()
-  const { vessel, onDeleteClick, onVesselClick = () => { }, selected = false } = props
+  const { vessel, onDeleteClick, onVesselClick = () => {}, selected = false } = props
   const { formatSource } = useVesselsConnect()
   const onClick = useCallback(() => onVesselClick(vessel), [onVesselClick, vessel])
   const [relatedOpen, setRelatedOpen] = useState(false)
@@ -43,9 +43,16 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
         <div className={styles.vesselItem} onClick={onClick}>
           <h3>
             {vessel?.shipname ?? DEFAULT_EMPTY_VALUE}
-            {props.saved && vessel.aka && vessel.aka.length && <span> ({t('vessel.nVesselsMerged', '{{count}} merged', {
-              count: vessel.aka.length + 1,
-            })})</span>}
+            {!!props.saved && !!vessel.aka && vessel.aka.length > 0 && (
+              <span>
+                {' '}
+                (
+                {t('vessel.nVesselsMerged', '{{count}} merged', {
+                  count: vessel.aka.length + 1,
+                })}
+                )
+              </span>
+            )}
           </h3>
           <div className={styles.identifiers}>
             <div>
@@ -77,26 +84,40 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
               </div>
             )}
             <div className={styles.transmissionField}>
-              <div className={styles.label}>{t('vessel.transmission_plural', 'transmissions')}
-                {props.showLabelsHelp &&
-                  <DataAndTerminology size="tiny" type="default" title={t('vessel.transmission_plural', 'transmissions')}>
+              <div className={styles.label}>
+                {t('vessel.transmission_plural', 'transmissions')}
+                {props.showLabelsHelp && (
+                  <DataAndTerminology
+                    size="tiny"
+                    type="default"
+                    title={t('vessel.transmission_plural', 'transmissions')}
+                  >
                     <Trans i18nKey="vessel.transmissionDescription">
-                      AIS stands for Automatic Identification Systems. AIS is a GPS-like device that large ships use to
-                      broadcast their position in order to avoid collisions. The positions listed in the vessel search
-                      results refer to the number of vessel positions broadcast over AIS that we have processed and matched
-                      to the search result, over a period of time.
-                      For more information on how AIS data is processed and caveats of our algorithms, please see our FAQs.
+                      AIS stands for Automatic Identification Systems. AIS is a GPS-like device that
+                      large ships use to broadcast their position in order to avoid collisions. The
+                      positions listed in the vessel search results refer to the number of vessel
+                      positions broadcast over AIS that we have processed and matched to the search
+                      result, over a period of time. For more information on how AIS data is
+                      processed and caveats of our algorithms, please see our FAQs.
                     </Trans>
                   </DataAndTerminology>
-                }
+                )}
               </div>
               {vessel.firstTransmissionDate || vessel.lastTransmissionDate ? (
                 <Fragment>
-                  {t('vessel.transmissionRange', '{{transmissions}} AIS transmissions from {{start}} to {{end}}', {
-                    transmissions: vessel.posCount,
-                    start: vessel.firstTransmissionDate ? formatI18nDate(vessel.firstTransmissionDate) : DEFAULT_EMPTY_VALUE,
-                    end: vessel.lastTransmissionDate ? formatI18nDate(vessel.lastTransmissionDate) : DEFAULT_EMPTY_VALUE,
-                  })}
+                  {t(
+                    'vessel.transmissionRange',
+                    '{{transmissions}} AIS transmissions from {{start}} to {{end}}',
+                    {
+                      transmissions: vessel.posCount,
+                      start: vessel.firstTransmissionDate
+                        ? formatI18nDate(vessel.firstTransmissionDate)
+                        : DEFAULT_EMPTY_VALUE,
+                      end: vessel.lastTransmissionDate
+                        ? formatI18nDate(vessel.lastTransmissionDate)
+                        : DEFAULT_EMPTY_VALUE,
+                    }
+                  )}
                 </Fragment>
               ) : (
                 DEFAULT_EMPTY_VALUE
@@ -132,40 +153,49 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
               parsedYears={vessel.years}
             />
           )}
-          {vessel.relatedVessels?.length > 1 &&
+          {vessel.relatedVessels?.length > 1 && (
             <Fragment>
               <div className={styles.relatedVesselNotification}>
-                {t('vessel.relatedNotification', 'This vessel is the combination of {{amount}} results', {
-                  amount: vessel.relatedVessels.length
-                })}
+                {t(
+                  'vessel.relatedNotification',
+                  'This vessel is the combination of {{amount}} results',
+                  {
+                    amount: vessel.relatedVessels.length,
+                  }
+                )}
               </div>
-              {!relatedOpen && <Button
-                className={styles.fullWidth}
-                type="secondary"
-                size="default"
-                onClick={() => setRelatedOpen(true)}
-              >
-                {t('search.viewIndividual', 'VIEW INDIVIDUAL RESULTS')}
-              </Button>}
-              {relatedOpen && vessel.relatedVessels.map((relatedVessel, index) =>
-                <RelatedVesselListItem
-                  key={index}
-                  vessel={relatedVessel}
-                  index={index}
-                  //onVesselClick={onVesselClick(index)}
-                  selected={selected}
-                ></RelatedVesselListItem>
+              {!relatedOpen && (
+                <Button
+                  className={styles.fullWidth}
+                  type="secondary"
+                  size="default"
+                  onClick={() => setRelatedOpen(true)}
+                >
+                  {t('search.viewIndividual', 'VIEW INDIVIDUAL RESULTS')}
+                </Button>
               )}
-              {relatedOpen && <Button
-                className={styles.fullWidth}
-                type="secondary"
-                size="default"
-                onClick={() => setRelatedOpen(false)}
-              >
-                {t('search.hideIndividual', 'HIDE INDIVIDUAL RESULTS')}
-              </Button>}
+              {relatedOpen &&
+                vessel.relatedVessels.map((relatedVessel, index) => (
+                  <RelatedVesselListItem
+                    key={index}
+                    vessel={relatedVessel}
+                    index={index}
+                    //onVesselClick={onVesselClick(index)}
+                    selected={selected}
+                  ></RelatedVesselListItem>
+                ))}
+              {relatedOpen && (
+                <Button
+                  className={styles.fullWidth}
+                  type="secondary"
+                  size="default"
+                  onClick={() => setRelatedOpen(false)}
+                >
+                  {t('search.hideIndividual', 'HIDE INDIVIDUAL RESULTS')}
+                </Button>
+              )}
             </Fragment>
-          }
+          )}
           {props.saved && (
             <div>
               <label>{t('vessel.savedOn', 'saved on')}</label>

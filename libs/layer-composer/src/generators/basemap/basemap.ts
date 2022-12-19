@@ -27,7 +27,7 @@ class BasemapGenerator {
     return {
       id: config.id,
       sources: this._getStyleSources(finalConfig),
-      layers: layers[config.basemap],
+      layers: layers[config.basemap] ?? [],
     }
   }
 }

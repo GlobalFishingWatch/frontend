@@ -24,9 +24,12 @@
 }
 
 .event {
-  padding: var(--space-M) 0 var(--space-S) 0;
   margin-left: 0;
-  border-top: var(--border);
+}
+
+.port_visit_entry {
+  border-bottom: var(--border);
+  margin-bottom: var(--space-XS);
 }
 
 .subtitle {

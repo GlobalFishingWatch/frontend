@@ -1,11 +1,12 @@
 {
+  "name": "api-types",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/api-types/src",
   "projectType": "library",
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nrwl/web:rollup",
+      "executor": "@nrwl/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/api-types",
@@ -32,7 +33,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/api-types"],
+      "outputs": ["{workspaceRoot}/coverage/libs/api-types"],
       "options": {
         "jestConfig": "libs/api-types/jest.config.ts",
         "passWithNoTests": true

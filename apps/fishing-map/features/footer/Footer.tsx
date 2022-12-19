@@ -1,6 +1,7 @@
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { WorkspaceCategories } from 'data/workspaces'
 import { selectLocationCategory } from 'routes/routes.selectors'
 import LogoDonaBertarelli from 'assets/images/partner-logos/dona-bertarelli@2x.png'
@@ -11,14 +12,20 @@ import styles from './Footer.module.css'
 
 export const FOOTER_HEIGHT = 24
 
-const FooterPartners = () => {
+interface FooterPartnersProps {
+  smallScreen: boolean
+}
+
+const FooterPartners = ({ smallScreen }: FooterPartnersProps) => {
   const category = useSelector(selectLocationCategory)
   const { t } = useTranslation()
   switch (category) {
     case WorkspaceCategories.MarineManager:
       return (
         <div className={styles.partners}>
-          <span className={styles.text}>{t('footer.supportBy', 'Supported by')}</span>
+          {!smallScreen && (
+            <span className={styles.text}>{t('footer.supportBy', 'Supported by')}</span>
+          )}
           <a href="https://donabertarelli.com/" rel="noopener noreferrer" target="_blank">
             <img src={LogoDonaBertarelli.src} alt="Dona Bertarelli" width="129px" />
           </a>
@@ -27,7 +34,11 @@ const FooterPartners = () => {
     default:
       return (
         <div className={styles.partners}>
-          <span className={styles.text}>{t('footer.convenedBy', 'A partnership convened by')}</span>
+          {!smallScreen && (
+            <span className={styles.text}>
+              {t('footer.convenedBy', 'A partnership convened by')}
+            </span>
+          )}
           <a href="https://oceana.org/" rel="noopener noreferrer" target="_blank">
             <img src={LogoOceana.src} alt="Oceana" width="64px" height="24px" />
           </a>
@@ -43,10 +54,15 @@ const FooterPartners = () => {
 }
 
 function Footer(): React.ReactElement {
+  const isSmallScreen = useSmallScreen(500)
+  const copyright = isSmallScreen ? '© GFW ' : '© Global Fishing Watch '
   return (
     <footer className={cx('print-hidden', styles.footer)}>
-      <FooterPartners />
-      <span className={styles.text}>© Global Fishing Watch {new Date().getFullYear()}</span>
+      <FooterPartners smallScreen={isSmallScreen} />
+      <span className={styles.text}>
+        {copyright}
+        {new Date().getFullYear()}
+      </span>
     </footer>
   )
 }

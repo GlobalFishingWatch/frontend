@@ -10,7 +10,7 @@ import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
 import { parsePropertiesBbox } from 'features/map/map.utils'
-import { fetchAreaThunk, getAreaKey } from 'features/areas/areas.slice'
+import { fetchAreaDetailThunk } from 'features/areas/areas.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import useMapInstance from 'features/map/map-context.hooks'
@@ -48,13 +48,12 @@ export const useContextInteractions = () => {
 
       const datasetId = feature.datasetId
       const areaId = feature.properties?.gfw_id
-      const areaKey = getAreaKey({ datasetId, areaId })
       const areaName = feature.value || feature.title
       batch(() => {
-        dispatch(setDownloadActivityAreaKey(areaKey))
+        dispatch(setDownloadActivityAreaKey({ datasetId, areaId }))
         dispatch(setClickedEvent(null))
       })
-      dispatch(fetchAreaThunk({ datasetId, areaId, areaName }))
+      dispatch(fetchAreaDetailThunk({ datasetId, areaId, areaName }))
 
       cleanFeatureState('highlight')
     },

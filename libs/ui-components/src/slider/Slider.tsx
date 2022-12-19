@@ -40,7 +40,7 @@ const borderColor =
     ? getComputedStyle(document.body).getPropertyValue('--color-border') || fallbackBorderColor
     : fallbackBorderColor
 
-export const formatNumber = (num: number): string => {
+export const formatSliderNumber = (num: number): string => {
   if (num >= 1000) return format('.2s')(num)
   if (num > 9) return format('.0f')(num)
   return format('.1f')(num)
@@ -144,7 +144,7 @@ export function Slider(props: SliderProps) {
                   className={styles.sliderThumbCounter}
                   style={{ opacity: isDefaultSelection ? 0.7 : 1 }}
                 >
-                  {formatNumber(scaledValue)}
+                  {formatSliderNumber(scaledValue)}
                 </span>
               </div>
             )

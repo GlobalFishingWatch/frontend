@@ -7,10 +7,7 @@ export interface Bounds {
   east: number
 }
 
-export const filterFeaturesByBounds = <P = unknown>(
-  features: GeoJSONFeature<P>[],
-  bounds: Bounds
-) => {
+export const filterFeaturesByBounds = (features: GeoJSONFeature[], bounds: Bounds) => {
   if (!bounds) {
     return []
   }
@@ -18,7 +15,8 @@ export const filterFeaturesByBounds = <P = unknown>(
   const rightWorldCopy = east >= 180
   const leftWorldCopy = west <= -180
   return features.filter((f) => {
-    const [lon, lat] = (f.geometry as any).coordinates[0][0]
+    const lon = (f.geometry as any).coordinates?.[0]?.[0]?.[0] || f.properties.lon
+    const lat = (f.geometry as any).coordinates?.[0]?.[0]?.[1] || f.properties.lat
     if (lat < south || lat > north) {
       return false
     }

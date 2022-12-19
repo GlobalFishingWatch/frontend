@@ -1,0 +1,91 @@
+{
+  "root": "apps/<%= name %>",
+  "sourceRoot": "apps/<%= name %>",
+  "projectType": "application",
+  "targets": {
+    "deploy": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["nx build <%= name %> --parallel", "nx docker-prepare <%= name %>"],
+        "parallel": false
+      }
+    },
+    "docker-prepare": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": [
+          "cp config/entrypoint.sh dist/apps/<%= name %>",
+          "cp apps/<%= name %>/nginx.conf dist/apps/<%= name %>"
+        ]
+      }
+    },
+    "compile": {
+      "executor": "@nrwl/next:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "root": "apps/<%= name %>",
+        "outputPath": "dist/apps/<%= name %>"
+      },
+      "configurations": {
+        "production": {}
+      }
+    },
+    "start": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "nx clean-locales <%= name %>",
+          "nx serve i18n-labels",
+          "nx serve <%= name %>"
+        ],
+        "parallel": true
+      }
+    },
+    "clean-locales": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": ["rm -rf dist/apps/<%= name %>/public/locales"]
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/next:server",
+      "options": {
+        "buildTarget": "<%= name %>:compile",
+        "dev": true,
+        "port": 3003
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "<%= name %>:compile:production",
+          "dev": false
+        }
+      }
+    },
+    "build": {
+      "executor": "@nrwl/next:export",
+      "options": {
+        "buildTarget": "<%= name %>:compile:production"
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/<%= name %>"],
+      "options": {
+        "jestConfig": "apps/<%= name %>/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/<%= name %>/**/*.{ts,tsx,js,jsx}"]
+      }
+    }
+  },
+  "tags": [],
+  "name": "tools-generators-app-files"
+}

@@ -15,6 +15,7 @@ export type InputDateProps = React.InputHTMLAttributes<HTMLInputElement> & {
   max?: string
   min?: string
   step?: number
+  type?: 'month' | 'date' | 'datetime-local'
   inputSize?: InputSize
   onRemove?: (e: React.MouseEvent) => void
 }
@@ -33,6 +34,7 @@ function InputDateComponent(props: InputDateProps, forwardedRef: Ref<HTMLInputEl
     step,
     onRemove,
     inputSize = 'default',
+    type = 'date',
     invalid,
     ...rest
   } = props
@@ -58,7 +60,7 @@ function InputDateComponent(props: InputDateProps, forwardedRef: Ref<HTMLInputEl
     <div className={cx(baseStyles.container, styles.container, styles[inputSize], className)}>
       {labelContent && <label htmlFor={inputProps.id}>{labelContent}</label>}
       <input
-        type="date"
+        type={type}
         value={yymmddDate}
         className={cx(styles.input, { [styles.invalid]: isInvalid })}
         ref={inputRef}

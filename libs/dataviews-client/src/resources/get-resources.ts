@@ -14,7 +14,10 @@ import {
 import { resolveEndpoint } from '../resolve-endpoint'
 
 export type GetDatasetConfigsCallbacks = {
-  tracks?: (datasetConfigs: DataviewDatasetConfig[]) => DataviewDatasetConfig[]
+  tracks?: (
+    datasetConfigs: DataviewDatasetConfig[],
+    dataview?: UrlDataviewInstance
+  ) => DataviewDatasetConfig[]
   activityContext?: (datasetConfigs: DataviewDatasetConfig) => DataviewDatasetConfig
 }
 export const getResources = (
@@ -61,7 +64,7 @@ export const getResources = (
     let preparedDatasetConfigs = [info, track, ...events]
 
     if (callbacks.tracks) {
-      preparedDatasetConfigs = callbacks.tracks(preparedDatasetConfigs)
+      preparedDatasetConfigs = callbacks.tracks(preparedDatasetConfigs, dataview)
     }
 
     const preparedDataview = {

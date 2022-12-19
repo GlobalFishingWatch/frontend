@@ -9,8 +9,15 @@
   },
   "timerange": {
     "title": "Pilih rentang waktu",
+    "year": "Year",
+    "month": "Month",
+    "day": "Day",
     "start": "mulai",
     "end": "akhir",
+    "selectAValidDate": "Please select a valid date",
+    "endBeforeStart": "The end needs to be after the start",
+    "tooLongForMonths": "Your timerange is too long to see individual months",
+    "tooLongForDays": "Your timerange is too long to see individual days",
     "last30days": "30 hari terakhir",
     "last3months": "3 bulan terakhir",
     "last6months": "6 bulan terakhir",
@@ -31,11 +38,15 @@
   "dragLabel": "Seret untuk mengubah rentang waktu",
   "lastUpdate": "Pembaharuan terakhir",
   "setBookmark": "Tandai rentang waktu saat ini",
-  "day": "hari",
-  "year": "tahun",
-  "month": "bulan",
-  "hour": "jam",
-  "zoomIn": "Perbesar",
-  "zoomTo": "Perbesar ke",
-  "zoomOut": "Perkecil"
+  "intervals": {
+    "hour": "hour",
+    "hourTooltip": "See hourly data",
+    "day": "day",
+    "dayTooltip": "See daily data",
+    "month": "month",
+    "monthTooltip": "See monthly data",
+    "year": "year",
+    "yearTooltip": "See yearly data"
+  },
+  "zoomTo": "Perbesar ke"
 }

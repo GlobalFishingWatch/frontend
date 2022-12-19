@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Modal, Spinner } from '@globalfishingwatch/ui-components'
 import { useUser } from 'features/user/user.hooks'
@@ -33,7 +33,7 @@ export interface RiskSummaryProps {
 
 export function RiskSummary(props: RiskSummaryProps) {
   const { t } = useTranslation()
-  const { authorizedIdentityIndicators: showIdentityIndicators, authorizedInsurer } = useUser()
+  const { authorizedIdentityIndicators: showIdentityIndicators } = useUser()
   const {
     coverage,
     encountersInForeignEEZ,
@@ -131,7 +131,6 @@ export function RiskSummary(props: RiskSummaryProps) {
 
   const hasIUUIndicators = iuuBlacklisted
 
-  if (!authorizedInsurer) return <Fragment />
   if (eventsLoading || indicatorsLoading) return <Spinner className={styles.spinnerFull} />
   const hasEncountersIndicators =
     hasEncountersInMPAs || hasEncountersInForeignEEZs || hasEncountersInRFMOWithoutAuthorization
@@ -167,7 +166,7 @@ export function RiskSummary(props: RiskSummaryProps) {
                 format: { year: 'numeric' },
               })
             })`}
-            history={vessel.history.iuuListing.byDate}
+            history={vessel.history.iuuListing?.byDate}
             field={VesselFieldLabel.iuuStatus}
             vesselName={vessel.shipname}
           />
@@ -191,6 +190,7 @@ export function RiskSummary(props: RiskSummaryProps) {
               ) as string
             }
             subtitle={' '}
+            section="gaps"
             events={gapsIntentionalDisabling}
             onEventInfoClick={openModal}
             onEventMapClick={onEventMapClick}
@@ -215,6 +215,7 @@ export function RiskSummary(props: RiskSummaryProps) {
                   }
                 ) as string
               }
+              section="fishing-rmfo"
               // The list of regions will be visible once the dataset (proto)
               // that includes events authorizations is used to get the resources
               subtitle={!!fishingRFMOsWithoutAuth && `(${fishingRFMOsWithoutAuth})`}
@@ -230,6 +231,7 @@ export function RiskSummary(props: RiskSummaryProps) {
                   count: fishingInMPA.length,
                 }) as string
               }
+              section="fishing-mpa"
               events={fishingInMPA}
               onEventInfoClick={openModal}
               onEventMapClick={onEventMapClick}
@@ -255,6 +257,7 @@ export function RiskSummary(props: RiskSummaryProps) {
                   }
                 ) as string
               }
+              section="encounters"
               // The list of regions will be visible once the dataset (proto)
               // that includes events authorizations is used to get the resources
               subtitle={!!encountersRFMOsWithoutAuth && `(${encountersRFMOsWithoutAuth})`}
@@ -270,6 +273,7 @@ export function RiskSummary(props: RiskSummaryProps) {
                   count: encountersInMPA.length,
                 }) as string
               }
+              section="encounters-mpa"
               events={encountersInMPA}
               onEventInfoClick={openModal}
               onEventMapClick={onEventMapClick}
@@ -282,6 +286,7 @@ export function RiskSummary(props: RiskSummaryProps) {
                   count: encountersInForeignEEZ.length,
                 }) as string
               }
+              section="encounters-eez"
               events={encountersInForeignEEZ}
               onEventInfoClick={openModal}
               onEventMapClick={onEventMapClick}
@@ -302,6 +307,7 @@ export function RiskSummary(props: RiskSummaryProps) {
                 count: loiteringInMPA.length,
               }) as string
             }
+            section="loitering-mpa"
             events={loiteringInMPA}
             onEventInfoClick={openModal}
             onEventMapClick={onEventMapClick}
@@ -321,10 +327,11 @@ export function RiskSummary(props: RiskSummaryProps) {
                 'risk.portVisitsToNonPSMAPortState',
                 '{{count}} visits to a port in a country that has not ratified the PSMA state',
                 {
-                  count: portVisitsToNonPSMAPortState.length,
+                  count: portVisitsToNonPSMAPortState.length / 3,
                 }
               ) as string
             }
+            section="port-visits"
             events={portVisitsToNonPSMAPortState}
             onEventInfoClick={openModal}
             onEventMapClick={onEventMapClick}

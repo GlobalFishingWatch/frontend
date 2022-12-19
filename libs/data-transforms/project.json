@@ -1,11 +1,12 @@
 {
+  "name": "data-transforms",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/data-transforms/src",
   "projectType": "library",
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nrwl/web:rollup",
+      "executor": "@nrwl/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/data-transforms",
@@ -32,7 +33,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/data-transforms"],
+      "outputs": ["{workspaceRoot}/coverage/libs/data-transforms"],
       "options": {
         "jestConfig": "libs/data-transforms/jest.config.ts",
         "passWithNoTests": true

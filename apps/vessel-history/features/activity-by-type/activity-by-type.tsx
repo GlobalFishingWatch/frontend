@@ -1,7 +1,9 @@
 import { Suspense, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { event as uaEvent } from 'react-ga'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
+import { useTranslation } from 'react-i18next'
 import { Modal, Spinner } from '@globalfishingwatch/ui-components'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import {
@@ -16,6 +18,8 @@ import AisCoverage from 'features/profile/components/activity/AisCoverage'
 import useRiskIndicator from 'features/risk-indicator/risk-indicator.hook'
 import { useUser } from 'features/user/user.hooks'
 import DateRangeLabel from 'features/date-range-label/date-range-label'
+import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
+import ActivityDataAndTerminology from 'features/profile/components/activity/ActivityDataAndTerminology'
 import ActivityItem from '../profile/components/activity/ActivityItem'
 import ActivityModalContent from '../profile/components/activity/ActivityModalContent'
 import { useActivityByType } from './activity-by-type.hook'
@@ -27,6 +31,7 @@ export interface ActivityByTypeProps {
 
 export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) {
   const { events, toggleEventType } = useActivityByType()
+  const { t } = useTranslation()
 
   const [isModalOpen, setIsOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent>()
@@ -34,6 +39,17 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
     setSelectedEvent(event)
     setIsOpen(true)
   }, [])
+  const onToggleEventType = useCallback(
+    (event) => {
+      toggleEventType(event)
+      uaEvent({
+        category: 'Vessel Detail ACTIVITY BY TYPE Tab',
+        action: 'View list of events by activity type',
+        label: JSON.stringify({ type: event }),
+      })
+    },
+    [toggleEventType]
+  )
   const { authorizedIdentityIndicators } = useUser()
   const { coverage, eventsLoading } = useRiskIndicator(authorizedIdentityIndicators)
   const closeModal = useCallback(() => setIsOpen(false), [])
@@ -62,6 +78,17 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
     [highlightEvent, highlightVoyage, onMoveToMap, setMapCoordinates, viewport.zoom]
   )
 
+  const getRowHeight = useCallback(
+    (index: number) => {
+      const event = events[index]
+      const height = !event.group && event?.type === 'port_visit' ? (event?.subEvent ? 35 : 44) : 60
+      return height
+    },
+    [events]
+  )
+
+  const displayOptions = { displayPortVisitsAsOneEvent: true }
+
   return (
     <div className={styles.activityContainer}>
       <Suspense fallback={<Spinner className={styles.spinnerFull} />}>
@@ -77,6 +104,14 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
         <div className={styles.heading}>
           <AisCoverage value={eventsLoading ? null : coverage?.percentage} />
           <div className={styles.headingButtons}>
+            <DataAndTerminology
+              containerClassName={styles.dataAndTerminologyContainer}
+              size="medium"
+              type="solid"
+              title={t('common.dataAndTerminology', 'Data and Terminology')}
+            >
+              <ActivityDataAndTerminology />
+            </DataAndTerminology>
             <DateRangeLabel type="secondary" className={styles.filterBtn} />
           </div>
         </div>
@@ -84,11 +119,17 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
           <AutoSizer disableWidth={true}>
             {({ width, height }) => (
               <List
+                /**
+                 * The `key` prop is needed here to force the List clear the cache of row heigths
+                 * when the length of the events changes (eg: collapsing/expanding events groups)
+                 * otherwise the variable row heights are not recalculated inside VariableSizeList
+                 */
+                key={`${events.length}-list`}
                 width={width}
                 height={height}
                 itemCount={events.length}
                 itemData={events}
-                itemSize={() => 60}
+                itemSize={getRowHeight}
               >
                 {({ index, style }) => {
                   const event = events[index]
@@ -99,7 +140,7 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
                           key={index}
                           eventType={event.type}
                           loading={event.loading}
-                          onToggleClick={toggleEventType}
+                          onToggleClick={onToggleEventType}
                           quantity={event.quantity}
                           status={event.status}
                         ></ActivityGroup>
@@ -114,6 +155,7 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
                           highlighted={highlightsIds[event.id]}
                           onMapClick={selectEventOnMap}
                           onInfoClick={openModal}
+                          options={displayOptions}
                         />
                       </div>
                     )

@@ -28,6 +28,7 @@
 
 .option {
   flex: 1;
+  min-width: max-content;
   z-index: 1;
 }
 

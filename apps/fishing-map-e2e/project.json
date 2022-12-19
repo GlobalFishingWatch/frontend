@@ -1,10 +1,11 @@
 {
+  "name": "fishing-map-e2e",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/fishing-map-e2e/src",
   "projectType": "application",
   "targets": {
     "test": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": ["nx serve i18n-labels", "nx e2e fishing-map-e2e"],
         "parallel": true

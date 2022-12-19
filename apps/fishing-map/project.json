@@ -1,24 +1,25 @@
 {
+  "name": "fishing-map",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/fishing-map",
   "projectType": "application",
   "targets": {
     "changelog": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": ["./changelog.sh fishing-map \"Map\""],
         "parallel": false
       }
     },
     "deploy": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": ["nx build fishing-map --parallel", "nx docker-prepare fishing-map"],
         "parallel": false
       }
     },
     "docker-prepare": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "outputs": [],
       "options": {
         "commands": [
@@ -40,7 +41,7 @@
       }
     },
     "start": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": [
           "nx clean-locales fishing-map",
@@ -51,7 +52,7 @@
       }
     },
     "clean-locales": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "outputs": [],
       "options": {
         "commands": ["rm -rf dist/apps/fishing-map/public/locales"]
@@ -78,7 +79,7 @@
       }
     },
     "rename-export": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": [
           "rm -rf dist/apps/fishing-map/map",
@@ -88,7 +89,7 @@
       }
     },
     "serve:export": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": [
           "nx build fishing-map --parallel",
@@ -100,7 +101,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/fishing-map"],
+      "outputs": ["{workspaceRoot}/coverage/apps/fishing-map"],
       "options": {
         "jestConfig": "apps/fishing-map/jest.config.ts",
         "passWithNoTests": true

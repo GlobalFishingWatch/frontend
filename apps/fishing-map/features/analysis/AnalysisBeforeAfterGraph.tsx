@@ -16,13 +16,14 @@ import { selectAnalysisTimeComparison } from 'features/app/app.selectors'
 import { WorkspaceAnalysisTimeComparison } from 'types'
 import i18n from 'features/i18n/i18n'
 import { COLOR_PRIMARY_BLUE } from 'features/app/App'
+import { getUTCDateTime } from 'utils/dates'
 import { formatDate, formatTooltipValue, tickFormatter } from './analysis.utils'
 import styles from './AnalysisEvolutionGraph.module.css'
 import { ComparisonGraphProps } from './AnalysisPeriodComparisonGraph'
 
 const formatDateTicks = (tick: number, timeComparison: WorkspaceAnalysisTimeComparison) => {
-  const dtTick = DateTime.fromMillis(tick).toUTC()
-  const dtStart = DateTime.fromISO(timeComparison.compareStart).toUTC()
+  const dtTick = getUTCDateTime(tick)
+  const dtStart = getUTCDateTime(timeComparison.compareStart)
   if (tick !== dtStart.toMillis()) {
     const diff = dtTick.diff(dtStart, timeComparison.durationType as any).toObject()
     const diffValue = Math.round(diff[timeComparison.durationType as any])
@@ -48,7 +49,7 @@ const AnalysisGraphTooltip = (props: any) => {
   const avgLineValue = payload?.find((p) => p.name === 'line')
   if (!avgLineValue) return null
 
-  const date = DateTime.fromMillis(avgLineValue.payload.date).toUTC().setLocale(i18n.language)
+  const date = getUTCDateTime(avgLineValue.payload.date).setLocale(i18n.language)
   return (
     <div className={styles.tooltipContainer}>
       <p className={styles.tooltipLabel}>{formatDate(date, timeChunkInterval)}</p>
@@ -69,19 +70,19 @@ const AnalysisBeforeAfterGraph: React.FC<{
   const timeComparison = useSelector(selectAnalysisTimeComparison)
 
   const dtStart = useMemo(() => {
-    return DateTime.fromISO(timeComparison.compareStart).toUTC()
+    return getUTCDateTime(timeComparison.compareStart)
   }, [timeComparison.compareStart])
 
   const range = useMemo(() => {
     const values = timeseries?.flatMap(({ date, compareDate, min, max }) => {
       return [
         {
-          date: DateTime.fromISO(date).toUTC().toMillis(),
+          date: getUTCDateTime(date).toMillis(),
           range: [min[0], max[0]],
           avg: (max[0] + min[0]) / 2,
         },
         {
-          date: DateTime.fromISO(compareDate).toUTC().toMillis(),
+          date: getUTCDateTime(compareDate).toMillis(),
           range: [min[1], max[1]],
           avg: (max[1] + min[1]) / 2,
         },
@@ -126,10 +127,7 @@ const AnalysisBeforeAfterGraph: React.FC<{
         <ComposedChart data={range} margin={{ top: 15, right: 20, left: -20, bottom: -10 }}>
           <CartesianGrid vertical={false} />
           <XAxis
-            domain={[
-              DateTime.fromISO(start).toUTC().toMillis(),
-              DateTime.fromISO(end).toUTC().toMillis(),
-            ]}
+            domain={[getUTCDateTime(start).toMillis(), getUTCDateTime(end).toMillis()]}
             dataKey="date"
             interval="preserveStartEnd"
             tickFormatter={(tick: number) => formatDateTicks(tick, timeComparison)}

@@ -118,6 +118,7 @@ export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions 
 export const FEEDBACK_EN = process.env.NEXT_PUBLIC_FEEDBACK_FORM_EN
 export const FEEDBACK_FR = process.env.NEXT_PUBLIC_FEEDBACK_FORM_FR
 
+export const AIS_DATA_DELAY_DAYS = 3
 export const RISK_SUMMARY_SETTINGS = {
   // Time range to use when calculating indicators
   timeRange: { years: 1 },
@@ -141,7 +142,7 @@ export const APP_PROFILE_VIEWS = [
     required_permission: INSURER_PERMISSION,
     propagate_events_query_params: ['confidences'],
     events_query_params: {
-      start_date: DateTime.now().toUTC().minus({ months: 12 }).toISO(),
+      start_date: DateTime.utc().minus({ months: 12 }).toISO(),
     },
   },
 ]

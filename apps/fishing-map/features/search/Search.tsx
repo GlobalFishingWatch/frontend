@@ -41,6 +41,7 @@ import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hoo
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { isGFWUser } from 'features/user/user.slice'
+import { getEventLabel } from 'utils/analytics'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
@@ -149,6 +150,7 @@ function Search() {
               filters,
               datasets: sources,
               offset,
+              gfwUser,
             })
           )
           // TODO: Find a better approach to sync query
@@ -230,6 +232,14 @@ function Search() {
         batch(() => {
           if (vesselGroupId) {
             dispatch(setVesselGroupEditId(vesselGroupId))
+            uaEvent({
+              category: 'Vessel groups',
+              action: `Use the 'add to vessel group' functionality from search`,
+              label: getEventLabel([
+                vessels.length.toString(),
+                ...vessels.map((vessel) => vessel.id),
+              ]),
+            })
           }
           dispatch(setNewVesselGroupSearchVessels(vessels))
           dispatch(setVesselGroupsModalOpen(true))
@@ -379,7 +389,7 @@ function Search() {
                     searchSuggestion &&
                     searchSuggestion !== searchQuery &&
                     !searchSuggestionClicked && (
-                      <li className={cx(styles.searchSuggestion)}>
+                      <li key="suggestion" className={cx(styles.searchSuggestion)}>
                         {t('search.suggestion', 'Did you mean')}{' '}
                         <button onClick={onSuggestionClick} className={styles.suggestion}>
                           {' '}
@@ -418,7 +428,7 @@ function Search() {
                           [styles.inWorkspace]: isInWorkspace,
                           [styles.selected]: isSelected,
                         })}
-                        key={id}
+                        key={`${id}-${index}`}
                       >
                         <div className={styles.name}>
                           {formatInfoField(shipname, 'name') || EMPTY_FIELD_PLACEHOLDER}
@@ -520,7 +530,7 @@ function Search() {
                     )
                   })}
                   {hasMoreResults && (
-                    <li className={styles.spinner} ref={ref}>
+                    <li key="spinner" className={styles.spinner} ref={ref}>
                       <Spinner inline size="small" />
                     </li>
                   )}
@@ -554,6 +564,7 @@ function Search() {
                   <li
                     className={cx(styles.groupOption, styles.groupOptionNew)}
                     onClick={() => onAddToVesselGroup()}
+                    key="new-group"
                   >
                     {t('vesselGroup.createNewGroup', 'Create new group')}
                   </li>

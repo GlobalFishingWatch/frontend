@@ -8,7 +8,7 @@ import {
   MultiSelectOnChange,
   MultiSelectOption,
 } from '@globalfishingwatch/ui-components'
-import { EXCLUDE_FILTER_ID, FilterOperator } from '@globalfishingwatch/api-types'
+import { DatasetTypes, EXCLUDE_FILTER_ID, FilterOperator } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
@@ -23,6 +23,7 @@ import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/ana
 import ActivitySchemaFilter, {
   showSchemaFilter,
 } from 'features/workspace/activity/ActivitySchemaFilter'
+import HistogramRangeFilter from 'features/workspace/environmental/HistogramRangeFilter'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { selectVessselGroupsAllowed } from 'features/vessel-groups/vessel-groups.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -72,6 +73,12 @@ const cleanDataviewFiltersNotAllowed = (
   })
 
   return filters
+}
+
+export const isHistogramDataviewSupported = (dataview: UrlDataviewInstance) => {
+  const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
+  const { max, min } = dataset?.configuration || {}
+  return max !== undefined && min !== undefined && max !== null && min !== null
 }
 
 function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): React.ReactElement {
@@ -240,7 +247,7 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
       delete newDataviewConfig.filterOperators[filterKey]
     }
 
-    upsertDataviewInstance({
+    onDataviewFilterChange({
       id: dataview.id,
       config: newDataviewConfig,
     })
@@ -277,7 +284,7 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
       : {}
     delete filters[filterKey]
     delete filterOperators[filterKey]
-    upsertDataviewInstance({
+    onDataviewFilterChange({
       id: dataview.id,
       config: { filters, filterOperators },
     })
@@ -288,7 +295,9 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
     })
   }
 
-  const showSchemaFilters = showSourceFilter || schemaFilters.some(showSchemaFilter)
+  const showHistogramFilter = isHistogramDataviewSupported(dataview)
+  const showSchemaFilters =
+    showHistogramFilter || showSourceFilter || schemaFilters.some(showSchemaFilter)
 
   if (!showSchemaFilters) {
     return <p className={styles.placeholder}>{t('dataset.emptyFilters', 'No filters available')}</p>
@@ -307,6 +316,7 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
           onRemove={sourcesSelected?.length > 1 ? onRemoveSourceClick : undefined}
         />
       )}
+      {showHistogramFilter && <HistogramRangeFilter dataview={dataview} />}
       {schemaFilters.map((schemaFilter) => {
         if (
           schemaFilter.id === 'vessel-groups' &&

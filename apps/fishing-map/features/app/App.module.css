@@ -5,9 +5,9 @@
 }
 
 .mapContainer {
-  height: calc(100vh - var(--footer-height));
+  height: calc(calc(var(--vh, 1vh) * 100) - var(--footer-height));
 }
 
 .withTimebar {
-  height: calc(100vh - var(--footer-height) - var(--timebar-height));
+  height: calc(calc(var(--vh, 1vh) * 100) - var(--footer-height) - var(--timebar-height));
 }

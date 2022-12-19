@@ -1,5 +1,4 @@
 import { memo, useCallback } from 'react'
-import { DateTime } from 'luxon'
 import { Timebar, TimebarHighlighter } from '@globalfishingwatch/timebar'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import {
@@ -10,6 +9,7 @@ import {
 } from 'features/timebar/timebar.hooks'
 // import { useMapInstanceStyle } from 'features/map/map-context.hooks'
 import { formatI18nDate } from 'utils/i18n'
+import { getUTCDateTime } from 'utils/dates'
 import TimebarActivityGraph from './TimebarActivityGraph'
 import TimebarVesselsEvents from './TimebarVesselsEvents'
 import TimebarVesselsTracks from './TimebarVesselsTracks'
@@ -30,11 +30,6 @@ const TimebarHighlighterWrapper = () => {
     //     return dateLabel
     //   } else if (interval === 'day') {
     //     return formatI18nDate(timestamp, { showUTCLabel: true })
-    //   } else if (interval === '10days') {
-    //     const frame = CONFIG_BY_INTERVAL['10days'].getRawFrame(timestamp)
-    //     const start = CONFIG_BY_INTERVAL['10days'].getDate(Math.floor(frame)).getTime()
-    //     const end = CONFIG_BY_INTERVAL['10days'].getDate(Math.ceil(frame)).getTime()
-    //     return [formatI18nDate(start), formatI18nDate(end)].join(' - ') + ` ${UTC_SUFFIX}`
     //   } else if (interval === 'month') {
     //     // TODO
     //   }
@@ -70,8 +65,8 @@ const TimebarWrapper = () => {
         try {
           const start = scale(clientX - 10).toISOString()
           const end = scale(clientX + 10).toISOString()
-          const startDateTime = DateTime.fromISO(start)
-          const endDateTime = DateTime.fromISO(end)
+          const startDateTime = getUTCDateTime(start)
+          const endDateTime = getUTCDateTime(end)
           const diff = endDateTime.diff(startDateTime, 'hours')
           if (diff.hours < 1) {
             // To ensure at least 1h range is highlighted

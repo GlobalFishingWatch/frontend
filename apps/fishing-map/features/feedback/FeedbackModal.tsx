@@ -84,12 +84,12 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
       ...initialFeedbackState,
       ...(!guestUser &&
         userData && {
-        userId: userData.id,
-        email: userData.email,
-        name: `${userData.firstName} ${userData.lastName}`,
-        groups: (userGroups || []).join(', '),
-        organization: userData.organization || '',
-      }),
+          userId: userData.id,
+          email: userData.email,
+          name: `${userData.firstName} ${userData.lastName}`,
+          groups: (userGroups || []).join(', '),
+          organization: userData.organization || '',
+        }),
     })
   }
 
@@ -196,12 +196,12 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
               <Fragment>
                 <InputText
                   value={feedbackData.name || ''}
-                  placeholder={t('common.name', 'Name') as any}
+                  placeholder={t('common.name', 'Name')}
                   onChange={({ target }) => onFieldChange('name', target.value)}
                 />
                 <InputText
                   value={feedbackData.email || ''}
-                  placeholder={t('feedback.email', 'E-mail address') as any}
+                  placeholder={t('feedback.email', 'E-mail address')}
                   onChange={({ target }) => onFieldChange('email', target.value)}
                 />
                 <span className={styles.emailDisclaimer}>
@@ -262,9 +262,10 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
                 onChange={({ target }) => onFieldChange('description', target.value)}
                 value={feedbackData.description || ''}
                 className={styles.textarea}
-                placeholder={
-                  t('feedback.descriptionPlaceholder', 'Please be as specific as possible.') as any
-                }
+                placeholder={t(
+                  'feedback.descriptionPlaceholder',
+                  'Please be as specific as possible.'
+                )}
               ></textarea>
             </div>
           )}

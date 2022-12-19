@@ -18,13 +18,14 @@ import {
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
-import { IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
+import { formatSliderNumber, IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { capitalize, sortFields } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
 import { PUBLIC_SUFIX, FULL_SUFIX, PRIVATE_SUFIX } from 'data/config'
 import { getDatasetNameTranslated } from 'features/i18n/utils'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { FileType } from 'features/common/FileDropzone'
+import { getLayerDatasetRange } from 'features/workspace/environmental/HistogramRangeFilter'
 import styles from '../vessel-groups/VesselGroupModal.module.css'
 
 export type SupportedDatasetSchema = SupportedActivityDatasetSchema | SupportedEnvDatasetSchema
@@ -44,6 +45,7 @@ export type SupportedActivityDatasetSchema =
   | 'target_species' // between camelCase or snake_case
   | 'license_category'
   | 'vessel-groups'
+  | 'visibleValues'
 
 export type SupportedEnvDatasetSchema = 'type'
 
@@ -133,10 +135,15 @@ export const getDatasetsInDataviews = (
   dataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[],
   guestUser = false
 ) => {
+  if (!dataviews?.length) {
+    return []
+  }
   return uniq(
     dataviews?.flatMap((dataviews) => {
       if (!dataviews.datasetsConfig) return []
-      const datasetIds = dataviews.datasetsConfig.map(({ datasetId }) => datasetId)
+      const datasetIds: string[] = dataviews.datasetsConfig.flatMap(
+        ({ datasetId }) => datasetId || []
+      )
       return guestUser
         ? datasetIds.filter((d) => !d.includes(PRIVATE_SUFIX) && !d.includes(FULL_SUFIX))
         : datasetIds
@@ -242,6 +249,15 @@ export const getDatasetsDownloadNotSupported = (
   const dataviewDatasets = getActiveDatasetsInActivityDataviews(dataviews)
   const datasetsDownloadSupported = getActivityDatasetsDownloadSupported(dataviews, permissions)
   return dataviewDatasets.filter((dataset) => !datasetsDownloadSupported.includes(dataset))
+}
+
+export const getActiveActivityDatasetsInDataviews = (dataviews: UrlDataviewInstance[]) => {
+  return dataviews.map((dataview) => {
+    const activeDatasets = (dataview?.config?.datasets || []) as string[]
+    return dataview.datasets.filter((dataset) => {
+      return activeDatasets.includes(dataset.id)
+    })
+  })
 }
 
 export const getEventsDatasetsInDataview = (dataview: UrlDataviewInstance) => {
@@ -423,6 +439,25 @@ export const getSchemaOptionsSelectedInDataview = (
       id: o.toString(),
       label: o.toString(),
     }))
+  }
+  if (
+    schema === 'visibleValues' &&
+    (dataview.config?.minVisibleValue || dataview.config?.maxVisibleValue)
+  ) {
+    const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
+    const layerRange = getLayerDatasetRange(dataset)
+    const min = dataview.config?.minVisibleValue || layerRange?.min
+    const max = dataview.config?.maxVisibleValue || layerRange?.max
+    return [
+      {
+        id: min.toString(),
+        label: formatSliderNumber(min),
+      },
+      {
+        id: max.toString(),
+        label: formatSliderNumber(max),
+      },
+    ]
   }
 
   return options?.filter((option) =>

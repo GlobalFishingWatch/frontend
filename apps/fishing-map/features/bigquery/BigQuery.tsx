@@ -183,7 +183,7 @@ const BigQueryMenu: React.FC = () => {
       <SwitchRow
         className={styles.row}
         label={t(
-          'dataset.uploadPublic' as any,
+          'dataset.uploadPublic',
           'Allow other users to see this dataset when you share a workspace'
         )}
         active={createAsPublic}

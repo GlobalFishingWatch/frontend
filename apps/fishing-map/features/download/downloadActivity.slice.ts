@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { DateTime } from 'luxon'
 import { Geometry } from 'geojson'
 import { stringify } from 'qs'
 import { saveAs } from 'file-saver'
@@ -8,6 +7,8 @@ import { DownloadActivity } from '@globalfishingwatch/api-types'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
+import { AreaKeys } from 'features/areas/areas.slice'
+import { getUTCDateTime } from 'utils/dates'
 import { Format, GroupBy, SpatialResolution, TemporalResolution } from './downloadActivity.config'
 
 export type DateRange = {
@@ -16,12 +17,12 @@ export type DateRange = {
 }
 
 export interface DownloadActivityState {
-  areaKey: string
+  areaKey: AreaKeys | undefined
   status: AsyncReducerStatus
 }
 
 const initialState: DownloadActivityState = {
-  areaKey: '',
+  areaKey: undefined,
   status: AsyncReducerStatus.Idle,
 }
 
@@ -34,9 +35,10 @@ export type DownloadActivityParams = {
   geometry: Geometry
   areaName: string
   format: Format
-  spatialResolution: SpatialResolution
-  temporalResolution: TemporalResolution
-  groupBy: GroupBy
+  spatialAggregation?: boolean
+  spatialResolution?: SpatialResolution
+  temporalResolution?: TemporalResolution
+  groupBy?: GroupBy
 }
 
 export const downloadActivityThunk = createAsyncThunk<
@@ -50,6 +52,7 @@ export const downloadActivityThunk = createAsyncThunk<
   async (params: DownloadActivityParams, { getState, rejectWithValue }) => {
     try {
       const {
+        spatialAggregation,
         dateRange,
         dataviews,
         geometry,
@@ -59,8 +62,8 @@ export const downloadActivityThunk = createAsyncThunk<
         temporalResolution,
         groupBy,
       } = params
-      const fromDate = DateTime.fromISO(dateRange.start).toUTC()
-      const toDate = DateTime.fromISO(dateRange.end).toUTC()
+      const fromDate = getUTCDateTime(dateRange.start)
+      const toDate = getUTCDateTime(dateRange.end)
 
       const downloadActivityParams = {
         format,
@@ -68,12 +71,15 @@ export const downloadActivityThunk = createAsyncThunk<
         filters: dataviews.map(({ filter }) => filter),
         'vessel-groups': dataviews.map((dv) => dv['vessel-groups']),
         'date-range': [fromDate, toDate].join(','),
+        'spatial-aggregation': spatialAggregation,
         'spatial-resolution': spatialResolution,
         'temporal-resolution': temporalResolution,
         'group-by': groupBy,
       }
 
-      const fileName = `${areaName} - ${downloadActivityParams['date-range']}.zip`
+      const fileName = `${areaName} - ${downloadActivityParams['date-range']}.${
+        format === Format.Json ? 'json' : 'zip'
+      }`
       const downloadUrl = `/4wings/report?${stringify(downloadActivityParams, {
         arrayFormat: 'indices',
       })}`
@@ -101,14 +107,14 @@ const downloadActivitySlice = createSlice({
   name: 'downloadActivity',
   initialState,
   reducers: {
-    setDownloadActivityAreaKey: (state, action: PayloadAction<string>) => {
+    setDownloadActivityAreaKey: (state, action: PayloadAction<AreaKeys>) => {
       state.areaKey = action.payload
     },
     resetDownloadActivityStatus: (state) => {
       state.status = AsyncReducerStatus.Idle
     },
     resetDownloadActivityState: (state) => {
-      state.areaKey = ''
+      state.areaKey = undefined
       state.status = AsyncReducerStatus.Idle
     },
   },

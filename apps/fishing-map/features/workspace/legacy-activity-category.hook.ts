@@ -42,7 +42,7 @@ export const useHideLegacyActivityCategoryDataviews = () => {
         actionDone.current = true
       }
     }
-  }, [activityCategory, dataviewInstancesResolved])
+  }, [activityCategory, dataviewInstancesResolved, dispatchQueryParams, upsertDataviewInstance])
 
   return activityCategory
 }

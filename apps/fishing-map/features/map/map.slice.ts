@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
 import { uniqBy } from 'lodash'
-import { DateTime } from 'luxon'
 import { InteractionEvent, ExtendedFeature } from '@globalfishingwatch/react-hooks'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { resolveEndpoint, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -24,6 +23,7 @@ import {
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { isGuestUser } from 'features/user/user.slice'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
+import { getUTCDateTime } from 'utils/dates'
 
 export const MAX_TOOLTIP_LIST = 5
 export const MAX_VESSELS_LOAD = 150
@@ -285,8 +285,8 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
       )
 
       const mainTemporalgridFeature = fishingActivityFeatures[0].temporalgrid
-      const startYear = DateTime.fromISO(mainTemporalgridFeature?.visibleStartDate).toUTC().year
-      const endYear = DateTime.fromISO(mainTemporalgridFeature?.visibleEndDate).toUTC().year
+      const startYear = getUTCDateTime(mainTemporalgridFeature?.visibleStartDate).year
+      const endYear = getUTCDateTime(mainTemporalgridFeature?.visibleEndDate).year
       const sublayersVessels: SublayerVessels[] = vesselsBySource.map((sublayerVessels, i) => {
         const activityProperty = activityProperties?.[i] || 'hours'
         return {
@@ -298,8 +298,8 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
                   if (entry.years?.length && startYear && endYear) {
                     return (
                       entry.id === vessel.id &&
-                      (entry.years.some((year) => year > startYear) ||
-                        entry.years.some((year) => year < endYear))
+                      (entry.years.some((year) => year >= startYear) ||
+                        entry.years.some((year) => year <= endYear))
                     )
                   }
                   return entry.id === vessel.id

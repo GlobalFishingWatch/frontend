@@ -2,12 +2,16 @@ import { useEffect, useState, useCallback } from 'react'
 import { debounce } from 'lodash'
 import { useDebounce, useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { Timeseries } from '@globalfishingwatch/timebar'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
+import { TimeseriesFeatureProps } from '@globalfishingwatch/fourwings-aggregate'
+import { getDatasetsExtent, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import { getTimeseriesFromFeatures } from '@globalfishingwatch/features-aggregate'
 import { checkEqualBounds, useMapBounds } from 'features/map/map-viewport.hooks'
+import { getActiveActivityDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import {
   areDataviewsFeatureLoaded,
+  DataviewFeature,
   hasDataviewsFeatureError,
   useMapDataviewFeatures,
 } from 'features/map/map-sources.hooks'
@@ -22,21 +26,35 @@ export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
   const error = hasDataviewsFeatureError(dataviewFeatures)
   const boundsChanged = !checkEqualBounds(bounds, debouncedBounds)
   const layersFilterHash = dataviewFeatures
-    .flatMap(({ metadata }) => `${metadata.minVisibleValue}-${metadata.maxVisibleValue}`)
+    .flatMap(({ metadata }) => `${metadata?.minVisibleValue}-${metadata?.maxVisibleValue}`)
     .join(',')
   const loading =
     boundsChanged || !areDataviewsFeatureLoaded(dataviewFeatures) || generatingStackedActivity
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSetStackedActivity = useCallback(
-    debounce((dataviewFeatures, bounds) => {
-      const dataviewFeaturesFiltered = dataviewFeatures.map((dataview) => {
+    debounce((dataviewFeatures: DataviewFeature[], bounds) => {
+      const dataviewFeaturesFiltered = dataviewFeatures.map((dataviewFeature) => {
+        const activeDataviewDatasets = getActiveActivityDatasetsInDataviews(dataviews)
+        const dataviewExtents = activeDataviewDatasets.map((dataviewDatasets) =>
+          getDatasetsExtent(dataviewDatasets, {
+            format: 'timestamp',
+          })
+        )
+
         return {
-          ...dataview,
-          chunksFeatures: dataview.chunksFeatures?.map((chunk) => {
+          ...dataviewFeature,
+          chunksFeatures: dataviewFeature.chunksFeatures?.map((chunk) => {
             return {
               ...chunk,
-              features: chunk.features ? filterFeaturesByBounds(chunk.features, bounds) : [],
+              startDataTimestamps: dataviewExtents.map((d) => d.extentStart),
+              endDataTimestamps: dataviewExtents.map((d) => d.extentEnd),
+              features: chunk.features
+                ? (filterFeaturesByBounds(
+                    chunk.features,
+                    bounds
+                  ) as GeoJSONFeature<TimeseriesFeatureProps>[])
+                : [],
             }
           }),
         }
@@ -45,7 +63,7 @@ export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
       setStackedActivity(stackedActivity)
       setGeneratingStackedActivity(false)
     }, 400),
-    [setStackedActivity]
+    [dataviews, setStackedActivity]
   )
 
   useEffect(() => {
@@ -55,13 +73,7 @@ export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
       debouncedSetStackedActivity(dataviewFeatures, debouncedBounds)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    dataviewFeatures,
-    debouncedBounds,
-    debouncedSetStackedActivity,
-    isSmallScreen,
-    layersFilterHash,
-  ])
+  }, [dataviewFeatures, debouncedBounds, isSmallScreen, layersFilterHash])
 
   return { loading, error, stackedActivity }
 }

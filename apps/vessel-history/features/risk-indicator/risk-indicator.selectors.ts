@@ -6,16 +6,20 @@ import { RISK_SUMMARY_SETTINGS } from 'data/config'
 import { RenderedEvent, selectEvents } from 'features/vessels/activity/vessels-activity.selectors'
 import { MOU, VesselIdentityIndicators } from 'types/risk-indicator'
 import { ValueItem, VesselAPISource } from 'types'
+import { getUTCDateTime } from 'utils/dates'
+import { getEventsWithMainPortVisit } from 'features/activity-by-type/activity-by-type.selectors'
 import { getMergedVesselsUniqueId, selectIndicators } from './risk-indicator.slice'
 
 const selectEventsForRiskSummaryInPeriod = createSelector([selectEvents], (events) => {
-  const endDate = DateTime.now()
+  const endDate = DateTime.utc()
   const startDate = endDate.minus(RISK_SUMMARY_SETTINGS.timeRange)
   const interval = Interval.fromDateTimes(startDate, endDate)
-  return events.filter((event: RenderedEvent) => {
+  // Aggregate main port visit event as well to display it grouped by port visit too
+  const result = getEventsWithMainPortVisit(events)
+  return result.filter((event: RenderedEvent) => {
     if (
-      !interval.contains(DateTime.fromMillis(event.start as number)) &&
-      !interval.contains(DateTime.fromMillis(event.end as number))
+      !interval.contains(getUTCDateTime(event.start as number)) &&
+      !interval.contains(getUTCDateTime(event.end as number))
     ) {
       return false
     }
@@ -53,10 +57,14 @@ const selectEventsForRiskSummary = createSelector(
         ...(indicators?.loitering?.eventsInMPA || []),
         ...(indicators?.loitering?.eventsInRFMO || []),
         ...(indicators?.portVisits?.nonPSMAPortState || []),
-        ...(indicators?.gaps?.intentionalDisabling || [])
+        ...(indicators?.gaps?.intentionalDisabling || []),
       ])
     )
-    return events.filter((event) => indicatorsEvents.includes(event.id))
+    // Given that por visits ids have suffixes now we should check only the start of it
+    return events.filter(
+      (event) =>
+        indicatorsEvents.filter((indicatorEvent) => event.id.startsWith(indicatorEvent)).length > 0
+    )
   }
 )
 
@@ -94,7 +102,7 @@ export const selectPortVisitsToNonPSMAPortState = createSelector(
   [selectCurrentMergedVesselsIndicators, selectEventsForRiskSummary],
   (indicators, events) => {
     return events.filter((event) =>
-      (indicators?.portVisits?.nonPSMAPortState || []).includes(event.id)
+      (indicators?.portVisits?.nonPSMAPortState || []).includes(event.id.split('-')[0])
     )
   }
 )

@@ -16,6 +16,9 @@ import {
   GRATICULES_DATAVIEW_ID,
   FAO_AREAS_DATAVIEW_ID,
   SAR_DATAVIEW_ID,
+  MPA_DATAVIEW_INSTANCE_ID,
+  EEZ_DATAVIEW_INSTANCE,
+  BASEMAP_LABELS_DATAVIEW_ID,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 // This id is used for highlighting the dataview with a popup on the right
@@ -29,7 +32,7 @@ const workspace: Workspace<WorkspaceState> = {
   id: DEFAULT_WORKSPACE_ID,
   app: APP_NAME,
   name: 'Default public Fishing Map workspace in production v1',
-  description: DEFAULT_WORKSPACE_ID,
+  description: '',
   category: WorkspaceCategories.FishingActivity,
   startAt: DEFAULT_TIME_RANGE.start,
   endAt: DEFAULT_TIME_RANGE.end,
@@ -101,7 +104,14 @@ const workspace: Workspace<WorkspaceState> = {
       },
     },
     {
-      id: 'context-layer-eez',
+      id: 'context-layer-graticules',
+      config: {
+        visible: true,
+      },
+      dataviewId: GRATICULES_DATAVIEW_ID,
+    },
+    {
+      id: EEZ_DATAVIEW_INSTANCE,
       config: {
         color: '#069688',
         visible: false,
@@ -109,7 +119,7 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: EEZ_DATAVIEW_ID,
     },
     {
-      id: 'context-layer-mpa',
+      id: MPA_DATAVIEW_INSTANCE_ID,
       config: {
         color: '#1AFF6B',
         visible: false,
@@ -132,18 +142,18 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: RFMO_DATAVIEW_ID,
     },
     {
-      id: 'context-layer-graticules',
-      config: {
-        visible: true,
-      },
-      dataviewId: GRATICULES_DATAVIEW_ID,
-    },
-    {
       id: 'context-layer-high-seas',
       config: {
         visible: false,
       },
       dataviewId: HIGH_SEAS_DATAVIEW_ID,
+    },
+    {
+      id: 'basemap-labels',
+      config: {
+        visible: false,
+      },
+      dataviewId: BASEMAP_LABELS_DATAVIEW_ID,
     },
   ],
 }

@@ -29,11 +29,11 @@ function Sidebar() {
   }
 
   const getFourwingsData = () => {
-    const data =
-      fourwingsLayerInstance?.getMode() === 'heatmap'
-        ? fourwingsLayerInstance.getHeatmapTimeseries()
-        : fourwingsLayerInstance.getVesselPositions()
-    console.log(data)
+    // const data =
+    //   fourwingsLayerInstance?.getMode() === 'heatmap'
+    //     ? fourwingsLayerInstance.getHeatmapTimeseries()
+    //     : fourwingsLayerInstance.getVesselPositions()
+    // console.log(data)
   }
 
   const changeFourwingsResolution = () => {
@@ -60,6 +60,7 @@ function Sidebar() {
       })
     )
   }
+
   const fourwingsMode = fourwingsLayerInstance?.getMode()
   const fourwingsResolution = fourwingsLayerInstance?.getResolution()
   return (

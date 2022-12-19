@@ -75,6 +75,7 @@ const Tracks = ({ data }: { data: TimebarChartData }) => {
                       top: track.props?.segmentsOffsetY ? (track.y || 0) + i : track.y,
                       left: chunk.x,
                       width: chunk.width,
+                      height: chunk.props?.height || 1,
                       transition: immediate
                         ? 'none'
                         : `left ${DEFAULT_CSS_TRANSITION}, width ${DEFAULT_CSS_TRANSITION}`,

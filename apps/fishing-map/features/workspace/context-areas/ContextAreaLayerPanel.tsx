@@ -11,13 +11,14 @@ import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { selectUserId } from 'features/user/user.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAddDataset, useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
-import { isGuestUser } from 'features/user/user.slice'
+import { isGFWUser, isGuestUser } from 'features/user/user.slice'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import GFWOnly from 'features/user/GFWOnly'
 import { PRIVATE_SUFIX, ROOT_DOM_ELEMENT } from 'data/config'
 import { ONLY_GFW_STAFF_DATAVIEWS } from 'data/workspaces'
 import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/dataviews.selectors'
+import { getDatasetNameTranslated } from 'features/i18n/utils'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -36,6 +37,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const [colorOpen, setColorOpen] = useState(false)
+  const gfwUser = useSelector(isGFWUser)
   const userId = useSelector(selectUserId)
   const [modalDataWarningOpen, setModalDataWarningOpen] = useState(false)
   const onDataWarningModalClose = useCallback(() => {
@@ -93,7 +95,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   }
 
   const title = dataset
-    ? t(`datasets:${dataset?.id}.name` as any, dataset?.name || dataset?.id)
+    ? getDatasetNameTranslated(dataset)
     : t(`dataview.${dataview?.id}.title` as any, dataview?.name || dataview?.id)
 
   const TitleComponent = (
@@ -145,7 +147,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
             />
           )}
           {!isBasemapLabelsDataview && <InfoModal dataview={dataview} />}
-          {isUserLayer && <Remove dataview={dataview} />}
+          {(isUserLayer || gfwUser) && <Remove dataview={dataview} />}
           {items.length > 1 && (
             <IconButton
               size="small"

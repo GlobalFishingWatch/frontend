@@ -1,9 +1,9 @@
-import { FourwingsColorRamp } from 'layers/fourwings/FourwingsLayer'
 import { useCallback, useEffect } from 'react'
 import { atom, selector, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { VesselsLayer } from 'layers/vessel/VesselsLayer'
 import { useMapLayers } from 'features/map/layers.hooks'
 import { useHighlightTimerange, useTimerange } from 'features/timebar/timebar.hooks'
+import { FourwingsColorRamp } from '../fourwings/FourwingsLayer'
 
 const dateToMs = (date: string) => {
   return new Date(date).getTime()

@@ -1,5 +1,5 @@
 import { mixed } from '@recoiljs/refine'
-import { FourwingsLayerResolution } from 'layers/fourwings/FourwingsLayer'
+import { FourwingsLayerResolution } from 'layers/fourwings/FourwingsHeatmapTileLayer'
 import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
 import { urlSyncEffect } from 'recoil-sync'
 

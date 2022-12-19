@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, Fragment } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import Link, { To } from 'redux-first-router-link'
@@ -7,7 +7,7 @@ import { Spinner } from '@globalfishingwatch/ui-components'
 import { isValidLocationCategory, selectLocationCategory } from 'routes/routes.selectors'
 import { HOME, WORKSPACE } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import useViewport from 'features/map/map-viewport.hooks'
 import { Locale } from 'types'
 import styles from './WorkspacesList.module.css'
@@ -16,6 +16,7 @@ import {
   selectCurrentHighlightedWorkspaces,
 } from './workspaces-list.selectors'
 import { selectHighlightedWorkspacesStatus } from './workspaces-list.slice'
+import WorkspaceWizard from './WorkspaceWizard'
 
 function WorkspacesList() {
   const { t, i18n } = useTranslation()
@@ -48,6 +49,12 @@ function WorkspacesList() {
 
   return (
     <div className={styles.container}>
+      {locationCategory === WorkspaceCategories.MarineManager && (
+        <Fragment>
+          <WorkspaceWizard />
+          <label className={styles.listTitle}>{t('common.partnerSites', 'Partner sites')}</label>
+        </Fragment>
+      )}
       {highlightedWorkspacesStatus === AsyncReducerStatus.Loading ? (
         <Spinner size="small" />
       ) : (
@@ -81,12 +88,32 @@ function WorkspacesList() {
               }
             }
             return (
-              <li key={highlightedWorkspace.id || i18nName}>
-                <div className={cx(styles.workspace, { [styles.disabled]: !active })}>
+              <li
+                key={highlightedWorkspace.id || i18nName}
+                className={cx(styles.workspace, { [styles.disabled]: !active })}
+              >
+                {active ? (
+                  isExternalLink ? (
+                    <a target="_blank" href={linkTo as string} rel="noreferrer">
+                      <img className={styles.image} alt={i18nName} src={img} />
+                    </a>
+                  ) : (
+                    <Link
+                      to={linkTo}
+                      target="_self"
+                      onClick={() => onWorkspaceClick(highlightedWorkspace)}
+                    >
+                      <img className={styles.image} alt={i18nName} src={img} />
+                    </Link>
+                  )
+                ) : (
+                  <img className={styles.image} alt={i18nName} src={img} />
+                )}
+                <div className={styles.info}>
                   {active ? (
                     isExternalLink ? (
                       <a target="_blank" href={linkTo as string} rel="noreferrer">
-                        <img className={styles.image} alt={i18nName} src={img} />
+                        <h3 className={styles.title}>{i18nName}</h3>
                       </a>
                     ) : (
                       <Link
@@ -94,59 +121,40 @@ function WorkspacesList() {
                         target="_self"
                         onClick={() => onWorkspaceClick(highlightedWorkspace)}
                       >
-                        <img className={styles.image} alt={i18nName} src={img} />
+                        <h3 className={styles.title}>{i18nName}</h3>
                       </Link>
                     )
                   ) : (
-                    <img className={styles.image} alt={i18nName} src={img} />
+                    <h3 className={styles.title}>{i18nName}</h3>
                   )}
-                  <div className={styles.info}>
-                    {active ? (
-                      isExternalLink ? (
-                        <a target="_blank" href={linkTo as string} rel="noreferrer">
-                          <h3 className={styles.title}>{i18nName}</h3>
-                        </a>
-                      ) : (
-                        <Link
-                          to={linkTo}
-                          target="_self"
-                          onClick={() => onWorkspaceClick(highlightedWorkspace)}
-                        >
-                          <h3 className={styles.title}>{i18nName}</h3>
-                        </Link>
-                      )
+                  {i18nDescription && (
+                    <p
+                      className={styles.description}
+                      dangerouslySetInnerHTML={{
+                        __html: i18nDescription,
+                      }}
+                    ></p>
+                  )}
+                  {active &&
+                    (isExternalLink ? (
+                      <a
+                        target="_blank"
+                        href={linkTo as string}
+                        className={styles.link}
+                        rel="noreferrer"
+                      >
+                        {i18nCta}
+                      </a>
                     ) : (
-                      <h3 className={styles.title}>{i18nName}</h3>
-                    )}
-                    {i18nDescription && (
-                      <p
-                        className={styles.description}
-                        dangerouslySetInnerHTML={{
-                          __html: i18nDescription,
-                        }}
-                      ></p>
-                    )}
-                    {active &&
-                      (isExternalLink ? (
-                        <a
-                          target="_blank"
-                          href={linkTo as string}
-                          className={styles.link}
-                          rel="noreferrer"
-                        >
-                          {i18nCta}
-                        </a>
-                      ) : (
-                        <Link
-                          to={linkTo}
-                          target="_self"
-                          className={styles.link}
-                          onClick={() => onWorkspaceClick(highlightedWorkspace)}
-                        >
-                          {i18nCta}
-                        </Link>
-                      ))}
-                  </div>
+                      <Link
+                        to={linkTo}
+                        target="_self"
+                        className={styles.link}
+                        onClick={() => onWorkspaceClick(highlightedWorkspace)}
+                      >
+                        {i18nCta}
+                      </Link>
+                    ))}
                 </div>
               </li>
             )

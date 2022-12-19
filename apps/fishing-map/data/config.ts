@@ -3,6 +3,7 @@ import { DateTime } from 'luxon'
 import { DataviewCategory, ThinningConfig } from '@globalfishingwatch/api-types'
 import { ThinningLevels, THINNING_LEVELS } from '@globalfishingwatch/api-client'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
+import { getUTCDateTime } from 'utils/dates'
 
 export const ROOT_DOM_ELEMENT = '__next'
 
@@ -13,7 +14,12 @@ export const IS_PRODUCTION =
 export const REPORT_DAYS_LIMIT =
   typeof process.env.NEXT_PUBLIC_REPORT_DAYS_LIMIT !== 'undefined'
     ? parseInt(process.env.NEXT_PUBLIC_REPORT_DAYS_LIMIT)
-    : 366
+    : 366 // 1 year
+
+export const VESSEL_GROUPS_DAYS_LIMIT =
+  typeof process.env.VESSEL_GROUPS_DAYS_LIMIT !== 'undefined'
+    ? parseInt(process.env.VESSEL_GROUPS_DAYS_LIMIT)
+    : 93 // 3 months
 
 // Never actually used?
 export const API_GATEWAY = process.env.API_GATEWAY || process.env.NEXT_PUBLIC_API_GATEWAY || ''
@@ -47,8 +53,9 @@ export const DEFAULT_VIEWPORT = {
   latitude: 19,
   longitude: 26,
 }
+
 export const DEFAULT_TIME_RANGE = {
-  start: DateTime.fromISO(LAST_DATA_UPDATE).minus({ months: 3 }).toISO(),
+  start: getUTCDateTime(LAST_DATA_UPDATE).minus({ months: 3 }).toISO(),
   end: LAST_DATA_UPDATE,
 }
 

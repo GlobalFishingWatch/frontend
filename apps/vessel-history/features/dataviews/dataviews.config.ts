@@ -75,7 +75,7 @@ export const dataviewInstances: DataviewInstance<GeneratorType>[] = [
     dataviewId: DEFAULT_EEZ_DATAVIEW_ID,
   },
   {
-    id: 'public-wdpa-may-2021-marine',
+    id: 'public-mpa-all',
     config: {
       color: '#1AFF6B',
       visible: true,
@@ -83,7 +83,7 @@ export const dataviewInstances: DataviewInstance<GeneratorType>[] = [
     dataviewId: DEFAULT_MPA_DATAVIEW_ID,
   },
   {
-    id: 'public-tuna-rfmo',
+    id: 'public-rfmo',
     config: {
       color: '#6b67e5',
       visible: true,

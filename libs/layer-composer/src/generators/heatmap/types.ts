@@ -1,5 +1,5 @@
 // month only supported in environmental layers
-export type Interval = 'month' | '10days' | 'day' | 'hour'
+export type Interval = 'year' | 'month' | 'day' | 'hour'
 
 export type GeomGl = 'heatmap' | 'fill' | 'fill-extrusion' | 'symbol'
 

@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
-import { EnviromentalDatasetConfiguration } from '@globalfishingwatch/api-types'
 import { aggregateFeatures, ChunkFeature } from '@globalfishingwatch/features-aggregate'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectActiveNonTrackEnvironmentalDataviews } from 'features/dataviews/dataviews.selectors'
@@ -31,8 +30,7 @@ export const useEnvironmentalBreaksUpdate = () => {
         ({ chunksFeatures, dataviewsId, metadata }) => {
           const { features } = chunksFeatures?.[0] || ({} as ChunkFeature)
           if (features && features.length) {
-            const config = dataviews.find(({ id }) => dataviewsId.includes(id))
-              ?.config as EnviromentalDatasetConfiguration
+            const config = dataviews.find(({ id }) => dataviewsId.includes(id))?.config
             const filteredFeatures = filterFeaturesByBounds(features, bounds)
             const rawData = aggregateFeatures(filteredFeatures, metadata)
             const data = rawData.filter((d) => {

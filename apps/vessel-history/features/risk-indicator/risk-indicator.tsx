@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react'
 import cx from 'classnames'
+import { event as uaEvent } from 'react-ga'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import ActivityEvent from 'features/profile/components/activity/ActivityEvent'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
@@ -11,6 +12,7 @@ export interface RiskIndicatorProps {
   onEventInfoClick?: (event: RenderedEvent) => void
   onEventMapClick?: (event: RenderedEvent | Voyage) => void
   title: string
+  section?: string
   subtitle?: string
 }
 
@@ -19,11 +21,22 @@ export function RiskIndicator({
   onEventInfoClick,
   onEventMapClick,
   title,
+  section,
   subtitle,
 }: RiskIndicatorProps) {
   const [expanded, setExpanded] = useState(false)
   const hasEvents = events && events.length > 0
-  const onToggle = useCallback(() => setExpanded(!expanded), [expanded])
+  const onToggle = useCallback(() => {
+    if (section) {
+      uaEvent({
+        category: 'Vessel Detail RISK SUMMARY Tab',
+        action: `View list of events or details of a risk indicator`,
+        label: JSON.stringify({ section }),
+      })
+    }
+    setExpanded(!expanded)
+  }, [section, expanded])
+  const displayOptions = { displayPortVisitsAsOneEvent: true }
 
   return (
     <div className={styles['container']}>
@@ -49,11 +62,12 @@ export function RiskIndicator({
         expanded &&
         events.map((event, index) => (
           <ActivityEvent
-            classname={styles.event}
+            classname={cx(styles.event, styles[`${event.type}_${event.subEvent}`])}
             key={index}
             event={event}
             onMapClick={onEventMapClick}
             onInfoClick={onEventInfoClick}
+            options={displayOptions}
           />
         ))}
     </div>

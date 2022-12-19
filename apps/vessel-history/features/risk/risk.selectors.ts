@@ -3,15 +3,16 @@ import { DateTime, Interval } from 'luxon'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { RenderedEvent, selectEvents } from 'features/vessels/activity/vessels-activity.selectors'
 import { RISK_SUMMARY_SETTINGS } from 'data/config'
+import { getUTCDateTime } from 'utils/dates'
 
 const selectEventsForRiskSummary = createSelector([selectEvents], (events) => {
-  const endDate = DateTime.now()
+  const endDate = DateTime.utc()
   const startDate = endDate.minus(RISK_SUMMARY_SETTINGS.timeRange)
   const interval = Interval.fromDateTimes(startDate, endDate)
   return events.filter((event: RenderedEvent) => {
     if (
-      !interval.contains(DateTime.fromMillis(event.start as number)) &&
-      !interval.contains(DateTime.fromMillis(event.end as number))
+      !interval.contains(getUTCDateTime(event.start as number)) &&
+      !interval.contains(getUTCDateTime(event.end as number))
     ) {
       return false
     }

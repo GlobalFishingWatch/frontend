@@ -1,11 +1,15 @@
 export type GuessColumn = 'latitude' | 'longitude' | 'timestamp'
 
-export const LatitudeMatches = ['latitude', 'lat', 'location-lat']
-export const LongitudeMatches = ['longitude', 'lng', 'lon', 'long', 'location-lng']
-export const TimestampMatches = ['timestamp', 'time', 'date', 'datetime']
+export const LatitudeMatches = ['latitude', 'latitud', 'lat', 'location-lat', 'y']
+export const LongitudeMatches = ['longitude', 'longitud', 'lng', 'lon', 'long', 'location-lng', 'x']
+export const TimestampMatches = ['timestamp', 'fecha', 'time', 'date', 'datetime', 't']
 
 const matchesWithUpperCase = (matches: string[]) => {
-  return [...matches, ...matches.map((match) => match.toUpperCase())]
+  return [
+    ...matches,
+    ...matches.map((match) => match.toUpperCase()),
+    ...matches.map((match) => match.charAt(0).toUpperCase() + match.slice(1)),
+  ]
 }
 
 export const GUESS_COLUMN_DICT: Record<GuessColumn, string[]> = {

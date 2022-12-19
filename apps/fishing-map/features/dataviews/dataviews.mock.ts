@@ -1,4 +1,4 @@
-import { Dataview, DataviewCategory } from '@globalfishingwatch/api-types'
+import { Dataview } from '@globalfishingwatch/api-types'
 
 export const dataviews: Dataview[] = []
 

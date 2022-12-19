@@ -3,7 +3,6 @@ import cx from 'classnames'
 import { Trans, useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import { batch, useSelector } from 'react-redux'
-import { DateTime } from 'luxon'
 import {
   Button,
   IconButton,
@@ -36,6 +35,7 @@ import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { getUTCDateTime } from 'utils/dates'
 import styles from './Analysis.module.css'
 import AnalysisEvolution from './AnalysisEvolution'
 import { useAnalysisArea, useFilteredTimeSeries } from './analysis.hooks'
@@ -71,14 +71,14 @@ function Analysis() {
   const dataviews = useSelector(selectActiveHeatmapDataviews)
   const userData = useSelector(selectUserData)
   const analysisType = useSelector(selectAnalysisTypeQuery)
-  const { bounds } = useSelector(selectAnalysisQuery)
+  const { bounds, areaId, datasetId } = useSelector(selectAnalysisQuery)
   const timeComparison = useSelector(selectAnalysisTimeComparison)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
 
   const analysisArea = useAnalysisArea()
-  const analysisAreaName = analysisArea?.name
-  const analysisAreaError = analysisArea.status === AsyncReducerStatus.Error
-  const analysisAreaLoading = analysisArea.status === AsyncReducerStatus.Loading
+  const analysisAreaName = analysisArea?.data?.name
+  const analysisAreaError = analysisArea?.status === AsyncReducerStatus.Error
+  const analysisAreaLoading = analysisArea?.status === AsyncReducerStatus.Loading
 
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
   const datasetsReportAllowed = getActivityDatasetsDownloadSupported(
@@ -92,8 +92,8 @@ function Analysis() {
 
   useEffect(() => {
     if (start && end) {
-      const startDateTime = DateTime.fromISO(start)
-      const endDateTime = DateTime.fromISO(end)
+      const startDateTime = getUTCDateTime(start)
+      const endDateTime = getUTCDateTime(end)
       const duration = endDateTime.diff(startDateTime, 'years')
       setTimeRangeTooLong(duration.years > 1)
     }
@@ -112,7 +112,7 @@ function Analysis() {
   }
 
   const onDownloadClick = async () => {
-    dispatch(setDownloadActivityAreaKey(analysisArea.key))
+    dispatch(setDownloadActivityAreaKey({ areaId, datasetId }))
   }
 
   const { error, blur, loading, layersTimeseriesFiltered } = useFilteredTimeSeries()

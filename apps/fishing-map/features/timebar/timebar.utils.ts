@@ -1,7 +1,7 @@
-import { DateTime } from 'luxon'
 import { ApiEvent } from '@globalfishingwatch/api-types'
 import { TrackEventChunkProps } from '@globalfishingwatch/timebar'
 import { getEventDescription } from 'utils/events'
+import { getUTCDateTime } from 'utils/dates'
 
 export const parseTrackEventChunkProps = (
   event: ApiEvent,
@@ -18,12 +18,8 @@ export const parseTrackEventChunkProps = (
   return {
     ...event,
     id: eventKey,
-    start: DateTime.fromISO(event.start as string)
-      .toUTC()
-      .toMillis(),
-    end: DateTime.fromISO(event.end as string)
-      .toUTC()
-      .toMillis(),
+    start: getUTCDateTime(event.start as string).toMillis(),
+    end: getUTCDateTime(event.end as string).toMillis(),
     props: {
       color,
       colorLabels,

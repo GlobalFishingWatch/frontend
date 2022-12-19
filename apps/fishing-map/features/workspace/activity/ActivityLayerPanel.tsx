@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import { DEFAULT_STATS_FIELDS, useGetStatsByDataviewQuery } from 'queries/stats-api'
-import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
+import { ColorBarOption, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import {
   getDatasetConfigByDatasetType,
   UrlDataviewInstance,
@@ -17,7 +17,7 @@ import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import { getDatasetTitleByDataview, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import Hint from 'features/hints/Hint'
-import { setHintDismissed } from 'features/hints/hints.slice'
+import { selectHintsDismissed, setHintDismissed } from 'features/hints/hints.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { isGuestUser } from 'features/user/user.slice'
@@ -27,6 +27,7 @@ import { SAR_DATAVIEW_ID } from 'data/workspaces'
 import DatasetNotFound from 'features/workspace/shared/DatasetNotFound'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import ActivityFitBounds from 'features/workspace/activity/ActivityFitBounds'
+import Color from 'features/workspace/common/Color'
 import DatasetFilterSource from '../shared/DatasetSourceField'
 import DatasetFlagField from '../shared/DatasetFlagsField'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
@@ -34,6 +35,7 @@ import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
 import InfoModal from '../common/InfoModal'
+import OutOfTimerangeDisclaimer from '../common/OutOfBoundsDisclaimer'
 import Filters from './ActivityFilters'
 import { isActivityDataview, isDetectionsDataview } from './activity.utils'
 import activityStyles from './ActivitySection.module.css'
@@ -54,11 +56,13 @@ function ActivityLayerPanel({
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [filterOpen, setFiltersOpen] = useState(isOpen === undefined ? false : isOpen)
+  const [colorOpen, setColorOpen] = useState(false)
 
-  const { deleteDataviewInstance } = useDataviewInstancesConnect()
+  const { deleteDataviewInstance, upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const urlTimeRange = useSelector(selectUrlTimeRange)
   const bivariateDataviews = useSelector(selectBivariateDataviews)
+  const hintsDismissed = useSelector(selectHintsDismissed)
   const guestUser = useSelector(isGuestUser)
   const readOnly = useSelector(selectReadOnly)
   const layerActive = dataview?.config?.visible ?? true
@@ -115,11 +119,29 @@ function ActivityLayerPanel({
 
   const onToggleFilterOpen = () => {
     setFiltersOpen(!filterOpen)
-    dispatch(setHintDismissed('filterActivityLayers'))
+    if (!hintsDismissed.filterActivityLayers) {
+      dispatch(setHintDismissed('filterActivityLayers'))
+    }
+  }
+
+  const changeColor = (color: ColorBarOption) => {
+    upsertDataviewInstance({
+      id: dataview.id,
+      config: {
+        color: color.value,
+        colorRamp: color.id,
+      },
+    })
+    setColorOpen(false)
+  }
+
+  const onToggleColorOpen = () => {
+    setColorOpen(!colorOpen)
   }
 
   const closeExpandedContainer = () => {
     setFiltersOpen(false)
+    setColorOpen(false)
   }
 
   const datasetTitle = getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
@@ -159,7 +181,7 @@ function ActivityLayerPanel({
   return (
     <div
       className={cx(styles.LayerPanel, activityStyles.layerPanel, {
-        [styles.expandedContainerOpen]: filterOpen,
+        [styles.expandedContainerOpen]: filterOpen || colorOpen,
         [styles.noBorder]: !showBorder || bivariateDataviews?.[0] === dataview.id,
         'print-hidden': !layerActive,
       })}
@@ -173,12 +195,22 @@ function ActivityLayerPanel({
               className={styles.switch}
               dataview={dataview}
             />
-            {datasetTitle.length > 24 ? (
+            {datasetTitle.length > 20 ? (
               <Tooltip content={datasetTitle}>{TitleComponent}</Tooltip>
             ) : (
               TitleComponent
             )}
             <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
+              {layerActive && (
+                <Color
+                  dataview={dataview}
+                  open={colorOpen}
+                  onColorClick={changeColor}
+                  onToggleClick={onToggleColorOpen}
+                  onClickOutside={closeExpandedContainer}
+                  colorType="fill"
+                />
+              )}
               {layerActive && showFilters && (
                 <ExpandedContainer
                   visible={filterOpen}
@@ -279,6 +311,7 @@ function ActivityLayerPanel({
               )}
               <div className={styles.filters}>
                 <div className={styles.filters}>
+                  <OutOfTimerangeDisclaimer dataview={dataview} />
                   <DatasetFilterSource dataview={dataview} />
                   <DatasetFlagField dataview={dataview} />
                   {datasetFields.map(({ field, label }) => (
