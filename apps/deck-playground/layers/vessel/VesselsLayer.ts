@@ -1,27 +1,37 @@
-import { CompositeLayer } from '@deck.gl/core/typed'
+import { CompositeLayer, LayerContext } from '@deck.gl/core/typed'
 import { VesselLayer, VesselLayerProps } from 'layers/vessel/VesselLayer'
 
 export type VesselsLayerProps = { ids: string[] } & VesselLayerProps
 
 export class VesselsLayer extends CompositeLayer<VesselsLayerProps> {
-  vesselLayers = this.props.ids.map(
-    (id) =>
-      new VesselLayer({
-        id,
-        startTime: this.props.startTime,
-        endTime: this.props.endTime,
-        highlightStartTime: this.props.highlightStartTime,
-        highlightEndTime: this.props.highlightEndTime,
-        onDataLoad: this.props.onDataLoad,
-      })
-  )
+  initializeState(context: LayerContext) {
+    super.initializeState(context)
+    this.state = {
+      ids: this.props.ids,
+      startTime: this.props.startTime,
+      endTime: this.props.endTime,
+      highlightStartTime: this.props.highlightStartTime,
+      highlightEndTime: this.props.highlightEndTime,
+    }
+  }
+
   renderLayers(): VesselLayer[] {
-    return this.vesselLayers
+    return this.state.ids.map(
+      (id) =>
+        new VesselLayer({
+          id,
+          startTime: this.state.startTime,
+          endTime: this.state.endTime,
+          highlightStartTime: this.state.highlightStartTime,
+          highlightEndTime: this.state.highlightEndTime,
+          onDataLoad: this.props.onDataLoad,
+        })
+    )
   }
   getVesselsLayers() {
-    return this.vesselLayers
+    return this.getSubLayers()
   }
   getVesselLayer(id: string) {
-    return this.vesselLayers.find((l) => l.id === id)
+    return this.getSubLayers().find((l) => l.id === id)
   }
 }

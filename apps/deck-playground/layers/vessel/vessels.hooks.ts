@@ -63,6 +63,16 @@ export function useVesselsLayer() {
   )
 
   useEffect(() => {
+    if (instance) {
+      instance.setState({
+        ids,
+        startTime,
+        endTime,
+        highlightStartTime,
+        highlightEndTime,
+      })
+      return
+    }
     if (layerVisible) {
       const vesselsLayer = new VesselsLayer({
         ids,
@@ -88,6 +98,7 @@ export function useVesselsLayer() {
     highlightStartTime,
     highlightEndTime,
     onDataLoad,
+    instance,
   ])
 
   return instance
