@@ -6,6 +6,7 @@ import {
 } from 'layers/fourwings/fourwings.hooks'
 import { groupBy } from 'lodash'
 import { DateTime } from 'luxon'
+import { FourwingsPositionsTileLayer } from 'layers/fourwings/FourwingsPositionsTileLayer'
 import { TimebarStackedActivity, TimebarTracks } from '@globalfishingwatch/timebar'
 import { ResourceStatus } from '@globalfishingwatch/api-types'
 import { useMapFourwingsLayer } from 'features/map/layers.hooks'
@@ -41,7 +42,9 @@ const TimebarActivityGraph = () => {
           const timebarTrack = {
             status: ResourceStatus.Finished,
             chunks: positions.map((position) => {
-              const color = fourwingsLayerInstance.layer?.getFillColor(position)
+              const color = (
+                fourwingsLayerInstance.layer as FourwingsPositionsTileLayer
+              ).getFillColor(position)
               return {
                 start: getDateFromHtime(position.properties.htime),
                 end: DateTime.fromMillis(getDateFromHtime(position.properties.htime))
