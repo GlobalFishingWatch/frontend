@@ -120,7 +120,7 @@ function Sidebar() {
                 <div>
                   <div>
                     <label>Color breaks</label>
-                    {fourwingsLayerInstance && (
+                    {fourwingsLayerInstance && fourwingsLayerLoaded && (
                       <ul className={styles.list}>
                         {fourwingsLayerInstance.getColorDomain()?.map((step) => (
                           <li key={step}>{step},</li>

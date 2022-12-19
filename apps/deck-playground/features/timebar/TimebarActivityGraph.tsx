@@ -20,7 +20,7 @@ const TimebarActivityGraph = () => {
   const fourwingsLayerInstance = useFourwingsLayerInstance()
   const fourwingsLayerLoaded = useFourwingsLayerLoaded()
   const { id, visible } = useMapFourwingsLayer()
-  const { mode } = fourwingsLayerInstance.props
+  const mode = fourwingsLayerInstance?.getMode()
   const dataviews = useMemo(() => {
     return [{ id, visible }]
   }, [id, visible])

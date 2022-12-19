@@ -15,6 +15,9 @@ import {
 
 export const filterData = (data: TimebarChartData<any>, start: string, end: string) => {
   return data?.map((item) => {
+    if (!item?.chunks?.length) {
+      return []
+    }
     const filteredChunks = item.chunks.filter((chunk) => {
       const chunkStart = chunk.start
       const chunkEnd = chunk.end || chunk.start
