@@ -76,8 +76,8 @@ export function useFourwingsLayer() {
         onTileLoad: onTileLoad,
         onViewportLoad: onViewportLoad,
         highlightedVesselId,
-        // onVesselHighlight: onVesselHighlight,
-        // onVesselClick: onVesselClick,
+        onVesselHighlight: onVesselHighlight,
+        onVesselClick: onVesselClick,
         resolution: fourwingsMapLayerResolution,
       })
       setAtomProperty({ instance: fourwingsLayer })
@@ -94,6 +94,8 @@ export function useFourwingsLayer() {
     onTileLoad,
     onViewportLoad,
     setAtomProperty,
+    onVesselHighlight,
+    onVesselClick,
   ])
 
   return instance

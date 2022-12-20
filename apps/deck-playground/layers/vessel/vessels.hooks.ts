@@ -1,15 +1,6 @@
 import { useCallback, useEffect } from 'react'
-import {
-  atom,
-  DefaultValue,
-  selector,
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
-} from 'recoil'
+import { atom, selector, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { VesselsLayer } from 'layers/vessel/VesselsLayer'
-import { urlSyncEffect, WriteAtomInterface } from 'recoil-sync'
-import { mixed } from '@recoiljs/refine'
 import { useMapLayers } from 'features/map/layers.hooks'
 import { useHighlightTimerange, useTimerange } from 'features/timebar/timebar.hooks'
 import { FourwingsColorRamp } from '../fourwings/FourwingsLayer'
@@ -19,6 +10,7 @@ const dateToMs = (date: string) => {
 }
 
 type VesselsAtom = {
+  loaded: boolean
   ids: string[]
   instance?: VesselsLayer
 }
@@ -27,26 +19,9 @@ export const vesselsLayerAtom = atom<VesselsAtom>({
   key: 'vesselsLayer',
   dangerouslyAllowMutability: true,
   default: {
+    loaded: false,
     ids: [],
   },
-  // effects: [
-  //   urlSyncEffect({
-  //     refine: mixed(),
-  //     history: 'replace',
-  //     read: ({ read }: WriteAtomInterface) => {
-  //       return { ids: read('ids') }
-  //     },
-  //     write: ({ write, reset }: WriteAtomInterface, newValue: VesselsAtom) => {
-  //       if (newValue instanceof DefaultValue) {
-  //         reset('ids')
-  //       } else {
-  //         delete newValue.instance
-  //         write('ids', newValue.ids)
-  //       }
-  //       delete newValue.instance
-  //     },
-  //   }),
-  // ],
 })
 
 export function useVesselsLayer() {
@@ -74,6 +49,10 @@ export function useVesselsLayer() {
     [setAtomProperty]
   )
 
+  const onDataLoad = useCallback(() => {
+    setAtomProperty({ loaded: true })
+  }, [setAtomProperty])
+
   const onColorRampUpdate = useCallback(
     (colorRamp: FourwingsColorRamp) => {
       if (colorRamp) {
@@ -91,10 +70,11 @@ export function useVesselsLayer() {
         endTime,
         highlightStartTime,
         highlightEndTime,
+        onDataLoad: onDataLoad,
       })
       setAtomProperty({ instance: vesselsLayer })
     } else {
-      setAtomProperty({ instance: undefined })
+      setAtomProperty({ instance: undefined, loaded: false })
     }
   }, [
     startTime,
@@ -107,6 +87,7 @@ export function useVesselsLayer() {
     ids,
     highlightStartTime,
     highlightEndTime,
+    onDataLoad,
   ])
 
   return instance
@@ -138,12 +119,25 @@ export function useVesselsLayerIds() {
   return instance
 }
 
+const vesselsLayerLoadedAtomSelector = selector({
+  key: 'vesselsLayerLoadedAtomSelector',
+  dangerouslyAllowMutability: true,
+  get: ({ get }) => {
+    return get(vesselsLayerAtom)?.loaded
+  },
+})
+
+export function useVesselsLayerLoaded() {
+  const loaded = useRecoilValue(vesselsLayerLoadedAtomSelector)
+  return loaded
+}
+
 export function useAddVesselInLayer() {
   const setVesselLayer = useSetRecoilState(vesselsLayerAtom)
   const addVesselLayer = useCallback(
     (id: string) => {
       setVesselLayer((atom) => {
-        return { ...atom, ids: Array.from(new Set([...atom.ids, id])) }
+        return { ...atom, ids: Array.from(new Set([...atom.ids, id])), loaded: false }
       })
     },
     [setVesselLayer]

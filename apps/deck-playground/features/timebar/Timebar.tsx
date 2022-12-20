@@ -11,6 +11,8 @@ import {
 import { formatI18nDate } from 'utils/i18n'
 import { getUTCDateTime } from 'utils/dates'
 import TimebarActivityGraph from './TimebarActivityGraph'
+import TimebarVesselsEvents from './TimebarVesselsEvents'
+import TimebarVesselsTracks from './TimebarVesselsTracks'
 import styles from './Timebar.module.css'
 
 const TimebarHighlighterWrapper = () => {
@@ -99,6 +101,8 @@ const TimebarWrapper = () => {
       >
         <TimebarActivityGraph />
         <TimebarHighlighterWrapper />
+        <TimebarVesselsEvents />
+        <TimebarVesselsTracks />
       </Timebar>
     </div>
   )
