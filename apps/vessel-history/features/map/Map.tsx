@@ -21,6 +21,7 @@ import useViewport from './map-viewport.hooks'
 import MapControls from './controls/MapControls'
 import useMapEvents from './map-events.hooks'
 import { selectHighlightedEvent } from './map.slice'
+import PopupWrapper from './popups/PopupWrapper'
 import styles from './Map.module.css'
 
 const mapStyles = {
@@ -33,7 +34,8 @@ const MapWrapper: React.FC = (): React.ReactElement => {
   const dispatch = useAppDispatch()
   const flying = useRef(false)
   const highlightedEvent = useSelector(selectHighlightedEvent)
-  const { selectVesselEventOnClick, highlightEvent, onFiltersChanged } = useMapEvents()
+  const { clickedLayers, selectVesselEventOnClick, highlightEvent, onFiltersChanged } =
+    useMapEvents()
   const { generatorsConfig, globalConfig, styleTransformations } = useGeneratorsConnect()
   const { viewport, onViewportChange, setMapCoordinates } = useViewport()
   const resourcesLoading: boolean = useSelector(selectResourcesLoading) ?? false
@@ -42,15 +44,19 @@ const MapWrapper: React.FC = (): React.ReactElement => {
     globalConfig,
     styleTransformations
   )
-
   const interactiveLayerIds = useMemoCompare(style?.metadata?.interactiveLayerIds)
   const { eventsLoading, events } = useVoyagesConnect()
 
+  const [clickCoordinates, setClickCoordinates] = useState(null)
   const onMapClick: any = useMapClick(
-    selectVesselEventOnClick,
+    (event) => {
+      setClickCoordinates({ latitude: event.latitude, longitude: event.longitude })
+      selectVesselEventOnClick(event)
+    },
     style?.metadata as ExtendedStyleMeta,
     map
   )
+
   const mergedVesselId = useSelector(selectMergedVesselId)
   const vessel = useSelector(selectVesselById(mergedVesselId))
 
@@ -184,7 +190,16 @@ const MapWrapper: React.FC = (): React.ReactElement => {
           mapStyle={style as MapboxStyle}
           interactiveLayerIds={interactiveLayerIds}
           customAttribution={'© Copyright Global Fishing Watch 2020'}
-        ></Map>
+        >
+          {clickedLayers && clickCoordinates && (
+            <PopupWrapper
+              key={Math.random()}
+              layers={clickedLayers}
+              latitude={clickCoordinates.latitude}
+              longitude={clickCoordinates.longitude}
+            />
+          )}
+        </Map>
       )}
       <MapControls mapLoading={layerComposerLoading || resourcesLoading}></MapControls>
       <Info onEventChange={onEventChange}></Info>
