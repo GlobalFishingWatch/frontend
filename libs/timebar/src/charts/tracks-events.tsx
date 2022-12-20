@@ -1,9 +1,7 @@
-import React, { useCallback, useContext, useMemo } from 'react'
+import React, { useContext, useMemo } from 'react'
 import cx from 'classnames'
 import { useSetRecoilState } from 'recoil'
 import TimelineContext, { TimelineScale, TrackGraphOrientation } from '../timelineContext'
-import ImmediateContext from '../immediateContext'
-import { DEFAULT_CSS_TRANSITION } from '../constants'
 import EncounterIcon from '../icons/events-shapes/encounter.svg'
 import LoiteringIcon from '../icons/events-shapes/loitering.svg'
 import {
@@ -64,7 +62,6 @@ const TracksEvents = ({
   onEventClick?: (event: TimebarChartChunk<TrackEventChunkProps>) => void
   onEventHover?: (event?: TimebarChartChunk<TrackEventChunkProps>) => void
 }) => {
-  const { immediate } = useContext(ImmediateContext) as any
   const { graphHeight, trackGraphOrientation } = useContext(TimelineContext)
   const outerScale = useOuterScale()
 
@@ -110,15 +107,10 @@ const TracksEvents = ({
               {
                 left: `${event.x}px`,
                 width: `${event.width}px`,
-                '--encounterIcon': `url(${EncounterIcon})`,
-                '--loiteringIcon': `url(${LoiteringIcon})`,
                 '--background-color':
                   useTrackColor || event.type === 'fishing'
                     ? trackEvents.color
                     : event.props?.color || 'white',
-                transition: immediate
-                  ? 'none'
-                  : `left ${DEFAULT_CSS_TRANSITION}, height ${DEFAULT_CSS_TRANSITION}, width ${DEFAULT_CSS_TRANSITION}`,
               } as React.CSSProperties
             }
             onClick={() => {
@@ -138,14 +130,25 @@ const TracksEvents = ({
     ))
   }, [
     highlightedEventsIds,
-    immediate,
     onEventClick,
     tracksEventsWithCoords,
     updateHoveredEvent,
     useTrackColor,
   ])
 
-  return <div className={styles.Events}>{trackEvents}</div>
+  return (
+    <div
+      className={styles.Events}
+      style={
+        {
+          '--encounterIcon': `url(${EncounterIcon})`,
+          '--loiteringIcon': `url(${LoiteringIcon})`,
+        } as React.CSSProperties
+      }
+    >
+      {trackEvents}
+    </div>
+  )
 }
 
 export default TracksEvents
