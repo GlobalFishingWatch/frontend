@@ -153,9 +153,7 @@ function App(): React.ReactElement {
       const resolvedAction = await action
       if (fetchWorkspaceThunk.fulfilled.match(resolvedAction)) {
         const workspace = resolvedAction.payload as Workspace
-        if (!urlViewport && workspace?.viewport) {
-          setMapCoordinates(workspace.viewport)
-        }
+        setMapCoordinates(urlViewport || workspace.viewport)
         if (!urlTimeRange && workspace?.startAt && workspace?.endAt) {
           setTimerange({
             start: workspace?.startAt,

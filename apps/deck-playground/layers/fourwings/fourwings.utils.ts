@@ -2,6 +2,7 @@ import { stringify } from 'qs'
 import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
 import { TileIndex } from '@deck.gl/geo-layers/typed/tile-layer/types'
 import { DateTime } from 'luxon'
+import { Feature } from 'geojson'
 import { TimebarRange } from 'features/timebar/timebar.hooks'
 import { getUTCDateTime } from 'utils/dates'
 import { Chunk } from './fourwings.config'
@@ -129,6 +130,27 @@ export const aggregateCellTimeseries = (cells: TileCell[]) => {
         acc[frame] = value
       }
     })
+    return acc
+  }, {} as Record<number, number>)
+  return timeseries
+}
+
+const getMillisFromHtime = (htime: number) => {
+  return htime * 1000 * 60 * 60
+}
+
+export const aggregatePositionsTimeseries = (positions: Feature[]) => {
+  if (!positions) {
+    return []
+  }
+  const timeseries = positions.reduce((acc, position) => {
+    const { htime, value } = position.properties
+    const activityStart = getMillisFromHtime(htime)
+    if (acc[activityStart]) {
+      acc[activityStart] += value
+    } else {
+      acc[activityStart] = value
+    }
     return acc
   }, {} as Record<number, number>)
   return timeseries
