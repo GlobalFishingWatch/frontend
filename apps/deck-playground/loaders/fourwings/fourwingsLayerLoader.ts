@@ -1,6 +1,7 @@
 // import { TileBoundingBox, TileIndex } from '@deck.gl/geo-layers/typed/tile-layer/types'
 // import { LoaderWithParser } from '@loaders.gl/loader-utils'
 import Pbf from 'pbf'
+import { FourwingsDatasetId, FourwingsSublayer } from '../../layers/fourwings/fourwings.types'
 import {
   CELL_END_INDEX,
   CELL_NUM_INDEX,
@@ -69,18 +70,30 @@ export type BBox = [number, number, number, number]
 const getDate = (day) => {
   return day * 1000 * 60 * 60 * 24
 }
-const getTimeseries = (startFrame, values) => {
-  return values.flatMap((v, i) => {
+
+export type GetTimeseriesParams = {
+  startFrame: number
+  sublayerIndex: number
+  sublayerCount: number
+}
+
+const getTimeseries = (values: number[], params: GetTimeseriesParams) => {
+  const sublayerLength = values.length / params.sublayerCount
+  const startIndex = sublayerLength * params.sublayerIndex
+  const endIndex = startIndex + sublayerLength
+  return values.slice(startIndex, endIndex).flatMap((v, i) => {
     return v > 0
       ? {
           value: v,
-          frame: getDate(i + startFrame),
+          frame: getDate(i + params.startFrame),
         }
       : []
   })
 }
 
-const getCellArrays = (intArray, sublayerCount = 1) => {
+const getCellArrays = (intArray, params: ParseFourwingsParams) => {
+  const sublayerCount = params.sublayers.length
+  const sublayerIds = params.sublayers.map((s) => s.id)
   const cells: Cell[] = []
   let cellNum = 0
   let startFrame = 0
@@ -109,7 +122,12 @@ const getCellArrays = (intArray, sublayerCount = 1) => {
       // const merged = original.concat(padded)
       const values = intArray.slice(startIndex + CELL_VALUES_START_INDEX, endIndex)
       cells.push({
-        timeseries: getTimeseries(startFrame, values),
+        timeseries: Object.fromEntries(
+          // eslint-disable-next-line no-loop-func
+          sublayerIds.map((id, sublayerIndex) => {
+            return [id, getTimeseries(values, { startFrame, sublayerIndex, sublayerCount })]
+          })
+        ),
         index: cellNum,
       })
       if (startFrame < domainX[0]) domainX[0] = startFrame
@@ -132,7 +150,7 @@ export type CellTimeseries = {
 
 export type Cell = {
   index: number
-  timeseries: CellTimeseries[]
+  timeseries: Record<FourwingsDatasetId, CellTimeseries[]>
 }
 
 export type FourwingsTileData = {
@@ -141,9 +159,13 @@ export type FourwingsTileData = {
   cells: Cell[]
 }
 
-export const parseFourWings = (arrayBuffer): FourwingsTileData => {
-  var data = new Pbf(arrayBuffer).readFields(readData, [])[0]
-  const { cells } = getCellArrays(data, 1)
+export type ParseFourwingsParams = {
+  sublayers: FourwingsSublayer[]
+}
+
+export const parseFourWings = (arrayBuffer, params: ParseFourwingsParams): FourwingsTileData => {
+  const data = new Pbf(arrayBuffer).readFields(readData, [])[0]
+  const { cells } = getCellArrays(data, params)
 
   const rows = data[FEATURE_ROW_INDEX]
   const cols = data[FEATURE_COL_INDEX]

@@ -6,6 +6,7 @@ import { useTimerange } from 'features/timebar/timebar.hooks'
 import { useViewport } from 'features/map/map-viewport.hooks'
 import { useMapLayers } from 'features/map/layers.hooks'
 import { FourwingsLayer, FourwingsLayerMode } from './FourwingsLayer'
+import { FourwingsSublayer } from './fourwings.types'
 
 const dateToMs = (date: string) => {
   return new Date(date).getTime()
@@ -24,6 +25,19 @@ export const fourwingsLayerAtom = atom<FourwingsAtom>({
     loaded: false,
   },
 })
+
+const sublayers: FourwingsSublayer[] = [
+  {
+    id: 'ais',
+    datasets: ['public-global-fishing-effort:v20201001'],
+    colorRamp: 'magenta',
+  },
+  {
+    id: 'vms-brazil',
+    datasets: ['public-bra-onyxsat-fishing-effort:v20211126'],
+    colorRamp: 'sky',
+  },
+]
 
 export function useFourwingsLayer() {
   const [{ highlightedVesselId, instance }, updateFourwingsAtom] =
@@ -73,6 +87,7 @@ export function useFourwingsLayer() {
         minFrame: startTime,
         maxFrame: endTime,
         mode: activityMode,
+        sublayers,
         onTileLoad: onTileLoad,
         onViewportLoad: onViewportLoad,
         highlightedVesselId,

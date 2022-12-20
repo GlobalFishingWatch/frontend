@@ -13,6 +13,7 @@ import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS, Interval } from '@globalfishingwatch/layer-composer'
 import { HEATMAP_ID } from './FourwingsLayer'
 import { Chunk, getChunksByInterval, getInterval } from './fourwings.config'
+import { FourwingsDatasetId, FourwingsSublayer } from './fourwings.types'
 
 export type FourwingsLayerResolution = 'default' | 'high'
 export type FourwingsHeatmapTileLayerProps = {
@@ -20,8 +21,14 @@ export type FourwingsHeatmapTileLayerProps = {
   resolution?: FourwingsLayerResolution
   minFrame: number
   maxFrame: number
+  sublayers: FourwingsSublayer[]
   onViewportLoad?: (tiles: Tile2DHeader[]) => void
 }
+
+export type ColorDomain = number[]
+export type ColorRange = Color[]
+export type SublayerColorRanges = Record<FourwingsDatasetId, ColorRange>
+export type ColorScale = { colorRange: ColorRange; colorDomain: ColorDomain }
 
 export class FourwingsHeatmapTileLayer extends CompositeLayer<
   FourwingsHeatmapTileLayerProps & TileLayerProps
@@ -33,7 +40,14 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     this.state = {
       cacheStart: undefined,
       cacheEnd: undefined,
-      colorScale: { colorRamp: [], colorDomain: [] },
+      // TODO: generate the colorDomain by each sublayer colorRamp at the beginning and update only when change
+      colorScale: {
+        colorDomain: [],
+        colorRange: this.props.sublayers.map(({ colorRamp }, i) => {
+          const opacity = ((i + 1) / COLOR_RAMP_DEFAULT_NUM_STEPS) * 255
+          return [255, 0, 255, opacity] as Color
+        }),
+      } as ColorScale,
     }
   }
 
@@ -42,7 +56,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     const viewportData = this.getData()
     const colorScale = { colorDomain: [], colorRange: [] }
     if (viewportData?.length > 0) {
-      const cells = viewportData.map((cell) => aggregateCell(cell, { minFrame, maxFrame }))
+      const cells = viewportData.flatMap((cell) => aggregateCell(cell, { minFrame, maxFrame }))
+      // TODO test calculating the colorDomain with all data (.map(c => c.value)) or by each sublayer or with the max of each cell
       const dataSampled = cells.length > 1000 ? sample(cells, 1000, Math.random) : cells
       // filter data to 2 standard deviations from mean to remove outliers
       const meanValue = mean(dataSampled)
@@ -56,10 +71,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         parseFloat(clusterFirst.toFixed(3))
       )
       colorScale.colorDomain = steps
-      colorScale.colorRange = steps.map((s, i) => {
-        const opacity = ((i + 1) / COLOR_RAMP_DEFAULT_NUM_STEPS) * 255
-        return [255, 0, 255, opacity] as Color
-      })
     }
     return colorScale
   }
@@ -79,16 +90,21 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   _getTileData: TileLayerProps['getTileData'] = async (tile) => {
+    const datasets = Array.from(
+      new Set(this.props.sublayers.flatMap((sublayer) => sublayer.datasets || []))
+    )
     const promises = this._getChunks(this.props.minFrame, this.props.maxFrame).map(
       async (chunk) => {
         // if (cache[chunk]) {
         //   return Promise.resolve(cache[chunk])
         // }
-        const response = await fetch(getDataUrlByChunk(tile, chunk), { signal: tile.signal })
+        const response = await fetch(getDataUrlByChunk({ tile, chunk, datasets }), {
+          signal: tile.signal,
+        })
         if (tile.signal?.aborted || !response.ok) {
           throw new Error()
         }
-        return parseFourWings(await response.arrayBuffer())
+        return parseFourWings(await response.arrayBuffer(), { sublayers: this.props.sublayers })
       }
     )
     const data = (await Promise.allSettled(promises)).flatMap((d) =>
@@ -129,6 +145,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       this.getSubLayerProps({
         id: HEATMAP_ID,
         // tileSize: 512,
+        colorDomain,
+        colorRange,
         minZoom: 0,
         maxZoom: ACTIVITY_SWITCH_ZOOM_LEVEL,
         zoomOffset: this.props.resolution === 'high' ? 1 : 0,
@@ -141,8 +159,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         renderSubLayers: (props: any) => {
           return new FourwingsHeatmapLayer({
             ...props,
-            colorDomain,
-            colorRange,
             cols: props.data?.cols,
             rows: props.data?.rows,
             data: props.data?.cells,

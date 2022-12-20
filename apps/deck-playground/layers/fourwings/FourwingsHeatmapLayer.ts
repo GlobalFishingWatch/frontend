@@ -1,44 +1,69 @@
 import { Color, CompositeLayer, GetPickingInfoParams, PickingInfo } from '@deck.gl/core/typed'
 import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
 import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
+import { maxBy } from 'lodash'
 import { Cell } from 'loaders/fourwings/fourwingsLayerLoader'
 import FourwingsTileCellLayer from 'layers/fourwings/FourwingsHeatmapCellLayer'
 import { PathLayer, TextLayer } from '@deck.gl/layers/typed'
 import { GeoBoundingBox } from '@deck.gl/geo-layers/typed'
-import { FourwingsLayerProps } from './FourwingsLayer'
+import {
+  ColorDomain,
+  FourwingsHeatmapTileLayerProps,
+  SublayerColorRanges,
+} from './FourwingsHeatmapTileLayer'
 
-export type FourwingsHeatmapLayerProps = FourwingsLayerProps & {
+export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
   id: string
   tile: Tile2DHeader
   data: any
   cols: number
   rows: number
-  colorDomain?: number[]
-  colorRange?: Color[]
+  colorDomain?: ColorDomain
+  colorRange?: SublayerColorRanges
 }
 
-export const aggregateCell = (cell: Cell | TileCell, { minFrame, maxFrame }) => {
-  if (!cell) return 0
-  return cell.timeseries
-    .filter(({ frame }) => frame >= minFrame && frame <= maxFrame)
-    .reduce((acc, next) => acc + next.value, 0)
+export type AggregateCellParams = {
+  minFrame: number
+  maxFrame: number
+}
+
+export const aggregateCell = (
+  cell: Cell | TileCell,
+  { minFrame, maxFrame }: AggregateCellParams
+) => {
+  if (!cell) return []
+  return Object.keys(cell.timeseries).map((key) => ({
+    id: key,
+    value: cell.timeseries[key]
+      .filter(({ frame }) => frame >= minFrame && frame <= maxFrame)
+      .reduce((acc, next) => acc + next.value, 0) as number,
+  }))
+}
+
+export type GetFillColorParams = {
+  minFrame: number
+  maxFrame: number
+  colorDomain: number[]
+  colorRange: FourwingsHeatmapLayerProps['colorRange']
 }
 
 export const getFillColor = (
   cell: Cell,
-  { minFrame, maxFrame, colorDomain, colorRange }
+  { minFrame, maxFrame, colorDomain, colorRange }: GetFillColorParams
 ): Color => {
-  const filteredCellValue = aggregateCell(cell, { minFrame, maxFrame })
-  if (!colorDomain || !colorRange || !filteredCellValue) {
+  const filteredCellValues = aggregateCell(cell, { minFrame, maxFrame })
+  // TODO add more comparison modes
+  const cellValueByMode = maxBy(filteredCellValues, 'value')
+  if (!colorDomain || !colorRange || !cellValueByMode) {
     return [0, 0, 0, 0]
   }
   const colorIndex = colorDomain.findIndex((d, i) => {
     if (colorDomain[i + 1]) {
-      return filteredCellValue > d && filteredCellValue <= colorDomain[i + 1]
+      return cellValueByMode.value > d && cellValueByMode.value <= colorDomain[i + 1]
     }
     return i
   })
-  return colorIndex >= 0 ? colorRange[colorIndex] : [0, 0, 0, 0]
+  return colorIndex >= 0 ? colorRange[cellValueByMode.id][colorIndex] : [0, 0, 0, 0]
 }
 
 export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
