@@ -110,32 +110,41 @@ const TrackGraph = ({ data }: { data: TimebarChartData }) => {
   const filteredGraphsData = useFilteredChartData(data)
   useUpdateChartsData('tracksGraphs', filteredGraphsData)
 
-  const pathContainers = useMemo(() => {
-    return getPathContainers({
+  const graph = useMemo(() => {
+    const pathContainers = getPathContainers({
       tracksGraphData: filteredGraphsData,
       graphHeight,
       overallScale,
       maxValues,
       orientation: trackGraphOrientation,
     })
-  }, [filteredGraphsData, graphHeight, overallScale, maxValues, trackGraphOrientation])
+    return (
+      <svg width={outerWidth} height={graphHeight}>
+        <g transform={svgTransform}>
+          {pathContainers.map((pathContainer, trackIndex) => {
+            return pathContainer.paths.map((path, i) => (
+              <path
+                key={`${trackIndex}-${i}`}
+                d={path as string}
+                fill={pathContainer.color}
+                fillOpacity={0.5}
+              />
+            ))
+          })}
+        </g>
+      </svg>
+    )
+  }, [
+    filteredGraphsData,
+    graphHeight,
+    overallScale,
+    maxValues,
+    trackGraphOrientation,
+    outerWidth,
+    svgTransform,
+  ])
 
-  return (
-    <svg width={outerWidth} height={graphHeight}>
-      <g transform={svgTransform}>
-        {pathContainers.map((pathContainer, trackIndex) => {
-          return pathContainer.paths.map((path, i) => (
-            <path
-              key={`${trackIndex}-${i}`}
-              d={path as string}
-              fill={pathContainer.color}
-              fillOpacity={0.5}
-            />
-          ))
-        })}
-      </g>
-    </svg>
-  )
+  return graph
 }
 
 export default TrackGraph
