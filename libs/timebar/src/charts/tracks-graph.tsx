@@ -1,9 +1,7 @@
 import React, { useContext, useMemo } from 'react'
 import { area, curveStepAfter } from 'd3-shape'
 import { quantile } from 'simple-statistics'
-import ImmediateContext from '../immediateContext'
 import TimelineContext, { TimelineScale, TrackGraphOrientation } from '../timelineContext'
-import { DEFAULT_CSS_TRANSITION } from '../constants'
 import { useFilteredChartData } from './common/hooks'
 import { getTrackY } from './common/utils'
 import { useUpdateChartsData } from './chartsData.atom'
@@ -104,7 +102,6 @@ const getPathContainers = ({
 }
 
 const TrackGraph = ({ data }: { data: TimebarChartData }) => {
-  const { immediate } = useContext(ImmediateContext)
   const { overallScale, outerWidth, graphHeight, svgTransform, trackGraphOrientation } =
     useContext(TimelineContext)
   const maxValues = useMemo(() => {
@@ -125,12 +122,7 @@ const TrackGraph = ({ data }: { data: TimebarChartData }) => {
 
   return (
     <svg width={outerWidth} height={graphHeight}>
-      <g
-        transform={svgTransform}
-        style={{
-          transition: immediate ? 'none' : `transform ${DEFAULT_CSS_TRANSITION}`,
-        }}
-      >
+      <g transform={svgTransform}>
         {pathContainers.map((pathContainer, trackIndex) => {
           return pathContainer.paths.map((path, i) => (
             <path
