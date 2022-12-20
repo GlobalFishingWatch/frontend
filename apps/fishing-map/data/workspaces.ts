@@ -26,7 +26,7 @@ export enum WorkspaceCategories {
 
 // Contextual layers dataviews by environment
 export const BASEMAP_DATAVIEW_SLUG = 'basemap'
-export const BASEMAP_LABELS_DATAVIEW_SLUG = '305' // TODO ADD IN PRODUCTION
+export const BASEMAP_LABELS_DATAVIEW_SLUG = 'basemap-labels'
 export const EEZ_DATAVIEW_SLUG = 'eez'
 export const EEZ_DATAVIEW_INSTANCE_ID = 'context-layer-eez'
 export const MPA_DATAVIEW_SLUG = 'mpa'
@@ -43,7 +43,7 @@ export const CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG = 'encounter-cluster-events'
 export const VIIRS_MATCH_DATAVIEW_SLUG = 'viirs-match'
 export const SAR_DATAVIEW_SLUG = 'sar'
 export const PRESENCE_DATAVIEW_SLUG = 'presence-activity'
-export const VESSEL_PRESENCE_DATAVIEW_SLUG = '270' // TODO ADD IN PRODUCTION
+export const VESSEL_PRESENCE_DATAVIEW_SLUG = 'fishing-map-vessel-presence'
 export const TEMPLATE_USER_TRACK_SLUG = 'user-track'
 export const TEMPLATE_VESSEL_DATAVIEW_SLUG = 'fishing-map-vessel-track'
 export const TEMPLATE_CONTEXT_DATAVIEW_SLUG = 'default-context-layer'
