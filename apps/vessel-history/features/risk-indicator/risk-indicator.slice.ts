@@ -9,7 +9,7 @@ import {
   createAsyncSlice,
 } from 'utils/async-slice'
 import { RootState } from 'store'
-import { Indicator } from 'types/risk-indicator'
+import { Indicator, IndicatorType } from 'types/risk-indicator'
 import { selectEventDatasetsConfigQueryParams } from 'features/dataviews/dataviews.selectors'
 import { NOT_AVAILABLE } from 'features/vessels/vessels.utils'
 
@@ -39,7 +39,7 @@ export const parseMergedVesselsUniqueId = (id: string): FetchIds[] =>
 
 type ThunkParameters = {
   idData: FetchIds[]
-  indicator: string
+  indicator: IndicatorType
 }
 const indicatorsIdGenerator = (args: ThunkParameters) =>
   args.indicator + '-' + uuidv5(`${getMergedVesselsUniqueId(args.idData)}`, uuidv5.DNS)
