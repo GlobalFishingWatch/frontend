@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
+import { v5 as uuidv5 } from 'uuid'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import {
   asyncInitialState,
@@ -8,7 +9,7 @@ import {
   createAsyncSlice,
 } from 'utils/async-slice'
 import { RootState } from 'store'
-import { Indicator } from 'types/risk-indicator'
+import { Indicator, IndicatorType } from 'types/risk-indicator'
 import { selectEventDatasetsConfigQueryParams } from 'features/dataviews/dataviews.selectors'
 import { NOT_AVAILABLE } from 'features/vessels/vessels.utils'
 
@@ -35,37 +36,71 @@ export const parseMergedVesselsUniqueId = (id: string): FetchIds[] =>
     const [datasetId, vesselId, tmtId] = x.split('|')
     return { datasetId, vesselId, tmtId }
   })
+
+type ThunkParameters = {
+  idData: FetchIds[]
+  indicator: IndicatorType
+}
+const indicatorsIdGenerator = (args: ThunkParameters) =>
+  args.indicator + '-' + uuidv5(`${getMergedVesselsUniqueId(args.idData)}`, uuidv5.DNS)
+
+const mapIndicatorToResponseKey = {
+  coverage: 'coverage',
+  encounter: 'encounters',
+  fishing: 'fishing',
+  gap: 'gaps',
+  'port-visit': 'portVisits',
+  'vessel-identity': 'vesselIdentity',
+}
+
 export const fetchIndicatorsByIdThunk = createAsyncThunk(
   'indicators/fetchById',
-  async (idData: FetchIds[], { getState, rejectWithValue }) => {
+  async (params: ThunkParameters, { getState, rejectWithValue }) => {
+    const { idData, indicator } = params
     try {
       const state = getState() as RootState
       const queryParams = selectEventDatasetsConfigQueryParams(state)
       const query = queryParams
         .map((query) => `${query.id}=${encodeURIComponent(query.value)}`)
         .join('&')
-      const indicator = await GFWAPI.fetch<Indicator>(`/prototype/vessels/indicators?${query}`, {
-        method: 'POST',
-        body: idData.map(({ datasetId, vesselId, tmtId: vesselHistoryId }) => ({
-          ...(datasetId !== NOT_AVAILABLE && { datasetId }),
-          ...(vesselId !== NOT_AVAILABLE && { vesselId }),
-          ...(vesselHistoryId !== NOT_AVAILABLE && { vesselHistoryId }),
-        })) as any,
-        version: '',
-      })
-      indicator.id = getMergedVesselsUniqueId(idData)
-      return indicator
+
+      const result = await GFWAPI.fetch<Indicator>(
+        `/prototype/vessels/indicators?includes=${indicator}&${query}`,
+        {
+          method: 'POST',
+          body: idData.map(({ datasetId, vesselId, tmtId: vesselHistoryId }) => ({
+            ...(datasetId !== NOT_AVAILABLE && { datasetId }),
+            ...(vesselId !== NOT_AVAILABLE && { vesselId }),
+            ...(vesselHistoryId !== NOT_AVAILABLE && { vesselHistoryId }),
+          })) as any,
+          version: '',
+        }
+      )
+
+      result.id = getMergedVesselsUniqueId(idData)
+      return result
     } catch (e: any) {
       return rejectWithValue(parseAPIError(e))
     }
   },
   {
-    condition: (idData: FetchIds[], { getState, extra }) => {
+    idGenerator: indicatorsIdGenerator,
+    condition: (params: ThunkParameters, { getState, extra }) => {
+      const { idData, indicator } = params
       const state = getState() as RootState
       const mergedVesselsUniqueId = getMergedVesselsUniqueId(idData)
       const indicators = selectById(state, mergedVesselsUniqueId)
       const fetchStatus = selectIndicatorsStatus(state)
-      if (indicators !== undefined || fetchStatus === AsyncReducerStatus.LoadingItem) {
+      const requestId = indicatorsIdGenerator(params)
+      const sameRequestIsInProgress =
+        fetchStatus === AsyncReducerStatus.LoadingItem &&
+        state.indicators.currentRequestIds.includes(requestId)
+
+      const responseKey = mapIndicatorToResponseKey[indicator]
+      if (
+        (indicators !== undefined && indicators[responseKey] !== undefined) ||
+        sameRequestIsInProgress
+      ) {
         // Already fetched or in progress, don't need to re-fetch
         return false
       }
@@ -93,5 +128,6 @@ export const selectIndicatorById = memoize((id: string) =>
 )
 export const selectIndicatorsStatus = (state: RootState) => state.indicators.status
 export const selectIndicators = (state: RootState) => state.indicators.entities
+export const selectIndicatorsRequests = (state: RootState) => state.indicators.currentRequestIds
 export const indicatorEntityAdapter = entityAdapter
 export default indicatorSlice.reducer
