@@ -7,6 +7,7 @@ import { TimebarRange } from 'features/timebar/timebar.hooks'
 import { getUTCDateTime } from 'utils/dates'
 import { Chunk } from './fourwings.config'
 import { FourwingsLayerMode } from './FourwingsLayer'
+import { FourwingsSublayer } from './fourwings.types'
 
 function stringHash(s: string): number {
   return Math.abs(s.split('').reduce((a, b) => ((a << 5) - a + b.charCodeAt(0)) | 0, 0))
@@ -42,15 +43,18 @@ export function getURLFromTemplate(
   return url
 }
 
-const API_BASE_URL =
-  'https://gateway.api.dev.globalfishingwatch.org/v2/4wings/tile/heatmap/{z}/{x}/{y}'
-export const getDataUrlByChunk = (
+type GetDataUrlByChunk = {
   tile: {
     index: TileIndex
     id: string
-  },
+  }
   chunk: Chunk
-) => {
+  datasets: FourwingsSublayer['datasets']
+}
+
+const API_BASE_URL =
+  'https://gateway.api.dev.globalfishingwatch.org/v2/4wings/tile/heatmap/{z}/{x}/{y}'
+export const getDataUrlByChunk = ({ tile, chunk, datasets }: GetDataUrlByChunk) => {
   const params = {
     interval: chunk.interval,
     format: 'intArray',
@@ -60,7 +64,7 @@ export const getDataUrlByChunk = (
       DateTime.fromMillis(chunk.start).toISODate(),
       DateTime.fromMillis(chunk.end).toISODate(),
     ].join(','),
-    datasets: ['public-global-fishing-effort:v20201001'],
+    datasets,
   }
   const url = `${API_BASE_URL}?${stringify(params, {
     arrayFormat: 'indices',
