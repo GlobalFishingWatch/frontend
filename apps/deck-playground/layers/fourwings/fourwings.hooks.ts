@@ -26,26 +26,30 @@ export const fourwingsLayerAtom = atom<FourwingsAtom>({
   },
 })
 
-const sublayers: FourwingsSublayer[] = [
+export const FOURWINGS_SUBLAYERS: FourwingsSublayer[] = [
   {
     id: 'ais',
     datasets: ['public-global-fishing-effort:v20201001'],
     colorRamp: 'magenta',
+    visible: true,
   },
   {
     id: 'vms-brazil',
     datasets: ['public-bra-onyxsat-fishing-effort:v20211126'],
     colorRamp: 'sky',
+    visible: true,
   },
   {
     id: 'vms-chile',
     datasets: ['public-chile-fishing-effort:v20211126'],
     colorRamp: 'green',
+    visible: true,
   },
   {
     id: 'vms-ecuador',
     datasets: ['public-ecuador-fishing-effort:v20211126'],
     colorRamp: 'orange',
+    visible: true,
   },
 ]
 
@@ -97,7 +101,7 @@ export function useFourwingsLayer() {
         minFrame: startTime,
         maxFrame: endTime,
         mode: activityMode,
-        sublayers,
+        sublayers: FOURWINGS_SUBLAYERS,
         onTileLoad: onTileLoad,
         onViewportLoad: onViewportLoad,
         highlightedVesselId,

@@ -123,19 +123,25 @@ export const aggregateCellTimeseries = (cells: TileCell[]) => {
   if (!cells) {
     return []
   }
-  const timeseries = cells.reduce((acc, cell) => {
-    if (!cell) {
-      return acc
-    }
-    cell.timeseries.forEach(({ frame, value }) => {
-      if (acc[frame]) {
-        acc[frame] += value
-      } else {
-        acc[frame] = value
+  // [{index:number, timeseries: {id: {frame:value, ...}  }}]
+  // [{date: date, 0:number, 1:number ...}, ...]
+  const timeseries = Object.keys(cells[0].timeseries).map((sublayerId) => {
+    return cells.reduce((acc, cell) => {
+      if (!cell || !cell.timeseries[sublayerId]) {
+        return acc
       }
-    })
-    return acc
-  }, {} as Record<number, number>)
+      Object.entries(cell.timeseries[sublayerId]).forEach(([frame, value]) => {
+        if (acc[frame]) {
+          acc[frame] += value
+        } else {
+          acc[frame] = value
+        }
+      })
+      return acc
+    }, {} as Record<number, number>)
+  })
+  console.log('timeseries', timeseries)
+
   return timeseries
 }
 
