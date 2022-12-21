@@ -39,6 +39,18 @@ export const rgbaToString = ({ r, g, b, a = 1 }: RGBA) => {
   return `rgba(${r}, ${g}, ${b}, ${a})`
 }
 
+export const rgbaStringToComponents = (color: string) => {
+  const rgba = color.match(/[.?\d]+/g)
+  if (rgba)
+    return [
+      parseInt(rgba[0]),
+      parseInt(rgba[1]),
+      parseInt(rgba[2]),
+      Math.round(parseFloat(rgba[3]) * 255),
+    ]
+  return []
+}
+
 export const BLEND_BACKGROUND = '#0f2e5f'
 export const getBlend = (color1: RGBA, color2: RGBA) => {
   return normal({ ...hexToRgb(BLEND_BACKGROUND), a: 1 }, screen(color1 as RGBA, color2 as RGBA))

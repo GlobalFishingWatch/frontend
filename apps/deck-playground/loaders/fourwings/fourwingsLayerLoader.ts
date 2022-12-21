@@ -78,11 +78,8 @@ export type GetTimeseriesParams = {
 }
 
 const getTimeseries = (values: number[], params: GetTimeseriesParams) => {
-  const sublayerLength = values.length / params.sublayerCount
-  const startIndex = sublayerLength * params.sublayerIndex
-  const endIndex = startIndex + sublayerLength
-  return values.slice(startIndex, endIndex).flatMap((v, i) => {
-    return v > 0
+  return values.flatMap((v, i) => {
+    return v > 0 && i % params.sublayerCount === params.sublayerIndex
       ? {
           value: v,
           frame: getDate(i + params.startFrame),

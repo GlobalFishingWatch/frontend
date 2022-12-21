@@ -37,6 +37,16 @@ const sublayers: FourwingsSublayer[] = [
     datasets: ['public-bra-onyxsat-fishing-effort:v20211126'],
     colorRamp: 'sky',
   },
+  {
+    id: 'vms-chile',
+    datasets: ['public-chile-fishing-effort:v20211126'],
+    colorRamp: 'green',
+  },
+  {
+    id: 'vms-ecuador',
+    datasets: ['public-ecuador-fishing-effort:v20211126'],
+    colorRamp: 'orange',
+  },
 ]
 
 export function useFourwingsLayer() {
