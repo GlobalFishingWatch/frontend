@@ -1,9 +1,10 @@
 import { ColorRampsIds } from '@globalfishingwatch/layer-composer'
 
+export type FourwingsSublayerId = string
 export type FourwingsDatasetId = string
 
 export interface FourwingsSublayer {
-  id: string
+  id: FourwingsSublayerId
   datasets: FourwingsDatasetId[]
   colorRamp: ColorRampsIds
   // visible?: boolean

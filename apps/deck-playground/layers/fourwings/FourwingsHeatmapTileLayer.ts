@@ -10,10 +10,15 @@ import {
 } from 'layers/fourwings/fourwings.utils'
 import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
 import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
-import { COLOR_RAMP_DEFAULT_NUM_STEPS, Interval } from '@globalfishingwatch/layer-composer'
+import {
+  COLOR_RAMP_DEFAULT_NUM_STEPS,
+  HEATMAP_COLOR_RAMPS,
+  Interval,
+  rgbaStringToComponents,
+} from '@globalfishingwatch/layer-composer'
 import { HEATMAP_ID } from './FourwingsLayer'
 import { Chunk, getChunksByInterval, getInterval } from './fourwings.config'
-import { FourwingsDatasetId, FourwingsSublayer } from './fourwings.types'
+import { FourwingsSublayer, FourwingsSublayerId } from './fourwings.types'
 
 export type FourwingsLayerResolution = 'default' | 'high'
 export type FourwingsHeatmapTileLayerProps = {
@@ -27,8 +32,7 @@ export type FourwingsHeatmapTileLayerProps = {
 
 export type ColorDomain = number[]
 export type ColorRange = Color[]
-export type SublayerColorRanges = Record<FourwingsDatasetId, ColorRange>
-export type ColorScale = { colorRange: ColorRange; colorDomain: ColorDomain }
+export type SublayerColorRanges = Record<FourwingsSublayerId, ColorRange>
 
 export class FourwingsHeatmapTileLayer extends CompositeLayer<
   FourwingsHeatmapTileLayerProps & TileLayerProps
@@ -40,25 +44,26 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     this.state = {
       cacheStart: undefined,
       cacheEnd: undefined,
-      // TODO: generate the colorDomain by each sublayer colorRamp at the beginning and update only when change
-      colorScale: {
-        colorDomain: [],
-        colorRange: this.props.sublayers.map(({ colorRamp }, i) => {
-          const opacity = ((i + 1) / COLOR_RAMP_DEFAULT_NUM_STEPS) * 255
-          return [255, 0, 255, opacity] as Color
-        }),
-      } as ColorScale,
+      colorDomain: [],
+      // TODO: update colorRanges only when a sublayer colorRamp prop changes
+      colorRanges: Object.fromEntries(
+        this.props.sublayers.map(({ id, colorRamp }) => [
+          [id as FourwingsSublayerId],
+          HEATMAP_COLOR_RAMPS[colorRamp].map((c) => rgbaStringToComponents(c)) as ColorRange,
+        ])
+      ),
     }
   }
 
-  getColorScale = () => {
+  calculateColorDomain = () => {
     const { maxFrame, minFrame } = this.props
     const viewportData = this.getData()
-    const colorScale = { colorDomain: [], colorRange: [] }
     if (viewportData?.length > 0) {
       const cells = viewportData.flatMap((cell) => aggregateCell(cell, { minFrame, maxFrame }))
       // TODO test calculating the colorDomain with all data (.map(c => c.value)) or by each sublayer or with the max of each cell
-      const dataSampled = cells.length > 1000 ? sample(cells, 1000, Math.random) : cells
+      const dataSampled = (cells.length > 1000 ? sample(cells, 1000, Math.random) : cells).map(
+        (c) => c.value
+      )
       // filter data to 2 standard deviations from mean to remove outliers
       const meanValue = mean(dataSampled)
       const standardDeviationValue = standardDeviation(dataSampled)
@@ -67,22 +72,19 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       const dataFiltered = dataSampled.filter((a) => a >= lowerCut && a <= upperCut)
       const stepsNum = Math.min(dataFiltered.length, COLOR_RAMP_DEFAULT_NUM_STEPS)
       // using ckmeans as jenks
-      const steps = ckmeans(dataFiltered, stepsNum).map(([clusterFirst]) =>
-        parseFloat(clusterFirst.toFixed(3))
-      )
-      colorScale.colorDomain = steps
+      return ckmeans(dataFiltered, stepsNum).map(([clusterFirst]) => {
+        return parseFloat(clusterFirst.toFixed(3))
+      })
     }
-    return colorScale
   }
 
   getColorDomain = () => {
-    return this.state.colorScale?.colorDomain
+    return this.state.colorDomain
   }
 
   _onViewportLoad = (tiles) => {
-    const colorScale = this.getColorScale()
     requestAnimationFrame(() => {
-      this.setState({ colorScale })
+      this.setState({ colorDomain: this.calculateColorDomain() })
     })
     if (this.props.onViewportLoad) {
       return this.props.onViewportLoad(tiles)
@@ -136,7 +138,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   renderLayers(): Layer<{}> | LayersList {
     const TileLayerClass = this.getSubLayerClass(HEATMAP_ID, TileLayer)
     const { minFrame, maxFrame } = this.props
-    const { colorDomain, colorRange } = this.state.colorScale
+    const { colorDomain, colorRanges } = this.state
     const chunks = this._getChunks(minFrame, maxFrame)
     const cacheKey = this._getTileDataCacheKey(minFrame, maxFrame, chunks)
 
@@ -146,7 +148,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         id: HEATMAP_ID,
         // tileSize: 512,
         colorDomain,
-        colorRange,
+        colorRanges,
         minZoom: 0,
         maxZoom: ACTIVITY_SWITCH_ZOOM_LEVEL,
         zoomOffset: this.props.resolution === 'high' ? 1 : 0,
@@ -187,10 +189,10 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 
   getTimeseries() {
     const data = this.getData()
-    if (data?.length) {
-      const cells = aggregateCellTimeseries(data)
-      return cells
-    }
+    // if (data?.length) {
+    //   const cells = aggregateCellTimeseries(data)
+    //   return cells
+    // }
     return []
   }
 }

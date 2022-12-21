@@ -19,7 +19,7 @@ export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
   cols: number
   rows: number
   colorDomain?: ColorDomain
-  colorRange?: SublayerColorRanges
+  colorRanges?: SublayerColorRanges
 }
 
 export type AggregateCellParams = {
@@ -44,17 +44,17 @@ export type GetFillColorParams = {
   minFrame: number
   maxFrame: number
   colorDomain: number[]
-  colorRange: FourwingsHeatmapLayerProps['colorRange']
+  colorRanges: FourwingsHeatmapLayerProps['colorRanges']
 }
 
 export const getFillColor = (
   cell: Cell,
-  { minFrame, maxFrame, colorDomain, colorRange }: GetFillColorParams
+  { minFrame, maxFrame, colorDomain, colorRanges }: GetFillColorParams
 ): Color => {
   const filteredCellValues = aggregateCell(cell, { minFrame, maxFrame })
   // TODO add more comparison modes
   const cellValueByMode = maxBy(filteredCellValues, 'value')
-  if (!colorDomain || !colorRange || !cellValueByMode) {
+  if (!colorDomain || !colorRanges || !cellValueByMode.value) {
     return [0, 0, 0, 0]
   }
   const colorIndex = colorDomain.findIndex((d, i) => {
@@ -63,7 +63,7 @@ export const getFillColor = (
     }
     return i
   })
-  return colorIndex >= 0 ? colorRange[cellValueByMode.id][colorIndex] : [0, 0, 0, 0]
+  return colorIndex >= 0 ? colorRanges[cellValueByMode.id][colorIndex] : [0, 0, 0, 0]
 }
 
 export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
@@ -80,8 +80,8 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
   }
 
   renderLayers() {
-    const { data, maxFrame, minFrame, rows, cols, colorDomain, colorRange } = this.props
-    if (!data || !colorDomain || !colorRange) {
+    const { data, maxFrame, minFrame, rows, cols, colorDomain, colorRanges } = this.props
+    if (!data || !colorDomain || !colorRanges) {
       return
     }
     const FourwingsTileCellLayerClass = this.getSubLayerClass('cell', FourwingsTileCellLayer)
@@ -98,10 +98,10 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
           pickable: true,
           stroked: false,
           getFillColor: (cell) =>
-            getFillColor(cell, { minFrame, maxFrame, colorDomain, colorRange }),
+            getFillColor(cell, { minFrame, maxFrame, colorDomain, colorRanges }),
           updateTriggers: {
             // This tells deck.gl to recalculate fillColor on changes
-            getFillColor: [minFrame, maxFrame, colorDomain, colorRange],
+            getFillColor: [minFrame, maxFrame, colorDomain, colorRanges],
           },
         })
       ),
