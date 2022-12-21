@@ -78,14 +78,12 @@ export type GetTimeseriesParams = {
 }
 
 const getTimeseries = (values: number[], params: GetTimeseriesParams) => {
-  return values.flatMap((v, i) => {
-    return v > 0 && i % params.sublayerCount === params.sublayerIndex
-      ? {
-          value: v,
-          frame: getDate(i + params.startFrame),
-        }
-      : []
-  })
+  return values.reduce((acc, v, i) => {
+    if (v > 0 && i % params.sublayerCount === params.sublayerIndex) {
+      acc[getDate(i + params.startFrame)] = v
+    }
+    return acc
+  }, {})
 }
 
 const getCellArrays = (intArray, params: ParseFourwingsParams) => {
@@ -140,14 +138,13 @@ const getCellArrays = (intArray, params: ParseFourwingsParams) => {
   }
 }
 
-export type CellTimeseries = {
-  value: number
-  frame: number
-}
+export type CellFrame = number
+export type CellValue = number
+export type CellTimeseries = Record<CellFrame, CellValue>
 
 export type Cell = {
   index: number
-  timeseries: Record<FourwingsDatasetId, CellTimeseries[]>
+  timeseries: Record<FourwingsDatasetId, CellTimeseries>
 }
 
 export type FourwingsTileData = {

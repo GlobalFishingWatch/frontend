@@ -60,6 +60,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     const viewportData = this.getData()
     if (viewportData?.length > 0) {
       const cells = viewportData.flatMap((cell) => aggregateCell(cell, { minFrame, maxFrame }))
+      console.log('cells', cells)
       // TODO test calculating the colorDomain with all data (.map(c => c.value)) or by each sublayer or with the max of each cell
       const dataSampled = (cells.length > 1000 ? sample(cells, 1000, Math.random) : cells).map(
         (c) => c.value
@@ -189,10 +190,12 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 
   getTimeseries() {
     const data = this.getData()
-    // if (data?.length) {
-    //   const cells = aggregateCellTimeseries(data)
-    //   return cells
-    // }
+    console.log('data', data)
+    if (data?.length) {
+      const cells = aggregateCellTimeseries(data)
+      console.log('cells', cells)
+      return cells
+    }
     return []
   }
 }

@@ -1,6 +1,7 @@
 import cx from 'classnames'
 import { useMemo } from 'react'
 import {
+  FOURWINGS_SUBLAYERS,
   useFourwingsLayerInstance,
   useFourwingsLayerLoaded,
 } from 'layers/fourwings/fourwings.hooks'
@@ -21,20 +22,20 @@ const TimebarActivityGraph = () => {
   const fourwingsLayerLoaded = useFourwingsLayerLoaded()
   const { id, visible } = useMapFourwingsLayer()
   const mode = fourwingsLayerInstance?.getMode()
-  const dataviews = useMemo(() => {
-    return [{ id, visible }]
-  }, [id, visible])
+  const dataviews = FOURWINGS_SUBLAYERS
 
   const formattedData = useMemo(() => {
     if (fourwingsLayerInstance && fourwingsLayerLoaded) {
       const data = fourwingsLayerInstance.getTimeseries()
       if (mode === 'heatmap') {
-        const dataArray = Object.keys(data)
-          .map((key) => {
-            return { date: parseInt(key), 0: data[key] }
-          })
-          .sort((a, b) => a.date - b.date)
-        return dataArray
+        // const dataArray = data
+        //   .map((sublayerTimeseries, i) => {
+        //     return Object.keys(sublayerTimeseries).map((key) => {
+        //       return { date: parseInt(key), [i]: data[key] }
+        //     })
+        //   })
+        //   .sort((a, b) => a.date - b.date)
+        return data
       } else if (mode === 'positions') {
         const positionsByVessel = groupBy(data, 'properties.vesselId')
         const segments = Object.entries(positionsByVessel).flatMap(([vesselId, positions]) => {

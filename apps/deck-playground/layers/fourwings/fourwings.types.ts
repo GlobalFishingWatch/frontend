@@ -7,7 +7,7 @@ export interface FourwingsSublayer {
   id: FourwingsSublayerId
   datasets: FourwingsDatasetId[]
   colorRamp: ColorRampsIds
-  // visible?: boolean
+  visible?: boolean
   // filter?: string
   // vesselGroups?: string
   // colorRampWhiteEnd?: boolean

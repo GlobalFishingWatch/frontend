@@ -1,9 +1,8 @@
-import { CellTimeseries } from 'loaders/fourwings/fourwingsLayerLoader'
+import { Cell } from 'loaders/fourwings/fourwingsLayerLoader'
 
 export type BBox = [number, number, number, number]
 
-export type TileCell = {
-  timeseries: CellTimeseries[]
+export type TileCell = Cell & {
   coordinates: [number[]]
 }
 
