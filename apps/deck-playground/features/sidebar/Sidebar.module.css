@@ -23,3 +23,16 @@
   display: flex;
   flex-wrap: wrap;
 }
+
+.sublayer {
+  display: flex;
+  align-items: center;
+}
+
+.dot {
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.5rem;
+  margin-right: 0.5rem;
+}

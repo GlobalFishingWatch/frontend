@@ -1,5 +1,6 @@
 import { Fragment } from 'react'
 import {
+  FOURWINGS_SUBLAYERS,
   useFourwingsLayerInstance,
   useFourwingsLayerLoaded,
 } from 'layers/fourwings/fourwings.hooks'
@@ -118,6 +119,15 @@ function Sidebar() {
               </div>
               {layer.visible && (
                 <div>
+                  {FOURWINGS_SUBLAYERS.map((sublayer) => (
+                    <div className={styles.sublayer} key={sublayer.id}>
+                      <span
+                        style={{ backgroundColor: sublayer.config.color }}
+                        className={styles.dot}
+                      />
+                      <label>{sublayer.id}</label>
+                    </div>
+                  ))}
                   <div>
                     <label>Color breaks</label>
                     {fourwingsLayerInstance && fourwingsLayerLoaded && (

@@ -58,7 +58,6 @@ const MapWrapper = (): React.ReactElement => {
     [setMapLayers]
   )
 
-
   const fourwingsLayer = useFourwingsLayer()
   const vesselsLayer = useVesselsLayer()
   const layers = useMemo(() => {
@@ -68,7 +67,10 @@ const MapWrapper = (): React.ReactElement => {
   const getTooltip = (tooltip) => {
     // Heatmap
     if (tooltip.object?.value) {
-      return tooltip.object.value.toString()
+      const sublayers = tooltip.object.value.flatMap(({ id, value }) =>
+        value ? `${id}: ${value}` : []
+      )
+      return sublayers.length ? sublayers.join('\n') : undefined
     }
     // Vessel position
     if (tooltip.object?.properties?.vesselId) {
