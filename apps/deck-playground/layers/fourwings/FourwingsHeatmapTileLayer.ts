@@ -10,6 +10,7 @@ import {
 } from 'layers/fourwings/fourwings.utils'
 import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
 import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
+import { maxBy } from 'lodash'
 import {
   COLOR_RAMP_DEFAULT_NUM_STEPS,
   HEATMAP_COLOR_RAMPS,
@@ -59,8 +60,10 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     const { maxFrame, minFrame } = this.props
     const viewportData = this.getData()
     if (viewportData?.length > 0) {
-      const cells = viewportData.flatMap((cell) => aggregateCell(cell, { minFrame, maxFrame }))
-      // TODO test calculating the colorDomain with all data (.map(c => c.value)) or by each sublayer or with the max of each cell
+      const cells = viewportData.flatMap((cell) => {
+        const cellValues = aggregateCell(cell, { minFrame, maxFrame })
+        return maxBy(cellValues, 'value')
+      })
       const dataSampled = (cells.length > 1000 ? sample(cells, 1000, Math.random) : cells).map(
         (c) => c.value
       )
