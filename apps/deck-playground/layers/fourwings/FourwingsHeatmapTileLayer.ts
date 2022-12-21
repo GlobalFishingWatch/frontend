@@ -47,9 +47,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       colorDomain: [],
       // TODO: update colorRanges only when a sublayer colorRamp prop changes
       colorRanges: Object.fromEntries(
-        this.props.sublayers.map(({ id, colorRamp }) => [
+        this.props.sublayers.map(({ id, config }) => [
           [id as FourwingsSublayerId],
-          HEATMAP_COLOR_RAMPS[colorRamp].map((c) => rgbaStringToComponents(c)) as ColorRange,
+          HEATMAP_COLOR_RAMPS[config.colorRamp].map((c) => rgbaStringToComponents(c)) as ColorRange,
         ])
       ),
     }
@@ -60,7 +60,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     const viewportData = this.getData()
     if (viewportData?.length > 0) {
       const cells = viewportData.flatMap((cell) => aggregateCell(cell, { minFrame, maxFrame }))
-      console.log('cells', cells)
       // TODO test calculating the colorDomain with all data (.map(c => c.value)) or by each sublayer or with the max of each cell
       const dataSampled = (cells.length > 1000 ? sample(cells, 1000, Math.random) : cells).map(
         (c) => c.value
@@ -93,9 +92,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   _getTileData: TileLayerProps['getTileData'] = async (tile) => {
-    const datasets = Array.from(
-      new Set(this.props.sublayers.flatMap((sublayer) => sublayer.datasets || []))
-    )
+    const datasets = this.props.sublayers.map((sublayer) => sublayer.datasets.join(','))
     const promises = this._getChunks(this.props.minFrame, this.props.maxFrame).map(
       async (chunk) => {
         // if (cache[chunk]) {
@@ -190,10 +187,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 
   getTimeseries() {
     const data = this.getData()
-    console.log('data', data)
     if (data?.length) {
       const cells = aggregateCellTimeseries(data)
-      console.log('cells', cells)
       return cells
     }
     return []

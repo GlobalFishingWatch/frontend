@@ -6,8 +6,11 @@ export type FourwingsDatasetId = string
 export interface FourwingsSublayer {
   id: FourwingsSublayerId
   datasets: FourwingsDatasetId[]
-  colorRamp: ColorRampsIds
-  visible?: boolean
+  config: {
+    color: string
+    colorRamp: ColorRampsIds
+    visible?: boolean
+  }
   // filter?: string
   // vesselGroups?: string
   // colorRampWhiteEnd?: boolean

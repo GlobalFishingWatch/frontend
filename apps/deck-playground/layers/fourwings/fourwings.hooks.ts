@@ -30,26 +30,41 @@ export const FOURWINGS_SUBLAYERS: FourwingsSublayer[] = [
   {
     id: 'ais',
     datasets: ['public-global-fishing-effort:v20201001'],
-    colorRamp: 'magenta',
-    visible: true,
+    config: {
+      color: '#FF64CE',
+      colorRamp: 'magenta',
+      visible: true,
+    },
   },
   {
-    id: 'vms-brazil',
-    datasets: ['public-bra-onyxsat-fishing-effort:v20211126'],
-    colorRamp: 'sky',
-    visible: true,
+    id: 'vms-brazil-and-panama',
+    datasets: [
+      'public-bra-onyxsat-fishing-effort:v20211126',
+      'public-panama-fishing-effort:v20211126',
+    ],
+    config: {
+      color: '#00EEFF',
+      colorRamp: 'sky',
+      visible: true,
+    },
   },
   {
     id: 'vms-chile',
     datasets: ['public-chile-fishing-effort:v20211126'],
-    colorRamp: 'green',
-    visible: true,
+    config: {
+      color: '#A6FF59',
+      colorRamp: 'green',
+      visible: true,
+    },
   },
   {
     id: 'vms-ecuador',
     datasets: ['public-ecuador-fishing-effort:v20211126'],
-    colorRamp: 'orange',
-    visible: true,
+    config: {
+      color: '#FFAA0D',
+      colorRamp: 'orange',
+      visible: true,
+    },
   },
 ]
 

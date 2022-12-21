@@ -123,26 +123,33 @@ export const aggregateCellTimeseries = (cells: TileCell[]) => {
   if (!cells) {
     return []
   }
+  // What we have from the data
   // [{index:number, timeseries: {id: {frame:value, ...}  }}]
+  // What we want for the timebar
   // [{date: date, 0:number, 1:number ...}, ...]
-  const timeseries = Object.keys(cells[0].timeseries).map((sublayerId) => {
-    return cells.reduce((acc, cell) => {
-      if (!cell || !cell.timeseries[sublayerId]) {
-        return acc
-      }
-      Object.entries(cell.timeseries[sublayerId]).forEach(([frame, value]) => {
-        if (acc[frame]) {
-          acc[frame] += value
-        } else {
-          acc[frame] = value
-        }
-      })
+  const timeseries = cells.reduce((acc, { timeseries }) => {
+    if (!timeseries) {
       return acc
-    }, {} as Record<number, number>)
-  })
-  console.log('timeseries', timeseries)
+    }
+    Object.values(timeseries).forEach((sublayerTimeseries, index) => {
+      const frames = Object.keys(sublayerTimeseries)
+      frames.forEach((frame) => {
+        if (!acc[frame]) {
+          // We populate the frame with 0s for all the sublayers
+          acc[frame] = Object.fromEntries(Object.keys(timeseries).map((key, index) => [index, 0]))
+        }
+        acc[frame][index] += sublayerTimeseries[frame]
+      })
+    })
+    return acc
+  }, {} as Record<number, Record<number, number>>)
 
-  return timeseries
+  return Object.entries(timeseries)
+    .map(([frame, values]) => ({
+      date: parseInt(frame),
+      ...values,
+    }))
+    .sort((a, b) => a.date - b.date)
 }
 
 const getMillisFromHtime = (htime: number) => {
