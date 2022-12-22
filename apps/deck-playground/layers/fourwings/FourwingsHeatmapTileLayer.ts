@@ -1,6 +1,10 @@
 import { Color, CompositeLayer, Layer, LayerContext, LayersList } from '@deck.gl/core/typed'
 import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
-import { parseFourWings } from 'loaders/fourwings/fourwingsLayerLoader'
+import {
+  combineChunkTimeseries,
+  FourwingsChunkData,
+  parseFourWings,
+} from 'loaders/fourwings/fourwingsLayerLoader'
 import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
 import { aggregateCell, FourwingsHeatmapLayer } from 'layers/fourwings/FourwingsHeatmapLayer'
 import {
@@ -10,7 +14,6 @@ import {
 } from 'layers/fourwings/fourwings.utils'
 import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
 import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
-import { maxBy } from 'lodash'
 import {
   COLOR_RAMP_DEFAULT_NUM_STEPS,
   HEATMAP_COLOR_RAMPS,
@@ -61,8 +64,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     const viewportData = this.getData()
     if (viewportData?.length > 0) {
       const cells = viewportData.flatMap((cell) => {
-        const cellValues = aggregateCell(cell, { minFrame, maxFrame })
-        return maxBy(cellValues, 'value')
+        return aggregateCell(cell, { minFrame, maxFrame })
       })
       const dataSampled = (cells.length > 1000 ? sample(cells, 1000, Math.random) : cells).map(
         (c) => c.value
@@ -107,13 +109,17 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         if (tile.signal?.aborted || !response.ok) {
           throw new Error()
         }
-        return parseFourWings(await response.arrayBuffer(), { sublayers: this.props.sublayers })
+        return parseFourWings(await response.arrayBuffer(), {
+          sublayers: this.props.sublayers,
+        })
       }
     )
-    const data = (await Promise.allSettled(promises)).flatMap((d) =>
+    // TODO decide what to do when a chunk load fails
+    const data: FourwingsChunkData[] = (await Promise.allSettled(promises)).flatMap((d) =>
       d.status === 'fulfilled' ? d.value : []
     )
-    return { cols: data[0]?.cols, rows: data[0]?.rows, cells: data.flatMap((d) => d.cells) }
+    const mergeChunkDataCells = combineChunkTimeseries(data)
+    return { cols: data[0]?.cols, rows: data[0]?.rows, cells: mergeChunkDataCells }
   }
 
   _getChunks(minFrame: number, maxFrame: number) {
