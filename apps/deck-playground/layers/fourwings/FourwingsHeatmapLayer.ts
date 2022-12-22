@@ -70,18 +70,6 @@ export const getFillColor = (
 }
 
 export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
-  getPickingInfo({ info }: GetPickingInfoParams): PickingInfo {
-    const { minFrame, maxFrame } = this.props
-    if (info.object) {
-      const value = aggregateCell(info.object, { minFrame, maxFrame })
-      info.object = {
-        ...info.object,
-        value,
-      }
-    }
-    return info
-  }
-
   renderLayers() {
     const { data, maxFrame, minFrame, rows, cols, colorDomain, colorRanges } = this.props
     if (!data || !colorDomain || !colorRanges) {
