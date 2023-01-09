@@ -116,6 +116,7 @@ export function useFourwingsLayer() {
         minFrame: startTime,
         maxFrame: endTime,
         mode: activityMode,
+        debug: true,
         sublayers: FOURWINGS_SUBLAYERS,
         onTileLoad: onTileLoad,
         onViewportLoad: onViewportLoad,
