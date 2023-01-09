@@ -78,24 +78,27 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     const FourwingsTileCellLayerClass = this.getSubLayerClass('cell', FourwingsTileCellLayer)
     const { west, east, north, south } = this.props.tile.bbox as GeoBoundingBox
 
-    return [
-      new FourwingsTileCellLayerClass(
-        this.props,
-        this.getSubLayerProps({
-          id: `fourwings-tile-${this.props.tile.id}`,
-          data: data,
-          cols,
-          rows,
-          pickable: true,
-          stroked: false,
-          getFillColor: (cell) =>
-            getFillColor(cell, { minFrame, maxFrame, colorDomain, colorRanges }),
-          updateTriggers: {
-            // This tells deck.gl to recalculate fillColor on changes
-            getFillColor: [minFrame, maxFrame, colorDomain, colorRanges],
-          },
-        })
-      ),
+    const fourwingsLayer = new FourwingsTileCellLayerClass(
+      this.props,
+      this.getSubLayerProps({
+        id: `fourwings-tile-${this.props.tile.id}`,
+        data: data,
+        cols,
+        rows,
+        pickable: true,
+        stroked: false,
+        getFillColor: (cell) =>
+          getFillColor(cell, { minFrame, maxFrame, colorDomain, colorRanges }),
+        updateTriggers: {
+          // This tells deck.gl to recalculate fillColor on changes
+          getFillColor: [minFrame, maxFrame, colorDomain, colorRanges],
+        },
+      })
+    )
+
+    if (!this.props.debug) return fourwingsLayer
+
+    const debugLayers = [
       new PathLayer({
         id: `tile-boundary-${this.props.tile.id}`,
         data: [
@@ -129,6 +132,8 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         getAlignmentBaseline: 'top',
       }),
     ]
+
+    return [fourwingsLayer, ...debugLayers]
   }
 
   getData() {
