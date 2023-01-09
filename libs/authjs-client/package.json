@@ -1,0 +1,12 @@
+{
+  "name": "@globalfishingwatch/authjs-client",
+  "version": "0.0.1",
+  "description": "",
+  "author": "Rodrigo Fuentes <rodrigo.fuentes@globalfishingwatch.org>",
+  "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
+  }
+}

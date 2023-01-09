@@ -4,6 +4,7 @@
     "api-client": "libs/api-client",
     "api-portal": "apps/api-portal",
     "api-types": "libs/api-types",
+    "authjs-client": "libs/authjs-client",
     "data-transforms": "libs/data-transforms",
     "dataviews-client": "libs/dataviews-client",
     "deck-playground": "apps/deck-playground",

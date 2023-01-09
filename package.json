@@ -112,6 +112,8 @@
     "@nrwl/web": "15.2.4",
     "@nrwl/workspace": "15.2.4",
     "@svgr/rollup": "^6.2.1",
+    "@swc/core": "^1.2.173",
+    "@swc/jest": "0.2.20",
     "@testing-library/react": "13.4.0",
     "@types/color-convert": "^2.0.0",
     "@types/d3": "^7.1.0",
@@ -189,4 +191,3 @@
     ]
   }
 }
-
