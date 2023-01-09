@@ -136,7 +136,7 @@ function VesselGroupVessels(): React.ReactElement {
           Object.keys(searchVesselsByMMSI).map((mmsi) => {
             const vessels = searchVesselsByMMSI[mmsi]
             return (
-              <Fragment>
+              <Fragment key={mmsi}>
                 {vessels.map((vessel, i) => (
                   <VesselGroupVesselRow
                     key={`${vessel.id}-${vessel.dataset}`}
