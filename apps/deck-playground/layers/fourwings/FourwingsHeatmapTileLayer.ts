@@ -1,10 +1,6 @@
 import { Color, CompositeLayer, Layer, LayerContext, LayersList } from '@deck.gl/core/typed'
 import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
-import {
-  combineChunkTimeseries,
-  FourwingsChunkData,
-  parseFourWings,
-} from 'loaders/fourwings/fourwingsLayerLoader'
+import { parseFourWings } from 'loaders/fourwings/fourwingsLayerLoader'
 import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
 import { aggregateCell, FourwingsHeatmapLayer } from 'layers/fourwings/FourwingsHeatmapLayer'
 import {
@@ -26,6 +22,7 @@ import { FourwingsSublayer, FourwingsSublayerId } from './fourwings.types'
 
 export type FourwingsLayerResolution = 'default' | 'high'
 export type FourwingsHeatmapTileLayerProps = {
+  debug?: boolean
   interval: Interval
   resolution?: FourwingsLayerResolution
   minFrame: number
@@ -109,17 +106,24 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         if (tile.signal?.aborted || !response.ok) {
           throw new Error()
         }
-        return parseFourWings(await response.arrayBuffer(), {
-          sublayers: this.props.sublayers,
-        })
+        return await response.arrayBuffer()
+        // return parseFourWings(await response.arrayBuffer(), {
+        //   sublayers: this.props.sublayers,
+        // })
       }
     )
     // TODO decide what to do when a chunk load fails
-    const data: FourwingsChunkData[] = (await Promise.allSettled(promises)).flatMap((d) =>
+    const data: ArrayBuffer[] = (await Promise.allSettled(promises)).flatMap((d) =>
       d.status === 'fulfilled' ? d.value : []
     )
-    const mergeChunkDataCells = combineChunkTimeseries(data)
-    return { cols: data[0]?.cols, rows: data[0]?.rows, cells: mergeChunkDataCells }
+    if (!data.length) {
+      return {}
+    }
+    const mergeChunkDataCells = parseFourWings(data, {
+      sublayers: this.props.sublayers,
+    })
+
+    return mergeChunkDataCells
   }
 
   _getChunks(minFrame: number, maxFrame: number) {
