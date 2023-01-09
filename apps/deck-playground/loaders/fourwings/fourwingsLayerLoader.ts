@@ -86,7 +86,8 @@ const getTimeseries = (values: number[], params: GetTimeseriesParams) => {
   }, {})
 }
 
-const getCellTimeseries = (intArray, params: ParseFourwingsParams) => {
+export type FourwingsRawData = number[]
+const getCellTimeseries = (intArrays: FourwingsRawData[], params: ParseFourwingsParams): Cell[] => {
   const sublayerCount = params.sublayers.length
   const sublayerIds = params.sublayers.map((s) => s.id)
   const cells: ChunkCell = {}
@@ -99,102 +100,116 @@ const getCellTimeseries = (intArray, params: ParseFourwingsParams) => {
   const domainX = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY]
   const domainY = [0, Number.NEGATIVE_INFINITY]
 
-  for (let i = FEATURE_CELLS_START_INDEX; i < intArray.length; i++) {
-    const value = intArray[i]
-    if (indexInCell === CELL_NUM_INDEX) {
-      startIndex = i
-      cellNum = value
-    } else if (indexInCell === CELL_START_INDEX) {
-      startFrame = value
-    } else if (indexInCell === CELL_END_INDEX) {
-      endFrame = value
-      endIndex = startIndex + CELL_VALUES_START_INDEX + (endFrame - startFrame + 1) * sublayerCount
-    }
-    indexInCell++
-    if (i === endIndex - 1) {
-      indexInCell = 0
-      // const padded = new Array(delta * sublayerCount).fill(padValue)
-      // original[FEATURE_CELLS_START_INDEX] = endFrame + delta
-      // const merged = original.concat(padded)
-      const values = intArray.slice(startIndex + CELL_VALUES_START_INDEX, endIndex)
-      cells[cellNum] = Object.fromEntries(
+  intArrays.forEach((intArray) => {
+    for (let i = FEATURE_CELLS_START_INDEX; i < intArray.length; i++) {
+      const value = intArray[i]
+      if (indexInCell === CELL_NUM_INDEX) {
+        startIndex = i
+        cellNum = value
+      } else if (indexInCell === CELL_START_INDEX) {
+        startFrame = value
+      } else if (indexInCell === CELL_END_INDEX) {
+        endFrame = value
+        endIndex =
+          startIndex + CELL_VALUES_START_INDEX + (endFrame - startFrame + 1) * sublayerCount
+      }
+      indexInCell++
+      if (i === endIndex - 1) {
+        indexInCell = 0
+        // const padded = new Array(delta * sublayerCount).fill(padValue)
+        // original[FEATURE_CELLS_START_INDEX] = endFrame + delta
+        // const merged = original.concat(padded)
+        const values = intArray.slice(startIndex + CELL_VALUES_START_INDEX, endIndex)
+
         // eslint-disable-next-line no-loop-func
-        sublayerIds.map((id, sublayerIndex) => {
-          return [id, getTimeseries(values, { startFrame, sublayerIndex, sublayerCount })]
+        sublayerIds.forEach((id, sublayerIndex) => {
+          if (!cells[cellNum]) {
+            cells[cellNum] = {}
+          }
+          if (!cells[cellNum][id]) {
+            const timeseries = getTimeseries(values, { startFrame, sublayerIndex, sublayerCount })
+            if (Object.keys(timeseries).length) {
+              cells[cellNum][id] = timeseries
+            }
+          } else {
+            cells[cellNum][id] = {
+              ...cells[cellNum][id],
+              ...getTimeseries(values, { startFrame, sublayerIndex, sublayerCount }),
+            }
+          }
         })
-      )
-      if (startFrame < domainX[0]) domainX[0] = startFrame
-      if (endFrame > domainX[1]) domainX[1] = endFrame
-      const cellMaxValue = Math.max(...values)
-      if (cellMaxValue > domainY[1]) domainY[1] = cellMaxValue
+
+        if (startFrame < domainX[0]) domainX[0] = startFrame
+        if (endFrame > domainX[1]) domainX[1] = endFrame
+        const cellMaxValue = Math.max(...values)
+        if (cellMaxValue > domainY[1]) domainY[1] = cellMaxValue
+      }
     }
-  }
-  return {
-    domainX,
-    domainY,
-    cells,
-  }
+  })
+
+  return Object.entries(cells).map(([cellId, timeseries]) => ({
+    index: parseInt(cellId),
+    timeseries,
+  }))
 }
 
 export type CellFrame = number
 export type CellValue = number
 export type CellTimeseries = Record<CellFrame, CellValue>
-
 export type CellIndex = number
 export type ChunkCell = Record<CellIndex, Record<FourwingsDatasetId, CellTimeseries>>
+export type Cell = {
+  index: CellIndex
+  timeseries: Record<FourwingsDatasetId, CellTimeseries>
+}
 
-export type FourwingsChunkData = {
+export type FourwingsTileData = {
   cols: number
   rows: number
-  cells: ChunkCell
+  cells: Cell[]
 }
 
 export type ParseFourwingsParams = {
   sublayers: FourwingsSublayer[]
 }
 
-export const parseFourWings = (arrayBuffer, params: ParseFourwingsParams): FourwingsChunkData => {
-  const data = new Pbf(arrayBuffer).readFields(readData, [])[0]
-  const { cells } = getCellTimeseries(data, params)
-
-  const rows = data[FEATURE_ROW_INDEX]
-  const cols = data[FEATURE_COL_INDEX]
+export const parseFourWings = (
+  arrayBuffers: ArrayBuffer[],
+  params: ParseFourwingsParams
+): FourwingsTileData => {
+  const data = arrayBuffers.map((arrayBuffer) => new Pbf(arrayBuffer).readFields(readData, [])[0])
+  const rows = data[0]?.[FEATURE_ROW_INDEX]
+  const cols = data[0]?.[FEATURE_COL_INDEX]
 
   return {
     cols,
     rows,
-    cells,
+    cells: getCellTimeseries(data, params),
   }
 }
-
-export type Cell = {
-  index: CellIndex
-  timeseries: Record<FourwingsDatasetId, CellTimeseries>
-}
-export type FourwingsTileData = Cell[]
-export const combineChunkTimeseries = (
-  fourwingsChunks: FourwingsChunkData[]
-): FourwingsTileData => {
-  const cellIds = Array.from(new Set(fourwingsChunks.flatMap((chunk) => Object.keys(chunk.cells))))
-  const timeseries = cellIds.map((cellId) => {
-    const cell: Cell = {
-      index: parseInt(cellId),
-      timeseries: Object.fromEntries(
-        Object.keys(fourwingsChunks[0].cells[Object.keys(fourwingsChunks[0].cells)[0]]).map(
-          (key) => [key, {}]
-        )
-      ),
-    }
-    fourwingsChunks.forEach(({ cells }) => {
-      if (cells[cellId]) {
-        Object.keys(cells[cellId]).forEach((sublayerId) => {
-          Object.entries(cells[cellId][sublayerId]).forEach(([timestamp, value]) => {
-            cell.timeseries[sublayerId][timestamp] = value
-          })
-        })
-      }
-    })
-    return cell
-  })
-  return timeseries
-}
+// export const combineChunkTimeseries = (
+//   fourwingsChunks: FourwingsChunkData[]
+// ): FourwingsTileData => {
+//   const cellIds = Array.from(new Set(fourwingsChunks.flatMap((chunk) => Object.keys(chunk.cells))))
+//   const timeseries = cellIds.map((cellId) => {
+//     const cell: Cell = {
+//       index: parseInt(cellId),
+//       timeseries: Object.fromEntries(
+//         Object.keys(fourwingsChunks[0].cells[Object.keys(fourwingsChunks[0].cells)[0]]).map(
+//           (key) => [key, {}]
+//         )
+//       ),
+//     }
+//     fourwingsChunks.forEach(({ cells }) => {
+//       if (cells[cellId]) {
+//         Object.keys(cells[cellId]).forEach((sublayerId) => {
+//           Object.entries(cells[cellId][sublayerId]).forEach(([timestamp, value]) => {
+//             cell.timeseries[sublayerId][timestamp] = value
+//           })
+//         })
+//       }
+//     })
+//     return cell
+//   })
+//   return timeseries
+// }
