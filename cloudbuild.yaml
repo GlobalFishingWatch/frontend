@@ -31,7 +31,7 @@ steps:
       - '--no-clobber'
 
   - id: get-affected
-    name: 'node:16-alpine'
+    name: 'gcr.io/cloud-builders/yarn:latest'
     entrypoint: yarn
     args: ['affected']
 
