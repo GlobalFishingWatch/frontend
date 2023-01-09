@@ -245,7 +245,8 @@ const getTimeChunks = (
   const config = CONFIG_BY_INTERVAL[interval]
   let activeChunkFrame = 0
   let activeSourceId = ''
-  const chunks: TimeChunk[] = chunkStarts.map((chunkStart) => {
+
+  const chunks: TimeChunk[] = chunkStarts.flatMap((chunkStart) => {
     // end of *usable* tileset is end of year
     // end of *loaded* tileset is end of year + 100 days
     const chunkViewEnd = config.getChunkViewEnd(chunkStart)
@@ -253,7 +254,13 @@ const getTimeChunks = (
     // use dataset start if chunk starts before dataset
     if (+chunkStart < +toDT(datasetStart)) chunkStart = toDT(datasetStart)
     // use dataset end if chunk ends after dataset
-    if (+chunkDataEnd > +toDT(datasetEnd)) chunkDataEnd = toDT(datasetEnd)
+    if (+chunkDataEnd > +toDT(datasetEnd)) {
+      // in case the start of the chunk is after the dataset extend the chunk is discarded
+      if (chunkStart.toISODate() >= datasetEnd.split('T')[0]) {
+        return []
+      }
+      chunkDataEnd = toDT(datasetEnd)
+    }
     const start = chunkStart.toString()
     const viewEnd = chunkViewEnd.toString()
     const dataEnd = chunkDataEnd.toString()

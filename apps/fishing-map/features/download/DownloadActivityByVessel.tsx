@@ -103,32 +103,18 @@ function DownloadActivityByVessel() {
       })
       .filter((dataview) => dataview.datasets.length > 0)
 
-    if (format === Format.GeoTIFF) {
-      uaEvent({
-        category: 'Data downloads',
-        action: `Download GeoTIFF file`,
-        label: JSON.stringify({
-          regionName: downloadAreaName || EMPTY_FIELD_PLACEHOLDER,
-          sourceNames: dataviews.flatMap((dataview) =>
-            getSourcesSelectedInDataview(dataview).map((source) => source.label)
-          ),
-        }),
-      })
-    }
-    if (format === Format.Csv) {
-      uaEvent({
-        category: 'Data downloads',
-        action: `Download CSV file`,
-        label: JSON.stringify({
-          regionName: downloadAreaName || EMPTY_FIELD_PLACEHOLDER,
-          temporalResolution,
-          groupBy,
-          sourceNames: dataviews.flatMap((dataview) =>
-            getSourcesSelectedInDataview(dataview).map((source) => source.label)
-          ),
-        }),
-      })
-    }
+    uaEvent({
+      category: 'Data downloads',
+      action: `Download ${format.toUpperCase()} file`,
+      label: JSON.stringify({
+        regionName: downloadAreaName || EMPTY_FIELD_PLACEHOLDER,
+        temporalResolution,
+        groupBy,
+        sourceNames: dataviews.flatMap((dataview) =>
+          getSourcesSelectedInDataview(dataview).map((source) => source.label)
+        ),
+      }),
+    })
 
     const downloadParams: DownloadActivityParams = {
       dateRange: timerange as DateRange,

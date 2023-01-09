@@ -1,6 +1,6 @@
 import cx from 'classnames'
 import { ReactNode } from 'react'
-import { Icon, IconType } from '@globalfishingwatch/ui-components'
+import { Icon, IconType, Spinner } from '@globalfishingwatch/ui-components'
 import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
 import styles from './risk-section.module.css'
 
@@ -11,6 +11,7 @@ export interface RiskSectionProps {
   title?: string
   titleInfo?: ReactNode
   icon?: IconType
+  loading: boolean
 }
 
 export function RiskSection({
@@ -19,6 +20,7 @@ export function RiskSection({
   severity,
   title,
   titleInfo,
+  loading = false,
   icon,
 }: RiskSectionProps) {
   return (
@@ -38,7 +40,7 @@ export function RiskSection({
           )}
         </label>
       )}
-      {children}
+      {loading ? <Spinner className={styles.spinnerFull} /> : children}
     </div>
   )
 }

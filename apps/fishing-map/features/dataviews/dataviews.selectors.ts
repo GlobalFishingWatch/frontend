@@ -47,14 +47,14 @@ export const selectDefaultBasemapGenerator = createSelector(
 )
 
 export const selectDataviewInstancesResolvedVisible = createSelector(
-  [selectDataviewInstancesResolved],
+  [(state) => selectDataviewInstancesResolved(state)],
   (dataviews = []) => {
     return dataviews.filter((dataview) => dataview.config?.visible)
   }
 )
 
 export const selectDataviewInstancesByCategory = (category: DataviewCategory) => {
-  return createSelector([selectDataviewInstancesResolved], (dataviews) => {
+  return createSelector([(state) => selectDataviewInstancesResolved(state)], (dataviews) => {
     return dataviews?.filter((dataview) => dataview.category === category)
   })
 }
@@ -66,7 +66,7 @@ export const selectDataviewInstancesByIds = (ids: string[]) => {
 }
 
 export const selectBasemapLabelsDataviewInstance = createSelector(
-  [selectAllDataviewInstancesResolved],
+  [(state) => selectAllDataviewInstancesResolved(state)],
   (dataviews) => {
     const basemapLabelsDataview = dataviews?.find(
       (d) => d.config?.type === GeneratorType.BasemapLabels
@@ -152,7 +152,9 @@ export const selectActiveNonTrackEnvironmentalDataviews = createSelector(
   }
 )
 
-export const selectActiveTemporalgridDataviews = createSelector(
+export const selectActiveTemporalgridDataviews: (
+  state: any
+) => UrlDataviewInstance<GeneratorType>[] = createSelector(
   [
     selectActiveActivityDataviews,
     selectActiveDetectionsDataviews,
@@ -163,10 +165,12 @@ export const selectActiveTemporalgridDataviews = createSelector(
   }
 )
 
-export const selectEventsDataviews = createSelector(
-  [selectDataviewInstancesByCategory(DataviewCategory.Events)],
-  (dataviews) => dataviews
-)
+export const selectEventsDataviews: (state: any) => UrlDataviewInstance<GeneratorType>[] =
+  createSelector(
+    [selectDataviewInstancesByCategory(DataviewCategory.Events)],
+    (dataviews) => dataviews
+  )
+
 export const selectActiveEventsDataviews = createSelector(
   [selectDataviewInstancesByCategory(DataviewCategory.Events)],
   (dataviews) => dataviews?.filter((d) => d.config?.visible)
@@ -215,7 +219,7 @@ export const selectHasAnalysisLayersVisible = createSelector(
 export const selectActiveDataviews = createSelector(
   [
     selectActiveActivityDataviews,
-    selectActiveVesselsDataviews,
+    (state) => selectActiveVesselsDataviews(state),
     selectActiveEventsDataviews,
     selectActiveEnvironmentalDataviews,
     selectActiveContextAreasDataviews,

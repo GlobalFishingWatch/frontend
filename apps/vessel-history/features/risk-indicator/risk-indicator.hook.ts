@@ -6,12 +6,16 @@ import { selectResourcesLoading } from 'features/resources/resources.slice'
 import { selectEventsInsideMPAByType } from 'features/risk/risk.selectors'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { AISCoverage, FlagOnMOU } from 'types/risk-indicator'
+import { AISCoverage, FlagOnMOU, IndicatorType } from 'types/risk-indicator'
 import { selectMergedVesselId } from 'routes/routes.selectors'
 import { selectVesselById } from 'features/vessels/vessels.slice'
 import { ValueItem, VesselWithHistory } from 'types'
 import { getUniqueHistoryValues } from 'features/vessels/activity/vessels-activity.utils'
-import { fetchIndicatorsByIdThunk, selectIndicatorsStatus } from './risk-indicator.slice'
+import {
+  fetchIndicatorsByIdThunk,
+  selectIndicatorsRequests,
+  selectIndicatorsStatus,
+} from './risk-indicator.slice'
 import {
   selectEncountersInMPA,
   selectFishingInMPA,
@@ -67,13 +71,25 @@ export function useRiskIndicator(showIdentityIndicators: boolean): UseRiskIndica
   const dispatch = useAppDispatch()
   const idData = useSelector(selectCurrentMergedVesselsId)
   const indicatorsStatus = useSelector(selectIndicatorsStatus)
+  const indicatorsRequest = useSelector(selectIndicatorsRequests)
   const eventsLoading = useSelector(selectResourcesLoading)
   const mergedVesselId = useSelector(selectMergedVesselId)
   const vessel = useSelector(selectVesselById(mergedVesselId))
+  const indicatorsKeys = useMemo(
+    () => [
+      IndicatorType.encounter,
+      IndicatorType.fishing,
+      IndicatorType.portVisit,
+      IndicatorType.gap,
+      IndicatorType.vesselIdentity,
+      IndicatorType.coverage,
+    ],
+    []
+  )
 
   useEffect(() => {
-    dispatch(fetchIndicatorsByIdThunk(idData))
-  }, [dispatch, idData])
+    indicatorsKeys.forEach((indicator) => dispatch(fetchIndicatorsByIdThunk({ idData, indicator })))
+  }, [dispatch, idData, indicatorsKeys])
 
   const encountersInMPA = useSelector(selectEncountersInMPA)
   const fishingInMPA = useSelector(selectFishingInMPA)
@@ -104,9 +120,13 @@ export function useRiskIndicator(showIdentityIndicators: boolean): UseRiskIndica
     [operatorsHistory]
   )
   const uniqueOwners = useMemo(() => getUniqueHistoryValues(ownersHistory), [ownersHistory])
-  const {
-    vesselIdentity: { iuuListed: iuuBlacklisted },
-  } = useSelector(selectCurrentMergedVesselsIndicators) ?? { vesselIdentity: { iuuListed: null } }
+
+  const mergedIndicators = useSelector(selectCurrentMergedVesselsIndicators)
+
+  const iuuBlacklisted = useMemo(
+    () => mergedIndicators?.vesselIdentity?.iuuListed,
+    [mergedIndicators]
+  )
 
   /** Migration to API pengding */
   const loiteringInMPA = useSelector(selectEventsInsideMPAByType(EventTypes.Loitering))
@@ -145,7 +165,9 @@ export function useRiskIndicator(showIdentityIndicators: boolean): UseRiskIndica
     fishingRFMOsAreasWithoutAuthorization,
     flagsHistory,
     gapsIntentionalDisabling,
-    indicatorsLoading: indicatorsStatus === AsyncReducerStatus.LoadingItem,
+    indicatorsLoading:
+      indicatorsStatus === AsyncReducerStatus.LoadingItem &&
+      indicatorsRequest.length === indicatorsKeys.length,
     iuuBlacklisted,
     loiteringInMPA,
     namesHistory,

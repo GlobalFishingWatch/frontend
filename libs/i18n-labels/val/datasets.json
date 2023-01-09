@@ -1511,8 +1511,13 @@
     }
   },
   "public-eez-areas": {
-    "name": "crwdns29169:0crwdne29169:0",
-    "description": "crwdns9657:0crwdne9657:0",
+    "name": "crwdns29233:0crwdne29233:0",
+    "description": "crwdns29235:0crwdne29235:0",
+    "schema": {}
+  },
+  "public-eez-areas-12nm": {
+    "name": "crwdns29205:0crwdne29205:0",
+    "description": "crwdns29207:0crwdne29207:0",
     "schema": {}
   },
   "public-eez-boundaries": {
@@ -1525,223 +1530,20 @@
     "description": "crwdns29173:0crwdne29173:0",
     "schema": {}
   },
+  "public-fao": {
+    "name": "crwdns29209:0crwdne29209:0",
+    "description": "crwdns29211:0crwdne29211:0",
+    "schema": {}
+  },
   "public-fao-areas-major-subareas": {
     "name": "crwdns29175:0crwdne29175:0",
     "description": "crwdns29177:0crwdne29177:0",
     "schema": {}
   },
-  "public-fd-chlorophyl-ascension-v3": {
-    "name": "crwdns25376:0crwdne25376:0",
-    "description": "crwdns25378:0crwdne25378:0",
-    "schema": {
-      "flag": "crwdns25380:0crwdne25380:0",
-      "vessel_id": "crwdns25382:0crwdne25382:0"
-    }
-  },
-  "public-fd-chlorophyl-caribe-v3": {
-    "name": "crwdns25384:0crwdne25384:0",
-    "description": "crwdns25386:0crwdne25386:0",
-    "schema": {
-      "flag": "crwdns25388:0crwdne25388:0",
-      "vessel_id": "crwdns25390:0crwdne25390:0"
-    }
-  },
-  "public-fd-chlorophyl-fiji-v3": {
-    "name": "crwdns25634:0crwdne25634:0",
-    "description": "crwdns25394:0crwdne25394:0",
+  "public-fao-major": {
+    "name": "crwdns29237:0crwdne29237:0",
+    "description": "crwdns29251:0crwdne29251:0",
     "schema": {}
-  },
-  "public-fd-chlorophyl-fsm-v3": {
-    "name": "crwdns25636:0crwdne25636:0",
-    "description": "crwdns25398:0crwdne25398:0",
-    "schema": {}
-  },
-  "public-fd-chlorophyl-galapagos-v3": {
-    "name": "crwdns25400:0crwdne25400:0",
-    "description": "crwdns25402:0crwdne25402:0",
-    "schema": {
-      "flag": "crwdns25404:0crwdne25404:0",
-      "vessel_id": "crwdns25406:0crwdne25406:0"
-    }
-  },
-  "public-fd-chlorophyl-maldives-v3": {
-    "name": "crwdns25638:0crwdne25638:0",
-    "description": "crwdns25410:0crwdne25410:0",
-    "schema": {}
-  },
-  "public-fd-chlorophyl-mediterranean-v3": {
-    "name": "crwdns25412:0crwdne25412:0",
-    "description": "crwdns25414:0crwdne25414:0",
-    "schema": {
-      "flag": "crwdns25416:0crwdne25416:0",
-      "vessel_id": "crwdns25418:0crwdne25418:0"
-    }
-  },
-  "public-fd-chlorophyl-niue-v3": {
-    "name": "crwdns25420:0crwdne25420:0",
-    "description": "crwdns25422:0crwdne25422:0",
-    "schema": {
-      "flag": "crwdns25424:0crwdne25424:0",
-      "vessel_id": "crwdns25426:0crwdne25426:0"
-    }
-  },
-  "public-fd-chlorophyl-palau-v3": {
-    "name": "crwdns25428:0crwdne25428:0",
-    "description": "crwdns25430:0crwdne25430:0",
-    "schema": {
-      "flag": "crwdns25432:0crwdne25432:0",
-      "vessel_id": "crwdns25434:0crwdne25434:0"
-    }
-  },
-  "public-fd-chlorophyl-tristan-v3": {
-    "name": "crwdns25436:0crwdne25436:0",
-    "description": "crwdns25438:0crwdne25438:0",
-    "schema": {
-      "flag": "crwdns25440:0crwdne25440:0",
-      "vessel_id": "crwdns25442:0crwdne25442:0"
-    }
-  },
-  "public-fd-salinity-ascension-v3": {
-    "name": "crwdns9723:0crwdne9723:0",
-    "description": "crwdns25444:0crwdne25444:0",
-    "schema": {
-      "flag": "crwdns9727:0crwdne9727:0",
-      "vessel_id": "crwdns9729:0crwdne9729:0"
-    }
-  },
-  "public-fd-salinity-caribe-v3": {
-    "name": "crwdns25446:0crwdne25446:0",
-    "description": "crwdns25448:0crwdne25448:0",
-    "schema": {
-      "flag": "crwdns9735:0crwdne9735:0",
-      "vessel_id": "crwdns9737:0crwdne9737:0"
-    }
-  },
-  "public-fd-salinity-fiji-v3": {
-    "name": "crwdns25640:0crwdne25640:0",
-    "description": "crwdns25452:0crwdne25452:0",
-    "schema": {}
-  },
-  "public-fd-salinity-fsm-v3": {
-    "name": "crwdns25642:0crwdne25642:0",
-    "description": "crwdns25456:0crwdne25456:0",
-    "schema": {}
-  },
-  "public-fd-salinity-galapagos-v3": {
-    "name": "crwdns25458:0crwdne25458:0",
-    "description": "crwdns25460:0crwdne25460:0",
-    "schema": {
-      "flag": "crwdns25462:0crwdne25462:0",
-      "vessel_id": "crwdns25464:0crwdne25464:0"
-    }
-  },
-  "public-fd-salinity-maldives-v3": {
-    "name": "crwdns25644:0crwdne25644:0",
-    "description": "crwdns25468:0crwdne25468:0",
-    "schema": {}
-  },
-  "public-fd-salinity-mediterranean-v3": {
-    "name": "crwdns25470:0crwdne25470:0",
-    "description": "crwdns25472:0crwdne25472:0",
-    "schema": {
-      "flag": "crwdns25474:0crwdne25474:0",
-      "vessel_id": "crwdns25476:0crwdne25476:0"
-    }
-  },
-  "public-fd-salinity-niue-v3": {
-    "name": "crwdns25478:0crwdne25478:0",
-    "description": "crwdns17345:0crwdne17345:0",
-    "schema": {
-      "flag": "crwdns9759:0crwdne9759:0",
-      "vessel_id": "crwdns9761:0crwdne9761:0"
-    }
-  },
-  "public-fd-salinity-palau-v3": {
-    "name": "crwdns25480:0crwdne25480:0",
-    "description": "crwdns17347:0crwdne17347:0",
-    "schema": {
-      "flag": "crwdns9767:0crwdne9767:0",
-      "vessel_id": "crwdns9769:0crwdne9769:0"
-    }
-  },
-  "public-fd-salinity-tristan-v3": {
-    "name": "crwdns25482:0crwdne25482:0",
-    "description": "crwdns17349:0crwdne17349:0",
-    "schema": {
-      "flag": "crwdns9775:0crwdne9775:0",
-      "vessel_id": "crwdns9777:0crwdne9777:0"
-    }
-  },
-  "public-fd-water-temperature-ascension-v3": {
-    "name": "crwdns25484:0crwdne25484:0",
-    "description": "crwdns25486:0crwdne25486:0",
-    "schema": {
-      "flag": "crwdns25488:0crwdne25488:0",
-      "vessel_id": "crwdns25490:0crwdne25490:0"
-    }
-  },
-  "public-fd-water-temperature-caribe-v3": {
-    "name": "crwdns25492:0crwdne25492:0",
-    "description": "crwdns25494:0crwdne25494:0",
-    "schema": {
-      "flag": "crwdns25496:0crwdne25496:0",
-      "vessel_id": "crwdns25498:0crwdne25498:0"
-    }
-  },
-  "public-fd-water-temperature-fiji-v3": {
-    "name": "crwdns25646:0crwdne25646:0",
-    "description": "crwdns25502:0crwdne25502:0",
-    "schema": {}
-  },
-  "public-fd-water-temperature-fsm-v3": {
-    "name": "crwdns25648:0crwdne25648:0",
-    "description": "crwdns25506:0crwdne25506:0",
-    "schema": {}
-  },
-  "public-fd-water-temperature-galapagos-v3": {
-    "name": "crwdns25508:0crwdne25508:0",
-    "description": "crwdns25510:0crwdne25510:0",
-    "schema": {
-      "flag": "crwdns25512:0crwdne25512:0",
-      "vessel_id": "crwdns25514:0crwdne25514:0"
-    }
-  },
-  "public-fd-water-temperature-maldives-v3": {
-    "name": "crwdns25650:0crwdne25650:0",
-    "description": "crwdns25518:0crwdne25518:0",
-    "schema": {}
-  },
-  "public-fd-water-temperature-mediterranean-v3": {
-    "name": "crwdns25520:0crwdne25520:0",
-    "description": "crwdns25522:0crwdne25522:0",
-    "schema": {
-      "flag": "crwdns25524:0crwdne25524:0",
-      "vessel_id": "crwdns25526:0crwdne25526:0"
-    }
-  },
-  "public-fd-water-temperature-niue-v3": {
-    "name": "crwdns25528:0crwdne25528:0",
-    "description": "crwdns25530:0crwdne25530:0",
-    "schema": {
-      "flag": "crwdns25532:0crwdne25532:0",
-      "vessel_id": "crwdns25534:0crwdne25534:0"
-    }
-  },
-  "public-fd-water-temperature-palau-v3": {
-    "name": "crwdns25536:0crwdne25536:0",
-    "description": "crwdns25538:0crwdne25538:0",
-    "schema": {
-      "flag": "crwdns25540:0crwdne25540:0",
-      "vessel_id": "crwdns25542:0crwdne25542:0"
-    }
-  },
-  "public-fd-water-temperature-tristan-v3": {
-    "name": "crwdns25544:0crwdne25544:0",
-    "description": "crwdns25546:0crwdne25546:0",
-    "schema": {
-      "flag": "crwdns25548:0crwdne25548:0",
-      "vessel_id": "crwdns25550:0crwdne25550:0"
-    }
   },
   "public-fisheries-restricted-areas": {
     "name": "crwdns25552:0crwdne25552:0",
@@ -2018,8 +1820,8 @@
     "schema": {}
   },
   "public-graticules": {
-    "name": "crwdns25572:0crwdne25572:0",
-    "description": "crwdns25574:0crwdne25574:0",
+    "name": "crwdns29241:0crwdne29241:0",
+    "description": "crwdns29253:0crwdne29253:0",
     "schema": {}
   },
   "public-gs-as-simplified": {
@@ -2033,7 +1835,7 @@
     "schema": {}
   },
   "public-high-seas": {
-    "name": "crwdns25584:0crwdne25584:0",
+    "name": "crwdns29217:0crwdne29217:0",
     "description": "crwdns10115:0crwdne10115:0",
     "schema": {}
   },
@@ -2207,13 +2009,18 @@
     }
   },
   "public-mpa-all": {
-    "name": "crwdns25598:0crwdne25598:0",
-    "description": "crwdns25600:0crwdne25600:0",
+    "name": "crwdns29245:0crwdne29245:0",
+    "description": "crwdns29259:0crwdne29259:0",
     "schema": {}
   },
   "public-mpa-no-take": {
-    "name": "crwdns25602:0crwdne25602:0",
+    "name": "crwdns29255:0crwdne29255:0",
     "description": "crwdns10277:0crwdne10277:0",
+    "schema": {}
+  },
+  "public-mpa-no-take-partial": {
+    "name": "crwdns29249:0crwdne29249:0",
+    "description": "crwdns29227:0crwdne29227:0",
     "schema": {}
   },
   "public-mpa-restricted": {
@@ -2510,6 +2317,11 @@
       "timestamp": "crwdns18440:0crwdne18440:0",
       "vessel_id": "crwdns18442:0crwdne18442:0"
     }
+  },
+  "public-rfmo": {
+    "name": "crwdns29229:0crwdne29229:0",
+    "description": "crwdns29257:0crwdne29257:0",
+    "schema": {}
   },
   "public-tristan-seamounts-200-1618586314138": {
     "name": "crwdns25612:0crwdne25612:0",

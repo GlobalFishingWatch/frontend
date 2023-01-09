@@ -23,6 +23,7 @@ import LayerSwitch from '../common/LayerSwitch'
 import InfoModal from '../common/InfoModal'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
+import OutOfTimerangeDisclaimer from '../common/OutOfBoundsDisclaimer'
 import { getDatasetNameTranslated } from '../../i18n/utils'
 import { getLayerDatasetRange } from './HistogramRangeFilter'
 
@@ -98,8 +99,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   }
 
   const title = getDatasetNameTranslated(dataset)
-  const showFilters =
-    dataset.fieldsAllowed?.length > 0 || (gfwUser && isHistogramDataviewSupported(dataview))
+  const showFilters = dataset.fieldsAllowed?.length > 0 || isHistogramDataviewSupported(dataview)
 
   const TitleComponent = (
     <Title
@@ -195,6 +195,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
         <div className={styles.properties}>
           <div className={styles.filters}>
             <div className={styles.filters}>
+              <OutOfTimerangeDisclaimer dataview={dataview} />
               {datasetFields.map(({ field, label }) => (
                 <DatasetSchemaField key={field} dataview={dataview} field={field} label={label} />
               ))}

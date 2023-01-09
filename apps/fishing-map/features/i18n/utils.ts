@@ -28,7 +28,7 @@ export const removeDatasetVersion = (datasetId: string) => {
 }
 
 export const getDatasetNameTranslated = (dataset: { id: string; name?: string }): string => {
-  return t(`datasets:${removeDatasetVersion(dataset?.id)}.name`, dataset?.name)
+  return t(`datasets:${removeDatasetVersion(dataset?.id)}.name`, dataset?.name || dataset?.id)
 }
 
 export const getDatasetDescriptionTranslated = (dataset: {

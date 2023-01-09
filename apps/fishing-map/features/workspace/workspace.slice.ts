@@ -123,11 +123,11 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       const endAt =
         daysFromLatest !== undefined
           ? getUTCDateTime(DEFAULT_TIME_RANGE.end)
-          : getUTCDateTime(workspace.endAt)
+          : getUTCDateTime(workspace.endAt || DEFAULT_TIME_RANGE.end)
       const startAt =
         daysFromLatest !== undefined
           ? endAt.minus({ days: daysFromLatest })
-          : getUTCDateTime(workspace.startAt)
+          : getUTCDateTime(workspace.startAt || DEFAULT_TIME_RANGE.start)
 
       const defaultWorkspaceDataviews = gfwUser
         ? [...DEFAULT_DATAVIEW_IDS, VESSEL_PRESENCE_DATAVIEW_ID] // Only for gfw users as includes the private-global-presence-tracks dataset

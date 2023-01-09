@@ -16,7 +16,7 @@ export const mapLayersAtom = atom<MapLayer[]>({
   key: 'mapLayers',
   default: [
     { id: 'fourwings', visible: true, resolution: 'default' },
-    { id: 'vessel', visible: false },
+    { id: 'vessel', visible: true },
   ],
   effects: [urlSyncEffect({ refine: mixed(), history: 'replace' })],
 })

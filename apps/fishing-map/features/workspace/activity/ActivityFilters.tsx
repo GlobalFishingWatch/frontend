@@ -26,7 +26,6 @@ import ActivitySchemaFilter, {
 import HistogramRangeFilter from 'features/workspace/environmental/HistogramRangeFilter'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { selectVessselGroupsAllowed } from 'features/vessel-groups/vessel-groups.selectors'
-import { isGFWUser } from 'features/user/user.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   setCurrentDataviewId,
@@ -78,13 +77,12 @@ const cleanDataviewFiltersNotAllowed = (
 
 export const isHistogramDataviewSupported = (dataview: UrlDataviewInstance) => {
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
-  const { max, min } = dataset?.configuration
+  const { max, min } = dataset?.configuration || {}
   return max !== undefined && min !== undefined && max !== null && min !== null
 }
 
 function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): React.ReactElement {
   const { t } = useTranslation()
-  const gfwUser = useSelector(isGFWUser)
 
   const [newDataviewInstanceConfig, setNewDataviewInstanceConfig] = useState<
     UrlDataviewInstance | undefined
@@ -249,7 +247,7 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
       delete newDataviewConfig.filterOperators[filterKey]
     }
 
-    upsertDataviewInstance({
+    onDataviewFilterChange({
       id: dataview.id,
       config: newDataviewConfig,
     })
@@ -286,7 +284,7 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
       : {}
     delete filters[filterKey]
     delete filterOperators[filterKey]
-    upsertDataviewInstance({
+    onDataviewFilterChange({
       id: dataview.id,
       config: { filters, filterOperators },
     })
@@ -297,7 +295,7 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
     })
   }
 
-  const showHistogramFilter = gfwUser && isHistogramDataviewSupported(dataview)
+  const showHistogramFilter = isHistogramDataviewSupported(dataview)
   const showSchemaFilters =
     showHistogramFilter || showSourceFilter || schemaFilters.some(showSchemaFilter)
 

@@ -19,7 +19,7 @@ export type FourwingsColorRamp = {
 }
 
 export type FourwingsLayerProps<DataT = any> = FourwingsPositionsTileLayerProps<DataT> &
-  FourwingsHeatmapTileLayerProps<DataT> & {
+  FourwingsHeatmapTileLayerProps & {
     mode: FourwingsLayerMode
   }
 
@@ -28,7 +28,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   layer: FourwingsHeatmapTileLayer | FourwingsPositionsTileLayer | undefined
 
   renderLayers(): Layer<{}> | LayersList {
-    const { mode = 'heatmap' } = this.props
+    const mode = this.getMode()
     this.layer =
       mode === 'heatmap'
         ? new FourwingsHeatmapTileLayer(this.props)
@@ -41,7 +41,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   }
 
   getMode() {
-    return this.props.mode
+    return this.props.mode || 'heatmap'
   }
 
   getResolution() {

@@ -102,7 +102,7 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
         </Modal>
 
         <div className={styles.heading}>
-          <AisCoverage value={eventsLoading ? null : coverage?.percentage} />
+          <AisCoverage value={coverage?.percentage} />
           <div className={styles.headingButtons}>
             <DataAndTerminology
               containerClassName={styles.dataAndTerminologyContainer}

@@ -15,11 +15,13 @@ import {
 
 export const filterData = (data: TimebarChartData<any>, start: string, end: string) => {
   return data?.map((item) => {
-    const filteredChunks = item.chunks.filter((chunk) => {
-      const chunkStart = chunk.start
-      const chunkEnd = chunk.end || chunk.start
-      return chunkEnd > +new Date(start) && chunkStart < +new Date(end)
-    })
+    const filteredChunks = item?.chunks?.length
+      ? item.chunks.filter((chunk) => {
+          const chunkStart = chunk.start
+          const chunkEnd = chunk.end || chunk.start
+          return chunkEnd > +new Date(start) && chunkStart < +new Date(end)
+        })
+      : []
     return {
       ...item,
       chunks: filteredChunks,

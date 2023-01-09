@@ -25,6 +25,7 @@ import {
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { RootState } from 'store'
 import { selectAllSearchDatasetsByType } from 'features/search/search.selectors'
+import { selectDatasetById } from '../datasets/datasets.slice'
 
 export const MAX_VESSEL_GROUP_VESSELS = 1000
 
@@ -146,6 +147,60 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
               })
             : uniqSearchResults
         return searchResultsFiltered
+      } catch (e: any) {
+        console.warn(e)
+        return rejectWithValue(parseAPIError(e))
+      }
+    } else {
+      console.warn('No search datasets found')
+      return rejectWithValue({
+        code: 0,
+        message: 'No search datasets found',
+      })
+    }
+  },
+  {
+    condition: (_, { getState }) => {
+      const workspaceVesselGroupsStatus = (getState() as RootState).vesselGroups.search.status
+      // Fetched already in progress, don't need to re-fetch
+      return workspaceVesselGroupsStatus !== AsyncReducerStatus.Loading
+    },
+  }
+)
+
+export const getVesselInVesselGroupThunk = createAsyncThunk(
+  'vessel-groups/getVessels',
+  async ({ vesselGroup }: { vesselGroup: VesselGroup }, { signal, rejectWithValue, getState }) => {
+    const state = getState() as RootState
+    const datasets = uniq(vesselGroup.vessels.flatMap((v) => v.dataset || []))
+    const dataset = selectDatasetById(datasets[0])(state)
+    if (vesselGroup.id && dataset) {
+      const datasetConfig: DataviewDatasetConfig = {
+        endpoint: EndpointId.VesselList,
+        datasetId: dataset.id,
+        params: [],
+        query: [
+          {
+            id: 'datasets',
+            value: datasets,
+          },
+          {
+            id: 'vessel-groups',
+            value: [vesselGroup.id],
+          },
+        ],
+      }
+      try {
+        const url = resolveEndpoint(dataset, datasetConfig)
+        if (!url) {
+          console.warn('Missing search url')
+          return rejectWithValue({
+            code: 0,
+            message: 'Missing search url',
+          })
+        }
+        const vessels = await GFWAPI.fetch<APIPagination<VesselSearch>>(url, { signal })
+        return vessels.entries
       } catch (e: any) {
         console.warn(e)
         return rejectWithValue(parseAPIError(e))
@@ -343,6 +398,22 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
       state.search.vessels = action.payload
     })
     builder.addCase(searchVesselGroupsVesselsThunk.rejected, (state, action) => {
+      if (action.error.message === 'Aborted') {
+        state.search.status = AsyncReducerStatus.Idle
+      } else {
+        state.search.status = AsyncReducerStatus.Error
+        state.search.error = action.payload as ParsedAPIError
+      }
+    })
+    builder.addCase(getVesselInVesselGroupThunk.pending, (state) => {
+      state.search.status = AsyncReducerStatus.Loading
+      state.search.vessels = undefined
+    })
+    builder.addCase(getVesselInVesselGroupThunk.fulfilled, (state, action) => {
+      state.search.status = AsyncReducerStatus.Finished
+      state.search.vessels = action.payload
+    })
+    builder.addCase(getVesselInVesselGroupThunk.rejected, (state, action) => {
       if (action.error.message === 'Aborted') {
         state.search.status = AsyncReducerStatus.Idle
       } else {
