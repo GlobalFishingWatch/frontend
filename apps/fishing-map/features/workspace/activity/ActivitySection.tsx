@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -19,7 +19,6 @@ import {
   getActivityDataviewInstanceFromDataview,
 } from 'features/dataviews/dataviews.utils'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/app.selectors'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import TooltipContainer, { TooltipListContainer } from '../shared/TooltipContainer'
@@ -96,7 +95,7 @@ function ActivitySection(): React.ReactElement {
         ]),
       })
     },
-    [dataviews, dispatchQueryParams, upsertDataviewInstance]
+    [dataviews, detectionsDataviews, dispatchQueryParams, upsertDataviewInstance]
   )
 
   const onToggleLayer = useCallback(

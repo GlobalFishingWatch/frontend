@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Modal, Spinner } from '@globalfishingwatch/ui-components'
+import { useSelector } from 'react-redux'
+import { Modal } from '@globalfishingwatch/ui-components'
 import { useUser } from 'features/user/user.hooks'
 import RiskSection from 'features/risk-section/risk-section'
 import RiskIndicator from 'features/risk-indicator/risk-indicator'
@@ -25,6 +26,11 @@ import DateRangeLabel from 'features/date-range-label/date-range-label'
 import AisCoverage from 'features/profile/components/activity/AisCoverage'
 import RiskIuuIndicator from 'features/risk-iuu-indicator/risk-iuu-indicator'
 import { formatI18nSpecialDate } from 'features/i18n/i18nDate'
+import {
+  selectIndicatorsRequests,
+  selectIndicatorsStatus,
+} from 'features/risk-indicator/risk-indicator.slice'
+import { IndicatorType } from 'types/risk-indicator'
 import styles from './risk-summary.module.css'
 
 export interface RiskSummaryProps {
@@ -70,6 +76,7 @@ export function RiskSummary(props: RiskSummaryProps) {
     setIsOpen(true)
   }, [])
   const closeModal = useCallback(() => setIsOpen(false), [])
+  const indicatorsLoadingList = useSelector(selectIndicatorsRequests)
 
   const onEventMapClick = useCallback(
     (event: RenderedEvent | Voyage) => {
@@ -131,26 +138,36 @@ export function RiskSummary(props: RiskSummaryProps) {
 
   const hasIUUIndicators = iuuBlacklisted
 
-  if (eventsLoading || indicatorsLoading) return <Spinner className={styles.spinnerFull} />
+  // I think this is not more necessary as every section has its own spinner
+  // if (eventsLoading || indicatorsLoading) return <Spinner className={styles.spinnerFull} />
   const hasEncountersIndicators =
     hasEncountersInMPAs || hasEncountersInForeignEEZs || hasEncountersInRFMOWithoutAuthorization
   const hasFishingIndicators = hasFishingInMPAs || hasFishingInRFMOWithoutAuthorization
 
+  const isSectionLoading = useCallback(
+    (indicator) => {
+      return indicatorsLoadingList.some((requestId) => requestId.includes(indicator))
+    },
+    [indicatorsLoadingList]
+  )
+
   return (
     <div className={styles['container']}>
-      <RiskSection severity={coverageLevel}>
+      <RiskSection severity={coverageLevel} loading={false}>
         <div className={styles.heading}>
-          <AisCoverage
-            value={eventsLoading ? null : coverage?.percentage}
-            className={styles.aisCoverage}
-          />
+          <AisCoverage value={coverage?.percentage} className={styles.aisCoverage} />
           <div className={styles.headingButtons}>
             <DateRangeLabel type="secondary" className={styles.filterBtn} />
           </div>
         </div>
       </RiskSection>
       {hasIUUIndicators && (
-        <RiskSection severity="high" title={t('event.iuu', 'iuu')} titleInfo={<TerminologyIuu />}>
+        <RiskSection
+          severity="high"
+          title={t('event.iuu', 'iuu')}
+          loading={isSectionLoading(IndicatorType.vesselIdentity)}
+          titleInfo={<TerminologyIuu />}
+        >
           <RiskIuuIndicator
             title={
               t(
@@ -178,6 +195,7 @@ export function RiskSummary(props: RiskSummaryProps) {
           severity="medium"
           title={t('risk.aisDisabling', 'AIS Disabling')}
           titleInfo={<TerminologyAisDisabling />}
+          loading={isSectionLoading(IndicatorType.gap)}
         >
           <RiskIndicator
             title={
@@ -203,6 +221,7 @@ export function RiskSummary(props: RiskSummaryProps) {
           severity="medium"
           title={t('event.fishing', 'fishing')}
           titleInfo={<TerminologyFishingEvents />}
+          loading={isSectionLoading(IndicatorType.fishing)}
         >
           {hasFishingInRFMOWithoutAuthorization && (
             <RiskIndicator
@@ -245,6 +264,7 @@ export function RiskSummary(props: RiskSummaryProps) {
           severity="medium"
           title={t('event.encounter', 'encounter', { count: 2 })}
           titleInfo={<TerminologyEncounterEvents />}
+          loading={isSectionLoading(IndicatorType.encounter)}
         >
           {hasEncountersInRFMOWithoutAuthorization && (
             <RiskIndicator
@@ -300,6 +320,7 @@ export function RiskSummary(props: RiskSummaryProps) {
           severity="medium"
           title={t('event.loitering', 'loitering')}
           titleInfo={<TerminologyLoiteringEvents />}
+          loading={eventsLoading}
         >
           <RiskIndicator
             title={
@@ -320,6 +341,7 @@ export function RiskSummary(props: RiskSummaryProps) {
           severity="medium"
           title={t('event.portVisitEvents', 'Port Visits')}
           titleInfo={<TerminologyPortVisitEvents />}
+          loading={isSectionLoading(IndicatorType.portVisit)}
         >
           <RiskIndicator
             title={
@@ -346,6 +368,7 @@ export function RiskSummary(props: RiskSummaryProps) {
           severity="medium"
           title={t('risk.identity', 'Identity')}
           titleInfo={<TerminologyRiskIdentity />}
+          loading={isSectionLoading(IndicatorType.vesselIdentity)}
         >
           {vesselFlagsPerMOU.map((mou, index) => (
             <RiskIdentityFlagsOnMouIndicator
@@ -420,12 +443,17 @@ export function RiskSummary(props: RiskSummaryProps) {
         !hasVesselFlagsOnMOU ||
         !hasIUUIndicators ||
         !hasGapsIntentionalDisabling) && (
-        <RiskSection severity="none" title={t('risk.noRiskDetected', 'No risk detected') as string}>
+        <RiskSection
+          severity="none"
+          title={t('risk.noRiskDetected', 'No risk detected') as string}
+          loading={false}
+        >
           {!hasGapsIntentionalDisabling && (
             <RiskSection
               icon="transmissions-off"
               className={styles.naSubSection}
               title={t('risk.aisDisabling', 'AIS Disabling')}
+              loading={isSectionLoading(IndicatorType.vesselIdentity)}
             >
               {!hasGapsIntentionalDisabling && (
                 <RiskIndicator
@@ -440,7 +468,11 @@ export function RiskSummary(props: RiskSummaryProps) {
             </RiskSection>
           )}
           {!hasIUUIndicators && (
-            <RiskSection className={styles.naSubSection} title={t('event.iuu', 'iuu')}>
+            <RiskSection
+              className={styles.naSubSection}
+              title={t('event.iuu', 'iuu')}
+              loading={isSectionLoading(IndicatorType.vesselIdentity)}
+            >
               {!hasIUUIndicators && (
                 <RiskIndicator
                   title={
@@ -463,6 +495,7 @@ export function RiskSummary(props: RiskSummaryProps) {
               className={styles.naSubSection}
               icon="event-fishing"
               title={t('event.fishing', 'fishing')}
+              loading={isSectionLoading(IndicatorType.fishing) || eventsLoading}
             >
               {!hasFishingInRFMOWithoutAuthorization && (
                 <RiskIndicator
@@ -496,6 +529,7 @@ export function RiskSummary(props: RiskSummaryProps) {
               icon="event-encounter"
               className={styles.naSubSection}
               title={t('event.encounter', 'encounter', { count: 2 })}
+              loading={isSectionLoading(IndicatorType.encounter) || eventsLoading}
             >
               {!hasEncountersInRFMOWithoutAuthorization && (
                 <RiskIndicator
@@ -540,6 +574,7 @@ export function RiskSummary(props: RiskSummaryProps) {
               icon="event-loitering"
               className={styles.naSubSection}
               title={t('event.loitering', 'loitering')}
+              loading={eventsLoading}
             >
               <RiskIndicator
                 title={
@@ -556,6 +591,7 @@ export function RiskSummary(props: RiskSummaryProps) {
               icon="event-port-visit"
               className={styles.naSubSection}
               title={t('event.portVisitEvents', 'Port Visits')}
+              loading={isSectionLoading(IndicatorType.portVisit) || eventsLoading}
             >
               <RiskIndicator
                 title={
@@ -574,7 +610,11 @@ export function RiskSummary(props: RiskSummaryProps) {
             !hasChangedFlags ||
             (showIdentityIndicators &&
               (!hasChangedOwners || !hasChangedNames || !hasChangedOperators))) && (
-            <RiskSection className={styles.naSubSection} title={t('risk.identity', 'Identity')}>
+            <RiskSection
+              className={styles.naSubSection}
+              title={t('risk.identity', 'Identity')}
+              loading={isSectionLoading(IndicatorType.vesselIdentity)}
+            >
               {!hasVesselFlagsOnMOU && (
                 <RiskIndicator
                   title={

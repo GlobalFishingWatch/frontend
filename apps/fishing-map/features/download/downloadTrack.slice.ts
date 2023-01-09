@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { DateTime } from 'luxon'
 import { stringify } from 'qs'
 import { saveAs } from 'file-saver'
 import { DownloadActivity } from '@globalfishingwatch/api-types'

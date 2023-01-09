@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 import { BarChart, Bar, ResponsiveContainer } from 'recharts'
 import { useTranslation } from 'react-i18next'
+import { event as uaEvent } from 'react-ga'
 import { Slider } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
@@ -10,6 +11,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useDataviewHistogram } from 'features/workspace/environmental/histogram.hooks'
+import { getActivitySources, getEventLabel } from 'utils/analytics'
 import styles from './HistogramRangeFilter.module.css'
 
 type HistogramRangeFilterProps = {
@@ -38,7 +40,6 @@ function HistogramRangeFilter({ dataview }: HistogramRangeFilterProps) {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const histogram = useDataviewHistogram(dataview)
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
-  const { max, min } = dataset?.configuration
   const layerRange = getLayerDatasetRange(dataset)
   const minSliderValue = dataview.config?.minVisibleValue ?? layerRange.min
   const maxSliderValue = dataview.config?.maxVisibleValue ?? layerRange.max
@@ -50,7 +51,7 @@ function HistogramRangeFilter({ dataview }: HistogramRangeFilterProps) {
 
   const onSliderChange = useCallback(
     (rangeSelected) => {
-      if (rangeSelected[0] === min && rangeSelected[1] === max) {
+      if (rangeSelected[0] === layerRange.min && rangeSelected[1] === layerRange.max) {
         // onClean(id)
       } else {
         upsertDataviewInstance({
@@ -61,8 +62,13 @@ function HistogramRangeFilter({ dataview }: HistogramRangeFilterProps) {
           },
         })
       }
+      uaEvent({
+        category: 'Environmental data',
+        action: `Filter environmental layer`,
+        label: getEventLabel([dataview.name, ...rangeSelected]),
+      })
     },
-    [dataview.id, max, min, upsertDataviewInstance]
+    [dataview.id, layerRange?.min, layerRange?.max, upsertDataviewInstance]
   )
 
   return (

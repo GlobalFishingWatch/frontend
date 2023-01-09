@@ -18,6 +18,7 @@ import GFWOnly from 'features/user/GFWOnly'
 import { PRIVATE_SUFIX, ROOT_DOM_ELEMENT } from 'data/config'
 import { ONLY_GFW_STAFF_DATAVIEWS } from 'data/workspaces'
 import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/dataviews.selectors'
+import { getDatasetNameTranslated } from 'features/i18n/utils'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -94,7 +95,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   }
 
   const title = dataset
-    ? t(`datasets:${dataset?.id}.name` as any, dataset?.name || dataset?.id)
+    ? getDatasetNameTranslated(dataset)
     : t(`dataview.${dataview?.id}.title` as any, dataview?.name || dataview?.id)
 
   const TitleComponent = (

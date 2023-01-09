@@ -113,6 +113,7 @@
 .dataWarning {
   opacity: var(--opacity-secondary);
   font: var(--font-S);
+  width: 100%;
 }
 
 .dataWarningLinks button {

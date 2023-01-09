@@ -29,64 +29,6 @@ Fetch them using this [API endpoint](https://gateway.api.globalfishingwatch.org/
 | ---------------------------- | ------ | ------ |
 | Default (used on new layers) | 125    | 223    |
 
-### Marine Manager - Caribe (Guyana)
-
-| Layer name                         | Dev id | Pro id |
-| ---------------------------------- | ------ | ------ |
-| SAR match 2019 for Caribe          | 138    | 242    |
-| SAR not match 2019 for Caribe      | 139    | 243    |
-| Sea surface temperature for Caribe | 79     | 224    |
-| Salinity for Caribe                | 80     | 225    |
-| Chlorophyll for Caribe             | 84     | 226    |
-
-### Marine Manager - Galapagos
-
-| Layer name                             | Dev id | Pro id |
-| -------------------------------------- | ------ | ------ |
-| Salinity for Galapagos                 | 126    | 227    |
-| Sea surface tempoerature for Galapagos | 128    | 228    |
-| Chlorophyll for Galapagos              | 127    | 229    |
-
-### Marine Manager - Tristan
-
-| Layer name                           | Dev id | Pro id |
-| ------------------------------------ | ------ | ------ |
-| Salinity for Tristan                 | 131    | 234    |
-| Sea surface tempoerature for Tristan | 129    | 232    |
-| Chlorophyll for Tristan              | 130    | 233    |
-
-### Marine Manager - Ascension
-
-| Layer name                             | Dev id | Pro id |
-| -------------------------------------- | ------ | ------ |
-| Salinity for Ascension                 | 134    | 237    |
-| Sea surface tempoerature for Ascension | 132    | 235    |
-| Chlorophyll for Ascension              | 133    | 236    |
-
-### Marine Manager - Palau
-
-| Layer name                        | Dev id | Pro id |
-| --------------------------------- | ------ | ------ |
-| Salinity for Palau                | 137    | 240    |
-| Sea surface temperature for Palau | 135    | 238    |
-| Chlorophyll for Palau             | 136    | 239    |
-
-### Marine Manager - Niue
-
-| Layer name                       | Dev id | Pro id |
-| -------------------------------- | ------ | ------ |
-| Salinity for Niue                | 141    | 248    |
-| Sea surface temperature for Niue | 142    | 249    |
-| Chlorophyll for Niue             | 143    | 250    |
-
-### Marine Reserves - Mediterranean
-
-| Layer name                                | Dev id | Pro id |
-| ----------------------------------------- | ------ | ------ |
-| Salinity for Mediterranean                | ---    | 244    |
-| Sea surface temperature for Mediterranean | ---    | 245    |
-| Chlorophyll for Mediterranean             | ---    | 246    |
-
 ## Fishing
 
 | Layer name                       | Dev id | Pro id |

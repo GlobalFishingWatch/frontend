@@ -7,7 +7,6 @@ import {
   createAsyncSlice,
 } from 'utils/async-slice'
 import { RootState } from 'store'
-import { API_VERSION } from 'data/config'
 
 export type RegionId = string | number
 export enum MarineRegionType {
@@ -50,22 +49,34 @@ export const fetchRegionsThunk = createAsyncThunk(
     try {
       const apiUrl = `/datasets`
       const options = {}
-      const eezs = await GFWAPI.fetch<Region[]>(
-        `${apiUrl}/public-eez-areas/user-context-layer-v1`,
-        options
-      )
-      const mpas = await GFWAPI.fetch<Region[]>(
-        `${apiUrl}/public-mpa-all/user-context-layer-v1`,
-        options
-      )
-      const rfmos = await GFWAPI.fetch<Region[]>(
-        `${apiUrl}/public-rfmo/user-context-layer-v1`,
-        options
-      )
+      const promises = [
+        GFWAPI.fetch<Region[]>(`${apiUrl}/public-eez-areas/user-context-layer-v1`, options),
+        GFWAPI.fetch<Region[]>(`${apiUrl}/public-mpa-all/user-context-layer-v1`, options),
+        GFWAPI.fetch<Region[]>(`${apiUrl}/public-rfmo/user-context-layer-v1`, options),
+      ]
+      const regions = await Promise.allSettled(promises)
       const result: Regions[] = [
-        { id: MarineRegionType.eez, data: eezs.sort(sortRegionAlphabetically) },
-        { id: MarineRegionType.mpa, data: mpas.sort(sortRegionAlphabetically) },
-        { id: MarineRegionType.rfmo, data: rfmos.sort(sortRegionAlphabetically) },
+        {
+          id: MarineRegionType.eez,
+          data:
+            regions[0]?.status === 'fulfilled'
+              ? regions[0].value.sort(sortRegionAlphabetically)
+              : [],
+        },
+        {
+          id: MarineRegionType.mpa,
+          data:
+            regions[1]?.status === 'fulfilled'
+              ? regions[1].value.sort(sortRegionAlphabetically)
+              : [],
+        },
+        {
+          id: MarineRegionType.rfmo,
+          data:
+            regions[2]?.status === 'fulfilled'
+              ? regions[2].value.sort(sortRegionAlphabetically)
+              : [],
+        },
       ]
       return result
     } catch (e: any) {

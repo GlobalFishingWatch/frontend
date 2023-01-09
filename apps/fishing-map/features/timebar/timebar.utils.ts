@@ -1,4 +1,3 @@
-import { DateTime } from 'luxon'
 import { ApiEvent } from '@globalfishingwatch/api-types'
 import { TrackEventChunkProps } from '@globalfishingwatch/timebar'
 import { getEventDescription } from 'utils/events'

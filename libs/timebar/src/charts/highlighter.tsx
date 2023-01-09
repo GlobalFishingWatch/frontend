@@ -58,6 +58,9 @@ const findChunks = (
   item: TimebarChartItem,
   minHighlightChunkDuration: number
 ) => {
+  if (!item?.chunks?.length) {
+    return []
+  }
   const foundChunks = item.chunks.filter((chunk: TimebarChartChunk, chunkIndex: number) => {
     const chunkEnd = chunk.end || item.chunks[chunkIndex + 1]?.start || Number.NEGATIVE_INFINITY
     const delta = chunkEnd - chunk.start

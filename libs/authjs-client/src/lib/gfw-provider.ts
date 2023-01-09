@@ -41,7 +41,7 @@ export function GFWProvider<P extends GFWProfile>(
       url: `${gatewayUrl.toString()}/auth`,
       params: {
         client: 'gfw',
-        callback: `${callbackUrl.protocol}//${callbackUrl.host}/api/auth/callback/gfw`,
+        callback: `${callbackUrl.protocol}//${callbackUrl.host}${callbackUrl.pathname}/api/auth/callback/gfw`,
       },
     },
     idToken: true,

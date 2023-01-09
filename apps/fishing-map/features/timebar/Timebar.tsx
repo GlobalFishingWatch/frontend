@@ -199,6 +199,10 @@ const TimebarWrapper = () => {
         TIME_RANGE_SELECTOR: 'Configure timerange using calendar option',
         ZOOM_IN_BUTTON: 'Zoom In timerange',
         ZOOM_OUT_BUTTON: 'Zoom Out timerange',
+        HOUR_INTERVAL_BUTTON: 'Use hour preset',
+        DAY_INTERVAL_BUTTON: 'Use day preset',
+        MONTH_INTERVAL_BUTTON: 'Use month preset',
+        YEAR_INTERVAL_BUTTON: 'Use year preset',
       }
       if (gaActions[e.source]) {
         uaEvent({
