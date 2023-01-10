@@ -201,7 +201,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   getTimeseries() {
     const data = this.getData()
     if (data?.length) {
-      const cells = aggregateCellTimeseries(data)
+      const cells = aggregateCellTimeseries(data, this.props.sublayers)
       return cells
     }
     return []
