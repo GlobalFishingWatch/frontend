@@ -6,13 +6,14 @@ import {
 } from 'layers/vessel/vessels.hooks'
 import { TimebarTracks, TimebarChartChunk, TimebarChartValue } from '@globalfishingwatch/timebar'
 import { ResourceStatus } from '@globalfishingwatch/api-types'
+import { VesselLayerTrack } from 'types'
 
 const TimebarVesselsEvents = () => {
   const vesselsLayerInstance = useVesselsLayerInstance()
   const vesselsLayerLoaded = useVesselsLayerLoaded()
   const ids = useVesselsLayerIds()
 
-  const getTrackChunk = (segment): TimebarChartChunk => {
+  const getTrackChunk = (segment: VesselLayerTrack): TimebarChartChunk => {
     const { waypoints } = segment
     return {
       start: waypoints[0].timestamp || Number.POSITIVE_INFINITY,
@@ -23,19 +24,13 @@ const TimebarVesselsEvents = () => {
 
   const tracksData = useMemo(() => {
     if (vesselsLayerLoaded) {
-      return vesselsLayerInstance
-        .getVesselsLayers()
-        .filter((l) => ids.includes(l.id))
-        .reduce((acc, l) => {
-          return [
-            ...acc,
-            {
-              status: ResourceStatus.Finished,
-              chunks: l.getVesselTrackData().map((segment) => getTrackChunk(segment)),
-              color: '#f00',
-            },
-          ]
-        }, [])
+      return ids.map( id => ({
+        status: ResourceStatus.Finished,
+        chunks: vesselsLayerInstance.getVesselTrackDataById(id).map(
+          segment => getTrackChunk(segment)
+        ),
+        color: '#f00',
+      }))
     }
     return []
     // eslint-disable-next-line react-hooks/exhaustive-deps

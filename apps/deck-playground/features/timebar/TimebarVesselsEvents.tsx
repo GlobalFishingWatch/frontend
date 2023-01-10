@@ -15,12 +15,11 @@ const TimebarVesselsEvents = () => {
 
   const eventsData = useMemo(() => {
     if (vesselsLayerLoaded) {
-      return vesselsLayerInstance
-        .getVesselsLayers()
-        .filter((l) => ids.includes(l.id))
-        .reduce((acc, l) => {
-          return [...acc, { chunks: l.getVesselEventsData(), color: '#f00' }]
-        }, [])
+      return ids.map(
+        id => ({
+          chunks: vesselsLayerInstance.getVesselEventsDataById(id),
+          color: '#f00' 
+      }))
     }
     return []
     // eslint-disable-next-line react-hooks/exhaustive-deps

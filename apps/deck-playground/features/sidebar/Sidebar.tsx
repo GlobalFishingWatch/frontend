@@ -22,10 +22,9 @@ function Sidebar() {
   const removeVesselId = useRemoveVesselInLayer()
 
   const getVesselsEventsData = () => {
-    const vesselsEvents = vesselsLayerInstance
-      .getVesselsLayers()
-      .reduce((acc, l) => [...acc, l.getVesselEventsData()], [])
-    console.log(vesselsEvents)
+    if (vesselIds.length) {
+      vesselIds.map(id => console.log(id, vesselsLayerInstance.getVesselEventsDataById(id)))
+    }
   }
 
   const getFourwingsData = () => {
