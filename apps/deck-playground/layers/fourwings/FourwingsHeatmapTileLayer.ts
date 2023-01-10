@@ -42,9 +42,10 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 
   initializeState(context: LayerContext): void {
     super.initializeState(context)
+    const chunks = this._getChunks(this.props.minFrame, this.props.maxFrame)
     this.state = {
-      cacheStart: undefined,
-      cacheEnd: undefined,
+      cacheStart: chunks[1].start,
+      cacheEnd: chunks[chunks.length - 2].end,
       colorDomain: [],
       // TODO: update colorRanges only when a sublayer colorRamp prop changes
       colorRanges: Object.fromEntries(
@@ -132,18 +133,17 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     return chunks
   }
 
-  _getTileDataCacheKey = (start: number, end: number, chunks: Chunk[]): 'cache' | 'no-cache' => {
+  _getTileDataCacheKey = (start: number, end: number, chunks: Chunk[]): string => {
     const isStartOutRange = start <= this.state.cacheStart
     const isEndOutRange = end >= this.state.cacheEnd
-    if (!this.state.cacheStart || !this.state.cacheEnd || isStartOutRange || isEndOutRange) {
+    if (isStartOutRange || isEndOutRange) {
       this.setState({
         // Using the first chunk index to invalidate cache when the timebar is about to end the buffer
         cacheStart: chunks[1].start,
         cacheEnd: chunks[chunks.length - 2].end,
       })
-      return 'no-cache'
     }
-    return 'cache'
+    return [this.state.cacheStart, this.state.cacheEnd].join('-')
   }
 
   renderLayers(): Layer<{}> | LayersList {
@@ -164,6 +164,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         maxZoom: ACTIVITY_SWITCH_ZOOM_LEVEL,
         zoomOffset: this.props.resolution === 'high' ? 1 : 0,
         opacity: 1,
+        maxRequests: -1,
         getTileData: this._getTileData,
         updateTriggers: {
           getTileData: [cacheKey],
