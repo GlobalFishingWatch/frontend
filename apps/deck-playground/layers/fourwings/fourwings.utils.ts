@@ -119,27 +119,30 @@ export const filterCellsByBounds = (cells: TileCell[], bounds: Bounds) => {
   })
 }
 
-export const aggregateCellTimeseries = (cells: TileCell[]) => {
+export const aggregateCellTimeseries = (cells: TileCell[], sublayers: FourwingsSublayer[]) => {
   if (!cells) {
     return []
   }
-  // What we have from the data
+  // What we have from the data is
   // [{index:number, timeseries: {id: {frame:value, ...}  }}]
-  // What we want for the timebar
+  // What we want for the timebar is
   // [{date: date, 0:number, 1:number ...}, ...]
   const timeseries = cells.reduce((acc, { timeseries }) => {
     if (!timeseries) {
       return acc
     }
-    Object.values(timeseries).forEach((sublayerTimeseries, index) => {
-      const frames = Object.keys(sublayerTimeseries)
-      frames.forEach((frame) => {
-        if (!acc[frame]) {
-          // We populate the frame with 0s for all the sublayers
-          acc[frame] = Object.fromEntries(Object.keys(timeseries).map((key, index) => [index, 0]))
-        }
-        acc[frame][index] += sublayerTimeseries[frame]
-      })
+    sublayers.forEach((sublayer, index) => {
+      const sublayerTimeseries = timeseries[sublayer.id]
+      if (sublayerTimeseries) {
+        const frames = Object.keys(sublayerTimeseries)
+        frames.forEach((frame) => {
+          if (!acc[frame]) {
+            // We populate the frame with 0s for all the sublayers
+            acc[frame] = Object.fromEntries(sublayers.map((key, index) => [index, 0]))
+          }
+          acc[frame][index] += sublayerTimeseries[frame]
+        })
+      }
     })
     return acc
   }, {} as Record<number, Record<number, number>>)
