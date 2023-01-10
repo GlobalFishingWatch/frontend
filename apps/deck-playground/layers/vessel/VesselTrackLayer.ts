@@ -3,6 +3,7 @@ import { AccessorFunction, DefaultProps } from '@deck.gl/core/typed'
 import { PathLayer, PathLayerProps } from '@deck.gl/layers/typed'
 import { getPathDefaultAccessor, getTimestampsDefaultAccessor } from 'layers/vessel/vessels.utils'
 import { Segment } from '@globalfishingwatch/api-types'
+import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
 
 /** Properties added by VesselTrackLayer. */
 export type _VesselTrackLayerProps<DataT = any> = {
@@ -27,6 +28,11 @@ export type _VesselTrackLayerProps<DataT = any> = {
    */
   highlightEndTime?: number
   /**
+   * The layer z ordering index
+   * Default values come from layer-composer sorting for Track layers
+   */
+  layerZIndex?: number
+  /**
    * Path accessor.
    */
   getPath?: AccessorFunction<DataT, NumericArray>
@@ -42,6 +48,7 @@ const defaultProps: DefaultProps<VesselTrackLayerProps> = {
   getPath: { type: 'accessor', value: getPathDefaultAccessor },
   getColor: { type: 'accessor', value: () => [255, 255, 255, 100] },
   getTimestamps: { type: 'accessor', value: getTimestampsDefaultAccessor },
+  layerZIndex: { type: 'accessor', value: GROUP_ORDER.indexOf(Group.Track) }
 }
 
 /** All properties supported by VesselTrackLayer. */
