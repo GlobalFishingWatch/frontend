@@ -123,12 +123,12 @@ const getCellTimeseries = (intArrays: FourwingsRawData[], params: ParseFourwings
 
         // eslint-disable-next-line no-loop-func
         sublayerIds.forEach((id, sublayerIndex) => {
-          if (!cells[cellNum]) {
-            cells[cellNum] = {}
-          }
-          if (!cells[cellNum][id]) {
+          if (!cells[cellNum]?.[id]) {
             const timeseries = getTimeseries(values, { startFrame, sublayerIndex, sublayerCount })
             if (Object.keys(timeseries).length) {
+              if (!cells[cellNum]) {
+                cells[cellNum] = {}
+              }
               cells[cellNum][id] = timeseries
             }
           } else {
