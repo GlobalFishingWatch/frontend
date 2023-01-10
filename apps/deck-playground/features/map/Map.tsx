@@ -4,18 +4,13 @@ import { BitmapLayer } from '@deck.gl/layers'
 import { TileLayer } from '@deck.gl/geo-layers'
 import { MapView } from '@deck.gl/core/typed'
 import { useVesselsLayer } from 'layers/vessel/vessels.hooks'
-import { useTimerange } from 'features/timebar/timebar.hooks'
-import { MapLayer, MapLayerType, useMapLayers } from 'features/map/layers.hooks'
+import { VesselEventsLayer } from 'layers/vessel/VesselEventsLayer'
+import { VesselTrackLayer } from 'layers/vessel/VesselTrackLayer'
+import { VesselsLayer } from 'layers/vessel/VesselsLayer'
+import { useFourwingsLayer } from 'layers/fourwings/fourwings.hooks'
 import { useURLViewport, useViewport } from 'features/map/map-viewport.hooks'
-import { useFourwingsLayer } from '../../layers/fourwings/fourwings.hooks'
+import { layersZIndexSort } from 'utils/layers'
 
-const INITIAL_VIEW_STATE = {
-  // longitude: -2,
-  // latitude: 40,
-  latitude: 44.00079038236199,
-  longitude: -8.153310241289587,
-  zoom: 9,
-}
 
 const basemap = new TileLayer({
   id: 'basemap',
@@ -40,30 +35,15 @@ const mapView = new MapView({ repeat: true })
 
 const MapWrapper = (): React.ReactElement => {
   useURLViewport()
-  const [timerange] = useTimerange()
-  const [mapLayers, setMapLayers] = useMapLayers()
   const { viewState, onViewportStateChange } = useViewport()
 
-  const setMapLayerProperty = useCallback(
-    (id: MapLayerType, property: keyof MapLayer, value) => {
-      setMapLayers((layers) =>
-        layers.map((l) => {
-          if (l.id === id) {
-            return { ...l, [property]: value }
-          }
-          return l
-        })
-      )
-    },
-    [setMapLayers]
-  )
-
-
   const fourwingsLayer = useFourwingsLayer()
-  const vesselsLayer = useVesselsLayer()
+  const VesselsLayerInstance: VesselsLayer = useVesselsLayer()
+  
   const layers = useMemo(() => {
-    return [basemap, fourwingsLayer, vesselsLayer]
-  }, [fourwingsLayer, vesselsLayer])
+    const vesselsLayers: (VesselEventsLayer | VesselTrackLayer)[] = VesselsLayerInstance?.getLayers() || []
+    return layersZIndexSort([basemap, fourwingsLayer, ...vesselsLayers])
+  }, [fourwingsLayer, VesselsLayerInstance])
 
   const getTooltip = (tooltip) => {
     // Heatmap
