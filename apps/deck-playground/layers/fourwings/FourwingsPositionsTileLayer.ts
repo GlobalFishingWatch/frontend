@@ -22,6 +22,7 @@ import { FourwingsColorRamp } from './FourwingsLayer'
 export type FourwingsPositionsTileLayerProps<DataT = any> = {
   minFrame: number
   maxFrame: number
+  zOrderIndex: number
   colorDomain: number[]
   colorRange: Color[]
   highlightedVesselId?: string

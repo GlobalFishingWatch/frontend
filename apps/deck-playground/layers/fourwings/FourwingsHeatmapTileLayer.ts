@@ -20,6 +20,7 @@ export type FourwingsHeatmapTileLayerProps = {
   resolution?: FourwingsLayerResolution
   minFrame: number
   maxFrame: number
+  zOrderIndex: number
   onViewportLoad?: (tiles: Tile2DHeader[]) => void
 }
 

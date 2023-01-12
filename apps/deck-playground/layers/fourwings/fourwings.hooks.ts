@@ -2,6 +2,7 @@ import { getFourwingsMode } from 'layers/fourwings/fourwings.utils'
 import { useCallback, useEffect } from 'react'
 import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
 import { useAddVesselInLayer } from 'layers/vessel/vessels.hooks'
+import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
 import { useTimerange } from 'features/timebar/timebar.hooks'
 import { useViewport } from 'features/map/map-viewport.hooks'
 import { useMapLayers } from 'features/map/layers.hooks'
@@ -72,6 +73,9 @@ export function useFourwingsLayer() {
       const fourwingsLayer = new FourwingsLayer({
         minFrame: startTime,
         maxFrame: endTime,
+        zOrderIndex: activityMode === 'heatmap' ? 
+          GROUP_ORDER.indexOf(Group.Heatmap) :
+          GROUP_ORDER.indexOf(Group.Default),
         mode: activityMode,
         onTileLoad: onTileLoad,
         onViewportLoad: onViewportLoad,
