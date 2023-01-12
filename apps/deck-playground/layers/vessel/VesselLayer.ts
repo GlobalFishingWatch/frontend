@@ -1,5 +1,5 @@
 import { DataFilterExtension } from '@deck.gl/extensions'
-import { CompositeLayer, Layer, LayersList, LayerProps, LayerContext } from '@deck.gl/core/typed'
+import { CompositeLayer, Layer, LayersList, LayerProps } from '@deck.gl/core/typed'
 // Layers
 import { VesselEventsLayer, _VesselEventsLayerProps } from 'layers/vessel/VesselEventsLayer'
 import { VesselTrackLayer, _VesselTrackLayerProps } from 'layers/vessel/VesselTrackLayer'
@@ -114,11 +114,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   renderLayers(): Layer<{}> | LayersList {
-    this.setState({
-      layers: [this._getVesselTrackLayer(), ...this.getVesselEventsLayers()]
-    })
     this.layers = [this._getVesselTrackLayer(), ...this.getVesselEventsLayers()]
-    return this.state.layers
+    return this.layers
   }
 
   getTrackLayer() {
