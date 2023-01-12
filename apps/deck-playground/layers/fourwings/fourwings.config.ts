@@ -29,6 +29,23 @@ export const getInterval = (start: number, end: number): Interval => {
   return validIntervals[0]
 }
 
+export const getDateInIntervalResolution = (date: number, interval: Interval): number => {
+  return DateTime.fromMillis(date)
+    .startOf(interval as any)
+    .toMillis()
+}
+
+export const getDatesInIntervalResolution = (
+  start: number,
+  end: number
+): { start: number; end: number } => {
+  const interval = getInterval(start, end)
+  return {
+    start: getDateInIntervalResolution(start, interval),
+    end: getDateInIntervalResolution(end, interval),
+  }
+}
+
 export type Chunk = {
   id: string
   interval: Interval

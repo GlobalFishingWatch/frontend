@@ -1,4 +1,4 @@
-import { Color, CompositeLayer, GetPickingInfoParams, PickingInfo } from '@deck.gl/core/typed'
+import { Color, CompositeLayer } from '@deck.gl/core/typed'
 import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
 import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
 import { maxBy } from 'lodash'
@@ -11,6 +11,7 @@ import {
   FourwingsHeatmapTileLayerProps,
   SublayerColorRanges,
 } from './FourwingsHeatmapTileLayer'
+import { getDatesInIntervalResolution } from './fourwings.config'
 
 export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
   id: string
@@ -77,7 +78,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     }
     const FourwingsTileCellLayerClass = this.getSubLayerClass('cell', FourwingsTileCellLayer)
     const { west, east, north, south } = this.props.tile.bbox as GeoBoundingBox
-
+    const { start, end } = getDatesInIntervalResolution(minFrame, maxFrame)
     const fourwingsLayer = new FourwingsTileCellLayerClass(
       this.props,
       this.getSubLayerProps({
@@ -91,7 +92,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
           getFillColor(cell, { minFrame, maxFrame, colorDomain, colorRanges }),
         updateTriggers: {
           // This tells deck.gl to recalculate fillColor on changes
-          getFillColor: [minFrame, maxFrame, colorDomain, colorRanges],
+          getFillColor: [start, end, colorDomain, colorRanges],
         },
       })
     )
