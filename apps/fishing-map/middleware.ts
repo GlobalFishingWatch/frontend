@@ -6,21 +6,30 @@ const basicAuthUser = process.env['BASIC_AUTH_USER']
 const basicAuthPass = process.env['BASIC_AUTH_PASS']
 
 export const config = {
-  matcher: '/',
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API auth routes)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!api|favicon.ico).*)',
+  ],
 }
 
 export function middleware(req: NextRequest) {
-  const basicAuth = req.headers.get('authorization')
+  const authHeader = req.headers.get('authorization')
   const url = req.nextUrl
   if (!basicAuthEnabled) return NextResponse.next()
-  if (basicAuth) {
-    const authValue = basicAuth.split(' ')[1]
-    const [user, pwd] = atob(authValue).split(':')
+  if (authHeader) {
+    const [authMethod, authValue] = authHeader.split(' ')
+    if (authMethod === 'Basic') {
+      const [user, pwd] = Buffer.from(authValue, 'base64').toString().split(':')
 
-    if (user === basicAuthUser && pwd === basicAuthPass) {
-      return NextResponse.next()
+      if (user === basicAuthUser && pwd === basicAuthPass) {
+        return NextResponse.next()
+      }
     }
   }
-  url.pathname = '/api/auth'
+  url.pathname = '/api/basic-auth'
   return NextResponse.rewrite(url)
 }
