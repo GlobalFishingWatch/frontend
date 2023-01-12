@@ -104,7 +104,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         const response = await fetch(getDataUrlByChunk({ tile, chunk, datasets }), {
           signal: tile.signal,
         })
-        if (tile.signal?.aborted || !response.ok) {
+        if (tile.signal?.aborted || response.status !== 200) {
           throw new Error()
         }
         return await response.arrayBuffer()
@@ -114,9 +114,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       }
     )
     // TODO decide what to do when a chunk load fails
-    const data: ArrayBuffer[] = (await Promise.allSettled(promises)).flatMap((d) =>
-      d.status === 'fulfilled' ? d.value : []
-    )
+    const data: ArrayBuffer[] = (await Promise.allSettled(promises)).flatMap((d) => {
+      return d.status === 'fulfilled' && d.value !== undefined ? d.value : []
+    })
     if (!data.length) {
       return {}
     }
