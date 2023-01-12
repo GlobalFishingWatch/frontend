@@ -1,8 +1,10 @@
 import { AccessorFunction, DefaultProps } from '@deck.gl/core/typed'
 import { ScatterplotLayer, ScatterplotLayerProps } from '@deck.gl/layers/typed'
+import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
 
 export type _VesselEventsLayerProps<DataT = any> = {
   eventType?: string
+  zOrderIndex?: number
   filterRange: Array<number>
   getShape?: AccessorFunction<DataT, number>
   getPosition?: AccessorFunction<DataT, number>
@@ -28,6 +30,7 @@ const defaultProps: DefaultProps<VesselEventsLayerProps> = {
   getFilterValue: { type: 'accessor', value: (d) => d.start },
   getPosition: { type: 'accessor', value: (d) => d.coordinates },
   getPickingInfo: { type: 'accessor', value: ({ info }) => info },
+  zOrderIndex: { type: 'accessor', value: GROUP_ORDER.indexOf(Group.Point) },
 }
 
 export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends ScatterplotLayer<

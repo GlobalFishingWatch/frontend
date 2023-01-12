@@ -1,5 +1,5 @@
 import { DataFilterExtension } from '@deck.gl/extensions'
-import { CompositeLayer, Layer, LayersList, LayerProps } from '@deck.gl/core/typed'
+import { CompositeLayer, Layer, LayersList, LayerProps, LayerContext } from '@deck.gl/core/typed'
 // Layers
 import { VesselEventsLayer, _VesselEventsLayerProps } from 'layers/vessel/VesselEventsLayer'
 import { VesselTrackLayer, _VesselTrackLayerProps } from 'layers/vessel/VesselTrackLayer'
@@ -7,6 +7,7 @@ import { VesselTrackLayer, _VesselTrackLayerProps } from 'layers/vessel/VesselTr
 import { trackLoader } from 'loaders/vessels/trackLoader'
 import { vesselEventsLoader } from 'loaders/vessels/eventsLoader'
 import { Segment } from '@globalfishingwatch/api-types'
+import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
 
 export type VesselLayerProps = _VesselTrackLayerProps & _VesselEventsLayerProps
 
@@ -35,6 +36,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         wrapLongitude: true,
         jointRounded: true,
         capRounded: true,
+        zOrderIndex: GROUP_ORDER.indexOf(Group.Track),
         onDataLoad: this.onDataLoad,
         getColor: (d) => {
           return d.waypoints.map((p) => {
@@ -68,6 +70,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         startTime: this.props.startTime,
         endTime: this.props.endTime,
         onDataLoad: this.onDataLoad,
+        zOrderIndex: GROUP_ORDER.indexOf(Group.Point),
         filterRange: [this.props.startTime, this.props.endTime],
         extensions: [new DataFilterExtension({ filterSize: 1 })],
       })
@@ -85,6 +88,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         startTime: this.props.startTime,
         endTime: this.props.endTime,
         onDataLoad: this.onDataLoad,
+        zOrderIndex: GROUP_ORDER.indexOf(Group.Point),
         filterRange: [this.props.startTime, this.props.endTime],
         extensions: [new DataFilterExtension({ filterSize: 1 })],
       })
@@ -102,6 +106,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         startTime: this.props.startTime,
         endTime: this.props.endTime,
         onDataLoad: this.onDataLoad,
+        zOrderIndex: GROUP_ORDER.indexOf(Group.Point),
         filterRange: [this.props.startTime, this.props.endTime],
         extensions: [new DataFilterExtension({ filterSize: 1 })],
       })
@@ -109,8 +114,11 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   renderLayers(): Layer<{}> | LayersList {
-    this.layers = [...this.getVesselEventsLayers(), this._getVesselTrackLayer()]
-    return this.layers
+    this.setState({
+      layers: [this._getVesselTrackLayer(), ...this.getVesselEventsLayers()]
+    })
+    this.layers = [this._getVesselTrackLayer(), ...this.getVesselEventsLayers()]
+    return this.state.layers
   }
 
   getTrackLayer() {
