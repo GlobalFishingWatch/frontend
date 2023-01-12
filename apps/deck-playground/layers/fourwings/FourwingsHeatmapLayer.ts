@@ -35,12 +35,12 @@ export const aggregateCell = (
   if (!cell) return []
   return Object.keys(cell.timeseries).map((key) => ({
     id: key,
-    value: Object.entries(cell.timeseries[key])
-      .flatMap(([frame, value]) => {
-        if (parseInt(frame) >= minFrame && parseInt(frame) <= maxFrame) return value
-        return []
-      })
-      .reduce((acc, next) => acc + next, 0) as number,
+    value: Object.keys(cell.timeseries[key]).reduce((acc, frame) => {
+      if (parseInt(frame) >= minFrame && parseInt(frame) <= maxFrame) {
+        return acc + cell.timeseries[key][frame]
+      }
+      return acc
+    }, 0) as number,
   }))
 }
 
