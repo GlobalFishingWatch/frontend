@@ -6,10 +6,13 @@ import { aggregateCell, FourwingsHeatmapLayer } from 'layers/fourwings/Fourwings
 import {
   ACTIVITY_SWITCH_ZOOM_LEVEL,
   aggregateCellTimeseries,
+  asyncAwaitMS,
   getDataUrlByChunk,
 } from 'layers/fourwings/fourwings.utils'
 import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
 import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
+import { debounce } from 'lodash'
+import { TileLoadProps } from '@deck.gl/geo-layers/typed/tile-layer/types'
 import {
   COLOR_RAMP_DEFAULT_NUM_STEPS,
   HEATMAP_COLOR_RAMPS,
@@ -28,6 +31,7 @@ export type FourwingsHeatmapTileLayerProps = {
   minFrame: number
   maxFrame: number
   sublayers: FourwingsSublayer[]
+  onTileLoad?: (tile: Tile2DHeader, allTilesLoaded: boolean) => void
   onViewportLoad?: (tiles: Tile2DHeader[]) => void
 }
 
@@ -85,16 +89,31 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     return this.state.colorDomain
   }
 
-  _onViewportLoad = (tiles) => {
+  updateColorDomain = () => {
     requestAnimationFrame(() => {
       this.setState({ colorDomain: this.calculateColorDomain() })
     })
-    if (this.props.onViewportLoad) {
-      return this.props.onViewportLoad(tiles)
+  }
+
+  debouncedUpdateColorDomain = debounce(this.updateColorDomain, 1000)
+
+  _onTileLoad = (tile) => {
+    const allTilesLoaded = this.getLayerInstance().state.tileset.tiles.every(
+      (tile) => tile.isLoaded === true
+    )
+    if (this.props.onTileLoad) {
+      this.props.onTileLoad(tile, allTilesLoaded)
     }
   }
 
-  _getTileData: TileLayerProps['getTileData'] = async (tile) => {
+  _onViewportLoad = (tiles) => {
+    if (this.props.onViewportLoad) {
+      this.props.onViewportLoad(tiles)
+    }
+    this.debouncedUpdateColorDomain()
+  }
+
+  _fetchTileData = async (tile: TileLoadProps) => {
     const datasets = this.props.sublayers.map((sublayer) => sublayer.datasets.join(','))
     const promises = this._getChunks(this.props.minFrame, this.props.maxFrame).map(
       async (chunk) => {
@@ -113,18 +132,30 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         // })
       }
     )
+    if (tile.signal?.aborted) {
+      throw new Error('tile aborted')
+    }
     // TODO decide what to do when a chunk load fails
     const data: ArrayBuffer[] = (await Promise.allSettled(promises)).flatMap((d) => {
       return d.status === 'fulfilled' && d.value !== undefined ? d.value : []
     })
     if (!data.length) {
-      return {}
+      return null
     }
     const mergeChunkDataCells = parseFourWings(data, {
       sublayers: this.props.sublayers,
     })
 
     return mergeChunkDataCells
+  }
+
+  _getTileData: TileLayerProps['getTileData'] = async (tile) => {
+    console.log('getTileData', tile)
+    await asyncAwaitMS(1000)
+    if (tile.signal?.aborted) {
+      return null
+    }
+    return this._fetchTileData(tile)
   }
 
   _getChunks(minFrame: number, maxFrame: number) {
@@ -164,7 +195,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         maxZoom: ACTIVITY_SWITCH_ZOOM_LEVEL,
         zoomOffset: this.props.resolution === 'high' ? 1 : 0,
         opacity: 1,
-        maxRequests: -1,
+        maxRequests: 9,
+        onTileLoad: this._onTileLoad,
         getTileData: this._getTileData,
         updateTriggers: {
           getTileData: [cacheKey],

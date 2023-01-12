@@ -88,9 +88,12 @@ export function useFourwingsLayer() {
     [updateFourwingsAtom]
   )
 
-  const onTileLoad = useCallback(() => {
-    setAtomProperty({ loaded: false })
-  }, [setAtomProperty])
+  const onTileLoad: any = useCallback(
+    (tile, allTilesLoaded) => {
+      setAtomProperty({ loaded: allTilesLoaded })
+    },
+    [setAtomProperty]
+  )
 
   const onViewportLoad = useCallback(() => {
     setAtomProperty({ loaded: true })
