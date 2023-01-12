@@ -20,6 +20,7 @@
     "paths": {
       "@globalfishingwatch/api-client": ["../../libs/api-client/src/index.ts"],
       "@globalfishingwatch/api-types": ["../../libs/api-types/src/index.ts"],
+      "@globalfishingwatch/authjs-client": ["../../libs/authjs-client/src/index.ts"],
       "@globalfishingwatch/data-transforms": ["../../libs/data-transforms/src/index.ts"],
       "@globalfishingwatch/dataviews-client": ["../../libs/dataviews-client/src/index.ts"],
       "@globalfishingwatch/features-aggregate": ["../../libs/features-aggregate/src/index.ts"],

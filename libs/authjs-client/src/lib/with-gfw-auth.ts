@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { getToken, JWT } from 'next-auth/jwt'
 import GFW from './gfw-client'
 
-const GFW_API_GATEWAY = process.env['GFW_API_GATEWAY'] ?? ''
+const GFW_API_GATEWAY = process.env['NEXT_PUBLIC_API_GATEWAY'] ?? ''
 
 declare type GFWHandler<T = any> = (
   req: NextApiRequest,

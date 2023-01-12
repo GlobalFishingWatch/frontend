@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+const { join } = require('path')
 const withNx = require('@nrwl/next/plugins/with-nx')
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
 // const CircularDependencyPlugin = require('circular-dependency-plugin')
-const { join } = require('path')
 
 // const { i18n } = require('./next-i18next.config')
 const basePath =
@@ -21,7 +21,7 @@ const nextConfig = {
     return [
       // Rewrite everything to `pages/index`
       {
-        source: '/:any*',
+        source: '/:any(^api/)',
         destination: '/',
       },
     ]

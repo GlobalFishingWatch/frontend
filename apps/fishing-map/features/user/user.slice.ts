@@ -1,15 +1,12 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import {
-  GFWAPI,
-  getAccessTokenFromUrl,
-  removeAccessTokenFromUrl,
-  GUEST_USER_TYPE,
-} from '@globalfishingwatch/api-client'
+import { signOut } from 'next-auth/react'
+import { GFWAPI, GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import { UserData } from '@globalfishingwatch/api-types'
 import { redirectToLogin } from '@globalfishingwatch/react-hooks'
 import { RootState } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { removeGFWStaffOnlyDataviews } from 'features/workspace/workspace.slice'
+import { BASE_PATH } from 'data/config'
 
 interface UserState {
   logged: boolean
@@ -44,13 +41,14 @@ export const fetchUserThunk = createAsyncThunk(
     if (guest) {
       return await GFWAPI.fetchGuestUser()
     }
-    const accessToken = getAccessTokenFromUrl()
-    if (accessToken) {
-      removeAccessTokenFromUrl()
-    }
 
     try {
-      return await GFWAPI.login({ accessToken })
+      const response = await fetch(`${BASE_PATH}/api/me`)
+      if (response.ok) {
+        const data = await response.json()
+        return data as UserData
+      }
+      return await GFWAPI.fetchGuestUser()
     } catch (e: any) {
       return await GFWAPI.fetchGuestUser()
     }
@@ -64,7 +62,8 @@ export const logoutUserThunk = createAsyncThunk(
     { dispatch }
   ) => {
     try {
-      await GFWAPI.logout()
+      await signOut({ redirect: false })
+      // await GFWAPI.logout()
       dispatch(removeGFWStaffOnlyDataviews())
     } catch (e: any) {
       console.warn(e)
@@ -101,10 +100,11 @@ const userSlice = createSlice({
 export const selectUserData = (state: RootState) => state.user.data
 export const selectUserStatus = (state: RootState) => state.user.status
 export const selectUserLogged = (state: RootState) => state.user.logged
-export const isGFWUser = (state: RootState) => state.user.data?.groups.includes(GFW_GROUP_ID)
-export const isGFWAdminUser = (state: RootState) => state.user.data?.groups.includes(ADMIN_GROUP_ID)
+export const isGFWUser = (state: RootState) => state.user.data?.groups?.includes(GFW_GROUP_ID)
+export const isGFWAdminUser = (state: RootState) =>
+  state.user.data?.groups?.includes(ADMIN_GROUP_ID)
 export const isGFWDeveloper = (state: RootState) =>
-  state.user.data?.groups.includes(GFW_DEV_GROUP_ID)
+  state.user.data?.groups?.includes(GFW_DEV_GROUP_ID)
 
 export const isGuestUser = createSelector([selectUserData], (userData) => {
   return userData?.type === GUEST_USER_TYPE

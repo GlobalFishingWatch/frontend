@@ -1,7 +1,8 @@
 import { useSelector } from 'react-redux'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
+import { useSession } from 'next-auth/react'
 import { parse } from 'qs'
-import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
+import { ACCESS_TOKEN_STRING, GFWAPI } from '@globalfishingwatch/api-client'
 import { parseWorkspace } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_CALLBACK_URL_PARAM, useLoginRedirect } from '@globalfishingwatch/react-hooks'
 import { QueryParams } from 'types'
@@ -20,6 +21,20 @@ export const useReplaceLoginUrl = () => {
   const dispatch = useAppDispatch()
   const locationPayload = useSelector(selectLocationPayload)
   const locationType = useSelector(selectLocationType)
+  const { data: session } = useSession()
+  const [bearerToken, refreshToken] = useMemo(
+    () => [GFWAPI.getToken(), GFWAPI.getRefreshToken()],
+    []
+  )
+  useEffect(() => {
+    // Update tokens in GFWAPI for backward compat
+    if (session && session['bearerToken'] && session['bearerToken'] !== bearerToken) {
+      GFWAPI.setToken(session['bearerToken'])
+    }
+    if (session && session['refreshToken'] && session['refreshToken'] !== refreshToken) {
+      GFWAPI.setRefreshToken(session['refreshToken'])
+    }
+  }, [session, bearerToken, refreshToken])
 
   useEffect(() => {
     const currentQuery = parse(window.location.search, { ignoreQueryPrefix: true })

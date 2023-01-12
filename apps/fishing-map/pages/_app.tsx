@@ -4,6 +4,7 @@ import { ClickToComponent } from 'click-to-react-component'
 import { AppProps } from 'next/app'
 import { Provider } from 'react-redux'
 import { RecoilRoot } from 'recoil'
+import { SessionProvider } from 'next-auth/react'
 // import dynamic from 'next/dynamic'
 // import { useEffect, useState } from 'react'
 import Head from 'next/head'
@@ -20,6 +21,9 @@ import '@globalfishingwatch/maplibre-gl/dist/maplibre-gl.css'
 // function SafeHydrate({ children }) {
 //   return <div suppressHydrationWarning>{typeof window === 'undefined' ? null : children}</div>
 // }
+
+const basePath =
+  process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/map' : '')
 
 function CustomApp({ Component, pageProps }: AppProps) {
   // const [root, setRoot] = useState(null)
@@ -38,8 +42,15 @@ function CustomApp({ Component, pageProps }: AppProps) {
       <RecoilRoot>
         {/* <RecoilizeDebugger root={root} /> */}
         <Provider store={store}>
-          <ClickToComponent />
-          <Component {...pageProps} />
+          <SessionProvider
+            // Provider options are not required but can be useful in situations where
+            // you have a short session maxAge time. Shown here with default values.
+            session={pageProps.session}
+            basePath={`${basePath}/api/auth`}
+          >
+            <ClickToComponent />
+            <Component {...pageProps} />
+          </SessionProvider>
         </Provider>
       </RecoilRoot>
     </React.StrictMode>

@@ -11,8 +11,9 @@ export const config = {
      * Match all request paths except for the ones starting with:
      * - api (API auth routes)
      * - favicon.ico (favicon file)
+     * - icons/manifest.webmanifest (web manifest file)
      */
-    '/((?!api|favicon.ico).*)',
+    '/((?!api|favicon.ico|icons/manifest.webmanifest).*)',
   ],
 }
 
