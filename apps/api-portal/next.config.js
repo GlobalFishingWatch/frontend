@@ -1,13 +1,31 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
+const { join } = require('path')
 const withNx = require('@nrwl/next/plugins/with-nx')
 // const CircularDependencyPlugin = require('circular-dependency-plugin')
 
 // const { i18n } = require('./next-i18next.config')
+const basePath =
+  process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/api-portal' : '')
 
 /**
  * @type {import('@nrwl/next/plugins/with-nx').WithNxOptions}
  **/
 const nextConfig = {
+  async redirects() {
+    return [
+      // Redirect everything in / root to basePath if defined
+      ...(basePath !== ''
+        ? [
+            {
+              source: '/',
+              destination: basePath,
+              basePath: false,
+              permanent: false,
+            },
+          ]
+        : []),
+    ]
+  },
   nx: {
     // Set this to true if you would like to to use SVGR
     // See: https://github.com/gregberge/svgr
@@ -27,11 +45,19 @@ const nextConfig = {
   //   esmExternals: false,
   // },
   // productionBrowserSourceMaps: true,
-  basePath:
-    process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/api-portal' : ''),
+  basePath,
   productionBrowserSourceMaps:
     process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'development' ||
     process.env.NODE_ENV === 'development',
+
+  // to deploy on a node server
+  output: 'standalone',
+  outputFileTracing: true,
+  experimental: {
+    outputFileTracingRoot: join(__dirname, '../../'),
+  },
+  cleanDistDir: true,
+  distDir: '.next',
 }
 
 module.exports = withNx(nextConfig)

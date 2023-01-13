@@ -40,6 +40,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   getColorScale = () => {
     const { maxFrame, minFrame } = this.props
     const viewportData = this.getData()
+    const colorScale = { colorDomain: [], colorRange: [] }
     if (viewportData?.length > 0) {
       const cells = viewportData.map((cell) => aggregateCell(cell, { minFrame, maxFrame }))
       const dataSampled = cells.length > 1000 ? sample(cells, 1000, Math.random) : cells
@@ -54,16 +55,17 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       const steps = ckmeans(dataFiltered, stepsNum).map(([clusterFirst]) =>
         parseFloat(clusterFirst.toFixed(3))
       )
-      const colorRange = steps.map((s, i) => {
+      colorScale.colorDomain = steps
+      colorScale.colorRange = steps.map((s, i) => {
         const opacity = ((i + 1) / COLOR_RAMP_DEFAULT_NUM_STEPS) * 255
         return [255, 0, 255, opacity] as Color
       })
-      return { colorDomain: steps, colorRange }
     }
+    return colorScale
   }
 
   getColorDomain = () => {
-    return this.state.colorScale.colorDomain
+    return this.state.colorScale?.colorDomain
   }
 
   _onViewportLoad = (tiles) => {

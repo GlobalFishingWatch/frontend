@@ -8,7 +8,7 @@ import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology
 import EventFiltersButton from 'features/event-filters/EventFiltersButton'
 import { selectIsFilterUpdated } from 'features/event-filters/filters.selectors'
 import ActivityDataAndTerminology from '../components/activity/ActivityDataAndTerminology'
-import { selectCurrentUserProfileHasInsurerPermission } from '../profile.selectors'
+import { selectCurrentUserHasDownloadPermission } from '../profile.selectors'
 import styles from './ActivityFilters.module.css'
 
 const ActivityFilters: React.FC = (): React.ReactElement => {
@@ -23,7 +23,7 @@ const ActivityFilters: React.FC = (): React.ReactElement => {
     setIsOpen(isOpen)
   }, [])
   const filtersApplied = useSelector(selectIsFilterUpdated)
-  const currentProfileIsInsurer = useSelector(selectCurrentUserProfileHasInsurerPermission)
+  const isDownloadEnabled = useSelector(selectCurrentUserHasDownloadPermission)
 
   const onDownloadAllActivityCsv = useCallback(() => {
     uaEvent({
@@ -67,7 +67,7 @@ const ActivityFilters: React.FC = (): React.ReactElement => {
           type="secondary"
           onClick={() => setModalOpen(true)}
         ></EventFiltersButton>
-        {!currentProfileIsInsurer && (
+        {isDownloadEnabled && (
           <DownloadActivity
             filtersApplied={filtersApplied}
             onDownloadAllActivityCsv={onDownloadAllActivityCsv}

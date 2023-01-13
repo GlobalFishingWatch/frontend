@@ -109,6 +109,12 @@ export const RISK_SUMMARY_IDENTITY_INDICATORS_PERMISSION = {
   action: 'read',
 }
 
+export const DOWNLOAD_ACTIVITY_PERMISSION = {
+  type: 'vessel-info',
+  value: 'events-activity',
+  action: 'download',
+}
+
 export const GOOGLE_UNIVERSAL_ANALYTICS_ID =
   process.env.NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID || 'UA-56517380-5'
 export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions = IS_PRODUCTION

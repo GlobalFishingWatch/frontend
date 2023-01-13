@@ -2,8 +2,6 @@ import React, { useContext, useMemo } from 'react'
 import cx from 'classnames'
 import { useSetRecoilState } from 'recoil'
 import TimelineContext, { TimelineScale, TrackGraphOrientation } from '../timelineContext'
-import ImmediateContext from '../immediateContext'
-import { DEFAULT_CSS_TRANSITION } from '../constants'
 import EncounterIcon from '../icons/events-shapes/encounter.svg'
 import LoiteringIcon from '../icons/events-shapes/loitering.svg'
 import {
@@ -64,7 +62,6 @@ const TracksEvents = ({
   onEventClick?: (event: TimebarChartChunk<TrackEventChunkProps>) => void
   onEventHover?: (event?: TimebarChartChunk<TrackEventChunkProps>) => void
 }) => {
-  const { immediate } = useContext(ImmediateContext) as any
   const { graphHeight, trackGraphOrientation } = useContext(TimelineContext)
   const outerScale = useOuterScale()
 
@@ -89,54 +86,67 @@ const TracksEvents = ({
 
   const updateHoveredEvent = useSetRecoilState(hoveredEventState)
 
+  const trackEvents = useMemo(() => {
+    return tracksEventsWithCoords.map((trackEvents, index) => (
+      <div
+        key={index}
+        className={styles.track}
+        style={{
+          top: `${trackEvents.y}px`,
+        }}
+      >
+        {trackEvents.chunks.map((event) => (
+          <div
+            key={event.id}
+            className={cx(styles.event, styles[event.type || 'none'], {
+              [styles.compact]: tracksEventsWithCoords.length >= 5,
+              [styles.highlighted]:
+                highlightedEventsIds && highlightedEventsIds.includes(event.id as string),
+            })}
+            style={
+              {
+                left: `${event.x}px`,
+                width: `${event.width}px`,
+                '--background-color':
+                  useTrackColor || event.type === 'fishing'
+                    ? trackEvents.color
+                    : event.props?.color || 'white',
+              } as React.CSSProperties
+            }
+            onClick={() => {
+              if (onEventClick) onEventClick(event)
+            }}
+            onMouseEnter={() => {
+              updateHoveredEvent(event.id as string)
+            }}
+            onMouseLeave={() => {
+              updateHoveredEvent(undefined)
+            }}
+          >
+            <div className={styles.eventInner} />
+          </div>
+        ))}
+      </div>
+    ))
+  }, [
+    highlightedEventsIds,
+    onEventClick,
+    tracksEventsWithCoords,
+    updateHoveredEvent,
+    useTrackColor,
+  ])
+
   return (
-    <div className={styles.Events}>
-      {tracksEventsWithCoords.map((trackEvents, index) => (
-        <div
-          key={index}
-          className={styles.track}
-          style={{
-            top: `${trackEvents.y}px`,
-          }}
-        >
-          {trackEvents.chunks.map((event) => (
-            <div
-              key={event.id}
-              className={cx(styles.event, styles[event.type || 'none'], {
-                [styles.compact]: tracksEventsWithCoords.length >= 5,
-                [styles.highlighted]:
-                  highlightedEventsIds && highlightedEventsIds.includes(event.id as string),
-              })}
-              style={
-                {
-                  left: `${event.x}px`,
-                  width: `${event.width}px`,
-                  '--encounterIcon': `url(${EncounterIcon})`,
-                  '--loiteringIcon': `url(${LoiteringIcon})`,
-                  '--background-color':
-                    useTrackColor || event.type === 'fishing'
-                      ? trackEvents.color
-                      : event.props?.color || 'white',
-                  transition: immediate
-                    ? 'none'
-                    : `left ${DEFAULT_CSS_TRANSITION}, height ${DEFAULT_CSS_TRANSITION}, width ${DEFAULT_CSS_TRANSITION}`,
-                } as React.CSSProperties
-              }
-              onClick={() => {
-                if (onEventClick) onEventClick(event)
-              }}
-              onMouseEnter={() => {
-                updateHoveredEvent(event.id as string)
-              }}
-              onMouseLeave={() => {
-                updateHoveredEvent(undefined)
-              }}
-            >
-              <div className={styles.eventInner} />
-            </div>
-          ))}
-        </div>
-      ))}
+    <div
+      className={styles.Events}
+      style={
+        {
+          '--encounterIcon': `url(${EncounterIcon})`,
+          '--loiteringIcon': `url(${LoiteringIcon})`,
+        } as React.CSSProperties
+      }
+    >
+      {trackEvents}
     </div>
   )
 }

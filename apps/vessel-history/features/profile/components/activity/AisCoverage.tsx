@@ -7,16 +7,15 @@ interface AisCoverageProps {
   className?: string
   value?: number
 }
-const AisCoverage: React.FC<AisCoverageProps> = ({
-  className,
-  value = null,
-}): React.ReactElement => {
+const AisCoverage: React.FC<AisCoverageProps> = ({ className, value }): React.ReactElement => {
   const { t } = useTranslation()
+
   return (
     <div className={styles.aisCoverageContainer}>
       <ProgressBar
         value={value}
-        disabled={value === 0}
+        disabled={value === null}
+        loading={value === undefined}
         precision={0}
         disabledText={t('common.unknown', 'Unknown')}
         label={t('events.aisCoverage', 'AIS Coverage') as string}

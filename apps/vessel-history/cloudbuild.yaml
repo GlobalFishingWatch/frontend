@@ -8,13 +8,14 @@ steps:
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
-    name: node:14
-    entrypoint: bash
+    name: node:16-alpine
+    entrypoint: sh
     args:
       - '-c'
       # if dependencies cache is not found then install all deps
       - |
         if [ ! -d "node_modules" ]; then
+          apk add git
           yarn install --frozen-lockfile
         fi
 
@@ -29,7 +30,7 @@ steps:
 
   - id: 'build-app'
     waitFor: ['install-yarn']
-    name: node:14
+    name: node:16-alpine
     entrypoint: yarn
     args: ['nx', 'build', 'vessel-history', '--parallel']
     env:
@@ -42,23 +43,15 @@ steps:
       - 'NEXT_PUBLIC_FEEDBACK_FORM_EN=$_NEXT_PUBLIC_FEEDBACK_FORM_EN'
       - 'NEXT_PUBLIC_FEEDBACK_FORM_FR=$_NEXT_PUBLIC_FEEDBACK_FORM_FR'
 
-  - id: 'docker-prepare'
-    waitFor: ['build-app']
-    name: node:14
-    entrypoint: yarn
-    args: ['nx', 'docker-prepare', 'vessel-history']
-
   - name: 'gcr.io/kaniko-project/executor:v1.6.0'
     id: 'build-image'
-    waitFor: ['docker-prepare']
+    waitFor: ['build-app']
     args:
       [
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',
         '--cache=true',
         '--build-arg',
-        'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
-        '--build-arg',
-        'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
+        'APP_NAME=vessel-history',
         '--target',
         'production',
         '-f',
@@ -92,6 +85,10 @@ steps:
         --platform managed \
         --set-env-vars \
         BASIC_AUTH=$_BASIC_AUTH \
+        --set-env-vars \
+        BASIC_AUTH_USER=$_BASIC_AUTH_USER \
+        --set-env-vars \
+        BASIC_AUTH_PASS=$_BASIC_AUTH_PASS \
         --allow-unauthenticated
 
   - id: 'i18n-labels publish stable'

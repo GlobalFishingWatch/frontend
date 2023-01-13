@@ -1,7 +1,6 @@
-import { DateTime } from 'luxon'
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { InteractionEvent } from '@globalfishingwatch/react-hooks'
+import { ExtendedFeature, InteractionEvent } from '@globalfishingwatch/react-hooks'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { ApiEvent } from '@globalfishingwatch/api-types'
 import {
@@ -32,14 +31,15 @@ export default function useMapEvents() {
   const { viewport, setMapCoordinates } = useViewport()
   const [findEventVoyage, setFindEventVoyage] = useState<RenderedEvent>()
   const { dispatchQueryParams } = useLocationConnect()
+  const [clickedLayers, setClickedLayers] = useState<ExtendedFeature[] | null>()
 
   const selectVesselEventOnClick = useCallback(
     (event: InteractionEvent | null) => {
       const features = event?.features ?? []
-
       const vesselFeature = features.find(
         (feature) => feature.generatorType === GeneratorType.VesselEvents
       )
+      setClickedLayers(!vesselFeature ? features : null)
       const highlightEvent: { id: string } | undefined = { id: vesselFeature?.properties.id }
 
       if (highlightEvent && highlightedEvent?.id !== highlightEvent.id) {
@@ -153,6 +153,7 @@ export default function useMapEvents() {
   }, [events, findEventVoyage, highlightEvent, highlightedEvent, setMapCoordinates, viewport.zoom])
 
   return {
+    clickedLayers,
     highlightEvent,
     highlightVoyage,
     selectVesselEventOnClick,

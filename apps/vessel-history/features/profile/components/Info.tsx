@@ -305,31 +305,29 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                   valuesHistory={vessel.history.operator.byDate}
                 ></InfoField>
 
-                {!isMergedVesselsView && (
-                  <div className={styles.identifierField}>
-                    <label>{t(`vessel.aisTransmission_plural`, 'AIS Transmissions')}</label>
-                    <div>
-                      {vessel.firstTransmissionDate || vessel.lastTransmissionDate ? (
-                        <Fragment>
-                          {t('common.from', 'from')}{' '}
-                          {vessel.firstTransmissionDate ? (
-                            <I18nDate date={vessel.firstTransmissionDate} />
-                          ) : (
-                            DEFAULT_EMPTY_VALUE
-                          )}{' '}
-                          {t('common.to', 'to')}{' '}
-                          {vessel.lastTransmissionDate ? (
-                            <I18nDate date={vessel.lastTransmissionDate} />
-                          ) : (
-                            DEFAULT_EMPTY_VALUE
-                          )}
-                        </Fragment>
-                      ) : (
-                        DEFAULT_EMPTY_VALUE
-                      )}
-                    </div>
+                <div className={styles.identifierField}>
+                  <label>{t(`vessel.aisTransmission_plural`, 'AIS Positions')}</label>
+                  <div>
+                    {vessel.firstTransmissionDate || vessel.lastTransmissionDate ? (
+                      <Fragment>
+                        {t('common.from', 'from')}{' '}
+                        {vessel.firstTransmissionDate ? (
+                          <I18nDate date={vessel.firstTransmissionDate} />
+                        ) : (
+                          DEFAULT_EMPTY_VALUE
+                        )}{' '}
+                        {t('common.to', 'to')}{' '}
+                        {vessel.lastTransmissionDate ? (
+                          <I18nDate date={vessel.lastTransmissionDate} />
+                        ) : (
+                          DEFAULT_EMPTY_VALUE
+                        )}
+                      </Fragment>
+                    ) : (
+                      DEFAULT_EMPTY_VALUE
+                    )}
                   </div>
-                )}
+                </div>
                 {currentProfileIsPortInspector && (
                   <InfoField
                     vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}

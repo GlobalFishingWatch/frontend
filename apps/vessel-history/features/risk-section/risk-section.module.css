@@ -56,3 +56,7 @@
 .categoryIcon.event-loitering {
   background-color: #ddbef0;
 }
+
+.spinnerFull {
+  margin-bottom: 5px;
+}

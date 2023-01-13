@@ -1,8 +1,6 @@
 import React, { Fragment, useContext, useMemo } from 'react'
 import { ResourceStatus } from '@globalfishingwatch/api-types'
 import TimelineContext, { TimelineScale, TrackGraphOrientation } from '../timelineContext'
-import ImmediateContext from '../immediateContext'
-import { DEFAULT_CSS_TRANSITION } from '../constants'
 import { getTrackY } from './common/utils'
 import styles from './tracks.module.css'
 import { useFilteredChartData, useOuterScale } from './common/hooks'
@@ -46,7 +44,6 @@ const getTracksWithCoords = (
 }
 
 const Tracks = ({ data }: { data: TimebarChartData }) => {
-  const { immediate } = useContext(ImmediateContext)
   const { graphHeight, trackGraphOrientation } = useContext(TimelineContext)
   const outerScale = useOuterScale()
 
@@ -76,9 +73,6 @@ const Tracks = ({ data }: { data: TimebarChartData }) => {
                       left: chunk.x,
                       width: chunk.width,
                       height: chunk.props?.height || 1,
-                      transition: immediate
-                        ? 'none'
-                        : `left ${DEFAULT_CSS_TRANSITION}, width ${DEFAULT_CSS_TRANSITION}`,
                     }}
                   />
                 ))}

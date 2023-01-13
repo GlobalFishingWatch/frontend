@@ -7,10 +7,11 @@ interface ProgressBarProps {
   value?: number | string
   label?: string
   className?: string
-  precision?: number,
+  precision?: number
   helpText?: React.ReactNode
   disabled?: boolean
   disabledText?: string
+  loading: boolean
 }
 export function ProgressBar(props: ProgressBarProps) {
   const {
@@ -20,15 +21,12 @@ export function ProgressBar(props: ProgressBarProps) {
     disabled = false,
     disabledText = '',
     precision = 1,
-    helpText
+    helpText,
+    loading = false,
   } = props
 
   const [showModal, setShowModal] = useState(false)
   const closeModal = useCallback(() => setShowModal(false), [setShowModal])
-
-  const waitingValue = useMemo(() => {
-    return value === undefined || value === null
-  }, [value])
 
   const percent = useMemo(() => {
     // avoid NaN values
@@ -42,43 +40,50 @@ export function ProgressBar(props: ProgressBarProps) {
 
   return (
     <div className={cx(styles.barContainer, className, { [styles.disabled]: disabled })}>
-      {label && <label className={styles.label} >
-        {label}
-        {helpText && (
-          <Fragment>
-            <IconButton
-              icon="info"
-              size={"tiny"}
-              type={"default"}
-              className={cx(styles.infoButton)}
-              onClick={() => setShowModal(true)}
-            />
-            <Modal
-              appSelector="__next"
-              isOpen={showModal}
-              onClose={closeModal}
-              title={label}
-
-            >
-              {helpText}
-            </Modal>
-          </Fragment>
+      {label && (
+        <label className={styles.label}>
+          {label}
+          {helpText && (
+            <Fragment>
+              <IconButton
+                icon="info"
+                size={'tiny'}
+                type={'default'}
+                className={cx(styles.infoButton)}
+                onClick={() => setShowModal(true)}
+              />
+              <Modal appSelector="__next" isOpen={showModal} onClose={closeModal} title={label}>
+                {helpText}
+              </Modal>
+            </Fragment>
+          )}
+        </label>
+      )}
+      <div
+        className={styles.barValue}
+        style={{
+          paddingLeft: `calc(${loading ? 0 : percent}% - 14px)`,
+        }}
+      >
+        {!loading ? (
+          disabled ? (
+            disabledText
+          ) : (
+            percent + '%'
+          )
+        ) : (
+          <span className={styles.loadingLabel}>loading</span>
         )}
-      </label>}
-      <div className={styles.barValue} style={{
-        paddingLeft: `calc(${waitingValue ? 0 : percent}% - 14px)`,
-      }}>
-        {!waitingValue ?
-          (disabled ? disabledText : percent + '%')
-          : <span className={styles.loadingLabel}>loading</span>
-        }
       </div>
       <div className={cx(styles.bar)}>
-        <div className={cx(styles.dot, {
-          [styles.loading]: waitingValue
-        })} style={{
-          left: `${percent}%`,
-        }} />
+        <div
+          className={cx(styles.dot, {
+            [styles.loading]: loading,
+          })}
+          style={{
+            left: `${percent}%`,
+          }}
+        />
       </div>
     </div>
   )

@@ -7,7 +7,6 @@ import {
   createAsyncSlice,
 } from 'utils/async-slice'
 import { RootState } from 'store'
-import { IS_PRODUCTION } from 'data/config'
 
 export type RegionId = string | number
 export enum MarineRegionType {
@@ -53,10 +52,7 @@ export const fetchRegionsThunk = createAsyncThunk(
       const promises = [
         GFWAPI.fetch<Region[]>(`${apiUrl}/public-eez-areas/user-context-layer-v1`, options),
         GFWAPI.fetch<Region[]>(`${apiUrl}/public-mpa-all/user-context-layer-v1`, options),
-        GFWAPI.fetch<Region[]>(
-          `${apiUrl}/${IS_PRODUCTION ? 'public-tuna-rfmo' : 'public-rfmo'}/user-context-layer-v1`,
-          options
-        ),
+        GFWAPI.fetch<Region[]>(`${apiUrl}/public-rfmo/user-context-layer-v1`, options),
       ]
       const regions = await Promise.allSettled(promises)
       const result: Regions[] = [
