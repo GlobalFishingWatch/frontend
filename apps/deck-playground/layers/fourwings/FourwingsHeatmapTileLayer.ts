@@ -20,7 +20,7 @@ import {
   rgbaStringToComponents,
 } from '@globalfishingwatch/layer-composer'
 import { HEATMAP_ID } from './FourwingsLayer'
-import { Chunk, getChunksByInterval, getInterval } from './fourwings.config'
+import { Chunk, getChunkBuffer, getChunksByInterval, getInterval } from './fourwings.config'
 import { FourwingsSublayer, FourwingsSublayerId } from './fourwings.types'
 
 export type FourwingsLayerResolution = 'default' | 'high'
@@ -46,10 +46,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 
   initializeState(context: LayerContext): void {
     super.initializeState(context)
-    const chunks = this._getChunks(this.props.minFrame, this.props.maxFrame)
     this.state = {
-      cacheStart: chunks[1].start,
-      cacheEnd: chunks[chunks.length - 2].end,
+      ...this.getCacheRange(this.props.minFrame, this.props.maxFrame),
       colorDomain: [],
       // TODO: update colorRanges only when a sublayer colorRamp prop changes
       colorRanges: Object.fromEntries(
@@ -58,6 +56,14 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
           HEATMAP_COLOR_RAMPS[config.colorRamp].map((c) => rgbaStringToComponents(c)) as ColorRange,
         ])
       ),
+    }
+  }
+
+  getCacheRange = (minFrame: number, maxFrame: number) => {
+    const chunkBuffer = getChunkBuffer(getInterval(minFrame, maxFrame))
+    return {
+      cacheStart: this.props.minFrame - chunkBuffer,
+      cacheEnd: this.props.maxFrame + chunkBuffer,
     }
   }
 
@@ -114,24 +120,23 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   _fetchTileData = async (tile: TileLoadProps) => {
-    const datasets = this.props.sublayers.map((sublayer) => sublayer.datasets.join(','))
-    const promises = this._getChunks(this.props.minFrame, this.props.maxFrame).map(
-      async (chunk) => {
-        // if (cache[chunk]) {
-        //   return Promise.resolve(cache[chunk])
-        // }
-        const response = await fetch(getDataUrlByChunk({ tile, chunk, datasets }), {
-          signal: tile.signal,
-        })
-        if (tile.signal?.aborted || response.status !== 200) {
-          throw new Error()
-        }
-        return await response.arrayBuffer()
-        // return parseFourWings(await response.arrayBuffer(), {
-        //   sublayers: this.props.sublayers,
-        // })
+    const { minFrame, maxFrame, sublayers } = this.props
+    const datasets = sublayers.map((sublayer) => sublayer.datasets.join(','))
+    const promises = this._getChunks(minFrame, maxFrame).map(async (chunk) => {
+      // if (cache[chunk]) {
+      //   return Promise.resolve(cache[chunk])
+      // }
+      const response = await fetch(getDataUrlByChunk({ tile, chunk, datasets }), {
+        signal: tile.signal,
+      })
+      if (tile.signal?.aborted || response.status !== 200) {
+        throw new Error()
       }
-    )
+      return await response.arrayBuffer()
+      // return parseFourWings(await response.arrayBuffer(), {
+      //   sublayers: this.props.sublayers,
+      // })
+    })
     if (tile.signal?.aborted) {
       throw new Error('tile aborted')
     }
@@ -143,14 +148,16 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       return null
     }
     const mergeChunkDataCells = parseFourWings(data, {
-      sublayers: this.props.sublayers,
+      sublayers,
+      minFrame,
+      maxFrame,
+      interval: getInterval(minFrame, maxFrame),
     })
 
     return mergeChunkDataCells
   }
 
   _getTileData: TileLayerProps['getTileData'] = async (tile) => {
-    console.log('getTileData', tile)
     await asyncAwaitMS(1000)
     if (tile.signal?.aborted) {
       return null
@@ -164,15 +171,11 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     return chunks
   }
 
-  _getTileDataCacheKey = (start: number, end: number, chunks: Chunk[]): string => {
-    const isStartOutRange = start <= this.state.cacheStart
-    const isEndOutRange = end >= this.state.cacheEnd
+  _getTileDataCacheKey = (minFrame: number, maxFrame: number, chunks: Chunk[]): string => {
+    const isStartOutRange = minFrame <= this.state.cacheStart
+    const isEndOutRange = maxFrame >= this.state.cacheEnd
     if (isStartOutRange || isEndOutRange) {
-      this.setState({
-        // Using the first chunk index to invalidate cache when the timebar is about to end the buffer
-        cacheStart: chunks[1].start,
-        cacheEnd: chunks[chunks.length - 2].end,
-      })
+      this.setState(this.getCacheRange(minFrame, maxFrame))
     }
     return [this.state.cacheStart, this.state.cacheEnd].join('-')
   }
