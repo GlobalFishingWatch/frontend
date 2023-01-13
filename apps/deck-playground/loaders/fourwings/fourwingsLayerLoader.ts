@@ -1,6 +1,8 @@
 // import { TileBoundingBox, TileIndex } from '@deck.gl/geo-layers/typed/tile-layer/types'
 // import { LoaderWithParser } from '@loaders.gl/loader-utils'
 import Pbf from 'pbf'
+import { Interval } from '@globalfishingwatch/layer-composer'
+import { getChunkBuffer } from '../../layers/fourwings/fourwings.config'
 import { FourwingsDatasetId, FourwingsSublayer } from '../../layers/fourwings/fourwings.types'
 import {
   CELL_END_INDEX,
@@ -73,14 +75,20 @@ const getDate = (day) => {
 
 export type GetTimeseriesParams = {
   startFrame: number
+  minFrame: number
+  maxFrame: number
   sublayerIndex: number
   sublayerCount: number
+  bufferMs: number
 }
 
 const getTimeseries = (values: number[], params: GetTimeseriesParams) => {
   return values.reduce((acc, v, i) => {
     if (v > 0 && i % params.sublayerCount === params.sublayerIndex) {
-      acc[getDate(i + params.startFrame)] = v
+      const date = getDate(i + params.startFrame)
+      if (date >= params.minFrame - params.bufferMs && date <= params.maxFrame + params.bufferMs) {
+        acc[date] = v
+      }
     }
     return acc
   }, {})
@@ -88,8 +96,9 @@ const getTimeseries = (values: number[], params: GetTimeseriesParams) => {
 
 export type FourwingsRawData = number[]
 const getCellTimeseries = (intArrays: FourwingsRawData[], params: ParseFourwingsParams): Cell[] => {
-  const sublayerCount = params.sublayers.length
-  const sublayerIds = params.sublayers.map((s) => s.id)
+  const { minFrame, maxFrame, interval, sublayers } = params
+  const sublayerCount = sublayers.length
+  const sublayerIds = sublayers.map((s) => s.id)
   const cells: ChunkCell = {}
   let cellNum = 0
   let startFrame = 0
@@ -99,7 +108,7 @@ const getCellTimeseries = (intArrays: FourwingsRawData[], params: ParseFourwings
   let indexInCell = 0
   const domainX = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY]
   const domainY = [0, Number.NEGATIVE_INFINITY]
-
+  const bufferMs = getChunkBuffer(interval)
   intArrays.forEach((intArray) => {
     for (let i = FEATURE_CELLS_START_INDEX; i < intArray.length; i++) {
       const value = intArray[i]
@@ -123,8 +132,16 @@ const getCellTimeseries = (intArrays: FourwingsRawData[], params: ParseFourwings
 
         // eslint-disable-next-line no-loop-func
         sublayerIds.forEach((id, sublayerIndex) => {
+          const timeseriesParams = {
+            startFrame,
+            sublayerIndex,
+            sublayerCount,
+            minFrame,
+            maxFrame,
+            bufferMs,
+          }
           if (!cells[cellNum]?.[id]) {
-            const timeseries = getTimeseries(values, { startFrame, sublayerIndex, sublayerCount })
+            const timeseries = getTimeseries(values, timeseriesParams)
             if (Object.keys(timeseries).length) {
               if (!cells[cellNum]) {
                 cells[cellNum] = {}
@@ -134,7 +151,7 @@ const getCellTimeseries = (intArrays: FourwingsRawData[], params: ParseFourwings
           } else {
             cells[cellNum][id] = {
               ...cells[cellNum][id],
-              ...getTimeseries(values, { startFrame, sublayerIndex, sublayerCount }),
+              ...getTimeseries(values, timeseriesParams),
             }
           }
         })
@@ -170,6 +187,9 @@ export type FourwingsTileData = {
 }
 
 export type ParseFourwingsParams = {
+  minFrame: number
+  maxFrame: number
+  interval: Interval
   sublayers: FourwingsSublayer[]
 }
 
