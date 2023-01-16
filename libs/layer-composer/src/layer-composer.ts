@@ -75,7 +75,7 @@ export class LayerComposer {
     generatorStyles: GeneratorStyles
   ): GeneratorStyles => {
     const newGeneratorStyles = { ...generatorStyles }
-    newGeneratorStyles.layers = newGeneratorStyles.layers.map((layer) => {
+    newGeneratorStyles.layers = newGeneratorStyles.layers?.map((layer) => {
       const newLayer = { ...layer }
       if (!newLayer.layout) {
         newLayer.layout = {} as LayerSpecification['layout']
