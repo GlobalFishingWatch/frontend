@@ -158,7 +158,10 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   _getTileData: TileLayerProps['getTileData'] = async (tile) => {
-    await asyncAwaitMS(1000)
+    // waiting when zoom changes to avoid loading tiles for intermidiate zoom levels
+    if (tile.zoom !== Math.round(this.getLayerInstance().internalState?.viewport.zoom)) {
+      await asyncAwaitMS(500)
+    }
     if (tile.signal?.aborted) {
       return null
     }
