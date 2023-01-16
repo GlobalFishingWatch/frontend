@@ -35,6 +35,8 @@ import { selectDownloadActivityArea } from 'features/download/download.selectors
 import DownloadActivityProductsBanner from 'features/download/DownloadActivityProductsBanner'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import DatasetLabel from 'features/datasets/DatasetLabel'
+import SOURCE_SWITCH_CONTENT from 'features/welcome/SourceSwitch.content'
+import { Locale } from 'types'
 import styles from './DownloadModal.module.css'
 import {
   Format,
@@ -53,7 +55,9 @@ import {
 } from './download.utils'
 
 function DownloadActivityByVessel() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const { disclaimer } =
+    SOURCE_SWITCH_CONTENT[i18n.language as Locale] || SOURCE_SWITCH_CONTENT[Locale.en]
   const dispatch = useAppDispatch()
   const userData = useSelector(selectUserData)
   const dataviews = useSelector(selectActiveHeatmapDataviews)
@@ -255,7 +259,6 @@ function DownloadActivityByVessel() {
               ))}
             </p>
           )}
-
           {!isDownloadReportSupported ? (
             <p className={cx(styles.footerLabel, styles.error)}>
               {t('download.timerangeTooLong', 'The maximum time range is 1 year')}
@@ -264,7 +267,12 @@ function DownloadActivityByVessel() {
             <p className={cx(styles.footerLabel, styles.error)}>
               {`${t('analysis.errorMessage', 'Something went wrong')} 🙈`}
             </p>
-          ) : null}
+          ) : (
+            <p
+              className={styles.disclaimerContainer}
+              dangerouslySetInnerHTML={{ __html: disclaimer }}
+            />
+          )}
           <Button
             onClick={onDownloadClick}
             loading={downloadLoading || downloadAreaLoading}
