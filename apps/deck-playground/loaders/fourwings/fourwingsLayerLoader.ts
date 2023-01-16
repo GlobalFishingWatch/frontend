@@ -12,6 +12,7 @@ import {
   FEATURE_CELLS_START_INDEX,
   FEATURE_COL_INDEX,
   FEATURE_ROW_INDEX,
+  VALUE_MULTIPLIER,
 } from '../constants'
 
 // function sinh(arg) {
@@ -85,9 +86,9 @@ export type GetTimeseriesParams = {
 const getTimeseries = (values: number[], params: GetTimeseriesParams) => {
   return values.reduce((acc, v, i) => {
     if (v > 0 && i % params.sublayerCount === params.sublayerIndex) {
-      const date = getDate(i + params.startFrame)
+      const date = getDate(Math.ceil(i / params.sublayerCount) + params.startFrame)
       if (date >= params.minFrame - params.bufferMs && date <= params.maxFrame + params.bufferMs) {
-        acc[date] = v
+        acc[date] = v / VALUE_MULTIPLIER
       }
     }
     return acc
@@ -106,8 +107,6 @@ const getCellTimeseries = (intArrays: FourwingsRawData[], params: ParseFourwings
   let startIndex = 0
   let endIndex = 0
   let indexInCell = 0
-  const domainX = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY]
-  const domainY = [0, Number.NEGATIVE_INFINITY]
   const bufferMs = getChunkBuffer(interval)
   intArrays.forEach((intArray) => {
     for (let i = FEATURE_CELLS_START_INDEX; i < intArray.length; i++) {
@@ -155,11 +154,6 @@ const getCellTimeseries = (intArrays: FourwingsRawData[], params: ParseFourwings
             }
           }
         })
-
-        if (startFrame < domainX[0]) domainX[0] = startFrame
-        if (endFrame > domainX[1]) domainX[1] = endFrame
-        const cellMaxValue = Math.max(...values)
-        if (cellMaxValue > domainY[1]) domainY[1] = cellMaxValue
       }
     }
   })
