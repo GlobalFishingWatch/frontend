@@ -11,7 +11,6 @@ import {
 } from 'layers/fourwings/fourwings.utils'
 import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
 import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
-import { debounce } from 'lodash'
 import { TileLoadProps } from '@deck.gl/geo-layers/typed/tile-layer/types'
 import {
   COLOR_RAMP_DEFAULT_NUM_STEPS,
@@ -101,8 +100,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     })
   }
 
-  debouncedUpdateColorDomain = debounce(this.updateColorDomain, 1000)
-
   _onTileLoad = (tile) => {
     const allTilesLoaded = this.getLayerInstance().state.tileset.tiles.every(
       (tile) => tile.isLoaded === true
@@ -113,10 +110,10 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   _onViewportLoad = (tiles) => {
+    this.updateColorDomain()
     if (this.props.onViewportLoad) {
       this.props.onViewportLoad(tiles)
     }
-    this.debouncedUpdateColorDomain()
   }
 
   _fetchTileData = async (tile: TileLoadProps) => {
