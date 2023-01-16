@@ -78,21 +78,27 @@ export type GetTimeseriesParams = {
   startFrame: number
   minFrame: number
   maxFrame: number
-  sublayerIndex: number
+  // sublayerIndex: number
   sublayerCount: number
   bufferMs: number
 }
 
 const getTimeseries = (values: number[], params: GetTimeseriesParams) => {
-  return values.reduce((acc, v, i) => {
-    if (v > 0 && i % params.sublayerCount === params.sublayerIndex) {
-      const date = getDate(Math.ceil(i / params.sublayerCount) + params.startFrame)
-      if (date >= params.minFrame - params.bufferMs && date <= params.maxFrame + params.bufferMs) {
-        acc[date] = v / VALUE_MULTIPLIER
+  return values.reduce(
+    (acc, v, i) => {
+      if (v > 0) {
+        const date = getDate(Math.ceil(i / params.sublayerCount) + params.startFrame)
+        if (
+          date >= params.minFrame - params.bufferMs &&
+          date <= params.maxFrame + params.bufferMs
+        ) {
+          acc[i % params.sublayerCount][date] = v / VALUE_MULTIPLIER
+        }
       }
-    }
-    return acc
-  }, {})
+      return acc
+    },
+    Array.from(Array(params.sublayerCount).keys()).map(() => ({}))
+  )
 }
 
 export type FourwingsRawData = number[]
@@ -130,27 +136,28 @@ const getCellTimeseries = (intArrays: FourwingsRawData[], params: ParseFourwings
         const values = intArray.slice(startIndex + CELL_VALUES_START_INDEX, endIndex)
 
         // eslint-disable-next-line no-loop-func
+        const timeseriesParams = {
+          startFrame,
+          sublayerCount,
+          minFrame,
+          maxFrame,
+          bufferMs,
+        }
+        const timeseries = getTimeseries(values, timeseriesParams)
+        // eslint-disable-next-line no-loop-func
         sublayerIds.forEach((id, sublayerIndex) => {
-          const timeseriesParams = {
-            startFrame,
-            sublayerIndex,
-            sublayerCount,
-            minFrame,
-            maxFrame,
-            bufferMs,
-          }
+          const sublayerTimeseries = timeseries[sublayerIndex]
           if (!cells[cellNum]?.[id]) {
-            const timeseries = getTimeseries(values, timeseriesParams)
-            if (Object.keys(timeseries).length) {
+            if (Object.keys(sublayerTimeseries).length) {
               if (!cells[cellNum]) {
                 cells[cellNum] = {}
               }
-              cells[cellNum][id] = timeseries
+              cells[cellNum][id] = sublayerTimeseries
             }
           } else {
             cells[cellNum][id] = {
               ...cells[cellNum][id],
-              ...getTimeseries(values, timeseriesParams),
+              ...sublayerTimeseries,
             }
           }
         })
@@ -158,10 +165,12 @@ const getCellTimeseries = (intArrays: FourwingsRawData[], params: ParseFourwings
     }
   })
 
-  return Object.entries(cells).map(([cellId, timeseries]) => ({
-    index: parseInt(cellId),
-    timeseries,
-  }))
+  return Object.keys(cells).map((cellId) => {
+    return {
+      index: parseInt(cellId),
+      timeseries: cells[cellId],
+    }
+  })
 }
 
 export type CellFrame = number
