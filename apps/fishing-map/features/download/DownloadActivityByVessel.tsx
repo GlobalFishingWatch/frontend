@@ -51,8 +51,7 @@ import {
 
 function DownloadActivityByVessel() {
   const { t, i18n } = useTranslation()
-  const { disclaimer } =
-    SOURCE_SWITCH_CONTENT[i18n.language as Locale] || SOURCE_SWITCH_CONTENT[Locale.en]
+  const { disclaimer } = SOURCE_SWITCH_CONTENT[(i18n.language as Locale) || Locale.en]
   const dispatch = useAppDispatch()
   const userData = useSelector(selectUserData)
   const dataviews = useSelector(selectActiveHeatmapDataviews)
