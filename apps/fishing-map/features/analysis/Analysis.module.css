@@ -49,10 +49,13 @@
   justify-content: center;
 }
 
+.placeholderContainer {
+  padding: var(--space-M);
+}
+
 .placeholder {
   font: var(--font-S);
   color: var(--color-secondary-blue);
-  padding: var(--space-M);
 }
 
 .placeholder a {
