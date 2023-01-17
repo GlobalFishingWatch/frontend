@@ -1,59 +1,15 @@
-// import { TileBoundingBox, TileIndex } from '@deck.gl/geo-layers/typed/tile-layer/types'
-// import { LoaderWithParser } from '@loaders.gl/loader-utils'
 import Pbf from 'pbf'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import { getChunkBuffer } from '../../layers/fourwings/fourwings.config'
 import { FourwingsDatasetId, FourwingsSublayer } from '../../layers/fourwings/fourwings.types'
-import { FEATURE_COL_INDEX, FEATURE_ROW_INDEX } from '../constants'
-
-// function sinh(arg) {
-//   return (Math.exp(arg) - Math.exp(-arg)) / 2
-// }
-
-// function tileToLng(x, z) {
-//   return (x * 360) / Math.pow(2, z) - 180
-// }
-
-// function tileToLat(y, z) {
-//   return Math.atan(sinh(Math.PI - (y * 2 * Math.PI) / Math.pow(2, z))) * (180 / Math.PI)
-// }
-
-// function getTileIndex(url: string) {
-//   return url
-//     .split('/')
-//     .slice(-3)
-//     .map((i) => parseInt(i)) as [number, number, number]
-// }
-
-// function getTileBBox(url: string): BBox {
-//   const [z, x, y] = getTileIndex(url)
-//   const north = tileToLat(y, z)
-//   const west = tileToLng(x, z)
-//   const south = tileToLat(y + 1, z)
-//   const east = tileToLng(x + 1, z)
-//   return [west, south, east, north]
-// }
-
-// export const fourwingsLayerLoader: LoaderWithParser = {
-//   name: 'fourwings',
-//   module: 'fourwings',
-//   options: {},
-//   id: '4Wings-pbf',
-//   version: 'latest',
-//   extensions: ['pbf'],
-//   mimeTypes: ['application/x-protobuf', 'application/octet-stream'],
-//   worker: false,
-//   parse: async (arrayBuffer, { baseUri }) => {
-//     const tileBbox = getTileBBox(baseUri)
-//     const tileIndex = getTileIndex(baseUri)
-//     return parseFourWings(arrayBuffer, { tileBbox, tileIndex })
-//   },
-//   parseSync: async (arrayBuffer, { baseUri }) => {
-//     const tileBbox = getTileBBox(baseUri)
-//     const tileIndex = getTileIndex(baseUri)
-//     return parseFourWings(arrayBuffer, { tileBbox, tileIndex })
-//   },
-// }
+import {
+  CELL_END_INDEX,
+  CELL_NUM_INDEX,
+  CELL_START_INDEX,
+  CELL_VALUES_START_INDEX,
+  FEATURE_COL_INDEX,
+  FEATURE_ROW_INDEX,
+} from '../constants'
 
 function readData(_, data, pbf) {
   data.push(pbf.readPackedVarint())
@@ -90,19 +46,20 @@ const getCellTimeseries = (intArrays: FourwingsRawData[], params: ParseFourwings
     const intArray = intArrays[index]
     for (let i = 2; i < intArray.length; i++) {
       const value = intArray[i]
-      if (indexInCell === 0) {
+      if (indexInCell === CELL_NUM_INDEX) {
         startIndex = i
         cellNum = value
-      } else if (indexInCell === 1) {
+      } else if (indexInCell === CELL_START_INDEX) {
         startFrame = value
-      } else if (indexInCell === 2) {
+      } else if (indexInCell === CELL_END_INDEX) {
         endFrame = value
-        endIndex = startIndex + 3 + (endFrame - startFrame + 1) * sublayerCount
+        endIndex =
+          startIndex + CELL_VALUES_START_INDEX + (endFrame - startFrame + 1) * sublayerCount
       }
       indexInCell++
       if (i === endIndex - 1) {
         indexInCell = 0
-        const timeseries = intArray.slice(startIndex + 3, endIndex).reduce(
+        const timeseries = intArray.slice(startIndex + CELL_VALUES_START_INDEX, endIndex).reduce(
           // eslint-disable-next-line no-loop-func
           (acc, v, i) => {
             if (v > 0) {
@@ -167,19 +124,37 @@ export type ParseFourwingsParams = {
   sublayers: FourwingsSublayer[]
 }
 
-export const parseFourWings = (
+export const parseFourWings = async (
   arrayBuffers: ArrayBuffer[],
   params: ParseFourwingsParams
-): FourwingsTileData => {
+): Promise<FourwingsTileData> => {
   const data = arrayBuffers.map((arrayBuffer) => new Pbf(arrayBuffer).readFields(readData, [])[0])
   const rows = data[0]?.[FEATURE_ROW_INDEX]
   const cols = data[0]?.[FEATURE_COL_INDEX]
 
-  return {
-    cols,
-    rows,
-    cells: getCellTimeseries(data, params),
-  }
+  return new Promise((resolve) => {
+    const worker =
+      typeof window !== 'undefined'
+        ? new Worker(new URL('./worker.ts', import.meta.url))
+        : undefined
+    if (worker) {
+      worker.onmessage = (event: MessageEvent<Cell[]>) => {
+        resolve({
+          cols,
+          rows,
+          cells: event.data,
+        })
+      }
+
+      worker.postMessage({ data, ...params })
+    } else {
+      resolve({
+        cols,
+        rows,
+        cells: getCellTimeseries(data, params),
+      })
+    }
+  })
 }
 // export const combineChunkTimeseries = (
 //   fourwingsChunks: FourwingsChunkData[]

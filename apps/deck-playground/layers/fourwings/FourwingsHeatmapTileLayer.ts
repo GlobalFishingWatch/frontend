@@ -144,13 +144,12 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     if (!data.length) {
       return null
     }
-    const mergeChunkDataCells = parseFourWings(data, {
+    const mergeChunkDataCells = await parseFourWings(data, {
       sublayers,
       minFrame,
       maxFrame,
       interval: getInterval(minFrame, maxFrame),
     })
-
     return mergeChunkDataCells
   }
 
