@@ -44,10 +44,13 @@ const MapWrapper = (): React.ReactElement => {
   const getTooltip = (tooltip) => {
     // Heatmap
     if (tooltip.object?.value) {
-      const sublayers = tooltip.object.value.flatMap(({ id, value }) =>
-        value ? `${id}: ${value}` : []
-      )
-      return sublayers.length ? sublayers.join('\n') : undefined
+      if (Array.isArray(tooltip.object?.value)) {
+        const sublayers = tooltip.object.value?.flatMap(({ id, value }) =>
+          value ? `${id}: ${value}` : []
+        )
+        return sublayers.length ? sublayers.join('\n') : undefined
+      }
+      return tooltip.object?.value
     }
     // Vessel position
     if (tooltip.object?.properties?.vesselId) {
