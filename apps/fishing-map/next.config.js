@@ -4,8 +4,11 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
 // const CircularDependencyPlugin = require('circular-dependency-plugin')
+const { join } = require('path')
 
 // const { i18n } = require('./next-i18next.config')
+const basePath =
+  process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/map' : '')
 
 const IS_PRODUCTION =
   process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'production' || process.env.NODE_ENV === 'production'
@@ -21,6 +24,21 @@ const nextConfig = {
         source: '/:any*',
         destination: '/',
       },
+    ]
+  },
+  async redirects() {
+    return [
+      // Redirect everything in / root to basePath if defined
+      ...(basePath !== ''
+        ? [
+            {
+              source: '/',
+              destination: basePath,
+              basePath: false,
+              permanent: false,
+            },
+          ]
+        : []),
     ]
   },
   nx: {
@@ -55,8 +73,16 @@ const nextConfig = {
   },
   // productionBrowserSourceMaps: true,
   // i18n,
-  basePath: process.env.NEXT_PUBLIC_URL || IS_PRODUCTION ? '/map' : '',
+  basePath,
   productionBrowserSourceMaps: !IS_PRODUCTION,
+  // to deploy on a node server
+  output: 'standalone',
+  outputFileTracing: true,
+  experimental: {
+    outputFileTracingRoot: join(__dirname, '../../'),
+  },
+  cleanDistDir: true,
+  distDir: '.next',
 }
 
 module.exports = withBundleAnalyzer(withNx(nextConfig))

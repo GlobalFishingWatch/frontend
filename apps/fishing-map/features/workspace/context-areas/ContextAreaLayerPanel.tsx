@@ -16,7 +16,7 @@ import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import GFWOnly from 'features/user/GFWOnly'
 import { PRIVATE_SUFIX, ROOT_DOM_ELEMENT } from 'data/config'
-import { ONLY_GFW_STAFF_DATAVIEWS } from 'data/workspaces'
+import { ONLY_GFW_STAFF_DATAVIEW_SLUGS } from 'data/workspaces'
 import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/dataviews.selectors'
 import { getDatasetNameTranslated } from 'features/i18n/utils'
 import DatasetNotFound from '../shared/DatasetNotFound'
@@ -128,7 +128,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           dataview={dataview}
           onToggle={onToggle}
         />
-        {ONLY_GFW_STAFF_DATAVIEWS.includes(dataview.dataviewId) && (
+        {ONLY_GFW_STAFF_DATAVIEW_SLUGS.includes(dataview.dataviewId as number) && (
           <GFWOnly type="only-icon" style={{ transform: 'none' }} className={styles.gfwIcon} />
         )}
         {title && title.length > 30 ? (

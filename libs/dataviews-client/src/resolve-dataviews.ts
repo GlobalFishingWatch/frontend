@@ -15,7 +15,7 @@ import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { resolveEndpoint } from './resolve-endpoint'
 
 export type UrlDataviewInstance<T = GeneratorType> = Omit<DataviewInstance<T>, 'dataviewId'> & {
-  dataviewId?: number // making this optional as sometimes we just need to reference the id
+  dataviewId?: Dataview['id'] | Dataview['slug'] // making this optional as sometimes we just need to reference the id
   deleted?: boolean // needed when you want to override from url an existing workspace config
 }
 
@@ -173,7 +173,7 @@ export const resolveResourcesFromDatasetConfigs = (
         if (!dataset) return []
         const url = resolveEndpoint(dataset, datasetConfig)
         if (!url) return []
-        return [{ dataset, datasetConfig, url, dataviewId: dataview.dataviewId as number }]
+        return [{ dataset, datasetConfig, url, dataviewId: dataview.dataviewId as string }]
       })
     })
 }
@@ -223,7 +223,7 @@ export const resolveDataviewDatasetResources = (
           url,
           dataset,
           datasetConfig,
-          dataviewId: dataview.dataviewId as number,
+          dataviewId: dataview.dataviewId,
           key: generateDataviewDatasetResourceKey(dataset, datasetConfig),
         } as Resource,
       ]
@@ -257,7 +257,11 @@ export function resolveDataviews(
         return []
       }
 
-      const dataview = dataviews?.find((dataview) => dataview.id === dataviewInstance.dataviewId)
+      const dataview = dataviews?.find((dataview) =>
+        ([dataview.id, dataview.slug] as Dataview['slug'][]).includes(
+          dataviewInstance.dataviewId as Dataview['slug']
+        )
+      )
       if (!dataview) {
         console.warn(
           `DataviewInstance id: ${dataviewInstance.id} doesn't have a valid dataview (${dataviewInstance.dataviewId})`
@@ -313,8 +317,8 @@ export function resolveDataviews(
 
       const resolvedDataview = {
         ...dataview,
-        id: dataviewInstance.id as string,
-        dataviewId: dataview.id,
+        id: dataviewInstance.id,
+        dataviewId: dataview.slug,
         config,
         datasets: dataviewDatasets,
         datasetsConfig,

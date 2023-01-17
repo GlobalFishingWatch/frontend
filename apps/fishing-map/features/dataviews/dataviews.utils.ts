@@ -12,15 +12,15 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
 import {
-  TEMPLATE_ACTIVITY_DATAVIEW_ID,
-  TEMPLATE_ENVIRONMENT_DATAVIEW_ID,
-  TEMPLATE_CONTEXT_DATAVIEW_ID,
-  FISHING_DATAVIEW_ID,
-  TEMPLATE_VESSEL_DATAVIEW_ID,
-  TEMPLATE_USER_TRACK_ID,
-  VESSEL_PRESENCE_DATAVIEW_ID,
-  TEMPLATE_POINTS_DATAVIEW_ID,
-  TEMPLATE_CLUSTERS_DATAVIEW_ID,
+  TEMPLATE_ACTIVITY_DATAVIEW_SLUG,
+  TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG,
+  TEMPLATE_CONTEXT_DATAVIEW_SLUG,
+  FISHING_DATAVIEW_SLUG,
+  TEMPLATE_VESSEL_DATAVIEW_SLUG,
+  TEMPLATE_USER_TRACK_SLUG,
+  VESSEL_PRESENCE_DATAVIEW_SLUG,
+  TEMPLATE_POINTS_DATAVIEW_SLUG,
+  TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import { isPrivateDataset } from 'features/datasets/datasets.utils'
 
@@ -73,11 +73,11 @@ export const getVesselDataviewInstanceDatasetConfig = (
   return datasetsConfig
 }
 
-const vesselDataviewInstanceTemplate = (dataviewId: number) => {
+const vesselDataviewInstanceTemplate = (dataviewSlug: Dataview['slug']) => {
   return {
     // TODO find the way to use different vessel dataviews, for example
     // panama and peru doesn't show events and needed a workaround to work with this
-    dataviewId,
+    dataviewId: dataviewSlug,
     config: {
       colorCyclingType: 'line' as ColorCyclingType,
     },
@@ -90,7 +90,7 @@ export const getVesselDataviewInstance = (
 ): DataviewInstance<GeneratorType> => {
   const vesselDataviewInstance = {
     id: `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
-    ...vesselDataviewInstanceTemplate(TEMPLATE_VESSEL_DATAVIEW_ID),
+    ...vesselDataviewInstanceTemplate(TEMPLATE_VESSEL_DATAVIEW_SLUG),
     datasetsConfig: getVesselDataviewInstanceDatasetConfig(vessel.id, datasets),
   }
   return vesselDataviewInstance
@@ -102,7 +102,7 @@ export const getPresenceVesselDataviewInstance = (
 ): DataviewInstance<GeneratorType> => {
   const vesselDataviewInstance = {
     id: `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
-    ...vesselDataviewInstanceTemplate(VESSEL_PRESENCE_DATAVIEW_ID),
+    ...vesselDataviewInstanceTemplate(VESSEL_PRESENCE_DATAVIEW_SLUG),
     datasetsConfig: getVesselDataviewInstanceDatasetConfig(vessel.id, datasets),
   }
   return vesselDataviewInstance
@@ -114,7 +114,7 @@ export const getFishingDataviewInstance = (): DataviewInstance<GeneratorType> =>
     config: {
       colorCyclingType: 'fill' as ColorCyclingType,
     },
-    dataviewId: FISHING_DATAVIEW_ID,
+    dataviewId: FISHING_DATAVIEW_SLUG,
   }
 }
 
@@ -126,7 +126,7 @@ export const getEnvironmentDataviewInstance = (
     config: {
       colorCyclingType: 'fill' as ColorCyclingType,
     },
-    dataviewId: TEMPLATE_ENVIRONMENT_DATAVIEW_ID,
+    dataviewId: TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG,
     datasetsConfig: [
       {
         datasetId,
@@ -142,7 +142,7 @@ export const getUserPointsDataviewInstance = (
 ): DataviewInstance<GeneratorType> => {
   return {
     id: `user-points-${datasetId}`,
-    dataviewId: TEMPLATE_POINTS_DATAVIEW_ID,
+    dataviewId: TEMPLATE_POINTS_DATAVIEW_SLUG,
     config: {
       colorCyclingType: 'line' as ColorCyclingType,
     },
@@ -166,7 +166,7 @@ export const getUserTrackDataviewInstance = (dataset: Dataset) => {
   ]
   const dataviewInstance = {
     id: `user-track-${dataset.id}`,
-    dataviewId: TEMPLATE_USER_TRACK_ID,
+    dataviewId: TEMPLATE_USER_TRACK_SLUG,
     config: {
       colorCyclingType: 'line' as ColorCyclingType,
     },
@@ -182,7 +182,7 @@ export const getContextDataviewInstance = (datasetId: string): DataviewInstance<
     config: {
       colorCyclingType: 'line' as ColorCyclingType,
     },
-    dataviewId: TEMPLATE_CONTEXT_DATAVIEW_ID,
+    dataviewId: TEMPLATE_CONTEXT_DATAVIEW_SLUG,
     datasetsConfig: [
       {
         datasetId,
@@ -197,7 +197,7 @@ export const getContextDataviewInstance = (datasetId: string): DataviewInstance<
 export const getDataviewInstanceFromDataview = (dataview: Dataview) => {
   return {
     id: `${kebabCase(dataview.name)}-${Date.now()}`,
-    dataviewId: dataview.id,
+    dataviewId: dataview.slug,
   }
 }
 
@@ -224,7 +224,7 @@ export const getBigQuery4WingsDataviewInstance = (
       colorCyclingType: 'fill' as ColorCyclingType,
       aggregationOperation,
     },
-    dataviewId: TEMPLATE_ACTIVITY_DATAVIEW_ID,
+    dataviewId: TEMPLATE_ACTIVITY_DATAVIEW_SLUG,
     datasetsConfig: [
       {
         datasetId,
@@ -246,7 +246,7 @@ export const getBigQueryEventsDataviewInstance = (
 ): DataviewInstance<GeneratorType> => {
   const contextDataviewInstance = {
     id: `${BIG_QUERY_EVENTS_PREFIX}${Date.now()}`,
-    dataviewId: TEMPLATE_CLUSTERS_DATAVIEW_ID,
+    dataviewId: TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
     datasetsConfig: [
       {
         datasetId,

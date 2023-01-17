@@ -43,6 +43,7 @@ import {
   updateVesselGroupThunk,
   searchVesselGroupsVesselsThunk,
   MAX_VESSEL_GROUP_VESSELS,
+  getVesselInVesselGroupThunk,
 } from './vessel-groups.slice'
 import styles from './VesselGroupModal.module.css'
 
@@ -92,12 +93,11 @@ function VesselGroupModal(): React.ReactElement {
     },
     [dispatch]
   )
-  const editingVesselGroupVessels = editingVesselGroup?.vessels
   useEffect(() => {
-    if (editingVesselGroupVessels?.length > 0) {
-      dispatchSearchVesselsGroupsThunk(editingVesselGroupVessels)
+    if (editingVesselGroup?.vessels?.length > 0) {
+      dispatch(getVesselInVesselGroupThunk({ vesselGroup: editingVesselGroup }))
     }
-  }, [editingVesselGroupVessels, dispatchSearchVesselsGroupsThunk])
+  }, [dispatch, editingVesselGroup])
 
   const onGroupNameChange = useCallback((e) => {
     setGroupName(e.target.value)
