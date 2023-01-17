@@ -7,9 +7,8 @@ import {
 } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { AppDispatch, RootState } from 'store'
+import { AppDispatch } from 'store'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
-import { selectUserLogged } from 'features/user/user.slice'
 import { fetchDataviewsByIdsThunk } from './dataviews.slice'
 import {
   dataviewInstances,
@@ -29,7 +28,7 @@ type VesselInstanceDatasets = {
 export const getVesselDataviewInstanceId = (vesselId: string) => `${VESSEL_LAYER_PREFIX}${vesselId}`
 
 export const getVesselDataviewInstanceFactory =
-  (defaultVesselDataviewId: number, startDate?: string) =>
+  (defaultVesselDataviewId: Dataview['slug'], startDate?: string) =>
   (
     vessel: { id: string },
     { trackDatasetId, infoDatasetId, eventsDatasetsId }: VesselInstanceDatasets,

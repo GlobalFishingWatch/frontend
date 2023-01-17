@@ -16,11 +16,7 @@ function DownloadActivityProductsBanner({ format }: DownloadActivityProductsBann
   const isDownloadReportSupported = getDownloadReportSupported(start, end)
 
   return (
-    <div
-      className={cx(styles.downloadFooterContainer, {
-        [styles.open]: !isDownloadReportSupported || format === Format.Json,
-      })}
-    >
+    <div className={cx(styles.downloadFooterContainer, styles.open)}>
       {!isDownloadReportSupported ? (
         <div className={styles.downloadFooter}>
           <p className={styles.downloadLabel}>
@@ -34,7 +30,7 @@ function DownloadActivityProductsBanner({ format }: DownloadActivityProductsBann
             {t('download.dataPortal', 'See data download portal')}
           </Button>
         </div>
-      ) : format === Format.Json ? (
+      ) : (
         <div className={styles.downloadFooter}>
           <p className={styles.downloadLabel}>
             {t('download.doYouNeedAnAPI', 'Does your application need continuous data?')}
@@ -47,7 +43,7 @@ function DownloadActivityProductsBanner({ format }: DownloadActivityProductsBann
             {t('download.apiPortal', 'See our APIs here')}
           </Button>
         </div>
-      ) : null}
+      )}
     </div>
   )
 }

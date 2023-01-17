@@ -1,11 +1,14 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { cwd } = require('process')
+const { join } = require('path')
 const withNx = require('@nrwl/next/plugins/with-nx')
 const withPWAConstructor = require('next-pwa')
 const runtimeCaching = require('next-pwa/cache')
 const getStaticPrecacheEntries = require('./utils/staticprecache')
 
 // const { i18n } = require('./next-i18next.config')
+const basePath =
+  process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/vessel-viewer' : '')
 
 /**
  * @type {import('next').NextConfig}
@@ -20,24 +23,54 @@ const nextConfig = {
       },
     ]
   },
-  webpack: function (config) {
-    config.resolve.fallback = {
-      ...config.resolve.fallback,
-      child_process: false,
-      fs: false,
-      net: false,
-      tls: false,
+  async redirects() {
+    return [
+      // Redirect everything in / root to basePath if defined
+      ...(basePath !== ''
+        ? [
+            {
+              source: '/',
+              destination: basePath,
+              basePath: false,
+              permanent: false,
+            },
+          ]
+        : []),
+    ]
+  },
+  webpack: function (config, { isServer }) {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        child_process: false,
+        fs: false,
+        net: false,
+        tls: false,
+      }
     }
-    config.externals = [...config.externals, 'mapbox-gl']
     return config
   },
 
   // i18n,
-  basePath:
-    process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/vessel-viewer' : ''),
+  basePath,
   productionBrowserSourceMaps:
     process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'development' ||
     process.env.NODE_ENV === 'development',
+
+  // to deploy on a node server
+  output: 'standalone',
+  outputFileTracing: true,
+  experimental: {
+    outputFileTracingRoot: join(__dirname, '../../'),
+  },
+  cleanDistDir: true,
+  distDir: '.next',
+
+  nx: {
+    // Set this to true if you would like to to use SVGR
+    // See: https://github.com/gregberge/svgr
+    svgr: true,
+  },
 }
 
 const withPWA = withPWAConstructor({
@@ -65,13 +98,4 @@ const withPWA = withPWAConstructor({
   ],
 })
 
-module.exports = withPWA(
-  withNx({
-    ...nextConfig,
-    nx: {
-      // Set this to true if you would like to to use SVGR
-      // See: https://github.com/gregberge/svgr
-      svgr: true,
-    },
-  })
-)
+module.exports = withPWA(withNx(nextConfig))

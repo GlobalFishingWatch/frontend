@@ -14,21 +14,11 @@
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx build fishing-map --parallel", "nx docker-prepare fishing-map"],
+        "commands": ["nx build fishing-map --parallel"],
         "parallel": false
       }
     },
-    "docker-prepare": {
-      "executor": "nx:run-commands",
-      "outputs": [],
-      "options": {
-        "commands": [
-          "cp config/entrypoint.sh dist/apps/fishing-map",
-          "cp apps/fishing-map/nginx.conf dist/apps/fishing-map"
-        ]
-      }
-    },
-    "compile": {
+    "build": {
       "executor": "@nrwl/next:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
@@ -61,21 +51,21 @@
     "serve": {
       "executor": "@nrwl/next:server",
       "options": {
-        "buildTarget": "fishing-map:compile",
+        "buildTarget": "fishing-map:build",
         "dev": true,
         "port": 3003
       },
       "configurations": {
         "production": {
-          "buildTarget": "fishing-map:compile:production",
+          "buildTarget": "fishing-map:build:production",
           "dev": false
         }
       }
     },
-    "build": {
+    "export": {
       "executor": "@nrwl/next:export",
       "options": {
-        "buildTarget": "fishing-map:compile:production"
+        "buildTarget": "fishing-map:build:production"
       }
     },
     "rename-export": {
@@ -88,7 +78,7 @@
         "parallel": false
       }
     },
-    "serve:export": {
+    "serve:build": {
       "executor": "nx:run-commands",
       "options": {
         "commands": [

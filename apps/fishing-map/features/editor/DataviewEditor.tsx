@@ -297,8 +297,8 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
                   options={temporalResolutionOptions}
                   containerClassName={styles.input2Columns}
                   direction="top"
-                  selectedOption={temporalResolutionOptions.find(
-                    ({ id }) => id === dataview.config?.interval
+                  selectedOption={temporalResolutionOptions.find(({ id }) =>
+                    dataview.config?.intervals?.includes(id)
                   )}
                   onSelect={(selected) => {
                     onDataviewConfigChange({ interval: selected.id })
