@@ -84,7 +84,7 @@ const TimebarActivityGraph = () => {
         <TimebarStackedActivity
           key="stackedActivity"
           timeseries={formattedData as any}
-          dataviews={dataviews}
+          dataviews={dataviews as any}
           // highlighterCallback={getActivityHighlighterLabel}
           highlighterIconCallback="heatmap"
         />
