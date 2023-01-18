@@ -44,7 +44,7 @@ const TimebarActivityGraph = () => {
             status: ResourceStatus.Finished,
             chunks: positions.map((position) => {
               const color = (
-                fourwingsLayerInstance.layer as FourwingsPositionsTileLayer
+                fourwingsLayerInstance.layers[0] as FourwingsPositionsTileLayer
               ).getFillColor(position)
               return {
                 start: getDateFromHtime(position.properties.htime),

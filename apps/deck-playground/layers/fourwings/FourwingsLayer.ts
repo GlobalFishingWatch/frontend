@@ -18,26 +18,26 @@ export type FourwingsColorRamp = {
   colorRange: Color[]
 }
 
-export type FourwingsLayerProps<DataT = any> = FourwingsPositionsTileLayerProps<DataT> &
+export type FourwingsLayerProps = FourwingsPositionsTileLayerProps &
   FourwingsHeatmapTileLayerProps & {
     mode: FourwingsLayerMode
   }
 
 export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLayerProps> {
   static layerName = 'FourwingsLayer'
-  layer: FourwingsHeatmapTileLayer | FourwingsPositionsTileLayer | undefined
+  layers: FourwingsHeatmapTileLayer[] | FourwingsPositionsTileLayer[] | undefined
 
   renderLayers(): Layer<{}> | LayersList {
     const mode = this.getMode()
-    this.layer =
+    this.layers =
       mode === HEATMAP_ID
-        ? new FourwingsHeatmapTileLayer(this.props)
-        : new FourwingsPositionsTileLayer(this.props)
-    return this.layer
+        ? [new FourwingsHeatmapTileLayer(this.props)]
+        : [new FourwingsPositionsTileLayer(this.props)]
+    return this.layers
   }
 
   getData() {
-    return this.layer.getData()
+    return this.layers[0].getData()
   }
 
   getMode() {
@@ -49,10 +49,10 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   }
 
   getColorDomain() {
-    return this.layer?.getColorDomain()
+    return this.layers && this.layers[0]?.getColorDomain()
   }
 
   getTimeseries() {
-    return this.layer?.getTimeseries()
+    return this.layers && this.layers[0]?.getTimeseries()
   }
 }
