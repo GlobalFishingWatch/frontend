@@ -1,76 +1,38 @@
-import { Fragment, useCallback, useMemo } from 'react'
+import { Fragment, useMemo } from 'react'
 import { DeckGL } from '@deck.gl/react/typed'
-import { BitmapLayer } from '@deck.gl/layers'
-import { TileLayer } from '@deck.gl/geo-layers'
 import { MapView } from '@deck.gl/core/typed'
-import { useVesselsLayer } from 'layers/vessel/vessels.hooks'
-import { useTimerange } from 'features/timebar/timebar.hooks'
-import { MapLayer, MapLayerType, useMapLayers } from 'features/map/layers.hooks'
+import { useVesselsLayer, useVesselsLayerLoaded } from 'layers/vessel/vessels.hooks'
+import { useFourwingsLayer, useFourwingsLayerLoaded } from 'layers/fourwings/fourwings.hooks'
+import { basemapLayer } from 'layers/basemap/BasemapLayer'
 import { useURLViewport, useViewport } from 'features/map/map-viewport.hooks'
-import { useFourwingsLayer } from '../../layers/fourwings/fourwings.hooks'
-
-const INITIAL_VIEW_STATE = {
-  // longitude: -2,
-  // latitude: 40,
-  latitude: 44.00079038236199,
-  longitude: -8.153310241289587,
-  zoom: 9,
-}
-
-const basemap = new TileLayer({
-  id: 'basemap',
-  data: 'https://gateway.api.dev.globalfishingwatch.org/v2/tileset/sat/tile?x={x}&y={y}&z={z}',
-  minZoom: 0,
-  maxZoom: 12,
-  // tileSize: 256,
-  renderSubLayers: (props) => {
-    const {
-      bbox: { west, south, east, north },
-    } = props.tile
-    return new BitmapLayer(props, {
-      data: null,
-      image: props.data,
-      tintColor: [21, 93, 206],
-      bounds: [west, south, east, north],
-    })
-  },
-})
+import { zIndexSortedArray } from 'utils/layers'
 
 const mapView = new MapView({ repeat: true })
 
 const MapWrapper = (): React.ReactElement => {
   useURLViewport()
-  const [timerange] = useTimerange()
-  const [mapLayers, setMapLayers] = useMapLayers()
   const { viewState, onViewportStateChange } = useViewport()
-
-  const setMapLayerProperty = useCallback(
-    (id: MapLayerType, property: keyof MapLayer, value) => {
-      setMapLayers((layers) =>
-        layers.map((l) => {
-          if (l.id === id) {
-            return { ...l, [property]: value }
-          }
-          return l
-        })
-      )
-    },
-    [setMapLayers]
-  )
 
   const fourwingsLayer = useFourwingsLayer()
   const vesselsLayer = useVesselsLayer()
+  const vesselsLoaded = useVesselsLayerLoaded()
+  const fourwingsLoaded = useFourwingsLayerLoaded()
+
   const layers = useMemo(() => {
-    return [basemap, fourwingsLayer, vesselsLayer]
-  }, [fourwingsLayer, vesselsLayer])
+    return zIndexSortedArray([basemapLayer, fourwingsLayer, vesselsLayer])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fourwingsLayer, vesselsLayer, vesselsLoaded, fourwingsLoaded])
 
   const getTooltip = (tooltip) => {
     // Heatmap
     if (tooltip.object?.value) {
-      const sublayers = tooltip.object.value.flatMap(({ id, value }) =>
-        value ? `${id}: ${value}` : []
-      )
-      return sublayers.length ? sublayers.join('\n') : undefined
+      if (Array.isArray(tooltip.object?.value)) {
+        const sublayers = tooltip.object.value?.flatMap(({ id, value }) =>
+          value ? `${id}: ${value}` : []
+        )
+        return sublayers.length ? sublayers.join('\n') : undefined
+      }
+      return tooltip.object?.value
     }
     // Vessel position
     if (tooltip.object?.properties?.vesselId) {

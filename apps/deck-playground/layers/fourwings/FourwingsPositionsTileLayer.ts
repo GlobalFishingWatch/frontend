@@ -6,6 +6,7 @@ import {
   LayerContext,
   LayersList,
   PickingInfo,
+  DefaultProps,
 } from '@deck.gl/core/typed'
 import { MVTLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
 import { IconLayer, TextLayer } from '@deck.gl/layers/typed'
@@ -16,12 +17,17 @@ import { groupBy, orderBy } from 'lodash'
 import { Feature, Point } from 'geojson'
 import bboxPolygon from '@turf/bbox-polygon'
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
-import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
+import {
+  COLOR_RAMP_DEFAULT_NUM_STEPS,
+  Group,
+  GROUP_ORDER,
+} from '@globalfishingwatch/layer-composer'
 import { FourwingsColorRamp } from './FourwingsLayer'
 
-export type FourwingsPositionsTileLayerProps<DataT = any> = {
+export type _FourwingsPositionsTileLayerProps<DataT = any> = {
   minFrame: number
   maxFrame: number
+  zIndex?: number
   colorDomain: number[]
   colorRange: Color[]
   highlightedVesselId?: string
@@ -31,6 +37,13 @@ export type FourwingsPositionsTileLayerProps<DataT = any> = {
   onVesselClick?: (vesselId: string) => void
   onViewportLoad?: (tiles) => void
 }
+
+export type FourwingsPositionsTileLayerProps = _FourwingsPositionsTileLayerProps & TileLayerProps
+
+const defaultProps: DefaultProps<FourwingsPositionsTileLayerProps> = {
+  zIndex: { type: 'number', value: GROUP_ORDER.indexOf(Group.Point) },
+}
+
 const MAX_LABEL_LENGTH = 20
 const ICON_MAPPING = {
   vessel: { x: 0, y: 0, width: 22, height: 40, mask: true },
@@ -42,6 +55,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   FourwingsPositionsTileLayerProps & TileLayerProps
 > {
   static layerName = 'FourwingsPositionsTileLayer'
+  static defaultProps = defaultProps
 
   initializeState(context: LayerContext) {
     super.initializeState(context)

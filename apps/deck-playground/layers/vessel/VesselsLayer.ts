@@ -4,7 +4,7 @@ import { VesselLayer, VesselLayerProps } from 'layers/vessel/VesselLayer'
 export type VesselsLayerProps = { ids: string[] } & VesselLayerProps
 
 export class VesselsLayer extends CompositeLayer<VesselsLayerProps> {
-  vesselLayers = this.props.ids.map(
+  layers = this.props.ids.map(
     (id) =>
       new VesselLayer({
         id,
@@ -16,12 +16,12 @@ export class VesselsLayer extends CompositeLayer<VesselsLayerProps> {
       })
   )
   renderLayers(): VesselLayer[] {
-    return this.vesselLayers
+    return this.layers
   }
   getVesselsLayers() {
-    return this.vesselLayers
+    return this.layers
   }
   getVesselLayer(id: string) {
-    return this.vesselLayers.find((l) => l.id === id)
+    return this.layers.find((l) => l.id === id)
   }
 }

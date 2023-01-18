@@ -1,6 +1,6 @@
 import { Group, Dictionary, ExtendedStyle, ExtendedLayer, StyleTransformation } from '../../types'
 
-const GROUP_ORDER = [
+export const GROUP_ORDER = [
   Group.Background,
   Group.Basemap,
   Group.OutlinePolygonsBackground,
