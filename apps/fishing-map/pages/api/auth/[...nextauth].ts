@@ -1,14 +1,16 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import NextAuth from 'next-auth'
 import { GFW, GFWProvider } from '@globalfishingwatch/authjs-client'
+import { BASE_PATH } from 'data/config'
 
-const GFW_API_GATEWAY = process.env.NEXT_PUBLIC_API_GATEWAY ?? ''
+const GFW_API_GATEWAY =
+  process.env.NEXT_PUBLIC_API_GATEWAY ?? 'https://gateway.api.dev.globalfishingwatch.org'
 
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
 
 export default async function auth(req: NextApiRequest, res: NextApiResponse) {
-  const callbackUrl = new URL(process.env.NEXTAUTH_URL ?? 'http://localhost:3003/map')
+  const callbackUrl = new URL(process.env.NEXTAUTH_URL ?? `http://localhost:3003/${BASE_PATH}`)
 
   return await NextAuth(req, res, {
     // https://next-auth.js.org/configuration/providers
@@ -83,7 +85,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
       // async signIn({ user, account, profile, email, credentials }) { return true },
       // async redirect({ url, baseUrl }) { return baseUrl },
       async session({ session, token, user }) {
-        console.log({ session })
+        // console.log({ session })
         return {
           ...session,
           bearerToken: token.bearerToken,

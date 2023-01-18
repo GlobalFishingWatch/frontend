@@ -6,7 +6,6 @@ import { redirectToLogin } from '@globalfishingwatch/react-hooks'
 import { RootState } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { removeGFWStaffOnlyDataviews } from 'features/workspace/workspace.slice'
-import { BASE_PATH } from 'data/config'
 
 interface UserState {
   logged: boolean
@@ -43,12 +42,8 @@ export const fetchUserThunk = createAsyncThunk(
     }
 
     try {
-      const response = await fetch(`${BASE_PATH}/api/me`)
-      if (response.ok) {
-        const data = await response.json()
-        return data as UserData
-      }
-      return await GFWAPI.fetchGuestUser()
+      const response = await GFWAPI.fetchUser()
+      return response
     } catch (e: any) {
       return await GFWAPI.fetchGuestUser()
     }
