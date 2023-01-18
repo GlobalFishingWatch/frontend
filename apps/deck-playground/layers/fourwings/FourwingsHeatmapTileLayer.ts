@@ -1,4 +1,11 @@
-import { Color, CompositeLayer, Layer, LayerContext, LayersList } from '@deck.gl/core/typed'
+import {
+  Color,
+  CompositeLayer,
+  Layer,
+  LayerContext,
+  LayersList,
+  DefaultProps,
+} from '@deck.gl/core/typed'
 import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
 import { parseFourWings } from 'loaders/fourwings/fourwingsLayerLoader'
 import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
@@ -17,22 +24,30 @@ import {
   HEATMAP_COLOR_RAMPS,
   Interval,
   rgbaStringToComponents,
+  Group,
+  GROUP_ORDER,
 } from '@globalfishingwatch/layer-composer'
 import { HEATMAP_ID } from './FourwingsLayer'
 import { Chunk, getChunkBuffer, getChunksByInterval, getInterval } from './fourwings.config'
 import { FourwingsSublayer, FourwingsSublayerId } from './fourwings.types'
 
 export type FourwingsLayerResolution = 'default' | 'high'
-export type FourwingsHeatmapTileLayerProps = {
+export type _FourwingsHeatmapTileLayerProps = {
   debug?: boolean
   interval: Interval
   resolution?: FourwingsLayerResolution
   minFrame: number
   maxFrame: number
-  zOrderIndex: number
+  zIndex?: number
   sublayers: FourwingsSublayer[]
   onTileLoad?: (tile: Tile2DHeader, allTilesLoaded: boolean) => void
   onViewportLoad?: (tiles: Tile2DHeader[]) => void
+}
+
+export type FourwingsHeatmapTileLayerProps = _FourwingsHeatmapTileLayerProps & TileLayerProps
+
+const defaultProps: DefaultProps<FourwingsHeatmapTileLayerProps> = {
+  zIndex: { type: 'number', value: GROUP_ORDER.indexOf(Group.Heatmap) },
 }
 
 export type ColorDomain = number[]
@@ -43,6 +58,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   FourwingsHeatmapTileLayerProps & TileLayerProps
 > {
   static layerName = 'FourwingsHeatmapTileLayer'
+  static defaultProps = defaultProps
 
   initializeState(context: LayerContext): void {
     super.initializeState(context)

@@ -30,7 +30,7 @@ export type _VesselTrackLayerProps<DataT = any> = {
   /**
    * Ordering index on the layers stack
    */
-  zOrderIndex?: number
+  zIndex?: number
   /**
    * Path accessor.
    */
@@ -47,7 +47,7 @@ const defaultProps: DefaultProps<VesselTrackLayerProps> = {
   getPath: { type: 'accessor', value: getPathDefaultAccessor },
   getColor: { type: 'accessor', value: () => [255, 255, 255, 100] },
   getTimestamps: { type: 'accessor', value: getTimestampsDefaultAccessor },
-  zOrderIndex: { type: 'accessor', value: GROUP_ORDER.indexOf(Group.Track) },
+  zIndex: { type: 'accessor', value: GROUP_ORDER.indexOf(Group.Track) },
 }
 
 /** All properties supported by VesselTrackLayer. */

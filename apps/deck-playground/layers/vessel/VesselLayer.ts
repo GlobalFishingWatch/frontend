@@ -36,7 +36,6 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         wrapLongitude: true,
         jointRounded: true,
         capRounded: true,
-        zOrderIndex: GROUP_ORDER.indexOf(Group.Track),
         onDataLoad: this.onDataLoad,
         getColor: (d) => {
           return d.waypoints.map((p) => {
@@ -70,7 +69,6 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         startTime: this.props.startTime,
         endTime: this.props.endTime,
         onDataLoad: this.onDataLoad,
-        zOrderIndex: GROUP_ORDER.indexOf(Group.Point),
         filterRange: [this.props.startTime, this.props.endTime],
         extensions: [new DataFilterExtension({ filterSize: 1 })],
       })
@@ -88,7 +86,6 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         startTime: this.props.startTime,
         endTime: this.props.endTime,
         onDataLoad: this.onDataLoad,
-        zOrderIndex: GROUP_ORDER.indexOf(Group.Point),
         filterRange: [this.props.startTime, this.props.endTime],
         extensions: [new DataFilterExtension({ filterSize: 1 })],
       })
@@ -106,7 +103,6 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         startTime: this.props.startTime,
         endTime: this.props.endTime,
         onDataLoad: this.onDataLoad,
-        zOrderIndex: GROUP_ORDER.indexOf(Group.Point),
         filterRange: [this.props.startTime, this.props.endTime],
         extensions: [new DataFilterExtension({ filterSize: 1 })],
       })

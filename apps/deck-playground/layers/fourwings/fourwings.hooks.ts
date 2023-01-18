@@ -119,9 +119,6 @@ export function useFourwingsLayer() {
       const fourwingsLayer = new FourwingsLayer({
         minFrame: startTime,
         maxFrame: endTime,
-        zOrderIndex: activityMode === 'heatmap' ? 
-          GROUP_ORDER.indexOf(Group.Heatmap) :
-          GROUP_ORDER.indexOf(Group.Default),
         mode: activityMode,
         debug: true,
         sublayers: FOURWINGS_SUBLAYERS,
