@@ -478,7 +478,7 @@ export const getSchemaFilterOperationInDataview = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema
 ) => {
-  if (schema === 'vessel-groups') {
+  if (schema === 'vessel-groups' || dataview.category === DataviewCategory.Context) {
     return
   }
   return dataview.config?.filterOperators?.[schema] || INCLUDE_FILTER_ID
