@@ -58,7 +58,7 @@ export const logoutUserThunk = createAsyncThunk(
   ) => {
     try {
       await signOut({ redirect: false })
-      // await GFWAPI.logout()
+      await GFWAPI.logout()
       dispatch(removeGFWStaffOnlyDataviews())
     } catch (e: any) {
       console.warn(e)

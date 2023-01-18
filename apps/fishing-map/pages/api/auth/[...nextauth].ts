@@ -10,7 +10,7 @@ const GFW_API_GATEWAY =
 // https://next-auth.js.org/configuration/options
 
 export default async function auth(req: NextApiRequest, res: NextApiResponse) {
-  const callbackUrl = new URL(process.env.NEXTAUTH_URL ?? `http://localhost:3003/${BASE_PATH}`)
+  const callbackUrl = new URL(process.env.NEXTAUTH_URL ?? `http://localhost:3003${BASE_PATH}`)
 
   return await NextAuth(req, res, {
     // https://next-auth.js.org/configuration/providers
