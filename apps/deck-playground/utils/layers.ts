@@ -2,7 +2,6 @@ export function zIndexSortedArray(layersArray) {
   return layersArray
     .flatMap((l) => {
       if (!l) return []
-      if (l.layer) return l.layer
       if (l?.layers?.length) return recursivelyGetLayers(l.layers)
       return l
     })

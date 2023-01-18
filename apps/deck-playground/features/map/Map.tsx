@@ -2,7 +2,7 @@ import { Fragment, useMemo } from 'react'
 import { DeckGL } from '@deck.gl/react/typed'
 import { MapView } from '@deck.gl/core/typed'
 import { useVesselsLayer, useVesselsLayerLoaded } from 'layers/vessel/vessels.hooks'
-import { useFourwingsLayer } from 'layers/fourwings/fourwings.hooks'
+import { useFourwingsLayer, useFourwingsLayerLoaded } from 'layers/fourwings/fourwings.hooks'
 import { basemapLayer } from 'layers/basemap/BasemapLayer'
 import { useURLViewport, useViewport } from 'features/map/map-viewport.hooks'
 import { zIndexSortedArray } from 'utils/layers'
@@ -16,11 +16,12 @@ const MapWrapper = (): React.ReactElement => {
   const fourwingsLayer = useFourwingsLayer()
   const vesselsLayer = useVesselsLayer()
   const vesselsLoaded = useVesselsLayerLoaded()
+  const fourwingsLoaded = useFourwingsLayerLoaded()
 
   const layers = useMemo(() => {
     return zIndexSortedArray([basemapLayer, fourwingsLayer, vesselsLayer])
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fourwingsLayer, vesselsLayer, vesselsLoaded])
+  }, [fourwingsLayer, vesselsLayer, vesselsLoaded, fourwingsLoaded])
 
   const getTooltip = (tooltip) => {
     // Heatmap
