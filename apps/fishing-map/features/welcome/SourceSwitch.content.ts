@@ -40,7 +40,27 @@ const SOURCE_SWITCH_CONTENT: WelcomeContentLang = {
         <p>Por favor volte <a target="_blank" href="https://globalfishingwatch.org/faqs/data-source-updates/">aquí</a> para detalhes sobre possíveis mudanças ou envie um e-mail para <a href="mailto:support@globalfishingwatch.org">support@globalfishingwatch.org</a> para mais informações.</p>
       `,
     disclaimer:
-      'Atualização na fonte de dados na plataforma Global Fishing Watch. A partir de 1º de Janeiro de 2023, os satélites Spire Global foram incluídos. É possível que suas estimativas de atividade tenham mudado.<a target="_blank" href="https://globalfishingwatch.org/faqs/data-source-updates/">Mais informação.</a>',
+      'Atualização na fonte de dados na plataforma Global Fishing Watch. A partir de 1º de Janeiro de 2023, os satélites Spire Global foram incluídos. É possível que suas estimativas de atividade tenham mudado. <a target="_blank" href="https://globalfishingwatch.org/faqs/data-source-updates/">Mais informação.</a>',
+  },
+  fr: {
+    title: 'Mises à jour des sources de données dans la plateforme Global Fishing Watch',
+    description: `
+        <p>Global Fishing Watch a établi un nouveau partenariat avec <a target="_blank" href="https://spire.com/">Spire Global</a>, fournissant des données d'activité AIS encore plus précises et cohérentes grâce à l'utilisation des satellites ExactView.</p>
+        <p>À compter du 1er janvier 2023, les données de Global Fishing Watch sont générées à l'aide des satellites Spire et Spire Global et n'utiliseront plus les données OrbComm. Les utilisateurs doivent savoir qu'il est possible que leurs estimations d'activité aient changé.</p>
+        <p>Global Fishing Watch est en train de réaliser une analyse pour déterminer l'impact et la localisation des changements, ainsi que des améliorations pour la continuité des données.</p>
+        <p>Veuillez consulter les détails sur les changements possibles dans <a target="_blank" href="https://globalfishingwatch.org/faqs/data-source-updates/">notre FAQ</a> ou envoyez un courriel à <a href="mailto:support@globalfishingwatch.org">support@globalfishingwatch.org</a> pour plus d'informations.</p>
+      `,
+    disclaimer: `Mises à jour des sources de données dans la plateforme Global Fishing Watch. À partir du 1er janvier 2023, les satellites Spire Global sont inclus, ce qui peut modifier les estimations de l'effort de pêche apparent. <a target="_blank" href="https://globalfishingwatch.org/faqs/data-source-updates/">En savoir plus.</a>`,
+  },
+  id: {
+    title: 'Pembaruan pada sumber data di platform Global Fishing Watch',
+    description: `
+        <p>Global Fishing Watch telah menjalin kemitraan baru dengan <a target="_blank" href="https://spire.com/">Spire Global</a>, menyediakan data aktivitas AIS yang lebih presisi dan konsisten melalui penggunaan satelit ExactView.</p>
+        <p>Mulai 1 Januari 2023, data Global Fishing Watch dihasilkan dengan menggunakan satelit Spire dan Spire Global dan tidak akan lagi menggunakan data Orbcomm. Pengguna harus menyadari bahwa ada kemungkinan perkiraan aktivitas yang mereka lakukan mungkin telah berubah.</p>
+        <p>Global Fishing Watch sedang menyelesaikan analisis untuk menentukan dampak dan lokasi perubahan, serta perbaikan untuk kesinambungan data.</p>
+        <p>Silakan lihat detail tentang kemungkinan perubahan di <a target="_blank" href="https://globalfishingwatch.org/faqs/data-source-updates/">FAQ</a> kami atau email <a href="mailto:support@globalfishingwatch.org">support@globalfishingwatch.org</a> untuk informasi lebih lanjut.</p>
+      `,
+    disclaimer: `Pembaruan pada sumber data di platform Global Fishing Watch. Mulai 1 Januari 2023, Satelit Spire Global telah dimasukkan sehingga dapat mengubah estimasi upaya penangkapan ikan yang terlihat. <a target="_blank" href="https://globalfishingwatch.org/faqs/data-source-updates/">Pelajari lebih lanjut.</a>`,
   },
 }
 
