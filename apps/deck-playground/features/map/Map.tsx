@@ -1,31 +1,11 @@
 import { Fragment, useMemo } from 'react'
 import { DeckGL } from '@deck.gl/react/typed'
-import { BitmapLayer } from '@deck.gl/layers'
-import { TileLayer } from '@deck.gl/geo-layers'
 import { MapView } from '@deck.gl/core/typed'
 import { useVesselsLayer, useVesselsLayerLoaded } from 'layers/vessel/vessels.hooks'
+import { useFourwingsLayer } from 'layers/fourwings/fourwings.hooks'
+import { basemapLayer } from 'layers/basemap/BasemapLayer'
 import { useURLViewport, useViewport } from 'features/map/map-viewport.hooks'
 import { zIndexSortedArray } from 'utils/layers'
-import { useFourwingsLayer } from '../../layers/fourwings/fourwings.hooks'
-
-const basemap = new TileLayer({
-  id: 'basemap',
-  data: 'https://gateway.api.dev.globalfishingwatch.org/v2/tileset/sat/tile?x={x}&y={y}&z={z}',
-  minZoom: 0,
-  maxZoom: 12,
-  // tileSize: 256,
-  renderSubLayers: (props) => {
-    const {
-      bbox: { west, south, east, north },
-    } = props.tile
-    return new BitmapLayer(props, {
-      data: null,
-      image: props.data,
-      tintColor: [21, 93, 206],
-      bounds: [west, south, east, north],
-    })
-  },
-})
 
 const mapView = new MapView({ repeat: true })
 
@@ -38,7 +18,8 @@ const MapWrapper = (): React.ReactElement => {
   const vesselsLoaded = useVesselsLayerLoaded()
 
   const layers = useMemo(() => {
-    return zIndexSortedArray([basemap, fourwingsLayer, vesselsLayer])
+    return zIndexSortedArray([basemapLayer, fourwingsLayer, vesselsLayer])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fourwingsLayer, vesselsLayer, vesselsLoaded])
 
   const getTooltip = (tooltip) => {
