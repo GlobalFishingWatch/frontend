@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, Fragment } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -24,7 +24,12 @@ import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
+import Filters from '../activity/ActivityFilters'
 import InfoModal from '../common/InfoModal'
+import ExpandedContainer from '../shared/ExpandedContainer'
+import DatasetSchemaField from '../shared/DatasetSchemaField'
+import { getSchemaFiltersInDataview } from '../../datasets/datasets.utils'
+import { showSchemaFilter } from '../activity/ActivitySchemaFilter'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -36,6 +41,7 @@ const DATAVIEWS_WARNING = ['context-layer-eez', 'context-layer-mpa', 'basemap-la
 function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const [filterOpen, setFiltersOpen] = useState(false)
   const [colorOpen, setColorOpen] = useState(false)
   const gfwUser = useSelector(isGFWUser)
   const userId = useSelector(selectUserId)
@@ -73,7 +79,12 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     setColorOpen(!colorOpen)
   }
 
+  const onToggleFilterOpen = () => {
+    setFiltersOpen(!filterOpen)
+  }
+
   const closeExpandedContainer = () => {
+    setFiltersOpen(false)
     setColorOpen(false)
   }
 
@@ -109,11 +120,16 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   )
 
   const isBasemapLabelsDataview = dataview.config?.type === GeneratorType.BasemapLabels
+  const schemaFilters = getSchemaFiltersInDataview(dataview)
+  const hasSchemaFilters = schemaFilters.some(showSchemaFilter)
+  const hasSchemaFilterSelection = schemaFilters.some(
+    (schema) => schema.optionsSelected?.length > 0
+  )
 
   return (
     <div
       className={cx(styles.LayerPanel, {
-        [styles.expandedContainerOpen]: colorOpen,
+        [styles.expandedContainerOpen]: filterOpen || colorOpen,
         'print-hidden': !layerActive,
       })}
       ref={setNodeRef}
@@ -146,6 +162,27 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
               onClickOutside={closeExpandedContainer}
             />
           )}
+          {layerActive && hasSchemaFilters && (
+            <ExpandedContainer
+              visible={filterOpen}
+              onClickOutside={closeExpandedContainer}
+              component={<Filters dataview={dataview} />}
+            >
+              <div className={styles.filterButtonWrapper}>
+                <IconButton
+                  icon={filterOpen ? 'filter-on' : 'filter-off'}
+                  size="small"
+                  onClick={onToggleFilterOpen}
+                  tooltip={
+                    filterOpen
+                      ? t('layer.filterClose', 'Close filters')
+                      : t('layer.filterOpen', 'Open filters')
+                  }
+                  tooltipPlacement="top"
+                />
+              </div>
+            </ExpandedContainer>
+          )}
           {!isBasemapLabelsDataview && <InfoModal dataview={dataview} />}
           {(isUserLayer || gfwUser) && <Remove dataview={dataview} />}
           {items.length > 1 && (
@@ -159,39 +196,54 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           )}
         </div>
       </div>
-      {layerActive && DATAVIEWS_WARNING.includes(dataview?.id) && (
+      {layerActive && (DATAVIEWS_WARNING.includes(dataview?.id) || hasSchemaFilterSelection) && (
         <div
           className={cx(styles.properties, styles.dataWarning, styles.drag, {
             [styles.dragging]: isSorting && activeIndex > -1,
           })}
         >
-          <div>
-            {t(
-              `dataview.${dataview?.id}.dataWarning` as any,
-              'This platform uses a reference layer from an external source.'
-            )}
-          </div>
-          <div className={cx('print-hidden', styles.dataWarningLinks)}>
-            <button onClick={onAddNewClick}>{t('dataset.uploadYourOwn', 'Upload your own')}</button>{' '}
-            |{' '}
-            <button onClick={() => setModalDataWarningOpen(!modalDataWarningOpen)}>
-              {t('common.learnMore', 'Learn more')}
-            </button>
-            <Modal
-              appSelector={ROOT_DOM_ELEMENT}
-              title={title}
-              isOpen={modalDataWarningOpen}
-              onClose={onDataWarningModalClose}
-              contentClassName={styles.modalContent}
-            >
-              {ReactHtmlParser(
-                t(
-                  `dataview.${dataview?.id}.dataWarningDetail` as any,
-                  'This platform uses reference layers (shapefiles) from an external source. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw or upload your own reference layer using the "+" icon in the left sidebar. Learn more on our <a href="https://globalfishingwatch.org/tutorials/">tutorials</a> and <a href="https://globalfishingwatch.org/help-faqs/">FAQs</a>.'
-                )
-              )}
-            </Modal>
-          </div>
+          {DATAVIEWS_WARNING.includes(dataview?.id) && (
+            <Fragment>
+              <div>
+                {t(
+                  `dataview.${dataview?.id}.dataWarning` as any,
+                  'This platform uses a reference layer from an external source.'
+                )}
+              </div>
+              <div className={cx('print-hidden', styles.dataWarningLinks)}>
+                <button onClick={onAddNewClick}>
+                  {t('dataset.uploadYourOwn', 'Upload your own')}
+                </button>{' '}
+                |{' '}
+                <button onClick={() => setModalDataWarningOpen(!modalDataWarningOpen)}>
+                  {t('common.learnMore', 'Learn more')}
+                </button>
+                <Modal
+                  appSelector={ROOT_DOM_ELEMENT}
+                  title={title}
+                  isOpen={modalDataWarningOpen}
+                  onClose={onDataWarningModalClose}
+                  contentClassName={styles.modalContent}
+                >
+                  {ReactHtmlParser(
+                    t(
+                      `dataview.${dataview?.id}.dataWarningDetail` as any,
+                      'This platform uses reference layers (shapefiles) from an external source. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw or upload your own reference layer using the "+" icon in the left sidebar. Learn more on our <a href="https://globalfishingwatch.org/tutorials/">tutorials</a> and <a href="https://globalfishingwatch.org/help-faqs/">FAQs</a>.'
+                    )
+                  )}
+                </Modal>
+              </div>
+            </Fragment>
+          )}
+          {hasSchemaFilterSelection && (
+            <div className={styles.filters}>
+              <div className={styles.filters}>
+                {schemaFilters.map(({ id }) => (
+                  <DatasetSchemaField key={id} dataview={dataview} field={id} label={id} />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
