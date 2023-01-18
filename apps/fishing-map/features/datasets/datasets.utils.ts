@@ -15,6 +15,7 @@ import {
   FilterOperator,
   INCLUDE_FILTER_ID,
   DatasetSubCategory,
+  DataviewCategory,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
@@ -28,7 +29,10 @@ import { FileType } from 'features/common/FileDropzone'
 import { getLayerDatasetRange } from 'features/workspace/environmental/HistogramRangeFilter'
 import styles from '../vessel-groups/VesselGroupModal.module.css'
 
-export type SupportedDatasetSchema = SupportedActivityDatasetSchema | SupportedEnvDatasetSchema
+export type SupportedDatasetSchema =
+  | SupportedActivityDatasetSchema
+  | SupportedEnvDatasetSchema
+  | SupportedContextDatasetSchema
 
 export type SupportedActivityDatasetSchema =
   | 'flag'
@@ -48,10 +52,11 @@ export type SupportedActivityDatasetSchema =
   | 'visibleValues'
 
 export type SupportedEnvDatasetSchema = 'type'
+export type SupportedContextDatasetSchema = 'ID'
 
 export type SchemaFieldDataview =
   | UrlDataviewInstance
-  | Pick<Dataview, 'config' | 'datasets' | 'filtersConfig'>
+  | Pick<Dataview, 'category' | 'config' | 'datasets' | 'filtersConfig'>
 
 type DatasetGeometryTypesSupported = Extract<DatasetGeometryType, 'polygons' | 'tracks' | 'points'>
 export const FILES_TYPES_BY_GEOMETRY_TYPE: Record<DatasetGeometryTypesSupported, FileType[]> = {
@@ -368,9 +373,10 @@ const getCommonSchemaTypeInDataview = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema
 ) => {
-  const activeDatasets = dataview?.datasets?.filter((dataset) =>
-    dataview.config?.datasets?.includes(dataset.id)
-  )
+  const activeDatasets =
+    dataview.category === DataviewCategory.Context
+      ? dataview.datasets
+      : dataview?.datasets?.filter((dataset) => dataview.config?.datasets?.includes(dataset.id))
   const datasetSchemas = activeDatasets?.map((d) => d.schema?.[schema]?.type).filter(Boolean)
   return datasetSchemas?.[0]
 }
@@ -387,9 +393,10 @@ export const getCommonSchemaFieldsInDataview = (
   schema: SupportedDatasetSchema,
   vesselGroups: MultiSelectOption[] = []
 ): SchemaFieldSelection[] => {
-  const activeDatasets = dataview?.datasets?.filter((dataset) =>
-    dataview.config?.datasets?.includes(dataset.id)
-  )
+  const activeDatasets =
+    dataview.category === DataviewCategory.Context
+      ? dataview?.datasets
+      : dataview?.datasets?.filter((dataset) => dataview.config?.datasets?.includes(dataset.id))
   if (schema === 'flag') {
     return getFlags()
   } else if (schema === 'vessel-groups') {
@@ -414,7 +421,9 @@ export const getCommonSchemaFieldsInDataview = (
             ? field
             : t(`datasets:${datasetId}.schema.${schema}.enum.${field}`, field.toString())
         if (label === field) {
-          label = t(`vessel.${schema}.${field}`, capitalize(lowerCase(field)))
+          if (dataview.category !== DataviewCategory.Context) {
+            label = t(`vessel.${schema}.${field}`, capitalize(lowerCase(field)))
+          }
           if (schema === 'geartype') {
             // There is an fixed list of gearTypes independant of the dataset
             label = t(`vessel.gearTypes.${field}`, capitalize(lowerCase(field)))
