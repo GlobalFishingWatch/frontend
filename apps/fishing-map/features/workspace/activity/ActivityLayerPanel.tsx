@@ -23,7 +23,7 @@ import I18nNumber from 'features/i18n/i18nNumber'
 import { isGuestUser } from 'features/user/user.slice'
 import { selectUrlTimeRange } from 'routes/routes.selectors'
 import ActivityAuxiliaryLayerPanel from 'features/workspace/activity/ActivityAuxiliaryLayer'
-import { SAR_DATAVIEW_ID } from 'data/workspaces'
+import { SAR_DATAVIEW_SLUG } from 'data/workspaces'
 import DatasetNotFound from 'features/workspace/shared/DatasetNotFound'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import ActivityFitBounds from 'features/workspace/activity/ActivityFitBounds'
@@ -239,7 +239,7 @@ function ActivityLayerPanel({
               <InfoModal
                 dataview={dataview}
                 // Workaround to always show the auxiliar dataset too
-                showAllDatasets={dataview.dataviewId === SAR_DATAVIEW_ID}
+                showAllDatasets={dataview.dataviewId === SAR_DATAVIEW_SLUG}
               />
               {!readOnly && <Remove onClick={onRemoveLayerClick} />}
             </div>

@@ -1,4 +1,5 @@
 import { AccessorFunction, DefaultProps } from '@deck.gl/core'
+import { GetPickingInfoParams, PickingInfo } from '@deck.gl/core/typed'
 import { _GeoCellLayer, GeoBoundingBox, _GeoCellLayerProps } from '@deck.gl/geo-layers/typed'
 import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
 import {
@@ -6,6 +7,7 @@ import {
   generateUniqueId,
   getCellCoordinates,
 } from 'loaders/fourwings/fourwingsTileParser'
+import { aggregateCell, FourwingsHeatmapLayerProps } from './FourwingsHeatmapLayer'
 
 const defaultProps: DefaultProps<FourwingsHeatmapCellLayerProps> = {
   getIndex: { type: 'accessor', value: (d) => d.index },
@@ -16,7 +18,7 @@ export type FourwingsHeatmapCellLayerProps<DataT = any> = _FourwingsHeatmapCellL
   _GeoCellLayerProps<DataT>
 
 /** Properties added by FourwingsHeatmapCellLayer. */
-type _FourwingsHeatmapCellLayerProps<DataT> = {
+type _FourwingsHeatmapCellLayerProps<DataT> = FourwingsHeatmapLayerProps & {
   /**
    * Called for each data object to retrieve the quadkey string identifier.
    *
@@ -35,6 +37,18 @@ export default class FourwingsHeatmapCellLayer<DataT = any, ExtraProps = {}> ext
 > {
   static layerName = 'FourwingsHeatmapCellLayer'
   static defaultProps = defaultProps
+
+  getPickingInfo({ info }: GetPickingInfoParams): PickingInfo {
+    const { minFrame, maxFrame } = this.props
+    if (info.object) {
+      const value = aggregateCell(info.object, { minFrame, maxFrame })
+      info.object = {
+        ...info.object,
+        value,
+      }
+    }
+    return info
+  }
 
   indexToBounds(): Partial<_GeoCellLayer['props']> | null {
     const { data, getIndex, tile, cols, rows } = this.props

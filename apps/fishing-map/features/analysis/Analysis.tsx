@@ -26,7 +26,7 @@ import {
   selectAnalysisTimeComparison,
   selectAnalysisTypeQuery,
 } from 'features/app/app.selectors'
-import { WorkspaceAnalysisType } from 'types'
+import { Locale, WorkspaceAnalysisType } from 'types'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
@@ -36,6 +36,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getUTCDateTime } from 'utils/dates'
+import SOURCE_SWITCH_CONTENT from 'features/welcome/SourceSwitch.content'
 import styles from './Analysis.module.css'
 import AnalysisEvolution from './AnalysisEvolution'
 import { useAnalysisArea, useFilteredTimeSeries } from './analysis.hooks'
@@ -62,7 +63,8 @@ const ANALYSIS_COMPONENTS_BY_TYPE: Record<
 }
 
 function Analysis() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const { disclaimer } = SOURCE_SWITCH_CONTENT[(i18n.language as Locale) || Locale.en]
   const { start, end } = useTimerangeConnect()
   const fitMapBounds = useMapFitBounds()
   const dispatch = useAppDispatch()
@@ -284,7 +286,7 @@ function Analysis() {
               disabled={!bounds}
             />
           </div>
-          <div>
+          <div className={styles.placeholderContainer}>
             <p className={styles.placeholder}>
               <Trans i18nKey="analysis.disclaimer">
                 The data shown above should be taken as an estimate.
@@ -293,33 +295,34 @@ function Analysis() {
                 </a>
               </Trans>
             </p>
-          </div>
-          {showReportDownload && (
-            <Fragment>
-              <div className="print-hidden">
+            <div className="print-hidden">
+              <p className={styles.placeholder} dangerouslySetInnerHTML={{ __html: disclaimer }} />
+              {showReportDownload && (
                 <p className={styles.placeholder}>
                   {t(
                     'analysis.disclaimerReport',
                     'Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.'
                   )}
                 </p>
-              </div>
-              <div className={cx('print-hidden', styles.footer)}>
-                <LoginButtonWrapper
-                  tooltip={t('analysis.downloadLogin', 'Please login to download report')}
+              )}
+            </div>
+          </div>
+          {showReportDownload && (
+            <div className={cx('print-hidden', styles.footer)}>
+              <LoginButtonWrapper
+                tooltip={t('analysis.downloadLogin', 'Please login to download report')}
+              >
+                <Button
+                  className={styles.saveBtn}
+                  onClick={onDownloadClick}
+                  tooltip={downloadTooltip}
+                  tooltipPlacement="top"
+                  disabled={disableReportDownload}
                 >
-                  <Button
-                    className={styles.saveBtn}
-                    onClick={onDownloadClick}
-                    tooltip={downloadTooltip}
-                    tooltipPlacement="top"
-                    disabled={disableReportDownload}
-                  >
-                    {t('analysis.download', 'Download report')}
-                  </Button>
-                </LoginButtonWrapper>
-              </div>
-            </Fragment>
+                  {t('analysis.download', 'Download report')}
+                </Button>
+              </LoginButtonWrapper>
+            </div>
           )}
         </div>
       )}

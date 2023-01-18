@@ -1,6 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
-import { APP_PROFILE_VIEWS, INSURER_PERMISSION, PORT_INSPECTOR_PERMISSION } from 'data/config'
+import {
+  APP_PROFILE_VIEWS,
+  DOWNLOAD_ACTIVITY_PERMISSION,
+  INSURER_PERMISSION,
+  PORT_INSPECTOR_PERMISSION,
+} from 'data/config'
 import { selectUserData } from 'features/user/user.slice'
 import { selectWorkspaceProfileView } from 'features/workspace/workspace.selectors'
 
@@ -27,3 +32,7 @@ export const selectCurrentUserProfileHasPortInspectorPermission = createSelector
     )
   }
 )
+
+export const selectCurrentUserHasDownloadPermission = createSelector([selectUserData], (user) => {
+  return user && checkExistPermissionInList(user.permissions, DOWNLOAD_ACTIVITY_PERMISSION)
+})

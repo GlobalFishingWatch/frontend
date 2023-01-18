@@ -8,7 +8,7 @@ import {
   PickingInfo,
 } from '@deck.gl/core/typed'
 import { MVTLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
-import { IconLayer } from '@deck.gl/layers/typed'
+import { IconLayer, TextLayer } from '@deck.gl/layers/typed'
 import { MVTWorkerLoader } from '@loaders.gl/mvt'
 import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
 import { ACTIVITY_SWITCH_ZOOM_LEVEL, getDateRangeParam } from 'layers/fourwings/fourwings.utils'
@@ -31,7 +31,7 @@ export type FourwingsPositionsTileLayerProps<DataT = any> = {
   onVesselClick?: (vesselId: string) => void
   onViewportLoad?: (tiles) => void
 }
-
+const MAX_LABEL_LENGTH = 20
 const ICON_MAPPING = {
   vessel: { x: 0, y: 0, width: 22, height: 40, mask: true },
   vesselHighlight: { x: 24, y: 0, width: 22, height: 40, mask: false },
@@ -105,6 +105,14 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return [255, 255, 255, 120]
   }
 
+  getHighlightLabelColor(d: Feature): Color {
+    const { highlightedVesselId } = this.state
+    if (highlightedVesselId) {
+      return [255, 255, 255, 0]
+    }
+    return [255, 255, 255, 120]
+  }
+
   getLineColor(d: Feature): Color {
     const { highlightedVesselId } = this.state
     return highlightedVesselId && d.properties.vesselId === highlightedVesselId
@@ -120,6 +128,11 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   getSize(d: Feature): number {
     const { highlightedVesselId } = this.state
     return highlightedVesselId && d.properties.vesselId === highlightedVesselId ? 15 : 8
+  }
+
+  getVesselLabel = (d: Feature) => {
+    const label = d.properties.name || d.properties.vesselId
+    return label.length <= MAX_LABEL_LENGTH ? label : `${label.slice(0, MAX_LABEL_LENGTH)}...`
   }
 
   getPickingInfo({ info, mode }: GetPickingInfoParams): PickingInfo {
@@ -265,6 +278,20 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         getColor: (d) => this.getFillColor(d),
         pickable: true,
         getPickingInfo: this.getPickingInfo,
+        updateTriggers: {
+          getColor: [highlightedVesselId],
+        },
+      }),
+      new TextLayer({
+        id: `lastPositionsNames`,
+        data: lastPositions,
+        getText: (d) => this.getVesselLabel(d),
+        getPosition: (d) => d.geometry.coordinates,
+        getPixelOffset: [10, 0],
+        getColor: (d) => this.getHighlightLabelColor(d),
+        getSize: 12,
+        getTextAnchor: 'start',
+        getAlignmentBaseline: 'center',
         updateTriggers: {
           getColor: [highlightedVesselId],
         },

@@ -137,6 +137,12 @@ export function getGeneratorConfig(
   }
 
   switch (dataview.config?.type) {
+    case GeneratorType.Basemap: {
+      return {
+        ...generator,
+        basemap: dataview.config.basemap || dataview.config.layers?.[0]?.id,
+      }
+    }
     case GeneratorType.TileCluster: {
       const { dataset: tileClusterDataset, url: tileClusterUrl } = resolveDataviewDatasetResource(
         dataview,
@@ -250,7 +256,9 @@ export function getGeneratorConfig(
       const dataset = dataview.datasets?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
       if (isEnvironmentLayer) {
         const datasetsIds =
-          dataview.config.datasets || dataview.datasetsConfig?.map((dc) => dc.datasetId)
+          dataview.config.datasets?.length > 0
+            ? dataview.config.datasets
+            : dataview.datasetsConfig?.map((dc) => dc.datasetId)
         const sublayers: HeatmapAnimatedGeneratorSublayer[] = [
           {
             id: generator.id,
