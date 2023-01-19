@@ -22,6 +22,7 @@ import {
   DEFAULT_GROUP_ID,
   PRIVATE_SUPPORTED_GROUPS,
   isGFWUser,
+  USER_GROUP_WORKSPACE,
 } from './user.slice'
 
 export const isUserLogged = createSelector(
@@ -96,7 +97,11 @@ export const selectUserWorkspacesPrivate = createSelector(
       (workspace) =>
         workspace.id.includes(PRIVATE_SUFIX) &&
         !workspace.id.includes(USER_SUFIX) &&
-        groupsWithAccess.some((g) => workspace.id.includes(g))
+        groupsWithAccess.some(
+          (g) =>
+            workspace.id.includes(g) ||
+            (USER_GROUP_WORKSPACE[g] && workspace.id.includes(USER_GROUP_WORKSPACE[g]))
+        )
     )
     return orderBy(privateWorkspaces, 'createdAt', 'desc')
   }

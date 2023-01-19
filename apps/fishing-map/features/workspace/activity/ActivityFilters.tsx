@@ -78,7 +78,9 @@ const cleanDataviewFiltersNotAllowed = (
 export const isHistogramDataviewSupported = (dataview: UrlDataviewInstance) => {
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
   const { max, min } = dataset?.configuration || {}
-  return max !== undefined && min !== undefined && max !== null && min !== null
+  return (
+    max !== undefined && min !== undefined && max !== null && min !== null && max !== 0 && min !== 0
+  )
 }
 
 function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): React.ReactElement {

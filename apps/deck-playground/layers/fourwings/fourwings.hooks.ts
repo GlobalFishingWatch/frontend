@@ -2,10 +2,12 @@ import { getFourwingsMode } from 'layers/fourwings/fourwings.utils'
 import { useCallback, useEffect } from 'react'
 import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
 import { useAddVesselInLayer } from 'layers/vessel/vessels.hooks'
+import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
 import { useTimerange } from 'features/timebar/timebar.hooks'
 import { useViewport } from 'features/map/map-viewport.hooks'
 import { useMapLayers } from 'features/map/layers.hooks'
 import { FourwingsLayer, FourwingsLayerMode } from './FourwingsLayer'
+import { FourwingsSublayer } from './fourwings.types'
 
 const dateToMs = (date: string) => {
   return new Date(date).getTime()
@@ -24,6 +26,48 @@ export const fourwingsLayerAtom = atom<FourwingsAtom>({
     loaded: false,
   },
 })
+
+export const FOURWINGS_SUBLAYERS: FourwingsSublayer[] = [
+  {
+    id: 'ais',
+    datasets: ['public-global-fishing-effort:v20201001'],
+    config: {
+      color: '#FF64CE',
+      colorRamp: 'magenta',
+      visible: true,
+    },
+  },
+  {
+    id: 'vms-brazil-and-panama',
+    datasets: [
+      'public-bra-onyxsat-fishing-effort:v20211126',
+      'public-panama-fishing-effort:v20211126',
+    ],
+    config: {
+      color: '#00EEFF',
+      colorRamp: 'sky',
+      visible: true,
+    },
+  },
+  {
+    id: 'vms-chile',
+    datasets: ['public-chile-fishing-effort:v20211126'],
+    config: {
+      color: '#A6FF59',
+      colorRamp: 'green',
+      visible: true,
+    },
+  },
+  {
+    id: 'vms-ecuador',
+    datasets: ['public-ecuador-fishing-effort:v20211126'],
+    config: {
+      color: '#FFAA0D',
+      colorRamp: 'orange',
+      visible: true,
+    },
+  },
+]
 
 export function useFourwingsLayer() {
   const [{ highlightedVesselId, instance }, updateFourwingsAtom] =
@@ -45,9 +89,12 @@ export function useFourwingsLayer() {
     [updateFourwingsAtom]
   )
 
-  const onTileLoad = useCallback(() => {
-    setAtomProperty({ loaded: false })
-  }, [setAtomProperty])
+  const onTileLoad: any = useCallback(
+    (tile, allTilesLoaded) => {
+      setAtomProperty({ loaded: allTilesLoaded })
+    },
+    [setAtomProperty]
+  )
 
   const onViewportLoad = useCallback(() => {
     setAtomProperty({ loaded: true })
@@ -73,6 +120,8 @@ export function useFourwingsLayer() {
         minFrame: startTime,
         maxFrame: endTime,
         mode: activityMode,
+        debug: true,
+        sublayers: FOURWINGS_SUBLAYERS,
         onTileLoad: onTileLoad,
         onViewportLoad: onViewportLoad,
         highlightedVesselId,

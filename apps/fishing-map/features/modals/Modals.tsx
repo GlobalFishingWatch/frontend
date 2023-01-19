@@ -19,6 +19,7 @@ import { selectDownloadTrackId } from 'features/download/downloadTrack.slice'
 import { selectVesselGroupModalOpen } from 'features/vessel-groups/vessel-groups.slice'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectAnyAppModalOpen } from 'features/modals/modals.selectors'
+import { DISABLE_SOURCE_SWITCH_POPUP } from 'features/welcome/WelcomeSourceSwitch'
 import styles from './Modals.module.css'
 
 const BigQueryMenu = dynamic(
@@ -40,6 +41,9 @@ const EditorMenu = dynamic(
   () => import(/* webpackChunkName: "EditorMenu" */ 'features/editor/EditorMenu')
 )
 const Welcome = dynamic(() => import(/* webpackChunkName: "Welcome" */ 'features/welcome/Welcome'))
+const SourceSwitch = dynamic(
+  () => import(/* webpackChunkName: "SourceSwitch" */ 'features/welcome/WelcomeSourceSwitch')
+)
 
 const VesselGroupModal = dynamic(
   () => import(/* webpackChunkName: "VesselGroup" */ 'features/vessel-groups/VesselGroupModal')
@@ -86,6 +90,10 @@ const AppModals = () => {
   const downloadTrackId = useSelector(selectDownloadTrackId)
   const anyAppModalOpen = useSelector(selectAnyAppModalOpen)
   const [disabledWelcomePopup] = useLocalStorage(DISABLE_WELCOME_POPUP, false)
+  const [disabledSourceSwitchPopup, setDisabledSourceSwitchPopup] = useLocalStorage(
+    DISABLE_SOURCE_SWITCH_POPUP,
+    false
+  )
 
   const locationIsMarineManager =
     useSelector(selectLocationCategory) === WorkspaceCategories.MarineManager
@@ -103,6 +111,7 @@ const AppModals = () => {
     ? WorkspaceCategories.MarineManager
     : WorkspaceCategories.FishingActivity
 
+  const [sourceSwitchPopupOpen, setSourceSwitchPopupOpen] = useState(!disabledSourceSwitchPopup)
   return (
     <Fragment>
       {gfwUser && (
@@ -161,12 +170,27 @@ const AppModals = () => {
           appSelector={ROOT_DOM_ELEMENT}
           shouldCloseOnEsc
           isOpen={welcomePopupOpen}
-          onClose={() => setWelcomePopupOpen(false)}
+          onClose={() => {
+            setWelcomePopupOpen(false)
+            setSourceSwitchPopupOpen(false)
+            setDisabledSourceSwitchPopup(true)
+          }}
         >
           <Welcome
             contentKey={welcomePopupContentKey}
             showDisableCheckbox={!locationIsMarineManager}
           />
+        </Modal>
+      )}
+      {sourceSwitchPopupOpen && !welcomePopupOpen && !readOnly && (
+        <Modal
+          header={false}
+          appSelector={ROOT_DOM_ELEMENT}
+          shouldCloseOnEsc
+          isOpen={sourceSwitchPopupOpen}
+          onClose={() => setSourceSwitchPopupOpen(false)}
+        >
+          <SourceSwitch />
         </Modal>
       )}
       {isVesselGroupModalOpen && <VesselGroupModal />}
