@@ -1,38 +1,37 @@
-export const CONTEXT_LAYERS_CONFIG = [
-  {
-    id: 'grid',
-    apiPath:
-      'https://gateway.api.dev.globalfishingwatch.org/v2/datasets/public-graticules/user-context-layer-v1/{z}/{x}/{y}',
+export const API_PATH = 'https://gateway.api.dev.globalfishingwatch.org/v2/datasets'
+
+const GRID = 'grid'
+const EEZ = 'eez'
+const MPAS = 'mpas'
+const FAO = 'fao'
+const RFMO = 'rfmo'
+const HIGH_SEAS = 'high-seas'
+
+export const CONTEXT_LAYERS_IDS = [GRID, EEZ, MPAS, FAO, RFMO, HIGH_SEAS]
+
+export const CONTEXT_LAYERS_OBJECT = {
+  [GRID]: {
+    dataset: 'public-graticules/user-context-layer-v1',
     lineColor: [192, 192, 192],
   },
-  {
-    id: 'eez',
-    apiPath:
-      'https://gateway.api.dev.globalfishingwatch.org/v2/datasets/public-eez-areas/user-context-layer-v1/{z}/{x}/{y}',
+  [EEZ]: {
+    dataset: 'public-eez-areas/user-context-layer-v1',
     lineColor: [0, 192, 192],
   },
-  {
-    id: 'mpas',
-    apiPath:
-      'https://gateway.api.dev.globalfishingwatch.org/v2/datasets/public-mpa-all/user-context-layer-v1/{z}/{x}/{y}',
+  [MPAS]: {
+    dataset: 'public-mpa-all/user-context-layer-v1',
     lineColor: [192, 0, 192],
   },
-  {
-    id: 'fao',
-    apiPath:
-      'https://gateway.api.dev.globalfishingwatch.org/v2/datasets/public-fao-major/user-context-layer-v1/{z}/{x}/{y}',
+  [FAO]: {
+    dataset: 'public-fao-major/user-context-layer-v1',
     lineColor: [192, 192, 0],
   },
-  {
-    id: 'rfmo',
-    apiPath:
-      'https://gateway.api.dev.globalfishingwatch.org/v2/datasets/public-rfmo/user-context-layer-v1/{z}/{x}/{y}',
+  [RFMO]: {
+    dataset: 'public-rfmo/user-context-layer-v1',
     lineColor: [254, 254, 254],
   },
-  {
-    id: 'high-seas',
-    apiPath:
-      'https://gateway.api.dev.globalfishingwatch.org/v2/datasets/public-high-seas/user-context-layer-v1/{z}/{x}/{y}',
+  [HIGH_SEAS]: {
+    dataset: 'public-high-seas/user-context-layer-v1',
     lineColor: [254, 254, 0],
   },
-]
+}

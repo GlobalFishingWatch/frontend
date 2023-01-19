@@ -1,14 +1,16 @@
 import { Fragment, useMemo, useRef } from 'react'
 import { DeckGL } from '@deck.gl/react/typed'
 import { MapView, DeckProps } from '@deck.gl/core/typed'
-import { useVesselsLayer, useVesselsLayerLoaded } from 'layers/vessel/vessels.hooks'
-import { ContextLayer } from 'layers/context/ContextLayer'
+import {
+  useVesselsLayer,
+  useVesselsLayerLoaded,
+  useVesselsLayerRenderReady,
+} from 'layers/vessel/vessels.hooks'
+import { useContextsLayer } from 'layers/context/context.hooks'
 import { useFourwingsLayer, useFourwingsLayerLoaded } from 'layers/fourwings/fourwings.hooks'
 import { basemapLayer } from 'layers/basemap/BasemapLayer'
 import { useURLViewport, useViewport } from 'features/map/map-viewport.hooks'
 import { zIndexSortedArray } from 'utils/layers'
-
-const contextLayer = new ContextLayer()
 
 const mapView = new MapView({ repeat: true })
 
@@ -21,11 +23,13 @@ const MapWrapper = (): React.ReactElement => {
   const vesselsLayer = useVesselsLayer()
   const vesselsLoaded = useVesselsLayerLoaded()
   const fourwingsLoaded = useFourwingsLayerLoaded()
+  const vesselsRenderReady = useVesselsLayerRenderReady()
+  const contextLayer = useContextsLayer()
 
   const layers = useMemo(() => {
-    return zIndexSortedArray([basemapLayer, fourwingsLayer, vesselsLayer, contextLayer])
+    return zIndexSortedArray([basemapLayer, contextLayer, fourwingsLayer, vesselsLayer])
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fourwingsLayer, vesselsLayer, vesselsLoaded, fourwingsLoaded])
+  }, [fourwingsLayer, vesselsRenderReady, contextLayer, fourwingsLoaded])
 
   const getTooltip = (tooltip) => {
     // console.log('🚀 ~ file: Map.tsx:70 ~ getTooltip ~ tooltip', tooltip)

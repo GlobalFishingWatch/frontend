@@ -9,11 +9,16 @@ import {
   useVesselsLayerIds,
   useVesselsLayerInstance,
 } from 'layers/vessel/vessels.hooks'
+import {
+  useRemoveContextInLayer,
+  useAddContextInLayer,
+  useContextsLayerIds,
+} from 'layers/context/context.hooks'
+import { CONTEXT_LAYERS_IDS } from 'layers/context/context.config'
 import { Button, IconButton, Switch } from '@globalfishingwatch/ui-components'
 import { MapLayer, useMapLayers } from 'features/map/layers.hooks'
 import styles from './Sidebar.module.css'
 import SidebarHeader from './SidebarHeader'
-
 function Sidebar() {
   const [layers, setMapLayers] = useMapLayers()
   const fourwingsLayerInstance = useFourwingsLayerInstance()
@@ -21,6 +26,10 @@ function Sidebar() {
   const fourwingsLayerLoaded = useFourwingsLayerLoaded()
   const vesselIds = useVesselsLayerIds()
   const removeVesselId = useRemoveVesselInLayer()
+  const removeContextId = useRemoveContextInLayer()
+  const addContextId = useAddContextInLayer()
+  const contextIds = useContextsLayerIds()
+  console.log('CONTEXTS IDS', contextIds)
 
   const getVesselsEventsData = () => {
     const vesselsEvents = vesselsLayerInstance
@@ -62,6 +71,10 @@ function Sidebar() {
     )
   }
 
+  const handleContextLayerToggle = (layerId) => {
+    contextIds.includes(layerId) ? removeContextId(layerId) : addContextId(layerId)
+  }
+
   const fourwingsMode = fourwingsLayerInstance?.getMode()
   const fourwingsResolution = fourwingsLayerInstance?.getResolution()
   return (
@@ -69,6 +82,7 @@ function Sidebar() {
       <div className="scrollContainer">
         <SidebarHeader />
         {layers.map((layer) => {
+          console.log(layer)
           if (layer.id === 'vessel') {
             return (
               <div key={layer.id} className={styles.row}>
@@ -102,6 +116,23 @@ function Sidebar() {
                   </Fragment>
                 )}
               </div>
+            )
+          }
+          if (layer.id === 'contexts') {
+            return (
+              <section className={styles.row}>
+                <p>CONTEXT LAYERS</p>
+                {CONTEXT_LAYERS_IDS.map((id) => (
+                  <div key={id} className={styles.header}>
+                    <Switch
+                      className={styles.switch}
+                      active={contextIds.includes(id)}
+                      onClick={() => handleContextLayerToggle(id)}
+                    />
+                    <span>{id}</span>
+                  </div>
+                ))}
+              </section>
             )
           }
           return (
