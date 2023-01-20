@@ -8,7 +8,7 @@ import { updateLocation } from 'routes/routes.actions'
 import { SUPPORT_EMAIL } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import styles from './User.module.css'
-import { fetchUserThunk, logoutUserThunk, selectUserData } from './user.slice'
+import { fetchGuestUserThunk, logoutUserThunk, selectUserData } from './user.slice'
 import { isUserLogged, selectUserGroupsClean } from './user.selectors'
 
 function UserInfo() {
@@ -23,7 +23,7 @@ function UserInfo() {
     setLogoutLoading(true)
     await dispatch(logoutUserThunk({ loginRedirect: false }))
     dispatch(updateLocation(HOME, { replaceQuery: true }))
-    await dispatch(fetchUserThunk({ guest: true }))
+    await dispatch(fetchGuestUserThunk())
     setLogoutLoading(false)
   }, [dispatch])
 

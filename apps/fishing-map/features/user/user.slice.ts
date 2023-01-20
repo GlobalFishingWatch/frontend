@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
 import { signOut } from 'next-auth/react'
 import { GFWAPI, GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import { UserData } from '@globalfishingwatch/api-types'
@@ -34,21 +34,9 @@ export const PRIVATE_SUPPORTED_GROUPS = [
   'Belize',
 ]
 
-export const fetchUserThunk = createAsyncThunk(
-  'user/fetch',
-  async ({ guest }: { guest: boolean } = { guest: false }) => {
-    if (guest) {
-      return await GFWAPI.fetchGuestUser()
-    }
-
-    try {
-      const response = await GFWAPI.fetchUser()
-      return response
-    } catch (e: any) {
-      return await GFWAPI.fetchGuestUser()
-    }
-  }
-)
+export const fetchGuestUserThunk = createAsyncThunk('user/fetchGuest', async () => {
+  return await GFWAPI.fetchGuestUser()
+})
 
 export const logoutUserThunk = createAsyncThunk(
   'user/logout',
@@ -72,17 +60,23 @@ export const logoutUserThunk = createAsyncThunk(
 const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {},
+  reducers: {
+    setUserData: (state, action: PayloadAction<UserData>) => {
+      state.status = AsyncReducerStatus.Finished
+      state.logged = true
+      state.data = action.payload
+    },
+  },
   extraReducers: (builder) => {
-    builder.addCase(fetchUserThunk.pending, (state) => {
+    builder.addCase(fetchGuestUserThunk.pending, (state) => {
       state.status = AsyncReducerStatus.Loading
     })
-    builder.addCase(fetchUserThunk.fulfilled, (state, action) => {
+    builder.addCase(fetchGuestUserThunk.fulfilled, (state, action) => {
       state.status = AsyncReducerStatus.Finished
       state.logged = true
       state.data = action.payload
     })
-    builder.addCase(fetchUserThunk.rejected, (state) => {
+    builder.addCase(fetchGuestUserThunk.rejected, (state) => {
       state.status = AsyncReducerStatus.Error
     })
     builder.addCase(logoutUserThunk.fulfilled, (state) => {
@@ -104,5 +98,7 @@ export const isGFWDeveloper = (state: RootState) =>
 export const isGuestUser = createSelector([selectUserData], (userData) => {
   return userData?.type === GUEST_USER_TYPE
 })
+
+export const { setUserData } = userSlice.actions
 
 export default userSlice.reducer
