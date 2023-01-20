@@ -1,5 +1,6 @@
 import { NextApiRequest } from 'next'
 import { OAuthConfig, OAuthUserConfig, TokenEndpointHandler } from 'next-auth/providers'
+import { GFW_API_GATEWAY } from './config'
 
 export type OAuthProfileData = {
   id: string
@@ -18,7 +19,7 @@ interface GFWOAuthProfile extends Record<string, any> {
   iss: 'gfw'
 }
 type GFWOAuthConfig = {
-  gatewayUrl: URL
+  gatewayUrl?: URL
   callbackUrl: URL
   req: NextApiRequest
   // requestUserInfo?: boolean
@@ -29,7 +30,7 @@ export function GFWProvider<P extends GFWOAuthProfile>(
     gfw: GFWOAuthConfig
   }
 ): OAuthConfig<P> {
-  const { gatewayUrl, callbackUrl, req } = options?.gfw || {}
+  const { gatewayUrl = GFW_API_GATEWAY, callbackUrl, req } = options?.gfw || {}
   const config: OAuthConfig<P> = {
     id: 'gfw',
     name: 'GlobalFishingWatch SSO',
