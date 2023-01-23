@@ -5,11 +5,10 @@ import { GFW, withException, withGFWAuth } from '@globalfishingwatch/authjs-clie
 export default withException(withGFWAuth(handler))
 
 async function handler(_req: NextApiRequest, res: NextApiResponse, client: GFW) {
-  const response = await client.get(`/auth/me`)
-  if (response.ok) {
-    const data = await response.json()
-    return res.status(response.status).json(data)
-  } else {
-    throw new ApiError(response.status, await response.text())
+  try {
+    const data = await client.get(`/auth/me`)
+    res.status(200).json(data)
+  } catch (e: any) {
+    throw new ApiError(e.status, await e.message)
   }
 }
