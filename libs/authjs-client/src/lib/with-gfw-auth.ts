@@ -20,8 +20,8 @@ export const withGFWAuth =
     if (token?.bearerToken) {
       const client = new GFW({
         gatewayUrl: GFW_API_GATEWAY,
-        bearerToken: token?.bearerToken,
-        refreshToken: token?.refreshToken,
+        bearerToken: token?.bearerToken as string,
+        refreshToken: token?.refreshToken as string,
       })
       return handler(req, res, client)
     }
