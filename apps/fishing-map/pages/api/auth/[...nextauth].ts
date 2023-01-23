@@ -8,8 +8,13 @@ export const AUTH_SECRET = process.env.NEXTAUTH_SECRET
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
 
-export default async function auth(req: NextApiRequest, res: NextApiResponse) {
-  const callbackUrl = new URL(process.env.NEXTAUTH_URL ?? `${BASE_PATH}`)
+export default async function auth(
+  req: NextApiRequest & { protocol: string },
+  res: NextApiResponse
+) {
+  const callbackUrl = new URL(
+    process.env.NEXTAUTH_URL ?? `${req.protocol}://${req.headers.location}${BASE_PATH}`
+  )
 
   return await NextAuth(req, res, {
     // https://next-auth.js.org/configuration/providers
