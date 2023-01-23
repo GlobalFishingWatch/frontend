@@ -3,6 +3,7 @@ import { getToken, JWT } from 'next-auth/jwt'
 import GFW from './gfw-client'
 
 const GFW_API_GATEWAY = process.env['NEXT_PUBLIC_API_GATEWAY'] ?? ''
+export const AUTH_SECRET = process.env['NEXTAUTH_SECRET'] ?? 'test'
 
 declare type GFWHandler<T = any> = (
   req: NextApiRequest,
@@ -14,7 +15,7 @@ export const withGFWAuth =
   (handler: GFWHandler) => async (req: NextApiRequest, res: NextApiResponse) => {
     const token: JWT | null = await getToken({
       req,
-      secret: process.env['NEXTAUTH_SECRET'],
+      secret: AUTH_SECRET,
     })
 
     if (token?.bearerToken) {

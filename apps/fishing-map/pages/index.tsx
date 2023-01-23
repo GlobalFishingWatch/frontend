@@ -1,8 +1,7 @@
 import path from 'path'
 import dynamic from 'next/dynamic'
 import { getToken } from 'next-auth/jwt'
-import { GFW } from '@globalfishingwatch/authjs-client'
-import { AUTH_SECRET } from './api/auth/[...nextauth]'
+import { GFW, AUTH_SECRET } from '@globalfishingwatch/authjs-client'
 
 // This is needed by nx/next builder to run build the standalone next app properly
 // https://github.com/nrwl/nx/issues/9017#issuecomment-1140066503

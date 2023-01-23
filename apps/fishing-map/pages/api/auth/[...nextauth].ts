@@ -1,9 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import NextAuth from 'next-auth'
-import { GFW, GFWProvider, GFW_API_GATEWAY } from '@globalfishingwatch/authjs-client'
+import { AUTH_SECRET, GFW, GFWProvider, GFW_API_GATEWAY } from '@globalfishingwatch/authjs-client'
 import { BASE_PATH } from 'data/config'
-
-export const AUTH_SECRET = process.env.NEXTAUTH_SECRET
 
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
