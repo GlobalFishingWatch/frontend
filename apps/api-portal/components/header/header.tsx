@@ -1,6 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Fragment, useMemo } from 'react'
-import { getProviders, signOut, useSession } from 'next-auth/react'
+import React, { Fragment } from 'react'
 import { UserData } from '@globalfishingwatch/api-types'
 import { Header as UIHeader, HeaderMenuItem, IconButton } from '@globalfishingwatch/ui-components'
 import { MenuItem } from '@globalfishingwatch/ui-components/header/Header.links'

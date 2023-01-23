@@ -3,7 +3,6 @@ import React, { Fragment, useEffect } from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import Script from 'next/script'
-import { getProviders, signIn, useSession } from 'next-auth/react'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import useUser from 'features/user/user'
@@ -12,7 +11,7 @@ import { APPLICATION_NAME, GOOGLE_TAG_MANAGER_KEY, PATH_BASENAME } from './data/
 import Header from './header/header'
 
 const Layout = ({ children }) => {
-  const { data: user, isLoading: loading, authorized, logout, isError, error } = useUser()
+  const { data: user, isLoading, authorized, logout, loginLink } = useUser()
 
   const errorInfo = [
     `Not enough permissions to access ` + APPLICATION_NAME,
@@ -28,26 +27,15 @@ const Layout = ({ children }) => {
       .join('&'),
   ].join('')
 
+  const redirectToLogin = true
   const logged = !!user?.id
   const guestUser = user && user.type === GUEST_USER_TYPE
-  console.log({ loading, user, logged, guestUser, isError, error })
+  const router = useRouter()
   useEffect(() => {
-    async function signedInGuard() {
-      if (!loading && ((!user && !logged) || guestUser || isError)) {
-        const providers = await getProviders()
-        const providerId =
-          !!providers && Object.entries(providers).length === 1 && Object.keys(providers).pop()
-
-        console.log(`to sign in with`, providerId)
-        if (providerId) {
-          signIn(providerId)
-        } else {
-          signIn()
-        }
-      }
+    if (redirectToLogin && !isLoading && ((!user && !logged) || guestUser) && loginLink) {
+      router.push(loginLink)
     }
-    signedInGuard()
-  }, [guestUser, loading, logged, user])
+  }, [guestUser, isLoading, logged, loginLink, redirectToLogin, router, user])
   return (
     <Fragment>
       <Head>
@@ -71,14 +59,14 @@ const Layout = ({ children }) => {
       <main className={styles.main}>
         <Header title="Access Tokens" user={user} logout={logout.mutate} />
         <div className={styles.container}>
-          {(loading || !user) && <Spinner></Spinner>}
-          {!loading && user && !authorized && (
+          {(isLoading || !user) && <Spinner></Spinner>}
+          {!isLoading && user && !authorized && (
             <p>
               You don't have enough permissions to perform this action, please{' '}
               <a href={mailto}>contact us</a>.
             </p>
           )}
-          {!loading && user && authorized && <Fragment>{children}</Fragment>}
+          {!isLoading && user && authorized && <Fragment>{children}</Fragment>}
         </div>
       </main>
       <noscript
