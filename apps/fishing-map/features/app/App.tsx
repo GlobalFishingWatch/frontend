@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { useTranslation } from 'react-i18next'
 import { Menu, SplitView } from '@globalfishingwatch/ui-components'
-import { Workspace } from '@globalfishingwatch/api-types'
+import { UserData, Workspace } from '@globalfishingwatch/api-types'
 import {
   isWorkspaceLocation,
   selectLocationType,
@@ -21,7 +21,6 @@ import {
   selectWorkspaceCustomStatus,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
-import { fetchUserThunk } from 'features/user/user.slice'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
@@ -36,6 +35,7 @@ import { FIT_BOUNDS_ANALYSIS_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
 import { initializeHints } from 'features/hints/hints.slice'
 import AppModals from 'features/modals/Modals'
 import useMapInstance from 'features/map/map-context.hooks'
+import { useUserData } from '../user/user.hooks'
 import { useAppDispatch } from './app.hooks'
 import { selectAnalysisQuery, selectReadOnly, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
@@ -89,9 +89,13 @@ const setMobileSafeVH = () => {
   document.documentElement.style.setProperty('--vh', `${vh}px`)
 }
 
-function App(): React.ReactElement {
+type AppProps = {
+  user: UserData
+}
+function App({ user }: AppProps) {
   useAnalytics()
   useReplaceLoginUrl()
+  useUserData(user)
   const map = useMapInstance()
   const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)
@@ -190,10 +194,6 @@ function App(): React.ReactElement {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  useEffect(() => {
-    dispatch(fetchUserThunk({ guest: false }))
-  }, [dispatch])
 
   useEffect(() => {
     dispatch(fetchHighlightWorkspacesThunk())
