@@ -13,7 +13,7 @@ export const config = {
      * - favicon.ico (favicon file)
      * - icons/manifest.webmanifest (web manifest file)
      */
-    `/((?!api|map|favicon.ico|icons/manifest.webmanifest).*)`,
+    `/((?!api|map|locales|images|favicon.ico|icons/manifest.webmanifest).*)`,
   ],
 }
 
@@ -24,7 +24,7 @@ export function middleware(req: NextRequest) {
   if (authHeader) {
     const [authMethod, authValue] = authHeader.split(' ')
     if (authMethod === 'Basic') {
-      const [user, pwd] = Buffer.from(authValue, 'base64').toString().split(':')
+      const [user, pwd] = atob(authValue).split(':')
 
       if (user === basicAuthUser && pwd === basicAuthPass) {
         return NextResponse.next()
