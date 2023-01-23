@@ -41,7 +41,7 @@ export class GFW {
     refreshToken?: string
   ): Promise<T> {
     const requestData = {
-      url: `${gatewayUrl}/${GFW_API_AUTH_ENDPOINT}token/reload`,
+      url: `${gatewayUrl}${GFW_API_AUTH_ENDPOINT}/tokens/reload`,
       method: 'GET',
     }
     const results = await fetch(requestData.url, {
@@ -236,12 +236,9 @@ export class GFW {
       ...(request.body ? { body: request.body } : {}),
     }).then(async (res: Response) => {
       if (!res.ok && res.status === 401 && this.config.refreshToken) {
-        return await this.refreshToken()
-          // Retry request after refreshing token
-          .then(() => this._fetch(method, resource, parameters, body))
-          // Token refresh was unsuccessful,
-          // returning response from get request
-          .catch((_) => res)
+        await this.refreshToken()
+        // Retry request after refreshing token
+        return this._fetch(method, resource, parameters, body)
       }
       return await handleResponseTextOrJson(res)
     })

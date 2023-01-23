@@ -23,6 +23,7 @@ export async function getServerSideProps(context) {
 
   const client = new GFW({
     bearerToken: token?.bearerToken,
+    refreshToken: token?.refreshToken,
   })
   try {
     const user = token ? await client.fetchUser() : await client.fetchGuestUser()
