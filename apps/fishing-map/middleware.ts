@@ -13,7 +13,7 @@ export const config = {
      * - favicon.ico (favicon file)
      * - icons/manifest.webmanifest (web manifest file)
      */
-    '/((?!api|favicon.ico|icons/manifest.webmanifest).*)',
+    `/((?!api|map|favicon.ico|icons/manifest.webmanifest).*)`,
   ],
 }
 
