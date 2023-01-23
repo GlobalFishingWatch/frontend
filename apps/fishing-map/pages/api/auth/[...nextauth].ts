@@ -3,6 +3,8 @@ import NextAuth from 'next-auth'
 import { GFW, GFWProvider, GFW_API_GATEWAY } from '@globalfishingwatch/authjs-client'
 import { BASE_PATH } from 'data/config'
 
+export const AUTH_SECRET = process.env.NEXTAUTH_SECRET
+
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
 
@@ -15,13 +17,13 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     // The secret should be set to a reasonably long random string.
     // It is used to sign cookies and to sign and encrypt JSON Web Tokens, unless
     // a separate secret is defined explicitly for encrypting the JWT.
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: AUTH_SECRET,
     session: {
       strategy: 'jwt',
     },
     jwt: {
       // A secret to use for key generation (you should set this explicitly)
-      secret: process.env.NEXTAUTH_SECRET,
+      secret: AUTH_SECRET,
       // Set to true to use encryption (default: false)
       // encryption: true,
     },

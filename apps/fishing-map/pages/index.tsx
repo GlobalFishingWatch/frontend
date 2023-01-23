@@ -2,6 +2,7 @@ import path from 'path'
 import dynamic from 'next/dynamic'
 import { getToken } from 'next-auth/jwt'
 import { GFW } from '@globalfishingwatch/authjs-client'
+import { AUTH_SECRET } from './api/auth/[...nextauth]'
 
 // This is needed by nx/next builder to run build the standalone next app properly
 // https://github.com/nrwl/nx/issues/9017#issuecomment-1140066503
@@ -18,7 +19,7 @@ const AppNoSSRComponent = dynamic(() => import('../features/app/App'), {
 export async function getServerSideProps(context) {
   const token = (await getToken({
     req: context.req,
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: AUTH_SECRET,
   })) as { bearerToken: string; refreshToken: string }
 
   const client = new GFW({
