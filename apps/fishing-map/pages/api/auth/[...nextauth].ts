@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import NextAuth from 'next-auth'
 import { AUTH_SECRET, GFW, GFWProvider, GFW_API_GATEWAY } from '@globalfishingwatch/authjs-client'
-import { BASE_PATH } from 'data/config'
+import { BASE_PATH, IS_PRODUCTION } from 'data/config'
 
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
@@ -100,6 +100,6 @@ export default async function auth(
       },
     },
     // Enable debug messages in the console if you are having problems
-    debug: true,
+    debug: !IS_PRODUCTION,
   })
 }
