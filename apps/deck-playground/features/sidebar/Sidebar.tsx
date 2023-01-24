@@ -29,7 +29,6 @@ function Sidebar() {
   const removeContextId = useRemoveContextInLayer()
   const addContextId = useAddContextInLayer()
   const contextIds = useContextsLayerIds()
-  console.log('CONTEXTS IDS', contextIds)
 
   const getVesselsEventsData = () => {
     const vesselsEvents = vesselsLayerInstance
@@ -82,7 +81,6 @@ function Sidebar() {
       <div className="scrollContainer">
         <SidebarHeader />
         {layers.map((layer) => {
-          console.log(layer)
           if (layer.id === 'vessel') {
             return (
               <div key={layer.id} className={styles.row}>
