@@ -36,8 +36,6 @@ steps:
     env:
       - 'NX_BRANCH=$_NX_BRANCH'
       - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
-      - 'NEXTAUTH_URL=$_NEXTAUTH_URL'
-      - 'NEXTAUTH_SECRET=$_NEXTAUTH_SECRET'
       - 'NEXT_PUBLIC_API_GATEWAY=$_NEXT_PUBLIC_API_GATEWAY'
       - 'NEXT_PUBLIC_CARRIER_PORTAL_URL=$_NEXT_PUBLIC_CARRIER_PORTAL_URL'
       - 'NEXT_PUBLIC_FEEDBACK_SPREADSHEET_ID=$_NEXT_PUBLIC_FEEDBACK_SPREADSHEET_ID'
@@ -94,11 +92,7 @@ steps:
         $_RUN_REGION \
         --platform managed \
         --set-env-vars \
-        BASIC_AUTH=$_BASIC_AUTH \
-        --set-env-vars \
-        BASIC_AUTH_USER=$_BASIC_AUTH_USER \
-        --set-env-vars \
-        BASIC_AUTH_PASS=$_BASIC_AUTH_PASS \
+        BASIC_AUTH=$_BASIC_AUTH,BASIC_AUTH_USER=$_BASIC_AUTH_USER,BASIC_AUTH_PASS=$_BASIC_AUTH_PASS,NEXTAUTH_URL=$_NEXTAUTH_URL,NEXTAUTH_SECRET=$_NEXTAUTH_SECRET \
         --allow-unauthenticated
 
   - id: 'i18n-labels publish stable'
