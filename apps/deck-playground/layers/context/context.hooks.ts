@@ -2,11 +2,12 @@ import { useCallback, useEffect } from 'react'
 import { atom, selector, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { ContextsLayer } from 'layers/context/ContextsLayer'
 import { useMapLayers } from 'features/map/layers.hooks'
+import { useMapHoveredFeatures } from 'features/map/map-picking.hooks'
 
 type ContextsAtom = {
   ids: string[]
   loaded: boolean
-  renderReady: boolean
+  // renderReady: boolean
   instance?: ContextsLayer
 }
 
@@ -16,13 +17,18 @@ export const contextsLayerAtom = atom<ContextsAtom>({
   default: {
     ids: [],
     loaded: false,
-    renderReady: false,
+    // renderReady: false,
   },
 })
 
 export function useContextsLayer() {
   const [{ instance, ids }, updateAtom] = useRecoilState(contextsLayerAtom)
   const [mapLayers] = useMapLayers()
+  // const mapHoveredFeatures = useMapHoveredFeatures()
+  // console.log(
+  //   '🚀 ~ file: context.hooks.ts:28 ~ useContextsLayer ~ mapHoveredFeatures',
+  //   mapHoveredFeatures
+  // )
 
   const layer = mapLayers.find((l) => l.id === 'contexts')
   const layerVisible = layer?.visible
@@ -36,22 +42,22 @@ export function useContextsLayer() {
     setAtomProperty({ loaded: true })
   }, [setAtomProperty])
 
-  const onBeforeRender = useCallback(() => {
-    setAtomProperty({ renderReady: true })
-  }, [setAtomProperty])
+  // const onBeforeRender = useCallback(() => {
+  //   setAtomProperty({ renderReady: true })
+  // }, [setAtomProperty])
 
   useEffect(() => {
     if (layerVisible) {
       const vesselsLayer = new ContextsLayer({
         ids,
         onDataLoad: onDataLoad,
-        onBeforeRender: onBeforeRender,
+        // onBeforeRender: onBeforeRender,
       })
       setAtomProperty({ instance: vesselsLayer, renderReady: false })
     } else {
       setAtomProperty({ instance: undefined, loaded: false, renderReady: false })
     }
-  }, [ids, layerVisible, updateAtom, onDataLoad, onBeforeRender, setAtomProperty])
+  }, [ids, layerVisible, updateAtom, onDataLoad, setAtomProperty])
 
   return instance
 }
@@ -81,32 +87,6 @@ export function useContextsLayerIds() {
   const instance = useRecoilValue(contextsLayerIdsAtomSelector)
   return instance
 }
-
-// const vesselsLayerLoadedAtomSelector = selector({
-//   key: 'vesselsLayerLoadedAtomSelector',
-//   dangerouslyAllowMutability: true,
-//   get: ({ get }) => {
-//     return get(vesselsLayerAtom)?.loaded
-//   },
-// })
-
-// export function useVesselsLayerLoaded() {
-//     const loaded = useRecoilValue(vesselsLayerLoadedAtomSelector)
-//     return loaded
-//   }
-
-// const vesselsLayerRenderReadyAtomSelector = selector({
-//   key: 'vesselsLayerRenderReadyAtomSelector',
-//   dangerouslyAllowMutability: true,
-//   get: ({ get }) => {
-//     return get(vesselsLayerAtom)?.renderReady
-//   },
-// })
-
-// export function useVesselsLayerRenderReady() {
-//   const renderReady = useRecoilValue(vesselsLayerRenderReadyAtomSelector)
-//   return renderReady
-// }
 
 export function useAddContextInLayer() {
   const setContextLayer = useSetRecoilState(contextsLayerAtom)

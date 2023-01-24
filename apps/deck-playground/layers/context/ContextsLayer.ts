@@ -1,6 +1,5 @@
 import { CompositeLayer } from '@deck.gl/core/typed'
 import { MVTLayer, MVTLayerProps, TileLayerProps } from '@deck.gl/geo-layers/typed'
-// import { mvtloader } from 'loaders/context/contextLoader'
 import { API_PATH, CONTEXT_LAYERS_OBJECT } from './context.config'
 
 export type ContextsLayerProps = TileLayerProps & MVTLayerProps & { ids: string[] }
@@ -8,19 +7,6 @@ export type ContextsLayerProps = TileLayerProps & MVTLayerProps & { ids: string[
 export class ContextsLayer extends CompositeLayer<ContextsLayerProps> {
   static layerName = 'ContextLayer'
   // layers = []
-  // getPickingInfo(info) {
-  //   console.log('🚀 ~ file: ContextLayer.ts:10 ~ ContextLayer ~ getPickingInfo ~ info', info)
-
-  //   return info.info
-  // }
-
-  // onHover(event) {
-  //   // console.log('🚀 ~ file: ContextLayer.ts:18 ~ ContextLayer ~ onHover ~ event', event)
-  //   const Deck = event.layer?.context?.deck
-  //   const objects = Deck?.pickMultipleObjects({ x: event.x, y: event.y })
-  //   console.log('🚀 ~ file: ContextLayer.ts:18 ~ ContextLayer ~ onHover ~ objects', objects)
-  //   return event
-  // }
 
   // _getLabelsLayer() {
   //   return new TileLayer(
@@ -38,7 +24,6 @@ export class ContextsLayer extends CompositeLayer<ContextsLayerProps> {
           id,
           data: `${API_PATH}/${CONTEXT_LAYERS_OBJECT[id].dataset}/{z}/{x}/{y}`,
           zIndex: 1,
-          // loaders: [mvtloader],
           getLineColor: CONTEXT_LAYERS_OBJECT[id].lineColor,
           getPickingInfo: this.getPickingInfo,
           getFillColor: [0, 0, 0, 0],
@@ -46,7 +31,11 @@ export class ContextsLayer extends CompositeLayer<ContextsLayerProps> {
           pickable: true,
           highlightColor: [...CONTEXT_LAYERS_OBJECT[id].lineColor, 50],
           autoHighlight: true,
-          binary: true,
+          // We need binary to be false to avoid
+          // selecting too many objects
+          // https://github.com/visgl/deck.gl/issues/6362
+          binary: false,
+          uniqueIdProperty: 'gfw_id',
         })
       )
   )
