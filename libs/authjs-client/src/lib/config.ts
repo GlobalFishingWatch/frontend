@@ -1,5 +1,7 @@
 import { GFWConfig } from './types'
 
+export const AUTH_SECRET = process.env['NEXTAUTH_SECRET']
+
 export const GFW_API_GATEWAY =
   process.env['API_GATEWAY'] ||
   process.env['REACT_APP_API_GATEWAY'] ||

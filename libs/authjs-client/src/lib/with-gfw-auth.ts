@@ -1,9 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getToken, JWT } from 'next-auth/jwt'
+import { GFW_API_GATEWAY, AUTH_SECRET } from './config'
 import GFW from './gfw-client'
-
-const GFW_API_GATEWAY = process.env['NEXT_PUBLIC_API_GATEWAY'] ?? ''
-export const AUTH_SECRET = process.env['NEXTAUTH_SECRET'] ?? 'test'
 
 declare type GFWHandler<T = any> = (
   req: NextApiRequest,
