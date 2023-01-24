@@ -10,10 +10,11 @@ export const config = {
 }
 
 export function middleware(req: NextRequest) {
-  const [authMethod, authValue] = (req.headers.get('authorization') ?? '').split(' ')
+  const basicAuth = req.headers.get('authorization')
   const url = req.nextUrl
   if (!basicAuthEnabled) return NextResponse.next()
-  if (authMethod === 'Basic') {
+  if (basicAuth) {
+    const authValue = basicAuth.split(' ')[1]
     const [user, pwd] = atob(authValue).split(':')
 
     if (user === basicAuthUser && pwd === basicAuthPass) {
