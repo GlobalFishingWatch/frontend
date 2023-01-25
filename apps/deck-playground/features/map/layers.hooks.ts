@@ -3,7 +3,7 @@ import { FourwingsLayerResolution } from 'layers/fourwings/FourwingsHeatmapTileL
 import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
 import { urlSyncEffect } from 'recoil-sync'
 
-export type MapLayerType = 'vessel' | 'fourwings' | 'contexts'
+export type MapLayerType = 'vessel' | 'fourwings' | 'contexts' | 'basemap'
 
 export type MapLayer = {
   id: MapLayerType
@@ -18,6 +18,7 @@ export const mapLayersAtom = atom<MapLayer[]>({
     { id: 'fourwings', visible: true, resolution: 'default' },
     { id: 'vessel', visible: true },
     { id: 'contexts', visible: true },
+    { id: 'basemap', visible: true },
   ],
   effects: [urlSyncEffect({ refine: mixed(), history: 'replace' })],
 })

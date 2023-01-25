@@ -1,13 +1,14 @@
 import { useCallback, useEffect } from 'react'
+import { PickingInfo } from '@deck.gl/core/typed'
 import { atom, selector, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { ContextsLayer } from 'layers/context/ContextsLayer'
+import { useAtomValue } from 'jotai'
 import { useMapLayers } from 'features/map/layers.hooks'
-import { useMapHoveredFeatures } from 'features/map/map-picking.hooks'
+import { hoveredFeaturesAtom, clickedFeaturesAtom } from 'features/map/map-picking.hooks'
 
 type ContextsAtom = {
   ids: string[]
   loaded: boolean
-  // renderReady: boolean
   instance?: ContextsLayer
 }
 
@@ -17,18 +18,14 @@ export const contextsLayerAtom = atom<ContextsAtom>({
   default: {
     ids: [],
     loaded: false,
-    // renderReady: false,
   },
 })
 
 export function useContextsLayer() {
   const [{ instance, ids }, updateAtom] = useRecoilState(contextsLayerAtom)
   const [mapLayers] = useMapLayers()
-  // const mapHoveredFeatures = useMapHoveredFeatures()
-  // console.log(
-  //   '🚀 ~ file: context.hooks.ts:28 ~ useContextsLayer ~ mapHoveredFeatures',
-  //   mapHoveredFeatures
-  // )
+  const hoveredFeatures: PickingInfo[] = useAtomValue(hoveredFeaturesAtom)
+  const clickedFeatures: PickingInfo[] = useAtomValue(clickedFeaturesAtom)
 
   const layer = mapLayers.find((l) => l.id === 'contexts')
   const layerVisible = layer?.visible
@@ -42,22 +39,19 @@ export function useContextsLayer() {
     setAtomProperty({ loaded: true })
   }, [setAtomProperty])
 
-  // const onBeforeRender = useCallback(() => {
-  //   setAtomProperty({ renderReady: true })
-  // }, [setAtomProperty])
-
   useEffect(() => {
     if (layerVisible) {
-      const vesselsLayer = new ContextsLayer({
+      const contextLayer = new ContextsLayer({
         ids,
+        hoveredFeatures,
+        clickedFeatures,
         onDataLoad: onDataLoad,
-        // onBeforeRender: onBeforeRender,
       })
-      setAtomProperty({ instance: vesselsLayer, renderReady: false })
+      setAtomProperty({ instance: contextLayer })
     } else {
-      setAtomProperty({ instance: undefined, loaded: false, renderReady: false })
+      setAtomProperty({ instance: undefined, loaded: false })
     }
-  }, [ids, layerVisible, updateAtom, onDataLoad, setAtomProperty])
+  }, [ids, layerVisible, updateAtom, onDataLoad, setAtomProperty, hoveredFeatures, clickedFeatures])
 
   return instance
 }
