@@ -176,7 +176,7 @@ function ActivityLayerPanel({
     return fields
   }, [t])
 
-  const statsValue = stats && (stats.vessel_id || stats.id)
+  const statsValue = stats && (stats.vesselIds || stats.id)
 
   return (
     <div
