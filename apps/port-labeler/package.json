@@ -40,8 +40,8 @@
     "uuid": "8.3.2"
   },
   "devDependencies": {
-    "@math.gl/web-mercator": "^3.5.7",
     "@globalfishingwatch/linting": "2.0.2",
+    "@math.gl/web-mercator": "^3.5.7",
     "@next/eslint-plugin-next": "12.1.6",
     "@testing-library/react": "13.2.0",
     "@testing-library/user-event": "14.1.1",
