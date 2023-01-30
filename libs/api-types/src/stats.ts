@@ -3,7 +3,7 @@ export type StatsParams = 'flags' | 'vessel-ids'
 
 export type StatField =
   | 'id'
-  | 'flag'
+  | 'flags'
   | 'vesselIds'
   | 'activityHours'
   | 'geartype'
