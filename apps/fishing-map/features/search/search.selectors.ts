@@ -9,7 +9,11 @@ import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { SearchType } from './search.slice'
 
 export const selectSearchDatasetsInWorkspace = createSelector(
-  [selectAllDataviewsInWorkspace, selectVesselsDatasets, selectAllDatasets],
+  [
+    (state) => selectAllDataviewsInWorkspace(state),
+    (state) => selectVesselsDatasets(state),
+    (state) => selectAllDatasets(state),
+  ],
   (dataviews, vesselsDatasets, allDatasets) => {
     const datasetsIds = getDatasetsInDataviews(dataviews)
     const datasets = allDatasets.flatMap(({ id, relatedDatasets }) => {
@@ -36,7 +40,11 @@ export const filterDatasetByPermissions = (
 
 export const selectAllSearchDatasetsByType = (type: SearchType) =>
   createSelector(
-    [selectVesselsDatasets, selectUserData, isGuestUser],
+    [
+      (state) => selectVesselsDatasets(state),
+      (state) => selectUserData(state),
+      (state) => isGuestUser(state),
+    ],
     (datasets, userData, guestUser) => {
       if (!userData || !datasets?.length) return
       return filterDatasetByPermissions(datasets, type, userData, guestUser)
@@ -45,7 +53,11 @@ export const selectAllSearchDatasetsByType = (type: SearchType) =>
 
 export const selectSearchDatasetsInWorkspaceByType = (type: SearchType) =>
   createSelector(
-    [selectSearchDatasetsInWorkspace, selectUserData, isGuestUser],
+    [
+      (state) => selectSearchDatasetsInWorkspace(state),
+      (state) => selectUserData(state),
+      (state) => isGuestUser(state),
+    ],
     (datasets, userData, guestUser) => {
       if (!userData || !datasets?.length) return
       return filterDatasetByPermissions(datasets, type, userData, guestUser)

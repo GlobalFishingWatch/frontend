@@ -227,13 +227,15 @@ function App(): React.ReactElement {
         isOpen={sidebarOpen}
         showToggle={workspaceLocation}
         onToggle={onToggle}
-        aside={<Sidebar onMenuClick={onMenuClick} />}
+        // aside={<Sidebar onMenuClick={onMenuClick} />}
         main={<Main />}
         asideWidth={asideWidth}
         showAsideLabel={getSidebarName()}
         showMainLabel={t('common.map', 'Map')}
         className="split-container"
-      />
+      >
+        <Sidebar onMenuClick={onMenuClick} />
+      </SplitView>
       {!readOnly && (
         <Menu
           appSelector={ROOT_DOM_ELEMENT}

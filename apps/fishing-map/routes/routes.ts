@@ -59,13 +59,13 @@ const routesOptions: Options = {
     if (typeof window !== 'undefined') {
       document
         .querySelector('meta[name="description"]')
-        .setAttribute('content', getState().description)
+        ?.setAttribute('content', getState().description)
       document
         .querySelector('meta[property="og:description"]')
-        .setAttribute('content', getState().description)
+        ?.setAttribute('content', getState().description)
       document
         .querySelector('meta[name="twitter:description"]')
-        .setAttribute('content', getState().description)
+        ?.setAttribute('content', getState().description)
     }
   },
 }

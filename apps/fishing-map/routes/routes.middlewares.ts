@@ -52,7 +52,7 @@ export const routerWorkspaceMiddleware: Middleware =
   (next) =>
   (action: UpdateQueryParamsAction) => {
     const { prev } = getState().location
-    const { lastVisited } = getState().workspace
+    const { lastVisited } = getState().workspace || {}
     const routesToSaveWorkspace = Object.keys(routesMap).filter(
       (key) => !WORKSPACE_ROUTES.includes(key)
     )

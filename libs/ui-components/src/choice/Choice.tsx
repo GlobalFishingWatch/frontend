@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { Placement } from 'tippy.js'
 import cx from 'classnames'

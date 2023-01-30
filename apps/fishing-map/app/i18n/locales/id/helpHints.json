@@ -1,0 +1,8 @@
+{
+  "areaSearch": "Cari berdasarkan negara, laut, atau samudra untuk fokus pada area yang Anda minati.",
+  "changingTheTimeRange": "Klik dan seret untuk mengubah rentang waktu yang Anda lihat di bilah waktu.",
+  "clickingOnAGridCellToShowVessels": "Klik pada sel grid manapun untuk menampilkan kapal paling aktif di area itu selama rentang waktu yang dipilih.",
+  "filterActivityLayers": "Klik ikon filter untuk memfilter aktivitas menggunakan berbagai kriteria yang tersedia, termasuk tipe sumber data, bendera, dan tipe alat tangkap.",
+  "fishingEffortHeatmap": "Peta menunjukkan aktivitas peta panas interaktif. Sel grid yang lebih terang adalah area dengan lebih banyak aktivitas.",
+  "periodComparisonBaseline": "Pilih garis dasar untuk membandingkan perubahan aktivitas, misalnya, antara sekarang dan tanggal yang sama tahun lalu, atau untuk membandingkan aktivitas pada waktu yang berbeda dalam setahun."
+}

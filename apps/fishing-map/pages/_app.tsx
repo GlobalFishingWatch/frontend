@@ -7,7 +7,8 @@ import { RecoilRoot } from 'recoil'
 // import dynamic from 'next/dynamic'
 // import { useEffect, useState } from 'react'
 import Head from 'next/head'
-import store from '../store'
+import { getStore } from '../store'
+import { rootReducer } from '../reducers'
 
 import 'features/i18n/i18n'
 import './styles.css'
@@ -37,7 +38,7 @@ function CustomApp({ Component, pageProps }: AppProps) {
       </Head>
       <RecoilRoot>
         {/* <RecoilizeDebugger root={root} /> */}
-        <Provider store={store}>
+        <Provider store={getStore(rootReducer)}>
           <ClickToComponent />
           <Component {...pageProps} />
         </Provider>

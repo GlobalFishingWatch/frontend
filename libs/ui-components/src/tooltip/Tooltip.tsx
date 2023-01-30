@@ -1,3 +1,5 @@
+'use client'
+
 import * as React from 'react'
 import Tippy, { TippyProps } from '@tippyjs/react'
 import styles from './Tooltip.module.css'

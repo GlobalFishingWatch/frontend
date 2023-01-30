@@ -19,7 +19,15 @@ const IS_PRODUCTION =
 const nextConfig = {
   async rewrites() {
     return [
-      // Rewrite everything to `pages/index`
+      // Rewrite everything to `app/page`
+      {
+        source: '/:category/:workspace/report',
+        destination: '/:category/:workspace/report',
+      },
+      {
+        source: '/:category/:workspace/vessel/:id*',
+        destination: '/:category/:workspace/vessel/:id*',
+      },
       {
         source: '/:any*',
         destination: '/',
@@ -79,6 +87,7 @@ const nextConfig = {
   output: 'standalone',
   outputFileTracing: true,
   experimental: {
+    appDir: true,
     outputFileTracingRoot: join(__dirname, '../../'),
   },
   cleanDistDir: true,

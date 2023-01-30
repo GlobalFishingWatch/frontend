@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import cx from 'classnames'
 import { Icon } from '../icon'
@@ -10,7 +12,7 @@ interface SplitViewProps {
   showToggle?: boolean
   onToggle?: (e: React.MouseEvent) => void
   asideWidth?: string
-  aside: React.ReactNode
+  children: React.ReactNode
   main: React.ReactNode
   showAsideLabel?: string
   showMainLabel?: string
@@ -22,7 +24,7 @@ export function SplitView(props: SplitViewProps) {
     isOpen = true,
     showToggle = true,
     onToggle,
-    aside = null,
+    children = null,
     main = null,
     asideWidth = '32rem',
     showAsideLabel = 'Show aside',
@@ -82,7 +84,7 @@ export function SplitView(props: SplitViewProps) {
             </button>
           )
         )}
-        {aside}
+        {children}
       </aside>
       <main style={{ left: isOpen ? asideWidth : 0 }} className={styles.main}>
         {main}

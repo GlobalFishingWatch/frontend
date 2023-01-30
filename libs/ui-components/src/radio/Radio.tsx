@@ -1,3 +1,5 @@
+'use client'
+
 import React, { ReactElement } from 'react'
 import cx from 'classnames'
 import { Placement } from 'tippy.js'

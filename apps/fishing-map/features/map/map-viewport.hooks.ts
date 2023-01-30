@@ -12,7 +12,7 @@ import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { selectViewport } from 'features/app/app.selectors'
 import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
 import { useMapReady } from 'features/map/map-state.hooks'
-import store, { RootState } from '../../store'
+import { store, RootState } from '../../store'
 import useMapInstance from './map-context.hooks'
 
 type ViewportKeys = 'latitude' | 'longitude' | 'zoom'

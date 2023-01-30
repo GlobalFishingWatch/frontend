@@ -1,3 +1,5 @@
+'use client'
+
 import React, { MouseEvent, useCallback } from 'react'
 import cx from 'classnames'
 import { useSelect } from 'downshift'

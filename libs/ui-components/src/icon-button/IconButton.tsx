@@ -1,3 +1,5 @@
+'use client'
+
 import React, { forwardRef, Fragment, Ref, CSSProperties } from 'react'
 import cx from 'classnames'
 import { Placement } from 'tippy.js'

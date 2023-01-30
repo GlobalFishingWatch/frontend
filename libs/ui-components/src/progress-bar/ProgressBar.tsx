@@ -1,3 +1,5 @@
+'use client'
+
 import React, { Fragment, useCallback, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { IconButton, Modal } from '@globalfishingwatch/ui-components'

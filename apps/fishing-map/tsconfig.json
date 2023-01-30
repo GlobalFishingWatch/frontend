@@ -34,8 +34,20 @@
       "@globalfishingwatch/timebar": ["../../libs/timebar/src/index.js"],
       "@globalfishingwatch/ui-components": ["../../libs/ui-components/src/index.ts"]
     },
-    "incremental": true
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
-  "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "next-env.d.ts"],
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx",
+    "next-env.d.ts",
+    "../../dist/apps/fishing-map/.next/types/**/*.ts"
+  ],
   "exclude": ["node_modules", "jest.config.ts"]
 }

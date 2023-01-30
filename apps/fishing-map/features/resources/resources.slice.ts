@@ -24,7 +24,11 @@ export {
 
 // DO NOT MOVE TO RESOURCES.SELECTORS, IT CREATES A CIRCULAR DEPENDENCY
 export const selectTrackThinningConfig = createSelector(
-  [(state) => isGuestUser(state), selectDebugOptions, selectUrlMapZoomQuery],
+  [
+    (state) => isGuestUser(state),
+    (state) => selectDebugOptions(state),
+    (state) => selectUrlMapZoomQuery(state),
+  ],
   (guestUser, { thinning }, currentZoom) => {
     if (!thinning) return null
     let config: ThinningConfig

@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useRef } from 'react'
 import cx from 'classnames'
 import { Button } from '../button'

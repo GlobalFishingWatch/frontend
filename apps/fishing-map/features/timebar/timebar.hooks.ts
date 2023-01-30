@@ -20,7 +20,7 @@ import {
   selectActiveDetectionsDataviews,
   selectActiveNonTrackEnvironmentalDataviews,
 } from 'features/dataviews/dataviews.selectors'
-import store from 'store'
+import { store, RootState } from 'store'
 import { updateUrlTimerange } from 'routes/routes.actions'
 import { selectUrlTimeRange } from 'routes/routes.selectors'
 import { setHintDismissed } from 'features/hints/hints.slice'
@@ -48,7 +48,7 @@ export const TimeRangeAtom = atom<Range | null>({
     ({ trigger, setSelf, onSet }) => {
       const redirectUrl =
         typeof window !== 'undefined' ? window.localStorage.getItem(DEFAULT_CALLBACK_URL_KEY) : null
-      const urlTimeRange = selectUrlTimeRange(store.getState() as any)
+      const urlTimeRange = selectUrlTimeRange(store.getState() as RootState)
 
       if (trigger === 'get') {
         if (urlTimeRange) {

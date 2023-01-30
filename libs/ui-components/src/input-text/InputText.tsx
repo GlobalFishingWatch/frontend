@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useRef, forwardRef, useImperativeHandle, Ref } from 'react'
 import cx from 'classnames'
 import { Icon } from '../icon'

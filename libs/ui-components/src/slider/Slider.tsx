@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useMemo, useCallback, useState } from 'react'
 import cx from 'classnames'
 import { Range, getTrackBackground } from 'react-range'
