@@ -19,7 +19,6 @@ export const basemapLayerAtom = atom<BasemapAtom>({
 export function useBasemapLayer() {
   const [{ instance }, updateAtom] = useRecoilState(basemapLayerAtom)
   const [mapLayers] = useMapLayers()
-  console.log('MAP LAYERS', mapLayers)
   const layer = mapLayers.find((l) => l.id === 'basemap')
   const layerVisible = layer?.visible
 
@@ -33,7 +32,6 @@ export function useBasemapLayer() {
   }, [setAtomProperty])
 
   useEffect(() => {
-    console.log('LAYER VISIBLE', layerVisible)
     if (layerVisible) {
       const basemapLayer = new BaseMap({
         onDataLoad: onDataLoad,
@@ -43,7 +41,6 @@ export function useBasemapLayer() {
       setAtomProperty({ instance: undefined, loaded: false })
     }
   }, [layerVisible, updateAtom, onDataLoad, setAtomProperty])
-  console.log('instance', instance)
   return instance
 }
 

@@ -23,7 +23,7 @@ const MapWrapper = (): React.ReactElement => {
   const fourwingsLoaded = useFourwingsLayerLoaded()
   const sethoveredFeaturesAtom = useSetAtom(hoveredFeaturesAtom)
   const setClickedFeaturesAtom = useSetAtom(clickedFeaturesAtom)
-  console.log(basemapLayer)
+
   const layers = useMemo(
     () => zIndexSortedArray([basemapLayer, contextLayer, fourwingsLayer, vesselsLayer]),
     // eslint-disable-next-line react-hooks/exhaustive-deps
