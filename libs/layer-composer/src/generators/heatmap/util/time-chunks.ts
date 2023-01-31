@@ -171,10 +171,8 @@ export const getInterval = (
 
   // Get intervals that are common to all dataset (initial array provided to ensure order from smallest to largest)
   const commonIntervals = intersection(INTERVAL_ORDER, ...availableIntervals)
-  const fallbackOption = commonIntervals.length
-    ? commonIntervals[commonIntervals.length - 1]
-    : 'day'
   const intervals = commonIntervals.filter((interval) => !omitIntervals.includes(interval))
+  const fallbackOption = intervals.length ? intervals[intervals.length - 1] : 'day'
   if (!intervals.length) {
     console.warn(
       `no common interval found, using the largest available option (${fallbackOption})`,
