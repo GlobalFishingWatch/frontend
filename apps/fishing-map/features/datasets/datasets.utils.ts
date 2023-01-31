@@ -502,6 +502,7 @@ export const getSchemaFieldsSelectedInDataview = (
 export type SchemaFilter = {
   type: DatasetSchemaType
   id: SupportedDatasetSchema
+  label: string
   disabled: boolean
   options: ReturnType<typeof getCommonSchemaFieldsInDataview>
   optionsSelected: ReturnType<typeof getCommonSchemaFieldsInDataview>
@@ -522,10 +523,14 @@ export const getFiltersBySchema = (
   const disabled = datasetsWithoutSchema || incompatibleFilterSelection
 
   const datasetId = removeDatasetVersion(getActiveDatasetsInDataview(dataview)?.[0]?.id)
-  const schemaId = CONTEXT_DATASETS_SCHEMAS.includes(schema as SupportedContextDatasetSchema)
+  let label = CONTEXT_DATASETS_SCHEMAS.includes(schema as SupportedContextDatasetSchema)
     ? t(`datasets:${datasetId}.schema.${schema}.keyword`, schema.toString())
-    : schema
-  return { id: schemaId, disabled, options, optionsSelected, type, filterOperator }
+    : t(`vessel.${schema}`, schema)
+  if (schema === 'vessel-groups') {
+    label = t('vesselGroup.vesselGroups', 'Vessel Groups')
+  }
+
+  return { id: schema, label, disabled, options, optionsSelected, type, filterOperator }
 }
 
 export const getSchemaFiltersInDataview = (

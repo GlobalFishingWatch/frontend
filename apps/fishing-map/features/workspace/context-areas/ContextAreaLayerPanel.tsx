@@ -238,8 +238,8 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           {hasSchemaFilterSelection && (
             <div className={styles.filters}>
               <div className={styles.filters}>
-                {schemaFilters.map(({ id }) => (
-                  <DatasetSchemaField key={id} dataview={dataview} field={id} label={id} />
+                {schemaFilters.map(({ id, label }) => (
+                  <DatasetSchemaField key={id} dataview={dataview} field={id} label={label} />
                 ))}
               </div>
             </div>
