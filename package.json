@@ -8,7 +8,8 @@
   "workspaces": {
     "packages": [
       "apps/*",
-      "linting"
+      "linting",
+      "libs/i18n-labels"
     ]
   },
   "scripts": {
@@ -32,6 +33,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@globalfishingwatch/i18n-labels": "*",
     "@globalfishingwatch/map-convert": "github:GlobalFishingWatch/map-convert",
     "@mapbox/tile-cover": "^3.0.2",
     "@mapbox/tilebelt": "^1.0.2",
@@ -96,6 +98,8 @@
     "webpack-sources": "3.2.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.20.12",
+    "@babel/plugin-transform-react-jsx": "^7.20.13",
     "@globalfishingwatch/maplibre-gl": "^2.2.0-gfw.25",
     "@jscutlery/semver": "^2.23.3",
     "@next/bundle-analyzer": "^13.0.5",
