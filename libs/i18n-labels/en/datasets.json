@@ -2328,13 +2328,13 @@
     "description": "Protected seas",
     "schema": {
       "removal_of": {
-        "keyword": "removal_of",
+        "keyword": "Level of Fishing Protection",
         "enum": {
-          "1": "1",
-          "2": "2",
-          "3": "3",
-          "4": "4",
-          "5": "5"
+          "1": "Least restrictive: No known fishing restrictions",
+          "2": "Less restrictive: Few species- or gear-specific restrictions apply",
+          "3": "Moderately restrictive: Several species- or gear-specific restrictions apply; or either commercial fishing or recreational fishing is entirely prohibited",
+          "4": "Heavily restrictive: Fishing is mostly prohibited, with few exceptions",
+          "5": "Most restrictive: Fishing is prohibited"
         }
       }
     }
