@@ -37,7 +37,7 @@ function DownloadActivityProductsBanner({ format }: DownloadActivityProductsBann
           </p>
           <Button
             className={styles.downloadBtn}
-            href="https://globalfishingwatch.org/our-apis/documentation#create-a-report-of-a-specified-region"
+            href="https://globalfishingwatch.org/our-apis/documentation?utm_source=map&utm_medium=banner&utm_campaign=download_activity#create-a-report-of-a-specified-region"
             target="_blank"
           >
             {t('download.apiPortal', 'See our APIs here')}
