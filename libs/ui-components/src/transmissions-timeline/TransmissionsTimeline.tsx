@@ -19,8 +19,10 @@ export function TransmissionsTimeline({
   const [timelineWidth, setTimelineWidth] = useState<number>(0)
   const transmissionsRef = useRef<HTMLDivElement | null>(null)
   const start = DateTime.fromISO(firstYearOfData.toString(), { zone: 'utc' })
-  const startTransmission = DateTime.fromISO(firstTransmissionDate, { zone: 'utc' })
-  const endTransmission = DateTime.fromISO(lastTransmissionDate, { zone: 'utc' })
+  const startTransmission = DateTime.fromISO(firstTransmissionDate, { zone: 'utc' }).setLocale(
+    locale
+  )
+  const endTransmission = DateTime.fromISO(lastTransmissionDate, { zone: 'utc' }).setLocale(locale)
   const end = DateTime.now().toUTC()
   const total = end.diff(start).milliseconds
   const beforeTransmission = startTransmission.diff(start).milliseconds
@@ -42,17 +44,16 @@ export function TransmissionsTimeline({
         {timelineWidth > 30 && (
           <Fragment>
             <span>
-              {timelineWidth > 90 &&
-                `${startTransmission.setLocale(locale).toFormat(monthFormat)} `}
+              {timelineWidth > 90 && `${startTransmission.toFormat(monthFormat)} `}
               {timelineWidth > 50
-                ? startTransmission.setLocale(locale).toFormat('yyyy')
-                : startTransmission.setLocale(locale).toFormat('yy')}
+                ? startTransmission.toFormat('yyyy')
+                : startTransmission.toFormat('yy')}
             </span>
             <span>
-              {timelineWidth > 90 && `${endTransmission.setLocale(locale).toFormat(monthFormat)} `}
+              {timelineWidth > 90 && `${endTransmission.toFormat(monthFormat)} `}
               {timelineWidth > 50
-                ? endTransmission.setLocale(locale).toFormat('yyyy')
-                : endTransmission.setLocale(locale).toFormat('yy')}
+                ? endTransmission.toFormat('yyyy')
+                : endTransmission.toFormat('yy')}
             </span>
           </Fragment>
         )}
