@@ -23,13 +23,9 @@ export function TransmissionsTimeline({
   const endTransmission = DateTime.fromISO(lastTransmissionDate, { zone: 'utc' })
   const end = DateTime.now().toUTC()
   const total = end.diff(start).milliseconds
-  console.log('total', total)
   const beforeTransmission = startTransmission.diff(start).milliseconds
-  console.log('beforeTransmission', beforeTransmission)
   const duringTransmission = endTransmission.diff(startTransmission).milliseconds
   const beforeWidth = Math.floor((beforeTransmission / total) * 100)
-  console.log('before', beforeTransmission / total)
-  console.log('beforeWidth', Math.floor(beforeWidth))
   const duringWidth = Math.floor((duringTransmission / total) * 100)
   const monthFormat = 'LLL'
 
