@@ -21,6 +21,14 @@ const nextConfig = {
     return [
       // Rewrite everything to `pages/index`
       {
+        source: '/vessel/:any*',
+        destination: '/vessel/:any*',
+      },
+      {
+        source: '/:category/:workspace/vessel/:datasetId/:any*',
+        destination: '/:category/:workspace/vessel/:datasetId/:any*',
+      },
+      {
         source: '/:any*',
         destination: '/',
       },

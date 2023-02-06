@@ -15,6 +15,7 @@ export const HOME = 'HOME'
 export const WORKSPACE = 'WORKSPACE'
 export const WORKSPACES_LIST = 'WORKSPACES_LIST'
 export const USER = 'USER'
+export const VESSEL = 'VESSEL'
 export const WORKSPACE_REPORT = 'WORKSPACE_REPORT'
 export const REPORT = 'REPORT'
 export const WORKSPACE_ROUTES = [HOME, WORKSPACE]
@@ -24,6 +25,7 @@ export type ROUTE_TYPES =
   | typeof USER
   | typeof WORKSPACES_LIST
   | typeof WORKSPACE
+  | typeof VESSEL
   | typeof WORKSPACE_REPORT
   | typeof REPORT
 
@@ -42,6 +44,9 @@ export const routesMap: RoutesMap = {
   },
   [WORKSPACE]: {
     path: '/:category/:workspaceId?',
+  },
+  [VESSEL]: {
+    path: '/:category/:workspaceId/vessel/:datasetId/:vesselId',
   },
   [WORKSPACE_REPORT]: {
     path: '/:category/:workspaceId/report/:datasetId?/:areaId?',

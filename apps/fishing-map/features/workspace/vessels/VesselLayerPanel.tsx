@@ -38,6 +38,8 @@ import { selectPrivateUserGroups } from 'features/user/user.selectors'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import GFWOnly from 'features/user/GFWOnly'
 import DatasetLabel from 'features/datasets/DatasetLabel'
+import { selectLocationSearch } from 'routes/routes.selectors'
+import { PATH_BASENAME } from 'routes/routes'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -53,8 +55,9 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
+  const { url: infoUrl, dataset } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
   const resources = useSelector(selectResources)
+  const locationSearch = useSelector(selectLocationSearch)
   const trackResource = pickTrackResource(dataview, EndpointId.Tracks, resources)
   const infoResource: Resource<Vessel> = useSelector(selectResourceByUrl<Vessel>(infoUrl))
   const { items, attributes, listeners, setNodeRef, setActivatorNodeRef, style } =
@@ -88,9 +91,9 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const onToggleColorOpen = () => {
     setColorOpen(!colorOpen)
   }
-  const onToggleInfoOpen = () => {
-    setInfoOpen(!infoOpen)
-  }
+  // const onToggleInfoOpen = () => {
+  //   setInfoOpen(!infoOpen)
+  // }
 
   const closeExpandedContainer = () => {
     if (!datasetModalOpen) {
@@ -254,24 +257,26 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         </ul>
       }
     >
-      <IconButton
-        size="small"
-        icon={infoError ? 'warning' : 'info'}
-        type={infoError ? 'warning' : 'default'}
-        disabled={infoError}
-        tooltip={
-          infoError
-            ? `${t(
-                'errors.vesselLoading',
-                'There was an error loading the vessel details'
-              )} (${vesselId})`
-            : infoOpen
-            ? t('layer.infoClose', 'Hide info')
-            : t('layer.infoOpen', 'Show info')
-        }
-        onClick={onToggleInfoOpen}
-        tooltipPlacement="top"
-      />
+      <a
+        href={`${PATH_BASENAME}/fishing-activity/wizard_template-public/vessel/${dataset?.id}/${vesselId}?${locationSearch}`}
+      >
+        <IconButton
+          size="small"
+          icon={infoError ? 'warning' : 'info'}
+          type={infoError ? 'warning' : 'default'}
+          disabled={infoError}
+          tooltip={
+            infoError
+              ? `${t(
+                  'errors.vesselLoading',
+                  'There was an error loading the vessel details'
+                )} (${vesselId})`
+              : t('layer.infoOpen', 'Show info')
+          }
+          // onClick={onToggleInfoOpen}
+          tooltipPlacement="top"
+        />
+      </a>
     </ExpandedContainer>
   )
 

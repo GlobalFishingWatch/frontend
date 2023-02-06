@@ -3,8 +3,12 @@ import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
-import { selectIsReportLocation, selectLocationType } from 'routes/routes.selectors'
-import { USER, WORKSPACES_LIST } from 'routes/routes'
+import {
+  selectLocationPayload,
+  selectIsReportLocation,
+  selectLocationType,
+} from 'routes/routes.selectors'
+import { REPORT, USER, VESSEL, WORKSPACES_LIST } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
 import { isUserLogged, selectUserGroupsPermissions } from 'features/user/user.selectors'
@@ -48,6 +52,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const readOnly = useSelector(selectReadOnly)
   const searchQuery = useSelector(selectSearchQuery)
   const locationType = useSelector(selectLocationType)
+  const locationPayload = useSelector(selectLocationPayload)
   const isReportLocation = useSelector(selectIsReportLocation)
   const dataviewsResources = useSelector(selectDataviewsResources)
   const userLogged = useSelector(isUserLogged)
@@ -85,6 +90,10 @@ function Sidebar({ onMenuClick }: SidebarProps) {
       return <User />
     }
 
+    if (locationType === VESSEL) {
+      return <h2>Vessel: {JSON.stringify(locationPayload)}</h2>
+    }
+
     if (locationType === WORKSPACES_LIST) {
       return highlightedWorkspacesStatus === AsyncReducerStatus.Loading ? (
         <Spinner />
@@ -98,7 +107,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     }
 
     return <Workspace />
-  }, [userLogged, locationType, isReportLocation, highlightedWorkspacesStatus])
+  }, [userLogged, locationType, isReportLocation, locationPayload, highlightedWorkspacesStatus])
 
   if (searchQuery !== undefined) {
     return <Search />

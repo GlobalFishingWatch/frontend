@@ -33,12 +33,7 @@ function CustomApp({ Component, pageProps }: AppProps) {
         <title>GFW | Map</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </Head>
-      <RecoilRoot>
-        <Provider store={store}>
-          <ClickToComponent />
-          <Component {...pageProps} />
-        </Provider>
-      </RecoilRoot>
+      <Component {...pageProps} />
     </React.StrictMode>
   )
 }
