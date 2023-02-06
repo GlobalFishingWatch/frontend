@@ -64,7 +64,7 @@
     "recharts": "2.1.9",
     "recoil": "0.7.5",
     "recoilize": "3.1.6",
-    "redux": "4.2.0",
+    "redux": "^4.2.1",
     "redux-first-router": "2.1.5",
     "redux-first-router-link": "2.1.1",
     "shpjs": "4.0.2",
