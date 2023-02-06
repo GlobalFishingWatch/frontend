@@ -27,8 +27,8 @@ export function TransmissionsTimeline({
   const total = end.diff(start).milliseconds
   const beforeTransmission = startTransmission.diff(start).milliseconds
   const duringTransmission = endTransmission.diff(startTransmission).milliseconds
-  const beforeWidth = Math.floor((beforeTransmission / total) * 100)
-  const duringWidth = Math.floor((duringTransmission / total) * 100)
+  const beforeWidth = Math.max(0, Math.floor((beforeTransmission / total) * 100))
+  const duringWidth = Math.max(0, Math.floor((duringTransmission / total) * 100))
   const monthFormat = 'LLL'
 
   useLayoutEffect(() => {
