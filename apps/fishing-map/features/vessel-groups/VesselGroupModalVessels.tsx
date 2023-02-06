@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { groupBy } from 'lodash'
 import { IconButton, Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
-import { Vessel } from '@globalfishingwatch/api-types'
+import { Locale, Vessel } from '@globalfishingwatch/api-types'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
 import I18nDate from 'features/i18n/i18nDate'
@@ -26,7 +26,7 @@ function VesselGroupVesselRow({
   onRemoveClick,
   className = '',
 }: VesselGroupVesselRowProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const vesselName = formatInfoField(vessel.shipname, 'name')
 
   const vesselGearType = `${t(
@@ -61,7 +61,7 @@ function VesselGroupVesselRow({
                 firstTransmissionDate={firstTransmissionDate}
                 lastTransmissionDate={lastTransmissionDate}
                 firstYearOfData={FIRST_YEAR_OF_DATA}
-                shortYears
+                locale={i18n.language as Locale}
               />
             </div>
           </Tooltip>

@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { Trans, useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { Button, IconButton, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
-import { RelatedVesselSearchMerged, VesselSearch as Vessel } from '@globalfishingwatch/api-types'
+import { Locale, VesselSearch as Vessel } from '@globalfishingwatch/api-types'
 import { DEFAULT_EMPTY_VALUE, FIRST_YEAR_OF_DATA } from 'data/config'
 import { useVesselsConnect } from 'features/vessels/vessels.hook'
 import { getFlagById } from 'utils/flags'
@@ -26,7 +26,7 @@ interface ListItemProps {
 }
 
 const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { vessel, onDeleteClick, onVesselClick = () => {}, selected = false } = props
   const { formatSource } = useVesselsConnect()
   const onClick = useCallback(() => onVesselClick(vessel), [onVesselClick, vessel])
@@ -150,7 +150,7 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
               firstTransmissionDate={vessel.firstTransmissionDate}
               lastTransmissionDate={vessel.lastTransmissionDate}
               firstYearOfData={FIRST_YEAR_OF_DATA}
-              parsedYears={vessel.years}
+              locale={i18n.language as Locale}
             />
           )}
           {vessel.relatedVessels?.length > 1 && (

@@ -6,7 +6,7 @@ import cx from 'classnames'
 import Downshift from 'downshift'
 import { Trans, useTranslation } from 'react-i18next'
 import { debounce, uniqBy } from 'lodash'
-import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
+import { Dataset, DatasetTypes, Locale } from '@globalfishingwatch/api-types'
 import {
   IconButton,
   InputText,
@@ -73,7 +73,7 @@ import {
 } from './search.selectors'
 
 function Search() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const urlQuery = useSelector(selectSearchQuery)
   const { addNewDataviewInstances } = useDataviewInstancesConnect()
@@ -503,6 +503,7 @@ function Search() {
                                 firstTransmissionDate={firstTransmissionDate}
                                 lastTransmissionDate={lastTransmissionDate}
                                 firstYearOfData={FIRST_YEAR_OF_DATA}
+                                locale={i18n.language as Locale}
                               />
                             </div>
                           )}
