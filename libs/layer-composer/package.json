@@ -41,5 +41,8 @@
     "@globalfishingwatch/fourwings-aggregate": "4.x",
     "lodash": "4.x",
     "luxon": "^2.4.0"
+  },
+  "resolutions": {
+    "tslib": "^2.4"
   }
 }

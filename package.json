@@ -33,7 +33,6 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@globalfishingwatch/i18n-labels": "*",
     "@globalfishingwatch/map-convert": "github:GlobalFishingWatch/map-convert",
     "@mapbox/tile-cover": "^3.0.2",
     "@mapbox/tilebelt": "^1.0.2",
@@ -165,6 +164,7 @@
     "serve": "^14.1.2",
     "ts-jest": "28.0.8",
     "ts-node": "10.9.1",
+    "tslib": "^2.4",
     "typescript": "4.8.4",
     "yarn-deduplicate": "^5.0.0"
   },
