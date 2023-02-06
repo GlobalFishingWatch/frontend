@@ -19,15 +19,11 @@ const IS_PRODUCTION =
 const nextConfig = {
   async rewrites() {
     return [
-      // Rewrite everything to `pages/index`
-      {
-        source: '/vessel/:any*',
-        destination: '/vessel/:any*',
-      },
       {
         source: '/:category/:workspace/vessel/:datasetId/:any*',
         destination: '/:category/:workspace/vessel/:datasetId/:any*',
       },
+      // Rewrite everything to `pages/index`
       {
         source: '/:any*',
         destination: '/',

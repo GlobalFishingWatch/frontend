@@ -1,6 +1,7 @@
 import path from 'path'
 import { useEffect, useState } from 'react'
 import { SplitView } from '@globalfishingwatch/ui-components'
+import VesselDetail from 'features/vessel/VesselDetail'
 import Index from '../../../../index'
 
 // This is needed by nx/next builder to run build the standalone next app properly
@@ -11,22 +12,21 @@ export async function getServerSideProps({ params }) {
   return {
     props: {
       id: params.vesselId,
+      datasetId: params.datasetId,
     },
   }
 }
 const MapPlaceholder = () => {
   return <div style={{ backgroundColor: 'blue', width: '100%', height: '100%' }}></div>
 }
-const VesselDetails = ({ vesselId }) => {
-  return <h2>{vesselId}</h2>
-}
-const VesselInfo = ({ vesselId }) => {
+
+const VesselInfo = ({ vesselId, datasetId }) => {
   return (
     <SplitView
       isOpen={true}
       showToggle={true}
       // onToggle={()}
-      aside={<VesselDetails vesselId={vesselId} />}
+      aside={<VesselDetail vesselId={vesselId} datasetId={datasetId} />}
       main={<MapPlaceholder />}
       asideWidth={'50%'}
       // showAsideLabel={getSidebarName()}
@@ -41,7 +41,7 @@ const Vessel = (props) => {
   useEffect(() => setServer(false), [])
 
   if (isServer) {
-    return <VesselInfo vesselId={props.id} />
+    return <VesselInfo {...props} />
   }
 
   return <Index />
