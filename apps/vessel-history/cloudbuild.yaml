@@ -4,29 +4,25 @@ steps:
     waitFor: ['-']
     args:
       - '--bucket=gs://frontend-cache-dependencies'
-      - '--key=yarn-$( checksum yarn.lock )'
+      - '--key=yarn3-$( checksum yarn.lock )'
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
     name: node:18-alpine
-    entrypoint: sh
-    args:
-      - '-c'
-      # if dependencies cache is not found then install all deps
-      - |
-        if [ ! -d "node_modules" ]; then
-          apk add git
-          yarn install --immutable
-        fi
-      - yarn set version 3.3.1
-      - yarn install --immutable
+    script: |
+      yarn set version 3.3.1
+      yarn install --immutable
+      if [ ! -d "node_modules" ]; then
+        apk add git
+        yarn install --immutable
+      fi
 
   - id: 'save_cache'
     waitFor: ['install-yarn']
     name: 'gcr.io/$PROJECT_ID/save_cache'
     args:
       - '--bucket=gs://frontend-cache-dependencies'
-      - '--key=yarn-$( checksum yarn.lock )'
+      - '--key=yarn3-$( checksum yarn.lock )'
       - '--path=./node_modules'
       - '--no-clobber'
 
