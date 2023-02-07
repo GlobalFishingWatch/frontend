@@ -17,10 +17,12 @@ steps:
     waitFor: ['restore_cache', 'restore_cache_fallback']
     name: node:18-alpine
     script: |
-      apk add git
-      yarn set version 3.3.1
-      yarn -v
-      yarn install
+      if [ ! -d "node_modules" ]; then
+        apk add git
+        yarn set version 3.3.1
+        yarn -v
+        yarn install --immutable
+      fi
 
   - id: 'save_cache'
     waitFor: ['install-yarn']
