@@ -18,6 +18,8 @@ steps:
           apk add git
           yarn install --immutable
         fi
+      - yarn set version 3.3.1
+      - yarn install --immutable
 
   - id: 'save_cache'
     waitFor: ['install-yarn']
