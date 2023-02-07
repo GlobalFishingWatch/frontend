@@ -22,7 +22,6 @@ steps:
       - '--bucket=gs://frontend-cache-dependencies'
       - '--key=yarn3-cache'
       - '--path=./.yarn/cache'
-      - '--no-clobber'
 
   - id: 'build-app'
     waitFor: ['install-yarn']
