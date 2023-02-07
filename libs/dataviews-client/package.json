@@ -14,7 +14,7 @@
     "qs": "^6.11.0"
   },
   "devDependencies": {
-    "@types/qs": "^6.9.3"
+    "@types/qs": "^6.9.7"
   },
   "peerDependencies": {
     "@globalfishingwatch/api-types": "6.x",
