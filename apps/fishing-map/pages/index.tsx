@@ -6,9 +6,9 @@ import { MapProvider } from 'react-map-gl'
 // https://github.com/nrwl/nx/issues/9017#issuecomment-1140066503
 path.resolve('./next.config.js')
 
-/*const MapProvider = dynamic(() => import('react-map-gl').then((module) => module.MapProvider), {
-  ssr: false,
-})*/
+// const MapProvider = dynamic(() => import('react-map-gl').then((module) => module.MapProvider), {
+//   ssr: false,
+// })
 
 const AppNoSSRComponent = dynamic(() => import('../features/app/App'), {
   ssr: false,

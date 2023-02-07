@@ -17,7 +17,7 @@
   ],
   "devDependencies": {
     "kill-port": "^1.6.1",
-    "serve": "13.0.2"
+    "serve": "14.2.0"
   },
   "publishConfig": {
     "access": "public",
