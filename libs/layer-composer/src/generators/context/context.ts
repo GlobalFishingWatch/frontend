@@ -85,7 +85,7 @@ class ContextGenerator {
     if (!baseLayers?.length) {
       throw new Error(`Context layer should specify a valid layer parameter, ${config.layer}`)
     }
-
+    const [filterKey, filterValues] = Object.entries(config?.filters || [])[0]
     const color = config.color || DEFAULT_LINE_COLOR
     const layers = baseLayers.map((baseLayer) => {
       const paint = getPaintPropertyByType(baseLayer, config)
@@ -97,6 +97,7 @@ class ContextGenerator {
         layout: {
           ...baseLayer.layout,
         },
+        ...(filterValues && { filter: ['match', ['get', filterKey], filterValues, true, false] }),
         paint,
         metadata: {
           ...(baseLayer.metadata as ExtendedLayerMeta),

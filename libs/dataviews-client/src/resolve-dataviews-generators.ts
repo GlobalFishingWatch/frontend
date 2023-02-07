@@ -350,12 +350,8 @@ export function getGeneratorConfig(
     case GeneratorType.UserContext: {
       if (Array.isArray(dataview.config.layers)) {
         const tilesUrls = dataview.config.layers?.flatMap(({ id, dataset }) => {
-          const hasFiltersConfig = Object.keys(dataview.config?.filters || {}).length > 0
-          const dataviewWithConfig = hasFiltersConfig
-            ? getDataviewWithDatasetFiltersConfig(dataview, dataset)
-            : dataview
           const { dataset: resolvedDataset, url } = resolveDataviewDatasetResource(
-            dataviewWithConfig,
+            dataview,
             dataset
           )
           if (!url || resolvedDataset?.status !== DatasetStatus.Done) return []
