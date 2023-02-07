@@ -16,7 +16,7 @@ steps:
       - |
         if [ ! -d "node_modules" ]; then
           apk add git
-          yarn install --frozen-lockfile
+          yarn install --immutable
         fi
 
   - id: 'save_cache'
