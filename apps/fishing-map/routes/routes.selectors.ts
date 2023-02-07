@@ -49,6 +49,16 @@ export const selectLocationCategory = createSelector(
   (payload) => payload?.category as WorkspaceCategories
 )
 
+export const selectLocationDatasetId = createSelector(
+  [selectLocationPayload],
+  (payload) => payload?.datasetId as string
+)
+
+export const selectLocationAreaId = createSelector(
+  [selectLocationPayload],
+  (payload) => payload?.areaId as number
+)
+
 export const isValidLocationCategory = createSelector(
   [selectLocationCategory],
   (locationCategory) => Object.values(WorkspaceCategories).includes(locationCategory)

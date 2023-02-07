@@ -8,12 +8,12 @@ type ReportTitleProps = {
   infoLink?: string
 }
 
-export default function ReportTitle(props: ReportTitleProps) {
+export default function ReportTitle({ title, type }: ReportTitleProps) {
   const { t } = useTranslation()
   return (
     <div>
-      <h1>{t(`reports.title.${props.type}`)}</h1>
-      <h2>{props.title}</h2>
+      <h1>{t(`report.title.${type}`, type)}</h1>
+      <h2>{title}</h2>
     </div>
   )
 }

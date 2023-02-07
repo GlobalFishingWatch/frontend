@@ -402,11 +402,12 @@
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out"
   },
-  "reports": {
+  "report": {
     "title": {
       "activity": "Activity report",
       "area": "Area report"
-    }
+    },
+    "summary": "<strong>{{vessels}}</strong> $t(common.vessel, {\"count\": {{vessels}} }) had {{hours}} $t(common.hour, {\"count\": {{hours}} }) of {{activityType}} in the area between {{start}} and {{end}}"
   },
   "search": {
     "advanced": "Advanced",

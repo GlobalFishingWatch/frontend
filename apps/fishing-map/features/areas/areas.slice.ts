@@ -169,12 +169,25 @@ const areasSlice = createSlice({
 })
 
 export const selectAreas = (state: RootState) => state.areas
-export const selectAreaById = memoize((id: string) =>
+export const selectDatasetAreaById = memoize((id: string) =>
   createSelector([selectAreas], (areas) => areas?.[id])
 )
 
 export const selectDatasetAreasById = memoize((id: string) =>
-  createSelector([selectAreaById(id)], (area): DatasetAreaList => area?.list)
+  createSelector([selectDatasetAreaById(id)], (area): DatasetAreaList => area?.list)
+)
+
+export const selectDatasetAreaStatus = memoize(
+  ({ datasetId, areaId }: { datasetId: string; areaId: string }) =>
+    createSelector([selectDatasetAreaById(datasetId)], (area): AsyncReducerStatus => {
+      return area?.detail?.[areaId]?.status
+    })
+)
+export const selectDatasetAreaDetail = memoize(
+  ({ datasetId, areaId }: { datasetId: string; areaId: string }) =>
+    createSelector([selectDatasetAreaById(datasetId)], (area): Area => {
+      return area?.detail?.[areaId]?.data
+    })
 )
 
 export default areasSlice.reducer

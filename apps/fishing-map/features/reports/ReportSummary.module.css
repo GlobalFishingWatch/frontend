@@ -1,0 +1,7 @@
+.summary {
+  font: var(--font-L);
+}
+
+.summary strong {
+  font-weight: 500;
+}
