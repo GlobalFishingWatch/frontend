@@ -5,13 +5,12 @@
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "license": "MIT",
-  "main": "dist/index.js",
-  "typings": "types",
+  "main": "index.js",
+  "typings": "index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
-  "scripts": {},
   "dependencies": {
     "@globalfishingwatch/map-convert": "github:GlobalFishingWatch/map-convert",
     "@mapbox/tile-cover": "^3.0.2",
