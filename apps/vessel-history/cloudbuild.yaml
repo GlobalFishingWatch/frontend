@@ -4,7 +4,7 @@ steps:
     waitFor: ['-']
     args:
       - '--bucket=gs://frontend-cache-dependencies'
-      - '--key=yarn3-vv'
+      - '--key=yarn3-cache'
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
@@ -20,8 +20,8 @@ steps:
     name: 'gcr.io/$PROJECT_ID/save_cache'
     args:
       - '--bucket=gs://frontend-cache-dependencies'
-      - '--key=yarn3-vv'
-      - '--path=./node_modules'
+      - '--key=yarn3-cache'
+      - '--path=./.yarn/cache'
       - '--no-clobber'
 
   - id: 'build-app'
