@@ -38,7 +38,7 @@ steps:
       - 'NEXT_PUBLIC_FEEDBACK_FORM_FR=$_NEXT_PUBLIC_FEEDBACK_FORM_FR'
     script: |
       yarn -v
-      nx run vessel-history:build:production --parallel
+      yarn nx run vessel-history:build:production --parallel
 
   - name: 'gcr.io/kaniko-project/executor:v1.6.0'
     id: 'build-image'
