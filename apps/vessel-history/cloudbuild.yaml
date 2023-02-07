@@ -4,10 +4,17 @@ steps:
     waitFor: ['-']
     args:
       - '--bucket=gs://frontend-cache-dependencies'
+      - '--key=yarn-$( checksum yarn.lock )'
+
+  - name: 'gcr.io/$PROJECT_ID/restore_cache'
+    id: restore_cache_fallback
+    waitFor: ['-']
+    args:
+      - '--bucket=gs://frontend-cache-dependencies'
       - '--key=yarn3-cache'
 
   - id: 'install-yarn'
-    waitFor: ['restore_cache']
+    waitFor: ['restore_cache', 'restore_cache_fallback']
     name: node:18-alpine
     script: |
       apk add git
@@ -16,6 +23,15 @@ steps:
       yarn install
 
   - id: 'save_cache'
+    waitFor: ['install-yarn']
+    name: 'gcr.io/$PROJECT_ID/save_cache'
+    args:
+      - '--bucket=gs://frontend-cache-dependencies'
+      - '--key=yarn-$( checksum yarn.lock )'
+      - '--path=./node_modules'
+      - '--no-clobber'
+
+   - id: 'save_cache_fallback'
     waitFor: ['install-yarn']
     name: 'gcr.io/$PROJECT_ID/save_cache'
     args:
