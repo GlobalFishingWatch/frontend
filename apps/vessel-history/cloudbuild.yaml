@@ -31,7 +31,7 @@ steps:
       - '--path=./node_modules'
       - '--no-clobber'
 
-   - id: 'save_cache_fallback'
+  - id: 'save_cache_fallback'
     waitFor: ['install-yarn']
     name: 'gcr.io/$PROJECT_ID/save_cache'
     args:
