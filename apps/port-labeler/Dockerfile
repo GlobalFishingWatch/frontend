@@ -3,7 +3,7 @@
 #################################################################################
 
 # Production image, copy all the files and run next
-FROM node:16-alpine AS production
+FROM node:18-alpine AS production
 WORKDIR /app
 
 ARG APP_NAME=port-labeler
