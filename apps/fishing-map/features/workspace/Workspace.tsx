@@ -27,7 +27,7 @@ import {
   SUPPORT_EMAIL,
   USER_SUFIX,
 } from 'data/config'
-import { WorkspaceCategories } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import {
   selectDataviewInstancesMergedOrdered,
   selectDataviewsResources,
@@ -255,6 +255,7 @@ function Workspace() {
         locationCategory === WorkspaceCategories.FishingActivity) &&
         workspace?.name &&
         workspace?.id !== WIZARD_TEMPLATE_ID &&
+        workspace?.id !== DEFAULT_WORKSPACE_ID &&
         !readOnly && (
           <div className={styles.header}>
             {isUserWorkspace && (

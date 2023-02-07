@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
-import { selectLocationType } from 'routes/routes.selectors'
+import { selectIsReportLocation, selectLocationType } from 'routes/routes.selectors'
 import { USER, WORKSPACES_LIST } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
@@ -12,6 +12,7 @@ import { isUserLogged, selectUserGroupsPermissions } from 'features/user/user.se
 import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
 import { fetchUserVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
+import Report from 'features/reports/Report'
 import styles from './Sidebar.module.css'
 import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
@@ -41,6 +42,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const isAnalyzing = useSelector(selectIsAnalyzing)
   const searchQuery = useSelector(selectSearchQuery)
   const locationType = useSelector(selectLocationType)
+  const isReportLocation = useSelector(selectIsReportLocation)
   const userLogged = useSelector(isUserLogged)
   const hasUserGroupsPermissions = useSelector(selectUserGroupsPermissions)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
@@ -69,8 +71,12 @@ function Sidebar({ onMenuClick }: SidebarProps) {
       )
     }
 
+    if (isReportLocation) {
+      return <Report />
+    }
+
     return <Workspace />
-  }, [locationType, userLogged, highlightedWorkspacesStatus])
+  }, [userLogged, locationType, isReportLocation, highlightedWorkspacesStatus])
 
   if (searchQuery !== undefined) {
     return <Search />

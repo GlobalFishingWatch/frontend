@@ -16,7 +16,7 @@ import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
 import useViewport, { useMapBounds } from 'features/map/map-viewport.hooks'
-import { isWorkspaceLocation } from 'routes/routes.selectors'
+import { selectIsWorkspaceLocation } from 'routes/routes.selectors'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
 import setInlineStyles from 'utils/dom'
 import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
@@ -139,7 +139,7 @@ const MapControls = ({
       },
     })
   }
-  const extendedControls = useSelector(isWorkspaceLocation)
+  const extendedControls = useSelector(selectIsWorkspaceLocation)
   const isAnalyzing = useSelector(selectIsAnalyzing)
   return (
     <Fragment>

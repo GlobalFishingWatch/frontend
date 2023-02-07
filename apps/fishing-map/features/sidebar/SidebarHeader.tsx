@@ -12,7 +12,7 @@ import {
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { isWorkspaceLocation, selectLocationCategory } from 'routes/routes.selectors'
+import { selectIsWorkspaceLocation, selectLocationCategory } from 'routes/routes.selectors'
 import { WorkspaceCategories } from 'data/workspaces'
 import { selectWorkspaceWithCurrentState, selectReadOnly } from 'features/app/app.selectors'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
@@ -117,7 +117,7 @@ function ShareWorkspaceButton() {
 function SidebarHeader() {
   const readOnly = useSelector(selectReadOnly)
   const locationCategory = useSelector(selectLocationCategory)
-  const workspaceLocation = useSelector(isWorkspaceLocation)
+  const workspaceLocation = useSelector(selectIsWorkspaceLocation)
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
   const showBackToWorkspaceButton = !workspaceLocation
 

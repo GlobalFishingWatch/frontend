@@ -402,6 +402,12 @@
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out"
   },
+  "reports": {
+    "title": {
+      "activity": "Activity report",
+      "area": "Area report"
+    }
+  },
   "search": {
     "advanced": "Advanced",
     "advancedDisabled": "You need to <1>login</1> to use advanced search",

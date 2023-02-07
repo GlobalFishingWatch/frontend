@@ -15,8 +15,14 @@ export const HOME = 'HOME'
 export const WORKSPACE = 'WORKSPACE'
 export const WORKSPACES_LIST = 'WORKSPACES_LIST'
 export const USER = 'USER'
+export const REPORT = 'REPORT'
 export const WORKSPACE_ROUTES = [HOME, WORKSPACE]
-export type ROUTE_TYPES = typeof HOME | typeof USER | typeof WORKSPACES_LIST | typeof WORKSPACE
+export type ROUTE_TYPES =
+  | typeof HOME
+  | typeof USER
+  | typeof WORKSPACES_LIST
+  | typeof WORKSPACE
+  | typeof REPORT
 
 export const routesMap: RoutesMap = {
   [HOME]: {
@@ -30,6 +36,9 @@ export const routesMap: RoutesMap = {
   },
   [WORKSPACE]: {
     path: '/:category/:workspaceId?',
+  },
+  [REPORT]: {
+    path: '/:category/:workspaceId/report/:datasetId?/:areaId?',
   },
   [NOT_FOUND]: {
     path: '',

@@ -30,7 +30,7 @@ import {
 } from 'features/timebar/timebar.slice'
 import { selectBivariateDataviews, selectTimeRange } from 'features/app/app.selectors'
 import { selectMarineManagerDataviewInstanceResolved } from 'features/dataviews/dataviews.slice'
-import { selectIsMarineManagerLocation, isWorkspaceLocation } from 'routes/routes.selectors'
+import { selectIsMarineManagerLocation, selectIsWorkspaceLocation } from 'routes/routes.selectors'
 import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
 import { WorkspaceCategories } from 'data/workspaces'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -306,7 +306,7 @@ export const selectDefaultMapGeneratorsConfig = createSelector(
   [
     selectWorkspaceError,
     selectWorkspaceStatus,
-    isWorkspaceLocation,
+    selectIsWorkspaceLocation,
     selectDefaultBasemapGenerator,
     selectMapGeneratorsConfig,
     selectMapWorkspacesListGenerators,

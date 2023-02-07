@@ -36,7 +36,7 @@ import MapControls from 'features/map/controls/MapControls'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { getEventLabel } from 'utils/analytics'
 import { selectIsAnalyzing, selectShowTimeComparison } from 'features/analysis/analysis.selectors'
-import { selectIsMarineManagerLocation, isWorkspaceLocation } from 'routes/routes.selectors'
+import { selectIsMarineManagerLocation, selectIsWorkspaceLocation } from 'routes/routes.selectors'
 import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
 import { useMapLoaded, useSetMapIdleAtom } from 'features/map/map-state.hooks'
 import { useEnvironmentalBreaksUpdate } from 'features/workspace/environmental/environmental.hooks'
@@ -205,7 +205,7 @@ const MapWrapper = () => {
 
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const isAnalyzing = useSelector(selectIsAnalyzing)
-  const isWorkspace = useSelector(isWorkspaceLocation)
+  const isWorkspace = useSelector(selectIsWorkspaceLocation)
   const debugOptions = useSelector(selectDebugOptions)
 
   const mapLegends = useMapLegend(style, dataviews, hoveredEvent)

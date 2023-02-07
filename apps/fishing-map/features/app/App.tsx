@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { Menu, SplitView } from '@globalfishingwatch/ui-components'
 import { Workspace } from '@globalfishingwatch/api-types'
 import {
-  isWorkspaceLocation,
+  selectIsWorkspaceLocation,
   selectLocationType,
   selectUrlTimeRange,
   selectUrlViewport,
@@ -28,7 +28,7 @@ import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { selectIsAnalyzing, selectShowTimeComparison } from 'features/analysis/analysis.selectors'
 import { isUserLogged } from 'features/user/user.selectors'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
-import { HOME, WORKSPACE, USER, WORKSPACES_LIST } from 'routes/routes'
+import { HOME, WORKSPACE, USER, WORKSPACES_LIST, REPORT } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { t } from 'features/i18n/i18n'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -64,7 +64,7 @@ export const COLOR_GRADIENT =
   'rgb(229, 240, 242)'
 
 const Main = () => {
-  const workspaceLocation = useSelector(isWorkspaceLocation)
+  const workspaceLocation = useSelector(selectIsWorkspaceLocation)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const isTimeComparisonAnalysis = useSelector(selectShowTimeComparison)
 
@@ -100,7 +100,7 @@ function App(): React.ReactElement {
   const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
   const analysisQuery = useSelector(selectAnalysisQuery)
-  const workspaceLocation = useSelector(isWorkspaceLocation)
+  const workspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isAnalysing = useSelector(selectIsAnalyzing)
   const isTimeComparisonAnalysis = useSelector(selectShowTimeComparison)
   const narrowSidebar = workspaceLocation && !analysisQuery
@@ -144,7 +144,8 @@ function App(): React.ReactElement {
   // probably better to fetch in both components just checking if the workspaceId is already fetched
   const isHomeLocation = locationType === HOME
   const homeNeedsFetch = isHomeLocation && currentWorkspaceId !== DEFAULT_WORKSPACE_ID
-  const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId
+  const hasWorkspaceIdChanged =
+    (locationType === WORKSPACE || locationType === REPORT) && currentWorkspaceId !== urlWorkspaceId
   useEffect(() => {
     let action: any
     let actionResolved = false
