@@ -1,0 +1,50 @@
+.vesselsTable {
+  margin-right: var(--space-S);
+  margin-bottom: var(--space-XS);
+  border-collapse: collapse;
+}
+
+.vesselsTable tr {
+  min-height: 10rem;
+}
+
+.vesselsTable th {
+  text-align: left;
+  font: var(--font-XS);
+  color: var(--color-secondary-blue);
+  text-transform: uppercase;
+}
+
+.vesselsTable td,
+.vesselsTable th {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0;
+  line-height: 2rem;
+  height: 3rem;
+  max-width: 12rem;
+  vertical-align: middle;
+}
+
+.vesselsTable td.largeColumn {
+  max-width: 24rem;
+}
+
+.vesselsTable tr:not(:last-child) td {
+  border-bottom: 1px solid var(--color-terthiary-blue);
+}
+
+.vesselsTable .columnSpace,
+.vesselsTable th:not(:first-child) {
+  padding-left: 2rem;
+}
+
+.vesselsTable td.icon {
+  width: 3rem;
+  overflow: visible;
+}
+
+.vesselsTableHour {
+  text-align: right;
+}

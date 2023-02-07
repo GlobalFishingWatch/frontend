@@ -17,7 +17,7 @@ export type Report = {
   status: ReportStatus
 }
 
-export type ReportVessels = {
+export type ReportVessel = {
   callsign: string
   date: string
   firstTransmissionDate: string
@@ -35,5 +35,5 @@ export type ReportVessels = {
 }
 
 export type ReportVesselsByDataset = {
-  [dataset: string]: ReportVessels
+  [dataset: string]: ReportVessel[]
 }

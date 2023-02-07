@@ -4,6 +4,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import ReportSummary from './ReportSummary'
 import ReportTitle from './ReportTitle'
 import { useFetchReportArea, useFetchReportVessel } from './reports.hooks'
+import ReportVesselTable from './ReportVesselTable'
 
 export type ReportType = 'activity' | 'area'
 
@@ -20,6 +21,7 @@ export default function Report(props: ReportsProps) {
     <Fragment>
       <ReportTitle title={areaDetail?.name} type="activity" />
       <ReportSummary />
+      <ReportVesselTable acitivityUnit="hours" />
     </Fragment>
   )
 }

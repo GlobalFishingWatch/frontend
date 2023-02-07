@@ -59,6 +59,7 @@ export function useFetchReportVessel() {
           },
           dateRange: timerange as DateRange,
           temporalResolution: 'daily',
+          spatialAggregation: true,
         })
       )
     }

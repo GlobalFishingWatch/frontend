@@ -30,6 +30,7 @@ type FetchReportVesselsThunkParams = {
   groupBy?: 'vessel_id' | 'flag' | 'geartype' | 'flagAndGearType' | 'mmsi'
   spatialResolution?: 'low' | 'high'
   format?: 'csv' | 'json'
+  spatialAggregation?: boolean
 }
 export const fetchReportVesselsThunk = createAsyncThunk(
   'reports/vessels',
@@ -41,6 +42,7 @@ export const fetchReportVesselsThunk = createAsyncThunk(
       temporalResolution,
       groupBy = 'vessel_id',
       spatialResolution = 'low',
+      spatialAggregation = true,
       format = 'json',
     } = params
     const query = stringify(
@@ -53,6 +55,7 @@ export const fetchReportVesselsThunk = createAsyncThunk(
         ].join(','),
         'group-by': groupBy,
         'spatial-resolution': spatialResolution,
+        'spatial-aggregation': spatialAggregation,
         format: format,
       },
       { arrayFormat: 'indices' }
