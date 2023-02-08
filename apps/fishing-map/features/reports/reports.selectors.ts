@@ -1,9 +1,14 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { groupBy, sum, sumBy, uniq, uniqBy } from 'lodash'
 import { ReportVessel } from '@globalfishingwatch/api-types'
-import { selectReportActivityGraph, selectReportVesselGraph } from 'routes/routes.selectors'
+import {
+  selectReportActivityGraph,
+  selectReportVesselGraph,
+  selectReportVesselPage,
+} from 'routes/routes.selectors'
 import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import { sortStrings } from 'utils/shared'
+import { REPORT_VESSELS_PER_PAGE } from 'data/config'
 import { selectReportVesselsData } from './reports.slice'
 
 export const selectReportActivityFlatten = createSelector(
@@ -105,3 +110,24 @@ export const selectReportVesselsList = createSelector([selectReportActivityFlatt
     })
     .sort((a, b) => b.hours - a.hours)
 })
+
+export const selectReportVesselsPaginated = createSelector(
+  [selectReportVesselsList, selectReportVesselPage],
+  (vessels, page = 0) => {
+    if (!vessels?.length) return null
+    return vessels.slice(REPORT_VESSELS_PER_PAGE * page, REPORT_VESSELS_PER_PAGE * (page + 1))
+  }
+)
+
+export const selectReportVesselsPagination = createSelector(
+  [selectReportVesselsList, selectReportVesselPage],
+  (vessels, page = 0) => {
+    if (!vessels?.length) return null
+    return {
+      page,
+      offset: REPORT_VESSELS_PER_PAGE * page,
+      results: REPORT_VESSELS_PER_PAGE,
+      total: vessels.length,
+    }
+  }
+)

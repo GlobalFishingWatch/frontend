@@ -85,6 +85,7 @@ export const selectUrlDataviewInstancesOrder =
 export const selectReportActivityGraph =
   selectQueryParam<ReportActivityGraph>('reportActivityGraph')
 export const selectReportVesselGraph = selectQueryParam<ReportVesselGraph>('reportVesselGraph')
+export const selectReportVesselPage = selectQueryParam<number>('reportVesselPage')
 
 export const selectUrlViewport = createSelector(
   [selectUrlMapZoomQuery, selectUrlMapLatitudeQuery, selectUrlMapLongitudeQuery],

@@ -133,6 +133,8 @@ export const POPUP_CATEGORY_ORDER = [
 
 export const FIT_BOUNDS_ANALYSIS_PADDING = 30
 
+export const REPORT_VESSELS_PER_PAGE = 10
+
 export const REPORT_VESSELS_GRAPH_GEARTYPE = 'geartype'
 export const REPORT_VESSELS_GRAPH_FLAG = 'flag'
 

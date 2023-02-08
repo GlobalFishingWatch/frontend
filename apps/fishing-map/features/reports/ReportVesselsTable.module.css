@@ -47,3 +47,19 @@
 .vesselsTableHour {
   text-align: right;
 }
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2rem;
+}
+
+.footer > div {
+  display: flex;
+  align-items: center;
+}
+
+.footerButton {
+  margin-left: 1rem;
+}
