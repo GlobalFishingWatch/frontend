@@ -1,8 +1,9 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { groupBy, sumBy, uniq, uniqBy } from 'lodash'
 import { ReportVessel } from '@globalfishingwatch/api-types'
-import { selectReportVesselGraph } from 'routes/routes.selectors'
+import { selectReportActivityGraph, selectReportVesselGraph } from 'routes/routes.selectors'
 import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
+import { sortStrings } from 'utils/shared'
 import { selectReportVesselsData } from './reports.slice'
 
 export const selectReportActivityFlatten = createSelector(
@@ -32,15 +33,39 @@ export const selectReportVesselsHours = createSelector([selectReportActivityFlat
   return vessels.map((vessel) => vessel?.hours || 0).reduce((acc, hours) => acc + hours, 0)
 })
 
+export const selectReportActivityGraphData = createSelector(
+  [selectReportActivityGraph, selectReportVesselsData, selectActiveHeatmapDataviews],
+  (reportGraph, reportData, heatmapDataviews) => {
+    if (!reportData?.length) return null
+
+    const dataByDataview = heatmapDataviews.map((dataview, index) => {
+      const dataviewData = Object.values(reportData[index]).flat()
+      const key = reportGraph === 'evolution' ? 'date' : 'date' // TODO for before/after and periodComparison
+      const dataByKey = groupBy(dataviewData, key)
+      return { id: dataview.id, data: dataByKey }
+    })
+
+    const distributionKeys = uniq(dataByDataview.flatMap(({ data }) => Object.keys(data))).sort(
+      sortStrings
+    )
+
+    return distributionKeys.map((key) => {
+      const distributionData = { date: key }
+      dataByDataview.forEach(({ id, data }) => {
+        const hours = sumBy(data[key], 'hours')
+        if (hours > 0) {
+          distributionData[id] = hours
+        }
+      })
+      return distributionData
+    })
+  }
+)
+
 export const selectReportVesselsGraphData = createSelector(
-  [
-    selectReportVesselGraph,
-    selectReportVesselsData,
-    selectReportActivityFlatten,
-    selectActiveHeatmapDataviews,
-  ],
-  (reportGraph, reportData, vessels, heatmapDataviews) => {
-    if (!vessels?.length) return null
+  [selectReportVesselGraph, selectReportVesselsData, selectActiveHeatmapDataviews],
+  (reportGraph, reportData, heatmapDataviews) => {
+    if (!reportData?.length) return null
 
     const dataByDataview = heatmapDataviews.map((dataview, index) => {
       const dataviewData = Object.values(reportData[index]).flat()

@@ -1,6 +1,12 @@
 import { BaseUrlWorkspace } from '@globalfishingwatch/dataviews-client'
 import { EventType } from '@globalfishingwatch/api-types'
-import { REPORT_VESSELS_GRAPH_GEARTYPE, REPORT_VESSELS_GRAPH_FLAG } from 'data/config'
+import {
+  REPORT_VESSELS_GRAPH_GEARTYPE,
+  REPORT_VESSELS_GRAPH_FLAG,
+  REPORT_ACTIVITY_GRAPH_EVOLUTION,
+  REPORT_ACTIVITY_GRAPH_BEFORE_AFTER,
+  REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
+} from 'data/config'
 export { Locale } from '@globalfishingwatch/api-types'
 
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
@@ -21,6 +27,7 @@ export type WorkspaceStateProperty =
   | 'timebarSelectedEnvId'
   | 'bivariateDataviews'
   | 'activityCategory'
+  | 'reportActivityGraph'
   | 'reportVesselGraph'
 
 export type WorkspaceParam =
@@ -45,6 +52,10 @@ export type WorkspaceAnalysisTimeComparison = {
 }
 
 export type BivariateDataviews = [string, string]
+export type ReportActivityGraph =
+  | typeof REPORT_ACTIVITY_GRAPH_EVOLUTION
+  | typeof REPORT_ACTIVITY_GRAPH_BEFORE_AFTER
+  | typeof REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON
 export type ReportVesselGraph =
   | typeof REPORT_VESSELS_GRAPH_GEARTYPE
   | typeof REPORT_VESSELS_GRAPH_FLAG
@@ -63,6 +74,7 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   timebarGraph?: TimebarGraphs
   timebarSelectedEnvId?: string
   bivariateDataviews?: BivariateDataviews
+  reportActivityGraph?: ReportActivityGraph
   reportVesselGraph?: ReportVesselGraph
 }
 

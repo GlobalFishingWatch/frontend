@@ -12,6 +12,9 @@ export const toFixed = (value: number, decimals = 2) => {
 }
 
 export type Field = { id: string; label: string | number }
+
+export const sortStrings = (a: string, b: string) => a.localeCompare(b)
+
 export const sortFields = (a: Field, b: Field) => {
   if (typeof a.label === 'number' || typeof b.label === 'number') {
     return (a.label as number) - (b.label as number)

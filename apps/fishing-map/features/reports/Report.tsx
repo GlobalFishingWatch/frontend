@@ -1,9 +1,10 @@
 import { Fragment } from 'react'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { useFetchReportArea, useFetchReportVessel } from './reports.hooks'
 import ReportSummary from './ReportSummary'
 import ReportTitle from './ReportTitle'
-import { useFetchReportArea, useFetchReportVessel } from './reports.hooks'
+import ReportActivity from './ReportActivity'
 import ReportVessels from './ReportVessels'
 
 export type ReportType = 'activity' | 'area'
@@ -25,6 +26,7 @@ export default function Report(props: ReportsProps) {
     <Fragment>
       <ReportTitle title={areaDetail?.name} type="activity" />
       <ReportSummary />
+      <ReportActivity activityUnit={activityUnit} />
       <ReportVessels activityUnit={activityUnit} />
     </Fragment>
   )

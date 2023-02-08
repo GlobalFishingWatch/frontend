@@ -22,6 +22,8 @@
     "excluding": "Excluding",
     "experimental": "Experimental",
     "filteredBy": "filtered by",
+    "groupByFlag": "Flag distribution",
+    "groupByGeartype": "Gear type distribution",
     "noDataByArea": "No data available for the selected area",
     "onlyAISAllowed": "Only AIS datasets are allowed to download",
     "periodComparison": "period comparison",
@@ -29,6 +31,12 @@
     "periodComparison2nd": "comparison start",
     "periodComparisonDuration": "duration",
     "periodComparisonRange": "in the {{duration}} following {{compareStart}} compared to baseline in the {{duration}} following {{start}}",
+    "searchPlaceholder": "Filter vessels by name, mmsi, flag states or gear type",
+    "summary": "<strong>{{vessels}}</strong> $t(common.vessel, {\"count\": {{vessels}} }) had {{hours}} $t(common.hour, {\"count\": {{hours}} }) of {{activityType}} in the area between {{start}} and {{end}}",
+    "reportTitle": {
+      "activity": "Activity report",
+      "area": "Area report"
+    },
     "timeRangeTooLong": "Reports are only allowed for time ranges up to one year",
     "title": "Analysis",
     "vesselFlags": "by vessels flagged by",
@@ -401,16 +409,6 @@
     "search": "Search ocean and sea areas, MPAs or EEZs",
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out"
-  },
-  "report": {
-    "title": {
-      "activity": "Activity report",
-      "area": "Area report"
-    },
-    "groupByGeartype": "Gear type distribution",
-    "groupByFlag": "Flag distribution",
-    "summary": "<strong>{{vessels}}</strong> $t(common.vessel, {\"count\": {{vessels}} }) had {{hours}} $t(common.hour, {\"count\": {{hours}} }) of {{activityType}} in the area between {{start}} and {{end}}",
-    "searchPlaceholder": "Filter vessels by name, mmsi, flag states or gear type"
   },
   "search": {
     "advanced": "Advanced",

@@ -1,10 +1,12 @@
 import { useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectLocationDatasetId, selectLocationAreaId } from 'routes/routes.selectors'
+import {
+  selectLocationDatasetId,
+  selectLocationAreaId,
+  selectUrlTimeRange,
+} from 'routes/routes.selectors'
 import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { DateRange } from 'features/download/downloadActivity.slice'
 import { getActiveDatasetsInActivityDataviews } from 'features/datasets/datasets.utils'
 import {
   fetchAreaDetailThunk,
@@ -39,8 +41,8 @@ export function useFetchReportArea() {
 }
 
 export function useFetchReportVessel() {
-  const { timerange } = useTimerangeConnect()
   const dispatch = useAppDispatch()
+  const timerange = useSelector(selectUrlTimeRange)
   const locationDatasetId = useSelector(selectLocationDatasetId)
   const locationAreaId = useSelector(selectLocationAreaId)
   const dataviews = useSelector(selectActiveHeatmapDataviews)
@@ -57,7 +59,7 @@ export function useFetchReportVessel() {
             id: locationAreaId,
             dataset: locationDatasetId,
           },
-          dateRange: timerange as DateRange,
+          dateRange: timerange,
           temporalResolution: 'daily',
           spatialAggregation: true,
         })

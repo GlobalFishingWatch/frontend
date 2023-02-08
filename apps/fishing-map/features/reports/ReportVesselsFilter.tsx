@@ -13,7 +13,7 @@ export default function ReportVesselsFilter(props: ReportVesselsFilterProps) {
         type="search"
         value={query}
         placeholder={t(
-          'report.searchPlaceholder',
+          'analysis.searchPlaceholder',
           'Filter vessels by name, mmsi, flag states or gear type'
         )}
         onChange={(e) => setQuery(e.target.value)}

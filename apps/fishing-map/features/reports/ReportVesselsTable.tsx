@@ -59,7 +59,7 @@ export default function ReportVesselsTable({ activityUnit }: ReportVesselTablePr
     // })
   }
 
-  if (!vessels.length) return null
+  if (!vessels?.length) return null
   return (
     <table className={cx(styles.vesselsTable)}>
       <thead>

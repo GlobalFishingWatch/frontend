@@ -30,7 +30,14 @@ export default function ReportVesselsGraph(props: ReportVesselsGraphProps) {
             <XAxis dataKey="name" />
             <Tooltip />
             {dataviews.map((dataview) => {
-              return <Bar dataKey={dataview.id} stackId="a" fill={dataview.config?.color} />
+              return (
+                <Bar
+                  key={dataview.id}
+                  dataKey={dataview.id}
+                  stackId="a"
+                  fill={dataview.config?.color}
+                />
+              )
             })}
           </BarChart>
         </ResponsiveContainer>

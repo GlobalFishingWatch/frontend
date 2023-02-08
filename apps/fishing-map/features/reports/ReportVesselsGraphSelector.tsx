@@ -16,11 +16,11 @@ export default function ReportVesselsGraphSelector(props: ReportVesselsGraphProp
   const options: SelectOption[] = [
     {
       id: REPORT_VESSELS_GRAPH_GEARTYPE,
-      label: t('report.groupByGeartype', 'Gear type distribution'),
+      label: t('analysis.groupByGeartype', 'Gear type distribution'),
     },
     {
       id: REPORT_VESSELS_GRAPH_FLAG,
-      label: t('report.groupByFlag', 'Flag distribution'),
+      label: t('analysis.groupByFlag', 'Flag distribution'),
     },
   ]
 
