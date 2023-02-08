@@ -16,12 +16,16 @@ export default function ReportSummary(props: ReportSummaryProps) {
   // const dataviews = useSelector(selectActiveHeatmapDataviews)
   const summary = t('analysis.summary', {
     defaultValue:
-      '<strong>{{vessels}}</strong> $t(common.vessel, {"count": {{vessels}} }) had {{hours}} $t(common.hour, {"count": {{hours}} }) of {{activityType}} in the area between {{start}} and {{end}}',
+      '<strong>{{vessels}} $t(common.vessel, {"count": {{vessels}} })</strong> had <strong>{{hours}} $t(common.hour, {"count": {{hours}} })</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
     vessels: reportVessels || 0,
     hours: Math.floor(reportHours),
     activityType: 'Apparent fishing effort', // TODO get this from dataviews
     start: formatI18nDate(timerange.start),
     end: formatI18nDate(timerange.end),
   })
-  return <p className={styles.summary} dangerouslySetInnerHTML={{ __html: summary }}></p>
+  return (
+    <div className={styles.container}>
+      <p className={styles.summary} dangerouslySetInnerHTML={{ __html: summary }}></p>
+    </div>
+  )
 }

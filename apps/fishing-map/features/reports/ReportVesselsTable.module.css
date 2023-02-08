@@ -1,6 +1,5 @@
 .vesselsTable {
-  margin-right: var(--space-S);
-  margin-bottom: var(--space-XS);
+  width: 100%;
   border-collapse: collapse;
 }
 

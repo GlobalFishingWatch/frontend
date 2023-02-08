@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from 'recharts'
 import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import styles from './ReportVesselsGraph.module.css'
-import ReportVesselsGraphSelector from './ReportVesselsGraphSelector'
 import { selectReportVesselsGraphData } from './reports.selectors'
 
 type ReportVesselsGraphProps = {}
@@ -13,7 +12,6 @@ export default function ReportVesselsGraph(props: ReportVesselsGraphProps) {
   const data = useSelector(selectReportVesselsGraphData)
   return (
     <Fragment>
-      <ReportVesselsGraphSelector />
       <div className={styles.graph}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart

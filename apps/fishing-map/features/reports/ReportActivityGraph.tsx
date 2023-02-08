@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import { useSelector } from 'react-redux'
 import {
   ResponsiveContainer,
@@ -14,7 +14,6 @@ import i18n from 'features/i18n/i18n'
 import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
 import styles from './ReportActivityGraph.module.css'
-import ReportActivityGraphSelector from './ReportActivityGraphSelector'
 import { selectReportActivityGraphData } from './reports.selectors'
 import { formatTooltipValue, tickFormatter } from './reports.utils'
 
@@ -65,55 +64,52 @@ export default function ReportActivityGraph(props: ReportActivityProps) {
   const data = useSelector(selectReportActivityGraphData)
 
   return (
-    <Fragment>
-      <ReportActivityGraphSelector />
-      <div className={styles.graph}>
-        <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={data} margin={{ top: 15, right: 20, left: -20, bottom: -10 }}>
-            <CartesianGrid vertical={false} />
-            <XAxis
-              // domain={domain}
-              dataKey="date"
-              interval="preserveStartEnd"
-              // tickFormatter={(tick: number) => formatDateTicks(tick, interval)}
-              // axisLine={paddedDomain[0] === 0}
-              // scale={'time'}
-              // type={'number'}
-            />
-            <YAxis
-              scale="linear"
-              domain={([dataMin, dataMax]) => {
-                const domainPadding = (dataMax - dataMin) / 8
-                return [
-                  Math.max(0, Math.floor(dataMin - domainPadding)),
-                  Math.ceil(dataMax + domainPadding),
-                ]
-              }}
-              tickFormatter={tickFormatter}
-              axisLine={false}
-              tickLine={false}
-              tickCount={4}
-            />
-            <Tooltip content={<AnalysisGraphTooltip timeChunkInterval={'day'} />} />
-            {dataviews.map(({ id, config, datasets }) => {
-              const unit = datasets[0]?.unit
-              return (
-                <Line
-                  key={`${id}-line`}
-                  name="line"
-                  type="monotone"
-                  dataKey={id}
-                  unit={unit}
-                  dot={false}
-                  isAnimationActive={false}
-                  stroke={config?.color}
-                  strokeWidth={2}
-                />
-              )
-            })}
-          </ComposedChart>
-        </ResponsiveContainer>
-      </div>
-    </Fragment>
+    <div className={styles.graph}>
+      <ResponsiveContainer width="100%" height="100%">
+        <ComposedChart data={data} margin={{ top: 15, right: 20, left: -20, bottom: -10 }}>
+          <CartesianGrid vertical={false} />
+          <XAxis
+            // domain={domain}
+            dataKey="date"
+            interval="preserveStartEnd"
+            // tickFormatter={(tick: number) => formatDateTicks(tick, interval)}
+            // axisLine={paddedDomain[0] === 0}
+            // scale={'time'}
+            // type={'number'}
+          />
+          <YAxis
+            scale="linear"
+            domain={([dataMin, dataMax]) => {
+              const domainPadding = (dataMax - dataMin) / 8
+              return [
+                Math.max(0, Math.floor(dataMin - domainPadding)),
+                Math.ceil(dataMax + domainPadding),
+              ]
+            }}
+            tickFormatter={tickFormatter}
+            axisLine={false}
+            tickLine={false}
+            tickCount={4}
+          />
+          <Tooltip content={<AnalysisGraphTooltip timeChunkInterval={'day'} />} />
+          {dataviews.map(({ id, config, datasets }) => {
+            const unit = datasets[0]?.unit
+            return (
+              <Line
+                key={`${id}-line`}
+                name="line"
+                type="monotone"
+                dataKey={id}
+                unit={unit}
+                dot={false}
+                isAnimationActive={false}
+                stroke={config?.color}
+                strokeWidth={2}
+              />
+            )
+          })}
+        </ComposedChart>
+      </ResponsiveContainer>
+    </div>
   )
 }

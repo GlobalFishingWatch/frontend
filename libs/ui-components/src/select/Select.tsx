@@ -21,6 +21,7 @@ interface SelectProps {
   className?: string
   direction?: 'bottom' | 'top'
   disabled?: boolean
+  type?: 'primary' | 'secondary'
 }
 
 const isItemSelected = (selectedItem: SelectOption | undefined, item: SelectOption) => {
@@ -42,6 +43,7 @@ export function Select(props: SelectProps) {
     direction = 'bottom',
     disabled = false,
     onToggleButtonClick,
+    type = 'primary',
   } = props
   const {
     isOpen,
@@ -86,12 +88,15 @@ export function Select(props: SelectProps) {
 
   return (
     <div className={containerClassName}>
-      <label className={styles.label} {...getLabelProps()}>
-        {label}
-      </label>
+      {label && (
+        <label className={styles.label} {...getLabelProps()}>
+          {label}
+        </label>
+      )}
       <div
         className={cx(
           styles.container,
+          styles[type],
           { [styles.isOpen]: isOpen },
           { [styles.placeholderShown]: !selectedOption },
           className
