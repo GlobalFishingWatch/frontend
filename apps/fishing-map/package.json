@@ -61,7 +61,7 @@
     "react-map-gl": "^7.0.16",
     "react-redux": "^8.0.2",
     "react-sticky-el": "2.0.9",
-    "recharts": "2.1.9",
+    "recharts": "2.3.2",
     "recoil": "0.7.5",
     "recoilize": "3.1.6",
     "redux": "4.2.0",

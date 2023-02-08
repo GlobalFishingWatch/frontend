@@ -24,7 +24,7 @@ type ReportRegion = {
 type TemporalResolution = 'daily' | 'monthly' | 'yearly' | 'entire'
 type FetchReportVesselsThunkParams = {
   region: ReportRegion
-  datasets: string[]
+  datasets: string[][]
   temporalResolution: TemporalResolution
   dateRange: DateRange
   groupBy?: 'vessel_id' | 'flag' | 'geartype' | 'flagAndGearType' | 'mmsi'
@@ -47,7 +47,7 @@ export const fetchReportVesselsThunk = createAsyncThunk(
     } = params
     const query = stringify(
       {
-        datasets,
+        datasets: datasets.map((d) => d.join(',')),
         'temporal-resolution': temporalResolution,
         'date-range': [
           getUTCDateTime(dateRange?.start).toString(),

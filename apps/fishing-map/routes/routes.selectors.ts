@@ -3,7 +3,7 @@ import { memoize } from 'lodash'
 import { Query, RouteObject } from 'redux-first-router'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { RootState } from 'store'
-import { WorkspaceParam } from 'types'
+import { ReportVesselGraph, WorkspaceParam } from 'types'
 import { WorkspaceCategories } from 'data/workspaces'
 import { REPORT, ROUTE_TYPES, WORKSPACE_ROUTES } from './routes'
 
@@ -81,6 +81,8 @@ export const selectUrlDataviewInstances =
 
 export const selectUrlDataviewInstancesOrder =
   selectQueryParam<UrlDataviewInstance['id'][]>('dataviewInstancesOrder')
+
+export const selectReportVesselGraph = selectQueryParam<ReportVesselGraph>('reportVesselGraph')
 
 export const selectUrlViewport = createSelector(
   [selectUrlMapZoomQuery, selectUrlMapLatitudeQuery, selectUrlMapLongitudeQuery],

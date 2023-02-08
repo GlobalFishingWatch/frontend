@@ -7,15 +7,15 @@ import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { getVesselInWorkspace } from 'features/dataviews/dataviews.utils'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import I18nNumber from 'features/i18n/i18nNumber'
-import styles from './ReportVesselTable.module.css'
 import { selectReportVesselsList } from './reports.selectors'
+import { ReportActivityUnit } from './Report'
+import styles from './ReportVesselsTable.module.css'
 
-type ReportActivityUnit = 'hours' | 'detections'
 type ReportVesselTableProps = {
-  acitivityUnit: ReportActivityUnit
+  activityUnit: ReportActivityUnit
 }
 
-export default function ReportVesselTable({ acitivityUnit }: ReportVesselTableProps) {
+export default function ReportVesselsTable({ activityUnit }: ReportVesselTableProps) {
   const { t } = useTranslation()
   const vessels = useSelector(selectReportVesselsList)
   const vesselsInWorkspace = useSelector(selectActiveTrackDataviews)
@@ -70,7 +70,7 @@ export default function ReportVesselTable({ acitivityUnit }: ReportVesselTablePr
           <th>{t('vessel.gearType_short', 'gear')}</th>
           {/* Disabled for detections to allocate some space for timestamps interaction */}
           <th>
-            {acitivityUnit === 'hours'
+            {activityUnit === 'hours'
               ? t('common.hour_other', 'hours')
               : t('common.detection_other', 'detections')}
           </th>
@@ -123,7 +123,7 @@ export default function ReportVesselTable({ acitivityUnit }: ReportVesselTablePr
               </td>
               <td className={styles.columnSpace}>{vesselGearType}</td>
               <td className={cx(styles.columnSpace, styles.vesselsTableHour)}>
-                <I18nNumber number={vessel[acitivityUnit]} />
+                <I18nNumber number={vessel[activityUnit]} />
               </td>
             </tr>
           )

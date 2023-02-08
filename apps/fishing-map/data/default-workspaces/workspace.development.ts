@@ -56,24 +56,24 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: FISHING_DATAVIEW_SLUG,
     },
-    // {
-    //   id: 'vms',
-    //   config: {
-    //     color: '#FFAA0D',
-    //     colorRamp: 'orange',
-    //     datasets: [
-    //       'public-belize-fishing-effort:v20220304',
-    //       'public-bra-onyxsat-fishing-effort:v20211126',
-    //       'public-chile-fishing-effort:v20211126',
-    //       'public-costa-rica-fishing-effort:v20211126',
-    //       'public-ecuador-fishing-effort:v20211126',
-    //       'public-indonesia-fishing-effort:v20200320',
-    //       'public-panama-fishing-effort:v20211126',
-    //       'public-peru-fishing-effort:v20211126',
-    //     ],
-    //   },
-    //   dataviewId: FISHING_DATAVIEW_SLUG,
-    // },
+    {
+      id: 'vms',
+      config: {
+        color: '#FFAA0D',
+        colorRamp: 'orange',
+        datasets: [
+          'public-belize-fishing-effort:v20220304',
+          'public-bra-onyxsat-fishing-effort:v20211126',
+          'public-chile-fishing-effort:v20211126',
+          'public-costa-rica-fishing-effort:v20211126',
+          'public-ecuador-fishing-effort:v20211126',
+          'public-indonesia-fishing-effort:v20200320',
+          'public-panama-fishing-effort:v20211126',
+          'public-peru-fishing-effort:v20211126',
+        ],
+      },
+      dataviewId: FISHING_DATAVIEW_SLUG,
+    },
     {
       id: 'presence',
       config: {

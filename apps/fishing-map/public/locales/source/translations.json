@@ -407,7 +407,10 @@
       "activity": "Activity report",
       "area": "Area report"
     },
-    "summary": "<strong>{{vessels}}</strong> $t(common.vessel, {\"count\": {{vessels}} }) had {{hours}} $t(common.hour, {\"count\": {{hours}} }) of {{activityType}} in the area between {{start}} and {{end}}"
+    "groupByGeartype": "Gear type distribution",
+    "groupByFlag": "Flag distribution",
+    "summary": "<strong>{{vessels}}</strong> $t(common.vessel, {\"count\": {{vessels}} }) had {{hours}} $t(common.hour, {\"count\": {{hours}} }) of {{activityType}} in the area between {{start}} and {{end}}",
+    "searchPlaceholder": "Filter vessels by name, mmsi, flag states or gear type"
   },
   "search": {
     "advanced": "Advanced",

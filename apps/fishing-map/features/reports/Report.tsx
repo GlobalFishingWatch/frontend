@@ -4,9 +4,10 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import ReportSummary from './ReportSummary'
 import ReportTitle from './ReportTitle'
 import { useFetchReportArea, useFetchReportVessel } from './reports.hooks'
-import ReportVesselTable from './ReportVesselTable'
+import ReportVessels from './ReportVessels'
 
 export type ReportType = 'activity' | 'area'
+export type ReportActivityUnit = 'hours' | 'detections'
 
 type ReportsProps = {}
 
@@ -17,11 +18,14 @@ export default function Report(props: ReportsProps) {
   if (reportStatus === AsyncReducerStatus.Error) return <p>There was a error</p>
   if (reportStatus !== AsyncReducerStatus.Finished) return <Spinner />
 
+  // TODO get this from datasets config
+  const activityUnit = 'hours' // using hours as we are doing only fishing effort for now
+
   return (
     <Fragment>
       <ReportTitle title={areaDetail?.name} type="activity" />
       <ReportSummary />
-      <ReportVesselTable acitivityUnit="hours" />
+      <ReportVessels activityUnit={activityUnit} />
     </Fragment>
   )
 }
