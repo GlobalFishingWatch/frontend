@@ -3,6 +3,7 @@ import {
   CircleLayerSpecification,
   LineLayerSpecification,
   FillLayerSpecification,
+  FilterExpression,
 } from '@globalfishingwatch/maplibre-gl'
 import { GeneratorType, ContextGeneratorConfig } from '../types'
 import { ExtendedLayerMeta } from '../../types'
@@ -85,7 +86,13 @@ class ContextGenerator {
     if (!baseLayers?.length) {
       throw new Error(`Context layer should specify a valid layer parameter, ${config.layer}`)
     }
-    const [filterKey, filterValues] = Object.entries(config?.filters || [])[0]
+    let filters: Array<any> = []
+    if (config?.filters) {
+      filters = ['all']
+      Object.entries(config.filters).forEach(([key, values]) => {
+        filters.push(['match', ['get', key], values, true, false])
+      })
+    }
     const color = config.color || DEFAULT_LINE_COLOR
     const layers = baseLayers.map((baseLayer) => {
       const paint = getPaintPropertyByType(baseLayer, config)
@@ -97,7 +104,7 @@ class ContextGenerator {
         layout: {
           ...baseLayer.layout,
         },
-        ...(filterValues && { filter: ['match', ['get', filterKey], filterValues, true, false] }),
+        ...(filters.length > 0 && { filter: filters }),
         paint,
         metadata: {
           ...(baseLayer.metadata as ExtendedLayerMeta),
