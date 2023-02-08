@@ -3,7 +3,6 @@ import {
   CircleLayerSpecification,
   LineLayerSpecification,
   FillLayerSpecification,
-  FilterExpression,
 } from '@globalfishingwatch/maplibre-gl'
 import { GeneratorType, ContextGeneratorConfig } from '../types'
 import { ExtendedLayerMeta } from '../../types'
