@@ -103,25 +103,6 @@ const getUTCDate = (timestamp: number) => {
   )
 }
 
-const getDataviewWithDatasetFiltersConfig = (
-  dataview: UrlDataviewInstance,
-  dataset: string
-): UrlDataviewInstance => {
-  const dataviewDatasetsConfig = (dataview.datasetsConfig || []).map((datasetConfig) => {
-    if (datasetConfig.datasetId === dataset) {
-      const filterDataviewConfig = Object.keys(dataview.config?.filters || {}).map(
-        (id): DataviewDatasetConfigParam => ({
-          id,
-          value: dataview.config?.filters?.[id].join(','),
-        })
-      )
-      return { ...datasetConfig, query: [...(datasetConfig.query || []), ...filterDataviewConfig] }
-    }
-    return datasetConfig
-  })
-  return { ...dataview, datasetsConfig: dataviewDatasetsConfig }
-}
-
 export const getDatasetsExtent = (
   datasets: Dataset[] | undefined,
   { format }: { format: 'isoString' | 'timestamp' } = { format: 'isoString' }
@@ -350,12 +331,8 @@ export function getGeneratorConfig(
     case GeneratorType.UserContext: {
       if (Array.isArray(dataview.config.layers)) {
         const tilesUrls = dataview.config.layers?.flatMap(({ id, dataset }) => {
-          const hasFiltersConfig = Object.keys(dataview.config?.filters || {}).length > 0
-          const dataviewWithConfig = hasFiltersConfig
-            ? getDataviewWithDatasetFiltersConfig(dataview, dataset)
-            : dataview
           const { dataset: resolvedDataset, url } = resolveDataviewDatasetResource(
-            dataviewWithConfig,
+            dataview,
             dataset
           )
           if (!url || resolvedDataset?.status !== DatasetStatus.Done) return []
@@ -380,15 +357,7 @@ export function getGeneratorConfig(
           ? `${dataview.id}${MULTILAYER_SEPARATOR}${dataview.config.layers}`
           : dataview.id
         generator.layer = dataview.config.layers
-        const hasFiltersConfig = Object.keys(dataview.config?.filters || {}).length > 0
-        const dataviewWithConfig =
-          hasFiltersConfig && dataview.datasets?.[0].id
-            ? getDataviewWithDatasetFiltersConfig(dataview, dataview.datasets?.[0].id)
-            : dataview
-        const { dataset, url } = resolveDataviewDatasetResource(
-          dataviewWithConfig,
-          DatasetTypes.Context
-        )
+        const { dataset, url } = resolveDataviewDatasetResource(dataview, DatasetTypes.Context)
         if (dataset?.status !== DatasetStatus.Done) {
           return []
         }
