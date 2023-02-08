@@ -89,7 +89,7 @@ class ContextGenerator {
     if (config?.filters) {
       filters = ['all']
       Object.entries(config.filters).forEach(([key, values]) => {
-        filters.push(['match', ['get', key], values, true, false])
+        filters.push(['match', ['to-string', ['get', key]], values, true, false])
       })
     }
     const color = config.color || DEFAULT_LINE_COLOR
