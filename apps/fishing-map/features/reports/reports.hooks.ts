@@ -43,21 +43,21 @@ export function useFetchReportArea() {
 export function useFetchReportVessel() {
   const dispatch = useAppDispatch()
   const timerange = useSelector(selectUrlTimeRange)
-  const locationDatasetId = useSelector(selectLocationDatasetId)
-  const locationAreaId = useSelector(selectLocationAreaId)
+  const datasetId = useSelector(selectLocationDatasetId)
+  const areaId = useSelector(selectLocationAreaId)
   const dataviews = useSelector(selectActiveHeatmapDataviews)
   const status = useSelector(selectReportVesselsStatus)
   const data = useSelector(selectReportVesselsData)
 
   useEffect(() => {
     const datasets = dataviews.map((d) => getActiveDatasetsInActivityDataviews([d]))
-    if (!data && datasets?.length) {
+    if (datasets?.length) {
       dispatch(
         fetchReportVesselsThunk({
           datasets,
           region: {
-            id: locationAreaId,
-            dataset: locationDatasetId,
+            id: areaId,
+            dataset: datasetId,
           },
           dateRange: timerange,
           temporalResolution: 'daily',
@@ -65,7 +65,7 @@ export function useFetchReportVessel() {
         })
       )
     }
-  }, [dataviews, dispatch, locationAreaId, locationDatasetId, data, timerange])
+  }, [dispatch, areaId, datasetId, timerange, dataviews])
 
   return useMemo(() => ({ status, data }), [status, data])
 }

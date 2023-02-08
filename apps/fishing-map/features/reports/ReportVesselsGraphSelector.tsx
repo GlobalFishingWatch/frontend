@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Select, SelectOption } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import { REPORT_VESSELS_GRAPH_GEARTYPE, REPORT_VESSELS_GRAPH_FLAG } from 'data/config'
-import { selectReportVesselGraph } from 'routes/routes.selectors'
+import { selectReportVesselGraph } from 'features/app/app.selectors'
 
 type ReportVesselsGraphProps = {}
 

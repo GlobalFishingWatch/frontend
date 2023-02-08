@@ -35,6 +35,13 @@ export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions 
   ? {}
   : { debug: true }
 
+export const REPORT_VESSELS_PER_PAGE = 10
+export const REPORT_VESSELS_GRAPH_GEARTYPE = 'geartype'
+export const REPORT_VESSELS_GRAPH_FLAG = 'flag'
+export const REPORT_ACTIVITY_GRAPH_EVOLUTION = 'evolution'
+export const REPORT_ACTIVITY_GRAPH_BEFORE_AFTER = 'beforeAfter'
+export const REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON = 'periodComparison'
+
 // TODO use it to retrieve it and store in workspace.default in deploy
 export const APP_NAME = 'fishing-map'
 export const PUBLIC_SUFIX = 'public'
@@ -85,6 +92,9 @@ export const DEFAULT_WORKSPACE = {
   timebarGraph: TimebarGraphs.None,
   bivariateDataviews: undefined,
   analysis: undefined,
+  reportActivityGraph: REPORT_ACTIVITY_GRAPH_EVOLUTION,
+  reportVesselGraph: REPORT_VESSELS_GRAPH_GEARTYPE,
+  reportVesselPage: REPORT_VESSELS_PER_PAGE,
 }
 
 export const EVENTS_COLORS: Record<string, string> = {
@@ -132,12 +142,3 @@ export const POPUP_CATEGORY_ORDER = [
 ]
 
 export const FIT_BOUNDS_ANALYSIS_PADDING = 30
-
-export const REPORT_VESSELS_PER_PAGE = 10
-
-export const REPORT_VESSELS_GRAPH_GEARTYPE = 'geartype'
-export const REPORT_VESSELS_GRAPH_FLAG = 'flag'
-
-export const REPORT_ACTIVITY_GRAPH_EVOLUTION = 'evolution'
-export const REPORT_ACTIVITY_GRAPH_BEFORE_AFTER = 'beforeAfter'
-export const REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON = 'periodComparison'

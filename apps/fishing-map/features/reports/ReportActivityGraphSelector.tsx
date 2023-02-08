@@ -8,7 +8,7 @@ import {
   REPORT_ACTIVITY_GRAPH_BEFORE_AFTER,
   REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
 } from 'data/config'
-import { selectReportActivityGraph } from 'routes/routes.selectors'
+import { selectReportActivityGraph } from 'features/app/app.selectors'
 
 type ReportActivityGraphSelectorProps = {}
 

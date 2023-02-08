@@ -15,6 +15,8 @@ import {
 } from 'routes/routes.selectors'
 import {
   BivariateDataviews,
+  ReportActivityGraph,
+  ReportVesselGraph,
   TimebarGraphs,
   TimebarVisualisations,
   VisibleEvents,
@@ -113,6 +115,26 @@ export const selectSidebarOpen = createSelector(
   [selectWorkspaceStateProperty('sidebarOpen')],
   (sidebarOpen): boolean => {
     return sidebarOpen
+  }
+)
+
+export const selectReportActivityGraph = createSelector(
+  [selectWorkspaceStateProperty('reportActivityGraph')],
+  (reportActivityGraph): ReportActivityGraph => {
+    return reportActivityGraph
+  }
+)
+
+export const selectReportVesselGraph = createSelector(
+  [selectWorkspaceStateProperty('reportVesselGraph')],
+  (reportVesselGraph): ReportVesselGraph => {
+    return reportVesselGraph
+  }
+)
+export const selectReportVesselPage = createSelector(
+  [selectWorkspaceStateProperty('reportVesselPage')],
+  (reportVesselPage): number => {
+    return reportVesselPage
   }
 )
 

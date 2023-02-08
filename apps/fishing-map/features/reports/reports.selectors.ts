@@ -5,7 +5,7 @@ import {
   selectReportActivityGraph,
   selectReportVesselGraph,
   selectReportVesselPage,
-} from 'routes/routes.selectors'
+} from 'features/app/app.selectors'
 import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import { sortStrings } from 'utils/shared'
 import { REPORT_VESSELS_PER_PAGE } from 'data/config'

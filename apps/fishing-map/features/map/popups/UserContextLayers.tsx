@@ -37,9 +37,11 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
                   id={id}
                   key={`${id}-${index}`}
                   label={label}
+                  datasetId={feature.datasetId}
+                  areaId={feature.properties.gfw_id}
                   showFeaturesDetails={showFeaturesDetails}
                   handleDownloadClick={(e) => onDownloadClick(e, feature)}
-                  handleAnalysisClick={(e) => onAnalysisClick(e, feature)}
+                  // handleAnalysisClick={(e) => onAnalysisClick(e, feature)}
                 />
               )
             })}
