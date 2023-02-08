@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { groupBy, sumBy, uniq, uniqBy } from 'lodash'
+import { groupBy, sum, sumBy, uniq, uniqBy } from 'lodash'
 import { ReportVessel } from '@globalfishingwatch/api-types'
 import { selectReportActivityGraph, selectReportVesselGraph } from 'routes/routes.selectors'
 import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
@@ -64,10 +64,10 @@ export const selectReportActivityGraphData = createSelector(
 
 export const selectReportVesselsGraphData = createSelector(
   [selectReportVesselGraph, selectReportVesselsData, selectActiveHeatmapDataviews],
-  (reportGraph, reportData, heatmapDataviews) => {
+  (reportGraph, reportData, dataviews) => {
     if (!reportData?.length) return null
 
-    const dataByDataview = heatmapDataviews.map((dataview, index) => {
+    const dataByDataview = dataviews.map((dataview, index) => {
       const dataviewData = Object.values(reportData[index]).flat()
       const dataByKey = groupBy(dataviewData, reportGraph.toLowerCase())
       return { id: dataview.id, data: dataByKey }
@@ -75,13 +75,17 @@ export const selectReportVesselsGraphData = createSelector(
 
     const distributionKeys = uniq(dataByDataview.flatMap(({ data }) => Object.keys(data)))
 
-    return distributionKeys.map((key) => {
+    const data = distributionKeys.map((key) => {
       const distributionData = { name: key }
       dataByDataview.forEach(({ id, data }) => {
         distributionData[id] = data[key]?.length || 0
       })
       return distributionData
     })
+    const dataviewIds = dataviews.map((d) => d.id)
+    return data.sort(
+      (a, b) => sum(dataviewIds.map((d) => b[d])) - sum(dataviewIds.map((d) => a[d]))
+    )
   }
 )
 
