@@ -8,7 +8,6 @@ import { format } from 'd3-format'
 import { DateTime } from 'luxon'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { toFixed } from '../../utils/shared'
 
 const arrayToStringTransform = (array: string[]) =>
   `(${array?.map((v: string) => `'${v}'`).join(', ')})`

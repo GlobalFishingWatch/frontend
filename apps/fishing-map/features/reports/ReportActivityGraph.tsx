@@ -16,7 +16,7 @@ import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
 import styles from './ReportActivityGraph.module.css'
 import ReportActivityGraphSelector from './ReportActivityGraphSelector'
 import { selectReportActivityGraphData } from './reports.selectors'
-import { formatTooltipValue } from './reports.utils'
+import { formatTooltipValue, tickFormatter } from './reports.utils'
 
 type AnalysisGraphTooltipProps = {
   active: boolean
@@ -64,17 +64,6 @@ export default function ReportActivityGraph(props: ReportActivityProps) {
   const dataviews = useSelector(selectActiveHeatmapDataviews)
   const data = useSelector(selectReportActivityGraphData)
 
-  // const domain = useMemo(
-  //   () => [new Date(start).getTime(), new Date(cleanEnd).getTime()],
-  //   [start, cleanEnd]
-  // )
-
-  // const domainPadding = (dataMax - dataMin) / 8
-  // const paddedDomain: [number, number] = [
-  //   Math.max(0, Math.floor(dataMin - domainPadding)),
-  //   Math.ceil(dataMax + domainPadding),
-  // ]
-
   return (
     <Fragment>
       <ReportActivityGraphSelector />
@@ -93,9 +82,14 @@ export default function ReportActivityGraph(props: ReportActivityProps) {
             />
             <YAxis
               scale="linear"
-              // domain={paddedDomain}
-              interval="preserveEnd"
-              // tickFormatter={tickFormatter}
+              domain={([dataMin, dataMax]) => {
+                const domainPadding = (dataMax - dataMin) / 8
+                return [
+                  Math.max(0, Math.floor(dataMin - domainPadding)),
+                  Math.ceil(dataMax + domainPadding),
+                ]
+              }}
+              tickFormatter={tickFormatter}
               axisLine={false}
               tickLine={false}
               tickCount={4}
