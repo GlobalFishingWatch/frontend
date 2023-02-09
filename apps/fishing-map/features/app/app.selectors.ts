@@ -134,7 +134,7 @@ export const selectReportVesselGraph = createSelector(
 export const selectReportVesselPage = createSelector(
   [selectWorkspaceStateProperty('reportVesselPage')],
   (reportVesselPage): number => {
-    return reportVesselPage
+    return parseInt(reportVesselPage)
   }
 )
 
