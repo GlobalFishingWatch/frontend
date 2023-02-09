@@ -117,6 +117,22 @@ export const selectReportVesselsList = createSelector([selectReportActivityFlatt
     .sort((a, b) => b.hours - a.hours)
 })
 
+export const selectReportVesselsListWithAllInfo = createSelector(
+  [selectReportActivityFlatten],
+  (vessels) => {
+    if (!vessels?.length) return null
+
+    return Object.values(groupBy(vessels, 'vesselId'))
+      .map((vesselActivity) => {
+        return {
+          ...vesselActivity[0],
+          hours: sumBy(vesselActivity, 'hours'),
+        }
+      })
+      .sort((a, b) => b.hours - a.hours)
+  }
+)
+
 export const selectReportVesselsPaginated = createSelector(
   [selectReportVesselsList, selectReportVesselPage],
   (vessels, page = 0) => {

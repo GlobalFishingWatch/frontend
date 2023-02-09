@@ -12,6 +12,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { selectUrlTimeRange } from 'routes/routes.selectors'
 import {
   selectReportVesselsList,
+  selectReportVesselsListWithAllInfo,
   selectReportVesselsPaginated,
   selectReportVesselsPagination,
 } from './reports.selectors'
@@ -26,7 +27,7 @@ type ReportVesselTableProps = {
 export default function ReportVesselsTable({ activityUnit, reportName }: ReportVesselTableProps) {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
-  const allVessels = useSelector(selectReportVesselsList)
+  const allVessels = useSelector(selectReportVesselsListWithAllInfo)
   const vessels = useSelector(selectReportVesselsPaginated)
   const pagination = useSelector(selectReportVesselsPagination)
   const vesselsInWorkspace = useSelector(selectActiveTrackDataviews)
