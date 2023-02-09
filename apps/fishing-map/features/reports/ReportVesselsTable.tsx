@@ -92,13 +92,6 @@ export default function ReportVesselsTable({ activityUnit }: ReportVesselTablePr
           </thead>
           <tbody>
             {vessels.map((vessel, i) => {
-              const vesselName = formatInfoField(vessel.shipName, 'name')
-
-              const vesselGearType = `${t(
-                `vessel.gearTypes.${vessel.geartype}` as any,
-                vessel.geartype ?? EMPTY_FIELD_PLACEHOLDER
-              )}`
-
               const hasDatasets = true
               // TODO get datasets from the vessel
               // const hasDatasets = vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
@@ -128,9 +121,11 @@ export default function ReportVesselsTable({ activityUnit }: ReportVesselTablePr
                       />
                     </td>
                   )}
-                  <td colSpan={pinTrackDisabled ? 2 : 1}>{vesselName}</td>
+                  <td colSpan={pinTrackDisabled ? 2 : 1}>
+                    {formatInfoField(vessel.shipName, 'name')}
+                  </td>
                   <td colSpan={1} className={styles.columnSpace}>
-                    <span>{vessel.mmsi}</span>
+                    <span>{vessel.mmsi || EMPTY_FIELD_PLACEHOLDER}</span>
                   </td>
                   <td colSpan={1} className={styles.columnSpace}>
                     <span>
@@ -138,7 +133,7 @@ export default function ReportVesselsTable({ activityUnit }: ReportVesselTablePr
                     </span>
                   </td>
                   <td colSpan={1} className={styles.columnSpace}>
-                    {vesselGearType}
+                    {`${t(`vessel.gearTypes.${vessel.geartype}` as any, EMPTY_FIELD_PLACEHOLDER)}`}
                   </td>
                   <td colSpan={1} className={cx(styles.columnSpace, styles.right)}>
                     <I18nNumber number={vessel[activityUnit]} />

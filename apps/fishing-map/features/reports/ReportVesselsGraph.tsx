@@ -6,6 +6,7 @@ import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selec
 import { selectReportVesselGraph } from 'features/app/app.selectors'
 import { ReportVesselGraph } from 'types'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
+import I18nNumber from 'features/i18n/i18nNumber'
 import styles from './ReportVesselsGraph.module.css'
 import { selectReportVesselsGraphData } from './reports.selectors'
 
@@ -43,7 +44,7 @@ const ReportGraphTooltip = (props: any) => {
             return value !== 0 ? (
               <li key={index} className={styles.tooltipValue}>
                 <span className={styles.tooltipValueDot} style={{ color }}></span>
-                {value}
+                <I18nNumber number={value} /> {t('common.vessel', { count: value }).toLowerCase()}
               </li>
             ) : null
           })}
@@ -74,7 +75,7 @@ export default function ReportVesselsGraph(props: ReportVesselsGraphProps) {
               bottom: 5,
             }}
           >
-            <Tooltip content={<ReportGraphTooltip />} type={selectedReportVesselGraph} />
+            <Tooltip content={<ReportGraphTooltip type={selectedReportVesselGraph} />} />
             {dataviews.map((dataview) => {
               return (
                 <Bar
@@ -85,7 +86,7 @@ export default function ReportVesselsGraph(props: ReportVesselsGraphProps) {
                 />
               )
             })}
-            <XAxis dataKey="name" />
+            <XAxis dataKey="name" interval="preserveStart" />
           </BarChart>
         </ResponsiveContainer>
       </div>
