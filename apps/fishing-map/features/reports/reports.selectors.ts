@@ -11,6 +11,8 @@ import { sortStrings } from 'utils/shared'
 import { REPORT_VESSELS_PER_PAGE } from 'data/config'
 import { selectReportVesselsData } from './reports.slice'
 
+export const DEFAULT_NULL_VALUE = 'NULL'
+
 export const selectReportActivityFlatten = createSelector(
   [selectReportVesselsData],
   (reportDatasets) => {
@@ -90,9 +92,11 @@ export const selectReportVesselsGraphData = createSelector(
       return distributionData
     })
     const dataviewIds = dataviews.map((d) => d.id)
-    return data.sort(
-      (a, b) => sum(dataviewIds.map((d) => b[d])) - sum(dataviewIds.map((d) => a[d]))
-    )
+    return data.sort((a, b) => {
+      if (a.name === DEFAULT_NULL_VALUE) return 1
+      if (b.name === DEFAULT_NULL_VALUE) return -1
+      return sum(dataviewIds.map((d) => b[d])) - sum(dataviewIds.map((d) => a[d]))
+    })
   }
 )
 
