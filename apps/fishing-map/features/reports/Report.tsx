@@ -27,7 +27,7 @@ export default function Report(props: ReportsProps) {
       <ReportTitle title={areaDetail?.name} type="activity" />
       <ReportSummary />
       <ReportActivity activityUnit={activityUnit} />
-      <ReportVessels activityUnit={activityUnit} />
+      <ReportVessels activityUnit={activityUnit} reportName={areaDetail?.name} />
     </Fragment>
   )
 }

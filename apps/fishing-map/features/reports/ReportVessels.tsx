@@ -9,9 +9,10 @@ import styles from './ReportVessels.module.css'
 
 type ReportVesselTableProps = {
   activityUnit: ReportActivityUnit
+  reportName: string
 }
 
-export default function ReportVessels({ activityUnit }: ReportVesselTableProps) {
+export default function ReportVessels({ activityUnit, reportName }: ReportVesselTableProps) {
   const { t } = useTranslation()
   return (
     <div className={styles.container}>
@@ -21,7 +22,7 @@ export default function ReportVessels({ activityUnit }: ReportVesselTableProps) 
       </div>
       <ReportVesselsGraph />
       <ReportVesselsFilter />
-      <ReportVesselsTable activityUnit={activityUnit} />
+      <ReportVesselsTable activityUnit={activityUnit} reportName={reportName} />
     </div>
   )
 }

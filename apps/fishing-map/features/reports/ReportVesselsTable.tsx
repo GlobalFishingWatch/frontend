@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
+import { CSVLink } from 'react-csv'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
 import { ReportVessel } from '@globalfishingwatch/api-types'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
@@ -8,20 +9,28 @@ import { getVesselInWorkspace } from 'features/dataviews/dataviews.utils'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectReportVesselsPaginated, selectReportVesselsPagination } from './reports.selectors'
+import { selectUrlTimeRange } from 'routes/routes.selectors'
+import {
+  selectReportVesselsList,
+  selectReportVesselsPaginated,
+  selectReportVesselsPagination,
+} from './reports.selectors'
 import { ReportActivityUnit } from './Report'
 import styles from './ReportVesselsTable.module.css'
 
 type ReportVesselTableProps = {
   activityUnit: ReportActivityUnit
+  reportName: string
 }
 
-export default function ReportVesselsTable({ activityUnit }: ReportVesselTableProps) {
+export default function ReportVesselsTable({ activityUnit, reportName }: ReportVesselTableProps) {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
+  const allVessels = useSelector(selectReportVesselsList)
   const vessels = useSelector(selectReportVesselsPaginated)
   const pagination = useSelector(selectReportVesselsPagination)
   const vesselsInWorkspace = useSelector(selectActiveTrackDataviews)
+  const { start, end } = useSelector(selectUrlTimeRange)
 
   const onVesselClick = (ev: React.MouseEvent<Element, MouseEvent>, vessel: ReportVessel) => {
     // const vesselInWorkspace = getVesselInWorkspace(vesselsInWorkspace, vessel.id)
@@ -171,9 +180,11 @@ export default function ReportVesselsTable({ activityUnit }: ReportVesselTablePr
           <Button className={styles.footerButton} type="secondary">
             {t('analysis.createVesselGroup', 'Create vessel group')}
           </Button>
-          <Button className={styles.footerButton}>
-            {t('analysis.downloadVesselsList', 'Download list')}
-          </Button>
+          <CSVLink filename={`${reportName}-${start}-${end}.csv`} data={allVessels}>
+            <Button className={styles.footerButton}>
+              {t('analysis.downloadVesselsList', 'Download list')}
+            </Button>
+          </CSVLink>
         </div>
       </div>
     </div>
