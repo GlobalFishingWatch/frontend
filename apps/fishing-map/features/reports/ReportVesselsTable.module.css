@@ -1,17 +1,30 @@
+.tableContainer {
+  margin-top: 2.5rem;
+  height: 42rem;
+}
+
 .vesselsTable {
   width: 100%;
   border-collapse: collapse;
 }
 
 .vesselsTable tr {
-  min-height: 10rem;
+  height: 4rem;
+}
+
+.vesselsTable thead tr {
+  height: 2rem;
 }
 
 .vesselsTable th {
   text-align: left;
-  font: var(--font-XS);
+  font: var(--font-S);
   color: var(--color-secondary-blue);
   text-transform: uppercase;
+}
+
+.vesselsTable th.right {
+  text-align: right;
 }
 
 .vesselsTable td,
@@ -20,14 +33,8 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   padding: 0;
-  line-height: 2rem;
-  height: 3rem;
-  max-width: 12rem;
+  max-width: 15rem;
   vertical-align: middle;
-}
-
-.vesselsTable td.largeColumn {
-  max-width: 24rem;
 }
 
 .vesselsTable tr:not(:last-child) td {
@@ -36,15 +43,15 @@
 
 .vesselsTable .columnSpace,
 .vesselsTable th:not(:first-child) {
-  padding-left: 2rem;
+  padding-left: 1rem;
 }
 
 .vesselsTable td.icon {
-  width: 3rem;
+  width: 2.8rem;
   overflow: visible;
 }
 
-.vesselsTableHour {
+.right {
   text-align: right;
 }
 
@@ -52,14 +59,18 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 2rem;
+  margin-top: 2.5rem;
+  color: var(--color-secondary-blue);
+  text-transform: uppercase;
+  font: var(--font-S);
 }
 
 .footer > div {
   display: flex;
   align-items: center;
+  gap: 1rem;
 }
 
-.footerButton {
-  margin-left: 1rem;
+.footer .disabled {
+  opacity: 0.5;
 }
