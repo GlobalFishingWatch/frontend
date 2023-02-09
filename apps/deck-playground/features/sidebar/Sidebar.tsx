@@ -118,7 +118,7 @@ function Sidebar() {
           }
           if (layer.id === 'contexts') {
             return (
-              <section className={styles.row}>
+              <section className={styles.row} key={'contexts'}>
                 <p>CONTEXT LAYERS</p>
                 {CONTEXT_LAYERS_IDS.map((id) => (
                   <div key={id} className={styles.header}>
