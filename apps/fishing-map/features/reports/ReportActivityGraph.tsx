@@ -17,7 +17,7 @@ import styles from './ReportActivityGraph.module.css'
 import { selectReportActivityGraphData } from './reports.selectors'
 import { formatTooltipValue, tickFormatter } from './reports.utils'
 
-type AnalysisGraphTooltipProps = {
+type ReportGraphTooltipProps = {
   active: boolean
   payload: {
     name: string
@@ -31,8 +31,8 @@ type AnalysisGraphTooltipProps = {
   label: number
   timeChunkInterval: Interval
 }
-const AnalysisGraphTooltip = (props: any) => {
-  const { active, payload, label, timeChunkInterval } = props as AnalysisGraphTooltipProps
+const ReportGraphTooltip = (props: any) => {
+  const { active, payload, label, timeChunkInterval } = props as ReportGraphTooltipProps
 
   if (active && payload && payload.length) {
     const date = getUTCDateTime(label).setLocale(i18n.language)
@@ -91,7 +91,7 @@ export default function ReportActivityGraph(props: ReportActivityProps) {
             tickLine={false}
             tickCount={4}
           />
-          <Tooltip content={<AnalysisGraphTooltip timeChunkInterval={'day'} />} />
+          <Tooltip content={<ReportGraphTooltip timeChunkInterval={'day'} />} />
           {dataviews.map(({ id, config, datasets }) => {
             const unit = datasets[0]?.unit
             return (
