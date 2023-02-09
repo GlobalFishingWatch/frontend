@@ -1,0 +1,14 @@
+.container {
+  padding: var(--space-M);
+}
+
+.description {
+  margin: var(--space-S) 0;
+}
+
+.actionsRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+}

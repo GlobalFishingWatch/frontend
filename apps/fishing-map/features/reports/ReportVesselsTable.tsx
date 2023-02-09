@@ -11,7 +11,6 @@ import I18nNumber from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectUrlTimeRange } from 'routes/routes.selectors'
 import {
-  selectReportVesselsList,
   selectReportVesselsListWithAllInfo,
   selectReportVesselsPaginated,
   selectReportVesselsPagination,

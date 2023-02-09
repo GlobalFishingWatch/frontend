@@ -6,6 +6,7 @@ import ReportSummary from './ReportSummary'
 import ReportTitle from './ReportTitle'
 import ReportActivity from './ReportActivity'
 import ReportVessels from './ReportVessels'
+import ReportDownload from './ReportDownload'
 
 export type ReportType = 'activity' | 'area'
 export type ReportActivityUnit = 'hours' | 'detections'
@@ -28,6 +29,7 @@ export default function Report(props: ReportsProps) {
       <ReportSummary />
       <ReportActivity activityUnit={activityUnit} />
       <ReportVessels activityUnit={activityUnit} reportName={areaDetail?.name} />
+      <ReportDownload reportName={areaDetail?.name} />
     </Fragment>
   )
 }
