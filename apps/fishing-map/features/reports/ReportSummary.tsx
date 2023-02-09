@@ -3,6 +3,9 @@ import { useSelector } from 'react-redux'
 // import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectUrlTimeRange } from 'routes/routes.selectors'
+import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
+import ReportSummaryTags from 'features/reports/ReportSummaryTags'
+import { FIELDS, getCommonProperties } from 'features/reports/reports.utils'
 import { selectReportVesselsHours, selectReportVesselsNumber } from './reports.selectors'
 import styles from './ReportSummary.module.css'
 
@@ -13,7 +16,8 @@ export default function ReportSummary(props: ReportSummaryProps) {
   const timerange = useSelector(selectUrlTimeRange)
   const reportVessels = useSelector(selectReportVesselsNumber)
   const reportHours = useSelector(selectReportVesselsHours)
-  // const dataviews = useSelector(selectActiveHeatmapDataviews)
+  const dataviews = useSelector(selectActiveHeatmapDataviews)
+  const commonProperties = getCommonProperties(dataviews)
   const summary = t('analysis.summary', {
     defaultValue:
       '<strong>{{vessels}} $t(common.vessel, {"count": {{vessels}} })</strong> had <strong>{{hours}} $t(common.hour, {"count": {{hours}} })</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
@@ -26,6 +30,18 @@ export default function ReportSummary(props: ReportSummaryProps) {
   return (
     <div className={styles.container}>
       <p className={styles.summary} dangerouslySetInnerHTML={{ __html: summary }}></p>
+      <div className={styles.tagsContainer}>
+        {dataviews?.map((dataview, index) => (
+          <ReportSummaryTags
+            key={dataview.id}
+            dataview={dataview}
+            index={index}
+            hiddenProperties={commonProperties}
+            availableFields={FIELDS}
+            // hideColors={type !== 'evolution'}
+          />
+        ))}
+      </div>
     </div>
   )
 }

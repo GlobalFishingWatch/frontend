@@ -12,3 +12,8 @@
   font-weight: 400;
   color: var(--color-primary-blue);
 }
+
+.tagsContainer {
+  display: flex;
+  gap: var(--space-M);
+}
