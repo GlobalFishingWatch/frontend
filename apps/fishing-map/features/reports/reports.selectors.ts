@@ -73,7 +73,9 @@ export const selectReportVesselsGraphData = createSelector(
     if (!reportData?.length) return null
 
     const dataByDataview = dataviews.map((dataview, index) => {
-      const dataviewData = Object.values(reportData[index]).flat()
+      const dataviewData = reportData[index]
+        ? Object.values(reportData[index]).flatMap((v) => v || [])
+        : []
       const dataByKey = groupBy(dataviewData, reportGraph.toLowerCase())
       return { id: dataview.id, data: dataByKey }
     })
@@ -83,7 +85,7 @@ export const selectReportVesselsGraphData = createSelector(
     const data = distributionKeys.map((key) => {
       const distributionData = { name: key }
       dataByDataview.forEach(({ id, data }) => {
-        distributionData[id] = data[key]?.length || 0
+        distributionData[id] = uniqBy(data?.[key] || [], 'vesselId').length
       })
       return distributionData
     })
