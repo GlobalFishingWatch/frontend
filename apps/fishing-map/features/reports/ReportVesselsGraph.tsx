@@ -8,7 +8,7 @@ import { ReportVesselGraph } from 'types'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import I18nNumber from 'features/i18n/i18nNumber'
 import styles from './ReportVesselsGraph.module.css'
-import { selectReportVesselsGraphData } from './reports.selectors'
+import { DEFAULT_NULL_VALUE, selectReportVesselsGraphData } from './reports.selectors'
 
 type ReportVesselsGraphProps = {}
 
@@ -31,10 +31,13 @@ const ReportGraphTooltip = (props: any) => {
   const { active, payload, label, type } = props as ReportGraphTooltipProps
   const { t } = useTranslation()
 
-  const translatedLabel =
-    type === 'geartype'
-      ? `${t(`vessel.gearTypes.${label}` as any, label)}`
-      : t(`flags:${label}` as any, EMPTY_FIELD_PLACEHOLDER)
+  let translatedLabel = ''
+  if (label === DEFAULT_NULL_VALUE) translatedLabel = t('common.unknown', 'Unknown')
+  else if (type === 'geartype') {
+    translatedLabel = `${t(`vessel.gearTypes.${label}` as any, label)}`
+  } else {
+    translatedLabel = t(`flags:${label}` as any, label)
+  }
   if (active && payload && payload.length) {
     return (
       <div className={styles.tooltipContainer}>
@@ -57,9 +60,16 @@ const ReportGraphTooltip = (props: any) => {
 }
 
 export default function ReportVesselsGraph(props: ReportVesselsGraphProps) {
+  const { t } = useTranslation()
   const dataviews = useSelector(selectActiveHeatmapDataviews)
   const data = useSelector(selectReportVesselsGraphData)
   const selectedReportVesselGraph = useSelector(selectReportVesselGraph)
+  const tickFormatter = (label) => {
+    if (label === DEFAULT_NULL_VALUE) return t('common.unknown', 'Unknown')
+    return selectedReportVesselGraph === 'geartype'
+      ? `${t(`vessel.gearTypes.${label}` as any, label)}`
+      : t(`flags:${label}` as any, label)
+  }
   return (
     <Fragment>
       <div className={styles.graph}>
@@ -86,7 +96,13 @@ export default function ReportVesselsGraph(props: ReportVesselsGraphProps) {
                 />
               )
             })}
-            <XAxis dataKey="name" interval="preserveStart" />
+            <XAxis
+              dataKey="name"
+              interval="preserveStart"
+              tickFormatter={tickFormatter}
+              tickLine={false}
+              minTickGap={0}
+            />
           </BarChart>
         </ResponsiveContainer>
       </div>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import {
   ResponsiveContainer,
@@ -58,33 +58,36 @@ const ReportGraphTooltip = (props: any) => {
   return null
 }
 
+const formatDateTicks = (tick: string, timeChunkInterval: Interval) => {
+  const date = getUTCDateTime(tick).setLocale(i18n.language)
+  return formatDateForInterval(date, timeChunkInterval)
+}
+
 type ReportActivityProps = {}
 export default function ReportActivityGraph(props: ReportActivityProps) {
   const dataviews = useSelector(selectActiveHeatmapDataviews)
   const data = useSelector(selectReportActivityGraphData)
-
+  const [graphStartsInCero, setGraphStartsInCero] = useState(true)
   return (
     <div className={styles.graph}>
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart data={data} margin={{ top: 15, right: 20, left: -20, bottom: -10 }}>
           <CartesianGrid vertical={false} />
           <XAxis
-            // domain={domain}
             dataKey="date"
             interval="preserveStartEnd"
-            // tickFormatter={(tick: number) => formatDateTicks(tick, interval)}
-            // axisLine={paddedDomain[0] === 0}
-            // scale={'time'}
-            // type={'number'}
+            // TODO change to proper Interval
+            tickFormatter={(tick: string) => formatDateTicks(tick, 'day')}
+            axisLine={graphStartsInCero}
+            minTickGap={0}
           />
           <YAxis
             scale="linear"
             domain={([dataMin, dataMax]) => {
               const domainPadding = (dataMax - dataMin) / 8
-              return [
-                Math.max(0, Math.floor(dataMin - domainPadding)),
-                Math.ceil(dataMax + domainPadding),
-              ]
+              const min = Math.max(0, Math.floor(dataMin - domainPadding))
+              setGraphStartsInCero(min === 0)
+              return [min, Math.ceil(dataMax + domainPadding)]
             }}
             tickFormatter={tickFormatter}
             axisLine={false}
