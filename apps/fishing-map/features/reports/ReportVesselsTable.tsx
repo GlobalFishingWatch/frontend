@@ -153,7 +153,7 @@ export default function ReportVesselsTable({ activityUnit }: ReportVesselTablePr
             onClick={onPrevPageClick}
             size="medium"
           />
-          <span>{`${pagination.offset} - ${
+          <span>{`${pagination.offset + 1} - ${
             isLastPaginationPage ? pagination.total : pagination.offset + pagination.results
           }`}</span>
           <IconButton
