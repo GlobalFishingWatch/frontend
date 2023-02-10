@@ -29,7 +29,7 @@ export default function fetchStats(config: GlobalHeatmapGeneratorConfig) {
   const finalurl = statsFilters ? statsUrlString + `&${statsFilters}` : statsUrl.toString()
   controllerCache = new AbortController()
   return fetch(finalurl, {
-    signal: controllerCache.signal,
+    signal: controllerCache?.signal,
     ...(config.token && {
       headers: {
         Authorization: `Bearer ${token}`,

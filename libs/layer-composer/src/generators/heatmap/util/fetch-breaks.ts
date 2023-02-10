@@ -145,7 +145,7 @@ export default function fetchBreaks(config: FetchBreaksParams): Promise<Breaks> 
 
   controllerCache = new AbortController()
   return fetch(url, {
-    signal: controllerCache.signal,
+    signal: controllerCache?.signal,
     ...(token && {
       headers: {
         Authorization: `Bearer ${token}`,

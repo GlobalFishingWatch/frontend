@@ -4,13 +4,15 @@ module.exports = {
     // TODO fix
     // 'plugin:@typescript-eslint/recommended',
     'react-app',
-    'plugin:import/errors',
-    'plugin:import/warnings',
+    // TODO fix ESLint couldn't determine the plugin "import" uniquely.
+    // 'plugin:import/errors',
+    // 'plugin:import/warnings',
     'plugin:import/typescript',
     'prettier',
   ],
   // plugins: ['@typescript-eslint', 'react', 'import'],
-  plugins: ['react', 'import'],
+  // TODO fix ESLint couldn't determine the plugin "import" uniquely.
+  plugins: ['react' /*'import'*/],
   settings: {
     react: {
       version: 'detect',

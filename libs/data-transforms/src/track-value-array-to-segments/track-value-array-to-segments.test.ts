@@ -1,5 +1,5 @@
+import { Field } from '@globalfishingwatch/api-types'
 import { trackValueArrayToSegments } from './track-value-array-to-segments'
-import { Field } from './types'
 
 describe('trackValueArrayToSegments', () => {
   test('parses elevation properly', () => {

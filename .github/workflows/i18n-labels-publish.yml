@@ -49,7 +49,7 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: Install dependencies
         if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
 
       - name: Lib Changes
         shell: bash
