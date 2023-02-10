@@ -1,6 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { groupBy, sum, sumBy, uniq, uniqBy } from 'lodash'
 import { matchSorter } from 'match-sorter'
+import { t } from 'i18next'
 import { Dataset, DatasetTypes, ReportVessel } from '@globalfishingwatch/api-types'
 import {
   selectReportActivityGraph,
@@ -159,7 +160,12 @@ export const selectReportVesselsFiltered = createSelector(
   (vessels, filter) => {
     if (!vessels?.length) return null
     return matchSorter(vessels, filter, {
-      keys: ['shipName', 'mmsi', 'flag', 'geartype'],
+      keys: [
+        'shipName',
+        'mmsi',
+        (item) => t(`flags:${item.flag as string}` as any, item.flag),
+        (item) => t(`vessel.gearTypes.${item.geartype}` as any, item.geartype),
+      ],
     })
   }
 )

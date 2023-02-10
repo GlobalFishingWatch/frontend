@@ -5,6 +5,7 @@ import { useDebounce } from 'use-debounce'
 import { InputText } from '@globalfishingwatch/ui-components'
 import { selectReportVesselFilter } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
+import styles from './ReportVesselsFilter.module.css'
 
 type ReportVesselsFilterProps = {}
 
@@ -22,13 +23,13 @@ export default function ReportVesselsFilter(props: ReportVesselsFilterProps) {
   return (
     <div>
       <InputText
-        type="search"
         value={query}
         placeholder={t(
           'analysis.searchPlaceholder',
           'Filter vessels by name, mmsi, flag states or gear type'
         )}
         onChange={(e) => setQuery(e.target.value)}
+        className={styles.input}
       />
     </div>
   )

@@ -133,7 +133,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                     </span>
                   </td>
                   <td colSpan={1} className={styles.columnSpace}>
-                    {`${t(`vessel.gearTypes.${vessel.geartype}` as any, EMPTY_FIELD_PLACEHOLDER)}`}
+                    {t(`vessel.gearTypes.${vessel.geartype}` as any, EMPTY_FIELD_PLACEHOLDER)}
                   </td>
                   <td colSpan={1} className={cx(styles.columnSpace, styles.right)}>
                     <I18nNumber number={vessel[activityUnit]} />
