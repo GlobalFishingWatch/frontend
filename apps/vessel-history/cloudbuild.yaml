@@ -3,14 +3,12 @@ steps:
     id: restore_cache
     waitFor: ['-']
     entrypoint: 'bash'
-    args:
-      - '--bucket=gs://frontend-cache-dependencies'
-      - '--key=yarn-$( checksum yarn.lock )'
-      - '-c'
-      - |
-        if [ ! -d "node_modules" ]; then
-          restore_cache --bucket=gs://frontend-cache-dependencies --key=yarn3-cache'
-        fi
+    script: |
+      #!/usr/bin/env bash
+      restore_cache --bucket=gs://frontend-cache-dependencies --key=yarn-$( checksum yarn.lock ) --fallback=yarn3-cache
+      if [ ! -d "node_modules" ]; then
+        restore_cache --bucket=gs://frontend-cache-dependencies --key=yarn3-cache
+      fi
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
