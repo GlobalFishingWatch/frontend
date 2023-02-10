@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { groupBy, sum, sumBy, uniq, uniqBy } from 'lodash'
 import { matchSorter } from 'match-sorter'
-import { ReportVessel } from '@globalfishingwatch/api-types'
+import { Dataset, DatasetTypes, ReportVessel } from '@globalfishingwatch/api-types'
 import {
   selectReportActivityGraph,
   selectReportVesselFilter,
@@ -11,13 +11,21 @@ import {
 import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import { sortStrings } from 'utils/shared'
 import { REPORT_VESSELS_PER_PAGE } from 'data/config'
+import { selectAllDatasets } from 'features/datasets/datasets.slice'
+import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { selectReportVesselsData } from './reports.slice'
 
 export const DEFAULT_NULL_VALUE = 'NULL'
 
+export type ReportVesselWithDatasets = Partial<ReportVessel> & {
+  datasetId: string
+  infoDataset?: Dataset
+  trackDataset?: Dataset
+}
+
 export const selectReportActivityFlatten = createSelector(
   [selectReportVesselsData],
-  (reportDatasets) => {
+  (reportDatasets): ReportVesselWithDatasets[] => {
     if (!reportDatasets?.length) return null
 
     return reportDatasets.flatMap((dataset) =>
@@ -102,22 +110,33 @@ export const selectReportVesselsGraphData = createSelector(
   }
 )
 
-export const selectReportVesselsList = createSelector([selectReportActivityFlatten], (vessels) => {
-  if (!vessels?.length) return null
+export const selectReportVesselsList = createSelector(
+  [selectReportActivityFlatten, selectAllDatasets],
+  (vessels, datasets) => {
+    if (!vessels?.length) return null
 
-  return Object.values(groupBy(vessels, 'vesselId'))
-    .map((vesselActivity) => {
-      return {
-        vesselId: vesselActivity[0]?.vesselId,
-        shipName: vesselActivity[0]?.shipName,
-        mmsi: vesselActivity[0]?.mmsi,
-        flag: vesselActivity[0]?.flag,
-        geartype: vesselActivity[0]?.geartype,
-        hours: sumBy(vesselActivity, 'hours'),
-      } as ReportVessel
-    })
-    .sort((a, b) => b.hours - a.hours)
-})
+    return Object.values(groupBy(vessels, 'vesselId'))
+      .map((vesselActivity) => {
+        const activityDataset = datasets.find((d) => d.id === vesselActivity[0]?.datasetId)
+        const infoDatasetId = getRelatedDatasetsByType(activityDataset, DatasetTypes.Vessels)?.[0]
+          ?.id
+        const infoDataset = datasets.find((d) => d.id === infoDatasetId)
+        const trackDatasetId = getRelatedDatasetsByType(infoDataset, DatasetTypes.Tracks)?.[0]?.id
+        const trackDataset = datasets.find((d) => d.id === trackDatasetId)
+        return {
+          vesselId: vesselActivity[0]?.vesselId,
+          shipName: vesselActivity[0]?.shipName,
+          mmsi: vesselActivity[0]?.mmsi,
+          flag: vesselActivity[0]?.flag,
+          geartype: vesselActivity[0]?.geartype,
+          hours: sumBy(vesselActivity, 'hours'),
+          infoDataset: infoDataset,
+          trackDataset: trackDataset,
+        } as ReportVesselWithDatasets
+      })
+      .sort((a, b) => b.hours - a.hours)
+  }
+)
 
 export const selectReportVesselsListWithAllInfo = createSelector(
   [selectReportActivityFlatten],

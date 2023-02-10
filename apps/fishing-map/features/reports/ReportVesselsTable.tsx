@@ -3,14 +3,17 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { CSVLink } from 'react-csv'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
-import { ReportVessel } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
-import { getVesselInWorkspace } from 'features/dataviews/dataviews.utils'
+import { getVesselDataviewInstance, getVesselInWorkspace } from 'features/dataviews/dataviews.utils'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectUrlTimeRange } from 'routes/routes.selectors'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import {
+  ReportVesselWithDatasets,
   selectReportVesselsListWithAllInfo,
   selectReportVesselsPaginated,
   selectReportVesselsPagination,
@@ -27,48 +30,36 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const allVessels = useSelector(selectReportVesselsListWithAllInfo)
+
+  const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const vessels = useSelector(selectReportVesselsPaginated)
   const pagination = useSelector(selectReportVesselsPagination)
   const vesselsInWorkspace = useSelector(selectActiveTrackDataviews)
   const { start, end } = useSelector(selectUrlTimeRange)
 
-  const onVesselClick = (ev: React.MouseEvent<Element, MouseEvent>, vessel: ReportVessel) => {
-    // const vesselInWorkspace = getVesselInWorkspace(vesselsInWorkspace, vessel.id)
-    // if (vesselInWorkspace) {
-    //   deleteDataviewInstance(vesselInWorkspace.id)
-    //   return
-    // }
-    // let vesselDataviewInstance: DataviewInstance | undefined
-    // if (
-    //   gfwUser &&
-    //   vessel.dataset?.id.includes(PRESENCE_DATASET_ID) &&
-    //   vessel.trackDataset?.id.includes(PRESENCE_TRACKS_DATASET_ID)
-    // ) {
-    //   vesselDataviewInstance = getPresenceVesselDataviewInstance(vessel, {
-    //     trackDatasetId: vessel.trackDataset?.id,
-    //     infoDatasetId: vessel.infoDataset?.id,
-    //   })
-    // } else {
-    //   const vesselEventsDatasets = getRelatedDatasetsByType(
-    //     vessel.infoDataset || vessel.dataset,
-    //     DatasetTypes.Events
-    //   )
-    //   const eventsDatasetsId =
-    //     vesselEventsDatasets && vesselEventsDatasets?.length
-    //       ? vesselEventsDatasets.map((d) => d.id)
-    //       : []
-    //   vesselDataviewInstance = getVesselDataviewInstance(vessel, {
-    //     trackDatasetId: vessel.trackDataset?.id,
-    //     infoDatasetId: vessel.infoDataset?.id,
-    //     ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
-    //   })
-    // }
-    // upsertDataviewInstance(vesselDataviewInstance)
-    // uaEvent({
-    //   category: 'Tracks',
-    //   action: 'Click in vessel from grid cell panel',
-    //   label: getEventLabel([vessel.dataset.id, vessel.id]),
-    // })
+  const onVesselClick = (
+    ev: React.MouseEvent<Element, MouseEvent>,
+    vessel: ReportVesselWithDatasets
+  ) => {
+    const vesselInWorkspace = getVesselInWorkspace(vesselsInWorkspace, vessel.vesselId)
+    if (vesselInWorkspace) {
+      deleteDataviewInstance(vesselInWorkspace.id)
+      return
+    }
+    const vesselEventsDatasets = getRelatedDatasetsByType(vessel.infoDataset, DatasetTypes.Events)
+    const eventsDatasetsId =
+      vesselEventsDatasets && vesselEventsDatasets?.length
+        ? vesselEventsDatasets.map((d) => d.id)
+        : []
+    const vesselDataviewInstance: DataviewInstance = getVesselDataviewInstance(
+      { id: vessel.vesselId },
+      {
+        trackDatasetId: vessel.trackDataset?.id,
+        infoDatasetId: vessel.infoDataset?.id,
+        ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
+      }
+    )
+    upsertDataviewInstance(vesselDataviewInstance)
   }
 
   const onPrevPageClick = () => {
