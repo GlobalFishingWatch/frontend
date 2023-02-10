@@ -2465,6 +2465,7 @@ __metadata:
     mapbox-gl: "npm:empty-npm-package@1.0.0"
     next: 13.1.6
     next-pwa: ^5.6.0
+    prop-types: ^15.8.1
     qs: ^6.11.0
     react: ^18.2.0
     react-dom: ^18.2.0
@@ -3856,7 +3857,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nrwl/devkit@npm:15.6.3":
+"@nrwl/devkit@npm:15.6.3, @nrwl/devkit@npm:^15.6.3":
   version: 15.6.3
   resolution: "@nrwl/devkit@npm:15.6.3"
   dependencies:
@@ -14435,6 +14436,7 @@ __metadata:
     "@next/eslint-plugin-next": 13.1.6
     "@nrwl/cli": 15.6.3
     "@nrwl/cypress": 15.6.3
+    "@nrwl/devkit": ^15.6.3
     "@nrwl/eslint-plugin-nx": 15.6.3
     "@nrwl/jest": 15.6.3
     "@nrwl/js": 15.6.3
