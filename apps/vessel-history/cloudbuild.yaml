@@ -2,19 +2,14 @@ steps:
   - name: 'gcr.io/$PROJECT_ID/restore_cache'
     id: restore_cache
     waitFor: ['-']
-    args:
-      - '--bucket=gs://frontend-cache-dependencies'
-      - '--key=yarn-$( checksum yarn.lock )'
-
-  - name: 'gcr.io/$PROJECT_ID/restore_cache'
-    id: restore_cache_fallback
-    waitFor: ['-']
-    args:
-      - '--bucket=gs://frontend-cache-dependencies'
-      - '--key=yarn3-cache'
+    script: |
+      restore_cache --bucket=gs://frontend-cache-dependencies --key=yarn-$( checksum yarn.lock )'
+      if [ ! -d "node_modules" ]; then
+        restore_cache --bucket=gs://frontend-cache-dependencies --key=yarn3-cache'
+      fi
 
   - id: 'install-yarn'
-    waitFor: ['restore_cache', 'restore_cache_fallback']
+    waitFor: ['restore_cache']
     name: node:18-alpine
     script: |
       if [ ! -d "node_modules" ]; then
@@ -27,19 +22,13 @@ steps:
   - id: 'save_cache'
     waitFor: ['install-yarn']
     name: 'gcr.io/$PROJECT_ID/save_cache'
-    args:
-      - '--bucket=gs://frontend-cache-dependencies'
-      - '--key=yarn-$( checksum yarn.lock )'
-      - '--path=./node_modules'
-      - '--no-clobber'
-
-  - id: 'save_cache_fallback'
-    waitFor: ['install-yarn']
-    name: 'gcr.io/$PROJECT_ID/save_cache'
-    args:
-      - '--bucket=gs://frontend-cache-dependencies'
-      - '--key=yarn3-cache'
-      - '--path=./.yarn/cache'
+    script: |
+      save_cache --bucket=gs://frontend-cache-dependencies --key=yarn-$( checksum yarn.lock )' --path=./node_modules --no-clobber
+      if [ -d ".yarn/cache" ]; then
+        if [ $BRANCH_NAME == "dev" ]; then
+          save_cache --bucket=gs://frontend-cache-dependencies --key=yarn3-cache' --path=./.yarn/cache
+        fi
+      fi
 
   - id: 'build-app'
     waitFor: ['install-yarn']
