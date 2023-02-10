@@ -1,8 +1,8 @@
 import { parse } from 'papaparse'
 // import { segmentsToGeoJSON } from '../segments'
-import csvToTrackSegment from './csvToTrackSegments'
-import checkRecordValidity from './checkRecordValidity'
-import guessColumns from './guessColumns'
+import { csvToTrackSegments } from './csvToTrackSegments'
+import { checkRecordValidity } from './checkRecordValidity'
+import { guessColumns } from './guessColumns'
 const fs = require('fs')
 const path = require('path')
 const rawCsv = fs.readFileSync(path.join(__dirname, 'test/mock.csv'), 'utf-8')
@@ -49,7 +49,7 @@ it('converts to segments', () => {
     timestamp: 'timestamp',
     id: 'individual-local-identifier',
   }
-  const segments = csvToTrackSegment({ records: data as Record<string, any>[], ...columns })
+  const segments = csvToTrackSegments({ records: data as Record<string, any>[], ...columns })
   expect(segments[0].length).toEqual(583)
   expect(segments[0][0].longitude).toEqual(-32.394212)
   expect(segments[0][0].timestamp).toEqual(1441961520000)

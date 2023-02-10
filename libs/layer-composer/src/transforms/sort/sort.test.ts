@@ -2,7 +2,9 @@ import { LayerSpecification, StyleSpecification } from '@globalfishingwatch/mapl
 import { ExtendedLayer, ExtendedStyle, Group } from '../../types'
 import { sort, convertLegacyGroups } from './sort'
 
-type MockStyle = Omit<StyleSpecification, 'layers'> & { layers: Partial<LayerSpecification>[] }
+type MockStyle = Omit<StyleSpecification, 'layers' | 'version' | 'sources'> & {
+  layers: Partial<LayerSpecification>[]
+}
 
 const mock: MockStyle = {
   layers: [

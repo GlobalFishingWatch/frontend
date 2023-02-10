@@ -5,27 +5,26 @@
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "license": "MIT",
-  "main": "dist/index.js",
-  "typings": "types",
+  "main": "index.js",
+  "typings": "index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
-  "scripts": {},
   "dependencies": {
     "@globalfishingwatch/map-convert": "github:GlobalFishingWatch/map-convert",
     "@mapbox/tile-cover": "^3.0.2",
-    "@turf/area": "^6.0.1",
+    "@turf/area": "^6.5.0",
     "@turf/bbox": "6.5.0",
     "d3-ease": "3.0.1",
     "d3-geo": "3.0.1",
     "d3-scale": "^3.3.0",
-    "d3-shape": "3.1.0",
+    "d3-shape": "3.2.0",
     "memoize-one": "^6.0.0",
-    "react-spring": "^9.4.5",
+    "react-spring": "^9.6.1",
     "recoil": "0.7.5",
     "resize-observer-polyfill": "^1.5.1",
-    "simple-statistics": "^7.7.0",
+    "simple-statistics": "^7.8.2",
     "topojson-client": "^3.1.0",
     "use-debounce": "^8.0.1"
   },
@@ -33,7 +32,7 @@
     "@mapbox/geojsonhint": "^3.0.0",
     "dayjs": "1.8.36",
     "geojson-validation": "^0.2.1",
-    "prop-types": "^15.6.2"
+    "prop-types": "^15.8.1"
   },
   "peerDependencies": {
     "@globalfishingwatch/ui-components": "12.x",

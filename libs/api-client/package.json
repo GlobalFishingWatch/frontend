@@ -12,7 +12,7 @@
   "peerDependencies": {
     "@globalfishingwatch/api-types": "6.x",
     "@globalfishingwatch/pbf": "1.x",
-    "lodash": "4.x",
-    "file-saver": "2.x"
+    "file-saver": "2.x",
+    "lodash": "4.x"
   }
 }

@@ -5,8 +5,8 @@
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "license": "MIT",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "index.js",
+  "typings": "src/index.d.ts",
   "scripts": {
     "mpas": "ts-node -P tsconfig.node.json src/scripts/mpas.ts",
     "locales": "ts-node -P tsconfig.node.json src/scripts/names.ts"
