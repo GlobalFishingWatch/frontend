@@ -19,7 +19,7 @@ steps:
 
   - id: 'test'
     waitFor: ['install-yarn']
-    name: node:14
+    name: node:18
     entrypoint: yarn
     args: ['nx', 'test', 'vessel-history']
 
