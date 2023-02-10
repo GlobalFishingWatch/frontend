@@ -2,31 +2,34 @@ steps:
   - name: 'gcr.io/$PROJECT_ID/restore_cache'
     id: restore_cache
     waitFor: ['-']
-    args:
-      - '--bucket=gs://frontend-cache-dependencies'
-      - '--key=yarn-$( checksum yarn.lock )'
+    script: |
+      #!/usr/bin/env bash
+      restore_cache --bucket=gs://frontend-cache-dependencies --key=yarn-$( checksum yarn.lock ) --key_fallback=yarn3-cache
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
     name: node:18-alpine
-    entrypoint: sh
-    args:
-      - '-c'
-      # if dependencies cache is not found then install all deps
-      - |
-        if [ ! -d "node_modules" ]; then
-          apk add git
-          yarn install --immutable
-        fi
+    script: |
+      if [ ! -d "node_modules" ]; then
+        apk add git
+        yarn set version 3.3.1
+        yarn -v
+        yarn install --immutable
+      fi
 
   - id: 'save_cache'
     waitFor: ['install-yarn']
-    name: 'gcr.io/$PROJECT_ID/save_cache'
-    args:
-      - '--bucket=gs://frontend-cache-dependencies'
-      - '--key=yarn-$( checksum yarn.lock )'
-      - '--path=./node_modules'
-      - '--no-clobber'
+    name: 'gcr.io/$PROJECT_ID/restore_cache'
+    env:
+      - 'BRANCH_NAME=$BRANCH_NAME'
+    script: |
+      #!/usr/bin/env bash
+      save_cache --bucket=gs://frontend-cache-dependencies --key=yarn-$( checksum yarn.lock ) --path=./node_modules --no-clobber
+      if [ -d ".yarn/cache" ]; then
+        if [ $BRANCH_NAME == "dev" ]; then
+          save_cache --bucket=gs://frontend-cache-dependencies --key=yarn3-cache --path=./.yarn/cache
+        fi
+      fi
 
   - id: 'build-app'
     waitFor: ['install-yarn']
