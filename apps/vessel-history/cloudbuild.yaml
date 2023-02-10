@@ -2,7 +2,6 @@ steps:
   - name: 'gcr.io/$PROJECT_ID/restore_cache'
     id: restore_cache
     waitFor: ['-']
-    entrypoint: 'bash'
     script: |
       #!/usr/bin/env bash
       restore_cache --bucket=gs://frontend-cache-dependencies --key=yarn-$( checksum yarn.lock ) --fallback=yarn3-cache
