@@ -2,8 +2,14 @@ import { useTranslation } from 'react-i18next'
 import { CSVLink } from 'react-csv'
 import { useSelector } from 'react-redux'
 import { Button } from '@globalfishingwatch/ui-components'
-import { selectUrlTimeRange } from 'routes/routes.selectors'
+import {
+  selectLocationAreaId,
+  selectLocationDatasetId,
+  selectUrlTimeRange,
+} from 'routes/routes.selectors'
 import { selectReportActivityFlatten } from 'features/reports/reports.selectors'
+import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
+import { useAppDispatch } from 'features/app/app.hooks'
 import styles from './ReportDownload.module.css'
 
 type ReportDownloadProps = {
@@ -13,8 +19,15 @@ type ReportDownloadProps = {
 export default function ReportDownload(props: ReportDownloadProps) {
   const { reportName } = props
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const { start, end } = useSelector(selectUrlTimeRange)
+  const datasetId = useSelector(selectLocationDatasetId)
+  const areaId = useSelector(selectLocationAreaId).toString()
   const reportActivityData = useSelector(selectReportActivityFlatten)
+
+  const handleMoreOptionsClick = () => {
+    dispatch(setDownloadActivityAreaKey({ datasetId, areaId }))
+  }
 
   return (
     <div className={styles.container}>
@@ -26,7 +39,9 @@ export default function ReportDownload(props: ReportDownloadProps) {
         )}
       </p>
       <div className={styles.actionsRow}>
-        <Button type="secondary">{t('download.moreOptions', 'More options')}</Button>
+        <Button type="secondary" onClick={handleMoreOptionsClick}>
+          {t('download.moreOptions', 'More options')}
+        </Button>
         <CSVLink filename={`${reportName}-${start}-${end}.csv`} data={reportActivityData}>
           <Button>{t('download.title', 'Download')}</Button>
         </CSVLink>
