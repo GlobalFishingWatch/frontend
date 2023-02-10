@@ -2,34 +2,24 @@ steps:
   - name: 'gcr.io/$PROJECT_ID/restore_cache'
     id: restore_cache
     waitFor: ['-']
-    args:
-      - '--bucket=gs://frontend-cache-dependencies'
-      - '--key=yarn-$( checksum yarn.lock )'
+    script: |
+      #!/usr/bin/env bash
+      restore_cache --bucket=gs://frontend-cache-dependencies --key=yarn-$( checksum yarn.lock ) --key_fallback=yarn3-cache
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
-    name: node:14
-    entrypoint: bash
-    args:
-      - '-c'
-      # if dependencies cache is not found then install all deps
-      - |
-        if [ ! -d "node_modules" ]; then
-          yarn install --immutable
-        fi
-
-  - id: 'save_cache'
-    waitFor: ['install-yarn']
-    name: 'gcr.io/$PROJECT_ID/save_cache'
-    args:
-      - '--bucket=gs://frontend-cache-dependencies'
-      - '--key=yarn-$( checksum yarn.lock )'
-      - '--path=./node_modules'
-      - '--no-clobber'
+    name: node:18-alpine
+    script: |
+      if [ ! -d "node_modules" ]; then
+        apk add git
+        yarn set version 3.3.1
+        yarn -v
+        yarn install --immutable
+      fi
 
   - id: 'test'
     waitFor: ['install-yarn']
-    name: node:14
+    name: node:18
     entrypoint: yarn
     args: ['nx', 'test', 'vessel-history']
 
