@@ -9,7 +9,8 @@
     "packages": [
       "apps/*",
       "linting",
-      "libs/i18n-labels"
+      "libs/i18n-labels",
+      "libs/timebar"
     ]
   },
   "scripts": {
@@ -84,7 +85,7 @@
     "react-modal": "^3.16.1",
     "react-range": "^1.8.14",
     "react-redux": "^8.0.5",
-    "react-spring": "^9.6.1",
+    "redux": "^4.2.1",
     "redux-first-router": "^2.1.5",
     "redux-first-router-link": "^2.1.1",
     "regenerator-runtime": "^0.13.11",
@@ -165,7 +166,7 @@
     "lint-staged": "13.1.1",
     "mocha": "^10.2.0",
     "next-circular-dependency": "^1.0.1",
-    "ngx-deploy-npm": "^4.3.11",
+    "ngx-deploy-npm": "^5.0.0",
     "nx": "15.6.3",
     "prettier": "2.8.3",
     "react-refresh": "^0.10.0",

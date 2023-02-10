@@ -15,8 +15,6 @@ import '../../../libs/ui-components/src/base.css'
 import '../../../libs/timebar/src/timebar-settings.css'
 import '@globalfishingwatch/maplibre-gl/dist/maplibre-gl.css'
 
-// const RecoilizeDebugger = dynamic(() => import('recoilize'), { ssr: false })
-
 // function SafeHydrate({ children }) {
 //   return <div suppressHydrationWarning>{typeof window === 'undefined' ? null : children}</div>
 // }
@@ -36,7 +34,6 @@ function CustomApp({ Component, pageProps }: AppProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </Head>
       <RecoilRoot>
-        {/* <RecoilizeDebugger root={root} /> */}
         <Provider store={store}>
           <ClickToComponent />
           <Component {...pageProps} />
