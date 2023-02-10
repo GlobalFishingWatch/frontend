@@ -93,8 +93,9 @@ export const DEFAULT_WORKSPACE = {
   bivariateDataviews: undefined,
   analysis: undefined,
   reportActivityGraph: REPORT_ACTIVITY_GRAPH_EVOLUTION,
+  reportVesselFilter: '',
   reportVesselGraph: REPORT_VESSELS_GRAPH_GEARTYPE,
-  reportVesselPage: REPORT_VESSELS_PER_PAGE,
+  reportVesselPage: 0,
 }
 
 export const EVENTS_COLORS: Record<string, string> = {

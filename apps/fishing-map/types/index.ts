@@ -29,6 +29,7 @@ export type WorkspaceStateProperty =
   | 'activityCategory'
   | 'reportActivityGraph'
   | 'reportVesselGraph'
+  | 'reportVesselFilter'
   | 'reportVesselPage'
 
 export type WorkspaceParam =
@@ -77,6 +78,7 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   bivariateDataviews?: BivariateDataviews
   reportActivityGraph?: ReportActivityGraph
   reportVesselGraph?: ReportVesselGraph
+  reportVesselFilter?: string
   reportVesselPage?: number
 }
 

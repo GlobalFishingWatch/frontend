@@ -131,6 +131,14 @@ export const selectReportVesselGraph = createSelector(
     return reportVesselGraph
   }
 )
+
+export const selectReportVesselFilter = createSelector(
+  [selectWorkspaceStateProperty('reportVesselFilter')],
+  (reportVesselFilter): string => {
+    return reportVesselFilter
+  }
+)
+
 export const selectReportVesselPage = createSelector(
   [selectWorkspaceStateProperty('reportVesselPage')],
   (reportVesselPage): number => {

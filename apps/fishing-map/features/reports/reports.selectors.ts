@@ -1,8 +1,10 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { groupBy, sum, sumBy, uniq, uniqBy } from 'lodash'
+import { matchSorter } from 'match-sorter'
 import { ReportVessel } from '@globalfishingwatch/api-types'
 import {
   selectReportActivityGraph,
+  selectReportVesselFilter,
   selectReportVesselGraph,
   selectReportVesselPage,
 } from 'features/app/app.selectors'
@@ -133,8 +135,18 @@ export const selectReportVesselsListWithAllInfo = createSelector(
   }
 )
 
+export const selectReportVesselsFiltered = createSelector(
+  [selectReportVesselsList, selectReportVesselFilter],
+  (vessels, filter) => {
+    if (!vessels?.length) return null
+    return matchSorter(vessels, filter, {
+      keys: ['shipName', 'mmsi', 'flag', 'geartype'],
+    })
+  }
+)
+
 export const selectReportVesselsPaginated = createSelector(
-  [selectReportVesselsList, selectReportVesselPage],
+  [selectReportVesselsFiltered, selectReportVesselPage],
   (vessels, page = 0) => {
     if (!vessels?.length) return null
     return vessels.slice(REPORT_VESSELS_PER_PAGE * page, REPORT_VESSELS_PER_PAGE * (page + 1))
