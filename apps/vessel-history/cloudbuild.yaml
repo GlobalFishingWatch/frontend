@@ -23,7 +23,7 @@ steps:
     env:
       - 'BRANCH_NAME=$BRANCH_NAME'
     script: |
-      save_cache --bucket=gs://frontend-cache-dependencies --key=yarn-$( checksum yarn.lock )' --path=./node_modules --no-clobber
+      save_cache --bucket=gs://frontend-cache-dependencies --key=yarn-$( checksum yarn.lock ) --path=./node_modules --no-clobber
 
   - id: 'save_cache_fallback'
     waitFor: ['install-yarn']
