@@ -33,7 +33,7 @@ steps:
     script: |
       if [ -d ".yarn/cache" ]; then
         if [ $BRANCH_NAME == "dev" ]; then
-          save_cache --bucket=gs://frontend-cache-dependencies --key=yarn3-cache' --path=./.yarn/cache
+          save_cache --bucket=gs://frontend-cache-dependencies --key=yarn3-cache --path=./.yarn/cache
         fi
       fi
 
