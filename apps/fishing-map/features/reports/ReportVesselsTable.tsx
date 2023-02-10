@@ -69,8 +69,6 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
     dispatchQueryParams({ reportVesselPage: pagination.page + 1 })
   }
 
-  if (!vessels?.length) return null
-
   const isLastPaginationPage = pagination.offset + pagination.results >= pagination.total
   return (
     <div>
@@ -91,7 +89,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
             </tr>
           </thead>
           <tbody>
-            {vessels.map((vessel, i) => {
+            {vessels?.map((vessel, i) => {
               const hasDatasets = true
               // TODO get datasets from the vessel
               // const hasDatasets = vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
@@ -166,7 +164,8 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
         </div>
         <div>
           <span>
-            {pagination.total} {t('common.vessel', { count: pagination.total })}
+            <I18nNumber number={pagination.total} />{' '}
+            {t('common.vessel', { count: pagination.total })}
           </span>
           <Button className={styles.footerButton} type="secondary">
             {t('analysis.createVesselGroup', 'Create vessel group')}
