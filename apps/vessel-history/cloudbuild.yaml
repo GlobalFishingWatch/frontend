@@ -19,14 +19,14 @@ steps:
 
   - id: 'save_cache'
     waitFor: ['install-yarn']
-    name: 'gcr.io/$PROJECT_ID/save_cache'
+    name: 'gcr.io/$PROJECT_ID/restore_cache'
     env:
       - 'BRANCH_NAME=$BRANCH_NAME'
     script: |
       #!/usr/bin/env bash
       save_cache --bucket=gs://frontend-cache-dependencies --key=yarn-$( checksum yarn.lock ) --path=./node_modules --no-clobber
       if [ -d ".yarn/cache" ]; then
-        if [ $BRANCH_NAME == "upgrade-cloud-build" ]; then
+        if [ $BRANCH_NAME == "dev" ]; then
           save_cache --bucket=gs://frontend-cache-dependencies --key=yarn3-cache --path=./.yarn/cache
         fi
       fi
