@@ -2,11 +2,14 @@ steps:
   - name: 'gcr.io/$PROJECT_ID/restore_cache'
     id: restore_cache
     waitFor: ['-']
-    script: |
-      restore_cache --bucket=gs://frontend-cache-dependencies --key=yarn-$( checksum yarn.lock )'
-      if [ ! -d "node_modules" ]; then
-        restore_cache --bucket=gs://frontend-cache-dependencies --key=yarn3-cache'
-      fi
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |-
+        restore_cache --bucket=gs://frontend-cache-dependencies --key=yarn-$( checksum yarn.lock )'
+        if [ ! -d "node_modules" ]; then
+          restore_cache --bucket=gs://frontend-cache-dependencies --key=yarn3-cache'
+        fi
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
@@ -22,6 +25,8 @@ steps:
   - id: 'save_cache'
     waitFor: ['install-yarn']
     name: 'gcr.io/$PROJECT_ID/save_cache'
+    env:
+      - 'BRANCH_NAME=$BRANCH_NAME'
     script: |
       save_cache --bucket=gs://frontend-cache-dependencies --key=yarn-$( checksum yarn.lock )' --path=./node_modules --no-clobber
       if [ -d ".yarn/cache" ]; then
