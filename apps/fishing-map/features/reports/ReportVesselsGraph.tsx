@@ -40,14 +40,17 @@ const ReportGraphTooltip = (props: any) => {
       <div className={styles.tooltipContainer}>
         <p className={styles.tooltipLabel}>{translatedLabel}</p>
         <ul>
-          {payload.map(({ value, color }, index) => {
-            return value !== 0 ? (
-              <li key={index} className={styles.tooltipValue}>
-                <span className={styles.tooltipValueDot} style={{ color }}></span>
-                <I18nNumber number={value} /> {t('common.vessel', { count: value }).toLowerCase()}
-              </li>
-            ) : null
-          })}
+          {payload
+            .slice()
+            .reverse()
+            .map(({ value, color }, index) => {
+              return value !== 0 ? (
+                <li key={index} className={styles.tooltipValue}>
+                  <span className={styles.tooltipValueDot} style={{ color }}></span>
+                  <I18nNumber number={value} /> {t('common.vessel', { count: value }).toLowerCase()}
+                </li>
+              ) : null
+            })}
         </ul>
       </div>
     )

@@ -43,14 +43,16 @@ const ReportGraphTooltip = (props: any) => {
       <div className={styles.tooltipContainer}>
         <p className={styles.tooltipLabel}>{formattedLabel}</p>
         <ul>
-          {formattedValues.map(({ value, color, unit }, index) => {
-            return (
-              <li key={index} className={styles.tooltipValue}>
-                <span className={styles.tooltipValueDot} style={{ color }}></span>
-                {formatTooltipValue(value, unit)}
-              </li>
-            )
-          })}
+          {formattedValues
+            .sort((a, b) => b.value - a.value)
+            .map(({ value, color, unit }, index) => {
+              return (
+                <li key={index} className={styles.tooltipValue}>
+                  <span className={styles.tooltipValueDot} style={{ color }}></span>
+                  {formatTooltipValue(value, unit)}
+                </li>
+              )
+            })}
         </ul>
       </div>
     )
