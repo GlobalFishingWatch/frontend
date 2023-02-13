@@ -7,12 +7,16 @@ import {
   selectUrlTimeRange,
 } from 'routes/routes.selectors'
 import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
-import { getActiveDatasetsInActivityDataviews } from 'features/datasets/datasets.utils'
+import {
+  checkDatasetReportPermission,
+  getActiveDatasetsInActivityDataviews,
+} from 'features/datasets/datasets.utils'
 import {
   fetchAreaDetailThunk,
   selectDatasetAreaDetail,
   selectDatasetAreaStatus,
 } from 'features/areas/areas.slice'
+import { selectUserData } from 'features/user/user.slice'
 import {
   fetchReportVesselsThunk,
   selectReportVesselsData,
@@ -48,6 +52,29 @@ export function useFetchReportVessel() {
   const dataviews = useSelector(selectActiveHeatmapDataviews)
   const status = useSelector(selectReportVesselsStatus)
   const data = useSelector(selectReportVesselsData)
+  const userData = useSelector(selectUserData)
+
+  const reportDataviews = useMemo(
+    () =>
+      dataviews
+        .map((dataview) => {
+          const activityDatasets: string[] = (dataview?.config?.datasets || []).filter(
+            (id: string) => {
+              return id ? checkDatasetReportPermission(id, userData?.permissions) : false
+            }
+          )
+          return {
+            filter: dataview.config?.filter || [],
+            filters: dataview.config?.filters || {},
+            ...(dataview.config?.['vessel-groups']?.length && {
+              'vessel-groups': dataview.config?.['vessel-groups'],
+            }),
+            datasets: activityDatasets,
+          }
+        })
+        .filter((dataview) => dataview.datasets.length > 0),
+    [dataviews, userData?.permissions]
+  )
 
   useEffect(() => {
     const datasets = dataviews.map((d) => getActiveDatasetsInActivityDataviews([d]))
@@ -55,6 +82,7 @@ export function useFetchReportVessel() {
       dispatch(
         fetchReportVesselsThunk({
           datasets,
+          dataviews: reportDataviews,
           region: {
             id: areaId,
             dataset: datasetId,
@@ -65,7 +93,7 @@ export function useFetchReportVessel() {
         })
       )
     }
-  }, [dispatch, areaId, datasetId, timerange, dataviews])
+  }, [dispatch, areaId, datasetId, timerange, dataviews, reportDataviews])
 
   return useMemo(() => ({ status, data }), [status, data])
 }

@@ -57,7 +57,7 @@ export const selectReportActivityGraphData = createSelector(
     if (!reportData?.length) return null
 
     const dataByDataview = heatmapDataviews.map((dataview, index) => {
-      const dataviewData = Object.values(reportData[index]).flat()
+      const dataviewData = (Object.values(reportData[index]) || []).flat()
       const key = reportGraph === 'evolution' ? 'date' : 'date' // TODO for before/after and periodComparison
       const dataByKey = groupBy(dataviewData, key)
       return { id: dataview.id, data: dataByKey }
