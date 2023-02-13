@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { Menu, SplitView } from '@globalfishingwatch/ui-components'
 import { Workspace } from '@globalfishingwatch/api-types'
 import {
+  selectIsReportLocation,
   selectIsWorkspaceLocation,
   selectLocationType,
   selectUrlTimeRange,
@@ -65,13 +66,13 @@ export const COLOR_GRADIENT =
 
 const Main = () => {
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
+  const reportLocation = useSelector(selectIsReportLocation)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const isTimeComparisonAnalysis = useSelector(selectShowTimeComparison)
 
   const showTimebar =
-    workspaceLocation &&
-    workspaceStatus === AsyncReducerStatus.Finished &&
-    !isTimeComparisonAnalysis
+    (workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished) ||
+    (reportLocation && !isTimeComparisonAnalysis)
 
   return (
     <div className={styles.main}>
