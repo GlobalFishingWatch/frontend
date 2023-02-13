@@ -26,7 +26,10 @@ export const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDataset
       const endpointQuery = endpoint.query.find((q) => q.id === query.id)
       // TODO: this won't scale, we need another meta in Dataset
       if (endpointQuery && arrayQueryParams.includes(endpointQuery.type)) {
-        ;(query.value as string[]).forEach((queryArrItem, i) => {
+        const queryArray = Array.isArray(query.value)
+          ? (query.value as string[])
+          : [query.value as string]
+        queryArray.forEach((queryArrItem, i) => {
           const queryArrId = `${query.id}[${i}]`
           resolvedQuery.set(queryArrId, queryArrItem)
         })
