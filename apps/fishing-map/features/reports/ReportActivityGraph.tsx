@@ -9,10 +9,11 @@ import {
   Line,
   ComposedChart,
 } from 'recharts'
-import { Interval } from '@globalfishingwatch/layer-composer'
+import { getInterval, Interval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
 import i18n from 'features/i18n/i18n'
 import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
+import { selectUrlTimeRange } from 'routes/routes.selectors'
 import styles from './ReportActivityGraph.module.css'
 import { selectReportActivityGraphData } from './reports.selectors'
 import { formatTooltipValue, tickFormatter } from './reports.utils'
@@ -67,7 +68,10 @@ type ReportActivityProps = {}
 export default function ReportActivityGraph(props: ReportActivityProps) {
   const dataviews = useSelector(selectActiveHeatmapDataviews)
   const data = useSelector(selectReportActivityGraphData)
+  const timerange = useSelector(selectUrlTimeRange)
+  const interval = getInterval(timerange.start, timerange.end, [INTERVAL_ORDER])
   const [graphStartsInCero, setGraphStartsInCero] = useState(true)
+
   return (
     <div className={styles.graph}>
       <ResponsiveContainer width="100%" height="100%">
@@ -76,8 +80,7 @@ export default function ReportActivityGraph(props: ReportActivityProps) {
           <XAxis
             dataKey="date"
             interval="preserveStartEnd"
-            // TODO change to proper Interval
-            tickFormatter={(tick: string) => formatDateTicks(tick, 'day')}
+            tickFormatter={(tick: string) => formatDateTicks(tick, interval)}
             axisLine={graphStartsInCero}
             minTickGap={15}
           />
@@ -94,7 +97,7 @@ export default function ReportActivityGraph(props: ReportActivityProps) {
             tickLine={false}
             tickCount={4}
           />
-          <Tooltip content={<ReportGraphTooltip timeChunkInterval={'day'} />} />
+          <Tooltip content={<ReportGraphTooltip timeChunkInterval={interval} />} />
           {dataviews.map(({ id, config, datasets }) => {
             const unit = datasets[0]?.unit
             return (

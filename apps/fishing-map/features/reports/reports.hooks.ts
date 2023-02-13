@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
+import { getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectLocationDatasetId,
@@ -17,6 +18,7 @@ import {
   selectDatasetAreaStatus,
 } from 'features/areas/areas.slice'
 import { selectUserData } from 'features/user/user.slice'
+import { TemporalResolution } from 'features/download/downloadActivity.config'
 import {
   fetchReportVesselsThunk,
   selectReportVesselsData,
@@ -88,7 +90,10 @@ export function useFetchReportVessel() {
             dataset: datasetId,
           },
           dateRange: timerange,
-          temporalResolution: 'daily',
+          //TODO: ask for API change to use e.g. month, not monthly
+          temporalResolution: `${getInterval(timerange.start, timerange.end, [
+            INTERVAL_ORDER,
+          ])}ly` as TemporalResolution,
           spatialAggregation: true,
         })
       )
