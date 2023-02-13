@@ -17,6 +17,7 @@ import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { selectReportVesselsData } from './reports.slice'
 
 export const DEFAULT_NULL_VALUE = 'NULL'
+export const MAX_CATEGORIES = 5
 
 export type ReportVesselWithDatasets = Partial<ReportVessel> & {
   datasetId: string
@@ -95,19 +96,32 @@ export const selectReportVesselsGraphData = createSelector(
 
     const distributionKeys = uniq(dataByDataview.flatMap(({ data }) => Object.keys(data)))
 
-    const data = distributionKeys.map((key) => {
-      const distributionData = { name: key }
-      dataByDataview.forEach(({ id, data }) => {
-        distributionData[id] = uniqBy(data?.[key] || [], 'vesselId').length
-      })
-      return distributionData
-    })
     const dataviewIds = dataviews.map((d) => d.id)
-    return data.sort((a, b) => {
-      if (a.name === DEFAULT_NULL_VALUE) return 1
-      if (b.name === DEFAULT_NULL_VALUE) return -1
-      return sum(dataviewIds.map((d) => b[d])) - sum(dataviewIds.map((d) => a[d]))
-    })
+    const data = distributionKeys
+      .map((key) => {
+        const distributionData = { name: key }
+        dataByDataview.forEach(({ id, data }) => {
+          distributionData[id] = uniqBy(data?.[key] || [], 'vesselId').length
+        })
+        return distributionData
+      })
+      .sort((a, b) => {
+        if (a.name === DEFAULT_NULL_VALUE) return 1
+        if (b.name === DEFAULT_NULL_VALUE) return -1
+        return sum(dataviewIds.map((d) => b[d])) - sum(dataviewIds.map((d) => a[d]))
+      })
+
+    if (distributionKeys.length <= MAX_CATEGORIES) return data
+
+    const top = data.slice(0, MAX_CATEGORIES)
+    const rest = data.slice(MAX_CATEGORIES)
+    const others = {
+      name: 'others',
+      ...Object.fromEntries(
+        dataviewIds.map((dataview) => [dataview, sum(rest.map((key) => key[dataview]))])
+      ),
+    }
+    return [...top, others]
   }
 )
 

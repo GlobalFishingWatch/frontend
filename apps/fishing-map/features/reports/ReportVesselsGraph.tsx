@@ -5,12 +5,9 @@ import { useTranslation } from 'react-i18next'
 import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import { selectReportVesselGraph } from 'features/app/app.selectors'
 import { ReportVesselGraph } from 'types'
-import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import I18nNumber from 'features/i18n/i18nNumber'
 import styles from './ReportVesselsGraph.module.css'
 import { DEFAULT_NULL_VALUE, selectReportVesselsGraphData } from './reports.selectors'
-
-type ReportVesselsGraphProps = {}
 
 type ReportGraphTooltipProps = {
   active: boolean
@@ -43,7 +40,7 @@ const ReportGraphTooltip = (props: any) => {
       <div className={styles.tooltipContainer}>
         <p className={styles.tooltipLabel}>{translatedLabel}</p>
         <ul>
-          {payload.map(({ value, color, unit }, index) => {
+          {payload.map(({ value, color }, index) => {
             return value !== 0 ? (
               <li key={index} className={styles.tooltipValue}>
                 <span className={styles.tooltipValueDot} style={{ color }}></span>
@@ -59,12 +56,12 @@ const ReportGraphTooltip = (props: any) => {
   return null
 }
 
-export default function ReportVesselsGraph(props: ReportVesselsGraphProps) {
+export default function ReportVesselsGraph() {
   const { t } = useTranslation()
   const dataviews = useSelector(selectActiveHeatmapDataviews)
   const data = useSelector(selectReportVesselsGraphData)
   const selectedReportVesselGraph = useSelector(selectReportVesselGraph)
-  const tickFormatter = (label) => {
+  const tickFormatter = (label: string) => {
     if (label === DEFAULT_NULL_VALUE) return t('common.unknown', 'Unknown')
     return selectedReportVesselGraph === 'geartype'
       ? `${t(`vessel.gearTypes.${label}` as any, label)}`
