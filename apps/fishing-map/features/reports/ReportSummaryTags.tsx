@@ -15,7 +15,6 @@ const allAvailableProperties = ['dataset', 'source', 'flag']
 type LayerPanelProps = {
   index: number
   dataview: UrlDataviewInstance
-  hideColors?: boolean
   hiddenProperties?: string[]
   availableFields: string[][]
 }
@@ -24,7 +23,6 @@ export default function ReportSummaryTags({
   dataview,
   hiddenProperties,
   availableFields,
-  hideColors,
 }: LayerPanelProps) {
   const { t } = useTranslation()
 
@@ -39,8 +37,7 @@ export default function ReportSummaryTags({
         : t(`common.apparentFishing`, 'Apparent Fishing Effort')
   }
   const TitleComponent = <p className={styles.dataset}>{datasetName}</p>
-  const showDot =
-    !allAvailableProperties.every((property) => hiddenProperties?.includes(property)) && !hideColors
+  const showDot = !allAvailableProperties.every((property) => hiddenProperties?.includes(property))
 
   const areAllPropertiesHidden =
     hiddenProperties?.includes('dataset') &&
@@ -67,9 +64,7 @@ export default function ReportSummaryTags({
             )}
           </div>
         )}
-        {!hiddenProperties?.includes('source') && (
-          <DatasetFilterSource dataview={dataview} hideColor={hideColors} />
-        )}
+        {!hiddenProperties?.includes('source') && <DatasetFilterSource dataview={dataview} />}
         {!hiddenProperties?.includes('flag') && (
           <DatasetFlagField dataview={dataview} showWhenEmpty />
         )}

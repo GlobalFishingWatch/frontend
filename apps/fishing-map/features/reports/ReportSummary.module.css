@@ -15,5 +15,6 @@
 
 .tagsContainer {
   display: flex;
-  gap: var(--space-M);
+  gap: var(--space-S) var(--space-M);
+  flex-wrap: wrap;
 }
