@@ -166,7 +166,7 @@ export const selectReportVesselsFiltered = createSelector(
         (item) => t(`flags:${item.flag as string}` as any, item.flag),
         (item) => t(`vessel.gearTypes.${item.geartype}` as any, item.geartype),
       ],
-    })
+    }).sort((a, b) => b.hours - a.hours)
   }
 )
 
