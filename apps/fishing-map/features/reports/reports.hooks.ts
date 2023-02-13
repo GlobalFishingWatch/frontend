@@ -46,6 +46,14 @@ export function useFetchReportArea() {
   return useMemo(() => ({ status, data }), [status, data])
 }
 
+//TODO: ask for API change to use e.g. "month", not "monthly", and add "hour"
+const temporalResolutions: Record<string, TemporalResolution> = {
+  hour: TemporalResolution.Daily,
+  day: TemporalResolution.Daily,
+  month: TemporalResolution.Monthly,
+  year: TemporalResolution.Yearly,
+}
+
 export function useFetchReportVessel() {
   const dispatch = useAppDispatch()
   const timerange = useSelector(selectUrlTimeRange)
@@ -90,10 +98,8 @@ export function useFetchReportVessel() {
             dataset: datasetId,
           },
           dateRange: timerange,
-          //TODO: ask for API change to use e.g. month, not monthly
-          temporalResolution: `${getInterval(timerange.start, timerange.end, [
-            INTERVAL_ORDER,
-          ])}ly` as TemporalResolution,
+          temporalResolution:
+            temporalResolutions[getInterval(timerange.start, timerange.end, [INTERVAL_ORDER])],
           spatialAggregation: true,
         })
       )
