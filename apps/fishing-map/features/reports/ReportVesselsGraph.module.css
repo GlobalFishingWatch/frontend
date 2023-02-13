@@ -4,6 +4,13 @@
   margin-bottom: var(--space-S);
 }
 
+.graph tspan {
+  text-transform: uppercase;
+  font: var(--font-XS);
+  line-height: 1.2rem;
+  fill: var(--color-secondary-blue);
+}
+
 .tooltipContainer {
   background-color: var(--color-white);
   border: var(--border);
@@ -27,11 +34,4 @@
   border: var(--border);
   background-color: currentcolor;
   margin-right: 0.5rem;
-}
-
-.axisLabel {
-  text-transform: uppercase;
-  font: var(--font-XS);
-  line-height: 1.2rem;
-  fill: var(--color-secondary-blue);
 }

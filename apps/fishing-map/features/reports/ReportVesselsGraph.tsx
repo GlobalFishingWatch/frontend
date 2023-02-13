@@ -1,11 +1,11 @@
 import React, { Fragment } from 'react'
 import { useSelector } from 'react-redux'
-import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from 'recharts'
+import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts'
 import { useTranslation } from 'react-i18next'
 import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import { selectReportVesselGraph } from 'features/app/app.selectors'
 import { ReportVesselGraph } from 'types'
-import I18nNumber from 'features/i18n/i18nNumber'
+import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import styles from './ReportVesselsGraph.module.css'
 import { DEFAULT_NULL_VALUE, selectReportVesselsGraphData } from './reports.selectors'
 
@@ -106,21 +106,28 @@ export default function ReportVesselsGraph() {
             height={300}
             data={data}
             margin={{
-              top: 0,
+              top: 10,
               right: 0,
               left: 0,
               bottom: 0,
             }}
           >
             <Tooltip content={<ReportGraphTooltip type={selectedReportVesselGraph} />} />
-            {dataviews.map((dataview) => {
+            {dataviews.map((dataview, index) => {
               return (
                 <Bar
                   key={dataview.id}
                   dataKey={dataview.id}
                   stackId="a"
                   fill={dataview.config?.color}
-                />
+                >
+                  {index === dataviews.length - 1 && (
+                    <LabelList
+                      position="top"
+                      valueAccessor={(entry) => formatI18nNumber(entry.value[1])}
+                    />
+                  )}
+                </Bar>
               )
             })}
             <XAxis

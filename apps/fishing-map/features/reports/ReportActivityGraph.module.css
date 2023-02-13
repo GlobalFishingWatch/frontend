@@ -4,6 +4,10 @@
   margin-top: var(--space-S);
 }
 
+.graph svg {
+  overflow: visible;
+}
+
 .tooltipContainer {
   background-color: var(--color-white);
   border: var(--border);
