@@ -56,17 +56,44 @@ const ReportGraphTooltip = (props: any) => {
   return null
 }
 
-export default function ReportVesselsGraph() {
+const CustomTick = (props: any) => {
+  const { x, y, payload } = props
   const { t } = useTranslation()
+  const selectedReportVesselGraph = useSelector(selectReportVesselGraph)
+  let label = payload.value
+  if (label === DEFAULT_NULL_VALUE) {
+    label = t('common.unknown', 'Unknown')
+  } else {
+    label =
+      selectedReportVesselGraph === 'geartype'
+        ? `${t(`vessel.gearTypes.${label}` as any, label)}`
+        : t(`flags:${label}` as any, label)
+  }
+  const labelChunks = label.split(' ')
+  let labelChunksClean = [labelChunks[0]]
+  labelChunks.slice(1).forEach((chunk) => {
+    let currentChunk = labelChunksClean[labelChunksClean.length - 1]
+    if (currentChunk.length + chunk.length >= 15) {
+      labelChunksClean.push(chunk)
+    } else {
+      labelChunksClean[labelChunksClean.length - 1] = currentChunk + ' ' + chunk
+    }
+  })
+  return (
+    <text transform={`translate(${x},${y - 3})`}>
+      {labelChunksClean.map((chunk) => (
+        <tspan key={chunk} className={styles.axisLabel} textAnchor="middle" x="0" dy={12}>
+          {chunk}
+        </tspan>
+      ))}
+    </text>
+  )
+}
+
+export default function ReportVesselsGraph() {
   const dataviews = useSelector(selectActiveHeatmapDataviews)
   const data = useSelector(selectReportVesselsGraphData)
   const selectedReportVesselGraph = useSelector(selectReportVesselGraph)
-  const tickFormatter = (label: string) => {
-    if (label === DEFAULT_NULL_VALUE) return t('common.unknown', 'Unknown')
-    return selectedReportVesselGraph === 'geartype'
-      ? `${t(`vessel.gearTypes.${label}` as any, label)}`
-      : t(`flags:${label}` as any, label)
-  }
   return (
     <Fragment>
       <div className={styles.graph}>
@@ -76,10 +103,10 @@ export default function ReportVesselsGraph() {
             height={300}
             data={data}
             margin={{
-              top: 20,
-              right: 30,
-              left: 20,
-              bottom: 5,
+              top: 0,
+              right: 0,
+              left: 0,
+              bottom: 0,
             }}
           >
             <Tooltip content={<ReportGraphTooltip type={selectedReportVesselGraph} />} />
@@ -96,9 +123,10 @@ export default function ReportVesselsGraph() {
             <XAxis
               dataKey="name"
               interval="preserveStart"
-              tickFormatter={tickFormatter}
               tickLine={false}
-              minTickGap={0}
+              minTickGap={-1000}
+              tick={<CustomTick />}
+              tickMargin={0}
             />
           </BarChart>
         </ResponsiveContainer>

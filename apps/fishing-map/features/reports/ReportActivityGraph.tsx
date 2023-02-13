@@ -71,7 +71,7 @@ export default function ReportActivityGraph(props: ReportActivityProps) {
   return (
     <div className={styles.graph}>
       <ResponsiveContainer width="100%" height="100%">
-        <ComposedChart data={data} margin={{ top: 15, right: 20, left: -20, bottom: -10 }}>
+        <ComposedChart data={data} margin={{ top: 0, right: 0, left: -20, bottom: -10 }}>
           <CartesianGrid vertical={false} />
           <XAxis
             dataKey="date"
@@ -79,7 +79,7 @@ export default function ReportActivityGraph(props: ReportActivityProps) {
             // TODO change to proper Interval
             tickFormatter={(tick: string) => formatDateTicks(tick, 'day')}
             axisLine={graphStartsInCero}
-            minTickGap={0}
+            minTickGap={15}
           />
           <YAxis
             scale="linear"
