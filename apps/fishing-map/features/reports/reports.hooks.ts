@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { getInterval, Interval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
+import { Interval } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
@@ -16,6 +16,7 @@ import {
   selectDatasetAreaStatus,
 } from 'features/areas/areas.slice'
 import { TemporalResolution } from 'features/download/downloadActivity.config'
+import { selectReportTemporalResolution } from 'features/reports/reports.selectors'
 import {
   fetchReportVesselsThunk,
   selectReportVesselsData,
@@ -44,7 +45,7 @@ export function useFetchReportArea() {
 }
 
 //TODO: change API to add "hour"
-const temporalResolutions: Record<Interval, TemporalResolution> = {
+export const REPORT_TEMPORAL_RESOLUTIONS: Record<Interval, TemporalResolution> = {
   hour: TemporalResolution.Daily,
   day: TemporalResolution.Daily,
   month: TemporalResolution.Monthly,
@@ -59,6 +60,7 @@ export function useFetchReportVessel() {
   const dataviews = useSelector(selectActiveHeatmapDataviews)
   const status = useSelector(selectReportVesselsStatus)
   const data = useSelector(selectReportVesselsData)
+  const temporalResolution = useSelector(selectReportTemporalResolution)
 
   const reportDataviews = useMemo(
     () =>
@@ -92,13 +94,12 @@ export function useFetchReportVessel() {
             dataset: datasetId,
           },
           dateRange: timerange,
-          temporalResolution:
-            temporalResolutions[getInterval(timerange.start, timerange.end, [INTERVAL_ORDER])],
+          temporalResolution,
           spatialAggregation: true,
         })
       )
     }
-  }, [dispatch, areaId, datasetId, timerange, dataviews, reportDataviews])
+  }, [dispatch, areaId, datasetId, timerange, dataviews, reportDataviews, temporalResolution])
 
   return useMemo(() => ({ status, data }), [status, data])
 }

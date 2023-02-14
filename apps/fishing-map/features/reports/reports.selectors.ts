@@ -3,17 +3,20 @@ import { groupBy, sum, sumBy, uniq, uniqBy } from 'lodash'
 import { matchSorter } from 'match-sorter'
 import { t } from 'i18next'
 import { Dataset, DatasetTypes, ReportVessel } from '@globalfishingwatch/api-types'
+import { getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
 import {
   selectReportActivityGraph,
   selectReportVesselFilter,
   selectReportVesselGraph,
   selectReportVesselPage,
+  selectTimeRange,
 } from 'features/app/app.selectors'
 import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import { sortStrings } from 'utils/shared'
 import { REPORT_VESSELS_PER_PAGE } from 'data/config'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
+import { REPORT_TEMPORAL_RESOLUTIONS } from 'features/reports/reports.hooks'
 import { selectReportVesselsData } from './reports.slice'
 
 export const DEFAULT_NULL_VALUE = 'NULL'
@@ -204,3 +207,11 @@ export const selectReportVesselsPagination = createSelector(
     }
   }
 )
+
+export const selectReportInterval = createSelector([selectTimeRange], (timerange) => {
+  return getInterval(timerange.start, timerange.end, [INTERVAL_ORDER])
+})
+
+export const selectReportTemporalResolution = createSelector([selectReportInterval], (interval) => {
+  return REPORT_TEMPORAL_RESOLUTIONS[interval]
+})

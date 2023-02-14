@@ -9,13 +9,12 @@ import {
   Line,
   ComposedChart,
 } from 'recharts'
-import { getInterval, Interval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
+import { Interval } from '@globalfishingwatch/layer-composer'
 import i18n from 'features/i18n/i18n'
 import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
-import { selectUrlTimeRange } from 'routes/routes.selectors'
 import styles from './ReportActivityGraph.module.css'
-import { selectReportActivityGraphData } from './reports.selectors'
+import { selectReportActivityGraphData, selectReportInterval } from './reports.selectors'
 import { formatTooltipValue, tickFormatter } from './reports.utils'
 
 type ReportGraphTooltipProps = {
@@ -70,8 +69,7 @@ type ReportActivityProps = {}
 export default function ReportActivityGraph(props: ReportActivityProps) {
   const dataviews = useSelector(selectActiveHeatmapDataviews)
   const data = useSelector(selectReportActivityGraphData)
-  const timerange = useSelector(selectUrlTimeRange)
-  const interval = getInterval(timerange.start, timerange.end, [INTERVAL_ORDER])
+  const interval = useSelector(selectReportInterval)
   const [graphStartsInCero, setGraphStartsInCero] = useState(true)
 
   return (
