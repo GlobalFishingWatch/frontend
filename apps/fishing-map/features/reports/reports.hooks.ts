@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
+import { getInterval, Interval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectLocationDatasetId,
@@ -8,16 +9,12 @@ import {
   selectUrlTimeRange,
 } from 'routes/routes.selectors'
 import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
-import {
-  checkDatasetReportPermission,
-  getActiveDatasetsInActivityDataviews,
-} from 'features/datasets/datasets.utils'
+import { getActiveDatasetsInActivityDataviews } from 'features/datasets/datasets.utils'
 import {
   fetchAreaDetailThunk,
   selectDatasetAreaDetail,
   selectDatasetAreaStatus,
 } from 'features/areas/areas.slice'
-import { selectUserData } from 'features/user/user.slice'
 import { TemporalResolution } from 'features/download/downloadActivity.config'
 import {
   fetchReportVesselsThunk,
@@ -46,8 +43,8 @@ export function useFetchReportArea() {
   return useMemo(() => ({ status, data }), [status, data])
 }
 
-//TODO: ask for API change to use e.g. "month", not "monthly", and add "hour"
-const temporalResolutions: Record<string, TemporalResolution> = {
+//TODO: change API to add "hour"
+const temporalResolutions: Record<Interval, TemporalResolution> = {
   hour: TemporalResolution.Daily,
   day: TemporalResolution.Daily,
   month: TemporalResolution.Monthly,
@@ -62,17 +59,14 @@ export function useFetchReportVessel() {
   const dataviews = useSelector(selectActiveHeatmapDataviews)
   const status = useSelector(selectReportVesselsStatus)
   const data = useSelector(selectReportVesselsData)
-  const userData = useSelector(selectUserData)
 
   const reportDataviews = useMemo(
     () =>
       dataviews
         .map((dataview) => {
-          const activityDatasets: string[] = (dataview?.config?.datasets || []).filter(
-            (id: string) => {
-              return id ? checkDatasetReportPermission(id, userData?.permissions) : false
-            }
-          )
+          const activityDatasets = getActiveDatasetsInActivityDataviews([
+            dataview as UrlDataviewInstance,
+          ])
           return {
             filter: dataview.config?.filter || [],
             filters: dataview.config?.filters || {},
@@ -83,7 +77,7 @@ export function useFetchReportVessel() {
           }
         })
         .filter((dataview) => dataview.datasets.length > 0),
-    [dataviews, userData?.permissions]
+    [dataviews]
   )
 
   useEffect(() => {

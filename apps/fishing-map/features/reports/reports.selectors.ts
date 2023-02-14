@@ -116,7 +116,7 @@ export const selectReportVesselsGraphData = createSelector(
     const top = data.slice(0, MAX_CATEGORIES)
     const rest = data.slice(MAX_CATEGORIES)
     const others = {
-      name: 'others',
+      name: t('analysis.others', 'Others'),
       ...Object.fromEntries(
         dataviewIds.map((dataview) => [dataview, sum(rest.map((key) => key[dataview]))])
       ),
