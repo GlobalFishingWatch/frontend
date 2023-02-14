@@ -41,8 +41,6 @@ const ReportGraphTooltip = (props: any) => {
         <p className={styles.tooltipLabel}>{translatedLabel}</p>
         <ul>
           {payload
-            .slice()
-            .reverse()
             .map(({ value, color }, index) => {
               return value !== 0 ? (
                 <li key={index} className={styles.tooltipValue}>
@@ -50,7 +48,8 @@ const ReportGraphTooltip = (props: any) => {
                   <I18nNumber number={value} /> {t('common.vessel', { count: value }).toLowerCase()}
                 </li>
               ) : null
-            })}
+            })
+            .reverse()}
         </ul>
       </div>
     )
