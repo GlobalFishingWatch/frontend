@@ -75,7 +75,7 @@ const CustomTick = (props: any) => {
   let labelChunksClean = [labelChunks[0]]
   labelChunks.slice(1).forEach((chunk) => {
     let currentChunk = labelChunksClean[labelChunksClean.length - 1]
-    if (currentChunk.length + chunk.length >= 15) {
+    if (currentChunk.length + chunk.length >= 12) {
       labelChunksClean.push(chunk)
     } else {
       labelChunksClean[labelChunksClean.length - 1] = currentChunk + ' ' + chunk
