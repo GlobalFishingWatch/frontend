@@ -11,9 +11,7 @@ import ReportDownload from './ReportDownload'
 export type ReportType = 'activity' | 'area'
 export type ReportActivityUnit = 'hours' | 'detections'
 
-type ReportsProps = {}
-
-export default function Report(props: ReportsProps) {
+export default function Report() {
   const { status: reportStatus } = useFetchReportVessel()
   const { data: areaDetail } = useFetchReportArea()
 

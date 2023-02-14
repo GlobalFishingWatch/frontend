@@ -38,7 +38,6 @@ export default function ReportSummary(props: ReportSummaryProps) {
             index={index}
             hiddenProperties={commonProperties}
             availableFields={FIELDS}
-            // hideColors={type !== 'evolution'}
           />
         ))}
       </div>

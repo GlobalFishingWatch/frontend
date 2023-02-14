@@ -14,7 +14,7 @@ import i18n from 'features/i18n/i18n'
 import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
 import styles from './ReportActivityGraph.module.css'
-import { selectReportActivityGraphData } from './reports.selectors'
+import { selectReportActivityGraphData, selectReportInterval } from './reports.selectors'
 import { formatTooltipValue, tickFormatter } from './reports.utils'
 
 type ReportGraphTooltipProps = {
@@ -42,14 +42,16 @@ const ReportGraphTooltip = (props: any) => {
       <div className={styles.tooltipContainer}>
         <p className={styles.tooltipLabel}>{formattedLabel}</p>
         <ul>
-          {formattedValues.map(({ value, color, unit }, index) => {
-            return (
-              <li key={index} className={styles.tooltipValue}>
-                <span className={styles.tooltipValueDot} style={{ color }}></span>
-                {formatTooltipValue(value, unit)}
-              </li>
-            )
-          })}
+          {formattedValues
+            .sort((a, b) => b.value - a.value)
+            .map(({ value, color, unit }, index) => {
+              return (
+                <li key={index} className={styles.tooltipValue}>
+                  <span className={styles.tooltipValueDot} style={{ color }}></span>
+                  {formatTooltipValue(value, unit)}
+                </li>
+              )
+            })}
         </ul>
       </div>
     )
@@ -67,19 +69,20 @@ type ReportActivityProps = {}
 export default function ReportActivityGraph(props: ReportActivityProps) {
   const dataviews = useSelector(selectActiveHeatmapDataviews)
   const data = useSelector(selectReportActivityGraphData)
+  const interval = useSelector(selectReportInterval)
   const [graphStartsInCero, setGraphStartsInCero] = useState(true)
+
   return (
     <div className={styles.graph}>
       <ResponsiveContainer width="100%" height="100%">
-        <ComposedChart data={data} margin={{ top: 15, right: 20, left: -20, bottom: -10 }}>
+        <ComposedChart data={data} margin={{ top: 0, right: 0, left: -20, bottom: -10 }}>
           <CartesianGrid vertical={false} />
           <XAxis
             dataKey="date"
             interval="preserveStartEnd"
-            // TODO change to proper Interval
-            tickFormatter={(tick: string) => formatDateTicks(tick, 'day')}
+            tickFormatter={(tick: string) => formatDateTicks(tick, interval)}
             axisLine={graphStartsInCero}
-            minTickGap={0}
+            minTickGap={15}
           />
           <YAxis
             scale="linear"
@@ -94,7 +97,7 @@ export default function ReportActivityGraph(props: ReportActivityProps) {
             tickLine={false}
             tickCount={4}
           />
-          <Tooltip content={<ReportGraphTooltip timeChunkInterval={'day'} />} />
+          <Tooltip content={<ReportGraphTooltip timeChunkInterval={interval} />} />
           {dataviews.map(({ id, config, datasets }) => {
             const unit = datasets[0]?.unit
             return (

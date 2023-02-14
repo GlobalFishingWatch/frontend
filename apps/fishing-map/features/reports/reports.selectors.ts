@@ -3,20 +3,24 @@ import { groupBy, sum, sumBy, uniq, uniqBy } from 'lodash'
 import { matchSorter } from 'match-sorter'
 import { t } from 'i18next'
 import { Dataset, DatasetTypes, ReportVessel } from '@globalfishingwatch/api-types'
+import { getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
 import {
   selectReportActivityGraph,
   selectReportVesselFilter,
   selectReportVesselGraph,
   selectReportVesselPage,
+  selectTimeRange,
 } from 'features/app/app.selectors'
 import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import { sortStrings } from 'utils/shared'
 import { REPORT_VESSELS_PER_PAGE } from 'data/config'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
+import { REPORT_TEMPORAL_RESOLUTIONS } from 'features/reports/reports.hooks'
 import { selectReportVesselsData } from './reports.slice'
 
 export const DEFAULT_NULL_VALUE = 'NULL'
+export const MAX_CATEGORIES = 5
 
 export type ReportVesselWithDatasets = Partial<ReportVessel> & {
   datasetId: string
@@ -57,7 +61,7 @@ export const selectReportActivityGraphData = createSelector(
     if (!reportData?.length) return null
 
     const dataByDataview = heatmapDataviews.map((dataview, index) => {
-      const dataviewData = Object.values(reportData[index]).flat()
+      const dataviewData = (Object.values(reportData[index]) || []).flat()
       const key = reportGraph === 'evolution' ? 'date' : 'date' // TODO for before/after and periodComparison
       const dataByKey = groupBy(dataviewData, key)
       return { id: dataview.id, data: dataByKey }
@@ -95,19 +99,32 @@ export const selectReportVesselsGraphData = createSelector(
 
     const distributionKeys = uniq(dataByDataview.flatMap(({ data }) => Object.keys(data)))
 
-    const data = distributionKeys.map((key) => {
-      const distributionData = { name: key }
-      dataByDataview.forEach(({ id, data }) => {
-        distributionData[id] = uniqBy(data?.[key] || [], 'vesselId').length
-      })
-      return distributionData
-    })
     const dataviewIds = dataviews.map((d) => d.id)
-    return data.sort((a, b) => {
-      if (a.name === DEFAULT_NULL_VALUE) return 1
-      if (b.name === DEFAULT_NULL_VALUE) return -1
-      return sum(dataviewIds.map((d) => b[d])) - sum(dataviewIds.map((d) => a[d]))
-    })
+    const data = distributionKeys
+      .map((key) => {
+        const distributionData = { name: key }
+        dataByDataview.forEach(({ id, data }) => {
+          distributionData[id] = uniqBy(data?.[key] || [], 'vesselId').length
+        })
+        return distributionData
+      })
+      .sort((a, b) => {
+        if (a.name === DEFAULT_NULL_VALUE) return 1
+        if (b.name === DEFAULT_NULL_VALUE) return -1
+        return sum(dataviewIds.map((d) => b[d])) - sum(dataviewIds.map((d) => a[d]))
+      })
+
+    if (distributionKeys.length <= MAX_CATEGORIES) return data
+
+    const top = data.slice(0, MAX_CATEGORIES)
+    const rest = data.slice(MAX_CATEGORIES)
+    const others = {
+      name: t('analysis.others', 'Others'),
+      ...Object.fromEntries(
+        dataviewIds.map((dataview) => [dataview, sum(rest.map((key) => key[dataview]))])
+      ),
+    }
+    return [...top, others]
   }
 )
 
@@ -190,3 +207,11 @@ export const selectReportVesselsPagination = createSelector(
     }
   }
 )
+
+export const selectReportInterval = createSelector([selectTimeRange], (timerange) => {
+  return getInterval(timerange.start, timerange.end, [INTERVAL_ORDER])
+})
+
+export const selectReportTemporalResolution = createSelector([selectReportInterval], (interval) => {
+  return REPORT_TEMPORAL_RESOLUTIONS[interval]
+})
