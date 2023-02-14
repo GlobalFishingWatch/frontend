@@ -231,7 +231,9 @@ export class GFW_API_CLASS {
       .then(parseJSON)
   }
 
-  async getTokenWithRefreshToken(refreshToken: string): Promise<{ token: string }> {
+  async getTokenWithRefreshToken(
+    refreshToken: string
+  ): Promise<{ token: string; refreshToken: string }> {
     return fetch(this.generateUrl(`/${AUTH_PATH}/tokens/reload`, this.apiVersion, true), {
       headers: {
         'refresh-token': refreshToken,
@@ -249,8 +251,11 @@ export class GFW_API_CLASS {
         if (!refreshToken) {
           throw new Error('No refresh token')
         }
-        const { token } = await this.getTokenWithRefreshToken(refreshToken)
+        const { token, refreshToken: newRefreshToken } = await this.getTokenWithRefreshToken(
+          refreshToken
+        )
         this.setToken(token)
+        this.setRefreshToken(newRefreshToken)
         this.status = 'idle'
         return token
       } catch (e: any) {
@@ -517,8 +522,11 @@ export class GFW_API_CLASS {
           console.log(`GFWAPI: Token wasn't valid, trying to refresh`)
         }
         try {
-          const { token } = await this.getTokenWithRefreshToken(refreshToken)
+          const { token, refreshToken: newRefreshToken } = await this.getTokenWithRefreshToken(
+            refreshToken
+          )
           this.setToken(token)
+          this.setRefreshToken(newRefreshToken)
           if (this.debug) {
             console.log(`GFWAPI: Refresh token OK, fetching user`)
           }
