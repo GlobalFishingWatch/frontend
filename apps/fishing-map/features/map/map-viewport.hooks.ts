@@ -5,6 +5,7 @@ import { debounce } from 'lodash'
 import { ViewStateChangeEvent } from 'react-map-gl'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { LngLatBounds, Map } from '@globalfishingwatch/maplibre-gl'
+import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { Bbox, MapCoordinates } from 'types'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { updateUrlViewport } from 'routes/routes.actions'
@@ -150,7 +151,8 @@ export function useMapFitBounds() {
 
   const fitMapBounds = useCallback(
     (bounds: Bbox, params: FitBoundsParams = {}) => {
-      const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(map, bounds, params)
+      const wrapBbox = wrapBBoxLongitudes(bounds)
+      const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(map, wrapBbox, params)
       setMapCoordinates({ latitude, longitude, zoom: Math.max(0, zoom) })
     },
     [map, setMapCoordinates]

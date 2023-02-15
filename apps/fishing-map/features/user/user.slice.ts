@@ -62,6 +62,12 @@ export const fetchUserThunk = createAsyncThunk(
     } catch (e: any) {
       return await GFWAPI.fetchGuestUser()
     }
+  },
+  {
+    condition: (params, { getState }) => {
+      const { user } = getState() as RootState
+      return user.status !== AsyncReducerStatus.Loading
+    },
   }
 )
 
