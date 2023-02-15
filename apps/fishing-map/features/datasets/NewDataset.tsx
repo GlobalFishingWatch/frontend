@@ -237,7 +237,7 @@ function NewDataset(): React.ReactElement {
             ...metadata,
             public: true,
             name: metadataName,
-            type: DatasetTypes.Context,
+            type: DatasetTypes.UserContext,
             category: datasetCategory,
             configuration,
           }))

@@ -26,6 +26,7 @@ export interface EndpointParam {
 }
 
 export enum EndpointId {
+  ContextTiles = 'context-tiles',
   ClusterTiles = 'events-cluster-tiles',
   ContextGeojson = 'temporal-context-geojson',
   Events = 'events',
@@ -60,10 +61,9 @@ export enum DatasetTypes {
   Ports = 'ports:v1',
   Tracks = 'tracks:v1',
   Fourwings = '4wings:v1',
-  Context = 'user-context-layer:v1',
+  UserContext = 'user-context-layer:v1',
   TemporalContext = 'temporal-context-layer:v1',
   Download = 'data-download:v1',
-  // TODO
   UserTracks = 'user-tracks:v1',
 }
 

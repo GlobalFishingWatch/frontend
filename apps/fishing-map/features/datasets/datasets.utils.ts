@@ -92,7 +92,7 @@ export const getDatasetLabel = (dataset: { id: string; name?: string }): string 
 export const getDatasetIcon = (dataset: Dataset): IconType => {
   if (dataset.type === DatasetTypes.UserTracks) return 'track'
   if (dataset.configuration.geometryType === 'points') return 'dots'
-  if (dataset.type === DatasetTypes.Context) return 'polygons'
+  if (dataset.type === DatasetTypes.UserContext) return 'polygons'
   return null
 }
 

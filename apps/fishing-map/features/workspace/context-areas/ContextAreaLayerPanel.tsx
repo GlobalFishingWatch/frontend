@@ -88,7 +88,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     setColorOpen(false)
   }
 
-  const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Context)
+  const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.UserContext)
   const isUserLayer = !guestUser && dataset?.ownerId === userId
 
   useAutoRefreshImportingDataset(dataset, 5000)

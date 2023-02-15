@@ -357,7 +357,7 @@ export function getGeneratorConfig(
           ? `${dataview.id}${MULTILAYER_SEPARATOR}${dataview.config.layers}`
           : dataview.id
         generator.layer = dataview.config.layers
-        const { dataset, url } = resolveDataviewDatasetResource(dataview, DatasetTypes.Context)
+        const { dataset, url } = resolveDataviewDatasetResource(dataview, DatasetTypes.UserContext)
         if (dataset?.status !== DatasetStatus.Done) {
           return []
         }
