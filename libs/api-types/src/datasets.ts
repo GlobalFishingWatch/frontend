@@ -91,6 +91,8 @@ export interface DatasetConfiguration {
   format?: 'geojson'
   documentation?: DatasetDocumentation
   fields?: string[]
+  idProperty?: string
+  valueProperties?: string[]
   [key: string]: unknown
 }
 

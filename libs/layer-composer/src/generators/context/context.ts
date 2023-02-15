@@ -15,7 +15,7 @@ import {
   getFillPaintWithFeatureState,
   getLinePaintWithFeatureState,
 } from './context.utils'
-import { DEFAULT_CONTEXT_SOURCE_LAYER } from './config'
+import { DEFAULT_CONTEXT_PROMOTE_ID, DEFAULT_CONTEXT_SOURCE_LAYER } from './config'
 
 const getPaintPropertyByType = (layer: LayerSpecification, config: any) => {
   const opacity = config.opacity !== undefined ? config.opacity : 1
@@ -73,7 +73,7 @@ class ContextGenerator {
       {
         id: getContextSourceId(config),
         type: 'vector',
-        promoteId: 'gfw_id',
+        promoteId: config.promoteId || DEFAULT_CONTEXT_PROMOTE_ID,
         tiles: [tilesUrl.replace(/{{/g, '{').replace(/}}/g, '}')],
         ...(config.attribution && { attribution: config.attribution }),
       },
@@ -111,6 +111,8 @@ class ContextGenerator {
           layer: config.layer,
           generatorId: config.id,
           datasetId: config.datasetId,
+          promoteId: config.promoteId || DEFAULT_CONTEXT_PROMOTE_ID,
+          valueProperties: config.valueProperties,
         },
       }
     })
