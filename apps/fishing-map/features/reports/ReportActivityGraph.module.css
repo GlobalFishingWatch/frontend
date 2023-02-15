@@ -32,3 +32,7 @@
   background-color: currentcolor;
   margin-right: 0.5rem;
 }
+
+.graph :global(.recharts-tooltip-cursor) {
+  stroke: var(--color-secondary-blue);
+}

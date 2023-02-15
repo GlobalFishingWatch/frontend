@@ -2,8 +2,7 @@ import React, { Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts'
 import { useTranslation } from 'react-i18next'
-import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
-import { selectReportVesselGraph } from 'features/app/app.selectors'
+import { selectActiveReportDataviews, selectReportVesselGraph } from 'features/app/app.selectors'
 import { ReportVesselGraph } from 'types'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import styles from './ReportVesselsGraph.module.css'
@@ -59,7 +58,7 @@ const ReportGraphTooltip = (props: any) => {
 }
 
 const CustomTick = (props: any) => {
-  const { x, y, payload } = props
+  const { x, y, payload, width, visibleTicksCount } = props
   const { t } = useTranslation()
   const selectedReportVesselGraph = useSelector(selectReportVesselGraph)
   let label = payload.value
@@ -75,7 +74,7 @@ const CustomTick = (props: any) => {
   let labelChunksClean = [labelChunks[0]]
   labelChunks.slice(1).forEach((chunk) => {
     let currentChunk = labelChunksClean[labelChunksClean.length - 1]
-    if (currentChunk.length + chunk.length >= 12) {
+    if (currentChunk.length + chunk.length >= width / visibleTicksCount / 8) {
       labelChunksClean.push(chunk)
     } else {
       labelChunksClean[labelChunksClean.length - 1] = currentChunk + ' ' + chunk
@@ -93,7 +92,7 @@ const CustomTick = (props: any) => {
 }
 
 export default function ReportVesselsGraph() {
-  const dataviews = useSelector(selectActiveHeatmapDataviews)
+  const dataviews = useSelector(selectActiveReportDataviews)
   const data = useSelector(selectReportVesselsGraphData)
   const selectedReportVesselGraph = useSelector(selectReportVesselGraph)
   return (
@@ -105,7 +104,7 @@ export default function ReportVesselsGraph() {
             height={300}
             data={data}
             margin={{
-              top: 10,
+              top: 15,
               right: 0,
               left: 0,
               bottom: 0,

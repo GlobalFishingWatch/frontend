@@ -5,13 +5,13 @@ import { t } from 'i18next'
 import { Dataset, DatasetTypes, ReportVessel } from '@globalfishingwatch/api-types'
 import { getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
 import {
+  selectActiveReportDataviews,
   selectReportActivityGraph,
   selectReportVesselFilter,
   selectReportVesselGraph,
   selectReportVesselPage,
   selectTimeRange,
 } from 'features/app/app.selectors'
-import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import { sortStrings } from 'utils/shared'
 import { REPORT_VESSELS_PER_PAGE } from 'data/config'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
@@ -56,20 +56,20 @@ export const selectReportVesselsHours = createSelector([selectReportActivityFlat
 })
 
 export const selectReportActivityGraphData = createSelector(
-  [selectReportActivityGraph, selectReportVesselsData, selectActiveHeatmapDataviews],
+  [selectReportActivityGraph, selectReportVesselsData, selectActiveReportDataviews],
   (reportGraph, reportData, heatmapDataviews) => {
     if (!reportData?.length) return null
 
     const dataByDataview = heatmapDataviews.map((dataview, index) => {
-      const dataviewData = (Object.values(reportData[index]) || []).flat()
+      const dataviewData = Object.values(reportData[index] || []).flat()
       const key = reportGraph === 'evolution' ? 'date' : 'date' // TODO for before/after and periodComparison
       const dataByKey = groupBy(dataviewData, key)
       return { id: dataview.id, data: dataByKey }
     })
 
-    const distributionKeys = uniq(dataByDataview.flatMap(({ data }) => Object.keys(data))).sort(
-      sortStrings
-    )
+    const distributionKeys = uniq(dataByDataview.flatMap(({ data }) => Object.keys(data)))
+      .filter((d) => d !== 'undefined')
+      .sort(sortStrings)
 
     return distributionKeys.map((key) => {
       const distributionData = { date: key }
@@ -85,7 +85,7 @@ export const selectReportActivityGraphData = createSelector(
 )
 
 export const selectReportVesselsGraphData = createSelector(
-  [selectReportVesselGraph, selectReportVesselsData, selectActiveHeatmapDataviews],
+  [selectReportVesselGraph, selectReportVesselsData, selectActiveReportDataviews],
   (reportGraph, reportData, dataviews) => {
     if (!reportData?.length) return null
 
@@ -180,9 +180,11 @@ export const selectReportVesselsFiltered = createSelector(
       keys: [
         'shipName',
         'mmsi',
+        'flag',
         (item) => t(`flags:${item.flag as string}` as any, item.flag),
         (item) => t(`vessel.gearTypes.${item.geartype}` as any, item.geartype),
       ],
+      threshold: matchSorter.rankings.ACRONYM,
     }).sort((a, b) => b.hours - a.hours)
   }
 )

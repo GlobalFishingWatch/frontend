@@ -104,7 +104,7 @@ const getSerializedFilterFields = (dataview: UrlDataviewInstance, filterKey: str
 
 export const FIELDS = [
   ['geartype', 'layer.gearType_other', 'Gear types'],
-  ['fleet', 'layer.fleet_other', 'Fleets'],
+  ['vessel-groups', 'vesselGroup.vesselGroups', 'Vessel Groups'],
   ['origin', 'vessel.origin', 'Origin'],
   ['vessel_type', 'vessel.vesselType_other', 'Vessel types'],
 ]

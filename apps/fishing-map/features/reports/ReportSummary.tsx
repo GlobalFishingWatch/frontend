@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 // import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectUrlTimeRange } from 'routes/routes.selectors'
-import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectActiveReportDataviews } from 'features/app/app.selectors'
 import ReportSummaryTags from 'features/reports/ReportSummaryTags'
 import { FIELDS, getCommonProperties } from 'features/reports/reports.utils'
 import { selectReportVesselsHours, selectReportVesselsNumber } from './reports.selectors'
@@ -16,8 +16,9 @@ export default function ReportSummary(props: ReportSummaryProps) {
   const timerange = useSelector(selectUrlTimeRange)
   const reportVessels = useSelector(selectReportVesselsNumber)
   const reportHours = useSelector(selectReportVesselsHours)
-  const dataviews = useSelector(selectActiveHeatmapDataviews)
+  const dataviews = useSelector(selectActiveReportDataviews)
   const commonProperties = getCommonProperties(dataviews)
+  // TODO remove "hours" if category is not activity
   const summary = t('analysis.summary', {
     defaultValue:
       '<strong>{{vessels}} $t(common.vessel, {"count": {{vessels}} })</strong> had <strong>{{hours}} $t(common.hour, {"count": {{hours}} })</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>',

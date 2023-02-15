@@ -93,6 +93,7 @@ export const DEFAULT_WORKSPACE = {
   bivariateDataviews: undefined,
   analysis: undefined,
   reportActivityGraph: REPORT_ACTIVITY_GRAPH_EVOLUTION,
+  reportCategory: DataviewCategory.Activity,
   reportVesselFilter: '',
   reportVesselGraph: REPORT_VESSELS_GRAPH_GEARTYPE,
   reportVesselPage: 0,

@@ -38,6 +38,7 @@ import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-groups.selectors'
 import { getUTCDateTime } from 'utils/dates'
+import { selectIsReportLocation } from 'routes/routes.selectors'
 import { setHighlightedTime, selectHighlightedTime, Range } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import { selectTracksData, selectTracksGraphData, selectTracksEvents } from './timebar.selectors'
@@ -138,6 +139,7 @@ const TimebarWrapper = () => {
   const { isMapDrawing } = useMapDrawConnect()
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const vesselGroupsFiltering = useSelector(selectIsVessselGroupsFiltering)
+  const isReportLocation = useSelector(selectIsReportLocation)
   const dispatch = useAppDispatch()
 
   const [bookmark, setBookmark] = useState<{ start: string; end: string } | null>(null)
@@ -316,7 +318,7 @@ const TimebarWrapper = () => {
   return (
     <div className={styles.timebarWrapper}>
       <Timebar
-        enablePlayback={!vesselGroupsFiltering}
+        enablePlayback={!vesselGroupsFiltering && !isReportLocation}
         labels={labels}
         start={internalRange ? internalRange.start : start}
         end={internalRange ? internalRange.end : end}
