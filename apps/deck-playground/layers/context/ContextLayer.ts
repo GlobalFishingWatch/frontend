@@ -1,6 +1,6 @@
 import { CompositeLayer, Color, PickingInfo } from '@deck.gl/core/typed'
 import { MVTLayer, MVTLayerProps, TileLayerProps } from '@deck.gl/geo-layers/typed'
-import { Feature } from '@turf/helpers'
+import { Feature } from 'geojson'
 import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
 import { getPickedFeatureToHighlight } from 'utils/layers'
 import { API_PATH, CONTEXT_LAYERS_OBJECT } from './context.config'

@@ -16,7 +16,7 @@ export class BaseMap extends CompositeLayer<BaseMapLayerProps> {
       id: 'basemap-bathimetry',
       data: 'https://storage.googleapis.com/public-tiles/basemap/bathymetry/{z}/{x}/{y}.png',
       minZoom: 0,
-      maxZoom: 12,
+      maxZoom: 9,
       onDataLoad: this.props.onDataLoad,
       zIndex: GROUP_ORDER.indexOf(Group.Basemap),
       tileSize: 256,
@@ -37,7 +37,7 @@ export class BaseMap extends CompositeLayer<BaseMapLayerProps> {
     return new MVTLayer({
       id: 'basemap-landmass',
       minZoom: 0,
-      maxZoom: 12,
+      maxZoom: 8,
       onDataLoad: this.props.onDataLoad,
       zIndex: GROUP_ORDER.indexOf(Group.BasemapFill),
       getFillColor: [39, 70, 119],
