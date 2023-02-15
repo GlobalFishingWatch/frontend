@@ -39,7 +39,7 @@ export default function Report() {
   if (reportStatus !== AsyncReducerStatus.Finished) return <Spinner />
 
   const handleTabClick = (option) => {
-    dispatchQueryParams({ reportCategory: option.id })
+    dispatchQueryParams({ reportCategory: option.id, reportVesselPage: 0 })
   }
 
   // TODO get this from datasets config

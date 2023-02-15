@@ -30,7 +30,6 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const allVessels = useSelector(selectReportVesselsListWithAllInfo)
-
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const vessels = useSelector(selectReportVesselsPaginated)
   const pagination = useSelector(selectReportVesselsPagination)
