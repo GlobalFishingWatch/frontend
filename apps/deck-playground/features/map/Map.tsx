@@ -116,6 +116,8 @@ const MapWrapper = (): React.ReactElement => {
         onClick={onClick}
         onHover={onHover}
         onViewStateChange={onViewportStateChange}
+        // this experimental prop reduces memory usage
+        _typedArrayManagerProps={{ overAlloc: 1, poolSize: 0 }}
       />
       {hoveredFeatures && hoveredFeatures.length > 0 && <InfoTooltip features={hoveredFeatures} />}
       {clickedFeatures && clickedFeatures.length > 0 && (
