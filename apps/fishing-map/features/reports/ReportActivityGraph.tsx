@@ -11,7 +11,7 @@ import {
 } from 'recharts'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import i18n from 'features/i18n/i18n'
-import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectActiveReportDataviews } from 'features/app/app.selectors'
 import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
 import styles from './ReportActivityGraph.module.css'
 import { selectReportActivityGraphData, selectReportInterval } from './reports.selectors'
@@ -67,7 +67,7 @@ const formatDateTicks = (tick: string, timeChunkInterval: Interval) => {
 
 type ReportActivityProps = {}
 export default function ReportActivityGraph(props: ReportActivityProps) {
-  const dataviews = useSelector(selectActiveHeatmapDataviews)
+  const dataviews = useSelector(selectActiveReportDataviews)
   const data = useSelector(selectReportActivityGraphData)
   const interval = useSelector(selectReportInterval)
   const [graphStartsInCero, setGraphStartsInCero] = useState(true)

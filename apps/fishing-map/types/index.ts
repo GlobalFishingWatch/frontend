@@ -1,5 +1,5 @@
 import { BaseUrlWorkspace } from '@globalfishingwatch/dataviews-client'
-import { EventType } from '@globalfishingwatch/api-types'
+import { DataviewCategory, EventType } from '@globalfishingwatch/api-types'
 import {
   REPORT_VESSELS_GRAPH_GEARTYPE,
   REPORT_VESSELS_GRAPH_FLAG,
@@ -27,6 +27,7 @@ export type WorkspaceStateProperty =
   | 'timebarSelectedEnvId'
   | 'bivariateDataviews'
   | 'activityCategory'
+  | 'reportCategory'
   | 'reportActivityGraph'
   | 'reportVesselGraph'
   | 'reportVesselFilter'
@@ -77,6 +78,7 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   timebarSelectedEnvId?: string
   bivariateDataviews?: BivariateDataviews
   reportActivityGraph?: ReportActivityGraph
+  reportCategory?: DataviewCategory
   reportVesselGraph?: ReportVesselGraph
   reportVesselFilter?: string
   reportVesselPage?: number

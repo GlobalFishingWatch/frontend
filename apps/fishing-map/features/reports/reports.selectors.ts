@@ -5,13 +5,13 @@ import { t } from 'i18next'
 import { Dataset, DatasetTypes, ReportVessel } from '@globalfishingwatch/api-types'
 import { getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
 import {
+  selectActiveReportDataviews,
   selectReportActivityGraph,
   selectReportVesselFilter,
   selectReportVesselGraph,
   selectReportVesselPage,
   selectTimeRange,
 } from 'features/app/app.selectors'
-import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import { sortStrings } from 'utils/shared'
 import { REPORT_VESSELS_PER_PAGE } from 'data/config'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
@@ -56,7 +56,7 @@ export const selectReportVesselsHours = createSelector([selectReportActivityFlat
 })
 
 export const selectReportActivityGraphData = createSelector(
-  [selectReportActivityGraph, selectReportVesselsData, selectActiveHeatmapDataviews],
+  [selectReportActivityGraph, selectReportVesselsData, selectActiveReportDataviews],
   (reportGraph, reportData, heatmapDataviews) => {
     if (!reportData?.length) return null
 
@@ -85,7 +85,7 @@ export const selectReportActivityGraphData = createSelector(
 )
 
 export const selectReportVesselsGraphData = createSelector(
-  [selectReportVesselGraph, selectReportVesselsData, selectActiveHeatmapDataviews],
+  [selectReportVesselGraph, selectReportVesselsData, selectActiveReportDataviews],
   (reportGraph, reportData, dataviews) => {
     if (!reportData?.length) return null
 

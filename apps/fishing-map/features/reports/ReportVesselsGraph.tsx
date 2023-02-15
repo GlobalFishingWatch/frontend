@@ -2,8 +2,7 @@ import React, { Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts'
 import { useTranslation } from 'react-i18next'
-import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
-import { selectReportVesselGraph } from 'features/app/app.selectors'
+import { selectActiveReportDataviews, selectReportVesselGraph } from 'features/app/app.selectors'
 import { ReportVesselGraph } from 'types'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import styles from './ReportVesselsGraph.module.css'
@@ -93,7 +92,7 @@ const CustomTick = (props: any) => {
 }
 
 export default function ReportVesselsGraph() {
-  const dataviews = useSelector(selectActiveHeatmapDataviews)
+  const dataviews = useSelector(selectActiveReportDataviews)
   const data = useSelector(selectReportVesselsGraphData)
   const selectedReportVesselGraph = useSelector(selectReportVesselGraph)
   return (

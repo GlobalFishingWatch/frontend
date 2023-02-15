@@ -8,7 +8,7 @@ import {
   selectLocationAreaId,
   selectUrlTimeRange,
 } from 'routes/routes.selectors'
-import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectActiveReportDataviews } from 'features/app/app.selectors'
 import { getActiveDatasetsInActivityDataviews } from 'features/datasets/datasets.utils'
 import {
   fetchAreaDetailThunk,
@@ -57,7 +57,7 @@ export function useFetchReportVessel() {
   const timerange = useSelector(selectUrlTimeRange)
   const datasetId = useSelector(selectLocationDatasetId)
   const areaId = useSelector(selectLocationAreaId)
-  const dataviews = useSelector(selectActiveHeatmapDataviews)
+  const dataviews = useSelector(selectActiveReportDataviews)
   const status = useSelector(selectReportVesselsStatus)
   const data = useSelector(selectReportVesselsData)
   const temporalResolution = useSelector(selectReportTemporalResolution)

@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { DataviewInstance } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewInstance } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_WORKSPACE } from 'data/config'
 import {
   selectWorkspace,
@@ -31,7 +31,11 @@ import {
   selectDataviewInstancesMergedOrdered,
 } from 'features/dataviews/dataviews.slice'
 import { RootState } from 'store'
-import { selectEnvironmentalDataviews } from 'features/dataviews/dataviews.selectors'
+import {
+  selectActiveActivityDataviews,
+  selectActiveDetectionsDataviews,
+  selectEnvironmentalDataviews,
+} from 'features/dataviews/dataviews.selectors'
 
 export const selectViewport = createSelector(
   [selectUrlViewport, selectWorkspaceViewport],
@@ -116,6 +120,19 @@ export const selectSidebarOpen = createSelector(
   (sidebarOpen): boolean => {
     return sidebarOpen
   }
+)
+
+export const selectReportCategory = createSelector(
+  [selectWorkspaceStateProperty('reportCategory')],
+  (reportCategory): DataviewCategory => {
+    return reportCategory
+  }
+)
+
+export const selectActiveReportDataviews = createSelector(
+  [selectReportCategory, selectActiveActivityDataviews, selectActiveDetectionsDataviews],
+  (reportCategory, activityDataviews = [], detectionsDataviews = []) =>
+    reportCategory === DataviewCategory.Activity ? activityDataviews : detectionsDataviews
 )
 
 export const selectReportActivityGraph = createSelector(
