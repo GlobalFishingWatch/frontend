@@ -166,6 +166,10 @@ export interface ContextGeneratorConfig extends GeneratorConfig {
    * Sets the color of the line https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#paint-fill-fill-color
    */
   color?: string
+  /**
+   * Filter the polygons displayed https://docs.mapbox.com/help/glossary/filter/
+   */
+  filters?: Record<string, Array<string>>
 }
 
 export type TileClusterEventType = 'encounter' | 'loitering' | 'port'

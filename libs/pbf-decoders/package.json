@@ -1,7 +1,6 @@
 {
   "name": "@globalfishingwatch/pbf",
   "version": "1.0.11",
-  "private": false,
   "license": "MIT",
   "main": "index.ts",
   "typings": "./decoders",

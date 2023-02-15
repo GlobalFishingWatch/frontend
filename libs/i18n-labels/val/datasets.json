@@ -1839,6 +1839,11 @@
     "description": "crwdns10115:0crwdne10115:0",
     "schema": {}
   },
+  "public-high-seas-pockets": {
+    "name": "crwdns29285:0crwdne29285:0",
+    "description": "crwdns29287:0crwdne29287:0",
+    "schema": {}
+  },
   "public-indonesia-fishing-effort": {
     "name": "crwdns10117:0crwdne10117:0",
     "description": "crwdns25984:0crwdne25984:0",
@@ -2316,6 +2321,22 @@
       },
       "timestamp": "crwdns18440:0crwdne18440:0",
       "vessel_id": "crwdns18442:0crwdne18442:0"
+    }
+  },
+  "public-protectedseas": {
+    "name": "crwdns29289:0crwdne29289:0",
+    "description": "crwdns29291:0crwdne29291:0",
+    "schema": {
+      "removal_of": {
+        "keyword": "crwdns29293:0crwdne29293:0",
+        "enum": {
+          "1": "crwdns29295:0crwdne29295:0",
+          "2": "crwdns29297:0crwdne29297:0",
+          "3": "crwdns29299:0crwdne29299:0",
+          "4": "crwdns29301:0crwdne29301:0",
+          "5": "crwdns29303:0crwdne29303:0"
+        }
+      }
     }
   },
   "public-rfmo": {

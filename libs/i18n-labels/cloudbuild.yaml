@@ -15,7 +15,7 @@ steps:
       # if dependencies cache is not found then install all deps
       - |
         if [ ! -d "node_modules" ]; then
-          yarn install --frozen-lockfile
+          yarn install --immutable
         fi
 
   - id: 'save_cache'

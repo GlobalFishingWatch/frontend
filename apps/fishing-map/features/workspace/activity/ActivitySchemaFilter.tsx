@@ -1,5 +1,4 @@
 import { useCallback } from 'react'
-import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import {
   Choice,
@@ -66,8 +65,7 @@ function ActivitySchemaFilter({
   onIsOpenChange,
   onSelectOperation,
 }: ActivitySchemaFilterProps): React.ReactElement {
-  const { id, type, disabled, options, optionsSelected, filterOperator } = schemaFilter
-  const { t } = useTranslation()
+  const { id, label, type, disabled, options, optionsSelected, filterOperator } = schemaFilter
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const onSliderChange = useCallback(
@@ -95,7 +93,7 @@ function ActivitySchemaFilter({
       <Slider
         className={styles.multiSelect}
         initialRange={getRangeBySchema(schemaFilter)}
-        label={t(`vessel.${id}` as any, id)}
+        label={label}
         config={{
           steps: [0, 1, 10, 100, 1000, 10000],
           min: 0,
@@ -112,7 +110,7 @@ function ActivitySchemaFilter({
       <Select
         key={id}
         disabled={disabled}
-        label={t(`vessel.${id}` as any, id)}
+        label={label}
         placeholder={getPlaceholderBySelections(optionsSelected)}
         options={options}
         selectedOption={optionsSelected?.[0]}
@@ -138,11 +136,7 @@ function ActivitySchemaFilter({
       <MultiSelect
         key={id}
         disabled={disabled}
-        label={
-          id === 'vessel-groups'
-            ? t('vesselGroup.vesselGroups', 'Vessel Groups')
-            : t(`vessel.${id}` as any, id)
-        }
+        label={label}
         placeholder={getPlaceholderBySelections(optionsSelected, filterOperator)}
         options={options}
         selectedOptions={optionsSelected}

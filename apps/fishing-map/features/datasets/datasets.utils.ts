@@ -23,7 +23,7 @@ import { formatSliderNumber, IconType, MultiSelectOption } from '@globalfishingw
 import { capitalize, sortFields } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
 import { PUBLIC_SUFIX, FULL_SUFIX, PRIVATE_SUFIX } from 'data/config'
-import { getDatasetNameTranslated } from 'features/i18n/utils'
+import { getDatasetNameTranslated, removeDatasetVersion } from 'features/i18n/utils'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { FileType } from 'features/common/FileDropzone'
 import { getLayerDatasetRange } from 'features/workspace/environmental/HistogramRangeFilter'
@@ -52,7 +52,9 @@ export type SupportedActivityDatasetSchema =
   | 'visibleValues'
 
 export type SupportedEnvDatasetSchema = 'type'
-export type SupportedContextDatasetSchema = 'ID'
+export type SupportedContextDatasetSchema = 'removal_of'
+
+const CONTEXT_DATASETS_SCHEMAS: SupportedContextDatasetSchema[] = ['removal_of']
 
 export type SchemaFieldDataview =
   | UrlDataviewInstance
@@ -388,15 +390,18 @@ export type SchemaFieldSelection = {
 
 export const VESSEL_GROUPS_MODAL_ID = 'vesselGroupsOpenModalId'
 
+export const getActiveDatasetsInDataview = (dataview: SchemaFieldDataview) => {
+  return dataview.category === DataviewCategory.Context
+    ? dataview?.datasets
+    : dataview?.datasets?.filter((dataset) => dataview.config?.datasets?.includes(dataset.id))
+}
+
 export const getCommonSchemaFieldsInDataview = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema,
   vesselGroups: MultiSelectOption[] = []
 ): SchemaFieldSelection[] => {
-  const activeDatasets =
-    dataview.category === DataviewCategory.Context
-      ? dataview?.datasets
-      : dataview?.datasets?.filter((dataset) => dataview.config?.datasets?.includes(dataset.id))
+  const activeDatasets = getActiveDatasetsInDataview(dataview)
   if (schema === 'flag') {
     return getFlags()
   } else if (schema === 'vessel-groups') {
@@ -413,7 +418,7 @@ export const getCommonSchemaFieldsInDataview = (
   }
   const schemaFields = activeDatasets?.map((d) => d.schema?.[schema]?.enum || [])
   const schemaType = getCommonSchemaTypeInDataview(dataview, schema)
-  const datasetId = activeDatasets?.[0]?.id?.split(':')[0]
+  const datasetId = removeDatasetVersion(activeDatasets?.[0]?.id)
   const commonSchemaFields = schemaFields
     ? intersection(...schemaFields).map((field) => {
         let label =
@@ -497,6 +502,7 @@ export const getSchemaFieldsSelectedInDataview = (
 export type SchemaFilter = {
   type: DatasetSchemaType
   id: SupportedDatasetSchema
+  label: string
   disabled: boolean
   options: ReturnType<typeof getCommonSchemaFieldsInDataview>
   optionsSelected: ReturnType<typeof getCommonSchemaFieldsInDataview>
@@ -516,7 +522,15 @@ export const getFiltersBySchema = (
   const incompatibleFilterSelection = getIncompatibleFilterSelection(dataview, schema)?.length > 0
   const disabled = datasetsWithoutSchema || incompatibleFilterSelection
 
-  return { id: schema, disabled, options, optionsSelected, type, filterOperator }
+  const datasetId = removeDatasetVersion(getActiveDatasetsInDataview(dataview)?.[0]?.id)
+  let label = CONTEXT_DATASETS_SCHEMAS.includes(schema as SupportedContextDatasetSchema)
+    ? t(`datasets:${datasetId}.schema.${schema}.keyword`, schema.toString())
+    : t(`vessel.${schema}`, schema)
+  if (schema === 'vessel-groups') {
+    label = t('vesselGroup.vesselGroups', 'Vessel Groups')
+  }
+
+  return { id: schema, label, disabled, options, optionsSelected, type, filterOperator }
 }
 
 export const getSchemaFiltersInDataview = (

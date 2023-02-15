@@ -176,7 +176,7 @@ function ActivityLayerPanel({
     return fields
   }, [t])
 
-  const statsValue = stats && (stats.vessel_id || stats.id)
+  const statsValue = stats && (stats.vesselIds || stats.id)
 
   return (
     <div
@@ -289,16 +289,16 @@ function ActivityLayerPanel({
                         t('workspace.noDetectionInFilters', 'No detections match your filters')
                       )}
                       {stats.type === 'vessels' &&
-                        stats.flag > 0 &&
+                        stats.flags > 0 &&
                         (!dataview.config?.filters?.flag ||
                           dataview.config?.filterOperators?.flag === EXCLUDE_FILTER_ID ||
                           dataview.config?.filters?.flag.length > 1) && (
                           <Fragment>
                             <span> {t('common.from', 'from')} </span>
                             <span>
-                              <I18nNumber number={stats.flag} />{' '}
+                              <I18nNumber number={stats.flags} />{' '}
                               {t('layer.flagState', {
-                                count: stats.flag,
+                                count: stats.flags,
                                 defaultValue: 'flag states',
                               }).toLocaleLowerCase()}
                             </span>

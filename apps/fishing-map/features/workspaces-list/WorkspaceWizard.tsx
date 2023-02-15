@@ -10,7 +10,6 @@ import type {
   OceanArea,
 } from '@globalfishingwatch/ocean-areas'
 import { Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
-import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { t as trans } from 'features/i18n/i18n'
 import useViewport, {
   getMapCoordinatesFromBounds,
@@ -105,8 +104,7 @@ function WorkspaceWizard() {
     if (selectedItem) {
       const bounds = selectedItem?.properties.bounds
       if (bounds) {
-        const wrappedBounds = wrapBBoxLongitudes(bounds)
-        fitBounds(wrappedBounds)
+        fitBounds(bounds)
       }
     }
   }
@@ -115,8 +113,7 @@ function WorkspaceWizard() {
     const highlightedArea = areasMatching[highlightedIndex]
     const bounds = highlightedArea?.properties.bounds
     if (bounds) {
-      const wrappedBounds = wrapBBoxLongitudes(bounds)
-      fitBounds(wrappedBounds)
+      fitBounds(bounds)
     }
   }
 

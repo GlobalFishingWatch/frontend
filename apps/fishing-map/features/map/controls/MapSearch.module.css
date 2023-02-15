@@ -39,7 +39,7 @@
 .results {
   display: block;
   left: 0;
-  width: 32rem;
+  width: 100%;
   background-color: var(--color-gradient);
 }
 

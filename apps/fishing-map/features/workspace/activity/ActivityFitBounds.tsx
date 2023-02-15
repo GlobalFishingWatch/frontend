@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
-import { StatFields } from 'queries/stats-api'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { Bbox } from '@globalfishingwatch/data-transforms'
+import { StatFields } from '@globalfishingwatch/api-types'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
 

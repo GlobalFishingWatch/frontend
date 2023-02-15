@@ -33,7 +33,7 @@ export const MPA_DATAVIEW_SLUG = 'mpa'
 export const MPA_DATAVIEW_INSTANCE_ID = 'context-layer-mpa'
 export const RFMO_DATAVIEW_SLUG = 'tuna-rfmo-areas'
 export const HIGH_SEAS_DATAVIEW_SLUG = 'high-seas'
-export const PROTECTED_SEAS_DATAVIEW_SLUG = ''
+export const PROTECTED_SEAS_DATAVIEW_SLUG = 'protected-seas'
 export const GRATICULES_DATAVIEW_SLUG = 'graticules'
 export const FAO_AREAS_DATAVIEW_SLUG = 'fao-areas'
 

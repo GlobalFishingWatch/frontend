@@ -35,5 +35,6 @@
     }
   },
   "files": ["./vendors.d.ts"],
+  "include": ["**/*.ts"],
   "exclude": ["node_modules", "tmp", "tools/generators/*/files/*"]
 }

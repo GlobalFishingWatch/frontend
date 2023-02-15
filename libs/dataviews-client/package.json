@@ -4,8 +4,8 @@
   "description": "",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "license": "MIT",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "index.js",
+  "typings": "src/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
@@ -14,7 +14,7 @@
     "qs": "^6.11.0"
   },
   "devDependencies": {
-    "@types/qs": "^6.9.3"
+    "@types/qs": "^6.9.7"
   },
   "peerDependencies": {
     "@globalfishingwatch/api-types": "6.x",
