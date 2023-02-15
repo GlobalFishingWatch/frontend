@@ -51,8 +51,8 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
             )}
             {featureByType.map((feature, index) => {
               if (!feature.value) return null
-              const { generatorContextLayer } = feature
-              const { gfw_id } = feature.properties
+              const { generatorContextLayer, promoteId } = feature
+              const gfw_id = feature.properties.gfw_id || feature.properties[promoteId]
               const isGFWLayer =
                 generatorContextLayer === ContextLayerType.MPA ||
                 generatorContextLayer === ContextLayerType.MPARestricted ||
