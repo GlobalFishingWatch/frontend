@@ -62,33 +62,23 @@ export function useFetchReportVessel() {
   const data = useSelector(selectReportVesselsData)
   const temporalResolution = useSelector(selectReportTemporalResolution)
 
-  const reportDataviews = useMemo(
-    () =>
-      dataviews
-        .map((dataview) => {
-          const activityDatasets = getActiveDatasetsInActivityDataviews([
-            dataview as UrlDataviewInstance,
-          ])
-          return {
-            filter: dataview.config?.filter || [],
-            filters: dataview.config?.filters || {},
-            ...(dataview.config?.['vessel-groups']?.length && {
-              'vessel-groups': dataview.config?.['vessel-groups'],
-            }),
-            datasets: activityDatasets,
-          }
-        })
-        .filter((dataview) => dataview.datasets.length > 0),
-    [dataviews]
-  )
-
   useEffect(() => {
-    const datasets = dataviews.map((d) => getActiveDatasetsInActivityDataviews([d]))
-    if (datasets?.length) {
+    const reportDataviews = dataviews
+      .map((dataview) => ({
+        datasets: getActiveDatasetsInActivityDataviews([dataview as UrlDataviewInstance]),
+        filter: dataview.config?.filter || [],
+        ...(dataview.config?.['vessel-groups']?.length && {
+          vesselGroups: dataview.config?.['vessel-groups'],
+        }),
+      }))
+      .filter((dataview) => dataview.datasets.length > 0)
+
+    if (reportDataviews?.length) {
       dispatch(
         fetchReportVesselsThunk({
-          datasets,
-          dataviews: reportDataviews,
+          datasets: reportDataviews.map(({ datasets }) => datasets.join(',')),
+          filters: reportDataviews.map(({ filter }) => filter),
+          vesselGroups: reportDataviews.map(({ vesselGroups }) => vesselGroups),
           region: {
             id: areaId,
             dataset: datasetId,
@@ -99,7 +89,7 @@ export function useFetchReportVessel() {
         })
       )
     }
-  }, [dispatch, areaId, datasetId, timerange, dataviews, reportDataviews, temporalResolution])
+  }, [dispatch, areaId, datasetId, timerange, temporalResolution, dataviews])
 
   return useMemo(() => ({ status, data }), [status, data])
 }
