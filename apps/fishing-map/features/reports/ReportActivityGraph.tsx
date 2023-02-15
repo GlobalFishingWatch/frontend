@@ -79,7 +79,7 @@ export default function ReportActivityGraph(props: ReportActivityProps) {
           <CartesianGrid vertical={false} />
           <XAxis
             dataKey="date"
-            interval="preserveStartEnd"
+            interval="preserveEnd"
             tickFormatter={(tick: string) => formatDateTicks(tick, interval)}
             axisLine={graphStartsInCero}
             minTickGap={15}

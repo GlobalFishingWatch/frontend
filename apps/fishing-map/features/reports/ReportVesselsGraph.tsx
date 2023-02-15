@@ -104,7 +104,7 @@ export default function ReportVesselsGraph() {
             height={300}
             data={data}
             margin={{
-              top: 10,
+              top: 15,
               right: 0,
               left: 0,
               bottom: 0,

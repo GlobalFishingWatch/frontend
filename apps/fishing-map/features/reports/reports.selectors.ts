@@ -61,15 +61,15 @@ export const selectReportActivityGraphData = createSelector(
     if (!reportData?.length) return null
 
     const dataByDataview = heatmapDataviews.map((dataview, index) => {
-      const dataviewData = (Object.values(reportData[index]) || []).flat()
+      const dataviewData = Object.values(reportData[index] || []).flat()
       const key = reportGraph === 'evolution' ? 'date' : 'date' // TODO for before/after and periodComparison
       const dataByKey = groupBy(dataviewData, key)
       return { id: dataview.id, data: dataByKey }
     })
 
-    const distributionKeys = uniq(dataByDataview.flatMap(({ data }) => Object.keys(data))).sort(
-      sortStrings
-    )
+    const distributionKeys = uniq(dataByDataview.flatMap(({ data }) => Object.keys(data)))
+      .filter((d) => d !== 'undefined')
+      .sort(sortStrings)
 
     return distributionKeys.map((key) => {
       const distributionData = { date: key }
@@ -180,9 +180,11 @@ export const selectReportVesselsFiltered = createSelector(
       keys: [
         'shipName',
         'mmsi',
+        'flag',
         (item) => t(`flags:${item.flag as string}` as any, item.flag),
         (item) => t(`vessel.gearTypes.${item.geartype}` as any, item.geartype),
       ],
+      threshold: matchSorter.rankings.ACRONYM,
     }).sort((a, b) => b.hours - a.hours)
   }
 )
