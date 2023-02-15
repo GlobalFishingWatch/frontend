@@ -61,6 +61,7 @@ export enum DatasetTypes {
   Ports = 'ports:v1',
   Tracks = 'tracks:v1',
   Fourwings = '4wings:v1',
+  Context = 'context-layer:v1',
   UserContext = 'user-context-layer:v1',
   TemporalContext = 'temporal-context-layer:v1',
   Download = 'data-download:v1',
