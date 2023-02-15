@@ -71,7 +71,8 @@ const Main = () => {
   const isTimeComparisonAnalysis = useSelector(selectShowTimeComparison)
 
   const showTimebar =
-    (workspaceLocation || reportLocation && workspaceStatus === AsyncReducerStatus.Finished) ||
+    workspaceLocation ||
+    (reportLocation && workspaceStatus === AsyncReducerStatus.Finished) ||
     (reportLocation && !isTimeComparisonAnalysis)
 
   return (
