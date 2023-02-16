@@ -156,6 +156,12 @@ function Sidebar() {
             </div>
           )
         })}
+        <section className={styles.row}>
+          <div>
+            <span>Create a custom polygon </span>
+            <IconButton icon="add-polygon" type="border" onClick={() => {}} />
+          </div>
+        </section>
       </div>
     </div>
   )
