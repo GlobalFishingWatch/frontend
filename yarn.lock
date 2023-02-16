@@ -1742,9 +1742,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@deck.gl/core@npm:^8.8.23":
-  version: 8.8.23
-  resolution: "@deck.gl/core@npm:8.8.23"
+"@danmarshall/deckgl-typings@npm:4.9.12":
+  version: 4.9.12
+  resolution: "@danmarshall/deckgl-typings@npm:4.9.12"
+  dependencies:
+    "@types/hammerjs": ^2.0.36
+    "@types/react": "*"
+    indefinitely-typed: ^1.1.0
+  checksum: 299c1808ccf9ef984bbcb695ab9d1ad8506f78992498a1c278b43c9b9acdab2231cc7b709556926bc22066d14175c251ed51c4c5dc084a0d78c9d2f8fe8aff9c
+  languageName: node
+  linkType: hard
+
+"@deck.gl/core@npm:^8.8.24":
+  version: 8.8.24
+  resolution: "@deck.gl/core@npm:8.8.24"
   dependencies:
     "@loaders.gl/core": ^3.2.10
     "@loaders.gl/images": ^3.2.10
@@ -1759,13 +1770,13 @@ __metadata:
     gl-matrix: ^3.0.0
     math.gl: ^3.6.2
     mjolnir.js: ^2.7.0
-  checksum: 59c2697af624cd8e8233d115333bd5ae8d7cf0441e73b871c2f516681628eedefd47a4e34da8c1b31e76e963a0a7ae2ed16287403c74e70e4f0ffb6036bb40c2
+  checksum: f5c5eeba2531082691f5d838fd4027d4871676f20d58e16c7d80cf260bac93826082a624a2df6c34254045da6ad1b0e5eb96ad76ab235be396f85de971a64b89
   languageName: node
   linkType: hard
 
-"@deck.gl/extensions@npm:^8.8.23":
-  version: 8.8.23
-  resolution: "@deck.gl/extensions@npm:8.8.23"
+"@deck.gl/extensions@npm:^8.8.24":
+  version: 8.8.24
+  resolution: "@deck.gl/extensions@npm:8.8.24"
   dependencies:
     "@luma.gl/shadertools": ^8.5.16
   peerDependencies:
@@ -1773,13 +1784,13 @@ __metadata:
     "@luma.gl/constants": ^8.0.0
     "@luma.gl/core": ^8.0.0
     gl-matrix: ^3.0.0
-  checksum: 565416c072fd3e29afe6b04c1c6769d67cb0b84d0f6f563e227b809c2cc1fccd0122923b743c9df1d162f8190a4feb876012cfb4b5ff80bb0b9b94d46fa6bb44
+  checksum: 95c30e6e5db30ccc58695af7ee36f99123e219544edb404eca51eb188657ec7c8afce46def81bae3aba2d57f77e0230e8fb4647bf926ad271f7259d138c1e39a
   languageName: node
   linkType: hard
 
-"@deck.gl/geo-layers@npm:^8.8.23":
-  version: 8.8.23
-  resolution: "@deck.gl/geo-layers@npm:8.8.23"
+"@deck.gl/geo-layers@npm:^8.8.24":
+  version: 8.8.24
+  resolution: "@deck.gl/geo-layers@npm:8.8.24"
   dependencies:
     "@loaders.gl/3d-tiles": ^3.2.10
     "@loaders.gl/gis": ^3.2.10
@@ -1803,13 +1814,13 @@ __metadata:
     "@deck.gl/mesh-layers": ^8.0.0
     "@loaders.gl/core": ^3.0.0
     "@luma.gl/core": ^8.0.0
-  checksum: c8e142775c1714b6106603be219ee45f58f1b76ccdd2aa519d926b6f02b9afba32c1b9465c6d17840dd87cecba275ca1198f0b27a90ad7305ca73e21167bf174
+  checksum: 6ffbe34984cb17fae2879c2a86a695e76b524a2b92e4e88065e3dc2311d4cec8416178083304a3a90f67ceb58b149d751773d58ed10d27822681e29364c06ee4
   languageName: node
   linkType: hard
 
-"@deck.gl/layers@npm:^8.8.23":
-  version: 8.8.23
-  resolution: "@deck.gl/layers@npm:8.8.23"
+"@deck.gl/layers@npm:^8.8.24":
+  version: 8.8.24
+  resolution: "@deck.gl/layers@npm:8.8.24"
   dependencies:
     "@loaders.gl/images": ^3.2.10
     "@loaders.gl/schema": ^3.2.10
@@ -1823,13 +1834,13 @@ __metadata:
     "@deck.gl/core": ^8.0.0
     "@loaders.gl/core": ^3.0.0
     "@luma.gl/core": ^8.0.0
-  checksum: 13367e9064117f0cee2d18342377de267e81dc7b724694382f0d80c0c91b7d75e620eea8389ae3a3835875e5ed49f28c37b150817fa09f4d5e537de619e80477
+  checksum: 6dbdcc01cd7c7fbd0e0134bf3c2d21bcb4267de4fcc963b1e96d3cda96aecac0402e9f67a78997a0c784c7a9967d157bf12a9c82c02d92dba0e128db2575413c
   languageName: node
   linkType: hard
 
-"@deck.gl/mesh-layers@npm:^8.8.23":
-  version: 8.8.23
-  resolution: "@deck.gl/mesh-layers@npm:8.8.23"
+"@deck.gl/mesh-layers@npm:^8.8.24":
+  version: 8.8.24
+  resolution: "@deck.gl/mesh-layers@npm:8.8.24"
   dependencies:
     "@loaders.gl/gltf": ^3.2.10
     "@luma.gl/constants": ^8.5.16
@@ -1838,19 +1849,19 @@ __metadata:
   peerDependencies:
     "@deck.gl/core": ^8.0.0
     "@luma.gl/core": ^8.0.0
-  checksum: 8380490f662eb74458194301416214fe15dba71ba78d8620af81229e283ee5986e218e6529845afc9ece8caf9b981f2f49da848b1d86b5396bb1ed3e63ea690e
+  checksum: e169721274360e995f748d445c0236e61072c8698b0197472c766bc62f2c3bc10cd492c82d08cde4a04e3bce45c5d0dd531aed2fd3b5cebc3c97f4d01c1cbeab
   languageName: node
   linkType: hard
 
-"@deck.gl/react@npm:^8.8.23":
-  version: 8.8.23
-  resolution: "@deck.gl/react@npm:8.8.23"
+"@deck.gl/react@npm:^8.8.24":
+  version: 8.8.24
+  resolution: "@deck.gl/react@npm:8.8.24"
   peerDependencies:
     "@deck.gl/core": ^8.0.0
     "@types/react": ">= 16.3"
     react: ">=16.3"
     react-dom: ">=16.3"
-  checksum: 7a2e0bb86da3856106c258206588c91c815294d4472da42c3d6d6a0233fdb7f8f00688b84cd91965e425563e0c5a842631b21bbcf91aae2eb2a61d62d3e0dd1a
+  checksum: b03bf087f5069e7d9f41d3086cce41ddeec0059b835c4cd720b5150bd8714fee1f4a36686fdf8a650d44b881e7e39bb1068cad6f8ea739947f8aeccd3d193b0e
   languageName: node
   linkType: hard
 
@@ -2132,16 +2143,18 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@globalfishingwatchapp/deck-playground@workspace:apps/deck-playground"
   dependencies:
-    "@deck.gl/core": ^8.8.23
-    "@deck.gl/extensions": ^8.8.23
-    "@deck.gl/geo-layers": ^8.8.23
-    "@deck.gl/layers": ^8.8.23
-    "@deck.gl/mesh-layers": ^8.8.23
-    "@deck.gl/react": ^8.8.23
+    "@deck.gl/core": ^8.8.24
+    "@deck.gl/extensions": ^8.8.24
+    "@deck.gl/geo-layers": ^8.8.24
+    "@deck.gl/layers": ^8.8.24
+    "@deck.gl/mesh-layers": ^8.8.24
+    "@deck.gl/react": ^8.8.24
     "@globalfishingwatch/linting": 2.0.2
     "@loaders.gl/core": ^3.2.13
     "@loaders.gl/loader-utils": ^3.2.13
     "@loaders.gl/mvt": ^3.2.13
+    "@nebula.gl/edit-modes": ^1.0.4
+    "@nebula.gl/layers": ^1.0.4
     "@next/eslint-plugin-next": 13.1.6
     "@recoiljs/refine": ^0.1.1
     "@tanstack/react-query": ^4.24.4
@@ -3723,13 +3736,95 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@math.gl/web-mercator@npm:^3.5.1, @math.gl/web-mercator@npm:^3.6.2, @math.gl/web-mercator@npm:^3.6.3":
+"@math.gl/web-mercator@npm:^3.5.1, @math.gl/web-mercator@npm:^3.5.5, @math.gl/web-mercator@npm:^3.6.2, @math.gl/web-mercator@npm:^3.6.3":
   version: 3.6.3
   resolution: "@math.gl/web-mercator@npm:3.6.3"
   dependencies:
     "@babel/runtime": ^7.12.0
     gl-matrix: ^3.4.0
   checksum: cc6deab7542c9e525b752bed95ae5f68ede94b38cb0f71bed2cf208bacc7f02b0a761dbf94bdec2b898e39f327e5c15fbccec9b328da89fce4f68366d68127aa
+  languageName: node
+  linkType: hard
+
+"@nebula.gl/edit-modes@npm:1.0.4, @nebula.gl/edit-modes@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "@nebula.gl/edit-modes@npm:1.0.4"
+  dependencies:
+    "@turf/along": ">=6.3.0"
+    "@turf/area": ">=4.0.0"
+    "@turf/bbox": ">=4.0.0"
+    "@turf/bbox-polygon": ">=4.0.0"
+    "@turf/bearing": ">=4.0.0"
+    "@turf/boolean-point-in-polygon": ">=4.0.0"
+    "@turf/buffer": ">=4.0.0"
+    "@turf/center": ">=4.0.0"
+    "@turf/centroid": ">=4.0.0"
+    "@turf/circle": ">=4.0.0"
+    "@turf/destination": ">=4.0.0"
+    "@turf/difference": ">=4.0.0"
+    "@turf/distance": ">=4.0.0"
+    "@turf/ellipse": ">=4.0.0"
+    "@turf/helpers": ">=4.0.0"
+    "@turf/intersect": ">=4.0.0"
+    "@turf/line-intersect": ">=4.0.0"
+    "@turf/midpoint": ">=4.0.0"
+    "@turf/nearest-point-on-line": ">=4.0.0"
+    "@turf/point-to-line-distance": ">=4.0.0"
+    "@turf/polygon-to-line": ">=4.0.0"
+    "@turf/rewind": ">=4.0.0"
+    "@turf/transform-rotate": ">=4.0.0"
+    "@turf/transform-scale": ">=4.0.0"
+    "@turf/transform-translate": ">=4.0.0"
+    "@turf/union": ">=4.0.0"
+    geojson: 0.5.0
+    lodash.throttle: ^4.1.1
+    viewport-mercator-project: ">=6.0.0"
+  checksum: 63fb2dda0c403501b08144b7ef994a3b917a73feda837952d2f7f28204c6c03a0b19b8cffd5a6aec6ab998b00f64d33f2dc8abc26cb44a1a466b06885478df73
+  languageName: node
+  linkType: hard
+
+"@nebula.gl/layers@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "@nebula.gl/layers@npm:1.0.4"
+  dependencies:
+    "@danmarshall/deckgl-typings": 4.9.12
+    "@nebula.gl/edit-modes": 1.0.4
+    "@turf/bbox": ">=4.0.0"
+    "@turf/bbox-polygon": ">=4.0.0"
+    "@turf/bearing": ">=4.0.0"
+    "@turf/boolean-point-in-polygon": ">=4.0.0"
+    "@turf/buffer": ">=4.0.0"
+    "@turf/center": ">=4.0.0"
+    "@turf/centroid": ">=4.0.0"
+    "@turf/circle": ">=4.0.0"
+    "@turf/destination": ">=4.0.0"
+    "@turf/difference": ">=4.0.0"
+    "@turf/distance": ">=4.0.0"
+    "@turf/ellipse": ">=4.0.0"
+    "@turf/helpers": ">=4.0.0"
+    "@turf/intersect": ">=4.0.0"
+    "@turf/line-intersect": ">=4.0.0"
+    "@turf/nearest-point-on-line": ">=4.0.0"
+    "@turf/point-to-line-distance": ">=4.0.0"
+    "@turf/polygon-to-line": ">=4.0.0"
+    "@turf/transform-rotate": ">=4.0.0"
+    "@turf/transform-scale": ">=4.0.0"
+    "@turf/transform-translate": ">=4.0.0"
+    "@turf/union": ">=4.0.0"
+    cubic-hermite-spline: ^1.0.1
+    geojson-types: ^2.0.1
+    global: ">=4.3.0"
+    h3-js: ^3.6.4
+    viewport-mercator-project: ">=6.0.0"
+  peerDependencies:
+    "@deck.gl/core": ^8.6.0
+    "@deck.gl/extensions": ^8.6.0
+    "@deck.gl/geo-layers": ^8.6.0
+    "@deck.gl/layers": ^8.6.0
+    "@deck.gl/mesh-layers": ^8.6.0
+    "@luma.gl/constants": ^8.5.10
+    "@luma.gl/core": ^8.5.10
+  checksum: d1a05a220e0b58ee829f62c66feafeee4d5f8ea55825d7a5747228dc49e1800da277c2a5b7136c67009d06629df64d3e9c0b3b95d16df67c24f4c7591f63aa1d
   languageName: node
   linkType: hard
 
@@ -5286,7 +5381,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/along@npm:^6.5.0":
+"@turf/along@npm:>=6.3.0, @turf/along@npm:^6.5.0":
   version: 6.5.0
   resolution: "@turf/along@npm:6.5.0"
   dependencies:
@@ -5311,7 +5406,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/area@npm:^6.5.0":
+"@turf/area@npm:>=4.0.0, @turf/area@npm:^6.5.0":
   version: 6.5.0
   resolution: "@turf/area@npm:6.5.0"
   dependencies:
@@ -5331,7 +5426,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/bbox-polygon@npm:^6.5.0":
+"@turf/bbox-polygon@npm:>=4.0.0, @turf/bbox-polygon@npm:^6.5.0":
   version: 6.5.0
   resolution: "@turf/bbox-polygon@npm:6.5.0"
   dependencies:
@@ -5340,7 +5435,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/bbox@npm:*, @turf/bbox@npm:6.5.0, @turf/bbox@npm:^6.5.0":
+"@turf/bbox@npm:*, @turf/bbox@npm:6.5.0, @turf/bbox@npm:>=4.0.0, @turf/bbox@npm:^6.5.0":
   version: 6.5.0
   resolution: "@turf/bbox@npm:6.5.0"
   dependencies:
@@ -5350,7 +5445,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/bearing@npm:^6.5.0":
+"@turf/bearing@npm:>=4.0.0, @turf/bearing@npm:^6.5.0":
   version: 6.5.0
   resolution: "@turf/bearing@npm:6.5.0"
   dependencies:
@@ -5468,7 +5563,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/boolean-point-in-polygon@npm:6.5.0, @turf/boolean-point-in-polygon@npm:^6.5.0":
+"@turf/boolean-point-in-polygon@npm:6.5.0, @turf/boolean-point-in-polygon@npm:>=4.0.0, @turf/boolean-point-in-polygon@npm:^6.5.0":
   version: 6.5.0
   resolution: "@turf/boolean-point-in-polygon@npm:6.5.0"
   dependencies:
@@ -5501,7 +5596,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/buffer@npm:^6.5.0":
+"@turf/buffer@npm:>=4.0.0, @turf/buffer@npm:^6.5.0":
   version: 6.5.0
   resolution: "@turf/buffer@npm:6.5.0"
   dependencies:
@@ -5553,7 +5648,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/center@npm:^6.5.0":
+"@turf/center@npm:>=4.0.0, @turf/center@npm:^6.5.0":
   version: 6.5.0
   resolution: "@turf/center@npm:6.5.0"
   dependencies:
@@ -5563,7 +5658,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/centroid@npm:^6.5.0":
+"@turf/centroid@npm:>=4.0.0, @turf/centroid@npm:^6.5.0":
   version: 6.5.0
   resolution: "@turf/centroid@npm:6.5.0"
   dependencies:
@@ -5573,7 +5668,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/circle@npm:^6.5.0":
+"@turf/circle@npm:>=4.0.0, @turf/circle@npm:^6.5.0":
   version: 6.5.0
   resolution: "@turf/circle@npm:6.5.0"
   dependencies:
@@ -5687,7 +5782,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/destination@npm:^6.5.0":
+"@turf/destination@npm:>=4.0.0, @turf/destination@npm:^6.5.0":
   version: 6.5.0
   resolution: "@turf/destination@npm:6.5.0"
   dependencies:
@@ -5697,7 +5792,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/difference@npm:^6.5.0":
+"@turf/difference@npm:>=4.0.0, @turf/difference@npm:^6.5.0":
   version: 6.5.0
   resolution: "@turf/difference@npm:6.5.0"
   dependencies:
@@ -5732,7 +5827,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/distance@npm:^6.5.0":
+"@turf/distance@npm:>=4.0.0, @turf/distance@npm:^6.5.0":
   version: 6.5.0
   resolution: "@turf/distance@npm:6.5.0"
   dependencies:
@@ -5742,7 +5837,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/ellipse@npm:^6.5.0":
+"@turf/ellipse@npm:>=4.0.0, @turf/ellipse@npm:^6.5.0":
   version: 6.5.0
   resolution: "@turf/ellipse@npm:6.5.0"
   dependencies:
@@ -5806,7 +5901,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/helpers@npm:6.5.0, @turf/helpers@npm:6.x, @turf/helpers@npm:^6.5.0":
+"@turf/helpers@npm:6.5.0, @turf/helpers@npm:6.x, @turf/helpers@npm:>=4.0.0, @turf/helpers@npm:^6.5.0":
   version: 6.5.0
   resolution: "@turf/helpers@npm:6.5.0"
   checksum: d57f746351357838c654e0a9b98be3285a14b447504fd6d59753d90c6d437410bb24805d61c65b612827f07f6c2ade823bb7e56e41a1a946217abccfbd64c117
@@ -5844,7 +5939,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/intersect@npm:^6.5.0":
+"@turf/intersect@npm:>=4.0.0, @turf/intersect@npm:^6.5.0":
   version: 6.5.0
   resolution: "@turf/intersect@npm:6.5.0"
   dependencies:
@@ -5936,7 +6031,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/line-intersect@npm:^6.5.0":
+"@turf/line-intersect@npm:>=4.0.0, @turf/line-intersect@npm:^6.5.0":
   version: 6.5.0
   resolution: "@turf/line-intersect@npm:6.5.0"
   dependencies:
@@ -6059,7 +6154,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/midpoint@npm:^6.5.0":
+"@turf/midpoint@npm:>=4.0.0, @turf/midpoint@npm:^6.5.0":
   version: 6.5.0
   resolution: "@turf/midpoint@npm:6.5.0"
   dependencies:
@@ -6082,7 +6177,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/nearest-point-on-line@npm:^6.5.0":
+"@turf/nearest-point-on-line@npm:>=4.0.0, @turf/nearest-point-on-line@npm:^6.5.0":
   version: 6.5.0
   resolution: "@turf/nearest-point-on-line@npm:6.5.0"
   dependencies:
@@ -6157,7 +6252,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/point-to-line-distance@npm:^6.5.0":
+"@turf/point-to-line-distance@npm:>=4.0.0, @turf/point-to-line-distance@npm:^6.5.0":
   version: 6.5.0
   resolution: "@turf/point-to-line-distance@npm:6.5.0"
   dependencies:
@@ -6208,7 +6303,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/polygon-to-line@npm:^6.5.0":
+"@turf/polygon-to-line@npm:>=4.0.0, @turf/polygon-to-line@npm:^6.5.0":
   version: 6.5.0
   resolution: "@turf/polygon-to-line@npm:6.5.0"
   dependencies:
@@ -6262,7 +6357,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/rewind@npm:^6.5.0":
+"@turf/rewind@npm:>=4.0.0, @turf/rewind@npm:^6.5.0":
   version: 6.5.0
   resolution: "@turf/rewind@npm:6.5.0"
   dependencies:
@@ -6421,7 +6516,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/transform-rotate@npm:^6.5.0":
+"@turf/transform-rotate@npm:>=4.0.0, @turf/transform-rotate@npm:^6.5.0":
   version: 6.5.0
   resolution: "@turf/transform-rotate@npm:6.5.0"
   dependencies:
@@ -6437,7 +6532,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/transform-scale@npm:^6.5.0":
+"@turf/transform-scale@npm:>=4.0.0, @turf/transform-scale@npm:^6.5.0":
   version: 6.5.0
   resolution: "@turf/transform-scale@npm:6.5.0"
   dependencies:
@@ -6455,7 +6550,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/transform-translate@npm:^6.5.0":
+"@turf/transform-translate@npm:>=4.0.0, @turf/transform-translate@npm:^6.5.0":
   version: 6.5.0
   resolution: "@turf/transform-translate@npm:6.5.0"
   dependencies:
@@ -6602,7 +6697,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/union@npm:6.5.0, @turf/union@npm:^6.5.0":
+"@turf/union@npm:6.5.0, @turf/union@npm:>=4.0.0, @turf/union@npm:^6.5.0":
   version: 6.5.0
   resolution: "@turf/union@npm:6.5.0"
   dependencies:
@@ -7154,7 +7249,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/hammerjs@npm:^2.0.41":
+"@types/hammerjs@npm:^2.0.36, @types/hammerjs@npm:^2.0.41":
   version: 2.0.41
   resolution: "@types/hammerjs@npm:2.0.41"
   checksum: d16fbd688fc9b18cc270abe8dea8d4c50ef7bd8375e593d92c233d299387933a6b003c8db69819344833052458bc5f9ef1b472001277a49f095928d184356006
@@ -11370,6 +11465,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cubic-hermite-spline@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "cubic-hermite-spline@npm:1.0.1"
+  checksum: d5a9f4118d2cbb3a462c616b011e6c7c52c0a05ba94b3d858f73cbef29120e422f68cace0879259a86043fddfbcbbbac139344170b94b08f44d9261a4212ed62
+  languageName: node
+  linkType: hard
+
 "cypress@npm:^12.2.0":
   version: 12.5.1
   resolution: "cypress@npm:12.5.1"
@@ -12405,6 +12507,13 @@ __metadata:
     domhandler: ^5.0.2
     entities: ^4.2.0
   checksum: cd1810544fd8cdfbd51fa2c0c1128ec3a13ba92f14e61b7650b5de421b88205fd2e3f0cc6ace82f13334114addb90ed1c2f23074a51770a8e9c1273acbc7f3e6
+  languageName: node
+  linkType: hard
+
+"dom-walk@npm:^0.1.0":
+  version: 0.1.2
+  resolution: "dom-walk@npm:0.1.2"
+  checksum: 19eb0ce9c6de39d5e231530685248545d9cd2bd97b2cb3486e0bfc0f2a393a9addddfd5557463a932b52fdfcf68ad2a619020cd2c74a5fe46fbecaa8e80872f3
   languageName: node
   linkType: hard
 
@@ -14114,6 +14223,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fs-extra@npm:^7.0.0":
+  version: 7.0.1
+  resolution: "fs-extra@npm:7.0.1"
+  dependencies:
+    graceful-fs: ^4.1.2
+    jsonfile: ^4.0.0
+    universalify: ^0.1.0
+  checksum: 141b9dccb23b66a66cefdd81f4cda959ff89282b1d721b98cea19ba08db3dcbe6f862f28841f3cf24bb299e0b7e6c42303908f65093cb7e201708e86ea5a8dcf
+  languageName: node
+  linkType: hard
+
 "fs-extra@npm:^8.0.1, fs-extra@npm:^8.1.0":
   version: 8.1.0
   resolution: "fs-extra@npm:8.1.0"
@@ -14322,6 +14442,13 @@ __metadata:
     "@types/geojson": 7946.0.8
     rbush: ^3.0.1
   checksum: f373e646f3699b86e3f88b16783bb8835b75446f0be9d5cbefbb5a0197e657ebe85fecfd7ce0b9140feecf532a88716c1aacf4d6a0dbcce1b48d6fd29d507927
+  languageName: node
+  linkType: hard
+
+"geojson-types@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "geojson-types@npm:2.0.1"
+  checksum: a1db401de3ba9a09e737c550252d4168b66b857c8df42a4fc2b9d8419fd27369158c58e1a033b11f2862d8a039cd3239fd57c19d30bbdb48169001b99e90ba42
   languageName: node
   linkType: hard
 
@@ -14644,6 +14771,16 @@ __metadata:
     kind-of: ^6.0.2
     which: ^1.3.1
   checksum: 8a82fc1d6f22c45484a4e34656cc91bf021a03e03213b0035098d605bfc612d7141f1e14a21097e8a0413b4884afd5b260df0b6a25605ce9d722e11f1df2881d
+  languageName: node
+  linkType: hard
+
+"global@npm:>=4.3.0":
+  version: 4.4.0
+  resolution: "global@npm:4.4.0"
+  dependencies:
+    min-document: ^2.19.0
+    process: ^0.11.10
+  checksum: 9c057557c8f5a5bcfbeb9378ba4fe2255d04679452be504608dd5f13b54edf79f7be1db1031ea06a4ec6edd3b9f5f17d2d172fb47e6c69dae57fd84b7e72b77f
   languageName: node
   linkType: hard
 
@@ -15005,7 +15142,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"h3-js@npm:^3.7.0":
+"h3-js@npm:^3.6.4, h3-js@npm:^3.7.0":
   version: 3.7.2
   resolution: "h3-js@npm:3.7.2"
   checksum: 69d492874a73ea0edee50ba365f6baef101beedd399130f87315eb0b1c16344f8d2d0628d8697fb7ad33471bab1deebe615a1e05425e271ca648b0d21d8669dc
@@ -15781,6 +15918,18 @@ __metadata:
   version: 0.1.4
   resolution: "imurmurhash@npm:0.1.4"
   checksum: 7cae75c8cd9a50f57dadd77482359f659eaebac0319dd9368bcd1714f55e65badd6929ca58569da2b6494ef13fdd5598cd700b1eba23f8b79c5f19d195a3ecf7
+  languageName: node
+  linkType: hard
+
+"indefinitely-typed@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "indefinitely-typed@npm:1.1.0"
+  dependencies:
+    fs-extra: ^7.0.0
+    minimist: ^1.2.5
+  bin:
+    indefinitely-typed: bin/cli2.js
+  checksum: 542bd706184361c575302901c451742ed37e62ad71c945924a77b69926421b6d12bb1372908a81817513571fad9b03e56f267efc661c1fde8b9aaaf274d99f1c
   languageName: node
   linkType: hard
 
@@ -18437,6 +18586,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash.throttle@npm:^4.1.1":
+  version: 4.1.1
+  resolution: "lodash.throttle@npm:4.1.1"
+  checksum: 129c0a28cee48b348aef146f638ef8a8b197944d4e9ec26c1890c19d9bf5a5690fe11b655c77a4551268819b32d27f4206343e30c78961f60b561b8608c8c805
+  languageName: node
+  linkType: hard
+
 "lodash.truncate@npm:^4.4.2":
   version: 4.4.2
   resolution: "lodash.truncate@npm:4.4.2"
@@ -18898,6 +19054,15 @@ __metadata:
   version: 4.0.0
   resolution: "mimic-fn@npm:4.0.0"
   checksum: 995dcece15ee29aa16e188de6633d43a3db4611bcf93620e7e62109ec41c79c0f34277165b8ce5e361205049766e371851264c21ac64ca35499acb5421c2ba56
+  languageName: node
+  linkType: hard
+
+"min-document@npm:^2.19.0":
+  version: 2.19.0
+  resolution: "min-document@npm:2.19.0"
+  dependencies:
+    dom-walk: ^0.1.0
+  checksum: da6437562ea2228041542a2384528e74e22d1daa1a4ec439c165abf0b9d8a63e17e3b8a6dc6e0c731845e85301198730426932a0e813d23f932ca668340c9623
   languageName: node
   linkType: hard
 
@@ -21531,6 +21696,13 @@ __metadata:
   version: 2.0.1
   resolution: "process-nextick-args@npm:2.0.1"
   checksum: 1d38588e520dab7cea67cbbe2efdd86a10cc7a074c09657635e34f035277b59fbb57d09d8638346bf7090f8e8ebc070c96fa5fd183b777fff4f5edff5e9466cf
+  languageName: node
+  linkType: hard
+
+"process@npm:^0.11.10":
+  version: 0.11.10
+  resolution: "process@npm:0.11.10"
+  checksum: bfcce49814f7d172a6e6a14d5fa3ac92cc3d0c3b9feb1279774708a719e19acd673995226351a082a9ae99978254e320ccda4240ddc474ba31a76c79491ca7c3
   languageName: node
   linkType: hard
 
@@ -26138,6 +26310,15 @@ __metadata:
     d3-time: ^3.0.0
     d3-timer: ^3.0.1
   checksum: 6411f7c19a776cef3919946d429293cfe33c93a6e4dcfdfa2ba1edecad3a28ed2cd6b0d117169b8917ab6a7679e2bade5e7bfc1fed3fc8b464b842f21dac5f49
+  languageName: node
+  linkType: hard
+
+"viewport-mercator-project@npm:>=6.0.0":
+  version: 7.0.4
+  resolution: "viewport-mercator-project@npm:7.0.4"
+  dependencies:
+    "@math.gl/web-mercator": ^3.5.5
+  checksum: ef6fad785e773caacccd09b333cd485a83813b5b2776fbcaa4b6e2c05e203c5b1fcd4abd94224ca6e4a2129c186b87d107497d532984265c15617e06318ec826
   languageName: node
   linkType: hard
 
