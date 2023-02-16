@@ -1742,9 +1742,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@deck.gl/core@npm:^8.8.23":
-  version: 8.8.23
-  resolution: "@deck.gl/core@npm:8.8.23"
+"@deck.gl/core@npm:^8.8.24":
+  version: 8.8.24
+  resolution: "@deck.gl/core@npm:8.8.24"
   dependencies:
     "@loaders.gl/core": ^3.2.10
     "@loaders.gl/images": ^3.2.10
@@ -1759,13 +1759,13 @@ __metadata:
     gl-matrix: ^3.0.0
     math.gl: ^3.6.2
     mjolnir.js: ^2.7.0
-  checksum: 59c2697af624cd8e8233d115333bd5ae8d7cf0441e73b871c2f516681628eedefd47a4e34da8c1b31e76e963a0a7ae2ed16287403c74e70e4f0ffb6036bb40c2
+  checksum: f5c5eeba2531082691f5d838fd4027d4871676f20d58e16c7d80cf260bac93826082a624a2df6c34254045da6ad1b0e5eb96ad76ab235be396f85de971a64b89
   languageName: node
   linkType: hard
 
-"@deck.gl/extensions@npm:^8.8.23":
-  version: 8.8.23
-  resolution: "@deck.gl/extensions@npm:8.8.23"
+"@deck.gl/extensions@npm:^8.8.24":
+  version: 8.8.24
+  resolution: "@deck.gl/extensions@npm:8.8.24"
   dependencies:
     "@luma.gl/shadertools": ^8.5.16
   peerDependencies:
@@ -1773,13 +1773,13 @@ __metadata:
     "@luma.gl/constants": ^8.0.0
     "@luma.gl/core": ^8.0.0
     gl-matrix: ^3.0.0
-  checksum: 565416c072fd3e29afe6b04c1c6769d67cb0b84d0f6f563e227b809c2cc1fccd0122923b743c9df1d162f8190a4feb876012cfb4b5ff80bb0b9b94d46fa6bb44
+  checksum: 95c30e6e5db30ccc58695af7ee36f99123e219544edb404eca51eb188657ec7c8afce46def81bae3aba2d57f77e0230e8fb4647bf926ad271f7259d138c1e39a
   languageName: node
   linkType: hard
 
-"@deck.gl/geo-layers@npm:^8.8.23":
-  version: 8.8.23
-  resolution: "@deck.gl/geo-layers@npm:8.8.23"
+"@deck.gl/geo-layers@npm:^8.8.24":
+  version: 8.8.24
+  resolution: "@deck.gl/geo-layers@npm:8.8.24"
   dependencies:
     "@loaders.gl/3d-tiles": ^3.2.10
     "@loaders.gl/gis": ^3.2.10
@@ -1803,13 +1803,13 @@ __metadata:
     "@deck.gl/mesh-layers": ^8.0.0
     "@loaders.gl/core": ^3.0.0
     "@luma.gl/core": ^8.0.0
-  checksum: c8e142775c1714b6106603be219ee45f58f1b76ccdd2aa519d926b6f02b9afba32c1b9465c6d17840dd87cecba275ca1198f0b27a90ad7305ca73e21167bf174
+  checksum: 6ffbe34984cb17fae2879c2a86a695e76b524a2b92e4e88065e3dc2311d4cec8416178083304a3a90f67ceb58b149d751773d58ed10d27822681e29364c06ee4
   languageName: node
   linkType: hard
 
-"@deck.gl/layers@npm:^8.8.23":
-  version: 8.8.23
-  resolution: "@deck.gl/layers@npm:8.8.23"
+"@deck.gl/layers@npm:^8.8.24":
+  version: 8.8.24
+  resolution: "@deck.gl/layers@npm:8.8.24"
   dependencies:
     "@loaders.gl/images": ^3.2.10
     "@loaders.gl/schema": ^3.2.10
@@ -1823,13 +1823,13 @@ __metadata:
     "@deck.gl/core": ^8.0.0
     "@loaders.gl/core": ^3.0.0
     "@luma.gl/core": ^8.0.0
-  checksum: 13367e9064117f0cee2d18342377de267e81dc7b724694382f0d80c0c91b7d75e620eea8389ae3a3835875e5ed49f28c37b150817fa09f4d5e537de619e80477
+  checksum: 6dbdcc01cd7c7fbd0e0134bf3c2d21bcb4267de4fcc963b1e96d3cda96aecac0402e9f67a78997a0c784c7a9967d157bf12a9c82c02d92dba0e128db2575413c
   languageName: node
   linkType: hard
 
-"@deck.gl/mesh-layers@npm:^8.8.23":
-  version: 8.8.23
-  resolution: "@deck.gl/mesh-layers@npm:8.8.23"
+"@deck.gl/mesh-layers@npm:^8.8.24":
+  version: 8.8.24
+  resolution: "@deck.gl/mesh-layers@npm:8.8.24"
   dependencies:
     "@loaders.gl/gltf": ^3.2.10
     "@luma.gl/constants": ^8.5.16
@@ -1838,19 +1838,19 @@ __metadata:
   peerDependencies:
     "@deck.gl/core": ^8.0.0
     "@luma.gl/core": ^8.0.0
-  checksum: 8380490f662eb74458194301416214fe15dba71ba78d8620af81229e283ee5986e218e6529845afc9ece8caf9b981f2f49da848b1d86b5396bb1ed3e63ea690e
+  checksum: e169721274360e995f748d445c0236e61072c8698b0197472c766bc62f2c3bc10cd492c82d08cde4a04e3bce45c5d0dd531aed2fd3b5cebc3c97f4d01c1cbeab
   languageName: node
   linkType: hard
 
-"@deck.gl/react@npm:^8.8.23":
-  version: 8.8.23
-  resolution: "@deck.gl/react@npm:8.8.23"
+"@deck.gl/react@npm:^8.8.24":
+  version: 8.8.24
+  resolution: "@deck.gl/react@npm:8.8.24"
   peerDependencies:
     "@deck.gl/core": ^8.0.0
     "@types/react": ">= 16.3"
     react: ">=16.3"
     react-dom: ">=16.3"
-  checksum: 7a2e0bb86da3856106c258206588c91c815294d4472da42c3d6d6a0233fdb7f8f00688b84cd91965e425563e0c5a842631b21bbcf91aae2eb2a61d62d3e0dd1a
+  checksum: b03bf087f5069e7d9f41d3086cce41ddeec0059b835c4cd720b5150bd8714fee1f4a36686fdf8a650d44b881e7e39bb1068cad6f8ea739947f8aeccd3d193b0e
   languageName: node
   linkType: hard
 
@@ -2132,12 +2132,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@globalfishingwatchapp/deck-playground@workspace:apps/deck-playground"
   dependencies:
-    "@deck.gl/core": ^8.8.23
-    "@deck.gl/extensions": ^8.8.23
-    "@deck.gl/geo-layers": ^8.8.23
-    "@deck.gl/layers": ^8.8.23
-    "@deck.gl/mesh-layers": ^8.8.23
-    "@deck.gl/react": ^8.8.23
+    "@deck.gl/core": ^8.8.24
+    "@deck.gl/extensions": ^8.8.24
+    "@deck.gl/geo-layers": ^8.8.24
+    "@deck.gl/layers": ^8.8.24
+    "@deck.gl/mesh-layers": ^8.8.24
+    "@deck.gl/react": ^8.8.24
     "@globalfishingwatch/linting": 2.0.2
     "@loaders.gl/core": ^3.2.13
     "@loaders.gl/loader-utils": ^3.2.13
@@ -2174,6 +2174,7 @@ __metadata:
     eslint-plugin-react: 7.32.2
     eslint-plugin-react-hooks: 4.6.0
     husky: 8.0.3
+    jotai: ^1.13.1
     lodash: 4.17.21
     luxon: ^2.5.2
     next-react-memory-stats: ^1.0.2
@@ -17660,6 +17661,49 @@ __metadata:
   bin:
     jest: bin/jest.js
   checksum: 96f1d69042b3c6dfc695f2a4e4b0db38af6fb78582ad1a02beaa57cfcd77cbd31567d7d865c1c85709b7c3e176eefa3b2035ffecd646005f15d8ef528eccf205
+  languageName: node
+  linkType: hard
+
+"jotai@npm:^1.13.1":
+  version: 1.13.1
+  resolution: "jotai@npm:1.13.1"
+  peerDependencies:
+    "@babel/core": "*"
+    "@babel/template": "*"
+    jotai-devtools: "*"
+    jotai-immer: "*"
+    jotai-optics: "*"
+    jotai-redux: "*"
+    jotai-tanstack-query: "*"
+    jotai-urql: "*"
+    jotai-valtio: "*"
+    jotai-xstate: "*"
+    jotai-zustand: "*"
+    react: ">=16.8"
+  peerDependenciesMeta:
+    "@babel/core":
+      optional: true
+    "@babel/template":
+      optional: true
+    jotai-devtools:
+      optional: true
+    jotai-immer:
+      optional: true
+    jotai-optics:
+      optional: true
+    jotai-redux:
+      optional: true
+    jotai-tanstack-query:
+      optional: true
+    jotai-urql:
+      optional: true
+    jotai-valtio:
+      optional: true
+    jotai-xstate:
+      optional: true
+    jotai-zustand:
+      optional: true
+  checksum: bc1f88ec1d52dda7c2aa39d278b15c128a6babc91fe9294862feb1b2d8467e47fc37cd193fd1358107212b9a4e5f5a8ae9a5a5ed1e845b74421d4476ce5d9efd
   languageName: node
   linkType: hard
 
