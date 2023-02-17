@@ -1,11 +1,13 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { uniqBy } from 'lodash'
 import { Spinner, Tabs } from '@globalfishingwatch/ui-components'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectReportCategory } from 'features/app/app.selectors'
+import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import { useFetchReportArea, useFetchReportVessel } from './reports.hooks'
 import ReportSummary from './ReportSummary'
 import ReportTitle from './ReportTitle'
@@ -20,6 +22,9 @@ export default function Report() {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const reportCategory = useSelector(selectReportCategory)
+  const dataviewCategories = uniqBy(useSelector(selectActiveHeatmapDataviews), 'category').map(
+    (d) => d.category
+  )
   const categoryTabs = [
     {
       id: DataviewCategory.Activity,
@@ -32,6 +37,7 @@ export default function Report() {
       content: '',
     },
   ]
+  const filteredCategoryTabs = categoryTabs.filter((tab) => dataviewCategories.includes(tab.id))
   const { status: reportStatus } = useFetchReportVessel()
   const { data: areaDetail } = useFetchReportArea()
 
@@ -48,7 +54,9 @@ export default function Report() {
   return (
     <Fragment>
       <ReportTitle title={areaDetail?.name} type="activity" />
-      <Tabs tabs={categoryTabs} activeTab={reportCategory} onTabClick={handleTabClick} />
+      {filteredCategoryTabs.length > 1 && (
+        <Tabs tabs={filteredCategoryTabs} activeTab={reportCategory} onTabClick={handleTabClick} />
+      )}
       <ReportSummary />
       <ReportActivity activityUnit={activityUnit} />
       <ReportVessels activityUnit={activityUnit} reportName={areaDetail?.name} />
