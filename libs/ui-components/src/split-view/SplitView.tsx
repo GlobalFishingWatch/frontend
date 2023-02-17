@@ -15,6 +15,8 @@ interface SplitViewProps {
   showAsideLabel?: string
   showMainLabel?: string
   className?: string
+  asideClassName?: string
+  mainClassName?: string
 }
 
 export function SplitView(props: SplitViewProps) {
@@ -28,6 +30,8 @@ export function SplitView(props: SplitViewProps) {
     showAsideLabel = 'Show aside',
     showMainLabel = 'Show main',
     className,
+    asideClassName,
+    mainClassName,
   } = props
   const panelOptions = useMemo(
     () => [
@@ -61,7 +65,10 @@ export function SplitView(props: SplitViewProps) {
 
   return (
     <div className={cx(styles.container, { [styles.isOpen]: internalOpen }, className)}>
-      <aside className={styles.aside} style={isSmallScreen ? {} : { width: asideWidth }}>
+      <aside
+        className={cx(styles.aside, asideClassName)}
+        style={isSmallScreen ? {} : { width: asideWidth }}
+      >
         {isSmallScreen ? (
           <div className={cx('print-hidden', styles.toggleChoice)}>
             <Choice
@@ -84,7 +91,7 @@ export function SplitView(props: SplitViewProps) {
         )}
         {aside}
       </aside>
-      <main style={{ left: isOpen ? asideWidth : 0 }} className={styles.main}>
+      <main style={{ left: isOpen ? asideWidth : 0 }} className={cx(styles.main, mainClassName)}>
         {main}
       </main>
     </div>

@@ -1,6 +1,9 @@
 .container {
   padding: 1.5rem var(--space-M);
   border-bottom: var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .type {

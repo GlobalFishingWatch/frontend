@@ -18,3 +18,17 @@
 .graphContainer {
   min-height: 300px;
 }
+
+@media print {
+  .container {
+    border-bottom: none;
+  }
+
+  .titleRow {
+    justify-content: initial;
+  }
+
+  .blockTitle::after {
+    content: ' - ';
+  }
+}

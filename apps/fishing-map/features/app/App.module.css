@@ -11,3 +11,63 @@
 .withTimebar {
   height: calc(calc(var(--vh, 1vh) * 100) - var(--footer-height) - var(--timebar-height));
 }
+
+@page {
+  size: 21cm 29.7cm;
+  margin: 1cm;
+}
+
+@media print {
+  .splitContainer {
+    --color-primary-blue: black;
+
+    height: auto;
+    min-height: 100%;
+    background: none;
+    width: 21cm;
+  }
+
+  .aside {
+    position: relative;
+    width: 100% !important;
+    overflow: visible;
+    height: auto;
+    background: none;
+  }
+
+  .main {
+    position: relative;
+    width: 100%;
+    height: 29.7cm;
+    page-break-after: always;
+    left: 0 !important;
+    page-break-before: always;
+    overflow: hidden;
+  }
+
+  .aside button {
+    display: none;
+  }
+
+  .mapContainer,
+  .withTimebar {
+    height: 29.7cm;
+  }
+
+  .mapContainer ~ * {
+    display: none;
+  }
+
+  .splitContainer .aside * {
+    color: var(--color-primary-blue);
+  }
+
+  .splitContainer .aside tspan {
+    fill: var(--color-primary-blue);
+  }
+
+  .splitContainer .aside :global(.recharts-surface) {
+    display: block;
+    width: calc(21cm - 30px);
+  }
+}

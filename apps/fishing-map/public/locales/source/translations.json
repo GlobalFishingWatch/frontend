@@ -33,6 +33,7 @@
     "periodComparison2nd": "comparison start",
     "periodComparisonDuration": "duration",
     "periodComparisonRange": "in the {{duration}} following {{compareStart}} compared to baseline in the {{duration}} following {{start}}",
+    "print": "Print / Save as PDF",
     "searchPlaceholder": "Filter vessels by name, mmsi, flag states or gear type",
     "summary": "<strong>{{vessels}} $t(common.vessel, {\"count\": {{vessels}} })</strong> had <strong>{{hours}} $t(common.hour, {\"count\": {{hours}} })</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "reportTitle": {

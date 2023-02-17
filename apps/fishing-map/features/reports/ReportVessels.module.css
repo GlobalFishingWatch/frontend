@@ -14,3 +14,18 @@
   color: var(--color-primary-blue);
   line-height: 2.8rem;
 }
+
+@media print {
+  .container {
+    page-break-before: always;
+    border-bottom: none;
+  }
+
+  .titleRow {
+    justify-content: initial;
+  }
+
+  .blockTitle::after {
+    content: ' - ';
+  }
+}

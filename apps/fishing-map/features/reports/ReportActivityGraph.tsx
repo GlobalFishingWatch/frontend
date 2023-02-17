@@ -66,7 +66,7 @@ const formatDateTicks = (tick: string, timeChunkInterval: Interval) => {
   return formatDateForInterval(date, timeChunkInterval)
 }
 
-const graphMargin = { top: 15, right: 20, left: -20, bottom: -10 }
+const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
 
 type ReportActivityProps = {
   data: ReportGraphProps
@@ -120,7 +120,7 @@ export default function ReportActivityGraph({ start, end, data }: ReportActivity
   return (
     <div className={styles.graph}>
       <ResponsiveContainer width="100%" height="100%">
-        <ComposedChart data={dataFormated} margin={graphMargin}>
+        <ComposedChart data={data} margin={graphMargin}>
           <CartesianGrid vertical={false} />
           <XAxis
             domain={domain}
