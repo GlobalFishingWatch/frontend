@@ -98,7 +98,7 @@ export default function ReportVesselsGraph() {
   return (
     <Fragment>
       <div className={styles.graph}>
-        <CustomResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="100%">
           <BarChart
             width={500}
             height={300}
@@ -137,26 +137,8 @@ export default function ReportVesselsGraph() {
               tickMargin={0}
             />
           </BarChart>
-        </CustomResponsiveContainer>
+        </ResponsiveContainer>
       </div>
     </Fragment>
-  )
-}
-
-export function CustomResponsiveContainer(props) {
-  return (
-    <div style={{ width: '100%', height: '100%', position: 'relative' }}>
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-        }}
-      >
-        <ResponsiveContainer {...props} />
-      </div>
-    </div>
   )
 }
