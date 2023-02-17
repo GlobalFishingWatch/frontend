@@ -89,7 +89,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   }
 
   const dataset = dataview.datasets?.find(
-    (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.Context
+    (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.UserContext
   )
   useAutoRefreshImportingDataset(dataset)
   const isCustomUserLayer = !guestUser && dataset?.ownerId === userId

@@ -41,13 +41,13 @@ export const useContextInteractions = () => {
 
   const onDownloadClick = useCallback(
     (ev: React.MouseEvent<Element, MouseEvent>, feature: TooltipEventFeature) => {
-      if (!feature.properties?.gfw_id) {
+      const areaId = feature.properties.gfw_id || feature.properties[feature.promoteId]
+      if (!areaId) {
         console.warn('No gfw_id available in the feature to analyze', feature)
         return
       }
 
       const datasetId = feature.datasetId
-      const areaId = feature.properties?.gfw_id
       const areaName = feature.value || feature.title
       batch(() => {
         dispatch(setDownloadActivityAreaKey({ datasetId, areaId }))
@@ -62,11 +62,11 @@ export const useContextInteractions = () => {
 
   const setAnalysisArea = useCallback(
     (feature: TooltipEventFeature) => {
-      const { source: sourceId, datasetId, properties = {}, title, value } = feature
-      const { gfw_id: areaId, bbox } = properties
+      const { source: sourceId, datasetId, properties = {}, title, value, promoteId } = feature
+      const areaId = feature.properties.gfw_id || feature.properties[promoteId]
       // Analysis already does it on page reload but to avoid waiting
       // this moves the map to the same position
-      const bounds = parsePropertiesBbox(bbox)
+      const bounds = parsePropertiesBbox(properties.bbox)
       if (bounds) {
         const boundsParams = {
           padding: FIT_BOUNDS_ANALYSIS_PADDING,
@@ -96,12 +96,13 @@ export const useContextInteractions = () => {
 
   const onAnalysisClick = useCallback(
     (ev: React.MouseEvent<Element, MouseEvent>, feature: TooltipEventFeature) => {
-      if (!feature.properties?.gfw_id) {
+      const gfw_id = feature.properties.gfw_id || feature.properties[feature.promoteId]
+      if (!gfw_id) {
         console.warn('No gfw_id available in the feature to report', feature)
         return
       }
 
-      if (areaId !== feature.properties?.gfw_id || sourceId !== feature.source) {
+      if (areaId !== gfw_id || sourceId !== feature.source) {
         setAnalysisArea(feature)
       }
     },
