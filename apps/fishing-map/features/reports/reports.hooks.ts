@@ -20,6 +20,7 @@ import { selectReportTemporalResolution } from 'features/reports/reports.selecto
 import {
   fetchReportVesselsThunk,
   selectReportVesselsData,
+  selectReportVesselsError,
   selectReportVesselsStatus,
 } from './reports.slice'
 
@@ -59,6 +60,7 @@ export function useFetchReportVessel() {
   const areaId = useSelector(selectLocationAreaId)
   const dataviews = useSelector(selectActiveReportDataviews)
   const status = useSelector(selectReportVesselsStatus)
+  const error = useSelector(selectReportVesselsError)
   const data = useSelector(selectReportVesselsData)
   const temporalResolution = useSelector(selectReportTemporalResolution)
 
@@ -91,5 +93,5 @@ export function useFetchReportVessel() {
     }
   }, [dispatch, areaId, datasetId, timerange, temporalResolution, dataviews])
 
-  return useMemo(() => ({ status, data }), [status, data])
+  return useMemo(() => ({ status, data, error }), [status, data, error])
 }

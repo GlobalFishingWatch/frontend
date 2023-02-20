@@ -272,6 +272,7 @@
     "latestCarrierNotFound": "Latest carrier dataset not found",
     "missingLatLng": "No latitude or longitude fields found",
     "pageNotFound": "Page not found",
+    "privateReport": "This is a private report",
     "privateView": "This is a private view",
     "requestAccess": "Request access",
     "showError": "Show error",
