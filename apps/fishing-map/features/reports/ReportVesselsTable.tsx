@@ -12,6 +12,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { selectUrlTimeRange } from 'routes/routes.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
+import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import {
   ReportVesselWithDatasets,
   selectReportVesselsListWithAllInfo,
@@ -166,9 +167,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
             <I18nNumber number={pagination.total} />{' '}
             {t('common.vessel', { count: pagination.total })}
           </span>
-          <Button className={styles.footerButton} type="secondary">
-            {t('analysis.createVesselGroup', 'Create vessel group')}
-          </Button>
+          <VesselGroupAddButton vessels={vessels} showCount={false} />
           <CSVLink filename={`${reportName}-${start}-${end}.csv`} data={allVessels}>
             <Button className={styles.footerButton}>
               {t('analysis.downloadVesselsList', 'Download list')}
