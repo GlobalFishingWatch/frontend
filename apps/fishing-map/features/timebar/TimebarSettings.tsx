@@ -239,7 +239,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
             />
             {activeEnvironmentalDataviews.map((envDataview, i) => {
               const dataset = envDataview.datasets?.find(
-                (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.Context
+                (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.UserContext
               )
 
               const title = t(`datasets:${dataset?.id}.name` as any, dataset?.name || dataset?.id)

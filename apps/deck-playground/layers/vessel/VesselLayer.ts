@@ -7,7 +7,6 @@ import { VesselTrackLayer, _VesselTrackLayerProps } from 'layers/vessel/VesselTr
 import { trackLoader } from 'loaders/vessels/trackLoader'
 import { vesselEventsLoader } from 'loaders/vessels/eventsLoader'
 import { Segment } from '@globalfishingwatch/api-types'
-import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
 
 export type VesselLayerProps = _VesselTrackLayerProps & _VesselEventsLayerProps
 
@@ -148,6 +147,6 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   getVesselTrackData() {
-    return this.getTrackLayer()?.getSegments()
+    return this.getTrackLayer()?.getSegments() || []
   }
 }

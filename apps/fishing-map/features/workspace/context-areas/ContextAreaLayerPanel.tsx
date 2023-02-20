@@ -2,7 +2,7 @@ import { useState, useCallback, Fragment } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import ReactHtmlParser from 'react-html-parser'
+import parse from 'html-react-parser'
 import { DatasetTypes, DatasetStatus, DatasetCategory } from '@globalfishingwatch/api-types'
 import { Tooltip, ColorBarOption, Modal, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -88,7 +88,9 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     setColorOpen(false)
   }
 
-  const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Context)
+  const dataset = dataview.datasets?.find(
+    (d) => d.type === DatasetTypes.Context || d.type === DatasetTypes.UserContext
+  )
   const isUserLayer = !guestUser && dataset?.ownerId === userId
 
   useAutoRefreshImportingDataset(dataset, 5000)
@@ -225,7 +227,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
                   onClose={onDataWarningModalClose}
                   contentClassName={styles.modalContent}
                 >
-                  {ReactHtmlParser(
+                  {parse(
                     t(
                       `dataview.${dataview?.id}.dataWarningDetail` as any,
                       'This platform uses reference layers (shapefiles) from an external source. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw or upload your own reference layer using the "+" icon in the left sidebar. Learn more on our <a href="https://globalfishingwatch.org/tutorials/">tutorials</a> and <a href="https://globalfishingwatch.org/help-faqs/">FAQs</a>.'

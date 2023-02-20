@@ -86,9 +86,13 @@ function VesselGroupVessels(): React.ReactElement {
   const { t } = useTranslation()
   const vesselGroupSearchVessels = useSelector(selectVesselGroupSearchVessels)
   const newVesselGroupSearchVessels = useSelector(selectNewVesselGroupSearchVessels)
-
-  const searchVesselsByMMSI = groupBy(vesselGroupSearchVessels, 'mmsi')
-  const newSearchVesselsByMMSI = groupBy(newVesselGroupSearchVessels, 'mmsi')
+  const groupByKey = [...vesselGroupSearchVessels, ...newVesselGroupSearchVessels].some(
+    (vessel) => vessel?.mmsi !== undefined
+  )
+    ? 'mmsi'
+    : 'id'
+  const searchVesselsGrouped = groupBy(vesselGroupSearchVessels, groupByKey)
+  const newSearchVesselsGrouped = groupBy(newVesselGroupSearchVessels, groupByKey)
   const dispatch = useAppDispatch()
 
   const onVesselRemoveClick = useCallback(
@@ -120,9 +124,9 @@ function VesselGroupVessels(): React.ReactElement {
         </tr>
       </thead>
       <tbody>
-        {Object.keys(newSearchVesselsByMMSI)?.length > 0 &&
-          Object.keys(newSearchVesselsByMMSI).map((mmsi) => {
-            const vessels = newSearchVesselsByMMSI[mmsi]
+        {Object.keys(newSearchVesselsGrouped)?.length > 0 &&
+          Object.keys(newSearchVesselsGrouped).map((mmsi) => {
+            const vessels = newSearchVesselsGrouped[mmsi]
             return vessels.map((vessel) => (
               <VesselGroupVesselRow
                 key={`${vessel.id}-${vessel.dataset}`}
@@ -132,9 +136,12 @@ function VesselGroupVessels(): React.ReactElement {
               />
             ))
           })}
-        {Object.keys(searchVesselsByMMSI)?.length > 0 &&
-          Object.keys(searchVesselsByMMSI).map((mmsi) => {
-            const vessels = searchVesselsByMMSI[mmsi]
+        {Object.keys(searchVesselsGrouped)?.length > 0 &&
+          Object.keys(searchVesselsGrouped).map((mmsi) => {
+            if (newSearchVesselsGrouped[mmsi]) {
+              return null
+            }
+            const vessels = searchVesselsGrouped[mmsi]
             return (
               <Fragment key={mmsi}>
                 {vessels.map((vessel, i) => (

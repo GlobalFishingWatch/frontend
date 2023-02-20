@@ -159,6 +159,14 @@ export interface ContextGeneratorConfig extends GeneratorConfig {
    */
   datasetId?: string
   /**
+   * Property to use as id internally in mapbox
+   */
+  promoteId?: string
+  /**
+   * Properties to be used as value
+   */
+  valueProperties?: string[]
+  /**
    * Url to grab the tiles from, internally using https://docs.mapbox.com/mapbox-gl-js/style-spec/sources/#vector-tiles
    */
   tilesUrl: string

@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import ReactHtmlParser from 'react-html-parser'
+import parse from 'html-react-parser'
 import { useSelector } from 'react-redux'
 import { Dataset } from '@globalfishingwatch/api-types'
 import { getDatasetDescriptionTranslated } from 'features/i18n/utils'
@@ -34,7 +34,7 @@ const InfoModalContent = ({ dataset }: InfoModalContentProps) => {
          * For security reasons, we are only parsing html
          * coming from translated descriptions
          **/}
-        {description.length > 0 ? ReactHtmlParser(description) : dataset.description}
+        {description.length > 0 ? parse(description) : dataset.description}
       </p>
       {gfwUser && queries?.length > 0 && (
         <div className={styles.content}>
