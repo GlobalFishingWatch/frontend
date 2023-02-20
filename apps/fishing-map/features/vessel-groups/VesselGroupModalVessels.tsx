@@ -86,9 +86,10 @@ function VesselGroupVessels(): React.ReactElement {
   const { t } = useTranslation()
   const vesselGroupSearchVessels = useSelector(selectVesselGroupSearchVessels)
   const newVesselGroupSearchVessels = useSelector(selectNewVesselGroupSearchVessels)
-  const groupByKey = [...vesselGroupSearchVessels, ...newVesselGroupSearchVessels].some(
-    (vessel) => vessel?.mmsi !== undefined
-  )
+  const groupByKey = [
+    ...(vesselGroupSearchVessels || []),
+    ...(newVesselGroupSearchVessels || []),
+  ].some((vessel) => vessel?.mmsi !== undefined)
     ? 'mmsi'
     : 'id'
   const searchVesselsGrouped = groupBy(vesselGroupSearchVessels, groupByKey)
