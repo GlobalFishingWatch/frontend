@@ -105,7 +105,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
                     label={label}
                     linkHref={linkHref}
                     datasetId={feature.datasetId}
-                    areaId={feature.properties.gfw_id}
+                    areaId={gfw_id}
                     showFeaturesDetails={showFeaturesDetails}
                     handleDownloadClick={(e) => trackOnDownloadClick(e, feature)}
                     // handleAnalysisClick={(e) => onAnalysisClick(e, feature)}
