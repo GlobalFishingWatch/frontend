@@ -99,7 +99,7 @@ function VesselGroupAddButton({
       }
     >
       <div>
-        {hasUserGroupsPermissions && vessels.length > 0 && (
+        {hasUserGroupsPermissions && vessels?.length > 0 && (
           <Button type="secondary" className={styles.footerAction} onClick={toggleVesselGroupsOpen}>
             {t('vesselGroup.add', 'Add to vessel group')}
             {showCount ? ` (${vessels.length})` : ''}

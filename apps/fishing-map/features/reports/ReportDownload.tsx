@@ -22,7 +22,7 @@ export default function ReportDownload(props: ReportDownloadProps) {
   const dispatch = useAppDispatch()
   const { start, end } = useSelector(selectUrlTimeRange)
   const datasetId = useSelector(selectLocationDatasetId)
-  const areaId = useSelector(selectLocationAreaId).toString()
+  const areaId = useSelector(selectLocationAreaId)?.toString()
   const reportActivityData = useSelector(selectReportActivityFlatten)
 
   const handleMoreOptionsClick = () => {

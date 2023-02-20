@@ -17,6 +17,7 @@ import { REPORT_VESSELS_PER_PAGE } from 'data/config'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { REPORT_TEMPORAL_RESOLUTIONS } from 'features/reports/reports.hooks'
+import { selectLocationAreaId, selectLocationDatasetId } from 'routes/routes.selectors'
 import { selectReportVesselsData } from './reports.slice'
 
 export const DEFAULT_NULL_VALUE = 'NULL'
@@ -27,6 +28,13 @@ export type ReportVesselWithDatasets = Partial<ReportVessel> & {
   infoDataset?: Dataset
   trackDataset?: Dataset
 }
+
+export const selectReportAreaIds = createSelector(
+  [selectLocationAreaId, selectLocationDatasetId],
+  (areaId, datasetId) => {
+    return { datasetId, areaId: areaId?.toString() }
+  }
+)
 
 export const selectReportActivityFlatten = createSelector(
   [selectReportVesselsData],
@@ -215,5 +223,6 @@ export const selectReportInterval = createSelector([selectTimeRange], (timerange
 })
 
 export const selectReportTemporalResolution = createSelector([selectReportInterval], (interval) => {
+  console.log(interval)
   return REPORT_TEMPORAL_RESOLUTIONS[interval]
 })

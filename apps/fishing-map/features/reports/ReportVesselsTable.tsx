@@ -69,7 +69,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
     dispatchQueryParams({ reportVesselPage: pagination.page + 1 })
   }
 
-  const isLastPaginationPage = pagination.offset + pagination.results >= pagination.total
+  const isLastPaginationPage = pagination?.offset + pagination?.results >= pagination?.total
   return (
     <div>
       <div className={styles.tableContainer}>
@@ -146,13 +146,13 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
         <div>
           <IconButton
             icon="arrow-left"
-            disabled={pagination.page === 0}
-            className={cx({ [styles.disabled]: pagination.page === 0 })}
+            disabled={pagination?.page === 0}
+            className={cx({ [styles.disabled]: pagination?.page === 0 })}
             onClick={onPrevPageClick}
             size="medium"
           />
-          <span>{`${pagination.offset + 1} - ${
-            isLastPaginationPage ? pagination.total : pagination.offset + pagination.results
+          <span>{`${pagination?.offset + 1} - ${
+            isLastPaginationPage ? pagination?.total : pagination?.offset + pagination?.results
           }`}</span>
           <IconButton
             icon="arrow-right"
@@ -164,15 +164,17 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
         </div>
         <div>
           <span>
-            <I18nNumber number={pagination.total} />{' '}
-            {t('common.vessel', { count: pagination.total })}
+            <I18nNumber number={pagination?.total} />{' '}
+            {t('common.vessel', { count: pagination?.total })}
           </span>
           <VesselGroupAddButton vessels={vessels} showCount={false} />
-          <CSVLink filename={`${reportName}-${start}-${end}.csv`} data={allVessels}>
-            <Button className={styles.footerButton}>
-              {t('analysis.downloadVesselsList', 'Download list')}
-            </Button>
-          </CSVLink>
+          {allVessels?.length > 0 && (
+            <CSVLink filename={`${reportName}-${start}-${end}.csv`} data={allVessels}>
+              <Button className={styles.footerButton}>
+                {t('analysis.downloadVesselsList', 'Download list')}
+              </Button>
+            </CSVLink>
+          )}
         </div>
       </div>
     </div>

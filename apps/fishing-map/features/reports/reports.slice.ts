@@ -59,8 +59,8 @@ export const fetchReportVesselsThunk = createAsyncThunk(
           'vessel-groups': vesselGroups,
           'temporal-resolution': temporalResolution,
           'date-range': [
-            getUTCDateTime(dateRange?.start).toString(),
-            getUTCDateTime(dateRange?.end).toString(),
+            getUTCDateTime(dateRange?.start)?.toString(),
+            getUTCDateTime(dateRange?.end)?.toString(),
           ].join(','),
           'group-by': groupBy,
           'spatial-resolution': spatialResolution,

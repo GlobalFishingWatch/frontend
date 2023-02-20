@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useMemo } from 'react'
 import {
   ResponsiveContainer,
   CartesianGrid,
@@ -8,13 +7,15 @@ import {
   Tooltip,
   Line,
   ComposedChart,
+  Area,
 } from 'recharts'
+import { max, min } from 'lodash'
+import { DateTime } from 'luxon'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import i18n from 'features/i18n/i18n'
-import { selectActiveReportDataviews } from 'features/app/app.selectors'
 import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
+import { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
 import styles from './ReportActivityGraph.module.css'
-import { selectReportActivityGraphData, selectReportInterval } from './reports.selectors'
 import { formatTooltipValue, tickFormatter } from './reports.utils'
 
 type ReportGraphTooltipProps = {
@@ -65,55 +66,107 @@ const formatDateTicks = (tick: string, timeChunkInterval: Interval) => {
   return formatDateForInterval(date, timeChunkInterval)
 }
 
-type ReportActivityProps = {}
-export default function ReportActivityGraph(props: ReportActivityProps) {
-  const dataviews = useSelector(selectActiveReportDataviews)
-  const data = useSelector(selectReportActivityGraphData)
-  const interval = useSelector(selectReportInterval)
-  const [graphStartsInCero, setGraphStartsInCero] = useState(true)
+const graphMargin = { top: 15, right: 20, left: -20, bottom: -10 }
+
+type ReportActivityProps = {
+  data: ReportGraphProps
+  start: string
+  end: string
+}
+export default function ReportActivityGraph({ start, end, data }: ReportActivityProps) {
+  // const [graphStartsInCero, setGraphStartsInCero] = useState(true)
+  const dataFormated = useMemo(() => {
+    return data?.timeseries
+      ?.map(({ date, min, max }) => {
+        const range = min.map((m, i) => [m, max[i]])
+        const avg = min.map((m, i) => (m + max[i]) / 2)
+        return {
+          date: new Date(date).getTime(),
+          range,
+          avg,
+        }
+      })
+      .filter((d) => {
+        return !isNaN(d.avg[0])
+      })
+  }, [data?.timeseries])
+
+  const domain = useMemo(() => {
+    if (start && end && data?.interval) {
+      const cleanEnd = DateTime.fromISO(end, { zone: 'utc' })
+        .minus({ [data?.interval]: 1 })
+        .toISO()
+      return [new Date(start).getTime(), new Date(cleanEnd).getTime()]
+    }
+  }, [start, end, data?.interval])
+
+  if (!dataFormated || !domain) {
+    return null
+  }
+
+  const dataMin: number = dataFormated.length
+    ? (min(dataFormated.flatMap(({ range }) => range[0][0])) as number)
+    : 0
+  const dataMax: number = dataFormated.length
+    ? (max(dataFormated.flatMap(({ range }) => range[0][1])) as number)
+    : 0
+
+  const domainPadding = (dataMax - dataMin) / 8
+  const paddedDomain: [number, number] = [
+    Math.max(0, Math.floor(dataMin - domainPadding)),
+    Math.ceil(dataMax + domainPadding),
+  ]
 
   return (
     <div className={styles.graph}>
       <ResponsiveContainer width="100%" height="100%">
-        <ComposedChart data={data} margin={{ top: 0, right: 0, left: -20, bottom: -10 }}>
+        <ComposedChart data={dataFormated} margin={graphMargin}>
           <CartesianGrid vertical={false} />
           <XAxis
+            domain={domain}
             dataKey="date"
-            interval="preserveEnd"
-            tickFormatter={(tick: string) => formatDateTicks(tick, interval)}
-            axisLine={graphStartsInCero}
-            minTickGap={15}
+            interval="preserveStartEnd"
+            tickFormatter={(tick: string) => formatDateTicks(tick, data?.interval)}
+            axisLine={paddedDomain[0] === 0}
+            // scale={'time'}
+            type={'number'}
           />
           <YAxis
             scale="linear"
-            domain={([dataMin, dataMax]) => {
-              const domainPadding = (dataMax - dataMin) / 8
-              const min = Math.max(0, Math.floor(dataMin - domainPadding))
-              setGraphStartsInCero(min === 0)
-              return [min, Math.ceil(dataMax + domainPadding)]
-            }}
+            domain={paddedDomain}
+            interval="preserveEnd"
             tickFormatter={tickFormatter}
             axisLine={false}
             tickLine={false}
             tickCount={4}
           />
-          <Tooltip content={<ReportGraphTooltip timeChunkInterval={interval} />} />
-          {dataviews.map(({ id, config, datasets }) => {
-            const unit = datasets[0]?.unit
-            return (
-              <Line
-                key={`${id}-line`}
-                name="line"
-                type="monotone"
-                dataKey={id}
-                unit={unit}
-                dot={false}
-                isAnimationActive={false}
-                stroke={config?.color}
-                strokeWidth={2}
-              />
-            )
-          })}
+          <Tooltip content={<ReportGraphTooltip timeChunkInterval={data?.interval} />} />
+          {data?.sublayers.map(({ id, legend }, index) => (
+            <Line
+              key={`${id}-line`}
+              name="line"
+              type="monotone"
+              dataKey={(data) => data.avg[index]}
+              unit={legend.unit}
+              dot={false}
+              isAnimationActive={false}
+              stroke={legend.color}
+              strokeWidth={2}
+            />
+          ))}
+          {data?.sublayers.map(({ id, legend }, index) => (
+            <Area
+              key={`${id}-area`}
+              name="area"
+              type="monotone"
+              dataKey={(data) => data.range[index]}
+              activeDot={false}
+              fill={legend.color}
+              stroke="none"
+              fillOpacity={0.2}
+              isAnimationActive={false}
+            />
+          ))}
         </ComposedChart>
       </ResponsiveContainer>
     </div>
