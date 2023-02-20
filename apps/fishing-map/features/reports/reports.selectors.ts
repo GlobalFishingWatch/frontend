@@ -223,6 +223,5 @@ export const selectReportInterval = createSelector([selectTimeRange], (timerange
 })
 
 export const selectReportTemporalResolution = createSelector([selectReportInterval], (interval) => {
-  console.log(interval)
   return REPORT_TEMPORAL_RESOLUTIONS[interval]
 })

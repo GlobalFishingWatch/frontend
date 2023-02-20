@@ -4,7 +4,7 @@ import { REPLACE_URL_PARAMS } from 'data/config'
 import { setLastWorkspaceVisited } from 'features/workspace/workspace.slice'
 import { RootState } from 'store'
 import { QueryParams } from 'types'
-import { routesMap, WORKSPACE_ROUTES } from './routes'
+import { REPORT, routesMap, WORKSPACE, WORKSPACE_ROUTES } from './routes'
 import { UpdateQueryParamsAction } from './routes.actions'
 
 export const routerQueryMiddleware: Middleware =
@@ -57,9 +57,20 @@ export const routerWorkspaceMiddleware: Middleware =
       (key) => !WORKSPACE_ROUTES.includes(key)
     )
     const comesFromWorkspacesRoute = WORKSPACE_ROUTES.includes(prev.type)
-    if (routesToSaveWorkspace.includes(action.type) && comesFromWorkspacesRoute && !lastVisited) {
-      const { type, query, payload } = prev
-      dispatch(setLastWorkspaceVisited({ type, query, payload }))
+    const isReportLocation = action.type === REPORT
+    if (
+      routesToSaveWorkspace.includes(action.type) &&
+      (comesFromWorkspacesRoute || isReportLocation) &&
+      !lastVisited
+    ) {
+      if (isReportLocation) {
+        dispatch(
+          setLastWorkspaceVisited({ type: WORKSPACE, query: action.query, payload: action.payload })
+        )
+      } else {
+        const { type, query, payload } = prev
+        dispatch(setLastWorkspaceVisited({ type, query, payload }))
+      }
     } else if (WORKSPACE_ROUTES.includes(action.type) && lastVisited) {
       dispatch(setLastWorkspaceVisited(undefined))
     }
