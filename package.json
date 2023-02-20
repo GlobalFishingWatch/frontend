@@ -9,8 +9,7 @@
     "packages": [
       "apps/*",
       "linting",
-      "libs/i18n-labels",
-      "libs/timebar"
+      "libs/i18n-labels"
     ]
   },
   "scripts": {
