@@ -62,9 +62,6 @@
     "prop-types": "^15.8.1",
     "source-map-explorer": "2.5.3"
   },
-  "resolutions": {
-    "gl-matrix": "3.3.0"
-  },
   "browserslist": [
     ">0.1%",
     "not dead",
