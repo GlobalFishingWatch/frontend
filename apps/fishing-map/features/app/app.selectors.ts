@@ -1,6 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { DataviewCategory, DataviewInstance } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_WORKSPACE } from 'data/config'
+import { createDeepEqualSelector } from 'utils/selectors'
 import {
   selectWorkspace,
   selectWorkspaceStateProperty,
@@ -129,7 +130,7 @@ export const selectReportCategory = createSelector(
   }
 )
 
-export const selectActiveReportDataviews = createSelector(
+export const selectActiveReportDataviews = createDeepEqualSelector(
   [selectReportCategory, selectActiveActivityDataviews, selectActiveDetectionsDataviews],
   (reportCategory, activityDataviews = [], detectionsDataviews = []) =>
     reportCategory === DataviewCategory.Activity ? activityDataviews : detectionsDataviews
