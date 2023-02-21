@@ -18,7 +18,7 @@ import ReportVessels from './ReportVessels'
 import ReportDownload from './ReportDownload'
 
 export type ReportType = 'activity' | 'area'
-export type ReportActivityUnit = 'hours' | 'detections'
+export type ReportActivityUnit = 'hour' | 'detection'
 
 export default function Report() {
   const { t } = useTranslation()
@@ -63,7 +63,7 @@ export default function Report() {
   }
 
   // TODO get this from datasets config
-  const activityUnit = 'hours' // using hours as we are doing only fishing effort for now
+  const activityUnit = reportCategory === DataviewCategory.Activity ? 'hour' : 'detection'
 
   return (
     <Fragment>
@@ -71,7 +71,7 @@ export default function Report() {
       {filteredCategoryTabs.length > 1 && (
         <Tabs tabs={filteredCategoryTabs} activeTab={reportCategory} onTabClick={handleTabClick} />
       )}
-      <ReportSummary />
+      <ReportSummary activityUnit={activityUnit} />
       <ReportActivity activityUnit={activityUnit} />
       <ReportVessels activityUnit={activityUnit} reportName={areaDetail?.name} />
       <ReportDownload reportName={areaDetail?.name} />

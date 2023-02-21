@@ -6,25 +6,34 @@ import { selectUrlTimeRange } from 'routes/routes.selectors'
 import { selectActiveReportDataviews } from 'features/app/app.selectors'
 import ReportSummaryTags from 'features/reports/ReportSummaryTags'
 import { FIELDS, getCommonProperties } from 'features/reports/reports.utils'
+import { ReportActivityUnit } from 'features/reports/Report'
+import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectReportVesselsHours, selectReportVesselsNumber } from './reports.selectors'
 import styles from './ReportSummary.module.css'
 
-type ReportSummaryProps = {}
+type ReportSummaryProps = {
+  activityUnit: ReportActivityUnit
+}
 
-export default function ReportSummary(props: ReportSummaryProps) {
+export default function ReportSummary({ activityUnit }: ReportSummaryProps) {
   const { t } = useTranslation()
   const timerange = useSelector(selectUrlTimeRange)
   const reportVessels = useSelector(selectReportVesselsNumber)
   const reportHours = useSelector(selectReportVesselsHours)
   const dataviews = useSelector(selectActiveReportDataviews)
+  const datasetTitle = getDatasetTitleByDataview(dataviews?.[0], { showPrivateIcon: false })
   const commonProperties = getCommonProperties(dataviews)
   // TODO remove "hours" if category is not activity
   const summary = t('analysis.summary', {
     defaultValue:
-      '<strong>{{vessels}} $t(common.vessel, {"count": {{vessels}} })</strong> had <strong>{{hours}} $t(common.hour, {"count": {{hours}} })</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
+      '<strong>{{vessels}} $t(common.vessel, {"count": {{vessels}} })</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
     vessels: reportVessels || 0,
-    hours: Math.floor(reportHours),
-    activityType: 'Apparent fishing effort', // TODO get this from dataviews
+    activityQuantity: Math.floor(reportHours),
+    activityUnit: t(`common.${activityUnit}`, {
+      defaultValue: 'hours',
+      count: Math.floor(reportHours),
+    }),
+    activityType: datasetTitle,
     start: formatI18nDate(timerange.start),
     end: formatI18nDate(timerange.end),
   })
