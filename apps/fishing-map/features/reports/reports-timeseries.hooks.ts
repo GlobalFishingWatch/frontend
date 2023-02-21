@@ -9,9 +9,9 @@ import { Interval } from '@globalfishingwatch/layer-composer'
 import {
   selectAnalysisTimeComparison,
   selectAnalysisTypeQuery,
+  selectReportAreaSource,
   selectTimeRange,
 } from 'features/app/app.selectors'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
   DataviewFeature,
   areDataviewsFeatureLoaded,
@@ -28,6 +28,7 @@ import {
   removeTimeseriesPadding,
 } from 'features/reports/reports-timeseries.utils'
 import { useAreaFitBounds } from 'features/map/map-viewport.hooks'
+import { useReportAreaHighlight } from 'features/reports/reports.hooks'
 
 export interface EvolutionGraphData {
   date: string
@@ -67,8 +68,7 @@ export type DateTimeSeries = {
   compareDate?: string
 }[]
 
-export const useFilteredTimeSeriesByArea = (area: Area) => {
-  useAreaFitBounds(area?.bounds)
+export const useFilteredTimeSeriesByArea = (area?: Area) => {
   const [timeseries, setTimeseries] = useRecoilState(mapTimeseriesAtom)
   const [blur, setBlur] = useState(false)
   const areaGeometry = area?.geometry
@@ -79,6 +79,9 @@ export const useFilteredTimeSeriesByArea = (area: Area) => {
   const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
   const activityFeatures = useMapDataviewFeatures(temporalgridDataviews)
   const { start: timebarStart, end: timebarEnd } = useSelector(selectTimeRange)
+  const sourceId = useSelector(selectReportAreaSource)
+  useAreaFitBounds(area?.bounds)
+  useReportAreaHighlight(area?.id, sourceId)
 
   const simplifiedGeometry = useMemo(() => {
     if (!areaGeometry) return null

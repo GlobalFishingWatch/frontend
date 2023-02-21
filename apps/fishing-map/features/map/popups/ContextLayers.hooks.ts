@@ -1,11 +1,11 @@
 import { useCallback, useMemo } from 'react'
 import { batch, useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
+import bbox from '@turf/bbox'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
-import { useLocationConnect } from 'routes/routes.hook'
 import { getEventLabel } from 'utils/analytics'
-import { selectAnalysisQuery, selectSidebarOpen } from 'features/app/app.selectors'
+import { selectAnalysisQuery } from 'features/app/app.selectors'
 import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
@@ -14,9 +14,22 @@ import { fetchAreaDetailThunk } from 'features/areas/areas.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import useMapInstance from 'features/map/map-context.hooks'
+import { Bbox } from 'types'
 import { setClickedEvent } from '../map.slice'
 import { TooltipEventFeature } from '../map.hooks'
 import { useMapFitBounds } from '../map-viewport.hooks'
+
+export const getFeatureBounds = (feature: TooltipEventFeature) => {
+  return feature.properties.bbox
+    ? parsePropertiesBbox(feature.properties.bbox)
+    : feature.geometry
+    ? (bbox(feature.geometry) as Bbox)
+    : null
+}
+
+export const getFeatureAreaId = (feature: TooltipEventFeature) => {
+  return feature.properties.gfw_id || feature.properties[feature.promoteId]
+}
 
 export const useHighlightArea = () => {
   const { updateFeatureState, cleanFeatureState } = useFeatureState(useMapInstance())
@@ -33,8 +46,6 @@ export const useHighlightArea = () => {
 export const useContextInteractions = () => {
   const dispatch = useAppDispatch()
   const highlightArea = useHighlightArea()
-  const isSidebarOpen = useSelector(selectSidebarOpen)
-  const { dispatchQueryParams } = useLocationConnect()
   const { areaId, sourceId } = useSelector(selectAnalysisQuery) || {}
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const fitMapBounds = useMapFitBounds()
@@ -62,11 +73,11 @@ export const useContextInteractions = () => {
 
   const setAnalysisArea = useCallback(
     (feature: TooltipEventFeature) => {
-      const { source: sourceId, datasetId, properties = {}, title, value, promoteId } = feature
-      const areaId = feature.properties.gfw_id || feature.properties[promoteId]
+      const { source: sourceId, title, value } = feature
+      const areaId = getFeatureAreaId(feature)
       // Analysis already does it on page reload but to avoid waiting
       // this moves the map to the same position
-      const bounds = parsePropertiesBbox(properties.bbox)
+      const bounds = getFeatureBounds(feature)
       if (bounds) {
         const boundsParams = {
           padding: FIT_BOUNDS_ANALYSIS_PADDING,
@@ -77,13 +88,7 @@ export const useContextInteractions = () => {
       }
 
       highlightArea(areaId, sourceId)
-      batch(() => {
-        dispatchQueryParams({
-          analysis: { areaId, sourceId, datasetId, bounds },
-          ...(!isSidebarOpen && { sidebarOpen: true }),
-        })
-        dispatch(setClickedEvent(null))
-      })
+      dispatch(setClickedEvent(null))
 
       uaEvent({
         category: 'Analysis',
@@ -91,7 +96,7 @@ export const useContextInteractions = () => {
         label: getEventLabel([title ?? '', value ?? '']),
       })
     },
-    [highlightArea, dispatchQueryParams, isSidebarOpen, dispatch, fitMapBounds]
+    [highlightArea, dispatch, fitMapBounds]
   )
 
   const onAnalysisClick = useCallback(

@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { debounce } from 'lodash'
 import { useTranslation } from 'react-i18next'
+import { Geometry } from 'geojson'
 import {
   InteractionEvent,
   TemporalGridFeature,
@@ -287,6 +288,7 @@ export type TooltipEventFeature = {
   }
   event?: ExtendedFeatureEvent
   temporalgrid?: TemporalGridFeature
+  geometry?: Geometry
   category: DataviewCategory
 }
 

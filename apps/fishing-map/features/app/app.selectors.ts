@@ -15,8 +15,10 @@ import {
   selectUrlTimeRange,
 } from 'routes/routes.selectors'
 import {
+  Bbox,
   BivariateDataviews,
   ReportActivityGraph,
+  ReportCategory,
   ReportVesselGraph,
   TimebarGraphs,
   TimebarVisualisations,
@@ -125,8 +127,22 @@ export const selectSidebarOpen = createSelector(
 
 export const selectReportCategory = createSelector(
   [selectWorkspaceStateProperty('reportCategory')],
-  (reportCategory): DataviewCategory => {
+  (reportCategory): ReportCategory => {
     return reportCategory
+  }
+)
+
+export const selectReportAreaBounds = createSelector(
+  [selectWorkspaceStateProperty('reportAreaBounds')],
+  (reportAreaBounds): Bbox => {
+    return reportAreaBounds
+  }
+)
+
+export const selectReportAreaSource = createSelector(
+  [selectWorkspaceStateProperty('reportAreaSource')],
+  (reportAreaSource): string => {
+    return reportAreaSource
   }
 )
 

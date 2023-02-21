@@ -9,7 +9,7 @@ import {
   selectLocationAreaId,
   selectUrlTimeRange,
 } from 'routes/routes.selectors'
-import { selectActiveReportDataviews } from 'features/app/app.selectors'
+import { selectActiveReportDataviews, selectReportAreaSource } from 'features/app/app.selectors'
 import { getActiveDatasetsInActivityDataviews } from 'features/datasets/datasets.utils'
 import {
   fetchAreaDetailThunk,
@@ -29,11 +29,8 @@ import {
   selectReportVesselsStatus,
 } from './reports.slice'
 
-export function useReportAreaHighlight() {
+export function useReportAreaHighlight(areaId: string, sourceId: string) {
   const { updateFeatureState, cleanFeatureState } = useFeatureState(useMapInstance())
-  const areaId = useSelector(selectLocationAreaId)
-  // TODO
-  const sourceId = ''
 
   const setHighlightedArea = useCallback(
     (areaId, sourceId) => {

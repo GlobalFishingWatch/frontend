@@ -6,7 +6,8 @@ import ReportActivityGraphSelector from 'features/reports/ReportActivityGraphSel
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useFilteredTimeSeriesByArea } from 'features/reports/reports-timeseries.hooks'
 import { selectReportAreaIds } from 'features/reports/reports.selectors'
-import { selectDatasetAreaDetail } from 'features/areas/areas.slice'
+import { selectDatasetAreaDetail, selectDatasetAreaStatus } from 'features/areas/areas.slice'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import { ReportActivityUnit } from './Report'
 import ReportActivityGraph from './ReportActivityGraph'
 import styles from './ReportActivity.module.css'
@@ -20,8 +21,11 @@ export default function ReportActivity({ activityUnit }: ReportVesselTableProps)
   const { start, end } = useTimerangeConnect()
   const reportAreaIds = useSelector(selectReportAreaIds)
   const reportArea = useSelector(selectDatasetAreaDetail(reportAreaIds))
+  const reportAreaStatus = useSelector(selectDatasetAreaStatus(reportAreaIds))
 
-  const { loading, layersTimeseriesFiltered } = useFilteredTimeSeriesByArea(reportArea)
+  const { loading, layersTimeseriesFiltered } = useFilteredTimeSeriesByArea(
+    reportAreaStatus === AsyncReducerStatus.Finished ? reportArea : undefined
+  )
   return (
     <div className={styles.container}>
       <div className={styles.titleRow}>
@@ -29,7 +33,9 @@ export default function ReportActivity({ activityUnit }: ReportVesselTableProps)
         <ReportActivityGraphSelector />
       </div>
       {loading ? (
-        <Spinner />
+        <div className={styles.graphContainer}>
+          <Spinner />
+        </div>
       ) : (
         <ReportActivityGraph start={start} end={end} data={layersTimeseriesFiltered?.[0]} />
       )}
