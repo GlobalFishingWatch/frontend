@@ -29,10 +29,10 @@ import { HOME, WORKSPACE } from 'routes/routes'
 import { cleanQueryLocation, updateLocation, updateQueryParam } from 'routes/routes.actions'
 import { selectDaysFromLatest } from 'features/app/app.selectors'
 import {
-  DEFAULT_DATAVIEW_IDS,
+  DEFAULT_DATAVIEW_SLUGS,
+  ONLY_GFW_STAFF_DATAVIEW_SLUGS,
   getWorkspaceEnv,
-  ONLY_GFW_STAFF_DATAVIEWS,
-  VESSEL_PRESENCE_DATAVIEW_ID,
+  VESSEL_PRESENCE_DATAVIEW_SLUG,
   WorkspaceCategories,
 } from 'data/workspaces'
 import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
@@ -93,9 +93,9 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         : null
       if (!workspace && locationType === HOME) {
         workspace = await getDefaultWorkspace()
-        if (gfwUser && ONLY_GFW_STAFF_DATAVIEWS.length) {
+        if (gfwUser && ONLY_GFW_STAFF_DATAVIEW_SLUGS.length) {
           // Inject dataviews for gfw staff only
-          ONLY_GFW_STAFF_DATAVIEWS.forEach((id) => {
+          ONLY_GFW_STAFF_DATAVIEW_SLUGS.forEach((id) => {
             workspace.dataviewInstances.push({
               id: `${id}-instance`,
               config: {
@@ -130,13 +130,13 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           : getUTCDateTime(workspace.startAt || DEFAULT_TIME_RANGE.start)
 
       const defaultWorkspaceDataviews = gfwUser
-        ? [...DEFAULT_DATAVIEW_IDS, VESSEL_PRESENCE_DATAVIEW_ID] // Only for gfw users as includes the private-global-presence-tracks dataset
-        : DEFAULT_DATAVIEW_IDS
+        ? [...DEFAULT_DATAVIEW_SLUGS, VESSEL_PRESENCE_DATAVIEW_SLUG] // Only for gfw users as includes the private-global-presence-tracks dataset
+        : DEFAULT_DATAVIEW_SLUGS
 
       const dataviewIds = [
         ...defaultWorkspaceDataviews,
         ...(workspace.dataviewInstances || []).map(({ dataviewId }) => dataviewId),
-        ...(urlDataviewInstances || []).map(({ dataviewId }) => dataviewId as number),
+        ...(urlDataviewInstances || []).map(({ dataviewId }) => dataviewId),
       ].filter(Boolean)
 
       const uniqDataviewIds = uniq(dataviewIds)
@@ -163,7 +163,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
 
         // Try to add track for for VMS vessels in case it is logged using the full- datasets
         const vesselDataviewsWithoutTrack = dataviewInstances.filter((dataviewInstance) => {
-          const dataview = dataviews.find(({ id }) => dataviewInstance.dataviewId === id)
+          const dataview = dataviews.find(({ slug }) => dataviewInstance.dataviewId === slug)
           const isVesselDataview = dataview?.category === DataviewCategory.Vessels
           const hasTrackDatasetConfig = dataviewInstance.datasetsConfig?.some(
             (datasetConfig) => datasetConfig.endpoint === EndpointId.Tracks
@@ -316,9 +316,9 @@ const workspaceSlice = createSlice({
       state.lastVisited = action.payload
     },
     removeGFWStaffOnlyDataviews: (state) => {
-      if (ONLY_GFW_STAFF_DATAVIEWS.length) {
+      if (ONLY_GFW_STAFF_DATAVIEW_SLUGS.length) {
         state.data.dataviewInstances = state.data.dataviewInstances.filter((d) =>
-          ONLY_GFW_STAFF_DATAVIEWS.includes(d.dataviewId)
+          ONLY_GFW_STAFF_DATAVIEW_SLUGS.includes(d.dataviewId as number)
         )
       }
     },

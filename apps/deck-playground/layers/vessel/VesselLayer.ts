@@ -109,7 +109,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   renderLayers(): Layer<{}> | LayersList {
-    this.layers = [...this.getVesselEventsLayers(), this._getVesselTrackLayer()]
+    this.layers = [this._getVesselTrackLayer(), ...this.getVesselEventsLayers()]
     return this.layers
   }
 
@@ -147,6 +147,6 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   getVesselTrackData() {
-    return this.getTrackLayer()?.getSegments()
+    return this.getTrackLayer()?.getSegments() || []
   }
 }

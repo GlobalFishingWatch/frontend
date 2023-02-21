@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { groupBy } from 'lodash'
 import { IconButton, Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
-import { Vessel } from '@globalfishingwatch/api-types'
+import { Locale, Vessel } from '@globalfishingwatch/api-types'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
 import I18nDate from 'features/i18n/i18nDate'
@@ -26,7 +26,7 @@ function VesselGroupVesselRow({
   onRemoveClick,
   className = '',
 }: VesselGroupVesselRowProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const vesselName = formatInfoField(vessel.shipname, 'name')
 
   const vesselGearType = `${t(
@@ -61,7 +61,7 @@ function VesselGroupVesselRow({
                 firstTransmissionDate={firstTransmissionDate}
                 lastTransmissionDate={lastTransmissionDate}
                 firstYearOfData={FIRST_YEAR_OF_DATA}
-                shortYears
+                locale={i18n.language as Locale}
               />
             </div>
           </Tooltip>
@@ -86,9 +86,14 @@ function VesselGroupVessels(): React.ReactElement {
   const { t } = useTranslation()
   const vesselGroupSearchVessels = useSelector(selectVesselGroupSearchVessels)
   const newVesselGroupSearchVessels = useSelector(selectNewVesselGroupSearchVessels)
-
-  const searchVesselsByMMSI = groupBy(vesselGroupSearchVessels, 'mmsi')
-  const newSearchVesselsByMMSI = groupBy(newVesselGroupSearchVessels, 'mmsi')
+  const groupByKey = [
+    ...(vesselGroupSearchVessels || []),
+    ...(newVesselGroupSearchVessels || []),
+  ].some((vessel) => vessel?.mmsi !== undefined)
+    ? 'mmsi'
+    : 'id'
+  const searchVesselsGrouped = groupBy(vesselGroupSearchVessels, groupByKey)
+  const newSearchVesselsGrouped = groupBy(newVesselGroupSearchVessels, groupByKey)
   const dispatch = useAppDispatch()
 
   const onVesselRemoveClick = useCallback(
@@ -120,9 +125,9 @@ function VesselGroupVessels(): React.ReactElement {
         </tr>
       </thead>
       <tbody>
-        {Object.keys(newSearchVesselsByMMSI)?.length > 0 &&
-          Object.keys(newSearchVesselsByMMSI).map((mmsi) => {
-            const vessels = newSearchVesselsByMMSI[mmsi]
+        {Object.keys(newSearchVesselsGrouped)?.length > 0 &&
+          Object.keys(newSearchVesselsGrouped).map((mmsi) => {
+            const vessels = newSearchVesselsGrouped[mmsi]
             return vessels.map((vessel) => (
               <VesselGroupVesselRow
                 key={`${vessel.id}-${vessel.dataset}`}
@@ -132,9 +137,12 @@ function VesselGroupVessels(): React.ReactElement {
               />
             ))
           })}
-        {Object.keys(searchVesselsByMMSI)?.length > 0 &&
-          Object.keys(searchVesselsByMMSI).map((mmsi) => {
-            const vessels = searchVesselsByMMSI[mmsi]
+        {Object.keys(searchVesselsGrouped)?.length > 0 &&
+          Object.keys(searchVesselsGrouped).map((mmsi) => {
+            if (newSearchVesselsGrouped[mmsi]) {
+              return null
+            }
+            const vessels = searchVesselsGrouped[mmsi]
             return (
               <Fragment key={mmsi}>
                 {vessels.map((vessel, i) => (

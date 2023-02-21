@@ -6,6 +6,11 @@ export const INCLUDE_FILTER_ID = 'include'
 export const EXCLUDE_FILTER_ID = 'exclude'
 export type FilterOperator = typeof INCLUDE_FILTER_ID | typeof EXCLUDE_FILTER_ID
 
+export interface DataviewContexLayerConfig {
+  id: string
+  dataset: string
+}
+
 export interface DataviewConfig<Type = any> {
   // TODO use any property from layer-composer here?
   type?: Type
@@ -16,6 +21,7 @@ export interface DataviewConfig<Type = any> {
   filterOperators?: Record<string, FilterOperator>
   dynamicBreaks?: boolean
   maxZoom?: number
+  layers?: DataviewContexLayerConfig[]
   [key: string]: any
 }
 
@@ -99,7 +105,7 @@ export interface Dataview<Type = any, Category = DataviewCategory> {
 export interface DataviewInstance<Type = any>
   extends Partial<Omit<Dataview<Type>, 'id' | 'config'>> {
   id: string
-  dataviewId: number
+  dataviewId: Dataview['id'] | Dataview['slug']
   config?: DataviewConfig<Type>
   datasetsConfig?: DataviewDatasetConfig[]
 }

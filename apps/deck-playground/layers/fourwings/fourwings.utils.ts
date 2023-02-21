@@ -7,6 +7,15 @@ import { TimebarRange } from 'features/timebar/timebar.hooks'
 import { getUTCDateTime } from 'utils/dates'
 import { Chunk } from './fourwings.config'
 import { FourwingsLayerMode } from './FourwingsLayer'
+import { FourwingsSublayer } from './fourwings.types'
+
+export function asyncAwaitMS(millisec) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve('')
+    }, millisec)
+  })
+}
 
 function stringHash(s: string): number {
   return Math.abs(s.split('').reduce((a, b) => ((a << 5) - a + b.charCodeAt(0)) | 0, 0))
@@ -42,25 +51,28 @@ export function getURLFromTemplate(
   return url
 }
 
-const API_BASE_URL =
-  'https://gateway.api.dev.globalfishingwatch.org/v2/4wings/tile/heatmap/{z}/{x}/{y}'
-export const getDataUrlByChunk = (
+type GetDataUrlByChunk = {
   tile: {
     index: TileIndex
     id: string
-  },
+  }
   chunk: Chunk
-) => {
+  datasets: FourwingsSublayer['datasets']
+}
+
+const API_BASE_URL =
+  'https://gateway.api.dev.globalfishingwatch.org/v2/4wings/tile/heatmap/{z}/{x}/{y}'
+export const getDataUrlByChunk = ({ tile, chunk, datasets }: GetDataUrlByChunk) => {
   const params = {
     interval: chunk.interval,
-    format: 'intArray',
+    format: '4wings',
     'temporal-aggregation': false,
     proxy: true,
     'date-range': [
       DateTime.fromMillis(chunk.start).toISODate(),
       DateTime.fromMillis(chunk.end).toISODate(),
     ].join(','),
-    datasets: ['public-global-fishing-effort:v20201001'],
+    datasets,
   }
   const url = `${API_BASE_URL}?${stringify(params, {
     arrayFormat: 'indices',
@@ -115,24 +127,40 @@ export const filterCellsByBounds = (cells: TileCell[], bounds: Bounds) => {
   })
 }
 
-export const aggregateCellTimeseries = (cells: TileCell[]) => {
+export const aggregateCellTimeseries = (cells: TileCell[], sublayers: FourwingsSublayer[]) => {
   if (!cells) {
     return []
   }
-  const timeseries = cells.reduce((acc, cell) => {
-    if (!cell) {
+  // What we have from the data is
+  // [{index:number, timeseries: {id: {frame:value, ...}  }}]
+  // What we want for the timebar is
+  // [{date: date, 0:number, 1:number ...}, ...]
+  const timeseries = cells.reduce((acc, { timeseries }) => {
+    if (!timeseries) {
       return acc
     }
-    cell.timeseries.forEach(({ frame, value }) => {
-      if (acc[frame]) {
-        acc[frame] += value
-      } else {
-        acc[frame] = value
+    sublayers.forEach((sublayer, index) => {
+      const sublayerTimeseries = timeseries[sublayer.id]
+      if (sublayerTimeseries) {
+        const frames = Object.keys(sublayerTimeseries)
+        frames.forEach((frame) => {
+          if (!acc[frame]) {
+            // We populate the frame with 0s for all the sublayers
+            acc[frame] = Object.fromEntries(sublayers.map((key, index) => [index, 0]))
+          }
+          acc[frame][index] += sublayerTimeseries[frame]
+        })
       }
     })
     return acc
-  }, {} as Record<number, number>)
-  return timeseries
+  }, {} as Record<number, Record<number, number>>)
+
+  return Object.entries(timeseries)
+    .map(([frame, values]) => ({
+      date: parseInt(frame),
+      ...values,
+    }))
+    .sort((a, b) => a.date - b.date)
 }
 
 const getMillisFromHtime = (htime: number) => {

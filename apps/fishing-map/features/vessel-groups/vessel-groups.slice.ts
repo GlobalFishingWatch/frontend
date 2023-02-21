@@ -174,6 +174,7 @@ export const getVesselInVesselGroupThunk = createAsyncThunk(
     const state = getState() as RootState
     const datasets = uniq(vesselGroup.vessels.flatMap((v) => v.dataset || []))
     const dataset = selectDatasetById(datasets[0])(state)
+
     if (vesselGroup.id && dataset) {
       const datasetConfig: DataviewDatasetConfig = {
         endpoint: EndpointId.VesselList,
@@ -186,7 +187,7 @@ export const getVesselInVesselGroupThunk = createAsyncThunk(
           },
           {
             id: 'vessel-groups',
-            value: [vesselGroup.id],
+            value: vesselGroup.id,
           },
         ],
       }

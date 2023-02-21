@@ -1,9 +1,8 @@
-import { CellTimeseries } from 'loaders/fourwings/fourwingsLayerLoader'
+import { Cell } from 'loaders/fourwings/fourwingsLayerLoader'
 
 export type BBox = [number, number, number, number]
 
-export type TileCell = {
-  timeseries: CellTimeseries[]
+export type TileCell = Cell & {
   coordinates: [number[]]
 }
 
@@ -15,9 +14,9 @@ export type GetCellCoordinatesParams = {
   id: number
 }
 
-const getCellProperties = (tileBBox: BBox, cell: number, numCols: number) => {
-  const col = cell % numCols
-  const row = Math.floor(cell / numCols)
+const getCellProperties = (tileBBox: BBox, cellIndex: number, numCols: number) => {
+  const col = cellIndex % numCols
+  const row = Math.floor(cellIndex / numCols)
   const [minX, minY, maxX, maxY] = tileBBox
   const width = maxX - minX
   const height = maxY - minY

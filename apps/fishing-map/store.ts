@@ -89,10 +89,10 @@ const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware(defaultMiddlewareOptions)
+      .concat(dataviewStatsApi.middleware)
       .concat(routerQueryMiddleware)
       .concat(routerWorkspaceMiddleware)
-      .concat(routerMiddleware)
-      .concat(dataviewStatsApi.middleware),
+      .concat(routerMiddleware),
   enhancers: (defaultEnhancers) => [routerEnhancer, ...defaultEnhancers],
 })
 

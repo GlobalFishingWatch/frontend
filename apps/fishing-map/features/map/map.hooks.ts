@@ -273,6 +273,7 @@ export type TooltipEventFeature = {
   sourceLayer: string
   layerId: string
   datasetId?: string
+  promoteId?: string
   generatorContextLayer?: ContextLayerType | null
   value: string // TODO Why not a number?
   properties: Record<string, string>

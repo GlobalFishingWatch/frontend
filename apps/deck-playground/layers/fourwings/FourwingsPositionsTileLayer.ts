@@ -1,30 +1,37 @@
 import {
   Color,
   CompositeLayer,
-  GetPickingInfoParams,
   Layer,
   LayerContext,
   LayersList,
   PickingInfo,
+  DefaultProps,
 } from '@deck.gl/core/typed'
 import { MVTLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
-import { IconLayer } from '@deck.gl/layers/typed'
+import { IconLayer, TextLayer } from '@deck.gl/layers/typed'
 import { MVTWorkerLoader } from '@loaders.gl/mvt'
 import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
 import { ACTIVITY_SWITCH_ZOOM_LEVEL, getDateRangeParam } from 'layers/fourwings/fourwings.utils'
 import { groupBy, orderBy } from 'lodash'
-import { Feature, Point } from 'geojson'
+import { Feature } from 'geojson'
 import bboxPolygon from '@turf/bbox-polygon'
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
-import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
+import {
+  COLOR_RAMP_DEFAULT_NUM_STEPS,
+  Group,
+  GROUP_ORDER,
+} from '@globalfishingwatch/layer-composer'
 import { FourwingsColorRamp } from './FourwingsLayer'
 
-export type FourwingsPositionsTileLayerProps<DataT = any> = {
+export type _FourwingsPositionsTileLayerProps<DataT = any> = {
   minFrame: number
   maxFrame: number
+  zIndex?: number
   colorDomain: number[]
   colorRange: Color[]
   highlightedVesselId?: string
+  clickedFeatures: PickingInfo[]
+  hoveredFeatures: PickingInfo[]
   onDataLoad?: (data: DataT) => void
   onColorRampUpdate: (colorRamp: FourwingsColorRamp) => void
   onVesselHighlight?: (vesselId: string) => void
@@ -32,6 +39,13 @@ export type FourwingsPositionsTileLayerProps<DataT = any> = {
   onViewportLoad?: (tiles) => void
 }
 
+export type FourwingsPositionsTileLayerProps = _FourwingsPositionsTileLayerProps & TileLayerProps
+
+const defaultProps: DefaultProps<FourwingsPositionsTileLayerProps> = {
+  zIndex: { type: 'number', value: GROUP_ORDER.indexOf(Group.Point) },
+}
+
+const MAX_LABEL_LENGTH = 20
 const ICON_MAPPING = {
   vessel: { x: 0, y: 0, width: 22, height: 40, mask: true },
   vesselHighlight: { x: 24, y: 0, width: 22, height: 40, mask: false },
@@ -42,6 +56,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   FourwingsPositionsTileLayerProps & TileLayerProps
 > {
   static layerName = 'FourwingsPositionsTileLayer'
+  static defaultProps = defaultProps
 
   initializeState(context: LayerContext) {
     super.initializeState(context)
@@ -105,6 +120,14 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return [255, 255, 255, 120]
   }
 
+  getHighlightLabelColor(d: Feature): Color {
+    const { highlightedVesselId } = this.state
+    if (highlightedVesselId) {
+      return [255, 255, 255, 0]
+    }
+    return [255, 255, 255, 120]
+  }
+
   getLineColor(d: Feature): Color {
     const { highlightedVesselId } = this.state
     return highlightedVesselId && d.properties.vesselId === highlightedVesselId
@@ -122,39 +145,9 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return highlightedVesselId && d.properties.vesselId === highlightedVesselId ? 15 : 8
   }
 
-  getPickingInfo({ info, mode }: GetPickingInfoParams): PickingInfo {
-    this.setState({
-      highlightedVesselId: info.object?.properties?.vesselId,
-    })
-    if (this.props.onVesselHighlight) {
-      const vesselId = info.object?.properties?.vesselId
-      if (vesselId) {
-        this.props.onVesselHighlight(vesselId)
-        if (mode === 'query') {
-          this.props.onVesselClick(vesselId)
-        }
-      } else if (this.props.highlightedVesselId) {
-        this.props.onVesselHighlight(undefined)
-      }
-    }
-    if (mode === 'query') {
-      console.log(info.object?.properties)
-    }
-    if (info.object) {
-      const allVesselPositions: Feature[] = this.state.allPositions.filter(
-        (p) => p.properties.vesselId === info.object?.properties?.vesselId
-      )
-      const latestVesselPosition: Feature<Point> = this.state.lastPositions.find(
-        (p) => p.properties.vesselId === info.object?.properties?.vesselId
-      )
-      const vesselHours = allVesselPositions.reduce((acc, next) => acc + next.properties.value, 0)
-      info.object.value = `${info.object?.properties?.vesselId} \n  ${Math.round(
-        vesselHours
-      )} hours \n latest position: ${latestVesselPosition.geometry?.coordinates?.map((c) =>
-        c.toFixed(4)
-      )}`
-    }
-    return info
+  getVesselLabel = (d: Feature) => {
+    const label = d.properties.name || d.properties.vesselId
+    return label.length <= MAX_LABEL_LENGTH ? label : `${label.slice(0, MAX_LABEL_LENGTH)}...`
   }
 
   onViewportLoad = (tiles) => {
@@ -183,6 +176,27 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         return this.props.onViewportLoad(tiles)
       }
     })
+  }
+
+  updateState() {
+    const clickedVesselId = this.props?.clickedFeatures.flatMap(
+      (f) => f.sourceLayer.id === 'FourwingsPositionsTileLayer' && f.object?.properties?.vesselId
+    )
+    const highlightedVesselId = this.props?.hoveredFeatures.flatMap(
+      (f) => f.sourceLayer.id === 'FourwingsPositionsTileLayer' && f.object?.properties?.vesselId
+    )
+    if (highlightedVesselId && highlightedVesselId[0]) {
+      this.setState({
+        highlightedVesselId: highlightedVesselId[0],
+      })
+    } else {
+      this.setState({
+        highlightedVesselId: undefined,
+      })
+    }
+    if (clickedVesselId[0]) {
+      this.props.onVesselClick(clickedVesselId[0])
+    }
   }
 
   renderLayers(): Layer<{}> | LayersList {
@@ -265,6 +279,20 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         getColor: (d) => this.getFillColor(d),
         pickable: true,
         getPickingInfo: this.getPickingInfo,
+        updateTriggers: {
+          getColor: [highlightedVesselId],
+        },
+      }),
+      new TextLayer({
+        id: `lastPositionsNames`,
+        data: lastPositions,
+        getText: (d) => this.getVesselLabel(d),
+        getPosition: (d) => d.geometry.coordinates,
+        getPixelOffset: [10, 0],
+        getColor: (d) => this.getHighlightLabelColor(d),
+        getSize: 12,
+        getTextAnchor: 'start',
+        getAlignmentBaseline: 'center',
         updateTriggers: {
           getColor: [highlightedVesselId],
         },

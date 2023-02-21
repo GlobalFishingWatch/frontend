@@ -316,7 +316,7 @@
     "switchAccount": "Switch account"
   },
   "vessel": {
-    "aisTransmission_plural": "AIS Positions",
+    "aisTransmission_plural": "AIS Transmissions",
     "authorization_plural": "authorizations",
     "authorizationRangeHelp": "RFMO authorizations are based on available data. Dates may be approximations where RFMO authorized vessel lists, do not contain specific authorization periods.",
     "authorizations": "authorizations",

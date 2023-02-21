@@ -3,7 +3,10 @@
 #################################################################################
 
 # Production image, copy all the files and run next
-FROM node:16-alpine AS production
+FROM node:18-alpine AS production
+ENV YARN_VERSION 3.3.1
+
+RUN yarn set version $YARN_VERSION
 WORKDIR /app
 
 ARG APP_NAME=vessel-history

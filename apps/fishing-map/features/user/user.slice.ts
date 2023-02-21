@@ -36,7 +36,15 @@ export const PRIVATE_SUPPORTED_GROUPS = [
   'Ecuador',
   'Costa_Rica',
   'Belize',
+  'SSF-Aruna',
+  'SSF-Rare',
+  'SSF-Ipnlf',
 ]
+export const USER_GROUP_WORKSPACE = {
+  'ssf-aruna': 'coastal_fisheries_indonesia',
+  'ssf-rare': 'coastal_fisheries_indonesia',
+  'ssf-ipnlf': 'coastal_fisheries_indonesia',
+}
 
 export const fetchUserThunk = createAsyncThunk(
   'user/fetch',
@@ -54,6 +62,12 @@ export const fetchUserThunk = createAsyncThunk(
     } catch (e: any) {
       return await GFWAPI.fetchGuestUser()
     }
+  },
+  {
+    condition: (params, { getState }) => {
+      const { user } = getState() as RootState
+      return user.status !== AsyncReducerStatus.Loading
+    },
   }
 )
 

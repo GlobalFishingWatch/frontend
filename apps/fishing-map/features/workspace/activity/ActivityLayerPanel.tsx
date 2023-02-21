@@ -23,7 +23,7 @@ import I18nNumber from 'features/i18n/i18nNumber'
 import { isGuestUser } from 'features/user/user.slice'
 import { selectUrlTimeRange } from 'routes/routes.selectors'
 import ActivityAuxiliaryLayerPanel from 'features/workspace/activity/ActivityAuxiliaryLayer'
-import { SAR_DATAVIEW_ID } from 'data/workspaces'
+import { SAR_DATAVIEW_SLUG } from 'data/workspaces'
 import DatasetNotFound from 'features/workspace/shared/DatasetNotFound'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import ActivityFitBounds from 'features/workspace/activity/ActivityFitBounds'
@@ -176,7 +176,7 @@ function ActivityLayerPanel({
     return fields
   }, [t])
 
-  const statsValue = stats && (stats.vessel_id || stats.id)
+  const statsValue = stats && (stats.vesselIds || stats.id)
 
   return (
     <div
@@ -239,7 +239,7 @@ function ActivityLayerPanel({
               <InfoModal
                 dataview={dataview}
                 // Workaround to always show the auxiliar dataset too
-                showAllDatasets={dataview.dataviewId === SAR_DATAVIEW_ID}
+                showAllDatasets={dataview.dataviewId === SAR_DATAVIEW_SLUG}
               />
               {!readOnly && <Remove onClick={onRemoveLayerClick} />}
             </div>
@@ -289,16 +289,16 @@ function ActivityLayerPanel({
                         t('workspace.noDetectionInFilters', 'No detections match your filters')
                       )}
                       {stats.type === 'vessels' &&
-                        stats.flag > 0 &&
+                        stats.flags > 0 &&
                         (!dataview.config?.filters?.flag ||
                           dataview.config?.filterOperators?.flag === EXCLUDE_FILTER_ID ||
                           dataview.config?.filters?.flag.length > 1) && (
                           <Fragment>
                             <span> {t('common.from', 'from')} </span>
                             <span>
-                              <I18nNumber number={stats.flag} />{' '}
+                              <I18nNumber number={stats.flags} />{' '}
                               {t('layer.flagState', {
-                                count: stats.flag,
+                                count: stats.flags,
                                 defaultValue: 'flag states',
                               }).toLocaleLowerCase()}
                             </span>

@@ -11,6 +11,7 @@ import {
   Dataset,
   ApiEvent,
   TrackResourceData,
+  DataviewDatasetConfigParam,
 } from '@globalfishingwatch/api-types'
 import {
   DEFAULT_HEATMAP_INTERVALS,
@@ -137,6 +138,12 @@ export function getGeneratorConfig(
   }
 
   switch (dataview.config?.type) {
+    case GeneratorType.Basemap: {
+      return {
+        ...generator,
+        basemap: dataview.config.basemap || dataview.config.layers?.[0]?.id,
+      }
+    }
     case GeneratorType.TileCluster: {
       const { dataset: tileClusterDataset, url: tileClusterUrl } = resolveDataviewDatasetResource(
         dataview,
@@ -250,7 +257,9 @@ export function getGeneratorConfig(
       const dataset = dataview.datasets?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
       if (isEnvironmentLayer) {
         const datasetsIds =
-          dataview.config.datasets || dataview.datasetsConfig?.map((dc) => dc.datasetId)
+          dataview.config.datasets?.length > 0
+            ? dataview.config.datasets
+            : dataview.datasetsConfig?.map((dc) => dc.datasetId)
         const sublayers: HeatmapAnimatedGeneratorSublayer[] = [
           {
             id: generator.id,
@@ -327,28 +336,38 @@ export function getGeneratorConfig(
             dataset
           )
           if (!url || resolvedDataset?.status !== DatasetStatus.Done) return []
+
           return {
             id,
             tilesUrl: url,
             attribution: getDatasetAttribution(resolvedDataset),
             datasetId: resolvedDataset.id,
+            promoteId: resolvedDataset?.configuration?.idProperty,
+            valueProperties: resolvedDataset?.configuration?.valueProperties,
           }
         })
         // Duplicated generators when context dataview have multiple layers
-        return tilesUrls.map(({ id, tilesUrl, attribution, datasetId }) => ({
-          ...generator,
-          id: `${dataview.id}${MULTILAYER_SEPARATOR}${id}`,
-          layer: id,
-          attribution,
-          tilesUrl,
-          datasetId,
-        }))
+        return tilesUrls.map(
+          ({ id, tilesUrl, attribution, datasetId, promoteId, valueProperties }) => ({
+            ...generator,
+            id: `${dataview.id}${MULTILAYER_SEPARATOR}${id}`,
+            layer: id,
+            attribution,
+            tilesUrl,
+            datasetId,
+            promoteId,
+            valueProperties,
+          })
+        )
       } else {
         generator.id = dataview.config.layers
           ? `${dataview.id}${MULTILAYER_SEPARATOR}${dataview.config.layers}`
           : dataview.id
         generator.layer = dataview.config.layers
-        const { dataset, url } = resolveDataviewDatasetResource(dataview, DatasetTypes.Context)
+        const { dataset, url } = resolveDataviewDatasetResource(dataview, [
+          DatasetTypes.Context,
+          DatasetTypes.UserContext,
+        ])
         if (dataset?.status !== DatasetStatus.Done) {
           return []
         }

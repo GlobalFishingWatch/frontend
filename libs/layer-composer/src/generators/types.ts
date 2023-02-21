@@ -159,6 +159,14 @@ export interface ContextGeneratorConfig extends GeneratorConfig {
    */
   datasetId?: string
   /**
+   * Property to use as id internally in mapbox
+   */
+  promoteId?: string
+  /**
+   * Properties to be used as value
+   */
+  valueProperties?: string[]
+  /**
    * Url to grab the tiles from, internally using https://docs.mapbox.com/mapbox-gl-js/style-spec/sources/#vector-tiles
    */
   tilesUrl: string
@@ -166,6 +174,10 @@ export interface ContextGeneratorConfig extends GeneratorConfig {
    * Sets the color of the line https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#paint-fill-fill-color
    */
   color?: string
+  /**
+   * Filter the polygons displayed https://docs.mapbox.com/help/glossary/filter/
+   */
+  filters?: Record<string, Array<string>>
 }
 
 export type TileClusterEventType = 'encounter' | 'loitering' | 'port'

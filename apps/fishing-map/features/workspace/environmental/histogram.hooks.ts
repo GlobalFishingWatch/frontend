@@ -20,7 +20,7 @@ export const useDataviewHistogram = (dataview: UrlDataviewInstance) => {
   const layerFeature = useMapDataviewFeatures(dataview)?.[0]
   const sourcesLoaded = areDataviewsFeatureLoaded(layerFeature)
   const dataset = dataview.datasets?.find(
-    (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.Context
+    (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.UserContext
   )
   const [histogram, setHistogram] = useState<any>()
 

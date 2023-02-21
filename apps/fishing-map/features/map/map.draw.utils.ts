@@ -14,7 +14,7 @@ export const getCoordinatePrecisionRounded = (coordinate: Position): Position =>
 export const getDrawDatasetDefinition = (name: string): Partial<Dataset> => {
   return {
     name,
-    type: DatasetTypes.Context,
+    type: DatasetTypes.UserContext,
     category: DatasetCategory.Context,
     subcategory: 'user',
     unit: 'NA',

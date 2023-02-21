@@ -38,7 +38,7 @@ const Title = (props: TitleProps, ref: Ref<HTMLHeadingElement>) => {
       onClick={onToggleLayerActive}
     >
       <span>
-        {datasetIcon && !CONTEXT_LAYERS_DATAVIEWS.includes(dataview.dataviewId) && (
+        {datasetIcon && !CONTEXT_LAYERS_DATAVIEWS.includes(dataview.dataviewId as string) && (
           <Icon icon={datasetIcon} style={{ transform: 'translateY(25%)' }} />
         )}
         {title}

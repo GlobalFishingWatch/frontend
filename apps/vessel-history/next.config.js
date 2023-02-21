@@ -50,7 +50,7 @@ const nextConfig = {
     }
     return config
   },
-
+  transpilePackages: ['d3-geo', 'lodash-es'],
   // i18n,
   basePath,
   productionBrowserSourceMaps:
