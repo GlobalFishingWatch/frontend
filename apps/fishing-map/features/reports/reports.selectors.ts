@@ -17,6 +17,7 @@ import { REPORT_VESSELS_PER_PAGE } from 'data/config'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { REPORT_TEMPORAL_RESOLUTIONS } from 'features/reports/reports.hooks'
+import { selectLocationAreaId, selectLocationDatasetId } from 'routes/routes.selectors'
 import { selectReportVesselsData } from './reports.slice'
 
 export const DEFAULT_NULL_VALUE = 'NULL'
@@ -27,6 +28,13 @@ export type ReportVesselWithDatasets = Partial<ReportVessel> & {
   infoDataset?: Dataset
   trackDataset?: Dataset
 }
+
+export const selectReportAreaIds = createSelector(
+  [selectLocationAreaId, selectLocationDatasetId],
+  (areaId, datasetId) => {
+    return { datasetId, areaId: areaId?.toString() }
+  }
+)
 
 export const selectReportActivityFlatten = createSelector(
   [selectReportVesselsData],
@@ -156,6 +164,10 @@ export const selectReportVesselsList = createSelector(
   }
 )
 
+export const selectHasReportVessels = createSelector([selectReportVesselsList], (vessels) => {
+  return vessels?.length > 0
+})
+
 export const selectReportVesselsListWithAllInfo = createSelector(
   [selectReportActivityFlatten],
   (vessels) => {
@@ -172,40 +184,55 @@ export const selectReportVesselsListWithAllInfo = createSelector(
   }
 )
 
+function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: string) {
+  return matchSorter(vessels, filter, {
+    keys: [
+      'shipName',
+      'mmsi',
+      'flag',
+      (item) => t(`flags:${item.flag as string}` as any, item.flag),
+      (item) => t(`vessel.gearTypes.${item.geartype}` as any, item.geartype),
+    ],
+    threshold: matchSorter.rankings.ACRONYM,
+  }).sort((a, b) => b.hours - a.hours)
+}
+
+const defaultDownloadVessels = []
+export const selectReportDownloadVessels = createSelector(
+  [selectReportVesselsListWithAllInfo, selectReportVesselFilter],
+  (vessels, filter) => {
+    if (!vessels?.length) return defaultDownloadVessels
+
+    return getVesselsFiltered(vessels, filter)
+  }
+)
+
 export const selectReportVesselsFiltered = createSelector(
   [selectReportVesselsList, selectReportVesselFilter],
   (vessels, filter) => {
     if (!vessels?.length) return null
-    return matchSorter(vessels, filter, {
-      keys: [
-        'shipName',
-        'mmsi',
-        'flag',
-        (item) => t(`flags:${item.flag as string}` as any, item.flag),
-        (item) => t(`vessel.gearTypes.${item.geartype}` as any, item.geartype),
-      ],
-      threshold: matchSorter.rankings.ACRONYM,
-    }).sort((a, b) => b.hours - a.hours)
+    return getVesselsFiltered(vessels, filter)
   }
 )
 
+const defaultVesselsList = []
 export const selectReportVesselsPaginated = createSelector(
   [selectReportVesselsFiltered, selectReportVesselPage],
   (vessels, page = 0) => {
-    if (!vessels?.length) return null
+    if (!vessels?.length) return defaultVesselsList
     return vessels.slice(REPORT_VESSELS_PER_PAGE * page, REPORT_VESSELS_PER_PAGE * (page + 1))
   }
 )
 
 export const selectReportVesselsPagination = createSelector(
-  [selectReportVesselsList, selectReportVesselPage],
-  (vessels, page = 0) => {
-    if (!vessels?.length) return null
+  [selectReportVesselsPaginated, selectReportVesselsList, selectReportVesselPage],
+  (vessels, allVessels, page = 0) => {
     return {
       page,
       offset: REPORT_VESSELS_PER_PAGE * page,
-      results: REPORT_VESSELS_PER_PAGE,
-      total: vessels.length,
+      resultsPerPage: REPORT_VESSELS_PER_PAGE,
+      resultsNumber: vessels?.length,
+      total: allVessels?.length,
     }
   }
 )

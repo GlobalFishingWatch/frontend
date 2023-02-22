@@ -7,7 +7,7 @@ import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { LngLatBounds, Map } from '@globalfishingwatch/maplibre-gl'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { Bbox, MapCoordinates } from 'types'
-import { DEFAULT_VIEWPORT } from 'data/config'
+import { DEFAULT_VIEWPORT, FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
 import { updateUrlViewport } from 'routes/routes.actions'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { selectViewport } from 'features/app/app.selectors'
@@ -157,5 +157,16 @@ export function useMapFitBounds() {
     },
     [map, setMapCoordinates]
   )
+
   return fitMapBounds
+}
+
+export function useAreaFitBounds(bounds: Bbox) {
+  const fitMapBounds = useMapFitBounds()
+
+  useEffect(() => {
+    if (bounds) {
+      fitMapBounds(bounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
+    }
+  }, [bounds, fitMapBounds])
 }

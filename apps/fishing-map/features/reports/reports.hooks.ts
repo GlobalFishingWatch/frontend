@@ -1,14 +1,11 @@
-import { useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { Interval } from '@globalfishingwatch/layer-composer'
+import { DEFAULT_CONTEXT_SOURCE_LAYER, Interval } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import {
-  selectLocationDatasetId,
-  selectLocationAreaId,
-  selectUrlTimeRange,
-} from 'routes/routes.selectors'
-import { selectActiveReportDataviews } from 'features/app/app.selectors'
+import { selectLocationDatasetId, selectLocationAreaId } from 'routes/routes.selectors'
+import { selectActiveReportDataviews, selectTimeRange } from 'features/app/app.selectors'
 import { getActiveDatasetsInActivityDataviews } from 'features/datasets/datasets.utils'
 import {
   fetchAreaDetailThunk,
@@ -16,19 +13,46 @@ import {
   selectDatasetAreaStatus,
 } from 'features/areas/areas.slice'
 import { TemporalResolution } from 'features/download/downloadActivity.config'
-import { selectReportTemporalResolution } from 'features/reports/reports.selectors'
+import {
+  selectReportAreaIds,
+  selectReportTemporalResolution,
+} from 'features/reports/reports.selectors'
+import useMapInstance from 'features/map/map-context.hooks'
 import {
   fetchReportVesselsThunk,
   selectReportVesselsData,
+  selectReportVesselsError,
   selectReportVesselsStatus,
 } from './reports.slice'
 
+export function useReportAreaHighlight(areaId: string, sourceId: string) {
+  const { updateFeatureState, cleanFeatureState } = useFeatureState(useMapInstance())
+
+  const setHighlightedArea = useCallback(
+    (areaId, sourceId) => {
+      cleanFeatureState('highlight')
+      const featureState = {
+        source: sourceId,
+        sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
+        id: areaId.toString(),
+      }
+      updateFeatureState([featureState], 'highlight')
+    },
+    [cleanFeatureState, updateFeatureState]
+  )
+
+  useEffect(() => {
+    if (areaId && sourceId) {
+      setHighlightedArea(areaId, sourceId)
+    }
+  }, [areaId, sourceId, setHighlightedArea])
+}
+
 export function useFetchReportArea() {
   const dispatch = useAppDispatch()
-  const datasetId = useSelector(selectLocationDatasetId)
-  const areaId = useSelector(selectLocationAreaId)
-  const status = useSelector(selectDatasetAreaStatus({ datasetId, areaId: areaId.toString() }))
-  const data = useSelector(selectDatasetAreaDetail({ datasetId, areaId: areaId.toString() }))
+  const { datasetId, areaId } = useSelector(selectReportAreaIds)
+  const status = useSelector(selectDatasetAreaStatus({ datasetId, areaId }))
+  const data = useSelector(selectDatasetAreaDetail({ datasetId, areaId }))
 
   useEffect(() => {
     if (datasetId && areaId) {
@@ -44,9 +68,8 @@ export function useFetchReportArea() {
   return useMemo(() => ({ status, data }), [status, data])
 }
 
-//TODO: change API to add "hour"
 export const REPORT_TEMPORAL_RESOLUTIONS: Record<Interval, TemporalResolution> = {
-  hour: TemporalResolution.Daily,
+  hour: TemporalResolution.Hourly,
   day: TemporalResolution.Daily,
   month: TemporalResolution.Monthly,
   year: TemporalResolution.Yearly,
@@ -54,11 +77,12 @@ export const REPORT_TEMPORAL_RESOLUTIONS: Record<Interval, TemporalResolution> =
 
 export function useFetchReportVessel() {
   const dispatch = useAppDispatch()
-  const timerange = useSelector(selectUrlTimeRange)
+  const timerange = useSelector(selectTimeRange)
   const datasetId = useSelector(selectLocationDatasetId)
   const areaId = useSelector(selectLocationAreaId)
   const dataviews = useSelector(selectActiveReportDataviews)
   const status = useSelector(selectReportVesselsStatus)
+  const error = useSelector(selectReportVesselsError)
   const data = useSelector(selectReportVesselsData)
   const temporalResolution = useSelector(selectReportTemporalResolution)
 
@@ -73,7 +97,7 @@ export function useFetchReportVessel() {
       }))
       .filter((dataview) => dataview.datasets.length > 0)
 
-    if (reportDataviews?.length) {
+    if (areaId && reportDataviews?.length) {
       dispatch(
         fetchReportVesselsThunk({
           datasets: reportDataviews.map(({ datasets }) => datasets.join(',')),
@@ -91,5 +115,5 @@ export function useFetchReportVessel() {
     }
   }, [dispatch, areaId, datasetId, timerange, temporalResolution, dataviews])
 
-  return useMemo(() => ({ status, data }), [status, data])
+  return useMemo(() => ({ status, data, error }), [status, data, error])
 }

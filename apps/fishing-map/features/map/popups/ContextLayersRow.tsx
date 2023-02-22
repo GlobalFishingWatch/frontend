@@ -13,6 +13,9 @@ import { REPORT } from 'routes/routes'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { selectLocationQuery } from 'routes/routes.selectors'
+import { selectSidebarOpen } from 'features/app/app.selectors'
+import { TooltipEventFeature } from 'features/map/map.hooks'
+import { getFeatureAreaId, getFeatureBounds } from 'features/map/popups/ContextLayers.hooks'
 import styles from './Popup.module.css'
 
 interface DownloadPopupButtonProps {
@@ -55,16 +58,17 @@ const DownloadPopupButton: React.FC<DownloadPopupButtonProps> = ({
 }
 
 interface ReportPopupButtonProps {
-  datasetId: string
-  areaId: string
+  feature: TooltipEventFeature
   onClick?: (e: React.MouseEvent<Element, MouseEvent>) => void
 }
 
-const ReportPopupLink = ({ datasetId, areaId, onClick }: ReportPopupButtonProps) => {
+const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) => {
   const { t } = useTranslation()
   const hasAnalysableLayer = useSelector(selectHasAnalysisLayersVisible)
   const workspace = useSelector(selectWorkspace)
+  const isSidebarOpen = useSelector(selectSidebarOpen)
   const query = useSelector(selectLocationQuery)
+  const bounds = getFeatureBounds(feature)
   return (
     <Link
       className={styles.workspaceLink}
@@ -73,10 +77,16 @@ const ReportPopupLink = ({ datasetId, areaId, onClick }: ReportPopupButtonProps)
         payload: {
           category: workspace.category || WorkspaceCategories.FishingActivity,
           workspaceId: workspace.id || DEFAULT_WORKSPACE_ID,
-          datasetId,
-          areaId,
+          datasetId: feature.datasetId,
+          areaId: getFeatureAreaId(feature),
         },
-        query: { ...query, reportVesselPage: 0 },
+        query: {
+          ...query,
+          reportVesselPage: 0,
+          reportAreaSource: feature.source,
+          ...(bounds && { reportAreaBounds: bounds }),
+          ...(!isSidebarOpen && { sidebarOpen: true }),
+        },
       }}
       onClick={onClick}
     >
@@ -100,11 +110,10 @@ const ReportPopupLink = ({ datasetId, areaId, onClick }: ReportPopupButtonProps)
 interface ContextLayersRowProps {
   id: string
   label: string
+  feature: TooltipEventFeature
   showFeaturesDetails: boolean
   showActions?: boolean
   linkHref?: string
-  datasetId?: string
-  areaId?: string
   handleDownloadClick?: (e: React.MouseEvent<Element, MouseEvent>) => void
   handleAnalysisClick?: (e: React.MouseEvent<Element, MouseEvent>) => void
 }
@@ -113,8 +122,7 @@ const ContextLayersRow: React.FC<ContextLayersRowProps> = ({
   label,
   showFeaturesDetails,
   linkHref,
-  datasetId,
-  areaId,
+  feature,
   handleDownloadClick,
   handleAnalysisClick,
 }: ContextLayersRowProps) => {
@@ -125,7 +133,7 @@ const ContextLayersRow: React.FC<ContextLayersRowProps> = ({
       {showFeaturesDetails && (
         <div className={styles.rowActions}>
           {handleDownloadClick && <DownloadPopupButton onClick={handleDownloadClick} />}
-          <ReportPopupLink datasetId={datasetId} areaId={areaId} onClick={handleAnalysisClick} />
+          <ReportPopupLink feature={feature} onClick={handleAnalysisClick} />
           {linkHref && (
             <a target="_blank" rel="noopener noreferrer" href={linkHref}>
               <IconButton

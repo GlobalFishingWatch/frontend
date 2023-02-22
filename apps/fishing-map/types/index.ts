@@ -11,6 +11,16 @@ export { Locale } from '@globalfishingwatch/api-types'
 
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
 export type WorkspaceTimeRangeParam = 'start' | 'end'
+
+export type ReportStateProperty =
+  | 'reportCategory'
+  | 'reportAreaSource'
+  | 'reportAreaBounds'
+  | 'reportActivityGraph'
+  | 'reportVesselGraph'
+  | 'reportVesselFilter'
+  | 'reportVesselPage'
+
 export type WorkspaceStateProperty =
   | 'query'
   | 'analysis'
@@ -27,11 +37,7 @@ export type WorkspaceStateProperty =
   | 'timebarSelectedEnvId'
   | 'bivariateDataviews'
   | 'activityCategory'
-  | 'reportCategory'
-  | 'reportActivityGraph'
-  | 'reportVesselGraph'
-  | 'reportVesselFilter'
-  | 'reportVesselPage'
+  | ReportStateProperty
 
 export type WorkspaceParam =
   | WorkspaceViewportParam
@@ -59,6 +65,7 @@ export type ReportActivityGraph =
   | typeof REPORT_ACTIVITY_GRAPH_EVOLUTION
   | typeof REPORT_ACTIVITY_GRAPH_BEFORE_AFTER
   | typeof REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON
+export type ReportCategory = DataviewCategory.Activity | DataviewCategory.Detections
 export type ReportVesselGraph =
   | typeof REPORT_VESSELS_GRAPH_GEARTYPE
   | typeof REPORT_VESSELS_GRAPH_FLAG
@@ -78,7 +85,9 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   timebarSelectedEnvId?: string
   bivariateDataviews?: BivariateDataviews
   reportActivityGraph?: ReportActivityGraph
-  reportCategory?: DataviewCategory
+  reportCategory?: ReportCategory
+  reportAreaSource?: string
+  reportAreaBounds?: Bbox
   reportVesselGraph?: ReportVesselGraph
   reportVesselFilter?: string
   reportVesselPage?: number

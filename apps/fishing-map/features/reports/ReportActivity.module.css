@@ -14,3 +14,7 @@
   color: var(--color-primary-blue);
   line-height: 2.8rem;
 }
+
+.graphContainer {
+  min-height: 300px;
+}

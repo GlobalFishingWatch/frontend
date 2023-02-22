@@ -63,6 +63,7 @@
   color: var(--color-secondary-blue);
   text-transform: uppercase;
   font: var(--font-S);
+  gap: 1rem;
 }
 
 .footer > div {
@@ -73,4 +74,8 @@
 
 .footer .disabled {
   opacity: 0.5;
+}
+
+.noWrap {
+  white-space: nowrap;
 }

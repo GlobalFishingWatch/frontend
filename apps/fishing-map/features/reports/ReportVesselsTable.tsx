@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { CSVLink } from 'react-csv'
+import { Fragment } from 'react'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
 import { DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
@@ -9,12 +10,15 @@ import { getVesselDataviewInstance, getVesselInWorkspace } from 'features/datavi
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectUrlTimeRange } from 'routes/routes.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
+import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
+import { selectReportVesselFilter, selectTimeRange } from 'features/app/app.selectors'
 import {
   ReportVesselWithDatasets,
-  selectReportVesselsListWithAllInfo,
+  selectReportDownloadVessels,
+  selectReportVesselsFiltered,
+  selectReportVesselsList,
   selectReportVesselsPaginated,
   selectReportVesselsPagination,
 } from './reports.selectors'
@@ -29,12 +33,15 @@ type ReportVesselTableProps = {
 export default function ReportVesselsTable({ activityUnit, reportName }: ReportVesselTableProps) {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
-  const allVessels = useSelector(selectReportVesselsListWithAllInfo)
+  const allVessels = useSelector(selectReportVesselsList)
+  const allFilteredVessels = useSelector(selectReportVesselsFiltered)
+  const downloadVessels = useSelector(selectReportDownloadVessels)
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const vessels = useSelector(selectReportVesselsPaginated)
+  const reportVesselFilter = useSelector(selectReportVesselFilter)
   const pagination = useSelector(selectReportVesselsPagination)
   const vesselsInWorkspace = useSelector(selectActiveTrackDataviews)
-  const { start, end } = useSelector(selectUrlTimeRange)
+  const { start, end } = useSelector(selectTimeRange)
 
   const onVesselClick = (
     ev: React.MouseEvent<Element, MouseEvent>,
@@ -68,7 +75,10 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
     dispatchQueryParams({ reportVesselPage: pagination.page + 1 })
   }
 
-  const isLastPaginationPage = pagination.offset + pagination.results >= pagination.total
+  const hasLessVesselsThanAPage =
+    pagination.page === 0 && pagination?.resultsNumber < pagination?.resultsPerPage
+  const isLastPaginationPage = pagination?.offset + pagination?.resultsPerPage >= pagination?.total
+
   return (
     <div>
       <div className={styles.tableContainer}>
@@ -81,7 +91,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
               <th>{t('vessel.gearType_short', 'gear')}</th>
               {/* Disabled for detections to allocate some space for timestamps interaction */}
               <th className={styles.right}>
-                {activityUnit === 'hours'
+                {activityUnit === 'hour'
                   ? t('common.hour_other', 'hours')
                   : t('common.detection_other', 'detections')}
               </th>
@@ -133,7 +143,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                     {t(`vessel.gearTypes.${vessel.geartype}` as any, EMPTY_FIELD_PLACEHOLDER)}
                   </td>
                   <td colSpan={1} className={cx(styles.columnSpace, styles.right)}>
-                    <I18nNumber number={vessel[activityUnit]} />
+                    <I18nNumber number={vessel[`${activityUnit}s`]} />
                   </td>
                 </tr>
               )
@@ -143,37 +153,57 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
       </div>
       <div className={styles.footer}>
         <div>
-          <IconButton
-            icon="arrow-left"
-            disabled={pagination.page === 0}
-            className={cx({ [styles.disabled]: pagination.page === 0 })}
-            onClick={onPrevPageClick}
-            size="medium"
-          />
-          <span>{`${pagination.offset + 1} - ${
-            isLastPaginationPage ? pagination.total : pagination.offset + pagination.results
-          }`}</span>
-          <IconButton
-            icon="arrow-right"
-            onClick={onNextPageClick}
-            disabled={isLastPaginationPage}
-            className={cx({ [styles.disabled]: isLastPaginationPage })}
-            size="medium"
-          />
+          {!hasLessVesselsThanAPage && (
+            <Fragment>
+              <IconButton
+                icon="arrow-left"
+                disabled={pagination?.page === 0}
+                className={cx({ [styles.disabled]: pagination?.page === 0 })}
+                onClick={onPrevPageClick}
+                size="medium"
+              />
+              <span className={styles.noWrap}>
+                {`${pagination?.offset + 1} - ${
+                  isLastPaginationPage
+                    ? pagination?.total
+                    : pagination?.offset + pagination?.resultsPerPage
+                }`}{' '}
+              </span>
+              <IconButton
+                icon="arrow-right"
+                onClick={onNextPageClick}
+                disabled={isLastPaginationPage || hasLessVesselsThanAPage}
+                className={cx({
+                  [styles.disabled]: isLastPaginationPage || hasLessVesselsThanAPage,
+                })}
+                size="medium"
+              />
+            </Fragment>
+          )}
         </div>
         <div>
-          <span>
-            <I18nNumber number={pagination.total} />{' '}
-            {t('common.vessel', { count: pagination.total })}
+          <span className={styles.noWrap}>
+            {reportVesselFilter && (
+              <Fragment>
+                <I18nNumber number={allFilteredVessels?.length} /> {t('common.of', 'of')}{' '}
+              </Fragment>
+            )}
+            <I18nNumber number={pagination?.total} />{' '}
+            {t('common.vessel', { count: pagination?.total })}
           </span>
-          <Button className={styles.footerButton} type="secondary">
-            {t('analysis.createVesselGroup', 'Create vessel group')}
+          <VesselGroupAddButton
+            vessels={reportVesselFilter ? allFilteredVessels : allVessels}
+            showCount={false}
+          />
+          <Button className={styles.footerButton} disabled={!downloadVessels?.length}>
+            {downloadVessels?.length ? (
+              <CSVLink filename={`${reportName}-${start}-${end}.csv`} data={downloadVessels}>
+                {t('analysis.downloadVesselsList', 'Download csv')}
+              </CSVLink>
+            ) : (
+              t('analysis.downloadVesselsList', 'Download csv')
+            )}
           </Button>
-          <CSVLink filename={`${reportName}-${start}-${end}.csv`} data={allVessels}>
-            <Button className={styles.footerButton}>
-              {t('analysis.downloadVesselsList', 'Download list')}
-            </Button>
-          </CSVLink>
         </div>
       </div>
     </div>

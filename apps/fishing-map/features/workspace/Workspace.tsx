@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -7,26 +7,13 @@ import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { arrayMove } from '@dnd-kit/sortable'
 import { Spinner, Button, IconButton, Modal, InputText } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
-import {
-  selectWorkspaceStatus,
-  selectWorkspaceError,
-  selectWorkspace,
-} from 'features/workspace/workspace.selectors'
+import { selectWorkspaceStatus, selectWorkspace } from 'features/workspace/workspace.selectors'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { isGFWUser, isGuestUser, logoutUserThunk, selectUserData } from 'features/user/user.slice'
-import { selectLocationCategory, selectWorkspaceId } from 'routes/routes.selectors'
-import { HOME } from 'routes/routes'
-import { updateLocation } from 'routes/routes.actions'
-import LocalStorageLoginLink from 'routes/LoginLink'
+import { isGFWUser } from 'features/user/user.slice'
+import { selectLocationCategory } from 'routes/routes.selectors'
 import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
-import {
-  PRIVATE_SUFIX,
-  PUBLIC_SUFIX,
-  ROOT_DOM_ELEMENT,
-  SUPPORT_EMAIL,
-  USER_SUFIX,
-} from 'data/config'
+import { PRIVATE_SUFIX, PUBLIC_SUFIX, ROOT_DOM_ELEMENT, USER_SUFIX } from 'data/config'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import {
   selectDataviewInstancesMergedOrdered,
@@ -42,9 +29,9 @@ import { updateWorkspaceThunk } from 'features/workspaces-list/workspaces-list.s
 import { WIZARD_TEMPLATE_ID } from 'data/default-workspaces/marine-manager'
 import {
   fetchWorkspaceVesselGroupsThunk,
-  selectWorkspaceVesselGroupsError,
   selectWorkspaceVesselGroupsStatus,
 } from 'features/vessel-groups/vessel-groups.slice'
+import WorkspaceError from 'features/workspace/WorkspaceError'
 import ActivitySection from './activity/ActivitySection'
 import VesselsSection from './vessels/VesselsSection'
 import EventsSection from './events/EventsSection'
@@ -53,94 +40,6 @@ import ContextAreaSection from './context-areas/ContextAreaSection'
 import styles from './Workspace.module.css'
 
 const Search = dynamic(() => import(/* webpackChunkName: "Search" */ 'features/search/Search'))
-
-function WorkspaceError(): React.ReactElement {
-  const [logoutLoading, setLogoutLoading] = useState(false)
-  const error = useSelector(selectWorkspaceError)
-  const vesselGroupsError = useSelector(selectWorkspaceVesselGroupsError)
-  const workspaceId = useSelector(selectWorkspaceId)
-  const guestUser = useSelector(isGuestUser)
-  const userData = useSelector(selectUserData)
-  const { t } = useTranslation()
-  const dispatch = useAppDispatch()
-
-  const ErrorPlaceHolder = ({ title, children }: { title: string; children?: React.ReactNode }) => (
-    <div className={styles.placeholder}>
-      <div>
-        <h2 className={styles.errorTitle}>{title}</h2>
-        {children && children}
-      </div>
-    </div>
-  )
-  if (
-    error.status === 401 ||
-    error.status === 403 ||
-    vesselGroupsError?.status === 401 ||
-    vesselGroupsError?.status === 403
-  ) {
-    return (
-      <ErrorPlaceHolder title={t('errors.privateView', 'This is a private view')}>
-        {guestUser ? (
-          <LocalStorageLoginLink className={styles.button}>
-            {t('common.login', 'Log in') as string}
-          </LocalStorageLoginLink>
-        ) : (
-          <Fragment>
-            <Button
-              href={`mailto:${SUPPORT_EMAIL}?subject=Requesting access for ${workspaceId} view`}
-            >
-              {t('errors.requestAccess', 'Request access') as string}
-            </Button>
-            {userData?.email && (
-              <p className={styles.logged}>
-                {t('common.loggedAs', 'Logged as')} {userData.email}
-              </p>
-            )}
-            <Button
-              type="secondary"
-              size="small"
-              loading={logoutLoading}
-              onClick={async () => {
-                setLogoutLoading(true)
-                await dispatch(logoutUserThunk({ loginRedirect: true }))
-                setLogoutLoading(false)
-              }}
-            >
-              {t('errors.switchAccount', 'Switch account') as string}
-            </Button>
-          </Fragment>
-        )}
-      </ErrorPlaceHolder>
-    )
-  }
-  if (error.status === 404) {
-    return (
-      <ErrorPlaceHolder title={t('errors.workspaceNotFound', 'The view you request was not found')}>
-        <Button
-          onClick={() => {
-            dispatch(
-              updateLocation(HOME, {
-                payload: { workspaceId: undefined },
-                query: {},
-                replaceQuery: true,
-              })
-            )
-          }}
-        >
-          Load default view
-        </Button>
-      </ErrorPlaceHolder>
-    )
-  }
-  return (
-    <ErrorPlaceHolder
-      title={t(
-        'errors.workspaceLoad',
-        'There was an error loading the workspace, please try again later'
-      )}
-    ></ErrorPlaceHolder>
-  )
-}
 
 function Workspace() {
   useHideLegacyActivityCategoryDataviews()

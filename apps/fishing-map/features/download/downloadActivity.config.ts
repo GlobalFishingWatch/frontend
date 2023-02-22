@@ -24,6 +24,7 @@ export enum GroupBy {
 
 export enum TemporalResolution {
   Full = 'entire',
+  Hourly = 'hourly',
   Daily = 'daily',
   Monthly = 'monthly',
   Yearly = 'yearly',
