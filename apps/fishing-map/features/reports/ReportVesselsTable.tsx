@@ -17,6 +17,8 @@ import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { selectReportVesselFilter } from 'features/app/app.selectors'
 import {
   ReportVesselWithDatasets,
+  selectReportVesselsFiltered,
+  selectReportVesselsList,
   selectReportVesselsListWithAllInfo,
   selectReportVesselsPaginated,
   selectReportVesselsPagination,
@@ -32,7 +34,9 @@ type ReportVesselTableProps = {
 export default function ReportVesselsTable({ activityUnit, reportName }: ReportVesselTableProps) {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
-  const allVessels = useSelector(selectReportVesselsListWithAllInfo)
+  const allVessels = useSelector(selectReportVesselsList)
+  const allFilteredVessels = useSelector(selectReportVesselsFiltered)
+  const downloadVessels = useSelector(selectReportVesselsListWithAllInfo)
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const vessels = useSelector(selectReportVesselsPaginated)
   const reportVesselFilter = useSelector(selectReportVesselFilter)
@@ -183,9 +187,12 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
             <I18nNumber number={pagination?.total} />{' '}
             {t('common.vessel', { count: pagination?.total })}
           </span>
-          <VesselGroupAddButton vessels={vessels} showCount={false} />
-          {allVessels?.length > 0 && (
-            <CSVLink filename={`${reportName}-${start}-${end}.csv`} data={allVessels}>
+          <VesselGroupAddButton
+            vessels={reportVesselFilter ? allFilteredVessels : allVessels}
+            showCount={false}
+          />
+          {downloadVessels?.length > 0 && (
+            <CSVLink filename={`${reportName}-${start}-${end}.csv`} data={downloadVessels}>
               <Button className={styles.footerButton}>
                 {t('analysis.downloadVesselsList', 'Download list')}
               </Button>
