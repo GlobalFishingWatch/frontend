@@ -180,27 +180,42 @@ export const selectReportVesselsListWithAllInfo = createSelector(
   }
 )
 
+function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: string) {
+  return matchSorter(vessels, filter, {
+    keys: [
+      'shipName',
+      'mmsi',
+      'flag',
+      (item) => t(`flags:${item.flag as string}` as any, item.flag),
+      (item) => t(`vessel.gearTypes.${item.geartype}` as any, item.geartype),
+    ],
+    threshold: matchSorter.rankings.ACRONYM,
+  }).sort((a, b) => b.hours - a.hours)
+}
+
+const defaultDownloadVessels = []
+export const selectReportDownloadVessels = createSelector(
+  [selectReportVesselsListWithAllInfo, selectReportVesselFilter],
+  (vessels, filter) => {
+    if (!vessels?.length) return defaultDownloadVessels
+
+    return getVesselsFiltered(vessels, filter)
+  }
+)
+
 export const selectReportVesselsFiltered = createSelector(
   [selectReportVesselsList, selectReportVesselFilter],
   (vessels, filter) => {
     if (!vessels?.length) return null
-    return matchSorter(vessels, filter, {
-      keys: [
-        'shipName',
-        'mmsi',
-        'flag',
-        (item) => t(`flags:${item.flag as string}` as any, item.flag),
-        (item) => t(`vessel.gearTypes.${item.geartype}` as any, item.geartype),
-      ],
-      threshold: matchSorter.rankings.ACRONYM,
-    }).sort((a, b) => b.hours - a.hours)
+    return getVesselsFiltered(vessels, filter)
   }
 )
 
+const defaultVesselsList = []
 export const selectReportVesselsPaginated = createSelector(
   [selectReportVesselsFiltered, selectReportVesselPage],
   (vessels, page = 0) => {
-    if (!vessels?.length) return null
+    if (!vessels?.length) return defaultVesselsList
     return vessels.slice(REPORT_VESSELS_PER_PAGE * page, REPORT_VESSELS_PER_PAGE * (page + 1))
   }
 )

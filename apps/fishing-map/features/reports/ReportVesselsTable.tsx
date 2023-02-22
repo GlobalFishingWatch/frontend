@@ -17,9 +17,9 @@ import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { selectReportVesselFilter } from 'features/app/app.selectors'
 import {
   ReportVesselWithDatasets,
+  selectReportDownloadVessels,
   selectReportVesselsFiltered,
   selectReportVesselsList,
-  selectReportVesselsListWithAllInfo,
   selectReportVesselsPaginated,
   selectReportVesselsPagination,
 } from './reports.selectors'
@@ -36,7 +36,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
   const { dispatchQueryParams } = useLocationConnect()
   const allVessels = useSelector(selectReportVesselsList)
   const allFilteredVessels = useSelector(selectReportVesselsFiltered)
-  const downloadVessels = useSelector(selectReportVesselsListWithAllInfo)
+  const downloadVessels = useSelector(selectReportDownloadVessels)
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const vessels = useSelector(selectReportVesselsPaginated)
   const reportVesselFilter = useSelector(selectReportVesselFilter)
@@ -153,29 +153,33 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
       </div>
       <div className={styles.footer}>
         <div>
-          <IconButton
-            icon="arrow-left"
-            disabled={pagination?.page === 0}
-            className={cx({ [styles.disabled]: pagination?.page === 0 })}
-            onClick={onPrevPageClick}
-            size="medium"
-          />
-          <span>
-            {hasLessVesselsThanAPage
-              ? pagination?.offset + 1
-              : `${pagination?.offset + 1} - ${
+          {!hasLessVesselsThanAPage && (
+            <Fragment>
+              <IconButton
+                icon="arrow-left"
+                disabled={pagination?.page === 0}
+                className={cx({ [styles.disabled]: pagination?.page === 0 })}
+                onClick={onPrevPageClick}
+                size="medium"
+              />
+              <span>
+                {`${pagination?.offset + 1} - ${
                   isLastPaginationPage
                     ? pagination?.total
                     : pagination?.offset + pagination?.resultsPerPage
                 }`}{' '}
-          </span>
-          <IconButton
-            icon="arrow-right"
-            onClick={onNextPageClick}
-            disabled={isLastPaginationPage || hasLessVesselsThanAPage}
-            className={cx({ [styles.disabled]: isLastPaginationPage || hasLessVesselsThanAPage })}
-            size="medium"
-          />
+              </span>
+              <IconButton
+                icon="arrow-right"
+                onClick={onNextPageClick}
+                disabled={isLastPaginationPage || hasLessVesselsThanAPage}
+                className={cx({
+                  [styles.disabled]: isLastPaginationPage || hasLessVesselsThanAPage,
+                })}
+                size="medium"
+              />
+            </Fragment>
+          )}
         </div>
         <div>
           <span>
