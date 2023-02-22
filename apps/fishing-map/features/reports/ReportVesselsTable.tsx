@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { CSVLink } from 'react-csv'
+import { Fragment } from 'react'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
 import { DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
@@ -13,6 +14,7 @@ import { selectUrlTimeRange } from 'routes/routes.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
+import { selectReportVesselFilter } from 'features/app/app.selectors'
 import {
   ReportVesselWithDatasets,
   selectReportVesselsListWithAllInfo,
@@ -33,6 +35,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
   const allVessels = useSelector(selectReportVesselsListWithAllInfo)
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const vessels = useSelector(selectReportVesselsPaginated)
+  const reportVesselFilter = useSelector(selectReportVesselFilter)
   const pagination = useSelector(selectReportVesselsPagination)
   const vesselsInWorkspace = useSelector(selectActiveTrackDataviews)
   const { start, end } = useSelector(selectUrlTimeRange)
@@ -69,7 +72,9 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
     dispatchQueryParams({ reportVesselPage: pagination.page + 1 })
   }
 
-  const isLastPaginationPage = pagination?.offset + pagination?.results >= pagination?.total
+  const hasLessVesselsThanAPage =
+    pagination.page === 0 && pagination?.resultsNumber < pagination?.resultsPerPage
+  const isLastPaginationPage = pagination?.offset + pagination?.resultsPerPage >= pagination?.total
   return (
     <div>
       <div className={styles.tableContainer}>
@@ -82,7 +87,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
               <th>{t('vessel.gearType_short', 'gear')}</th>
               {/* Disabled for detections to allocate some space for timestamps interaction */}
               <th className={styles.right}>
-                {activityUnit === 'hours'
+                {activityUnit === 'hour'
                   ? t('common.hour_other', 'hours')
                   : t('common.detection_other', 'detections')}
               </th>
@@ -134,7 +139,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                     {t(`vessel.gearTypes.${vessel.geartype}` as any, EMPTY_FIELD_PLACEHOLDER)}
                   </td>
                   <td colSpan={1} className={cx(styles.columnSpace, styles.right)}>
-                    <I18nNumber number={vessel[activityUnit]} />
+                    <I18nNumber number={vessel[`${activityUnit}s`]} />
                   </td>
                 </tr>
               )
@@ -151,19 +156,30 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
             onClick={onPrevPageClick}
             size="medium"
           />
-          <span>{`${pagination?.offset + 1} - ${
-            isLastPaginationPage ? pagination?.total : pagination?.offset + pagination?.results
-          }`}</span>
+          <span>
+            {hasLessVesselsThanAPage
+              ? pagination?.offset + 1
+              : `${pagination?.offset + 1} - ${
+                  isLastPaginationPage
+                    ? pagination?.total
+                    : pagination?.offset + pagination?.resultsPerPage
+                }`}{' '}
+          </span>
           <IconButton
             icon="arrow-right"
             onClick={onNextPageClick}
-            disabled={isLastPaginationPage}
-            className={cx({ [styles.disabled]: isLastPaginationPage })}
+            disabled={isLastPaginationPage || hasLessVesselsThanAPage}
+            className={cx({ [styles.disabled]: isLastPaginationPage || hasLessVesselsThanAPage })}
             size="medium"
           />
         </div>
         <div>
           <span>
+            {reportVesselFilter && (
+              <Fragment>
+                <I18nNumber number={vessels?.length} /> {t('common.of', 'of')}{' '}
+              </Fragment>
+            )}
             <I18nNumber number={pagination?.total} />{' '}
             {t('common.vessel', { count: pagination?.total })}
           </span>

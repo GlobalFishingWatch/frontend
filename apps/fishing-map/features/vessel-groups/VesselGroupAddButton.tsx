@@ -49,7 +49,7 @@ function VesselGroupAddButton({
         id: (vessel as VesselWithDatasets)?.id || (vessel as ReportVesselWithDatasets)?.vesselId,
         dataset:
           (vessel as VesselWithDatasets)?.dataset?.id ||
-          (vessel as ReportVesselWithDatasets)?.infoDataset.id,
+          (vessel as ReportVesselWithDatasets)?.infoDataset?.id,
       }))
       if (vesselsWithDataset?.length) {
         batch(() => {
