@@ -5,6 +5,7 @@ import { APIPagination, ReportVesselsByDataset } from '@globalfishingwatch/api-t
 import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { getUTCDateTime } from 'utils/dates'
+import { TemporalResolution } from 'features/download/downloadActivity.config'
 import { DateRange } from '../download/downloadActivity.slice'
 
 interface ReportState {
@@ -23,7 +24,6 @@ type ReportRegion = {
   id: number
 }
 
-type TemporalResolution = 'daily' | 'monthly' | 'yearly' | 'entire'
 type FetchReportVesselsThunkParams = {
   region: ReportRegion
   datasets: string[]
