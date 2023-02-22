@@ -1,5 +1,6 @@
 import React, { useRef, forwardRef, useImperativeHandle, Ref } from 'react'
 import cx from 'classnames'
+import { IconButton } from '../icon-button'
 import { Icon } from '../icon'
 import { Spinner } from '../spinner'
 import styles from './InputText.module.css'
@@ -18,6 +19,7 @@ type InputTextProps = React.InputHTMLAttributes<HTMLInputElement> & {
   inputSize?: InputSize
   inputKey?: string
   loading?: boolean
+  onCleanButtonClick?: (e: React.MouseEvent<Element>) => void
 }
 
 const defaultKey = Date.now().toString()
@@ -33,6 +35,7 @@ function InputTextComponent(props: InputTextProps, forwardedRef: Ref<HTMLInputEl
     inputSize = 'default',
     inputKey = defaultKey,
     loading = false,
+    onCleanButtonClick,
     ...rest
   } = props
   const inputRef = useRef<HTMLInputElement>(null)
@@ -53,6 +56,14 @@ function InputTextComponent(props: InputTextProps, forwardedRef: Ref<HTMLInputEl
       )}
       <input className={styles.input} key={inputKey} ref={inputRef} type={type} {...inputProps} />
       {loading && <Spinner size="tiny" className={styles.spinner} />}
+      {!loading && onCleanButtonClick && inputProps.value && (
+        <IconButton
+          icon="delete"
+          size="medium"
+          className={styles.delete}
+          onClick={onCleanButtonClick}
+        />
+      )}
       {!loading && (type === 'email' || type === 'search') && (
         <Icon
           icon={type}

@@ -12,7 +12,7 @@
     "disclaimer": "The data shown above should be taken as an estimate. <1>Find out more about Global Fishing Watch analysis tools and methods.</1>",
     "disclaimerReport": "Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.",
     "download": "Download report",
-    "downloadVesselsList": "Download list",
+    "downloadVesselsList": "Download csv",
     "downloadLogin": "You need to login to download a report",
     "empty": "Your selected datasets will appear here",
     "error": "There was a problem loading the data, please try refreshing the page",
@@ -553,7 +553,7 @@
     "widthRange": "Width range"
   },
   "vesselGroup": {
-    "add": "Add to vessel group",
+    "add": "Add to group",
     "confirmAbort": "You will lose any changes made in this vessel group. Are you sure?",
     "confirmRemove": "Are you sure you want to permanently delete this vessel group?",
     "createNewGroup": "Create new group",

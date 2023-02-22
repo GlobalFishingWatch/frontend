@@ -162,7 +162,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                 onClick={onPrevPageClick}
                 size="medium"
               />
-              <span>
+              <span className={styles.noWrap}>
                 {`${pagination?.offset + 1} - ${
                   isLastPaginationPage
                     ? pagination?.total
@@ -182,10 +182,10 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
           )}
         </div>
         <div>
-          <span>
+          <span className={styles.noWrap}>
             {reportVesselFilter && (
               <Fragment>
-                <I18nNumber number={vessels?.length} /> {t('common.of', 'of')}{' '}
+                <I18nNumber number={allFilteredVessels?.length} /> {t('common.of', 'of')}{' '}
               </Fragment>
             )}
             <I18nNumber number={pagination?.total} />{' '}
@@ -195,13 +195,15 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
             vessels={reportVesselFilter ? allFilteredVessels : allVessels}
             showCount={false}
           />
-          {downloadVessels?.length > 0 && (
-            <CSVLink filename={`${reportName}-${start}-${end}.csv`} data={downloadVessels}>
-              <Button className={styles.footerButton}>
-                {t('analysis.downloadVesselsList', 'Download list')}
-              </Button>
-            </CSVLink>
-          )}
+          <Button className={styles.footerButton} disabled={!downloadVessels?.length}>
+            {downloadVessels?.length ? (
+              <CSVLink filename={`${reportName}-${start}-${end}.csv`} data={downloadVessels}>
+                {t('analysis.downloadVesselsList', 'Download csv')}
+              </CSVLink>
+            ) : (
+              t('analysis.downloadVesselsList', 'Download csv')
+            )}
+          </Button>
         </div>
       </div>
     </div>

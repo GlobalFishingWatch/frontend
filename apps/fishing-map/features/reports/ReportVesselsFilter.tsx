@@ -17,8 +17,9 @@ export default function ReportVesselsFilter(props: ReportVesselsFilterProps) {
   const [debouncedQuery] = useDebounce(query, 200)
 
   useEffect(() => {
-    dispatchQueryParams({ reportVesselFilter: debouncedQuery })
-  }, [debouncedQuery, dispatchQueryParams])
+    dispatchQueryParams({ reportVesselFilter: debouncedQuery, reportVesselPage: 0 })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedQuery])
 
   return (
     <div className={styles.inputContainer}>
@@ -30,6 +31,7 @@ export default function ReportVesselsFilter(props: ReportVesselsFilterProps) {
           'Filter vessels by name, mmsi, flag states or gear type'
         )}
         onChange={(e) => setQuery(e.target.value)}
+        onCleanButtonClick={() => setQuery('')}
         className={styles.input}
       />
     </div>
