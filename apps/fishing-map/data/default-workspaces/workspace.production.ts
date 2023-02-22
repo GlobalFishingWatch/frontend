@@ -15,7 +15,6 @@ import {
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
   GRATICULES_DATAVIEW_SLUG,
   FAO_AREAS_DATAVIEW_SLUG,
-  SAR_DATAVIEW_SLUG,
   MPA_DATAVIEW_INSTANCE_ID,
   EEZ_DATAVIEW_INSTANCE_ID,
   BASEMAP_LABELS_DATAVIEW_SLUG,
@@ -91,7 +90,7 @@ const workspace: Workspace<WorkspaceState> = {
     },
     {
       id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
-      dataviewId: SAR_DATAVIEW_SLUG,
+      dataviewId: null,
       config: {
         visible: false,
       },
