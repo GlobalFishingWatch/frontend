@@ -164,6 +164,10 @@ export const selectReportVesselsList = createSelector(
   }
 )
 
+export const selectHasReportVessels = createSelector([selectReportVesselsList], (vessels) => {
+  return vessels?.length > 0
+})
+
 export const selectReportVesselsListWithAllInfo = createSelector(
   [selectReportActivityFlatten],
   (vessels) => {

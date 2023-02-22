@@ -4,12 +4,8 @@ import { DEFAULT_CONTEXT_SOURCE_LAYER, Interval } from '@globalfishingwatch/laye
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import {
-  selectLocationDatasetId,
-  selectLocationAreaId,
-  selectUrlTimeRange,
-} from 'routes/routes.selectors'
-import { selectActiveReportDataviews, selectReportAreaSource } from 'features/app/app.selectors'
+import { selectLocationDatasetId, selectLocationAreaId } from 'routes/routes.selectors'
+import { selectActiveReportDataviews, selectTimeRange } from 'features/app/app.selectors'
 import { getActiveDatasetsInActivityDataviews } from 'features/datasets/datasets.utils'
 import {
   fetchAreaDetailThunk,
@@ -81,7 +77,7 @@ export const REPORT_TEMPORAL_RESOLUTIONS: Record<Interval, TemporalResolution> =
 
 export function useFetchReportVessel() {
   const dispatch = useAppDispatch()
-  const timerange = useSelector(selectUrlTimeRange)
+  const timerange = useSelector(selectTimeRange)
   const datasetId = useSelector(selectLocationDatasetId)
   const areaId = useSelector(selectLocationAreaId)
   const dataviews = useSelector(selectActiveReportDataviews)

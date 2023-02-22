@@ -10,11 +10,10 @@ import { getVesselDataviewInstance, getVesselInWorkspace } from 'features/datavi
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectUrlTimeRange } from 'routes/routes.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
-import { selectReportVesselFilter } from 'features/app/app.selectors'
+import { selectReportVesselFilter, selectTimeRange } from 'features/app/app.selectors'
 import {
   ReportVesselWithDatasets,
   selectReportDownloadVessels,
@@ -42,7 +41,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
   const reportVesselFilter = useSelector(selectReportVesselFilter)
   const pagination = useSelector(selectReportVesselsPagination)
   const vesselsInWorkspace = useSelector(selectActiveTrackDataviews)
-  const { start, end } = useSelector(selectUrlTimeRange)
+  const { start, end } = useSelector(selectTimeRange)
 
   const onVesselClick = (
     ev: React.MouseEvent<Element, MouseEvent>,
@@ -79,6 +78,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
   const hasLessVesselsThanAPage =
     pagination.page === 0 && pagination?.resultsNumber < pagination?.resultsPerPage
   const isLastPaginationPage = pagination?.offset + pagination?.resultsPerPage >= pagination?.total
+
   return (
     <div>
       <div className={styles.tableContainer}>

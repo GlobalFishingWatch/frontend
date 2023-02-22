@@ -2,8 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 // import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import { selectUrlTimeRange } from 'routes/routes.selectors'
-import { selectActiveReportDataviews } from 'features/app/app.selectors'
+import { selectActiveReportDataviews, selectTimeRange } from 'features/app/app.selectors'
 import ReportSummaryTags from 'features/reports/ReportSummaryTags'
 import { FIELDS, getCommonProperties } from 'features/reports/reports.utils'
 import { ReportActivityUnit } from 'features/reports/Report'
@@ -17,7 +16,7 @@ type ReportSummaryProps = {
 
 export default function ReportSummary({ activityUnit }: ReportSummaryProps) {
   const { t } = useTranslation()
-  const timerange = useSelector(selectUrlTimeRange)
+  const timerange = useSelector(selectTimeRange)
   const reportVessels = useSelector(selectReportVesselsNumber)
   const reportHours = useSelector(selectReportVesselsHours)
   const dataviews = useSelector(selectActiveReportDataviews)
@@ -34,8 +33,8 @@ export default function ReportSummary({ activityUnit }: ReportSummaryProps) {
       count: Math.floor(reportHours),
     }),
     activityType: datasetTitle,
-    start: formatI18nDate(timerange.start),
-    end: formatI18nDate(timerange.end),
+    start: formatI18nDate(timerange?.start),
+    end: formatI18nDate(timerange?.end),
   })
   return (
     <div className={styles.container}>

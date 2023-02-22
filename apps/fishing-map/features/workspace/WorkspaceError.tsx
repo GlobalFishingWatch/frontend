@@ -2,6 +2,7 @@ import { Fragment, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Button } from '@globalfishingwatch/ui-components'
+import { isAuthError } from '@globalfishingwatch/api-client'
 import { selectWorkspaceError } from 'features/workspace/workspace.selectors'
 import { isGuestUser, logoutUserThunk, selectUserData } from 'features/user/user.slice'
 import { selectWorkspaceId } from 'routes/routes.selectors'
@@ -81,12 +82,7 @@ function WorkspaceError(): React.ReactElement {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const workspaceId = useSelector(selectWorkspaceId)
-  if (
-    error.status === 401 ||
-    error.status === 403 ||
-    vesselGroupsError?.status === 401 ||
-    vesselGroupsError?.status === 403
-  ) {
+  if (isAuthError(error) || isAuthError(vesselGroupsError)) {
     return (
       <WorkspaceLoginError
         title={t('errors.privateView', 'This is a private view')}
