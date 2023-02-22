@@ -98,6 +98,7 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
@@ -518,8 +519,8 @@
     }
   },
   "private-indonesia-aruna-fishing-effort": {
-    "name": "Aruna Indonesia Pelagic",
-    "description": "Indonesia Aruna Fishing Effort Public Data",
+    "name": "Aruna: Indonesia Pelagic",
+    "description": "Indonesia Aruna Fishing Effort",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -529,17 +530,17 @@
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
-          "set longline": "set longline",
           "traps": "traps",
           "purse seine": "purse seine",
           "Handline": "Handline"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "private-indonesia-aruna-presence": {
-    "name": "Aruna",
+    "name": "Aruna: Indonesia Pelagic",
     "description": "Aruna Presence",
     "schema": {
       "lat": "lat",
@@ -550,7 +551,6 @@
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
-          "set longline": "set longline",
           "traps": "traps",
           "purse seine": "purse seine",
           "Handline": "Handline"
@@ -614,7 +614,7 @@
   },
   "private-indonesia-ipnlf-fishing-effort": {
     "name": "AP2HI-IPNLF: Indonesia Pelagic",
-    "description": "Indonesia AP2HI-IPNLF Fishing Effort Public Data",
+    "description": "Indonesia AP2HI-IPNLF Fishing Effort",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -624,18 +624,18 @@
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
-          "set longline": "set longline",
           "traps": "traps",
           "purse seine": "purse seine",
           "Handline": "Handline"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "private-indonesia-ipnlf-presence": {
-    "name": "IPNLF",
-    "description": "IPNLF Presence",
+    "name": "AP2HI-IPNLF: Indonesia Pelagic",
+    "description": "AP2HI-IPNLF Presence",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -645,7 +645,6 @@
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
-          "set longline": "set longline",
           "traps": "traps",
           "purse seine": "purse seine",
           "Handline": "Handline"
@@ -669,29 +668,8 @@
       "firstTransmissionDate": "firstTransmissionDate"
     }
   },
-  "private-indonesia-pelagic-fishing-effort": {
-    "name": "Indonesia Pelagic",
-    "description": "Indonesia Pelagic Fishing Effort Private Data",
-    "schema": {
-      "lat": "lat",
-      "lon": "lon",
-      "flag": "flag",
-      "geartype": {
-        "keyword": "geartype",
-        "enum": {
-          "gillnets": "gillnets",
-          "longline": "longline",
-          "set longline": "set longline",
-          "traps": "traps",
-          "purse seine": "purse seine",
-          "Handline": "Handline"
-        }
-      },
-      "vessel_id": "vessel_id"
-    }
-  },
   "private-indonesia-pelagic-presence": {
-    "name": "Pelagic",
+    "name": "Indonesia Pelagic",
     "description": "Pelagic Presence",
     "schema": {
       "lat": "lat",
@@ -702,7 +680,6 @@
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
-          "set longline": "set longline",
           "traps": "traps",
           "purse seine": "purse seine",
           "Handline": "Handline"
@@ -759,7 +736,7 @@
   },
   "private-indonesia-rare-fishing-effort": {
     "name": "Rare: Indonesia Pelagic",
-    "description": "Indonesia Rare Fishing Effort Public Data",
+    "description": "Indonesia Rare Fishing Effort",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -769,17 +746,17 @@
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
-          "set longline": "set longline",
           "traps": "traps",
           "purse seine": "purse seine",
           "Handline": "Handline"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "private-indonesia-rare-presence": {
-    "name": "Rare",
+    "name": "Rare: Indonesia Pelagic",
     "description": "Rare Presence",
     "schema": {
       "lat": "lat",
@@ -790,7 +767,6 @@
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
-          "set longline": "set longline",
           "traps": "traps",
           "purse seine": "purse seine",
           "Handline": "Handline"
@@ -815,7 +791,7 @@
     }
   },
   "private-indonesia-zebrax-presence": {
-    "name": "Zebrax",
+    "name": "Indonesia Zebrax (Private)",
     "description": "Zebra X Presence",
     "schema": {
       "lat": "lat",
@@ -912,6 +888,23 @@
       "veselType": "veselType",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
+  "private-panama-presence": {
+    "name": "Vessel Presence Panama VMS",
+    "description": "This layer uses the Vessel Monitoring System (VMS) data provided by the Panamanian Authority of Aquatic Resources (ARAP). The data is received by Panama’s VMS system via satellite and contains vessel identities, gear type, location, speed, direction and more. Each point in the carrier vessel data layer represents a position of the carriers, but not all positions are displayed. Carrier vessel positions are displayed once per day. Click on a carrier vessel’s position to view the vessel’s complete track.",
+    "schema": {
+      "flag": "flag",
+      "shiptype": {
+        "keyword": "shiptype",
+        "enum": {
+          "carrier": "carrier",
+          "fishing": "fishing",
+          "oil_tanker": "oil_tanker"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "private-peru-fishing-effort": {
@@ -1149,6 +1142,7 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
@@ -1172,11 +1166,6 @@
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
     }
-  },
-  "public-benthic-1638352102079": {
-    "name": "Coral reefs - benthic features (Source: ACA)",
-    "description": "The Allen Coral Atlas is a global-scale coral reef habitat mapping project that uses Planet Dove 3.7 m resolution daily satellite imagery (in combination with wave models and ecological data) to create consistent and high-detail global habitat maps to support reef-related science and conservation.  Global Benthic Habitat Maps characterise different coral reef bottom types. These bottom types include communities of living organisms attached to the reef (benthos), as well as sediments and underlying substrate.  Visit allencoralatlas.org for a short description of six global benthic habitat classes.  Allen Coral Atlas maps, bathymetry and map statistics​ are ​© 2020 Allen Coral Atlas Partnership and Vulcan, Inc. and ​are ​licensed CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)  © 2020 Allen Coral Atlas Partnership and Vulcan, Inc. Benthic maps. Available from: allencoralatlas.org.  Data downloaded from Allen Coral Atlas (allencoralatlas.org) - December, 2021",
-    "schema": {}
   },
   "public-bra-onyxsat-fishing-effort": {
     "name": "Brazil VMS",
@@ -1523,11 +1512,11 @@
   },
   "public-eez-areas": {
     "name": "EEZs",
-    "description": "Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org",
+    "description": "Exclusive economic zones (EEZs) extend up to 200 nautical miles from a country's coast. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org.",
     "schema": {}
   },
   "public-eez-areas-12nm": {
-    "name": "EEZs 12nm",
+    "name": "EEZ (marineregions.org)",
     "description": "Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org",
     "schema": {}
   },
@@ -1553,62 +1542,13 @@
   },
   "public-fao-major": {
     "name": "FAO major fishing areas",
-    "description": "FAO Major Fishing Areas for Statistical Purposes are arbitrary areas, the boundaries of which were determined in consultation with international fishery agencies on various considerations, including (i) the boundary of natural regions and the natural divisions of oceans and seas; (ii) the boundaries of adjacent statistical fisheries bodies already established in inter-governmental conventions and treaties; (iii) existing national practices; (iv) national boundaries; (v) the longitude and latitude grid system; (vi) the distribution of the aquatic fauna; and (vii) the distribution of the resources and the environmental conditions within an area.",
-    "schema": {
-      "FID": "FID"
-    }
+    "description": "FAO major fishing areas for statistical purposes are arbitrary areas, the boundaries of which were determined in consultation with international fishery agencies. The major fishing areas, inland and marine, are listed below by two-digit codes and their names. To access maps and description of boundaries of each fishing area click on the relevant item in the list below or in the map showing the 19 major marine fishing areas. <a href='https://www.fao.org/fishery/en/area/search' target='_blank'>Source</a>. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer",
+    "schema": {}
   },
   "public-fisheries-restricted-areas": {
     "name": "Fisheries Restricted Areas",
     "description": "",
     "schema": {}
-  },
-  "public-geomorphic-1638352077553": {
-    "name": "Coral reefs - geomorphic features (Source: ACA)",
-    "description": "The Allen Coral Atlas is a global-scale coral reef habitat mapping project that is using Planet Dove 3.7m resolution daily satellite imagery (in combination with wave models and ecological data) to create consistent global coral reef habitat maps with the purpose of supporting science and conservation.  Visit allencoralatlas.org for a short description of 12 shallow coral reef internal structure geomorphic mapping categories.  Allen Coral Atlas maps, bathymetry and map statistics​ are ​© 2020 Allen Coral Atlas Partnership and Vulcan, Inc. and ​are ​licensed CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)  © 2020 Allen Coral Atlas Partnership and Vulcan, Inc. Geomorphic maps. Available from: allencoralatlas.org.  Data downloaded from Allen Coral Atlas (allencoralatlas.org) - December, 2021",
-    "schema": {}
-  },
-  "public-global-all-vessels": {
-    "name": "AIS (All Vessels)",
-    "description": "Vessels from AIS",
-    "schema": {
-      "id": "id",
-      "imo": "imo",
-      "flag": "flag",
-      "mmsi": "mmsi",
-      "source": "source",
-      "dataset": "dataset",
-      "callsign": "callsign",
-      "geartype": {
-        "keyword": "geartype",
-        "enum": {
-          "tuna_purse_seines": "tuna_purse_seines",
-          "driftnets": "driftnets",
-          "trollers": "trollers",
-          "set_longlines": "set_longlines",
-          "purse_seines": "purse_seines",
-          "pots_and_traps": "pots_and_traps",
-          "other_fishing": "other_fishing",
-          "dredge_fishing": "dredge_fishing",
-          "set_gillnets": "set_gillnets",
-          "fixed_gear": "fixed_gear",
-          "trawlers": "trawlers",
-          "fishing": "fishing",
-          "seiners": "seiners",
-          "other_purse_seines": "other_purse_seines",
-          "other_seines": "other_seines",
-          "squid_jigger": "squid_jigger",
-          "pole_and_line": "pole_and_line",
-          "drifting_longlines": "drifting_longlines"
-        }
-      },
-      "msgCount": "msgCount",
-      "posCount": "posCount",
-      "shipname": "shipname",
-      "normalized_shipname": "normalized_shipname",
-      "lastTransmissionDate": "lastTransmissionDate",
-      "firstTransmissionDate": "firstTransmissionDate"
-    }
   },
   "public-global-carrier-vessels": {
     "name": "AIS (Carrier Vessels)",
@@ -1633,6 +1573,26 @@
   "public-global-encounters-events-carriers-fishing": {
     "name": "Encounter Events for Carriers-Fishing Vessels (AIS)",
     "description": "The dataset contains encounter events for AIS (Carriers-Fishing)",
+    "schema": {
+      "fields": "fields",
+      "event_id": "event_id",
+      "event_end": "event_end",
+      "vessel_id": "vessel_id",
+      "event_info": "event_info",
+      "event_type": {
+        "keyword": "event_type",
+        "enum": {
+          "port": "port"
+        }
+      },
+      "event_start": "event_start",
+      "event_vessels": "event_vessels",
+      "event_mean_position": "event_mean_position"
+    }
+  },
+  "public-global-encounters-events": {
+    "name": "Encounter Events. (AIS)",
+    "description": "The dataset contains encounter events for AIS. [Fishing-Carriers, Carriers-Fishing, Support-Fishing, Fishing-Support]",
     "schema": {
       "fields": "fields",
       "event_id": "event_id",
@@ -1722,6 +1682,26 @@
       "normalized_shipname": "normalized_shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
+  "public-global-loitering-events": {
+    "name": "Loitering Events (AIS)",
+    "description": "The dataset contains loitering events for AIS",
+    "schema": {
+      "fields": "fields",
+      "event_id": "event_id",
+      "event_end": "event_end",
+      "vessel_id": "vessel_id",
+      "event_info": "event_info",
+      "event_type": {
+        "keyword": "event_type",
+        "enum": {
+          "port": "port"
+        }
+      },
+      "event_start": "event_start",
+      "event_vessels": "event_vessels",
+      "event_mean_position": "event_mean_position"
     }
   },
   "public-global-presence": {
@@ -1840,8 +1820,8 @@
     "schema": {}
   },
   "public-graticules": {
-    "name": "Graticules",
-    "description": "Grids at 1, 5, 10, and 30° intervals. <a href='https://www.naturalearthdata.com/downloads/110m-physical-vectors/110m-graticules' target='_blank'>Source</a>",
+    "name": "Latitude longitude grids",
+    "description": "Grids or graticules of latitude and longitude at 1, 5, 10 and 30° intervals depending on the zoom level of the map (Source: <a href='https://www.naturalearthdata.com/downloads/110m-physical-vectors/110m-graticules/'_blank'>Natural Earth</a>).",
     "schema": {}
   },
   "public-gs-as-simplified": {
@@ -1861,7 +1841,7 @@
   },
   "public-high-seas-pockets": {
     "name": "High seas pockets",
-    "description": "This data set is derived from the Marine Regions high-seas data set by extracting just the polygons corresponding to the 15 high seas pockets that GFW has labeled from HSP-1 to HSP-15.   Note that HSP-15 is split across the anti-meridian, so it appears in two pieces that have the same label.   Naming of the pockets is consistent with the naming that WCPFC uses to identify HSP 1-4.",
+    "description": "This data set is derived from the Marine Regions high-seas data set by extracting just the polygons corresponding to the 15 high seas pockets that GFW has labeled from HSP-1 to HSP-15.   Note that HSP-15 is split across the anti-meridian, so it appears in two pieces that have the same label.   Naming of the pockets is consistent with the naming that WCPFC uses to identify HSP 1-4. ",
     "schema": {}
   },
   "public-indonesia-fishing-effort": {
@@ -1914,12 +1894,12 @@
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
-          "set longline": "set longline",
           "traps": "traps",
           "purse seine": "purse seine",
           "Handline": "Handline"
         }
-      }
+      },
+      "vessel-groups": "vessel-groups"
     }
   },
   "public-indonesia-pelagic-presence": {
@@ -1934,7 +1914,6 @@
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
-          "set longline": "set longline",
           "traps": "traps",
           "purse seine": "purse seine",
           "Handline": "Handline"
@@ -1945,7 +1924,7 @@
     }
   },
   "public-indonesia-zebrax-presence": {
-    "name": "Zebrax",
+    "name": "Indonesia Zebrax",
     "description": "Zebra X Presence",
     "schema": {
       "lat": "lat",
@@ -1971,7 +1950,7 @@
   },
   "public-mediterranean-area-of-interest-1": {
     "name": "Area of Interest",
-    "description": "Area of Interest",
+    "description": "",
     "schema": {}
   },
   "public-mexico-fishing-effort": {
@@ -2036,17 +2015,17 @@
   },
   "public-mpa-all": {
     "name": "MPAs",
-    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: March 2022.",
+    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: November 2022. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer.",
     "schema": {}
   },
   "public-mpa-no-take": {
-    "name": "MPAs No Take (Source: WDPA)",
-    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: March 2022.",
+    "name": "MPAs - No take",
+    "description": "The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. No Take layer was created using the data available from the Marine Protected Planet WDPA using the filter NO_TAKE = 'All'. Source: World Database on Protected Areas (WDPA)",
     "schema": {}
   },
   "public-mpa-no-take-partial": {
-    "name": "MPAs No Take Partial",
-    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: March 2022.",
+    "name": "MPAs - No take Partial",
+    "description": "The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. Source: World Database on Protected Areas (WDPA)",
     "schema": {}
   },
   "public-mpa-restricted": {
@@ -2058,26 +2037,6 @@
     "name": "Marine Protection Zone",
     "description": "90% of EEZ",
     "schema": {}
-  },
-  "public-norway-fishing-effort": {
-    "name": "Norway VMS",
-    "description": "Description pending",
-    "schema": {
-      "lat": "lat",
-      "lon": "lon",
-      "flag": {
-        "keyword": "flag",
-        "enum": {
-          "NOR": "NOR"
-        }
-      },
-      "hours": "hours",
-      "vessel_id": "vessel_id",
-      "elevation_m": "elevation_m",
-      "vessel-groups": "vessel-groups",
-      "distance_from_port_m": "distance_from_port_m",
-      "distance_from_shore_m": "distance_from_shore_m"
-    }
   },
   "public-panama-fishing-effort": {
     "name": "Panama VMS",
@@ -2381,18 +2340,18 @@
     }
   },
   "public-rfmo": {
-    "name": "FAO",
-    "description": "RFMO stands for Regional Fishery Management Organization. These organizations are international organizations formed by countries with a shared interest in managing or conserving an area’s fish stock. Some RFMOs manage all the fish stocks found in a specific area, while others focus on particular highly migratory species, notably tuna, throughout vast geographical areas. The RFMO Layer on the Global Fishing Watch map currently includes the five tuna RFMOs.",
+    "name": "RFMO",
+    "description": "Regional fisheries management organizations (RFMOs) are international bodies formed by countries with a shared interest in managing or conserving fish stocks in a particular region. Some manage all the fish stocks found in a given area, while others focus on specific highly migratory species, notably tuna. The regional fisheries management organization on the Global Fishing Watch map currently includes the five tuna regional fisheries management organizations. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer.",
     "schema": {}
   },
   "public-tristan-seamounts-200-1618586314138": {
     "name": "Depth: -200 m",
-    "description": "Depth: -200 m",
+    "description": "",
     "schema": {}
   },
   "public-tristan-seamounts-3000-1618586349746": {
     "name": "Depth: -3000 m",
-    "description": "Depth: -3000 m",
+    "description": "",
     "schema": {}
   },
   "public-tristan-seamounts-existing-1618586378121": {
