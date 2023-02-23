@@ -29,7 +29,6 @@ const MapWrapper = (): React.ReactElement => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [fourwingsLayer, contextLayer, vesselsLayer, fourwingsLoaded, basemapLayer]
   )
-
   const onClick = useCallback(
     (info: PickingInfo) => {
       const features = deckRef?.current?.pickMultipleObjects({
@@ -107,6 +106,10 @@ const MapWrapper = (): React.ReactElement => {
         ref={deckRef}
         views={mapView}
         layers={layers}
+        glOptions={{
+          powerPreference: 'high-performance',
+          antialias: false,
+        }}
         // This avoids performing the default picking
         // since we are handling it through pickMultipleObjects
         // discussion for reference https://github.com/visgl/deck.gl/discussions/5793
@@ -117,7 +120,7 @@ const MapWrapper = (): React.ReactElement => {
         onHover={onHover}
         onViewStateChange={onViewportStateChange}
         // this experimental prop reduces memory usage
-        _typedArrayManagerProps={{ overAlloc: 1, poolSize: 0 }}
+        _typedArrayManagerProps={{ overAlloc: 1, poolSize: 2 }}
       />
       {hoveredFeatures && hoveredFeatures.length > 0 && <InfoTooltip features={hoveredFeatures} />}
       {clickedFeatures && clickedFeatures.length > 0 && (

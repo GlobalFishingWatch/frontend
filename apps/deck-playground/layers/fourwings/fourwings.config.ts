@@ -72,7 +72,7 @@ export type Chunk = {
   end: number
 }
 
-export const CHUNKS_BUFFER = 0
+export const CHUNKS_BUFFER = 5
 // TODO: validate if worth to make this dynamic for the playback
 // export const getChunksByInterval = (start: number, end: number, interval: Interval): Chunk[] => {
 //   const intervalUnit = LIMITS_BY_INTERVAL[interval]?.unit

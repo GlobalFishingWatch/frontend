@@ -3,7 +3,7 @@ import { AppProps } from 'next/app'
 import { FpsView } from 'react-fps'
 import MemoryStatsComponent from 'next-react-memory-stats'
 import { RecoilURLSyncJSONNext } from 'recoil-sync-next'
-import { RecoilRoot } from 'recoil'
+import { RecoilRoot, useRecoilSnapshot } from 'recoil'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import dynamic from 'next/dynamic'
 import { SplitView } from '@globalfishingwatch/ui-components'
@@ -50,6 +50,18 @@ const Timebar = dynamic(
     ssr: false,
   }
 )
+
+function DebugObserver(): any {
+  const snapshot = useRecoilSnapshot()
+  useEffect(() => {
+    console.debug('The following atoms were modified:')
+    for (const node of snapshot.getNodes_UNSTABLE({ isModified: true })) {
+      console.debug(node.key, snapshot.getLoadable(node))
+    }
+  }, [snapshot])
+
+  return null
+}
 
 function CustomApp({ Component, pageProps }: AppProps) {
   const [showFps, setShowFps] = useState(false)

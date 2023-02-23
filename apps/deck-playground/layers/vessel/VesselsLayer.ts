@@ -4,6 +4,7 @@ import { VesselLayer, VesselLayerProps } from 'layers/vessel/VesselLayer'
 export type VesselsLayerProps = { ids: string[] } & VesselLayerProps
 
 export class VesselsLayer extends CompositeLayer<VesselsLayerProps> {
+  static layerName = 'VesselsLayer'
   layers = this.props.ids.map(
     (id) =>
       new VesselLayer({

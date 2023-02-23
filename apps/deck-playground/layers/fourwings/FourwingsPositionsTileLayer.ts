@@ -71,6 +71,11 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     }
   }
 
+  finalizeState(extension) {
+    console.log(extension)
+    delete this.state
+  }
+
   getColorRamp(positions: Feature[]) {
     if (positions?.length > 0) {
       const hours = positions.map((d) => d?.properties?.value).filter(Number)

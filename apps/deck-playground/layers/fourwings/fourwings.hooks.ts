@@ -1,5 +1,5 @@
 import { getFourwingsMode } from 'layers/fourwings/fourwings.utils'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { PickingInfo } from '@deck.gl/core/typed'
 import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
 import { useAtomValue } from 'jotai'
@@ -8,6 +8,7 @@ import { hoveredFeaturesAtom, clickedFeaturesAtom } from 'features/map/map-picki
 import { useTimerange } from 'features/timebar/timebar.hooks'
 import { useViewport } from 'features/map/map-viewport.hooks'
 import { useMapLayers } from 'features/map/layers.hooks'
+import { roundZoom } from 'utils/layers'
 import { FourwingsLayer, FourwingsLayerMode } from './FourwingsLayer'
 import { FourwingsSublayer } from './fourwings.types'
 
@@ -83,7 +84,6 @@ export function useFourwingsLayer() {
   const { viewState } = useViewport()
   const activityMode: FourwingsLayerMode = getFourwingsMode(viewState.zoom, timerange)
   const addVesselLayer = useAddVesselInLayer()
-
   const fourwingsMapLayer = mapLayers.find((l) => l.id === 'fourwings')
   const fourwingsMapLayerVisible = fourwingsMapLayer?.visible
   const fourwingsMapLayerResolution = fourwingsMapLayer?.resolution
@@ -117,22 +117,27 @@ export function useFourwingsLayer() {
     },
     [addVesselLayer]
   )
-
+  const currentZoom: number = useMemo(() => roundZoom(viewState.zoom), [viewState.zoom])
   useEffect(() => {
-    if (fourwingsMapLayerVisible) {
+    if (true) {
+      // is faster the hide and show if we hide the layer in FourwingsHeatmapTileLayer
+      // we just need to improve the if to know if not visible and nothing loaded, no render
       const fourwingsLayer = new FourwingsLayer({
         minFrame: startTime,
         maxFrame: endTime,
         mode: activityMode,
         debug: true,
+        currentZoom,
+        isVisible: fourwingsMapLayerVisible,
         sublayers: FOURWINGS_SUBLAYERS,
         onTileLoad: onTileLoad,
         onViewportLoad: onViewportLoad,
         onVesselHighlight: onVesselHighlight,
         onVesselClick: onVesselClick,
         resolution: fourwingsMapLayerResolution,
-        hoveredFeatures: hoveredFeatures,
-        clickedFeatures: clickedFeatures,
+        // this add lot of memory usage, so I think is better add other layers to handle this
+        //hoveredFeatures: hoveredFeatures,
+        //clickedFeatures: clickedFeatures,
       })
       setAtomProperty({ instance: fourwingsLayer })
     } else {
@@ -151,6 +156,7 @@ export function useFourwingsLayer() {
     onVesselClick,
     clickedFeatures,
     hoveredFeatures,
+    currentZoom,
   ])
 
   return instance
@@ -169,8 +175,8 @@ export function useFourwingsLayerInstance() {
 }
 
 const fourwingsLoadedAtomSelector = selector({
-  key: 'fourwingsLoadedAtomSelector',
-  dangerouslyAllowMutability: true,
+  key: 'fourwingsLoadedAtomSelector' + Math.random(),
+  dangerouslyAllowMutability: false,
   get: ({ get }) => {
     return get(fourwingsLayerAtom)?.loaded
   },

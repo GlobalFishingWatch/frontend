@@ -28,3 +28,13 @@ export function getPickedFeatureToHighlight(data, pickedFeatures: PickingInfo[])
     )
   )
 }
+
+/**
+ * This function rounds between 0.50 and avoid updates and requests just for small changes
+ *
+ * @param zoom number
+ * @returns special rounded number
+ */
+export function roundZoom(zoom: number): number {
+  return Math.round(zoom / 0.5) * 0.5
+}

@@ -14,6 +14,7 @@ export const TRACK_LAYER_PREFIX = 'track'
 export const EVENTS_LAYER_PREFIX = 'events'
 
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
+  static layerName = 'VesselLayer'
   layersLoaded: Layer[] = []
   layers: Layer[] = []
 

@@ -19,6 +19,7 @@ export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
   data: any
   cols: number
   rows: number
+  isVisible: boolean
   colorDomain?: ColorDomain
   colorRanges?: SublayerColorRanges
 }
@@ -71,6 +72,8 @@ export const getFillColor = (
 }
 
 export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
+  static layerName = 'FourwingsHeatmapLayer'
+
   renderLayers() {
     const { data, maxFrame, minFrame, rows, cols, colorDomain, colorRanges } = this.props
     if (!data || !colorDomain || !colorRanges) {
@@ -79,15 +82,23 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     const FourwingsTileCellLayerClass = this.getSubLayerClass('cell', FourwingsTileCellLayer)
     const { west, east, north, south } = this.props.tile.bbox as GeoBoundingBox
     const { start, end } = getDatesInIntervalResolution(minFrame, maxFrame)
+    console.log(this.props.visible)
+
+    var s = performance.now()
     const fourwingsLayer = new FourwingsTileCellLayerClass(
-      this.props,
+      {
+        ...this.props,
+        visible: this.props.visible,
+      },
       this.getSubLayerProps({
         id: `fourwings-tile-${this.props.tile.id}`,
         data: data,
         cols,
+        visible: this.props.isVisible,
         rows,
         pickable: true,
         stroked: false,
+        // https://deck.gl/docs/developer-guide/performance#supply-attributes-directly ???
         getFillColor: (cell) =>
           getFillColor(cell, { minFrame, maxFrame, colorDomain, colorRanges }),
         updateTriggers: {
@@ -119,6 +130,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       }),
       new TextLayer({
         id: `tile-id-${this.props.tile.id}`,
+        isVisible: this.props.visible,
         data: [
           {
             text: this.props.tile.id,
@@ -134,7 +146,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       }),
     ]
 
-    return [fourwingsLayer, ...debugLayers]
+    return [...debugLayers, fourwingsLayer]
   }
 
   getData() {

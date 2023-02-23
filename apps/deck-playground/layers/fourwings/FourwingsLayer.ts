@@ -23,6 +23,7 @@ export type FourwingsLayerProps = FourwingsPositionsTileLayerProps &
     mode: FourwingsLayerMode
     hoveredFeatures: PickingInfo[]
     clickedFeatures: PickingInfo[]
+    currentZoom: number
   }
 
 export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLayerProps> {
@@ -31,16 +32,8 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
 
   renderLayers(): Layer<{}> | LayersList {
     const mode = this.getMode()
-    this.layers =
-      mode === HEATMAP_ID
-        ? [new FourwingsHeatmapTileLayer(this.props)]
-        : [
-            new FourwingsPositionsTileLayer({
-              ...this.props,
-              clickedFeatures: this.props.clickedFeatures,
-              hoveredFeatures: this.props.hoveredFeatures,
-            }),
-          ]
+    console.log(this.props)
+    this.layers = mode === HEATMAP_ID ? [new FourwingsHeatmapTileLayer(this.props)] : undefined
     return this.layers
   }
 
