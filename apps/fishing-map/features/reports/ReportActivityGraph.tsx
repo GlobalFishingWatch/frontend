@@ -120,7 +120,7 @@ export default function ReportActivityGraph({ start, end, data }: ReportActivity
   return (
     <div className={styles.graph}>
       <ResponsiveContainer width="100%" height="100%">
-        <ComposedChart data={data} margin={graphMargin}>
+        <ComposedChart data={data.timeseries} margin={graphMargin}>
           <CartesianGrid vertical={false} />
           <XAxis
             domain={domain}
