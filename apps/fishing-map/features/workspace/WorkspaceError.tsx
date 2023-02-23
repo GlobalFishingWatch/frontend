@@ -35,7 +35,7 @@ export function WorkspaceLoginError({
   emailSubject,
 }: {
   title: string
-  emailSubject: string
+  emailSubject?: string
 }) {
   const { t } = useTranslation()
   const [logoutLoading, setLogoutLoading] = useState(false)
@@ -50,9 +50,11 @@ export function WorkspaceLoginError({
         </LocalStorageLoginLink>
       ) : (
         <Fragment>
-          <Button href={`mailto:${SUPPORT_EMAIL}?subject=${emailSubject}`}>
-            {t('errors.requestAccess', 'Request access') as string}
-          </Button>
+          {emailSubject && (
+            <Button href={`mailto:${SUPPORT_EMAIL}?subject=${emailSubject}`}>
+              {t('errors.requestAccess', 'Request access') as string}
+            </Button>
+          )}
           {userData?.email && (
             <p className={styles.logged}>
               {t('common.loggedAs', 'Logged as')} {userData.email}

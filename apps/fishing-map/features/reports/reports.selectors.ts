@@ -3,20 +3,15 @@ import { groupBy, sum, sumBy, uniq, uniqBy } from 'lodash'
 import { matchSorter } from 'match-sorter'
 import { t } from 'i18next'
 import { Dataset, DatasetTypes, ReportVessel } from '@globalfishingwatch/api-types'
-import { getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
 import {
   selectActiveReportDataviews,
-  selectReportActivityGraph,
   selectReportVesselFilter,
   selectReportVesselGraph,
   selectReportVesselPage,
-  selectTimeRange,
 } from 'features/app/app.selectors'
-import { sortStrings } from 'utils/shared'
 import { REPORT_VESSELS_PER_PAGE } from 'data/config'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
-import { REPORT_TEMPORAL_RESOLUTIONS } from 'features/reports/reports.hooks'
 import { selectLocationAreaId, selectLocationDatasetId } from 'routes/routes.selectors'
 import { selectReportVesselsData } from './reports.slice'
 
@@ -53,6 +48,7 @@ export const selectReportVesselsNumber = createSelector(
   [selectReportActivityFlatten],
   (vessels) => {
     if (!vessels?.length) return null
+
     return uniqBy(vessels, 'vesselId').length
   }
 )
@@ -62,35 +58,6 @@ export const selectReportVesselsHours = createSelector([selectReportActivityFlat
 
   return vessels.map((vessel) => vessel?.hours || 0).reduce((acc, hours) => acc + hours, 0)
 })
-
-export const selectReportActivityGraphData = createSelector(
-  [selectReportActivityGraph, selectReportVesselsData, selectActiveReportDataviews],
-  (reportGraph, reportData, heatmapDataviews) => {
-    if (!reportData?.length) return null
-
-    const dataByDataview = heatmapDataviews.map((dataview, index) => {
-      const dataviewData = Object.values(reportData[index] || []).flat()
-      const key = reportGraph === 'evolution' ? 'date' : 'date' // TODO for before/after and periodComparison
-      const dataByKey = groupBy(dataviewData, key)
-      return { id: dataview.id, data: dataByKey }
-    })
-
-    const distributionKeys = uniq(dataByDataview.flatMap(({ data }) => Object.keys(data)))
-      .filter((d) => d !== 'undefined')
-      .sort(sortStrings)
-
-    return distributionKeys.map((key) => {
-      const distributionData = { date: key }
-      dataByDataview.forEach(({ id, data }) => {
-        const hours = sumBy(data[key], 'hours')
-        if (hours > 0) {
-          distributionData[id] = hours
-        }
-      })
-      return distributionData
-    })
-  }
-)
 
 export const selectReportVesselsGraphData = createSelector(
   [selectReportVesselGraph, selectReportVesselsData, selectActiveReportDataviews],
@@ -236,11 +203,3 @@ export const selectReportVesselsPagination = createSelector(
     }
   }
 )
-
-export const selectReportInterval = createSelector([selectTimeRange], (timerange) => {
-  return getInterval(timerange.start, timerange.end, [INTERVAL_ORDER])
-})
-
-export const selectReportTemporalResolution = createSelector([selectReportInterval], (interval) => {
-  return REPORT_TEMPORAL_RESOLUTIONS[interval]
-})

@@ -74,7 +74,6 @@ type ReportActivityProps = {
   end: string
 }
 export default function ReportActivityGraph({ start, end, data }: ReportActivityProps) {
-  // const [graphStartsInCero, setGraphStartsInCero] = useState(true)
   const dataFormated = useMemo(() => {
     return data?.timeseries
       ?.map(({ date, min, max }) => {

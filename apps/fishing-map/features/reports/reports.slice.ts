@@ -5,7 +5,12 @@ import { APIPagination, ReportVesselsByDataset } from '@globalfishingwatch/api-t
 import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { getUTCDateTime } from 'utils/dates'
-import { TemporalResolution } from 'features/download/downloadActivity.config'
+import {
+  Format,
+  GroupBy,
+  SpatialResolution,
+  TemporalResolution,
+} from 'features/download/downloadActivity.config'
 import { DateRange } from '../download/downloadActivity.slice'
 
 interface ReportState {
@@ -29,11 +34,11 @@ type FetchReportVesselsThunkParams = {
   datasets: string[]
   filters: Record<string, any>[]
   vesselGroups: string[]
-  temporalResolution: TemporalResolution
   dateRange: DateRange
-  groupBy?: 'vessel_id' | 'flag' | 'geartype' | 'flagAndGearType' | 'mmsi'
-  spatialResolution?: 'low' | 'high'
-  format?: 'csv' | 'json'
+  temporalResolution?: TemporalResolution
+  groupBy?: GroupBy
+  spatialResolution?: SpatialResolution
+  format?: Format.Csv | Format.Json
   spatialAggregation?: boolean
 }
 export const fetchReportVesselsThunk = createAsyncThunk(
@@ -46,11 +51,11 @@ export const fetchReportVesselsThunk = createAsyncThunk(
         filters,
         vesselGroups,
         dateRange,
-        temporalResolution,
-        groupBy = 'vessel_id',
-        spatialResolution = 'low',
+        temporalResolution = TemporalResolution.Full,
+        groupBy = GroupBy.Vessel,
+        spatialResolution = SpatialResolution.Low,
         spatialAggregation = true,
-        format = 'json',
+        format = Format.Json,
       } = params
       const query = stringify(
         {
