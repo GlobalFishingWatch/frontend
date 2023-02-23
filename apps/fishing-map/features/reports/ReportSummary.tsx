@@ -18,6 +18,8 @@ export default function ReportSummary({ activityUnit }: ReportSummaryProps) {
   const { t } = useTranslation()
   const timerange = useSelector(selectTimeRange)
   const reportVessels = useSelector(selectReportVesselsNumber)
+  // TODO: get this value from tiles
+  // TODO: Support not rendering vesssels count when no report available
   const reportHours = useSelector(selectReportVesselsHours)
   const dataviews = useSelector(selectActiveReportDataviews)
   const datasetTitle = getDatasetTitleByDataview(dataviews?.[0], { showPrivateIcon: false })
