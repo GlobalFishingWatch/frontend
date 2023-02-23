@@ -2020,7 +2020,7 @@
   },
   "public-mpa-no-take": {
     "name": "MPAs - No take",
-    "description": "MPA berarti sebagai kawasan perlindungan laut. Kawasan lindung laut larang tangkap adalah kawasan lautan yang dilarang mengekstraksi atau merusak secara signifikan sumber daya alam dan budaya, termasuk ikan.Sumber: World Database on Protected Areas. Terakhir diperbarui: May 2021.",
+    "description": "The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. No Take layer was created using the data available from the Marine Protected Planet WDPA using the filter NO_TAKE = 'All'. Source: World Database on Protected Areas (WDPA)",
     "schema": {}
   },
   "public-mpa-no-take-partial": {
@@ -2037,6 +2037,26 @@
     "name": "Marine Protection Zone",
     "description": "90% of EEZ",
     "schema": {}
+  },
+  "public-norway-fishing-effort": {
+    "name": "Norway VMS",
+    "description": "Description pending",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": {
+        "keyword": "flag",
+        "enum": {
+          "NOR": "NOR"
+        }
+      },
+      "hours": "hours",
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
   },
   "public-panama-fishing-effort": {
     "name": "VMS Panama",
