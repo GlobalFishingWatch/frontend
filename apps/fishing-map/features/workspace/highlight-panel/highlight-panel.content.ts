@@ -4,7 +4,7 @@ import { Locale } from 'types'
 // Update with a new id when a new release
 // This id is used for highlighting the dataview with a popup on the right
 // update it here if you want to show it again
-export const HIGHLIGHT_DATAVIEW_INSTANCE_ID = 'vms'
+export const HIGHLIGHT_DATAVIEW_INSTANCE_ID = 'vms-with-norway'
 
 type HighlighPanelConfigLocale = {
   [locale in Locale]?: {

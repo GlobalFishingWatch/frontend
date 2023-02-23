@@ -4,6 +4,7 @@ import {
   WorkspaceCategories,
   DEFAULT_WORKSPACE_ID,
   EEZ_DATAVIEW_SLUG,
+  SAR_DATAVIEW_SLUG,
   MPA_DATAVIEW_SLUG,
   RFMO_DATAVIEW_SLUG,
   HIGH_SEAS_DATAVIEW_SLUG,
@@ -52,7 +53,7 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: FISHING_DATAVIEW_SLUG,
     },
     {
-      id: 'vms',
+      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
       config: {
         color: '#FFAA0D',
         colorRamp: 'orange',
@@ -89,8 +90,8 @@ const workspace: Workspace<WorkspaceState> = {
       datasetsConfig: [],
     },
     {
-      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
-      dataviewId: null,
+      id: 'sar',
+      dataviewId: SAR_DATAVIEW_SLUG,
       config: {
         visible: false,
       },
