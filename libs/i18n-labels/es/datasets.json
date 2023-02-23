@@ -891,7 +891,7 @@
     }
   },
   "private-panama-presence": {
-    "name": "VMS de Panamá",
+    "name": "Vessel Presence Panama VMS",
     "description": "This layer uses the Vessel Monitoring System (VMS) data provided by the Panamanian Authority of Aquatic Resources (ARAP). The data is received by Panama’s VMS system via satellite and contains vessel identities, gear type, location, speed, direction and more. Each point in the carrier vessel data layer represents a position of the carriers, but not all positions are displayed. Carrier vessel positions are displayed once per day. Click on a carrier vessel’s position to view the vessel’s complete track.",
     "schema": {
       "flag": "flag",
@@ -1512,7 +1512,7 @@
   },
   "public-eez-areas": {
     "name": "ZEE",
-    "description": "Instituto Marino de Flandes (2019). Geobase de datos de Límites Marítimos: Límites Marítimos y Zonas Económicas Exclusivas (200MN), versión 11. Fuente: marineregions.org",
+    "description": "Exclusive economic zones (EEZs) extend up to 200 nautical miles from a country's coast. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org.",
     "schema": {}
   },
   "public-eez-areas-12nm": {
@@ -1591,8 +1591,8 @@
     }
   },
   "public-global-encounters-events": {
-    "name": "Encuentros para embarcaciones Transportistas y Pesqueras (AIS)",
-    "description": "Identificado de los datos AIS como lugares donde dos buques, un transportador y uno pesquero; estuvieron a 500 metros durante al menos 2 horas y viajando a una velocidad media de &lt;2 nudos, y a menos de 10 km de la costa.",
+    "name": "Encounter Events. (AIS)",
+    "description": "The dataset contains encounter events for AIS. [Fishing-Carriers, Carriers-Fishing, Support-Fishing, Fishing-Support]",
     "schema": {
       "fields": "fields",
       "event_id": "event_id",
@@ -1820,7 +1820,7 @@
     "schema": {}
   },
   "public-graticules": {
-    "name": "Latitud y longitud",
+    "name": "Latitude longitude grids",
     "description": "Grids or graticules of latitude and longitude at 1, 5, 10 and 30° intervals depending on the zoom level of the map (Source: <a href='https://www.naturalearthdata.com/downloads/110m-physical-vectors/110m-graticules/'_blank'>Natural Earth</a>).",
     "schema": {}
   },
@@ -2020,7 +2020,7 @@
   },
   "public-mpa-no-take": {
     "name": "MPAs - No take",
-    "description": "El término Áreas Marinas Protegidas incluye, por ejemplo, reservas marinas, áreas marinas totalmente protegidas, zonas sin tomar santuarios marinos, santuarios oceánicos, parques marinos y áreas marinas administradas localmente. Muchos de ellos tienen diferentes niveles de protección y el abanico de actividades permitidas o prohibidas dentro de sus límites también varía considerablemente. La capa de áreas sin actividad pesquera se creó utilizando los datos disponibles en el Planeta Marino Protegido WDPA usando el filtro NO_TAKE = 'Todos'. Fuente: Base de datos mundial sobre áreas protegidas (WDPA)",
+    "description": "The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. No Take layer was created using the data available from the Marine Protected Planet WDPA using the filter NO_TAKE = 'All'. Source: World Database on Protected Areas (WDPA)",
     "schema": {}
   },
   "public-mpa-no-take-partial": {
@@ -2037,6 +2037,26 @@
     "name": "Marine Protection Zone",
     "description": "90% of EEZ",
     "schema": {}
+  },
+  "public-norway-fishing-effort": {
+    "name": "Norway VMS",
+    "description": "Description pending",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": {
+        "keyword": "flag",
+        "enum": {
+          "NOR": "NOR"
+        }
+      },
+      "hours": "hours",
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
   },
   "public-panama-fishing-effort": {
     "name": "VMS de Panamá",
