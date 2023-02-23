@@ -66,6 +66,7 @@ const workspace: Workspace<WorkspaceState> = {
           'public-indonesia-fishing-effort:v20200320',
           'public-panama-fishing-effort:v20211126',
           'public-peru-fishing-effort:v20211126',
+          'public-norway-fishing-effort:v20220112',
         ],
       },
       dataviewId: FISHING_DATAVIEW_SLUG,
