@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { DEFAULT_CONTEXT_SOURCE_LAYER, Interval } from '@globalfishingwatch/layer-composer'
+import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -12,11 +12,7 @@ import {
   selectDatasetAreaDetail,
   selectDatasetAreaStatus,
 } from 'features/areas/areas.slice'
-import { TemporalResolution } from 'features/download/downloadActivity.config'
-import {
-  selectReportAreaIds,
-  selectReportTemporalResolution,
-} from 'features/reports/reports.selectors'
+import { selectReportAreaIds } from 'features/reports/reports.selectors'
 import useMapInstance from 'features/map/map-context.hooks'
 import {
   fetchReportVesselsThunk,
@@ -68,13 +64,6 @@ export function useFetchReportArea() {
   return useMemo(() => ({ status, data }), [status, data])
 }
 
-export const REPORT_TEMPORAL_RESOLUTIONS: Record<Interval, TemporalResolution> = {
-  hour: TemporalResolution.Hourly,
-  day: TemporalResolution.Daily,
-  month: TemporalResolution.Monthly,
-  year: TemporalResolution.Yearly,
-}
-
 export function useFetchReportVessel() {
   const dispatch = useAppDispatch()
   const timerange = useSelector(selectTimeRange)
@@ -84,7 +73,6 @@ export function useFetchReportVessel() {
   const status = useSelector(selectReportVesselsStatus)
   const error = useSelector(selectReportVesselsError)
   const data = useSelector(selectReportVesselsData)
-  const temporalResolution = useSelector(selectReportTemporalResolution)
 
   useEffect(() => {
     const reportDataviews = dataviews
@@ -108,12 +96,11 @@ export function useFetchReportVessel() {
             dataset: datasetId,
           },
           dateRange: timerange,
-          temporalResolution,
           spatialAggregation: true,
         })
       )
     }
-  }, [dispatch, areaId, datasetId, timerange, temporalResolution, dataviews])
+  }, [dispatch, areaId, datasetId, timerange, dataviews])
 
   return useMemo(() => ({ status, data, error }), [status, data, error])
 }
