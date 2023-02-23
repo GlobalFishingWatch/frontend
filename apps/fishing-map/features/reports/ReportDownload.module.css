@@ -12,3 +12,9 @@
   justify-content: flex-end;
   gap: 1rem;
 }
+
+@media print {
+  .container {
+    display: none;
+  }
+}

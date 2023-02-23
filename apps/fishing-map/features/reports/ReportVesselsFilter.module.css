@@ -25,3 +25,9 @@
   right: 4rem;
   z-index: 2;
 }
+
+@media print {
+  .inputContainer {
+    display: none;
+  }
+}

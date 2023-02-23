@@ -75,13 +75,13 @@ const Main = () => {
     (reportLocation && !isTimeComparisonAnalysis)
 
   return (
-    <div className={styles.main}>
+    <Fragment>
       <div className={cx(styles.mapContainer, { [styles.withTimebar]: showTimebar })}>
         <Map />
       </div>
       {showTimebar && <Timebar />}
       <Footer />
-    </div>
+    </Fragment>
   )
 }
 
@@ -234,7 +234,9 @@ function App(): React.ReactElement {
         asideWidth={asideWidth}
         showAsideLabel={getSidebarName()}
         showMainLabel={t('common.map', 'Map')}
-        className="split-container"
+        className={styles.splitContainer}
+        asideClassName={styles.aside}
+        mainClassName={styles.main}
       />
       {!readOnly && (
         <Menu
