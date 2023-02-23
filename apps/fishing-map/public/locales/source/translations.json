@@ -273,7 +273,7 @@
     "latestCarrierNotFound": "Latest carrier dataset not found",
     "missingLatLng": "No latitude or longitude fields found",
     "pageNotFound": "Page not found",
-    "privateReport": "You need to login to see the vessels active in the area",
+    "privateReport": "Login to see the vessels active in the area",
     "privateView": "This is a private view",
     "requestAccess": "Request access",
     "showError": "Show error",

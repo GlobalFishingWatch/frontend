@@ -13,7 +13,7 @@ import WorkspaceError from 'features/workspace/WorkspaceError'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { selectWorkspaceVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
 import { selectHasReportVessels } from 'features/reports/reports.selectors'
-import ReportPlaceholder from 'features/reports/ReportPlaceholder'
+import ReportVesselsPlaceholder from 'features/reports/ReportVesselsPlaceholder'
 import { useFetchReportArea, useFetchReportVessel } from './reports.hooks'
 import ReportSummary from './ReportSummary'
 import ReportTitle from './ReportTitle'
@@ -79,7 +79,7 @@ export default function Report() {
       <Fragment>
         {Header}
         <ReportActivity activityUnit={activityUnit} />
-        {hasAuthError && <ReportPlaceholder />}
+        {hasAuthError && <ReportVesselsPlaceholder />}
         {hasNoReportVessels && (
           <p>{t('analysis.noDataByArea', 'No data available for the selected area')}</p>
         )}

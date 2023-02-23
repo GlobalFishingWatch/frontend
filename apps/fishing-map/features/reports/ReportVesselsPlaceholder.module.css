@@ -1,0 +1,88 @@
+.container {
+  padding: var(--space-M);
+  position: relative;
+}
+
+.placeholder {
+  filter: blur(1px);
+}
+
+.flex {
+  display: flex;
+  gap: 1rem;
+}
+
+.column {
+  flex-direction: column;
+}
+
+.spaceBetween {
+  justify-content: space-between;
+}
+
+.spaceAround {
+  justify-content: space-around;
+}
+
+.end {
+  align-items: flex-end;
+}
+
+.block {
+  height: 1.6rem;
+  border-radius: 0.8rem;
+  flex: 1;
+  animation: placeHolderShimmer 2s linear forwards infinite;
+  background: linear-gradient(
+    90deg,
+    rgba(var(--primary-blue-rgb), 0.05) 0%,
+    rgba(var(--primary-blue-rgb), 0.1) 40%,
+    rgba(var(--primary-blue-rgb), 0.05) 70%
+  );
+  background-size: 1000px 100%;
+}
+
+.short {
+  flex: 0.5;
+}
+
+.thick {
+  min-height: 4rem;
+  border-radius: 2rem;
+}
+
+.line {
+  min-height: 1px;
+}
+
+.marginH {
+  margin-left: var(--space-S);
+  margin-right: var(--space-S);
+}
+
+.marginL {
+  margin-left: var(--space-S);
+}
+
+.marginV {
+  margin-top: var(--space-S);
+  margin-bottom: var(--space-S);
+}
+
+@keyframes placeHolderShimmer {
+  0% {
+    background-position: -500px 0;
+  }
+
+  100% {
+    background-position: 500px 0;
+  }
+}
+
+.cover {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
