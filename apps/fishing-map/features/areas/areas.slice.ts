@@ -47,14 +47,12 @@ export const fetchAreaDetailThunk = createAsyncThunk(
   ) => {
     const area = await GFWAPI.fetch<ContextAreaFeature>(
       `/datasets/${datasetId}/user-context-layer-v1/${areaId}`,
-      {
-        signal,
-      }
+      { signal }
     )
-    const name = areaName || area.properties.value || area.properties.name || area.id
+
     return {
-      name,
       id: area.id,
+      name: areaName || area.value || area.properties.value || area.properties.name || area.id,
       bounds: wrapBBoxLongitudes(bbox(area.geometry) as Bbox),
       geometry: area.geometry,
     }

@@ -145,7 +145,7 @@ export default function ReportActivityGraph({ start, end, data }: ReportActivity
               key={`${id}-line`}
               name="line"
               type="monotone"
-              dataKey={(data) => data.avg[index]}
+              dataKey={(data) => data.avg?.[index]}
               unit={legend.unit}
               dot={false}
               isAnimationActive={false}

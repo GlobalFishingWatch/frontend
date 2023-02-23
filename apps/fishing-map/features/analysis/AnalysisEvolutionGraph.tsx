@@ -177,7 +177,7 @@ const AnalysisEvolutionGraph: React.FC<{
               key={`${id}-line`}
               name="line"
               type="monotone"
-              dataKey={(data) => data.avg[index]}
+              dataKey={(data) => data.avg?.[index]}
               unit={legend.unit}
               dot={false}
               isAnimationActive={false}

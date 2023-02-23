@@ -8,6 +8,7 @@ export interface ContextAreaFeatureProperties {
 export type ContextAreaFeatureGeom = Polygon | MultiPolygon
 export interface ContextAreaFeature<P = ContextAreaFeatureProperties> {
   id: string
+  value?: string
   type: string
   geometry: ContextAreaFeatureGeom
   properties: P
