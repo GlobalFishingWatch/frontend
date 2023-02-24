@@ -256,12 +256,13 @@ export function resolveDataviews(
       if (dataviewInstance?.deleted) {
         return []
       }
-
-      const dataview = dataviews?.find((dataview) =>
-        ([dataview.id, dataview.slug] as Dataview['slug'][]).includes(
-          dataviewInstance.dataviewId as Dataview['slug']
+      const dataview = dataviews?.find((dataview) => {
+        return (
+          dataview.slug === dataviewInstance.dataviewId ||
+          // We need to parse the dataviewId as a string because now it is always a string to support slugs
+          dataview.id === parseInt(dataviewInstance.dataviewId as string, 10)
         )
-      )
+      })
       if (!dataview) {
         console.warn(
           `DataviewInstance id: ${dataviewInstance.id} doesn't have a valid dataview (${dataviewInstance.dataviewId})`
