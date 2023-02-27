@@ -2058,6 +2058,29 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "public-norway-presence": {
+    "name": "Norway VMS",
+    "description": "Description pending",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "vessel_type": {
+        "keyword": "vessel_type",
+        "enum": {
+          "fishing": "fishing",
+          "research": "research",
+          "kelp trawler": "kelp trawler",
+          "other": "other"
+        }
+      },
+      "vessel-groups": "vessel-groups",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
   "public-panama-fishing-effort": {
     "name": "VMS Panama",
     "description": "Data Vessel Monitoring System (VMS) disediakan oleh Panamanian Authority of Aquatic Resources (ARAP). Data diterima oleh sistem VMS Panama melalui satelit dan berisi identitas kapal, jenis alat tangkap, lokasi, kecepatan, arah, dan lainnya. Data kapal pengangkut Panama juga tersedia di sini. Setiap titik di layer data kapal pengangkut mewakili posisi pengangkut, tetapi tidak semua posisi ditampilkan. Posisi kapal pengangkut ditampilkan sekali sehari. Di masa mendatang, kami berharap dapat menampilkan lebih banyak posisi. Klik pada posisi kapal pengangkut untuk melihat trek lengkap kapal. Global Fishing Watch menganalisis data ini menggunakan algoritma yang sama dengan yang dkembangkan untuk data Automatic Identification System (AIS) untuk mengidentifikasi aktivitas dan perilaku penangkapan ikan. Algoritma tersebut mengklasifikasikan setiap titik data siaran dari kapal sebagai yang terlihat sedang memancing atau tidak sedang memancing dan menunjukkan titik data sebelumnya pada peta panas aktivitas penangkapan ikan Global Fishing Watch. VMS menyiarkan data dengan sangat berbeda dari AIS dan dapat memberikan ukuran kelengkapan, akurasi dan kualitas yang berbeda. Seiring waktu, algoritma kami akan meningkat di semua format data siaran kami. Algoritma deteksi penangkapan ikan Global Fishing Watch untuk VMS seperti untuk AIS, adalah upaya terbaik secara algoritma untuk mengidentifikasi \"aktivitas penangkapan ikan yang terlihat.\" Ada kemungkinan bahwa beberapa aktivitas penangkapan ikan tidak teridentifikasi, atau peta panas dapat menunjukkan aktivitas penangkapan ikan yang terlihat jelas di mana penangkapan ikan sebenarnya tidak terjadi. Untuk alasan ini, Global Fishing Watch mengkualifikasikan istilah \"aktivitas memancing\", \"memancing\", dan \"upaya penangkapan ikan\", sebagai \"terlihat jelas\" dan daripada pasti. Setiap / semua informasi Global Fishing Watch tentang \"aktivitas penangkapan ikan yang terlihat\" harus dianggap sebagai perkiraan dan harus diandalkan sepenuhnya dengan risiko Anda sendiri. Algoritma deteksi penangkapan ikan Global Fishing Watch dikembangkan dan diuji menggunakan data peristiwa penangkapan ikan aktual yang dikumpulkan oleh pengamat, dikombinasikan dengan analisis ahli dari data pergerakan kapal AIS yang menghasilkan klasifikasi manual dari ribuan peristiwa penangkapan ikan yang diketahui. Global Fishing Watch juga bekerja sama secara ekstensif dengan peneliti akademis melalui program penelitian kami untuk berbagi data klasifikasi aktivitas penangkapan ikan dan klasifikasi otomatis.",
