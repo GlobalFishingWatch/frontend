@@ -76,9 +76,7 @@
 }
 
 @media print {
-  .footer {
-    border-bottom: none;
-    justify-content: initial;
-    gap: 2rem;
+  .footer > div:last-child {
+    display: none;
   }
 }
