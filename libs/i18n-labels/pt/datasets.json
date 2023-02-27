@@ -2058,6 +2058,29 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "public-norway-presence": {
+    "name": "Norway VMS",
+    "description": "Dados do sistema de monitoramento de embarcações são fornecidos pela Diretoria de Pesca da Noruega. Os dados são compilados utilizando o sistema de monitoramento de embarcações da Noruega e publicados com atraso de três dias, contendo informações sobre a identidade da embarcação, localização, velocidade, rumo, e movimentos. A camada de atividade apresenta um mapa de calor com a presença das embarcações. Cada ponto na camada de presença representa a posição de uma embarcação, é apresentada uma posição por hora de cada embarcação. Você pode selecionar uma posição para ver o rastreamento completo da embarcação.",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "vessel_type": {
+        "keyword": "vessel_type",
+        "enum": {
+          "fishing": "fishing",
+          "research": "research",
+          "kelp trawler": "kelp trawler",
+          "other": "other"
+        }
+      },
+      "vessel-groups": "vessel-groups",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
   "public-panama-fishing-effort": {
     "name": "Panama VMS",
     "description": "Vessel monitoring system (VMS) data provided by the Panamanian Authority of Aquatic Resources (ARAP). Data is received by Panama’s VMS system via satellite and contains vessel identities, gear type, location, speed, direction and more. Panama’s carrier vessel data is also available here. Each point in the carrier vessel data layer represents a position of the carriers, but not all positions are displayed. Carrier vessel positions are displayed once per day. In the future, we expect to be able to display more positions. Click on a carrier vessel’s position to view the vessel’s complete track. Global Fishing Watch analyzes this data using the same algorithms we developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing detection algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing,” and “fishing effort,” as “apparent” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification.",

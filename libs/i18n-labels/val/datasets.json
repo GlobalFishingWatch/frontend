@@ -2058,6 +2058,29 @@
       "distance_from_shore_m": "crwdns30169:0crwdne30169:0"
     }
   },
+  "public-norway-presence": {
+    "name": "crwdns30171:0crwdne30171:0",
+    "description": "crwdns30173:0crwdne30173:0",
+    "schema": {
+      "lat": "crwdns30175:0crwdne30175:0",
+      "lon": "crwdns30177:0crwdne30177:0",
+      "flag": "crwdns30179:0crwdne30179:0",
+      "vessel_id": "crwdns30181:0crwdne30181:0",
+      "elevation_m": "crwdns30183:0crwdne30183:0",
+      "vessel_type": {
+        "keyword": "crwdns30185:0crwdne30185:0",
+        "enum": {
+          "fishing": "crwdns30187:0crwdne30187:0",
+          "research": "crwdns30189:0crwdne30189:0",
+          "kelp trawler": "crwdns30191:0crwdne30191:0",
+          "other": "crwdns30193:0crwdne30193:0"
+        }
+      },
+      "vessel-groups": "crwdns30195:0crwdne30195:0",
+      "distance_from_port_m": "crwdns30197:0crwdne30197:0",
+      "distance_from_shore_m": "crwdns30199:0crwdne30199:0"
+    }
+  },
   "public-panama-fishing-effort": {
     "name": "crwdns10287:0crwdne10287:0",
     "description": "crwdns10289:0crwdne10289:0",

@@ -2040,7 +2040,7 @@
   },
   "public-norway-fishing-effort": {
     "name": "Norway VMS",
-    "description": "Description pending",
+    "description": "Les données du système de surveillance des navires (VMS) sont fournies par la Direction norvégienne des pêches. Les données sont collectées par le système norvégien de surveillance des navires via des satellites, sont publiées dans un délai de trois jours et contiennent des informations sur la localisation, la vitesse, la trajectoire et le mouvement des navires. Global Fishing Watch analyse ces données en utilisant les mêmes algorithmes que ceux développés pour les systèmes d'identification automatique (AIS) afin d'identifier les activités et les comportements de pêche. L'algorithme classe chaque point de données diffusé par les navires comme étant apparemment en train de pêcher ou non et affiche le premier sur la carte thermique de l'activité de pêche de Global Fishing Watch. Le VMS diffuse des données différentes de celles de l'AIS et peut donner des mesures différentes en exhaustivité, précision et qualité. Global Fishing Watch améliore continuellement ses algorithmes pour tous les formats de données diffusées afin d'identifier de manière algorithmique les \"activités de pêche apparentes\". Il est possible qu'une partie de l'activité de pêche ne soit pas identifiée ou que la carte thermique montre une activité de pêche apparente alors que la pêche n'a pas réellement lieu. Pour ces raisons, Global Fishing Watch utilise les termes \"activité de pêche\", \"pêche\" ou \"effort de pêche\" apparents plutôt que certains. Toutes les informations de Global Fishing Watch concernant \"l'activité de pêche apparente\" doivent être considérées comme une estimation et doivent être utilisées à la seule discrétion de l'utilisateur. Les algorithmes de détection de pêche de Global Fishing Watch sont développés et testés à partir de données d'événements de pêche réels collectés par des observateurs et sont combinés à une analyse experte des données de mouvement des navires AIS, ce qui permet de classer manuellement des milliers d'événements de pêche connus. Global Fishing Watch collabore également de manière intensive avec des chercheurs universitaires par le biais de notre programme de recherche afin de partager les données de classification des activités de pêche et d'améliorer les techniques de classification automatisée.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -2053,6 +2053,29 @@
       "hours": "hours",
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "public-norway-presence": {
+    "name": "Norway VMS",
+    "description": "Les données du système de surveillance des navires (VMS) sont fournies par la Direction norvégienne des pêches. Les données sont collectées par le système norvégien de surveillance des navires via des satellites, sont publiées dans un délai de trois jours et contiennent des informations sur la localisation, la vitesse, la trajectoire et le mouvement des navires. La couche d'activité affiche une carte thermique de la présence des navires. Chaque point de la couche de présence représente une position du navire, mais toutes les positions ne sont pas affichées. Les positions des navires sont affichées une fois par heure. Vous pouvez sélectionner une position pour afficher la route complète du navire.",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "vessel_type": {
+        "keyword": "vessel_type",
+        "enum": {
+          "fishing": "fishing",
+          "research": "research",
+          "kelp trawler": "kelp trawler",
+          "other": "other"
+        }
+      },
       "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
