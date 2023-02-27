@@ -16,6 +16,7 @@ import {
 import { selectIsReportAllowed, selectReportAreaIds } from 'features/reports/reports.selectors'
 import useMapInstance from 'features/map/map-context.hooks'
 import { selectUserData } from 'features/user/user.slice'
+import { selectDatasetById } from 'features/datasets/datasets.slice'
 import {
   fetchReportVesselsThunk,
   selectReportVesselsData,
@@ -51,17 +52,18 @@ export function useFetchReportArea() {
   const { datasetId, areaId } = useSelector(selectReportAreaIds)
   const status = useSelector(selectDatasetAreaStatus({ datasetId, areaId }))
   const data = useSelector(selectDatasetAreaDetail({ datasetId, areaId }))
+  const analysisDataset = useSelector(selectDatasetById(datasetId))
 
   useEffect(() => {
-    if (datasetId && areaId) {
+    if (analysisDataset && areaId) {
       dispatch(
         fetchAreaDetailThunk({
-          datasetId,
+          dataset: analysisDataset,
           areaId: areaId.toString(),
         })
       )
     }
-  }, [areaId, datasetId, dispatch])
+  }, [areaId, analysisDataset, dispatch])
 
   return useMemo(() => ({ status, data }), [status, data])
 }

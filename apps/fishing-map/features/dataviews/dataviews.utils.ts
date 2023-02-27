@@ -131,7 +131,7 @@ export const getEnvironmentDataviewInstance = (
       {
         datasetId,
         params: [],
-        endpoint: EndpointId.UserContextTiles,
+        endpoint: EndpointId.ContextTiles,
       },
     ],
   }
@@ -149,7 +149,7 @@ export const getUserPointsDataviewInstance = (
     datasetsConfig: [
       {
         datasetId: datasetId,
-        endpoint: EndpointId.UserContextTiles,
+        endpoint: EndpointId.ContextTiles,
         params: [{ id: 'id', value: datasetId }],
       },
     ],
@@ -187,7 +187,7 @@ export const getContextDataviewInstance = (datasetId: string): DataviewInstance<
       {
         datasetId,
         params: [],
-        endpoint: EndpointId.UserContextTiles,
+        endpoint: EndpointId.ContextTiles,
       },
     ],
   }
