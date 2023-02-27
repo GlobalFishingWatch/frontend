@@ -15,8 +15,10 @@ import { Interval } from '@globalfishingwatch/layer-composer'
 import i18n from 'features/i18n/i18n'
 import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
 import { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
+import { toFixed } from 'utils/shared'
+import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import styles from './ReportActivityGraph.module.css'
-import { formatTooltipValue, tickFormatter } from './reports.utils'
+import { tickFormatter } from './reports.utils'
 
 type ReportGraphTooltipProps = {
   active: boolean
@@ -32,24 +34,44 @@ type ReportGraphTooltipProps = {
   label: number
   timeChunkInterval: Interval
 }
+
+const formatTooltipValue = (value: number, payload: any, unit: string) => {
+  if (value === undefined || !payload?.range) {
+    return null
+  }
+  const index = payload.avg?.findIndex((avg: number) => avg === value)
+  const range = payload.range?.[index]
+  const difference = range ? range[1] - value : 0
+  const imprecision = value > 0 && (difference / value) * 100
+  // TODO review why abs is needed and why we have negative imprecision
+  const imprecisionFormatted = imprecision ? toFixed(Math.abs(imprecision), 0) : '0'
+  const valueFormatted = formatI18nNumber(value, { maximumFractionDigits: 2 })
+  const valueLabel = `${valueFormatted} ${unit ? unit : ''}`
+  const imprecisionLabel =
+    imprecisionFormatted !== '0' && valueFormatted !== '0' ? ` ± ${imprecisionFormatted}%` : ''
+  return valueLabel + imprecisionLabel
+}
+
 const ReportGraphTooltip = (props: any) => {
   const { active, payload, label, timeChunkInterval } = props as ReportGraphTooltipProps
 
   if (active && payload && payload.length) {
     const date = getUTCDateTime(label).setLocale(i18n.language)
     const formattedLabel = formatDateForInterval(date, timeChunkInterval)
-    const formattedValues = payload.filter(({ name }) => name === 'line')
+    const formattedValues = payload.filter(({ name }) => {
+      return name === 'line'
+    })
     return (
       <div className={styles.tooltipContainer}>
         <p className={styles.tooltipLabel}>{formattedLabel}</p>
         <ul>
           {formattedValues
             .sort((a, b) => b.value - a.value)
-            .map(({ value, color, unit }, index) => {
+            .map(({ value, payload, color, unit }, index) => {
               return (
                 <li key={index} className={styles.tooltipValue}>
                   <span className={styles.tooltipValueDot} style={{ color }}></span>
-                  {formatTooltipValue(value, unit)}
+                  {formatTooltipValue(value, payload, unit)}
                 </li>
               )
             })}

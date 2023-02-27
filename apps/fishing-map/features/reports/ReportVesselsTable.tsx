@@ -80,79 +80,71 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
   const isLastPaginationPage = pagination?.offset + pagination?.resultsPerPage >= pagination?.total
 
   return (
-    <div>
+    <Fragment>
       <div className={styles.tableContainer}>
-        <table className={cx(styles.vesselsTable)}>
-          <thead>
-            <tr>
-              <th colSpan={2}>{t('common.name', 'Name')}</th>
-              <th>{t('vessel.mmsi', 'mmsi')}</th>
-              <th>{t('layer.flagState_one', 'Flag state')}</th>
-              <th>{t('vessel.gearType_short', 'gear')}</th>
-              {/* Disabled for detections to allocate some space for timestamps interaction */}
-              <th className={styles.right}>
-                {activityUnit === 'hour'
-                  ? t('common.hour_other', 'hours')
-                  : t('common.detection_other', 'detections')}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {vessels?.map((vessel, i) => {
-              const hasDatasets = true
-              // TODO get datasets from the vessel
-              // const hasDatasets = vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
-
-              const vesselInWorkspace = getVesselInWorkspace(vesselsInWorkspace, vessel.vesselId)
-
-              const pinTrackDisabled = !hasDatasets
-              return (
-                <tr key={i}>
-                  {!pinTrackDisabled && (
-                    <td className={styles.icon}>
-                      <IconButton
-                        icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
-                        style={{
-                          color: vesselInWorkspace ? vesselInWorkspace.config.color : '',
-                        }}
-                        tooltip={
-                          vesselInWorkspace
-                            ? t(
-                                'search.vesselAlreadyInWorkspace',
-                                'This vessel is already in your workspace'
-                              )
-                            : t('search.seeVessel', 'See vessel')
-                        }
-                        onClick={(e) => onVesselClick(e, vessel)}
-                        size="small"
-                      />
-                    </td>
-                  )}
-                  <td colSpan={pinTrackDisabled ? 2 : 1}>
-                    {formatInfoField(vessel.shipName, 'name')}
-                  </td>
-                  <td colSpan={1} className={styles.columnSpace}>
-                    <span>{vessel.mmsi || EMPTY_FIELD_PLACEHOLDER}</span>
-                  </td>
-                  <td colSpan={1} className={styles.columnSpace}>
-                    <span>
-                      {t(`flags:${vessel.flag as string}` as any, EMPTY_FIELD_PLACEHOLDER)}
-                    </span>
-                  </td>
-                  <td colSpan={1} className={styles.columnSpace}>
-                    {t(`vessel.gearTypes.${vessel.geartype}` as any, EMPTY_FIELD_PLACEHOLDER)}
-                  </td>
-                  <td colSpan={1} className={cx(styles.columnSpace, styles.right)}>
-                    <I18nNumber number={vessel[`${activityUnit}s`]} />
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
+        <div className={cx(styles.vesselsTable)}>
+          <div className={cx(styles.header, styles.spansFirstTwoColumns)}>
+            {t('common.name', 'Name')}
+          </div>
+          <div className={styles.header}>{t('vessel.mmsi', 'mmsi')}</div>
+          <div className={styles.header}>{t('layer.flagState_one', 'Flag state')}</div>
+          <div className={styles.header}>{t('vessel.gearType_short', 'gear')}</div>
+          <div className={cx(styles.header, styles.right)}>
+            {activityUnit === 'hour'
+              ? t('common.hour_other', 'hours')
+              : t('common.detection_other', 'detections')}
+          </div>
+          {vessels?.map((vessel, i) => {
+            const hasDatasets = true
+            // TODO get datasets from the vessel
+            // const hasDatasets = vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
+            const vesselInWorkspace = getVesselInWorkspace(vesselsInWorkspace, vessel.vesselId)
+            const pinTrackDisabled = !hasDatasets
+            const isLastRow = i === vessels.length - 1
+            return (
+              <Fragment key={vessel.vesselId}>
+                {!pinTrackDisabled && (
+                  <div className={cx({ [styles.border]: !isLastRow }, styles.icon)}>
+                    <IconButton
+                      icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
+                      style={{
+                        color: vesselInWorkspace ? vesselInWorkspace.config.color : '',
+                      }}
+                      tooltip={
+                        vesselInWorkspace
+                          ? t(
+                              'search.vesselAlreadyInWorkspace',
+                              'This vessel is already in your workspace'
+                            )
+                          : t('search.seeVessel', 'See vessel')
+                      }
+                      onClick={(e) => onVesselClick(e, vessel)}
+                      size="small"
+                    />
+                  </div>
+                )}
+                <div className={cx({ [styles.border]: !isLastRow })}>
+                  {formatInfoField(vessel.shipName, 'name')}
+                </div>
+                <div className={cx({ [styles.border]: !isLastRow })}>
+                  <span>{vessel.mmsi || EMPTY_FIELD_PLACEHOLDER}</span>
+                </div>
+                <div className={cx({ [styles.border]: !isLastRow })}>
+                  <span>{t(`flags:${vessel.flag as string}` as any, EMPTY_FIELD_PLACEHOLDER)}</span>
+                </div>
+                <div className={cx({ [styles.border]: !isLastRow })}>
+                  {t(`vessel.gearTypes.${vessel.geartype}` as any, EMPTY_FIELD_PLACEHOLDER)}
+                </div>
+                <div className={cx({ [styles.border]: !isLastRow }, styles.right)}>
+                  <I18nNumber number={vessel[`${activityUnit}s`]} />
+                </div>
+              </Fragment>
+            )
+          })}
+        </div>
       </div>
       <div className={styles.footer}>
-        <div>
+        <div className={cx(styles.flex, styles.expand)}>
           {!hasLessVesselsThanAPage && (
             <Fragment>
               <IconButton
@@ -178,24 +170,27 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                 })}
                 size="medium"
               />
+              <span className={cx(styles.noWrap, styles.expand, styles.right)}>
+                {reportVesselFilter && (
+                  <Fragment>
+                    <I18nNumber number={allFilteredVessels?.length} /> {t('common.of', 'of')}{' '}
+                  </Fragment>
+                )}
+                <I18nNumber number={pagination?.total} />{' '}
+                {t('common.vessel', { count: pagination?.total })}
+              </span>
             </Fragment>
           )}
         </div>
-        <div>
-          <span className={styles.noWrap}>
-            {reportVesselFilter && (
-              <Fragment>
-                <I18nNumber number={allFilteredVessels?.length} /> {t('common.of', 'of')}{' '}
-              </Fragment>
-            )}
-            <I18nNumber number={pagination?.total} />{' '}
-            {t('common.vessel', { count: pagination?.total })}
-          </span>
+        <div className={cx(styles.flex, styles.expand)}>
           <VesselGroupAddButton
             vessels={reportVesselFilter ? allFilteredVessels : allVessels}
             showCount={false}
           />
-          <Button className={styles.footerButton} disabled={!downloadVessels?.length}>
+          <Button
+            className={cx(styles.footerButton, styles.expand)}
+            disabled={!downloadVessels?.length}
+          >
             {downloadVessels?.length ? (
               <CSVLink filename={`${reportName}-${start}-${end}.csv`} data={downloadVessels}>
                 {t('analysis.downloadVesselsList', 'Download csv')}
@@ -206,6 +201,6 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
           </Button>
         </div>
       </div>
-    </div>
+    </Fragment>
   )
 }

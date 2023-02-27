@@ -43,6 +43,7 @@ export default function ReportActivityGraphSelector(props: ReportActivityGraphSe
   return (
     <Select
       type="secondary"
+      align="right"
       options={options}
       selectedOption={selectedOption}
       onSelect={onSelect}
