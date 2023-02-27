@@ -35,7 +35,7 @@ import {
   selectIsReportLocation,
   selectIsWorkspaceLocation,
 } from 'routes/routes.selectors'
-import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
+import { selectShowTimeComparison } from 'features/reports/reports.selectors'
 import { WorkspaceCategories } from 'data/workspaces'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { BivariateDataviews } from 'types'

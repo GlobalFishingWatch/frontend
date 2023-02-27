@@ -14,10 +14,10 @@ import { DateTime } from 'luxon'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import i18n from 'features/i18n/i18n'
 import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
-import { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
 import { toFixed } from 'utils/shared'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import styles from './ReportActivityGraph.module.css'
+import { ReportActivityProps } from 'features/reports/ReportActivity'
+import styles from './ReportActivityEvolution.module.css'
 import { tickFormatter } from './reports.utils'
 
 type ReportGraphTooltipProps = {
@@ -90,11 +90,6 @@ const formatDateTicks = (tick: string, timeChunkInterval: Interval) => {
 
 const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
 
-type ReportActivityProps = {
-  data: ReportGraphProps
-  start: string
-  end: string
-}
 export default function ReportActivityGraph({ start, end, data }: ReportActivityProps) {
   const dataFormated = useMemo(() => {
     return data?.timeseries

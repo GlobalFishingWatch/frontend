@@ -5,6 +5,8 @@ import { t } from 'i18next'
 import { Dataset, DatasetTypes, ReportVessel } from '@globalfishingwatch/api-types'
 import {
   selectActiveReportDataviews,
+  selectReportActivityGraph,
+  selectReportTimeComparison,
   selectReportVesselFilter,
   selectReportVesselGraph,
   selectReportVesselPage,
@@ -20,6 +22,7 @@ import { selectLocationAreaId, selectLocationDatasetId } from 'routes/routes.sel
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUserData } from 'features/user/user.slice'
+import { getUTCDateTime } from 'utils/dates'
 import { selectReportVesselsData } from './reports.slice'
 
 export const DEFAULT_NULL_VALUE = 'NULL'
@@ -222,5 +225,33 @@ export const selectIsReportAllowed = createSelector(
     )
     const dataviewDatasets = uniq(getActiveDatasetsInActivityDataviews(reportDataviews))
     return datasetsReportAllowed?.length === dataviewDatasets?.length
+  }
+)
+
+export const selectShowTimeComparison = createSelector(
+  [selectReportActivityGraph],
+  (reportActivityGraph) => {
+    return reportActivityGraph === 'beforeAfter' || reportActivityGraph === 'periodComparison'
+  }
+)
+
+export const selectTimeComparisonValues = createSelector(
+  [selectReportTimeComparison],
+  (timeComparison) => {
+    if (!timeComparison) return null
+
+    const end = getUTCDateTime(timeComparison.start)
+      .plus({ [timeComparison.durationType]: timeComparison.duration })
+      .toISO()
+    const compareEnd = getUTCDateTime(timeComparison.compareStart)
+      .plus({ [timeComparison.durationType]: timeComparison.duration })
+      .toISO()
+
+    return {
+      start: timeComparison.start,
+      end,
+      compareStart: timeComparison.compareStart,
+      compareEnd,
+    }
   }
 )

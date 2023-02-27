@@ -19,6 +19,7 @@ import {
   BivariateDataviews,
   ReportActivityGraph,
   ReportCategory,
+  ReportActivityTimeComparison,
   ReportVesselGraph,
   TimebarGraphs,
   TimebarVisualisations,
@@ -79,6 +80,13 @@ export const selectAnalysisTypeQuery = createSelector(
 export const selectAnalysisTimeComparison = createSelector(
   [selectWorkspaceStateProperty('analysisTimeComparison')],
   (analysis): WorkspaceAnalysisTimeComparison => {
+    return analysis
+  }
+)
+
+export const selectReportTimeComparison = createSelector(
+  [selectWorkspaceStateProperty('reportTimeComparison')],
+  (analysis): ReportActivityTimeComparison => {
     return analysis
   }
 )

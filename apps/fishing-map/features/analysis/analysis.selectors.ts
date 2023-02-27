@@ -1,8 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit'
 import {
   selectAnalysisQuery,
-  selectAnalysisTimeComparison,
-  selectAnalysisTypeQuery,
+  selectReportActivityGraph,
+  selectReportTimeComparison,
 } from 'features/app/app.selectors'
 import { DatasetAreaDetail, selectAreas } from 'features/areas/areas.slice'
 import { getUTCDateTime } from 'utils/dates'
@@ -21,14 +21,14 @@ export const selectAnalysisArea = createSelector(
 )
 
 export const selectShowTimeComparison = createSelector(
-  [selectAnalysisTypeQuery],
-  (analysisType) => {
-    return analysisType === 'beforeAfter' || analysisType === 'periodComparison'
+  [selectReportActivityGraph],
+  (reportActivityGraph) => {
+    return reportActivityGraph === 'beforeAfter' || reportActivityGraph === 'periodComparison'
   }
 )
 
 export const selectTimeComparisonValues = createSelector(
-  [selectAnalysisTimeComparison],
+  [selectReportTimeComparison],
   (timeComparison) => {
     if (!timeComparison) return null
 

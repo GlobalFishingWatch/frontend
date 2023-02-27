@@ -20,6 +20,7 @@ export type ReportStateProperty =
   | 'reportVesselGraph'
   | 'reportVesselFilter'
   | 'reportVesselPage'
+  | 'reportTimeComparison'
 
 export type WorkspaceStateProperty =
   | 'query'
@@ -65,6 +66,13 @@ export type ReportActivityGraph =
   | typeof REPORT_ACTIVITY_GRAPH_EVOLUTION
   | typeof REPORT_ACTIVITY_GRAPH_BEFORE_AFTER
   | typeof REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON
+
+export type ReportActivityTimeComparison = {
+  start: string
+  compareStart: string
+  duration: number
+  durationType: 'days' | 'months'
+}
 export type ReportCategory = DataviewCategory.Activity | DataviewCategory.Detections
 export type ReportVesselGraph =
   | typeof REPORT_VESSELS_GRAPH_GEARTYPE
@@ -91,6 +99,7 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   reportVesselGraph?: ReportVesselGraph
   reportVesselFilter?: string
   reportVesselPage?: number
+  reportTimeComparison?: ReportActivityTimeComparison
 }
 
 export type RedirectParam = {
