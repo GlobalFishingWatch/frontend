@@ -4,6 +4,7 @@ import {
   WorkspaceCategories,
   DEFAULT_WORKSPACE_ID,
   EEZ_DATAVIEW_SLUG,
+  SAR_DATAVIEW_SLUG,
   MPA_DATAVIEW_SLUG,
   RFMO_DATAVIEW_SLUG,
   HIGH_SEAS_DATAVIEW_SLUG,
@@ -15,7 +16,6 @@ import {
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
   GRATICULES_DATAVIEW_SLUG,
   FAO_AREAS_DATAVIEW_SLUG,
-  SAR_DATAVIEW_SLUG,
   MPA_DATAVIEW_INSTANCE_ID,
   EEZ_DATAVIEW_INSTANCE_ID,
   BASEMAP_LABELS_DATAVIEW_SLUG,
@@ -53,7 +53,7 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: FISHING_DATAVIEW_SLUG,
     },
     {
-      id: 'vms',
+      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
       config: {
         color: '#FFAA0D',
         colorRamp: 'orange',
@@ -66,6 +66,7 @@ const workspace: Workspace<WorkspaceState> = {
           'public-indonesia-fishing-effort:v20200320',
           'public-panama-fishing-effort:v20211126',
           'public-peru-fishing-effort:v20211126',
+          'public-norway-fishing-effort:v20220112',
         ],
       },
       dataviewId: FISHING_DATAVIEW_SLUG,
@@ -90,7 +91,7 @@ const workspace: Workspace<WorkspaceState> = {
       datasetsConfig: [],
     },
     {
-      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
+      id: 'sar',
       dataviewId: SAR_DATAVIEW_SLUG,
       config: {
         visible: false,

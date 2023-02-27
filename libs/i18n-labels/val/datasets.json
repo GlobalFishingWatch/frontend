@@ -98,7 +98,7 @@
       },
       "vessel_id": "crwdns18508:0crwdne18508:0",
       "elevation_m": "crwdns18510:0crwdne18510:0",
-      "vessel-groups": "crwdns27267:0crwdne27267:0",
+      "vessel-groups": "crwdns30015:0crwdne30015:0",
       "distance_from_port_m": "crwdns18512:0crwdne18512:0",
       "distance_from_shore_m": "crwdns18514:0crwdne18514:0"
     }
@@ -519,8 +519,8 @@
     }
   },
   "private-indonesia-aruna-fishing-effort": {
-    "name": "crwdns27166:0crwdne27166:0",
-    "description": "crwdns27048:0crwdne27048:0",
+    "name": "crwdns30017:0crwdne30017:0",
+    "description": "crwdns30019:0crwdne30019:0",
     "schema": {
       "lat": "crwdns27050:0crwdne27050:0",
       "lon": "crwdns27052:0crwdne27052:0",
@@ -536,11 +536,11 @@
         }
       },
       "vessel_id": "crwdns27068:0crwdne27068:0",
-      "vessel-groups": "crwdns27277:0crwdne27277:0"
+      "vessel-groups": "crwdns30021:0crwdne30021:0"
     }
   },
   "private-indonesia-aruna-presence": {
-    "name": "crwdns27168:0crwdne27168:0",
+    "name": "crwdns30023:0crwdne30023:0",
     "description": "crwdns26370:0crwdne26370:0",
     "schema": {
       "lat": "crwdns26372:0crwdne26372:0",
@@ -614,7 +614,7 @@
   },
   "private-indonesia-ipnlf-fishing-effort": {
     "name": "crwdns27184:0crwdne27184:0",
-    "description": "crwdns27074:0crwdne27074:0",
+    "description": "crwdns30025:0crwdne30025:0",
     "schema": {
       "lat": "crwdns27076:0crwdne27076:0",
       "lon": "crwdns27078:0crwdne27078:0",
@@ -630,12 +630,12 @@
         }
       },
       "vessel_id": "crwdns27094:0crwdne27094:0",
-      "vessel-groups": "crwdns27283:0crwdne27283:0"
+      "vessel-groups": "crwdns30027:0crwdne30027:0"
     }
   },
   "private-indonesia-ipnlf-presence": {
-    "name": "crwdns27186:0crwdne27186:0",
-    "description": "crwdns27188:0crwdne27188:0",
+    "name": "crwdns30029:0crwdne30029:0",
+    "description": "crwdns30031:0crwdne30031:0",
     "schema": {
       "lat": "crwdns26416:0crwdne26416:0",
       "lon": "crwdns26418:0crwdne26418:0",
@@ -669,7 +669,7 @@
     }
   },
   "private-indonesia-pelagic-presence": {
-    "name": "crwdns27100:0crwdne27100:0",
+    "name": "crwdns30033:0crwdne30033:0",
     "description": "crwdns24892:0crwdne24892:0",
     "schema": {
       "lat": "crwdns18026:0crwdne18026:0",
@@ -736,7 +736,7 @@
   },
   "private-indonesia-rare-fishing-effort": {
     "name": "crwdns27170:0crwdne27170:0",
-    "description": "crwdns27104:0crwdne27104:0",
+    "description": "crwdns30035:0crwdne30035:0",
     "schema": {
       "lat": "crwdns27106:0crwdne27106:0",
       "lon": "crwdns27108:0crwdne27108:0",
@@ -752,11 +752,11 @@
         }
       },
       "vessel_id": "crwdns27124:0crwdne27124:0",
-      "vessel-groups": "crwdns27291:0crwdne27291:0"
+      "vessel-groups": "crwdns30037:0crwdne30037:0"
     }
   },
   "private-indonesia-rare-presence": {
-    "name": "crwdns27172:0crwdne27172:0",
+    "name": "crwdns30039:0crwdne30039:0",
     "description": "crwdns26458:0crwdne26458:0",
     "schema": {
       "lat": "crwdns26460:0crwdne26460:0",
@@ -791,7 +791,7 @@
     }
   },
   "private-indonesia-zebrax-presence": {
-    "name": "crwdns27128:0crwdne27128:0",
+    "name": "crwdns30041:0crwdne30041:0",
     "description": "crwdns17443:0crwdne17443:0",
     "schema": {
       "lat": "crwdns17445:0crwdne17445:0",
@@ -891,20 +891,20 @@
     }
   },
   "private-panama-presence": {
-    "name": "crwdns27028:0crwdne27028:0",
-    "description": "crwdns27030:0crwdne27030:0",
+    "name": "crwdns30043:0crwdne30043:0",
+    "description": "crwdns30045:0crwdne30045:0",
     "schema": {
-      "flag": "crwdns27032:0crwdne27032:0",
+      "flag": "crwdns30047:0crwdne30047:0",
       "shiptype": {
-        "keyword": "crwdns27034:0crwdne27034:0",
+        "keyword": "crwdns30049:0crwdne30049:0",
         "enum": {
-          "carrier": "crwdns27036:0crwdne27036:0",
-          "fishing": "crwdns27038:0crwdne27038:0",
-          "oil_tanker": "crwdns27040:0crwdne27040:0"
+          "carrier": "crwdns30051:0crwdne30051:0",
+          "fishing": "crwdns30053:0crwdne30053:0",
+          "oil_tanker": "crwdns30055:0crwdne30055:0"
         }
       },
-      "vessel_id": "crwdns27042:0crwdne27042:0",
-      "vessel-groups": "crwdns27299:0crwdne27299:0"
+      "vessel_id": "crwdns30057:0crwdne30057:0",
+      "vessel-groups": "crwdns30059:0crwdne30059:0"
     }
   },
   "private-peru-fishing-effort": {
@@ -1142,7 +1142,7 @@
       },
       "vessel_id": "crwdns18634:0crwdne18634:0",
       "elevation_m": "crwdns18636:0crwdne18636:0",
-      "vessel-groups": "crwdns27301:0crwdne27301:0",
+      "vessel-groups": "crwdns30061:0crwdne30061:0",
       "distance_from_port_m": "crwdns18638:0crwdne18638:0",
       "distance_from_shore_m": "crwdns18640:0crwdne18640:0"
     }
@@ -1512,11 +1512,11 @@
   },
   "public-eez-areas": {
     "name": "crwdns29233:0crwdne29233:0",
-    "description": "crwdns29235:0crwdne29235:0",
+    "description": "crwdns30063:0crwdne30063:0",
     "schema": {}
   },
   "public-eez-areas-12nm": {
-    "name": "crwdns29205:0crwdne29205:0",
+    "name": "crwdns30065:0crwdne30065:0",
     "description": "crwdns29207:0crwdne29207:0",
     "schema": {}
   },
@@ -1542,7 +1542,7 @@
   },
   "public-fao-major": {
     "name": "crwdns29237:0crwdne29237:0",
-    "description": "crwdns29251:0crwdne29251:0",
+    "description": "crwdns30067:0crwdne30067:0",
     "schema": {}
   },
   "public-fisheries-restricted-areas": {
@@ -1591,23 +1591,23 @@
     }
   },
   "public-global-encounters-events": {
-    "name": "crwdns9883:0crwdne9883:0",
-    "description": "crwdns9885:0crwdne9885:0",
+    "name": "crwdns30069:0crwdne30069:0",
+    "description": "crwdns30071:0crwdne30071:0",
     "schema": {
-      "fields": "crwdns9887:0crwdne9887:0",
-      "event_id": "crwdns9889:0crwdne9889:0",
-      "event_end": "crwdns9891:0crwdne9891:0",
-      "vessel_id": "crwdns9893:0crwdne9893:0",
-      "event_info": "crwdns9895:0crwdne9895:0",
+      "fields": "crwdns30073:0crwdne30073:0",
+      "event_id": "crwdns30075:0crwdne30075:0",
+      "event_end": "crwdns30077:0crwdne30077:0",
+      "vessel_id": "crwdns30079:0crwdne30079:0",
+      "event_info": "crwdns30081:0crwdne30081:0",
       "event_type": {
-        "keyword": "crwdns9897:0crwdne9897:0",
+        "keyword": "crwdns30083:0crwdne30083:0",
         "enum": {
-          "port": "crwdns9899:0crwdne9899:0"
+          "port": "crwdns30085:0crwdne30085:0"
         }
       },
-      "event_start": "crwdns9901:0crwdne9901:0",
-      "event_vessels": "crwdns9903:0crwdne9903:0",
-      "event_mean_position": "crwdns9905:0crwdne9905:0"
+      "event_start": "crwdns30087:0crwdne30087:0",
+      "event_vessels": "crwdns30089:0crwdne30089:0",
+      "event_mean_position": "crwdns30091:0crwdne30091:0"
     }
   },
   "public-global-fishing-effort": {
@@ -1685,23 +1685,23 @@
     }
   },
   "public-global-loitering-events": {
-    "name": "crwdns26776:0crwdne26776:0",
-    "description": "crwdns26778:0crwdne26778:0",
+    "name": "crwdns30093:0crwdne30093:0",
+    "description": "crwdns30095:0crwdne30095:0",
     "schema": {
-      "fields": "crwdns26780:0crwdne26780:0",
-      "event_id": "crwdns26782:0crwdne26782:0",
-      "event_end": "crwdns26784:0crwdne26784:0",
-      "vessel_id": "crwdns26786:0crwdne26786:0",
-      "event_info": "crwdns26788:0crwdne26788:0",
+      "fields": "crwdns30097:0crwdne30097:0",
+      "event_id": "crwdns30099:0crwdne30099:0",
+      "event_end": "crwdns30101:0crwdne30101:0",
+      "vessel_id": "crwdns30103:0crwdne30103:0",
+      "event_info": "crwdns30105:0crwdne30105:0",
       "event_type": {
-        "keyword": "crwdns26790:0crwdne26790:0",
+        "keyword": "crwdns30107:0crwdne30107:0",
         "enum": {
-          "port": "crwdns26792:0crwdne26792:0"
+          "port": "crwdns30109:0crwdne30109:0"
         }
       },
-      "event_start": "crwdns26794:0crwdne26794:0",
-      "event_vessels": "crwdns26796:0crwdne26796:0",
-      "event_mean_position": "crwdns26798:0crwdne26798:0"
+      "event_start": "crwdns30111:0crwdne30111:0",
+      "event_vessels": "crwdns30113:0crwdne30113:0",
+      "event_mean_position": "crwdns30115:0crwdne30115:0"
     }
   },
   "public-global-presence": {
@@ -1820,8 +1820,8 @@
     "schema": {}
   },
   "public-graticules": {
-    "name": "crwdns29241:0crwdne29241:0",
-    "description": "crwdns29253:0crwdne29253:0",
+    "name": "crwdns30117:0crwdne30117:0",
+    "description": "crwdns30119:0crwdne30119:0",
     "schema": {}
   },
   "public-gs-as-simplified": {
@@ -1841,7 +1841,7 @@
   },
   "public-high-seas-pockets": {
     "name": "crwdns29285:0crwdne29285:0",
-    "description": "crwdns29287:0crwdne29287:0",
+    "description": "crwdns30121:0crwdne30121:0",
     "schema": {}
   },
   "public-indonesia-fishing-effort": {
@@ -1899,7 +1899,7 @@
           "Handline": "crwdns27164:0crwdne27164:0"
         }
       },
-      "vessel-groups": "crwdns27309:0crwdne27309:0"
+      "vessel-groups": "crwdns30123:0crwdne30123:0"
     }
   },
   "public-indonesia-pelagic-presence": {
@@ -1924,7 +1924,7 @@
     }
   },
   "public-indonesia-zebrax-presence": {
-    "name": "crwdns27142:0crwdne27142:0",
+    "name": "crwdns30125:0crwdne30125:0",
     "description": "crwdns10177:0crwdne10177:0",
     "schema": {
       "lat": "crwdns10179:0crwdne10179:0",
@@ -1950,7 +1950,7 @@
   },
   "public-mediterranean-area-of-interest-1": {
     "name": "crwdns25590:0crwdne25590:0",
-    "description": "crwdns25592:0crwdne25592:0",
+    "description": "crwdns30127:0crwdne30127:0",
     "schema": {}
   },
   "public-mexico-fishing-effort": {
@@ -2015,17 +2015,17 @@
   },
   "public-mpa-all": {
     "name": "crwdns29245:0crwdne29245:0",
-    "description": "crwdns29259:0crwdne29259:0",
+    "description": "crwdns30129:0crwdne30129:0",
     "schema": {}
   },
   "public-mpa-no-take": {
-    "name": "crwdns29255:0crwdne29255:0",
-    "description": "crwdns10277:0crwdne10277:0",
+    "name": "crwdns30131:0crwdne30131:0",
+    "description": "crwdns30133:0crwdne30133:0",
     "schema": {}
   },
   "public-mpa-no-take-partial": {
-    "name": "crwdns29249:0crwdne29249:0",
-    "description": "crwdns29227:0crwdne29227:0",
+    "name": "crwdns30135:0crwdne30135:0",
+    "description": "crwdns30137:0crwdne30137:0",
     "schema": {}
   },
   "public-mpa-restricted": {
@@ -2037,6 +2037,26 @@
     "name": "crwdns25606:0crwdne25606:0",
     "description": "crwdns25608:0crwdne25608:0",
     "schema": {}
+  },
+  "public-norway-fishing-effort": {
+    "name": "crwdns30147:0crwdne30147:0",
+    "description": "crwdns30149:0crwdne30149:0",
+    "schema": {
+      "lat": "crwdns30151:0crwdne30151:0",
+      "lon": "crwdns30153:0crwdne30153:0",
+      "flag": {
+        "keyword": "crwdns30155:0crwdne30155:0",
+        "enum": {
+          "NOR": "crwdns30157:0crwdne30157:0"
+        }
+      },
+      "hours": "crwdns30159:0crwdne30159:0",
+      "vessel_id": "crwdns30161:0crwdne30161:0",
+      "elevation_m": "crwdns30163:0crwdne30163:0",
+      "vessel-groups": "crwdns30165:0crwdne30165:0",
+      "distance_from_port_m": "crwdns30167:0crwdne30167:0",
+      "distance_from_shore_m": "crwdns30169:0crwdne30169:0"
+    }
   },
   "public-panama-fishing-effort": {
     "name": "crwdns10287:0crwdne10287:0",
@@ -2340,18 +2360,18 @@
     }
   },
   "public-rfmo": {
-    "name": "crwdns29229:0crwdne29229:0",
-    "description": "crwdns29257:0crwdne29257:0",
+    "name": "crwdns30139:0crwdne30139:0",
+    "description": "crwdns30141:0crwdne30141:0",
     "schema": {}
   },
   "public-tristan-seamounts-200-1618586314138": {
     "name": "crwdns25612:0crwdne25612:0",
-    "description": "crwdns25614:0crwdne25614:0",
+    "description": "crwdns30143:0crwdne30143:0",
     "schema": {}
   },
   "public-tristan-seamounts-3000-1618586349746": {
     "name": "crwdns25616:0crwdne25616:0",
-    "description": "crwdns25618:0crwdne25618:0",
+    "description": "crwdns30145:0crwdne30145:0",
     "schema": {}
   },
   "public-tristan-seamounts-existing-1618586378121": {
