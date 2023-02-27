@@ -2060,7 +2060,7 @@
   },
   "public-norway-presence": {
     "name": "Norway VMS",
-    "description": "Description pending",
+    "description": "Dados do sistema de monitoramento de embarcações são fornecidos pela Diretoria de Pesca da Noruega. Os dados são compilados utilizando o sistema de monitoramento de embarcações da Noruega e publicados com atraso de três dias, contendo informações sobre a identidade da embarcação, localização, velocidade, rumo, e movimentos. A camada de atividade apresenta um mapa de calor com a presença das embarcações. Cada ponto na camada de presença representa a posição de uma embarcação, é apresentada uma posição por hora de cada embarcação. Você pode selecionar uma posição para ver o rastreamento completo da embarcação.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
