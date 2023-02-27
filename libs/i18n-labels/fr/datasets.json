@@ -2060,7 +2060,7 @@
   },
   "public-norway-presence": {
     "name": "Norway VMS",
-    "description": "Description pending",
+    "description": "Les données du système de surveillance des navires (VMS) sont fournies par la Direction norvégienne des pêches. Les données sont collectées par le système norvégien de surveillance des navires via des satellites, sont publiées dans un délai de trois jours et contiennent des informations sur la localisation, la vitesse, la trajectoire et le mouvement des navires. La couche d'activité affiche une carte thermique de la présence des navires. Chaque point de la couche de présence représente une position du navire, mais toutes les positions ne sont pas affichées. Les positions des navires sont affichées une fois par heure. Vous pouvez sélectionner une position pour afficher la route complète du navire.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
