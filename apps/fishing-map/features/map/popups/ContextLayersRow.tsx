@@ -6,7 +6,7 @@ import {
   selectActiveHeatmapDataviews,
   selectHasAnalysisLayersVisible,
 } from 'features/dataviews/dataviews.selectors'
-import { getActivityDatasetsDownloadSupported } from 'features/datasets/datasets.utils'
+import { getActivityDatasetsReportSupported } from 'features/datasets/datasets.utils'
 import { isGuestUser, selectUserData } from 'features/user/user.slice'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { REPORT } from 'routes/routes'
@@ -29,7 +29,7 @@ const DownloadPopupButton: React.FC<DownloadPopupButtonProps> = ({
   const userData = useSelector(selectUserData)
   const activityDataviews = useSelector(selectActiveHeatmapDataviews)
   const hasAnalysableLayer = useSelector(selectHasAnalysisLayersVisible)
-  const datasetsReportAllowed = getActivityDatasetsDownloadSupported(
+  const datasetsReportAllowed = getActivityDatasetsReportSupported(
     activityDataviews,
     userData?.permissions || []
   )

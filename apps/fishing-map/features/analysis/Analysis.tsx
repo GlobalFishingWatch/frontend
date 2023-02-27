@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback, Fragment } from 'react'
+import { useEffect, useState, useMemo, useCallback } from 'react'
 import cx from 'classnames'
 import { Trans, useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
@@ -20,7 +20,7 @@ import {
   selectActiveHeatmapDataviews,
   selectHasAnalysisLayersVisible,
 } from 'features/dataviews/dataviews.selectors'
-import { getActivityDatasetsDownloadSupported } from 'features/datasets/datasets.utils'
+import { getActivityDatasetsReportSupported } from 'features/datasets/datasets.utils'
 import {
   selectAnalysisQuery,
   selectAnalysisTimeComparison,
@@ -83,7 +83,7 @@ function Analysis() {
   const analysisAreaLoading = analysisArea?.status === AsyncReducerStatus.Loading
 
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
-  const datasetsReportAllowed = getActivityDatasetsDownloadSupported(
+  const datasetsReportAllowed = getActivityDatasetsReportSupported(
     dataviews,
     userData?.permissions || []
   )

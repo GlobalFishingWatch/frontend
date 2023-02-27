@@ -25,7 +25,7 @@ import { getActivityFilters, getEventLabel } from 'utils/analytics'
 import { selectUserData } from 'features/user/user.slice'
 import {
   checkDatasetReportPermission,
-  getDatasetsDownloadNotSupported,
+  getDatasetsReportNotSupported,
 } from 'features/datasets/datasets.utils'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -58,7 +58,7 @@ function DownloadActivityByVessel() {
   const vesselDatasets = useSelector(selectActiveHeatmapVesselDatasets)
   const timeoutRef = useRef<NodeJS.Timeout>()
   const { start, end, timerange } = useTimerangeConnect()
-  const datasetsDownloadNotSupported = getDatasetsDownloadNotSupported(
+  const datasetsDownloadNotSupported = getDatasetsReportNotSupported(
     dataviews,
     userData?.permissions || []
   )
