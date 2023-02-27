@@ -67,7 +67,6 @@ export type ReportActivityGraph =
   | typeof REPORT_ACTIVITY_GRAPH_BEFORE_AFTER
   | typeof REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON
 
-export type ReportActivityType = 'evolution' | 'periodComparison' | 'beforeAfter'
 export type ReportActivityTimeComparison = {
   start: string
   compareStart: string

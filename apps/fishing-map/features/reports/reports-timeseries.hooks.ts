@@ -29,6 +29,7 @@ import {
 } from 'features/reports/reports-timeseries.utils'
 import { useAreaFitBounds } from 'features/map/map-viewport.hooks'
 import { useReportAreaHighlight } from 'features/reports/reports.hooks'
+import { selectShowTimeComparison } from 'features/reports/reports.selectors'
 
 export interface EvolutionGraphData {
   date: string
@@ -43,6 +44,7 @@ export interface ReportSublayerGraph {
     unit?: string
   }
 }
+
 export interface ReportGraphProps {
   timeseries: EvolutionGraphData[]
   sublayers: ReportSublayerGraph[]
@@ -73,8 +75,7 @@ export const useFilteredTimeSeriesByArea = (area?: Area) => {
   const [blur, setBlur] = useState(false)
   const areaGeometry = area?.geometry
   const reportType = useSelector(selectReportActivityGraph)
-  // const showTimeComparison = useSelector(selectShowTimeComparison)
-  const showTimeComparison = false
+  const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparison = useSelector(selectReportTimeComparison)
   const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
   const activityFeatures = useMapDataviewFeatures(temporalgridDataviews)

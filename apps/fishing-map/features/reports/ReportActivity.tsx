@@ -8,7 +8,7 @@ import {
   ReportGraphProps,
   useFilteredTimeSeriesByArea,
 } from 'features/reports/reports-timeseries.hooks'
-import { selectReportAreaIds } from 'features/reports/reports.selectors'
+import { selectReportAreaIds, selectTimeComparisonValues } from 'features/reports/reports.selectors'
 import { selectDatasetAreaDetail, selectDatasetAreaStatus } from 'features/areas/areas.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { ReportActivityGraph } from 'types'
@@ -40,14 +40,16 @@ export default function ReportActivity({ activityUnit }: ReportVesselTableProps)
   const reportAreaIds = useSelector(selectReportAreaIds)
   const reportArea = useSelector(selectDatasetAreaDetail(reportAreaIds))
   const reportAreaStatus = useSelector(selectDatasetAreaStatus(reportAreaIds))
-  const selectedReportActivityGraph = useSelector(selectReportActivityGraph)
+  const reportActivityGraph = useSelector(selectReportActivityGraph)
+  const timeComparisonValues = useSelector(selectTimeComparisonValues)
 
   const { loading, layersTimeseriesFiltered } = useFilteredTimeSeriesByArea(
     reportAreaStatus === AsyncReducerStatus.Finished ? reportArea : undefined
   )
+
   const ReportGraphComponent = useMemo(
-    () => REPORT_BY_TYPE[selectedReportActivityGraph],
-    [selectedReportActivityGraph]
+    () => REPORT_BY_TYPE[reportActivityGraph],
+    [reportActivityGraph]
   )
   return (
     <div className={styles.container}>
@@ -60,7 +62,11 @@ export default function ReportActivity({ activityUnit }: ReportVesselTableProps)
           <Spinner />
         </div>
       ) : (
-        <ReportGraphComponent start={start} end={end} data={layersTimeseriesFiltered?.[0]} />
+        <ReportGraphComponent
+          start={reportActivityGraph === 'evolution' ? start : timeComparisonValues.start}
+          end={reportActivityGraph === 'evolution' ? end : timeComparisonValues.end}
+          data={layersTimeseriesFiltered?.[0]}
+        />
       )}
     </div>
   )

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { SelectOption } from '@globalfishingwatch/ui-components'
 import { t } from 'features/i18n/i18n'
-import { ReportActivityType } from 'types'
+import { ReportActivityGraph } from 'types'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { selectReportTimeComparison } from 'features/app/app.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -26,12 +26,11 @@ const MAX_DATE = DEFAULT_WORKSPACE.availableEnd.slice(0, 10)
 export const MAX_DAYS_TO_COMPARE = 100
 export const MAX_MONTHS_TO_COMPARE = 12
 
-export const useReportTimeCompareConnect = (activityType: ReportActivityType) => {
+export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) => {
   const { dispatchQueryParams } = useLocationConnect()
   const { start: timebarStart, end: timebarEnd } = useTimerangeConnect()
   const [errorMsg, setErrorMsg] = useState(null)
   const timeComparison = useSelector(selectReportTimeComparison)
-  console.log(timeComparison)
   const durationType = timeComparison?.durationType
   const duration = timeComparison?.duration
 

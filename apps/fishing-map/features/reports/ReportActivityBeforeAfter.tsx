@@ -89,7 +89,7 @@ export default function ReportActivityGraph({ start, end, data }: ReportActivity
 
   return (
     <Fragment>
-      <ReportActivityBeforeAfterGraph data={data} start={start} end={end} />
+      {data && <ReportActivityBeforeAfterGraph data={data} start={start} end={end} />}
       <div className={styles.container}>
         <div className={styles.timeSelection}>
           <div className={styles.dateWrapper}>

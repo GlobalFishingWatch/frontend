@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import {
   ResponsiveContainer,
   CartesianGrid,
@@ -8,183 +8,186 @@ import {
   Line,
   ComposedChart,
   Area,
+  ReferenceLine,
 } from 'recharts'
-import { max, min } from 'lodash'
 import { DateTime } from 'luxon'
+import { useSelector } from 'react-redux'
 import { Interval } from '@globalfishingwatch/layer-composer'
+import { selectReportTimeComparison } from 'features/app/app.selectors'
+import { ReportActivityTimeComparison } from 'types'
 import i18n from 'features/i18n/i18n'
-import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
-import { toFixed } from 'utils/shared'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { ReportActivityProps } from 'features/reports/ReportActivity'
-import styles from './ReportActivityEvolution.module.css'
-import { tickFormatter } from './reports.utils'
+import { COLOR_PRIMARY_BLUE } from 'features/app/App'
+import { getUTCDateTime } from 'utils/dates'
+import { formatDate, formatTooltipValue, tickFormatter } from 'features/reports/reports.utils'
+import styles from './ReportActivityBeforeAfter.module.css'
 
-type ReportGraphTooltipProps = {
-  active: boolean
-  payload: {
-    name: string
-    dataKey: string
-    label: number
-    value: number
-    payload: any
-    color: string
-    unit: string
-  }[]
-  label: number
-  timeChunkInterval: Interval
+export interface ComparisonGraphData {
+  date: string
+  compareDate?: string
+  min: number[]
+  max: number[]
 }
 
-const formatTooltipValue = (value: number, payload: any, unit: string) => {
-  if (value === undefined || !payload?.range) {
-    return null
-  }
-  const index = payload.avg?.findIndex((avg: number) => avg === value)
-  const range = payload.range?.[index]
-  const difference = range ? range[1] - value : 0
-  const imprecision = value > 0 && (difference / value) * 100
-  // TODO review why abs is needed and why we have negative imprecision
-  const imprecisionFormatted = imprecision ? toFixed(Math.abs(imprecision), 0) : '0'
-  const valueFormatted = formatI18nNumber(value, { maximumFractionDigits: 2 })
-  const valueLabel = `${valueFormatted} ${unit ? unit : ''}`
-  const imprecisionLabel =
-    imprecisionFormatted !== '0' && valueFormatted !== '0' ? ` ± ${imprecisionFormatted}%` : ''
-  return valueLabel + imprecisionLabel
-}
-
-const ReportGraphTooltip = (props: any) => {
-  const { active, payload, label, timeChunkInterval } = props as ReportGraphTooltipProps
-
-  if (active && payload && payload.length) {
-    const date = getUTCDateTime(label).setLocale(i18n.language)
-    const formattedLabel = formatDateForInterval(date, timeChunkInterval)
-    const formattedValues = payload.filter(({ name }) => {
-      return name === 'line'
-    })
-    return (
-      <div className={styles.tooltipContainer}>
-        <p className={styles.tooltipLabel}>{formattedLabel}</p>
-        <ul>
-          {formattedValues
-            .sort((a, b) => b.value - a.value)
-            .map(({ value, payload, color, unit }, index) => {
-              return (
-                <li key={index} className={styles.tooltipValue}>
-                  <span className={styles.tooltipValueDot} style={{ color }}></span>
-                  {formatTooltipValue(value, payload, unit)}
-                </li>
-              )
-            })}
-        </ul>
-      </div>
-    )
-  }
-
-  return null
-}
-
-const formatDateTicks = (tick: string, timeChunkInterval: Interval) => {
-  const date = getUTCDateTime(tick).setLocale(i18n.language)
-  return formatDateForInterval(date, timeChunkInterval)
-}
-
-const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
-
-export default function ReportActivityBeforeAfterGraph({ start, end, data }: ReportActivityProps) {
-  const dataFormated = useMemo(() => {
-    return data?.timeseries
-      ?.map(({ date, min, max }) => {
-        const range = min.map((m, i) => [m, max[i]])
-        const avg = min.map((m, i) => (m + max[i]) / 2)
-        return {
-          date: new Date(date).getTime(),
-          range,
-          avg,
-        }
-      })
-      .filter((d) => {
-        return !isNaN(d.avg[0])
-      })
-  }, [data?.timeseries])
-
-  const domain = useMemo(() => {
-    if (start && end && data?.interval) {
-      const cleanEnd = DateTime.fromISO(end, { zone: 'utc' })
-        .minus({ [data?.interval]: 1 })
-        .toISO()
-      return [new Date(start).getTime(), new Date(cleanEnd).getTime()]
+export interface ComparisonGraphProps {
+  timeseries: ComparisonGraphData[]
+  sublayers: {
+    id: string
+    legend: {
+      color?: string
+      unit?: string
     }
-  }, [start, end, data?.interval])
+  }[]
+  interval: Interval
+}
 
-  if (!dataFormated || !domain) {
-    return null
+const formatDateTicks = (tick: number, timeComparison: ReportActivityTimeComparison) => {
+  const dtTick = getUTCDateTime(tick)
+  const dtStart = getUTCDateTime(timeComparison.compareStart)
+  if (tick !== dtStart.toMillis()) {
+    const diff = dtTick.diff(dtStart, timeComparison.durationType as any).toObject()
+    const diffValue = Math.round(diff[timeComparison.durationType as any])
+    const sign = diffValue > 0 ? '+' : ''
+    return [sign, diffValue].join('')
   }
+  const date = dtTick.setLocale(i18n.language)
+  let formattedTick = ''
+  switch (timeComparison.durationType) {
+    case 'months':
+      formattedTick = date.toFormat('LLL y')
+      break
+    default:
+      formattedTick = date.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)
+      break
+  }
+  return formattedTick
+}
 
-  const dataMin: number = dataFormated.length
-    ? (min(dataFormated.flatMap(({ range }) => range[0][0])) as number)
-    : 0
-  const dataMax: number = dataFormated.length
-    ? (max(dataFormated.flatMap(({ range }) => range[0][1])) as number)
-    : 0
+const AnalysisGraphTooltip = (props: any) => {
+  const { payload, timeChunkInterval } = props
 
-  const domainPadding = (dataMax - dataMin) / 8
-  const paddedDomain: [number, number] = [
-    Math.max(0, Math.floor(dataMin - domainPadding)),
-    Math.ceil(dataMax + domainPadding),
-  ]
+  const avgLineValue = payload?.find((p) => p.name === 'line')
+  if (!avgLineValue) return null
+
+  const date = getUTCDateTime(avgLineValue.payload.date).setLocale(i18n.language)
+  return (
+    <div className={styles.tooltipContainer}>
+      <p className={styles.tooltipLabel}>{formatDate(date, timeChunkInterval)}</p>
+      <span className={styles.tooltipValue}>
+        {formatTooltipValue(avgLineValue.payload.avg as number, avgLineValue.unit as string)}
+      </span>
+    </div>
+  )
+}
+
+const AnalysisBeforeAfterGraph: React.FC<{
+  data: ComparisonGraphProps
+  start: string
+  end: string
+}> = (props) => {
+  const { start, end } = props
+  const { timeseries, sublayers, interval } = props.data
+  const timeComparison = useSelector(selectReportTimeComparison)
+
+  const dtStart = useMemo(() => {
+    return getUTCDateTime(timeComparison.compareStart)
+  }, [timeComparison.compareStart])
+
+  const range = useMemo(() => {
+    const values = timeseries?.flatMap(({ date, compareDate, min, max }) => {
+      return [
+        {
+          date: getUTCDateTime(date)?.toMillis(),
+          range: [min[0], max[0]],
+          avg: (max[0] + min[0]) / 2,
+        },
+        {
+          date: getUTCDateTime(compareDate)?.toMillis(),
+          range: [min[1], max[1]],
+          avg: (max[1] + min[1]) / 2,
+        },
+      ]
+    })
+    values.sort((v1, v2) => v2.date - v1.date)
+
+    return values
+  }, [timeseries])
+
+  const ticks = useMemo(() => {
+    const finalTicks = [dtStart.toMillis()]
+    const FRACTION_OF_AXIS_WITHOUT_TICKS = 0.35
+    const startTicksAt = Math.ceil(timeComparison.duration * FRACTION_OF_AXIS_WITHOUT_TICKS)
+    for (let i = startTicksAt; i <= timeComparison.duration; i++) {
+      finalTicks.push(
+        dtStart
+          .plus({ [timeComparison.durationType]: i })
+          .toUTC()
+          .toMillis()
+      )
+      finalTicks.push(
+        dtStart
+          .minus({ [timeComparison.durationType]: i })
+          .toUTC()
+          .toMillis()
+      )
+    }
+    finalTicks.sort()
+    return finalTicks
+  }, [timeComparison, dtStart])
+
+  const unit = useMemo(() => {
+    return sublayers[0].legend.unit
+  }, [sublayers])
+
+  if (!range) return null
 
   return (
     <div className={styles.graph}>
-      <ResponsiveContainer width="100%" height="100%">
-        <ComposedChart data={dataFormated} margin={graphMargin}>
+      <ResponsiveContainer width="100%" height={240}>
+        <ComposedChart data={range} margin={{ top: 15, right: 20, left: -20, bottom: -10 }}>
           <CartesianGrid vertical={false} />
           <XAxis
-            domain={domain}
+            domain={[getUTCDateTime(start).toMillis(), getUTCDateTime(end).toMillis()]}
             dataKey="date"
             interval="preserveStartEnd"
-            tickFormatter={(tick: string) => formatDateTicks(tick, data?.interval)}
-            axisLine={paddedDomain[0] === 0}
-            // scale={'time'}
+            tickFormatter={(tick: number) => formatDateTicks(tick, timeComparison)}
+            scale={'time'}
             type={'number'}
+            ticks={ticks}
           />
           <YAxis
             scale="linear"
-            domain={paddedDomain}
             interval="preserveEnd"
             tickFormatter={tickFormatter}
             axisLine={false}
             tickLine={false}
             tickCount={4}
           />
-          <Tooltip content={<ReportGraphTooltip timeChunkInterval={data?.interval} />} />
-          {data?.sublayers.map(({ id, legend }, index) => (
-            <Line
-              key={`${id}-line`}
-              name="line"
-              type="monotone"
-              dataKey={(data) => data.avg?.[index]}
-              unit={legend.unit}
-              dot={false}
-              isAnimationActive={false}
-              stroke={legend.color}
-              strokeWidth={2}
-            />
-          ))}
-          {data?.sublayers.map(({ id, legend }, index) => (
-            <Area
-              key={`${id}-area`}
-              name="area"
-              type="monotone"
-              dataKey={(data) => data.range?.[index]}
-              activeDot={false}
-              fill={legend.color}
-              stroke="none"
-              fillOpacity={0.2}
-              isAnimationActive={false}
-            />
-          ))}
+          <ReferenceLine x={dtStart.toMillis()} stroke={COLOR_PRIMARY_BLUE} />
+          <Tooltip content={<AnalysisGraphTooltip timeChunkInterval={interval} />} />
+          <Line
+            name="line"
+            type="monotone"
+            dataKey="avg"
+            unit={unit}
+            dot={false}
+            isAnimationActive={false}
+            stroke={COLOR_PRIMARY_BLUE}
+            strokeWidth={2}
+          />
+          <Area
+            name="area"
+            type="monotone"
+            dataKey="range"
+            activeDot={false}
+            fill={COLOR_PRIMARY_BLUE}
+            stroke="none"
+            fillOpacity={0.2}
+            isAnimationActive={false}
+          />
         </ComposedChart>
       </ResponsiveContainer>
     </div>
   )
 }
+
+export default AnalysisBeforeAfterGraph
