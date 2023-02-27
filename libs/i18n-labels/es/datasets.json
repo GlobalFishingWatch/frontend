@@ -2060,7 +2060,7 @@
   },
   "public-norway-presence": {
     "name": "Norway VMS",
-    "description": "Description pending",
+    "description": "Esta capa utiliza los datos del sistema de monitoreo de embarcaciones (VMS) proporcionados por la Dirección de Pesca de Noruega. Los datos son recibidos por el sistema VMS de Noruega vía satélite y se publican con un retraso de tres días conteniendo información sobre la ubicación, velocidad, rumbo y movimiento de las embarcaciones. La capa de actividad muestra un mapa de calor de la presencia de embarcaciones. Cada punto en la capa de presencia representa una posición de las embarcaciones, sin embargo no son mostradas todas las posiciones. Las posiciones de las embarcaciones se muestran una vez por hora. Haga clic en la posición de un barco para ver la ruta completa de la embarcación.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
