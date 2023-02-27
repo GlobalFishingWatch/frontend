@@ -1,13 +1,11 @@
 import { Fragment } from 'react'
 import cx from 'classnames'
-import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { WorkspaceLoginError } from 'features/workspace/WorkspaceError'
 import { selectLocationDatasetId, selectLocationAreaId } from 'routes/routes.selectors'
 import styles from './ReportVesselsPlaceholder.module.css'
 
-export default function ReportVesselsPlaceholder() {
-  const { t } = useTranslation()
+export default function ReportVesselsPlaceholder({ title }: { title: string }) {
   const datasetId = useSelector(selectLocationDatasetId)
   const areaId = useSelector(selectLocationAreaId)
   const tableRows = Array(11).fill('')
@@ -60,7 +58,7 @@ export default function ReportVesselsPlaceholder() {
             <div className={cx(styles.block, styles.thick, styles.marginV)} />
             {/* table */}
             {tableRows.map((_, index) => (
-              <Fragment>
+              <Fragment key={index}>
                 <div className={cx(styles.flex, styles.spaceBetween)}>
                   <div className={styles.block} />
                   <div className={styles.block} />
@@ -78,7 +76,7 @@ export default function ReportVesselsPlaceholder() {
         </div>
         <div className={styles.cover}>
           <WorkspaceLoginError
-            title={t('errors.privateReport', 'Login to see the vessels active in the area')}
+            title={title}
             emailSubject={`Requesting access for ${datasetId}-${areaId} report`}
           />
         </div>

@@ -194,7 +194,7 @@ export const getRelatedDatasetsByType = (
 
 export const getActiveDatasetsInActivityDataviews = (
   dataviews: UrlDataviewInstance<GeneratorType>[]
-) => {
+): string[] => {
   return dataviews.flatMap((dataview) => {
     return dataview?.config?.datasets || []
   })

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
+import { UserData } from '@globalfishingwatch/api-types'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectLocationDatasetId, selectLocationAreaId } from 'routes/routes.selectors'
 import { selectActiveReportDataviews, selectTimeRange } from 'features/app/app.selectors'
@@ -12,8 +13,9 @@ import {
   selectDatasetAreaDetail,
   selectDatasetAreaStatus,
 } from 'features/areas/areas.slice'
-import { selectReportAreaIds } from 'features/reports/reports.selectors'
+import { selectIsReportAllowed, selectReportAreaIds } from 'features/reports/reports.selectors'
 import useMapInstance from 'features/map/map-context.hooks'
+import { selectUserData } from 'features/user/user.slice'
 import {
   fetchReportVesselsThunk,
   selectReportVesselsData,
@@ -64,8 +66,24 @@ export function useFetchReportArea() {
   return useMemo(() => ({ status, data }), [status, data])
 }
 
+function getReportDataviews(dataviews: UrlDataviewInstance[], userData: UserData) {
+  return dataviews
+    .map((dataview) => {
+      const datasets = getActiveDatasetsInActivityDataviews([dataview])
+      return {
+        datasets: datasets,
+        filter: dataview.config?.filter || [],
+        ...(dataview.config?.['vessel-groups']?.length && {
+          vesselGroups: dataview.config?.['vessel-groups'],
+        }),
+      }
+    })
+    .filter((dataview) => dataview.datasets.length > 0)
+}
+
 export function useFetchReportVessel() {
   const dispatch = useAppDispatch()
+  const userData = useSelector(selectUserData)
   const timerange = useSelector(selectTimeRange)
   const datasetId = useSelector(selectLocationDatasetId)
   const areaId = useSelector(selectLocationAreaId)
@@ -73,19 +91,11 @@ export function useFetchReportVessel() {
   const status = useSelector(selectReportVesselsStatus)
   const error = useSelector(selectReportVesselsError)
   const data = useSelector(selectReportVesselsData)
+  const reportAllowed = useSelector(selectIsReportAllowed)
 
   useEffect(() => {
-    const reportDataviews = dataviews
-      .map((dataview) => ({
-        datasets: getActiveDatasetsInActivityDataviews([dataview as UrlDataviewInstance]),
-        filter: dataview.config?.filter || [],
-        ...(dataview.config?.['vessel-groups']?.length && {
-          vesselGroups: dataview.config?.['vessel-groups'],
-        }),
-      }))
-      .filter((dataview) => dataview.datasets.length > 0)
-
-    if (areaId && reportDataviews?.length) {
+    const reportDataviews = getReportDataviews(dataviews, userData)
+    if (reportAllowed && areaId && reportDataviews?.length) {
       dispatch(
         fetchReportVesselsThunk({
           datasets: reportDataviews.map(({ datasets }) => datasets.join(',')),
@@ -100,7 +110,10 @@ export function useFetchReportVessel() {
         })
       )
     }
-  }, [dispatch, areaId, datasetId, timerange, dataviews])
+  }, [dispatch, areaId, datasetId, timerange, dataviews, userData, reportAllowed])
 
-  return useMemo(() => ({ status, data, error }), [status, data, error])
+  return useMemo(
+    () => ({ status, data, error, reportAllowed }),
+    [status, data, error, reportAllowed]
+  )
 }
