@@ -119,7 +119,7 @@ export default function ReportActivityGraph({ start, end, data }: ReportActivity
   return (
     <div className={styles.graph}>
       <ResponsiveContainer width="100%" height="100%">
-        <ComposedChart data={data.timeseries} margin={graphMargin}>
+        <ComposedChart data={dataFormated} margin={graphMargin}>
           <CartesianGrid vertical={false} />
           <XAxis
             domain={domain}
@@ -158,7 +158,7 @@ export default function ReportActivityGraph({ start, end, data }: ReportActivity
               key={`${id}-area`}
               name="area"
               type="monotone"
-              dataKey={(data) => data.range[index]}
+              dataKey={(data) => data.range?.[index]}
               activeDot={false}
               fill={legend.color}
               stroke="none"
