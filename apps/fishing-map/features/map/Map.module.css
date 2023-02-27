@@ -26,6 +26,20 @@
   .legend .currentValue {
     display: none;
   }
+
+  .container :global(.maplibregl-map) {
+    height: max-content !important;
+  }
+
+  .container :global(.maplibregl-canvas) {
+    width: 100% !important;
+    height: auto !important;
+    position: relative;
+  }
+
+  .container :global(.maplibregl-ctrl-attrib-button) {
+    display: none;
+  }
 }
 
 .legendLabel {
