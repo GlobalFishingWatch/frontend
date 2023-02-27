@@ -44,7 +44,8 @@ export default function Report() {
     },
   ]
   const filteredCategoryTabs = categoryTabs.filter((tab) => dataviewCategories.includes(tab.id))
-  const { status: reportStatus, error: statusError } = useFetchReportVessel()
+
+  const { status: reportStatus, error: statusError, reportAllowed } = useFetchReportVessel()
   const { data: areaDetail } = useFetchReportArea()
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const hasReportVessels = useSelector(selectHasReportVessels)
@@ -79,7 +80,11 @@ export default function Report() {
       <Fragment>
         {Header}
         <ReportActivity activityUnit={activityUnit} />
-        {hasAuthError && <ReportVesselsPlaceholder />}
+        {hasAuthError && (
+          <ReportVesselsPlaceholder
+            title={t('errors.reportLogin', 'Login to see the vessels active in the area')}
+          />
+        )}
         {hasNoReportVessels && (
           <p>{t('analysis.noDataByArea', 'No data available for the selected area')}</p>
         )}
@@ -87,12 +92,30 @@ export default function Report() {
     )
   }
 
-  if (reportStatus !== AsyncReducerStatus.Finished) {
+  if (
+    workspaceStatus === AsyncReducerStatus.Loading ||
+    reportStatus === AsyncReducerStatus.Loading
+  ) {
     return (
       <Fragment>
         {Header}
         <ReportActivity activityUnit={activityUnit} />
         <Spinner />
+      </Fragment>
+    )
+  }
+
+  if (reportStatus === AsyncReducerStatus.Idle && !reportAllowed) {
+    return (
+      <Fragment>
+        {Header}
+        <ReportActivity activityUnit={activityUnit} />
+        <ReportVesselsPlaceholder
+          title={t(
+            'errors.privateReport',
+            "Your account doesn't have permissions to see the vessels active in this area"
+          )}
+        />
       </Fragment>
     )
   }

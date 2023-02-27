@@ -39,9 +39,11 @@ export default function ReportDownload(props: ReportDownloadProps) {
         <Button type="secondary" onClick={handleMoreOptionsClick}>
           {t('download.moreOptions', 'More options')}
         </Button>
-        <CSVLink filename={`${reportName} - ${start},${end}.csv`} data={reportActivityData}>
-          <Button>{t('download.title', 'Download')}</Button>
-        </CSVLink>
+        {reportActivityData && (
+          <CSVLink filename={`${reportName} - ${start},${end}.csv`} data={reportActivityData}>
+            <Button>{t('download.title', 'Download')}</Button>
+          </CSVLink>
+        )}
       </div>
     </div>
   )

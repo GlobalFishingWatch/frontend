@@ -33,9 +33,7 @@ export default function ReportActivity({ activityUnit }: ReportVesselTableProps)
         <ReportActivityGraphSelector />
       </div>
       {loading ? (
-        <div className={styles.graphContainer}>
-          <Spinner />
-        </div>
+        <Spinner />
       ) : (
         <ReportActivityGraph start={start} end={end} data={layersTimeseriesFiltered?.[0]} />
       )}

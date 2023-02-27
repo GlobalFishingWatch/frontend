@@ -11,8 +11,15 @@ import {
 } from 'features/app/app.selectors'
 import { REPORT_VESSELS_PER_PAGE } from 'data/config'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
+import {
+  getActiveDatasetsInActivityDataviews,
+  getActivityDatasetsReportSupported,
+  getRelatedDatasetsByType,
+} from 'features/datasets/datasets.utils'
 import { selectLocationAreaId, selectLocationDatasetId } from 'routes/routes.selectors'
+import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import { selectUserData } from 'features/user/user.slice'
 import { selectReportVesselsData } from './reports.slice'
 
 export const DEFAULT_NULL_VALUE = 'NULL'
@@ -201,5 +208,19 @@ export const selectReportVesselsPagination = createSelector(
       resultsNumber: vessels?.length,
       total: allVessels?.length,
     }
+  }
+)
+
+export const selectIsReportAllowed = createSelector(
+  [selectWorkspaceStatus, selectActiveReportDataviews, selectUserData],
+  (workspaceStatus, reportDataviews, userData) => {
+    if (workspaceStatus !== AsyncReducerStatus.Finished) {
+      return false
+    }
+    const datasetsReportAllowed = uniq(
+      getActivityDatasetsReportSupported(reportDataviews, userData?.permissions)
+    )
+    const dataviewDatasets = uniq(getActiveDatasetsInActivityDataviews(reportDataviews))
+    return datasetsReportAllowed?.length === dataviewDatasets?.length
   }
 )
