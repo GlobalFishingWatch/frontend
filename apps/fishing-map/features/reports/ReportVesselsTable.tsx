@@ -102,7 +102,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
             const pinTrackDisabled = !hasDatasets
             const isLastRow = i === vessels.length - 1
             return (
-              <Fragment>
+              <Fragment key={vessel.vesselId}>
                 {!pinTrackDisabled && (
                   <div className={cx({ [styles.border]: !isLastRow }, styles.icon)}>
                     <IconButton
