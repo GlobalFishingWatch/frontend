@@ -19,6 +19,7 @@ import {
 } from 'features/dataviews/dataviews.slice'
 import { TimebarVisualisations } from 'types'
 import { selectTimebarSelectedEnvId } from 'features/app/app.selectors'
+import { createDeepEqualSelector } from 'utils/selectors'
 
 const defaultBasemapDataview = {
   id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
@@ -154,7 +155,7 @@ export const selectActiveNonTrackEnvironmentalDataviews = createSelector(
 
 export const selectActiveTemporalgridDataviews: (
   state: any
-) => UrlDataviewInstance<GeneratorType>[] = createSelector(
+) => UrlDataviewInstance<GeneratorType>[] = createDeepEqualSelector(
   [
     selectActiveActivityDataviews,
     selectActiveDetectionsDataviews,

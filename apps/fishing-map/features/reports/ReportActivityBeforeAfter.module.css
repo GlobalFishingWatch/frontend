@@ -1,0 +1,49 @@
+.layerPanel {
+  width: 100%;
+  display: flex;
+}
+
+.container {
+  display: flex;
+  padding: var(--space-M);
+  width: 100%;
+}
+
+.graphContainer {
+  width: 100%;
+  min-height: 28rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timeSelection {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: var(--space-S);
+  justify-content: space-between;
+}
+
+.dateWrapper {
+  flex: 1;
+}
+
+.durationWrapper {
+  display: flex;
+  align-items: flex-end;
+  padding-left: 3rem;
+}
+
+.duration {
+  width: var(--size-L);
+}
+
+.durationType {
+  width: 10rem;
+}
+
+.blur {
+  filter: blur(5px);
+  pointer-events: none;
+}

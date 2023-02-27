@@ -7,9 +7,9 @@ import { atom, selector, useRecoilState } from 'recoil'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import {
-  selectAnalysisTimeComparison,
-  selectAnalysisTypeQuery,
+  selectReportActivityGraph,
   selectReportAreaSource,
+  selectReportTimeComparison,
   selectTimeRange,
 } from 'features/app/app.selectors'
 import {
@@ -72,10 +72,10 @@ export const useFilteredTimeSeriesByArea = (area?: Area) => {
   const [timeseries, setTimeseries] = useRecoilState(mapTimeseriesAtom)
   const [blur, setBlur] = useState(false)
   const areaGeometry = area?.geometry
-  const analysisType = useSelector(selectAnalysisTypeQuery)
+  const reportType = useSelector(selectReportActivityGraph)
   // const showTimeComparison = useSelector(selectShowTimeComparison)
   const showTimeComparison = false
-  const timeComparison = useSelector(selectAnalysisTimeComparison)
+  const timeComparison = useSelector(selectReportTimeComparison)
   const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
   const activityFeatures = useMapDataviewFeatures(temporalgridDataviews)
   const { start: timebarStart, end: timebarEnd } = useSelector(selectTimeRange)
@@ -122,14 +122,14 @@ export const useFilteredTimeSeriesByArea = (area?: Area) => {
     [showTimeComparison, compareDeltaMillis, setTimeseries]
   )
 
-  const analysisEvolutionChange =
-    analysisType === 'beforeAfter' || analysisType === 'periodComparison' ? 'time' : analysisType
+  const reportEvolutionChange =
+    reportType === 'beforeAfter' || reportType === 'periodComparison' ? 'time' : reportType
 
   useEffect(() => {
     setTimeseries(undefined)
     setBlur(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [area?.id, analysisEvolutionChange])
+  }, [area?.id, reportEvolutionChange])
 
   useEffect(() => {
     if (timeseries) {

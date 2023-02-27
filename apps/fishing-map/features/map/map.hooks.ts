@@ -30,13 +30,13 @@ import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedEvents, setHighlightedEvents } from 'features/timebar/timebar.slice'
 import { setHintDismissed } from 'features/hints/hints.slice'
-import {
-  selectShowTimeComparison,
-  selectTimeComparisonValues,
-} from 'features/analysis/analysis.selectors'
 import { useMapClusterTilesLoaded, useMapSourceTiles } from 'features/map/map-sources.hooks'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
+import {
+  selectShowTimeComparison,
+  selectTimeComparisonValues,
+} from 'features/reports/reports.selectors'
 import {
   selectDefaultMapGeneratorsConfig,
   WORKSPACES_POINTS_TYPE,
