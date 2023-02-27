@@ -36,6 +36,7 @@ export default function ReportVesselsGraphSelector(props: ReportVesselsGraphProp
     <div>
       <Select
         type="secondary"
+        align="right"
         options={options}
         selectedOption={selectedOption}
         onSelect={onSelect}

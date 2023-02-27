@@ -20,6 +20,7 @@ interface SelectProps {
   containerClassName?: string
   className?: string
   direction?: 'bottom' | 'top'
+  align?: 'left' | 'right'
   disabled?: boolean
   type?: 'primary' | 'secondary'
 }
@@ -41,6 +42,7 @@ export function Select(props: SelectProps) {
     containerClassName = '',
     className = '',
     direction = 'bottom',
+    align = 'left',
     disabled = false,
     onToggleButtonClick,
     type = 'primary',
@@ -119,7 +121,10 @@ export function Select(props: SelectProps) {
             {...getToggleButtonProps()}
           ></IconButton>
         </div>
-        <ul {...getMenuProps()} className={cx(styles.optionsContainer, styles[direction])}>
+        <ul
+          {...getMenuProps()}
+          className={cx(styles.optionsContainer, styles[direction], styles[align])}
+        >
           {isOpen &&
             options.length > 0 &&
             options.map((item, index) => {

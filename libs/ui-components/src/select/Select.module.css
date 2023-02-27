@@ -41,7 +41,7 @@
   color: var(--color-secondary-blue);
 }
 
-.isOpen {
+:not(.secondary).isOpen {
   background: var(--color-white);
   box-shadow: var(--box-shadow);
   z-index: 11;
@@ -73,6 +73,15 @@
   max-height: 24rem;
   overflow: auto;
   z-index: 10;
+}
+
+.secondary .optionsContainer {
+  min-width: max-content;
+}
+
+.secondary .optionsContainer.right {
+  left: unset;
+  right: 0;
 }
 
 .optionsContainer.bottom {
