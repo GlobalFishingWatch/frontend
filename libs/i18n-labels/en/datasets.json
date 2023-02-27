@@ -2060,7 +2060,7 @@
   },
   "public-norway-presence": {
     "name": "Norway VMS",
-    "description": "Description pending",
+    "description": "Vessel monitoring system (VMS) data is provided by the The Norwegian Directorate of Fisheries. Data is collected using Norway's vessel monitoring system via satellites and is published on a three-day delay containing information on vessels' location, speed, course, and movement. The activity layer displays a heatmap of vessel presence.  Each point in the presence layer represents a position of the vessel, but not all positions are displayed. Vessel positions are displayed once per hour. You can select a position to view the vessel's complete track.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
