@@ -15,6 +15,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import useMapInstance from 'features/map/map-context.hooks'
 import { Bbox } from 'types'
+import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { setClickedEvent } from '../map.slice'
 import { TooltipEventFeature } from '../map.hooks'
 import { useMapFitBounds } from '../map-viewport.hooks'
@@ -47,6 +48,7 @@ export const useContextInteractions = () => {
   const dispatch = useAppDispatch()
   const highlightArea = useHighlightArea()
   const { areaId, sourceId } = useSelector(selectAnalysisQuery) || {}
+  const datasets = useSelector(selectAllDatasets)
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const fitMapBounds = useMapFitBounds()
 
@@ -59,16 +61,19 @@ export const useContextInteractions = () => {
       }
 
       const datasetId = feature.datasetId
-      const areaName = feature.value || feature.title
-      batch(() => {
-        dispatch(setDownloadActivityAreaKey({ datasetId, areaId }))
-        dispatch(setClickedEvent(null))
-      })
-      dispatch(fetchAreaDetailThunk({ datasetId, areaId, areaName }))
+      const dataset = datasets.find((d) => d.id === datasetId)
+      if (dataset) {
+        const areaName = feature.value || feature.title
+        batch(() => {
+          dispatch(setDownloadActivityAreaKey({ datasetId, areaId }))
+          dispatch(setClickedEvent(null))
+        })
+        dispatch(fetchAreaDetailThunk({ dataset, areaId, areaName }))
+      }
 
       cleanFeatureState('highlight')
     },
-    [cleanFeatureState, dispatch]
+    [cleanFeatureState, dispatch, datasets]
   )
 
   const setAnalysisArea = useCallback(

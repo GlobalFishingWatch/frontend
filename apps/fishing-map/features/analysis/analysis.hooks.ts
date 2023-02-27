@@ -42,6 +42,7 @@ import {
 } from 'features/areas/areas.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getUTCDateTime } from 'utils/dates'
+import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { filterByPolygon } from './analysis-geo.utils'
 import { AnalysisGraphProps } from './AnalysisEvolutionGraph'
 import { selectAnalysisArea, selectShowTimeComparison } from './analysis.selectors'
@@ -182,6 +183,7 @@ export const useAnalysisArea = () => {
   const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
   const contextDataviews = useSelector(selectContextAreasDataviews)
   const { areaId, sourceId, datasetId } = useSelector(selectAnalysisQuery)
+  const analysisDataset = useSelector(selectDatasetById(datasetId))
   const analysisArea = useSelector(selectAnalysisArea)
   const { status, data: { bounds } = {} } = analysisArea || ({} as DatasetAreaDetail)
 
@@ -230,10 +232,10 @@ export const useAnalysisArea = () => {
 
   const areaName = contextDataviews?.find(({ id }) => id === sourceId)?.datasets?.[0].name
   useEffect(() => {
-    if (areaId && datasetId) {
-      fetchAnalysisArea({ datasetId, areaId, areaName })
+    if (areaId && analysisDataset) {
+      fetchAnalysisArea({ dataset: analysisDataset, areaId, areaName })
     }
-  }, [areaId, datasetId, fetchAnalysisArea, areaName])
+  }, [areaId, analysisDataset, fetchAnalysisArea, areaName])
 
   useEffect(() => {
     if (status === AsyncReducerStatus.Finished) {
