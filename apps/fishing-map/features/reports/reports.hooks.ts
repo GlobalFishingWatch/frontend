@@ -4,6 +4,7 @@ import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { UserData } from '@globalfishingwatch/api-types'
+import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectLocationDatasetId, selectLocationAreaId } from 'routes/routes.selectors'
 import { selectActiveReportDataviews, selectTimeRange } from 'features/app/app.selectors'
@@ -17,12 +18,51 @@ import { selectIsReportAllowed, selectReportAreaIds } from 'features/reports/rep
 import useMapInstance from 'features/map/map-context.hooks'
 import { selectUserData } from 'features/user/user.slice'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
+import { Bbox } from 'types'
+import useViewport, { getMapCoordinatesFromBounds } from 'features/map/map-viewport.hooks'
+import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
 import {
   fetchReportVesselsThunk,
   selectReportVesselsData,
   selectReportVesselsError,
   selectReportVesselsStatus,
 } from './reports.slice'
+
+export function useReportAreaCenter(bounds: Bbox) {
+  const map = useMapInstance()
+  return useMemo(() => {
+    if (!bounds) return null
+
+    const wrapBbox = wrapBBoxLongitudes(bounds)
+    const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(map, wrapBbox, {
+      padding: FIT_BOUNDS_ANALYSIS_PADDING,
+    })
+    return { latitude, longitude, zoom }
+  }, [bounds, map])
+}
+
+export function useReportAreaInViewport() {
+  const { viewport } = useViewport()
+  const reportAreaIds = useSelector(selectReportAreaIds)
+  const area = useSelector(selectDatasetAreaDetail(reportAreaIds))
+  const areaCenter = useReportAreaCenter(area?.bounds)
+  return (
+    viewport?.latitude === areaCenter?.latitude && viewport?.longitude === areaCenter?.longitude
+  )
+}
+
+export function useFitAreaInViewport() {
+  const { setMapCoordinates } = useViewport()
+  const reportAreaIds = useSelector(selectReportAreaIds)
+  const area = useSelector(selectDatasetAreaDetail(reportAreaIds))
+  const areaCenter = useReportAreaCenter(area?.bounds)
+  const areaInViewport = useReportAreaInViewport()
+  return useCallback(() => {
+    if (!areaInViewport) {
+      setMapCoordinates(areaCenter)
+    }
+  }, [areaCenter, areaInViewport, setMapCoordinates])
+}
 
 export function useReportAreaHighlight(areaId: string, sourceId: string) {
   const { updateFeatureState, cleanFeatureState } = useFeatureState(useMapInstance())

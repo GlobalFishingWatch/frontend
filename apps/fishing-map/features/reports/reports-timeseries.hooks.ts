@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { Polygon, MultiPolygon } from 'geojson'
 import { useSelector } from 'react-redux'
 import simplify from '@turf/simplify'
@@ -20,16 +20,19 @@ import {
 } from 'features/map/map-sources.hooks'
 import { selectActiveTemporalgridDataviews } from 'features/dataviews/dataviews.selectors'
 import { getUTCDateTime } from 'utils/dates'
-import { Area } from 'features/areas/areas.slice'
+import { selectDatasetAreaDetail } from 'features/areas/areas.slice'
 import { filterByPolygon } from 'features/reports/reports-geo.utils'
 import {
   featuresToTimeseries,
   filterTimeseriesByTimerange,
   removeTimeseriesPadding,
 } from 'features/reports/reports-timeseries.utils'
-import { useAreaFitBounds } from 'features/map/map-viewport.hooks'
-import { useReportAreaHighlight } from 'features/reports/reports.hooks'
-import { selectShowTimeComparison } from 'features/reports/reports.selectors'
+import {
+  useFitAreaInViewport,
+  useReportAreaHighlight,
+  useReportAreaInViewport,
+} from 'features/reports/reports.hooks'
+import { selectReportAreaIds, selectShowTimeComparison } from 'features/reports/reports.selectors'
 
 export interface EvolutionGraphData {
   date: string
@@ -70,10 +73,10 @@ export type DateTimeSeries = {
   compareDate?: string
 }[]
 
-export const useFilteredTimeSeriesByArea = (area?: Area) => {
+export const useFilteredTimeSeries = () => {
   const [timeseries, setTimeseries] = useRecoilState(mapTimeseriesAtom)
-  const [blur, setBlur] = useState(false)
-  const areaGeometry = area?.geometry
+  const reportAreaIds = useSelector(selectReportAreaIds)
+  const area = useSelector(selectDatasetAreaDetail(reportAreaIds))
   const reportType = useSelector(selectReportActivityGraph)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparison = useSelector(selectReportTimeComparison)
@@ -81,19 +84,26 @@ export const useFilteredTimeSeriesByArea = (area?: Area) => {
   const activityFeatures = useMapDataviewFeatures(temporalgridDataviews)
   const { start: timebarStart, end: timebarEnd } = useSelector(selectTimeRange)
   const sourceId = useSelector(selectReportAreaSource)
-  useAreaFitBounds(area?.bounds)
+  const areaInViewport = useReportAreaInViewport()
+  const fitAreaInViewport = useFitAreaInViewport()
   useReportAreaHighlight(area?.id, sourceId)
 
+  // This ensures that the area is in viewport when then area load finishes
+  useEffect(() => {
+    fitAreaInViewport()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [area])
+
   const simplifiedGeometry = useMemo(() => {
-    if (!areaGeometry) return null
-    const simplifiedGeometry = simplify(areaGeometry, {
+    if (!area?.geometry) return null
+    const simplifiedGeometry = simplify(area?.geometry, {
       tolerance: 0.1,
     })
     // Doing this once to avoid recomputing inside turf booleanPointInPolygon for each cell
     // https://github.com/Turfjs/turf/blob/master/packages/turf-boolean-point-in-polygon/index.ts#L63
     simplifiedGeometry.bbox = bbox(simplifiedGeometry)
     return simplifiedGeometry
-  }, [areaGeometry])
+  }, [area?.geometry])
 
   let compareDeltaMillis: number | undefined = undefined
   if (showTimeComparison && timeComparison) {
@@ -101,6 +111,7 @@ export const useFilteredTimeSeriesByArea = (area?: Area) => {
     const compareStartMillis = getUTCDateTime(timeComparison.compareStart).toMillis()
     compareDeltaMillis = compareStartMillis - startMillis
   }
+
   const computeTimeseries = useCallback(
     (layersWithFeatures: DataviewFeature[], geometry: Polygon | MultiPolygon) => {
       const features = layersWithFeatures
@@ -118,50 +129,44 @@ export const useFilteredTimeSeriesByArea = (area?: Area) => {
       })
 
       setTimeseries(timeseries)
-      setBlur(false)
     },
     [showTimeComparison, compareDeltaMillis, setTimeseries]
   )
 
-  const reportEvolutionChange =
+  const reportTypeChange =
     reportType === 'beforeAfter' || reportType === 'periodComparison' ? 'time' : reportType
+  // const reportTimerangeChange =
+  //   reportTypeChange === 'time' ? `${timebarStart}-${timebarEnd}` : compareDeltaMillis
 
+  // We need to re calculate the timeseries when area or timerange changes
   useEffect(() => {
     setTimeseries(undefined)
-    setBlur(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [area?.id, reportEvolutionChange])
-
-  useEffect(() => {
-    if (timeseries) {
-      setBlur(true)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timeComparison])
+  }, [area?.id, reportTypeChange])
 
   const activeSourceIdHash = activityFeatures
     .map(({ metadata }) => metadata?.timeChunks?.activeSourceId)
     .join(',')
 
-  // Set blur when there new source data is fetched on timebar changes
+  // Re calculate timerange when there new source data is fetched on timebar changes
   useEffect(() => {
     const hasActivityLayers = temporalgridDataviews.some(
       ({ category }) =>
         category === DataviewCategory.Activity || category === DataviewCategory.Detections
     )
     if (hasActivityLayers) {
-      setBlur(true)
+      setTimeseries(undefined)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeSourceIdHash])
 
   useEffect(() => {
     const activityFeaturesLoaded = areDataviewsFeatureLoaded(activityFeatures)
-    if (activityFeaturesLoaded && simplifiedGeometry) {
+    if (activityFeaturesLoaded && simplifiedGeometry && areaInViewport) {
       computeTimeseries(activityFeatures, simplifiedGeometry)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activityFeatures, simplifiedGeometry])
+  }, [activityFeatures, simplifiedGeometry, areaInViewport])
 
   const layersTimeseriesFiltered = useMemo(() => {
     if (showTimeComparison) {
@@ -174,7 +179,6 @@ export const useFilteredTimeSeriesByArea = (area?: Area) => {
   }, [timeseries, showTimeComparison, timebarStart, timebarEnd])
 
   return {
-    blur,
     loading: !timeseries && !areDataviewsFeatureLoaded(activityFeatures),
     error: hasDataviewsFeatureError(activityFeatures),
     layersTimeseriesFiltered,

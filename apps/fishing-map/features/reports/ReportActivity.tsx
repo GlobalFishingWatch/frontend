@@ -4,13 +4,8 @@ import { useTranslation } from 'react-i18next'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import ReportActivityGraphSelector from 'features/reports/ReportActivityGraphSelector'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import {
-  ReportGraphProps,
-  useFilteredTimeSeriesByArea,
-} from 'features/reports/reports-timeseries.hooks'
-import { selectReportAreaIds, selectTimeComparisonValues } from 'features/reports/reports.selectors'
-import { selectDatasetAreaDetail, selectDatasetAreaStatus } from 'features/areas/areas.slice'
-import { AsyncReducerStatus } from 'utils/async-slice'
+import { ReportGraphProps, useFilteredTimeSeries } from 'features/reports/reports-timeseries.hooks'
+import { selectTimeComparisonValues } from 'features/reports/reports.selectors'
 import { ReportActivityGraph } from 'types'
 import { selectReportActivityGraph } from 'features/app/app.selectors'
 import { ReportActivityUnit } from './Report'
@@ -37,15 +32,10 @@ type ReportVesselTableProps = {
 export default function ReportActivity({ activityUnit }: ReportVesselTableProps) {
   const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()
-  const reportAreaIds = useSelector(selectReportAreaIds)
-  const reportArea = useSelector(selectDatasetAreaDetail(reportAreaIds))
-  const reportAreaStatus = useSelector(selectDatasetAreaStatus(reportAreaIds))
   const reportActivityGraph = useSelector(selectReportActivityGraph)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
 
-  const { loading, layersTimeseriesFiltered } = useFilteredTimeSeriesByArea(
-    reportAreaStatus === AsyncReducerStatus.Finished ? reportArea : undefined
-  )
+  const { loading, layersTimeseriesFiltered } = useFilteredTimeSeries()
 
   const ReportGraphComponent = useMemo(
     () => REPORT_BY_TYPE[reportActivityGraph],
@@ -63,8 +53,8 @@ export default function ReportActivity({ activityUnit }: ReportVesselTableProps)
         </div>
       ) : (
         <ReportGraphComponent
-          start={reportActivityGraph === 'evolution' ? start : timeComparisonValues.start}
-          end={reportActivityGraph === 'evolution' ? end : timeComparisonValues.end}
+          start={reportActivityGraph === 'evolution' ? start : timeComparisonValues?.start}
+          end={reportActivityGraph === 'evolution' ? end : timeComparisonValues?.end}
           data={layersTimeseriesFiltered?.[0]}
         />
       )}

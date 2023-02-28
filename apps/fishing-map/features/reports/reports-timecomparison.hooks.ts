@@ -68,7 +68,7 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
         : { [initialDurationType]: initialDurationValue }
     const initialStart = getUTCDateTime(baseStart).minus(baseStartMinusOffset).toISO()
     const initialCompareStart = baseStart
-    debugger
+
     dispatchQueryParams({
       reportTimeComparison: {
         start: initialStart,
