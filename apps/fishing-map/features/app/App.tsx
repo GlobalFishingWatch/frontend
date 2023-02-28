@@ -26,7 +26,7 @@ import { fetchUserThunk } from 'features/user/user.slice'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
-import { selectIsAnalyzing, selectShowTimeComparison } from 'features/analysis/analysis.selectors'
+import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
 import { isUserLogged } from 'features/user/user.selectors'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { HOME, WORKSPACE, USER, WORKSPACES_LIST, REPORT } from 'routes/routes'
@@ -102,7 +102,7 @@ function App(): React.ReactElement {
   const [menuOpen, setMenuOpen] = useState(false)
   const analysisQuery = useSelector(selectAnalysisQuery)
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
-  const isAnalysing = useSelector(selectIsAnalyzing)
+  const reportLocation = useSelector(selectIsReportLocation)
   const isTimeComparisonAnalysis = useSelector(selectShowTimeComparison)
   const narrowSidebar = workspaceLocation && !analysisQuery
   const workspaceStatus = useSelector(selectWorkspaceStatus)
@@ -121,7 +121,7 @@ function App(): React.ReactElement {
       map.resize()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAnalysing, sidebarOpen, showTimebar, isTimeComparisonAnalysis])
+  }, [reportLocation, sidebarOpen, showTimebar, isTimeComparisonAnalysis])
 
   useEffect(() => {
     setMobileSafeVH()
@@ -183,7 +183,7 @@ function App(): React.ReactElement {
   }, [userLogged, homeNeedsFetch, hasWorkspaceIdChanged])
 
   useLayoutEffect(() => {
-    if (isAnalysing) {
+    if (reportLocation) {
       if (analysisQuery.bounds) {
         fitMapBounds(analysisQuery.bounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
       } else {
@@ -208,9 +208,9 @@ function App(): React.ReactElement {
   const getSidebarName = useCallback(() => {
     if (locationType === USER) return t('user.title', 'User')
     if (locationType === WORKSPACES_LIST) return t('workspace.title_other', 'Workspaces')
-    if (isAnalysing) return t('analysis.title', 'Analysis')
+    if (locationType === REPORT) return t('analysis.title', 'Analysis')
     return t('common.layerList', 'Layer list')
-  }, [isAnalysing, locationType])
+  }, [locationType])
 
   let asideWidth = '50%'
   if (readOnly) {

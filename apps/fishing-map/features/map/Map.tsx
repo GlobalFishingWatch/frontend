@@ -35,9 +35,12 @@ import MapInfo from 'features/map/controls/MapInfo'
 import MapControls from 'features/map/controls/MapControls'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { getEventLabel } from 'utils/analytics'
-import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
 import { selectShowTimeComparison } from 'features/reports/reports.selectors'
-import { selectIsMarineManagerLocation, selectIsWorkspaceLocation } from 'routes/routes.selectors'
+import {
+  selectIsMarineManagerLocation,
+  selectIsReportLocation,
+  selectIsWorkspaceLocation,
+} from 'routes/routes.selectors'
 import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
 import { useMapLoaded, useSetMapIdleAtom } from 'features/map/map-state.hooks'
 import { useEnvironmentalBreaksUpdate } from 'features/workspace/environmental/environmental.hooks'
@@ -205,7 +208,7 @@ const MapWrapper = () => {
   }, [viewport])
 
   const showTimeComparison = useSelector(selectShowTimeComparison)
-  const isAnalyzing = useSelector(selectIsAnalyzing)
+  const reportLocation = useSelector(selectIsReportLocation)
   const isWorkspace = useSelector(selectIsWorkspaceLocation)
   const debugOptions = useSelector(selectDebugOptions)
 
@@ -292,7 +295,7 @@ const MapWrapper = () => {
           longitude={viewport.longitude}
           pitch={debugOptions.extruded ? 40 : 0}
           bearing={0}
-          onMove={isAnalyzing && !hasTimeseries ? undefined : onViewportChange}
+          onMove={reportLocation && !hasTimeseries ? undefined : onViewportChange}
           mapStyle={style as MapboxStyle}
           transformRequest={transformRequest}
           onResize={setMapBounds}
@@ -327,10 +330,10 @@ const MapWrapper = () => {
         </Map>
       )}
       <MapControls onMouseEnter={resetHoverState} mapLoading={debouncedMapLoading} />
-      {isWorkspace && !isAnalyzing && (
+      {isWorkspace && !reportLocation && (
         <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
       )}
-      {isWorkspace && !isAnalyzing && (
+      {isWorkspace && !reportLocation && (
         <Hint id="clickingOnAGridCellToShowVessels" className={styles.helpHintRight} />
       )}
     </div>

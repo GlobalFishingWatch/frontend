@@ -7,7 +7,6 @@ import { selectIsReportLocation, selectLocationType } from 'routes/routes.select
 import { USER, WORKSPACES_LIST } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
-import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
 import { isUserLogged, selectUserGroupsPermissions } from 'features/user/user.selectors'
 import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
 import { fetchUserVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
@@ -17,9 +16,6 @@ import styles from './Sidebar.module.css'
 import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
 
-const Analysis = dynamic(
-  () => import(/* webpackChunkName: "Analyis" */ 'features/analysis/Analysis')
-)
 const User = dynamic(() => import(/* webpackChunkName: "User" */ 'features/user/User'))
 const Workspace = dynamic(
   () => import(/* webpackChunkName: "Workspace" */ 'features/workspace/Workspace')
@@ -39,7 +35,6 @@ type SidebarProps = {
 function Sidebar({ onMenuClick }: SidebarProps) {
   const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)
-  const isAnalyzing = useSelector(selectIsAnalyzing)
   const searchQuery = useSelector(selectSearchQuery)
   const locationType = useSelector(selectLocationType)
   const isReportLocation = useSelector(selectIsReportLocation)
@@ -80,10 +75,6 @@ function Sidebar({ onMenuClick }: SidebarProps) {
 
   if (searchQuery !== undefined) {
     return <Search />
-  }
-
-  if (isAnalyzing) {
-    return <Analysis />
   }
 
   return (
