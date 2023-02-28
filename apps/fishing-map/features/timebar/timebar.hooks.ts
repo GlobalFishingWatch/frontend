@@ -22,15 +22,13 @@ import {
 } from 'features/dataviews/dataviews.selectors'
 import store from 'store'
 import { updateUrlTimerange } from 'routes/routes.actions'
-import { selectUrlTimeRange } from 'routes/routes.selectors'
+import { selectIsReportLocation, selectUrlTimeRange } from 'routes/routes.selectors'
 import { setHintDismissed } from 'features/hints/hints.slice'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import useMapInstance from 'features/map/map-context.hooks'
 import { BIG_QUERY_PREFIX } from 'features/dataviews/dataviews.utils'
-import { selectAnalysisArea, selectIsAnalyzing } from 'features/analysis/analysis.selectors'
-import { useMapFitBounds } from 'features/map/map-viewport.hooks'
-import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { useFitAreaInViewport } from 'features/reports/reports.hooks'
 import {
   Range,
   changeSettings,
@@ -82,10 +80,9 @@ export const TimeRangeAtom = atom<Range | null>({
 
 export const useTimerangeConnect = () => {
   const [timerange, setTimerange] = useRecoilState(TimeRangeAtom)
-  const isAnalyzing = useSelector(selectIsAnalyzing)
-  const fitMapBounds = useMapFitBounds()
   const dispatch = useAppDispatch()
-  const analysisAreaBounds = useSelector(selectAnalysisArea)?.data.bounds
+  const reportLocation = useSelector(selectIsReportLocation)
+  const fitAreaInViewport = useFitAreaInViewport()
 
   const onTimebarChange = useCallback(
     (start: string, end: string) => {
@@ -93,19 +90,11 @@ export const useTimerangeConnect = () => {
         dispatch(setHintDismissed('changingTheTimeRange'))
       }
       setTimerange({ start, end })
-      if (isAnalyzing && analysisAreaBounds) {
-        fitMapBounds(analysisAreaBounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
+      if (reportLocation) {
+        fitAreaInViewport()
       }
     },
-    [
-      analysisAreaBounds,
-      dispatch,
-      fitMapBounds,
-      isAnalyzing,
-      setTimerange,
-      timerange?.end,
-      timerange?.start,
-    ]
+    [dispatch, fitAreaInViewport, reportLocation, setTimerange, timerange.end, timerange?.start]
   )
   return useMemo(() => {
     return {
