@@ -336,28 +336,38 @@ export function getGeneratorConfig(
             dataset
           )
           if (!url || resolvedDataset?.status !== DatasetStatus.Done) return []
+
           return {
             id,
             tilesUrl: url,
             attribution: getDatasetAttribution(resolvedDataset),
             datasetId: resolvedDataset.id,
+            promoteId: resolvedDataset?.configuration?.idProperty,
+            valueProperties: resolvedDataset?.configuration?.valueProperties,
           }
         })
         // Duplicated generators when context dataview have multiple layers
-        return tilesUrls.map(({ id, tilesUrl, attribution, datasetId }) => ({
-          ...generator,
-          id: `${dataview.id}${MULTILAYER_SEPARATOR}${id}`,
-          layer: id,
-          attribution,
-          tilesUrl,
-          datasetId,
-        }))
+        return tilesUrls.map(
+          ({ id, tilesUrl, attribution, datasetId, promoteId, valueProperties }) => ({
+            ...generator,
+            id: `${dataview.id}${MULTILAYER_SEPARATOR}${id}`,
+            layer: id,
+            attribution,
+            tilesUrl,
+            datasetId,
+            promoteId,
+            valueProperties,
+          })
+        )
       } else {
         generator.id = dataview.config.layers
           ? `${dataview.id}${MULTILAYER_SEPARATOR}${dataview.config.layers}`
           : dataview.id
         generator.layer = dataview.config.layers
-        const { dataset, url } = resolveDataviewDatasetResource(dataview, DatasetTypes.Context)
+        const { dataset, url } = resolveDataviewDatasetResource(dataview, [
+          DatasetTypes.Context,
+          DatasetTypes.UserContext,
+        ])
         if (dataset?.status !== DatasetStatus.Done) {
           return []
         }

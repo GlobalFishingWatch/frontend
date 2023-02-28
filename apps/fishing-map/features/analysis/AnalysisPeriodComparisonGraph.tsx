@@ -151,7 +151,7 @@ const AnalysisPeriodComparisonGraph: React.FC<{
   const baseline = useMemo(() => {
     if (!timeseries || !timeseries.length) return []
     return timeseries.map(({ date }) => ({
-      date: getUTCDateTime(date).toMillis(),
+      date: getUTCDateTime(date)?.toMillis(),
       zero: 0,
     }))
   }, [timeseries])
@@ -162,9 +162,9 @@ const AnalysisPeriodComparisonGraph: React.FC<{
       const avgCompare = min[1] + max[1] / 2
       const difference = avgCompare - avgBaseline
       return {
-        date: getUTCDateTime(date).toMillis(),
+        date: getUTCDateTime(date)?.toMillis(),
         ...{
-          compareDate: compareDate ? getUTCDateTime(compareDate).toMillis() : {},
+          compareDate: compareDate ? getUTCDateTime(compareDate)?.toMillis() : {},
         },
         baseline: avgBaseline,
         difference,
@@ -205,7 +205,7 @@ const AnalysisPeriodComparisonGraph: React.FC<{
         <ComposedChart data={range} margin={{ top: 15, right: 20, left: -20, bottom: -10 }}>
           <CartesianGrid vertical={false} />
           <XAxis
-            domain={[getUTCDateTime(start).toMillis(), getUTCDateTime(end).toMillis()]}
+            domain={[getUTCDateTime(start)?.toMillis(), getUTCDateTime(end)?.toMillis()]}
             dataKey="date"
             interval="preserveStartEnd"
             tickFormatter={(tick: number) => formatDateTicks(tick, start, interval)}

@@ -1,8 +1,10 @@
 import { getFourwingsMode } from 'layers/fourwings/fourwings.utils'
 import { useCallback, useEffect } from 'react'
+import { PickingInfo } from '@deck.gl/core/typed'
 import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import { useAddVesselInLayer } from 'layers/vessel/vessels.hooks'
-import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
+import { hoveredFeaturesAtom, clickedFeaturesAtom } from 'features/map/map-picking.hooks'
 import { useTimerange } from 'features/timebar/timebar.hooks'
 import { useViewport } from 'features/map/map-viewport.hooks'
 import { useMapLayers } from 'features/map/layers.hooks'
@@ -70,8 +72,10 @@ export const FOURWINGS_SUBLAYERS: FourwingsSublayer[] = [
 ]
 
 export function useFourwingsLayer() {
-  const [{ highlightedVesselId, instance }, updateFourwingsAtom] =
-    useRecoilState(fourwingsLayerAtom)
+  const [{ instance }, updateFourwingsAtom] = useRecoilState(fourwingsLayerAtom)
+
+  const hoveredFeatures: PickingInfo[] = useAtomValue(hoveredFeaturesAtom)
+  const clickedFeatures: PickingInfo[] = useAtomValue(clickedFeaturesAtom)
   const [mapLayers] = useMapLayers()
   const [timerange] = useTimerange()
   const startTime = dateToMs(timerange.start)
@@ -124,10 +128,11 @@ export function useFourwingsLayer() {
         sublayers: FOURWINGS_SUBLAYERS,
         onTileLoad: onTileLoad,
         onViewportLoad: onViewportLoad,
-        highlightedVesselId,
         onVesselHighlight: onVesselHighlight,
         onVesselClick: onVesselClick,
         resolution: fourwingsMapLayerResolution,
+        hoveredFeatures: hoveredFeatures,
+        clickedFeatures: clickedFeatures,
       })
       setAtomProperty({ instance: fourwingsLayer })
     } else {
@@ -138,13 +143,14 @@ export function useFourwingsLayer() {
     startTime,
     endTime,
     activityMode,
-    highlightedVesselId,
     fourwingsMapLayerResolution,
     onTileLoad,
     onViewportLoad,
     setAtomProperty,
     onVesselHighlight,
     onVesselClick,
+    clickedFeatures,
+    hoveredFeatures,
   ])
 
   return instance

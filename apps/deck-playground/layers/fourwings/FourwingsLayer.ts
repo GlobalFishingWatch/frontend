@@ -1,4 +1,4 @@
-import { Color, CompositeLayer, Layer, LayersList } from '@deck.gl/core/typed'
+import { Color, CompositeLayer, Layer, LayersList, PickingInfo } from '@deck.gl/core/typed'
 import { TileLayerProps } from '@deck.gl/geo-layers/typed'
 import {
   FourwingsHeatmapTileLayerProps,
@@ -21,6 +21,8 @@ export type FourwingsColorRamp = {
 export type FourwingsLayerProps = FourwingsPositionsTileLayerProps &
   FourwingsHeatmapTileLayerProps & {
     mode: FourwingsLayerMode
+    hoveredFeatures: PickingInfo[]
+    clickedFeatures: PickingInfo[]
   }
 
 export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLayerProps> {
@@ -32,7 +34,13 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
     this.layers =
       mode === HEATMAP_ID
         ? [new FourwingsHeatmapTileLayer(this.props)]
-        : [new FourwingsPositionsTileLayer(this.props)]
+        : [
+            new FourwingsPositionsTileLayer({
+              ...this.props,
+              clickedFeatures: this.props.clickedFeatures,
+              hoveredFeatures: this.props.hoveredFeatures,
+            }),
+          ]
     return this.layers
   }
 

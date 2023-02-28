@@ -1,7 +1,6 @@
 import {
   Color,
   CompositeLayer,
-  GetPickingInfoParams,
   Layer,
   LayerContext,
   LayersList,
@@ -14,7 +13,7 @@ import { MVTWorkerLoader } from '@loaders.gl/mvt'
 import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
 import { ACTIVITY_SWITCH_ZOOM_LEVEL, getDateRangeParam } from 'layers/fourwings/fourwings.utils'
 import { groupBy, orderBy } from 'lodash'
-import { Feature, Point } from 'geojson'
+import { Feature } from 'geojson'
 import bboxPolygon from '@turf/bbox-polygon'
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
 import {
@@ -31,6 +30,8 @@ export type _FourwingsPositionsTileLayerProps<DataT = any> = {
   colorDomain: number[]
   colorRange: Color[]
   highlightedVesselId?: string
+  clickedFeatures: PickingInfo[]
+  hoveredFeatures: PickingInfo[]
   onDataLoad?: (data: DataT) => void
   onColorRampUpdate: (colorRamp: FourwingsColorRamp) => void
   onVesselHighlight?: (vesselId: string) => void
@@ -149,41 +150,6 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return label.length <= MAX_LABEL_LENGTH ? label : `${label.slice(0, MAX_LABEL_LENGTH)}...`
   }
 
-  getPickingInfo({ info, mode }: GetPickingInfoParams): PickingInfo {
-    this.setState({
-      highlightedVesselId: info.object?.properties?.vesselId,
-    })
-    if (this.props.onVesselHighlight) {
-      const vesselId = info.object?.properties?.vesselId
-      if (vesselId) {
-        this.props.onVesselHighlight(vesselId)
-        if (mode === 'query') {
-          this.props.onVesselClick(vesselId)
-        }
-      } else if (this.props.highlightedVesselId) {
-        this.props.onVesselHighlight(undefined)
-      }
-    }
-    if (mode === 'query') {
-      console.log(info.object?.properties)
-    }
-    if (info.object) {
-      const allVesselPositions: Feature[] = this.state.allPositions.filter(
-        (p) => p.properties.vesselId === info.object?.properties?.vesselId
-      )
-      const latestVesselPosition: Feature<Point> = this.state.lastPositions.find(
-        (p) => p.properties.vesselId === info.object?.properties?.vesselId
-      )
-      const vesselHours = allVesselPositions.reduce((acc, next) => acc + next.properties.value, 0)
-      info.object.value = `${info.object?.properties?.vesselId} \n  ${Math.round(
-        vesselHours
-      )} hours \n latest position: ${latestVesselPosition.geometry?.coordinates?.map((c) =>
-        c.toFixed(4)
-      )}`
-    }
-    return info
-  }
-
   onViewportLoad = (tiles) => {
     const positions = orderBy(
       tiles.flatMap((tile) => tile.dataInWGS84),
@@ -210,6 +176,27 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         return this.props.onViewportLoad(tiles)
       }
     })
+  }
+
+  updateState() {
+    const clickedVesselId = this.props?.clickedFeatures.flatMap(
+      (f) => f.sourceLayer.id === 'FourwingsPositionsTileLayer' && f.object?.properties?.vesselId
+    )
+    const highlightedVesselId = this.props?.hoveredFeatures.flatMap(
+      (f) => f.sourceLayer.id === 'FourwingsPositionsTileLayer' && f.object?.properties?.vesselId
+    )
+    if (highlightedVesselId && highlightedVesselId[0]) {
+      this.setState({
+        highlightedVesselId: highlightedVesselId[0],
+      })
+    } else {
+      this.setState({
+        highlightedVesselId: undefined,
+      })
+    }
+    if (clickedVesselId[0]) {
+      this.props.onVesselClick(clickedVesselId[0])
+    }
   }
 
   renderLayers(): Layer<{}> | LayersList {

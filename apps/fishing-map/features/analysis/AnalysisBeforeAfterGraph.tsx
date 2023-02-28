@@ -77,12 +77,12 @@ const AnalysisBeforeAfterGraph: React.FC<{
     const values = timeseries?.flatMap(({ date, compareDate, min, max }) => {
       return [
         {
-          date: getUTCDateTime(date).toMillis(),
+          date: getUTCDateTime(date)?.toMillis(),
           range: [min[0], max[0]],
           avg: (max[0] + min[0]) / 2,
         },
         {
-          date: getUTCDateTime(compareDate).toMillis(),
+          date: getUTCDateTime(compareDate)?.toMillis(),
           range: [min[1], max[1]],
           avg: (max[1] + min[1]) / 2,
         },
@@ -127,7 +127,7 @@ const AnalysisBeforeAfterGraph: React.FC<{
         <ComposedChart data={range} margin={{ top: 15, right: 20, left: -20, bottom: -10 }}>
           <CartesianGrid vertical={false} />
           <XAxis
-            domain={[getUTCDateTime(start).toMillis(), getUTCDateTime(end).toMillis()]}
+            domain={[getUTCDateTime(start)?.toMillis(), getUTCDateTime(end)?.toMillis()]}
             dataKey="date"
             interval="preserveStartEnd"
             tickFormatter={(tick: number) => formatDateTicks(tick, timeComparison)}

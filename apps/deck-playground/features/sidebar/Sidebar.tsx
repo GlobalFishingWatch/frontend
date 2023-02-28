@@ -13,11 +13,16 @@ import {
   useUpdateMode,
   useCustomReferenceMode,
 } from 'layers/custom-reference/custom-reference.hooks'
+import {
+  useRemoveContextInLayer,
+  useAddContextInLayer,
+  useContextsLayerIds,
+} from 'layers/context/context.hooks'
+import { CONTEXT_LAYERS_IDS } from 'layers/context/context.config'
 import { Button, IconButton, Switch } from '@globalfishingwatch/ui-components'
 import { MapLayer, useMapLayers } from 'features/map/layers.hooks'
 import styles from './Sidebar.module.css'
 import SidebarHeader from './SidebarHeader'
-
 function Sidebar() {
   const [layers, setMapLayers] = useMapLayers()
   const fourwingsLayerInstance = useFourwingsLayerInstance()
@@ -27,6 +32,10 @@ function Sidebar() {
   const vesselIds = useVesselsLayerIds()
   const removeVesselId = useRemoveVesselInLayer()
   const setMode = useUpdateMode()
+  const removeContextId = useRemoveContextInLayer()
+  const addContextId = useAddContextInLayer()
+  const contextIds = useContextsLayerIds()
+
   const getVesselsEventsData = () => {
     const vesselsEvents = vesselsLayerInstance
       .getVesselsLayers()
@@ -65,6 +74,10 @@ function Sidebar() {
         return l
       })
     )
+  }
+
+  const handleContextLayerToggle = (layerId) => {
+    contextIds.includes(layerId) ? removeContextId(layerId) : addContextId(layerId)
   }
 
   const fourwingsMode = fourwingsLayerInstance?.getMode()
@@ -107,6 +120,23 @@ function Sidebar() {
                   </Fragment>
                 )}
               </div>
+            )
+          }
+          if (layer.id === 'contexts') {
+            return (
+              <section className={styles.row} key={'contexts'}>
+                <p>CONTEXT LAYERS</p>
+                {CONTEXT_LAYERS_IDS.map((id) => (
+                  <div key={id} className={styles.header}>
+                    <Switch
+                      className={styles.switch}
+                      active={contextIds.includes(id)}
+                      onClick={() => handleContextLayerToggle(id)}
+                    />
+                    <span>{id}</span>
+                  </div>
+                ))}
+              </section>
             )
           }
           if (layer.id === 'fourwings') {

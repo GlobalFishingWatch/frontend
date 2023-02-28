@@ -98,6 +98,8 @@ export interface ExtendedLayerMeta {
   datasetId?: string
   generatorId?: string
   generatorType?: GeneratorType
+  promoteId?: string
+  valueProperties?: string[]
   interactive?: boolean
   uniqueFeatureInteraction?: boolean
   group?: Group

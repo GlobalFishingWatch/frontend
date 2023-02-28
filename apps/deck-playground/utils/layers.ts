@@ -1,3 +1,5 @@
+import { PickingInfo } from '@deck.gl/core/typed'
+
 export function zIndexSortedArray(layersArray) {
   return layersArray
     .flatMap((l) => {
@@ -15,4 +17,14 @@ function recursivelyGetLayers(layers) {
     return [...acc, ...l]
   }, [])
   return reducer
+}
+
+export function getPickedFeatureToHighlight(data, pickedFeatures: PickingInfo[]) {
+  return (
+    pickedFeatures &&
+    pickedFeatures.find(
+      (f: PickingInfo) =>
+        f.object.type === 'Feature' && f.object.properties.gfw_id === data.properties.gfw_id
+    )
+  )
 }
