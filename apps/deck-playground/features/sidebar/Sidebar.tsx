@@ -9,6 +9,10 @@ import {
   useVesselsLayerIds,
   useVesselsLayerInstance,
 } from 'layers/vessel/vessels.hooks'
+import {
+  useUpdateMode,
+  useCustomReferenceMode,
+} from 'layers/custom-reference/custom-reference.hooks'
 import { Button, IconButton, Switch } from '@globalfishingwatch/ui-components'
 import { MapLayer, useMapLayers } from 'features/map/layers.hooks'
 import styles from './Sidebar.module.css'
@@ -19,9 +23,10 @@ function Sidebar() {
   const fourwingsLayerInstance = useFourwingsLayerInstance()
   const vesselsLayerInstance = useVesselsLayerInstance()
   const fourwingsLayerLoaded = useFourwingsLayerLoaded()
+  const editMode = useCustomReferenceMode()
   const vesselIds = useVesselsLayerIds()
   const removeVesselId = useRemoveVesselInLayer()
-
+  const setMode = useUpdateMode()
   const getVesselsEventsData = () => {
     const vesselsEvents = vesselsLayerInstance
       .getVesselsLayers()
@@ -104,64 +109,95 @@ function Sidebar() {
               </div>
             )
           }
-          return (
-            <div key={layer.id} className={styles.row}>
-              <div className={styles.header}>
-                <Switch
-                  className={styles.switch}
-                  active={layer.visible}
-                  onClick={() => onLayerVisibilityClick(layer)}
-                />
-                <div>
-                  4wings layer
-                  {fourwingsMode && <label>Mode: {fourwingsMode}</label>}
-                </div>
-              </div>
-              {layer.visible && (
-                <div>
-                  {FOURWINGS_SUBLAYERS.map((sublayer) => (
-                    <div className={styles.sublayer} key={sublayer.id}>
-                      <span
-                        style={{ backgroundColor: sublayer.config.color }}
-                        className={styles.dot}
-                      />
-                      <label>{sublayer.id}</label>
-                    </div>
-                  ))}
+          if (layer.id === 'fourwings') {
+            return (
+              <div key={layer.id} className={styles.row}>
+                <div className={styles.header}>
+                  <Switch
+                    className={styles.switch}
+                    active={layer.visible}
+                    onClick={() => onLayerVisibilityClick(layer)}
+                  />
                   <div>
-                    <label>Color breaks</label>
-                    {fourwingsLayerInstance && fourwingsLayerLoaded && (
-                      <ul className={styles.list}>
-                        {fourwingsLayerInstance.getColorDomain()?.map((step) => (
-                          <li key={step}>{step},</li>
-                        ))}
-                      </ul>
+                    4wings layer
+                    {fourwingsMode && <label>Mode: {fourwingsMode}</label>}
+                  </div>
+                </div>
+                {layer.visible && (
+                  <div>
+                    {FOURWINGS_SUBLAYERS.map((sublayer) => (
+                      <div className={styles.sublayer} key={sublayer.id}>
+                        <span
+                          style={{ backgroundColor: sublayer.config.color }}
+                          className={styles.dot}
+                        />
+                        <label>{sublayer.id}</label>
+                      </div>
+                    ))}
+                    <div>
+                      <label>Color breaks</label>
+                      {fourwingsLayerInstance && fourwingsLayerLoaded && (
+                        <ul className={styles.list}>
+                          {fourwingsLayerInstance.getColorDomain()?.map((step) => (
+                            <li key={step}>{step},</li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                    <Button
+                      size="small"
+                      onClick={getFourwingsData}
+                      loading={!fourwingsLayerLoaded}
+                      disabled={!fourwingsLayerLoaded}
+                    >
+                      {fourwingsMode === 'heatmap' ? 'LOG 4WINGS DATA' : 'LOG VESSEL POSITIONS'}
+                    </Button>
+                    {fourwingsMode === 'heatmap' && fourwingsLayerLoaded && (
+                      <Button size="small" onClick={changeFourwingsResolution}>
+                        {fourwingsResolution === 'high' ? 'lower def' : 'higher def'}
+                      </Button>
                     )}
                   </div>
-                  <Button
-                    size="small"
-                    onClick={getFourwingsData}
-                    loading={!fourwingsLayerLoaded}
-                    disabled={!fourwingsLayerLoaded}
-                  >
-                    {fourwingsMode === 'heatmap' ? 'LOG 4WINGS DATA' : 'LOG VESSEL POSITIONS'}
-                  </Button>
-                  {fourwingsMode === 'heatmap' && fourwingsLayerLoaded && (
-                    <Button size="small" onClick={changeFourwingsResolution}>
-                      {fourwingsResolution === 'high' ? 'lower def' : 'higher def'}
-                    </Button>
-                  )}
+                )}
+              </div>
+            )
+          }
+          if (layer.id === 'custom-reference') {
+            return (
+              <div key={layer.id} className={styles.row}>
+                <div className={styles.header}>
+                  <Switch
+                    className={styles.switch}
+                    active={layer.visible}
+                    onClick={() => onLayerVisibilityClick(layer)}
+                  />
+                  <div>custom reference layer</div>
                 </div>
-              )}
-            </div>
-          )
+                {layer.visible && (
+                  <div className={styles.sublayer}>
+                    <div>
+                      <span>Update mode</span>
+                      {editMode && <label>current mode: {editMode}</label>}
+                    </div>
+                    <IconButton
+                      icon="add-polygon"
+                      type="border"
+                      disabled={editMode === 'draw'}
+                      onClick={() => setMode('draw')}
+                    />
+                    <IconButton
+                      icon="edit"
+                      disabled={editMode === 'edit'}
+                      type="border"
+                      onClick={() => setMode('edit')}
+                    />
+                  </div>
+                )}
+              </div>
+            )
+          }
+          return null
         })}
-        <section className={styles.row}>
-          <div>
-            <span>Create a custom polygon </span>
-            <IconButton icon="add-polygon" type="border" onClick={() => {}} />
-          </div>
-        </section>
       </div>
     </div>
   )
