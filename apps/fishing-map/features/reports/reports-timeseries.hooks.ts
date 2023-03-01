@@ -55,12 +55,12 @@ export interface ReportGraphProps {
 }
 
 export const mapTimeseriesAtom = atom<ReportGraphProps[] | undefined>({
-  key: 'mapTimeseriesState',
+  key: 'mapTimeseriesStateReport',
   default: undefined,
 })
 
 export const selectMapTimeseries = selector({
-  key: 'mapTimeseriesStateLoaded',
+  key: 'mapTimeseriesStateReportLoaded',
   get: ({ get }) => {
     const timeseries = get(mapTimeseriesAtom)
     return timeseries && timeseries.length > 0
