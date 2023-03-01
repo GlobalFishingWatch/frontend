@@ -98,7 +98,7 @@ export default function Report() {
     return (
       <Fragment>
         {Header}
-        <ReportActivity activityUnit={activityUnit} />
+        <ReportActivity />
         <Spinner />
       </Fragment>
     )
@@ -108,7 +108,7 @@ export default function Report() {
     return (
       <Fragment>
         {Header}
-        <ReportActivity activityUnit={activityUnit} />
+        <ReportActivity />
         <ReportVesselsPlaceholder
           title={t(
             'errors.privateReport',
@@ -123,7 +123,7 @@ export default function Report() {
     <Fragment>
       {Header}
       <ReportSummary activityUnit={activityUnit} />
-      <ReportActivity activityUnit={activityUnit} />
+      <ReportActivity />
       <ReportVessels activityUnit={activityUnit} reportName={areaDetail?.name} />
       <ReportDownload reportName={areaDetail?.name} />
     </Fragment>
