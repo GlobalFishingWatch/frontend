@@ -138,10 +138,10 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
       }
     },
     [
-      timeComparison.compareStart,
-      timeComparison.duration,
-      timeComparison.durationType,
-      timeComparison.start,
+      timeComparison?.compareStart,
+      timeComparison?.duration,
+      timeComparison?.durationType,
+      timeComparison?.start,
       activityType,
       fitAreaInViewport,
       dispatchQueryParams,
