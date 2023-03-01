@@ -50,10 +50,8 @@ export const routesMap: RoutesMap = {
 
 const parseAppWorkspace = (queryString: string) => {
   return parseWorkspace(queryString, {
-    report: (report: any) => ({
-      ...report,
-      bounds: report.bounds?.map((bound: string) => parseFloat(bound)),
-    }),
+    reportAreaBounds: (reportAreaBounds: string[]) =>
+      reportAreaBounds?.map((bound: string) => parseFloat(bound)),
   })
 }
 
