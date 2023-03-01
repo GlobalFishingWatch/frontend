@@ -4,7 +4,7 @@ import Link from 'redux-first-router-link'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import {
   selectActiveHeatmapDataviews,
-  selectHasAnalysisLayersVisible,
+  selectHasReportLayersVisible,
 } from 'features/dataviews/dataviews.selectors'
 import { getActivityDatasetsReportSupported } from 'features/datasets/datasets.utils'
 import { isGuestUser, selectUserData } from 'features/user/user.slice'
@@ -28,7 +28,7 @@ const DownloadPopupButton: React.FC<DownloadPopupButtonProps> = ({
   const guestUser = useSelector(isGuestUser)
   const userData = useSelector(selectUserData)
   const activityDataviews = useSelector(selectActiveHeatmapDataviews)
-  const hasAnalysableLayer = useSelector(selectHasAnalysisLayersVisible)
+  const hasAnalysableLayer = useSelector(selectHasReportLayersVisible)
   const datasetsReportAllowed = getActivityDatasetsReportSupported(
     activityDataviews,
     userData?.permissions || []
@@ -64,7 +64,7 @@ interface ReportPopupButtonProps {
 
 const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) => {
   const { t } = useTranslation()
-  const hasAnalysableLayer = useSelector(selectHasAnalysisLayersVisible)
+  const hasAnalysableLayer = useSelector(selectHasReportLayersVisible)
   const workspace = useSelector(selectWorkspace)
   const isSidebarOpen = useSelector(selectSidebarOpen)
   const query = useSelector(selectLocationQuery)
@@ -115,7 +115,7 @@ interface ContextLayersRowProps {
   showActions?: boolean
   linkHref?: string
   handleDownloadClick?: (e: React.MouseEvent<Element, MouseEvent>) => void
-  handleAnalysisClick?: (e: React.MouseEvent<Element, MouseEvent>) => void
+  handleReportClick?: (e: React.MouseEvent<Element, MouseEvent>) => void
 }
 const ContextLayersRow: React.FC<ContextLayersRowProps> = ({
   id,
@@ -124,7 +124,7 @@ const ContextLayersRow: React.FC<ContextLayersRowProps> = ({
   linkHref,
   feature,
   handleDownloadClick,
-  handleAnalysisClick,
+  handleReportClick,
 }: ContextLayersRowProps) => {
   const { t } = useTranslation()
   return (
@@ -133,7 +133,7 @@ const ContextLayersRow: React.FC<ContextLayersRowProps> = ({
       {showFeaturesDetails && (
         <div className={styles.rowActions}>
           {handleDownloadClick && <DownloadPopupButton onClick={handleDownloadClick} />}
-          <ReportPopupLink feature={feature} onClick={handleAnalysisClick} />
+          <ReportPopupLink feature={feature} onClick={handleReportClick} />
           {linkHref && (
             <a target="_blank" rel="noopener noreferrer" href={linkHref}>
               <IconButton

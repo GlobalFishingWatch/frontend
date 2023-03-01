@@ -25,9 +25,8 @@ import {
   TimebarVisualisations,
   VisibleEvents,
   WorkspaceActivityCategory,
-  WorkspaceAnalysis,
-  WorkspaceAnalysisTimeComparison,
-  WorkspaceAnalysisType,
+  WorkspaceReport,
+  WorkspaceReportType,
 } from 'types'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import {
@@ -63,31 +62,24 @@ export const selectTimeRange = createSelector(
   }
 )
 
-export const selectAnalysisQuery = createSelector(
-  [selectWorkspaceStateProperty('analysis')],
-  (analysis): WorkspaceAnalysis => {
-    return analysis
+export const selectReportQuery = createSelector(
+  [selectWorkspaceStateProperty('report')],
+  (report): WorkspaceReport => {
+    return report
   }
 )
 
-export const selectAnalysisTypeQuery = createSelector(
-  [selectWorkspaceStateProperty('analysisType')],
-  (analysis): WorkspaceAnalysisType => {
-    return analysis || 'evolution'
-  }
-)
-
-export const selectAnalysisTimeComparison = createSelector(
-  [selectWorkspaceStateProperty('analysisTimeComparison')],
-  (analysis): WorkspaceAnalysisTimeComparison => {
-    return analysis
+export const selectReportAnalysisGraph = createSelector(
+  [selectWorkspaceStateProperty('reportActivityGraph')],
+  (report): WorkspaceReportType => {
+    return report || 'evolution'
   }
 )
 
 export const selectReportTimeComparison = createSelector(
   [selectWorkspaceStateProperty('reportTimeComparison')],
-  (analysis): ReportActivityTimeComparison => {
-    return analysis
+  (report): ReportActivityTimeComparison => {
+    return report
   }
 )
 

@@ -20,13 +20,19 @@ import { selectUserData } from 'features/user/user.slice'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { Bbox } from 'types'
 import useViewport, { getMapCoordinatesFromBounds } from 'features/map/map-viewport.hooks'
-import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
+import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import {
   fetchReportVesselsThunk,
   selectReportVesselsData,
   selectReportVesselsError,
   selectReportVesselsStatus,
 } from './reports.slice'
+
+export type DateTimeSeries = {
+  date: string
+  values: number[]
+  compareDate?: string
+}[]
 
 export function useReportAreaCenter(bounds: Bbox) {
   const map = useMapInstance()
@@ -35,7 +41,7 @@ export function useReportAreaCenter(bounds: Bbox) {
 
     const wrapBbox = wrapBBoxLongitudes(bounds)
     const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(map, wrapBbox, {
-      padding: FIT_BOUNDS_ANALYSIS_PADDING,
+      padding: FIT_BOUNDS_REPORT_PADDING,
     })
     return { latitude, longitude, zoom }
   }, [bounds, map])
@@ -94,18 +100,18 @@ export function useFetchReportArea() {
   const { datasetId, areaId } = useSelector(selectReportAreaIds)
   const status = useSelector(selectDatasetAreaStatus({ datasetId, areaId }))
   const data = useSelector(selectDatasetAreaDetail({ datasetId, areaId }))
-  const analysisDataset = useSelector(selectDatasetById(datasetId))
+  const reportAreaDataset = useSelector(selectDatasetById(datasetId))
 
   useEffect(() => {
-    if (analysisDataset && areaId) {
+    if (reportAreaDataset && areaId) {
       dispatch(
         fetchAreaDetailThunk({
-          dataset: analysisDataset,
+          dataset: reportAreaDataset,
           areaId: areaId.toString(),
         })
       )
     }
-  }, [areaId, analysisDataset, dispatch])
+  }, [areaId, reportAreaDataset, dispatch])
 
   return useMemo(() => ({ status, data }), [status, data])
 }

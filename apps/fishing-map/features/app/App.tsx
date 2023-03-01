@@ -33,12 +33,12 @@ import { HOME, WORKSPACE, USER, WORKSPACES_LIST, REPORT } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { t } from 'features/i18n/i18n'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { FIT_BOUNDS_ANALYSIS_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
+import { FIT_BOUNDS_REPORT_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
 import { initializeHints } from 'features/hints/hints.slice'
 import AppModals from 'features/modals/Modals'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useAppDispatch } from './app.hooks'
-import { selectAnalysisQuery, selectReadOnly, selectSidebarOpen } from './app.selectors'
+import { selectReadOnly, selectReportQuery, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
 import { useAnalytics } from './analytics.hooks'
 
@@ -68,10 +68,10 @@ const Main = () => {
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
   const reportLocation = useSelector(selectIsReportLocation)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const isTimeComparisonAnalysis = useSelector(selectShowTimeComparison)
+  const isTimeComparisonReport = useSelector(selectShowTimeComparison)
 
   const showTimebar =
-    (workspaceLocation || (reportLocation && !isTimeComparisonAnalysis)) &&
+    (workspaceLocation || (reportLocation && !isTimeComparisonReport)) &&
     workspaceStatus === AsyncReducerStatus.Finished
 
   return (
@@ -100,11 +100,11 @@ function App(): React.ReactElement {
   const i18n = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
-  const analysisQuery = useSelector(selectAnalysisQuery)
+  const reportQuery = useSelector(selectReportQuery)
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
   const reportLocation = useSelector(selectIsReportLocation)
-  const isTimeComparisonAnalysis = useSelector(selectShowTimeComparison)
-  const narrowSidebar = workspaceLocation && !analysisQuery
+  const isTimeComparisonReport = useSelector(selectShowTimeComparison)
+  const narrowSidebar = workspaceLocation && !reportQuery
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const showTimebar = workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished
 
@@ -121,7 +121,7 @@ function App(): React.ReactElement {
       map.resize()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reportLocation, sidebarOpen, showTimebar, isTimeComparisonAnalysis])
+  }, [reportLocation, sidebarOpen, showTimebar, isTimeComparisonReport])
 
   useEffect(() => {
     setMobileSafeVH()
@@ -184,8 +184,8 @@ function App(): React.ReactElement {
 
   useLayoutEffect(() => {
     if (reportLocation) {
-      if (analysisQuery?.bounds) {
-        fitMapBounds(analysisQuery.bounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
+      if (reportQuery?.bounds) {
+        fitMapBounds(reportQuery.bounds, { padding: FIT_BOUNDS_REPORT_PADDING })
       } else {
         setMapCoordinates({ latitude: 0, longitude: 0, zoom: 0 })
       }
@@ -214,7 +214,7 @@ function App(): React.ReactElement {
 
   let asideWidth = '50%'
   if (readOnly) {
-    asideWidth = analysisQuery ? '45%' : '34rem'
+    asideWidth = reportQuery ? '45%' : '34rem'
   } else if (narrowSidebar) {
     asideWidth = '39rem'
   }

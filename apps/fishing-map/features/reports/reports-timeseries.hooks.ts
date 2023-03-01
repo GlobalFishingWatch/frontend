@@ -7,7 +7,7 @@ import { atom, selector, useRecoilState } from 'recoil'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import {
-  selectReportActivityGraph,
+  selectReportAnalysisGraph,
   selectReportAreaSource,
   selectReportTimeComparison,
   selectTimeRange,
@@ -55,12 +55,12 @@ export interface ReportGraphProps {
 }
 
 export const mapTimeseriesAtom = atom<ReportGraphProps[] | undefined>({
-  key: 'mapTimeseriesStateReport',
+  key: 'mapTimeseriesState',
   default: undefined,
 })
 
 export const selectMapTimeseries = selector({
-  key: 'mapTimeseriesStateReportLoaded',
+  key: 'mapTimeseriesStateLoaded',
   get: ({ get }) => {
     const timeseries = get(mapTimeseriesAtom)
     return timeseries && timeseries.length > 0
@@ -77,7 +77,7 @@ export const useFilteredTimeSeries = () => {
   const [timeseries, setTimeseries] = useRecoilState(mapTimeseriesAtom)
   const reportAreaIds = useSelector(selectReportAreaIds)
   const area = useSelector(selectDatasetAreaDetail(reportAreaIds))
-  const reportType = useSelector(selectReportActivityGraph)
+  const reportGraph = useSelector(selectReportAnalysisGraph)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparison = useSelector(selectReportTimeComparison)
   const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
@@ -133,16 +133,16 @@ export const useFilteredTimeSeries = () => {
     [showTimeComparison, compareDeltaMillis, setTimeseries]
   )
 
-  const reportTypeChange =
-    reportType === 'beforeAfter' || reportType === 'periodComparison' ? 'time' : reportType
+  const reportGraphChange =
+    reportGraph === 'beforeAfter' || reportGraph === 'periodComparison' ? 'time' : reportGraph
   // const reportTimerangeChange =
-  //   reportTypeChange === 'time' ? `${timebarStart}-${timebarEnd}` : compareDeltaMillis
+  //   reportGraphChange === 'time' ? `${timebarStart}-${timebarEnd}` : compareDeltaMillis
 
   // We need to re calculate the timeseries when area or timerange changes
   useEffect(() => {
     setTimeseries(undefined)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [area?.id, reportTypeChange])
+  }, [area?.id, reportGraphChange])
 
   const activeSourceIdHash = activityFeatures
     .map(({ metadata }) => metadata?.timeChunks?.activeSourceId)

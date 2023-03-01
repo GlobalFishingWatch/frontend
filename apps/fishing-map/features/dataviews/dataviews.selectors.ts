@@ -202,7 +202,7 @@ export const selectActiveActivityDataviewsByVisualisation = (
     }
   )
 
-export const selectHasAnalysisLayersVisible = createSelector(
+export const selectHasReportLayersVisible = createSelector(
   [selectActivityDataviews, selectDetectionsDataviews, selectEnvironmentalDataviews],
   (activityDataviews = [], detectionsDataviews = [], environmentalDataviews = []) => {
     const heatmapEnvironmentalDataviews = environmentalDataviews?.filter(

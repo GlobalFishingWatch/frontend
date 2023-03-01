@@ -91,7 +91,7 @@ export const DEFAULT_WORKSPACE = {
   visibleEvents: 'all',
   timebarGraph: TimebarGraphs.None,
   bivariateDataviews: undefined,
-  analysis: undefined,
+  report: undefined,
   reportActivityGraph: REPORT_ACTIVITY_GRAPH_EVOLUTION,
   reportCategory: DataviewCategory.Activity,
   reportVesselFilter: '',
@@ -143,4 +143,4 @@ export const POPUP_CATEGORY_ORDER = [
   DataviewCategory.Context,
 ]
 
-export const FIT_BOUNDS_ANALYSIS_PADDING = 30
+export const FIT_BOUNDS_REPORT_PADDING = 30

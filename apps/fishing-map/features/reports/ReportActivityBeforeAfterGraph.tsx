@@ -79,7 +79,7 @@ const formatDateTicks = (tick: number, timeComparison: ReportActivityTimeCompari
   return formattedTick
 }
 
-const AnalysisGraphTooltip = (props: any) => {
+const BeforeAfterGraphTooltip = (props: any) => {
   const { payload, timeChunkInterval } = props
 
   const avgLineValue = payload?.find((p) => p.name === 'line')
@@ -102,7 +102,7 @@ const AnalysisGraphTooltip = (props: any) => {
 
 const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
 
-const AnalysisBeforeAfterGraph: React.FC<{
+const ReportActivityBeforeAfterGraph: React.FC<{
   data: ComparisonGraphProps
   start: string
   end: string
@@ -186,7 +186,7 @@ const AnalysisBeforeAfterGraph: React.FC<{
             tickCount={4}
           />
           <ReferenceLine x={dtStart.toMillis()} stroke={COLOR_PRIMARY_BLUE} />
-          <Tooltip content={<AnalysisGraphTooltip timeChunkInterval={interval} />} />
+          <Tooltip content={<BeforeAfterGraphTooltip timeChunkInterval={interval} />} />
           <Line
             name="line"
             type="monotone"
@@ -213,4 +213,4 @@ const AnalysisBeforeAfterGraph: React.FC<{
   )
 }
 
-export default AnalysisBeforeAfterGraph
+export default ReportActivityBeforeAfterGraph

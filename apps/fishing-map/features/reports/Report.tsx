@@ -21,7 +21,6 @@ import ReportActivity from './ReportActivity'
 import ReportVessels from './ReportVessels'
 import ReportDownload from './ReportDownload'
 
-export type ReportType = 'activity' | 'area'
 export type ReportActivityUnit = 'hour' | 'detection'
 
 export default function Report() {
@@ -67,7 +66,7 @@ export default function Report() {
 
   const Header = (
     <Fragment>
-      <ReportTitle title={areaDetail?.name} type="activity" />
+      <ReportTitle title={areaDetail?.name} />
       {filteredCategoryTabs.length > 1 && (
         <Tabs tabs={filteredCategoryTabs} activeTab={reportCategory} onTabClick={handleTabClick} />
       )}

@@ -40,7 +40,7 @@ export default function ReportActivityGraph({ start, end, data }: ReportActivity
 
   const trackAndChangeDate = (date) => {
     uaEvent({
-      category: 'Analysis',
+      category: 'Report',
       action: `Select date in 'before/after'`,
       label: JSON.stringify({
         date: date.target.value,
@@ -55,7 +55,7 @@ export default function ReportActivityGraph({ start, end, data }: ReportActivity
 
   const trackAndChangeDuration = (duration) => {
     uaEvent({
-      category: 'Analysis',
+      category: 'Report',
       action: `Select duration in 'before/after'`,
       label: JSON.stringify({
         duration: duration.target.value + ' ' + durationTypeOption?.label,
@@ -72,7 +72,7 @@ export default function ReportActivityGraph({ start, end, data }: ReportActivity
 
   const trackAndChangeDurationType = (duration) => {
     uaEvent({
-      category: 'Analysis',
+      category: 'Report',
       action: `Select duration in 'before/after'`,
       label: JSON.stringify({
         duration: timeComparison?.duration + ' ' + duration.label,

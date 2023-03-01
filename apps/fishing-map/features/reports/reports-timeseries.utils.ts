@@ -8,13 +8,13 @@ import {
   pickActiveTimeChunk,
   quantizeOffsetToDate,
 } from '@globalfishingwatch/layer-composer'
-import { AnalysisGraphProps, AnalysisSublayerGraph } from 'features/analysis/AnalysisEvolutionGraph'
-import { FilteredPolygons } from 'features/analysis/analysis-geo.utils'
-import { DateTimeSeries } from 'features/analysis/analysis.hooks'
+import { ReportGraphProps, ReportSublayerGraph } from 'features/reports/ReportActivityEvolution'
+import { FilteredPolygons } from 'features/reports/report-geo.utils'
+import { DateTimeSeries } from 'features/reports/reports.hooks'
 import { DataviewFeature } from 'features/map/map-sources.hooks'
 import { getUTCDateTime } from 'utils/dates'
 
-export const removeTimeseriesPadding = (timeseries?: AnalysisGraphProps[]) => {
+export const removeTimeseriesPadding = (timeseries?: ReportGraphProps[]) => {
   return timeseries?.map((timeserie) => {
     return {
       ...timeserie,
@@ -26,7 +26,7 @@ export const removeTimeseriesPadding = (timeseries?: AnalysisGraphProps[]) => {
 }
 
 export const filterTimeseriesByTimerange = (
-  timeseries: AnalysisGraphProps[],
+  timeseries: ReportGraphProps[],
   start: string,
   end: string
 ) => {
@@ -129,7 +129,7 @@ export const featuresToTimeseries = (
     return {
       timeseries,
       interval: sourceInterval,
-      sublayers: sourceMetadata.sublayers as unknown as AnalysisSublayerGraph[],
+      sublayers: sourceMetadata.sublayers as unknown as ReportSublayerGraph[],
     }
   })
 }

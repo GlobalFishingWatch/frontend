@@ -24,9 +24,9 @@ export type ReportStateProperty =
 
 export type WorkspaceStateProperty =
   | 'query'
-  | 'analysis'
-  | 'analysisType'
-  | 'analysisTimeComparison'
+  | 'report'
+  | 'reportAnalysisGraph'
+  | 'reportTimeComparison'
   | 'readOnly'
   | 'daysFromLatest'
   | 'sidebarOpen'
@@ -47,19 +47,13 @@ export type WorkspaceParam =
 
 export type WorkspaceViewport = Record<WorkspaceViewportParam, number>
 export type WorkspaceTimeRange = Record<WorkspaceTimeRangeParam, string>
-export type WorkspaceAnalysis = {
+export type WorkspaceReport = {
   areaId: string
   sourceId: string
   datasetId: string
   bounds?: [number, number, number, number]
 }
-export type WorkspaceAnalysisType = 'evolution' | 'correlation' | 'periodComparison' | 'beforeAfter'
-export type WorkspaceAnalysisTimeComparison = {
-  start: string
-  compareStart: string
-  duration: number
-  durationType: string
-}
+export type WorkspaceReportType = 'evolution' | 'correlation' | 'periodComparison' | 'beforeAfter'
 
 export type BivariateDataviews = [string, string]
 export type ReportActivityGraph =
@@ -80,26 +74,24 @@ export type ReportVesselGraph =
 
 export type WorkspaceActivityCategory = 'fishing' | 'presence'
 export interface WorkspaceState extends BaseUrlWorkspace {
+  bivariateDataviews?: BivariateDataviews
+  daysFromLatest?: number // use latest day as endAt minus the number of days set here
   query?: string
   readOnly?: boolean
-  daysFromLatest?: number // use latest day as endAt minus the number of days set here
+  report?: WorkspaceReport
+  reportActivityGraph?: ReportActivityGraph
+  reportAreaBounds?: Bbox
+  reportAreaSource?: string
+  reportCategory?: ReportCategory
+  reportTimeComparison?: ReportActivityTimeComparison
+  reportVesselFilter?: string
+  reportVesselGraph?: ReportVesselGraph
+  reportVesselPage?: number
   sidebarOpen?: boolean
-  analysis?: WorkspaceAnalysis
-  analysisType?: WorkspaceAnalysisType
-  analysisTimeComparison?: WorkspaceAnalysisTimeComparison
-  timebarVisualisation?: TimebarVisualisations
-  visibleEvents?: VisibleEvents
   timebarGraph?: TimebarGraphs
   timebarSelectedEnvId?: string
-  bivariateDataviews?: BivariateDataviews
-  reportActivityGraph?: ReportActivityGraph
-  reportCategory?: ReportCategory
-  reportAreaSource?: string
-  reportAreaBounds?: Bbox
-  reportVesselGraph?: ReportVesselGraph
-  reportVesselFilter?: string
-  reportVesselPage?: number
-  reportTimeComparison?: ReportActivityTimeComparison
+  timebarVisualisation?: TimebarVisualisations
+  visibleEvents?: VisibleEvents
 }
 
 export type RedirectParam = {

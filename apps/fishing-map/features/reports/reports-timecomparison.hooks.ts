@@ -5,7 +5,7 @@ import { DateTime } from 'luxon'
 import { SelectOption } from '@globalfishingwatch/ui-components'
 import { ReportActivityGraph } from 'types'
 import { DEFAULT_WORKSPACE } from 'data/config'
-import { selectReportTypeQuery, selectReportTimeComparison } from 'features/app/app.selectors'
+import { selectReportAnalysisGraph, selectReportTimeComparison } from 'features/app/app.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getUTCDateTime } from 'utils/dates'
@@ -215,7 +215,7 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
 export const useTimeCompareTimeDescription = (addPrefix = true) => {
   const { t } = useTranslation()
   const timeComparison = useSelector(selectReportTimeComparison)
-  const reportType = useSelector(selectReportTypeQuery)
+  const reportGraph = useSelector(selectReportAnalysisGraph)
   if (!timeComparison) return undefined
   const startLabel = formatI18nDate(timeComparison.start, {
     format: DateTime.DATE_MED_WITH_WEEKDAY,
@@ -231,7 +231,7 @@ export const useTimeCompareTimeDescription = (addPrefix = true) => {
   const durationLabel = [timeComparison.duration, durationTypeLabel].join(' ')
 
   let label =
-    reportType === 'periodComparison'
+    reportGraph === 'periodComparison'
       ? t('analysis.periodComparisonRange', {
           compareStart: formatI18nDate(timeComparison.compareStart, {
             format: DateTime.DATE_MED_WITH_WEEKDAY,

@@ -5,10 +5,10 @@ import bbox from '@turf/bbox'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { getEventLabel } from 'utils/analytics'
-import { selectAnalysisQuery } from 'features/app/app.selectors'
+import { selectReportQuery } from 'features/app/app.selectors'
 import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
-import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
+import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { parsePropertiesBbox } from 'features/map/map.utils'
 import { fetchAreaDetailThunk } from 'features/areas/areas.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -47,7 +47,7 @@ export const useHighlightArea = () => {
 export const useContextInteractions = () => {
   const dispatch = useAppDispatch()
   const highlightArea = useHighlightArea()
-  const { areaId, sourceId } = useSelector(selectAnalysisQuery) || {}
+  const { areaId, sourceId } = useSelector(selectReportQuery) || {}
   const datasets = useSelector(selectAllDatasets)
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const fitMapBounds = useMapFitBounds()
@@ -76,16 +76,16 @@ export const useContextInteractions = () => {
     [cleanFeatureState, dispatch, datasets]
   )
 
-  const setAnalysisArea = useCallback(
+  const setReportArea = useCallback(
     (feature: TooltipEventFeature) => {
       const { source: sourceId, title, value } = feature
       const areaId = getFeatureAreaId(feature)
-      // Analysis already does it on page reload but to avoid waiting
+      // Report already does it on page reload but to avoid waiting
       // this moves the map to the same position
       const bounds = getFeatureBounds(feature)
       if (bounds) {
         const boundsParams = {
-          padding: FIT_BOUNDS_ANALYSIS_PADDING,
+          padding: FIT_BOUNDS_REPORT_PADDING,
           mapWidth: window.innerWidth / 2,
           mapHeight: window.innerHeight - TIMEBAR_HEIGHT - FOOTER_HEIGHT,
         }
@@ -96,15 +96,15 @@ export const useContextInteractions = () => {
       dispatch(setClickedEvent(null))
 
       uaEvent({
-        category: 'Analysis',
-        action: `Open analysis panel`,
+        category: 'Report',
+        action: `Open report`,
         label: getEventLabel([title ?? '', value ?? '']),
       })
     },
     [highlightArea, dispatch, fitMapBounds]
   )
 
-  const onAnalysisClick = useCallback(
+  const onReportClick = useCallback(
     (ev: React.MouseEvent<Element, MouseEvent>, feature: TooltipEventFeature) => {
       const gfw_id = feature.properties.gfw_id || feature.properties[feature.promoteId]
       if (!gfw_id) {
@@ -113,11 +113,11 @@ export const useContextInteractions = () => {
       }
 
       if (areaId !== gfw_id || sourceId !== feature.source) {
-        setAnalysisArea(feature)
+        setReportArea(feature)
       }
     },
-    [areaId, sourceId, setAnalysisArea]
+    [areaId, sourceId, setReportArea]
   )
 
-  return useMemo(() => ({ onDownloadClick, onAnalysisClick }), [onDownloadClick, onAnalysisClick])
+  return useMemo(() => ({ onDownloadClick, onReportClick }), [onDownloadClick, onReportClick])
 }
