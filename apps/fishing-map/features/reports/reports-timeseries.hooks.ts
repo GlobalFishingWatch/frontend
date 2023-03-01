@@ -9,6 +9,7 @@ import { Interval } from '@globalfishingwatch/layer-composer'
 import {
   selectReportAnalysisGraph,
   selectReportAreaSource,
+  selectReportCategory,
   selectReportTimeComparison,
   selectTimeRange,
 } from 'features/app/app.selectors'
@@ -81,12 +82,16 @@ export const useFilteredTimeSeries = () => {
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparison = useSelector(selectReportTimeComparison)
   const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
-  const activityFeatures = useMapDataviewFeatures(temporalgridDataviews)
+  const reportCategory = useSelector(selectReportCategory)
+  const currentCategoryDataviews = temporalgridDataviews.filter(
+    (dataview) => dataview.category === reportCategory
+  )
+  const activityFeatures = useMapDataviewFeatures(currentCategoryDataviews)
   const { start: timebarStart, end: timebarEnd } = useSelector(selectTimeRange)
-  const sourceId = useSelector(selectReportAreaSource)
+  const areaSourceId = useSelector(selectReportAreaSource)
   const areaInViewport = useReportAreaInViewport()
   const fitAreaInViewport = useFitAreaInViewport()
-  useReportAreaHighlight(area?.id, sourceId)
+  useReportAreaHighlight(area?.id, areaSourceId)
 
   // This ensures that the area is in viewport when then area load finishes
   useEffect(() => {

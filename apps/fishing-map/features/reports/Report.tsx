@@ -78,7 +78,7 @@ export default function Report() {
     return (
       <Fragment>
         {Header}
-        <ReportActivity activityUnit={activityUnit} />
+        <ReportActivity />
         {hasAuthError && (
           <ReportVesselsPlaceholder
             title={t('errors.reportLogin', 'Login to see the vessels active in the area')}
