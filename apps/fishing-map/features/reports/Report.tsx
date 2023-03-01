@@ -14,6 +14,7 @@ import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { selectWorkspaceVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
 import { selectHasReportVessels } from 'features/reports/reports.selectors'
 import ReportVesselsPlaceholder from 'features/reports/ReportVesselsPlaceholder'
+import { isGuestUser } from 'features/user/user.slice'
 import { useFetchReportArea, useFetchReportVessel } from './reports.hooks'
 import ReportSummary from './ReportSummary'
 import ReportTitle from './ReportTitle'
@@ -27,6 +28,7 @@ export default function Report() {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const reportCategory = useSelector(selectReportCategory)
+  const guestUser = useSelector(isGuestUser)
   const dataviewCategories = uniqBy(useSelector(selectActiveHeatmapDataviews), 'category').map(
     (d) => d.category
   )
@@ -44,7 +46,7 @@ export default function Report() {
   ]
   const filteredCategoryTabs = categoryTabs.filter((tab) => dataviewCategories.includes(tab.id))
 
-  const { status: reportStatus, error: statusError, reportAllowed } = useFetchReportVessel()
+  const { status: reportStatus, error: statusError } = useFetchReportVessel()
   const { data: areaDetail } = useFetchReportArea()
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const hasReportVessels = useSelector(selectHasReportVessels)
@@ -81,7 +83,14 @@ export default function Report() {
         <ReportActivity />
         {hasAuthError && (
           <ReportVesselsPlaceholder
-            title={t('errors.reportLogin', 'Login to see the vessels active in the area')}
+            title={
+              guestUser
+                ? t('errors.reportLogin', 'Login to see the vessels active in the area')
+                : t(
+                    'errors.privateReport',
+                    "Your account doesn't have permissions to see the vessels active in this area"
+                  )
+            }
           />
         )}
         {hasNoReportVessels && (
@@ -104,28 +113,15 @@ export default function Report() {
     )
   }
 
-  if (reportStatus === AsyncReducerStatus.Idle && !reportAllowed) {
+  if (reportStatus === AsyncReducerStatus.Finished) {
     return (
       <Fragment>
         {Header}
+        <ReportSummary activityUnit={activityUnit} />
         <ReportActivity />
-        <ReportVesselsPlaceholder
-          title={t(
-            'errors.privateReport',
-            "Your account doesn't have permissions to see the vessels active in this area"
-          )}
-        />
+        <ReportVessels activityUnit={activityUnit} reportName={areaDetail?.name} />
+        <ReportDownload reportName={areaDetail?.name} />
       </Fragment>
     )
   }
-
-  return (
-    <Fragment>
-      {Header}
-      <ReportSummary activityUnit={activityUnit} />
-      <ReportActivity />
-      <ReportVessels activityUnit={activityUnit} reportName={areaDetail?.name} />
-      <ReportDownload reportName={areaDetail?.name} />
-    </Fragment>
-  )
 }

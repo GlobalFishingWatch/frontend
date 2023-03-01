@@ -14,7 +14,7 @@ import {
   selectDatasetAreaDetail,
   selectDatasetAreaStatus,
 } from 'features/areas/areas.slice'
-import { selectIsReportAllowed, selectReportAreaIds } from 'features/reports/reports.selectors'
+import { selectReportAreaIds } from 'features/reports/reports.selectors'
 import useMapInstance from 'features/map/map-context.hooks'
 import { selectUserData } from 'features/user/user.slice'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
@@ -37,7 +37,7 @@ export type DateTimeSeries = {
 export function useReportAreaCenter(bounds: Bbox) {
   const map = useMapInstance()
   return useMemo(() => {
-    if (!bounds) return null
+    if (!bounds || !map) return null
 
     const wrapBbox = wrapBBoxLongitudes(bounds)
     const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(map, wrapBbox, {
@@ -141,11 +141,10 @@ export function useFetchReportVessel() {
   const status = useSelector(selectReportVesselsStatus)
   const error = useSelector(selectReportVesselsError)
   const data = useSelector(selectReportVesselsData)
-  const reportAllowed = useSelector(selectIsReportAllowed)
 
   useEffect(() => {
     const reportDataviews = getReportDataviews(dataviews, userData)
-    if (reportAllowed && areaId && reportDataviews?.length) {
+    if (areaId && reportDataviews?.length) {
       dispatch(
         fetchReportVesselsThunk({
           datasets: reportDataviews.map(({ datasets }) => datasets.join(',')),
@@ -160,10 +159,7 @@ export function useFetchReportVessel() {
         })
       )
     }
-  }, [dispatch, areaId, datasetId, timerange, dataviews, userData, reportAllowed])
+  }, [dispatch, areaId, datasetId, timerange, dataviews, userData])
 
-  return useMemo(
-    () => ({ status, data, error, reportAllowed }),
-    [status, data, error, reportAllowed]
-  )
+  return useMemo(() => ({ status, data, error }), [status, data, error])
 }
