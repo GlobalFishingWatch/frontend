@@ -1,13 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { DateTime } from 'luxon'
 import { SelectOption } from '@globalfishingwatch/ui-components'
 import { ReportActivityGraph } from 'types'
 import { DEFAULT_WORKSPACE } from 'data/config'
-import { selectReportTimeComparison } from 'features/app/app.selectors'
+import { selectReportTypeQuery, selectReportTimeComparison } from 'features/app/app.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getUTCDateTime } from 'utils/dates'
+import { formatI18nDate } from 'features/i18n/i18nDate'
+import { useFitAreaInViewport } from 'features/reports/reports.hooks'
 
 // TODO get this from start and endDate from datasets
 const MIN_DATE = DEFAULT_WORKSPACE.availableStart.slice(0, 10)
@@ -19,6 +22,7 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const { start: timebarStart, end: timebarEnd } = useTimerangeConnect()
+  const fitAreaInViewport = useFitAreaInViewport()
   const [errorMsg, setErrorMsg] = useState(null)
   const timeComparison = useSelector(selectReportTimeComparison)
   const durationType = timeComparison?.durationType
@@ -113,7 +117,7 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
         }
       }
 
-      // fitMapBounds(bounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
+      fitAreaInViewport()
       dispatchQueryParams({
         reportTimeComparison: {
           start,
@@ -133,7 +137,7 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
         setErrorMsg(null)
       }
     },
-    [timeComparison, activityType, dispatchQueryParams]
+    [timeComparison, activityType, dispatchQueryParams, fitAreaInViewport]
   )
 
   const onStartChange = useCallback(
@@ -206,4 +210,46 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
       onStartChange,
     ]
   )
+}
+
+export const useTimeCompareTimeDescription = (addPrefix = true) => {
+  const { t } = useTranslation()
+  const timeComparison = useSelector(selectReportTimeComparison)
+  const reportType = useSelector(selectReportTypeQuery)
+  if (!timeComparison) return undefined
+  const startLabel = formatI18nDate(timeComparison.start, {
+    format: DateTime.DATE_MED_WITH_WEEKDAY,
+  })
+  const compareStartLabel = formatI18nDate(timeComparison.compareStart, {
+    format: DateTime.DATE_MED_WITH_WEEKDAY,
+  })
+
+  const durationTypeLabel =
+    parseInt(timeComparison.duration as any) === 1
+      ? t(`common.${timeComparison.durationType}_one`)
+      : t(`common.${timeComparison.durationType}_other`)
+  const durationLabel = [timeComparison.duration, durationTypeLabel].join(' ')
+
+  let label =
+    reportType === 'periodComparison'
+      ? t('analysis.periodComparisonRange', {
+          compareStart: formatI18nDate(timeComparison.compareStart, {
+            format: DateTime.DATE_MED_WITH_WEEKDAY,
+          }),
+          start: startLabel,
+          duration: durationLabel,
+          defaultValue:
+            'in the {{duration}} following {{compareStart}} compared to baseline in the {{duration}} following {{start}}',
+        })
+      : t('analysis.beforeAfterRange', {
+          compareStart: compareStartLabel,
+          duration: durationLabel,
+          defaultValue: 'between the {{duration}} before and after {{compareStart}}',
+        })
+
+  if (addPrefix) {
+    label = [t('analysis.change', 'Change'), label].join(' ')
+  }
+
+  return label
 }
