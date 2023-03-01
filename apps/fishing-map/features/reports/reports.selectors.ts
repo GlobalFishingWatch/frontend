@@ -2,7 +2,12 @@ import { createSelector } from '@reduxjs/toolkit'
 import { groupBy, sum, sumBy, uniq, uniqBy } from 'lodash'
 import { matchSorter } from 'match-sorter'
 import { t } from 'i18next'
-import { Dataset, DatasetTypes, ReportVessel } from '@globalfishingwatch/api-types'
+import {
+  Dataset,
+  DatasetTypes,
+  DataviewCategory,
+  ReportVessel,
+} from '@globalfishingwatch/api-types'
 import {
   selectActiveReportDataviews,
   selectReportActivityGraph,
@@ -25,7 +30,6 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUserData } from 'features/user/user.slice'
 import { getUTCDateTime } from 'utils/dates'
 import { selectActiveTemporalgridDataviews } from 'features/dataviews/dataviews.selectors'
-import { ReportCategory } from 'types'
 import { selectReportVesselsData } from './reports.slice'
 
 export const DEFAULT_NULL_VALUE = 'NULL'
@@ -33,7 +37,7 @@ export const MAX_CATEGORIES = 5
 
 export type ReportVesselWithDatasets = Partial<ReportVessel> & {
   datasetId: string
-  category: ReportCategory
+  category: DataviewCategory
   infoDataset?: Dataset
   trackDataset?: Dataset
 }
