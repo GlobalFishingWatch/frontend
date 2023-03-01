@@ -1,24 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import { SelectOption } from '@globalfishingwatch/ui-components'
-import { t } from 'features/i18n/i18n'
 import { ReportActivityGraph } from 'types'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { selectReportTimeComparison } from 'features/app/app.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getUTCDateTime } from 'utils/dates'
-
-export const DURATION_TYPES_OPTIONS: SelectOption[] = [
-  {
-    id: 'days',
-    label: t('common.days_other'),
-  },
-  {
-    id: 'months',
-    label: t('common.months_other'),
-  },
-]
 
 // TODO get this from start and endDate from datasets
 const MIN_DATE = DEFAULT_WORKSPACE.availableStart.slice(0, 10)
@@ -27,12 +16,27 @@ export const MAX_DAYS_TO_COMPARE = 100
 export const MAX_MONTHS_TO_COMPARE = 12
 
 export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) => {
+  const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const { start: timebarStart, end: timebarEnd } = useTimerangeConnect()
   const [errorMsg, setErrorMsg] = useState(null)
   const timeComparison = useSelector(selectReportTimeComparison)
   const durationType = timeComparison?.durationType
   const duration = timeComparison?.duration
+
+  const durationTypeOptions: SelectOption[] = useMemo(
+    () => [
+      {
+        id: 'days',
+        label: t('common.days_other'),
+      },
+      {
+        id: 'months',
+        label: t('common.months_other'),
+      },
+    ],
+    [t]
+  )
 
   useEffect(() => {
     if (timeComparison) {
@@ -177,8 +181,8 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
 
   const durationTypeOption = useMemo(() => {
     if (!timeComparison) return null
-    return DURATION_TYPES_OPTIONS.find((o) => o.id === timeComparison.durationType)
-  }, [timeComparison])
+    return durationTypeOptions.find((o) => o.id === timeComparison.durationType)
+  }, [durationTypeOptions, timeComparison])
 
   return useMemo(
     () => ({
@@ -187,12 +191,14 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
       onDurationChange,
       onDurationTypeSelect,
       durationTypeOption,
+      durationTypeOptions,
       errorMsg,
       MIN_DATE,
       MAX_DATE,
     }),
     [
       durationTypeOption,
+      durationTypeOptions,
       errorMsg,
       onCompareStartChange,
       onDurationChange,

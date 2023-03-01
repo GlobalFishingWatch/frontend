@@ -19,7 +19,7 @@ import i18n from 'features/i18n/i18n'
 import { COLOR_PRIMARY_BLUE } from 'features/app/App'
 import { getUTCDateTime } from 'utils/dates'
 import { formatDate, formatTooltipValue, tickFormatter } from 'features/reports/reports.utils'
-import styles from './ReportActivityBeforeAfter.module.css'
+import styles from './ReportActivityEvolution.module.css'
 
 export interface ComparisonGraphData {
   date: string
@@ -79,6 +79,8 @@ const AnalysisGraphTooltip = (props: any) => {
   )
 }
 
+const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
+
 const AnalysisBeforeAfterGraph: React.FC<{
   data: ComparisonGraphProps
   start: string
@@ -90,7 +92,7 @@ const AnalysisBeforeAfterGraph: React.FC<{
 
   const dtStart = useMemo(() => {
     return getUTCDateTime(timeComparison.compareStart)
-  }, [timeComparison.compareStart])
+  }, [timeComparison?.compareStart])
 
   const range = useMemo(() => {
     const values = timeseries?.flatMap(({ date, compareDate, min, max }) => {
@@ -142,8 +144,8 @@ const AnalysisBeforeAfterGraph: React.FC<{
 
   return (
     <div className={styles.graph}>
-      <ResponsiveContainer width="100%" height={240}>
-        <ComposedChart data={range} margin={{ top: 15, right: 20, left: -20, bottom: -10 }}>
+      <ResponsiveContainer width="100%" height={'100%'}>
+        <ComposedChart data={range} margin={graphMargin}>
           <CartesianGrid vertical={false} />
           <XAxis
             domain={[getUTCDateTime(start).toMillis(), getUTCDateTime(end).toMillis()]}
