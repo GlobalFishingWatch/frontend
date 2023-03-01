@@ -9,7 +9,6 @@ import { Interval } from '@globalfishingwatch/layer-composer'
 import {
   selectReportAnalysisGraph,
   selectReportAreaSource,
-  selectReportCategory,
   selectReportTimeComparison,
   selectTimeRange,
 } from 'features/app/app.selectors'
@@ -19,7 +18,6 @@ import {
   useMapDataviewFeatures,
   hasDataviewsFeatureError,
 } from 'features/map/map-sources.hooks'
-import { selectActiveTemporalgridDataviews } from 'features/dataviews/dataviews.selectors'
 import { getUTCDateTime } from 'utils/dates'
 import { selectDatasetAreaDetail } from 'features/areas/areas.slice'
 import { filterByPolygon } from 'features/reports/reports-geo.utils'
@@ -33,7 +31,11 @@ import {
   useReportAreaHighlight,
   useReportAreaInViewport,
 } from 'features/reports/reports.hooks'
-import { selectReportAreaIds, selectShowTimeComparison } from 'features/reports/reports.selectors'
+import {
+  selectReportCategoryDataviews,
+  selectReportAreaIds,
+  selectShowTimeComparison,
+} from 'features/reports/reports.selectors'
 
 export interface EvolutionGraphData {
   date: string
@@ -81,11 +83,7 @@ export const useFilteredTimeSeries = () => {
   const reportGraph = useSelector(selectReportAnalysisGraph)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparison = useSelector(selectReportTimeComparison)
-  const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
-  const reportCategory = useSelector(selectReportCategory)
-  const currentCategoryDataviews = temporalgridDataviews.filter(
-    (dataview) => dataview.category === reportCategory
-  )
+  const currentCategoryDataviews = useSelector(selectReportCategoryDataviews)
   const activityFeatures = useMapDataviewFeatures(currentCategoryDataviews)
   const { start: timebarStart, end: timebarEnd } = useSelector(selectTimeRange)
   const areaSourceId = useSelector(selectReportAreaSource)
@@ -155,7 +153,7 @@ export const useFilteredTimeSeries = () => {
 
   // Re calculate timerange when there new source data is fetched on timebar changes
   useEffect(() => {
-    const hasActivityLayers = temporalgridDataviews.some(
+    const hasActivityLayers = currentCategoryDataviews.some(
       ({ category }) =>
         category === DataviewCategory.Activity || category === DataviewCategory.Detections
     )
