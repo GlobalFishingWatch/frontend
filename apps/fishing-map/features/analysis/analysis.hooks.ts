@@ -48,12 +48,12 @@ import { AnalysisGraphProps } from './AnalysisEvolutionGraph'
 import { selectAnalysisArea, selectShowTimeComparison } from './analysis.selectors'
 
 export const mapTimeseriesAtom = atom<AnalysisGraphProps[] | undefined>({
-  key: 'mapTimeseriesState',
+  key: 'mapTimeseriesStateAnalysis',
   default: undefined,
 })
 
 export const selectMapTimeseries = selector({
-  key: 'mapTimeseriesStateLoaded',
+  key: 'mapTimeseriesStateAnalysisLoaded',
   get: ({ get }) => {
     const timeseries = get(mapTimeseriesAtom)
     return timeseries && timeseries.length > 0
