@@ -187,10 +187,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
             vessels={reportVesselFilter ? allFilteredVessels : allVessels}
             showCount={false}
           />
-          <Button
-            className={cx(styles.footerButton, styles.expand)}
-            disabled={!downloadVessels?.length}
-          >
+          <Button className={styles.expand} disabled={!downloadVessels?.length}>
             {downloadVessels?.length ? (
               <CSVLink filename={`${reportName}-${start}-${end}.csv`} data={downloadVessels}>
                 {t('analysis.downloadVesselsList', 'Download csv')}

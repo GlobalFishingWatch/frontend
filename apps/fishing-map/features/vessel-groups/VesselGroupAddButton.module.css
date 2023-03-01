@@ -16,3 +16,7 @@
 .groupOption:not(:last-of-type) {
   border-bottom: var(--border);
 }
+
+.button {
+  white-space: nowrap;
+}
