@@ -38,7 +38,7 @@ import { initializeHints } from 'features/hints/hints.slice'
 import AppModals from 'features/modals/Modals'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useAppDispatch } from './app.hooks'
-import { selectReadOnly, selectReportQuery, selectSidebarOpen } from './app.selectors'
+import { selectReadOnly, selectReportAreaBounds, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
 import { useAnalytics } from './analytics.hooks'
 
@@ -100,11 +100,11 @@ function App(): React.ReactElement {
   const i18n = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
-  const reportQuery = useSelector(selectReportQuery)
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
   const reportLocation = useSelector(selectIsReportLocation)
+  const reportAreaBounds = useSelector(selectReportAreaBounds)
   const isTimeComparisonReport = useSelector(selectShowTimeComparison)
-  const narrowSidebar = workspaceLocation && !reportQuery
+  const narrowSidebar = workspaceLocation
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const showTimebar = workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished
 
@@ -184,8 +184,8 @@ function App(): React.ReactElement {
 
   useLayoutEffect(() => {
     if (reportLocation) {
-      if (reportQuery?.bounds) {
-        fitMapBounds(reportQuery.bounds, { padding: FIT_BOUNDS_REPORT_PADDING })
+      if (reportAreaBounds) {
+        fitMapBounds(reportAreaBounds, { padding: FIT_BOUNDS_REPORT_PADDING })
       } else {
         setMapCoordinates({ latitude: 0, longitude: 0, zoom: 0 })
       }
@@ -214,7 +214,7 @@ function App(): React.ReactElement {
 
   let asideWidth = '50%'
   if (readOnly) {
-    asideWidth = reportQuery ? '45%' : '34rem'
+    asideWidth = reportLocation ? '45%' : '34rem'
   } else if (narrowSidebar) {
     asideWidth = '39rem'
   }

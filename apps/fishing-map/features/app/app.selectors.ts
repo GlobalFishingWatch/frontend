@@ -17,7 +17,6 @@ import {
 import {
   Bbox,
   BivariateDataviews,
-  ReportActivityGraph,
   ReportCategory,
   ReportActivityTimeComparison,
   ReportVesselGraph,
@@ -25,8 +24,7 @@ import {
   TimebarVisualisations,
   VisibleEvents,
   WorkspaceActivityCategory,
-  WorkspaceReport,
-  WorkspaceReportType,
+  ReportActivityGraph,
 } from 'types'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import {
@@ -62,24 +60,10 @@ export const selectTimeRange = createSelector(
   }
 )
 
-export const selectReportQuery = createSelector(
-  [selectWorkspaceStateProperty('report')],
-  (report): WorkspaceReport => {
-    return report
-  }
-)
-
-export const selectReportAnalysisGraph = createSelector(
-  [selectWorkspaceStateProperty('reportActivityGraph')],
-  (report): WorkspaceReportType => {
-    return report || 'evolution'
-  }
-)
-
 export const selectReportTimeComparison = createSelector(
   [selectWorkspaceStateProperty('reportTimeComparison')],
-  (report): ReportActivityTimeComparison => {
-    return report
+  (reportTimeComparison): ReportActivityTimeComparison => {
+    return reportTimeComparison
   }
 )
 

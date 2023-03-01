@@ -108,11 +108,12 @@ function VesselGroupAddButton({
             onClick={toggleVesselGroupsOpen}
             disabled={!vessels?.length || tooManyVessels}
             tooltip={
-              tooManyVessels &&
-              t('vesselGroup.tooManyVessels', {
-                count: MAX_VESSEL_GROUP_VESSELS,
-                defaultValue: 'Maximum number of vessels is {{count}}',
-              })
+              tooManyVessels
+                ? t('vesselGroup.tooManyVessels', {
+                    count: MAX_VESSEL_GROUP_VESSELS,
+                    defaultValue: 'Maximum number of vessels is {{count}}',
+                  })
+                : ''
             }
             tooltipPlacement="top"
           >

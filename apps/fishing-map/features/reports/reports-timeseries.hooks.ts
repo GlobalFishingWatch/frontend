@@ -7,7 +7,7 @@ import { atom, selector, useRecoilState } from 'recoil'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import {
-  selectReportAnalysisGraph,
+  selectReportActivityGraph,
   selectReportAreaSource,
   selectReportTimeComparison,
   selectTimeRange,
@@ -80,7 +80,7 @@ export const useFilteredTimeSeries = () => {
   const [timeseries, setTimeseries] = useRecoilState(mapTimeseriesAtom)
   const reportAreaIds = useSelector(selectReportAreaIds)
   const area = useSelector(selectDatasetAreaDetail(reportAreaIds))
-  const reportGraph = useSelector(selectReportAnalysisGraph)
+  const reportGraph = useSelector(selectReportActivityGraph)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparison = useSelector(selectReportTimeComparison)
   const currentCategoryDataviews = useSelector(selectReportCategoryDataviews)

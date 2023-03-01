@@ -25,8 +25,6 @@ export type ReportStateProperty =
 export type WorkspaceStateProperty =
   | 'query'
   | 'report'
-  | 'reportAnalysisGraph'
-  | 'reportTimeComparison'
   | 'readOnly'
   | 'daysFromLatest'
   | 'sidebarOpen'
@@ -47,13 +45,6 @@ export type WorkspaceParam =
 
 export type WorkspaceViewport = Record<WorkspaceViewportParam, number>
 export type WorkspaceTimeRange = Record<WorkspaceTimeRangeParam, string>
-export type WorkspaceReport = {
-  areaId: string
-  sourceId: string
-  datasetId: string
-  bounds?: [number, number, number, number]
-}
-export type WorkspaceReportType = 'evolution' | 'correlation' | 'periodComparison' | 'beforeAfter'
 
 export type BivariateDataviews = [string, string]
 export type ReportActivityGraph =
@@ -78,7 +69,6 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   daysFromLatest?: number // use latest day as endAt minus the number of days set here
   query?: string
   readOnly?: boolean
-  report?: WorkspaceReport
   reportActivityGraph?: ReportActivityGraph
   reportAreaBounds?: Bbox
   reportAreaSource?: string

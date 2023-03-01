@@ -5,7 +5,6 @@ import bbox from '@turf/bbox'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { getEventLabel } from 'utils/analytics'
-import { selectReportQuery } from 'features/app/app.selectors'
 import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
@@ -16,6 +15,8 @@ import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.s
 import useMapInstance from 'features/map/map-context.hooks'
 import { Bbox } from 'types'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
+import { selectReportAreaSource } from 'features/app/app.selectors'
+import { selectLocationAreaId } from 'routes/routes.selectors'
 import { setClickedEvent } from '../map.slice'
 import { TooltipEventFeature } from '../map.hooks'
 import { useMapFitBounds } from '../map-viewport.hooks'
@@ -47,7 +48,8 @@ export const useHighlightArea = () => {
 export const useContextInteractions = () => {
   const dispatch = useAppDispatch()
   const highlightArea = useHighlightArea()
-  const { areaId, sourceId } = useSelector(selectReportQuery) || {}
+  const areaId = useSelector(selectLocationAreaId)
+  const sourceId = useSelector(selectReportAreaSource)
   const datasets = useSelector(selectAllDatasets)
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const fitMapBounds = useMapFitBounds()
@@ -112,7 +114,7 @@ export const useContextInteractions = () => {
         return
       }
 
-      if (areaId !== gfw_id || sourceId !== feature.source) {
+      if (areaId?.toString() !== gfw_id || sourceId !== feature.source) {
         setReportArea(feature)
       }
     },

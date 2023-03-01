@@ -91,7 +91,6 @@ export const DEFAULT_WORKSPACE = {
   visibleEvents: 'all',
   timebarGraph: TimebarGraphs.None,
   bivariateDataviews: undefined,
-  report: undefined,
   reportActivityGraph: REPORT_ACTIVITY_GRAPH_EVOLUTION,
   reportCategory: DataviewCategory.Activity,
   reportVesselFilter: '',
