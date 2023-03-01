@@ -26,7 +26,7 @@ import { fetchUserThunk } from 'features/user/user.slice'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
-import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
+import { selectShowTimeComparison } from 'features/reports/reports.selectors'
 import { isUserLogged } from 'features/user/user.selectors'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { HOME, WORKSPACE, USER, WORKSPACES_LIST, REPORT } from 'routes/routes'
@@ -71,8 +71,8 @@ const Main = () => {
   const isTimeComparisonAnalysis = useSelector(selectShowTimeComparison)
 
   const showTimebar =
-    ((workspaceLocation || reportLocation) && workspaceStatus === AsyncReducerStatus.Finished) ||
-    (reportLocation && !isTimeComparisonAnalysis)
+    (workspaceLocation || (reportLocation && !isTimeComparisonAnalysis)) &&
+    workspaceStatus === AsyncReducerStatus.Finished
 
   return (
     <Fragment>
@@ -184,7 +184,7 @@ function App(): React.ReactElement {
 
   useLayoutEffect(() => {
     if (reportLocation) {
-      if (analysisQuery.bounds) {
+      if (analysisQuery?.bounds) {
         fitMapBounds(analysisQuery.bounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
       } else {
         setMapCoordinates({ latitude: 0, longitude: 0, zoom: 0 })
