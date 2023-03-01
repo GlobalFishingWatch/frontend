@@ -7,17 +7,19 @@ import { useMapLayers } from 'features/map/layers.hooks'
 type customReferenceAtom = {
   loaded: boolean
   instance?: CustomReferenceLayer
-  layerGeometry: GeoJSON | null
-  editMode: 'draw' | 'edit'
+  data: GeoJSON | null
+  mode: 'draw' | 'edit'
+  selectedFeatureIndexes: number[]
 }
 
 export const customReferenceLayerAtom = atom<customReferenceAtom>({
   key: 'customReferenceLayer',
   dangerouslyAllowMutability: true,
   default: {
-    editMode: 'draw',
+    mode: 'draw',
     loaded: false,
-    layerGeometry: {
+    selectedFeatureIndexes: [0],
+    data: {
       type: 'FeatureCollection',
       features: [],
     },
@@ -25,7 +27,7 @@ export const customReferenceLayerAtom = atom<customReferenceAtom>({
 })
 
 export function useCustomReferenceLayer() {
-  const [{ instance, layerGeometry, editMode }, updateAtom] =
+  const [{ instance, data, mode, selectedFeatureIndexes }, updateAtom] =
     useRecoilState(customReferenceLayerAtom)
   const [mapLayers] = useMapLayers()
 
@@ -38,25 +40,47 @@ export function useCustomReferenceLayer() {
   )
 
   const onEdit = useCallback(
-    ({ updatedData }) => {
-      setAtomProperty({ layerGeometry: updatedData })
+    ({ updatedData, editType }) => {
+      if (editType === 'addFeature' || editType === 'movePosition' || editType === 'addPosition') {
+        setAtomProperty({ data: updatedData })
+      }
+    },
+    [setAtomProperty]
+  )
+
+  const onClick = useCallback(
+    (info) => {
+      if (info.featureType === 'polygons') {
+        setAtomProperty({ selectedFeatureIndexes: [info.index] })
+      }
+      console.log('clicked', info)
     },
     [setAtomProperty]
   )
 
   useEffect(() => {
     if (layerVisible) {
-      console.log('editMode', editMode)
       const customReferenceLayer = new CustomReferenceLayer({
+        data,
         onEdit,
-        data: layerGeometry,
-        editMode,
+        onClick,
+        mode,
+        selectedFeatureIndexes,
       })
       setAtomProperty({ instance: customReferenceLayer })
     } else {
       setAtomProperty({ instance: undefined, loaded: false })
     }
-  }, [updateAtom, setAtomProperty, layerVisible, onEdit, layerGeometry, editMode])
+  }, [
+    data,
+    onEdit,
+    onClick,
+    mode,
+    updateAtom,
+    layerVisible,
+    setAtomProperty,
+    selectedFeatureIndexes,
+  ])
 
   return instance
 }
@@ -64,10 +88,9 @@ export function useCustomReferenceLayer() {
 export function useUpdateMode() {
   const setCustomReferenceAtom = useSetRecoilState(customReferenceLayerAtom)
   const setMode = useCallback(
-    (editMode: string) => {
-      console.log('uppdating mode', editMode)
+    (mode: customReferenceAtom['mode']) => {
       setCustomReferenceAtom((atom) => {
-        return { ...atom, editMode }
+        return { ...atom, mode }
       })
     },
     [setCustomReferenceAtom]
@@ -92,7 +115,7 @@ const customReferenceModeAtomSelector = selector({
   key: 'customReferenceModeAtomSelector',
   dangerouslyAllowMutability: true,
   get: ({ get }) => {
-    return get(customReferenceLayerAtom)?.editMode
+    return get(customReferenceLayerAtom)?.mode
   },
 })
 

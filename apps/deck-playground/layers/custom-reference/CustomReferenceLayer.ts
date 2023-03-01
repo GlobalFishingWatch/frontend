@@ -1,64 +1,35 @@
 import { EditableGeoJsonLayer } from '@nebula.gl/layers'
 import { DrawPolygonMode, ModifyMode } from '@nebula.gl/edit-modes'
 import { DefaultProps } from '@deck.gl/core/typed'
+import { EditableGeojsonLayerProps } from '@nebula.gl/layers/dist-types/layers/editable-geojson-layer'
 import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
 
-const defaultProps: DefaultProps = {
-  zIndex: { type: 'number', value: GROUP_ORDER.indexOf(Group.CustomLayer) },
-  pickable: { type: 'boolean', value: true },
+type _CustomReferenceLayerProps = {
+  zIndex?: number
 }
 
+export type CustomReferenceLayerProps<DataT = any> = EditableGeojsonLayerProps<DataT> &
+  _CustomReferenceLayerProps
+
+const defaultProps: DefaultProps<CustomReferenceLayerProps> = {
+  zIndex: { type: 'number', value: GROUP_ORDER.indexOf(Group.CustomLayer) },
+}
 export class CustomReferenceLayer extends EditableGeoJsonLayer {
-  static layerName = 'CustomReferenceLayer'
+  static layerName = 'custom-reference-layer'
   static defaultProps = defaultProps
-
-  initializeState() {
-    // super.initializeState(context)
-    this.state = {
-      selectedFeatureIndexes: [0],
-    }
-  }
-
   renderLayers() {
-    const { mode, data, selectedFeatureIndexes, onEdit, ...otherProps } = this.props
-
+    const { mode, data, selectedFeatureIndexes, onEdit, onClick } = this.props
     return [
-      new EditableGeoJsonLayer(
-        { pickable: true, onClick: () => console.log('CLICKED') },
-        this.getSubLayerProps({
-          ...otherProps,
-          id: 'custom-reference',
-          data,
-          pickable: true,
-          autoHighlight: true,
-          getPickingInfo: (info) => {
-            console.log('PICKING', info)
-            return info
-          },
-          mode: this.props.editMode === 'edit' ? ModifyMode : DrawPolygonMode,
-          onEdit: ({ updatedData, editType, featureIndexes, editContext }) => {
-            if (
-              editType === 'addFeature' ||
-              editType === 'movePosition' ||
-              editType === 'addPosition'
-            ) {
-              this.props.onEdit({ updatedData })
-            }
-            console.log('EDITTING', editType, featureIndexes, editContext)
-            // this.props.onEdit({ updatedData })
-          },
-          onClick: (info) => {
-            console.log('CLICKED', info)
-            this.setState({ selectedFeatureIndexes: [info.index] })
-          },
-          selectedFeatureIndexes: this.state.selectedFeatureIndexes,
-          // Styles
-          filled: true,
-          pointRadiusMinPixels: 2,
-          pointRadiusScale: 2000,
-          getFillColor: [200, 0, 80, 50],
-        })
-      ),
+      new EditableGeoJsonLayer({
+        id: 'custom-reference',
+        data,
+        onEdit,
+        onClick,
+        pickable: true,
+        autoHighlight: true,
+        selectedFeatureIndexes,
+        mode: mode === 'edit' ? ModifyMode : DrawPolygonMode,
+      }),
     ]
   }
 }
