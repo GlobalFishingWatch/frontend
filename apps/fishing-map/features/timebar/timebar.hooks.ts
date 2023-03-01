@@ -86,7 +86,7 @@ export const useTimerangeConnect = () => {
 
   const onTimebarChange = useCallback(
     (start: string, end: string) => {
-      if (start !== timerange?.start || end !== timerange.end) {
+      if (start !== timerange?.start || end !== timerange?.end) {
         dispatch(setHintDismissed('changingTheTimeRange'))
       }
       setTimerange({ start, end })
@@ -94,7 +94,7 @@ export const useTimerangeConnect = () => {
         fitAreaInViewport()
       }
     },
-    [dispatch, fitAreaInViewport, reportLocation, setTimerange, timerange.end, timerange?.start]
+    [dispatch, fitAreaInViewport, reportLocation, setTimerange, timerange?.end, timerange?.start]
   )
   return useMemo(() => {
     return {
