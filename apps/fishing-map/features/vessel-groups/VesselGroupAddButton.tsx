@@ -12,6 +12,7 @@ import {
   setVesselGroupEditId,
   setNewVesselGroupSearchVessels,
   setVesselGroupsModalOpen,
+  MAX_VESSEL_GROUP_VESSELS,
 } from 'features/vessel-groups/vessel-groups.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
@@ -31,6 +32,7 @@ function VesselGroupAddButton({
   const hasUserGroupsPermissions = useSelector(selectUserGroupsPermissions)
   const vesselGroupOptions = useVesselGroupsOptions()
   const [vesselGroupsOpen, setVesselGroupsOpen] = useState(false)
+  const tooManyVessels = vessels?.length > MAX_VESSEL_GROUP_VESSELS
 
   const toggleVesselGroupsOpen = useCallback(() => {
     setVesselGroupsOpen(!vesselGroupsOpen)
@@ -102,9 +104,18 @@ function VesselGroupAddButton({
         {hasUserGroupsPermissions && (
           <Button
             type="secondary"
-            className={styles.footerAction}
+            className={styles.button}
             onClick={toggleVesselGroupsOpen}
-            disabled={!vessels?.length}
+            disabled={!vessels?.length || tooManyVessels}
+            tooltip={
+              tooManyVessels
+                ? t('vesselGroup.tooManyVessels', {
+                    count: MAX_VESSEL_GROUP_VESSELS,
+                    defaultValue: 'Maximum number of vessels is {{count}}',
+                  })
+                : ''
+            }
+            tooltipPlacement="top"
           >
             {t('vesselGroup.add', 'Add to group')}
             {showCount ? ` (${vessels.length})` : ''}

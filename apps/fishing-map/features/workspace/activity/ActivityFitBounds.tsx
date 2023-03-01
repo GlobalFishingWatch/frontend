@@ -3,7 +3,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { Bbox } from '@globalfishingwatch/data-transforms'
 import { StatFields } from '@globalfishingwatch/api-types'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
-import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
+import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 
 type ActivityFitBoundsProps = {
   stats: StatFields
@@ -16,7 +16,7 @@ function ActivityFitBounds({ stats, loading }: ActivityFitBoundsProps): React.Re
   const statsBbox = stats && ([stats.minLon, stats.minLat, stats.maxLon, stats.maxLat] as Bbox)
 
   const onFitBoundsHandle = () => {
-    fitMapBounds(statsBbox, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
+    fitMapBounds(statsBbox, { padding: FIT_BOUNDS_REPORT_PADDING })
   }
 
   return statsBbox ? (

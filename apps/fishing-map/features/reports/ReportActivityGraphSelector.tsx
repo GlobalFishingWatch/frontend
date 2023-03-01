@@ -11,9 +11,7 @@ import {
 import { selectReportActivityGraph } from 'features/app/app.selectors'
 import { useFitAreaInViewport } from 'features/reports/reports.hooks'
 
-type ReportActivityGraphSelectorProps = {}
-
-export default function ReportActivityGraphSelector(props: ReportActivityGraphSelectorProps) {
+export default function ReportActivityGraphSelector() {
   const { dispatchQueryParams } = useLocationConnect()
   const selectedReportActivityGraph = useSelector(selectReportActivityGraph)
   const { t } = useTranslation()

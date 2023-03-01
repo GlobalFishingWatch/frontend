@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
@@ -6,7 +6,6 @@ import { InputDate, InputText, Select } from '@globalfishingwatch/ui-components'
 import { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
 import ReportActivityBeforeAfterGraph from 'features/reports/ReportActivityBeforeAfterGraph'
 import {
-  DURATION_TYPES_OPTIONS,
   MAX_DAYS_TO_COMPARE,
   MAX_MONTHS_TO_COMPARE,
   useReportTimeCompareConnect,
@@ -34,13 +33,14 @@ export default function ReportActivityGraph({ start, end, data }: ReportActivity
     onDurationChange,
     onDurationTypeSelect,
     durationTypeOption,
+    durationTypeOptions,
     MIN_DATE,
     MAX_DATE,
   } = useReportTimeCompareConnect('beforeAfter')
 
   const trackAndChangeDate = (date) => {
     uaEvent({
-      category: 'Analysis',
+      category: 'Report',
       action: `Select date in 'before/after'`,
       label: JSON.stringify({
         date: date.target.value,
@@ -55,7 +55,7 @@ export default function ReportActivityGraph({ start, end, data }: ReportActivity
 
   const trackAndChangeDuration = (duration) => {
     uaEvent({
-      category: 'Analysis',
+      category: 'Report',
       action: `Select duration in 'before/after'`,
       label: JSON.stringify({
         duration: duration.target.value + ' ' + durationTypeOption?.label,
@@ -72,7 +72,7 @@ export default function ReportActivityGraph({ start, end, data }: ReportActivity
 
   const trackAndChangeDurationType = (duration) => {
     uaEvent({
-      category: 'Analysis',
+      category: 'Report',
       action: `Select duration in 'before/after'`,
       label: JSON.stringify({
         duration: timeComparison?.duration + ' ' + duration.label,
@@ -88,44 +88,42 @@ export default function ReportActivityGraph({ start, end, data }: ReportActivity
   }
 
   return (
-    <Fragment>
+    <div className={styles.container}>
       {data && <ReportActivityBeforeAfterGraph data={data} start={start} end={end} />}
-      <div className={styles.container}>
-        <div className={styles.timeSelection}>
-          <div className={styles.dateWrapper}>
-            <InputDate
-              label={t('analysis.beforeAfterDate', 'date')}
-              onChange={trackAndChangeDate}
-              value={timeComparison?.compareStart}
-              min={MIN_DATE}
-              max={MAX_DATE}
+      <div className={styles.timeSelection}>
+        <div className={styles.dateWrapper}>
+          <InputDate
+            label={t('analysis.beforeAfterDate', 'date')}
+            onChange={trackAndChangeDate}
+            value={timeComparison?.compareStart}
+            min={MIN_DATE}
+            max={MAX_DATE}
+          />
+        </div>
+        <div className={styles.durationWrapper}>
+          <InputText
+            label={t('analysis.periodComparisonDuration', 'duration')}
+            value={timeComparison?.duration}
+            type="number"
+            onChange={trackAndChangeDuration}
+            className={styles.duration}
+            min={1}
+            max={
+              timeComparison?.durationType === 'months'
+                ? MAX_MONTHS_TO_COMPARE
+                : MAX_DAYS_TO_COMPARE
+            }
+          />
+          {durationTypeOption && (
+            <Select
+              options={durationTypeOptions}
+              onSelect={trackAndChangeDurationType}
+              className={styles.durationType}
+              selectedOption={durationTypeOption}
             />
-          </div>
-          <div className={styles.durationWrapper}>
-            <InputText
-              label={t('analysis.periodComparisonDuration', 'duration')}
-              value={timeComparison?.duration}
-              type="number"
-              onChange={trackAndChangeDuration}
-              className={styles.duration}
-              min={1}
-              max={
-                timeComparison?.durationType === 'months'
-                  ? MAX_MONTHS_TO_COMPARE
-                  : MAX_DAYS_TO_COMPARE
-              }
-            />
-            {durationTypeOption && (
-              <Select
-                options={DURATION_TYPES_OPTIONS}
-                onSelect={trackAndChangeDurationType}
-                className={styles.durationType}
-                selectedOption={durationTypeOption}
-              />
-            )}
-          </div>
+          )}
         </div>
       </div>
-    </Fragment>
+    </div>
   )
 }

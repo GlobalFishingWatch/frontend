@@ -1,28 +1,14 @@
-.layerPanel {
+.graph {
   width: 100%;
-  display: flex;
-}
-
-.container {
-  display: flex;
-  padding: var(--space-M);
-  width: 100%;
-}
-
-.graphContainer {
-  width: 100%;
-  min-height: 28rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  height: 30rem;
 }
 
 .timeSelection {
   display: flex;
   flex-wrap: wrap;
-  width: 100%;
   gap: var(--space-S);
   justify-content: space-between;
+  margin-top: var(--space-S);
 }
 
 .dateWrapper {
@@ -32,7 +18,6 @@
 .durationWrapper {
   display: flex;
   align-items: flex-end;
-  padding-left: 3rem;
 }
 
 .duration {
@@ -40,7 +25,7 @@
 }
 
 .durationType {
-  width: 10rem;
+  width: 12rem;
 }
 
 .blur {

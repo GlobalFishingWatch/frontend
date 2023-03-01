@@ -2,10 +2,16 @@ import { createSelector } from '@reduxjs/toolkit'
 import { groupBy, sum, sumBy, uniq, uniqBy } from 'lodash'
 import { matchSorter } from 'match-sorter'
 import { t } from 'i18next'
-import { Dataset, DatasetTypes, ReportVessel } from '@globalfishingwatch/api-types'
+import {
+  Dataset,
+  DatasetTypes,
+  DataviewCategory,
+  ReportVessel,
+} from '@globalfishingwatch/api-types'
 import {
   selectActiveReportDataviews,
   selectReportActivityGraph,
+  selectReportCategory,
   selectReportTimeComparison,
   selectReportVesselFilter,
   selectReportVesselGraph,
@@ -23,6 +29,7 @@ import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUserData } from 'features/user/user.slice'
 import { getUTCDateTime } from 'utils/dates'
+import { selectActiveTemporalgridDataviews } from 'features/dataviews/dataviews.selectors'
 import { selectReportVesselsData } from './reports.slice'
 
 export const DEFAULT_NULL_VALUE = 'NULL'
@@ -30,6 +37,7 @@ export const MAX_CATEGORIES = 5
 
 export type ReportVesselWithDatasets = Partial<ReportVessel> & {
   datasetId: string
+  category: DataviewCategory
   infoDataset?: Dataset
   trackDataset?: Dataset
 }
@@ -42,14 +50,17 @@ export const selectReportAreaIds = createSelector(
 )
 
 export const selectReportActivityFlatten = createSelector(
-  [selectReportVesselsData],
-  (reportDatasets): ReportVesselWithDatasets[] => {
+  [selectReportVesselsData, selectActiveTemporalgridDataviews],
+  (reportDatasets, dataviews): ReportVesselWithDatasets[] => {
     if (!reportDatasets?.length) return null
 
     return reportDatasets.flatMap((dataset) =>
-      Object.entries(dataset).flatMap(([datasetId, vessels]) =>
-        (vessels || []).map((vessel) => ({ ...vessel, datasetId }))
-      )
+      Object.entries(dataset).flatMap(([datasetId, vessels]) => {
+        const { category } = dataviews.find((dataview) =>
+          dataview.config.datasets.includes(datasetId)
+        )
+        return (vessels || []).map((vessel) => ({ ...vessel, datasetId, category }))
+      })
     )
   }
 )
@@ -114,12 +125,13 @@ export const selectReportVesselsGraphData = createSelector(
 )
 
 export const selectReportVesselsList = createSelector(
-  [selectReportActivityFlatten, selectAllDatasets],
-  (vessels, datasets) => {
+  [selectReportActivityFlatten, selectAllDatasets, selectReportCategory],
+  (vessels, datasets, reportCategory) => {
     if (!vessels?.length) return null
 
     return Object.values(groupBy(vessels, 'vesselId'))
-      .map((vesselActivity) => {
+      .flatMap((vesselActivity) => {
+        if (vesselActivity[0]?.category !== reportCategory) return []
         const activityDataset = datasets.find((d) => d.id === vesselActivity[0]?.datasetId)
         const infoDatasetId = getRelatedDatasetsByType(activityDataset, DatasetTypes.Vessels)?.[0]
           ?.id
@@ -253,5 +265,12 @@ export const selectTimeComparisonValues = createSelector(
       compareStart: timeComparison.compareStart,
       compareEnd,
     }
+  }
+)
+
+export const selectReportCategoryDataviews = createSelector(
+  [selectActiveTemporalgridDataviews, selectReportCategory],
+  (temporalgridDataviews, reportCategory) => {
+    return temporalgridDataviews.filter((dataview) => dataview.category === reportCategory)
   }
 )

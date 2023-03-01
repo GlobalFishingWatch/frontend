@@ -8,7 +8,6 @@ import { ReportGraphProps, useFilteredTimeSeries } from 'features/reports/report
 import { selectTimeComparisonValues } from 'features/reports/reports.selectors'
 import { ReportActivityGraph } from 'types'
 import { selectReportActivityGraph } from 'features/app/app.selectors'
-import { ReportActivityUnit } from './Report'
 import ReportActivityEvolution from './ReportActivityEvolution'
 import ReportActivityBeforeAfter from './ReportActivityBeforeAfter'
 import styles from './ReportActivity.module.css'
@@ -25,11 +24,7 @@ const REPORT_BY_TYPE: Record<ReportActivityGraph, React.FC<ReportActivityProps> 
   beforeAfter: ReportActivityBeforeAfter,
 }
 
-type ReportVesselTableProps = {
-  activityUnit: ReportActivityUnit
-}
-
-export default function ReportActivity({ activityUnit }: ReportVesselTableProps) {
+export default function ReportActivity() {
   const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()
   const reportActivityGraph = useSelector(selectReportActivityGraph)

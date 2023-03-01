@@ -21,7 +21,6 @@ import ReportActivity from './ReportActivity'
 import ReportVessels from './ReportVessels'
 import ReportDownload from './ReportDownload'
 
-export type ReportType = 'activity' | 'area'
 export type ReportActivityUnit = 'hour' | 'detection'
 
 export default function Report() {
@@ -67,7 +66,7 @@ export default function Report() {
 
   const Header = (
     <Fragment>
-      <ReportTitle title={areaDetail?.name} type="activity" />
+      <ReportTitle title={areaDetail?.name} />
       {filteredCategoryTabs.length > 1 && (
         <Tabs tabs={filteredCategoryTabs} activeTab={reportCategory} onTabClick={handleTabClick} />
       )}
@@ -79,7 +78,7 @@ export default function Report() {
     return (
       <Fragment>
         {Header}
-        <ReportActivity activityUnit={activityUnit} />
+        <ReportActivity />
         {hasAuthError && (
           <ReportVesselsPlaceholder
             title={t('errors.reportLogin', 'Login to see the vessels active in the area')}
@@ -99,7 +98,7 @@ export default function Report() {
     return (
       <Fragment>
         {Header}
-        <ReportActivity activityUnit={activityUnit} />
+        <ReportActivity />
         <Spinner />
       </Fragment>
     )
@@ -109,7 +108,7 @@ export default function Report() {
     return (
       <Fragment>
         {Header}
-        <ReportActivity activityUnit={activityUnit} />
+        <ReportActivity />
         <ReportVesselsPlaceholder
           title={t(
             'errors.privateReport',
@@ -124,7 +123,7 @@ export default function Report() {
     <Fragment>
       {Header}
       <ReportSummary activityUnit={activityUnit} />
-      <ReportActivity activityUnit={activityUnit} />
+      <ReportActivity />
       <ReportVessels activityUnit={activityUnit} reportName={areaDetail?.name} />
       <ReportDownload reportName={areaDetail?.name} />
     </Fragment>

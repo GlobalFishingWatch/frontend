@@ -1,17 +1,13 @@
 .container {
-  padding: 1.5rem var(--space-M);
+  padding: var(--space-S);
+  padding-left: var(--space-M);
   border-bottom: var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.type {
-  line-height: 1em;
-}
-
 .title {
   font: var(--font-L);
   font-size: 2.2rem;
-  line-height: 1em;
 }

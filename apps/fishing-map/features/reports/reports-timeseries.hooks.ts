@@ -18,7 +18,6 @@ import {
   useMapDataviewFeatures,
   hasDataviewsFeatureError,
 } from 'features/map/map-sources.hooks'
-import { selectActiveTemporalgridDataviews } from 'features/dataviews/dataviews.selectors'
 import { getUTCDateTime } from 'utils/dates'
 import { selectDatasetAreaDetail } from 'features/areas/areas.slice'
 import { filterByPolygon } from 'features/reports/reports-geo.utils'
@@ -32,7 +31,11 @@ import {
   useReportAreaHighlight,
   useReportAreaInViewport,
 } from 'features/reports/reports.hooks'
-import { selectReportAreaIds, selectShowTimeComparison } from 'features/reports/reports.selectors'
+import {
+  selectReportCategoryDataviews,
+  selectReportAreaIds,
+  selectShowTimeComparison,
+} from 'features/reports/reports.selectors'
 
 export interface EvolutionGraphData {
   date: string
@@ -77,16 +80,16 @@ export const useFilteredTimeSeries = () => {
   const [timeseries, setTimeseries] = useRecoilState(mapTimeseriesAtom)
   const reportAreaIds = useSelector(selectReportAreaIds)
   const area = useSelector(selectDatasetAreaDetail(reportAreaIds))
-  const reportType = useSelector(selectReportActivityGraph)
+  const reportGraph = useSelector(selectReportActivityGraph)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparison = useSelector(selectReportTimeComparison)
-  const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
-  const activityFeatures = useMapDataviewFeatures(temporalgridDataviews)
+  const currentCategoryDataviews = useSelector(selectReportCategoryDataviews)
+  const activityFeatures = useMapDataviewFeatures(currentCategoryDataviews)
   const { start: timebarStart, end: timebarEnd } = useSelector(selectTimeRange)
-  const sourceId = useSelector(selectReportAreaSource)
+  const areaSourceId = useSelector(selectReportAreaSource)
   const areaInViewport = useReportAreaInViewport()
   const fitAreaInViewport = useFitAreaInViewport()
-  useReportAreaHighlight(area?.id, sourceId)
+  useReportAreaHighlight(area?.id, areaSourceId)
 
   // This ensures that the area is in viewport when then area load finishes
   useEffect(() => {
@@ -133,16 +136,16 @@ export const useFilteredTimeSeries = () => {
     [showTimeComparison, compareDeltaMillis, setTimeseries]
   )
 
-  const reportTypeChange =
-    reportType === 'beforeAfter' || reportType === 'periodComparison' ? 'time' : reportType
+  const reportGraphChange =
+    reportGraph === 'beforeAfter' || reportGraph === 'periodComparison' ? 'time' : reportGraph
   // const reportTimerangeChange =
-  //   reportTypeChange === 'time' ? `${timebarStart}-${timebarEnd}` : compareDeltaMillis
+  //   reportGraphChange === 'time' ? `${timebarStart}-${timebarEnd}` : compareDeltaMillis
 
   // We need to re calculate the timeseries when area or timerange changes
   useEffect(() => {
     setTimeseries(undefined)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [area?.id, reportTypeChange])
+  }, [area?.id, reportGraphChange])
 
   const activeSourceIdHash = activityFeatures
     .map(({ metadata }) => metadata?.timeChunks?.activeSourceId)
@@ -150,7 +153,7 @@ export const useFilteredTimeSeries = () => {
 
   // Re calculate timerange when there new source data is fetched on timebar changes
   useEffect(() => {
-    const hasActivityLayers = temporalgridDataviews.some(
+    const hasActivityLayers = currentCategoryDataviews.some(
       ({ category }) =>
         category === DataviewCategory.Activity || category === DataviewCategory.Detections
     )

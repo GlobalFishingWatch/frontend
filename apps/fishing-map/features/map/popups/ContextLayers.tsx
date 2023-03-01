@@ -22,7 +22,7 @@ type ContextTooltipRowProps = {
 }
 
 function ContextTooltipSection({ features, showFeaturesDetails = false }: ContextTooltipRowProps) {
-  const { onAnalysisClick, onDownloadClick } = useContextInteractions()
+  const { onReportClick, onDownloadClick } = useContextInteractions()
   const featuresByType = groupBy(features, 'layerId')
 
   const trackOnDownloadClick = useCallback(
@@ -107,7 +107,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
                     feature={feature}
                     showFeaturesDetails={showFeaturesDetails}
                     handleDownloadClick={(e) => trackOnDownloadClick(e, feature)}
-                    handleAnalysisClick={(e) => onAnalysisClick(e, feature)}
+                    handleReportClick={(e) => onReportClick(e, feature)}
                   />
                 )
               }
