@@ -68,7 +68,7 @@ export default function Report() {
 
   const Header = (
     <Fragment>
-      <ReportTitle title={areaDetail?.name} />
+      <ReportTitle area={areaDetail} />
       {filteredCategoryTabs.length > 1 && (
         <Tabs tabs={filteredCategoryTabs} activeTab={reportCategory} onTabClick={handleTabClick} />
       )}

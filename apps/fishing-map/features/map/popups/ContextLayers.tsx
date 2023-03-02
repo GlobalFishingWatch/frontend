@@ -4,17 +4,10 @@ import { event as uaEvent } from 'react-ga'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { ContextLayerType } from '@globalfishingwatch/layer-composer'
 import { TooltipEventFeature } from 'features/map/map.hooks'
+import { getContextAreaLink } from 'features/dataviews/dataviews.utils'
 import styles from './Popup.module.css'
 import ContextLayersRow from './ContextLayersRow'
 import { useContextInteractions } from './ContextLayers.hooks'
-
-const TunaRfmoLinksById: Record<string, string> = {
-  CCSBT: 'https://www.ccsbt.org/',
-  ICCAT: 'https://www.iccat.int/en/',
-  IATTC: 'http://www.iattc.org/',
-  IOTC: 'http://www.iotc.org/',
-  WCPFC: 'http://www.wcpfc.int/',
-}
 
 type ContextTooltipRowProps = {
   features: TooltipEventFeature[]
@@ -76,21 +69,21 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
                     const { WDPA_PID, DESIG } = feature.properties
                     label = `${feature.value} - ${DESIG}`
                     id = `${label}-${gfw_id}`
-                    linkHref = WDPA_PID ? `https://www.protectedplanet.net/${WDPA_PID}` : undefined
+                    linkHref = getContextAreaLink(generatorContextLayer, WDPA_PID)
                     break
                   case ContextLayerType.TunaRfmo:
                     id = `${feature.value}-${gfw_id}`
-                    linkHref = TunaRfmoLinksById[feature.value]
+                    linkHref = getContextAreaLink(generatorContextLayer, feature.value)
                     break
                   case ContextLayerType.EEZ:
                     const { MRGID_EEZ } = feature.properties
                     id = `${MRGID_EEZ}-${gfw_id}`
-                    linkHref = `https://www.marineregions.org/eezdetails.php?mrgid=${MRGID_EEZ}`
+                    linkHref = getContextAreaLink(generatorContextLayer, MRGID_EEZ)
                     break
                   case ContextLayerType.ProtectedSeas:
                     const { site_id } = feature.properties
                     id = `${site_id}-${gfw_id}`
-                    linkHref = `https://mpa.protectedseas.net/index.php?q=${site_id}`
+                    linkHref = getContextAreaLink(generatorContextLayer, site_id)
                     break
                   case ContextLayerType.WPPNRI:
                   case ContextLayerType.HighSeas:

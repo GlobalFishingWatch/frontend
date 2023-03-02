@@ -9,7 +9,7 @@ import {
   EndpointId,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
+import { ContextLayerType, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
 import {
   TEMPLATE_ACTIVITY_DATAVIEW_SLUG,
@@ -275,4 +275,52 @@ export const getVesselInWorkspace = (vessels: UrlDataviewInstance[], vesselId: s
     return isVesselInEndpointParams ? v : undefined
   })
   return vesselInWorkspace
+}
+
+const RFMO_LINKS: Record<string, string> = {
+  'CCSBT Primary Area': 'https://www.ccsbt.org/',
+  AIDCP: 'https://www.iattc.org/en-US/AIDCP/About-AIDCP',
+  CCAMLR: 'https://www.ccamlr.org/',
+  CCBSP: 'https://www.fao.org/fishery/en/organization/rfb/ccbsp',
+  CCSBT: 'https://www.ccsbt.org/',
+  FFA: 'https://www.ffa.int/',
+  GFCM: 'https://www.fao.org/gfcm/en/',
+  IATTC: 'https://www.iattc.org/',
+  ICCAT: 'https://www.iccat.int/en/',
+  ICES: 'https://www.ices.dk/',
+  IOTC: 'https://www.iotc.org/',
+  NAFO: 'https://www.nafo.int/',
+  NAMMCO: 'https://nammco.no/',
+  NASCO: 'https://www.nasco.int/',
+  NEAFC: 'https://www.neafc.org/',
+  NPAFC: 'https://npafc.org/',
+  NPFC: 'https://www.npfc.int/',
+  PICES: 'https://meetings.pices.int/',
+  SEAFDEC: 'https://www.seafdec.org/',
+  SEAFO: 'https://www.seafo.org/',
+  SIOFA: 'https://www.apsoi.org/',
+  SPC: 'https://www.spc.int/',
+  SPRFMO: 'https://www.sprfmo.int/',
+  WCPFC: 'https://www.wcpfc.int/',
+}
+
+export const getContextAreaLink = (generatorContextLayer: ContextLayerType, id: string) => {
+  let linkHref = undefined
+  switch (generatorContextLayer) {
+    case ContextLayerType.MPA:
+    case ContextLayerType.MPANoTake:
+    case ContextLayerType.MPARestricted:
+      linkHref = `https://www.protectedplanet.net/${id}`
+      break
+    case ContextLayerType.TunaRfmo:
+      linkHref = RFMO_LINKS[id]
+      break
+    case ContextLayerType.EEZ:
+      linkHref = `https://www.marineregions.org/eezdetails.php?mrgid=${id}`
+      break
+    case ContextLayerType.ProtectedSeas:
+      linkHref = `https://mpa.protectedseas.net/index.php?q=${id}`
+      break
+  }
+  return linkHref
 }
