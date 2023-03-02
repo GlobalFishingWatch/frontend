@@ -81,7 +81,9 @@ export function useReportAreaInViewport() {
   const area = useSelector(selectAnalysisArea)
   const areaCenter = useReportAreaCenter(area?.data?.bounds)
   return (
-    viewport?.latitude === areaCenter?.latitude && viewport?.longitude === areaCenter?.longitude
+    viewport?.latitude === areaCenter?.latitude &&
+    viewport?.longitude === areaCenter?.longitude &&
+    viewport?.zoom === areaCenter?.zoom
   )
 }
 
