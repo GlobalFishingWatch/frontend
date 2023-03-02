@@ -29,6 +29,7 @@ export interface Area {
   geometry: ContextAreaFeatureGeom | undefined
   bounds: Bbox | undefined
   name: string
+  properties: Record<any, any>
 }
 export interface DatasetAreaDetail {
   status: AsyncReducerStatus
@@ -67,6 +68,7 @@ export const fetchAreaDetailThunk = createAsyncThunk(
       name: areaName || area.value || area.properties.value || area.properties.name || area.id,
       bounds: wrapBBoxLongitudes(bbox(area.geometry) as Bbox),
       geometry: area.geometry,
+      properties: area.properties,
     }
   },
   {

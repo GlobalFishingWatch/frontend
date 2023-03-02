@@ -21,7 +21,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   const areaDataview = contextDataviews.find((dataview) => {
     return dataview.datasets.some((dataset) => dataset.id === datasetId)
   })
-  const linkHref = getContextAreaLink(areaDataview?.config.layers[0]?.id, area?.id)
+  const linkHref = getContextAreaLink(areaDataview?.config.layers[0]?.id, area)
 
   return (
     <div className={styles.container}>

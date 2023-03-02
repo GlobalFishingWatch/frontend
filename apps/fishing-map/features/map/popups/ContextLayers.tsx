@@ -85,6 +85,11 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
                     id = `${site_id}-${gfw_id}`
                     linkHref = getContextAreaLink(generatorContextLayer, site_id)
                     break
+                  case ContextLayerType.FAO:
+                    const { F_CODE } = feature.properties
+                    id = `${F_CODE}-${gfw_id}`
+                    linkHref = getContextAreaLink(generatorContextLayer, F_CODE)
+                    break
                   case ContextLayerType.WPPNRI:
                   case ContextLayerType.HighSeas:
                     id = `${feature.value}-${gfw_id}`

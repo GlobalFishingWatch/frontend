@@ -23,6 +23,7 @@ import {
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import { isPrivateDataset } from 'features/datasets/datasets.utils'
+import { Area } from 'features/areas/areas.slice'
 
 // used in workspaces with encounter events layers
 export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter-events'
@@ -283,6 +284,7 @@ const RFMO_LINKS: Record<string, string> = {
   CCAMLR: 'https://www.ccamlr.org/',
   CCBSP: 'https://www.fao.org/fishery/en/organization/rfb/ccbsp',
   CCSBT: 'https://www.ccsbt.org/',
+  CPPS: 'http://www.cpps-int.org/',
   FFA: 'https://www.ffa.int/',
   GFCM: 'https://www.fao.org/gfcm/en/',
   IATTC: 'https://www.iattc.org/',
@@ -304,23 +306,25 @@ const RFMO_LINKS: Record<string, string> = {
   WCPFC: 'https://www.wcpfc.int/',
 }
 
-export const getContextAreaLink = (generatorContextLayer: ContextLayerType, id: string) => {
-  let linkHref = undefined
+export const getContextAreaLink = (
+  generatorContextLayer: ContextLayerType,
+  area: Area | string | number
+) => {
+  const areaIsObject = typeof area === 'object'
   switch (generatorContextLayer) {
     case ContextLayerType.MPA:
     case ContextLayerType.MPANoTake:
     case ContextLayerType.MPARestricted:
-      linkHref = `https://www.protectedplanet.net/${id}`
-      break
+      return `https://www.protectedplanet.net/${areaIsObject ? area?.id : area}`
     case ContextLayerType.TunaRfmo:
-      linkHref = RFMO_LINKS[id]
-      break
+      return RFMO_LINKS[areaIsObject ? area?.id : area]
     case ContextLayerType.EEZ:
-      linkHref = `https://www.marineregions.org/eezdetails.php?mrgid=${id}`
-      break
+      return `https://www.marineregions.org/eezdetails.php?mrgid=${areaIsObject ? area?.id : area}`
     case ContextLayerType.ProtectedSeas:
-      linkHref = `https://mpa.protectedseas.net/index.php?q=${id}`
-      break
+      return `https://mpa.protectedseas.net/index.php?q=${areaIsObject ? area?.id : area}`
+    case ContextLayerType.FAO:
+      return `https://www.fao.org/fishery/en/area/${areaIsObject ? area?.properties?.F_CODE : area}`
+    default:
+      return undefined
   }
-  return linkHref
 }
