@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux'
 import { SelectOption } from '@globalfishingwatch/ui-components'
 import { t } from 'features/i18n/i18n'
 import { WorkspaceAnalysisType } from 'types'
-import { DEFAULT_WORKSPACE, FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
-import { selectAnalysisQuery, selectAnalysisTimeComparison } from 'features/app/app.selectors'
-import { useMapFitBounds } from 'features/map/map-viewport.hooks'
+import { DEFAULT_WORKSPACE } from 'data/config'
+import { selectAnalysisTimeComparison } from 'features/app/app.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getUTCDateTime } from 'utils/dates'
+import { useFitAreaInViewport } from 'features/analysis/analysis.hooks'
 
 export const DURATION_TYPES_OPTIONS: SelectOption[] = [
   {
@@ -28,8 +28,7 @@ export const MAX_MONTHS_TO_COMPARE = 12
 
 export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisType) => {
   const { dispatchQueryParams } = useLocationConnect()
-  const fitMapBounds = useMapFitBounds()
-  const { bounds } = useSelector(selectAnalysisQuery)
+  const fitAreaInViewport = useFitAreaInViewport()
   const { start: timebarStart, end: timebarEnd } = useTimerangeConnect()
   const [errorMsg, setErrorMsg] = useState(null)
   const timeComparison = useSelector(selectAnalysisTimeComparison)
@@ -111,7 +110,7 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
         }
       }
 
-      fitMapBounds(bounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
+      fitAreaInViewport()
       dispatchQueryParams({
         analysisTimeComparison: {
           start,
@@ -131,7 +130,7 @@ export const useAnalysisTimeCompareConnect = (analysisType: WorkspaceAnalysisTyp
         setErrorMsg(null)
       }
     },
-    [timeComparison, analysisType, fitMapBounds, bounds, dispatchQueryParams]
+    [timeComparison, analysisType, fitAreaInViewport, dispatchQueryParams]
   )
 
   const onStartChange = useCallback(

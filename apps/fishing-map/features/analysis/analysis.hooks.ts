@@ -8,9 +8,13 @@ import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { MULTILAYER_SEPARATOR } from '@globalfishingwatch/dataviews-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { Bbox } from 'types'
 import { useLocationConnect } from 'routes/routes.hook'
-import { useMapFitBounds } from 'features/map/map-viewport.hooks'
+import useViewport, {
+  getMapCoordinatesFromBounds,
+  useMapFitBounds,
+} from 'features/map/map-viewport.hooks'
 import {
   selectAnalysisQuery,
   selectAnalysisTimeComparison,
@@ -59,119 +63,38 @@ export const selectMapTimeseries = selector({
   },
 })
 
-export type DateTimeSeries = {
-  date: string
-  values: number[]
-  compareDate?: string
-}[]
+export function useReportAreaCenter(bounds: Bbox) {
+  const map = useMapInstance()
+  return useMemo(() => {
+    if (!bounds) return null
 
-export const useFilteredTimeSeries = () => {
-  const [timeseries, setTimeseries] = useRecoilState(mapTimeseriesAtom)
-  const [blur, setBlur] = useState(false)
-  const analysisAreaGeometry = useSelector(selectAnalysisArea)?.data?.geometry
-  const analysisType = useSelector(selectAnalysisTypeQuery)
-  const showTimeComparison = useSelector(selectShowTimeComparison)
-  const timeComparison = useSelector(selectAnalysisTimeComparison)
-  const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
-  const activityFeatures = useMapDataviewFeatures(temporalgridDataviews)
-  const { areaId } = useSelector(selectAnalysisQuery)
-  const { start: timebarStart, end: timebarEnd } = useTimerangeConnect()
-
-  const simplifiedGeometry = useMemo(() => {
-    if (!analysisAreaGeometry) return null
-    const simplifiedGeometry = simplify(analysisAreaGeometry, {
-      tolerance: 0.1,
+    const wrapBbox = wrapBBoxLongitudes(bounds)
+    const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(map, wrapBbox, {
+      padding: FIT_BOUNDS_ANALYSIS_PADDING,
     })
-    // Doing this once to avoid recomputing inside turf booleanPointInPolygon for each cell
-    // https://github.com/Turfjs/turf/blob/master/packages/turf-boolean-point-in-polygon/index.ts#L63
-    simplifiedGeometry.bbox = bbox(simplifiedGeometry)
-    return simplifiedGeometry
-  }, [analysisAreaGeometry])
+    return { latitude, longitude, zoom }
+  }, [bounds, map])
+}
 
-  let compareDeltaMillis: number | undefined = undefined
-  if (showTimeComparison && timeComparison) {
-    const startMillis = getUTCDateTime(timeComparison.start).toMillis()
-    const compareStartMillis = getUTCDateTime(timeComparison.compareStart).toMillis()
-    compareDeltaMillis = compareStartMillis - startMillis
-  }
-  const computeTimeseries = useCallback(
-    (layersWithFeatures: DataviewFeature[], geometry: Polygon | MultiPolygon) => {
-      const features = layersWithFeatures
-        .map(({ chunksFeatures }) =>
-          chunksFeatures
-            ? chunksFeatures.flatMap(({ active, features }) => (active && features ? features : []))
-            : []
-        )
-        .filter((features) => features.length > 0)
-      const filteredFeatures = filterByPolygon(features, geometry)
-      const timeseries = featuresToTimeseries(filteredFeatures, {
-        layersWithFeatures,
-        showTimeComparison,
-        compareDeltaMillis,
-      })
-
-      setTimeseries(timeseries)
-      setBlur(false)
-    },
-    [showTimeComparison, compareDeltaMillis, setTimeseries]
+export function useReportAreaInViewport() {
+  const { viewport } = useViewport()
+  const area = useSelector(selectAnalysisArea)
+  const areaCenter = useReportAreaCenter(area?.data?.bounds)
+  return (
+    viewport?.latitude === areaCenter?.latitude && viewport?.longitude === areaCenter?.longitude
   )
+}
 
-  const analysisEvolutionChange =
-    analysisType === 'beforeAfter' || analysisType === 'periodComparison' ? 'time' : analysisType
-
-  useEffect(() => {
-    setTimeseries(undefined)
-    setBlur(false)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [areaId, analysisEvolutionChange])
-
-  useEffect(() => {
-    if (timeseries) {
-      setBlur(true)
+export function useFitAreaInViewport() {
+  const { setMapCoordinates } = useViewport()
+  const area = useSelector(selectAnalysisArea)
+  const areaCenter = useReportAreaCenter(area?.data?.bounds)
+  const areaInViewport = useReportAreaInViewport()
+  return useCallback(() => {
+    if (!areaInViewport) {
+      setMapCoordinates(areaCenter)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timeComparison])
-
-  const activeSourceIdHash = activityFeatures
-    .map(({ metadata }) => metadata?.timeChunks?.activeSourceId)
-    .join(',')
-
-  // Set blur when there new source data is fetched on timebar changes
-  useEffect(() => {
-    const hasActivityLayers = temporalgridDataviews.some(
-      ({ category }) =>
-        category === DataviewCategory.Activity || category === DataviewCategory.Detections
-    )
-    if (hasActivityLayers) {
-      setBlur(true)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeSourceIdHash])
-
-  useEffect(() => {
-    const activityFeaturesLoaded = areDataviewsFeatureLoaded(activityFeatures)
-    if (activityFeaturesLoaded && simplifiedGeometry) {
-      computeTimeseries(activityFeatures, simplifiedGeometry)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activityFeatures, simplifiedGeometry])
-
-  const layersTimeseriesFiltered = useMemo(() => {
-    if (showTimeComparison) {
-      return removeTimeseriesPadding(timeseries)
-    } else {
-      if (timebarStart && timebarEnd && timeseries) {
-        return filterTimeseriesByTimerange(timeseries, timebarStart, timebarEnd)
-      }
-    }
-  }, [timeseries, showTimeComparison, timebarStart, timebarEnd])
-
-  return {
-    blur,
-    loading: !timeseries && !areDataviewsFeatureLoaded(activityFeatures),
-    error: hasDataviewsFeatureError(activityFeatures),
-    layersTimeseriesFiltered,
-  }
+  }, [areaCenter, areaInViewport, setMapCoordinates])
 }
 
 export const useAnalysisArea = () => {
@@ -248,4 +171,120 @@ export const useAnalysisArea = () => {
   }, [status, bounds])
 
   return analysisArea
+}
+
+export type DateTimeSeries = {
+  date: string
+  values: number[]
+  compareDate?: string
+}[]
+
+export const useFilteredTimeSeries = () => {
+  const [timeseries, setTimeseries] = useRecoilState(mapTimeseriesAtom)
+  const [blur, setBlur] = useState(false)
+  const analysisAreaGeometry = useSelector(selectAnalysisArea)?.data?.geometry
+  const analysisType = useSelector(selectAnalysisTypeQuery)
+  const showTimeComparison = useSelector(selectShowTimeComparison)
+  const timeComparison = useSelector(selectAnalysisTimeComparison)
+  const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
+  const activityFeatures = useMapDataviewFeatures(temporalgridDataviews)
+  const areaInViewport = useReportAreaInViewport()
+  const { areaId } = useSelector(selectAnalysisQuery)
+  const { start: timebarStart, end: timebarEnd } = useTimerangeConnect()
+
+  const simplifiedGeometry = useMemo(() => {
+    if (!analysisAreaGeometry) return null
+    const simplifiedGeometry = simplify(analysisAreaGeometry, {
+      tolerance: 0.1,
+    })
+    // Doing this once to avoid recomputing inside turf booleanPointInPolygon for each cell
+    // https://github.com/Turfjs/turf/blob/master/packages/turf-boolean-point-in-polygon/index.ts#L63
+    simplifiedGeometry.bbox = bbox(simplifiedGeometry)
+    return simplifiedGeometry
+  }, [analysisAreaGeometry])
+
+  let compareDeltaMillis: number | undefined = undefined
+  if (showTimeComparison && timeComparison) {
+    const startMillis = getUTCDateTime(timeComparison.start).toMillis()
+    const compareStartMillis = getUTCDateTime(timeComparison.compareStart).toMillis()
+    compareDeltaMillis = compareStartMillis - startMillis
+  }
+  const computeTimeseries = useCallback(
+    (layersWithFeatures: DataviewFeature[], geometry: Polygon | MultiPolygon) => {
+      const features = layersWithFeatures
+        .map(({ chunksFeatures }) =>
+          chunksFeatures
+            ? chunksFeatures.flatMap(({ active, features }) => (active && features ? features : []))
+            : []
+        )
+        .filter((features) => features.length > 0)
+      const filteredFeatures = filterByPolygon(features, geometry)
+      const timeseries = featuresToTimeseries(filteredFeatures, {
+        layersWithFeatures,
+        showTimeComparison,
+        compareDeltaMillis,
+      })
+
+      setTimeseries(timeseries)
+      setBlur(false)
+    },
+    [showTimeComparison, compareDeltaMillis, setTimeseries]
+  )
+
+  const analysisEvolutionChange =
+    analysisType === 'beforeAfter' || analysisType === 'periodComparison' ? 'time' : analysisType
+
+  useEffect(() => {
+    setTimeseries(undefined)
+    setBlur(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [areaId, analysisEvolutionChange])
+
+  useEffect(() => {
+    if (timeseries) {
+      setBlur(true)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeComparison])
+
+  const activeSourceIdHash = activityFeatures
+    .map(({ metadata }) => metadata?.timeChunks?.activeSourceId)
+    .join(',')
+
+  // Set blur when there new source data is fetched on timebar changes
+  useEffect(() => {
+    const hasActivityLayers = temporalgridDataviews.some(
+      ({ category }) =>
+        category === DataviewCategory.Activity || category === DataviewCategory.Detections
+    )
+    if (hasActivityLayers) {
+      setBlur(true)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeSourceIdHash])
+
+  useEffect(() => {
+    const activityFeaturesLoaded = areDataviewsFeatureLoaded(activityFeatures)
+    if (activityFeaturesLoaded && simplifiedGeometry && areaInViewport) {
+      computeTimeseries(activityFeatures, simplifiedGeometry)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activityFeatures, simplifiedGeometry, areaInViewport])
+
+  const layersTimeseriesFiltered = useMemo(() => {
+    if (showTimeComparison) {
+      return removeTimeseriesPadding(timeseries)
+    } else {
+      if (timebarStart && timebarEnd && timeseries) {
+        return filterTimeseriesByTimerange(timeseries, timebarStart, timebarEnd)
+      }
+    }
+  }, [timeseries, showTimeComparison, timebarStart, timebarEnd])
+
+  return {
+    blur,
+    loading: !timeseries && !areDataviewsFeatureLoaded(activityFeatures),
+    error: hasDataviewsFeatureError(activityFeatures),
+    layersTimeseriesFiltered,
+  }
 }

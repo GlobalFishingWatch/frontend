@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback, Fragment } from 'react'
+import { useEffect, useState, useMemo, useCallback } from 'react'
 import cx from 'classnames'
 import { Trans, useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
@@ -27,8 +27,6 @@ import {
   selectAnalysisTypeQuery,
 } from 'features/app/app.selectors'
 import { Locale, WorkspaceAnalysisType } from 'types'
-import { useMapFitBounds } from 'features/map/map-viewport.hooks'
-import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
@@ -39,7 +37,7 @@ import { getUTCDateTime } from 'utils/dates'
 import SOURCE_SWITCH_CONTENT from 'features/welcome/SourceSwitch.content'
 import styles from './Analysis.module.css'
 import AnalysisEvolution from './AnalysisEvolution'
-import { useAnalysisArea, useFilteredTimeSeries } from './analysis.hooks'
+import { useAnalysisArea, useFilteredTimeSeries, useFitAreaInViewport } from './analysis.hooks'
 import { AnalysisGraphProps } from './AnalysisEvolutionGraph'
 import { ComparisonGraphProps } from './AnalysisPeriodComparisonGraph'
 import AnalysisPeriodComparison from './AnalysisPeriodComparison'
@@ -64,9 +62,9 @@ const ANALYSIS_COMPONENTS_BY_TYPE: Record<
 
 function Analysis() {
   const { t, i18n } = useTranslation()
+  const fitAreaInViewport = useFitAreaInViewport()
   const { disclaimer } = SOURCE_SWITCH_CONTENT[(i18n.language as Locale) || Locale.en]
   const { start, end } = useTimerangeConnect()
-  const fitMapBounds = useMapFitBounds()
   const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(useMapInstance())
@@ -200,10 +198,10 @@ function Analysis() {
           }),
         })
       }
-      fitMapBounds(bounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
+      fitAreaInViewport()
       dispatchQueryParams({ analysisType: option.id as WorkspaceAnalysisType })
     },
-    [timeComparison, fitMapBounds, bounds, dispatchQueryParams, analysisAreaName, dataviews]
+    [timeComparison, fitAreaInViewport, dispatchQueryParams, analysisAreaName, dataviews]
   )
 
   const AnalysisComponent = useMemo(() => ANALYSIS_COMPONENTS_BY_TYPE[analysisType], [analysisType])
