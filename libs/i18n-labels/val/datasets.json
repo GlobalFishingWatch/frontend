@@ -2163,6 +2163,66 @@
       "distance_from_shore_m": "crwdns30169:0crwdne30169:0"
     }
   },
+  "public-norway-fishing-vessels": {
+    "name": "crwdns30405:0crwdne30405:0",
+    "description": "crwdns30407:0crwdne30407:0",
+    "schema": {
+      "id": "crwdns30409:0crwdne30409:0",
+      "flag": "crwdns30411:0crwdne30411:0",
+      "source": "crwdns30413:0crwdne30413:0",
+      "callsign": "crwdns30415:0crwdne30415:0",
+      "geartype": {
+        "keyword": "crwdns30417:0crwdne30417:0",
+        "enum": {
+          "dredge_fishing": "crwdns30419:0crwdne30419:0",
+          "drifting_longlines": "crwdns30421:0crwdne30421:0",
+          "fishing": "crwdns30423:0crwdne30423:0",
+          "fixed_gear": "crwdns30425:0crwdne30425:0",
+          "pole_and_line": "crwdns30427:0crwdne30427:0",
+          "pots_and_traps": "crwdns30429:0crwdne30429:0",
+          "purse_seines": "crwdns30431:0crwdne30431:0",
+          "seiners": "crwdns30433:0crwdne30433:0",
+          "set_gillnets": "crwdns30435:0crwdne30435:0",
+          "set_longlines": "crwdns30437:0crwdne30437:0",
+          "trawlers": "crwdns30439:0crwdne30439:0",
+          "trollers": "crwdns30441:0crwdne30441:0"
+        }
+      },
+      "shipname": "crwdns30443:0crwdne30443:0",
+      "lastTransmissionDate": "crwdns30445:0crwdne30445:0",
+      "firstTransmissionDate": "crwdns30447:0crwdne30447:0"
+    }
+  },
+  "public-norway-non-fishing-vessels": {
+    "name": "crwdns30449:0crwdne30449:0",
+    "description": "crwdns30451:0crwdne30451:0",
+    "schema": {
+      "id": "crwdns30453:0crwdne30453:0",
+      "flag": "crwdns30455:0crwdne30455:0",
+      "source": "crwdns30457:0crwdne30457:0",
+      "callsign": "crwdns30459:0crwdne30459:0",
+      "geartype": {
+        "keyword": "crwdns30461:0crwdne30461:0",
+        "enum": {
+          "dredge_fishing": "crwdns30463:0crwdne30463:0",
+          "drifting_longlines": "crwdns30465:0crwdne30465:0",
+          "fishing": "crwdns30467:0crwdne30467:0",
+          "fixed_gear": "crwdns30469:0crwdne30469:0",
+          "pole_and_line": "crwdns30471:0crwdne30471:0",
+          "pots_and_traps": "crwdns30473:0crwdne30473:0",
+          "purse_seines": "crwdns30475:0crwdne30475:0",
+          "seiners": "crwdns30477:0crwdne30477:0",
+          "set_gillnets": "crwdns30479:0crwdne30479:0",
+          "set_longlines": "crwdns30481:0crwdne30481:0",
+          "trawlers": "crwdns30483:0crwdne30483:0",
+          "trollers": "crwdns30485:0crwdne30485:0"
+        }
+      },
+      "shipname": "crwdns30487:0crwdne30487:0",
+      "lastTransmissionDate": "crwdns30489:0crwdne30489:0",
+      "firstTransmissionDate": "crwdns30491:0crwdne30491:0"
+    }
+  },
   "public-norway-presence": {
     "name": "crwdns30171:0crwdne30171:0",
     "description": "crwdns30173:0crwdne30173:0",
