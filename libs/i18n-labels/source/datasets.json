@@ -2163,6 +2163,66 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "public-norway-fishing-vessels": {
+    "name": "Norway VMS (Fishing Vessels)",
+    "description": "Dataset for VMS Norway (Public)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "callsign": "callsign",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "dredge_fishing": "dredge_fishing",
+          "drifting_longlines": "drifting_longlines",
+          "fishing": "fishing",
+          "fixed_gear": "fixed_gear",
+          "pole_and_line": "pole_and_line",
+          "pots_and_traps": "pots_and_traps",
+          "purse_seines": "purse_seines",
+          "seiners": "seiners",
+          "set_gillnets": "set_gillnets",
+          "set_longlines": "set_longlines",
+          "trawlers": "trawlers",
+          "trollers": "trollers"
+        }
+      },
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
+  "public-norway-non-fishing-vessels": {
+    "name": "Norway VMS (Non Fishing Vessels)",
+    "description": "Dataset for VMS Norway (Public)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "callsign": "callsign",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "dredge_fishing": "dredge_fishing",
+          "drifting_longlines": "drifting_longlines",
+          "fishing": "fishing",
+          "fixed_gear": "fixed_gear",
+          "pole_and_line": "pole_and_line",
+          "pots_and_traps": "pots_and_traps",
+          "purse_seines": "purse_seines",
+          "seiners": "seiners",
+          "set_gillnets": "set_gillnets",
+          "set_longlines": "set_longlines",
+          "trawlers": "trawlers",
+          "trollers": "trollers"
+        }
+      },
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "public-norway-presence": {
     "name": "Norway VMS",
     "description": "Description pending",
