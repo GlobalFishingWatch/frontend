@@ -62,9 +62,9 @@ export function useCustomReferenceLayer() {
     if (layerVisible) {
       const customReferenceLayer = new CustomReferenceLayer({
         data,
+        mode,
         onEdit,
         onClick,
-        mode,
         selectedFeatureIndexes,
       })
       setAtomProperty({ instance: customReferenceLayer })
