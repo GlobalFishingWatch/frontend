@@ -56,9 +56,9 @@ export const selectReportActivityFlatten = createSelector(
 
     return reportDatasets.flatMap((dataset) =>
       Object.entries(dataset).flatMap(([datasetId, vessels]) => {
-        const { category } = dataviews.find((dataview) =>
+        const category = dataviews.find((dataview) =>
           dataview.config.datasets.includes(datasetId)
-        )
+        )?.category
         return (vessels || []).map((vessel) => ({ ...vessel, datasetId, category }))
       })
     )

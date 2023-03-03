@@ -25,10 +25,8 @@ export default function ReportTitle({ area }: ReportTitleProps) {
 
   return (
     <div className={styles.container}>
-      <div>
-        <h1 className={styles.title}>{area?.name}</h1>
-      </div>
-      <div>
+      <h1 className={styles.title}>{area?.name}</h1>
+      <div className={styles.actions}>
         {linkHref && (
           <a target="_blank" rel="noopener noreferrer" href={linkHref}>
             <IconButton icon="external-link" tooltip={t('common.learnMore', 'Learn more')} />

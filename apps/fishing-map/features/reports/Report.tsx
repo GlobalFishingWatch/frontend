@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniqBy } from 'lodash'
-import { Spinner, Tabs } from '@globalfishingwatch/ui-components'
+import { Tab, Tabs } from '@globalfishingwatch/ui-components'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { isAuthError } from '@globalfishingwatch/api-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -15,12 +15,14 @@ import { selectWorkspaceVesselGroupsStatus } from 'features/vessel-groups/vessel
 import { selectHasReportVessels } from 'features/reports/reports.selectors'
 import ReportVesselsPlaceholder from 'features/reports/ReportVesselsPlaceholder'
 import { isGuestUser } from 'features/user/user.slice'
+import { ReportCategory } from 'types'
 import { useFetchReportArea, useFetchReportVessel } from './reports.hooks'
 import ReportSummary from './ReportSummary'
 import ReportTitle from './ReportTitle'
 import ReportActivity from './ReportActivity'
 import ReportVessels from './ReportVessels'
 import ReportDownload from './ReportDownload'
+import styles from './Report.module.css'
 
 export type ReportActivityUnit = 'hour' | 'detection'
 
@@ -32,7 +34,7 @@ export default function Report() {
   const dataviewCategories = uniqBy(useSelector(selectActiveHeatmapDataviews), 'category').map(
     (d) => d.category
   )
-  const categoryTabs = [
+  const categoryTabs: Tab[] = [
     {
       id: DataviewCategory.Activity,
       title: t('common.activity', 'Activity'),
@@ -44,7 +46,9 @@ export default function Report() {
       content: '',
     },
   ]
-  const filteredCategoryTabs = categoryTabs.filter((tab) => dataviewCategories.includes(tab.id))
+  const filteredCategoryTabs = categoryTabs.filter((tab) =>
+    dataviewCategories.includes(tab.id as DataviewCategory)
+  )
 
   const { status: reportStatus, error: statusError } = useFetchReportVessel()
   const { data: areaDetail } = useFetchReportArea()
@@ -59,69 +63,49 @@ export default function Report() {
     return <WorkspaceError />
   }
 
-  const handleTabClick = (option) => {
-    dispatchQueryParams({ reportCategory: option.id, reportVesselPage: 0 })
+  const handleTabClick = (option: Tab) => {
+    dispatchQueryParams({ reportCategory: option.id as ReportCategory, reportVesselPage: 0 })
   }
 
   // TODO get this from datasets config
   const activityUnit = reportCategory === DataviewCategory.Activity ? 'hour' : 'detection'
 
-  const Header = (
+  const hasAuthError = reportStatus === AsyncReducerStatus.Error && isAuthError(statusError)
+  const hasNoReportVessels = reportStatus === AsyncReducerStatus.Finished && !hasReportVessels
+
+  return (
     <Fragment>
       <ReportTitle area={areaDetail} />
       {filteredCategoryTabs.length > 1 && (
         <Tabs tabs={filteredCategoryTabs} activeTab={reportCategory} onTabClick={handleTabClick} />
       )}
+      {reportStatus === AsyncReducerStatus.Finished && (
+        <ReportSummary activityUnit={activityUnit} />
+      )}
+      <ReportActivity />
+      {reportStatus === AsyncReducerStatus.Finished && hasReportVessels ? (
+        <ReportVessels activityUnit={activityUnit} reportName={areaDetail?.name} />
+      ) : (
+        <ReportVesselsPlaceholder />
+      )}
+      {hasAuthError && (
+        <ReportVesselsPlaceholder
+          title={
+            guestUser
+              ? t('errors.reportLogin', 'Login to see the vessels active in the area')
+              : t(
+                  'errors.privateReport',
+                  "Your account doesn't have permissions to see the vessels active in this area"
+                )
+          }
+        />
+      )}
+      {hasNoReportVessels && (
+        <p className={styles.noData}>
+          {t('analysis.noDataByArea', 'No data available for the selected area')}
+        </p>
+      )}
+      <ReportDownload reportName={areaDetail?.name} />
     </Fragment>
   )
-  const hasAuthError = reportStatus === AsyncReducerStatus.Error && isAuthError(statusError)
-  const hasNoReportVessels = reportStatus === AsyncReducerStatus.Finished && !hasReportVessels
-  if (hasNoReportVessels || hasAuthError) {
-    return (
-      <Fragment>
-        {Header}
-        <ReportActivity />
-        {hasAuthError && (
-          <ReportVesselsPlaceholder
-            title={
-              guestUser
-                ? t('errors.reportLogin', 'Login to see the vessels active in the area')
-                : t(
-                    'errors.privateReport',
-                    "Your account doesn't have permissions to see the vessels active in this area"
-                  )
-            }
-          />
-        )}
-        {hasNoReportVessels && (
-          <p>{t('analysis.noDataByArea', 'No data available for the selected area')}</p>
-        )}
-      </Fragment>
-    )
-  }
-
-  if (
-    workspaceStatus === AsyncReducerStatus.Loading ||
-    reportStatus === AsyncReducerStatus.Loading
-  ) {
-    return (
-      <Fragment>
-        {Header}
-        <ReportActivity />
-        <Spinner />
-      </Fragment>
-    )
-  }
-
-  if (reportStatus === AsyncReducerStatus.Finished) {
-    return (
-      <Fragment>
-        {Header}
-        <ReportSummary activityUnit={activityUnit} />
-        <ReportActivity />
-        <ReportVessels activityUnit={activityUnit} reportName={areaDetail?.name} />
-        <ReportDownload reportName={areaDetail?.name} />
-      </Fragment>
-    )
-  }
 }

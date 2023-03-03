@@ -37,7 +37,12 @@ export const filterTimeseriesByTimerange = (
       ...layerTimeseries,
       timeseries: layerTimeseries?.timeseries.filter((current) => {
         const currentDate = getUTCDateTime(current.date)
-        return currentDate >= startDate && currentDate < endDate
+        return (
+          current.max.some((v) => v !== 0) &&
+          current.min.some((v) => v !== 0) &&
+          currentDate >= startDate &&
+          currentDate < endDate
+        )
       }),
     }
   })
