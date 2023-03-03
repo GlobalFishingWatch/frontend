@@ -7,7 +7,7 @@ import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { isAuthError } from '@globalfishingwatch/api-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectReportCategory } from 'features/app/app.selectors'
+import { selectReportCategory, selectTimeRange } from 'features/app/app.selectors'
 import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import WorkspaceError from 'features/workspace/WorkspaceError'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
@@ -16,6 +16,8 @@ import { selectHasReportVessels } from 'features/reports/reports.selectors'
 import ReportVesselsPlaceholder from 'features/reports/ReportVesselsPlaceholder'
 import { isGuestUser } from 'features/user/user.slice'
 import { ReportCategory } from 'types'
+import { getDownloadReportSupported } from 'features/download/download.utils'
+import { SUPPORT_EMAIL } from 'data/config'
 import { useFetchReportArea, useFetchReportVessel } from './reports.hooks'
 import ReportSummary from './ReportSummary'
 import ReportTitle from './ReportTitle'
@@ -31,6 +33,8 @@ export default function Report() {
   const { dispatchQueryParams } = useLocationConnect()
   const reportCategory = useSelector(selectReportCategory)
   const guestUser = useSelector(isGuestUser)
+  const timerange = useSelector(selectTimeRange)
+  const timerangeTooLong = !getDownloadReportSupported(timerange.start, timerange.end)
   const dataviewCategories = uniqBy(useSelector(selectActiveHeatmapDataviews), 'category').map(
     (d) => d.category
   )
@@ -110,9 +114,16 @@ export default function Report() {
           />
         ) : (
           <p className={styles.error}>
-            {t(
-              'analysis.timeRangeTooLong',
-              'Reports are only allowed for time ranges up to one year'
+            {!timerangeTooLong ? (
+              t(
+                'analysis.timeRangeTooLong',
+                'Reports are only allowed for time ranges up to one year'
+              )
+            ) : (
+              <span>
+                {t('errors.generic', 'Something went wrong, try again or contact:')}{' '}
+                <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
+              </span>
             )}
           </p>
         )
