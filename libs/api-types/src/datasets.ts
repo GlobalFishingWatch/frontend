@@ -27,6 +27,7 @@ export interface EndpointParam {
 
 export enum EndpointId {
   ContextTiles = 'context-tiles',
+  ContextFeature = 'context-feature',
   ClusterTiles = 'events-cluster-tiles',
   ContextGeojson = 'temporal-context-geojson',
   Events = 'events',
@@ -36,7 +37,6 @@ export enum EndpointId {
   FourwingsLegend = '4wings-legend',
   FourwingsTiles = '4wings-tiles',
   Tracks = 'tracks',
-  UserContextTiles = 'user-context-tiles',
   UserTracks = 'user-tracks-data',
   Vessel = 'vessel',
   VesselAdvancedSearch = 'advanced-search-vessels',
