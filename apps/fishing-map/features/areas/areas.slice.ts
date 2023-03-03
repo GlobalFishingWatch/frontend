@@ -1,9 +1,15 @@
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import bbox from '@turf/bbox'
 import { kebabCase, memoize, uniqBy } from 'lodash'
-import { ContextAreaFeature, ContextAreaFeatureGeom } from '@globalfishingwatch/api-types'
+import {
+  ContextAreaFeature,
+  ContextAreaFeatureGeom,
+  Dataset,
+  EndpointId,
+} from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
+import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import { RootState } from 'store'
 import { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -38,20 +44,25 @@ export type AreasState = Record<string, DatasetAreas>
 const initialState: AreasState = {}
 
 export type AreaKeys = { datasetId: string; areaId: string }
-export type FetchAreaDetailThunkParam = AreaKeys & { areaName?: string }
+export type FetchAreaDetailThunkParam = { dataset: Dataset; areaId: string; areaName?: string }
 export const fetchAreaDetailThunk = createAsyncThunk(
   'areas/fetch',
   async (
-    { datasetId, areaId, areaName }: FetchAreaDetailThunkParam = {} as FetchAreaDetailThunkParam,
+    {
+      dataset = {} as Dataset,
+      areaId,
+      areaName,
+    }: FetchAreaDetailThunkParam = {} as FetchAreaDetailThunkParam,
     { signal }
   ) => {
-    const area = await GFWAPI.fetch<ContextAreaFeature>(
-      `/datasets/${datasetId}/user-context-layer-v1/${areaId}`,
-      {
-        signal,
-      }
-    )
+    const endpoint = resolveEndpoint(dataset, {
+      datasetId: dataset?.id,
+      endpoint: EndpointId.ContextFeature,
+      params: [{ id: 'id', value: areaId }],
+    })
+    const area = await GFWAPI.fetch<ContextAreaFeature>(endpoint, { signal })
     const name = areaName || area.properties.value || area.properties.name || area.id
+
     return {
       name,
       id: area.id,
@@ -60,9 +71,9 @@ export const fetchAreaDetailThunk = createAsyncThunk(
     }
   },
   {
-    condition: ({ datasetId, areaId }: FetchAreaDetailThunkParam, { getState }) => {
+    condition: ({ dataset, areaId }: FetchAreaDetailThunkParam, { getState }) => {
       const { areas } = getState() as RootState
-      const fetchStatus = areas[datasetId]?.detail?.[areaId]?.status
+      const fetchStatus = areas[dataset?.id]?.detail?.[areaId]?.status
       if (
         fetchStatus === AsyncReducerStatus.Finished ||
         fetchStatus === AsyncReducerStatus.Loading
@@ -114,7 +125,8 @@ const areasSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchAreaDetailThunk.pending, (state, action) => {
-      const { datasetId, areaId, areaName } = action.meta.arg
+      const { dataset, areaId, areaName } = action.meta.arg
+      const datasetId = dataset?.id
       const area = {
         status: AsyncReducerStatus.Loading,
         data: { ...(areaName && { name: areaName }) } as Area,
@@ -131,14 +143,16 @@ const areasSlice = createSlice({
       }
     })
     builder.addCase(fetchAreaDetailThunk.fulfilled, (state, action) => {
-      const { datasetId, areaId } = action.meta.arg
+      const { dataset, areaId } = action.meta.arg
+      const datasetId = dataset?.id
       state[datasetId].detail[areaId] = {
         status: AsyncReducerStatus.Finished,
         data: { ...state[datasetId].detail[areaId].data, ...action.payload },
       }
     })
     builder.addCase(fetchAreaDetailThunk.rejected, (state, action) => {
-      const { datasetId, areaId } = action.meta.arg
+      const { dataset, areaId } = action.meta.arg
+      const datasetId = dataset?.id
       state[datasetId].detail[areaId].status = AsyncReducerStatus.Error
     })
     builder.addCase(fetchDatasetAreasThunk.pending, (state, action) => {
