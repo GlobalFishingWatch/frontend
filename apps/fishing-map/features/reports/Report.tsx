@@ -53,7 +53,7 @@ export default function Report() {
   const { status: reportStatus, error: statusError } = useFetchReportVessel()
   const { data: areaDetail } = useFetchReportArea()
   const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const hasReportVessels = useSelector(selectHasReportVessels)
+  const hasVessels = useSelector(selectHasReportVessels)
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
 
   if (
@@ -71,7 +71,7 @@ export default function Report() {
   const activityUnit = reportCategory === DataviewCategory.Activity ? 'hour' : 'detection'
 
   const hasAuthError = reportStatus === AsyncReducerStatus.Error && isAuthError(statusError)
-  const hasNoReportVessels = reportStatus === AsyncReducerStatus.Finished && !hasReportVessels
+  const reportLoaded = reportStatus === AsyncReducerStatus.Finished
 
   return (
     <Fragment>
@@ -79,12 +79,16 @@ export default function Report() {
       {filteredCategoryTabs.length > 1 && (
         <Tabs tabs={filteredCategoryTabs} activeTab={reportCategory} onTabClick={handleTabClick} />
       )}
-      {reportStatus === AsyncReducerStatus.Finished && (
-        <ReportSummary activityUnit={activityUnit} />
-      )}
+      {reportLoaded && <ReportSummary activityUnit={activityUnit} />}
       <ReportActivity />
-      {reportStatus === AsyncReducerStatus.Finished && hasReportVessels ? (
-        <ReportVessels activityUnit={activityUnit} reportName={areaDetail?.name} />
+      {reportLoaded ? (
+        hasVessels ? (
+          <ReportVessels activityUnit={activityUnit} reportName={areaDetail?.name} />
+        ) : (
+          <p className={styles.noData}>
+            {t('analysis.noDataByArea', 'No data available for the selected area')}
+          </p>
+        )
       ) : (
         <ReportVesselsPlaceholder />
       )}
@@ -99,11 +103,6 @@ export default function Report() {
                 )
           }
         />
-      )}
-      {hasNoReportVessels && (
-        <p className={styles.noData}>
-          {t('analysis.noDataByArea', 'No data available for the selected area')}
-        </p>
       )}
       <ReportDownload reportName={areaDetail?.name} />
     </Fragment>
