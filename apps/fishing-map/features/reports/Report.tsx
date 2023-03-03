@@ -114,7 +114,7 @@ export default function Report() {
           />
         ) : (
           <p className={styles.error}>
-            {!timerangeTooLong ? (
+            {timerangeTooLong ? (
               t(
                 'analysis.timeRangeTooLong',
                 'Reports are only allowed for time ranges up to one year'
