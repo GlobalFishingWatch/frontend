@@ -70,8 +70,10 @@ export default function Report() {
   // TODO get this from datasets config
   const activityUnit = reportCategory === DataviewCategory.Activity ? 'hour' : 'detection'
 
-  const hasAuthError = reportStatus === AsyncReducerStatus.Error && isAuthError(statusError)
+  const reportLoading = reportStatus === AsyncReducerStatus.Loading
+  const reportError = reportStatus === AsyncReducerStatus.Error
   const reportLoaded = reportStatus === AsyncReducerStatus.Finished
+  const hasAuthError = reportError && isAuthError(statusError)
 
   return (
     <Fragment>
@@ -81,30 +83,40 @@ export default function Report() {
       )}
       {reportLoaded && <ReportSummary activityUnit={activityUnit} />}
       <ReportActivity />
+      {reportLoading && <ReportVesselsPlaceholder />}
       {reportLoaded ? (
         hasVessels ? (
-          <ReportVessels activityUnit={activityUnit} reportName={areaDetail?.name} />
+          <Fragment>
+            <ReportVessels activityUnit={activityUnit} reportName={areaDetail?.name} />
+            <ReportDownload reportName={areaDetail?.name} />
+          </Fragment>
         ) : (
-          <p className={styles.noData}>
+          <p className={styles.error}>
             {t('analysis.noDataByArea', 'No data available for the selected area')}
           </p>
         )
-      ) : (
-        <ReportVesselsPlaceholder />
-      )}
-      {hasAuthError && (
-        <ReportVesselsPlaceholder
-          title={
-            guestUser
-              ? t('errors.reportLogin', 'Login to see the vessels active in the area')
-              : t(
-                  'errors.privateReport',
-                  "Your account doesn't have permissions to see the vessels active in this area"
-                )
-          }
-        />
-      )}
-      <ReportDownload reportName={areaDetail?.name} />
+      ) : null}
+      {reportError ? (
+        hasAuthError ? (
+          <ReportVesselsPlaceholder
+            title={
+              guestUser
+                ? t('errors.reportLogin', 'Login to see the vessels active in the area')
+                : t(
+                    'errors.privateReport',
+                    "Your account doesn't have permissions to see the vessels active in this area"
+                  )
+            }
+          />
+        ) : (
+          <p className={styles.error}>
+            {t(
+              'analysis.timeRangeTooLong',
+              'Reports are only allowed for time ranges up to one year'
+            )}
+          </p>
+        )
+      ) : null}
     </Fragment>
   )
 }

@@ -1,6 +1,6 @@
-.noData {
+.error {
   width: 100%;
   text-align: center;
   padding: 6rem var(--space-L);
-  color: var(--color-secondary-blue);
+  color: var(--color-danger-red);
 }
