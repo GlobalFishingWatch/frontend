@@ -169,7 +169,7 @@ const ReportActivityBeforeAfterGraph: React.FC<{
         <ComposedChart data={range} margin={graphMargin}>
           <CartesianGrid vertical={false} />
           <XAxis
-            domain={[getUTCDateTime(start).toMillis(), getUTCDateTime(end).toMillis()]}
+            domain={[getUTCDateTime(start)?.toMillis(), getUTCDateTime(end)?.toMillis()]}
             dataKey="date"
             interval="preserveStartEnd"
             tickFormatter={(tick: number) => formatDateTicks(tick, timeComparison)}
