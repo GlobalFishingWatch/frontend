@@ -74,7 +74,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
                   case ContextLayerType.MPANoTake:
                   case ContextLayerType.MPARestricted:
                     const { NAME, WDPA_PID, DESIG } = feature.properties
-                    label = `${NAME} - ${DESIG}`
+                    label = NAME ? `${NAME} - ${DESIG}` : DESIG || feature.value || ''
                     id = `${label}-${gfw_id}`
                     linkHref = WDPA_PID ? `https://www.protectedplanet.net/${WDPA_PID}` : undefined
                     break
