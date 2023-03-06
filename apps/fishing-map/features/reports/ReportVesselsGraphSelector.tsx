@@ -16,6 +16,10 @@ export default function ReportVesselsGraphSelector(props: ReportVesselsGraphProp
   const { t } = useTranslation()
 
   const options: SelectOption[] = [
+    {
+      id: REPORT_VESSELS_GRAPH_FLAG,
+      label: t('analysis.groupByFlag', 'Flag distribution'),
+    },
     ...(reportCategory !== DataviewCategory.Detections
       ? [
           {
@@ -24,10 +28,6 @@ export default function ReportVesselsGraphSelector(props: ReportVesselsGraphProp
           },
         ]
       : []),
-    {
-      id: REPORT_VESSELS_GRAPH_FLAG,
-      label: t('analysis.groupByFlag', 'Flag distribution'),
-    },
   ]
 
   const onSelect = (option: SelectOption) => {
