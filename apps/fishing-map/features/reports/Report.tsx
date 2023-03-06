@@ -85,7 +85,7 @@ export default function Report() {
       {filteredCategoryTabs.length > 1 && (
         <Tabs tabs={filteredCategoryTabs} activeTab={reportCategory} onTabClick={handleTabClick} />
       )}
-      {reportLoaded && <ReportSummary activityUnit={activityUnit} />}
+      <ReportSummary activityUnit={activityUnit} reportStatus={reportStatus} />
       <ReportActivity />
       {reportLoading && <ReportVesselsPlaceholder />}
       {reportLoaded ? (

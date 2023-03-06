@@ -18,6 +18,7 @@ import { toFixed } from 'utils/shared'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { ReportActivityProps } from 'features/reports/ReportActivity'
 import { EvolutionGraphData } from 'features/reports/reports-timeseries.hooks'
+import { formatEvolutionData } from 'features/reports/reports-timeseries.utils'
 import styles from './ReportActivityEvolution.module.css'
 import { tickFormatter } from './reports.utils'
 
@@ -105,21 +106,7 @@ const formatDateTicks = (tick: string, timeChunkInterval: Interval) => {
 const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
 
 export default function ReportActivityGraph({ start, end, data }: ReportActivityProps) {
-  const dataFormated = useMemo(() => {
-    return data?.timeseries
-      ?.map(({ date, min, max }) => {
-        const range = min.map((m, i) => [m, max[i]])
-        const avg = min.map((m, i) => (m + max[i]) / 2)
-        return {
-          date: new Date(date).getTime(),
-          range,
-          avg,
-        }
-      })
-      .filter((d) => {
-        return !isNaN(d.avg[0])
-      })
-  }, [data?.timeseries])
+  const dataFormated = formatEvolutionData(data)
 
   const domain = useMemo(() => {
     if (start && end && data?.interval) {

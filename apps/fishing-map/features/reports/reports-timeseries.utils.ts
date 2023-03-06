@@ -138,3 +138,19 @@ export const featuresToTimeseries = (
     }
   })
 }
+
+export const formatEvolutionData = (data: ReportGraphProps) => {
+  return data?.timeseries
+    ?.map(({ date, min, max }) => {
+      const range = min.map((m, i) => [m, max[i]])
+      const avg = min.map((m, i) => (m + max[i]) / 2)
+      return {
+        date: new Date(date).getTime(),
+        range,
+        avg,
+      }
+    })
+    .filter((d) => {
+      return !isNaN(d.avg[0])
+    })
+}
