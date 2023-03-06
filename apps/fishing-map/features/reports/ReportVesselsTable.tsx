@@ -4,7 +4,7 @@ import cx from 'classnames'
 import { CSVLink } from 'react-csv'
 import { Fragment } from 'react'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
-import { DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory, DataviewInstance } from '@globalfishingwatch/api-types'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { getVesselDataviewInstance, getVesselInWorkspace } from 'features/dataviews/dataviews.utils'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
@@ -13,7 +13,11 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
-import { selectReportVesselFilter, selectTimeRange } from 'features/app/app.selectors'
+import {
+  selectReportCategory,
+  selectReportVesselFilter,
+  selectTimeRange,
+} from 'features/app/app.selectors'
 import {
   ReportVesselWithDatasets,
   selectReportDownloadVessels,
@@ -41,6 +45,8 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
   const reportVesselFilter = useSelector(selectReportVesselFilter)
   const pagination = useSelector(selectReportVesselsPagination)
   const vesselsInWorkspace = useSelector(selectActiveTrackDataviews)
+  const reportCategory = useSelector(selectReportCategory)
+  const isDetections = reportCategory === DataviewCategory.Detections
   const { start, end } = useSelector(selectTimeRange)
 
   const onVesselClick = (
@@ -82,13 +88,15 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
   return (
     <Fragment>
       <div className={styles.tableContainer}>
-        <div className={cx(styles.vesselsTable)}>
+        <div className={cx(styles.vesselsTable, { [styles.detections]: isDetections })}>
           <div className={cx(styles.header, styles.spansFirstTwoColumns)}>
             {t('common.name', 'Name')}
           </div>
-          <div className={styles.header}>{t('vessel.mmsi', 'mmsi')}</div>
+          {!isDetections && <div className={styles.header}>{t('vessel.mmsi', 'mmsi')}</div>}
           <div className={styles.header}>{t('layer.flagState_one', 'Flag state')}</div>
-          <div className={styles.header}>{t('vessel.gearType_short', 'gear')}</div>
+          {!isDetections && (
+            <div className={styles.header}>{t('vessel.gearType_short', 'gear')}</div>
+          )}
           <div className={cx(styles.header, styles.right)}>
             {activityUnit === 'hour'
               ? t('common.hour_other', 'hours')
@@ -126,15 +134,19 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                 <div className={cx({ [styles.border]: !isLastRow })}>
                   {formatInfoField(vessel.shipName, 'name')}
                 </div>
-                <div className={cx({ [styles.border]: !isLastRow })}>
-                  <span>{vessel.mmsi || EMPTY_FIELD_PLACEHOLDER}</span>
-                </div>
+                {!isDetections && (
+                  <div className={cx({ [styles.border]: !isLastRow })}>
+                    <span>{vessel.mmsi || EMPTY_FIELD_PLACEHOLDER}</span>
+                  </div>
+                )}
                 <div className={cx({ [styles.border]: !isLastRow })}>
                   <span>{t(`flags:${vessel.flag as string}` as any, EMPTY_FIELD_PLACEHOLDER)}</span>
                 </div>
-                <div className={cx({ [styles.border]: !isLastRow })}>
-                  {t(`vessel.gearTypes.${vessel.geartype}` as any, EMPTY_FIELD_PLACEHOLDER)}
-                </div>
+                {!isDetections && (
+                  <div className={cx({ [styles.border]: !isLastRow })}>
+                    {t(`vessel.gearTypes.${vessel.geartype}` as any, EMPTY_FIELD_PLACEHOLDER)}
+                  </div>
+                )}
                 <div className={cx({ [styles.border]: !isLastRow }, styles.right)}>
                   <I18nNumber number={vessel[`${activityUnit}s`]} />
                 </div>
