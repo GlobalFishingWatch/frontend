@@ -11,7 +11,6 @@ import {
   Dataset,
   ApiEvent,
   TrackResourceData,
-  DataviewDatasetConfigParam,
 } from '@globalfishingwatch/api-types'
 import {
   DEFAULT_HEATMAP_INTERVALS,
