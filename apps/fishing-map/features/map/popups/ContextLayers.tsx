@@ -66,8 +66,8 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
                   case ContextLayerType.MPA:
                   case ContextLayerType.MPANoTake:
                   case ContextLayerType.MPARestricted:
-                    const { NAME, WDPA_PID, DESIG } = feature.properties
-                    label = NAME ? `${NAME} - ${DESIG}` : DESIG || feature.value || ''
+                    const { NAME, WDPA_PID } = feature.properties
+                    label = NAME || feature.value || ''
                     id = `${label}-${gfw_id}`
                     linkHref = getContextAreaLink(generatorContextLayer, WDPA_PID)
                     break

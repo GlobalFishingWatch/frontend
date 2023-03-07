@@ -1,6 +1,7 @@
 import { Dictionary } from '@reduxjs/toolkit'
 import { invert, isObject, isString, transform } from 'lodash'
 import { stringify, parse } from 'qs'
+import { EndpointId } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '.'
 
 /**
@@ -176,6 +177,9 @@ export const migrateLegacyVMSDatasets = (datasetId: string) => {
 }
 
 export const removeLegacyEndpointPrefix = (endpointId: string) => {
+  if (endpointId === 'user-context-tiles') {
+    return EndpointId.ContextTiles
+  }
   return endpointId.replace('carriers-', '')
 }
 
