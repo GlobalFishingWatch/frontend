@@ -13,7 +13,7 @@ import WorkspaceError from 'features/workspace/WorkspaceError'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { selectWorkspaceVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
 import { selectHasReportVessels } from 'features/reports/reports.selectors'
-import ReportVesselsPlaceholder from 'features/reports/ReportVesselsPlaceholder'
+import ReportVesselsPlaceholder from 'features/reports/placeholders/ReportVesselsPlaceholder'
 import { isGuestUser } from 'features/user/user.slice'
 import { ReportCategory } from 'types'
 import { getDownloadReportSupported } from 'features/download/download.utils'
@@ -114,10 +114,10 @@ export default function Report() {
           />
         ) : (
           <p className={styles.error}>
-              <span>
-                {t('errors.generic', 'Something went wrong, try again or contact:')}{' '}
-                <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
-              </span>
+            <span>
+              {t('errors.generic', 'Something went wrong, try again or contact:')}{' '}
+              <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
+            </span>
           </p>
         )
       ) : null}
