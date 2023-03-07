@@ -8,10 +8,14 @@ import { USER, WORKSPACES_LIST } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
 import { isUserLogged, selectUserGroupsPermissions } from 'features/user/user.selectors'
+import { fetchResourceThunk } from 'features/resources/resources.slice'
+import { parseTrackEventChunkProps } from 'features/timebar/timebar.utils'
+import { parseUserTrackCallback } from 'features/resources/resources.utils'
 import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
 import { fetchUserVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import Report from 'features/reports/Report'
+import { selectDataviewsResources } from 'features/dataviews/dataviews.slice'
 import styles from './Sidebar.module.css'
 import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
@@ -38,6 +42,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const searchQuery = useSelector(selectSearchQuery)
   const locationType = useSelector(selectLocationType)
   const isReportLocation = useSelector(selectIsReportLocation)
+  const dataviewsResources = useSelector(selectDataviewsResources)
   const userLogged = useSelector(isUserLogged)
   const hasUserGroupsPermissions = useSelector(selectUserGroupsPermissions)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
@@ -48,6 +53,21 @@ function Sidebar({ onMenuClick }: SidebarProps) {
       dispatch(fetchUserVesselGroupsThunk())
     }
   }, [dispatch, hasUserGroupsPermissions])
+
+  useEffect(() => {
+    if (dataviewsResources?.resources?.length) {
+      dataviewsResources.resources.forEach((resource) => {
+        dispatch(
+          fetchResourceThunk({
+            resource,
+            resourceKey: resource.key,
+            parseEventCb: parseTrackEventChunkProps,
+            parseUserTrackCb: parseUserTrackCallback,
+          })
+        )
+      })
+    }
+  }, [dispatch, dataviewsResources])
 
   const sidebarComponent = useMemo(() => {
     if (!userLogged) {
