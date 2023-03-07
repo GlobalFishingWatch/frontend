@@ -94,7 +94,7 @@ export const DEFAULT_WORKSPACE = {
   reportActivityGraph: REPORT_ACTIVITY_GRAPH_EVOLUTION,
   reportCategory: DataviewCategory.Activity,
   reportVesselFilter: '',
-  reportVesselGraph: REPORT_VESSELS_GRAPH_GEARTYPE,
+  reportVesselGraph: REPORT_VESSELS_GRAPH_FLAG,
   reportVesselPage: 0,
 }
 

@@ -1,6 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { DataviewCategory, DataviewInstance } from '@globalfishingwatch/api-types'
-import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_WORKSPACE } from 'data/config'
+import {
+  APP_NAME,
+  DEFAULT_TIME_RANGE,
+  DEFAULT_WORKSPACE,
+  REPORT_VESSELS_GRAPH_FLAG,
+} from 'data/config'
 import { createDeepEqualSelector } from 'utils/selectors'
 import {
   selectWorkspace,
@@ -144,8 +149,9 @@ export const selectReportActivityGraph = createSelector(
 )
 
 export const selectReportVesselGraph = createSelector(
-  [selectWorkspaceStateProperty('reportVesselGraph')],
-  (reportVesselGraph): ReportVesselGraph => {
+  [selectWorkspaceStateProperty('reportVesselGraph'), selectReportCategory],
+  (reportVesselGraph, reportCategory): ReportVesselGraph => {
+    if (reportCategory === DataviewCategory.Detections) return REPORT_VESSELS_GRAPH_FLAG
     return reportVesselGraph
   }
 )

@@ -37,7 +37,12 @@ export const filterTimeseriesByTimerange = (
       ...layerTimeseries,
       timeseries: layerTimeseries?.timeseries.filter((current) => {
         const currentDate = getUTCDateTime(current.date)
-        return currentDate >= startDate && currentDate < endDate
+        return (
+          current.max.some((v) => v !== 0) &&
+          current.min.some((v) => v !== 0) &&
+          currentDate >= startDate &&
+          currentDate < endDate
+        )
       }),
     }
   })
@@ -132,4 +137,20 @@ export const featuresToTimeseries = (
       sublayers: sourceMetadata.sublayers as unknown as ReportSublayerGraph[],
     }
   })
+}
+
+export const formatEvolutionData = (data: ReportGraphProps) => {
+  return data?.timeseries
+    ?.map(({ date, min, max }) => {
+      const range = min.map((m, i) => [m, max[i]])
+      const avg = min.map((m, i) => (m + max[i]) / 2)
+      return {
+        date: new Date(date).getTime(),
+        range,
+        avg,
+      }
+    })
+    .filter((d) => {
+      return !isNaN(d.avg[0])
+    })
 }

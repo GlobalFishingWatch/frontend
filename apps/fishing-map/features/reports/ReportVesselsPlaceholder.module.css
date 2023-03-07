@@ -3,7 +3,8 @@
   position: relative;
 }
 
-.placeholder {
+.faint {
+  opacity: 0.5;
   filter: blur(1px);
 }
 
@@ -35,9 +36,9 @@
   animation: placeHolderShimmer 2s linear forwards infinite;
   background: linear-gradient(
     90deg,
-    rgba(var(--primary-blue-rgb), 0.05) 0%,
-    rgba(var(--primary-blue-rgb), 0.1) 40%,
-    rgba(var(--primary-blue-rgb), 0.05) 70%
+    rgba(var(--primary-blue-rgb), 0.1) 0%,
+    rgba(var(--primary-blue-rgb), 0.2) 40%,
+    rgba(var(--primary-blue-rgb), 0.1) 70%
   );
   background-size: 1000px 100%;
 }

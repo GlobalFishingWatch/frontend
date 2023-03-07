@@ -56,10 +56,28 @@ export const selectReportActivityFlatten = createSelector(
 
     return reportDatasets.flatMap((dataset) =>
       Object.entries(dataset).flatMap(([datasetId, vessels]) => {
-        const { category } = dataviews.find((dataview) =>
+        const category = dataviews.find((dataview) =>
           dataview.config.datasets.includes(datasetId)
-        )
-        return (vessels || []).map((vessel) => ({ ...vessel, datasetId, category }))
+        )?.category
+        return (vessels || []).flatMap((vessel) => {
+          if (
+            vessel.flag === DEFAULT_NULL_VALUE &&
+            vessel.shipName === DEFAULT_NULL_VALUE &&
+            vessel.vesselType === DEFAULT_NULL_VALUE &&
+            vessel.geartype === DEFAULT_NULL_VALUE
+          ) {
+            return []
+          }
+          return {
+            ...vessel,
+            shipName:
+              vessel.shipName === DEFAULT_NULL_VALUE
+                ? t('common.unknownVessel', 'Unknown Vessel')
+                : vessel.shipName,
+            datasetId,
+            category,
+          }
+        })
       })
     )
   }

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { Fragment, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Spinner } from '@globalfishingwatch/ui-components'
@@ -30,28 +30,34 @@ export default function ReportActivity() {
   const reportActivityGraph = useSelector(selectReportActivityGraph)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
 
-  const { loading, layersTimeseriesFiltered } = useFilteredTimeSeries()
-
   const ReportGraphComponent = useMemo(
     () => REPORT_BY_TYPE[reportActivityGraph],
     [reportActivityGraph]
   )
+  const { loading, layersTimeseriesFiltered } = useFilteredTimeSeries()
+  if (
+    (!loading && !layersTimeseriesFiltered?.[0]?.timeseries) ||
+    layersTimeseriesFiltered?.[0]?.timeseries?.length === 0
+  )
+    return
   return (
     <div className={styles.container}>
-      <div className={styles.titleRow}>
-        <label className={styles.blockTitle}>{t('common.activity', 'Activity')}</label>
-        <ReportActivityGraphSelector />
-      </div>
       {loading ? (
         <div className={styles.spinner}>
           <Spinner />
         </div>
       ) : (
-        <ReportGraphComponent
-          start={reportActivityGraph === 'evolution' ? start : timeComparisonValues?.start}
-          end={reportActivityGraph === 'evolution' ? end : timeComparisonValues?.end}
-          data={layersTimeseriesFiltered?.[0]}
-        />
+        <Fragment>
+          <div className={styles.titleRow}>
+            <label className={styles.blockTitle}>{t('common.activity', 'Activity')}</label>
+            <ReportActivityGraphSelector />
+          </div>
+          <ReportGraphComponent
+            start={reportActivityGraph === 'evolution' ? start : timeComparisonValues?.start}
+            end={reportActivityGraph === 'evolution' ? end : timeComparisonValues?.end}
+            data={layersTimeseriesFiltered?.[0]}
+          />
+        </Fragment>
       )}
     </div>
   )
