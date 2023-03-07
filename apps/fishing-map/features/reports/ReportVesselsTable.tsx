@@ -148,7 +148,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                   </div>
                 )}
                 <div className={cx({ [styles.border]: !isLastRow }, styles.right)}>
-                  <I18nNumber number={vessel[`${activityUnit}s`]} />
+                  <I18nNumber number={vessel.hours} />
                 </div>
               </Fragment>
             )
