@@ -8,20 +8,14 @@ import { arrayMove } from '@dnd-kit/sortable'
 import { Spinner, Button, IconButton, Modal, InputText } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectWorkspaceStatus, selectWorkspace } from 'features/workspace/workspace.selectors'
-import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { isGFWUser } from 'features/user/user.slice'
 import { selectLocationCategory } from 'routes/routes.selectors'
 import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
 import { PRIVATE_SUFIX, PUBLIC_SUFIX, ROOT_DOM_ELEMENT, USER_SUFIX } from 'data/config'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
-import {
-  selectDataviewInstancesMergedOrdered,
-  selectDataviewsResources,
-} from 'features/dataviews/dataviews.slice'
+import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/dataviews.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { parseTrackEventChunkProps } from 'features/timebar/timebar.utils'
-import { parseUserTrackCallback } from 'features/resources/resources.utils'
 import DetectionsSection from 'features/workspace/detections/DetectionsSection'
 import { selectWorkspaceVessselGroupsIds } from 'features/vessel-groups/vessel-groups.selectors'
 import { useHideLegacyActivityCategoryDataviews } from 'features/workspace/legacy-activity-category.hook'
@@ -53,7 +47,6 @@ function Workspace() {
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
   const locationCategory = useSelector(selectLocationCategory)
-  const dataviewsResources = useSelector(selectDataviewsResources)
   const workspaceVesselGroupsIds = useSelector(selectWorkspaceVessselGroupsIds)
   const isUserWorkspace =
     workspace?.id?.endsWith(`-${USER_SUFIX}`) ||
@@ -70,22 +63,6 @@ function Workspace() {
       setWorkspaceEditDescription(workspace.description)
     }
   }, [workspace])
-
-  useEffect(() => {
-    if (dataviewsResources) {
-      const { resources } = dataviewsResources
-      resources.forEach((resource) => {
-        dispatch(
-          fetchResourceThunk({
-            resource,
-            resourceKey: resource.key,
-            parseEventCb: parseTrackEventChunkProps,
-            parseUserTrackCb: parseUserTrackCallback,
-          })
-        )
-      })
-    }
-  }, [dispatch, dataviewsResources])
 
   useEffect(() => {
     if (workspaceVesselGroupsIds.length) {

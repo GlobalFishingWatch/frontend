@@ -15,9 +15,10 @@ import { selectWorkspaceVesselGroupsStatus } from 'features/vessel-groups/vessel
 import { selectHasReportVessels } from 'features/reports/reports.selectors'
 import ReportVesselsPlaceholder from 'features/reports/placeholders/ReportVesselsPlaceholder'
 import { isGuestUser } from 'features/user/user.slice'
-import { ReportCategory } from 'types'
+import { ReportCategory, TimebarVisualisations } from 'types'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { SUPPORT_EMAIL } from 'data/config'
+import { useTimebarVisualisationConnect } from 'features/timebar/timebar.hooks'
 import { useFetchReportArea, useFetchReportVessel } from './reports.hooks'
 import ReportSummary from './ReportSummary'
 import ReportTitle from './ReportTitle'
@@ -58,6 +59,7 @@ export default function Report() {
   const { data: areaDetail } = useFetchReportArea()
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const hasVessels = useSelector(selectHasReportVessels)
+  const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
 
   if (
@@ -67,8 +69,13 @@ export default function Report() {
     return <WorkspaceError />
   }
 
-  const handleTabClick = (option: Tab) => {
-    dispatchQueryParams({ reportCategory: option.id as ReportCategory, reportVesselPage: 0 })
+  const handleTabClick = (option: Tab<ReportCategory>) => {
+    dispatchTimebarVisualisation(
+      option.id === DataviewCategory.Detections
+        ? TimebarVisualisations.HeatmapDetections
+        : TimebarVisualisations.HeatmapActivity
+    )
+    dispatchQueryParams({ reportCategory: option.id, reportVesselPage: 0 })
   }
 
   // TODO get this from datasets config

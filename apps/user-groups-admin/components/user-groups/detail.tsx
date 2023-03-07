@@ -1,5 +1,5 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react'
-import sortBy from 'lodash/sortBy'
+import { sortBy } from 'lodash'
 import { Button, IconButton, InputText, Spinner } from '@globalfishingwatch/ui-components'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { FutureUserData, UserData, UserGroup } from '@globalfishingwatch/api-types'

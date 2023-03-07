@@ -71,17 +71,13 @@ export const fetchReportVesselsThunk = createAsyncThunk(
           'spatial-resolution': spatialResolution,
           'spatial-aggregation': spatialAggregation,
           format: format,
+          'region-id': region.id,
+          'region-dataset': region.dataset,
         },
         { arrayFormat: 'indices' }
       )
       const vessels = await GFWAPI.fetch<APIPagination<ReportVesselsByDataset>>(
-        `/4wings/report?${query}`,
-        {
-          method: 'POST',
-          body: {
-            region,
-          } as any,
-        }
+        `/4wings/report?${query}`
       )
       return vessels.entries
     } catch (e) {
