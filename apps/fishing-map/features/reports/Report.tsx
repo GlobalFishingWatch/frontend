@@ -114,20 +114,21 @@ export default function Report() {
           />
         ) : (
           <p className={styles.error}>
-            {timerangeTooLong ? (
-              t(
-                'analysis.timeRangeTooLong',
-                'Reports are only allowed for time ranges up to one year'
-              )
-            ) : (
               <span>
                 {t('errors.generic', 'Something went wrong, try again or contact:')}{' '}
                 <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
               </span>
-            )}
           </p>
         )
       ) : null}
+      {timerangeTooLong && (
+        <p className={styles.error}>
+          {t(
+            'analysis.timeRangeTooLong',
+            'Reports are only allowed for time ranges up to one year'
+          )}
+        </p>
+      )}
     </Fragment>
   )
 }
