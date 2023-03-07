@@ -6,7 +6,7 @@ import { selectActiveReportDataviews, selectReportVesselGraph } from 'features/a
 import { ReportVesselGraph } from 'types'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import styles from './ReportVesselsGraph.module.css'
-import { DEFAULT_NULL_VALUE, selectReportVesselsGraphData } from './reports.selectors'
+import { EMPTY_API_VALUES, selectReportVesselsGraphData } from './reports.selectors'
 
 type ReportGraphTooltipProps = {
   active: boolean
@@ -28,7 +28,7 @@ const ReportGraphTooltip = (props: any) => {
   const { t } = useTranslation()
 
   let translatedLabel = ''
-  if (label === DEFAULT_NULL_VALUE) translatedLabel = t('common.unknown', 'Unknown')
+  if (EMPTY_API_VALUES.includes(label)) translatedLabel = t('common.unknown', 'Unknown')
   else if (type === 'geartype') {
     translatedLabel = `${t(`vessel.gearTypes.${label}` as any, label)}`
   } else {
@@ -62,7 +62,7 @@ const CustomTick = (props: any) => {
   const { t } = useTranslation()
   const selectedReportVesselGraph = useSelector(selectReportVesselGraph)
   let label = payload.value
-  if (label === DEFAULT_NULL_VALUE) {
+  if (EMPTY_API_VALUES.includes(label)) {
     label = t('common.unknown', 'Unknown')
   } else {
     label =

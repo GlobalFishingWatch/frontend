@@ -32,7 +32,7 @@ import { getUTCDateTime } from 'utils/dates'
 import { selectActiveTemporalgridDataviews } from 'features/dataviews/dataviews.selectors'
 import { selectReportVesselsData } from './reports.slice'
 
-export const DEFAULT_NULL_VALUE = 'NULL'
+export const EMPTY_API_VALUES = ['NULL', undefined, '']
 export const MAX_CATEGORIES = 5
 
 export type ReportVesselWithDatasets = Partial<ReportVessel> & {
@@ -61,19 +61,18 @@ export const selectReportActivityFlatten = createSelector(
         )?.category
         return (vessels || []).flatMap((vessel) => {
           if (
-            vessel.flag === DEFAULT_NULL_VALUE &&
-            vessel.shipName === DEFAULT_NULL_VALUE &&
-            vessel.vesselType === DEFAULT_NULL_VALUE &&
-            vessel.geartype === DEFAULT_NULL_VALUE
+            EMPTY_API_VALUES.includes(vessel.flag) &&
+            EMPTY_API_VALUES.includes(vessel.shipName) &&
+            EMPTY_API_VALUES.includes(vessel.vesselType) &&
+            EMPTY_API_VALUES.includes(vessel.geartype)
           ) {
             return []
           }
           return {
             ...vessel,
-            shipName:
-              vessel.shipName === DEFAULT_NULL_VALUE
-                ? t('common.unknownVessel', 'Unknown Vessel')
-                : vessel.shipName,
+            shipName: EMPTY_API_VALUES.includes(vessel.shipName)
+              ? t('common.unknownVessel', 'Unknown Vessel')
+              : vessel.shipName,
             datasetId,
             category,
           }
@@ -123,8 +122,8 @@ export const selectReportVesselsGraphData = createSelector(
         return distributionData
       })
       .sort((a, b) => {
-        if (a.name === DEFAULT_NULL_VALUE) return 1
-        if (b.name === DEFAULT_NULL_VALUE) return -1
+        if (EMPTY_API_VALUES.includes(a.name)) return 1
+        if (EMPTY_API_VALUES.includes(b.name)) return -1
         return sum(dataviewIds.map((d) => b[d])) - sum(dataviewIds.map((d) => a[d]))
       })
 
