@@ -13,6 +13,8 @@ import { useFilteredTimeSeries } from 'features/reports/reports-timeseries.hooks
 import { formatEvolutionData } from 'features/reports/reports-timeseries.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import ReportSummaryPlaceholder from 'features/reports/placeholders/ReportSummaryPlaceholder'
+import ReportSummaryTagsPlaceholder from 'features/reports/placeholders/ReportSummaryTagsPlaceholder'
 import { selectReportVesselsHours, selectReportVesselsNumber } from './reports.selectors'
 import styles from './ReportSummary.module.css'
 
@@ -92,17 +94,25 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
 
   return (
     <div className={styles.container}>
-      {summary && <p className={styles.summary} dangerouslySetInnerHTML={{ __html: summary }}></p>}
+      {summary ? (
+        <p className={styles.summary} dangerouslySetInnerHTML={{ __html: summary }}></p>
+      ) : (
+        <ReportSummaryPlaceholder />
+      )}
       <div className={styles.tagsContainer}>
-        {dataviews?.map((dataview, index) => (
-          <ReportSummaryTags
-            key={dataview.id}
-            dataview={dataview}
-            index={index}
-            hiddenProperties={getCommonProperties(dataviews)}
-            availableFields={FIELDS}
-          />
-        ))}
+        {dataviews.length > 0 ? (
+          dataviews?.map((dataview, index) => (
+            <ReportSummaryTags
+              key={dataview.id}
+              dataview={dataview}
+              index={index}
+              hiddenProperties={getCommonProperties(dataviews)}
+              availableFields={FIELDS}
+            />
+          ))
+        ) : (
+          <ReportSummaryTagsPlaceholder />
+        )}
       </div>
     </div>
   )

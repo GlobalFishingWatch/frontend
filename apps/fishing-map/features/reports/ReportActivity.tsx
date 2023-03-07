@@ -1,13 +1,13 @@
 import React, { Fragment, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { Spinner } from '@globalfishingwatch/ui-components'
 import ReportActivityGraphSelector from 'features/reports/ReportActivityGraphSelector'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { ReportGraphProps, useFilteredTimeSeries } from 'features/reports/reports-timeseries.hooks'
 import { selectTimeComparisonValues } from 'features/reports/reports.selectors'
 import { ReportActivityGraph } from 'types'
 import { selectReportActivityGraph } from 'features/app/app.selectors'
+import ReportActivityPlaceholder from 'features/reports/placeholders/ReportActivityPlaceholder'
 import ReportActivityEvolution from './ReportActivityEvolution'
 import ReportActivityBeforeAfter from './ReportActivityBeforeAfter'
 import styles from './ReportActivity.module.css'
@@ -35,17 +35,11 @@ export default function ReportActivity() {
     [reportActivityGraph]
   )
   const { loading, layersTimeseriesFiltered } = useFilteredTimeSeries()
-  if (
-    (!loading && !layersTimeseriesFiltered?.[0]?.timeseries) ||
-    layersTimeseriesFiltered?.[0]?.timeseries?.length === 0
-  )
-    return
+
   return (
     <div className={styles.container}>
       {loading ? (
-        <div className={styles.spinner}>
-          <Spinner />
-        </div>
+        <ReportActivityPlaceholder />
       ) : (
         <Fragment>
           <div className={styles.titleRow}>

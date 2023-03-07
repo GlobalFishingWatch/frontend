@@ -92,7 +92,7 @@ export const fetchReportVesselsThunk = createAsyncThunk(
   {
     condition: (params: FetchReportVesselsThunkParams, { getState }) => {
       const { status } = (getState() as RootState)?.reports
-      if (status === AsyncReducerStatus.Loading || status === AsyncReducerStatus.Error) {
+      if (status === AsyncReducerStatus.Loading) {
         return false
       }
       return true
