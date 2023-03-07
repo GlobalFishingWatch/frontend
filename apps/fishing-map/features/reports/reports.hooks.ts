@@ -21,6 +21,7 @@ import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { Bbox } from 'types'
 import useViewport, { getMapCoordinatesFromBounds } from 'features/map/map-viewport.hooks'
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
+import { getDownloadReportSupported } from 'features/download/download.utils'
 import {
   fetchReportVesselsThunk,
   selectReportVesselsData,
@@ -135,6 +136,7 @@ export function useFetchReportVessel() {
   const dispatch = useAppDispatch()
   const userData = useSelector(selectUserData)
   const timerange = useSelector(selectTimeRange)
+  const timerangeSupported = getDownloadReportSupported(timerange.start, timerange.end)
   const datasetId = useSelector(selectLocationDatasetId)
   const areaId = useSelector(selectLocationAreaId)
   const dataviews = useSelector(selectActiveReportDataviews)
@@ -144,7 +146,7 @@ export function useFetchReportVessel() {
 
   useEffect(() => {
     const reportDataviews = getReportDataviews(dataviews, userData)
-    if (areaId && reportDataviews?.length) {
+    if (areaId && reportDataviews?.length && timerangeSupported) {
       dispatch(
         fetchReportVesselsThunk({
           datasets: reportDataviews.map(({ datasets }) => datasets.join(',')),
@@ -159,7 +161,7 @@ export function useFetchReportVessel() {
         })
       )
     }
-  }, [dispatch, areaId, datasetId, timerange, dataviews, userData])
+  }, [dispatch, areaId, datasetId, timerange, dataviews, userData, timerangeSupported])
 
   return useMemo(() => ({ status, data, error }), [status, data, error])
 }
