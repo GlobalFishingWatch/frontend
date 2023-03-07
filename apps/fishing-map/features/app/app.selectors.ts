@@ -115,12 +115,18 @@ export const selectSidebarOpen = createSelector(
 )
 
 export const selectReportCategory = createSelector(
-  [selectWorkspaceStateProperty('reportCategory'), selectActiveDetectionsDataviews],
-  (reportActivityGraph, detectionsDataviews): ReportCategory => {
+  [
+    selectWorkspaceStateProperty('reportCategory'),
+    selectActiveActivityDataviews,
+    selectActiveDetectionsDataviews,
+  ],
+  (reportActivityGraph, activityDataviews, detectionsDataviews): ReportCategory => {
     if (reportActivityGraph) {
       return reportActivityGraph
     }
-    return detectionsDataviews?.length ? DataviewCategory.Detections : DataviewCategory.Activity
+    return !activityDataviews?.length && detectionsDataviews?.length
+      ? DataviewCategory.Detections
+      : DataviewCategory.Activity
   }
 )
 
