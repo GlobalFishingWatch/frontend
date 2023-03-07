@@ -115,9 +115,12 @@ export const selectSidebarOpen = createSelector(
 )
 
 export const selectReportCategory = createSelector(
-  [selectWorkspaceStateProperty('reportCategory')],
-  (reportCategory): ReportCategory => {
-    return reportCategory
+  [selectWorkspaceStateProperty('reportCategory'), selectActiveDetectionsDataviews],
+  (reportActivityGraph, detectionsDataviews): ReportCategory => {
+    if (reportActivityGraph) {
+      return reportActivityGraph
+    }
+    return detectionsDataviews?.length ? DataviewCategory.Detections : DataviewCategory.Activity
   }
 )
 
@@ -137,8 +140,9 @@ export const selectReportAreaSource = createSelector(
 
 export const selectActiveReportDataviews = createDeepEqualSelector(
   [selectReportCategory, selectActiveActivityDataviews, selectActiveDetectionsDataviews],
-  (reportCategory, activityDataviews = [], detectionsDataviews = []) =>
-    reportCategory === DataviewCategory.Activity ? activityDataviews : detectionsDataviews
+  (reportCategory, activityDataviews = [], detectionsDataviews = []) => {
+    return reportCategory === DataviewCategory.Activity ? activityDataviews : detectionsDataviews
+  }
 )
 
 export const selectReportActivityGraph = createSelector(
