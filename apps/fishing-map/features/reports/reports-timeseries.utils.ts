@@ -9,7 +9,7 @@ import {
   quantizeOffsetToDate,
 } from '@globalfishingwatch/layer-composer'
 import { ReportGraphProps, ReportSublayerGraph } from 'features/reports/ReportActivityEvolution'
-import { FilteredPolygons } from 'features/reports/report-geo.utils'
+import { FilteredPolygons } from 'features/reports/reports-geo.utils'
 import { DateTimeSeries } from 'features/reports/reports.hooks'
 import { DataviewFeature } from 'features/map/map-sources.hooks'
 import { getUTCDateTime } from 'utils/dates'

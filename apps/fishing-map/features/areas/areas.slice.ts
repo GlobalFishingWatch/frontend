@@ -45,7 +45,12 @@ export type AreasState = Record<string, DatasetAreas>
 const initialState: AreasState = {}
 
 export type AreaKeys = { datasetId: string; areaId: string }
-export type FetchAreaDetailThunkParam = { dataset: Dataset; areaId: string; areaName?: string }
+export type FetchAreaDetailThunkParam = {
+  dataset: Dataset
+  areaId: string
+  areaName?: string
+  simplify?: number
+}
 export const fetchAreaDetailThunk = createAsyncThunk(
   'areas/fetch',
   async (
@@ -53,6 +58,7 @@ export const fetchAreaDetailThunk = createAsyncThunk(
       dataset = {} as Dataset,
       areaId,
       areaName,
+      simplify,
     }: FetchAreaDetailThunkParam = {} as FetchAreaDetailThunkParam,
     { signal }
   ) => {
@@ -60,13 +66,19 @@ export const fetchAreaDetailThunk = createAsyncThunk(
       datasetId: dataset?.id,
       endpoint: EndpointId.ContextFeature,
       params: [{ id: 'id', value: areaId }],
+      query: simplify ? [{ id: 'simplify', value: simplify }] : [],
     })
     const area = await GFWAPI.fetch<ContextAreaFeature>(endpoint, { signal })
-
+    const bounds = wrapBBoxLongitudes(bbox(area.geometry) as Bbox)
+    // Doing this once to avoid recomputing inside turf booleanPointInPolygon for each cell
+    // https://github.com/Turfjs/turf/blob/master/packages/turf-boolean-point-in-polygon/index.ts#L63
+    if (area.geometry) {
+      area.geometry.bbox = bounds
+    }
     return {
       id: area.id,
       name: areaName || area.value || area.properties.value || area.properties.name || area.id,
-      bounds: wrapBBoxLongitudes(bbox(area.geometry) as Bbox),
+      bounds,
       geometry: area.geometry,
       properties: area.properties,
     }

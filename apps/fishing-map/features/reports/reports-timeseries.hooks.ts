@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { Polygon, MultiPolygon } from 'geojson'
 import { useSelector } from 'react-redux'
-import simplify from '@turf/simplify'
-import bbox from '@turf/bbox'
 import { atom, selector, useRecoilState } from 'recoil'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { Interval } from '@globalfishingwatch/layer-composer'
@@ -97,17 +95,6 @@ export const useFilteredTimeSeries = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [area])
 
-  const simplifiedGeometry = useMemo(() => {
-    if (!area?.geometry) return null
-    const simplifiedGeometry = simplify(area?.geometry, {
-      tolerance: 0.1,
-    })
-    // Doing this once to avoid recomputing inside turf booleanPointInPolygon for each cell
-    // https://github.com/Turfjs/turf/blob/master/packages/turf-boolean-point-in-polygon/index.ts#L63
-    simplifiedGeometry.bbox = bbox(simplifiedGeometry)
-    return simplifiedGeometry
-  }, [area?.geometry])
-
   let compareDeltaMillis: number | undefined = undefined
   if (showTimeComparison && timeComparison) {
     const startMillis = getUTCDateTime(timeComparison.start).toMillis()
@@ -165,11 +152,11 @@ export const useFilteredTimeSeries = () => {
 
   useEffect(() => {
     const activityFeaturesLoaded = areDataviewsFeatureLoaded(activityFeatures)
-    if (activityFeaturesLoaded && simplifiedGeometry && areaInViewport) {
-      computeTimeseries(activityFeatures, simplifiedGeometry)
+    if (activityFeaturesLoaded && area?.geometry && areaInViewport) {
+      computeTimeseries(activityFeatures, area?.geometry)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activityFeatures, simplifiedGeometry, areaInViewport])
+  }, [activityFeatures, area?.geometry, areaInViewport])
 
   const layersTimeseriesFiltered = useMemo(() => {
     if (showTimeComparison) {
