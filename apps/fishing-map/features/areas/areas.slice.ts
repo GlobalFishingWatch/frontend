@@ -8,7 +8,7 @@ import {
   EndpointId,
 } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
+// import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import { RootState } from 'store'
 import { Bbox } from 'types'
@@ -51,6 +51,40 @@ export type FetchAreaDetailThunkParam = {
   areaName?: string
   simplify?: number
 }
+
+const getBbox = (geometry: ContextAreaFeatureGeom): Bbox => {
+  let minY
+  let maxY
+  let minX
+  let maxX
+  geometry.coordinates.forEach((polygon) => {
+    polygon.forEach((points) => {
+      points.forEach(([x, y]) => {
+        if (!minY || y < minY) minY = y
+        if (!maxY || y > maxY) maxY = y
+        if (!minX || x < minX) minX = x
+        if (!maxX || x > maxX) maxX = x
+      })
+    })
+  })
+
+  if (minX === -180 && maxX === 180) {
+    console.log('crosses', [minX, minY, maxX, maxY])
+    geometry.coordinates.forEach((polygon) => {
+      const polygonBbox = bbox({ type: 'Polygon', coordinates: polygon })
+      console.log('polygonBbox:', polygonBbox)
+      minX = 180
+      if (polygonBbox[0] === -180 && polygonBbox[2] + 360 > maxX) {
+        maxX = polygonBbox[2] + 360
+      }
+      if (polygonBbox[2] === 180 && polygonBbox[0] < minX) {
+        minX = polygonBbox[0]
+      }
+    })
+  }
+  return [minX, minY, maxX, maxY]
+}
+
 export const fetchAreaDetailThunk = createAsyncThunk(
   'areas/fetch',
   async (
@@ -69,7 +103,11 @@ export const fetchAreaDetailThunk = createAsyncThunk(
       query: simplify ? [{ id: 'simplify', value: simplify }] : [],
     })
     const area = await GFWAPI.fetch<ContextAreaFeature>(endpoint, { signal })
-    const bounds = wrapBBoxLongitudes(bbox(area.geometry) as Bbox)
+    console.log('area:', area)
+    // const bounds = wrapBBoxLongitudes(bbox(area.geometry) as Bbox)
+
+    const bounds = getBbox(area.geometry)
+    console.log('--> getBbox:', bounds)
     // Doing this once to avoid recomputing inside turf booleanPointInPolygon for each cell
     // https://github.com/Turfjs/turf/blob/master/packages/turf-boolean-point-in-polygon/index.ts#L63
     if (area.geometry) {
