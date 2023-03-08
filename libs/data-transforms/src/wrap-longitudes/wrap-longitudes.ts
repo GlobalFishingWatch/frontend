@@ -76,7 +76,7 @@ export function wrapGeometryBbox(geometry: MultiPolygon): [number, number, numbe
       if (polygonBbox[2] === 180 && (minX === -180 || polygonBbox[0] < (minX as number))) {
         minX = polygonBbox[0]
       }
-      if (polygonBbox[0] === -180 && (maxX === 180 || polygonBbox[2] > (maxX as number))) {
+      if (polygonBbox[0] === -180 && (maxX === 180 || polygonBbox[2] + 360 > (maxX as number))) {
         maxX = polygonBbox[2] + 360
       }
     })
