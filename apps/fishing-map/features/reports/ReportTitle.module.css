@@ -17,3 +17,9 @@
 .actions {
   white-space: nowrap;
 }
+
+@media print {
+  .actions {
+    display: none;
+  }
+}

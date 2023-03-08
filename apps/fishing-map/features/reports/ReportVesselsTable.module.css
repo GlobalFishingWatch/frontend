@@ -80,6 +80,10 @@
 }
 
 @media print {
+  .footer button {
+    display: none;
+  }
+
   .footer > div:last-child {
     display: none;
   }
