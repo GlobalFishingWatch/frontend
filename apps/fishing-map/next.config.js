@@ -17,6 +17,13 @@ const IS_PRODUCTION =
  * @type {import('@nrwl/next/plugins/with-nx').WithNxOptions}
  **/
 const nextConfig = {
+  // analysis[areaId]=8381
+  // analysis[bounds][0]=-32.898692458
+  // analysis[bounds][1]=-23.877185253
+  // analysis[bounds][2]=-25.294038966
+  // analysis[bounds][3]=-17.11870414
+  // analysis[sourceId]=context-layer-eez__eez-areas-eez-areas
+  // analysis[dsId]=public-eez-areas
   async rewrites() {
     return [
       // Rewrite everything to `pages/index`
@@ -24,21 +31,28 @@ const nextConfig = {
         source: '/:any*',
         destination: '/',
       },
+      // {
+      //   source: '/:any*',
+      //   destination: '/',
+      // },
     ]
   },
   async redirects() {
     return [
       // Redirect everything in / root to basePath if defined
-      ...(basePath !== ''
-        ? [
-            {
-              source: '/',
-              destination: basePath,
-              basePath: false,
-              permanent: false,
-            },
-          ]
-        : []),
+      {
+        source: '/:any((?!report$).*)',
+        destination: `${basePath}/fishing-activity/default-public/report/:datasetId`,
+        basePath: false,
+        permanent: false,
+        has: [
+          {
+            type: 'query',
+            key: 'analysis[dsId]',
+            value: '(?<datasetId>.*)', // Named capture group to match anything on the value
+          },
+        ],
+      },
     ]
   },
   nx: {
