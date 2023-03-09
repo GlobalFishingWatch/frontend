@@ -147,6 +147,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                         color: vesselInWorkspace ? vesselInWorkspace.config.color : '',
                       }}
                       loading={vesselIdLoading === vessel.vesselId}
+                      disabled={vesselIdLoading !== ''}
                       tooltip={
                         vesselInWorkspace
                           ? t(
