@@ -32,3 +32,8 @@
   filter: blur(5px);
   pointer-events: none;
 }
+
+.inputDateLabel {
+  display: flex;
+  align-items: center;
+}

@@ -8,6 +8,7 @@ import { selectTimeComparisonValues } from 'features/reports/reports.selectors'
 import { ReportActivityGraph } from 'types'
 import { selectReportActivityGraph } from 'features/app/app.selectors'
 import ReportActivityPlaceholder from 'features/reports/placeholders/ReportActivityPlaceholder'
+import ReportActivityPeriodComparison from 'features/reports/ReportActivityPeriodComparison'
 import ReportActivityEvolution from './ReportActivityEvolution'
 import ReportActivityBeforeAfter from './ReportActivityBeforeAfter'
 import styles from './ReportActivity.module.css'
@@ -20,8 +21,8 @@ export type ReportActivityProps = {
 
 const REPORT_BY_TYPE: Record<ReportActivityGraph, React.FC<ReportActivityProps> | null> = {
   evolution: ReportActivityEvolution,
-  periodComparison: ReportActivityBeforeAfter,
   beforeAfter: ReportActivityBeforeAfter,
+  periodComparison: ReportActivityPeriodComparison,
 }
 
 export default function ReportActivity() {

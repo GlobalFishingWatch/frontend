@@ -22,7 +22,7 @@ type ReportActivityProps = {
   start: string
   end: string
 }
-export default function ReportActivityGraph({ start, end, data }: ReportActivityProps) {
+export default function ReportActivityBeforeAfter({ start, end, data }: ReportActivityProps) {
   const { t } = useTranslation()
   const timeComparison = useSelector(selectReportTimeComparison)
   const dataviews = useSelector(selectActiveHeatmapDataviews)
