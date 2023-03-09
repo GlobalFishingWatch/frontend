@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next'
 import { batch, useSelector } from 'react-redux'
 import { uniqBy } from 'lodash'
 import { Button } from '@globalfishingwatch/ui-components'
+import { GFWAPI } from '@globalfishingwatch/api-client'
+import { APIPagination, Vessel } from '@globalfishingwatch/api-types'
 import { VesselWithDatasets } from 'features/search/search.slice'
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import { getEventLabel } from 'utils/analytics'
@@ -18,6 +20,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { selectUserGroupsPermissions } from 'features/user/user.selectors'
 import { ReportVesselWithDatasets } from 'features/reports/reports.selectors'
+import { getVesselInfoEndpoint } from 'features/map/map.slice'
 import styles from './VesselGroupAddButton.module.css'
 
 function VesselGroupAddButton({
@@ -39,20 +42,45 @@ function VesselGroupAddButton({
   }, [vesselGroupsOpen])
 
   const onAddToVesselGroup = useCallback(
-    (vesselGroupId?: string) => {
-      const vesselDatasets = uniqBy(
-        vessels.map(
-          (v) => (v as VesselWithDatasets)?.dataset || (v as ReportVesselWithDatasets)?.infoDataset
-        ),
-        'id'
-      )
-      const vesselsWithDataset = vessels.map((vessel) => ({
+    async (vesselGroupId?: string) => {
+      let vesselsWithDataset = vessels.map((vessel: VesselWithDatasets) => ({
         ...vessel,
-        id: (vessel as VesselWithDatasets)?.id || (vessel as ReportVesselWithDatasets)?.vesselId,
-        dataset:
-          (vessel as VesselWithDatasets)?.dataset?.id ||
-          (vessel as ReportVesselWithDatasets)?.infoDataset?.id,
+        id: vessel?.id,
+        dataset: vessel?.dataset?.id,
       }))
+      const reportVesselInfoDatasets = (vessels?.[0] as ReportVesselWithDatasets).infoDatasets
+      if (reportVesselInfoDatasets?.length) {
+        if (reportVesselInfoDatasets.length > 1) {
+          const vesselDatasets = uniqBy(
+            vessels.flatMap(
+              (v) =>
+                (v as VesselWithDatasets)?.dataset || (v as ReportVesselWithDatasets)?.infoDatasets
+            ),
+            'id'
+          )
+          const vesselIds = (vessels as ReportVesselWithDatasets[]).map((vessel) => vessel.vesselId)
+          const vesselsInfoUrl = getVesselInfoEndpoint(vesselDatasets, vesselIds)
+          const apiVessel = await GFWAPI.fetch<APIPagination<Vessel>>(vesselsInfoUrl).then(
+            (r) => r?.entries || []
+          )
+          vesselsWithDataset = apiVessel.map((vessel) => ({
+            ...vessel,
+            id: vessel.id,
+            dataset: vessel.dataset,
+          }))
+        } else {
+          vesselsWithDataset = vessels.map((vessel: ReportVesselWithDatasets) => ({
+            ...vessel,
+            id: vessel.vesselId,
+            flag: vessel.flag,
+            shipname: vessel.shipName,
+            firstTransmissionDate: vessel.firstTransmissionDate,
+            lastTransmissionDate: vessel.lastTransmissionDate,
+            dataset: vessel.infoDatasets[0]?.id,
+          }))
+        }
+      }
+      console.log(vesselsWithDataset)
       if (vesselsWithDataset?.length) {
         batch(() => {
           if (vesselGroupId) {
@@ -70,7 +98,7 @@ function VesselGroupAddButton({
           dispatch(setVesselGroupsModalOpen(true))
         })
       } else {
-        console.warn('No related activity datasets founds for', vesselDatasets)
+        console.warn('No related activity datasets founds for', vesselsWithDataset)
       }
     },
     [dispatch, vessels]
