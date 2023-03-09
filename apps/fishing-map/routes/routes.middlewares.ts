@@ -71,39 +71,40 @@ export const routerWorkspaceMiddleware: Middleware =
   ({ getState, dispatch }: { getState: () => RootState; dispatch: Dispatch }) =>
   (next) =>
   (action: UpdateQueryParamsAction) => {
-    const { prev } = getState().location
-    const { lastVisited } = getState().workspace
-    const routesToSaveWorkspace = Object.keys(routesMap).filter(
-      (key) => !WORKSPACE_ROUTES.includes(key)
-    )
-    const comesFromWorkspacesRoute = WORKSPACE_ROUTES.includes(prev.type)
-    const isReportLocation = action.type === REPORT
-    if (
-      routesToSaveWorkspace.includes(action.type) &&
-      (comesFromWorkspacesRoute || isReportLocation) &&
-      !lastVisited
-    ) {
-      if (isReportLocation) {
-        dispatch(
-          setLastWorkspaceVisited({
-            type: WORKSPACE,
-            query: cleanReportQuery(action.query),
-            payload: cleanReportPayload(action.payload),
-            replaceQuery: true,
-          })
-        )
-      } else {
-        dispatch(
-          setLastWorkspaceVisited({
-            type: prev.type,
-            query: prev.query,
-            payload: prev.payload,
-            replaceQuery: true,
-          })
-        )
+    const routesActions = Object.keys(routesMap)
+    // check if action type matches a route type
+    const isRouterAction = routesActions.includes(action.type)
+    if (isRouterAction) {
+      const { prev } = getState().location
+      const { lastVisited } = getState().workspace
+      const routesToSaveWorkspace = Object.keys(routesMap).filter(
+        (key) => !WORKSPACE_ROUTES.includes(key)
+      )
+      const comesFromWorkspacesRoute = WORKSPACE_ROUTES.includes(prev.type)
+      const isReportLocation = action.type === REPORT
+      if (routesToSaveWorkspace.includes(action.type)) {
+        if (isReportLocation) {
+          dispatch(
+            setLastWorkspaceVisited({
+              type: WORKSPACE,
+              query: cleanReportQuery(action.query),
+              payload: cleanReportPayload(action.payload),
+              replaceQuery: true,
+            })
+          )
+        } else if (comesFromWorkspacesRoute && !lastVisited) {
+          dispatch(
+            setLastWorkspaceVisited({
+              type: prev.type,
+              query: prev.query,
+              payload: prev.payload,
+              replaceQuery: true,
+            })
+          )
+        }
+      } else if (WORKSPACE_ROUTES.includes(action.type) && lastVisited) {
+        dispatch(setLastWorkspaceVisited(undefined))
       }
-    } else if (WORKSPACE_ROUTES.includes(action.type) && lastVisited) {
-      // dispatch(setLastWorkspaceVisited(undefined))
     }
     next(action)
   }
