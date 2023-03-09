@@ -7,42 +7,41 @@ export interface Authorization {
 }
 
 export interface Vessel {
-  id: string
-  flag: string
-  shipname: string
-  firstTransmissionDate: string
-  lastTransmissionDate: string
-  dataset?: string
-  imo?: string
-  mmsi?: string
-  callsign?: string
-  fleet?: string
-  casco?: string
-  matricula?: string
-  nationalId?: string
-  origin?: string
-  type?: string
-  geartype?: string
-  length?: string
-  depth?: string
-  grossTonnage?: string
-  owner?: string
-  operator?: string
-  builtYear?: string
   authorizations?: Authorization[]
-  registeredGearType?: string
+  builtYear?: string
+  callsign?: string
+  casco?: string
+  dataset?: string
+  depth?: string
+  firstTransmissionDate: string
+  flag: string
+  fleet?: string
+  geartype?: string
+  grossTonnage?: string
+  id: string
   imageList?: string[]
-  years?: number[]
+  imo?: string
+  lastTransmissionDate: string
+  length?: string
+  matricula?: string
+  mmsi?: string
+  nationalId?: string
+  operator?: string
+  origin?: string
+  owner?: string
   posCount?: number
+  registeredGearType?: string
+  shipname: string
+  type?: string
+  years?: number[]
 }
 
 export interface VesselSearch extends Vessel {
   dataset: string
   source: string // Label of the dataset
   vesselMatchId: string
-
 }
 
 export interface RelatedVesselSearchMerged extends VesselSearch {
-  relatedVessels: VesselSearch[],
+  relatedVessels: VesselSearch[]
 }

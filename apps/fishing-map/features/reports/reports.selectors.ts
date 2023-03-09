@@ -35,10 +35,13 @@ import { selectReportVesselsData } from './reports.slice'
 export const EMPTY_API_VALUES = ['NULL', undefined, '']
 export const MAX_CATEGORIES = 5
 
-export type ReportVesselWithDatasets = Partial<ReportVessel> & {
-  category: DataviewCategory
+export type ReportVesselWithMeta = ReportVessel & {
   activityDatasetId: string
-  infoDatasets?: Dataset[]
+  category: DataviewCategory
+}
+export type ReportVesselWithDatasets = Partial<ReportVessel> & {
+  infoDataset?: Dataset
+  trackDataset?: Dataset
 }
 
 export const selectReportAreaIds = createSelector(
@@ -50,7 +53,7 @@ export const selectReportAreaIds = createSelector(
 
 export const selectReportActivityFlatten = createSelector(
   [selectReportVesselsData, selectActiveTemporalgridDataviews],
-  (reportDatasets, dataviews): ReportVesselWithDatasets[] => {
+  (reportDatasets, dataviews): ReportVesselWithMeta[] => {
     if (!reportDatasets?.length) return null
 
     return reportDatasets.flatMap((dataset) =>
@@ -74,7 +77,7 @@ export const selectReportActivityFlatten = createSelector(
               : vessel.shipName,
             activityDatasetId: datasetId,
             category,
-          } as ReportVesselWithDatasets
+          } as ReportVesselWithMeta
         })
       })
     )
@@ -148,20 +151,18 @@ export const selectReportVesselsList = createSelector(
     return Object.values(groupBy(vessels, 'vesselId'))
       .flatMap((vesselActivity) => {
         if (vesselActivity[0]?.category !== reportCategory) return []
-        const activityDataset = datasets.find((d) => d.id === vesselActivity[0]?.activityDatasetId)
-        const infoDatasetIds = (
-          getRelatedDatasetsByType(activityDataset, DatasetTypes.Vessels) || []
-        ).map((d) => d.id)
-        const infoDatasets = datasets.filter((d) => infoDatasetIds.includes(d.id))
+        const infoDataset = datasets.find((d) => vesselActivity[0].dataset === d.id)
+        const trackDatasetId = getRelatedDatasetsByType(infoDataset, DatasetTypes.Tracks)?.[0]?.id
+        const trackDataset = datasets.find((d) => d.id === trackDatasetId)
         return {
-          activityDatasetId: vesselActivity[0]?.activityDatasetId,
           vesselId: vesselActivity[0]?.vesselId,
           shipName: vesselActivity[0]?.shipName,
           mmsi: vesselActivity[0]?.mmsi,
           flag: vesselActivity[0]?.flag,
           geartype: vesselActivity[0]?.geartype,
           hours: sumBy(vesselActivity, 'hours'),
-          infoDatasets,
+          infoDataset,
+          trackDataset,
         } as ReportVesselWithDatasets
       })
       .sort((a, b) => b.hours - a.hours)

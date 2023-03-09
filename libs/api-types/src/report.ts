@@ -19,6 +19,7 @@ export type Report = {
 
 export type ReportVessel = {
   callsign: string
+  dataset: string
   date: string
   firstTransmissionDate: string
   flag: string
