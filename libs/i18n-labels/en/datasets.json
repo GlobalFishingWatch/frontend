@@ -670,7 +670,7 @@
     }
   },
   "private-indonesia-pelagic-fishing-effort": {
-    "name": "Indonesia Pelagic",
+    "name": "Indonesia Pelagic (Pilot)",
     "description": "Indonesia Pelagic Fishing Effort Private Data",
     "schema": {
       "lat": "lat",
@@ -691,7 +691,7 @@
     }
   },
   "private-indonesia-pelagic-presence": {
-    "name": "Indonesia Pelagic",
+    "name": "Indonesia Pelagic (Pilot)",
     "description": "Pelagic Presence",
     "schema": {
       "lat": "lat",
@@ -1970,7 +1970,7 @@
     }
   },
   "public-indonesia-pelagic-fishing-effort": {
-    "name": "Indonesia Pelagic",
+    "name": "Indonesia Pelagic (Pilot)",
     "description": "Indonesia Pelagic Fishing Effort Public Data",
     "schema": {
       "lat": "lat",
@@ -1990,7 +1990,7 @@
     }
   },
   "public-indonesia-pelagic-presence": {
-    "name": "Indonesia Pelagic",
+    "name": "Indonesia Pelagic (Pilot)",
     "description": "This layer of Global Fishing Watch uses data provided by Rare, Aruna and AP2HI. The data is collected using Pelagic devices that tracks location and speed. The information shown represents the vessel presence. The presence is determined by taking one position per hour transmitted by the vessel's tracking device.",
     "schema": {
       "lat": "lat",
