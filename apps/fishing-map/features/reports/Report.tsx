@@ -54,7 +54,6 @@ export default function Report() {
   const filteredCategoryTabs = categoryTabs.filter((tab) =>
     dataviewCategories.includes(tab.id as DataviewCategory)
   )
-
   const { status: reportStatus, error: statusError } = useFetchReportVessel()
   const { data: areaDetail } = useFetchReportArea()
   const workspaceStatus = useSelector(selectWorkspaceStatus)

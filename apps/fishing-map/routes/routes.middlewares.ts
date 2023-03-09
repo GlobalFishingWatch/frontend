@@ -46,6 +46,26 @@ export const routerQueryMiddleware: Middleware =
     }
   }
 
+function cleanReportPayload(params: Record<string, any>) {
+  const { areaId, datasetId, ...rest } = params || {}
+  return rest
+}
+
+function cleanReportQuery(query: QueryParams) {
+  const {
+    reportCategory,
+    reportTimeComparison,
+    reportActivityGraph,
+    reportVesselFilter,
+    reportVesselGraph,
+    reportVesselPage,
+    reportAreaBounds,
+    reportAreaSource,
+    ...rest
+  } = query || {}
+  return rest
+}
+
 // This middleware is going to save the state of the workspace to back
 export const routerWorkspaceMiddleware: Middleware =
   ({ getState, dispatch }: { getState: () => RootState; dispatch: Dispatch }) =>
@@ -65,14 +85,25 @@ export const routerWorkspaceMiddleware: Middleware =
     ) {
       if (isReportLocation) {
         dispatch(
-          setLastWorkspaceVisited({ type: WORKSPACE, query: action.query, payload: action.payload })
+          setLastWorkspaceVisited({
+            type: WORKSPACE,
+            query: cleanReportQuery(action.query),
+            payload: cleanReportPayload(action.payload),
+            replaceQuery: true,
+          })
         )
       } else {
-        const { type, query, payload } = prev
-        dispatch(setLastWorkspaceVisited({ type, query, payload }))
+        dispatch(
+          setLastWorkspaceVisited({
+            type: prev.type,
+            query: prev.query,
+            payload: prev.payload,
+            replaceQuery: true,
+          })
+        )
       }
     } else if (WORKSPACE_ROUTES.includes(action.type) && lastVisited) {
-      dispatch(setLastWorkspaceVisited(undefined))
+      // dispatch(setLastWorkspaceVisited(undefined))
     }
     next(action)
   }

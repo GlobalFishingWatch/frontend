@@ -45,7 +45,7 @@ import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook
 import { getUTCDateTime } from 'utils/dates'
 import { selectWorkspaceStatus } from './workspace.selectors'
 
-type LastWorkspaceVisited = { type: string; payload: any; query: any }
+type LastWorkspaceVisited = { type: string; payload: any; query: any; replaceQuery?: boolean }
 
 interface WorkspaceSliceState {
   status: AsyncReducerStatus

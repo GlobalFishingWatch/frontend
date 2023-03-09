@@ -82,7 +82,6 @@ const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) => {
         },
         query: {
           ...query,
-          reportVesselPage: 0,
           reportAreaSource: feature.source,
           ...(bounds && { reportAreaBounds: bounds }),
           ...(!isSidebarOpen && { sidebarOpen: true }),
