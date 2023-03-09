@@ -2,9 +2,16 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { CSVLink } from 'react-csv'
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
-import { DatasetTypes, DataviewCategory, DataviewInstance } from '@globalfishingwatch/api-types'
+import {
+  APIPagination,
+  DatasetTypes,
+  DataviewCategory,
+  DataviewInstance,
+  Vessel,
+} from '@globalfishingwatch/api-types'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { getVesselDataviewInstance, getVesselInWorkspace } from 'features/dataviews/dataviews.utils'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
@@ -18,6 +25,8 @@ import {
   selectReportVesselFilter,
   selectTimeRange,
 } from 'features/app/app.selectors'
+import { getVesselInfoEndpoint } from 'features/map/map.slice'
+import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
   ReportVesselWithDatasets,
   selectReportDownloadVessels,
@@ -35,9 +44,11 @@ type ReportVesselTableProps = {
 }
 
 export default function ReportVesselsTable({ activityUnit, reportName }: ReportVesselTableProps) {
+  const [vesselIdLoading, setVesselIdLoading] = useState('')
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const allVessels = useSelector(selectReportVesselsList)
+  const allDatasets = useSelector(selectAllDatasets)
   const allFilteredVessels = useSelector(selectReportVesselsFiltered)
   const downloadVessels = useSelector(selectReportDownloadVessels)
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
@@ -49,7 +60,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
   const isDetections = reportCategory === DataviewCategory.Detections
   const { start, end } = useSelector(selectTimeRange)
 
-  const onVesselClick = (
+  const onVesselClick = async (
     ev: React.MouseEvent<Element, MouseEvent>,
     vessel: ReportVesselWithDatasets
   ) => {
@@ -58,20 +69,37 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
       deleteDataviewInstance(vesselInWorkspace.id)
       return
     }
-    const vesselEventsDatasets = getRelatedDatasetsByType(vessel.infoDataset, DatasetTypes.Events)
-    const eventsDatasetsId =
-      vesselEventsDatasets && vesselEventsDatasets?.length
-        ? vesselEventsDatasets.map((d) => d.id)
-        : []
-    const vesselDataviewInstance: DataviewInstance = getVesselDataviewInstance(
-      { id: vessel.vesselId },
-      {
-        trackDatasetId: vessel.trackDataset?.id,
-        infoDatasetId: vessel.infoDataset?.id,
-        ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
+    const vesselsInfoUrl = getVesselInfoEndpoint(vessel.infoDatasets, [vessel.vesselId])
+    if (vesselsInfoUrl) {
+      setVesselIdLoading(vessel.vesselId)
+      try {
+        const vesselsInfoResponse = await GFWAPI.fetch<APIPagination<Vessel>>(vesselsInfoUrl)
+        const apiVessel = vesselsInfoResponse?.entries?.[0]
+        if (apiVessel) {
+          const infoDataset = allDatasets.find((d) => d.id === apiVessel.dataset)
+          const trackDatasetId = getRelatedDatasetsByType(infoDataset, DatasetTypes.Tracks)?.[0]?.id
+          const trackDataset = allDatasets.find((d) => d.id === trackDatasetId)
+          const vesselEventsDatasets = getRelatedDatasetsByType(infoDataset, DatasetTypes.Events)
+          const eventsDatasetsId =
+            vesselEventsDatasets && vesselEventsDatasets?.length
+              ? vesselEventsDatasets.map((d) => d.id)
+              : []
+          const vesselDataviewInstance: DataviewInstance = getVesselDataviewInstance(
+            { id: apiVessel.id },
+            {
+              infoDatasetId: infoDataset.id,
+              trackDatasetId: trackDataset?.id,
+              ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
+            }
+          )
+          upsertDataviewInstance(vesselDataviewInstance)
+          setVesselIdLoading('')
+        }
+      } catch (e) {
+        console.warn()
+        setVesselIdLoading('')
       }
-    )
-    upsertDataviewInstance(vesselDataviewInstance)
+    }
   }
 
   const onPrevPageClick = () => {
@@ -118,6 +146,8 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                       style={{
                         color: vesselInWorkspace ? vesselInWorkspace.config.color : '',
                       }}
+                      loading={vesselIdLoading === vessel.vesselId}
+                      disabled={vesselIdLoading !== ''}
                       tooltip={
                         vesselInWorkspace
                           ? t(

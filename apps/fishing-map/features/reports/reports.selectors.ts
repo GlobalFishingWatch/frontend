@@ -36,10 +36,9 @@ export const EMPTY_API_VALUES = ['NULL', undefined, '']
 export const MAX_CATEGORIES = 5
 
 export type ReportVesselWithDatasets = Partial<ReportVessel> & {
-  datasetId: string
   category: DataviewCategory
-  infoDataset?: Dataset
-  trackDataset?: Dataset
+  activityDatasetId: string
+  infoDatasets?: Dataset[]
 }
 
 export const selectReportAreaIds = createSelector(
@@ -73,9 +72,9 @@ export const selectReportActivityFlatten = createSelector(
             shipName: EMPTY_API_VALUES.includes(vessel.shipName)
               ? t('common.unknownVessel', 'Unknown Vessel')
               : vessel.shipName,
-            datasetId,
+            activityDatasetId: datasetId,
             category,
-          }
+          } as ReportVesselWithDatasets
         })
       })
     )
@@ -149,21 +148,20 @@ export const selectReportVesselsList = createSelector(
     return Object.values(groupBy(vessels, 'vesselId'))
       .flatMap((vesselActivity) => {
         if (vesselActivity[0]?.category !== reportCategory) return []
-        const activityDataset = datasets.find((d) => d.id === vesselActivity[0]?.datasetId)
-        const infoDatasetId = getRelatedDatasetsByType(activityDataset, DatasetTypes.Vessels)?.[0]
-          ?.id
-        const infoDataset = datasets.find((d) => d.id === infoDatasetId)
-        const trackDatasetId = getRelatedDatasetsByType(infoDataset, DatasetTypes.Tracks)?.[0]?.id
-        const trackDataset = datasets.find((d) => d.id === trackDatasetId)
+        const activityDataset = datasets.find((d) => d.id === vesselActivity[0]?.activityDatasetId)
+        const infoDatasetIds = (
+          getRelatedDatasetsByType(activityDataset, DatasetTypes.Vessels) || []
+        ).map((d) => d.id)
+        const infoDatasets = datasets.filter((d) => infoDatasetIds.includes(d.id))
         return {
+          activityDatasetId: vesselActivity[0]?.activityDatasetId,
           vesselId: vesselActivity[0]?.vesselId,
           shipName: vesselActivity[0]?.shipName,
           mmsi: vesselActivity[0]?.mmsi,
           flag: vesselActivity[0]?.flag,
           geartype: vesselActivity[0]?.geartype,
           hours: sumBy(vesselActivity, 'hours'),
-          infoDataset: infoDataset,
-          trackDataset: trackDataset,
+          infoDatasets,
         } as ReportVesselWithDatasets
       })
       .sort((a, b) => b.hours - a.hours)
