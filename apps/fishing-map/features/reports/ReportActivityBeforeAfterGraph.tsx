@@ -58,8 +58,9 @@ const formatTooltipValue = (value: number, payload: any, unit: string) => {
 }
 
 const formatDateTicks = (tick: number, timeComparison: ReportActivityTimeComparison) => {
+  if (!timeComparison) return ''
   const dtTick = getUTCDateTime(tick)
-  const dtStart = getUTCDateTime(timeComparison?.compareStart)
+  const dtStart = getUTCDateTime(timeComparison.compareStart)
   if (tick !== dtStart?.toMillis()) {
     const diff = dtTick.diff(dtStart, timeComparison.durationType as any).toObject()
     const diffValue = Math.round(diff[timeComparison.durationType as any])
@@ -136,6 +137,9 @@ const ReportActivityBeforeAfterGraph: React.FC<{
   }, [timeseries])
 
   const ticks = useMemo(() => {
+    if (!timeComparison) {
+      return []
+    }
     const finalTicks = [dtStart?.toMillis()]
     const FRACTION_OF_AXIS_WITHOUT_TICKS = 0.35
     const startTicksAt = Math.ceil(timeComparison.duration * FRACTION_OF_AXIS_WITHOUT_TICKS)

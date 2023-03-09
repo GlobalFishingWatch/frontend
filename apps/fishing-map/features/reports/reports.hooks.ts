@@ -4,7 +4,6 @@ import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { UserData } from '@globalfishingwatch/api-types'
-import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectLocationDatasetId, selectLocationAreaId } from 'routes/routes.selectors'
 import { selectActiveReportDataviews, selectTimeRange } from 'features/app/app.selectors'
@@ -39,9 +38,7 @@ export function useReportAreaCenter(bounds: Bbox) {
   const map = useMapInstance()
   return useMemo(() => {
     if (!bounds || !map) return null
-
-    const wrapBbox = wrapBBoxLongitudes(bounds)
-    const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(map, wrapBbox, {
+    const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(map, bounds, {
       padding: FIT_BOUNDS_REPORT_PADDING,
     })
     return { latitude, longitude, zoom }

@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
-import bbox from '@turf/bbox'
 import { kebabCase, memoize, uniqBy } from 'lodash'
+import { MultiPolygon } from 'geojson'
 import {
   ContextAreaFeature,
   ContextAreaFeatureGeom,
@@ -8,8 +8,8 @@ import {
   EndpointId,
 } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
+import { wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import { RootState } from 'store'
 import { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -51,6 +51,7 @@ export type FetchAreaDetailThunkParam = {
   areaName?: string
   simplify?: number
 }
+
 export const fetchAreaDetailThunk = createAsyncThunk(
   'areas/fetch',
   async (
@@ -69,7 +70,7 @@ export const fetchAreaDetailThunk = createAsyncThunk(
       query: simplify ? [{ id: 'simplify', value: simplify }] : [],
     })
     const area = await GFWAPI.fetch<ContextAreaFeature>(endpoint, { signal })
-    const bounds = wrapBBoxLongitudes(bbox(area.geometry) as Bbox)
+    const bounds = wrapGeometryBbox(area.geometry as MultiPolygon)
     // Doing this once to avoid recomputing inside turf booleanPointInPolygon for each cell
     // https://github.com/Turfjs/turf/blob/master/packages/turf-boolean-point-in-polygon/index.ts#L63
     if (area.geometry) {
