@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useLayoutEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
@@ -42,7 +42,7 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
     [t]
   )
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (timeComparison) {
       if (activityType === 'beforeAfter') {
         // make sure start is properly recalculated again in beforeAfter mode when coming from another mode

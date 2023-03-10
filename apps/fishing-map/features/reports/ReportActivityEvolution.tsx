@@ -17,7 +17,6 @@ import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
 import { toFixed } from 'utils/shared'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { ReportActivityProps } from 'features/reports/ReportActivity'
-import { EvolutionGraphData } from 'features/reports/reports-timeseries.hooks'
 import { formatEvolutionData } from 'features/reports/reports-timeseries.utils'
 import styles from './ReportActivityEvolution.module.css'
 import { tickFormatter } from './reports.utils'
@@ -35,19 +34,6 @@ type ReportGraphTooltipProps = {
   }[]
   label: number
   timeChunkInterval: Interval
-}
-
-export interface ReportSublayerGraph {
-  id: string
-  legend: {
-    color?: string
-    unit?: string
-  }
-}
-export interface ReportGraphProps {
-  timeseries: EvolutionGraphData[]
-  sublayers: ReportSublayerGraph[]
-  interval: Interval
 }
 
 const formatTooltipValue = (value: number, payload: any, unit: string) => {
