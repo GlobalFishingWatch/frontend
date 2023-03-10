@@ -113,11 +113,12 @@ const ReportActivityBeforeAfterGraph: React.FC<{
   const timeComparison = useSelector(selectReportTimeComparison)
 
   const dtStart = useMemo(() => {
+    if (!timeComparison?.compareStart) return null
     return getUTCDateTime(timeComparison?.compareStart)
   }, [timeComparison?.compareStart])
 
   const range = useMemo(() => {
-    const values = timeseries?.flatMap(({ date, compareDate, min, max }) => {
+    const values = (timeseries || [])?.flatMap(({ date, compareDate, min, max }) => {
       return [
         {
           date: getUTCDateTime(date)?.toMillis(),
@@ -162,10 +163,12 @@ const ReportActivityBeforeAfterGraph: React.FC<{
   }, [timeComparison, dtStart])
 
   const unit = useMemo(() => {
-    return sublayers[0].legend.unit
+    return sublayers?.[0]?.legend?.unit
   }, [sublayers])
 
-  if (!range) return null
+  if (!start || !end || !range) {
+    return null
+  }
 
   return (
     <div className={styles.graph}>

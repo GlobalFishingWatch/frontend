@@ -129,7 +129,7 @@ const ReportActivityPeriodComparisonGraph: React.FC<{
   const timeComparison = useSelector(selectReportTimeComparison)
 
   const unit = useMemo(() => {
-    return sublayers[0].legend.unit
+    return sublayers?.[0]?.legend?.unit
   }, [sublayers])
 
   const dtLastDataUpdate = useMemo(() => {

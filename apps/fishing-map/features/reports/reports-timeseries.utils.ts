@@ -8,7 +8,7 @@ import {
   pickActiveTimeChunk,
   quantizeOffsetToDate,
 } from '@globalfishingwatch/layer-composer'
-import { ReportGraphProps, ReportSublayerGraph } from 'features/reports/ReportActivityEvolution'
+import { ReportGraphProps, ReportSublayerGraph } from 'features/reports/reports-timeseries.hooks'
 import { FilteredPolygons } from 'features/reports/reports-geo.utils'
 import { DateTimeSeries } from 'features/reports/reports.hooks'
 import { DataviewFeature } from 'features/map/map-sources.hooks'

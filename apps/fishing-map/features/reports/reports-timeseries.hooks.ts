@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo } from 'react'
 import { Polygon, MultiPolygon } from 'geojson'
 import { useSelector } from 'react-redux'
 import { atom, selector, useRecoilState } from 'recoil'
@@ -34,6 +34,7 @@ import {
   selectReportAreaIds,
   selectShowTimeComparison,
 } from 'features/reports/reports.selectors'
+import { ReportActivityGraph } from 'types'
 
 export interface EvolutionGraphData {
   date: string
@@ -49,10 +50,19 @@ export interface ReportSublayerGraph {
   }
 }
 
+export type ReportGraphMode = 'evolution' | 'time'
+
+export function getReportGraphMode(reportActivityGraph: ReportActivityGraph): ReportGraphMode {
+  return reportActivityGraph === 'beforeAfter' || reportActivityGraph === 'periodComparison'
+    ? 'time'
+    : 'evolution'
+}
+
 export interface ReportGraphProps {
   timeseries: EvolutionGraphData[]
   sublayers: ReportSublayerGraph[]
   interval: Interval
+  mode?: ReportGraphMode
 }
 
 export const mapTimeseriesAtom = atom<ReportGraphProps[] | undefined>({
@@ -103,7 +113,11 @@ export const useFilteredTimeSeries = () => {
   }
 
   const computeTimeseries = useCallback(
-    (layersWithFeatures: DataviewFeature[], geometry: Polygon | MultiPolygon) => {
+    (
+      layersWithFeatures: DataviewFeature[],
+      geometry: Polygon | MultiPolygon,
+      reportGraphMode: ReportGraphMode
+    ) => {
       const features = layersWithFeatures
         .map(({ chunksFeatures }) =>
           chunksFeatures
@@ -117,22 +131,18 @@ export const useFilteredTimeSeries = () => {
         showTimeComparison,
         compareDeltaMillis,
       })
-
-      setTimeseries(timeseries)
+      setTimeseries(timeseries.map((timeseries) => ({ ...timeseries, mode: reportGraphMode })))
     },
     [showTimeComparison, compareDeltaMillis, setTimeseries]
   )
 
-  const reportGraphChange =
-    reportGraph === 'beforeAfter' || reportGraph === 'periodComparison' ? 'time' : reportGraph
-  // const reportTimerangeChange =
-  //   reportGraphChange === 'time' ? `${timebarStart}-${timebarEnd}` : compareDeltaMillis
+  const reportGraphMode = getReportGraphMode(reportGraph)
 
   // We need to re calculate the timeseries when area or timerange changes
-  useEffect(() => {
+  useLayoutEffect(() => {
     setTimeseries(undefined)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [area?.id, reportGraphChange])
+  }, [area?.id, reportGraphMode])
 
   const activeSourceIdHash = activityFeatures
     .map(({ metadata }) => metadata?.timeChunks?.activeSourceId)
@@ -153,10 +163,17 @@ export const useFilteredTimeSeries = () => {
   useEffect(() => {
     const activityFeaturesLoaded = areDataviewsFeatureLoaded(activityFeatures)
     if (activityFeaturesLoaded && area?.geometry && areaInViewport) {
-      computeTimeseries(activityFeatures, area?.geometry)
+      if (reportGraphMode === 'time' && !timeComparison) {
+        if (timeseries) {
+          setTimeseries(undefined)
+        }
+        return
+      } else {
+        computeTimeseries(activityFeatures, area?.geometry, reportGraphMode)
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activityFeatures, area?.geometry, areaInViewport])
+  }, [activityFeatures, area?.geometry, areaInViewport, reportGraphMode, timeComparison])
 
   const layersTimeseriesFiltered = useMemo(() => {
     if (showTimeComparison) {

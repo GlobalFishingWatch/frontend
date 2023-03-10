@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import ReportActivityGraphSelector from 'features/reports/ReportActivityGraphSelector'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { ReportGraphProps, useFilteredTimeSeries } from 'features/reports/reports-timeseries.hooks'
+import {
+  getReportGraphMode,
+  ReportGraphProps,
+  useFilteredTimeSeries,
+} from 'features/reports/reports-timeseries.hooks'
 import { selectTimeComparisonValues } from 'features/reports/reports.selectors'
 import { ReportActivityGraph } from 'types'
 import { selectReportActivityGraph } from 'features/app/app.selectors'
@@ -24,7 +28,7 @@ const REPORT_BY_TYPE: Record<ReportActivityGraph, React.FC<ReportActivityProps> 
   beforeAfter: ReportActivityBeforeAfter,
   periodComparison: ReportActivityPeriodComparison,
 }
-
+const emptyGraphData = {} as ReportGraphProps
 export default function ReportActivity() {
   const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()
@@ -36,6 +40,8 @@ export default function ReportActivity() {
     [reportActivityGraph]
   )
   const { loading, layersTimeseriesFiltered } = useFilteredTimeSeries()
+  const reportGraphMode = getReportGraphMode(reportActivityGraph)
+  const isSameTimeseriesMode = layersTimeseriesFiltered?.[0]?.mode === reportGraphMode
 
   return (
     <div className={styles.container}>
@@ -50,7 +56,7 @@ export default function ReportActivity() {
           <ReportGraphComponent
             start={reportActivityGraph === 'evolution' ? start : timeComparisonValues?.start}
             end={reportActivityGraph === 'evolution' ? end : timeComparisonValues?.end}
-            data={layersTimeseriesFiltered?.[0]}
+            data={isSameTimeseriesMode ? layersTimeseriesFiltered?.[0] : emptyGraphData}
           />
         </Fragment>
       )}
