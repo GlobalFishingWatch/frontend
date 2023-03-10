@@ -106,7 +106,7 @@ export function useFetchReportArea() {
         fetchAreaDetailThunk({
           dataset: reportAreaDataset,
           areaId: areaId.toString(),
-          simplify: 1000,
+          simplify: 0.1,
         })
       )
     }
