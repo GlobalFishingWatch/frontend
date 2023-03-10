@@ -63,13 +63,23 @@ export const fetchAreaDetailThunk = createAsyncThunk(
     }: FetchAreaDetailThunkParam = {} as FetchAreaDetailThunkParam,
     { signal }
   ) => {
-    const endpoint = resolveEndpoint(dataset, {
+    const datasetConfig = {
       datasetId: dataset?.id,
       endpoint: EndpointId.ContextFeature,
       params: [{ id: 'id', value: areaId }],
+    }
+    const endpoint = resolveEndpoint(dataset, {
+      ...datasetConfig,
       query: simplify ? [{ id: 'simplify', value: simplify }] : [],
     })
-    const area = await GFWAPI.fetch<ContextAreaFeature>(endpoint, { signal })
+    let area = await GFWAPI.fetch<ContextAreaFeature>(endpoint, { signal })
+    if (!area.geometry) {
+      const endpointNoSimplified = resolveEndpoint(dataset, datasetConfig)
+      area = await GFWAPI.fetch<ContextAreaFeature>(endpointNoSimplified, { signal })
+      if (!area.geometry) {
+        console.warn('Area has no geometry, even calling the endpoint without simplification')
+      }
+    }
     const bounds = wrapGeometryBbox(area.geometry as MultiPolygon)
     // Doing this once to avoid recomputing inside turf booleanPointInPolygon for each cell
     // https://github.com/Turfjs/turf/blob/master/packages/turf-boolean-point-in-polygon/index.ts#L63
