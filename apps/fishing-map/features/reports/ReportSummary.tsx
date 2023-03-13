@@ -44,13 +44,14 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
     const datasetTitle = sameTitleDataviews
       ? datasetTitles?.[0]
       : category === DataviewCategory.Activity
-      ? t(`common.activity`, 'Activity').toLowerCase()
+      ? `${t('common.of', 'of')} <strong>${t(`common.activity`, 'Activity').toLowerCase()}</strong>`
       : undefined
+
     if (reportStatus === AsyncReducerStatus.Finished) {
       if (reportHours) {
         return t('analysis.summary', {
           defaultValue:
-            '<strong>{{vessels}} $t(common.vessel_other)</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
+            '<strong>{{vessels}} $t(common.vessel_other)</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> {{activityType}} in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
           vessels: formatI18nNumber(reportVessels || 0, {
             locale: i18n.language as Locale,
           }),
