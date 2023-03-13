@@ -36,13 +36,15 @@ export const EMPTY_API_VALUES = ['NULL', undefined, '']
 export const MAX_CATEGORIES = 5
 
 export type ReportVesselWithMeta = ReportVessel & {
+  sourceColor: string
   activityDatasetId: string
   category: DataviewCategory
 }
-export type ReportVesselWithDatasets = Partial<ReportVessel> & {
-  infoDataset?: Dataset
-  trackDataset?: Dataset
-}
+export type ReportVesselWithDatasets = Partial<ReportVessel> &
+  Pick<ReportVesselWithMeta, 'sourceColor'> & {
+    infoDataset?: Dataset
+    trackDataset?: Dataset
+  }
 
 export const selectReportAreaIds = createSelector(
   [selectLocationAreaId, selectLocationDatasetId],
@@ -58,9 +60,7 @@ export const selectReportActivityFlatten = createSelector(
 
     return reportDatasets.flatMap((dataset) =>
       Object.entries(dataset).flatMap(([datasetId, vessels]) => {
-        const category = dataviews.find((dataview) =>
-          dataview.config.datasets.includes(datasetId)
-        )?.category
+        const dataview = dataviews.find((dataview) => dataview.config.datasets.includes(datasetId))
         return (vessels || []).flatMap((vessel) => {
           if (
             EMPTY_API_VALUES.includes(vessel.flag) &&
@@ -76,7 +76,8 @@ export const selectReportActivityFlatten = createSelector(
               ? t('common.unknownVessel', 'Unknown Vessel')
               : vessel.shipName,
             activityDatasetId: datasetId,
-            category,
+            category: dataview?.category,
+            sourceColor: dataview?.config?.color,
           } as ReportVesselWithMeta
         })
       })
@@ -163,6 +164,7 @@ export const selectReportVesselsList = createSelector(
           hours: sumBy(vesselActivity, 'hours'),
           infoDataset,
           trackDataset,
+          sourceColor: vesselActivity[0]?.sourceColor,
         } as ReportVesselWithDatasets
       })
       .sort((a, b) => b.hours - a.hours)

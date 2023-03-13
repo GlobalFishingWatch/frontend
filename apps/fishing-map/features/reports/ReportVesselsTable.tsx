@@ -132,6 +132,12 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                   </div>
                 )}
                 <div className={cx({ [styles.border]: !isLastRow })}>
+                  {vessel.sourceColor && (
+                    <span
+                      className={styles.dot}
+                      style={{ backgroundColor: vessel.sourceColor }}
+                    ></span>
+                  )}
                   {formatInfoField(vessel.shipName, 'name')}
                 </div>
                 {!isDetections && (
