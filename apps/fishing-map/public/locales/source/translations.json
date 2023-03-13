@@ -251,7 +251,7 @@
     "mmsiNotSupported": "The datasets selected don't support grouping by MMSI",
     "monthly": "Month",
     "monthlyNotAvailable": "Your time range is shorter than 1 month",
-    "moreOptions": "More options",
+    "downloadOptions": "Download options",
     "spatialResolution": "Spatial resolution",
     "temporalResolution": "Group time by",
     "timeRange": "Time Range",
