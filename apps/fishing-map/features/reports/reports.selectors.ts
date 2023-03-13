@@ -34,6 +34,7 @@ import { selectReportVesselsData } from './reports.slice'
 
 export const EMPTY_API_VALUES = ['NULL', undefined, '']
 export const MAX_CATEGORIES = 5
+export const OTHERS_CATEGORY_LABEL = 'OTHERS'
 
 export type ReportVesselWithMeta = ReportVessel & {
   sourceColor: string
@@ -130,17 +131,46 @@ export const selectReportVesselsGraphData = createSelector(
         return sum(dataviewIds.map((d) => b[d])) - sum(dataviewIds.map((d) => a[d]))
       })
 
-    if (distributionKeys.length <= MAX_CATEGORIES) return data
+    return { distributionKeys, data }
+  }
+)
 
-    const top = data.slice(0, MAX_CATEGORIES)
-    const rest = data.slice(MAX_CATEGORIES)
+export const selectReportVesselsGraphDataGrouped = createSelector(
+  [selectReportVesselsGraphData, selectActiveReportDataviews],
+  (reportGraph, dataviews) => {
+    if (!reportGraph?.data?.length) return null
+    if (reportGraph?.distributionKeys.length <= MAX_CATEGORIES) return reportGraph.data
+    const dataviewIds = dataviews.map((d) => d.id)
+    const top = reportGraph.data.slice(0, MAX_CATEGORIES)
+    const rest = reportGraph.data.slice(MAX_CATEGORIES)
     const others = {
-      name: t('analysis.others', 'Others'),
+      name: OTHERS_CATEGORY_LABEL,
       ...Object.fromEntries(
         dataviewIds.map((dataview) => [dataview, sum(rest.map((key) => key[dataview]))])
       ),
     }
     return [...top, others]
+  }
+)
+const defaultOthersLabel = []
+export const selectReportVesselsGraphDataOthers = createSelector(
+  [selectReportVesselsGraphData],
+  (reportGraph) => {
+    if (!reportGraph?.data?.length) return null
+    if (reportGraph?.distributionKeys.length <= MAX_CATEGORIES) return defaultOthersLabel
+    const others = reportGraph.data.slice(MAX_CATEGORIES)
+    return reportGraph.distributionKeys
+      .flatMap((key) => {
+        const other = others.find((o) => o.name === key)
+        if (!other) return []
+        const { name, ...rest } = other
+        return { name, value: sum(Object.values(rest)) }
+      })
+      .sort((a, b) => {
+        if (EMPTY_API_VALUES.includes(a.name)) return 1
+        if (EMPTY_API_VALUES.includes(b.name)) return -1
+        return b.value - a.value
+      })
   }
 )
 

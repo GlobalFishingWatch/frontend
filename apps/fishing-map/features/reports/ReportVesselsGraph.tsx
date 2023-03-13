@@ -2,11 +2,17 @@ import React, { Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts'
 import { useTranslation } from 'react-i18next'
+import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
 import { selectActiveReportDataviews, selectReportVesselGraph } from 'features/app/app.selectors'
 import { ReportVesselGraph } from 'types'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import styles from './ReportVesselsGraph.module.css'
-import { EMPTY_API_VALUES, selectReportVesselsGraphData } from './reports.selectors'
+import {
+  EMPTY_API_VALUES,
+  OTHERS_CATEGORY_LABEL,
+  selectReportVesselsGraphDataGrouped,
+  selectReportVesselsGraphDataOthers,
+} from './reports.selectors'
 
 type ReportGraphTooltipProps = {
   active: boolean
@@ -61,15 +67,26 @@ const CustomTick = (props: any) => {
   const { x, y, payload, width, visibleTicksCount } = props
   const { t } = useTranslation()
   const selectedReportVesselGraph = useSelector(selectReportVesselGraph)
-  let label = payload.value
-  if (EMPTY_API_VALUES.includes(label)) {
-    label = t('common.unknown', 'Unknown')
-  } else {
-    label =
-      selectedReportVesselGraph === 'geartype'
-        ? `${t(`vessel.gearTypes.${label}` as any, label)}`
-        : t(`flags:${label}` as any, label)
+  const othersData = useSelector(selectReportVesselsGraphDataOthers)
+
+  const getTickLabel = (label: string) => {
+    if (EMPTY_API_VALUES.includes(label)) return t('analysis.unknown', 'Unknown')
+    return selectedReportVesselGraph === 'geartype'
+      ? `${t(`vessel.gearTypes.${label}` as any, label)}`
+      : t(`flags:${label}` as any, label)
   }
+
+  const isOtherCategory = payload.value === OTHERS_CATEGORY_LABEL
+  const tooltip = isOtherCategory ? (
+    <ul>
+      {othersData.map(({ name, value }) => (
+        <li>{`${getTickLabel(name)}: ${value}`}</li>
+      ))}
+    </ul>
+  ) : (
+    ''
+  )
+  const label = isOtherCategory ? t('analysis.others', 'Others') : getTickLabel(payload.value)
   const labelChunks = label.split(' ')
   let labelChunksClean = [labelChunks[0]]
   labelChunks.slice(1).forEach((chunk) => {
@@ -81,19 +98,21 @@ const CustomTick = (props: any) => {
     }
   })
   return (
-    <text transform={`translate(${x},${y - 3})`}>
-      {labelChunksClean.map((chunk) => (
-        <tspan key={chunk} className={styles.axisLabel} textAnchor="middle" x="0" dy={12}>
-          {chunk}
-        </tspan>
-      ))}
-    </text>
+    <GFWTooltip content={tooltip} placement="bottom">
+      <text transform={`translate(${x},${y - 3})`}>
+        {labelChunksClean.map((chunk) => (
+          <tspan key={chunk} className={styles.axisLabel} textAnchor="middle" x="0" dy={12}>
+            {chunk}
+          </tspan>
+        ))}
+      </text>
+    </GFWTooltip>
   )
 }
 
 export default function ReportVesselsGraph() {
   const dataviews = useSelector(selectActiveReportDataviews)
-  const data = useSelector(selectReportVesselsGraphData)
+  const data = useSelector(selectReportVesselsGraphDataGrouped)
   const selectedReportVesselGraph = useSelector(selectReportVesselGraph)
   return (
     <Fragment>

@@ -46,6 +46,7 @@
     "timeRangeTooLong": "Reports are only allowed for time ranges up to one year",
     "title": "Analysis",
     "others": "Others",
+    "unknown": "Unknown",
     "vesselFlags": "by vessels flagged by",
     "vesselFlagsExclude": "by all vessels except the ones flagged by"
   },
