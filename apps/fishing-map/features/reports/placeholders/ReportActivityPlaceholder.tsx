@@ -1,14 +1,16 @@
 import cx from 'classnames'
 import styles from './placeholders.module.css'
 
-export default function ReportActivityPlaceholder() {
+export default function ReportActivityPlaceholder({ showHeader = true }: { showHeader?: boolean }) {
   return (
     <div style={{ height: '34rem' }}>
       {/* header */}
-      <div className={cx(styles.flex, styles.spaceBetween)}>
-        <div style={{ maxWidth: '10rem' }} className={cx(styles.block, styles.grow)} />
-        <div style={{ maxWidth: '15rem' }} className={cx(styles.block, styles.grow)} />
-      </div>
+      {showHeader && (
+        <div className={cx(styles.flex, styles.spaceBetween)}>
+          <div style={{ maxWidth: '10rem' }} className={cx(styles.block, styles.grow)} />
+          <div style={{ maxWidth: '15rem' }} className={cx(styles.block, styles.grow)} />
+        </div>
+      )}
       {/* graph */}
       <div
         style={{ display: 'flex', height: '29rem', marginBottom: 0 }}

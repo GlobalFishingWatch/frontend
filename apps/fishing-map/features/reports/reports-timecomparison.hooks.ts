@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
@@ -18,31 +18,14 @@ const MAX_DATE = DEFAULT_WORKSPACE.availableEnd.slice(0, 10)
 export const MAX_DAYS_TO_COMPARE = 100
 export const MAX_MONTHS_TO_COMPARE = 12
 
-export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) => {
-  const { t } = useTranslation()
-  const { dispatchQueryParams } = useLocationConnect()
-  const { start: timebarStart, end: timebarEnd } = useTimerangeConnect()
-  const fitAreaInViewport = useFitAreaInViewport()
-  const [errorMsg, setErrorMsg] = useState(null)
+export const useSetReportTimeComparison = () => {
   const timeComparison = useSelector(selectReportTimeComparison)
   const durationType = timeComparison?.durationType
   const duration = timeComparison?.duration
+  const { dispatchQueryParams } = useLocationConnect()
+  const { start: timebarStart, end: timebarEnd } = useTimerangeConnect()
 
-  const durationTypeOptions: SelectOption[] = useMemo(
-    () => [
-      {
-        id: 'days',
-        label: t('common.days_other'),
-      },
-      {
-        id: 'months',
-        label: t('common.months_other'),
-      },
-    ],
-    [t]
-  )
-
-  useLayoutEffect(() => {
+  const setReportTimecomparison = useCallback((activityType: ReportActivityGraph) => {
     if (timeComparison) {
       if (activityType === 'beforeAfter') {
         // make sure start is properly recalculated again in beforeAfter mode when coming from another mode
@@ -87,6 +70,37 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const resetReportTimecomparison = useCallback(() => {
+    dispatchQueryParams({ reportTimeComparison: undefined })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  return { setReportTimecomparison, resetReportTimecomparison }
+}
+
+export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) => {
+  const { t } = useTranslation()
+  const { dispatchQueryParams } = useLocationConnect()
+  const fitAreaInViewport = useFitAreaInViewport()
+  const [errorMsg, setErrorMsg] = useState(null)
+  const timeComparison = useSelector(selectReportTimeComparison)
+  const durationType = timeComparison?.durationType
+  const duration = timeComparison?.duration
+
+  const durationTypeOptions: SelectOption[] = useMemo(
+    () => [
+      {
+        id: 'days',
+        label: t('common.days_other'),
+      },
+      {
+        id: 'months',
+        label: t('common.months_other'),
+      },
+    ],
+    [t]
+  )
 
   const update = useCallback(
     ({ newStart, newCompareStart, newDuration, newDurationType, error }: any) => {

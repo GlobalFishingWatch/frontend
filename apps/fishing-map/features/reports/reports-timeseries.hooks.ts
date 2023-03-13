@@ -2,7 +2,6 @@ import { useCallback, useEffect, useLayoutEffect, useMemo } from 'react'
 import { Polygon, MultiPolygon } from 'geojson'
 import { useSelector } from 'react-redux'
 import { atom, selector, useRecoilState } from 'recoil'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import {
   selectReportActivityGraph,
@@ -84,6 +83,7 @@ export type DateTimeSeries = {
   compareDate?: string
 }[]
 
+const emptyArray = []
 export const useFilteredTimeSeries = () => {
   const [timeseries, setTimeseries] = useRecoilState(mapTimeseriesAtom)
   const reportAreaIds = useSelector(selectReportAreaIds)
@@ -92,10 +92,12 @@ export const useFilteredTimeSeries = () => {
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparison = useSelector(selectReportTimeComparison)
   const currentCategoryDataviews = useSelector(selectReportCategoryDataviews)
-  const activityFeatures = useMapDataviewFeatures(currentCategoryDataviews)
-  const { start: timebarStart, end: timebarEnd } = useSelector(selectTimeRange)
   const areaSourceId = useSelector(selectReportAreaSource)
+  const { start: timebarStart, end: timebarEnd } = useSelector(selectTimeRange)
   const areaInViewport = useReportAreaInViewport()
+  const activityFeatures = useMapDataviewFeatures(
+    areaInViewport ? currentCategoryDataviews : emptyArray
+  )
   const fitAreaInViewport = useFitAreaInViewport()
   useReportAreaHighlight(area?.id, areaSourceId)
 
@@ -131,49 +133,37 @@ export const useFilteredTimeSeries = () => {
         showTimeComparison,
         compareDeltaMillis,
       })
-      setTimeseries(timeseries.map((timeseries) => ({ ...timeseries, mode: reportGraphMode })))
+      setTimeseries(
+        timeseries.map((timeseries) => {
+          timeseries.mode = reportGraphMode
+          return timeseries
+        })
+      )
     },
     [showTimeComparison, compareDeltaMillis, setTimeseries]
   )
-
-  const reportGraphMode = getReportGraphMode(reportGraph)
 
   // We need to re calculate the timeseries when area or timerange changes
   useLayoutEffect(() => {
     setTimeseries(undefined)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [area?.id, reportGraphMode])
+  }, [area?.id])
 
-  const activeSourceIdHash = activityFeatures
-    .map(({ metadata }) => metadata?.timeChunks?.activeSourceId)
-    .join(',')
-
-  // Re calculate timerange when there new source data is fetched on timebar changes
-  useEffect(() => {
-    const hasActivityLayers = currentCategoryDataviews.some(
-      ({ category }) =>
-        category === DataviewCategory.Activity || category === DataviewCategory.Detections
-    )
-    if (hasActivityLayers) {
-      setTimeseries(undefined)
+  const reportGraphMode = getReportGraphMode(reportGraph)
+  useLayoutEffect(() => {
+    if (timeseries?.length > 0) {
+      setTimeseries([])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeSourceIdHash])
+  }, [reportGraphMode])
 
+  const activityFeaturesLoaded = areDataviewsFeatureLoaded(activityFeatures)
   useEffect(() => {
-    const activityFeaturesLoaded = areDataviewsFeatureLoaded(activityFeatures)
     if (activityFeaturesLoaded && area?.geometry && areaInViewport) {
-      if (reportGraphMode === 'time' && !timeComparison) {
-        if (timeseries) {
-          setTimeseries(undefined)
-        }
-        return
-      } else {
-        computeTimeseries(activityFeatures, area?.geometry, reportGraphMode)
-      }
+      computeTimeseries(activityFeatures, area?.geometry, reportGraphMode)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activityFeatures, area?.geometry, areaInViewport, reportGraphMode, timeComparison])
+  }, [activityFeaturesLoaded, area?.geometry, areaInViewport])
 
   const layersTimeseriesFiltered = useMemo(() => {
     if (showTimeComparison) {
@@ -186,7 +176,7 @@ export const useFilteredTimeSeries = () => {
   }, [timeseries, showTimeComparison, timebarStart, timebarEnd])
 
   return {
-    loading: !timeseries && !areDataviewsFeatureLoaded(activityFeatures),
+    loading: areaInViewport && !activityFeaturesLoaded,
     error: hasDataviewsFeatureError(activityFeatures),
     layersTimeseriesFiltered,
   }

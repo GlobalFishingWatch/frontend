@@ -10,9 +10,12 @@ import {
 } from 'data/config'
 import { selectReportActivityGraph } from 'features/app/app.selectors'
 import { useFitAreaInViewport } from 'features/reports/reports.hooks'
+import { ReportActivityGraph } from 'types'
+import { useSetReportTimeComparison } from 'features/reports/reports-timecomparison.hooks'
 
 export default function ReportActivityGraphSelector() {
   const { dispatchQueryParams } = useLocationConnect()
+  const { setReportTimecomparison, resetReportTimecomparison } = useSetReportTimeComparison()
   const selectedReportActivityGraph = useSelector(selectReportActivityGraph)
   const { t } = useTranslation()
   const fitAreaInViewport = useFitAreaInViewport()
@@ -32,9 +35,16 @@ export default function ReportActivityGraphSelector() {
     },
   ]
 
-  const onSelect = (option: SelectOption) => {
-    fitAreaInViewport()
-    dispatchQueryParams({ reportActivityGraph: option.id })
+  const onSelect = (option: SelectOption<ReportActivityGraph>) => {
+    if (selectedReportActivityGraph !== option.id) {
+      fitAreaInViewport()
+      if (option.id === 'evolution') {
+        resetReportTimecomparison()
+      } else {
+        setReportTimecomparison(option.id)
+      }
+      dispatchQueryParams({ reportActivityGraph: option.id })
+    }
   }
 
   const selectedOption = selectedReportActivityGraph

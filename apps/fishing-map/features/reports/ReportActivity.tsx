@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import ReportActivityGraphSelector from 'features/reports/ReportActivityGraphSelector'
@@ -13,8 +13,10 @@ import { ReportActivityGraph } from 'types'
 import { selectReportActivityGraph } from 'features/app/app.selectors'
 import ReportActivityPlaceholder from 'features/reports/placeholders/ReportActivityPlaceholder'
 import ReportActivityPeriodComparison from 'features/reports/ReportActivityPeriodComparison'
+import ReportActivityPeriodComparisonGraph from 'features/reports/ReportActivityPeriodComparisonGraph'
 import ReportActivityEvolution from './ReportActivityEvolution'
 import ReportActivityBeforeAfter from './ReportActivityBeforeAfter'
+import ReportActivityBeforeAfterGraph from './ReportActivityBeforeAfterGraph'
 import styles from './ReportActivity.module.css'
 
 export type ReportActivityProps = {
@@ -23,11 +25,17 @@ export type ReportActivityProps = {
   end: string
 }
 
-const REPORT_BY_TYPE: Record<ReportActivityGraph, React.FC<ReportActivityProps> | null> = {
-  evolution: ReportActivityEvolution,
+const SELECTORS_BY_TYPE: Record<ReportActivityGraph, React.FC> = {
+  evolution: null,
   beforeAfter: ReportActivityBeforeAfter,
   periodComparison: ReportActivityPeriodComparison,
 }
+const GRAPH_BY_TYPE: Record<ReportActivityGraph, React.FC<ReportActivityProps> | null> = {
+  evolution: ReportActivityEvolution,
+  beforeAfter: ReportActivityBeforeAfterGraph,
+  periodComparison: ReportActivityPeriodComparisonGraph,
+}
+
 const emptyGraphData = {} as ReportGraphProps
 export default function ReportActivity() {
   const { t } = useTranslation()
@@ -35,31 +43,33 @@ export default function ReportActivity() {
   const reportActivityGraph = useSelector(selectReportActivityGraph)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
 
-  const ReportGraphComponent = useMemo(
-    () => REPORT_BY_TYPE[reportActivityGraph],
+  const SelectorsComponent = useMemo(
+    () => SELECTORS_BY_TYPE[reportActivityGraph],
     [reportActivityGraph]
   )
+  const GraphComponent = useMemo(() => GRAPH_BY_TYPE[reportActivityGraph], [reportActivityGraph])
   const { loading, layersTimeseriesFiltered } = useFilteredTimeSeries()
   const reportGraphMode = getReportGraphMode(reportActivityGraph)
   const isSameTimeseriesMode = layersTimeseriesFiltered?.[0]?.mode === reportGraphMode
-
+  const showSelectors = layersTimeseriesFiltered !== undefined
   return (
     <div className={styles.container}>
-      {loading || !isSameTimeseriesMode ? (
-        <ReportActivityPlaceholder />
-      ) : (
-        <Fragment>
-          <div className={styles.titleRow}>
-            <label className={styles.blockTitle}>{t('common.activity', 'Activity')}</label>
-            <ReportActivityGraphSelector />
-          </div>
-          <ReportGraphComponent
-            start={reportActivityGraph === 'evolution' ? start : timeComparisonValues?.start}
-            end={reportActivityGraph === 'evolution' ? end : timeComparisonValues?.end}
-            data={isSameTimeseriesMode ? layersTimeseriesFiltered?.[0] : emptyGraphData}
-          />
-        </Fragment>
+      {showSelectors && (
+        <div className={styles.titleRow}>
+          <label className={styles.blockTitle}>{t('common.activity', 'Activity')}</label>
+          <ReportActivityGraphSelector />
+        </div>
       )}
+      {loading || !isSameTimeseriesMode ? (
+        <ReportActivityPlaceholder showHeader={!showSelectors} />
+      ) : (
+        <GraphComponent
+          start={reportActivityGraph === 'evolution' ? start : timeComparisonValues?.start}
+          end={reportActivityGraph === 'evolution' ? end : timeComparisonValues?.end}
+          data={isSameTimeseriesMode ? layersTimeseriesFiltered?.[0] : emptyGraphData}
+        />
+      )}
+      {showSelectors && SelectorsComponent && <SelectorsComponent />}
     </div>
   )
 }

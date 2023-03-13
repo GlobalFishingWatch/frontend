@@ -3,8 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { InputDate, InputText, Select } from '@globalfishingwatch/ui-components'
-import { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
-import ReportActivityPeriodComparisonGraph from 'features/reports/ReportActivityPeriodComparisonGraph'
 import {
   MAX_DAYS_TO_COMPARE,
   MAX_MONTHS_TO_COMPARE,
@@ -19,12 +17,7 @@ import Hint from 'features/hints/Hint'
 import { COLOR_PRIMARY_BLUE } from 'features/app/App'
 import styles from './ReportActivityBeforeAfter.module.css'
 
-type ReportActivityProps = {
-  data: ReportGraphProps
-  start: string
-  end: string
-}
-export default function ReportActivityGraph({ start, end, data }: ReportActivityProps) {
+export default function ReportActivityGraph() {
   const { t } = useTranslation()
   const timeComparison = useSelector(selectReportTimeComparison)
   const dataviews = useSelector(selectActiveHeatmapDataviews)
@@ -105,7 +98,6 @@ export default function ReportActivityGraph({ start, end, data }: ReportActivity
 
   return (
     <div className={styles.container}>
-      {data && <ReportActivityPeriodComparisonGraph data={data} start={start} end={end} />}
       <div className={styles.timeSelection}>
         <div>
           <div className={styles.inputDateLabel}>

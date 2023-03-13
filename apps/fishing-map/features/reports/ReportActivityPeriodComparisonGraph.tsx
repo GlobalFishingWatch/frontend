@@ -85,7 +85,6 @@ const PeriodComparisonGraphTooltip = (props: any) => {
   if (label && active && payload.length > 0 && payload.length) {
     const difference = payload.find(({ name }) => name === DIFFERENCE)
     if (!difference) return null
-    console.log(difference)
     const baselineDate = getUTCDateTime(difference?.payload.date).setLocale(i18n.language)
     const compareDate = getUTCDateTime(difference?.payload.compareDate).setLocale(i18n.language)
 
@@ -138,17 +137,19 @@ const ReportActivityPeriodComparisonGraph: React.FC<{
 
   const offsetedLastDataUpdate = useMemo(() => {
     // Need to offset LAST_DATA_UPDATE because graph uses dates from start, not compareStart
-    const diff = getUTCDateTime(timeComparison.compareStart)
-      .diff(getUTCDateTime(timeComparison.start))
-      .toMillis()
-    const offsetedLastDataUpdate = dtLastDataUpdate
-      .minus({
-        milliseconds: diff,
-      })
-      .toUTC()
-      .toMillis()
-    return offsetedLastDataUpdate
-  }, [dtLastDataUpdate, timeComparison.compareStart, timeComparison.start])
+    if (timeComparison) {
+      const diff = getUTCDateTime(timeComparison.compareStart)
+        .diff(getUTCDateTime(timeComparison.start))
+        .toMillis()
+      const offsetedLastDataUpdate = dtLastDataUpdate
+        .minus({
+          milliseconds: diff,
+        })
+        .toUTC()
+        .toMillis()
+      return offsetedLastDataUpdate
+    }
+  }, [dtLastDataUpdate, timeComparison])
 
   const baseline = useMemo(() => {
     if (!timeseries || !timeseries.length) return []
