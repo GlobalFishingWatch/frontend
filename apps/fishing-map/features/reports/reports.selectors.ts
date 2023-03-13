@@ -193,7 +193,10 @@ function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: string)
   if (!filter || !filter.length) {
     return vessels
   }
-  const filterWords = filter.split(' ')
+  const filterWords = filter
+    .replace(/,/g, ' ')
+    .split(' ')
+    .filter((word) => word.length)
   if (!filterWords) {
     return vessels
   }
