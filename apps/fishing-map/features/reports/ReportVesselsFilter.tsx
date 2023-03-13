@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useDebounce } from 'use-debounce'
-import { InputText } from '@globalfishingwatch/ui-components'
+import { InputText, Tooltip } from '@globalfishingwatch/ui-components'
 import { selectReportVesselFilter } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import styles from './ReportVesselsFilter.module.css'
@@ -23,17 +23,30 @@ export default function ReportVesselsFilter(props: ReportVesselsFilterProps) {
 
   return (
     <div className={styles.inputContainer}>
-      <InputText
-        type="search"
-        value={query}
-        placeholder={t(
-          'analysis.searchPlaceholder',
-          'Filter vessels by name, mmsi, flag states or gear type'
-        )}
-        onChange={(e) => setQuery(e.target.value)}
-        onCleanButtonClick={() => setQuery('')}
-        className={styles.input}
-      />
+      <Tooltip
+        content={
+          <Fragment>
+            {t(
+              'analysis.searchHelp',
+              "Use spaces to search by multiple fileds and '-' to find all vessels that don't match a query."
+            )}
+            <br />
+            {t('analysis.searchHelpExamples', "e.g. 'china trawlers', '-spain'")}
+          </Fragment>
+        }
+      >
+        <InputText
+          type="search"
+          value={query}
+          placeholder={t(
+            'analysis.searchPlaceholder',
+            'Type to filter vessels by name, mmsi, flag states or gear type'
+          )}
+          onChange={(e) => setQuery(e.target.value)}
+          onCleanButtonClick={() => setQuery('')}
+          className={styles.input}
+        />
+      </Tooltip>
     </div>
   )
 }

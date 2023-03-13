@@ -197,13 +197,27 @@ function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: string)
     .replace(/,/g, ' ')
     .split(' ')
     .filter((word) => word.length)
-  if (!filterWords) {
+  if (!filterWords.length) {
     return vessels
   }
   return filterWords
-    .reduceRight(
-      (vessels, word) =>
-        matchSorter(vessels, word, {
+    .reduce(
+      (vessels, word) => {
+        if (word.startsWith('-')) {
+          const matched = matchSorter(vessels, word.replace('-', ''), {
+            keys: [
+              'shipName',
+              'mmsi',
+              'flag',
+              (item) => t(`flags:${item.flag as string}` as any, item.flag),
+              (item) => t(`vessel.gearTypes.${item.geartype}` as any, item.geartype),
+            ],
+            threshold: matchSorter.rankings.ACRONYM,
+          }).map((vessel) => vessel.vesselId)
+
+          return vessels.filter((vessel) => !matched.includes(vessel.vesselId))
+        }
+        return matchSorter(vessels, word, {
           keys: [
             'shipName',
             'mmsi',
@@ -212,7 +226,9 @@ function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: string)
             (item) => t(`vessel.gearTypes.${item.geartype}` as any, item.geartype),
           ],
           threshold: matchSorter.rankings.ACRONYM,
-        }),
+        })
+      },
+
       vessels
     )
     .sort((a, b) => b.hours - a.hours)
