@@ -98,7 +98,7 @@ export default function Report() {
         hasVessels ? (
           <Fragment>
             <ReportVessels activityUnit={activityUnit} reportName={areaDetail?.name} />
-            <ReportDownload reportName={areaDetail?.name} />
+            <ReportDownload />
           </Fragment>
         ) : (
           <p className={styles.error}>

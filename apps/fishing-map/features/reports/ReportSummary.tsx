@@ -2,9 +2,13 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { sum } from 'lodash'
 import { useMemo } from 'react'
-import { Locale } from '@globalfishingwatch/api-types'
+import { DataviewCategory, Locale } from '@globalfishingwatch/api-types'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import { selectActiveReportDataviews, selectTimeRange } from 'features/app/app.selectors'
+import {
+  selectActiveReportDataviews,
+  selectReportCategory,
+  selectTimeRange,
+} from 'features/app/app.selectors'
 import ReportSummaryTags from 'features/reports/ReportSummaryTags'
 import { FIELDS, getCommonProperties } from 'features/reports/reports.utils'
 import { ReportActivityUnit } from 'features/reports/Report'
@@ -26,19 +30,28 @@ type ReportSummaryProps = {
 export default function ReportSummary({ activityUnit, reportStatus }: ReportSummaryProps) {
   const { t, i18n } = useTranslation()
   const timerange = useSelector(selectTimeRange)
+  const category = useSelector(selectReportCategory)
   const reportVessels = useSelector(selectReportVesselsNumber)
   const { loading: timeseriesLoading, layersTimeseriesFiltered } = useFilteredTimeSeries()
   const reportHours = useSelector(selectReportVesselsHours)
   const dataviews = useSelector(selectActiveReportDataviews)
   const summary = useMemo(() => {
     if (!dataviews.length) return
-    const datasetTitle = getDatasetTitleByDataview(dataviews?.[0], { showPrivateIcon: false })
+    const datasetTitles = dataviews?.map((dataview) =>
+      getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
+    )
+    const sameTitleDataviews = datasetTitles.every((d) => d === datasetTitles?.[0])
+    const datasetTitle = sameTitleDataviews
+      ? datasetTitles?.[0]
+      : category === DataviewCategory.Activity
+      ? `${t('common.of', 'of')} <strong>${t(`common.activity`, 'Activity').toLowerCase()}</strong>`
+      : undefined
+
     if (reportStatus === AsyncReducerStatus.Finished) {
-      // TODO: Support not rendering vesssels count when no report available
       if (reportHours) {
         return t('analysis.summary', {
           defaultValue:
-            '<strong>{{vessels}} $t(common.vessel_other)</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
+            '<strong>{{vessels}} $t(common.vessel_other)</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> {{activityType}} in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
           vessels: formatI18nNumber(reportVessels || 0, {
             locale: i18n.language as Locale,
           }),

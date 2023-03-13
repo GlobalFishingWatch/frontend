@@ -34,15 +34,18 @@ import { selectReportVesselsData } from './reports.slice'
 
 export const EMPTY_API_VALUES = ['NULL', undefined, '']
 export const MAX_CATEGORIES = 5
+export const OTHERS_CATEGORY_LABEL = 'OTHERS'
 
 export type ReportVesselWithMeta = ReportVessel & {
+  sourceColor: string
   activityDatasetId: string
   category: DataviewCategory
 }
-export type ReportVesselWithDatasets = Partial<ReportVessel> & {
-  infoDataset?: Dataset
-  trackDataset?: Dataset
-}
+export type ReportVesselWithDatasets = Partial<ReportVessel> &
+  Pick<ReportVesselWithMeta, 'sourceColor'> & {
+    infoDataset?: Dataset
+    trackDataset?: Dataset
+  }
 
 export const selectReportAreaIds = createSelector(
   [selectLocationAreaId, selectLocationDatasetId],
@@ -58,9 +61,7 @@ export const selectReportActivityFlatten = createSelector(
 
     return reportDatasets.flatMap((dataset) =>
       Object.entries(dataset).flatMap(([datasetId, vessels]) => {
-        const category = dataviews.find((dataview) =>
-          dataview.config.datasets.includes(datasetId)
-        )?.category
+        const dataview = dataviews.find((dataview) => dataview.config.datasets.includes(datasetId))
         return (vessels || []).flatMap((vessel) => {
           if (
             EMPTY_API_VALUES.includes(vessel.flag) &&
@@ -76,7 +77,8 @@ export const selectReportActivityFlatten = createSelector(
               ? t('common.unknownVessel', 'Unknown Vessel')
               : vessel.shipName,
             activityDatasetId: datasetId,
-            category,
+            category: dataview?.category,
+            sourceColor: dataview?.config?.color,
           } as ReportVesselWithMeta
         })
       })
@@ -129,17 +131,46 @@ export const selectReportVesselsGraphData = createSelector(
         return sum(dataviewIds.map((d) => b[d])) - sum(dataviewIds.map((d) => a[d]))
       })
 
-    if (distributionKeys.length <= MAX_CATEGORIES) return data
+    return { distributionKeys, data }
+  }
+)
 
-    const top = data.slice(0, MAX_CATEGORIES)
-    const rest = data.slice(MAX_CATEGORIES)
+export const selectReportVesselsGraphDataGrouped = createSelector(
+  [selectReportVesselsGraphData, selectActiveReportDataviews],
+  (reportGraph, dataviews) => {
+    if (!reportGraph?.data?.length) return null
+    if (reportGraph?.distributionKeys.length <= MAX_CATEGORIES) return reportGraph.data
+    const dataviewIds = dataviews.map((d) => d.id)
+    const top = reportGraph.data.slice(0, MAX_CATEGORIES)
+    const rest = reportGraph.data.slice(MAX_CATEGORIES)
     const others = {
-      name: t('analysis.others', 'Others'),
+      name: OTHERS_CATEGORY_LABEL,
       ...Object.fromEntries(
         dataviewIds.map((dataview) => [dataview, sum(rest.map((key) => key[dataview]))])
       ),
     }
     return [...top, others]
+  }
+)
+const defaultOthersLabel = []
+export const selectReportVesselsGraphDataOthers = createSelector(
+  [selectReportVesselsGraphData],
+  (reportGraph) => {
+    if (!reportGraph?.data?.length) return null
+    if (reportGraph?.distributionKeys.length <= MAX_CATEGORIES) return defaultOthersLabel
+    const others = reportGraph.data.slice(MAX_CATEGORIES)
+    return reportGraph.distributionKeys
+      .flatMap((key) => {
+        const other = others.find((o) => o.name === key)
+        if (!other) return []
+        const { name, ...rest } = other
+        return { name, value: sum(Object.values(rest)) }
+      })
+      .sort((a, b) => {
+        if (EMPTY_API_VALUES.includes(a.name)) return 1
+        if (EMPTY_API_VALUES.includes(b.name)) return -1
+        return b.value - a.value
+      })
   }
 )
 
@@ -163,6 +194,7 @@ export const selectReportVesselsList = createSelector(
           hours: sumBy(vesselActivity, 'hours'),
           infoDataset,
           trackDataset,
+          sourceColor: vesselActivity[0]?.sourceColor,
         } as ReportVesselWithDatasets
       })
       .sort((a, b) => b.hours - a.hours)
@@ -190,16 +222,67 @@ export const selectReportVesselsListWithAllInfo = createSelector(
 )
 
 function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: string) {
-  return matchSorter(vessels, filter, {
-    keys: [
-      'shipName',
-      'mmsi',
-      'flag',
-      (item) => t(`flags:${item.flag as string}` as any, item.flag),
-      (item) => t(`vessel.gearTypes.${item.geartype}` as any, item.geartype),
-    ],
-    threshold: matchSorter.rankings.ACRONYM,
-  }).sort((a, b) => b.hours - a.hours)
+  if (!filter || !filter.length) {
+    return vessels
+  }
+  const filterWords = filter
+    .replace(/,/g, ' ')
+    .split(' ')
+    .filter((word) => word.length)
+  if (!filterWords.length) {
+    return vessels
+  }
+
+  return filterWords
+    .reduce(
+      (vessels, word) => {
+        if (word.startsWith('-')) {
+          const matched = matchSorter(vessels, word.replace('-', ''), {
+            keys: [
+              'shipName',
+              'mmsi',
+              'flag',
+              (item) => t(`flags:${item.flag as string}` as any, item.flag),
+              (item) => t(`vessel.gearTypes.${item.geartype}` as any, item.geartype),
+            ],
+            threshold: matchSorter.rankings.ACRONYM,
+          }).map((vessel) => vessel.vesselId)
+
+          return vessels.filter((vessel) => !matched.includes(vessel.vesselId))
+        } else if (word.includes('|')) {
+          const words = word.split('|').filter((word) => word.length)
+          const matched = uniqBy(
+            words.flatMap((w) =>
+              matchSorter(vessels, w, {
+                keys: [
+                  'shipName',
+                  'mmsi',
+                  'flag',
+                  (item) => t(`flags:${item.flag as string}` as any, item.flag),
+                  (item) => t(`vessel.gearTypes.${item.geartype}` as any, item.geartype),
+                ],
+                threshold: matchSorter.rankings.ACRONYM,
+              })
+            ),
+            'vesselId'
+          )
+          return matched
+        }
+        return matchSorter(vessels, word, {
+          keys: [
+            'shipName',
+            'mmsi',
+            'flag',
+            (item) => t(`flags:${item.flag as string}` as any, item.flag),
+            (item) => t(`vessel.gearTypes.${item.geartype}` as any, item.geartype),
+          ],
+          threshold: matchSorter.rankings.ACRONYM,
+        })
+      },
+
+      vessels
+    )
+    .sort((a, b) => b.hours - a.hours)
 }
 
 const defaultDownloadVessels = []
