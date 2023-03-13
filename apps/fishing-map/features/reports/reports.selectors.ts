@@ -190,16 +190,29 @@ export const selectReportVesselsListWithAllInfo = createSelector(
 )
 
 function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: string) {
-  return matchSorter(vessels, filter, {
-    keys: [
-      'shipName',
-      'mmsi',
-      'flag',
-      (item) => t(`flags:${item.flag as string}` as any, item.flag),
-      (item) => t(`vessel.gearTypes.${item.geartype}` as any, item.geartype),
-    ],
-    threshold: matchSorter.rankings.ACRONYM,
-  }).sort((a, b) => b.hours - a.hours)
+  if (!filter || !filter.length) {
+    return vessels
+  }
+  const filterWords = filter.split(' ')
+  if (!filterWords) {
+    return vessels
+  }
+  return filterWords
+    .reduceRight(
+      (vessels, word) =>
+        matchSorter(vessels, word, {
+          keys: [
+            'shipName',
+            'mmsi',
+            'flag',
+            (item) => t(`flags:${item.flag as string}` as any, item.flag),
+            (item) => t(`vessel.gearTypes.${item.geartype}` as any, item.geartype),
+          ],
+          threshold: matchSorter.rankings.ACRONYM,
+        }),
+      vessels
+    )
+    .sort((a, b) => b.hours - a.hours)
 }
 
 const defaultDownloadVessels = []
