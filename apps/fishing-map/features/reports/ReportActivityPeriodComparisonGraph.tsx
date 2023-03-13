@@ -204,7 +204,7 @@ const ReportActivityPeriodComparisonGraph: React.FC<{
 
   return (
     <div className={styles.graph}>
-      <ResponsiveContainer width="100%" height={240}>
+      <ResponsiveContainer width="100%" height={'100%'}>
         <ComposedChart data={range} margin={graphMargin}>
           <CartesianGrid vertical={false} />
           <XAxis

@@ -3,7 +3,7 @@ import styles from './placeholders.module.css'
 
 export default function ReportActivityPlaceholder({ showHeader = true }: { showHeader?: boolean }) {
   return (
-    <div style={{ height: '34rem' }}>
+    <div style={{ height: showHeader ? '34rem' : '30rem' }}>
       {/* header */}
       {showHeader && (
         <div className={cx(styles.flex, styles.spaceBetween)}>
