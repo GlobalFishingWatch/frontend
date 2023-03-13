@@ -31,7 +31,10 @@ export default function ReportVesselsFilter(props: ReportVesselsFilterProps) {
               "Use spaces to search by multiple fileds and '-' to find all vessels that don't match a query."
             )}
             <br />
-            {t('analysis.searchHelpExamples', "e.g. 'china trawlers', '-spain'")}
+            {t(
+              'analysis.searchHelpExamples',
+              "e.g. 'china trawlers', '-spain', 'peru purse|trawler'"
+            )}
           </Fragment>
         }
       >

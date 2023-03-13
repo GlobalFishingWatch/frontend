@@ -202,6 +202,7 @@ function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: string)
   if (!filterWords.length) {
     return vessels
   }
+
   return filterWords
     .reduce(
       (vessels, word) => {
@@ -218,6 +219,24 @@ function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: string)
           }).map((vessel) => vessel.vesselId)
 
           return vessels.filter((vessel) => !matched.includes(vessel.vesselId))
+        } else if (word.includes('|')) {
+          const words = word.split('|').filter((word) => word.length)
+          const matched = uniqBy(
+            words.flatMap((w) =>
+              matchSorter(vessels, w, {
+                keys: [
+                  'shipName',
+                  'mmsi',
+                  'flag',
+                  (item) => t(`flags:${item.flag as string}` as any, item.flag),
+                  (item) => t(`vessel.gearTypes.${item.geartype}` as any, item.geartype),
+                ],
+                threshold: matchSorter.rankings.ACRONYM,
+              })
+            ),
+            'vesselId'
+          )
+          return matched
         }
         return matchSorter(vessels, word, {
           keys: [
