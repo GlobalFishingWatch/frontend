@@ -1,11 +1,12 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { Select, SelectOption } from '@globalfishingwatch/ui-components'
+import { Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { useLocationConnect } from 'routes/routes.hook'
 import { REPORT_VESSELS_GRAPH_GEARTYPE, REPORT_VESSELS_GRAPH_FLAG } from 'data/config'
 import { selectReportCategory, selectReportVesselGraph } from 'features/app/app.selectors'
+import { ReportVesselGraph } from 'types'
 
 type ReportVesselsGraphProps = {}
 
@@ -15,7 +16,7 @@ export default function ReportVesselsGraphSelector(props: ReportVesselsGraphProp
   const reportCategory = useSelector(selectReportCategory)
   const { t } = useTranslation()
 
-  const options: SelectOption[] = [
+  const options: ChoiceOption[] = [
     {
       id: REPORT_VESSELS_GRAPH_FLAG,
       label: t('analysis.groupByFlag', 'Flag distribution'),
@@ -30,7 +31,7 @@ export default function ReportVesselsGraphSelector(props: ReportVesselsGraphProp
       : []),
   ]
 
-  const onSelect = (option: SelectOption) => {
+  const onSelect = (option: ChoiceOption<ReportVesselGraph>) => {
     dispatchQueryParams({ reportVesselGraph: option.id })
   }
 
@@ -41,12 +42,6 @@ export default function ReportVesselsGraphSelector(props: ReportVesselsGraphProp
   if (options.length === 1) return <label>{options[0].label}</label>
 
   return (
-    <Select
-      type="secondary"
-      align="right"
-      options={options}
-      selectedOption={selectedOption}
-      onSelect={onSelect}
-    />
+    <Choice size="tiny" options={options} activeOption={selectedOption?.id} onSelect={onSelect} />
   )
 }

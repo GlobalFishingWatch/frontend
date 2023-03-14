@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { Select, SelectOption } from '@globalfishingwatch/ui-components'
+import { Choice, ChoiceOption, Select, SelectOption } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   REPORT_ACTIVITY_GRAPH_EVOLUTION,
@@ -20,7 +20,7 @@ export default function ReportActivityGraphSelector() {
   const { t } = useTranslation()
   const fitAreaInViewport = useFitAreaInViewport()
 
-  const options: SelectOption[] = [
+  const options: ChoiceOption[] = [
     {
       id: REPORT_ACTIVITY_GRAPH_EVOLUTION,
       label: t('analysis.evolution', 'Evolution'),
@@ -35,7 +35,7 @@ export default function ReportActivityGraphSelector() {
     },
   ]
 
-  const onSelect = (option: SelectOption<ReportActivityGraph>) => {
+  const onSelect = (option: ChoiceOption<ReportActivityGraph>) => {
     if (selectedReportActivityGraph !== option.id) {
       fitAreaInViewport()
       if (option.id === 'evolution') {
@@ -52,12 +52,6 @@ export default function ReportActivityGraphSelector() {
     : options[0]
 
   return (
-    <Select
-      type="secondary"
-      align="right"
-      options={options}
-      selectedOption={selectedOption}
-      onSelect={onSelect}
-    />
+    <Choice size="tiny" options={options} activeOption={selectedOption?.id} onSelect={onSelect} />
   )
 }

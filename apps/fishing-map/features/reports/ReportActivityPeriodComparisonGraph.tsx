@@ -46,7 +46,7 @@ export interface ComparisonGraphProps {
 }
 
 const formatDateTicks = (tick: number, start: string, timeChunkInterval: Interval) => {
-  if (!tick) {
+  if (!tick || !start) {
     return ''
   }
   const startDate = getUTCDateTime(start)

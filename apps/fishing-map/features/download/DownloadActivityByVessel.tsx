@@ -167,7 +167,7 @@ function DownloadActivityByVessel() {
             options={VESSEL_FORMAT_OPTIONS}
             size="small"
             activeOption={format}
-            onOptionClick={(option) => setFormat(option.id as Format)}
+            onSelect={(option) => setFormat(option.id as Format)}
           />
         </div>
         <div>
@@ -176,7 +176,7 @@ function DownloadActivityByVessel() {
             options={filteredGroupByOptions}
             size="small"
             activeOption={groupBy}
-            onOptionClick={(option) => setGroupBy(option.id as GroupBy)}
+            onSelect={(option) => setGroupBy(option.id as GroupBy)}
           />
         </div>
         <div>
@@ -185,7 +185,7 @@ function DownloadActivityByVessel() {
             options={filteredTemporalResolutionOptions}
             size="small"
             activeOption={temporalResolution}
-            onOptionClick={(option) => setTemporalResolution(option.id as TemporalResolution)}
+            onSelect={(option) => setTemporalResolution(option.id as TemporalResolution)}
           />
         </div>
         <div className={styles.footer}>

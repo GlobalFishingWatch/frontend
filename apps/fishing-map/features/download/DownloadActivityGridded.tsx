@@ -212,7 +212,7 @@ function DownloadActivityByVessel() {
             options={GRIDDED_FORMAT_OPTIONS}
             size="small"
             activeOption={format}
-            onOptionClick={(option) => setFormat(option.id as Format)}
+            onSelect={(option) => setFormat(option.id as Format)}
           />
         </div>
         {(format === Format.Csv || format === Format.Json) && (
@@ -223,7 +223,7 @@ function DownloadActivityByVessel() {
                 options={filteredGroupByOptions}
                 size="small"
                 activeOption={groupBy}
-                onOptionClick={(option) => setGroupBy(option.id as GroupBy)}
+                onSelect={(option) => setGroupBy(option.id as GroupBy)}
               />
             </div>
             <div>
@@ -232,7 +232,7 @@ function DownloadActivityByVessel() {
                 options={filteredTemporalResolutionOptions}
                 size="small"
                 activeOption={temporalResolution}
-                onOptionClick={(option) => setTemporalResolution(option.id as TemporalResolution)}
+                onSelect={(option) => setTemporalResolution(option.id as TemporalResolution)}
               />
             </div>
           </Fragment>
@@ -243,7 +243,7 @@ function DownloadActivityByVessel() {
             options={filteredSpatialResolutionOptions}
             size="small"
             activeOption={spatialResolution}
-            onOptionClick={(option) => setSpatialResolution(option.id as SpatialResolution)}
+            onSelect={(option) => setSpatialResolution(option.id as SpatialResolution)}
           />
         </div>
         <div className={styles.footer}>

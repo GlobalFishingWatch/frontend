@@ -65,7 +65,7 @@ export const DEFAULT_VIEWPORT = {
 }
 
 export const DEFAULT_TIME_RANGE = {
-  start: getUTCDateTime(LAST_DATA_UPDATE).minus({ months: 3 }).toISO(),
+  start: getUTCDateTime(LAST_DATA_UPDATE)?.minus({ months: 3 }).toISO(),
   end: LAST_DATA_UPDATE,
 }
 

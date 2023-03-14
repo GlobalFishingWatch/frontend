@@ -39,19 +39,19 @@ export enum SpatialResolution {
 export const GRIDDED_FORMAT_OPTIONS: ChoiceOption[] = [
   {
     id: Format.GeoTIFF,
-    title: 'geotiff',
+    label: 'geotiff',
   },
   {
     id: Format.Csv,
-    title: 'csv',
+    label: 'csv',
   },
   {
     id: Format.Json,
-    title: 'json',
+    label: 'json',
   },
   {
     id: Format.NetCDF,
-    title: 'netcdf',
+    label: 'netcdf',
     disabled: true,
     tooltip: t('common.comingSoon', 'Coming Soon!'),
     tooltipPlacement: 'top',
@@ -61,36 +61,36 @@ export const GRIDDED_FORMAT_OPTIONS: ChoiceOption[] = [
 export const VESSEL_FORMAT_OPTIONS: ChoiceOption[] = [
   {
     id: Format.Csv,
-    title: 'csv',
+    label: 'csv',
   },
   {
     id: Format.Json,
-    title: 'json',
+    label: 'json',
   },
 ]
 
 const BASE_GROUP_BY_OPTIONS: ChoiceOption[] = [
   {
     id: GroupBy.MMSI,
-    title: t('vessel.mmsi', 'MMSI'),
+    label: t('vessel.mmsi', 'MMSI'),
   },
   {
     id: GroupBy.Flag,
-    title: t('vessel.flag', 'Flag'),
+    label: t('vessel.flag', 'Flag'),
   },
   {
     id: GroupBy.GearType,
-    title: t('vessel.geartype', 'Gear Type'),
+    label: t('vessel.geartype', 'Gear Type'),
   },
   {
     id: GroupBy.FlagAndGearType,
-    title: `${t('vessel.flag', 'Flag')} + ${t('vessel.geartype', 'Gear Type')}`,
+    label: `${t('vessel.flag', 'Flag')} + ${t('vessel.geartype', 'Gear Type')}`,
   },
 ]
 export const VESSEL_GROUP_BY_OPTIONS: ChoiceOption[] = [
   {
     id: GroupBy.Vessel,
-    title: t('common.none', 'None'),
+    label: t('common.none', 'None'),
   },
   ...BASE_GROUP_BY_OPTIONS,
 ]
@@ -98,7 +98,7 @@ export const VESSEL_GROUP_BY_OPTIONS: ChoiceOption[] = [
 export const GRIDDED_GROUP_BY_OPTIONS: ChoiceOption[] = [
   {
     id: GroupBy.None,
-    title: t('common.none', 'None'),
+    label: t('common.none', 'None'),
   },
   ...BASE_GROUP_BY_OPTIONS,
 ]
@@ -106,15 +106,15 @@ export const GRIDDED_GROUP_BY_OPTIONS: ChoiceOption[] = [
 export const SPATIAL_RESOLUTION_OPTIONS: ChoiceOption[] = [
   {
     id: SpatialResolution.Low,
-    title: '0.1º',
+    label: '0.1º',
   },
   {
     id: SpatialResolution.High,
-    title: '0.01º',
+    label: '0.01º',
   },
   {
     id: SpatialResolution.VeryHigh,
-    title: '0.001º',
+    label: '0.001º',
     disabled: true,
     tooltip: t('common.comingSoon', 'Coming Soon!'),
     tooltipPlacement: 'top',
@@ -124,19 +124,19 @@ export const SPATIAL_RESOLUTION_OPTIONS: ChoiceOption[] = [
 export const TEMPORAL_RESOLUTION_OPTIONS: ChoiceOption[] = [
   {
     id: TemporalResolution.Full,
-    title: t('download.fullTimeRange', 'Selected time range'),
+    label: t('download.fullTimeRange', 'Selected time range'),
   },
   {
     id: TemporalResolution.Daily,
-    title: t('download.daily', 'Day'),
+    label: t('download.daily', 'Day'),
   },
   {
     id: TemporalResolution.Monthly,
-    title: t('download.monthly', 'Month'),
+    label: t('download.monthly', 'Month'),
   },
   {
     id: TemporalResolution.Yearly,
-    title: t('download.yearly', 'Year'),
+    label: t('download.yearly', 'Year'),
   },
 ]
 
