@@ -98,7 +98,7 @@ const CustomTick = (props: any) => {
   const tooltip = isOtherCategory ? (
     <ul>
       {othersData.map(({ name, value }) => (
-        <li>{`${getTickLabel(name)}: ${value}`}</li>
+        <li key={name}>{`${getTickLabel(name)}: ${value}`}</li>
       ))}
     </ul>
   ) : (
@@ -120,15 +120,23 @@ const CustomTick = (props: any) => {
     <GFWTooltip content={tooltip} placement="bottom">
       <text transform={`translate(${x},${y - 3})`} onClick={onLabelClick}>
         {labelChunksClean.map((chunk) => (
-          <tspan
-            key={chunk}
-            className={cx({ [styles.axisLabel]: isCategoryInteractive })}
-            textAnchor="middle"
-            x="0"
-            dy={12}
-          >
-            {chunk}
-          </tspan>
+          <Fragment>
+            <tspan
+              key={chunk}
+              className={cx({ [styles.axisLabel]: isCategoryInteractive })}
+              textAnchor="middle"
+              x="0"
+              dy={12}
+            >
+              {chunk}{' '}
+            </tspan>
+            {isOtherCategory && (
+              <Fragment>
+                <tspan>&nbsp;</tspan>
+                <tspan className={styles.info}>i</tspan>
+              </Fragment>
+            )}
+          </Fragment>
         ))}
       </text>
     </GFWTooltip>

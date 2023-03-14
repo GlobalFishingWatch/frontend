@@ -59,9 +59,9 @@ export const selectReportActivityFlatten = createSelector(
   (reportDatasets, dataviews): ReportVesselWithMeta[] => {
     if (!reportDatasets?.length) return null
 
-    return reportDatasets.flatMap((dataset) =>
+    return reportDatasets.flatMap((dataset, index) =>
       Object.entries(dataset).flatMap(([datasetId, vessels]) => {
-        const dataview = dataviews.find((dataview) => dataview.config.datasets.includes(datasetId))
+        const dataview = dataviews[index]
         return (vessels || []).flatMap((vessel) => {
           if (
             EMPTY_API_VALUES.includes(vessel.flag) &&
