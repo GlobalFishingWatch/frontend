@@ -83,10 +83,13 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
     dispatchQueryParams({ reportVesselPage: pagination.page + 1 })
   }
   const onShowMoreClick = () => {
-    dispatchQueryParams({ reportResultsPerPage: REPORT_SHOW_MORE_VESSELS_PER_PAGE })
+    dispatchQueryParams({
+      reportResultsPerPage: REPORT_SHOW_MORE_VESSELS_PER_PAGE,
+      reportVesselPage: 0,
+    })
   }
   const onShowLessClick = () => {
-    dispatchQueryParams({ reportResultsPerPage: REPORT_VESSELS_PER_PAGE })
+    dispatchQueryParams({ reportResultsPerPage: REPORT_VESSELS_PER_PAGE, reportVesselPage: 0 })
   }
   const onFilterClick = (reportVesselFilter) => {
     dispatchQueryParams({ reportVesselFilter, reportVesselPage: 0 })
@@ -95,7 +98,8 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
   const isShowingMore = pagination.resultsPerPage === REPORT_SHOW_MORE_VESSELS_PER_PAGE
   const hasLessVesselsThanAPage =
     pagination.page === 0 && pagination?.resultsNumber < pagination?.resultsPerPage
-  const isLastPaginationPage = pagination?.offset + pagination?.resultsPerPage >= pagination?.total
+  const isLastPaginationPage =
+    pagination?.offset + pagination?.resultsPerPage >= pagination?.totalFiltered
 
   return (
     <Fragment>
@@ -204,8 +208,8 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
       </div>
       <div className={styles.footer}>
         <div className={cx(styles.flex, styles.expand)}>
-          {!hasLessVesselsThanAPage && (
-            <Fragment>
+          <Fragment>
+            <div className={styles.flex}>
               <IconButton
                 icon="arrow-left"
                 disabled={pagination?.page === 0}
@@ -216,7 +220,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
               <span className={styles.noWrap}>
                 {`${pagination?.offset + 1} - ${
                   isLastPaginationPage
-                    ? pagination?.total
+                    ? pagination?.totalFiltered
                     : pagination?.offset + pagination?.resultsPerPage
                 }`}{' '}
               </span>
@@ -229,27 +233,35 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                 })}
                 size="medium"
               />
-              <label>
-                {isShowingMore
-                  ? t('analysis.seeLessVessels', 'See less vessels')
-                  : t('analysis.seeMoreVessels', 'See more vessels')}
-              </label>
-              <IconButton
-                icon={isShowingMore ? 'arrow-top' : 'arrow-down'}
-                onClick={isShowingMore ? onShowLessClick : onShowMoreClick}
-                size="tiny"
-              />
-              <span className={cx(styles.noWrap, styles.expand, styles.right)}>
-                {reportVesselFilter && (
-                  <Fragment>
-                    <I18nNumber number={allFilteredVessels?.length} /> {t('common.of', 'of')}{' '}
-                  </Fragment>
-                )}
-                <I18nNumber number={pagination?.total} />{' '}
-                {t('common.vessel', { count: pagination?.total })}
-              </span>
-            </Fragment>
-          )}
+            </div>
+            <label
+              className={styles.pointer}
+              onClick={isShowingMore ? onShowLessClick : onShowMoreClick}
+            >
+              {t('analysis.resultsPerPage', {
+                results: isShowingMore
+                  ? REPORT_VESSELS_PER_PAGE
+                  : REPORT_SHOW_MORE_VESSELS_PER_PAGE,
+                defaultValue: `Show ${
+                  isShowingMore ? REPORT_VESSELS_PER_PAGE : REPORT_SHOW_MORE_VESSELS_PER_PAGE
+                } per page`,
+              })}
+            </label>
+            {/* <IconButton
+              icon={isShowingMore ? 'arrow-top' : 'arrow-down'}
+              onClick={isShowingMore ? onShowLessClick : onShowMoreClick}
+              size="tiny"
+            /> */}
+            <span className={cx(styles.noWrap, styles.right)}>
+              {reportVesselFilter && (
+                <Fragment>
+                  <I18nNumber number={allFilteredVessels?.length} /> {t('common.of', 'of')}{' '}
+                </Fragment>
+              )}
+              <I18nNumber number={pagination?.total} />{' '}
+              {t('common.vessel', { count: pagination?.total })}
+            </span>
+          </Fragment>
         </div>
         <div className={cx(styles.flex, styles.expand)}>
           <VesselGroupAddButton
