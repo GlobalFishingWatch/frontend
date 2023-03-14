@@ -1,6 +1,6 @@
 .tableContainer {
   margin-top: 2.5rem;
-  height: 42rem;
+  min-height: 42rem;
 }
 
 .vesselsTable {

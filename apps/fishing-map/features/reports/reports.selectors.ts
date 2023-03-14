@@ -12,12 +12,12 @@ import {
   selectActiveReportDataviews,
   selectReportActivityGraph,
   selectReportCategory,
+  selectReportResultsPerPage,
   selectReportTimeComparison,
   selectReportVesselFilter,
   selectReportVesselGraph,
   selectReportVesselPage,
 } from 'features/app/app.selectors'
-import { REPORT_VESSELS_PER_PAGE } from 'data/config'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
   getActiveDatasetsInActivityDataviews,
@@ -305,20 +305,25 @@ export const selectReportVesselsFiltered = createSelector(
 
 const defaultVesselsList = []
 export const selectReportVesselsPaginated = createSelector(
-  [selectReportVesselsFiltered, selectReportVesselPage],
-  (vessels, page = 0) => {
+  [selectReportVesselsFiltered, selectReportVesselPage, selectReportResultsPerPage],
+  (vessels, page = 0, resultsPerPage) => {
     if (!vessels?.length) return defaultVesselsList
-    return vessels.slice(REPORT_VESSELS_PER_PAGE * page, REPORT_VESSELS_PER_PAGE * (page + 1))
+    return vessels.slice(resultsPerPage * page, resultsPerPage * (page + 1))
   }
 )
 
 export const selectReportVesselsPagination = createSelector(
-  [selectReportVesselsPaginated, selectReportVesselsList, selectReportVesselPage],
-  (vessels, allVessels, page = 0) => {
+  [
+    selectReportVesselsPaginated,
+    selectReportVesselsList,
+    selectReportVesselPage,
+    selectReportResultsPerPage,
+  ],
+  (vessels, allVessels, page = 0, resultsPerPage) => {
     return {
       page,
-      offset: REPORT_VESSELS_PER_PAGE * page,
-      resultsPerPage: REPORT_VESSELS_PER_PAGE,
+      offset: resultsPerPage * page,
+      resultsPerPage: resultsPerPage,
       resultsNumber: vessels?.length,
       total: allVessels?.length,
     }

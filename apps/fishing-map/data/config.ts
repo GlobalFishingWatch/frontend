@@ -36,6 +36,7 @@ export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions 
   : { debug: true }
 
 export const REPORT_VESSELS_PER_PAGE = 10
+export const REPORT_SHOW_MORE_VESSELS_PER_PAGE = REPORT_VESSELS_PER_PAGE * 5
 export const REPORT_VESSELS_GRAPH_GEARTYPE = 'geartype'
 export const REPORT_VESSELS_GRAPH_FLAG = 'flag'
 export const REPORT_ACTIVITY_GRAPH_EVOLUTION = 'evolution'
@@ -96,6 +97,7 @@ export const DEFAULT_WORKSPACE = {
   reportVesselFilter: '',
   reportVesselGraph: REPORT_VESSELS_GRAPH_FLAG,
   reportVesselPage: 0,
+  reportResultsPerPage: REPORT_VESSELS_PER_PAGE,
 }
 
 export const EVENTS_COLORS: Record<string, string> = {

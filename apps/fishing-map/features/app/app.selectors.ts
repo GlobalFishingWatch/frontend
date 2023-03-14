@@ -180,6 +180,13 @@ export const selectReportVesselPage = createSelector(
   }
 )
 
+export const selectReportResultsPerPage = createSelector(
+  [selectWorkspaceStateProperty('reportResultsPerPage')],
+  (reportVesselPage): number => {
+    return parseInt(reportVesselPage)
+  }
+)
+
 export const selectTimebarVisualisation = createSelector(
   [selectWorkspaceStateProperty('timebarVisualisation')],
   (timebarVisualisation): TimebarVisualisations => {

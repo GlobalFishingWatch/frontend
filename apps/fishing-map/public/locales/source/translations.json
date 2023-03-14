@@ -34,6 +34,8 @@
     "periodComparisonDuration": "duration",
     "periodComparisonRange": "in the {{duration}} following {{compareStart}} compared to baseline in the {{duration}} following {{start}}",
     "print": "Print / Save as PDF",
+    "seeLessVessels": "See less vessels",
+    "seeMoreVessels": "See more vessels",
     "searchHelp": "Use spaces to search by multiple fileds and '-' to find all vessels that don't match a query.",
     "searchHelpExamples": "e.g. 'china trawlers', '-spain'",
     "searchPlaceholder": "Filter vessels by name, mmsi, flag states or gear type",

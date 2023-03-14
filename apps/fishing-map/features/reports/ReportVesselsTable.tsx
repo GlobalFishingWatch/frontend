@@ -18,6 +18,7 @@ import {
   selectReportVesselFilter,
   selectTimeRange,
 } from 'features/app/app.selectors'
+import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data/config'
 import {
   ReportVesselWithDatasets,
   selectReportDownloadVessels,
@@ -80,7 +81,14 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
   const onNextPageClick = () => {
     dispatchQueryParams({ reportVesselPage: pagination.page + 1 })
   }
+  const onShowMoreClick = () => {
+    dispatchQueryParams({ reportResultsPerPage: REPORT_SHOW_MORE_VESSELS_PER_PAGE })
+  }
+  const onShowLessClick = () => {
+    dispatchQueryParams({ reportResultsPerPage: REPORT_VESSELS_PER_PAGE })
+  }
 
+  const isShowingMore = pagination.resultsPerPage === REPORT_SHOW_MORE_VESSELS_PER_PAGE
   const hasLessVesselsThanAPage =
     pagination.page === 0 && pagination?.resultsNumber < pagination?.resultsPerPage
   const isLastPaginationPage = pagination?.offset + pagination?.resultsPerPage >= pagination?.total
@@ -187,6 +195,16 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                   [styles.disabled]: isLastPaginationPage || hasLessVesselsThanAPage,
                 })}
                 size="medium"
+              />
+              <label>
+                {isShowingMore
+                  ? t('analysis.seeLessVessels', 'See less vessels')
+                  : t('analysis.seeMoreVessels', 'See more vessels')}
+              </label>
+              <IconButton
+                icon={isShowingMore ? 'arrow-top' : 'arrow-down'}
+                onClick={isShowingMore ? onShowLessClick : onShowMoreClick}
+                size="tiny"
               />
               <span className={cx(styles.noWrap, styles.expand, styles.right)}>
                 {reportVesselFilter && (
