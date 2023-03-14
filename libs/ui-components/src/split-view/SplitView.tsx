@@ -37,11 +37,11 @@ export function SplitView(props: SplitViewProps) {
     () => [
       {
         id: 'aside',
-        title: showAsideLabel,
+        label: showAsideLabel,
       },
       {
         id: 'main',
-        title: showMainLabel,
+        label: showMainLabel,
       },
     ],
     [showAsideLabel, showMainLabel]
@@ -75,7 +75,7 @@ export function SplitView(props: SplitViewProps) {
               size="small"
               options={panelOptions}
               activeOption={internalOpen ? panelOptions[0].id : panelOptions[1].id}
-              onOptionClick={handleClick}
+              onSelect={handleClick}
             />
           </div>
         ) : (
