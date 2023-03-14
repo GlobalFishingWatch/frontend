@@ -67,6 +67,10 @@
   gap: 1rem;
 }
 
+.footer > .flex {
+  justify-content: space-between;
+}
+
 .footer .disabled {
   opacity: 0.5;
 }
