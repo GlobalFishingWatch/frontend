@@ -101,7 +101,7 @@ function DownloadTrackModal() {
             options={FORMAT_OPTIONS}
             size="small"
             activeOption={format}
-            onOptionClick={(option) => setFormat(option.id as Format)}
+            onSelect={(option) => setFormat(option.id as Format)}
           />
         </div>
         <div className={styles.footer}>

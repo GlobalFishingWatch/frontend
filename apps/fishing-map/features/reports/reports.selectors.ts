@@ -12,12 +12,12 @@ import {
   selectActiveReportDataviews,
   selectReportActivityGraph,
   selectReportCategory,
+  selectReportResultsPerPage,
   selectReportTimeComparison,
   selectReportVesselFilter,
   selectReportVesselGraph,
   selectReportVesselPage,
 } from 'features/app/app.selectors'
-import { REPORT_VESSELS_PER_PAGE } from 'data/config'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
   getActiveDatasetsInActivityDataviews,
@@ -59,9 +59,9 @@ export const selectReportActivityFlatten = createSelector(
   (reportDatasets, dataviews): ReportVesselWithMeta[] => {
     if (!reportDatasets?.length) return null
 
-    return reportDatasets.flatMap((dataset) =>
+    return reportDatasets.flatMap((dataset, index) =>
       Object.entries(dataset).flatMap(([datasetId, vessels]) => {
-        const dataview = dataviews.find((dataview) => dataview.config.datasets.includes(datasetId))
+        const dataview = dataviews[index]
         return (vessels || []).flatMap((vessel) => {
           if (
             EMPTY_API_VALUES.includes(vessel.flag) &&
@@ -221,13 +221,19 @@ export const selectReportVesselsListWithAllInfo = createSelector(
   }
 )
 
+export function cleanFlagState(flagState: string) {
+  return flagState.replace(/,/g, '')
+}
+
 function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: string) {
   if (!filter || !filter.length) {
     return vessels
   }
   const filterWords = filter
-    .replace(/,/g, ' ')
-    .split(' ')
+    .replace(/ ,/g, ',')
+    .replace(/ , /g, ',')
+    .replace(/, /g, ',')
+    .split(',')
     .filter((word) => word.length)
   if (!filterWords.length) {
     return vessels
@@ -259,6 +265,7 @@ function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: string)
                   'mmsi',
                   'flag',
                   (item) => t(`flags:${item.flag as string}` as any, item.flag),
+                  (item) => cleanFlagState(t(`flags:${item.flag as string}` as any, item.flag)),
                   (item) => t(`vessel.gearTypes.${item.geartype}` as any, item.geartype),
                 ],
                 threshold: matchSorter.rankings.ACRONYM,
@@ -305,21 +312,28 @@ export const selectReportVesselsFiltered = createSelector(
 
 const defaultVesselsList = []
 export const selectReportVesselsPaginated = createSelector(
-  [selectReportVesselsFiltered, selectReportVesselPage],
-  (vessels, page = 0) => {
+  [selectReportVesselsFiltered, selectReportVesselPage, selectReportResultsPerPage],
+  (vessels, page = 0, resultsPerPage) => {
     if (!vessels?.length) return defaultVesselsList
-    return vessels.slice(REPORT_VESSELS_PER_PAGE * page, REPORT_VESSELS_PER_PAGE * (page + 1))
+    return vessels.slice(resultsPerPage * page, resultsPerPage * (page + 1))
   }
 )
 
 export const selectReportVesselsPagination = createSelector(
-  [selectReportVesselsPaginated, selectReportVesselsList, selectReportVesselPage],
-  (vessels, allVessels, page = 0) => {
+  [
+    selectReportVesselsPaginated,
+    selectReportVesselsFiltered,
+    selectReportVesselsList,
+    selectReportVesselPage,
+    selectReportResultsPerPage,
+  ],
+  (vessels, allVesselsFiltered, allVessels, page = 0, resultsPerPage) => {
     return {
       page,
-      offset: REPORT_VESSELS_PER_PAGE * page,
-      resultsPerPage: REPORT_VESSELS_PER_PAGE,
+      offset: resultsPerPage * page,
+      resultsPerPage: resultsPerPage,
       resultsNumber: vessels?.length,
+      totalFiltered: allVesselsFiltered?.length,
       total: allVessels?.length,
     }
   }

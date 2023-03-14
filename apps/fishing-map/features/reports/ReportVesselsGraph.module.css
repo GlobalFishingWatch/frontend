@@ -17,6 +17,10 @@
   padding: var(--space-S);
 }
 
+.axisLabel {
+  cursor: pointer;
+}
+
 .tooltipRow {
   display: flex;
   align-items: center;
@@ -34,6 +38,13 @@
   border: var(--border);
   background-color: currentcolor;
   margin-right: 0.5rem;
+}
+
+.graph tspan.info {
+  text-transform: lowercase;
+  font-family: serif;
+  font-style: italic;
+  font-weight: 600;
 }
 
 .graph :global(.recharts-tooltip-cursor) {

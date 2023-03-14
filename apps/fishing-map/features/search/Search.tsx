@@ -88,13 +88,13 @@ function Search() {
     return [
       {
         id: 'basic' as SearchType,
-        title: t('search.basic', 'Basic'),
+        label: t('search.basic', 'Basic'),
       },
       {
         id: 'advanced' as SearchType,
-        title: t('search.advanced', 'Advanced'),
+        label: t('search.advanced', 'Advanced'),
       },
-    ]
+    ] as ChoiceOption<SearchType>[]
   }, [t])
 
   const [activeSearchOption, setActiveSearchOption] = useState<SearchType>(
@@ -297,7 +297,7 @@ function Search() {
             <Choice
               options={searchOptions}
               activeOption={activeSearchOption}
-              onOptionClick={onSearchOptionChange}
+              onSelect={onSearchOptionChange}
               size="small"
             />
             <IconButton

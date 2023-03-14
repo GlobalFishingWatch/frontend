@@ -20,6 +20,7 @@ export type ReportStateProperty =
   | 'reportVesselGraph'
   | 'reportVesselFilter'
   | 'reportVesselPage'
+  | 'reportResultsPerPage'
   | 'reportTimeComparison'
 
 export type WorkspaceStateProperty =
@@ -77,6 +78,7 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   reportVesselFilter?: string
   reportVesselGraph?: ReportVesselGraph
   reportVesselPage?: number
+  reportResultsPerPage?: number
   sidebarOpen?: boolean
   timebarGraph?: TimebarGraphs
   timebarSelectedEnvId?: string

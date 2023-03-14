@@ -3,7 +3,7 @@
 }
 
 .input input {
-  padding: 0 4rem 0 1.5rem;
+  padding: 0 7rem 0 1.5rem;
   border-radius: 2rem;
   background: var(--color-terthiary-blue);
   border-bottom: 1px solid var(--color-secondary-blue);

@@ -21,6 +21,13 @@ export default function ReportVesselsFilter(props: ReportVesselsFilterProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedQuery])
 
+  useEffect(() => {
+    if (reportVesselFilter !== query) {
+      setQuery(reportVesselFilter)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reportVesselFilter])
+
   return (
     <div className={styles.inputContainer}>
       <Tooltip

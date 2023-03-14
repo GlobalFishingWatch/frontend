@@ -7,6 +7,7 @@
     "change": "Change",
     "changeIn": "Change in",
     "close": "Close analysis",
+    "clickToFilterBy": "Click to filter by:",
     "createVesselGroup": "Create vessel group",
     "correlation": "correlation",
     "disclaimer": "The data shown above should be taken as an estimate. <1>Find out more about Global Fishing Watch analysis tools and methods.</1>",
@@ -43,6 +44,7 @@
       "activity": "Activity report",
       "area": "Area report"
     },
+    "resultsPerPage": "Show {{results}} per page",
     "timeRangeTooLong": "Reports are only allowed for time ranges up to one year",
     "title": "Analysis",
     "others": "Others",

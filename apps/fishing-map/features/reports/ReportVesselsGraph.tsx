@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react'
+import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts'
 import { useTranslation } from 'react-i18next'
@@ -6,8 +7,10 @@ import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
 import { selectActiveReportDataviews, selectReportVesselGraph } from 'features/app/app.selectors'
 import { ReportVesselGraph } from 'types'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { useLocationConnect } from 'routes/routes.hook'
 import styles from './ReportVesselsGraph.module.css'
 import {
+  cleanFlagState,
   EMPTY_API_VALUES,
   OTHERS_CATEGORY_LABEL,
   selectReportVesselsGraphDataGrouped,
@@ -68,6 +71,9 @@ const CustomTick = (props: any) => {
   const { t } = useTranslation()
   const selectedReportVesselGraph = useSelector(selectReportVesselGraph)
   const othersData = useSelector(selectReportVesselsGraphDataOthers)
+  const { dispatchQueryParams } = useLocationConnect()
+  const isOtherCategory = payload.value === OTHERS_CATEGORY_LABEL
+  const isCategoryInteractive = !EMPTY_API_VALUES.includes(payload.value)
 
   const getTickLabel = (label: string) => {
     if (EMPTY_API_VALUES.includes(label)) return t('analysis.unknown', 'Unknown')
@@ -76,11 +82,23 @@ const CustomTick = (props: any) => {
       : t(`flags:${label}` as any, label)
   }
 
-  const isOtherCategory = payload.value === OTHERS_CATEGORY_LABEL
+  const onLabelClick = () => {
+    if (isCategoryInteractive) {
+      const vesselFilter = isOtherCategory
+        ? cleanFlagState(
+            othersData
+              .flatMap((d) => (EMPTY_API_VALUES.includes(d.name) ? [] : getTickLabel(d.name)))
+              .join('|')
+          )
+        : getTickLabel(payload.value)
+      dispatchQueryParams({ reportVesselFilter: vesselFilter, reportVesselPage: 0 })
+    }
+  }
+
   const tooltip = isOtherCategory ? (
     <ul>
       {othersData.map(({ name, value }) => (
-        <li>{`${getTickLabel(name)}: ${value}`}</li>
+        <li key={name}>{`${getTickLabel(name)}: ${value}`}</li>
       ))}
     </ul>
   ) : (
@@ -97,13 +115,28 @@ const CustomTick = (props: any) => {
       labelChunksClean[labelChunksClean.length - 1] = currentChunk + ' ' + chunk
     }
   })
+
   return (
     <GFWTooltip content={tooltip} placement="bottom">
-      <text transform={`translate(${x},${y - 3})`}>
+      <text transform={`translate(${x},${y - 3})`} onClick={onLabelClick}>
         {labelChunksClean.map((chunk) => (
-          <tspan key={chunk} className={styles.axisLabel} textAnchor="middle" x="0" dy={12}>
-            {chunk}
-          </tspan>
+          <Fragment>
+            <tspan
+              key={chunk}
+              className={cx({ [styles.axisLabel]: isCategoryInteractive })}
+              textAnchor="middle"
+              x="0"
+              dy={12}
+            >
+              {chunk}{' '}
+            </tspan>
+            {isOtherCategory && (
+              <Fragment>
+                <tspan>&nbsp;</tspan>
+                <tspan className={styles.info}>i</tspan>
+              </Fragment>
+            )}
+          </Fragment>
         ))}
       </text>
     </GFWTooltip>

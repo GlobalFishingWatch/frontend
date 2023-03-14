@@ -1,17 +1,10 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
-import type { Placement } from 'tippy.js'
 import cx from 'classnames'
-import { TooltipTypes } from '..'
+import { SelectOption } from '..'
 import { Button } from '../button'
 import styles from './Choice.module.css'
 
-export interface ChoiceOption {
-  id: string
-  title: string
-  disabled?: boolean
-  tooltip?: TooltipTypes
-  tooltipPlacement?: Placement
-}
+export type ChoiceOption<Option = string> = SelectOption<Option>
 
 type ActiveChoiceProperties = {
   width: number
@@ -22,7 +15,7 @@ interface ChoiceProps {
   options: ChoiceOption[]
   activeOption: string
   disabled?: boolean
-  onOptionClick?: (option: ChoiceOption, e: React.MouseEvent) => void
+  onSelect?: (option: ChoiceOption, e: React.MouseEvent) => void
   size?: 'default' | 'small' | 'tiny'
   className?: string
 }
@@ -31,7 +24,7 @@ export function Choice({
   activeOption,
   options,
   disabled,
-  onOptionClick,
+  onSelect,
   size = 'default',
   className = '',
 }: ChoiceProps) {
@@ -49,7 +42,7 @@ export function Choice({
       width: activeRef?.current.clientWidth,
       left: activeRef?.current.offsetLeft,
     })
-    onOptionClick && onOptionClick(option, e)
+    onSelect && onSelect(option, e)
   }
 
   const updateActiveElementPoperties = useCallback(() => {
@@ -100,7 +93,7 @@ export function Choice({
                 onClick={(e) => !option.disabled && onOptionClickHandle(option, e)}
                 size={size}
               >
-                {option.title}
+                {option.label}
               </Button>
             </li>
           )

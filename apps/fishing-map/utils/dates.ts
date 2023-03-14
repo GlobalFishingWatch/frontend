@@ -2,7 +2,7 @@ import { DateTime, DurationUnits } from 'luxon'
 import { Interval } from '@globalfishingwatch/layer-composer'
 
 export const getUTCDateTime = (d: string | number) => {
-  if (!d) {
+  if (!d || (typeof d !== 'string' && typeof d !== 'number')) {
     console.warn('Not a valid date', d)
     return
   }

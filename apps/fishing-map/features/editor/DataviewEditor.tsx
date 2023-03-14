@@ -17,6 +17,7 @@ import {
   ColorBar,
   FillColorBarOptions,
   MultiSelect,
+  ChoiceOption,
 } from '@globalfishingwatch/ui-components'
 import { GeneratorType, COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 import { fetchAllDatasetsThunk, selectDatasetsStatus } from 'features/datasets/datasets.slice'
@@ -40,8 +41,8 @@ const categoryOptions = [
   { id: UNKNOWN_CATEGORY, label: 'Unknown' },
 ]
 
-const dynamicHeatmapOption = { id: 'dynamic', title: 'Dynamic' }
-const staticHeatmapOption = { id: 'static', title: 'Static' }
+const dynamicHeatmapOption: ChoiceOption = { id: 'dynamic', label: 'Dynamic' }
+const staticHeatmapOption: ChoiceOption = { id: 'static', label: 'Static' }
 const heatmapTypesOptions = [dynamicHeatmapOption, staticHeatmapOption]
 
 const temporalResolutionOptions = [
@@ -284,7 +285,7 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
                   activeOption={
                     dataview.config?.static ? staticHeatmapOption.id : dynamicHeatmapOption.id
                   }
-                  onOptionClick={(option) => {
+                  onSelect={(option) => {
                     onDataviewConfigChange({ static: option.id === staticHeatmapOption.id })
                   }}
                   size="small"
