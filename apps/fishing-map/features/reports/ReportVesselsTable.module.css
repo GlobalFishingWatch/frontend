@@ -79,6 +79,10 @@
   flex: 1;
 }
 
+.pointer {
+  cursor: pointer;
+}
+
 .dot {
   width: 1rem;
   height: 1rem;

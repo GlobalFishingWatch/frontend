@@ -20,6 +20,7 @@ import {
 } from 'features/app/app.selectors'
 import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data/config'
 import {
+  EMPTY_API_VALUES,
   ReportVesselWithDatasets,
   selectReportDownloadVessels,
   selectReportVesselsFiltered,
@@ -87,6 +88,9 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
   const onShowLessClick = () => {
     dispatchQueryParams({ reportResultsPerPage: REPORT_VESSELS_PER_PAGE })
   }
+  const onFilterClick = (reportVesselFilter) => {
+    dispatchQueryParams({ reportVesselFilter, reportVesselPage: 0 })
+  }
 
   const isShowingMore = pagination.resultsPerPage === REPORT_SHOW_MORE_VESSELS_PER_PAGE
   const hasLessVesselsThanAPage =
@@ -117,6 +121,13 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
             const vesselInWorkspace = getVesselInWorkspace(vesselsInWorkspace, vessel.vesselId)
             const pinTrackDisabled = !hasDatasets
             const isLastRow = i === vessels.length - 1
+            const flag = t(`flags:${vessel.flag as string}` as any, EMPTY_FIELD_PLACEHOLDER)
+            const flagInteractionEnabled = !EMPTY_API_VALUES.includes(vessel.flag)
+            const gearType = t(
+              `vessel.gearTypes.${vessel.geartype}` as any,
+              EMPTY_FIELD_PLACEHOLDER
+            )
+            const gearTypeInteractionEnabled = !EMPTY_API_VALUES.includes(vessel.geartype)
             return (
               <Fragment key={vessel.vesselId}>
                 {!pinTrackDisabled && (
@@ -153,12 +164,34 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                     <span>{vessel.mmsi || EMPTY_FIELD_PLACEHOLDER}</span>
                   </div>
                 )}
-                <div className={cx({ [styles.border]: !isLastRow })}>
-                  <span>{t(`flags:${vessel.flag as string}` as any, EMPTY_FIELD_PLACEHOLDER)}</span>
+                <div
+                  className={cx({
+                    [styles.border]: !isLastRow,
+                    [styles.pointer]: flagInteractionEnabled,
+                  })}
+                  title={
+                    flagInteractionEnabled
+                      ? `${t('analysis.clickToFilterBy', `Click to filter by:`)} ${flag}`
+                      : flag
+                  }
+                  onClick={flagInteractionEnabled ? () => onFilterClick(flag) : undefined}
+                >
+                  <span>{flag}</span>
                 </div>
                 {!isDetections && (
-                  <div className={cx({ [styles.border]: !isLastRow })}>
-                    {t(`vessel.gearTypes.${vessel.geartype}` as any, EMPTY_FIELD_PLACEHOLDER)}
+                  <div
+                    className={cx({
+                      [styles.border]: !isLastRow,
+                      [styles.pointer]: gearTypeInteractionEnabled,
+                    })}
+                    title={
+                      gearTypeInteractionEnabled
+                        ? `${t('analysis.clickToFilterBy', `Click to filter by:`)} ${gearType}`
+                        : gearType
+                    }
+                    onClick={gearTypeInteractionEnabled ? () => onFilterClick(gearType) : undefined}
+                  >
+                    {gearType}
                   </div>
                 )}
                 <div className={cx({ [styles.border]: !isLastRow }, styles.right)}>

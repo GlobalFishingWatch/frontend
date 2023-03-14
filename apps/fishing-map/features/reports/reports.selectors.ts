@@ -221,13 +221,19 @@ export const selectReportVesselsListWithAllInfo = createSelector(
   }
 )
 
+export function cleanFlagState(flagState: string) {
+  return flagState.replace(/,/g, '')
+}
+
 function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: string) {
   if (!filter || !filter.length) {
     return vessels
   }
   const filterWords = filter
-    .replace(/,/g, ' ')
-    .split(' ')
+    .replace(/ ,/g, ',')
+    .replace(/ , /g, ',')
+    .replace(/, /g, ',')
+    .split(',')
     .filter((word) => word.length)
   if (!filterWords.length) {
     return vessels
@@ -259,6 +265,7 @@ function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: string)
                   'mmsi',
                   'flag',
                   (item) => t(`flags:${item.flag as string}` as any, item.flag),
+                  (item) => cleanFlagState(t(`flags:${item.flag as string}` as any, item.flag)),
                   (item) => t(`vessel.gearTypes.${item.geartype}` as any, item.geartype),
                 ],
                 threshold: matchSorter.rankings.ACRONYM,
