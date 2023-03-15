@@ -118,16 +118,14 @@ const CustomTick = (props: any) => {
 
   return (
     <GFWTooltip content={tooltip} placement="bottom">
-      <text transform={`translate(${x},${y - 3})`} onClick={onLabelClick}>
+      <text
+        className={cx({ [styles.axisLabel]: isCategoryInteractive })}
+        transform={`translate(${x},${y - 3})`}
+        onClick={onLabelClick}
+      >
         {labelChunksClean.map((chunk) => (
           <Fragment>
-            <tspan
-              key={chunk}
-              className={cx({ [styles.axisLabel]: isCategoryInteractive })}
-              textAnchor="middle"
-              x="0"
-              dy={12}
-            >
+            <tspan key={chunk} textAnchor="middle" x="0" dy={12}>
               {chunk}{' '}
             </tspan>
             {isOtherCategory && (

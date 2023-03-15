@@ -10,10 +10,6 @@
   grid-template-columns: max-content 2fr minmax(max-content, 1fr) 2fr 1fr minmax(max-content, 1fr);
 }
 
-.vesselsTable.detections {
-  grid-template-columns: max-content 2fr 1fr minmax(max-content, 1fr);
-}
-
 .spansFirstTwoColumns {
   grid-column: 1 / 3;
 }
