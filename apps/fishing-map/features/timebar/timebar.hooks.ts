@@ -23,7 +23,7 @@ import {
 import store from 'store'
 import { updateUrlTimerange } from 'routes/routes.actions'
 import { selectUrlTimeRange } from 'routes/routes.selectors'
-import { setHintDismissed } from 'features/hints/hints.slice'
+import { selectHintsDismissed, setHintDismissed } from 'features/hints/hints.slice'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import useMapInstance from 'features/map/map-context.hooks'
 import { BIG_QUERY_PREFIX } from 'features/dataviews/dataviews.utils'
@@ -83,11 +83,15 @@ export const useTimerangeConnect = () => {
   const [timerange, setTimerange] = useRecoilState(TimeRangeAtom)
   const isAnalyzing = useSelector(selectIsAnalyzing)
   const dispatch = useAppDispatch()
+  const hintsDismissed = useSelector(selectHintsDismissed)
   const fitAreaInViewport = useFitAreaInViewport()
 
   const onTimebarChange = useCallback(
     (start: string, end: string) => {
-      if (start !== timerange?.start || end !== timerange.end) {
+      if (
+        (start !== timerange?.start || end !== timerange.end) &&
+        !hintsDismissed?.changingTheTimeRange
+      ) {
         dispatch(setHintDismissed('changingTheTimeRange'))
       }
       setTimerange({ start, end })
@@ -95,7 +99,15 @@ export const useTimerangeConnect = () => {
         fitAreaInViewport()
       }
     },
-    [dispatch, fitAreaInViewport, isAnalyzing, setTimerange, timerange?.end, timerange?.start]
+    [
+      dispatch,
+      fitAreaInViewport,
+      hintsDismissed?.changingTheTimeRange,
+      isAnalyzing,
+      setTimerange,
+      timerange.end,
+      timerange?.start,
+    ]
   )
   return useMemo(() => {
     return {
