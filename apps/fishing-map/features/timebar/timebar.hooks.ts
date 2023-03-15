@@ -104,7 +104,7 @@ export const useTimerangeConnect = () => {
       hintsDismissed?.changingTheTimeRange,
       reportLocation,
       setTimerange,
-      timerange.end,
+      timerange?.end,
       timerange?.start,
     ]
   )
