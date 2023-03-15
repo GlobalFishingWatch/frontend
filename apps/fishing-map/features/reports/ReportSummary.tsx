@@ -93,6 +93,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
     }
   }, [
     activityUnit,
+    category,
     dataviews,
     i18n.language,
     layersTimeseriesFiltered,
