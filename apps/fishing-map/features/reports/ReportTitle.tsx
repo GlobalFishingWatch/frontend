@@ -32,7 +32,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
           <div className={styles.actions}>
             {linkHref && (
               <a target="_blank" rel="noopener noreferrer" href={linkHref}>
-                <IconButton icon="external-link" tooltip={t('common.learnMore', 'Learn more')} />
+                <IconButton icon="info" tooltip={t('common.learnMore', 'Learn more')} />
               </a>
             )}
             <IconButton

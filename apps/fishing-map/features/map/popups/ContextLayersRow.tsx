@@ -135,11 +135,7 @@ const ContextLayersRow: React.FC<ContextLayersRowProps> = ({
           <ReportPopupLink feature={feature} onClick={handleReportClick} />
           {linkHref && (
             <a target="_blank" rel="noopener noreferrer" href={linkHref}>
-              <IconButton
-                icon="external-link"
-                tooltip={t('common.learnMore', 'Learn more')}
-                size="small"
-              />
+              <IconButton icon="info" tooltip={t('common.learnMore', 'Learn more')} size="small" />
             </a>
           )}
         </div>
