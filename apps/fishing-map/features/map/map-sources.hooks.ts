@@ -170,17 +170,34 @@ type DataviewMetadata = {
   filter?: string[]
 }
 
+// Key used to refresh activity graph only when active chunk changes and we can safely ignore the rest of the metadata
+function getGeneratorsMetadataChangeKey(generatorsMetadata: Record<string, HeatmapLayerMeta>) {
+  if (!generatorsMetadata) return ''
+  return Object.keys(generatorsMetadata)
+    .map((key) => {
+      const metadata = generatorsMetadata[key]
+      const timeChunks = [
+        metadata.timeChunks.activeSourceId,
+        (metadata.timeChunks.chunks || [])
+          .flatMap(({ active, sourceId, quantizeOffset }) =>
+            active ? [active, sourceId, quantizeOffset] : []
+          )
+          .join('|'),
+      ].join('-')
+      return [key, metadata.sourceLayer, timeChunks].join('-')
+    })
+    .join('_')
+}
+
 export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDataviewInstance[]) => {
   const style = useMapStyle()
   const map = useMapInstance()
 
   // Memoized to avoid re-runs on style changes like hovers
   const memoizedDataviews = useMemoCompare(dataviews)
-  // TODO: review performance as chunk activeStart timebar changes forces to rerun everything here
-  const generatorsMetadata = useMemoCompare(style?.metadata?.generatorsMetadata)
+  const metadataKey = getGeneratorsMetadataChangeKey(style?.metadata?.generatorsMetadata)
 
   const dataviewsMetadata = useMemo(() => {
-    const style = { metadata: { generatorsMetadata } } as ExtendedStyle
     const dataviewsArray = toArray(memoizedDataviews || [])
     if (!dataviewsArray || !dataviewsArray.length) {
       return []
@@ -208,7 +225,8 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
       })
     }, [] as DataviewMetadata[])
     return dataviewsMetadata
-  }, [memoizedDataviews, generatorsMetadata])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [memoizedDataviews, metadataKey])
 
   const sourcesIds = dataviewsMetadata.flatMap(({ sourcesId }) => sourcesId)
   const sourceTilesLoaded = useMapSourceTiles(sourcesIds)
