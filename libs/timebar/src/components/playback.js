@@ -46,7 +46,7 @@ class Playback extends Component {
     return step
   })
 
-  update = (deltaMultiplicator, byIntervals) => {
+  update = (deltaMultiplicator, { byIntervals = false } = {}) => {
     const { onTick, start, end, absoluteStart, intervals, getCurrentInterval } = this.props
     const { speedStep, loop } = this.state
     let newStartMs
@@ -150,11 +150,11 @@ class Playback extends Component {
   }
 
   onForwardClick = () => {
-    this.update(1, true)
+    this.update(1, { byIntervals: true })
   }
 
   onBackwardClick = () => {
-    this.update(-1, true)
+    this.update(-1, { byIntervals: true })
   }
 
   onSpeedClick = () => {
