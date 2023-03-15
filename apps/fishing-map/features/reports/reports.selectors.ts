@@ -54,8 +54,15 @@ export const selectReportAreaIds = createSelector(
   }
 )
 
+export const selectReportCategoryDataviews = createSelector(
+  [selectActiveTemporalgridDataviews, selectReportCategory],
+  (temporalgridDataviews, reportCategory) => {
+    return temporalgridDataviews.filter((dataview) => dataview.category === reportCategory)
+  }
+)
+
 export const selectReportActivityFlatten = createSelector(
-  [selectReportVesselsData, selectActiveTemporalgridDataviews],
+  [selectReportVesselsData, selectReportCategoryDataviews],
   (reportDatasets, dataviews): ReportVesselWithMeta[] => {
     if (!reportDatasets?.length) return null
 
@@ -97,7 +104,6 @@ export const selectReportVesselsNumber = createSelector(
 
 export const selectReportVesselsHours = createSelector([selectReportActivityFlatten], (vessels) => {
   if (!vessels?.length) return null
-
   return vessels.map((vessel) => vessel?.hours || 0).reduce((acc, hours) => acc + hours, 0)
 })
 
@@ -378,12 +384,5 @@ export const selectTimeComparisonValues = createSelector(
       compareStart: timeComparison.compareStart,
       compareEnd,
     }
-  }
-)
-
-export const selectReportCategoryDataviews = createSelector(
-  [selectActiveTemporalgridDataviews, selectReportCategory],
-  (temporalgridDataviews, reportCategory) => {
-    return temporalgridDataviews.filter((dataview) => dataview.category === reportCategory)
   }
 )
