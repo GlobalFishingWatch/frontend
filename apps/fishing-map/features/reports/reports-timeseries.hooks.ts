@@ -6,6 +6,7 @@ import { Interval } from '@globalfishingwatch/layer-composer'
 import {
   selectReportActivityGraph,
   selectReportAreaSource,
+  selectReportCategory,
   selectReportTimeComparison,
   selectTimeRange,
 } from 'features/app/app.selectors'
@@ -89,6 +90,7 @@ export const useFilteredTimeSeries = () => {
   const reportAreaIds = useSelector(selectReportAreaIds)
   const area = useSelector(selectDatasetAreaDetail(reportAreaIds))
   const reportGraph = useSelector(selectReportActivityGraph)
+  const reportCategory = useSelector(selectReportCategory)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparison = useSelector(selectReportTimeComparison)
   const currentCategoryDataviews = useSelector(selectReportCategoryDataviews)
@@ -163,7 +165,7 @@ export const useFilteredTimeSeries = () => {
       computeTimeseries(activityFeatures, area?.geometry, reportGraphMode)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activityFeaturesLoaded, area?.geometry, areaInViewport])
+  }, [activityFeaturesLoaded, area?.geometry, areaInViewport, reportCategory])
 
   const layersTimeseriesFiltered = useMemo(() => {
     if (showTimeComparison) {
