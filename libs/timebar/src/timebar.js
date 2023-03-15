@@ -231,6 +231,8 @@ class Timebar extends Component {
                 absoluteEnd={absoluteEnd}
                 onTick={this.onPlaybackTick}
                 onTogglePlay={this.onTogglePlay}
+                intervals={intervals}
+                getCurrentInterval={getCurrentInterval}
               />
             )}
 

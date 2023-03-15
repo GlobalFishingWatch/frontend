@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import cx from 'classnames'
 import memoize from 'memoize-one'
 import { scaleLinear } from 'd3-scale'
+import dayjs from 'dayjs'
+import { getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
 import { clampToAbsoluteBoundaries } from '../utils/internal-utils'
 import ImmediateContext from '../immediateContext'
 import { ReactComponent as IconLoop } from '../icons/loop.svg'
@@ -15,7 +17,12 @@ import styles from './playback.module.css'
 
 const BASE_STEP = 0.001
 const SPEED_STEPS = [1, 2, 3, 5, 10]
-const FAST_FORWARD_REWIND_MULTIPLICATOR = 100
+
+const MS_IN_INTERVAL = {
+  hour: 1000 * 60 * 60,
+  day: 1000 * 60 * 60 * 24,
+  year: 1000 * 60 * 60 * 24 * 365,
+}
 
 class Playback extends Component {
   static contextType = ImmediateContext
@@ -39,24 +46,33 @@ class Playback extends Component {
     return step
   })
 
-  update = (deltaMultiplicatorMs) => {
-    const { onTick, start, end, absoluteStart } = this.props
+  update = (deltaMultiplicator, byIntervals) => {
+    const { onTick, start, end, absoluteStart, intervals, getCurrentInterval } = this.props
     const { speedStep, loop } = this.state
-    const deltaMs = this.getStep(start, end, speedStep) * deltaMultiplicatorMs
-
-    const newStartMs = new Date(start).getTime() + deltaMs
-    const newEndMs = new Date(end).getTime() + deltaMs
-
+    let newStartMs
+    let newEndMs
+    if (byIntervals) {
+      const interval = getCurrentInterval(start, end, [intervals])
+      const intervalStartMs =
+        interval === 'month'
+          ? dayjs(start).utc().daysInMonth() * MS_IN_INTERVAL.day
+          : MS_IN_INTERVAL[interval]
+      const intervalEndMs =
+        interval === 'month'
+          ? dayjs(end).utc().daysInMonth() * MS_IN_INTERVAL.day
+          : MS_IN_INTERVAL[interval]
+      newStartMs = new Date(start).getTime() + intervalStartMs * deltaMultiplicator
+      newEndMs = new Date(end).getTime() + intervalEndMs * deltaMultiplicator
+    } else {
+      const deltaMs = this.getStep(start, end, speedStep) * deltaMultiplicator
+      newStartMs = new Date(start).getTime() + deltaMs
+      newEndMs = new Date(end).getTime() + deltaMs
+    }
     const currentStartEndDeltaMs = newEndMs - newStartMs
-
-    const newStart = new Date(newStartMs).toISOString()
-    const newEnd = new Date(newEndMs).toISOString()
-
     const playbackAbsoluteEnd = new Date(Date.now()).toISOString()
-
     const { newStartClamped, newEndClamped, clamped } = clampToAbsoluteBoundaries(
-      newStart,
-      newEnd,
+      new Date(newStartMs).toISOString(),
+      new Date(newEndMs).toISOString(),
       currentStartEndDeltaMs,
       absoluteStart,
       playbackAbsoluteEnd
@@ -134,11 +150,11 @@ class Playback extends Component {
   }
 
   onForwardClick = () => {
-    this.update(FAST_FORWARD_REWIND_MULTIPLICATOR)
+    this.update(1, true)
   }
 
   onBackwardClick = () => {
-    this.update(-FAST_FORWARD_REWIND_MULTIPLICATOR)
+    this.update(-1, true)
   }
 
   onSpeedClick = () => {
@@ -221,6 +237,7 @@ Playback.propTypes = {
   absoluteStart: PropTypes.string.isRequired,
   absoluteEnd: PropTypes.string.isRequired,
   onTogglePlay: PropTypes.func,
+  getCurrentInterval: PropTypes.func,
 }
 
 Playback.defaultProps = {
@@ -235,6 +252,8 @@ Playback.defaultProps = {
   onTogglePlay: () => {
     // do nothing
   },
+  intervals: INTERVAL_ORDER,
+  getCurrentInterval: getInterval,
 }
 
 export default Playback
