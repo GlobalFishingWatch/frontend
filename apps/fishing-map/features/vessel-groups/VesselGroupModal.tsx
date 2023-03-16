@@ -25,6 +25,9 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getEventLabel } from 'utils/analytics'
+import { selectLastVisitedWorkspace } from 'features/workspace/workspace.selectors'
+import { updateLocation } from 'routes/routes.actions'
+import { ROUTE_TYPES } from 'routes/routes'
 import {
   IdField,
   resetVesselGroup,
@@ -44,6 +47,7 @@ import {
   MAX_VESSEL_GROUP_VESSELS,
   getVesselInVesselGroupThunk,
   selectCurrentDataviewIds,
+  selectVesselGroupConfirmationMode,
 } from './vessel-groups.slice'
 import styles from './VesselGroupModal.module.css'
 
@@ -62,12 +66,14 @@ function VesselGroupModal(): React.ReactElement {
   const dispatch = useAppDispatch()
   const isModalOpen = useSelector(selectVesselGroupModalOpen)
   const currentDataviewIds = useSelector(selectCurrentDataviewIds)
+  const confirmationMode = useSelector(selectVesselGroupConfirmationMode)
   const searchIdField = useSelector(selectVesselGroupSearchId)
   const editingVesselGroupId = useSelector(selectVesselGroupEditId)
   const vesselGroupVessels = useSelector(selectVesselGroupsVessels)
   const editingVesselGroup = useSelector(selectVesselGroupById(editingVesselGroupId))
   const searchVesselStatus = useSelector(selectVesselGroupSearchStatus)
   const vesselGroupsStatus = useSelector(selectVesselGroupsStatus)
+  const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
   const loading =
     searchVesselStatus === AsyncReducerStatus.Loading ||
     vesselGroupsStatus === AsyncReducerStatus.Loading ||
@@ -173,54 +179,81 @@ function VesselGroupModal(): React.ReactElement {
     [currentDataviewIds, upsertDataviewInstance, urlDataviewInstances]
   )
 
-  const onCreateGroupClick = useCallback(async () => {
-    const vessels: VesselGroupVessel[] = vesselGroupSearchVessels.map((vessel) => {
-      return {
-        vesselId: vessel.id,
-        dataset: vessel.dataset,
+  const onCreateGroupClick = useCallback(
+    async (
+      e: React.MouseEvent<Element, MouseEvent>,
+      { addToDataviews = true, navigateToWorkspace = false } = {}
+    ) => {
+      const vessels: VesselGroupVessel[] = vesselGroupSearchVessels.map((vessel) => {
+        return {
+          vesselId: vessel.id,
+          dataset: vessel.dataset,
+        }
+      })
+      let dispatchedAction
+      if (editingVesselGroupId) {
+        const vesselGroup = {
+          id: editingVesselGroupId,
+          name: groupName,
+          vessels,
+        }
+        dispatchedAction = await dispatch(updateVesselGroupThunk(vesselGroup))
+      } else {
+        const vesselGroup = {
+          name: groupName,
+          vessels,
+          public: createAsPublic,
+        }
+        dispatchedAction = await dispatch(createVesselGroupThunk(vesselGroup))
       }
-    })
-    let dispatchedAction
-    if (editingVesselGroupId) {
-      const vesselGroup = {
-        id: editingVesselGroupId,
-        name: groupName,
-        vessels,
-      }
-      dispatchedAction = await dispatch(updateVesselGroupThunk(vesselGroup))
-    } else {
-      const vesselGroup = {
-        name: groupName,
-        vessels,
-        public: createAsPublic,
-      }
-      dispatchedAction = await dispatch(createVesselGroupThunk(vesselGroup))
-    }
 
-    if (
-      updateVesselGroupThunk.fulfilled.match(dispatchedAction) ||
-      createVesselGroupThunk.fulfilled.match(dispatchedAction)
-    ) {
-      addVesselGroupToDataviewInstance(dispatchedAction.payload.id)
-      close()
-    }
-    uaEvent({
-      category: 'Vessel groups',
-      action: `Create new vessel group`,
-      label: getEventLabel([
-        vessels.length.toString(),
-        ...vessels.map((vessel) => vessel.vesselId),
-      ]),
-    })
-  }, [
-    vesselGroupSearchVessels,
-    editingVesselGroupId,
-    groupName,
-    dispatch,
-    createAsPublic,
-    addVesselGroupToDataviewInstance,
-    close,
-  ])
+      if (
+        updateVesselGroupThunk.fulfilled.match(dispatchedAction) ||
+        createVesselGroupThunk.fulfilled.match(dispatchedAction)
+      ) {
+        if (addToDataviews) {
+          addVesselGroupToDataviewInstance(dispatchedAction.payload.id)
+        }
+        if (navigateToWorkspace && lastVisitedWorkspace) {
+          const { type, ...rest } = lastVisitedWorkspace
+          dispatch(updateLocation(type as ROUTE_TYPES, rest))
+        }
+        close()
+      }
+      uaEvent({
+        category: 'Vessel groups',
+        action: `Create new vessel group`,
+        label: getEventLabel([
+          vessels.length.toString(),
+          ...vessels.map((vessel) => vessel.vesselId),
+        ]),
+      })
+    },
+    [
+      vesselGroupSearchVessels,
+      editingVesselGroupId,
+      groupName,
+      dispatch,
+      createAsPublic,
+      lastVisitedWorkspace,
+      close,
+      addVesselGroupToDataviewInstance,
+    ]
+  )
+
+  const confirmButtonDisabled =
+    loading ||
+    hasVesselsOverflow ||
+    searchVesselStatus === AsyncReducerStatus.Error ||
+    (hasVesselGroupsVessels && groupName === '')
+  const confirmButtonTooltip = hasVesselsOverflow
+    ? t('vesselGroup.tooManyVessels', {
+        count: MAX_VESSEL_GROUP_VESSELS,
+        defaultValue: 'Maximum number of vessels is {{count}}',
+      })
+    : hasVesselGroupsVessels && groupName === ''
+    ? t('vesselGroup.missingName', 'Vessel group name is mandatory')
+    : ''
 
   return (
     <Modal
@@ -305,32 +338,49 @@ function VesselGroupModal(): React.ReactElement {
             {t('common.back', 'back')}
           </Button>
         )}
-        {!fullModalLoading && (
-          <Button
-            disabled={
-              loading ||
-              hasVesselsOverflow ||
-              searchVesselStatus === AsyncReducerStatus.Error ||
-              (hasVesselGroupsVessels && groupName === '')
-            }
-            onClick={hasVesselGroupsVessels ? onCreateGroupClick : onSearchVesselsClick}
-            loading={loading}
-            tooltip={
-              hasVesselsOverflow
-                ? t('vesselGroup.tooManyVessels', {
-                    count: MAX_VESSEL_GROUP_VESSELS,
-                    defaultValue: 'Maximum number of vessels is {{count}}',
-                  })
-                : hasVesselGroupsVessels && groupName === ''
-                ? t('vesselGroup.missingName', 'Vessel group name is mandatory')
-                : ''
-            }
-          >
-            {hasVesselGroupsVessels
-              ? t('common.confirm', 'Confirm')
-              : t('common.continue', 'Continue')}
-          </Button>
-        )}
+        {!fullModalLoading &&
+          (confirmationMode === 'simple' ? (
+            <Button
+              disabled={confirmButtonDisabled}
+              onClick={hasVesselGroupsVessels ? onCreateGroupClick : onSearchVesselsClick}
+              loading={loading}
+              tooltip={confirmButtonTooltip}
+            >
+              {hasVesselGroupsVessels
+                ? t('common.confirm', 'Confirm')
+                : t('common.continue', 'Continue')}
+            </Button>
+          ) : (
+            <Fragment>
+              <Button
+                className={styles.footerButton}
+                disabled={confirmButtonDisabled}
+                onClick={(e) => onCreateGroupClick(e, { addToDataviews: false })}
+                loading={loading}
+                type="secondary"
+                tooltip={
+                  confirmButtonTooltip ||
+                  t(
+                    'vesselGroup.saveForLaterTooltip',
+                    "You'll find the group in the activity layers filters or your user panel button"
+                  )
+                }
+              >
+                {t('vesselGroup.saveForLater', 'Save for later')}
+              </Button>
+              <Button
+                className={styles.footerButton}
+                disabled={confirmButtonDisabled}
+                onClick={(e) =>
+                  onCreateGroupClick(e, { addToDataviews: false, navigateToWorkspace: true })
+                }
+                loading={loading}
+                tooltip={confirmButtonTooltip}
+              >
+                {t('vesselGroup.saveAndFilter', 'Save and filter workspace')}
+              </Button>
+            </Fragment>
+          ))}
       </div>
     </Modal>
   )

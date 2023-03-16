@@ -30,11 +30,13 @@ import { selectDatasetById } from '../datasets/datasets.slice'
 export const MAX_VESSEL_GROUP_VESSELS = 1000
 
 export type IdField = 'vesselId' | 'mmsi'
+export type VesselGroupConfirmationMode = 'simple' | 'multiple'
 
 interface VesselGroupsSliceState extends AsyncReducer<VesselGroup> {
   isModalOpen: boolean
   vesselGroupEditId: string
   currentDataviewIds: string[]
+  confirmationMode: VesselGroupConfirmationMode
   groupVessels: VesselGroupVessel[]
   search: {
     id: IdField
@@ -55,6 +57,7 @@ const initialState: VesselGroupsSliceState = {
   isModalOpen: false,
   vesselGroupEditId: undefined,
   currentDataviewIds: undefined,
+  confirmationMode: 'simple',
   groupVessels: undefined,
   search: {
     id: 'mmsi',
@@ -365,7 +368,10 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
     setVesselGroupEditId: (state, action: PayloadAction<string>) => {
       state.vesselGroupEditId = action.payload
     },
-    setCurrentDataviewIds: (state, action: PayloadAction<string[]>) => {
+    setVesselGroupConfirmationMode: (state, action: PayloadAction<VesselGroupConfirmationMode>) => {
+      state.confirmationMode = action.payload
+    },
+    setVesselGroupCurrentDataviewIds: (state, action: PayloadAction<string[]>) => {
       state.currentDataviewIds = action.payload
     },
     resetVesselGroup: (state) => {
@@ -373,6 +379,7 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
       state.status = AsyncReducerStatus.Idle
       state.isModalOpen = false
       state.vesselGroupEditId = undefined
+      state.confirmationMode = 'simple'
       state.currentDataviewIds = undefined
       state.groupVessels = undefined
       state.search = {
@@ -454,12 +461,13 @@ export const {
   resetVesselGroup,
   resetVesselGroupStatus,
   setVesselGroupEditId,
-  setCurrentDataviewIds,
   setVesselGroupVessels,
   setVesselGroupSearchId,
   setVesselGroupsModalOpen,
   setVesselGroupSearchVessels,
   setNewVesselGroupSearchVessels,
+  setVesselGroupCurrentDataviewIds,
+  setVesselGroupConfirmationMode,
 } = vesselGroupsSlice.actions
 
 export const { selectAll: selectAllVesselGroups, selectById } =
@@ -487,5 +495,7 @@ export const selectNewVesselGroupSearchVessels = (state: RootState) =>
 export const selectVesselGroupsStatusId = (state: RootState) => state.vesselGroups.statusId
 export const selectCurrentDataviewIds = (state: RootState) => state.vesselGroups.currentDataviewIds
 export const selectVesselGroupEditId = (state: RootState) => state.vesselGroups.vesselGroupEditId
+export const selectVesselGroupConfirmationMode = (state: RootState) =>
+  state.vesselGroups.confirmationMode
 
 export default vesselGroupsSlice.reducer

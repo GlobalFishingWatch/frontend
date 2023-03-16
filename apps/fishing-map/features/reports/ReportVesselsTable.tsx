@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux'
+import { batch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { CSVLink } from 'react-csv'
@@ -16,7 +16,10 @@ import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { selectReportVesselFilter, selectTimeRange } from 'features/app/app.selectors'
 import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { setCurrentDataviewIds } from 'features/vessel-groups/vessel-groups.slice'
+import {
+  setVesselGroupConfirmationMode,
+  setVesselGroupCurrentDataviewIds,
+} from 'features/vessel-groups/vessel-groups.slice'
 import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import { getVesselGearOrType } from 'features/reports/reports.utils'
 import {
@@ -102,9 +105,12 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
   }
   const onAddToVesselGroup = () => {
     const dataviewIds = heatmapDataviews.map(({ id }) => id)
-    if (dataviewIds?.length) {
-      dispatch(setCurrentDataviewIds(dataviewIds))
-    }
+    batch(() => {
+      dispatch(setVesselGroupConfirmationMode('multiple'))
+      if (dataviewIds?.length) {
+        dispatch(setVesselGroupCurrentDataviewIds(dataviewIds))
+      }
+    })
   }
 
   const isShowingMore = pagination.resultsPerPage === REPORT_SHOW_MORE_VESSELS_PER_PAGE
