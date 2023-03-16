@@ -14,7 +14,7 @@ export default function ReportSummaryTagsPlaceholder() {
             style={{
               marginTop: '0.5rem',
               marginLeft: '2rem',
-              width: '10rem',
+              width: '3rem',
               borderRadius: '0.3rem',
             }}
             className={cx(styles.block, styles.XL)}
@@ -31,7 +31,7 @@ export default function ReportSummaryTagsPlaceholder() {
             style={{
               marginTop: '0.5rem',
               marginLeft: '2rem',
-              width: '3rem',
+              width: '8rem',
               borderRadius: '0.3rem',
             }}
             className={cx(styles.block, styles.XL)}

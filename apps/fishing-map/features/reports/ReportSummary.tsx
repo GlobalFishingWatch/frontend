@@ -19,6 +19,8 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import ReportSummaryPlaceholder from 'features/reports/placeholders/ReportSummaryPlaceholder'
 import ReportSummaryTagsPlaceholder from 'features/reports/placeholders/ReportSummaryTagsPlaceholder'
+import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
+import { listAsSentence } from 'utils/shared'
 import { selectReportVesselsHours, selectReportVesselsNumber } from './reports.selectors'
 import styles from './ReportSummary.module.css'
 
@@ -26,6 +28,8 @@ type ReportSummaryProps = {
   activityUnit: ReportActivityUnit
   reportStatus: AsyncReducerStatus
 }
+
+const PROPERTIES_EXCLUDED = ['flag', 'geartype']
 
 export default function ReportSummary({ activityUnit, reportStatus }: ReportSummaryProps) {
   const { t, i18n } = useTranslation()
@@ -35,6 +39,13 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
   const { loading: timeseriesLoading, layersTimeseriesFiltered } = useFilteredTimeSeries()
   const reportHours = useSelector(selectReportVesselsHours)
   const dataviews = useSelector(selectActiveReportDataviews)
+  const commonProperties = useMemo(() => {
+    return getCommonProperties(dataviews).filter(
+      (property) =>
+        !dataviews[0].config.filters?.[property] || !PROPERTIES_EXCLUDED.includes(property)
+    )
+  }, [dataviews])
+
   const summary = useMemo(() => {
     if (!dataviews.length) return
     const datasetTitles = dataviews?.map((dataview) =>
@@ -51,7 +62,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
       if (reportHours) {
         return t('analysis.summary', {
           defaultValue:
-            '<strong>{{vessels}} $t(common.vessel_other)</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> {{activityType}} in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
+            '<strong>{{vessels}} $t(common.vessel_other){{sources}}</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
           vessels: formatI18nNumber(reportVessels || 0, {
             locale: i18n.language as Locale,
           }),
@@ -65,6 +76,11 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
           activityType: datasetTitle,
           start: formatI18nDate(timerange?.start),
           end: formatI18nDate(timerange?.end),
+          sources: commonProperties.includes('source')
+            ? ` (${listAsSentence(
+                getSourcesSelectedInDataview(dataviews[0]).map((source) => source.label)
+              )})`
+            : '',
         })
       }
     }
@@ -75,7 +91,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
       const timeseriesImprecision = ((timeseriesMaxHours - timeseriesHours) / timeseriesHours) * 100
       return t('analysis.summaryNoVessels', {
         defaultValue:
-          '<strong>{{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
+          '<strong>{{sources}} {{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
         activityQuantity: `<span title="± ${timeseriesImprecision.toFixed(2)}%">~${formatI18nNumber(
           timeseriesHours.toFixed(),
           {
@@ -89,11 +105,17 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
         activityType: datasetTitle,
         start: formatI18nDate(timerange?.start),
         end: formatI18nDate(timerange?.end),
+        sources: commonProperties.includes('source')
+          ? `(${listAsSentence(
+              getSourcesSelectedInDataview(dataviews[0]).map((source) => source.label)
+            )}) `
+          : '',
       })
     }
   }, [
     activityUnit,
     category,
+    commonProperties,
     dataviews,
     i18n.language,
     layersTimeseriesFiltered,
@@ -120,7 +142,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
               key={dataview.id}
               dataview={dataview}
               index={index}
-              hiddenProperties={getCommonProperties(dataviews)}
+              hiddenProperties={commonProperties}
               availableFields={FIELDS}
             />
           ))

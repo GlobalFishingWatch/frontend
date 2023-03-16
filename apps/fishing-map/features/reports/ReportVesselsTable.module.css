@@ -7,7 +7,7 @@
   width: 100%;
   border-collapse: collapse;
   display: grid;
-  grid-template-columns: max-content 2fr minmax(max-content, 1fr) 2fr 1fr minmax(max-content, 1fr);
+  grid-template-columns: max-content 2fr max-content 2fr 2fr max-content;
 }
 
 .spansFirstTwoColumns {
