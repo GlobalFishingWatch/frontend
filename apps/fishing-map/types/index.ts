@@ -59,7 +59,11 @@ export type ReportActivityTimeComparison = {
   duration: number
   durationType: 'days' | 'months'
 }
-export type ReportCategory = DataviewCategory.Activity | DataviewCategory.Detections
+export type ReportCategory =
+  | DataviewCategory.Activity
+  | DataviewCategory.Detections
+  | DataviewCategory.Environment
+
 export type ReportVesselGraph =
   | typeof REPORT_VESSELS_GRAPH_GEARTYPE
   | typeof REPORT_VESSELS_GRAPH_FLAG
