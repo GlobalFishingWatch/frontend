@@ -27,6 +27,8 @@ type ReportSummaryProps = {
   reportStatus: AsyncReducerStatus
 }
 
+const PROPERTIES_EXCLUDED = ['flag', 'geartype']
+
 export default function ReportSummary({ activityUnit, reportStatus }: ReportSummaryProps) {
   const { t, i18n } = useTranslation()
   const timerange = useSelector(selectTimeRange)
@@ -35,6 +37,11 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
   const { loading: timeseriesLoading, layersTimeseriesFiltered } = useFilteredTimeSeries()
   const reportHours = useSelector(selectReportVesselsHours)
   const dataviews = useSelector(selectActiveReportDataviews)
+  const commonProperties = useMemo(() => {
+    return getCommonProperties(dataviews).filter(
+      (property) => !PROPERTIES_EXCLUDED.includes(property)
+    )
+  }, [dataviews])
   const summary = useMemo(() => {
     if (!dataviews.length) return
     const datasetTitles = dataviews?.map((dataview) =>
@@ -120,7 +127,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
               key={dataview.id}
               dataview={dataview}
               index={index}
-              hiddenProperties={getCommonProperties(dataviews)}
+              hiddenProperties={commonProperties}
               availableFields={FIELDS}
             />
           ))
