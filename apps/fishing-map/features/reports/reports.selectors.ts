@@ -108,8 +108,13 @@ export const selectReportVesselsHours = createSelector([selectReportActivityFlat
 })
 
 export const selectReportVesselsGraphData = createSelector(
-  [selectReportVesselGraph, selectReportVesselsData, selectActiveReportDataviews],
-  (reportGraph, reportData, dataviews) => {
+  [
+    selectReportVesselGraph,
+    selectReportVesselsData,
+    selectActiveReportDataviews,
+    selectReportVesselFilter,
+  ],
+  (reportGraph, reportData, dataviews, filter) => {
     if (!reportData?.length) return null
 
     const dataByDataview = dataviews.map((dataview, index) => {
@@ -120,15 +125,19 @@ export const selectReportVesselsGraphData = createSelector(
       return { id: dataview.id, data: dataByKey }
     })
 
-    const distributionKeys = uniq(dataByDataview.flatMap(({ data }) => Object.keys(data)))
+    const allDistributionKeys = uniq(dataByDataview.flatMap(({ data }) => Object.keys(data)))
 
     const dataviewIds = dataviews.map((d) => d.id)
-    const data = distributionKeys
-      .map((key) => {
+    const data = allDistributionKeys
+      .flatMap((key) => {
         const distributionData = { name: key }
         dataByDataview.forEach(({ id, data }) => {
-          distributionData[id] = uniqBy(data?.[key] || [], 'vesselId').length
+          distributionData[id] = getVesselsFiltered(
+            (data?.[key] || []) as ReportVesselWithDatasets[],
+            filter
+          ).length
         })
+        if (sum(dataviewIds.map((d) => distributionData[d])) === 0) return []
         return distributionData
       })
       .sort((a, b) => {
@@ -137,7 +146,7 @@ export const selectReportVesselsGraphData = createSelector(
         return sum(dataviewIds.map((d) => b[d])) - sum(dataviewIds.map((d) => a[d]))
       })
 
-    return { distributionKeys, data }
+    return { distributionKeys: data.map((d) => d.name), data }
   }
 )
 
@@ -262,7 +271,7 @@ function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: string)
               (item) => cleanFlagState(t(`flags:${item.flag as string}` as any, item.flag)),
               (item) => t(`vessel.gearTypes.${item.geartype}` as any, item.geartype),
             ],
-            threshold: matchSorter.rankings.ACRONYM,
+            threshold: matchSorter.rankings.EQUAL,
           })
         )
         .map((vessel) => vessel.vesselId)
