@@ -143,7 +143,9 @@ export default function ReportActivityGraph({ start, end, data }: ReportActivity
             tickLine={false}
             tickCount={4}
           />
-          <Tooltip content={<ReportGraphTooltip timeChunkInterval={data?.interval} />} />
+          {dataFormated?.length && (
+            <Tooltip content={<ReportGraphTooltip timeChunkInterval={data?.interval} />} />
+          )}
           {data?.sublayers.map(({ id, legend }, index) => (
             <Line
               key={`${id}-line`}

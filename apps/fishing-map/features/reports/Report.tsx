@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniqBy } from 'lodash'
@@ -18,13 +18,17 @@ import { isGuestUser } from 'features/user/user.slice'
 import { ReportCategory, TimebarVisualisations } from 'types'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { SUPPORT_EMAIL } from 'data/config'
-import { useTimebarVisualisationConnect } from 'features/timebar/timebar.hooks'
+import {
+  useTimebarEnvironmentConnect,
+  useTimebarVisualisationConnect,
+} from 'features/timebar/timebar.hooks'
 import { useFetchReportArea, useFetchReportVessel } from './reports.hooks'
 import ReportSummary from './ReportSummary'
 import ReportTitle from './ReportTitle'
 import ReportActivity from './ReportActivity'
 import ReportVessels from './ReportVessels'
 import ReportDownload from './ReportDownload'
+import ReportEnvironment from './ReportEnvironment'
 import styles from './Report.module.css'
 
 export type ReportActivityUnit = 'hour' | 'detection'
@@ -95,17 +99,12 @@ function ActivityReport({ reportName }: { reportName: string }) {
   )
 }
 
-function EnvironmentReport({ reportName }: { reportName: string }) {
-  return <p>environment report</p>
-}
-
 export default function Report() {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const reportCategory = useSelector(selectReportCategory)
-  const dataviewCategories = uniqBy(useSelector(selectActiveTemporalgridDataviews), 'category').map(
-    (d) => d.category
-  )
+  const dataviews = useSelector(selectActiveTemporalgridDataviews)
+  const dataviewCategories = uniqBy(dataviews, 'category').map((d) => d.category)
   const categoryTabs: Tab[] = [
     {
       id: DataviewCategory.Activity,
@@ -129,22 +128,39 @@ export default function Report() {
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const { data: areaDetail } = useFetchReportArea()
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
+  const { dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
+
+  const setTimebarVisualizationByCategory = useCallback(
+    (category: ReportCategory) => {
+      if (category === DataviewCategory.Environment && dataviews?.length > 0) {
+        dispatchTimebarVisualisation(TimebarVisualisations.Environment)
+        dispatchTimebarSelectedEnvId(dataviews[0]?.id)
+      } else {
+        dispatchTimebarVisualisation(
+          category === DataviewCategory.Detections
+            ? TimebarVisualisations.HeatmapDetections
+            : TimebarVisualisations.HeatmapActivity
+        )
+      }
+    },
+    [dataviews, dispatchTimebarSelectedEnvId, dispatchTimebarVisualisation]
+  )
+
+  useEffect(() => {
+    setTimebarVisualizationByCategory(reportCategory)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reportCategory])
+
+  const handleTabClick = (option: Tab<ReportCategory>) => {
+    dispatchQueryParams({ reportCategory: option.id, reportVesselPage: 0 })
+  }
 
   if (
     workspaceStatus === AsyncReducerStatus.Error ||
     workspaceVesselGroupsStatus === AsyncReducerStatus.Error
   ) {
     return <WorkspaceError />
-  }
-
-  const handleTabClick = (option: Tab<ReportCategory>) => {
-    dispatchTimebarVisualisation(
-      option.id === DataviewCategory.Detections
-        ? TimebarVisualisations.HeatmapDetections
-        : TimebarVisualisations.HeatmapActivity
-    )
-    dispatchQueryParams({ reportCategory: option.id, reportVesselPage: 0 })
   }
 
   return (
@@ -154,7 +170,7 @@ export default function Report() {
         <Tabs tabs={filteredCategoryTabs} activeTab={reportCategory} onTabClick={handleTabClick} />
       )}
       {reportCategory === DataviewCategory.Environment ? (
-        <EnvironmentReport reportName="environment" />
+        <ReportEnvironment />
       ) : (
         <ActivityReport reportName={areaDetail?.name} />
       )}
