@@ -98,7 +98,7 @@ const CustomTick = (props: any) => {
   const tooltip = isOtherCategory ? (
     <ul>
       {othersData.map(({ name, value }) => (
-        <li key={name}>{`${getTickLabel(name)}: ${value}`}</li>
+        <li key={`${name}-${value}`}>{`${getTickLabel(name)}: ${value}`}</li>
       ))}
     </ul>
   ) : (
@@ -124,7 +124,7 @@ const CustomTick = (props: any) => {
         onClick={onLabelClick}
       >
         {labelChunksClean.map((chunk) => (
-          <Fragment>
+          <Fragment key={chunk}>
             <tspan key={chunk} textAnchor="middle" x="0" dy={12}>
               {chunk}{' '}
             </tspan>
