@@ -10,7 +10,7 @@ import layerPanelStyles from 'features/workspace/shared/LayerPanel.module.css'
 import { getDatasetLabel, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import styles from './ReportSummaryTags.module.css'
 
-const allAvailableProperties = ['dataset', 'source', 'flag']
+const allAvailableProperties = ['dataset', 'source', 'flag', 'vessel-groups']
 
 type LayerPanelProps = {
   index: number

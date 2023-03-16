@@ -8,11 +8,13 @@ import { format } from 'd3-format'
 import { DateTime } from 'luxon'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { sortStrings } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
 import {
   getSchemaFieldsSelectedInDataview,
+  getSchemaFilterOperationInDataview,
   SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
 
@@ -131,20 +133,25 @@ export const getCommonProperties = (dataviews: UrlDataviewInstance[]) => {
     }
 
     const firstDataviewFlags = getSerializedFilterFields(dataviews[0], 'flag')
+    const firstDataviewFlagOperator = getSchemaFilterOperationInDataview(dataviews[0], 'flag')
     if (
       dataviews?.every((dataview) => {
         const flags = getSerializedFilterFields(dataview, 'flag')
-        return flags === firstDataviewFlags
+        const flagOperator = getSchemaFilterOperationInDataview(dataview, 'flag')
+        return flags === firstDataviewFlags && flagOperator === firstDataviewFlagOperator
       })
     ) {
       commonProperties.push('flag')
     }
 
-    // Collect common filters that are not 'flag'
+    // Collect common filters that are not 'flag' and 'vessel-groups'
+    // as we will have the vessel-group in all of them when added from report
     const firstDataviewGenericFilterKeys =
       dataviews[0].config && dataviews[0].config?.filters
-        ? Object.keys(dataviews[0].config?.filters).filter((key) => key !== 'flag')
-        : []
+        ? (Object.keys(dataviews[0].config?.filters) as SupportedDatasetSchema[]).filter(
+            (key) => key !== 'flag' && key !== 'vessel-groups'
+          )
+        : ([] as SupportedDatasetSchema[])
 
     const genericFilters: Record<string, string>[] = []
     const genericExcludedFilters: Record<string, string>[] = []
@@ -168,7 +175,7 @@ export const getCommonProperties = (dataviews: UrlDataviewInstance[]) => {
           .map((f) => f.label.toLocaleLowerCase())
           .join(', ')
 
-        if (dataviews[0].config?.filterOperators?.[filterKey] === 'exclude') {
+        if (getSchemaFilterOperationInDataview(dataviews[0], filterKey) === EXCLUDE_FILTER_ID) {
           genericExcludedFilters.push({
             keyLabel,
             valuesLabel,
