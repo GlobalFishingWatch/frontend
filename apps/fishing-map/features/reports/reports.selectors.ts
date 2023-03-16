@@ -40,6 +40,7 @@ export type ReportVesselWithMeta = ReportVessel & {
   sourceColor: string
   activityDatasetId: string
   category: DataviewCategory
+  dataviewId: string
 }
 export type ReportVesselWithDatasets = Partial<ReportVessel> &
   Pick<ReportVesselWithMeta, 'sourceColor'> & {
@@ -84,6 +85,7 @@ export const selectReportActivityFlatten = createSelector(
               ? t('common.unknownVessel', 'Unknown Vessel')
               : vessel.shipName,
             activityDatasetId: datasetId,
+            dataviewId: dataview?.id,
             category: dataview?.category,
             sourceColor: dataview?.config?.color,
           } as ReportVesselWithMeta
@@ -107,88 +109,6 @@ export const selectReportVesselsHours = createSelector([selectReportActivityFlat
   return vessels.map((vessel) => vessel?.hours || 0).reduce((acc, hours) => acc + hours, 0)
 })
 
-export const selectReportVesselsGraphData = createSelector(
-  [
-    selectReportVesselGraph,
-    selectReportVesselsData,
-    selectActiveReportDataviews,
-    selectReportVesselFilter,
-  ],
-  (reportGraph, reportData, dataviews, filter) => {
-    if (!reportData?.length) return null
-
-    const dataByDataview = dataviews.map((dataview, index) => {
-      const dataviewData = reportData[index]
-        ? Object.values(reportData[index]).flatMap((v) => v || [])
-        : []
-      const dataByKey = groupBy(dataviewData, reportGraph.toLowerCase())
-      return { id: dataview.id, data: dataByKey }
-    })
-
-    const allDistributionKeys = uniq(dataByDataview.flatMap(({ data }) => Object.keys(data)))
-
-    const dataviewIds = dataviews.map((d) => d.id)
-    const data = allDistributionKeys
-      .flatMap((key) => {
-        const distributionData = { name: key }
-        dataByDataview.forEach(({ id, data }) => {
-          distributionData[id] = getVesselsFiltered(
-            (data?.[key] || []) as ReportVesselWithDatasets[],
-            filter
-          ).length
-        })
-        if (sum(dataviewIds.map((d) => distributionData[d])) === 0) return []
-        return distributionData
-      })
-      .sort((a, b) => {
-        if (EMPTY_API_VALUES.includes(a.name)) return 1
-        if (EMPTY_API_VALUES.includes(b.name)) return -1
-        return sum(dataviewIds.map((d) => b[d])) - sum(dataviewIds.map((d) => a[d]))
-      })
-
-    return { distributionKeys: data.map((d) => d.name), data }
-  }
-)
-
-export const selectReportVesselsGraphDataGrouped = createSelector(
-  [selectReportVesselsGraphData, selectActiveReportDataviews],
-  (reportGraph, dataviews) => {
-    if (!reportGraph?.data?.length) return null
-    if (reportGraph?.distributionKeys.length <= MAX_CATEGORIES) return reportGraph.data
-    const dataviewIds = dataviews.map((d) => d.id)
-    const top = reportGraph.data.slice(0, MAX_CATEGORIES)
-    const rest = reportGraph.data.slice(MAX_CATEGORIES)
-    const others = {
-      name: OTHERS_CATEGORY_LABEL,
-      ...Object.fromEntries(
-        dataviewIds.map((dataview) => [dataview, sum(rest.map((key) => key[dataview]))])
-      ),
-    }
-    return [...top, others]
-  }
-)
-const defaultOthersLabel = []
-export const selectReportVesselsGraphDataOthers = createSelector(
-  [selectReportVesselsGraphData],
-  (reportGraph) => {
-    if (!reportGraph?.data?.length) return null
-    if (reportGraph?.distributionKeys.length <= MAX_CATEGORIES) return defaultOthersLabel
-    const others = reportGraph.data.slice(MAX_CATEGORIES)
-    return reportGraph.distributionKeys
-      .flatMap((key) => {
-        const other = others.find((o) => o.name === key)
-        if (!other) return []
-        const { name, ...rest } = other
-        return { name, value: sum(Object.values(rest)) }
-      })
-      .sort((a, b) => {
-        if (EMPTY_API_VALUES.includes(a.name)) return 1
-        if (EMPTY_API_VALUES.includes(b.name)) return -1
-        return b.value - a.value
-      })
-  }
-)
-
 export const selectReportVesselsList = createSelector(
   [selectReportActivityFlatten, selectAllDatasets, selectReportCategory],
   (vessels, datasets, reportCategory) => {
@@ -201,11 +121,13 @@ export const selectReportVesselsList = createSelector(
         const trackDatasetId = getRelatedDatasetsByType(infoDataset, DatasetTypes.Tracks)?.[0]?.id
         const trackDataset = datasets.find((d) => d.id === trackDatasetId)
         return {
+          dataviewId: vesselActivity[0]?.dataviewId,
           vesselId: vesselActivity[0]?.vesselId,
           shipName: vesselActivity[0]?.shipName,
           mmsi: vesselActivity[0]?.mmsi,
           flag: vesselActivity[0]?.flag,
           geartype: vesselActivity[0]?.geartype,
+          vesselType: vesselActivity[0]?.vesselType,
           hours: sumBy(vesselActivity, 'hours'),
           infoDataset,
           trackDataset,
@@ -240,7 +162,7 @@ export function cleanFlagState(flagState: string) {
   return flagState.replace(/,/g, '')
 }
 
-function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: string) {
+export function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: string) {
   if (!filter || !filter.length) {
     return vessels
   }
@@ -290,7 +212,6 @@ export const selectReportDownloadVessels = createSelector(
   [selectReportVesselsListWithAllInfo, selectReportVesselFilter],
   (vessels, filter) => {
     if (!vessels?.length) return defaultDownloadVessels
-
     return getVesselsFiltered(vessels, filter)
   }
 )
@@ -371,5 +292,81 @@ export const selectTimeComparisonValues = createSelector(
       compareStart: timeComparison.compareStart,
       compareEnd,
     }
+  }
+)
+
+export const selectReportVesselsGraphData = createSelector(
+  [selectReportVesselGraph, selectReportVesselsFiltered, selectActiveReportDataviews],
+  (reportGraph, vesselsFiltered, dataviews) => {
+    if (!vesselsFiltered?.length) return null
+
+    const reportData = groupBy(vesselsFiltered, 'dataviewId')
+
+    const dataByDataview = dataviews.map((dataview) => {
+      const dataviewData = reportData[dataview.id]
+        ? Object.values(reportData[dataview.id]).flatMap((v) => v || [])
+        : []
+      const dataByKey = groupBy(dataviewData, reportGraph.toLowerCase())
+      return { id: dataview.id, data: dataByKey }
+    })
+
+    const allDistributionKeys = uniq(dataByDataview.flatMap(({ data }) => Object.keys(data)))
+
+    const dataviewIds = dataviews.map((d) => d.id)
+    const data = allDistributionKeys
+      .flatMap((key) => {
+        const distributionData = { name: key }
+        dataByDataview.forEach(({ id, data }) => {
+          distributionData[id] = (data?.[key] || []).length
+        })
+        if (sum(dataviewIds.map((d) => distributionData[d])) === 0) return []
+        return distributionData
+      })
+      .sort((a, b) => {
+        if (EMPTY_API_VALUES.includes(a.name)) return 1
+        if (EMPTY_API_VALUES.includes(b.name)) return -1
+        return sum(dataviewIds.map((d) => b[d])) - sum(dataviewIds.map((d) => a[d]))
+      })
+
+    return { distributionKeys: data.map((d) => d.name), data }
+  }
+)
+
+export const selectReportVesselsGraphDataGrouped = createSelector(
+  [selectReportVesselsGraphData, selectActiveReportDataviews],
+  (reportGraph, dataviews) => {
+    if (!reportGraph?.data?.length) return null
+    if (reportGraph?.distributionKeys.length <= MAX_CATEGORIES) return reportGraph.data
+    const dataviewIds = dataviews.map((d) => d.id)
+    const top = reportGraph.data.slice(0, MAX_CATEGORIES)
+    const rest = reportGraph.data.slice(MAX_CATEGORIES)
+    const others = {
+      name: OTHERS_CATEGORY_LABEL,
+      ...Object.fromEntries(
+        dataviewIds.map((dataview) => [dataview, sum(rest.map((key) => key[dataview]))])
+      ),
+    }
+    return [...top, others]
+  }
+)
+const defaultOthersLabel = []
+export const selectReportVesselsGraphDataOthers = createSelector(
+  [selectReportVesselsGraphData],
+  (reportGraph) => {
+    if (!reportGraph?.data?.length) return null
+    if (reportGraph?.distributionKeys.length <= MAX_CATEGORIES) return defaultOthersLabel
+    const others = reportGraph.data.slice(MAX_CATEGORIES)
+    return reportGraph.distributionKeys
+      .flatMap((key) => {
+        const other = others.find((o) => o.name === key)
+        if (!other) return []
+        const { name, ...rest } = other
+        return { name, value: sum(Object.values(rest)) }
+      })
+      .sort((a, b) => {
+        if (EMPTY_API_VALUES.includes(a.name)) return 1
+        if (EMPTY_API_VALUES.includes(b.name)) return -1
+        return b.value - a.value
+      })
   }
 )

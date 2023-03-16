@@ -527,6 +527,16 @@
       "trollers": "Troller",
       "tuna_purse_seines": "Tuna Purse Seine"
     },
+    "vesselTypes": {
+      "fishing": "Fishing",
+      "carrier": "Carrier",
+      "cargo": "Cargo",
+      "bunker_or_tanker": "Bunker or tanker",
+      "passenger": "Passenger",
+      "seismic_vessel": "Seismic vessel",
+      "other_non_fishing": "Other non fishing",
+      "unknown": "Unknown"
+    },
     "grossTonnageRange": "Gross Tonnage range",
     "imo": "IMO",
     "lastTransmissionDate": "Last transmission date",

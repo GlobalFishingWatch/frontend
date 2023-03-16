@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { CSVLink } from 'react-csv'
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
 import { DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
@@ -18,11 +18,12 @@ import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data
 import {
   EMPTY_API_VALUES,
   ReportVesselWithDatasets,
-  selectReportDownloadVessels,
   selectReportVesselsFiltered,
   selectReportVesselsList,
+  selectReportVesselsListWithAllInfo,
   selectReportVesselsPaginated,
   selectReportVesselsPagination,
+  getVesselsFiltered,
 } from './reports.selectors'
 import { ReportActivityUnit } from './Report'
 import styles from './ReportVesselsTable.module.css'
@@ -35,15 +36,20 @@ type ReportVesselTableProps = {
 export default function ReportVesselsTable({ activityUnit, reportName }: ReportVesselTableProps) {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
+  const [allVesselsWithAllInfoFiltered, setAllVesselsWithAllInfoFiltered] = useState([])
+  const allVesselsWithAllInfo = useSelector(selectReportVesselsListWithAllInfo)
   const allVessels = useSelector(selectReportVesselsList)
   const allFilteredVessels = useSelector(selectReportVesselsFiltered)
-  const downloadVessels = useSelector(selectReportDownloadVessels)
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const vessels = useSelector(selectReportVesselsPaginated)
   const reportVesselFilter = useSelector(selectReportVesselFilter)
   const pagination = useSelector(selectReportVesselsPagination)
   const vesselsInWorkspace = useSelector(selectActiveTrackDataviews)
   const { start, end } = useSelector(selectTimeRange)
+
+  const getDownloadVessels = () => {
+    setAllVesselsWithAllInfoFiltered(getVesselsFiltered(allVesselsWithAllInfo, reportVesselFilter))
+  }
 
   const onVesselClick = async (
     ev: React.MouseEvent<Element, MouseEvent>,
@@ -104,7 +110,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
           </div>
           <div className={styles.header}>{t('vessel.mmsi', 'mmsi')}</div>
           <div className={styles.header}>{t('layer.flagState_one', 'Flag state')}</div>
-          <div className={styles.header}>{t('vessel.gearType_short', 'gear')}</div>
+          <div className={styles.header}>{t('vessel.vessel_type', 'Vessel Type')}</div>
           <div className={cx(styles.header, styles.right)}>
             {activityUnit === 'hour'
               ? t('common.hour_other', 'hours')
@@ -119,10 +125,9 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
             const isLastRow = i === vessels.length - 1
             const flag = t(`flags:${vessel.flag as string}` as any, EMPTY_FIELD_PLACEHOLDER)
             const flagInteractionEnabled = !EMPTY_API_VALUES.includes(vessel.flag)
-            const gearType = t(
-              `vessel.gearTypes.${vessel.geartype}` as any,
-              EMPTY_FIELD_PLACEHOLDER
-            )
+            const gearType = vessel.geartype
+              ? t(`vessel.gearTypes.${vessel.geartype}` as any, vessel.geartype)
+              : t(`vessel.vesselTypes.${vessel.vesselType}` as any, vessel.vesselType)
             const gearTypeInteractionEnabled = !EMPTY_API_VALUES.includes(vessel.geartype)
             return (
               <Fragment key={vessel.vesselId}>
@@ -235,11 +240,6 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                 } per page`,
               })}
             </label>
-            {/* <IconButton
-              icon={isShowingMore ? 'arrow-top' : 'arrow-down'}
-              onClick={isShowingMore ? onShowLessClick : onShowMoreClick}
-              size="tiny"
-            /> */}
             <span className={cx(styles.noWrap, styles.right)}>
               {reportVesselFilter && (
                 <Fragment>
@@ -256,9 +256,13 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
             vessels={reportVesselFilter ? allFilteredVessels : allVessels}
             showCount={false}
           />
-          <Button className={styles.expand} disabled={!downloadVessels?.length}>
-            {downloadVessels?.length ? (
-              <CSVLink filename={`${reportName}-${start}-${end}.csv`} data={downloadVessels}>
+          <Button className={styles.expand} disabled={!allVesselsWithAllInfo?.length}>
+            {allVesselsWithAllInfo?.length ? (
+              <CSVLink
+                filename={`${reportName}-${start}-${end}.csv`}
+                onClick={getDownloadVessels}
+                data={allVesselsWithAllInfoFiltered}
+              >
                 {t('analysis.downloadVesselsList', 'Download csv')}
               </CSVLink>
             ) : (
