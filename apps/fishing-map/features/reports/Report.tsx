@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniqBy } from 'lodash'
@@ -8,7 +8,7 @@ import { isAuthError } from '@globalfishingwatch/api-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectReportCategory, selectTimeRange } from 'features/app/app.selectors'
-import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectActiveTemporalgridDataviews } from 'features/dataviews/dataviews.selectors'
 import WorkspaceError from 'features/workspace/WorkspaceError'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { selectWorkspaceVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
@@ -18,64 +18,29 @@ import { isGuestUser } from 'features/user/user.slice'
 import { ReportCategory, TimebarVisualisations } from 'types'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { SUPPORT_EMAIL } from 'data/config'
-import { useTimebarVisualisationConnect } from 'features/timebar/timebar.hooks'
+import {
+  useTimebarEnvironmentConnect,
+  useTimebarVisualisationConnect,
+} from 'features/timebar/timebar.hooks'
 import { useFetchReportArea, useFetchReportVessel } from './reports.hooks'
 import ReportSummary from './ReportSummary'
 import ReportTitle from './ReportTitle'
 import ReportActivity from './ReportActivity'
 import ReportVessels from './ReportVessels'
 import ReportDownload from './ReportDownload'
+import ReportEnvironment from './ReportEnvironment'
 import styles from './Report.module.css'
 
 export type ReportActivityUnit = 'hour' | 'detection'
 
-export default function Report() {
+function ActivityReport({ reportName }: { reportName: string }) {
   const { t } = useTranslation()
-  const { dispatchQueryParams } = useLocationConnect()
   const reportCategory = useSelector(selectReportCategory)
-  const guestUser = useSelector(isGuestUser)
   const timerange = useSelector(selectTimeRange)
+  const guestUser = useSelector(isGuestUser)
   const timerangeTooLong = !getDownloadReportSupported(timerange.start, timerange.end)
-  const dataviewCategories = uniqBy(useSelector(selectActiveHeatmapDataviews), 'category').map(
-    (d) => d.category
-  )
-  const categoryTabs: Tab[] = [
-    {
-      id: DataviewCategory.Activity,
-      title: t('common.activity', 'Activity'),
-      content: '',
-    },
-    {
-      id: DataviewCategory.Detections,
-      title: t('common.detections', 'Detections'),
-      content: '',
-    },
-  ]
-  const filteredCategoryTabs = categoryTabs.filter((tab) =>
-    dataviewCategories.includes(tab.id as DataviewCategory)
-  )
   const { status: reportStatus, error: statusError } = useFetchReportVessel()
-  const { data: areaDetail } = useFetchReportArea()
-  const workspaceStatus = useSelector(selectWorkspaceStatus)
   const hasVessels = useSelector(selectHasReportVessels)
-  const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
-  const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
-
-  if (
-    workspaceStatus === AsyncReducerStatus.Error ||
-    workspaceVesselGroupsStatus === AsyncReducerStatus.Error
-  ) {
-    return <WorkspaceError />
-  }
-
-  const handleTabClick = (option: Tab<ReportCategory>) => {
-    dispatchTimebarVisualisation(
-      option.id === DataviewCategory.Detections
-        ? TimebarVisualisations.HeatmapDetections
-        : TimebarVisualisations.HeatmapActivity
-    )
-    dispatchQueryParams({ reportCategory: option.id, reportVesselPage: 0 })
-  }
 
   // TODO get this from datasets config
   const activityUnit = reportCategory === DataviewCategory.Activity ? 'hour' : 'detection'
@@ -84,20 +49,15 @@ export default function Report() {
   const reportError = reportStatus === AsyncReducerStatus.Error
   const reportLoaded = reportStatus === AsyncReducerStatus.Finished
   const hasAuthError = reportError && isAuthError(statusError)
-
   return (
     <Fragment>
-      <ReportTitle area={areaDetail} />
-      {filteredCategoryTabs.length > 1 && (
-        <Tabs tabs={filteredCategoryTabs} activeTab={reportCategory} onTabClick={handleTabClick} />
-      )}
       <ReportSummary activityUnit={activityUnit} reportStatus={reportStatus} />
       <ReportActivity />
       {reportLoading && <ReportVesselsPlaceholder />}
       {reportLoaded ? (
         hasVessels ? (
           <Fragment>
-            <ReportVessels activityUnit={activityUnit} reportName={areaDetail?.name} />
+            <ReportVessels activityUnit={activityUnit} reportName={reportName} />
             <ReportDownload />
           </Fragment>
         ) : (
@@ -134,6 +94,85 @@ export default function Report() {
             'Reports are only allowed for time ranges up to one year'
           )}
         </p>
+      )}
+    </Fragment>
+  )
+}
+
+export default function Report() {
+  const { t } = useTranslation()
+  const { dispatchQueryParams } = useLocationConnect()
+  const reportCategory = useSelector(selectReportCategory)
+  const dataviews = useSelector(selectActiveTemporalgridDataviews)
+  const dataviewCategories = uniqBy(dataviews, 'category').map((d) => d.category)
+  const categoryTabs: Tab[] = [
+    {
+      id: DataviewCategory.Activity,
+      title: t('common.activity', 'Activity'),
+      content: '',
+    },
+    {
+      id: DataviewCategory.Detections,
+      title: t('common.detections', 'Detections'),
+      content: '',
+    },
+    {
+      id: DataviewCategory.Environment,
+      title: t('common.environment', 'Environment'),
+      content: '',
+    },
+  ]
+  const filteredCategoryTabs = categoryTabs.filter((tab) =>
+    dataviewCategories.includes(tab.id as DataviewCategory)
+  )
+  const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const { data: areaDetail } = useFetchReportArea()
+  const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
+  const { dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
+  const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
+
+  const setTimebarVisualizationByCategory = useCallback(
+    (category: ReportCategory) => {
+      if (category === DataviewCategory.Environment && dataviews?.length > 0) {
+        dispatchTimebarVisualisation(TimebarVisualisations.Environment)
+        dispatchTimebarSelectedEnvId(dataviews[0]?.id)
+      } else {
+        dispatchTimebarVisualisation(
+          category === DataviewCategory.Detections
+            ? TimebarVisualisations.HeatmapDetections
+            : TimebarVisualisations.HeatmapActivity
+        )
+      }
+    },
+    [dataviews, dispatchTimebarSelectedEnvId, dispatchTimebarVisualisation]
+  )
+
+  useEffect(() => {
+    setTimebarVisualizationByCategory(reportCategory)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reportCategory])
+
+  const handleTabClick = (option: Tab<ReportCategory>) => {
+    dispatchQueryParams({ reportCategory: option.id, reportVesselPage: 0 })
+  }
+
+  if (
+    workspaceStatus === AsyncReducerStatus.Error ||
+    workspaceVesselGroupsStatus === AsyncReducerStatus.Error
+  ) {
+    return <WorkspaceError />
+  }
+
+  return (
+    <Fragment>
+      <ReportTitle area={areaDetail} />
+      {filteredCategoryTabs.length > 1 && (
+        <Tabs tabs={filteredCategoryTabs} activeTab={reportCategory} onTabClick={handleTabClick} />
+      )}
+      {reportCategory === DataviewCategory.Environment ? (
+        <ReportEnvironment />
+      ) : (
+        <ActivityReport reportName={areaDetail?.name} />
       )}
     </Fragment>
   )
