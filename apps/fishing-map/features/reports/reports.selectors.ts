@@ -235,66 +235,44 @@ function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: string)
   if (!filter || !filter.length) {
     return vessels
   }
-  const filterWords = filter
+  const filterBlocks = filter
     .replace(/ ,/g, ',')
     .replace(/ , /g, ',')
     .replace(/, /g, ',')
     .split(',')
-    .filter((word) => word.length)
-  if (!filterWords.length) {
+    .filter((block) => block.length)
+  if (!filterBlocks.length) {
     return vessels
   }
 
-  return filterWords
-    .reduce(
-      (vessels, word) => {
-        if (word.startsWith('-')) {
-          const matched = matchSorter(vessels, word.replace('-', ''), {
+  return filterBlocks
+    .reduce((vessels, block) => {
+      const words = block
+        .replace('-', '')
+        .split('|')
+        .filter((word) => word.replace(' ', '').length)
+      const matchedIds = words
+        .flatMap((w) =>
+          matchSorter(vessels, w, {
             keys: [
               'shipName',
               'mmsi',
               'flag',
               (item) => t(`flags:${item.flag as string}` as any, item.flag),
+              (item) => cleanFlagState(t(`flags:${item.flag as string}` as any, item.flag)),
               (item) => t(`vessel.gearTypes.${item.geartype}` as any, item.geartype),
             ],
             threshold: matchSorter.rankings.ACRONYM,
-          }).map((vessel) => vessel.vesselId)
-
-          return vessels.filter((vessel) => !matched.includes(vessel.vesselId))
-        } else if (word.includes('|')) {
-          const words = word.split('|').filter((word) => word.length)
-          const matched = uniqBy(
-            words.flatMap((w) =>
-              matchSorter(vessels, w, {
-                keys: [
-                  'shipName',
-                  'mmsi',
-                  'flag',
-                  (item) => t(`flags:${item.flag as string}` as any, item.flag),
-                  (item) => cleanFlagState(t(`flags:${item.flag as string}` as any, item.flag)),
-                  (item) => t(`vessel.gearTypes.${item.geartype}` as any, item.geartype),
-                ],
-                threshold: matchSorter.rankings.ACRONYM,
-              })
-            ),
-            'vesselId'
-          )
-          return matched
-        }
-        return matchSorter(vessels, word, {
-          keys: [
-            'shipName',
-            'mmsi',
-            'flag',
-            (item) => t(`flags:${item.flag as string}` as any, item.flag),
-            (item) => t(`vessel.gearTypes.${item.geartype}` as any, item.geartype),
-          ],
-          threshold: matchSorter.rankings.ACRONYM,
-        })
-      },
-
-      vessels
-    )
+          })
+        )
+        .map((vessel) => vessel.vesselId)
+      const uniqMatchedIds = block.includes('|') ? uniq(matchedIds) : matchedIds
+      if (block.startsWith('-')) {
+        return vessels.filter((vessel) => !uniqMatchedIds.includes(vessel.vesselId))
+      } else {
+        return vessels.filter((vessel) => uniqMatchedIds.includes(vessel.vesselId))
+      }
+    }, vessels)
     .sort((a, b) => b.hours - a.hours)
 }
 
