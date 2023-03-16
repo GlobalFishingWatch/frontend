@@ -34,7 +34,7 @@ export type IdField = 'vesselId' | 'mmsi'
 interface VesselGroupsSliceState extends AsyncReducer<VesselGroup> {
   isModalOpen: boolean
   vesselGroupEditId: string
-  currentDataviewId: string
+  currentDataviewIds: string[]
   groupVessels: VesselGroupVessel[]
   search: {
     id: IdField
@@ -54,7 +54,7 @@ const initialState: VesselGroupsSliceState = {
   ...asyncInitialState,
   isModalOpen: false,
   vesselGroupEditId: undefined,
-  currentDataviewId: undefined,
+  currentDataviewIds: undefined,
   groupVessels: undefined,
   search: {
     id: 'mmsi',
@@ -365,15 +365,15 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
     setVesselGroupEditId: (state, action: PayloadAction<string>) => {
       state.vesselGroupEditId = action.payload
     },
-    setCurrentDataviewId: (state, action: PayloadAction<string>) => {
-      state.currentDataviewId = action.payload
+    setCurrentDataviewIds: (state, action: PayloadAction<string[]>) => {
+      state.currentDataviewIds = action.payload
     },
     resetVesselGroup: (state) => {
       // Using initialState doesn't work so needs manual reset
       state.status = AsyncReducerStatus.Idle
       state.isModalOpen = false
       state.vesselGroupEditId = undefined
-      state.currentDataviewId = undefined
+      state.currentDataviewIds = undefined
       state.groupVessels = undefined
       state.search = {
         id: 'mmsi',
@@ -454,7 +454,7 @@ export const {
   resetVesselGroup,
   resetVesselGroupStatus,
   setVesselGroupEditId,
-  setCurrentDataviewId,
+  setCurrentDataviewIds,
   setVesselGroupVessels,
   setVesselGroupSearchId,
   setVesselGroupsModalOpen,
@@ -485,7 +485,7 @@ export const selectVesselGroupSearchVessels = (state: RootState) =>
 export const selectNewVesselGroupSearchVessels = (state: RootState) =>
   state.vesselGroups.newSearchVessels
 export const selectVesselGroupsStatusId = (state: RootState) => state.vesselGroups.statusId
-export const selectCurrentDataviewId = (state: RootState) => state.vesselGroups.currentDataviewId
+export const selectCurrentDataviewIds = (state: RootState) => state.vesselGroups.currentDataviewIds
 export const selectVesselGroupEditId = (state: RootState) => state.vesselGroups.vesselGroupEditId
 
 export default vesselGroupsSlice.reducer

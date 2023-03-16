@@ -29,7 +29,6 @@ import {
   IdField,
   resetVesselGroup,
   createVesselGroupThunk,
-  selectCurrentDataviewId,
   selectVesselGroupById,
   selectVesselGroupEditId,
   selectVesselGroupModalOpen,
@@ -44,6 +43,7 @@ import {
   searchVesselGroupsVesselsThunk,
   MAX_VESSEL_GROUP_VESSELS,
   getVesselInVesselGroupThunk,
+  selectCurrentDataviewIds,
 } from './vessel-groups.slice'
 import styles from './VesselGroupModal.module.css'
 
@@ -61,7 +61,7 @@ function VesselGroupModal(): React.ReactElement {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const isModalOpen = useSelector(selectVesselGroupModalOpen)
-  const currentDataviewId = useSelector(selectCurrentDataviewId)
+  const currentDataviewIds = useSelector(selectCurrentDataviewIds)
   const searchIdField = useSelector(selectVesselGroupSearchId)
   const editingVesselGroupId = useSelector(selectVesselGroupEditId)
   const vesselGroupVessels = useSelector(selectVesselGroupsVessels)
@@ -144,30 +144,33 @@ function VesselGroupModal(): React.ReactElement {
 
   const addVesselGroupToDataviewInstance = useCallback(
     (vesselGroupId: string) => {
-      if (currentDataviewId) {
-        let config = {
-          filters: {
-            'vessel-groups': [vesselGroupId],
-          },
-        }
-        const currentDataviewInstance = urlDataviewInstances.find(
-          (dvi) => dvi.id === currentDataviewId
-        )
-        if (currentDataviewInstance) {
-          config = {
+      if (currentDataviewIds?.length) {
+        const dataviewInstances = currentDataviewIds.map((currentDataviewId) => {
+          let config = {
             filters: {
-              ...(currentDataviewInstance.config?.filters || {}),
-              'vessel-groups': [
-                ...(currentDataviewInstance.config?.filters?.['vessel-groups'] || []),
-                vesselGroupId,
-              ],
+              'vessel-groups': [vesselGroupId],
             },
           }
-        }
-        upsertDataviewInstance({ id: currentDataviewId, config })
+          const currentDataviewInstance = urlDataviewInstances.find(
+            (dvi) => dvi.id === currentDataviewId
+          )
+          if (currentDataviewInstance) {
+            config = {
+              filters: {
+                ...(currentDataviewInstance.config?.filters || {}),
+                'vessel-groups': [
+                  ...(currentDataviewInstance.config?.filters?.['vessel-groups'] || []),
+                  vesselGroupId,
+                ],
+              },
+            }
+          }
+          return { id: currentDataviewId, config }
+        })
+        upsertDataviewInstance(dataviewInstances)
       }
     },
-    [currentDataviewId, upsertDataviewInstance, urlDataviewInstances]
+    [currentDataviewIds, upsertDataviewInstance, urlDataviewInstances]
   )
 
   const onCreateGroupClick = useCallback(async () => {

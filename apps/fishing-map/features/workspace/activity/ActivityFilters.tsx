@@ -28,7 +28,7 @@ import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hoo
 import { selectVessselGroupsAllowed } from 'features/vessel-groups/vessel-groups.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
-  setCurrentDataviewId,
+  setCurrentDataviewIds,
   setVesselGroupsModalOpen,
 } from 'features/vessel-groups/vessel-groups.slice'
 import styles from './ActivityFilters.module.css'
@@ -198,7 +198,7 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
   ) => {
     if ((selection as MultiSelectOption)?.id === VESSEL_GROUPS_MODAL_ID) {
       dispatch(setVesselGroupsModalOpen(true))
-      dispatch(setCurrentDataviewId(dataview.id))
+      dispatch(setCurrentDataviewIds([dataview.id]))
       return
     }
     const filterValues = Array.isArray(selection)
