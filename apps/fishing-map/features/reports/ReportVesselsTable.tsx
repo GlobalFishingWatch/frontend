@@ -125,10 +125,14 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
             const isLastRow = i === vessels.length - 1
             const flag = t(`flags:${vessel.flag as string}` as any, EMPTY_FIELD_PLACEHOLDER)
             const flagInteractionEnabled = !EMPTY_API_VALUES.includes(vessel.flag)
-            const gearType = vessel.geartype
+            const type = vessel.geartype
               ? t(`vessel.gearTypes.${vessel.geartype}` as any, vessel.geartype)
-              : t(`vessel.vesselTypes.${vessel.vesselType}` as any, vessel.vesselType)
-            const gearTypeInteractionEnabled = !EMPTY_API_VALUES.includes(vessel.geartype)
+              : vessel.vesselType
+              ? t(`vessel.vesselTypes.${vessel.vesselType}` as any, vessel.vesselType)
+              : EMPTY_FIELD_PLACEHOLDER
+            const typeInteractionEnabled = vessel.geartype
+              ? !EMPTY_API_VALUES.includes(vessel.geartype)
+              : !EMPTY_API_VALUES.includes(vessel.vesselType)
             return (
               <Fragment key={vessel.vesselId}>
                 {!pinTrackDisabled && (
@@ -169,9 +173,8 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                     [styles.pointer]: flagInteractionEnabled,
                   })}
                   title={
-                    flagInteractionEnabled
-                      ? `${t('analysis.clickToFilterBy', `Click to filter by:`)} ${flag}`
-                      : flag
+                    flagInteractionEnabled &&
+                    `${t('analysis.clickToFilterBy', `Click to filter by:`)} ${flag}`
                   }
                   onClick={flagInteractionEnabled ? () => onFilterClick(flag) : undefined}
                 >
@@ -180,16 +183,15 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                 <div
                   className={cx({
                     [styles.border]: !isLastRow,
-                    [styles.pointer]: gearTypeInteractionEnabled,
+                    [styles.pointer]: typeInteractionEnabled,
                   })}
                   title={
-                    gearTypeInteractionEnabled
-                      ? `${t('analysis.clickToFilterBy', `Click to filter by:`)} ${gearType}`
-                      : gearType
+                    typeInteractionEnabled &&
+                    `${t('analysis.clickToFilterBy', `Click to filter by:`)} ${type}`
                   }
-                  onClick={gearTypeInteractionEnabled ? () => onFilterClick(gearType) : undefined}
+                  onClick={typeInteractionEnabled ? () => onFilterClick(type) : undefined}
                 >
-                  {gearType}
+                  {type}
                 </div>
                 <div className={cx({ [styles.border]: !isLastRow }, styles.right)}>
                   <I18nNumber number={vessel.hours} />

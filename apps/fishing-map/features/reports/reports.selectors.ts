@@ -336,7 +336,7 @@ export const selectReportVesselsGraphData = createSelector(
       const dataviewData = reportData[dataview.id]
         ? Object.values(reportData[dataview.id]).flatMap((v) => v || [])
         : []
-      const dataByKey = groupBy(dataviewData, reportGraph.toLowerCase())
+      const dataByKey = groupBy(dataviewData, reportGraph)
       return { id: dataview.id, data: dataByKey }
     })
 

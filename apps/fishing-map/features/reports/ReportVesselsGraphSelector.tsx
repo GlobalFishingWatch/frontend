@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
-import { REPORT_VESSELS_GRAPH_GEARTYPE, REPORT_VESSELS_GRAPH_FLAG } from 'data/config'
+import {
+  REPORT_VESSELS_GRAPH_GEARTYPE,
+  REPORT_VESSELS_GRAPH_FLAG,
+  REPORT_VESSELS_GRAPH_VESSELTYPE,
+} from 'data/config'
 import { selectReportVesselGraph } from 'features/app/app.selectors'
 import { ReportVesselGraph } from 'types'
 
@@ -15,11 +19,15 @@ export default function ReportVesselsGraphSelector() {
   const options: ChoiceOption[] = [
     {
       id: REPORT_VESSELS_GRAPH_FLAG,
-      label: t('analysis.groupByFlag', 'Flag distribution'),
+      label: t('analysis.groupByFlag', 'by flag'),
+    },
+    {
+      id: REPORT_VESSELS_GRAPH_VESSELTYPE,
+      label: t('analysis.groupByVesseltype', 'by vessel type'),
     },
     {
       id: REPORT_VESSELS_GRAPH_GEARTYPE,
-      label: t('analysis.groupByGeartype', 'Gear type distribution'),
+      label: t('analysis.groupByGeartype', 'by gear type'),
     },
   ]
 

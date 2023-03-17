@@ -77,9 +77,16 @@ const CustomTick = (props: any) => {
 
   const getTickLabel = (label: string) => {
     if (EMPTY_API_VALUES.includes(label)) return t('analysis.unknown', 'Unknown')
-    return selectedReportVesselGraph === 'geartype'
-      ? `${t(`vessel.gearTypes.${label}` as any, label)}`
-      : t(`flags:${label}` as any, label)
+    switch (selectedReportVesselGraph) {
+      case 'geartype':
+        return `${t(`vessel.gearTypes.${label}` as any, label)}`
+      case 'vesselType':
+        return `${t(`vessel.vesselTypes.${label}` as any, label)}`
+      case 'flag':
+        return t(`flags:${label}` as any, label)
+      default:
+        return label
+    }
   }
 
   const onLabelClick = () => {
