@@ -24,6 +24,7 @@ import {
   selectReportVesselsPaginated,
   selectReportVesselsPagination,
   getVesselsFiltered,
+  ReportVesselWithMeta,
 } from './reports.selectors'
 import { ReportActivityUnit } from './Report'
 import styles from './ReportVesselsTable.module.css'
@@ -48,7 +49,26 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
   const { start, end } = useSelector(selectTimeRange)
 
   const getDownloadVessels = () => {
-    setAllVesselsWithAllInfoFiltered(getVesselsFiltered(allVesselsWithAllInfo, reportVesselFilter))
+    const vesselsFiltered = getVesselsFiltered(
+      allVesselsWithAllInfo,
+      reportVesselFilter
+    ) as ReportVesselWithMeta[]
+
+    setAllVesselsWithAllInfoFiltered(
+      vesselsFiltered.map((vessel) => {
+        const {
+          activityDatasetId,
+          category,
+          dataviewId,
+          date,
+          flagTranslated,
+          flagTranslatedClean,
+          sourceColor,
+          ...rest
+        } = vessel
+        return rest
+      })
+    )
   }
 
   const onVesselClick = async (

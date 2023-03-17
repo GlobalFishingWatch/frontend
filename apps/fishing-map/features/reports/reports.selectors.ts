@@ -41,6 +41,8 @@ export type ReportVesselWithMeta = ReportVessel & {
   activityDatasetId: string
   category: DataviewCategory
   dataviewId: string
+  flagTranslated: string
+  flagTranslatedClean: string
 }
 export type ReportVesselWithDatasets = Partial<ReportVessel> &
   Pick<ReportVesselWithMeta, 'sourceColor'> & {
@@ -126,8 +128,21 @@ export const selectReportVesselsList = createSelector(
           shipName: vesselActivity[0]?.shipName,
           mmsi: vesselActivity[0]?.mmsi,
           flag: vesselActivity[0]?.flag,
-          geartype: vesselActivity[0]?.geartype,
-          vesselType: vesselActivity[0]?.vesselType,
+          flagTranslated: t(
+            `flags:${vesselActivity[0]?.flag as string}` as any,
+            vesselActivity[0]?.flag
+          ),
+          flagTranslatedClean: cleanFlagState(
+            t(`flags:${vesselActivity[0]?.flag as string}` as any, vesselActivity[0]?.flag)
+          ),
+          geartype: t(
+            `vessel.gearTypes.${vesselActivity[0]?.geartype}` as any,
+            vesselActivity[0]?.geartype
+          ),
+          vesselType: t(
+            `vessel.veeselTypes.${vesselActivity[0]?.vesselType}` as any,
+            vesselActivity[0]?.vesselType
+          ),
           hours: sumBy(vesselActivity, 'hours'),
           infoDataset,
           trackDataset,
@@ -152,6 +167,21 @@ export const selectReportVesselsListWithAllInfo = createSelector(
         return {
           ...vesselActivity[0],
           hours: sumBy(vesselActivity, 'hours'),
+          flagTranslated: t(
+            `flags:${vesselActivity[0]?.flag as string}` as any,
+            vesselActivity[0]?.flag
+          ),
+          flagTranslatedClean: cleanFlagState(
+            t(`flags:${vesselActivity[0]?.flag as string}` as any, vesselActivity[0]?.flag)
+          ),
+          geartype: t(
+            `vessel.gearTypes.${vesselActivity[0]?.geartype}` as any,
+            vesselActivity[0]?.geartype
+          ),
+          vesselType: t(
+            `vessel.veeselTypes.${vesselActivity[0]?.vesselType}` as any,
+            vesselActivity[0]?.vesselType
+          ),
         }
       })
       .sort((a, b) => b.hours - a.hours)
@@ -166,55 +196,70 @@ export function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: 
   if (!filter || !filter.length) {
     return vessels
   }
+
+  const a = performance.now()
+
   const filterBlocks = filter
     .replace(/ ,/g, ',')
     .replace(/ , /g, ',')
     .replace(/, /g, ',')
     .split(',')
     .filter((block) => block.length)
+
   if (!filterBlocks.length) {
     return vessels
   }
 
-  return filterBlocks
+  const result = filterBlocks
     .reduce((vessels, block) => {
       const words = block
         .replace('-', '')
         .split('|')
         .filter((word) => word.replace(' ', '').length)
-      const matchedIds = words
-        .flatMap((w) =>
-          matchSorter(vessels, w, {
-            keys: [
-              'shipName',
-              'mmsi',
-              'flag',
-              (item) => t(`flags:${item.flag as string}` as any, item.flag),
-              (item) => cleanFlagState(t(`flags:${item.flag as string}` as any, item.flag)),
-              (item) => t(`vessel.gearTypes.${item.geartype}` as any, item.geartype),
-            ],
-            threshold: matchSorter.rankings.EQUAL,
-          })
-        )
-        .map((vessel) => vessel.vesselId)
-      const uniqMatchedIds = block.includes('|') ? uniq(matchedIds) : matchedIds
+      const matched = words.flatMap((w) =>
+        matchSorter(vessels, w, {
+          keys: [
+            'shipName',
+            'mmsi',
+            'flag',
+            'flagTranslated',
+            'flagTranslatedClean',
+            'geartype',
+            'vesselType',
+          ],
+          threshold: matchSorter.rankings.EQUAL,
+        })
+      )
+      const uniqMatched = block.includes('|') ? uniqBy(matched, 'vesselId') : matched
       if (block.startsWith('-')) {
-        return vessels.filter((vessel) => !uniqMatchedIds.includes(vessel.vesselId))
+        let uniqMatchedIds = uniqMatched.map(({ vesselId }) => vesselId).join('')
+        return vessels.filter(({ vesselId }) => {
+          if (!listOfIdsIncludesId(uniqMatchedIds, vesselId)) {
+            return true
+          } else {
+            uniqMatchedIds = uniqMatchedIds.split(vesselId).join('')
+            return false
+          }
+        })
       } else {
-        return vessels.filter((vessel) => uniqMatchedIds.includes(vessel.vesselId))
+        return uniqMatched
       }
     }, vessels)
     .sort((a, b) => b.hours - a.hours)
+
+  const b = performance.now()
+  console.log('match', b - a)
+  return result
 }
 
-const defaultDownloadVessels = []
-export const selectReportDownloadVessels = createSelector(
-  [selectReportVesselsListWithAllInfo, selectReportVesselFilter],
-  (vessels, filter) => {
-    if (!vessels?.length) return defaultDownloadVessels
-    return getVesselsFiltered(vessels, filter)
+const VESSEL_ID_LENGTH = 37
+
+function listOfIdsIncludesId(list: string, id: string) {
+  for (let index = 0; index < list.length / VESSEL_ID_LENGTH; index += VESSEL_ID_LENGTH) {
+    if (list.substring(index, VESSEL_ID_LENGTH) === id) return true
   }
-)
+  return false
+}
 
 export const selectReportVesselsFiltered = createSelector(
   [selectReportVesselsList, selectReportVesselFilter],
