@@ -20,6 +20,7 @@ import {
 import { WorkspaceCategories } from 'data/workspaces'
 import { selectWorkspaceWithCurrentState, selectReadOnly } from 'features/app/app.selectors'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
+import { resetSidebarScroll } from 'features/sidebar/Sidebar'
 import { useClipboardNotification } from './sidebar.hooks'
 import styles from './SidebarHeader.module.css'
 
@@ -118,13 +119,6 @@ function ShareWorkspaceButton() {
   )
 }
 
-function onCloseClick() {
-  const scrollContainer = document.getElementsByClassName('scrollContainer')[0]
-  if (scrollContainer) {
-    scrollContainer.scrollTop = 0
-  }
-}
-
 function SidebarHeader() {
   const readOnly = useSelector(selectReadOnly)
   const locationCategory = useSelector(selectLocationCategory)
@@ -152,7 +146,11 @@ function SidebarHeader() {
           </Fragment>
         )}
         {(reportLocation || (showBackToWorkspaceButton && lastVisitedWorkspace)) && (
-          <Link className={styles.workspaceLink} to={lastVisitedWorkspace} onClick={onCloseClick}>
+          <Link
+            className={styles.workspaceLink}
+            to={lastVisitedWorkspace}
+            onClick={resetSidebarScroll}
+          >
             <IconButton type="border" icon="close" />
           </Link>
         )}

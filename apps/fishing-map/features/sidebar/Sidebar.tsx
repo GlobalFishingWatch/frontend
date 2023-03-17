@@ -36,6 +36,13 @@ type SidebarProps = {
   onMenuClick: () => void
 }
 
+export function resetSidebarScroll() {
+  const scrollContainer = document.querySelector('.scrollContainer')
+  if (scrollContainer) {
+    scrollContainer.scrollTo({ top: 0 })
+  }
+}
+
 function Sidebar({ onMenuClick }: SidebarProps) {
   const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)
