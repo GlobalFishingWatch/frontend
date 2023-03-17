@@ -229,19 +229,18 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                 size="medium"
               />
             </div>
-            <label
-              className={styles.pointer}
-              onClick={isShowingMore ? onShowLessClick : onShowMoreClick}
-            >
-              {t('analysis.resultsPerPage', {
-                results: isShowingMore
-                  ? REPORT_VESSELS_PER_PAGE
-                  : REPORT_SHOW_MORE_VESSELS_PER_PAGE,
-                defaultValue: `Show ${
-                  isShowingMore ? REPORT_VESSELS_PER_PAGE : REPORT_SHOW_MORE_VESSELS_PER_PAGE
-                } per page`,
-              })}
-            </label>
+            <button onClick={isShowingMore ? onShowLessClick : onShowMoreClick}>
+              <label className={styles.pointer}>
+                {t('analysis.resultsPerPage', {
+                  results: isShowingMore
+                    ? REPORT_VESSELS_PER_PAGE
+                    : REPORT_SHOW_MORE_VESSELS_PER_PAGE,
+                  defaultValue: `Show ${
+                    isShowingMore ? REPORT_VESSELS_PER_PAGE : REPORT_SHOW_MORE_VESSELS_PER_PAGE
+                  } per page`,
+                })}
+              </label>
+            </button>
             <span className={cx(styles.noWrap, styles.right)}>
               {reportVesselFilter && (
                 <Fragment>
