@@ -118,6 +118,13 @@ function ShareWorkspaceButton() {
   )
 }
 
+function onCloseClick() {
+  const scrollContainer = document.getElementsByClassName('scrollContainer')[0]
+  if (scrollContainer) {
+    scrollContainer.scrollTop = 0
+  }
+}
+
 function SidebarHeader() {
   const readOnly = useSelector(selectReadOnly)
   const locationCategory = useSelector(selectLocationCategory)
@@ -145,7 +152,7 @@ function SidebarHeader() {
           </Fragment>
         )}
         {(reportLocation || (showBackToWorkspaceButton && lastVisitedWorkspace)) && (
-          <Link className={styles.workspaceLink} to={lastVisitedWorkspace}>
+          <Link className={styles.workspaceLink} to={lastVisitedWorkspace} onClick={onCloseClick}>
             <IconButton type="border" icon="close" />
           </Link>
         )}
