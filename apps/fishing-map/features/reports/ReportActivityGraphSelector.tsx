@@ -52,6 +52,6 @@ export default function ReportActivityGraphSelector() {
     : options[0]
 
   return (
-    <Choice size="tiny" options={options} activeOption={selectedOption?.id} onSelect={onSelect} />
+    <Choice size="small" options={options} activeOption={selectedOption?.id} onSelect={onSelect} />
   )
 }
