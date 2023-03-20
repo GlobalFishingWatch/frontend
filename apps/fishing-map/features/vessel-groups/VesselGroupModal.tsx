@@ -32,6 +32,8 @@ import { selectLastVisitedWorkspace } from 'features/workspace/workspace.selecto
 import { updateLocation } from 'routes/routes.actions'
 import { ROUTE_TYPES } from 'routes/routes'
 import { resetSidebarScroll } from 'features/sidebar/Sidebar'
+import { selectSearchQuery } from 'features/app/app.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
 import {
   IdField,
   resetVesselGroup,
@@ -80,6 +82,8 @@ function VesselGroupModal(): React.ReactElement {
   const searchVesselStatus = useSelector(selectVesselGroupSearchStatus)
   const vesselGroupsStatus = useSelector(selectVesselGroupsStatus)
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
+  const { dispatchQueryParams } = useLocationConnect()
+  const searchQuery = useSelector(selectSearchQuery)
   const loading =
     searchVesselStatus === AsyncReducerStatus.Loading ||
     vesselGroupsStatus === AsyncReducerStatus.Loading ||
@@ -163,7 +167,7 @@ function VesselGroupModal(): React.ReactElement {
               'vessel-groups': [vesselGroupId],
             },
           }
-          const currentDataviewInstance = urlDataviewInstances.find(
+          const currentDataviewInstance = urlDataviewInstances?.find(
             (dvi) => dvi.id === currentDataviewId
           )
           if (currentDataviewInstance) {
@@ -219,20 +223,25 @@ function VesselGroupModal(): React.ReactElement {
         createVesselGroupThunk.fulfilled.match(dispatchedAction)
       ) {
         const dataviewInstances = getDataviewInstancesWithVesselGroups(dispatchedAction.payload.id)
-        if (navigateToWorkspace && lastVisitedWorkspace) {
-          const { type, ...rest } = lastVisitedWorkspace
-          const { query, payload, replaceQuery } = rest
-          // TODO ensure we don't insert duplicates in the new dataview instance
-          const dataviewInstancesMerged = addToDataviews
-            ? mergeDataviewIntancesToUpsert(dataviewInstances, rest.query.dataviewInstances)
-            : rest.query.dataviewInstances
-          dispatch(
-            updateLocation(type as ROUTE_TYPES, {
-              query: { ...query, dataviewInstances: dataviewInstancesMerged },
-              payload,
-              replaceQuery,
-            })
-          )
+        if (navigateToWorkspace) {
+          if (lastVisitedWorkspace) {
+            const { type, ...rest } = lastVisitedWorkspace
+            const { query, payload, replaceQuery } = rest
+            const dataviewInstancesMerged = addToDataviews
+              ? mergeDataviewIntancesToUpsert(dataviewInstances, rest.query.dataviewInstances)
+              : rest.query.dataviewInstances
+            // TODO ensure we don't insert duplicates in the new dataview instance
+            dispatch(
+              updateLocation(type as ROUTE_TYPES, {
+                query: { ...query, dataviewInstances: dataviewInstancesMerged },
+                payload,
+                replaceQuery,
+              })
+            )
+          } else if (searchQuery) {
+            upsertDataviewInstance(dataviewInstances)
+            dispatchQueryParams({ query: undefined })
+          }
           resetSidebarScroll()
         } else if (addToDataviews) {
           upsertDataviewInstance(dataviewInstances)
@@ -256,9 +265,11 @@ function VesselGroupModal(): React.ReactElement {
       dispatch,
       createAsPublic,
       getDataviewInstancesWithVesselGroups,
-      lastVisitedWorkspace,
       close,
+      lastVisitedWorkspace,
+      searchQuery,
       upsertDataviewInstance,
+      dispatchQueryParams,
     ]
   )
 
