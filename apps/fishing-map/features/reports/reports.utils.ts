@@ -15,6 +15,8 @@ import {
   getSchemaFieldsSelectedInDataview,
   SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
+import { ReportVesselWithDatasets } from 'features/reports/reports.selectors'
+import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
 const arrayToStringTransform = (array: string[]) =>
   `(${array?.map((v: string) => `'${v}'`).join(', ')})`
@@ -185,4 +187,14 @@ export const getCommonProperties = (dataviews: UrlDataviewInstance[]) => {
   }
 
   return commonProperties
+}
+
+export const getVesselGearOrType = (vessel: ReportVesselWithDatasets): string => {
+  if (vessel.geartype) {
+    return t(`vessel.gearTypes.${vessel.geartype}` as any, vessel.geartype)
+  }
+  if (vessel.vesselType) {
+    return t(`vessel.vesselTypes.${vessel.vesselType}` as any, vessel.vesselType)
+  }
+  return EMPTY_FIELD_PLACEHOLDER
 }

@@ -30,6 +30,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUserData } from 'features/user/user.slice'
 import { getUTCDateTime } from 'utils/dates'
 import { selectActiveTemporalgridDataviews } from 'features/dataviews/dataviews.selectors'
+import { getVesselGearOrType } from 'features/reports/reports.utils'
 import { selectReportVesselsData } from './reports.slice'
 
 export const EMPTY_API_VALUES = ['NULL', undefined, '']
@@ -143,6 +144,7 @@ export const selectReportVesselsList = createSelector(
             `vessel.veeselTypes.${vesselActivity[0]?.vesselType}` as any,
             vesselActivity[0]?.vesselType
           ),
+          gearOrVesselType: getVesselGearOrType(vesselActivity[0]),
           hours: sumBy(vesselActivity, 'hours'),
           infoDataset,
           trackDataset,
@@ -182,6 +184,7 @@ export const selectReportVesselsListWithAllInfo = createSelector(
             `vessel.veeselTypes.${vesselActivity[0]?.vesselType}` as any,
             vesselActivity[0]?.vesselType
           ),
+          gearOrVesselType: getVesselGearOrType(vesselActivity[0]),
         }
       })
       .sort((a, b) => b.hours - a.hours)
@@ -222,10 +225,9 @@ export function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: 
             'flag',
             'flagTranslated',
             'flagTranslatedClean',
-            'geartype',
-            'vesselType',
+            'gearOrVesselType',
           ],
-          threshold: matchSorter.rankings.EQUAL,
+          threshold: matchSorter.rankings.CONTAINS,
         })
       )
       const uniqMatched = block.includes('|') ? Array.from(new Set([...matched])) : matched

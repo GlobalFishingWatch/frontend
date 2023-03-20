@@ -15,6 +15,7 @@ import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { selectReportVesselFilter, selectTimeRange } from 'features/app/app.selectors'
 import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data/config'
+import { getVesselGearOrType } from 'features/reports/reports.utils'
 import {
   EMPTY_API_VALUES,
   ReportVesselWithDatasets,
@@ -125,14 +126,8 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
             const isLastRow = i === vessels.length - 1
             const flag = t(`flags:${vessel.flag as string}` as any, EMPTY_FIELD_PLACEHOLDER)
             const flagInteractionEnabled = !EMPTY_API_VALUES.includes(vessel.flag)
-            const type = vessel.geartype
-              ? t(`vessel.gearTypes.${vessel.geartype}` as any, vessel.geartype)
-              : vessel.vesselType
-              ? t(`vessel.vesselTypes.${vessel.vesselType}` as any, vessel.vesselType)
-              : EMPTY_FIELD_PLACEHOLDER
-            const typeInteractionEnabled = vessel.geartype
-              ? !EMPTY_API_VALUES.includes(vessel.geartype)
-              : !EMPTY_API_VALUES.includes(vessel.vesselType)
+            const type = getVesselGearOrType(vessel)
+            const typeInteractionEnabled = type !== EMPTY_FIELD_PLACEHOLDER
             return (
               <Fragment key={vessel.vesselId}>
                 {!pinTrackDisabled && (
