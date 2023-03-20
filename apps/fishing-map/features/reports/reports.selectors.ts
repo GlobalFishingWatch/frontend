@@ -228,17 +228,13 @@ export function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: 
           threshold: matchSorter.rankings.EQUAL,
         })
       )
-      const uniqMatched = block.includes('|') ? uniqBy(matched, 'vesselId') : matched
+      const uniqMatched = block.includes('|') ? Array.from(new Set([...matched])) : matched
       if (block.startsWith('-')) {
-        let uniqMatchedIds: string = uniqMatched.map(({ vesselId }) => vesselId).join('')
-        return vessels.filter(({ vesselId }) => {
-          if (!uniqMatchedIds.includes(vesselId)) {
-            return true
-          } else {
-            uniqMatchedIds = uniqMatchedIds.split(vesselId).join('')
-            return false
-          }
+        const uniqMatchedIds = new Set<string>()
+        uniqMatched.forEach(({ vesselId }) => {
+          uniqMatchedIds.add(vesselId)
         })
+        return vessels.filter(({ vesselId }) => !uniqMatchedIds.has(vesselId))
       } else {
         return uniqMatched
       }
