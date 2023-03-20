@@ -131,8 +131,8 @@ const CustomTick = (props: any) => {
         onClick={onLabelClick}
       >
         {labelChunksClean.map((chunk) => (
-          <Fragment>
-            <tspan key={chunk} textAnchor="middle" x="0" dy={12}>
+          <Fragment key={chunk}>
+            <tspan textAnchor="middle" x="0" dy={12}>
               {chunk}{' '}
             </tspan>
             {isOtherCategory && (

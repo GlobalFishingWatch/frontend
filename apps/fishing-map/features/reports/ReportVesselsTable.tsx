@@ -168,8 +168,9 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                     [styles.pointer]: flagInteractionEnabled,
                   })}
                   title={
-                    flagInteractionEnabled &&
-                    `${t('analysis.clickToFilterBy', `Click to filter by:`)} ${flag}`
+                    flagInteractionEnabled
+                      ? `${t('analysis.clickToFilterBy', `Click to filter by:`)} ${flag}`
+                      : undefined
                   }
                   onClick={flagInteractionEnabled ? () => onFilterClick(flag) : undefined}
                 >
@@ -181,8 +182,9 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                     [styles.pointer]: typeInteractionEnabled,
                   })}
                   title={
-                    typeInteractionEnabled &&
-                    `${t('analysis.clickToFilterBy', `Click to filter by:`)} ${type}`
+                    typeInteractionEnabled
+                      ? `${t('analysis.clickToFilterBy', `Click to filter by:`)} ${type}`
+                      : undefined
                   }
                   onClick={typeInteractionEnabled ? () => onFilterClick(type) : undefined}
                 >
