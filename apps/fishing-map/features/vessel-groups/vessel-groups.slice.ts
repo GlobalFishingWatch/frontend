@@ -30,7 +30,7 @@ import { selectDatasetById } from '../datasets/datasets.slice'
 export const MAX_VESSEL_GROUP_VESSELS = 1000
 
 export type IdField = 'vesselId' | 'mmsi'
-export type VesselGroupConfirmationMode = 'simple' | 'multiple'
+export type VesselGroupConfirmationMode = 'save' | 'saveAndNavigate'
 
 interface VesselGroupsSliceState extends AsyncReducer<VesselGroup> {
   isModalOpen: boolean
@@ -57,7 +57,7 @@ const initialState: VesselGroupsSliceState = {
   isModalOpen: false,
   vesselGroupEditId: undefined,
   currentDataviewIds: undefined,
-  confirmationMode: 'simple',
+  confirmationMode: 'save',
   groupVessels: undefined,
   search: {
     id: 'mmsi',
@@ -379,7 +379,7 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
       state.status = AsyncReducerStatus.Idle
       state.isModalOpen = false
       state.vesselGroupEditId = undefined
-      state.confirmationMode = 'simple'
+      state.confirmationMode = 'save'
       state.currentDataviewIds = undefined
       state.groupVessels = undefined
       state.search = {

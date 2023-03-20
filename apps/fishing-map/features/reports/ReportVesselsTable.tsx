@@ -106,7 +106,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
   const onAddToVesselGroup = () => {
     const dataviewIds = heatmapDataviews.map(({ id }) => id)
     batch(() => {
-      dispatch(setVesselGroupConfirmationMode('multiple'))
+      dispatch(setVesselGroupConfirmationMode('saveAndNavigate'))
       if (dataviewIds?.length) {
         dispatch(setVesselGroupCurrentDataviewIds(dataviewIds))
       }

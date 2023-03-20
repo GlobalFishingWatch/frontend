@@ -21,13 +21,17 @@ import {
   selectHasVesselGroupSearchVessels,
   selectHasVesselGroupVesselsOverflow,
 } from 'features/vessel-groups/vessel-groups.selectors'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import {
+  mergeDataviewIntancesToUpsert,
+  useDataviewInstancesConnect,
+} from 'features/workspace/workspace.hook'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getEventLabel } from 'utils/analytics'
 import { selectLastVisitedWorkspace } from 'features/workspace/workspace.selectors'
 import { updateLocation } from 'routes/routes.actions'
 import { ROUTE_TYPES } from 'routes/routes'
+import { resetSidebarScroll } from 'features/sidebar/Sidebar'
 import {
   IdField,
   resetVesselGroup,
@@ -48,6 +52,7 @@ import {
   getVesselInVesselGroupThunk,
   selectCurrentDataviewIds,
   selectVesselGroupConfirmationMode,
+  VesselGroupConfirmationMode,
 } from './vessel-groups.slice'
 import styles from './VesselGroupModal.module.css'
 
@@ -64,6 +69,7 @@ const ID_COLUMNS_OPTIONS: SelectOption[] = ID_COLUMN_LOOKUP.map((key) => ({
 function VesselGroupModal(): React.ReactElement {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const [buttonLoading, setButtonLoading] = useState<VesselGroupConfirmationMode | ''>('')
   const isModalOpen = useSelector(selectVesselGroupModalOpen)
   const currentDataviewIds = useSelector(selectCurrentDataviewIds)
   const confirmationMode = useSelector(selectVesselGroupConfirmationMode)
@@ -148,7 +154,7 @@ function VesselGroupModal(): React.ReactElement {
     dispatchSearchVesselsGroupsThunk(vesselGroupVessels, searchIdField)
   }, [dispatchSearchVesselsGroupsThunk, vesselGroupVessels, searchIdField])
 
-  const addVesselGroupToDataviewInstance = useCallback(
+  const getDataviewInstancesWithVesselGroups = useCallback(
     (vesselGroupId: string) => {
       if (currentDataviewIds?.length) {
         const dataviewInstances = currentDataviewIds.map((currentDataviewId) => {
@@ -173,17 +179,18 @@ function VesselGroupModal(): React.ReactElement {
           }
           return { id: currentDataviewId, config }
         })
-        upsertDataviewInstance(dataviewInstances)
+        return dataviewInstances
       }
     },
-    [currentDataviewIds, upsertDataviewInstance, urlDataviewInstances]
+    [currentDataviewIds, urlDataviewInstances]
   )
 
   const onCreateGroupClick = useCallback(
     async (
       e: React.MouseEvent<Element, MouseEvent>,
-      { addToDataviews = true, navigateToWorkspace = false } = {}
+      { addToDataviews = false, navigateToWorkspace = false } = {}
     ) => {
+      setButtonLoading(navigateToWorkspace ? 'saveAndNavigate' : 'save')
       const vessels: VesselGroupVessel[] = vesselGroupSearchVessels.map((vessel) => {
         return {
           vesselId: vessel.id,
@@ -211,14 +218,27 @@ function VesselGroupModal(): React.ReactElement {
         updateVesselGroupThunk.fulfilled.match(dispatchedAction) ||
         createVesselGroupThunk.fulfilled.match(dispatchedAction)
       ) {
-        if (addToDataviews) {
-          addVesselGroupToDataviewInstance(dispatchedAction.payload.id)
-        }
+        const dataviewInstances = getDataviewInstancesWithVesselGroups(dispatchedAction.payload.id)
         if (navigateToWorkspace && lastVisitedWorkspace) {
           const { type, ...rest } = lastVisitedWorkspace
-          dispatch(updateLocation(type as ROUTE_TYPES, rest))
+          const { query, payload, replaceQuery } = rest
+          // TODO ensure we don't insert duplicates in the new dataview instance
+          const dataviewInstancesMerged = addToDataviews
+            ? mergeDataviewIntancesToUpsert(dataviewInstances, rest.query.dataviewInstances)
+            : rest.query.dataviewInstances
+          dispatch(
+            updateLocation(type as ROUTE_TYPES, {
+              query: { ...query, dataviewInstances: dataviewInstancesMerged },
+              payload,
+              replaceQuery,
+            })
+          )
+          resetSidebarScroll()
+        } else if (addToDataviews) {
+          upsertDataviewInstance(dataviewInstances)
         }
         close()
+        setButtonLoading('')
       }
       uaEvent({
         category: 'Vessel groups',
@@ -235,9 +255,10 @@ function VesselGroupModal(): React.ReactElement {
       groupName,
       dispatch,
       createAsPublic,
+      getDataviewInstancesWithVesselGroups,
       lastVisitedWorkspace,
       close,
-      addVesselGroupToDataviewInstance,
+      upsertDataviewInstance,
     ]
   )
 
@@ -339,7 +360,7 @@ function VesselGroupModal(): React.ReactElement {
           </Button>
         )}
         {!fullModalLoading &&
-          (confirmationMode === 'simple' ? (
+          (confirmationMode === 'save' ? (
             <Button
               disabled={confirmButtonDisabled}
               onClick={hasVesselGroupsVessels ? onCreateGroupClick : onSearchVesselsClick}
@@ -356,7 +377,7 @@ function VesselGroupModal(): React.ReactElement {
                 className={styles.footerButton}
                 disabled={confirmButtonDisabled}
                 onClick={(e) => onCreateGroupClick(e, { addToDataviews: false })}
-                loading={loading}
+                loading={loading && buttonLoading === 'save'}
                 type="secondary"
                 tooltip={
                   confirmButtonTooltip ||
@@ -372,9 +393,9 @@ function VesselGroupModal(): React.ReactElement {
                 className={styles.footerButton}
                 disabled={confirmButtonDisabled}
                 onClick={(e) =>
-                  onCreateGroupClick(e, { addToDataviews: false, navigateToWorkspace: true })
+                  onCreateGroupClick(e, { addToDataviews: true, navigateToWorkspace: true })
                 }
-                loading={loading}
+                loading={loading && buttonLoading === 'saveAndNavigate'}
                 tooltip={confirmButtonTooltip}
               >
                 {t('vesselGroup.saveAndFilter', 'Save and filter workspace')}
