@@ -36,7 +36,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
               </a>
             )}
             <IconButton
-              icon="category-news"
+              icon="print"
               tooltip={t('analysis.print', 'Print / Save as PDF')}
               onClick={window.print}
             />

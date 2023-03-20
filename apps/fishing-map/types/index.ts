@@ -6,6 +6,7 @@ import {
   REPORT_ACTIVITY_GRAPH_EVOLUTION,
   REPORT_ACTIVITY_GRAPH_BEFORE_AFTER,
   REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
+  REPORT_VESSELS_GRAPH_VESSELTYPE,
 } from 'data/config'
 export { Locale } from '@globalfishingwatch/api-types'
 
@@ -66,6 +67,7 @@ export type ReportCategory =
 
 export type ReportVesselGraph =
   | typeof REPORT_VESSELS_GRAPH_GEARTYPE
+  | typeof REPORT_VESSELS_GRAPH_VESSELTYPE
   | typeof REPORT_VESSELS_GRAPH_FLAG
 
 export type WorkspaceActivityCategory = 'fishing' | 'presence'

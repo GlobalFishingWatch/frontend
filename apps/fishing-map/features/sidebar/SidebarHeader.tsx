@@ -20,6 +20,7 @@ import {
 import { WorkspaceCategories } from 'data/workspaces'
 import { selectWorkspaceWithCurrentState, selectReadOnly } from 'features/app/app.selectors'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
+import { resetSidebarScroll } from 'features/sidebar/Sidebar'
 import { useClipboardNotification } from './sidebar.hooks'
 import styles from './SidebarHeader.module.css'
 
@@ -92,6 +93,10 @@ function SaveWorkspaceButton() {
 
 function ShareWorkspaceButton() {
   const { t } = useTranslation()
+  const workspaceLocation = useSelector(selectIsWorkspaceLocation)
+  const shareTitle = workspaceLocation
+    ? t('common.share', 'Share map')
+    : t('analysis.share', 'Share report')
 
   const { showClipboardNotification, copyToClipboard } = useClipboardNotification()
 
@@ -111,7 +116,7 @@ function ShareWorkspaceButton() {
               'common.copiedToClipboard',
               'The link to share this view has been copied to your clipboard'
             )
-          : t('common.share', 'Share the current view')
+          : shareTitle
       }
       tooltipPlacement="bottom"
     />
@@ -131,21 +136,20 @@ function SidebarHeader() {
     if (locationCategory === WorkspaceCategories.MarineManager) subBrand = SubBrands.MarineManager
     return subBrand
   }, [locationCategory])
-
   return (
     <Sticky scrollElement=".scrollContainer">
       <div className={styles.sidebarHeader}>
         <a href="https://globalfishingwatch.org" className={styles.logoLink}>
           <Logo className={styles.logo} subBrand={getSubBrand()} />
         </a>
-        {workspaceLocation && !readOnly && (
-          <Fragment>
-            <SaveWorkspaceButton />
-            <ShareWorkspaceButton />
-          </Fragment>
-        )}
+        {workspaceLocation && !readOnly && <SaveWorkspaceButton />}
+        {(workspaceLocation || reportLocation) && !readOnly && <ShareWorkspaceButton />}
         {(reportLocation || (showBackToWorkspaceButton && lastVisitedWorkspace)) && (
-          <Link className={styles.workspaceLink} to={lastVisitedWorkspace}>
+          <Link
+            className={styles.workspaceLink}
+            to={lastVisitedWorkspace}
+            onClick={resetSidebarScroll}
+          >
             <IconButton type="border" icon="close" />
           </Link>
         )}

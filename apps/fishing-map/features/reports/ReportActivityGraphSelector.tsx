@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { Choice, ChoiceOption, Select, SelectOption } from '@globalfishingwatch/ui-components'
+import { Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   REPORT_ACTIVITY_GRAPH_EVOLUTION,
@@ -52,6 +52,6 @@ export default function ReportActivityGraphSelector() {
     : options[0]
 
   return (
-    <Choice size="tiny" options={options} activeOption={selectedOption?.id} onSelect={onSelect} />
+    <Choice size="small" options={options} activeOption={selectedOption?.id} onSelect={onSelect} />
   )
 }

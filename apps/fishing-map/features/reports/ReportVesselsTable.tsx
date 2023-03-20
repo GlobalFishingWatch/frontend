@@ -15,6 +15,7 @@ import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { selectReportVesselFilter, selectTimeRange } from 'features/app/app.selectors'
 import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data/config'
+import { getVesselGearOrType } from 'features/reports/reports.utils'
 import {
   EMPTY_API_VALUES,
   ReportVesselWithDatasets,
@@ -125,10 +126,8 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
             const isLastRow = i === vessels.length - 1
             const flag = t(`flags:${vessel.flag as string}` as any, EMPTY_FIELD_PLACEHOLDER)
             const flagInteractionEnabled = !EMPTY_API_VALUES.includes(vessel.flag)
-            const gearType = vessel.geartype
-              ? t(`vessel.gearTypes.${vessel.geartype}` as any, vessel.geartype)
-              : t(`vessel.vesselTypes.${vessel.vesselType}` as any, vessel.vesselType)
-            const gearTypeInteractionEnabled = !EMPTY_API_VALUES.includes(vessel.geartype)
+            const type = getVesselGearOrType(vessel)
+            const typeInteractionEnabled = type !== EMPTY_FIELD_PLACEHOLDER
             return (
               <Fragment key={vessel.vesselId}>
                 {!pinTrackDisabled && (
@@ -171,7 +170,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                   title={
                     flagInteractionEnabled
                       ? `${t('analysis.clickToFilterBy', `Click to filter by:`)} ${flag}`
-                      : flag
+                      : undefined
                   }
                   onClick={flagInteractionEnabled ? () => onFilterClick(flag) : undefined}
                 >
@@ -180,16 +179,16 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                 <div
                   className={cx({
                     [styles.border]: !isLastRow,
-                    [styles.pointer]: gearTypeInteractionEnabled,
+                    [styles.pointer]: typeInteractionEnabled,
                   })}
                   title={
-                    gearTypeInteractionEnabled
-                      ? `${t('analysis.clickToFilterBy', `Click to filter by:`)} ${gearType}`
-                      : gearType
+                    typeInteractionEnabled
+                      ? `${t('analysis.clickToFilterBy', `Click to filter by:`)} ${type}`
+                      : undefined
                   }
-                  onClick={gearTypeInteractionEnabled ? () => onFilterClick(gearType) : undefined}
+                  onClick={typeInteractionEnabled ? () => onFilterClick(type) : undefined}
                 >
-                  {gearType}
+                  {type}
                 </div>
                 <div className={cx({ [styles.border]: !isLastRow }, styles.right)}>
                   <I18nNumber number={vessel.hours} />
@@ -227,19 +226,18 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                 size="medium"
               />
             </div>
-            <label
-              className={styles.pointer}
-              onClick={isShowingMore ? onShowLessClick : onShowMoreClick}
-            >
-              {t('analysis.resultsPerPage', {
-                results: isShowingMore
-                  ? REPORT_VESSELS_PER_PAGE
-                  : REPORT_SHOW_MORE_VESSELS_PER_PAGE,
-                defaultValue: `Show ${
-                  isShowingMore ? REPORT_VESSELS_PER_PAGE : REPORT_SHOW_MORE_VESSELS_PER_PAGE
-                } per page`,
-              })}
-            </label>
+            <button onClick={isShowingMore ? onShowLessClick : onShowMoreClick}>
+              <label className={styles.pointer}>
+                {t('analysis.resultsPerPage', {
+                  results: isShowingMore
+                    ? REPORT_VESSELS_PER_PAGE
+                    : REPORT_SHOW_MORE_VESSELS_PER_PAGE,
+                  defaultValue: `Show ${
+                    isShowingMore ? REPORT_VESSELS_PER_PAGE : REPORT_SHOW_MORE_VESSELS_PER_PAGE
+                  } per page`,
+                })}
+              </label>
+            </button>
             <span className={cx(styles.noWrap, styles.right)}>
               {reportVesselFilter && (
                 <Fragment>

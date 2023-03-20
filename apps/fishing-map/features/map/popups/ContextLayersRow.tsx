@@ -16,6 +16,7 @@ import { selectLocationQuery } from 'routes/routes.selectors'
 import { selectSidebarOpen } from 'features/app/app.selectors'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { getFeatureAreaId, getFeatureBounds } from 'features/map/popups/ContextLayers.hooks'
+import { resetSidebarScroll } from 'features/sidebar/Sidebar'
 import styles from './Popup.module.css'
 
 interface DownloadPopupButtonProps {
@@ -126,13 +127,18 @@ const ContextLayersRow: React.FC<ContextLayersRowProps> = ({
   handleReportClick,
 }: ContextLayersRowProps) => {
   const { t } = useTranslation()
+
+  const reportClickFn = (e: React.MouseEvent<Element, MouseEvent>) => {
+    resetSidebarScroll()
+    handleReportClick(e)
+  }
   return (
     <div className={styles.row} key={id}>
       <span className={styles.rowText}>{label}</span>
       {showFeaturesDetails && (
         <div className={styles.rowActions}>
           {handleDownloadClick && <DownloadPopupButton onClick={handleDownloadClick} />}
-          <ReportPopupLink feature={feature} onClick={handleReportClick} />
+          <ReportPopupLink feature={feature} onClick={reportClickFn} />
           {linkHref && (
             <a target="_blank" rel="noopener noreferrer" href={linkHref}>
               <IconButton icon="info" tooltip={t('common.learnMore', 'Learn more')} size="small" />
