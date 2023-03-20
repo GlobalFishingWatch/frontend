@@ -184,9 +184,9 @@ function getGeneratorsMetadataChangeKey(generatorsMetadata: Record<string, Heatm
           )
           .join('|'),
       ].join('-')
-      return [key, metadata.sourceLayer, timeChunks].join('-')
+      return [metadata.sourceLayer, timeChunks, metadata.visibleSublayers].join('_')
     })
-    .join('_')
+    .join('+')
 }
 
 export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDataviewInstance[]) => {
