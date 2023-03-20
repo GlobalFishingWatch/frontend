@@ -35,6 +35,11 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { isGFWUser } from 'features/user/user.slice'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
+import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
+import {
+  setVesselGroupConfirmationMode,
+  setVesselGroupCurrentDataviewIds,
+} from 'features/vessel-groups/vessel-groups.slice'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
@@ -74,6 +79,7 @@ function Search() {
   const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
   const debouncedQuery = useDebounce(searchQuery, 600)
   const { dispatchQueryParams } = useLocationConnect()
+  const heatmapDataviews = useSelector(selectActiveHeatmapDataviews)
   const basicSearchAllowed = useSelector(isBasicSearchAllowed)
   const advancedSearchAllowed = useSelector(isAdvancedSearchAllowed)
   const searchResults = useSelector(selectSearchResults)
@@ -278,6 +284,16 @@ function Search() {
       })
       setActiveSearchOption(option.id as SearchType)
     }
+  }
+
+  const onAddToVesselGroup = () => {
+    const dataviewIds = heatmapDataviews.map(({ id }) => id)
+    batch(() => {
+      dispatch(setVesselGroupConfirmationMode('saveAndNavigate'))
+      if (dataviewIds?.length) {
+        dispatch(setVesselGroupCurrentDataviewIds(dataviewIds))
+      }
+    })
   }
 
   if (workspaceStatus !== AsyncReducerStatus.Finished) {
@@ -514,7 +530,10 @@ function Search() {
             </div>
           )}
           <div className={cx(styles.footer, { [styles.hidden]: vesselsSelected.length === 0 })}>
-            <VesselGroupAddButton vessels={vesselsSelected} />
+            <VesselGroupAddButton
+              vessels={vesselsSelected}
+              onAddToVesselGroup={onAddToVesselGroup}
+            />
             <Button className={styles.footerAction} onClick={onConfirmSelection}>
               {vesselsSelected.length > 1
                 ? t('search.seeVessels', {

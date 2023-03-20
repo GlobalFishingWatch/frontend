@@ -22,9 +22,11 @@ import styles from './VesselGroupAddButton.module.css'
 function VesselGroupAddButton({
   vessels,
   showCount = true,
+  onAddToVesselGroup,
 }: {
   vessels: (VesselWithDatasets | ReportVesselWithDatasets)[]
   showCount?: boolean
+  onAddToVesselGroup?: (vesselGroupId?: string) => void
 }) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -37,7 +39,7 @@ function VesselGroupAddButton({
     setVesselGroupsOpen(!vesselGroupsOpen)
   }, [vesselGroupsOpen])
 
-  const onAddToVesselGroup = useCallback(
+  const handleAddToVesselGroupClick = useCallback(
     async (vesselGroupId?: string) => {
       const vesselsWithDataset = vessels.map((vessel) => ({
         ...vessel,
@@ -61,12 +63,13 @@ function VesselGroupAddButton({
           }
           dispatch(setNewVesselGroupSearchVessels(vesselsWithDataset))
           dispatch(setVesselGroupsModalOpen(true))
+          onAddToVesselGroup(vesselGroupId)
         })
       } else {
         console.warn('No related activity datasets founds for', vesselsWithDataset)
       }
     },
-    [dispatch, vessels]
+    [dispatch, onAddToVesselGroup, vessels]
   )
   return (
     <TooltipContainer
@@ -76,7 +79,7 @@ function VesselGroupAddButton({
         <ul className={styles.groupOptions}>
           <li
             className={cx(styles.groupOption, styles.groupOptionNew)}
-            onClick={() => onAddToVesselGroup()}
+            onClick={() => handleAddToVesselGroupClick()}
             key="new-group"
           >
             {t('vesselGroup.createNewGroup', 'Create new group')}
@@ -85,7 +88,7 @@ function VesselGroupAddButton({
             <li
               className={styles.groupOption}
               key={group.id}
-              onClick={() => onAddToVesselGroup(group.id)}
+              onClick={() => handleAddToVesselGroupClick(group.id)}
             >
               {group.label}
             </li>

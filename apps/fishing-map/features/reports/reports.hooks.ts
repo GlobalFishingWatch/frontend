@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
-import { UserData } from '@globalfishingwatch/api-types'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectLocationDatasetId, selectLocationAreaId } from 'routes/routes.selectors'
 import { selectActiveReportDataviews, selectTimeRange } from 'features/app/app.selectors'
@@ -15,7 +14,6 @@ import {
 } from 'features/areas/areas.slice'
 import { selectReportAreaIds } from 'features/reports/reports.selectors'
 import useMapInstance from 'features/map/map-context.hooks'
-import { selectUserData } from 'features/user/user.slice'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { Bbox } from 'types'
 import useViewport, { getMapCoordinatesFromBounds } from 'features/map/map-viewport.hooks'
@@ -115,7 +113,7 @@ export function useFetchReportArea() {
   return useMemo(() => ({ status, data }), [status, data])
 }
 
-function getReportDataviews(dataviews: UrlDataviewInstance[], userData: UserData) {
+function getReportDataviews(dataviews: UrlDataviewInstance[]) {
   return dataviews
     .map((dataview) => {
       const datasets = getActiveDatasetsInActivityDataviews([dataview])
@@ -132,7 +130,6 @@ function getReportDataviews(dataviews: UrlDataviewInstance[], userData: UserData
 
 export function useFetchReportVessel() {
   const dispatch = useAppDispatch()
-  const userData = useSelector(selectUserData)
   const timerange = useSelector(selectTimeRange)
   const timerangeSupported = getDownloadReportSupported(timerange.start, timerange.end)
   const datasetId = useSelector(selectLocationDatasetId)
@@ -143,7 +140,7 @@ export function useFetchReportVessel() {
   const data = useSelector(selectReportVesselsData)
 
   useEffect(() => {
-    const reportDataviews = getReportDataviews(dataviews, userData)
+    const reportDataviews = getReportDataviews(dataviews)
     if (areaId && reportDataviews?.length && timerangeSupported) {
       dispatch(
         fetchReportVesselsThunk({
@@ -159,7 +156,7 @@ export function useFetchReportVessel() {
         })
       )
     }
-  }, [dispatch, areaId, datasetId, timerange, dataviews, userData, timerangeSupported])
+  }, [dispatch, areaId, datasetId, timerange, dataviews, timerangeSupported])
 
   return useMemo(() => ({ status, data, error }), [status, data, error])
 }

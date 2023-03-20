@@ -105,7 +105,7 @@ const CustomTick = (props: any) => {
   const tooltip = isOtherCategory ? (
     <ul>
       {othersData.map(({ name, value }) => (
-        <li key={name}>{`${getTickLabel(name)}: ${value}`}</li>
+        <li key={`${name}-${value}`}>{`${getTickLabel(name)}: ${value}`}</li>
       ))}
     </ul>
   ) : (
