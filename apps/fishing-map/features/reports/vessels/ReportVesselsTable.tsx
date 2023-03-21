@@ -1,9 +1,8 @@
-import { batch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
-import { CSVLink } from 'react-csv'
-import { Fragment, useState } from 'react'
-import { Button, IconButton } from '@globalfishingwatch/ui-components'
+import { Fragment } from 'react'
+import { IconButton } from '@globalfishingwatch/ui-components'
 import { DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { getVesselDataviewInstance, getVesselInWorkspace } from 'features/dataviews/dataviews.utils'
@@ -12,27 +11,14 @@ import I18nNumber from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
-import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
-import { selectReportVesselFilter, selectTimeRange } from 'features/app/app.selectors'
-import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data/config'
-import { useAppDispatch } from 'features/app/app.hooks'
-import {
-  setVesselGroupConfirmationMode,
-  setVesselGroupCurrentDataviewIds,
-} from 'features/vessel-groups/vessel-groups.slice'
-import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import { getVesselGearOrType } from 'features/reports/reports.utils'
+import ReportVesselsTableFooter from 'features/reports/vessels/ReportVesselsTableFooter'
 import {
   EMPTY_API_VALUES,
   ReportVesselWithDatasets,
-  selectReportVesselsFiltered,
-  selectReportVesselsList,
-  selectReportVesselsListWithAllInfo,
   selectReportVesselsPaginated,
-  selectReportVesselsPagination,
-  getVesselsFiltered,
-} from './reports.selectors'
-import { ReportActivityUnit } from './Report'
+} from '../reports.selectors'
+import { ReportActivityUnit } from '../Report'
 import styles from './ReportVesselsTable.module.css'
 
 type ReportVesselTableProps = {
@@ -42,23 +28,10 @@ type ReportVesselTableProps = {
 
 export default function ReportVesselsTable({ activityUnit, reportName }: ReportVesselTableProps) {
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
-  const [allVesselsWithAllInfoFiltered, setAllVesselsWithAllInfoFiltered] = useState([])
-  const allVesselsWithAllInfo = useSelector(selectReportVesselsListWithAllInfo)
-  const allVessels = useSelector(selectReportVesselsList)
-  const allFilteredVessels = useSelector(selectReportVesselsFiltered)
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const vessels = useSelector(selectReportVesselsPaginated)
-  const reportVesselFilter = useSelector(selectReportVesselFilter)
-  const pagination = useSelector(selectReportVesselsPagination)
   const vesselsInWorkspace = useSelector(selectActiveTrackDataviews)
-  const heatmapDataviews = useSelector(selectActiveHeatmapDataviews)
-  const { start, end } = useSelector(selectTimeRange)
-
-  const getDownloadVessels = () => {
-    setAllVesselsWithAllInfoFiltered(getVesselsFiltered(allVesselsWithAllInfo, reportVesselFilter))
-  }
 
   const onVesselClick = async (
     ev: React.MouseEvent<Element, MouseEvent>,
@@ -85,39 +58,9 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
     upsertDataviewInstance(vesselDataviewInstance)
   }
 
-  const onPrevPageClick = () => {
-    dispatchQueryParams({ reportVesselPage: pagination.page - 1 })
-  }
-  const onNextPageClick = () => {
-    dispatchQueryParams({ reportVesselPage: pagination.page + 1 })
-  }
-  const onShowMoreClick = () => {
-    dispatchQueryParams({
-      reportResultsPerPage: REPORT_SHOW_MORE_VESSELS_PER_PAGE,
-      reportVesselPage: 0,
-    })
-  }
-  const onShowLessClick = () => {
-    dispatchQueryParams({ reportResultsPerPage: REPORT_VESSELS_PER_PAGE, reportVesselPage: 0 })
-  }
   const onFilterClick = (reportVesselFilter) => {
     dispatchQueryParams({ reportVesselFilter, reportVesselPage: 0 })
   }
-  const onAddToVesselGroup = () => {
-    const dataviewIds = heatmapDataviews.map(({ id }) => id)
-    batch(() => {
-      dispatch(setVesselGroupConfirmationMode('saveAndNavigate'))
-      if (dataviewIds?.length) {
-        dispatch(setVesselGroupCurrentDataviewIds(dataviewIds))
-      }
-    })
-  }
-
-  const isShowingMore = pagination.resultsPerPage === REPORT_SHOW_MORE_VESSELS_PER_PAGE
-  const hasLessVesselsThanAPage =
-    pagination.page === 0 && pagination?.resultsNumber < pagination?.resultsPerPage
-  const isLastPaginationPage =
-    pagination?.offset + pagination?.resultsPerPage >= pagination?.totalFiltered
 
   return (
     <Fragment>
@@ -215,78 +158,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
           })}
         </div>
       </div>
-      <div className={styles.footer}>
-        <div className={cx(styles.flex, styles.expand)}>
-          <Fragment>
-            <div className={styles.flex}>
-              <IconButton
-                icon="arrow-left"
-                disabled={pagination?.page === 0}
-                className={cx({ [styles.disabled]: pagination?.page === 0 })}
-                onClick={onPrevPageClick}
-                size="medium"
-              />
-              <span className={styles.noWrap}>
-                {`${pagination?.offset + 1} - ${
-                  isLastPaginationPage
-                    ? pagination?.totalFiltered
-                    : pagination?.offset + pagination?.resultsPerPage
-                }`}{' '}
-              </span>
-              <IconButton
-                icon="arrow-right"
-                onClick={onNextPageClick}
-                disabled={isLastPaginationPage || hasLessVesselsThanAPage}
-                className={cx({
-                  [styles.disabled]: isLastPaginationPage || hasLessVesselsThanAPage,
-                })}
-                size="medium"
-              />
-            </div>
-            <button onClick={isShowingMore ? onShowLessClick : onShowMoreClick}>
-              <label className={styles.pointer}>
-                {t('analysis.resultsPerPage', {
-                  results: isShowingMore
-                    ? REPORT_VESSELS_PER_PAGE
-                    : REPORT_SHOW_MORE_VESSELS_PER_PAGE,
-                  defaultValue: `Show ${
-                    isShowingMore ? REPORT_VESSELS_PER_PAGE : REPORT_SHOW_MORE_VESSELS_PER_PAGE
-                  } per page`,
-                })}
-              </label>
-            </button>
-            <span className={cx(styles.noWrap, styles.right)}>
-              {reportVesselFilter && (
-                <Fragment>
-                  <I18nNumber number={allFilteredVessels?.length} /> {t('common.of', 'of')}{' '}
-                </Fragment>
-              )}
-              <I18nNumber number={pagination?.total} />{' '}
-              {t('common.vessel', { count: pagination?.total })}
-            </span>
-          </Fragment>
-        </div>
-        <div className={cx(styles.flex, styles.expand)}>
-          <VesselGroupAddButton
-            vessels={reportVesselFilter ? allFilteredVessels : allVessels}
-            showCount={false}
-            onAddToVesselGroup={onAddToVesselGroup}
-          />
-          <Button className={styles.expand} disabled={!allVesselsWithAllInfo?.length}>
-            {allVesselsWithAllInfo?.length ? (
-              <CSVLink
-                filename={`${reportName}-${start}-${end}.csv`}
-                onClick={getDownloadVessels}
-                data={allVesselsWithAllInfoFiltered}
-              >
-                {t('analysis.downloadVesselsList', 'Download csv')}
-              </CSVLink>
-            ) : (
-              t('analysis.downloadVesselsList', 'Download csv')
-            )}
-          </Button>
-        </div>
-      </div>
+      <ReportVesselsTableFooter reportName={reportName} />
     </Fragment>
   )
 }
