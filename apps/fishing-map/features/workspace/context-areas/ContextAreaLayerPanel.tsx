@@ -1,13 +1,15 @@
-import { useState, useCallback, Fragment } from 'react'
+import { useState, useCallback, Fragment, useMemo } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import parse from 'html-react-parser'
+import { uniqBy } from 'lodash'
 import { DatasetTypes, DatasetStatus, DatasetCategory } from '@globalfishingwatch/api-types'
 import { Tooltip, ColorBarOption, Modal, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
+import { selectViewport } from 'features/app/app.selectors'
 import { selectUserId } from 'features/user/user.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAddDataset, useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
@@ -19,6 +21,12 @@ import { PRIVATE_SUFIX, ROOT_DOM_ELEMENT } from 'data/config'
 import { ONLY_GFW_STAFF_DATAVIEW_SLUGS } from 'data/workspaces'
 import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/dataviews.selectors'
 import { getDatasetNameTranslated } from 'features/i18n/utils'
+import { useMapDataviewFeatures } from 'features/map/map-sources.hooks'
+import {
+  filterFeaturesByCenterDistance,
+  parseContextFeatures,
+} from 'features/workspace/context-areas/context.utils'
+import { ReportPopupLink } from 'features/map/popups/ContextLayersRow'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -50,7 +58,29 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     setModalDataWarningOpen(false)
   }, [setModalDataWarningOpen])
   const guestUser = useSelector(isGuestUser)
+  const viewport = useSelector(selectViewport)
   const onAddNewClick = useAddDataset({ datasetCategory: DatasetCategory.Context })
+  const layerActive = dataview?.config?.visible ?? true
+  const dataset = dataview.datasets?.find(
+    (d) => d.type === DatasetTypes.Context || d.type === DatasetTypes.UserContext
+  )
+
+  const layerFeatures = useMapDataviewFeatures(layerActive ? dataview : [], 'render')?.[0]
+  const uniqKey = `properties.${dataset?.configuration?.idProperty || 'id'}`
+  const featuresByDistance = useMemo(() => {
+    if (!layerActive) {
+      return []
+    }
+    const uniqLayerFeatures = uniqBy(layerFeatures?.features, uniqKey)
+    const filteredFeatures = filterFeaturesByCenterDistance(uniqLayerFeatures, {
+      viewport,
+      uniqKey,
+    })
+    return parseContextFeatures(filteredFeatures, dataset)
+  }, [dataset, layerActive, layerFeatures?.features, uniqKey, viewport])
+  if (layerActive) {
+    console.log(featuresByDistance)
+  }
 
   const {
     items,
@@ -62,8 +92,6 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     isSorting,
     activeIndex,
   } = useLayerPanelDataviewSort(dataview.id)
-
-  const layerActive = dataview?.config?.visible ?? true
 
   const changeColor = (color: ColorBarOption) => {
     upsertDataviewInstance({
@@ -88,9 +116,6 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     setColorOpen(false)
   }
 
-  const dataset = dataview.datasets?.find(
-    (d) => d.type === DatasetTypes.Context || d.type === DatasetTypes.UserContext
-  )
   const isUserLayer = !guestUser && dataset?.ownerId === userId
 
   useAutoRefreshImportingDataset(dataset, 5000)
@@ -246,6 +271,28 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
               </div>
             </div>
           )}
+        </div>
+      )}
+      {layerActive && featuresByDistance && featuresByDistance.length > 0 && (
+        <div className={styles.properties}>
+          <label>{t('layer.closestAreas', 'Closest areas')}</label>
+          <ul>
+            {featuresByDistance.map((feature) => {
+              const id = feature?.properties?.[uniqKey]
+              let title =
+                feature.properties.value || feature.properties.name || feature.properties.id
+              if (dataset.configuration?.valueProperties?.length) {
+                title = dataset.configuration.valueProperties
+                  .flatMap((prop) => feature.properties[prop] || [])
+                  .join(', ')
+              }
+              return (
+                <li key={id} className={styles.area}>
+                  {title} <ReportPopupLink feature={feature} />
+                </li>
+              )
+            })}
+          </ul>
         </div>
       )}
     </div>

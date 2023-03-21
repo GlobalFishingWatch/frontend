@@ -8,10 +8,9 @@ import { GeneratorType, ContextGeneratorConfig } from '../types'
 import { ExtendedLayerMeta } from '../../types'
 import { isUrlAbsolute } from '../../utils'
 import { API_GATEWAY } from '../../config'
-import LAYERS, { HIGHLIGHT_SUFIX } from './context-layers'
+import LAYERS, { HIGHLIGHT_SUFIX, INTERACTION_SUFIX } from './context-layers'
 import {
   DEFAULT_LINE_COLOR,
-  getContextSourceId,
   getFillPaintWithFeatureState,
   getLinePaintWithFeatureState,
 } from './context.utils'
@@ -71,7 +70,7 @@ class ContextGenerator {
       : API_GATEWAY + config.tilesUrl
     return [
       {
-        id: getContextSourceId(config),
+        id: config.id,
         type: 'vector',
         promoteId: config.promoteId || DEFAULT_CONTEXT_PROMOTE_ID,
         tiles: [tilesUrl.replace(/{{/g, '{').replace(/}}/g, '}')],
@@ -97,8 +96,8 @@ class ContextGenerator {
       const paint = getPaintPropertyByType(baseLayer, config)
       return {
         ...baseLayer,
-        id: baseLayer.id + config.id,
-        source: getContextSourceId(config),
+        id: baseLayer.id.includes(INTERACTION_SUFIX) ? config.id : baseLayer.id + config.id,
+        source: config.id,
         'source-layer': DEFAULT_CONTEXT_SOURCE_LAYER,
         layout: {
           ...baseLayer.layout,
