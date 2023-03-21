@@ -179,9 +179,7 @@ function getGeneratorsMetadataChangeKey(generatorsMetadata: Record<string, Heatm
       const timeChunks = [
         metadata.timeChunks.activeSourceId,
         (metadata.timeChunks.chunks || [])
-          .flatMap(({ active, sourceId, quantizeOffset }) =>
-            active ? [active, sourceId, quantizeOffset] : []
-          )
+          .map(({ active, sourceId, quantizeOffset }) => [active, sourceId, quantizeOffset])
           .join('|'),
       ].join('-')
       return [metadata.sourceLayer, timeChunks, metadata.visibleSublayers].join('_')
