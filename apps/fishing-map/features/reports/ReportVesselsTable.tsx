@@ -2,7 +2,7 @@ import { batch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { CSVLink } from 'react-csv'
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
 import { DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
@@ -56,9 +56,19 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
   const heatmapDataviews = useSelector(selectActiveHeatmapDataviews)
   const { start, end } = useSelector(selectTimeRange)
 
-  const getDownloadVessels = () => {
-    setAllVesselsWithAllInfoFiltered(getVesselsFiltered(allVesselsWithAllInfo, reportVesselFilter))
+  const getDownloadVessels = async (_, done) => {
+    await setAllVesselsWithAllInfoFiltered(
+      getVesselsFiltered(allVesselsWithAllInfo, reportVesselFilter)
+    )
+    done(true)
   }
+
+  useEffect(() => {
+    // State cleanup needed to avoid sluggist renders when there are lots of vessels
+    if (allVesselsWithAllInfoFiltered.length) {
+      setAllVesselsWithAllInfoFiltered([])
+    }
+  }, [allVesselsWithAllInfoFiltered.length])
 
   const onVesselClick = async (
     ev: React.MouseEvent<Element, MouseEvent>,
@@ -272,19 +282,14 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
             showCount={false}
             onAddToVesselGroup={onAddToVesselGroup}
           />
-          <Button className={styles.expand} disabled={!allVesselsWithAllInfo?.length}>
-            {allVesselsWithAllInfo?.length ? (
-              <CSVLink
-                filename={`${reportName}-${start}-${end}.csv`}
-                onClick={getDownloadVessels}
-                data={allVesselsWithAllInfoFiltered}
-              >
-                {t('analysis.downloadVesselsList', 'Download csv')}
-              </CSVLink>
-            ) : (
-              t('analysis.downloadVesselsList', 'Download csv')
-            )}
-          </Button>
+          <CSVLink
+            filename={`${reportName}-${start}-${end}.csv`}
+            onClick={getDownloadVessels}
+            asyncOnClick={true}
+            data={allVesselsWithAllInfoFiltered}
+          >
+            <Button>{t('analysis.downloadVesselsList', 'Download csv')}</Button>
+          </CSVLink>
         </div>
       </div>
     </Fragment>
