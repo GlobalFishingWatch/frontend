@@ -1,5 +1,4 @@
 import { useEffect, useState, useCallback } from 'react'
-import { debounce } from 'lodash'
 import { useDebounce, useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { Timeseries } from '@globalfishingwatch/timebar'
 import { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
@@ -33,7 +32,7 @@ export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSetStackedActivity = useCallback(
-    debounce((dataviewFeatures: DataviewFeature[], bounds) => {
+    (dataviewFeatures: DataviewFeature[], bounds) => {
       const dataviewFeaturesFiltered = dataviewFeatures.map((dataviewFeature) => {
         const activeDataviewDatasets = getActiveActivityDatasetsInDataviews(dataviews)
         const dataviewExtents = activeDataviewDatasets.map((dataviewDatasets) =>
@@ -62,18 +61,18 @@ export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
       const stackedActivity = getTimeseriesFromFeatures(dataviewFeaturesFiltered)
       setStackedActivity(stackedActivity)
       setGeneratingStackedActivity(false)
-    }, 400),
+    },
     [dataviews, setStackedActivity]
   )
 
+  const dataviewFeaturesLoaded = areDataviewsFeatureLoaded(dataviewFeatures)
   useEffect(() => {
-    const dataviewFeaturesLoaded = areDataviewsFeatureLoaded(dataviewFeatures)
     if (!isSmallScreen && dataviewFeaturesLoaded && !error) {
       setGeneratingStackedActivity(true)
       debouncedSetStackedActivity(dataviewFeatures, debouncedBounds)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataviewFeatures, debouncedBounds, isSmallScreen, layersFilterHash])
+  }, [dataviewFeaturesLoaded, debouncedBounds, isSmallScreen, layersFilterHash])
 
   return { loading, error, stackedActivity }
 }
