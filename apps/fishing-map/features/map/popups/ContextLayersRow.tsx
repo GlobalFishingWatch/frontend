@@ -63,7 +63,7 @@ interface ReportPopupButtonProps {
   onClick?: (e: React.MouseEvent<Element, MouseEvent>) => void
 }
 
-const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) => {
+export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) => {
   const { t } = useTranslation()
   const hasAnalysableLayer = useSelector(selectHasReportLayersVisible)
   const workspace = useSelector(selectWorkspace)
