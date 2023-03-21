@@ -12,13 +12,13 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { getVesselGearOrType } from 'features/reports/reports.utils'
-import ReportVesselsTableFooter from 'features/reports/ReportVesselsTableFooter'
+import ReportVesselsTableFooter from 'features/reports/vessels/ReportVesselsTableFooter'
 import {
   EMPTY_API_VALUES,
   ReportVesselWithDatasets,
   selectReportVesselsPaginated,
-} from './reports.selectors'
-import { ReportActivityUnit } from './Report'
+} from '../reports.selectors'
+import { ReportActivityUnit } from '../Report'
 import styles from './ReportVesselsTable.module.css'
 
 type ReportVesselTableProps = {

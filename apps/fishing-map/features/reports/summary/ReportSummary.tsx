@@ -9,7 +9,7 @@ import {
   selectReportCategory,
   selectTimeRange,
 } from 'features/app/app.selectors'
-import ReportSummaryTags from 'features/reports/ReportSummaryTags'
+import ReportSummaryTags from 'features/reports/summary/ReportSummaryTags'
 import { FIELDS, getCommonProperties } from 'features/reports/reports.utils'
 import { ReportActivityUnit } from 'features/reports/Report'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
@@ -21,7 +21,7 @@ import ReportSummaryPlaceholder from 'features/reports/placeholders/ReportSummar
 import ReportSummaryTagsPlaceholder from 'features/reports/placeholders/ReportSummaryTagsPlaceholder'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { listAsSentence } from 'utils/shared'
-import { selectReportVesselsHours, selectReportVesselsNumber } from './reports.selectors'
+import { selectReportVesselsHours, selectReportVesselsNumber } from '../reports.selectors'
 import styles from './ReportSummary.module.css'
 
 type ReportSummaryProps = {

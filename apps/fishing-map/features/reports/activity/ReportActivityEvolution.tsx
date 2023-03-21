@@ -16,10 +16,10 @@ import i18n from 'features/i18n/i18n'
 import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
 import { toFixed } from 'utils/shared'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { ReportActivityProps } from 'features/reports/ReportActivity'
+import { ReportActivityProps } from 'features/reports/activity/ReportActivity'
 import { formatEvolutionData } from 'features/reports/reports-timeseries.utils'
+import { tickFormatter } from '../reports.utils'
 import styles from './ReportActivityEvolution.module.css'
-import { tickFormatter } from './reports.utils'
 
 type ReportGraphTooltipProps = {
   active: boolean

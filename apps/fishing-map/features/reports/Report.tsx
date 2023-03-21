@@ -23,12 +23,12 @@ import {
   useTimebarVisualisationConnect,
 } from 'features/timebar/timebar.hooks'
 import { useFetchReportArea, useFetchReportVessel } from './reports.hooks'
-import ReportSummary from './ReportSummary'
-import ReportTitle from './ReportTitle'
-import ReportActivity from './ReportActivity'
-import ReportVessels from './ReportVessels'
-import ReportDownload from './ReportDownload'
-import ReportEnvironment from './ReportEnvironment'
+import ReportSummary from './summary/ReportSummary'
+import ReportTitle from './title/ReportTitle'
+import ReportActivity from './activity/ReportActivity'
+import ReportVessels from './vessels/ReportVessels'
+import ReportDownload from './download/ReportDownload'
+import ReportEnvironment from './environment/ReportEnvironment'
 import styles from './Report.module.css'
 
 export type ReportActivityUnit = 'hour' | 'detection'

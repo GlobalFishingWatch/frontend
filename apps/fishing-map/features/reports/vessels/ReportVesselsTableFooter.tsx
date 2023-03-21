@@ -21,7 +21,7 @@ import {
   selectReportVesselsListWithAllInfo,
   selectReportVesselsPagination,
   getVesselsFiltered,
-} from './reports.selectors'
+} from '../reports.selectors'
 import styles from './ReportVesselsTableFooter.module.css'
 
 type ReportVesselsTableFooterProps = {

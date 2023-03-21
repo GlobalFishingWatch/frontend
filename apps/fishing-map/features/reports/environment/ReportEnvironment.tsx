@@ -6,8 +6,8 @@ import { useFilteredTimeSeries } from 'features/reports/reports-timeseries.hooks
 import ReportActivityPlaceholder from 'features/reports/placeholders/ReportActivityPlaceholder'
 import { selectReportCategoryDataviews } from 'features/reports/reports.selectors'
 import { getDatasetNameTranslated } from 'features/i18n/utils'
-import ReportActivityEvolution from './ReportActivityEvolution'
-import styles from './ReportActivity.module.css'
+import ReportActivityEvolution from '../activity/ReportActivityEvolution'
+import styles from '../activity/ReportActivity.module.css'
 
 function ReportEnvironment() {
   const timerange = useSelector(selectTimeRange)

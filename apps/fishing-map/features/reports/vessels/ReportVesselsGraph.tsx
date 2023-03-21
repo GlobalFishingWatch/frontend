@@ -8,14 +8,14 @@ import { selectActiveReportDataviews, selectReportVesselGraph } from 'features/a
 import { ReportVesselGraph } from 'types'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
-import styles from './ReportVesselsGraph.module.css'
 import {
   cleanFlagState,
   EMPTY_API_VALUES,
   OTHERS_CATEGORY_LABEL,
   selectReportVesselsGraphDataGrouped,
   selectReportVesselsGraphDataOthers,
-} from './reports.selectors'
+} from '../reports.selectors'
+import styles from './ReportVesselsGraph.module.css'
 
 type ReportGraphTooltipProps = {
   active: boolean
