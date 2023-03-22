@@ -206,6 +206,11 @@
   margin-right: 6px;
 }
 
+.closestAreas {
+  transition: height 300ms ease-in-out;
+  overflow: hidden;
+}
+
 .area {
   cursor: default;
   font: var(--font-S);

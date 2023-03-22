@@ -1,4 +1,4 @@
-import { useState, useCallback, Fragment, useMemo } from 'react'
+import { useState, useCallback, Fragment, useEffect, useMemo } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -48,11 +48,16 @@ type LayerPanelProps = {
 }
 
 const DATAVIEWS_WARNING = ['context-layer-eez', 'context-layer-mpa', 'basemap-labels']
+const LIST_ELEMENT_HEIGHT = 28
+const LIST_ELLIPSIS_HEIGHT = 14
+const LIST_MARGIN_HEIGHT = 10
+const LIST_TITLE_HEIGHT = 22
 
 function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const [filterOpen, setFiltersOpen] = useState(false)
+  const [featuresOnScreen, setFeaturesOnScreen] = useState({ total: 0, closest: [] })
   const [colorOpen, setColorOpen] = useState(false)
   const gfwUser = useSelector(isGFWUser)
   const userId = useSelector(selectUserId)
@@ -73,20 +78,27 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   const uniqKey = dataset?.configuration?.idProperty
     ? `properties.${dataset?.configuration?.idProperty}`
     : 'id'
-  const featuresOnScreen = useMemo(() => {
-    if (!layerActive) {
-      return { total: 0, closest: [] }
-    }
-    const uniqLayerFeatures = uniqBy(layerFeatures?.features, uniqKey)
-    const filteredFeatures = filterFeaturesByDistance(uniqLayerFeatures, {
-      viewport,
-      uniqKey,
-    })
-    return {
-      total: uniqLayerFeatures.length,
-      closest: parseContextFeatures(filteredFeatures, dataset),
+
+  useEffect(() => {
+    if (layerActive && layerFeatures?.features) {
+      const uniqLayerFeatures = uniqBy(layerFeatures?.features, uniqKey)
+      const filteredFeatures = filterFeaturesByDistance(uniqLayerFeatures, {
+        viewport,
+        uniqKey,
+      })
+      setFeaturesOnScreen({
+        total: uniqLayerFeatures.length,
+        closest: parseContextFeatures(filteredFeatures, dataset),
+      })
     }
   }, [dataset, layerActive, layerFeatures?.features, uniqKey, viewport])
+
+  const listHeight = Math.min(featuresOnScreen?.total, CONTEXT_FEATURES_LIMIT) * LIST_ELEMENT_HEIGHT
+  const ellispsisHeight =
+    featuresOnScreen?.total > CONTEXT_FEATURES_LIMIT ? LIST_ELLIPSIS_HEIGHT : 0
+  const closestAreasHeight = featuresOnScreen?.total
+    ? listHeight + ellispsisHeight + LIST_TITLE_HEIGHT + LIST_MARGIN_HEIGHT
+    : 0
 
   const {
     items,
@@ -291,39 +303,49 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           )}
         </div>
       )}
-      {layerActive && featuresOnScreen && featuresOnScreen?.total > 0 && (
-        <div className={styles.properties}>
-          <label>
-            {t('layer.areasOnScreen', 'Areas on screen')} ({featuresOnScreen?.total})
-          </label>
-          <ul>
-            {featuresOnScreen.closest.map((feature) => {
-              const id = feature?.properties?.[uniqKey] || feature?.properties.id || feature?.id
-              let title =
-                feature.properties.value || feature.properties.name || feature.properties.id
-              if (dataset.configuration?.valueProperties?.length) {
-                title = dataset.configuration.valueProperties
-                  .flatMap((prop) => feature.properties[prop] || [])
-                  .join(', ')
-              }
-              return (
-                <li
-                  key={id}
-                  className={styles.area}
-                  onMouseEnter={() => handleHoverArea(feature)}
-                  onMouseLeave={() => cleanFeatureState('highlight')}
-                >
-                  <span title={title.length > 40 ? title : undefined} className={styles.areaTitle}>
-                    {title}
-                  </span>
-                  <ReportPopupLink feature={feature}></ReportPopupLink>
-                </li>
-              )
-            })}
-            {featuresOnScreen?.total > CONTEXT_FEATURES_LIMIT && (
-              <li className={styles.area}>...</li>
-            )}
-          </ul>
+      {layerActive && (
+        <div
+          className={cx(styles.properties, styles.closestAreas)}
+          style={{ height: closestAreasHeight }}
+        >
+          {featuresOnScreen && featuresOnScreen?.total > 0 && (
+            <Fragment>
+              <label>
+                {t('layer.areasOnScreen', 'Areas on screen')} ({featuresOnScreen?.total})
+              </label>
+              <ul>
+                {featuresOnScreen.closest.map((feature) => {
+                  const id = feature?.properties?.[uniqKey] || feature?.properties.id || feature?.id
+                  let title =
+                    feature.properties.value || feature.properties.name || feature.properties.id
+                  if (dataset.configuration?.valueProperties?.length) {
+                    title = dataset.configuration.valueProperties
+                      .flatMap((prop) => feature.properties[prop] || [])
+                      .join(', ')
+                  }
+                  return (
+                    <li
+                      key={`${id}-${title}`}
+                      className={styles.area}
+                      onMouseEnter={() => handleHoverArea(feature)}
+                      onMouseLeave={() => cleanFeatureState('highlight')}
+                    >
+                      <span
+                        title={title.length > 40 ? title : undefined}
+                        className={styles.areaTitle}
+                      >
+                        {title}
+                      </span>
+                      <ReportPopupLink feature={feature}></ReportPopupLink>
+                    </li>
+                  )
+                })}
+                {featuresOnScreen?.total > CONTEXT_FEATURES_LIMIT && (
+                  <li className={styles.area}>...</li>
+                )}
+              </ul>
+            </Fragment>
+          )}
         </div>
       )}
     </div>
