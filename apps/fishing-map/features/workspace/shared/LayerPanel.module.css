@@ -206,6 +206,27 @@
   margin-right: 6px;
 }
 
+.area {
+  cursor: default;
+  font: var(--font-S);
+  opacity: var(--opacity-secondary);
+  transition: opacity 200ms linear;
+  display: flex;
+  align-items: center;
+  max-width: 100%;
+  gap: var(--space-XS);
+}
+
+.area:hover {
+  opacity: var(--opacity-primary);
+}
+
+.areaTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 @media print {
   .tagList > li > div {
     border: var(--border);

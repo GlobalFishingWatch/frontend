@@ -7,7 +7,8 @@ import { uniqBy } from 'lodash'
 import { DatasetTypes, DatasetStatus, DatasetCategory } from '@globalfishingwatch/api-types'
 import { Tooltip, ColorBarOption, Modal, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
+import { DEFAULT_CONTEXT_SOURCE_LAYER, GeneratorType } from '@globalfishingwatch/layer-composer'
+import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { selectViewport } from 'features/app/app.selectors'
 import { selectUserId } from 'features/user/user.selectors'
@@ -23,10 +24,11 @@ import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/dataview
 import { getDatasetNameTranslated } from 'features/i18n/utils'
 import { useMapDataviewFeatures } from 'features/map/map-sources.hooks'
 import {
-  filterFeaturesByCenterDistance,
+  filterFeaturesByDistance,
   parseContextFeatures,
 } from 'features/workspace/context-areas/context.utils'
 import { ReportPopupLink } from 'features/map/popups/ContextLayersRow'
+import useMapInstance from 'features/map/map-context.hooks'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -65,6 +67,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     (d) => d.type === DatasetTypes.Context || d.type === DatasetTypes.UserContext
   )
 
+  const { cleanFeatureState, updateFeatureState } = useFeatureState(useMapInstance())
   const layerFeatures = useMapDataviewFeatures(layerActive ? dataview : [], 'render')?.[0]
   const uniqKey = `properties.${dataset?.configuration?.idProperty || 'id'}`
   const featuresByDistance = useMemo(() => {
@@ -72,15 +75,12 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
       return []
     }
     const uniqLayerFeatures = uniqBy(layerFeatures?.features, uniqKey)
-    const filteredFeatures = filterFeaturesByCenterDistance(uniqLayerFeatures, {
+    const filteredFeatures = filterFeaturesByDistance(uniqLayerFeatures, {
       viewport,
       uniqKey,
     })
     return parseContextFeatures(filteredFeatures, dataset)
   }, [dataset, layerActive, layerFeatures?.features, uniqKey, viewport])
-  if (layerActive) {
-    console.log(featuresByDistance)
-  }
 
   const {
     items,
@@ -152,6 +152,18 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   const hasSchemaFilterSelection = schemaFilters.some(
     (schema) => schema.optionsSelected?.length > 0
   )
+
+  const handleHoverArea = (feature) => {
+    const { source, id } = feature
+    if (source && id) {
+      const featureState = {
+        source,
+        sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
+        id,
+      }
+      updateFeatureState([featureState], 'highlight')
+    }
+  }
 
   return (
     <div
@@ -287,8 +299,16 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
                   .join(', ')
               }
               return (
-                <li key={id} className={styles.area}>
-                  {title} <ReportPopupLink feature={feature} />
+                <li
+                  key={id}
+                  className={styles.area}
+                  onMouseEnter={() => handleHoverArea(feature)}
+                  onMouseLeave={() => cleanFeatureState('highlight')}
+                >
+                  <span title={title.length > 40 ? title : undefined} className={styles.areaTitle}>
+                    {title}
+                  </span>
+                  <ReportPopupLink feature={feature}></ReportPopupLink>
                 </li>
               )
             })}

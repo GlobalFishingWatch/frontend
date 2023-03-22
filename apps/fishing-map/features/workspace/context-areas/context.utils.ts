@@ -10,7 +10,7 @@ type FilterFeaturesByCenterDistanceParams = {
   uniqKey?: string
   limit?: number
 }
-export const filterFeaturesByCenterDistance = (
+export const filterFeaturesByDistance = (
   features: GeoJSONFeature[],
   {
     viewport,
