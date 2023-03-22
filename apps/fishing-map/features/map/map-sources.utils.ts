@@ -3,6 +3,7 @@ import {
   isHeatmapAnimatedDataview,
   MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
   MERGED_DETECTIONS_ANIMATED_HEATMAP_GENERATOR_ID,
+  MULTILAYER_SEPARATOR,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import {
@@ -34,15 +35,21 @@ export const getSourceMetadata = (style: ExtendedStyle, dataview: UrlDataviewIns
     return { metadata, generatorSourceId }
   }
   const environmentMetadata = getHeatmapSourceMetadata(style, dataview.id)
+  if (environmentMetadata) {
+    return { metadata: environmentMetadata, generatorSourceId: dataview.id }
+  }
+
+  const generatorSourceId = Array.isArray(dataview.config.layers)
+    ? `${dataview.id}${MULTILAYER_SEPARATOR}${dataview.config.layers[0]?.id}`
+    : `${dataview.id}${MULTILAYER_SEPARATOR}${dataview.config.layers}`
+
   return {
-    metadata: environmentMetadata
-      ? environmentMetadata
-      : ({
-          sourceLayer:
-            dataview.config?.type === GeneratorType.TileCluster
-              ? DEFAULT_POINTS_SOURCE_LAYER
-              : DEFAULT_CONTEXT_SOURCE_LAYER,
-        } as HeatmapLayerMeta),
-    generatorSourceId: dataview.id,
+    metadata: {
+      sourceLayer:
+        dataview.config?.type === GeneratorType.TileCluster
+          ? DEFAULT_POINTS_SOURCE_LAYER
+          : DEFAULT_CONTEXT_SOURCE_LAYER,
+    } as HeatmapLayerMeta,
+    generatorSourceId,
   }
 }

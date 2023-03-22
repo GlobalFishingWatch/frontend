@@ -63,13 +63,26 @@ interface ReportPopupButtonProps {
   onClick?: (e: React.MouseEvent<Element, MouseEvent>) => void
 }
 
-const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) => {
+export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) => {
   const { t } = useTranslation()
   const hasAnalysableLayer = useSelector(selectHasReportLayersVisible)
   const workspace = useSelector(selectWorkspace)
   const isSidebarOpen = useSelector(selectSidebarOpen)
   const query = useSelector(selectLocationQuery)
   const bounds = getFeatureBounds(feature)
+  if (!hasAnalysableLayer) {
+    return (
+      <IconButton
+        icon="analysis"
+        disabled={true}
+        size="small"
+        tooltip={t(
+          'common.analysisNotAvailable',
+          'Toggle an activity or environmenet layer on to analyse in in this area'
+        )}
+      />
+    )
+  }
   return (
     <Link
       className={styles.workspaceLink}
@@ -92,15 +105,7 @@ const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) => {
     >
       <IconButton
         icon="analysis"
-        disabled={!hasAnalysableLayer}
-        tooltip={
-          hasAnalysableLayer
-            ? t('common.analysis', 'Create an analysis for this area')
-            : t(
-                'common.analysisNotAvailable',
-                'Toggle an activity or environmenet layer on to analyse in in this area'
-              )
-        }
+        tooltip={t('common.analysis', 'Create an analysis for this area')}
         size="small"
       />
     </Link>

@@ -1,13 +1,16 @@
-import { useState, useCallback, Fragment } from 'react'
+import { useState, useCallback, Fragment, useEffect, useMemo } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import parse from 'html-react-parser'
+import { uniqBy } from 'lodash'
 import { DatasetTypes, DatasetStatus, DatasetCategory } from '@globalfishingwatch/api-types'
 import { Tooltip, ColorBarOption, Modal, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
+import { DEFAULT_CONTEXT_SOURCE_LAYER, GeneratorType } from '@globalfishingwatch/layer-composer'
+import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
+import { selectViewport } from 'features/app/app.selectors'
 import { selectUserId } from 'features/user/user.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAddDataset, useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
@@ -19,6 +22,14 @@ import { PRIVATE_SUFIX, ROOT_DOM_ELEMENT } from 'data/config'
 import { ONLY_GFW_STAFF_DATAVIEW_SLUGS } from 'data/workspaces'
 import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/dataviews.selectors'
 import { getDatasetNameTranslated } from 'features/i18n/utils'
+import { useMapDataviewFeatures } from 'features/map/map-sources.hooks'
+import {
+  CONTEXT_FEATURES_LIMIT,
+  filterFeaturesByDistance,
+  parseContextFeatures,
+} from 'features/workspace/context-areas/context.utils'
+import { ReportPopupLink } from 'features/map/popups/ContextLayersRow'
+import useMapInstance from 'features/map/map-context.hooks'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -37,11 +48,16 @@ type LayerPanelProps = {
 }
 
 const DATAVIEWS_WARNING = ['context-layer-eez', 'context-layer-mpa', 'basemap-labels']
+const LIST_ELEMENT_HEIGHT = 30
+const LIST_ELLIPSIS_HEIGHT = 14
+const LIST_MARGIN_HEIGHT = 10
+const LIST_TITLE_HEIGHT = 22
 
 function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const [filterOpen, setFiltersOpen] = useState(false)
+  const [featuresOnScreen, setFeaturesOnScreen] = useState({ total: 0, closest: [] })
   const [colorOpen, setColorOpen] = useState(false)
   const gfwUser = useSelector(isGFWUser)
   const userId = useSelector(selectUserId)
@@ -50,7 +66,51 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     setModalDataWarningOpen(false)
   }, [setModalDataWarningOpen])
   const guestUser = useSelector(isGuestUser)
+  const viewport = useSelector(selectViewport)
   const onAddNewClick = useAddDataset({ datasetCategory: DatasetCategory.Context })
+  const layerActive = dataview?.config?.visible ?? true
+  const dataset = dataview.datasets?.find(
+    (d) => d.type === DatasetTypes.Context || d.type === DatasetTypes.UserContext
+  )
+
+  const { cleanFeatureState, updateFeatureState } = useFeatureState(useMapInstance())
+  const dataviewFeaturesParams = useMemo(() => {
+    return {
+      queryMethod: 'render' as const,
+      queryCacheKey: [viewport.latitude, viewport.longitude, viewport.zoom]
+        .map((v) => v.toFixed(3))
+        .join('-'),
+    }
+  }, [viewport])
+
+  const layerFeatures = useMapDataviewFeatures(
+    layerActive ? dataview : [],
+    dataviewFeaturesParams
+  )?.[0]
+  const uniqKey = dataset?.configuration?.idProperty
+    ? `properties.${dataset?.configuration?.idProperty}`
+    : 'id'
+
+  useEffect(() => {
+    if (layerActive && layerFeatures?.features) {
+      const uniqLayerFeatures = uniqBy(layerFeatures?.features, uniqKey)
+      const filteredFeatures = filterFeaturesByDistance(uniqLayerFeatures, {
+        viewport,
+        uniqKey,
+      })
+      setFeaturesOnScreen({
+        total: uniqLayerFeatures.length,
+        closest: parseContextFeatures(filteredFeatures, dataset),
+      })
+    }
+  }, [dataset, layerActive, layerFeatures?.features, uniqKey, viewport])
+
+  const listHeight = Math.min(featuresOnScreen?.total, CONTEXT_FEATURES_LIMIT) * LIST_ELEMENT_HEIGHT
+  const ellispsisHeight =
+    featuresOnScreen?.total > CONTEXT_FEATURES_LIMIT ? LIST_ELLIPSIS_HEIGHT : 0
+  const closestAreasHeight = featuresOnScreen?.total
+    ? listHeight + ellispsisHeight + LIST_TITLE_HEIGHT + LIST_MARGIN_HEIGHT
+    : 0
 
   const {
     items,
@@ -62,8 +122,6 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     isSorting,
     activeIndex,
   } = useLayerPanelDataviewSort(dataview.id)
-
-  const layerActive = dataview?.config?.visible ?? true
 
   const changeColor = (color: ColorBarOption) => {
     upsertDataviewInstance({
@@ -88,9 +146,6 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     setColorOpen(false)
   }
 
-  const dataset = dataview.datasets?.find(
-    (d) => d.type === DatasetTypes.Context || d.type === DatasetTypes.UserContext
-  )
   const isUserLayer = !guestUser && dataset?.ownerId === userId
 
   useAutoRefreshImportingDataset(dataset, 5000)
@@ -127,6 +182,18 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   const hasSchemaFilterSelection = schemaFilters.some(
     (schema) => schema.optionsSelected?.length > 0
   )
+
+  const handleHoverArea = (feature) => {
+    const { source, id } = feature
+    if (source && id) {
+      const featureState = {
+        source,
+        sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
+        id,
+      }
+      updateFeatureState([featureState], 'highlight')
+    }
+  }
 
   return (
     <div
@@ -245,6 +312,51 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
                 ))}
               </div>
             </div>
+          )}
+        </div>
+      )}
+      {layerActive && (
+        <div
+          className={cx(styles.closestAreas, { [styles.properties]: featuresOnScreen?.total > 0 })}
+          style={{ height: closestAreasHeight }}
+        >
+          {featuresOnScreen?.total > 0 && (
+            <Fragment>
+              <label>
+                {t('layer.areasOnScreen', 'Areas on screen')} ({featuresOnScreen?.total})
+              </label>
+              <ul>
+                {featuresOnScreen.closest.map((feature) => {
+                  const id = feature?.properties?.[uniqKey] || feature?.properties.id || feature?.id
+                  let title =
+                    feature.properties.value || feature.properties.name || feature.properties.id
+                  if (dataset.configuration?.valueProperties?.length) {
+                    title = dataset.configuration.valueProperties
+                      .flatMap((prop) => feature.properties[prop] || [])
+                      .join(', ')
+                  }
+                  return (
+                    <li
+                      key={`${id}-${title}`}
+                      className={styles.area}
+                      onMouseEnter={() => handleHoverArea(feature)}
+                      onMouseLeave={() => cleanFeatureState('highlight')}
+                    >
+                      <span
+                        title={title.length > 40 ? title : undefined}
+                        className={styles.areaTitle}
+                      >
+                        {title}
+                      </span>
+                      <ReportPopupLink feature={feature}></ReportPopupLink>
+                    </li>
+                  )
+                })}
+                {featuresOnScreen?.total > CONTEXT_FEATURES_LIMIT && (
+                  <li className={cx(styles.area, styles.ellipsis)}>...</li>
+                )}
+              </ul>
+            </Fragment>
           )}
         </div>
       )}

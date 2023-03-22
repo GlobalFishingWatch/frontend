@@ -91,7 +91,7 @@
   transition: var(--transition);
 }
 
-.LayerPanel:not(.expandedContainerOpen):not(:hover) .hideUntilHovered > * {
+.LayerPanel:not(.expandedContainerOpen, :hover) .hideUntilHovered > * {
   overflow: hidden;
   width: 0;
   opacity: 0;
@@ -204,6 +204,36 @@
   height: 6px;
   border-top: 2px solid var(--color);
   margin-right: 6px;
+}
+
+.closestAreas {
+  transition: height 300ms ease-in-out;
+  overflow: hidden;
+}
+
+.area {
+  cursor: default;
+  font: var(--font-S);
+  opacity: var(--opacity-secondary);
+  transition: opacity 200ms linear;
+  display: flex;
+  align-items: center;
+  max-width: 100%;
+  gap: var(--space-XS);
+}
+
+.area:hover {
+  opacity: var(--opacity-primary);
+}
+
+.ellipsis {
+  line-height: 1;
+}
+
+.areaTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 @media print {

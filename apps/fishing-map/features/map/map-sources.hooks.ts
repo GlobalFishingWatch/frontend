@@ -189,7 +189,15 @@ function getGeneratorsMetadataChangeKey(generatorsMetadata: Record<string, Heatm
     .join('_')
 }
 
-export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDataviewInstance[]) => {
+export type MapLayerFeaturesQueryMethod = 'render' | 'source'
+export type MapDataviewFeaturesParams = {
+  queryMethod: MapLayerFeaturesQueryMethod
+  queryCacheKey?: string
+}
+export const useMapDataviewFeatures = (
+  dataviews: UrlDataviewInstance | UrlDataviewInstance[],
+  { queryMethod = 'source', queryCacheKey = '' } = {} as MapDataviewFeaturesParams
+) => {
   const style = useMapStyle()
   const map = useMapInstance()
 
@@ -215,7 +223,7 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
         }
       }
       const sourcesId =
-        metadata?.timeChunks?.chunks.flatMap(({ sourceId }) => sourceId) || dataview?.id
+        metadata?.timeChunks?.chunks.flatMap(({ sourceId }) => sourceId) || generatorSourceId
       return acc.concat({
         metadata,
         sourcesId,
@@ -232,59 +240,70 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
   const sourceTilesLoaded = useMapSourceTiles(sourcesIds)
 
   const dataviewFeatures = useMemo(() => {
-    const dataviewsFeature = dataviewsMetadata.map(({ dataviewsId, metadata, filter }) => {
-      const sourceLayer = metadata?.sourceLayer || TEMPORALGRID_SOURCE_LAYER_INTERACTIVE
-      const chunks = metadata?.timeChunks?.chunks.map(({ active, sourceId, quantizeOffset }) => ({
-        active,
-        sourceId,
-        quantizeOffset,
-      }))
-      const chunksFeatures: ChunkFeature[] | null = chunks
-        ? chunks.map(({ active, sourceId, quantizeOffset }) => {
-            const emptyChunkState = {} as TilesAtomSourceState
-            const chunkState = sourceTilesLoaded[sourceId] || emptyChunkState
-            const features =
-              chunkState.loaded && !chunkState.error
-                ? map.querySourceFeatures(sourceId, { sourceLayer, filter })
-                : null
-            return {
-              active,
-              features: features as unknown as GeoJSONFeature<TimeseriesFeatureProps>[],
-              quantizeOffset,
-              state: chunkState,
-            }
-          })
-        : null
-      const sourceId = metadata?.timeChunks?.activeSourceId || dataviewsId[0]
-      const state = chunks
-        ? ({
-            loaded: chunksFeatures.every(({ state }) => state.loaded !== false),
-            error: chunksFeatures
-              .filter(({ state }) => state.error)
-              .map(({ state }) => state.error)
-              .join(','),
-          } as TilesAtomSourceState)
-        : sourceTilesLoaded[sourceId] || ({} as TilesAtomSourceState)
-
-      const features: GeoJSONFeature[] | null =
-        !chunks && state?.loaded && !state?.error
-          ? map.querySourceFeatures(sourceId, { sourceLayer, filter })
+    const dataviewsFeature = dataviewsMetadata.map(
+      ({ dataviewsId, metadata, filter, generatorSourceId }) => {
+        const sourceLayer = metadata?.sourceLayer || TEMPORALGRID_SOURCE_LAYER_INTERACTIVE
+        const chunks = metadata?.timeChunks?.chunks.map(({ active, sourceId, quantizeOffset }) => ({
+          active,
+          sourceId,
+          quantizeOffset,
+        }))
+        const chunksFeatures: ChunkFeature[] | null = chunks
+          ? chunks.map(({ active, sourceId, quantizeOffset }) => {
+              const emptyChunkState = {} as TilesAtomSourceState
+              const chunkState = sourceTilesLoaded[sourceId] || emptyChunkState
+              let features = null
+              if (chunkState.loaded && !chunkState.error) {
+                if (queryMethod === 'render') {
+                  features = map.queryRenderedFeatures(undefined, { layers: [sourceLayer] })
+                } else {
+                  features = map.querySourceFeatures(sourceId, { sourceLayer, filter })
+                }
+              }
+              return {
+                active,
+                features: features as unknown as GeoJSONFeature<TimeseriesFeatureProps>[],
+                quantizeOffset,
+                state: chunkState,
+              }
+            })
           : null
+        const sourceId = metadata?.timeChunks?.activeSourceId || generatorSourceId
+        const state = chunks
+          ? ({
+              loaded: chunksFeatures.every(({ state }) => state.loaded !== false),
+              error: chunksFeatures
+                .filter(({ state }) => state.error)
+                .map(({ state }) => state.error)
+                .join(','),
+            } as TilesAtomSourceState)
+          : sourceTilesLoaded[sourceId] || ({} as TilesAtomSourceState)
 
-      const data: DataviewFeature = {
-        sourceId,
-        dataviewsId,
-        state,
-        features,
-        chunksFeatures,
-        metadata,
+        let features: GeoJSONFeature[] | null = null
+
+        if (!chunks && state?.loaded && !state?.error) {
+          if (queryMethod === 'render') {
+            features = map.queryRenderedFeatures(undefined, { layers: [sourceId] })
+          } else {
+            features = map.querySourceFeatures(sourceId, { sourceLayer, filter })
+          }
+        }
+
+        const data: DataviewFeature = {
+          sourceId,
+          dataviewsId,
+          state,
+          features,
+          chunksFeatures,
+          metadata,
+        }
+        return data
       }
-      return data
-    })
+    )
     return dataviewsFeature
     // Runs only when source tiles load change or metadata changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, sourceTilesLoaded, dataviewsMetadata])
+  }, [map, sourceTilesLoaded, dataviewsMetadata, queryCacheKey])
 
   return dataviewFeatures
 }
