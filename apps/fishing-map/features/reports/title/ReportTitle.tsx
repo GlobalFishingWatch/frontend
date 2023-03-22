@@ -8,6 +8,7 @@ import { selectReportAreaIds } from 'features/reports/reports.selectors'
 import { selectDataviewInstancesByType } from 'features/dataviews/dataviews.slice'
 import { getContextAreaLink } from 'features/dataviews/dataviews.utils'
 import ReportTitlePlaceholder from 'features/reports/placeholders/ReportTitlePlaceholder'
+import { selectContextAreasDataviews } from 'features/dataviews/dataviews.selectors'
 import styles from './ReportTitle.module.css'
 
 type ReportTitleProps = {
@@ -19,16 +20,20 @@ type ReportTitleProps = {
 export default function ReportTitle({ area }: ReportTitleProps) {
   const { t } = useTranslation()
   const { datasetId } = useSelector(selectReportAreaIds)
-  const contextDataviews = useSelector(selectDataviewInstancesByType(GeneratorType.Context))
+  const contextDataviews = useSelector(selectContextAreasDataviews)
   const areaDataview = contextDataviews.find((dataview) => {
     return dataview.datasets.some((dataset) => dataset.id === datasetId)
   })
-  const linkHref = getContextAreaLink(areaDataview?.config.layers[0]?.id, area)
+  const name =
+    areaDataview?.config.type === GeneratorType.UserContext
+      ? areaDataview?.datasets?.[0]?.name
+      : area.name
+  const linkHref = getContextAreaLink(areaDataview?.config?.layers?.[0]?.id, area)
   return (
     <div className={styles.container}>
-      {area?.name ? (
+      {name ? (
         <Fragment>
-          <h1 className={styles.title}>{area.name}</h1>
+          <h1 className={styles.title}>{name}</h1>
           <div className={styles.actions}>
             {linkHref && (
               <a target="_blank" rel="noopener noreferrer" href={linkHref}>
