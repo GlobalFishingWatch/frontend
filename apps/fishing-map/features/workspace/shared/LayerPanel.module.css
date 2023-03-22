@@ -91,7 +91,7 @@
   transition: var(--transition);
 }
 
-.LayerPanel:not(.expandedContainerOpen):not(:hover) .hideUntilHovered > * {
+.LayerPanel:not(.expandedContainerOpen, :hover) .hideUntilHovered > * {
   overflow: hidden;
   width: 0;
   opacity: 0;
@@ -215,6 +215,7 @@
   align-items: center;
   max-width: 100%;
   gap: var(--space-XS);
+  line-height: 1;
 }
 
 .area:hover {

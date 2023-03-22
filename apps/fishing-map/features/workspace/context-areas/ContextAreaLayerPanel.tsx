@@ -24,6 +24,7 @@ import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/dataview
 import { getDatasetNameTranslated } from 'features/i18n/utils'
 import { useMapDataviewFeatures } from 'features/map/map-sources.hooks'
 import {
+  CONTEXT_FEATURES_LIMIT,
   filterFeaturesByDistance,
   parseContextFeatures,
 } from 'features/workspace/context-areas/context.utils'
@@ -69,17 +70,22 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
 
   const { cleanFeatureState, updateFeatureState } = useFeatureState(useMapInstance())
   const layerFeatures = useMapDataviewFeatures(layerActive ? dataview : [], 'render')?.[0]
-  const uniqKey = `properties.${dataset?.configuration?.idProperty || 'id'}`
-  const featuresByDistance = useMemo(() => {
+  const uniqKey = dataset?.configuration?.idProperty
+    ? `properties.${dataset?.configuration?.idProperty}`
+    : 'id'
+  const featuresOnScreen = useMemo(() => {
     if (!layerActive) {
-      return []
+      return { total: 0, closest: [] }
     }
     const uniqLayerFeatures = uniqBy(layerFeatures?.features, uniqKey)
     const filteredFeatures = filterFeaturesByDistance(uniqLayerFeatures, {
       viewport,
       uniqKey,
     })
-    return parseContextFeatures(filteredFeatures, dataset)
+    return {
+      total: uniqLayerFeatures.length,
+      closest: parseContextFeatures(filteredFeatures, dataset),
+    }
   }, [dataset, layerActive, layerFeatures?.features, uniqKey, viewport])
 
   const {
@@ -285,12 +291,14 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           )}
         </div>
       )}
-      {layerActive && featuresByDistance && featuresByDistance.length > 0 && (
+      {layerActive && featuresOnScreen && featuresOnScreen?.total > 0 && (
         <div className={styles.properties}>
-          <label>{t('layer.closestAreas', 'Closest areas')}</label>
+          <label>
+            {t('layer.areasOnScreen', 'Areas on screen')} ({featuresOnScreen?.total})
+          </label>
           <ul>
-            {featuresByDistance.map((feature) => {
-              const id = feature?.properties?.[uniqKey]
+            {featuresOnScreen.closest.map((feature) => {
+              const id = feature?.properties?.[uniqKey] || feature?.properties.id || feature?.id
               let title =
                 feature.properties.value || feature.properties.name || feature.properties.id
               if (dataset.configuration?.valueProperties?.length) {
@@ -312,6 +320,9 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
                 </li>
               )
             })}
+            {featuresOnScreen?.total > CONTEXT_FEATURES_LIMIT && (
+              <li className={styles.area}>...</li>
+            )}
           </ul>
         </div>
       )}

@@ -376,7 +376,7 @@
       "eez": "EEZ",
       "mpa": "MPA"
     },
-    "closestAreas": "Closest areas",
+    "areasOnScreen": "Areas on screen",
     "color_change": "Change color",
     "drawPolygon": "Draw a layer",
     "drawPolygonLogin": "Register and login to draw a layer (free, 2 minutes)",

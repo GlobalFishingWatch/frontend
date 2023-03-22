@@ -4,7 +4,8 @@ import { getAreasByDistance } from '@globalfishingwatch/ocean-areas'
 import { Dataset } from '@globalfishingwatch/api-types'
 import { MapCoordinates } from 'types'
 
-const CONTEXT_FEATURES_LIMIT = 5
+export const CONTEXT_FEATURES_LIMIT = 5
+
 type FilterFeaturesByCenterDistanceParams = {
   viewport: MapCoordinates
   uniqKey?: string
