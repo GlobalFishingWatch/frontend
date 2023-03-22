@@ -58,46 +58,64 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
       ? `${t('common.of', 'of')} <strong>${t(`common.activity`, 'Activity').toLowerCase()}</strong>`
       : undefined
 
-    if (reportStatus === AsyncReducerStatus.Finished) {
-      if (reportHours) {
-        return t('analysis.summary', {
-          defaultValue:
-            '<strong>{{vessels}} $t(common.vessel_other){{sources}}</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
-          vessels: formatI18nNumber(reportVessels || 0, {
-            locale: i18n.language as Locale,
-          }),
-          activityQuantity: formatI18nNumber(Math.floor(reportHours), {
-            locale: i18n.language as Locale,
-          }),
-          activityUnit: t(`common.${activityUnit}`, {
-            defaultValue: 'hours',
-            count: Math.floor(reportHours),
-          }),
-          activityType: datasetTitle,
-          start: formatI18nDate(timerange?.start),
-          end: formatI18nDate(timerange?.end),
-          sources: commonProperties.includes('source')
-            ? ` (${listAsSentence(
-                getSourcesSelectedInDataview(dataviews[0]).map((source) => source.label)
-              )})`
-            : '',
-        })
-      }
+    if (
+      reportHours &&
+      reportStatus === AsyncReducerStatus.Finished &&
+      category !== DataviewCategory.Detections
+    ) {
+      return t('analysis.summary', {
+        defaultValue:
+          '<strong>{{vessels}} $t(common.vessel_other){{sources}}</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
+        vessels: formatI18nNumber(reportVessels || 0, {
+          locale: i18n.language as Locale,
+        }),
+        activityQuantity: formatI18nNumber(Math.floor(reportHours), {
+          locale: i18n.language as Locale,
+        }),
+        activityUnit: t(`common.${activityUnit}`, {
+          defaultValue: 'hours',
+          count: Math.floor(reportHours),
+        }),
+        activityType: datasetTitle,
+        start: formatI18nDate(timerange?.start),
+        end: formatI18nDate(timerange?.end),
+        sources: commonProperties.includes('source')
+          ? ` (${listAsSentence(
+              getSourcesSelectedInDataview(dataviews[0]).map((source) => source.label)
+            )})`
+          : '',
+      })
     }
-    if (!timeseriesLoading && layersTimeseriesFiltered?.[0]) {
+    if (
+      (!timeseriesLoading && layersTimeseriesFiltered?.[0]) ||
+      category === DataviewCategory.Detections
+    ) {
       const formattedTimeseries = formatEvolutionData(layersTimeseriesFiltered?.[0])
       const timeseriesHours = sum(formattedTimeseries?.map((t) => sum(t.avg)))
       const timeseriesMaxHours = sum(formattedTimeseries?.map((t) => sum(t.range.map((r) => r[1]))))
       const timeseriesImprecision = ((timeseriesMaxHours - timeseriesHours) / timeseriesHours) * 100
+      let activityQuantity =
+        !timeseriesLoading && layersTimeseriesFiltered?.[0]
+          ? `<span title="± ${timeseriesImprecision.toFixed(2)}%">~${formatI18nNumber(
+              timeseriesHours.toFixed(),
+              {
+                locale: i18n.language as Locale,
+              }
+            )}</span>`
+          : ''
+      if (
+        category === DataviewCategory.Detections &&
+        reportStatus === AsyncReducerStatus.Finished &&
+        reportHours
+      ) {
+        activityQuantity = formatI18nNumber(Math.floor(reportHours), {
+          locale: i18n.language as Locale,
+        }) as string
+      }
       return t('analysis.summaryNoVessels', {
         defaultValue:
           '<strong>{{sources}} {{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
-        activityQuantity: `<span title="± ${timeseriesImprecision.toFixed(2)}%">~${formatI18nNumber(
-          timeseriesHours.toFixed(),
-          {
-            locale: i18n.language as Locale,
-          }
-        )}</span>`,
+        activityQuantity,
         activityUnit: t(`common.${activityUnit}`, {
           defaultValue: 'hours',
           count: Math.floor(reportHours),
@@ -113,6 +131,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
       })
     }
   }, [
+    t,
     activityUnit,
     category,
     commonProperties,
@@ -122,7 +141,6 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
     reportHours,
     reportStatus,
     reportVessels,
-    t,
     timerange?.end,
     timerange?.start,
     timeseriesLoading,
