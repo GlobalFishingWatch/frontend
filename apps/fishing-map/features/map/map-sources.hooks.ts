@@ -190,9 +190,13 @@ function getGeneratorsMetadataChangeKey(generatorsMetadata: Record<string, Heatm
 }
 
 export type MapLayerFeaturesQueryMethod = 'render' | 'source'
+export type MapDataviewFeaturesParams = {
+  queryMethod: MapLayerFeaturesQueryMethod
+  queryCacheKey?: string
+}
 export const useMapDataviewFeatures = (
   dataviews: UrlDataviewInstance | UrlDataviewInstance[],
-  queryMethod: MapLayerFeaturesQueryMethod = 'source'
+  { queryMethod = 'source', queryCacheKey = '' } = {} as MapDataviewFeaturesParams
 ) => {
   const style = useMapStyle()
   const map = useMapInstance()
@@ -299,7 +303,7 @@ export const useMapDataviewFeatures = (
     return dataviewsFeature
     // Runs only when source tiles load change or metadata changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, sourceTilesLoaded, dataviewsMetadata])
+  }, [map, sourceTilesLoaded, dataviewsMetadata, queryCacheKey])
 
   return dataviewFeatures
 }

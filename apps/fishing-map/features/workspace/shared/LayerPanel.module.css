@@ -220,11 +220,14 @@
   align-items: center;
   max-width: 100%;
   gap: var(--space-XS);
-  line-height: 1;
 }
 
 .area:hover {
   opacity: var(--opacity-primary);
+}
+
+.ellipsis {
+  line-height: 1;
 }
 
 .areaTitle {

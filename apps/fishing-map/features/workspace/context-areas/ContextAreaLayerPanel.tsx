@@ -48,7 +48,7 @@ type LayerPanelProps = {
 }
 
 const DATAVIEWS_WARNING = ['context-layer-eez', 'context-layer-mpa', 'basemap-labels']
-const LIST_ELEMENT_HEIGHT = 28
+const LIST_ELEMENT_HEIGHT = 30
 const LIST_ELLIPSIS_HEIGHT = 14
 const LIST_MARGIN_HEIGHT = 10
 const LIST_TITLE_HEIGHT = 22
@@ -74,7 +74,19 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   )
 
   const { cleanFeatureState, updateFeatureState } = useFeatureState(useMapInstance())
-  const layerFeatures = useMapDataviewFeatures(layerActive ? dataview : [], 'render')?.[0]
+  const dataviewFeaturesParams = useMemo(() => {
+    return {
+      queryMethod: 'render' as const,
+      queryCacheKey: [viewport.latitude, viewport.longitude, viewport.zoom]
+        .map((v) => v.toFixed(3))
+        .join('-'),
+    }
+  }, [viewport])
+
+  const layerFeatures = useMapDataviewFeatures(
+    layerActive ? dataview : [],
+    dataviewFeaturesParams
+  )?.[0]
   const uniqKey = dataset?.configuration?.idProperty
     ? `properties.${dataset?.configuration?.idProperty}`
     : 'id'
@@ -305,10 +317,10 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
       )}
       {layerActive && (
         <div
-          className={cx(styles.properties, styles.closestAreas)}
+          className={cx(styles.closestAreas, { [styles.properties]: featuresOnScreen?.total > 0 })}
           style={{ height: closestAreasHeight }}
         >
-          {featuresOnScreen && featuresOnScreen?.total > 0 && (
+          {featuresOnScreen?.total > 0 && (
             <Fragment>
               <label>
                 {t('layer.areasOnScreen', 'Areas on screen')} ({featuresOnScreen?.total})
@@ -341,7 +353,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
                   )
                 })}
                 {featuresOnScreen?.total > CONTEXT_FEATURES_LIMIT && (
-                  <li className={styles.area}>...</li>
+                  <li className={cx(styles.area, styles.ellipsis)}>...</li>
                 )}
               </ul>
             </Fragment>
