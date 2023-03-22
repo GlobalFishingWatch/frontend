@@ -7,7 +7,7 @@ import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { DateRange } from 'features/download/downloadActivity.slice'
 import { getUTCDateTime } from 'utils/dates'
-import { Format } from './downloadTrack.config'
+import { Format, FORMAT_EXTENSION } from './downloadTrack.config'
 
 type VesselParams = {
   name: string
@@ -34,7 +34,7 @@ export type DownloadTrackParams = {
   vesselName: string
   dateRange: DateRange
   datasets: string
-  format: Format | 'lines'
+  format: Format
 }
 
 export const downloadTrackThunk = createAsyncThunk<
@@ -53,13 +53,13 @@ export const downloadTrackThunk = createAsyncThunk<
       'start-date': fromDate,
       'end-date': toDate,
       datasets,
-      format: format === Format.GeoJson ? 'lines' : format,
+      format,
       fields: 'lonlat,timestamp,speed,course',
     }
 
     const fileName = `${vesselName || vesselId} - ${downloadTrackParams['start-date']},${
       downloadTrackParams['end-date']
-    }.${format}`
+    }.${FORMAT_EXTENSION[format]}`
 
     const createdDownload: any = await GFWAPI.fetch<DownloadActivity>(
       `/vessels/${vesselId}/tracks?${stringify(downloadTrackParams)}`,
