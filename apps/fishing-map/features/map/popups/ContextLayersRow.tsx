@@ -70,6 +70,19 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
   const isSidebarOpen = useSelector(selectSidebarOpen)
   const query = useSelector(selectLocationQuery)
   const bounds = getFeatureBounds(feature)
+  if (!hasAnalysableLayer) {
+    return (
+      <IconButton
+        icon="analysis"
+        disabled={true}
+        size="small"
+        tooltip={t(
+          'common.analysisNotAvailable',
+          'Toggle an activity or environmenet layer on to analyse in in this area'
+        )}
+      />
+    )
+  }
   return (
     <Link
       className={styles.workspaceLink}
@@ -92,15 +105,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
     >
       <IconButton
         icon="analysis"
-        disabled={!hasAnalysableLayer}
-        tooltip={
-          hasAnalysableLayer
-            ? t('common.analysis', 'Create an analysis for this area')
-            : t(
-                'common.analysisNotAvailable',
-                'Toggle an activity or environmenet layer on to analyse in in this area'
-              )
-        }
+        tooltip={t('common.analysis', 'Create an analysis for this area')}
         size="small"
       />
     </Link>
