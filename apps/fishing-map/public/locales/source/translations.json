@@ -41,7 +41,7 @@
     "searchHelpExamples": "e.g. 'china trawlers', '-spain'",
     "searchPlaceholder": "Filter vessels by name, mmsi, flag states or gear type",
     "summary": "<strong>{{vessels}} $t(common.vessel, {\"count\": {{vessels}} })</strong> had <strong>{{hours}} $t(common.hour, {\"count\": {{hours}} })</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
-    "summaryNoVessels": "<strong>{{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "summaryNoVessels": "<strong>{{sources}} {{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "reportTitle": {
       "activity": "Activity report",
       "area": "Area report"
@@ -130,6 +130,7 @@
     "logout": "Log out",
     "longitude": "Longitude",
     "map": "Map",
+    "matchedVessels": "Matched vessels",
     "max": "Max",
     "min": "Min",
     "minute": "minute",
