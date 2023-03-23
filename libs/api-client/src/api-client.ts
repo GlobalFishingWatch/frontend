@@ -251,13 +251,12 @@ export class GFW_API_CLASS {
         if (!refreshToken) {
           throw new Error('No refresh token')
         }
-        const { token, refreshToken: newRefreshToken } = await this.getTokenWithRefreshToken(
-          refreshToken
-        )
+        const refreshResponse = await this.getTokenWithRefreshToken(refreshToken)
+        const { token, refreshToken: newRefreshToken } = refreshResponse
         this.setToken(token)
         this.setRefreshToken(newRefreshToken)
         this.status = 'idle'
-        return token
+        return refreshResponse
       } catch (e: any) {
         this.status = 'idle'
         e.status = 401

@@ -81,7 +81,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
                     linkHref = getContextAreaLink(generatorContextLayer, MRGID_EEZ)
                     break
                   case ContextLayerType.ProtectedSeas:
-                    const { site_id } = feature.properties
+                    const { id: site_id } = feature.properties
                     id = `${site_id}-${gfw_id}`
                     linkHref = getContextAreaLink(generatorContextLayer, site_id)
                     break
