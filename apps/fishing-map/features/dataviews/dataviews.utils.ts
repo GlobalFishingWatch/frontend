@@ -321,7 +321,7 @@ export const getContextAreaLink = (
     case ContextLayerType.EEZ:
       return `https://www.marineregions.org/eezdetails.php?mrgid=${areaIsObject ? area?.id : area}`
     case ContextLayerType.ProtectedSeas:
-      return `https://mpa.protectedseas.net/index.php?q=${areaIsObject ? area?.id : area}`
+      return `https://map.navigatormap.org/site-detail?site_id=${areaIsObject ? area?.id : area}`
     case ContextLayerType.FAO:
       return `https://www.fao.org/fishery/en/area/${areaIsObject ? area?.properties?.F_CODE : area}`
     default:
