@@ -1,5 +1,10 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { DataviewCategory, Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
+import {
+  DataviewCategory,
+  Dataset,
+  DatasetTypes,
+  DatasetSubCategory,
+} from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance, getGeneratorConfig } from '@globalfishingwatch/dataviews-client'
 import {
   GeneratorType,
@@ -101,6 +106,22 @@ export const selectDetectionsDataviews = createSelector(
 export const selectActiveActivityDataviews = createSelector(
   [selectActivityDataviews],
   (dataviews): UrlDataviewInstance[] => dataviews?.filter((d) => d.config?.visible)
+)
+
+export const selectActiveFishingDataviews = createSelector(
+  [selectActiveActivityDataviews],
+  (dataviews): UrlDataviewInstance[] =>
+    dataviews.filter((dataview) =>
+      dataview.datasets.every((dataset) => dataset.subcategory === DatasetSubCategory.Fishing)
+    )
+)
+
+export const selectActivePresenceDataviews = createSelector(
+  [selectActiveActivityDataviews],
+  (dataviews): UrlDataviewInstance[] =>
+    dataviews.filter((dataview) =>
+      dataview.datasets.every((dataset) => dataset.subcategory === DatasetSubCategory.Presence)
+    )
 )
 
 export const selectActiveDetectionsDataviews = createSelector(

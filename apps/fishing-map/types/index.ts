@@ -1,5 +1,5 @@
 import { BaseUrlWorkspace } from '@globalfishingwatch/dataviews-client'
-import { DataviewCategory, EventType } from '@globalfishingwatch/api-types'
+import { DatasetSubCategory, DataviewCategory, EventType } from '@globalfishingwatch/api-types'
 import {
   REPORT_VESSELS_GRAPH_GEARTYPE,
   REPORT_VESSELS_GRAPH_FLAG,
@@ -60,10 +60,13 @@ export type ReportActivityTimeComparison = {
   duration: number
   durationType: 'days' | 'months'
 }
-export type ReportCategory =
-  | DataviewCategory.Activity
-  | DataviewCategory.Detections
-  | DataviewCategory.Environment
+
+export enum ReportCategory {
+  Fishing = DatasetSubCategory.Fishing,
+  Presence = DatasetSubCategory.Presence,
+  Detections = DataviewCategory.Detections,
+  Environment = DataviewCategory.Environment,
+}
 
 export type ReportVesselGraph =
   | typeof REPORT_VESSELS_GRAPH_GEARTYPE

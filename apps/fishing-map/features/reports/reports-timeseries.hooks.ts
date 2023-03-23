@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { atom, selector, useRecoilState } from 'recoil'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import {
+  selectActiveReportDataviews,
   selectReportActivityGraph,
   selectReportAreaSource,
   selectReportCategory,
@@ -29,11 +30,7 @@ import {
   useReportAreaHighlight,
   useReportAreaInViewport,
 } from 'features/reports/reports.hooks'
-import {
-  selectReportCategoryDataviews,
-  selectReportAreaIds,
-  selectShowTimeComparison,
-} from 'features/reports/reports.selectors'
+import { selectReportAreaIds, selectShowTimeComparison } from 'features/reports/reports.selectors'
 import { ReportActivityGraph } from 'types'
 
 export interface EvolutionGraphData {
@@ -93,7 +90,7 @@ export const useFilteredTimeSeries = () => {
   const reportCategory = useSelector(selectReportCategory)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparison = useSelector(selectReportTimeComparison)
-  const currentCategoryDataviews = useSelector(selectReportCategoryDataviews)
+  const currentCategoryDataviews = useSelector(selectActiveReportDataviews)
   const areaSourceId = useSelector(selectReportAreaSource)
   const { start: timebarStart, end: timebarEnd } = useSelector(selectTimeRange)
   const areaInViewport = useReportAreaInViewport()

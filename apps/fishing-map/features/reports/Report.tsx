@@ -1,7 +1,7 @@
 import { Fragment, useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { uniqBy } from 'lodash'
+import { uniq } from 'lodash'
 import { Tab, Tabs } from '@globalfishingwatch/ui-components'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { isAuthError } from '@globalfishingwatch/api-client'
@@ -43,7 +43,10 @@ function ActivityReport({ reportName }: { reportName: string }) {
   const hasVessels = useSelector(selectHasReportVessels)
 
   // TODO get this from datasets config
-  const activityUnit = reportCategory === DataviewCategory.Activity ? 'hour' : 'detection'
+  const activityUnit =
+    reportCategory === ReportCategory.Fishing || reportCategory === ReportCategory.Presence
+      ? 'hour'
+      : 'detection'
 
   const reportLoading = reportStatus === AsyncReducerStatus.Loading
   const reportError = reportStatus === AsyncReducerStatus.Error
@@ -104,27 +107,32 @@ export default function Report() {
   const { dispatchQueryParams } = useLocationConnect()
   const reportCategory = useSelector(selectReportCategory)
   const dataviews = useSelector(selectActiveTemporalgridDataviews)
-  const dataviewCategories = uniqBy(dataviews, 'category').map((d) => d.category)
-  const categoryTabs: Tab[] = [
+  const dataviewCategories = uniq(
+    dataviews.map((d) =>
+      d.category === DataviewCategory.Activity
+        ? (d.datasets?.[0].subcategory as unknown as ReportCategory)
+        : (d.category as unknown as ReportCategory)
+    )
+  )
+  const categoryTabs: Tab<ReportCategory>[] = [
     {
-      id: DataviewCategory.Activity,
-      title: t('common.activity', 'Activity'),
-      content: '',
+      id: ReportCategory.Fishing,
+      title: t('common.fishing', 'Fishing'),
     },
     {
-      id: DataviewCategory.Detections,
+      id: ReportCategory.Presence,
+      title: t('common.presence', 'Presence'),
+    },
+    {
+      id: ReportCategory.Detections,
       title: t('common.detections', 'Detections'),
-      content: '',
     },
     {
-      id: DataviewCategory.Environment,
+      id: ReportCategory.Environment,
       title: t('common.environment', 'Environment'),
-      content: '',
     },
   ]
-  const filteredCategoryTabs = categoryTabs.filter((tab) =>
-    dataviewCategories.includes(tab.id as DataviewCategory)
-  )
+  const filteredCategoryTabs = categoryTabs.filter((tab) => dataviewCategories.includes(tab.id))
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const { data: areaDetail } = useFetchReportArea()
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
@@ -133,12 +141,12 @@ export default function Report() {
 
   const setTimebarVisualizationByCategory = useCallback(
     (category: ReportCategory) => {
-      if (category === DataviewCategory.Environment && dataviews?.length > 0) {
+      if (category === ReportCategory.Environment && dataviews?.length > 0) {
         dispatchTimebarVisualisation(TimebarVisualisations.Environment)
         dispatchTimebarSelectedEnvId(dataviews[0]?.id)
       } else {
         dispatchTimebarVisualisation(
-          category === DataviewCategory.Detections
+          category === ReportCategory.Detections
             ? TimebarVisualisations.HeatmapDetections
             : TimebarVisualisations.HeatmapActivity
         )
@@ -169,7 +177,7 @@ export default function Report() {
       {filteredCategoryTabs.length > 1 && (
         <Tabs tabs={filteredCategoryTabs} activeTab={reportCategory} onTabClick={handleTabClick} />
       )}
-      {reportCategory === DataviewCategory.Environment ? (
+      {reportCategory === ReportCategory.Environment ? (
         <ReportEnvironment />
       ) : (
         <ActivityReport reportName={areaDetail?.name} />

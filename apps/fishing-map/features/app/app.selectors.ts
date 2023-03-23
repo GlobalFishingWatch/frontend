@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { DataviewCategory, DataviewInstance } from '@globalfishingwatch/api-types'
+import { DataviewInstance } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_WORKSPACE } from 'data/config'
 import { createDeepEqualSelector } from 'utils/selectors'
 import {
@@ -33,8 +33,10 @@ import {
 } from 'features/dataviews/dataviews.slice'
 import { RootState } from 'store'
 import {
-  selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
+  selectActiveEnvironmentalDataviews,
+  selectActiveFishingDataviews,
+  selectActivePresenceDataviews,
   selectEnvironmentalDataviews,
 } from 'features/dataviews/dataviews.selectors'
 
@@ -112,16 +114,34 @@ export const selectSidebarOpen = createSelector(
 export const selectReportCategory = createSelector(
   [
     selectWorkspaceStateProperty('reportCategory'),
-    selectActiveActivityDataviews,
+    selectActiveFishingDataviews,
+    selectActivePresenceDataviews,
     selectActiveDetectionsDataviews,
+    selectActiveEnvironmentalDataviews,
   ],
-  (reportActivityGraph, activityDataviews, detectionsDataviews): ReportCategory => {
-    if (reportActivityGraph) {
-      return reportActivityGraph
+  (
+    reportCategory,
+    fishingDataviews,
+    presenceDataviews,
+    detectionsDataviews,
+    environmentalDataviews
+  ): ReportCategory => {
+    if (reportCategory) {
+      return reportCategory
     }
-    return !activityDataviews?.length && detectionsDataviews?.length
-      ? DataviewCategory.Detections
-      : DataviewCategory.Activity
+    if (fishingDataviews.length) {
+      return ReportCategory.Fishing
+    }
+    if (presenceDataviews.length) {
+      return ReportCategory.Presence
+    }
+    if (detectionsDataviews.length) {
+      return ReportCategory.Detections
+    }
+    if (environmentalDataviews.length) {
+      return ReportCategory.Environment
+    }
+    return undefined
   }
 )
 
@@ -140,9 +160,30 @@ export const selectReportAreaSource = createSelector(
 )
 
 export const selectActiveReportDataviews = createDeepEqualSelector(
-  [selectReportCategory, selectActiveActivityDataviews, selectActiveDetectionsDataviews],
-  (reportCategory, activityDataviews = [], detectionsDataviews = []) => {
-    return reportCategory === DataviewCategory.Activity ? activityDataviews : detectionsDataviews
+  [
+    selectReportCategory,
+    selectActiveFishingDataviews,
+    selectActivePresenceDataviews,
+    selectActiveDetectionsDataviews,
+    selectActiveEnvironmentalDataviews,
+  ],
+  (
+    reportCategory,
+    fishingDataviews = [],
+    presenceDataviews = [],
+    detectionsDataviews = [],
+    environmentalDataviews = []
+  ) => {
+    if (reportCategory === ReportCategory.Fishing) {
+      return fishingDataviews
+    }
+    if (reportCategory === ReportCategory.Presence) {
+      return presenceDataviews
+    }
+    if (reportCategory === ReportCategory.Detections) {
+      return detectionsDataviews
+    }
+    return environmentalDataviews
   }
 )
 
