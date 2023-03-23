@@ -5,7 +5,7 @@ import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
 import { useTranslation } from 'react-i18next'
 import { Modal, Spinner } from '@globalfishingwatch/ui-components'
-import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
+import { DEFAULT_VESSEL_MAP_ZOOM, IS_STANDALONE_APP } from 'data/config'
 import {
   RenderedEvent,
   selectHighlightEventIds,
@@ -22,6 +22,7 @@ import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology
 import ActivityDataAndTerminology from 'features/profile/components/activity/ActivityDataAndTerminology'
 import ActivityItem from '../profile/components/activity/ActivityItem'
 import ActivityModalContent from '../profile/components/activity/ActivityModalContent'
+import { EventTypes } from '../../../../libs/api-types/src/events'
 import { useActivityByType } from './activity-by-type.hook'
 import styles from './activity-by-type.module.css'
 
@@ -102,7 +103,7 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
         </Modal>
 
         <div className={styles.heading}>
-          <AisCoverage value={coverage?.percentage} />
+          {!IS_STANDALONE_APP && <AisCoverage value={coverage?.percentage} />}
           <div className={styles.headingButtons}>
             <DataAndTerminology
               containerClassName={styles.dataAndTerminologyContainer}
@@ -133,7 +134,7 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
               >
                 {({ index, style }) => {
                   const event = events[index]
-                  if (event.group)
+                  if (event.group && (event.type !== EventTypes.Gap || !IS_STANDALONE_APP)) {
                     return (
                       <div style={style}>
                         <ActivityGroup
@@ -146,7 +147,7 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
                         ></ActivityGroup>
                       </div>
                     )
-                  else
+                  } else if (event.type !== EventTypes.Gap || !IS_STANDALONE_APP) {
                     return (
                       <div style={style}>
                         <ActivityItem
@@ -159,6 +160,7 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
                         />
                       </div>
                     )
+                  }
                 }}
               </List>
             )}

@@ -123,7 +123,8 @@ export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions 
 
 export const FEEDBACK_EN = process.env.NEXT_PUBLIC_FEEDBACK_FORM_EN
 export const FEEDBACK_FR = process.env.NEXT_PUBLIC_FEEDBACK_FORM_FR
-
+export const CUSTOM_ACCESS_TOKEN = process.env.NEXT_PUBLIC_CUSTOM_ACCESS_TOKEN || null
+export const IS_STANDALONE_APP = !!CUSTOM_ACCESS_TOKEN
 export const AIS_DATA_DELAY_DAYS = 3
 export const RISK_SUMMARY_SETTINGS = {
   // Time range to use when calculating indicators
@@ -146,6 +147,14 @@ export const APP_PROFILE_VIEWS = [
     id: 'insurance-underwriter',
     name: 'Insurance Underwriter',
     required_permission: INSURER_PERMISSION,
+    propagate_events_query_params: ['confidences'],
+    events_query_params: {
+      start_date: DateTime.utc().minus({ months: 12 }).toISO(),
+    },
+  },
+  {
+    id: 'standalone',
+    name: 'Standalone App',
     propagate_events_query_params: ['confidences'],
     events_query_params: {
       start_date: DateTime.utc().minus({ months: 12 }).toISO(),

@@ -11,6 +11,7 @@ import { selectMergedVesselId } from 'routes/routes.selectors'
 import { selectVesselById } from 'features/vessels/vessels.slice'
 import { ValueItem, VesselWithHistory } from 'types'
 import { getUniqueHistoryValues } from 'features/vessels/activity/vessels-activity.utils'
+import { IS_STANDALONE_APP } from 'data/config'
 import {
   fetchIndicatorsByIdThunk,
   selectIndicatorsRequests,
@@ -88,7 +89,11 @@ export function useRiskIndicator(showIdentityIndicators: boolean): UseRiskIndica
   )
 
   useEffect(() => {
-    indicatorsKeys.forEach((indicator) => dispatch(fetchIndicatorsByIdThunk({ idData, indicator })))
+    if (!IS_STANDALONE_APP) {
+      indicatorsKeys.forEach((indicator) =>
+        dispatch(fetchIndicatorsByIdThunk({ idData, indicator }))
+      )
+    }
   }, [dispatch, idData, indicatorsKeys])
 
   const encountersInMPA = useSelector(selectEncountersInMPA)

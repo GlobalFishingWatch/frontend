@@ -43,6 +43,7 @@ steps:
       - 'NEXT_PUBLIC_TMT_CONTACT_US_URL=$_NEXT_PUBLIC_TMT_CONTACT_US_URL'
       - 'NEXT_PUBLIC_FEEDBACK_FORM_EN=$_NEXT_PUBLIC_FEEDBACK_FORM_EN'
       - 'NEXT_PUBLIC_FEEDBACK_FORM_FR=$_NEXT_PUBLIC_FEEDBACK_FORM_FR'
+      - 'NEXT_CUSTOM_ACCESS_TOKEN=$_NEXT_CUSTOM_ACCESS_TOKEN'
     script: |
       yarn -v
       yarn nx run vessel-history:build:production --parallel

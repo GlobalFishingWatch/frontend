@@ -51,6 +51,7 @@ export const OFFLINE_LAYERS: GeneratorConfig[] = [
 // Using the same dataviews ids than fishing-map for consistency
 export const DEFAULT_BASEMAP_DATAVIEW_SLUG = 'basemap'
 export const DEFAULT_VESSEL_DATAVIEWS = {
+  standalone: 'vv-vessel-tracks-and-events', // Vessel with port visits c2
   'port-inspector': 'vv-vessel-tracks-and-events', // Vessel with port visits c2
   'insurance-underwriter': 'vv-vessel-tracks-and-events-c3-c4', // Vessel with port visits c3 and c4
 }

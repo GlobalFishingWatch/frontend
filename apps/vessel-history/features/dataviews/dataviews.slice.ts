@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { memoize, uniqBy } from 'lodash'
 import { stringify } from 'qs'
-import { APIPagination, Dataview } from '@globalfishingwatch/api-types'
-import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
+import { GFWApiClient } from 'http-client/http-client'
+import { APIPagination, DatasetTypes, Dataview } from '@globalfishingwatch/api-types'
+import { parseAPIError } from '@globalfishingwatch/api-client'
 import { AsyncReducer, AsyncReducerStatus, createAsyncSlice } from 'utils/async-slice'
 import { RootState } from 'store'
-import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
+import { DEFAULT_PAGINATION_PARAMS, IS_STANDALONE_APP } from 'data/config'
 
 export const fetchDataviewsByIdsThunk = createAsyncThunk(
   'dataviews/fetch',
@@ -18,12 +19,25 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
         cache: false,
         ...DEFAULT_PAGINATION_PARAMS,
       }
-      const dataviews = await GFWAPI.fetch<APIPagination<Dataview>>(
+      let dataviews = await GFWApiClient.fetch<APIPagination<Dataview>>(
         `/dataviews?${stringify(dataviewsParams, { arrayFormat: 'comma' })}`,
         {
           signal,
         }
-      ).then((d) => d.entries)
+      ).then((response) => response.entries)
+
+      dataviews = dataviews.map((dataview: Dataview) =>
+        !IS_STANDALONE_APP
+          ? dataview
+          : {
+              ...dataview,
+              datasetsConfig: dataview.datasetsConfig?.filter(
+                (conf) =>
+                  conf.datasetId.startsWith('public-') && conf.endpoint !== DatasetTypes.Tracks
+              ),
+            }
+      )
+
       if (
         process.env.NODE_ENV === 'development' ||
         process.env.NEXT_PUBLIC_USE_LOCAL_DATAVIEWS === 'true'

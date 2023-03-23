@@ -1,16 +1,13 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
 import { event as uaEvent } from 'react-ga'
-import {
-  GFWAPI,
-  AdvancedSearchQueryField,
-  getAdvancedSearchQuery,
-} from '@globalfishingwatch/api-client'
+import { GFWApiClient } from 'http-client/http-client'
+import { AdvancedSearchQueryField, getAdvancedSearchQuery } from '@globalfishingwatch/api-client'
 import { VesselSearch } from '@globalfishingwatch/api-types'
 import { BASE_DATASET, RESULTS_PER_PAGE, SEARCH_MIN_CHARACTERS } from 'data/constants'
 import { RootState } from 'store'
 import { SearchResults } from 'types'
-import { API_VERSION } from 'data/config'
+import { IS_STANDALONE_APP } from 'data/config'
 import { CachedVesselSearch } from './search.slice'
 
 export const getSerializedQuery = (query: string, advancedSearch?: Record<string, any>) => {
@@ -59,13 +56,13 @@ export const fetchData = async (
     datasets: BASE_DATASET,
     limit: RESULTS_PER_PAGE,
     offset,
-    query: serializedQuery,
-    'use-tmt': true,
+    query,
+    ...(!IS_STANDALONE_APP && { 'use-tmt': true }),
   })
 
-  const url = `/vessels/advanced-search-tmt?${urlQuery}`
+  const url = `/v2/vessels/search?${urlQuery}`
 
-  return await GFWAPI.fetch<any>(url, {
+  return await GFWApiClient.fetch<any>(url, {
     signal,
   })
     .then((json: any) => {
@@ -168,3 +165,6 @@ export const fetchVesselSearchThunk = createAsyncThunk(
     },
   }
 )
+
+//https://gateway.api.dev.globalfishingwatch.org/v2/vessels/search?datasets=public-global-fishing-vessels%3Av20201001%2Cpublic-global-carrier-vessels%3Av20201001%2Cpublic-global-support-vessels%3Av20201001&limit=25&offset=0&query=shipname%20LIKE%20%27%25MAVERICK%25%27
+//https://gateway.api.globalfishingwatch.org    /v2/vessels/search?datasets=public-global-fishing-vessels%3Av20201001%2Cpublic-global-support-vessels%3Av20201001%2Cpublic-global-carrier-vessels%3Av20201001&limit=20&offset=0&query=Maverick

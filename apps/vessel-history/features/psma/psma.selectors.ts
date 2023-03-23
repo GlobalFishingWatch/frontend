@@ -20,4 +20,4 @@ export const selectPsmaEarliestDateById = memoize((id: string) =>
   })
 )
 
-export const selectPsmaStatus = (state: RootState) => state.psma.status
+export const selectPsmaStatus = (state: RootState) => true //state.psma.status

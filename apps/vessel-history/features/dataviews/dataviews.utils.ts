@@ -105,6 +105,7 @@ export const initializeDataviews = async (dispatch: AppDispatch) => {
   const dataviewIds = Array.from(
     new Set([...dataviewInstances.map((instance) => instance.dataviewId), ...vesselDataviewIds])
   )
+
   const action = await dispatch(fetchDataviewsByIdsThunk(dataviewIds))
   if (fetchDataviewsByIdsThunk.fulfilled.match(action as any)) {
     dataviews = action.payload as Dataview[]

@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { GFWApiClient } from 'http-client/http-client'
 import {
   asyncInitialState,
   AsyncReducer,
@@ -50,9 +50,9 @@ export const fetchRegionsThunk = createAsyncThunk(
       const apiUrl = `/datasets`
       const options = {}
       const promises = [
-        GFWAPI.fetch<Region[]>(`${apiUrl}/public-eez-areas/user-context-layer-v1`, options),
-        GFWAPI.fetch<Region[]>(`${apiUrl}/public-mpa-all/user-context-layer-v1`, options),
-        GFWAPI.fetch<Region[]>(`${apiUrl}/public-rfmo/user-context-layer-v1`, options),
+        GFWApiClient.fetch<Region[]>(`${apiUrl}/public-eez-areas/user-context-layer-v1`, options),
+        GFWApiClient.fetch<Region[]>(`${apiUrl}/public-mpa-all/user-context-layer-v1`, options),
+        GFWApiClient.fetch<Region[]>(`${apiUrl}/public-rfmo/user-context-layer-v1`, options),
       ]
       const regions = await Promise.allSettled(promises)
       const result: Regions[] = [
