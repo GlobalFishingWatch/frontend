@@ -23,8 +23,10 @@ import {
   selectAllDataviews,
 } from 'features/dataviews/dataviews.slice'
 import { TimebarVisualisations } from 'types'
-import { selectTimebarSelectedEnvId } from 'features/app/app.selectors'
+import { selectReportCategory, selectTimebarSelectedEnvId } from 'features/app/app.selectors'
 import { createDeepEqualSelector } from 'utils/selectors'
+import { selectIsReportLocation } from 'routes/routes.selectors'
+import { getReportCategoryFromDataview } from 'features/reports/reports.utils'
 
 const defaultBasemapDataview = {
   id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
@@ -53,8 +55,25 @@ export const selectDefaultBasemapGenerator = createSelector(
 )
 
 export const selectDataviewInstancesResolvedVisible = createSelector(
-  [(state) => selectDataviewInstancesResolved(state)],
-  (dataviews = []) => {
+  [
+    (state) => selectDataviewInstancesResolved(state),
+    selectIsReportLocation,
+    (state) => selectReportCategory(state),
+  ],
+  (dataviews = [], isReportLocation, reportCategory) => {
+    if (isReportLocation) {
+      return dataviews.filter((dataview) => {
+        if (
+          dataview.category === DataviewCategory.Activity ||
+          dataview.category === DataviewCategory.Detections
+        ) {
+          return (
+            dataview.config?.visible && getReportCategoryFromDataview(dataview) === reportCategory
+          )
+        }
+        return dataview.config?.visible
+      })
+    }
     return dataviews.filter((dataview) => dataview.config?.visible)
   }
 )

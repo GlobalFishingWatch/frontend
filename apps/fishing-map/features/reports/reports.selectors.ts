@@ -29,7 +29,7 @@ import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUserData } from 'features/user/user.slice'
 import { getUTCDateTime } from 'utils/dates'
-import { getVesselGearOrType } from 'features/reports/reports.utils'
+import { getReportCategoryFromDataview, getVesselGearOrType } from 'features/reports/reports.utils'
 import { ReportCategory } from 'types'
 import { selectReportVesselsData } from './reports.slice'
 
@@ -83,10 +83,7 @@ export const selectReportActivityFlatten = createSelector(
               : vessel.shipName,
             activityDatasetId: datasetId,
             dataviewId: dataview?.id,
-            category:
-              dataview?.category === DataviewCategory.Activity
-                ? (dataview?.datasets?.[0]?.subcategory as unknown as ReportCategory)
-                : (dataview?.category as unknown as ReportCategory),
+            category: getReportCategoryFromDataview(dataview),
             sourceColor: dataview?.config?.color,
           } as ReportVesselWithMeta
         })

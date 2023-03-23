@@ -22,6 +22,7 @@ import {
   useTimebarEnvironmentConnect,
   useTimebarVisualisationConnect,
 } from 'features/timebar/timebar.hooks'
+import { getReportCategoryFromDataview } from 'features/reports/reports.utils'
 import { useFetchReportArea, useFetchReportVessel } from './reports.hooks'
 import ReportSummary from './summary/ReportSummary'
 import ReportTitle from './title/ReportTitle'
@@ -107,13 +108,7 @@ export default function Report() {
   const { dispatchQueryParams } = useLocationConnect()
   const reportCategory = useSelector(selectReportCategory)
   const dataviews = useSelector(selectActiveTemporalgridDataviews)
-  const dataviewCategories = uniq(
-    dataviews.map((d) =>
-      d.category === DataviewCategory.Activity
-        ? (d.datasets?.[0].subcategory as unknown as ReportCategory)
-        : (d.category as unknown as ReportCategory)
-    )
-  )
+  const dataviewCategories = uniq(dataviews.map((d) => getReportCategoryFromDataview(d)))
   const categoryTabs: Tab<ReportCategory>[] = [
     {
       id: ReportCategory.Fishing,

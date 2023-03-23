@@ -8,7 +8,7 @@ import { format } from 'd3-format'
 import { DateTime } from 'luxon'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
+import { Dataview, DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { sortStrings } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
@@ -19,6 +19,7 @@ import {
 } from 'features/datasets/datasets.utils'
 import { ReportVesselWithDatasets } from 'features/reports/reports.selectors'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
+import { ReportCategory } from 'types'
 
 const arrayToStringTransform = (array: string[]) =>
   `(${array?.map((v: string) => `'${v}'`).join(', ')})`
@@ -204,4 +205,12 @@ export const getVesselGearOrType = (vessel: ReportVesselWithDatasets): string =>
     return t(`vessel.vesselTypes.${vessel.vesselType}` as any, vessel.vesselType)
   }
   return EMPTY_FIELD_PLACEHOLDER
+}
+
+export const getReportCategoryFromDataview = (
+  dataview: Dataview | UrlDataviewInstance
+): ReportCategory => {
+  return dataview.category === DataviewCategory.Activity
+    ? (dataview.datasets?.[0].subcategory as unknown as ReportCategory)
+    : (dataview.category as unknown as ReportCategory)
 }
