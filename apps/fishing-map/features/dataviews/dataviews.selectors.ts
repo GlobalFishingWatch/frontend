@@ -1,10 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import {
-  DataviewCategory,
-  Dataset,
-  DatasetTypes,
-  DatasetSubCategory,
-} from '@globalfishingwatch/api-types'
+import { DataviewCategory, Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance, getGeneratorConfig } from '@globalfishingwatch/dataviews-client'
 import {
   GeneratorType,
@@ -124,23 +119,21 @@ export const selectDetectionsDataviews = createSelector(
 
 export const selectActiveActivityDataviews = createSelector(
   [selectActivityDataviews],
-  (dataviews): UrlDataviewInstance[] => dataviews?.filter((d) => d.config?.visible)
+  (dataviews): UrlDataviewInstance[] => {
+    return dataviews?.filter((d) => d.config?.visible)
+  }
 )
 
-export const selectActiveFishingDataviews = createSelector(
-  [selectActiveActivityDataviews],
-  (dataviews): UrlDataviewInstance[] =>
-    dataviews.filter((dataview) =>
-      dataview.datasets.every((dataset) => dataset.subcategory === DatasetSubCategory.Fishing)
-    )
-)
-
-export const selectActivePresenceDataviews = createSelector(
-  [selectActiveActivityDataviews],
-  (dataviews): UrlDataviewInstance[] =>
-    dataviews.filter((dataview) =>
-      dataview.datasets.every((dataset) => dataset.subcategory === DatasetSubCategory.Presence)
-    )
+export const selectActiveReportActivityDataviews = createSelector(
+  [selectActiveActivityDataviews, selectIsReportLocation, (state) => selectReportCategory(state)],
+  (dataviews, isReportLocation, reportCategory): UrlDataviewInstance[] => {
+    if (isReportLocation) {
+      return dataviews.filter((dataview) => {
+        return getReportCategoryFromDataview(dataview) === reportCategory
+      })
+    }
+    return dataviews
+  }
 )
 
 export const selectActiveDetectionsDataviews = createSelector(
@@ -149,7 +142,7 @@ export const selectActiveDetectionsDataviews = createSelector(
 )
 
 export const selectActiveHeatmapDataviews = createSelector(
-  [selectActiveActivityDataviews, selectActiveDetectionsDataviews],
+  [selectActiveReportActivityDataviews, selectActiveDetectionsDataviews],
   (activityDataviews = [], detectionsDataviews = []) => [
     ...activityDataviews,
     ...detectionsDataviews,
@@ -222,7 +215,7 @@ export const selectActiveActivityDataviewsByVisualisation = (
 ) =>
   createSelector(
     [
-      selectActiveActivityDataviews,
+      selectActiveReportActivityDataviews,
       selectActiveDetectionsDataviews,
       selectActiveNonTrackEnvironmentalDataviews,
       selectTimebarSelectedEnvId,
@@ -259,7 +252,7 @@ export const selectHasReportLayersVisible = createSelector(
 
 export const selectActiveDataviews = createSelector(
   [
-    selectActiveActivityDataviews,
+    selectActiveHeatmapDataviews,
     (state) => selectActiveVesselsDataviews(state),
     selectActiveEventsDataviews,
     selectActiveEnvironmentalDataviews,

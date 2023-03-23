@@ -30,15 +30,16 @@ import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import {
   selectActiveVesselsDataviews,
   selectDataviewInstancesMergedOrdered,
+  selectDataviewInstancesResolved,
 } from 'features/dataviews/dataviews.slice'
 import { RootState } from 'store'
 import {
   selectActiveDetectionsDataviews,
   selectActiveEnvironmentalDataviews,
-  selectActiveFishingDataviews,
-  selectActivePresenceDataviews,
+  selectActiveReportActivityDataviews,
   selectEnvironmentalDataviews,
 } from 'features/dataviews/dataviews.selectors'
+import { getReportCategoryFromDataview } from 'features/reports/reports.utils'
 
 export const selectViewport = createSelector(
   [selectUrlViewport, selectWorkspaceViewport],
@@ -114,34 +115,26 @@ export const selectSidebarOpen = createSelector(
 export const selectReportCategory = createSelector(
   [
     selectWorkspaceStateProperty('reportCategory'),
-    selectActiveFishingDataviews,
-    selectActivePresenceDataviews,
-    selectActiveDetectionsDataviews,
-    selectActiveEnvironmentalDataviews,
+    (state) => selectDataviewInstancesResolved(state),
   ],
-  (
-    reportCategory,
-    fishingDataviews,
-    presenceDataviews,
-    detectionsDataviews,
-    environmentalDataviews
-  ): ReportCategory => {
+  (reportCategory, dataviews): ReportCategory => {
     if (reportCategory) {
       return reportCategory
     }
-    if (fishingDataviews.length) {
-      return ReportCategory.Fishing
-    }
-    if (presenceDataviews.length) {
-      return ReportCategory.Presence
-    }
-    if (detectionsDataviews.length) {
-      return ReportCategory.Detections
-    }
-    if (environmentalDataviews.length) {
-      return ReportCategory.Environment
-    }
-    return undefined
+    const orderedCategories = [
+      ReportCategory.Fishing,
+      ReportCategory.Presence,
+      ReportCategory.Detections,
+      ReportCategory.Environment,
+    ]
+    const categoriesWithActiveDataviews = orderedCategories.map((category) => {
+      return dataviews.some((dataview) => {
+        return dataview.config.visible && getReportCategoryFromDataview(dataview) === category
+      })
+    })
+    const firstCategoryActive =
+      categoriesWithActiveDataviews.findIndex((active) => active === true) || 0
+    return orderedCategories[firstCategoryActive]
   }
 )
 
@@ -162,23 +155,18 @@ export const selectReportAreaSource = createSelector(
 export const selectActiveReportDataviews = createDeepEqualSelector(
   [
     selectReportCategory,
-    selectActiveFishingDataviews,
-    selectActivePresenceDataviews,
+    selectActiveReportActivityDataviews,
     selectActiveDetectionsDataviews,
     selectActiveEnvironmentalDataviews,
   ],
   (
     reportCategory,
-    fishingDataviews = [],
-    presenceDataviews = [],
+    activityDataviews = [],
     detectionsDataviews = [],
     environmentalDataviews = []
   ) => {
-    if (reportCategory === ReportCategory.Fishing) {
-      return fishingDataviews
-    }
-    if (reportCategory === ReportCategory.Presence) {
-      return presenceDataviews
+    if (reportCategory === ReportCategory.Fishing || reportCategory === ReportCategory.Presence) {
+      return activityDataviews
     }
     if (reportCategory === ReportCategory.Detections) {
       return detectionsDataviews

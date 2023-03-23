@@ -16,7 +16,7 @@ import {
 } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
-  selectActiveActivityDataviews,
+  selectActiveReportActivityDataviews,
   selectActiveDetectionsDataviews,
   selectActiveNonTrackEnvironmentalDataviews,
 } from 'features/dataviews/dataviews.selectors'
@@ -212,7 +212,7 @@ export const useTimebarGraphConnect = () => {
 // should be instanciated only once to avoid doing it more than needed
 export const useTimebarVisualisation = () => {
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
-  const activeActivityDataviews = useSelector(selectActiveActivityDataviews)
+  const activeActivityDataviews = useSelector(selectActiveReportActivityDataviews)
   const activeDetectionsDataviews = useSelector(selectActiveDetectionsDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const activeEnvDataviews = useSelector(selectActiveNonTrackEnvironmentalDataviews)
