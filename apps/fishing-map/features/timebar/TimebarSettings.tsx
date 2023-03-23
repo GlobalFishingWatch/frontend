@@ -8,7 +8,7 @@ import { DatasetTypes } from '@globalfishingwatch/api-types'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import {
-  selectActiveActivityDataviews,
+  selectActiveReportActivityDataviews,
   selectActiveDetectionsDataviews,
   selectActiveNonTrackEnvironmentalDataviews,
 } from 'features/dataviews/dataviews.selectors'
@@ -59,7 +59,7 @@ const Icon = ({
 const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const { t } = useTranslation()
   const [optionsPanelOpen, setOptionsPanelOpen] = useState(false)
-  const activeActivityDataviews = useSelector(selectActiveActivityDataviews)
+  const activeActivityDataviews = useSelector(selectActiveReportActivityDataviews)
   const activeDetectionsDataviews = useSelector(selectActiveDetectionsDataviews)
   const activeEnvironmentalDataviews = useSelector(selectActiveNonTrackEnvironmentalDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)

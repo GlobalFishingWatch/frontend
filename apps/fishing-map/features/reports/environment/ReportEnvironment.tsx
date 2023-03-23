@@ -1,10 +1,9 @@
 import React, { Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { selectTimeRange } from 'features/app/app.selectors'
+import { selectActiveReportDataviews, selectTimeRange } from 'features/app/app.selectors'
 import { useFilteredTimeSeries } from 'features/reports/reports-timeseries.hooks'
 import ReportActivityPlaceholder from 'features/reports/placeholders/ReportActivityPlaceholder'
-import { selectReportCategoryDataviews } from 'features/reports/reports.selectors'
 import { getDatasetNameTranslated } from 'features/i18n/utils'
 import ReportActivityEvolution from '../activity/ReportActivityEvolution'
 import styles from '../activity/ReportActivity.module.css'
@@ -12,7 +11,7 @@ import styles from '../activity/ReportActivity.module.css'
 function ReportEnvironment() {
   const timerange = useSelector(selectTimeRange)
   const { loading, layersTimeseriesFiltered } = useFilteredTimeSeries()
-  const environmentalDataviews = useSelector(selectReportCategoryDataviews)
+  const environmentalDataviews = useSelector(selectActiveReportDataviews)
 
   if (!environmentalDataviews?.length) return null
 

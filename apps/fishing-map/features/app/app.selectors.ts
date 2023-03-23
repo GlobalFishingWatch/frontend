@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { DataviewCategory, DataviewInstance } from '@globalfishingwatch/api-types'
+import { DataviewInstance } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_WORKSPACE } from 'data/config'
 import { createDeepEqualSelector } from 'utils/selectors'
 import {
@@ -30,13 +30,16 @@ import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import {
   selectActiveVesselsDataviews,
   selectDataviewInstancesMergedOrdered,
+  selectDataviewInstancesResolved,
 } from 'features/dataviews/dataviews.slice'
 import { RootState } from 'store'
 import {
-  selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
+  selectActiveEnvironmentalDataviews,
+  selectActiveReportActivityDataviews,
   selectEnvironmentalDataviews,
 } from 'features/dataviews/dataviews.selectors'
+import { getReportCategoryFromDataview } from 'features/reports/reports.utils'
 
 export const selectViewport = createSelector(
   [selectUrlViewport, selectWorkspaceViewport],
@@ -112,16 +115,26 @@ export const selectSidebarOpen = createSelector(
 export const selectReportCategory = createSelector(
   [
     selectWorkspaceStateProperty('reportCategory'),
-    selectActiveActivityDataviews,
-    selectActiveDetectionsDataviews,
+    (state) => selectDataviewInstancesResolved(state),
   ],
-  (reportActivityGraph, activityDataviews, detectionsDataviews): ReportCategory => {
-    if (reportActivityGraph) {
-      return reportActivityGraph
+  (reportCategory, dataviews): ReportCategory => {
+    if (reportCategory) {
+      return reportCategory
     }
-    return !activityDataviews?.length && detectionsDataviews?.length
-      ? DataviewCategory.Detections
-      : DataviewCategory.Activity
+    const orderedCategories = [
+      ReportCategory.Fishing,
+      ReportCategory.Presence,
+      ReportCategory.Detections,
+      ReportCategory.Environment,
+    ]
+    const categoriesWithActiveDataviews = orderedCategories.map((category) => {
+      return dataviews.some((dataview) => {
+        return dataview.config.visible && getReportCategoryFromDataview(dataview) === category
+      })
+    })
+    const firstCategoryActive =
+      categoriesWithActiveDataviews.findIndex((active) => active === true) || 0
+    return orderedCategories[firstCategoryActive]
   }
 )
 
@@ -140,9 +153,25 @@ export const selectReportAreaSource = createSelector(
 )
 
 export const selectActiveReportDataviews = createDeepEqualSelector(
-  [selectReportCategory, selectActiveActivityDataviews, selectActiveDetectionsDataviews],
-  (reportCategory, activityDataviews = [], detectionsDataviews = []) => {
-    return reportCategory === DataviewCategory.Activity ? activityDataviews : detectionsDataviews
+  [
+    selectReportCategory,
+    selectActiveReportActivityDataviews,
+    selectActiveDetectionsDataviews,
+    selectActiveEnvironmentalDataviews,
+  ],
+  (
+    reportCategory,
+    activityDataviews = [],
+    detectionsDataviews = [],
+    environmentalDataviews = []
+  ) => {
+    if (reportCategory === ReportCategory.Fishing || reportCategory === ReportCategory.Presence) {
+      return activityDataviews
+    }
+    if (reportCategory === ReportCategory.Detections) {
+      return detectionsDataviews
+    }
+    return environmentalDataviews
   }
 )
 

@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { sum } from 'lodash'
 import { useMemo } from 'react'
-import { DataviewCategory, Locale } from '@globalfishingwatch/api-types'
+import { Locale } from '@globalfishingwatch/api-types'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import {
   selectActiveReportDataviews,
@@ -21,6 +21,7 @@ import ReportSummaryPlaceholder from 'features/reports/placeholders/ReportSummar
 import ReportSummaryTagsPlaceholder from 'features/reports/placeholders/ReportSummaryTagsPlaceholder'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { listAsSentence } from 'utils/shared'
+import { ReportCategory } from 'types'
 import { selectReportVesselsHours, selectReportVesselsNumber } from '../reports.selectors'
 import styles from './ReportSummary.module.css'
 
@@ -54,14 +55,14 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
     const sameTitleDataviews = datasetTitles.every((d) => d === datasetTitles?.[0])
     const datasetTitle = sameTitleDataviews
       ? datasetTitles?.[0]
-      : category === DataviewCategory.Activity
+      : category === ReportCategory.Fishing || category === ReportCategory.Presence
       ? `${t('common.of', 'of')} <strong>${t(`common.activity`, 'Activity').toLowerCase()}</strong>`
       : undefined
 
     if (
       reportHours &&
       reportStatus === AsyncReducerStatus.Finished &&
-      category !== DataviewCategory.Detections
+      category !== ReportCategory.Detections
     ) {
       return t('analysis.summary', {
         defaultValue:
@@ -88,7 +89,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
     }
     if (
       (!timeseriesLoading && layersTimeseriesFiltered?.[0]) ||
-      (category === DataviewCategory.Detections &&
+      (category === ReportCategory.Detections &&
         reportStatus === AsyncReducerStatus.Finished &&
         reportHours)
     ) {
@@ -106,7 +107,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
             )}</span>`
           : ''
       if (
-        category === DataviewCategory.Detections &&
+        category === ReportCategory.Detections &&
         reportStatus === AsyncReducerStatus.Finished &&
         reportHours
       ) {
@@ -115,7 +116,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
         }) as string
       }
       const activityUnitLabel =
-        category === DataviewCategory.Detections
+        category === ReportCategory.Detections
           ? ''
           : `<strong>${t(`common.${activityUnit}`, {
               defaultValue: 'hours',

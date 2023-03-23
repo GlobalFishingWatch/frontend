@@ -29,8 +29,8 @@ import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUserData } from 'features/user/user.slice'
 import { getUTCDateTime } from 'utils/dates'
-import { selectActiveTemporalgridDataviews } from 'features/dataviews/dataviews.selectors'
-import { getVesselGearOrType } from 'features/reports/reports.utils'
+import { getReportCategoryFromDataview, getVesselGearOrType } from 'features/reports/reports.utils'
+import { ReportCategory } from 'types'
 import { selectReportVesselsData } from './reports.slice'
 
 export const EMPTY_API_VALUES = ['NULL', undefined, '']
@@ -40,7 +40,7 @@ export const OTHERS_CATEGORY_LABEL = 'OTHERS'
 export type ReportVesselWithMeta = ReportVessel & {
   sourceColor: string
   activityDatasetId: string
-  category: DataviewCategory
+  category: ReportCategory
   dataviewId: string
   flagTranslated: string
   flagTranslatedClean: string
@@ -58,15 +58,8 @@ export const selectReportAreaIds = createSelector(
   }
 )
 
-export const selectReportCategoryDataviews = createSelector(
-  [selectActiveTemporalgridDataviews, selectReportCategory],
-  (temporalgridDataviews, reportCategory) => {
-    return temporalgridDataviews.filter((dataview) => dataview.category === reportCategory)
-  }
-)
-
 export const selectReportActivityFlatten = createSelector(
-  [selectReportVesselsData, selectReportCategoryDataviews, selectReportCategory],
+  [selectReportVesselsData, selectActiveReportDataviews, selectReportCategory],
   (reportDatasets, dataviews, reportCategory): ReportVesselWithMeta[] => {
     if (!reportDatasets?.length) return null
 
@@ -75,7 +68,7 @@ export const selectReportActivityFlatten = createSelector(
         const dataview = dataviews[index]
         return (vessels || []).flatMap((vessel) => {
           if (
-            reportCategory !== DataviewCategory.Detections &&
+            reportCategory !== ReportCategory.Detections &&
             EMPTY_API_VALUES.includes(vessel.flag) &&
             EMPTY_API_VALUES.includes(vessel.shipName) &&
             EMPTY_API_VALUES.includes(vessel.vesselType) &&
@@ -90,7 +83,7 @@ export const selectReportActivityFlatten = createSelector(
               : vessel.shipName,
             activityDatasetId: datasetId,
             dataviewId: dataview?.id,
-            category: dataview?.category,
+            category: getReportCategoryFromDataview(dataview),
             sourceColor: dataview?.config?.color,
           } as ReportVesselWithMeta
         })
@@ -146,7 +139,7 @@ export const selectReportVesselsList = createSelector(
             vesselActivity[0]?.vesselType
           ),
           gearOrVesselType: getVesselGearOrType(vesselActivity[0]),
-          hours: sumBy(vesselActivity, 'hours'),
+          hours: vesselActivity[0]?.hours,
           infoDataset,
           trackDataset,
           sourceColor: vesselActivity[0]?.sourceColor,

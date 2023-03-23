@@ -1,9 +1,9 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
 import ReportVesselsGraphSelector from 'features/reports/vessels/ReportVesselsGraphSelector'
 import { selectReportCategory } from 'features/app/app.selectors'
+import { ReportCategory } from 'types'
 import { ReportActivityUnit } from '../Report'
 import ReportVesselsGraph from './ReportVesselsGraph'
 import ReportVesselsFilter from './ReportVesselsFilter'
@@ -22,7 +22,7 @@ export default function ReportVessels({ activityUnit, reportName }: ReportVessel
     <div className={styles.container}>
       <div className={styles.titleRow}>
         <label className={styles.blockTitle}>
-          {reportCategory === DataviewCategory.Detections
+          {reportCategory === ReportCategory.Detections
             ? t('common.matchedVessels', 'Matched vessels')
             : t('common.vessel_other', 'Vessels')}
         </label>
