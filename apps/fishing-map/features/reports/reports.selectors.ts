@@ -217,7 +217,8 @@ export function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: 
       const words = block
         .replace('-', '')
         .split('|')
-        .filter((word) => word.replace(' ', '').length)
+        .map((word) => word.trim())
+        .filter((word) => word.length)
       const matched = words.flatMap((w) =>
         matchSorter(vessels, w, {
           keys: [
