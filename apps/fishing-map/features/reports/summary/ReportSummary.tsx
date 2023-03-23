@@ -88,7 +88,9 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
     }
     if (
       (!timeseriesLoading && layersTimeseriesFiltered?.[0]) ||
-      category === DataviewCategory.Detections
+      (category === DataviewCategory.Detections &&
+        reportStatus === AsyncReducerStatus.Finished &&
+        reportHours)
     ) {
       const formattedTimeseries = formatEvolutionData(layersTimeseriesFiltered?.[0])
       const timeseriesHours = sum(formattedTimeseries?.map((t) => sum(t.avg)))
@@ -112,14 +114,19 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
           locale: i18n.language as Locale,
         }) as string
       }
+      const activityUnitLabel =
+        category === DataviewCategory.Detections
+          ? ''
+          : `<strong>${t(`common.${activityUnit}`, {
+              defaultValue: 'hours',
+              count: Math.floor(reportHours),
+            })}</strong> ${t('common.of', 'of')}`
+
       return t('analysis.summaryNoVessels', {
         defaultValue:
-          '<strong>{{sources}} {{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
+          '<strong>{{sources}} {{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
         activityQuantity,
-        activityUnit: t(`common.${activityUnit}`, {
-          defaultValue: 'hours',
-          count: Math.floor(reportHours),
-        }),
+        activityUnit: activityUnitLabel,
         activityType: datasetTitle,
         start: formatI18nDate(timerange?.start),
         end: formatI18nDate(timerange?.end),
