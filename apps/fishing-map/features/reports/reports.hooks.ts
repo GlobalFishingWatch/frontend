@@ -21,7 +21,9 @@ import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import {
   fetchReportVesselsThunk,
+  getDateRangeHash,
   selectReportVesselsData,
+  selectReportVesselsDateRangeHash,
   selectReportVesselsError,
   selectReportVesselsStatus,
 } from './reports.slice'
@@ -132,6 +134,7 @@ export function useFetchReportVessel() {
   const dispatch = useAppDispatch()
   const timerange = useSelector(selectTimeRange)
   const timerangeSupported = getDownloadReportSupported(timerange.start, timerange.end)
+  const reportDateRangeHash = useSelector(selectReportVesselsDateRangeHash)
   const datasetId = useSelector(selectLocationDatasetId)
   const areaId = useSelector(selectLocationAreaId)
   const dataviews = useSelector(selectActiveReportDataviews)
@@ -141,7 +144,8 @@ export function useFetchReportVessel() {
 
   useEffect(() => {
     const reportDataviews = getReportDataviews(dataviews)
-    if (areaId && reportDataviews?.length && timerangeSupported) {
+    const isDifferentDateRange = reportDateRangeHash !== getDateRangeHash(timerange)
+    if (areaId && reportDataviews?.length && timerangeSupported && isDifferentDateRange) {
       dispatch(
         fetchReportVesselsThunk({
           datasets: reportDataviews.map(({ datasets }) => datasets.join(',')),
@@ -156,7 +160,9 @@ export function useFetchReportVessel() {
         })
       )
     }
-  }, [dispatch, areaId, datasetId, timerange, dataviews, timerangeSupported])
+    // Avoid re-fetching when timerange changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, areaId, datasetId, dataviews, timerangeSupported, reportDateRangeHash])
 
   return useMemo(() => ({ status, data, error }), [status, data, error])
 }

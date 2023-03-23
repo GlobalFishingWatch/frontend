@@ -17,12 +17,14 @@ interface ReportState {
   status: AsyncReducerStatus
   error: AsyncError | null
   data: ReportVesselsByDataset[] | null
+  dateRangeHash: string
 }
 
 const initialState: ReportState = {
   status: AsyncReducerStatus.Idle,
   error: null,
   data: null,
+  dateRangeHash: '',
 }
 type ReportRegion = {
   dataset: string
@@ -96,10 +98,18 @@ export const fetchReportVesselsThunk = createAsyncThunk(
   }
 )
 
+export function getDateRangeHash(dateRange: DateRange) {
+  return [dateRange.start, dateRange.end].join('-')
+}
+
 const reportSlice = createSlice({
   name: 'reports',
   initialState,
-  reducers: {},
+  reducers: {
+    setDateRangeHash: (state, action: PayloadAction<string>) => {
+      state.dateRangeHash = action.payload
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchReportVesselsThunk.pending, (state) => {
       state.status = AsyncReducerStatus.Loading
@@ -107,6 +117,7 @@ const reportSlice = createSlice({
     builder.addCase(fetchReportVesselsThunk.fulfilled, (state, action) => {
       state.status = AsyncReducerStatus.Finished
       state.data = action.payload
+      state.dateRangeHash = getDateRangeHash(action.meta.arg.dateRange)
     })
     builder.addCase(
       fetchReportVesselsThunk.rejected,
@@ -118,9 +129,12 @@ const reportSlice = createSlice({
   },
 })
 
+export const { setDateRangeHash } = reportSlice.actions
+
 export const selectReportSummary = (state: RootState) => state.reports
 export const selectReportVesselsStatus = (state: RootState) => state.reports.status
 export const selectReportVesselsError = (state: RootState) => state.reports.error
 export const selectReportVesselsData = (state: RootState) => state.reports.data
+export const selectReportVesselsDateRangeHash = (state: RootState) => state.reports.dateRangeHash
 
 export default reportSlice.reducer

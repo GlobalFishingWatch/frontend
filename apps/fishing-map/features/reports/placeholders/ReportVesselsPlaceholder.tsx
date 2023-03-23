@@ -1,18 +1,13 @@
 import { Fragment } from 'react'
 import cx from 'classnames'
-import { useSelector } from 'react-redux'
-import { WorkspaceLoginError } from 'features/workspace/WorkspaceError'
-import { selectLocationDatasetId, selectLocationAreaId } from 'routes/routes.selectors'
 import styles from './placeholders.module.css'
 
-export default function ReportVesselsPlaceholder({ title }: { title?: string }) {
-  const datasetId = useSelector(selectLocationDatasetId)
-  const areaId = useSelector(selectLocationAreaId)
+export default function ReportVesselsPlaceholder({ children }: { children?: React.ReactNode }) {
   const tableRows = Array(11).fill('')
   return (
     <Fragment>
       <div className={styles.container}>
-        <div className={cx({ [styles.faint]: title })}>
+        <div className={cx({ [styles.faint]: children !== undefined })}>
           <div className={cx(styles.flex, styles.column)}>
             {/* header */}
             <div style={{ width: '100%' }} className={cx(styles.flex, styles.spaceBetween)}>
@@ -83,14 +78,7 @@ export default function ReportVesselsPlaceholder({ title }: { title?: string }) 
             ))}
           </div>
         </div>
-        {title && (
-          <div className={styles.cover}>
-            <WorkspaceLoginError
-              title={title}
-              emailSubject={`Requesting access for ${datasetId}-${areaId} report`}
-            />
-          </div>
-        )}
+        {children}
       </div>
     </Fragment>
   )

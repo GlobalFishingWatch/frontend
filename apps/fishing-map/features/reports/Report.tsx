@@ -1,14 +1,15 @@
-import { Fragment, useCallback, useEffect } from 'react'
+import { Fragment, useCallback, useEffect, useMemo } from 'react'
+import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniq } from 'lodash'
-import { Tab, Tabs } from '@globalfishingwatch/ui-components'
+import { Button, Tab, Tabs } from '@globalfishingwatch/ui-components'
 import { isAuthError } from '@globalfishingwatch/api-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectReportCategory, selectTimeRange } from 'features/app/app.selectors'
+import { isActivityReport, selectReportCategory, selectTimeRange } from 'features/app/app.selectors'
 import { selectActiveTemporalgridDataviews } from 'features/dataviews/dataviews.selectors'
-import WorkspaceError from 'features/workspace/WorkspaceError'
+import WorkspaceError, { WorkspaceLoginError } from 'features/workspace/WorkspaceError'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { selectWorkspaceVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
 import { selectHasReportVessels } from 'features/reports/reports.selectors'
@@ -22,6 +23,13 @@ import {
   useTimebarVisualisationConnect,
 } from 'features/timebar/timebar.hooks'
 import { getReportCategoryFromDataview } from 'features/reports/reports.utils'
+import {
+  getDateRangeHash,
+  selectReportVesselsDateRangeHash,
+  setDateRangeHash,
+} from 'features/reports/reports.slice'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { selectLocationAreaId, selectLocationDatasetId } from 'routes/routes.selectors'
 import { useFetchReportArea, useFetchReportVessel } from './reports.hooks'
 import ReportSummary from './summary/ReportSummary'
 import ReportTitle from './title/ReportTitle'
@@ -35,61 +43,99 @@ export type ReportActivityUnit = 'hour' | 'detection'
 
 function ActivityReport({ reportName }: { reportName: string }) {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const reportCategory = useSelector(selectReportCategory)
   const timerange = useSelector(selectTimeRange)
   const guestUser = useSelector(isGuestUser)
+  const datasetId = useSelector(selectLocationDatasetId)
+  const areaId = useSelector(selectLocationAreaId)
+  const reportDateRangeHash = useSelector(selectReportVesselsDateRangeHash)
   const timerangeTooLong = !getDownloadReportSupported(timerange.start, timerange.end)
   const { status: reportStatus, error: statusError } = useFetchReportVessel()
   const hasVessels = useSelector(selectHasReportVessels)
 
   // TODO get this from datasets config
-  const activityUnit =
-    reportCategory === ReportCategory.Fishing || reportCategory === ReportCategory.Presence
-      ? 'hour'
-      : 'detection'
+  const activityUnit = isActivityReport(reportCategory) ? 'hour' : 'detection'
 
   const reportLoading = reportStatus === AsyncReducerStatus.Loading
   const reportError = reportStatus === AsyncReducerStatus.Error
   const reportLoaded = reportStatus === AsyncReducerStatus.Finished
+  const reportOutdated = reportDateRangeHash !== getDateRangeHash(timerange)
   const hasAuthError = reportError && isAuthError(statusError)
+
+  const ReportComponent = useMemo(() => {
+    if (reportOutdated) {
+      return (
+        <ReportVesselsPlaceholder>
+          <div className={cx(styles.cover, styles.center)}>
+            <Button onClick={() => dispatch(setDateRangeHash(''))}>Update</Button>
+          </div>
+        </ReportVesselsPlaceholder>
+      )
+    }
+    if (reportLoading) {
+      return <ReportVesselsPlaceholder />
+    }
+    if (reportLoaded) {
+      return hasVessels ? (
+        <Fragment>
+          <ReportVessels activityUnit={activityUnit} reportName={reportName} />
+          <ReportDownload />
+        </Fragment>
+      ) : (
+        <p className={styles.error}>
+          {t('analysis.noDataByArea', 'No data available for the selected area')}
+        </p>
+      )
+    }
+    if (reportError) {
+      return hasAuthError ? (
+        <ReportVesselsPlaceholder>
+          <div className={styles.cover}>
+            <WorkspaceLoginError
+              title={
+                guestUser
+                  ? t('errors.reportLogin', 'Login to see the vessels active in the area')
+                  : t(
+                      'errors.privateReport',
+                      "Your account doesn't have permissions to see the vessels active in this area"
+                    )
+              }
+              emailSubject={`Requesting access for ${datasetId}-${areaId} report`}
+            />
+          </div>
+        </ReportVesselsPlaceholder>
+      ) : (
+        <p className={styles.error}>
+          <span>
+            {t('errors.generic', 'Something went wrong, try again or contact:')}{' '}
+            <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
+          </span>
+        </p>
+      )
+    }
+    return null
+  }, [
+    activityUnit,
+    areaId,
+    datasetId,
+    dispatch,
+    guestUser,
+    hasAuthError,
+    hasVessels,
+    reportError,
+    reportLoaded,
+    reportLoading,
+    reportName,
+    reportOutdated,
+    t,
+  ])
+
   return (
     <Fragment>
       <ReportSummary activityUnit={activityUnit} reportStatus={reportStatus} />
       <ReportActivity />
-      {reportLoading && <ReportVesselsPlaceholder />}
-      {reportLoaded ? (
-        hasVessels ? (
-          <Fragment>
-            <ReportVessels activityUnit={activityUnit} reportName={reportName} />
-            <ReportDownload />
-          </Fragment>
-        ) : (
-          <p className={styles.error}>
-            {t('analysis.noDataByArea', 'No data available for the selected area')}
-          </p>
-        )
-      ) : null}
-      {reportError ? (
-        hasAuthError ? (
-          <ReportVesselsPlaceholder
-            title={
-              guestUser
-                ? t('errors.reportLogin', 'Login to see the vessels active in the area')
-                : t(
-                    'errors.privateReport',
-                    "Your account doesn't have permissions to see the vessels active in this area"
-                  )
-            }
-          />
-        ) : (
-          <p className={styles.error}>
-            <span>
-              {t('errors.generic', 'Something went wrong, try again or contact:')}{' '}
-              <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
-            </span>
-          </p>
-        )
-      ) : null}
+      {ReportComponent}
       {timerangeTooLong && (
         <p className={styles.error}>
           {t(
