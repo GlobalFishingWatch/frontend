@@ -66,8 +66,8 @@ export const selectReportCategoryDataviews = createSelector(
 )
 
 export const selectReportActivityFlatten = createSelector(
-  [selectReportVesselsData, selectReportCategoryDataviews],
-  (reportDatasets, dataviews): ReportVesselWithMeta[] => {
+  [selectReportVesselsData, selectReportCategoryDataviews, selectReportCategory],
+  (reportDatasets, dataviews, reportCategory): ReportVesselWithMeta[] => {
     if (!reportDatasets?.length) return null
 
     return reportDatasets.flatMap((dataset, index) =>
@@ -75,6 +75,7 @@ export const selectReportActivityFlatten = createSelector(
         const dataview = dataviews[index]
         return (vessels || []).flatMap((vessel) => {
           if (
+            reportCategory !== DataviewCategory.Detections &&
             EMPTY_API_VALUES.includes(vessel.flag) &&
             EMPTY_API_VALUES.includes(vessel.shipName) &&
             EMPTY_API_VALUES.includes(vessel.vesselType) &&
