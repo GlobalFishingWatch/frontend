@@ -19,24 +19,26 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
         cache: false,
         ...DEFAULT_PAGINATION_PARAMS,
       }
-      let dataviews = await GFWApiClient.fetch<APIPagination<Dataview>>(
+      const dataviews = await GFWApiClient.fetch<APIPagination<Dataview>>(
         `/dataviews?${stringify(dataviewsParams, { arrayFormat: 'comma' })}`,
         {
           signal,
         }
-      ).then((response) => response.entries)
-
-      dataviews = dataviews.map((dataview: Dataview) =>
-        !IS_STANDALONE_APP
-          ? dataview
-          : {
-              ...dataview,
-              datasetsConfig: dataview.datasetsConfig?.filter(
-                (conf) =>
-                  conf.datasetId.startsWith('public-') && conf.endpoint !== DatasetTypes.Tracks
-              ),
-            }
       )
+        .then((response) => response.entries)
+        .then((dataviews) =>
+          dataviews.map((dataview: Dataview) =>
+            !IS_STANDALONE_APP
+              ? dataview
+              : {
+                  ...dataview,
+                  datasetsConfig: dataview.datasetsConfig?.filter(
+                    (conf) =>
+                      conf.datasetId.startsWith('public-') && conf.endpoint !== DatasetTypes.Tracks
+                  ),
+                }
+          )
+        )
 
       if (
         process.env.NODE_ENV === 'development' ||

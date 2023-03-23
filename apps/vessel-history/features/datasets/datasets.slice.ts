@@ -77,7 +77,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
         process.env.NEXT_PUBLIC_USE_LOCAL_DATASETS === 'true'
       ) {
         const mockedDatasets = await import('./datasets.mock')
-        //datasets = uniqBy([...mockedDatasets.default, ...datasets], 'id')
+        datasets = uniqBy([...mockedDatasets.default, ...datasets], 'id')
       }
       return datasets
     } catch (e: any) {

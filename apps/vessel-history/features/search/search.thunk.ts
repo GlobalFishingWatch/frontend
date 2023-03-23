@@ -56,11 +56,13 @@ export const fetchData = async (
     datasets: BASE_DATASET,
     limit: RESULTS_PER_PAGE,
     offset,
-    query,
+    query: IS_STANDALONE_APP ? query : serializedQuery,
     ...(!IS_STANDALONE_APP && { 'use-tmt': true }),
   })
 
-  const url = `/v2/vessels/search?${urlQuery}`
+  const url = IS_STANDALONE_APP
+    ? `/v2/vessels/search?${urlQuery}` // TODO: why advance search return 403?
+    : `/v2/vessels/advanced-search-tmt?${urlQuery}`
 
   return await GFWApiClient.fetch<any>(url, {
     signal,
@@ -165,6 +167,3 @@ export const fetchVesselSearchThunk = createAsyncThunk(
     },
   }
 )
-
-//https://gateway.api.dev.globalfishingwatch.org/v2/vessels/search?datasets=public-global-fishing-vessels%3Av20201001%2Cpublic-global-carrier-vessels%3Av20201001%2Cpublic-global-support-vessels%3Av20201001&limit=25&offset=0&query=shipname%20LIKE%20%27%25MAVERICK%25%27
-//https://gateway.api.globalfishingwatch.org    /v2/vessels/search?datasets=public-global-fishing-vessels%3Av20201001%2Cpublic-global-support-vessels%3Av20201001%2Cpublic-global-carrier-vessels%3Av20201001&limit=20&offset=0&query=Maverick

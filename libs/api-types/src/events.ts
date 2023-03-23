@@ -171,27 +171,6 @@ export interface ApiEvent<Vessel = EventVessel> {
   key?: string
 }
 
-export interface Distances {
-  startDistanceFromShoreKm?: number
-  endDistanceFromShoreKm: number
-  startDistanceFromPortKm?: number
-  endDistanceFromPortKm: number
-}
-
-export interface Fishing {
-  totalDistanceKm: number
-  averageSpeedKnots: number
-  averageDurationHours: number
-}
-
-export interface ActivityEvent<Vessel = EventVessel> extends ApiEvent<Vessel> {
-  regions: Regions
-  boundingBox: number[]
-  distances: Distances
-  fishing: Fishing
-  timestamp?: number
-}
-
 export interface ApiEvents<T = ApiEvent> {
   entries: T[]
   limit: number | null

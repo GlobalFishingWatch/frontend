@@ -90,6 +90,7 @@ export function useRiskIndicator(showIdentityIndicators: boolean): UseRiskIndica
 
   useEffect(() => {
     if (!IS_STANDALONE_APP) {
+      // Avoid multiple requests without permission
       indicatorsKeys.forEach((indicator) =>
         dispatch(fetchIndicatorsByIdThunk({ idData, indicator }))
       )

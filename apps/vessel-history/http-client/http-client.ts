@@ -1,5 +1,5 @@
 import { GFW_API_CLASS } from '@globalfishingwatch/api-client'
-import { CUSTOM_ACCESS_TOKEN } from 'data/config'
+import { CUSTOM_ACCESS_TOKEN, IS_STANDALONE_APP } from 'data/config'
 
 export class STANDALONE_GFW_API_CLASS extends GFW_API_CLASS {
   setToken(token: string) {
@@ -23,7 +23,7 @@ export class STANDALONE_GFW_API_CLASS extends GFW_API_CLASS {
   }
 
   getRefreshToken() {
-    return null
+    return IS_STANDALONE_APP ? null : this.refreshToken
   }
 }
 

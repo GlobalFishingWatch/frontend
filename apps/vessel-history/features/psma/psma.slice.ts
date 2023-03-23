@@ -25,6 +25,7 @@ export const fetchPsmaThunk = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       if (IS_STANDALONE_APP) {
+        // TODO: we should add the psma to the available endpoints
         return []
       }
       const queryParams = {

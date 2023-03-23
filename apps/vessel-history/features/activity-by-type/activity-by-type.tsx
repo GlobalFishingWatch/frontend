@@ -5,6 +5,7 @@ import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
 import { useTranslation } from 'react-i18next'
 import { Modal, Spinner } from '@globalfishingwatch/ui-components'
+import { EventTypes } from '@globalfishingwatch/api-types'
 import { DEFAULT_VESSEL_MAP_ZOOM, IS_STANDALONE_APP } from 'data/config'
 import {
   RenderedEvent,
@@ -22,7 +23,6 @@ import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology
 import ActivityDataAndTerminology from 'features/profile/components/activity/ActivityDataAndTerminology'
 import ActivityItem from '../profile/components/activity/ActivityItem'
 import ActivityModalContent from '../profile/components/activity/ActivityModalContent'
-import { EventTypes } from '../../../../libs/api-types/src/events'
 import { useActivityByType } from './activity-by-type.hook'
 import styles from './activity-by-type.module.css'
 
