@@ -15,6 +15,14 @@
 
 .center {
   display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: var(--space-S);
+  padding: var(--space-L);
   justify-content: center;
   align-items: center;
+}
+
+.center strong {
+  font-weight: 500;
 }

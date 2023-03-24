@@ -30,6 +30,7 @@ import {
 } from 'features/reports/reports.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectLocationAreaId, selectLocationDatasetId } from 'routes/routes.selectors'
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useFetchReportArea, useFetchReportVessel } from './reports.hooks'
 import ReportSummary from './summary/ReportSummary'
 import ReportTitle from './title/ReportTitle'
@@ -64,11 +65,23 @@ function ActivityReport({ reportName }: { reportName: string }) {
   const hasAuthError = reportError && isAuthError(statusError)
 
   const ReportComponent = useMemo(() => {
-    if (reportOutdated) {
+    if (reportOutdated && !reportLoading) {
       return (
         <ReportVesselsPlaceholder>
           <div className={cx(styles.cover, styles.center)}>
-            <Button onClick={() => dispatch(setDateRangeHash(''))}>Update</Button>
+            <p
+              dangerouslySetInnerHTML={{
+                __html: t('analysis.newTimeRange', {
+                  defaultValue:
+                    'Click Update to see the vessels active in the area<br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
+                  start: formatI18nDate(timerange?.start),
+                  end: formatI18nDate(timerange?.end),
+                }),
+              }}
+            />
+            <Button onClick={() => dispatch(setDateRangeHash(''))}>
+              {t('common.update', 'Update')}
+            </Button>
           </div>
         </ReportVesselsPlaceholder>
       )
