@@ -8,6 +8,7 @@ import { selectActiveReportDataviews, selectReportVesselGraph } from 'features/a
 import { ReportVesselGraph } from 'types'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
+import { ReportVesselsGraphPlaceholder } from 'features/reports/placeholders/ReportVesselsPlaceholder'
 import {
   cleanFlagState,
   EMPTY_API_VALUES,
@@ -155,46 +156,52 @@ export default function ReportVesselsGraph() {
   return (
     <Fragment>
       <div className={styles.graph}>
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            width={500}
-            height={300}
-            data={data}
-            margin={{
-              top: 15,
-              right: 0,
-              left: 0,
-              bottom: 0,
-            }}
-          >
-            <Tooltip content={<ReportGraphTooltip type={selectedReportVesselGraph} />} />
-            {dataviews.map((dataview, index) => {
-              return (
-                <Bar
-                  key={dataview.id}
-                  dataKey={dataview.id}
-                  stackId="a"
-                  fill={dataview.config?.color}
-                >
-                  {index === dataviews.length - 1 && (
-                    <LabelList
-                      position="top"
-                      valueAccessor={(entry) => formatI18nNumber(entry.value[1])}
-                    />
-                  )}
-                </Bar>
-              )
-            })}
-            <XAxis
-              dataKey="name"
-              interval="preserveStart"
-              tickLine={false}
-              minTickGap={-1000}
-              tick={<CustomTick />}
-              tickMargin={0}
-            />
-          </BarChart>
-        </ResponsiveContainer>
+        {data ? (
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              width={500}
+              height={300}
+              data={data}
+              margin={{
+                top: 15,
+                right: 0,
+                left: 0,
+                bottom: 0,
+              }}
+            >
+              {data && (
+                <Tooltip content={<ReportGraphTooltip type={selectedReportVesselGraph} />} />
+              )}
+              {dataviews.map((dataview, index) => {
+                return (
+                  <Bar
+                    key={dataview.id}
+                    dataKey={dataview.id}
+                    stackId="a"
+                    fill={dataview.config?.color}
+                  >
+                    {index === dataviews.length - 1 && (
+                      <LabelList
+                        position="top"
+                        valueAccessor={(entry) => formatI18nNumber(entry.value[1])}
+                      />
+                    )}
+                  </Bar>
+                )
+              })}
+              <XAxis
+                dataKey="name"
+                interval="preserveStart"
+                tickLine={false}
+                minTickGap={-1000}
+                tick={<CustomTick />}
+                tickMargin={0}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        ) : (
+          <ReportVesselsGraphPlaceholder animate={false}>no data</ReportVesselsGraphPlaceholder>
+        )}
       </div>
     </Fragment>
   )
