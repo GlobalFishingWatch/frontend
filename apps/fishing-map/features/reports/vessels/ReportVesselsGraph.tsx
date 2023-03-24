@@ -8,6 +8,12 @@ import { selectActiveReportDataviews, selectReportVesselGraph } from 'features/a
 import { ReportVesselGraph } from 'types'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
+import { ReportVesselsGraphPlaceholder } from 'features/reports/placeholders/ReportVesselsPlaceholder'
+import {
+  REPORT_VESSELS_GRAPH_FLAG,
+  REPORT_VESSELS_GRAPH_GEARTYPE,
+  REPORT_VESSELS_GRAPH_VESSELTYPE,
+} from 'data/config'
 import {
   cleanFlagState,
   EMPTY_API_VALUES,
@@ -16,6 +22,8 @@ import {
   selectReportVesselsGraphDataOthers,
 } from '../reports.selectors'
 import styles from './ReportVesselsGraph.module.css'
+
+const MAX_OTHER_TOOLTIP_ITEMS = 10
 
 type ReportGraphTooltipProps = {
   active: boolean
@@ -89,6 +97,12 @@ const CustomTick = (props: any) => {
     }
   }
 
+  const filterProperties = {
+    [REPORT_VESSELS_GRAPH_FLAG]: 'flag',
+    [REPORT_VESSELS_GRAPH_GEARTYPE]: 'gear',
+    [REPORT_VESSELS_GRAPH_VESSELTYPE]: 'type',
+  }
+
   const onLabelClick = () => {
     if (isCategoryInteractive) {
       const vesselFilter = isOtherCategory
@@ -98,15 +112,23 @@ const CustomTick = (props: any) => {
               .join('|')
           )
         : getTickLabel(payload.value)
-      dispatchQueryParams({ reportVesselFilter: vesselFilter, reportVesselPage: 0 })
+      dispatchQueryParams({
+        reportVesselFilter: `${filterProperties[selectedReportVesselGraph]}:${vesselFilter}`,
+        reportVesselPage: 0,
+      })
     }
   }
 
   const tooltip = isOtherCategory ? (
     <ul>
-      {othersData.map(({ name, value }) => (
+      {othersData.slice(0, MAX_OTHER_TOOLTIP_ITEMS).map(({ name, value }) => (
         <li key={`${name}-${value}`}>{`${getTickLabel(name)}: ${value}`}</li>
       ))}
+      {othersData.length > MAX_OTHER_TOOLTIP_ITEMS && (
+        <li>
+          + {othersData.length - MAX_OTHER_TOOLTIP_ITEMS} {t('analysis.others', 'Others')}
+        </li>
+      )}
     </ul>
   ) : (
     ''
@@ -149,52 +171,61 @@ const CustomTick = (props: any) => {
 }
 
 export default function ReportVesselsGraph() {
+  const { t } = useTranslation()
   const dataviews = useSelector(selectActiveReportDataviews)
   const data = useSelector(selectReportVesselsGraphDataGrouped)
   const selectedReportVesselGraph = useSelector(selectReportVesselGraph)
   return (
     <Fragment>
       <div className={styles.graph}>
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            width={500}
-            height={300}
-            data={data}
-            margin={{
-              top: 15,
-              right: 0,
-              left: 0,
-              bottom: 0,
-            }}
-          >
-            <Tooltip content={<ReportGraphTooltip type={selectedReportVesselGraph} />} />
-            {dataviews.map((dataview, index) => {
-              return (
-                <Bar
-                  key={dataview.id}
-                  dataKey={dataview.id}
-                  stackId="a"
-                  fill={dataview.config?.color}
-                >
-                  {index === dataviews.length - 1 && (
-                    <LabelList
-                      position="top"
-                      valueAccessor={(entry) => formatI18nNumber(entry.value[1])}
-                    />
-                  )}
-                </Bar>
-              )
-            })}
-            <XAxis
-              dataKey="name"
-              interval="preserveStart"
-              tickLine={false}
-              minTickGap={-1000}
-              tick={<CustomTick />}
-              tickMargin={0}
-            />
-          </BarChart>
-        </ResponsiveContainer>
+        {data ? (
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              width={500}
+              height={300}
+              data={data}
+              margin={{
+                top: 15,
+                right: 0,
+                left: 0,
+                bottom: 0,
+              }}
+            >
+              {data && (
+                <Tooltip content={<ReportGraphTooltip type={selectedReportVesselGraph} />} />
+              )}
+              {dataviews.map((dataview, index) => {
+                return (
+                  <Bar
+                    key={dataview.id}
+                    dataKey={dataview.id}
+                    stackId="a"
+                    fill={dataview.config?.color}
+                  >
+                    {index === dataviews.length - 1 && (
+                      <LabelList
+                        position="top"
+                        valueAccessor={(entry) => formatI18nNumber(entry.value[1])}
+                      />
+                    )}
+                  </Bar>
+                )
+              })}
+              <XAxis
+                dataKey="name"
+                interval="preserveStart"
+                tickLine={false}
+                minTickGap={-1000}
+                tick={<CustomTick />}
+                tickMargin={0}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        ) : (
+          <ReportVesselsGraphPlaceholder animate={false}>
+            {t('analysis.noVesselDataFiltered', 'There are no vessels matching your filter')}
+          </ReportVesselsGraphPlaceholder>
+        )}
       </div>
     </Fragment>
   )

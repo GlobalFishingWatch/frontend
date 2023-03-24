@@ -4,11 +4,9 @@ import { Fragment } from 'react'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { Area } from 'features/areas/areas.slice'
-import { selectReportAreaIds } from 'features/reports/reports.selectors'
-import { selectDataviewInstancesByType } from 'features/dataviews/dataviews.slice'
+import { selectReportAreaDataview } from 'features/reports/reports.selectors'
 import { getContextAreaLink } from 'features/dataviews/dataviews.utils'
 import ReportTitlePlaceholder from 'features/reports/placeholders/ReportTitlePlaceholder'
-import { selectContextAreasDataviews } from 'features/dataviews/dataviews.selectors'
 import styles from './ReportTitle.module.css'
 
 type ReportTitleProps = {
@@ -19,11 +17,7 @@ type ReportTitleProps = {
 
 export default function ReportTitle({ area }: ReportTitleProps) {
   const { t } = useTranslation()
-  const { datasetId } = useSelector(selectReportAreaIds)
-  const contextDataviews = useSelector(selectContextAreasDataviews)
-  const areaDataview = contextDataviews.find((dataview) => {
-    return dataview.datasets.some((dataset) => dataset.id === datasetId)
-  })
+  const areaDataview = useSelector(selectReportAreaDataview)
   const name =
     areaDataview?.config.type === GeneratorType.UserContext
       ? areaDataview?.datasets?.[0]?.name

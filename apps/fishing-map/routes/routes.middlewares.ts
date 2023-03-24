@@ -53,14 +53,15 @@ function cleanReportPayload(params: Record<string, any>) {
 
 function cleanReportQuery(query: QueryParams) {
   const {
-    reportCategory,
-    reportTimeComparison,
     reportActivityGraph,
+    reportAreaBounds,
+    reportAreaSource,
+    reportCategory,
+    reportResultsPerPage,
+    reportTimeComparison,
     reportVesselFilter,
     reportVesselGraph,
     reportVesselPage,
-    reportAreaBounds,
-    reportAreaSource,
     ...rest
   } = query || {}
   return rest

@@ -37,6 +37,7 @@ export const useHighlightArea = () => {
   const { updateFeatureState, cleanFeatureState } = useFeatureState(useMapInstance())
   return useCallback(
     (source: string, id: string) => {
+      cleanFeatureState('click')
       cleanFeatureState('highlight')
       const featureState = { source, sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER, id }
       updateFeatureState([featureState], 'highlight')

@@ -29,6 +29,7 @@
     "groupByGeartype": "by gear type",
     "groupByVesseltype": "by vessel type",
     "noDataByArea": "No data available for the selected area",
+    "noVesselDataFiltered": "There are no vessels matching your filter",
     "newTimeRange": "Click Update to see the vessels active in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "onlyAISAllowed": "Only AIS datasets are allowed to download",
     "periodComparison": "period comparison",

@@ -14,15 +14,15 @@ export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
 export type WorkspaceTimeRangeParam = 'start' | 'end'
 
 export type ReportStateProperty =
-  | 'reportCategory'
-  | 'reportAreaSource'
-  | 'reportAreaBounds'
   | 'reportActivityGraph'
-  | 'reportVesselGraph'
-  | 'reportVesselFilter'
-  | 'reportVesselPage'
+  | 'reportAreaBounds'
+  | 'reportAreaSource'
+  | 'reportCategory'
   | 'reportResultsPerPage'
   | 'reportTimeComparison'
+  | 'reportVesselFilter'
+  | 'reportVesselGraph'
+  | 'reportVesselPage'
 
 export type WorkspaceStateProperty =
   | 'query'

@@ -3,6 +3,12 @@
   position: relative;
 }
 
+.relative {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
 .cover {
   position: absolute;
   width: 100%;
@@ -19,6 +25,12 @@
 .flex {
   display: flex;
   gap: 1rem;
+  align-items: center;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
   align-items: center;
 }
 
@@ -53,7 +65,6 @@
 .block {
   height: 1.6rem;
   border-radius: 0.8rem;
-  animation: placeHolderShimmer 2s linear forwards infinite;
   background: linear-gradient(
     90deg,
     rgba(var(--primary-blue-rgb), 0.1) 0%,
@@ -61,6 +72,10 @@
     rgba(var(--primary-blue-rgb), 0.1) 70%
   );
   background-size: 1000px 100%;
+}
+
+.animate {
+  animation: placeHolderShimmer 2s linear forwards infinite;
 }
 
 .grow {
@@ -115,6 +130,10 @@
 
 .marginV {
   margin-top: var(--space-S);
+  margin-bottom: var(--space-S);
+}
+
+.marginBottom {
   margin-bottom: var(--space-S);
 }
 

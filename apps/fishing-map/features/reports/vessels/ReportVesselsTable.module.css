@@ -44,3 +44,7 @@
 .border {
   border-bottom: 1px solid var(--color-terthiary-blue);
 }
+
+.pointer {
+  cursor: pointer;
+}

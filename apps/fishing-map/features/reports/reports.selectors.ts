@@ -26,6 +26,7 @@ import { selectUserData } from 'features/user/user.slice'
 import { getUTCDateTime } from 'utils/dates'
 import { getReportCategoryFromDataview, getVesselGearOrType } from 'features/reports/reports.utils'
 import { ReportCategory } from 'types'
+import { selectContextAreasDataviews } from 'features/dataviews/dataviews.selectors'
 import { selectReportVesselsData } from './reports.slice'
 
 export const EMPTY_API_VALUES = ['NULL', undefined, '']
@@ -46,6 +47,16 @@ export type ReportVesselWithDatasets = Partial<ReportVessel> &
     trackDataset?: Dataset
   }
 
+export const selectReportAreaDataview = createSelector(
+  [selectContextAreasDataviews, selectLocationDatasetId],
+  (contextDataviews, datasetId) => {
+    const areaDataview = contextDataviews?.find((dataview) => {
+      return dataview.datasets.some((dataset) => dataset.id === datasetId)
+    })
+    return areaDataview
+  }
+)
+
 export const selectReportAreaIds = createSelector(
   [selectLocationAreaId, selectLocationDatasetId],
   (areaId, datasetId) => {
@@ -56,7 +67,7 @@ export const selectReportAreaIds = createSelector(
 export const selectReportActivityFlatten = createSelector(
   [selectReportVesselsData, selectActiveReportDataviews, selectReportCategory],
   (reportDatasets, dataviews, reportCategory): ReportVesselWithMeta[] => {
-    if (!reportDatasets?.length) return null
+    if (!dataviews?.length || !reportDatasets?.length) return null
 
     return reportDatasets.flatMap((dataset, index) =>
       Object.entries(dataset).flatMap(([datasetId, vessels]) => {
@@ -184,6 +195,14 @@ export function cleanFlagState(flagState: string) {
   return flagState.replace(/,/g, '')
 }
 
+const FILTER_PROPERTIES = {
+  name: ['shipName'],
+  flag: ['flag', 'flagTranslated', 'flagTranslatedClean'],
+  mmsi: ['mmsi'],
+  gear: ['gearOrVesselType'],
+  type: ['gearOrVesselType'],
+}
+
 export function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: string) {
   if (!filter || !filter.length) {
     return vessels
@@ -202,21 +221,15 @@ export function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: 
 
   return filterBlocks
     .reduce((vessels, block) => {
-      const words = block
+      const propertiesToMatch = block.includes(':') && FILTER_PROPERTIES[block.split(':')[0]]
+      const words = (propertiesToMatch ? block.split(':')[1] : block)
         .replace('-', '')
         .split('|')
         .map((word) => word.trim())
         .filter((word) => word.length)
       const matched = words.flatMap((w) =>
         matchSorter(vessels, w, {
-          keys: [
-            'shipName',
-            'mmsi',
-            'flag',
-            'flagTranslated',
-            'flagTranslatedClean',
-            'gearOrVesselType',
-          ],
+          keys: propertiesToMatch || Object.values(FILTER_PROPERTIES).flat(),
           threshold: matchSorter.rankings.CONTAINS,
         })
       )
