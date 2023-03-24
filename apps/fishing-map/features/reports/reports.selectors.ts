@@ -26,6 +26,7 @@ import { selectUserData } from 'features/user/user.slice'
 import { getUTCDateTime } from 'utils/dates'
 import { getReportCategoryFromDataview, getVesselGearOrType } from 'features/reports/reports.utils'
 import { ReportCategory } from 'types'
+import { selectContextAreasDataviews } from 'features/dataviews/dataviews.selectors'
 import { selectReportVesselsData } from './reports.slice'
 
 export const EMPTY_API_VALUES = ['NULL', undefined, '']
@@ -45,6 +46,16 @@ export type ReportVesselWithDatasets = Partial<ReportVessel> &
     infoDataset?: Dataset
     trackDataset?: Dataset
   }
+
+export const selectReportAreaDataview = createSelector(
+  [selectContextAreasDataviews, selectLocationDatasetId],
+  (contextDataviews, datasetId) => {
+    const areaDataview = contextDataviews?.find((dataview) => {
+      return dataview.datasets.some((dataset) => dataset.id === datasetId)
+    })
+    return areaDataview
+  }
+)
 
 export const selectReportAreaIds = createSelector(
   [selectLocationAreaId, selectLocationDatasetId],

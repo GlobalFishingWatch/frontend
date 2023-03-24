@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
+import { Dataview } from '@globalfishingwatch/api-types'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectLocationDatasetId, selectLocationAreaId } from 'routes/routes.selectors'
 import { selectActiveReportDataviews, selectTimeRange } from 'features/app/app.selectors'
@@ -12,13 +13,14 @@ import {
   selectDatasetAreaDetail,
   selectDatasetAreaStatus,
 } from 'features/areas/areas.slice'
-import { selectReportAreaIds } from 'features/reports/reports.selectors'
+import { selectReportAreaDataview, selectReportAreaIds } from 'features/reports/reports.selectors'
 import useMapInstance from 'features/map/map-context.hooks'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { Bbox } from 'types'
 import useViewport, { getMapCoordinatesFromBounds } from 'features/map/map-viewport.hooks'
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { getDownloadReportSupported } from 'features/download/download.utils'
+import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
 import {
   fetchReportVesselsThunk,
   getDateRangeHash,
@@ -93,24 +95,30 @@ export function useReportAreaHighlight(areaId: string, sourceId: string) {
   }, [areaId, sourceId, setHighlightedArea])
 }
 
+export function getSimplificationByDataview(dataview: UrlDataviewInstance | Dataview) {
+  return dataview?.slug === RFMO_DATAVIEW_SLUG ? 0.1 : 0.001
+}
+
 export function useFetchReportArea() {
   const dispatch = useAppDispatch()
   const { datasetId, areaId } = useSelector(selectReportAreaIds)
   const status = useSelector(selectDatasetAreaStatus({ datasetId, areaId }))
   const data = useSelector(selectDatasetAreaDetail({ datasetId, areaId }))
   const reportAreaDataset = useSelector(selectDatasetById(datasetId))
+  const areaDataview = useSelector(selectReportAreaDataview)
 
   useEffect(() => {
-    if (reportAreaDataset && areaId) {
+    if (reportAreaDataset && areaId && areaDataview) {
+      const simplify = getSimplificationByDataview(areaDataview)
       dispatch(
         fetchAreaDetailThunk({
           dataset: reportAreaDataset,
           areaId: areaId.toString(),
-          simplify: 0.1,
+          simplify,
         })
       )
     }
-  }, [areaId, reportAreaDataset, dispatch])
+  }, [areaId, reportAreaDataset, dispatch, areaDataview])
 
   return useMemo(() => ({ status, data }), [status, data])
 }
