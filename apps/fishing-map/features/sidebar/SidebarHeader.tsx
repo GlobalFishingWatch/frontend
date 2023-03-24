@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import Sticky from 'react-sticky-el'
 import Link from 'redux-first-router-link'
 import { IconButton, Logo, SubBrands } from '@globalfishingwatch/ui-components'
+import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import {
   selectLastVisitedWorkspace,
   selectWorkspace,
@@ -21,6 +22,7 @@ import { WorkspaceCategories } from 'data/workspaces'
 import { selectWorkspaceWithCurrentState, selectReadOnly } from 'features/app/app.selectors'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { resetSidebarScroll } from 'features/sidebar/Sidebar'
+import useMapInstance from 'features/map/map-context.hooks'
 import { useClipboardNotification } from './sidebar.hooks'
 import styles from './SidebarHeader.module.css'
 
@@ -129,6 +131,7 @@ function SidebarHeader() {
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
   const reportLocation = useSelector(selectIsReportLocation)
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
+  const { cleanFeatureState } = useFeatureState(useMapInstance())
   const showBackToWorkspaceButton = !workspaceLocation
 
   const getSubBrand = useCallback((): SubBrands | undefined => {
@@ -136,6 +139,12 @@ function SidebarHeader() {
     if (locationCategory === WorkspaceCategories.MarineManager) subBrand = SubBrands.MarineManager
     return subBrand
   }, [locationCategory])
+
+  const onCloseClick = () => {
+    resetSidebarScroll()
+    cleanFeatureState('highlight')
+  }
+
   return (
     <Sticky scrollElement=".scrollContainer">
       <div className={styles.sidebarHeader}>
@@ -145,11 +154,7 @@ function SidebarHeader() {
         {workspaceLocation && !readOnly && <SaveWorkspaceButton />}
         {(workspaceLocation || reportLocation) && !readOnly && <ShareWorkspaceButton />}
         {(reportLocation || (showBackToWorkspaceButton && lastVisitedWorkspace)) && (
-          <Link
-            className={styles.workspaceLink}
-            to={lastVisitedWorkspace}
-            onClick={resetSidebarScroll}
-          >
+          <Link className={styles.workspaceLink} to={lastVisitedWorkspace} onClick={onCloseClick}>
             <IconButton type="border" icon="close" />
           </Link>
         )}
