@@ -13,6 +13,8 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { getVesselGearOrType } from 'features/reports/reports.utils'
 import ReportVesselsTableFooter from 'features/reports/vessels/ReportVesselsTableFooter'
+import { selectReportCategory } from 'features/app/app.selectors'
+import { ReportCategory } from 'types'
 import {
   EMPTY_API_VALUES,
   ReportVesselWithDatasets,
@@ -32,6 +34,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const vessels = useSelector(selectReportVesselsPaginated)
   const vesselsInWorkspace = useSelector(selectActiveTrackDataviews)
+  const reportCategory = useSelector(selectReportCategory)
 
   const onVesselClick = async (
     ev: React.MouseEvent<Element, MouseEvent>,
@@ -71,7 +74,11 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
           </div>
           <div className={styles.header}>{t('vessel.mmsi', 'mmsi')}</div>
           <div className={styles.header}>{t('layer.flagState_one', 'Flag state')}</div>
-          <div className={styles.header}>{t('vessel.vessel_type', 'Vessel Type')}</div>
+          <div className={styles.header}>
+            {reportCategory === ReportCategory.Fishing
+              ? t('vessel.geartype', 'Gear Type')
+              : t('vessel.vessel_type', 'Vessel Type')}
+          </div>
           <div className={cx(styles.header, styles.right)}>
             {activityUnit === 'hour'
               ? t('common.hour_other', 'hours')
@@ -146,7 +153,14 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                       ? `${t('analysis.clickToFilterBy', `Click to filter by:`)} ${type}`
                       : undefined
                   }
-                  onClick={typeInteractionEnabled ? () => onFilterClick(`type:${type}`) : undefined}
+                  onClick={
+                    typeInteractionEnabled
+                      ? () =>
+                          onFilterClick(
+                            `${reportCategory === ReportCategory.Fishing ? 'gear' : 'type'}:${type}`
+                          )
+                      : undefined
+                  }
                 >
                   {type}
                 </div>

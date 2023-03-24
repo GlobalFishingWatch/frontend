@@ -10,6 +10,11 @@ import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
 import { ReportVesselsGraphPlaceholder } from 'features/reports/placeholders/ReportVesselsPlaceholder'
 import {
+  REPORT_VESSELS_GRAPH_FLAG,
+  REPORT_VESSELS_GRAPH_GEARTYPE,
+  REPORT_VESSELS_GRAPH_VESSELTYPE,
+} from 'data/config'
+import {
   cleanFlagState,
   EMPTY_API_VALUES,
   OTHERS_CATEGORY_LABEL,
@@ -90,9 +95,14 @@ const CustomTick = (props: any) => {
     }
   }
 
+  const filterProperties = {
+    [REPORT_VESSELS_GRAPH_FLAG]: 'flag',
+    [REPORT_VESSELS_GRAPH_GEARTYPE]: 'gear',
+    [REPORT_VESSELS_GRAPH_VESSELTYPE]: 'type',
+  }
+
   const onLabelClick = () => {
     if (isCategoryInteractive) {
-      const filterProperty = selectedReportVesselGraph === 'flag' ? 'flag' : 'type'
       const vesselFilter = isOtherCategory
         ? cleanFlagState(
             othersData
@@ -101,7 +111,7 @@ const CustomTick = (props: any) => {
           )
         : getTickLabel(payload.value)
       dispatchQueryParams({
-        reportVesselFilter: `${filterProperty}:${vesselFilter}`,
+        reportVesselFilter: `${filterProperties[selectedReportVesselGraph]}:${vesselFilter}`,
         reportVesselPage: 0,
       })
     }

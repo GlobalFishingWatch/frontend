@@ -188,6 +188,7 @@ const FILTER_PROPERTIES = {
   name: ['shipName'],
   flag: ['flag', 'flagTranslated', 'flagTranslatedClean'],
   mmsi: ['mmsi'],
+  gear: ['gearOrVesselType'],
   type: ['gearOrVesselType'],
 }
 
