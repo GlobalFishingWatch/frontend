@@ -17,6 +17,8 @@ import { selectSidebarOpen } from 'features/app/app.selectors'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { getFeatureAreaId, getFeatureBounds } from 'features/map/popups/ContextLayers.hooks'
 import { resetSidebarScroll } from 'features/sidebar/Sidebar'
+import { resetReportData } from 'features/reports/reports.slice'
+import { useAppDispatch } from 'features/app/app.hooks'
 import styles from './Popup.module.css'
 
 interface DownloadPopupButtonProps {
@@ -65,6 +67,7 @@ interface ReportPopupButtonProps {
 
 export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) => {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const hasAnalysableLayer = useSelector(selectHasReportLayersVisible)
   const workspace = useSelector(selectWorkspace)
   const isSidebarOpen = useSelector(selectSidebarOpen)
@@ -82,6 +85,10 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
         )}
       />
     )
+  }
+  const handleReportClick = (e: React.MouseEvent<Element, MouseEvent>) => {
+    dispatch(resetReportData())
+    onClick(e)
   }
   return (
     <Link
@@ -101,7 +108,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
           ...(!isSidebarOpen && { sidebarOpen: true }),
         },
       }}
-      onClick={onClick}
+      onClick={handleReportClick}
     >
       <IconButton
         icon="analysis"
