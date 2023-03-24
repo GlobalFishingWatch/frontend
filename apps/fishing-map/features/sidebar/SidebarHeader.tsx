@@ -23,6 +23,8 @@ import { selectWorkspaceWithCurrentState, selectReadOnly } from 'features/app/ap
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { resetSidebarScroll } from 'features/sidebar/Sidebar'
 import useMapInstance from 'features/map/map-context.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { resetReportData } from 'features/reports/reports.slice'
 import { useClipboardNotification } from './sidebar.hooks'
 import styles from './SidebarHeader.module.css'
 
@@ -126,6 +128,7 @@ function ShareWorkspaceButton() {
 }
 
 function SidebarHeader() {
+  const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)
   const locationCategory = useSelector(selectLocationCategory)
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
@@ -143,6 +146,7 @@ function SidebarHeader() {
   const onCloseClick = () => {
     resetSidebarScroll()
     cleanFeatureState('highlight')
+    dispatch(resetReportData())
   }
 
   return (

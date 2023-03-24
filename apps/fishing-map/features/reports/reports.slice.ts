@@ -106,6 +106,12 @@ const reportSlice = createSlice({
   name: 'reports',
   initialState,
   reducers: {
+    resetReportData: (state) => {
+      state.status = AsyncReducerStatus.Idle
+      state.data = null
+      state.error = null
+      state.dateRangeHash = ''
+    },
     setDateRangeHash: (state, action: PayloadAction<string>) => {
       state.dateRangeHash = action.payload
     },
@@ -129,7 +135,7 @@ const reportSlice = createSlice({
   },
 })
 
-export const { setDateRangeHash } = reportSlice.actions
+export const { resetReportData, setDateRangeHash } = reportSlice.actions
 
 export const selectReportSummary = (state: RootState) => state.reports
 export const selectReportVesselsStatus = (state: RootState) => state.reports.status
