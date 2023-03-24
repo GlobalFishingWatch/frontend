@@ -67,7 +67,7 @@ export const selectReportAreaIds = createSelector(
 export const selectReportActivityFlatten = createSelector(
   [selectReportVesselsData, selectActiveReportDataviews, selectReportCategory],
   (reportDatasets, dataviews, reportCategory): ReportVesselWithMeta[] => {
-    if (!reportDatasets?.length) return null
+    if (!dataviews?.length || !reportDatasets?.length) return null
 
     return reportDatasets.flatMap((dataset, index) =>
       Object.entries(dataset).flatMap(([datasetId, vessels]) => {
