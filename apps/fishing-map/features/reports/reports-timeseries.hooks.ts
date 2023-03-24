@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo } from 'react'
 import { Polygon, MultiPolygon } from 'geojson'
 import { useSelector } from 'react-redux'
-import { atom, selector, useRecoilState } from 'recoil'
+import { atom, selector, useRecoilState, useSetRecoilState } from 'recoil'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import {
   selectActiveReportDataviews,
@@ -80,6 +80,10 @@ export type DateTimeSeries = {
   values: number[]
   compareDate?: string
 }[]
+
+export function useSetTimeseries() {
+  return useSetRecoilState(mapTimeseriesAtom)
+}
 
 const emptyArray = []
 export const useFilteredTimeSeries = () => {

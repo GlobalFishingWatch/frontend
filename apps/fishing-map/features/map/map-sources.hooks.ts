@@ -216,6 +216,11 @@ export const useMapDataviewFeatures = (
     const dataviewsMetadata: DataviewMetadata[] = dataviewsArray.reduce((acc, dataview) => {
       const activityDataview = isHeatmapAnimatedDataview(dataview)
       const { metadata, generatorSourceId } = getSourceMetadata(style, dataview)
+      // As metadata is not updated instantly when a dataview changes
+      // we skip sublayers of the metadata when the dataview is not active anymore
+      if (metadata && !metadata.sublayers.some((sublayer) => sublayer.id === dataview.id)) {
+        return acc
+      }
       if (activityDataview) {
         const existingMergedAnimatedDataviewIndex = acc.findIndex(
           (d) => d.generatorSourceId === generatorSourceId

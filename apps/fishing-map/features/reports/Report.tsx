@@ -32,6 +32,7 @@ import {
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectLocationAreaId, selectLocationDatasetId } from 'routes/routes.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
+import { useSetTimeseries } from 'features/reports/reports-timeseries.hooks'
 import { useFetchReportArea, useFetchReportVessel } from './reports.hooks'
 import ReportSummary from './summary/ReportSummary'
 import ReportTitle from './title/ReportTitle'
@@ -167,6 +168,7 @@ function ActivityReport({ reportName }: { reportName: string }) {
 export default function Report() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const setTimeseries = useSetTimeseries()
   const { dispatchQueryParams } = useLocationConnect()
   const reportCategory = useSelector(selectReportCategory)
   const dataviews = useSelector(selectActiveTemporalgridDataviews)
@@ -218,8 +220,11 @@ export default function Report() {
   }, [reportCategory])
 
   const handleTabClick = (option: Tab<ReportCategory>) => {
-    dispatch(resetReportData())
-    dispatchQueryParams({ reportCategory: option.id, reportVesselPage: 0 })
+    setTimeseries([])
+    setTimeout(() => {
+      dispatch(resetReportData())
+      dispatchQueryParams({ reportCategory: option.id, reportVesselPage: 0 })
+    }, 1)
   }
 
   if (
