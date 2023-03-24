@@ -92,6 +92,7 @@ const CustomTick = (props: any) => {
 
   const onLabelClick = () => {
     if (isCategoryInteractive) {
+      const filterProperty = selectedReportVesselGraph === 'flag' ? 'flag' : 'type'
       const vesselFilter = isOtherCategory
         ? cleanFlagState(
             othersData
@@ -99,7 +100,10 @@ const CustomTick = (props: any) => {
               .join('|')
           )
         : getTickLabel(payload.value)
-      dispatchQueryParams({ reportVesselFilter: vesselFilter, reportVesselPage: 0 })
+      dispatchQueryParams({
+        reportVesselFilter: `${filterProperty}:${vesselFilter}`,
+        reportVesselPage: 0,
+      })
     }
   }
 

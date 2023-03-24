@@ -132,7 +132,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                       ? `${t('analysis.clickToFilterBy', `Click to filter by:`)} ${flag}`
                       : undefined
                   }
-                  onClick={flagInteractionEnabled ? () => onFilterClick(flag) : undefined}
+                  onClick={flagInteractionEnabled ? () => onFilterClick(`flag:${flag}`) : undefined}
                 >
                   <span>{flag}</span>
                 </div>
@@ -146,7 +146,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                       ? `${t('analysis.clickToFilterBy', `Click to filter by:`)} ${type}`
                       : undefined
                   }
-                  onClick={typeInteractionEnabled ? () => onFilterClick(type) : undefined}
+                  onClick={typeInteractionEnabled ? () => onFilterClick(`type:${type}`) : undefined}
                 >
                   {type}
                 </div>

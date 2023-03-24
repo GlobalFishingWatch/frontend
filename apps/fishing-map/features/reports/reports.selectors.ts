@@ -184,6 +184,13 @@ export function cleanFlagState(flagState: string) {
   return flagState.replace(/,/g, '')
 }
 
+const FILTER_PROPERTIES = {
+  name: ['shipName'],
+  flag: ['flag', 'flagTranslated', 'flagTranslatedClean'],
+  mmsi: ['mmsi'],
+  type: ['gearOrVesselType'],
+}
+
 export function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: string) {
   if (!filter || !filter.length) {
     return vessels
@@ -202,21 +209,15 @@ export function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: 
 
   return filterBlocks
     .reduce((vessels, block) => {
-      const words = block
+      const propertiesToMatch = block.includes(':') && FILTER_PROPERTIES[block.split(':')[0]]
+      const words = (propertiesToMatch ? block.split(':')[1] : block)
         .replace('-', '')
         .split('|')
         .map((word) => word.trim())
         .filter((word) => word.length)
       const matched = words.flatMap((w) =>
         matchSorter(vessels, w, {
-          keys: [
-            'shipName',
-            'mmsi',
-            'flag',
-            'flagTranslated',
-            'flagTranslatedClean',
-            'gearOrVesselType',
-          ],
+          keys: propertiesToMatch || Object.values(FILTER_PROPERTIES).flat(),
           threshold: matchSorter.rankings.CONTAINS,
         })
       )
