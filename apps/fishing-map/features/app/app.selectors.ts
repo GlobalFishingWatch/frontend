@@ -152,6 +152,10 @@ export const selectReportAreaSource = createSelector(
   }
 )
 
+export function isActivityReport(reportCategory: ReportCategory) {
+  return reportCategory === ReportCategory.Fishing || reportCategory === ReportCategory.Presence
+}
+
 export const selectActiveReportDataviews = createDeepEqualSelector(
   [
     selectReportCategory,
@@ -165,7 +169,7 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
     detectionsDataviews = [],
     environmentalDataviews = []
   ) => {
-    if (reportCategory === ReportCategory.Fishing || reportCategory === ReportCategory.Presence) {
+    if (isActivityReport(reportCategory)) {
       return activityDataviews
     }
     if (reportCategory === ReportCategory.Detections) {

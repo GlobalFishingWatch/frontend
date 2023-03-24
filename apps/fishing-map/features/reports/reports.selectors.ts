@@ -2,12 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { groupBy, sum, sumBy, uniq, uniqBy } from 'lodash'
 import { matchSorter } from 'match-sorter'
 import { t } from 'i18next'
-import {
-  Dataset,
-  DatasetTypes,
-  DataviewCategory,
-  ReportVessel,
-} from '@globalfishingwatch/api-types'
+import { Dataset, DatasetTypes, ReportVessel } from '@globalfishingwatch/api-types'
 import {
   selectActiveReportDataviews,
   selectReportActivityGraph,

@@ -22,6 +22,7 @@ import ReportSummaryTagsPlaceholder from 'features/reports/placeholders/ReportSu
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { listAsSentence } from 'utils/shared'
 import { ReportCategory } from 'types'
+import { getDateRangeHash, selectReportVesselsDateRangeHash } from 'features/reports/reports.slice'
 import { selectReportVesselsHours, selectReportVesselsNumber } from '../reports.selectors'
 import styles from './ReportSummary.module.css'
 
@@ -40,6 +41,9 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
   const { loading: timeseriesLoading, layersTimeseriesFiltered } = useFilteredTimeSeries()
   const reportHours = useSelector(selectReportVesselsHours)
   const dataviews = useSelector(selectActiveReportDataviews)
+  const reportDateRangeHash = useSelector(selectReportVesselsDateRangeHash)
+  const reportOutdated = reportDateRangeHash !== getDateRangeHash(timerange)
+
   const commonProperties = useMemo(() => {
     return getCommonProperties(dataviews).filter(
       (property) =>
@@ -62,7 +66,8 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
     if (
       reportHours &&
       reportStatus === AsyncReducerStatus.Finished &&
-      category !== ReportCategory.Detections
+      category !== ReportCategory.Detections &&
+      !reportOutdated
     ) {
       return t('analysis.summary', {
         defaultValue:
@@ -139,19 +144,20 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
       })
     }
   }, [
-    t,
-    activityUnit,
-    category,
-    commonProperties,
     dataviews,
-    i18n.language,
-    layersTimeseriesFiltered,
+    category,
+    t,
     reportHours,
     reportStatus,
-    reportVessels,
-    timerange?.end,
-    timerange?.start,
+    reportOutdated,
     timeseriesLoading,
+    layersTimeseriesFiltered,
+    reportVessels,
+    i18n.language,
+    activityUnit,
+    timerange?.start,
+    timerange?.end,
+    commonProperties,
   ])
 
   return (
