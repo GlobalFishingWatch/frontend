@@ -1,6 +1,6 @@
 {
   "playback": {
-    "playAnimation": "Jouer l'animation",
+    "playAnimation": "Lancer l’animation",
     "pauseAnimation": "Mettre en pause l'animation",
     "toogleAnimationLooping": "Activer/désactiver la boucle d'animation",
     "moveBack": "Revenir en arrière",

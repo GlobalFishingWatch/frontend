@@ -3,6 +3,6 @@
   "changingTheTimeRange": "Cliquez et faites glisser pour modifier la plage de temps que vous souhaitez visualiser dans la barre de temps.",
   "clickingOnAGridCellToShowVessels": "Cliquez sur n'importe quelle cellule de la grille pour afficher les navires les plus actifs dans cette zone au cours de la période choisie.",
   "filterActivityLayers": "Cliquez sur l'icône de filtre pour filtrer l'activité en utilisant différents critères disponibles, y compris la source des données, le pavillon et le type d'équipement.",
-  "fishingEffortHeatmap": "La carte de chaleur interactive montre l'activité. Les cellules plus claires sont celles avec le plus d'activité.",
+  "fishingEffortHeatmap": "La carte thermique interactive montre l'activité. Les cellules plus claires sont celles avec le plus d'activité.",
   "periodComparisonBaseline": "Sélectionnez une référence pour comparer les changements d'activité, par ex. entre maintenant et la même date l'année dernière, ou pour comparer l'activité à des périodes différentes de l'année."
 }
