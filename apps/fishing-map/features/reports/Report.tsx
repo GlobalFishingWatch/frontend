@@ -25,6 +25,7 @@ import {
 import { getReportCategoryFromDataview } from 'features/reports/reports.utils'
 import {
   getDateRangeHash,
+  resetReportData,
   selectReportVesselsDateRangeHash,
   setDateRangeHash,
 } from 'features/reports/reports.slice'
@@ -142,6 +143,8 @@ function ActivityReport({ reportName }: { reportName: string }) {
     reportName,
     reportOutdated,
     t,
+    timerange?.end,
+    timerange?.start,
   ])
 
   return (
@@ -163,6 +166,7 @@ function ActivityReport({ reportName }: { reportName: string }) {
 
 export default function Report() {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
   const reportCategory = useSelector(selectReportCategory)
   const dataviews = useSelector(selectActiveTemporalgridDataviews)
@@ -214,6 +218,7 @@ export default function Report() {
   }, [reportCategory])
 
   const handleTabClick = (option: Tab<ReportCategory>) => {
+    dispatch(resetReportData())
     dispatchQueryParams({ reportCategory: option.id, reportVesselPage: 0 })
   }
 

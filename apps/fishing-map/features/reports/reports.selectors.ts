@@ -72,6 +72,10 @@ export const selectReportActivityFlatten = createSelector(
     return reportDatasets.flatMap((dataset, index) =>
       Object.entries(dataset).flatMap(([datasetId, vessels]) => {
         const dataview = dataviews[index]
+        if (!dataview) {
+          console.warn('Missing dataview for report dataset:', dataset)
+          return []
+        }
         return (vessels || []).flatMap((vessel) => {
           if (
             reportCategory !== ReportCategory.Detections &&
