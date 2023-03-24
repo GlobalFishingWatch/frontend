@@ -15,7 +15,6 @@ export default function ReportVesselsGraphSelector() {
   const { dispatchQueryParams } = useLocationConnect()
   const selectedReportVesselGraph = useSelector(selectReportVesselGraph)
   const reportCategory = useSelector(selectReportCategory)
-  console.log('reportCategory:', reportCategory)
   const { t } = useTranslation()
 
   const options: ChoiceOption[] = [

@@ -5,6 +5,8 @@
 
 .relative {
   position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .cover {
@@ -128,6 +130,10 @@
 
 .marginV {
   margin-top: var(--space-S);
+  margin-bottom: var(--space-S);
+}
+
+.marginBottom {
   margin-bottom: var(--space-S);
 }
 

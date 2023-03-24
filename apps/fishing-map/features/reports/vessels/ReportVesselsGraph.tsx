@@ -164,6 +164,7 @@ const CustomTick = (props: any) => {
 }
 
 export default function ReportVesselsGraph() {
+  const { t } = useTranslation()
   const dataviews = useSelector(selectActiveReportDataviews)
   const data = useSelector(selectReportVesselsGraphDataGrouped)
   const selectedReportVesselGraph = useSelector(selectReportVesselGraph)
@@ -214,7 +215,9 @@ export default function ReportVesselsGraph() {
             </BarChart>
           </ResponsiveContainer>
         ) : (
-          <ReportVesselsGraphPlaceholder animate={false}>no data</ReportVesselsGraphPlaceholder>
+          <ReportVesselsGraphPlaceholder animate={false}>
+            {t('analysis.noVesselDataFiltered', 'There are no vessels matching your filter')}
+          </ReportVesselsGraphPlaceholder>
         )}
       </div>
     </Fragment>

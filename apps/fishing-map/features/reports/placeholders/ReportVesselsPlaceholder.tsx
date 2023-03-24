@@ -13,7 +13,7 @@ export function ReportVesselsGraphPlaceholder({
     <div className={styles.relative}>
       <div
         style={{ width: '100%' }}
-        className={cx(styles.flex, styles.spaceAround, styles.end, styles.marginV)}
+        className={cx(styles.flex, styles.spaceAround, styles.end, styles.marginBottom)}
       >
         <div
           style={{ height: 260, borderRadius: 0 }}
