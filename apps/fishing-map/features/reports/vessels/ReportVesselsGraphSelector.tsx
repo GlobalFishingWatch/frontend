@@ -36,7 +36,6 @@ export default function ReportVesselsGraphSelector() {
       label: t('analysis.groupByGeartype', 'by gear type'),
     },
   ]
-  console.log('options:', options)
 
   const onSelect = (option: ChoiceOption<ReportVesselGraph>) => {
     dispatchQueryParams({ reportVesselGraph: option.id })
