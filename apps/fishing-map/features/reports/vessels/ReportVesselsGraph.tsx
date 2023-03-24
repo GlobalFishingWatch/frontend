@@ -23,6 +23,8 @@ import {
 } from '../reports.selectors'
 import styles from './ReportVesselsGraph.module.css'
 
+const MAX_OTHER_TOOLTIP_ITEMS = 10
+
 type ReportGraphTooltipProps = {
   active: boolean
   payload: {
@@ -119,9 +121,14 @@ const CustomTick = (props: any) => {
 
   const tooltip = isOtherCategory ? (
     <ul>
-      {othersData.map(({ name, value }) => (
+      {othersData.slice(0, MAX_OTHER_TOOLTIP_ITEMS).map(({ name, value }) => (
         <li key={`${name}-${value}`}>{`${getTickLabel(name)}: ${value}`}</li>
       ))}
+      {othersData.length > MAX_OTHER_TOOLTIP_ITEMS && (
+        <li>
+          + {othersData.length - MAX_OTHER_TOOLTIP_ITEMS} {t('analysis.others', 'Others')}
+        </li>
+      )}
     </ul>
   ) : (
     ''
