@@ -8,12 +8,14 @@ import {
   REPORT_VESSELS_GRAPH_FLAG,
   REPORT_VESSELS_GRAPH_VESSELTYPE,
 } from 'data/config'
-import { selectReportVesselGraph } from 'features/app/app.selectors'
-import { ReportVesselGraph } from 'types'
+import { selectReportCategory, selectReportVesselGraph } from 'features/app/app.selectors'
+import { ReportCategory, ReportVesselGraph } from 'types'
 
 export default function ReportVesselsGraphSelector() {
   const { dispatchQueryParams } = useLocationConnect()
   const selectedReportVesselGraph = useSelector(selectReportVesselGraph)
+  const reportCategory = useSelector(selectReportCategory)
+  console.log('reportCategory:', reportCategory)
   const { t } = useTranslation()
 
   const options: ChoiceOption[] = [
@@ -21,15 +23,20 @@ export default function ReportVesselsGraphSelector() {
       id: REPORT_VESSELS_GRAPH_FLAG,
       label: t('analysis.groupByFlag', 'by flag'),
     },
-    {
-      id: REPORT_VESSELS_GRAPH_VESSELTYPE,
-      label: t('analysis.groupByVesseltype', 'by vessel type'),
-    },
+    ...(reportCategory !== ReportCategory.Fishing
+      ? [
+          {
+            id: REPORT_VESSELS_GRAPH_VESSELTYPE,
+            label: t('analysis.groupByVesseltype', 'by vessel type'),
+          },
+        ]
+      : []),
     {
       id: REPORT_VESSELS_GRAPH_GEARTYPE,
       label: t('analysis.groupByGeartype', 'by gear type'),
     },
   ]
+  console.log('options:', options)
 
   const onSelect = (option: ChoiceOption<ReportVesselGraph>) => {
     dispatchQueryParams({ reportVesselGraph: option.id })
