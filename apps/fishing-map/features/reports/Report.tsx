@@ -27,6 +27,7 @@ import {
   getDateRangeHash,
   resetReportData,
   selectReportVesselsDateRangeHash,
+  selectReportVesselsStatus,
   setDateRangeHash,
 } from 'features/reports/reports.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -172,6 +173,7 @@ export default function Report() {
   const { dispatchQueryParams } = useLocationConnect()
   const reportCategory = useSelector(selectReportCategory)
   const dataviews = useSelector(selectActiveTemporalgridDataviews)
+  const reportStatus = useSelector(selectReportVesselsStatus)
   const dataviewCategories = uniq(dataviews.map((d) => getReportCategoryFromDataview(d)))
   const categoryTabs: Tab<ReportCategory>[] = [
     {
@@ -191,7 +193,15 @@ export default function Report() {
       title: t('common.environment', 'Environment'),
     },
   ]
-  const filteredCategoryTabs = categoryTabs.filter((tab) => dataviewCategories.includes(tab.id))
+  const filteredCategoryTabs = categoryTabs.flatMap((tab) => {
+    if (!dataviewCategories.includes(tab.id)) {
+      return []
+    }
+    return {
+      ...tab,
+      disabled: tab.id !== reportCategory && reportStatus === AsyncReducerStatus.Loading,
+    }
+  })
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const { data: areaDetail } = useFetchReportArea()
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
@@ -220,11 +230,11 @@ export default function Report() {
   }, [reportCategory])
 
   const handleTabClick = (option: Tab<ReportCategory>) => {
-    setTimeseries([])
-    setTimeout(() => {
+    if (option.id !== reportCategory) {
+      setTimeseries([])
       dispatch(resetReportData())
       dispatchQueryParams({ reportCategory: option.id, reportVesselPage: 0 })
-    }, 1)
+    }
   }
 
   if (
