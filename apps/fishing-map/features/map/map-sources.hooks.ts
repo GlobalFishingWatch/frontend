@@ -218,7 +218,10 @@ export const useMapDataviewFeatures = (
       const { metadata, generatorSourceId } = getSourceMetadata(style, dataview)
       // As metadata is not updated instantly when a dataview changes
       // we skip sublayers of the metadata when the dataview is not active anymore
-      if (metadata && !metadata.sublayers.some((sublayer) => sublayer.id === dataview.id)) {
+      if (
+        metadata?.sublayers &&
+        !metadata.sublayers.some((sublayer) => sublayer.id === dataview.id)
+      ) {
         return acc
       }
       if (activityDataview) {
