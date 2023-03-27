@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from 'react'
 import { batch, useSelector } from 'react-redux'
-import { event as uaEvent } from 'react-ga'
 import bbox from '@turf/bbox'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
@@ -17,6 +16,7 @@ import { Bbox } from 'types'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectReportAreaSource } from 'features/app/app.selectors'
 import { selectLocationAreaId } from 'routes/routes.selectors'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { setClickedEvent } from '../map.slice'
 import { TooltipEventFeature } from '../map.hooks'
 import { useMapFitBounds } from '../map-viewport.hooks'
@@ -98,8 +98,8 @@ export const useContextInteractions = () => {
       highlightArea(areaId, sourceId)
       dispatch(setClickedEvent(null))
 
-      uaEvent({
-        category: 'Report',
+      trackEvent({
+        category: TrackCategory.Analysis,
         action: `Open report`,
         label: getEventLabel([title ?? '', value ?? '']),
       })

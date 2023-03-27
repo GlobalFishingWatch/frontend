@@ -1,6 +1,5 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { InputDate, InputText, Select } from '@globalfishingwatch/ui-components'
 import {
@@ -15,6 +14,7 @@ import { selectReportAreaIds } from 'features/reports/reports.selectors'
 import { selectDatasetAreaDetail } from 'features/areas/areas.slice'
 import Hint from 'features/hints/Hint'
 import { COLOR_PRIMARY_BLUE } from 'features/app/App'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './ReportActivityBeforeAfter.module.css'
 
 export default function ReportActivityGraph() {
@@ -35,8 +35,8 @@ export default function ReportActivityGraph() {
   } = useReportTimeCompareConnect('periodComparison')
 
   const trackAndChangeComparisonDate = (date) => {
-    uaEvent({
-      category: 'Analysis',
+    trackEvent({
+      category: TrackCategory.Analysis,
       action: `Select comparison date in 'period comparison'`,
       label: JSON.stringify({
         date: date.target.value,
@@ -50,8 +50,8 @@ export default function ReportActivityGraph() {
   }
 
   const trackAndChangeBaselineDate = (date) => {
-    uaEvent({
-      category: 'Analysis',
+    trackEvent({
+      category: TrackCategory.Analysis,
       action: `Select baseline date in 'period comparison'`,
       label: JSON.stringify({
         date: date.target.value,
@@ -65,8 +65,8 @@ export default function ReportActivityGraph() {
   }
 
   const trackAndChangeDuration = (duration) => {
-    uaEvent({
-      category: 'Analysis',
+    trackEvent({
+      category: TrackCategory.Analysis,
       action: `Select duration in 'period comparison'`,
       label: JSON.stringify({
         duration: duration?.target?.value + ' ' + durationTypeOption?.label,
@@ -80,8 +80,8 @@ export default function ReportActivityGraph() {
   }
 
   const trackAndChangeDurationType = (duration) => {
-    uaEvent({
-      category: 'Analysis',
+    trackEvent({
+      category: TrackCategory.Analysis,
       action: `Select duration in 'period comparison'`,
       label: JSON.stringify({
         duration: timeComparison?.duration + ' ' + duration?.label,

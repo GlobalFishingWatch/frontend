@@ -1,6 +1,5 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { InputDate, InputText, Select } from '@globalfishingwatch/ui-components'
 import {
@@ -13,6 +12,7 @@ import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selec
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { selectReportAreaIds } from 'features/reports/reports.selectors'
 import { selectDatasetAreaDetail } from 'features/areas/areas.slice'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './ReportActivityBeforeAfter.module.css'
 
 export default function ReportActivityBeforeAfter() {
@@ -32,8 +32,8 @@ export default function ReportActivityBeforeAfter() {
   } = useReportTimeCompareConnect('beforeAfter')
 
   const trackAndChangeDate = (date) => {
-    uaEvent({
-      category: 'Report',
+    trackEvent({
+      category: TrackCategory.Analysis,
       action: `Select date in 'before/after'`,
       label: JSON.stringify({
         date: date.target.value,
@@ -47,8 +47,8 @@ export default function ReportActivityBeforeAfter() {
   }
 
   const trackAndChangeDuration = (duration) => {
-    uaEvent({
-      category: 'Report',
+    trackEvent({
+      category: TrackCategory.Analysis,
       action: `Select duration in 'before/after'`,
       label: JSON.stringify({
         duration: duration.target.value + ' ' + durationTypeOption?.label,
@@ -64,8 +64,8 @@ export default function ReportActivityBeforeAfter() {
   }
 
   const trackAndChangeDurationType = (duration) => {
-    uaEvent({
-      category: 'Report',
+    trackEvent({
+      category: TrackCategory.Analysis,
       action: `Select duration in 'before/after'`,
       label: JSON.stringify({
         duration: timeComparison?.duration + ' ' + duration.label,

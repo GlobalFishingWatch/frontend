@@ -1,7 +1,6 @@
 import { useState, useCallback, useEffect, Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { event as uaEvent } from 'react-ga'
 import { VesselGroupVessel } from '@globalfishingwatch/api-types'
 import {
   Modal,
@@ -34,6 +33,7 @@ import { ROUTE_TYPES } from 'routes/routes'
 import { resetSidebarScroll } from 'features/sidebar/Sidebar'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   IdField,
   resetVesselGroup,
@@ -249,8 +249,8 @@ function VesselGroupModal(): React.ReactElement {
         close()
         setButtonLoading('')
       }
-      uaEvent({
-        category: 'Vessel groups',
+      trackEvent({
+        category: TrackCategory.VesselGroups,
         action: `Create new vessel group`,
         label: getEventLabel([
           vessels.length.toString(),

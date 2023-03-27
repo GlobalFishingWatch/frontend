@@ -1,7 +1,6 @@
 import { Fragment, useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { IconButton, Modal, Tooltip } from '@globalfishingwatch/ui-components'
@@ -33,6 +32,7 @@ import { TimeRangeDates } from 'features/map/controls/MapInfo'
 import GFWOnly from 'features/user/GFWOnly'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getUTCDateTime } from 'utils/dates'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
   TooltipEventFeature,
@@ -169,8 +169,8 @@ function VesselsTable({
 
     upsertDataviewInstance(vesselDataviewInstance)
 
-    uaEvent({
-      category: 'Tracks',
+    trackEvent({
+      category: TrackCategory.Tracks,
       action: 'Click in vessel from grid cell panel',
       label: getEventLabel([vessel.dataset.id, vessel.id]),
     })

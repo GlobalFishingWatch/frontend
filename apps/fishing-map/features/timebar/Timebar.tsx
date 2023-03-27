@@ -1,7 +1,6 @@
 import { Fragment, memo, useCallback, useState, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
-import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import {
   Timebar,
@@ -39,6 +38,7 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-groups.selectors'
 import { getUTCDateTime } from 'utils/dates'
 import { selectIsReportLocation } from 'routes/routes.selectors'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { setHighlightedTime, selectHighlightedTime, Range } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import { selectTracksData, selectTracksGraphData, selectTracksEvents } from './timebar.selectors'
@@ -146,16 +146,16 @@ const TimebarWrapper = () => {
   const onBookmarkChange = useCallback(
     (start, end) => {
       if (!start || !end) {
-        uaEvent({
-          category: 'Timebar',
+        trackEvent({
+          category: TrackCategory.Timebar,
           action: 'Bookmark timerange',
           label: 'removed',
         })
         setBookmark(null)
         return
       }
-      uaEvent({
-        category: 'Timebar',
+      trackEvent({
+        category: TrackCategory.Timebar,
         action: 'Bookmark timerange',
         label: getEventLabel([start, end]),
       })
@@ -207,8 +207,8 @@ const TimebarWrapper = () => {
         YEAR_INTERVAL_BUTTON: 'Use year preset',
       }
       if (gaActions[e.source]) {
-        uaEvent({
-          category: 'Timebar',
+        trackEvent({
+          category: TrackCategory.Timebar,
           action: gaActions[e.source],
           label: getEventLabel([e.start, e.end]),
         })
@@ -221,8 +221,8 @@ const TimebarWrapper = () => {
 
   const onTogglePlay = useCallback(
     (isPlaying: boolean) => {
-      uaEvent({
-        category: 'Timebar',
+      trackEvent({
+        category: TrackCategory.Timebar,
         action: `Click on ${isPlaying ? 'Play' : 'Pause'}`,
         label: getEventLabel([start ?? '', end ?? '']),
       })

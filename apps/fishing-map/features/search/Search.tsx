@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { batch, useSelector } from 'react-redux'
-import { event as uaEvent } from 'react-ga'
 import { useIntersectionObserver } from '@researchgate/react-intersection-observer'
 import cx from 'classnames'
 import Downshift from 'downshift'
@@ -40,6 +39,7 @@ import {
   setVesselGroupConfirmationMode,
   setVesselGroupCurrentDataviewIds,
 } from 'features/vessel-groups/vessel-groups.slice'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
@@ -151,8 +151,8 @@ function Search() {
           promiseRef.current.then((data: any) => {
             const total = data?.payload?.pagination?.total
             if (total >= 0) {
-              uaEvent({
-                category: 'Search Vessel',
+              trackEvent({
+                category: TrackCategory.SearchVessel,
                 action: 'Search specific vessel',
                 label: query,
                 value: total,
@@ -277,8 +277,8 @@ function Search() {
     if (option.id === activeSearchOption && scrollRef.current) {
       scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' })
     } else {
-      uaEvent({
-        category: 'Search Vessel',
+      trackEvent({
+        category: TrackCategory.SearchVessel,
         action: 'Toggle search type to filter results',
         label: option.id,
       })
