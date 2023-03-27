@@ -54,3 +54,21 @@
   background-color: transparent;
   opacity: 0.5;
 }
+
+@media print {
+  .list {
+    border: none;
+  }
+
+  .activeChip {
+    display: none;
+  }
+
+  .option button {
+    padding: 0;
+  }
+
+  .option:not([aria-checked='true']) {
+    display: none;
+  }
+}

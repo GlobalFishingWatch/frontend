@@ -1,0 +1,25 @@
+.container {
+  padding: var(--space-S);
+  padding-left: var(--space-M);
+  border-bottom: var(--border);
+  gap: var(--space-S);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 6.2rem;
+}
+
+.title {
+  font: var(--font-L);
+  font-size: 2.2rem;
+}
+
+.actions {
+  white-space: nowrap;
+}
+
+@media print {
+  .actions {
+    display: none;
+  }
+}

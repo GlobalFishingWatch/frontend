@@ -1,4 +1,3 @@
-import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
@@ -10,6 +9,7 @@ import { CROWDIN_IN_CONTEXT_LANG, LocaleLabels } from 'features/i18n/i18n'
 import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/dataviews.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { isGFWDeveloper } from 'features/user/user.slice'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './LanguageToggle.module.css'
 
 type LanguageToggleProps = {
@@ -26,8 +26,8 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
   const gfwDeveloper = useSelector(isGFWDeveloper)
   const basemapDataviewInstance = useSelector(selectBasemapLabelsDataviewInstance)
   const toggleLanguage = (lang: Locale) => {
-    uaEvent({
-      category: 'Internationalization',
+    trackEvent({
+      category: TrackCategory.I18n,
       action: `Change language`,
       label: lang,
     })

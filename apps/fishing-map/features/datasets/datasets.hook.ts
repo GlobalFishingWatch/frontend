@@ -1,6 +1,5 @@
 import { useSelector, batch } from 'react-redux'
 import { useCallback, useEffect } from 'react'
-import { event as uaEvent } from 'react-ga'
 import { Dataset, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
 import { AsyncError } from 'utils/async-slice'
 import {
@@ -11,6 +10,7 @@ import {
 } from 'features/dataviews/dataviews.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   CreateDataset,
   createDatasetThunk,
@@ -203,8 +203,8 @@ export const useAddDataset = ({ datasetCategory, onSelect }: NewDatasetTooltipPr
   const { dispatchDatasetModal, dispatchDatasetCategory } = useDatasetModalConnect()
   return () => {
     if (datasetCategory === DatasetCategory.Context) {
-      uaEvent({
-        category: 'Reference layer',
+      trackEvent({
+        category: TrackCategory.ReferenceLayer,
         action: 'Start upload reference layer flow',
         label: datasetCategory,
       })

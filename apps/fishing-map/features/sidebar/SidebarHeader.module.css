@@ -24,4 +24,8 @@
   .logo {
     margin-left: 0;
   }
+
+  .workspaceLink {
+    display: none;
+  }
 }

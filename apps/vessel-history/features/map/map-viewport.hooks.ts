@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { fitBounds } from '@math.gl/web-mercator'
 import { atom, useRecoilState } from 'recoil'
-import debounce from 'lodash/debounce'
+import { debounce } from 'lodash'
 import { ViewStateChangeEvent } from 'react-map-gl'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { Bbox, MapCoordinates } from 'types'

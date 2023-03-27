@@ -1,7 +1,6 @@
 import { useState, useCallback, Fragment } from 'react'
 import { featureCollection, point } from '@turf/helpers'
 import type { FeatureCollectionWithFilename } from 'shpjs'
-import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { lowerCase } from 'lodash'
 import { useSelector } from 'react-redux'
@@ -28,6 +27,7 @@ import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
 import { selectLocationType } from 'routes/routes.selectors'
 import { getFileFromGeojson, readBlobAs } from 'utils/files'
 import FileDropzone from 'features/common/FileDropzone'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   useDatasetsAPI,
   useDatasetModalConnect,
@@ -345,16 +345,17 @@ function NewDataset(): React.ReactElement {
         return
       }
 
-      let uaCategory, uaDatasetType
+      let uaCategory: TrackCategory | undefined
+      let uaDatasetType
       if (metadata?.category === DatasetCategory.Environment) {
-        uaCategory = 'Environmental data'
+        uaCategory = TrackCategory.EnvironmentalData
         uaDatasetType = 'environmental dataset'
       } else if (metadata?.category === DatasetCategory.Context) {
-        uaCategory = 'Reference layer'
+        uaCategory = TrackCategory.ReferenceLayer
         uaDatasetType = 'reference layer'
       }
-      uaEvent({
-        category: `${uaCategory}`,
+      trackEvent({
+        category: uaCategory,
         action: `Confirm ${uaDatasetType} upload`,
         label: onTheFlyGeoJSONFile?.name ?? file.name,
       })
@@ -400,8 +401,8 @@ function NewDataset(): React.ReactElement {
 
   const onConfirmDatasetCategoryClick = () => {
     if (datasetCategory === DatasetCategory.Environment) {
-      uaEvent({
-        category: 'Environmental data',
+      trackEvent({
+        category: TrackCategory.EnvironmentalData,
         action: `Start upload environmental dataset flow`,
         label: datasetGeometryType ?? '',
       })

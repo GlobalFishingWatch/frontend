@@ -17,6 +17,10 @@
   align-items: center;
 }
 
+.footerButton + .footerButton {
+  margin-left: var(--space-M);
+}
+
 .parameters {
   display: flex;
   height: 80px;

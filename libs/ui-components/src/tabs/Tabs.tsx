@@ -5,23 +5,23 @@ import { ButtonSize } from '../button/Button'
 import styles from './Tabs.module.css'
 import { Tab } from '.'
 
-interface TabsProps {
-  tabs: Tab[]
-  activeTab?: string
-  onTabClick?: (tab: Tab, e: React.MouseEvent) => void
+interface TabsProps<TabID> {
+  tabs: Tab<TabID>[]
+  activeTab?: TabID
+  onTabClick?: (tab: Tab<TabID>, e: React.MouseEvent) => void
   mountAllTabsOnLoad?: boolean
   tabClassName?: string
   buttonSize?: ButtonSize
 }
 
-export function Tabs({
+export function Tabs<TabID = string>({
   activeTab,
   tabs,
   onTabClick,
   mountAllTabsOnLoad = false,
   tabClassName = '',
   buttonSize = 'default',
-}: TabsProps) {
+}: TabsProps<TabID>) {
   const activeTabId = activeTab || tabs?.[0]?.id
   const activedTabs = useRef([activeTabId])
   if (!activedTabs.current.includes(activeTabId)) {
@@ -34,16 +34,17 @@ export function Tabs({
           const tabSelected = activeTabId === tab.id
           return (
             <li
-              key={tab.id}
+              key={tab.id as string}
               className={styles.tab}
               role="tab"
-              aria-controls={tab.id}
+              aria-controls={tab.id as string}
               tabIndex={index}
               aria-selected={tabSelected}
             >
               <Button
                 className={cx(styles.tabButton, { [styles.tabActive]: tabSelected })}
                 type="secondary"
+                disabled={tab.disabled}
                 onClick={(e) => onTabClick && onTabClick(tab, e)}
                 size={buttonSize || 'default'}
               >
@@ -55,12 +56,15 @@ export function Tabs({
       </ul>
       {tabs.map((tab) => {
         const tabSelected = activeTabId === tab.id
-        if (mountAllTabsOnLoad || tabSelected || activedTabs.current.includes(tab.id)) {
+        if (
+          (mountAllTabsOnLoad || tabSelected || activedTabs.current.includes(tab.id)) &&
+          tab.content
+        ) {
           return (
             // eslint-disable-next-line jsx-a11y/role-supports-aria-props
             <div
-              key={tab.id}
-              id={tab.id}
+              key={tab.id as string}
+              id={tab.id as string}
               role="tabpanel"
               aria-expanded={tabSelected}
               className={cx(styles.content, tabClassName, { [styles.contentActive]: tabSelected })}

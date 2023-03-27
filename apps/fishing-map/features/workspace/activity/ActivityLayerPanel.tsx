@@ -2,7 +2,6 @@ import { Fragment, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { event as uaEvent } from 'react-ga'
 import { DEFAULT_STATS_FIELDS, useGetStatsByDataviewQuery } from 'queries/stats-api'
 import { ColorBarOption, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import {
@@ -28,6 +27,7 @@ import DatasetNotFound from 'features/workspace/shared/DatasetNotFound'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import ActivityFitBounds from 'features/workspace/activity/ActivityFitBounds'
 import Color from 'features/workspace/common/Color'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import DatasetFilterSource from '../shared/DatasetSourceField'
 import DatasetFlagField from '../shared/DatasetFlagsField'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
@@ -90,8 +90,8 @@ function ActivityLayerPanel({
   const onSplitLayers = () => {
     disableBivariate()
 
-    uaEvent({
-      category: 'Activity data',
+    trackEvent({
+      category: TrackCategory.ActivityData,
       action: 'Click on bivariate option',
       label: getEventLabel([
         'split',

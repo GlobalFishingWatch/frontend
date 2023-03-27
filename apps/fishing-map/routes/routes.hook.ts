@@ -10,7 +10,6 @@ import {
   selectLocationPayload,
   selectLocationType,
 } from 'routes/routes.selectors'
-// import { initialDispatch } from 'store'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { ROUTE_TYPES } from './routes'
 import { updateLocation } from './routes.actions'

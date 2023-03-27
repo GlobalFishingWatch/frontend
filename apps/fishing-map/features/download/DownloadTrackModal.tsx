@@ -1,6 +1,5 @@
 import { Fragment, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { Button, Choice, Icon, Tag, Modal } from '@globalfishingwatch/ui-components'
 import {
@@ -22,6 +21,7 @@ import { DateRange } from 'features/download/downloadActivity.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectDownloadTrackModalOpen } from 'features/download/download.selectors'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './DownloadModal.module.css'
 import { Format, FORMAT_OPTIONS } from './downloadTrack.config'
 
@@ -54,8 +54,8 @@ function DownloadTrackModal() {
       console.warn(e)
     }
 
-    uaEvent({
-      category: 'Download',
+    trackEvent({
+      category: TrackCategory.DataDownloads,
       action: `Track download`,
       label: downloadTrackName,
     })
@@ -101,7 +101,7 @@ function DownloadTrackModal() {
             options={FORMAT_OPTIONS}
             size="small"
             activeOption={format}
-            onOptionClick={(option) => setFormat(option.id as Format)}
+            onSelect={(option) => setFormat(option.id as Format)}
           />
         </div>
         <div className={styles.footer}>

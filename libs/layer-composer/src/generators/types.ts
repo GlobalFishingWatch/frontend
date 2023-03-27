@@ -171,6 +171,10 @@ export interface ContextGeneratorConfig extends GeneratorConfig {
    */
   tilesUrl: string
   /**
+   * Maximum zoom level for which tiles are available https://docs.mapbox.com/mapbox-gl-js/style-spec/sources/#vector-maxzoom
+   */
+  maxzoom: number
+  /**
    * Sets the color of the line https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#paint-fill-fill-color
    */
   color?: string

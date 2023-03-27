@@ -7,6 +7,31 @@ import { selectLocationCategory } from 'routes/routes.selectors'
 
 const GOOGLE_UNIVERSAL_ANALYTICS_ID = process.env.NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID
 
+export enum TrackCategory {
+  ActivityData = 'Activity data',
+  Analysis = 'Analysis',
+  DataDownloads = 'Data downloads',
+  EnvironmentalData = 'Environmental data',
+  HelpHints = 'Help hints',
+  I18n = 'Internationalization',
+  ReferenceLayer = 'Reference Layer',
+  Timebar = 'Timebar',
+  Tracks = 'Tracks',
+  SearchVessel = 'Search Vessel',
+  VesselGroups = 'Vessel groups',
+  WorkspaceManagement = 'Workspace Management',
+}
+
+export type TrackEventParams = {
+  category: TrackCategory
+  action: string
+  label?: string
+  value?: any
+}
+export const trackEvent = ({ category, action, label, value }: TrackEventParams) => {
+  uaEvent({ category, action, label, value })
+}
+
 export const useAnalytics = () => {
   const userData = useSelector(selectUserData)
   const locationCategory = useSelector(selectLocationCategory)

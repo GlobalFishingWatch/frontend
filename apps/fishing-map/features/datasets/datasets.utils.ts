@@ -194,7 +194,7 @@ export const getRelatedDatasetsByType = (
 
 export const getActiveDatasetsInActivityDataviews = (
   dataviews: UrlDataviewInstance<GeneratorType>[]
-) => {
+): string[] => {
   return dataviews.flatMap((dataview) => {
     return dataview?.config?.datasets || []
   })
@@ -212,12 +212,12 @@ export const checkDatasetDownloadTrackPermission = (
   return checkExistPermissionInList(permissions, permission)
 }
 
-export const getActivityDatasetsDownloadSupported = (
+export const getActivityDatasetsReportSupported = (
   dataviews: UrlDataviewInstance<GeneratorType>[],
   permissions: UserPermission[] = []
 ) => {
   return dataviews.flatMap((dataview) => {
-    const permissionDatasetsIds: string[] = (dataview?.config?.datasets || []).filter(
+    const permissionDatasetsIds: string[] = getActiveDatasetsInActivityDataviews([dataview]).filter(
       (datasetId: string) => {
         return datasetId ? checkDatasetReportPermission(datasetId, permissions) : false
       }
@@ -249,12 +249,12 @@ export const getVesselDatasetsDownloadTrackSupported = (
   return datasets
 }
 
-export const getDatasetsDownloadNotSupported = (
+export const getDatasetsReportNotSupported = (
   dataviews: UrlDataviewInstance<GeneratorType>[],
   permissions: UserPermission[] = []
 ) => {
   const dataviewDatasets = getActiveDatasetsInActivityDataviews(dataviews)
-  const datasetsDownloadSupported = getActivityDatasetsDownloadSupported(dataviews, permissions)
+  const datasetsDownloadSupported = getActivityDatasetsReportSupported(dataviews, permissions)
   return dataviewDatasets.filter((dataset) => !datasetsDownloadSupported.includes(dataset))
 }
 

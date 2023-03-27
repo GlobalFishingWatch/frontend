@@ -175,7 +175,7 @@ export const useFeatureState = (map?: Map) => {
     (state: FeatureStates = 'hover') => {
       if (map) {
         sourcesWithFeatureState?.forEach((source: FeatureStateSource) => {
-          const feature = map.getFeatureState(source)
+          const feature = map?.getFeatureState(source)
           // https://github.com/mapbox/mapbox-gl-js/issues/9461
           if (feature?.hasOwnProperty(state)) {
             map.removeFeatureState(source, state)

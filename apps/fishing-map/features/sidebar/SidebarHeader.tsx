@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import Sticky from 'react-sticky-el'
 import Link from 'redux-first-router-link'
 import { IconButton, Logo, SubBrands } from '@globalfishingwatch/ui-components'
+import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import {
   selectLastVisitedWorkspace,
   selectWorkspace,
@@ -12,10 +13,19 @@ import {
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { isWorkspaceLocation, selectLocationCategory } from 'routes/routes.selectors'
+import {
+  selectIsReportLocation,
+  selectIsWorkspaceLocation,
+  selectLocationCategory,
+} from 'routes/routes.selectors'
 import { WorkspaceCategories } from 'data/workspaces'
 import { selectWorkspaceWithCurrentState, selectReadOnly } from 'features/app/app.selectors'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
+import { resetSidebarScroll } from 'features/sidebar/Sidebar'
+import useMapInstance from 'features/map/map-context.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { resetReportData } from 'features/reports/reports.slice'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useClipboardNotification } from './sidebar.hooks'
 import styles from './SidebarHeader.module.css'
 
@@ -88,12 +98,20 @@ function SaveWorkspaceButton() {
 
 function ShareWorkspaceButton() {
   const { t } = useTranslation()
+  const workspaceLocation = useSelector(selectIsWorkspaceLocation)
+  const shareTitle = workspaceLocation
+    ? t('common.share', 'Share map')
+    : t('analysis.share', 'Share report')
 
   const { showClipboardNotification, copyToClipboard } = useClipboardNotification()
 
   const onShareClick = useCallback(() => {
     copyToClipboard(window.location.href)
-  }, [copyToClipboard])
+    trackEvent({
+      category: workspaceLocation ? TrackCategory.WorkspaceManagement : TrackCategory.Analysis,
+      action: `Click share ${workspaceLocation ? 'workspace' : 'report'}'}`,
+    })
+  }, [copyToClipboard, workspaceLocation])
 
   return (
     <IconButton
@@ -107,7 +125,7 @@ function ShareWorkspaceButton() {
               'common.copiedToClipboard',
               'The link to share this view has been copied to your clipboard'
             )
-          : t('common.share', 'Share the current view')
+          : shareTitle
       }
       tooltipPlacement="bottom"
     />
@@ -115,10 +133,13 @@ function ShareWorkspaceButton() {
 }
 
 function SidebarHeader() {
+  const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)
   const locationCategory = useSelector(selectLocationCategory)
-  const workspaceLocation = useSelector(isWorkspaceLocation)
+  const workspaceLocation = useSelector(selectIsWorkspaceLocation)
+  const reportLocation = useSelector(selectIsReportLocation)
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
+  const { cleanFeatureState } = useFeatureState(useMapInstance())
   const showBackToWorkspaceButton = !workspaceLocation
 
   const getSubBrand = useCallback((): SubBrands | undefined => {
@@ -127,20 +148,22 @@ function SidebarHeader() {
     return subBrand
   }, [locationCategory])
 
+  const onCloseClick = () => {
+    resetSidebarScroll()
+    cleanFeatureState('highlight')
+    dispatch(resetReportData())
+  }
+
   return (
     <Sticky scrollElement=".scrollContainer">
       <div className={styles.sidebarHeader}>
         <a href="https://globalfishingwatch.org" className={styles.logoLink}>
           <Logo className={styles.logo} subBrand={getSubBrand()} />
         </a>
-        {workspaceLocation && !readOnly && (
-          <Fragment>
-            <SaveWorkspaceButton />
-            <ShareWorkspaceButton />
-          </Fragment>
-        )}
-        {showBackToWorkspaceButton && lastVisitedWorkspace && (
-          <Link className={styles.workspaceLink} to={lastVisitedWorkspace}>
+        {workspaceLocation && !readOnly && <SaveWorkspaceButton />}
+        {(workspaceLocation || reportLocation) && !readOnly && <ShareWorkspaceButton />}
+        {(reportLocation || (showBackToWorkspaceButton && lastVisitedWorkspace)) && (
+          <Link className={styles.workspaceLink} to={lastVisitedWorkspace} onClick={onCloseClick}>
             <IconButton type="border" icon="close" />
           </Link>
         )}

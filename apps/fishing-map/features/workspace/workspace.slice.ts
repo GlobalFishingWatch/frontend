@@ -34,6 +34,7 @@ import {
   getWorkspaceEnv,
   VESSEL_PRESENCE_DATAVIEW_SLUG,
   WorkspaceCategories,
+  DEFAULT_WORKSPACE_ID,
 } from 'data/workspaces'
 import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
@@ -44,7 +45,7 @@ import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook
 import { getUTCDateTime } from 'utils/dates'
 import { selectWorkspaceStatus } from './workspace.selectors'
 
-type LastWorkspaceVisited = { type: string; payload: any; query: any }
+type LastWorkspaceVisited = { type: string; payload: any; query: any; replaceQuery?: boolean }
 
 interface WorkspaceSliceState {
   status: AsyncReducerStatus
@@ -86,25 +87,26 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const gfwUser = isGFWUser(state)
 
     try {
-      let workspace: Workspace<WorkspaceState> = workspaceId
-        ? await GFWAPI.fetch<Workspace<WorkspaceState>>(`/workspaces/${workspaceId}`, {
-            signal,
-          })
-        : null
-      if (!workspace && locationType === HOME) {
-        workspace = await getDefaultWorkspace()
-        if (gfwUser && ONLY_GFW_STAFF_DATAVIEW_SLUGS.length) {
-          // Inject dataviews for gfw staff only
-          ONLY_GFW_STAFF_DATAVIEW_SLUGS.forEach((id) => {
-            workspace.dataviewInstances.push({
-              id: `${id}-instance`,
-              config: {
-                visible: false,
-              },
-              dataviewId: id,
+      let workspace: Workspace<WorkspaceState> =
+        workspaceId && workspaceId !== DEFAULT_WORKSPACE_ID
+          ? await GFWAPI.fetch<Workspace<WorkspaceState>>(`/workspaces/${workspaceId}`, {
+              signal,
             })
+          : null
+      if ((!workspace && locationType === HOME) || workspaceId === DEFAULT_WORKSPACE_ID) {
+        workspace = await getDefaultWorkspace()
+      }
+      if (gfwUser && ONLY_GFW_STAFF_DATAVIEW_SLUGS.length) {
+        // Inject dataviews for gfw staff only
+        ONLY_GFW_STAFF_DATAVIEW_SLUGS.forEach((id) => {
+          workspace.dataviewInstances.push({
+            id: `${id}-instance`,
+            config: {
+              visible: false,
+            },
+            dataviewId: id,
           })
-        }
+        })
       }
 
       if (workspace) {

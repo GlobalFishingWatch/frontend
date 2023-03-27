@@ -157,5 +157,6 @@ export function useMapFitBounds() {
     },
     [map, setMapCoordinates]
   )
+
   return fitMapBounds
 }

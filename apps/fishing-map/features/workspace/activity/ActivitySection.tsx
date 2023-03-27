@@ -2,7 +2,6 @@ import { Fragment, useCallback, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { event as uaEvent } from 'react-ga'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -21,6 +20,7 @@ import {
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/app.selectors'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import TooltipContainer, { TooltipListContainer } from '../shared/TooltipContainer'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './ActivityLayerPanel'
@@ -81,8 +81,8 @@ function ActivitySection(): React.ReactElement {
           }))
         )
       }
-      uaEvent({
-        category: 'Activity data',
+      trackEvent({
+        category: TrackCategory.ActivityData,
         action: 'Click on bivariate option',
         label: getEventLabel([
           'combine',
@@ -102,8 +102,8 @@ function ActivitySection(): React.ReactElement {
     (dataview: UrlDataviewInstance) => () => {
       const isVisible = dataview?.config?.visible ?? false
       const action = isVisible ? 'disable' : 'enable'
-      uaEvent({
-        category: 'Activity data',
+      trackEvent({
+        category: TrackCategory.ActivityData,
         action: `Toggle ${dataview.category} layer`,
         label: getEventLabel([
           action,
