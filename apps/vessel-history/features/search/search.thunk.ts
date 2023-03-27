@@ -56,12 +56,12 @@ export const fetchData = async (
     datasets: BASE_DATASET,
     limit: RESULTS_PER_PAGE,
     offset,
-    query: IS_STANDALONE_APP ? query : serializedQuery,
+    query: serializedQuery,
     ...(!IS_STANDALONE_APP && { 'use-tmt': true }),
   })
 
   const url = IS_STANDALONE_APP
-    ? `/v2/vessels/search?${urlQuery}` // TODO: why advance search return 403?
+    ? `/v2/vessels/advanced-search?${urlQuery}` // TODO: why advance search return 403?
     : `/v2/vessels/advanced-search-tmt?${urlQuery}`
 
   return await GFWApiClient.fetch<any>(url, {
