@@ -409,6 +409,7 @@
     "close": "Close search",
     "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar",
     "mainQueryLabel": "Name, IMO or MMSI",
+    "minCharacters": "Please type at least {{count}} characters",
     "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or Callsign",
     "notAllowed": "The available datasets don't allow searching vessels",
     "placeholder": "Type to search vessels",
