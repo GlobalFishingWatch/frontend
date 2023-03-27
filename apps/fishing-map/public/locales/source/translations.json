@@ -121,6 +121,7 @@
     "name": "Name",
     "none": "None",
     "onlyVisibleForGFW": "Only visible for GFW users",
+    "onlyVisibleForJAC": "Only visible for JAC users",
     "onlyVisibleForGFWShort": "GFW Only",
     "onScreen": "on screen",
     "optional": "Optional",
