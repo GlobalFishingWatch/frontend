@@ -34,6 +34,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectLocationAreaId, selectLocationDatasetId } from 'routes/routes.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useSetTimeseries } from 'features/reports/reports-timeseries.hooks'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useFetchReportArea, useFetchReportVessel } from './reports.hooks'
 import ReportSummary from './summary/ReportSummary'
 import ReportTitle from './title/ReportTitle'
@@ -234,6 +235,10 @@ export default function Report() {
       setTimeseries([])
       dispatch(resetReportData())
       dispatchQueryParams({ reportCategory: option.id, reportVesselPage: 0 })
+      trackEvent({
+        category: TrackCategory.Analysis,
+        action: `Click on ${option.id} report`,
+      })
     }
   }
 

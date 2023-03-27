@@ -10,6 +10,7 @@ import {
 } from 'data/config'
 import { selectReportCategory, selectReportVesselGraph } from 'features/app/app.selectors'
 import { ReportCategory, ReportVesselGraph } from 'types'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 
 export default function ReportVesselsGraphSelector() {
   const { dispatchQueryParams } = useLocationConnect()
@@ -37,6 +38,10 @@ export default function ReportVesselsGraphSelector() {
   ]
 
   const onSelect = (option: ChoiceOption<ReportVesselGraph>) => {
+    trackEvent({
+      category: TrackCategory.Analysis,
+      action: `Click on ${option.id} distribution`,
+    })
     dispatchQueryParams({ reportVesselGraph: option.id })
   }
 
