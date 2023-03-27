@@ -46,7 +46,7 @@
     "selectVisualisation": "Sélectionnez d'abord un mode de visualisation",
     "validationError": "Requête, nom, mode visualisation, mode agrégation et vérification des coûts de création sont requis",
     "visualiationMode": "Mode de visualisation",
-    "visualisationActivity": "Activité (carte de chaleur)",
+    "visualisationActivity": "Activité (cartes thermiques)",
     "visualisationActivityHint": "(Assurez-vous que l'id, les lat et lon, la date, l'heure et la valeur sont présents)",
     "visualisationEvents": "Événements (regroupements)",
     "visualisationEventsHint": "(Assurez-vous que event_id, event_start, event_end et geom sont tous présents)"
@@ -360,7 +360,7 @@
     "flagState_one": "Pavillon",
     "flagState_other": "Pavillons",
     "fleet_other": "Flottes",
-    "gearType_other": "Types d'équipement",
+    "gearType_other": "Types d’engin",
     "geometryError": "Certains polygones ont des auto-intersections",
     "geometryRequired": "Dessiner un polygone est requis",
     "infoClose": "Masquer les infos",
@@ -398,7 +398,7 @@
     "mapLoadingWait": "Veuillez patienter jusqu'à ce que la carte soit chargée",
     "rulers_add": "Mesurer des distances",
     "rulers_remove": "Supprimer toutes les mesures",
-    "search": "Recherchez les zones maritimes, les AMP ou les ZEE",
+    "search": "Recherchez des zones maritimes, les AMP ou les ZEE",
     "zoom_in": "Zoomer",
     "zoom_out": "Dézoomer"
   },
@@ -471,7 +471,7 @@
     "flag": "Pavillon",
     "flag_short": "iso3",
     "fleet": "Flotte",
-    "geartype": "Type d'équipement",
+    "geartype": "Type d’engin",
     "gearType_short": "engin",
     "gearTypes": {
       "dredge_fishing": "Pêche à la drague",

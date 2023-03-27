@@ -88,9 +88,9 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
                     linkHref = `https://www.marineregions.org/eezdetails.php?mrgid=${MRGID_EEZ}`
                     break
                   case ContextLayerType.ProtectedSeas:
-                    const { site_id } = feature.properties
+                    const { id: site_id } = feature.properties
                     id = `${site_id}-${gfw_id}`
-                    linkHref = `https://mpa.protectedseas.net/index.php?q=${site_id}`
+                    linkHref = `https://map.navigatormap.org/site-detail?site_id=${site_id}`
                     break
                   case ContextLayerType.WPPNRI:
                   case ContextLayerType.HighSeas:
