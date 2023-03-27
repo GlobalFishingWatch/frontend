@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { DateTime } from 'luxon'
 import { stringify } from 'qs'
 import { saveAs } from 'file-saver'
 import { DownloadActivity } from '@globalfishingwatch/api-types'
@@ -7,8 +6,8 @@ import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { DateRange } from 'features/download/downloadActivity.slice'
-import { API_VERSION } from 'data/config'
-import { Format } from './downloadTrack.config'
+import { getUTCDateTime } from 'utils/dates'
+import { Format, FORMAT_EXTENSION } from './downloadTrack.config'
 
 type VesselParams = {
   name: string
@@ -35,7 +34,7 @@ export type DownloadTrackParams = {
   vesselName: string
   dateRange: DateRange
   datasets: string
-  format: Format | 'lines'
+  format: Format
 }
 
 export const downloadTrackThunk = createAsyncThunk<
@@ -47,23 +46,23 @@ export const downloadTrackThunk = createAsyncThunk<
 >('downloadTrack/create', async (params: DownloadTrackParams, { rejectWithValue }) => {
   try {
     const { dateRange, datasets, format, vesselId, vesselName } = params
-    const fromDate = DateTime.fromISO(dateRange.start).toUTC().toString()
-    const toDate = DateTime.fromISO(dateRange.end).toUTC().toString()
+    const fromDate = getUTCDateTime(dateRange.start).toString()
+    const toDate = getUTCDateTime(dateRange.end).toString()
 
     const downloadTrackParams = {
       'start-date': fromDate,
       'end-date': toDate,
       datasets,
-      format: format === Format.GeoJson ? 'lines' : format,
+      format,
       fields: 'lonlat,timestamp,speed,course',
     }
 
     const fileName = `${vesselName || vesselId} - ${downloadTrackParams['start-date']},${
       downloadTrackParams['end-date']
-    }.${format}`
+    }.${FORMAT_EXTENSION[format]}`
 
     const createdDownload: any = await GFWAPI.fetch<DownloadActivity>(
-      `/${API_VERSION}/vessels/${vesselId}/tracks?${stringify(downloadTrackParams)}`,
+      `/vessels/${vesselId}/tracks?${stringify(downloadTrackParams)}`,
       {
         method: 'GET',
         responseType: 'blob',

@@ -2,9 +2,7 @@
   position: absolute;
   bottom: var(--timebar-size);
   left: 0;
-  width: 48rem;
-  background: var(--timebar-main-background-color);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  max-width: 100vw;
   box-sizing: border-box;
   z-index: var(--timebar-z-date-selector);
   box-shadow: 0 0 28px 5px rgba(0, 0, 0, 0.8);
@@ -19,55 +17,107 @@
   left: 0;
   background: var(--timebar-main-background-color);
   opacity: 0.7;
-  z-index: -1;
+  z-index: -2;
 }
 
 .inner {
+  color: var(--color-primary-blue);
+  background: white;
   padding: 3.5rem 3rem 3rem;
 }
 
 .title {
   font-size: var(--timebar-extra-large-font-size);
+  font-weight: 400;
   line-height: var(--timebar-extra-large-font-size);
   margin: 0 0 2rem;
 }
 
+.datesContainer {
+  display: flex;
+  gap: 2rem;
+}
+
 .selectorsContainer {
   display: flex;
-  margin-bottom: 4rem;
-  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  gap: 0.5rem;
 }
 
 .selectorGroup {
-  display: flex;
-  flex-wrap: wrap;
-  flex: 0 0 calc(50% - 0.5rem);
+  width: 6rem;
 }
 
-.selectorLabel {
-  width: 100%;
-  text-transform: uppercase;
+.long {
+  width: 7rem;
+}
+
+.dateLabel {
+  color: var(--color-primary-blue);
+}
+
+.resolutionMaxRange {
+  margin-top: 0.5rem;
+  color: var(--timebar-white-faded);
+  text-transform: unset;
+}
+
+.faded {
+  opacity: 0.3;
 }
 
 .input {
-  background: white;
   width: 100%;
+  padding: 0.5rem;
+  font: 400 1.6rem/2.4rem var(--timebar-font-family);
+  color: rgb(22, 63, 137);
+  height: 4rem;
+  margin: 0;
+  border-bottom: var(--border);
+}
+
+.input:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.input:not(.error):focus {
+  border-bottom: 1px solid var(--color-primary-blue);
+}
+
+.input[type='number']::-webkit-inner-spin-button {
+  opacity: 0.5;
+}
+
+.error {
+  border-bottom: 1px solid var(--color-danger-red);
+}
+
+.errorMessage {
+  display: block;
+  color: var(--color-danger-red);
+  height: 2rem;
+  margin-bottom: 1rem;
 }
 
 .actions {
+  width: 100%;
   display: flex;
   justify-content: space-between;
+}
+
+.actions label {
+  margin: 0;
 }
 
 .cta {
   display: block;
   border: none;
   padding: 0;
-  border-radius: 0;
   cursor: pointer;
   width: 15rem;
   height: 3.6rem;
-  background: var(--timebar-cta-btn-color);
+  background: var(--timebar-ui-btn-color);
   color: var(--timebar-white);
   font-size: var(--timebar-font-size);
   transition: var(--timebar-hover-transition);
@@ -76,32 +126,29 @@
 
 .cta:hover,
 .cta:focus {
-  background: var(--timebar-cta-btn-hover);
+  background: var(--timebar-ui-btn-color-hover);
   outline: none;
 }
 
-.lastX {
-  display: flex;
-  background: transparent;
-  border: 0.1rem solid var(--timebar-cta-btn-color);
-  margin-right: 0.5rem;
+.cta:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.6;
 }
 
-.lastX path {
-  fill: white;
+.lastX {
+  color: var(--color-primary-blue);
+  display: flex;
+  line-height: 3.6rem;
+  background: white;
+  border: var(--border);
 }
 
 .lastX:hover,
 .lastX:focus {
-  color: white;
-  background: rgba(255, 255, 255, 0.05);
+  background: white;
   outline: none;
-  border: 0.1rem solid var(--timebar-cta-btn-color);
-}
-
-.disabled {
-  pointer-events: none;
-  opacity: 0.6;
+  border: 1px solid var(--color-primary-blue);
 }
 
 @media only screen and (max-width: 540px) {
@@ -126,7 +173,7 @@
   }
 
   .selectorLabel {
-    width: 6rem;
+    width: 100%;
   }
 
   .secondary {

@@ -39,6 +39,7 @@ import { ReactComponent as ExternalLink } from '../assets/icons/external-link.sv
 import { ReactComponent as Feedback } from '../assets/icons/feedback.svg'
 import { ReactComponent as FilterOff } from '../assets/icons/filter-off.svg'
 import { ReactComponent as FilterOn } from '../assets/icons/filter-on.svg'
+import { ReactComponent as GFWLogo } from '../assets/icons/gfw-logo.svg'
 import { ReactComponent as Graph } from '../assets/icons/graph.svg'
 import { ReactComponent as Heatmap } from '../assets/icons/heatmap.svg'
 import { ReactComponent as Help } from '../assets/icons/help.svg'
@@ -47,6 +48,7 @@ import { ReactComponent as Info } from '../assets/icons/info.svg'
 import { ReactComponent as Language } from '../assets/icons/language.svg'
 import { ReactComponent as Layers } from '../assets/icons/layers.svg'
 import { ReactComponent as Logout } from '../assets/icons/logout.svg'
+import { ReactComponent as Magic } from '../assets/icons/magic.svg'
 import { ReactComponent as Menu } from '../assets/icons/menu.svg'
 import { ReactComponent as Minus } from '../assets/icons/minus.svg'
 import { ReactComponent as More } from '../assets/icons/more.svg'
@@ -70,6 +72,8 @@ import { ReactComponent as Split } from '../assets/icons/split.svg'
 import { ReactComponent as Target } from '../assets/icons/target.svg'
 import { ReactComponent as Tick } from '../assets/icons/tick.svg'
 import { ReactComponent as Track } from '../assets/icons/track.svg'
+import { ReactComponent as TransmissionsOff } from '../assets/icons/transmissions-off.svg'
+import { ReactComponent as TransmissionsOn } from '../assets/icons/transmissions-on.svg'
 import { ReactComponent as Upload } from '../assets/icons/upload.svg'
 import { ReactComponent as User } from '../assets/icons/user.svg'
 import { ReactComponent as Vessel } from '../assets/icons/vessel.svg'
@@ -100,6 +104,7 @@ export const IconComponents = {
   'external-link': ExternalLink,
   'filter-off': FilterOff,
   'filter-on': FilterOn,
+  'gfw-logo': GFWLogo,
   'pin-filled': PinFilled,
   'remove-from-map': RemoveFromMap,
   'view-on-map': ViewOnMap,
@@ -129,6 +134,7 @@ export const IconComponents = {
   language: Language,
   layers: Layers,
   logout: Logout,
+  magic: Magic,
   menu: Menu,
   minus: Minus,
   more: More,
@@ -150,6 +156,8 @@ export const IconComponents = {
   target: Target,
   tick: Tick,
   track: Track,
+  'transmissions-off': TransmissionsOff,
+  'transmissions-on': TransmissionsOn,
   upload: Upload,
   user: User,
   vessel: Vessel,
@@ -158,11 +166,11 @@ export const IconComponents = {
 
 export type IconType = keyof typeof IconComponents
 
-interface IconProps {
+export interface IconProps {
   className?: string
   icon: IconType
   style?: React.CSSProperties
-  type?: 'default' | 'warning'
+  type?: 'default' | 'warning' | 'original-colors'
   tooltip?: TooltipTypes
   tooltipPlacement?: Placement
 }

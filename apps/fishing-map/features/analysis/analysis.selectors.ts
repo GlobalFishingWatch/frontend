@@ -1,11 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { DateTime } from 'luxon'
 import {
   selectAnalysisQuery,
   selectAnalysisTimeComparison,
   selectAnalysisTypeQuery,
 } from 'features/app/app.selectors'
-import { Area, getAreaKey, selectAreas } from 'features/areas/areas.slice'
+import { DatasetAreaDetail, selectAreas } from 'features/areas/areas.slice'
+import { getUTCDateTime } from 'utils/dates'
 
 export const selectIsAnalyzing = createSelector([selectAnalysisQuery], (analysisQuery) => {
   return analysisQuery !== undefined
@@ -13,11 +13,10 @@ export const selectIsAnalyzing = createSelector([selectAnalysisQuery], (analysis
 
 export const selectAnalysisArea = createSelector(
   [selectAnalysisQuery, selectAreas],
-  (analysisQuery, areas): Area => {
+  (analysisQuery, areas): DatasetAreaDetail => {
     if (!analysisQuery) return
     const { areaId, datasetId } = analysisQuery
-    const areaKey = getAreaKey({ areaId, datasetId })
-    return areas[areaKey]
+    return areas[datasetId]?.detail?.[areaId]
   }
 )
 
@@ -33,12 +32,10 @@ export const selectTimeComparisonValues = createSelector(
   (timeComparison) => {
     if (!timeComparison) return null
 
-    const end = DateTime.fromISO(timeComparison.start)
-      .toUTC()
+    const end = getUTCDateTime(timeComparison.start)
       .plus({ [timeComparison.durationType]: timeComparison.duration })
       .toISO()
-    const compareEnd = DateTime.fromISO(timeComparison.compareStart)
-      .toUTC()
+    const compareEnd = getUTCDateTime(timeComparison.compareStart)
       .plus({ [timeComparison.durationType]: timeComparison.duration })
       .toISO()
 

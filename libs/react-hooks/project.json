@@ -1,10 +1,12 @@
 {
+  "name": "react-hooks",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/react-hooks/src",
   "projectType": "library",
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nrwl/web:rollup",
+      "executor": "@nrwl/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/react-hooks",
@@ -31,7 +33,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/react-hooks"],
+      "outputs": ["{workspaceRoot}/coverage/libs/react-hooks"],
       "options": {
         "jestConfig": "libs/react-hooks/jest.config.ts",
         "passWithNoTests": true

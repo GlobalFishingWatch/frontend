@@ -29,8 +29,16 @@ a.linkButton,
   background-color: var(--color-primary-blue);
 }
 
+.listTitle {
+  margin-top: var(--space-M);
+  margin-bottom: var(--space-XS);
+}
+
 .workspace {
   display: flex;
+}
+
+.workspace:not(:first-child) {
   margin-top: var(--space-M);
 }
 

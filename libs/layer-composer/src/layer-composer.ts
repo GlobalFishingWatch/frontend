@@ -75,7 +75,7 @@ export class LayerComposer {
     generatorStyles: GeneratorStyles
   ): GeneratorStyles => {
     const newGeneratorStyles = { ...generatorStyles }
-    newGeneratorStyles.layers = newGeneratorStyles.layers.map((layer) => {
+    newGeneratorStyles.layers = newGeneratorStyles.layers?.map((layer) => {
       const newLayer = { ...layer }
       if (!newLayer.layout) {
         newLayer.layout = {} as LayerSpecification['layout']
@@ -124,17 +124,19 @@ export class LayerComposer {
 
   // Uses generators to return the layer with sources and layers
   _getGeneratorStyles = (
-    config: AnyGeneratorConfig,
+    generatorConfig: AnyGeneratorConfig,
     globalConfig?: GlobalGeneratorConfig
   ): GeneratorStyles => {
-    if (!this.generators[config?.type]) {
+    if (!this.generators[generatorConfig?.type]) {
       throw new Error(
-        `There is no generator loaded for the config: ${config ? config.type : config}}`
+        `There is no generator loaded for the config: ${
+          generatorConfig ? generatorConfig.type : generatorConfig
+        }}`
       )
     }
     const finalConfig = {
       ...this._getGlobalConfig(globalConfig),
-      ...config,
+      ...generatorConfig,
     }
     const generator = this.generators[finalConfig.type]
     const generatorStyles = this._applyGenericStyle(finalConfig, generator.getStyle(finalConfig))
@@ -162,10 +164,17 @@ export class LayerComposer {
       console.warn('No layers passed to layer manager')
       return { style: this._getStyleJson() }
     }
-
+    const extendedGlobalGeneratorConfig = {
+      ...globalGeneratorConfig,
+      totalHeatmapAnimatedGenerators: layers.filter((l) => l.type === GeneratorType.HeatmapAnimated)
+        ?.length,
+    }
     let layersPromises: GeneratorPromise[] = []
     const layersGenerated = layers.map((layer) => {
-      const { promise, promises, ...rest } = this._getGeneratorStyles(layer, globalGeneratorConfig)
+      const { promise, promises, ...rest } = this._getGeneratorStyles(
+        layer,
+        extendedGlobalGeneratorConfig
+      )
       let layerPromises: GeneratorPromise[] = []
       if (promise) {
         layerPromises = [promise]

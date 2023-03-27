@@ -10,7 +10,10 @@ import {
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
-import { selectWorkspaceDataviewInstances } from './workspace.selectors'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { WorkspaceProfileViewParam } from 'types'
+import { selectWorkspace, selectWorkspaceDataviewInstances } from './workspace.selectors'
+import { setProfileView } from './workspace.slice'
 
 const getNextColor = (
   colorCyclingType: ColorCyclingType,
@@ -127,7 +130,11 @@ export const useDataviewInstancesConnect = () => {
         (dataviewInstance) => dataviewInstance.id === id
       )
       if (workspaceDataviewInstance) {
-        dataviewInstances.push({ id, deleted: true })
+        dataviewInstances.push({
+          id,
+          deleted: true,
+          config: undefined
+        })
       }
       dispatchQueryParams({ dataviewInstances })
     },
@@ -138,5 +145,19 @@ export const useDataviewInstancesConnect = () => {
     removeDataviewInstance,
     deleteDataviewInstance,
     addNewDataviewInstances,
+  }
+}
+
+export const useWorkspace = () => {
+  const dispatch = useAppDispatch()
+  const workspace = useSelector(selectWorkspace)
+
+  const updateProfileView = (profileView?: WorkspaceProfileViewParam) => {
+    dispatch(setProfileView(profileView))
+  }
+
+  return {
+    updateProfileView,
+    workspace,
   }
 }

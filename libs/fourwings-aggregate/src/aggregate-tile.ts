@@ -249,6 +249,7 @@ export function aggregate(intArray: number[], options: TileAggregationParams) {
     sublayerVisibility,
     aggregationOperation,
   } = options
+
   if (sublayerCombinationMode === SublayerCombinationMode.None && sublayerCount > 1) {
     err('Multiple sublayers but no proper combination mode set')
   }
@@ -404,23 +405,29 @@ export function aggregate(intArray: number[], options: TileAggregationParams) {
         let tailValue = 0
         if (tail > currentFeatureMinTimestamp) {
           tailValue = aggregating[datasetIndex].shift() as number
-        } else {
-          currentAggregatedValuesLength++
         }
 
+        const skipFrame = isNaN(value) || value === 0
+        if (currentAggregatedValuesLength < delta && !skipFrame) {
+          currentAggregatedValuesLength++
+        }
         // collect "working" value, ie value at head by substracting tail value
         let realValueAtFrameForDataset = 0
         let realValueAtFrameForDatasetWorkingValue = 0
         if (sublayerVisibility[datasetIndex]) {
           if (aggregationOperation === AggregationOperation.Avg) {
             // if isNaN, value is just for padding - stop incrementing running sum (just remove tail)
-            // and take into account one less frame to compute teh avg
-            realValueAtFrameForDatasetWorkingValue = isNaN(value)
+            // and take into account one less frame to compute the avg
+            realValueAtFrameForDatasetWorkingValue = skipFrame
               ? currentAggregatedValues[datasetIndex] - tailValue
               : currentAggregatedValues[datasetIndex] + value - tailValue
-            if (isNaN(value)) currentAggregatedValuesLength--
+            if (skipFrame && currentAggregatedValuesLength > 0 && tailValue > 0) {
+              currentAggregatedValuesLength--
+            }
             realValueAtFrameForDataset =
-              realValueAtFrameForDatasetWorkingValue / currentAggregatedValuesLength
+              currentAggregatedValuesLength > 0
+                ? realValueAtFrameForDatasetWorkingValue / currentAggregatedValuesLength
+                : realValueAtFrameForDatasetWorkingValue
           } else {
             realValueAtFrameForDataset = realValueAtFrameForDatasetWorkingValue =
               currentAggregatedValues[datasetIndex] + value - tailValue

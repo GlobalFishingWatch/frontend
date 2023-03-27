@@ -4,7 +4,8 @@ import { atom, useRecoilState } from 'recoil'
 import { debounce } from 'lodash'
 import { ViewStateChangeEvent } from 'react-map-gl'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
-import { LngLatBounds } from '@globalfishingwatch/maplibre-gl'
+import { LngLatBounds, Map } from '@globalfishingwatch/maplibre-gl'
+import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { Bbox, MapCoordinates } from 'types'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { updateUrlViewport } from 'routes/routes.actions'
@@ -120,29 +121,38 @@ type FitBoundsParams = {
   mapHeight?: number
   padding?: number
 }
+
+export const getMapCoordinatesFromBounds = (
+  map: Map,
+  bounds: Bbox,
+  params: FitBoundsParams = {}
+) => {
+  const { mapWidth, mapHeight, padding = 60 } = params
+  const width = mapWidth || (map ? parseInt(map.getCanvas().style.width) : window.innerWidth / 2)
+  const height =
+    mapHeight ||
+    (map
+      ? parseInt(map.getCanvas().style.height)
+      : window.innerHeight - TIMEBAR_HEIGHT - FOOTER_HEIGHT)
+  const { latitude, longitude, zoom } = fitBounds({
+    bounds: [
+      [bounds[0], bounds[1]],
+      [bounds[2], bounds[3]],
+    ],
+    width,
+    height,
+    padding,
+  })
+  return { latitude, longitude, zoom }
+}
 export function useMapFitBounds() {
   const map = useMapInstance()
   const { setMapCoordinates } = useViewport()
 
   const fitMapBounds = useCallback(
     (bounds: Bbox, params: FitBoundsParams = {}) => {
-      const { mapWidth, mapHeight, padding = 60 } = params
-      const width =
-        mapWidth || (map ? parseInt(map.getCanvas().style.width) : window.innerWidth / 2)
-      const height =
-        mapHeight ||
-        (map
-          ? parseInt(map.getCanvas().style.height)
-          : window.innerHeight - TIMEBAR_HEIGHT - FOOTER_HEIGHT)
-      const { latitude, longitude, zoom } = fitBounds({
-        bounds: [
-          [bounds[0], bounds[1]],
-          [bounds[2], bounds[3]],
-        ],
-        width,
-        height,
-        padding,
-      })
+      const wrapBbox = wrapBBoxLongitudes(bounds)
+      const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(map, wrapBbox, params)
       setMapCoordinates({ latitude, longitude, zoom: Math.max(0, zoom) })
     },
     [map, setMapCoordinates]

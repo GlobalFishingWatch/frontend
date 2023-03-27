@@ -6,6 +6,8 @@ import { Locale } from 'types'
 import { PATH_BASENAME } from 'routes/routes'
 import { WORKSPACE_ENV } from 'data/workspaces'
 
+export const CROWDIN_IN_CONTEXT_LANG = 'val'
+
 export const LocaleLabels = [
   { id: Locale.en, label: 'English' },
   { id: Locale.es, label: 'Español' },
@@ -22,6 +24,7 @@ export const SHARED_LABELS_PATH =
 
 export const PACKAGE_NAMESPACES = ['flags', 'datasets', 'timebar']
 
+// eslint-disable-next-line import/no-named-as-default-member
 i18n
   // load translation using http -> see /public/locales
   // learn more: https://github.com/i18next/i18next-http-backend
@@ -45,7 +48,7 @@ i18n
     ns: ['translations', 'flags', 'datasets', 'timebar'],
     defaultNS: 'translations',
     fallbackLng: Locale.en,
-    supportedLngs: Object.values(Locale),
+    supportedLngs: [...Object.values(Locale), CROWDIN_IN_CONTEXT_LANG],
     debug: process.env.i18n_DEBUG === 'true',
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default,
@@ -68,6 +71,7 @@ i18n.on('languageChanged', (lng) => {
   }
 })
 
+// eslint-disable-next-line import/no-named-as-default-member
 const t = i18n.t.bind(i18n)
 
 export { t }

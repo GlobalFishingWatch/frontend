@@ -1,4 +1,6 @@
+import { API_GATEWAY, API_GATEWAY_VERSION } from "@globalfishingwatch/layer-composer"
 import { LayerSpecification } from "@globalfishingwatch/maplibre-gl"
+import { NSLABELS_ENDOPOINT } from "data/config"
 
 const style = {
   version: 8,
@@ -14,13 +16,14 @@ const style = {
         '<a href="https://www.naturalearthdata.com" target="_blank" rel="noopener noreferrer">Natural Earth</a> | <a href="https://gadm.org/" target="_blank" rel="noopener noreferrer">GADM</a>',
     },
     satellite: {
+      tiles: [`${API_GATEWAY}/${API_GATEWAY_VERSION}/tileset/sat/tile?x={x}&y={y}&z={z}`],
       type: 'raster',
-      url: 'https://api.maptiler.com/tiles/satellite/tiles.json?key=get_your_own_OpIi9ZULNHzrESv6T2vL',
       tileSize: 256,
+      attribution: 'Google',
     },
     location_labels: {
       type: 'raster',
-      tiles: ['https://gtiles.api.dev.globalfishingwatch.org/v1/tileset/nslabels/tile?x={x}&y={y}&z={z}'],
+      tiles: [NSLABELS_ENDOPOINT],
       tileSize: 256
     },
     bathymetry: {

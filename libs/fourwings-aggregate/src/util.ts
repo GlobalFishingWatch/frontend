@@ -13,20 +13,24 @@ export const getCellValues = (rawValues: string | number[]) => {
         .slice(1, -1)
         .split(',')
         .map((v) => parseInt(v))
-  // First two values for a cell are the overall start and end time offsets for all the cell values (in days/hours/10days from start of time)
+  // First two values for a cell are the overall start and end time offsets for all the cell values (in days/hours from start of time)
   const minCellOffset = values[CELL_START_INDEX]
   const maxCellOffset = values[CELL_END_INDEX]
 
   return { values, minCellOffset, maxCellOffset }
 }
 
-export const getRealValue = (rawValue: number, multiplier = VALUE_MULTIPLIER) => {
-  return rawValue / multiplier
+export type RealValueOptions = { multiplier?: number; offset?: number }
+export const getRealValue = (
+  rawValue: number,
+  { multiplier = VALUE_MULTIPLIER, offset = 0 }: RealValueOptions = {}
+) => {
+  return rawValue / multiplier - offset
 }
 
-export const getRealValues = (rawValues: number[], multiplier = VALUE_MULTIPLIER) => {
+export const getRealValues = (rawValues: number[], options: RealValueOptions = {}) => {
   // Raw 4w API values come without decimals, multiplied by 100
-  const realValues = rawValues.map((sublayerValue) => getRealValue(sublayerValue, multiplier))
+  const realValues = rawValues.map((sublayerValue) => getRealValue(sublayerValue, options))
   return realValues
 }
 

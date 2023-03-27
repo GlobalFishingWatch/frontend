@@ -2,34 +2,38 @@ steps:
   - name: 'gcr.io/$PROJECT_ID/restore_cache'
     id: restore_cache
     waitFor: ['-']
-    args:
-      - '--bucket=gs://frontend-cache-dependencies'
-      - '--key=yarn-$( checksum yarn.lock )'
+    script: |
+      #!/usr/bin/env bash
+      restore_cache --bucket=gs://frontend-cache-dependencies --key=yarn-$( checksum yarn.lock ) --key_fallback=yarn3-cache
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
-    name: gcr.io/cloud-builders/yarn
-    entrypoint: bash
-    args:
-      - '-c'
-      # if dependencies cache is not found then install all deps
-      - |
-        if [ ! -d "node_modules" ]; then
-          yarn install --frozen-lockfile
-        fi
+    name: node:18-alpine
+    script: |
+      if [ ! -d "node_modules" ]; then
+        apk add git
+        yarn set version 3.3.1
+        yarn -v
+        yarn install --immutable
+      fi
 
   - id: 'save_cache'
     waitFor: ['install-yarn']
-    name: 'gcr.io/$PROJECT_ID/save_cache'
-    args:
-      - '--bucket=gs://frontend-cache-dependencies'
-      - '--key=yarn-$( checksum yarn.lock )'
-      - '--path=./node_modules'
-      - '--no-clobber'
+    name: 'gcr.io/$PROJECT_ID/restore_cache'
+    env:
+      - 'BRANCH_NAME=$BRANCH_NAME'
+    script: |
+      #!/usr/bin/env bash
+      save_cache --bucket=gs://frontend-cache-dependencies --key=yarn-$( checksum yarn.lock ) --path=./node_modules --no-clobber
+      if [ -d ".yarn/cache" ]; then
+        if [ $BRANCH_NAME == "dev" ]; then
+          save_cache --bucket=gs://frontend-cache-dependencies --key=yarn3-cache --path=./.yarn/cache
+        fi
+      fi
 
   - id: 'build-app'
     waitFor: ['install-yarn']
-    name: gcr.io/cloud-builders/yarn
+    name: node:18-alpine
     entrypoint: yarn
     args: ['nx', 'build', 'fishing-map', '--parallel']
     env:
@@ -47,25 +51,18 @@ steps:
       - 'NEXT_PUBLIC_USE_LOCAL_DATAVIEWS=$_NEXT_PUBLIC_USE_LOCAL_DATAVIEWS'
       - 'NEXT_PUBLIC_SPREADSHEET_PRIVATE_KEY=$_NEXT_PUBLIC_SPREADSHEET_PRIVATE_KEY'
       - 'NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
+      - 'NEXT_PUBLIC_REPORT_DAYS_LIMIT=$_NEXT_PUBLIC_REPORT_DAYS_LIMIT'
       - 'NEXT_PUBLIC_WORKSPACES_SPREADSHEET_ID=$_NEXT_PUBLIC_WORKSPACES_SPREADSHEET_ID'
-
-  - id: 'docker-prepare'
-    waitFor: ['build-app']
-    name: node:14
-    entrypoint: yarn
-    args: ['nx', 'docker-prepare', 'fishing-map']
 
   - name: 'gcr.io/kaniko-project/executor:v1.6.0'
     id: 'build-image'
-    waitFor: ['docker-prepare']
+    waitFor: ['build-app']
     args:
       [
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA',
         '--cache=true',
         '--build-arg',
-        'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
-        '--build-arg',
-        'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
+        'APP_NAME=fishing-map',
         '--target',
         'production',
         '-f',
@@ -99,6 +96,10 @@ steps:
         --platform managed \
         --set-env-vars \
         BASIC_AUTH=$_BASIC_AUTH \
+        --set-env-vars \
+        BASIC_AUTH_USER=$_BASIC_AUTH_USER \
+        --set-env-vars \
+        BASIC_AUTH_PASS=$_BASIC_AUTH_PASS \
         --allow-unauthenticated
 
   - id: 'i18n-labels publish stable'

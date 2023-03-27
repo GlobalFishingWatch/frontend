@@ -1,9 +1,10 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { v4 as uuidv4 } from 'uuid'
-import { InputText, SelectOption } from '@globalfishingwatch/ui-components'
+import { IconButton, InputText, Modal, SelectOption, Tooltip } from '@globalfishingwatch/ui-components'
+import { flags } from '@globalfishingwatch/i18n-labels'
 import useMapInstance from 'features/map/map-context.hooks'
 import { PortPosition } from 'types'
 import { selectCountry, selectHoverPoint, setHoverPoint, setPorts, setSubareas } from 'features/labeler/labeler.slice'
@@ -24,11 +25,13 @@ import { useValueManagerConnect } from './TableAnchorage.hooks'
 type TableRowProps = {
   record: PortPosition
   extra: boolean
+  onCountryChange: (point: PortPosition) => void
 }
 
 function TableRow({
   record,
-  extra
+  extra,
+  onCountryChange
 }: TableRowProps) {
   const map = useMapInstance()
   const dispatch = useDispatch()
@@ -48,12 +51,12 @@ function TableRow({
 
   const country = useSelector(selectCountry)
   const pointValues = useSelector(selectPointValuesByCountry)
-  const pointValue = pointValues[record.s2id] ?? ''
+  const pointValue = country && pointValues ? pointValues[record.s2id] : ''
   const portValues = useSelector(selectPortValuesByCountry)
-  const selectedPort = portValues[record.s2id]
+  const selectedPort = country && portValues ? portValues[record.s2id] : ''
 
   const subareaValues = useSelector(selectSubareaValuesByCountry)
-  const selectedSubarea = subareaValues[record.s2id]
+  const selectedSubarea = country && subareaValues ? subareaValues[record.s2id] : ''
   const hoverPoint = useSelector(selectHoverPoint)
 
   const ports = useSelector(selectPortsByCountry)
@@ -99,12 +102,13 @@ function TableRow({
     <div
       className={cx(styles.row, {
         [styles.rowHover]: hoverPoint === record.s2id,
+        [styles.rowBorder]: !country,
       })}
       onMouseEnter={() => onRowHover(record.s2id, true)}
       onMouseLeave={() => onRowHover(record.s2id, false)}
     >
       <div className={styles.col}>
-        <SubareaSelector
+        {country ? <SubareaSelector
           className={styles.portSelector}
           onRemove={() => { }}
           onSelect={(selected: SelectOption) => {
@@ -117,9 +121,11 @@ function TableRow({
           placeholder={t('common.select_port', 'Select a port')}
           addButtonLabel={t('common.add_port', 'Add new port')}
         ></SubareaSelector>
+          : <Tooltip content={record.port_label}><span>{record.port_label}</span></Tooltip>
+        }
       </div>
       <div className={styles.col}>
-        <SubareaSelector
+        {country ? <SubareaSelector
           onRemove={() => { }}
           onSelect={(selected: SelectOption) => {
             onSubareaChange(record.s2id, selected.id)
@@ -131,18 +137,26 @@ function TableRow({
           placeholder={t('common.select_subarea', 'Select a community')}
           addButtonLabel={t('common.select_subarea', 'Add new community')}
         ></SubareaSelector>
+          : <Tooltip content={record.community_label}><span>{record.community_label}</span></Tooltip>}
       </div>
       <div className={styles.col}>
-        <InputText value={pointValue} onChange={(value) => {
+        {country ? <InputText value={pointValue} onChange={(value) => {
           onPointValueChange(record.s2id, value.target.value)
         }}></InputText>
+          : <Tooltip content={record.point_label}><span>{record.point_label}</span></Tooltip>}
 
       </div>
       <div className={styles.col}>
-        {record.top_destination}
+        <Tooltip content={record.top_destination}><span>{record.top_destination}</span></Tooltip>
       </div>
       {extra && <div className={styles.col}>
-        {record.s2id}
+        <span>{record.s2id}</span>
+      </div>}
+      {extra && <div className={styles.col}>
+        <span
+          onClick={() => onCountryChange(record)}
+          className={styles.actionButton}
+        >{flags[record.iso3] ?? record.iso3}</span>
       </div>}
     </div>
   )

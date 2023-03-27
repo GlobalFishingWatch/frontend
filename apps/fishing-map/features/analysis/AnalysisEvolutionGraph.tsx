@@ -15,6 +15,7 @@ import { Interval } from '@globalfishingwatch/layer-composer'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import i18n from 'features/i18n/i18n'
 import { toFixed } from 'utils/shared'
+import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
 import styles from './AnalysisEvolutionGraph.module.css'
 import { tickFormatter } from './analysis.utils'
 
@@ -38,20 +39,8 @@ export interface AnalysisGraphProps {
 }
 
 const formatDateTicks = (tick: number, timeChunkInterval: Interval) => {
-  const date = DateTime.fromMillis(tick).toUTC().setLocale(i18n.language)
-  let formattedTick = ''
-  switch (timeChunkInterval) {
-    case 'month':
-      formattedTick = date.toFormat('LLL y')
-      break
-    case 'hour':
-      formattedTick = date.toLocaleString(DateTime.DATETIME_MED)
-      break
-    default:
-      formattedTick = date.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)
-      break
-  }
-  return formattedTick
+  const date = getUTCDateTime(tick).setLocale(i18n.language)
+  return formatDateForInterval(date, timeChunkInterval)
 }
 
 const formatTooltipValue = (value: number, payload: any, unit: string) => {
@@ -90,25 +79,8 @@ const AnalysisGraphTooltip = (props: any) => {
   const { active, payload, label, timeChunkInterval } = props as AnalysisGraphTooltipProps
 
   if (active && payload && payload.length) {
-    const date = DateTime.fromMillis(label).toUTC().setLocale(i18n.language)
-    let formattedLabel = ''
-    switch (timeChunkInterval) {
-      case 'month':
-        formattedLabel = date.toFormat('LLLL y')
-        break
-      case '10days': {
-        const timeRangeStart = date.toLocaleString(DateTime.DATE_MED)
-        const timeRangeEnd = date.plus({ days: 9 }).toLocaleString(DateTime.DATE_MED)
-        formattedLabel = `${timeRangeStart} - ${timeRangeEnd}`
-        break
-      }
-      case 'day':
-        formattedLabel = date.toLocaleString(DateTime.DATE_MED)
-        break
-      default:
-        formattedLabel = date.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)
-        break
-    }
+    const date = getUTCDateTime(label).setLocale(i18n.language)
+    const formattedLabel = formatDateForInterval(date, timeChunkInterval)
     const formattedValues = payload.filter(({ name }) => name === 'line')
     return (
       <div className={styles.tooltipContainer}>
@@ -137,7 +109,9 @@ const AnalysisEvolutionGraph: React.FC<{
 }> = (props) => {
   const { start, end } = props
   const { timeseries, interval, sublayers } = props.graphData
-
+  const cleanEnd = DateTime.fromISO(end, { zone: 'utc' })
+    .minus({ [interval]: 1 })
+    .toISO()
   const dataFormated = useMemo(() => {
     return timeseries
       ?.map(({ date, min, max }) => {
@@ -153,6 +127,11 @@ const AnalysisEvolutionGraph: React.FC<{
         return !isNaN(d.avg[0])
       })
   }, [timeseries])
+
+  const domain = useMemo(
+    () => [new Date(start).getTime(), new Date(cleanEnd).getTime()],
+    [start, cleanEnd]
+  )
 
   if (!dataFormated) return null
 
@@ -175,7 +154,7 @@ const AnalysisEvolutionGraph: React.FC<{
         <ComposedChart data={dataFormated} margin={{ top: 15, right: 20, left: -20, bottom: -10 }}>
           <CartesianGrid vertical={false} />
           <XAxis
-            domain={[new Date(start).getTime(), new Date(end).getTime()]}
+            domain={domain}
             dataKey="date"
             interval="preserveStartEnd"
             tickFormatter={(tick: number) => formatDateTicks(tick, interval)}

@@ -1,10 +1,16 @@
-import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { Icon, IconButton, Logo, Select, SelectOption, SubBrands } from '@globalfishingwatch/ui-components'
+import {
+  Icon,
+  IconButton,
+  Logo,
+  Select,
+  SelectOption,
+  SubBrands,
+} from '@globalfishingwatch/ui-components'
 import { flags } from '@globalfishingwatch/i18n-labels'
-import { selectCountry, sortOptions } from 'features/labeler/labeler.slice'
-import { selectCountries } from 'features/map/map.selectors'
+import { selectCountries, selectCountry, sortOptions } from 'features/labeler/labeler.slice'
+import Search from 'features/search/Search'
 import styles from './SidebarHeader.module.css'
 import { useSelectedTracksConnect } from './sidebar.hooks'
 
@@ -16,20 +22,15 @@ function SidebarHeader(props: HeaderProps) {
   const dispatch = useDispatch()
   const countries: SelectOption[] = useSelector(selectCountries)
   const country = useSelector(selectCountry)
-  const {
-    onCountryChange,
-    dispatchDownload,
-    dispatchImportHandler,
-  } = useSelectedTracksConnect()
-
+  const { onCountryChange, dispatchDownload, dispatchImportHandler } = useSelectedTracksConnect()
 
   return (
-
     <div className={styles.sidebarHeader}>
       <a href="https://globalfishingwatch.org" className={styles.logoLink}>
         <Logo className={styles.logo} subBrand={SubBrands.PortLabeler} />
       </a>
       <div className={styles.actionButtons}>
+        <Search />
         <IconButton
           type="default"
           icon="split"
@@ -45,11 +46,7 @@ function SidebarHeader(props: HeaderProps) {
             style={{ display: 'none' }}
             onChange={dispatchImportHandler}
           />
-          <Icon
-            icon="upload"
-            tooltip="Upload file"
-            tooltipPlacement="bottom"
-          />
+          <Icon icon="upload" tooltip="Upload file" tooltipPlacement="bottom" />
         </label>
 
         <IconButton
@@ -64,6 +61,7 @@ function SidebarHeader(props: HeaderProps) {
       <Select
         options={countries}
         onRemove={() => { }}
+        className={styles.countrySelector}
         placeholder={t('messages.country_selection', 'Select a country')}
         selectedOption={country ? { id: country, label: flags[country] ?? country } : undefined}
         onSelect={(selected: SelectOption) => {
@@ -75,7 +73,6 @@ function SidebarHeader(props: HeaderProps) {
         }}
       />
     </div>
-
   )
 }
 

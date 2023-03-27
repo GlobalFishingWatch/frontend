@@ -36,8 +36,8 @@ import MapControls from 'features/map/controls/MapControls'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { getEventLabel } from 'utils/analytics'
 import { selectIsAnalyzing, selectShowTimeComparison } from 'features/analysis/analysis.selectors'
-import { isWorkspaceLocation } from 'routes/routes.selectors'
-import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
+import { selectIsMarineManagerLocation, isWorkspaceLocation } from 'routes/routes.selectors'
+import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
 import { useMapLoaded, useSetMapIdleAtom } from 'features/map/map-state.hooks'
 import { useEnvironmentalBreaksUpdate } from 'features/workspace/environmental/environmental.hooks'
 import { mapReadyAtom } from 'features/map/map-state.atom'
@@ -58,7 +58,7 @@ const MapDraw = dynamic(() => import(/* webpackChunkName: "MapDraw" */ './MapDra
 const PopupWrapper = dynamic(
   () => import(/* webpackChunkName: "PopupWrapper" */ './popups/PopupWrapper')
 )
-const Hint = dynamic(() => import(/* webpackChunkName: "Hint" */ 'features/help/hints/Hint'))
+const Hint = dynamic(() => import(/* webpackChunkName: "Hint" */ 'features/hints/Hint'))
 
 // TODO: Abstract this away
 const transformRequest: (...args: any[]) => RequestParameters = (url: string) => {
@@ -104,8 +104,9 @@ const MapWrapper = () => {
   const setMapReady = useSetRecoilState(mapReadyAtom)
   const hasTimeseries = useRecoilValue(selectMapTimeseries)
   const { isMapDrawing } = useMapDrawConnect()
-  const dataviews = useSelector(selectDataviewInstancesResolved)
+  const dataviews = useSelector(selectCurrentDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
+  const isMarineManagerLocation = useSelector(selectIsMarineManagerLocation)
 
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
   // the generatorsConfig (ie the map "layers") and the global configuration
@@ -214,7 +215,7 @@ const MapWrapper = () => {
   const tilesClusterLoaded = useMapClusterTilesLoaded()
 
   const getCursor = useCallback(() => {
-    if (isMapDrawing) {
+    if (isMapDrawing || isMarineManagerLocation) {
       // updating cursor using css at style.css as the library sets classes depending on the state
       return undefined
     } else if (hoveredTooltipEvent) {
@@ -246,14 +247,14 @@ const MapWrapper = () => {
       return 'grabbing'
     }
     return 'grab'
-  }, [isMapDrawing, hoveredTooltipEvent, dataviews, tilesClusterLoaded])
-
-  useEffect(() => {
-    if (map) {
-      map.showTileBoundaries = debugOptions.debug
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, debugOptions])
+  }, [
+    isMapDrawing,
+    isMarineManagerLocation,
+    hoveredTooltipEvent,
+    map,
+    dataviews,
+    tilesClusterLoaded,
+  ])
 
   useEffect(() => {
     if (map) {
@@ -289,13 +290,14 @@ const MapWrapper = () => {
           latitude={viewport.latitude}
           longitude={viewport.longitude}
           pitch={debugOptions.extruded ? 40 : 0}
+          bearing={0}
           onMove={isAnalyzing && !hasTimeseries ? undefined : onViewportChange}
           mapStyle={style as MapboxStyle}
           transformRequest={transformRequest}
           onResize={setMapBounds}
           cursor={rulersEditing ? rulesCursor : getCursor()}
           interactiveLayerIds={interactiveLayerIds}
-          onClick={isMapDrawing ? undefined : currentClickCallback}
+          onClick={isMapDrawing || isMarineManagerLocation ? undefined : currentClickCallback}
           onMouseEnter={onMouseMove}
           onMouseMove={onMouseMove}
           onMouseLeave={resetHoverState}

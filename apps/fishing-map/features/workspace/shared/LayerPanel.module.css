@@ -69,6 +69,10 @@
   align-items: center;
 }
 
+.actions > * {
+  margin-right: calc(0px - var(--space-XS));
+}
+
 .active {
   opacity: 1;
 }
@@ -114,6 +118,7 @@
 .dataWarning {
   opacity: var(--opacity-secondary);
   font: var(--font-S);
+  width: 100%;
 }
 
 .dataWarningLinks button {
@@ -252,4 +257,8 @@
 
 .faded {
   color: var(--color-secondary-blue);
+}
+
+.gfwIcon {
+  margin-left: var(--space-XS);
 }

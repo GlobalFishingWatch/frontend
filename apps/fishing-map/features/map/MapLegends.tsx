@@ -1,4 +1,3 @@
-import React from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { createPortal } from 'react-dom'
@@ -35,7 +34,6 @@ interface MapLegendsProps {
 }
 
 const MapLegends: React.FC<MapLegendsProps> = ({ legends, portalled = false }: MapLegendsProps) => {
-  const { t } = useTranslation()
   // Assuming only timeComparison heatmap is visible, so timerange description apply to all
   const timeCompareTimeDescription = useTimeCompareTimeDescription()
   const legendsTranslated = useLegendsTranslated(legends, portalled)

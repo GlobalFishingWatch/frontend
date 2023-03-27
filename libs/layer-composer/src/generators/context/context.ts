@@ -11,14 +11,11 @@ import { API_GATEWAY } from '../../config'
 import LAYERS, { HIGHLIGHT_SUFIX } from './context-layers'
 import {
   DEFAULT_LINE_COLOR,
+  getContextSourceId,
   getFillPaintWithFeatureState,
   getLinePaintWithFeatureState,
 } from './context.utils'
-import { DEFAULT_CONTEXT_SOURCE_LAYER } from './config'
-
-const getSourceId = (config: ContextGeneratorConfig) => {
-  return `${config.id}-${config.layer}`
-}
+import { DEFAULT_CONTEXT_PROMOTE_ID, DEFAULT_CONTEXT_SOURCE_LAYER } from './config'
 
 const getPaintPropertyByType = (layer: LayerSpecification, config: any) => {
   const opacity = config.opacity !== undefined ? config.opacity : 1
@@ -74,9 +71,9 @@ class ContextGenerator {
       : API_GATEWAY + config.tilesUrl
     return [
       {
-        id: getSourceId(config),
+        id: getContextSourceId(config),
         type: 'vector',
-        promoteId: 'gfw_id',
+        promoteId: config.promoteId || DEFAULT_CONTEXT_PROMOTE_ID,
         tiles: [tilesUrl.replace(/{{/g, '{').replace(/}}/g, '}')],
         ...(config.attribution && { attribution: config.attribution }),
       },
@@ -88,18 +85,25 @@ class ContextGenerator {
     if (!baseLayers?.length) {
       throw new Error(`Context layer should specify a valid layer parameter, ${config.layer}`)
     }
-
+    let filters: Array<any> = []
+    if (config?.filters) {
+      filters = ['all']
+      Object.entries(config.filters).forEach(([key, values]) => {
+        filters.push(['match', ['to-string', ['get', key]], values, true, false])
+      })
+    }
     const color = config.color || DEFAULT_LINE_COLOR
     const layers = baseLayers.map((baseLayer) => {
       const paint = getPaintPropertyByType(baseLayer, config)
       return {
         ...baseLayer,
         id: baseLayer.id + config.id,
-        source: getSourceId(config),
+        source: getContextSourceId(config),
         'source-layer': DEFAULT_CONTEXT_SOURCE_LAYER,
         layout: {
           ...baseLayer.layout,
         },
+        ...(filters.length > 0 && { filter: filters }),
         paint,
         metadata: {
           ...(baseLayer.metadata as ExtendedLayerMeta),
@@ -107,6 +111,8 @@ class ContextGenerator {
           layer: config.layer,
           generatorId: config.id,
           datasetId: config.datasetId,
+          promoteId: config.promoteId || DEFAULT_CONTEXT_PROMOTE_ID,
+          valueProperties: config.valueProperties,
         },
       }
     })

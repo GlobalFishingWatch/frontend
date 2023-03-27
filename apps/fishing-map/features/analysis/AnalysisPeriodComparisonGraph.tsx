@@ -10,13 +10,14 @@ import {
   Area,
   ReferenceLine,
 } from 'recharts'
-import { DateTime, Interval as TimeInterval } from 'luxon'
+import { Interval as TimeInterval } from 'luxon'
 import { useSelector } from 'react-redux'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import i18n, { t } from 'features/i18n/i18n'
 import { LAST_DATA_UPDATE } from 'data/config'
 import { selectAnalysisTimeComparison } from 'features/app/app.selectors'
 import { COLOR_GRADIENT, COLOR_PRIMARY_BLUE } from 'features/app/App'
+import { getUTCDateTime } from 'utils/dates'
 import styles from './AnalysisEvolutionGraph.module.css'
 import { formatDate, formatTooltipValue, tickFormatter } from './analysis.utils'
 
@@ -48,8 +49,8 @@ const formatDateTicks = (tick: number, start: string, timeChunkInterval: Interva
   if (!tick) {
     return ''
   }
-  const startDate = DateTime.fromISO(start).toUTC()
-  const date = DateTime.fromMillis(tick).toUTC().setLocale(i18n.language)
+  const startDate = getUTCDateTime(start)
+  const date = getUTCDateTime(tick).setLocale(i18n.language)
   const diff = TimeInterval.fromDateTimes(startDate, date)
   if (!diff.length('hours') && !diff.length('days')) return ''
 
@@ -85,12 +86,8 @@ const PeriodComparisonGraphTooltip = (props: any) => {
   if (label && active && payload.length > 0 && payload.length) {
     const difference = payload.find(({ name }) => name === DIFFERENCE)
     if (!difference) return null
-    const baselineDate = DateTime.fromMillis(difference?.payload.date)
-      .toUTC()
-      .setLocale(i18n.language)
-    const compareDate = DateTime.fromMillis(difference?.payload.compareDate)
-      .toUTC()
-      .setLocale(i18n.language)
+    const baselineDate = getUTCDateTime(difference?.payload.date).setLocale(i18n.language)
+    const compareDate = getUTCDateTime(difference?.payload.compareDate).setLocale(i18n.language)
 
     const differenceValue = difference?.payload.difference
     return (
@@ -134,13 +131,13 @@ const AnalysisPeriodComparisonGraph: React.FC<{
   }, [sublayers])
 
   const dtLastDataUpdate = useMemo(() => {
-    return DateTime.fromISO(LAST_DATA_UPDATE).toUTC()
+    return getUTCDateTime(LAST_DATA_UPDATE)
   }, [])
 
   const offsetedLastDataUpdate = useMemo(() => {
     // Need to offset LAST_DATA_UPDATE because graph uses dates from start, not compareStart
-    const diff = DateTime.fromISO(timeComparison.compareStart)
-      .diff(DateTime.fromISO(timeComparison.start))
+    const diff = getUTCDateTime(timeComparison.compareStart)
+      .diff(getUTCDateTime(timeComparison.start))
       .toMillis()
     const offsetedLastDataUpdate = dtLastDataUpdate
       .minus({
@@ -154,7 +151,7 @@ const AnalysisPeriodComparisonGraph: React.FC<{
   const baseline = useMemo(() => {
     if (!timeseries || !timeseries.length) return []
     return timeseries.map(({ date }) => ({
-      date: DateTime.fromISO(date).toUTC().toMillis(),
+      date: getUTCDateTime(date)?.toMillis(),
       zero: 0,
     }))
   }, [timeseries])
@@ -165,8 +162,10 @@ const AnalysisPeriodComparisonGraph: React.FC<{
       const avgCompare = min[1] + max[1] / 2
       const difference = avgCompare - avgBaseline
       return {
-        date: DateTime.fromISO(date).toUTC().toMillis(),
-        ...{ compareDate: compareDate ? DateTime.fromISO(compareDate).toUTC().toMillis() : {} },
+        date: getUTCDateTime(date)?.toMillis(),
+        ...{
+          compareDate: compareDate ? getUTCDateTime(compareDate)?.toMillis() : {},
+        },
         baseline: avgBaseline,
         difference,
       }
@@ -178,8 +177,8 @@ const AnalysisPeriodComparisonGraph: React.FC<{
       const baseAvg = min[0] + max[0] / 2
       const avgCompare = min[1] + max[1] / 2
       const difference = avgCompare - baseAvg
-      const dtStart = DateTime.fromISO(date).toUTC()
-      const dtCompareStart = DateTime.fromISO(compareDate).toUTC()
+      const dtStart = getUTCDateTime(date)
+      const dtCompareStart = getUTCDateTime(compareDate)
       const data = {
         date: dtStart.toMillis(),
         ...{ compareDate: compareDate ? dtCompareStart.toMillis() : {} },
@@ -206,10 +205,7 @@ const AnalysisPeriodComparisonGraph: React.FC<{
         <ComposedChart data={range} margin={{ top: 15, right: 20, left: -20, bottom: -10 }}>
           <CartesianGrid vertical={false} />
           <XAxis
-            domain={[
-              DateTime.fromISO(start).toUTC().toMillis(),
-              DateTime.fromISO(end).toUTC().toMillis(),
-            ]}
+            domain={[getUTCDateTime(start)?.toMillis(), getUTCDateTime(end)?.toMillis()]}
             dataKey="date"
             interval="preserveStartEnd"
             tickFormatter={(tick: number) => formatDateTicks(tick, start, interval)}

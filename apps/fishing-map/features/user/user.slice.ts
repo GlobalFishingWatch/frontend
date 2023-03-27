@@ -3,11 +3,13 @@ import {
   GFWAPI,
   getAccessTokenFromUrl,
   removeAccessTokenFromUrl,
+  GUEST_USER_TYPE,
 } from '@globalfishingwatch/api-client'
 import { UserData } from '@globalfishingwatch/api-types'
 import { redirectToLogin } from '@globalfishingwatch/react-hooks'
 import { RootState } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { removeGFWStaffOnlyDataviews } from 'features/workspace/workspace.slice'
 
 interface UserState {
   logged: boolean
@@ -21,8 +23,8 @@ const initialState: UserState = {
   data: null,
 }
 
-export const GUEST_USER_TYPE = 'guest'
 export const GFW_GROUP_ID = 'GFW Staff'
+export const JAC_GROUP_ID = 'Joint Analytical Cell (JAC)'
 export const GFW_DEV_GROUP_ID = 'development-group'
 export const ADMIN_GROUP_ID = 'admin-group'
 export const DEFAULT_GROUP_ID = 'Default'
@@ -35,21 +37,21 @@ export const PRIVATE_SUPPORTED_GROUPS = [
   'Ecuador',
   'Costa_Rica',
   'Belize',
+  'SSF-Aruna',
+  'SSF-Rare',
+  'SSF-Ipnlf',
 ]
-
-export const fetchGuestUser = async () => {
-  const permissions = await fetch(`${GFWAPI.getBaseUrl()}/auth/acl/permissions/anonymous`).then(
-    (r) => r.json()
-  )
-  const user: UserData = { id: 0, type: GUEST_USER_TYPE, permissions, groups: [] }
-  return user
+export const USER_GROUP_WORKSPACE = {
+  'ssf-aruna': 'coastal_fisheries_indonesia',
+  'ssf-rare': 'coastal_fisheries_indonesia',
+  'ssf-ipnlf': 'coastal_fisheries_indonesia',
 }
 
 export const fetchUserThunk = createAsyncThunk(
   'user/fetch',
   async ({ guest }: { guest: boolean } = { guest: false }) => {
     if (guest) {
-      return await fetchGuestUser()
+      return await GFWAPI.fetchGuestUser()
     }
     const accessToken = getAccessTokenFromUrl()
     if (accessToken) {
@@ -59,16 +61,26 @@ export const fetchUserThunk = createAsyncThunk(
     try {
       return await GFWAPI.login({ accessToken })
     } catch (e: any) {
-      return await fetchGuestUser()
+      return await GFWAPI.fetchGuestUser()
     }
+  },
+  {
+    condition: (params, { getState }) => {
+      const { user } = getState() as RootState
+      return user.status !== AsyncReducerStatus.Loading
+    },
   }
 )
 
 export const logoutUserThunk = createAsyncThunk(
   'user/logout',
-  async ({ loginRedirect }: { loginRedirect: boolean } = { loginRedirect: false }) => {
+  async (
+    { loginRedirect }: { loginRedirect: boolean } = { loginRedirect: false },
+    { dispatch }
+  ) => {
     try {
       await GFWAPI.logout()
+      dispatch(removeGFWStaffOnlyDataviews())
     } catch (e: any) {
       console.warn(e)
     }
@@ -105,7 +117,10 @@ export const selectUserData = (state: RootState) => state.user.data
 export const selectUserStatus = (state: RootState) => state.user.status
 export const selectUserLogged = (state: RootState) => state.user.logged
 export const isGFWUser = (state: RootState) => state.user.data?.groups.includes(GFW_GROUP_ID)
+export const isJACUser = (state: RootState) => state.user.data?.groups.includes(JAC_GROUP_ID)
 export const isGFWAdminUser = (state: RootState) => state.user.data?.groups.includes(ADMIN_GROUP_ID)
+export const isGFWDeveloper = (state: RootState) =>
+  state.user.data?.groups.includes(GFW_DEV_GROUP_ID)
 
 export const isGuestUser = createSelector([selectUserData], (userData) => {
   return userData?.type === GUEST_USER_TYPE

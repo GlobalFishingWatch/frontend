@@ -116,7 +116,7 @@ export const getUnitsPositions = (
       width,
       label: getUnitLabel(mUnit, baseUnit, width),
       hoverLabel: `${getUnitLabel(mUnit, baseUnit, Infinity)} - ${labels.zoomTo} ${
-        labels[baseUnit]
+        labels.intervals[baseUnit]
       }`,
       start: mUnit.toISOString(),
       end: mUnitNext.toISOString(),

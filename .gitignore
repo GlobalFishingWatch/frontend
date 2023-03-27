@@ -44,10 +44,11 @@ build/Release
 
 # Dependency directories
 node_modules/
+.pnp.*
 .yarn/*
 !.yarn/patches
-!.yarn/releases
 !.yarn/plugins
+!.yarn/releases
 !.yarn/sdks
 !.yarn/versions
 .pnp.*

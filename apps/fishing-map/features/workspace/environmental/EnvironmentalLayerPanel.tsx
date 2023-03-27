@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useTransition } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -9,11 +9,11 @@ import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectUserId } from 'features/user/user.selectors'
 import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
-import { isGuestUser } from 'features/user/user.slice'
+import { isGFWUser, isGuestUser } from 'features/user/user.slice'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
-import ActivityFilters from 'features/workspace/activity/ActivityFilters'
-import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
-import DatasetFlagField from 'features/workspace/shared/DatasetFlagsField'
+import ActivityFilters, {
+  isHistogramDataviewSupported,
+} from 'features/workspace/activity/ActivityFilters'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import { SupportedEnvDatasetSchema } from 'features/datasets/datasets.utils'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
@@ -23,6 +23,9 @@ import LayerSwitch from '../common/LayerSwitch'
 import InfoModal from '../common/InfoModal'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
+import OutOfTimerangeDisclaimer from '../common/OutOfBoundsDisclaimer'
+import { getDatasetNameTranslated } from '../../i18n/utils'
+import { getLayerDatasetRange } from './HistogramRangeFilter'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -30,11 +33,13 @@ type LayerPanelProps = {
 }
 
 function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
+  const [isPending, startTransition] = useTransition()
   const [filterOpen, setFiltersOpen] = useState(false)
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const userId = useSelector(selectUserId)
   const guestUser = useSelector(isGuestUser)
+  const gfwUser = useSelector(isGFWUser)
   const [colorOpen, setColorOpen] = useState(false)
   const {
     items,
@@ -74,11 +79,17 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   }
 
   const onToggleFilterOpen = () => {
-    setFiltersOpen(!filterOpen)
+    if (!filterOpen) {
+      startTransition(() => {
+        setFiltersOpen(true)
+      })
+    } else {
+      setFiltersOpen(false)
+    }
   }
 
   const dataset = dataview.datasets?.find(
-    (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.Context
+    (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.UserContext
   )
   useAutoRefreshImportingDataset(dataset)
   const isCustomUserLayer = !guestUser && dataset?.ownerId === userId
@@ -87,8 +98,8 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
     return <DatasetNotFound dataview={dataview} />
   }
 
-  const title = t(`datasets:${dataset?.id}.name` as any, dataset?.name || dataset?.id)
-  const showFilters = dataset.fieldsAllowed?.length > 0
+  const title = getDatasetNameTranslated(dataset)
+  const showFilters = dataset.fieldsAllowed?.length > 0 || isHistogramDataviewSupported(dataview)
 
   const TitleComponent = (
     <Title
@@ -99,6 +110,17 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
       onToggle={onToggle}
     />
   )
+
+  const layerRange = getLayerDatasetRange(dataset)
+  const showMinVisibleFilter =
+    dataview.config?.minVisibleValue !== undefined
+      ? dataview.config?.minVisibleValue !== layerRange.min
+      : false
+  const showMaxVisibleFilter =
+    dataview.config?.maxVisibleValue !== undefined
+      ? dataview.config?.maxVisibleValue !== layerRange.max
+      : false
+  const showVisibleFilterValues = showMinVisibleFilter || showMaxVisibleFilter
 
   return (
     <div
@@ -133,6 +155,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
               <div className={styles.filterButtonWrapper}>
                 <IconButton
                   icon={filterOpen ? 'filter-on' : 'filter-off'}
+                  loading={isPending}
                   size="small"
                   onClick={onToggleFilterOpen}
                   tooltip={
@@ -156,7 +179,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
             />
           )}
           <InfoModal dataview={dataview} />
-          {isCustomUserLayer && <Remove dataview={dataview} />}
+          {(isCustomUserLayer || gfwUser) && <Remove dataview={dataview} />}
           {items.length > 1 && (
             <IconButton
               size="small"
@@ -168,18 +191,27 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
           )}
         </div>
       </div>
-      <div className={styles.properties}>
-        <div className={styles.filters}>
+      {layerActive && (
+        <div className={styles.properties}>
           <div className={styles.filters}>
-            <DatasetFilterSource dataview={dataview} />
-            <DatasetFlagField dataview={dataview} />
-            {datasetFields.map(({ field, label }) => (
-              <DatasetSchemaField key={field} dataview={dataview} field={field} label={label} />
-            ))}
+            <div className={styles.filters}>
+              <OutOfTimerangeDisclaimer dataview={dataview} />
+              {datasetFields.map(({ field, label }) => (
+                <DatasetSchemaField key={field} dataview={dataview} field={field} label={label} />
+              ))}
+              {showVisibleFilterValues && (
+                <DatasetSchemaField
+                  key={'visibleValues'}
+                  dataview={dataview}
+                  field={'visibleValues'}
+                  label={t('common.visibleValues', 'Visible values')}
+                />
+              )}
+            </div>
           </div>
         </div>
-      </div>
-      {layerActive && (
+      )}
+      {layerActive && gfwUser && (
         <div
           className={cx(styles.properties, styles.drag, {
             [styles.dragging]: isSorting && activeIndex > -1,

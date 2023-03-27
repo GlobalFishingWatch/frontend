@@ -22,10 +22,14 @@
   padding: 0;
   position: relative;
   width: 100%;
-  max-width: 72rem;
+  max-width: 78rem;
   overflow-y: auto;
   max-height: 100vh;
   height: var(--vh, 1vh) * 100;
+}
+
+.fullScreen {
+  max-width: unset;
 }
 
 @media only screen and (min-width: 720px) {

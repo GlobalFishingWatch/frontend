@@ -1,4 +1,3 @@
-import { DateTime } from 'luxon'
 import {
   getRealValues,
   getTimeSeries,
@@ -13,6 +12,7 @@ import { AnalysisGraphProps, AnalysisSublayerGraph } from 'features/analysis/Ana
 import { FilteredPolygons } from 'features/analysis/analysis-geo.utils'
 import { DateTimeSeries } from 'features/analysis/analysis.hooks'
 import { DataviewFeature } from 'features/map/map-sources.hooks'
+import { getUTCDateTime } from 'utils/dates'
 
 export const removeTimeseriesPadding = (timeseries?: AnalysisGraphProps[]) => {
   return timeseries?.map((timeserie) => {
@@ -30,13 +30,13 @@ export const filterTimeseriesByTimerange = (
   start: string,
   end: string
 ) => {
-  const startDate = DateTime.fromISO(start)
-  const endDate = DateTime.fromISO(end)
+  const startDate = getUTCDateTime(start)
+  const endDate = getUTCDateTime(end)
   return timeseries?.map((layerTimeseries) => {
     return {
       ...layerTimeseries,
-      timeseries: layerTimeseries?.timeseries.filter((current: any) => {
-        const currentDate = DateTime.fromISO(current.date)
+      timeseries: layerTimeseries?.timeseries.filter((current) => {
+        const currentDate = getUTCDateTime(current.date)
         return currentDate >= startDate && currentDate < endDate
       }),
     }
@@ -85,12 +85,12 @@ export const featuresToTimeseries = (
     const sourceActiveTimeChunk = pickActiveTimeChunk(sourceMetadata.timeChunks)
     const sourceQuantizeOffset = sourceActiveTimeChunk.quantizeOffset
     const sourceInterval = sourceMetadata.timeChunks.interval
-    const { values: valuesContainedRaw } = getTimeSeries(
-      (filteredFeatures.contained || []) as any,
-      sourceNumSublayers,
-      sourceQuantizeOffset,
-      sourceMetadata.aggregationOperation
-    )
+    const { values: valuesContainedRaw } = getTimeSeries({
+      features: filteredFeatures.contained || ([] as any),
+      numSublayers: sourceNumSublayers,
+      quantizeOffset: sourceQuantizeOffset,
+      aggregationOperation: sourceMetadata.aggregationOperation,
+    })
 
     const valuesContained = frameTimeseriesToDateTimeseries(
       valuesContainedRaw,
@@ -102,12 +102,12 @@ export const featuresToTimeseries = (
       ...(filteredFeatures.contained || []),
       ...(filteredFeatures.overlapping || []),
     ]
-    const { values: valuesContainedAndOverlappingRaw } = getTimeSeries(
-      featuresContainedAndOverlapping as any,
-      sourceNumSublayers,
-      sourceQuantizeOffset,
-      sourceMetadata.aggregationOperation
-    )
+    const { values: valuesContainedAndOverlappingRaw } = getTimeSeries({
+      features: featuresContainedAndOverlapping as any,
+      numSublayers: sourceNumSublayers,
+      quantizeOffset: sourceQuantizeOffset,
+      aggregationOperation: sourceMetadata.aggregationOperation,
+    })
 
     const valuesContainedAndOverlapping = frameTimeseriesToDateTimeseries(
       valuesContainedAndOverlappingRaw,

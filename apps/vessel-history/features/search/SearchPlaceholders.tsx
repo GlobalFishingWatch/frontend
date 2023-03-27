@@ -1,14 +1,20 @@
-import React from 'react'
 import cx from 'classnames'
 import { useTranslation, Trans } from 'react-i18next'
 import vesselImage from 'assets/images/vessel@2x.png'
 import vesselNoResultsImage from 'assets/images/vessel-side@2x.png'
 import styles from './SearchPlaceholders.module.css'
+import { HttpError } from './search.slice'
 
 type SearchPlaceholderProps = {
   className?: string
   children?: React.ReactNode
 }
+
+type SearchErrorProps = {
+  error: HttpError
+  className?: string
+}
+
 type SearchNoResultsStateProps = SearchPlaceholderProps & {
   contactUsLink?: string
   onContactUsClick?: () => void
@@ -25,7 +31,7 @@ function SearchPlaceholder({ children, className = '' }: SearchPlaceholderProps)
 export function SearchNoResultsState({
   className = '',
   contactUsLink = '',
-  onContactUsClick = () => {},
+  onContactUsClick = () => { },
 }: SearchNoResultsStateProps) {
   return (
     <SearchPlaceholder className={className}>
@@ -42,6 +48,21 @@ export function SearchNoResultsState({
             contact us
           </a>{' '}
           if you still can’t find it.
+        </Trans>
+      </p>
+    </SearchPlaceholder>
+  )
+}
+
+export function SearchNoResultsFromTmtState({
+  className = '',
+}: SearchNoResultsStateProps) {
+  return (
+    <SearchPlaceholder className={className}>
+      <img src={vesselNoResultsImage.src} alt="vessel" className={styles.noResultsImage} />
+      <p>
+        <Trans i18nKey="search.noTmtResults">
+          A vessel with these criteria could not be found, due to a timeout in the search function. Please try again.
         </Trans>
       </p>
     </SearchPlaceholder>
@@ -68,6 +89,15 @@ export function SearchNotAllowed({ className = '' }: SearchPlaceholderProps) {
   return (
     <SearchPlaceholder className={className}>
       <p>{t('search.notAllowed', 'Search not allowed')}</p>
+    </SearchPlaceholder>
+  )
+}
+
+export function SearchErrorState({ className = '', error }: SearchErrorProps) {
+  const { t } = useTranslation()
+  return (
+    <SearchPlaceholder className={className}>
+      <p>{error.message}</p>
     </SearchPlaceholder>
   )
 }

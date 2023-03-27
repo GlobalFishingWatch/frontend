@@ -2,12 +2,14 @@ import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { RISK_SUMMARY_SETTINGS } from 'data/config'
-import useRisk from 'features/risk/risk.hook'
+import useRiskIndicator from 'features/risk-indicator/risk-indicator.hook'
+import { useUser } from 'features/user/user.hooks'
 import styles from './risk-title.module.css'
 
 export function RiskTitle() {
   const { t } = useTranslation()
-  const { countByRiskLevel } = useRisk()
+  const { authorizedIdentityIndicators } = useUser()
+  const { countByRiskLevel } = useRiskIndicator(authorizedIdentityIndicators)
   const { showIndicatorIconEventCount } = RISK_SUMMARY_SETTINGS
   return (
     <div className={styles['container']}>

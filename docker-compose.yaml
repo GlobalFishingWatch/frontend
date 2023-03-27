@@ -19,6 +19,23 @@ services:
     networks:
       - frontend-network
 
+  data-explorer:
+    build:
+      context: ./dist/apps/fourwings-explorer
+      dockerfile: ../../../apps/fourwings-explorer/Dockerfile
+    container_name: data-explorer
+    expose:
+      - '80'
+    volumes:
+      - ./dist/apps/fourwings-explorer/exported:/usr/share/nginx/www
+    env_file:
+      - apps/fourwings-explorer/.build.env
+    environment:
+      - PORT=80
+      - BASIC_AUTH=off
+    networks:
+      - frontend-network
+
   vessel-viewer:
     build:
       context: ./dist/apps/vessel-history
@@ -60,7 +77,7 @@ services:
 
   webserver:
     # restart: always
-    image: nginx:stable-alpine
+    image: nginx:latest
     container_name: webserver
     ports:
       - 80:80
@@ -68,9 +85,13 @@ services:
     links:
       - vessel-viewer
       - api-portal
+      - map
+      - data-explorer
     depends_on:
       - api-portal
       - vessel-viewer
+      - map
+      - data-explorer
     volumes:
       - ./config/nginx.conf:/etc/nginx/nginx.conf
       - ./config/ssl:/etc/nginx/ssl

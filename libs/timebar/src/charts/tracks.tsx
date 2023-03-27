@@ -1,8 +1,6 @@
 import React, { Fragment, useContext, useMemo } from 'react'
 import { ResourceStatus } from '@globalfishingwatch/api-types'
 import TimelineContext, { TimelineScale, TrackGraphOrientation } from '../timelineContext'
-import ImmediateContext from '../immediateContext'
-import { DEFAULT_CSS_TRANSITION } from '../constants'
 import { getTrackY } from './common/utils'
 import styles from './tracks.module.css'
 import { useFilteredChartData, useOuterScale } from './common/hooks'
@@ -46,7 +44,6 @@ const getTracksWithCoords = (
 }
 
 const Tracks = ({ data }: { data: TimebarChartData }) => {
-  const { immediate } = useContext(ImmediateContext)
   const { graphHeight, trackGraphOrientation } = useContext(TimelineContext)
   const outerScale = useOuterScale()
 
@@ -64,7 +61,7 @@ const Tracks = ({ data }: { data: TimebarChartData }) => {
         if (track.status === ResourceStatus.Error) return null
         return (
           <div key={i}>
-            {track.status === ResourceStatus.Finished ? (
+            {track.status === ResourceStatus.Finished && (
               <Fragment>
                 {track.chunks.map((chunk, i) => (
                   <div
@@ -75,14 +72,13 @@ const Tracks = ({ data }: { data: TimebarChartData }) => {
                       top: track.props?.segmentsOffsetY ? (track.y || 0) + i : track.y,
                       left: chunk.x,
                       width: chunk.width,
-                      transition: immediate
-                        ? 'none'
-                        : `left ${DEFAULT_CSS_TRANSITION}, width ${DEFAULT_CSS_TRANSITION}`,
+                      height: chunk.props?.height || 1,
                     }}
                   />
                 ))}
               </Fragment>
-            ) : (
+            )}
+            {track.status === ResourceStatus.Loading && (
               <div
                 style={{
                   top: track.props?.segmentsOffsetY ? (track.y || 0) + i : track.y,

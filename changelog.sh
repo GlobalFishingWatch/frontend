@@ -11,9 +11,11 @@
 
 # Repo URL to base links off of
 REPOSITORY_URL=https://github.com/GlobalFishingWatch/frontend
+GITHUB_API_URL=https://api.github.com/repos/GlobalFishingWatch/frontend
 
 PACKAGE_VERSION=$(grep '"version": ' apps/$1/package.json)
 CURRENT_PACKAGE_VERSION=`grep -Eo '[0-9]+\.[0-9]+\.[0-9]+' <<< "$PACKAGE_VERSION"`
+APP_NAME=$1
 
 TAG_PREFIX="@globalfishingwatchapp/$1@"
 
@@ -57,6 +59,27 @@ $2 $new_version
 
 ## What's Changed
 "
+OTHER_PRS=""
+
+# Default github auth is none
+GH_AUTH='none'
+# When github personal access token is defined authenticate on github request
+if [[ $GH_PAT ]]; then
+  echo "Authenticating on Github with Personal Access Token using \$GH_PAT"
+  IS_AUTHENTICATED=$(curl --fail -s \
+    -H "Accept: application/vnd.github+json" \
+    -H "Authorization: Bearer $GH_PAT" \
+    https://api.github.com/octocat)
+
+  if [[ $IS_AUTHENTICATED ]]; then
+    echo "✅ Successful!"
+    GH_AUTH="Bearer $GH_PAT"
+  else
+    echo "⛔️ Failed"
+    echo "Review the token stored in yout GH_PAT variable, it might be expired in github. "
+    echo "You can manage your Personal Access Tokens on https://github.com/settings/tokens?type=beta"
+  fi
+fi
 
 # Loop over each commit and look for merged pull requests
 for COMMIT in $COMMITS; do
@@ -72,22 +95,39 @@ for COMMIT in $COMMITS; do
 	if [[ $PULL_REQUEST && $BODY ]]; then
 		# Perform a substring operation so we're left with just the digits of the pull request
 		PULL_NUM=${PULL_REQUEST#"Merge pull request #"}
-		# AUTHOR_USERNAME=$(git log -1 ${COMMIT} --pretty=format:"%aN")
-		# AUTHOR_NAME=$(git log -1 ${COMMIT} --pretty=format:"%an")
-		# AUTHOR_EMAIL=$(git log -1 ${COMMIT} --pretty=format:"%ae")
 
-		MARKDOWN+='\n'
-		MARKDOWN+=" - [#$PULL_NUM]($REPOSITORY_URL/pull/$PULL_NUM): $BODY"
-    # Outputs:
-    #  * [#1017](https://github.com/GlobalFishingWatch/frontend/pull/1017): VV-296 Fixed Downshift is not showing correct selection
+    # If the PR contains the app label then include it in the
+    IS_APP_PR=$(curl --fail -s \
+      -H "Accept: application/vnd.github+json" \
+      -H "Authorization: $GH_AUTH" \
+      $GITHUB_API_URL/issues/$PULL_NUM/labels \
+      | grep -o '"name": "'$APP_NAME'"')
 
-    # MARKDOWN+=" - $BODY in $REPOSITORY_URL/pull/$PULL_NUM"
-    # Outputs:
-    # * Temporalgrid timechunks by @nerik in https://github.com/GlobalFishingWatch/frontend/pull/42
+    if [[ $IS_APP_PR ]]; then
+      # AUTHOR_USERNAME=$(git log -1 ${COMMIT} --pretty=format:"%aN")
+      # AUTHOR_NAME=$(git log -1 ${COMMIT} --pretty=format:"%an")
+      # AUTHOR_EMAIL=$(git log -1 ${COMMIT} --pretty=format:"%ae")
+
+      MARKDOWN+='\n'
+      MARKDOWN+=" - [#$PULL_NUM]($REPOSITORY_URL/pull/$PULL_NUM): $BODY"
+      # Outputs:
+      #  * [#1017](https://github.com/GlobalFishingWatch/frontend/pull/1017): VV-296 Fixed Downshift is not showing correct selection
+
+      # MARKDOWN+=" - $BODY in $REPOSITORY_URL/pull/$PULL_NUM"
+      # Outputs:
+      # * Temporalgrid timechunks by @nerik in https://github.com/GlobalFishingWatch/frontend/pull/42
+    else
+      OTHER_PRS+='\n'
+      OTHER_PRS+=" - [#$PULL_NUM]($REPOSITORY_URL/pull/$PULL_NUM): $BODY"
+    fi
 	fi
 done
 MARKDOWN+='\n\n'
 MARKDOWN+="**Full Changelog**: $REPOSITORY_URL/compare/$PREVIOUS_TAG...$NEW_PACKAGE_VERSION"
+MARKDOWN+='\n\n'
+MARKDOWN+="## Other changes not labeled with '$APP_NAME':"
+MARKDOWN+='\n'
+MARKDOWN+=$OTHER_PRS
 
 # Output the markdown
 echo "$MARKDOWN\n\n"

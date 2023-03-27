@@ -22,6 +22,7 @@ import { selectUserData } from 'features/user/user.slice'
 import { selectUserWorkspaceEditPermissions } from 'features/user/user.selectors'
 import { selectWorkspaceId } from 'routes/routes.selectors'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
+import { selectIsGFWWorkspace } from 'features/workspace/workspace.selectors'
 import styles from './NewWorkspaceModal.module.css'
 
 type NewWorkspaceModalProps = {
@@ -60,6 +61,7 @@ function NewWorkspaceModal({
   const viewport = useSelector(selectViewport)
   const timerange = useTimerangeConnect()
   const userData = useSelector(selectUserData)
+  const isGFWWorkspace = useSelector(selectIsGFWWorkspace)
   const urlWorkspaceId = useSelector(selectWorkspaceId)
   const dataviewsInWorkspace = useSelector(selectDataviewInstancesMergedOrdered)
   const hasEditPermission = useSelector(selectUserWorkspaceEditPermissions)
@@ -73,6 +75,7 @@ function NewWorkspaceModal({
   const hasWorkspaceDefined =
     workspace !== null && urlWorkspaceId !== undefined && !isDefaultWorkspace
   const allowUpdate =
+    !isGFWWorkspace &&
     hasWorkspaceDefined &&
     (isOwnerWorkspace || hasEditPermission) &&
     (isPublicWorkspace ? !containsPrivateDatasets : true)
@@ -172,13 +175,13 @@ function NewWorkspaceModal({
       />
       {workspace?.id && (
         <SwitchRow
-          label={t('workspace.uploadPublic' as any, 'Allow other users to see this workspace')}
+          label={t('workspace.uploadPublic', 'Allow other users to see this workspace')}
           active={createAsPublic}
           disabled={containsPrivateDatasets}
           tooltip={
             containsPrivateDatasets
               ? `${t(
-                  'workspace.uploadPublicDisabled' as any,
+                  'workspace.uploadPublicDisabled',
                   "This workspace can't be shared publicly because it contains private datasets"
                 )}: ${privateDatasets.join(', ')}`
               : ''

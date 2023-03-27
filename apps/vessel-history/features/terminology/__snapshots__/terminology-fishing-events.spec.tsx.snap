@@ -27,7 +27,14 @@ exports[`TerminologyFishingEvents should render successfully 1`] = `
       >
         https://globalfishingwatch.org/datasets-and-code/
       </a>
-      .
+      and FAQs:
+      <a
+        href="events.fishingEventsFaqsLink"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        https://drive.google.com/file/d/1N4YRJ_yxAObEIWbaYM8l-YDPHS0bKe2N/view?usp=sharing/
+      </a>
     </p>
   </div>
 </body>

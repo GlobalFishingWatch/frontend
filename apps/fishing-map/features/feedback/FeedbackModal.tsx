@@ -3,9 +3,10 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Modal, Button, InputText, Select } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
+import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import { selectActiveDataviews } from 'features/dataviews/dataviews.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
-import { GUEST_USER_TYPE, selectUserData, isGuestUser } from 'features/user/user.slice'
+import { selectUserData, isGuestUser } from 'features/user/user.slice'
 import { loadSpreadsheetDoc } from 'utils/spreadsheet'
 import { selectUserGroupsClean } from 'features/user/user.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
@@ -195,12 +196,12 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
               <Fragment>
                 <InputText
                   value={feedbackData.name || ''}
-                  placeholder={t('common.name', 'Name') as any}
+                  placeholder={t('common.name', 'Name')}
                   onChange={({ target }) => onFieldChange('name', target.value)}
                 />
                 <InputText
                   value={feedbackData.email || ''}
-                  placeholder={t('feedback.email', 'E-mail address') as any}
+                  placeholder={t('feedback.email', 'E-mail address')}
                   onChange={({ target }) => onFieldChange('email', target.value)}
                 />
                 <span className={styles.emailDisclaimer}>
@@ -261,9 +262,10 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
                 onChange={({ target }) => onFieldChange('description', target.value)}
                 value={feedbackData.description || ''}
                 className={styles.textarea}
-                placeholder={
-                  t('feedback.descriptionPlaceholder', 'Please be as specific as possible.') as any
-                }
+                placeholder={t(
+                  'feedback.descriptionPlaceholder',
+                  'Please be as specific as possible.'
+                )}
               ></textarea>
             </div>
           )}

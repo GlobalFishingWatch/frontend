@@ -1,4 +1,3 @@
-import React from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -20,7 +19,7 @@ function EventsLayerSection(): React.ReactElement | null {
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={styles.header}>
-        <h2 className={styles.sectionTitle}>{t('common.events', 'Events')}</h2>
+        <h2 className={cx('print-hidden', styles.sectionTitle)}>{t('common.events', 'Events')}</h2>
       </div>
 
       <SortableContext items={dataviews}>

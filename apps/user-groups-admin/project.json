@@ -1,17 +1,18 @@
 {
+  "name": "user-groups-admin",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/user-groups-admin",
   "projectType": "application",
   "targets": {
     "changelog": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": ["./changelog.sh user-groups-admin \"User groups admin\""],
         "parallel": false
       }
     },
-
     "deploy": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": [
           "nx build user-groups-admin --parallel",
@@ -21,7 +22,7 @@
       }
     },
     "docker-prepare": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "outputs": [],
       "options": {
         "commands": [
@@ -43,7 +44,7 @@
       }
     },
     "start": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": ["nx serve user-groups-admin"],
         "parallel": true
@@ -78,7 +79,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/user-groups-admin"],
+      "outputs": ["{workspaceRoot}/coverage/apps/user-groups-admin"],
       "options": {
         "jestConfig": "apps/user-groups-admin/jest.config.ts",
         "passWithNoTests": true

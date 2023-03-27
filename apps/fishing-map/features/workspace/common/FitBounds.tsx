@@ -3,13 +3,11 @@ import { useCallback } from 'react'
 import { FeatureCollection } from 'geojson'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import {
-  Segment,
   segmentsToBbox,
   filterSegmentsByTimerange,
   geoJSONToSegments,
-  wrapBBoxLongitudes,
 } from '@globalfishingwatch/data-transforms'
-import { Resource, Vessel } from '@globalfishingwatch/api-types'
+import { Resource, Segment, Vessel } from '@globalfishingwatch/api-types'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { Bbox } from 'types'
@@ -34,8 +32,7 @@ const FitBounds = ({ className, trackResource, hasError, infoResource }: FitBoun
       const filteredSegments = filterSegmentsByTimerange(segments, { start, end })
       const bbox = filteredSegments?.length ? segmentsToBbox(filteredSegments) : undefined
       if (bbox) {
-        const bboxLongitudes = wrapBBoxLongitudes(bbox as Bbox)
-        fitBounds(bboxLongitudes as Bbox)
+        fitBounds(bbox)
       } else {
         if (
           infoResource &&
@@ -78,7 +75,7 @@ const FitBounds = ({ className, trackResource, hasError, infoResource }: FitBoun
         }
       }
     }
-  }, [fitBounds, trackResource, start, end, t, setTimerange])
+  }, [trackResource?.data, start, end, fitBounds, infoResource, t, setTimerange])
 
   return (
     <IconButton

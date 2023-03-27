@@ -1,6 +1,6 @@
 {
   "playback": {
-    "playAnimation": "Jouer l'animation",
+    "playAnimation": "Lancer l’animation",
     "pauseAnimation": "Mettre en pause l'animation",
     "toogleAnimationLooping": "Activer/désactiver la boucle d'animation",
     "moveBack": "Revenir en arrière",
@@ -9,8 +9,15 @@
   },
   "timerange": {
     "title": "Sélectionnez une plage de temps",
+    "year": "Year",
+    "month": "Month",
+    "day": "Day",
     "start": "Début",
     "end": "fin",
+    "selectAValidDate": "Please select a valid date",
+    "endBeforeStart": "The end needs to be after the start",
+    "tooLongForMonths": "Your timerange is too long to see individual months",
+    "tooLongForDays": "Your timerange is too long to see individual days",
     "last30days": "Les 30 derniers jours",
     "last3months": "Last 3 months",
     "last6months": "Last 6 months",
@@ -31,12 +38,15 @@
   "dragLabel": "Faites glisser pour modifier la plage de temps",
   "lastUpdate": "Dernière mise à jour",
   "setBookmark": "Mettre en favori la plage de temps actuelle",
-  "day": "jour",
-  "year": "Année",
-  "month": "mois",
-  "hour": "heure",
-  "zoomIn": "Zoom",
-  "zoomTo": "Zoom sur",
-  "zoomOut": "Zoom arrière",
-  "selectTimeRange": "Sélectionnez une plage de temps"
+  "intervals": {
+    "hour": "Heure",
+    "hourTooltip": "See hourly data",
+    "day": "Jour",
+    "dayTooltip": "See daily data",
+    "month": "Mois",
+    "monthTooltip": "See monthly data",
+    "year": "Année",
+    "yearTooltip": "See yearly data"
+  },
+  "zoomTo": "Zoom sur"
 }

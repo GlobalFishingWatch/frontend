@@ -8,14 +8,14 @@ steps:
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
-    name: gcr.io/cloud-builders/yarn
+    name: gcr.io/cloud-builders/yarn:latest
     entrypoint: bash
     args:
       - '-c'
       # if dependencies cache is not found then install all deps
       - |
         if [ ! -d "node_modules" ]; then
-          yarn install --frozen-lockfile
+          yarn install --immutable
         fi
 
   - id: 'save_cache'
@@ -29,7 +29,7 @@ steps:
 
   - id: 'build-app'
     waitFor: ['install-yarn']
-    name: gcr.io/cloud-builders/yarn
+    name: gcr.io/cloud-builders/yarn:latest
     entrypoint: yarn
     args: ['nx', 'build', 'user-groups-admin', '--parallel']
     env:

@@ -1,5 +1,5 @@
 {
-  "name": "@globalfishingwatch/tile-inspector",
+  "name": "@globalfishingwatchapp/tile-inspector",
   "version": "1.1.65",
   "private": true,
   "homepage": "/",
@@ -16,20 +16,21 @@
     "d3-geom": "^0.0.0",
     "d3-quadtree": "^3.0.1",
     "d3-scale": "^3.3.0",
-    "luxon": "^2.4.0",
+    "luxon": "^2.5.2",
     "pbf": "^3.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
-    "recharts": "^2.0.9"
+    "recharts": "^2.3.2"
   },
   "devDependencies": {
     "@globalfishingwatch/linting": "2.0.2",
     "@types/d3-quadtree": "^3.0.2",
-    "@types/d3-scale": "^4.0.2",
-    "@types/luxon": "^2.3.2",
-    "@types/react": "^18.0.9",
-    "@types/react-dom": "^18.0.3"
+    "@types/d3-scale": "^4.0.3",
+    "@types/luxon": "^2.4.0",
+    "@types/react": "^18.0.27",
+    "@types/react-dom": "^18.0.10",
+    "prop-types": "^15.8.1"
   },
   "browserslist": [
     ">0.1%",

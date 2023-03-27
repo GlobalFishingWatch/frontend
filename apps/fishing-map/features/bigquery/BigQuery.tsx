@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
@@ -30,6 +30,7 @@ const BigQueryMenu: React.FC = () => {
   const runCostStatus = useSelector(selectRunCostStatus)
   const creationStatus = useSelector(selectCreationStatus)
   const [name, setName] = useState('')
+  const [unit, setUnit] = useState('')
   const [error, setError] = useState('')
   const [visualisationMode, setVisualisationMode] = useState<BigQueryVisualisation | null>(null)
   const [aggregationOperation, setAggregationOperation] = useState<AggregationOperation | null>(
@@ -88,7 +89,7 @@ const BigQueryMenu: React.FC = () => {
 
   const onCreateClick = async () => {
     const action = await dispatch(
-      createBigQueryDatasetThunk({ name, createAsPublic, query, visualisationMode })
+      createBigQueryDatasetThunk({ name, unit, createAsPublic, query, visualisationMode })
     )
     if (createBigQueryDatasetThunk.fulfilled.match(action)) {
       const dataset = action.payload.payload as Dataset
@@ -126,23 +127,33 @@ const BigQueryMenu: React.FC = () => {
           label={t('bigQuery.visualiationMode', 'Visualisation mode')}
           placeholder={t('selects.placeholder', 'Select an option')}
           options={VisualisationOptions}
-          containerClassName={styles.inputShort}
+          containerClassName={styles.input}
           selectedOption={currentVisualisationMode}
           onSelect={(selected) => {
             setVisualisationMode(selected.id)
           }}
         />
         {visualisationMode === '4wings' && (
-          <Select
-            label={t('bigQuery.aggregationMode', 'Aggregation mode *')}
-            placeholder={t('selects.placeholder', 'Select an option')}
-            options={AggregationOptions}
-            containerClassName={styles.inputShort}
-            selectedOption={AggregationOptions.find(({ id }) => id === aggregationOperation)}
-            onSelect={(selected) => {
-              setAggregationOperation(selected.id)
-            }}
-          />
+          <Fragment>
+            <Select
+              label={t('bigQuery.aggregationMode', 'Aggregation mode *')}
+              placeholder={t('selects.placeholder', 'Select an option')}
+              options={AggregationOptions}
+              containerClassName={styles.input}
+              selectedOption={AggregationOptions.find(({ id }) => id === aggregationOperation)}
+              onSelect={(selected) => {
+                setAggregationOperation(selected.id)
+              }}
+            />
+            <InputText
+              className={styles.input}
+              labelClassName={styles.inputLabel}
+              inputSize="small"
+              label="unit"
+              value={unit}
+              onChange={(e) => setUnit(e.target.value)}
+            />
+          </Fragment>
         )}
       </div>
       <div className={styles.row}>
@@ -172,7 +183,7 @@ const BigQueryMenu: React.FC = () => {
       <SwitchRow
         className={styles.row}
         label={t(
-          'dataset.uploadPublic' as any,
+          'dataset.uploadPublic',
           'Allow other users to see this dataset when you share a workspace'
         )}
         active={createAsPublic}

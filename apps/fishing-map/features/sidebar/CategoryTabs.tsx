@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useState } from 'react'
+import { Fragment, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
@@ -16,8 +16,11 @@ import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/wo
 import useViewport from 'features/map/map-viewport.hooks'
 // import HelpModal from 'features/help/HelpModal'
 import LanguageToggle from 'features/i18n/LanguageToggle'
+import WhatsNew from 'features/sidebar/WhatsNew'
 import LocalStorageLoginLink from 'routes/LoginLink'
-import HintsHub from 'features/help/hints/HintsHub'
+import HelpHub from 'features/hints/HelpHub'
+import { selectFeedbackModalOpen, setModalOpen } from 'features/modals/modals.slice'
+import { useAppDispatch } from 'features/app/app.hooks'
 import styles from './CategoryTabs.module.css'
 
 const FeedbackModal = dynamic(
@@ -45,6 +48,7 @@ function getLinkToCategory(category: WorkspaceCategories) {
 function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const { t } = useTranslation()
   const guestUser = useSelector(isGuestUser)
+  const dispatch = useAppDispatch()
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const { dispatchClickedEvent } = useClickedEventConnect()
   const locationType = useSelector(selectLocationType)
@@ -56,14 +60,13 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
     ? `${userData?.firstName?.slice(0, 1)}${userData?.lastName?.slice(0, 1)}`
     : ''
 
-  // const [modalHelpOpen, setModalHelpOpen] = useState(false)
-  const [modalFeedbackOpen, setModalFeedbackOpen] = useState(false)
+  const modalFeedbackOpen = useSelector(selectFeedbackModalOpen)
 
   const onFeedbackClick = useCallback(() => {
     if (userData) {
-      setModalFeedbackOpen(true)
+      dispatch(setModalOpen({ id: 'feedback', open: true }))
     }
-  }, [userData])
+  }, [dispatch, userData])
 
   const onCategoryClick = useCallback(() => {
     setMapCoordinates(DEFAULT_WORKSPACE_LIST_VIEWPORT)
@@ -100,20 +103,10 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
         ))}
         <li className={styles.separator} aria-hidden></li>
         <li className={cx(styles.tab, styles.secondary)}>
-          <a
-            href="https://globalfishingwatch.org/platform-updates"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <IconButton
-              icon="sparks"
-              tooltip={t('common.whatsNew', "What's new?")}
-              tooltipPlacement="right"
-            />
-          </a>
+          <WhatsNew />
         </li>
         <li className={cx(styles.tab, styles.secondary)}>
-          <HintsHub />
+          <HelpHub />
         </li>
         <li className={cx(styles.tab, styles.secondary)}>
           <IconButton
@@ -152,9 +145,11 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           )}
         </li>
       </ul>
-      {/* <HelpModal isOpen={modalHelpOpen} onClose={() => setModalHelpOpen(false)} /> */}
       {modalFeedbackOpen && (
-        <FeedbackModal isOpen={modalFeedbackOpen} onClose={() => setModalFeedbackOpen(false)} />
+        <FeedbackModal
+          isOpen={modalFeedbackOpen}
+          onClose={() => dispatch(setModalOpen({ id: 'feedback', open: false }))}
+        />
       )}
     </Fragment>
   )

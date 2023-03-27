@@ -6,19 +6,19 @@ This monorepo hosts frontend packages and applications of the <a href="globalfis
 
 All of them availables with the `@globalfishingwatch/` prefix:
 
-|                                                     |                                                                                |
-| --------------------------------------------------- | ------------------------------------------------------------------------------ |
-| [api-client](packages/api-client)                   | JS library to simplify GFW API login and resources fetch                       |
-| [api-types](packages/api-types)                     | API typescript schema definitions                                              |
-| [data-transforms](packages/data-transforms)         | Set ot shared tools for data transformations                                   |
-| [dataviews-client](packages/dataviews-client)       | Api-client wrapper to fetch and edit dataviews and associated datasets/data    |
-| [layer-composer](packages/layer-composer)           | Orchestrates various Layer Generators to generate a Mapbox GL Style document   |
-| [ocean-areas](packages/ocean-areas)                 | Small library to get ocean area / eez names by viewport or by text search      |
-| [pbf-decoders](packages/pbf-decoders)               | PBF custom responses parsers                                                   |
-| [react-hooks](packages/react-hooks)                 | Set of hooks to use libraries easily in react                                  |
-| [timebar](packages/timebar)                         | Timebar component, not many more to say                                        |
-| [ui-components](packages/ui-components)             | Reusable atoms components kit                                                  |
-| [fourwings-aggregate](packages/fourwings-aggregate) | Logic to turn fourwings tiles or cells into meaningful values for the frontend |
+|                                                 |                                                                                |
+| ----------------------------------------------- | ------------------------------------------------------------------------------ |
+| [api-client](libs/api-client)                   | JS library to simplify GFW API login and resources fetch                       |
+| [api-types](libs/api-types)                     | API typescript schema definitions                                              |
+| [data-transforms](libs/data-transforms)         | Set ot shared tools for data transformations                                   |
+| [dataviews-client](libs/dataviews-client)       | Api-client wrapper to fetch and edit dataviews and associated datasets/data    |
+| [layer-composer](libs/layer-composer)           | Orchestrates various Layer Generators to generate a Mapbox GL Style document   |
+| [ocean-areas](libs/ocean-areas)                 | Small library to get ocean area / eez names by viewport or by text search      |
+| [pbf-decoders](libs/pbf-decoders)               | PBF custom responses parsers                                                   |
+| [react-hooks](libs/react-hooks)                 | Set of hooks to use libraries easily in react                                  |
+| [timebar](libs/timebar)                         | Timebar component, not many more to say                                        |
+| [ui-components](libs/ui-components)             | Reusable atoms components kit                                                  |
+| [fourwings-aggregate](libs/fourwings-aggregate) | Logic to turn fourwings tiles or cells into meaningful values for the frontend |
 
 ## Applications
 
@@ -142,22 +142,23 @@ cp apps/fishing-map/.build.env.sample apps/fishing-map/.build.env
 # Edit apps/fishing-map/.build.env and save your changes
 cp apps/vessel-history/.build.env.sample apps/vessel-history/.build.env
 # Edit apps/vessel-history/.build.env and save your changes
-cp apps/vessel-history/.build.env.sample apps/api-portal/.build.env
+cp apps/api-portal/.build.env.sample apps/api-portal/.build.env
 # Edit apps/api-portal/.build.env and save your changes
+cp apps/fourwings-explorer/.build.env.sample apps/fourwings-explorer/.build.env
+# Edit apps/fourwings-explorer/.build.env and save your changes
 ```
 
 3. Build the apps:
 
 ```bash
 npx env-cmd -f apps/fishing-map/.build.env nx build fishing-map --parallel
-nx run fishing-map:docker-prepare
 npx env-cmd -f apps/vessel-history/.build.env nx build vessel-history --parallel
-nx run vessel-history:docker-prepare
 npx env-cmd -f apps/api-portal/.build.env nx build api-portal --parallel
-nx run api-portal:docker-prepare
+npx env-cmd -f apps/fourwings-explorer/.build.env nx build fourwings-explorer --parallel
+nx run-many --target=docker-prepare --all
 ```
 
-4. Spin up docker compose:
+1. Spin up docker compose:
 
 ```bash
 docker-compose up -d
@@ -181,4 +182,5 @@ _Pending: Add `https://localhost` (or a more meaningful hostname) to the list of
 
 ## Generating release notes for github releases
 
-To generate the release notes you can run `nx changelog <app_or_lib_name>`. Note that such output is still not filtered by app or lib so you'll have to filter the list before using it in the release notes.
+To generate the release notes you can run `nx changelog <app_or_lib_name>`.
+This feature makes use of [Github REST API](https://docs.github.com/es/rest) to identify Pull Requests labeled with the `<app_or_lib_name>` label to include them in the changelog `What's Changed` section. The rest of PRs that are not identified, will be listed in the `Other changes not labeled with <app_or_lib_name>` section for you to review. It's recommended that you [create a Github Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) and set it to the `GH_PAT` environment variable so it can be used by this tool to have higher rate limits.

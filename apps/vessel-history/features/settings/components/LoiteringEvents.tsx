@@ -1,4 +1,3 @@
-import React from 'react'
 import {
   LOITERING_EVENTS_MAX_DISTANCE,
   LOITERING_EVENTS_MAX_DURATION,

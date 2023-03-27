@@ -1,10 +1,12 @@
 {
+  "name": "dataviews-client",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/dataviews-client/src",
   "projectType": "library",
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nrwl/web:rollup",
+      "executor": "@nrwl/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/dataviews-client",
@@ -31,7 +33,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/dataviews-client"],
+      "outputs": ["{workspaceRoot}/coverage/libs/dataviews-client"],
       "options": {
         "jestConfig": "libs/dataviews-client/jest.config.ts",
         "passWithNoTests": true

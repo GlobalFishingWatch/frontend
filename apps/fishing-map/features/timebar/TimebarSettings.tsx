@@ -21,6 +21,7 @@ import { ReactComponent as AreaIcon } from 'assets/icons/timebar-area.svg'
 import { ReactComponent as TracksIcon } from 'assets/icons/timebar-tracks.svg'
 import { ReactComponent as TrackSpeedIcon } from 'assets/icons/timebar-track-speed.svg'
 import { ReactComponent as TrackDepthIcon } from 'assets/icons/timebar-track-depth.svg'
+import { selectHasTracksData } from 'features/timebar/timebar.selectors'
 import { COLOR_PRIMARY_BLUE } from 'features/app/App'
 import {
   useTimebarVisualisationConnect,
@@ -62,6 +63,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const activeDetectionsDataviews = useSelector(selectActiveDetectionsDataviews)
   const activeEnvironmentalDataviews = useSelector(selectActiveNonTrackEnvironmentalDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
+  const hasTracksData = useSelector(selectHasTracksData)
   const activeVesselsDataviews = useSelector(selectActiveVesselsDataviews)
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { timebarSelectedEnvId, dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
@@ -166,10 +168,10 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   SvgIcon={TracksIcon}
                   label={t('timebarSettings.tracks', 'Tracks')}
                   color={activeTrackDataviews[0]?.config.color || COLOR_PRIMARY_BLUE}
-                  disabled={!activeTrackDataviews?.length}
+                  disabled={!hasTracksData || !activeTrackDataviews?.length}
                 />
               }
-              disabled={!activeTrackDataviews?.length}
+              disabled={!hasTracksData || !activeTrackDataviews?.length}
               active={
                 timebarVisualisation === TimebarVisualisations.Vessel &&
                 (timebarGraph === TimebarGraphs.None || !timebarGraphEnabled)
@@ -187,10 +189,10 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   SvgIcon={TrackSpeedIcon}
                   label={t('timebarSettings.graphSpeed', 'Vessel Speed')}
                   color={activeTrackDataviews[0]?.config.color || COLOR_PRIMARY_BLUE}
-                  disabled={!activeTrackDataviews?.length || !timebarGraphEnabled}
+                  disabled={!hasTracksData || !activeTrackDataviews?.length || !timebarGraphEnabled}
                 />
               }
-              disabled={!activeTrackDataviews?.length || !timebarGraphEnabled}
+              disabled={!hasTracksData || !activeTrackDataviews?.length || !timebarGraphEnabled}
               active={
                 timebarVisualisation === TimebarVisualisations.Vessel &&
                 timebarGraph === TimebarGraphs.Speed &&
@@ -214,10 +216,10 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   SvgIcon={TrackDepthIcon}
                   label={t('timebarSettings.graphDepth', 'Vessel Depth')}
                   color={activeTrackDataviews[0]?.config.color || COLOR_PRIMARY_BLUE}
-                  disabled={!activeTrackDataviews?.length || !timebarGraphEnabled}
+                  disabled={!hasTracksData || !activeTrackDataviews?.length || !timebarGraphEnabled}
                 />
               }
-              disabled={!activeTrackDataviews?.length || !timebarGraphEnabled}
+              disabled={!hasTracksData || !activeTrackDataviews?.length || !timebarGraphEnabled}
               active={
                 timebarVisualisation === TimebarVisualisations.Vessel &&
                 timebarGraph === TimebarGraphs.Depth &&
@@ -237,7 +239,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
             />
             {activeEnvironmentalDataviews.map((envDataview, i) => {
               const dataset = envDataview.datasets?.find(
-                (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.Context
+                (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.UserContext
               )
 
               const title = t(`datasets:${dataset?.id}.name` as any, dataset?.name || dataset?.id)

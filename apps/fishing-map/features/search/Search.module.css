@@ -132,6 +132,10 @@
   cursor: pointer;
 }
 
+.red {
+  color: var(--color-danger-red);
+}
+
 .searchResult:hover .properties,
 .searchResult:hover .properties label {
   cursor: pointer;
@@ -174,4 +178,23 @@
 
 .footerAction {
   flex: 1;
+}
+
+.groupOptions {
+  padding: var(--space-S);
+  padding-right: 0;
+}
+
+.groupOption {
+  cursor: pointer;
+  padding: var(--space-XS);
+  padding-right: var(--space-M);
+}
+
+.groupOptionNew {
+  text-decoration: underline;
+}
+
+.groupOption:not(:last-of-type) {
+  border-bottom: var(--border);
 }

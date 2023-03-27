@@ -1,0 +1,98 @@
+steps:
+  - name: 'gcr.io/$PROJECT_ID/restore_cache'
+    id: restore_cache
+    waitFor: ['-']
+    script: |
+      #!/usr/bin/env bash
+      restore_cache --bucket=gs://frontend-cache-dependencies --key=yarn-$( checksum yarn.lock ) --key_fallback=yarn3-cache
+
+  - id: 'install-yarn'
+    waitFor: ['restore_cache']
+    name: node:18-alpine
+    script: |
+      if [ ! -d "node_modules" ]; then
+        apk add git
+        yarn set version 3.3.1
+        yarn -v
+        yarn install --immutable
+      fi
+
+  - id: 'save_cache'
+    waitFor: ['install-yarn']
+    name: 'gcr.io/$PROJECT_ID/restore_cache'
+    env:
+      - 'BRANCH_NAME=$BRANCH_NAME'
+    script: |
+      #!/usr/bin/env bash
+      save_cache --bucket=gs://frontend-cache-dependencies --key=yarn-$( checksum yarn.lock ) --path=./node_modules --no-clobber
+      if [ -d ".yarn/cache" ]; then
+        if [ $BRANCH_NAME == "dev" ]; then
+          save_cache --bucket=gs://frontend-cache-dependencies --key=yarn3-cache --path=./.yarn/cache
+        fi
+      fi
+
+  - id: 'build-app'
+    waitFor: ['install-yarn']
+    name: gcr.io/cloud-builders/yarn:latest
+    entrypoint: yarn
+    args: ['nx', 'build', 'deck-playground', '--parallel']
+    env:
+      - 'NX_BRANCH=$_NX_BRANCH'
+      - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
+      - 'NEXT_PUBLIC_API_GATEWAY=$_NEXT_PUBLIC_API_GATEWAY'
+
+  - id: 'docker-prepare'
+    waitFor: ['build-app']
+    name: node:14
+    entrypoint: yarn
+    args: ['nx', 'docker-prepare', 'deck-playground']
+
+  - name: 'gcr.io/kaniko-project/executor:v1.6.0'
+    id: 'build-image'
+    waitFor: ['docker-prepare']
+    args:
+      [
+        '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/deck-playground:$COMMIT_SHA',
+        '--cache=true',
+        '--build-arg',
+        'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
+        '--build-arg',
+        'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
+        '--target',
+        'production',
+        '-f',
+        './apps/deck-playground/Dockerfile',
+        '-c',
+        './dist/apps/deck-playground',
+      ]
+
+  # Deploy to the appropriate environment
+  - name: 'gcr.io/cloud-builders/gcloud'
+    waitFor: ['build-image']
+    id: 'deploy-cloud-run'
+    entrypoint: 'bash'
+    env:
+      - '_RUN_SERVICE_NAME=$_RUN_SERVICE_NAME'
+    args:
+      - '-eEuo'
+      - 'pipefail'
+      - '-c'
+      - |-
+        branch_service_name=`echo deck-playground-$BRANCH_NAME | sed -r 's,[/\.],-,g' | awk '{print substr(tolower($0),0,62)}'`
+        service_name=${_RUN_SERVICE_NAME:-${branch_service_name}}
+        gcloud beta run deploy \
+        $service_name \
+        --project \
+        $_RUN_PROJECT \
+        --image \
+        gcr.io/world-fishing-827/github.com/globalfishingwatch/deck-playground:$COMMIT_SHA \
+        --region \
+        $_RUN_REGION \
+        --platform managed \
+        --set-env-vars \
+        BASIC_AUTH=$_BASIC_AUTH \
+        --allow-unauthenticated
+
+timeout: 1800s
+options:
+  machineType: 'E2_HIGHCPU_8'

@@ -13,6 +13,8 @@ import { useTimeCompareTimeDescription } from 'features/analysis/analysisDescrip
 import DetectionsTooltipRow from 'features/map/popups/DetectionsLayers'
 import UserPointsTooltipSection from 'features/map/popups/UserPointsLayers'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { WORKSPACE_GENERATOR_ID } from 'features/map/map.selectors'
+import WorkspacePointsTooltipSection from 'features/map/popups/WorkspacePointsLayers'
 import { selectApiEventStatus, selectFishingInteractionStatus } from '../map.slice'
 import styles from './Popup.module.css'
 import ActivityTooltipRow from './ActivityLayers'
@@ -54,7 +56,9 @@ function PopupWrapper({
 
   if (!event) return null
 
-  const visibleFeatures = event.features.filter((feature) => feature.visible)
+  const visibleFeatures = event.features.filter(
+    (feature) => feature.visible || feature.source === WORKSPACE_GENERATOR_ID
+  )
   const featureByCategory = groupBy(
     visibleFeatures.sort(
       (a, b) => POPUP_CATEGORY_ORDER.indexOf(a.category) - POPUP_CATEGORY_ORDER.indexOf(b.category)
@@ -152,12 +156,16 @@ function PopupWrapper({
                 const defaultContextFeatures = features.filter(
                   (feature) => feature.type === GeneratorType.Context
                 )
+                const workspacePointsFeatures = features.filter(
+                  (feature) => feature.source === WORKSPACE_GENERATOR_ID
+                )
                 return (
                   <Fragment key={featureCategory}>
                     <UserPointsTooltipSection
                       features={userPointFeatures}
                       showFeaturesDetails={type === 'click'}
                     />
+                    <WorkspacePointsTooltipSection features={workspacePointsFeatures} />
                     <UserContextTooltipSection
                       features={userContextFeatures}
                       showFeaturesDetails={type === 'click'}

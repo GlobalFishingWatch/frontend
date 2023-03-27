@@ -1,9 +1,8 @@
-import { useEffect, useState, useMemo, useCallback, Fragment } from 'react'
+import { useEffect, useState, useMemo, useCallback } from 'react'
 import cx from 'classnames'
 import { Trans, useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import { batch, useSelector } from 'react-redux'
-import { DateTime } from 'luxon'
 import {
   Button,
   IconButton,
@@ -27,18 +26,18 @@ import {
   selectAnalysisTimeComparison,
   selectAnalysisTypeQuery,
 } from 'features/app/app.selectors'
-import { WorkspaceAnalysisType } from 'types'
-import { useMapFitBounds } from 'features/map/map-viewport.hooks'
-import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
+import { Locale, WorkspaceAnalysisType } from 'types'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { getUTCDateTime } from 'utils/dates'
+import SOURCE_SWITCH_CONTENT from 'features/welcome/SourceSwitch.content'
 import styles from './Analysis.module.css'
 import AnalysisEvolution from './AnalysisEvolution'
-import { useAnalysisArea, useFilteredTimeSeries } from './analysis.hooks'
+import { useAnalysisArea, useFilteredTimeSeries, useFitAreaInViewport } from './analysis.hooks'
 import { AnalysisGraphProps } from './AnalysisEvolutionGraph'
 import { ComparisonGraphProps } from './AnalysisPeriodComparisonGraph'
 import AnalysisPeriodComparison from './AnalysisPeriodComparison'
@@ -62,23 +61,24 @@ const ANALYSIS_COMPONENTS_BY_TYPE: Record<
 }
 
 function Analysis() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const fitAreaInViewport = useFitAreaInViewport()
+  const { disclaimer } = SOURCE_SWITCH_CONTENT[(i18n.language as Locale) || Locale.en]
   const { start, end } = useTimerangeConnect()
-  const fitMapBounds = useMapFitBounds()
   const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const dataviews = useSelector(selectActiveHeatmapDataviews)
   const userData = useSelector(selectUserData)
   const analysisType = useSelector(selectAnalysisTypeQuery)
-  const { bounds } = useSelector(selectAnalysisQuery)
+  const { bounds, areaId, datasetId } = useSelector(selectAnalysisQuery)
   const timeComparison = useSelector(selectAnalysisTimeComparison)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
 
   const analysisArea = useAnalysisArea()
-  const analysisAreaName = analysisArea?.name
-  const analysisAreaError = analysisArea.status === AsyncReducerStatus.Error
-  const analysisAreaLoading = analysisArea.status === AsyncReducerStatus.Loading
+  const analysisAreaName = analysisArea?.data?.name
+  const analysisAreaError = analysisArea?.status === AsyncReducerStatus.Error
+  const analysisAreaLoading = analysisArea?.status === AsyncReducerStatus.Loading
 
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
   const datasetsReportAllowed = getActivityDatasetsDownloadSupported(
@@ -92,8 +92,8 @@ function Analysis() {
 
   useEffect(() => {
     if (start && end) {
-      const startDateTime = DateTime.fromISO(start)
-      const endDateTime = DateTime.fromISO(end)
+      const startDateTime = getUTCDateTime(start)
+      const endDateTime = getUTCDateTime(end)
       const duration = endDateTime.diff(startDateTime, 'years')
       setTimeRangeTooLong(duration.years > 1)
     }
@@ -112,7 +112,7 @@ function Analysis() {
   }
 
   const onDownloadClick = async () => {
-    dispatch(setDownloadActivityAreaKey(analysisArea.key))
+    dispatch(setDownloadActivityAreaKey({ areaId, datasetId }))
   }
 
   const { error, blur, loading, layersTimeseriesFiltered } = useFilteredTimeSeries()
@@ -198,10 +198,10 @@ function Analysis() {
           }),
         })
       }
-      fitMapBounds(bounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
+      fitAreaInViewport()
       dispatchQueryParams({ analysisType: option.id as WorkspaceAnalysisType })
     },
-    [timeComparison, fitMapBounds, bounds, dispatchQueryParams, analysisAreaName, dataviews]
+    [timeComparison, fitAreaInViewport, dispatchQueryParams, analysisAreaName, dataviews]
   )
 
   const AnalysisComponent = useMemo(() => ANALYSIS_COMPONENTS_BY_TYPE[analysisType], [analysisType])
@@ -284,7 +284,7 @@ function Analysis() {
               disabled={!bounds}
             />
           </div>
-          <div>
+          <div className={styles.placeholderContainer}>
             <p className={styles.placeholder}>
               <Trans i18nKey="analysis.disclaimer">
                 The data shown above should be taken as an estimate.
@@ -293,33 +293,34 @@ function Analysis() {
                 </a>
               </Trans>
             </p>
-          </div>
-          {showReportDownload && (
-            <Fragment>
-              <div className="print-hidden">
+            <div className="print-hidden">
+              <p className={styles.placeholder} dangerouslySetInnerHTML={{ __html: disclaimer }} />
+              {showReportDownload && (
                 <p className={styles.placeholder}>
                   {t(
                     'analysis.disclaimerReport',
                     'Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.'
                   )}
                 </p>
-              </div>
-              <div className={cx('print-hidden', styles.footer)}>
-                <LoginButtonWrapper
-                  tooltip={t('analysis.downloadLogin', 'Please login to download report')}
+              )}
+            </div>
+          </div>
+          {showReportDownload && (
+            <div className={cx('print-hidden', styles.footer)}>
+              <LoginButtonWrapper
+                tooltip={t('analysis.downloadLogin', 'Please login to download report')}
+              >
+                <Button
+                  className={styles.saveBtn}
+                  onClick={onDownloadClick}
+                  tooltip={downloadTooltip}
+                  tooltipPlacement="top"
+                  disabled={disableReportDownload}
                 >
-                  <Button
-                    className={styles.saveBtn}
-                    onClick={onDownloadClick}
-                    tooltip={downloadTooltip}
-                    tooltipPlacement="top"
-                    disabled={disableReportDownload}
-                  >
-                    {t('analysis.download', 'Download report')}
-                  </Button>
-                </LoginButtonWrapper>
-              </div>
-            </Fragment>
+                  {t('analysis.download', 'Download report')}
+                </Button>
+              </LoginButtonWrapper>
+            </div>
           )}
         </div>
       )}

@@ -1,13 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { VesselSearch } from '@globalfishingwatch/api-types'
+import { RelatedVesselSearchMerged, VesselSearch } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { fetchVesselSearchThunk, getSerializedQuery } from './search.thunk'
+import { mergeSearchVessels } from './search.utils'
 
 export type CachedVesselSearch = {
   offset: number
   searching: boolean
   total: number | null
-  vessels: VesselSearch[]
+  vessels: RelatedVesselSearchMerged[]
+}
+export type HttpError = {
+  message: string,
+  status: number
 }
 
 const searchInitialState = {
@@ -21,12 +26,16 @@ export type CachedQuerySearch = {
 
 export type SearchSlice = {
   status: AsyncReducerStatus
+  error?: HttpError
   queries: CachedQuerySearch
+  sources: string[]
 }
 
 const initialState: SearchSlice = {
   status: AsyncReducerStatus.Idle,
   queries: {},
+  error: null,
+  sources: []
 }
 
 const slice = createSlice({
@@ -40,6 +49,8 @@ const slice = createSlice({
         action.meta.arg.query,
         action.meta.arg.advancedSearch
       )
+      state.error = null
+      state.sources = []
       if (serializedQuery) {
         if (!state.queries[serializedQuery]) {
           state.queries[serializedQuery] = {
@@ -62,12 +73,13 @@ const slice = createSlice({
         action.meta.arg.advancedSearch
       )
       if (action.payload) {
+        state.sources = action.payload.sources
         state.queries[serializedQuery] = {
           ...action.payload,
           vessels:
             action.meta.arg.offset > 0
               ? [...state.queries[serializedQuery].vessels, ...action.payload.vessels]
-              : action.payload.vessels,
+              : mergeSearchVessels(action.payload.vessels),
         }
       } else {
         state.queries[serializedQuery].searching = false
@@ -78,6 +90,7 @@ const slice = createSlice({
         action.meta.arg.query,
         action.meta.arg.advancedSearch
       )
+      state.error = action.payload as HttpError
       if (state.queries[serializedQuery]) {
         state.queries[serializedQuery].searching = false
       }

@@ -168,12 +168,13 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
   "private-bra-onyxsat-fishing-effort": {
-    "name": "VMS Brasil",
+    "name": "VMS Brasil (Esforço de Pesca)",
     "description": "Dados de rastreamento por satélite são fornecidos pela Secretaria de Aquicultura e Pesca. Os dados são coletados do sistema de rastreamento de embarcações pesqueira do Brasil e publicados com atraso de três dias, contendo informações sobre a identidade da embarcação, localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica para transmissão de localização em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações AIS, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada.",
     "schema": {
       "flag": "bandeira",
@@ -377,7 +378,7 @@
     }
   },
   "private-bra-onyxsat-presence": {
-    "name": "VMS Brasil",
+    "name": "VMS Brasil (Presença)",
     "description": "Presença (Brasil Privado)",
     "schema": {
       "lat": "lat",
@@ -400,7 +401,8 @@
       "lat": "lat",
       "lon": "lon",
       "flag": "bandeira",
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "private-costa-rica-fishing-effort": {
@@ -442,6 +444,7 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
@@ -486,6 +489,7 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
@@ -511,6 +515,63 @@
       "normalized_shipname": "Embarcação normalizado",
       "lastTransmissionDate": "última data de transmissão",
       "firstTransmissionDate": "primeira data de transmissão"
+    }
+  },
+  "private-indonesia-aruna-fishing-effort": {
+    "name": "Aruna: Indonesia Pelagic",
+    "description": "Indonesia Aruna Fishing Effort",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "set longline": "set longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      },
+      "vessel_id": "vessel_id"
+    }
+  },
+  "private-indonesia-aruna-presence": {
+    "name": "Aruna: Indonesia Pelagic",
+    "description": "Aruna Presence",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "set longline": "set longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
+    }
+  },
+  "private-indonesia-aruna-vessels": {
+    "name": "Indonesia Aruna (Vessels)",
+    "description": "Vessels (Indonesia Aruna)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "dataset": "dataset",
+      "geartype": "geartype",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
     }
   },
   "private-indonesia-fishing-effort": {
@@ -546,12 +607,91 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "private-indonesia-ipnlf-fishing-effort": {
+    "name": "AP2HI-IPNLF: Indonesia Pelagic",
+    "description": "Indonesia AP2HI-IPNLF Fishing Effort",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "set longline": "set longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      },
+      "vessel_id": "vessel_id"
+    }
+  },
+  "private-indonesia-ipnlf-presence": {
+    "name": "AP2HI-IPNLF: Indonesia Pelagic",
+    "description": "AP2HI-IPNLF Presence",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "set longline": "set longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
+    }
+  },
+  "private-indonesia-ipnlf-vessels": {
+    "name": "Indonesia AP2HI-IPNLF (Vessels)\n",
+    "description": "Vessels (Indonesia AP2HI-IPNLF)\n",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "dataset": "dataset",
+      "geartype": "geartype",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
+  "private-indonesia-pelagic-fishing-effort": {
+    "name": "Indonesia Pelagic (Pilot)",
+    "description": "Indonesia Pelagic Fishing Effort Private Data",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "set longline": "set longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      },
+      "vessel_id": "vessel_id"
+    }
+  },
   "private-indonesia-pelagic-presence": {
-    "name": "Pelagic",
+    "name": "Indonesia Pelagic (Pilot)",
     "description": "Pelagic Presence",
     "schema": {
       "lat": "lat",
@@ -562,12 +702,14 @@
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
+          "set longline": "set longline",
           "traps": "traps",
           "purse seine": "purse seine",
           "Handline": "Handline"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "private-indonesia-pelagic-vessels": {
@@ -611,11 +753,69 @@
           "Squid hooking": "Squid hooking"
         }
       },
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
+    }
+  },
+  "private-indonesia-rare-fishing-effort": {
+    "name": "Rare: Indonesia Pelagic",
+    "description": "Indonesia Rare Fishing Effort",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "set longline": "set longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      },
       "vessel_id": "vessel_id"
     }
   },
+  "private-indonesia-rare-presence": {
+    "name": "Rare: Indonesia Pelagic",
+    "description": "Rare Presence",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "set longline": "set longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
+    }
+  },
+  "private-indonesia-rare-vessels": {
+    "name": "Indonesia Rare (Vessels)",
+    "description": "Vessels (Indonesia Rare)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "dataset": "dataset",
+      "geartype": "geartype",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "private-indonesia-zebrax-presence": {
-    "name": "Pesca Costeira Indonésia",
+    "name": "Indonesia Zebrax (Private)",
     "description": "Esta camada do Global Fishing Watch usa dados fornecidos pela Rare, Aruna e AP2HI. Os dados são coletados usando dispositivos de diferentes provedores que rastreiam a localização e a velocidade. As informações mostradas representam a presença do vaso. A presença é determinada tomando todas as posições transmitidas pelo dispositivo de rastreamento da embarcação.",
     "schema": {
       "lat": "lat",
@@ -630,7 +830,8 @@
           "purse seine": "purse seine"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "private-indonesia-zebrax-vessels": {
@@ -662,6 +863,7 @@
       "hours": "hours",
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
@@ -710,6 +912,23 @@
       "veselType": "veselType",
       "lastTransmissionDate": "última data de transmissão",
       "firstTransmissionDate": "primeira data de transmissão"
+    }
+  },
+  "private-panama-presence": {
+    "name": "Vessel Presence Panama VMS",
+    "description": "This layer uses the Vessel Monitoring System (VMS) data provided by the Panamanian Authority of Aquatic Resources (ARAP). The data is received by Panama’s VMS system via satellite and contains vessel identities, gear type, location, speed, direction and more. Each point in the carrier vessel data layer represents a position of the carriers, but not all positions are displayed. Carrier vessel positions are displayed once per day. Click on a carrier vessel’s position to view the vessel’s complete track.",
+    "schema": {
+      "flag": "flag",
+      "shiptype": {
+        "keyword": "shiptype",
+        "enum": {
+          "carrier": "carrier",
+          "fishing": "fishing",
+          "oil_tanker": "oil_tanker"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "private-peru-fishing-effort": {
@@ -853,6 +1072,26 @@
         }
       },
       "vessel_id": "vessel_id"
+    }
+  },
+  "proto-global-encounters-events": {
+    "name": "Encounter Events. (AIS)",
+    "description": "The dataset contains encounter events with authorizations for AIS. [Fishing-Carriers, Carriers-Fishing, Support-Fishing, Fishing-Support]",
+    "schema": {
+      "fields": "fields",
+      "event_id": "event_id",
+      "event_end": "event_end",
+      "vessel_id": "vessel_id",
+      "event_info": "event_info",
+      "event_type": {
+        "keyword": "event_type",
+        "enum": {
+          "port": "port"
+        }
+      },
+      "event_start": "event_start",
+      "event_vessels": "event_vessels",
+      "event_mean_position": "event_mean_position"
     }
   },
   "public-ais-presence-viirs-match-prototype": {
@@ -1095,7 +1334,8 @@
       "lat": "lat",
       "lon": "lon",
       "flag": "bandeira",
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "public-chile-all-vessels": {
@@ -1288,13 +1528,19 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
   "public-eez-areas": {
-    "name": "Areas geometries for eez",
-    "description": "Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org",
+    "name": "EEZs",
+    "description": "Exclusive economic zones (EEZs) extend up to 200 nautical miles from a country's coast. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org.",
+    "schema": {}
+  },
+  "public-eez-areas-12nm": {
+    "name": "EEZs 12nm",
+    "description": "Exclusive economic zones (EEZs) extend up to 200 nautical miles from a country's coast. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (12NM), version 11. Source: marineregions.org.",
     "schema": {}
   },
   "public-eez-boundaries": {
@@ -1307,228 +1553,69 @@
     "description": "Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org",
     "schema": {}
   },
+  "public-fao": {
+    "name": "FAO",
+    "description": "FAO Major Fishing Areas for Statistical Purposes are arbitrary areas, the boundaries of which were determined in consultation with international fishery agencies on various considerations, including (i) the boundary of natural regions and the natural divisions of oceans and seas; (ii) the boundaries of adjacent statistical fisheries bodies already established in inter-governmental conventions and treaties; (iii) existing national practices; (iv) national boundaries; (v) the longitude and latitude grid system; (vi) the distribution of the aquatic fauna; and (vii) the distribution of the resources and the environmental conditions within an area.",
+    "schema": {}
+  },
   "public-fao-areas-major-subareas": {
     "name": "Fao areas (major & subareas)",
     "description": "FAO major fishing areas for statistical purposes are arbitrary areas, the boundaries of which were determined in consultation with international fishery agencies. The major fishing areas, inland and marine, are listed below by two-digit codes and their names. To access maps and description of boundaries of each fishing area click on the relevant item in the list below or in the map showing the 19 major marine fishing areas. <a href='https://www.fao.org/fishery/en/area/search' target='_blank'>Source</a>",
     "schema": {}
   },
-  "public-fd-chlorophyl-ascension-v3": {
-    "name": "Chlorophyll-a concentration",
-    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
+  "public-fao-major": {
+    "name": "FAO major fishing areas",
+    "description": "FAO major fishing areas for statistical purposes are arbitrary areas, the boundaries of which were determined in consultation with international fishery agencies. The major fishing areas, inland and marine, are listed below by two-digit codes and their names. To access maps and description of boundaries of each fishing area click on the relevant item in the list below or in the map showing the 19 major marine fishing areas. <a href='https://www.fao.org/fishery/en/area/search' target='_blank'>Source</a>. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer",
     "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-chlorophyl-caribe-v3": {
-    "name": "Chlorophyll-a concentration",
-    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
-    "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-chlorophyl-fiji-v3": {
-    "name": "Chlorophyll-a concentration",
-    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
-    "schema": {}
-  },
-  "public-fd-chlorophyl-fsm-v3": {
-    "name": "Chlorophyll-a concentration",
-    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
-    "schema": {}
-  },
-  "public-fd-chlorophyl-galapagos-v3": {
-    "name": "Chlorophyll-a concentration",
-    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
-    "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-chlorophyl-maldives-v3": {
-    "name": "Chlorophyll-a concentration",
-    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
-    "schema": {}
-  },
-  "public-fd-chlorophyl-mediterranean-v3": {
-    "name": "Chlorophyll-a concentration",
-    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
-    "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-chlorophyl-niue-v3": {
-    "name": "Chlorophyll-a concentration",
-    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
-    "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-chlorophyl-palau-v3": {
-    "name": "Chlorophyl Palau",
-    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
-    "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-chlorophyl-tristan-v3": {
-    "name": "Chlorophyll-a concentration",
-    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
-    "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-salinity-ascension-v3": {
-    "name": "Salinity",
-    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: HYCOM.",
-    "schema": {
-      "flag": "bandeira",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-salinity-caribe-v3": {
-    "name": "Salinity",
-    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: HYCOM.",
-    "schema": {
-      "flag": "bandeira",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-salinity-fiji-v3": {
-    "name": "Salinity",
-    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
-    "schema": {}
-  },
-  "public-fd-salinity-fsm-v3": {
-    "name": "Salinity",
-    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
-    "schema": {}
-  },
-  "public-fd-salinity-galapagos-v3": {
-    "name": "Salinity",
-    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: HYCOM.",
-    "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-salinity-maldives-v3": {
-    "name": "Salinity",
-    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
-    "schema": {}
-  },
-  "public-fd-salinity-mediterranean-v3": {
-    "name": "Salinity",
-    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
-    "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-salinity-niue-v3": {
-    "name": "Salinity",
-    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
-    "schema": {
-      "flag": "bandeira",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-salinity-palau-v3": {
-    "name": "Salinity",
-    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
-    "schema": {
-      "flag": "bandeira",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-salinity-tristan-v3": {
-    "name": "Salinity",
-    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
-    "schema": {
-      "flag": "bandeira",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-water-temperature-ascension-v3": {
-    "name": "Sea surface temperature",
-    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM",
-    "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-water-temperature-caribe-v3": {
-    "name": "Sea surface temperature",
-    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM",
-    "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-water-temperature-fiji-v3": {
-    "name": "Sea surface temperature",
-    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM",
-    "schema": {}
-  },
-  "public-fd-water-temperature-fsm-v3": {
-    "name": "Sea surface temperature",
-    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM",
-    "schema": {}
-  },
-  "public-fd-water-temperature-galapagos-v3": {
-    "name": "Sea surface temperature",
-    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM",
-    "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-water-temperature-maldives-v3": {
-    "name": "Sea surface temperature",
-    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM",
-    "schema": {}
-  },
-  "public-fd-water-temperature-mediterranean-v3": {
-    "name": "Sea surface temperature",
-    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM",
-    "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-water-temperature-niue-v3": {
-    "name": "Sea surface temperature",
-    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM",
-    "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-water-temperature-palau-v3": {
-    "name": "Sea surface temperature",
-    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM",
-    "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "public-fd-water-temperature-tristan-v3": {
-    "name": "Sea surface temperature",
-    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM",
-    "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
+      "FID": "FID"
     }
   },
   "public-fisheries-restricted-areas": {
     "name": "Fisheries Restricted Areas",
     "description": "",
     "schema": {}
+  },
+  "public-global-all-vessels": {
+    "name": "AIS (All Vessels)",
+    "description": "Vessels from AIS",
+    "schema": {
+      "id": "id",
+      "imo": "imo",
+      "flag": "flag",
+      "mmsi": "mmsi",
+      "source": "source",
+      "dataset": "dataset",
+      "callsign": "callsign",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "tuna_purse_seines": "tuna_purse_seines",
+          "driftnets": "driftnets",
+          "trollers": "trollers",
+          "set_longlines": "set_longlines",
+          "purse_seines": "purse_seines",
+          "pots_and_traps": "pots_and_traps",
+          "other_fishing": "other_fishing",
+          "dredge_fishing": "dredge_fishing",
+          "set_gillnets": "set_gillnets",
+          "fixed_gear": "fixed_gear",
+          "trawlers": "trawlers",
+          "fishing": "fishing",
+          "seiners": "seiners",
+          "other_purse_seines": "other_purse_seines",
+          "other_seines": "other_seines",
+          "squid_jigger": "squid_jigger",
+          "pole_and_line": "pole_and_line",
+          "drifting_longlines": "drifting_longlines"
+        }
+      },
+      "msgCount": "msgCount",
+      "posCount": "posCount",
+      "shipname": "shipname",
+      "normalized_shipname": "normalized_shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
   },
   "public-global-carrier-vessels": {
     "name": "AIS (Carrier Vessels)",
@@ -1544,6 +1631,11 @@
       "lastTransmissionDate": "última data de transmissão",
       "firstTransmissionDate": "primeira data de transmissão"
     }
+  },
+  "public-global-chlorophyl": {
+    "name": "Concentração de clorofila-a",
+    "description": "Clorofila é o pigmento encontrado em todas as plantas fotossintéticas. A sua concentração no oceano é utilizada como um índice da biomassa fitoplanctônica e, como tal, é um elemento fundamental para os modelos de produtividade primária. O instrumento moderado de resolução que imagina o espectro (MODIS) a bordo dos satélites Terra e de Aqua da NASA mede a cor do oceano todos os dias, da qual as concentrações globais de clorofila-a são derivadas. o fitoplâncton oceaânico fixa quimicamente o carbono através da fotossíntese, absorvendo dióxido de carbono dissolvido e produzindo oxigênio. Através deste processo, as plantas marinhas capturam uma quantidade igual de carbono do que a fotossíntese por vegetação terrestre. Mudanças na quantidade de fittoplâncton indicam a mudança na produtividade dos oceanos e fornecem uma ligação oceânica fundamental para o acompanhamento global das alterações climáticas. Os cientistas utilizam a clorofila na modelagem dos ciclos biogeoquímicos da Terra, como o ciclo do carbono ou o ciclo do nitrogênio. Além disso, em curto período, a clorofila pode ser usada para rastrear correntes oceanográficas, jatos e plumas estuarinas. A resolução de 1 quilômetro e cobertura global quase diária dos dados MODIS, permite assim que os cientistas observem características oceanográficas de mesoescala em ambientes costeiros e estuarinos, que são cada vez mais importantes nos estudos das ciências marinhas. Fonte: Observações à Terra da NASA.",
+    "schema": {}
   },
   "public-global-encounters-events-carriers-fishing": {
     "name": "Encounter Events for Carriers-Fishing Vessels (AIS)",
@@ -1659,6 +1751,46 @@
       "firstTransmissionDate": "primeira data de transmissão"
     }
   },
+  "public-global-loitering-events-carriers": {
+    "name": "Loitering Events for Carriers Vessels (AIS)",
+    "description": "The dataset contains loitering events for AIS (Carriers).",
+    "schema": {
+      "fields": "fields",
+      "event_id": "event_id",
+      "event_end": "event_end",
+      "vessel_id": "vessel_id",
+      "event_info": "event_info",
+      "event_type": {
+        "keyword": "event_type",
+        "enum": {
+          "port": "port"
+        }
+      },
+      "event_start": "event_start",
+      "event_vessels": "event_vessels",
+      "event_mean_position": "event_mean_position"
+    }
+  },
+  "public-global-loitering-events": {
+    "name": "Loitering Events (AIS)",
+    "description": "The dataset contains loitering events for AIS",
+    "schema": {
+      "fields": "fields",
+      "event_id": "event_id",
+      "event_end": "event_end",
+      "vessel_id": "vessel_id",
+      "event_info": "event_info",
+      "event_type": {
+        "keyword": "event_type",
+        "enum": {
+          "port": "port"
+        }
+      },
+      "event_start": "event_start",
+      "event_vessels": "event_vessels",
+      "event_mean_position": "event_mean_position"
+    }
+  },
   "public-global-presence": {
     "name": "AIS",
     "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as carriers. The activity layer displays a heatmap of vessel presence. The presence is determined by taking one position per day per vessel from the positions transmitted by the vessel's AIS.",
@@ -1677,7 +1809,8 @@
           "other_non_fishing": "other_non_fishing",
           "unknown": "unknown"
         }
-      }
+      },
+      "vessel-groups": "vessel-groups"
     }
   },
   "public-global-sar-footprints": {
@@ -1763,9 +1896,19 @@
       "timestamp": "timestamp"
     }
   },
+  "public-global-water-salinity": {
+    "name": "Salinidade",
+    "description": "A salinidade de superfície do mar é um parâmetro fundamental para estimar a influência dos oceanos no clima. Assim como a temperatura, a salinidade é um fator fundamental que determina a densidade da água oceânica e influencia, assim, o afundamento e o ressurgimento de massas de água. A circulação termohalina ocorre em todos os oceanos entre a superfície e o fundo, impulsionada pela temperatura e pela salinidade. A circulação termohalina global é um modelo simples de circulação em grande escala. As águas profundas formadas no Atlântico Norte, se movem para sul, circulam em torno da Antárctica e finalmente entram nas bacias do Atlântico Índico, Pacífico e Atlântico. Correntes trazem massa de água fria do norte ao sul e vice-versa. Esta circulação termohalina tem grande influência na formação de gelo marinho nos polos, e transporta fontes de alimentos oceânicos e a vida marinha em todo o planeta, além de afetar padrões de chuva, padrões de vento, furacões e monsões. Fonte: Informações sobre o Serviço Marinho da UE.",
+    "schema": {}
+  },
+  "public-global-water-temperature": {
+    "name": "Temperatura da superfície do mar",
+    "description": "A temperatura da superfície do mar é a temperatura da água na superfície do oceano. O Modelo de Oceano Coordenado Híbrido (HYCOM) é um modelo de coordenadas oceânicas híbrido de dados análoga à pressão híbrida isopycnal-sigma (generalizado). O subconjunto de dados HYCOM hospedados na EE contém as variáveis salinidade, temperatura, velocidade vetorial e altitude. Eles foram interpolados para uma grade uniforme de 0,08 graus de lato/longo entre 70,48°S e 85,48°N. A salinidade, a temperatura e as variáveis de velocidade vetorial foram interpoladas para 40 níveis z-padrão. Fonte: HYCOM",
+    "schema": {}
+  },
   "public-graticules": {
-    "name": "Graticules",
-    "description": "Grids at 1, 5, 10, and 30° intervals. <a href='https://www.naturalearthdata.com/downloads/110m-physical-vectors/110m-graticules' target='_blank'>Source</a>",
+    "name": "Latitude longitude grids",
+    "description": "Grids or graticules of latitude and longitude at 1, 5, 10 and 30° intervals depending on the zoom level of the map (Source: <a href='https://www.naturalearthdata.com/downloads/110m-physical-vectors/110m-graticules/'_blank'>Natural Earth</a>).",
     "schema": {}
   },
   "public-gs-as-simplified": {
@@ -1779,8 +1922,13 @@
     "schema": {}
   },
   "public-high-seas": {
-    "name": "High seas pockets",
+    "name": "High seas",
     "description": "The High Seas are any area of the ocean beyond Exclusive Economic Zones (EEZ). High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them.",
+    "schema": {}
+  },
+  "public-high-seas-pockets": {
+    "name": "High seas pockets",
+    "description": "This data set is derived from the Marine Regions high-seas data set by extracting just the polygons corresponding to the 15 high seas pockets that GFW has labeled from HSP-1 to HSP-15.   Note that HSP-15 is split across the anti-meridian, so it appears in two pieces that have the same label.   Naming of the pockets is consistent with the naming that WCPFC uses to identify HSP 1-4.",
     "schema": {}
   },
   "public-indonesia-fishing-effort": {
@@ -1816,12 +1964,33 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "public-indonesia-pelagic-fishing-effort": {
+    "name": "Indonesia Pelagic (Pilot)",
+    "description": "Indonesia Pelagic Fishing Effort Public Data",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "gillnets": "gillnets",
+          "longline": "longline",
+          "set longline": "set longline",
+          "traps": "traps",
+          "purse seine": "purse seine",
+          "Handline": "Handline"
+        }
+      }
+    }
+  },
   "public-indonesia-pelagic-presence": {
-    "name": "Pelagic",
+    "name": "Indonesia Pelagic (Pilot)",
     "description": "Pelagic Presence",
     "schema": {
       "lat": "lat",
@@ -1832,16 +2001,18 @@
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
+          "set longline": "set longline",
           "traps": "traps",
           "purse seine": "purse seine",
           "Handline": "Handline"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "public-indonesia-zebrax-presence": {
-    "name": "Pesca Costeira Indonésia",
+    "name": "Indonesia Zebrax",
     "description": "Esta camada do Global Fishing Watch usa dados fornecidos pela Rare, Aruna e AP2HI. Os dados são coletados usando dispositivos de diferentes provedores que rastreiam a localização e a velocidade. As informações mostradas representam a presença do vaso. A presença é determinada tomando todas as posições transmitidas pelo dispositivo de rastreamento da embarcação.",
     "schema": {
       "lat": "lat",
@@ -1856,7 +2027,8 @@
           "purse seine": "purse seine"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "vessel_id",
+      "vessel-groups": "vessel-groups"
     }
   },
   "public-inshore-fishing-zone-1618837176535": {
@@ -1866,7 +2038,7 @@
   },
   "public-mediterranean-area-of-interest-1": {
     "name": "Area of Interest",
-    "description": "",
+    "description": "Area of Interest",
     "schema": {}
   },
   "public-mexico-fishing-effort": {
@@ -1885,6 +2057,7 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
@@ -1923,18 +2096,24 @@
       },
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
   "public-mpa-all": {
-    "name": "MPAs (Source: WDPA)",
-    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: March 2022.",
+    "name": "MPAs",
+    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: November 2022. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer.",
     "schema": {}
   },
   "public-mpa-no-take": {
-    "name": "MPAs - No take (Source: WDPA)",
+    "name": "MPAs - No take",
     "description": "The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. No Take layer was created using the data available from the Marine Protected Planet WDPA using the filter NO_TAKE = 'All'. Source: World Database on Protected Areas (WDPA)",
+    "schema": {}
+  },
+  "public-mpa-no-take-partial": {
+    "name": "MPAs - No take Partial",
+    "description": "The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. Source: World Database on Protected Areas (WDPA)",
     "schema": {}
   },
   "public-mpa-restricted": {
@@ -1946,6 +2125,143 @@
     "name": "Marine Protection Zone",
     "description": "90% of EEZ",
     "schema": {}
+  },
+  "public-norway-fishing-effort": {
+    "name": "Norway VMS",
+    "description": "Dados de rastreamento por satélite são fornecidos pela Diretoria de Pesca da Noruega. Os dados são compilados utilizando o sistema de monitoramento de embarcações da Noruega e publicados com atraso de três dias, contendo informações sobre a identidade da embarcação, localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica para cada transmissão de localização em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações AIS, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": {
+        "keyword": "flag",
+        "enum": {
+          "NOR": "NOR"
+        }
+      },
+      "hours": "hours",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "dredge_fishing": "dredge_fishing",
+          "drifting_longlines": "drifting_longlines",
+          "fishing": "fishing",
+          "fixed_gear": "fixed_gear",
+          "pole_and_line": "pole_and_line",
+          "pots_and_traps": "pots_and_traps",
+          "purse_seines": "purse_seines",
+          "seiners": "seiners",
+          "set_gillnets": "set_gillnets",
+          "set_longlines": "set_longlines",
+          "trawlers": "trawlers",
+          "trollers": "trollers"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "public-norway-fishing-vessels": {
+    "name": "Norway VMS (Fishing Vessels)",
+    "description": "Dataset for VMS Norway (Public)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "callsign": "callsign",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "dredge_fishing": "dredge_fishing",
+          "drifting_longlines": "drifting_longlines",
+          "fishing": "fishing",
+          "fixed_gear": "fixed_gear",
+          "pole_and_line": "pole_and_line",
+          "pots_and_traps": "pots_and_traps",
+          "purse_seines": "purse_seines",
+          "seiners": "seiners",
+          "set_gillnets": "set_gillnets",
+          "set_longlines": "set_longlines",
+          "trawlers": "trawlers",
+          "trollers": "trollers"
+        }
+      },
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
+  "public-norway-non-fishing-vessels": {
+    "name": "Norway VMS (Non Fishing Vessels)",
+    "description": "Dataset for VMS Norway (Public)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "callsign": "callsign",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "dredge_fishing": "dredge_fishing",
+          "drifting_longlines": "drifting_longlines",
+          "fishing": "fishing",
+          "fixed_gear": "fixed_gear",
+          "pole_and_line": "pole_and_line",
+          "pots_and_traps": "pots_and_traps",
+          "purse_seines": "purse_seines",
+          "seiners": "seiners",
+          "set_gillnets": "set_gillnets",
+          "set_longlines": "set_longlines",
+          "trawlers": "trawlers",
+          "trollers": "trollers"
+        }
+      },
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
+  "public-norway-presence": {
+    "name": "Norway VMS",
+    "description": "Dados do sistema de monitoramento de embarcações são fornecidos pela Diretoria de Pesca da Noruega. Os dados são compilados utilizando o sistema de monitoramento de embarcações da Noruega e publicados com atraso de três dias, contendo informações sobre a identidade da embarcação, localização, velocidade, rumo, e movimentos. A camada de atividade apresenta um mapa de calor com a presença das embarcações. Cada ponto na camada de presença representa a posição de uma embarcação, é apresentada uma posição por hora de cada embarcação. Você pode selecionar uma posição para ver o rastreamento completo da embarcação.",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "dredge_fishing": "dredge_fishing",
+          "drifting_longlines": "drifting_longlines",
+          "fishing": "fishing",
+          "fixed_gear": "fixed_gear",
+          "pole_and_line": "pole_and_line",
+          "pots_and_traps": "pots_and_traps",
+          "purse_seines": "purse_seines",
+          "seiners": "seiners",
+          "set_gillnets": "set_gillnets",
+          "set_longlines": "set_longlines",
+          "trawlers": "trawlers",
+          "trollers": "trollers"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "vessel_type": {
+        "keyword": "vessel_type",
+        "enum": {
+          "fishing": "fishing",
+          "research": "research",
+          "kelp trawler": "kelp trawler",
+          "other": "other"
+        }
+      },
+      "vessel-groups": "vessel-groups",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
   },
   "public-panama-fishing-effort": {
     "name": "Panama VMS",
@@ -2232,14 +2548,35 @@
       "vessel_id": "vessel_id"
     }
   },
+  "public-protectedseas": {
+    "name": "Protected Seas",
+    "description": "Protected seas",
+    "schema": {
+      "removal_of": {
+        "keyword": "removal_of",
+        "enum": {
+          "1": "1",
+          "2": "2",
+          "3": "3",
+          "4": "4",
+          "5": "5"
+        }
+      }
+    }
+  },
+  "public-rfmo": {
+    "name": "RFMO",
+    "description": "Regional fisheries management organizations (RFMOs) are international bodies formed by countries with a shared interest in managing or conserving fish stocks in a particular region. Some manage all the fish stocks found in a given area, while others focus on specific highly migratory species, notably tuna. The regional fisheries management organization on the Global Fishing Watch map currently includes the five tuna regional fisheries management organizations. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer.",
+    "schema": {}
+  },
   "public-tristan-seamounts-200-1618586314138": {
     "name": "Depth: -200 m",
-    "description": "",
+    "description": "Depth: -200 m",
     "schema": {}
   },
   "public-tristan-seamounts-3000-1618586349746": {
     "name": "Depth: -3000 m",
-    "description": "",
+    "description": "Depth: -3000 m",
     "schema": {}
   },
   "public-tristan-seamounts-existing-1618586378121": {

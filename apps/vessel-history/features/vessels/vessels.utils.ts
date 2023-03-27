@@ -3,14 +3,16 @@ import { VesselAPISource, VesselFieldsHistory, VesselWithHistory } from 'types'
 
 type VesselFieldKey = keyof VesselWithHistory
 
+export const NOT_AVAILABLE = 'NA'
+
 export const formatVesselProfileId = (dataset: string, gfwId: string, tmtId: string) => {
-  return `${dataset ?? 'NA'}_${gfwId ?? 'NA'}_${tmtId ?? 'NA'}`
+  return `${dataset ?? NOT_AVAILABLE}_${gfwId ?? NOT_AVAILABLE}_${tmtId ?? NOT_AVAILABLE}`
 }
 
 export const parseVesselProfileId = (vesselProfileId: string) => {
   const [dataset, id, vesselMatchId] = vesselProfileId
     .split('_')
-    .map((value) => (value.toLowerCase() === 'na' ? undefined : value))
+    .map((value) => (value.toLowerCase() === NOT_AVAILABLE.toLocaleLowerCase() ? undefined : value))
   return { dataset, id, vesselMatchId }
 }
 
@@ -29,7 +31,7 @@ const getPriorityzedFieldValue = <T = any>(
     .map((dataValue) => ({
       value: dataValue.value,
       priority: fieldPriority.indexOf(dataValue.source),
-      source: dataValue.source
+      source: dataValue.source,
     }))
     .sort((a, b) => {
       // If any of the values not exist, we use the other
@@ -104,6 +106,49 @@ export const mergeVesselFromSources = (
   )
   if (allFields.length) {
     const result = allFields.reduce((acc, key) => {
+      if (key.toString() === 'years') {
+        return {
+          ...acc,
+          years: vesselData
+            .map((data) => {
+              return data.vessel[key] as number[]
+            }).flatMap(data => data),
+        }
+      }
+      if (key.toString() === 'firstTransmissionDate') {
+        return {
+          ...acc,
+          firstTransmissionDate: vesselData.reduce((lastDate, data) => {
+            if (data.vessel.firstTransmissionDate) {
+              if (!lastDate || lastDate.localeCompare(data.vessel.firstTransmissionDate) === 1) {
+                return data.vessel.firstTransmissionDate
+              }
+            }
+            return lastDate
+          }, '')
+        }
+      }
+      if (key.toString() === 'lastTransmissionDate') {
+        return {
+          ...acc,
+          lastTransmissionDate: vesselData.reduce((lastDate, data) => {
+            if (data.vessel.lastTransmissionDate) {
+              if (!lastDate || lastDate.localeCompare(data.vessel.lastTransmissionDate) === -1) {
+                return data.vessel.lastTransmissionDate
+              }
+            }
+            return lastDate
+          }, '')
+        }
+      }
+      if (key.toString() === 'posCount') {
+        return {
+          ...acc,
+          posCount: vesselData.reduce((sum, data) => {
+            return sum + ((data.vessel[key] ?? 0) as number)
+          }, 0)
+        }
+      }
       const value =
         key.toString() === 'history'
           ? mergeHistoryFields(

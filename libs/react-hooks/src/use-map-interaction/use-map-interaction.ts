@@ -57,6 +57,15 @@ const getExtendedFeatures = (
 
     const uniqueFeatureInteraction = feature.layer?.metadata?.uniqueFeatureInteraction ?? false
     const properties = feature.properties || {}
+    const promoteIdValue =
+      feature.layer.metadata?.promoteId && feature.properties[feature.layer.metadata?.promoteId]
+    let value = properties.value || properties.name || properties.id
+    if (feature.layer.metadata?.valueProperties?.length) {
+      value = feature.layer.metadata.valueProperties
+        .flatMap((prop) => properties[prop] || [])
+        .join(', ')
+    }
+
     const extendedFeature: ExtendedFeature | null = {
       properties,
       generatorType,
@@ -65,8 +74,8 @@ const getExtendedFeatures = (
       source: feature.source,
       sourceLayer: feature.sourceLayer,
       uniqueFeatureInteraction,
-      id: (feature.id as number) || feature.properties?.gfw_id || undefined,
-      value: properties.value || properties.name || properties.id,
+      id: (feature.id as number) || feature.properties?.gfw_id || promoteIdValue || undefined,
+      value,
       tile: {
         x: (feature as any)._vectorTileFeature._x,
         y: (feature as any)._vectorTileFeature._y,
@@ -102,9 +111,22 @@ const getExtendedFeatures = (
         if (debug) {
           console.log(properties.rawValues)
         }
-
         // Clean values with 0 for sum aggregation and with NaN for avg aggregation layers
-        if (!values || !values.filter((v: number) => v !== 0 && !isNaN(v)).length) return []
+        if (
+          !values ||
+          !values.filter((v: number) => {
+            const matchesMin =
+              generatorMetadata?.minVisibleValue !== undefined
+                ? v >= generatorMetadata?.minVisibleValue
+                : true
+            const matchesMax =
+              generatorMetadata?.maxVisibleValue !== undefined
+                ? v <= generatorMetadata?.maxVisibleValue
+                : true
+            return v !== 0 && !isNaN(v) && matchesMin && matchesMax
+          }).length
+        )
+          return []
         const visibleSublayers = generatorMetadata?.visibleSublayers as boolean[]
         const sublayers = generatorMetadata?.sublayers
         return values.flatMap((value: any, i: number) => {
@@ -130,14 +152,15 @@ const getExtendedFeatures = (
         })
       case GeneratorType.Context:
       case GeneratorType.UserPoints:
-      case GeneratorType.UserContext:
+      case GeneratorType.UserContext: {
         return {
           ...extendedFeature,
-          gfwId: feature.properties?.gfw_id,
           datasetId: feature.layer.metadata?.datasetId,
+          promoteId: feature.layer.metadata?.promoteId,
           generatorContextLayer: feature.layer.metadata?.layer,
           geometry: feature.geometry,
         }
+      }
       default:
         return extendedFeature
     }
@@ -253,12 +276,13 @@ export const useMapHover = (
   hoverCallbackImmediate?: InteractionEventCallback,
   hoverCallback?: InteractionEventCallback,
   map?: Map,
-  metadata?: ExtendedStyleMeta,
+  styleMetadata?: ExtendedStyleMeta,
   config?: MapHoverConfig
 ) => {
   const { debounced = 300 } = config || ({} as MapHoverConfig)
   // Keep a list of active feature state sources, so that we can turn them off when hovering away
   const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
+  const metadata = styleMetadata || (map?.getStyle()?.metadata as ExtendedStyleMeta)
 
   const hoverCallbackDebounced = useRef<any>(null)
   useEffect(() => {

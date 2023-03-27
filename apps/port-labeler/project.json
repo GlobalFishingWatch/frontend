@@ -1,25 +1,17 @@
 {
+  "name": "port-labeler",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/port-labeler",
   "projectType": "application",
   "targets": {
     "deploy": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx build port-labeler --parallel", "nx docker-prepare port-labeler"],
+        "commands": ["nx build port-labeler --parallel"],
         "parallel": false
       }
     },
-    "docker-prepare": {
-      "executor": "@nrwl/workspace:run-commands",
-      "outputs": [],
-      "options": {
-        "commands": [
-          "cp config/entrypoint.sh dist/apps/port-labeler",
-          "cp apps/port-labeler/nginx.conf dist/apps/port-labeler"
-        ]
-      }
-    },
-    "compile": {
+    "build": {
       "executor": "@nrwl/next:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
@@ -32,7 +24,7 @@
       }
     },
     "start": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": [
           "nx clean-locales port-labeler",
@@ -43,7 +35,7 @@
       }
     },
     "clean-locales": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "outputs": [],
       "options": {
         "commands": ["rm -rf dist/apps/port-labeler/public/locales"]
@@ -52,21 +44,21 @@
     "serve": {
       "executor": "@nrwl/next:server",
       "options": {
-        "buildTarget": "port-labeler:compile",
+        "buildTarget": "port-labeler:build",
         "dev": true,
         "port": 3003
       },
       "configurations": {
         "production": {
-          "buildTarget": "port-labeler:compile:production",
+          "buildTarget": "port-labeler:build:production",
           "dev": false
         }
       }
     },
-    "build": {
+    "export": {
       "executor": "@nrwl/next:export",
       "options": {
-        "buildTarget": "port-labeler:compile:production"
+        "buildTarget": "port-labeler:build:production"
       }
     },
     "lint": {
@@ -78,7 +70,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/port-labeler"],
+      "outputs": ["{workspaceRoot}/coverage/apps/port-labeler"],
       "options": {
         "jestConfig": "apps/port-labeler/jest.config.ts",
         "passWithNoTests": true

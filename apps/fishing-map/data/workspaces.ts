@@ -25,44 +25,70 @@ export enum WorkspaceCategories {
 //      apps/vessel-history/src/features/dataviews/dataviews.config.ts
 
 // Contextual layers dataviews by environment
-export const BASEMAP_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 90 : 173
-export const EEZ_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 94 : 177
-export const MPA_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 98 : 176
-export const RFMO_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 95 : 175
-export const HIGH_SEAS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 97 : 174
-export const PROTECTED_SEAS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 292 : undefined
-export const GRATICULES_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 246 : 286
-export const FAO_AREAS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 245 : 285
+export const BASEMAP_DATAVIEW_SLUG = 'basemap'
+export const BASEMAP_LABELS_DATAVIEW_SLUG = 'basemap-labels'
+export const EEZ_DATAVIEW_SLUG = 'eez'
+export const EEZ_DATAVIEW_INSTANCE_ID = 'context-layer-eez'
+export const MPA_DATAVIEW_SLUG = 'mpa'
+export const MPA_DATAVIEW_INSTANCE_ID = 'context-layer-mpa'
+export const RFMO_DATAVIEW_SLUG = 'tuna-rfmo-areas'
+export const HIGH_SEAS_DATAVIEW_SLUG = 'high-seas'
+export const PROTECTED_SEAS_DATAVIEW_SLUG = 'protected-seas'
+export const GRATICULES_DATAVIEW_SLUG = 'graticules'
+export const FAO_AREAS_DATAVIEW_SLUG = 'fao-areas'
 
 // Workspaces dataviews
-export const FISHING_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 91 : 178
-export const CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 140 : 254
-export const VIIRS_MATCH_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 197 : 289
-export const SAR_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 269 : 299
-export const PRESENCE_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 124 : 241
-export const VESSEL_PRESENCE_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 195 : 270
-export const TEMPLATE_USER_TRACK_ID = WORKSPACE_ENV === 'development' ? 154 : 251
-export const TEMPLATE_VESSEL_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 92 : 171
-export const TEMPLATE_CONTEXT_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 123 : 220
-export const TEMPLATE_POINTS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 207 : 274
-export const TEMPLATE_ENVIRONMENT_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 125 : 223
-export const TEMPLATE_ACTIVITY_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 234 : 275
-export const TEMPLATE_CLUSTERS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 243 : 284
+export const FISHING_DATAVIEW_SLUG = 'apparent-fishing-effort'
+export const CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG = 'encounter-cluster-events'
+export const VIIRS_MATCH_DATAVIEW_SLUG = 'viirs-match'
+export const SAR_DATAVIEW_SLUG = 'sar'
+export const PRESENCE_DATAVIEW_SLUG = 'presence-activity'
+export const VESSEL_PRESENCE_DATAVIEW_SLUG = 'fishing-map-vessel-presence'
+export const TEMPLATE_USER_TRACK_SLUG = 'user-track'
+export const TEMPLATE_VESSEL_DATAVIEW_SLUG = 'fishing-map-vessel-track'
+export const TEMPLATE_CONTEXT_DATAVIEW_SLUG = 'default-context-layer'
+export const TEMPLATE_POINTS_DATAVIEW_SLUG = 'default-points-layer'
+export const TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG = 'default-environmental-layer'
+export const TEMPLATE_ACTIVITY_DATAVIEW_SLUG = 'activity-template'
+export const TEMPLATE_CLUSTERS_DATAVIEW_SLUG = 'template-for-bigquery-cluster-events'
 
-export const TEMPLATE_DATAVIEW_IDS = [
-  TEMPLATE_USER_TRACK_ID,
-  TEMPLATE_VESSEL_DATAVIEW_ID,
-  TEMPLATE_CONTEXT_DATAVIEW_ID,
-  TEMPLATE_ENVIRONMENT_DATAVIEW_ID,
-  TEMPLATE_POINTS_DATAVIEW_ID,
-  TEMPLATE_ACTIVITY_DATAVIEW_ID,
-  TEMPLATE_CLUSTERS_DATAVIEW_ID,
+export const TEMPLATE_DATAVIEW_SLUGS = [
+  TEMPLATE_USER_TRACK_SLUG,
+  TEMPLATE_VESSEL_DATAVIEW_SLUG,
+  TEMPLATE_CONTEXT_DATAVIEW_SLUG,
+  TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG,
+  TEMPLATE_POINTS_DATAVIEW_SLUG,
+  TEMPLATE_ACTIVITY_DATAVIEW_SLUG,
+  TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
 ]
 
 export const PRESENCE_DATAVIEWS = [
-  VIIRS_MATCH_DATAVIEW_ID, // we ensure the + icon woks for the presence category
-  PRESENCE_DATAVIEW_ID, // In case the workspace doesn't have the dataview added,
-  SAR_DATAVIEW_ID, // TODO include once ready to release
+  VIIRS_MATCH_DATAVIEW_SLUG, // we ensure the + icon woks for the presence category
+  PRESENCE_DATAVIEW_SLUG, // In case the workspace doesn't have the dataview added,
+  SAR_DATAVIEW_SLUG, // TODO include once ready to release
 ]
 
-export const DEFAULT_DATAVIEW_IDS = [...PRESENCE_DATAVIEWS, ...TEMPLATE_DATAVIEW_IDS]
+export const CONTEXT_LAYERS_DATAVIEWS = [
+  BASEMAP_DATAVIEW_SLUG,
+  EEZ_DATAVIEW_SLUG,
+  MPA_DATAVIEW_SLUG,
+  RFMO_DATAVIEW_SLUG,
+  HIGH_SEAS_DATAVIEW_SLUG,
+  PROTECTED_SEAS_DATAVIEW_SLUG,
+  GRATICULES_DATAVIEW_SLUG,
+  FAO_AREAS_DATAVIEW_SLUG,
+  BASEMAP_LABELS_DATAVIEW_SLUG,
+]
+
+// Global environmental dataviews
+export const GLOBAL_WATER_TEMPERATURE_DATAVIEW_SLUG = undefined
+export const GLOBAL_SALINITY_DATAVIEW_SLUG = undefined
+export const GLOBAL_CHLOROPHYL_DATAVIEW_SLUG = undefined
+
+export const DEFAULT_DATAVIEW_SLUGS = [
+  FISHING_DATAVIEW_SLUG,
+  ...PRESENCE_DATAVIEWS,
+  ...TEMPLATE_DATAVIEW_SLUGS,
+]
+
+export const ONLY_GFW_STAFF_DATAVIEW_SLUGS: number[] = []

@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -19,7 +19,6 @@ import {
   getActivityDataviewInstanceFromDataview,
 } from 'features/dataviews/dataviews.utils'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/app.selectors'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import TooltipContainer, { TooltipListContainer } from '../shared/TooltipContainer'
@@ -38,7 +37,6 @@ function ActivitySection(): React.ReactElement {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariateDataviews = useSelector(selectBivariateDataviews)
-  const { start, end } = useTimerangeConnect()
 
   const addDataviewInstance = useCallback(
     (dataviewInstance: UrlDataviewInstance) => {
@@ -97,7 +95,7 @@ function ActivitySection(): React.ReactElement {
         ]),
       })
     },
-    [dataviews, dispatchQueryParams, upsertDataviewInstance]
+    [dataviews, detectionsDataviews, dispatchQueryParams, upsertDataviewInstance]
   )
 
   const onToggleLayer = useCallback(
@@ -121,7 +119,7 @@ function ActivitySection(): React.ReactElement {
     const options = activityDataviews.map((dataview) => {
       const option = {
         id: dataview.id,
-        label: getDatasetTitleByDataview(dataview),
+        label: getDatasetTitleByDataview(dataview, { withSources: true }),
       }
       return option
     })
@@ -131,7 +129,9 @@ function ActivitySection(): React.ReactElement {
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={styles.header}>
-        <h2 className={styles.sectionTitle}>{t('common.activity', 'Activity')}</h2>
+        <h2 className={cx('print-hidden', styles.sectionTitle)}>
+          {t('common.activity', 'Activity')}
+        </h2>
         {!readOnly && (
           <div className={cx('print-hidden', styles.sectionButtons)}>
             {activityOptions &&

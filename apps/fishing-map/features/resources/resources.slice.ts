@@ -14,6 +14,7 @@ import {
   selectUrlMapZoomQuery,
   selectUrlStartQuery,
 } from 'routes/routes.selectors'
+import { getUTCDateTime } from 'utils/dates'
 
 export {
   fetchResourceThunk,
@@ -47,8 +48,8 @@ export const selectTrackChunksConfig = createSelector(
   [selectUrlStartQuery, selectUrlEndQuery],
   (start, end) => {
     if (!start || !end) return null
-    const startDT = DateTime.fromISO(start).toUTC()
-    const endDT = DateTime.fromISO(end).toUTC()
+    const startDT = getUTCDateTime(start)
+    const endDT = getUTCDateTime(end)
 
     const delta = Duration.fromMillis(+endDT - +startDT)
 

@@ -31,7 +31,8 @@ const matchAnyRegion = (eventRegions: string[] = [], regions: string[] = []) =>
   // or at least one of the selected regions is assigned to the event
   regions.filter((e) => eventRegions.map((r) => `${r}`).includes(`${e}`)).length > 0
 
-const filterActivityEvent = (event: RenderedEvent, filter: SettingsEvents) =>
+const filterActivityEvent = (event: RenderedEvent, filter?: SettingsEvents) =>
+  filter &&
   isAnyFilterSet(filter) &&
   // no region filter is set
   (!isAnyRegionFilterSet(filter) ||
@@ -59,18 +60,20 @@ const filterActivityEvent = (event: RenderedEvent, filter: SettingsEvents) =>
     filter.distancePortLonger
   )
 
-const isAnyFlagFilterSet = (filter: SettingsPortVisits) =>
-  !isNullOrUndefined(filter.flags) && (filter.flags ?? []).length > 0
+const isAnyFlagFilterSet = (filter?: SettingsPortVisits) =>
+  filter && !isNullOrUndefined(filter.flags) && (filter.flags ?? []).length > 0
 
-const isAnyPortFilterSet = (filter: SettingsPortVisits) =>
-  isAnyFlagFilterSet(filter) ||
-  !isNullOrUndefined(filter.duration) ||
-  !isNullOrUndefined(filter.distanceShoreLonger)
+const isAnyPortFilterSet = (filter?: SettingsPortVisits) =>
+  filter &&
+  (isAnyFlagFilterSet(filter) ||
+    !isNullOrUndefined(filter.duration) ||
+    !isNullOrUndefined(filter.distanceShoreLonger))
 
 const matchAnyPortFlag = (port: Anchorage | undefined, regions: string[] = []) =>
   port === undefined || port === null || matchAnyRegion([port.flag], regions)
 
 const filterPortEvent = (event: RenderedEvent, filter: SettingsPortVisits) =>
+  filter &&
   isAnyPortFilterSet(filter) &&
   // no flag filter is set
   (!isAnyFlagFilterSet(filter) ||
@@ -91,11 +94,11 @@ const filterPortEvent = (event: RenderedEvent, filter: SettingsPortVisits) =>
 
 export function filterActivityHighlightEvents(events: RenderedEvent[], settings: Settings) {
   const filterByEventType: Record<EventTypes, ((event: RenderedEvent) => boolean) | undefined> = {
-    encounter: (event) => filterActivityEvent(event, settings.encounters),
-    fishing: (event) => filterActivityEvent(event, settings.fishingEvents),
-    loitering: (event) => filterActivityEvent(event, settings.loiteringEvents),
-    port_visit: (event) => filterPortEvent(event, settings.portVisits),
-    gap: undefined,
+    encounter: (event) => settings.enabled && filterActivityEvent(event, settings.encounters),
+    fishing: (event) => settings.enabled && filterActivityEvent(event, settings.fishingEvents),
+    loitering: (event) => settings.enabled && filterActivityEvent(event, settings.loiteringEvents),
+    port_visit: (event) => settings.enabled && filterPortEvent(event, settings.portVisits),
+    gap: (event) => settings.enabled && filterActivityEvent(event, settings.gapEvents),
   }
   return events
     .filter((event: RenderedEvent) => {
@@ -107,10 +110,12 @@ export function filterActivityHighlightEvents(events: RenderedEvent[], settings:
 
 export function isAnyHighlightsSettingDefined(settings: Settings) {
   return (
-    isAnyFilterSet(settings.fishingEvents) ||
-    isAnyFilterSet(settings.encounters) ||
-    isAnyFilterSet(settings.loiteringEvents) ||
-    isAnyPortFilterSet(settings.portVisits)
+    settings.enabled &&
+    (isAnyFilterSet(settings.fishingEvents) ||
+      isAnyFilterSet(settings.encounters) ||
+      isAnyFilterSet(settings.loiteringEvents) ||
+      isAnyPortFilterSet(settings.portVisits) ||
+      isAnyFilterSet(settings.gapEvents))
   )
 }
 const mod = { filterActivityHighlightEvents, isAnyHighlightsSettingDefined }

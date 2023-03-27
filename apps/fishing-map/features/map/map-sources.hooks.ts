@@ -4,23 +4,24 @@ import { GeoJSONFeature, MapDataEvent } from '@globalfishingwatch/maplibre-gl'
 import {
   ExtendedStyle,
   HeatmapLayerMeta,
-  DEFAULT_CONTEXT_SOURCE_LAYER,
   TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
 } from '@globalfishingwatch/layer-composer'
 import {
-  isDetectionsDataview,
   isHeatmapAnimatedDataview,
   isMergedAnimatedGenerator,
-  MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
-  MERGED_DETECTIONS_ANIMATED_HEATMAP_GENERATOR_ID,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import { TimeseriesFeatureProps } from '@globalfishingwatch/fourwings-aggregate'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
+import { ChunkFeature, LayerFeature } from '@globalfishingwatch/features-aggregate'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useMapStyle } from 'features/map/map-style.hooks'
 import { mapTilesAtom, TilesAtomSourceState } from 'features/map/map-sources.atom'
-import { getHeatmapSourceMetadata, isInteractionSource } from 'features/map/map-sources.utils'
+import {
+  getHeatmapSourceMetadata,
+  getSourceMetadata,
+  isInteractionSource,
+} from 'features/map/map-sources.utils'
 import {
   BIG_QUERY_EVENTS_PREFIX,
   ENCOUNTER_EVENTS_SOURCE_ID,
@@ -147,19 +148,8 @@ export const useAllMapSourceTilesLoaded = () => {
   return allSourcesLoaded
 }
 
-export type DataviewChunkFeature = {
-  active: boolean
-  state: TilesAtomSourceState
-  features: GeoJSONFeature<TimeseriesFeatureProps>[]
-  quantizeOffset: number
-}
-export type DataviewFeature = {
-  state: TilesAtomSourceState
-  sourceId: string
+export type DataviewFeature = LayerFeature & {
   dataviewsId: string[]
-  features: GeoJSONFeature[]
-  chunksFeatures: DataviewChunkFeature[]
-  metadata: HeatmapLayerMeta
 }
 
 export const areDataviewsFeatureLoaded = (dataviews: DataviewFeature | DataviewFeature[]) => {
@@ -180,41 +170,48 @@ type DataviewMetadata = {
   filter?: string[]
 }
 
+// Key used to refresh activity graph only when active chunk changes and we can safely ignore the rest of the metadata
+function getGeneratorsMetadataChangeKey(generatorsMetadata: Record<string, HeatmapLayerMeta>) {
+  if (!generatorsMetadata) return ''
+  return Object.keys(generatorsMetadata)
+    .map((key) => {
+      const metadata = generatorsMetadata[key]
+      const timeChunks = [
+        metadata.timeChunks.activeSourceId,
+        (metadata.timeChunks.chunks || [])
+          .map(({ active, sourceId, quantizeOffset }) => [active, sourceId, quantizeOffset])
+          .join('|'),
+      ].join('-')
+      return [metadata.sourceLayer, timeChunks, metadata.visibleSublayers].join('_')
+    })
+    .join('+')
+}
+
 export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDataviewInstance[]) => {
   const style = useMapStyle()
   const map = useMapInstance()
 
   // Memoized to avoid re-runs on style changes like hovers
   const memoizedDataviews = useMemoCompare(dataviews)
-  // TODO: review performance as chunk activeStart timebar changes forces to rerun everything here
-  const generatorsMetadata = useMemoCompare(style?.metadata?.generatorsMetadata)
+  const metadataKey = getGeneratorsMetadataChangeKey(style?.metadata?.generatorsMetadata)
 
   const dataviewsMetadata = useMemo(() => {
-    const style = { metadata: { generatorsMetadata } } as ExtendedStyle
     const dataviewsArray = toArray(memoizedDataviews || [])
     if (!dataviewsArray || !dataviewsArray.length) {
       return []
     }
     const dataviewsMetadata: DataviewMetadata[] = dataviewsArray.reduce((acc, dataview) => {
       const activityDataview = isHeatmapAnimatedDataview(dataview)
-      const animatedMergedId = isDetectionsDataview(dataview)
-        ? MERGED_DETECTIONS_ANIMATED_HEATMAP_GENERATOR_ID
-        : MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID
+      const { metadata, generatorSourceId } = getSourceMetadata(style, dataview)
       if (activityDataview) {
         const existingMergedAnimatedDataviewIndex = acc.findIndex(
-          (d) => d.generatorSourceId === animatedMergedId
+          (d) => d.generatorSourceId === generatorSourceId
         )
         if (existingMergedAnimatedDataviewIndex >= 0) {
           acc[existingMergedAnimatedDataviewIndex].dataviewsId.push(dataview.id)
           return acc
         }
       }
-      const generatorSourceId = activityDataview ? animatedMergedId : dataview.id
-
-      const metadata =
-        getHeatmapSourceMetadata(style, generatorSourceId) ||
-        ({ sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER } as HeatmapLayerMeta)
-
       const sourcesId =
         metadata?.timeChunks?.chunks.flatMap(({ sourceId }) => sourceId) || dataview?.id
       return acc.concat({
@@ -226,7 +223,8 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
       })
     }, [] as DataviewMetadata[])
     return dataviewsMetadata
-  }, [memoizedDataviews, generatorsMetadata])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [memoizedDataviews, metadataKey])
 
   const sourcesIds = dataviewsMetadata.flatMap(({ sourcesId }) => sourcesId)
   const sourceTilesLoaded = useMapSourceTiles(sourcesIds)
@@ -239,7 +237,7 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
         sourceId,
         quantizeOffset,
       }))
-      const chunksFeatures: DataviewChunkFeature[] | null = chunks
+      const chunksFeatures: ChunkFeature[] | null = chunks
         ? chunks.map(({ active, sourceId, quantizeOffset }) => {
             const emptyChunkState = {} as TilesAtomSourceState
             const chunkState = sourceTilesLoaded[sourceId] || emptyChunkState
@@ -282,9 +280,9 @@ export const useMapDataviewFeatures = (dataviews: UrlDataviewInstance | UrlDatav
       return data
     })
     return dataviewsFeature
-    // Runs only when source tiles load change to avoid unu
+    // Runs only when source tiles load change or metadata changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, sourceTilesLoaded])
+  }, [map, sourceTilesLoaded, dataviewsMetadata])
 
   return dataviewFeatures
 }

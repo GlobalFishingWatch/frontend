@@ -5,8 +5,8 @@ import { useIntersectionObserver } from '@researchgate/react-intersection-observ
 import cx from 'classnames'
 import Downshift from 'downshift'
 import { Trans, useTranslation } from 'react-i18next'
-import { debounce } from 'lodash'
-import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
+import { debounce, uniqBy } from 'lodash'
+import { Dataset, DatasetTypes, Locale } from '@globalfishingwatch/api-types'
 import {
   IconButton,
   InputText,
@@ -22,16 +22,27 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { getVesselDataviewInstance, VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
-import { getDatasetLabel, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
+import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import I18nDate from 'features/i18n/i18nDate'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { selectVesselsDataviews } from 'features/dataviews/dataviews.slice'
+import { selectUserGroupsPermissions } from 'features/user/user.selectors'
 import I18nFlag from 'features/i18n/i18nFlag'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
+import {
+  setVesselGroupsModalOpen,
+  setNewVesselGroupSearchVessels,
+  setVesselGroupEditId,
+} from 'features/vessel-groups/vessel-groups.slice'
+import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
+import TooltipContainer from 'features/workspace/shared/TooltipContainer'
+import DatasetLabel from 'features/datasets/DatasetLabel'
+import { isGFWUser } from 'features/user/user.slice'
+import { getEventLabel } from 'utils/analytics'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
@@ -61,8 +72,10 @@ import {
   selectAdvancedSearchDatasets,
 } from './search.selectors'
 
+const MIN_SEARCH_CHARACTERS = 3
+
 function Search() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const urlQuery = useSelector(selectSearchQuery)
   const { addNewDataviewInstances } = useDataviewInstancesConnect()
@@ -71,14 +84,23 @@ function Search() {
   const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
   const debouncedQuery = useDebounce(searchQuery, 600)
   const { dispatchQueryParams } = useLocationConnect()
+  const hasUserGroupsPermissions = useSelector(selectUserGroupsPermissions)
   const basicSearchAllowed = useSelector(isBasicSearchAllowed)
+  const vesselGroupOptions = useVesselGroupsOptions()
   const advancedSearchAllowed = useSelector(isAdvancedSearchAllowed)
   const searchResults = useSelector(selectSearchResults)
   const searchStatus = useSelector(selectSearchStatus)
   const searchStatusCode = useSelector(selectSearchStatusCode)
+  const gfwUser = useSelector(isGFWUser)
   const hasSearchFilters = checkSearchFiltersEnabled(searchFilters)
   const vesselDataviews = useSelector(selectVesselsDataviews)
   const [vesselsSelected, setVesselsSelected] = useState<VesselWithDatasets[]>([])
+  const [vesselGroupsOpen, setVesselGroupsOpen] = useState(false)
+
+  const toggleVesselGroupsOpen = useCallback(() => {
+    setVesselGroupsOpen(!vesselGroupsOpen)
+  }, [vesselGroupsOpen])
+
   const searchOptions = useMemo(() => {
     return [
       {
@@ -118,7 +140,7 @@ function Search() {
         filters: SearchFilter
         offset?: number
       }) => {
-        if (datasets?.length) {
+        if (datasets?.length && query?.length > MIN_SEARCH_CHARACTERS - 1) {
           const sourceIds = filters?.sources?.map((source) => source.id)
           const sources = sourceIds ? datasets.filter(({ id }) => sourceIds.includes(id)) : datasets
           if (promiseRef.current) {
@@ -132,6 +154,7 @@ function Search() {
               filters,
               datasets: sources,
               offset,
+              gfwUser,
             })
           )
           // TODO: Find a better approach to sync query
@@ -202,6 +225,36 @@ function Search() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedQuery])
 
+  const onAddToVesselGroup = useCallback(
+    (vesselGroupId?: string) => {
+      const vesselDatasets = uniqBy(
+        vesselsSelected.map((v) => v.dataset),
+        'id'
+      )
+      const vessels = vesselsSelected.map((vessel) => ({ ...vessel, dataset: vessel.dataset.id }))
+      if (vessels?.length) {
+        batch(() => {
+          if (vesselGroupId) {
+            dispatch(setVesselGroupEditId(vesselGroupId))
+            uaEvent({
+              category: 'Vessel groups',
+              action: `Use the 'add to vessel group' functionality from search`,
+              label: getEventLabel([
+                vessels.length.toString(),
+                ...vessels.map((vessel) => vessel.id),
+              ]),
+            })
+          }
+          dispatch(setNewVesselGroupSearchVessels(vessels))
+          dispatch(setVesselGroupsModalOpen(true))
+        })
+      } else {
+        console.warn('No related activity datasets founds for', vesselDatasets)
+      }
+    },
+    [dispatch, vesselsSelected]
+  )
+
   const onCloseClick = () => {
     batch(() => {
       dispatch(resetFilters())
@@ -219,6 +272,7 @@ function Search() {
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value)
+    setVesselsSelected([])
     if (e.target.value !== searchQuery && searchSuggestionClicked) {
       dispatch(setSuggestionClicked(false))
     }
@@ -335,11 +389,19 @@ function Search() {
                 searchStatus === AsyncReducerStatus.Aborted) &&
               searchPagination.loading === false ? null : basicSearchAllowed ? (
                 <ul {...getMenuProps()} className={styles.searchResults}>
+                  {debouncedQuery && debouncedQuery?.length < MIN_SEARCH_CHARACTERS && (
+                    <li key="suggestion" className={cx(styles.searchSuggestion, styles.red)}>
+                      {t('search.minCharacters', {
+                        defaultValue: 'Please type at least {{count}} characters',
+                        count: MIN_SEARCH_CHARACTERS,
+                      })}
+                    </li>
+                  )}
                   {searchQuery &&
                     searchSuggestion &&
                     searchSuggestion !== searchQuery &&
                     !searchSuggestionClicked && (
-                      <li className={cx(styles.searchSuggestion)}>
+                      <li key="suggestion" className={cx(styles.searchSuggestion)}>
                         {t('search.suggestion', 'Did you mean')}{' '}
                         <button onClick={onSuggestionClick} className={styles.suggestion}>
                           {' '}
@@ -378,7 +440,7 @@ function Search() {
                           [styles.inWorkspace]: isInWorkspace,
                           [styles.selected]: isSelected,
                         })}
-                        key={id}
+                        key={`${id}-${index}`}
                       >
                         <div className={styles.name}>
                           {formatInfoField(shipname, 'name') || EMPTY_FIELD_PLACEHOLDER}
@@ -451,13 +513,14 @@ function Search() {
                                 firstTransmissionDate={firstTransmissionDate}
                                 lastTransmissionDate={lastTransmissionDate}
                                 firstYearOfData={FIRST_YEAR_OF_DATA}
+                                locale={i18n.language as Locale}
                               />
                             </div>
                           )}
                           {dataset && (
                             <div className={styles.property}>
                               <label>{t('vessel.source', 'Source')}</label>
-                              <span>{getDatasetLabel(dataset)}</span>
+                              <DatasetLabel dataset={dataset} />
                             </div>
                           )}
                         </div>
@@ -480,7 +543,7 @@ function Search() {
                     )
                   })}
                   {hasMoreResults && (
-                    <li className={styles.spinner} ref={ref}>
+                    <li key="spinner" className={styles.spinner} ref={ref}>
                       <Spinner inline size="small" />
                     </li>
                   )}
@@ -506,17 +569,42 @@ function Search() {
             </div>
           )}
           <div className={cx(styles.footer, { [styles.hidden]: vesselsSelected.length === 0 })}>
-            {vesselsSelected.length > 1 && (
-              <Button
-                disabled
-                type="secondary"
-                tooltip={t('common.comingSoon', 'Coming Soon')}
-                tooltipPlacement="top"
-                className={styles.footerAction}
-              >
-                See as fleet
-              </Button>
-            )}
+            <TooltipContainer
+              visible={vesselGroupsOpen}
+              onClickOutside={toggleVesselGroupsOpen}
+              component={
+                <ul className={styles.groupOptions}>
+                  <li
+                    className={cx(styles.groupOption, styles.groupOptionNew)}
+                    onClick={() => onAddToVesselGroup()}
+                    key="new-group"
+                  >
+                    {t('vesselGroup.createNewGroup', 'Create new group')}
+                  </li>
+                  {vesselGroupOptions.map((group) => (
+                    <li
+                      className={styles.groupOption}
+                      key={group.id}
+                      onClick={() => onAddToVesselGroup(group.id)}
+                    >
+                      {group.label}
+                    </li>
+                  ))}
+                </ul>
+              }
+            >
+              <div>
+                {hasUserGroupsPermissions && vesselsSelected.length > 0 && (
+                  <Button
+                    type="secondary"
+                    className={styles.footerAction}
+                    onClick={toggleVesselGroupsOpen}
+                  >
+                    {t('vesselGroup.add', 'Add to vessel group')}({vesselsSelected.length})
+                  </Button>
+                )}
+              </div>
+            </TooltipContainer>
             <Button className={styles.footerAction} onClick={onConfirmSelection}>
               {vesselsSelected.length > 1
                 ? t('search.seeVessels', {

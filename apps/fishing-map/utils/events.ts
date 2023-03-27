@@ -1,7 +1,9 @@
 import { DateTime } from 'luxon'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { t } from 'features/i18n/i18n'
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import { EVENTS_COLORS } from 'data/config'
+import { getUTCDateTime } from './dates'
 
 type EventProps = {
   start: string
@@ -18,12 +20,12 @@ export const getEventDescription = ({
   encounterVesselName,
   portName,
 }: EventProps) => {
-  const startDT = DateTime.fromISO(start).toUTC()
-  const endDT = DateTime.fromISO(end).toUTC()
+  const startDT = getUTCDateTime(start)
+  const endDT = getUTCDateTime(end)
   const durationRaw = endDT.diff(startDT, ['days', 'hours', 'minutes'])
   const duration = durationRaw.toObject()
 
-  const startLabel = startDT.toLocaleString(DateTime.DATETIME_MED)
+  const startLabel = formatI18nDate(start, { format: DateTime.DATETIME_MED, showUTCLabel: true })
 
   const durationLabel = [
     duration.days && duration.days > 0

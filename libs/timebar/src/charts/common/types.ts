@@ -3,6 +3,7 @@ import { EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
 export type TrackChunkProps = {
   id?: string
   color?: string
+  height?: number
 }
 
 export type TrackEventChunkProps = {
@@ -70,4 +71,4 @@ export type TimebarChartsData = Record<ChartType, { data: TimebarChartData<void>
 
 export type HighlightedChunks = Partial<Record<ChartType, string[]>>
 
-export type Timeseries = { frame: number; date: number; [key: number]: number }[]
+export type Timeseries = { frame?: number; date: number; [key: number]: number }[]

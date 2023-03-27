@@ -10,10 +10,12 @@ import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { FIT_BOUNDS_ANALYSIS_PADDING } from 'data/config'
 import { parsePropertiesBbox } from 'features/map/map.utils'
-import { fetchAreaThunk, getAreaKey } from 'features/areas/areas.slice'
+import { fetchAreaDetailThunk } from 'features/areas/areas.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import useMapInstance from 'features/map/map-context.hooks'
+import { Bbox } from 'types'
+import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { setClickedEvent } from '../map.slice'
 import { TooltipEventFeature } from '../map.hooks'
 import { useMapFitBounds } from '../map-viewport.hooks'
@@ -36,38 +38,41 @@ export const useContextInteractions = () => {
   const isSidebarOpen = useSelector(selectSidebarOpen)
   const { dispatchQueryParams } = useLocationConnect()
   const { areaId, sourceId } = useSelector(selectAnalysisQuery) || {}
+  const datasets = useSelector(selectAllDatasets)
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const fitMapBounds = useMapFitBounds()
 
   const onDownloadClick = useCallback(
     (ev: React.MouseEvent<Element, MouseEvent>, feature: TooltipEventFeature) => {
-      if (!feature.properties?.gfw_id) {
+      const areaId = feature.properties.gfw_id || feature.properties[feature.promoteId]
+      if (!areaId) {
         console.warn('No gfw_id available in the feature to analyze', feature)
         return
       }
 
       const datasetId = feature.datasetId
-      const areaId = feature.properties?.gfw_id
-      const areaKey = getAreaKey({ datasetId, areaId })
-      const areaName = feature.value || feature.title
-      batch(() => {
-        dispatch(setDownloadActivityAreaKey(areaKey))
-        dispatch(setClickedEvent(null))
-      })
-      dispatch(fetchAreaThunk({ datasetId, areaId, areaName }))
+      const dataset = datasets.find((d) => d.id === datasetId)
+      if (dataset) {
+        const areaName = feature.value || feature.title
+        batch(() => {
+          dispatch(setDownloadActivityAreaKey({ datasetId, areaId }))
+          dispatch(setClickedEvent(null))
+        })
+        dispatch(fetchAreaDetailThunk({ dataset, areaId, areaName }))
+      }
 
       cleanFeatureState('highlight')
     },
-    [cleanFeatureState, dispatch]
+    [cleanFeatureState, dispatch, datasets]
   )
 
   const setAnalysisArea = useCallback(
     (feature: TooltipEventFeature) => {
-      const { source: sourceId, datasetId, properties = {}, title, value } = feature
-      const { gfw_id: areaId, bbox } = properties
+      const { source: sourceId, datasetId, properties = {}, title, value, promoteId } = feature
+      const areaId = feature.properties.gfw_id || feature.properties[promoteId]
       // Analysis already does it on page reload but to avoid waiting
       // this moves the map to the same position
-      const bounds = parsePropertiesBbox(bbox)
+      const bounds = parsePropertiesBbox(properties.bbox)
       if (bounds) {
         const boundsParams = {
           padding: FIT_BOUNDS_ANALYSIS_PADDING,
@@ -97,12 +102,13 @@ export const useContextInteractions = () => {
 
   const onAnalysisClick = useCallback(
     (ev: React.MouseEvent<Element, MouseEvent>, feature: TooltipEventFeature) => {
-      if (!feature.properties?.gfw_id) {
+      const gfw_id = feature.properties.gfw_id || feature.properties[feature.promoteId]
+      if (!gfw_id) {
         console.warn('No gfw_id available in the feature to report', feature)
         return
       }
 
-      if (areaId !== feature.properties?.gfw_id || sourceId !== feature.source) {
+      if (areaId !== gfw_id || sourceId !== feature.source) {
         setAnalysisArea(feature)
       }
     },

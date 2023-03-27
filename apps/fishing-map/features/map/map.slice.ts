@@ -21,8 +21,9 @@ import {
   selectActiveTemporalgridDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
-import { selectUserLogged } from 'features/user/user.slice'
+import { isGuestUser } from 'features/user/user.slice'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
+import { getUTCDateTime } from 'utils/dates'
 
 export const MAX_TOOLTIP_LIST = 5
 export const MAX_VESSELS_LOAD = 150
@@ -35,6 +36,7 @@ export type ExtendedFeatureVesselDatasets = Vessel & {
   trackDataset?: Dataset
 }
 
+// TODO extract this type in app types
 export type ExtendedFeatureVessel = ExtendedFeatureVesselDatasets & {
   hours: number
   [key: string]: any
@@ -123,8 +125,16 @@ const getInteractionEndpointDatasetConfig = (
   }
 
   const filters = featuresDataviews.map((dv) => dv.config?.filter || [])
-  if (filters?.length) {
+  if (filters.length) {
     datasetConfig.query?.push({ id: 'filters', value: filters })
+  }
+
+  const vesselGroups = featuresDataviews
+    .map((dv) => dv.config?.['vessel-groups'] || [])
+    .filter((vg) => vg.length)
+
+  if (vesselGroups.length) {
+    datasetConfig.query?.push({ id: 'vessel-groups', value: vesselGroups })
   }
 
   return { featuresDataviews, fourWingsDataset, datasetConfig }
@@ -189,7 +199,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
   'map/fetchFishingActivityInteraction',
   async ({ fishingActivityFeatures, activityProperties }, { getState, signal, dispatch }) => {
     const state = getState() as RootState
-    const userLogged = selectUserLogged(state)
+    const guestUser = isGuestUser(state)
     const temporalgridDataviews = selectActiveTemporalgridDataviews(state) || []
     if (!fishingActivityFeatures.length) {
       console.warn('fetchInteraction not possible, 0 features')
@@ -246,7 +256,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
       // Grab related dataset to fetch info from and prepare tracks
       const allInfoDatasets = await Promise.all(
         topActivityVesselsDatasets.flatMap(async (dataset) => {
-          const infoDatasets = getRelatedDatasetsByType(dataset, DatasetTypes.Vessels)
+          const infoDatasets = getRelatedDatasetsByType(dataset, DatasetTypes.Vessels, !guestUser)
           if (!infoDatasets) {
             return []
           }
@@ -260,12 +270,13 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
                   infoDataset = action.payload
                 }
               }
-              return (infoDataset || []) as Dataset
+              return infoDataset
             })
           )
         })
       )
-      const infoDatasets = allInfoDatasets.flatMap((d) => d || [])
+
+      const infoDatasets = allInfoDatasets.flatMap((datasets) => datasets.flatMap((d) => d || []))
       const topActivityVesselIds = topActivityVessels.map(({ id, vessel_id }) => id)
       const vesselsInfo = await fetchVesselInfo(infoDatasets, topActivityVesselIds, signal)
 
@@ -273,6 +284,9 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
         (feature) => feature.temporalgrid?.sublayerId || ''
       )
 
+      const mainTemporalgridFeature = fishingActivityFeatures[0].temporalgrid
+      const startYear = getUTCDateTime(mainTemporalgridFeature?.visibleStartDate).year
+      const endYear = getUTCDateTime(mainTemporalgridFeature?.visibleEndDate).year
       const sublayersVessels: SublayerVessels[] = vesselsBySource.map((sublayerVessels, i) => {
         const activityProperty = activityProperties?.[i] || 'hours'
         return {
@@ -280,18 +294,27 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
           vessels: sublayerVessels
             .flatMap((vessels) => {
               return vessels.map((vessel) => {
-                const vesselInfo = vesselsInfo?.find((entry) => entry.id === vessel.id)
+                const vesselInfo = vesselsInfo?.find((entry) => {
+                  if (entry.years?.length && startYear && endYear) {
+                    return (
+                      entry.id === vessel.id &&
+                      (entry.years.some((year) => year >= startYear) ||
+                        entry.years.some((year) => year <= endYear))
+                    )
+                  }
+                  return entry.id === vessel.id
+                })
                 const infoDataset = selectDatasetById(vesselInfo?.dataset as string)(state)
                 const trackFromRelatedDataset = infoDataset || vessel.dataset
                 const trackDatasetId = getRelatedDatasetByType(
                   trackFromRelatedDataset,
                   DatasetTypes.Tracks,
-                  userLogged
+                  !guestUser
                 )?.id
-                if (vesselInfo && !trackDatasetId) {
-                  console.warn('No track dataset found for dataset:', trackFromRelatedDataset)
-                  console.warn('and vessel:', vessel)
-                }
+                // if (vesselInfo && !trackDatasetId) {
+                //   console.warn('No track dataset found for dataset:', trackFromRelatedDataset)
+                //   console.warn('and vessel:', vessel)
+                // }
                 const trackDataset = selectDatasetById(trackDatasetId as string)(state)
                 return {
                   ...vesselInfo,

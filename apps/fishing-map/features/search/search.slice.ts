@@ -67,6 +67,7 @@ export type VesselSearchThunk = {
   offset: number
   filters: SearchFilter
   datasets: Dataset[]
+  gfwUser?: boolean
 }
 
 export function checkSearchFiltersEnabled(filters: SearchFilter): boolean {
@@ -81,7 +82,7 @@ export function checkAdvanceSearchFiltersEnabled(filters: SearchFilter): boolean
 export const fetchVesselSearchThunk = createAsyncThunk(
   'search/fetch',
   async (
-    { query, filters, datasets, offset }: VesselSearchThunk,
+    { query, filters, datasets, offset, gfwUser = false }: VesselSearchThunk,
     { getState, signal, rejectWithValue }
   ) => {
     const state = getState() as RootState
@@ -151,7 +152,11 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         const searchResults = await GFWAPI.fetch<APIPagination<VesselSearch>>(url, {
           signal,
         })
-        const uniqSearchResults = uniqBy(searchResults.entries, 'id')
+        // Not removing duplicates for GFWStaff so they can compare other VS fishing vessels
+        const uniqSearchResults = gfwUser
+          ? searchResults.entries
+          : uniqBy(searchResults.entries, 'id')
+
         const vesselsWithDataset = uniqSearchResults.flatMap((vessel) => {
           if (!vessel) return []
 

@@ -8,6 +8,7 @@ import styles from './Select.module.css'
 import { SelectOption, SelectOnChange } from './index'
 
 interface SelectProps {
+  id?: string
   label?: string
   placeholder?: string
   options: SelectOption[]
@@ -28,6 +29,7 @@ const isItemSelected = (selectedItem: SelectOption | undefined, item: SelectOpti
 
 export function Select(props: SelectProps) {
   const {
+    id,
     label = '',
     placeholder = 'Select an option',
     options,
@@ -50,6 +52,7 @@ export function Select(props: SelectProps) {
     getMenuProps,
     getItemProps,
   } = useSelect<SelectOption | null>({
+    ...((id && { id }) || {}),
     items: options,
     onSelectedItemChange: ({ selectedItem }) => {
       if (!disabled && selectedItem && !selectedItem.disabled) {
@@ -83,7 +86,9 @@ export function Select(props: SelectProps) {
 
   return (
     <div className={containerClassName}>
-      <label {...getLabelProps()}>{label}</label>
+      <label className={styles.label} {...getLabelProps()}>
+        {label}
+      </label>
       <div
         className={cx(
           styles.container,

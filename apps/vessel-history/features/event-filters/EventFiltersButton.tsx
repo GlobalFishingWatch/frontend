@@ -1,13 +1,13 @@
-import React, { Fragment, useMemo } from 'react'
+import { Fragment } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { capitalize } from 'lodash'
-import { DateTime } from 'luxon'
 import { Button, Icon, IconButton, ButtonType } from '@globalfishingwatch/ui-components'
-import { selectFilterUpdated } from 'features/event-filters/filters.selectors'
-import { formatI18nDate } from 'features/i18n/i18nDate'
-import { Filters, selectFilters } from './filters.slice'
+import { selectIsFilterUpdated } from 'features/event-filters/filters.selectors'
+import FiltersLabel from 'features/filters-label/filters-label'
+import { selectCurrentUserProfileHasInsurerPermission } from 'features/profile/profile.selectors'
+import DateRangeLabel from 'features/date-range-label/date-range-label'
+import { selectFilters } from './filters.slice'
 import styles from './EventFiltersButton.module.css'
 
 interface ButtonProps {
@@ -18,37 +18,14 @@ interface ButtonProps {
 
 const EventFiltersButton: React.FC<ButtonProps> = ({ className, ...props }): React.ReactElement => {
   const { t } = useTranslation()
-  const filtersApplied = useSelector(selectFilterUpdated)
+  const filtersApplied = useSelector(selectIsFilterUpdated)
   const filters = useSelector(selectFilters)
-
-  const filtersLabel = useMemo(() => {
-    return (
-      (Object.keys(filters) as (keyof Filters)[])
-        // Exclude filters without value or false
-        .filter((key) => !!filters[key])
-        .map((key) => ({
-          key,
-          value: filters[key],
-        }))
-        .map(({ key, value }) => {
-          if (['start', 'end'].includes(key)) {
-            return `${capitalize(t(`filters.${key}` as any, key))}: ${formatI18nDate(
-              value as string,
-              {
-                format: DateTime.DATE_SHORT,
-              }
-            )}`
-          } else {
-            return `${t(`settings.${key}.shortTitle` as any, key)}`
-          }
-        })
-        .join(', ')
-    )
-  }, [filters, t])
+  const currentProfileIsInsurer = useSelector(selectCurrentUserProfileHasInsurerPermission)
 
   return (
     <Fragment>
-      {!filtersApplied && (
+      {currentProfileIsInsurer && <DateRangeLabel type={props.type} className={className} />}
+      {!currentProfileIsInsurer && !filtersApplied && (
         <IconButton
           type={props?.type === 'default' ? 'map-tool' : 'solid'}
           icon={'filter-off'}
@@ -57,10 +34,10 @@ const EventFiltersButton: React.FC<ButtonProps> = ({ className, ...props }): Rea
           onClick={props?.onClick ?? (() => void 0)}
         />
       )}
-      {filtersApplied && (
+      {!currentProfileIsInsurer && filtersApplied && (
         <Button {...props} className={cx(styles.filterBtn, className)}>
           <Icon type="default" icon={filtersApplied ? 'filter-on' : 'filter-off'} />
-          <span>{filtersLabel}</span>
+          <FiltersLabel filters={filters} />
         </Button>
       )}
     </Fragment>

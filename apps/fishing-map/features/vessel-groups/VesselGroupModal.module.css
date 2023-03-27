@@ -1,0 +1,140 @@
+.modalContainer {
+  height: 58rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.modalFooter {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.parameters {
+  display: flex;
+  height: 80px;
+  margin-bottom: 2rem;
+}
+
+.parameters > * {
+  flex: 1;
+  max-width: 25rem;
+  margin-right: 2rem;
+}
+
+.vesselGroupInput {
+  display: flex;
+  flex: 1;
+}
+
+.ids {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  max-width: 25rem;
+  margin-right: 2rem;
+}
+
+.dropzoneContainer {
+  flex: 1;
+}
+
+.dropzone {
+  height: 100%;
+}
+
+.idsArea {
+  display: flex;
+  flex-direction: column;
+}
+
+.idsArea textarea {
+  flex: 1;
+}
+
+.footerMsg {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.hint {
+  color: var(--color-secondary-blue);
+  text-decoration: underline;
+}
+
+.errorMsg {
+  color: var(--color-danger-red);
+}
+
+.warning {
+  color: var(--color-danger-red);
+}
+
+.vesselsTableContainer {
+  max-height: 340px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.vesselsTable {
+  width: 100%;
+  margin-right: var(--space-S);
+  margin-bottom: var(--space-XS);
+  border-collapse: collapse;
+}
+
+.vesselsTable tr {
+  min-height: 10rem;
+}
+
+.vesselsTable th {
+  text-align: left;
+  font: var(--font-XS);
+  color: var(--color-secondary-blue);
+  text-transform: uppercase;
+}
+
+.vesselsTable td,
+.vesselsTable th {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0;
+  line-height: 2rem;
+  height: 3rem;
+  max-width: 14rem;
+  vertical-align: middle;
+}
+
+.vesselsTable tr:not(:last-child) td {
+  border-bottom: var(--border);
+}
+
+.vesselsTable tr.border:not(:last-child) td {
+  border-bottom: 1px solid var(--color-secondary-blue);
+}
+
+.vesselsTable td.icon {
+  width: 3rem;
+  overflow: visible;
+}
+
+.backButton {
+  margin-right: 1rem;
+}
+
+.new {
+  background-color: var(--color-help-yellow);
+}
+
+.openModalLink {
+  text-decoration: underline;
+}

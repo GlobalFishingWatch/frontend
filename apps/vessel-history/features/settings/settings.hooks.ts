@@ -62,7 +62,7 @@ export const useSettingsConnect = () => {
   const setSettingOptions = (section: string, field: string, values: Region[]) => {
     const key = section as keyof Settings
     const newSettings = {
-      ...settings[key],
+      ...settings[key] as SettingsEvents,
       [field]: values.map((v) => v.id),
     }
     mergeSettings(section, newSettings)
@@ -70,16 +70,25 @@ export const useSettingsConnect = () => {
 
   const setSetting = (section: string, field: string, value: number) => {
     const key = section as keyof Settings
-    const newSettings = {
-      ...settings[key],
+    const newSettings: SettingsEvents = {
+      ...settings[key] as SettingsEvents,
       [field]: value >= 0 ? value : undefined,
     }
     mergeSettings(section, newSettings)
   }
 
+  const setFiltersStatus = (status: boolean) => {
+    const newSettings: Settings = {
+      ...settings,
+      enabled: status,
+    }
+    dispatch(updateSettings(newSettings))
+  }
+
   return {
     setSetting,
     setSettingOptions,
+    setFiltersStatus,
   }
 }
 
@@ -96,7 +105,7 @@ export const useSettingsRegionsConnect = (section: SettingEventSectionName) => {
   const MPAS_REGIONS = useSelector(selectMPAs)
   const COUNTRIES: Region[] = flags
 
-  const anyOption: MultiSelectOption<string> = useMemo(
+  const anyOption: MultiSelectOption<string, string> = useMemo(
     () => ({
       ...anyRegion,
       label: t(`common.${anyRegion.label}` as any, capitalize(anyRegion.label)) as string,
@@ -106,23 +115,27 @@ export const useSettingsRegionsConnect = (section: SettingEventSectionName) => {
   )
 
   const onSelectRegion = useCallback(
-    (selected: MultiSelectOption<string>, currentSelected: MultiSelectOption[], field: string) => {
-      selected === anyOption
-        ? // when ANY is selected the rest are deselected
-          setSettingOptions(section, field, [selected])
-        : // when other than ANY is selected
-          setSettingOptions(section, field, [
-            // then ANY should be deselected
-            ...currentSelected.filter((option) => option !== anyOption),
-            selected,
-          ])
+    (
+      selected: MultiSelectOption<string, string>,
+      currentSelected: MultiSelectOption<string, string>[],
+      field: string
+    ) => {
+      selected === anyOption ?
+        // when ANY is selected the rest are deselected
+        setSettingOptions(section, field, [selected]) :
+        // when other than ANY is selected
+        setSettingOptions(section, field, [
+          // then ANY should be deselected
+          ...currentSelected.filter((option) => option !== anyOption),
+          selected,
+        ])
     },
     [section, setSettingOptions, anyOption]
   )
 
   const getOptions = useCallback(
     (
-      availableOptions: MultiSelectOption[] | undefined = [],
+      availableOptions: MultiSelectOption<string, string>[] | undefined = [],
       field: string,
       selected?: string | string[]
     ) => {
@@ -139,13 +152,13 @@ export const useSettingsRegionsConnect = (section: SettingEventSectionName) => {
       return {
         options,
         onClean: () => setSettingOptions(section, field, []),
-        onRemove: (option: MultiSelectOption) =>
+        onRemove: (option: MultiSelectOption<string, string>) =>
           setSettingOptions(
             section,
             field,
             selectedOptions.filter((o) => o.id !== option.id)
           ),
-        onSelect: (option: MultiSelectOption) => {
+        onSelect: (option: MultiSelectOption<string, string>) => {
           onSelectRegion(option, selectedOptions, field)
         },
         selected: selectedOptions,

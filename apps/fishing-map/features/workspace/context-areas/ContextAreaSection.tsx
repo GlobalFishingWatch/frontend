@@ -52,7 +52,9 @@ function ContextAreaSection(): React.ReactElement {
   const onToggleLayer = useCallback(
     (dataview: UrlDataviewInstance) => () => {
       const isVisible = dataview?.config?.visible ?? false
-      const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Context)
+      const dataset = dataview.datasets?.find(
+        (d) => d.type === DatasetTypes.Context || d.type === DatasetTypes.UserContext
+      )
       const layerTitle = dataset?.name ?? dataset?.id ?? 'Unknown layer'
       const action = isVisible ? 'disable' : 'enable'
       uaEvent({
@@ -66,7 +68,9 @@ function ContextAreaSection(): React.ReactElement {
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={styles.header}>
-        <h2 className={styles.sectionTitle}>{t('common.context_area_other', 'Context areas')}</h2>
+        <h2 className={cx('print-hidden', styles.sectionTitle)}>
+          {t('common.context_area_other', 'Context areas')}
+        </h2>
         {!readOnly && (
           <Fragment>
             <LoginButtonWrapper

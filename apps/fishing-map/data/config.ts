@@ -3,6 +3,7 @@ import { DateTime } from 'luxon'
 import { DataviewCategory, ThinningConfig } from '@globalfishingwatch/api-types'
 import { ThinningLevels, THINNING_LEVELS } from '@globalfishingwatch/api-client'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
+import { getUTCDateTime } from 'utils/dates'
 
 export const ROOT_DOM_ELEMENT = '__next'
 
@@ -10,8 +11,20 @@ export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
 export const IS_PRODUCTION =
   process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'production' || process.env.NODE_ENV === 'production'
 
+export const REPORT_DAYS_LIMIT =
+  typeof process.env.NEXT_PUBLIC_REPORT_DAYS_LIMIT !== 'undefined'
+    ? parseInt(process.env.NEXT_PUBLIC_REPORT_DAYS_LIMIT)
+    : 366 // 1 year
+
+export const VESSEL_GROUPS_DAYS_LIMIT =
+  typeof process.env.VESSEL_GROUPS_DAYS_LIMIT !== 'undefined'
+    ? parseInt(process.env.VESSEL_GROUPS_DAYS_LIMIT)
+    : 93 // 3 months
+
 // Never actually used?
 export const API_GATEWAY = process.env.API_GATEWAY || process.env.NEXT_PUBLIC_API_GATEWAY || ''
+export const CARRIER_PORTAL_API_URL =
+  process.env.NEXT_CARRIER_PORTAL_API_URL || 'https://gateway.api.globalfishingwatch.org'
 export const CARRIER_PORTAL_URL =
   process.env.NEXT_PUBLIC_CARRIER_PORTAL_URL || 'https://carrier-portal.globalfishingwatch.org'
 export const LATEST_CARRIER_DATASET_ID =
@@ -23,7 +36,6 @@ export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions 
   : { debug: true }
 
 // TODO use it to retrieve it and store in workspace.default in deploy
-export const API_VERSION = 'v2'
 export const APP_NAME = 'fishing-map'
 export const PUBLIC_SUFIX = 'public'
 export const FULL_SUFIX = 'full'
@@ -43,9 +55,15 @@ export const DEFAULT_VIEWPORT = {
   latitude: 19,
   longitude: 26,
 }
+
 export const DEFAULT_TIME_RANGE = {
-  start: DateTime.fromISO(LAST_DATA_UPDATE).minus({ months: 3 }).toISO(),
+  start: getUTCDateTime(LAST_DATA_UPDATE).minus({ months: 3 }).toISO(),
   end: LAST_DATA_UPDATE,
+}
+
+export const DEFAULT_PAGINATION_PARAMS = {
+  limit: 99999,
+  offset: 0,
 }
 
 export const DEFAULT_ACTIVITY_CATEGORY = 'fishing'

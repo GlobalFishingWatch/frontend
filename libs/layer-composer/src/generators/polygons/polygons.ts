@@ -1,9 +1,13 @@
-import type { LineLayerSpecification } from '@globalfishingwatch/maplibre-gl'
+import type {
+  FillLayerSpecification,
+  LineLayerSpecification,
+} from '@globalfishingwatch/maplibre-gl'
 import { Group } from '../../types'
 import { isUrlAbsolute } from '../../utils'
 import { API_GATEWAY } from '../../config'
 import { GeneratorType, MergedGeneratorConfig, PolygonsGeneratorConfig } from '../types'
 import { isConfigVisible } from '../utils'
+import { getFillPaintWithFeatureState } from '../context/context.utils'
 
 const DEFAULT_COLOR = 'rgba(0, 193, 231, 1)'
 
@@ -32,7 +36,16 @@ class PolygonsGenerator {
     ]
   }
 
-  _getStyleLayers = (config: GlobalPolygonsConfig): LineLayerSpecification[] => {
+  _getStyleLayers = (
+    config: GlobalPolygonsConfig
+  ): (LineLayerSpecification | FillLayerSpecification)[] => {
+    const generatorId = config.id
+    const baseLayer = {
+      id: generatorId,
+      source: config.id,
+    }
+    const interactive = config.metadata?.interactive
+
     const paint = {
       'line-color': config.color || DEFAULT_COLOR,
       'line-width': 0.5,
@@ -40,17 +53,35 @@ class PolygonsGenerator {
     }
 
     const visibility = isConfigVisible(config)
-    const layer: LineLayerSpecification = {
-      id: config.id,
-      source: config.id,
+    const lineLayer: LineLayerSpecification = {
+      ...baseLayer,
       type: 'line',
       layout: { visibility },
       paint,
       metadata: {
-        group: Group.Track,
+        group: Group.OutlinePolygons,
+        ...(config.metadata || {}),
       },
     }
-    return [layer]
+
+    if (!interactive) {
+      return [lineLayer]
+    }
+    const interactionLayer: FillLayerSpecification = {
+      ...baseLayer,
+      id: `${generatorId}_interaction`,
+      type: 'fill',
+      paint: {
+        'fill-outline-color': 'transparent',
+        ...getFillPaintWithFeatureState('transparent'),
+      },
+      metadata: {
+        interactive,
+        generatorId: generatorId,
+        group: Group.CustomLayer,
+      },
+    }
+    return [lineLayer, interactionLayer]
   }
 
   getStyle = (config: GlobalPolygonsConfig) => {

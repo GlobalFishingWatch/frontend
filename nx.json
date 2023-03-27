@@ -3,13 +3,6 @@
   "affected": {
     "defaultBase": "develop"
   },
-  "implicitDependencies": {
-    "package.json": {
-      "dependencies": "*",
-      "devDependencies": "*"
-    },
-    "nx.json": "*"
-  },
   "tasksRunnerOptions": {
     "default": {
       "runner": "@nrwl/nx-cloud",
@@ -20,6 +13,7 @@
           "echo $NEXT_PUBLIC_API_GATEWAY",
           "echo $NEXT_PUBLIC_WORKSPACE_ENV",
           "echo $NEXT_PUBLIC_CARRIER_PORTAL_URL",
+          "echo $NEXT_PUBLIC_LATEST_CARRIER_DATASET_ID",
           "echo $NEXT_PUBLIC_FEEDBACK_SPREADSHEET_ID",
           "echo $NEXT_PUBLIC_SPREADSHEET_CLIENT_EMAIL",
           "echo $NEXT_PUBLIC_SPREADSHEET_PRIVATE_KEY"
@@ -29,17 +23,6 @@
         "showUsageWarnings": true
       }
     }
-  },
-  "targetDependencies": {
-    "build": [
-      {
-        "target": "build",
-        "projects": "dependencies"
-      }
-    ]
-  },
-  "cli": {
-    "defaultCollection": "@nrwl/next"
   },
   "generators": {
     "@nrwl/react": {
@@ -63,5 +46,38 @@
       }
     }
   },
-  "defaultProject": "fishing-map"
+  "defaultProject": "fishing-map",
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "targetDefaults": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
+    },
+    "test-dev": {
+      "inputs": ["default", "^production"]
+    },
+    "test-pro": {
+      "inputs": ["default", "^production"]
+    },
+    "e2e": {
+      "inputs": ["default", "^production"]
+    },
+    "test": {
+      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"]
+    },
+    "lint": {
+      "inputs": ["default", "{workspaceRoot}/.eslintrc.js"]
+    }
+  },
+  "namedInputs": {
+    "default": ["{projectRoot}/**/*", "sharedGlobals"],
+    "sharedGlobals": ["{workspaceRoot}/nx.json", "{workspaceRoot}/babel.config.json"],
+    "production": [
+      "default",
+      "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
+      "!{projectRoot}/tsconfig.spec.json",
+      "!{projectRoot}/jest.config.[jt]s",
+      "!{projectRoot}/.eslintrc.js"
+    ]
+  }
 }

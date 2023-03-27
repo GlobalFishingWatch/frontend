@@ -27,6 +27,22 @@
 .row {
   display: flex;
   z-index: 50;
+  height: 40px;
+}
+
+.rowBorder {
+  border-bottom: 1px solid var(--color-terthiary-blue);
+}
+
+.rowBorder .col {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.rowBorder .col span {
+  white-space: nowrap;
+  word-break: break-all;
+  font: var(--font-S);
 }
 
 .row .col,
@@ -79,4 +95,8 @@
 .alert {
   padding: var(--font-S);
   text-align: center;
+}
+
+.actionButton {
+  cursor: pointer;
 }

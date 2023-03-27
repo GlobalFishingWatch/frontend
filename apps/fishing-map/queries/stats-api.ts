@@ -5,14 +5,8 @@ import type { SerializeQueryArgs } from '@reduxjs/toolkit/dist/query/defaultSeri
 import { gfwBaseQuery } from 'queries/base'
 import { uniq } from 'lodash'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { StatField, StatFields, StatType } from '@globalfishingwatch/api-types'
 import type { Range } from 'features/timebar/timebar.slice'
-import { API_VERSION } from 'data/config'
-
-export type StatType = 'vessels' | 'detections'
-export type StatField = 'id' | 'flag' | 'vessel_id' | 'geartype'
-export type StatFields = {
-  [key in StatField]: number
-} & { type: StatType }
 
 export type FetchDataviewStatsParams = {
   timerange: Range
@@ -33,13 +27,13 @@ const serializeStatsDataviewKey: SerializeQueryArgs<CustomBaseQueryArg> = ({ que
   ].join('-')
 }
 
-export const DEFAULT_STATS_FIELDS = ['vessel_id', 'flag']
+export const DEFAULT_STATS_FIELDS = ['vessel-ids', 'flags']
 // Define a service using a base URL and expected endpoints
 export const dataviewStatsApi = createApi({
   reducerPath: 'dataviewStatsApi',
   serializeQueryArgs: serializeStatsDataviewKey,
   baseQuery: gfwBaseQuery({
-    baseUrl: `/${API_VERSION}/4wings/stats`,
+    baseUrl: `/4wings/stats`,
   }),
   endpoints: (builder) => ({
     getStatsByDataview: builder.query<StatFields, FetchDataviewStatsParams>({
@@ -47,6 +41,7 @@ export const dataviewStatsApi = createApi({
         const statsParams = {
           datasets: [dataview.config?.datasets?.join(',') || []],
           filters: [dataview.config?.filter] || [],
+          'vessel-groups': [dataview.config?.['vessel-groups']] || [],
           'date-range': [timerange.start, timerange.end].join(','),
         }
         return {

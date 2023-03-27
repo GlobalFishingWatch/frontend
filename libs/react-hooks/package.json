@@ -5,19 +5,18 @@
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "license": "ISC",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "index.js",
+  "typings": "src/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
-  "devDependencies": {},
   "peerDependencies": {
     "@globalfishingwatch/api-client": "4.x",
     "@globalfishingwatch/dataviews-client": "14.x",
     "@globalfishingwatch/fourwings-aggregate": "4.x",
     "@globalfishingwatch/layer-composer": "10.x",
-    "@globalfishingwatch/maplibre-gl": "^2.2.0-gfw.24",
+    "@globalfishingwatch/maplibre-gl": "^2.2.0-gfw.25",
     "lodash": "4.x"
   },
   "publishConfig": {

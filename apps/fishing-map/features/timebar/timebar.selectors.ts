@@ -58,7 +58,9 @@ export const selectTracksData = createSelector(
         trackResource = resources[url] as Resource<TrackResourceData>
       }
 
-      if (!trackResource || trackResource.status === ResourceStatus.Loading) {
+      if (!trackResource) {
+        return { ...timebarTrack, status: ResourceStatus.Idle }
+      } else if (trackResource.status === ResourceStatus.Loading) {
         return { ...timebarTrack, status: ResourceStatus.Loading }
       } else if (
         trackResource.status === ResourceStatus.Error ||
@@ -111,6 +113,16 @@ export const selectTracksData = createSelector(
     return tracksSegments
   }
 )
+
+export const selectHasTracksData = createSelector([selectTracksData], (tracks = []) => {
+  return tracks.some(({ chunks }) => chunks.length > 0)
+})
+
+export const selectHasTracksWithNoData = createSelector([selectTracksData], (tracks = []) => {
+  return tracks.some(
+    ({ chunks, status }) => status !== ResourceStatus.Loading && chunks.length === 0
+  )
+})
 
 const getTrackGraphSpeedHighlighterLabel = ({ value }: HighlighterCallbackFnArgs) =>
   value ? `${value.value.toFixed(2)} knots` : ''
@@ -229,11 +241,14 @@ export const selectTracksEvents = createSelector(
         return resources[url].data as TimebarChartChunk<TrackEventChunkProps>[]
       })
       const statuses = eventsResourcesFiltered.map(({ url }) => resources[url]?.status)
-      if (statuses.some((s) => s === ResourceStatus.Error))
+
+      if (statuses.some((s) => s === ResourceStatus.Error)) {
         trackEvents.status = ResourceStatus.Error
-      else if (statuses.every((s) => s === ResourceStatus.Finished))
+      } else if (statuses.every((s) => s === ResourceStatus.Finished)) {
         trackEvents.status = ResourceStatus.Finished
-      else trackEvents.status = ResourceStatus.Loading
+      } else {
+        trackEvents.status = ResourceStatus.Loading
+      }
 
       return trackEvents
     })

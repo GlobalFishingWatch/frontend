@@ -6,14 +6,22 @@ import {
   DataviewDatasetConfig,
   DataviewInstance,
   EndpointId,
+  EXCLUDE_FILTER_ID,
+  FilterOperator,
+  INCLUDE_FILTER_ID,
   Resource,
 } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { resolveEndpoint } from './resolve-endpoint'
 
 export type UrlDataviewInstance<T = GeneratorType> = Omit<DataviewInstance<T>, 'dataviewId'> & {
-  dataviewId?: number // making this optional as sometimes we just need to reference the id
+  dataviewId?: Dataview['id'] | Dataview['slug'] // making this optional as sometimes we just need to reference the id
   deleted?: boolean // needed when you want to override from url an existing workspace config
+}
+
+export const FILTER_OPERATOR_SQL: Record<FilterOperator, string> = {
+  [INCLUDE_FILTER_ID]: 'IN',
+  [EXCLUDE_FILTER_ID]: 'NOT IN',
 }
 
 /**
@@ -165,7 +173,7 @@ export const resolveResourcesFromDatasetConfigs = (
         if (!dataset) return []
         const url = resolveEndpoint(dataset, datasetConfig)
         if (!url) return []
-        return [{ dataset, datasetConfig, url, dataviewId: dataview.dataviewId as number }]
+        return [{ dataset, datasetConfig, url, dataviewId: dataview.dataviewId as string }]
       })
     })
 }
@@ -215,7 +223,7 @@ export const resolveDataviewDatasetResources = (
           url,
           dataset,
           datasetConfig,
-          dataviewId: dataview.dataviewId as number,
+          dataviewId: dataview.dataviewId,
           key: generateDataviewDatasetResourceKey(dataset, datasetConfig),
         } as Resource,
       ]
@@ -248,8 +256,13 @@ export function resolveDataviews(
       if (dataviewInstance?.deleted) {
         return []
       }
-
-      const dataview = dataviews?.find((dataview) => dataview.id === dataviewInstance.dataviewId)
+      const dataview = dataviews?.find((dataview) => {
+        return (
+          dataview.slug === dataviewInstance.dataviewId ||
+          // We need to parse the dataviewId as a string because now it is always a string to support slugs
+          dataview.id === parseInt(dataviewInstance.dataviewId as string, 10)
+        )
+      })
       if (!dataview) {
         console.warn(
           `DataviewInstance id: ${dataviewInstance.id} doesn't have a valid dataview (${dataviewInstance.dataviewId})`
@@ -305,8 +318,8 @@ export function resolveDataviews(
 
       const resolvedDataview = {
         ...dataview,
-        id: dataviewInstance.id as string,
-        dataviewId: dataview.id,
+        id: dataviewInstance.id,
+        dataviewId: dataview.slug,
         config,
         datasets: dataviewDatasets,
         datasetsConfig,
@@ -318,35 +331,48 @@ export function resolveDataviews(
   // resolved array filters to url filters
   dataviewInstancesResolved = dataviewInstancesResolved.map((dataviewInstance) => {
     if (dataviewInstance.config?.type === GeneratorType.HeatmapAnimated) {
-      const { filters } = dataviewInstance.config
+      const { filters, filterOperators } = dataviewInstance.config
       if (filters) {
-        const sqlFilters = Object.keys(filters).flatMap((filterKey) => {
-          if (!filters[filterKey]) return []
-          const filterValues = Array.isArray(filters[filterKey])
-            ? filters[filterKey]
-            : [filters[filterKey]]
+        if (filters['vessel-groups']) {
+          dataviewInstance.config['vessel-groups'] = filters['vessel-groups'].join(',')
+        }
+        const sqlFilters = Object.keys(filters)
+          .filter((key) => key !== 'vessel-groups')
+          .flatMap((filterKey) => {
+            if (!filters[filterKey]) return []
+            const filterValues = Array.isArray(filters[filterKey])
+              ? filters[filterKey]
+              : [filters[filterKey]]
 
-          const datasetSchema = dataviewInstance.datasets?.find(
-            (d) => d.schema?.[filterKey] !== undefined
-          )?.schema?.[filterKey]
+            const datasetSchema = dataviewInstance.datasets?.find(
+              (d) => d.schema?.[filterKey] !== undefined
+            )?.schema?.[filterKey]
 
-          if (datasetSchema && datasetSchema.type === 'number') {
-            const minPossible = Number(datasetSchema.enum[0])
-            const minSelected = Number(filterValues[0])
-            const maxPossible = Number(datasetSchema.enum[datasetSchema.enum.length - 1])
-            const maxSelected = Number(filterValues[filterValues.length - 1])
-            if (minSelected !== minPossible && maxSelected !== maxPossible) {
-              return `${filterKey} >= ${minSelected} AND ${filterKey} <= ${maxSelected}`
+            if (datasetSchema && datasetSchema.type === 'number') {
+              const minPossible = Number(datasetSchema.enum[0])
+              const minSelected = Number(filterValues[0])
+              const maxPossible = Number(datasetSchema.enum[datasetSchema.enum.length - 1])
+              const maxSelected = Number(filterValues[filterValues.length - 1])
+              if (minSelected !== minPossible && maxSelected !== maxPossible) {
+                return `${filterKey} >= ${minSelected} AND ${filterKey} <= ${maxSelected}`
+              }
+              if (minSelected !== minPossible) {
+                return `${filterKey} >= ${minSelected}`
+              }
+              if (maxSelected !== maxPossible) {
+                return `${filterKey} <= ${maxSelected}`
+              }
             }
-            if (minSelected !== minPossible) {
-              return `${filterKey} >= ${minSelected}`
+            const filterOperator = filterOperators?.[filterKey] || INCLUDE_FILTER_ID
+            const query = `${filterKey} ${FILTER_OPERATOR_SQL[filterOperator]} (${filterValues
+              .map((f: string) => `'${f}'`)
+              .join(', ')})`
+            if (filterOperator === EXCLUDE_FILTER_ID) {
+              // workaround as bigquery exludes null values
+              return `(${filterKey} IS NULL OR ${query})`
             }
-            if (maxSelected !== maxPossible) {
-              return `${filterKey} <= ${maxSelected}`
-            }
-          }
-          return `${filterKey} IN (${filterValues.map((f: string) => `'${f}'`).join(', ')})`
-        })
+            return query
+          })
         if (sqlFilters.length) {
           dataviewInstance.config.filter = sqlFilters.join(' AND ')
         }

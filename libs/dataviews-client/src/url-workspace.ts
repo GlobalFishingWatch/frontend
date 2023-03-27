@@ -1,6 +1,7 @@
 import { Dictionary } from '@reduxjs/toolkit'
 import { invert, isObject, isString, transform } from 'lodash'
 import { stringify, parse } from 'qs'
+import { EndpointId } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '.'
 
 /**
@@ -31,6 +32,7 @@ const PARAMS_TO_ABBREVIATED = {
   query: 'qry',
   value: 'val',
   color: 'clr',
+  'vessel-groups': 'vGs',
 }
 const ABBREVIATED_TO_PARAMS = invert(PARAMS_TO_ABBREVIATED)
 
@@ -136,7 +138,48 @@ const deepDetokenizeValues = (obj: Dictionary<any>) => {
   return detokenized
 }
 
+const PUBLIC_VMS_TRACK_DATASETS = [
+  'public-belize-fishing-tracks',
+  'public-bra-onyxsat-fishing-tracks',
+  'public-chile-fishing-tracks',
+  'public-chile-non-fishing-tracks',
+  'public-costa-rica-fishing-tracks',
+  'public-ecuador-fishing-tracks',
+  'public-ecuador-non-fishing-tracks',
+  'public-indonesia-fishing-tracks',
+  'public-mexico-fishing-tracks',
+  'public-panama-fishing-tracks',
+  'public-panama-non-fishing-tracks',
+  'public-peru-fishing-tracks',
+]
+
+export const migrateLegacyVMSPublicDataset = (datasetId: string) => {
+  return PUBLIC_VMS_TRACK_DATASETS.some((legacyDataset) => datasetId.includes(legacyDataset))
+    ? datasetId.replace('public-', 'full-')
+    : datasetId
+}
+
+const FULL_VMS_VESSELS_DATASETS = [
+  'full-chile-fishing-vessels',
+  'full-indonesia-fishing-vessels',
+  'full-panama-fishing-vessels',
+  'full-panama-non-fishing-vessels',
+  'full-peru-fishing-vessels',
+]
+export const migrateLegacyVMSFullDataset = (datasetId: string) => {
+  return FULL_VMS_VESSELS_DATASETS.some((legacyDataset) => datasetId.includes(legacyDataset))
+    ? datasetId.replace('full-', 'public-')
+    : datasetId
+}
+
+export const migrateLegacyVMSDatasets = (datasetId: string) => {
+  return migrateLegacyVMSFullDataset(migrateLegacyVMSPublicDataset(datasetId))
+}
+
 export const removeLegacyEndpointPrefix = (endpointId: string) => {
+  if (endpointId === 'user-context-tiles') {
+    return EndpointId.ContextTiles
+  }
   return endpointId.replace('carriers-', '')
 }
 
@@ -148,6 +191,7 @@ export const parseLegacyDataviewInstanceEndpoint = (
     ...(dataviewInstance.datasetsConfig && {
       datasetsConfig: dataviewInstance.datasetsConfig.map((dc) => ({
         ...dc,
+        datasetId: migrateLegacyVMSDatasets(dc.datasetId),
         endpoint: removeLegacyEndpointPrefix(dc.endpoint),
       })),
     }),
@@ -155,12 +199,27 @@ export const parseLegacyDataviewInstanceEndpoint = (
 }
 
 const parseDataviewInstance = (dataview: UrlDataviewInstance) => {
-  const dataviewId = parseInt((dataview.dataviewId as number)?.toString())
+  const dataviewId = dataview.dataviewId?.toString()
   const breaks = dataview.config?.breaks?.map((b: string) => parseFloat(b))
+  const vesselGroups = dataview.config?.['vessel-groups']?.map((vg: any) => parseInt(vg as any))
+
+  const config = { ...dataview.config }
+  if (breaks) {
+    config.breaks = breaks
+  }
+  if (dataview.config?.maxVisibleValue !== undefined) {
+    config.maxVisibleValue = parseFloat(dataview.config?.maxVisibleValue)
+  }
+  if (dataview.config?.minVisibleValue !== undefined) {
+    config.minVisibleValue = parseFloat(dataview.config?.minVisibleValue)
+  }
+  if (vesselGroups) {
+    config['vessel-groups'] = vesselGroups
+  }
   return {
     ...parseLegacyDataviewInstanceEndpoint(dataview),
     ...(dataviewId && { dataviewId }),
-    ...(dataview.config && breaks && { config: { ...dataview.config, breaks } }),
+    config,
   }
 }
 

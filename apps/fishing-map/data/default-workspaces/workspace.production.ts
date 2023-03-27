@@ -3,19 +3,22 @@ import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_VIEWPORT } from 'data/config'
 import {
   WorkspaceCategories,
   DEFAULT_WORKSPACE_ID,
-  EEZ_DATAVIEW_ID,
-  MPA_DATAVIEW_ID,
-  RFMO_DATAVIEW_ID,
-  HIGH_SEAS_DATAVIEW_ID,
-  BASEMAP_DATAVIEW_ID,
-  FISHING_DATAVIEW_ID,
-  PRESENCE_DATAVIEW_ID,
-  VIIRS_MATCH_DATAVIEW_ID,
-  CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_ID,
+  EEZ_DATAVIEW_SLUG,
+  SAR_DATAVIEW_SLUG,
+  MPA_DATAVIEW_SLUG,
+  RFMO_DATAVIEW_SLUG,
+  HIGH_SEAS_DATAVIEW_SLUG,
+  BASEMAP_DATAVIEW_SLUG,
+  FISHING_DATAVIEW_SLUG,
+  PRESENCE_DATAVIEW_SLUG,
+  VIIRS_MATCH_DATAVIEW_SLUG,
+  CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
-  GRATICULES_DATAVIEW_ID,
-  FAO_AREAS_DATAVIEW_ID,
-  SAR_DATAVIEW_ID,
+  GRATICULES_DATAVIEW_SLUG,
+  FAO_AREAS_DATAVIEW_SLUG,
+  MPA_DATAVIEW_INSTANCE_ID,
+  EEZ_DATAVIEW_INSTANCE_ID,
+  BASEMAP_LABELS_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 // This id is used for highlighting the dataview with a popup on the right
@@ -29,7 +32,7 @@ const workspace: Workspace<WorkspaceState> = {
   id: DEFAULT_WORKSPACE_ID,
   app: APP_NAME,
   name: 'Default public Fishing Map workspace in production v1',
-  description: DEFAULT_WORKSPACE_ID,
+  description: '',
   category: WorkspaceCategories.FishingActivity,
   startAt: DEFAULT_TIME_RANGE.start,
   endAt: DEFAULT_TIME_RANGE.end,
@@ -40,17 +43,17 @@ const workspace: Workspace<WorkspaceState> = {
   dataviewInstances: [
     {
       id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
-      dataviewId: BASEMAP_DATAVIEW_ID,
+      dataviewId: BASEMAP_DATAVIEW_SLUG,
     },
     {
       id: 'fishing-ais',
       config: {
         datasets: ['public-global-fishing-effort:v20201001'],
       },
-      dataviewId: FISHING_DATAVIEW_ID,
+      dataviewId: FISHING_DATAVIEW_SLUG,
     },
     {
-      id: 'vms',
+      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
       config: {
         color: '#FFAA0D',
         colorRamp: 'orange',
@@ -63,9 +66,10 @@ const workspace: Workspace<WorkspaceState> = {
           'public-indonesia-fishing-effort:v20200320',
           'public-panama-fishing-effort:v20211126',
           'public-peru-fishing-effort:v20211126',
+          'public-norway-fishing-effort:v20220112',
         ],
       },
-      dataviewId: FISHING_DATAVIEW_ID,
+      dataviewId: FISHING_DATAVIEW_SLUG,
     },
     {
       id: 'presence',
@@ -74,7 +78,7 @@ const workspace: Workspace<WorkspaceState> = {
         colorRamp: 'magenta',
         visible: false,
       },
-      dataviewId: PRESENCE_DATAVIEW_ID,
+      dataviewId: PRESENCE_DATAVIEW_SLUG,
     },
     {
       id: 'viirs',
@@ -83,45 +87,52 @@ const workspace: Workspace<WorkspaceState> = {
         colorRamp: 'yellow',
         visible: false,
       },
-      dataviewId: VIIRS_MATCH_DATAVIEW_ID,
+      dataviewId: VIIRS_MATCH_DATAVIEW_SLUG,
       datasetsConfig: [],
     },
     {
-      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
-      dataviewId: SAR_DATAVIEW_ID,
+      id: 'sar',
+      dataviewId: SAR_DATAVIEW_SLUG,
       config: {
         visible: false,
       },
     },
     {
       id: ENCOUNTER_EVENTS_SOURCE_ID,
-      dataviewId: CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_ID,
+      dataviewId: CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
       config: {
         visible: false,
       },
     },
     {
-      id: 'context-layer-eez',
+      id: 'context-layer-graticules',
+      config: {
+        visible: true,
+      },
+      dataviewId: GRATICULES_DATAVIEW_SLUG,
+    },
+    {
+      id: EEZ_DATAVIEW_INSTANCE_ID,
       config: {
         color: '#069688',
         visible: false,
       },
-      dataviewId: EEZ_DATAVIEW_ID,
+      dataviewId: EEZ_DATAVIEW_SLUG,
     },
     {
-      id: 'context-layer-mpa',
+      id: MPA_DATAVIEW_INSTANCE_ID,
       config: {
         color: '#1AFF6B',
         visible: false,
       },
-      dataviewId: MPA_DATAVIEW_ID,
+      dataviewId: MPA_DATAVIEW_SLUG,
     },
     {
       id: 'context-layer-fao-areas',
       config: {
         visible: false,
       },
-      dataviewId: FAO_AREAS_DATAVIEW_ID,
+      dataviewId: FAO_AREAS_DATAVIEW_SLUG,
     },
     {
       id: 'context-layer-rfmo',
@@ -129,21 +140,21 @@ const workspace: Workspace<WorkspaceState> = {
         color: '#6b67e5',
         visible: false,
       },
-      dataviewId: RFMO_DATAVIEW_ID,
-    },
-    {
-      id: 'context-layer-graticules',
-      config: {
-        visible: true,
-      },
-      dataviewId: GRATICULES_DATAVIEW_ID,
+      dataviewId: RFMO_DATAVIEW_SLUG,
     },
     {
       id: 'context-layer-high-seas',
       config: {
         visible: false,
       },
-      dataviewId: HIGH_SEAS_DATAVIEW_ID,
+      dataviewId: HIGH_SEAS_DATAVIEW_SLUG,
+    },
+    {
+      id: 'basemap-labels',
+      config: {
+        visible: false,
+      },
+      dataviewId: BASEMAP_LABELS_DATAVIEW_SLUG,
     },
   ],
 }

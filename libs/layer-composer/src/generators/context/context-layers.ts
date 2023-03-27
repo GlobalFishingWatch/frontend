@@ -144,12 +144,12 @@ const CONTEXT_LAYERS: Record<ContextLayerType, LayerSpecification[]> = {
     {
       id: 'eez_rest_lines_',
       ...getDefaultContextLine('#33B679'),
-      filter: ['match', ['get', 'line_type'], settledBoundaries, true, false],
+      filter: ['match', ['get', 'LINE_TYPE'], settledBoundaries, true, false],
     } as LineLayerSpecification,
     {
       id: 'eez_special_lines_',
       ...getDefaultContextLine(),
-      filter: ['match', ['get', 'line_type'], settledBoundaries, false, true],
+      filter: ['match', ['get', 'LINE_TYPE'], settledBoundaries, false, true],
       paint: {
         'line-color': '#33B679',
         'line-dasharray': [2, 4],

@@ -1,32 +1,24 @@
 {
+  "name": "vessel-history",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/vessel-history",
   "projectType": "application",
   "targets": {
     "changelog": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": ["./changelog.sh vessel-history \"Vessel Viewer\""],
         "parallel": false
       }
     },
     "deploy": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx build vessel-history", "nx docker-prepare vessel-history"],
+        "commands": ["nx build vessel-history"],
         "parallel": false
       }
     },
-    "docker-prepare": {
-      "executor": "@nrwl/workspace:run-commands",
-      "outputs": [],
-      "options": {
-        "commands": [
-          "cp config/entrypoint.sh dist/apps/vessel-history",
-          "cp apps/vessel-history/nginx.conf dist/apps/vessel-history"
-        ]
-      }
-    },
-    "compile": {
+    "build": {
       "executor": "@nrwl/next:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
@@ -39,7 +31,7 @@
       }
     },
     "start": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": [
           "nx clean-locales vessel-history",
@@ -50,7 +42,7 @@
       }
     },
     "clean-locales": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "outputs": [],
       "options": {
         "commands": ["rm -rf dist/apps/vessel-history/public/locales"]
@@ -59,26 +51,26 @@
     "serve": {
       "executor": "@nrwl/next:server",
       "options": {
-        "buildTarget": "vessel-history:compile",
+        "buildTarget": "vessel-history:build",
         "dev": true,
         "port": 3000
       },
       "configurations": {
         "production": {
-          "buildTarget": "vessel-history:compile:production",
+          "buildTarget": "vessel-history:build:production",
           "dev": false
         }
       }
     },
-    "build": {
+    "export": {
       "executor": "@nrwl/next:export",
       "options": {
-        "buildTarget": "vessel-history:compile:production"
+        "buildTarget": "vessel-history:build:production"
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/vessel-history"],
+      "outputs": ["{workspaceRoot}/coverage/apps/vessel-history"],
       "options": {
         "jestConfig": "apps/vessel-history/jest.config.ts",
         "passWithNoTests": true

@@ -1,0 +1,72 @@
+{
+  "name": "@globalfishingwatchapp/fourwings-explorer",
+  "version": "1.1.65",
+  "private": true,
+  "homepage": "/",
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start",
+    "lint": "yarn lint:js && yarn lint:css",
+    "lint:js": "eslint . -c .eslintrc.js --ext .js,jsx,ts,tsx --fix",
+    "lint:css": "stylelint ./**/*.{css,scss,sass} --config .stylelintrc.js --fix",
+    "serve": "serve -s build",
+    "analyze": "source-map-explorer 'build/static/js/*.js'"
+  },
+  "dependencies": {
+    "@dnd-kit/core": "6.0.7",
+    "@dnd-kit/modifiers": "6.0.1",
+    "@dnd-kit/sortable": "7.0.2",
+    "@dnd-kit/utilities": "3.2.1",
+    "@recoiljs/refine": "^0.1.1",
+    "@reduxjs/toolkit": "^1.9.2",
+    "@tanstack/react-query": "^4.24.4",
+    "classnames": "2.3.2",
+    "d3": "^7.8.2",
+    "lodash": "4.17.21",
+    "luxon": "^2.5.2",
+    "qs": "^6.11.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-dropzone": "14.2.3",
+    "react-sticky-el": "2.0.9",
+    "recoil": "0.7.6",
+    "recoil-sync": "^0.2.0",
+    "recoil-sync-next": "^0.0.3",
+    "transit-js": "^0.8.874",
+    "typescript": "4.9.5",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@globalfishingwatch/linting": "2.0.2",
+    "@next/eslint-plugin-next": "13.1.6",
+    "@types/lodash": "4.14.191",
+    "@types/luxon": "^2.4.0",
+    "@types/node": "18.11.19",
+    "@types/qs": "6.9.7",
+    "@types/react": "^18.0.27",
+    "@types/react-dom": "^18.0.10",
+    "@types/react-sticky-el": "1.0.3",
+    "depcheck": "1.4.3",
+    "prettier": "2.8.3",
+    "react-test-renderer": "18.2.0",
+    "serve": "14.2.0",
+    "source-map-explorer": "2.5.3",
+    "stylelint": "^14.16.1",
+    "stylelint-config-css-modules": "^2.3.0",
+    "stylelint-config-prettier": "^9.0.4",
+    "stylelint-config-standard": "^29.0.0"
+  },
+  "browserslist": [
+    ">0.1%",
+    "not dead",
+    "not op_mini all"
+  ],
+  "eslintConfig": {
+    "extends": [
+      "@globalfishingwatch/linting"
+    ],
+    "ignorePatterns": "public/"
+  },
+  "prettier": "@globalfishingwatch/linting/prettier"
+}

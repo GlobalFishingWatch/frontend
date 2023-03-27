@@ -18,6 +18,10 @@
   justify-content: space-between;
 }
 
+.label {
+  margin-bottom: var(--space-XS);
+}
+
 .labelIconWarning {
   margin: 0 0.9rem;
 }
@@ -61,11 +65,11 @@
 }
 
 .optionsContainer.bottom {
-  top: var(--size-M);
+  top: calc(100% + 1px);
 }
 
 .optionsContainer.top {
-  bottom: var(--size-M);
+  bottom: calc(100% + 1px);
   top: auto;
 }
 

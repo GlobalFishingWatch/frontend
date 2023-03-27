@@ -1,13 +1,9 @@
-import React from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { TagList, TagItem } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
-import {
-  getSourcesOptionsInDataview,
-  getSourcesSelectedInDataview,
-} from 'features/workspace/activity/activity.utils'
+import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { dataviewWithPrivateDatasets } from 'features/dataviews/dataviews.utils'
 
 type DatasetFilterSourceProps = {
@@ -17,7 +13,6 @@ type DatasetFilterSourceProps = {
 
 function DatasetFilterSource({ dataview, hideColor }: DatasetFilterSourceProps) {
   const { t } = useTranslation()
-  const sourcesOptions: TagItem[] = getSourcesOptionsInDataview(dataview)
   const sourcesSelected: TagItem[] = getSourcesSelectedInDataview(dataview)
   const nonVmsSources = sourcesSelected.filter((source) => !source.label.includes('VMS'))
   const vmsSources = sourcesSelected.filter((source) => source.label.includes('VMS'))
@@ -34,7 +29,7 @@ function DatasetFilterSource({ dataview, hideColor }: DatasetFilterSourceProps) 
     ]
   }
 
-  if (!sourcesSelected?.length || sourcesOptions?.length <= 1) {
+  if (!sourcesSelected?.length) {
     return null
   }
 

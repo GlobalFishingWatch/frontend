@@ -15,29 +15,29 @@ import {
   HighlightedChunks,
 } from '@globalfishingwatch/timebar'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { CONFIG_BY_INTERVAL, getTimeChunksInterval } from '@globalfishingwatch/layer-composer'
 import { ResourceStatus } from '@globalfishingwatch/api-types'
-import { isMergedAnimatedGenerator } from '@globalfishingwatch/dataviews-client'
+import { getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
 import {
   useTimerangeConnect,
   useTimebarVisualisation,
   useTimebarVisualisationConnect,
   useDisableHighlightTimeConnect,
   useActivityMetadata,
-  useTimebarEnvironmentConnect,
 } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE, LAST_DATA_UPDATE } from 'data/config'
 import { TimebarVisualisations } from 'types'
 import useViewport from 'features/map/map-viewport.hooks'
-import { selectTimebarGraph } from 'features/app/app.selectors'
+import { selectTimebarGraph, selectTimebarVisualisation } from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { upperFirst } from 'utils/info'
 import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
-import Hint from 'features/help/hints/Hint'
+import Hint from 'features/hints/Hint'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
-import { useGeneratorsConnect } from 'features/map/map.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
+import { formatI18nDate } from 'features/i18n/i18nDate'
+import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-groups.selectors'
+import { getUTCDateTime } from 'utils/dates'
 import { setHighlightedTime, selectHighlightedTime, Range } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import { selectTracksData, selectTracksGraphData, selectTracksEvents } from './timebar.selectors'
@@ -48,6 +48,7 @@ const ZOOM_LEVEL_TO_FOCUS_EVENT = 5
 
 const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents }) => {
   // const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
+  const timebarVisualisation = useSelector(selectTimebarVisualisation)
   const highlightedTime = useSelector(selectHighlightedTime)
   const onHighlightChunks = useCallback(
     (chunks: HighlightedChunks) => {
@@ -64,32 +65,46 @@ const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents }) => {
   // Return precise chunk frame extent
   const activityDateCallback = useCallback(
     (timestamp: number) => {
-      const dt = DateTime.fromMillis(timestamp).toUTC()
-      if (!metadata) {
-        return dt.toLocaleString(DateTime.DATETIME_MED)
+      let dateLabel = formatI18nDate(timestamp, {
+        format: DateTime.DATETIME_MED,
+        showUTCLabel: true,
+      })
+      if (metadata) {
+        const interval = metadata.timeChunks.interval
+        if (interval === 'hour') {
+          const HOUR_FORMAT = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            weekday: 'long',
+            hour: 'numeric',
+          }
+          return formatI18nDate(timestamp, { format: HOUR_FORMAT, showUTCLabel: true })
+        } else if (interval === 'day') {
+          const DAY_FORMAT = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            weekday: 'long',
+          }
+          return formatI18nDate(timestamp, { format: DAY_FORMAT })
+        } else if (interval === 'month') {
+          const MONTH_FORMAT = {
+            year: 'numeric',
+            month: 'long',
+          }
+          return formatI18nDate(timestamp, { format: MONTH_FORMAT })
+        } else if (interval === 'year') {
+          const YEAR_FORMAT = {
+            year: 'numeric',
+          }
+          return formatI18nDate(timestamp, { format: YEAR_FORMAT })
+        }
       }
-      const interval = metadata.timeChunks.interval
-      if (interval === 'hour') {
-        return dt.toLocaleString(DateTime.DATETIME_MED)
-      } else if (interval === 'day') {
-        return dt.toLocaleString(DateTime.DATE_MED)
-      } else if (interval === '10days') {
-        const frame = CONFIG_BY_INTERVAL['10days'].getRawFrame(timestamp)
-        const start = CONFIG_BY_INTERVAL['10days'].getDate(Math.floor(frame))
-        const end = CONFIG_BY_INTERVAL['10days'].getDate(Math.ceil(frame))
-        return [
-          DateTime.fromJSDate(start).toLocaleString(DateTime.DATE_MED),
-          DateTime.fromJSDate(end).toLocaleString(DateTime.DATE_MED),
-        ].join('- ')
-      } else if (interval === 'month') {
-        // TODO
-      }
-
-      return dt.toLocaleString(DateTime.DATETIME_MED)
+      return dateLabel
     },
     [metadata]
   )
-  const { timebarVisualisation } = useTimebarVisualisationConnect()
   const formatDate =
     timebarVisualisation !== TimebarVisualisations.HeatmapActivity &&
     timebarVisualisation !== TimebarVisualisations.HeatmapDetections
@@ -122,32 +137,7 @@ const TimebarWrapper = () => {
   const tracksEvents = useSelector(selectTracksEvents)
   const { isMapDrawing } = useMapDrawConnect()
   const showTimeComparison = useSelector(selectShowTimeComparison)
-  const { timebarSelectedEnvId } = useTimebarEnvironmentConnect()
-  const { generatorsConfig } = useGeneratorsConnect()
-
-  const stickToUnit = useCallback(
-    (start, end) => {
-      const heatmapConfig = generatorsConfig.find((c) => isMergedAnimatedGenerator(c.id))
-      if (
-        heatmapConfig &&
-        (timebarVisualisation === TimebarVisualisations.HeatmapActivity ||
-          timebarVisualisation === TimebarVisualisations.HeatmapDetections)
-      ) {
-        const interval = getTimeChunksInterval(heatmapConfig as any, start, end)
-        return interval === '10days' ? 'day' : interval
-      } else if (timebarVisualisation === TimebarVisualisations.Environment) {
-        // TODO decide interval for stick unit depending on available intervals when env layers have interval < month
-        const heatmapConfig = generatorsConfig.find((c) => c.id === timebarSelectedEnvId)
-        if (heatmapConfig) {
-          const interval = getTimeChunksInterval(heatmapConfig as any, start, end)
-          return interval === '10days' ? 'day' : interval
-        }
-        return 'month'
-      }
-    },
-    [generatorsConfig, timebarSelectedEnvId, timebarVisualisation]
-  )
-
+  const vesselGroupsFiltering = useSelector(selectIsVessselGroupsFiltering)
   const dispatch = useAppDispatch()
 
   const [bookmark, setBookmark] = useState<{ start: string; end: string } | null>(null)
@@ -182,8 +172,8 @@ const TimebarWrapper = () => {
         try {
           const start = scale(clientX - 10).toISOString()
           const end = scale(clientX + 10).toISOString()
-          const startDateTime = DateTime.fromISO(start)
-          const endDateTime = DateTime.fromISO(end)
+          const startDateTime = getUTCDateTime(start)
+          const endDateTime = getUTCDateTime(end)
           const diff = endDateTime.diff(startDateTime, 'hours')
           if (diff.hours < 1) {
             // To ensure at least 1h range is highlighted
@@ -205,14 +195,14 @@ const TimebarWrapper = () => {
   const [internalRange, setInternalRange] = useState<Range | null>(null)
   const onChange = useCallback(
     (e) => {
-      if (e.source === 'ZOOM_OUT_MOVE') {
-        setInternalRange({ ...e })
-        return
-      }
       const gaActions: Record<string, string> = {
         TIME_RANGE_SELECTOR: 'Configure timerange using calendar option',
         ZOOM_IN_BUTTON: 'Zoom In timerange',
         ZOOM_OUT_BUTTON: 'Zoom Out timerange',
+        HOUR_INTERVAL_BUTTON: 'Use hour preset',
+        DAY_INTERVAL_BUTTON: 'Use day preset',
+        MONTH_INTERVAL_BUTTON: 'Use month preset',
+        YEAR_INTERVAL_BUTTON: 'Use year preset',
       }
       if (gaActions[e.source]) {
         uaEvent({
@@ -271,9 +261,13 @@ const TimebarWrapper = () => {
   if (!start || !end || isMapDrawing || showTimeComparison) return null
 
   const loading =
-    tracks?.some(({ status }) => status === ResourceStatus.Loading) ||
-    tracksGraphsData?.some(({ status }) => status === ResourceStatus.Loading) ||
-    tracksEvents?.some(({ status }) => status === ResourceStatus.Loading)
+    tracks?.some(({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading) ||
+    tracksGraphsData?.some(
+      ({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading
+    ) ||
+    tracksEvents?.some(
+      ({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading
+    )
 
   const hasTrackError =
     tracks?.some(({ status }) => status === ResourceStatus.Error) ||
@@ -322,7 +316,7 @@ const TimebarWrapper = () => {
   return (
     <div className={styles.timebarWrapper}>
       <Timebar
-        enablePlayback={true}
+        enablePlayback={!vesselGroupsFiltering}
         labels={labels}
         start={internalRange ? internalRange.start : start}
         end={internalRange ? internalRange.end : end}
@@ -340,7 +334,8 @@ const TimebarWrapper = () => {
         minimumRange={1}
         // TODO: set this by current active activity dataviews
         // minimumRangeUnit={activityCategory === 'fishing' ? 'hour' : 'day'}
-        stickToUnit={stickToUnit}
+        intervals={INTERVAL_ORDER}
+        getCurrentInterval={getInterval}
         trackGraphOrientation={trackGraphOrientation}
         locale={i18n.language}
       >

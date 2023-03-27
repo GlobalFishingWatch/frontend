@@ -1,10 +1,12 @@
 import React, { useMemo, useCallback, useState } from 'react'
+import cx from 'classnames'
 import { Range, getTrackBackground } from 'react-range'
 import { format } from 'd3-format'
 import { scaleLinear } from 'd3-scale'
 import styles from './slider.module.css'
 
 export type SliderRange = number[]
+export type SliderThumbsSize = 'default' | 'small'
 type SliderConfig = {
   // step: number
   steps: number[]
@@ -13,6 +15,7 @@ type SliderConfig = {
 }
 interface SliderProps {
   label: string
+  thumbsSize?: SliderThumbsSize
   initialRange: SliderRange
   config: SliderConfig
   onChange: (range: SliderRange) => void
@@ -37,14 +40,22 @@ const borderColor =
     ? getComputedStyle(document.body).getPropertyValue('--color-border') || fallbackBorderColor
     : fallbackBorderColor
 
-export const formatNumber = (num: number): string => {
+export const formatSliderNumber = (num: number): string => {
   if (num >= 1000) return format('.2s')(num)
   if (num > 9) return format('.0f')(num)
   return format('.1f')(num)
 }
 
 export function Slider(props: SliderProps) {
-  const { initialRange, label, config = {}, onChange, className, histogram } = props
+  const {
+    initialRange,
+    label,
+    config = {},
+    onChange,
+    className,
+    histogram,
+    thumbsSize = 'default',
+  } = props
   const { min = MIN, max = MAX, steps } = config as SliderConfig
   const scale = useMemo(() => {
     return scaleLinear()
@@ -124,7 +135,7 @@ export function Slider(props: SliderProps) {
             return (
               <div
                 {...props}
-                className={styles.sliderThumb}
+                className={cx(styles.sliderThumb, styles[`${thumbsSize}Size`])}
                 style={{
                   ...props.style,
                 }}
@@ -133,7 +144,7 @@ export function Slider(props: SliderProps) {
                   className={styles.sliderThumbCounter}
                   style={{ opacity: isDefaultSelection ? 0.7 : 1 }}
                 >
-                  {formatNumber(scaledValue)}
+                  {formatSliderNumber(scaledValue)}
                 </span>
               </div>
             )

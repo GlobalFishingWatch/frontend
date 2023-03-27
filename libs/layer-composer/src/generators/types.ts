@@ -4,8 +4,8 @@ import {
   LayerSpecification,
   GeoJSONSourceSpecification,
 } from '@globalfishingwatch/maplibre-gl'
-import { Segment } from '@globalfishingwatch/data-transforms'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
+import { Segment, Locale } from '@globalfishingwatch/api-types'
 import { Group } from '..'
 import { Interval } from './heatmap/types'
 
@@ -14,6 +14,7 @@ export type LayerVisibility = 'visible' | 'none'
 export enum GeneratorType {
   Background = 'BACKGROUND',
   Basemap = 'BASEMAP',
+  BasemapLabels = 'BASEMAP_LABELS',
   CartoPolygons = 'CARTO_POLYGONS',
   Context = 'CONTEXT',
   GL = 'GL',
@@ -44,10 +45,12 @@ export interface GlobalGeneratorConfig {
   token?: string
   compareStart?: string
   compareEnd?: string
+  locale?: Locale
 }
 
 export interface GlobalGeneratorConfigExtended extends GlobalGeneratorConfig {
   zoomLoadLevel: number
+  totalHeatmapAnimatedGenerators?: number
 }
 
 export type AnyData = FeatureCollection | Segment[] | RawEvent[] | Ruler[] | null
@@ -61,6 +64,7 @@ export interface GeneratorLegend {
 
 export interface GeneratorMetadata {
   legend?: GeneratorLegend
+  interactive?: boolean
   [key: string]: any
 }
 
@@ -69,8 +73,10 @@ export interface GeneratorConfig {
   data?: AnyData
   type: GeneratorType | string
   visible?: boolean
+  color?: string
   opacity?: number
   metadata?: GeneratorMetadata
+  attribution?: string
 }
 
 /**
@@ -80,17 +86,20 @@ export interface GeneratorConfig {
 export type MergedGeneratorConfig<T> = T & GlobalGeneratorConfigExtended
 
 /**
- * A solid color background layer
+ * A default or satellite basemap
  */
 export interface BasemapGeneratorConfig extends GeneratorConfig {
   type: GeneratorType.Basemap
-  /**
-   * Sets the color of the map background in any format supported by Mapbox GL, see https://docs.mapbox.com/mapbox-gl-js/style-spec/types/#color
-   */
   basemap: BasemapType
-  labels: boolean
 }
 
+/**
+ * Place labels
+ */
+export interface BasemapLabelsGeneratorConfig extends GeneratorConfig {
+  type: GeneratorType.BasemapLabels
+  locale?: Locale
+}
 /**
  * A solid color background layer
  */
@@ -151,9 +160,13 @@ export interface ContextGeneratorConfig extends GeneratorConfig {
    */
   datasetId?: string
   /**
-   * Contains the attribution to be displayed when the map is showing the layer.
+   * Property to use as id internally in mapbox
    */
-  attribution?: string
+  promoteId?: string
+  /**
+   * Properties to be used as value
+   */
+  valueProperties?: string[]
   /**
    * Url to grab the tiles from, internally using https://docs.mapbox.com/mapbox-gl-js/style-spec/sources/#vector-tiles
    */
@@ -162,6 +175,10 @@ export interface ContextGeneratorConfig extends GeneratorConfig {
    * Sets the color of the line https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#paint-fill-fill-color
    */
   color?: string
+  /**
+   * Filter the polygons displayed https://docs.mapbox.com/help/glossary/filter/
+   */
+  filters?: Record<string, Array<string>>
 }
 
 export type TileClusterEventType = 'encounter' | 'loitering' | 'port'
@@ -170,6 +187,10 @@ export type TileClusterEventType = 'encounter' | 'loitering' | 'port'
  */
 export interface TileClusterGeneratorConfig extends GeneratorConfig {
   type: 'TILE_CLUSTER'
+  /**
+   * Defines the 3 steps for the circle radius
+   */
+  breaks?: number[]
   /**
    * Defines the maximum zoom that returns clusters
    */
@@ -377,11 +398,14 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   availableIntervals?: Interval[]
   aggregationOperation?: AggregationOperation
   breaksMultiplier?: number
+  minVisibleValue?: number
+  maxVisibleValue?: number
 }
 
 export type AnyGeneratorConfig =
   | BackgroundGeneratorConfig
   | BasemapGeneratorConfig
+  | BasemapLabelsGeneratorConfig
   | CartoPolygonsGeneratorConfig
   | ContextGeneratorConfig
   | GlGeneratorConfig
@@ -399,7 +423,7 @@ export type AnyGeneratorConfig =
 export enum BasemapType {
   Satellite = 'satellite',
   Default = 'basemap_default',
-  Labels = 'labels',
+  Labels = 'basemap_labels',
 }
 
 // ---- Generator specific types
@@ -462,6 +486,7 @@ export interface HeatmapAnimatedGeneratorSublayer {
   id: string
   datasets: string[]
   filter?: string
+  vesselGroups?: string
   colorRamp: ColorRampsIds
   colorRampWhiteEnd?: boolean
   visible?: boolean

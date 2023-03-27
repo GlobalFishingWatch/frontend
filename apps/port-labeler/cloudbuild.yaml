@@ -8,14 +8,15 @@ steps:
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
-    name: gcr.io/cloud-builders/yarn
-    entrypoint: bash
+    name: node:18-alpine
+    entrypoint: sh
     args:
       - '-c'
       # if dependencies cache is not found then install all deps
       - |
         if [ ! -d "node_modules" ]; then
-          yarn install --frozen-lockfile
+          apk add git
+          yarn install --immutable
         fi
 
   - id: 'save_cache'
@@ -29,35 +30,27 @@ steps:
 
   - id: 'build-app'
     waitFor: ['install-yarn']
-    name: gcr.io/cloud-builders/yarn
+    name: node:18-alpine
     entrypoint: yarn
     args: ['nx', 'build', 'port-labeler', '--parallel']
     env:
       - 'NX_BRANCH=$_NX_BRANCH'
       - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
       - 'NEXT_PUBLIC_URL=$_NEXT_PUBLIC_URL'
-      # - 'NEXT_PUBLIC_API_GATEWAY=$_NEXT_PUBLIC_API_GATEWAY'
+      - 'NEXT_PUBLIC_API_GATEWAY=$_NEXT_PUBLIC_API_GATEWAY'
       # - 'NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=$_NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID'
       # - 'NEXT_PUBLIC_GOOGLE_TAG_MANAGER_KEY=$_NEXT_PUBLIC_GOOGLE_TAG_MANAGER_KEY'
       # - 'NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID=$_NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID'
 
-  - id: 'docker-prepare'
-    waitFor: ['build-app']
-    name: node:14
-    entrypoint: yarn
-    args: ['nx', 'docker-prepare', 'port-labeler']
-
   - name: 'gcr.io/kaniko-project/executor:v1.6.0'
     id: 'build-image'
-    waitFor: ['docker-prepare']
+    waitFor: ['build-app']
     args:
       [
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/port-labeler:$COMMIT_SHA',
         '--cache=true',
         '--build-arg',
-        'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
-        '--build-arg',
-        'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
+        'APP_NAME=port-labeler',
         '--target',
         'production',
         '-f',
@@ -91,6 +84,10 @@ steps:
         --platform managed \
         --set-env-vars \
         BASIC_AUTH=$_BASIC_AUTH \
+        --set-env-vars \
+        BASIC_AUTH_USER=$_BASIC_AUTH_USER \
+        --set-env-vars \
+        BASIC_AUTH_PASS=$_BASIC_AUTH_PASS \
         --allow-unauthenticated
 
 timeout: 1800s

@@ -1,13 +1,6 @@
 import { BaseUrlWorkspace } from '@globalfishingwatch/dataviews-client'
 import { EventType } from '@globalfishingwatch/api-types'
-
-export enum Locale {
-  en = 'en',
-  es = 'es',
-  fr = 'fr',
-  id = 'id',
-  pt = 'pt',
-}
+export { Locale } from '@globalfishingwatch/api-types'
 
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
 export type WorkspaceTimeRangeParam = 'start' | 'end'

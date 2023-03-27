@@ -1,32 +1,24 @@
 {
+  "name": "api-portal",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/api-portal",
   "projectType": "application",
   "targets": {
     "changelog": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": ["./changelog.sh api-portal \"API Portal\""],
         "parallel": false
       }
     },
     "deploy": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": ["nx build api-portal --parallel"],
         "parallel": false
       }
     },
-    "docker-prepare": {
-      "executor": "@nrwl/workspace:run-commands",
-      "outputs": [],
-      "options": {
-        "commands": [
-          "cp config/entrypoint.sh dist/apps/api-portal",
-          "cp apps/api-portal/nginx.conf dist/apps/api-portal"
-        ]
-      }
-    },
-    "compile": {
+    "build": {
       "executor": "@nrwl/next:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
@@ -39,7 +31,7 @@
       }
     },
     "start": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": ["nx serve api-portal"],
         "parallel": true
@@ -48,21 +40,21 @@
     "serve": {
       "executor": "@nrwl/next:server",
       "options": {
-        "buildTarget": "api-portal:compile",
+        "buildTarget": "api-portal:build",
         "dev": true,
         "port": 3003
       },
       "configurations": {
         "production": {
-          "buildTarget": "api-portal:compile:production",
+          "buildTarget": "api-portal:build:production",
           "dev": false
         }
       }
     },
-    "build": {
+    "export": {
       "executor": "@nrwl/next:export",
       "options": {
-        "buildTarget": "api-portal:compile:production"
+        "buildTarget": "api-portal:build:production"
       }
     },
     "lint": {
@@ -74,7 +66,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/api-portal"],
+      "outputs": ["{workspaceRoot}/coverage/apps/api-portal"],
       "options": {
         "jestConfig": "apps/api-portal/jest.config.ts",
         "passWithNoTests": true

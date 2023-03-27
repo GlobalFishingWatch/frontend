@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { IconButton, Modal, Tooltip } from '@globalfishingwatch/ui-components'
 import { DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
-import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
+import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getDetectionsTimestamps } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
   getPresenceVesselDataviewInstance,
@@ -27,9 +27,12 @@ import { PRESENCE_DATASET_ID, PRESENCE_TRACKS_DATASET_ID } from 'features/datase
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { t } from 'features/i18n/i18n'
-import I18nDate, { formatI18nDate } from 'features/i18n/i18nDate'
+import I18nDate from 'features/i18n/i18nDate'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { TimeRangeDates } from 'features/map/controls/MapInfo'
+import GFWOnly from 'features/user/GFWOnly'
+import DatasetLabel from 'features/datasets/DatasetLabel'
+import { getUTCDateTime } from 'utils/dates'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
   TooltipEventFeature,
@@ -38,21 +41,7 @@ import styles from './VesselsTable.module.css'
 
 export const getVesselTableTitle = (feature: TooltipEventFeature) => {
   let title = feature.title
-  if (feature.temporalgrid && feature.temporalgrid.interval === '10days') {
-    title = [
-      title,
-      t('common.dateRange', {
-        start: formatI18nDate(feature.temporalgrid.visibleStartDate),
-        end: formatI18nDate(feature.temporalgrid.visibleEndDate),
-        defaultValue: 'between {{start}} and {{end}}',
-      }),
-    ].join(' ')
-  }
   return title
-}
-
-const getDetectionsTimestamps = (vessel: ExtendedFeatureVessel) => {
-  return vessel?.timestamp?.split(',').sort()
 }
 
 export const VesselDetectionTimestamps = ({ vessel }: { vessel: ExtendedFeatureVessel }) => {
@@ -62,13 +51,11 @@ export const VesselDetectionTimestamps = ({ vessel }: { vessel: ExtendedFeatureV
   const hasMultipleDetectionsTimestamps = hasDetectionsTimestamps && detectionsTimestamps.length > 1
 
   const start = hasDetectionsTimestamps
-    ? DateTime.fromISO(detectionsTimestamps[0], { zone: 'utc' }).startOf('day').toISO()
+    ? getUTCDateTime(detectionsTimestamps[0]).startOf('day').toISO()
     : ''
 
   const end = hasDetectionsTimestamps
-    ? DateTime.fromISO(detectionsTimestamps[detectionsTimestamps.length - 1], {
-        zone: 'utc',
-      })
+    ? getUTCDateTime(detectionsTimestamps[detectionsTimestamps.length - 1])
         .endOf('day')
         .toISO()
     : ''
@@ -96,7 +83,7 @@ export const VesselDetectionTimestamps = ({ vessel }: { vessel: ExtendedFeatureV
         onClick={() => {
           setTimerange({
             start,
-            end: DateTime.fromISO(start, { zone: 'utc' }).endOf('day').toISO(),
+            end: getUTCDateTime(start).endOf('day').toISO(),
           })
         }}
       >
@@ -256,7 +243,9 @@ function VesselsTable({
                   <td className={styles.columnSpace}>{vesselGearType}</td>
                   {vesselProperty !== 'detections' && (
                     <td className={styles.columnSpace}>
-                      {getDatasetLabel(vessel.infoDataset) || EMPTY_FIELD_PLACEHOLDER}
+                      <Tooltip content={getDatasetLabel(vessel.infoDataset)}>
+                        <DatasetLabel dataset={vessel.infoDataset} />
+                      </Tooltip>
                     </td>
                   )}
                   <td
@@ -292,7 +281,12 @@ function VesselsTable({
       {gfwUser && !showFullList && (
         <Modal
           appSelector={ROOT_DOM_ELEMENT}
-          title={title}
+          title={
+            <Fragment>
+              {title}
+              <GFWOnly />
+            </Fragment>
+          }
           isOpen={modalOpen}
           onClose={onModalClose}
         >

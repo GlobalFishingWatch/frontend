@@ -9,7 +9,7 @@ import styles from './layout.module.css'
 
 export function Layout({ children }) {
   const [loading, setLoading] = useState(false)
-  const login = useGFWLogin()
+  const login = useGFWLogin(GFWAPI)
 
   const onLogoutClick = () => {
     setLoading(true)

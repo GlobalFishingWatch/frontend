@@ -1,7 +1,6 @@
-import { DateTime } from 'luxon'
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { InteractionEvent } from '@globalfishingwatch/react-hooks'
+import { ExtendedFeature, InteractionEvent } from '@globalfishingwatch/react-hooks'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { ApiEvent } from '@globalfishingwatch/api-types'
 import {
@@ -13,6 +12,8 @@ import { Range } from 'types'
 import { Voyage } from 'types/voyage'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import { resetFilters } from 'features/event-filters/filters.slice'
+import { useLocationConnect } from 'routes/routes.hook'
+import { getUTCDateTime } from 'utils/dates'
 import {
   selectHighlightedEvent,
   selectMapVoyageTime,
@@ -29,14 +30,16 @@ export default function useMapEvents() {
   const { getVoyageByEvent, getLastEventInVoyage } = useVoyagesConnect()
   const { viewport, setMapCoordinates } = useViewport()
   const [findEventVoyage, setFindEventVoyage] = useState<RenderedEvent>()
+  const { dispatchQueryParams } = useLocationConnect()
+  const [clickedLayers, setClickedLayers] = useState<ExtendedFeature[] | null>()
 
   const selectVesselEventOnClick = useCallback(
     (event: InteractionEvent | null) => {
       const features = event?.features ?? []
-
       const vesselFeature = features.find(
         (feature) => feature.generatorType === GeneratorType.VesselEvents
       )
+      setClickedLayers(!vesselFeature ? features : null)
       const highlightEvent: { id: string } | undefined = { id: vesselFeature?.properties.id }
 
       if (highlightEvent && highlightedEvent?.id !== highlightEvent.id) {
@@ -64,8 +67,8 @@ export default function useMapEvents() {
     (voyage: Voyage) => {
       if (!voyage) return
       const voyageTimes = {
-        start: DateTime.fromMillis(voyage.start).toUTC().toISO(),
-        end: DateTime.fromMillis(voyage.end).toUTC().toISO(),
+        start: getUTCDateTime(voyage.start).toISO(),
+        end: getUTCDateTime(voyage.end).toISO(),
       } as Range
       if (
         voyageTimes.start === currentVoyageTime?.start &&
@@ -87,11 +90,13 @@ export default function useMapEvents() {
       }
 
       dispatch(setVoyageTime(voyageTimes))
+      dispatchQueryParams({ start: voyageTimes.start, end: voyageTimes.end })
     },
     [
       currentVoyageTime?.end,
       currentVoyageTime?.start,
       dispatch,
+      dispatchQueryParams,
       getLastEventInVoyage,
       setMapCoordinates,
       viewport.zoom,
@@ -106,8 +111,8 @@ export default function useMapEvents() {
     const voyage = getVoyageByEvent(findEventVoyage)
     if (!voyage) return
     const voyageTimes = {
-      start: DateTime.fromMillis(voyage.start).toUTC().toISO(),
-      end: DateTime.fromMillis(voyage.end).toUTC().toISO(),
+      start: getUTCDateTime(voyage.start).toISO(),
+      end: getUTCDateTime(voyage.end).toISO(),
     } as Range
     if (
       voyageTimes.start === currentVoyageTime?.start &&
@@ -116,11 +121,13 @@ export default function useMapEvents() {
       return
 
     dispatch(setVoyageTime(voyageTimes))
+    dispatchQueryParams({ start: voyageTimes.start, end: voyageTimes.end })
     setFindEventVoyage(undefined)
   }, [
     currentVoyageTime?.end,
     currentVoyageTime?.start,
     dispatch,
+    dispatchQueryParams,
     findEventVoyage,
     getVoyageByEvent,
   ])
@@ -146,6 +153,7 @@ export default function useMapEvents() {
   }, [events, findEventVoyage, highlightEvent, highlightedEvent, setMapCoordinates, viewport.zoom])
 
   return {
+    clickedLayers,
     highlightEvent,
     highlightVoyage,
     selectVesselEventOnClick,

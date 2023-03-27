@@ -1,15 +1,18 @@
 {
+  "name": "ui-components",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/ui-components/src",
   "projectType": "library",
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nrwl/web:rollup",
+      "executor": "@nrwl/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/ui-components",
         "tsConfig": "libs/ui-components/tsconfig.lib.json",
         "project": "libs/ui-components/package.json",
+        "extractCss": false,
         "entryFile": "libs/ui-components/src/index.ts",
         "external": ["react/jsx-runtime"],
         "rollupConfig": "libs/ui-components/rollup.config.js",
@@ -19,7 +22,8 @@
             "input": ".",
             "output": "."
           }
-        ]
+        ],
+        "styles": "libs/ui-components/src/base.css"
       }
     },
     "lint": {
@@ -31,7 +35,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/ui-components"],
+      "outputs": ["{workspaceRoot}/coverage/libs/ui-components"],
       "options": {
         "jestConfig": "libs/ui-components/jest.config.ts",
         "passWithNoTests": true

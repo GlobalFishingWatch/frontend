@@ -5,14 +5,13 @@
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "license": "ISC",
-  "main": "dist/index.js",
-  "typings": "dist/index.js",
+  "main": "./index.js",
+  "typings": "./src/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
   "peerDependencies": {
-    "@globalfishingwatch/data-transforms": "1.x",
     "geojson": "0.5.0"
   }
 }

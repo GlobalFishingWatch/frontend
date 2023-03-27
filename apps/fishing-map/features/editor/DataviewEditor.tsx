@@ -7,7 +7,6 @@ import {
   DataviewCategory,
   DataviewConfig,
   EndpointId,
-  DatasetCategory,
 } from '@globalfishingwatch/api-types'
 import {
   Button,
@@ -47,7 +46,6 @@ const heatmapTypesOptions = [dynamicHeatmapOption, staticHeatmapOption]
 
 const temporalResolutionOptions = [
   { id: 'month', label: 'Month' },
-  { id: '10days', label: '10days' },
   { id: 'day', label: 'Day' },
   { id: 'hour', label: 'Hour' },
 ]
@@ -63,7 +61,9 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
   const [dataview, setDataview] = useState<Partial<Dataview>>(editDataview || ({} as Dataview))
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string>()
-  const [dataviewDatasets, setDataviewDatasets] = useState<{ id: string; label: string }[]>([])
+  const [dataviewDatasets, setDataviewDatasets] = useState<
+    { id: string; label: string | JSX.Element }[]
+  >([])
   const datasets = useSelector(selectFourwingsDatasets)
   const datasetsStatus = useSelector(selectDatasetsStatus)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
@@ -77,9 +77,7 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
       if (dataview.category === UNKNOWN_CATEGORY) {
         return !dataset.category || !Object.keys(dataset.category).length
       }
-      return dataset.category === DatasetCategory.Activity
-        ? dataview.category === dataset.subcategory
-        : dataview.category === dataset.category
+      return dataview.category === dataset.category
     })
     return filteredDatasets.map((dataset) => ({ id: dataset.id, label: dataset.id }))
   }, [dataview.category, datasets])
@@ -299,8 +297,8 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
                   options={temporalResolutionOptions}
                   containerClassName={styles.input2Columns}
                   direction="top"
-                  selectedOption={temporalResolutionOptions.find(
-                    ({ id }) => id === dataview.config?.interval
+                  selectedOption={temporalResolutionOptions.find(({ id }) =>
+                    dataview.config?.intervals?.includes(id)
                   )}
                   onSelect={(selected) => {
                     onDataviewConfigChange({ interval: selected.id })

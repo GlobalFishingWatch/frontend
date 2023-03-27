@@ -8,6 +8,8 @@ export interface WorkspaceViewport {
   longitude: number
 }
 
+export type OwnerType = 'super-user' | string
+
 export interface Workspace<State = unknown, Category = string> {
   id: string
   name: string
@@ -20,8 +22,8 @@ export interface Workspace<State = unknown, Category = string> {
   endAt: string
   state?: State
   dataviewInstances: DataviewInstance[]
-  ownerId: number
-  ownerType?: string
+  ownerId?: number
+  ownerType?: OwnerType
   createdAt?: string
 }
 

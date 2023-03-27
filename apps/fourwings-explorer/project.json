@@ -1,0 +1,118 @@
+{
+  "name": "fourwings-explorer",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/fourwings-explorer",
+  "projectType": "application",
+  "targets": {
+    "changelog": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["./changelog.sh fourwings-explorer \"Map\""],
+        "parallel": false
+      }
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx build fourwings-explorer --parallel",
+          "nx docker-prepare fourwings-explorer"
+        ],
+        "parallel": false
+      }
+    },
+    "docker-prepare": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": [
+          "cp config/entrypoint.sh dist/apps/fourwings-explorer",
+          "cp apps/fourwings-explorer/nginx.conf dist/apps/fourwings-explorer"
+        ]
+      }
+    },
+    "zip": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": ["zip -r dist.zip dist/apps/fourwings-explorer/exported/*"]
+      }
+    },
+    "compile": {
+      "executor": "@nrwl/next:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "root": "apps/fourwings-explorer",
+        "outputPath": "dist/apps/fourwings-explorer"
+      },
+      "configurations": {
+        "production": {}
+      }
+    },
+    "clean-locales": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": ["rm -rf dist/apps/fourwings-explorer/public/locales"]
+      }
+    },
+    "start": {
+      "executor": "@nrwl/next:server",
+      "options": {
+        "buildTarget": "fourwings-explorer:compile",
+        "dev": true,
+        "port": 3000
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "fourwings-explorer:compile:production",
+          "dev": false
+        }
+      }
+    },
+    "build": {
+      "executor": "@nrwl/next:export",
+      "options": {
+        "buildTarget": "fourwings-explorer:compile:production"
+      }
+    },
+    "rename-export": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "rm -rf dist/apps/fourwings-explorer/map",
+          "mv dist/apps/fourwings-explorer/exported dist/apps/fourwings-explorer/map"
+        ],
+        "parallel": false
+      }
+    },
+    "serve:export": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx build fourwings-explorer --parallel",
+          "nx rename-export fourwings-explorer",
+          "serve dist/apps/fourwings-explorer"
+        ],
+        "parallel": false
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/apps/fourwings-explorer"],
+      "options": {
+        "jestConfig": "apps/fourwings-explorer/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/fourwings-explorer/**/*.{ts,tsx,js,jsx}"]
+      }
+    }
+  },
+  "tags": []
+}

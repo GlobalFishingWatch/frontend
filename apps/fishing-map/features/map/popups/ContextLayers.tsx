@@ -51,8 +51,8 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
             )}
             {featureByType.map((feature, index) => {
               if (!feature.value) return null
-              const { generatorContextLayer } = feature
-              const { gfw_id } = feature.properties
+              const { generatorContextLayer, promoteId } = feature
+              const gfw_id = feature.properties.gfw_id || feature.properties[promoteId]
               const isGFWLayer =
                 generatorContextLayer === ContextLayerType.MPA ||
                 generatorContextLayer === ContextLayerType.MPARestricted ||
@@ -73,24 +73,24 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
                   case ContextLayerType.MPA:
                   case ContextLayerType.MPANoTake:
                   case ContextLayerType.MPARestricted:
-                    const { wdpa_pid } = feature.properties
-                    label = `${feature.value} - ${feature.properties.desig}`
+                    const { NAME, WDPA_PID } = feature.properties
+                    label = NAME || feature.value || ''
                     id = `${label}-${gfw_id}`
-                    linkHref = wdpa_pid ? `https://www.protectedplanet.net/${wdpa_pid}` : undefined
+                    linkHref = WDPA_PID ? `https://www.protectedplanet.net/${WDPA_PID}` : undefined
                     break
                   case ContextLayerType.TunaRfmo:
                     id = `${feature.value}-${gfw_id}`
                     linkHref = TunaRfmoLinksById[feature.value]
                     break
                   case ContextLayerType.EEZ:
-                    const { mrgid } = feature.properties
-                    id = `${mrgid}-${gfw_id}`
-                    linkHref = `https://www.marineregions.org/eezdetails.php?mrgid=${mrgid}`
+                    const { MRGID_EEZ } = feature.properties
+                    id = `${MRGID_EEZ}-${gfw_id}`
+                    linkHref = `https://www.marineregions.org/eezdetails.php?mrgid=${MRGID_EEZ}`
                     break
                   case ContextLayerType.ProtectedSeas:
-                    const { site_id } = feature.properties
+                    const { id: site_id } = feature.properties
                     id = `${site_id}-${gfw_id}`
-                    linkHref = `https://mpa.protectedseas.net/index.php?q=${site_id}`
+                    linkHref = `https://map.navigatormap.org/site-detail?site_id=${site_id}`
                     break
                   case ContextLayerType.WPPNRI:
                   case ContextLayerType.HighSeas:

@@ -5,6 +5,8 @@ import {
   ActionReducerMapBuilder,
   createEntityAdapter,
   Dictionary,
+  IdSelector,
+  Comparer,
 } from '@reduxjs/toolkit'
 
 export enum AsyncReducerStatus {
@@ -29,6 +31,7 @@ export type AsyncReducer<T = any> = {
   entities: Dictionary<T>
   error: AsyncError
   status: AsyncReducerStatus
+  currentRequestIds: string[]
   statusId: number | string | null
 }
 
@@ -37,8 +40,18 @@ export const asyncInitialState: AsyncReducer = {
   statusId: null,
   error: {},
   ids: [],
+  currentRequestIds: [],
   entities: {},
 }
+
+const getRequestIdsOnStart = (currentRequestIds: string[], action: any) => {
+  const currentRequests = currentRequestIds || []
+  return action.meta?.requestId ? [...currentRequests, action.meta?.requestId] : currentRequests
+}
+const getRequestIdsOnFinish = (currentRequestIds: string[], action: any) => {
+  return currentRequestIds.filter((id: string) => id !== action.meta?.requestId)
+}
+
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const createAsyncSlice = <T, U>({
   name = '',
@@ -46,6 +59,7 @@ export const createAsyncSlice = <T, U>({
   reducers = {},
   extraReducers,
   thunks = {},
+  createEntityAdapterOptions,
 }: {
   name: string
   initialState?: T
@@ -58,9 +72,13 @@ export const createAsyncSlice = <T, U>({
     updateThunk?: any
     deleteThunk?: any
   }
+  createEntityAdapterOptions?: {
+    selectId?: IdSelector<U>
+    sortComparer?: false | Comparer<U>
+  }
 }) => {
   const { fetchThunk, fetchByIdThunk, createThunk, updateThunk, deleteThunk } = thunks
-  const entityAdapter = createEntityAdapter<U>()
+  const entityAdapter = createEntityAdapter<U>(createEntityAdapterOptions)
   const slice = createSlice({
     name,
     initialState: entityAdapter.getInitialState({
@@ -76,60 +94,88 @@ export const createAsyncSlice = <T, U>({
         extraReducers(builder)
       }
       if (fetchThunk) {
-        builder.addCase(fetchThunk.pending, (state: any) => {
+        builder.addCase(fetchThunk.pending, (state: any, action) => {
           state.status = AsyncReducerStatus.Loading
+          state.currentRequestIds = getRequestIdsOnStart(state.currentRequestIds, action)
         })
         builder.addCase(fetchThunk.fulfilled, (state: any, action) => {
-          state.status = AsyncReducerStatus.Finished
+          state.currentRequestIds = getRequestIdsOnFinish(state.currentRequestIds, action)
+          if (state.currentRequestIds.length === 0) {
+            state.status = AsyncReducerStatus.Finished
+          }
           entityAdapter.upsertMany(state, action.payload)
         })
         builder.addCase(fetchThunk.rejected, (state: any, action) => {
-          state.status = AsyncReducerStatus.Error
+          state.currentRequestIds = getRequestIdsOnFinish(state.currentRequestIds, action)
+          if (state.currentRequestIds.length === 0) {
+            state.status = AsyncReducerStatus.Error
+          }
           state.error = action.payload
         })
       }
       if (fetchByIdThunk) {
         builder.addCase(fetchByIdThunk.pending, (state: any, action) => {
           state.status = AsyncReducerStatus.LoadingItem
+          state.currentRequestIds = getRequestIdsOnStart(state.currentRequestIds, action)
           state.statusId = action.meta.arg
         })
         builder.addCase(fetchByIdThunk.fulfilled, (state: any, action) => {
-          state.status = AsyncReducerStatus.Finished
+          state.currentRequestIds = getRequestIdsOnFinish(state.currentRequestIds, action)
+          if (state.currentRequestIds.length === 0) {
+            state.status = AsyncReducerStatus.Finished
+          }
           state.statusId = null
           entityAdapter.upsertOne(state, action.payload)
         })
         builder.addCase(fetchByIdThunk.rejected, (state: any, action) => {
-          state.status = AsyncReducerStatus.Error
+          state.currentRequestIds = getRequestIdsOnFinish(state.currentRequestIds, action)
+          if (state.currentRequestIds.length === 0) {
+            state.status = AsyncReducerStatus.Error
+          }
           state.statusId = null
           state.error = action.payload
         })
       }
 
       if (createThunk) {
-        builder.addCase(createThunk.pending, (state: any) => {
+        builder.addCase(createThunk.pending, (state: any, action) => {
           state.status = AsyncReducerStatus.LoadingCreate
+          state.currentRequestIds = getRequestIdsOnStart(state.currentRequestIds, action)
         })
         builder.addCase(createThunk.fulfilled, (state: any, action) => {
-          state.status = 'finished'
+          state.currentRequestIds = getRequestIdsOnFinish(state.currentRequestIds, action)
+          if (state.currentRequestIds.length === 0) {
+            state.status = AsyncReducerStatus.Finished
+          }
           entityAdapter.upsertOne(state, action.payload)
         })
         builder.addCase(createThunk.rejected, (state: any, action) => {
-          state.status = 'error'
+          state.currentRequestIds = getRequestIdsOnFinish(state.currentRequestIds, action)
+          if (state.currentRequestIds.length === 0) {
+            state.status = AsyncReducerStatus.Error
+          }
           state.error = action.payload
         })
       }
       if (updateThunk) {
         builder.addCase(updateThunk.pending, (state: any, action) => {
           state.status = AsyncReducerStatus.LoadingUpdate
+          state.currentRequestIds = getRequestIdsOnStart(state.currentRequestIds, action)
           state.statusId = action.meta.arg.id
         })
         builder.addCase(updateThunk.fulfilled, (state: any, action) => {
-          state.status = 'finished'
+          state.currentRequestIds = getRequestIdsOnFinish(state.currentRequestIds, action)
+          if (state.currentRequestIds.length === 0) {
+            state.status = AsyncReducerStatus.Finished
+          }
           state.statusId = null
           entityAdapter.upsertOne(state, action.payload)
         })
         builder.addCase(updateThunk.rejected, (state: any, action) => {
-          state.status = 'error'
+          state.currentRequestIds = getRequestIdsOnFinish(state.currentRequestIds, action)
+          if (state.currentRequestIds.length === 0) {
+            state.status = AsyncReducerStatus.Error
+          }
           state.statusId = null
           state.error = action.payload
         })
@@ -137,15 +183,22 @@ export const createAsyncSlice = <T, U>({
       if (deleteThunk) {
         builder.addCase(deleteThunk.pending, (state: any, action) => {
           state.status = AsyncReducerStatus.LoadingDelete
+          state.currentRequestIds = getRequestIdsOnStart(state.currentRequestIds, action)
           state.statusId = action.meta.arg
         })
         builder.addCase(deleteThunk.fulfilled, (state: any, action) => {
-          state.status = 'finished'
+          state.currentRequestIds = getRequestIdsOnFinish(state.currentRequestIds, action)
+          if (state.currentRequestIds.length === 0) {
+            state.status = AsyncReducerStatus.Finished
+          }
           state.statusId = null
-          entityAdapter.removeOne(state, action.payload.id)
+          entityAdapter.removeOne(state, entityAdapter.selectId(action.payload))
         })
         builder.addCase(deleteThunk.rejected, (state: any, action) => {
-          state.status = 'error'
+          state.currentRequestIds = getRequestIdsOnFinish(state.currentRequestIds, action)
+          if (state.currentRequestIds.length === 0) {
+            state.status = AsyncReducerStatus.Error
+          }
           state.statusId = null
           state.error = action.payload
         })

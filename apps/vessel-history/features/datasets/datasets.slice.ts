@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { uniqBy, memoize, without } from 'lodash'
 import { stringify } from 'qs'
-import { APIPagination, Dataset } from '@globalfishingwatch/api-types'
+import { APIPagination, Dataset, DatasetTypes, RelatedDataset } from '@globalfishingwatch/api-types'
 import {
   GFWAPI,
   parseAPIError,
@@ -16,7 +16,7 @@ import {
   AsyncReducerStatus,
 } from 'utils/async-slice'
 import { RootState } from 'store'
-import { API_VERSION } from 'data/config'
+import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 
 export const fetchDatasetByIdThunk = createAsyncThunk<
   Dataset,
@@ -26,9 +26,7 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
   }
 >('datasets/fetchById', async (id: string, { rejectWithValue }) => {
   try {
-    const dataset = await GFWAPI.fetch<Dataset>(
-      `/${API_VERSION}/datasets/${id}?include=endpoints&cache=false`
-    )
+    const dataset = await GFWAPI.fetch<Dataset>(`/datasets/${id}?include=endpoints&cache=false`)
     return dataset
   } catch (e: any) {
     return rejectWithValue({
@@ -48,9 +46,10 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
         ...(uniqIds?.length && { ids: uniqIds }),
         include: 'endpoints',
         cache: process.env.NODE_ENV !== 'development',
+        ...DEFAULT_PAGINATION_PARAMS,
       }
       const initialDatasets = await GFWAPI.fetch<APIPagination<Dataset>>(
-        `/${API_VERSION}/datasets?${stringify(workspacesParams, { arrayFormat: 'comma' })}`,
+        `/datasets?${stringify(workspacesParams, { arrayFormat: 'comma' })}`,
         { signal }
       ).then((d) => d.entries)
       const relatedDatasetsIds = initialDatasets.flatMap(
@@ -61,7 +60,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
       // if no ids are specified, then do not get all the datasets
       const relatedDatasets = relatedWorkspaceParams.ids
         ? await GFWAPI.fetch<APIPagination<Dataset>>(
-            `/${API_VERSION}/datasets?${stringify(relatedWorkspaceParams, {
+            `/datasets?${stringify(relatedWorkspaceParams, {
               arrayFormat: 'comma',
             })}`,
             { signal }
@@ -127,9 +126,43 @@ const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, D
 
 export const { setDatasetModal } = datasetSlice.actions
 
-export const { selectAll, selectById, selectIds } = entityAdapter.getSelectors<RootState>(
-  (state) => state.datasets
-)
+export const {
+  selectAll: baseSelectAll,
+  selectById,
+  selectIds,
+} = entityAdapter.getSelectors<RootState>((state) => state.datasets)
+
+export const selectAll = createSelector([baseSelectAll], (datasets) => {
+  const vesselInfo: Dataset[] = datasets
+    .filter((d) => d.category === 'vessel' && d.subcategory === 'info')
+    // Inject Proto Gaps Dataset
+    .map((d) => ({
+      ...d,
+      relatedDatasets: [
+        ...d.relatedDatasets,
+        {
+          id: 'proto-global-gaps-events:v20201001',
+          type: DatasetTypes.Events,
+        },
+      ],
+    }))
+
+  const gaps: Dataset[] = datasets
+    .filter((d) => d.id === 'proto-global-gaps-events:v20201001')
+    // Inject related datasets to Proto Gaps Dataset
+    .map((d) => ({
+      ...d,
+      relatedDatasets: [
+        ...(d.relatedDatasets ?? []),
+        ...vesselInfo.map((vi) => ({ id: vi.id, type: vi.type } as RelatedDataset)),
+      ],
+    }))
+  const result: Dataset[] = datasets.map((dataset) => {
+    const override = [...vesselInfo, ...gaps].find((current) => current.id === dataset.id)
+    return override ?? dataset
+  })
+  return result
+})
 
 export function selectDatasets(state: RootState) {
   return selectAll(state)

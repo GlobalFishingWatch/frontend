@@ -1,9 +1,9 @@
 {
   "name": "@globalfishingwatch/i18n-labels",
-  "version": "1.2.39",
+  "version": "1.2.99",
   "license": "MIT",
   "scripts": {
-    "start": "yarn kill && serve -p 8000 --cors=true",
+    "start": "kill-port 8000 && serve -p 8000 --cors=true",
     "kill": "kill-port 8000"
   },
   "files": [
@@ -12,11 +12,12 @@
     "fr",
     "id",
     "pt",
-    "source"
+    "source",
+    "val"
   ],
   "devDependencies": {
     "kill-port": "^1.6.1",
-    "serve": "13.0.2"
+    "serve": "14.2.0"
   },
   "publishConfig": {
     "access": "public",

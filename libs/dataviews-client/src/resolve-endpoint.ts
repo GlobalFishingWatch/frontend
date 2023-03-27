@@ -1,5 +1,11 @@
-import { Dataset, DatasetTypes, DataviewDatasetConfig } from '@globalfishingwatch/api-types'
+import {
+  Dataset,
+  DatasetTypes,
+  DataviewDatasetConfig,
+  EndpointParamType,
+} from '@globalfishingwatch/api-types'
 
+const arrayQueryParams: EndpointParamType[] = ['4wings-datasets', 'sql']
 // Generates an URL by interpolating a dataset endpoint template with a dataview datasetConfig
 export const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDatasetConfig) => {
   const endpoint = dataset.endpoints?.find((endpoint) => endpoint.id === datasetConfig.endpoint)
@@ -18,9 +24,12 @@ export const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDataset
     datasetConfig.query.forEach((query) => {
       // if (query)
       const endpointQuery = endpoint.query.find((q) => q.id === query.id)
-      // TODO               this won't scale, we need another meta in Dataset
-      if (endpointQuery && ['4wings-datasets', 'sql'].includes(endpointQuery.type)) {
-        ;(query.value as string[]).forEach((queryArrItem, i) => {
+      // TODO: this won't scale, we need another meta in Dataset
+      if (endpointQuery && arrayQueryParams.includes(endpointQuery.type)) {
+        const queryArray = Array.isArray(query.value)
+          ? (query.value as string[])
+          : [query.value as string]
+        queryArray.forEach((queryArrItem, i) => {
           const queryArrId = `${query.id}[${i}]`
           resolvedQuery.set(queryArrId, queryArrItem)
         })

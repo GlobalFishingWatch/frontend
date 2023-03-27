@@ -14,7 +14,10 @@ import {
 import { resolveEndpoint } from '../resolve-endpoint'
 
 export type GetDatasetConfigsCallbacks = {
-  tracks?: (datasetConfigs: DataviewDatasetConfig[]) => DataviewDatasetConfig[]
+  tracks?: (
+    datasetConfigs: DataviewDatasetConfig[],
+    dataview?: UrlDataviewInstance
+  ) => DataviewDatasetConfig[]
   activityContext?: (datasetConfigs: DataviewDatasetConfig) => DataviewDatasetConfig
 }
 export const getResources = (
@@ -45,7 +48,14 @@ export const getResources = (
       dataview.datasets && dataview.datasets?.[0]?.type === DatasetTypes.UserTracks
         ? DatasetTypes.UserTracks
         : DatasetTypes.Tracks
-    const track = { ...getDatasetConfigByDatasetType(dataview, trackDatasetType) }
+
+    const trackDatasetConfig = { ...getDatasetConfigByDatasetType(dataview, trackDatasetType) }
+    const hasTrackData =
+      trackDatasetType === DatasetTypes.Tracks
+        ? trackDatasetConfig?.params?.find((p) => p.id === 'vesselId')?.value
+        : trackDatasetConfig?.params?.find((p) => p.id === 'id')?.value
+    // Cleaning track resources with no data as now now the track is hidden for guest users in VMS full- datasets
+    const track = hasTrackData ? trackDatasetConfig : ({} as DataviewDatasetConfig)
 
     const events = getDatasetConfigsByDatasetType(dataview, DatasetTypes.Events).filter(
       (datasetConfig) => datasetConfig.query?.find((q) => q.id === 'vessels')?.value
@@ -54,7 +64,7 @@ export const getResources = (
     let preparedDatasetConfigs = [info, track, ...events]
 
     if (callbacks.tracks) {
-      preparedDatasetConfigs = callbacks.tracks(preparedDatasetConfigs)
+      preparedDatasetConfigs = callbacks.tracks(preparedDatasetConfigs, dataview)
     }
 
     const preparedDataview = {
@@ -75,7 +85,7 @@ export const getResources = (
       if (!dataset) return []
       const url = resolveEndpoint(dataset, datasetConfig)
       if (!url) return []
-      return [{ dataset, datasetConfig, url, dataviewId: dataview.dataviewId as number }]
+      return [{ dataset, datasetConfig, url, dataviewId: dataview.dataviewId as string }]
     })
   })
 

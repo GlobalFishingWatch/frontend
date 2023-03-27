@@ -191,7 +191,7 @@ export const selectWorkspaceWithCurrentState = createSelector(
       startAt: timerange.start,
       endAt: timerange.end,
       state,
-      dataviewInstances: dataviewInstances as DataviewInstance<any>[],
+      dataviewInstances: dataviewInstances.filter((d) => !d.deleted) as DataviewInstance<any>[],
     }
   }
 )

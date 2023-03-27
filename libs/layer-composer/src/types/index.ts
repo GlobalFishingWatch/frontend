@@ -1,6 +1,5 @@
 import type {
   SourceSpecification,
-  HeatmapLayerSpecification,
   LayerSpecification,
   StyleSpecification,
 } from '@globalfishingwatch/maplibre-gl'
@@ -36,7 +35,7 @@ export interface Generator {
 }
 
 /**
- * Defines groups for layer order. See actual layer order in packages/layer-composer/src/transforms/sort/sort.ts
+ * Defines groups for layer order. See actual layer order in libs/layer-composer/src/transforms/sort/sort.ts
  */
 export enum Group {
   Background = 'background', // Solid bg color
@@ -99,6 +98,8 @@ export interface ExtendedLayerMeta {
   datasetId?: string
   generatorId?: string
   generatorType?: GeneratorType
+  promoteId?: string
+  valueProperties?: string[]
   interactive?: boolean
   uniqueFeatureInteraction?: boolean
   group?: Group
@@ -119,9 +120,11 @@ export interface HeatmapLayerMeta {
   multiplier: number
   numSublayers: number
   sublayerCombinationMode: SublayerCombinationMode
-  sublayers: ExtendedLayer<HeatmapLayerSpecification>[]
+  sublayers: HeatmapAnimatedGeneratorSublayer[]
   temporalgrid: true
   timeChunks: TimeChunks
+  minVisibleValue?: number
+  maxVisibleValue?: number
   visibleSublayers: boolean[]
   sourceLayer?: string
 }

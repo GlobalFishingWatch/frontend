@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Polygon, MultiPolygon } from 'geojson'
 import { useSelector } from 'react-redux'
-import { DateTime } from 'luxon'
 import simplify from '@turf/simplify'
 import bbox from '@turf/bbox'
 import { atom, selector, useRecoilState } from 'recoil'
@@ -9,9 +8,13 @@ import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { MULTILAYER_SEPARATOR } from '@globalfishingwatch/dataviews-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { Bbox } from 'types'
 import { useLocationConnect } from 'routes/routes.hook'
-import { useMapFitBounds } from 'features/map/map-viewport.hooks'
+import useViewport, {
+  getMapCoordinatesFromBounds,
+  useMapFitBounds,
+} from 'features/map/map-viewport.hooks'
 import {
   selectAnalysisQuery,
   selectAnalysisTimeComparison,
@@ -36,8 +39,14 @@ import {
   selectContextAreasDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { Area, fetchAreaThunk, FetchAreaThunkParam } from 'features/areas/areas.slice'
+import {
+  DatasetAreaDetail,
+  fetchAreaDetailThunk,
+  FetchAreaDetailThunkParam,
+} from 'features/areas/areas.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { getUTCDateTime } from 'utils/dates'
+import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { filterByPolygon } from './analysis-geo.utils'
 import { AnalysisGraphProps } from './AnalysisEvolutionGraph'
 import { selectAnalysisArea, selectShowTimeComparison } from './analysis.selectors'
@@ -55,6 +64,119 @@ export const selectMapTimeseries = selector({
   },
 })
 
+export function useReportAreaCenter(bounds: Bbox) {
+  const map = useMapInstance()
+  return useMemo(() => {
+    if (!bounds) return null
+
+    const wrapBbox = wrapBBoxLongitudes(bounds)
+    const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(map, wrapBbox, {
+      padding: FIT_BOUNDS_ANALYSIS_PADDING,
+    })
+    return { latitude, longitude, zoom }
+  }, [bounds, map])
+}
+
+export function useReportAreaInViewport() {
+  const { viewport } = useViewport()
+  const area = useSelector(selectAnalysisArea)
+  const areaCenter = useReportAreaCenter(area?.data?.bounds)
+  return (
+    viewport?.latitude === areaCenter?.latitude &&
+    viewport?.longitude === areaCenter?.longitude &&
+    viewport?.zoom === areaCenter?.zoom
+  )
+}
+
+export function useFitAreaInViewport() {
+  const { setMapCoordinates } = useViewport()
+  const area = useSelector(selectAnalysisArea)
+  const areaCenter = useReportAreaCenter(area?.data?.bounds)
+  const areaInViewport = useReportAreaInViewport()
+  return useCallback(() => {
+    if (!areaInViewport) {
+      setMapCoordinates(areaCenter)
+    }
+  }, [areaCenter, areaInViewport, setMapCoordinates])
+}
+
+export const useAnalysisArea = () => {
+  const map = useMapInstance()
+  const dispatch = useAppDispatch()
+  const fitMapBounds = useMapFitBounds()
+  const { dispatchQueryParams } = useLocationConnect()
+  const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
+  const contextDataviews = useSelector(selectContextAreasDataviews)
+  const { areaId, sourceId, datasetId } = useSelector(selectAnalysisQuery)
+  const analysisDataset = useSelector(selectDatasetById(datasetId))
+  const analysisArea = useSelector(selectAnalysisArea)
+  const { status, data: { bounds } = {} } = analysisArea || ({} as DatasetAreaDetail)
+
+  const setHighlightedArea = useCallback(() => {
+    cleanFeatureState('highlight')
+    const featureState = {
+      source: sourceId,
+      sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
+      id: areaId,
+    }
+    updateFeatureState([featureState], 'highlight')
+  }, [areaId, cleanFeatureState, sourceId, updateFeatureState])
+
+  const setAnalysisBounds = useCallback(
+    (bounds: Bbox) => {
+      dispatchQueryParams({ analysis: { areaId, bounds, sourceId, datasetId } })
+      fitMapBounds(bounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
+    },
+    [dispatchQueryParams, areaId, sourceId, datasetId, fitMapBounds]
+  )
+
+  const fetchAnalysisArea = useCallback(
+    (fetchParams: FetchAreaDetailThunkParam) => {
+      dispatch(fetchAreaDetailThunk(fetchParams))
+    },
+    [dispatch]
+  )
+
+  useEffect(() => {
+    if (areaId && !datasetId && contextDataviews?.length) {
+      // Fallback for legacy url which doesn't contain datasetId in the url
+      // trying to get the dataset from the context dataview
+      const dataviewsIdBySource = contextDataviews.map(
+        ({ id }) => id.split(MULTILAYER_SEPARATOR)[0]
+      )
+      const dataview = contextDataviews.find(
+        ({ id }) => id === sourceId || dataviewsIdBySource.includes(id)
+      )
+      const datasetId = dataview?.datasets?.[0].id
+      if (datasetId) {
+        dispatchQueryParams({ analysis: { areaId, bounds, sourceId, datasetId } })
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [areaId, datasetId])
+
+  const areaName = contextDataviews?.find(({ id }) => id === sourceId)?.datasets?.[0].name
+  useEffect(() => {
+    if (areaId && analysisDataset) {
+      fetchAnalysisArea({ dataset: analysisDataset, areaId, areaName })
+    }
+  }, [areaId, analysisDataset, fetchAnalysisArea, areaName])
+
+  useEffect(() => {
+    if (status === AsyncReducerStatus.Finished) {
+      if (bounds) {
+        setAnalysisBounds(bounds)
+        setHighlightedArea()
+      } else {
+        console.warn('No area bounds')
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, bounds])
+
+  return analysisArea
+}
+
 export type DateTimeSeries = {
   date: string
   values: number[]
@@ -64,12 +186,13 @@ export type DateTimeSeries = {
 export const useFilteredTimeSeries = () => {
   const [timeseries, setTimeseries] = useRecoilState(mapTimeseriesAtom)
   const [blur, setBlur] = useState(false)
-  const analysisAreaGeometry = useSelector(selectAnalysisArea)?.geometry
+  const analysisAreaGeometry = useSelector(selectAnalysisArea)?.data?.geometry
   const analysisType = useSelector(selectAnalysisTypeQuery)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparison = useSelector(selectAnalysisTimeComparison)
   const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
   const activityFeatures = useMapDataviewFeatures(temporalgridDataviews)
+  const areaInViewport = useReportAreaInViewport()
   const { areaId } = useSelector(selectAnalysisQuery)
   const { start: timebarStart, end: timebarEnd } = useTimerangeConnect()
 
@@ -86,15 +209,19 @@ export const useFilteredTimeSeries = () => {
 
   let compareDeltaMillis: number | undefined = undefined
   if (showTimeComparison && timeComparison) {
-    const startMillis = DateTime.fromISO(timeComparison.start).toUTC().toMillis()
-    const compareStartMillis = DateTime.fromISO(timeComparison.compareStart).toUTC().toMillis()
+    const startMillis = getUTCDateTime(timeComparison.start).toMillis()
+    const compareStartMillis = getUTCDateTime(timeComparison.compareStart).toMillis()
     compareDeltaMillis = compareStartMillis - startMillis
   }
   const computeTimeseries = useCallback(
     (layersWithFeatures: DataviewFeature[], geometry: Polygon | MultiPolygon) => {
-      const features = layersWithFeatures.map(({ chunksFeatures }) =>
-        chunksFeatures.flatMap(({ active, features }) => (active && features ? features : []))
-      )
+      const features = layersWithFeatures
+        .map(({ chunksFeatures }) =>
+          chunksFeatures
+            ? chunksFeatures.flatMap(({ active, features }) => (active && features ? features : []))
+            : []
+        )
+        .filter((features) => features.length > 0)
       const filteredFeatures = filterByPolygon(features, geometry)
       const timeseries = featuresToTimeseries(filteredFeatures, {
         layersWithFeatures,
@@ -142,11 +269,11 @@ export const useFilteredTimeSeries = () => {
 
   useEffect(() => {
     const activityFeaturesLoaded = areDataviewsFeatureLoaded(activityFeatures)
-    if (activityFeaturesLoaded && simplifiedGeometry) {
+    if (activityFeaturesLoaded && simplifiedGeometry && areaInViewport) {
       computeTimeseries(activityFeatures, simplifiedGeometry)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activityFeatures, simplifiedGeometry])
+  }, [activityFeatures, simplifiedGeometry, areaInViewport])
 
   const layersTimeseriesFiltered = useMemo(() => {
     if (showTimeComparison) {
@@ -164,80 +291,4 @@ export const useFilteredTimeSeries = () => {
     error: hasDataviewsFeatureError(activityFeatures),
     layersTimeseriesFiltered,
   }
-}
-
-export const useAnalysisArea = () => {
-  const map = useMapInstance()
-  const dispatch = useAppDispatch()
-  const fitMapBounds = useMapFitBounds()
-  const { dispatchQueryParams } = useLocationConnect()
-  const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
-  const contextDataviews = useSelector(selectContextAreasDataviews)
-  const { areaId, sourceId, datasetId } = useSelector(selectAnalysisQuery)
-  const analysisArea = useSelector(selectAnalysisArea) || ({} as Area)
-  const { status, bounds } = analysisArea
-
-  const setHighlightedArea = useCallback(() => {
-    cleanFeatureState('highlight')
-    const featureState = {
-      source: sourceId,
-      sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
-      id: areaId,
-    }
-    updateFeatureState([featureState], 'highlight')
-  }, [areaId, cleanFeatureState, sourceId, updateFeatureState])
-
-  const setAnalysisBounds = useCallback(
-    (bounds: Bbox) => {
-      dispatchQueryParams({ analysis: { areaId, bounds, sourceId, datasetId } })
-      fitMapBounds(bounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
-    },
-    [dispatchQueryParams, areaId, sourceId, datasetId, fitMapBounds]
-  )
-
-  const fetchAnalysisArea = useCallback(
-    (fetchParams: FetchAreaThunkParam) => {
-      dispatch(fetchAreaThunk(fetchParams))
-    },
-    [dispatch]
-  )
-
-  useEffect(() => {
-    if (areaId && !datasetId && contextDataviews?.length) {
-      // Fallback for legacy url which doesn't contain datasetId in the url
-      // trying to get the dataset from the context dataview
-      const dataviewsIdBySource = contextDataviews.map(
-        ({ id }) => id.split(MULTILAYER_SEPARATOR)[0]
-      )
-      const dataview = contextDataviews.find(
-        ({ id }) => id === sourceId || dataviewsIdBySource.includes(id)
-      )
-      const datasetId = dataview?.datasets?.[0].id
-      if (datasetId) {
-        dispatchQueryParams({ analysis: { areaId, bounds, sourceId, datasetId } })
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [areaId, datasetId])
-
-  const areaName = contextDataviews?.find(({ id }) => id === sourceId)?.datasets?.[0].name
-  useEffect(() => {
-    if (areaId && datasetId) {
-      fetchAnalysisArea({ datasetId, areaId, areaName })
-    }
-  }, [areaId, datasetId, fetchAnalysisArea, areaName])
-
-  useEffect(() => {
-    if (status === AsyncReducerStatus.Finished) {
-      if (bounds) {
-        setAnalysisBounds(bounds)
-        setHighlightedArea()
-      } else {
-        console.warn('No area bounds')
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, bounds])
-
-  return analysisArea
 }

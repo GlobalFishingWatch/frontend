@@ -1,5 +1,4 @@
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { API_VERSION } from 'data/config'
 import { GFWDetail, VesselAPISource, VesselWithHistory } from 'types'
 import { VesselSourceId } from 'types/vessel'
 import { VesselAPIThunk } from '../vessels.slice'
@@ -32,6 +31,8 @@ export const toVessel: (data: GFWDetail) => VesselWithHistory = (data: GFWDetail
     lastTransmissionDate: data.lastTransmissionDate,
     imo: data.imo,
     mmsi: data.mmsi,
+    years: data.years,
+    posCount: data.posCount,
     callsign: data.callsign,
     geartype: data.geartype,
     type: data.vesselType,
@@ -61,7 +62,7 @@ const vesselThunk: VesselAPIThunk = {
         reject('Missing vessel id or dataset to fetch data')
       })
     }
-    const url = `/${API_VERSION}/vessels/${id}?datasets=${dataset}`
+    const url = `/vessels/${id}?datasets=${dataset}`
     return await GFWAPI.fetch<GFWDetail>(url).then(toVessel)
   },
 }
