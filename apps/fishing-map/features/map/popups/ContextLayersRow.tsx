@@ -19,6 +19,7 @@ import { getFeatureAreaId, getFeatureBounds } from 'features/map/popups/ContextL
 import { resetSidebarScroll } from 'features/sidebar/Sidebar'
 import { resetReportData } from 'features/reports/reports.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './Popup.module.css'
 
 interface DownloadPopupButtonProps {
@@ -66,6 +67,7 @@ interface ReportPopupButtonProps {
 }
 
 export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) => {
+  console.log('🚀 ~ ReportPopupLink ~ feature:', feature)
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const hasAnalysableLayer = useSelector(selectHasReportLayersVisible)
@@ -87,9 +89,15 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
     )
   }
   const handleReportClick = (e: React.MouseEvent<Element, MouseEvent>) => {
+    trackEvent({
+      category: TrackCategory.Analysis,
+      action: 'Open analysis panel',
+      label: getFeatureAreaId(feature),
+    })
     dispatch(resetReportData())
     onClick(e)
   }
+
   return (
     <Link
       className={styles.workspaceLink}

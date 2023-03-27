@@ -4,6 +4,7 @@ import { Button } from '@globalfishingwatch/ui-components'
 import { selectLocationAreaId, selectLocationDatasetId } from 'routes/routes.selectors'
 import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './ReportDownload.module.css'
 
 export default function ReportDownload() {
@@ -13,6 +14,7 @@ export default function ReportDownload() {
   const areaId = useSelector(selectLocationAreaId)?.toString()
 
   const handleMoreOptionsClick = () => {
+    trackEvent({ category: TrackCategory.Analysis, action: 'Download report', label: areaId })
     dispatch(setDownloadActivityAreaKey({ datasetId, areaId }))
   }
 

@@ -1,7 +1,6 @@
 import { useMemo, useRef, useState, Fragment } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { Geometry } from 'geojson'
 import { Icon, Button, Choice, ChoiceOption, Tag } from '@globalfishingwatch/ui-components'
@@ -35,6 +34,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import SOURCE_SWITCH_CONTENT from 'features/welcome/SourceSwitch.content'
 import { Locale } from 'types'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './DownloadModal.module.css'
 import {
   Format,
@@ -106,8 +106,8 @@ function DownloadActivityByVessel() {
       })
       .filter((dataview) => dataview.datasets.length > 0)
 
-    uaEvent({
-      category: 'Data downloads',
+    trackEvent({
+      category: TrackCategory.DataDownloads,
       action: `Download ${format.toUpperCase()} file`,
       label: JSON.stringify({
         regionName: downloadAreaName || EMPTY_FIELD_PLACEHOLDER,
@@ -131,8 +131,8 @@ function DownloadActivityByVessel() {
     }
     await dispatch(downloadActivityThunk(downloadParams))
 
-    uaEvent({
-      category: 'Download',
+    trackEvent({
+      category: TrackCategory.DataDownloads,
       action: `Activity download`,
       label: getEventLabel([
         downloadAreaName,

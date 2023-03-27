@@ -15,6 +15,7 @@ import {
   setVesselGroupCurrentDataviewIds,
 } from 'features/vessel-groups/vessel-groups.slice'
 import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   selectReportVesselsFiltered,
   selectReportVesselsList,
@@ -45,6 +46,10 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
     await setAllVesselsWithAllInfoFiltered(
       getVesselsFiltered(allVesselsWithAllInfo, reportVesselFilter)
     )
+    trackEvent({
+      category: TrackCategory.Analysis,
+      action: `Download CSV`,
+    })
     done(true)
   }
 
@@ -66,9 +71,17 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
       reportResultsPerPage: REPORT_SHOW_MORE_VESSELS_PER_PAGE,
       reportVesselPage: 0,
     })
+    trackEvent({
+      category: TrackCategory.Analysis,
+      action: `Click on show more vessels`,
+    })
   }
   const onShowLessClick = () => {
     dispatchQueryParams({ reportResultsPerPage: REPORT_VESSELS_PER_PAGE, reportVesselPage: 0 })
+    trackEvent({
+      category: TrackCategory.Analysis,
+      action: `Click on show less vessels`,
+    })
   }
   const onAddToVesselGroup = () => {
     const dataviewIds = heatmapDataviews.map(({ id }) => id)

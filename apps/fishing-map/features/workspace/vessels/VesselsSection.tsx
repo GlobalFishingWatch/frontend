@@ -2,7 +2,6 @@ import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { SortableContext } from '@dnd-kit/sortable'
 import cx from 'classnames'
-import { event as uaEvent } from 'react-ga'
 import { useTranslation, Trans } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -12,6 +11,7 @@ import { selectHasTracksWithNoData } from 'features/timebar/timebar.selectors'
 import { isBasicSearchAllowed } from 'features/search/search.selectors'
 import { isGuestUser } from 'features/user/user.slice'
 import LocalStorageLoginLink from 'routes/LoginLink'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import VesselEventsLegend from './VesselEventsLegend'
 import VesselLayerPanel from './VesselLayerPanel'
 
@@ -25,8 +25,8 @@ function VesselsSection(): React.ReactElement {
   const searchAllowed = useSelector(isBasicSearchAllowed)
 
   const onSearchClick = useCallback(() => {
-    uaEvent({
-      category: 'Search Vessel',
+    trackEvent({
+      category: TrackCategory.SearchVessel,
       action: 'Click search icon to open search panel',
     })
     dispatchQueryParams({ query: '' })

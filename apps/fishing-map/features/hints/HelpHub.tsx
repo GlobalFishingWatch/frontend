@@ -1,9 +1,9 @@
 import cx from 'classnames'
-import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import hintsConfig from './hints.content'
 import { resetHints, selectHintsDismissed } from './hints.slice'
 import styles from './Hint.module.css'
@@ -23,8 +23,8 @@ function HelpHub() {
   const noHelpHintsSeen = percentageOfHintsSeen === 0
 
   const onHelpClick = () => {
-    uaEvent({
-      category: 'Help hints',
+    trackEvent({
+      category: TrackCategory.HelpHints,
       action: `Pressing the '?' on the left of the screen to restore help hints after they've been dismissed`,
       label: percentageOfHintsSeen.toString(),
     })

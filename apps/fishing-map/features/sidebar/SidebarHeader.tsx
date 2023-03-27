@@ -25,6 +25,7 @@ import { resetSidebarScroll } from 'features/sidebar/Sidebar'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { resetReportData } from 'features/reports/reports.slice'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useClipboardNotification } from './sidebar.hooks'
 import styles from './SidebarHeader.module.css'
 
@@ -106,7 +107,11 @@ function ShareWorkspaceButton() {
 
   const onShareClick = useCallback(() => {
     copyToClipboard(window.location.href)
-  }, [copyToClipboard])
+    trackEvent({
+      category: workspaceLocation ? TrackCategory.WorkspaceManagement : TrackCategory.Analysis,
+      action: `Click share ${workspaceLocation ? 'workspace' : 'report'}'}`,
+    })
+  }, [copyToClipboard, workspaceLocation])
 
   return (
     <IconButton

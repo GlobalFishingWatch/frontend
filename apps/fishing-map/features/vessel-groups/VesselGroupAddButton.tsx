@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react'
-import { event as uaEvent } from 'react-ga'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { batch, useSelector } from 'react-redux'
@@ -17,6 +16,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { selectUserGroupsPermissions } from 'features/user/user.selectors'
 import { ReportVesselWithDatasets } from 'features/reports/reports.selectors'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './VesselGroupAddButton.module.css'
 
 function VesselGroupAddButton({
@@ -52,8 +52,8 @@ function VesselGroupAddButton({
         batch(() => {
           if (vesselGroupId) {
             dispatch(setVesselGroupEditId(vesselGroupId))
-            uaEvent({
-              category: 'Vessel groups',
+            trackEvent({
+              category: TrackCategory.VesselGroups,
               action: `Use the 'add to vessel group' functionality from report`,
               label: getEventLabel([
                 vesselsWithDataset.length.toString(),

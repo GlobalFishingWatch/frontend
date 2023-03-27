@@ -12,6 +12,7 @@ import { selectReportActivityGraph } from 'features/app/app.selectors'
 import { useFitAreaInViewport } from 'features/reports/reports.hooks'
 import { ReportActivityGraph } from 'types'
 import { useSetReportTimeComparison } from 'features/reports/reports-timecomparison.hooks'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 
 export default function ReportActivityGraphSelector() {
   const { dispatchQueryParams } = useLocationConnect()
@@ -43,6 +44,10 @@ export default function ReportActivityGraphSelector() {
       } else {
         setReportTimecomparison(option.id)
       }
+      trackEvent({
+        category: TrackCategory.Analysis,
+        action: `Click on ${option.id} activity graph`,
+      })
       dispatchQueryParams({ reportActivityGraph: option.id })
     }
   }

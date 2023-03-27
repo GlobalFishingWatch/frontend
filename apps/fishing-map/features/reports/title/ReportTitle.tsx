@@ -7,6 +7,7 @@ import { Area } from 'features/areas/areas.slice'
 import { selectReportAreaDataview } from 'features/reports/reports.selectors'
 import { getContextAreaLink } from 'features/dataviews/dataviews.utils'
 import ReportTitlePlaceholder from 'features/reports/placeholders/ReportTitlePlaceholder'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './ReportTitle.module.css'
 
 type ReportTitleProps = {
@@ -23,6 +24,13 @@ export default function ReportTitle({ area }: ReportTitleProps) {
       ? areaDataview?.datasets?.[0]?.name
       : area?.name
   const linkHref = getContextAreaLink(areaDataview?.config?.layers?.[0]?.id, area)
+  const onPrintClick = () => {
+    trackEvent({
+      category: TrackCategory.Analysis,
+      action: `Click print/save as pdf`,
+    })
+    window.print()
+  }
   return (
     <div className={styles.container}>
       {name ? (
@@ -37,7 +45,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
             <IconButton
               icon="print"
               tooltip={t('analysis.print', 'Print / Save as PDF')}
-              onClick={window.print}
+              onClick={onPrintClick}
             />
           </div>
         </Fragment>

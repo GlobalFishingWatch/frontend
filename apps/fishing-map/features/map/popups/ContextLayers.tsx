@@ -1,10 +1,10 @@
 import { Fragment, useCallback } from 'react'
 import { groupBy } from 'lodash'
-import { event as uaEvent } from 'react-ga'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { ContextLayerType } from '@globalfishingwatch/layer-composer'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { getContextAreaLink } from 'features/dataviews/dataviews.utils'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './Popup.module.css'
 import ContextLayersRow from './ContextLayersRow'
 import { useContextInteractions } from './ContextLayers.hooks'
@@ -20,8 +20,8 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
 
   const trackOnDownloadClick = useCallback(
     (event, feature) => {
-      uaEvent({
-        category: 'Data downloads',
+      trackEvent({
+        category: TrackCategory.DataDownloads,
         action: `Click on polygon, click on download icon`,
       })
       onDownloadClick(event, feature)

@@ -1,11 +1,11 @@
 import { useState, useCallback } from 'react'
 import cx from 'classnames'
-import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
 import { selectReadOnly } from 'features/app/app.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import TooltipContainer from '../workspace/shared/TooltipContainer'
 import hintsConfig, { HintId } from './hints.content'
 import styles from './Hint.module.css'
@@ -29,8 +29,8 @@ function Hint({ id, className }: HintProps) {
   const onDismiss = useCallback(() => {
     setVisible(false)
     dispatch(setHintDismissed(id))
-    uaEvent({
-      category: 'Help hints',
+    trackEvent({
+      category: TrackCategory.HelpHints,
       action: `Dismiss one specific help hint`,
       label: id,
     })
@@ -41,8 +41,8 @@ function Hint({ id, className }: HintProps) {
     Object.keys(hintsConfig).forEach((id) => {
       dispatch(setHintDismissed(id as HintId))
     })
-    uaEvent({
-      category: 'Help hints',
+    trackEvent({
+      category: TrackCategory.HelpHints,
       action: `Dismiss all help hints before viewing all`,
       label: id,
     })
@@ -50,8 +50,8 @@ function Hint({ id, className }: HintProps) {
 
   const showHint = useCallback(() => {
     setVisible(true)
-    uaEvent({
-      category: 'Help hints',
+    trackEvent({
+      category: TrackCategory.HelpHints,
       action: `Click on a help hint to view supporting information`,
       label: id,
     })
