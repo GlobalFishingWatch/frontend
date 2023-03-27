@@ -69,6 +69,8 @@ import {
   selectAdvancedSearchDatasets,
 } from './search.selectors'
 
+const MIN_SEARCH_CHARACTERS = 3
+
 function Search() {
   const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
@@ -129,7 +131,7 @@ function Search() {
         filters: SearchFilter
         offset?: number
       }) => {
-        if (datasets?.length) {
+        if (datasets?.length && query?.length > MIN_SEARCH_CHARACTERS - 1) {
           const sourceIds = filters?.sources?.map((source) => source.id)
           const sources = sourceIds ? datasets.filter(({ id }) => sourceIds.includes(id)) : datasets
           if (promiseRef.current) {
@@ -358,6 +360,14 @@ function Search() {
                 searchStatus === AsyncReducerStatus.Aborted) &&
               searchPagination.loading === false ? null : basicSearchAllowed ? (
                 <ul {...getMenuProps()} className={styles.searchResults}>
+                  {debouncedQuery && debouncedQuery?.length < MIN_SEARCH_CHARACTERS && (
+                    <li key="suggestion" className={cx(styles.searchSuggestion, styles.red)}>
+                      {t('search.minCharacters', {
+                        defaultValue: 'Please type at least {{count}} characters',
+                        count: MIN_SEARCH_CHARACTERS,
+                      })}
+                    </li>
+                  )}
                   {searchQuery &&
                     searchSuggestion &&
                     searchSuggestion !== searchQuery &&

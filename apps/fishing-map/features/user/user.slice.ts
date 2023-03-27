@@ -24,6 +24,7 @@ const initialState: UserState = {
 }
 
 export const GFW_GROUP_ID = 'GFW Staff'
+export const JAC_GROUP_ID = 'Joint Analytical Cell (JAC)'
 export const GFW_DEV_GROUP_ID = 'development-group'
 export const ADMIN_GROUP_ID = 'admin-group'
 export const DEFAULT_GROUP_ID = 'Default'
@@ -116,6 +117,7 @@ export const selectUserData = (state: RootState) => state.user.data
 export const selectUserStatus = (state: RootState) => state.user.status
 export const selectUserLogged = (state: RootState) => state.user.logged
 export const isGFWUser = (state: RootState) => state.user.data?.groups.includes(GFW_GROUP_ID)
+export const isJACUser = (state: RootState) => state.user.data?.groups.includes(JAC_GROUP_ID)
 export const isGFWAdminUser = (state: RootState) => state.user.data?.groups.includes(ADMIN_GROUP_ID)
 export const isGFWDeveloper = (state: RootState) =>
   state.user.data?.groups.includes(GFW_DEV_GROUP_ID)

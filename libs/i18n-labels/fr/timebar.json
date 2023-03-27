@@ -1,6 +1,6 @@
 {
   "playback": {
-    "playAnimation": "Jouer l'animation",
+    "playAnimation": "Lancer l’animation",
     "pauseAnimation": "Mettre en pause l'animation",
     "toogleAnimationLooping": "Activer/désactiver la boucle d'animation",
     "moveBack": "Revenir en arrière",
@@ -39,13 +39,13 @@
   "lastUpdate": "Dernière mise à jour",
   "setBookmark": "Mettre en favori la plage de temps actuelle",
   "intervals": {
-    "hour": "hour",
+    "hour": "Heure",
     "hourTooltip": "See hourly data",
-    "day": "day",
+    "day": "Jour",
     "dayTooltip": "See daily data",
-    "month": "month",
+    "month": "Mois",
     "monthTooltip": "See monthly data",
-    "year": "year",
+    "year": "Année",
     "yearTooltip": "See yearly data"
   },
   "zoomTo": "Zoom sur"

@@ -10,7 +10,7 @@ export enum Format {
   GeoTIFF = 'tif',
   Json = 'json',
   Csv = 'csv',
-  NetCDF = 'netcdf',
+  Geopackage = 'geopackage',
 }
 
 export enum GroupBy {
@@ -50,8 +50,8 @@ export const GRIDDED_FORMAT_OPTIONS: ChoiceOption[] = [
     label: 'json',
   },
   {
-    id: Format.NetCDF,
-    label: 'netcdf',
+    id: Format.Geopackage,
+    label: 'Geopackage',
     disabled: true,
     tooltip: t('common.comingSoon', 'Coming Soon!'),
     tooltipPlacement: 'top',

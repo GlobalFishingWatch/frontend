@@ -143,7 +143,7 @@
     "download": "Download",
     "downloadAllActivity": "Download entire vessel activity",
     "downloadCurrentActivityFiltered": "Download current vessel activity filtered",
-    "encounterEvents": "Rencontres",
+    "encounterEvents": "Événements de rencontre",
     "encounterEventsDescription": "Les rencontres peuvent indiquer une activité de transbordement potentielle entre deux navires qui apparaissent tous les deux sur l'AIS. Les rencontres sont estimées à l'aide des données AIS, y compris la distance entre les deux navires, la vitesse des navires et la durée dans une zone donnée. <1></1>Une rencontre est définie comme lorsque deux navires, un navire transporteur et un navire de pêche rencontré, sont détectés sur les données AIS à moins de 500 mètres pendant au moins deux heures et voyageant à une vitesse médiane &lt;2 nœuds, tandis que à au moins 10 km d'un mouillage côtier.",
     "fishingEvents": "Événements de pêche",
     "fishingEventsDescription": "Lorsqu'il existe une série cohérente de points AIS estimés comme indiquant une activité de pêche apparente, les points sont regroupés en « événements de pêche ». <1></1>Nous analysons les données du système d'identification automatique (AIS) collectées à partir des navires que notre recherche a identifiés comme des navires de pêche commerciale connus ou possibles, et appliquons un algorithme de détection de pêche pour déterminer « l'activité de pêche apparente » en fonction des changements de vitesse et direction du navire.<3></3>L'algorithme classe chaque point de données de diffusion AIS pour ces navires en tant que « apparemment en train de pêcher » ou « ne pas pêcher » et affiche le premier sur notre carte thermique d'activité de pêche. Vous pouvez trouver plus de détails dans notre page Technologie : <6>https://globalfishingwatch.org/our-technology/</6> et page Dataset : <10>https://globalfishingwatch.org/datasets-and-code/ </10>.",
@@ -269,7 +269,7 @@
     "enable": "Enable activity highlights",
     "encounters": {
       "shortTitle": "Rencontre",
-      "title": "Rencontres"
+      "title": "Événements de rencontre"
     },
     "fishingEvents": {
       "shortTitle": "Pêche",
@@ -339,8 +339,8 @@
     "forcedLabourModel": "Forced Labor",
     "forcedLabourModelAvailability": "The forced labor model is available from 2012 to 2020 at the moment.",
     "formatValues": "{{quantity}} valeurs",
-    "gearType": "type d'engin de pêche",
-    "gearType_plural": "types d'engin de pêche",
+    "gearType": "type d’engin",
+    "gearType_plural": "types d'engin",
     "geartypeDescription": "Le type d'engin de pêche probable tel que défini par Global Fishing Watch. La classification des navires de pêche est estimée à l'aide d'informations de registre connues en combinaison avec un réseau neuronal convolutionnel utilisé pour estimer la classe des navires, voir plus d’informations ici:<1>https://globalfishingwatch. rg/datasets-and-code-bateau-identity/</1> . La classification des navires pour les navires de transport est estimée à l'aide d'un cumul d'informations de registre connues. Tous les navires de soutien de la visionneuse de bateaux de soutien sont considérés comme des navires de soutien à senne coulissante en fonction de l'examen interne.",
     "grossTonnage": "gross tonnage",
     "grossTonnage_plural": "tonnages bruts",
