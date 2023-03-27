@@ -3,12 +3,13 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import { redirect } from 'redux-first-router'
 import { EventVessel } from '@globalfishingwatch/api-types'
-import { Spinner } from '@globalfishingwatch/ui-components'
+import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { PROFILE } from 'routes/routes'
 import { useSearchConnect } from 'features/search/search.hooks'
 import { NOT_AVAILABLE } from 'features/vessels/vessels.utils'
+import AuthIcon from 'features/profile/components/auth-icon/AuthIcon'
 import ActivityModalContentField from './ActivityModalContentField'
 import ActivityModalContentDetails from './ActivityModalContentDetails'
 import styles from './ActivityModalDetails.module.css'
@@ -90,16 +91,40 @@ const ActivityModalContentDetailsEncounter: React.FC<ActivityModalContentProps> 
       <ActivityModalContentDetails event={event} />
 
       {event.encounter && (
-        <ActivityModalContentField
-          label={t('event.medianSpeed', 'Median Speed')}
-          value={
-            event.encounter.medianSpeedKnots
-              ? t('event.formatSpeedKnots', '{{value}} knots', {
-                  value: event.encounter.medianSpeedKnots.toFixed(2),
-                })
-              : DEFAULT_EMPTY_VALUE
-          }
-        />
+        <Fragment>
+          <ActivityModalContentField
+            label={t('event.medianSpeed', 'Median Speed')}
+            value={
+              event.encounter.medianSpeedKnots
+                ? t('event.formatSpeedKnots', '{{value}} knots', {
+                    value: event.encounter.medianSpeedKnots.toFixed(2),
+                  })
+                : DEFAULT_EMPTY_VALUE
+            }
+          />
+          {event.vessel.authorizations && (
+            <ActivityModalContentField
+              label={t('event.vesselAuthorization', 'Vessel Authorization')}
+              value={event.vessel.authorizations.map((auth) => (
+                <span className={styles.authorizationStatuses}>
+                  <AuthIcon isAuthorized={auth.isAuthorized === 'true'} />
+                  {auth.rfmo}
+                </span>
+              ))}
+            />
+          )}
+          {event.encounter.vessel.authorizations && (
+            <ActivityModalContentField
+              label={t('event.encounteredVesselAuthorization', 'Encountered Vessel Authorization')}
+              value={event.encounter.vessel.authorizations.map((auth) => (
+                <span className={styles.authorizationStatuses}>
+                  <AuthIcon isAuthorized={auth.is_authorized === 'true'} />
+                  {auth.rfmo}
+                </span>
+              ))}
+            />
+          )}
+        </Fragment>
       )}
     </Fragment>
   )
