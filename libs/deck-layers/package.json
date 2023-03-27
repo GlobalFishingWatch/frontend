@@ -1,0 +1,13 @@
+{
+  "name": "@globalfishingwatch/deck-layers",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "typings": "src/index.d.ts",
+  "license": "MIT",
+  "author": "satellitestudio <contact@satellitestud.io>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
+  }
+}

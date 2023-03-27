@@ -31,7 +31,8 @@
       "@globalfishingwatch/react-hooks": ["libs/react-hooks/src/index.ts"],
       "@globalfishingwatch/timebar": ["libs/timebar/src/index.js"],
       "@globalfishingwatch/ui-components": ["libs/ui-components/src/index.ts"],
-      "@globalfishingwatch/ui-components/*": ["libs/ui-components/*"]
+      "@globalfishingwatch/ui-components/*": ["libs/ui-components/*"],
+      "@globalfishingwatch/deck-layers": ["libs/deck-layers/src/index.ts"]
     }
   },
   "files": ["./vendors.d.ts"],
