@@ -193,7 +193,13 @@
     "node-fetch": "2.6.7",
     "underscore": "^1.12.1",
     "tslib": "^2.5.0",
-    "webpack-sources": "3.2.1"
+    "webpack-sources": "3.2.1",
+    "@deck.gl/core": "^8.8.24",
+    "@deck.gl/extensions": "^8.8.24",
+    "@deck.gl/geo-layers": "^8.8.24",
+    "@deck.gl/layers": "^8.8.24",
+    "@deck.gl/mesh-layers": "^8.8.24",
+    "@deck.gl/react": "^8.8.24"
   },
   "husky": {
     "hooks": {
