@@ -39,13 +39,13 @@
   "lastUpdate": "Dernière mise à jour",
   "setBookmark": "Mettre en favori la plage de temps actuelle",
   "intervals": {
-    "hour": "hour",
+    "hour": "Heure",
     "hourTooltip": "See hourly data",
-    "day": "day",
+    "day": "Jour",
     "dayTooltip": "See daily data",
-    "month": "month",
+    "month": "Mois",
     "monthTooltip": "See monthly data",
-    "year": "year",
+    "year": "Année",
     "yearTooltip": "See yearly data"
   },
   "zoomTo": "Zoom sur"

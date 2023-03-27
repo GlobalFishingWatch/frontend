@@ -583,7 +583,7 @@
       "flag": "flag",
       "hours": "hours",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "Purse Seine Group (2 boat) Small Pelagics": "Purse Seine Group (2 boat) Small Pelagics",
           "Purse Seine Group (2 boat) Big Pelagics": "Purse Seine Group (2 boat) Big Pelagics",
@@ -1075,7 +1075,7 @@
     }
   },
   "proto-global-encounters-events": {
-    "name": "Encounter Events. (AIS)",
+    "name": "Événements de rencontre (AIS)",
     "description": "The dataset contains encounter events with authorizations for AIS. [Fishing-Carriers, Carriers-Fishing, Support-Fishing, Fishing-Support]",
     "schema": {
       "fields": "fields",
@@ -1638,7 +1638,7 @@
     "schema": {}
   },
   "public-global-encounters-events-carriers-fishing": {
-    "name": "Encounter Events for Carriers-Fishing Vessels (AIS)",
+    "name": "Événements de rencontre (AIS)",
     "description": "The dataset contains encounter events for AIS (Carriers-Fishing)",
     "schema": {
       "fields": "fields",
@@ -1658,7 +1658,7 @@
     }
   },
   "public-global-encounters-events": {
-    "name": "Encounter Events. (AIS)",
+    "name": "Événements de rencontre (AIS)",
     "description": "The dataset contains encounter events for AIS. [Fishing-Carriers, Carriers-Fishing, Support-Fishing, Fishing-Support]",
     "schema": {
       "fields": "fields",
