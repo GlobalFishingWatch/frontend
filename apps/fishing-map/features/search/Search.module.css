@@ -132,6 +132,10 @@
   cursor: pointer;
 }
 
+.red {
+  color: var(--color-danger-red);
+}
+
 .searchResult:hover .properties,
 .searchResult:hover .properties label {
   cursor: pointer;
