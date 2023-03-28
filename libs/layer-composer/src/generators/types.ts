@@ -146,6 +146,33 @@ export interface UserContextGeneratorConfig extends GeneratorConfig {
 }
 
 /**
+ * Layers created by user uploading their own shapefile
+ */
+export interface UserPointsGeneratorConfig extends GeneratorConfig {
+  type: GeneratorType.UserPoints
+  /**
+   * Sets the color of the line https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#paint-fill-fill-color
+   */
+  color?: string
+  /**
+   * Url to grab the tiles from, internally using https://docs.mapbox.com/mapbox-gl-js/style-spec/sources/#vector-tiles
+   */
+  tilesUrl: string
+  /**
+   * Id for API dataset in case you need to fetch geometries by gfw_id
+   */
+  datasetId?: string
+  /**
+   * Property to get value to display the ramp
+   */
+  pickValueAt?: string
+  /**
+   * Disable interaction (needed when user uploaded a non-polygon layer)
+   */
+  disableInteraction?: boolean
+}
+
+/**
  * Contextual layers provided by GFW
  */
 export interface ContextGeneratorConfig extends GeneratorConfig {
