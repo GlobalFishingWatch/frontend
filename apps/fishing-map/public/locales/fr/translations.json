@@ -299,7 +299,7 @@
     "port_visitAction": "À quai pendant",
     "portAction": "À quai depuis {{start}} pendant {{duration}}",
     "portAt": "À quai à {{port}} depuis {{start}} pendant {{duration}}",
-    "seeInCVP": "Voir dans le Carrier Vessel Portal",
+    "seeInCVP": "Voir dans le Portail des navires de transport",
     "unknown": "Événement inconnu"
   },
   "feedback": {
