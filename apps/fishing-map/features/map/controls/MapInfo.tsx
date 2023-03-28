@@ -52,12 +52,12 @@ const MapInfo = ({ center }: { center: InteractionEvent | null }) => {
         <ScaleControl maxWidth={100} unit="nautical" />
         {center && (
           <div className={cx('print-hidden', styles.mouseCoordinates)}>
+            {toFixed(center.latitude, 4)} {toFixed(center.longitude, 4)}
+            <br />
             {formatcoords(center.latitude, center.longitude).format('DDMMssX', {
               latLonSeparator: ' ',
               decimalPlaces: 2,
             })}
-            <br />
-            {toFixed(center.latitude, 4)} {toFixed(center.longitude, 4)}
           </div>
         )}
       </div>
