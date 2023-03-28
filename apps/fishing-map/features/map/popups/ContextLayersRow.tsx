@@ -67,7 +67,6 @@ interface ReportPopupButtonProps {
 }
 
 export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) => {
-  console.log('🚀 ~ ReportPopupLink ~ feature:', feature)
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const hasAnalysableLayer = useSelector(selectHasReportLayersVisible)

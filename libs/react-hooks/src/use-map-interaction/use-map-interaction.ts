@@ -173,7 +173,7 @@ let sourcesWithFeatureState: FeatureStateSource[] = []
 export const useFeatureState = (map?: Map) => {
   const cleanFeatureState = useCallback(
     (state: FeatureStates = 'hover') => {
-      if (map) {
+      if (map && map.getStyle() && map.isStyleLoaded()) {
         sourcesWithFeatureState?.forEach((source: FeatureStateSource) => {
           const feature = map?.getFeatureState(source)
           // https://github.com/mapbox/mapbox-gl-js/issues/9461
@@ -189,7 +189,7 @@ export const useFeatureState = (map?: Map) => {
   const updateFeatureState = useCallback(
     (extendedFeatures: FeatureStateSource[], state: FeatureStates = 'hover') => {
       const newSourcesWithClickState: FeatureStateSource[] = extendedFeatures.flatMap((feature) => {
-        if (!map || feature.id === undefined) {
+        if (!map || !map.getStyle() || !map.isStyleLoaded() || feature.id === undefined) {
           return []
         }
         map.setFeatureState(
