@@ -14,6 +14,7 @@ import {
 } from 'features/vessel-groups/vessel-groups.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDatasetsStatus } from 'features/datasets/datasets.slice'
+import { getVesselGroupLabel } from 'features/vessel-groups/vessel-groups.utils'
 import { selectUserVesselGroups } from './user.selectors'
 import styles from './User.module.css'
 
@@ -74,7 +75,7 @@ function UserVesselGroups() {
             vesselGroups.map((vesselGroup) => {
               return (
                 <li className={styles.dataset} key={vesselGroup.id}>
-                  {vesselGroup.name}
+                  {getVesselGroupLabel(vesselGroup)}
                   <div>
                     <IconButton
                       icon="edit"
