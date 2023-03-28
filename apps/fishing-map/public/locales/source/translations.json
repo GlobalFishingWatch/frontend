@@ -126,6 +126,7 @@
     "none": "None",
     "of": "of",
     "onlyVisibleForGFW": "Only visible for GFW users",
+    "onlyVisibleForJAC": "Only visible for JAC users",
     "onlyVisibleForGFWShort": "GFW Only",
     "onlyVisibleForJAC": "Only visible for JAC users",
     "onScreen": "on screen",
