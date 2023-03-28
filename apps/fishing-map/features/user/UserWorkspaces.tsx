@@ -23,6 +23,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import NewWorkspaceModal from 'features/workspace/shared/NewWorkspaceModal'
 import { cleanCurrentWorkspaceData } from 'features/workspace/workspace.slice'
+import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
 import styles from './User.module.css'
 import { selectUserWorkspaces } from './user.selectors'
 
@@ -202,7 +203,7 @@ function UserWorkspaces() {
                     }}
                     onClick={() => onWorkspaceClick(workspace)}
                   >
-                    <span className={styles.workspaceTitle}>{workspace.name}</span>
+                    <span className={styles.workspaceTitle}>{getWorkspaceLabel(workspace)}</span>
                     <IconButton icon="arrow-right" />
                   </Link>
                   <IconButton
