@@ -10,7 +10,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUserDatasetsNotUsed } from 'features/user/user.selectors'
 import { isGuestUser } from 'features/user/user.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { getDatasetIcon } from 'features/datasets/datasets.utils'
+import { getDatasetIcon, getDatasetLabel } from 'features/datasets/datasets.utils'
 import { useAddDataviewFromDatasetToWorkspace, useAddDataset } from './datasets.hook'
 import styles from './NewDatasetTooltip.module.css'
 import {
@@ -101,7 +101,7 @@ function NewDatasetTooltip({ onSelect, datasetCategory }: NewDatasetTooltipProps
                       style={{ transform: 'translateY(25%)' }}
                     />
                   )}
-                  {dataset.name}
+                  {getDatasetLabel(dataset)}
                 </span>
               </li>
             )

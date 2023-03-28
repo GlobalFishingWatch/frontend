@@ -1,5 +1,6 @@
 import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
+import formatcoords from 'formatcoords'
 import cx from 'classnames'
 import { DateTime, DateTimeFormatOptions } from 'luxon'
 import { ScaleControl } from 'react-map-gl'
@@ -52,6 +53,11 @@ const MapInfo = ({ center }: { center: InteractionEvent | null }) => {
         {center && (
           <div className={cx('print-hidden', styles.mouseCoordinates)}>
             {toFixed(center.latitude, 4)} {toFixed(center.longitude, 4)}
+            <br />
+            {formatcoords(center.latitude, center.longitude).format('DDMMssX', {
+              latLonSeparator: ' ',
+              decimalPlaces: 2,
+            })}
           </div>
         )}
       </div>

@@ -12,7 +12,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { isGFWUser } from 'features/user/user.slice'
 import { selectLocationCategory } from 'routes/routes.selectors'
 import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
-import { PRIVATE_SUFIX, PUBLIC_SUFIX, ROOT_DOM_ELEMENT, USER_SUFIX } from 'data/config'
+import { PUBLIC_SUFIX, ROOT_DOM_ELEMENT, USER_SUFIX } from 'data/config'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/dataviews.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -26,6 +26,7 @@ import {
   selectWorkspaceVesselGroupsStatus,
 } from 'features/vessel-groups/vessel-groups.slice'
 import WorkspaceError from 'features/workspace/WorkspaceError'
+import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
 import ActivitySection from './activity/ActivitySection'
 import VesselsSection from './vessels/VesselsSection'
 import EventsSection from './events/EventsSection'
@@ -138,8 +139,7 @@ function Workspace() {
               <label className={styles.subTitle}>{t('workspace.user', 'User workspace')}</label>
             )}
             <h2 className={styles.title}>
-              {workspace.id.startsWith(PRIVATE_SUFIX) && '🔒 '}
-              {workspace.name}
+              {getWorkspaceLabel(workspace)}
               {gfwUser && (
                 <IconButton
                   className="print-hidden"

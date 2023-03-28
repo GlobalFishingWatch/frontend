@@ -9,6 +9,7 @@ import { WorkspaceCategories } from 'data/workspaces'
 import { selectWorkspaceListStatus } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useViewport from 'features/map/map-viewport.hooks'
+import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
 import { selectUserWorkspacesPrivate } from './user.selectors'
 import styles from './User.module.css'
 
@@ -56,7 +57,7 @@ function UserWorkspacesPrivate() {
                 }}
                 onClick={() => onWorkspaceClick(workspace)}
               >
-                <span className={styles.workspaceTitle}>🔒 {workspace.name}</span>
+                <span className={styles.workspaceTitle}>{getWorkspaceLabel(workspace)}</span>
                 <IconButton icon="arrow-right" />
               </Link>
             </li>
