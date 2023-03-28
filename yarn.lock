@@ -2131,12 +2131,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@globalfishingwatchapp/deck-playground@workspace:apps/deck-playground"
   dependencies:
-    "@deck.gl/core": ^8.8.24
-    "@deck.gl/extensions": ^8.8.24
-    "@deck.gl/geo-layers": ^8.8.24
-    "@deck.gl/layers": ^8.8.24
-    "@deck.gl/mesh-layers": ^8.8.24
-    "@deck.gl/react": ^8.8.24
+    "@deck.gl/core": 8.8.24
+    "@deck.gl/extensions": 8.8.24
+    "@deck.gl/geo-layers": 8.8.24
+    "@deck.gl/layers": 8.8.24
+    "@deck.gl/mesh-layers": 8.8.24
+    "@deck.gl/react": 8.8.24
     "@globalfishingwatch/linting": 2.0.2
     "@loaders.gl/core": ^3.2.13
     "@loaders.gl/loader-utils": ^3.2.13

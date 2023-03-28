@@ -34,10 +34,10 @@ export function Tabs<TabID = string>({
           const tabSelected = activeTabId === tab.id
           return (
             <li
-              key={tab.id as string}
+              key={tab.id as unknown as string}
               className={styles.tab}
               role="tab"
-              aria-controls={tab.id as string}
+              aria-controls={tab.id as unknown as string}
               tabIndex={index}
               aria-selected={tabSelected}
             >
@@ -63,8 +63,8 @@ export function Tabs<TabID = string>({
           return (
             // eslint-disable-next-line jsx-a11y/role-supports-aria-props
             <div
-              key={tab.id as string}
-              id={tab.id as string}
+              key={tab.id as unknown as string}
+              id={tab.id as unknown as string}
               role="tabpanel"
               aria-expanded={tabSelected}
               className={cx(styles.content, tabClassName, { [styles.contentActive]: tabSelected })}
