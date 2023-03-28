@@ -81,9 +81,9 @@ export const CONTEXT_LAYERS_DATAVIEWS = [
 ]
 
 // Global environmental dataviews
-export const GLOBAL_WATER_TEMPERATURE_DATAVIEW_SLUG = undefined
-export const GLOBAL_SALINITY_DATAVIEW_SLUG = undefined
-export const GLOBAL_CHLOROPHYL_DATAVIEW_SLUG = undefined
+export const GLOBAL_WATER_TEMPERATURE_DATAVIEW_SLUG = 'global-sea-surface-temperature'
+export const GLOBAL_SALINITY_DATAVIEW_SLUG = 'global-water-salinity'
+export const GLOBAL_CHLOROPHYL_DATAVIEW_SLUG = 'global-chlorophyll'
 
 export const DEFAULT_DATAVIEW_SLUGS = [
   FISHING_DATAVIEW_SLUG,
