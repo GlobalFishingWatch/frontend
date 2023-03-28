@@ -20,6 +20,16 @@
   line-height: 2.8rem;
 }
 
+.disclaimer {
+  font: var(--font-S);
+  margin-top: var(--space-M);
+  color: var(--color-secondary-blue);
+}
+
+.disclaimer a {
+  text-decoration: underline;
+}
+
 @media print {
   .container {
     border-bottom: none;

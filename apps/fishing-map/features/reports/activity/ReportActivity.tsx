@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import ReportActivityGraphSelector from 'features/reports/activity/ReportActivityGraphSelector'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
@@ -70,6 +70,14 @@ export default function ReportActivity() {
         />
       )}
       {showSelectors && SelectorsComponent && <SelectorsComponent />}
+      <p className={styles.disclaimer}>
+        <Trans i18nKey="analysis.disclaimer">
+          The data shown above should be taken as an estimate.
+          <a href="https://globalfishingwatch.org/faqs/" target="_blank" rel="noreferrer">
+            Find out more about Global Fishing Watch analysis tools and methods.
+          </a>
+        </Trans>
+      </p>
     </div>
   )
 }
