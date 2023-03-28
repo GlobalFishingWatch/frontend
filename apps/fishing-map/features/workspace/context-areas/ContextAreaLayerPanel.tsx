@@ -21,7 +21,6 @@ import GFWOnly from 'features/user/GFWOnly'
 import { PRIVATE_SUFIX, ROOT_DOM_ELEMENT } from 'data/config'
 import { ONLY_GFW_STAFF_DATAVIEW_SLUGS } from 'data/workspaces'
 import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/dataviews.selectors'
-import { getDatasetNameTranslated } from 'features/i18n/utils'
 import { useMapDataviewFeatures } from 'features/map/map-sources.hooks'
 import {
   CONTEXT_FEATURES_LIMIT,
@@ -39,7 +38,7 @@ import Filters from '../activity/ActivityFilters'
 import InfoModal from '../common/InfoModal'
 import ExpandedContainer from '../shared/ExpandedContainer'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
-import { getSchemaFiltersInDataview } from '../../datasets/datasets.utils'
+import { getDatasetLabel, getSchemaFiltersInDataview } from '../../datasets/datasets.utils'
 import { showSchemaFilter } from '../activity/ActivitySchemaFilter'
 
 type LayerPanelProps = {
@@ -163,7 +162,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   }
 
   const title = dataset
-    ? getDatasetNameTranslated(dataset)
+    ? getDatasetLabel(dataset)
     : t(`dataview.${dataview?.id}.title` as any, dataview?.name || dataview?.id)
 
   const TitleComponent = (

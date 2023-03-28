@@ -4,7 +4,7 @@ import { batch, useSelector } from 'react-redux'
 import { Button, Spinner, IconButton, Modal, Icon } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
 import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
-import { getDatasetIcon } from 'features/datasets/datasets.utils'
+import { getDatasetIcon, getDatasetLabel } from 'features/datasets/datasets.utils'
 import {
   deleteDatasetThunk,
   selectDatasetsStatus,
@@ -111,7 +111,7 @@ function UserDatasets({ datasetCategory }: UserDatasetsProps) {
                     {datasetIcon && (
                       <Icon icon={datasetIcon} style={{ transform: 'translateY(25%)' }} />
                     )}
-                    {dataset.name}
+                    {getDatasetLabel(dataset)}
                   </span>
                   <div>
                     <InfoError
