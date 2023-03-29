@@ -43,6 +43,9 @@ export const formatDateForInterval = (date: DateTime, timeChunkInterval: Interva
   return formattedTick
 }
 
-export const sortByCreationDate = (entities: Dataset[] | AppWorkspace[] | VesselGroup[]) => {
-  return entities.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
+type UserCreatedEntities = Dataset | AppWorkspace | VesselGroup
+
+export const sortByCreationDate = <T>(entities: UserCreatedEntities[]): T[] => {
+  if (!entities) return []
+  return entities.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1)) as T[]
 }

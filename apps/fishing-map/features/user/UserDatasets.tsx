@@ -123,7 +123,7 @@ function UserDatasets({ datasetCategory }: UserDatasetsProps) {
       ) : (
         <ul>
           {datasets && datasets.length > 0 ? (
-            sortByCreationDate(datasets)?.map((dataset) => {
+            sortByCreationDate<Dataset>(datasets).map((dataset) => {
               const datasetError = dataset.status === DatasetStatus.Error
               const datasetImporting = dataset.status === DatasetStatus.Importing
               const datasetDescription = dataset.description !== dataset.name

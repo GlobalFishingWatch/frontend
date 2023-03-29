@@ -43,7 +43,7 @@ function UserWorkspacesPrivate() {
         <label>{t('workspace.privateTitle_other', 'Private workspaces')}</label>
       </div>
       <ul>
-        {sortByCreationDate(workspaces).map((workspace) => {
+        {sortByCreationDate<Workspace>(workspaces).map((workspace) => {
           return (
             <li className={styles.workspace} key={workspace.id}>
               <Link

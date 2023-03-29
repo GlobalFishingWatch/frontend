@@ -73,7 +73,7 @@ function UserVesselGroups() {
       ) : (
         <ul>
           {vesselGroups && vesselGroups.length > 0 ? (
-            sortByCreationDate(vesselGroups).map((vesselGroup) => {
+            sortByCreationDate<VesselGroup>(vesselGroups).map((vesselGroup) => {
               return (
                 <li className={styles.dataset} key={vesselGroup.id}>
                   {getVesselGroupLabel(vesselGroup)}
