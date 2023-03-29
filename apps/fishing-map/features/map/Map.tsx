@@ -304,7 +304,6 @@ const MapWrapper = () => {
           onClick={isMapDrawing || isMarineManagerLocation ? undefined : currentClickCallback}
           onMouseEnter={onMouseMove}
           onMouseMove={onMouseMove}
-          onMouseLeave={resetHoverState}
           onLoad={onLoadCallback}
           onError={handleError}
           onMouseOut={resetHoverState}

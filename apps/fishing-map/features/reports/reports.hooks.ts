@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { Dataview } from '@globalfishingwatch/api-types'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectLocationDatasetId, selectLocationAreaId } from 'routes/routes.selectors'
@@ -21,6 +19,7 @@ import useViewport, { getMapCoordinatesFromBounds } from 'features/map/map-viewp
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
+import { useHighlightArea } from 'features/map/popups/ContextLayers.hooks'
 import {
   fetchReportVesselsThunk,
   getDateRangeHash,
@@ -73,26 +72,13 @@ export function useFitAreaInViewport() {
 }
 
 export function useReportAreaHighlight(areaId: string, sourceId: string) {
-  const { updateFeatureState, cleanFeatureState } = useFeatureState(useMapInstance())
-
-  const setHighlightedArea = useCallback(
-    (areaId, sourceId) => {
-      cleanFeatureState('highlight')
-      const featureState = {
-        source: sourceId,
-        sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
-        id: areaId.toString(),
-      }
-      updateFeatureState([featureState], 'highlight')
-    },
-    [cleanFeatureState, updateFeatureState]
-  )
+  const highlightedArea = useHighlightArea()
 
   useEffect(() => {
     if (areaId && sourceId) {
-      setHighlightedArea(areaId, sourceId)
+      highlightedArea({ sourceId, areaId })
     }
-  }, [areaId, sourceId, setHighlightedArea])
+  }, [areaId, sourceId, highlightedArea])
 }
 
 export function getSimplificationByDataview(dataview: UrlDataviewInstance | Dataview) {
