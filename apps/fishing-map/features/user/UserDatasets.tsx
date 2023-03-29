@@ -3,7 +3,10 @@ import { useTranslation } from 'react-i18next'
 import { batch, useSelector } from 'react-redux'
 import { Button, Spinner, IconButton, Modal, Icon } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
-import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
+import {
+  getDataviewInstanceByDataset,
+  useDatasetModalConnect,
+} from 'features/datasets/datasets.hook'
 import { getDatasetIcon, getDatasetLabel } from 'features/datasets/datasets.utils'
 import {
   deleteDatasetThunk,
@@ -16,6 +19,9 @@ import InfoModalContent from 'features/workspace/common/InfoModalContent'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import DatasetLabel from 'features/datasets/DatasetLabel'
+import { selectLastVisitedWorkspace } from 'features/workspace/workspace.selectors'
+import { HOME } from 'routes/routes'
+import { updateLocation } from 'routes/routes.actions'
 import styles from './User.module.css'
 import { selectUserDatasetsByCategory } from './user.selectors'
 
@@ -28,6 +34,7 @@ function UserDatasets({ datasetCategory }: UserDatasetsProps) {
   const datasets = useSelector(selectUserDatasetsByCategory(datasetCategory))
   const datasetsStatus = useSelector(selectDatasetsStatus)
   const datasetStatusId = useSelector(selectDatasetsStatusId)
+  const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { dispatchDatasetModal, dispatchDatasetCategory, dispatchEditingDatasetId } =
@@ -39,6 +46,30 @@ function UserDatasets({ datasetCategory }: UserDatasetsProps) {
       dispatchDatasetCategory(datasetCategory)
     })
   }, [datasetCategory, dispatchDatasetModal, dispatchDatasetCategory])
+
+  const onDatasetClick = useCallback(
+    (dataset: Dataset) => {
+      const dataviewInstanceWithDataset = getDataviewInstanceByDataset(dataset)
+      if (!dataviewInstanceWithDataset) {
+        return
+      }
+      const {
+        type = HOME,
+        query = { dataviewInstances: [] },
+        payload = {},
+      } = lastVisitedWorkspace || {}
+      const locationParams = {
+        payload,
+        query: {
+          ...query,
+          dataviewInstances: [...(query.dataviewInstances || []), dataviewInstanceWithDataset],
+        },
+        replaceQuery: false,
+      }
+      dispatch(updateLocation(type, locationParams))
+    },
+    [dispatch, lastVisitedWorkspace]
+  )
 
   const onInfoClick = useCallback((dataset: Dataset) => {
     setInfoDataset(dataset)
@@ -114,6 +145,11 @@ function UserDatasets({ datasetCategory }: UserDatasetsProps) {
                     {getDatasetLabel(dataset)}
                   </span>
                   <div>
+                    <IconButton
+                      icon="arrow-right"
+                      onClick={() => onDatasetClick(dataset)}
+                      tooltip={t('user.seeDataset', 'See this dataset in your worksace')}
+                    />
                     <InfoError
                       error={datasetError}
                       loading={datasetImporting}
