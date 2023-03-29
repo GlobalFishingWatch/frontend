@@ -31,7 +31,7 @@
     "searchHelpExamples": "crwdns30521:0crwdne30521:0",
     "searchPlaceholder": "crwdns30523:0crwdne30523:0",
     "share": "crwdns30517:0crwdne30517:0",
-    "summary": "crwdns30525:0{{vessels}}crwdnd30525:0$t(common.vessel, {\"count\": {{vessels}} })crwdnd30525:0{{hours}}crwdnd30525:0$t(common.hour, {\"count\": {{hours}} })crwdnd30525:0{{activityType}}crwdnd30525:0{{start}}crwdnd30525:0{{end}}crwdne30525:0",
+    "summary": "crwdns30591:0{{vessels}}crwdnd30591:0$t(common.vessel, {count: {{vessels}} })crwdnd30591:0{{sources}}crwdnd30591:0{{activityQuantity}}crwdnd30591:0{{activityUnit}}crwdnd30591:0{{activityType}}crwdnd30591:0{{start}}crwdnd30591:0{{end}}crwdne30591:0",
     "summaryNoVessels": "crwdns30527:0{{sources}}crwdnd30527:0{{activityQuantity}}crwdnd30527:0{{activityUnit}}crwdnd30527:0{{activityType}}crwdnd30527:0{{start}}crwdnd30527:0{{end}}crwdne30527:0",
     "timeRangeTooLong": "crwdns3710:0crwdne3710:0",
     "title": "crwdns3628:0crwdne3628:0",
