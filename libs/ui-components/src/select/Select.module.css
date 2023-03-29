@@ -2,14 +2,12 @@
   position: relative;
   height: var(--size-M);
   display: flex;
+  border-bottom: 1px solid var(--color-secondary-blue);
   line-height: var(--size-M);
 }
 
-.primary {
-  border-bottom: 1px solid var(--color-secondary-blue);
-}
-
 .secondary {
+  border-bottom: none;
   font: var(--font-S);
   text-transform: uppercase;
   color: var(--color-secondary-blue);
