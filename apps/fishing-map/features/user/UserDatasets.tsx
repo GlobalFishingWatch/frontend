@@ -159,7 +159,7 @@ function UserDatasets({ datasetCategory }: UserDatasetsProps) {
                         error={datasetError}
                         loading={datasetImporting}
                         tooltip={infoTooltip}
-                        onClick={() => onInfoClick(dataset)}
+                        onClick={() => !datasetError && onInfoClick(dataset)}
                       />
                     )}
                     {!datasetImporting && !datasetError && (
