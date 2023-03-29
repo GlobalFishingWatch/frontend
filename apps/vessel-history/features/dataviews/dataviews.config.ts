@@ -6,6 +6,7 @@ import {
   BackgroundGeneratorConfig,
 } from '@globalfishingwatch/layer-composer'
 import { FillLayerSpecification } from '@globalfishingwatch/maplibre-gl'
+import { IS_STANDALONE_APP } from 'data/config'
 import { LANDMASS_OFFLINE_GEOJSON } from 'data/constants'
 
 export const MAP_BACKGROUND_COLOR = '#052555'
@@ -51,7 +52,7 @@ export const OFFLINE_LAYERS: GeneratorConfig[] = [
 // Using the same dataviews ids than fishing-map for consistency
 export const DEFAULT_BASEMAP_DATAVIEW_SLUG = 'basemap'
 export const DEFAULT_VESSEL_DATAVIEWS = {
-  standalone: 'vv-vessel-tracks-and-events', // Vessel with port visits c2
+  standalone: 'vv-vessel-public-events', // Vessel with public events
   'port-inspector': 'vv-vessel-tracks-and-events', // Vessel with port visits c2
   'insurance-underwriter': 'vv-vessel-tracks-and-events-c3-c4', // Vessel with port visits c3 and c4
 }
@@ -90,6 +91,8 @@ export const dataviewInstances: DataviewInstance<GeneratorType>[] = [
   },
 ]
 
-export const vesselDataviewIds = Object.values(DEFAULT_VESSEL_DATAVIEWS)
+export const vesselDataviewIds = IS_STANDALONE_APP
+  ? [DEFAULT_VESSEL_DATAVIEWS.standalone]
+  : Object.values(DEFAULT_VESSEL_DATAVIEWS)
 
 export const DEFAULT_TRACK_COLOR = '#8DE9F6'
