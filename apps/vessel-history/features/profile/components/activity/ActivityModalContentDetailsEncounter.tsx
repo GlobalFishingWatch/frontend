@@ -118,7 +118,7 @@ const ActivityModalContentDetailsEncounter: React.FC<ActivityModalContentProps> 
               label={t('event.encounteredVesselAuthorization', 'Encountered Vessel Authorization')}
               value={event.encounter.vessel.authorizations.map((auth) => (
                 <span className={styles.authorizationStatuses}>
-                  <AuthIcon isAuthorized={auth.is_authorized === 'true'} />
+                  <AuthIcon isAuthorized={auth.isAuthorized === 'true'} />
                   {auth.rfmo}
                 </span>
               ))}
