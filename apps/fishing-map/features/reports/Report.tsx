@@ -69,7 +69,7 @@ function ActivityReport({ reportName }: { reportName: string }) {
   const hasAuthError = reportError && isAuthError(statusError)
 
   const ReportComponent = useMemo(() => {
-    if (reportOutdated && !reportLoading) {
+    if (reportOutdated && !reportLoading && !hasAuthError) {
       return (
         <ReportVesselsPlaceholder>
           <div className={cx(styles.cover, styles.center)}>
