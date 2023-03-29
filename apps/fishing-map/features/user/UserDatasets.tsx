@@ -125,6 +125,7 @@ function UserDatasets({ datasetCategory }: UserDatasetsProps) {
             datasets?.map((dataset) => {
               const datasetError = dataset.status === DatasetStatus.Error
               const datasetImporting = dataset.status === DatasetStatus.Importing
+              const datasetDescription = dataset.description !== dataset.name
               let infoTooltip = t(`layer.seeDescription`, 'Click to see layer description')
               if (datasetImporting) {
                 infoTooltip = t('dataset.importing', 'Dataset is being imported')
@@ -145,17 +146,21 @@ function UserDatasets({ datasetCategory }: UserDatasetsProps) {
                     {getDatasetLabel(dataset)}
                   </span>
                   <div>
+                    {!datasetError && (
                     <IconButton
                       icon="arrow-right"
                       onClick={() => onDatasetClick(dataset)}
-                      tooltip={t('user.seeDataset', 'See this dataset in your worksace')}
+                        tooltip={t('user.seeDataset', 'See on map')}
                     />
+                    )}
+                    {(datasetError || datasetDescription) && (
                     <InfoError
                       error={datasetError}
                       loading={datasetImporting}
                       tooltip={infoTooltip}
                       onClick={() => onInfoClick(dataset)}
                     />
+                    )}
                     {!datasetImporting && !datasetError && (
                       <IconButton
                         icon="edit"
