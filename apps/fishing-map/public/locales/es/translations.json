@@ -367,6 +367,7 @@
     "drawPolygonLogin": "Registra e inicia sesión para dibujar una capa (gratis, 2 minutos)",
     "editPolygonHint": "Haga clic en las esquinas del polígono para ajustar sus coordenadas",
     "filterClose": "Cerrar los filtros",
+    "filtersDisabled": "Other filters {{filters}} are available depending on the sources selected",
     "filterOpen": "Abrir los filtros",
     "filterValues": "Filtrar valores",
     "flagState_one": "Estado de bandera",
@@ -468,6 +469,7 @@
     "groups": "Grupos",
     "info": "Información de usuario",
     "profile": "Perfil de usuario",
+    "seeDataset": "See on map",
     "title": "Usuario"
   },
   "vessel": {
