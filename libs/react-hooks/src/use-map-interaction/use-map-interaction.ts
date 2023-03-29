@@ -173,23 +173,29 @@ let sourcesWithFeatureState: FeatureStateSource[] = []
 export const useFeatureState = (map?: Map) => {
   const cleanFeatureState = useCallback(
     (state: FeatureStates = 'hover') => {
-      if (map && map.getStyle() && map.isStyleLoaded()) {
-        sourcesWithFeatureState?.forEach((source: FeatureStateSource) => {
-          const feature = map?.getFeatureState(source)
-          // https://github.com/mapbox/mapbox-gl-js/issues/9461
-          if (feature?.hasOwnProperty(state)) {
-            map.removeFeatureState(source, state)
-          }
-        })
+      if (!map || !map.getStyle() || !map.isStyleLoaded()) {
+        setTimeout(() => cleanFeatureState(state), 200)
+        return
       }
+      sourcesWithFeatureState?.forEach((source: FeatureStateSource) => {
+        const feature = map?.getFeatureState(source)
+        // https://github.com/mapbox/mapbox-gl-js/issues/9461
+        if (feature?.hasOwnProperty(state)) {
+          map.removeFeatureState(source, state)
+        }
+      })
     },
     [map]
   )
 
   const updateFeatureState = useCallback(
     (extendedFeatures: FeatureStateSource[], state: FeatureStates = 'hover') => {
+      if (!map || !map.getStyle() || !map.isStyleLoaded()) {
+        setTimeout(() => updateFeatureState(extendedFeatures, state), 200)
+        return
+      }
       const newSourcesWithClickState: FeatureStateSource[] = extendedFeatures.flatMap((feature) => {
-        if (!map || !map.getStyle() || !map.isStyleLoaded() || feature.id === undefined) {
+        if (!map || feature.id === undefined) {
           return []
         }
         map.setFeatureState(
