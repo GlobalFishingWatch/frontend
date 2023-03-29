@@ -31,7 +31,7 @@
     "searchHelpExamples": "e.g. 'china trawlers', '-spain'",
     "searchPlaceholder": "Filter vessels by name, mmsi, flag states or gear type",
     "share": "Save report",
-    "summary": "<strong>{{vessels}} $t(common.vessel, {\"count\": {{vessels}} })</strong> had <strong>{{hours}} $t(common.hour, {\"count\": {{hours}} })</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "summary": "<strong>{{vessels}} $t(common.vessel, {count: {{vessels}} }) {{sources}} </strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "summaryNoVessels": "<strong>{{sources}} {{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "timeRangeTooLong": "Laporan hanya diizinkan untuk rentang waktu hingga satu tahun",
     "title": "Analisis",
@@ -367,6 +367,7 @@
     "drawPolygonLogin": "Daftar dan masuk untuk menggambar lapisan (gratis, 2 menit)",
     "editPolygonHint": "Klik pada sudut poligon untuk menyesuaikan koordinatnya",
     "filterClose": "Tutup filter",
+    "filtersDisabled": "Other filters {{filters}} are available depending on the sources selected",
     "filterOpen": "Buka filter",
     "filterValues": "Nilai filter",
     "flagState_one": "Bendera",
@@ -468,6 +469,7 @@
     "groups": "Grup Pengguna",
     "info": "Info Pengguna",
     "profile": "Profil pengguna",
+    "seeDataset": "See on map",
     "title": "Pengguna"
   },
   "vessel": {

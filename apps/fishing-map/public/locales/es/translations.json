@@ -31,7 +31,7 @@
     "searchHelpExamples": "e.g. 'china trawlers', '-spain'",
     "searchPlaceholder": "Filter vessels by name, mmsi, flag states or gear type",
     "share": "Save report",
-    "summary": "<strong>{{vessels}} $t(common.vessel, {\"count\": {{vessels}} })</strong> had <strong>{{hours}} $t(common.hour, {\"count\": {{hours}} })</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "summary": "<strong>{{vessels}} $t(common.vessel, {count: {{vessels}} }) {{sources}} </strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "summaryNoVessels": "<strong>{{sources}} {{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año",
     "title": "Análisis",
@@ -367,6 +367,7 @@
     "drawPolygonLogin": "Registra e inicia sesión para dibujar una capa (gratis, 2 minutos)",
     "editPolygonHint": "Haga clic en las esquinas del polígono para ajustar sus coordenadas",
     "filterClose": "Cerrar los filtros",
+    "filtersDisabled": "Other filters {{filters}} are available depending on the sources selected",
     "filterOpen": "Abrir los filtros",
     "filterValues": "Filtrar valores",
     "flagState_one": "Estado de bandera",
@@ -468,6 +469,7 @@
     "groups": "Grupos",
     "info": "Información de usuario",
     "profile": "Perfil de usuario",
+    "seeDataset": "See on map",
     "title": "Usuario"
   },
   "vessel": {

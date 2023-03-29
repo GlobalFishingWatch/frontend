@@ -31,7 +31,7 @@
     "searchHelpExamples": "crwdns30521:0crwdne30521:0",
     "searchPlaceholder": "crwdns30523:0crwdne30523:0",
     "share": "crwdns30517:0crwdne30517:0",
-    "summary": "crwdns30525:0{{vessels}}crwdnd30525:0$t(common.vessel, {\"count\": {{vessels}} })crwdnd30525:0{{hours}}crwdnd30525:0$t(common.hour, {\"count\": {{hours}} })crwdnd30525:0{{activityType}}crwdnd30525:0{{start}}crwdnd30525:0{{end}}crwdne30525:0",
+    "summary": "crwdns30591:0{{vessels}}crwdnd30591:0$t(common.vessel, {count: {{vessels}} })crwdnd30591:0{{sources}}crwdnd30591:0{{activityQuantity}}crwdnd30591:0{{activityUnit}}crwdnd30591:0{{activityType}}crwdnd30591:0{{start}}crwdnd30591:0{{end}}crwdne30591:0",
     "summaryNoVessels": "crwdns30527:0{{sources}}crwdnd30527:0{{activityQuantity}}crwdnd30527:0{{activityUnit}}crwdnd30527:0{{activityType}}crwdnd30527:0{{start}}crwdnd30527:0{{end}}crwdne30527:0",
     "timeRangeTooLong": "crwdns3710:0crwdne3710:0",
     "title": "crwdns3628:0crwdne3628:0",
@@ -367,6 +367,7 @@
     "drawPolygonLogin": "crwdns17149:0crwdne17149:0",
     "editPolygonHint": "crwdns11141:0crwdne11141:0",
     "filterClose": "crwdns1532:0crwdne1532:0",
+    "filtersDisabled": "crwdns30587:0{{filters}}crwdne30587:0",
     "filterOpen": "crwdns1534:0crwdne1534:0",
     "filterValues": "crwdns27014:0crwdne27014:0",
     "flagState_one": "crwdns18480:0crwdne18480:0",
@@ -468,6 +469,7 @@
     "groups": "crwdns3704:0crwdne3704:0",
     "info": "crwdns26366:0crwdne26366:0",
     "profile": "crwdns3706:0crwdne3706:0",
+    "seeDataset": "crwdns30589:0crwdne30589:0",
     "title": "crwdns3708:0crwdne3708:0"
   },
   "vessel": {
