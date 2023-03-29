@@ -22,6 +22,7 @@ import DatasetLabel from 'features/datasets/DatasetLabel'
 import { selectLastVisitedWorkspace } from 'features/workspace/workspace.selectors'
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
+import { sortByCreationDate } from 'utils/dates'
 import styles from './User.module.css'
 import { selectUserDatasetsByCategory } from './user.selectors'
 
@@ -122,7 +123,7 @@ function UserDatasets({ datasetCategory }: UserDatasetsProps) {
       ) : (
         <ul>
           {datasets && datasets.length > 0 ? (
-            datasets?.map((dataset) => {
+            sortByCreationDate(datasets)?.map((dataset) => {
               const datasetError = dataset.status === DatasetStatus.Error
               const datasetImporting = dataset.status === DatasetStatus.Importing
               const datasetDescription = dataset.description !== dataset.name
@@ -147,19 +148,19 @@ function UserDatasets({ datasetCategory }: UserDatasetsProps) {
                   </span>
                   <div>
                     {!datasetError && (
-                    <IconButton
-                      icon="arrow-right"
-                      onClick={() => onDatasetClick(dataset)}
+                      <IconButton
+                        icon="arrow-right"
+                        onClick={() => onDatasetClick(dataset)}
                         tooltip={t('user.seeDataset', 'See on map')}
-                    />
+                      />
                     )}
                     {(datasetError || datasetDescription) && (
-                    <InfoError
-                      error={datasetError}
-                      loading={datasetImporting}
-                      tooltip={infoTooltip}
-                      onClick={() => onInfoClick(dataset)}
-                    />
+                      <InfoError
+                        error={datasetError}
+                        loading={datasetImporting}
+                        tooltip={infoTooltip}
+                        onClick={() => onInfoClick(dataset)}
+                      />
                     )}
                     {!datasetImporting && !datasetError && (
                       <IconButton
