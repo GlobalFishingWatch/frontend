@@ -71,7 +71,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
     ) {
       return t('analysis.summary', {
         defaultValue:
-          '<strong>{{vessels}} $t(common.vessel_other){{sources}}</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
+          '<strong>{{vessels}} $t(common.vessel, {"count": {{vessels}} }) {{sources}} </strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
         vessels: formatI18nNumber(reportVessels || 0, {
           locale: i18n.language as Locale,
         }),
