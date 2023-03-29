@@ -28,3 +28,13 @@ export function getPickedFeatureToHighlight(data, pickedFeatures: PickingInfo[])
     )
   )
 }
+
+export const hexToRgb = (hex: string) => {
+  const cleanHex = hex.replace('#', '')
+  const color = {
+    r: parseInt(cleanHex.slice(0, 2), 16),
+    g: parseInt(cleanHex.slice(2, 4), 16),
+    b: parseInt(cleanHex.slice(4, 6), 16),
+  }
+  return [color.r, color.g, color.b]
+}
