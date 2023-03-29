@@ -25,7 +25,7 @@ import {
   selectLocationType,
   selectUrlDataviewInstances,
 } from 'routes/routes.selectors'
-import { HOME, WORKSPACE } from 'routes/routes'
+import { HOME, ROUTE_TYPES, WORKSPACE } from 'routes/routes'
 import { cleanQueryLocation, updateLocation, updateQueryParam } from 'routes/routes.actions'
 import { selectDaysFromLatest } from 'features/app/app.selectors'
 import {
@@ -45,7 +45,7 @@ import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook
 import { getUTCDateTime } from 'utils/dates'
 import { selectWorkspaceStatus } from './workspace.selectors'
 
-type LastWorkspaceVisited = { type: string; payload: any; query: any; replaceQuery?: boolean }
+type LastWorkspaceVisited = { type: ROUTE_TYPES; payload: any; query: any; replaceQuery?: boolean }
 
 interface WorkspaceSliceState {
   status: AsyncReducerStatus

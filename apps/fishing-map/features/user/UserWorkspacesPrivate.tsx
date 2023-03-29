@@ -10,6 +10,7 @@ import { selectWorkspaceListStatus } from 'features/workspaces-list/workspaces-l
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useViewport from 'features/map/map-viewport.hooks'
 import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
+import { sortByCreationDate } from 'utils/dates'
 import { selectUserWorkspacesPrivate } from './user.selectors'
 import styles from './User.module.css'
 
@@ -42,7 +43,7 @@ function UserWorkspacesPrivate() {
         <label>{t('workspace.privateTitle_other', 'Private workspaces')}</label>
       </div>
       <ul>
-        {workspaces.map((workspace) => {
+        {sortByCreationDate<Workspace>(workspaces).map((workspace) => {
           return (
             <li className={styles.workspace} key={workspace.id}>
               <Link

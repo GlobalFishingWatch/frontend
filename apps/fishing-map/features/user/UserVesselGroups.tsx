@@ -15,6 +15,7 @@ import {
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import { getVesselGroupLabel } from 'features/vessel-groups/vessel-groups.utils'
+import { sortByCreationDate } from 'utils/dates'
 import { selectUserVesselGroups } from './user.selectors'
 import styles from './User.module.css'
 
@@ -72,7 +73,7 @@ function UserVesselGroups() {
       ) : (
         <ul>
           {vesselGroups && vesselGroups.length > 0 ? (
-            vesselGroups.map((vesselGroup) => {
+            sortByCreationDate<VesselGroup>(vesselGroups).map((vesselGroup) => {
               return (
                 <li className={styles.dataset} key={vesselGroup.id}>
                   {getVesselGroupLabel(vesselGroup)}

@@ -32,24 +32,26 @@ import type { NewDatasetTooltipProps } from './NewDatasetTooltip'
 
 const DATASET_REFRESH_TIMEOUT = 10000
 
+export const getDataviewInstanceByDataset = (dataset: Dataset) => {
+  if (dataset.category === DatasetCategory.Context) {
+    return dataset.configuration?.geometryType === 'points'
+      ? getUserPointsDataviewInstance(dataset.id)
+      : getContextDataviewInstance(dataset.id)
+  } else if (dataset.category === DatasetCategory.Environment) {
+    if (dataset.configuration?.geometryType === 'polygons') {
+      return getEnvironmentDataviewInstance(dataset.id)
+    } else if (dataset.configuration?.geometryType === 'tracks') {
+      return getUserTrackDataviewInstance(dataset)
+    }
+  }
+}
+
 export const useAddDataviewFromDatasetToWorkspace = () => {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   const addDataviewFromDatasetToWorkspace = useCallback(
     (dataset: Dataset) => {
-      let dataviewInstance
-      if (dataset.category === DatasetCategory.Context) {
-        dataviewInstance =
-          dataset.configuration?.geometryType === 'points'
-            ? getUserPointsDataviewInstance(dataset.id)
-            : getContextDataviewInstance(dataset.id)
-      } else if (dataset.category === DatasetCategory.Environment) {
-        if (dataset.configuration?.geometryType === 'polygons') {
-          dataviewInstance = getEnvironmentDataviewInstance(dataset.id)
-        } else if (dataset.configuration?.geometryType === 'tracks') {
-          dataviewInstance = getUserTrackDataviewInstance(dataset)
-        }
-      }
+      const dataviewInstance = getDataviewInstanceByDataset(dataset)
       if (dataviewInstance) {
         upsertDataviewInstance(dataviewInstance)
       } else {

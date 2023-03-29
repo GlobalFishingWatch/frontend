@@ -4,7 +4,7 @@ import { REPLACE_URL_PARAMS } from 'data/config'
 import { setLastWorkspaceVisited } from 'features/workspace/workspace.slice'
 import { RootState } from 'store'
 import { QueryParams } from 'types'
-import { REPORT, routesMap, WORKSPACE, WORKSPACE_ROUTES } from './routes'
+import { REPORT, routesMap, ROUTE_TYPES, WORKSPACE, WORKSPACE_ROUTES } from './routes'
 import { UpdateQueryParamsAction } from './routes.actions'
 
 export const routerQueryMiddleware: Middleware =
@@ -96,7 +96,7 @@ export const routerWorkspaceMiddleware: Middleware =
         } else if (comesFromWorkspacesRoute && !lastVisited) {
           dispatch(
             setLastWorkspaceVisited({
-              type: prev.type,
+              type: prev.type as ROUTE_TYPES,
               query: prev.query,
               payload: prev.payload,
               replaceQuery: true,
