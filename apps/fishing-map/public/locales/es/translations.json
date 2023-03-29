@@ -31,7 +31,7 @@
     "searchHelpExamples": "e.g. 'china trawlers', '-spain'",
     "searchPlaceholder": "Filter vessels by name, mmsi, flag states or gear type",
     "share": "Save report",
-    "summary": "<strong>{{vessels}} $t(common.vessel, {\"count\": {{vessels}} })</strong> had <strong>{{hours}} $t(common.hour, {\"count\": {{hours}} })</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "summary": "<strong>{{vessels}} $t(common.vessel, {count: {{vessels}} }) {{sources}} </strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "summaryNoVessels": "<strong>{{sources}} {{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año",
     "title": "Análisis",
