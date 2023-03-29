@@ -63,7 +63,7 @@ const DownloadPopupButton: React.FC<DownloadPopupButtonProps> = ({
 
 interface ReportPopupButtonProps {
   feature: TooltipEventFeature
-  onClick?: (e: React.MouseEvent<Element, MouseEvent>) => void
+  onClick?: (e: React.MouseEvent<Element, MouseEvent>, feature: TooltipEventFeature) => void
 }
 
 export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) => {
@@ -87,14 +87,15 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
       />
     )
   }
-  const handleReportClick = (e: React.MouseEvent<Element, MouseEvent>) => {
+  const onReportClick = (e: React.MouseEvent<Element, MouseEvent>) => {
     trackEvent({
       category: TrackCategory.Analysis,
       action: 'Open analysis panel',
       label: getFeatureAreaId(feature),
     })
+    resetSidebarScroll()
     dispatch(resetReportData())
-    onClick(e)
+    onClick(e, feature)
   }
 
   return (
@@ -115,7 +116,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
           ...(!isSidebarOpen && { sidebarOpen: true }),
         },
       }}
-      onClick={handleReportClick}
+      onClick={onReportClick}
     >
       <IconButton
         icon="analysis"
@@ -134,7 +135,10 @@ interface ContextLayersRowProps {
   showActions?: boolean
   linkHref?: string
   handleDownloadClick?: (e: React.MouseEvent<Element, MouseEvent>) => void
-  handleReportClick?: (e: React.MouseEvent<Element, MouseEvent>) => void
+  handleReportClick?: (
+    e: React.MouseEvent<Element, MouseEvent>,
+    feature: TooltipEventFeature
+  ) => void
 }
 const ContextLayersRow: React.FC<ContextLayersRowProps> = ({
   id,
@@ -147,17 +151,13 @@ const ContextLayersRow: React.FC<ContextLayersRowProps> = ({
 }: ContextLayersRowProps) => {
   const { t } = useTranslation()
 
-  const reportClickFn = (e: React.MouseEvent<Element, MouseEvent>) => {
-    resetSidebarScroll()
-    handleReportClick(e)
-  }
   return (
     <div className={styles.row} key={id}>
       <span className={styles.rowText}>{label}</span>
       {showFeaturesDetails && (
         <div className={styles.rowActions}>
           {handleDownloadClick && <DownloadPopupButton onClick={handleDownloadClick} />}
-          <ReportPopupLink feature={feature} onClick={reportClickFn} />
+          <ReportPopupLink feature={feature} onClick={handleReportClick} />
           {linkHref && (
             <a target="_blank" rel="noopener noreferrer" href={linkHref}>
               <IconButton icon="info" tooltip={t('common.learnMore', 'Learn more')} size="small" />

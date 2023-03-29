@@ -105,7 +105,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
                     feature={feature}
                     showFeaturesDetails={showFeaturesDetails}
                     handleDownloadClick={(e) => trackOnDownloadClick(e, feature)}
-                    handleReportClick={(e) => onReportClick(e, feature)}
+                    handleReportClick={onReportClick}
                   />
                 )
               }

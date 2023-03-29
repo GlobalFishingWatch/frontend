@@ -29,6 +29,7 @@ import {
 } from 'features/workspace/context-areas/context.utils'
 import { ReportPopupLink } from 'features/map/popups/ContextLayersRow'
 import useMapInstance from 'features/map/map-context.hooks'
+import { useContextInteractions } from 'features/map/popups/ContextLayers.hooks'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -55,6 +56,7 @@ const LIST_TITLE_HEIGHT = 22
 function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const { onReportClick } = useContextInteractions()
   const [filterOpen, setFiltersOpen] = useState(false)
   const [featuresOnScreen, setFeaturesOnScreen] = useState({ total: 0, closest: [] })
   const [colorOpen, setColorOpen] = useState(false)
@@ -347,7 +349,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
                       >
                         {title}
                       </span>
-                      <ReportPopupLink feature={feature}></ReportPopupLink>
+                      <ReportPopupLink feature={feature} onClick={onReportClick}></ReportPopupLink>
                     </li>
                   )
                 })}

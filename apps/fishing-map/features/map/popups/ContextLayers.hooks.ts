@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from 'react'
 import { batch, useSelector } from 'react-redux'
-import bbox from '@turf/bbox'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { getEventLabel } from 'utils/analytics'
@@ -12,7 +11,6 @@ import { fetchAreaDetailThunk } from 'features/areas/areas.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import useMapInstance from 'features/map/map-context.hooks'
-import { Bbox } from 'types'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectReportAreaSource } from 'features/app/app.selectors'
 import { selectLocationAreaId } from 'routes/routes.selectors'
@@ -22,11 +20,7 @@ import { TooltipEventFeature } from '../map.hooks'
 import { useMapFitBounds } from '../map-viewport.hooks'
 
 export const getFeatureBounds = (feature: TooltipEventFeature) => {
-  return feature.properties.bbox
-    ? parsePropertiesBbox(feature.properties.bbox)
-    : feature.geometry
-    ? (bbox(feature.geometry) as Bbox)
-    : null
+  return feature.properties.bbox ? parsePropertiesBbox(feature.properties.bbox) : null
 }
 
 export const getFeatureAreaId = (feature: TooltipEventFeature) => {
@@ -36,10 +30,14 @@ export const getFeatureAreaId = (feature: TooltipEventFeature) => {
 export const useHighlightArea = () => {
   const { updateFeatureState, cleanFeatureState } = useFeatureState(useMapInstance())
   return useCallback(
-    (source: string, id: string) => {
+    ({ sourceId, areaId }: { sourceId: string; areaId: string }) => {
       cleanFeatureState('click')
       cleanFeatureState('highlight')
-      const featureState = { source, sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER, id }
+      const featureState = {
+        source: sourceId,
+        sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
+        id: areaId,
+      }
       updateFeatureState([featureState], 'highlight')
     },
     [cleanFeatureState, updateFeatureState]
@@ -95,7 +93,7 @@ export const useContextInteractions = () => {
         fitMapBounds(bounds, boundsParams)
       }
 
-      highlightArea(areaId, sourceId)
+      highlightArea({ sourceId, areaId })
       dispatch(setClickedEvent(null))
 
       trackEvent({
