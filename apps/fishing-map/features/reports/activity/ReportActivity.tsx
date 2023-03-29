@@ -52,6 +52,7 @@ export default function ReportActivity() {
   const reportGraphMode = getReportGraphMode(reportActivityGraph)
   const isSameTimeseriesMode = layersTimeseriesFiltered?.[0]?.mode === reportGraphMode
   const showSelectors = layersTimeseriesFiltered !== undefined
+  const showPlaceholder = loading || !isSameTimeseriesMode
   return (
     <div className={styles.container}>
       {showSelectors && (
@@ -60,7 +61,7 @@ export default function ReportActivity() {
           <ReportActivityGraphSelector />
         </div>
       )}
-      {loading || !isSameTimeseriesMode ? (
+      {showPlaceholder ? (
         <ReportActivityPlaceholder showHeader={!showSelectors} />
       ) : (
         <GraphComponent
@@ -70,14 +71,16 @@ export default function ReportActivity() {
         />
       )}
       {showSelectors && SelectorsComponent && <SelectorsComponent />}
-      <p className={styles.disclaimer}>
-        <Trans i18nKey="analysis.disclaimer">
-          The data shown above should be taken as an estimate.
-          <a href="https://globalfishingwatch.org/faqs/" target="_blank" rel="noreferrer">
-            Find out more about Global Fishing Watch analysis tools and methods.
-          </a>
-        </Trans>
-      </p>
+      {!showPlaceholder && (
+        <p className={styles.disclaimer}>
+          <Trans i18nKey="analysis.disclaimer">
+            The data shown above should be taken as an estimate.
+            <a href="https://globalfishingwatch.org/faqs/" target="_blank" rel="noreferrer">
+              Find out more about Global Fishing Watch analysis tools and methods.
+            </a>
+          </Trans>
+        </p>
+      )}
     </div>
   )
 }
