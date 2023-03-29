@@ -367,6 +367,7 @@
     "drawPolygonLogin": "Register and login to draw a layer (free, 2 minutes)",
     "editPolygonHint": "Click on polygon corners to adjust their coordinates",
     "filterClose": "Close filters",
+    "filtersDisabled": "Other filters {{filters}} are available depending on the sources selected",
     "filterOpen": "Open filters",
     "filterValues": "Filter values",
     "flagState_one": "Flag State",
@@ -468,6 +469,7 @@
     "groups": "Groups",
     "info": "User Info",
     "profile": "Profile",
+    "seeDataset": "See on map",
     "title": "User"
   },
   "vessel": {
