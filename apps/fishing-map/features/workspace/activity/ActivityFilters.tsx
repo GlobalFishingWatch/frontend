@@ -31,6 +31,7 @@ import {
   setVesselGroupsModalOpen,
 } from 'features/vessel-groups/vessel-groups.slice'
 import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
+import { listAsSentence } from 'utils/shared'
 import styles from './ActivityFilters.module.css'
 import {
   areAllSourcesSelectedInDataview,
@@ -124,7 +125,10 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
 
   const showSourceFilter = sourceOptions && sourceOptions?.length > 1
 
-  const schemaFilters = getSchemaFiltersInDataview(dataview, vesselGroupsOptions)
+  const { filtersAllowed, filtersDisabled } = getSchemaFiltersInDataview(
+    dataview,
+    vesselGroupsOptions
+  )
 
   const onDataviewFilterChange = useCallback(
     (dataviewInstance: UrlDataviewInstance) => {
@@ -303,7 +307,7 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
 
   const showHistogramFilter = isHistogramDataviewSupported(dataview)
   const showSchemaFilters =
-    showHistogramFilter || showSourceFilter || schemaFilters.some(showSchemaFilter)
+    showHistogramFilter || showSourceFilter || filtersAllowed.some(showSchemaFilter)
 
   if (!showSchemaFilters) {
     return <p className={styles.placeholder}>{t('dataset.emptyFilters', 'No filters available')}</p>
@@ -323,7 +327,7 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
         />
       )}
       {showHistogramFilter && <HistogramRangeFilter dataview={dataview} />}
-      {schemaFilters.map((schemaFilter) => {
+      {filtersAllowed.map((schemaFilter) => {
         if (
           schemaFilter.id === 'vessel-groups' &&
           !schemaFilter.optionsSelected.length &&
@@ -346,6 +350,15 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
           />
         )
       })}
+      {filtersDisabled.length >= 1 && (
+        <p className={styles.filtersDisabled}>
+          {t('layer.filtersDisabled', {
+            defaultValue:
+              'Other filters ({{filters}}) are available depending on the sources selected',
+            filters: listAsSentence(filtersDisabled.map((filter) => filter.label)),
+          })}
+        </p>
+      )}
     </Fragment>
   )
 }

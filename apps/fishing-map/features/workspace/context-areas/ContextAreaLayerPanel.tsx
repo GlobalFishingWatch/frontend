@@ -176,9 +176,9 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   )
 
   const isBasemapLabelsDataview = dataview.config?.type === GeneratorType.BasemapLabels
-  const schemaFilters = getSchemaFiltersInDataview(dataview)
-  const hasSchemaFilters = schemaFilters.some(showSchemaFilter)
-  const hasSchemaFilterSelection = schemaFilters.some(
+  const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
+  const hasSchemaFilters = filtersAllowed.some(showSchemaFilter)
+  const hasSchemaFilterSelection = filtersAllowed.some(
     (schema) => schema.optionsSelected?.length > 0
   )
 
@@ -306,7 +306,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           {hasSchemaFilterSelection && (
             <div className={styles.filters}>
               <div className={styles.filters}>
-                {schemaFilters.map(({ id, label }) => (
+                {filtersAllowed.map(({ id, label }) => (
                   <DatasetSchemaField key={id} dataview={dataview} field={id} label={label} />
                 ))}
               </div>

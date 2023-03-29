@@ -536,12 +536,13 @@ export const getFiltersBySchema = (
 export const getSchemaFiltersInDataview = (
   dataview: SchemaFieldDataview,
   vesselGroups?: MultiSelectOption[]
-): SchemaFilter[] => {
+): { filtersAllowed: SchemaFilter[]; filtersDisabled: SchemaFilter[] } => {
   const fieldsIds = uniq(
     dataview.datasets?.flatMap((d) => d.fieldsAllowed || [])
   ) as SupportedDatasetSchema[]
   const fieldsOrder = dataview.filtersConfig?.order as SupportedDatasetSchema[]
   const fieldsAllowed = fieldsIds.filter((f) => isDataviewSchemaSupported(dataview, f))
+  const fieldsDisabled = fieldsIds.filter((f) => !isDataviewSchemaSupported(dataview, f))
   const fielsAllowedOrdered =
     fieldsOrder && fieldsOrder.length > 0
       ? fieldsAllowed.sort((a, b) => {
@@ -550,8 +551,14 @@ export const getSchemaFiltersInDataview = (
           return aIndex - bIndex
         })
       : fieldsAllowed
-  const schemaFilters = fielsAllowedOrdered.map((id) => {
+  const filtersAllowed = fielsAllowedOrdered.map((id) => {
     return getFiltersBySchema(dataview, id, vesselGroups)
   })
-  return schemaFilters
+  const filtersDisabled = fieldsDisabled.map((id) => {
+    return getFiltersBySchema(dataview, id, vesselGroups)
+  })
+  return {
+    filtersAllowed,
+    filtersDisabled,
+  }
 }
