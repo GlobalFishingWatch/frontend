@@ -31,7 +31,7 @@
     "searchHelpExamples": "e.g. \"flag:china, gear:palangre\", \"-España\", \"cargo|passenger\"...",
     "searchPlaceholder": "Filtre embarcaciones por nombre, MMSI, estados de bandera o arte de pesca",
     "share": "Guardar informe",
-    "summary": "<strong>{{vessels}} $t(common.vessel, {'count': {{vessels}} }) {{sources}} </strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "summary": "<strong>{{vessels}} $t(common.vessel, {count: {{vessels}} }) {{sources}} </strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "summaryNoVessels": "<strong>{{sources}} {{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> en el área entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
     "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año",
     "title": "Análisis",
