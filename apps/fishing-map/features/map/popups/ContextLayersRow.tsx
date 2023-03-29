@@ -12,7 +12,7 @@ import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { REPORT } from 'routes/routes'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
-import { selectLocationQuery } from 'routes/routes.selectors'
+import { selectLocationAreaId, selectLocationQuery } from 'routes/routes.selectors'
 import { selectSidebarOpen } from 'features/app/app.selectors'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { getFeatureAreaId, getFeatureBounds } from 'features/map/popups/ContextLayers.hooks'
@@ -74,16 +74,23 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
   const isSidebarOpen = useSelector(selectSidebarOpen)
   const query = useSelector(selectLocationQuery)
   const bounds = getFeatureBounds(feature)
-  if (!hasAnalysableLayer) {
+  const reportAreaId = useSelector(selectLocationAreaId)
+  const areaId = getFeatureAreaId(feature)
+  const isSameArea = reportAreaId.toString() === areaId.toString()
+  if (!hasAnalysableLayer || isSameArea) {
     return (
       <IconButton
         icon="analysis"
-        disabled={true}
+        disabled={!hasAnalysableLayer}
         size="small"
-        tooltip={t(
-          'common.analysisNotAvailable',
-          'Toggle an activity or environmenet layer on to analyse in in this area'
-        )}
+        tooltip={
+          isSameArea
+            ? ''
+            : t(
+                'common.analysisNotAvailable',
+                'Toggle an activity or environmenet layer on to analyse in in this area'
+              )
+        }
       />
     )
   }
@@ -91,7 +98,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
     trackEvent({
       category: TrackCategory.Analysis,
       action: 'Open analysis panel',
-      label: getFeatureAreaId(feature),
+      label: areaId,
     })
     resetSidebarScroll()
     dispatch(resetReportData())
@@ -107,7 +114,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
           category: workspace.category || WorkspaceCategories.FishingActivity,
           workspaceId: workspace.id || DEFAULT_WORKSPACE_ID,
           datasetId: feature.datasetId,
-          areaId: getFeatureAreaId(feature),
+          areaId,
         },
         query: {
           ...query,
