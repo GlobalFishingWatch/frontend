@@ -367,6 +367,7 @@
     "drawPolygonLogin": "S'inscrire et se connecter pour dessiner un calque (gratuit, 2 minutes)",
     "editPolygonHint": "Cliquez sur les coins du polygone pour ajuster leurs coordonnées",
     "filterClose": "Fermer les filtres",
+    "filtersDisabled": "Other filters {{filters}} are available depending on the sources selected",
     "filterOpen": "Ouvrir les filtres",
     "filterValues": "Filtrer les valeurs",
     "flagState_one": "Pavillon",
@@ -468,6 +469,7 @@
     "groups": "Groupes",
     "info": "Informations utilisateur",
     "profile": "Profil",
+    "seeDataset": "See on map",
     "title": "Utilisateur"
   },
   "vessel": {
