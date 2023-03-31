@@ -27,7 +27,7 @@ import {
   selectReportVesselsDateRangeHash,
   selectReportVesselsError,
   selectReportVesselsStatus,
-} from './reports.slice'
+} from './report.slice'
 
 export type DateTimeSeries = {
   date: string

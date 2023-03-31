@@ -27,7 +27,7 @@ import { getUTCDateTime } from 'utils/dates'
 import { getReportCategoryFromDataview, getVesselGearOrType } from 'features/reports/reports.utils'
 import { ReportCategory } from 'types'
 import { selectContextAreasDataviews } from 'features/dataviews/dataviews.selectors'
-import { selectReportVesselsData } from './reports.slice'
+import { selectReportVesselsData } from './report.slice'
 
 export const EMPTY_API_VALUES = ['NULL', undefined, '']
 export const MAX_CATEGORIES = 5

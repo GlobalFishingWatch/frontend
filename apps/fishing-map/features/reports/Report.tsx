@@ -29,7 +29,7 @@ import {
   selectReportVesselsDateRangeHash,
   selectReportVesselsStatus,
   setDateRangeHash,
-} from 'features/reports/reports.slice'
+} from 'features/reports/report.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectLocationAreaId, selectLocationDatasetId } from 'routes/routes.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
