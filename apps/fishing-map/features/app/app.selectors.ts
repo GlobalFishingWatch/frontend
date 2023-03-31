@@ -252,21 +252,71 @@ export const selectTimebarGraph = createSelector(
   }
 )
 
+export const selectWorkspaceReportState = createSelector(
+  [
+    selectReportActivityGraph,
+    selectReportAreaBounds,
+    selectReportAreaSource,
+    selectReportCategory,
+    selectReportResultsPerPage,
+    selectReportTimeComparison,
+    selectReportVesselFilter,
+    selectReportVesselGraph,
+    selectReportVesselPage,
+  ],
+  (
+    reportActivityGraph,
+    reportAreaBounds,
+    reportAreaSource,
+    reportCategory,
+    reportResultsPerPage,
+    reportTimeComparison,
+    reportVesselFilter,
+    reportVesselGraph,
+    reportVesselPage
+  ) => ({
+    ...(reportActivityGraph && { reportActivityGraph }),
+    ...(reportAreaBounds && { reportAreaBounds }),
+    ...(reportAreaSource && { reportAreaSource }),
+    ...(reportCategory && { reportCategory }),
+    ...(reportResultsPerPage && { reportResultsPerPage }),
+    ...(reportTimeComparison && { reportTimeComparison }),
+    ...(reportVesselFilter && { reportVesselFilter }),
+    ...(reportVesselGraph && { reportVesselGraph }),
+    ...(reportVesselPage && { reportVesselPage }),
+  })
+)
+
 export const selectWorkspaceAppState = createSelector(
   [
+    selectActivityCategory,
     selectBivariateDataviews,
     selectSidebarOpen,
+    selectTimebarGraph,
+    selectTimebarSelectedEnvId,
     selectTimebarVisualisation,
     selectVisibleEvents,
-    selectTimebarGraph,
+    selectWorkspaceReportState,
   ],
-  (bivariateDataviews, sidebarOpen, timebarVisualisation, visibleEvents, timebarGraph) => {
+  (
+    activityCategory,
+    bivariateDataviews,
+    sidebarOpen,
+    timebarGraph,
+    timebarSelectedEnvId,
+    timebarVisualisation,
+    visibleEvents,
+    reportState
+  ) => {
     return {
+      activityCategory,
       bivariateDataviews,
       sidebarOpen,
+      timebarGraph,
+      timebarSelectedEnvId,
       timebarVisualisation,
       visibleEvents,
-      timebarGraph,
+      ...reportState,
     }
   }
 )
