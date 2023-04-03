@@ -78,7 +78,11 @@ export enum DatasetStatus {
 export type DatasetGeometryType = 'polygons' | 'tracks' | 'points' | 'draw'
 
 export interface DatasetDocumentation {
+  type?: string
+  enable?: boolean
+  status?: 'Active' | 'Deprecated'
   queries?: string[]
+  provider?: string
 }
 
 export interface DatasetConfiguration {
