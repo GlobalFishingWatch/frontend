@@ -8,7 +8,7 @@ import {
   parseAPIErrorMessage,
   parseAPIErrorStatus,
 } from '@globalfishingwatch/api-client'
-import { AsyncError, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
+import { AsyncError, AsyncReducer, AsyncReducerStatus, createAsyncSlice } from 'utils/async-slice'
 import { RootState } from 'store'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 
@@ -30,22 +30,31 @@ export const fetchReportByIdThunk = createAsyncThunk(
 
 export const fetchReportsThunk = createAsyncThunk(
   'reports/fetch',
-  async (ids: number[], { signal, rejectWithValue, getState }) => {
+  async (ids, { signal, rejectWithValue, getState }) => {
     try {
-      const reportsParams = {
-        ...(ids && { ids }),
-        cache: false,
-        ...DEFAULT_PAGINATION_PARAMS,
-      }
-      const reportsResponse = await GFWAPI.fetch<APIPagination<Report>>(
-        `/reports?${stringify(reportsParams, { arrayFormat: 'comma' })}`,
-        { signal }
+      const reportsResponse = await fetch(`http://localhost:3000/reports`, { signal }).then((r) =>
+        r.json()
       )
-      return reportsResponse.entries
+      // const reportsParams = {
+      //   ...(ids && { ids }),
+      //   cache: false,
+      //   ...DEFAULT_PAGINATION_PARAMS,
+      // }
+      // const reportsResponse = await GFWAPI.fetch<APIPagination<Report>>(
+      //   `/reports?${stringify(reportsParams, { arrayFormat: 'comma' })}`,
+      //   { signal }
+      // )
+      return reportsResponse
     } catch (e: any) {
       console.warn(e)
       return rejectWithValue(parseAPIError(e))
     }
+  },
+  {
+    condition: (_, { getState }) => {
+      const status = (getState() as RootState).reports.status
+      return status !== AsyncReducerStatus.Loading
+    },
   }
 )
 
@@ -125,5 +134,6 @@ export const selectReportById = memoize((id: number) =>
 )
 
 export const selectReportsStatus = (state: RootState) => state.reports.status
+export const selectReportsStatusId = (state: RootState) => state.reports.statusId
 
 export default reportsSlice.reducer

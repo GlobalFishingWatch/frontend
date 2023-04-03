@@ -20,6 +20,7 @@ import { isUserLogged, selectUserGroupsPermissions } from './user.selectors'
 import UserWorkspaces from './UserWorkspaces'
 import UserWorkspacesPrivate from './UserWorkspacesPrivate'
 import UserDatasets from './UserDatasets'
+import UserReports from './UserReports'
 import UserInfo from './UserInfo'
 import UserVesselGroups from './UserVesselGroups'
 
@@ -57,6 +58,11 @@ function User() {
             <UserDatasets datasetCategory={DatasetCategory.Context} />
           </Fragment>
         ),
+      },
+      {
+        id: 'reports',
+        title: t('common.report', 'Report'),
+        content: <UserReports />,
       },
     ]
     if (hasUserGroupsPermissions) {
