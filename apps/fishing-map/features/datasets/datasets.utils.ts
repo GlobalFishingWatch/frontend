@@ -73,7 +73,10 @@ export const getFileTypes = (datasetGeometryType) =>
 export const isPrivateDataset = (dataset: Partial<Dataset>) =>
   !(dataset?.id || '').startsWith(`${PUBLIC_SUFIX}-`)
 
-const GFW_ONLY_DATASETS = ['private-global-other-vessels:v20201001']
+const GFW_ONLY_DATASETS = [
+  'private-global-other-vessels:v20201001',
+  'proto-global-vessel-identity:v20230119',
+]
 
 export const isGFWOnlyDataset = (dataset: Partial<Dataset>) =>
   GFW_ONLY_DATASETS.includes(dataset?.id)

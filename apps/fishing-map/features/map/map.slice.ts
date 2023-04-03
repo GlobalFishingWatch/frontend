@@ -24,6 +24,7 @@ import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/data
 import { isGuestUser } from 'features/user/user.slice'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { getUTCDateTime } from 'utils/dates'
+import { IDENTITY_VESSEL_DATASET_ID } from 'features/datasets/datasets.mock'
 
 export const MAX_TOOLTIP_LIST = 5
 export const MAX_VESSELS_LOAD = 150
@@ -304,7 +305,8 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
                   }
                   return entry.id === vessel.id
                 })
-                const infoDataset = selectDatasetById(vesselInfo?.dataset as string)(state)
+                // TODO remove this and get it from the API once ready and use vesselInfo?.dataset again
+                const infoDataset = selectDatasetById(IDENTITY_VESSEL_DATASET_ID)(state)
                 const trackFromRelatedDataset = infoDataset || vessel.dataset
                 const trackDatasetId = getRelatedDatasetByType(
                   trackFromRelatedDataset,

@@ -6,10 +6,11 @@ import {
   EndpointId,
 } from '@globalfishingwatch/api-types'
 
+export const IDENTITY_VESSEL_DATASET_ID = 'proto-global-vessel-identity:v20230119'
 export const datasets: Dataset[] = [
   {
     alias: ['proto-global-vessel-identity:latest'],
-    id: 'proto-global-vessel-identity:v20230119',
+    id: IDENTITY_VESSEL_DATASET_ID,
     name: 'Vessel Identity',
     type: DatasetTypes.Vessels,
     description: 'Vessel Identity',
