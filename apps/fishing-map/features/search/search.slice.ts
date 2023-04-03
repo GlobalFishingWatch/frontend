@@ -21,7 +21,6 @@ import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
-import { IDENTITY_VESSEL_DATASET_ID } from 'features/datasets/datasets.mock'
 
 export const RESULTS_PER_PAGE = 20
 
@@ -160,8 +159,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
 
         const vesselsWithDataset = uniqSearchResults.flatMap((vessel) => {
           if (!vessel) return []
-          // TODO remove this and get it from the API once ready and use vessel.dataset again
-          const infoDataset = selectDatasetById(IDENTITY_VESSEL_DATASET_ID)(state)
+          const infoDataset = selectDatasetById(vessel.dataset)(state)
           if (!infoDataset) return []
 
           const trackDatasetId = getRelatedDatasetByType(infoDataset, DatasetTypes.Tracks)?.id
