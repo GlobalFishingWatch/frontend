@@ -30,8 +30,12 @@ import {
 } from 'features/timebar/timebar.slice'
 import { selectBivariateDataviews, selectTimeRange } from 'features/app/app.selectors'
 import { selectMarineManagerDataviewInstanceResolved } from 'features/dataviews/dataviews.slice'
-import { selectIsMarineManagerLocation, isWorkspaceLocation } from 'routes/routes.selectors'
-import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
+import {
+  selectIsMarineManagerLocation,
+  selectIsReportLocation,
+  selectIsWorkspaceLocation,
+} from 'routes/routes.selectors'
+import { selectShowTimeComparison } from 'features/reports/reports.selectors'
 import { WorkspaceCategories } from 'data/workspaces'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { BivariateDataviews } from 'types'
@@ -306,7 +310,8 @@ export const selectDefaultMapGeneratorsConfig = createSelector(
   [
     selectWorkspaceError,
     selectWorkspaceStatus,
-    isWorkspaceLocation,
+    selectIsWorkspaceLocation,
+    selectIsReportLocation,
     selectDefaultBasemapGenerator,
     selectMapGeneratorsConfig,
     selectMapWorkspacesListGenerators,
@@ -314,11 +319,13 @@ export const selectDefaultMapGeneratorsConfig = createSelector(
   (
     workspaceError,
     workspaceStatus,
-    showWorkspaceDetail,
+    isWorkspacelLocation,
+    isReportLocation,
     basemapGenerator,
     workspaceGenerators = [] as AnyGeneratorConfig[],
     workspaceListGenerators
   ): AnyGeneratorConfig[] => {
+    const showWorkspaceDetail = isWorkspacelLocation || isReportLocation
     if (workspaceError.status === 401 || workspaceStatus === AsyncReducerStatus.Loading) {
       return [basemapGenerator]
     }

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { groupBy } from 'lodash'
 import { IconButton, Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
-import { Locale, Vessel } from '@globalfishingwatch/api-types'
+import { Locale, ReportVessel, Vessel } from '@globalfishingwatch/api-types'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
 import I18nDate from 'features/i18n/i18nDate'
@@ -17,9 +17,9 @@ import {
 import styles from './VesselGroupModal.module.css'
 
 type VesselGroupVesselRowProps = {
-  vessel: Vessel
+  vessel: Vessel | ReportVessel
   className?: string
-  onRemoveClick: (vessel: Vessel) => void
+  onRemoveClick: (vessel: Vessel | ReportVessel) => void
 }
 function VesselGroupVesselRow({
   vessel,
@@ -27,7 +27,10 @@ function VesselGroupVesselRow({
   className = '',
 }: VesselGroupVesselRowProps) {
   const { t, i18n } = useTranslation()
-  const vesselName = formatInfoField(vessel.shipname, 'name')
+  const vesselName = formatInfoField(
+    (vessel as Vessel).shipname || (vessel as ReportVessel).shipName,
+    'name'
+  )
 
   const vesselGearType = `${t(
     `vessel.gearTypes.${vessel.geartype}` as any,
@@ -133,7 +136,7 @@ function VesselGroupVessels(): React.ReactElement {
                 key={`${vessel.id}-${vessel.dataset}`}
                 className={styles.new}
                 vessel={vessel}
-                onRemoveClick={(vessel) => onVesselRemoveClick(vessel, 'new')}
+                onRemoveClick={(vessel) => onVesselRemoveClick(vessel as Vessel, 'new')}
               />
             ))
           })}

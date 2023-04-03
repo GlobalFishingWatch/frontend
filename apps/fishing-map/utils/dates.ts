@@ -1,8 +1,10 @@
 import { DateTime, DurationUnits } from 'luxon'
 import { Interval } from '@globalfishingwatch/layer-composer'
+import { Dataset, VesselGroup } from '@globalfishingwatch/api-types'
+import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 
 export const getUTCDateTime = (d: string | number) => {
-  if (!d) {
+  if (!d || (typeof d !== 'string' && typeof d !== 'number')) {
     console.warn('Not a valid date', d)
     return
   }
@@ -39,4 +41,11 @@ export const formatDateForInterval = (date: DateTime, timeChunkInterval: Interva
       break
   }
   return formattedTick
+}
+
+type UserCreatedEntities = Dataset | AppWorkspace | VesselGroup
+
+export const sortByCreationDate = <T>(entities: UserCreatedEntities[]): T[] => {
+  if (!entities) return []
+  return entities.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1)) as T[]
 }

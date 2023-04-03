@@ -1,6 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { DataviewInstance } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_WORKSPACE } from 'data/config'
+import { createDeepEqualSelector } from 'utils/selectors'
 import {
   selectWorkspace,
   selectWorkspaceStateProperty,
@@ -14,22 +15,31 @@ import {
   selectUrlTimeRange,
 } from 'routes/routes.selectors'
 import {
+  Bbox,
   BivariateDataviews,
+  ReportCategory,
+  ReportActivityTimeComparison,
+  ReportVesselGraph,
   TimebarGraphs,
   TimebarVisualisations,
   VisibleEvents,
   WorkspaceActivityCategory,
-  WorkspaceAnalysis,
-  WorkspaceAnalysisTimeComparison,
-  WorkspaceAnalysisType,
+  ReportActivityGraph,
 } from 'types'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import {
   selectActiveVesselsDataviews,
   selectDataviewInstancesMergedOrdered,
+  selectDataviewInstancesResolved,
 } from 'features/dataviews/dataviews.slice'
 import { RootState } from 'store'
-import { selectEnvironmentalDataviews } from 'features/dataviews/dataviews.selectors'
+import {
+  selectActiveDetectionsDataviews,
+  selectActiveEnvironmentalDataviews,
+  selectActiveReportActivityDataviews,
+  selectEnvironmentalDataviews,
+} from 'features/dataviews/dataviews.selectors'
+import { getReportCategoryFromDataview } from 'features/reports/reports.utils'
 
 export const selectViewport = createSelector(
   [selectUrlViewport, selectWorkspaceViewport],
@@ -53,24 +63,10 @@ export const selectTimeRange = createSelector(
   }
 )
 
-export const selectAnalysisQuery = createSelector(
-  [selectWorkspaceStateProperty('analysis')],
-  (analysis): WorkspaceAnalysis => {
-    return analysis
-  }
-)
-
-export const selectAnalysisTypeQuery = createSelector(
-  [selectWorkspaceStateProperty('analysisType')],
-  (analysis): WorkspaceAnalysisType => {
-    return analysis || 'evolution'
-  }
-)
-
-export const selectAnalysisTimeComparison = createSelector(
-  [selectWorkspaceStateProperty('analysisTimeComparison')],
-  (analysis): WorkspaceAnalysisTimeComparison => {
-    return analysis
+export const selectReportTimeComparison = createSelector(
+  [selectWorkspaceStateProperty('reportTimeComparison')],
+  (reportTimeComparison): ReportActivityTimeComparison => {
+    return reportTimeComparison
   }
 )
 
@@ -113,6 +109,108 @@ export const selectSidebarOpen = createSelector(
   [selectWorkspaceStateProperty('sidebarOpen')],
   (sidebarOpen): boolean => {
     return sidebarOpen
+  }
+)
+
+export const selectReportCategory = createSelector(
+  [
+    selectWorkspaceStateProperty('reportCategory'),
+    (state) => selectDataviewInstancesResolved(state),
+  ],
+  (reportCategory, dataviews): ReportCategory => {
+    if (reportCategory) {
+      return reportCategory
+    }
+    const orderedCategories = [
+      ReportCategory.Fishing,
+      ReportCategory.Presence,
+      ReportCategory.Detections,
+      ReportCategory.Environment,
+    ]
+    const categoriesWithActiveDataviews = orderedCategories.map((category) => {
+      return dataviews.some((dataview) => {
+        return dataview.config.visible && getReportCategoryFromDataview(dataview) === category
+      })
+    })
+    const firstCategoryActive =
+      categoriesWithActiveDataviews.findIndex((active) => active === true) || 0
+    return orderedCategories[firstCategoryActive]
+  }
+)
+
+export const selectReportAreaBounds = createSelector(
+  [selectWorkspaceStateProperty('reportAreaBounds')],
+  (reportAreaBounds): Bbox => {
+    return reportAreaBounds
+  }
+)
+
+export const selectReportAreaSource = createSelector(
+  [selectWorkspaceStateProperty('reportAreaSource')],
+  (reportAreaSource): string => {
+    return reportAreaSource
+  }
+)
+
+export function isActivityReport(reportCategory: ReportCategory) {
+  return reportCategory === ReportCategory.Fishing || reportCategory === ReportCategory.Presence
+}
+
+export const selectActiveReportDataviews = createDeepEqualSelector(
+  [
+    selectReportCategory,
+    selectActiveReportActivityDataviews,
+    selectActiveDetectionsDataviews,
+    selectActiveEnvironmentalDataviews,
+  ],
+  (
+    reportCategory,
+    activityDataviews = [],
+    detectionsDataviews = [],
+    environmentalDataviews = []
+  ) => {
+    if (isActivityReport(reportCategory)) {
+      return activityDataviews
+    }
+    if (reportCategory === ReportCategory.Detections) {
+      return detectionsDataviews
+    }
+    return environmentalDataviews
+  }
+)
+
+export const selectReportActivityGraph = createSelector(
+  [selectWorkspaceStateProperty('reportActivityGraph')],
+  (reportActivityGraph): ReportActivityGraph => {
+    return reportActivityGraph
+  }
+)
+
+export const selectReportVesselGraph = createSelector(
+  [selectWorkspaceStateProperty('reportVesselGraph')],
+  (reportVesselGraph): ReportVesselGraph => {
+    return reportVesselGraph
+  }
+)
+
+export const selectReportVesselFilter = createSelector(
+  [selectWorkspaceStateProperty('reportVesselFilter')],
+  (reportVesselFilter): string => {
+    return reportVesselFilter
+  }
+)
+
+export const selectReportVesselPage = createSelector(
+  [selectWorkspaceStateProperty('reportVesselPage')],
+  (reportVesselPage): number => {
+    return parseInt(reportVesselPage)
+  }
+)
+
+export const selectReportResultsPerPage = createSelector(
+  [selectWorkspaceStateProperty('reportResultsPerPage')],
+  (reportVesselPage): number => {
+    return parseInt(reportVesselPage)
   }
 )
 

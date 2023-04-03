@@ -140,7 +140,7 @@ const getInteractionEndpointDatasetConfig = (
   return { featuresDataviews, fourWingsDataset, datasetConfig }
 }
 
-const getVesselInfoEndpoint = (vesselDatasets: Dataset[], vesselIds: string[]) => {
+export const getVesselInfoEndpoint = (vesselDatasets: Dataset[], vesselIds: string[]) => {
   if (!vesselDatasets || !vesselDatasets.length || !vesselIds || !vesselIds.length) {
     return null
   }

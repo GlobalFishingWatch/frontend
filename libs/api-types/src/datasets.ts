@@ -149,7 +149,7 @@ export interface Dataset {
   description: string
   schema?: Record<string, DatasetSchema>
   category?: DatasetCategory
-  subcategory?: EventTypes | string
+  subcategory?: DatasetSubCategory | EventTypes | string
   source?: string
   status: DatasetStatus
   importLogs?: string

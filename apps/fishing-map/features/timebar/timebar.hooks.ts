@@ -16,20 +16,19 @@ import {
 } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
-  selectActiveActivityDataviews,
+  selectActiveReportActivityDataviews,
   selectActiveDetectionsDataviews,
   selectActiveNonTrackEnvironmentalDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import store from 'store'
 import { updateUrlTimerange } from 'routes/routes.actions'
-import { selectUrlTimeRange } from 'routes/routes.selectors'
+import { selectIsReportLocation, selectUrlTimeRange } from 'routes/routes.selectors'
 import { selectHintsDismissed, setHintDismissed } from 'features/hints/hints.slice'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import useMapInstance from 'features/map/map-context.hooks'
 import { BIG_QUERY_PREFIX } from 'features/dataviews/dataviews.utils'
-import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { useFitAreaInViewport } from 'features/analysis/analysis.hooks'
+import { useFitAreaInViewport } from 'features/reports/reports.hooks'
 import {
   Range,
   changeSettings,
@@ -81,9 +80,9 @@ export const TimeRangeAtom = atom<Range | null>({
 
 export const useTimerangeConnect = () => {
   const [timerange, setTimerange] = useRecoilState(TimeRangeAtom)
-  const isAnalyzing = useSelector(selectIsAnalyzing)
   const dispatch = useAppDispatch()
   const hintsDismissed = useSelector(selectHintsDismissed)
+  const reportLocation = useSelector(selectIsReportLocation)
   const fitAreaInViewport = useFitAreaInViewport()
 
   const onTimebarChange = useCallback(
@@ -95,7 +94,7 @@ export const useTimerangeConnect = () => {
         dispatch(setHintDismissed('changingTheTimeRange'))
       }
       setTimerange({ start, end })
-      if (isAnalyzing) {
+      if (reportLocation) {
         fitAreaInViewport()
       }
     },
@@ -103,7 +102,7 @@ export const useTimerangeConnect = () => {
       dispatch,
       fitAreaInViewport,
       hintsDismissed?.changingTheTimeRange,
-      isAnalyzing,
+      reportLocation,
       setTimerange,
       timerange?.end,
       timerange?.start,
@@ -213,7 +212,7 @@ export const useTimebarGraphConnect = () => {
 // should be instanciated only once to avoid doing it more than needed
 export const useTimebarVisualisation = () => {
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
-  const activeActivityDataviews = useSelector(selectActiveActivityDataviews)
+  const activeActivityDataviews = useSelector(selectActiveReportActivityDataviews)
   const activeDetectionsDataviews = useSelector(selectActiveDetectionsDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const activeEnvDataviews = useSelector(selectActiveNonTrackEnvironmentalDataviews)

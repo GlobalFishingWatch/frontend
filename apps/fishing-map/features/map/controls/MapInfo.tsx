@@ -1,5 +1,6 @@
 import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
+import formatcoords from 'formatcoords'
 import cx from 'classnames'
 import { DateTime, DateTimeFormatOptions } from 'luxon'
 import { ScaleControl } from 'react-map-gl'
@@ -8,7 +9,7 @@ import LogoSkylight from 'assets/images/partner-logos/skylight@2x.png'
 import { toFixed } from 'utils/shared'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import I18nDate from 'features/i18n/i18nDate'
-import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
+import { selectShowTimeComparison } from 'features/reports/reports.selectors'
 import { selectRealTimeActive } from 'features/workspace/realtime/realtime.selectors'
 import styles from './MapInfo.module.css'
 
@@ -55,6 +56,11 @@ const MapInfo = ({ center }: { center: InteractionEvent | null }) => {
         {center && (
           <div className={cx('print-hidden', styles.mouseCoordinates)}>
             {toFixed(center.latitude, 4)} {toFixed(center.longitude, 4)}
+            <br />
+            {formatcoords(center.latitude, center.longitude).format('DDMMssX', {
+              latLonSeparator: ' ',
+              decimalPlaces: 2,
+            })}
           </div>
         )}
         {showRealTimeLogo && (

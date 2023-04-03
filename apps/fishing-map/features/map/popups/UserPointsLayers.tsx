@@ -37,6 +37,7 @@ function UserPointsTooltipSection({
                   id={id}
                   key={`${id}-${index}`}
                   label={label}
+                  feature={feature}
                   showFeaturesDetails={showFeaturesDetails}
                 />
               )

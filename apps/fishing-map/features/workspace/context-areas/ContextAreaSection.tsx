@@ -3,7 +3,6 @@ import cx from 'classnames'
 import { SortableContext } from '@dnd-kit/sortable'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { event as uaEvent } from 'react-ga'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { DatasetCategory, DatasetTypes } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -17,6 +16,7 @@ import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { selectUserDatasetsByCategory } from 'features/user/user.selectors'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './ContextAreaLayerPanel'
 
@@ -32,8 +32,8 @@ function ContextAreaSection(): React.ReactElement {
   const onDrawClick = useCallback(() => {
     dispatchSetMapDrawing(true)
     dispatchQueryParams({ sidebarOpen: false })
-    uaEvent({
-      category: 'Reference layer',
+    trackEvent({
+      category: TrackCategory.ReferenceLayer,
       action: `Draw a custom reference layer - Start`,
     })
   }, [dispatchQueryParams, dispatchSetMapDrawing])
@@ -41,8 +41,8 @@ function ContextAreaSection(): React.ReactElement {
   const [newDatasetOpen, setNewDatasetOpen] = useState(false)
   const userDatasets = useSelector(selectUserDatasetsByCategory(DatasetCategory.Context))
   const onAdd = useCallback(() => {
-    uaEvent({
-      category: 'Reference layer',
+    trackEvent({
+      category: TrackCategory.ReferenceLayer,
       action: `Open panel to upload new reference layer`,
       value: userDatasets.length,
     })
@@ -57,8 +57,8 @@ function ContextAreaSection(): React.ReactElement {
       )
       const layerTitle = dataset?.name ?? dataset?.id ?? 'Unknown layer'
       const action = isVisible ? 'disable' : 'enable'
-      uaEvent({
-        category: 'Reference layer',
+      trackEvent({
+        category: TrackCategory.ReferenceLayer,
         action: `Toggle reference layer`,
         label: getEventLabel([action, layerTitle]),
       })

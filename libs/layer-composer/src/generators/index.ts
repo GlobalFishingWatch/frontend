@@ -26,7 +26,6 @@ export { HEATMAP_COLOR_RAMPS } from './heatmap/colors'
 export { rgbaStringToComponents } from './heatmap/util/colors'
 export { DEFAULT_BACKGROUND_COLOR } from './background/config'
 export { DEFAULT_CONTEXT_SOURCE_LAYER } from './context/config'
-export { getContextSourceId } from './context/context.utils'
 export { DEFAULT_POINTS_SOURCE_LAYER, MAX_ZOOM_TO_CLUSTER_POINTS } from './tile-cluster/config'
 export {
   COLOR_RAMP_DEFAULT_NUM_STEPS,

@@ -56,6 +56,7 @@ import { ReactComponent as Pin } from '../assets/icons/pin.svg'
 import { ReactComponent as PinFilled } from '../assets/icons/pin-filled.svg'
 import { ReactComponent as Plus } from '../assets/icons/plus.svg'
 import { ReactComponent as Polygons } from '../assets/icons/polygons.svg'
+import { ReactComponent as Print } from '../assets/icons/print.svg'
 import { ReactComponent as Private } from '../assets/icons/private.svg'
 import { ReactComponent as Publish } from '../assets/icons/publish.svg'
 import { ReactComponent as RemoveFromMap } from '../assets/icons/remove-from-map.svg'
@@ -141,6 +142,7 @@ export const IconComponents = {
   pin: Pin,
   plus: Plus,
   polygons: Polygons,
+  print: Print,
   private: Private,
   publish: Publish,
   report: Report,

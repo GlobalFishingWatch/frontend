@@ -1,6 +1,5 @@
 import { Fragment, useCallback, useMemo, useState } from 'react'
 import cx from 'classnames'
-import { event as uaEvent } from 'react-ga'
 import kinks from '@turf/kinks'
 import { useTranslation } from 'react-i18next'
 import { Feature, Polygon } from 'geojson'
@@ -13,6 +12,7 @@ import {
   useDatasetsAPI,
 } from 'features/datasets/datasets.hook'
 import useDrawControl from 'features/map/MapDrawControl'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useMapDrawConnect } from './map-draw.hooks'
 import styles from './MapDraw.module.css'
 import {
@@ -173,8 +173,8 @@ function MapDraw() {
 
   const onAddPolygonClick = useCallback(() => {
     setDrawingMode('draw_polygon')
-    uaEvent({
-      category: 'Reference layer',
+    trackEvent({
+      category: TrackCategory.ReferenceLayer,
       action: `Draw a custom reference layer - Click + icon`,
     })
   }, [setDrawingMode])
@@ -198,8 +198,8 @@ function MapDraw() {
     resetState()
     dispatchSetMapDrawing(false)
     dispatchQueryParams({ sidebarOpen: true })
-    uaEvent({
-      category: 'Reference layer',
+    trackEvent({
+      category: TrackCategory.ReferenceLayer,
       action: `Draw a custom reference layer - Click dismiss`,
     })
   }, [dispatchQueryParams, dispatchSetMapDrawing, resetState])
@@ -233,8 +233,8 @@ function MapDraw() {
     (features) => {
       if (features && features.length > 0 && layerName) {
         createDataset(features, layerName)
-        uaEvent({
-          category: 'Reference layer',
+        trackEvent({
+          category: TrackCategory.ReferenceLayer,
           action: `Draw a custom reference layer - Click save`,
         })
       }

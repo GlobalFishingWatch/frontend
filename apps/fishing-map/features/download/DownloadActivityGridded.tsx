@@ -1,7 +1,6 @@
 import { useMemo, useRef, useState, Fragment } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import area from '@turf/area'
 import type { Placement } from 'tippy.js'
@@ -27,7 +26,7 @@ import { getActivityFilters, getEventLabel } from 'utils/analytics'
 import { selectUserData } from 'features/user/user.slice'
 import {
   checkDatasetReportPermission,
-  getDatasetsDownloadNotSupported,
+  getDatasetsReportNotSupported,
 } from 'features/datasets/datasets.utils'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -37,6 +36,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import SOURCE_SWITCH_CONTENT from 'features/welcome/SourceSwitch.content'
 import { Locale } from 'types'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './DownloadModal.module.css'
 import {
   Format,
@@ -63,7 +63,7 @@ function DownloadActivityByVessel() {
   const vesselDatasets = useSelector(selectActiveHeatmapVesselDatasets)
   const timeoutRef = useRef<NodeJS.Timeout>()
   const { start, end, timerange } = useTimerangeConnect()
-  const datasetsDownloadNotSupported = getDatasetsDownloadNotSupported(
+  const datasetsDownloadNotSupported = getDatasetsReportNotSupported(
     dataviews,
     userData?.permissions || []
   )
@@ -132,8 +132,8 @@ function DownloadActivityByVessel() {
       .filter((dataview) => dataview.datasets.length > 0)
 
     if (format === Format.GeoTIFF) {
-      uaEvent({
-        category: 'Data downloads',
+      trackEvent({
+        category: TrackCategory.DataDownloads,
         action: `Download GeoTIFF file`,
         label: JSON.stringify({
           regionName: downloadAreaName || EMPTY_FIELD_PLACEHOLDER,
@@ -143,10 +143,9 @@ function DownloadActivityByVessel() {
           ),
         }),
       })
-    }
-    if (format === Format.Csv || format === Format.Json) {
-      uaEvent({
-        category: 'Data downloads',
+    } else if (format === Format.Csv || format === Format.Json) {
+      trackEvent({
+        category: TrackCategory.DataDownloads,
         action: `Download ${format} file`,
         label: JSON.stringify({
           regionName: downloadAreaName || EMPTY_FIELD_PLACEHOLDER,
@@ -173,8 +172,8 @@ function DownloadActivityByVessel() {
     }
     await dispatch(downloadActivityThunk(downloadParams))
 
-    uaEvent({
-      category: 'Data downloads',
+    trackEvent({
+      category: TrackCategory.DataDownloads,
       action: `Activity download`,
       label: getEventLabel([
         downloadAreaName,
@@ -212,7 +211,7 @@ function DownloadActivityByVessel() {
             options={GRIDDED_FORMAT_OPTIONS}
             size="small"
             activeOption={format}
-            onOptionClick={(option) => setFormat(option.id as Format)}
+            onSelect={(option) => setFormat(option.id as Format)}
           />
         </div>
         {(format === Format.Csv || format === Format.Json) && (
@@ -223,7 +222,7 @@ function DownloadActivityByVessel() {
                 options={filteredGroupByOptions}
                 size="small"
                 activeOption={groupBy}
-                onOptionClick={(option) => setGroupBy(option.id as GroupBy)}
+                onSelect={(option) => setGroupBy(option.id as GroupBy)}
               />
             </div>
             <div>
@@ -232,7 +231,7 @@ function DownloadActivityByVessel() {
                 options={filteredTemporalResolutionOptions}
                 size="small"
                 activeOption={temporalResolution}
-                onOptionClick={(option) => setTemporalResolution(option.id as TemporalResolution)}
+                onSelect={(option) => setTemporalResolution(option.id as TemporalResolution)}
               />
             </div>
           </Fragment>
@@ -243,7 +242,7 @@ function DownloadActivityByVessel() {
             options={filteredSpatialResolutionOptions}
             size="small"
             activeOption={spatialResolution}
-            onOptionClick={(option) => setSpatialResolution(option.id as SpatialResolution)}
+            onSelect={(option) => setSpatialResolution(option.id as SpatialResolution)}
           />
         </div>
         <div className={styles.footer}>

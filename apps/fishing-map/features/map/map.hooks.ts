@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { debounce } from 'lodash'
 import { useTranslation } from 'react-i18next'
+import { Geometry } from 'geojson'
 import {
   InteractionEvent,
   TemporalGridFeature,
@@ -29,13 +30,13 @@ import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedEvents, setHighlightedEvents } from 'features/timebar/timebar.slice'
 import { setHintDismissed } from 'features/hints/hints.slice'
-import {
-  selectShowTimeComparison,
-  selectTimeComparisonValues,
-} from 'features/analysis/analysis.selectors'
 import { useMapClusterTilesLoaded, useMapSourceTiles } from 'features/map/map-sources.hooks'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
+import {
+  selectShowTimeComparison,
+  selectTimeComparisonValues,
+} from 'features/reports/reports.selectors'
 import {
   selectDefaultMapGeneratorsConfig,
   WORKSPACES_POINTS_TYPE,
@@ -54,6 +55,7 @@ import {
   ExtendedFeatureEvent,
   fetchFishingActivityInteractionThunk,
   fetchBQEventThunk,
+  SliceExtendedFeature,
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
 
@@ -287,6 +289,7 @@ export type TooltipEventFeature = {
   }
   event?: ExtendedFeatureEvent
   temporalgrid?: TemporalGridFeature
+  geometry?: Geometry
   category: DataviewCategory
 }
 
@@ -336,37 +339,12 @@ export const useMapHighlightedEvent = (features?: TooltipEventFeature[]) => {
   }, [features])
 }
 
-export const parseMapTooltipEvent = (
-  event: SliceInteractionEvent | null,
+export const parseMapTooltipFeatures = (
+  features: SliceExtendedFeature[],
   dataviews: UrlDataviewInstance<GeneratorType>[],
-  temporalgridDataviews: UrlDataviewInstance<GeneratorType>[]
-) => {
-  if (!event || !event.features) return null
-
-  const baseEvent = {
-    point: event.point,
-    latitude: event.latitude,
-    longitude: event.longitude,
-  }
-
-  const clusterFeature = event.features.find(
-    (f) => f.generatorType === GeneratorType.TileCluster && parseInt(f.properties.count) > 1
-  )
-
-  // We don't want to show anything else when hovering a cluster point
-  if (clusterFeature) {
-    return {
-      ...baseEvent,
-      features: [
-        {
-          type: clusterFeature.generatorType,
-          properties: clusterFeature.properties,
-        } as TooltipEventFeature,
-      ],
-    }
-  }
-
-  const tooltipEventFeatures: TooltipEventFeature[] = event.features.flatMap((feature) => {
+  temporalgridDataviews?: UrlDataviewInstance<GeneratorType>[]
+): TooltipEventFeature[] => {
+  const tooltipEventFeatures: TooltipEventFeature[] = features.flatMap((feature) => {
     const { temporalgrid, generatorId } = feature
     const baseFeature = {
       source: feature.source,
@@ -378,9 +356,9 @@ export const parseMapTooltipEvent = (
       return {
         ...baseFeature,
         category: DataviewCategory.Comparison,
-        value: event.features[0]?.value,
+        value: features[0]?.value,
         visible: true,
-        unit: event.features[0]?.temporalgrid?.unit,
+        unit: features[0]?.temporalgrid?.unit,
       } as TooltipEventFeature
     }
 
@@ -446,7 +424,43 @@ export const parseMapTooltipEvent = (
     }
     return tooltipEventFeature
   })
+  return tooltipEventFeatures
+}
 
+export const parseMapTooltipEvent = (
+  event: SliceInteractionEvent | null,
+  dataviews: UrlDataviewInstance<GeneratorType>[],
+  temporalgridDataviews: UrlDataviewInstance<GeneratorType>[]
+) => {
+  if (!event || !event.features) return null
+
+  const baseEvent = {
+    point: event.point,
+    latitude: event.latitude,
+    longitude: event.longitude,
+  }
+
+  const clusterFeature = event.features.find(
+    (f) => f.generatorType === GeneratorType.TileCluster && parseInt(f.properties.count) > 1
+  )
+
+  // We don't want to show anything else when hovering a cluster point
+  if (clusterFeature) {
+    return {
+      ...baseEvent,
+      features: [
+        {
+          type: clusterFeature.generatorType,
+          properties: clusterFeature.properties,
+        } as TooltipEventFeature,
+      ],
+    }
+  }
+  const tooltipEventFeatures = parseMapTooltipFeatures(
+    event.features,
+    dataviews,
+    temporalgridDataviews
+  )
   if (!tooltipEventFeatures.length) return null
   return {
     ...baseEvent,

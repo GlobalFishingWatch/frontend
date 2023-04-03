@@ -16,10 +16,9 @@ import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
 import useViewport, { useMapBounds } from 'features/map/map-viewport.hooks'
-import { isWorkspaceLocation } from 'routes/routes.selectors'
+import { selectIsReportLocation, selectIsWorkspaceLocation } from 'routes/routes.selectors'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
 import setInlineStyles from 'utils/dom'
-import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
 import { selectScreenshotModalOpen, setModalOpen } from 'features/modals/modals.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -139,8 +138,8 @@ const MapControls = ({
       },
     })
   }
-  const extendedControls = useSelector(isWorkspaceLocation)
-  const isAnalyzing = useSelector(selectIsAnalyzing)
+  const extendedControls = useSelector(selectIsWorkspaceLocation)
+  const reportLocation = useSelector(selectIsReportLocation)
   return (
     <Fragment>
       {modalOpen && <MapScreenshot />}
@@ -174,7 +173,7 @@ const MapControls = ({
           />
           {extendedControls && (
             <Fragment>
-              {!isAnalyzing && <Rulers />}
+              {!reportLocation && <Rulers />}
               <IconButton
                 icon="camera"
                 type="map-tool"

@@ -2,7 +2,6 @@ import { useState, useEffect, useRef, useMemo } from 'react'
 import cx from 'classnames'
 import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
-import { event as uaEvent } from 'react-ga'
 import { useCombobox, UseComboboxStateChange } from 'downshift'
 import type {
   searchOceanAreas as searchOceanAreasType,
@@ -32,6 +31,7 @@ import {
 } from 'data/workspaces'
 import { WORKSPACE } from 'routes/routes'
 import { getEventLabel } from 'utils/analytics'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './WorkspaceWizard.module.css'
 
 const MAX_RESULTS_NUMBER = 10
@@ -91,8 +91,8 @@ function WorkspaceWizard() {
   }
 
   const onSelectResult = ({ selectedItem }: UseComboboxStateChange<OceanArea>) => {
-    uaEvent({
-      category: 'Workspace Management',
+    trackEvent({
+      category: TrackCategory.WorkspaceManagement,
       action: 'Uses marine manager workspace wizard',
       label: getEventLabel([inputSearch, selectedItem.properties.name]),
     })

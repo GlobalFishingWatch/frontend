@@ -3,7 +3,6 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { SortableContext } from '@dnd-kit/sortable'
 import { useTranslation } from 'react-i18next'
-import { event as uaEvent } from 'react-ga'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { DatasetCategory, DatasetTypes } from '@globalfishingwatch/api-types'
@@ -14,6 +13,7 @@ import { selectUserDatasetsByCategory } from 'features/user/user.selectors'
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import { getEventLabel } from 'utils/analytics'
 import { selectReadOnly } from 'features/app/app.selectors'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import EnvironmentalLayerPanel from './EnvironmentalLayerPanel'
 import UserTrackLayerPanel from './UserTrackLayerPanel'
@@ -27,8 +27,8 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
 
   const onAddClick = useCallback(() => {
-    uaEvent({
-      category: 'Environmental data',
+    trackEvent({
+      category: TrackCategory.EnvironmentalData,
       action: `Open panel to upload new environmental dataset`,
       value: userDatasets.length,
     })
@@ -41,8 +41,8 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
       const dataset = dataview.datasets?.shift()
       const layerTitle = dataset?.name ?? dataset?.id ?? 'Unknown layer'
       const action = isVisible ? 'disable' : 'enable'
-      uaEvent({
-        category: 'Environmental data',
+      trackEvent({
+        category: TrackCategory.EnvironmentalData,
         action: `Toggle environmental layer`,
         label: getEventLabel([action, layerTitle]),
       })

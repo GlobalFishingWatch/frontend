@@ -35,6 +35,15 @@ export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions 
   ? {}
   : { debug: true }
 
+export const REPORT_VESSELS_PER_PAGE = 10
+export const REPORT_SHOW_MORE_VESSELS_PER_PAGE = REPORT_VESSELS_PER_PAGE * 5
+export const REPORT_VESSELS_GRAPH_GEARTYPE = 'geartype'
+export const REPORT_VESSELS_GRAPH_VESSELTYPE = 'vesselType'
+export const REPORT_VESSELS_GRAPH_FLAG = 'flag'
+export const REPORT_ACTIVITY_GRAPH_EVOLUTION = 'evolution'
+export const REPORT_ACTIVITY_GRAPH_BEFORE_AFTER = 'beforeAfter'
+export const REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON = 'periodComparison'
+
 // TODO use it to retrieve it and store in workspace.default in deploy
 export const APP_NAME = 'fishing-map'
 export const PUBLIC_SUFIX = 'public'
@@ -57,7 +66,7 @@ export const DEFAULT_VIEWPORT = {
 }
 
 export const DEFAULT_TIME_RANGE = {
-  start: getUTCDateTime(LAST_DATA_UPDATE).minus({ months: 3 }).toISO(),
+  start: getUTCDateTime(LAST_DATA_UPDATE)?.minus({ months: 3 }).toISO(),
   end: LAST_DATA_UPDATE,
 }
 
@@ -84,7 +93,12 @@ export const DEFAULT_WORKSPACE = {
   visibleEvents: 'all',
   timebarGraph: TimebarGraphs.None,
   bivariateDataviews: undefined,
-  analysis: undefined,
+  reportActivityGraph: REPORT_ACTIVITY_GRAPH_EVOLUTION,
+  reportCategory: undefined,
+  reportVesselFilter: '',
+  reportVesselGraph: REPORT_VESSELS_GRAPH_FLAG,
+  reportVesselPage: 0,
+  reportResultsPerPage: REPORT_VESSELS_PER_PAGE,
 }
 
 export const EVENTS_COLORS: Record<string, string> = {
@@ -131,4 +145,4 @@ export const POPUP_CATEGORY_ORDER = [
   DataviewCategory.Context,
 ]
 
-export const FIT_BOUNDS_ANALYSIS_PADDING = 30
+export const FIT_BOUNDS_REPORT_PADDING = 30

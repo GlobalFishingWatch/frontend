@@ -1,6 +1,5 @@
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { event as uaEvent } from 'react-ga'
 import { debounce } from 'lodash'
 import { useSelector } from 'react-redux'
 import {
@@ -28,9 +27,11 @@ import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hoo
 import { selectVessselGroupsAllowed } from 'features/vessel-groups/vessel-groups.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
-  setCurrentDataviewId,
+  setVesselGroupCurrentDataviewIds,
   setVesselGroupsModalOpen,
 } from 'features/vessel-groups/vessel-groups.slice'
+import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
+import { listAsSentence } from 'utils/shared'
 import styles from './ActivityFilters.module.css'
 import {
   areAllSourcesSelectedInDataview,
@@ -42,9 +43,9 @@ type ActivityFiltersProps = {
   dataview: UrlDataviewInstance
 }
 
-const trackEvent = debounce((filterKey: string, label: string) => {
-  uaEvent({
-    category: 'Activity data',
+const trackEventCb = debounce((filterKey: string, label: string) => {
+  trackEvent({
+    category: TrackCategory.ActivityData,
     action: `Click on ${filterKey} filter`,
     label: label,
   })
@@ -124,7 +125,10 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
 
   const showSourceFilter = sourceOptions && sourceOptions?.length > 1
 
-  const schemaFilters = getSchemaFiltersInDataview(dataview, vesselGroupsOptions)
+  const { filtersAllowed, filtersDisabled } = getSchemaFiltersInDataview(
+    dataview,
+    vesselGroupsOptions
+  )
 
   const onDataviewFilterChange = useCallback(
     (dataviewInstance: UrlDataviewInstance) => {
@@ -202,7 +206,7 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
   ) => {
     if ((selection as MultiSelectOption)?.id === VESSEL_GROUPS_MODAL_ID) {
       dispatch(setVesselGroupsModalOpen(true))
-      dispatch(setCurrentDataviewId(dataview.id))
+      dispatch(setVesselGroupCurrentDataviewIds([dataview.id]))
       return
     }
     const filterValues = Array.isArray(selection)
@@ -234,7 +238,7 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
       getActivitySources(dataview),
       ...getActivityFilters({ [filterKey]: filterValues }),
     ])
-    trackEvent(filterKey, eventLabel)
+    trackEventCb(filterKey, eventLabel)
   }
 
   const onSelectFilterOperationClick = (
@@ -262,7 +266,7 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
       getActivitySources(dataview),
       ...getActivityFilters({ [filterKey]: [filterOperator] }),
     ])
-    trackEvent(filterKey, eventLabel)
+    trackEventCb(filterKey, eventLabel)
   }
 
   const onRemoveFilterClick = (filterKey: string, selection: MultiSelectOption[]) => {
@@ -272,8 +276,8 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
       id: dataview.id,
       config: { filters: { ...filters, [filterKey]: filterValue } },
     })
-    uaEvent({
-      category: 'Activity data',
+    trackEvent({
+      category: TrackCategory.ActivityData,
       action: `Click on ${filterKey} filter`,
       label: getEventLabel([
         'deselect',
@@ -294,8 +298,8 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
       id: dataview.id,
       config: { filters, filterOperators },
     })
-    uaEvent({
-      category: 'Activity data',
+    trackEvent({
+      category: TrackCategory.ActivityData,
       action: `Click on ${filterKey} filter`,
       label: getEventLabel(['clear', getActivitySources(dataview)]),
     })
@@ -303,7 +307,7 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
 
   const showHistogramFilter = isHistogramDataviewSupported(dataview)
   const showSchemaFilters =
-    showHistogramFilter || showSourceFilter || schemaFilters.some(showSchemaFilter)
+    showHistogramFilter || showSourceFilter || filtersAllowed.some(showSchemaFilter)
 
   if (!showSchemaFilters) {
     return <p className={styles.placeholder}>{t('dataset.emptyFilters', 'No filters available')}</p>
@@ -323,7 +327,7 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
         />
       )}
       {showHistogramFilter && <HistogramRangeFilter dataview={dataview} />}
-      {schemaFilters.map((schemaFilter) => {
+      {filtersAllowed.map((schemaFilter) => {
         if (
           schemaFilter.id === 'vessel-groups' &&
           !schemaFilter.optionsSelected.length &&
@@ -346,6 +350,15 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
           />
         )
       })}
+      {filtersDisabled.length >= 1 && (
+        <p className={styles.filtersDisabled}>
+          {t('layer.filtersDisabled', {
+            defaultValue:
+              'Other filters ({{filters}}) are available depending on the sources selected',
+            filters: listAsSentence(filtersDisabled.map((filter) => filter.label)),
+          })}
+        </p>
+      )}
     </Fragment>
   )
 }

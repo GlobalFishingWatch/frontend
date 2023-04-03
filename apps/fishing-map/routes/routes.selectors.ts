@@ -5,7 +5,7 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { RootState } from 'store'
 import { WorkspaceParam } from 'types'
 import { WorkspaceCategories } from 'data/workspaces'
-import { ROUTE_TYPES, WORKSPACE_ROUTES } from './routes'
+import { REPORT, ROUTE_TYPES, WORKSPACE_ROUTES } from './routes'
 
 const selectLocation = (state: RootState) => state.location
 export const selectCurrentLocation = createSelector([selectLocation], ({ type, routesMap }) => {
@@ -18,13 +18,23 @@ export const selectLocationType = createSelector(
   (location) => location.type as ROUTE_TYPES
 )
 
-export const isWorkspaceLocation = createSelector([selectLocationType], (locationType) =>
+export const selectIsWorkspaceLocation = createSelector([selectLocationType], (locationType) =>
   WORKSPACE_ROUTES.includes(locationType)
+)
+
+export const selectIsReportLocation = createSelector(
+  [selectLocationType],
+  (locationType) => locationType === REPORT
 )
 
 export const selectLocationQuery = createSelector(
   [selectLocation],
   (location) => location.query as Query
+)
+
+export const selectLocationSearch = createSelector(
+  [selectLocation],
+  (location) => location.search as string
 )
 
 export const selectQueryParam = <T = any>(param: WorkspaceParam) =>
@@ -42,6 +52,16 @@ export const selectWorkspaceId = createSelector(
 export const selectLocationCategory = createSelector(
   [selectLocationPayload],
   (payload) => payload?.category as WorkspaceCategories
+)
+
+export const selectLocationDatasetId = createSelector(
+  [selectLocationPayload],
+  (payload) => payload?.datasetId as string
+)
+
+export const selectLocationAreaId = createSelector(
+  [selectLocationPayload],
+  (payload) => payload?.areaId as number
 )
 
 export const isValidLocationCategory = createSelector(
