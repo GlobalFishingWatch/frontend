@@ -138,28 +138,16 @@ export const datasets: Dataset[] = [
         description: 'Endpoint to lists vessels given a list of vessels ids',
         downloadable: true,
         method: 'GET',
-        pathTemplate: '/v2/vessels',
+        pathTemplate: 'https://gateway.api.dev.globalfishingwatch.org/prototypes/vessels',
         params: [],
         query: [
           {
             label: 'Datasets',
             id: 'datasets',
-            type: 'string',
+            type: '4wings-datasets',
             required: true,
           },
           { label: 'ids', id: 'ids', type: 'string', required: true },
-          {
-            label: 'limit',
-            id: 'limit',
-            type: 'number',
-            required: false,
-          },
-          {
-            label: 'offset',
-            id: 'offset',
-            type: 'number',
-            required: false,
-          },
           {
             label: 'binary',
             id: 'binary',
@@ -180,13 +168,13 @@ export const datasets: Dataset[] = [
         description: 'Endpoint to search for a vessel given a free form query.',
         downloadable: true,
         method: 'GET',
-        pathTemplate: '/v2/vessels/search',
+        pathTemplate: 'https://gateway.api.dev.globalfishingwatch.org/prototypes/vessels/search',
         params: [],
         query: [
           {
             label: 'Datasets',
             id: 'datasets',
-            type: 'string',
+            type: '4wings-datasets',
             required: true,
           },
           {
@@ -194,18 +182,6 @@ export const datasets: Dataset[] = [
             id: 'query',
             type: 'string',
             required: true,
-          },
-          {
-            label: 'limit',
-            id: 'limit',
-            type: 'number',
-            required: false,
-          },
-          {
-            label: 'offset',
-            id: 'offset',
-            type: 'number',
-            required: false,
           },
           {
             label: 'binary',
@@ -232,13 +208,14 @@ export const datasets: Dataset[] = [
         description: 'Endpoint to searches for a vessel given a query',
         downloadable: true,
         method: 'GET',
-        pathTemplate: '/v2/vessels/advanced-search',
+        pathTemplate:
+          'https://gateway.api.dev.globalfishingwatch.org/prototypes/vessels/advanced-search',
         params: [],
         query: [
           {
             label: 'Datasets',
             id: 'datasets',
-            type: 'string',
+            type: '4wings-datasets',
             required: true,
           },
           {
@@ -246,18 +223,6 @@ export const datasets: Dataset[] = [
             id: 'query',
             type: 'string',
             required: true,
-          },
-          {
-            label: 'limit',
-            id: 'limit',
-            type: 'number',
-            required: false,
-          },
-          {
-            label: 'offset',
-            id: 'offset',
-            type: 'number',
-            required: false,
           },
           {
             label: 'binary',
