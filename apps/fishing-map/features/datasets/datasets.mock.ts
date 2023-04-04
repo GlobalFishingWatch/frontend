@@ -108,8 +108,8 @@ export const datasets: Dataset[] = [
           },
         },
       },
-      lastTransmissionDate: { type: 'string', format: 'date-time' },
-      firstTransmissionDate: { type: 'string', format: 'date-time' },
+      last_transmission_date: { type: 'string', format: 'date-time' },
+      first_transmission_date: { type: 'string', format: 'date-time' },
     } as any,
     fieldsAllowed: [
       'shipname',
@@ -118,8 +118,8 @@ export const datasets: Dataset[] = [
       'callsign',
       'imo',
       'flag',
-      'firstTransmissionDate',
-      'lastTransmissionDate',
+      'last_transmission_date',
+      'first_transmission_date',
       'vesselRegistryInfo.shipname',
       'vesselRegistryInfo.nShipname',
       'vesselRegistryInfo.ssvid',
@@ -147,7 +147,7 @@ export const datasets: Dataset[] = [
             type: '4wings-datasets',
             required: true,
           },
-          { label: 'ids', id: 'ids', type: 'string', required: true },
+          { label: 'ids', id: 'ids', type: '4wings-datasets', required: true },
           {
             label: 'binary',
             id: 'binary',
@@ -208,8 +208,7 @@ export const datasets: Dataset[] = [
         description: 'Endpoint to searches for a vessel given a query',
         downloadable: true,
         method: 'GET',
-        pathTemplate:
-          'https://gateway.api.dev.globalfishingwatch.org/prototypes/vessels/advanced-search',
+        pathTemplate: 'https://gateway.api.dev.globalfishingwatch.org/prototypes/vessels/search',
         params: [],
         query: [
           {
@@ -219,8 +218,8 @@ export const datasets: Dataset[] = [
             required: true,
           },
           {
-            label: 'query',
-            id: 'query',
+            label: 'where',
+            id: 'where',
             type: 'string',
             required: true,
           },
