@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { batch, useSelector } from 'react-redux'
 import { useIntersectionObserver } from '@researchgate/react-intersection-observer'
 import cx from 'classnames'
@@ -7,13 +7,10 @@ import { Trans, useTranslation } from 'react-i18next'
 import { debounce } from 'lodash'
 import { Dataset, DatasetTypes, Locale } from '@globalfishingwatch/api-types'
 import {
-  IconButton,
   InputText,
   Spinner,
   Button,
-  Choice,
   Icon,
-  ChoiceOption,
   TransmissionsTimeline,
 } from '@globalfishingwatch/ui-components'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
@@ -48,11 +45,10 @@ import {
   selectSearchStatusCode,
   VesselWithDatasets,
   RESULTS_PER_PAGE,
-  checkSearchFiltersEnabled,
   resetFilters,
   setSuggestionClicked,
-  SearchType,
   SearchFilter,
+  selectSearchOption,
 } from './search.slice'
 import styles from './Search.module.css'
 import SearchFilters from './SearchFilters'
@@ -88,26 +84,9 @@ function Search() {
   const searchStatus = useSelector(selectSearchStatus)
   const searchStatusCode = useSelector(selectSearchStatusCode)
   const gfwUser = useSelector(isGFWUser)
-  const hasSearchFilters = checkSearchFiltersEnabled(searchFilters)
   const vesselDataviews = useSelector(selectVesselsDataviews)
   const [vesselsSelected, setVesselsSelected] = useState<VesselWithDatasets[]>([])
-
-  const searchOptions = useMemo(() => {
-    return [
-      {
-        id: 'basic' as SearchType,
-        label: t('search.basic', 'Basic'),
-      },
-      {
-        id: 'advanced' as SearchType,
-        label: t('search.advanced', 'Advanced'),
-      },
-    ] as ChoiceOption<SearchType>[]
-  }, [t])
-
-  const [activeSearchOption, setActiveSearchOption] = useState<SearchType>(
-    hasSearchFilters ? searchOptions[1].id : searchOptions[0].id
-  )
+  const activeSearchOption = useSelector(selectSearchOption)
 
   const searchDatasets = useSelector(
     activeSearchOption === 'basic' ? selectBasicSearchDatasets : selectAdvancedSearchDatasets
@@ -115,7 +94,6 @@ function Search() {
 
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const promiseRef = useRef<any>()
-  const scrollRef = useRef<HTMLDivElement | null>(null)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchResults = useCallback(
@@ -275,19 +253,6 @@ function Search() {
     searchPagination.offset &&
     searchPagination.offset <= searchPagination.total
 
-  const onSearchOptionChange = (option: ChoiceOption, e: React.MouseEvent<Element, MouseEvent>) => {
-    if (option.id === activeSearchOption && scrollRef.current) {
-      scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' })
-    } else {
-      trackEvent({
-        category: TrackCategory.SearchVessel,
-        action: 'Toggle search type to filter results',
-        label: option.id,
-      })
-      setActiveSearchOption(option.id as SearchType)
-    }
-  }
-
   const onAddToVesselGroup = () => {
     const dataviewIds = heatmapDataviews.map(({ id }) => id)
     batch(() => {
@@ -308,24 +273,8 @@ function Search() {
 
   return (
     <Downshift onSelect={onSelect} itemToString={(item) => (item ? item.shipname : '')}>
-      {({ getInputProps, getItemProps, getMenuProps, highlightedIndex, selectedItem }) => (
+      {({ getInputProps, getItemProps, getMenuProps, highlightedIndex }) => (
         <div className={styles.search}>
-          <div className={styles.header}>
-            <label className={styles.title}>{t('search.title', 'Search')}</label>
-            <Choice
-              options={searchOptions}
-              activeOption={activeSearchOption}
-              onSelect={onSearchOptionChange}
-              size="small"
-            />
-            <IconButton
-              icon="close"
-              onClick={onCloseClick}
-              type="border"
-              tooltip={t('search.close', 'Close search')}
-              tooltipPlacement="bottom"
-            />
-          </div>
           {activeSearchOption === 'advanced' && !advancedSearchAllowed ? (
             <SearchPlaceholder>
               <Trans i18nKey="search.advancedDisabled">
@@ -335,7 +284,7 @@ function Search() {
               </Trans>
             </SearchPlaceholder>
           ) : (
-            <div ref={scrollRef} className={styles.scrollContainer}>
+            <div className={styles.scrollContainer}>
               <div className={styles.form}>
                 <InputText
                   {...getInputProps()}

@@ -41,6 +41,7 @@ interface SearchState {
   data: VesselWithDatasets[] | null
   suggestion: string | null
   suggestionClicked: boolean
+  option: SearchType
   pagination: {
     loading: boolean
     total: number
@@ -58,6 +59,7 @@ const initialState: SearchState = {
   data: null,
   suggestion: null,
   suggestionClicked: false,
+  option: 'basic',
   filtersOpen: false,
   filters: {},
 }
@@ -68,10 +70,6 @@ export type VesselSearchThunk = {
   filters: SearchFilter
   datasets: Dataset[]
   gfwUser?: boolean
-}
-
-export function checkSearchFiltersEnabled(filters: SearchFilter): boolean {
-  return Object.values(filters).filter((f) => f !== undefined).length > 0
 }
 
 export function checkAdvanceSearchFiltersEnabled(filters: SearchFilter): boolean {
@@ -204,6 +202,9 @@ const searchSlice = createSlice({
       state.filters = initialState.filters
       state.filtersOpen = initialState.filtersOpen
     },
+    setSearchOption: (state, action: PayloadAction<SearchType>) => {
+      state.option = action.payload
+    },
     setSuggestionClicked: (state, action: PayloadAction<boolean>) => {
       state.suggestionClicked = action.payload
     },
@@ -246,10 +247,12 @@ export const {
   setFilters,
   setFiltersOpen,
   resetFilters,
+  setSearchOption,
   setSuggestionClicked,
   cleanVesselSearchResults,
 } = searchSlice.actions
 
+export const selectSearchOption = (state: RootState) => state.search.option
 export const selectSearchResults = (state: RootState) => state.search.data
 export const selectSearchStatus = (state: RootState) => state.search.status
 export const selectSearchStatusCode = (state: RootState) => state.search.statusCode

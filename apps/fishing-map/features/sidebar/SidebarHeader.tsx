@@ -1,10 +1,16 @@
-import { Fragment, useCallback, useState } from 'react'
+import { Fragment, useCallback, useMemo, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import Sticky from 'react-sticky-el'
 import Link from 'redux-first-router-link'
-import { IconButton, Logo, SubBrands } from '@globalfishingwatch/ui-components'
+import {
+  Choice,
+  ChoiceOption,
+  IconButton,
+  Logo,
+  SubBrands,
+} from '@globalfishingwatch/ui-components'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import {
   selectLastVisitedWorkspace,
@@ -15,6 +21,7 @@ import {
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   selectIsReportLocation,
+  selectIsSearchLocation,
   selectIsWorkspaceLocation,
   selectLocationCategory,
 } from 'routes/routes.selectors'
@@ -26,6 +33,7 @@ import useMapInstance from 'features/map/map-context.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { resetReportData } from 'features/reports/reports.slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { SearchType, selectSearchOption, setSearchOption } from 'features/search/search.slice'
 import { useClipboardNotification } from './sidebar.hooks'
 import styles from './SidebarHeader.module.css'
 
@@ -133,14 +141,17 @@ function ShareWorkspaceButton() {
 }
 
 function SidebarHeader() {
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)
   const locationCategory = useSelector(selectLocationCategory)
-  const workspaceLocation = useSelector(selectIsWorkspaceLocation)
-  const reportLocation = useSelector(selectIsReportLocation)
+  const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
+  const isSearchLocation = useSelector(selectIsSearchLocation)
+  const isReportLocation = useSelector(selectIsReportLocation)
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
+  const activeSearchOption = useSelector(selectSearchOption)
   const { cleanFeatureState } = useFeatureState(useMapInstance())
-  const showBackToWorkspaceButton = !workspaceLocation
+  const showBackToWorkspaceButton = !isWorkspaceLocation
 
   const getSubBrand = useCallback((): SubBrands | undefined => {
     let subBrand: SubBrands | undefined
@@ -154,15 +165,46 @@ function SidebarHeader() {
     dispatch(resetReportData())
   }
 
+  const searchOptions = useMemo(() => {
+    return [
+      {
+        id: 'basic' as SearchType,
+        label: t('search.basic', 'Basic'),
+      },
+      {
+        id: 'advanced' as SearchType,
+        label: t('search.advanced', 'Advanced'),
+      },
+    ] as ChoiceOption<SearchType>[]
+  }, [t])
+
+  const onSearchOptionChange = (option: ChoiceOption, e: React.MouseEvent<Element, MouseEvent>) => {
+    trackEvent({
+      category: TrackCategory.SearchVessel,
+      action: 'Toggle search type to filter results',
+      label: option.id,
+    })
+    dispatch(setSearchOption(option.id as SearchType))
+  }
+
   return (
     <Sticky scrollElement=".scrollContainer">
       <div className={styles.sidebarHeader}>
         <a href="https://globalfishingwatch.org" className={styles.logoLink}>
           <Logo className={styles.logo} subBrand={getSubBrand()} />
         </a>
-        {workspaceLocation && !readOnly && <SaveWorkspaceButton />}
-        {(workspaceLocation || reportLocation) && !readOnly && <ShareWorkspaceButton />}
-        {(reportLocation || (showBackToWorkspaceButton && lastVisitedWorkspace)) && (
+        {isWorkspaceLocation && !readOnly && <SaveWorkspaceButton />}
+        {(isWorkspaceLocation || isReportLocation) && !readOnly && <ShareWorkspaceButton />}
+        {isSearchLocation && !readOnly && (
+          <Choice
+            options={searchOptions}
+            activeOption={activeSearchOption}
+            onSelect={onSearchOptionChange}
+            size="small"
+            className={styles.searchOption}
+          />
+        )}
+        {(isReportLocation || (showBackToWorkspaceButton && lastVisitedWorkspace)) && (
           <Link className={styles.workspaceLink} to={lastVisitedWorkspace} onClick={onCloseClick}>
             <IconButton type="border" icon="close" />
           </Link>
