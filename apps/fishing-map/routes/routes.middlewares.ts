@@ -84,6 +84,7 @@ export const routerWorkspaceMiddleware: Middleware =
       const comesFromWorkspacesRoute = WORKSPACE_ROUTES.includes(prev.type)
       const isReportLocation = action.type === REPORT
       if (routesToSaveWorkspace.includes(action.type)) {
+        // TODO include search location
         if (isReportLocation) {
           dispatch(
             setLastWorkspaceVisited({
