@@ -11,6 +11,7 @@ import {
 import { AsyncError, AsyncReducer, AsyncReducerStatus, createAsyncSlice } from 'utils/async-slice'
 import { RootState } from 'store'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
+import { selectReportId } from 'routes/routes.selectors'
 
 export const fetchReportByIdThunk = createAsyncThunk(
   'reports/fetchById',
@@ -30,21 +31,17 @@ export const fetchReportByIdThunk = createAsyncThunk(
 
 export const fetchReportsThunk = createAsyncThunk(
   'reports/fetch',
-  async (ids, { signal, rejectWithValue, getState }) => {
+  async (ids: string[] | undefined, { signal, rejectWithValue }) => {
     try {
-      const reportsResponse = await fetch(`http://localhost:3000/reports`, { signal }).then((r) =>
-        r.json()
+      const reportsParams = {
+        ...(ids && { ids }),
+        ...DEFAULT_PAGINATION_PARAMS,
+      }
+      const reportsResponse = await GFWAPI.fetch<APIPagination<Report>>(
+        `/reports?${stringify(reportsParams, { arrayFormat: 'comma' })}`,
+        { signal }
       )
-      // const reportsParams = {
-      //   ...(ids && { ids }),
-      //   cache: false,
-      //   ...DEFAULT_PAGINATION_PARAMS,
-      // }
-      // const reportsResponse = await GFWAPI.fetch<APIPagination<Report>>(
-      //   `/reports?${stringify(reportsParams, { arrayFormat: 'comma' })}`,
-      //   { signal }
-      // )
-      return reportsResponse
+      return reportsResponse?.entries
     } catch (e: any) {
       console.warn(e)
       return rejectWithValue(parseAPIError(e))
@@ -108,6 +105,35 @@ export const updateReportThunk = createAsyncThunk<
   }
 )
 
+export const deleteReportThunk = createAsyncThunk<
+  { id: Report['id'] },
+  { id: Report['id'] },
+  {
+    rejectValue: AsyncError
+  }
+>(
+  'reports/delete',
+  async (report, { rejectWithValue }) => {
+    try {
+      await GFWAPI.fetch<Report>(`/reports/${report?.id}`, {
+        method: 'DELETE',
+      })
+      return report
+    } catch (e: any) {
+      console.warn(e)
+      return rejectWithValue(parseAPIError(e))
+    }
+  },
+  {
+    condition: (reportId) => {
+      if (!reportId) {
+        console.warn('To remove a report you need the id')
+        return false
+      }
+    },
+  }
+)
+
 export type ResourcesState = AsyncReducer<Report>
 
 const { slice: reportsSlice, entityAdapter } = createAsyncSlice<ResourcesState, Report>({
@@ -117,6 +143,7 @@ const { slice: reportsSlice, entityAdapter } = createAsyncSlice<ResourcesState, 
     fetchByIdThunk: fetchReportByIdThunk,
     createThunk: createReportThunk,
     updateThunk: updateReportThunk,
+    deleteThunk: deleteReportThunk,
   },
   reducers: {},
 })
@@ -131,6 +158,14 @@ export function selectAllReports(state: RootState) {
 
 export const selectReportById = memoize((id: number) =>
   createSelector([(state: RootState) => state], (state) => selectById(state, id))
+)
+
+export const selectCurrentReport = createSelector(
+  [selectReportId, (state) => state.reports],
+  (reportId, reports) => {
+    const report = selectReportById(reportId)({ reports })
+    return report
+  }
 )
 
 export const selectReportsStatus = (state: RootState) => state.reports.status

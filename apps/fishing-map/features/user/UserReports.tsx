@@ -8,14 +8,13 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { sortByCreationDate } from 'utils/dates'
 import {
+  deleteReportThunk,
   fetchReportsThunk,
   selectAllReports,
   selectReportsStatus,
   selectReportsStatusId,
 } from 'features/reports/reports.slice'
 import { REPORT } from 'routes/routes'
-import { WorkspaceCategories } from 'data/workspaces'
-import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
 import styles from './User.module.css'
 
 function UserReports() {
@@ -24,7 +23,6 @@ function UserReports() {
   const reports = useSelector(selectAllReports)
   const reportsStatus = useSelector(selectReportsStatus)
   const reportsStatusId = useSelector(selectReportsStatusId)
-  const workspaces = useSelector(selectWorkspaces)
 
   useEffect(() => {
     dispatch(fetchReportsThunk())
@@ -39,10 +37,10 @@ function UserReports() {
         )}\n${report.name}`
       )
       if (confirmation) {
-        console.log('TODO: delete report', report)
+        dispatch(deleteReportThunk(report))
       }
     },
-    [t]
+    [dispatch, t]
   )
   const loading = reportsStatus === AsyncReducerStatus.Loading
 
@@ -59,23 +57,13 @@ function UserReports() {
         <ul>
           {reports && reports.length > 0 ? (
             sortByCreationDate<Report>(reports).map((report) => {
-              const workspace = workspaces.find((w) => {
-                return w.id === report.workspaceId
-              })
               return (
                 <li className={styles.dataset} key={report.id}>
                   <Link
                     className={styles.workspaceLink}
                     to={{
                       type: REPORT,
-                      payload: {
-                        category: workspace
-                          ? workspace.category
-                          : WorkspaceCategories.FishingActivity,
-                        workspaceId: report.workspaceId,
-                        areaId: report.areaId,
-                        datasetId: report.datasetId,
-                      },
+                      payload: { reportId: report.id },
                       query: {},
                     }}
                   >

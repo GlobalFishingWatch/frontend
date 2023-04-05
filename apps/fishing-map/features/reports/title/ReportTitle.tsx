@@ -8,6 +8,7 @@ import { selectReportAreaDataview } from 'features/reports/reports.selectors'
 import { getContextAreaLink } from 'features/dataviews/dataviews.utils'
 import ReportTitlePlaceholder from 'features/reports/placeholders/ReportTitlePlaceholder'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectCurrentReport } from 'features/reports/reports.slice'
 import styles from './ReportTitle.module.css'
 
 type ReportTitleProps = {
@@ -19,10 +20,12 @@ type ReportTitleProps = {
 export default function ReportTitle({ area }: ReportTitleProps) {
   const { t } = useTranslation()
   const areaDataview = useSelector(selectReportAreaDataview)
-  const name =
-    areaDataview?.config.type === GeneratorType.UserContext
-      ? areaDataview?.datasets?.[0]?.name
-      : area?.name
+  const report = useSelector(selectCurrentReport)
+  const name = report
+    ? report.name
+    : areaDataview?.config.type === GeneratorType.UserContext
+    ? areaDataview?.datasets?.[0]?.name
+    : area?.name
   const linkHref = getContextAreaLink(areaDataview?.config?.layers?.[0]?.id, area)
   const onPrintClick = () => {
     trackEvent({
