@@ -1,9 +1,14 @@
+import { OwnerType, Workspace } from '@globalfishingwatch/api-types'
+
 export type Report = {
-  id: number
+  id: string
   name: string
   description: string
-  areaId: number
+  public?: boolean
+  areaId: string
   datasetId: string
-  workspaceId: string
+  workspace: Workspace
   createdAt: string
+  ownerId: string
+  ownerType: OwnerType
 }
