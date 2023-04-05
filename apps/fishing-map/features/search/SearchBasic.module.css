@@ -6,11 +6,25 @@
 }
 
 .form {
-  padding: var(--space-S) var(--space-S) var(--space-M) var(--space-S);
+  padding: var(--space-S);
 }
 
-.input {
-  flex: 1;
+.input input {
+  padding: 0 7rem 0 1.5rem;
+  border-radius: 2rem;
+  background: var(--color-terthiary-blue);
+  border-bottom: 1px solid var(--color-terthiary-blue);
+}
+
+.input input:placeholder-shown {
+  border-bottom: 1px solid var(--color-terthiary-blue);
+}
+
+.input > *:last-child {
+  right: 1.5rem;
+  bottom: 50%;
+  margin: 0;
+  transform: translateY(50%);
 }
 
 .searchResults {

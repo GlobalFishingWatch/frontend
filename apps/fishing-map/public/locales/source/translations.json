@@ -429,6 +429,7 @@
     "notAllowed": "The available datasets don't allow searching vessels",
     "placeholder": "Type to search vessels",
     "seeVessel": "See vessel",
+    "selectVessel": "Select vessel",
     "seeVessels_one": "See {{count}} vessels",
     "seeVessels_other": "See vessels",
     "suggestion": "Did you mean",

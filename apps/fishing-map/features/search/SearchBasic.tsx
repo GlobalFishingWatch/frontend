@@ -6,7 +6,7 @@ import { InputText, Spinner } from '@globalfishingwatch/ui-components'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import SearchResults from 'features/search/SearchResults'
+import SearchBasicResults from 'features/search/SearchBasicResults'
 import {
   selectSearchResults,
   selectSearchStatus,
@@ -74,7 +74,6 @@ function SearchBasic({
               {...getInputProps()}
               onChange={onInputChange}
               value={searchQuery}
-              label={t('search.mainQueryLabel', 'Name, IMO or MMSI')}
               autoFocus
               disabled={!basicSearchAllowed}
               className={styles.input}
@@ -83,7 +82,10 @@ function SearchBasic({
                 searchStatus === AsyncReducerStatus.Loading ||
                 searchStatus === AsyncReducerStatus.Aborted
               }
-              placeholder={t('search.placeholder', 'Type to search vessels')}
+              placeholder={`${t('search.placeholder', 'Type to search vessels')} (${t(
+                'search.mainQueryLabel',
+                'Name, IMO or MMSI'
+              )})`}
             />
           </div>
           {(searchStatus === AsyncReducerStatus.Loading ||
@@ -111,7 +113,7 @@ function SearchBasic({
                     ?
                   </li>
                 )}
-              <SearchResults
+              <SearchBasicResults
                 searchResults={searchResults}
                 highlightedIndex={highlightedIndex}
                 getItemProps={getItemProps}

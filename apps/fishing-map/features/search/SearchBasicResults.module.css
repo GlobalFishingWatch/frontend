@@ -1,29 +1,26 @@
 .searchResult {
   position: relative;
-  padding: var(--space-M) var(--space-S);
-  background-color: transparent;
+  padding: var(--space-M);
   cursor: pointer;
-  border-left: 0.1rem solid transparent;
-  border-right: 0.5rem solid transparent;
   transition: background-color 150ms linear, box-shadow 150ms linear, border 150ms linear;
+  border-bottom: var(--border);
 }
 
 .searchResult:hover,
-.highlighted {
-  background-color: var(--color-white);
-  box-shadow: var(--box-shadow);
-  border-left: 0.5rem solid var(--color-secondary-blue);
-  border-right: 0.1rem solid transparent;
-}
-
+.highlighted,
 .selected {
   background: var(--color-terthiary-blue);
 }
 
+.container {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
 .inWorkspace {
-  /* background: var(--color-terthiary-blue); */
   color: var(--color-secondary-blue);
-  pointer-events: none;
+  /* pointer-events: none; */
 }
 
 .alreadyAddedMsg {
@@ -32,22 +29,13 @@
   font: var(--font-S);
 }
 
-.searchResult:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  left: var(--space-S);
-  bottom: 0;
-  height: 0.1rem;
-  width: calc(100% - var(--space-S));
-  background-color: var(--color-border);
-  z-index: -1;
-}
-
 .properties {
   display: flex;
+  justify-content: space-between;
   flex-wrap: wrap;
   opacity: var(--opacity-secondary);
   transition: opacity 150ms linear;
+  width: 100%;
 }
 
 .property {
@@ -64,8 +52,7 @@
 }
 
 .fullWidth {
-  margin-right: unset;
-  width: 100%;
+  flex: 1;
 }
 
 .searchResult:hover .properties,

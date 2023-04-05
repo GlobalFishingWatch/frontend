@@ -6,7 +6,7 @@ import { InputText, Spinner } from '@globalfishingwatch/ui-components'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import SearchResults from 'features/search/SearchResults'
+import SearchBasicResults from 'features/search/SearchBasicResults'
 import {
   selectSearchResults,
   selectSearchStatus,
@@ -123,7 +123,7 @@ function SearchAdvanced({
                       ?
                     </li>
                   )}
-                <SearchResults
+                <SearchBasicResults
                   searchResults={searchResults}
                   highlightedIndex={highlightedIndex}
                   getItemProps={getItemProps}
