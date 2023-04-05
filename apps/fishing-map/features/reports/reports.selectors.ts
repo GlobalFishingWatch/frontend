@@ -76,7 +76,7 @@ export const selectReportActivityFlatten = createSelector(
           console.warn('Missing dataview for report dataset:', dataset)
           return []
         }
-        return (vessels || []).flatMap((vessel) => {
+        return (vessels || ([] as any)).flatMap((vessel) => {
           if (
             reportCategory !== ReportCategory.Detections &&
             EMPTY_API_VALUES.includes(vessel.flag) &&

@@ -44,10 +44,10 @@ export type AreasState = Record<string, DatasetAreas>
 
 const initialState: AreasState = {}
 
-export type AreaKeys = { datasetId: string; areaId: string }
+export type AreaKeys = { datasetId: string; areaId: number }
 export type FetchAreaDetailThunkParam = {
   dataset: Dataset
-  areaId: string
+  areaId: number
   areaName?: string
   simplify?: number
 }
@@ -216,13 +216,13 @@ export const selectDatasetAreasById = memoize((id: string) =>
 )
 
 export const selectDatasetAreaStatus = memoize(
-  ({ datasetId, areaId }: { datasetId: string; areaId: string }) =>
+  ({ datasetId, areaId }: { datasetId: string; areaId: number }) =>
     createSelector([selectDatasetAreaById(datasetId)], (area): AsyncReducerStatus => {
       return area?.detail?.[areaId]?.status
     })
 )
 export const selectDatasetAreaDetail = memoize(
-  ({ datasetId, areaId }: { datasetId: string; areaId: string }) =>
+  ({ datasetId, areaId }: { datasetId: string; areaId: number }) =>
     createSelector([selectDatasetAreaById(datasetId)], (area): Area => {
       return area?.detail?.[areaId]?.data
     })

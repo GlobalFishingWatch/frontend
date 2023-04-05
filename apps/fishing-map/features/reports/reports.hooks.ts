@@ -98,7 +98,7 @@ export function useFetchReportArea() {
       dispatch(
         fetchAreaDetailThunk({
           dataset: reportAreaDataset,
-          areaId: areaId.toString(),
+          areaId,
           simplify,
         })
       )

@@ -13,7 +13,11 @@ export default function ReportDownload() {
   const { datasetId, areaId } = useSelector(selectReportAreaIds)
 
   const handleMoreOptionsClick = () => {
-    trackEvent({ category: TrackCategory.Analysis, action: 'Download report', label: areaId })
+    trackEvent({
+      category: TrackCategory.Analysis,
+      action: 'Download report',
+      label: areaId?.toString(),
+    })
     dispatch(setDownloadActivityAreaKey({ datasetId, areaId }))
   }
 

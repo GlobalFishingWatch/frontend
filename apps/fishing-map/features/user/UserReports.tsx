@@ -25,7 +25,7 @@ function UserReports() {
   const reportsStatusId = useSelector(selectReportsStatusId)
 
   useEffect(() => {
-    dispatch(fetchReportsThunk())
+    dispatch(fetchReportsThunk([]))
   }, [dispatch])
 
   const onDeleteClick = useCallback(
