@@ -100,7 +100,7 @@ const store = configureStore({
   enhancers: (defaultEnhancers) => [routerEnhancer, ...defaultEnhancers],
 })
 
-export type RootState = ReturnType<typeof rootReducer>
+export type RootState = any // ReturnType<typeof rootReducer>
 // TODO: fix this once issue solved
 // https://github.com/reduxjs/redux-toolkit/issues/1854
 // export type AppDispatch = typeof store.dispatch
