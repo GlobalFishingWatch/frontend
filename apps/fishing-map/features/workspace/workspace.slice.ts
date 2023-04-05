@@ -23,9 +23,10 @@ import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import {
   selectLocationCategory,
   selectLocationType,
+  selectReportId,
   selectUrlDataviewInstances,
 } from 'routes/routes.selectors'
-import { HOME, ROUTE_TYPES, WORKSPACE } from 'routes/routes'
+import { HOME, REPORT, ROUTE_TYPES, WORKSPACE } from 'routes/routes'
 import { cleanQueryLocation, updateLocation, updateQueryParam } from 'routes/routes.actions'
 import { selectDaysFromLatest } from 'features/app/app.selectors'
 import {
@@ -43,6 +44,7 @@ import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { getVesselDataviewInstanceDatasetConfig } from 'features/dataviews/dataviews.utils'
 import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
 import { getUTCDateTime } from 'utils/dates'
+import { fetchReportsThunk } from 'features/reports/reports.slice'
 import { selectWorkspaceStatus } from './workspace.selectors'
 
 type LastWorkspaceVisited = { type: ROUTE_TYPES; payload: any; query: any; replaceQuery?: boolean }
@@ -85,14 +87,21 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const urlDataviewInstances = selectUrlDataviewInstances(state)
     const guestUser = isGuestUser(state)
     const gfwUser = isGFWUser(state)
-
+    const reportId = selectReportId(state)
     try {
-      let workspace: Workspace<WorkspaceState> =
-        workspaceId && workspaceId !== DEFAULT_WORKSPACE_ID
-          ? await GFWAPI.fetch<Workspace<WorkspaceState>>(`/workspaces/${workspaceId}`, {
-              signal,
-            })
-          : null
+      let workspace: Workspace<WorkspaceState> = null
+      if (locationType === REPORT) {
+        const action = dispatch(fetchReportsThunk([reportId]))
+        const resolvedAction = await action
+        if (fetchReportsThunk.fulfilled.match(resolvedAction)) {
+          workspace = resolvedAction.payload?.[0]?.workspace
+        }
+        // TODO fetch report and use the workspace within it
+      } else if (workspaceId && workspaceId !== DEFAULT_WORKSPACE_ID) {
+        await GFWAPI.fetch<Workspace<WorkspaceState>>(`/workspaces/${workspaceId}`, {
+          signal,
+        })
+      }
       if ((!workspace && locationType === HOME) || workspaceId === DEFAULT_WORKSPACE_ID) {
         workspace = await getDefaultWorkspace()
       }
