@@ -1,0 +1,55 @@
+.scrollContainer {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.form {
+  padding: var(--space-S) var(--space-S) var(--space-M) var(--space-S);
+}
+
+.input {
+  flex: 1;
+}
+
+.searchResults {
+  flex: 1;
+  min-height: 40rem;
+  position: relative;
+}
+
+.spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 15rem;
+}
+
+.error {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.red {
+  color: var(--color-danger-red);
+}
+
+.searchSuggestion {
+  display: flex;
+  padding: var(--space-S);
+  background-color: var(--color-white);
+  box-shadow: var(--box-shadow);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.suggestion {
+  margin: 0 3px;
+  color: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}

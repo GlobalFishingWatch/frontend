@@ -2,33 +2,19 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { batch, useSelector } from 'react-redux'
 import { useIntersectionObserver } from '@researchgate/react-intersection-observer'
 import cx from 'classnames'
-import Downshift from 'downshift'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { debounce } from 'lodash'
-import { Dataset, DatasetTypes, Locale } from '@globalfishingwatch/api-types'
-import {
-  InputText,
-  Spinner,
-  Button,
-  Icon,
-  TransmissionsTimeline,
-} from '@globalfishingwatch/ui-components'
+import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
+import { Spinner, Button } from '@globalfishingwatch/ui-components'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
-import { getVesselDataviewInstance, VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
+import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { selectSearchQuery } from 'features/app/app.selectors'
-import I18nDate from 'features/i18n/i18nDate'
-import LocalStorageLoginLink from 'routes/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
-import { selectVesselsDataviews } from 'features/dataviews/dataviews.slice'
-import I18nFlag from 'features/i18n/i18nFlag'
-import { FIRST_YEAR_OF_DATA } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
-import DatasetLabel from 'features/datasets/DatasetLabel'
 import { isGFWUser } from 'features/user/user.slice'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
@@ -37,12 +23,13 @@ import {
   setVesselGroupCurrentDataviewIds,
 } from 'features/vessel-groups/vessel-groups.slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import SearchBasic from 'features/search/SearchBasic'
+import SearchAdvanced from 'features/search/SearchAdvanced'
+import SearchPlaceholder from 'features/search/SearchPlaceholders'
+import { WORKSPACE } from 'routes/routes'
 import {
   fetchVesselSearchThunk,
-  selectSearchResults,
   cleanVesselSearchResults,
-  selectSearchStatus,
-  selectSearchStatusCode,
   VesselWithDatasets,
   RESULTS_PER_PAGE,
   resetFilters,
@@ -51,40 +38,23 @@ import {
   selectSearchOption,
 } from './search.slice'
 import styles from './Search.module.css'
-import SearchFilters from './SearchFilters'
 import { useSearchConnect, useSearchFiltersConnect } from './search.hook'
-import SearchPlaceholder, {
-  SearchNotAllowed,
-  SearchNoResultsState,
-  SearchEmptyState,
-} from './SearchPlaceholders'
-import {
-  isBasicSearchAllowed,
-  isAdvancedSearchAllowed,
-  selectBasicSearchDatasets,
-  selectAdvancedSearchDatasets,
-} from './search.selectors'
+import { selectBasicSearchDatasets, selectAdvancedSearchDatasets } from './search.selectors'
 
 const MIN_SEARCH_CHARACTERS = 3
 
 function Search() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const urlQuery = useSelector(selectSearchQuery)
   const { addNewDataviewInstances } = useDataviewInstancesConnect()
   const [searchQuery, setSearchQuery] = useState((urlQuery || '') as string)
   const { searchFilters } = useSearchFiltersConnect()
-  const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
+  const { searchPagination, searchSuggestion } = useSearchConnect()
   const debouncedQuery = useDebounce(searchQuery, 600)
-  const { dispatchQueryParams } = useLocationConnect()
+  const { dispatchQueryParams, dispatchLocation } = useLocationConnect()
   const heatmapDataviews = useSelector(selectActiveHeatmapDataviews)
-  const basicSearchAllowed = useSelector(isBasicSearchAllowed)
-  const advancedSearchAllowed = useSelector(isAdvancedSearchAllowed)
-  const searchResults = useSelector(selectSearchResults)
-  const searchStatus = useSelector(selectSearchStatus)
-  const searchStatusCode = useSelector(selectSearchStatusCode)
   const gfwUser = useSelector(isGFWUser)
-  const vesselDataviews = useSelector(selectVesselsDataviews)
   const [vesselsSelected, setVesselsSelected] = useState<VesselWithDatasets[]>([])
   const activeSearchOption = useSelector(selectSearchOption)
 
@@ -162,7 +132,7 @@ function Search() {
     },
     [searchPagination, searchDatasets, searchFilters, debouncedQuery, fetchResults]
   )
-  const [ref] = useIntersectionObserver(handleIntersection, { rootMargin: '100px' })
+  const [spinnerRef] = useIntersectionObserver(handleIntersection, { rootMargin: '100px' })
 
   useEffect(() => {
     if (debouncedQuery && !promiseRef.current && searchDatasets?.length) {
@@ -194,26 +164,10 @@ function Search() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedQuery])
 
-  const onCloseClick = () => {
-    batch(() => {
-      dispatch(resetFilters())
-      dispatch(cleanVesselSearchResults())
-      dispatchQueryParams({ query: undefined })
-    })
-  }
-
   const onSuggestionClick = () => {
     if (searchSuggestion) {
       dispatch(setSuggestionClicked(true))
       setSearchQuery(searchSuggestion)
-    }
-  }
-
-  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value)
-    setVesselsSelected([])
-    if (e.target.value !== searchQuery && searchSuggestionClicked) {
-      dispatch(setSuggestionClicked(false))
     }
   }
 
@@ -244,14 +198,13 @@ function Search() {
       return vesselDataviewInstance
     })
     addNewDataviewInstances(instances)
-    onCloseClick()
+    batch(() => {
+      dispatch(resetFilters())
+      dispatch(cleanVesselSearchResults())
+      dispatchQueryParams({ query: undefined })
+    })
+    dispatchLocation(WORKSPACE)
   }
-
-  const hasMoreResults =
-    searchPagination.total !== 0 &&
-    searchPagination.total > RESULTS_PER_PAGE &&
-    searchPagination.offset &&
-    searchPagination.offset <= searchPagination.total
 
   const onAddToVesselGroup = () => {
     const dataviewIds = heatmapDataviews.map(({ id }) => id)
@@ -271,240 +224,32 @@ function Search() {
     )
   }
 
-  return (
-    <Downshift onSelect={onSelect} itemToString={(item) => (item ? item.shipname : '')}>
-      {({ getInputProps, getItemProps, getMenuProps, highlightedIndex }) => (
-        <div className={styles.search}>
-          {activeSearchOption === 'advanced' && !advancedSearchAllowed ? (
-            <SearchPlaceholder>
-              <Trans i18nKey="search.advancedDisabled">
-                You need to
-                <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink>
-                to use advanced search
-              </Trans>
-            </SearchPlaceholder>
-          ) : (
-            <div className={styles.scrollContainer}>
-              <div className={styles.form}>
-                <InputText
-                  {...getInputProps()}
-                  onChange={onInputChange}
-                  value={searchQuery}
-                  label={t('search.mainQueryLabel', 'Name, IMO or MMSI')}
-                  autoFocus
-                  disabled={!basicSearchAllowed}
-                  className={styles.input}
-                  type="search"
-                  loading={
-                    searchStatus === AsyncReducerStatus.Loading ||
-                    searchStatus === AsyncReducerStatus.Aborted
-                  }
-                  placeholder={t('search.placeholder', 'Type to search vessels')}
-                />
-                {activeSearchOption === 'advanced' && searchDatasets && (
-                  <SearchFilters className={styles.filters} datasets={searchDatasets} />
-                )}
-              </div>
-              {(searchStatus === AsyncReducerStatus.Loading ||
-                searchStatus === AsyncReducerStatus.Aborted) &&
-              searchPagination.loading === false ? null : basicSearchAllowed ? (
-                <ul {...getMenuProps()} className={styles.searchResults}>
-                  {debouncedQuery && debouncedQuery?.length < MIN_SEARCH_CHARACTERS && (
-                    <li key="suggestion" className={cx(styles.searchSuggestion, styles.red)}>
-                      {t('search.minCharacters', {
-                        defaultValue: 'Please type at least {{count}} characters',
-                        count: MIN_SEARCH_CHARACTERS,
-                      })}
-                    </li>
-                  )}
-                  {searchQuery &&
-                    searchSuggestion &&
-                    searchSuggestion !== searchQuery &&
-                    !searchSuggestionClicked && (
-                      <li key="suggestion" className={cx(styles.searchSuggestion)}>
-                        {t('search.suggestion', 'Did you mean')}{' '}
-                        <button onClick={onSuggestionClick} className={styles.suggestion}>
-                          {' '}
-                          {searchSuggestion}{' '}
-                        </button>{' '}
-                        ?
-                      </li>
-                    )}
-                  {searchResults?.map((entry, index: number) => {
-                    const {
-                      id,
-                      shipname,
-                      flag,
-                      fleet,
-                      mmsi,
-                      imo,
-                      callsign,
-                      geartype,
-                      origin,
-                      casco,
-                      nationalId,
-                      matricula,
-                      dataset,
-                      firstTransmissionDate,
-                      lastTransmissionDate,
-                    } = entry
-                    const isInWorkspace = vesselDataviews?.some(
-                      (vessel) => vessel.id === `${VESSEL_LAYER_PREFIX}${id}`
-                    )
-                    const isSelected = vesselsSelected?.some((vessel) => vessel.id === id)
-                    return (
-                      <li
-                        {...getItemProps({ item: entry, index })}
-                        className={cx(styles.searchResult, {
-                          [styles.highlighted]: highlightedIndex === index,
-                          [styles.inWorkspace]: isInWorkspace,
-                          [styles.selected]: isSelected,
-                        })}
-                        key={`${id}-${index}`}
-                      >
-                        <div className={styles.name}>
-                          {formatInfoField(shipname, 'name') || EMPTY_FIELD_PLACEHOLDER}
-                        </div>
-                        <div className={styles.properties}>
-                          <div className={styles.property}>
-                            <label>{t('vessel.flag', 'Flag')}</label>
-                            <span>
-                              <I18nFlag iso={flag} />
-                            </span>
-                          </div>
-                          <div className={styles.property}>
-                            <label>{t('vessel.mmsi', 'MMSI')}</label>
-                            <span>{mmsi || EMPTY_FIELD_PLACEHOLDER}</span>
-                          </div>
-                          <div className={styles.property}>
-                            <label>{t('vessel.imo', 'IMO')}</label>
-                            <span>{imo || EMPTY_FIELD_PLACEHOLDER}</span>
-                          </div>
-                          <div className={styles.property}>
-                            <label>{t('vessel.callsign', 'Callsign')}</label>
-                            <span>{callsign || EMPTY_FIELD_PLACEHOLDER}</span>
-                          </div>
-                          <div className={styles.property}>
-                            <label>{t('vessel.geartype', 'Gear Type')}</label>
-                            <span>
-                              {geartype !== undefined
-                                ? t(`vessel.gearTypes.${geartype}` as any, EMPTY_FIELD_PLACEHOLDER)
-                                : EMPTY_FIELD_PLACEHOLDER}
-                            </span>
-                          </div>
-                          {matricula && (
-                            <div className={styles.property}>
-                              <label>{t('vessel.matricula', 'Matricula')}</label>
-                              <span>{matricula}</span>
-                            </div>
-                          )}
-                          {nationalId && (
-                            <div className={styles.property}>
-                              <label>{t('vessel.nationalId', 'National Id')}</label>
-                              <span>{nationalId}</span>
-                            </div>
-                          )}
-                          {casco && (
-                            <div className={styles.property}>
-                              <label>{t('vessel.casco', 'Casco')}</label>
-                              <span>{casco}</span>
-                            </div>
-                          )}
-                          {fleet && (
-                            <div className={styles.property}>
-                              <label>{t('vessel.fleet', 'Fleet')}</label>
-                              <span>{formatInfoField(fleet, 'fleet')}</span>
-                            </div>
-                          )}
-                          {origin && (
-                            <div className={styles.property}>
-                              <label>{t('vessel.origin', 'Origin')}</label>
-                              <span>{formatInfoField(origin, 'fleet')}</span>
-                            </div>
-                          )}
-                          {firstTransmissionDate && lastTransmissionDate && (
-                            <div className={cx(styles.property, styles.fullWidth)}>
-                              <label>{t('vessel.transmission_other', 'Transmissions')}</label>
-                              <span>
-                                from <I18nDate date={firstTransmissionDate} /> to{' '}
-                                <I18nDate date={lastTransmissionDate} />
-                              </span>
-                              <TransmissionsTimeline
-                                firstTransmissionDate={firstTransmissionDate}
-                                lastTransmissionDate={lastTransmissionDate}
-                                firstYearOfData={FIRST_YEAR_OF_DATA}
-                                locale={i18n.language as Locale}
-                              />
-                            </div>
-                          )}
-                          {dataset && (
-                            <div className={styles.property}>
-                              <label>{t('vessel.source', 'Source')}</label>
-                              <DatasetLabel dataset={dataset} />
-                            </div>
-                          )}
-                        </div>
-                        {isSelected && (
-                          <span className={styles.alreadyAddedMsg}>
-                            <Icon icon="tick" />
-                            {t('search.vesselSelected', 'Vessel selected')}
-                          </span>
-                        )}
-                        {isInWorkspace && (
-                          <span className={styles.alreadyAddedMsg}>
-                            <Icon icon="tick" />
-                            {t(
-                              'search.vesselAlreadyInWorkspace',
-                              'This vessel is already in your workspace'
-                            )}
-                          </span>
-                        )}
-                      </li>
-                    )
-                  })}
-                  {hasMoreResults && (
-                    <li key="spinner" className={styles.spinner} ref={ref}>
-                      <Spinner inline size="small" />
-                    </li>
-                  )}
+  const SearchComponent = activeSearchOption === 'basic' ? SearchBasic : SearchAdvanced
 
-                  {searchStatus === AsyncReducerStatus.Idle && <SearchEmptyState />}
-                  {searchStatus === AsyncReducerStatus.Finished && !hasMoreResults && (
-                    <SearchNoResultsState />
-                  )}
-                  {searchStatus === AsyncReducerStatus.Error && (
-                    <p className={styles.error}>
-                      {searchStatusCode === 404
-                        ? t(
-                            'search.noResults',
-                            "Can't find the vessel you are looking for? Try using MMSI, IMO or Callsign"
-                          )
-                        : t('errors.genericShort', 'Something went wrong')}
-                    </p>
-                  )}
-                </ul>
-              ) : (
-                <SearchNotAllowed />
-              )}
-            </div>
-          )}
-          <div className={cx(styles.footer, { [styles.hidden]: vesselsSelected.length === 0 })}>
-            <VesselGroupAddButton
-              vessels={vesselsSelected}
-              onAddToVesselGroup={onAddToVesselGroup}
-            />
-            <Button className={styles.footerAction} onClick={onConfirmSelection}>
-              {vesselsSelected.length > 1
-                ? t('search.seeVessels', {
-                    defaultValue: 'See vessels',
-                    count: vesselsSelected.length,
-                  })
-                : t('search.seeVessel', 'See vessel')}
-            </Button>
-          </div>
-        </div>
-      )}
-    </Downshift>
+  return (
+    <div className={styles.search}>
+      <SearchComponent
+        onSuggestionClick={onSuggestionClick}
+        setSearchQuery={setSearchQuery}
+        searchQuery={searchQuery}
+        debouncedQuery={debouncedQuery}
+        onSelect={onSelect}
+        spinnerRef={spinnerRef}
+        vesselsSelected={vesselsSelected}
+        setVesselsSelected={setVesselsSelected}
+      />
+      <div className={cx(styles.footer, { [styles.hidden]: vesselsSelected.length === 0 })}>
+        <VesselGroupAddButton vessels={vesselsSelected} onAddToVesselGroup={onAddToVesselGroup} />
+        <Button className={styles.footerAction} onClick={onConfirmSelection}>
+          {vesselsSelected.length > 1
+            ? t('search.seeVessels', {
+                defaultValue: 'See vessels',
+                count: vesselsSelected.length,
+              })
+            : t('search.seeVessel', 'See vessel')}
+        </Button>
+      </div>
+    </div>
   )
 }
 

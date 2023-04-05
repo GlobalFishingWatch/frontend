@@ -6,6 +6,7 @@ import vesselImage from 'assets/images/vessel@2x.png'
 import vesselNoResultsImage from 'assets/images/vessel-side@2x.png'
 import { isGuestUser } from 'features/user/user.slice'
 import { selectSearchDatasetsNotGuestAllowedLabels } from 'features/search/search.selectors'
+import { selectSearchOption } from 'features/search/search.slice'
 import styles from './SearchPlaceholders.module.css'
 
 type SearchPlaceholderProps = {
@@ -40,14 +41,20 @@ export function SearchEmptyState({ className = '' }: SearchPlaceholderProps) {
   const { t } = useTranslation()
   const guestUser = useSelector(isGuestUser)
   const noGuestDatasets = useSelector(selectSearchDatasetsNotGuestAllowedLabels)
+  const activeSearchOption = useSelector(selectSearchOption)
   return (
     <SearchPlaceholder className={className}>
       <img src={vesselImage.src} alt="vessel" className={styles.vesselImage} />
       <p>
-        {t(
-          'search.description',
-          'Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar'
-        )}
+        {activeSearchOption === 'basic'
+          ? t(
+              'search.description',
+              'Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar'
+            )
+          : t(
+              'search.descriptionAdvanced',
+              'The vessels will appear here once you select your desired filters.'
+            )}
       </p>
       {guestUser && noGuestDatasets?.length > 0 && (
         <p>

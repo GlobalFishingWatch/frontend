@@ -421,6 +421,7 @@
     "basic": "Basic",
     "close": "Close search",
     "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar",
+    "descriptionAdvanced": "The vessels will appear here once you select your desired filters.",
     "mainQueryLabel": "Name, IMO or MMSI",
     "minCharacters": "Please type at least {{count}} characters",
     "missingSources": "won’t appear unless you log in",
