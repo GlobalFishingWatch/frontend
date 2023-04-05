@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataview } from '@globalfishingwatch/api-types'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectLocationDatasetId, selectLocationAreaId } from 'routes/routes.selectors'
 import { selectActiveReportDataviews, selectTimeRange } from 'features/app/app.selectors'
 import { getActiveDatasetsInActivityDataviews } from 'features/datasets/datasets.utils'
 import {
@@ -129,8 +128,7 @@ export function useFetchReportVessel() {
   const timerange = useSelector(selectTimeRange)
   const timerangeSupported = getDownloadReportSupported(timerange.start, timerange.end)
   const reportDateRangeHash = useSelector(selectReportVesselsDateRangeHash)
-  const datasetId = useSelector(selectLocationDatasetId)
-  const areaId = useSelector(selectLocationAreaId)
+  const { datasetId, areaId } = useSelector(selectReportAreaIds)
   const dataviews = useSelector(selectActiveReportDataviews)
   const status = useSelector(selectReportVesselsStatus)
   const error = useSelector(selectReportVesselsError)

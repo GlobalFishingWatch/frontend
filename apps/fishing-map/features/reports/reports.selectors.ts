@@ -19,7 +19,7 @@ import {
   getActivityDatasetsReportSupported,
   getRelatedDatasetsByType,
 } from 'features/datasets/datasets.utils'
-import { selectLocationAreaId, selectLocationDatasetId } from 'routes/routes.selectors'
+import { selectReportAreaId, selectReportDatasetId } from 'features/app/app.selectors'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUserData } from 'features/user/user.slice'
@@ -48,7 +48,7 @@ export type ReportVesselWithDatasets = Partial<ReportVessel> &
   }
 
 export const selectReportAreaDataview = createSelector(
-  [selectContextAreasDataviews, selectLocationDatasetId],
+  [selectContextAreasDataviews, selectReportDatasetId],
   (contextDataviews, datasetId) => {
     const areaDataview = contextDataviews?.find((dataview) => {
       return dataview.datasets.some((dataset) => dataset.id === datasetId)
@@ -58,9 +58,9 @@ export const selectReportAreaDataview = createSelector(
 )
 
 export const selectReportAreaIds = createSelector(
-  [selectLocationAreaId, selectLocationDatasetId],
+  [selectReportAreaId, selectReportDatasetId],
   (areaId, datasetId) => {
-    return { datasetId, areaId: areaId?.toString() }
+    return { datasetId, areaId }
   }
 )
 

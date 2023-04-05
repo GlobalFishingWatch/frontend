@@ -31,7 +31,7 @@ import {
   setDateRangeHash,
 } from 'features/reports/report.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectLocationAreaId, selectLocationDatasetId } from 'routes/routes.selectors'
+import { selectReportAreaId, selectReportDatasetId } from 'features/app/app.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useSetTimeseries } from 'features/reports/reports-timeseries.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -52,8 +52,8 @@ function ActivityReport({ reportName }: { reportName: string }) {
   const reportCategory = useSelector(selectReportCategory)
   const timerange = useSelector(selectTimeRange)
   const guestUser = useSelector(isGuestUser)
-  const datasetId = useSelector(selectLocationDatasetId)
-  const areaId = useSelector(selectLocationAreaId)
+  const datasetId = useSelector(selectReportDatasetId)
+  const areaId = useSelector(selectReportAreaId)
   const reportDateRangeHash = useSelector(selectReportVesselsDateRangeHash)
   const timerangeTooLong = !getDownloadReportSupported(timerange.start, timerange.end)
   const { status: reportStatus, error: statusError } = useFetchReportVessel()

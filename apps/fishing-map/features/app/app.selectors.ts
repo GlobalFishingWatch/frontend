@@ -13,6 +13,8 @@ import {
   selectUrlViewport,
   selectLocationCategory,
   selectUrlTimeRange,
+  selectLocationDatasetId,
+  selectLocationAreaId,
 } from 'routes/routes.selectors'
 import {
   Bbox,
@@ -40,6 +42,7 @@ import {
   selectEnvironmentalDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import { getReportCategoryFromDataview } from 'features/reports/reports.utils'
+import { selectCurrentReport } from 'features/reports/reports.slice'
 
 export const selectViewport = createSelector(
   [selectUrlViewport, selectWorkspaceViewport],
@@ -110,6 +113,16 @@ export const selectSidebarOpen = createSelector(
   (sidebarOpen): boolean => {
     return sidebarOpen
   }
+)
+
+export const selectReportDatasetId = createSelector(
+  [selectLocationDatasetId, selectCurrentReport],
+  (locationDatasetId, report) => (locationDatasetId || report?.datasetId) as string
+)
+
+export const selectReportAreaId = createSelector(
+  [selectLocationAreaId, selectCurrentReport],
+  (locationAreaId, report) => (locationAreaId || report?.areaId) as number
 )
 
 export const selectReportCategory = createSelector(
