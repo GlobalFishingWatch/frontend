@@ -29,7 +29,7 @@ import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { selectShowTimeComparison } from 'features/reports/reports.selectors'
 import { isUserLogged } from 'features/user/user.selectors'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
-import { HOME, WORKSPACE, USER, WORKSPACES_LIST, REPORT } from 'routes/routes'
+import { HOME, WORKSPACE, USER, WORKSPACES_LIST } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { t } from 'features/i18n/i18n'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -101,7 +101,7 @@ function App(): React.ReactElement {
   const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
-  const reportLocation = useSelector(selectIsReportLocation)
+  const isReportLocation = useSelector(selectIsReportLocation)
   const reportAreaBounds = useSelector(selectReportAreaBounds)
   const isTimeComparisonReport = useSelector(selectShowTimeComparison)
   const narrowSidebar = workspaceLocation
@@ -125,7 +125,7 @@ function App(): React.ReactElement {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reportLocation, sidebarOpen, showTimebar, isTimeComparisonReport])
+  }, [isReportLocation, sidebarOpen, showTimebar, isTimeComparisonReport])
 
   useEffect(() => {
     setMobileSafeVH()
@@ -149,8 +149,8 @@ function App(): React.ReactElement {
   // probably better to fetch in both components just checking if the workspaceId is already fetched
   const isHomeLocation = locationType === HOME
   const homeNeedsFetch = isHomeLocation && currentWorkspaceId !== DEFAULT_WORKSPACE_ID
-  const hasWorkspaceIdChanged =
-    (locationType === WORKSPACE || locationType === REPORT) && currentWorkspaceId !== urlWorkspaceId
+  const locationNeedsFetch = isReportLocation
+  const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId
   useEffect(() => {
     let action: any
     let actionResolved = false
@@ -159,7 +159,10 @@ function App(): React.ReactElement {
       const resolvedAction = await action
       if (fetchWorkspaceThunk.fulfilled.match(resolvedAction)) {
         const workspace = resolvedAction.payload as Workspace
-        setMapCoordinates(urlViewport || workspace.viewport)
+        const viewport = urlViewport || workspace?.viewport
+        if (viewport) {
+          setMapCoordinates(viewport)
+        }
         if (!urlTimeRange && workspace?.startAt && workspace?.endAt) {
           setTimerange({
             start: workspace?.startAt,
@@ -172,7 +175,7 @@ function App(): React.ReactElement {
     if (
       userLogged &&
       workspaceCustomStatus !== AsyncReducerStatus.Loading &&
-      (homeNeedsFetch || hasWorkspaceIdChanged)
+      (homeNeedsFetch || locationNeedsFetch || hasWorkspaceIdChanged)
     ) {
       // TODO Can we arrive in a situation where no workspace is ever loaded?
       // In that case static timerange will need to be set manually
@@ -184,10 +187,10 @@ function App(): React.ReactElement {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userLogged, homeNeedsFetch, hasWorkspaceIdChanged])
+  }, [userLogged, homeNeedsFetch, locationNeedsFetch, hasWorkspaceIdChanged])
 
   useLayoutEffect(() => {
-    if (reportLocation) {
+    if (isReportLocation) {
       if (reportAreaBounds) {
         fitMapBounds(reportAreaBounds, { padding: FIT_BOUNDS_REPORT_PADDING })
       } else {
@@ -212,13 +215,13 @@ function App(): React.ReactElement {
   const getSidebarName = useCallback(() => {
     if (locationType === USER) return t('user.title', 'User')
     if (locationType === WORKSPACES_LIST) return t('workspace.title_other', 'Workspaces')
-    if (locationType === REPORT) return t('analysis.title', 'Analysis')
+    if (isReportLocation) return t('analysis.title', 'Analysis')
     return t('common.layerList', 'Layer list')
-  }, [locationType])
+  }, [locationType, isReportLocation])
 
   let asideWidth = '50%'
   if (readOnly) {
-    asideWidth = reportLocation ? '45%' : '34rem'
+    asideWidth = isReportLocation ? '45%' : '34rem'
   } else if (narrowSidebar) {
     asideWidth = '39rem'
   }
