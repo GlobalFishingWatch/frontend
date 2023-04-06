@@ -3,5 +3,5 @@
 }
 
 .select {
-  width: calc(var(--size-XL) * 3);
+  max-width: calc(var(--size-XL) * 3);
 }

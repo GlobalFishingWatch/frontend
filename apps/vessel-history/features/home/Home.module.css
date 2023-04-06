@@ -135,3 +135,10 @@
     width: 67%;
   }
 }
+
+@media only screen and (max-width: 500px) {
+  .logo {
+    margin-left: var(--size-XS);
+    font-size: var(--font-S);
+  }
+}
