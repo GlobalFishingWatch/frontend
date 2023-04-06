@@ -104,10 +104,10 @@ const ActivityModalContentDetailsEncounter: React.FC<ActivityModalContentProps> 
           />
           {event.vessel.authorizations && (
             <ActivityModalContentField
-              label={t('event.vesselAuthorization', 'Vessel Authorization')}
+              label={t('events.vesselAuthorization', 'Vessel Authorization')}
               value={event.vessel.authorizations.map((auth) => (
                 <span className={styles.authorizationStatuses}>
-                  <AuthIcon isAuthorized={auth.isAuthorized === 'true'} />
+                  <AuthIcon authorizationStatus={auth.isAuthorized} />
                   {auth.rfmo}
                 </span>
               ))}
@@ -115,10 +115,10 @@ const ActivityModalContentDetailsEncounter: React.FC<ActivityModalContentProps> 
           )}
           {event.encounter.vessel.authorizations && (
             <ActivityModalContentField
-              label={t('event.encounteredVesselAuthorization', 'Encountered Vessel Authorization')}
+              label={t('events.encounteredVesselAuthorization', 'Encountered Vessel Authorization')}
               value={event.encounter.vessel.authorizations.map((auth) => (
                 <span className={styles.authorizationStatuses}>
-                  <AuthIcon isAuthorized={auth.isAuthorized === 'true'} />
+                  <AuthIcon authorizationStatus={auth.isAuthorized} />
                   {auth.rfmo}
                 </span>
               ))}
