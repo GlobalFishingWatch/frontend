@@ -1,7 +1,10 @@
-import { useCallback, useState, useEffect, useMemo } from 'react'
+import { useCallback, useState, useEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import { Map, MapboxStyle } from 'react-map-gl'
+import { DeckGL, DeckGLRef } from '@deck.gl/react/typed'
+import { MapView } from '@deck.gl/core/typed'
+import MemoryStatsComponent from 'next-react-memory-stats'
 import dynamic from 'next/dynamic'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import maplibregl from '@globalfishingwatch/maplibre-gl'
@@ -18,6 +21,7 @@ import {
   defaultStyleTransformations,
   useDebounce,
   useMemoCompare,
+  useDeckLayerComposer,
 } from '@globalfishingwatch/react-hooks'
 import { ExtendedStyleMeta, GeneratorType, LayerComposer } from '@globalfishingwatch/layer-composer'
 import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
@@ -95,12 +99,18 @@ const mapStyles = {
 }
 
 const MapWrapper = () => {
+  ///////////////////////////////////////
+  // DECK related code
+  const deckRef = useRef<DeckGLRef>(null)
+  const mapView = new MapView({ repeat: true, controller: true })
+  ////////////////////////////////////////
   // Used it only once here to attach the listener only once
   useSetMapIdleAtom()
   useMapSourceTilesLoadedAtom()
   useEnvironmentalBreaksUpdate()
   const map = useMapInstance()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
+
   const setMapReady = useSetRecoilState(mapReadyAtom)
   const hasTimeseries = useRecoilValue(selectMapTimeseries)
   const { isMapDrawing } = useMapDrawConnect()
@@ -116,6 +126,9 @@ const MapWrapper = () => {
     defaultStyleTransformations,
     layerComposer
   )
+
+  const { layers } = useDeckLayerComposer({ generatorsConfig, globalGeneratorConfig: globalConfig })
+
   const allSourcesLoaded = useAllMapSourceTilesLoaded()
 
   const { clickedEvent, dispatchClickedEvent, cancelPendingInteractionRequests } =
@@ -280,10 +293,38 @@ const MapWrapper = () => {
 
   return (
     <div className={styles.container}>
+      <DeckGL
+        id="deckgl"
+        ref={deckRef}
+        views={mapView}
+        layers={layers}
+        style={mapStyles}
+        // This avoids performing the default picking
+        // since we are handling it through pickMultipleObjects
+        // discussion for reference https://github.com/visgl/deck.gl/discussions/5793
+        layerFilter={({ renderPass }) => renderPass !== 'picking:hover'}
+        controller={true}
+        viewState={{
+          longitude: -9,
+          latitude: 42,
+          zoom: 7,
+          pitch: 0,
+          bearing: 0,
+          minZoom: 0,
+          maxZoom: 20,
+          minPitch: 0,
+          maxPitch: 60,
+        }}
+        // onClick={onClick}
+        // onHover={onHover}
+        // onViewStateChange={onViewportStateChange}
+        // this experimental prop reduces memory usage
+        _typedArrayManagerProps={{ overAlloc: 1, poolSize: 0 }}
+      />
       {style && (
         <Map
           id="map"
-          style={mapStyles}
+          style={{ ...mapStyles, display: 'none', pointerEvents: 'none' }}
           keyboard={!isMapDrawing}
           zoom={viewport.zoom}
           mapLib={maplibregl}
@@ -291,19 +332,19 @@ const MapWrapper = () => {
           longitude={viewport.longitude}
           pitch={debugOptions.extruded ? 40 : 0}
           bearing={0}
-          onMove={isAnalyzing && !hasTimeseries ? undefined : onViewportChange}
+          // onMove={isAnalyzing && !hasTimeseries ? undefined : onViewportChange}
           mapStyle={style as MapboxStyle}
           transformRequest={transformRequest}
           onResize={setMapBounds}
-          cursor={rulersEditing ? rulesCursor : getCursor()}
+          // cursor={rulersEditing ? rulesCursor : getCursor()}
           interactiveLayerIds={interactiveLayerIds}
-          onClick={isMapDrawing || isMarineManagerLocation ? undefined : currentClickCallback}
-          onMouseEnter={onMouseMove}
-          onMouseMove={onMouseMove}
-          onMouseLeave={resetHoverState}
-          onLoad={onLoadCallback}
-          onError={handleError}
-          onMouseOut={resetHoverState}
+          // onClick={isMapDrawing || isMarineManagerLocation ? undefined : currentClickCallback}
+          // onMouseEnter={onMouseMove}
+          // onMouseMove={onMouseMove}
+          // onMouseLeave={resetHoverState}
+          // onLoad={onLoadCallback}
+          // onError={handleError}
+          // onMouseOut={resetHoverState}
         >
           {clickedEvent && (
             <PopupWrapper
@@ -332,6 +373,8 @@ const MapWrapper = () => {
       {isWorkspace && !isAnalyzing && (
         <Hint id="clickingOnAGridCellToShowVessels" className={styles.helpHintRight} />
       )}
+
+      <MemoryStatsComponent />
     </div>
   )
 }
