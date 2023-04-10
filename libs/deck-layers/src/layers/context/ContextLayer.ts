@@ -8,10 +8,10 @@ import { API_PATH } from './context.config'
 export type ContextLayerProps = TileLayerProps &
   MVTLayerProps & {
     id: string
-    hoveredFeatures: PickingInfo[]
-    clickedFeatures: PickingInfo[]
     color: string
     datasetId: string
+    hoveredFeatures: PickingInfo[]
+    clickedFeatures: PickingInfo[]
   }
 
 export class ContextLayer extends CompositeLayer<ContextLayerProps> {
@@ -35,9 +35,7 @@ export class ContextLayer extends CompositeLayer<ContextLayerProps> {
   _getBaseLayer() {
     return new MVTLayer({
       id: `base-layer`,
-      // data: `${API_PATH}${this.props.tilesUrl}`,
       data: `${API_PATH}/${this.props.datasetId}/user-context-layer-v1/{z}/{x}/{y}`,
-      // data: ['https://tiles-a.basemaps.cartocdn.com/vectortiles/carto.streets/v1/{z}/{x}/{y}.mvt'],
       zIndex: GROUP_ORDER.indexOf(Group.OutlinePolygons),
       getLineColor: hexToRgb(this.props.color),
       getFillColor: [0, 0, 0, 0],

@@ -1,5 +1,5 @@
 import { BitmapLayer } from '@deck.gl/layers/typed'
-import { CompositeLayer } from '@deck.gl/core/typed'
+import { CompositeLayer, Layer } from '@deck.gl/core/typed'
 import { TileLayer } from '@deck.gl/geo-layers'
 import { MVTLayer, TileLayerProps, MVTLayerProps } from '@deck.gl/geo-layers/typed'
 import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
@@ -10,7 +10,7 @@ export class BaseMap extends CompositeLayer<BaseMapLayerProps> {
   static layerName = 'ContextLayer'
   static defaultProps = {}
 
-  layers: BaseMapLayerProps[] = []
+  layers: Layer[] = []
 
   _getBathimetryLayer() {
     return new TileLayer({

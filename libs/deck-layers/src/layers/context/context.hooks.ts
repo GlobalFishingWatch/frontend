@@ -37,11 +37,11 @@ export function useContextsLayer({
   useEffect(() => {
     if (visible) {
       const contextLayer = new ContextLayer({
-        hoveredFeatures,
-        clickedFeatures,
+        id,
         color,
         datasetId,
-        id,
+        hoveredFeatures,
+        clickedFeatures,
         onDataLoad: onDataLoad,
       })
       updateAtom({ instance: contextLayer, loaded })

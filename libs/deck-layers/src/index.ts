@@ -1,4 +1,5 @@
 export * from './layers/vessel/VesselLayer'
+export * from './layers/vessel/vessel.hooks'
 export * from './layers/basemap/BasemapLayer'
 export * from './layers/basemap/basemap.hooks'
 export * from './layers/context/ContextLayer'
