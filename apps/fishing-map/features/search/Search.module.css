@@ -8,9 +8,10 @@
 
 .footer {
   position: fixed;
-  width: 100%;
+  width: calc(100% - 5.2rem);
   bottom: 0;
   display: flex;
+  align-items: center;
   gap: var(--space-S);
   padding: var(--space-S);
   background: var(--color-white);
@@ -22,7 +23,7 @@
   transform: translateY(100%);
 }
 
-.footerAction {
+.results {
   flex: 1;
 }
 

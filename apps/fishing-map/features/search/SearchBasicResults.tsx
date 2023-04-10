@@ -20,7 +20,7 @@ import styles from './SearchBasicResults.module.css'
 type SearchBasicResultsProps = {
   searchResults: VesselWithDatasets[]
   highlightedIndex: number
-  getItemProps: (options: GetItemPropsOptions<VesselWithDatasets>) => VesselWithDatasets
+  getItemProps: (options: GetItemPropsOptions<VesselWithDatasets>) => any
   vesselsSelected: VesselWithDatasets[]
 }
 
@@ -62,9 +62,11 @@ function SearchBasicResults({
         } else if (isSelected) {
           tooltip = t('search.vesselSelected', 'Vessel selected')
         }
+        const itemProps = getItemProps({ item: entry, index })
         return (
           <li
-            {...getItemProps({ item: entry, index })}
+            {...itemProps}
+            onClick={isInWorkspace ? undefined : itemProps.onClick}
             className={cx(styles.searchResult, {
               [styles.highlighted]: highlightedIndex === index,
               [styles.inWorkspace]: isInWorkspace,
@@ -76,6 +78,7 @@ function SearchBasicResults({
               <IconButton
                 icon={isSelected || isInWorkspace ? 'tick' : undefined}
                 type="border"
+                className={cx({ [styles.selectedIcon]: isSelected || isInWorkspace })}
                 size="tiny"
                 tooltip={tooltip}
               />

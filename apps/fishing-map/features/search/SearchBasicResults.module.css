@@ -6,10 +6,16 @@
   border-bottom: var(--border);
 }
 
-.searchResult:hover,
-.highlighted,
+.searchResult:not(.inWorkspace):hover,
+.searchResult:not(.inWorkspace).highlighted,
 .selected {
   background: var(--color-terthiary-blue);
+}
+
+.selectedIcon {
+  opacity: 1;
+  background: var(--color-terthiary-blue);
+  border: none;
 }
 
 .container {
@@ -20,7 +26,7 @@
 
 .inWorkspace {
   color: var(--color-secondary-blue);
-  /* pointer-events: none; */
+  cursor: default;
 }
 
 .alreadyAddedMsg {
@@ -55,8 +61,8 @@
   flex: 1;
 }
 
-.searchResult:hover .properties,
-.searchResult:hover .properties label {
+.searchResult:not(.inWorkspace):hover .properties,
+.searchResult:not(.inWorkspace):hover .properties label {
   cursor: pointer;
   opacity: var(--opacity-primary);
 }

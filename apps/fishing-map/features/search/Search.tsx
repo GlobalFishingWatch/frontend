@@ -27,6 +27,7 @@ import SearchBasic from 'features/search/SearchBasic'
 import SearchAdvanced from 'features/search/SearchAdvanced'
 import SearchPlaceholder from 'features/search/SearchPlaceholders'
 import { WORKSPACE } from 'routes/routes'
+import I18nNumber from 'features/i18n/i18nNumber'
 import {
   fetchVesselSearchThunk,
   cleanVesselSearchResults,
@@ -36,6 +37,7 @@ import {
   setSuggestionClicked,
   SearchFilter,
   selectSearchOption,
+  selectSearchPagination,
 } from './search.slice'
 import styles from './Search.module.css'
 import { useSearchConnect, useSearchFiltersConnect } from './search.hook'
@@ -57,6 +59,7 @@ function Search() {
   const gfwUser = useSelector(isGFWUser)
   const [vesselsSelected, setVesselsSelected] = useState<VesselWithDatasets[]>([])
   const activeSearchOption = useSelector(selectSearchOption)
+  const searchResultsPagination = useSelector(selectSearchPagination)
 
   const searchDatasets = useSelector(
     activeSearchOption === 'basic' ? selectBasicSearchDatasets : selectAdvancedSearchDatasets
@@ -238,9 +241,29 @@ function Search() {
         vesselsSelected={vesselsSelected}
         setVesselsSelected={setVesselsSelected}
       />
-      <div className={cx(styles.footer, { [styles.hidden]: vesselsSelected.length === 0 })}>
-        <VesselGroupAddButton vessels={vesselsSelected} onAddToVesselGroup={onAddToVesselGroup} />
-        <Button className={styles.footerAction} onClick={onConfirmSelection}>
+      <div
+        className={cx(styles.footer, {
+          [styles.hidden]: !searchResultsPagination || searchResultsPagination.total === 0,
+        })}
+      >
+        <label className={styles.results}>
+          <I18nNumber number={searchResultsPagination.total} />
+          {` ${t('search.result_other', 'results')} ${
+            vesselsSelected.length !== 0
+              ? `(${vesselsSelected.length} ${t('selects.selected', 'selected')})`
+              : ''
+          }`}
+        </label>
+        <VesselGroupAddButton
+          vessels={vesselsSelected}
+          onAddToVesselGroup={onAddToVesselGroup}
+          showCount={false}
+        />
+        <Button
+          className={styles.footerAction}
+          onClick={onConfirmSelection}
+          disabled={vesselsSelected.length === 0}
+        >
           {vesselsSelected.length > 1
             ? t('search.seeVessels', {
                 defaultValue: 'See vessels',
