@@ -8,6 +8,12 @@ import {
   AnyGeneratorConfig,
   GlobalGeneratorConfig,
 } from '@globalfishingwatch/layer-composer'
+import {
+  useBasemapLayer,
+  useContextsLayer,
+  useVesselLayer,
+  zIndexSortedArray,
+} from '@globalfishingwatch/deck-layers'
 import { useDebounce } from '../use-debounce'
 
 const applyStyleTransformations = (
@@ -84,4 +90,53 @@ export function useLayerComposer(
   }, [generatorConfigs, globalGeneratorConfig, layerComposer, styleTransformations])
 
   return { style: debouncedStyle, loading, error }
+}
+
+export function useDeckLayerComposer({
+  generatorsConfig,
+  globalGeneratorConfig,
+}: {
+  generatorsConfig: AnyGeneratorConfig[]
+  globalGeneratorConfig?: GlobalGeneratorConfig
+}) {
+  // console.log(
+  //   '🚀 ~ file: use-layer-composer.ts:105 ~ globalGeneratorConfig:',
+  //   globalGeneratorConfig
+  // )
+  const basemap = generatorsConfig.find((generator) => generator.type === 'BASEMAP')?.basemap
+  const visible = generatorsConfig.find((generator) => generator.type === 'BASEMAP')?.visible
+  const basemapLayer = useBasemapLayer({
+    visible,
+    basemap,
+  })
+
+  const contextLayersGenerators = generatorsConfig.filter(
+    (generator) => generator.type === 'CONTEXT'
+  )
+
+  const vesselLayersGenerators = generatorsConfig.filter(
+    (generator) => generator.type === 'VESSEL_EVENTS_SHAPES'
+  )
+  // console.log(
+  //   '🚀 ~ file: use-layer-composer.ts:120 ~ vesselLayersGenerators:',
+  //   vesselLayersGenerators
+  // )
+
+  const contextLayer = useContextsLayer({
+    visible: contextLayersGenerators.length ? true : false,
+    id: contextLayersGenerators.length ? contextLayersGenerators[0].id : '',
+    color: contextLayersGenerators.length ? contextLayersGenerators[0].color : 'red',
+    datasetId: contextLayersGenerators.length ? contextLayersGenerators[0].datasetId : 'eez',
+  })
+
+  const vesselLayer = useVesselLayer({
+    visible: vesselLayersGenerators.length ? true : false,
+    id: vesselLayersGenerators.length ? vesselLayersGenerators[0].vesselId : '',
+    color: vesselLayersGenerators.length ? vesselLayersGenerators[0].color : 'red',
+    endDate: vesselLayersGenerators.length && globalGeneratorConfig.end,
+    startDate: vesselLayersGenerators.length && globalGeneratorConfig.start,
+  })
+  console.log('🚀 ~ file: use-layer-composer.ts:139 ~ vesselLayer:', vesselLayer)
+
+  return { layers: zIndexSortedArray([basemapLayer, contextLayer, vesselLayer]) }
 }
