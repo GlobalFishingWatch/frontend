@@ -32,7 +32,8 @@
       "@globalfishingwatch/pbf/*": ["../../libs/pbf-decoders/*"],
       "@globalfishingwatch/react-hooks": ["../../libs/react-hooks/src/index.ts"],
       "@globalfishingwatch/timebar": ["../../libs/timebar/src/index.js"],
-      "@globalfishingwatch/ui-components": ["../../libs/ui-components/src/index.ts"]
+      "@globalfishingwatch/ui-components": ["../../libs/ui-components/src/index.ts"],
+      "@globalfishingwatch/deck-layers": ["../../libs/deck-layers/src/index.ts"]
     },
     "incremental": true
   },
