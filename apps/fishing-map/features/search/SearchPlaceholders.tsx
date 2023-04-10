@@ -7,6 +7,7 @@ import vesselNoResultsImage from 'assets/images/vessel-side@2x.png'
 import { isGuestUser } from 'features/user/user.slice'
 import { selectSearchDatasetsNotGuestAllowedLabels } from 'features/search/search.selectors'
 import { selectSearchOption } from 'features/search/search.slice'
+import { useSmallScreen } from '../../../../libs/react-hooks/src/use-small-screen'
 import styles from './SearchPlaceholders.module.css'
 
 type SearchPlaceholderProps = {
@@ -42,20 +43,39 @@ export function SearchEmptyState({ className = '' }: SearchPlaceholderProps) {
   const guestUser = useSelector(isGuestUser)
   const noGuestDatasets = useSelector(selectSearchDatasetsNotGuestAllowedLabels)
   const activeSearchOption = useSelector(selectSearchOption)
+  const isSmallScreen = useSmallScreen()
   return (
     <SearchPlaceholder className={className}>
       <img src={vesselImage.src} alt="vessel" className={styles.vesselImage} />
-      <p>
-        {activeSearchOption === 'basic'
-          ? t(
-              'search.description',
-              'Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar'
-            )
-          : t(
-              'search.descriptionAdvanced',
-              'The vessels will appear here once you select your desired filters.'
-            )}
-      </p>
+      {activeSearchOption === 'basic' && (
+        <div className={styles.description}>
+          {t('search.description', 'Search by vessel name or identification code.')}
+          <br />
+          {isSmallScreen
+            ? t(
+                'search.descriptionSmallScreens',
+                'An advanced search with flters is available on bigger screens'
+              )
+            : t(
+                'search.descriptionNarrow',
+                'You can narrow your search by clicking "ADVANCED" in the top menu bar.'
+              )}
+        </div>
+      )}
+      {activeSearchOption === 'advanced' &&
+        t(
+          'search.descriptionAdvanced',
+          'The vessels will appear here once you select your desired filters.'
+        )}
+      <div
+        className={styles.highlighted}
+        dangerouslySetInnerHTML={{
+          __html: t(
+            'search.learnMore',
+            'Learn more about our identity work <a href="https://globalfishingwatch.org/research-project-vessel-identity/" target="_blank">here</a>.'
+          ),
+        }}
+      />
       {guestUser && noGuestDatasets?.length > 0 && (
         <p>
           <Tooltip content={noGuestDatasets.join(', ')}>

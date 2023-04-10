@@ -11,7 +11,7 @@ import {
   Logo,
   SubBrands,
 } from '@globalfishingwatch/ui-components'
-import { useFeatureState } from '@globalfishingwatch/react-hooks'
+import { useFeatureState, useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
   selectLastVisitedWorkspace,
   selectWorkspace,
@@ -148,6 +148,7 @@ function SidebarHeader() {
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isSearchLocation = useSelector(selectIsSearchLocation)
   const isReportLocation = useSelector(selectIsReportLocation)
+  const isSmallScreen = useSmallScreen()
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
   const activeSearchOption = useSelector(selectSearchOption)
   const { cleanFeatureState } = useFeatureState(useMapInstance())
@@ -195,7 +196,7 @@ function SidebarHeader() {
         </a>
         {isWorkspaceLocation && !readOnly && <SaveWorkspaceButton />}
         {(isWorkspaceLocation || isReportLocation) && !readOnly && <ShareWorkspaceButton />}
-        {isSearchLocation && !readOnly && (
+        {isSearchLocation && !readOnly && !isSmallScreen && (
           <Choice
             options={searchOptions}
             activeOption={activeSearchOption}

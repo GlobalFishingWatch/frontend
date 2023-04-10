@@ -20,6 +20,7 @@ import styles from './SearchBasicResults.module.css'
 type SearchBasicResultsProps = {
   searchResults: VesselWithDatasets[]
   highlightedIndex: number
+  setHighlightedIndex: (index: number) => void
   getItemProps: (options: GetItemPropsOptions<VesselWithDatasets>) => any
   vesselsSelected: VesselWithDatasets[]
 }
@@ -27,6 +28,7 @@ type SearchBasicResultsProps = {
 function SearchBasicResults({
   searchResults,
   highlightedIndex,
+  setHighlightedIndex,
   getItemProps,
   vesselsSelected,
 }: SearchBasicResultsProps) {
@@ -67,6 +69,7 @@ function SearchBasicResults({
           <li
             {...itemProps}
             onClick={isInWorkspace ? undefined : itemProps.onClick}
+            onMouseOut={() => setHighlightedIndex(-1)}
             className={cx(styles.searchResult, {
               [styles.highlighted]: highlightedIndex === index,
               [styles.inWorkspace]: isInWorkspace,
@@ -153,9 +156,9 @@ function SearchBasicResults({
                 <div className={styles.properties}>
                   {firstTransmissionDate && lastTransmissionDate && (
                     <div className={cx(styles.property, styles.fullWidth)}>
-                      <label>{t('vessel.transmission_other', 'Transmissions')}</label>
                       <span>
-                        from <I18nDate date={firstTransmissionDate} /> to{' '}
+                        {t('common.active', 'Active')} {t('common.from', 'from')}{' '}
+                        <I18nDate date={firstTransmissionDate} /> {t('common.to', 'to')}{' '}
                         <I18nDate date={lastTransmissionDate} />
                       </span>
                       <TransmissionsTimeline

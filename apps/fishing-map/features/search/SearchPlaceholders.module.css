@@ -32,3 +32,20 @@
 .inlineIcon {
   height: 1em;
 }
+
+.description {
+  max-width: 70rem;
+  text-align: center;
+}
+
+.highlighted {
+  background: var(--color-terthiary-blue);
+  padding: var(--space-XS) var(--space-S);
+  border-radius: var(--border-radius);
+  width: max-content;
+  margin: var(--space-L) auto;
+}
+
+.highlighted a {
+  text-decoration: underline;
+}

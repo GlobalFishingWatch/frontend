@@ -67,7 +67,7 @@ function SearchBasic({
 
   return (
     <Downshift onSelect={onSelect} itemToString={(item) => (item ? item.shipname : '')}>
-      {({ getInputProps, getItemProps, getMenuProps, highlightedIndex }) => (
+      {({ getInputProps, getItemProps, getMenuProps, highlightedIndex, setHighlightedIndex }) => (
         <div className={styles.scrollContainer}>
           <div className={styles.form}>
             <InputText
@@ -116,6 +116,7 @@ function SearchBasic({
               <SearchBasicResults
                 searchResults={searchResults}
                 highlightedIndex={highlightedIndex}
+                setHighlightedIndex={setHighlightedIndex}
                 getItemProps={getItemProps}
                 vesselsSelected={vesselsSelected}
               />
