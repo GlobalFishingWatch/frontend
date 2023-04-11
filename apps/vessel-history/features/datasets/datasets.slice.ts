@@ -15,7 +15,7 @@ import {
   AsyncError,
   AsyncReducerStatus,
 } from 'utils/async-slice'
-import { RootState } from 'store'
+import { RootState } from 'features/app/app.hooks'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 
 export const fetchDatasetByIdThunk = createAsyncThunk<

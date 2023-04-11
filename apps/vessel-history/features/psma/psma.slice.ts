@@ -9,7 +9,7 @@ import {
   AsyncReducerStatus,
   createAsyncSlice,
 } from 'utils/async-slice'
-import { RootState } from 'store'
+import { RootState } from 'features/app/app.hooks'
 import { Psma } from 'types/psma'
 import { API_VERSION, DEFAULT_PAGINATION_PARAMS } from 'data/config'
 

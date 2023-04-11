@@ -9,6 +9,7 @@ import type {
   OceanArea,
 } from '@globalfishingwatch/ocean-areas'
 import { Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
+import { Dataview } from '@globalfishingwatch/api-types'
 import { t as trans } from 'features/i18n/i18n'
 import useViewport, {
   getMapCoordinatesFromBounds,
@@ -122,7 +123,7 @@ function WorkspaceWizard() {
       const marineManagerDataviews = MARINE_MANAGER_DATAVIEWS.map((d) => d.dataviewId)
       const { payload } = await dispatch(fetchDataviewsByIdsThunk(marineManagerDataviews))
       if (payload) {
-        const datasetsIds = getDatasetsInDataviews(payload)
+        const datasetsIds = getDatasetsInDataviews(payload as Dataview[])
         if (datasetsIds?.length) {
           dispatch(fetchDatasetsByIdsThunk(datasetsIds))
         }

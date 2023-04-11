@@ -17,7 +17,6 @@ import {
   EndpointId,
 } from '@globalfishingwatch/api-types'
 import { MultiSelectOption } from '@globalfishingwatch/ui-components'
-import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
@@ -49,6 +48,7 @@ interface SearchState {
   filtersOpen: boolean
   filters: SearchFilter
 }
+type SearchSliceState = { search: SearchState }
 
 const paginationInitialState = { total: 0, offset: 0, loading: false }
 const initialState: SearchState = {
@@ -85,7 +85,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
     { query, filters, datasets, offset, gfwUser = false }: VesselSearchThunk,
     { getState, signal, rejectWithValue }
   ) => {
-    const state = getState() as RootState
+    const state = getState() as SearchSliceState
     const dataset = datasets[0]
     const currentResults = selectSearchResults(state)
     let advancedQuery
@@ -160,7 +160,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         const vesselsWithDataset = uniqSearchResults.flatMap((vessel) => {
           if (!vessel) return []
 
-          const infoDataset = selectDatasetById(vessel.dataset)(state)
+          const infoDataset = selectDatasetById(vessel.dataset)(state as any)
           if (!infoDataset) return []
 
           const trackDatasetId = getRelatedDatasetByType(infoDataset, DatasetTypes.Tracks)?.id
@@ -250,13 +250,14 @@ export const {
   cleanVesselSearchResults,
 } = searchSlice.actions
 
-export const selectSearchResults = (state: RootState) => state.search.data
-export const selectSearchStatus = (state: RootState) => state.search.status
-export const selectSearchStatusCode = (state: RootState) => state.search.statusCode
-export const selectSearchFiltersOpen = (state: RootState) => state.search.filtersOpen
-export const selectSearchFilters = (state: RootState) => state.search.filters
-export const selectSearchSuggestion = (state: RootState) => state.search.suggestion
-export const selectSearchSuggestionClicked = (state: RootState) => state.search.suggestionClicked
-export const selectSearchPagination = (state: RootState) => state.search.pagination
+export const selectSearchResults = (state: SearchSliceState) => state.search.data
+export const selectSearchStatus = (state: SearchSliceState) => state.search.status
+export const selectSearchStatusCode = (state: SearchSliceState) => state.search.statusCode
+export const selectSearchFiltersOpen = (state: SearchSliceState) => state.search.filtersOpen
+export const selectSearchFilters = (state: SearchSliceState) => state.search.filters
+export const selectSearchSuggestion = (state: SearchSliceState) => state.search.suggestion
+export const selectSearchSuggestionClicked = (state: SearchSliceState) =>
+  state.search.suggestionClicked
+export const selectSearchPagination = (state: SearchSliceState) => state.search.pagination
 
 export default searchSlice.reducer

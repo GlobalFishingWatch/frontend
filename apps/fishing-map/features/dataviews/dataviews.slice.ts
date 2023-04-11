@@ -39,7 +39,6 @@ import {
   selectTrackThinningConfig,
   selectTrackChunksConfig,
 } from 'features/resources/resources.slice'
-import { RootState } from 'store'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { MARINE_MANAGER_DATAVIEWS } from 'data/default-workspaces/marine-manager'
 import { trackDatasetConfigsCallback } from '../resources/resources.utils'
@@ -63,7 +62,7 @@ export const fetchDataviewByIdThunk = createAsyncThunk(
 export const fetchDataviewsByIdsThunk = createAsyncThunk(
   'dataviews/fetch',
   async (ids: (Dataview['id'] | Dataview['slug'])[], { signal, rejectWithValue, getState }) => {
-    const state = getState() as RootState
+    const state = getState() as DataviewsSliceState
     const existingIds = selectIds(state) as (number | string)[]
     const uniqIds = ids.filter((id) => !existingIds.includes(id))
 
@@ -145,9 +144,10 @@ export const updateDataviewThunk = createAsyncThunk<
   }
 )
 
-export type ResourcesState = AsyncReducer<Dataview>
+export type DataviewsState = AsyncReducer<Dataview>
+export type DataviewsSliceState = { dataviews: DataviewsState }
 
-const { slice: dataviewsSlice, entityAdapter } = createAsyncSlice<ResourcesState, Dataview>({
+const { slice: dataviewsSlice, entityAdapter } = createAsyncSlice<DataviewsState, Dataview>({
   name: 'dataview',
   thunks: {
     fetchThunk: fetchDataviewsByIdsThunk,
@@ -163,19 +163,19 @@ const { slice: dataviewsSlice, entityAdapter } = createAsyncSlice<ResourcesState
 })
 
 export const { addDataviewEntity } = dataviewsSlice.actions
-export const { selectAll, selectById, selectIds } = entityAdapter.getSelectors<RootState>(
+export const { selectAll, selectById, selectIds } = entityAdapter.getSelectors<DataviewsSliceState>(
   (state) => state.dataviews
 )
 
-export function selectAllDataviews(state: RootState) {
+export function selectAllDataviews(state: DataviewsSliceState) {
   return selectAll(state)
 }
 
 export const selectDataviewById = memoize((id: number) =>
-  createSelector([(state: RootState) => state], (state) => selectById(state, id))
+  createSelector([(state: DataviewsSliceState) => state], (state) => selectById(state, id))
 )
 
-export const selectDataviewsStatus = (state: RootState) => state.dataviews.status
+export const selectDataviewsStatus = (state: DataviewsSliceState) => state.dataviews.status
 
 export const selectDataviewInstancesMerged = createSelector(
   [selectWorkspaceStatus, selectWorkspaceDataviewInstances, selectUrlDataviewInstances],

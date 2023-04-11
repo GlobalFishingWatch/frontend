@@ -8,7 +8,7 @@ import {
 } from '@globalfishingwatch/api-client'
 import { VesselSearch } from '@globalfishingwatch/api-types'
 import { BASE_DATASET, RESULTS_PER_PAGE, SEARCH_MIN_CHARACTERS } from 'data/constants'
-import { RootState } from 'store'
+import { RootState } from 'features/app/app.hooks'
 import { SearchResults } from 'types'
 import { API_VERSION } from 'data/config'
 import { CachedVesselSearch } from './search.slice'
@@ -78,7 +78,7 @@ export const fetchData = async (
         offset: json.offset,
         total: json.total,
         searching: false,
-        sources: json.metadata.sources
+        sources: json.metadata.sources,
       }
     })
     .catch((error) => {
@@ -153,7 +153,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
   async ({ query, offset, advancedSearch }: VesselSearchThunk, { signal, rejectWithValue }) => {
     const searchData = await fetchData(query, offset, signal, advancedSearch)
     if (!searchData.success) {
-      return rejectWithValue(searchData.error);
+      return rejectWithValue(searchData.error)
     }
     trackData({ query: query, ...advancedSearch }, searchData, 5)
     return searchData

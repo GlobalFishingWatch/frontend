@@ -6,7 +6,7 @@ import {
   AsyncReducerStatus,
   createAsyncSlice,
 } from 'utils/async-slice'
-import { RootState } from 'store'
+import { RootState } from 'features/app/app.hooks'
 
 export type RegionId = string | number
 export enum MarineRegionType {

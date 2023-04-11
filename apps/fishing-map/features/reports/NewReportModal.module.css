@@ -1,0 +1,28 @@
+div.modal {
+  height: auto;
+}
+
+.input {
+  margin-bottom: var(--space-M);
+}
+
+.footer {
+  margin-top: var(--space-M);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-M);
+}
+
+.footer button:only-child {
+  margin-left: auto;
+}
+
+.adminWarning {
+  margin-top: var(--space-M);
+  color: var(--color-secondary-blue);
+}
+
+.error {
+  color: var(--color-danger-red);
+}

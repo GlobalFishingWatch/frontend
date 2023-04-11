@@ -22,7 +22,7 @@ import ReportSummaryTagsPlaceholder from 'features/reports/placeholders/ReportSu
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { listAsSentence } from 'utils/shared'
 import { ReportCategory } from 'types'
-import { getDateRangeHash, selectReportVesselsDateRangeHash } from 'features/reports/reports.slice'
+import { getDateRangeHash, selectReportVesselsDateRangeHash } from 'features/reports/report.slice'
 import { selectReportVesselsHours, selectReportVesselsNumber } from '../reports.selectors'
 import styles from './ReportSummary.module.css'
 

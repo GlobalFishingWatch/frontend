@@ -10,7 +10,7 @@ import {
 import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { PRIVATE_SUFIX } from 'data/config'
-import { RootState } from 'store'
+import { RootState } from 'features/app/app.hooks'
 import { selectUserStatus, selectUserLogged, selectUserData, isGFWUser } from './user.slice'
 
 const DEFAULT_GROUP_ID = 'Default'

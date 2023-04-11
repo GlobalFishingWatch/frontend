@@ -1,146 +1,165 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
+import { memoize } from 'lodash'
 import { stringify } from 'qs'
-import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
-import { APIPagination, ReportVesselsByDataset } from '@globalfishingwatch/api-types'
-import { RootState } from 'store'
-import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
-import { getUTCDateTime } from 'utils/dates'
+import { APIPagination, Report } from '@globalfishingwatch/api-types'
 import {
-  Format,
-  GroupBy,
-  SpatialResolution,
-  TemporalResolution,
-} from 'features/download/downloadActivity.config'
-import { DateRange } from '../download/downloadActivity.slice'
+  GFWAPI,
+  parseAPIError,
+  parseAPIErrorMessage,
+  parseAPIErrorStatus,
+} from '@globalfishingwatch/api-client'
+import { AsyncError, AsyncReducer, AsyncReducerStatus, createAsyncSlice } from 'utils/async-slice'
+import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 
-interface ReportState {
-  status: AsyncReducerStatus
-  error: AsyncError | null
-  data: ReportVesselsByDataset[] | null
-  dateRangeHash: string
-}
-
-const initialState: ReportState = {
-  status: AsyncReducerStatus.Idle,
-  error: null,
-  data: null,
-  dateRangeHash: '',
-}
-type ReportRegion = {
-  dataset: string
-  id: number
-}
-
-type FetchReportVesselsThunkParams = {
-  region: ReportRegion
-  datasets: string[]
-  filters: Record<string, any>[]
-  vesselGroups: string[]
-  dateRange: DateRange
-  temporalResolution?: TemporalResolution
-  groupBy?: GroupBy
-  spatialResolution?: SpatialResolution
-  format?: Format.Csv | Format.Json
-  spatialAggregation?: boolean
-}
-export const fetchReportVesselsThunk = createAsyncThunk(
-  'reports/vessels',
-  async (params: FetchReportVesselsThunkParams, { rejectWithValue }) => {
+export const fetchReportByIdThunk = createAsyncThunk(
+  'reports/fetchById',
+  async (id: number, { rejectWithValue }) => {
     try {
-      const {
-        region,
-        datasets,
-        filters,
-        vesselGroups,
-        dateRange,
-        temporalResolution = TemporalResolution.Full,
-        groupBy = GroupBy.Vessel,
-        spatialResolution = SpatialResolution.Low,
-        spatialAggregation = true,
-        format = Format.Json,
-      } = params
-      const query = stringify(
-        {
-          datasets,
-          filters,
-          'vessel-groups': vesselGroups,
-          'temporal-resolution': temporalResolution,
-          'date-range': [
-            getUTCDateTime(dateRange?.start)?.toString(),
-            getUTCDateTime(dateRange?.end)?.toString(),
-          ].join(','),
-          'group-by': groupBy,
-          'spatial-resolution': spatialResolution,
-          'spatial-aggregation': spatialAggregation,
-          format: format,
-          'region-id': region.id,
-          'region-dataset': region.dataset,
-        },
-        { arrayFormat: 'indices' }
+      const report = await GFWAPI.fetch<Report>(`/reports/${id}`)
+      return report
+    } catch (e: any) {
+      console.warn(e)
+      return rejectWithValue({
+        status: parseAPIErrorStatus(e),
+        message: `${id} - ${parseAPIErrorMessage(e)}`,
+      })
+    }
+  }
+)
+
+export const fetchReportsThunk = createAsyncThunk(
+  'reports/fetch',
+  async (ids: string[], { signal, rejectWithValue }) => {
+    try {
+      const reportsParams = {
+        ...(ids?.length && { ids }),
+        ...DEFAULT_PAGINATION_PARAMS,
+      }
+      const reportsResponse = await GFWAPI.fetch<APIPagination<Report>>(
+        `/reports?${stringify(reportsParams, { arrayFormat: 'comma' })}`,
+        { signal }
       )
-      const vessels = await GFWAPI.fetch<APIPagination<ReportVesselsByDataset>>(
-        `/4wings/report?${query}`
-      )
-      return vessels.entries
-    } catch (e) {
+      return reportsResponse?.entries
+    } catch (e: any) {
       console.warn(e)
       return rejectWithValue(parseAPIError(e))
     }
   },
   {
-    condition: (params: FetchReportVesselsThunkParams, { getState }) => {
-      const { status } = (getState() as RootState)?.reports
-      if (status === AsyncReducerStatus.Loading) {
-        return false
-      }
-      return true
+    condition: (_, { getState }) => {
+      const status = (getState() as ReportsSliceState).reports.status
+      return status !== AsyncReducerStatus.Loading
     },
   }
 )
 
-export function getDateRangeHash(dateRange: DateRange) {
-  return [dateRange.start, dateRange.end].join('-')
-}
+export const createReportThunk = createAsyncThunk<
+  Report,
+  Partial<Report>,
+  {
+    rejectValue: AsyncError
+  }
+>('report/create', async (report, { rejectWithValue }) => {
+  try {
+    const createdReport = await GFWAPI.fetch<Report>(`/reports`, {
+      method: 'POST',
+      body: report as any,
+    })
 
-const reportSlice = createSlice({
-  name: 'reports',
-  initialState,
-  reducers: {
-    resetReportData: (state) => {
-      state.status = AsyncReducerStatus.Idle
-      state.data = null
-      state.error = null
-      state.dateRangeHash = ''
-    },
-    setDateRangeHash: (state, action: PayloadAction<string>) => {
-      state.dateRangeHash = action.payload
-    },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(fetchReportVesselsThunk.pending, (state) => {
-      state.status = AsyncReducerStatus.Loading
-    })
-    builder.addCase(fetchReportVesselsThunk.fulfilled, (state, action) => {
-      state.status = AsyncReducerStatus.Finished
-      state.data = action.payload
-      state.dateRangeHash = getDateRangeHash(action.meta.arg.dateRange)
-    })
-    builder.addCase(
-      fetchReportVesselsThunk.rejected,
-      (state, action: PayloadAction<AsyncError>) => {
-        state.status = AsyncReducerStatus.Error
-        state.error = action.payload
-      }
-    )
-  },
+    return createdReport
+  } catch (e: any) {
+    console.warn(e)
+    return rejectWithValue(parseAPIError(e))
+  }
 })
 
-export const { resetReportData, setDateRangeHash } = reportSlice.actions
+export const updateReportThunk = createAsyncThunk<
+  Report,
+  Partial<Report>,
+  {
+    rejectValue: AsyncError
+  }
+>(
+  'reports/update',
+  async (partialReport, { rejectWithValue }) => {
+    try {
+      const report = await GFWAPI.fetch<Report>(`/reports/${partialReport.id}`, {
+        method: 'PATCH',
+        body: partialReport as any,
+      })
+      return report
+    } catch (e: any) {
+      console.warn(e)
+      return rejectWithValue(parseAPIError(e))
+    }
+  },
+  {
+    condition: (partialReport) => {
+      if (!partialReport || !partialReport.id) {
+        console.warn('To update the dataset you need the id')
+        return false
+      }
+    },
+  }
+)
 
-export const selectReportSummary = (state: RootState) => state.reports
-export const selectReportVesselsStatus = (state: RootState) => state.reports.status
-export const selectReportVesselsError = (state: RootState) => state.reports.error
-export const selectReportVesselsData = (state: RootState) => state.reports.data
-export const selectReportVesselsDateRangeHash = (state: RootState) => state.reports.dateRangeHash
+export const deleteReportThunk = createAsyncThunk<
+  { id: Report['id'] },
+  { id: Report['id'] },
+  {
+    rejectValue: AsyncError
+  }
+>(
+  'reports/delete',
+  async (report, { rejectWithValue }) => {
+    try {
+      await GFWAPI.fetch<Report>(`/reports/${report?.id}`, {
+        method: 'DELETE',
+      })
+      return report
+    } catch (e: any) {
+      console.warn(e)
+      return rejectWithValue(parseAPIError(e))
+    }
+  },
+  {
+    condition: (reportId) => {
+      if (!reportId) {
+        console.warn('To remove a report you need the id')
+        return false
+      }
+    },
+  }
+)
 
-export default reportSlice.reducer
+export type ReportState = AsyncReducer<Report>
+type ReportsSliceState = { reports: ReportState }
+
+const { slice: reportsSlice, entityAdapter } = createAsyncSlice<ReportState, Report>({
+  name: 'reports',
+  thunks: {
+    fetchThunk: fetchReportsThunk,
+    fetchByIdThunk: fetchReportByIdThunk,
+    createThunk: createReportThunk,
+    updateThunk: updateReportThunk,
+    deleteThunk: deleteReportThunk,
+  },
+  reducers: {},
+})
+
+export const { selectAll, selectById, selectIds } = entityAdapter.getSelectors<ReportsSliceState>(
+  (state) => state.reports
+)
+
+export function selectAllReports(state: ReportsSliceState) {
+  return selectAll(state)
+}
+
+export const selectReportById = memoize((id: number) =>
+  createSelector([(state: ReportsSliceState) => state], (state) => selectById(state, id))
+)
+
+export const selectReportsStatus = (state: ReportsSliceState) => state.reports.status
+export const selectReportsStatusId = (state: ReportsSliceState) => state.reports.statusId
+
+export default reportsSlice.reducer

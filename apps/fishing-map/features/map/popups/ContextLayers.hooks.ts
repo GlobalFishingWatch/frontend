@@ -55,7 +55,7 @@ export const useContextInteractions = () => {
 
   const onDownloadClick = useCallback(
     (ev: React.MouseEvent<Element, MouseEvent>, feature: TooltipEventFeature) => {
-      const areaId = feature.properties.gfw_id || feature.properties[feature.promoteId]
+      const areaId = parseInt(feature.properties.gfw_id || feature.properties[feature.promoteId])
       if (!areaId) {
         console.warn('No gfw_id available in the feature to analyze', feature)
         return
