@@ -15,6 +15,7 @@ import {
   selectAllVesselGroups,
   selectWorkspaceVesselGroups,
 } from 'features/vessel-groups/vessel-groups.slice'
+import { selectAllReports } from 'features/reports/reports.slice'
 import {
   selectUserStatus,
   selectUserLogged,
@@ -73,6 +74,17 @@ export const selectUserWorkspaces = createSelector(
   (userData, workspaces) => {
     return orderBy(
       workspaces?.filter((workspace) => workspace.ownerId === userData?.id),
+      'createdAt',
+      'desc'
+    )
+  }
+)
+
+export const selectUserReports = createSelector(
+  [(state: RootState) => selectUserData(state), (state: RootState) => selectAllReports(state)],
+  (userData, reports) => {
+    return orderBy(
+      reports?.filter((report) => report.ownerId === userData?.id),
       'createdAt',
       'desc'
     )

@@ -10,17 +10,17 @@ import { sortByCreationDate } from 'utils/dates'
 import {
   deleteReportThunk,
   fetchReportsThunk,
-  selectAllReports,
   selectReportsStatus,
   selectReportsStatusId,
 } from 'features/reports/reports.slice'
 import { REPORT } from 'routes/routes'
+import { selectUserReports } from 'features/user/user.selectors'
 import styles from './User.module.css'
 
 function UserReports() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const reports = useSelector(selectAllReports)
+  const reports = useSelector(selectUserReports)
   const reportsStatus = useSelector(selectReportsStatus)
   const reportsStatusId = useSelector(selectReportsStatusId)
 
