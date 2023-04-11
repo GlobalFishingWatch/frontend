@@ -9,6 +9,6 @@ export type Report = {
   datasetId: string
   workspace: Workspace
   createdAt: string
-  ownerId: string
+  ownerId: number
   ownerType: OwnerType
 }

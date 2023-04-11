@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { RootState } from 'reducers'
 import { DataviewCategory, Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance, getGeneratorConfig } from '@globalfishingwatch/dataviews-client'
 import {
@@ -10,7 +11,6 @@ import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getDatasetsInDataviews, getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID, DEFAULT_DATAVIEW_SLUGS } from 'data/workspaces'
-import { RootState } from 'store'
 import {
   selectActiveVesselsDataviews,
   selectAllDataviewInstancesResolved,

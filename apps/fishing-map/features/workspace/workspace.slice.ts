@@ -17,7 +17,6 @@ import {
 } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_TIME_RANGE } from 'data/config'
 import { WorkspaceState } from 'types'
-import { RootState } from 'store'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import {
@@ -82,7 +81,7 @@ export const getDefaultWorkspace = () => {
 export const fetchWorkspaceThunk = createAsyncThunk(
   'workspace/fetch',
   async (workspaceId: string, { signal, dispatch, getState, rejectWithValue }) => {
-    const state = getState() as RootState
+    const state = getState() as any
     const locationType = selectLocationType(state)
     const urlDataviewInstances = selectUrlDataviewInstances(state)
     const guestUser = isGuestUser(state)
@@ -225,7 +224,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
   },
   {
     condition: (workspaceId, { getState }) => {
-      const workspaceStatus = selectWorkspaceStatus(getState() as RootState)
+      const workspaceStatus = selectWorkspaceStatus(getState() as any)
       // Fetched already in progress, don't need to re-fetch
       return workspaceStatus !== AsyncReducerStatus.Loading
     },
@@ -251,7 +250,7 @@ export const saveWorkspaceThunk = createAsyncThunk(
     },
     { dispatch, getState }
   ) => {
-    const state = getState() as RootState
+    const state = getState() as any
     const workspaceUpsert = parseUpsertWorkspace(workspace)
 
     const saveWorkspace = async (tries = 0): Promise<Workspace<WorkspaceState> | undefined> => {

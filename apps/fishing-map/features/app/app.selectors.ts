@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { RootState } from 'reducers'
 import { DataviewInstance } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_WORKSPACE } from 'data/config'
 import { createDeepEqualSelector } from 'utils/selectors'
@@ -15,6 +16,7 @@ import {
   selectUrlTimeRange,
   selectLocationDatasetId,
   selectLocationAreaId,
+  selectReportId,
 } from 'routes/routes.selectors'
 import {
   Bbox,
@@ -34,7 +36,6 @@ import {
   selectDataviewInstancesMergedOrdered,
   selectDataviewInstancesResolved,
 } from 'features/dataviews/dataviews.slice'
-import { RootState } from 'store'
 import {
   selectActiveDetectionsDataviews,
   selectActiveEnvironmentalDataviews,
@@ -42,7 +43,7 @@ import {
   selectEnvironmentalDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import { getReportCategoryFromDataview } from 'features/reports/reports.utils'
-import { selectCurrentReport } from 'features/reports/reports.slice'
+import { selectReportById } from 'features/reports/reports.slice'
 
 export const selectViewport = createSelector(
   [selectUrlViewport, selectWorkspaceViewport],
@@ -112,6 +113,14 @@ export const selectSidebarOpen = createSelector(
   [selectWorkspaceStateProperty('sidebarOpen')],
   (sidebarOpen): boolean => {
     return sidebarOpen
+  }
+)
+
+export const selectCurrentReport = createSelector(
+  [selectReportId, (state) => state.reports],
+  (reportId, reports) => {
+    const report = selectReportById(reportId)({ reports })
+    return report
   }
 )
 

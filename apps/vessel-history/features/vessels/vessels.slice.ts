@@ -13,7 +13,7 @@ import {
 import { VesselSourceId } from 'types/vessel'
 import gfwThunk from 'features/vessels/sources/gfw.slice'
 import tmtThunk from 'features/vessels/sources/tmt.slice'
-import { RootState } from 'store'
+import { RootState } from 'features/app/app.hooks'
 import { RenderedVoyage } from 'types/voyage'
 import { mergeVesselFromSources, NOT_AVAILABLE } from './vessels.utils'
 

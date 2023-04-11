@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { RootState } from 'store'
+import { RootState } from 'features/app/app.hooks'
 import { selectAdvancedSearchFields, selectQueryParam } from 'routes/routes.selectors'
 import { getSerializedQuery } from './search.thunk'
 

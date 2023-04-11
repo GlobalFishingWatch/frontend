@@ -8,7 +8,7 @@ import { selectReportAreaDataview } from 'features/reports/reports.selectors'
 import { getContextAreaLink } from 'features/dataviews/dataviews.utils'
 import ReportTitlePlaceholder from 'features/reports/placeholders/ReportTitlePlaceholder'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectCurrentReport } from 'features/reports/reports.slice'
+import { selectCurrentReport } from 'features/app/app.selectors'
 import styles from './ReportTitle.module.css'
 
 type ReportTitleProps = {

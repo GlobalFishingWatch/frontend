@@ -10,7 +10,6 @@ import {
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import { wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
-import { RootState } from 'store'
 import { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -96,7 +95,7 @@ export const fetchAreaDetailThunk = createAsyncThunk(
   },
   {
     condition: ({ dataset, areaId }: FetchAreaDetailThunkParam, { getState }) => {
-      const { areas } = getState() as RootState
+      const { areas } = getState() as { areas: AreasState }
       const fetchStatus = areas[dataset?.id]?.detail?.[areaId]?.status
       if (
         fetchStatus === AsyncReducerStatus.Finished ||
@@ -130,7 +129,7 @@ export const fetchDatasetAreasThunk = createAsyncThunk(
   },
   {
     condition: ({ datasetId }: FetchDatasetAreasThunkParam, { getState }) => {
-      const { areas } = getState() as RootState
+      const { areas } = getState() as { areas: AreasState }
       const fetchStatus = areas[datasetId]?.list?.status
       if (
         fetchStatus === AsyncReducerStatus.Finished ||
@@ -206,7 +205,7 @@ const areasSlice = createSlice({
   },
 })
 
-export const selectAreas = (state: RootState) => state.areas
+export const selectAreas = (state: { areas: AreasState }) => state.areas
 export const selectDatasetAreaById = memoize((id: string) =>
   createSelector([selectAreas], (areas) => areas?.[id])
 )

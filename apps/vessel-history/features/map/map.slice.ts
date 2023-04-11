@@ -6,7 +6,7 @@ import {
   BasemapGeneratorConfig,
 } from '@globalfishingwatch/layer-composer'
 import { ApiEvent } from '@globalfishingwatch/api-types'
-import { RootState } from 'store'
+import { RootState } from 'features/app/app.hooks'
 import { Range } from 'types'
 
 export interface MapState {

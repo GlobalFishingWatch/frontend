@@ -1,5 +1,5 @@
 import { WorkspaceViewport } from '@globalfishingwatch/api-types'
-import { AppDispatch, RootState } from 'store'
+import { AppDispatch, RootState } from 'features/app/app.hooks'
 import { QueryParams } from 'types'
 import { HOME, ROUTE_TYPES } from './routes'
 import {

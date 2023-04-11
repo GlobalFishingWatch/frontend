@@ -1,6 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { orderBy, uniqBy } from 'lodash'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
+import { RootState } from 'reducers'
 import { DatasetStatus, DatasetCategory, UserPermission } from '@globalfishingwatch/api-types'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
@@ -10,7 +11,6 @@ import {
 import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { PRIVATE_SUFIX, USER_SUFIX } from 'data/config'
-import { RootState } from 'store'
 import {
   selectAllVesselGroups,
   selectWorkspaceVesselGroups,

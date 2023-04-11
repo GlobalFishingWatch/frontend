@@ -7,7 +7,7 @@ import {
   GUEST_USER_TYPE,
 } from '@globalfishingwatch/api-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { RootState } from 'store'
+import { RootState } from 'features/app/app.hooks'
 
 interface UserState {
   logged: boolean

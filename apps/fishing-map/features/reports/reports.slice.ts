@@ -9,9 +9,7 @@ import {
   parseAPIErrorStatus,
 } from '@globalfishingwatch/api-client'
 import { AsyncError, AsyncReducer, AsyncReducerStatus, createAsyncSlice } from 'utils/async-slice'
-import { RootState } from 'store'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
-import { selectReportId } from 'routes/routes.selectors'
 
 export const fetchReportByIdThunk = createAsyncThunk(
   'reports/fetchById',
@@ -49,7 +47,7 @@ export const fetchReportsThunk = createAsyncThunk(
   },
   {
     condition: (_, { getState }) => {
-      const status = (getState() as RootState).reports.status
+      const status = (getState() as ReportsSliceState).reports.status
       return status !== AsyncReducerStatus.Loading
     },
   }
@@ -134,9 +132,10 @@ export const deleteReportThunk = createAsyncThunk<
   }
 )
 
-export type ResourcesState = AsyncReducer<Report>
+export type ReportState = AsyncReducer<Report>
+type ReportsSliceState = { reports: ReportState }
 
-const { slice: reportsSlice, entityAdapter } = createAsyncSlice<ResourcesState, Report>({
+const { slice: reportsSlice, entityAdapter } = createAsyncSlice<ReportState, Report>({
   name: 'reports',
   thunks: {
     fetchThunk: fetchReportsThunk,
@@ -148,27 +147,19 @@ const { slice: reportsSlice, entityAdapter } = createAsyncSlice<ResourcesState, 
   reducers: {},
 })
 
-export const { selectAll, selectById, selectIds } = entityAdapter.getSelectors<RootState>(
+export const { selectAll, selectById, selectIds } = entityAdapter.getSelectors<ReportsSliceState>(
   (state) => state.reports
 )
 
-export function selectAllReports(state: RootState) {
+export function selectAllReports(state: ReportsSliceState) {
   return selectAll(state)
 }
 
 export const selectReportById = memoize((id: number) =>
-  createSelector([(state: RootState) => state], (state) => selectById(state, id))
+  createSelector([(state: ReportsSliceState) => state], (state) => selectById(state, id))
 )
 
-export const selectCurrentReport = createSelector(
-  [selectReportId, (state) => state.reports],
-  (reportId, reports) => {
-    const report = selectReportById(reportId)({ reports })
-    return report
-  }
-)
-
-export const selectReportsStatus = (state: RootState) => state.reports.status
-export const selectReportsStatusId = (state: RootState) => state.reports.statusId
+export const selectReportsStatus = (state: ReportsSliceState) => state.reports.status
+export const selectReportsStatusId = (state: ReportsSliceState) => state.reports.statusId
 
 export default reportsSlice.reducer

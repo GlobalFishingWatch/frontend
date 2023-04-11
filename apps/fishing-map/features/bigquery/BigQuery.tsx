@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux'
 import { Button, InputText, Select, SwitchRow, Tooltip } from '@globalfishingwatch/ui-components'
 import { Dataset } from '@globalfishingwatch/api-types'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
+import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   getBigQuery4WingsDataviewInstance,
@@ -82,7 +83,7 @@ const BigQueryMenu: React.FC = () => {
     if (fetchBigQueryRunCostThunk.fulfilled.match(action)) {
       setRunCostChecked(true)
     } else {
-      const error = action.payload
+      const error = action.payload as ParsedAPIError
       setError(error.message)
     }
   }
@@ -102,7 +103,7 @@ const BigQueryMenu: React.FC = () => {
       addNewDataviewInstances([dataviewInstance])
       dispatch(toggleBigQueryMenu())
     } else {
-      const error = action.payload
+      const error = action.payload as ParsedAPIError
       setError(error.message)
     }
   }

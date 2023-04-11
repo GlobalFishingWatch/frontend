@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { APIPagination, ReportVesselsByDataset } from '@globalfishingwatch/api-types'
-import { RootState } from 'store'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { getUTCDateTime } from 'utils/dates'
 import {
@@ -19,6 +18,7 @@ interface ReportState {
   data: ReportVesselsByDataset[] | null
   dateRangeHash: string
 }
+type ReportSliceState = { report: ReportState }
 
 const initialState: ReportState = {
   status: AsyncReducerStatus.Idle,
@@ -89,7 +89,7 @@ export const fetchReportVesselsThunk = createAsyncThunk(
   },
   {
     condition: (params: FetchReportVesselsThunkParams, { getState }) => {
-      const { status } = (getState() as RootState)?.report
+      const { status } = (getState() as ReportSliceState)?.report
       if (status === AsyncReducerStatus.Loading) {
         return false
       }
@@ -137,10 +137,11 @@ const reportSlice = createSlice({
 
 export const { resetReportData, setDateRangeHash } = reportSlice.actions
 
-export const selectReportSummary = (state: RootState) => state.report
-export const selectReportVesselsStatus = (state: RootState) => state.report.status
-export const selectReportVesselsError = (state: RootState) => state.report.error
-export const selectReportVesselsData = (state: RootState) => state.report.data
-export const selectReportVesselsDateRangeHash = (state: RootState) => state.report.dateRangeHash
+export const selectReportSummary = (state: ReportSliceState) => state.report
+export const selectReportVesselsStatus = (state: ReportSliceState) => state.report.status
+export const selectReportVesselsError = (state: ReportSliceState) => state.report.error
+export const selectReportVesselsData = (state: ReportSliceState) => state.report.data
+export const selectReportVesselsDateRangeHash = (state: ReportSliceState) =>
+  state.report.dateRangeHash
 
 export default reportSlice.reducer
