@@ -61,7 +61,7 @@ function User() {
       },
       {
         id: 'reports',
-        title: t('common.report', 'Report'),
+        title: t('common.reports', 'Reports'),
         content: <UserReports />,
       },
     ]

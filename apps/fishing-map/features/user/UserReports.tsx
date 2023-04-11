@@ -47,7 +47,7 @@ function UserReports() {
   return (
     <div className={styles.views}>
       <div className={styles.viewsHeader}>
-        <label>{t('common.report', 'Report')}</label>
+        <label>{t('common.reports', 'Reports')}</label>
       </div>
       {loading ? (
         <div className={styles.placeholder}>
