@@ -1,5 +1,5 @@
 import { Range } from 'features/timebar/timebar.slice'
-import { AppDispatch, RootState } from 'features/app/app.hooks'
+import { AppDispatch, RootState } from 'store'
 import { QueryParams, WorkspaceViewport } from 'types'
 import { ROUTE_TYPES } from './routes'
 import {

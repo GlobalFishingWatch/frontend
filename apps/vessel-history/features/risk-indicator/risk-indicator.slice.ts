@@ -8,7 +8,7 @@ import {
   AsyncReducerStatus,
   createAsyncSlice,
 } from 'utils/async-slice'
-import { RootState } from 'features/app/app.hooks'
+import { RootState } from 'store'
 import { Indicator, IndicatorType } from 'types/risk-indicator'
 import { selectEventDatasetsConfigQueryParams } from 'features/dataviews/dataviews.selectors'
 import { NOT_AVAILABLE } from 'features/vessels/vessels.utils'

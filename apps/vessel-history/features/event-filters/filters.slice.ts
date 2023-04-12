@@ -1,6 +1,6 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
-import { RootState } from 'features/app/app.hooks'
+import { RootState } from 'store'
 
 export type availableEventFilters =
   | 'portVisits'

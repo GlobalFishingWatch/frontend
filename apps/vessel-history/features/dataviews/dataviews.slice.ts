@@ -4,7 +4,7 @@ import { stringify } from 'qs'
 import { APIPagination, Dataview } from '@globalfishingwatch/api-types'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { AsyncReducer, AsyncReducerStatus, createAsyncSlice } from 'utils/async-slice'
-import { RootState } from 'features/app/app.hooks'
+import { RootState } from 'store'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 
 export const fetchDataviewsByIdsThunk = createAsyncThunk(

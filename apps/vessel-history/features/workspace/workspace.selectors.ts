@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { WorkspaceState, WorkspaceStateProperty } from 'types'
-import { RootState } from 'features/app/app.hooks'
+import { RootState } from 'store'
 import { selectQueryParam } from 'routes/routes.selectors'
 import { DEFAULT_WORKSPACE } from 'data/config'
 

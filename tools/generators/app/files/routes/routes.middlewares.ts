@@ -1,7 +1,7 @@
 import { Middleware } from 'redux'
 import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 import { REPLACE_URL_PARAMS } from 'data/config'
-import { RootState } from 'features/app/app.hooks'
+import { RootState } from 'store'
 import { QueryParams } from 'types'
 import { routesMap } from './routes'
 import { UpdateQueryParamsAction } from './routes.actions'

@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { Query, RouteObject } from 'redux-first-router'
 import { DEFAULT_WORKSPACE } from 'data/config'
-import { RootState } from 'features/app/app.hooks'
+import { RootState } from 'store'
 import { WorkspaceParam } from 'types'
 import { ROUTE_TYPES } from './routes'
 

@@ -4,7 +4,7 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { formatVesselProfileId, NOT_AVAILABLE } from 'features/vessels/vessels.utils'
 import { createDeepEqualSelector } from 'utils/selectors'
-import { RootState } from 'features/app/app.hooks'
+import { RootState } from 'store'
 import { WorkspaceParam } from 'types'
 import { ROUTE_TYPES } from './routes'
 

@@ -6,7 +6,7 @@ import {
   parseAPIErrorMessage,
   parseAPIErrorStatus,
 } from '@globalfishingwatch/api-client'
-import { RootState } from 'features/app/app.hooks'
+import { RootState } from 'store'
 import { OfflineVessel } from 'types/vessel'
 import { AsyncError, asyncInitialState, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 export interface OfflineVesselState extends AsyncReducer<OfflineVessel> {

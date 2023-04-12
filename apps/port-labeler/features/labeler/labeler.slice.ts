@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { point } from '@turf/helpers'
 import { SelectOption } from '@globalfishingwatch/ui-components'
-import { RootState } from 'features/app/app.hooks'
+import { RootState } from 'store'
 import { PortPosition, PortSubarea } from 'types'
 
 interface ValuesObject {

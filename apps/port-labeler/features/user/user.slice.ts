@@ -7,7 +7,7 @@ import {
 } from '@globalfishingwatch/api-client'
 import { UserData } from '@globalfishingwatch/api-types'
 import { redirectToLogin } from '@globalfishingwatch/react-hooks'
-import { RootState } from 'features/app/app.hooks'
+import { RootState } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 interface UserState {

@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
-import { RootState } from 'features/app/app.hooks'
+import { RootState } from 'store'
 import { psmaEntityAdapter } from './psma.slice'
 
 const { selectById } = psmaEntityAdapter.getSelectors<RootState>((state) => state.psma)
