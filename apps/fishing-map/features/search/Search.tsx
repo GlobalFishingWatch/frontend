@@ -3,8 +3,9 @@ import { batch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { debounce } from 'lodash'
+import { CSVLink } from 'react-csv'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
-import { Spinner, Button } from '@globalfishingwatch/ui-components'
+import { Spinner, Button, IconButton } from '@globalfishingwatch/ui-components'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -39,9 +40,9 @@ import {
   selectSearchPagination,
   selectSearchResults,
 } from './search.slice'
-import styles from './Search.module.css'
 import { useSearchConnect, useSearchFiltersConnect } from './search.hook'
 import { selectBasicSearchDatasets, selectAdvancedSearchDatasets } from './search.selectors'
+import styles from './Search.module.css'
 
 const MIN_SEARCH_CHARACTERS = 3
 
@@ -172,12 +173,13 @@ function Search() {
   const onSelect = useCallback(
     (selection: VesselWithDatasets[] | null) => {
       if (!selection) return
+      const selectedIds = vesselsSelected.map((vessel) => vessel.id)
       if (selection.length === 0) {
         setVesselsSelected([])
       }
       if (selection.length === 1) {
         const vessel = selection[0]
-        if (vesselsSelected.includes(vessel)) {
+        if (selectedIds.includes(vessel.id)) {
           setVesselsSelected(vesselsSelected.filter((v) => v !== vessel))
         } else if (vessel && vessel.dataset && vessel.trackDatasetId) {
           setVesselsSelected([...vesselsSelected, vessel])
@@ -250,14 +252,41 @@ function Search() {
           [styles.hidden]: !searchResultsPagination || searchResultsPagination.total === 0,
         })}
       >
-        <label className={styles.results}>
-          <I18nNumber number={searchResultsPagination.total} />
-          {` ${t('search.result_other', 'results')} ${
-            vesselsSelected.length !== 0
-              ? `(${vesselsSelected.length} ${t('selects.selected', 'selected')})`
-              : ''
-          }`}
-        </label>
+        {searchResults && searchResults.length !== 0 && (
+          <label className={styles.results}>
+            {`${t('search.seeing', 'seeing')} `}
+            <I18nNumber number={searchResults.length} />
+            {` ${t('common.of', 'of')} `}
+            <I18nNumber number={searchResultsPagination.total} />
+            {` ${t('search.result_other', 'results')} ${
+              vesselsSelected.length !== 0
+                ? `(${vesselsSelected.length} ${t('selects.selected', 'selected')})`
+                : ''
+            }`}
+          </label>
+        )}
+        {activeSearchOption === 'advanced' && searchResults && (
+          <CSVLink
+            filename={`search-results-${debouncedQuery}.csv`}
+            asyncOnClick={true}
+            data={vesselsSelected.length !== 0 ? vesselsSelected : searchResults}
+          >
+            <IconButton
+              icon="download"
+              type="border"
+              tooltip={
+                vesselsSelected.length !== 0
+                  ? `${t('search.downloadSelected', 'Download CSV of selected vessels')} (${
+                      vesselsSelected.length
+                    })`
+                  : `${t('search.downloadTable', 'Download CSV of vessels on table')} (${
+                      searchResults.length
+                    })`
+              }
+              tooltipPlacement="top"
+            />
+          </CSVLink>
+        )}
         <VesselGroupAddButton
           vessels={vesselsSelected}
           onAddToVesselGroup={onAddToVesselGroup}
