@@ -2,10 +2,15 @@ import { useSelector } from 'react-redux'
 import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { VesselWithDatasets, selectSearchResults } from 'features/search/search.slice'
+import {
+  VesselWithDatasets,
+  selectSearchResults,
+  selectSearchStatus,
+} from 'features/search/search.slice'
 import { formatInfoField, EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import I18nFlag from 'features/i18n/i18nFlag'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
 const PINNED_COLUMN = 'shipname'
 
@@ -16,6 +21,7 @@ function SearchAdvancedResults({
   fetchMoreResults,
 }) {
   const { t } = useTranslation()
+  const searchStatus = useSelector(selectSearchStatus)
   const searchResults = useSelector(selectSearchResults)
   const tableContainerRef = useRef<HTMLDivElement>(null)
   const columns = useMemo((): MRT_ColumnDef<VesselWithDatasets>[] => {
@@ -65,12 +71,15 @@ function SearchAdvancedResults({
     (containerRefElement?: HTMLDivElement | null) => {
       if (containerRefElement) {
         const { scrollHeight, scrollTop, clientHeight } = containerRefElement
-        if (scrollHeight - scrollTop - clientHeight < 400) {
+        if (
+          scrollHeight - scrollTop - clientHeight < 50 &&
+          searchStatus === AsyncReducerStatus.Finished
+        ) {
           fetchMoreResults()
         }
       }
     },
-    [fetchMoreResults]
+    [fetchMoreResults, searchStatus]
   )
 
   useEffect(() => {
@@ -81,13 +90,15 @@ function SearchAdvancedResults({
     return null
   }
 
+  const showProgressBars = searchStatus !== AsyncReducerStatus.Finished
+
   return (
     <MaterialReactTable
       columns={columns}
       data={searchResults}
       enableSorting={false}
-      enableBottomToolbar={false}
       enableTopToolbar={false}
+      renderToolbarInternalActions={null}
       enableColumnFilters={false}
       enablePagination={false}
       enableColumnActions
@@ -101,20 +112,22 @@ function SearchAdvancedResults({
         columnPinning: { left: [PINNED_COLUMN] },
       }}
       state={{
+        showProgressBars,
         rowSelection: Object.fromEntries(
           searchResults.map((vessel) => [vessel.id, vesselsSelected.includes(vessel)])
         ),
       }}
       onRowSelectionChange={undefined}
       muiTablePaperProps={{
-        sx: { backgroundColor: 'transparent', height: 'auto' },
+        sx: { backgroundColor: 'transparent', boxShadow: 'none' },
       }}
       muiTableContainerProps={{
-        ref: tableContainerRef, //get access to the table container element
-        sx: { height: 'calc(100vh - 60px - 52px)' }, //give the table a max height
-        onScroll: (
-          event //add an event listener to the table container element
-        ) => fetchMoreOnBottomReached(event.target as HTMLDivElement),
+        ref: tableContainerRef,
+        sx: {
+          height: 'calc(100vh - 112px)',
+          transition: 'height 0.2s',
+        },
+        onScroll: (event) => fetchMoreOnBottomReached(event.target as HTMLDivElement),
       }}
       muiSelectAllCheckboxProps={{
         onClick: () => {
@@ -164,6 +177,17 @@ function SearchAdvancedResults({
             maxWidth: '20rem',
           },
         }
+      }}
+      muiBottomToolbarProps={{
+        sx: { overflow: 'visible' },
+      }}
+      muiLinearProgressProps={{
+        sx: {
+          height: '6px',
+          backgroundColor: 'var(--color-white)',
+          transform: 'translateY(-6px)',
+          span: { backgroundColor: 'var(--color-secondary-blue)' },
+        },
       }}
     />
   )
