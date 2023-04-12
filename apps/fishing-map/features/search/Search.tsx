@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { batch, useSelector } from 'react-redux'
-import { useIntersectionObserver } from '@researchgate/react-intersection-observer'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { debounce } from 'lodash'
@@ -119,23 +118,17 @@ function Search() {
     [dispatch]
   )
 
-  const handleIntersection = useCallback(
-    (entry: IntersectionObserverEntry) => {
-      const { offset, total } = searchPagination
-      if (entry.isIntersecting) {
-        if (offset <= total && total > RESULTS_PER_PAGE && searchDatasets) {
-          fetchResults({
-            query: debouncedQuery,
-            datasets: searchDatasets,
-            filters: searchFilters,
-            offset,
-          })
-        }
-      }
-    },
-    [searchPagination, searchDatasets, searchFilters, debouncedQuery, fetchResults]
-  )
-  const [spinnerRef] = useIntersectionObserver(handleIntersection, { rootMargin: '100px' })
+  const fetchMoreResults = useCallback(() => {
+    const { offset, total } = searchPagination
+    if (offset <= total && total > RESULTS_PER_PAGE && searchDatasets) {
+      fetchResults({
+        query: debouncedQuery,
+        datasets: searchDatasets,
+        filters: searchFilters,
+        offset,
+      })
+    }
+  }, [searchPagination, searchDatasets, fetchResults, debouncedQuery, searchFilters])
 
   useEffect(() => {
     if (debouncedQuery && !promiseRef.current && searchDatasets?.length) {
@@ -237,7 +230,7 @@ function Search() {
         searchQuery={searchQuery}
         debouncedQuery={debouncedQuery}
         onSelect={onSelect}
-        spinnerRef={spinnerRef}
+        fetchMoreResults={fetchMoreResults}
         vesselsSelected={vesselsSelected}
         setVesselsSelected={setVesselsSelected}
       />

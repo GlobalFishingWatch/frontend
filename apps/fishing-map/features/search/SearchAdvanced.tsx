@@ -1,18 +1,18 @@
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import Downshift from 'downshift'
 import { Trans, useTranslation } from 'react-i18next'
+import { MutableRefObject } from 'react'
 import { InputText, Spinner } from '@globalfishingwatch/ui-components'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import SearchBasicResults from 'features/search/SearchBasicResults'
+import SearchAdvancedResults from 'features/search/SearchAdvancedResults'
 import {
-  selectSearchResults,
   selectSearchStatus,
   selectSearchStatusCode,
   RESULTS_PER_PAGE,
   setSuggestionClicked,
+  VesselWithDatasets,
 } from './search.slice'
 import styles from './SearchAdvanced.module.css'
 import SearchFilters from './SearchFilters'
@@ -30,22 +30,32 @@ import {
 
 const MIN_SEARCH_CHARACTERS = 3
 
+type SearchAdvancedProps = {
+  onSuggestionClick: () => void
+  onSelect: (vessel: VesselWithDatasets) => void
+  fetchMoreResults: () => void
+  setSearchQuery: (query: string) => void
+  searchQuery: string
+  debouncedQuery: string
+  vesselsSelected: VesselWithDatasets[]
+  setVesselsSelected: (vessels: VesselWithDatasets[]) => void
+}
+
 function SearchAdvanced({
   onSuggestionClick,
   onSelect,
-  spinnerRef,
+  fetchMoreResults,
   setSearchQuery,
   searchQuery,
   debouncedQuery,
   vesselsSelected,
   setVesselsSelected,
-}) {
+}: SearchAdvancedProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
   const basicSearchAllowed = useSelector(isBasicSearchAllowed)
   const advancedSearchAllowed = useSelector(isAdvancedSearchAllowed)
-  const searchResults = useSelector(selectSearchResults)
   const searchStatus = useSelector(selectSearchStatus)
   const searchStatusCode = useSelector(selectSearchStatusCode)
   const searchDatasets = useSelector(selectAdvancedSearchDatasets)
@@ -75,88 +85,78 @@ function SearchAdvanced({
       </SearchPlaceholder>
     )
   }
-  return (
-    <Downshift onSelect={onSelect} itemToString={(item) => (item ? item.shipname : '')}>
-      {({ getInputProps, getItemProps, getMenuProps, highlightedIndex }) => (
-        <div className={styles.advancedLayout}>
-          <div className={styles.form}>
-            <InputText
-              {...getInputProps()}
-              onChange={onInputChange}
-              value={searchQuery}
-              label={t('search.mainQueryLabel', 'Name, IMO or MMSI')}
-              autoFocus
-              disabled={!basicSearchAllowed}
-              className={styles.input}
-              type="search"
-              loading={
-                searchStatus === AsyncReducerStatus.Loading ||
-                searchStatus === AsyncReducerStatus.Aborted
-              }
-              placeholder={t('search.placeholder', 'Type to search vessels')}
-            />
-            <SearchFilters className={styles.filters} datasets={searchDatasets} />
-          </div>
-          <div className={styles.scrollContainer}>
-            {(searchStatus === AsyncReducerStatus.Loading ||
-              searchStatus === AsyncReducerStatus.Aborted) &&
-            searchPagination.loading === false ? null : basicSearchAllowed ? (
-              <ul {...getMenuProps()} className={styles.searchResults}>
-                {debouncedQuery && debouncedQuery?.length < MIN_SEARCH_CHARACTERS && (
-                  <li key="suggestion" className={cx(styles.searchSuggestion, styles.red)}>
-                    {t('search.minCharacters', {
-                      defaultValue: 'Please type at least {{count}} characters',
-                      count: MIN_SEARCH_CHARACTERS,
-                    })}
-                  </li>
-                )}
-                {searchQuery &&
-                  searchSuggestion &&
-                  searchSuggestion !== searchQuery &&
-                  !searchSuggestionClicked && (
-                    <li key="suggestion" className={cx(styles.searchSuggestion)}>
-                      {t('search.suggestion', 'Did you mean')}{' '}
-                      <button onClick={onSuggestionClick} className={styles.suggestion}>
-                        {' '}
-                        {searchSuggestion}{' '}
-                      </button>{' '}
-                      ?
-                    </li>
-                  )}
-                <SearchBasicResults
-                  searchResults={searchResults}
-                  highlightedIndex={highlightedIndex}
-                  getItemProps={getItemProps}
-                  vesselsSelected={vesselsSelected}
-                />
-                {hasMoreResults && (
-                  <li key="spinner" className={styles.spinner} ref={spinnerRef}>
-                    <Spinner inline size="small" />
-                  </li>
-                )}
 
-                {searchStatus === AsyncReducerStatus.Idle && <SearchEmptyState />}
-                {searchStatus === AsyncReducerStatus.Finished && !hasMoreResults && (
-                  <SearchNoResultsState />
-                )}
-                {searchStatus === AsyncReducerStatus.Error && (
-                  <p className={styles.error}>
-                    {searchStatusCode === 404
-                      ? t(
-                          'search.noResults',
-                          "Can't find the vessel you are looking for? Try using MMSI, IMO or Callsign"
-                        )
-                      : t('errors.genericShort', 'Something went wrong')}
-                  </p>
-                )}
-              </ul>
-            ) : (
-              <SearchNotAllowed />
+  return (
+    <div className={styles.advancedLayout}>
+      <div className={styles.form}>
+        <InputText
+          onChange={onInputChange}
+          value={searchQuery}
+          label={t('search.mainQueryLabel', 'Name, IMO or MMSI')}
+          autoFocus
+          disabled={!basicSearchAllowed}
+          className={styles.input}
+          type="search"
+          loading={
+            searchStatus === AsyncReducerStatus.Loading ||
+            searchStatus === AsyncReducerStatus.Aborted
+          }
+          placeholder={t('search.placeholder', 'Type to search vessels')}
+        />
+        <SearchFilters className={styles.filters} datasets={searchDatasets} />
+      </div>
+      <div className={styles.scrollContainer}>
+        {(searchStatus === AsyncReducerStatus.Loading ||
+          searchStatus === AsyncReducerStatus.Aborted) &&
+        searchPagination.loading === false ? null : basicSearchAllowed ? (
+          <div className={styles.searchResults}>
+            {debouncedQuery && debouncedQuery?.length < MIN_SEARCH_CHARACTERS && (
+              <div key="suggestion" className={cx(styles.searchSuggestion, styles.red)}>
+                {t('search.minCharacters', {
+                  defaultValue: 'Please type at least {{count}} characters',
+                  count: MIN_SEARCH_CHARACTERS,
+                })}
+              </div>
+            )}
+            {searchQuery &&
+              searchSuggestion &&
+              searchSuggestion !== searchQuery &&
+              !searchSuggestionClicked && (
+                <div key="suggestion" className={cx(styles.searchSuggestion)}>
+                  {t('search.suggestion', 'Did you mean')}{' '}
+                  <button onClick={onSuggestionClick} className={styles.suggestion}>
+                    {' '}
+                    {searchSuggestion}{' '}
+                  </button>{' '}
+                  ?
+                </div>
+              )}
+            <SearchAdvancedResults
+              onSelect={onSelect}
+              vesselsSelected={vesselsSelected}
+              fetchMoreResults={fetchMoreResults}
+              setVesselsSelected={setVesselsSelected}
+            />
+            {searchStatus === AsyncReducerStatus.Idle && <SearchEmptyState />}
+            {searchStatus === AsyncReducerStatus.Finished && !hasMoreResults && (
+              <SearchNoResultsState />
+            )}
+            {searchStatus === AsyncReducerStatus.Error && (
+              <p className={styles.error}>
+                {searchStatusCode === 404
+                  ? t(
+                      'search.noResults',
+                      "Can't find the vessel you are looking for? Try using MMSI, IMO or Callsign"
+                    )
+                  : t('errors.genericShort', 'Something went wrong')}
+              </p>
             )}
           </div>
-        </div>
-      )}
-    </Downshift>
+        ) : (
+          <SearchNotAllowed />
+        )}
+      </div>
+    </div>
   )
 }
 

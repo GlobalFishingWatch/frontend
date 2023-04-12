@@ -7,12 +7,19 @@
   /* FONTS */
   --font-family: 'Roboto', sans-serif;
   --font-regular: 400;
+  --font-bold: 500;
   --font-XS: var(--font-regular) 1.2rem/1.2rem var(--font-family);
+  --font-XS-bold: var(--font-bold) 1.2rem/1.2rem var(--font-family);
   --font-S: var(--font-regular) 1.4rem/2.2rem var(--font-family);
+  --font-S-bold: var(--font-bold) 1.4rem/2.2rem var(--font-family);
   --font-M: var(--font-regular) 1.6rem/2.4rem var(--font-family);
+  --font-M-bold: var(--font-bold) 1.6rem/2.4rem var(--font-family);
   --font-L: var(--font-regular) 2rem/3rem var(--font-family);
+  --font-L-bold: var(--font-bold) 2rem/3rem var(--font-family);
   --font-XL: var(--font-regular) 2.6rem/4rem var(--font-family);
+  --font-XL-bold: var(--font-bold) 2.6rem/4rem var(--font-family);
   --font-XXL: var(--font-regular) 5rem/6.2rem var(--font-family);
+  --font-XXL-bold: var(--font-bold) 5rem/6.2rem var(--font-family);
 
   /* BASE COLORS */
   --primary-blue-rgb: 22, 63, 137; /* rgb(22, 63, 137) */

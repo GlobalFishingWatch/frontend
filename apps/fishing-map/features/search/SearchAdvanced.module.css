@@ -8,7 +8,8 @@
   border-bottom: var(--border);
   background-color: var(--color-white);
   box-shadow: var(--box-shadow);
-  width: 36rem;
+  width: 32rem;
+  z-index: 3;
 }
 
 .input {
@@ -26,13 +27,6 @@
   flex: 1;
   min-height: 40rem;
   position: relative;
-}
-
-.spinner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 15rem;
 }
 
 .error {

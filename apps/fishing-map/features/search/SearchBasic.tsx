@@ -2,6 +2,8 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import Downshift from 'downshift'
 import { useTranslation } from 'react-i18next'
+import { useCallback } from 'react'
+import { useIntersectionObserver } from '@researchgate/react-intersection-observer'
 import { InputText, Spinner } from '@globalfishingwatch/ui-components'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -28,7 +30,7 @@ const MIN_SEARCH_CHARACTERS = 3
 function SearchBasic({
   onSuggestionClick,
   onSelect,
-  spinnerRef,
+  fetchMoreResults,
   setSearchQuery,
   searchQuery,
   debouncedQuery,
@@ -56,6 +58,16 @@ function SearchBasic({
       dispatch(setSuggestionClicked(false))
     }
   }
+
+  const handleIntersection = useCallback(
+    (entry: IntersectionObserverEntry) => {
+      if (entry.isIntersecting) {
+        fetchMoreResults()
+      }
+    },
+    [fetchMoreResults]
+  )
+  const [spinnerRef] = useIntersectionObserver(handleIntersection, { rootMargin: '100px' })
 
   if (workspaceStatus !== AsyncReducerStatus.Finished) {
     return (

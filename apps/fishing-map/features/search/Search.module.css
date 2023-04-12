@@ -17,6 +17,7 @@
   background: var(--color-white);
   box-shadow: var(--box-shadow);
   transition: transform 300ms ease-in-out;
+  z-index: 4;
 }
 
 .hidden {

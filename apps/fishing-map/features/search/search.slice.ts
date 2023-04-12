@@ -61,7 +61,10 @@ const initialState: SearchState = {
   suggestionClicked: false,
   option: 'basic',
   filtersOpen: false,
-  filters: {},
+  filters: {
+    lastTransmissionDate: '',
+    firstTransmissionDate: '',
+  },
 }
 
 export type VesselSearchThunk = {
