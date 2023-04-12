@@ -37,6 +37,7 @@ import {
   SearchFilter,
   selectSearchOption,
   selectSearchPagination,
+  selectSearchResults,
 } from './search.slice'
 import styles from './Search.module.css'
 import { useSearchConnect, useSearchFiltersConnect } from './search.hook'
@@ -50,6 +51,7 @@ function Search() {
   const urlQuery = useSelector(selectSearchQuery)
   const { addNewDataviewInstances } = useDataviewInstancesConnect()
   const [searchQuery, setSearchQuery] = useState((urlQuery || '') as string)
+  const searchResults = useSelector(selectSearchResults)
   const { searchFilters } = useSearchFiltersConnect()
   const { searchPagination, searchSuggestion } = useSearchConnect()
   const debouncedQuery = useDebounce(searchQuery, 600)
@@ -167,16 +169,25 @@ function Search() {
     }
   }
 
-  const onSelect = (selection: VesselWithDatasets | null) => {
-    if (!selection) return
-    if (vesselsSelected.includes(selection)) {
-      setVesselsSelected(vesselsSelected.filter((vessel) => vessel !== selection))
-      return
-    }
-    if (selection && selection.dataset && selection.trackDatasetId) {
-      setVesselsSelected([...vesselsSelected, selection])
-    }
-  }
+  const onSelect = useCallback(
+    (selection: VesselWithDatasets[] | null) => {
+      if (!selection) return
+      if (selection.length === 0) {
+        setVesselsSelected([])
+      }
+      if (selection.length === 1) {
+        const vessel = selection[0]
+        if (vesselsSelected.includes(vessel)) {
+          setVesselsSelected(vesselsSelected.filter((v) => v !== vessel))
+        } else if (vessel && vessel.dataset && vessel.trackDatasetId) {
+          setVesselsSelected([...vesselsSelected, vessel])
+        }
+      } else {
+        setVesselsSelected(selection)
+      }
+    },
+    [vesselsSelected]
+  )
 
   const onConfirmSelection = () => {
     const instances = vesselsSelected.map((vessel) => {

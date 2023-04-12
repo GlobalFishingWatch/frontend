@@ -11,15 +11,15 @@ import { formatInfoField, EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import I18nFlag from 'features/i18n/i18nFlag'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { SearchComponentProps } from 'features/search/SearchBasic'
 
 const PINNED_COLUMN = 'shipname'
 
 function SearchAdvancedResults({
   onSelect,
   vesselsSelected,
-  setVesselsSelected,
   fetchMoreResults,
-}) {
+}: SearchComponentProps) {
   const { t } = useTranslation()
   const searchStatus = useSelector(selectSearchStatus)
   const searchResults = useSelector(selectSearchResults)
@@ -82,6 +82,27 @@ function SearchAdvancedResults({
     [fetchMoreResults, searchStatus]
   )
 
+  const onSelectAllHandler = useCallback(
+    (selected: boolean) => {
+      onSelect(selected ? searchResults : [])
+    },
+    [onSelect, searchResults]
+  )
+
+  const onSelectHandler = useCallback(
+    (vessel: VesselWithDatasets) => {
+      onSelect([vessel])
+    },
+    [onSelect]
+  )
+
+  const rowSelection = useMemo(() => {
+    const selectedIds = vesselsSelected.map((vessel) => vessel.id)
+    return Object.fromEntries(
+      (searchResults || []).map((vessel) => [vessel.id, selectedIds.includes(vessel.id)])
+    )
+  }, [searchResults, vesselsSelected])
+
   useEffect(() => {
     fetchMoreOnBottomReached(tableContainerRef.current)
   }, [fetchMoreOnBottomReached])
@@ -105,19 +126,13 @@ function SearchAdvancedResults({
       enableColumnOrdering
       enableColumnDragging
       enableStickyHeader
+      enableMultiRowSelection
       enableRowSelection
+      onRowSelectionChange={null}
       selectAllMode="all"
       getRowId={(row) => row.id}
-      initialState={{
-        columnPinning: { left: [PINNED_COLUMN] },
-      }}
-      state={{
-        showProgressBars,
-        rowSelection: Object.fromEntries(
-          searchResults.map((vessel) => [vessel.id, vesselsSelected.includes(vessel)])
-        ),
-      }}
-      onRowSelectionChange={undefined}
+      initialState={{ columnPinning: { left: [PINNED_COLUMN] } }}
+      state={{ showProgressBars, rowSelection }}
       muiTablePaperProps={{
         sx: { backgroundColor: 'transparent', boxShadow: 'none' },
       }}
@@ -130,30 +145,34 @@ function SearchAdvancedResults({
         onScroll: (event) => fetchMoreOnBottomReached(event.target as HTMLDivElement),
       }}
       muiSelectAllCheckboxProps={{
-        onClick: () => {
-          if (vesselsSelected.length === searchResults.length) {
-            setVesselsSelected([])
-          } else {
-            setVesselsSelected(searchResults)
-          }
+        sx: { color: 'var(--color-secondary-blue)' },
+        onChange: (e) => onSelectAllHandler(e.target.checked),
+      }}
+      muiSelectCheckboxProps={{
+        onClick: () => {},
+        sx: {
+          '&.Mui-checked': { color: 'var(--color-secondary-blue)' },
+          color: 'var(--color-secondary-blue)',
+          pointerEvents: 'none',
         },
       }}
-      muiSelectCheckboxProps={({ row }) => ({
-        onClick: () => {
-          onSelect(row.original)
-        },
-      })}
       muiTableBodyRowProps={({ row }) => ({
         onClick: () => {
-          onSelect(row.original)
+          onSelectHandler(row.original)
         },
-        sx: { backgroundColor: 'transparent' },
+        sx: {
+          backgroundColor: 'transparent',
+          cursor: 'pointer',
+          ':hover': { td: { backgroundColor: 'var(--color-terthiary-blue)' } },
+        },
       })}
       muiTableHeadCellProps={(cell) => ({
         sx: {
           font: 'var(--font-S-bold)',
           color: 'var(--color-primary-blue)',
           borderRight: 'var(--border)',
+          borderBottom: 'var(--border)',
+          backgroundColor: 'var(--color-white)',
           boxShadow:
             cell.column.id === 'shipname' ? '5px 0 5px -3px var(--color-terthiary-blue)' : '',
         },

@@ -1,18 +1,17 @@
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { Trans, useTranslation } from 'react-i18next'
-import { MutableRefObject } from 'react'
-import { InputText, Spinner } from '@globalfishingwatch/ui-components'
+import { InputText } from '@globalfishingwatch/ui-components'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import SearchAdvancedResults from 'features/search/SearchAdvancedResults'
+import { SearchComponentProps } from 'features/search/SearchBasic'
 import {
   selectSearchStatus,
   selectSearchStatusCode,
   RESULTS_PER_PAGE,
   setSuggestionClicked,
-  VesselWithDatasets,
 } from './search.slice'
 import styles from './SearchAdvanced.module.css'
 import SearchFilters from './SearchFilters'
@@ -30,17 +29,6 @@ import {
 
 const MIN_SEARCH_CHARACTERS = 3
 
-type SearchAdvancedProps = {
-  onSuggestionClick: () => void
-  onSelect: (vessel: VesselWithDatasets) => void
-  fetchMoreResults: () => void
-  setSearchQuery: (query: string) => void
-  searchQuery: string
-  debouncedQuery: string
-  vesselsSelected: VesselWithDatasets[]
-  setVesselsSelected: (vessels: VesselWithDatasets[]) => void
-}
-
 function SearchAdvanced({
   onSuggestionClick,
   onSelect,
@@ -50,7 +38,7 @@ function SearchAdvanced({
   debouncedQuery,
   vesselsSelected,
   setVesselsSelected,
-}: SearchAdvancedProps) {
+}: SearchComponentProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
@@ -135,7 +123,6 @@ function SearchAdvanced({
               onSelect={onSelect}
               vesselsSelected={vesselsSelected}
               fetchMoreResults={fetchMoreResults}
-              setVesselsSelected={setVesselsSelected}
             />
             {searchStatus === AsyncReducerStatus.Idle && <SearchEmptyState />}
             {searchStatus === AsyncReducerStatus.Finished && !hasMoreResults && (

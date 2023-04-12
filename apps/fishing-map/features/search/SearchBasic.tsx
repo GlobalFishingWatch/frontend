@@ -15,6 +15,7 @@ import {
   selectSearchStatusCode,
   RESULTS_PER_PAGE,
   setSuggestionClicked,
+  VesselWithDatasets,
 } from './search.slice'
 import styles from './SearchBasic.module.css'
 import { useSearchConnect } from './search.hook'
@@ -27,6 +28,17 @@ import { isBasicSearchAllowed } from './search.selectors'
 
 const MIN_SEARCH_CHARACTERS = 3
 
+export type SearchComponentProps = {
+  onSuggestionClick?: () => void
+  onSelect: (selection: VesselWithDatasets | VesselWithDatasets[] | null) => void
+  fetchMoreResults?: () => void
+  setSearchQuery?: (query: string) => void
+  searchQuery?: string
+  debouncedQuery?: string
+  vesselsSelected?: VesselWithDatasets[]
+  setVesselsSelected?: (vessels: VesselWithDatasets[]) => void
+}
+
 function SearchBasic({
   onSuggestionClick,
   onSelect,
@@ -36,7 +48,7 @@ function SearchBasic({
   debouncedQuery,
   vesselsSelected,
   setVesselsSelected,
-}) {
+}: SearchComponentProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
@@ -78,7 +90,10 @@ function SearchBasic({
   }
 
   return (
-    <Downshift onSelect={onSelect} itemToString={(item) => (item ? item.shipname : '')}>
+    <Downshift
+      onSelect={(selectedItem: VesselWithDatasets) => onSelect([selectedItem])}
+      itemToString={(item) => (item ? item.shipname : '')}
+    >
       {({ getInputProps, getItemProps, getMenuProps, highlightedIndex, setHighlightedIndex }) => (
         <div className={styles.scrollContainer}>
           <div className={styles.form}>
