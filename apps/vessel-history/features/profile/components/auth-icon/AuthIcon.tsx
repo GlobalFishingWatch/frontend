@@ -1,8 +1,9 @@
-import { Fragment } from 'react'
 import { Icon } from '@globalfishingwatch/ui-components'
+import { AuthorizationType } from '@globalfishingwatch/api-types'
 import styles from './AuthIcon.module.css'
+
 interface AuthIconProps {
-  authorizationStatus: 'true' | 'false' | 'pending'
+  authorizationStatus: AuthorizationType
 }
 
 const AuthIcon: React.FC<AuthIconProps> = ({

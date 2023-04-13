@@ -34,8 +34,10 @@ export enum EventVesselTypeEnum {
   Fishing = 'fishing',
 }
 
+export type AuthorizationType = 'true' | 'false' | 'pending'
+
 export interface EventAuthorization {
-  isAuthorized: string
+  isAuthorized: AuthorizationType
   rfmo: string
 }
 
