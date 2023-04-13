@@ -34,8 +34,10 @@ export enum EventVesselTypeEnum {
   Fishing = 'fishing',
 }
 
+export type AuthorizationType = 'true' | 'false' | 'pending'
+
 export interface EventAuthorization {
-  is_authorized: string
+  isAuthorized: AuthorizationType
   rfmo: string
 }
 
@@ -138,18 +140,17 @@ export interface PortVisitEvent {
 }
 
 export interface GapEvent {
-  distanceKm: number;
-  durationHours: number;
-  intentionalDisabling: boolean;
-  impliedSpeedKnots: number;
-  isEventStart?: boolean;
-  isEventEnd?: boolean;
-  offPosition: GapPosition;
-  onPosition: GapPosition;
-  positions12HoursBefore: number;
-  positions12HoursBeforeSat: number;
-  positionsPerDaySatReception: number;
-
+  distanceKm: number
+  durationHours: number
+  intentionalDisabling: boolean
+  impliedSpeedKnots: number
+  isEventStart?: boolean
+  isEventEnd?: boolean
+  offPosition: GapPosition
+  onPosition: GapPosition
+  positions12HoursBefore: number
+  positions12HoursBeforeSat: number
+  positionsPerDaySatReception: number
 }
 
 export interface ApiEvent<Vessel = EventVessel> {
