@@ -44,6 +44,9 @@ export const routesMap: RoutesMap = {
   [WORKSPACE]: {
     path: '/:category/:workspaceId?',
   },
+  [SEARCH]: {
+    path: '/:category/:workspaceId/search',
+  },
   [WORKSPACE_REPORT]: {
     path: '/:category/:workspaceId/report/:datasetId?/:areaId?',
   },
