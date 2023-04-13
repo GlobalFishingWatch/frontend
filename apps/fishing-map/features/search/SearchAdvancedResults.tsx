@@ -149,7 +149,6 @@ function SearchAdvancedResults({
         onChange: (e) => onSelectAllHandler(e.target.checked),
       }}
       muiSelectCheckboxProps={{
-        onClick: () => {},
         sx: {
           '&.Mui-checked': { color: 'var(--color-secondary-blue)' },
           color: 'var(--color-secondary-blue)',
@@ -157,13 +156,14 @@ function SearchAdvancedResults({
         },
       }}
       muiTableBodyRowProps={({ row }) => ({
-        onClick: () => {
-          onSelectHandler(row.original)
-        },
+        onClick: () => onSelectHandler(row.original),
         sx: {
           backgroundColor: 'transparent',
           cursor: 'pointer',
-          ':hover': { td: { backgroundColor: 'var(--color-terthiary-blue)' } },
+          ':hover': {
+            td: { backgroundColor: 'white' },
+            'td ~ td': { backgroundColor: 'var(--color-terthiary-blue)' },
+          },
         },
       })}
       muiTableHeadCellProps={(cell) => ({
