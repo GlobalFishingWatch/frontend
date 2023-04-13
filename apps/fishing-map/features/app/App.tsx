@@ -102,7 +102,6 @@ function App(): React.ReactElement {
   const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
-  const isReportLocation = useSelector(selectIsReportLocation)
   const reportAreaBounds = useSelector(selectReportAreaBounds)
   const isTimeComparisonReport = useSelector(selectShowTimeComparison)
   const isSearchLocation = useSelector(selectIsSearchLocation)
