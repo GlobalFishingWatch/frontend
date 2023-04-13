@@ -138,24 +138,47 @@ export const getDatasetTitleByDataview = (
   return datasetTitle + ' ' + sources
 }
 
+const getDatasetsInDataview = (
+  dataview: Dataview | DataviewInstance | UrlDataviewInstance,
+  guestUser = false
+): string[] => {
+  if (!dataview.datasetsConfig) return []
+  const datasetIds: string[] = dataview.datasetsConfig.flatMap(({ datasetId }) => datasetId || [])
+  return guestUser
+    ? datasetIds.filter((d) => !d.includes(PRIVATE_SUFIX) && !d.includes(FULL_SUFIX))
+    : datasetIds
+}
+
 export const getDatasetsInDataviews = (
   dataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[],
+  dataviewInstances: (DataviewInstance | UrlDataviewInstance)[] = [],
   guestUser = false
 ) => {
   if (!dataviews?.length) {
     return []
   }
-  return uniq(
-    dataviews?.flatMap((dataviews) => {
-      if (!dataviews.datasetsConfig) return []
-      const datasetIds: string[] = dataviews.datasetsConfig.flatMap(
-        ({ datasetId }) => datasetId || []
-      )
-      return guestUser
-        ? datasetIds.filter((d) => !d.includes(PRIVATE_SUFIX) && !d.includes(FULL_SUFIX))
-        : datasetIds
-    })
+  const datasetsFromDataviews = dataviews.flatMap((dataview) =>
+    getDatasetsInDataview(dataview, guestUser)
   )
+  const datasetsFromDataviewInstances = dataviewInstances.flatMap((dataviewInstance) => {
+    const dataview = dataviews.find(
+      (d) => d.id === dataviewInstance.dataviewId || d.slug === dataviewInstance.dataviewId
+    )
+    if (!dataview?.datasetsConfig) {
+      return []
+    }
+    const availableDatasetIds = dataview.datasetsConfig.map((dsc) => dsc.datasetId)
+    return getDatasetsInDataview(
+      {
+        ...dataviewInstance,
+        datasetsConfig: dataviewInstance.datasetsConfig?.filter((dsc) =>
+          availableDatasetIds.includes(dsc.datasetId)
+        ),
+      },
+      guestUser
+    )
+  })
+  return uniq([...datasetsFromDataviews, ...datasetsFromDataviewInstances])
 }
 
 export const getRelatedDatasetByType = (
