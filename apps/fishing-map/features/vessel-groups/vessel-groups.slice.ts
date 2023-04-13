@@ -257,7 +257,11 @@ export const fetchWorkspaceVesselGroupsThunk = createAsyncThunk(
 export const fetchUserVesselGroupsThunk = createAsyncThunk(
   'vessel-groups/fetch',
   async () => {
-    const url = `/vessel-groups?${stringify(DEFAULT_PAGINATION_PARAMS)}`
+    const vesselGroupsParams = {
+      ...DEFAULT_PAGINATION_PARAMS,
+      'logged-user': true,
+    }
+    const url = `/vessel-groups?${stringify(vesselGroupsParams)}`
     const vesselGroups = await GFWAPI.fetch<APIPagination<VesselGroup>>(url)
     return vesselGroups.entries
   },
