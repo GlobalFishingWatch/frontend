@@ -30,6 +30,8 @@ import { selectReportsStatus } from 'features/reports/reports.slice'
 import { selectCurrentReport } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { REPORT } from 'routes/routes'
+import { selectReportAreaIds } from 'features/reports/reports.selectors'
+import { resetAreaDetail } from 'features/areas/areas.slice'
 import { useClipboardNotification } from './sidebar.hooks'
 import styles from './SidebarHeader.module.css'
 
@@ -210,6 +212,7 @@ function SidebarHeader() {
   const locationCategory = useSelector(selectLocationCategory)
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
   const reportLocation = useSelector(selectIsReportLocation)
+  const reportAreaIds = useSelector(selectReportAreaIds)
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const showBackToWorkspaceButton = !workspaceLocation
@@ -224,6 +227,7 @@ function SidebarHeader() {
     resetSidebarScroll()
     cleanFeatureState('highlight')
     dispatch(resetReportData())
+    dispatch(resetAreaDetail(reportAreaIds))
   }
 
   return (

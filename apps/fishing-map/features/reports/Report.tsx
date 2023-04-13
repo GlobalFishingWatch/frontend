@@ -7,7 +7,12 @@ import { Button, Tab, Tabs } from '@globalfishingwatch/ui-components'
 import { isAuthError } from '@globalfishingwatch/api-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useLocationConnect } from 'routes/routes.hook'
-import { isActivityReport, selectReportCategory, selectTimeRange } from 'features/app/app.selectors'
+import {
+  isActivityReport,
+  selectReportAreaSource,
+  selectReportCategory,
+  selectTimeRange,
+} from 'features/app/app.selectors'
 import { selectActiveTemporalgridDataviews } from 'features/dataviews/dataviews.selectors'
 import WorkspaceError, { WorkspaceLoginError } from 'features/workspace/WorkspaceError'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
@@ -35,7 +40,12 @@ import { selectReportAreaId, selectReportDatasetId } from 'features/app/app.sele
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useSetTimeseries } from 'features/reports/reports-timeseries.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { useFetchReportArea, useFetchReportVessel } from './reports.hooks'
+import {
+  useFetchReportArea,
+  useFetchReportVessel,
+  useFitAreaInViewport,
+  useReportAreaHighlight,
+} from './reports.hooks'
 import ReportSummary from './summary/ReportSummary'
 import ReportTitle from './title/ReportTitle'
 import ReportActivity from './activity/ReportActivity'
@@ -204,10 +214,23 @@ export default function Report() {
     }
   })
   const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const { data: areaDetail } = useFetchReportArea()
+  const areaSourceId = useSelector(selectReportAreaSource)
+  const { data: areaDetail, status } = useFetchReportArea()
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
+
+  const fitAreaInViewport = useFitAreaInViewport()
+  useReportAreaHighlight(areaDetail?.id, areaSourceId)
+
+  // This ensures that the area is in viewport when then area load finishes
+  useEffect(() => {
+    if (status === AsyncReducerStatus.Finished && areaDetail?.bounds) {
+      fitAreaInViewport()
+    }
+    // Reacting only to the area status and fitting bounds after load
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status])
 
   const setTimebarVisualizationByCategory = useCallback(
     (category: ReportCategory) => {
