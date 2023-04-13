@@ -121,7 +121,7 @@ const Profile: React.FC = (props): React.ReactElement => {
 
       if (vesselDataset) {
         const trackDatasetId = getRelatedDatasetByType(vesselDataset, DatasetTypes.Tracks)?.id
-        if (trackDatasetId) {
+        if (trackDatasetId || IS_STANDALONE_APP) {
           const eventsRelatedDatasets = getRelatedDatasetsByType(vesselDataset, DatasetTypes.Events)
           const eventsDatasetsId =
             eventsRelatedDatasets && eventsRelatedDatasets?.length
@@ -152,6 +152,7 @@ const Profile: React.FC = (props): React.ReactElement => {
             },
             akaVesselsIds as { id: string }[]
           )
+
           dispatch(upsertVesselDataview(vesselDataviewInstance))
         }
       }

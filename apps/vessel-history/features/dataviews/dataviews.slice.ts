@@ -24,22 +24,7 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
         {
           signal,
         }
-      )
-        .then((response) => response.entries)
-        .then((dataviews) =>
-          dataviews.map((dataview: Dataview) =>
-            !IS_STANDALONE_APP
-              ? dataview
-              : {
-                  ...dataview,
-                  datasetsConfig: dataview.datasetsConfig?.filter(
-                    (conf) =>
-                      conf.datasetId.startsWith('public-') && conf.endpoint !== DatasetTypes.Tracks
-                  ),
-                }
-          )
-        )
-
+      ).then((response) => response.entries)
       if (
         process.env.NODE_ENV === 'development' ||
         process.env.NEXT_PUBLIC_USE_LOCAL_DATAVIEWS === 'true'

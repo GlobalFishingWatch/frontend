@@ -61,16 +61,20 @@ export const useUser = () => {
   }, [user])
 
   const availableViews = useMemo(() => {
-    return APP_PROFILE_VIEWS.filter(
-      (view) =>
-        (user && checkExistPermissionInList(user?.permissions, view.required_permission)) ||
-        (!user && !view.required_permission)
-    )
+    return APP_PROFILE_VIEWS.filter((view) => {
+      return (
+        (IS_STANDALONE_APP && view.id === 'standalone') ||
+        (user &&
+          view.required_permission &&
+          checkExistPermissionInList(user?.permissions, view.required_permission))
+      )
+    })
   }, [user])
 
   // Setup default app profile view based on permissions
   useEffect(() => {
     const firstProfileView = availableViews.slice().shift()?.id as WorkspaceProfileViewParam
+
     if ((logged && !currentProfileView && firstProfileView) || IS_STANDALONE_APP) {
       updateProfileView(firstProfileView)
     }

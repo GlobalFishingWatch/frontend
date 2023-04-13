@@ -1,6 +1,6 @@
 import ReactGA from 'react-ga'
 import { DateTime } from 'luxon'
-import { ThinningConfig } from '@globalfishingwatch/api-types'
+import { DataviewDatasetConfigParam, ThinningConfig } from '@globalfishingwatch/api-types'
 import { ThinningLevels, THINNING_LEVELS } from '@globalfishingwatch/api-client'
 import { AppState } from 'types/redux.types'
 import { TimebarGraphs } from 'types'
@@ -133,39 +133,63 @@ export const RISK_SUMMARY_SETTINGS = {
     !!process.env.NEXT_PUBLIC_RISK_SUMMARY_SHOW_ICON_EVENTS_COUNT || false,
 }
 
-export const APP_PROFILE_VIEWS = [
+export const DEFAULT_PAGINATION_PARAMS = {
+  limit: 99999,
+  offset: 0,
+}
+
+export interface ProfileView {
+  id: string
+  name: string
+  required_permission?: {
+    type: string
+    value: string
+    action: string
+  }
+  propagate_events_query_params: string[]
+  events_query_params: DataviewDatasetConfigParam[]
+}
+
+export const APP_PROFILE_VIEWS: ProfileView[] = [
   {
     id: 'port-inspector',
     name: 'Port Inspector',
     required_permission: PORT_INSPECTOR_PERMISSION,
     propagate_events_query_params: ['confidences'],
-    events_query_params: {
-      start_date: undefined,
-    },
+    events_query_params: [],
   },
   {
     id: 'insurance-underwriter',
     name: 'Insurance Underwriter',
     required_permission: INSURER_PERMISSION,
     propagate_events_query_params: ['confidences'],
-    events_query_params: {
-      start_date: DateTime.utc().minus({ months: 12 }).toISO(),
-    },
+    events_query_params: [
+      {
+        id: 'start-date',
+        value: DateTime.utc().minus({ months: 12 }).toISO(),
+      },
+    ],
   },
   {
     id: 'standalone',
     name: 'Standalone App',
     propagate_events_query_params: ['confidences'],
-    events_query_params: {
-      start_date: DateTime.utc().minus({ months: 12 }).toISO(),
-    },
+    events_query_params: [
+      {
+        id: 'start-date',
+        value: DateTime.local(2012, 1, 1, 0, 0).toISO(),
+      },
+      {
+        id: 'limit',
+        value: DEFAULT_PAGINATION_PARAMS.limit,
+      },
+      {
+        id: 'offset',
+        value: DEFAULT_PAGINATION_PARAMS.offset,
+      },
+    ],
   },
 ]
-
-export const DEFAULT_PAGINATION_PARAMS = {
-  limit: 99999,
-  offset: 0,
-}
 
 export const THINNING_LEVEL_BY_ZOOM: Record<
   number,

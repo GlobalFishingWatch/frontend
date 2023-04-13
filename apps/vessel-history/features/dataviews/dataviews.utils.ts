@@ -2,6 +2,7 @@ import { uniq } from 'lodash'
 import {
   Dataview,
   DataviewDatasetConfig,
+  DataviewDatasetConfigParam,
   DataviewInstance,
   EndpointId,
 } from '@globalfishingwatch/api-types'
@@ -28,7 +29,7 @@ type VesselInstanceDatasets = {
 export const getVesselDataviewInstanceId = (vesselId: string) => `${VESSEL_LAYER_PREFIX}${vesselId}`
 
 export const getVesselDataviewInstanceFactory =
-  (defaultVesselDataviewId: Dataview['slug'], startDate?: string) =>
+  (defaultVesselDataviewId: Dataview['slug'], queryParams: DataviewDatasetConfigParam[]) =>
   (
     vessel: { id: string },
     { trackDatasetId, infoDatasetId, eventsDatasetsId }: VesselInstanceDatasets,
@@ -59,10 +60,10 @@ export const getVesselDataviewInstanceFactory =
       eventsDatasetsId.forEach((eventDatasetId) => {
         datasetsConfig.push({
           datasetId: eventDatasetId,
-          query: [
-            { id: 'vessels', value: akaVesselsIds },
-            ...((!!startDate && [{ id: 'start-date', value: startDate }]) || []),
-          ],
+          // add query params based on profile view
+          query: [{ id: 'vessels', value: akaVesselsIds } as DataviewDatasetConfigParam].concat(
+            queryParams
+          ),
           params: [],
           endpoint: EndpointId.Events,
         })
@@ -105,7 +106,7 @@ export const initializeDataviews = async (dispatch: AppDispatch) => {
   const dataviewIds = Array.from(
     new Set([...dataviewInstances.map((instance) => instance.dataviewId), ...vesselDataviewIds])
   )
-  console.log(dataviewIds)
+
   const action = await dispatch(fetchDataviewsByIdsThunk(dataviewIds))
   if (fetchDataviewsByIdsThunk.fulfilled.match(action as any)) {
     dataviews = action.payload as Dataview[]
