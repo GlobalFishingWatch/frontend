@@ -19,7 +19,7 @@
     "@dnd-kit/sortable": "7.0.2",
     "@dnd-kit/utilities": "3.2.1",
     "@recoiljs/refine": "^0.1.1",
-    "@reduxjs/toolkit": "^1.9.2",
+    "@reduxjs/toolkit": "^1.9.3",
     "@tanstack/react-query": "^4.24.4",
     "classnames": "2.3.2",
     "d3": "^7.8.2",

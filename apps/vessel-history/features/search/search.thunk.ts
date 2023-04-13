@@ -78,7 +78,7 @@ export const fetchData = async (
         offset: json.offset,
         total: json.total,
         searching: false,
-        sources: json.metadata.sources
+        sources: json.metadata.sources,
       }
     })
     .catch((error) => {
@@ -153,7 +153,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
   async ({ query, offset, advancedSearch }: VesselSearchThunk, { signal, rejectWithValue }) => {
     const searchData = await fetchData(query, offset, signal, advancedSearch)
     if (!searchData.success) {
-      return rejectWithValue(searchData.error);
+      return rejectWithValue(searchData.error)
     }
     trackData({ query: query, ...advancedSearch }, searchData, 5)
     return searchData

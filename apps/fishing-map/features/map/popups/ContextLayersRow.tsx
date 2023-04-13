@@ -9,7 +9,7 @@ import {
 import { getActivityDatasetsReportSupported } from 'features/datasets/datasets.utils'
 import { isGuestUser, selectUserData } from 'features/user/user.slice'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
-import { REPORT } from 'routes/routes'
+import { WORKSPACE_REPORT } from 'routes/routes'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { selectLocationAreaId, selectLocationQuery } from 'routes/routes.selectors'
@@ -17,7 +17,7 @@ import { selectSidebarOpen } from 'features/app/app.selectors'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { getFeatureAreaId, getFeatureBounds } from 'features/map/popups/ContextLayers.hooks'
 import { resetSidebarScroll } from 'features/sidebar/Sidebar'
-import { resetReportData } from 'features/reports/reports.slice'
+import { resetReportData } from 'features/reports/report.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './Popup.module.css'
@@ -109,7 +109,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
     <Link
       className={styles.workspaceLink}
       to={{
-        type: REPORT,
+        type: WORKSPACE_REPORT,
         payload: {
           category: workspace.category || WorkspaceCategories.FishingActivity,
           workspaceId: workspace.id || DEFAULT_WORKSPACE_ID,

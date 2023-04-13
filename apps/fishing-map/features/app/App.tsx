@@ -30,7 +30,7 @@ import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { selectShowTimeComparison } from 'features/reports/reports.selectors'
 import { isUserLogged } from 'features/user/user.selectors'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
-import { HOME, WORKSPACE, USER, WORKSPACES_LIST } from 'routes/routes'
+import { HOME, WORKSPACE, USER, WORKSPACES_LIST, REPORT } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { t } from 'features/i18n/i18n'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -102,6 +102,7 @@ function App(): React.ReactElement {
   const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
+  const isReportLocation = useSelector(selectIsReportLocation)
   const reportAreaBounds = useSelector(selectReportAreaBounds)
   const isTimeComparisonReport = useSelector(selectShowTimeComparison)
   const isSearchLocation = useSelector(selectIsSearchLocation)
@@ -160,7 +161,10 @@ function App(): React.ReactElement {
       const resolvedAction = await action
       if (fetchWorkspaceThunk.fulfilled.match(resolvedAction)) {
         const workspace = resolvedAction.payload as Workspace
-        setMapCoordinates(urlViewport || workspace.viewport)
+        const viewport = urlViewport || workspace?.viewport
+        if (viewport) {
+          setMapCoordinates(viewport)
+        }
         if (!urlTimeRange && workspace?.startAt && workspace?.endAt) {
           setTimerange({
             start: workspace?.startAt,
@@ -185,7 +189,7 @@ function App(): React.ReactElement {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userLogged, homeNeedsFetch, hasWorkspaceIdChanged])
+  }, [userLogged, homeNeedsFetch, locationNeedsFetch, hasWorkspaceIdChanged])
 
   useLayoutEffect(() => {
     if (isReportLocation) {

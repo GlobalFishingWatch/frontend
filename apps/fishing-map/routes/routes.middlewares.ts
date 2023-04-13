@@ -1,10 +1,10 @@
 import { Middleware, Dispatch } from 'redux'
+import { RootState } from 'reducers'
 import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 import { REPLACE_URL_PARAMS } from 'data/config'
 import { setLastWorkspaceVisited } from 'features/workspace/workspace.slice'
-import { RootState } from 'store'
 import { QueryParams } from 'types'
-import { REPORT, routesMap, ROUTE_TYPES, WORKSPACE, WORKSPACE_ROUTES } from './routes'
+import { WORKSPACE_REPORT, routesMap, ROUTE_TYPES, WORKSPACE, WORKSPACE_ROUTES } from './routes'
 import { UpdateQueryParamsAction } from './routes.actions'
 
 export const routerQueryMiddleware: Middleware =
@@ -76,13 +76,14 @@ export const routerWorkspaceMiddleware: Middleware =
     // check if action type matches a route type
     const isRouterAction = routesActions.includes(action.type)
     if (isRouterAction) {
-      const { prev } = getState().location
-      const { lastVisited } = getState().workspace
+      const state = getState() as RootState
+      const { prev } = state.location
+      const { lastVisited } = state.workspace
       const routesToSaveWorkspace = Object.keys(routesMap).filter(
         (key) => !WORKSPACE_ROUTES.includes(key)
       )
       const comesFromWorkspacesRoute = WORKSPACE_ROUTES.includes(prev.type)
-      const isReportLocation = action.type === REPORT
+      const isReportLocation = action.type === WORKSPACE_REPORT
       if (routesToSaveWorkspace.includes(action.type)) {
         // TODO include search location
         if (isReportLocation) {

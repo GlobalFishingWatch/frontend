@@ -1,11 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
 import { Query, RouteObject } from 'redux-first-router'
+import { RootState } from 'reducers'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { RootState } from 'store'
 import { WorkspaceParam } from 'types'
 import { WorkspaceCategories } from 'data/workspaces'
-import { REPORT, ROUTE_TYPES, SEARCH, WORKSPACE_ROUTES } from './routes'
+import { REPORT, WORKSPACE_REPORT, ROUTE_TYPES, SEARCH, WORKSPACE_ROUTES } from './routes'
 
 const selectLocation = (state: RootState) => state.location
 export const selectCurrentLocation = createSelector([selectLocation], ({ type, routesMap }) => {
@@ -24,7 +24,7 @@ export const selectIsWorkspaceLocation = createSelector([selectLocationType], (l
 
 export const selectIsReportLocation = createSelector(
   [selectLocationType],
-  (locationType) => locationType === REPORT
+  (locationType) => locationType === REPORT || locationType === WORKSPACE_REPORT
 )
 
 export const selectIsSearchLocation = createSelector(
@@ -52,6 +52,11 @@ export const selectLocationPayload = createSelector([selectLocation], ({ payload
 export const selectWorkspaceId = createSelector(
   [selectLocationPayload],
   (payload) => payload?.workspaceId
+)
+
+export const selectReportId = createSelector(
+  [selectLocationPayload],
+  (payload) => payload?.reportId
 )
 
 export const selectLocationCategory = createSelector(

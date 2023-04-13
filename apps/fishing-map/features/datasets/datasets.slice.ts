@@ -21,7 +21,6 @@ import {
   AsyncError,
   AsyncReducerStatus,
 } from 'utils/async-slice'
-import { RootState } from 'store'
 import {
   CARRIER_PORTAL_API_URL,
   DEFAULT_PAGINATION_PARAMS,
@@ -76,19 +75,19 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
 export const fetchDatasetsByIdsThunk = createAsyncThunk(
   'datasets/fetch',
   async (ids: string[] = [], { signal, rejectWithValue, getState }) => {
-    const state = getState() as RootState
+    const state = getState() as DatasetsSliceState
     const existingIds = selectIds(state) as string[]
     const uniqIds = ids?.length ? ids.filter((id) => !existingIds.includes(id)) : []
 
     try {
-      const workspacesParams = {
-        ...(uniqIds?.length && { ids: uniqIds }),
+      const datasetsParams = {
+        ...(uniqIds?.length ? { ids: uniqIds } : { 'logged-user': true }),
         include: 'endpoints',
         cache: false,
         ...DEFAULT_PAGINATION_PARAMS,
       }
       const initialDatasets = await GFWAPI.fetch<APIPagination<Dataset>>(
-        `/datasets?${stringify(workspacesParams, { arrayFormat: 'comma' })}`,
+        `/datasets?${stringify(datasetsParams, { arrayFormat: 'comma' })}`,
         { signal }
       )
       const relatedDatasetsIds = uniq(
@@ -97,7 +96,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
         )
       )
       const uniqRelatedDatasetsIds = without(relatedDatasetsIds, ...existingIds).join(',')
-      const relatedWorkspaceParams = { ...workspacesParams, ids: uniqRelatedDatasetsIds }
+      const relatedWorkspaceParams = { ...datasetsParams, ids: uniqRelatedDatasetsIds }
       const relatedDatasets = await GFWAPI.fetch<APIPagination<Dataset[]>>(
         `/datasets?${stringify(relatedWorkspaceParams, { arrayFormat: 'comma' })}`,
         { signal }
@@ -310,27 +309,30 @@ const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, D
 
 export const { setDatasetModal, setDatasetCategory, setEditingDatasetId } = datasetSlice.actions
 
-export const { selectAll, selectById, selectIds } = entityAdapter.getSelectors<RootState>(
+export type DatasetsSliceState = { datasets: DatasetsState }
+export const { selectAll, selectById, selectIds } = entityAdapter.getSelectors<DatasetsSliceState>(
   (state) => state.datasets
 )
 
-export function selectAllDatasets(state: RootState) {
+export function selectAllDatasets(state: DatasetsSliceState) {
   return selectAll(state)
 }
 
 export const selectDatasetById = memoize((id: string) =>
-  createSelector([(state: RootState) => state], (state) => selectById(state, id))
+  createSelector([(state: DatasetsSliceState) => state], (state) => selectById(state, id))
 )
 
-export const selectDatasetsStatus = (state: RootState) => state.datasets.status
-export const selectDatasetsStatusId = (state: RootState) => state.datasets.statusId
-export const selectDatasetsError = (state: RootState) => state.datasets.error
-export const selectEditingDatasetId = (state: RootState) => state.datasets.editingDatasetId
-export const selectAllDatasetsRequested = (state: RootState) => state.datasets.allDatasetsRequested
-export const selectDatasetModal = (state: RootState) => state.datasets.datasetModal
-export const selectCarrierLatestDataset = (state: RootState) => state.datasets.carrierLatest.dataset
-export const selectCarrierLatestDatasetStatus = (state: RootState) =>
+export const selectDatasetsStatus = (state: DatasetsSliceState) => state.datasets.status
+export const selectDatasetsStatusId = (state: DatasetsSliceState) => state.datasets.statusId
+export const selectDatasetsError = (state: DatasetsSliceState) => state.datasets.error
+export const selectEditingDatasetId = (state: DatasetsSliceState) => state.datasets.editingDatasetId
+export const selectAllDatasetsRequested = (state: DatasetsSliceState) =>
+  state.datasets.allDatasetsRequested
+export const selectDatasetModal = (state: DatasetsSliceState) => state.datasets.datasetModal
+export const selectCarrierLatestDataset = (state: DatasetsSliceState) =>
+  state.datasets.carrierLatest.dataset
+export const selectCarrierLatestDatasetStatus = (state: DatasetsSliceState) =>
   state.datasets.carrierLatest.status
-export const selectDatasetCategory = (state: RootState) => state.datasets.datasetCategory
+export const selectDatasetCategory = (state: DatasetsSliceState) => state.datasets.datasetCategory
 
 export default datasetSlice.reducer

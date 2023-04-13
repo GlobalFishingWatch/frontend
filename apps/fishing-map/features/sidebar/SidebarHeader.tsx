@@ -31,8 +31,12 @@ import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { resetSidebarScroll } from 'features/sidebar/Sidebar'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { resetReportData } from 'features/reports/reports.slice'
+import { resetReportData } from 'features/reports/report.slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectReportsStatus } from 'features/reports/reports.slice'
+import { selectCurrentReport } from 'features/app/app.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
+import { REPORT } from 'routes/routes'
 import { SearchType, selectSearchOption, setSearchOption } from 'features/search/search.slice'
 import { useClipboardNotification } from './sidebar.hooks'
 import styles from './SidebarHeader.module.css'
@@ -43,6 +47,74 @@ const NewWorkspaceModal = dynamic(
       /* webpackChunkName: "NewWorkspaceModal" */ 'features/workspace/shared/NewWorkspaceModal'
     )
 )
+const NewReportModal = dynamic(
+  () => import(/* webpackChunkName: "NewWorkspaceModal" */ 'features/reports/NewReportModal')
+)
+
+function SaveReportButton() {
+  const { t } = useTranslation()
+  const workspace = useSelector(selectWorkspace)
+  const report = useSelector(selectCurrentReport)
+  const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const reportStatus = useSelector(selectReportsStatus)
+  const { dispatchLocation } = useLocationConnect()
+  const { showClipboardNotification, copyToClipboard } = useClipboardNotification()
+  const [showReportCreateModal, setShowReportCreateModal] = useState(false)
+
+  const onCloseCreateReport = useCallback(() => {
+    setShowReportCreateModal(false)
+  }, [])
+
+  const onSaveCreateReport = useCallback(
+    (report) => {
+      copyToClipboard(window.location.href)
+      dispatchLocation(REPORT, { reportId: report?.id })
+      onCloseCreateReport()
+    },
+    [copyToClipboard, dispatchLocation, onCloseCreateReport]
+  )
+
+  const onSaveClick = async () => {
+    if (!showClipboardNotification) {
+      setShowReportCreateModal(true)
+    }
+  }
+
+  if (!workspace || workspaceStatus === AsyncReducerStatus.Loading) {
+    return null
+  }
+
+  return (
+    <Fragment>
+      <LoginButtonWrapper tooltip={t('workspace.saveLogin', 'You need to login to save views')}>
+        <IconButton
+          icon={showClipboardNotification ? 'tick' : 'save'}
+          size="medium"
+          className="print-hidden"
+          onClick={onSaveClick}
+          loading={reportStatus === AsyncReducerStatus.Loading}
+          tooltip={
+            showClipboardNotification
+              ? t(
+                  'workspace.saved',
+                  "The workspace was saved and it's available in your user profile"
+                )
+              : t('analysis.save', 'Save this report')
+          }
+          tooltipPlacement="bottom"
+        />
+      </LoginButtonWrapper>
+      {showReportCreateModal && (
+        <NewReportModal
+          isOpen={showReportCreateModal}
+          onClose={onCloseCreateReport}
+          onFinish={onSaveCreateReport}
+          report={report}
+        />
+      )}
+    </Fragment>
+  )
+}
 
 function SaveWorkspaceButton() {
   const [showWorkspaceCreateModal, setShowWorkspaceCreateModal] = useState(false)
@@ -194,6 +266,7 @@ function SidebarHeader() {
         <a href="https://globalfishingwatch.org" className={styles.logoLink}>
           <Logo className={styles.logo} subBrand={getSubBrand()} />
         </a>
+        {isReportLocation && !readOnly && <SaveReportButton />}
         {isWorkspaceLocation && !readOnly && <SaveWorkspaceButton />}
         {(isWorkspaceLocation || isReportLocation) && !readOnly && <ShareWorkspaceButton />}
         {isSearchLocation && !readOnly && !isSmallScreen && (
@@ -205,7 +278,7 @@ function SidebarHeader() {
             className={styles.searchOption}
           />
         )}
-        {(isReportLocation || (showBackToWorkspaceButton && lastVisitedWorkspace)) && (
+        {(isReportLocation || showBackToWorkspaceButton) && lastVisitedWorkspace && (
           <Link className={styles.workspaceLink} to={lastVisitedWorkspace} onClick={onCloseClick}>
             <IconButton type="border" icon="close" />
           </Link>

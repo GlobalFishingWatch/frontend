@@ -42,7 +42,7 @@
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.11.16",
     "@popperjs/core": "2.10.2",
-    "@reduxjs/toolkit": "^1.9.2",
+    "@reduxjs/toolkit": "^1.9.3",
     "@tippyjs/react": "4.2.6",
     "@turf/area": "^6.5.0",
     "@turf/bbox": "6.5.0",

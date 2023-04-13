@@ -1,6 +1,6 @@
 import { DateTime, DurationUnits } from 'luxon'
 import { Interval } from '@globalfishingwatch/layer-composer'
-import { Dataset, VesselGroup } from '@globalfishingwatch/api-types'
+import { Dataset, Report, VesselGroup } from '@globalfishingwatch/api-types'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 
 export const getUTCDateTime = (d: string | number) => {
@@ -43,7 +43,7 @@ export const formatDateForInterval = (date: DateTime, timeChunkInterval: Interva
   return formattedTick
 }
 
-type UserCreatedEntities = Dataset | AppWorkspace | VesselGroup
+type UserCreatedEntities = Dataset | AppWorkspace | VesselGroup | Report
 
 export const sortByCreationDate = <T>(entities: UserCreatedEntities[]): T[] => {
   if (!entities) return []
