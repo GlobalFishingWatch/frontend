@@ -1,7 +1,8 @@
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { Trans, useTranslation } from 'react-i18next'
-import { InputText } from '@globalfishingwatch/ui-components'
+import { useState } from 'react'
+import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -37,7 +38,6 @@ function SearchAdvanced({
   searchQuery,
   debouncedQuery,
   vesselsSelected,
-  setVesselsSelected,
 }: SearchComponentProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -47,13 +47,28 @@ function SearchAdvanced({
   const searchStatus = useSelector(selectSearchStatus)
   const searchStatusCode = useSelector(selectSearchStatusCode)
   const searchDatasets = useSelector(selectAdvancedSearchDatasets)
+  const [searchState, setSearchState] = useState({
+    name: '',
+    mmsi: '',
+    imo: '',
+    callsign: '',
+    owner: '',
+  })
+  console.log('searchState:', searchState)
+
+  const onConfirm = (e: React.MouseEvent) => {
+    // setSearchQuery(e.target.value)
+    // if (e.target.value !== searchQuery && searchSuggestionClicked) {
+    //   dispatch(setSuggestionClicked(false))
+    // }
+  }
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value)
-    setVesselsSelected([])
-    if (e.target.value !== searchQuery && searchSuggestionClicked) {
-      dispatch(setSuggestionClicked(false))
-    }
+    setSearchState({ ...searchState, [e.target.id]: e.target.value })
+  }
+
+  const resetSearchState = () => {
+    setSearchState({ name: '', mmsi: '', imo: '', callsign: '', owner: '' })
   }
 
   const hasMoreResults =
@@ -77,21 +92,63 @@ function SearchAdvanced({
   return (
     <div className={styles.advancedLayout}>
       <div className={styles.form}>
-        <InputText
-          onChange={onInputChange}
-          value={searchQuery}
-          label={t('search.mainQueryLabel', 'Name, IMO or MMSI')}
-          autoFocus
-          disabled={!basicSearchAllowed}
-          className={styles.input}
-          type="search"
-          loading={
-            searchStatus === AsyncReducerStatus.Loading ||
-            searchStatus === AsyncReducerStatus.Aborted
-          }
-          placeholder={t('search.placeholder', 'Type to search vessels')}
-        />
-        <SearchFilters className={styles.filters} datasets={searchDatasets} />
+        <div className={styles.formFields}>
+          <InputText
+            onChange={onInputChange}
+            id="name"
+            value={searchState.name}
+            label={t('common.name', 'Name')}
+            inputSize="small"
+            className={styles.input}
+            autoFocus
+          />
+          <InputText
+            onChange={onInputChange}
+            id="mmsi"
+            value={searchState.mmsi}
+            label={t('vessel.mmsi', 'MMSI')}
+            inputSize="small"
+            className={styles.input}
+          />
+          <InputText
+            onChange={onInputChange}
+            id="imo"
+            value={searchState.imo}
+            label={t('vessel.imo', 'IMO')}
+            inputSize="small"
+            className={styles.input}
+          />
+          <InputText
+            onChange={onInputChange}
+            id="callsign"
+            value={searchState.callsign}
+            label={t('vessel.callsign', 'Callsign')}
+            inputSize="small"
+            className={styles.input}
+          />
+          <SearchFilters className={styles.filters} datasets={searchDatasets} />
+          <InputText
+            onChange={onInputChange}
+            id="owner"
+            value={searchState.owner}
+            label={t('vessel.owner', 'Owner')}
+            inputSize="small"
+            className={styles.input}
+          />
+        </div>
+        <div className={styles.formFooter}>
+          <IconButton type="border" size="medium" icon="delete" onClick={resetSearchState} />
+          <Button
+            className={styles.confirmButton}
+            onClick={onConfirm}
+            loading={
+              searchStatus === AsyncReducerStatus.Loading ||
+              searchStatus === AsyncReducerStatus.Aborted
+            }
+          >
+            {t('search.title', 'Search')}
+          </Button>
+        </div>
       </div>
       <div className={styles.scrollContainer}>
         {(searchStatus === AsyncReducerStatus.Loading ||

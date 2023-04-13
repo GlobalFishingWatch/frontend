@@ -41,7 +41,12 @@ import {
   selectSearchResults,
 } from './search.slice'
 import { useSearchConnect, useSearchFiltersConnect } from './search.hook'
-import { selectBasicSearchDatasets, selectAdvancedSearchDatasets } from './search.selectors'
+import {
+  selectBasicSearchDatasets,
+  selectAdvancedSearchDatasets,
+  isBasicSearchAllowed,
+  isAdvancedSearchAllowed,
+} from './search.selectors'
 import styles from './Search.module.css'
 
 const MIN_SEARCH_CHARACTERS = 3
@@ -51,6 +56,8 @@ function Search() {
   const dispatch = useAppDispatch()
   const urlQuery = useSelector(selectSearchQuery)
   const { addNewDataviewInstances } = useDataviewInstancesConnect()
+  const basicSearchAllowed = useSelector(isBasicSearchAllowed)
+  const advancedSearchAllowed = useSelector(isAdvancedSearchAllowed)
   const [searchQuery, setSearchQuery] = useState((urlQuery || '') as string)
   const searchResults = useSelector(selectSearchResults)
   const { searchFilters } = useSearchFiltersConnect()
@@ -245,11 +252,14 @@ function Search() {
         onSelect={onSelect}
         fetchMoreResults={fetchMoreResults}
         vesselsSelected={vesselsSelected}
-        setVesselsSelected={setVesselsSelected}
       />
       <div
-        className={cx(styles.footer, {
-          [styles.hidden]: !searchResultsPagination || searchResultsPagination.total === 0,
+        className={cx(styles.footer, styles[activeSearchOption], {
+          [styles.hidden]:
+            !searchResultsPagination ||
+            searchResultsPagination.total === 0 ||
+            (activeSearchOption === 'basic' && !basicSearchAllowed) ||
+            (activeSearchOption === 'advanced' && !advancedSearchAllowed),
         })}
       >
         {searchResults && searchResults.length !== 0 && (
@@ -274,6 +284,7 @@ function Search() {
             <IconButton
               icon="download"
               type="border"
+              size="medium"
               tooltip={
                 vesselsSelected.length !== 0
                   ? `${t('search.downloadSelected', 'Download CSV of selected vessels')} (${
@@ -291,6 +302,7 @@ function Search() {
           vessels={vesselsSelected}
           onAddToVesselGroup={onAddToVesselGroup}
           showCount={false}
+          buttonClassName={cx(styles.footerAction, styles.vesselGroupButton)}
         />
         <Button
           className={styles.footerAction}

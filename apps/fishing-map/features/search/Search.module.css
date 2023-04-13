@@ -10,6 +10,7 @@
   position: fixed;
   width: calc(100% - 5.2rem);
   bottom: 0;
+  right: 0;
   display: flex;
   align-items: center;
   gap: var(--space-S);
@@ -17,11 +18,24 @@
   background: var(--color-white);
   box-shadow: var(--box-shadow);
   transition: transform 300ms ease-in-out;
-  z-index: 4;
+  z-index: 3;
+}
+
+.footer.advanced {
+  width: calc(100% - 5.2rem - 32rem);
+}
+
+.footerAction {
+  height: 3.2rem;
+}
+
+.vesselGroupButton {
+  background: none !important;
+  border: var(--border);
 }
 
 .hidden {
-  transform: translateY(100%);
+  transform: translateY(120%);
 }
 
 .results {

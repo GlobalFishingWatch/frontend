@@ -138,10 +138,7 @@ function SearchAdvancedResults({
       }}
       muiTableContainerProps={{
         ref: tableContainerRef,
-        sx: {
-          height: 'calc(100vh - 112px)',
-          transition: 'height 0.2s',
-        },
+        sx: { height: 'calc(100vh - 104px)' },
         onScroll: (event) => fetchMoreOnBottomReached(event.target as HTMLDivElement),
       }}
       muiSelectAllCheckboxProps={{

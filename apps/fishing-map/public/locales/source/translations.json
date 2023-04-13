@@ -564,6 +564,7 @@
     "nationalId": "National Id",
     "notMatched": "No data matched",
     "origin": "Origin",
+    "owner": "Owner",
     "registeredGearType": "Registered Gear Type",
     "shiptype": "Vessel type",
     "source": "Source",

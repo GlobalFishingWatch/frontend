@@ -36,7 +36,6 @@ export type SearchComponentProps = {
   searchQuery?: string
   debouncedQuery?: string
   vesselsSelected?: VesselWithDatasets[]
-  setVesselsSelected?: (vessels: VesselWithDatasets[]) => void
 }
 
 function SearchBasic({
@@ -47,7 +46,6 @@ function SearchBasic({
   searchQuery,
   debouncedQuery,
   vesselsSelected,
-  setVesselsSelected,
 }: SearchComponentProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -65,7 +63,6 @@ function SearchBasic({
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value)
-    setVesselsSelected([])
     if (e.target.value !== searchQuery && searchSuggestionClicked) {
       dispatch(setSuggestionClicked(false))
     }
