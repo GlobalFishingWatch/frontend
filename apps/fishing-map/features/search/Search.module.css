@@ -17,8 +17,10 @@
   padding: var(--space-S);
   background: var(--color-white);
   box-shadow: var(--box-shadow);
+  border-top: var(--border);
   transition: transform 300ms ease-in-out;
   z-index: 3;
+  line-height: 1;
 }
 
 .footer.advanced {

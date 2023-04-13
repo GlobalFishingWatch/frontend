@@ -1,5 +1,4 @@
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
 import { Trans, useTranslation } from 'react-i18next'
 import { useState } from 'react'
 import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components'
@@ -8,12 +7,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import SearchAdvancedResults from 'features/search/SearchAdvancedResults'
 import { SearchComponentProps } from 'features/search/SearchBasic'
-import {
-  selectSearchStatus,
-  selectSearchStatusCode,
-  RESULTS_PER_PAGE,
-  setSuggestionClicked,
-} from './search.slice'
+import { selectSearchStatus, selectSearchStatusCode, setSuggestionClicked } from './search.slice'
 import styles from './SearchAdvanced.module.css'
 import SearchFilters from './SearchFilters'
 import { useSearchConnect } from './search.hook'
@@ -54,7 +48,6 @@ function SearchAdvanced({
     callsign: '',
     owner: '',
   })
-  console.log('searchState:', searchState)
 
   const onConfirm = (e: React.MouseEvent) => {
     // setSearchQuery(e.target.value)
@@ -70,12 +63,6 @@ function SearchAdvanced({
   const resetSearchState = () => {
     setSearchState({ name: '', mmsi: '', imo: '', callsign: '', owner: '' })
   }
-
-  const hasMoreResults =
-    searchPagination.total !== 0 &&
-    searchPagination.total > RESULTS_PER_PAGE &&
-    searchPagination.offset &&
-    searchPagination.offset <= searchPagination.total
 
   if (!advancedSearchAllowed) {
     return (
@@ -94,9 +81,12 @@ function SearchAdvanced({
       <div className={styles.form}>
         <div className={styles.formFields}>
           <InputText
-            onChange={onInputChange}
+            // TODO: use this when query is composed of multiple fields
+            // onChange={onInputChange}
+            onChange={(e) => setSearchQuery(e.target.value)}
             id="name"
-            value={searchState.name}
+            // value={searchState.name}
+            value={searchQuery}
             label={t('common.name', 'Name')}
             inputSize="small"
             className={styles.input}
@@ -135,6 +125,27 @@ function SearchAdvanced({
             inputSize="small"
             className={styles.input}
           />
+          {debouncedQuery && debouncedQuery?.length < MIN_SEARCH_CHARACTERS && (
+            <div className={styles.red}>
+              {t('search.minCharacters', {
+                defaultValue: 'Please type at least {{count}} characters',
+                count: MIN_SEARCH_CHARACTERS,
+              })}
+            </div>
+          )}
+          {searchQuery &&
+            searchSuggestion &&
+            searchSuggestion !== searchQuery &&
+            !searchSuggestionClicked && (
+              <div>
+                {t('search.suggestion', 'Did you mean')}{' '}
+                <button onClick={onSuggestionClick} className={styles.suggestion}>
+                  {' '}
+                  {searchSuggestion}{' '}
+                </button>{' '}
+                ?
+              </div>
+            )}
         </div>
         <div className={styles.formFooter}>
           <IconButton type="border" size="medium" icon="delete" onClick={resetSearchState} />
@@ -155,34 +166,13 @@ function SearchAdvanced({
           searchStatus === AsyncReducerStatus.Aborted) &&
         searchPagination.loading === false ? null : basicSearchAllowed ? (
           <div className={styles.searchResults}>
-            {debouncedQuery && debouncedQuery?.length < MIN_SEARCH_CHARACTERS && (
-              <div key="suggestion" className={cx(styles.searchSuggestion, styles.red)}>
-                {t('search.minCharacters', {
-                  defaultValue: 'Please type at least {{count}} characters',
-                  count: MIN_SEARCH_CHARACTERS,
-                })}
-              </div>
-            )}
-            {searchQuery &&
-              searchSuggestion &&
-              searchSuggestion !== searchQuery &&
-              !searchSuggestionClicked && (
-                <div key="suggestion" className={cx(styles.searchSuggestion)}>
-                  {t('search.suggestion', 'Did you mean')}{' '}
-                  <button onClick={onSuggestionClick} className={styles.suggestion}>
-                    {' '}
-                    {searchSuggestion}{' '}
-                  </button>{' '}
-                  ?
-                </div>
-              )}
             <SearchAdvancedResults
               onSelect={onSelect}
               vesselsSelected={vesselsSelected}
               fetchMoreResults={fetchMoreResults}
             />
             {searchStatus === AsyncReducerStatus.Idle && <SearchEmptyState />}
-            {searchStatus === AsyncReducerStatus.Finished && !hasMoreResults && (
+            {searchStatus === AsyncReducerStatus.Finished && searchPagination.total === 0 && (
               <SearchNoResultsState />
             )}
             {searchStatus === AsyncReducerStatus.Error && (

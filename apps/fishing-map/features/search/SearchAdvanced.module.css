@@ -5,7 +5,8 @@
 
 .form {
   background-color: var(--color-white);
-  box-shadow: var(--box-shadow);
+  border-right: var(--border);
+  box-shadow: 0.6rem 0 1rem -0.4rem rgba(var(--primary-blue-rgb), var(--opacity-border));
   width: 32rem;
   z-index: 4;
   display: flex;
@@ -63,16 +64,6 @@
 
 .red {
   color: var(--color-danger-red);
-}
-
-.searchSuggestion {
-  display: flex;
-  padding: var(--space-S);
-  background-color: var(--color-white);
-  box-shadow: var(--box-shadow);
-  position: sticky;
-  top: 0;
-  z-index: 1;
 }
 
 .suggestion {

@@ -91,22 +91,22 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
 
   return (
     <div className={cx(className)}>
-      {sourceOptions && sourceOptions.length > 0 && (
-        <MultiSelect
-          label={t('layer.source_other', 'Sources')}
-          placeholder={getPlaceholderBySelections(sources)}
-          options={sourceOptions}
-          selectedOptions={sources}
-          className={styles.row}
-          onSelect={onSourceSelect}
-          onRemove={(filter, rest) => {
-            setSearchFilters({ sources: rest })
-          }}
-          onCleanClick={() => {
-            setSearchFilters({ sources: undefined })
-          }}
-        />
-      )}
+      <MultiSelect
+        label={t('layer.flagState_other', 'Flag States')}
+        placeholder={getPlaceholderBySelections(flag)}
+        options={flagOptions}
+        selectedOptions={flag}
+        className={styles.row}
+        onSelect={(filter) => {
+          setSearchFilters({ flag: [...(flag || []), filter] })
+        }}
+        onRemove={(filter, rest) => {
+          setSearchFilters({ flag: rest })
+        }}
+        onCleanClick={() => {
+          setSearchFilters({ flag: undefined })
+        }}
+      />
       {schemaFilters.map((schemaFilter) => {
         if (!showSchemaFilter(schemaFilter)) {
           return null
@@ -135,22 +135,22 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
           />
         )
       })}
-      <MultiSelect
-        label={t('layer.flagState_other', 'Flag States')}
-        placeholder={getPlaceholderBySelections(flag)}
-        options={flagOptions}
-        selectedOptions={flag}
-        className={styles.row}
-        onSelect={(filter) => {
-          setSearchFilters({ flag: [...(flag || []), filter] })
-        }}
-        onRemove={(filter, rest) => {
-          setSearchFilters({ flag: rest })
-        }}
-        onCleanClick={() => {
-          setSearchFilters({ flag: undefined })
-        }}
-      />
+      {sourceOptions && sourceOptions.length > 0 && (
+        <MultiSelect
+          label={t('layer.source_other', 'Sources')}
+          placeholder={getPlaceholderBySelections(sources)}
+          options={sourceOptions}
+          selectedOptions={sources}
+          className={styles.row}
+          onSelect={onSourceSelect}
+          onRemove={(filter, rest) => {
+            setSearchFilters({ sources: rest })
+          }}
+          onCleanClick={() => {
+            setSearchFilters({ sources: undefined })
+          }}
+        />
+      )}
       <div className={styles.row}>
         <InputDate
           value={lastTransmissionDate}
