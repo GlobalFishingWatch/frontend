@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { Icon } from '@globalfishingwatch/ui-components'
 import styles from './AuthIcon.module.css'
 interface AuthIconProps {
-  authorizationStatus: string
+  authorizationStatus: 'true' | 'false' | 'pending'
 }
 
 const AuthIcon: React.FC<AuthIconProps> = ({

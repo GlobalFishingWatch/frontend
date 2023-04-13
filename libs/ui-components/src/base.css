@@ -38,6 +38,11 @@
   --color-map-background: #002457;
   --color-highlight-blue: #6aecf9;
 
+  /* ENCOUNTER STATUS COLORS */
+  --color-encounter-status-pending: rgb(175, 187, 202);
+  --color-encounter-status-authorized: rgb(250, 233, 160);
+  --color-encounter-status-unauthorized: rgb(216, 86, 118);
+
   /* OPACITIES */
   --opacity-hover: 0.9;
   --opacity-secondary: 0.75;
