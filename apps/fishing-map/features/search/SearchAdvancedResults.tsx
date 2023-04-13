@@ -67,20 +67,17 @@ function SearchAdvancedResults({
     ]
   }, [t])
 
-  const fetchMoreOnBottomReached = useCallback(
-    (containerRefElement?: HTMLDivElement | null) => {
-      if (containerRefElement) {
-        const { scrollHeight, scrollTop, clientHeight } = containerRefElement
-        if (
-          scrollHeight - scrollTop - clientHeight < 50 &&
-          searchStatus === AsyncReducerStatus.Finished
-        ) {
-          fetchMoreResults()
-        }
+  const fetchMoreOnBottomReached = useCallback(() => {
+    if (tableContainerRef.current) {
+      const { scrollHeight, scrollTop, clientHeight } = tableContainerRef.current
+      if (
+        scrollHeight - scrollTop - clientHeight < 50 &&
+        searchStatus === AsyncReducerStatus.Finished
+      ) {
+        fetchMoreResults()
       }
-    },
-    [fetchMoreResults, searchStatus]
-  )
+    }
+  }, [fetchMoreResults, searchStatus])
 
   const onSelectAllHandler = useCallback(
     (selected: boolean) => {
@@ -104,7 +101,9 @@ function SearchAdvancedResults({
   }, [searchResults, vesselsSelected])
 
   useEffect(() => {
-    fetchMoreOnBottomReached(tableContainerRef.current)
+    fetchMoreOnBottomReached()
+    window.addEventListener('resize', fetchMoreOnBottomReached)
+    return () => window.removeEventListener('resize', fetchMoreOnBottomReached)
   }, [fetchMoreOnBottomReached])
 
   if (!searchResults?.length) {
@@ -139,7 +138,7 @@ function SearchAdvancedResults({
       muiTableContainerProps={{
         ref: tableContainerRef,
         sx: { height: 'calc(100vh - 104px)' },
-        onScroll: (event) => fetchMoreOnBottomReached(event.target as HTMLDivElement),
+        onScroll: fetchMoreOnBottomReached,
       }}
       muiSelectAllCheckboxProps={{
         sx: { color: 'var(--color-secondary-blue)' },
@@ -194,9 +193,7 @@ function SearchAdvancedResults({
           },
         }
       }}
-      muiBottomToolbarProps={{
-        sx: { overflow: 'visible' },
-      }}
+      muiBottomToolbarProps={{ sx: { overflow: 'visible' } }}
       muiLinearProgressProps={{
         sx: {
           height: '6px',
