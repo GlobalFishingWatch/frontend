@@ -80,14 +80,14 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
     const uniqIds = ids?.length ? ids.filter((id) => !existingIds.includes(id)) : []
 
     try {
-      const workspacesParams = {
-        ...(uniqIds?.length && { ids: uniqIds }),
+      const datasetsParams = {
+        ...(uniqIds?.length ? { ids: uniqIds } : { 'logged-user': true }),
         include: 'endpoints',
         cache: false,
         ...DEFAULT_PAGINATION_PARAMS,
       }
       const initialDatasets = await GFWAPI.fetch<APIPagination<Dataset>>(
-        `/datasets?${stringify(workspacesParams, { arrayFormat: 'comma' })}`,
+        `/datasets?${stringify(datasetsParams, { arrayFormat: 'comma' })}`,
         { signal }
       )
       const relatedDatasetsIds = uniq(
@@ -96,7 +96,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
         )
       )
       const uniqRelatedDatasetsIds = without(relatedDatasetsIds, ...existingIds).join(',')
-      const relatedWorkspaceParams = { ...workspacesParams, ids: uniqRelatedDatasetsIds }
+      const relatedWorkspaceParams = { ...datasetsParams, ids: uniqRelatedDatasetsIds }
       const relatedDatasets = await GFWAPI.fetch<APIPagination<Dataset[]>>(
         `/datasets?${stringify(relatedWorkspaceParams, { arrayFormat: 'comma' })}`,
         { signal }
