@@ -144,6 +144,7 @@
     "downloadAllActivity": "crwdns29163:0crwdne29163:0",
     "downloadCurrentActivityFiltered": "crwdns29165:0crwdne29165:0",
     "encounterEvents": "crwdns11033:0crwdne11033:0",
+    "encounteredVesselAuthorization": "crwdns30611:0crwdne30611:0",
     "encounterEventsDescription": "crwdns11035:0crwdne11035:0",
     "fishingEvents": "crwdns11037:0crwdne11037:0",
     "fishingEventsDescription": "crwdns11039:0crwdne11039:0",
@@ -162,7 +163,8 @@
     "noHighlitingSettingsMessage": "crwdns8561:0crwdne8561:0",
     "noResults": "crwdns8735:0crwdne8735:0",
     "portVisitEvents": "crwdns11045:0crwdne11045:0",
-    "portVisitEventsDescription": "crwdns11047:0crwdne11047:0"
+    "portVisitEventsDescription": "crwdns11047:0crwdne11047:0",
+    "vesselAuthorization": "crwdns30613:0crwdne30613:0"
   },
   "layer": {
     "toggleVisibility": "crwdns6456:0crwdne6456:0"
