@@ -32,7 +32,7 @@ export const fetchReportsThunk = createAsyncThunk(
   async (ids: string[], { signal, rejectWithValue }) => {
     try {
       const reportsParams = {
-        ...(ids?.length && { ids }),
+        ...(ids?.length ? { ids } : { 'logged-user': true }),
         ...DEFAULT_PAGINATION_PARAMS,
       }
       const reportsResponse = await GFWAPI.fetch<APIPagination<Report>>(

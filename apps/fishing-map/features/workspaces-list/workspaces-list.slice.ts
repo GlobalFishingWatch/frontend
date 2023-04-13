@@ -22,14 +22,14 @@ import { getDefaultWorkspace } from 'features/workspace/workspace.slice'
 
 export type AppWorkspace = Workspace<WorkspaceState, WorkspaceCategories>
 
-type fetchWorkspacesThunkParams = {
+type FetchWorkspacesThunkParams = {
   app?: string
   ids?: string[]
   userId?: number
 }
 export const fetchWorkspacesThunk = createAsyncThunk<
   Workspace[],
-  fetchWorkspacesThunkParams | undefined,
+  FetchWorkspacesThunkParams,
   {
     rejectValue: AsyncError
   }
@@ -38,7 +38,12 @@ export const fetchWorkspacesThunk = createAsyncThunk<
   async ({ app = APP_NAME, ids, userId } = {}, { getState, rejectWithValue }) => {
     const state = getState() as any
     const defaultWorkspaceLoaded = selectWorkspaceById(DEFAULT_WORKSPACE_ID)(state) !== undefined
-    const workspacesParams = { app, ids, 'owner-id': userId, ...DEFAULT_PAGINATION_PARAMS }
+    const workspacesParams = {
+      app,
+      ids,
+      ...(!ids?.length && { 'logged-user-or-gfw': true }),
+      ...DEFAULT_PAGINATION_PARAMS,
+    }
     try {
       const workspaces = await GFWAPI.fetch<APIPagination<AppWorkspace>>(
         `/workspaces?${stringify(workspacesParams, { arrayFormat: 'comma' })}`
