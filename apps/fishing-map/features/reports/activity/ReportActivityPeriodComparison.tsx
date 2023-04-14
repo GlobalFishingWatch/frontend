@@ -12,7 +12,7 @@ import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selec
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { selectReportAreaIds } from 'features/reports/reports.selectors'
 import { selectDatasetAreaDetail } from 'features/areas/areas.slice'
-import Hint from 'features/hints/Hint'
+import Hint from 'features/help/Hint'
 import { COLOR_PRIMARY_BLUE } from 'features/app/App'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './ReportActivityBeforeAfter.module.css'

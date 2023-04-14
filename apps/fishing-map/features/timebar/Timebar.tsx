@@ -30,7 +30,7 @@ import { selectTimebarGraph, selectTimebarVisualisation } from 'features/app/app
 import { getEventLabel } from 'utils/analytics'
 import { upperFirst } from 'utils/info'
 import { selectShowTimeComparison } from 'features/reports/reports.selectors'
-import Hint from 'features/hints/Hint'
+import Hint from 'features/help/Hint'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'

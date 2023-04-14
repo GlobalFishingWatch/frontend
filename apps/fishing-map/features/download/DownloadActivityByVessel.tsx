@@ -35,6 +35,7 @@ import DatasetLabel from 'features/datasets/DatasetLabel'
 import SOURCE_SWITCH_CONTENT from 'features/welcome/SourceSwitch.content'
 import { Locale } from 'types'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import UserGuideLink from 'features/help/UserGuideLink'
 import styles from './DownloadModal.module.css'
 import {
   Format,
@@ -188,6 +189,7 @@ function DownloadActivityByVessel() {
             onSelect={(option) => setTemporalResolution(option.id as TemporalResolution)}
           />
         </div>
+        <UserGuideLink section="downloadActivity" />
         <div className={styles.footer}>
           {datasetsDownloadNotSupported.length > 0 && (
             <p className={styles.footerLabel}>

@@ -52,7 +52,7 @@ function HelpHub() {
         <IconButton
           icon="help"
           type="border"
-          className={cx(styles.hintsHub, {
+          className={cx({
             [styles.pulseDarkOnce]: hintsDismissedArray.length === 1,
           })}
           style={{
