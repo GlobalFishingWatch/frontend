@@ -27,6 +27,7 @@ import { getDatasetNameTranslated, removeDatasetVersion } from 'features/i18n/ut
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { FileType } from 'features/common/FileDropzone'
 import { getLayerDatasetRange } from 'features/workspace/environmental/HistogramRangeFilter'
+import { TEMPLATE_VESSEL_DATAVIEW_SLUG } from 'data/workspaces'
 import styles from '../vessel-groups/VesselGroupModal.module.css'
 
 export type SupportedDatasetSchema =
@@ -161,22 +162,28 @@ export const getDatasetsInDataviews = (
     getDatasetsInDataview(dataview, guestUser)
   )
   const datasetsFromDataviewInstances = dataviewInstances.flatMap((dataviewInstance) => {
-    const dataview = dataviews.find(
-      (d) => d.id === dataviewInstance.dataviewId || d.slug === dataviewInstance.dataviewId
-    )
-    if (!dataview?.datasetsConfig) {
-      return []
+    // Needed to check when vessel dataview has included the new datasets
+    // Ex: gfw staff adding a vessel dataview with gaps
+    if (dataviewInstance.dataviewId === TEMPLATE_VESSEL_DATAVIEW_SLUG) {
+      const dataview = dataviews.find(
+        (d) => d.id === dataviewInstance.dataviewId || d.slug === dataviewInstance.dataviewId
+      )
+      if (!dataview?.datasetsConfig) {
+        return []
+      }
+      const availableDatasetIds = dataview.datasetsConfig.map((dsc) => dsc.datasetId)
+      return getDatasetsInDataview(
+        {
+          ...dataviewInstance,
+          datasetsConfig: dataviewInstance.datasetsConfig?.filter((dsc) =>
+            availableDatasetIds.includes(dsc.datasetId)
+          ),
+        },
+        guestUser
+      )
     }
-    const availableDatasetIds = dataview.datasetsConfig.map((dsc) => dsc.datasetId)
-    return getDatasetsInDataview(
-      {
-        ...dataviewInstance,
-        datasetsConfig: dataviewInstance.datasetsConfig?.filter((dsc) =>
-          availableDatasetIds.includes(dsc.datasetId)
-        ),
-      },
-      guestUser
-    )
+
+    return getDatasetsInDataview(dataviewInstance, guestUser)
   })
   return uniq([...datasetsFromDataviews, ...datasetsFromDataviewInstances])
 }
