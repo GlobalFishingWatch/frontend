@@ -137,39 +137,7 @@ export const {
 } = entityAdapter.getSelectors<RootState>((state) => state.datasets)
 
 export const selectAll = createSelector([baseSelectAll], (datasets) => {
-  const vesselInfo: Dataset[] = datasets
-    .filter((d) => d.category === 'vessel' && d.subcategory === 'info')
-    // Inject Proto Gaps Dataset
-    .map((d) =>
-      IS_STANDALONE_APP
-        ? d
-        : {
-            ...d,
-            relatedDatasets: [
-              ...d.relatedDatasets,
-              {
-                id: 'proto-global-gaps-events:v20201001',
-                type: DatasetTypes.Events,
-              },
-            ],
-          }
-    )
-
-  const gaps: Dataset[] = datasets
-    .filter((d) => d.id === 'proto-global-gaps-events:v20201001')
-    // Inject related datasets to Proto Gaps Dataset
-    .map((d) => ({
-      ...d,
-      relatedDatasets: [
-        ...(d.relatedDatasets ?? []),
-        ...vesselInfo.map((vi) => ({ id: vi.id, type: vi.type } as RelatedDataset)),
-      ],
-    }))
-  const result: Dataset[] = datasets.map((dataset) => {
-    const override = [...vesselInfo, ...gaps].find((current) => current.id === dataset.id)
-    return override ?? dataset
-  })
-  return result
+  return datasets
 })
 
 export function selectDatasets(state: RootState) {
