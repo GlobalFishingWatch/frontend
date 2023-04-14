@@ -79,16 +79,9 @@ function SearchAdvancedResults({
     }
   }, [fetchMoreResults, searchStatus])
 
-  const onSelectAllHandler = useCallback(
-    (selected: boolean) => {
-      onSelect(selected ? searchResults : [])
-    },
-    [onSelect, searchResults]
-  )
-
   const onSelectHandler = useCallback(
-    (vessel: VesselWithDatasets) => {
-      onSelect([vessel])
+    (vessels: VesselWithDatasets[]) => {
+      onSelect(vessels)
     },
     [onSelect]
   )
@@ -140,10 +133,11 @@ function SearchAdvancedResults({
         sx: { height: 'calc(100vh - 104px)' },
         onScroll: fetchMoreOnBottomReached,
       }}
-      muiSelectAllCheckboxProps={{
+      muiSelectAllCheckboxProps={({ table }) => ({
         sx: { color: 'var(--color-secondary-blue)' },
-        onChange: (e) => onSelectAllHandler(e.target.checked),
-      }}
+        onChange: (_, checked) =>
+          onSelectHandler(checked ? table.getRowModel().rows.map(({ original }) => original) : []),
+      })}
       muiSelectCheckboxProps={{
         sx: {
           '&.Mui-checked': { color: 'var(--color-secondary-blue)' },
@@ -152,7 +146,7 @@ function SearchAdvancedResults({
         },
       }}
       muiTableBodyRowProps={({ row }) => ({
-        onClick: () => onSelectHandler(row.original),
+        onClick: () => onSelectHandler([row.original]),
         sx: {
           backgroundColor: 'transparent',
           cursor: 'pointer',
@@ -162,6 +156,12 @@ function SearchAdvancedResults({
           },
         },
       })}
+      muiTableProps={{
+        style: {
+          ['--col-mrt_row_select-size' as any]: 10,
+          ['--header-mrt_row_select-size' as any]: 10,
+        },
+      }}
       muiTableHeadCellProps={(cell) => ({
         sx: {
           font: 'var(--font-S-bold)',
@@ -171,28 +171,30 @@ function SearchAdvancedResults({
           backgroundColor: 'var(--color-white)',
           boxShadow:
             cell.column.id === 'shipname' ? '5px 0 5px -3px var(--color-terthiary-blue)' : '',
+          div: { justifyContent: cell.column.id === 'mrt-row-select' ? 'center' : 'flex-start' },
+          '.Mui-TableHeadCell-Content-Wrapper': { minWidth: '1rem' },
         },
       })}
-      muiTableBodyCellProps={({ row, cell }) => {
-        return {
-          sx: {
-            font: 'var(--font-S)',
-            color: 'var(--color-primary-blue)',
-            backgroundColor:
-              cell.column.id === 'shipname'
-                ? 'var(--color-white)'
-                : vesselsSelected.includes(row.original)
-                ? 'var(--color-terthiary-blue)'
-                : 'transparent',
-            borderRight: 'var(--border)',
-            borderBottom: 'var(--border)',
-            boxShadow:
-              cell.column.id === 'shipname' ? '5px 0 5px -3px var(--color-terthiary-blue)' : '',
-            whiteSpace: 'nowrap',
-            maxWidth: '20rem',
-          },
-        }
-      }}
+      muiTableBodyCellProps={({ row, cell }) => ({
+        sx: {
+          font: 'var(--font-S)',
+          color: 'var(--color-primary-blue)',
+          backgroundColor:
+            cell.column.id === 'shipname'
+              ? 'var(--color-white)'
+              : vesselsSelected.includes(row.original)
+              ? 'var(--color-terthiary-blue)'
+              : 'transparent',
+          textAlign: cell.column.id === 'mrt-row-select' ? 'center' : 'left',
+          borderRight: 'var(--border)',
+          borderBottom: 'var(--border)',
+          boxShadow:
+            cell.column.id === 'shipname' ? '5px 0 5px -3px var(--color-terthiary-blue)' : '',
+          whiteSpace: 'nowrap',
+          maxWidth: '20rem',
+          '.Mui-TableHeadCell-Content-Wrapper': { minWidth: '2rem' },
+        },
+      })}
       muiBottomToolbarProps={{ sx: { overflow: 'visible' } }}
       muiLinearProgressProps={{
         sx: {
