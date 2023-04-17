@@ -2550,16 +2550,48 @@
   },
   "public-protectedseas": {
     "name": "Protected Seas",
+    "description": "Protected seas (only category IUCN MPA)",
+    "schema": {
+      "removal_of_marine_life_is_prohibited": {
+        "keyword": "removal_of_marine_life_is_prohibited",
+        "enum": {
+          "1": "1",
+          "2": "2",
+          "3": "3",
+          "4": "4",
+          "5": "5"
+        }
+      }
+    }
+  },
+  "public-protectedseas-all": {
+    "name": "Protected Seas",
     "description": "Protected seas",
     "schema": {
-      "removal_of": {
-        "keyword": "Level of Fishing Protection",
+      "category_name": {
+        "keyword": "category_name",
         "enum": {
-          "1": "1. Least restrictive: No known fishing restrictions",
-          "2": "2. Less restrictive: Few species- or gear-specific restrictions apply",
-          "3": "3. Moderately restrictive: Several species- or gear-specific restrictions apply; or either commercial fishing or recreational fishing is entirely prohibited",
-          "4": "4. Heavily restrictive: Fishing is mostly prohibited, with few exceptions",
-          "5": "5. Most restrictive: Fishing is prohibited"
+          "IUCN MPA": "IUCN MPA",
+          "Other": "Other",
+          "Jurisdictional Authority Area": "Jurisdictional Authority Area",
+          "TBD": "TBD",
+          "Fisheries Management Area": "Fisheries Management Area",
+          "Recreational Area": "Recreational Area",
+          "OECM": "OECM",
+          "Vessel Restricted Area": "Vessel Restricted Area",
+          "Voluntary Conservation Measure Area": "Voluntary Conservation Measure Area",
+          "Vessel Reporting Area": "Vessel Reporting Area",
+          "Water Quality/Human Health Area": "Water Quality/Human Health Area"
+        }
+      },
+      "removal_of_marine_life_is_prohibited": {
+        "keyword": "removal_of_marine_life_is_prohibited",
+        "enum": {
+          "1": "1",
+          "2": "2",
+          "3": "3",
+          "4": "4",
+          "5": "5"
         }
       }
     }

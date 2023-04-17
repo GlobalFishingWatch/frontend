@@ -2550,16 +2550,48 @@
   },
   "public-protectedseas": {
     "name": "crwdns29289:0crwdne29289:0",
-    "description": "crwdns29291:0crwdne29291:0",
+    "description": "crwdns30615:0crwdne30615:0",
     "schema": {
-      "removal_of": {
-        "keyword": "crwdns29293:0crwdne29293:0",
+      "removal_of_marine_life_is_prohibited": {
+        "keyword": "crwdns30617:0crwdne30617:0",
         "enum": {
-          "1": "crwdns29295:0crwdne29295:0",
-          "2": "crwdns29297:0crwdne29297:0",
-          "3": "crwdns29299:0crwdne29299:0",
-          "4": "crwdns29301:0crwdne29301:0",
-          "5": "crwdns29303:0crwdne29303:0"
+          "1": "crwdns30619:0crwdne30619:0",
+          "2": "crwdns30621:0crwdne30621:0",
+          "3": "crwdns30623:0crwdne30623:0",
+          "4": "crwdns30625:0crwdne30625:0",
+          "5": "crwdns30627:0crwdne30627:0"
+        }
+      }
+    }
+  },
+  "public-protectedseas-all": {
+    "name": "crwdns30629:0crwdne30629:0",
+    "description": "crwdns30631:0crwdne30631:0",
+    "schema": {
+      "category_name": {
+        "keyword": "crwdns30633:0crwdne30633:0",
+        "enum": {
+          "IUCN MPA": "crwdns30635:0crwdne30635:0",
+          "Other": "crwdns30637:0crwdne30637:0",
+          "Jurisdictional Authority Area": "crwdns30639:0crwdne30639:0",
+          "TBD": "crwdns30641:0crwdne30641:0",
+          "Fisheries Management Area": "crwdns30643:0crwdne30643:0",
+          "Recreational Area": "crwdns30645:0crwdne30645:0",
+          "OECM": "crwdns30647:0crwdne30647:0",
+          "Vessel Restricted Area": "crwdns30649:0crwdne30649:0",
+          "Voluntary Conservation Measure Area": "crwdns30651:0crwdne30651:0",
+          "Vessel Reporting Area": "crwdns30653:0crwdne30653:0",
+          "Water Quality/Human Health Area": "crwdns30655:0crwdne30655:0"
+        }
+      },
+      "removal_of_marine_life_is_prohibited": {
+        "keyword": "crwdns30657:0crwdne30657:0",
+        "enum": {
+          "1": "crwdns30659:0crwdne30659:0",
+          "2": "crwdns30661:0crwdne30661:0",
+          "3": "crwdns30663:0crwdne30663:0",
+          "4": "crwdns30665:0crwdne30665:0",
+          "5": "crwdns30667:0crwdne30667:0"
         }
       }
     }
