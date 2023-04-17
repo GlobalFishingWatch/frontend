@@ -61,7 +61,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
   const createReport = async () => {
     if (name) {
       setLoading(true)
-      const { ownerId, ...workspaceProperties } = workspace
+      const { ownerId, createdAt, ownerType, ...workspaceProperties } = workspace
       const dispatchedAction = await dispatch(
         createReportThunk({
           name,
