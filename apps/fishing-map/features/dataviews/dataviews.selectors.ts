@@ -7,7 +7,11 @@ import {
   BasemapType,
 } from '@globalfishingwatch/layer-composer'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
+import {
+  getDatasetsInDataviews,
+  getRelatedDatasetByType,
+  isPrivateDataset,
+} from 'features/datasets/datasets.utils'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID, DEFAULT_DATAVIEW_SLUGS } from 'data/workspaces'
 import { RootState } from 'store'
@@ -16,6 +20,7 @@ import {
   selectAllDataviewInstancesResolved,
   selectDataviewInstancesResolved,
   selectAllDataviews,
+  selectDataviewInstancesMergedOrdered,
 } from 'features/dataviews/dataviews.slice'
 import { TimebarVisualisations } from 'types'
 import { selectTimebarSelectedEnvId } from 'features/app/app.selectors'
@@ -282,5 +287,13 @@ export const selectAvailableDetectionsDataviews = createSelector(
     return dataviews?.filter(
       (d) => d.category === DataviewCategory.Detections && d.datasetsConfig?.length > 0
     )
+  }
+)
+
+export const selectPrivateDatasetsInWorkspace = createSelector(
+  [(state) => selectDataviewInstancesMergedOrdered(state)],
+  (dataviews) => {
+    const workspaceDatasets = getDatasetsInDataviews(dataviews || [])
+    return workspaceDatasets.filter((dataset) => isPrivateDataset({ id: dataset }))
   }
 )
