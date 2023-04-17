@@ -34,18 +34,18 @@ const USER_GUIDE_SECTIONS_EN: Record<UserGuideSection, string> = {
 }
 
 const USER_GUIDE_SECTIONS_ES: Record<UserGuideSection, string> = {
-  uploadReference: '#Carga%20de%20datos',
-  uploadEnvironment: '#Datos%20ambientales',
+  uploadReference: '#Carga de datos',
+  uploadEnvironment: '#Datos ambientales',
   analysis: '#Análisis',
-  downloadActivity: '#Descarga%20de%20datos',
-  vesselSearch: '#Búsqueda%20de%20embarcaciones',
-  vesselGroups: '#Grupos%20de%20embarcaciones',
-  activityFishing: '#Actividad%20-%20Pesca',
-  activityPresence: '#Actividad%20-%20Presencia',
-  activityFilters: '#Filtrar%20capas%20de%20actividad',
-  detectionsSAR: '#Detecciones%20de%20radar%20-%20Radar%20de%20apertura%20sintética',
+  downloadActivity: '#Descarga de datos',
+  vesselSearch: '#Búsqueda de embarcaciones',
+  vesselGroups: '#Grupos de embarcaciones',
+  activityFishing: '#Actividad - Pesca',
+  activityPresence: '#Actividad - Presencia',
+  activityFilters: '#Filtrar capas de actividad',
+  detectionsSAR: '#Detecciones de radar - Radar de apertura sintética',
   detectionsVIIRS:
-    '#Detecciones%20de%20luz%20nocturna%20-%20Suite%20de%20Radiómetros%20para%20Imágenes%20Infrarrojas%20Visibles',
+    '#Detecciones de luz nocturna - Suite de Radiómetros para Imágenes Infrarrojas Visibles',
 }
 
 type UserGuideLinkProps = {
