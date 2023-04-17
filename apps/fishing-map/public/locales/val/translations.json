@@ -6,7 +6,7 @@
     "beforeAfterRange": "crwdns17123:0{{duration}}crwdnd17123:0{{compareStart}}crwdne17123:0",
     "change": "crwdns11323:0crwdne11323:0",
     "clickToFilterBy": "crwdns30499:0crwdne30499:0",
-    "disclaimer": "crwdns17189:0crwdne17189:0",
+    "disclaimer": "crwdns30669:0crwdne30669:0",
     "downloadVesselsList": "crwdns30503:0crwdne30503:0",
     "error": "crwdns18014:0crwdne18014:0",
     "errorMessage": "crwdns3624:0crwdne3624:0",
@@ -476,6 +476,20 @@
     "profile": "crwdns3706:0crwdne3706:0",
     "seeDataset": "crwdns30589:0crwdne30589:0",
     "title": "crwdns3708:0crwdne3708:0"
+  },
+  "userGuide": {
+    "title": "crwdns30671:0crwdne30671:0",
+    "uploadReference": "crwdns30673:0crwdne30673:0",
+    "uploadEnvironment": "crwdns30675:0crwdne30675:0",
+    "analysis": "crwdns30677:0crwdne30677:0",
+    "downloadActivity": "crwdns30679:0crwdne30679:0",
+    "vesselSearch": "crwdns30681:0crwdne30681:0",
+    "vesselGroups": "crwdns30683:0crwdne30683:0",
+    "activityFishing": "crwdns30685:0crwdne30685:0",
+    "activityPresence": "crwdns30687:0crwdne30687:0",
+    "activityFilters": "crwdns30689:0crwdne30689:0",
+    "detectionsSAR": "crwdns30691:0crwdne30691:0",
+    "detectionsVIIRS": "crwdns30693:0crwdne30693:0"
   },
   "vessel": {
     "addToWorkspace": "crwdns6962:0crwdne6962:0",
