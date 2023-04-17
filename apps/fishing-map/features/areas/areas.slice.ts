@@ -43,10 +43,11 @@ export type AreasState = Record<string, DatasetAreas>
 
 const initialState: AreasState = {}
 
-export type AreaKeys = { datasetId: string; areaId: number }
+export type AreaKeyId = string | number
+export type AreaKeys = { datasetId: string; areaId: AreaKeyId }
 export type FetchAreaDetailThunkParam = {
   dataset: Dataset
-  areaId: number
+  areaId: AreaKeyId
   areaName?: string
   simplify?: number
 }
