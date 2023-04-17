@@ -6,7 +6,7 @@
     "beforeAfterRange": "entre {{duration}} antes e depois de {{compareStart}}",
     "change": "Mudar",
     "clickToFilterBy": "Click to filter by:",
-    "disclaimer": "Os dados mostrados acima devem ser tomados como uma estimativa. <1>Saiba mais sobre ferramentas e métodos do Global Fishing Watch.</1>",
+    "disclaimer": "Os dados mostrados acima devem ser tomados como uma estimativa.",
     "downloadVesselsList": "Download csv",
     "error": "Houve um problema ao carregar os dados, por favor, tente atualizar a página",
     "errorMessage": "Algo deu errado",
@@ -476,6 +476,20 @@
     "profile": "Perfil do usuário",
     "seeDataset": "See on map",
     "title": "Usuário"
+  },
+  "userGuide": {
+    "title": "User Guide",
+    "uploadReference": "Upload reference layers data",
+    "uploadEnvironment": "Upload environmenet layers data",
+    "analysis": "Analyse activity",
+    "downloadActivity": "Download data",
+    "vesselSearch": "Vessel Search",
+    "vesselGroups": "Vessel groups",
+    "activityFishing": "Activity - fishing",
+    "activityPresence": "Activity - presence",
+    "activityFilters": "Filtering activity layers",
+    "detectionsSAR": "Detections SAR",
+    "detectionsVIIRS": "Detections VIIRS"
   },
   "vessel": {
     "addToWorkspace": "Adicionar embarcação na visualização",
