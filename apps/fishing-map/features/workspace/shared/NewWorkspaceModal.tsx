@@ -15,14 +15,13 @@ import { pickDateFormatByRange } from 'features/map/controls/MapInfo'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectViewport } from 'features/app/app.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
-import { PRIVATE_SUFIX, PUBLIC_SUFIX, ROOT_DOM_ELEMENT } from 'data/config'
-import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/dataviews.slice'
+import { PUBLIC_SUFIX, ROOT_DOM_ELEMENT } from 'data/config'
 import { selectUserData } from 'features/user/user.slice'
 import { selectUserWorkspaceEditPermissions } from 'features/user/user.selectors'
 import { selectWorkspaceId } from 'routes/routes.selectors'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { selectIsGFWWorkspace } from 'features/workspace/workspace.selectors'
+import { selectPrivateDatasetsInWorkspace } from 'features/dataviews/dataviews.selectors'
 import styles from './NewWorkspaceModal.module.css'
 
 type NewWorkspaceModalProps = {
@@ -63,10 +62,8 @@ function NewWorkspaceModal({
   const userData = useSelector(selectUserData)
   const isGFWWorkspace = useSelector(selectIsGFWWorkspace)
   const urlWorkspaceId = useSelector(selectWorkspaceId)
-  const dataviewsInWorkspace = useSelector(selectDataviewInstancesMergedOrdered)
   const hasEditPermission = useSelector(selectUserWorkspaceEditPermissions)
-  const workspaceDatasets = getDatasetsInDataviews(dataviewsInWorkspace || [])
-  const privateDatasets = workspaceDatasets.filter((d) => d.includes(PRIVATE_SUFIX))
+  const privateDatasets = useSelector(selectPrivateDatasetsInWorkspace)
   const containsPrivateDatasets = privateDatasets.length > 0
 
   const isDefaultWorkspace = workspace?.id === DEFAULT_WORKSPACE_ID
