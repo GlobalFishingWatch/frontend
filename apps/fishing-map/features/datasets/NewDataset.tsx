@@ -28,6 +28,7 @@ import { selectLocationType } from 'routes/routes.selectors'
 import { getFileFromGeojson, readBlobAs } from 'utils/files'
 import FileDropzone from 'features/common/FileDropzone'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import UserGuideLink from 'features/help/UserGuideLink'
 import {
   useDatasetsAPI,
   useDatasetModalConnect,
@@ -452,15 +453,11 @@ function NewDataset(): React.ReactElement {
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
-          <span className={styles.hint}>
-            <a
-              href="https://globalfishingwatch.org/article-categories/reference-layers/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              {t('dataset.hint', 'Find out more about the supported formats')}
-            </a>
-          </span>
+          {datasetCategory === DatasetCategory.Context ? (
+            <UserGuideLink section="uploadReference" />
+          ) : (
+            <UserGuideLink section="uploadEnvironment" />
+          )}
         </div>
         {datasetGeometryTypeConfirmed === false ? (
           <Button

@@ -34,6 +34,7 @@ import { resetSidebarScroll } from 'features/sidebar/Sidebar'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import UserGuideLink from 'features/help/UserGuideLink'
 import {
   IdField,
   resetVesselGroup,
@@ -353,6 +354,7 @@ function VesselGroupModal(): React.ReactElement {
         </div>
       )}
       <div className={styles.modalFooter}>
+        <UserGuideLink section="vesselGroups" />
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
           {vesselGroupAPIError && (

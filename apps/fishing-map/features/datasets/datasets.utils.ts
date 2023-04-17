@@ -22,7 +22,7 @@ import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { formatSliderNumber, IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { capitalize, sortFields } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
-import { PUBLIC_SUFIX, FULL_SUFIX, PRIVATE_SUFIX } from 'data/config'
+import { PUBLIC_SUFIX, FULL_SUFIX } from 'data/config'
 import { getDatasetNameTranslated, removeDatasetVersion } from 'features/i18n/utils'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { FileType } from 'features/common/FileDropzone'
@@ -146,7 +146,7 @@ const getDatasetsInDataview = (
   if (!dataview.datasetsConfig) return []
   const datasetIds: string[] = dataview.datasetsConfig.flatMap(({ datasetId }) => datasetId || [])
   return guestUser
-    ? datasetIds.filter((d) => !d.includes(PRIVATE_SUFIX) && !d.includes(FULL_SUFIX))
+    ? datasetIds.filter((id) => !isPrivateDataset({ id }) && !id.includes(FULL_SUFIX))
     : datasetIds
 }
 
@@ -323,7 +323,7 @@ export const filterDatasetsByUserType = (datasets: Dataset[], isGuestUser: boole
       const fullDataset = id.replace(PUBLIC_SUFIX, FULL_SUFIX)
       return !datasetsIds.includes(fullDataset)
     }
-    return id.includes(FULL_SUFIX) || id.includes(PRIVATE_SUFIX)
+    return id.includes(FULL_SUFIX) || isPrivateDataset({ id })
   })
   return allowedDatasets
 }

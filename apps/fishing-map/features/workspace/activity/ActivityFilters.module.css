@@ -87,3 +87,7 @@
   color: var(--color-secondary-blue);
   margin-top: var(--space-M);
 }
+
+.userGuideLink {
+  margin-top: var(--space-S);
+}
