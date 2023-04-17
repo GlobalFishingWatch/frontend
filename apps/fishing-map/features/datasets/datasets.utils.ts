@@ -72,7 +72,7 @@ export const getFileTypes = (datasetGeometryType) =>
   datasetGeometryType ? FILES_TYPES_BY_GEOMETRY_TYPE[datasetGeometryType] : 'polygons'
 
 export const isPrivateDataset = (dataset: Partial<Dataset>) =>
-  (dataset?.id || '').includes(PRIVATE_SUFIX)
+  !(dataset?.id || '').startsWith(`${PUBLIC_SUFIX}-`)
 
 const GFW_ONLY_DATASETS = ['private-global-other-vessels:v20201001']
 
