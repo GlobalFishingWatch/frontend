@@ -6,7 +6,7 @@
     "beforeAfterRange": "antara {{duration}} sebelum dan sesudah {{compareStart}}",
     "change": "Ubah",
     "clickToFilterBy": "Click to filter by:",
-    "disclaimer": "Data yang ditunjukkan di atas harus diambil sebagai perkiraan. <1>Find out more about Global Fishing Watch analysis tools and methods.</1>",
+    "disclaimer": "The data shown above should be taken as an estimate.",
     "downloadVesselsList": "Download csv",
     "error": "Terjadi masalah saat memuat data, silakan coba segarkan halaman",
     "errorMessage": "Ada yang salah",
@@ -476,6 +476,20 @@
     "profile": "Profil pengguna",
     "seeDataset": "See on map",
     "title": "Pengguna"
+  },
+  "userGuide": {
+    "title": "User Guide",
+    "uploadReference": "Upload reference layers data",
+    "uploadEnvironment": "Upload environmenet layers data",
+    "analysis": "Analyse activity",
+    "downloadActivity": "Download data",
+    "vesselSearch": "Vessel Search",
+    "vesselGroups": "Vessel groups",
+    "activityFishing": "Activity - fishing",
+    "activityPresence": "Activity - presence",
+    "activityFilters": "Filtering activity layers",
+    "detectionsSAR": "Detections SAR",
+    "detectionsVIIRS": "Detections VIIRS"
   },
   "vessel": {
     "addToWorkspace": "Tambahkan kapal untuk melihat",
