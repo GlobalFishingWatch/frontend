@@ -28,6 +28,12 @@
     display: none;
   }
 
+  .container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+
   .reportLink {
     display: block;
   }
