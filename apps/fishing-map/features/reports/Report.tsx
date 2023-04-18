@@ -276,7 +276,13 @@ export default function Report() {
     <Fragment>
       <ReportTitle area={areaDetail} />
       {filteredCategoryTabs.length > 1 && (
-        <Tabs tabs={filteredCategoryTabs} activeTab={reportCategory} onTabClick={handleTabClick} />
+        <div className={styles.tabContainer}>
+          <Tabs
+            tabs={filteredCategoryTabs}
+            activeTab={reportCategory}
+            onTabClick={handleTabClick}
+          />
+        </div>
       )}
       {reportCategory === ReportCategory.Environment ? (
         <ReportEnvironment />
