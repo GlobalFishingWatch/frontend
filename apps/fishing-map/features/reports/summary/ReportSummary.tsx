@@ -31,7 +31,7 @@ type ReportSummaryProps = {
   reportStatus: AsyncReducerStatus
 }
 
-const PROPERTIES_EXCLUDED = ['flag', 'geartype']
+export const PROPERTIES_EXCLUDED = ['flag', 'geartype']
 
 export default function ReportSummary({ activityUnit, reportStatus }: ReportSummaryProps) {
   const { t, i18n } = useTranslation()
