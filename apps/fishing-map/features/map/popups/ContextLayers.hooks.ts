@@ -9,12 +9,16 @@ import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { parsePropertiesBbox } from 'features/map/map.utils'
 import { AreaKeyId, fetchAreaDetailThunk } from 'features/areas/areas.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
+import {
+  setDownloadActivityAreaDataview,
+  setDownloadActivityAreaKey,
+} from 'features/download/downloadActivity.slice'
 import useMapInstance from 'features/map/map-context.hooks'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectReportAreaSource } from 'features/app/app.selectors'
 import { selectLocationAreaId } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectContextAreasDataviews } from 'features/dataviews/dataviews.selectors'
 import { setClickedEvent } from '../map.slice'
 import { TooltipEventFeature } from '../map.hooks'
 import { useMapFitBounds } from '../map-viewport.hooks'
@@ -54,6 +58,7 @@ export const useContextInteractions = () => {
   const areaId = useSelector(selectLocationAreaId)
   const sourceId = useSelector(selectReportAreaSource)
   const datasets = useSelector(selectAllDatasets)
+  const dataviews = useSelector(selectContextAreasDataviews)
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const fitMapBounds = useMapFitBounds()
 
@@ -68,9 +73,13 @@ export const useContextInteractions = () => {
       const datasetId = feature.datasetId
       const dataset = datasets.find((d) => d.id === datasetId)
       if (dataset) {
+        const dataview = dataviews.find((dataview) =>
+          dataview.datasets?.some((dataset) => dataset.id === datasetId)
+        )
         const areaName = feature.value || feature.title
         batch(() => {
           dispatch(setDownloadActivityAreaKey({ datasetId, areaId }))
+          dispatch(setDownloadActivityAreaDataview(dataview))
           dispatch(setClickedEvent(null))
         })
         dispatch(fetchAreaDetailThunk({ dataset, areaId, areaName }))
@@ -78,7 +87,7 @@ export const useContextInteractions = () => {
 
       cleanFeatureState('highlight')
     },
-    [cleanFeatureState, dispatch, datasets]
+    [datasets, cleanFeatureState, dataviews, dispatch]
   )
 
   const setReportArea = useCallback(
