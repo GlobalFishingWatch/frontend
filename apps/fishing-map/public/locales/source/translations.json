@@ -15,6 +15,7 @@
     "groupByFlag": "by flag",
     "groupByGeartype": "by gear type",
     "groupByVesseltype": "by vessel type",
+    "linkToReport": "Check the dynamic report here",
     "newTimeRange": "Click Update to see the vessels active in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "noDataByArea": "No data available for the selected area",
     "noVesselDataFiltered": "There are no vessels matching your filter",

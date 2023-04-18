@@ -18,8 +18,17 @@
   white-space: nowrap;
 }
 
+.reportLink {
+  text-decoration: underline;
+  display: none;
+}
+
 @media print {
   .actions {
     display: none;
+  }
+
+  .reportLink {
+    display: block;
   }
 }
