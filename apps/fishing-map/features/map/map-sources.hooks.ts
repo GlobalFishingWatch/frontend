@@ -4,6 +4,7 @@ import { GeoJSONFeature, MapDataEvent } from '@globalfishingwatch/maplibre-gl'
 import {
   ExtendedStyle,
   HeatmapLayerMeta,
+  TEMPORALGRID_LAYER_INTERACTIVE_SUFIX,
   TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
 } from '@globalfishingwatch/layer-composer'
 import {
@@ -266,7 +267,11 @@ export const useMapDataviewFeatures = (
               let features = null
               if (chunkState.loaded && !chunkState.error) {
                 if (queryMethod === 'render') {
-                  features = map.queryRenderedFeatures(undefined, { layers: [sourceLayer] })
+                  const layer =
+                    metadata?.sourceLayer || sourceId + `-${TEMPORALGRID_LAYER_INTERACTIVE_SUFIX}`
+                  features = map.queryRenderedFeatures(undefined, {
+                    layers: [layer],
+                  })
                 } else {
                   features = map.querySourceFeatures(sourceId, { sourceLayer, filter })
                 }
