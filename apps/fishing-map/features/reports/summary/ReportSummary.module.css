@@ -1,6 +1,6 @@
-.container {
+.summaryContainer {
   padding: var(--space-M);
-  border-bottom: var(--border);
+  padding-bottom: 0;
 }
 
 .summary {
@@ -17,4 +17,11 @@
   display: flex;
   gap: var(--space-S) var(--space-M);
   flex-wrap: wrap;
+  border-bottom: var(--border);
+  padding: var(--space-M);
+  padding-top: var(--space-XS);
+}
+
+:global(.sticky) .tagsContainer {
+  padding: var(--space-XS);
 }

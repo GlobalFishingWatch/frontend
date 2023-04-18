@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { sum } from 'lodash'
-import { useMemo } from 'react'
+import { Fragment, useMemo } from 'react'
+import Sticky from 'react-sticky-el'
 import { Locale } from '@globalfishingwatch/api-types'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import {
@@ -161,27 +162,31 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
   ])
 
   return (
-    <div className={styles.container}>
-      {summary ? (
-        <p className={styles.summary} dangerouslySetInnerHTML={{ __html: summary }}></p>
-      ) : (
-        <ReportSummaryPlaceholder />
-      )}
-      <div className={styles.tagsContainer}>
-        {dataviews.length > 0 ? (
-          dataviews?.map((dataview, index) => (
-            <ReportSummaryTags
-              key={dataview.id}
-              dataview={dataview}
-              index={index}
-              hiddenProperties={commonProperties}
-              availableFields={FIELDS}
-            />
-          ))
+    <Fragment>
+      <div className={styles.summaryContainer}>
+        {summary ? (
+          <p className={styles.summary} dangerouslySetInnerHTML={{ __html: summary }}></p>
         ) : (
-          <ReportSummaryTagsPlaceholder />
+          <ReportSummaryPlaceholder />
         )}
       </div>
-    </div>
+      <Sticky scrollElement=".scrollContainer" topOffset={52}>
+        <div className={styles.tagsContainer}>
+          {dataviews.length > 0 ? (
+            dataviews?.map((dataview, index) => (
+              <ReportSummaryTags
+                key={dataview.id}
+                dataview={dataview}
+                index={index}
+                hiddenProperties={commonProperties}
+                availableFields={FIELDS}
+              />
+            ))
+          ) : (
+            <ReportSummaryTagsPlaceholder />
+          )}
+        </div>
+      </Sticky>
+    </Fragment>
   )
 }
