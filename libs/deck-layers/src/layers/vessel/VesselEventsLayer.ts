@@ -1,13 +1,14 @@
-import { AccessorFunction, DefaultProps } from '@deck.gl/core/typed'
+import { AccessorFunction, DefaultProps, Position } from '@deck.gl/core/typed'
 import { ScatterplotLayer, ScatterplotLayerProps } from '@deck.gl/layers/typed'
 import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
 
 export type _VesselEventsLayerProps<DataT = any> = {
   eventType?: string
   zIndex?: number
+  color: number[]
   filterRange: Array<number>
   getShape?: AccessorFunction<DataT, number>
-  getPosition?: AccessorFunction<DataT, number>
+  getPosition?: AccessorFunction<DataT, Position> | Position
   getFilterValue?: AccessorFunction<DataT, number>
   getPickingInfo?: AccessorFunction<DataT, string>
   onEventsDataLoad?: AccessorFunction<DataT, void>
@@ -20,6 +21,7 @@ const defaultProps: DefaultProps<VesselEventsLayerProps> = {
   filled: { type: 'accessor', value: true },
   opacity: { type: 'accessor', value: 0.8 },
   stroked: { type: 'accessor', value: false },
+  color: { type: 'accessor', value: [255, 255, 255] },
   filterRange: { type: 'accessor', value: [] },
   radiusScale: { type: 'accessor', value: 30 },
   radiusMinPixels: { type: 'accessor', value: 5 },
@@ -42,12 +44,15 @@ export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends Scatterplot
 
   initializeState() {
     super.initializeState()
-    this.getAttributeManager().addInstanced({
-      instanceShapes: {
-        size: 1,
-        accessor: 'getShape',
-      },
-    })
+    const attributeManager = this.getAttributeManager()
+    if (attributeManager) {
+      attributeManager.addInstanced({
+        instanceShapes: {
+          size: 1,
+          accessor: 'getShape',
+        },
+      })
+    }
   }
 
   getShaders() {
@@ -64,6 +69,7 @@ export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends Scatterplot
         `,
         'fs:#decl': `
           uniform mat3 hueTransform;
+          uniform vec3 colorRgb;
           varying float vShape;
           const int SHAPE_SQUARE = 0;
           const int SHAPE_DIAMOND = 1;
@@ -79,10 +85,16 @@ export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends Scatterplot
               color = vec4(1.0, 1.0, 0.0, 1.0);
               if (uv.x + uv.y > 1.0) discard;
           } else {
-            color.rgb = vec3(1.0, 0.0, 0.0);
+            color.rgb = colorRgb;
           }
         `,
       },
     }
+  }
+
+  draw(params: any) {
+    const { color } = this.props
+    params.uniforms.colorRgb = color.map((x: number) => x / 255)
+    super.draw(params)
   }
 }
