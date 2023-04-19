@@ -106,10 +106,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                       }}
                       tooltip={
                         vesselInWorkspace
-                          ? t(
-                              'search.vesselAlreadyInWorkspace',
-                              'This vessel is already in your workspace'
-                            )
+                          ? t('search.removeVessel', 'Remove vessel')
                           : t('search.seeVessel', 'See vessel')
                       }
                       onClick={(e) => onVesselClick(e, vessel)}

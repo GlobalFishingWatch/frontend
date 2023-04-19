@@ -434,6 +434,7 @@
     "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or Callsign",
     "notAllowed": "The available datasets don't allow searching vessels",
     "placeholder": "Type to search vessels",
+    "removeVessel": "Remove vessel",
     "seeVessel": "See vessel",
     "seeVessels_one": "See {{count}} vessels",
     "seeVessels_other": "See vessels",
