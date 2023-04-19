@@ -366,7 +366,7 @@
       "eez": "EEZ",
       "mpa": "MPA"
     },
-    "areasOnScreen": "Areas on screen",
+    "areasOnScreen": "Areas on the map",
     "color_change": "Change color",
     "drawPolygon": "Draw a custom reference layer",
     "drawPolygonLogin": "Register and login to draw a layer (free, 2 minutes)",
