@@ -18,6 +18,7 @@
     "linkToReport": "Check the dynamic report here",
     "newTimeRange": "Click Update to see the vessels active in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "noDataByArea": "No data available for the selected area",
+    "noTimeComparisonAllowed": "Time comparison modes are not available when layers have different filters",
     "noVesselDataFiltered": "There are no vessels matching your filter",
     "onlyAISAllowed": "Only AIS datasets are allowed to download",
     "others": "Others",

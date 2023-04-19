@@ -8,7 +8,7 @@ import {
   REPORT_ACTIVITY_GRAPH_BEFORE_AFTER,
   REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
 } from 'data/config'
-import { selectReportActivityGraph } from 'features/app/app.selectors'
+import { selectActiveReportDataviews, selectReportActivityGraph } from 'features/app/app.selectors'
 import { useFitAreaInViewport } from 'features/reports/reports.hooks'
 import { ReportActivityGraph } from 'types'
 import { useSetReportTimeComparison } from 'features/reports/reports-timecomparison.hooks'
@@ -20,6 +20,8 @@ export default function ReportActivityGraphSelector() {
   const selectedReportActivityGraph = useSelector(selectReportActivityGraph)
   const { t } = useTranslation()
   const fitAreaInViewport = useFitAreaInViewport()
+  const dataviews = useSelector(selectActiveReportDataviews)
+  const areAllFiltersEqual = dataviews.every((d) => d.config.filter === dataviews[0].config.filter)
 
   const options: ChoiceOption[] = [
     {
@@ -29,10 +31,26 @@ export default function ReportActivityGraphSelector() {
     {
       id: REPORT_ACTIVITY_GRAPH_BEFORE_AFTER,
       label: t('analysis.beforeAfter', 'Before/after'),
+      tooltip:
+        !areAllFiltersEqual &&
+        t(
+          'analysis.noTimeComparisonAllowed',
+          'Time comparison modes are not available when layers have different filters'
+        ),
+      tooltipPlacement: 'bottom',
+      disabled: !areAllFiltersEqual,
     },
     {
       id: REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
       label: t('analysis.periodComparison', 'Period comparison'),
+      tooltip:
+        !areAllFiltersEqual &&
+        t(
+          'analysis.noTimeComparisonAllowed',
+          'Time comparison modes are not available when layers have different filters'
+        ),
+      tooltipPlacement: 'bottom',
+      disabled: !areAllFiltersEqual,
     },
   ]
 
