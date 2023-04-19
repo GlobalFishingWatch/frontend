@@ -309,7 +309,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
                 const trackDatasetId = getRelatedDatasetByType(
                   trackFromRelatedDataset,
                   DatasetTypes.Tracks,
-                  !guestUser
+                  { fullDatasetAllowed: !guestUser, vesselType: vesselInfo?.vesselType }
                 )?.id
                 // if (vesselInfo && !trackDatasetId) {
                 //   console.warn('No track dataset found for dataset:', trackFromRelatedDataset)

@@ -6,6 +6,16 @@ export interface Authorization {
   originalEndDate: number
 }
 
+export type VesselType =
+  | 'seismic_vessel'
+  | 'carrier'
+  | 'cargo'
+  | 'passenger'
+  | 'fishing'
+  | 'other_non_fishing'
+  | 'bunker_or_tanker'
+  | 'support'
+
 export interface Vessel {
   authorizations?: Authorization[]
   builtYear?: string
@@ -33,6 +43,7 @@ export interface Vessel {
   registeredGearType?: string
   shipname: string
   type?: string
+  vesselType?: VesselType
   years?: number[]
 }
 

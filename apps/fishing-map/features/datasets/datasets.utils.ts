@@ -16,6 +16,7 @@ import {
   INCLUDE_FILTER_ID,
   DatasetSubCategory,
   DataviewCategory,
+  VesselType,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
@@ -188,11 +189,27 @@ export const getDatasetsInDataviews = (
   return uniq([...datasetsFromDataviews, ...datasetsFromDataviewInstances])
 }
 
+export type RelatedDatasetByTypeParams = {
+  fullDatasetAllowed?: boolean
+  vesselType?: VesselType
+}
 export const getRelatedDatasetByType = (
   dataset?: Dataset,
   datasetType?: DatasetTypes,
-  fullDatasetAllowed = false
+  { fullDatasetAllowed = false, vesselType } = {} as RelatedDatasetByTypeParams
 ) => {
+  if (vesselType && datasetType === DatasetTypes.Tracks) {
+    return dataset?.relatedDatasets?.find((relatedDataset) => {
+      if (relatedDataset.type !== datasetType) {
+        return false
+      }
+      if (vesselType === 'fishing' || vesselType === 'carrier' || vesselType === 'support') {
+        return relatedDataset.id.includes(vesselType)
+      } else {
+        return relatedDataset.id.includes('presence')
+      }
+    })
+  }
   if (fullDatasetAllowed) {
     const fullDataset = dataset?.relatedDatasets?.find(
       (relatedDataset) =>
