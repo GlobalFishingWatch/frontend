@@ -80,6 +80,20 @@ function ActivityReport({ reportName }: { reportName: string }) {
   const hasAuthError = reportError && isAuthError(statusError)
 
   const ReportComponent = useMemo(() => {
+    if (timerangeTooLong) {
+      return (
+        <ReportVesselsPlaceholder>
+          <div className={cx(styles.cover, styles.center, styles.error)}>
+            <p>
+              {t(
+                'analysis.timeRangeTooLong',
+                'The selected time range is too long, please select a shorter time range'
+              )}
+            </p>
+          </div>
+        </ReportVesselsPlaceholder>
+      )
+    }
     if (reportOutdated && !reportLoading && !hasAuthError) {
       return (
         <ReportVesselsPlaceholder>
@@ -159,6 +173,7 @@ function ActivityReport({ reportName }: { reportName: string }) {
     t,
     timerange?.end,
     timerange?.start,
+    timerangeTooLong,
   ])
 
   return (
@@ -166,14 +181,6 @@ function ActivityReport({ reportName }: { reportName: string }) {
       <ReportSummary activityUnit={activityUnit} reportStatus={reportStatus} />
       <ReportActivity />
       {ReportComponent}
-      {timerangeTooLong && (
-        <p className={styles.error}>
-          {t(
-            'analysis.timeRangeTooLong',
-            'Reports are only allowed for time ranges up to one year'
-          )}
-        </p>
-      )}
     </Fragment>
   )
 }
