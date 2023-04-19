@@ -16,6 +16,12 @@
   height: auto;
 }
 
+.sticky {
+  background-color: var(--color-white);
+  box-shadow: var(--box-shadow);
+  z-index: 2;
+}
+
 :global(.printing) .logo {
   margin-left: 0;
 }

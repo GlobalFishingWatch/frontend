@@ -22,7 +22,6 @@
 }
 
 .vesselsTable > div:not(.header) {
-  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   height: 4rem;
@@ -30,6 +29,7 @@
 }
 
 .vesselsTable > div:not(.header, .icon) {
+  overflow: hidden;
   padding-block: 0.8rem;
 }
 

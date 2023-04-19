@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import ReportVesselsGraphSelector from 'features/reports/vessels/ReportVesselsGraphSelector'
-import { selectReportCategory } from 'features/app/app.selectors'
+import { selectActiveReportDataviews, selectReportCategory } from 'features/app/app.selectors'
 import { ReportCategory } from 'types'
+import ReportSummaryTags from 'features/reports/summary/ReportSummaryTags'
+import { FIELDS, getCommonProperties } from 'features/reports/reports.utils'
+import { PROPERTIES_EXCLUDED } from 'features/reports/summary/ReportSummary'
 import { ReportActivityUnit } from '../Report'
 import ReportVesselsGraph from './ReportVesselsGraph'
 import ReportVesselsFilter from './ReportVesselsFilter'
@@ -18,6 +21,13 @@ type ReportVesselTableProps = {
 export default function ReportVessels({ activityUnit, reportName }: ReportVesselTableProps) {
   const { t } = useTranslation()
   const reportCategory = useSelector(selectReportCategory)
+  const dataviews = useSelector(selectActiveReportDataviews)
+  const commonProperties = useMemo(() => {
+    return getCommonProperties(dataviews).filter(
+      (property) =>
+        !dataviews[0].config.filters?.[property] || !PROPERTIES_EXCLUDED.includes(property)
+    )
+  }, [dataviews])
   return (
     <div className={styles.container}>
       <div className={styles.titleRow}>
@@ -27,6 +37,17 @@ export default function ReportVessels({ activityUnit, reportName }: ReportVessel
             : t('common.vessel_other', 'Vessels')}
         </label>
         <ReportVesselsGraphSelector />
+      </div>
+      <div className={styles.tagsContainer}>
+        {dataviews?.map((dataview, index) => (
+          <ReportSummaryTags
+            key={dataview.id}
+            dataview={dataview}
+            index={index}
+            hiddenProperties={commonProperties}
+            availableFields={FIELDS}
+          />
+        ))}
       </div>
       <ReportVesselsGraph />
       <ReportVesselsFilter />

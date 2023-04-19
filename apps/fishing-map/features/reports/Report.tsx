@@ -75,10 +75,25 @@ function ActivityReport({ reportName }: { reportName: string }) {
   const reportLoading = reportStatus === AsyncReducerStatus.Loading
   const reportError = reportStatus === AsyncReducerStatus.Error
   const reportLoaded = reportStatus === AsyncReducerStatus.Finished
-  const reportOutdated = reportDateRangeHash !== getDateRangeHash(timerange)
+  const reportOutdated =
+    reportDateRangeHash !== '' && reportDateRangeHash !== getDateRangeHash(timerange)
   const hasAuthError = reportError && isAuthError(statusError)
 
   const ReportComponent = useMemo(() => {
+    if (timerangeTooLong) {
+      return (
+        <ReportVesselsPlaceholder>
+          <div className={cx(styles.cover, styles.error)}>
+            <p>
+              {t(
+                'analysis.timeRangeTooLong',
+                'The selected time range is too long, please select a shorter time range'
+              )}
+            </p>
+          </div>
+        </ReportVesselsPlaceholder>
+      )
+    }
     if (reportOutdated && !reportLoading && !hasAuthError) {
       return (
         <ReportVesselsPlaceholder>
@@ -116,23 +131,42 @@ function ActivityReport({ reportName }: { reportName: string }) {
       )
     }
     if (reportError) {
-      return hasAuthError ? (
-        <ReportVesselsPlaceholder>
-          <div className={styles.cover}>
-            <WorkspaceLoginError
-              title={
-                guestUser
-                  ? t('errors.reportLogin', 'Login to see the vessels active in the area')
-                  : t(
-                      'errors.privateReport',
-                      "Your account doesn't have permissions to see the vessels active in this area"
-                    )
-              }
-              emailSubject={`Requesting access for ${datasetId}-${areaId} report`}
-            />
-          </div>
-        </ReportVesselsPlaceholder>
-      ) : (
+      if (hasAuthError) {
+        return (
+          <ReportVesselsPlaceholder>
+            <div className={styles.cover}>
+              <WorkspaceLoginError
+                title={
+                  guestUser
+                    ? t('errors.reportLogin', 'Login to see the vessels active in the area')
+                    : t(
+                        'errors.privateReport',
+                        "Your account doesn't have permissions to see the vessels active in this area"
+                      )
+                }
+                emailSubject={`Requesting access for ${datasetId}-${areaId} report`}
+              />
+            </div>
+          </ReportVesselsPlaceholder>
+        )
+      }
+      if (statusError) {
+        let errorMessage = statusError.message
+        if (statusError.status === 429) {
+          errorMessage = t(
+            'analysis.errorConcurrentReport',
+            'You cannot perform more than one concurrent report'
+          )
+        }
+        return (
+          <ReportVesselsPlaceholder>
+            <div className={styles.cover}>
+              <p className={styles.error}>{errorMessage}</p>
+            </div>
+          </ReportVesselsPlaceholder>
+        )
+      }
+      return (
         <p className={styles.error}>
           <span>
             {t('errors.generic', 'Something went wrong, try again or contact:')}{' '}
@@ -155,9 +189,11 @@ function ActivityReport({ reportName }: { reportName: string }) {
     reportLoading,
     reportName,
     reportOutdated,
+    statusError,
     t,
     timerange?.end,
     timerange?.start,
+    timerangeTooLong,
   ])
 
   return (
@@ -165,14 +201,6 @@ function ActivityReport({ reportName }: { reportName: string }) {
       <ReportSummary activityUnit={activityUnit} reportStatus={reportStatus} />
       <ReportActivity />
       {ReportComponent}
-      {timerangeTooLong && (
-        <p className={styles.error}>
-          {t(
-            'analysis.timeRangeTooLong',
-            'Reports are only allowed for time ranges up to one year'
-          )}
-        </p>
-      )}
     </Fragment>
   )
 }
@@ -276,7 +304,13 @@ export default function Report() {
     <Fragment>
       <ReportTitle area={areaDetail} />
       {filteredCategoryTabs.length > 1 && (
-        <Tabs tabs={filteredCategoryTabs} activeTab={reportCategory} onTabClick={handleTabClick} />
+        <div className={styles.tabContainer}>
+          <Tabs
+            tabs={filteredCategoryTabs}
+            activeTab={reportCategory}
+            onTabClick={handleTabClick}
+          />
+        </div>
       )}
       {reportCategory === ReportCategory.Environment ? (
         <ReportEnvironment />

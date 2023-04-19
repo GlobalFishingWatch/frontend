@@ -231,7 +231,7 @@ function SidebarHeader() {
   }
 
   return (
-    <Sticky scrollElement=".scrollContainer">
+    <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
       <div className={styles.sidebarHeader}>
         <a href="https://globalfishingwatch.org" className={styles.logoLink}>
           <Logo className={styles.logo} subBrand={getSubBrand()} />

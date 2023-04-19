@@ -47,12 +47,6 @@
   width: 100%;
 }
 
-.sticky {
-  background-color: var(--color-white);
-  box-shadow: var(--box-shadow);
-  z-index: 2;
-}
-
 .recharts-cartesian-axis-tick-value {
   fill: var(--color-secondary-blue);
   font: var(--font-XS);

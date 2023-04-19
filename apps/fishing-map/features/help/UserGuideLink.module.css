@@ -33,3 +33,9 @@
   font: var(--font-XS);
   cursor: pointer;
 }
+
+@media print {
+  .link {
+    display: none;
+  }
+}

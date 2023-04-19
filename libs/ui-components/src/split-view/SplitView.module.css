@@ -11,7 +11,6 @@
   top: 0;
   left: 0;
   height: 100%;
-  transition: var(--transition);
   transform: translateX(-100%);
   background: var(--gradient);
 }
