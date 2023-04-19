@@ -169,11 +169,13 @@ export const useClickedEventConnect = () => {
           isDefaultWorkspace
             ? {}
             : {
-                category:
-                  workspace.properties?.category && workspace.properties.category !== 'null'
-                    ? workspace.properties.category
-                    : WorkspaceCategories.FishingActivity,
-                workspaceId: workspace.properties.id,
+                payload: {
+                  category:
+                    workspace.properties?.category && workspace.properties.category !== 'null'
+                      ? workspace.properties.category
+                      : WorkspaceCategories.FishingActivity,
+                  workspaceId: workspace.properties.id,
+                },
               },
           true
         )

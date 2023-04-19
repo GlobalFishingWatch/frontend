@@ -84,8 +84,10 @@ function UserWorkspaces() {
         dispatchLocation(
           WORKSPACE,
           {
-            category: workspace.category || WorkspaceCategories.FishingActivity,
-            workspaceId: workspace.id,
+            payload: {
+              category: workspace.category || WorkspaceCategories.FishingActivity,
+              workspaceId: workspace.id,
+            },
           },
           true
         )
