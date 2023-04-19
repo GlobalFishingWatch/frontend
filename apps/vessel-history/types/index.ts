@@ -129,7 +129,7 @@ export enum IuuStatus {
   currentlyListed = 2,
 }
 
-export interface VesselWithHistory extends Vessel {
+export interface VesselWithHistory extends Omit<Vessel, 'vesselType'> {
   history: VesselFieldsHistory
   iuuStatus?: number
   iuuListing?: Iuu
