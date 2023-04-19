@@ -14,7 +14,13 @@ import { ReportActivityGraph } from 'types'
 import { useSetReportTimeComparison } from 'features/reports/reports-timecomparison.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 
-export default function ReportActivityGraphSelector() {
+type ReportActivityGraphSelectorProps = {
+  loading: boolean
+}
+
+export default function ReportActivityGraphSelector({
+  loading = false,
+}: ReportActivityGraphSelectorProps) {
   const { dispatchQueryParams } = useLocationConnect()
   const { setReportTimecomparison, resetReportTimecomparison } = useSetReportTimeComparison()
   const selectedReportActivityGraph = useSelector(selectReportActivityGraph)
@@ -27,6 +33,7 @@ export default function ReportActivityGraphSelector() {
     {
       id: REPORT_ACTIVITY_GRAPH_EVOLUTION,
       label: t('analysis.evolution', 'Evolution'),
+      disabled: loading,
     },
     {
       id: REPORT_ACTIVITY_GRAPH_BEFORE_AFTER,
@@ -38,7 +45,7 @@ export default function ReportActivityGraphSelector() {
           'Time comparison modes are not available when layers have different filters'
         ),
       tooltipPlacement: 'bottom',
-      disabled: !areAllFiltersEqual,
+      disabled: loading || !areAllFiltersEqual,
     },
     {
       id: REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
@@ -50,7 +57,7 @@ export default function ReportActivityGraphSelector() {
           'Time comparison modes are not available when layers have different filters'
         ),
       tooltipPlacement: 'bottom',
-      disabled: !areAllFiltersEqual,
+      disabled: loading || !areAllFiltersEqual,
     },
   ]
 

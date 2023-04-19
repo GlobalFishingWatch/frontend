@@ -59,7 +59,7 @@ export default function ReportActivity() {
       {showSelectors && (
         <div className={styles.titleRow}>
           <label className={styles.blockTitle}>{t('common.activity', 'Activity')}</label>
-          <ReportActivityGraphSelector />
+          <ReportActivityGraphSelector loading={showPlaceholder} />
         </div>
       )}
       {showPlaceholder ? (
