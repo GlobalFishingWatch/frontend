@@ -1,7 +1,7 @@
 {
   "analysis": {
     "activityChange": "Activity change",
-    "beforeAfter": "before/after",
+    "beforeAfter": "Before/After",
     "beforeAfterDate": "date",
     "beforeAfterRange": "between the {{duration}} before and after {{compareStart}}",
     "change": "Change",
@@ -27,7 +27,7 @@
     "periodComparisonRange": "in the {{duration}} following {{compareStart}} compared to baseline in the {{duration}} following {{start}}",
     "print": "Print / Save as PDF",
     "resultsPerPage": "Show {{results}} per page",
-    "searchHelp": "Use spaces to search by multiple fileds and '-' to find all vessels that don't match a query.",
+    "searchHelp": "Use commas to search by multiple fields and '-' to find all vessels that don't match a query.",
     "searchHelpExamples": "e.g. \"flag:china, gear:trawlers\", \"-spain\", \"cargo|passenger\"...",
     "searchPlaceholder": "Filter vessels by name, mmsi, flag states or gear type",
     "save": "Save this report",
