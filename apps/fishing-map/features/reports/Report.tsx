@@ -75,7 +75,8 @@ function ActivityReport({ reportName }: { reportName: string }) {
   const reportLoading = reportStatus === AsyncReducerStatus.Loading
   const reportError = reportStatus === AsyncReducerStatus.Error
   const reportLoaded = reportStatus === AsyncReducerStatus.Finished
-  const reportOutdated = reportDateRangeHash !== getDateRangeHash(timerange)
+  const reportOutdated =
+    reportDateRangeHash !== '' && reportDateRangeHash !== getDateRangeHash(timerange)
   const hasAuthError = reportError && isAuthError(statusError)
 
   const ReportComponent = useMemo(() => {
