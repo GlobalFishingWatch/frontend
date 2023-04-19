@@ -11,6 +11,7 @@
     "error": "There was a problem loading the data, please try refreshing the page",
     "errorMessage": "Something went wrong",
     "errorPeriodComparisonDateRange": "Date range error. Comparison start must be after baseline start.",
+    "errorConcurrentReport": "You cannot perform more than one concurrent report",
     "evolution": "evolution",
     "groupByFlag": "by flag",
     "groupByGeartype": "by gear type",

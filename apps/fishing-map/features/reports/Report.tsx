@@ -83,7 +83,7 @@ function ActivityReport({ reportName }: { reportName: string }) {
     if (timerangeTooLong) {
       return (
         <ReportVesselsPlaceholder>
-          <div className={cx(styles.cover, styles.center, styles.error)}>
+          <div className={cx(styles.cover, styles.error)}>
             <p>
               {t(
                 'analysis.timeRangeTooLong',
@@ -131,23 +131,42 @@ function ActivityReport({ reportName }: { reportName: string }) {
       )
     }
     if (reportError) {
-      return hasAuthError ? (
-        <ReportVesselsPlaceholder>
-          <div className={styles.cover}>
-            <WorkspaceLoginError
-              title={
-                guestUser
-                  ? t('errors.reportLogin', 'Login to see the vessels active in the area')
-                  : t(
-                      'errors.privateReport',
-                      "Your account doesn't have permissions to see the vessels active in this area"
-                    )
-              }
-              emailSubject={`Requesting access for ${datasetId}-${areaId} report`}
-            />
-          </div>
-        </ReportVesselsPlaceholder>
-      ) : (
+      if (hasAuthError) {
+        return (
+          <ReportVesselsPlaceholder>
+            <div className={styles.cover}>
+              <WorkspaceLoginError
+                title={
+                  guestUser
+                    ? t('errors.reportLogin', 'Login to see the vessels active in the area')
+                    : t(
+                        'errors.privateReport',
+                        "Your account doesn't have permissions to see the vessels active in this area"
+                      )
+                }
+                emailSubject={`Requesting access for ${datasetId}-${areaId} report`}
+              />
+            </div>
+          </ReportVesselsPlaceholder>
+        )
+      }
+      if (statusError) {
+        let errorMessage = statusError.message
+        if (statusError.status === 429) {
+          errorMessage = t(
+            'analysis.errorConcurrentReport',
+            'You cannot perform more than one concurrent report'
+          )
+        }
+        return (
+          <ReportVesselsPlaceholder>
+            <div className={styles.cover}>
+              <p className={styles.error}>{errorMessage}</p>
+            </div>
+          </ReportVesselsPlaceholder>
+        )
+      }
+      return (
         <p className={styles.error}>
           <span>
             {t('errors.generic', 'Something went wrong, try again or contact:')}{' '}
@@ -170,6 +189,7 @@ function ActivityReport({ reportName }: { reportName: string }) {
     reportLoading,
     reportName,
     reportOutdated,
+    statusError,
     t,
     timerange?.end,
     timerange?.start,
