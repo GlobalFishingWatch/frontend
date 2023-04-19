@@ -570,6 +570,7 @@
     "source": "Source",
     "source_short": "Source",
     "ssvid": "Ssvid",
+    "type": "Type",
     "target_species": "Target species",
     "targetSpecies": "Target species",
     "trackLogin": "One of your selected sources requires you to <1>login</1> to see vessel tracks and events",

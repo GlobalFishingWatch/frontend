@@ -18,7 +18,7 @@ import {
   MULTILAYER_SEPARATOR,
   isMergedAnimatedGenerator,
 } from '@globalfishingwatch/dataviews-client'
-import { DataviewCategory, Locale } from '@globalfishingwatch/api-types'
+import { DatasetSubCategory, DataviewCategory, Locale } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
 import { selectLocationType } from 'routes/routes.selectors'
@@ -26,7 +26,10 @@ import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import useMapInstance from 'features/map/map-context.hooks'
-import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
+import {
+  getActiveDatasetsInActivityDataviews,
+  getDatasetTitleByDataview,
+} from 'features/datasets/datasets.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedEvents, setHighlightedEvents } from 'features/timebar/timebar.slice'
 import { setHintDismissed } from 'features/help/hints.slice'
@@ -265,20 +268,25 @@ export const useClickedEventConnect = () => {
 
 // TODO this could extend ExtendedFeature
 export type TooltipEventFeature = {
-  id?: string
-  title?: string
-  visible?: boolean
-  type?: GeneratorType
+  category: DataviewCategory
   color?: string
-  unit?: string
+  datasetId?: string
+  event?: ExtendedFeatureEvent
+  generatorContextLayer?: ContextLayerType | null
+  geometry?: Geometry
+  id?: string
+  layerId: string
+  promoteId?: string
+  properties: Record<string, string>
   source: string
   sourceLayer: string
-  layerId: string
-  datasetId?: string
-  promoteId?: string
-  generatorContextLayer?: ContextLayerType | null
+  subcategory?: DatasetSubCategory
+  temporalgrid?: TemporalGridFeature
+  title?: string
+  type?: GeneratorType
+  unit?: string
   value: string // TODO Why not a number?
-  properties: Record<string, string>
+  visible?: boolean
   vesselsInfo?: {
     overflow: boolean
     overflowNumber: number
@@ -287,10 +295,6 @@ export type TooltipEventFeature = {
     numVessels: number
     vessels: ExtendedFeatureVessel[]
   }
-  event?: ExtendedFeatureEvent
-  temporalgrid?: TemporalGridFeature
-  geometry?: Geometry
-  category: DataviewCategory
 }
 
 export type TooltipEvent = {
@@ -395,12 +399,16 @@ export const parseMapTooltipFeatures = (
     }
 
     const title = getDatasetTitleByDataview(dataview)
+
+    const datasets = getActiveDatasetsInActivityDataviews([dataview])
+    const subcategory = dataview?.datasets?.find(({ id }) => datasets.includes(id))?.subcategory
     const tooltipEventFeature: TooltipEventFeature = {
       title,
       type: dataview.config?.type,
       color: dataview.config?.color || 'black',
       visible: dataview.config?.visible,
       category: dataview.category || DataviewCategory.Context,
+      subcategory,
       ...feature,
       properties: { ...feature.properties },
     }
