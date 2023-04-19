@@ -209,8 +209,11 @@ export const selectReportActivityGraph = createSelector(
 )
 
 export const selectReportVesselGraph = createSelector(
-  [selectWorkspaceStateProperty('reportVesselGraph')],
-  (reportVesselGraph): ReportVesselGraph => {
+  [selectWorkspaceStateProperty('reportVesselGraph'), selectReportCategory],
+  (reportVesselGraph, reportCategory): ReportVesselGraph => {
+    if (reportCategory === ReportCategory.Fishing && reportVesselGraph === 'vesselType') {
+      return 'geartype'
+    }
     return reportVesselGraph
   }
 )
