@@ -10,6 +10,7 @@
     "downloadVesselsList": "crwdns30503:0crwdne30503:0",
     "error": "crwdns18014:0crwdne18014:0",
     "errorMessage": "crwdns3624:0crwdne3624:0",
+    "errorDuplicatedName": "crwdns30705:0crwdne30705:0",
     "errorPeriodComparisonDateRange": "crwdns17147:0crwdne17147:0",
     "errorConcurrentReport": "crwdns30695:0crwdne30695:0",
     "evolution": "crwdns11313:0crwdne11313:0",
