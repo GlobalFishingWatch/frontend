@@ -10,6 +10,7 @@
     "downloadVesselsList": "Download csv",
     "error": "Il y a eu un problème lors du chargement des données, essayez de rafraîchir la page",
     "errorMessage": "Quelque chose s'est mal passé",
+    "errorDuplicatedName": "There is already a report with the same name",
     "errorPeriodComparisonDateRange": "Erreur de plage de date. Le début de la comparaison doit être après le début de la référence.",
     "errorConcurrentReport": "You cannot perform more than one concurrent report",
     "evolution": "Évolution",
