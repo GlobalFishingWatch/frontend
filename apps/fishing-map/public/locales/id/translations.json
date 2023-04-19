@@ -10,6 +10,7 @@
     "downloadVesselsList": "Download csv",
     "error": "Terjadi masalah saat memuat data, silakan coba segarkan halaman",
     "errorMessage": "Ada yang salah",
+    "errorDuplicatedName": "There is already a report with the same name",
     "errorPeriodComparisonDateRange": "Kesalahan rentang tanggal. Awal perbandingan harus setelah acuan dasar awal.",
     "errorConcurrentReport": "You cannot perform more than one concurrent report",
     "evolution": "evolusi",
