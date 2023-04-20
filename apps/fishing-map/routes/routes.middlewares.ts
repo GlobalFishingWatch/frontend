@@ -4,7 +4,7 @@ import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 import { REPLACE_URL_PARAMS } from 'data/config'
 import { setLastWorkspaceVisited } from 'features/workspace/workspace.slice'
 import { QueryParams } from 'types'
-import { routesMap, ROUTE_TYPES, WORKSPACE_ROUTES } from './routes'
+import { routesMap, ROUTE_TYPES, WORKSPACE_ROUTES, REPORT_ROUTES } from './routes'
 import { UpdateQueryParamsAction } from './routes.actions'
 
 export const routerQueryMiddleware: Middleware =
@@ -62,7 +62,12 @@ export const routerWorkspaceMiddleware: Middleware =
         (key) => !WORKSPACE_ROUTES.includes(key)
       )
       const comesFromWorkspacesRoute = WORKSPACE_ROUTES.includes(prev.type)
-      if (routesToSaveWorkspace.includes(action.type) && comesFromWorkspacesRoute && !lastVisited) {
+      const comesFromReportRoute = REPORT_ROUTES.includes(prev.type)
+      if (
+        routesToSaveWorkspace.includes(action.type) &&
+        (comesFromWorkspacesRoute || comesFromReportRoute) &&
+        !lastVisited
+      ) {
         dispatch(
           setLastWorkspaceVisited({
             type: prev.type as ROUTE_TYPES,
