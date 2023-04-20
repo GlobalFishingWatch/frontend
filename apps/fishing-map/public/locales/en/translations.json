@@ -10,6 +10,7 @@
     "downloadVesselsList": "Download csv",
     "error": "There was a problem loading the data, please try refreshing the page",
     "errorMessage": "Something went wrong",
+    "errorDuplicatedName": "There is already a report with the same name",
     "errorPeriodComparisonDateRange": "Date range error. Comparison start must be after baseline start.",
     "errorConcurrentReport": "You cannot perform more than one concurrent report",
     "evolution": "evolution",
