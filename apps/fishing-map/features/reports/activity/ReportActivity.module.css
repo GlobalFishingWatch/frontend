@@ -29,6 +29,14 @@
   color: var(--color-secondary-blue);
 }
 
+.disclaimer + .disclaimer {
+  margin-top: var(--space-XS);
+}
+
+.disclaimerText a {
+  text-decoration: underline;
+}
+
 @media print {
   .container {
     border-bottom: none;

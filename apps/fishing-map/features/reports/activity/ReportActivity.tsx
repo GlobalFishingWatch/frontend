@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { Fragment, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import ReportActivityGraphSelector from 'features/reports/activity/ReportActivityGraphSelector'
@@ -9,12 +9,13 @@ import {
   useFilteredTimeSeries,
 } from 'features/reports/reports-timeseries.hooks'
 import { selectTimeComparisonValues } from 'features/reports/reports.selectors'
-import { ReportActivityGraph } from 'types'
+import { Locale, ReportActivityGraph } from 'types'
 import { selectReportActivityGraph } from 'features/app/app.selectors'
 import ReportActivityPlaceholder from 'features/reports/placeholders/ReportActivityPlaceholder'
 import ReportActivityPeriodComparison from 'features/reports/activity/ReportActivityPeriodComparison'
 import ReportActivityPeriodComparisonGraph from 'features/reports/activity/ReportActivityPeriodComparisonGraph'
 import UserGuideLink from 'features/help/UserGuideLink'
+import SOURCE_SWITCH_CONTENT from 'features/welcome/SourceSwitch.content'
 import ReportActivityEvolution from './ReportActivityEvolution'
 import ReportActivityBeforeAfter from './ReportActivityBeforeAfter'
 import ReportActivityBeforeAfterGraph from './ReportActivityBeforeAfterGraph'
@@ -39,10 +40,11 @@ const GRAPH_BY_TYPE: Record<ReportActivityGraph, React.FC<ReportActivityProps> |
 
 const emptyGraphData = {} as ReportGraphProps
 export default function ReportActivity() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { start, end } = useTimerangeConnect()
   const reportActivityGraph = useSelector(selectReportActivityGraph)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
+  const { disclaimer } = SOURCE_SWITCH_CONTENT[(i18n.language as Locale) || Locale.en]
 
   const SelectorsComponent = useMemo(
     () => SELECTORS_BY_TYPE[reportActivityGraph],
@@ -73,10 +75,17 @@ export default function ReportActivity() {
       )}
       {showSelectors && SelectorsComponent && <SelectorsComponent />}
       {!showPlaceholder && (
-        <div className={styles.disclaimer}>
-          <UserGuideLink section="analysis" />
-          <p>{t('analysis.disclaimer', 'The data shown above should be taken as an estimate.')}</p>
-        </div>
+        <Fragment>
+          <div className={styles.disclaimer}>
+            <UserGuideLink section="analysis" />
+            <p>
+              {t('analysis.disclaimer', 'The data shown above should be taken as an estimate.')}
+            </p>
+          </div>
+          <div className={styles.disclaimer}>
+            <p className={styles.disclaimerText} dangerouslySetInnerHTML={{ __html: disclaimer }} />
+          </div>
+        </Fragment>
       )}
     </div>
   )

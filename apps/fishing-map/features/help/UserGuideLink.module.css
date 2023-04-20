@@ -14,6 +14,7 @@
   padding-right: 1.2rem;
   transition: all 100ms linear;
   text-transform: initial;
+  white-space: nowrap;
 }
 
 .link:hover {
