@@ -19,6 +19,8 @@ import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
 import { useHighlightArea } from 'features/map/popups/ContextLayers.hooks'
+import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   fetchReportVesselsThunk,
   getDateRangeHash,
@@ -133,11 +135,18 @@ export function useFetchReportVessel() {
   const status = useSelector(selectReportVesselsStatus)
   const error = useSelector(selectReportVesselsError)
   const data = useSelector(selectReportVesselsData)
+  const workspaceStatus = useSelector(selectWorkspaceStatus)
 
   useEffect(() => {
     const reportDataviews = getReportDataviews(dataviews)
     const isDifferentDateRange = reportDateRangeHash !== getDateRangeHash(timerange)
-    if (areaId && reportDataviews?.length && timerangeSupported && isDifferentDateRange) {
+    if (
+      areaId &&
+      reportDataviews?.length &&
+      timerangeSupported &&
+      isDifferentDateRange &&
+      workspaceStatus === AsyncReducerStatus.Finished
+    ) {
       dispatch(
         fetchReportVesselsThunk({
           datasets: reportDataviews.map(({ datasets }) => datasets.join(',')),
@@ -154,7 +163,15 @@ export function useFetchReportVessel() {
     }
     // Avoid re-fetching when timerange changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, areaId, datasetId, dataviews, timerangeSupported, reportDateRangeHash])
+  }, [
+    dispatch,
+    areaId,
+    datasetId,
+    dataviews,
+    timerangeSupported,
+    reportDateRangeHash,
+    workspaceStatus,
+  ])
 
   return useMemo(() => ({ status, data, error }), [status, data, error])
 }

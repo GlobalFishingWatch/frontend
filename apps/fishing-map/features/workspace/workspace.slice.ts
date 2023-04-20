@@ -319,6 +319,12 @@ const workspaceSlice = createSlice({
   name: 'workspace',
   initialState,
   reducers: {
+    resetWorkspaceSlice: (state) => {
+      state.status = AsyncReducerStatus.Idle
+      state.customStatus = AsyncReducerStatus.Idle
+      state.data = null
+      state.error = {}
+    },
     cleanCurrentWorkspaceData: (state) => {
       state.data = null
     },
@@ -386,7 +392,11 @@ const workspaceSlice = createSlice({
   },
 })
 
-export const { setLastWorkspaceVisited, cleanCurrentWorkspaceData, removeGFWStaffOnlyDataviews } =
-  workspaceSlice.actions
+export const {
+  resetWorkspaceSlice,
+  setLastWorkspaceVisited,
+  cleanCurrentWorkspaceData,
+  removeGFWStaffOnlyDataviews,
+} = workspaceSlice.actions
 
 export default workspaceSlice.reducer

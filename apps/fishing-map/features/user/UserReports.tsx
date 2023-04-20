@@ -15,6 +15,8 @@ import {
 } from 'features/reports/reports.slice'
 import { REPORT } from 'routes/routes'
 import { selectUserReports } from 'features/user/user.selectors'
+import { resetReportData } from 'features/reports/report.slice'
+import { resetWorkspaceSlice } from 'features/workspace/workspace.slice'
 import styles from './User.module.css'
 
 function UserReports() {
@@ -27,6 +29,14 @@ function UserReports() {
   useEffect(() => {
     dispatch(fetchReportsThunk([]))
   }, [dispatch])
+
+  const onReportClick = useCallback(
+    (report: Report) => {
+      dispatch(resetWorkspaceSlice())
+      dispatch(resetReportData())
+    },
+    [dispatch]
+  )
 
   const onDeleteClick = useCallback(
     (report: Report) => {
@@ -66,6 +76,7 @@ function UserReports() {
                       payload: { reportId: report.id },
                       query: {},
                     }}
+                    onClick={() => onReportClick(report)}
                   >
                     <span className={styles.workspaceTitle}>{report.name}</span>
                     <IconButton icon="arrow-right" />

@@ -115,9 +115,6 @@ function ActivityReport({ reportName }: { reportName: string }) {
         </ReportVesselsPlaceholder>
       )
     }
-    if (reportLoading) {
-      return <ReportVesselsPlaceholder />
-    }
     if (reportLoaded) {
       return hasVessels ? (
         <Fragment>
@@ -175,7 +172,8 @@ function ActivityReport({ reportName }: { reportName: string }) {
         </p>
       )
     }
-    return null
+
+    return <ReportVesselsPlaceholder />
   }, [
     activityUnit,
     areaId,
