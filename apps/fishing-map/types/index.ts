@@ -8,6 +8,7 @@ import {
   REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
   REPORT_VESSELS_GRAPH_VESSELTYPE,
 } from 'data/config'
+import { SearchType } from 'features/search/search.slice'
 export { Locale } from '@globalfishingwatch/api-types'
 
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
@@ -26,6 +27,7 @@ export type ReportStateProperty =
 
 export type WorkspaceStateProperty =
   | 'query'
+  | 'searchOption'
   | 'report'
   | 'readOnly'
   | 'daysFromLatest'
@@ -78,6 +80,7 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   bivariateDataviews?: BivariateDataviews
   daysFromLatest?: number // use latest day as endAt minus the number of days set here
   query?: string
+  searchOption?: SearchType
   readOnly?: boolean
   reportActivityGraph?: ReportActivityGraph
   reportAreaBounds?: Bbox

@@ -12,7 +12,7 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
-import { selectSearchQuery } from 'features/app/app.selectors'
+import { selectSearchOption, selectSearchQuery } from 'features/app/app.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { isGFWUser } from 'features/user/user.slice'
@@ -36,7 +36,6 @@ import {
   resetFilters,
   setSuggestionClicked,
   SearchFilter,
-  selectSearchOption,
   selectSearchPagination,
   selectSearchResults,
 } from './search.slice'

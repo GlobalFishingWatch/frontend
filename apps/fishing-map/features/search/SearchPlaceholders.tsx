@@ -6,7 +6,7 @@ import vesselImage from 'assets/images/vessel@2x.png'
 import vesselNoResultsImage from 'assets/images/vessel-side@2x.png'
 import { isGuestUser } from 'features/user/user.slice'
 import { selectSearchDatasetsNotGuestAllowedLabels } from 'features/search/search.selectors'
-import { selectSearchOption } from 'features/search/search.slice'
+import { selectQueryParam } from 'routes/routes.selectors'
 import { useSmallScreen } from '../../../../libs/react-hooks/src/use-small-screen'
 import styles from './SearchPlaceholders.module.css'
 
@@ -42,7 +42,7 @@ export function SearchEmptyState({ className = '' }: SearchPlaceholderProps) {
   const { t } = useTranslation()
   const guestUser = useSelector(isGuestUser)
   const noGuestDatasets = useSelector(selectSearchDatasetsNotGuestAllowedLabels)
-  const activeSearchOption = useSelector(selectSearchOption)
+  const activeSearchOption = useSelector(selectQueryParam('searchOption')) || 'basic'
   const isSmallScreen = useSmallScreen()
   return (
     <SearchPlaceholder className={className}>
@@ -77,7 +77,7 @@ export function SearchEmptyState({ className = '' }: SearchPlaceholderProps) {
         }}
       />
       {guestUser && noGuestDatasets?.length > 0 && (
-        <p>
+        <p className={styles.description}>
           <Tooltip content={noGuestDatasets.join(', ')}>
             <u>
               {noGuestDatasets.length} {t('common.sources', 'Sources')}

@@ -26,7 +26,11 @@ import {
   selectLocationCategory,
 } from 'routes/routes.selectors'
 import { WorkspaceCategories } from 'data/workspaces'
-import { selectWorkspaceWithCurrentState, selectReadOnly } from 'features/app/app.selectors'
+import {
+  selectWorkspaceWithCurrentState,
+  selectReadOnly,
+  selectSearchOption,
+} from 'features/app/app.selectors'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { resetSidebarScroll } from 'features/sidebar/Sidebar'
 import useMapInstance from 'features/map/map-context.hooks'
@@ -37,7 +41,7 @@ import { selectReportsStatus } from 'features/reports/reports.slice'
 import { selectCurrentReport } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { REPORT } from 'routes/routes'
-import { SearchType, selectSearchOption, setSearchOption } from 'features/search/search.slice'
+import { SearchType } from 'features/search/search.slice'
 import { useClipboardNotification } from './sidebar.hooks'
 import styles from './SidebarHeader.module.css'
 
@@ -224,6 +228,7 @@ function SidebarHeader() {
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
   const activeSearchOption = useSelector(selectSearchOption)
   const { cleanFeatureState } = useFeatureState(useMapInstance())
+  const { dispatchQueryParams } = useLocationConnect()
   const showBackToWorkspaceButton = !isWorkspaceLocation
 
   const getSubBrand = useCallback((): SubBrands | undefined => {
@@ -238,7 +243,7 @@ function SidebarHeader() {
     dispatch(resetReportData())
   }
 
-  const searchOptions = useMemo(() => {
+  const searchOptions: ChoiceOption<SearchType>[] = useMemo(() => {
     return [
       {
         id: 'basic' as SearchType,
@@ -248,16 +253,16 @@ function SidebarHeader() {
         id: 'advanced' as SearchType,
         label: t('search.advanced', 'Advanced'),
       },
-    ] as ChoiceOption<SearchType>[]
+    ]
   }, [t])
 
-  const onSearchOptionChange = (option: ChoiceOption, e: React.MouseEvent<Element, MouseEvent>) => {
+  const onSearchOptionChange = (option: ChoiceOption<SearchType>) => {
     trackEvent({
       category: TrackCategory.SearchVessel,
       action: 'Toggle search type to filter results',
       label: option.id,
     })
-    dispatch(setSearchOption(option.id as SearchType))
+    dispatchQueryParams({ searchOption: option.id })
   }
 
   return (

@@ -205,9 +205,6 @@ const searchSlice = createSlice({
       state.filters = initialState.filters
       state.filtersOpen = initialState.filtersOpen
     },
-    setSearchOption: (state, action: PayloadAction<SearchType>) => {
-      state.option = action.payload
-    },
     setSuggestionClicked: (state, action: PayloadAction<boolean>) => {
       state.suggestionClicked = action.payload
     },
@@ -250,12 +247,10 @@ export const {
   setFilters,
   setFiltersOpen,
   resetFilters,
-  setSearchOption,
   setSuggestionClicked,
   cleanVesselSearchResults,
 } = searchSlice.actions
 
-export const selectSearchOption = (state: SearchSliceState) => state.search.option
 export const selectSearchResults = (state: SearchSliceState) => state.search.data
 export const selectSearchStatus = (state: SearchSliceState) => state.search.status
 export const selectSearchStatusCode = (state: SearchSliceState) => state.search.statusCode
