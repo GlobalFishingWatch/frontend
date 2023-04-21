@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { RootState } from 'reducers'
-import { DataviewCategory, Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
+import { DataviewCategory, Dataset, DatasetTypes, Dataview } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance, getGeneratorConfig } from '@globalfishingwatch/dataviews-client'
 import {
   GeneratorType,
@@ -305,7 +305,7 @@ export const selectAllDataviewsInWorkspace = createSelector(
           return dataset || []
         }
       )
-      return { ...dataview, datasets: dataviewDatasets }
+      return { ...dataview, datasets: dataviewDatasets } as Dataview
     })
   }
 )
