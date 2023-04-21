@@ -52,10 +52,7 @@ export const USER_SUFIX = 'user'
 export const PRIVATE_SUFIX = 'private'
 
 // used when no url data and no workspace data
-export const LAST_DATA_UPDATE = DateTime.fromObject(
-  { hour: 0, minute: 0, second: 0 },
-  { zone: 'utc' }
-)
+const LAST_DATA_UPDATE = DateTime.fromObject({ hour: 0, minute: 0, second: 0 }, { zone: 'utc' })
   .minus({ days: 3 })
   .toISO()
 

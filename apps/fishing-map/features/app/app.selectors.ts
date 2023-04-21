@@ -67,6 +67,20 @@ export const selectTimeRange = createSelector(
   }
 )
 
+export function isWorkspaceWithLessDelayThanDefault(endAt: string): boolean {
+  if (!endAt) return false
+  return endAt > DEFAULT_TIME_RANGE.end
+}
+
+export const selectLatestAvailableDate = createSelector(
+  [selectWorkspaceTimeRange],
+  (workspaceTimerange) => {
+    return isWorkspaceWithLessDelayThanDefault(workspaceTimerange.end)
+      ? workspaceTimerange.end
+      : DEFAULT_TIME_RANGE.end
+  }
+)
+
 export const selectReportTimeComparison = createSelector(
   [selectWorkspaceStateProperty('reportTimeComparison')],
   (reportTimeComparison): ReportActivityTimeComparison => {

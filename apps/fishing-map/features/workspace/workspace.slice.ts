@@ -27,7 +27,10 @@ import {
 } from 'routes/routes.selectors'
 import { HOME, REPORT, ROUTE_TYPES, WORKSPACE } from 'routes/routes'
 import { cleanQueryLocation, updateLocation, updateQueryParam } from 'routes/routes.actions'
-import { selectDaysFromLatest } from 'features/app/app.selectors'
+import {
+  isWorkspaceWithLessDelayThanDefault,
+  selectDaysFromLatest,
+} from 'features/app/app.selectors'
 import {
   DEFAULT_DATAVIEW_SLUGS,
   ONLY_GFW_STAFF_DATAVIEW_SLUGS,
@@ -130,9 +133,10 @@ export const fetchWorkspaceThunk = createAsyncThunk(
 
       const daysFromLatest =
         selectDaysFromLatest(state) || workspace.state?.daysFromLatest || undefined
+      const isWorkspaceWithLessDelay = isWorkspaceWithLessDelayThanDefault(workspace.endAt)
       const endAt =
         daysFromLatest !== undefined
-          ? getUTCDateTime(DEFAULT_TIME_RANGE.end)
+          ? getUTCDateTime(isWorkspaceWithLessDelay ? workspace.endAt : DEFAULT_TIME_RANGE.end)
           : getUTCDateTime(workspace.endAt || DEFAULT_TIME_RANGE.end)
       const startAt =
         daysFromLatest !== undefined
