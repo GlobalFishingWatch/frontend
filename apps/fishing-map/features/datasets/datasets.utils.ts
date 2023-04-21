@@ -247,6 +247,20 @@ export const getActiveDatasetsInActivityDataviews = (
   })
 }
 
+export const getLatestEndDateFromDatasets = (
+  datasets: Dataset[],
+  datasetCategory?: DatasetCategory
+): string => {
+  if (!datasets.length) return ''
+  const latestDate = datasets.reduce((acc, dataset) => {
+    if (datasetCategory && dataset.category !== datasetCategory) {
+      return acc
+    }
+    return dataset.endDate > acc ? dataset.endDate : acc
+  }, datasets?.[0].endDate || '')
+  return latestDate
+}
+
 export const checkDatasetReportPermission = (datasetId: string, permissions: UserPermission[]) => {
   const permission = { type: 'dataset', value: datasetId, action: 'report' }
   return checkExistPermissionInList(permissions, permission)
@@ -305,7 +319,9 @@ export const getDatasetsReportNotSupported = (
   return dataviewDatasets.filter((dataset) => !datasetsDownloadSupported.includes(dataset))
 }
 
-export const getActiveActivityDatasetsInDataviews = (dataviews: UrlDataviewInstance[]) => {
+export const getActiveActivityDatasetsInDataviews = (
+  dataviews: (Dataview | UrlDataviewInstance)[]
+) => {
   return dataviews.map((dataview) => {
     const activeDatasets = (dataview?.config?.datasets || []) as string[]
     return dataview.datasets.filter((dataset) => {
