@@ -23,7 +23,7 @@ import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { formatSliderNumber, IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { capitalize, sortFields } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
-import { PUBLIC_SUFIX, FULL_SUFIX } from 'data/config'
+import { PUBLIC_SUFIX, FULL_SUFIX, DEFAULT_TIME_RANGE } from 'data/config'
 import { getDatasetNameTranslated, removeDatasetVersion } from 'features/i18n/utils'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { FileType } from 'features/common/FileDropzone'
@@ -251,7 +251,7 @@ export const getLatestEndDateFromDatasets = (
   datasets: Dataset[],
   datasetCategory?: DatasetCategory
 ): string => {
-  if (!datasets.length) return ''
+  if (!datasets.length) return DEFAULT_TIME_RANGE.end
   const latestDate = datasets.reduce((acc, dataset) => {
     if (datasetCategory && dataset.category !== datasetCategory) {
       return acc
