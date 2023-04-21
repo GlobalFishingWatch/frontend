@@ -11,6 +11,13 @@
         "parallel": true
       }
     },
+    "test:watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["nx serve i18n-labels", "nx e2e fishing-map-e2e --watch"],
+        "parallel": true
+      }
+    },
     "test-dev": {
       "executor": "@nrwl/cypress:cypress",
       "options": {
