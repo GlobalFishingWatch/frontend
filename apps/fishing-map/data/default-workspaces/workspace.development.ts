@@ -161,29 +161,6 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: PROTECTED_SEAS_DATAVIEW_SLUG,
     },
-    // NOT move to production, layer only available for testing porpuses
-    {
-      id: 'context-layer-protected-seas-all',
-      config: {
-        visible: false,
-        color: '#FF64CE',
-        layers: [
-          {
-            id: 'protected-seas',
-            dataset: 'public-protectedseas-all',
-          },
-        ],
-      },
-      datasetsConfig: [
-        {
-          query: [],
-          params: [],
-          endpoint: 'context-tiles',
-          datasetId: 'public-protectedseas-all',
-        },
-      ],
-      dataviewId: TEMPLATE_CONTEXT_DATAVIEW_SLUG,
-    },
     {
       id: 'basemap-labels',
       config: {
