@@ -31,6 +31,10 @@ export type SearchType = 'basic' | 'advanced'
 export type SearchFilter = {
   lastTransmissionDate?: string
   firstTransmissionDate?: string
+  mmsi?: string
+  imo?: string
+  callsign?: string
+  owner?: string
   sources?: MultiSelectOption<string>[]
 } & Partial<Record<SupportedDatasetSchema, MultiSelectOption<string>[]>>
 
@@ -47,7 +51,6 @@ interface SearchState {
     total: number
     offset: number
   }
-  filtersOpen: boolean
   filters: SearchFilter
 }
 type SearchSliceState = { search: SearchState }
@@ -62,10 +65,13 @@ const initialState: SearchState = {
   suggestion: null,
   suggestionClicked: false,
   option: 'basic',
-  filtersOpen: false,
   filters: {
-    lastTransmissionDate: '',
-    firstTransmissionDate: '',
+    lastTransmissionDate: undefined,
+    firstTransmissionDate: undefined,
+    mmsi: undefined,
+    imo: undefined,
+    callsign: undefined,
+    owner: undefined,
   },
 }
 
@@ -106,25 +112,16 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           'origin',
           'lastTransmissionDate',
           'firstTransmissionDate',
-        ]
-        const orCombinedFields: AdvancedSearchQueryFieldKey[] = [
-          'shipname',
           'mmsi',
           'imo',
           'codMarinha',
         ]
 
         const fields: AdvancedSearchQueryField[] = [
-          ...orCombinedFields.flatMap((field) => {
-            if (fieldsAllowed.includes(field)) {
-              return {
-                key: field,
-                value: query,
-                combinedWithOR: true,
-              }
-            }
-            return []
-          }),
+          {
+            key: 'shipname',
+            value: query,
+          },
           ...andCombinedFields.flatMap((field) => {
             if (filters[field] && fieldsAllowed.includes(field)) {
               return {
@@ -200,12 +197,8 @@ const searchSlice = createSlice({
     setFilters: (state, action: PayloadAction<SearchFilter>) => {
       state.filters = { ...state.filters, ...action.payload }
     },
-    setFiltersOpen: (state, action: PayloadAction<boolean>) => {
-      state.filtersOpen = action.payload
-    },
     resetFilters: (state) => {
       state.filters = initialState.filters
-      state.filtersOpen = initialState.filtersOpen
     },
     setSelectedVessels: (state, action: PayloadAction<VesselWithDatasets[]>) => {
       const selection = action.payload
@@ -265,7 +258,6 @@ const searchSlice = createSlice({
 
 export const {
   setFilters,
-  setFiltersOpen,
   setSelectedVessels,
   resetFilters,
   setSuggestionClicked,
@@ -275,7 +267,6 @@ export const {
 export const selectSearchResults = (state: SearchSliceState) => state.search.data
 export const selectSearchStatus = (state: SearchSliceState) => state.search.status
 export const selectSearchStatusCode = (state: SearchSliceState) => state.search.statusCode
-export const selectSearchFiltersOpen = (state: SearchSliceState) => state.search.filtersOpen
 export const selectSearchFilters = (state: SearchSliceState) => state.search.filters
 export const selectSearchSuggestion = (state: SearchSliceState) => state.search.suggestion
 export const selectSearchSuggestionClicked = (state: SearchSliceState) =>

@@ -90,7 +90,10 @@ function Search() {
         filters: SearchFilter
         offset?: number
       }) => {
-        if (datasets?.length && query?.length > MIN_SEARCH_CHARACTERS - 1) {
+        if (
+          datasets?.length &&
+          (activeSearchOption === 'advanced' || query?.length > MIN_SEARCH_CHARACTERS - 1)
+        ) {
           const sourceIds = filters?.sources?.map((source) => source.id)
           const sources = sourceIds ? datasets.filter(({ id }) => sourceIds.includes(id)) : datasets
           if (promiseRef.current) {
@@ -140,22 +143,11 @@ function Search() {
   }, [searchPagination, searchDatasets, fetchResults, debouncedQuery, searchFilters])
 
   useEffect(() => {
-    if (debouncedQuery && !promiseRef.current && searchDatasets?.length) {
+    if (debouncedQuery && searchDatasets?.length && activeSearchOption === 'basic') {
       fetchResults({
         query: debouncedQuery,
         datasets: searchDatasets,
-        filters: searchFilters,
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchDatasets])
-
-  useEffect(() => {
-    if (debouncedQuery && searchDatasets?.length) {
-      fetchResults({
-        query: debouncedQuery,
-        datasets: searchDatasets,
-        filters: activeSearchOption === 'basic' ? {} : searchFilters,
+        filters: {},
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -210,6 +202,20 @@ function Search() {
     })
   }
 
+  const onConfirmSearch = useCallback(() => {
+    console.log('onConfirmSearch', {
+      query: debouncedQuery,
+      datasets: searchDatasets,
+      filters: searchFilters,
+    })
+
+    fetchResults({
+      query: debouncedQuery,
+      datasets: searchDatasets,
+      filters: searchFilters,
+    })
+  }, [debouncedQuery, fetchResults, searchDatasets, searchFilters])
+
   if (workspaceStatus !== AsyncReducerStatus.Finished) {
     return (
       <SearchPlaceholder>
@@ -228,6 +234,7 @@ function Search() {
         searchQuery={searchQuery}
         debouncedQuery={debouncedQuery}
         fetchMoreResults={fetchMoreResults}
+        onConfirm={onConfirmSearch}
       />
       <div
         className={cx(styles.footer, styles[activeSearchOption], {

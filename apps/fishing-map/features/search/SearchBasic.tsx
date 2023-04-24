@@ -36,6 +36,7 @@ export type SearchComponentProps = {
   setSearchQuery?: (query: string) => void
   searchQuery?: string
   debouncedQuery?: string
+  onConfirm?: () => void
 }
 
 function SearchBasic({

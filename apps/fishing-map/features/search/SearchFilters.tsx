@@ -1,7 +1,7 @@
-import { useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { MultiSelect, InputDate } from '@globalfishingwatch/ui-components'
+import { MultiSelect, InputDate, InputText } from '@globalfishingwatch/ui-components'
 import { Dataset } from '@globalfishingwatch/api-types'
 import { getFlags } from 'utils/flags'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
@@ -89,8 +89,39 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
     }
   }
 
+  const onInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchFilters({ [e.target.id]: e.target.value })
+    },
+    [setSearchFilters]
+  )
+
   return (
     <div className={cx(className)}>
+      <InputText
+        onChange={onInputChange}
+        id="mmsi"
+        value={searchFilters.mmsi || ''}
+        label={t('vessel.mmsi', 'MMSI')}
+        inputSize="small"
+        className={styles.input}
+      />
+      <InputText
+        onChange={onInputChange}
+        id="imo"
+        value={searchFilters.imo || ''}
+        label={t('vessel.imo', 'IMO')}
+        inputSize="small"
+        className={styles.input}
+      />
+      <InputText
+        onChange={onInputChange}
+        id="callsign"
+        value={searchFilters.callsign || ''}
+        label={t('vessel.callsign', 'Callsign')}
+        inputSize="small"
+        className={styles.input}
+      />
       <MultiSelect
         label={t('layer.flagState_other', 'Flag States')}
         placeholder={getPlaceholderBySelections(flag)}
@@ -100,7 +131,7 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
         onSelect={(filter) => {
           setSearchFilters({ flag: [...(flag || []), filter] })
         }}
-        onRemove={(filter, rest) => {
+        onRemove={(_, rest) => {
           setSearchFilters({ flag: rest })
         }}
         onCleanClick={() => {
@@ -126,7 +157,7 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
                 [id]: [...(searchFilters[id] || []), filter],
               })
             }}
-            onRemove={(filter, rest) => {
+            onRemove={(_, rest) => {
               setSearchFilters({ [id]: rest })
             }}
             onCleanClick={() => {
@@ -153,7 +184,7 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
       )}
       <div className={styles.row}>
         <InputDate
-          value={lastTransmissionDate}
+          value={lastTransmissionDate || ''}
           max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
           min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
           label={t('common.active_after', 'Active after')}
@@ -171,7 +202,7 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
       </div>
       <div className={styles.row}>
         <InputDate
-          value={firstTransmissionDate}
+          value={firstTransmissionDate || ''}
           max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
           min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
           label={t('common.active_before', 'Active Before')}
@@ -187,6 +218,14 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
           }}
         />
       </div>
+      <InputText
+        onChange={onInputChange}
+        id="owner"
+        value={searchFilters.owner || ''}
+        label={t('vessel.owner', 'Owner')}
+        inputSize="small"
+        className={styles.input}
+      />
     </div>
   )
 }

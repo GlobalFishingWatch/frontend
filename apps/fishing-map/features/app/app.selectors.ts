@@ -77,14 +77,14 @@ export const selectReportTimeComparison = createSelector(
 
 export const selectSearchOption = createSelector(
   [selectWorkspaceStateProperty('searchOption')],
-  (query): string => {
+  (query): SearchType => {
     return query
   }
 )
 
 export const selectSearchQuery = createSelector(
   [selectWorkspaceStateProperty('query')],
-  (query): SearchType => {
+  (query): string => {
     return query
   }
 )

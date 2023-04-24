@@ -1,13 +1,13 @@
 import { useSelector } from 'react-redux'
 import { Trans, useTranslation } from 'react-i18next'
-import { useState } from 'react'
+import { useCallback } from 'react'
 import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import SearchAdvancedResults from 'features/search/SearchAdvancedResults'
 import { SearchComponentProps } from 'features/search/SearchBasic'
-import { selectSearchStatus, selectSearchStatusCode } from './search.slice'
+import { resetFilters, selectSearchStatus, selectSearchStatusCode } from './search.slice'
 import styles from './SearchAdvanced.module.css'
 import SearchFilters from './SearchFilters'
 import { useSearchConnect } from './search.hook'
@@ -30,6 +30,7 @@ function SearchAdvanced({
   setSearchQuery,
   searchQuery,
   debouncedQuery,
+  onConfirm,
 }: SearchComponentProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -39,28 +40,11 @@ function SearchAdvanced({
   const searchStatus = useSelector(selectSearchStatus)
   const searchStatusCode = useSelector(selectSearchStatusCode)
   const searchDatasets = useSelector(selectAdvancedSearchDatasets)
-  const [searchState, setSearchState] = useState({
-    name: '',
-    mmsi: '',
-    imo: '',
-    callsign: '',
-    owner: '',
-  })
 
-  const onConfirm = (e: React.MouseEvent) => {
-    // setSearchQuery(e.target.value)
-    // if (e.target.value !== searchQuery && searchSuggestionClicked) {
-    //   dispatch(setSuggestionClicked(false))
-    // }
-  }
-
-  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchState({ ...searchState, [e.target.id]: e.target.value })
-  }
-
-  const resetSearchState = () => {
-    setSearchState({ name: '', mmsi: '', imo: '', callsign: '', owner: '' })
-  }
+  const resetSearchState = useCallback(() => {
+    setSearchQuery('')
+    dispatch(resetFilters())
+  }, [setSearchQuery, dispatch])
 
   if (!advancedSearchAllowed) {
     return (
@@ -79,50 +63,15 @@ function SearchAdvanced({
       <div className={styles.form}>
         <div className={styles.formFields}>
           <InputText
-            // TODO: use this when query is composed of multiple fields
-            // onChange={onInputChange}
             onChange={(e) => setSearchQuery(e.target.value)}
             id="name"
-            // value={searchState.name}
             value={searchQuery}
             label={t('common.name', 'Name')}
             inputSize="small"
             className={styles.input}
             autoFocus
           />
-          <InputText
-            onChange={onInputChange}
-            id="mmsi"
-            value={searchState.mmsi}
-            label={t('vessel.mmsi', 'MMSI')}
-            inputSize="small"
-            className={styles.input}
-          />
-          <InputText
-            onChange={onInputChange}
-            id="imo"
-            value={searchState.imo}
-            label={t('vessel.imo', 'IMO')}
-            inputSize="small"
-            className={styles.input}
-          />
-          <InputText
-            onChange={onInputChange}
-            id="callsign"
-            value={searchState.callsign}
-            label={t('vessel.callsign', 'Callsign')}
-            inputSize="small"
-            className={styles.input}
-          />
           <SearchFilters className={styles.filters} datasets={searchDatasets} />
-          <InputText
-            onChange={onInputChange}
-            id="owner"
-            value={searchState.owner}
-            label={t('vessel.owner', 'Owner')}
-            inputSize="small"
-            className={styles.input}
-          />
           {debouncedQuery && debouncedQuery?.length < MIN_SEARCH_CHARACTERS && (
             <div className={styles.red}>
               {t('search.minCharacters', {
