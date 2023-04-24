@@ -203,12 +203,6 @@ function Search() {
   }
 
   const onConfirmSearch = useCallback(() => {
-    console.log('onConfirmSearch', {
-      query: debouncedQuery,
-      datasets: searchDatasets,
-      filters: searchFilters,
-    })
-
     fetchResults({
       query: debouncedQuery,
       datasets: searchDatasets,
