@@ -1,9 +1,13 @@
+import { useSelector } from 'react-redux'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
-import VesselDetail, { VesselDetailProps } from './VesselDetail'
+import { selectVesselId, selectVesselDatasetId } from 'routes/routes.selectors'
+import VesselDetail from './VesselDetail'
 
-const VesselDetailWrapper = (props: VesselDetailProps) => {
+const VesselDetailWrapper = () => {
   useFetchDataviewResources()
-  return <VesselDetail {...props} />
+  const vesselId = useSelector(selectVesselId)
+  const vesselDatasetId = useSelector(selectVesselDatasetId)
+  return <VesselDetail vesselId={vesselId} datasetId={vesselDatasetId} />
 }
 
 export default VesselDetailWrapper

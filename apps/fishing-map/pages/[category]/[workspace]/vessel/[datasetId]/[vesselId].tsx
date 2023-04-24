@@ -11,7 +11,7 @@ path.resolve('./next.config.js')
 export async function getServerSideProps({ params }) {
   return {
     props: {
-      id: params.vesselId,
+      vesselId: params.vesselId,
       datasetId: params.datasetId,
     },
   }
@@ -36,14 +36,17 @@ const VesselInfo = ({ vesselId, datasetId }) => {
   )
 }
 const Vessel = (props) => {
+  console.log('🚀 ~ Vessel ~ props:', props)
   // const isServer = typeof window !== 'undefined'
   const [isServer, setServer] = useState<boolean>(true)
   useEffect(() => setServer(false), [])
 
-  if (isServer) {
-    return <VesselInfo {...props} />
-  }
+  return <VesselInfo {...props} />
 
-  return <Index />
+  // if (isServer) {
+  //   return <VesselInfo {...props} />
+  // }
+
+  // return <Index />
 }
 export default Vessel

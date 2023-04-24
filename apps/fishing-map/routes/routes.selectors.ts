@@ -59,6 +59,16 @@ export const selectReportId = createSelector(
   (payload) => payload?.reportId
 )
 
+export const selectVesselId = createSelector(
+  [selectLocationPayload],
+  (payload) => payload?.vesselId
+)
+
+export const selectVesselDatasetId = createSelector(
+  [selectLocationPayload],
+  (payload) => payload?.datasetId
+)
+
 export const selectLocationCategory = createSelector(
   [selectLocationPayload],
   (payload) => payload?.category as WorkspaceCategory

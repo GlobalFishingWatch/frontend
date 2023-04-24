@@ -3,11 +3,7 @@ import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
-import {
-  selectLocationPayload,
-  selectIsReportLocation,
-  selectLocationType,
-} from 'routes/routes.selectors'
+import { selectIsReportLocation, selectLocationType } from 'routes/routes.selectors'
 import { USER, VESSEL, WORKSPACES_LIST } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
@@ -49,7 +45,6 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const readOnly = useSelector(selectReadOnly)
   const searchQuery = useSelector(selectSearchQuery)
   const locationType = useSelector(selectLocationType)
-  const locationPayload = useSelector(selectLocationPayload)
   const isReportLocation = useSelector(selectIsReportLocation)
   const userLogged = useSelector(isUserLogged)
   const hasUserGroupsPermissions = useSelector(selectUserGroupsPermissions)
@@ -72,7 +67,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     }
 
     if (locationType === VESSEL) {
-      return <h2>Vessel: {JSON.stringify(locationPayload)}</h2>
+      return <VesselDetailWrapper />
     }
 
     if (locationType === WORKSPACES_LIST) {
@@ -88,7 +83,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     }
 
     return <Workspace />
-  }, [userLogged, locationType, isReportLocation, locationPayload, highlightedWorkspacesStatus])
+  }, [userLogged, locationType, isReportLocation, highlightedWorkspacesStatus])
 
   if (searchQuery !== undefined) {
     return <Search />

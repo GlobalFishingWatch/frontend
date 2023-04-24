@@ -6,7 +6,7 @@ export type VesselDetailProps = {
 const VesselDetail = ({ vesselId, datasetId }: VesselDetailProps) => {
   return (
     <h2>
-      {vesselId} in {datasetId}
+      The vessel {vesselId} is in the dataset: {datasetId}
     </h2>
   )
 }
