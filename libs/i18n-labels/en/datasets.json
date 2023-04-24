@@ -2565,8 +2565,8 @@
     }
   },
   "public-protectedseas-all": {
-    "name": "Protected Seas All",
-    "description": "Protected seas all",
+    "name": "Protected Seas",
+    "description": "Protected seas",
     "schema": {
       "category_name": {
         "keyword": "category_name",
