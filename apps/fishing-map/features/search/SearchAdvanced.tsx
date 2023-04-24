@@ -7,7 +7,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import SearchAdvancedResults from 'features/search/SearchAdvancedResults'
 import { SearchComponentProps } from 'features/search/SearchBasic'
-import { selectSearchStatus, selectSearchStatusCode, setSuggestionClicked } from './search.slice'
+import { selectSearchStatus, selectSearchStatusCode } from './search.slice'
 import styles from './SearchAdvanced.module.css'
 import SearchFilters from './SearchFilters'
 import { useSearchConnect } from './search.hook'
@@ -26,12 +26,10 @@ const MIN_SEARCH_CHARACTERS = 3
 
 function SearchAdvanced({
   onSuggestionClick,
-  onSelect,
   fetchMoreResults,
   setSearchQuery,
   searchQuery,
   debouncedQuery,
-  vesselsSelected,
 }: SearchComponentProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -166,11 +164,7 @@ function SearchAdvanced({
           searchStatus === AsyncReducerStatus.Aborted) &&
         searchPagination.loading === false ? null : basicSearchAllowed ? (
           <div className={styles.searchResults}>
-            <SearchAdvancedResults
-              onSelect={onSelect}
-              vesselsSelected={vesselsSelected}
-              fetchMoreResults={fetchMoreResults}
-            />
+            <SearchAdvancedResults fetchMoreResults={fetchMoreResults} />
             {searchStatus === AsyncReducerStatus.Idle && <SearchEmptyState />}
             {searchStatus === AsyncReducerStatus.Finished && searchPagination.total === 0 && (
               <SearchNoResultsState />

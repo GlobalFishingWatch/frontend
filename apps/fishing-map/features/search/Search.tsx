@@ -31,13 +31,13 @@ import I18nNumber from 'features/i18n/i18nNumber'
 import {
   fetchVesselSearchThunk,
   cleanVesselSearchResults,
-  VesselWithDatasets,
   RESULTS_PER_PAGE,
   resetFilters,
   setSuggestionClicked,
   SearchFilter,
   selectSearchPagination,
   selectSearchResults,
+  selectSelectedVessels,
 } from './search.slice'
 import { useSearchConnect, useSearchFiltersConnect } from './search.hook'
 import {
@@ -65,9 +65,9 @@ function Search() {
   const { dispatchQueryParams, dispatchLocation } = useLocationConnect()
   const heatmapDataviews = useSelector(selectActiveHeatmapDataviews)
   const gfwUser = useSelector(isGFWUser)
-  const [vesselsSelected, setVesselsSelected] = useState<VesselWithDatasets[]>([])
   const activeSearchOption = useSelector(selectSearchOption)
   const searchResultsPagination = useSelector(selectSearchPagination)
+  const vesselsSelected = useSelector(selectSelectedVessels)
 
   const searchDatasets = useSelector(
     activeSearchOption === 'basic' ? selectBasicSearchDatasets : selectAdvancedSearchDatasets
@@ -176,27 +176,6 @@ function Search() {
     }
   }
 
-  const onSelect = useCallback(
-    (selection: VesselWithDatasets[] | null) => {
-      if (!selection) return
-      const selectedIds = vesselsSelected.map((vessel) => vessel.id)
-      if (selection.length === 0) {
-        setVesselsSelected([])
-      }
-      if (selection.length === 1) {
-        const vessel = selection[0]
-        if (selectedIds.includes(vessel.id)) {
-          setVesselsSelected(vesselsSelected.filter((v) => v !== vessel))
-        } else if (vessel && vessel.dataset && vessel.trackDatasetId) {
-          setVesselsSelected([...vesselsSelected, vessel])
-        }
-      } else {
-        setVesselsSelected(selection)
-      }
-    },
-    [vesselsSelected]
-  )
-
   const onConfirmSelection = () => {
     const instances = vesselsSelected.map((vessel) => {
       const eventsRelatedDatasets = getRelatedDatasetsByType(vessel.dataset, DatasetTypes.Events)
@@ -248,9 +227,7 @@ function Search() {
         setSearchQuery={setSearchQuery}
         searchQuery={searchQuery}
         debouncedQuery={debouncedQuery}
-        onSelect={onSelect}
         fetchMoreResults={fetchMoreResults}
-        vesselsSelected={vesselsSelected}
       />
       <div
         className={cx(styles.footer, styles[activeSearchOption], {

@@ -35,6 +35,7 @@ export type SearchFilter = {
 } & Partial<Record<SupportedDatasetSchema, MultiSelectOption<string>[]>>
 
 interface SearchState {
+  selectedVessels: VesselWithDatasets[]
   status: AsyncReducerStatus
   statusCode: number | undefined
   data: VesselWithDatasets[] | null
@@ -53,6 +54,7 @@ type SearchSliceState = { search: SearchState }
 
 const paginationInitialState = { total: 0, offset: 0, loading: false }
 const initialState: SearchState = {
+  selectedVessels: [],
   status: AsyncReducerStatus.Idle,
   statusCode: undefined,
   pagination: paginationInitialState,
@@ -205,6 +207,23 @@ const searchSlice = createSlice({
       state.filters = initialState.filters
       state.filtersOpen = initialState.filtersOpen
     },
+    setSelectedVessels: (state, action: PayloadAction<VesselWithDatasets[]>) => {
+      const selection = action.payload
+      if (selection.length === 0) {
+        state.selectedVessels = []
+      }
+      if (selection.length === 1) {
+        const selectedIds = state.selectedVessels.map((vessel) => vessel.id)
+        const vessel = selection[0]
+        if (selectedIds.includes(vessel.id)) {
+          state.selectedVessels = state.selectedVessels.filter((v) => v.id !== vessel.id)
+        } else if (vessel && vessel.dataset && vessel.trackDatasetId) {
+          state.selectedVessels = [...state.selectedVessels, vessel]
+        }
+      } else {
+        state.selectedVessels = selection
+      }
+    },
     setSuggestionClicked: (state, action: PayloadAction<boolean>) => {
       state.suggestionClicked = action.payload
     },
@@ -214,6 +233,7 @@ const searchSlice = createSlice({
       state.suggestionClicked = false
       state.data = initialState.data
       state.pagination = paginationInitialState
+      state.selectedVessels = initialState.selectedVessels
     },
   },
   extraReducers: (builder) => {
@@ -246,6 +266,7 @@ const searchSlice = createSlice({
 export const {
   setFilters,
   setFiltersOpen,
+  setSelectedVessels,
   resetFilters,
   setSuggestionClicked,
   cleanVesselSearchResults,
@@ -260,5 +281,6 @@ export const selectSearchSuggestion = (state: SearchSliceState) => state.search.
 export const selectSearchSuggestionClicked = (state: SearchSliceState) =>
   state.search.suggestionClicked
 export const selectSearchPagination = (state: SearchSliceState) => state.search.pagination
+export const selectSelectedVessels = (state: SearchSliceState) => state.search.selectedVessels
 
 export default searchSlice.reducer

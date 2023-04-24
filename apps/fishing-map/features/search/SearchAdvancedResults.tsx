@@ -6,23 +6,24 @@ import {
   VesselWithDatasets,
   selectSearchResults,
   selectSearchStatus,
+  selectSelectedVessels,
+  setSelectedVessels,
 } from 'features/search/search.slice'
 import { formatInfoField, EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import I18nFlag from 'features/i18n/i18nFlag'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { SearchComponentProps } from 'features/search/SearchBasic'
+import { useAppDispatch } from 'features/app/app.hooks'
 
 const PINNED_COLUMN = 'shipname'
 
-function SearchAdvancedResults({
-  onSelect,
-  vesselsSelected,
-  fetchMoreResults,
-}: SearchComponentProps) {
+function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const searchStatus = useSelector(selectSearchStatus)
   const searchResults = useSelector(selectSearchResults)
+  const vesselsSelected = useSelector(selectSelectedVessels)
   const tableContainerRef = useRef<HTMLDivElement>(null)
   const columns = useMemo((): MRT_ColumnDef<VesselWithDatasets>[] => {
     return [
@@ -81,9 +82,9 @@ function SearchAdvancedResults({
 
   const onSelectHandler = useCallback(
     (vessels: VesselWithDatasets[]) => {
-      onSelect(vessels)
+      dispatch(setSelectedVessels(vessels))
     },
-    [onSelect]
+    [dispatch]
   )
 
   const rowSelection = useMemo(() => {
