@@ -35,6 +35,10 @@ export type _VesselTrackLayerProps<DataT = any> = {
    * Timestamp accessor.
    */
   getTimestamps?: AccessorFunction<DataT, NumericArray>
+  /**
+   * Track API url accessor.
+   */
+  trackUrl?: string
 }
 
 const defaultProps: DefaultProps<VesselTrackLayerProps> = {
@@ -44,6 +48,7 @@ const defaultProps: DefaultProps<VesselTrackLayerProps> = {
   getColor: { type: 'accessor', value: () => [255, 255, 255, 100] },
   getTimestamps: { type: 'accessor', value: getTimestampsDefaultAccessor },
   zIndex: { type: 'accessor', value: GROUP_ORDER.indexOf(Group.Point) },
+  trackUrl: { type: 'accessor', value: '' },
 }
 
 /** All properties supported by VesselTrackLayer. */
