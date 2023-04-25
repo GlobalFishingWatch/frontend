@@ -1,5 +1,6 @@
 import { useCallback, useState, useEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
+import { useAtom, useAtomValue } from 'jotai'
 import { event as uaEvent } from 'react-ga'
 import { Map, MapboxStyle } from 'react-map-gl'
 import { DeckGL, DeckGLRef } from '@deck.gl/react/typed'
@@ -47,6 +48,7 @@ import { useEnvironmentalBreaksUpdate } from 'features/workspace/environmental/e
 import { mapReadyAtom } from 'features/map/map-state.atom'
 import { selectMapTimeseries } from 'features/analysis/analysis.hooks'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
+import { selectHighlightedTime } from 'features/timebar/timebar.slice'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import useRulers from './rulers/rulers.hooks'
@@ -110,6 +112,7 @@ const MapWrapper = () => {
   useEnvironmentalBreaksUpdate()
   const map = useMapInstance()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
+  const highlightedTime = useSelector(selectHighlightedTime)
 
   const setMapReady = useSetRecoilState(mapReadyAtom)
   const hasTimeseries = useRecoilValue(selectMapTimeseries)
@@ -127,8 +130,11 @@ const MapWrapper = () => {
     layerComposer
   )
 
-  const { layers } = useDeckLayerComposer({ generatorsConfig, globalGeneratorConfig: globalConfig })
-
+  const { layers } = useDeckLayerComposer({
+    generatorsConfig,
+    globalGeneratorConfig: globalConfig,
+    highlightedTime,
+  })
   const allSourcesLoaded = useAllMapSourceTilesLoaded()
 
   const { clickedEvent, dispatchClickedEvent, cancelPendingInteractionRequests } =
@@ -303,11 +309,10 @@ const MapWrapper = () => {
         // since we are handling it through pickMultipleObjects
         // discussion for reference https://github.com/visgl/deck.gl/discussions/5793
         layerFilter={({ renderPass }) => renderPass !== 'picking:hover'}
-        controller={true}
-        viewState={{
+        initialViewState={{
           longitude: -9,
           latitude: 42,
-          zoom: 7,
+          zoom: 4,
           pitch: 0,
           bearing: 0,
           minZoom: 0,
@@ -315,11 +320,10 @@ const MapWrapper = () => {
           minPitch: 0,
           maxPitch: 60,
         }}
+        controller={true}
         // onClick={onClick}
         // onHover={onHover}
         // onViewStateChange={onViewportStateChange}
-        // this experimental prop reduces memory usage
-        _typedArrayManagerProps={{ overAlloc: 1, poolSize: 0 }}
       />
       {style && (
         <Map

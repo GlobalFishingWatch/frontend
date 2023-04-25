@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
+import { useAtom, useAtomValue } from 'jotai'
 import {
   sort,
   LayerComposer,
@@ -11,7 +12,10 @@ import {
 import {
   useBasemapLayer,
   useContextsLayer,
-  useVesselLayer,
+  vesselLayersAtom,
+  useVesselsLayer,
+  selectVesselsLayersAtom,
+  vesselLayersInstancesSelector,
   zIndexSortedArray,
 } from '@globalfishingwatch/deck-layers'
 import { useDebounce } from '../use-debounce'
@@ -95,14 +99,12 @@ export function useLayerComposer(
 export function useDeckLayerComposer({
   generatorsConfig,
   globalGeneratorConfig,
+  highlightedTime,
 }: {
   generatorsConfig: AnyGeneratorConfig[]
   globalGeneratorConfig?: GlobalGeneratorConfig
+  highlightedTime?: { start: number; end: number }
 }) {
-  // console.log(
-  //   '🚀 ~ file: use-layer-composer.ts:105 ~ globalGeneratorConfig:',
-  //   globalGeneratorConfig
-  // )
   const basemap = generatorsConfig.find((generator) => generator.type === 'BASEMAP')?.basemap
   const visible = generatorsConfig.find((generator) => generator.type === 'BASEMAP')?.visible
   const basemapLayer = useBasemapLayer({
@@ -113,14 +115,19 @@ export function useDeckLayerComposer({
   const contextLayersGenerators = generatorsConfig.filter(
     (generator) => generator.type === 'CONTEXT'
   )
-
   const vesselLayersGenerators = generatorsConfig.filter(
     (generator) => generator.type === 'VESSEL_EVENTS_SHAPES'
   )
-  // console.log(
-  //   '🚀 ~ file: use-layer-composer.ts:120 ~ vesselLayersGenerators:',
-  //   vesselLayersGenerators
-  // )
+  const vesselLayersGeneratorsLength = generatorsConfig.filter(
+    (generator) => generator.type === 'VESSEL_EVENTS_SHAPES'
+  ).length
+  const vesselLayersGeneratorsIds = useMemo(
+    () =>
+      generatorsConfig
+        .filter((generator) => generator.type === 'VESSEL_EVENTS_SHAPES')
+        .map((g) => g.id),
+    [vesselLayersGeneratorsLength]
+  )
 
   const contextLayer = useContextsLayer({
     visible: contextLayersGenerators.length ? true : false,
@@ -129,14 +136,8 @@ export function useDeckLayerComposer({
     datasetId: contextLayersGenerators.length ? contextLayersGenerators[0].datasetId : 'eez',
   })
 
-  const vesselLayer = useVesselLayer({
-    visible: vesselLayersGenerators.length ? true : false,
-    id: vesselLayersGenerators.length ? vesselLayersGenerators[0].vesselId : '',
-    color: vesselLayersGenerators.length ? vesselLayersGenerators[0].color : 'red',
-    endDate: vesselLayersGenerators.length && globalGeneratorConfig.end,
-    startDate: vesselLayersGenerators.length && globalGeneratorConfig.start,
-  })
-  console.log('🚀 ~ file: use-layer-composer.ts:139 ~ vesselLayer:', vesselLayer)
+  useVesselsLayer(vesselLayersGenerators, globalGeneratorConfig, vesselLayersGeneratorsIds)
+  const [vesselsLayers] = useAtom(vesselLayersInstancesSelector)
 
-  return { layers: zIndexSortedArray([basemapLayer, contextLayer, vesselLayer]) }
+  return { layers: zIndexSortedArray([basemapLayer, contextLayer, ...vesselsLayers]) }
 }
