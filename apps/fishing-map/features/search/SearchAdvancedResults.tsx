@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux'
 import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import { TransmissionsTimeline } from '@globalfishingwatch/ui-components'
 import {
   VesselWithDatasets,
   selectSearchResults,
@@ -15,11 +16,14 @@ import I18nFlag from 'features/i18n/i18nFlag'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { SearchComponentProps } from 'features/search/SearchBasic'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { FIRST_YEAR_OF_DATA } from 'data/config'
+import { Locale } from 'types'
+import I18nDate from 'features/i18n/i18nDate'
 
 const PINNED_COLUMN = 'shipname'
 
 function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const searchStatus = useSelector(selectSearchStatus)
   const searchResults = useSelector(selectSearchResults)
@@ -65,8 +69,24 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
         accessorFn: ({ dataset }: VesselWithDatasets) => <DatasetLabel dataset={dataset} />,
         header: t('vessel.source', 'Source'),
       },
+      {
+        accessorFn: ({ firstTransmissionDate, lastTransmissionDate }: VesselWithDatasets) => (
+          <div>
+            <span style={{ font: 'var(--font-XS)' }}>
+              <I18nDate date={firstTransmissionDate} /> - <I18nDate date={lastTransmissionDate} />
+            </span>
+            <TransmissionsTimeline
+              firstTransmissionDate={firstTransmissionDate}
+              lastTransmissionDate={lastTransmissionDate}
+              firstYearOfData={FIRST_YEAR_OF_DATA}
+              locale={i18n.language as Locale}
+            />
+          </div>
+        ),
+        header: t('vessel.transmissionDates', 'Transmission Dates'),
+      },
     ]
-  }, [t])
+  }, [i18n.language, t])
 
   const fetchMoreOnBottomReached = useCallback(() => {
     if (tableContainerRef.current) {
@@ -194,6 +214,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
           whiteSpace: 'nowrap',
           maxWidth: '20rem',
           '.Mui-TableHeadCell-Content-Wrapper': { minWidth: '2rem' },
+          padding: '0.5rem',
         },
       })}
       muiBottomToolbarProps={{ sx: { overflow: 'visible' } }}
