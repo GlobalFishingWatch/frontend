@@ -36,6 +36,7 @@ export interface Vessel {
   vesselType?: string
   type?: string
   years?: number[]
+  msgCount?: number
 }
 
 export interface VesselSearch extends Vessel {
