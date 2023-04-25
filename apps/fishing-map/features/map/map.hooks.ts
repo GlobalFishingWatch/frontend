@@ -24,7 +24,7 @@ import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate
 import { selectLocationType } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
-import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import useMapInstance from 'features/map/map-context.hooks'
 import {
   getActiveDatasetsInActivityDataviews,
@@ -173,7 +173,7 @@ export const useClickedEventConnect = () => {
                   category:
                     workspace.properties?.category && workspace.properties.category !== 'null'
                       ? workspace.properties.category
-                      : WorkspaceCategories.FishingActivity,
+                      : WorkspaceCategory.FishingActivity,
                   workspaceId: workspace.properties.id,
                 },
               },

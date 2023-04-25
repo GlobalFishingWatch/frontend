@@ -34,7 +34,7 @@ import {
   ONLY_GFW_STAFF_DATAVIEW_SLUGS,
   getWorkspaceEnv,
   VESSEL_PRESENCE_DATAVIEW_SLUG,
-  WorkspaceCategories,
+  WorkspaceCategory,
   DEFAULT_WORKSPACE_ID,
 } from 'data/workspaces'
 import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
@@ -284,7 +284,7 @@ export const saveWorkspaceThunk = createAsyncThunk(
 
     const workspaceUpdated = await saveWorkspace()
     const locationType = selectLocationType(state)
-    const locationCategory = selectLocationCategory(state) || WorkspaceCategories.FishingActivity
+    const locationCategory = selectLocationCategory(state) || WorkspaceCategory.FishingActivity
     if (workspaceUpdated) {
       dispatch(
         updateLocation(locationType === HOME ? WORKSPACE : locationType, {

@@ -2,7 +2,7 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { WorkspaceCategories } from 'data/workspaces'
+import { WorkspaceCategory } from 'data/workspaces'
 import { selectLocationCategory } from 'routes/routes.selectors'
 import LogoDonaBertarelli from 'assets/images/partner-logos/dona-bertarelli@2x.png'
 import LogoOceana from 'assets/images/partner-logos/oceana@2x.png'
@@ -20,7 +20,7 @@ const FooterPartners = ({ smallScreen }: FooterPartnersProps) => {
   const category = useSelector(selectLocationCategory)
   const { t } = useTranslation()
   switch (category) {
-    case WorkspaceCategories.MarineManager:
+    case WorkspaceCategory.MarineManager:
       return (
         <div className={styles.partners}>
           {!smallScreen && (
