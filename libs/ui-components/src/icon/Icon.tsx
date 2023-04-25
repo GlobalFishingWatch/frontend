@@ -16,6 +16,7 @@ import { ReactComponent as CategoryFishing } from '../assets/icons/category-fish
 import { ReactComponent as CategoryMarineManager } from '../assets/icons/category-marine-manager.svg'
 import { ReactComponent as CategoryNews } from '../assets/icons/category-news.svg'
 import { ReactComponent as CategoryReports } from '../assets/icons/category-reports.svg'
+import { ReactComponent as CategorySearch } from '../assets/icons/category-search.svg'
 import { ReactComponent as Close } from '../assets/icons/close.svg'
 import { ReactComponent as Clusters } from '../assets/icons/clusters.svg'
 import { ReactComponent as ColorPicker } from '../assets/icons/color-picker.svg'
@@ -95,6 +96,7 @@ export const IconComponents = {
   'category-marine-manager': CategoryMarineManager,
   'category-news': CategoryNews,
   'category-reports': CategoryReports,
+  'category-search': CategorySearch,
   'color-picker-filled': ColorPickerFilled,
   'color-picker': ColorPicker,
   'event-encounter': EventEncounter,

@@ -6,8 +6,8 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { Icon, IconButton, IconType, Tooltip } from '@globalfishingwatch/ui-components'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
-import { WorkspaceCategories } from 'data/workspaces'
-import { HOME, USER, WORKSPACES_LIST } from 'routes/routes'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
+import { HOME, SEARCH, USER, WORKSPACES_LIST } from 'routes/routes'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
 import { selectUserData, isGuestUser } from 'features/user/user.slice'
 import { useClickedEventConnect } from 'features/map/map.hooks'
@@ -21,6 +21,9 @@ import LocalStorageLoginLink from 'routes/LoginLink'
 import HelpHub from 'features/hints/HelpHub'
 import { selectFeedbackModalOpen, setModalOpen } from 'features/modals/modals.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useLocationConnect } from 'routes/routes.hook'
+import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import styles from './CategoryTabs.module.css'
 
 const FeedbackModal = dynamic(
@@ -49,10 +52,12 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const { t } = useTranslation()
   const guestUser = useSelector(isGuestUser)
   const dispatch = useAppDispatch()
+  const { dispatchLocation } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const { dispatchClickedEvent } = useClickedEventConnect()
   const locationType = useSelector(selectLocationType)
   const { setMapCoordinates } = useViewport()
+  const workspace = useSelector(selectWorkspace)
   const locationCategory = useSelector(selectLocationCategory)
   const availableCategories = useSelector(selectAvailableWorkspacesCategories)
   const userData = useSelector(selectUserData)
@@ -74,6 +79,17 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
     cleanFeatureState('highlight')
   }, [setMapCoordinates, cleanFeatureState, dispatchClickedEvent])
 
+  const onSearchClick = useCallback(() => {
+    trackEvent({
+      category: TrackCategory.SearchVessel,
+      action: 'Click search icon to open search panel',
+    })
+    dispatchLocation(SEARCH, {
+      category: workspace.category || WorkspaceCategories.FishingActivity,
+      workspaceId: workspace.id || DEFAULT_WORKSPACE_ID,
+    })
+  }, [dispatchLocation, workspace])
+
   return (
     <Fragment>
       <ul className={cx('print-hidden', styles.CategoryTabs)}>
@@ -82,12 +98,25 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             <Icon icon="menu" />
           </span>
         </li>
+        <li
+          className={cx(styles.tab, {
+            [styles.current]: locationType === SEARCH,
+          })}
+          onClick={onSearchClick}
+        >
+          <Tooltip content={t('search.vessels', 'Search vessels')} placement="right">
+            <span className={styles.tabContent}>
+              <Icon icon="category-search" className={styles.searchIcon} />
+            </span>
+          </Tooltip>
+        </li>
         {availableCategories?.map((category, index) => (
           <li
             key={category.title}
             className={cx(styles.tab, {
               [styles.current]:
-                locationCategory === (category.title as WorkspaceCategories) ||
+                (locationType !== SEARCH &&
+                  locationCategory === (category.title as WorkspaceCategories)) ||
                 (index === 0 && locationType === HOME),
             })}
           >

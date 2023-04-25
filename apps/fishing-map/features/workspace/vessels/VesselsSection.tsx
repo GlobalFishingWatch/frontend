@@ -14,6 +14,7 @@ import LocalStorageLoginLink from 'routes/LoginLink'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { SEARCH } from 'routes/routes'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
+import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import VesselEventsLegend from './VesselEventsLegend'
 import VesselLayerPanel from './VesselLayerPanel'
 
@@ -21,6 +22,7 @@ function VesselsSection(): React.ReactElement {
   const { t } = useTranslation()
   const { dispatchLocation } = useLocationConnect()
   const dataviews = useSelector(selectVesselsDataviews)
+  const workspace = useSelector(selectWorkspace)
   const guestUser = useSelector(isGuestUser)
   const hasVesselsWithNoTrack = useSelector(selectHasTracksWithNoData)
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
@@ -32,11 +34,10 @@ function VesselsSection(): React.ReactElement {
       action: 'Click search icon to open search panel',
     })
     dispatchLocation(SEARCH, {
-      // TODO get info from current workspace and use default as fallback
-      category: WorkspaceCategories.FishingActivity,
-      workspaceId: DEFAULT_WORKSPACE_ID,
+      category: workspace.category || WorkspaceCategories.FishingActivity,
+      workspaceId: workspace.id || DEFAULT_WORKSPACE_ID,
     })
-  }, [dispatchLocation])
+  }, [dispatchLocation, workspace])
 
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
