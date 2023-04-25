@@ -11,16 +11,8 @@ import { resetFilters, selectSearchStatus, selectSearchStatusCode } from './sear
 import styles from './SearchAdvanced.module.css'
 import SearchFilters from './SearchFilters'
 import { useSearchConnect } from './search.hook'
-import SearchPlaceholder, {
-  SearchNotAllowed,
-  SearchNoResultsState,
-  SearchEmptyState,
-} from './SearchPlaceholders'
-import {
-  isBasicSearchAllowed,
-  isAdvancedSearchAllowed,
-  selectAdvancedSearchDatasets,
-} from './search.selectors'
+import SearchPlaceholder, { SearchNoResultsState, SearchEmptyState } from './SearchPlaceholders'
+import { isAdvancedSearchAllowed } from './search.selectors'
 
 const MIN_SEARCH_CHARACTERS = 3
 
@@ -35,11 +27,9 @@ function SearchAdvanced({
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
-  const basicSearchAllowed = useSelector(isBasicSearchAllowed)
   const advancedSearchAllowed = useSelector(isAdvancedSearchAllowed)
   const searchStatus = useSelector(selectSearchStatus)
   const searchStatusCode = useSelector(selectSearchStatusCode)
-  const searchDatasets = useSelector(selectAdvancedSearchDatasets)
 
   const resetSearchState = useCallback(() => {
     setSearchQuery('')
@@ -71,7 +61,7 @@ function SearchAdvanced({
             className={styles.input}
             autoFocus
           />
-          <SearchFilters className={styles.filters} datasets={searchDatasets} />
+          <SearchFilters />
           {debouncedQuery && debouncedQuery?.length < MIN_SEARCH_CHARACTERS && (
             <div className={styles.red}>
               {t('search.minCharacters', {
@@ -111,7 +101,7 @@ function SearchAdvanced({
       <div className={styles.scrollContainer}>
         {(searchStatus === AsyncReducerStatus.Loading ||
           searchStatus === AsyncReducerStatus.Aborted) &&
-        searchPagination.loading === false ? null : basicSearchAllowed ? (
+        searchPagination.loading === false ? null : (
           <div className={styles.searchResults}>
             <SearchAdvancedResults fetchMoreResults={fetchMoreResults} />
             {searchStatus === AsyncReducerStatus.Idle && <SearchEmptyState />}
@@ -129,8 +119,6 @@ function SearchAdvanced({
               </p>
             )}
           </div>
-        ) : (
-          <SearchNotAllowed />
         )}
       </div>
     </div>

@@ -21,13 +21,6 @@
 
 .input {
   flex: 1;
-}
-
-.input:not(:last-child) {
-  margin-bottom: var(--space-S);
-}
-
-.filters {
   margin-bottom: var(--space-S);
 }
 
