@@ -48,7 +48,7 @@
   "bigQuery": {
     "aggregateAvg": "Average",
     "aggregateSum": "Sum",
-    "aggregationMode": "Aggregation mode *",
+    "aggregationMode": "Aggregation mode * (test)",
     "create": "Create",
     "query": "Query",
     "queryError": "There is an error in the query",
