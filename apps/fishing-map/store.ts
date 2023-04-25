@@ -1,4 +1,5 @@
 import { Action, AnyAction, ThunkAction, ThunkDispatch, configureStore } from '@reduxjs/toolkit'
+import { ToolkitStore } from '@reduxjs/toolkit/dist/configureStore'
 import { dataviewStatsApi } from 'queries/stats-api'
 import { RootState, rootReducer } from 'reducers'
 import connectedRoutes from 'routes/routes'
@@ -24,31 +25,39 @@ const defaultMiddlewareOptions: any = {
   },
 }
 
-const store = configureStore({
-  devTools: {
-    stateSanitizer: (state: any) => {
-      if (!state.resources) return state
-      const serializedResources = Object.entries(state.resources).map(([key, value]: any) => [
-        key,
-        { ...value, data: 'NOT_SERIALIZED' },
-      ])
+let storeInitialized = false
+let store: ToolkitStore
 
-      return {
-        ...state,
-        resources: Object.fromEntries(serializedResources),
-      }
+export const initalizeStore = (preloadedState = {}) => {
+  storeInitialized = true
+  store = configureStore({
+    devTools: {
+      stateSanitizer: (state: any) => {
+        if (!state.resources) return state
+        const serializedResources = Object.entries(state.resources).map(([key, value]: any) => [
+          key,
+          { ...value, data: 'NOT_SERIALIZED' },
+        ])
+
+        return {
+          ...state,
+          resources: Object.fromEntries(serializedResources),
+        }
+      },
     },
-  },
-  reducer: rootReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware(defaultMiddlewareOptions).concat(
-      dataviewStatsApi.middleware,
-      routerQueryMiddleware,
-      routerWorkspaceMiddleware,
-      routerMiddleware
-    ),
-  enhancers: (defaultEnhancers) => [routerEnhancer, ...defaultEnhancers],
-})
+    reducer: rootReducer,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware(defaultMiddlewareOptions).concat(
+        dataviewStatsApi.middleware,
+        routerQueryMiddleware,
+        routerWorkspaceMiddleware,
+        routerMiddleware
+      ),
+    enhancers: (defaultEnhancers) => [routerEnhancer, ...defaultEnhancers],
+    preloadedState,
+  })
+  return store
+}
 
 type TypedDispatch<T> = ThunkDispatch<T, any, AnyAction>
 
@@ -60,4 +69,4 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   Action<string>
 >
 
-export default store
+export const getStore = () => (storeInitialized ? store : {})

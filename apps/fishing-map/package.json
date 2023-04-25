@@ -48,6 +48,7 @@
     "i18next-browser-languagedetector": "6.1.8",
     "i18next-http-backend": "1.4.5",
     "intersection-observer": "0.12.2",
+    "jotai": "^2.0.4",
     "lodash": "4.17.21",
     "luxon": "^2.5.2",
     "match-sorter": "^6.3.1",

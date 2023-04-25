@@ -1,8 +1,9 @@
 import path from 'path'
 import dynamic from 'next/dynamic'
 import { RecoilRoot } from 'recoil'
-import { Provider } from 'react-redux'
-import store from '../store'
+import { Provider as ReduxProvider } from 'react-redux'
+import { Provider as JotaiProvider } from 'jotai'
+import { initalizeStore } from '../store'
 
 // This is needed by nx/next builder to run build the standalone next app properly
 // https://github.com/nrwl/nx/issues/9017#issuecomment-1140066503
@@ -16,14 +17,16 @@ const AppNoSSRComponent = dynamic(() => import('../features/app/App'), {
   ssr: false,
 })
 
-export const Index = () => {
+export const Index = ({ preloadedState = {} }) => {
   return (
     <RecoilRoot>
-      <Provider store={store}>
-        <MapProvider>
-          <AppNoSSRComponent />
-        </MapProvider>
-      </Provider>
+      <ReduxProvider store={initalizeStore(preloadedState)}>
+        <JotaiProvider>
+          <MapProvider>
+            <AppNoSSRComponent />
+          </MapProvider>
+        </JotaiProvider>
+      </ReduxProvider>
     </RecoilRoot>
   )
 }

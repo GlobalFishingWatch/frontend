@@ -2242,6 +2242,7 @@ __metadata:
     i18next-http-backend: 1.4.5
     i18next-parser: 6.6.0
     intersection-observer: 0.12.2
+    jotai: ^2.0.4
     lodash: 4.17.21
     luxon: ^2.5.2
     match-sorter: ^6.3.1
@@ -17782,6 +17783,18 @@ __metadata:
     jotai-zustand:
       optional: true
   checksum: bc1f88ec1d52dda7c2aa39d278b15c128a6babc91fe9294862feb1b2d8467e47fc37cd193fd1358107212b9a4e5f5a8ae9a5a5ed1e845b74421d4476ce5d9efd
+  languageName: node
+  linkType: hard
+
+"jotai@npm:^2.0.4":
+  version: 2.0.4
+  resolution: "jotai@npm:2.0.4"
+  peerDependencies:
+    react: ">=17.0.0"
+  peerDependenciesMeta:
+    react:
+      optional: true
+  checksum: 8e32fa126ef18850a1ac9c25e1260bebf0cb79c704ed9c564236904c0a5f28064de9b6a901c395dfbf2aa47f5ae7600ae97e3acadcc79778eda94d92da3a0ded
   languageName: node
   linkType: hard
 
