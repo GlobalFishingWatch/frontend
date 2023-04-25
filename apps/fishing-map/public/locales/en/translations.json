@@ -550,7 +550,7 @@
       "bunker_or_tanker": "Bunker or tanker",
       "passenger": "Passenger",
       "seismic_vessel": "Seismic vessel",
-      "other_non_fishing": "Other non fishing",
+      "other_non_fishing": "Other",
       "unknown": "Unknown"
     },
     "grossTonnageRange": "Gross tonnage range",
