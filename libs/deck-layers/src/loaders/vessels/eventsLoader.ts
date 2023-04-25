@@ -1,4 +1,5 @@
 import { LoaderWithParser } from '@loaders.gl/loader-utils'
+import { ApiEvent, EventTypes } from '@globalfishingwatch/api-types'
 import { START_TIMESTAMP } from '../constants'
 
 export const vesselEventsLoader: LoaderWithParser = {
@@ -19,12 +20,15 @@ async function parse(arrayBuffer: ArrayBuffer) {
   return parseEvents(data.entries)
 }
 
-function parseEvents(events) {
-  const shapeIndex = {
+function parseEvents(events: ApiEvent[]) {
+  const shapeIndex: { [key in EventTypes]: number } = {
     port_visit: 0,
     encounter: 1,
     fishing: 2,
+    gap: 3,
+    loitering: 4,
   }
+
   return events?.map((event) => {
     const { position, start, end, type, ...attributes } = event
     return {

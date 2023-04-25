@@ -148,6 +148,7 @@ export function getGeneratorConfig(
         dataview,
         DatasetTypes.Events
       )
+
       if (!tileClusterDataset || !tileClusterUrl) {
         console.warn('No dataset config for TileCluster generator', dataview)
         return []
@@ -185,6 +186,7 @@ export function getGeneratorConfig(
       }
 
       const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
+      const { url: trackUrl } = resolveDataviewDatasetResource(dataview, [DatasetTypes.Tracks])
       const hasEventData =
         eventsResources?.length && eventsResources.some(({ url }) => resources?.[url]?.data)
       // const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
@@ -206,6 +208,8 @@ export function getGeneratorConfig(
           vesselId,
           type,
           data,
+          eventsUrls: eventsResources.map(({ url }) => url),
+          trackUrl,
           track: generator.data,
           color: dataview.config?.color,
           event: dataview.config?.event,
