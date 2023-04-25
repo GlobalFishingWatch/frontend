@@ -39,7 +39,11 @@ import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel
 import GFWOnly from 'features/user/GFWOnly'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { selectLocationSearch } from 'routes/routes.selectors'
-import { PATH_BASENAME } from 'routes/routes'
+import { PATH_BASENAME, VESSEL } from 'routes/routes'
+import {
+  selectCurrentWorkspaceCategory,
+  selectCurrentWorkspaceId,
+} from 'features/workspace/workspace.selectors'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -70,6 +74,8 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const [datasetModalOpen, setDatasetModalOpen] = useState(false)
   const gfwUser = useSelector(isGFWUser)
   const userPrivateGroups = useSelector(selectPrivateUserGroups)
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
+  const workspaceCategory = useSelector(selectCurrentWorkspaceCategory)
   const downloadDatasetsSupported = getVesselDatasetsDownloadTrackSupported(
     dataview,
     userData?.permissions
@@ -258,7 +264,9 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       }
     >
       <a
-        href={`${PATH_BASENAME}/fishing-activity/wizard_template-public/vessel/${dataset?.id}/${vesselId}?${locationSearch}`}
+        href={`${PATH_BASENAME}/${workspaceCategory}/${workspaceId}/${VESSEL.toLowerCase()}/${
+          dataset?.id
+        }/${vesselId}?${locationSearch}`}
       >
         <IconButton
           size="small"
