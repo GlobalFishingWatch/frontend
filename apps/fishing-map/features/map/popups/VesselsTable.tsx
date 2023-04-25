@@ -128,7 +128,7 @@ function VesselsTable({
     showFullList ||
     (interactionAllowed &&
       feature?.vesselsInfo?.vessels?.some((vessel) => {
-        const hasDatasets = vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
+        const hasDatasets = vessel.infoDataset !== undefined && vessel.trackDataset !== undefined
         return hasDatasets
       }))
 
@@ -216,7 +216,7 @@ function VesselsTable({
                   )}`
 
               const hasDatasets =
-                vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
+                vessel.infoDataset !== undefined && vessel.trackDataset !== undefined
 
               const vesselInWorkspace = getVesselInWorkspace(vesselsInWorkspace, vessel.id)
 
