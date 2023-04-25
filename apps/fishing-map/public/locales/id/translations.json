@@ -7,7 +7,7 @@
     "change": "Ubah",
     "clickToFilterBy": "Click to filter by:",
     "disclaimer": "Data yang ditunjukkan di atas harus diambil sebagai perkiraan.",
-    "downloadVesselsList": "Download csv",
+    "downloadVesselsList": "Download list (CSV)",
     "error": "Terjadi masalah saat memuat data, silakan coba segarkan halaman",
     "errorMessage": "Ada yang salah",
     "errorDuplicatedName": "There is already a report with the same name",
