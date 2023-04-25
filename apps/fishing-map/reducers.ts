@@ -21,6 +21,7 @@ import searchReducer from 'features/search/search.slice'
 import timebarReducer from 'features/timebar/timebar.slice'
 import titleReducer from 'routes/title.reducer'
 import userReducer from 'features/user/user.slice'
+import vesselReducer from 'features/vessel/vessel.slice'
 import vesselGroupsReducer from 'features/vessel-groups/vessel-groups.slice'
 import workspaceReducer from 'features/workspace/workspace.slice'
 import workspacesReducer from 'features/workspaces-list/workspaces-list.slice'
@@ -48,6 +49,7 @@ export const rootReducer = combineReducers({
   timebar: timebarReducer,
   title: titleReducer,
   user: userReducer,
+  vessel: vesselReducer,
   vesselGroups: vesselGroupsReducer,
   workspace: workspaceReducer,
   workspaces: workspacesReducer,
