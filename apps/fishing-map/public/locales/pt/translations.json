@@ -7,7 +7,7 @@
     "change": "Mudar",
     "clickToFilterBy": "Click to filter by:",
     "disclaimer": "Os dados mostrados acima devem ser tomados como uma estimativa.",
-    "downloadVesselsList": "Download csv",
+    "downloadVesselsList": "Download list (CSV)",
     "error": "Houve um problema ao carregar os dados, por favor, tente atualizar a página",
     "errorMessage": "Algo deu errado",
     "errorDuplicatedName": "There is already a report with the same name",
