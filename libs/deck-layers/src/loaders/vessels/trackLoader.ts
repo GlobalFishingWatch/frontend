@@ -19,9 +19,10 @@ function readData(_, data, pbf) {
   data.push(pbf.readPackedSVarint())
 }
 
-const parseTrack = (arrayBuffer) => {
+const parseTrack = (arrayBuffer: ArrayBuffer) => {
   // read
-  const data = new Pbf(arrayBuffer).readFields(readData, [])[0]
+  const data: [] = new Pbf(arrayBuffer).readFields(readData, [])[0]
+  if (!data.length) return []
   const segments = trackValueArrayToSegments(data, ['lonlat', 'timestamp'])
   const formattedSegments = [
     segments.map((segment) => ({
