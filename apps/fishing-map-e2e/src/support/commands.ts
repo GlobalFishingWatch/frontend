@@ -22,15 +22,16 @@ function loginViaAuthAPI(username: string, password: string) {
   cy.visit('/')
   // This is needed to ensure the cookies are send
   Cypress.Cookies.debug(true)
+  // Close dialog popup
+  cy.get('div[role=dialog] button[type=button][aria-label=close]').click()
+
   // Login on Auth0.
-  cy.origin(Cypress.env('apiAuth'), { args: { username, password } }, ({ username, password }) => {
-    cy.visit(
-      '/v2/auth?client=gfw&callback=http%3A%2F%2Flocalhost%3A3003%2F%3FcallbackUrlStorage%3Dtrue&locale=en'
-    )
-    cy.get('input#email').type(username)
-    cy.get('input#password').type(password, { log: false })
-    cy.get('input[type=submit]').click()
-  })
+  cy.get('a[href*="auth"]', { timeout: 10000 }).click()
+  cy.log(`logging in with ${username}`)
+
+  cy.get('input#email').type(username)
+  cy.get('input#password').type(password, { log: false })
+  cy.get('input[type=submit]').click()
 
   // Ensure API Auth has redirected us back to the app.
   // cy.url().should('equal', 'http://localhost:3003/')
