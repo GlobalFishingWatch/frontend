@@ -102,6 +102,11 @@ steps:
         BASIC_AUTH_PASS=$_BASIC_AUTH_PASS \
         --allow-unauthenticated
 
+        gcloud run services describe $service_name \
+           --platform managed \
+           --region $_RUN_REGION \
+           --format 'value(status.url)' > app_url
+
   - id: 'i18n-labels publish stable'
     name: gcr.io/cloud-builders/gcloud
     waitFor: ['deploy-cloud-run']
@@ -117,6 +122,26 @@ steps:
         if [ $workspace_env = 'production' ]; then
           gcloud -q beta builds triggers run --branch=develop ui-libs-i18n-labels-stable
         fi
+
+  - id: 'smoke-test-e2e'
+    waitFor: ['deploy-cloud-run']
+    name: node:18-alpine
+    # entrypoint: yarn
+    # args: ['nx', 'run', 'fishing-map-e2e:test-dev', '--parallel']
+    env:
+      - 'CYPRESS_basicAuth=$_BASIC_AUTH'
+      - 'CYPRESS_basicAuthUser=$_BASIC_AUTH_USER'
+      - 'CYPRESS_basicAuthPass=$_BASIC_AUTH_PASS'
+      - 'CYPRESS_apiAuthUser=$_CYPRESS_apiAuthUser'
+      - 'CYPRESS_apiAuthPass=$_CYPRESS_apiAuthPass'
+      - 'CYPRESS_apiUserInitials=$_CYPRESS_apiUserInitials'
+    args:
+      - '-eEuo'
+      - 'pipefail'
+      - '-c'
+      - |-
+        CYPRESS_BASE_URL=`cat app_url`
+        yarn nx run fishing-map-e2e:test-dev --parallel
 
 timeout: 1800s
 options:
