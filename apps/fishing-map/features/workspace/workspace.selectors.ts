@@ -3,6 +3,7 @@ import { RootState } from 'reducers'
 import { WorkspaceState, WorkspaceStateProperty } from 'types'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { selectQueryParam } from 'routes/routes.selectors'
+import { WorkspaceCategory } from 'data/workspaces'
 
 export const selectLastVisitedWorkspace = (state: RootState) => state.workspace.lastVisited
 export const selectWorkspace = (state: RootState) => state.workspace.data
@@ -15,7 +16,7 @@ export const selectCurrentWorkspaceId = createSelector([selectWorkspace], (works
 })
 
 export const selectCurrentWorkspaceCategory = createSelector([selectWorkspace], (workspace) => {
-  return workspace?.category
+  return workspace?.category || WorkspaceCategory.FishingActivity
 })
 
 export const selectIsGFWWorkspace = createSelector([selectWorkspace], (workspace) => {

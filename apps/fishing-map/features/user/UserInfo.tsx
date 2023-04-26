@@ -22,7 +22,7 @@ function UserInfo() {
   const onLogoutClick = useCallback(async () => {
     setLogoutLoading(true)
     await dispatch(logoutUserThunk({ loginRedirect: false }))
-    dispatch(updateLocation(HOME, { replaceQuery: true }))
+    dispatch(updateLocation(HOME, { query: {}, replaceQuery: true }))
     await dispatch(fetchUserThunk({ guest: true }))
     setLogoutLoading(false)
   }, [dispatch])

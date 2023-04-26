@@ -14,7 +14,7 @@ import {
   selectWorkspaceId,
 } from 'routes/routes.selectors'
 import menuBgImage from 'assets/images/menubg.jpg'
-import { useLocationConnect, useReplaceLoginUrl } from 'routes/routes.hook'
+import { useLocationConnect, useNextAndRFRSync, useReplaceLoginUrl } from 'routes/routes.hook'
 import Sidebar from 'features/sidebar/Sidebar'
 import Footer from 'features/footer/Footer'
 import {
@@ -101,6 +101,7 @@ const setMobileSafeVH = () => {
 function App(): React.ReactElement {
   useAnalytics()
   useReplaceLoginUrl()
+  useNextAndRFRSync()
   const map = useMapInstance()
   const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)

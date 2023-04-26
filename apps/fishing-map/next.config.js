@@ -23,6 +23,10 @@ const nextConfig = {
         source: '/:category/:workspace/vessel/:datasetId/:any*',
         destination: '/:category/:workspace/vessel/:datasetId/:any*',
       },
+      {
+        source: '/:category/:workspace/:any*',
+        destination: '/:category/:workspace/:any*',
+      },
       // Rewrite everything to `pages/index`
       {
         source: '/:any*',

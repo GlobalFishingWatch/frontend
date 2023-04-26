@@ -2,6 +2,9 @@ import { Fragment, ReactNode, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { Trans, useTranslation } from 'react-i18next'
+// import Link from 'redux-first-router-link'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 import {
   Vessel,
   DatasetTypes,
@@ -44,6 +47,7 @@ import {
   selectCurrentWorkspaceCategory,
   selectCurrentWorkspaceId,
 } from 'features/workspace/workspace.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -58,6 +62,8 @@ type LayerPanelProps = {
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { dispatchLocation } = useLocationConnect()
+  const router = useRouter()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { url: infoUrl, dataset } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
   const resources = useSelector(selectResources)
@@ -263,10 +269,17 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         </ul>
       }
     >
-      <a
-        href={`${PATH_BASENAME}/${workspaceCategory}/${workspaceId}/${VESSEL.toLowerCase()}/${
-          dataset?.id
-        }/${vesselId}?${locationSearch}`}
+      {/* <Link
+        className={styles.workspaceLink}
+        to={{
+          type: VESSEL,
+          payload: {
+            category: workspaceCategory,
+            workspaceId: workspaceId,
+            datasetId: dataset?.id,
+            vesselId,
+          },
+        }}
       >
         <IconButton
           size="small"
@@ -284,7 +297,30 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           // onClick={onToggleInfoOpen}
           tooltipPlacement="top"
         />
-      </a>
+      </Link> */}
+      <Link
+        href={`${PATH_BASENAME}/${workspaceCategory}/${workspaceId}/${VESSEL.toLowerCase()}/${
+          dataset?.id
+        }/${vesselId}?${locationSearch}`}
+        // replace
+      >
+        <IconButton
+          size="small"
+          icon={infoError ? 'warning' : 'info'}
+          type={infoError ? 'warning' : 'default'}
+          disabled={infoError}
+          tooltip={
+            infoError
+              ? `${t(
+                  'errors.vesselLoading',
+                  'There was an error loading the vessel details'
+                )} (${vesselId})`
+              : t('layer.infoOpen', 'Show info')
+          }
+          // onClick={onToggleInfoOpen}
+          tooltipPlacement="top"
+        />
+      </Link>
     </ExpandedContainer>
   )
 

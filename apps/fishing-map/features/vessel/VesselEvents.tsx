@@ -8,10 +8,11 @@ export type VesselEventsProps = {
 }
 
 export const VesselEventsList = ({ events }: VesselEventsProps) => {
+  if (!events?.length) return null
   return (
     <ul>
-      {events.map((event) => (
-        <li>{event.id}</li>
+      {events.slice(0, 50).map((event) => (
+        <li key={event.id}>{event.id}</li>
       ))}
     </ul>
   )
@@ -19,12 +20,13 @@ export const VesselEventsList = ({ events }: VesselEventsProps) => {
 
 export const VesselEventsSummary = ({ events }: VesselEventsProps) => {
   const eventsByType = useMemo(() => {
+    if (!events?.length) return {}
     return groupBy(events, 'type')
   }, [events])
   return (
     <ul>
       {Object.keys(eventsByType).map((event) => (
-        <li>{event}</li>
+        <li key={event}>{event}</li>
       ))}
     </ul>
   )

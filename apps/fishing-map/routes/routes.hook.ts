@@ -1,18 +1,68 @@
 import { useSelector } from 'react-redux'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { parse } from 'qs'
+import { useRouter } from 'next/router'
 import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 import { parseWorkspace } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_CALLBACK_URL_PARAM, useLoginRedirect } from '@globalfishingwatch/react-hooks'
 import { QueryParams } from 'types'
 import {
   selectCurrentLocation,
+  selectIsVesselDetailLocation,
   selectLocationPayload,
   selectLocationType,
 } from 'routes/routes.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { ROUTE_TYPES } from './routes'
+import {
+  selectCurrentWorkspaceCategory,
+  selectCurrentWorkspaceId,
+} from 'features/workspace/workspace.selectors'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
+import { HOME, ROUTE_TYPES, VESSEL } from './routes'
 import { updateLocation } from './routes.actions'
+
+export const useNextAndRFRSync = () => {
+  const router = useRouter()
+  console.log('🚀 ~ useNextAndRFRSync ~ router:', router)
+  const {
+    category = WorkspaceCategory.FishingActivity,
+    workspace = DEFAULT_WORKSPACE_ID,
+    datasetId = '',
+    vesselId = '',
+  } = router.query
+  const { dispatchLocation } = useLocationConnect()
+  const location = useSelector(selectLocationType)
+
+  const checkUrlUnsync = (url) => {
+    if (url.includes('/vessel/') && location !== VESSEL) {
+      console.log('dispatching')
+      updateReportLocation()
+    }
+  }
+  const updateReportLocation = useCallback(() => {
+    dispatchLocation(
+      VESSEL,
+      {
+        payload: {
+          category,
+          workspaceId: workspace,
+          datasetId: 'public-global-all-vessels:v20201001',
+          vesselId: 'c07d01962-2339-d970-f490-352e951532af',
+        },
+      },
+      { replaceUrl: true }
+    )
+    router.events.off('routeChangeComplete', checkUrlUnsync)
+  }, [dispatchLocation])
+
+  useEffect(() => {
+    router.events.on('routeChangeComplete', checkUrlUnsync)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => {
+      router.events.off('routeChangeComplete', checkUrlUnsync)
+    }
+  }, [])
+}
 
 export const useReplaceLoginUrl = () => {
   const { redirectUrl, cleanRedirectUrl } = useLoginRedirect()
@@ -57,11 +107,16 @@ export const useLocationConnect = () => {
     (
       type: ROUTE_TYPES,
       params = {} as { query?: QueryParams; payload?: Record<string, any> },
-      replaceQuery = false
+      { replaceQuery = false, replaceUrl = false } = {}
     ) => {
       const { query = {}, payload: customPayload = {} } = params
       dispatch(
-        updateLocation(type, { query, payload: { ...payload, ...customPayload }, replaceQuery })
+        updateLocation(type, {
+          query,
+          payload: { ...payload, ...customPayload },
+          replaceQuery,
+          replaceUrl,
+        })
       )
     },
     [dispatch, payload]
