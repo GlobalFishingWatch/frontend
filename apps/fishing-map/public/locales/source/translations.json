@@ -509,7 +509,7 @@
     "firstTransmissionDate": "First transmission date",
     "fishingZone": "Fishing zone",
     "flag": "Flag",
-    "flag_short": "iso3",
+    "flag_short": "Flag",
     "fleet": "Fleet",
     "geartype": "Gear type",
     "gearType_short": "gear",
