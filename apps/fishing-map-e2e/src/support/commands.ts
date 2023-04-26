@@ -72,3 +72,16 @@ Cypress.Commands.add('store', (reducerName = '') => {
     })
     .then(cb)
 })
+
+Cypress.Commands.overwrite('visit', (originalFn, url, options) => {
+  options = options || {}
+  // Perform basic auth if defined in ENV variables
+  if (Cypress.env('basicAuth') === 'Restricted') {
+    options.auth = {
+      username: Cypress.env('basicAuthUser'),
+      password: Cypress.env('basicAuthPass'),
+    }
+  }
+  // @ts-ignore
+  return originalFn(url, options)
+})
