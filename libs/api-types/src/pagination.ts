@@ -2,6 +2,7 @@ export interface APIPagination<T = any> {
   entries: T[]
   metadata: {
     suggestion: string
+    datasets: string[]
   }
   limit: number
   nextOffset: number
