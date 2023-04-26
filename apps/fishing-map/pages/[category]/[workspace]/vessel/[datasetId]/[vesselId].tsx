@@ -1,5 +1,6 @@
 import path from 'path'
 import { useEffect, useState } from 'react'
+import Router, { useRouter } from 'next/router'
 import { RootState } from 'reducers'
 import { stringify } from 'qs'
 import { Logo, SplitView } from '@globalfishingwatch/ui-components'
@@ -136,8 +137,8 @@ type VesselPageProps = {
   vessel: Vessel
   events: ApiEvent[]
 }
+
 const VesselPage = (props: VesselPageProps) => {
-  // const isServer = typeof window !== 'undefined'
   const [isServer, setServer] = useState<boolean>(true)
   useEffect(() => setServer(false), [])
 
@@ -157,7 +158,11 @@ const VesselPage = (props: VesselPageProps) => {
   // return <VesselServer {...props} />
 
   if (isServer) {
-    return <VesselServer {...props} />
+    return (
+      <div style={{ opacity: 0 }}>
+        <VesselServer {...props} />
+      </div>
+    )
   }
 
   return <Index preloadedState={preloadedState} />

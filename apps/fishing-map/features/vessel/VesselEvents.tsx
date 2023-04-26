@@ -8,7 +8,6 @@ export type VesselEventsProps = {
 }
 
 export const VesselEventsList = ({ events }: VesselEventsProps) => {
-  console.log('🚀 ~ VesselEventsList ~ events:', events)
   return (
     <ul>
       {events.map((event) => (
