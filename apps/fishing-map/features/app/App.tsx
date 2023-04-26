@@ -101,7 +101,7 @@ const setMobileSafeVH = () => {
 function App(): React.ReactElement {
   useAnalytics()
   useReplaceLoginUrl()
-  useNextAndRFRSync()
+  // useNextAndRFRSync()
   const map = useMapInstance()
   const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)

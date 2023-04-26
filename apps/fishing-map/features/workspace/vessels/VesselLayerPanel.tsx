@@ -2,8 +2,8 @@ import { Fragment, ReactNode, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { Trans, useTranslation } from 'react-i18next'
-// import Link from 'redux-first-router-link'
-import Link from 'next/link'
+import Link from 'redux-first-router-link'
+import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import {
   Vessel,
@@ -269,58 +269,45 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         </ul>
       }
     >
-      {/* <Link
-        className={styles.workspaceLink}
-        to={{
-          type: VESSEL,
-          payload: {
-            category: workspaceCategory,
-            workspaceId: workspaceId,
-            datasetId: dataset?.id,
-            vesselId,
-          },
-        }}
-      >
-        <IconButton
-          size="small"
-          icon={infoError ? 'warning' : 'info'}
-          type={infoError ? 'warning' : 'default'}
-          disabled={infoError}
-          tooltip={
-            infoError
-              ? `${t(
-                  'errors.vesselLoading',
-                  'There was an error loading the vessel details'
-                )} (${vesselId})`
-              : t('layer.infoOpen', 'Show info')
-          }
-          // onClick={onToggleInfoOpen}
-          tooltipPlacement="top"
+      <Fragment>
+        <Link
+          className={styles.workspaceLink}
+          to={{
+            type: VESSEL,
+            payload: {
+              category: workspaceCategory,
+              workspaceId: workspaceId,
+              datasetId: dataset?.id,
+              vesselId,
+            },
+          }}
+        >
+          <IconButton
+            size="small"
+            icon={infoError ? 'warning' : 'info'}
+            type={infoError ? 'warning' : 'default'}
+            disabled={infoError}
+            tooltip={
+              infoError
+                ? `${t(
+                    'errors.vesselLoading',
+                    'There was an error loading the vessel details'
+                  )} (${vesselId})`
+                : t('layer.infoOpen', 'Show info')
+            }
+            // onClick={onToggleInfoOpen}
+            tooltipPlacement="top"
+          />
+        </Link>
+        <NextLink
+          href={`${workspaceCategory}/${workspaceId}/${VESSEL.toLowerCase()}/${
+            dataset?.id
+          }/${vesselId}?${locationSearch}`}
+          replace
+          prefetch
+          onClick={(ev) => ev.stopPropagation()}
         />
-      </Link> */}
-      <Link
-        href={`${PATH_BASENAME}/${workspaceCategory}/${workspaceId}/${VESSEL.toLowerCase()}/${
-          dataset?.id
-        }/${vesselId}?${locationSearch}`}
-        // replace
-      >
-        <IconButton
-          size="small"
-          icon={infoError ? 'warning' : 'info'}
-          type={infoError ? 'warning' : 'default'}
-          disabled={infoError}
-          tooltip={
-            infoError
-              ? `${t(
-                  'errors.vesselLoading',
-                  'There was an error loading the vessel details'
-                )} (${vesselId})`
-              : t('layer.infoOpen', 'Show info')
-          }
-          // onClick={onToggleInfoOpen}
-          tooltipPlacement="top"
-        />
-      </Link>
+      </Fragment>
     </ExpandedContainer>
   )
 

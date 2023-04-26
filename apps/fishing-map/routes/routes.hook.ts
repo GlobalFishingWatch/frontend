@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useRef } from 'react'
 import { parse } from 'qs'
 import { useRouter } from 'next/router'
+import { history } from 'redux-first-router'
 import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 import { parseWorkspace } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_CALLBACK_URL_PARAM, useLoginRedirect } from '@globalfishingwatch/react-hooks'
@@ -35,8 +36,8 @@ export const useNextAndRFRSync = () => {
 
   const checkUrlUnsync = (url) => {
     if (url.includes('/vessel/') && location !== VESSEL) {
-      console.log('dispatching')
-      updateReportLocation()
+      console.log('should dispatch vessel location?')
+      // updateReportLocation()
     }
   }
   const updateReportLocation = useCallback(() => {
@@ -57,6 +58,10 @@ export const useNextAndRFRSync = () => {
 
   useEffect(() => {
     router.events.on('routeChangeComplete', checkUrlUnsync)
+    window.addEventListener('popstate', (event) => {
+      console.log('popstate change')
+      console.log(`location: ${document.location}, state: ${JSON.stringify(event.state)}`)
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
     return () => {
       router.events.off('routeChangeComplete', checkUrlUnsync)
