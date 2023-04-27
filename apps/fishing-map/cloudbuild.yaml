@@ -86,22 +86,21 @@ steps:
         branch_service_name=`echo fishing-map-$BRANCH_NAME | sed -r 's,[/\.],-,g' | awk '{print substr(tolower($0),0,62)}'`
         service_name=${_RUN_SERVICE_NAME:-${branch_service_name}}
         gcloud beta run deploy \
-        $service_name \
-        --project \
-        $_RUN_PROJECT \
-        --image \
-        gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA \
-        --region \
-        $_RUN_REGION \
-        --platform managed \
-        --set-env-vars \
-        BASIC_AUTH=$_BASIC_AUTH \
-        --set-env-vars \
-        BASIC_AUTH_USER=$_BASIC_AUTH_USER \
-        --set-env-vars \
-        BASIC_AUTH_PASS=$_BASIC_AUTH_PASS \
-        --allow-unauthenticated
-
+          $service_name \
+          --project \
+          $_RUN_PROJECT \
+          --image \
+          gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA \
+          --region \
+          $_RUN_REGION \
+          --platform managed \
+          --set-env-vars \
+          BASIC_AUTH=$_BASIC_AUTH \
+          --set-env-vars \
+          BASIC_AUTH_USER=$_BASIC_AUTH_USER \
+          --set-env-vars \
+          BASIC_AUTH_PASS=$_BASIC_AUTH_PASS \
+          --allow-unauthenticated
         gcloud run services describe $service_name \
            --platform managed \
            --region $_RUN_REGION \
@@ -126,22 +125,21 @@ steps:
   - id: 'smoke-test-e2e'
     waitFor: ['deploy-cloud-run']
     name: node:18-alpine
-    # entrypoint: yarn
-    # args: ['nx', 'run', 'fishing-map-e2e:test-dev', '--parallel']
+    entrypoint: 'sh'
     env:
       - 'CYPRESS_basicAuth=$_BASIC_AUTH'
       - 'CYPRESS_basicAuthUser=$_BASIC_AUTH_USER'
       - 'CYPRESS_basicAuthPass=$_BASIC_AUTH_PASS'
-      - 'CYPRESS_apiAuthUser=$_CYPRESS_apiAuthUser'
-      - 'CYPRESS_apiAuthPass=$_CYPRESS_apiAuthPass'
-      - 'CYPRESS_apiUserInitials=$_CYPRESS_apiUserInitials'
+      - 'CYPRESS_apiAuthUser=$_CYPRESS_API_AUTH_USER'
+      - 'CYPRESS_apiAuthPass=$_CYPRESS_API_AUTH_PASS'
+      - 'CYPRESS_apiUserInitials=$_CYPRESS_API_USER_INITIALS'
     args:
       - '-eEuo'
       - 'pipefail'
       - '-c'
       - |-
-        CYPRESS_BASE_URL=`cat app_url`
-        yarn nx run fishing-map-e2e:test-dev --parallel
+        CYPRESS_BASE_URL=`cat app_url` \
+          yarn nx run fishing-map-e2e:test-dev --parallel
 
 timeout: 1800s
 options:
