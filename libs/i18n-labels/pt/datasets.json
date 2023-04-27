@@ -1806,7 +1806,7 @@
           "bunker_or_tanker": "bunker_or_tanker",
           "passenger": "passenger",
           "seismic_vessel": "seismic_vessel",
-          "other_non_fishing": "Other",
+          "other_non_fishing": "other_non_fishing",
           "unknown": "unknown"
         }
       },
