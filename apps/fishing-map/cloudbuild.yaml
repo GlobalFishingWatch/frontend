@@ -4,7 +4,30 @@ steps:
     waitFor: ['-']
     script: |
       #!/usr/bin/env bash
-      restore_cache --bucket=gs://frontend-cache-dependencies --key=yarn-$( checksum yarn.lock ) --key_fallback=yarn3-cache
+      restore_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=yarn-$( checksum yarn.lock ) \
+        --key_fallback=yarn3-cache
+
+  - id: 'generate-cypress-lock'
+    waitFor: ['restore_cache']
+    name: node:18-alpine
+    script: |
+      if [ -d "node_modules" ]; then
+        yarn info cypress version > cypress.lock
+      fi
+
+  - name: 'gcr.io/$PROJECT_ID/restore_cache'
+    id: restore_cypress_cache
+    waitFor: ['generate-cypress-lock']
+    script: |
+      #!/usr/bin/env bash
+      if [ -d "node_modules" ]; then
+        restore_cache \
+          --bucket=gs://frontend-cache-dependencies \
+          --key=cypress-$( checksum cypress.lock ) \
+          --key_fallback=cypress-cache
+      fi
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
@@ -14,7 +37,8 @@ steps:
         apk add git
         yarn set version 3.3.1
         yarn -v
-        yarn install --immutable
+        CYPRESS_CACHE_FOLDER=.cypress-cache yarn install --immutable
+        yarn info cypress version > cypress.lock
       fi
 
   - id: 'save_cache'
@@ -24,10 +48,22 @@ steps:
       - 'BRANCH_NAME=$BRANCH_NAME'
     script: |
       #!/usr/bin/env bash
-      save_cache --bucket=gs://frontend-cache-dependencies --key=yarn-$( checksum yarn.lock ) --path=./node_modules --no-clobber
+      save_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=yarn-$( checksum yarn.lock ) \
+        --path=./node_modules \
+        --no-clobber
+      save_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=cypress-$( checksum cypress.lock ) \
+        --path=.cypress-cache \
+        --no-clobber
       if [ -d ".yarn/cache" ]; then
         if [ $BRANCH_NAME == "dev" ]; then
-          save_cache --bucket=gs://frontend-cache-dependencies --key=yarn3-cache --path=./.yarn/cache
+          save_cache \
+            --bucket=gs://frontend-cache-dependencies \
+            --key=yarn3-cache \
+            --path=./.yarn/cache
         fi
       fi
 
@@ -139,6 +175,7 @@ steps:
       - '-c'
       - |-
         CYPRESS_BASE_URL=`cat app_url` \
+          CYPRESS_CACHE_FOLDER=.cypress-cache \
           yarn nx run fishing-map-e2e:test-dev --parallel
 
 timeout: 1800s
