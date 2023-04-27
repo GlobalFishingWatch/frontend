@@ -1806,7 +1806,7 @@
           "bunker_or_tanker": "crwdns25974:0crwdne25974:0",
           "passenger": "crwdns25976:0crwdne25976:0",
           "seismic_vessel": "crwdns25978:0crwdne25978:0",
-          "other_non_fishing": "crwdns25980:0crwdne25980:0",
+          "other_non_fishing": "crwdns30719:0crwdne30719:0",
           "unknown": "crwdns25828:0crwdne25828:0"
         }
       },
@@ -1863,6 +1863,18 @@
       "normalized_shipname": "crwdns10065:0crwdne10065:0",
       "lastTransmissionDate": "crwdns10067:0crwdne10067:0",
       "firstTransmissionDate": "crwdns10069:0crwdne10069:0"
+    }
+  },
+  "public-global-vessel-insights": {
+    "name": "crwdns30721:0crwdne30721:0",
+    "description": "crwdns30723:0crwdne30723:0",
+    "schema": {
+      "gap": "crwdns30725:0crwdne30725:0",
+      "coverage": "crwdns30727:0crwdne30727:0",
+      "portVisit": "crwdns30729:0crwdne30729:0",
+      "apparentFishing": "crwdns30731:0crwdne30731:0",
+      "likelyLoitering": "crwdns30733:0crwdne30733:0",
+      "likelyEncounters": "crwdns30735:0crwdne30735:0"
     }
   },
   "public-global-viirs-presence": {

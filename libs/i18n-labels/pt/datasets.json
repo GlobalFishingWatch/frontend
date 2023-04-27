@@ -1806,7 +1806,7 @@
           "bunker_or_tanker": "bunker_or_tanker",
           "passenger": "passenger",
           "seismic_vessel": "seismic_vessel",
-          "other_non_fishing": "Other",
+          "other_non_fishing": "other_non_fishing",
           "unknown": "unknown"
         }
       },
@@ -1863,6 +1863,18 @@
       "normalized_shipname": "Embarcação normalizado",
       "lastTransmissionDate": "última data de transmissão",
       "firstTransmissionDate": "primeira data de transmissão"
+    }
+  },
+  "public-global-vessel-insights": {
+    "name": "AIS (Insights)",
+    "description": "Vessel Insights from AIS",
+    "schema": {
+      "gap": "gap",
+      "coverage": "coverage",
+      "portVisit": "portVisit",
+      "apparentFishing": "apparentFishing",
+      "likelyLoitering": "likelyLoitering",
+      "likelyEncounters": "likelyEncounters"
     }
   },
   "public-global-viirs-presence": {
