@@ -160,8 +160,8 @@ steps:
 
   - id: 'smoke-test-e2e'
     waitFor: ['deploy-cloud-run']
-    name: node:18-alpine
-    entrypoint: 'sh'
+    name: cypress/included:12.10.0
+    entrypoint: 'bash'
     env:
       - 'CYPRESS_basicAuth=$_BASIC_AUTH'
       - 'CYPRESS_basicAuthUser=$_BASIC_AUTH_USER'
