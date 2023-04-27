@@ -1865,6 +1865,18 @@
       "firstTransmissionDate": "crwdns10069:0crwdne10069:0"
     }
   },
+  "public-global-vessel-insights": {
+    "name": "crwdns30721:0crwdne30721:0",
+    "description": "crwdns30723:0crwdne30723:0",
+    "schema": {
+      "gap": "crwdns30725:0crwdne30725:0",
+      "coverage": "crwdns30727:0crwdne30727:0",
+      "portVisit": "crwdns30729:0crwdne30729:0",
+      "apparentFishing": "crwdns30731:0crwdne30731:0",
+      "likelyLoitering": "crwdns30733:0crwdne30733:0",
+      "likelyEncounters": "crwdns30735:0crwdne30735:0"
+    }
+  },
   "public-global-viirs-presence": {
     "name": "crwdns25202:0crwdne25202:0",
     "description": "crwdns25982:0crwdne25982:0",
