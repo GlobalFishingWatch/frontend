@@ -20,8 +20,8 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/:category/:workspace/vessel/:datasetId/:any*',
-        destination: '/:category/:workspace/vessel/:datasetId/:any*',
+        source: '/:category/:workspace/vessel/:datasetId/:vesselId/:any*',
+        destination: '/:category/:workspace/vessel/:datasetId/:vesselId/:any*',
       },
       {
         source: '/:category/:workspace/:any*',
