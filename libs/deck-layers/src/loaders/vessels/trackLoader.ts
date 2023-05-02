@@ -1,5 +1,6 @@
 import Pbf from 'pbf'
 import { LoaderWithParser } from '@loaders.gl/loader-utils'
+import { Point, Segment, VesselTrackData } from '@globalfishingwatch/api-types'
 import { START_TIMESTAMP } from '../constants'
 
 export const trackLoader: LoaderWithParser = {
@@ -25,13 +26,13 @@ const parseTrack = (arrayBuffer: ArrayBuffer) => {
   if (!data.length) return []
   const segments = trackValueArrayToSegments(data, ['lonlat', 'timestamp'])
   const formattedSegments = [
-    segments.map((segment) => ({
+    segments.map((segment: Segment) => ({
       waypoints: segment.map((point) => ({
-        coordinates: [point.longitude, point.latitude],
+        coordinates: [point.longitude!, point.latitude!],
         // Because timestamps are stored as 32-bit floating numbers, raw unix epoch time can not be used.
         // You may test the validity of a timestamp by calling Math.fround(t) to check if there would be any loss of precision.
         // Also deduct start timestamp from each data point to avoid overflow
-        timestamp: Math.fround(point.timestamp - START_TIMESTAMP),
+        timestamp: Math.fround(point.timestamp! - START_TIMESTAMP),
       })),
     })),
   ]
@@ -41,13 +42,14 @@ const parseTrack = (arrayBuffer: ArrayBuffer) => {
 export const DEFAULT_NULL_VALUE = -Math.pow(2, 31)
 
 const transformerByField = {
-  latitude: (value) => value / Math.pow(10, 6),
-  longitude: (value) => value / Math.pow(10, 6),
-  timestamp: (value) => value * Math.pow(10, 3),
+  latitude: (value: Point['latitude']) => value! / Math.pow(10, 6),
+  longitude: (value: Point['longitude']) => value! / Math.pow(10, 6),
+  timestamp: (value: Point['timestamp']) => value! * Math.pow(10, 3),
 }
 
-export const trackValueArrayToSegments = (valueArray, fields_) => {
+export const trackValueArrayToSegments = (valueArray: [], fields_: string[]): Segment[] => {
   if (!fields_.length) {
+    console.log('No fields provided to trackValueArrayToSegments')
     throw new Error()
   }
 
@@ -58,18 +60,18 @@ export const trackValueArrayToSegments = (valueArray, fields_) => {
   }
   const numFields = fields.length
 
-  let numSegments
-  const segmentIndices = []
+  let numSegments: number
+  const segmentIndices: number[] = []
   const segments = []
 
   let nullValue = DEFAULT_NULL_VALUE
-  let currentSegment = []
-  let currentPoint = {}
+  let currentSegment: Point[] = []
+  let currentPoint: Point = {}
   let pointsFieldIndex = 0
   let currentPointFieldIndex = 0
   let currentSegmentIndex = 0
   let currentSegPointIndex = 0
-  valueArray.forEach((value, index) => {
+  valueArray.forEach((value: number, index: number) => {
     if (index === 0) {
       nullValue = value
     } else if (index === 1) {
@@ -129,7 +131,3 @@ export const trackValueArrayToSegments = (valueArray, fields_) => {
 
   return segments
 }
-
-// const getDate = (day) => {
-//   return new Date(day * 1000 * 60 * 60 * 24).toDateString();
-// };

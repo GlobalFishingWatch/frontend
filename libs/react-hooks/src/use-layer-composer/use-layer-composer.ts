@@ -12,8 +12,8 @@ import {
 import {
   useBasemapLayer,
   useContextsLayer,
-  vesselLayersAtom,
-  useVesselsLayer,
+  useVesselsLayers,
+  vesselLayersSelector,
   selectVesselsLayersAtom,
   vesselLayersInstancesSelector,
   zIndexSortedArray,
@@ -136,8 +136,12 @@ export function useDeckLayerComposer({
     datasetId: contextLayersGenerators.length ? contextLayersGenerators[0].datasetId : 'eez',
   })
 
-  useVesselsLayer(vesselLayersGenerators, globalGeneratorConfig, vesselLayersGeneratorsIds)
+  useVesselsLayers(
+    vesselLayersGenerators,
+    globalGeneratorConfig,
+    vesselLayersGeneratorsIds,
+    highlightedTime
+  )
   const [vesselsLayers] = useAtom(vesselLayersInstancesSelector)
-
   return { layers: zIndexSortedArray([basemapLayer, contextLayer, ...vesselsLayers]) }
 }
