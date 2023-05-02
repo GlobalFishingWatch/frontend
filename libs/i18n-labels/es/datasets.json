@@ -2114,8 +2114,8 @@
     }
   },
   "public-mpa-all": {
-    "name": "AMPs",
-    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: November 2022. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer.",
+    "name": "AMPs (WDPA)",
+    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer.",
     "schema": {}
   },
   "public-mpa-no-take": {
@@ -2608,17 +2608,17 @@
     }
   },
   "public-protectedseas": {
-    "name": "Protected Seas",
-    "description": "Protected seas (only category IUCN MPA)",
+    "name": "AMPs (ProtectedSeas)",
+    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: ProtectedSeas Navigator. See more detailed <a href='https://mpa.protectedseas.net/' target='_blank' rel=noopener'>metadata information</a> for this layer. The restrictions within the Level of Fishing Protection filter are as follows, Least restrictive: No known fishing restrictions; Less restrictive: Few species- or gear-specific restrictions apply; Moderately restrictive: Several species- or gear-specific restrictions apply; or either commercial fishing or recreational fishing is entirely prohibited; Heavily restrictive: Fishing is mostly prohibited, with few exceptions; and Most restrictive: Fishing is prohibited.",
     "schema": {
       "removal_of_marine_life_is_prohibited": {
-        "keyword": "removal_of_marine_life_is_prohibited",
+        "keyword": "Level of Fishing Protection",
         "enum": {
-          "1": "1",
-          "2": "2",
-          "3": "3",
-          "4": "4",
-          "5": "5"
+          "1": "Least restrictive",
+          "2": "Less restrictive",
+          "3": "Moderately restrictive",
+          "4": "Heavily restrictive",
+          "5": "Most restrictive"
         }
       }
     }
@@ -2681,7 +2681,7 @@
     "schema": {}
   },
   "public-wdpa-may-2021-marine": {
-    "name": "MPAs (Source: WDPA)",
+    "name": "MPAs (WDPA)",
     "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: May 2021.",
     "schema": {}
   },
