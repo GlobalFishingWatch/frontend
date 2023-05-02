@@ -117,12 +117,12 @@ function App(): React.ReactElement {
   }, [dispatch])
 
   useEffect(() => {
-    if (map && map?.getStyle()) {
-      try {
+    try {
+      if (map && map?.resize) {
         map.resize()
-      } catch (e) {
-        console.warn(e)
       }
+    } catch (e) {
+      console.warn(e)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReportLocation, sidebarOpen, showTimebar, isTimeComparisonReport])
