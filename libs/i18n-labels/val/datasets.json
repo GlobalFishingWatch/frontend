@@ -2420,6 +2420,53 @@
       "vessel_id": "crwdns10439:0crwdne10439:0"
     }
   },
+  "public-png-fishing-effort": {
+    "name": "crwdns30737:0crwdne30737:0",
+    "description": "crwdns30739:0crwdne30739:0",
+    "schema": {
+      "lat": "crwdns30741:0crwdne30741:0",
+      "lon": "crwdns30743:0crwdne30743:0",
+      "flag": {
+        "keyword": "crwdns30745:0crwdne30745:0",
+        "enum": {
+          "PNG": "crwdns30747:0crwdne30747:0"
+        }
+      },
+      "hours": "crwdns30749:0crwdne30749:0",
+      "vessel_id": "crwdns30751:0crwdne30751:0",
+      "elevation_m": "crwdns30753:0crwdne30753:0",
+      "vessel-groups": "crwdns30755:0crwdne30755:0",
+      "distance_from_port_m": "crwdns30757:0crwdne30757:0",
+      "distance_from_shore_m": "crwdns30759:0crwdne30759:0"
+    }
+  },
+  "public-png-fishing-vessels": {
+    "name": "crwdns30761:0crwdne30761:0",
+    "description": "crwdns30763:0crwdne30763:0",
+    "schema": {
+      "id": "crwdns30765:0crwdne30765:0",
+      "flag": "crwdns30767:0crwdne30767:0",
+      "source": "crwdns30769:0crwdne30769:0",
+      "callsign": "crwdns30771:0crwdne30771:0",
+      "shipname": "crwdns30773:0crwdne30773:0",
+      "lastTransmissionDate": "crwdns30775:0crwdne30775:0",
+      "firstTransmissionDate": "crwdns30777:0crwdne30777:0"
+    }
+  },
+  "public-png-presence": {
+    "name": "crwdns30779:0crwdne30779:0",
+    "description": "crwdns30781:0crwdne30781:0",
+    "schema": {
+      "lat": "crwdns30783:0crwdne30783:0",
+      "lon": "crwdns30785:0crwdne30785:0",
+      "flag": "crwdns30787:0crwdne30787:0",
+      "vessel_id": "crwdns30789:0crwdne30789:0",
+      "elevation_m": "crwdns30791:0crwdne30791:0",
+      "vessel-groups": "crwdns30793:0crwdne30793:0",
+      "distance_from_port_m": "crwdns30795:0crwdne30795:0",
+      "distance_from_shore_m": "crwdns30797:0crwdne30797:0"
+    }
+  },
   "public-presence-viirs-match-prototype": {
     "name": "crwdns18220:0crwdne18220:0",
     "description": "crwdns25990:0crwdne25990:0",

@@ -2420,6 +2420,53 @@
       "vessel_id": "vessel_id"
     }
   },
+  "public-png-fishing-effort": {
+    "name": "Papua New Guinea VMS",
+    "description": "Vessel monitoring system (VMS) data is provided by the The National Fisheries Authority of Papua New Guinea. Data is collected using Papua New Guinea's vessel monitoring (VMS) system via satellites, that contains vessel's identifiers and location, and is published on a two-day delay. Global Fishing Watch infers speed and course for each vessel location and analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity”. It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity”, “fishing” or “fishing effort”, as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": {
+        "keyword": "flag",
+        "enum": {
+          "PNG": "PNG"
+        }
+      },
+      "hours": "hours",
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "public-png-fishing-vessels": {
+    "name": "Papua New Guinea VMS (Fishing Vessels)",
+    "description": "Dataset for VMS Papua New Guinea (Public)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "callsign": "callsign",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
+  "public-png-presence": {
+    "name": "Papua New Guinea VMS",
+    "description": "Description pending",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
   "public-presence-viirs-match-prototype": {
     "name": "VIIRS",
     "description": "The night lights vessel detections layer, known as visible infrared imaging radiometer suite or VIIRS, shows vessels at sea that satellites have detected by the light they emit at night. Though not exclusively associated with fishing vessels, this activity layer is likely to show vessels associated with activities like squid fishing, which use bright lights and fish at night.<br/>\n<br/>\nBased on the Suomi NPP satellite, the VIIRS sensor makes a pass across the entire planet at least once every night, detecting lights to provide at least one daily observation globally. Due to the orbit design of polar orbiting satellites, regions closer to polar will have more over-passes per day, while equatorial regions have only one over-pass daily.<br/> \n<br/>\nBecause the vessels are detected solely based on light emission, we can detect individual vessels and even entire fishing fleets that may not broadcast identity information and so may not be represented elsewhere on the Global Fishing Watch map. Global Fishing Watch ingests boat detections processed from low light imaging data collected by the U.S. National Oceanic and Atmospheric Administration (NOAA) VIIRS. The boat detections are processed in near-real time by the <a href='https://eogdata.mines.edu/products/vbd/' target='_blank' rel=noopener'>Earth Observation Group</a> at the Colorado School of Mines. The data, known as VIIRS boat detections, picks up the presence of vessels, including those fishing using lights to attract catch or to conduct operations at night.Lights from fixed offshore infrastructure and other non-vessel sources are excluded. Read more about VIIRS night light vessel detections, and download the <a href='https://eogdata.mines.edu/products/vbd/' target='_blank' rel=noopener'>data</a>.<br/>\n<br/>\nGlobal Fishing Watch has developed a sophisticated system to match available automatic identification system (AIS) data to respective night light vessel detections. This matching is done using a probabilistic model that determines AIS-message/VIIRS-detection pairs based on all available AIS records right before and right after the time the satellite VIIRS image was taken, as well as the probability of pairing a specific AIS message to any of the vessels appearing on that image. Using this information, Global Fishing Watch has added the experimental ability to filter detections based on vessel type and gear type within the VIIRS activity layer.<br/>\n<br/>\nMore than 85% of the detections are from vessels that lack AIS or publicly shared vessel monitoring system (VMS) transponders. The global addition of the VIIRS layer enables you to rapidly filter the night light detections that either were matched or not with AIS where vessel identification is available.<br/>\n<br/>\nRadiance indicates the brightness of the light source received by the VIIRS sensor. Radiance is impacted by the moon, clouds, and the angle of the vessel from the satellite. Two vessels with the same brightness, or light intensity, may have different radiance levels depending on the conditions. In general, vessels that are not actively fishing using light may have lower radiance levels. Exceptions should be considered when vessels are approaching a coastline. To further explore how vessel lights at night emit different radiance levels, the VIIRS activity layer can be filtered to specific ranges of interest associated with different human behaviours.<br/>\n<br/>\nThose using night light detections data should consider the South Atlantic Anomaly (SAA), an area where the Earth's inner Van Allen radiation belt is at its lowest altitude, allowing more energetic particles from space to penetrate. When such particles hit the sensors on a satellite, this can create a false signal which might cause the algorithm to recognize it as a boat detection. A filtration algorithm has been applied but there may still be some mis-identification.",
