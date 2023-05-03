@@ -227,6 +227,10 @@
     "context-layer-mpa": {
       "dataWarning": "crwdns18110:0crwdne18110:0",
       "dataWarningDetail": "crwdns18112:0crwdne18112:0"
+    },
+    "context-layer-protectedseas": {
+      "dataWarning": "crwdns30799:0crwdne30799:0",
+      "dataWarningDetail": "crwdns30801:0crwdne30801:0"
     }
   },
   "download": {
