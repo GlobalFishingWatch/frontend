@@ -29,8 +29,8 @@ export type VesselWithDatasets = Omit<Vessel, 'dataset'> & {
 }
 export type SearchType = 'basic' | 'advanced'
 export type SearchFilter = {
-  lastTransmissionDate?: string
-  firstTransmissionDate?: string
+  last_transmission_date?: string
+  first_transmission_date?: string
   sources?: MultiSelectOption<string>[]
 } & Partial<Record<SupportedDatasetSchema, MultiSelectOption<string>[]>>
 
@@ -101,8 +101,8 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           'flag',
           'fleet',
           'origin',
-          'lastTransmissionDate',
-          'firstTransmissionDate',
+          'last_transmission_date',
+          'first_transmission_date',
         ]
         const orCombinedFields: AdvancedSearchQueryFieldKey[] = [
           'shipname',
@@ -141,9 +141,12 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         params: [],
         query: [
           { id: 'datasets', value: datasets.map((d) => d.id) },
-          { id: 'limit', value: RESULTS_PER_PAGE },
-          { id: 'offset', value: offset },
-          { id: 'query', value: encodeURIComponent(advancedQuery || query) },
+          // { id: 'limit', value: RESULTS_PER_PAGE },
+          // { id: 'offset', value: offset },
+          {
+            id: advancedQuery ? 'where' : 'query',
+            value: encodeURIComponent(advancedQuery || query),
+          },
         ],
       }
 
@@ -159,7 +162,6 @@ export const fetchVesselSearchThunk = createAsyncThunk(
 
         const vesselsWithDataset = uniqSearchResults.flatMap((vessel) => {
           if (!vessel) return []
-
           const infoDataset = selectDatasetById(vessel.dataset)(state as any)
           if (!infoDataset) return []
 

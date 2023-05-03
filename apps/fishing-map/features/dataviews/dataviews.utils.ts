@@ -24,6 +24,7 @@ import {
 } from 'data/workspaces'
 import { isPrivateDataset } from 'features/datasets/datasets.utils'
 import { Area } from 'features/areas/areas.slice'
+import { IDENTITY_VESSEL_DATAVIEW_ID } from 'features/dataviews/dataviews.mock'
 
 // used in workspaces with encounter events layers
 export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter-events'
@@ -51,6 +52,7 @@ export const getVesselDataviewInstanceDatasetConfig = (
     datasetsConfig.push({
       datasetId: infoDatasetId,
       params: [{ id: 'vesselId', value: vesselId }],
+      query: [{ id: 'datasets', value: [infoDatasetId] }],
       endpoint: EndpointId.Vessel,
     })
   }
@@ -91,7 +93,8 @@ export const getVesselDataviewInstance = (
 ): DataviewInstance<GeneratorType> => {
   const vesselDataviewInstance = {
     id: `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
-    ...vesselDataviewInstanceTemplate(TEMPLATE_VESSEL_DATAVIEW_SLUG),
+    // ...vesselDataviewInstanceTemplate(TEMPLATE_VESSEL_DATAVIEW_SLUG),
+    ...vesselDataviewInstanceTemplate(IDENTITY_VESSEL_DATAVIEW_ID),
     datasetsConfig: getVesselDataviewInstanceDatasetConfig(vessel.id, datasets),
   }
   return vesselDataviewInstance
