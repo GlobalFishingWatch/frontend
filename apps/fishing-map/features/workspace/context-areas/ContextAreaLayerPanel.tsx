@@ -178,7 +178,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           )}
           {layerActive &&
             hasSchemaFilters &&
-            HIDDEN_DATAVIEW_FILTERS.includes(dataview.dataviewId as string) && (
+            !HIDDEN_DATAVIEW_FILTERS.includes(dataview.dataviewId as string) && (
               <ExpandedContainer
                 visible={filterOpen}
                 onClickOutside={closeExpandedContainer}
