@@ -19,7 +19,13 @@ import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import GFWOnly from 'features/user/GFWOnly'
 import { ROOT_DOM_ELEMENT } from 'data/config'
-import { ONLY_GFW_STAFF_DATAVIEW_SLUGS } from 'data/workspaces'
+import {
+  BASEMAP_DATAVIEW_INSTANCE_ID,
+  EEZ_DATAVIEW_INSTANCE_ID,
+  MPA_DATAVIEW_INSTANCE_ID,
+  ONLY_GFW_STAFF_DATAVIEW_SLUGS,
+  PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
+} from 'data/workspaces'
 import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/dataviews.selectors'
 import { useMapDataviewFeatures } from 'features/map/map-sources.hooks'
 import {
@@ -51,7 +57,12 @@ type LayerPanelProps = {
   onToggle?: () => void
 }
 
-const DATAVIEWS_WARNING = ['context-layer-eez', 'context-layer-mpa', 'basemap-labels']
+const DATAVIEWS_WARNING = [
+  EEZ_DATAVIEW_INSTANCE_ID,
+  MPA_DATAVIEW_INSTANCE_ID,
+  BASEMAP_DATAVIEW_INSTANCE_ID,
+  PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
+]
 const LIST_ELEMENT_HEIGHT = 30
 const LIST_ELLIPSIS_HEIGHT = 14
 const LIST_MARGIN_HEIGHT = 10
