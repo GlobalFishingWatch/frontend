@@ -74,6 +74,11 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           startTime: this.props.startTime,
           endTime: this.props.endTime,
           color: hexToRgb(this.props.themeColor),
+          visibleEvents: this.props.visibleEvents,
+          getEventVisibility: (d: ApiEvent) => (this.props.visibleEvents?.includes(d.type) ? 1 : 0),
+          updateTriggers: {
+            getEventVisibility: [this.props.visibleEvents],
+          },
           filterRange: [this.props.startTime, this.props.endTime],
           extensions: [new DataFilterExtension({ filterSize: 1 })],
         })

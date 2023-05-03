@@ -4,6 +4,7 @@ import { atom, useSetAtom, useAtom, useAtomValue } from 'jotai'
 import { selectAtom, splitAtom } from 'jotai/utils'
 import { focusAtom } from 'jotai-optics'
 import type { OpticFor } from 'optics-ts'
+import { EventTypes } from '@globalfishingwatch/api-types'
 import { START_TIMESTAMP } from '../../loaders/constants'
 import { VesselEventsLayer } from './VesselEventsLayer'
 import { VesselTrackLayer } from './VesselTrackLayer'
@@ -69,7 +70,8 @@ export const useVesselsLayers = (
   vesselGeneratorConfig: vesselGeneratorConfig[],
   globalConfig: globalConfig,
   vesselLayersGeneratorsIds: string[],
-  highlightedTime?: { start: string; end: string }
+  highlightedTime?: { start: string; end: string },
+  visibleEvents?: EventTypes[]
 ) => {
   const { start, end, hoveredFeatures, clickedFeatures } = globalConfig
 
@@ -121,6 +123,7 @@ export const useVesselsLayers = (
         clickedFeatures,
         highlightEndTime,
         highlightStartTime,
+        visibleEvents,
       })
       vesselsLayers.current = [
         ...vesselsLayers.current.filter((v) => v.id !== id),
@@ -132,6 +135,14 @@ export const useVesselsLayers = (
       ]
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vesselLayersGeneratorsIds, start, end, highlightEndTime, highlightStartTime, vs])
+  }, [
+    vesselLayersGeneratorsIds,
+    start,
+    end,
+    highlightEndTime,
+    highlightStartTime,
+    vs,
+    visibleEvents,
+  ])
   setVesselLayers(vesselsLayers.current)
 }
