@@ -29,8 +29,8 @@ export type VesselWithDatasets = Omit<Vessel, 'dataset'> & {
 }
 export type SearchType = 'basic' | 'advanced'
 export type SearchFilter = {
-  last_transmission_date?: string
-  first_transmission_date?: string
+  lastTransmissionDate?: string
+  firstTransmissionDate?: string
   mmsi?: string
   imo?: string
   callsign?: string
@@ -66,8 +66,8 @@ const initialState: SearchState = {
   suggestionClicked: false,
   option: 'basic',
   filters: {
-    last_transmission_date: undefined,
-    first_transmission_date: undefined,
+    lastTransmissionDate: undefined,
+    firstTransmissionDate: undefined,
     mmsi: undefined,
     imo: undefined,
     callsign: undefined,
@@ -110,8 +110,8 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           'flag',
           'fleet',
           'origin',
-          'last_transmission_date',
-          'first_transmission_date',
+          'lastTransmissionDate',
+          'firstTransmissionDate',
           'mmsi',
           'imo',
           'codMarinha',

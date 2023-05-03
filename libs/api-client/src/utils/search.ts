@@ -21,8 +21,6 @@ export type AdvancedSearchQueryFieldKey =
   // TODO remove camelCase once api are stable
   | 'lastTransmissionDate'
   | 'firstTransmissionDate'
-  | 'last_transmission_date'
-  | 'first_transmission_date'
 
 export type AdvancedSearchQueryField = {
   key: AdvancedSearchQueryFieldKey
@@ -79,12 +77,6 @@ const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFiel
     operator: '>=',
   },
   firstTransmissionDate: {
-    operator: '<=',
-  },
-  last_transmission_date: {
-    operator: '>=',
-  },
-  first_transmission_date: {
     operator: '<=',
   },
 }

@@ -42,7 +42,7 @@ function SearchFilters() {
   const { start, end } = useTimerangeConnect()
   const datasets = useSelector(selectAdvancedSearchDatasets)
   const { searchFilters, setSearchFilters } = useSearchFiltersConnect()
-  const { flag, sources, last_transmission_date, first_transmission_date } = searchFilters
+  const { flag, sources, lastTransmissionDate, firstTransmissionDate } = searchFilters
 
   const flagOptions = useMemo(getFlags, [])
   const sourceOptions = useMemo(() => {
@@ -55,13 +55,13 @@ function SearchFilters() {
   }, [datasets])
 
   useEffect(() => {
-    if (last_transmission_date === undefined) {
-      setSearchFilters({ last_transmission_date: start?.split('T')[0] })
+    if (lastTransmissionDate === undefined) {
+      setSearchFilters({ lastTransmissionDate: start?.split('T')[0] })
     }
-    if (first_transmission_date === undefined) {
-      setSearchFilters({ first_transmission_date: end?.split('T')[0] })
+    if (firstTransmissionDate === undefined) {
+      setSearchFilters({ firstTransmissionDate: end?.split('T')[0] })
     }
-  }, [last_transmission_date, first_transmission_date, setSearchFilters, start, end])
+  }, [lastTransmissionDate, firstTransmissionDate, setSearchFilters, start, end])
 
   const dataview = useMemo(() => {
     return getSearchDataview(datasets, searchFilters, sources)
@@ -175,36 +175,36 @@ function SearchFilters() {
       )}
       <div>
         <InputDate
-          value={last_transmission_date || ''}
+          value={lastTransmissionDate || ''}
           max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
           min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
           label={t('common.active_after', 'Active after')}
           onChange={(e) => {
-            if (e.target.value !== last_transmission_date) {
-              setSearchFilters({ last_transmission_date: e.target.value })
+            if (e.target.value !== lastTransmissionDate) {
+              setSearchFilters({ lastTransmissionDate: e.target.value })
             }
           }}
           onRemove={() => {
-            if (last_transmission_date !== '') {
-              setSearchFilters({ last_transmission_date: '' })
+            if (lastTransmissionDate !== '') {
+              setSearchFilters({ lastTransmissionDate: '' })
             }
           }}
         />
       </div>
       <div>
         <InputDate
-          value={first_transmission_date || ''}
+          value={firstTransmissionDate || ''}
           max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
           min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
           label={t('common.active_before', 'Active Before')}
           onChange={(e) => {
-            if (e.target.value !== first_transmission_date) {
-              setSearchFilters({ first_transmission_date: e.target.value })
+            if (e.target.value !== firstTransmissionDate) {
+              setSearchFilters({ firstTransmissionDate: e.target.value })
             }
           }}
           onRemove={() => {
-            if (first_transmission_date !== '') {
-              setSearchFilters({ first_transmission_date: '' })
+            if (firstTransmissionDate !== '') {
+              setSearchFilters({ firstTransmissionDate: '' })
             }
           }}
         />
