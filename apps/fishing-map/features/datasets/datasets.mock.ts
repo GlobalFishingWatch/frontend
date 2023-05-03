@@ -67,7 +67,34 @@ export const datasets: Dataset[] = [
       propertyToIncludeRange: null,
     },
     createdAt: '2023-02-28T08:23:09.300Z',
-    relatedDatasets: null,
+    relatedDatasets: [
+      { id: 'public-global-fishing-tracks:v20201001', type: DatasetTypes.Tracks },
+      { id: 'public-global-support-tracks:v20201001', type: DatasetTypes.Tracks },
+      {
+        id: 'public-global-carriers-tracks:v20201001',
+        type: DatasetTypes.Tracks,
+      },
+      {
+        id: 'public-global-fishing-events:v20201001',
+        type: DatasetTypes.Events,
+      },
+      {
+        id: 'public-global-port-visits-c2-events:v20201001',
+        type: DatasetTypes.Events,
+      },
+      {
+        id: 'public-global-fishing-effort:v20201001',
+        type: DatasetTypes.Fourwings,
+      },
+      {
+        id: 'public-global-encounters-events:v20201001',
+        type: DatasetTypes.Events,
+      },
+      {
+        id: 'public-global-loitering-events:v20201001',
+        type: DatasetTypes.Events,
+      },
+    ],
     schema: {
       id: { type: 'string', minLength: 3 },
       imo: { type: 'string' },
