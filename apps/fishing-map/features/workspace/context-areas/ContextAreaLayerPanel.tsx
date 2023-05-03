@@ -16,7 +16,14 @@ import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import GFWOnly from 'features/user/GFWOnly'
 import { ROOT_DOM_ELEMENT } from 'data/config'
-import { ONLY_GFW_STAFF_DATAVIEW_SLUGS, HIDDEN_DATAVIEW_FILTERS } from 'data/workspaces'
+import {
+  BASEMAP_DATAVIEW_INSTANCE_ID,
+  EEZ_DATAVIEW_INSTANCE_ID,
+  MPA_DATAVIEW_INSTANCE_ID,
+  ONLY_GFW_STAFF_DATAVIEW_SLUGS,
+  PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
+  HIDDEN_DATAVIEW_FILTERS,
+} from 'data/workspaces'
 import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/dataviews.selectors'
 import { getDatasetNameTranslated } from 'features/i18n/utils'
 import { getSchemaFiltersInDataview, isPrivateDataset } from 'features/datasets/datasets.utils'
@@ -36,7 +43,12 @@ type LayerPanelProps = {
   onToggle?: () => void
 }
 
-const DATAVIEWS_WARNING = ['context-layer-eez', 'context-layer-mpa', 'basemap-labels']
+const DATAVIEWS_WARNING = [
+  EEZ_DATAVIEW_INSTANCE_ID,
+  MPA_DATAVIEW_INSTANCE_ID,
+  BASEMAP_DATAVIEW_INSTANCE_ID,
+  PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
+]
 
 function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()

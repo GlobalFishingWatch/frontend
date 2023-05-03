@@ -21,6 +21,7 @@ import {
   EEZ_DATAVIEW_INSTANCE_ID,
   BASEMAP_LABELS_DATAVIEW_SLUG,
   PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
+  BASEMAP_DATAVIEW_INSTANCE_ID,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
@@ -162,7 +163,7 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: PROTECTED_SEAS_DATAVIEW_SLUG,
     },
     {
-      id: 'basemap-labels',
+      id: BASEMAP_DATAVIEW_INSTANCE_ID,
       config: {
         visible: false,
       },
