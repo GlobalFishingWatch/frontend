@@ -5,7 +5,7 @@ import { RootState } from 'reducers'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { WorkspaceParam } from 'types'
 import { WorkspaceCategory } from 'data/workspaces'
-import { REPORT, WORKSPACE_REPORT, ROUTE_TYPES, WORKSPACE_ROUTES } from './routes'
+import { REPORT, WORKSPACE_REPORT, ROUTE_TYPES, SEARCH, WORKSPACE_ROUTES } from './routes'
 
 const selectLocation = (state: RootState) => state.location
 export const selectCurrentLocation = createSelector([selectLocation], ({ type, routesMap }) => {
@@ -25,6 +25,11 @@ export const selectIsWorkspaceLocation = createSelector([selectLocationType], (l
 export const selectIsReportLocation = createSelector(
   [selectLocationType],
   (locationType) => locationType === REPORT || locationType === WORKSPACE_REPORT
+)
+
+export const selectIsSearchLocation = createSelector(
+  [selectLocationType],
+  (locationType) => locationType === SEARCH
 )
 
 export const selectLocationQuery = createSelector(

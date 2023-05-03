@@ -26,6 +26,10 @@
   margin-left: 0;
 }
 
+.searchOption {
+  margin-right: var(--space-S);
+}
+
 @media print {
   .logo {
     margin-left: 0;

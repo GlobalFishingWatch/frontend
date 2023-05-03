@@ -1,8 +1,7 @@
-import { useEffect, useMemo } from 'react'
-import cx from 'classnames'
+import { useCallback, useEffect, useMemo } from 'react'
+import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { MultiSelect, InputDate } from '@globalfishingwatch/ui-components'
-import { Dataset } from '@globalfishingwatch/api-types'
+import { MultiSelect, InputDate, InputText } from '@globalfishingwatch/ui-components'
 import { getFlags } from 'utils/flags'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { DEFAULT_WORKSPACE } from 'data/config'
@@ -14,13 +13,10 @@ import {
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { showSchemaFilter } from 'features/workspace/activity/ActivitySchemaFilter'
 import DatasetLabel from 'features/datasets/DatasetLabel'
+import { selectAdvancedSearchDatasets } from 'features/search/search.selectors'
 import { useSearchFiltersConnect } from './search.hook'
 import styles from './SearchFilters.module.css'
 
-type SearchFiltersProps = {
-  datasets: Dataset[]
-  className?: string
-}
 const schemaFilterIds: SupportedDatasetSchema[] = [
   'fleet',
   'origin',
@@ -41,9 +37,10 @@ const getSearchDataview = (datasets, searchFilters, sources): SchemaFieldDatavie
   }
 }
 
-function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
+function SearchFilters() {
   const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()
+  const datasets = useSelector(selectAdvancedSearchDatasets)
   const { searchFilters, setSearchFilters } = useSearchFiltersConnect()
   const { flag, sources, last_transmission_date, first_transmission_date } = searchFilters
 
@@ -89,24 +86,51 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
     }
   }
 
+  const onInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchFilters({ [e.target.id]: e.target.value })
+    },
+    [setSearchFilters]
+  )
+
   return (
-    <div className={cx(className)}>
-      {sourceOptions && sourceOptions.length > 0 && (
-        <MultiSelect
-          label={t('layer.source_other', 'Sources')}
-          placeholder={getPlaceholderBySelections(sources)}
-          options={sourceOptions}
-          selectedOptions={sources}
-          className={styles.row}
-          onSelect={onSourceSelect}
-          onRemove={(filter, rest) => {
-            setSearchFilters({ sources: rest })
-          }}
-          onCleanClick={() => {
-            setSearchFilters({ sources: undefined })
-          }}
-        />
-      )}
+    <div className={styles.filters}>
+      <InputText
+        onChange={onInputChange}
+        id="mmsi"
+        value={searchFilters.mmsi || ''}
+        label={t('vessel.mmsi', 'MMSI')}
+        inputSize="small"
+      />
+      <InputText
+        onChange={onInputChange}
+        id="imo"
+        value={searchFilters.imo || ''}
+        label={t('vessel.imo', 'IMO')}
+        inputSize="small"
+      />
+      <InputText
+        onChange={onInputChange}
+        id="callsign"
+        value={searchFilters.callsign || ''}
+        label={t('vessel.callsign', 'Callsign')}
+        inputSize="small"
+      />
+      <MultiSelect
+        label={t('layer.flagState_other', 'Flag States')}
+        placeholder={getPlaceholderBySelections(flag)}
+        options={flagOptions}
+        selectedOptions={flag}
+        onSelect={(filter) => {
+          setSearchFilters({ flag: [...(flag || []), filter] })
+        }}
+        onRemove={(_, rest) => {
+          setSearchFilters({ flag: rest })
+        }}
+        onCleanClick={() => {
+          setSearchFilters({ flag: undefined })
+        }}
+      />
       {schemaFilters.map((schemaFilter) => {
         if (!showSchemaFilter(schemaFilter)) {
           return null
@@ -120,13 +144,12 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
             placeholder={getPlaceholderBySelections(optionsSelected)}
             options={options}
             selectedOptions={optionsSelected}
-            className={styles.row}
             onSelect={(filter) => {
               setSearchFilters({
                 [id]: [...(searchFilters[id] || []), filter],
               })
             }}
-            onRemove={(filter, rest) => {
+            onRemove={(_, rest) => {
               setSearchFilters({ [id]: rest })
             }}
             onCleanClick={() => {
@@ -135,25 +158,24 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
           />
         )
       })}
-      <MultiSelect
-        label={t('layer.flagState_other', 'Flag States')}
-        placeholder={getPlaceholderBySelections(flag)}
-        options={flagOptions}
-        selectedOptions={flag}
-        className={styles.row}
-        onSelect={(filter) => {
-          setSearchFilters({ flag: [...(flag || []), filter] })
-        }}
-        onRemove={(filter, rest) => {
-          setSearchFilters({ flag: rest })
-        }}
-        onCleanClick={() => {
-          setSearchFilters({ flag: undefined })
-        }}
-      />
-      <div className={styles.row}>
+      {sourceOptions && sourceOptions.length > 0 && (
+        <MultiSelect
+          label={t('layer.source_other', 'Sources')}
+          placeholder={getPlaceholderBySelections(sources)}
+          options={sourceOptions}
+          selectedOptions={sources}
+          onSelect={onSourceSelect}
+          onRemove={(_, rest) => {
+            setSearchFilters({ sources: rest })
+          }}
+          onCleanClick={() => {
+            setSearchFilters({ sources: undefined })
+          }}
+        />
+      )}
+      <div>
         <InputDate
-          value={last_transmission_date}
+          value={last_transmission_date || ''}
           max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
           min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
           label={t('common.active_after', 'Active after')}
@@ -169,9 +191,9 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
           }}
         />
       </div>
-      <div className={styles.row}>
+      <div>
         <InputDate
-          value={first_transmission_date}
+          value={first_transmission_date || ''}
           max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
           min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
           label={t('common.active_before', 'Active Before')}
@@ -187,6 +209,13 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
           }}
         />
       </div>
+      <InputText
+        onChange={onInputChange}
+        id="owner"
+        value={searchFilters.owner || ''}
+        label={t('vessel.owner', 'Owner')}
+        inputSize="small"
+      />
     </div>
   )
 }

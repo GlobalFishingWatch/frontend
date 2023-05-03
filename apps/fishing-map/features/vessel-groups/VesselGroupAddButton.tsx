@@ -23,10 +23,12 @@ function VesselGroupAddButton({
   vessels,
   showCount = true,
   onAddToVesselGroup,
+  buttonClassName = '',
 }: {
   vessels: (VesselWithDatasets | ReportVesselWithDatasets)[]
   showCount?: boolean
   onAddToVesselGroup?: (vesselGroupId?: string) => void
+  buttonClassName?: string
 }) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -100,7 +102,7 @@ function VesselGroupAddButton({
         {hasUserGroupsPermissions && (
           <Button
             type="secondary"
-            className={styles.button}
+            className={cx(styles.button, buttonClassName)}
             onClick={toggleVesselGroupsOpen}
             disabled={!vessels?.length || tooManyVessels}
             tooltip={

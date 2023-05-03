@@ -42,9 +42,11 @@ export interface Vessel {
   posCount?: number
   registeredGearType?: string
   shipname: string
+  source?: string
   type?: string
   vesselType?: VesselType
   years?: number[]
+  msgCount?: number
 }
 
 export interface VesselSearch extends Vessel {

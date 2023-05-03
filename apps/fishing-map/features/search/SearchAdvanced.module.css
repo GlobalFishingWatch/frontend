@@ -1,0 +1,71 @@
+.advancedLayout {
+  height: 100%;
+  display: flex;
+}
+
+.form {
+  background-color: var(--color-white);
+  border-right: var(--border);
+  box-shadow: 0.6rem 0 1rem -0.4rem rgba(var(--primary-blue-rgb), var(--opacity-border));
+  width: 32rem;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+}
+
+.formFields {
+  padding: var(--space-S);
+  flex: 1;
+  overflow-y: auto;
+}
+
+.input {
+  flex: 1;
+  margin-bottom: var(--space-S);
+}
+
+.formFooter {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-S);
+  border-top: var(--border);
+}
+
+.confirmButton {
+  height: 3.2rem;
+}
+
+.scrollContainer {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.searchResults {
+  flex: 1;
+  min-height: 40rem;
+  position: relative;
+}
+
+.error {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.red {
+  color: var(--color-danger-red);
+}
+
+.suggestion {
+  margin: 0 3px;
+  color: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.link {
+  text-decoration: underline;
+}

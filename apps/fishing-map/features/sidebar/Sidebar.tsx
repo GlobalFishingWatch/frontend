@@ -2,8 +2,12 @@ import { useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { Spinner } from '@globalfishingwatch/ui-components'
-import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
-import { selectIsReportLocation, selectLocationType } from 'routes/routes.selectors'
+import { selectReadOnly } from 'features/app/app.selectors'
+import {
+  selectIsReportLocation,
+  selectIsSearchLocation,
+  selectLocationType,
+} from 'routes/routes.selectors'
 import { USER, WORKSPACES_LIST } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
@@ -46,8 +50,8 @@ export function resetSidebarScroll() {
 function Sidebar({ onMenuClick }: SidebarProps) {
   const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)
-  const searchQuery = useSelector(selectSearchQuery)
   const locationType = useSelector(selectLocationType)
+  const isSearchLocation = useSelector(selectIsSearchLocation)
   const isReportLocation = useSelector(selectIsReportLocation)
   const dataviewsResources = useSelector(selectDataviewsResources)
   const userLogged = useSelector(isUserLogged)
@@ -97,12 +101,12 @@ function Sidebar({ onMenuClick }: SidebarProps) {
       return <Report />
     }
 
-    return <Workspace />
-  }, [userLogged, locationType, isReportLocation, highlightedWorkspacesStatus])
+    if (isSearchLocation) {
+      return <Search />
+    }
 
-  if (searchQuery !== undefined) {
-    return <Search />
-  }
+    return <Workspace />
+  }, [userLogged, locationType, isReportLocation, isSearchLocation, highlightedWorkspacesStatus])
 
   return (
     <div className={styles.container}>

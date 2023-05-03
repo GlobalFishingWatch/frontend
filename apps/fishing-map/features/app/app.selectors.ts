@@ -49,6 +49,7 @@ import {
 } from 'features/dataviews/dataviews.selectors'
 import { getReportCategoryFromDataview } from 'features/reports/reports.utils'
 import { selectReportById } from 'features/reports/reports.slice'
+import { SearchType } from 'features/search/search.slice'
 
 export const selectViewport = createSelector(
   [selectUrlViewport, selectWorkspaceViewport],
@@ -94,6 +95,13 @@ export const selectReportTimeComparison = createSelector(
   [selectWorkspaceStateProperty('reportTimeComparison')],
   (reportTimeComparison): ReportActivityTimeComparison => {
     return reportTimeComparison
+  }
+)
+
+export const selectSearchOption = createSelector(
+  [selectWorkspaceStateProperty('searchOption')],
+  (query): SearchType => {
+    return query
   }
 )
 

@@ -7,6 +7,7 @@ import { Menu, SplitView } from '@globalfishingwatch/ui-components'
 import { Workspace } from '@globalfishingwatch/api-types'
 import {
   selectIsReportLocation,
+  selectIsSearchLocation,
   selectIsWorkspaceLocation,
   selectLocationType,
   selectUrlTimeRange,
@@ -101,10 +102,10 @@ function App(): React.ReactElement {
   const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
-  const isReportLocation = useSelector(selectIsReportLocation)
   const reportAreaBounds = useSelector(selectReportAreaBounds)
   const isTimeComparisonReport = useSelector(selectShowTimeComparison)
-  const narrowSidebar = workspaceLocation
+  const isSearchLocation = useSelector(selectIsSearchLocation)
+  const isReportLocation = useSelector(selectIsReportLocation)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const showTimebar = workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished
 
@@ -225,7 +226,9 @@ function App(): React.ReactElement {
   let asideWidth = '50%'
   if (readOnly) {
     asideWidth = isReportLocation ? '45%' : '34rem'
-  } else if (narrowSidebar) {
+  } else if (isSearchLocation) {
+    asideWidth = '100%'
+  } else if (workspaceLocation) {
     asideWidth = '39rem'
   }
 

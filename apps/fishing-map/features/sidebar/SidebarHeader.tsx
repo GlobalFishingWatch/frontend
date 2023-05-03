@@ -1,11 +1,17 @@
-import { Fragment, useCallback, useState } from 'react'
+import { Fragment, useCallback, useMemo, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import Sticky from 'react-sticky-el'
 import Link from 'redux-first-router-link'
-import { IconButton, Logo, SubBrands } from '@globalfishingwatch/ui-components'
-import { useFeatureState } from '@globalfishingwatch/react-hooks'
+import {
+  Choice,
+  ChoiceOption,
+  IconButton,
+  Logo,
+  SubBrands,
+} from '@globalfishingwatch/ui-components'
+import { useFeatureState, useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
   selectCurrentWorkspaceId,
   selectLastVisitedWorkspace,
@@ -16,6 +22,7 @@ import {
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   selectIsReportLocation,
+  selectIsSearchLocation,
   selectIsWorkspaceLocation,
   selectLocationCategory,
   selectLocationPayload,
@@ -23,7 +30,11 @@ import {
   selectLocationType,
 } from 'routes/routes.selectors'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
-import { selectWorkspaceWithCurrentState, selectReadOnly } from 'features/app/app.selectors'
+import {
+  selectWorkspaceWithCurrentState,
+  selectReadOnly,
+  selectSearchOption,
+} from 'features/app/app.selectors'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { resetSidebarScroll } from 'features/sidebar/Sidebar'
 import useMapInstance from 'features/map/map-context.hooks'
@@ -34,11 +45,12 @@ import { selectReportsStatus } from 'features/reports/reports.slice'
 import { selectCurrentReport } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { HOME, REPORT, WORKSPACE } from 'routes/routes'
-import { selectReportAreaIds } from 'features/reports/reports.selectors'
+import { SearchType } from 'features/search/search.slice'
 import { resetAreaDetail } from 'features/areas/areas.slice'
+import { selectReportAreaIds } from 'features/reports/reports.selectors'
 import { QueryParams } from 'types'
-import { useClipboardNotification } from './sidebar.hooks'
 import styles from './SidebarHeader.module.css'
+import { useClipboardNotification } from './sidebar.hooks'
 
 const NewWorkspaceModal = dynamic(
   () =>
@@ -269,12 +281,19 @@ function CloseReportButton() {
 }
 
 function SidebarHeader() {
+  const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)
   const locationCategory = useSelector(selectLocationCategory)
-  const workspaceLocation = useSelector(selectIsWorkspaceLocation)
-  const reportLocation = useSelector(selectIsReportLocation)
+  const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
+  const isSearchLocation = useSelector(selectIsSearchLocation)
+  const isReportLocation = useSelector(selectIsReportLocation)
+  const isSmallScreen = useSmallScreen()
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
-  const showBackToWorkspaceButton = !workspaceLocation
+  const activeSearchOption = useSelector(selectSearchOption)
+  const { cleanFeatureState } = useFeatureState(useMapInstance())
+  const { dispatchQueryParams } = useLocationConnect()
+  const showBackToWorkspaceButton = !isWorkspaceLocation
 
   const getSubBrand = useCallback((): SubBrands | undefined => {
     let subBrand: SubBrands | undefined
@@ -282,18 +301,55 @@ function SidebarHeader() {
     return subBrand
   }, [locationCategory])
 
+  const onCloseClick = () => {
+    resetSidebarScroll()
+    cleanFeatureState('highlight')
+    dispatch(resetReportData())
+  }
+
+  const searchOptions: ChoiceOption<SearchType>[] = useMemo(() => {
+    return [
+      {
+        id: 'basic' as SearchType,
+        label: t('search.basic', 'Basic'),
+      },
+      {
+        id: 'advanced' as SearchType,
+        label: t('search.advanced', 'Advanced'),
+      },
+    ]
+  }, [t])
+
+  const onSearchOptionChange = (option: ChoiceOption<SearchType>) => {
+    trackEvent({
+      category: TrackCategory.SearchVessel,
+      action: 'Toggle search type to filter results',
+      label: option.id,
+    })
+    dispatchQueryParams({ searchOption: option.id })
+  }
+
   return (
-    <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
+    <Sticky scrollElement=".scrollContainer">
       <div className={styles.sidebarHeader}>
         <a href="https://globalfishingwatch.org" className={styles.logoLink}>
           <Logo className={styles.logo} subBrand={getSubBrand()} />
         </a>
-        {reportLocation && !readOnly && <SaveReportButton />}
-        {workspaceLocation && !readOnly && <SaveWorkspaceButton />}
-        {(workspaceLocation || reportLocation) && !readOnly && <ShareWorkspaceButton />}
-        {reportLocation && !readOnly && <CloseReportButton />}
-        {!reportLocation && showBackToWorkspaceButton && lastVisitedWorkspace && (
-          <Link className={styles.workspaceLink} to={lastVisitedWorkspace}>
+        {isReportLocation && !readOnly && <SaveReportButton />}
+        {isWorkspaceLocation && !readOnly && <SaveWorkspaceButton />}
+        {(isWorkspaceLocation || isReportLocation) && !readOnly && <ShareWorkspaceButton />}
+        {isReportLocation && !readOnly && <CloseReportButton />}
+        {isSearchLocation && !readOnly && !isSmallScreen && (
+          <Choice
+            options={searchOptions}
+            activeOption={activeSearchOption}
+            onSelect={onSearchOptionChange}
+            size="small"
+            className={styles.searchOption}
+          />
+        )}
+        {(isReportLocation || showBackToWorkspaceButton) && lastVisitedWorkspace && (
+          <Link className={styles.workspaceLink} to={lastVisitedWorkspace} onClick={onCloseClick}>
             <IconButton type="border" icon="close" />
           </Link>
         )}

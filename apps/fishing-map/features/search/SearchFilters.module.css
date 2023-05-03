@@ -1,3 +1,6 @@
-.row {
-  margin-top: var(--space-S);
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-S);
+  padding-bottom: var(--space-M);
 }
