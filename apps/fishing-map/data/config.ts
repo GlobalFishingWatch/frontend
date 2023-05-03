@@ -51,12 +51,10 @@ export const FULL_SUFIX = 'full'
 export const USER_SUFIX = 'user'
 export const PRIVATE_SUFIX = 'private'
 
+export const DEFAULT_DATA_DELAY_DAYS = 3
 // used when no url data and no workspace data
-export const LAST_DATA_UPDATE = DateTime.fromObject(
-  { hour: 0, minute: 0, second: 0 },
-  { zone: 'utc' }
-)
-  .minus({ days: 3 })
+const LAST_DATA_UPDATE = DateTime.fromObject({ hour: 0, minute: 0, second: 0 }, { zone: 'utc' })
+  .minus({ days: DEFAULT_DATA_DELAY_DAYS })
   .toISO()
 
 export const DEFAULT_VIEWPORT = {

@@ -30,12 +30,12 @@ import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { selectShowTimeComparison } from 'features/reports/reports.selectors'
 import { isUserLogged } from 'features/user/user.selectors'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
-import { HOME, WORKSPACE, USER, WORKSPACES_LIST, REPORT } from 'routes/routes'
+import { HOME, WORKSPACE, USER, WORKSPACES_LIST, REPORT, WORKSPACE_REPORT } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { t } from 'features/i18n/i18n'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { FIT_BOUNDS_REPORT_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
-import { initializeHints } from 'features/hints/hints.slice'
+import { initializeHints } from 'features/help/hints.slice'
 import AppModals from 'features/modals/Modals'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useAppDispatch } from './app.hooks'
@@ -118,12 +118,12 @@ function App(): React.ReactElement {
   }, [dispatch])
 
   useEffect(() => {
-    if (map && map?.getStyle()) {
-      try {
+    try {
+      if (map && map?.resize) {
         map.resize()
-      } catch (e) {
-        console.warn(e)
       }
+    } catch (e) {
+      console.warn(e)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReportLocation, sidebarOpen, showTimebar, isTimeComparisonReport])
@@ -150,7 +150,10 @@ function App(): React.ReactElement {
   // probably better to fetch in both components just checking if the workspaceId is already fetched
   const isHomeLocation = locationType === HOME
   const homeNeedsFetch = isHomeLocation && currentWorkspaceId !== DEFAULT_WORKSPACE_ID
-  const locationNeedsFetch = isReportLocation || isSearchLocation
+  // Checking only when REPORT entrypoint or WORKSPACE_REPORT when workspace is not loaded
+  const locationNeedsFetch =
+    locationType === REPORT ||
+    (locationType === WORKSPACE_REPORT && currentWorkspaceId !== urlWorkspaceId)
   const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId
   useEffect(() => {
     let action: any
@@ -161,7 +164,7 @@ function App(): React.ReactElement {
       if (fetchWorkspaceThunk.fulfilled.match(resolvedAction)) {
         const workspace = resolvedAction.payload as Workspace
         const viewport = urlViewport || workspace?.viewport
-        if (viewport) {
+        if (viewport && !isReportLocation) {
           setMapCoordinates(viewport)
         }
         if (!urlTimeRange && workspace?.startAt && workspace?.endAt) {

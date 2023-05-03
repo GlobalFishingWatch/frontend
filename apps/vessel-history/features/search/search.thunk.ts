@@ -1,16 +1,13 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
 import { event as uaEvent } from 'react-ga'
-import {
-  GFWAPI,
-  AdvancedSearchQueryField,
-  getAdvancedSearchQuery,
-} from '@globalfishingwatch/api-client'
+import { GFWApiClient } from 'http-client/http-client'
+import { AdvancedSearchQueryField, getAdvancedSearchQuery } from '@globalfishingwatch/api-client'
 import { VesselSearch } from '@globalfishingwatch/api-types'
 import { BASE_DATASET, RESULTS_PER_PAGE, SEARCH_MIN_CHARACTERS } from 'data/constants'
 import { RootState } from 'store'
 import { SearchResults } from 'types'
-import { API_VERSION } from 'data/config'
+import { IS_STANDALONE_APP } from 'data/config'
 import { CachedVesselSearch } from './search.slice'
 
 export const getSerializedQuery = (query: string, advancedSearch?: Record<string, any>) => {
@@ -60,12 +57,14 @@ export const fetchData = async (
     limit: RESULTS_PER_PAGE,
     offset,
     query: serializedQuery,
-    'use-tmt': true,
+    ...(!IS_STANDALONE_APP && { 'use-tmt': true }),
   })
 
-  const url = `/vessels/advanced-search-tmt?${urlQuery}`
+  const url = IS_STANDALONE_APP
+    ? `/v2/vessels/advanced-search?${urlQuery}` // TODO: why advance search return 403?
+    : `/v2/vessels/advanced-search-tmt?${urlQuery}`
 
-  return await GFWAPI.fetch<any>(url, {
+  return await GFWApiClient.fetch<any>(url, {
     signal,
   })
     .then((json: any) => {

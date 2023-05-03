@@ -21,12 +21,19 @@
 }
 
 .disclaimer {
+  display: flex;
+  gap: var(--space-S);
+  align-items: center;
   font: var(--font-S);
   margin-top: var(--space-M);
   color: var(--color-secondary-blue);
 }
 
-.disclaimer a {
+.disclaimer + .disclaimer {
+  margin-top: var(--space-XS);
+}
+
+.disclaimerText a {
   text-decoration: underline;
 }
 

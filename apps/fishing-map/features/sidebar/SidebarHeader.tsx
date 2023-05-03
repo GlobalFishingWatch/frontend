@@ -13,6 +13,7 @@ import {
 } from '@globalfishingwatch/ui-components'
 import { useFeatureState, useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
+  selectCurrentWorkspaceId,
   selectLastVisitedWorkspace,
   selectWorkspace,
   selectWorkspaceCustomStatus,
@@ -24,8 +25,11 @@ import {
   selectIsSearchLocation,
   selectIsWorkspaceLocation,
   selectLocationCategory,
+  selectLocationPayload,
+  selectLocationQuery,
+  selectLocationType,
 } from 'routes/routes.selectors'
-import { WorkspaceCategories } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import {
   selectWorkspaceWithCurrentState,
   selectReadOnly,
@@ -40,10 +44,13 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectReportsStatus } from 'features/reports/reports.slice'
 import { selectCurrentReport } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { REPORT } from 'routes/routes'
+import { HOME, REPORT, WORKSPACE } from 'routes/routes'
 import { SearchType } from 'features/search/search.slice'
-import { useClipboardNotification } from './sidebar.hooks'
+import { resetAreaDetail } from 'features/areas/areas.slice'
+import { selectReportAreaIds } from 'features/reports/reports.selectors'
+import { QueryParams } from 'types'
 import styles from './SidebarHeader.module.css'
+import { useClipboardNotification } from './sidebar.hooks'
 
 const NewWorkspaceModal = dynamic(
   () =>
@@ -72,7 +79,7 @@ function SaveReportButton() {
   const onSaveCreateReport = useCallback(
     (report) => {
       copyToClipboard(window.location.href)
-      dispatchLocation(REPORT, { reportId: report?.id })
+      dispatchLocation(REPORT, { payload: { reportId: report?.id } })
       onCloseCreateReport()
     },
     [copyToClipboard, dispatchLocation, onCloseCreateReport]
@@ -216,6 +223,63 @@ function ShareWorkspaceButton() {
   )
 }
 
+function cleanReportPayload(payload: Record<string, any>) {
+  const { areaId, datasetId, ...rest } = payload || {}
+  return rest
+}
+
+function cleanReportQuery(query: QueryParams) {
+  const {
+    reportActivityGraph,
+    reportAreaBounds,
+    reportAreaSource,
+    reportCategory,
+    reportResultsPerPage,
+    reportTimeComparison,
+    reportVesselFilter,
+    reportVesselGraph,
+    reportVesselPage,
+    ...rest
+  } = query || {}
+  return rest
+}
+
+function CloseReportButton() {
+  const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+  const reportAreaIds = useSelector(selectReportAreaIds)
+  const locationType = useSelector(selectLocationType)
+  const locationQuery = useSelector(selectLocationQuery)
+  const locationPayload = useSelector(selectLocationPayload)
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
+
+  const { cleanFeatureState } = useFeatureState(useMapInstance())
+
+  const onCloseClick = () => {
+    resetSidebarScroll()
+    cleanFeatureState('highlight')
+    dispatch(resetReportData())
+    dispatch(resetAreaDetail(reportAreaIds))
+  }
+
+  const linkTo = {
+    type: locationType === REPORT || workspaceId === DEFAULT_WORKSPACE_ID ? HOME : WORKSPACE,
+    payload: cleanReportPayload(locationPayload),
+    query: cleanReportQuery(locationQuery),
+  }
+
+  return (
+    <Link className={styles.workspaceLink} to={linkTo}>
+      <IconButton
+        icon="edit"
+        className="print-hidden"
+        onClick={onCloseClick}
+        tooltip={t('workspace.edit', 'Edit workspace')}
+      />
+    </Link>
+  )
+}
+
 function SidebarHeader() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -233,7 +297,7 @@ function SidebarHeader() {
 
   const getSubBrand = useCallback((): SubBrands | undefined => {
     let subBrand: SubBrands | undefined
-    if (locationCategory === WorkspaceCategories.MarineManager) subBrand = SubBrands.MarineManager
+    if (locationCategory === WorkspaceCategory.MarineManager) subBrand = SubBrands.MarineManager
     return subBrand
   }, [locationCategory])
 
@@ -274,6 +338,7 @@ function SidebarHeader() {
         {isReportLocation && !readOnly && <SaveReportButton />}
         {isWorkspaceLocation && !readOnly && <SaveWorkspaceButton />}
         {(isWorkspaceLocation || isReportLocation) && !readOnly && <ShareWorkspaceButton />}
+        {isReportLocation && !readOnly && <CloseReportButton />}
         {isSearchLocation && !readOnly && !isSmallScreen && (
           <Choice
             options={searchOptions}

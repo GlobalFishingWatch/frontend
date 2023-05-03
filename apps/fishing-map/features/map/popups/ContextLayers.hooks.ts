@@ -7,14 +7,18 @@ import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { parsePropertiesBbox } from 'features/map/map.utils'
-import { fetchAreaDetailThunk } from 'features/areas/areas.slice'
+import { AreaKeyId, fetchAreaDetailThunk } from 'features/areas/areas.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
+import {
+  setDownloadActivityAreaDataview,
+  setDownloadActivityAreaKey,
+} from 'features/download/downloadActivity.slice'
 import useMapInstance from 'features/map/map-context.hooks'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectReportAreaSource } from 'features/app/app.selectors'
 import { selectLocationAreaId } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectContextAreasDataviews } from 'features/dataviews/dataviews.selectors'
 import { setClickedEvent } from '../map.slice'
 import { TooltipEventFeature } from '../map.hooks'
 import { useMapFitBounds } from '../map-viewport.hooks'
@@ -44,18 +48,23 @@ export const useHighlightArea = () => {
   )
 }
 
+const getAreaIdFromFeature = (feature: TooltipEventFeature): AreaKeyId => {
+  return feature.properties?.gfw_id || feature.properties?.[feature.promoteId]
+}
+
 export const useContextInteractions = () => {
   const dispatch = useAppDispatch()
   const highlightArea = useHighlightArea()
   const areaId = useSelector(selectLocationAreaId)
   const sourceId = useSelector(selectReportAreaSource)
   const datasets = useSelector(selectAllDatasets)
+  const dataviews = useSelector(selectContextAreasDataviews)
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const fitMapBounds = useMapFitBounds()
 
   const onDownloadClick = useCallback(
     (ev: React.MouseEvent<Element, MouseEvent>, feature: TooltipEventFeature) => {
-      const areaId = parseInt(feature.properties.gfw_id || feature.properties[feature.promoteId])
+      const areaId = getAreaIdFromFeature(feature)
       if (!areaId) {
         console.warn('No gfw_id available in the feature to analyze', feature)
         return
@@ -64,9 +73,13 @@ export const useContextInteractions = () => {
       const datasetId = feature.datasetId
       const dataset = datasets.find((d) => d.id === datasetId)
       if (dataset) {
+        const dataview = dataviews.find((dataview) =>
+          dataview.datasets?.some((dataset) => dataset.id === datasetId)
+        )
         const areaName = feature.value || feature.title
         batch(() => {
           dispatch(setDownloadActivityAreaKey({ datasetId, areaId }))
+          dispatch(setDownloadActivityAreaDataview(dataview))
           dispatch(setClickedEvent(null))
         })
         dispatch(fetchAreaDetailThunk({ dataset, areaId, areaName }))
@@ -74,7 +87,7 @@ export const useContextInteractions = () => {
 
       cleanFeatureState('highlight')
     },
-    [cleanFeatureState, dispatch, datasets]
+    [datasets, cleanFeatureState, dataviews, dispatch]
   )
 
   const setReportArea = useCallback(
@@ -107,13 +120,13 @@ export const useContextInteractions = () => {
 
   const onReportClick = useCallback(
     (ev: React.MouseEvent<Element, MouseEvent>, feature: TooltipEventFeature) => {
-      const gfw_id = feature.properties.gfw_id || feature.properties[feature.promoteId]
-      if (!gfw_id) {
-        console.warn('No gfw_id available in the feature to report', feature)
+      const featureAreaId = getAreaIdFromFeature(feature)
+      if (!featureAreaId) {
+        console.warn('No areaId available in the feature to report', feature)
         return
       }
 
-      if (areaId?.toString() !== gfw_id || sourceId !== feature.source) {
+      if (areaId?.toString() !== featureAreaId || sourceId !== feature.source) {
         setReportArea(feature)
       }
     },

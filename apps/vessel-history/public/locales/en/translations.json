@@ -235,7 +235,7 @@
     "basic": "basic",
     "callsign": "Callsign",
     "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar",
-    "flagState": "Flag States",
+    "flagState": "Flags",
     "hideIndividual": "HIDE INDIVIDUAL RESULTS",
     "IMO": "IMO",
     "loadMore": "Load More",

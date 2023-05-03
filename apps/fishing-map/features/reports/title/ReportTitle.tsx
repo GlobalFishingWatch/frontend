@@ -21,6 +21,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   const { t } = useTranslation()
   const areaDataview = useSelector(selectReportAreaDataview)
   const report = useSelector(selectCurrentReport)
+  const reportLink = window.location.href
   const name = report
     ? report.name
     : areaDataview?.config.type === GeneratorType.UserContext
@@ -39,6 +40,10 @@ export default function ReportTitle({ area }: ReportTitleProps) {
       {name ? (
         <Fragment>
           <h1 className={styles.title}>{name}</h1>
+          <a className={styles.reportLink} href={reportLink}>
+            {t('analysis.linkToReport', 'Check the dynamic report here')}
+          </a>
+
           <div className={styles.actions}>
             {linkHref && (
               <a target="_blank" rel="noopener noreferrer" href={linkHref}>

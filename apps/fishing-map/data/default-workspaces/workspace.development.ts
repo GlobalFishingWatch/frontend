@@ -1,7 +1,7 @@
 import { Workspace } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_VIEWPORT } from 'data/config'
 import {
-  WorkspaceCategories,
+  WorkspaceCategory,
   DEFAULT_WORKSPACE_ID,
   EEZ_DATAVIEW_SLUG,
   MPA_DATAVIEW_SLUG,
@@ -20,6 +20,8 @@ import {
   MPA_DATAVIEW_INSTANCE_ID,
   EEZ_DATAVIEW_INSTANCE_ID,
   BASEMAP_LABELS_DATAVIEW_SLUG,
+  PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
+  BASEMAP_DATAVIEW_INSTANCE_ID,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
@@ -30,7 +32,7 @@ const workspace: Workspace<WorkspaceState> = {
   app: APP_NAME,
   name: 'Default public Fishing Map workspace',
   description: '',
-  category: WorkspaceCategories.FishingActivity,
+  category: WorkspaceCategory.FishingActivity,
   startAt: DEFAULT_TIME_RANGE.start,
   endAt: DEFAULT_TIME_RANGE.end,
   viewport: DEFAULT_VIEWPORT,
@@ -154,14 +156,14 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: HIGH_SEAS_DATAVIEW_SLUG,
     },
     {
-      id: 'context-layer-protected-seas',
+      id: PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
       config: {
         visible: false,
       },
       dataviewId: PROTECTED_SEAS_DATAVIEW_SLUG,
     },
     {
-      id: 'basemap-labels',
+      id: BASEMAP_DATAVIEW_INSTANCE_ID,
       config: {
         visible: false,
       },

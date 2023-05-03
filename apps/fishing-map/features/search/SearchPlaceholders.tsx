@@ -2,12 +2,12 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Tooltip } from '@globalfishingwatch/ui-components'
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import vesselImage from 'assets/images/vessel@2x.png'
 import vesselNoResultsImage from 'assets/images/vessel-side@2x.png'
 import { isGuestUser } from 'features/user/user.slice'
 import { selectSearchDatasetsNotGuestAllowedLabels } from 'features/search/search.selectors'
 import { selectQueryParam } from 'routes/routes.selectors'
-import { useSmallScreen } from '../../../../libs/react-hooks/src/use-small-screen'
 import styles from './SearchPlaceholders.module.css'
 
 type SearchPlaceholderProps = {
@@ -62,20 +62,12 @@ export function SearchEmptyState({ className = '' }: SearchPlaceholderProps) {
               )}
         </div>
       )}
-      {activeSearchOption === 'advanced' &&
-        t(
-          'search.descriptionAdvanced',
-          'The vessels will appear here once you select your desired filters.'
-        )}
-      <div
-        className={styles.highlighted}
-        dangerouslySetInnerHTML={{
-          __html: t(
-            'search.learnMore',
-            'Learn more about our identity work <a href="https://globalfishingwatch.org/research-project-vessel-identity/" target="_blank">here</a>.'
-          ),
-        }}
-      />
+      {activeSearchOption === 'advanced' && (
+        <p>
+          t( 'search.descriptionAdvanced', 'The vessels will appear here once you select your
+          desired filters.' )
+        </p>
+      )}
       {guestUser && noGuestDatasets?.length > 0 && (
         <p className={styles.description}>
           <Tooltip content={noGuestDatasets.join(', ')}>

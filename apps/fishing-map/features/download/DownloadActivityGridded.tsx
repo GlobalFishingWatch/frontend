@@ -6,6 +6,7 @@ import area from '@turf/area'
 import type { Placement } from 'tippy.js'
 import { Geometry } from 'geojson'
 import { Icon, Button, Choice, Tag, ChoiceOption } from '@globalfishingwatch/ui-components'
+import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import {
   DownloadActivityParams,
   downloadActivityThunk,
@@ -14,6 +15,7 @@ import {
   selectDownloadActivityFinished,
   selectDownloadActivityError,
   DateRange,
+  selectDownloadActivityAreaDataview,
 } from 'features/download/downloadActivity.slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
@@ -37,6 +39,7 @@ import DatasetLabel from 'features/datasets/DatasetLabel'
 import SOURCE_SWITCH_CONTENT from 'features/welcome/SourceSwitch.content'
 import { Locale } from 'types'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import UserGuideLink from 'features/help/UserGuideLink'
 import styles from './DownloadModal.module.css'
 import {
   Format,
@@ -73,7 +76,11 @@ function DownloadActivityByVessel() {
   const [format, setFormat] = useState(GRIDDED_FORMAT_OPTIONS[0].id as Format)
 
   const downloadArea = useSelector(selectDownloadActivityArea)
-  const downloadAreaName = downloadArea?.data?.name
+  const downloadAreaDataview = useSelector(selectDownloadActivityAreaDataview)
+  const downloadAreaName =
+    downloadAreaDataview?.config.type === GeneratorType.UserContext
+      ? downloadAreaDataview?.datasets?.[0]?.name
+      : downloadArea?.data?.name
   const downloadAreaGeometry = downloadArea?.data?.geometry
   const downloadAreaLoading = downloadArea?.status === AsyncReducerStatus.Loading
 
@@ -245,6 +252,7 @@ function DownloadActivityByVessel() {
             onSelect={(option) => setSpatialResolution(option.id as SpatialResolution)}
           />
         </div>
+        <UserGuideLink section="downloadActivity" />
         <div className={styles.footer}>
           {datasetsDownloadNotSupported.length > 0 && (
             <p className={styles.footerLabel}>

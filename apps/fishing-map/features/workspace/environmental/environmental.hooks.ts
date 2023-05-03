@@ -54,10 +54,14 @@ export const useEnvironmentalBreaksUpdate = () => {
               const ck = ckmeans(dataFiltered, steps).map(([clusterFirst]) =>
                 parseFloat(clusterFirst.toFixed(3))
               )
-
+              // Needed to ensure there is the correct num of steps in areas where
+              // ck returns less than COLOR_RAMP_DEFAULT_NUM_STEPS
+              const ckWithAllSteps = [...new Array(COLOR_RAMP_DEFAULT_NUM_STEPS)].map((_, i) => {
+                return ck[i] || 0
+              })
               let cleanBreaks = []
-              ck.forEach((k, i) => {
-                if (i > 1) {
+              ckWithAllSteps.forEach((k, i) => {
+                if (i >= 1) {
                   const cleanBreak =
                     k === 0 || k <= cleanBreaks?.[i - 1] ? cleanBreaks[i - 1] + 0.01 : k
                   cleanBreaks.push(cleanBreak)

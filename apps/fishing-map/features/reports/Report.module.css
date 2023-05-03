@@ -26,3 +26,9 @@
 .center strong {
   font-weight: 500;
 }
+
+@media print {
+  .tabContainer {
+    display: none;
+  }
+}

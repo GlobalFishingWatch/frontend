@@ -4,7 +4,7 @@ import { Query, RouteObject } from 'redux-first-router'
 import { RootState } from 'reducers'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { WorkspaceParam } from 'types'
-import { WorkspaceCategories } from 'data/workspaces'
+import { WorkspaceCategory } from 'data/workspaces'
 import { REPORT, WORKSPACE_REPORT, ROUTE_TYPES, SEARCH, WORKSPACE_ROUTES } from './routes'
 
 const selectLocation = (state: RootState) => state.location
@@ -61,7 +61,7 @@ export const selectReportId = createSelector(
 
 export const selectLocationCategory = createSelector(
   [selectLocationPayload],
-  (payload) => payload?.category as WorkspaceCategories
+  (payload) => payload?.category as WorkspaceCategory
 )
 
 export const selectLocationDatasetId = createSelector(
@@ -76,13 +76,13 @@ export const selectLocationAreaId = createSelector(
 
 export const isValidLocationCategory = createSelector(
   [selectLocationCategory],
-  (locationCategory) => Object.values(WorkspaceCategories).includes(locationCategory)
+  (locationCategory) => Object.values(WorkspaceCategory).includes(locationCategory)
 )
 
 export const selectIsMarineManagerLocation = createSelector(
   [selectLocationCategory, selectWorkspaceId],
   (category, workspaceId) => {
-    return category === WorkspaceCategories.MarineManager && !workspaceId
+    return category === WorkspaceCategory.MarineManager && !workspaceId
   }
 )
 

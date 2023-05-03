@@ -11,6 +11,7 @@ import { createReportThunk, updateReportThunk } from 'features/reports/reports.s
 import { selectPrivateDatasetsInWorkspace } from 'features/dataviews/dataviews.selectors'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { selectWorkspaceWithCurrentState } from 'features/app/app.selectors'
+import { AsyncError } from 'utils/async-slice'
 import styles from './NewReportModal.module.css'
 
 type NewReportModalProps = {
@@ -61,7 +62,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
   const createReport = async () => {
     if (name) {
       setLoading(true)
-      const { ownerId, ...workspaceProperties } = workspace
+      const { ownerId, createdAt, ownerType, ...workspaceProperties } = workspace
       const dispatchedAction = await dispatch(
         createReportThunk({
           name,
@@ -84,8 +85,13 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
           onFinish(report)
         }
       } else {
+        const error = dispatchedAction.payload || ({} as AsyncError)
         setLoading(false)
-        setError('Error saving workspace')
+        setError(
+          error.status === 422 && error.message?.includes('duplicated')
+            ? t('analysis.errorDuplicatedName', 'There is already a report with the same name')
+            : t('analysis.errorMessage', 'Something went wrong')
+        )
       }
     }
   }

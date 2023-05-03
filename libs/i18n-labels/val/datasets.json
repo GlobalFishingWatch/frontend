@@ -1806,7 +1806,7 @@
           "bunker_or_tanker": "crwdns25974:0crwdne25974:0",
           "passenger": "crwdns25976:0crwdne25976:0",
           "seismic_vessel": "crwdns25978:0crwdne25978:0",
-          "other_non_fishing": "crwdns25980:0crwdne25980:0",
+          "other_non_fishing": "crwdns30719:0crwdne30719:0",
           "unknown": "crwdns25828:0crwdne25828:0"
         }
       },
@@ -1863,6 +1863,18 @@
       "normalized_shipname": "crwdns10065:0crwdne10065:0",
       "lastTransmissionDate": "crwdns10067:0crwdne10067:0",
       "firstTransmissionDate": "crwdns10069:0crwdne10069:0"
+    }
+  },
+  "public-global-vessel-insights": {
+    "name": "crwdns30721:0crwdne30721:0",
+    "description": "crwdns30723:0crwdne30723:0",
+    "schema": {
+      "gap": "crwdns30725:0crwdne30725:0",
+      "coverage": "crwdns30727:0crwdne30727:0",
+      "portVisit": "crwdns30729:0crwdne30729:0",
+      "apparentFishing": "crwdns30731:0crwdne30731:0",
+      "likelyLoitering": "crwdns30733:0crwdne30733:0",
+      "likelyEncounters": "crwdns30735:0crwdne30735:0"
     }
   },
   "public-global-viirs-presence": {
@@ -2102,8 +2114,8 @@
     }
   },
   "public-mpa-all": {
-    "name": "crwdns29245:0crwdne29245:0",
-    "description": "crwdns30129:0crwdne30129:0",
+    "name": "crwdns30803:0crwdne30803:0",
+    "description": "crwdns30805:0crwdne30805:0",
     "schema": {}
   },
   "public-mpa-no-take": {
@@ -2408,6 +2420,53 @@
       "vessel_id": "crwdns10439:0crwdne10439:0"
     }
   },
+  "public-png-fishing-effort": {
+    "name": "crwdns30737:0crwdne30737:0",
+    "description": "crwdns30739:0crwdne30739:0",
+    "schema": {
+      "lat": "crwdns30741:0crwdne30741:0",
+      "lon": "crwdns30743:0crwdne30743:0",
+      "flag": {
+        "keyword": "crwdns30745:0crwdne30745:0",
+        "enum": {
+          "PNG": "crwdns30747:0crwdne30747:0"
+        }
+      },
+      "hours": "crwdns30749:0crwdne30749:0",
+      "vessel_id": "crwdns30751:0crwdne30751:0",
+      "elevation_m": "crwdns30753:0crwdne30753:0",
+      "vessel-groups": "crwdns30755:0crwdne30755:0",
+      "distance_from_port_m": "crwdns30757:0crwdne30757:0",
+      "distance_from_shore_m": "crwdns30759:0crwdne30759:0"
+    }
+  },
+  "public-png-fishing-vessels": {
+    "name": "crwdns30761:0crwdne30761:0",
+    "description": "crwdns30763:0crwdne30763:0",
+    "schema": {
+      "id": "crwdns30765:0crwdne30765:0",
+      "flag": "crwdns30767:0crwdne30767:0",
+      "source": "crwdns30769:0crwdne30769:0",
+      "callsign": "crwdns30771:0crwdne30771:0",
+      "shipname": "crwdns30773:0crwdne30773:0",
+      "lastTransmissionDate": "crwdns30775:0crwdne30775:0",
+      "firstTransmissionDate": "crwdns30777:0crwdne30777:0"
+    }
+  },
+  "public-png-presence": {
+    "name": "crwdns30779:0crwdne30779:0",
+    "description": "crwdns30781:0crwdne30781:0",
+    "schema": {
+      "lat": "crwdns30783:0crwdne30783:0",
+      "lon": "crwdns30785:0crwdne30785:0",
+      "flag": "crwdns30787:0crwdne30787:0",
+      "vessel_id": "crwdns30789:0crwdne30789:0",
+      "elevation_m": "crwdns30791:0crwdne30791:0",
+      "vessel-groups": "crwdns30793:0crwdne30793:0",
+      "distance_from_port_m": "crwdns30795:0crwdne30795:0",
+      "distance_from_shore_m": "crwdns30797:0crwdne30797:0"
+    }
+  },
   "public-presence-viirs-match-prototype": {
     "name": "crwdns18220:0crwdne18220:0",
     "description": "crwdns25990:0crwdne25990:0",
@@ -2549,17 +2608,49 @@
     }
   },
   "public-protectedseas": {
-    "name": "crwdns29289:0crwdne29289:0",
-    "description": "crwdns29291:0crwdne29291:0",
+    "name": "crwdns30807:0crwdne30807:0",
+    "description": "crwdns30809:0crwdne30809:0",
     "schema": {
-      "removal_of": {
-        "keyword": "crwdns29293:0crwdne29293:0",
+      "removal_of_marine_life_is_prohibited": {
+        "keyword": "crwdns30811:0crwdne30811:0",
         "enum": {
-          "1": "crwdns29295:0crwdne29295:0",
-          "2": "crwdns29297:0crwdne29297:0",
-          "3": "crwdns29299:0crwdne29299:0",
-          "4": "crwdns29301:0crwdne29301:0",
-          "5": "crwdns29303:0crwdne29303:0"
+          "1": "crwdns30813:0crwdne30813:0",
+          "2": "crwdns30815:0crwdne30815:0",
+          "3": "crwdns30817:0crwdne30817:0",
+          "4": "crwdns30819:0crwdne30819:0",
+          "5": "crwdns30821:0crwdne30821:0"
+        }
+      }
+    }
+  },
+  "public-protectedseas-all": {
+    "name": "crwdns30715:0crwdne30715:0",
+    "description": "crwdns30717:0crwdne30717:0",
+    "schema": {
+      "category_name": {
+        "keyword": "crwdns30633:0crwdne30633:0",
+        "enum": {
+          "IUCN MPA": "crwdns30635:0crwdne30635:0",
+          "Other": "crwdns30637:0crwdne30637:0",
+          "Jurisdictional Authority Area": "crwdns30639:0crwdne30639:0",
+          "TBD": "crwdns30641:0crwdne30641:0",
+          "Fisheries Management Area": "crwdns30643:0crwdne30643:0",
+          "Recreational Area": "crwdns30645:0crwdne30645:0",
+          "OECM": "crwdns30647:0crwdne30647:0",
+          "Vessel Restricted Area": "crwdns30649:0crwdne30649:0",
+          "Voluntary Conservation Measure Area": "crwdns30651:0crwdne30651:0",
+          "Vessel Reporting Area": "crwdns30653:0crwdne30653:0",
+          "Water Quality/Human Health Area": "crwdns30655:0crwdne30655:0"
+        }
+      },
+      "removal_of_marine_life_is_prohibited": {
+        "keyword": "crwdns30657:0crwdne30657:0",
+        "enum": {
+          "1": "crwdns30659:0crwdne30659:0",
+          "2": "crwdns30661:0crwdne30661:0",
+          "3": "crwdns30663:0crwdne30663:0",
+          "4": "crwdns30665:0crwdne30665:0",
+          "5": "crwdns30667:0crwdne30667:0"
         }
       }
     }
@@ -2567,7 +2658,49 @@
   "public-rfmo": {
     "name": "crwdns30139:0crwdne30139:0",
     "description": "crwdns30141:0crwdne30141:0",
-    "schema": {}
+    "schema": {
+      "ID": {
+        "keyword": "crwdns30823:0crwdne30823:0",
+        "enum": {
+          "APFIC": "crwdns30825:0crwdne30825:0",
+          "BOBP-IGO": "crwdns30827:0crwdne30827:0",
+          "CCAMLR": "crwdns30829:0crwdne30829:0",
+          "CCBSP": "crwdns30831:0crwdne30831:0",
+          "CCSBT": "crwdns30833:0crwdne30833:0",
+          "CCSBT Primary Area": "crwdns30835:0crwdne30835:0",
+          "COREP": "crwdns30837:0crwdne30837:0",
+          "CPPS": "crwdns30839:0crwdne30839:0",
+          "CRFM": "crwdns30841:0crwdne30841:0",
+          "CTMFM": "crwdns30843:0crwdne30843:0",
+          "FCWC": "crwdns30845:0crwdne30845:0",
+          "FFA": "crwdns30847:0crwdne30847:0",
+          "GFCM": "crwdns30849:0crwdne30849:0",
+          "IATTC": "crwdns30851:0crwdne30851:0",
+          "ICCAT": "crwdns30853:0crwdne30853:0",
+          "ICES": "crwdns30855:0crwdne30855:0",
+          "IOTC": "crwdns30857:0crwdne30857:0",
+          "IPHC": "crwdns30859:0crwdne30859:0",
+          "LTA": "crwdns30861:0crwdne30861:0",
+          "NAFO": "crwdns30863:0crwdne30863:0",
+          "NAMMCO": "crwdns30865:0crwdne30865:0",
+          "NASCO": "crwdns30867:0crwdne30867:0",
+          "NEAFC": "crwdns30869:0crwdne30869:0",
+          "NPAFC": "crwdns30871:0crwdne30871:0",
+          "NPFC": "crwdns30873:0crwdne30873:0",
+          "OSPESCA": "crwdns30875:0crwdne30875:0",
+          "PERSGA": "crwdns30877:0crwdne30877:0",
+          "PICES": "crwdns30879:0crwdne30879:0",
+          "RECOFI": "crwdns30881:0crwdne30881:0",
+          "SEAFDEC": "crwdns30883:0crwdne30883:0",
+          "SIOFA": "crwdns30885:0crwdne30885:0",
+          "SPC": "crwdns30887:0crwdne30887:0",
+          "SPRFMO": "crwdns30889:0crwdne30889:0",
+          "SRFC": "crwdns30891:0crwdne30891:0",
+          "SWIOFC": "crwdns30893:0crwdne30893:0",
+          "WCPFC": "crwdns30895:0crwdne30895:0"
+        }
+      }
+    }
   },
   "public-tristan-seamounts-200-1618586314138": {
     "name": "crwdns25612:0crwdne25612:0",
@@ -2590,7 +2723,7 @@
     "schema": {}
   },
   "public-wdpa-may-2021-marine": {
-    "name": "crwdns25628:0crwdne25628:0",
+    "name": "crwdns30897:0crwdne30897:0",
     "description": "crwdns25630:0crwdne25630:0",
     "schema": {}
   },

@@ -15271,7 +15271,7 @@ __metadata:
     react: 18.2.0
     react-dom: 18.2.0
     react-is: 18.2.0
-    react-map-gl: ^7.0.21
+    react-map-gl: ^7.0.23
     react-modal: ^3.16.1
     react-range: ^1.8.14
     react-redux: ^8.0.5
@@ -22700,15 +22700,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-map-gl@npm:^7.0.21":
-  version: 7.0.21
-  resolution: "react-map-gl@npm:7.0.21"
+"react-map-gl@npm:^7.0.23":
+  version: 7.0.23
+  resolution: "react-map-gl@npm:7.0.23"
   dependencies:
     "@types/mapbox-gl": ^2.6.0
   peerDependencies:
     mapbox-gl: "*"
     react: ">=16.3.0"
-  checksum: 9c182fc0ab612d965baf53da5a977f06a466634f65932527f1ee447b7eac880c4abfc6c87572a8193664aa3c2d854243e4e37a421d7b22bb4a5f1419b547b250
+  checksum: 55c771b95f517a4ff3b6f6ec1abb31d968e7467bfe7e45057e4dc2b5a6f9a5c89ee0717781827bd07dd2cc9a60cb2b5240f7e59a3a976d1607f4f26e878e7989
   languageName: node
   linkType: hard
 

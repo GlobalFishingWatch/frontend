@@ -32,6 +32,7 @@ import {
 } from 'features/vessel-groups/vessel-groups.slice'
 import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import { listAsSentence } from 'utils/shared'
+import UserGuideLink from 'features/help/UserGuideLink'
 import styles from './ActivityFilters.module.css'
 import {
   areAllSourcesSelectedInDataview,
@@ -359,6 +360,7 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
           })}
         </p>
       )}
+      <UserGuideLink section="activityFilters" className={styles.userGuideLink} />
     </Fragment>
   )
 }

@@ -23,7 +23,7 @@ import {
 import store from 'store'
 import { updateUrlTimerange } from 'routes/routes.actions'
 import { selectIsReportLocation, selectUrlTimeRange } from 'routes/routes.selectors'
-import { selectHintsDismissed, setHintDismissed } from 'features/hints/hints.slice'
+import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import useMapInstance from 'features/map/map-context.hooks'
 import { BIG_QUERY_PREFIX } from 'features/dataviews/dataviews.utils'

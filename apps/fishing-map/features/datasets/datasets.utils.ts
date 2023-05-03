@@ -16,17 +16,19 @@ import {
   INCLUDE_FILTER_ID,
   DatasetSubCategory,
   DataviewCategory,
+  VesselType,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { formatSliderNumber, IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { capitalize, sortFields } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
-import { PUBLIC_SUFIX, FULL_SUFIX, PRIVATE_SUFIX } from 'data/config'
+import { PUBLIC_SUFIX, FULL_SUFIX, DEFAULT_TIME_RANGE } from 'data/config'
 import { getDatasetNameTranslated, removeDatasetVersion } from 'features/i18n/utils'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { FileType } from 'features/common/FileDropzone'
 import { getLayerDatasetRange } from 'features/workspace/environmental/HistogramRangeFilter'
+import { TEMPLATE_VESSEL_DATAVIEW_SLUG } from 'data/workspaces'
 import styles from '../vessel-groups/VesselGroupModal.module.css'
 
 export type SupportedDatasetSchema =
@@ -138,31 +140,78 @@ export const getDatasetTitleByDataview = (
   return datasetTitle + ' ' + sources
 }
 
+const getDatasetsInDataview = (
+  dataview: Dataview | DataviewInstance | UrlDataviewInstance,
+  guestUser = false
+): string[] => {
+  if (!dataview.datasetsConfig) return []
+  const datasetIds: string[] = dataview.datasetsConfig.flatMap(({ datasetId }) => datasetId || [])
+  return guestUser
+    ? datasetIds.filter((id) => !isPrivateDataset({ id }) && !id.includes(FULL_SUFIX))
+    : datasetIds
+}
+
 export const getDatasetsInDataviews = (
   dataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[],
+  dataviewInstances: (DataviewInstance | UrlDataviewInstance)[] = [],
   guestUser = false
 ) => {
   if (!dataviews?.length) {
     return []
   }
-  return uniq(
-    dataviews?.flatMap((dataviews) => {
-      if (!dataviews.datasetsConfig) return []
-      const datasetIds: string[] = dataviews.datasetsConfig.flatMap(
-        ({ datasetId }) => datasetId || []
-      )
-      return guestUser
-        ? datasetIds.filter((d) => !d.includes(PRIVATE_SUFIX) && !d.includes(FULL_SUFIX))
-        : datasetIds
-    })
+  const datasetsFromDataviews = dataviews.flatMap((dataview) =>
+    getDatasetsInDataview(dataview, guestUser)
   )
+  const datasetsFromDataviewInstances = dataviewInstances.flatMap((dataviewInstance) => {
+    // Needed to check when vessel dataview has included the new datasets
+    // Ex: gfw staff adding a vessel dataview with gaps
+    if (dataviewInstance.dataviewId === TEMPLATE_VESSEL_DATAVIEW_SLUG) {
+      const dataview = dataviews.find(
+        (d) => d.id === dataviewInstance.dataviewId || d.slug === dataviewInstance.dataviewId
+      )
+      if (!dataview?.datasetsConfig) {
+        return []
+      }
+      const availableDatasetIds = dataview.datasetsConfig.map((dsc) => dsc.datasetId)
+      return getDatasetsInDataview(
+        {
+          ...dataviewInstance,
+          datasetsConfig: dataviewInstance.datasetsConfig?.filter((dsc) =>
+            availableDatasetIds.includes(dsc.datasetId)
+          ),
+        },
+        guestUser
+      )
+    }
+
+    return getDatasetsInDataview(dataviewInstance, guestUser)
+  })
+  return uniq([...datasetsFromDataviews, ...datasetsFromDataviewInstances])
 }
 
+const vesselTypeWithOwnDataset = ['fishing', 'carrier', 'support']
+const vesselPrivateOtherDatasetId = 'private-global-presence'
+export type RelatedDatasetByTypeParams = {
+  fullDatasetAllowed?: boolean
+  vesselType?: VesselType
+}
 export const getRelatedDatasetByType = (
   dataset?: Dataset,
   datasetType?: DatasetTypes,
-  fullDatasetAllowed = false
+  { fullDatasetAllowed = false, vesselType } = {} as RelatedDatasetByTypeParams
 ) => {
+  if (vesselType && datasetType === DatasetTypes.Tracks) {
+    return dataset?.relatedDatasets?.find((relatedDataset) => {
+      if (relatedDataset.type !== datasetType) {
+        return false
+      }
+      if (vesselTypeWithOwnDataset.includes(vesselType)) {
+        return relatedDataset.id.includes(vesselType)
+      } else {
+        return relatedDataset.id.startsWith(vesselPrivateOtherDatasetId)
+      }
+    })
+  }
   if (fullDatasetAllowed) {
     const fullDataset = dataset?.relatedDatasets?.find(
       (relatedDataset) =>
@@ -198,6 +247,20 @@ export const getActiveDatasetsInActivityDataviews = (
   return dataviews.flatMap((dataview) => {
     return dataview?.config?.datasets || []
   })
+}
+
+export const getLatestEndDateFromDatasets = (
+  datasets: Dataset[],
+  datasetCategory?: DatasetCategory
+): string => {
+  if (!datasets.length) return DEFAULT_TIME_RANGE.end
+  const latestDate = datasets.reduce((acc, dataset) => {
+    if (datasetCategory && dataset.category !== datasetCategory) {
+      return acc
+    }
+    return dataset.endDate > acc ? dataset.endDate : acc
+  }, datasets?.[0].endDate || '')
+  return latestDate
 }
 
 export const checkDatasetReportPermission = (datasetId: string, permissions: UserPermission[]) => {
@@ -258,7 +321,9 @@ export const getDatasetsReportNotSupported = (
   return dataviewDatasets.filter((dataset) => !datasetsDownloadSupported.includes(dataset))
 }
 
-export const getActiveActivityDatasetsInDataviews = (dataviews: UrlDataviewInstance[]) => {
+export const getActiveActivityDatasetsInDataviews = (
+  dataviews: (Dataview | UrlDataviewInstance)[]
+) => {
   return dataviews.map((dataview) => {
     const activeDatasets = (dataview?.config?.datasets || []) as string[]
     return dataview.datasets.filter((dataset) => {
@@ -293,7 +358,7 @@ export const filterDatasetsByUserType = (datasets: Dataset[], isGuestUser: boole
       const fullDataset = id.replace(PUBLIC_SUFIX, FULL_SUFIX)
       return !datasetsIds.includes(fullDataset)
     }
-    return id.includes(FULL_SUFIX) || id.includes(PRIVATE_SUFIX)
+    return id.includes(FULL_SUFIX) || isPrivateDataset({ id })
   })
   return allowedDatasets
 }

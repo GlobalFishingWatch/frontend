@@ -53,9 +53,7 @@ function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.
         <div className={styles.filter}>
           <label>
             {label}
-            {filterOperation === EXCLUDE_FILTER_ID && (
-              <span> ({t('common.excluded', 'Excluded')})</span>
-            )}
+            {filterOperation === EXCLUDE_FILTER_ID && ` (${t('common.excluded', 'Excluded')})`}
             {VESSEL_GROUPS_DAYS_LIMIT > 0 &&
               field === 'vessel-groups' &&
               duration?.days > VESSEL_GROUPS_DAYS_LIMIT && (

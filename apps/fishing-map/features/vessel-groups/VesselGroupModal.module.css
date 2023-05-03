@@ -15,10 +15,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.footerButton + .footerButton {
-  margin-left: var(--space-M);
+  gap: var(--space-S);
 }
 
 .parameters {

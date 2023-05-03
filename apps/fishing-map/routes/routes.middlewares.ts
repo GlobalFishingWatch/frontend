@@ -4,7 +4,7 @@ import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 import { REPLACE_URL_PARAMS } from 'data/config'
 import { setLastWorkspaceVisited } from 'features/workspace/workspace.slice'
 import { QueryParams } from 'types'
-import { WORKSPACE_REPORT, routesMap, ROUTE_TYPES, WORKSPACE, WORKSPACE_ROUTES } from './routes'
+import { routesMap, ROUTE_TYPES, WORKSPACE_ROUTES } from './routes'
 import { UpdateQueryParamsAction } from './routes.actions'
 
 export const routerQueryMiddleware: Middleware =
@@ -46,27 +46,6 @@ export const routerQueryMiddleware: Middleware =
     }
   }
 
-function cleanReportPayload(params: Record<string, any>) {
-  const { areaId, datasetId, ...rest } = params || {}
-  return rest
-}
-
-function cleanReportQuery(query: QueryParams) {
-  const {
-    reportActivityGraph,
-    reportAreaBounds,
-    reportAreaSource,
-    reportCategory,
-    reportResultsPerPage,
-    reportTimeComparison,
-    reportVesselFilter,
-    reportVesselGraph,
-    reportVesselPage,
-    ...rest
-  } = query || {}
-  return rest
-}
-
 // This middleware is going to save the state of the workspace to back
 export const routerWorkspaceMiddleware: Middleware =
   ({ getState, dispatch }: { getState: () => RootState; dispatch: Dispatch }) =>
@@ -83,28 +62,15 @@ export const routerWorkspaceMiddleware: Middleware =
         (key) => !WORKSPACE_ROUTES.includes(key)
       )
       const comesFromWorkspacesRoute = WORKSPACE_ROUTES.includes(prev.type)
-      const isReportLocation = action.type === WORKSPACE_REPORT
-      if (routesToSaveWorkspace.includes(action.type)) {
-        // TODO include search location
-        if (isReportLocation) {
-          dispatch(
-            setLastWorkspaceVisited({
-              type: WORKSPACE,
-              query: cleanReportQuery(action.query),
-              payload: cleanReportPayload(action.payload),
-              replaceQuery: true,
-            })
-          )
-        } else if (comesFromWorkspacesRoute && !lastVisited) {
-          dispatch(
-            setLastWorkspaceVisited({
-              type: prev.type as ROUTE_TYPES,
-              query: prev.query,
-              payload: prev.payload,
-              replaceQuery: true,
-            })
-          )
-        }
+      if (routesToSaveWorkspace.includes(action.type) && comesFromWorkspacesRoute && !lastVisited) {
+        dispatch(
+          setLastWorkspaceVisited({
+            type: prev.type as ROUTE_TYPES,
+            query: prev.query,
+            payload: prev.payload,
+            replaceQuery: true,
+          })
+        )
       } else if (WORKSPACE_ROUTES.includes(action.type) && lastVisited) {
         dispatch(setLastWorkspaceVisited(undefined))
       }

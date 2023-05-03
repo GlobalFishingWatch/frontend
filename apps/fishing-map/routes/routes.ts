@@ -19,6 +19,7 @@ export const SEARCH = 'SEARCH'
 export const WORKSPACE_REPORT = 'WORKSPACE_REPORT'
 export const REPORT = 'REPORT'
 export const WORKSPACE_ROUTES = [HOME, WORKSPACE]
+export const REPORT_ROUTES = [REPORT, WORKSPACE_REPORT]
 export type ROUTE_TYPES =
   | typeof HOME
   | typeof USER

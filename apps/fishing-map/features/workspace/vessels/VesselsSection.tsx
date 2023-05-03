@@ -13,7 +13,7 @@ import { isGuestUser } from 'features/user/user.slice'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { SEARCH } from 'routes/routes'
-import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import VesselEventsLegend from './VesselEventsLegend'
 import VesselLayerPanel from './VesselLayerPanel'
@@ -34,8 +34,10 @@ function VesselsSection(): React.ReactElement {
       action: 'Click search icon to open search panel',
     })
     dispatchLocation(SEARCH, {
-      category: workspace.category || WorkspaceCategories.FishingActivity,
-      workspaceId: workspace.id || DEFAULT_WORKSPACE_ID,
+      payload: {
+        category: workspace?.category || WorkspaceCategory.FishingActivity,
+        workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+      },
     })
   }, [dispatchLocation, workspace])
 

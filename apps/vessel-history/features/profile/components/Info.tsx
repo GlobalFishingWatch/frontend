@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux'
 import ImageGallery from 'react-image-gallery'
 import { DateTime, Interval } from 'luxon'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
+import { VesselType } from '@globalfishingwatch/api-types'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { VesselWithHistory } from 'types'
 import I18nDate, { formatI18nSpecialDate } from 'features/i18n/i18nDate'
@@ -97,6 +98,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
     await dispatchCreateOfflineVessel({
       vessel: {
         ...data,
+        vesselType: data.vesselType as VesselType,
         profileId: data.id,
         id: vesselId,
         dataset: vesselDataset,

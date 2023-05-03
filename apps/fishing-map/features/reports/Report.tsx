@@ -7,7 +7,12 @@ import { Button, Tab, Tabs } from '@globalfishingwatch/ui-components'
 import { isAuthError } from '@globalfishingwatch/api-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useLocationConnect } from 'routes/routes.hook'
-import { isActivityReport, selectReportCategory, selectTimeRange } from 'features/app/app.selectors'
+import {
+  isActivityReport,
+  selectReportAreaSource,
+  selectReportCategory,
+  selectTimeRange,
+} from 'features/app/app.selectors'
 import { selectActiveTemporalgridDataviews } from 'features/dataviews/dataviews.selectors'
 import WorkspaceError, { WorkspaceLoginError } from 'features/workspace/WorkspaceError'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
@@ -35,7 +40,12 @@ import { selectReportAreaId, selectReportDatasetId } from 'features/app/app.sele
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useSetTimeseries } from 'features/reports/reports-timeseries.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { useFetchReportArea, useFetchReportVessel } from './reports.hooks'
+import {
+  useFetchReportArea,
+  useFetchReportVessel,
+  useFitAreaInViewport,
+  useReportAreaHighlight,
+} from './reports.hooks'
 import ReportSummary from './summary/ReportSummary'
 import ReportTitle from './title/ReportTitle'
 import ReportActivity from './activity/ReportActivity'
@@ -65,10 +75,25 @@ function ActivityReport({ reportName }: { reportName: string }) {
   const reportLoading = reportStatus === AsyncReducerStatus.Loading
   const reportError = reportStatus === AsyncReducerStatus.Error
   const reportLoaded = reportStatus === AsyncReducerStatus.Finished
-  const reportOutdated = reportDateRangeHash !== getDateRangeHash(timerange)
+  const reportOutdated =
+    reportDateRangeHash !== '' && reportDateRangeHash !== getDateRangeHash(timerange)
   const hasAuthError = reportError && isAuthError(statusError)
 
   const ReportComponent = useMemo(() => {
+    if (timerangeTooLong) {
+      return (
+        <ReportVesselsPlaceholder>
+          <div className={cx(styles.cover, styles.error)}>
+            <p>
+              {t(
+                'analysis.timeRangeTooLong',
+                'The selected time range is too long, please select a shorter time range'
+              )}
+            </p>
+          </div>
+        </ReportVesselsPlaceholder>
+      )
+    }
     if (reportOutdated && !reportLoading && !hasAuthError) {
       return (
         <ReportVesselsPlaceholder>
@@ -90,9 +115,6 @@ function ActivityReport({ reportName }: { reportName: string }) {
         </ReportVesselsPlaceholder>
       )
     }
-    if (reportLoading) {
-      return <ReportVesselsPlaceholder />
-    }
     if (reportLoaded) {
       return hasVessels ? (
         <Fragment>
@@ -106,23 +128,42 @@ function ActivityReport({ reportName }: { reportName: string }) {
       )
     }
     if (reportError) {
-      return hasAuthError ? (
-        <ReportVesselsPlaceholder>
-          <div className={styles.cover}>
-            <WorkspaceLoginError
-              title={
-                guestUser
-                  ? t('errors.reportLogin', 'Login to see the vessels active in the area')
-                  : t(
-                      'errors.privateReport',
-                      "Your account doesn't have permissions to see the vessels active in this area"
-                    )
-              }
-              emailSubject={`Requesting access for ${datasetId}-${areaId} report`}
-            />
-          </div>
-        </ReportVesselsPlaceholder>
-      ) : (
+      if (hasAuthError) {
+        return (
+          <ReportVesselsPlaceholder>
+            <div className={styles.cover}>
+              <WorkspaceLoginError
+                title={
+                  guestUser
+                    ? t('errors.reportLogin', 'Login to see the vessels active in the area')
+                    : t(
+                        'errors.privateReport',
+                        "Your account doesn't have permissions to see the vessels active in this area"
+                      )
+                }
+                emailSubject={`Requesting access for ${datasetId}-${areaId} report`}
+              />
+            </div>
+          </ReportVesselsPlaceholder>
+        )
+      }
+      if (statusError) {
+        let errorMessage = statusError.message
+        if (statusError.status === 429) {
+          errorMessage = t(
+            'analysis.errorConcurrentReport',
+            'You cannot perform more than one concurrent report'
+          )
+        }
+        return (
+          <ReportVesselsPlaceholder>
+            <div className={styles.cover}>
+              <p className={styles.error}>{errorMessage}</p>
+            </div>
+          </ReportVesselsPlaceholder>
+        )
+      }
+      return (
         <p className={styles.error}>
           <span>
             {t('errors.generic', 'Something went wrong, try again or contact:')}{' '}
@@ -131,7 +172,8 @@ function ActivityReport({ reportName }: { reportName: string }) {
         </p>
       )
     }
-    return null
+
+    return <ReportVesselsPlaceholder />
   }, [
     activityUnit,
     areaId,
@@ -145,9 +187,11 @@ function ActivityReport({ reportName }: { reportName: string }) {
     reportLoading,
     reportName,
     reportOutdated,
+    statusError,
     t,
     timerange?.end,
     timerange?.start,
+    timerangeTooLong,
   ])
 
   return (
@@ -155,14 +199,6 @@ function ActivityReport({ reportName }: { reportName: string }) {
       <ReportSummary activityUnit={activityUnit} reportStatus={reportStatus} />
       <ReportActivity />
       {ReportComponent}
-      {timerangeTooLong && (
-        <p className={styles.error}>
-          {t(
-            'analysis.timeRangeTooLong',
-            'Reports are only allowed for time ranges up to one year'
-          )}
-        </p>
-      )}
     </Fragment>
   )
 }
@@ -204,10 +240,23 @@ export default function Report() {
     }
   })
   const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const { data: areaDetail } = useFetchReportArea()
+  const areaSourceId = useSelector(selectReportAreaSource)
+  const { data: areaDetail, status } = useFetchReportArea()
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
+
+  const fitAreaInViewport = useFitAreaInViewport()
+  useReportAreaHighlight(areaDetail?.id, areaSourceId)
+
+  // This ensures that the area is in viewport when then area load finishes
+  useEffect(() => {
+    if (status === AsyncReducerStatus.Finished && areaDetail?.bounds) {
+      fitAreaInViewport()
+    }
+    // Reacting only to the area status and fitting bounds after load
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status])
 
   const setTimebarVisualizationByCategory = useCallback(
     (category: ReportCategory) => {
@@ -253,7 +302,13 @@ export default function Report() {
     <Fragment>
       <ReportTitle area={areaDetail} />
       {filteredCategoryTabs.length > 1 && (
-        <Tabs tabs={filteredCategoryTabs} activeTab={reportCategory} onTabClick={handleTabClick} />
+        <div className={styles.tabContainer}>
+          <Tabs
+            tabs={filteredCategoryTabs}
+            activeTab={reportCategory}
+            onTabClick={handleTabClick}
+          />
+        </div>
       )}
       {reportCategory === ReportCategory.Environment ? (
         <ReportEnvironment />

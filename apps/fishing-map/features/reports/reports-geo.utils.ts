@@ -44,6 +44,9 @@ export function filterByPolygon(
         const [[minX, minY], [maxX], [_, maxY]] = (cell.geometry as Polygon).coordinates[0]
         const cellBbox: Bbox = [minX, minY, maxX, maxY]
         const bboxContained = isBboxContained(polygon.bbox as Bbox, cellBbox)
+        if (!bboxContained) {
+          return acc
+        }
         const isContained =
           bboxContained && polygon.type === 'MultiPolygon'
             ? polygon.coordinates.some((coordinates) =>

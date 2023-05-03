@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { kebabCase, memoize, uniqBy } from 'lodash'
 import { MultiPolygon } from 'geojson'
 import {
@@ -43,10 +43,11 @@ export type AreasState = Record<string, DatasetAreas>
 
 const initialState: AreasState = {}
 
-export type AreaKeys = { datasetId: string; areaId: number }
+export type AreaKeyId = string | number
+export type AreaKeys = { datasetId: string; areaId: AreaKeyId }
 export type FetchAreaDetailThunkParam = {
   dataset: Dataset
-  areaId: number
+  areaId: AreaKeyId
   areaName?: string
   simplify?: number
 }
@@ -145,7 +146,17 @@ export const fetchDatasetAreasThunk = createAsyncThunk(
 const areasSlice = createSlice({
   name: 'areas',
   initialState,
-  reducers: {},
+  reducers: {
+    resetAreaDetail: (state, action: PayloadAction<{ datasetId: string; areaId: number }>) => {
+      const { datasetId, areaId } = action.payload
+      if (state[datasetId].detail[areaId]) {
+        state[datasetId].detail[areaId] = {
+          status: AsyncReducerStatus.Idle,
+          data: {} as Area,
+        }
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchAreaDetailThunk.pending, (state, action) => {
       const { dataset, areaId, areaName } = action.meta.arg
@@ -204,6 +215,8 @@ const areasSlice = createSlice({
     })
   },
 })
+
+export const { resetAreaDetail } = areasSlice.actions
 
 export const selectAreas = (state: { areas: AreasState }) => state.areas
 export const selectDatasetAreaById = memoize((id: string) =>

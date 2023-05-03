@@ -256,6 +256,13 @@ export const selectDataviewInstancesResolved = createSelector(
   }
 )
 
+export const selectActiveDataviewInstancesResolved = createSelector(
+  [selectDataviewInstancesResolved],
+  (dataviewInstances) => {
+    return dataviewInstances.filter((d) => d.config.visible)
+  }
+)
+
 export const selectCurrentDataviewInstancesResolved = createSelector(
   [
     selectDataviewInstancesResolved,

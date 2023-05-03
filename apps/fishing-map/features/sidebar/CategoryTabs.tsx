@@ -6,7 +6,7 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { Icon, IconButton, IconType, Tooltip } from '@globalfishingwatch/ui-components'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
-import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { HOME, SEARCH, USER, WORKSPACES_LIST } from 'routes/routes'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
 import { selectUserData, isGuestUser } from 'features/user/user.slice'
@@ -18,7 +18,7 @@ import useViewport from 'features/map/map-viewport.hooks'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import WhatsNew from 'features/sidebar/WhatsNew'
 import LocalStorageLoginLink from 'routes/LoginLink'
-import HelpHub from 'features/hints/HelpHub'
+import HelpHub from 'features/help/HelpHub'
 import { selectFeedbackModalOpen, setModalOpen } from 'features/modals/modals.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -40,7 +40,7 @@ type CategoryTabsProps = {
   onMenuClick: () => void
 }
 
-function getLinkToCategory(category: WorkspaceCategories) {
+function getLinkToCategory(category: WorkspaceCategory) {
   return {
     type: WORKSPACES_LIST,
     payload: { workspaceId: undefined, category },
@@ -85,8 +85,10 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
       action: 'Click search icon to open search panel',
     })
     dispatchLocation(SEARCH, {
-      category: workspace.category || WorkspaceCategories.FishingActivity,
-      workspaceId: workspace.id || DEFAULT_WORKSPACE_ID,
+      payload: {
+        category: workspace?.category || WorkspaceCategory.FishingActivity,
+        workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+      },
     })
   }, [dispatchLocation, workspace])
 
@@ -116,13 +118,13 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             className={cx(styles.tab, {
               [styles.current]:
                 (locationType !== SEARCH &&
-                  locationCategory === (category.title as WorkspaceCategories)) ||
+                  locationCategory === (category.title as WorkspaceCategory)) ||
                 (index === 0 && locationType === HOME),
             })}
           >
             <Link
               className={styles.tabContent}
-              to={getLinkToCategory(category.title as WorkspaceCategories)}
+              to={getLinkToCategory(category.title as WorkspaceCategory)}
               onClick={onCategoryClick}
               title={category.title}
             >

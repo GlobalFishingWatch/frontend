@@ -6,17 +6,21 @@
     "beforeAfterRange": "crwdns17123:0{{duration}}crwdnd17123:0{{compareStart}}crwdne17123:0",
     "change": "crwdns11323:0crwdne11323:0",
     "clickToFilterBy": "crwdns30499:0crwdne30499:0",
-    "disclaimer": "crwdns17189:0crwdne17189:0",
+    "disclaimer": "crwdns30669:0crwdne30669:0",
     "downloadVesselsList": "crwdns30503:0crwdne30503:0",
     "error": "crwdns18014:0crwdne18014:0",
     "errorMessage": "crwdns3624:0crwdne3624:0",
+    "errorDuplicatedName": "crwdns30705:0crwdne30705:0",
     "errorPeriodComparisonDateRange": "crwdns17147:0crwdne17147:0",
+    "errorConcurrentReport": "crwdns30695:0crwdne30695:0",
     "evolution": "crwdns11313:0crwdne11313:0",
     "groupByFlag": "crwdns30505:0crwdne30505:0",
     "groupByGeartype": "crwdns30507:0crwdne30507:0",
     "groupByVesseltype": "crwdns30509:0crwdne30509:0",
+    "linkToReport": "crwdns30697:0crwdne30697:0",
     "newTimeRange": "crwdns30513:0{{start}}crwdnd30513:0{{end}}crwdne30513:0",
     "noDataByArea": "crwdns18016:0crwdne18016:0",
+    "noTimeComparisonAllowed": "crwdns30699:0crwdne30699:0",
     "noVesselDataFiltered": "crwdns30511:0crwdne30511:0",
     "onlyAISAllowed": "crwdns6374:0crwdne6374:0",
     "others": "crwdns30535:0crwdne30535:0",
@@ -223,6 +227,10 @@
     "context-layer-mpa": {
       "dataWarning": "crwdns18110:0crwdne18110:0",
       "dataWarningDetail": "crwdns18112:0crwdne18112:0"
+    },
+    "context-layer-protectedseas": {
+      "dataWarning": "crwdns30799:0crwdne30799:0",
+      "dataWarningDetail": "crwdns30801:0crwdne30801:0"
     }
   },
   "download": {
@@ -432,6 +440,7 @@
     "noResults": "crwdns3538:0crwdne3538:0",
     "notAllowed": "crwdns1558:0crwdne1558:0",
     "placeholder": "crwdns1560:0crwdne1560:0",
+    "removeVessel": "crwdns30701:0crwdne30701:0",
     "seeVessel": "crwdns5454:0crwdne5454:0",
     "seeVessels_one": "crwdns8973:0{{count}}crwdne8973:0",
     "seeVessels_other": "crwdns8975:0crwdne8975:0",
@@ -476,6 +485,20 @@
     "profile": "crwdns3706:0crwdne3706:0",
     "seeDataset": "crwdns30589:0crwdne30589:0",
     "title": "crwdns3708:0crwdne3708:0"
+  },
+  "userGuide": {
+    "title": "crwdns30671:0crwdne30671:0",
+    "uploadReference": "crwdns30673:0crwdne30673:0",
+    "uploadEnvironment": "crwdns30675:0crwdne30675:0",
+    "analysis": "crwdns30677:0crwdne30677:0",
+    "downloadActivity": "crwdns30679:0crwdne30679:0",
+    "vesselSearch": "crwdns30681:0crwdne30681:0",
+    "vesselGroups": "crwdns30683:0crwdne30683:0",
+    "activityFishing": "crwdns30685:0crwdne30685:0",
+    "activityPresence": "crwdns30687:0crwdne30687:0",
+    "activityFilters": "crwdns30689:0crwdne30689:0",
+    "detectionsSAR": "crwdns30691:0crwdne30691:0",
+    "detectionsVIIRS": "crwdns30693:0crwdne30693:0"
   },
   "vessel": {
     "addToWorkspace": "crwdns6962:0crwdne6962:0",
@@ -556,6 +579,7 @@
     "source": "crwdns1398:0crwdne1398:0",
     "source_short": "crwdns17389:0crwdne17389:0",
     "ssvid": "crwdns25790:0crwdne25790:0",
+    "type": "crwdns30703:0crwdne30703:0",
     "target_species": "crwdns11215:0crwdne11215:0",
     "targetSpecies": "crwdns13917:0crwdne13917:0",
     "trackLogin": "crwdns26728:0crwdne26728:0",

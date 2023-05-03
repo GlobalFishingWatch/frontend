@@ -1865,6 +1865,18 @@
       "firstTransmissionDate": "firstTransmissionDate"
     }
   },
+  "public-global-vessel-insights": {
+    "name": "AIS (Insights)",
+    "description": "Vessel Insights from AIS",
+    "schema": {
+      "gap": "gap",
+      "coverage": "coverage",
+      "portVisit": "portVisit",
+      "apparentFishing": "apparentFishing",
+      "likelyLoitering": "likelyLoitering",
+      "likelyEncounters": "likelyEncounters"
+    }
+  },
   "public-global-viirs-presence": {
     "name": "Detecciones de luz nocturna (VIIRS)",
     "description": "La capa de detección nocturna de barcos, conocida como conjunto de radiómetros de imágenes infrarrojas visibles (VIIRS, por sus siglas en ingles), muestra las embarcaciones en el mar que los satélites han detectado por la luz que emiten durante la noche. Aunque no se asocia exclusivamente con embarcaciones pesqueras, es probable que esta capa de actividad muestre embarcaciones asociadas con actividades como la pesca de calamar, que utilizan luces brillantes y pescan de noche.<br/>\n<br/>\nBasado en el satélite Suomi NPP, el sensor VIIRS pasa por todo el planeta al menos una vez cada noche, detectando luces para proporcionar al menos una observación diaria a nivel mundial. Debido al diseño de la órbita de los satélites de órbita polar, las regiones más cercanas a los polos tendrán más sobrepasos por día, mientras que las regiones ecuatoriales solo tienen un sobrepaso por día.<br/>\n<br/>\nDebido a que las embarcaciones se detectan únicamente en función a la emisión de luz, podemos detectar embarcaciones individuales e incluso flotas pesqueras completas que pueden no transmitir información de su identidad y, por lo tanto, pueden no estar representadas en otra parte del mapa de Global Fishing Watch. Global Fishing Watch incluye las detecciones de embarcaciones procesadas a partir de datos de las imágenes satelitales nocturnas recopilados por la Administración Nacional Oceánica y Atmosférica de los EE. UU. (NOAA por sus siglas en inglés) VIIRS. Las detecciones de embarcaciones son procesadas casi en tiempo real por el <a href='https://eogdata.mines.edu/products/vbd/' target='_blank' rel=noopener'>Earth Observation Group</a> en la Colorado School of Mines. Los datos, conocidos como detecciones de embarcaciones VIIRS, detectan la presencia de embarcaciones, incluidas aquellas que pescan con luces para atraer a su recurso objetivo o para realizar operaciones nocturnas. Se excluyen las luces de las infraestructuras fijas en el mar y otras fuentes ajenas a las embarcaciones. Obtenga más información sobre las detecciones nocturnas de embarcaciones VIIRS y descargue los <a href='https://eogdata.mines.edu/products/vbd/' target='_blank' rel=noopener'>datos</a>.<br/>\n<br/>\nGlobal Fishing Watch ha desarrollado un sistema sofisticado para hacer coincidir los datos disponibles del sistema de identificación automática (AIS, por sus siglas en inglés) con las respectivas detecciones nocturnas de embarcaciones. Esta coincidencia se realiza mediante un modelo probabilístico que determina los mensajes AIS/detección VIIRS que coinciden en función de todos los registros AIS disponibles justo antes y después de la hora en que se tomó la imagen satelital VIIRS, así como la probabilidad de emparejar un mensaje específico de AIS para cualquiera de las embarcaciones que aparecen en esa imagen satelital. Con esta información, Global Fishing Watch agregó la capacidad de filtrar las detecciones según el tipo de embarcación y el tipo de arte de pesca dentro de la capa de actividad VIIRS.<br/>\n<br/>\nMás del 85% de las detecciones son de embarcaciones que carecen de transpondedores AIS o del sistema de monitoreo de embarcaciones (VMS, por sus siglas en inglés). La adición global de la capa VIIRS le permite rápidamente filtrar las detecciones nocturnas que coincidieron o no con AIS, donde la identificación de la embarcación está disponible.<br/>\n<br/>\nEl resplandor indica el brillo de la fuente de luz recibida por el sensor VIIRS. El resplandor se ve afectado por la luna, las nubes y el ángulo de la embarcación identificada desde el satélite. Dos embarcaciones con el mismo brillo o intensidad de luz pueden tener diferentes niveles de resplandor dependiendo de las condiciones. En general, las embarcaciones que no están pescando activamente con luz pueden tener niveles de resplandor más bajos. Deben considerarse excepciones cuando los barcos se acercan a la costa. Para explorar más a fondo cómo las luces de las embarcaciones emiten diferentes niveles de resplandor durante la noche, la capa de actividad VIIRS puede ser filtrada por rangos específicos de interés asociados con diferentes comportamientos humanos.<br/>\n<br/>\nAquellos que utilizan datos de detecciones nocturnas deben considerar la Anomalía del Atlántico Sur (SAA, siglas en inglés), un área donde el cinturón interno de resplandor de Van Allen de la Tierra se encuentra en su altitud más baja, lo que permite que penetren más partículas energéticas del espacio. Cuando tales partículas golpean los sensores en un satélite, esto puede crear una señal falsa que podría hacer que el algoritmo lo reconozca como una detección de embarcación. Se ha aplicado un algoritmo de filtración, pero aún puede haber algún error de identificación.",
@@ -2102,7 +2114,7 @@
     }
   },
   "public-mpa-all": {
-    "name": "AMPs",
+    "name": "MPAs",
     "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: November 2022. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer.",
     "schema": {}
   },
@@ -2408,6 +2420,53 @@
       "vessel_id": "vessel_id"
     }
   },
+  "public-png-fishing-effort": {
+    "name": "Papua New Guinea VMS",
+    "description": "Vessel monitoring system (VMS) data is provided by the The National Fisheries Authority of Papua New Guinea. Data is collected using Papua New Guinea's vessel monitoring (VMS) system via satellites, that contains vessel's identifiers and location, and is published on a two-day delay. Global Fishing Watch infers speed and course for each vessel location and analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity”. It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity”, “fishing” or “fishing effort”, as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": {
+        "keyword": "flag",
+        "enum": {
+          "PNG": "PNG"
+        }
+      },
+      "hours": "hours",
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "public-png-fishing-vessels": {
+    "name": "Papua New Guinea VMS (Fishing Vessels)",
+    "description": "Dataset for VMS Papua New Guinea (Public)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "callsign": "callsign",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
+  "public-png-presence": {
+    "name": "Papua New Guinea VMS",
+    "description": "Description pending",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
   "public-presence-viirs-match-prototype": {
     "name": "VIIRS",
     "description": "La capa de detección nocturna de barcos, conocida como conjunto de radiómetros de imágenes infrarrojas visibles (VIIRS, por sus siglas en ingles), muestra las embarcaciones en el mar que los satélites han detectado por la luz que emiten durante la noche. Aunque no se asocia exclusivamente con embarcaciones pesqueras, es probable que esta capa de actividad muestre embarcaciones asociadas con actividades como la pesca de calamar, que utilizan luces brillantes y pescan de noche.<br/>\n<br/>\nBasado en el satélite Suomi NPP, el sensor VIIRS pasa por todo el planeta al menos una vez cada noche, detectando luces para proporcionar al menos una observación diaria a nivel mundial. Debido al diseño de la órbita de los satélites de órbita polar, las regiones más cercanas a los polos tendrán más sobrepasos por día, mientras que las regiones ecuatoriales solo tienen un sobrepaso por día.<br/>\n<br/>\nDebido a que las embarcaciones se detectan únicamente en función a la emisión de luz, podemos detectar embarcaciones individuales e incluso flotas pesqueras completas que pueden no transmitir información de su identidad y, por lo tanto, pueden no estar representadas en otra parte del mapa de Global Fishing Watch. Global Fishing Watch incluye las detecciones de embarcaciones procesadas a partir de datos de las imágenes satelitales nocturnas recopilados por la Administración Nacional Oceánica y Atmosférica de los EE. UU. (NOAA por sus siglas en inglés) VIIRS. Las detecciones de embarcaciones son procesadas casi en tiempo real por el <a href='https://eogdata.mines.edu/products/vbd/' target='_blank' rel=noopener'>Earth Observation Group</a> en la Colorado School of Mines. Los datos, conocidos como detecciones de embarcaciones VIIRS, detectan la presencia de embarcaciones, incluidas aquellas que pescan con luces para atraer a su recurso objetivo o para realizar operaciones nocturnas. Se excluyen las luces de las infraestructuras fijas en el mar y otras fuentes ajenas a las embarcaciones. Obtenga más información sobre las detecciones nocturnas de embarcaciones VIIRS y descargue los <a href='https://eogdata.mines.edu/products/vbd/' target='_blank' rel=noopener'>datos</a>.<br/>\n<br/>\nGlobal Fishing Watch ha desarrollado un sistema sofisticado para hacer coincidir los datos disponibles del sistema de identificación automática (AIS, por sus siglas en inglés) con las respectivas detecciones nocturnas de embarcaciones. Esta coincidencia se realiza mediante un modelo probabilístico que determina los mensajes AIS/detección VIIRS que coinciden en función de todos los registros AIS disponibles justo antes y después de la hora en que se tomó la imagen satelital VIIRS, así como la probabilidad de emparejar un mensaje específico de AIS para cualquiera de las embarcaciones que aparecen en esa imagen satelital. Con esta información, Global Fishing Watch agregó la capacidad de filtrar las detecciones según el tipo de embarcación y el tipo de arte de pesca dentro de la capa de actividad VIIRS.<br/>\n<br/>\nMás del 85% de las detecciones son de embarcaciones que carecen de transpondedores AIS o del sistema de monitoreo de embarcaciones (VMS, por sus siglas en inglés). La adición global de la capa VIIRS le permite rápidamente filtrar las detecciones nocturnas que coincidieron o no con AIS, donde la identificación de la embarcación está disponible.<br/>\n<br/>\nEl resplandor indica el brillo de la fuente de luz recibida por el sensor VIIRS. El resplandor se ve afectado por la luna, las nubes y el ángulo de la embarcación identificada desde el satélite. Dos embarcaciones con el mismo brillo o intensidad de luz pueden tener diferentes niveles de resplandor dependiendo de las condiciones. En general, las embarcaciones que no están pescando activamente con luz pueden tener niveles de resplandor más bajos. Deben considerarse excepciones cuando los barcos se acercan a la costa. Para explorar más a fondo cómo las luces de las embarcaciones emiten diferentes niveles de resplandor durante la noche, la capa de actividad VIIRS puede ser filtrada por rangos específicos de interés asociados con diferentes comportamientos humanos.<br/>\n<br/>\nAquellos que utilizan datos de detecciones nocturnas deben considerar la Anomalía del Atlántico Sur (SAA, siglas en inglés), un área donde el cinturón interno de resplandor de Van Allen de la Tierra se encuentra en su altitud más baja, lo que permite que penetren más partículas energéticas del espacio. Cuando tales partículas golpean los sensores en un satélite, esto puede crear una señal falsa que podría hacer que el algoritmo lo reconozca como una detección de embarcación. Se ha aplicado un algoritmo de filtración, pero aún puede haber algún error de identificación.",
@@ -2550,10 +2609,42 @@
   },
   "public-protectedseas": {
     "name": "Protected Seas",
-    "description": "Protected seas",
+    "description": "Protected seas (only category IUCN MPA)",
     "schema": {
-      "removal_of": {
-        "keyword": "removal_of",
+      "removal_of_marine_life_is_prohibited": {
+        "keyword": "removal_of_marine_life_is_prohibited",
+        "enum": {
+          "1": "1",
+          "2": "2",
+          "3": "3",
+          "4": "4",
+          "5": "5"
+        }
+      }
+    }
+  },
+  "public-protectedseas-all": {
+    "name": "Protected Seas all",
+    "description": "Protected seas all",
+    "schema": {
+      "category_name": {
+        "keyword": "category_name",
+        "enum": {
+          "IUCN MPA": "IUCN MPA",
+          "Other": "Other",
+          "Jurisdictional Authority Area": "Jurisdictional Authority Area",
+          "TBD": "TBD",
+          "Fisheries Management Area": "Fisheries Management Area",
+          "Recreational Area": "Recreational Area",
+          "OECM": "OECM",
+          "Vessel Restricted Area": "Vessel Restricted Area",
+          "Voluntary Conservation Measure Area": "Voluntary Conservation Measure Area",
+          "Vessel Reporting Area": "Vessel Reporting Area",
+          "Water Quality/Human Health Area": "Water Quality/Human Health Area"
+        }
+      },
+      "removal_of_marine_life_is_prohibited": {
+        "keyword": "removal_of_marine_life_is_prohibited",
         "enum": {
           "1": "1",
           "2": "2",
@@ -2567,7 +2658,49 @@
   "public-rfmo": {
     "name": "RFMO",
     "description": "Regional fisheries management organizations (RFMOs) are international bodies formed by countries with a shared interest in managing or conserving fish stocks in a particular region. Some manage all the fish stocks found in a given area, while others focus on specific highly migratory species, notably tuna. The regional fisheries management organization on the Global Fishing Watch map currently includes the five tuna regional fisheries management organizations. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer.",
-    "schema": {}
+    "schema": {
+      "ID": {
+        "keyword": "ID",
+        "enum": {
+          "APFIC": "APFIC",
+          "BOBP-IGO": "BOBP-IGO",
+          "CCAMLR": "CCAMLR",
+          "CCBSP": "CCBSP",
+          "CCSBT": "CCSBT",
+          "CCSBT Primary Area": "CCSBT Primary Area",
+          "COREP": "COREP",
+          "CPPS": "CPPS",
+          "CRFM": "CRFM",
+          "CTMFM": "CTMFM",
+          "FCWC": "FCWC",
+          "FFA": "FFA",
+          "GFCM": "GFCM",
+          "IATTC": "IATTC",
+          "ICCAT": "ICCAT",
+          "ICES": "ICES",
+          "IOTC": "IOTC",
+          "IPHC": "IPHC",
+          "LTA": "LTA",
+          "NAFO": "NAFO",
+          "NAMMCO": "NAMMCO",
+          "NASCO": "NASCO",
+          "NEAFC": "NEAFC",
+          "NPAFC": "NPAFC",
+          "NPFC": "NPFC",
+          "OSPESCA": "OSPESCA",
+          "PERSGA": "PERSGA",
+          "PICES": "PICES",
+          "RECOFI": "RECOFI",
+          "SEAFDEC": "SEAFDEC",
+          "SIOFA": "SIOFA",
+          "SPC": "SPC",
+          "SPRFMO": "SPRFMO",
+          "SRFC": "SRFC",
+          "SWIOFC": "SWIOFC",
+          "WCPFC": "WCPFC"
+        }
+      }
+    }
   },
   "public-tristan-seamounts-200-1618586314138": {
     "name": "Depth: -200 m",
