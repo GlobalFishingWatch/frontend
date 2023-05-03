@@ -2612,13 +2612,13 @@
     "description": "Protected seas (only category IUCN MPA)",
     "schema": {
       "removal_of_marine_life_is_prohibited": {
-        "keyword": "removal_of_marine_life_is_prohibited",
+        "keyword": "Level of Fishing Protection",
         "enum": {
-          "1": "1",
-          "2": "2",
-          "3": "3",
-          "4": "4",
-          "5": "5"
+          "1": "Least restrictive",
+          "2": "Less restrictive",
+          "3": "Moderately restrictive",
+          "4": "Heavily restrictive",
+          "5": "Most restrictive"
         }
       }
     }
@@ -2644,13 +2644,13 @@
         }
       },
       "removal_of_marine_life_is_prohibited": {
-        "keyword": "removal_of_marine_life_is_prohibited",
+        "keyword": "Level of Fishing Protection",
         "enum": {
-          "1": "1",
-          "2": "2",
-          "3": "3",
-          "4": "4",
-          "5": "5"
+          "1": "Least restrictive",
+          "2": "Less restrictive",
+          "3": "Moderately restrictive",
+          "4": "Heavily restrictive",
+          "5": "Most restrictive"
         }
       }
     }
