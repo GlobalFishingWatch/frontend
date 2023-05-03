@@ -138,7 +138,7 @@ export const datasets: Dataset[] = [
         description: 'Endpoint to lists vessels given a list of vessels ids',
         downloadable: true,
         method: 'GET',
-        pathTemplate: 'https://gateway.api.dev.globalfishingwatch.org/prototypes/vessels',
+        pathTemplate: 'https://gateway.api.globalfishingwatch.org/beta/v3/vessels',
         params: [],
         query: [
           {
@@ -168,7 +168,7 @@ export const datasets: Dataset[] = [
         description: 'Endpoint to search for a vessel given a free form query.',
         downloadable: true,
         method: 'GET',
-        pathTemplate: 'https://gateway.api.dev.globalfishingwatch.org/prototypes/vessels/search',
+        pathTemplate: 'https://gateway.api.globalfishingwatch.org/beta/v3/vessels/search',
         params: [],
         query: [
           {
@@ -208,7 +208,7 @@ export const datasets: Dataset[] = [
         description: 'Endpoint to searches for a vessel given a query',
         downloadable: true,
         method: 'GET',
-        pathTemplate: 'https://gateway.api.dev.globalfishingwatch.org/prototypes/vessels/search',
+        pathTemplate: 'https://gateway.api.globalfishingwatch.org/beta/v3/vessels/search',
         params: [],
         query: [
           {
@@ -236,8 +236,7 @@ export const datasets: Dataset[] = [
         description: 'Endpoint to retrieve one vessel information',
         downloadable: true,
         method: 'GET',
-        pathTemplate:
-          'https://gateway.api.dev.globalfishingwatch.org/prototypes/vessels/{{vesselId}}',
+        pathTemplate: 'https://gateway.api.globalfishingwatch.org/beta/v3/vessels/{{vesselId}}',
         params: [{ label: 'vessel id', id: 'vesselId', type: 'string' }],
         query: [
           {
