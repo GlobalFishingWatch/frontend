@@ -16,7 +16,7 @@ import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import GFWOnly from 'features/user/GFWOnly'
 import { ROOT_DOM_ELEMENT } from 'data/config'
-import { ONLY_GFW_STAFF_DATAVIEW_SLUGS } from 'data/workspaces'
+import { ONLY_GFW_STAFF_DATAVIEW_SLUGS, HIDDEN_DATAVIEW_FILTERS } from 'data/workspaces'
 import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/dataviews.selectors'
 import { getDatasetNameTranslated } from 'features/i18n/utils'
 import { getSchemaFiltersInDataview, isPrivateDataset } from 'features/datasets/datasets.utils'
@@ -146,7 +146,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           dataview={dataview}
           onToggle={onToggle}
         />
-        {ONLY_GFW_STAFF_DATAVIEW_SLUGS.includes(dataview.dataviewId as number) && (
+        {ONLY_GFW_STAFF_DATAVIEW_SLUGS.includes(dataview.dataviewId as string) && (
           <GFWOnly type="only-icon" style={{ transform: 'none' }} className={styles.gfwIcon} />
         )}
         {title && title.length > 30 ? (
@@ -164,27 +164,29 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
               onClickOutside={closeExpandedContainer}
             />
           )}
-          {layerActive && hasSchemaFilters && (
-            <ExpandedContainer
-              visible={filterOpen}
-              onClickOutside={closeExpandedContainer}
-              component={<Filters dataview={dataview} />}
-            >
-              <div className={styles.filterButtonWrapper}>
-                <IconButton
-                  icon={filterOpen ? 'filter-on' : 'filter-off'}
-                  size="small"
-                  onClick={onToggleFilterOpen}
-                  tooltip={
-                    filterOpen
-                      ? t('layer.filterClose', 'Close filters')
-                      : t('layer.filterOpen', 'Open filters')
-                  }
-                  tooltipPlacement="top"
-                />
-              </div>
-            </ExpandedContainer>
-          )}
+          {layerActive &&
+            hasSchemaFilters &&
+            HIDDEN_DATAVIEW_FILTERS.includes(dataview.dataviewId as string) && (
+              <ExpandedContainer
+                visible={filterOpen}
+                onClickOutside={closeExpandedContainer}
+                component={<Filters dataview={dataview} />}
+              >
+                <div className={styles.filterButtonWrapper}>
+                  <IconButton
+                    icon={filterOpen ? 'filter-on' : 'filter-off'}
+                    size="small"
+                    onClick={onToggleFilterOpen}
+                    tooltip={
+                      filterOpen
+                        ? t('layer.filterClose', 'Close filters')
+                        : t('layer.filterOpen', 'Open filters')
+                    }
+                    tooltipPlacement="top"
+                  />
+                </div>
+              </ExpandedContainer>
+            )}
           {!isBasemapLabelsDataview && <InfoModal dataview={dataview} />}
           {(isUserLayer || gfwUser) && <Remove dataview={dataview} />}
           {items.length > 1 && (

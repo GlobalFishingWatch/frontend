@@ -31,6 +31,7 @@ export const EEZ_DATAVIEW_SLUG = 'eez'
 export const EEZ_DATAVIEW_INSTANCE_ID = 'context-layer-eez'
 export const MPA_DATAVIEW_SLUG = 'mpa'
 export const MPA_DATAVIEW_INSTANCE_ID = 'context-layer-mpa'
+export const PROTECTEDSEAS_DATAVIEW_INSTANCE_ID = 'context-layer-protectedseas'
 export const RFMO_DATAVIEW_SLUG = 'tuna-rfmo-areas'
 export const HIGH_SEAS_DATAVIEW_SLUG = 'high-seas'
 export const PROTECTED_SEAS_DATAVIEW_SLUG = 'protected-seas'
@@ -91,4 +92,5 @@ export const DEFAULT_DATAVIEW_SLUGS = [
   ...TEMPLATE_DATAVIEW_SLUGS,
 ]
 
-export const ONLY_GFW_STAFF_DATAVIEW_SLUGS: number[] = []
+export const ONLY_GFW_STAFF_DATAVIEW_SLUGS: string[] = []
+export const HIDDEN_DATAVIEW_FILTERS: string[] = [RFMO_DATAVIEW_SLUG]
