@@ -485,7 +485,7 @@
   "userGuide": {
     "title": "User Guide",
     "uploadReference": "Upload reference layers data",
-    "uploadEnvironment": "Upload environmenet layers data",
+    "uploadEnvironment": "Upload environment layers data",
     "analysis": "Analyze activity",
     "downloadActivity": "Download data",
     "vesselSearch": "Vessel Search",
