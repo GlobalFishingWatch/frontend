@@ -20,13 +20,18 @@ declare namespace Cypress {
 function loginViaAuthAPI(username: string, password: string) {
   // App landing page redirects to Auth0.
   cy.visit('/')
+
   // This is needed to ensure the cookies are send
   Cypress.Cookies.debug(true)
+
+  // Clear local storage to ensure everything is clean before logging in
+  cy.clearLocalStorage()
+
   // Close dialog popup
   cy.get('div[role=dialog] button[type=button][aria-label=close]').click()
 
   // Login on Auth0.
-  cy.get('a[href*="auth"]', { timeout: 10000 }).click()
+  cy.get('a[href*="auth"]', { timeout: 20000 }).click()
   cy.log(`logging in with ${username}`)
 
   cy.get('input#email').type(username)
