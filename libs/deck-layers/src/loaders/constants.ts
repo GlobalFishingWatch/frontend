@@ -1,3 +1,4 @@
+import { EventTypes } from '@globalfishingwatch/api-types'
 export const FEATURE_ROW_INDEX = 0
 export const FEATURE_COL_INDEX = 1
 export const FEATURE_CELLS_START_INDEX = 2
@@ -11,3 +12,11 @@ export const CELL_VALUES_START_INDEX = 3
 export const VALUE_MULTIPLIER = 100
 
 export const START_TIMESTAMP = new Date('2012-01-01T00:00:00.000Z').getTime()
+
+export const EVENT_TYPES_ORDINALS: { [key in EventTypes]: number } = {
+  port_visit: 0,
+  encounter: 1,
+  fishing: 2,
+  gap: 3,
+  loitering: 4,
+}
