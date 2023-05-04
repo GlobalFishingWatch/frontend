@@ -44,7 +44,7 @@
     "summaryNoVessels": "<strong>{{sources}} {{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "timeRangeTooLong": "Relatórios só estão disponíveis para intervalos de tempo de até um ano",
     "title": "Análise",
-    "unknown": "Unknown"
+    "unknown": "Desconhecido"
   },
   "bigQuery": {
     "aggregateAvg": "Média",
@@ -493,8 +493,8 @@
     "uploadEnvironment": "Upload environment layers data",
     "analysis": "Analyze activity",
     "downloadActivity": "Download data",
-    "vesselSearch": "Vessel Search",
-    "vesselGroups": "Vessel groups",
+    "vesselSearch": "Pesquisar Embarcação",
+    "vesselGroups": "Grupos de embarcações",
     "activityFishing": "Activity - fishing",
     "activityPresence": "Activity - presence",
     "activityFilters": "Filtering activity layers",
@@ -549,14 +549,14 @@
       "tuna_purse_seines": "Rede de cerco para atuns"
     },
     "vesselTypes": {
-      "fishing": "Fishing",
-      "carrier": "Carrier",
+      "fishing": "Pesca",
+      "carrier": "Navio cargueiro",
       "cargo": "Cargo",
       "bunker_or_tanker": "Bunker or tanker",
       "passenger": "Passenger",
       "seismic_vessel": "Seismic vessel",
-      "other_non_fishing": "Other",
-      "unknown": "Unknown"
+      "other_non_fishing": "Outros",
+      "unknown": "Desconhecido"
     },
     "grossTonnageRange": "Intervalo de arqueação bruta",
     "imo": "IMO",
@@ -580,7 +580,7 @@
     "source": "Fonte",
     "source_short": "Fonte",
     "ssvid": "Ssvid",
-    "type": "Type",
+    "type": "Tipo",
     "target_species": "Espécie alvo",
     "targetSpecies": "Espécie alvo",
     "trackLogin": "Uma das fontes selecionadas requer que você esteja <1>login</1> para ver o rastreamento e eventos da embarcação",
