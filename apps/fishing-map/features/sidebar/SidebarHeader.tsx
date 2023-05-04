@@ -259,10 +259,11 @@ function CloseReportButton() {
   return (
     <Link className={styles.workspaceLink} to={linkTo}>
       <IconButton
-        icon="edit"
+        icon="close"
+        type="border"
         className="print-hidden"
         onClick={onCloseClick}
-        tooltip={t('workspace.edit', 'Edit workspace')}
+        tooltip={t('analysis.close', 'Close report and go back to workspace')}
       />
     </Link>
   )
@@ -292,7 +293,7 @@ function SidebarHeader() {
         {workspaceLocation && !readOnly && <SaveWorkspaceButton />}
         {(workspaceLocation || reportLocation) && !readOnly && <ShareWorkspaceButton />}
         {reportLocation && !readOnly && <CloseReportButton />}
-        {!reportLocation && showBackToWorkspaceButton && lastVisitedWorkspace && (
+        {!reportLocation && !readOnly && showBackToWorkspaceButton && lastVisitedWorkspace && (
           <Link className={styles.workspaceLink} to={lastVisitedWorkspace}>
             <IconButton type="border" icon="close" />
           </Link>
