@@ -44,7 +44,7 @@
     "summaryNoVessels": "<strong>{{sources}} {{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "timeRangeTooLong": "Laporan hanya diizinkan untuk rentang waktu hingga satu tahun",
     "title": "Analisis",
-    "unknown": "Unknown"
+    "unknown": "Tidak diketahui"
   },
   "bigQuery": {
     "aggregateAvg": "Rata-rata",
@@ -493,8 +493,8 @@
     "uploadEnvironment": "Upload environment layers data",
     "analysis": "Analyze activity",
     "downloadActivity": "Download data",
-    "vesselSearch": "Vessel Search",
-    "vesselGroups": "Vessel groups",
+    "vesselSearch": "Pencarian Kapal",
+    "vesselGroups": "Kelompok kapal",
     "activityFishing": "Activity - fishing",
     "activityPresence": "Activity - presence",
     "activityFilters": "Filtering activity layers",
@@ -549,14 +549,14 @@
       "tuna_purse_seines": "Pukat Cincin Tuna"
     },
     "vesselTypes": {
-      "fishing": "Fishing",
-      "carrier": "Carrier",
+      "fishing": "Memancing",
+      "carrier": "Pembawa",
       "cargo": "Cargo",
       "bunker_or_tanker": "Bunker or tanker",
       "passenger": "Passenger",
       "seismic_vessel": "Seismic vessel",
-      "other_non_fishing": "Other",
-      "unknown": "Unknown"
+      "other_non_fishing": "Lainnya",
+      "unknown": "Tidak diketahui"
     },
     "grossTonnageRange": "Rentang Gross Tonnage",
     "imo": "IMO",
@@ -580,7 +580,7 @@
     "source": "Sumber",
     "source_short": "Sumber",
     "ssvid": "Ssvid",
-    "type": "Type",
+    "type": "Jenis",
     "target_species": "Spesies target",
     "targetSpecies": "Spesies target",
     "trackLogin": "Salah satu sumber yang Anda pilih mengharuskan Anda untuk <1>login</1> untuk melihat lintasan dan peristiwa kapal",
