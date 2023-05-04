@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
 import { Trans, useTranslation } from 'react-i18next'
-import { useCallback } from 'react'
+import { ChangeEvent, useCallback } from 'react'
 import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -48,12 +48,16 @@ function SearchAdvanced({
     )
   }
 
+  const handleSearchQueryChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value)
+  }
+
   return (
     <div className={styles.advancedLayout}>
       <div className={styles.form}>
         <div className={styles.formFields}>
           <InputText
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={handleSearchQueryChange}
             id="name"
             value={searchQuery}
             label={t('common.name', 'Name')}

@@ -256,14 +256,14 @@ function Search() {
           <CSVLink
             filename={`search-results-${debouncedQuery}.csv`}
             asyncOnClick={true}
-            data={vesselsSelected.length !== 0 ? vesselsSelected : searchResults}
+            data={vesselsSelected.length ? vesselsSelected : searchResults}
           >
             <IconButton
               icon="download"
               type="border"
               size="medium"
               tooltip={
-                vesselsSelected.length !== 0
+                vesselsSelected.length
                   ? `${t('search.downloadSelected', 'Download CSV of selected vessels')} (${
                       vesselsSelected.length
                     })`
