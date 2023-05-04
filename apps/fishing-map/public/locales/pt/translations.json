@@ -6,6 +6,7 @@
     "beforeAfterRange": "entre {{duration}} antes e depois de {{compareStart}}",
     "change": "Mudar",
     "clickToFilterBy": "Click to filter by:",
+    "close": "Close report",
     "disclaimer": "Os dados mostrados acima devem ser tomados como uma estimativa.",
     "downloadVesselsList": "Download list (CSV)",
     "error": "Houve um problema ao carregar os dados, por favor, tente atualizar a página",
