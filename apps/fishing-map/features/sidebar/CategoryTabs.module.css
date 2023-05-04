@@ -4,8 +4,8 @@
 }
 
 .tab {
-  width: 5.2rem;
-  height: 5.2rem;
+  width: var(--sidebar-tabs-width);
+  height: var(--sidebar-tabs-width);
   display: flex;
   align-items: center;
   justify-content: center;

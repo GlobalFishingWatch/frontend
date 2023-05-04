@@ -33,7 +33,7 @@
 
 .bottomRight {
   bottom: 0;
-  left: 5.2rem;
+  left: var(--sidebar-tabs-width);
 }
 
 .rightDown {

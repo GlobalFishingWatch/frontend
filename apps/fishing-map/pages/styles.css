@@ -4,6 +4,9 @@
   --color-help: #fff8cd;
   --timebar-height: 7.2rem;
   --footer-height: 2.4rem;
+  --header-height: 5.2rem;
+  --sidebar-width: 32rem;
+  --sidebar-tabs-width: 5.2rem;
 }
 
 .printing * {

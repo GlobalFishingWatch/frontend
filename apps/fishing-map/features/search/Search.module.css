@@ -1,14 +1,14 @@
 .search {
   display: flex;
   flex-direction: column;
-  height: calc(100% - 52px);
+  height: calc(100% - var(--header-height));
   z-index: 0;
   position: relative;
 }
 
 .footer {
   position: fixed;
-  width: calc(100% - 5.2rem);
+  width: calc(100% - var(--header-height));
   bottom: 0;
   right: 0;
   display: flex;
@@ -24,7 +24,7 @@
 }
 
 .footer.advanced {
-  width: calc(100% - 5.2rem - 32rem);
+  width: calc(100% - var(--sidebar-tabs-width) - var(--sidebar-width));
 }
 
 .footerAction {

@@ -13,7 +13,7 @@
 }
 
 .container {
-  width: 32rem;
+  width: var(--sidebar-width);
 }
 
 .img {

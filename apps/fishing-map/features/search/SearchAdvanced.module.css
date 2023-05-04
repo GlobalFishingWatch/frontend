@@ -7,7 +7,7 @@
   background-color: var(--color-white);
   border-right: var(--border);
   box-shadow: 0.6rem 0 1rem -0.4rem rgba(var(--primary-blue-rgb), var(--opacity-border));
-  width: 32rem;
+  width: var(--sidebar-width);
   z-index: 4;
   display: flex;
   flex-direction: column;
