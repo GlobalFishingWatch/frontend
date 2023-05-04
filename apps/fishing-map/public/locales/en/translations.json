@@ -532,7 +532,7 @@
       "other_seines": "Other seines",
       "pole_and_line": "Pole and line",
       "pots_and_traps": "Pots and traps",
-      "purse seine": "Purse Seine",
+      "purse seine": "Purse seine",
       "purse_seine": "Purse Seine",
       "purse_seines": "Purse seine",
       "reefer": "Reefer",
@@ -556,7 +556,7 @@
       "passenger": "Passenger",
       "seismic_vessel": "Seismic vessel",
       "other_non_fishing": "Other",
-      "unknown": "Unknown"
+      "unknown": "Other"
     },
     "grossTonnageRange": "Gross tonnage range",
     "imo": "IMO",
