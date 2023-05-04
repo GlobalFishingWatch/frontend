@@ -132,7 +132,7 @@ function Search() {
 
   const fetchMoreResults = useCallback(() => {
     const { offset, total } = searchPagination
-    if (offset <= total && total > RESULTS_PER_PAGE && searchDatasets) {
+    if (offset && offset <= total && total > RESULTS_PER_PAGE && searchDatasets) {
       fetchResults({
         query: debouncedQuery,
         datasets: searchDatasets,
