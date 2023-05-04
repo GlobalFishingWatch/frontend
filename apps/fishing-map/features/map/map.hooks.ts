@@ -122,6 +122,7 @@ export const useGeneratorsConnect = () => {
     showTimeComparison,
     timeComparisonValues,
     updatedGeneratorConfig,
+    visibleEvents,
   ])
 }
 
