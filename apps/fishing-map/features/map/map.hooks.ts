@@ -20,6 +20,7 @@ import {
 import { DataviewCategory, Locale } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
+import { selectWorkspaceVisibleEventsArray } from 'features/workspace/workspace.selectors'
 import { selectLocationType } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -79,7 +80,7 @@ export const useGeneratorsConnect = () => {
   const generatorsConfig = useSelector(selectDefaultMapGeneratorsConfig)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
-
+  const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
   const sourceTilesLoaded = useMapSourceTiles()
   const updatedGeneratorConfig = useMemo(() => {
     return generatorsConfig.map((generatorConfig, i) => {
@@ -101,6 +102,7 @@ export const useGeneratorsConnect = () => {
       end,
       token: GFWAPI.getToken(),
       locale: i18n.language as Locale,
+      visibleEvents,
     }
     if (showTimeComparison && timeComparisonValues) {
       globalConfig = {

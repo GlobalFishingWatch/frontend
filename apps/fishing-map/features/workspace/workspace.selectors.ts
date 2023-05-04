@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { EventTypes } from '@globalfishingwatch/api-types'
 import { WorkspaceState, WorkspaceStateProperty } from 'types'
 import { RootState } from 'store'
 import { DEFAULT_WORKSPACE, PUBLIC_SUFIX } from 'data/config'
@@ -52,3 +53,14 @@ export const selectWorkspaceStateProperty = (property: WorkspaceStateProperty) =
       return workspaceState[property] ?? DEFAULT_WORKSPACE[property]
     }
   )
+
+export const selectWorkspaceVisibleEventsArray = createSelector(
+  [selectWorkspaceStateProperty('visibleEvents')],
+  (visibleEvents) => {
+    return typeof visibleEvents === 'string'
+      ? visibleEvents === 'all'
+        ? Object.values(EventTypes)
+        : []
+      : visibleEvents
+  }
+)

@@ -5,7 +5,7 @@ import {
   GeoJSONSourceSpecification,
 } from '@globalfishingwatch/maplibre-gl'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
-import { Segment, Locale } from '@globalfishingwatch/api-types'
+import { Segment, Locale, EventTypes } from '@globalfishingwatch/api-types'
 import { Group } from '..'
 import { Interval } from './heatmap/types'
 
@@ -45,6 +45,7 @@ export interface GlobalGeneratorConfig {
   compareStart?: string
   compareEnd?: string
   locale?: Locale
+  visibleEvents?: EventTypes[]
 }
 
 export interface GlobalGeneratorConfigExtended extends GlobalGeneratorConfig {

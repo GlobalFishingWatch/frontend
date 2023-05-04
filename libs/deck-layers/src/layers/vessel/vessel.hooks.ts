@@ -52,6 +52,7 @@ interface globalConfig {
   hoveredFeatures: PickingInfo[]
   clickedFeatures: PickingInfo[]
   highlightedTime?: { start: string; end: string }
+  visibleEvents?: EventTypes[]
 }
 
 interface commonGeneratorConfig {
@@ -70,10 +71,9 @@ export const useVesselsLayers = (
   vesselGeneratorConfig: vesselGeneratorConfig[],
   globalConfig: globalConfig,
   vesselLayersGeneratorsIds: string[],
-  highlightedTime?: { start: string; end: string },
-  visibleEvents?: EventTypes[]
+  highlightedTime?: { start: string; end: string }
 ) => {
-  const { start, end, hoveredFeatures, clickedFeatures } = globalConfig
+  const { start, end, hoveredFeatures, clickedFeatures, visibleEvents } = globalConfig
 
   const setVesselLayers = useSetAtom(vesselLayersAtom)
   const vs = useAtomValue(vesselLayersAtom)
