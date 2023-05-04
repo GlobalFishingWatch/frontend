@@ -6,6 +6,7 @@
     "beforeAfterRange": "antara {{duration}} sebelum dan sesudah {{compareStart}}",
     "change": "Ubah",
     "clickToFilterBy": "Click to filter by:",
+    "close": "Close report",
     "disclaimer": "Data yang ditunjukkan di atas harus diambil sebagai perkiraan.",
     "downloadVesselsList": "Download list (CSV)",
     "error": "Terjadi masalah saat memuat data, silakan coba segarkan halaman",
