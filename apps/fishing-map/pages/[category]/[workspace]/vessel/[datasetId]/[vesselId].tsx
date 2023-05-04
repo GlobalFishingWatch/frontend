@@ -1,38 +1,18 @@
 import path from 'path'
 import { useEffect, useState } from 'react'
-import Router, { useRouter } from 'next/router'
 import { RootState } from 'reducers'
-import { stringify } from 'qs'
 import { Logo, SplitView } from '@globalfishingwatch/ui-components'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import {
-  APIPagination,
-  ApiEvent,
-  Dataset,
-  DatasetTypes,
-  EventType,
-  Vessel,
-} from '@globalfishingwatch/api-types'
+import { APIPagination, ApiEvent, Dataset, Vessel } from '@globalfishingwatch/api-types'
 import VesselIdentity from 'features/vessel/Vesseldentity'
 import VesselSummary from 'features/vessel/VesselSummary'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import CategoryTabsServer from 'features/sidebar/CategoryTabs.server'
 import { WorkspaceCategory } from 'data/workspaces'
-import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
-import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import VesselEvents from 'features/vessel/VesselEvents'
+import { getEventsParamsFromVesselDataset } from 'features/vessel/vessel.slice'
 import Index from '../../../../index'
 import styles from './styles.module.css'
-
-// Workaround until we load the dataview TEMPLATE_VESSEL_DATAVIEW_SLUG to load the datasetConfig
-const API_PARAMS_BY_EVENT_TYPE: Partial<Record<EventType, any>> = {
-  port_visit: {
-    confidences: 4,
-  },
-  encounter: {
-    'encounter-types': ['carrier-fishing', 'fishing-carrier', 'fishing-support', 'support-fishing'],
-  },
-}
 
 // This is needed by nx/next builder to run build the standalone next app properly
 // https://github.com/nrwl/nx/issues/9017#issuecomment-1140066503
@@ -51,25 +31,10 @@ export async function getServerSideProps({ params }): Promise<{ props: VesselPag
   })
   const vessel = allSettledPromises[0] as Vessel
   const dataset = allSettledPromises[1] as Dataset
-  const eventsDatasetIds = getRelatedDatasetsByType(dataset, DatasetTypes.Events)?.map((e) => e.id)
-  const eventDatasetsParams = {
-    ids: eventsDatasetIds?.join(','),
-    ...DEFAULT_PAGINATION_PARAMS,
-  }
-  const eventsDatasets = await GFWAPI.fetch<APIPagination<Dataset>>(
-    `/datasets?${stringify(eventDatasetsParams)}`
-  ).then((res) => res.entries)
+  const eventParams = await getEventsParamsFromVesselDataset(dataset, vessel.id)
   const eventPromises = await Promise.allSettled(
-    eventsDatasets?.map((eventDataset) => {
-      const paramsByType = API_PARAMS_BY_EVENT_TYPE[eventDataset.subcategory] || {}
-      const eventsParams = {
-        summary: true,
-        vessels: vesselId,
-        datasets: eventDataset.id,
-        ...DEFAULT_PAGINATION_PARAMS,
-        ...paramsByType,
-      }
-      return GFWAPI.fetch<APIPagination<ApiEvent>>(`/events?${stringify(eventsParams)}`)
+    eventParams?.map((eventParams) => {
+      return GFWAPI.fetch<APIPagination<ApiEvent>>(`/events?${eventParams}`)
     })
   )
   const events = eventPromises.flatMap((res) => {

@@ -5,8 +5,10 @@ import { selectVesselId, selectVesselDatasetId } from 'routes/routes.selectors'
 import VesselHeader from 'features/vessel/VesselHeader'
 import VesselEvents from 'features/vessel/VesselEvents'
 import {
+  fetchVesselEventsThunk,
   fetchVesselInfoThunk,
   selectVesselEventsData,
+  selectVesselEventsStatus,
   selectVesselInfoData,
   selectVesselInfoStatus,
 } from 'features/vessel/vessel.slice'
@@ -20,12 +22,21 @@ const VesselDetail = () => {
   const datasetId = useSelector(selectVesselDatasetId)
   const vessel = useSelector(selectVesselInfoData)
   const infoStatus = useSelector(selectVesselInfoStatus)
+  const eventsStatus = useSelector(selectVesselEventsStatus)
   const events = useSelector(selectVesselEventsData)
+
   useEffect(() => {
     if (infoStatus === 'idle') {
       dispatch(fetchVesselInfoThunk({ vesselId, datasetId }))
     }
   }, [])
+
+  useEffect(() => {
+    if (eventsStatus === 'idle') {
+      dispatch(fetchVesselEventsThunk({ vesselId, datasetId }))
+    }
+  }, [])
+
   return (
     <Fragment>
       <VesselHeader vessel={vessel} />
