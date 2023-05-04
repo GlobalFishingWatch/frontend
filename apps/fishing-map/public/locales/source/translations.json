@@ -5,7 +5,6 @@
     "beforeAfterDate": "date",
     "beforeAfterRange": "between the {{duration}} before and after {{compareStart}}",
     "change": "Change",
-    "close": "Close report and go back to workspace",
     "clickToFilterBy": "Click to filter by:",
     "disclaimer": "The data shown above should be taken as an estimate.",
     "downloadVesselsList": "Download list (CSV)",
