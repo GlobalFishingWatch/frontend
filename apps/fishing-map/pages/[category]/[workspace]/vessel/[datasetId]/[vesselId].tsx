@@ -51,9 +51,9 @@ export async function getServerSideProps({ params }): Promise<{ props: VesselPag
   })
   const vessel = allSettledPromises[0] as Vessel
   const dataset = allSettledPromises[1] as Dataset
-  const eventsDatasetIds = getRelatedDatasetsByType(dataset, DatasetTypes.Events).map((e) => e.id)
+  const eventsDatasetIds = getRelatedDatasetsByType(dataset, DatasetTypes.Events)?.map((e) => e.id)
   const eventDatasetsParams = {
-    ids: eventsDatasetIds.join(','),
+    ids: eventsDatasetIds?.join(','),
     ...DEFAULT_PAGINATION_PARAMS,
   }
   const eventsDatasets = await GFWAPI.fetch<APIPagination<Dataset>>(

@@ -13,6 +13,7 @@ export interface UpdateQueryParamsAction {
   type: ROUTE_TYPES
   query: QueryParams
   replaceQuery?: boolean
+  replaceUrl?: boolean
   payload?: any
   prev?: any
   meta?: {
@@ -22,13 +23,21 @@ export interface UpdateQueryParamsAction {
   }
 }
 
-type UpdateLocationOptions = { query?: QueryParams; payload?: any; replaceQuery?: boolean }
+type UpdateLocationOptions = Pick<
+  UpdateQueryParamsAction,
+  'query' | 'payload' | 'replaceQuery' | 'replaceUrl'
+>
 
 export function updateLocation(
   type: ROUTE_TYPES,
-  { query = {}, payload = {}, replaceQuery = false }: UpdateLocationOptions = {}
+  {
+    query = {},
+    payload = {},
+    replaceQuery = false,
+    replaceUrl = false,
+  } = {} as UpdateLocationOptions
 ) {
-  return { type, query, payload, replaceQuery }
+  return { type, query, payload, replaceQuery, replaceUrl }
 }
 
 export function updateQueryParam(query: QueryParams = {}) {

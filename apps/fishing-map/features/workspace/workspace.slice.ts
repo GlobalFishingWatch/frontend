@@ -292,6 +292,7 @@ export const saveWorkspaceThunk = createAsyncThunk(
             category: locationCategory,
             workspaceId: workspaceUpdated.id,
           },
+          query: {},
           replaceQuery: true,
         })
       )
