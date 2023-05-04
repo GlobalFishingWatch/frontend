@@ -64,8 +64,10 @@ export function SearchEmptyState({ className = '' }: SearchPlaceholderProps) {
       )}
       {activeSearchOption === 'advanced' && (
         <p>
-          t( 'search.descriptionAdvanced', 'The vessels will appear here once you select your
-          desired filters.' )
+          {t(
+            'search.descriptionAdvanced',
+            'The vessels will appear here once you select your desired filters.'
+          )}
         </p>
       )}
       {guestUser && noGuestDatasets?.length > 0 && (
