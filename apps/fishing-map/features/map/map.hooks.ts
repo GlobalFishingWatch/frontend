@@ -177,7 +177,7 @@ export const useClickedEventConnect = () => {
                   workspaceId: workspace.properties.id,
                 },
               },
-          true
+          { replaceQuery: true }
         )
         const { latitude, longitude, zoom } = workspace.properties
         if (latitude && longitude && zoom) {

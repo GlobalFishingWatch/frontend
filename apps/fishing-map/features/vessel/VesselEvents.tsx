@@ -1,17 +1,17 @@
-import { Fragment, useMemo, useState } from 'react'
+import { Fragment, useMemo } from 'react'
 import { groupBy } from 'lodash'
-import { ApiEvent, Dataset } from '@globalfishingwatch/api-types'
-import { Tab, Tabs } from '@globalfishingwatch/ui-components'
+import { ApiEvent } from '@globalfishingwatch/api-types'
 
 export type VesselEventsProps = {
   events: ApiEvent[]
 }
 
 export const VesselEventsList = ({ events }: VesselEventsProps) => {
+  if (!events?.length) return null
   return (
     <ul>
       {events.map((event) => (
-        <li>{event.id}</li>
+        <li key={event.id}>{event.id}</li>
       ))}
     </ul>
   )
@@ -19,12 +19,13 @@ export const VesselEventsList = ({ events }: VesselEventsProps) => {
 
 export const VesselEventsSummary = ({ events }: VesselEventsProps) => {
   const eventsByType = useMemo(() => {
+    if (!events?.length) return {}
     return groupBy(events, 'type')
   }, [events])
   return (
     <ul>
       {Object.keys(eventsByType).map((event) => (
-        <li>{event}</li>
+        <li key={event}>{event}</li>
       ))}
     </ul>
   )

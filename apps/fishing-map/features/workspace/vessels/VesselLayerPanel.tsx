@@ -2,6 +2,9 @@ import { Fragment, ReactNode, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { Trans, useTranslation } from 'react-i18next'
+import Link from 'redux-first-router-link'
+// import NextLink from 'next/link'
+import { useRouter } from 'next/router'
 import {
   Vessel,
   DatasetTypes,
@@ -39,11 +42,12 @@ import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel
 import GFWOnly from 'features/user/GFWOnly'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { selectLocationSearch } from 'routes/routes.selectors'
-import { PATH_BASENAME, VESSEL } from 'routes/routes'
+import { VESSEL } from 'routes/routes'
 import {
   selectCurrentWorkspaceCategory,
   selectCurrentWorkspaceId,
 } from 'features/workspace/workspace.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -58,7 +62,9 @@ type LayerPanelProps = {
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const router = useRouter()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const { dispatchLocation } = useLocationConnect()
   const { url: infoUrl, dataset } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
   const resources = useSelector(selectResources)
   const locationSearch = useSelector(selectLocationSearch)
@@ -97,9 +103,38 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const onToggleColorOpen = () => {
     setColorOpen(!colorOpen)
   }
+
   // const onToggleInfoOpen = () => {
   //   setInfoOpen(!infoOpen)
   // }
+
+  const onInfoClick = () => {
+    // dispatchLocation(
+    //   VESSEL,
+    //   {
+    //     payload: {
+    //       category: workspaceCategory,
+    //       workspaceId: workspaceId,
+    //       datasetId: dataset?.id,
+    //       vesselId,
+    //     },
+    //   },
+    //   { replaceQuery: true }
+    // )
+    // router.replace(
+    //   {
+    //     pathname: '/[category]/[workspace]/vessel/[datasetId]/[vesselId]',
+    //     query: {
+    //       category: workspaceCategory,
+    //       workspace: workspaceId,
+    //       datasetId: dataset?.id,
+    //       vesselId: vesselId,
+    //     },
+    //   },
+    //   undefined,
+    //   { shallow: true }
+    // )
+  }
 
   const closeExpandedContainer = () => {
     if (!datasetModalOpen) {
@@ -263,10 +298,18 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         </ul>
       }
     >
-      <a
-        href={`${PATH_BASENAME}/${workspaceCategory}/${workspaceId}/${VESSEL.toLowerCase()}/${
-          dataset?.id
-        }/${vesselId}?${locationSearch}`}
+      <Link
+        className={styles.workspaceLink}
+        to={{
+          type: VESSEL,
+          payload: {
+            category: workspaceCategory,
+            workspaceId: workspaceId,
+            datasetId: dataset?.id,
+            vesselId,
+          },
+        }}
+        onClick={onInfoClick}
       >
         <IconButton
           size="small"
@@ -284,7 +327,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           // onClick={onToggleInfoOpen}
           tooltipPlacement="top"
         />
-      </a>
+      </Link>
     </ExpandedContainer>
   )
 

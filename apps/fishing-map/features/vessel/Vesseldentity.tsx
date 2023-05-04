@@ -10,7 +10,7 @@ const VesselIdentity = ({ vessel }: VesselIdentityProps) => {
     <ul>
       {identityFields.map((field) => (
         <li key={field}>
-          {field}: {vessel[field]}
+          {field}: {vessel?.[field]}
         </li>
       ))}
     </ul>

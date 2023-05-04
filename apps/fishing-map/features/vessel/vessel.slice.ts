@@ -28,7 +28,7 @@ const initialState: VesselState = {
 type VesselSliceState = { vessel: VesselState }
 
 type FetchVesselThunkParams = { vesselId: string; datasetId }
-export const fetchVesselThunk = createAsyncThunk(
+export const fetchVesselInfoThunk = createAsyncThunk(
   'vessel/fetchInfo',
   async ({ vesselId, datasetId }: FetchVesselThunkParams = {} as FetchVesselThunkParams) => {
     const vessel = await GFWAPI.fetch<Vessel>(`/vessels/${vesselId}?datasets=${datasetId}`)
@@ -47,14 +47,14 @@ const vesselSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchVesselThunk.pending, (state) => {
+    builder.addCase(fetchVesselInfoThunk.pending, (state) => {
       state.info.status = AsyncReducerStatus.Loading
     })
-    builder.addCase(fetchVesselThunk.fulfilled, (state, action) => {
+    builder.addCase(fetchVesselInfoThunk.fulfilled, (state, action) => {
       state.info.status = AsyncReducerStatus.Finished
       state.info.data = action.payload
     })
-    builder.addCase(fetchVesselThunk.rejected, (state) => {
+    builder.addCase(fetchVesselInfoThunk.rejected, (state) => {
       state.info.status = AsyncReducerStatus.Error
     })
   },
