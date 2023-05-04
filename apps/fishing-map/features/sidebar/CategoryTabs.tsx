@@ -6,6 +6,7 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { Icon, IconButton, IconType, Tooltip } from '@globalfishingwatch/ui-components'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
+import { Workspace } from '@globalfishingwatch/api-types'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { HOME, SEARCH, USER, WORKSPACES_LIST } from 'routes/routes'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
@@ -22,7 +23,6 @@ import HelpHub from 'features/help/HelpHub'
 import { selectFeedbackModalOpen, setModalOpen } from 'features/modals/modals.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { useLocationConnect } from 'routes/routes.hook'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import styles from './CategoryTabs.module.css'
 
@@ -40,6 +40,17 @@ type CategoryTabsProps = {
   onMenuClick: () => void
 }
 
+function getLinkToSearch(workspace: Workspace) {
+  return {
+    type: SEARCH,
+    payload: {
+      category: workspace?.category || WorkspaceCategory.FishingActivity,
+      workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+    },
+    replaceQuery: true,
+  }
+}
+
 function getLinkToCategory(category: WorkspaceCategory) {
   return {
     type: WORKSPACES_LIST,
@@ -52,7 +63,6 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const { t } = useTranslation()
   const guestUser = useSelector(isGuestUser)
   const dispatch = useAppDispatch()
-  const { dispatchLocation } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const { dispatchClickedEvent } = useClickedEventConnect()
   const locationType = useSelector(selectLocationType)
@@ -84,13 +94,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
       category: TrackCategory.SearchVessel,
       action: 'Click search icon to open search panel',
     })
-    dispatchLocation(SEARCH, {
-      payload: {
-        category: workspace?.category || WorkspaceCategory.FishingActivity,
-        workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-      },
-    })
-  }, [dispatchLocation, workspace])
+  }, [])
 
   return (
     <Fragment>
@@ -104,12 +108,17 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           className={cx(styles.tab, {
             [styles.current]: locationType === SEARCH,
           })}
-          onClick={onSearchClick}
         >
           <Tooltip content={t('search.vessels', 'Search vessels')} placement="right">
-            <span className={styles.tabContent}>
-              <Icon icon="category-search" className={styles.searchIcon} />
-            </span>
+            <Link
+              className={styles.tabContent}
+              to={getLinkToSearch(workspace)}
+              onClick={onSearchClick}
+            >
+              <span className={styles.tabContent}>
+                <Icon icon="category-search" className={styles.searchIcon} />
+              </span>
+            </Link>
           </Tooltip>
         </li>
         {availableCategories?.map((category, index) => (
