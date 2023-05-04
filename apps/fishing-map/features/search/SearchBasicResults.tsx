@@ -75,7 +75,7 @@ function SearchBasicResults({
               [styles.inWorkspace]: isInWorkspace,
               [styles.selected]: isSelected,
             })}
-            key={`${id}-${index}`}
+            key={`${index} - ${dataset.id} - ${id}`}
           >
             <div className={styles.container}>
               <IconButton

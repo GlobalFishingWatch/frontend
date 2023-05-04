@@ -148,7 +148,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
       enableRowSelection
       onRowSelectionChange={null}
       selectAllMode="all"
-      getRowId={(row) => row.id}
+      getRowId={(row, index) => `${index} - ${row.dataset.id} - ${row.id}`}
       initialState={{ columnPinning: { left: [PINNED_COLUMN] } }}
       state={{ showProgressBars, rowSelection }}
       muiTablePaperProps={{
