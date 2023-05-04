@@ -33,6 +33,7 @@ import GFWOnly from 'features/user/GFWOnly'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getUTCDateTime } from 'utils/dates'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
   TooltipEventFeature,
@@ -128,7 +129,7 @@ function VesselsTable({
     showFullList ||
     (interactionAllowed &&
       feature?.vesselsInfo?.vessels?.some((vessel) => {
-        const hasDatasets = vessel.infoDataset !== undefined && vessel.trackDataset !== undefined
+        const hasDatasets = vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
         return hasDatasets
       }))
 
@@ -215,8 +216,11 @@ function VesselsTable({
                     vessel.geartype ?? EMPTY_FIELD_PLACEHOLDER
                   )}`
 
-              const hasDatasets =
-                vessel.infoDataset !== undefined && vessel.trackDataset !== undefined
+              // Temporary workaround for public-global-all-vessels dataset as we
+              // don't want to show the pin only for that dataset for guest users
+              const hasDatasets = vessel.infoDataset.id.includes(GLOBAL_VESSELS_DATASET_ID)
+                ? vessel.infoDataset !== undefined && vessel.trackDataset !== undefined
+                : vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
 
               const vesselInWorkspace = getVesselInWorkspace(vesselsInWorkspace, vessel.id)
 
