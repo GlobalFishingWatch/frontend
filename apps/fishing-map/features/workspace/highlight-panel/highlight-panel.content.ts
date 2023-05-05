@@ -17,10 +17,12 @@ export type HighlightPanelConfig = {
   learnMoreUrl?: string
   delayed?: number
   workspaceUrl?: string
-  releaseDateTimestamp?: number
+  releaseDateTimestamp: number
 } & HighlighPanelConfigLocale
 
 const HIGHLIGHT_POPUP_KEY = 'HighlightPopup'
+
+const NEXT_YEAR = Date.now() + 1000 * 60 * 60 * 24 * 365
 
 // To display a new highlight popup, just add a HighlightPanelConfig element to this array.
 // It's important to define a unique dataviewInstanceId and the releaseDateTimestamp
@@ -56,7 +58,8 @@ const HIGHLIGHT_CONFIGS: HighlightPanelConfig[] = [
   },
   {
     dataviewInstanceId: 'vms-with-png',
-    releaseDateTimestamp: Date.parse('2023-05-25T00:00:00Z'),
+    // TODO: Set to a proper fixed date when release date is defined.
+    releaseDateTimestamp: NEXT_YEAR,
     localStorageKey: HIGHLIGHT_POPUP_KEY,
     delayed: 1000,
     imageUrl: `${PATH_BASENAME}/images/papua_new_guinea-vms.webp`,
@@ -85,13 +88,11 @@ const HIGHLIGHT_CONFIGS: HighlightPanelConfig[] = [
 ]
 
 const AVAILABLE_HIGHLIGHT_CONFIGS = HIGHLIGHT_CONFIGS
-  // Omit configs without release date for production environment
-  .filter((c) => !IS_PRODUCTION || c.releaseDateTimestamp)
   // sort them by release date descending
   .sort((a, b) => (a.releaseDateTimestamp > b.releaseDateTimestamp ? -1 : 1))
 const HIGHLIGHT_CONFIG_LATEST = AVAILABLE_HIGHLIGHT_CONFIGS.at(0)
 const HIGHLIGHT_CONFIG_PREVIOUS = AVAILABLE_HIGHLIGHT_CONFIGS.at(1)
-
+console.log(AVAILABLE_HIGHLIGHT_CONFIGS)
 const DISPLAY_LATEST_POPUP =
   // Non production environments always show the latest popup
   !IS_PRODUCTION ||
