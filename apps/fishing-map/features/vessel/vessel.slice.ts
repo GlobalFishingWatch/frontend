@@ -14,6 +14,8 @@ import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/data
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 
+export const DEFAULT_VESSEL_DATASET_ID = 'public-global-all-vessels:latest'
+
 interface VesselState {
   info: {
     status: AsyncReducerStatus

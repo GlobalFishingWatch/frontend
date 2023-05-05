@@ -1,6 +1,7 @@
 import path from 'path'
 import { useEffect, useState } from 'react'
 import { RootState } from 'reducers'
+import { GetServerSideProps } from 'next'
 import { Logo, SplitView } from '@globalfishingwatch/ui-components'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { APIPagination, ApiEvent, Dataset, Vessel } from '@globalfishingwatch/api-types'
@@ -10,21 +11,32 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import CategoryTabsServer from 'features/sidebar/CategoryTabs.server'
 import { WorkspaceCategory } from 'data/workspaces'
 import VesselEvents from 'features/vessel/VesselEvents'
-import { getEventsParamsFromVesselDataset } from 'features/vessel/vessel.slice'
-import Index from '../../../../index'
+import {
+  DEFAULT_VESSEL_DATASET_ID,
+  getEventsParamsFromVesselDataset,
+} from 'features/vessel/vessel.slice'
+import Index from 'pages'
 import styles from './styles.module.css'
 
 // This is needed by nx/next builder to run build the standalone next app properly
 // https://github.com/nrwl/nx/issues/9017#issuecomment-1140066503
 path.resolve('./next.config.js')
 
-export async function getServerSideProps({ params }): Promise<{ props: VesselPageProps }> {
-  const { vesselId, datasetId } = params
-  // const vessel = await GFWAPI.fetch<Vessel>(`/vessels/${vesselId}?datasets=${datasetId}`)
+type VesselPageParams = { category: WorkspaceCategory; workspace: string; vesselId: string }
+type VesselPageProps = {
+  params: VesselPageParams
+  reduxState: Pick<RootState, 'vessel'>
+}
 
+export const getServerSideProps: GetServerSideProps<VesselPageProps, VesselPageParams> = async ({
+  params,
+  query,
+}): Promise<{ props: VesselPageProps }> => {
+  const { vesselId } = params
+  const { vesselDatasetId = DEFAULT_VESSEL_DATASET_ID } = query
   const promises = await Promise.allSettled([
-    GFWAPI.fetch<Vessel>(`/vessels/${vesselId}?datasets=${datasetId}`),
-    GFWAPI.fetch<Dataset>(`/datasets/${datasetId}`),
+    GFWAPI.fetch<Vessel>(`/vessels/${vesselId}?datasets=${vesselDatasetId}`),
+    GFWAPI.fetch<Dataset>(`/datasets/${vesselDatasetId}`),
   ])
   const allSettledPromises = promises.map((res) => {
     return res.status === 'fulfilled' ? res.value : null
@@ -98,11 +110,6 @@ const VesselServer = ({ params, reduxState }: VesselPageProps) => {
       className="split-container"
     />
   )
-}
-
-type VesselPageProps = {
-  params: { category: WorkspaceCategory }
-  reduxState: Pick<RootState, 'vessel'>
 }
 
 const VesselPage = (props) => {

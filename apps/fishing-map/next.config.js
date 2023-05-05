@@ -20,8 +20,12 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/:category/:workspace/vessel/:datasetId/:vesselId/:any*',
-        destination: '/:category/:workspace/vessel/:datasetId/:vesselId/:any*',
+        source: '/vessel/:vesselId/:any*',
+        destination: '/vessel/:vesselId/:any*',
+      },
+      {
+        source: '/:category/:workspace/vessel/:vesselId/:any*',
+        destination: '/:category/:workspace/vessel/:vesselId/:any*',
       },
       // Rewrite everything to `pages/index`
       {

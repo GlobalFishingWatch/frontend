@@ -5,7 +5,16 @@ import { RootState } from 'reducers'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { WorkspaceParam } from 'types'
 import { WorkspaceCategory } from 'data/workspaces'
-import { REPORT, WORKSPACE_REPORT, ROUTE_TYPES, VESSEL, WORKSPACE_ROUTES } from './routes'
+import {
+  REPORT,
+  WORKSPACE_REPORT,
+  ROUTE_TYPES,
+  VESSEL,
+  WORKSPACE_ROUTES,
+  WORKSPACE_VESSEL,
+  USER,
+  WORKSPACES_LIST,
+} from './routes'
 
 const selectLocation = (state: RootState) => state.location
 export const selectCurrentLocation = createSelector([selectLocation], ({ type, routesMap }) => {
@@ -22,14 +31,24 @@ export const selectIsWorkspaceLocation = createSelector([selectLocationType], (l
   WORKSPACE_ROUTES.includes(locationType)
 )
 
-export const selectIsVesselDetailLocation = createSelector(
+export const selectIsVesselLocation = createSelector(
   [selectLocationType],
-  (locationType) => locationType === VESSEL
+  (locationType) => locationType === VESSEL || locationType === WORKSPACE_VESSEL
 )
 
 export const selectIsReportLocation = createSelector(
   [selectLocationType],
   (locationType) => locationType === REPORT || locationType === WORKSPACE_REPORT
+)
+
+export const selectIsWorkspacesListLocation = createSelector(
+  [selectLocationType],
+  (locationType) => locationType === WORKSPACES_LIST
+)
+
+export const selectIsUserLocation = createSelector(
+  [selectLocationType],
+  (locationType) => locationType === USER
 )
 
 export const selectLocationQuery = createSelector(
@@ -62,11 +81,6 @@ export const selectReportId = createSelector(
 export const selectVesselId = createSelector(
   [selectLocationPayload],
   (payload) => payload?.vesselId
-)
-
-export const selectVesselDatasetId = createSelector(
-  [selectLocationPayload],
-  (payload) => payload?.datasetId
 )
 
 export const selectLocationCategory = createSelector(
@@ -106,6 +120,8 @@ export const selectUrlMapLatitudeQuery = selectQueryParam<number>('latitude')
 export const selectUrlMapLongitudeQuery = selectQueryParam<number>('longitude')
 export const selectUrlStartQuery = selectQueryParam<string>('start')
 export const selectUrlEndQuery = selectQueryParam<string>('end')
+export const selectVesselDatasetId = selectQueryParam<string>('vesselDatasetId')
+
 export const selectUrlDataviewInstances =
   selectQueryParam<UrlDataviewInstance[]>('dataviewInstances')
 

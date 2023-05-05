@@ -3,8 +3,14 @@ import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
-import { selectIsReportLocation, selectLocationType } from 'routes/routes.selectors'
-import { USER, VESSEL, WORKSPACES_LIST } from 'routes/routes'
+import {
+  selectIsReportLocation,
+  selectIsUserLocation,
+  selectIsVesselLocation,
+  selectIsWorkspacesListLocation,
+  selectLocationType,
+} from 'routes/routes.selectors'
+import { USER, WORKSPACES_LIST } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
 import { isUserLogged, selectUserGroupsPermissions } from 'features/user/user.selectors'
@@ -44,8 +50,10 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)
   const searchQuery = useSelector(selectSearchQuery)
-  const locationType = useSelector(selectLocationType)
+  const isUserLocation = useSelector(selectIsUserLocation)
+  const isWorkspacesListLocation = useSelector(selectIsWorkspacesListLocation)
   const isReportLocation = useSelector(selectIsReportLocation)
+  const isVesselLocation = useSelector(selectIsVesselLocation)
   const userLogged = useSelector(isUserLogged)
   const hasUserGroupsPermissions = useSelector(selectUserGroupsPermissions)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
@@ -62,15 +70,15 @@ function Sidebar({ onMenuClick }: SidebarProps) {
       return <Spinner />
     }
 
-    if (locationType === USER) {
+    if (isUserLocation) {
       return <User />
     }
 
-    if (locationType === VESSEL) {
+    if (isVesselLocation) {
       return <VesselDetailWrapper />
     }
 
-    if (locationType === WORKSPACES_LIST) {
+    if (isWorkspacesListLocation) {
       return highlightedWorkspacesStatus === AsyncReducerStatus.Loading ? (
         <Spinner />
       ) : (
@@ -83,7 +91,14 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     }
 
     return <Workspace />
-  }, [userLogged, locationType, isReportLocation, highlightedWorkspacesStatus])
+  }, [
+    userLogged,
+    isUserLocation,
+    isVesselLocation,
+    isWorkspacesListLocation,
+    isReportLocation,
+    highlightedWorkspacesStatus,
+  ])
 
   if (searchQuery !== undefined) {
     return <Search />
