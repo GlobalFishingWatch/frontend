@@ -41,13 +41,11 @@ import { selectPrivateUserGroups } from 'features/user/user.selectors'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import GFWOnly from 'features/user/GFWOnly'
 import DatasetLabel from 'features/datasets/DatasetLabel'
-import { selectLocationSearch } from 'routes/routes.selectors'
-import { VESSEL } from 'routes/routes'
+import { WORKSPACE_VESSEL } from 'routes/routes'
 import {
   selectCurrentWorkspaceCategory,
   selectCurrentWorkspaceId,
 } from 'features/workspace/workspace.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -62,12 +60,9 @@ type LayerPanelProps = {
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const router = useRouter()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const { dispatchLocation } = useLocationConnect()
   const { url: infoUrl, dataset } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
   const resources = useSelector(selectResources)
-  const locationSearch = useSelector(selectLocationSearch)
   const trackResource = pickTrackResource(dataview, EndpointId.Tracks, resources)
   const infoResource: Resource<Vessel> = useSelector(selectResourceByUrl<Vessel>(infoUrl))
   const { items, attributes, listeners, setNodeRef, setActivatorNodeRef, style } =
@@ -301,12 +296,14 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       <Link
         className={styles.workspaceLink}
         to={{
-          type: VESSEL,
+          type: WORKSPACE_VESSEL,
           payload: {
             category: workspaceCategory,
             workspaceId: workspaceId,
-            datasetId: dataset?.id,
             vesselId,
+          },
+          query: {
+            vesselDatasetId: dataset?.id,
           },
         }}
         onClick={onInfoClick}

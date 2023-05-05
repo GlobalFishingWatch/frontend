@@ -13,6 +13,8 @@ export { Locale } from '@globalfishingwatch/api-types'
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
 export type WorkspaceTimeRangeParam = 'start' | 'end'
 
+export type VesselProfileStateProperty = 'vesselDatasetId'
+
 export type ReportStateProperty =
   | 'reportActivityGraph'
   | 'reportAreaBounds'
@@ -44,6 +46,7 @@ export type WorkspaceParam =
   | WorkspaceViewportParam
   | WorkspaceTimeRangeParam
   | WorkspaceStateProperty
+  | VesselProfileStateProperty
 
 export type WorkspaceViewport = Record<WorkspaceViewportParam, number>
 export type WorkspaceTimeRange = Record<WorkspaceTimeRangeParam, string>

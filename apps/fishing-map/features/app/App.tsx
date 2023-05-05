@@ -7,6 +7,7 @@ import { Menu, SplitView } from '@globalfishingwatch/ui-components'
 import { Workspace } from '@globalfishingwatch/api-types'
 import {
   selectIsReportLocation,
+  selectIsVesselLocation,
   selectIsWorkspaceLocation,
   selectLocationType,
   selectUrlTimeRange,
@@ -110,6 +111,7 @@ function App(): React.ReactElement {
   const [menuOpen, setMenuOpen] = useState(false)
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isReportLocation = useSelector(selectIsReportLocation)
+  const isVesselLocation = useSelector(selectIsVesselLocation)
   const reportAreaBounds = useSelector(selectReportAreaBounds)
   const isTimeComparisonReport = useSelector(selectShowTimeComparison)
   const narrowSidebar = workspaceLocation
@@ -156,11 +158,10 @@ function App(): React.ReactElement {
   // TODO review this as is needed in analysis and workspace but adds a lot of extra logic here
   // probably better to fetch in both components just checking if the workspaceId is already fetched
   const isHomeLocation = locationType === HOME
-  const isVesselLocation = locationType === VESSEL
   const homeNeedsFetch = isHomeLocation && currentWorkspaceId !== DEFAULT_WORKSPACE_ID
   // Checking only when REPORT entrypoint or WORKSPACE_REPORT when workspace is not loaded
   const locationNeedsFetch =
-    // isVesselLocation ||
+    isVesselLocation ||
     locationType === REPORT ||
     (locationType === WORKSPACE_REPORT && currentWorkspaceId !== urlWorkspaceId)
   const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId

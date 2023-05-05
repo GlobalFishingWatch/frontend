@@ -11,15 +11,17 @@ import CategoryTabsServer from 'features/sidebar/CategoryTabs.server'
 import { WorkspaceCategory } from 'data/workspaces'
 import VesselEvents from 'features/vessel/VesselEvents'
 import { getEventsParamsFromVesselDataset } from 'features/vessel/vessel.slice'
-import Index from '../../../../index'
+import Index from 'pages'
 import styles from './styles.module.css'
 
 // This is needed by nx/next builder to run build the standalone next app properly
 // https://github.com/nrwl/nx/issues/9017#issuecomment-1140066503
 path.resolve('./next.config.js')
 
-export async function getServerSideProps({ params }): Promise<{ props: VesselPageProps }> {
-  const { vesselId, datasetId } = params
+export async function getServerSideProps(serverSideProps): Promise<{ props: VesselPageProps }> {
+  console.log('🚀 ~ getServerSideProps ~ serverSideProps:', serverSideProps)
+  const { vesselId } = serverSideProps.params
+  const datasetId = 'public-global-all-vessels:v20201001'
   // const vessel = await GFWAPI.fetch<Vessel>(`/vessels/${vesselId}?datasets=${datasetId}`)
 
   const promises = await Promise.allSettled([
@@ -54,7 +56,7 @@ export async function getServerSideProps({ params }): Promise<{ props: VesselPag
   }
   return {
     props: {
-      params,
+      params: serverSideProps.params,
       reduxState,
     },
   }
