@@ -79,7 +79,7 @@ const HIGHLIGHT_CONFIGS: HighlightPanelConfig[] = [
     pt: {
       title: 'Os dados VMS da Papua Nova Guiné estão disponíveis',
       description:
-        'Os dados do sistema de monitoramento de embarcações (VMS) são fornecidos pela Autoridade Nacional de Pesca de Papua Nova Guiné. Agora é possível rastrear a posição e a atividade de todas as embarcações que compõem a frota de pesca da Associação da Indústria Pesqueira da Papua Nova Guiné que opera nas águas nacionais da Papua Nova Guiné.',
+        'Os dados do sistema de monitoramento de embarcações (VMS) são fornecidos pela Autoridade Pesqueira Nacional de Papua Nova Guiné. Agora é possível rastrear a posição e a atividade de todas as embarcações que compõem a frota de pesca da Associação da Indústria Pesqueira da Papua Nova Guiné que opera nas águas nacionais da Papua Nova Guiné.',
     },
   },
 ]
