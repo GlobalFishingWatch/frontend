@@ -40,24 +40,30 @@ export async function getServerSideProps({ params }): Promise<{ props: VesselPag
   const events = eventPromises.flatMap((res) => {
     return res.status === 'fulfilled' ? res.value.entries : []
   })
+  const reduxState: Pick<RootState, 'vessel'> = {
+    vessel: {
+      info: {
+        data: vessel,
+        status: AsyncReducerStatus.Finished,
+      },
+      events: {
+        data: events,
+        status: AsyncReducerStatus.Finished,
+      },
+    },
+  }
   return {
     props: {
-      workspaceCategory: params.category,
-      datasetId,
-      vessel,
-      events,
+      params,
+      reduxState,
     },
   }
 }
 
-const VesselComponent = ({
-  vessel,
-  events,
-  workspaceCategory,
-}: Pick<VesselPageProps, 'vessel' | 'workspaceCategory' | 'events'>) => {
+const VesselComponent = ({ params, reduxState }: VesselPageProps) => {
   return (
     <div className={styles.container}>
-      <CategoryTabsServer category={workspaceCategory} />
+      <CategoryTabsServer category={params.category} />
       <div className="scrollContainer">
         <div className={styles.sidebarHeader}>
           <a href="https://globalfishingwatch.org" className={styles.logoLink}>
@@ -65,9 +71,9 @@ const VesselComponent = ({
           </a>
         </div>
         <div className={styles.content}>
-          <VesselSummary vessel={vessel} />
-          <VesselIdentity vessel={vessel} />
-          <VesselEvents events={events} />
+          <VesselSummary vessel={reduxState?.vessel?.info?.data} />
+          <VesselIdentity vessel={reduxState?.vessel?.info?.data} />
+          <VesselEvents events={reduxState?.vessel?.events?.data} />
         </div>
       </div>
     </div>
@@ -78,15 +84,13 @@ const MapPlaceholder = () => {
   return <div className={styles.mapPlaceholder}></div>
 }
 
-const VesselServer = ({ workspaceCategory, vessel, events }: VesselPageProps) => {
+const VesselServer = ({ params, reduxState }: VesselPageProps) => {
   return (
     <SplitView
       isOpen={true}
       showToggle={true}
       // onToggle={()}
-      aside={
-        <VesselComponent workspaceCategory={workspaceCategory} vessel={vessel} events={events} />
-      }
+      aside={<VesselComponent params={params} reduxState={reduxState} />}
       main={<MapPlaceholder />}
       asideWidth={'50%'}
       // showAsideLabel={getSidebarName()}
@@ -97,28 +101,13 @@ const VesselServer = ({ workspaceCategory, vessel, events }: VesselPageProps) =>
 }
 
 type VesselPageProps = {
-  workspaceCategory: WorkspaceCategory
-  datasetId: string
-  vessel: Vessel
-  events: ApiEvent[]
+  params: { category: WorkspaceCategory }
+  reduxState: Pick<RootState, 'vessel'>
 }
 
-const VesselPage = (props: VesselPageProps) => {
+const VesselPage = (props) => {
   const [isServer, setServer] = useState<boolean>(true)
   useEffect(() => setServer(false), [])
-
-  const preloadedState: Pick<RootState, 'vessel'> = {
-    vessel: {
-      info: {
-        status: AsyncReducerStatus.Finished,
-        data: props.vessel,
-      },
-      events: {
-        status: AsyncReducerStatus.Finished,
-        data: props.events,
-      },
-    },
-  }
 
   // return <VesselServer {...props} />
 
@@ -130,6 +119,6 @@ const VesselPage = (props: VesselPageProps) => {
     )
   }
 
-  return <Index preloadedState={preloadedState} />
+  return <Index />
 }
 export default VesselPage
