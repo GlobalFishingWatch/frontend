@@ -59,5 +59,8 @@
   "jest.enableInlineErrorMessages": true,
   "jest.showCoverageOnLoad": true,
   "jest.runAllTestsFirst": false,
-  "docwriter.hotkey.mac": "⌥ + ."
+  "docwriter.hotkey.mac": "⌥ + .",
+  "search.exclude": {
+    "**/dist": true
+}
 }
