@@ -75,19 +75,19 @@ function SearchAdvancedFilters() {
       ...(sources || []),
       { id: filter.id, label: filter.label.props.dataset.name },
     ]
-    setSearchFilters({ sources: newSources })
+    const notCompatibleSchemaFilters = getIncompatibleFilters(newSources)
+    setSearchFilters({ ...notCompatibleSchemaFilters, sources: newSources })
+  }
+
+  const getIncompatibleFilters = (sources) => {
     // Recalculates schemaFilters to validate a new source has valid selection
     // when not valid we need to remove the filter from the search
-    const newDataview = getSearchDataview(datasets, searchFilters, newSources)
+    const newDataview = getSearchDataview(datasets, searchFilters, sources)
     const newSchemaFilters = schemaFilterIds.map((id) => getFiltersBySchema(newDataview, id))
     const notCompatibleSchemaFilters = newSchemaFilters.flatMap(({ id, disabled }) => {
       return disabled && searchFilters[id] !== undefined ? id : []
     })
-    if (notCompatibleSchemaFilters.length) {
-      notCompatibleSchemaFilters.forEach((schema) => {
-        setSearchFilters({ [schema]: undefined })
-      })
-    }
+    return Object.fromEntries(notCompatibleSchemaFilters.map((schema) => [schema, undefined]))
   }
 
   const onInputChange = useCallback(
@@ -170,10 +170,12 @@ function SearchAdvancedFilters() {
           selectedOptions={sources}
           onSelect={onSourceSelect}
           onRemove={(_, rest) => {
-            setSearchFilters({ sources: rest })
+            const notCompatibleSchemaFilters = getIncompatibleFilters(rest)
+            setSearchFilters({ ...notCompatibleSchemaFilters, sources: rest })
           }}
           onCleanClick={() => {
-            setSearchFilters({ sources: undefined })
+            const notCompatibleSchemaFilters = getIncompatibleFilters(sourceOptions)
+            setSearchFilters({ ...notCompatibleSchemaFilters, sources: undefined })
           }}
         />
       )}

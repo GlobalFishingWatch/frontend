@@ -51,7 +51,6 @@ interface SearchState {
     total: number
     offset: number
   }
-  filters: SearchFilter
 }
 type SearchSliceState = { search: SearchState }
 
@@ -65,14 +64,6 @@ const initialState: SearchState = {
   suggestion: null,
   suggestionClicked: false,
   option: 'basic',
-  filters: {
-    lastTransmissionDate: undefined,
-    firstTransmissionDate: undefined,
-    mmsi: undefined,
-    imo: undefined,
-    callsign: undefined,
-    owner: undefined,
-  },
 }
 
 export type VesselSearchThunk = {
@@ -106,7 +97,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
 
         const andCombinedFields: AdvancedSearchQueryFieldKey[] = [
           'geartype',
-          'target_species',
+          'targetSpecies',
           'flag',
           'fleet',
           'origin',
@@ -194,12 +185,6 @@ const searchSlice = createSlice({
   name: 'search',
   initialState,
   reducers: {
-    setFilters: (state, action: PayloadAction<SearchFilter>) => {
-      state.filters = { ...state.filters, ...action.payload }
-    },
-    resetFilters: (state) => {
-      state.filters = initialState.filters
-    },
     setSelectedVessels: (state, action: PayloadAction<VesselWithDatasets[]>) => {
       const selection = action.payload
       if (selection.length === 0) {
@@ -256,18 +241,12 @@ const searchSlice = createSlice({
   },
 })
 
-export const {
-  setFilters,
-  setSelectedVessels,
-  resetFilters,
-  setSuggestionClicked,
-  cleanVesselSearchResults,
-} = searchSlice.actions
+export const { setSelectedVessels, setSuggestionClicked, cleanVesselSearchResults } =
+  searchSlice.actions
 
 export const selectSearchResults = (state: SearchSliceState) => state.search.data
 export const selectSearchStatus = (state: SearchSliceState) => state.search.status
 export const selectSearchStatusCode = (state: SearchSliceState) => state.search.statusCode
-export const selectSearchFilters = (state: SearchSliceState) => state.search.filters
 export const selectSearchSuggestion = (state: SearchSliceState) => state.search.suggestion
 export const selectSearchSuggestionClicked = (state: SearchSliceState) =>
   state.search.suggestionClicked

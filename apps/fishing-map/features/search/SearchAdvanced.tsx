@@ -4,12 +4,12 @@ import { ChangeEvent, useCallback } from 'react'
 import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { useAppDispatch } from 'features/app/app.hooks'
 import SearchAdvancedResults from 'features/search/SearchAdvancedResults'
 import { SearchComponentProps } from 'features/search/SearchBasic'
-import { resetFilters, selectSearchStatus, selectSearchStatusCode } from './search.slice'
+import { useLocationConnect } from 'routes/routes.hook'
+import { selectSearchStatus, selectSearchStatusCode } from './search.slice'
 import styles from './SearchAdvanced.module.css'
-import SearchFilters from './SearchFilters'
+import SearchAdvancedFilters from './SearchAdvancedFilters'
 import { useSearchConnect } from './search.hook'
 import SearchPlaceholder, { SearchNoResultsState, SearchEmptyState } from './SearchPlaceholders'
 import { isAdvancedSearchAllowed } from './search.selectors'
@@ -25,16 +25,30 @@ function SearchAdvanced({
   onConfirm,
 }: SearchComponentProps) {
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
   const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
   const advancedSearchAllowed = useSelector(isAdvancedSearchAllowed)
   const searchStatus = useSelector(selectSearchStatus)
   const searchStatusCode = useSelector(selectSearchStatusCode)
+  const { dispatchQueryParams } = useLocationConnect()
 
   const resetSearchState = useCallback(() => {
     setSearchQuery('')
-    dispatch(resetFilters())
-  }, [setSearchQuery, dispatch])
+    dispatchQueryParams({
+      flag: undefined,
+      sources: undefined,
+      lastTransmissionDate: undefined,
+      firstTransmissionDate: undefined,
+      mmsi: undefined,
+      imo: undefined,
+      callsign: undefined,
+      owner: undefined,
+      codMarinha: undefined,
+      geartype: undefined,
+      targetSpecies: undefined,
+      fleet: undefined,
+      origin: undefined,
+    })
+  }, [setSearchQuery, dispatchQueryParams])
 
   if (!advancedSearchAllowed) {
     return (
@@ -65,7 +79,7 @@ function SearchAdvanced({
             className={styles.input}
             autoFocus
           />
-          <SearchFilters />
+          <SearchAdvancedFilters />
           {debouncedQuery && debouncedQuery?.length < MIN_SEARCH_CHARACTERS && (
             <div className={styles.red}>
               {t('search.minCharacters', {

@@ -15,11 +15,12 @@ export type AdvancedSearchQueryFieldKey =
   | 'codMarinha'
   | 'flag'
   | 'geartype'
-  | 'target_species'
+  | 'targetSpecies'
   | 'fleet'
   | 'origin'
   | 'lastTransmissionDate'
   | 'firstTransmissionDate'
+  | 'owner'
 
 export type AdvancedSearchQueryField = {
   key: AdvancedSearchQueryFieldKey
@@ -52,11 +53,14 @@ const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFiel
   callsign: {
     operator: '=',
   },
+  owner: {
+    operator: '=',
+  },
   geartype: {
     operator: 'IN',
     transformation: multiSelectOptionToQuery,
   },
-  target_species: {
+  targetSpecies: {
     operator: 'IN',
     transformation: multiSelectOptionToQuery,
   },
