@@ -1074,6 +1074,54 @@
       "vessel_id": "crwdns9477:0crwdne9477:0"
     }
   },
+  "private-png-fishing-effort": {
+    "name": "crwdns30903:0crwdne30903:0",
+    "description": "crwdns30905:0crwdne30905:0",
+    "schema": {
+      "lat": "crwdns30907:0crwdne30907:0",
+      "lon": "crwdns30909:0crwdne30909:0",
+      "flag": {
+        "keyword": "crwdns30911:0crwdne30911:0",
+        "enum": {
+          "PNG": "crwdns30913:0crwdne30913:0",
+          "PHL": "crwdns30915:0crwdne30915:0"
+        }
+      },
+      "hours": "crwdns30917:0crwdne30917:0",
+      "vessel_id": "crwdns30919:0crwdne30919:0",
+      "elevation_m": "crwdns30921:0crwdne30921:0",
+      "vessel-groups": "crwdns30923:0crwdne30923:0",
+      "distance_from_port_m": "crwdns30925:0crwdne30925:0",
+      "distance_from_shore_m": "crwdns30927:0crwdne30927:0"
+    }
+  },
+  "private-png-fishing-vessels": {
+    "name": "crwdns30929:0crwdne30929:0",
+    "description": "crwdns30931:0crwdne30931:0",
+    "schema": {
+      "id": "crwdns30933:0crwdne30933:0",
+      "flag": "crwdns30935:0crwdne30935:0",
+      "source": "crwdns30937:0crwdne30937:0",
+      "callsign": "crwdns30939:0crwdne30939:0",
+      "shipname": "crwdns30941:0crwdne30941:0",
+      "lastTransmissionDate": "crwdns30943:0crwdne30943:0",
+      "firstTransmissionDate": "crwdns30945:0crwdne30945:0"
+    }
+  },
+  "private-png-presence": {
+    "name": "crwdns30947:0crwdne30947:0",
+    "description": "crwdns30949:0crwdne30949:0",
+    "schema": {
+      "lat": "crwdns30951:0crwdne30951:0",
+      "lon": "crwdns30953:0crwdne30953:0",
+      "flag": "crwdns30955:0crwdne30955:0",
+      "vessel_id": "crwdns30957:0crwdne30957:0",
+      "elevation_m": "crwdns30959:0crwdne30959:0",
+      "vessel-groups": "crwdns30961:0crwdne30961:0",
+      "distance_from_port_m": "crwdns30963:0crwdne30963:0",
+      "distance_from_shore_m": "crwdns30965:0crwdne30965:0"
+    }
+  },
   "proto-global-encounters-events": {
     "name": "crwdns26730:0crwdne26730:0",
     "description": "crwdns26732:0crwdne26732:0",
@@ -2422,14 +2470,15 @@
   },
   "public-png-fishing-effort": {
     "name": "crwdns30737:0crwdne30737:0",
-    "description": "crwdns30739:0crwdne30739:0",
+    "description": "crwdns30967:0crwdne30967:0",
     "schema": {
       "lat": "crwdns30741:0crwdne30741:0",
       "lon": "crwdns30743:0crwdne30743:0",
       "flag": {
         "keyword": "crwdns30745:0crwdne30745:0",
         "enum": {
-          "PNG": "crwdns30747:0crwdne30747:0"
+          "PNG": "crwdns30747:0crwdne30747:0",
+          "PHL": "crwdns30969:0crwdne30969:0"
         }
       },
       "hours": "crwdns30749:0crwdne30749:0",
@@ -2455,7 +2504,7 @@
   },
   "public-png-presence": {
     "name": "crwdns30779:0crwdne30779:0",
-    "description": "crwdns30781:0crwdne30781:0",
+    "description": "crwdns30971:0crwdne30971:0",
     "schema": {
       "lat": "crwdns30783:0crwdne30783:0",
       "lon": "crwdns30785:0crwdne30785:0",
