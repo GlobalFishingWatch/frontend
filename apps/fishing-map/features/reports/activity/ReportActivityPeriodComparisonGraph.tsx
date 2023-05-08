@@ -13,12 +13,14 @@ import {
 import { Interval as TimeInterval } from 'luxon'
 import { useSelector } from 'react-redux'
 import { Interval } from '@globalfishingwatch/layer-composer'
-import { selectReportTimeComparison } from 'features/app/app.selectors'
+import {
+  selectLatestAvailableDataDate,
+  selectReportTimeComparison,
+} from 'features/app/app.selectors'
 import i18n, { t } from 'features/i18n/i18n'
 import { COLOR_GRADIENT, COLOR_PRIMARY_BLUE } from 'features/app/App'
 import { getUTCDateTime } from 'utils/dates'
 import { formatDate, formatTooltipValue, tickFormatter } from 'features/reports/reports.utils'
-import { LAST_DATA_UPDATE } from 'data/config'
 import styles from './ReportActivityEvolution.module.css'
 
 const DIFFERENCE = 'difference'
@@ -126,17 +128,18 @@ const ReportActivityPeriodComparisonGraph: React.FC<{
   const { start, end } = props
   const { interval, timeseries, sublayers } = props.data
   const timeComparison = useSelector(selectReportTimeComparison)
+  const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
 
   const unit = useMemo(() => {
     return sublayers?.[0]?.legend?.unit
   }, [sublayers])
 
   const dtLastDataUpdate = useMemo(() => {
-    return getUTCDateTime(LAST_DATA_UPDATE)
-  }, [])
+    return getUTCDateTime(latestAvailableDataDate)
+  }, [latestAvailableDataDate])
 
   const offsetedLastDataUpdate = useMemo(() => {
-    // Need to offset LAST_DATA_UPDATE because graph uses dates from start, not compareStart
+    // Need to offset latestAvailableDataDate because graph uses dates from start, not compareStart
     if (timeComparison) {
       const diff = getUTCDateTime(timeComparison.compareStart)
         .diff(getUTCDateTime(timeComparison.start))

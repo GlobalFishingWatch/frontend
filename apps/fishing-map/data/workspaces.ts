@@ -1,5 +1,7 @@
 import { PUBLIC_SUFIX } from './config'
 
+export const GLOBAL_VESSELS_DATASET_ID = 'public-global-all-vessels'
+
 export const DEFAULT_WORKSPACE_KEY = 'default'
 export const DEFAULT_WORKSPACE_ID = `${DEFAULT_WORKSPACE_KEY}-${PUBLIC_SUFIX}`
 export const DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID = 'basemap'
@@ -14,7 +16,7 @@ export function getWorkspaceEnv(): WorkspaceEnv {
   return WORKSPACE_ENV
 }
 
-export enum WorkspaceCategories {
+export enum WorkspaceCategory {
   FishingActivity = 'fishing-activity',
   MarineManager = 'marine-manager',
   CountryPortals = 'country-portals',
@@ -31,6 +33,8 @@ export const EEZ_DATAVIEW_SLUG = 'eez'
 export const EEZ_DATAVIEW_INSTANCE_ID = 'context-layer-eez'
 export const MPA_DATAVIEW_SLUG = 'mpa'
 export const MPA_DATAVIEW_INSTANCE_ID = 'context-layer-mpa'
+export const BASEMAP_DATAVIEW_INSTANCE_ID = 'basemap-labels'
+export const PROTECTEDSEAS_DATAVIEW_INSTANCE_ID = 'context-layer-protectedseas'
 export const RFMO_DATAVIEW_SLUG = 'tuna-rfmo-areas'
 export const HIGH_SEAS_DATAVIEW_SLUG = 'high-seas'
 export const PROTECTED_SEAS_DATAVIEW_SLUG = 'protected-seas'

@@ -14,6 +14,10 @@ export const selectCurrentWorkspaceId = createSelector([selectWorkspace], (works
   return workspace?.id
 })
 
+export const selectCurrentWorkspaceCategory = createSelector([selectWorkspace], (workspace) => {
+  return workspace?.category
+})
+
 export const selectIsGFWWorkspace = createSelector([selectWorkspace], (workspace) => {
   return workspace?.ownerType === 'super-user'
 })

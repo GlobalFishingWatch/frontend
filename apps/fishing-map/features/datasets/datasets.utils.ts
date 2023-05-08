@@ -23,7 +23,7 @@ import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { formatSliderNumber, IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { capitalize, sortFields } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
-import { PUBLIC_SUFIX, FULL_SUFIX } from 'data/config'
+import { PUBLIC_SUFIX, FULL_SUFIX, DEFAULT_TIME_RANGE } from 'data/config'
 import { getDatasetNameTranslated, removeDatasetVersion } from 'features/i18n/utils'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { FileType } from 'features/common/FileDropzone'
@@ -189,6 +189,8 @@ export const getDatasetsInDataviews = (
   return uniq([...datasetsFromDataviews, ...datasetsFromDataviewInstances])
 }
 
+const vesselTypeWithOwnDataset = ['fishing', 'carrier', 'support']
+const vesselPrivateOtherDatasetId = 'private-global-presence'
 export type RelatedDatasetByTypeParams = {
   fullDatasetAllowed?: boolean
   vesselType?: VesselType
@@ -203,10 +205,10 @@ export const getRelatedDatasetByType = (
       if (relatedDataset.type !== datasetType) {
         return false
       }
-      if (vesselType === 'fishing' || vesselType === 'carrier' || vesselType === 'support') {
+      if (vesselTypeWithOwnDataset.includes(vesselType)) {
         return relatedDataset.id.includes(vesselType)
       } else {
-        return relatedDataset.id.includes('presence')
+        return relatedDataset.id.startsWith(vesselPrivateOtherDatasetId)
       }
     })
   }
@@ -245,6 +247,20 @@ export const getActiveDatasetsInActivityDataviews = (
   return dataviews.flatMap((dataview) => {
     return dataview?.config?.datasets || []
   })
+}
+
+export const getLatestEndDateFromDatasets = (
+  datasets: Dataset[],
+  datasetCategory?: DatasetCategory
+): string => {
+  if (!datasets.length) return DEFAULT_TIME_RANGE.end
+  const latestDate = datasets.reduce((acc, dataset) => {
+    if (datasetCategory && dataset.category !== datasetCategory) {
+      return acc
+    }
+    return dataset.endDate > acc ? dataset.endDate : acc
+  }, datasets?.[0].endDate || '')
+  return latestDate
 }
 
 export const checkDatasetReportPermission = (datasetId: string, permissions: UserPermission[]) => {
@@ -305,7 +321,9 @@ export const getDatasetsReportNotSupported = (
   return dataviewDatasets.filter((dataset) => !datasetsDownloadSupported.includes(dataset))
 }
 
-export const getActiveActivityDatasetsInDataviews = (dataviews: UrlDataviewInstance[]) => {
+export const getActiveActivityDatasetsInDataviews = (
+  dataviews: (Dataview | UrlDataviewInstance)[]
+) => {
   return dataviews.map((dataview) => {
     const activeDatasets = (dataview?.config?.datasets || []) as string[]
     return dataview.datasets.filter((dataset) => {

@@ -28,7 +28,7 @@ import useMapInstance from 'features/map/map-context.hooks'
 import {
   EEZ_DATAVIEW_INSTANCE_ID,
   MPA_DATAVIEW_INSTANCE_ID,
-  WorkspaceCategories,
+  WorkspaceCategory,
 } from 'data/workspaces'
 import { WORKSPACE } from 'routes/routes'
 import { getEventLabel } from 'utils/analytics'
@@ -164,7 +164,7 @@ function WorkspaceWizard() {
     return {
       type: WORKSPACE,
       payload: {
-        category: WorkspaceCategories.MarineManager,
+        category: WorkspaceCategory.MarineManager,
         workspaceId: WIZARD_TEMPLATE_ID,
       },
       query: {

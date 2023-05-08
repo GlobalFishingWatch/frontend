@@ -22,7 +22,7 @@ import {
   selectLocationQuery,
   selectLocationType,
 } from 'routes/routes.selectors'
-import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { selectWorkspaceWithCurrentState, selectReadOnly } from 'features/app/app.selectors'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { resetSidebarScroll } from 'features/sidebar/Sidebar'
@@ -259,10 +259,11 @@ function CloseReportButton() {
   return (
     <Link className={styles.workspaceLink} to={linkTo}>
       <IconButton
-        icon="edit"
+        icon="close"
+        type="border"
         className="print-hidden"
         onClick={onCloseClick}
-        tooltip={t('workspace.edit', 'Edit workspace')}
+        tooltip={t('analysis.close', 'Close report and go back to workspace')}
       />
     </Link>
   )
@@ -278,7 +279,7 @@ function SidebarHeader() {
 
   const getSubBrand = useCallback((): SubBrands | undefined => {
     let subBrand: SubBrands | undefined
-    if (locationCategory === WorkspaceCategories.MarineManager) subBrand = SubBrands.MarineManager
+    if (locationCategory === WorkspaceCategory.MarineManager) subBrand = SubBrands.MarineManager
     return subBrand
   }, [locationCategory])
 
@@ -292,7 +293,7 @@ function SidebarHeader() {
         {workspaceLocation && !readOnly && <SaveWorkspaceButton />}
         {(workspaceLocation || reportLocation) && !readOnly && <ShareWorkspaceButton />}
         {reportLocation && !readOnly && <CloseReportButton />}
-        {!reportLocation && showBackToWorkspaceButton && lastVisitedWorkspace && (
+        {!reportLocation && !readOnly && showBackToWorkspaceButton && lastVisitedWorkspace && (
           <Link className={styles.workspaceLink} to={lastVisitedWorkspace}>
             <IconButton type="border" icon="close" />
           </Link>

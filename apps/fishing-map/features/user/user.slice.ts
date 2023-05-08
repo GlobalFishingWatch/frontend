@@ -30,17 +30,18 @@ export const GFW_DEV_GROUP_ID = 'development-group'
 export const ADMIN_GROUP_ID = 'admin-group'
 export const DEFAULT_GROUP_ID = 'Default'
 export const PRIVATE_SUPPORTED_GROUPS = [
-  'Indonesia',
-  'Peru',
-  'Panama',
-  'Brazil',
-  'Mexico',
-  'Ecuador',
-  'Costa_Rica',
   'Belize',
+  'Brazil',
+  'Costa_Rica',
+  'Ecuador',
+  'Indonesia',
+  'Mexico',
+  'Panama',
+  'Papua_New_Guinea',
+  'Peru',
   'SSF-Aruna',
-  'SSF-Rare',
   'SSF-Ipnlf',
+  'SSF-Rare',
 ]
 export const USER_GROUP_WORKSPACE = {
   'ssf-aruna': 'coastal_fisheries_indonesia',

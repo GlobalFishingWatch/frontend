@@ -36,7 +36,7 @@ import {
   selectIsWorkspaceLocation,
 } from 'routes/routes.selectors'
 import { selectShowTimeComparison } from 'features/reports/reports.selectors'
-import { WorkspaceCategories } from 'data/workspaces'
+import { WorkspaceCategory } from 'data/workspaces'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { BivariateDataviews } from 'types'
 import { VESSEL_GROUPS_DAYS_LIMIT } from 'data/config'
@@ -235,7 +235,7 @@ export const selectWorkspacesListGenerator = createSelector(
                   id: workspace.id,
                   label: workspace.name,
                   type: WORKSPACES_POINTS_TYPE,
-                  category: workspace.category || WorkspaceCategories.FishingActivity,
+                  category: workspace.category || WorkspaceCategory.FishingActivity,
                   latitude,
                   longitude,
                   zoom,

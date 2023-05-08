@@ -8,8 +8,10 @@ import { getUTCDateTime } from 'utils/dates'
 export const ROOT_DOM_ELEMENT = '__next'
 
 export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
-export const IS_PRODUCTION =
-  process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'production' || process.env.NODE_ENV === 'production'
+
+export const IS_PRODUCTION_BUILD = process.env.NODE_ENV === 'production'
+export const PUBLIC_WORKSPACE_ENV = process.env.NEXT_PUBLIC_WORKSPACE_ENV
+export const IS_PRODUCTION = PUBLIC_WORKSPACE_ENV === 'production' || IS_PRODUCTION_BUILD
 
 export const REPORT_DAYS_LIMIT =
   typeof process.env.NEXT_PUBLIC_REPORT_DAYS_LIMIT !== 'undefined'
@@ -51,12 +53,10 @@ export const FULL_SUFIX = 'full'
 export const USER_SUFIX = 'user'
 export const PRIVATE_SUFIX = 'private'
 
+export const DEFAULT_DATA_DELAY_DAYS = 3
 // used when no url data and no workspace data
-export const LAST_DATA_UPDATE = DateTime.fromObject(
-  { hour: 0, minute: 0, second: 0 },
-  { zone: 'utc' }
-)
-  .minus({ days: 3 })
+const LAST_DATA_UPDATE = DateTime.fromObject({ hour: 0, minute: 0, second: 0 }, { zone: 'utc' })
+  .minus({ days: DEFAULT_DATA_DELAY_DAYS })
   .toISO()
 
 export const DEFAULT_VIEWPORT = {

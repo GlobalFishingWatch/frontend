@@ -6,6 +6,7 @@
     "beforeAfterRange": "crwdns17123:0{{duration}}crwdnd17123:0{{compareStart}}crwdne17123:0",
     "change": "crwdns11323:0crwdne11323:0",
     "clickToFilterBy": "crwdns30499:0crwdne30499:0",
+    "close": "crwdns30899:0crwdne30899:0",
     "disclaimer": "crwdns30669:0crwdne30669:0",
     "downloadVesselsList": "crwdns30503:0crwdne30503:0",
     "error": "crwdns18014:0crwdne18014:0",
@@ -227,6 +228,10 @@
     "context-layer-mpa": {
       "dataWarning": "crwdns18110:0crwdne18110:0",
       "dataWarningDetail": "crwdns18112:0crwdne18112:0"
+    },
+    "context-layer-protectedseas": {
+      "dataWarning": "crwdns30799:0crwdne30799:0",
+      "dataWarningDetail": "crwdns30801:0crwdne30801:0"
     }
   },
   "download": {
