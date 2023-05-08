@@ -51,6 +51,7 @@ function ContextAreaSection(): React.ReactElement {
 
   const onToggleLayer = useCallback(
     (dataview: UrlDataviewInstance) => () => {
+      console.log(dataview)
       const isVisible = dataview?.config?.visible ?? false
       const dataset = dataview.datasets?.find(
         (d) => d.type === DatasetTypes.Context || d.type === DatasetTypes.UserContext
