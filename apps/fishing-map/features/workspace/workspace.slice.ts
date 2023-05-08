@@ -338,7 +338,7 @@ const workspaceSlice = createSlice({
     removeGFWStaffOnlyDataviews: (state) => {
       if (ONLY_GFW_STAFF_DATAVIEW_SLUGS.length) {
         state.data.dataviewInstances = state.data.dataviewInstances.filter((d) =>
-          ONLY_GFW_STAFF_DATAVIEW_SLUGS.includes(d.dataviewId as number)
+          ONLY_GFW_STAFF_DATAVIEW_SLUGS.includes(d.dataviewId as string)
         )
       }
     },
