@@ -76,12 +76,18 @@ export const COLOR_GRADIENT =
 const Main = () => {
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
   const reportLocation = useSelector(selectIsReportLocation)
+  const locationType = useSelector(selectLocationType)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const isTimeComparisonReport = useSelector(selectShowTimeComparison)
 
+  const isRouteWithTimebar = locationType === VESSEL
+  const isWorkspacesRouteWithTimebar =
+    workspaceLocation ||
+    locationType === WORKSPACE_VESSEL ||
+    (reportLocation && !isTimeComparisonReport)
   const showTimebar =
-    (workspaceLocation || (reportLocation && !isTimeComparisonReport)) &&
-    workspaceStatus === AsyncReducerStatus.Finished
+    isRouteWithTimebar ||
+    (isWorkspacesRouteWithTimebar && workspaceStatus === AsyncReducerStatus.Finished)
 
   return (
     <Fragment>
