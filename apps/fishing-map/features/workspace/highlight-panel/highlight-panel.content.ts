@@ -1,4 +1,4 @@
-import { IS_PRODUCTION } from 'data/config'
+import { IS_PRODUCTION_BUILD, PUBLIC_WORKSPACE_ENV } from 'data/config'
 import { PATH_BASENAME } from 'routes/routes'
 import { Locale } from 'types'
 
@@ -93,9 +93,11 @@ const AVAILABLE_HIGHLIGHT_CONFIGS = HIGHLIGHT_CONFIGS
 const HIGHLIGHT_CONFIG_LATEST = AVAILABLE_HIGHLIGHT_CONFIGS.at(0)
 const HIGHLIGHT_CONFIG_PREVIOUS = AVAILABLE_HIGHLIGHT_CONFIGS.at(1)
 
+const IS_PRODUCTION_ENV = IS_PRODUCTION_BUILD && PUBLIC_WORKSPACE_ENV === 'production'
+
 const DISPLAY_LATEST_POPUP =
   // Non production environments always show the latest popup
-  !IS_PRODUCTION ||
+  !IS_PRODUCTION_ENV ||
   // Production displays the latest only after its release date
   Date.now() >= HIGHLIGHT_CONFIG_LATEST.releaseDateTimestamp
 
