@@ -38,6 +38,7 @@ import {
   VESSEL,
   REPORT,
   WORKSPACE_REPORT,
+  WORKSPACE_VESSEL,
 } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { t } from 'features/i18n/i18n'

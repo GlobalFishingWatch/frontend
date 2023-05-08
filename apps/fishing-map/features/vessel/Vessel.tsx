@@ -7,12 +7,12 @@ import VesselEvents from 'features/vessel/VesselEvents'
 import {
   fetchVesselEventsThunk,
   fetchVesselInfoThunk,
-  selectVesselEventsData,
   selectVesselEventsStatus,
   selectVesselInfoData,
   selectVesselInfoStatus,
 } from 'features/vessel/vessel.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectVesselEventsFilteredByTimerange } from 'features/vessel/vessel.selectors'
 import VesselIdentity from './Vesseldentity'
 
 const VesselDetail = () => {
@@ -23,7 +23,7 @@ const VesselDetail = () => {
   const vessel = useSelector(selectVesselInfoData)
   const infoStatus = useSelector(selectVesselInfoStatus)
   const eventsStatus = useSelector(selectVesselEventsStatus)
-  const events = useSelector(selectVesselEventsData)
+  const events = useSelector(selectVesselEventsFilteredByTimerange)
 
   useEffect(() => {
     if (infoStatus === 'idle') {
