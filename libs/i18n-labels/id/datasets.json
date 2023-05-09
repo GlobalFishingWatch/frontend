@@ -2660,8 +2660,8 @@
     "name": "Protected Seas",
     "description": "Protected seas (only category IUCN MPA)",
     "schema": {
-      "removal_of_marine_life_is_prohibited": {
-        "keyword": "removal_of_marine_life_is_prohibited",
+      "removal_of": {
+        "keyword": "removal_of",
         "enum": {
           "1": "1",
           "2": "2",
