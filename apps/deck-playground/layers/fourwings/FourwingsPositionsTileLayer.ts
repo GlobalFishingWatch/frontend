@@ -283,6 +283,8 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           getColor: [highlightedVesselId],
         },
       }),
+      // Uncomment when this is fixed:
+      // https://github.com/visgl/deck.gl/issues/7735
       new TextLayer({
         id: `lastPositionsNames`,
         data: lastPositions,

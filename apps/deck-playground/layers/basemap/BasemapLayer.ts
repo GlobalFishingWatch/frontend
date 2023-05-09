@@ -20,17 +20,17 @@ export class BaseMap extends CompositeLayer<BaseMapLayerProps> {
       onDataLoad: this.props.onDataLoad,
       zIndex: GROUP_ORDER.indexOf(Group.Basemap),
       tileSize: 256,
-      renderSubLayers: (props) => {
+      renderSubLayers: (props): any => {
         const {
           bbox: { west, south, east, north },
         } = props.tile
         return new BitmapLayer(props, {
-          data: null,
+          // data: null,
           image: props.data,
           bounds: [west, south, east, north],
         })
       },
-    })
+    } as any)
   }
 
   _getLandMassLayer() {

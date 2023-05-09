@@ -15,8 +15,17 @@ export const HOME = 'HOME'
 export const WORKSPACE = 'WORKSPACE'
 export const WORKSPACES_LIST = 'WORKSPACES_LIST'
 export const USER = 'USER'
+export const WORKSPACE_REPORT = 'WORKSPACE_REPORT'
+export const REPORT = 'REPORT'
 export const WORKSPACE_ROUTES = [HOME, WORKSPACE]
-export type ROUTE_TYPES = typeof HOME | typeof USER | typeof WORKSPACES_LIST | typeof WORKSPACE
+export const REPORT_ROUTES = [REPORT, WORKSPACE_REPORT]
+export type ROUTE_TYPES =
+  | typeof HOME
+  | typeof USER
+  | typeof WORKSPACES_LIST
+  | typeof WORKSPACE
+  | typeof WORKSPACE_REPORT
+  | typeof REPORT
 
 export const routesMap: RoutesMap = {
   [HOME]: {
@@ -25,11 +34,17 @@ export const routesMap: RoutesMap = {
   [USER]: {
     path: '/user',
   },
+  [REPORT]: {
+    path: '/report/:reportId',
+  },
   [WORKSPACES_LIST]: {
     path: '/:category',
   },
   [WORKSPACE]: {
     path: '/:category/:workspaceId?',
+  },
+  [WORKSPACE_REPORT]: {
+    path: '/:category/:workspaceId/report/:datasetId?/:areaId?',
   },
   [NOT_FOUND]: {
     path: '',
@@ -41,10 +56,8 @@ export const routesMap: RoutesMap = {
 
 const parseAppWorkspace = (queryString: string) => {
   return parseWorkspace(queryString, {
-    analysis: (analysis: any) => ({
-      ...analysis,
-      bounds: analysis.bounds?.map((bound: string) => parseFloat(bound)),
-    }),
+    reportAreaBounds: (reportAreaBounds: string[]) =>
+      reportAreaBounds?.map((bound: string) => parseFloat(bound)),
   })
 }
 

@@ -1,7 +1,17 @@
 export type GuessColumn = 'latitude' | 'longitude' | 'timestamp'
 
 export const LatitudeMatches = ['latitude', 'latitud', 'lat', 'location-lat', 'y']
-export const LongitudeMatches = ['longitude', 'longitud', 'lng', 'lon', 'long', 'location-lng', 'x']
+export const LongitudeMatches = [
+  'longitude',
+  'longitud',
+  'lng',
+  'lon',
+  'long',
+  'location-lng',
+  'location-lon',
+  'location-long',
+  'x',
+]
 export const TimestampMatches = ['timestamp', 'fecha', 'time', 'date', 'datetime', 't']
 
 const matchesWithUpperCase = (matches: string[]) => {

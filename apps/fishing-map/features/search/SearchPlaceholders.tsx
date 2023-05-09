@@ -6,6 +6,7 @@ import vesselImage from 'assets/images/vessel@2x.png'
 import vesselNoResultsImage from 'assets/images/vessel-side@2x.png'
 import { isGuestUser } from 'features/user/user.slice'
 import { selectSearchDatasetsNotGuestAllowedLabels } from 'features/search/search.selectors'
+import UserGuideLink from 'features/help/UserGuideLink'
 import styles from './SearchPlaceholders.module.css'
 
 type SearchPlaceholderProps = {
@@ -49,6 +50,7 @@ export function SearchEmptyState({ className = '' }: SearchPlaceholderProps) {
           'Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar'
         )}
       </p>
+      <UserGuideLink section="vesselSearch" />
       {guestUser && noGuestDatasets?.length > 0 && (
         <p>
           <Tooltip content={noGuestDatasets.join(', ')}>

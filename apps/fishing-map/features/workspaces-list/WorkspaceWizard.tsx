@@ -2,7 +2,6 @@ import { useState, useEffect, useRef, useMemo } from 'react'
 import cx from 'classnames'
 import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
-import { event as uaEvent } from 'react-ga'
 import { useCombobox, UseComboboxStateChange } from 'downshift'
 import type {
   searchOceanAreas as searchOceanAreasType,
@@ -10,6 +9,7 @@ import type {
   OceanArea,
 } from '@globalfishingwatch/ocean-areas'
 import { Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
+import { Dataview } from '@globalfishingwatch/api-types'
 import { t as trans } from 'features/i18n/i18n'
 import useViewport, {
   getMapCoordinatesFromBounds,
@@ -28,10 +28,11 @@ import useMapInstance from 'features/map/map-context.hooks'
 import {
   EEZ_DATAVIEW_INSTANCE_ID,
   MPA_DATAVIEW_INSTANCE_ID,
-  WorkspaceCategories,
+  WorkspaceCategory,
 } from 'data/workspaces'
 import { WORKSPACE } from 'routes/routes'
 import { getEventLabel } from 'utils/analytics'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './WorkspaceWizard.module.css'
 
 const MAX_RESULTS_NUMBER = 10
@@ -91,8 +92,8 @@ function WorkspaceWizard() {
   }
 
   const onSelectResult = ({ selectedItem }: UseComboboxStateChange<OceanArea>) => {
-    uaEvent({
-      category: 'Workspace Management',
+    trackEvent({
+      category: TrackCategory.WorkspaceManagement,
       action: 'Uses marine manager workspace wizard',
       label: getEventLabel([inputSearch, selectedItem.properties.name]),
     })
@@ -122,7 +123,7 @@ function WorkspaceWizard() {
       const marineManagerDataviews = MARINE_MANAGER_DATAVIEWS.map((d) => d.dataviewId)
       const { payload } = await dispatch(fetchDataviewsByIdsThunk(marineManagerDataviews))
       if (payload) {
-        const datasetsIds = getDatasetsInDataviews(payload)
+        const datasetsIds = getDatasetsInDataviews(payload as Dataview[])
         if (datasetsIds?.length) {
           dispatch(fetchDatasetsByIdsThunk(datasetsIds))
         }
@@ -163,7 +164,7 @@ function WorkspaceWizard() {
     return {
       type: WORKSPACE,
       payload: {
-        category: WorkspaceCategories.MarineManager,
+        category: WorkspaceCategory.MarineManager,
         workspaceId: WIZARD_TEMPLATE_ID,
       },
       query: {

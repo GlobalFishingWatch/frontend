@@ -97,7 +97,7 @@ class UserContextGenerator {
         interactive,
         generatorId: generatorId,
         datasetId: config.datasetId,
-        group: Group.CustomLayer,
+        group: Group.OutlinePolygonsBackground,
       },
     }
     return [lineLayer, interactionLayer]

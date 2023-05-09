@@ -2,13 +2,15 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
-import { GFWAPI, getAccessTokenFromUrl } from '@globalfishingwatch/api-client'
+import { GFWApiClient } from 'http-client/http-client'
+import { getAccessTokenFromUrl } from '@globalfishingwatch/api-client'
 import {
   PORT_INSPECTOR_PERMISSION,
   FLRM_PERMISSION,
   INSURER_PERMISSION,
   APP_PROFILE_VIEWS,
   RISK_SUMMARY_IDENTITY_INDICATORS_PERMISSION,
+  IS_STANDALONE_APP,
 } from 'data/config'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -36,8 +38,8 @@ export const useUser = () => {
   } = useWorkspace()
 
   const accessToken = getAccessTokenFromUrl()
-  const token = GFWAPI.getToken()
-  const refreshToken = GFWAPI.getRefreshToken()
+  const token = GFWApiClient.getToken()
+  const refreshToken = GFWApiClient.getRefreshToken()
 
   const authorizedInspector = useMemo(() => {
     return user && checkExistPermissionInList(user.permissions, PORT_INSPECTOR_PERMISSION)
@@ -59,15 +61,21 @@ export const useUser = () => {
   }, [user])
 
   const availableViews = useMemo(() => {
-    return APP_PROFILE_VIEWS.filter(
-      (view) => user && checkExistPermissionInList(user?.permissions, view.required_permission)
-    )
+    return APP_PROFILE_VIEWS.filter((view) => {
+      return (
+        (IS_STANDALONE_APP && view.id === 'standalone') ||
+        (user &&
+          view.required_permission &&
+          checkExistPermissionInList(user?.permissions, view.required_permission))
+      )
+    })
   }, [user])
 
   // Setup default app profile view based on permissions
   useEffect(() => {
     const firstProfileView = availableViews.slice().shift()?.id as WorkspaceProfileViewParam
-    if (logged && !currentProfileView && firstProfileView) {
+
+    if ((logged && !currentProfileView && firstProfileView) || IS_STANDALONE_APP) {
       updateProfileView(firstProfileView)
     }
   }, [currentProfileView, dispatch, logged, updateProfileView])

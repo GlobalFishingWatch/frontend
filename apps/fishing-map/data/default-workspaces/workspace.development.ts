@@ -1,7 +1,7 @@
 import { Workspace } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_VIEWPORT } from 'data/config'
 import {
-  WorkspaceCategories,
+  WorkspaceCategory,
   DEFAULT_WORKSPACE_ID,
   EEZ_DATAVIEW_SLUG,
   MPA_DATAVIEW_SLUG,
@@ -32,7 +32,7 @@ const workspace: Workspace<WorkspaceState> = {
   app: APP_NAME,
   name: 'Default public Fishing Map workspace',
   description: '',
-  category: WorkspaceCategories.FishingActivity,
+  category: WorkspaceCategory.FishingActivity,
   startAt: DEFAULT_TIME_RANGE.start,
   endAt: DEFAULT_TIME_RANGE.end,
   viewport: DEFAULT_VIEWPORT,
@@ -64,13 +64,13 @@ const workspace: Workspace<WorkspaceState> = {
         color: '#FFAA0D',
         colorRamp: 'orange',
         datasets: [
-          'public-belize-fishing-effort:v20220304',
-          'public-bra-onyxsat-fishing-effort:v20211126',
-          'public-chile-fishing-effort:v20211126',
-          'public-costa-rica-fishing-effort:v20211126',
-          'public-ecuador-fishing-effort:v20211126',
-          'public-indonesia-fishing-effort:v20200320',
-          'public-panama-fishing-effort:v20211126',
+          // 'public-belize-fishing-effort:v20220304',
+          // 'public-bra-onyxsat-fishing-effort:v20211126',
+          // 'public-chile-fishing-effort:v20211126',
+          // 'public-costa-rica-fishing-effort:v20211126',
+          // 'public-ecuador-fishing-effort:v20211126',
+          // 'public-indonesia-fishing-effort:v20200320',
+          // 'public-panama-fishing-effort:v20211126',
           'public-peru-fishing-effort:v20211126',
           'public-norway-fishing-effort:v20220112',
         ],

@@ -1,0 +1,34 @@
+.error {
+  width: 100%;
+  text-align: center;
+  padding: 6rem var(--space-L);
+  color: var(--color-danger-red);
+}
+
+.cover {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: var(--space-S);
+  padding: var(--space-L);
+  justify-content: center;
+  align-items: center;
+}
+
+.center strong {
+  font-weight: 500;
+}
+
+@media print {
+  .tabContainer {
+    display: none;
+  }
+}

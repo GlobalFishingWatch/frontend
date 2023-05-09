@@ -16,13 +16,14 @@ import {
   INCLUDE_FILTER_ID,
   DatasetSubCategory,
   DataviewCategory,
+  VesselType,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { formatSliderNumber, IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { capitalize, sortFields } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
-import { PUBLIC_SUFIX, FULL_SUFIX } from 'data/config'
+import { PUBLIC_SUFIX, FULL_SUFIX, DEFAULT_TIME_RANGE } from 'data/config'
 import { getDatasetNameTranslated, removeDatasetVersion } from 'features/i18n/utils'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { FileType } from 'features/common/FileDropzone'
@@ -188,11 +189,29 @@ export const getDatasetsInDataviews = (
   return uniq([...datasetsFromDataviews, ...datasetsFromDataviewInstances])
 }
 
+const vesselTypeWithOwnDataset = ['fishing', 'carrier', 'support']
+const vesselPrivateOtherDatasetId = 'private-global-presence'
+export type RelatedDatasetByTypeParams = {
+  fullDatasetAllowed?: boolean
+  vesselType?: VesselType
+}
 export const getRelatedDatasetByType = (
   dataset?: Dataset,
   datasetType?: DatasetTypes,
-  fullDatasetAllowed = false
+  { fullDatasetAllowed = false, vesselType } = {} as RelatedDatasetByTypeParams
 ) => {
+  if (vesselType && datasetType === DatasetTypes.Tracks) {
+    return dataset?.relatedDatasets?.find((relatedDataset) => {
+      if (relatedDataset.type !== datasetType) {
+        return false
+      }
+      if (vesselTypeWithOwnDataset.includes(vesselType)) {
+        return relatedDataset.id.includes(vesselType)
+      } else {
+        return relatedDataset.id.startsWith(vesselPrivateOtherDatasetId)
+      }
+    })
+  }
   if (fullDatasetAllowed) {
     const fullDataset = dataset?.relatedDatasets?.find(
       (relatedDataset) =>
@@ -224,10 +243,24 @@ export const getRelatedDatasetsByType = (
 
 export const getActiveDatasetsInActivityDataviews = (
   dataviews: UrlDataviewInstance<GeneratorType>[]
-) => {
+): string[] => {
   return dataviews.flatMap((dataview) => {
     return dataview?.config?.datasets || []
   })
+}
+
+export const getLatestEndDateFromDatasets = (
+  datasets: Dataset[],
+  datasetCategory?: DatasetCategory
+): string => {
+  if (!datasets.length) return DEFAULT_TIME_RANGE.end
+  const latestDate = datasets.reduce((acc, dataset) => {
+    if (datasetCategory && dataset.category !== datasetCategory) {
+      return acc
+    }
+    return dataset.endDate > acc ? dataset.endDate : acc
+  }, datasets?.[0].endDate || '')
+  return latestDate
 }
 
 export const checkDatasetReportPermission = (datasetId: string, permissions: UserPermission[]) => {
@@ -242,12 +275,12 @@ export const checkDatasetDownloadTrackPermission = (
   return checkExistPermissionInList(permissions, permission)
 }
 
-export const getActivityDatasetsDownloadSupported = (
+export const getActivityDatasetsReportSupported = (
   dataviews: UrlDataviewInstance<GeneratorType>[],
   permissions: UserPermission[] = []
 ) => {
   return dataviews.flatMap((dataview) => {
-    const permissionDatasetsIds: string[] = (dataview?.config?.datasets || []).filter(
+    const permissionDatasetsIds: string[] = getActiveDatasetsInActivityDataviews([dataview]).filter(
       (datasetId: string) => {
         return datasetId ? checkDatasetReportPermission(datasetId, permissions) : false
       }
@@ -279,16 +312,18 @@ export const getVesselDatasetsDownloadTrackSupported = (
   return datasets
 }
 
-export const getDatasetsDownloadNotSupported = (
+export const getDatasetsReportNotSupported = (
   dataviews: UrlDataviewInstance<GeneratorType>[],
   permissions: UserPermission[] = []
 ) => {
   const dataviewDatasets = getActiveDatasetsInActivityDataviews(dataviews)
-  const datasetsDownloadSupported = getActivityDatasetsDownloadSupported(dataviews, permissions)
+  const datasetsDownloadSupported = getActivityDatasetsReportSupported(dataviews, permissions)
   return dataviewDatasets.filter((dataset) => !datasetsDownloadSupported.includes(dataset))
 }
 
-export const getActiveActivityDatasetsInDataviews = (dataviews: UrlDataviewInstance[]) => {
+export const getActiveActivityDatasetsInDataviews = (
+  dataviews: (Dataview | UrlDataviewInstance)[]
+) => {
   return dataviews.map((dataview) => {
     const activeDatasets = (dataview?.config?.datasets || []) as string[]
     return dataview.datasets.filter((dataset) => {
@@ -566,12 +601,13 @@ export const getFiltersBySchema = (
 export const getSchemaFiltersInDataview = (
   dataview: SchemaFieldDataview,
   vesselGroups?: MultiSelectOption[]
-): SchemaFilter[] => {
+): { filtersAllowed: SchemaFilter[]; filtersDisabled: SchemaFilter[] } => {
   const fieldsIds = uniq(
     dataview.datasets?.flatMap((d) => d.fieldsAllowed || [])
   ) as SupportedDatasetSchema[]
   const fieldsOrder = dataview.filtersConfig?.order as SupportedDatasetSchema[]
   const fieldsAllowed = fieldsIds.filter((f) => isDataviewSchemaSupported(dataview, f))
+  const fieldsDisabled = fieldsIds.filter((f) => !isDataviewSchemaSupported(dataview, f))
   const fielsAllowedOrdered =
     fieldsOrder && fieldsOrder.length > 0
       ? fieldsAllowed.sort((a, b) => {
@@ -580,8 +616,14 @@ export const getSchemaFiltersInDataview = (
           return aIndex - bIndex
         })
       : fieldsAllowed
-  const schemaFilters = fielsAllowedOrdered.map((id) => {
+  const filtersAllowed = fielsAllowedOrdered.map((id) => {
     return getFiltersBySchema(dataview, id, vesselGroups)
   })
-  return schemaFilters
+  const filtersDisabled = fieldsDisabled.map((id) => {
+    return getFiltersBySchema(dataview, id, vesselGroups)
+  })
+  return {
+    filtersAllowed,
+    filtersDisabled,
+  }
 }

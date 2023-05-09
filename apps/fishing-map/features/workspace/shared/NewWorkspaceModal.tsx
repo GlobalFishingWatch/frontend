@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { InputText, Button, Modal, SwitchRow } from '@globalfishingwatch/ui-components'
 import { getOceanAreaName, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
@@ -21,6 +20,7 @@ import { selectUserWorkspaceEditPermissions } from 'features/user/user.selectors
 import { selectWorkspaceId } from 'routes/routes.selectors'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { selectIsGFWWorkspace } from 'features/workspace/workspace.selectors'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectPrivateDatasetsInWorkspace } from 'features/dataviews/dataviews.selectors'
 import styles from './NewWorkspaceModal.module.css'
 
@@ -113,8 +113,8 @@ function NewWorkspaceModal({
       setUpdateLoading(true)
       const dispatchedAction = await dispatch(updatedCurrentWorkspaceThunk({ ...workspace, name }))
       if (updatedCurrentWorkspaceThunk.fulfilled.match(dispatchedAction)) {
-        uaEvent({
-          category: 'Workspace Management',
+        trackEvent({
+          category: TrackCategory.WorkspaceManagement,
           action: 'Edit current workspace',
           label: dispatchedAction.payload?.name ?? 'Unknown',
         })
@@ -137,8 +137,8 @@ function NewWorkspaceModal({
       )
       if (saveWorkspaceThunk.fulfilled.match(dispatchedAction)) {
         const workspace = dispatchedAction.payload as Workspace
-        uaEvent({
-          category: 'Workspace Management',
+        trackEvent({
+          category: TrackCategory.WorkspaceManagement,
           action: 'Save current workspace',
           label: workspace?.name ?? 'Unknown',
         })

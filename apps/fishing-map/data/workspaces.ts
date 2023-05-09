@@ -1,5 +1,7 @@
 import { PUBLIC_SUFIX } from './config'
 
+export const GLOBAL_VESSELS_DATASET_ID = 'public-global-all-vessels'
+
 export const DEFAULT_WORKSPACE_KEY = 'default'
 export const DEFAULT_WORKSPACE_ID = `${DEFAULT_WORKSPACE_KEY}-${PUBLIC_SUFIX}`
 export const DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID = 'basemap'
@@ -14,7 +16,7 @@ export function getWorkspaceEnv(): WorkspaceEnv {
   return WORKSPACE_ENV
 }
 
-export enum WorkspaceCategories {
+export enum WorkspaceCategory {
   FishingActivity = 'fishing-activity',
   MarineManager = 'marine-manager',
   CountryPortals = 'country-portals',
@@ -83,9 +85,9 @@ export const CONTEXT_LAYERS_DATAVIEWS = [
 ]
 
 // Global environmental dataviews
-export const GLOBAL_WATER_TEMPERATURE_DATAVIEW_SLUG = undefined
-export const GLOBAL_SALINITY_DATAVIEW_SLUG = undefined
-export const GLOBAL_CHLOROPHYL_DATAVIEW_SLUG = undefined
+export const GLOBAL_WATER_TEMPERATURE_DATAVIEW_SLUG = 'global-sea-surface-temperature'
+export const GLOBAL_SALINITY_DATAVIEW_SLUG = 'global-water-salinity'
+export const GLOBAL_CHLOROPHYL_DATAVIEW_SLUG = 'global-chlorophyll'
 
 export const DEFAULT_DATAVIEW_SLUGS = [
   FISHING_DATAVIEW_SLUG,

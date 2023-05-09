@@ -30,9 +30,13 @@ import {
 } from 'features/timebar/timebar.slice'
 import { selectBivariateDataviews, selectTimeRange } from 'features/app/app.selectors'
 import { selectMarineManagerDataviewInstanceResolved } from 'features/dataviews/dataviews.slice'
-import { selectIsMarineManagerLocation, isWorkspaceLocation } from 'routes/routes.selectors'
-import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
-import { WorkspaceCategories } from 'data/workspaces'
+import {
+  selectIsMarineManagerLocation,
+  selectIsReportLocation,
+  selectIsWorkspaceLocation,
+} from 'routes/routes.selectors'
+import { selectShowTimeComparison } from 'features/reports/reports.selectors'
+import { WorkspaceCategory } from 'data/workspaces'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { BivariateDataviews } from 'types'
 import { VESSEL_GROUPS_DAYS_LIMIT } from 'data/config'
@@ -231,7 +235,7 @@ export const selectWorkspacesListGenerator = createSelector(
                   id: workspace.id,
                   label: workspace.name,
                   type: WORKSPACES_POINTS_TYPE,
-                  category: workspace.category || WorkspaceCategories.FishingActivity,
+                  category: workspace.category || WorkspaceCategory.FishingActivity,
                   latitude,
                   longitude,
                   zoom,
@@ -306,7 +310,8 @@ export const selectDefaultMapGeneratorsConfig = createSelector(
   [
     selectWorkspaceError,
     selectWorkspaceStatus,
-    isWorkspaceLocation,
+    selectIsWorkspaceLocation,
+    selectIsReportLocation,
     selectDefaultBasemapGenerator,
     selectMapGeneratorsConfig,
     selectMapWorkspacesListGenerators,
@@ -314,11 +319,13 @@ export const selectDefaultMapGeneratorsConfig = createSelector(
   (
     workspaceError,
     workspaceStatus,
-    showWorkspaceDetail,
+    isWorkspacelLocation,
+    isReportLocation,
     basemapGenerator,
     workspaceGenerators = [] as AnyGeneratorConfig[],
     workspaceListGenerators
   ): AnyGeneratorConfig[] => {
+    const showWorkspaceDetail = isWorkspacelLocation || isReportLocation
     if (workspaceError.status === 401 || workspaceStatus === AsyncReducerStatus.Loading) {
       return [basemapGenerator]
     }

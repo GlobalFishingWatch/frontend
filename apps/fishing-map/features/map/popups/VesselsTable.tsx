@@ -1,11 +1,10 @@
 import { Fragment, useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { IconButton, Modal, Tooltip } from '@globalfishingwatch/ui-components'
-import { DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
+import { DatasetSubCategory, DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getDetectionsTimestamps } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
@@ -33,6 +32,8 @@ import { TimeRangeDates } from 'features/map/controls/MapInfo'
 import GFWOnly from 'features/user/GFWOnly'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getUTCDateTime } from 'utils/dates'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
   TooltipEventFeature,
@@ -97,10 +98,12 @@ function VesselsTable({
   feature,
   showFullList,
   vesselProperty = 'hours',
+  activityType = DatasetSubCategory.Fishing,
 }: {
   feature: TooltipEventFeature
   showFullList?: boolean
   vesselProperty?: ActivityProperty
+  activityType?: DatasetSubCategory
 }) {
   const { t } = useTranslation()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
@@ -169,14 +172,15 @@ function VesselsTable({
 
     upsertDataviewInstance(vesselDataviewInstance)
 
-    uaEvent({
-      category: 'Tracks',
+    trackEvent({
+      category: TrackCategory.Tracks,
       action: 'Click in vessel from grid cell panel',
       label: getEventLabel([vessel.dataset.id, vessel.id]),
     })
   }
   const vesselsLoaded = Math.min(MAX_VESSELS_LOAD, feature.vesselsInfo?.numVessels)
-
+  const isHoursProperty = vesselProperty !== 'detections'
+  const isPresenceActivity = activityType === DatasetSubCategory.Presence
   return (
     <Fragment>
       {vessels?.length > 0 && (
@@ -185,10 +189,12 @@ function VesselsTable({
             <tr>
               <th colSpan={hasPinColumn ? 2 : 1}>{t('common.vessel_other', 'Vessels')}</th>
               <th>{t('vessel.flag_short', 'iso3')}</th>
-              <th>{t('vessel.gearType_short', 'gear')}</th>
+              <th>
+                {isPresenceActivity ? t('vessel.type', 'Type') : t('vessel.gearType_short', 'Gear')}
+              </th>
               {/* Disabled for detections to allocate some space for timestamps interaction */}
               {vesselProperty !== 'detections' && <th>{t('vessel.source_short', 'source')}</th>}
-              <th className={vesselProperty !== 'detections' ? styles.vesselsTableHeaderRight : ''}>
+              <th className={isHoursProperty ? styles.vesselsTableHeaderRight : ''}>
                 {feature.temporalgrid?.unit === 'hours' && t('common.hour_other', 'hours')}
                 {feature.temporalgrid?.unit === 'days' && t('common.days_other', 'days')}
                 {feature.temporalgrid?.unit === 'detections' &&
@@ -200,13 +206,21 @@ function VesselsTable({
             {vessels.map((vessel, i) => {
               const vesselName = formatInfoField(vessel.shipname, 'name')
 
-              const vesselGearType = `${t(
-                `vessel.gearTypes.${vessel.geartype}` as any,
-                vessel.geartype ?? EMPTY_FIELD_PLACEHOLDER
-              )}`
+              const vesselType = isPresenceActivity
+                ? `${t(
+                    `vessel.vesselTypes.${vessel.vesselType}` as any,
+                    vessel.vesselType ?? EMPTY_FIELD_PLACEHOLDER
+                  )}`
+                : `${t(
+                    `vessel.gearTypes.${vessel.geartype}` as any,
+                    vessel.geartype ?? EMPTY_FIELD_PLACEHOLDER
+                  )}`
 
-              const hasDatasets =
-                vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
+              // Temporary workaround for public-global-all-vessels dataset as we
+              // don't want to show the pin only for that dataset for guest users
+              const hasDatasets = vessel.infoDataset.id.includes(GLOBAL_VESSELS_DATASET_ID)
+                ? vessel.infoDataset !== undefined && vessel.trackDataset !== undefined
+                : vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
 
               const vesselInWorkspace = getVesselInWorkspace(vesselsInWorkspace, vessel.id)
 
@@ -240,8 +254,9 @@ function VesselsTable({
                       <span>{vessel.flag || EMPTY_FIELD_PLACEHOLDER}</span>
                     </Tooltip>
                   </td>
-                  <td className={styles.columnSpace}>{vesselGearType}</td>
-                  {vesselProperty !== 'detections' && (
+
+                  <td className={styles.columnSpace}>{vesselType}</td>
+                  {isHoursProperty && (
                     <td className={styles.columnSpace}>
                       <Tooltip content={getDatasetLabel(vessel.infoDataset)}>
                         <DatasetLabel dataset={vessel.infoDataset} />
@@ -250,7 +265,7 @@ function VesselsTable({
                   )}
                   <td
                     className={cx(styles.columnSpace, {
-                      [styles.vesselsTableHour]: vesselProperty !== 'detections',
+                      [styles.vesselsTableHour]: isHoursProperty,
                       [styles.largeColumn]: detectionsTimestamps?.length > 1,
                     })}
                   >
@@ -292,7 +307,12 @@ function VesselsTable({
         >
           {feature.vesselsInfo && (
             <div className={styles.modalContainer}>
-              <VesselsTable feature={feature} showFullList={true} vesselProperty={vesselProperty} />
+              <VesselsTable
+                feature={feature}
+                showFullList={true}
+                vesselProperty={vesselProperty}
+                activityType={activityType}
+              />
               {vesselsLoaded !== feature.vesselsInfo.numVessels && (
                 <button className={styles.vesselsDisplayed}>
                   {vesselsLoaded} displayed out of {feature.vesselsInfo.numVessels}

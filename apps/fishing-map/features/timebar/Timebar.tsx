@@ -1,7 +1,6 @@
 import { Fragment, memo, useCallback, useState, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
-import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import {
   Timebar,
@@ -24,20 +23,26 @@ import {
   useDisableHighlightTimeConnect,
   useActivityMetadata,
 } from 'features/timebar/timebar.hooks'
-import { DEFAULT_WORKSPACE, LAST_DATA_UPDATE } from 'data/config'
+import { DEFAULT_WORKSPACE } from 'data/config'
 import { TimebarVisualisations } from 'types'
 import useViewport from 'features/map/map-viewport.hooks'
-import { selectTimebarGraph, selectTimebarVisualisation } from 'features/app/app.selectors'
+import {
+  selectLatestAvailableDataDate,
+  selectTimebarGraph,
+  selectTimebarVisualisation,
+} from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { upperFirst } from 'utils/info'
-import { selectShowTimeComparison } from 'features/analysis/analysis.selectors'
-import Hint from 'features/hints/Hint'
+import { selectShowTimeComparison } from 'features/reports/reports.selectors'
+import Hint from 'features/help/Hint'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-groups.selectors'
 import { getUTCDateTime } from 'utils/dates'
+import { selectIsReportLocation } from 'routes/routes.selectors'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { setHighlightedTime, selectHighlightedTime, Range } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import { selectTracksData, selectTracksGraphData, selectTracksEvents } from './timebar.selectors'
@@ -138,22 +143,24 @@ const TimebarWrapper = () => {
   const { isMapDrawing } = useMapDrawConnect()
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const vesselGroupsFiltering = useSelector(selectIsVessselGroupsFiltering)
+  const isReportLocation = useSelector(selectIsReportLocation)
+  const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
   const dispatch = useAppDispatch()
 
   const [bookmark, setBookmark] = useState<{ start: string; end: string } | null>(null)
   const onBookmarkChange = useCallback(
     (start, end) => {
       if (!start || !end) {
-        uaEvent({
-          category: 'Timebar',
+        trackEvent({
+          category: TrackCategory.Timebar,
           action: 'Bookmark timerange',
           label: 'removed',
         })
         setBookmark(null)
         return
       }
-      uaEvent({
-        category: 'Timebar',
+      trackEvent({
+        category: TrackCategory.Timebar,
         action: 'Bookmark timerange',
         label: getEventLabel([start, end]),
       })
@@ -205,8 +212,8 @@ const TimebarWrapper = () => {
         YEAR_INTERVAL_BUTTON: 'Use year preset',
       }
       if (gaActions[e.source]) {
-        uaEvent({
-          category: 'Timebar',
+        trackEvent({
+          category: TrackCategory.Timebar,
           action: gaActions[e.source],
           label: getEventLabel([e.start, e.end]),
         })
@@ -219,8 +226,8 @@ const TimebarWrapper = () => {
 
   const onTogglePlay = useCallback(
     (isPlaying: boolean) => {
-      uaEvent({
-        category: 'Timebar',
+      trackEvent({
+        category: TrackCategory.Timebar,
         action: `Click on ${isPlaying ? 'Play' : 'Pause'}`,
         label: getEventLabel([start ?? '', end ?? '']),
       })
@@ -316,13 +323,13 @@ const TimebarWrapper = () => {
   return (
     <div className={styles.timebarWrapper}>
       <Timebar
-        enablePlayback={!vesselGroupsFiltering}
+        enablePlayback={!vesselGroupsFiltering && !isReportLocation}
         labels={labels}
         start={internalRange ? internalRange.start : start}
         end={internalRange ? internalRange.end : end}
         absoluteStart={DEFAULT_WORKSPACE.availableStart}
         absoluteEnd={DEFAULT_WORKSPACE.availableEnd}
-        latestAvailableDataDate={LAST_DATA_UPDATE}
+        latestAvailableDataDate={latestAvailableDataDate}
         onChange={onChange}
         showLastUpdate={false}
         onMouseMove={onMouseMove}

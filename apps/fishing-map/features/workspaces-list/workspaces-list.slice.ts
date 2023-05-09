@@ -15,13 +15,12 @@ import {
   createAsyncSlice,
   AsyncError,
 } from 'utils/async-slice'
-import { RootState } from 'store'
 import { APP_NAME, DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { WorkspaceState } from 'types'
-import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { getDefaultWorkspace } from 'features/workspace/workspace.slice'
 
-export type AppWorkspace = Workspace<WorkspaceState, WorkspaceCategories>
+export type AppWorkspace = Workspace<WorkspaceState, WorkspaceCategory>
 
 type FetchWorkspacesThunkParams = {
   app?: string
@@ -37,7 +36,7 @@ export const fetchWorkspacesThunk = createAsyncThunk<
 >(
   'workspaces/fetch',
   async ({ app = APP_NAME, ids, userId } = {}, { getState, rejectWithValue }) => {
-    const state = getState() as RootState
+    const state = getState() as any
     const defaultWorkspaceLoaded = selectWorkspaceById(DEFAULT_WORKSPACE_ID)(state) !== undefined
     const workspacesParams = {
       app,
@@ -220,6 +219,8 @@ const initialState: WorkspacesState = {
   },
 }
 
+type WorkspaceSliceState = { workspaces: WorkspacesState }
+
 const { slice: workspacesSlice, entityAdapter } = createAsyncSlice<WorkspacesState, AppWorkspace>({
   name: 'workspaces',
   initialState,
@@ -244,21 +245,22 @@ const { slice: workspacesSlice, entityAdapter } = createAsyncSlice<WorkspacesSta
   },
 })
 
-export const { selectAll, selectById } = entityAdapter.getSelectors<RootState>(
+export const { selectAll, selectById } = entityAdapter.getSelectors<WorkspaceSliceState>(
   (state) => state.workspaces
 )
 
-export function selectWorkspaces(state: RootState) {
+export function selectWorkspaces(state: WorkspaceSliceState) {
   return selectAll(state)
 }
-export const selectWorkspaceListStatus = (state: RootState) => state.workspaces.status
-export const selectWorkspaceListStatusId = (state: RootState) => state.workspaces.statusId
-export const selectHighlightedWorkspaces = (state: RootState) => state.workspaces.highlighted.data
-export const selectHighlightedWorkspacesStatus = (state: RootState) =>
+export const selectWorkspaceListStatus = (state: WorkspaceSliceState) => state.workspaces.status
+export const selectWorkspaceListStatusId = (state: WorkspaceSliceState) => state.workspaces.statusId
+export const selectHighlightedWorkspaces = (state: WorkspaceSliceState) =>
+  state.workspaces.highlighted.data
+export const selectHighlightedWorkspacesStatus = (state: WorkspaceSliceState) =>
   state.workspaces.highlighted.status
 
 export const selectWorkspaceById = memoize((id: string) =>
-  createSelector([(state: RootState) => state], (state) => selectById(state, id))
+  createSelector([(state: WorkspaceSliceState) => state], (state) => selectById(state, id))
 )
 
 export default workspacesSlice.reducer

@@ -23,3 +23,13 @@ div.modalContent {
   font: var(--font-S);
   text-transform: uppercase;
 }
+
+.titleContainer {
+  display: flex;
+  align-items: center;
+  margin-right: var(--space-S);
+}
+
+.title {
+  flex: 1;
+}

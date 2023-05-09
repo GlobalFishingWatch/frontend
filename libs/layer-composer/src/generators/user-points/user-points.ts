@@ -1,16 +1,16 @@
 import type { LayerSpecification, CircleLayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '../context/config'
-import { GeneratorType, UserContextGeneratorConfig } from '../types'
+import { GeneratorType, UserPointsGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { Group } from '../../types'
 import { API_GATEWAY } from '../../config'
 import { getCirclePaintWithFeatureState } from '../context/context.utils'
 import { DEFAULT_BACKGROUND_COLOR } from '../background/config'
 
-class UserContextGenerator {
-  type = GeneratorType.UserContext
+class UserPointsGenerator {
+  type = GeneratorType.UserPoints
 
-  _getStyleSources = (config: UserContextGeneratorConfig) => {
+  _getStyleSources = (config: UserPointsGeneratorConfig) => {
     const tilesUrl = isUrlAbsolute(config.tilesUrl)
       ? config.tilesUrl
       : API_GATEWAY + config.tilesUrl
@@ -24,7 +24,7 @@ class UserContextGenerator {
     ]
   }
 
-  _getStyleLayers = (config: UserContextGeneratorConfig): LayerSpecification[] => {
+  _getStyleLayers = (config: UserPointsGeneratorConfig): LayerSpecification[] => {
     const generatorId = config.id
     const baseLayer = {
       id: generatorId,
@@ -36,11 +36,11 @@ class UserContextGenerator {
       ...baseLayer,
       type: 'circle',
       paint: {
-        'circle-radius': ['interpolate', ['linear'], ['zoom'], 2, 2, 5, 5],
+        'circle-radius': ['interpolate', ['linear'], ['zoom'], 2, 4, 5, 8],
         'circle-stroke-color': DEFAULT_BACKGROUND_COLOR,
         'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 3, 0.1, 5, 0.5],
         'circle-stroke-opacity': 0.5,
-        ...getCirclePaintWithFeatureState(config.color),
+        ...getCirclePaintWithFeatureState(config.color, 0.7),
       },
       metadata: {
         color: config.color,
@@ -58,7 +58,7 @@ class UserContextGenerator {
     return [circleLayer]
   }
 
-  getStyle = (config: UserContextGeneratorConfig) => {
+  getStyle = (config: UserPointsGeneratorConfig) => {
     return {
       id: config.id,
       sources: this._getStyleSources(config),
@@ -67,4 +67,4 @@ class UserContextGenerator {
   }
 }
 
-export default UserContextGenerator
+export default UserPointsGenerator

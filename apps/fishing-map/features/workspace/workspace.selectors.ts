@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { RootState } from 'reducers'
 import { WorkspaceState, WorkspaceStateProperty } from 'types'
-import { RootState } from 'store'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { selectQueryParam } from 'routes/routes.selectors'
 
@@ -12,6 +12,10 @@ export const selectWorkspaceError = (state: RootState) => state.workspace.error
 
 export const selectCurrentWorkspaceId = createSelector([selectWorkspace], (workspace) => {
   return workspace?.id
+})
+
+export const selectCurrentWorkspaceCategory = createSelector([selectWorkspace], (workspace) => {
+  return workspace?.category
 })
 
 export const selectIsGFWWorkspace = createSelector([selectWorkspace], (workspace) => {

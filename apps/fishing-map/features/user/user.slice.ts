@@ -7,7 +7,6 @@ import {
 } from '@globalfishingwatch/api-client'
 import { UserData } from '@globalfishingwatch/api-types'
 import { redirectToLogin } from '@globalfishingwatch/react-hooks'
-import { RootState } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { removeGFWStaffOnlyDataviews } from 'features/workspace/workspace.slice'
 
@@ -23,23 +22,26 @@ const initialState: UserState = {
   data: null,
 }
 
+type UserSliceState = { user: UserState }
+
 export const GFW_GROUP_ID = 'GFW Staff'
 export const JAC_GROUP_ID = 'Joint Analytical Cell (JAC)'
 export const GFW_DEV_GROUP_ID = 'development-group'
 export const ADMIN_GROUP_ID = 'admin-group'
 export const DEFAULT_GROUP_ID = 'Default'
 export const PRIVATE_SUPPORTED_GROUPS = [
-  'Indonesia',
-  'Peru',
-  'Panama',
-  'Brazil',
-  'Mexico',
-  'Ecuador',
-  'Costa_Rica',
   'Belize',
+  'Brazil',
+  'Costa_Rica',
+  'Ecuador',
+  'Indonesia',
+  'Mexico',
+  'Panama',
+  'Papua_New_Guinea',
+  'Peru',
   'SSF-Aruna',
-  'SSF-Rare',
   'SSF-Ipnlf',
+  'SSF-Rare',
 ]
 export const USER_GROUP_WORKSPACE = {
   'ssf-aruna': 'coastal_fisheries_indonesia',
@@ -66,7 +68,7 @@ export const fetchUserThunk = createAsyncThunk(
   },
   {
     condition: (params, { getState }) => {
-      const { user } = getState() as RootState
+      const { user } = getState() as UserSliceState
       return user.status !== AsyncReducerStatus.Loading
     },
   }
@@ -113,13 +115,14 @@ const userSlice = createSlice({
   },
 })
 
-export const selectUserData = (state: RootState) => state.user.data
-export const selectUserStatus = (state: RootState) => state.user.status
-export const selectUserLogged = (state: RootState) => state.user.logged
-export const isGFWUser = (state: RootState) => state.user.data?.groups.includes(GFW_GROUP_ID)
-export const isJACUser = (state: RootState) => state.user.data?.groups.includes(JAC_GROUP_ID)
-export const isGFWAdminUser = (state: RootState) => state.user.data?.groups.includes(ADMIN_GROUP_ID)
-export const isGFWDeveloper = (state: RootState) =>
+export const selectUserData = (state: UserSliceState) => state.user.data
+export const selectUserStatus = (state: UserSliceState) => state.user.status
+export const selectUserLogged = (state: UserSliceState) => state.user.logged
+export const isGFWUser = (state: UserSliceState) => state.user.data?.groups.includes(GFW_GROUP_ID)
+export const isJACUser = (state: UserSliceState) => state.user.data?.groups.includes(JAC_GROUP_ID)
+export const isGFWAdminUser = (state: UserSliceState) =>
+  state.user.data?.groups.includes(ADMIN_GROUP_ID)
+export const isGFWDeveloper = (state: UserSliceState) =>
   state.user.data?.groups.includes(GFW_DEV_GROUP_ID)
 
 export const isGuestUser = createSelector([selectUserData], (userData) => {

@@ -9,6 +9,7 @@ import {
   EndpointId,
   Dataset,
   DatasetTypes,
+  DatasetCategory,
 } from '@globalfishingwatch/api-types'
 import { GFWAPI, FetchOptions, parseAPIError } from '@globalfishingwatch/api-client'
 import {
@@ -17,15 +18,15 @@ import {
 } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_TIME_RANGE } from 'data/config'
 import { WorkspaceState } from 'types'
-import { RootState } from 'store'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import {
   selectLocationCategory,
   selectLocationType,
+  selectReportId,
   selectUrlDataviewInstances,
 } from 'routes/routes.selectors'
-import { HOME, WORKSPACE } from 'routes/routes'
+import { HOME, REPORT, ROUTE_TYPES, WORKSPACE } from 'routes/routes'
 import { cleanQueryLocation, updateLocation, updateQueryParam } from 'routes/routes.actions'
 import { selectDaysFromLatest } from 'features/app/app.selectors'
 import {
@@ -33,18 +34,23 @@ import {
   ONLY_GFW_STAFF_DATAVIEW_SLUGS,
   getWorkspaceEnv,
   VESSEL_PRESENCE_DATAVIEW_SLUG,
-  WorkspaceCategories,
+  WorkspaceCategory,
+  DEFAULT_WORKSPACE_ID,
 } from 'data/workspaces'
 import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
-import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
+import {
+  getDatasetsInDataviews,
+  getLatestEndDateFromDatasets,
+} from 'features/datasets/datasets.utils'
 import { isGFWUser, isGuestUser } from 'features/user/user.slice'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { getVesselDataviewInstanceDatasetConfig } from 'features/dataviews/dataviews.utils'
 import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
 import { getUTCDateTime } from 'utils/dates'
+import { fetchReportsThunk } from 'features/reports/reports.slice'
 import { selectWorkspaceStatus } from './workspace.selectors'
 
-type LastWorkspaceVisited = { type: string; payload: any; query: any }
+type LastWorkspaceVisited = { type: ROUTE_TYPES; payload: any; query: any; replaceQuery?: boolean }
 
 interface WorkspaceSliceState {
   status: AsyncReducerStatus
@@ -79,32 +85,40 @@ export const getDefaultWorkspace = () => {
 export const fetchWorkspaceThunk = createAsyncThunk(
   'workspace/fetch',
   async (workspaceId: string, { signal, dispatch, getState, rejectWithValue }) => {
-    const state = getState() as RootState
+    const state = getState() as any
     const locationType = selectLocationType(state)
     const urlDataviewInstances = selectUrlDataviewInstances(state)
     const guestUser = isGuestUser(state)
     const gfwUser = isGFWUser(state)
-
+    const reportId = selectReportId(state)
     try {
-      let workspace: Workspace<WorkspaceState> = workspaceId
-        ? await GFWAPI.fetch<Workspace<WorkspaceState>>(`/workspaces/${workspaceId}`, {
-            signal,
-          })
-        : null
-      if (!workspace && locationType === HOME) {
-        workspace = await getDefaultWorkspace()
-        if (gfwUser && ONLY_GFW_STAFF_DATAVIEW_SLUGS.length) {
-          // Inject dataviews for gfw staff only
-          ONLY_GFW_STAFF_DATAVIEW_SLUGS.forEach((id) => {
-            workspace.dataviewInstances.push({
-              id: `${id}-instance`,
-              config: {
-                visible: false,
-              },
-              dataviewId: id,
-            })
-          })
+      let workspace: Workspace<WorkspaceState> = null
+      if (locationType === REPORT) {
+        const action = dispatch(fetchReportsThunk([reportId]))
+        const resolvedAction = await action
+        if (fetchReportsThunk.fulfilled.match(resolvedAction)) {
+          workspace = resolvedAction.payload?.[0]?.workspace
         }
+        // TODO fetch report and use the workspace within it
+      } else if (workspaceId && workspaceId !== DEFAULT_WORKSPACE_ID) {
+        workspace = await GFWAPI.fetch<Workspace<WorkspaceState>>(`/workspaces/${workspaceId}`, {
+          signal,
+        })
+      }
+      if ((!workspace && locationType === HOME) || workspaceId === DEFAULT_WORKSPACE_ID) {
+        workspace = await getDefaultWorkspace()
+      }
+      if (gfwUser && ONLY_GFW_STAFF_DATAVIEW_SLUGS.length) {
+        // Inject dataviews for gfw staff only
+        ONLY_GFW_STAFF_DATAVIEW_SLUGS.forEach((id) => {
+          workspace.dataviewInstances.push({
+            id: `${id}-instance`,
+            config: {
+              visible: false,
+            },
+            dataviewId: id,
+          })
+        })
       }
 
       if (workspace) {
@@ -114,20 +128,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
             (dv) => parseLegacyDataviewInstanceEndpoint(dv) as DataviewInstance
           ),
         }
-      } else {
-        return
       }
-
-      const daysFromLatest =
-        selectDaysFromLatest(state) || workspace.state?.daysFromLatest || undefined
-      const endAt =
-        daysFromLatest !== undefined
-          ? getUTCDateTime(DEFAULT_TIME_RANGE.end)
-          : getUTCDateTime(workspace.endAt || DEFAULT_TIME_RANGE.end)
-      const startAt =
-        daysFromLatest !== undefined
-          ? endAt.minus({ days: daysFromLatest })
-          : getUTCDateTime(workspace.startAt || DEFAULT_TIME_RANGE.start)
 
       const defaultWorkspaceDataviews = gfwUser
         ? [...DEFAULT_DATAVIEW_SLUGS, VESSEL_PRESENCE_DATAVIEW_SLUG] // Only for gfw users as includes the private-global-presence-tracks dataset
@@ -150,7 +151,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           dataviews = payload
         }
       }
-
+      let datasets: Dataset[] = []
       if (!signal.aborted) {
         const dataviewInstances: UrlDataviewInstance[] = [
           ...(workspace.dataviewInstances || []),
@@ -159,7 +160,8 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         const datasetsIds = getDatasetsInDataviews(dataviews, dataviewInstances, guestUser)
         const fetchDatasetsAction: any = dispatch(fetchDatasetsByIdsThunk(datasetsIds))
         signal.addEventListener('abort', fetchDatasetsAction.abort)
-        const { error, payload: datasets } = await fetchDatasetsAction
+        const { error, payload } = await fetchDatasetsAction
+        datasets = payload as Dataset[]
 
         // Try to add track for for VMS vessels in case it is logged using the full- datasets
         const vesselDataviewsWithoutTrack = dataviewInstances.filter((dataviewInstance) => {
@@ -206,6 +208,18 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         }
       }
 
+      const daysFromLatest =
+        selectDaysFromLatest(state) || workspace.state?.daysFromLatest || undefined
+      const latestDatasetEndDate = getLatestEndDateFromDatasets(datasets, DatasetCategory.Activity)
+      const endAt =
+        daysFromLatest !== undefined
+          ? getUTCDateTime(latestDatasetEndDate)
+          : getUTCDateTime(workspace.endAt || DEFAULT_TIME_RANGE.end)
+      const startAt =
+        daysFromLatest !== undefined
+          ? endAt.minus({ days: daysFromLatest })
+          : getUTCDateTime(workspace.startAt || DEFAULT_TIME_RANGE.start)
+
       return { ...workspace, startAt: startAt.toISO(), endAt: endAt.toISO() }
     } catch (e: any) {
       console.warn(e)
@@ -214,7 +228,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
   },
   {
     condition: (workspaceId, { getState }) => {
-      const workspaceStatus = selectWorkspaceStatus(getState() as RootState)
+      const workspaceStatus = selectWorkspaceStatus(getState() as any)
       // Fetched already in progress, don't need to re-fetch
       return workspaceStatus !== AsyncReducerStatus.Loading
     },
@@ -240,7 +254,7 @@ export const saveWorkspaceThunk = createAsyncThunk(
     },
     { dispatch, getState }
   ) => {
-    const state = getState() as RootState
+    const state = getState() as any
     const workspaceUpsert = parseUpsertWorkspace(workspace)
 
     const saveWorkspace = async (tries = 0): Promise<Workspace<WorkspaceState> | undefined> => {
@@ -270,7 +284,7 @@ export const saveWorkspaceThunk = createAsyncThunk(
 
     const workspaceUpdated = await saveWorkspace()
     const locationType = selectLocationType(state)
-    const locationCategory = selectLocationCategory(state) || WorkspaceCategories.FishingActivity
+    const locationCategory = selectLocationCategory(state) || WorkspaceCategory.FishingActivity
     if (workspaceUpdated) {
       dispatch(
         updateLocation(locationType === HOME ? WORKSPACE : locationType, {
@@ -309,6 +323,12 @@ const workspaceSlice = createSlice({
   name: 'workspace',
   initialState,
   reducers: {
+    resetWorkspaceSlice: (state) => {
+      state.status = AsyncReducerStatus.Idle
+      state.customStatus = AsyncReducerStatus.Idle
+      state.data = null
+      state.error = {}
+    },
     cleanCurrentWorkspaceData: (state) => {
       state.data = null
     },
@@ -376,7 +396,11 @@ const workspaceSlice = createSlice({
   },
 })
 
-export const { setLastWorkspaceVisited, cleanCurrentWorkspaceData, removeGFWStaffOnlyDataviews } =
-  workspaceSlice.actions
+export const {
+  resetWorkspaceSlice,
+  setLastWorkspaceVisited,
+  cleanCurrentWorkspaceData,
+  removeGFWStaffOnlyDataviews,
+} = workspaceSlice.actions
 
 export default workspaceSlice.reducer

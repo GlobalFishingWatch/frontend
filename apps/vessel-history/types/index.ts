@@ -41,7 +41,7 @@ export type WorkspaceMergeVessels = {
 
 export type BivariateDataviews = [string, string]
 
-export type WorkspaceProfileViewParam = 'port-inspector' | 'insurance-underwriter'
+export type WorkspaceProfileViewParam = 'port-inspector' | 'insurance-underwriter' | 'standalone'
 export interface Workspace<T> extends BaseWorkspace<T> {
   profileView?: WorkspaceProfileViewParam
 }
@@ -129,7 +129,7 @@ export enum IuuStatus {
   currentlyListed = 2,
 }
 
-export interface VesselWithHistory extends Vessel {
+export interface VesselWithHistory extends Omit<Vessel, 'vesselType'> {
   history: VesselFieldsHistory
   iuuStatus?: number
   iuuListing?: Iuu

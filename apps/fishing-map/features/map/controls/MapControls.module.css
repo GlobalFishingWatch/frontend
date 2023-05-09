@@ -95,3 +95,10 @@
 .printBtn {
   margin-right: var(--space-S);
 }
+
+@media print {
+  .mapControls {
+    right: unset;
+    left: var(--space-S);
+  }
+}

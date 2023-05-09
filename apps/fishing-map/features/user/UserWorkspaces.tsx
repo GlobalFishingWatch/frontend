@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import { Spinner, IconButton } from '@globalfishingwatch/ui-components'
 // import TooltipContainer, { TooltipListContainer } from 'features/workspace/shared/TooltipContainer'
 import { WORKSPACE } from 'routes/routes'
-import { WorkspaceCategories } from 'data/workspaces'
+import { WorkspaceCategory } from 'data/workspaces'
 import {
   AppWorkspace,
   deleteWorkspaceThunk,
@@ -23,6 +23,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import NewWorkspaceModal from 'features/workspace/shared/NewWorkspaceModal'
 import { cleanCurrentWorkspaceData } from 'features/workspace/workspace.slice'
+import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
 import styles from './User.module.css'
 import { selectUserWorkspaces } from './user.selectors'
 
@@ -83,8 +84,10 @@ function UserWorkspaces() {
         dispatchLocation(
           WORKSPACE,
           {
-            category: workspace.category || WorkspaceCategories.FishingActivity,
-            workspaceId: workspace.id,
+            payload: {
+              category: workspace.category || WorkspaceCategory.FishingActivity,
+              workspaceId: workspace.id,
+            },
           },
           true
         )
@@ -195,14 +198,14 @@ function UserWorkspaces() {
                     to={{
                       type: WORKSPACE,
                       payload: {
-                        category: workspace.category || WorkspaceCategories.FishingActivity,
+                        category: workspace.category || WorkspaceCategory.FishingActivity,
                         workspaceId: workspace.id,
                       },
                       query: {},
                     }}
                     onClick={() => onWorkspaceClick(workspace)}
                   >
-                    <span className={styles.workspaceTitle}>{workspace.name}</span>
+                    <span className={styles.workspaceTitle}>{getWorkspaceLabel(workspace)}</span>
                     <IconButton icon="arrow-right" />
                   </Link>
                   <IconButton

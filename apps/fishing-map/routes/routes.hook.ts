@@ -10,7 +10,6 @@ import {
   selectLocationPayload,
   selectLocationType,
 } from 'routes/routes.selectors'
-// import { initialDispatch } from 'store'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { ROUTE_TYPES } from './routes'
 import { updateLocation } from './routes.actions'
@@ -55,8 +54,15 @@ export const useLocationConnect = () => {
   const payload = useSelector(selectLocationPayload)
 
   const dispatchLocation = useCallback(
-    (type: ROUTE_TYPES, customPayload: Record<string, any> = {}, replaceQuery = false) => {
-      dispatch(updateLocation(type, { payload: { ...payload, ...customPayload }, replaceQuery }))
+    (
+      type: ROUTE_TYPES,
+      params = {} as { query?: QueryParams; payload?: Record<string, any> },
+      replaceQuery = false
+    ) => {
+      const { query = {}, payload: customPayload = {} } = params
+      dispatch(
+        updateLocation(type, { query, payload: { ...payload, ...customPayload }, replaceQuery })
+      )
     },
     [dispatch, payload]
   )
