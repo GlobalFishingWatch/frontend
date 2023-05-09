@@ -13,7 +13,7 @@
     "errorMessage": "Ada yang salah",
     "errorDuplicatedName": "Sudah ada laporan dengan nama yang sama",
     "errorPeriodComparisonDateRange": "Kesalahan rentang tanggal. Awal perbandingan harus setelah acuan dasar awal.",
-    "errorConcurrentReport": "Tidak dapat membuat lebih dari satu laporan serentak",
+    "errorConcurrentReport": "Tidak dapat menghasilkan lebih dari satu laporan secara bersamaan",
     "evolution": "evolusi",
     "groupByFlag": "berdasarkan bendera",
     "groupByGeartype": "berdasarkan jenis peralatan",
