@@ -12,17 +12,21 @@ export const trackLoader: LoaderWithParser = {
   extensions: ['pbf'],
   mimeTypes: ['application/x-protobuf', 'application/octet-stream', 'application/protobuf'],
   worker: false,
-  parse: async (arrayBuffer) => parseTrack(arrayBuffer),
-  parseSync: async (arrayBuffer) => parseTrack(arrayBuffer),
+  parse: parse,
+  parseSync: parse,
 }
 
-function readData(_, data, pbf) {
-  data.push(pbf.readPackedSVarint())
+function readData(_: number, data: any, pbf: Pbf | undefined) {
+  pbf && data.push(pbf.readPackedSVarint())
 }
 
-const parseTrack = (arrayBuffer: ArrayBuffer) => {
-  // read
+async function parse(arrayBuffer: ArrayBuffer) {
   const data: [] = new Pbf(arrayBuffer).readFields(readData, [])[0]
+  return parseTrack(data)
+}
+
+export const parseTrack = (data: []) => {
+  // read
   if (!data.length) return []
   const segments = trackValueArrayToSegments(data, ['lonlat', 'timestamp'])
   const formattedSegments = [

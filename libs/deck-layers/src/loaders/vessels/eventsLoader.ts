@@ -20,7 +20,7 @@ async function parse(arrayBuffer: ArrayBuffer) {
   return parseEvents(data.entries)
 }
 
-function parseEvents(events: ApiEvent[]) {
+export function parseEvents(events: ApiEvent[]) {
   return events?.map((event) => {
     const { position, start, end, type, ...attributes } = event
     return {
