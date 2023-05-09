@@ -4,7 +4,7 @@ import { AppProps } from 'next/app'
 import { Provider } from 'react-redux'
 import { RecoilRoot } from 'recoil'
 import Head from 'next/head'
-import { useStore } from '../store'
+import { wrapper } from '../store'
 
 import 'features/i18n/i18n'
 import './styles.css'
@@ -12,8 +12,8 @@ import '../../../libs/ui-components/src/base.css'
 import '../../../libs/timebar/src/timebar-settings.css'
 import '@globalfishingwatch/maplibre-gl/dist/maplibre-gl.css'
 
-function CustomApp({ Component, pageProps }: AppProps) {
-  const store = useStore(pageProps?.reduxState)
+function CustomApp({ Component, ...rest }: AppProps) {
+  const { store, props } = wrapper.useWrappedStore(rest)
 
   return (
     <React.StrictMode>
@@ -24,7 +24,7 @@ function CustomApp({ Component, pageProps }: AppProps) {
       <RecoilRoot>
         <Provider store={store}>
           <ClickToComponent />
-          <Component {...pageProps} />
+          <Component {...props.pageProps} />
         </Provider>
       </RecoilRoot>
     </React.StrictMode>

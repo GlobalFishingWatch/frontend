@@ -37,7 +37,7 @@ const PARAMS_TO_ABBREVIATED = {
 const ABBREVIATED_TO_PARAMS = invert(PARAMS_TO_ABBREVIATED)
 
 const TOKEN_PREFIX = '~'
-const TOKEN_REGEX = /~(\d+)/
+export const TOKEN_REGEX = /~(\d+)/
 
 const BASE_URL_TO_OBJECT_TRANSFORMATION: Dictionary<(value: any) => any> = {
   latitude: (latitude) => parseFloat(latitude),

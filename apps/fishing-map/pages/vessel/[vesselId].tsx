@@ -1,20 +1,15 @@
 import path from 'path'
 import { useEffect, useState } from 'react'
 import { RootState } from 'reducers'
-import { GetServerSideProps } from 'next'
 import { Logo, SplitView } from '@globalfishingwatch/ui-components'
-import { GFWAPI } from '@globalfishingwatch/api-client'
-import { APIPagination, ApiEvent, Dataset, Vessel } from '@globalfishingwatch/api-types'
+import { TOKEN_REGEX } from '@globalfishingwatch/dataviews-client'
 import VesselIdentity from 'features/vessel/Vesseldentity'
 import VesselSummary from 'features/vessel/VesselSummary'
-import { AsyncReducerStatus } from 'utils/async-slice'
 import CategoryTabsServer from 'features/sidebar/CategoryTabs.server'
 import { WorkspaceCategory } from 'data/workspaces'
 import VesselEvents from 'features/vessel/VesselEvents'
-import {
-  DEFAULT_VESSEL_DATASET_ID,
-  getEventsParamsFromVesselDataset,
-} from 'features/vessel/vessel.slice'
+import { wrapper } from 'store'
+import { fetchVesselEventsThunk, fetchVesselInfoThunk } from 'features/vessel/vessel.slice'
 import Index from 'pages'
 import styles from './styles.module.css'
 
@@ -28,49 +23,38 @@ type VesselPageProps = {
   reduxState: Pick<RootState, 'vessel'>
 }
 
-export const getServerSideProps: GetServerSideProps<VesselPageProps, VesselPageParams> = async ({
-  params,
-  query,
-}): Promise<{ props: VesselPageProps }> => {
-  const { vesselId } = params
-  const { vesselDatasetId = DEFAULT_VESSEL_DATASET_ID } = query
-  const promises = await Promise.allSettled([
-    GFWAPI.fetch<Vessel>(`/vessels/${vesselId}?datasets=${vesselDatasetId}`),
-    GFWAPI.fetch<Dataset>(`/datasets/${vesselDatasetId}`),
-  ])
-  const allSettledPromises = promises.map((res) => {
-    return res.status === 'fulfilled' ? res.value : null
-  })
-  const vessel = allSettledPromises[0] as Vessel
-  const dataset = allSettledPromises[1] as Dataset
-  const eventParams = await getEventsParamsFromVesselDataset(dataset, vessel.id)
-  const eventPromises = await Promise.allSettled(
-    eventParams?.map((eventParams) => {
-      return GFWAPI.fetch<APIPagination<ApiEvent>>(`/events?${eventParams}`)
-    })
-  )
-  const events = eventPromises.flatMap((res) => {
-    return res.status === 'fulfilled' ? res.value.entries : []
-  })
-  const reduxState: Pick<RootState, 'vessel'> = {
-    vessel: {
-      info: {
-        data: vessel,
-        status: AsyncReducerStatus.Finished,
-      },
-      events: {
-        data: events,
-        status: AsyncReducerStatus.Finished,
-      },
-    },
-  }
-  return {
-    props: {
-      params,
-      reduxState,
-    },
-  }
-}
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) =>
+    async ({ params, query }) => {
+      const { vesselId } = params
+      const queryVesselDatasetId = query.vesselDatasetId as string
+      const datasetMatchesToken = queryVesselDatasetId.match(TOKEN_REGEX)
+      const vesselDatasetId = datasetMatchesToken
+        ? query[`tk[${datasetMatchesToken[1]}]`]
+        : queryVesselDatasetId
+
+      await store.dispatch(
+        fetchVesselInfoThunk({
+          vesselId: vesselId as string,
+          datasetId: vesselDatasetId as string,
+        }) as any
+      )
+      await store.dispatch(
+        fetchVesselEventsThunk({
+          vesselId: vesselId as string,
+          datasetId: vesselDatasetId as string,
+        }) as any
+      )
+      return {
+        props: {
+          params: {
+            ...(params || {}),
+          },
+          reduxState: { vessel: store.getState()?.vessel },
+        },
+      }
+    }
+)
 
 const VesselComponent = ({ params, reduxState }: VesselPageProps) => {
   return (

@@ -1,7 +1,6 @@
 import { Action, AnyAction, ThunkAction, ThunkDispatch, configureStore } from '@reduxjs/toolkit'
-import { ToolkitStore } from '@reduxjs/toolkit/dist/configureStore'
+import { createWrapper } from 'next-redux-wrapper'
 import { dataviewStatsApi } from 'queries/stats-api'
-import { useMemo } from 'react'
 import { RootState, rootReducer } from 'reducers'
 import connectedRoutes from 'routes/routes'
 import { routerQueryMiddleware, routerWorkspaceMiddleware } from 'routes/routes.middlewares'
@@ -26,10 +25,8 @@ const defaultMiddlewareOptions: any = {
   },
 }
 
-let store: ToolkitStore
-
-export const initStore = (preloadedState = {}) => {
-  store = configureStore({
+export const makeStore = () => {
+  return configureStore({
     devTools: {
       stateSanitizer: (state: any) => {
         if (!state.resources) return state
@@ -40,6 +37,10 @@ export const initStore = (preloadedState = {}) => {
 
         return {
           ...state,
+          vessel: {
+            info: { ...state.vessel.info, data: 'NOT_SERIALIZED' },
+            events: { ...state.vessel.events, data: 'NOT_SERIALIZED' },
+          },
           resources: Object.fromEntries(serializedResources),
         }
       },
@@ -52,34 +53,12 @@ export const initStore = (preloadedState = {}) => {
         routerWorkspaceMiddleware,
         routerMiddleware
       ),
-    enhancers: (defaultEnhancers) => [routerEnhancer, ...defaultEnhancers],
-    preloadedState,
+    enhancers: (defaultEnhancers) => [routerEnhancer, ...defaultEnhancers] as any,
+    // preloadedState,
   })
-  return store
 }
 
-export const initializeStore = (preloadedState) => {
-  let _store = store ?? initStore(preloadedState)
-
-  // After navigating to a page with an initial Redux state, merge that state
-  // with the current state in the store, and create a new store
-  if (preloadedState && store) {
-    _store = initStore({
-      ...store.getState(),
-      ...preloadedState,
-    })
-    // Reset the current store
-    store = undefined
-  }
-
-  // For SSG and SSR always create a new store
-  if (typeof window === 'undefined') return _store
-  // Create the store once in the client
-  if (!store) store = _store
-
-  return _store
-}
-
+export type AppStore = ReturnType<typeof makeStore>
 type TypedDispatch<T> = ThunkDispatch<T, any, AnyAction>
 
 export type AppDispatch = TypedDispatch<RootState>
@@ -90,7 +69,18 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   Action<string>
 >
 
-export function useStore(initialState) {
-  const store = useMemo(() => initializeStore(initialState), [initialState])
-  return store
-}
+// export function useStore(initialState) {
+//   const store = useMemo(() => initializeStore(initialState), [initialState])
+//   return store
+// }
+
+export const wrapper = createWrapper<AppStore>(makeStore, {
+  debug: false,
+  serializeState: (state) => {
+    return {
+      vessel: state.vessel,
+      // location: { ...state.location, history: state.location.history || null },
+    }
+  },
+  // deserializeState: (state) => JSON.parse(state),
+})

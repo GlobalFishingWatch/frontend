@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { HYDRATE } from 'next-redux-wrapper'
 import { stringify } from 'qs'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import {
@@ -44,6 +45,8 @@ type FetchVesselThunkParams = { vesselId: string; datasetId: string }
 export const fetchVesselInfoThunk = createAsyncThunk(
   'vessel/fetchInfo',
   async ({ vesselId, datasetId }: FetchVesselThunkParams = {} as FetchVesselThunkParams) => {
+    // TODO move this to a POST request, DOCUMENTATION:
+    // https://api-doc.dev.globalfishingwatch.org/#get-all-events-post-endpoint
     const vessel = await GFWAPI.fetch<Vessel>(`/vessels/${vesselId}?datasets=${datasetId}`)
     return vessel
   },
@@ -75,6 +78,7 @@ export async function getEventsParamsFromVesselDataset(dataset: Dataset, vesselI
   ).then((res) => res.entries)
   return eventsDatasets?.map((eventDataset) => {
     const paramsByType = API_PARAMS_BY_EVENT_TYPE[eventDataset.subcategory] || {}
+    // TODO: remove summary ans use POST request and includes fields
     const eventsParams = {
       summary: true,
       vessels: vesselId,
@@ -142,6 +146,13 @@ const vesselSlice = createSlice({
     })
     builder.addCase(fetchVesselEventsThunk.rejected, (state) => {
       state.events.status = AsyncReducerStatus.Error
+    })
+    builder.addCase(HYDRATE, (state, action: any) => {
+      console.log('HYDRATE', state, action)
+      return {
+        ...state,
+        ...action.payload.vessel,
+      }
     })
   },
 })

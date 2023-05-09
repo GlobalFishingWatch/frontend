@@ -20,4 +20,5 @@ const Index = () => {
     </MapProvider>
   )
 }
+
 export default Index
