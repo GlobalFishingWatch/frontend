@@ -14,6 +14,14 @@ declare namespace Cypress {
   interface Chainable<Subject> {
     login(email: string, password: string): void
     store(reducerName: string): void
+    getBySel(
+      selector: string,
+      options?: Partial<Loggable & Timeoutable & Withinable & Shadow>
+    ): Cypress.Chainable<JQuery<HTMLElement>>
+    getBySelLike(
+      selector: string,
+      options?: Partial<Loggable & Timeoutable & Withinable & Shadow>
+    ): Cypress.Chainable<JQuery<HTMLElement>>
   }
 }
 
@@ -78,6 +86,26 @@ Cypress.Commands.add('store', (reducerName = '') => {
     })
     .then(cb)
 })
+
+Cypress.Commands.add(
+  'getBySel',
+  (
+    selector: string,
+    options?: Partial<Cypress.Loggable & Cypress.Timeoutable & Cypress.Withinable & Cypress.Shadow>
+  ) => {
+    return cy.get(`[data-test=${selector}]`, options)
+  }
+)
+
+Cypress.Commands.add(
+  'getBySelLike',
+  (
+    selector: string,
+    options?: Partial<Cypress.Loggable & Cypress.Timeoutable & Cypress.Withinable & Cypress.Shadow>
+  ) => {
+    return cy.get(`[data-test*=${selector}]`, options)
+  }
+)
 
 Cypress.Commands.overwrite('visit', (originalFn, url, options) => {
   options = options || {}
