@@ -12,7 +12,7 @@ export type EndpointParamType =
   | 'string'
   | 'date-iso'
   | 'sql'
-  | '4wings-datasets'
+  | '4wings-datasets' // legacy from v2 replaced by type: string, array: true
 
 export interface EndpointParam {
   id: string
