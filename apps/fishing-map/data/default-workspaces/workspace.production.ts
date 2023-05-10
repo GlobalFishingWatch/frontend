@@ -62,7 +62,7 @@ const workspace: Workspace<WorkspaceState> = {
         colorRamp: 'orange',
         datasets: [
           'public-belize-fishing-effort:v20220304',
-          'public-bra-onyxsat-fishing-effort:v20211126',
+          'public-bra-onyxsat-fishing-effort:v20220124',
           'public-chile-fishing-effort:v20211126',
           'public-costa-rica-fishing-effort:v20211126',
           'public-ecuador-fishing-effort:v20211126',
