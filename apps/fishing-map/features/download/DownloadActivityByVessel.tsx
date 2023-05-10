@@ -203,25 +203,15 @@ function DownloadActivityByVessel() {
                 'download.datasetsNotAllowed',
                 "You don't have permissions to download the following datasets:"
               )}{' '}
-              {datasetsDownloadNotSupported.map((dataset) => (
-                <DatasetLabel key={dataset} dataset={{ id: dataset }} />
+              {datasetsDownloadNotSupported.map((dataset, index) => (
+                <Fragment>
+                  <DatasetLabel key={dataset} dataset={{ id: dataset }} />
+                  {index < datasetsDownloadNotSupported.length - 1 && ', '}
+                </Fragment>
               ))}
             </p>
           )}
-          {!isDownloadReportSupported ? (
-            <p className={cx(styles.footerLabel, styles.error)}>
-              {t('download.timerangeTooLong', 'The maximum time range is 1 year')}
-            </p>
-          ) : downloadError ? (
-            <p className={cx(styles.footerLabel, styles.error)}>
-              {`${t('analysis.errorMessage', 'Something went wrong')} 🙈`}
-            </p>
-          ) : (
-            <p
-              className={styles.disclaimerContainer}
-              dangerouslySetInnerHTML={{ __html: disclaimer }}
-            />
-          )}
+
           <Button
             onClick={onDownloadClick}
             loading={downloadLoading || downloadAreaLoading}
@@ -231,6 +221,20 @@ function DownloadActivityByVessel() {
             {downloadFinished ? <Icon icon="tick" /> : t('download.title', 'Download')}
           </Button>
         </div>
+        {!isDownloadReportSupported ? (
+          <p className={cx(styles.footerLabel, styles.error)}>
+            {t('download.timerangeTooLong', 'The maximum time range is 1 year')}
+          </p>
+        ) : downloadError ? (
+          <p className={cx(styles.footerLabel, styles.error)}>
+            {`${t('analysis.errorMessage', 'Something went wrong')} 🙈`}
+          </p>
+        ) : (
+          <p
+            className={styles.disclaimerContainer}
+            dangerouslySetInnerHTML={{ __html: disclaimer }}
+          />
+        )}
       </div>
       <DownloadActivityProductsBanner format={format} />
     </Fragment>

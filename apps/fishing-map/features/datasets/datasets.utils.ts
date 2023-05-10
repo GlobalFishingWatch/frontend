@@ -312,6 +312,15 @@ export const getVesselDatasetsDownloadTrackSupported = (
   return datasets
 }
 
+export const getDatasetsReportSupported = (
+  dataviews: UrlDataviewInstance<GeneratorType>[],
+  permissions: UserPermission[] = []
+) => {
+  const dataviewDatasets = getActiveDatasetsInActivityDataviews(dataviews)
+  const datasetsDownloadSupported = getActivityDatasetsReportSupported(dataviews, permissions)
+  return dataviewDatasets.filter((dataset) => datasetsDownloadSupported.includes(dataset))
+}
+
 export const getDatasetsReportNotSupported = (
   dataviews: UrlDataviewInstance<GeneratorType>[],
   permissions: UserPermission[] = []
