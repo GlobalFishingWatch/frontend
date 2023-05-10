@@ -83,7 +83,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
           <p className={styles.error}>
             {t(
               'analysis.datasetsNotAllowed',
-              "You don't have permissions to see vessel from the following datasets:"
+              "You don't have permissions to see vessels from the following datasets:"
             )}{' '}
             {datasetsDownloadNotSupported.map((dataset, index) => (
               <Fragment>
