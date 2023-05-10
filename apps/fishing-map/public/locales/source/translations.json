@@ -514,9 +514,10 @@
     "firstTransmissionDate": "First transmission date",
     "fishingZone": "Fishing zone",
     "flag": "Flag",
-    "flag_short": "Flag",
+    "flag_other": "Flags",
     "fleet": "Fleet",
     "geartype": "Gear type",
+    "geartype_other": "Gear types",
     "gearType_short": "gear",
     "gearTypes": {
       "dredge_fishing": "Dredge Fishing",
