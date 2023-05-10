@@ -7,6 +7,7 @@
     "change": "Change",
     "clickToFilterBy": "Click to filter by:",
     "close": "Close report",
+    "datasetsNotAllowed": "You don't have permissions to see vessels from the following datasets:",
     "disclaimer": "The data shown above should be taken as an estimate.",
     "downloadVesselsList": "Download list (CSV)",
     "error": "There was a problem loading the data, please try refreshing the page",
