@@ -586,11 +586,10 @@ export const getFiltersBySchema = (
   const datasetsWithoutSchema = getNotSupportedSchemaFieldsDatasets(dataview, schema)?.length > 0
   const incompatibleFilterSelection = getIncompatibleFilterSelection(dataview, schema)?.length > 0
   const disabled = datasetsWithoutSchema || incompatibleFilterSelection
-
   const datasetId = removeDatasetVersion(getActiveDatasetsInDataview(dataview)?.[0]?.id)
   let label = CONTEXT_DATASETS_SCHEMAS.includes(schema as SupportedContextDatasetSchema)
     ? t(`datasets:${datasetId}.schema.${schema}.keyword`, schema.toString())
-    : t(`vessel.${schema}`, schema)
+    : t(`vessel.${schema}`, { defaultValue: schema, count: 2 }) // We always want to show the plural for the multiselect
   if (schema === 'vessel-groups') {
     label = t('vesselGroup.vesselGroups', 'Vessel Groups')
   }
