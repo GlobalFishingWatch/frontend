@@ -514,9 +514,10 @@
     "firstTransmissionDate": "Première date de transmission",
     "fishingZone": "Zone de pêche",
     "flag": "Pavillon",
-    "flag_short": "iso3",
+    "flag_other": "Pavillons",
     "fleet": "Flotte",
     "geartype": "Type d’engin",
+    "geartype_other": "Types d’engin",
     "gearType_short": "engin",
     "gearTypes": {
       "dredge_fishing": "Pêche à la drague",
