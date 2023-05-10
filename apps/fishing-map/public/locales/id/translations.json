@@ -8,6 +8,7 @@
     "clickToFilterBy": "Klik untuk memfilter berdasarkan:",
     "close": "Tutup laporan",
     "datasetsNotAllowed": "Vessels are not included from the following sources:",
+    "datasetsNotAllowedAll": "None of your datasets are allowed to be used in reports",
     "disclaimer": "Data yang ditunjukkan di atas harus diambil sebagai perkiraan.",
     "downloadVesselsList": "Unduh daftar (CSV)",
     "error": "Terjadi masalah saat memuat data, silakan coba segarkan halaman",
