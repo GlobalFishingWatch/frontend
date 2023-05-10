@@ -73,6 +73,7 @@ function ActivityReport({ reportName }: { reportName: string }) {
   const areaId = useSelector(selectReportAreaId)
   const reportDateRangeHash = useSelector(selectReportVesselsDateRangeHash)
   const userData = useSelector(selectUserData)
+  const workspaceStatus = useSelector(selectWorkspaceStatus)
   const dataviews = useSelector(selectActiveReportDataviews)
   const datasetsDownloadNotSupported = getDatasetsReportNotSupported(
     dataviews,
@@ -93,6 +94,9 @@ function ActivityReport({ reportName }: { reportName: string }) {
   const hasAuthError = reportError && isAuthError(statusError)
 
   const ReportComponent = useMemo(() => {
+    if (workspaceStatus === AsyncReducerStatus.Loading) {
+      return <ReportVesselsPlaceholder />
+    }
     if (timerangeTooLong) {
       return (
         <ReportVesselsPlaceholder>
@@ -154,7 +158,7 @@ function ActivityReport({ reportName }: { reportName: string }) {
         </p>
       )
     }
-    if (reportError || !reportDataviews?.length) {
+    if (reportError || (!reportLoading && !reportDataviews?.length)) {
       if (hasAuthError || guestUser) {
         return (
           <ReportVesselsPlaceholder>
@@ -212,6 +216,7 @@ function ActivityReport({ reportName }: { reportName: string }) {
 
     return <ReportVesselsPlaceholder />
   }, [
+    workspaceStatus,
     timerangeTooLong,
     reportOutdated,
     reportLoading,
