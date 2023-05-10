@@ -217,19 +217,18 @@ function cleanReportPayload(payload: Record<string, any>) {
 }
 
 function cleanReportQuery(query: QueryParams) {
-  const {
-    reportActivityGraph,
-    reportAreaBounds,
-    reportAreaSource,
-    reportCategory,
-    reportResultsPerPage,
-    reportTimeComparison,
-    reportVesselFilter,
-    reportVesselGraph,
-    reportVesselPage,
-    ...rest
-  } = query || {}
-  return rest
+  return {
+    ...query,
+    reportActivityGraph: undefined,
+    reportAreaBounds: undefined,
+    reportAreaSource: undefined,
+    reportCategory: undefined,
+    reportResultsPerPage: undefined,
+    reportTimeComparison: undefined,
+    reportVesselFilter: undefined,
+    reportVesselGraph: undefined,
+    reportVesselPage: undefined,
+  }
 }
 
 function CloseReportButton() {
@@ -255,6 +254,7 @@ function CloseReportButton() {
     payload: cleanReportPayload(locationPayload),
     query: cleanReportQuery(locationQuery),
   }
+  console.log('🚀 ~ CloseReportButton ~ linkTo:', linkTo)
 
   return (
     <Link className={styles.workspaceLink} to={linkTo}>
