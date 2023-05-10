@@ -8,6 +8,7 @@
     "clickToFilterBy": "Click to filter by:",
     "close": "Close report",
     "datasetsNotAllowed": "Vessels are not included from the following sources:",
+    "datasetsNotAllowedAll": "None of your datasets are allowed to be used in reports",
     "disclaimer": "The data shown above should be taken as an estimate.",
     "downloadVesselsList": "Download list (CSV)",
     "error": "There was a problem loading the data, please try refreshing the page",
