@@ -514,9 +514,10 @@
     "firstTransmissionDate": "Primeira data de transmissão",
     "fishingZone": "Área de pesca",
     "flag": "Bandeira",
-    "flag_short": "iso3",
+    "flag_other": "Estados de Bandeira",
     "fleet": "Frota",
     "geartype": "Petrechos de pesca",
+    "geartype_other": "Petrechos de pesca",
     "gearType_short": "petrecho",
     "gearTypes": {
       "dredge_fishing": "Pesca de draga",
