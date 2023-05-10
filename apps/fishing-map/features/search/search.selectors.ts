@@ -10,20 +10,17 @@ import {
 } from 'features/datasets/datasets.utils'
 import { selectAllDataviewsInWorkspace } from 'features/dataviews/dataviews.selectors'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { IDENTITY_VESSEL_DATASET_ID } from 'features/datasets/datasets.mock'
 import { SearchType } from './search.slice'
 
 export const selectSearchDatasetsInWorkspace = createSelector(
   [selectAllDataviewsInWorkspace, selectVesselsDatasets, selectAllDatasets],
   (dataviews, vesselsDatasets, allDatasets) => {
-    // TODO remove this and get it from the API once ready in relatedDatasets
-    return vesselsDatasets.filter((dataset) => dataset.id === IDENTITY_VESSEL_DATASET_ID)
-    // const datasetsIds = getDatasetsInDataviews(dataviews)
-    // const datasets = allDatasets.flatMap(({ id, relatedDatasets }) => {
-    //   if (!datasetsIds.includes(id)) return []
-    //   return [id, ...(relatedDatasets || []).map((d) => d.id)]
-    // })
-    // return vesselsDatasets.filter((dataset) => datasets.includes(dataset.id))
+    const datasetsIds = getDatasetsInDataviews(dataviews)
+    const datasets = allDatasets.flatMap(({ id, relatedDatasets }) => {
+      if (!datasetsIds.includes(id)) return []
+      return [id, ...(relatedDatasets || []).map((d) => d.id)]
+    })
+    return vesselsDatasets.filter((dataset) => datasets.includes(dataset.id))
   }
 )
 
@@ -56,9 +53,7 @@ export const selectSearchDatasetsInWorkspaceByType = (type: SearchType) =>
     (datasets, userData, guestUser) => {
       if (!userData || !datasets?.length) return
 
-      // TODO remove this and get it from the API once ready in relatedDatasets
-      return datasets
-      // return filterDatasetByPermissions(datasets, type, userData, guestUser)
+      return filterDatasetByPermissions(datasets, type, userData, guestUser)
     }
   )
 

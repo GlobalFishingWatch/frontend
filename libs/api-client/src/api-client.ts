@@ -270,6 +270,7 @@ export class GFW_API_CLASS {
     if (isUrlAbsolute(url)) {
       return url
     }
+
     if (url.startsWith('/beta/v3/') || url.startsWith('/v2/') || url.startsWith('/v1/')) {
       return absolute ? `${this.baseUrl}${url}` : url
     }

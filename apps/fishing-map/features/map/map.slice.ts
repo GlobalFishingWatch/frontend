@@ -24,7 +24,6 @@ import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/data
 import { isGuestUser } from 'features/user/user.slice'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { getUTCDateTime } from 'utils/dates'
-import { IDENTITY_VESSEL_DATASET_ID } from 'features/datasets/datasets.mock'
 
 export const MAX_TOOLTIP_LIST = 5
 export const MAX_VESSELS_LOAD = 150
@@ -168,6 +167,7 @@ export const fetchVesselInfo = async (
   vesselIds: string[],
   signal: AbortSignal
 ) => {
+  debugger
   const vesselsInfoUrl = getVesselInfoEndpoint(datasets, vesselIds)
   if (!vesselsInfoUrl) {
     console.warn('No vessel info url found for dataset', datasets)
@@ -279,8 +279,10 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
 
       const infoDatasets = allInfoDatasets.flatMap((datasets) => datasets.flatMap((d) => d || []))
       const topActivityVesselIds = topActivityVessels.map(({ id, vessel_id }) => id)
+      debugger
       const vesselsInfo = await fetchVesselInfo(infoDatasets, topActivityVesselIds, signal)
 
+      debugger
       const sublayersIds = fishingActivityFeatures.map(
         (feature) => feature.temporalgrid?.sublayerId || ''
       )
@@ -305,8 +307,8 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
                   }
                   return entry.id === vessel.id
                 })
-                // TODO remove this and get it from the API once ready and use vesselInfo?.dataset again
-                const infoDataset = selectDatasetById(IDENTITY_VESSEL_DATASET_ID)(state)
+                debugger
+                const infoDataset = selectDatasetById(vesselInfo?.dataset)(state)
                 const trackFromRelatedDataset = infoDataset || vessel.dataset
                 const trackDatasetId = getRelatedDatasetByType(
                   trackFromRelatedDataset,
@@ -329,7 +331,6 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
             .sort((a, b) => b[activityProperty] - a[activityProperty]),
         }
       })
-
       return { vessels: sublayersVessels }
     }
   }
