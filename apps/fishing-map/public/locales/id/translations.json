@@ -514,9 +514,10 @@
     "firstTransmissionDate": "Tanggal transmisi pertama",
     "fishingZone": "Zona penangkapan ikan",
     "flag": "Bendera",
-    "flag_short": "iso3",
+    "flag_other": "Bendera",
     "fleet": "Armada",
     "geartype": "Jenis peralatan",
+    "geartype_other": "Jenis peralatan",
     "gearType_short": "Peralatan",
     "gearTypes": {
       "dredge_fishing": "Penggaruk",

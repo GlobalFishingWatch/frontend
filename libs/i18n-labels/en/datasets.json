@@ -2663,11 +2663,11 @@
       "removal_of": {
         "keyword": "Level of Fishing Protection",
         "enum": {
-          "1": "Least restrictive",
-          "2": "Less restrictive",
-          "3": "Moderately restrictive",
-          "4": "Heavily restrictive",
-          "5": "Most restrictive"
+          "1": "1. Least restrictive",
+          "2": "2. Less restrictive",
+          "3": "3. Moderately restrictive",
+          "4": "4. Heavily restrictive",
+          "5": "5. Most restrictive"
         }
       }
     }
