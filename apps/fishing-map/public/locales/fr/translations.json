@@ -7,6 +7,7 @@
     "change": "Évolution",
     "clickToFilterBy": "Cliquer pour filtrer par :",
     "close": "Fermer le rapport",
+    "datasetsNotAllowed": "You don't have permissions to see vessels from the following datasets:",
     "disclaimer": "Les données indiquées ci-dessus doivent être considérées comme une estimation.",
     "downloadVesselsList": "Télécharger la liste (CSV)",
     "error": "Il y a eu un problème lors du chargement des données, essayez de rafraîchir la page",
