@@ -7,7 +7,7 @@
     "change": "Cambio",
     "clickToFilterBy": "Haz clic para filtrar por:",
     "close": "Cerrar informe",
-    "datasetsNotAllowed": "You don't have permissions to see vessels from the following datasets:",
+    "datasetsNotAllowed": "No se han incluido embarcaciones de las siguientes fuentes:",
     "disclaimer": "Los datos mostrados arriba deben ser tomados como una estimación.",
     "downloadVesselsList": "Descargar lista (CSV)",
     "error": "Hubo un problema al cargar los datos, por favor intente actualizar la página",
