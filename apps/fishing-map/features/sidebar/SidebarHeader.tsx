@@ -254,7 +254,6 @@ function CloseReportButton() {
     payload: cleanReportPayload(locationPayload),
     query: cleanReportQuery(locationQuery),
   }
-  console.log('🚀 ~ CloseReportButton ~ linkTo:', linkTo)
 
   return (
     <Link className={styles.workspaceLink} to={linkTo}>
