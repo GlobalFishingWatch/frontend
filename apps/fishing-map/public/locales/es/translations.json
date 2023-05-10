@@ -514,9 +514,10 @@
     "firstTransmissionDate": "Fecha primera transmisión",
     "fishingZone": "Zona de pesca",
     "flag": "Bandera",
-    "flag_short": "ISO3",
+    "flag_other": "Banderas",
     "fleet": "Flota",
     "geartype": "Arte de pesca",
+    "geartype_other": "Artes de pesca",
     "gearType_short": "Arte",
     "gearTypes": {
       "dredge_fishing": "Pesca de dragado",

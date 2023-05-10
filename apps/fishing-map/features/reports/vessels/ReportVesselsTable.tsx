@@ -10,11 +10,16 @@ import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
+import {
+  getDatasetsReportNotSupported,
+  getRelatedDatasetsByType,
+} from 'features/datasets/datasets.utils'
 import { getVesselGearOrType } from 'features/reports/reports.utils'
 import ReportVesselsTableFooter from 'features/reports/vessels/ReportVesselsTableFooter'
-import { selectReportCategory } from 'features/app/app.selectors'
+import { selectActiveReportDataviews, selectReportCategory } from 'features/app/app.selectors'
 import { ReportCategory } from 'types'
+import { selectUserData } from 'features/user/user.slice'
+import DatasetLabel from 'features/datasets/DatasetLabel'
 import {
   EMPTY_API_VALUES,
   ReportVesselWithDatasets,
@@ -35,6 +40,12 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
   const vessels = useSelector(selectReportVesselsPaginated)
   const vesselsInWorkspace = useSelector(selectActiveTrackDataviews)
   const reportCategory = useSelector(selectReportCategory)
+  const userData = useSelector(selectUserData)
+  const dataviews = useSelector(selectActiveReportDataviews)
+  const datasetsDownloadNotSupported = getDatasetsReportNotSupported(
+    dataviews,
+    userData?.permissions || []
+  )
 
   const onVesselClick = async (
     ev: React.MouseEvent<Element, MouseEvent>,
@@ -68,6 +79,20 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
   return (
     <Fragment>
       <div className={styles.tableContainer}>
+        {datasetsDownloadNotSupported.length > 0 && (
+          <p className={styles.error}>
+            {t(
+              'analysis.datasetsNotAllowed',
+              "You don't have permissions to see vessels from the following datasets:"
+            )}{' '}
+            {datasetsDownloadNotSupported.map((dataset, index) => (
+              <Fragment>
+                <DatasetLabel key={dataset} dataset={{ id: dataset }} />
+                {index < datasetsDownloadNotSupported.length - 1 && ', '}
+              </Fragment>
+            ))}
+          </p>
+        )}
         <div className={styles.vesselsTable}>
           <div className={cx(styles.header, styles.spansFirstTwoColumns)}>
             {t('common.name', 'Name')}

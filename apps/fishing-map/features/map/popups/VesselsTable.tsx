@@ -188,7 +188,7 @@ function VesselsTable({
           <thead>
             <tr>
               <th colSpan={hasPinColumn ? 2 : 1}>{t('common.vessel_other', 'Vessels')}</th>
-              <th>{t('vessel.flag_short', 'iso3')}</th>
+              <th>{t('vessel.flag', 'flag')}</th>
               <th>
                 {isPresenceActivity ? t('vessel.type', 'Type') : t('vessel.gearType_short', 'Gear')}
               </th>

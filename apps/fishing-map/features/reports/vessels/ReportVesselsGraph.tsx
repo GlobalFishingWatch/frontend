@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts'
 import { useTranslation } from 'react-i18next'
 import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
-import { selectActiveReportDataviews, selectReportVesselGraph } from 'features/app/app.selectors'
+import { selectReportVesselGraph } from 'features/app/app.selectors'
 import { ReportVesselGraph } from 'types'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -18,6 +18,7 @@ import {
   cleanFlagState,
   EMPTY_API_VALUES,
   OTHERS_CATEGORY_LABEL,
+  selectReportDataviewsWithPermissions,
   selectReportVesselsGraphDataGrouped,
   selectReportVesselsGraphDataOthers,
 } from '../reports.selectors'
@@ -172,7 +173,7 @@ const CustomTick = (props: any) => {
 
 export default function ReportVesselsGraph() {
   const { t } = useTranslation()
-  const dataviews = useSelector(selectActiveReportDataviews)
+  const dataviews = useSelector(selectReportDataviewsWithPermissions)
   const data = useSelector(selectReportVesselsGraphDataGrouped)
   const selectedReportVesselGraph = useSelector(selectReportVesselGraph)
   return (
