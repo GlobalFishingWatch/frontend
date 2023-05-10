@@ -287,7 +287,9 @@ export const getActivityDatasetsReportSupported = (
     )
     return dataview.datasets
       .filter(
-        (d) => permissionDatasetsIds.includes(d.id) && d.category === DatasetCategory.Activity
+        (d) =>
+          permissionDatasetsIds.includes(d.id) &&
+          (d.category === DatasetCategory.Activity || d.category === DatasetCategory.Detections)
       )
       .map((d) => d.id)
   })
