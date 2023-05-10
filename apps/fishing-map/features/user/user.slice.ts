@@ -37,13 +37,14 @@ export const PRIVATE_SUPPORTED_GROUPS = [
   'Indonesia',
   'Mexico',
   'Panama',
-  'Papua_New_Guinea',
+  'Papua New Guinea',
   'Peru',
   'SSF-Aruna',
   'SSF-Ipnlf',
   'SSF-Rare',
 ]
 export const USER_GROUP_WORKSPACE = {
+  'papua new guinea': 'papua_new_guinea',
   'ssf-aruna': 'coastal_fisheries_indonesia',
   'ssf-rare': 'coastal_fisheries_indonesia',
   'ssf-ipnlf': 'coastal_fisheries_indonesia',
