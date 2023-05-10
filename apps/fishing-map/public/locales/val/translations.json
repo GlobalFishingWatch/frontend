@@ -514,9 +514,10 @@
     "firstTransmissionDate": "crwdns1390:0crwdne1390:0",
     "fishingZone": "crwdns13911:0crwdne13911:0",
     "flag": "crwdns1200:0crwdne1200:0",
-    "flag_short": "crwdns17385:0crwdne17385:0",
+    "flag_other": "crwdns30985:0crwdne30985:0",
     "fleet": "crwdns1380:0crwdne1380:0",
     "geartype": "crwdns4418:0crwdne4418:0",
+    "geartype_other": "crwdns30987:0crwdne30987:0",
     "gearType_short": "crwdns17387:0crwdne17387:0",
     "gearTypes": {
       "dredge_fishing": "crwdns4516:0crwdne4516:0",
