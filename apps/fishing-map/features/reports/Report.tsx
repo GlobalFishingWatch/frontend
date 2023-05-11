@@ -139,9 +139,9 @@ function ActivityReport({ reportName }: { reportName: string }) {
           <ReportDownload />
         </Fragment>
       ) : (
-        <p className={styles.error}>
+        <div className={styles.error}>
           {datasetsDownloadNotSupported.length > 0 && (
-            <p>
+            <p className={styles.secondary}>
               {t(
                 'analysis.datasetsNotAllowed',
                 'Vessels are not included from the following sources:'
@@ -154,8 +154,8 @@ function ActivityReport({ reportName }: { reportName: string }) {
               ))}
             </p>
           )}
-          {t('analysis.noDataByArea', 'No data available for the selected area')}
-        </p>
+          <p>{t('analysis.noDataByArea', 'No data available for the selected area')}</p>
+        </div>
       )
     }
     if (reportError || (!reportLoading && !reportDataviews?.length)) {
