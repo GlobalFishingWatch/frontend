@@ -141,7 +141,7 @@ function ActivityReport({ reportName }: { reportName: string }) {
       ) : (
         <p className={styles.error}>
           {datasetsDownloadNotSupported.length > 0 && (
-            <p>
+            <p className={styles.secondary}>
               {t(
                 'analysis.datasetsNotAllowed',
                 'Vessels are not included from the following sources:'
