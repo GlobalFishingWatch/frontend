@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { useCallback, useEffect } from 'react'
 import Link from 'redux-first-router-link'
 import { Spinner, IconButton } from '@globalfishingwatch/ui-components'
-import { Report } from '@globalfishingwatch/api-types'
+import { Locale, Report } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { sortByCreationDate } from 'utils/dates'
@@ -19,8 +19,17 @@ import { resetReportData } from 'features/reports/report.slice'
 import { resetWorkspaceSlice } from 'features/workspace/workspace.slice'
 import styles from './User.module.css'
 
+function getUserGuideReportLinkByLocale(locale: Locale) {
+  if (locale === Locale.es) {
+    return 'https://globalfishingwatch.org/es/guia-de-usuario/#An%C3%A1lisis%20y%20reportes%20din%C3%A1micos'
+  } else if (locale === Locale.fr) {
+    return 'https://globalfishingwatch.org/user-guide-french/#Analyses%20et%20rapports%20dynamiques'
+  }
+  return 'https://globalfishingwatch.org/user-guide/#Analysis%20and%20dynamic%20reports'
+}
+
 function UserReports() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const reports = useSelector(selectUserReports)
   const reportsStatus = useSelector(selectReportsStatus)
@@ -102,7 +111,7 @@ function UserReports() {
             )}{' '}
             <a
               className={styles.link}
-              href="https://globalfishingwatch.org/user-guide/#Analysis%20and%20dynamic%20reports"
+              href={getUserGuideReportLinkByLocale(i18n.language as Locale)}
               target="_blank"
               rel="noreferrer"
             >
