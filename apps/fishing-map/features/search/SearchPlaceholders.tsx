@@ -1,7 +1,8 @@
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { Tooltip } from '@globalfishingwatch/ui-components'
+import LocalStorageLoginLink from 'routes/LoginLink'
 import vesselImage from 'assets/images/vessel@2x.png'
 import vesselNoResultsImage from 'assets/images/vessel-side@2x.png'
 import { isGuestUser } from 'features/user/user.slice'
@@ -50,17 +51,20 @@ export function SearchEmptyState({ className = '' }: SearchPlaceholderProps) {
           'Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar'
         )}
       </p>
-      <UserGuideLink section="vesselSearch" />
       {guestUser && noGuestDatasets?.length > 0 && (
         <p>
           <Tooltip content={noGuestDatasets.join(', ')}>
-            <u>
+            <span className={styles.bold}>
               {noGuestDatasets.length} {t('common.sources', 'Sources')}
-            </u>
+            </span>
           </Tooltip>{' '}
-          {t('search.missingSources', 'won’t appear unless you log in')}.
+          <Trans i18nKey="search.missingSources">
+            won't appear unless you
+            <LocalStorageLoginLink className={styles.link}>log in</LocalStorageLoginLink>
+          </Trans>
         </p>
       )}
+      <UserGuideLink section="vesselSearch" />
     </SearchPlaceholder>
   )
 }
