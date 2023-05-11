@@ -16,7 +16,7 @@ import {
   parseLegacyDataviewInstanceEndpoint,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import { DEFAULT_TIME_RANGE } from 'data/config'
+import { DEFAULT_TIME_RANGE, PRIVATE_SUFIX } from 'data/config'
 import { WorkspaceState } from 'types'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
@@ -115,6 +115,9 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       }
       if ((!workspace && locationType === HOME) || workspaceId === DEFAULT_WORKSPACE_ID) {
         workspace = await getDefaultWorkspace()
+        if (workspace.id.includes(PRIVATE_SUFIX) && guestUser) {
+          return rejectWithValue({ error: { status: 401, message: 'Private workspace' } })
+        }
       }
       if (gfwUser && ONLY_GFW_STAFF_DATAVIEW_SLUGS.length) {
         // Inject dataviews for gfw staff only
