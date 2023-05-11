@@ -123,7 +123,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
       }
       const activityUnitLabel =
         category === ReportCategory.Detections
-          ? ''
+          ? t('common.detection', { defaultValue: 'detections', count: Math.floor(reportHours) })
           : `<strong>${t(`common.${activityUnit}`, {
               defaultValue: 'hours',
               count: Math.floor(reportHours),
