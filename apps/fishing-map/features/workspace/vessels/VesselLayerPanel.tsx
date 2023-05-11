@@ -9,6 +9,8 @@ import {
   DataviewDatasetConfigParam,
   Resource,
   EndpointId,
+  VesselRegistryInfo,
+  DataviewInfoConfigField,
 } from '@globalfishingwatch/api-types'
 import { IconButton, Tooltip, ColorBarOption } from '@globalfishingwatch/ui-components'
 import {
@@ -48,6 +50,19 @@ import InfoModal from '../common/InfoModal'
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
 }
+
+const vesselRegistryFields: DataviewInfoConfigField[] = [
+  {
+    id: 'lengthM',
+    type: 'number',
+    mandatory: true,
+  },
+  {
+    id: 'tonnageGt',
+    type: 'number',
+    mandatory: true,
+  },
+]
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
@@ -222,6 +237,20 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       onClickOutside={closeExpandedContainer}
       component={
         <ul className={styles.infoContent}>
+          {gfwUser &&
+            infoResource?.data?.vesselRegistryInfo?.length > 0 &&
+            vesselRegistryFields.map((registryField) => {
+              const value =
+                infoResource?.data?.vesselRegistryInfo[0]?.[
+                  registryField.id as keyof VesselRegistryInfo
+                ]
+              return (
+                <li key={registryField.id} className={styles.infoContentItem}>
+                  <label>{t(`vessel.${registryField.id}` as any, registryField.id)}</label>
+                  {value ? getFieldValue(registryField, value as any) : '---'}
+                </li>
+              )
+            })}
           {infoFields?.map((field: any) => {
             const value = infoResource?.data?.[field.id as keyof Vessel]
             if (!value && !field.mandatory) return null
