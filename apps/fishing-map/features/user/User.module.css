@@ -57,7 +57,7 @@
 }
 
 .placeholder {
-  height: 15rem;
+  min-height: 15rem;
   display: flex;
   align-items: center;
   justify-content: center;

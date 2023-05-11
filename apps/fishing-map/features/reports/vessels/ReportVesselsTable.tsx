@@ -110,9 +110,8 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
               : t('common.detection_other', 'detections')}
           </div>
           {vessels?.map((vessel, i) => {
-            const hasDatasets = true
-            // TODO get datasets from the vessel
-            // const hasDatasets = vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
+            const hasDatasets =
+              vessel.infoDataset !== undefined && vessel.trackDataset !== undefined
             const vesselInWorkspace = getVesselInWorkspace(vesselsInWorkspace, vessel.vesselId)
             const pinTrackDisabled = !hasDatasets
             const isLastRow = i === vessels.length - 1
@@ -122,23 +121,24 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
             const typeInteractionEnabled = type !== EMPTY_FIELD_PLACEHOLDER
             return (
               <Fragment key={vessel.vesselId}>
-                {!pinTrackDisabled && (
-                  <div className={cx({ [styles.border]: !isLastRow }, styles.icon)}>
-                    <IconButton
-                      icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
-                      style={{
-                        color: vesselInWorkspace ? vesselInWorkspace.config.color : '',
-                      }}
-                      tooltip={
-                        vesselInWorkspace
-                          ? t('search.removeVessel', 'Remove vessel')
-                          : t('search.seeVessel', 'See vessel')
-                      }
-                      onClick={(e) => onVesselClick(e, vessel)}
-                      size="small"
-                    />
-                  </div>
-                )}
+                <div className={cx({ [styles.border]: !isLastRow }, styles.icon)}>
+                  <IconButton
+                    icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
+                    style={{
+                      color: vesselInWorkspace ? vesselInWorkspace.config.color : '',
+                    }}
+                    disabled={pinTrackDisabled}
+                    tooltip={
+                      pinTrackDisabled
+                        ? ''
+                        : vesselInWorkspace
+                        ? t('search.removeVessel', 'Remove vessel')
+                        : t('search.seeVessel', 'See vessel')
+                    }
+                    onClick={(e) => onVesselClick(e, vessel)}
+                    size="small"
+                  />
+                </div>
                 <div className={cx({ [styles.border]: !isLastRow })}>
                   {vessel.sourceColor && (
                     <span
