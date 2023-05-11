@@ -16,6 +16,38 @@ export type VesselType =
   | 'bunker_or_tanker'
   | 'support'
 
+export type VesselRegistryInfo = {
+  callsign: string
+  flag: string
+  geartype: string
+  imo: string
+  latestVesselInfo: true
+  lengthM: number
+  matchFields: string
+  nShipname: string
+  recordId: string
+  shipname: string
+  shiptype: string
+  sourceCode: string[]
+  ssvid: string
+  tonnageGt: number
+  transmissionDateFrom: string
+  transmissionDateTo: string
+  vesselInfoReference: string
+}
+export type VesselRegistryOwner = {
+  owner: string
+  ownerFlag: string
+  recordId: string
+  sourceCode: string[]
+}
+export type VesselRegistryAuthorization = {
+  authorizedFrom: string
+  authorizedTo: string
+  recordId: string
+  sourceCode: string[]
+}
+
 export interface Vessel {
   authorizations?: Authorization[]
   builtYear?: string
@@ -47,6 +79,9 @@ export interface Vessel {
   vesselType?: VesselType
   years?: number[]
   msgCount?: number
+  vesselRegistryInfo: VesselRegistryInfo[]
+  vesselRegistryOwners: VesselRegistryOwner[]
+  vesselRegistryAuthorizations: VesselRegistryAuthorization[]
 }
 
 export interface VesselSearch extends Vessel {
