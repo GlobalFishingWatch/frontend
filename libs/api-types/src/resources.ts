@@ -42,7 +42,7 @@ export enum ResourceStatus {
   Error = 'error',
 }
 
-export interface Resource<T = unknown> {
+export interface Resource<T = any> {
   key?: string // used to store the resource in the same reducer key
   dataviewId: number | string
   dataset: Dataset

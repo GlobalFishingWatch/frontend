@@ -28,6 +28,7 @@ export enum GeneratorType {
   UserPoints = 'USER_POINTS',
   VesselEvents = 'VESSEL_EVENTS',
   VesselEventsShapes = 'VESSEL_EVENTS_SHAPES',
+  Vessels = 'VESSELS',
 }
 
 export interface GeneratorFeature {

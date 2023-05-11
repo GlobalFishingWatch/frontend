@@ -8,6 +8,7 @@ import {
   getInteractiveLayerIds,
   AnyGeneratorConfig,
   GlobalGeneratorConfig,
+  GeneratorType,
 } from '@globalfishingwatch/layer-composer'
 import {
   useBasemapLayer,
@@ -97,12 +98,14 @@ export function useLayerComposer(
 }
 
 export function useDeckLayerComposer({
+  generatorsDictionary,
   generatorsConfig,
   globalGeneratorConfig,
   highlightedTime,
 }: {
+  generatorsDictionary: Record<string, AnyGeneratorConfig>
   generatorsConfig: AnyGeneratorConfig[]
-  globalGeneratorConfig?: GlobalGeneratorConfig
+  globalGeneratorConfig: GlobalGeneratorConfig
   highlightedTime?: { start: number; end: number }
 }) {
   const basemap = generatorsConfig.find((generator) => generator.type === 'BASEMAP')?.basemap
@@ -115,19 +118,6 @@ export function useDeckLayerComposer({
   const contextLayersGenerators = generatorsConfig.filter(
     (generator) => generator.type === 'CONTEXT'
   )
-  const vesselLayersGenerators = generatorsConfig.filter(
-    (generator) => generator.type === 'VESSEL_EVENTS_SHAPES'
-  )
-  const vesselLayersGeneratorsLength = generatorsConfig.filter(
-    (generator) => generator.type === 'VESSEL_EVENTS_SHAPES'
-  ).length
-  const vesselLayersGeneratorsIds = useMemo(
-    () =>
-      generatorsConfig
-        .filter((generator) => generator.type === 'VESSEL_EVENTS_SHAPES')
-        .map((g) => g.id),
-    [vesselLayersGeneratorsLength]
-  )
 
   const contextLayer = useContextsLayer({
     visible: contextLayersGenerators.length ? true : false,
@@ -137,9 +127,8 @@ export function useDeckLayerComposer({
   })
 
   useVesselsLayers(
-    vesselLayersGenerators,
+    generatorsDictionary[GeneratorType.Vessels],
     globalGeneratorConfig,
-    vesselLayersGeneratorsIds,
     highlightedTime
   )
   const [vesselsLayers] = useAtom(vesselLayersInstancesSelector)

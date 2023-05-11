@@ -9,6 +9,7 @@ import {
 } from '@globalfishingwatch/layer-composer'
 import {
   getDataviewsGeneratorConfigs,
+  getDataviewsGeneratorsDictionary,
   UrlDataviewInstance,
   DataviewsGeneratorConfigsParams,
   isMergedAnimatedGenerator,
@@ -48,6 +49,15 @@ type GetGeneratorConfigParams = {
   highlightedEvents?: string[]
   bivariateDataviews?: BivariateDataviews
   showTimeComparison?: boolean
+}
+const getGeneratorsDictionary = ({
+  dataviews,
+  resources,
+}: {
+  dataviews: UrlDataviewInstance[]
+  resources: ResourcesState
+}) => {
+  return getDataviewsGeneratorsDictionary(dataviews, resources)
 }
 const getGeneratorsConfig = ({
   dataviews = [],
@@ -143,6 +153,15 @@ const getGeneratorsConfig = ({
     return []
   }
 }
+export const selectMapGeneratorsDictionary = createSelector(
+  [selectDataviewInstancesResolvedVisible, selectVisibleResources],
+  (dataviews = [], resources) => {
+    return getGeneratorsDictionary({
+      dataviews,
+      resources,
+    })
+  }
+)
 
 const selectMapGeneratorsConfig = createSelector(
   [

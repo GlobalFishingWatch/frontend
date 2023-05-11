@@ -11,6 +11,7 @@ import {
   Dataset,
   ApiEvent,
   TrackResourceData,
+  EventVessel,
 } from '@globalfishingwatch/api-types'
 import {
   DEFAULT_HEATMAP_INTERVALS,
@@ -219,7 +220,9 @@ export function getGeneratorConfig(
           ...(highlightedEvent && { currentEventId: highlightedEvent.id }),
           ...(highlightedEvents && { currentEventsIds: highlightedEvents }),
         }
-        return [generator, eventsGenerator]
+        // we just want one generator per vessel
+        // return [generator, eventsGenerator]
+        return eventsGenerator
       }
       return generator
     }
@@ -411,6 +414,69 @@ export function getGeneratorConfig(
     default: {
       return generator
     }
+  }
+}
+
+function getEventsData(
+  dataview: UrlDataviewInstance,
+  resources: DataviewsGeneratorResource
+): ApiEvent[] {
+  const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
+  const hasEventData =
+    eventsResources?.length && eventsResources.some(({ url }) => resources?.[url]?.data)
+  if (!hasEventData) return []
+  return eventsResources.flatMap(({ url }) => (url ? resources?.[url]?.data || [] : []))
+}
+
+export function getDataviewsGeneratorsDictionary(
+  dataviews: UrlDataviewInstance[],
+  resources?: DataviewsGeneratorResource
+): {
+  [GeneratorType.Vessels]: {
+    ids: string[]
+    colors: Record<string, string>
+    eventsData: Record<string, ApiEvent[] | {}>
+    trackUrls: any
+    eventsUrls: any
+  }
+} {
+  const vesselsDataviews = dataviews.filter((dataview) => isTrackDataview(dataview))
+  return {
+    [GeneratorType.Vessels]: {
+      ids: vesselsDataviews.map((dataview) => dataview.id),
+      colors: vesselsDataviews.reduce(
+        (acc, dataview) => ({
+          ...acc,
+          [dataview.id]: dataview.config!.color!,
+        }),
+        {}
+      ),
+      eventsData: resources
+        ? vesselsDataviews.reduce(
+            (acc, dataview) => ({
+              ...acc,
+              [dataview.id]: getEventsData(dataview, resources),
+            }),
+            {}
+          )
+        : {},
+      trackUrls: vesselsDataviews.reduce(
+        (acc, dataview) => ({
+          ...acc,
+          [dataview.id]: resolveDataviewDatasetResource(dataview, [DatasetTypes.Tracks])?.url,
+        }),
+        {}
+      ),
+      eventsUrls: vesselsDataviews.reduce(
+        (acc, dataview) => ({
+          ...acc,
+          [dataview.id]: resolveDataviewDatasetResources(dataview, DatasetTypes.Events).map(
+            (resources) => resources.url
+          ),
+        }),
+        {}
+      ),
+    },
   }
 }
 
@@ -620,6 +686,5 @@ export function getDataviewsGeneratorConfigs(
   ].flatMap((dataview) => {
     return getGeneratorConfig(dataview, params, resources)
   })
-
   return generatorsConfig
 }

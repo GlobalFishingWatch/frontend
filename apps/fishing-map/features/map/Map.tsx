@@ -31,6 +31,7 @@ import useMapInstance from 'features/map/map-context.hooks'
 import {
   useClickedEventConnect,
   useMapHighlightedEvent,
+  useGeneratorsDictionaryConnect,
   parseMapTooltipEvent,
   useGeneratorsConnect,
   TooltipEventFeature,
@@ -112,6 +113,7 @@ const MapWrapper = () => {
   useEnvironmentalBreaksUpdate()
   const map = useMapInstance()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
+  const generatorsDictionary = useGeneratorsDictionaryConnect()
   const highlightedTime = useSelector(selectHighlightedTime)
 
   const setMapReady = useSetRecoilState(mapReadyAtom)
@@ -131,6 +133,7 @@ const MapWrapper = () => {
   )
 
   const { layers } = useDeckLayerComposer({
+    generatorsDictionary,
     generatorsConfig,
     globalGeneratorConfig: globalConfig,
     highlightedTime,

@@ -39,6 +39,7 @@ import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectDefaultMapGeneratorsConfig,
+  selectMapGeneratorsDictionary,
   WORKSPACES_POINTS_TYPE,
   WORKSPACE_GENERATOR_ID,
 } from './map.selectors'
@@ -69,6 +70,19 @@ export const getVesselsInfoConfig = (vessels: ExtendedFeatureVessel[]) => {
     overflowLoad: vessels.length > MAX_VESSELS_LOAD,
     overflowLoadNumber: vessels.length - MAX_VESSELS_LOAD,
   }
+}
+
+export const useGeneratorsDictionaryConnect = () => {
+  const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
+  const generatorsDictionary = useSelector(selectMapGeneratorsDictionary)
+  return useMemo(() => {
+    return {
+      [GeneratorType.Vessels]: {
+        ...generatorsDictionary[GeneratorType.Vessels],
+        visibleEvents,
+      },
+    }
+  }, [generatorsDictionary, visibleEvents])
 }
 
 // This is a convenience hook that returns at the same time the portions of the store we interested in

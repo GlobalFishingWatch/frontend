@@ -15,6 +15,7 @@ export type _VesselEventsLayerProps<DataT = any> = {
   onEventsDataLoad?: AccessorFunction<DataT, void>
   visibleEvents?: EventTypes[]
   getEventVisibility?: AccessorFunction<DataT, number>
+  eventsResource?: DataT[]
 }
 
 export type VesselEventsLayerProps<DataT = any> = _VesselEventsLayerProps<DataT> &
@@ -39,6 +40,7 @@ const defaultProps: DefaultProps<VesselEventsLayerProps> = {
   zIndex: { type: 'accessor', value: GROUP_ORDER.indexOf(Group.Point) },
   visibleEvents: { type: 'accessor', value: [] },
   getEventVisibility: { type: 'accessor', value: () => 1 },
+  eventsResource: { type: 'accessor', value: [] },
 }
 
 export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends ScatterplotLayer<
