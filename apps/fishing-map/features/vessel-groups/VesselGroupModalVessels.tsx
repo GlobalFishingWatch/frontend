@@ -121,7 +121,7 @@ function VesselGroupVessels(): React.ReactElement {
         <tr>
           <th>{t('vessel.mmsi', 'MMSI')}</th>
           <th>{t('common.name', 'Name')}</th>
-          <th>{t('vessel.flag_short', 'iso3')}</th>
+          <th>{t('vessel.flag', 'flag')}</th>
           <th>{t('vessel.gearType_short', 'gear')}</th>
           <th>{t('vessel.transmissionDates', 'Transmission dates')}</th>
           <th />

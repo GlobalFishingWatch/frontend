@@ -1,5 +1,7 @@
 import { PUBLIC_SUFIX } from './config'
 
+export const GLOBAL_VESSELS_DATASET_ID = 'public-global-all-vessels'
+
 export const DEFAULT_WORKSPACE_KEY = 'default'
 export const DEFAULT_WORKSPACE_ID = `${DEFAULT_WORKSPACE_KEY}-${PUBLIC_SUFIX}`
 export const DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID = 'basemap'
@@ -93,4 +95,5 @@ export const DEFAULT_DATAVIEW_SLUGS = [
   ...TEMPLATE_DATAVIEW_SLUGS,
 ]
 
-export const ONLY_GFW_STAFF_DATAVIEW_SLUGS: number[] = []
+export const ONLY_GFW_STAFF_DATAVIEW_SLUGS: string[] = []
+export const HIDDEN_DATAVIEW_FILTERS: string[] = []

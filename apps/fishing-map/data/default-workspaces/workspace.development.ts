@@ -58,25 +58,25 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: FISHING_DATAVIEW_SLUG,
     },
-    // {
-    //   id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
-    //   config: {
-    //     color: '#FFAA0D',
-    //     colorRamp: 'orange',
-    //     datasets: [
-    //       // 'public-belize-fishing-effort:v20220304',
-    //       // 'public-bra-onyxsat-fishing-effort:v20211126',
-    //       // 'public-chile-fishing-effort:v20211126',
-    //       // 'public-costa-rica-fishing-effort:v20211126',
-    //       // 'public-ecuador-fishing-effort:v20211126',
-    //       // 'public-indonesia-fishing-effort:v20200320',
-    //       // 'public-panama-fishing-effort:v20211126',
-    //       'public-peru-fishing-effort:v20211126',
-    //       'public-norway-fishing-effort:v20220112',
-    //     ],
-    //   },
-    //   dataviewId: FISHING_DATAVIEW_SLUG,
-    // },
+    {
+      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
+      config: {
+        color: '#FFAA0D',
+        colorRamp: 'orange',
+        datasets: [
+          'public-belize-fishing-effort:v20220304',
+          'public-bra-onyxsat-fishing-effort:v20211126',
+          'public-chile-fishing-effort:v20211126',
+          'public-costa-rica-fishing-effort:v20211126',
+          'public-ecuador-fishing-effort:v20211126',
+          'public-indonesia-fishing-effort:v20200320',
+          'public-panama-fishing-effort:v20211126',
+          'public-peru-fishing-effort:v20211126',
+          'public-norway-fishing-effort:v20220112',
+        ],
+      },
+      dataviewId: FISHING_DATAVIEW_SLUG,
+    },
     {
       id: 'presence',
       config: {
@@ -87,7 +87,7 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: PRESENCE_DATAVIEW_SLUG,
     },
     {
-      id: 'viirs-match',
+      id: 'viirs',
       config: {
         color: '#FFEA00',
         colorRamp: 'yellow',
@@ -134,6 +134,13 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: MPA_DATAVIEW_SLUG,
     },
     {
+      id: PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
+      config: {
+        visible: false,
+      },
+      dataviewId: PROTECTED_SEAS_DATAVIEW_SLUG,
+    },
+    {
       id: 'context-layer-fao-areas',
       config: {
         visible: false,
@@ -154,13 +161,6 @@ const workspace: Workspace<WorkspaceState> = {
         visible: false,
       },
       dataviewId: HIGH_SEAS_DATAVIEW_SLUG,
-    },
-    {
-      id: PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
-      config: {
-        visible: false,
-      },
-      dataviewId: PROTECTED_SEAS_DATAVIEW_SLUG,
     },
     {
       id: BASEMAP_DATAVIEW_INSTANCE_ID,

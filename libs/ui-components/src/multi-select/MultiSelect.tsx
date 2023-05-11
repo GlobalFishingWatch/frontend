@@ -72,15 +72,15 @@ const getPlaceholderBySelections = (
   displayAll: boolean
 ): string => {
   if (!selections?.length) return 'Select an option'
-  return displayAll ?
-    selections.map((elem: MultiSelectOption) => {
-      return elem.label
-    }).join(', ') :
-    (
-      selections.length > 1 ?
-        `${selections.length} selected` :
-        selections[0]?.label.toString()
-    )
+  return displayAll
+    ? selections
+        .map((elem: MultiSelectOption) => {
+          return elem.label
+        })
+        .join(', ')
+    : selections.length > 1
+    ? `${selections.length} selected`
+    : selections[0]?.label.toString()
 }
 
 const isItemSelected = (selectedItems: MultiSelectOption[], item: MultiSelectOption) => {
@@ -303,13 +303,11 @@ export function MultiSelect(props: MultiSelectProps) {
                 selectedOptions.some(({ id }) => item.id === id) &&
                 !item.disableSelection
               const icon =
-                highlight && isSelected ?
-                  'close' :
-                  (
-                    (highlight || isSelected) && !item.disableSelection ?
-                      'tick' :
-                      ('' as IconType)
-                  )
+                highlight && isSelected
+                  ? 'close'
+                  : (highlight || isSelected) && !item.disableSelection
+                  ? 'tick'
+                  : ('' as IconType)
               return (
                 <Tooltip key={item.id} content={item.tooltip} placement="top-start">
                   <li
@@ -320,7 +318,14 @@ export function MultiSelect(props: MultiSelectProps) {
                     {...getItemProps({ item, index })}
                   >
                     {item.label}
-                    {icon && <Icon icon={icon} />}
+                    {
+                      <Icon
+                        icon={icon || 'tick'}
+                        className={cx(styles.icon, {
+                          [styles.visible]: icon,
+                        })}
+                      />
+                    }
                   </li>
                 </Tooltip>
               )

@@ -45,7 +45,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
       if (updateReportThunk.fulfilled.match(dispatchedAction)) {
         trackEvent({
           category: TrackCategory.WorkspaceManagement,
-          action: 'Edit current workspace',
+          action: 'Edit current report',
           label: dispatchedAction.payload?.name ?? 'Unknown',
         })
         setLoading(false)
@@ -54,7 +54,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
         }
       } else {
         setLoading(false)
-        setError('Error updating workspace')
+        setError('Error updating report')
       }
     }
   }
@@ -122,7 +122,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
             containsPrivateDatasets
               ? `${t(
                   'analysis.savePublicDisabled',
-                  "This workspace can't be shared publicly because it contains private datasets"
+                  "This reoport can't be shared publicly because it contains private datasets"
                 )}: ${privateDatasets.join(', ')}`
               : ''
           }

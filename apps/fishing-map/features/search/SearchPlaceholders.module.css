@@ -23,6 +23,14 @@
   margin-bottom: var(--space-L);
 }
 
+.bold {
+  font-weight: 500;
+}
+
+.link {
+  text-decoration: underline;
+}
+
 .noResultsImage {
   height: auto;
   display: block;
