@@ -441,7 +441,7 @@
     "description": "Buscar por nombre de embarcación o código de identificación. Puedes filtrar tu búsqueda presionando \"Avanzada\" en la barra superior.",
     "mainQueryLabel": "Nombre, IMO, MMSI o Call sign",
     "minCharacters": "Introduce al menos {{count}} caracteres",
-    "missingSources": "won't appear unless you <1>log in</1>",
+    "missingSources": "no aparecerá a menos que <1>inicies sesión</1>",
     "noResults": "¿No encuentras la embarcación que estás buscando? Intenta usar MMSI, IMO o Call sign.",
     "notAllowed": "Los datos disponibles no permiten la búsqueda de embarcaciones",
     "placeholder": "Escriba para buscar embarcaciones",
