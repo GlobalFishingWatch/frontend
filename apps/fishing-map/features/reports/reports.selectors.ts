@@ -146,8 +146,12 @@ export const selectReportVesselsList = createSelector(
     return Object.values(groupBy(vessels, 'vesselId'))
       .flatMap((vesselActivity) => {
         if (vesselActivity[0]?.category !== reportCategory) return []
-        const infoDataset = datasets.find((d) => vesselActivity[0].dataset === d.id)
-        const trackDatasetId = getRelatedDatasetsByType(infoDataset, DatasetTypes.Tracks)?.[0]?.id
+        const activityDataset = datasets.find((d) => vesselActivity[0].activityDatasetId === d.id)
+        const infoDatasetId = getRelatedDatasetsByType(activityDataset, DatasetTypes.Vessels)?.[0]
+          ?.id
+        const trackDatasetId = getRelatedDatasetsByType(activityDataset, DatasetTypes.Tracks)?.[0]
+          ?.id
+        const infoDataset = datasets.find((d) => d.id === infoDatasetId)
         const trackDataset = datasets.find((d) => d.id === trackDatasetId)
         return {
           dataviewId: vesselActivity[0]?.dataviewId,
