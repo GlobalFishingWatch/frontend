@@ -127,8 +127,8 @@ function VesselsTable({
     let vesselDataviewInstance: DataviewInstance | undefined
     if (
       gfwUser &&
-      vessel.dataset?.id.includes(PRESENCE_DATASET_ID) &&
-      vessel.trackDataset?.id.includes(PRESENCE_TRACKS_DATASET_ID)
+      vessel.dataset?.id?.includes(PRESENCE_DATASET_ID) &&
+      vessel.trackDataset?.id?.includes(PRESENCE_TRACKS_DATASET_ID)
     ) {
       vesselDataviewInstance = getPresenceVesselDataviewInstance(vessel, {
         trackDatasetId: vessel.trackDataset?.id,
