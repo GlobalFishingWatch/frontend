@@ -10,7 +10,7 @@
     "createReportHelp": "Para explorar cómo cambian los datos ambientales y de actividad a lo largo del tiempo, puede crear un análisis reporte dinámico que incluye análisis para cualquier área.\nLos reportes dinámicos ofrecen una forma rápida de acceder y comprender más información sobre cualquier área oceánica, zona económica exclusiva, área marina protegida o área de interés. Los reportes dinámicos lo ayudan a comprender cuánta actividad está ocurriendo en un área, incluidos qué embarcaciones y Estados del pabellón están activos.",
     "createReportHelpLink": "Ver más.",
     "datasetsNotAllowed": "No se han incluido embarcaciones de las siguientes fuentes:",
-    "datasetsNotAllowedAll": "None of your datasets are allowed to be used in reports",
+    "datasetsNotAllowedAll": "Ninguno de sus conjuntos de datos pueden ser usados en informes",
     "disclaimer": "Los datos mostrados arriba deben ser tomados como una estimación.",
     "downloadVesselsList": "Descargar lista (CSV)",
     "error": "Hubo un problema al cargar los datos, por favor intente actualizar la página",
