@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const withNx = require('@nrwl/next/plugins/with-nx')
+const withNx = require('@nx/next/plugins/with-nx')
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
@@ -11,7 +11,7 @@ const IS_PRODUCTION =
 const BASE_PATH = process.env.NEXT_PUBLIC_URL || IS_PRODUCTION ? '/data-explorer' : ''
 
 /**
- * @type {import('@nrwl/next/plugins/with-nx').WithNxOptions}
+ * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
  **/
 const nextConfig = {
   // async rewrites() {

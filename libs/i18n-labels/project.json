@@ -12,7 +12,7 @@
       }
     },
     "build": {
-      "executor": "@nrwl/rollup:rollup",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/i18n-labels",
@@ -20,7 +20,7 @@
         "project": "libs/i18n-labels/package.json",
         "entryFile": "libs/i18n-labels/index.ts",
         "external": ["react/jsx-runtime"],
-        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "assets": [
           {
             "glob": "libs/i18n-labels/README.md",
@@ -66,14 +66,14 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["libs/i18n-labels/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/i18n-labels"],
       "options": {
         "jestConfig": "libs/i18n-labels/jest.config.ts",

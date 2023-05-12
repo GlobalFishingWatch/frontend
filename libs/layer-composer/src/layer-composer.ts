@@ -33,7 +33,7 @@ export class LayerComposer {
   constructor(params?: LayerComposerOptions) {
     this.glyphs = (params && params.glyphs) || DEFAULT_STYLE.glyphs
     this.sprite = (params && params.sprite) || DEFAULT_STYLE.sprite
-    this.generators = (params && params.generators) || Generators
+    this.generators = (params && params.generators) || (Generators as any as Dictionary<Generator>)
 
     // Used to cache results and always return the latest style in promises
     this.latestGenerated = { sourcesStyle: {}, layersStyle: {} }

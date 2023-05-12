@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const withNx = require('@nrwl/next/plugins/with-nx')
+const withNx = require('@nx/next/plugins/with-nx')
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
@@ -14,7 +14,7 @@ const IS_PRODUCTION =
   process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'production' || process.env.NODE_ENV === 'production'
 
 /**
- * @type {import('@nrwl/next/plugins/with-nx').WithNxOptions}
+ * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
  **/
 const nextConfig = {
   async rewrites() {
@@ -80,6 +80,8 @@ const nextConfig = {
   outputFileTracing: true,
   experimental: {
     outputFileTracingRoot: join(__dirname, '../../'),
+    appDir: true,
+    serverActions: true,
   },
   cleanDistDir: true,
   distDir: '.next',

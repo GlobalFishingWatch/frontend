@@ -4,14 +4,14 @@
   "projectType": "application",
   "targets": {
     "deploy": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "@nx/workspace:run-commands",
       "options": {
         "commands": ["nx build <%= name %> --parallel", "nx docker-prepare <%= name %>"],
         "parallel": false
       }
     },
     "docker-prepare": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "@nx/workspace:run-commands",
       "outputs": [],
       "options": {
         "commands": [
@@ -21,7 +21,7 @@
       }
     },
     "compile": {
-      "executor": "@nrwl/next:build",
+      "executor": "@nx/next:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
@@ -33,7 +33,7 @@
       }
     },
     "start": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "@nx/workspace:run-commands",
       "options": {
         "commands": [
           "nx clean-locales <%= name %>",
@@ -44,14 +44,14 @@
       }
     },
     "clean-locales": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "@nx/workspace:run-commands",
       "outputs": [],
       "options": {
         "commands": ["rm -rf dist/apps/<%= name %>/public/locales"]
       }
     },
     "serve": {
-      "executor": "@nrwl/next:server",
+      "executor": "@nx/next:server",
       "options": {
         "buildTarget": "<%= name %>:compile",
         "dev": true,
@@ -65,13 +65,13 @@
       }
     },
     "build": {
-      "executor": "@nrwl/next:export",
+      "executor": "@nx/next:export",
       "options": {
         "buildTarget": "<%= name %>:compile:production"
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["coverage/apps/<%= name %>"],
       "options": {
         "jestConfig": "apps/<%= name %>/jest.config.js",
@@ -79,7 +79,7 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["apps/<%= name %>/**/*.{ts,tsx,js,jsx}"]
