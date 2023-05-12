@@ -14,6 +14,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
+import { EVENTS_CONFIG_BY_EVENT_TYPE } from 'features/vessel/vessel.config'
 
 export const DEFAULT_VESSEL_DATASET_ID = 'public-global-all-vessels:latest'
 
@@ -45,8 +46,6 @@ type FetchVesselThunkParams = { vesselId: string; datasetId: string }
 export const fetchVesselInfoThunk = createAsyncThunk(
   'vessel/fetchInfo',
   async ({ vesselId, datasetId }: FetchVesselThunkParams = {} as FetchVesselThunkParams) => {
-    // TODO move this to a POST request, DOCUMENTATION:
-    // https://api-doc.dev.globalfishingwatch.org/#get-all-events-post-endpoint
     const vessel = await GFWAPI.fetch<Vessel>(`/vessels/${vesselId}?datasets=${datasetId}`)
     return vessel
   },
@@ -58,16 +57,7 @@ export const fetchVesselInfoThunk = createAsyncThunk(
   }
 )
 
-// Workaround until we load the dataview TEMPLATE_VESSEL_DATAVIEW_SLUG to load the datasetConfig
-const API_PARAMS_BY_EVENT_TYPE: Partial<Record<EventType, any>> = {
-  port_visit: {
-    confidences: 4,
-  },
-  encounter: {
-    'encounter-types': ['carrier-fishing', 'fishing-carrier', 'fishing-support', 'support-fishing'],
-  },
-}
-export async function getEventsParamsFromVesselDataset(dataset: Dataset, vesselId: string) {
+export async function getEventsBodyFromVesselDataset(dataset: Dataset, vesselId: string) {
   const eventsDatasetIds = getRelatedDatasetsByType(dataset, DatasetTypes.Events)?.map((e) => e.id)
   const eventDatasetsParams = {
     ids: eventsDatasetIds?.join(','),
@@ -77,16 +67,15 @@ export async function getEventsParamsFromVesselDataset(dataset: Dataset, vesselI
     `/datasets?${stringify(eventDatasetsParams)}`
   ).then((res) => res.entries)
   return eventsDatasets?.map((eventDataset) => {
-    const paramsByType = API_PARAMS_BY_EVENT_TYPE[eventDataset.subcategory] || {}
-    // TODO: remove summary ans use POST request and includes fields
+    const { params, includes } =
+      EVENTS_CONFIG_BY_EVENT_TYPE[eventDataset.subcategory as EventType] || {}
     const eventsParams = {
-      summary: true,
-      vessels: vesselId,
-      datasets: eventDataset.id,
-      ...DEFAULT_PAGINATION_PARAMS,
-      ...paramsByType,
+      vessels: [vesselId],
+      datasets: [eventDataset.id],
+      includes,
+      ...params,
     }
-    return stringify(eventsParams)
+    return eventsParams
   })
 }
 
@@ -104,10 +93,16 @@ export const fetchVesselEventsThunk = createAsyncThunk(
         dataset = action.payload
       }
     }
-    const eventParams = await getEventsParamsFromVesselDataset(dataset, vesselId)
+    const eventsBody = await getEventsBodyFromVesselDataset(dataset, vesselId)
     const eventPromises = await Promise.allSettled(
-      eventParams?.map((eventParams) => {
-        return GFWAPI.fetch<APIPagination<ApiEvent>>(`/events?${eventParams}`)
+      eventsBody?.map((body) => {
+        return GFWAPI.fetch<APIPagination<ApiEvent>, typeof body>(
+          `/events?${stringify(DEFAULT_PAGINATION_PARAMS)}`,
+          {
+            method: 'POST',
+            body,
+          }
+        )
       })
     )
     return eventPromises.flatMap((res) => {
