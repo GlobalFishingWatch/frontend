@@ -48,3 +48,8 @@
 .pointer {
   cursor: pointer;
 }
+
+.error {
+  color: var(--color-secondary-blue);
+  margin-bottom: var(--space-S);
+}

@@ -2162,7 +2162,7 @@
     }
   },
   "public-mpa-all": {
-    "name": "MPAs",
+    "name": "MPAs (WDPA)",
     "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: November 2022. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer.",
     "schema": {}
   },
@@ -2657,17 +2657,17 @@
     }
   },
   "public-protectedseas": {
-    "name": "Protected Seas",
-    "description": "Protected seas (only category IUCN MPA)",
+    "name": "MPAs (ProtectedSeas)",
+    "description": "Áreas marinhas protegidas (MPAs) são áreas do oceano reservadas para conservação a longo prazo. Estes podem ter diferentes níveis de proteção, e a gama de atividades permitidas ou proibidas dentro de seus limites varia consideravelmente. Fonte: ProtectedSeas Navigator. ProtectedSeas atribui uma pontuação de Nível de Proteção à Pesca (LFP) para cada área com base em uma análise das restrições à extração de vida marinha. Você pode usar o ícone de filtro para explorar as diferentes pontuações LFP, que são: Menos restritivas: Sem restrições de pesca conhecidas; Pouco restritivo: Poucas restrições específicas de espécies ou equipamentos se aplicam; Moderadamente restritivo: Aplicam-se várias restrições específicas de espécies ou equipamentos; Fortemente restritivo: A pesca é praticamente proibida, com poucas exceções; Totalmente restritivo: A pesca é proibida. Veja <a href='https://protectedseas.net/mpa-methods/' target='_blank' rel=noopener'>informações</a> mais detalhadas para esta camada.",
     "schema": {
-      "removal_of_marine_life_is_prohibited": {
-        "keyword": "removal_of_marine_life_is_prohibited",
+      "removal_of": {
+        "keyword": "Nível de Proteção à Pesca",
         "enum": {
-          "1": "1",
-          "2": "2",
-          "3": "3",
-          "4": "4",
-          "5": "5"
+          "1": "1. Pouco restritivo",
+          "2": "2. Menos restritivo",
+          "3": "3. Moderadamente restritivo",
+          "4": "4. Fortemente restritivo",
+          "5": "5. Totalmente restritivo"
         }
       }
     }

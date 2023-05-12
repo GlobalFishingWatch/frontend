@@ -9,6 +9,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   isActivityReport,
+  selectActiveReportDataviews,
   selectReportAreaSource,
   selectReportCategory,
   selectTimeRange,
@@ -17,9 +18,12 @@ import { selectActiveTemporalgridDataviews } from 'features/dataviews/dataviews.
 import WorkspaceError, { WorkspaceLoginError } from 'features/workspace/WorkspaceError'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { selectWorkspaceVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
-import { selectHasReportVessels } from 'features/reports/reports.selectors'
+import {
+  selectHasReportVessels,
+  selectReportDataviewsWithPermissions,
+} from 'features/reports/reports.selectors'
 import ReportVesselsPlaceholder from 'features/reports/placeholders/ReportVesselsPlaceholder'
-import { isGuestUser } from 'features/user/user.slice'
+import { isGuestUser, selectUserData } from 'features/user/user.slice'
 import { ReportCategory, TimebarVisualisations } from 'types'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { SUPPORT_EMAIL } from 'data/config'
@@ -40,6 +44,8 @@ import { selectReportAreaId, selectReportDatasetId } from 'features/app/app.sele
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useSetTimeseries } from 'features/reports/reports-timeseries.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
+import DatasetLabel from 'features/datasets/DatasetLabel'
 import {
   useFetchReportArea,
   useFetchReportVessel,
@@ -61,10 +67,18 @@ function ActivityReport({ reportName }: { reportName: string }) {
   const dispatch = useAppDispatch()
   const reportCategory = useSelector(selectReportCategory)
   const timerange = useSelector(selectTimeRange)
+  const reportDataviews = useSelector(selectReportDataviewsWithPermissions)
   const guestUser = useSelector(isGuestUser)
   const datasetId = useSelector(selectReportDatasetId)
   const areaId = useSelector(selectReportAreaId)
   const reportDateRangeHash = useSelector(selectReportVesselsDateRangeHash)
+  const userData = useSelector(selectUserData)
+  const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const dataviews = useSelector(selectActiveReportDataviews)
+  const datasetsDownloadNotSupported = getDatasetsReportNotSupported(
+    dataviews,
+    userData?.permissions || []
+  )
   const timerangeTooLong = !getDownloadReportSupported(timerange.start, timerange.end)
   const { status: reportStatus, error: statusError } = useFetchReportVessel()
   const hasVessels = useSelector(selectHasReportVessels)
@@ -80,6 +94,9 @@ function ActivityReport({ reportName }: { reportName: string }) {
   const hasAuthError = reportError && isAuthError(statusError)
 
   const ReportComponent = useMemo(() => {
+    if (workspaceStatus === AsyncReducerStatus.Loading) {
+      return <ReportVesselsPlaceholder />
+    }
     if (timerangeTooLong) {
       return (
         <ReportVesselsPlaceholder>
@@ -122,13 +139,27 @@ function ActivityReport({ reportName }: { reportName: string }) {
           <ReportDownload />
         </Fragment>
       ) : (
-        <p className={styles.error}>
-          {t('analysis.noDataByArea', 'No data available for the selected area')}
-        </p>
+        <div className={styles.error}>
+          {datasetsDownloadNotSupported.length > 0 && (
+            <p className={styles.secondary}>
+              {t(
+                'analysis.datasetsNotAllowed',
+                'Vessels are not included from the following sources:'
+              )}{' '}
+              {datasetsDownloadNotSupported.map((dataset, index) => (
+                <Fragment>
+                  <DatasetLabel key={dataset} dataset={{ id: dataset }} />
+                  {index < datasetsDownloadNotSupported.length - 1 && ', '}
+                </Fragment>
+              ))}
+            </p>
+          )}
+          <p>{t('analysis.noDataByArea', 'No data available for the selected area')}</p>
+        </div>
       )
     }
-    if (reportError) {
-      if (hasAuthError) {
+    if (reportError || (!reportLoading && !reportDataviews?.length)) {
+      if (hasAuthError || guestUser) {
         return (
           <ReportVesselsPlaceholder>
             <div className={styles.cover}>
@@ -163,6 +194,16 @@ function ActivityReport({ reportName }: { reportName: string }) {
           </ReportVesselsPlaceholder>
         )
       }
+      if (!reportDataviews?.length) {
+        return (
+          <p className={styles.error}>
+            {t(
+              'analysis.datasetsNotAllowedAll',
+              'None of your datasets are allowed to be used in reports'
+            )}{' '}
+          </p>
+        )
+      }
       return (
         <p className={styles.error}>
           <span>
@@ -175,23 +216,26 @@ function ActivityReport({ reportName }: { reportName: string }) {
 
     return <ReportVesselsPlaceholder />
   }, [
-    activityUnit,
-    areaId,
-    datasetId,
-    dispatch,
-    guestUser,
-    hasAuthError,
-    hasVessels,
-    reportError,
-    reportLoaded,
-    reportLoading,
-    reportName,
-    reportOutdated,
-    statusError,
-    t,
-    timerange?.end,
-    timerange?.start,
+    workspaceStatus,
     timerangeTooLong,
+    reportOutdated,
+    reportLoading,
+    hasAuthError,
+    reportLoaded,
+    reportError,
+    reportDataviews?.length,
+    t,
+    timerange?.start,
+    timerange?.end,
+    dispatch,
+    hasVessels,
+    activityUnit,
+    reportName,
+    datasetsDownloadNotSupported,
+    guestUser,
+    statusError,
+    datasetId,
+    areaId,
   ])
 
   return (

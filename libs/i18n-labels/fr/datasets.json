@@ -2162,7 +2162,7 @@
     }
   },
   "public-mpa-all": {
-    "name": "MPAs",
+    "name": "AMPs (WDPA)",
     "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: November 2022. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer.",
     "schema": {}
   },
@@ -2657,17 +2657,17 @@
     }
   },
   "public-protectedseas": {
-    "name": "Protected Seas",
-    "description": "Protected seas (only category IUCN MPA)",
+    "name": "AMPs (ProtectedSeas)",
+    "description": "Les aires marines protégées (AMP) sont des zones océaniques réservées à la conservation à long terme. Celles-ci peuvent avoir différents niveaux de protection et l'éventail des activités autorisées ou interdites à l'intérieur de leurs limites varie considérablement. Source : Navigateur ProtectedSeas. ProtectedSeas attribue un niveau de protection de la pêche (LFP) à chaque zone sur la base d'une analyse des restrictions à l'extraction de la vie marine. Vous pouvez utiliser l'icône de filtre pour explorer les différents scores LFP, qui sont, Le moins restrictif : Aucune restriction de pêche connue ; Moins restrictif : peu de restrictions spécifiques à l'espèce ou à l'engin s'appliquent ; Modérément restrictif : plusieurs restrictions spécifiques à l'espèce ou à l'engin s'appliquent; Fortement restrictif : la pêche est généralement interdite, à quelques exceptions près ; Le plus restrictif : La pêche est interdite. Voir des <a href='https://protectedseas.net/mpa-methods/' target='_blank' rel=noopener'>informations</a> plus détaillées pour cette couche.",
     "schema": {
-      "removal_of_marine_life_is_prohibited": {
-        "keyword": "removal_of_marine_life_is_prohibited",
+      "removal_of": {
+        "keyword": "Niveau de protection de la pêche",
         "enum": {
-          "1": "1",
-          "2": "2",
-          "3": "3",
-          "4": "4",
-          "5": "5"
+          "1": "1. Le moins restrictif",
+          "2": "2. Moins restrictif",
+          "3": "3. Modérément restrictif",
+          "4": "4. Fortement restrictif",
+          "5": "5. Le plus restrictif"
         }
       }
     }
