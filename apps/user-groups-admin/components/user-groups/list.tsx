@@ -1,13 +1,19 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { UserGroup } from '@globalfishingwatch/api-types'
+import { UserData, UserGroup } from '@globalfishingwatch/api-types'
+import { ADMIN_GROUP_ID, ANONYMOUS_GROUP_ID } from 'data/config'
 import styles from './user-groups.module.css'
 
-type UserGroupsListProps = { groupId: number; onGroupClick: (group: number) => void }
-export function UserGroupsList({ groupId, onGroupClick }: UserGroupsListProps) {
+type UserGroupsListProps = {
+  groupId: number
+  user?: UserData
+  onGroupClick: (group: number) => void
+}
+
+export function UserGroupsList({ groupId, onGroupClick, user }: UserGroupsListProps) {
   const [groups, setGroups] = useState<UserGroup[]>()
   const fetchGroups = async () => {
-    const userGroups = await GFWAPI.fetch<UserGroup[]>('/auth/user-groups',)
+    const userGroups = await GFWAPI.fetch<UserGroup[]>('/auth/user-groups')
     setGroups(userGroups.sort((a, b) => a.name.localeCompare(b.name)))
   }
   useEffect(() => {
@@ -23,12 +29,12 @@ export function UserGroupsList({ groupId, onGroupClick }: UserGroupsListProps) {
       <h2 className={styles.title}>Groups</h2>
       <ul className={styles.list}>
         {groups
-          ?.filter(
-            (g) =>
-              !g.default &&
-              g.name.toLowerCase() !== 'anonymous' &&
-              g.name.toLowerCase() !== 'admin-group'
-          )
+          ?.filter((group) => {
+            if (group.name.toLowerCase() === ADMIN_GROUP_ID) {
+              return user?.groups?.some((g) => g.toLowerCase() === ADMIN_GROUP_ID)
+            }
+            return !group.default && group.name.toLowerCase() !== ANONYMOUS_GROUP_ID
+          })
           ?.map((group) => {
             return (
               <li key={group.id} className={group.id === groupId ? styles.active : ''}>

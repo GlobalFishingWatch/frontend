@@ -82,10 +82,11 @@ export const updateReportThunk = createAsyncThunk<
 >(
   'reports/update',
   async (partialReport, { rejectWithValue }) => {
+    const { id, ownerId, ownerType, createdAt, ...rest } = partialReport
     try {
       const report = await GFWAPI.fetch<Report>(`/reports/${partialReport.id}`, {
         method: 'PATCH',
-        body: partialReport as any,
+        body: rest as any,
       })
       return report
     } catch (e: any) {

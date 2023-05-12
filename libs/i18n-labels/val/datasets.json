@@ -2660,14 +2660,14 @@
     "name": "crwdns30807:0crwdne30807:0",
     "description": "crwdns30809:0crwdne30809:0",
     "schema": {
-      "removal_of_marine_life_is_prohibited": {
-        "keyword": "crwdns30811:0crwdne30811:0",
+      "removal_of": {
+        "keyword": "crwdns30973:0crwdne30973:0",
         "enum": {
-          "1": "crwdns30813:0crwdne30813:0",
-          "2": "crwdns30815:0crwdne30815:0",
-          "3": "crwdns30817:0crwdne30817:0",
-          "4": "crwdns30819:0crwdne30819:0",
-          "5": "crwdns30821:0crwdne30821:0"
+          "1": "crwdns30975:0crwdne30975:0",
+          "2": "crwdns30977:0crwdne30977:0",
+          "3": "crwdns30979:0crwdne30979:0",
+          "4": "crwdns30981:0crwdne30981:0",
+          "5": "crwdns30983:0crwdne30983:0"
         }
       }
     }

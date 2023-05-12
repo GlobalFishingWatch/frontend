@@ -149,7 +149,7 @@ const areasSlice = createSlice({
   reducers: {
     resetAreaDetail: (state, action: PayloadAction<{ datasetId: string; areaId: number }>) => {
       const { datasetId, areaId } = action.payload
-      if (state[datasetId].detail[areaId]) {
+      if (state[datasetId]?.detail?.[areaId]) {
         state[datasetId].detail[areaId] = {
           status: AsyncReducerStatus.Idle,
           data: {} as Area,

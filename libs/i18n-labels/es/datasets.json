@@ -2162,7 +2162,7 @@
     }
   },
   "public-mpa-all": {
-    "name": "MPAs",
+    "name": "AMP (WDPA)",
     "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: November 2022. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer.",
     "schema": {}
   },
@@ -2657,17 +2657,17 @@
     }
   },
   "public-protectedseas": {
-    "name": "Protected Seas",
-    "description": "Protected seas (only category IUCN MPA)",
+    "name": "AMP (ProtectedSeas)",
+    "description": "Las áreas marinas protegidas (AMP) son áreas del océano reservadas para la conservación a largo plazo. Estas pueden tener diferentes niveles de protección, y la gama de actividades permitidas o prohibidas dentro de sus límites varía considerablemente. Fuente: ProtectedSeas Navigator. ProtectedSeas asigna una puntuación de nivel de protección pesquera (LFP) a cada área en función de un análisis de las restricciones a la extracción de vida marina. Puede usar el ícono de filtro para explorar los diferentes puntajes LFP, que son, El menos restrictivo: Sin restricciones de pesca conocidas; Menos restrictivo: se aplican pocas restricciones específicas de especies o artes; Moderadamente restrictivo: se aplican varias restricciones específicas de especies o artes; Muy restrictivo: la pesca está prohibida en su mayoría, con pocas excepciones; El más restrictivo: La pesca está prohibida. Ver <a href='https://protectedseas.net/mpa-methods/' target='_blank' rel=noopener'>información</a> más detallada para esta capa.",
     "schema": {
-      "removal_of_marine_life_is_prohibited": {
-        "keyword": "removal_of_marine_life_is_prohibited",
+      "removal_of": {
+        "keyword": "Nivel de protección de la pesca",
         "enum": {
-          "1": "1",
-          "2": "2",
-          "3": "3",
-          "4": "4",
-          "5": "5"
+          "1": "1. El menos restrictivo",
+          "2": "2. Menos restrictivo",
+          "3": "3. Moderadamente restrictivo",
+          "4": "4. Muy restrictivo",
+          "5": "5. El más restrictivo"
         }
       }
     }
