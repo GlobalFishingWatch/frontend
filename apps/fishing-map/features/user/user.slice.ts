@@ -32,7 +32,7 @@ export const DEFAULT_GROUP_ID = 'Default'
 export const PRIVATE_SUPPORTED_GROUPS = [
   'Belize',
   'Brazil',
-  'Costa_Rica',
+  'Costa Rica',
   'Ecuador',
   'Indonesia',
   'Mexico',
@@ -44,6 +44,7 @@ export const PRIVATE_SUPPORTED_GROUPS = [
   'SSF-Rare',
 ]
 export const USER_GROUP_WORKSPACE = {
+  'costa rica': 'costa_rica',
   'papua new guinea': 'papua_new_guinea',
   'ssf-aruna': 'coastal_fisheries_indonesia',
   'ssf-rare': 'coastal_fisheries_indonesia',
