@@ -43,7 +43,7 @@ interface LoginParams {
   refreshToken?: string | null
 }
 export type ApiVersion = '' | 'v1' | 'v2'
-export type FetchOptions<T = BodyInit> = Partial<RequestInit> & {
+export type FetchOptions<T = unknown> = Partial<Omit<RequestInit, 'body'>> & {
   version?: ApiVersion
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
   responseType?: ResourceResponseType
@@ -279,8 +279,8 @@ export class GFW_API_CLASS {
     return absolute ? `${this.baseUrl}${prefix}${url}` : `${prefix}${url}`
   }
 
-  fetch<T>(url: string, options: FetchOptions = {}) {
-    return this._internalFetch<T>(this.generateUrl(url, options.version), options)
+  fetch<Response, Body = unknown>(url: string, options: FetchOptions<Body> = {}) {
+    return this._internalFetch<Response, Body>(this.generateUrl(url, options.version), options)
   }
 
   download(downloadUrl: string, fileName = 'download'): Promise<boolean> {
@@ -297,9 +297,9 @@ export class GFW_API_CLASS {
       })
   }
 
-  async _internalFetch<T = Record<string, unknown> | Blob | ArrayBuffer | Response>(
+  async _internalFetch<T = Record<string, unknown> | Blob | ArrayBuffer | Response, Body = unknown>(
     url: string,
-    options: FetchOptions = {},
+    options: FetchOptions<Body> = {},
     refreshRetries = 0,
     waitLogin = true
   ): Promise<T> {
@@ -346,7 +346,8 @@ export class GFW_API_CLASS {
         const data = await fetch(fetchUrl, {
           method,
           signal,
-          ...(body && { body: requestType === 'json' ? JSON.stringify(body) : body }),
+          ...(body &&
+            ({ body: requestType === 'json' ? JSON.stringify(body) : body } as RequestInit)),
           headers: finalHeaders,
         })
           .then(processStatus)
