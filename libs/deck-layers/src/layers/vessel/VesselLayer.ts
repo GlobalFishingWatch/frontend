@@ -54,7 +54,11 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         },
         getWidth: 1,
         updateTriggers: {
-          getColor: [this.props.highlightStartTime, this.props.highlightEndTime],
+          getColor: [
+            this.props.highlightStartTime,
+            this.props.highlightEndTime,
+            this.props.themeColor,
+          ],
         },
         startTime: this.props.startTime,
         endTime: this.props.endTime,
