@@ -5,7 +5,7 @@ import {
   GeoJSONSourceSpecification,
 } from '@globalfishingwatch/maplibre-gl'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
-import { Segment, Locale, EventTypes } from '@globalfishingwatch/api-types'
+import { Segment, Locale, EventTypes, ApiEvent } from '@globalfishingwatch/api-types'
 import { Group } from '..'
 import { Interval } from './heatmap/types'
 
@@ -528,7 +528,16 @@ export enum HeatmapAnimatedMode {
   // Just show raw value ffor 1 sublayer
   Single = 'single',
 }
-
 export interface VesselsEventsSource extends GeoJSONSourceSpecification {
   id: string
 }
+
+export interface VesselDeckLayersGenerator {
+  ids: string[]
+  colors: Record<string, string>
+  eventsData: Record<string, ApiEvent[] | {}>
+  trackUrls: any
+  eventsUrls: any
+}
+
+export type AnyDeckLayersGenerator = VesselDeckLayersGenerator
