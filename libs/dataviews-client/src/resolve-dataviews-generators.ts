@@ -23,6 +23,7 @@ import {
   HeatmapAnimatedMode,
   HeatmapAnimatedGeneratorConfig,
   Interval,
+  DeckLayersGeneratorDictionary,
 } from '@globalfishingwatch/layer-composer'
 import type {
   ColorRampsIds,
@@ -431,15 +432,7 @@ function getEventsData(
 export function getDataviewsGeneratorsDictionary(
   dataviews: UrlDataviewInstance[],
   resources?: DataviewsGeneratorResource
-): {
-  [GeneratorType.Vessels]: {
-    ids: string[]
-    colors: Record<string, string>
-    eventsData: Record<string, ApiEvent[] | {}>
-    trackUrls: any
-    eventsUrls: any
-  }
-} {
+): DeckLayersGeneratorDictionary {
   const vesselsDataviews = dataviews.filter((dataview) => isTrackDataview(dataview))
   return {
     [GeneratorType.Vessels]: {

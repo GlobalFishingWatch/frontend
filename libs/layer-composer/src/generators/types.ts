@@ -532,6 +532,7 @@ export interface VesselsEventsSource extends GeoJSONSourceSpecification {
   id: string
 }
 
+export type DeckLayersGeneratorDictionary = Partial<Record<GeneratorType, AnyDeckLayersGenerator>>
 export interface VesselDeckLayersGenerator {
   ids: string[]
   colors: Record<string, string>
