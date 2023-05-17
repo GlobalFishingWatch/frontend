@@ -74,15 +74,12 @@ const VesselIdentity = () => {
       <ul className={styles.fields}>
         {IDENTITY_FIELD_GROUPS.map((fieldGroup) => (
           <div className={cx(styles.fieldGroup, styles.border)}>
-            {fieldGroup.map((field) => {
-              console.log('field:', field)
-              return (
-                <li key={field}>
-                  <label>{t(`vessel.${field}` as any, field)}</label>
-                  {getFieldValue(field) || EMPTY_FIELD_PLACEHOLDER}
-                </li>
-              )
-            })}
+            {fieldGroup.map((field) => (
+              <li key={field}>
+                <label>{t(`vessel.${field}` as any, field)}</label>
+                {getFieldValue(field) || EMPTY_FIELD_PLACEHOLDER}
+              </li>
+            ))}
           </div>
         ))}
         <div className={styles.fieldGroup}>
