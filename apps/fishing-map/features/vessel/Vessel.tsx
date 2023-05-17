@@ -1,47 +1,63 @@
 import { useSelector } from 'react-redux'
-import { Fragment, useEffect } from 'react'
-import { useFetchDataviewResources } from 'features/resources/resources.hooks'
+import { Fragment, useEffect, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Tab, Tabs } from '@globalfishingwatch/ui-components'
 import { selectVesselId, selectVesselDatasetId } from 'routes/routes.selectors'
-import VesselHeader from 'features/vessel/VesselHeader'
-import VesselEvents from 'features/vessel/VesselEvents'
 import {
   fetchVesselEventsThunk,
   fetchVesselInfoThunk,
   selectVesselEventsStatus,
-  selectVesselInfoData,
   selectVesselInfoStatus,
 } from 'features/vessel/vessel.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectVesselEventsFilteredByTimerange } from 'features/vessel/vessel.selectors'
-import VesselIdentity from './Vesseldentity'
+import VesselSummary from 'features/vessel/VesselSummary'
+import VesselActivity from 'features/vessel/VesselActivity'
+import VesselIdentity from './VesselIdentity'
+
+type VesselSection = 'activity' | 'relatedVessels' | 'areas'
 
 const VesselDetail = () => {
+  const { t } = useTranslation()
   // useFetchDataviewResources()
   const dispatch = useAppDispatch()
   const vesselId = useSelector(selectVesselId)
   const datasetId = useSelector(selectVesselDatasetId)
-  const vessel = useSelector(selectVesselInfoData)
   const infoStatus = useSelector(selectVesselInfoStatus)
   const eventsStatus = useSelector(selectVesselEventsStatus)
-  const events = useSelector(selectVesselEventsFilteredByTimerange)
 
   useEffect(() => {
     if (infoStatus === 'idle') {
       dispatch(fetchVesselInfoThunk({ vesselId, datasetId }))
     }
-  }, [])
-
-  useEffect(() => {
     if (eventsStatus === 'idle') {
       dispatch(fetchVesselEventsThunk({ vesselId, datasetId }))
     }
   }, [])
 
+  const sectionTabs: Tab<VesselSection>[] = useMemo(
+    () => [
+      {
+        id: 'activity',
+        title: t('vessel.sectionActivity', 'activity'),
+        content: <VesselActivity />,
+      },
+      {
+        id: 'relatedVessels',
+        title: t('vessel.sectionRelatedVessels', 'Related Vessels'),
+      },
+      {
+        id: 'areas',
+        title: t('vessel.sectionAreas', 'Areas'),
+      },
+    ],
+    [t]
+  )
+
   return (
     <Fragment>
-      <VesselHeader vessel={vessel} />
-      <VesselIdentity vessel={vessel} />
-      <VesselEvents events={events} />
+      <VesselSummary />
+      <VesselIdentity />
+      <Tabs tabs={sectionTabs} activeTab={sectionTabs[0].id} />
     </Fragment>
   )
 }

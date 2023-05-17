@@ -1,0 +1,22 @@
+.summaryContainer {
+  padding: var(--space-M);
+}
+
+.activityTitleContainer {
+  padding: 0 var(--space-M);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.actionButton {
+  height: var(--size-SM);
+  background: none;
+  border-radius: var(--border-radius);
+  border: var(--border);
+  color: var(--color-secondary-blue);
+}
+
+.actionButton:not(:disabled):hover {
+  background: var(--color-terthiary-blue);
+}

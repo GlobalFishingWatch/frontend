@@ -30,6 +30,10 @@ import { ReactComponent as Draw } from '../assets/icons/draw.svg'
 import { ReactComponent as Edit } from '../assets/icons/edit.svg'
 import { ReactComponent as Email } from '../assets/icons/email.svg'
 import { ReactComponent as Encounters } from '../assets/icons/encounters.svg'
+import { ReactComponent as EventLegendEncounter } from '../assets/icons/event-legend-encounter.svg'
+import { ReactComponent as EventLegendFishing } from '../assets/icons/event-legend-fishing.svg'
+import { ReactComponent as EventLegendLoitering } from '../assets/icons/event-legend-loitering.svg'
+import { ReactComponent as EventLegendPort } from '../assets/icons/event-legend-port_visit.svg'
 import { ReactComponent as EventEncounter } from '../assets/icons/event-encounter.svg'
 import { ReactComponent as EventFishing } from '../assets/icons/event-fishing.svg'
 import { ReactComponent as EventLoitering } from '../assets/icons/event-loitering.svg'
@@ -100,6 +104,10 @@ export const IconComponents = {
   'event-encounter': EventEncounter,
   'event-fishing': EventFishing,
   'event-loitering': EventLoitering,
+  'event-legend-encounter': EventLegendEncounter,
+  'event-legend-fishing': EventLegendFishing,
+  'event-legend-loitering': EventLegendLoitering,
+  'event-legend-port_visit': EventLegendPort,
   'event-port-visit': EventPortVisit,
   'event-port': EventPort,
   'external-link': ExternalLink,

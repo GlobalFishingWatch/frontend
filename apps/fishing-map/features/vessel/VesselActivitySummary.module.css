@@ -1,0 +1,17 @@
+.eventsCount {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+  color: var(--color-secondary-blue);
+}
+
+.eventsCount strong {
+  font-weight: 400;
+  color: var(--color-primary-blue);
+}
+
+.iconContainer {
+  width: 2rem;
+  display: flex;
+  justify-content: center;
+}

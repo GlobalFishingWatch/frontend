@@ -3,11 +3,10 @@ import { useEffect, useState } from 'react'
 import { RootState } from 'reducers'
 import { Logo, SplitView } from '@globalfishingwatch/ui-components'
 import { TOKEN_REGEX } from '@globalfishingwatch/dataviews-client'
-import VesselIdentity from 'features/vessel/Vesseldentity'
+import VesselIdentity from 'features/vessel/VesselIdentity'
 import VesselSummary from 'features/vessel/VesselSummary'
 import CategoryTabsServer from 'features/sidebar/CategoryTabs.server'
 import { WorkspaceCategory } from 'data/workspaces'
-import VesselEvents from 'features/vessel/VesselEvents'
 import { wrapper } from 'store'
 import { fetchVesselEventsThunk, fetchVesselInfoThunk } from 'features/vessel/vessel.slice'
 import Index from 'pages'
@@ -67,9 +66,8 @@ const VesselComponent = ({ params, reduxState }: VesselPageProps) => {
           </a>
         </div>
         <div className={styles.content}>
-          <VesselSummary vessel={reduxState?.vessel?.info?.data} />
-          <VesselIdentity vessel={reduxState?.vessel?.info?.data} />
-          <VesselEvents events={reduxState?.vessel?.events?.data} />
+          <VesselSummary />
+          <VesselIdentity />
         </div>
       </div>
     </div>
