@@ -1,5 +1,4 @@
-import { useEffect, useState, useMemo } from 'react'
-import { useAtom, useAtomValue } from 'jotai'
+import { useEffect, useState } from 'react'
 import {
   sort,
   LayerComposer,
@@ -9,14 +8,13 @@ import {
   AnyGeneratorConfig,
   GlobalGeneratorConfig,
   GeneratorType,
+  DeckLayersGeneratorDictionary,
+  VesselDeckLayersGenerator,
 } from '@globalfishingwatch/layer-composer'
 import {
   useBasemapLayer,
   useContextsLayer,
-  useVesselsLayers,
-  vesselLayersSelector,
-  selectVesselsLayersAtom,
-  vesselLayersInstancesSelector,
+  useVesselLayers,
   zIndexSortedArray,
 } from '@globalfishingwatch/deck-layers'
 import { useDebounce } from '../use-debounce'
@@ -103,10 +101,10 @@ export function useDeckLayerComposer({
   globalGeneratorConfig,
   highlightedTime,
 }: {
-  generatorsDictionary: Record<string, AnyGeneratorConfig>
+  generatorsDictionary: DeckLayersGeneratorDictionary
   generatorsConfig: AnyGeneratorConfig[]
   globalGeneratorConfig: GlobalGeneratorConfig
-  highlightedTime?: { start: number; end: number }
+  highlightedTime?: { start: string; end: string }
 }) {
   const basemap = generatorsConfig.find((generator) => generator.type === 'BASEMAP')?.basemap
   const visible = generatorsConfig.find((generator) => generator.type === 'BASEMAP')?.visible
@@ -126,11 +124,11 @@ export function useDeckLayerComposer({
     datasetId: contextLayersGenerators.length ? contextLayersGenerators[0].datasetId : 'eez',
   })
 
-  useVesselsLayers(
-    generatorsDictionary[GeneratorType.Vessels],
+  const vesselLayers = useVesselLayers(
+    generatorsDictionary[GeneratorType.Vessels] as VesselDeckLayersGenerator,
     globalGeneratorConfig,
     highlightedTime
   )
-  const [vesselsLayers] = useAtom(vesselLayersInstancesSelector)
-  return { layers: zIndexSortedArray([basemapLayer, contextLayer, ...vesselsLayers]) }
+
+  return { layers: zIndexSortedArray([basemapLayer, contextLayer, ...vesselLayers]) }
 }

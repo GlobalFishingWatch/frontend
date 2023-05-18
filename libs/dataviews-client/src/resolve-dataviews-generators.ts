@@ -11,7 +11,6 @@ import {
   Dataset,
   ApiEvent,
   TrackResourceData,
-  EventVessel,
 } from '@globalfishingwatch/api-types'
 import {
   DEFAULT_HEATMAP_INTERVALS,

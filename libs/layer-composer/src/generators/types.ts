@@ -536,9 +536,10 @@ export type DeckLayersGeneratorDictionary = Partial<Record<GeneratorType, AnyDec
 export interface VesselDeckLayersGenerator {
   ids: string[]
   colors: Record<string, string>
-  eventsData: Record<string, ApiEvent[] | {}>
-  trackUrls: any
-  eventsUrls: any
+  eventsData: Record<string, ApiEvent[] | []>
+  trackUrls: Record<string, string>
+  eventsUrls: Record<string, string[]>
+  visibleEvents?: EventTypes[]
 }
 
 export type AnyDeckLayersGenerator = VesselDeckLayersGenerator

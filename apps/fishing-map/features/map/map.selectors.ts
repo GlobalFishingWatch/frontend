@@ -6,6 +6,7 @@ import {
   GlGeneratorConfig,
   HeatmapAnimatedMode,
   Ruler,
+  DeckLayersGeneratorDictionary,
 } from '@globalfishingwatch/layer-composer'
 import {
   getDataviewsGeneratorConfigs,
@@ -50,15 +51,7 @@ type GetGeneratorConfigParams = {
   bivariateDataviews?: BivariateDataviews
   showTimeComparison?: boolean
 }
-const getGeneratorsDictionary = ({
-  dataviews,
-  resources,
-}: {
-  dataviews: UrlDataviewInstance[]
-  resources: ResourcesState
-}) => {
-  return getDataviewsGeneratorsDictionary(dataviews, resources)
-}
+
 const getGeneratorsConfig = ({
   dataviews = [],
   resources,
@@ -155,11 +148,8 @@ const getGeneratorsConfig = ({
 }
 export const selectMapGeneratorsDictionary = createSelector(
   [selectDataviewInstancesResolvedVisible, selectVisibleResources],
-  (dataviews = [], resources) => {
-    return getGeneratorsDictionary({
-      dataviews,
-      resources,
-    })
+  (dataviews = [], resources): DeckLayersGeneratorDictionary => {
+    return getDataviewsGeneratorsDictionary(dataviews, resources)
   }
 )
 
