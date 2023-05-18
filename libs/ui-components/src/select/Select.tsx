@@ -20,7 +20,9 @@ interface SelectProps {
   containerClassName?: string
   className?: string
   direction?: 'bottom' | 'top'
+  align?: 'left' | 'right'
   disabled?: boolean
+  type?: 'primary' | 'secondary'
 }
 
 const isItemSelected = (selectedItem: SelectOption | undefined, item: SelectOption) => {
@@ -40,8 +42,10 @@ export function Select(props: SelectProps) {
     containerClassName = '',
     className = '',
     direction = 'bottom',
+    align = 'left',
     disabled = false,
     onToggleButtonClick,
+    type = 'primary',
   } = props
   const {
     isOpen,
@@ -86,12 +90,15 @@ export function Select(props: SelectProps) {
 
   return (
     <div className={containerClassName}>
-      <label className={styles.label} {...getLabelProps()}>
-        {label}
-      </label>
+      {label && (
+        <label className={styles.label} {...getLabelProps()}>
+          {label}
+        </label>
+      )}
       <div
         className={cx(
           styles.container,
+          styles[type],
           { [styles.isOpen]: isOpen },
           { [styles.placeholderShown]: !selectedOption },
           className
@@ -114,7 +121,10 @@ export function Select(props: SelectProps) {
             {...getToggleButtonProps()}
           ></IconButton>
         </div>
-        <ul {...getMenuProps()} className={cx(styles.optionsContainer, styles[direction])}>
+        <ul
+          {...getMenuProps()}
+          className={cx(styles.optionsContainer, styles[direction], styles[align])}
+        >
           {isOpen &&
             options.length > 0 &&
             options.map((item, index) => {
@@ -132,9 +142,12 @@ export function Select(props: SelectProps) {
                     {...getItemProps({ item, index })}
                   >
                     {item.label}
-                    {highlight && !itemDisabled && onRemove && (
-                      <Icon icon={selected ? 'close' : 'tick'} />
-                    )}
+                    <Icon
+                      icon={selected ? 'close' : 'tick'}
+                      className={cx(styles.icon, {
+                        [styles.visible]: highlight && !itemDisabled && onRemove,
+                      })}
+                    />
                   </li>
                 </Tooltip>
               )

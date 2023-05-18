@@ -2,9 +2,9 @@ import { useEffect, useRef } from 'react'
 import { isEqual } from 'lodash'
 
 // https://usehooks.com/useMemoCompare/
-export function useMemoCompare<N = unknown>(next: N, compare = isEqual) {
+export function useMemoCompare<N = unknown>(next: N, compare = isEqual): N {
   // Ref for storing previous value
-  const previousRef = useRef<N>()
+  const previousRef = useRef<N>(next)
   const previous = previousRef.current
   // Pass previous and next value to compare function
   // to determine whether to consider them equal.

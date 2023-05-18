@@ -6,7 +6,8 @@ import { useTranslation } from 'react-i18next'
 import { Menu, SplitView } from '@globalfishingwatch/ui-components'
 import { Workspace } from '@globalfishingwatch/api-types'
 import {
-  isWorkspaceLocation,
+  selectIsReportLocation,
+  selectIsWorkspaceLocation,
   selectLocationType,
   selectUrlTimeRange,
   selectUrlViewport,
@@ -25,19 +26,19 @@ import { fetchUserThunk } from 'features/user/user.slice'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
-import { selectIsAnalyzing, selectShowTimeComparison } from 'features/analysis/analysis.selectors'
+import { selectShowTimeComparison } from 'features/reports/reports.selectors'
 import { isUserLogged } from 'features/user/user.selectors'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
-import { HOME, WORKSPACE, USER, WORKSPACES_LIST } from 'routes/routes'
+import { HOME, WORKSPACE, USER, WORKSPACES_LIST, REPORT, WORKSPACE_REPORT } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { t } from 'features/i18n/i18n'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { FIT_BOUNDS_ANALYSIS_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
-import { initializeHints } from 'features/hints/hints.slice'
+import { FIT_BOUNDS_REPORT_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
+import { initializeHints } from 'features/help/hints.slice'
 import AppModals from 'features/modals/Modals'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useAppDispatch } from './app.hooks'
-import { selectAnalysisQuery, selectReadOnly, selectSidebarOpen } from './app.selectors'
+import { selectReadOnly, selectReportAreaBounds, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
 import { useAnalytics } from './analytics.hooks'
 
@@ -64,23 +65,23 @@ export const COLOR_GRADIENT =
   'rgb(229, 240, 242)'
 
 const Main = () => {
-  const workspaceLocation = useSelector(isWorkspaceLocation)
+  const workspaceLocation = useSelector(selectIsWorkspaceLocation)
+  const reportLocation = useSelector(selectIsReportLocation)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const isTimeComparisonAnalysis = useSelector(selectShowTimeComparison)
+  const isTimeComparisonReport = useSelector(selectShowTimeComparison)
 
   const showTimebar =
-    workspaceLocation &&
-    workspaceStatus === AsyncReducerStatus.Finished &&
-    !isTimeComparisonAnalysis
+    (workspaceLocation || (reportLocation && !isTimeComparisonReport)) &&
+    workspaceStatus === AsyncReducerStatus.Finished
 
   return (
-    <div className={styles.main}>
+    <Fragment>
       <div className={cx(styles.mapContainer, { [styles.withTimebar]: showTimebar })}>
         <Map />
       </div>
       {showTimebar && <Timebar />}
       <Footer />
-    </div>
+    </Fragment>
   )
 }
 
@@ -99,11 +100,11 @@ function App(): React.ReactElement {
   const i18n = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
-  const analysisQuery = useSelector(selectAnalysisQuery)
-  const workspaceLocation = useSelector(isWorkspaceLocation)
-  const isAnalysing = useSelector(selectIsAnalyzing)
-  const isTimeComparisonAnalysis = useSelector(selectShowTimeComparison)
-  const narrowSidebar = workspaceLocation && !analysisQuery
+  const workspaceLocation = useSelector(selectIsWorkspaceLocation)
+  const isReportLocation = useSelector(selectIsReportLocation)
+  const reportAreaBounds = useSelector(selectReportAreaBounds)
+  const isTimeComparisonReport = useSelector(selectShowTimeComparison)
+  const narrowSidebar = workspaceLocation
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const showTimebar = workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished
 
@@ -116,11 +117,15 @@ function App(): React.ReactElement {
   }, [dispatch])
 
   useEffect(() => {
-    if (map) {
-      map.resize()
+    try {
+      if (map && map?.resize) {
+        map.resize()
+      }
+    } catch (e) {
+      console.warn(e)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAnalysing, sidebarOpen, showTimebar, isTimeComparisonAnalysis])
+  }, [isReportLocation, sidebarOpen, showTimebar, isTimeComparisonReport])
 
   useEffect(() => {
     setMobileSafeVH()
@@ -144,6 +149,10 @@ function App(): React.ReactElement {
   // probably better to fetch in both components just checking if the workspaceId is already fetched
   const isHomeLocation = locationType === HOME
   const homeNeedsFetch = isHomeLocation && currentWorkspaceId !== DEFAULT_WORKSPACE_ID
+  // Checking only when REPORT entrypoint or WORKSPACE_REPORT when workspace is not loaded
+  const locationNeedsFetch =
+    locationType === REPORT ||
+    (locationType === WORKSPACE_REPORT && currentWorkspaceId !== urlWorkspaceId)
   const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId
   useEffect(() => {
     let action: any
@@ -153,7 +162,10 @@ function App(): React.ReactElement {
       const resolvedAction = await action
       if (fetchWorkspaceThunk.fulfilled.match(resolvedAction)) {
         const workspace = resolvedAction.payload as Workspace
-        setMapCoordinates(urlViewport || workspace.viewport)
+        const viewport = urlViewport || workspace?.viewport
+        if (viewport && !isReportLocation) {
+          setMapCoordinates(viewport)
+        }
         if (!urlTimeRange && workspace?.startAt && workspace?.endAt) {
           setTimerange({
             start: workspace?.startAt,
@@ -166,7 +178,7 @@ function App(): React.ReactElement {
     if (
       userLogged &&
       workspaceCustomStatus !== AsyncReducerStatus.Loading &&
-      (homeNeedsFetch || hasWorkspaceIdChanged)
+      (homeNeedsFetch || locationNeedsFetch || hasWorkspaceIdChanged)
     ) {
       // TODO Can we arrive in a situation where no workspace is ever loaded?
       // In that case static timerange will need to be set manually
@@ -178,12 +190,12 @@ function App(): React.ReactElement {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userLogged, homeNeedsFetch, hasWorkspaceIdChanged])
+  }, [userLogged, homeNeedsFetch, locationNeedsFetch, hasWorkspaceIdChanged])
 
   useLayoutEffect(() => {
-    if (isAnalysing) {
-      if (analysisQuery.bounds) {
-        fitMapBounds(analysisQuery.bounds, { padding: FIT_BOUNDS_ANALYSIS_PADDING })
+    if (isReportLocation) {
+      if (reportAreaBounds) {
+        fitMapBounds(reportAreaBounds, { padding: FIT_BOUNDS_REPORT_PADDING })
       } else {
         setMapCoordinates({ latitude: 0, longitude: 0, zoom: 0 })
       }
@@ -206,13 +218,13 @@ function App(): React.ReactElement {
   const getSidebarName = useCallback(() => {
     if (locationType === USER) return t('user.title', 'User')
     if (locationType === WORKSPACES_LIST) return t('workspace.title_other', 'Workspaces')
-    if (isAnalysing) return t('analysis.title', 'Analysis')
+    if (isReportLocation) return t('analysis.title', 'Analysis')
     return t('common.layerList', 'Layer list')
-  }, [isAnalysing, locationType])
+  }, [locationType, isReportLocation])
 
   let asideWidth = '50%'
   if (readOnly) {
-    asideWidth = analysisQuery ? '45%' : '34rem'
+    asideWidth = isReportLocation ? '45%' : '34rem'
   } else if (narrowSidebar) {
     asideWidth = '39rem'
   }
@@ -232,7 +244,9 @@ function App(): React.ReactElement {
         asideWidth={asideWidth}
         showAsideLabel={getSidebarName()}
         showMainLabel={t('common.map', 'Map')}
-        className="split-container"
+        className={styles.splitContainer}
+        asideClassName={styles.aside}
+        mainClassName={styles.main}
       />
       {!readOnly && (
         <Menu

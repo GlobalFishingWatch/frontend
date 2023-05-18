@@ -9,6 +9,7 @@ import { ContextLayerType } from '../types'
 import { DEFAULT_BACKGROUND_COLOR } from '../background/config'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from './config'
 
+export const INTERACTION_SUFIX = '_interaction'
 export const HIGHLIGHT_SUFIX = '_highlight'
 
 const settledBoundaries = [
@@ -101,7 +102,7 @@ const getDefaultContextLayersById = (
 ): (LineLayerSpecification | FillLayerSpecification)[] => {
   return [
     {
-      id: `${id}_interaction`,
+      id: `${id}${INTERACTION_SUFIX}`,
       ...getDefaultContextInteraction(),
     } as FillLayerSpecification,
     {
@@ -132,22 +133,22 @@ const CONTEXT_LAYERS: Record<ContextLayerType, LayerSpecification[]> = {
   [ContextLayerType.FAO]: getDefaultContextLayersById(ContextLayerType.FAO, '#8E24A9'),
   [ContextLayerType.EEZ]: [
     {
-      id: 'eez_interaction_',
+      id: `${ContextLayerType.EEZ}${INTERACTION_SUFIX}`,
       ...getDefaultContextInteraction(),
     } as FillLayerSpecification,
     {
-      id: `eez${HIGHLIGHT_SUFIX}_`,
+      id: `${ContextLayerType.EEZ}${HIGHLIGHT_SUFIX}`,
       ...getDefaultContextHighlight(),
     } as LineLayerSpecification,
   ],
   [ContextLayerType.EEZBoundaries]: [
     {
-      id: 'eez_rest_lines_',
+      id: `${ContextLayerType.EEZBoundaries}_rest_lines`,
       ...getDefaultContextLine('#33B679'),
       filter: ['match', ['get', 'LINE_TYPE'], settledBoundaries, true, false],
     } as LineLayerSpecification,
     {
-      id: 'eez_special_lines_',
+      id: `${ContextLayerType.EEZBoundaries}_special_lines`,
       ...getDefaultContextLine(),
       filter: ['match', ['get', 'LINE_TYPE'], settledBoundaries, false, true],
       paint: {

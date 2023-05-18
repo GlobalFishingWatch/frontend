@@ -30,11 +30,11 @@ export const getFilterOperatorOptions = () => {
   return [
     {
       id: INCLUDE_FILTER_ID,
-      title: t('common.include', 'Include'),
+      label: t('common.include', 'Include'),
     },
     {
       id: EXCLUDE_FILTER_ID,
-      title: t('common.exclude', 'Exclude'),
+      label: t('common.exclude', 'Exclude'),
     },
   ] as ChoiceOption[]
 }
@@ -130,7 +130,7 @@ function ActivitySchemaFilter({
           className={styles.filterOperator}
           options={getFilterOperatorOptions()}
           activeOption={filterOperator}
-          onOptionClick={(option) => onSelectOperation(id, option.id as FilterOperator)}
+          onSelect={(option) => onSelectOperation(id, option.id as FilterOperator)}
         />
       )}
       <MultiSelect

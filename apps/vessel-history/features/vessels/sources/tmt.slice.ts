@@ -1,5 +1,6 @@
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { GFWApiClient } from 'http-client/http-client'
 import { Authorization } from '@globalfishingwatch/api-types'
+import { IS_STANDALONE_APP } from 'data/config'
 import {
   AnyValueList,
   Iuu,
@@ -118,9 +119,12 @@ const vesselThunk: VesselAPIThunk = {
         reject('Missing vessel id to fetch data')
       })
     }
+    if (IS_STANDALONE_APP) {
+      return undefined
+    }
     const url = `/vessel-histories/${id}`
 
-    return await GFWAPI.fetch<TMTDetail>(url)
+    return await GFWApiClient.fetch<TMTDetail>(url)
       .then(transformIuuListing)
       .then(toVessel)
       .catch((error) => {

@@ -1,14 +1,13 @@
 import { Fragment, useState, ComponentType } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { IconButton, Radio } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import {
-  selectActiveActivityDataviews,
+  selectActiveReportActivityDataviews,
   selectActiveDetectionsDataviews,
   selectActiveNonTrackEnvironmentalDataviews,
 } from 'features/dataviews/dataviews.selectors'
@@ -23,6 +22,7 @@ import { ReactComponent as TrackSpeedIcon } from 'assets/icons/timebar-track-spe
 import { ReactComponent as TrackDepthIcon } from 'assets/icons/timebar-track-depth.svg'
 import { selectHasTracksData } from 'features/timebar/timebar.selectors'
 import { COLOR_PRIMARY_BLUE } from 'features/app/App'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   useTimebarVisualisationConnect,
   useTimebarGraphConnect,
@@ -59,7 +59,7 @@ const Icon = ({
 const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const { t } = useTranslation()
   const [optionsPanelOpen, setOptionsPanelOpen] = useState(false)
-  const activeActivityDataviews = useSelector(selectActiveActivityDataviews)
+  const activeActivityDataviews = useSelector(selectActiveReportActivityDataviews)
   const activeDetectionsDataviews = useSelector(selectActiveDetectionsDataviews)
   const activeEnvironmentalDataviews = useSelector(selectActiveNonTrackEnvironmentalDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
@@ -72,8 +72,8 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
     activeVesselsDataviews && activeVesselsDataviews.length && activeVesselsDataviews.length <= 2
 
   const openOptions = () => {
-    uaEvent({
-      category: 'Timebar',
+    trackEvent({
+      category: TrackCategory.Timebar,
       action: 'Open timebar settings',
       label: getEventLabel([`visualization: ${timebarVisualisation}`]),
     })

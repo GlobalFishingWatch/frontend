@@ -16,6 +16,9 @@ function DatasetFilterSource({ dataview, hideColor }: DatasetFilterSourceProps) 
   const sourcesSelected: TagItem[] = getSourcesSelectedInDataview(dataview)
   const nonVmsSources = sourcesSelected.filter((source) => !source.label.includes('VMS'))
   const vmsSources = sourcesSelected.filter((source) => source.label.includes('VMS'))
+  const dataviewFourWingsSources = dataview.datasets.filter((dataset) =>
+    dataset.type.includes('4wings')
+  )
   const hasPrivateDatasets = dataviewWithPrivateDatasets(dataview as UrlDataviewInstance)
   let mergedSourceOptions: TagItem[] = []
   if (!hasPrivateDatasets && vmsSources?.length > 1) {
@@ -29,7 +32,7 @@ function DatasetFilterSource({ dataview, hideColor }: DatasetFilterSourceProps) 
     ]
   }
 
-  if (!sourcesSelected?.length) {
+  if (dataviewFourWingsSources.length < 2 || !sourcesSelected?.length) {
     return null
   }
 

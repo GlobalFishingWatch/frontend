@@ -1,8 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { RootState } from 'reducers'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { WorkspaceState, WorkspaceStateProperty } from 'types'
-import { RootState } from 'store'
-import { DEFAULT_WORKSPACE, PUBLIC_SUFIX } from 'data/config'
+import { DEFAULT_WORKSPACE } from 'data/config'
 import { selectQueryParam } from 'routes/routes.selectors'
 
 export const selectLastVisitedWorkspace = (state: RootState) => state.workspace.lastVisited
@@ -11,12 +11,12 @@ export const selectWorkspaceStatus = (state: RootState) => state.workspace.statu
 export const selectWorkspaceCustomStatus = (state: RootState) => state.workspace.customStatus
 export const selectWorkspaceError = (state: RootState) => state.workspace.error
 
-export const isWorkspacePublic = createSelector([selectWorkspace], (workspace) => {
-  return workspace?.id.slice(-PUBLIC_SUFIX.length) === PUBLIC_SUFIX
-})
-
 export const selectCurrentWorkspaceId = createSelector([selectWorkspace], (workspace) => {
   return workspace?.id
+})
+
+export const selectCurrentWorkspaceCategory = createSelector([selectWorkspace], (workspace) => {
+  return workspace?.category
 })
 
 export const selectIsGFWWorkspace = createSelector([selectWorkspace], (workspace) => {

@@ -20,6 +20,7 @@
   right: var(--space-S);
   font: var(--font-XS);
   opacity: var(--opacity-secondary);
+  text-align: right;
 }
 
 .dateRange {
@@ -28,6 +29,9 @@
 
 @media print {
   .info {
+    bottom: unset;
+    left: 7.5rem;
+    top: 2.2rem;
     padding: 0 var(--space-XS);
   }
 

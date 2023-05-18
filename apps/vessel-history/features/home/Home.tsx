@@ -41,6 +41,7 @@ import Partners from 'features/partners/Partners'
 import ViewSelector from 'features/view-selector/view-selector'
 import { OfflineVessel } from 'types/vessel'
 import { getUTCDateTime } from 'utils/dates'
+import { IS_STANDALONE_APP } from 'data/config'
 import styles from './Home.module.css'
 import LanguageToggle from './LanguageToggle'
 
@@ -219,7 +220,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
       })}`,
     [advancedSearch, email, query, searchContext, vesselIds]
   )
-  const hasAccess = logged && authorized
+  const hasAccess = (logged && authorized) || IS_STANDALONE_APP
   const onContactUsClick = useCallback(() => {
     uaEvent({
       category: 'Search Vessel VV',

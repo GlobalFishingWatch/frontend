@@ -29,7 +29,9 @@ function ActivityTooltipRow({ feature, showFeaturesDetails }: ActivityTooltipRow
               })}
             </span>
           </div>
-          {showFeaturesDetails && <VesselsTable feature={feature} />}
+          {showFeaturesDetails && (
+            <VesselsTable feature={feature} activityType={feature.subcategory} />
+          )}
         </div>
       </div>
     </Fragment>

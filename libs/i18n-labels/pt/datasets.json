@@ -39,7 +39,7 @@
       "flag": "bandeira",
       "length": "length",
       "source": "fonte",
-      "geartype": "geartype",
+      "geartype": "Aparelho de pesca",
       "shipname": "Embarcação",
       "vesselType": "vesselType",
       "gross_tonnage": "gross_tonnage",
@@ -55,7 +55,7 @@
       "beam": "beam",
       "flag": "bandeira",
       "fleet": {
-        "keyword": "fleet",
+        "keyword": "frota",
         "enum": {
           "industrial": "industrial",
           "artisanal": "artisanal",
@@ -87,9 +87,9 @@
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
-      "hours": "hours",
+      "hours": "horas",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "Aparelho de pesca",
         "enum": {
           "purse_seine": "purse_seine",
           "trawler": "trawler",
@@ -113,7 +113,7 @@
       "source": "source",
       "callsign": "callsign",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "Aparelho de pesca",
         "enum": {
           "purse_seine": "purse_seine",
           "trawler": "trawler",
@@ -121,9 +121,9 @@
           "reefer": "reefer"
         }
       },
-      "shipname": "shipname",
-      "lastTransmissionDate": "lastTransmissionDate",
-      "firstTransmissionDate": "firstTransmissionDate"
+      "shipname": "Embarcação",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
     }
   },
   "private-belize-non-fishing-vessels": {
@@ -137,7 +137,7 @@
       "source": "source",
       "callsign": "callsign",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "Aparelho de pesca",
         "enum": {
           "purse_seine": "purse_seine",
           "trawler": "trawler",
@@ -145,9 +145,9 @@
           "reefer": "reefer"
         }
       },
-      "shipname": "shipname",
-      "lastTransmissionDate": "lastTransmissionDate",
-      "firstTransmissionDate": "firstTransmissionDate"
+      "shipname": "Embarcação",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
     }
   },
   "private-belize-presence": {
@@ -158,7 +158,7 @@
       "lon": "lon",
       "flag": "flag",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "Aparelho de pesca",
         "enum": {
           "purse_seine": "purse_seine",
           "trawler": "trawler",
@@ -413,14 +413,14 @@
       "lon": "lon",
       "flag": "bandeira",
       "fleet": {
-        "keyword": "fleet",
+        "keyword": "frota",
         "enum": {
           "costarica_vms_industrial_longline": "costarica_vms_industrial_longline",
           "costarica_vms_atuneros": "costarica_vms_atuneros",
           "costarica_vms_sardineros": "costarica_vms_sardineros"
         }
       },
-      "hours": "hours",
+      "hours": "horas",
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
       "distance_from_port_m": "distance_from_port_m",
@@ -435,7 +435,7 @@
       "lon": "lon",
       "flag": "flag",
       "fleet": {
-        "keyword": "fleet",
+        "keyword": "frota",
         "enum": {
           "costarica_vms_industrial_longline": "costarica_vms_industrial_longline",
           "costarica_vms_atuneros": "costarica_vms_atuneros",
@@ -456,11 +456,11 @@
       "lat": "lat",
       "lon": "lon",
       "flag": "bandeira",
-      "hours": "hours",
+      "hours": "horas",
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
-          "fishing": "fishing"
+          "fishing": "pesca"
         }
       },
       "vessel_id": "vessel_id",
@@ -479,7 +479,7 @@
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
-          "fishing": "fishing",
+          "fishing": "pesca",
           "international traffic": "international traffic",
           "national traffic": "national traffic",
           "tug": "tug",
@@ -525,7 +525,7 @@
       "lon": "lon",
       "flag": "flag",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "Aparelho de pesca",
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
@@ -546,7 +546,7 @@
       "lon": "lon",
       "flag": "flag",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "Aparelho de pesca",
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
@@ -568,10 +568,10 @@
       "flag": "flag",
       "source": "source",
       "dataset": "dataset",
-      "geartype": "geartype",
-      "shipname": "shipname",
-      "lastTransmissionDate": "lastTransmissionDate",
-      "firstTransmissionDate": "firstTransmissionDate"
+      "geartype": "Aparelho de pesca",
+      "shipname": "Embarcação",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
     }
   },
   "private-indonesia-fishing-effort": {
@@ -581,7 +581,7 @@
       "lat": "lat",
       "lon": "lon",
       "flag": "bandeira",
-      "hours": "hours",
+      "hours": "horas",
       "geartype": {
         "keyword": "Aparelho de pesca",
         "enum": {
@@ -620,7 +620,7 @@
       "lon": "lon",
       "flag": "flag",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "Aparelho de pesca",
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
@@ -641,7 +641,7 @@
       "lon": "lon",
       "flag": "flag",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "Aparelho de pesca",
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
@@ -663,10 +663,10 @@
       "flag": "flag",
       "source": "source",
       "dataset": "dataset",
-      "geartype": "geartype",
-      "shipname": "shipname",
-      "lastTransmissionDate": "lastTransmissionDate",
-      "firstTransmissionDate": "firstTransmissionDate"
+      "geartype": "Aparelho de pesca",
+      "shipname": "Embarcação",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
     }
   },
   "private-indonesia-pelagic-fishing-effort": {
@@ -677,7 +677,7 @@
       "lon": "lon",
       "flag": "flag",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "Aparelho de pesca",
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
@@ -698,7 +698,7 @@
       "lon": "lon",
       "flag": "flag",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "Aparelho de pesca",
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
@@ -720,15 +720,15 @@
       "flag": "flag",
       "source": "source",
       "dataset": "dataset",
-      "geartype": "geartype",
-      "shipname": "shipname",
-      "lastTransmissionDate": "lastTransmissionDate",
-      "firstTransmissionDate": "firstTransmissionDate"
+      "geartype": "Aparelho de pesca",
+      "shipname": "Embarcação",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
     }
   },
   "private-indonesia-presence": {
     "name": "VMS Indonesia (Presence)",
-    "description": "Presence",
+    "description": "Presença",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -765,7 +765,7 @@
       "lon": "lon",
       "flag": "flag",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "Aparelho de pesca",
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
@@ -786,7 +786,7 @@
       "lon": "lon",
       "flag": "flag",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "Aparelho de pesca",
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
@@ -808,10 +808,10 @@
       "flag": "flag",
       "source": "source",
       "dataset": "dataset",
-      "geartype": "geartype",
-      "shipname": "shipname",
-      "lastTransmissionDate": "lastTransmissionDate",
-      "firstTransmissionDate": "firstTransmissionDate"
+      "geartype": "Aparelho de pesca",
+      "shipname": "Embarcação",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
     }
   },
   "private-indonesia-zebrax-presence": {
@@ -860,7 +860,7 @@
           "NOR": "NOR"
         }
       },
-      "hours": "hours",
+      "hours": "horas",
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
       "vessel-groups": "vessel-groups",
@@ -875,7 +875,7 @@
       "lat": "lat",
       "lon": "lon",
       "flag": "bandeira",
-      "hours": "hours",
+      "hours": "horas",
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
       "distance_from_port_m": "distance_from_port_m",
@@ -923,7 +923,7 @@
         "keyword": "shiptype",
         "enum": {
           "carrier": "carrier",
-          "fishing": "fishing",
+          "fishing": "pesca",
           "oil_tanker": "oil_tanker"
         }
       },
@@ -939,7 +939,7 @@
       "lon": "lon",
       "flag": "bandeira",
       "fleet": {
-        "keyword": "fleet",
+        "keyword": "frota",
         "enum": {
           "industrial": "industrial",
           "artisanal": "artisanal",
@@ -947,7 +947,7 @@
           "not defined": "not defined"
         }
       },
-      "hours": "hours",
+      "hours": "horas",
       "origin": {
         "keyword": "origin",
         "enum": {
@@ -968,7 +968,7 @@
           "set_gillnets": "Emalhe de Fundo",
           "set_longlines|squid_jigger": "set_longlines|squid_jigger",
           "driftnets|pole_and_line|set_gillnets|set_longlines": "emalhe de superfície | vara e isca viva | emalhe de fundo | espinhel de fundo",
-          "fishing": "fishing",
+          "fishing": "pesca",
           "driftnets|set_gillnets": "emalhe de superfície | emalhe de fundo",
           "fishing|purse_seines": "fishing|purse_seines",
           "drifting_longlines|trawlers": "espinhel de superfície | arrasto"
@@ -998,7 +998,7 @@
         }
       },
       "fleet": {
-        "keyword": "fleet",
+        "keyword": "frota",
         "enum": {
           "industrial": "industrial",
           "artisanal": "artisanal",
@@ -1036,7 +1036,7 @@
       "lon": "lon",
       "flag": "bandeira",
       "fleet": {
-        "keyword": "fleet",
+        "keyword": "frota",
         "enum": {
           "industrial": "industrial",
           "artisanal": "artisanal",
@@ -1065,13 +1065,61 @@
           "set_gillnets": "Emalhe de Fundo",
           "set_longlines|squid_jigger": "Espinhel de fundo | jigger lula",
           "driftnets|pole_and_line|set_gillnets|set_longlines": "emalhe de superfície | vara e isca viva | emalhe de fundo | espinhel de fundo",
-          "fishing": "fishing",
+          "fishing": "pesca",
           "driftnets|set_gillnets": "emalhe de superfície | emalhe de fundo",
           "fishing|purse_seines": "fishing|purse_seines",
           "drifting_longlines|trawlers": "espinhel de superfície | arrasto"
         }
       },
       "vessel_id": "vessel_id"
+    }
+  },
+  "private-png-fishing-effort": {
+    "name": "Papua New Guinea VMS",
+    "description": "Vessel monitoring system (VMS) data is provided by the The National Fisheries Authority of Papua New Guinea. Data is collected using Papua New Guinea's vessel monitoring (VMS) system via satellites, that contains vessel's identifiers and location, and is published on a five-day delay. Global Fishing Watch infers speed and course for each vessel location and analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity”. It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity”, “fishing” or “fishing effort”, as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": {
+        "keyword": "flag",
+        "enum": {
+          "PNG": "PNG",
+          "PHL": "PHL"
+        }
+      },
+      "hours": "horas",
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "private-png-fishing-vessels": {
+    "name": "Papua New Guinea VMS (Fishing Vessels)",
+    "description": "Dataset for VMS Papua New Guinea (Private)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "callsign": "callsign",
+      "shipname": "Embarcação",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
+    }
+  },
+  "private-png-presence": {
+    "name": "Papua New Guinea VMS",
+    "description": "Vessel monitoring system (VMS) data is provided by the The National Fisheries Authority of Papua New Guinea. Data is collected using Papua New Guinea's national VMS  that is provided by the Fisheries Information and Management System (FIMS). VMS data includes vessel identifiers and location, and is published with a five-day delay.\n\nThe activity layer displays a heatmap of vessel presence. The presence is determined by taking two positions per hour per vessel from the positions transmitted by the vessel's VMS.",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
     }
   },
   "proto-global-encounters-events": {
@@ -1122,7 +1170,7 @@
         "keyword": "shiptype",
         "enum": {
           "unknown": "unknown",
-          "fishing": "fishing",
+          "fishing": "pesca",
           "carrier": "carrier",
           "support": "support"
         }
@@ -1155,9 +1203,9 @@
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
-      "hours": "hours",
+      "hours": "horas",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "Aparelho de pesca",
         "enum": {
           "purse_seine": "purse_seine",
           "trawler": "trawler",
@@ -1178,7 +1226,7 @@
       "flag": "flag",
       "source": "source",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "Aparelho de pesca",
         "enum": {
           "purse_seine": "purse_seine",
           "trawler": "trawler",
@@ -1186,8 +1234,8 @@
           "reefer": "reefer"
         }
       },
-      "lastTransmissionDate": "lastTransmissionDate",
-      "firstTransmissionDate": "firstTransmissionDate"
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
     }
   },
   "public-bra-onyxsat-fishing-effort": {
@@ -1344,7 +1392,7 @@
     "schema": {
       "id": "id",
       "shipname": "Embarcação",
-      "normalizedShipname": "normalizedShipname",
+      "normalizedShipname": "nome normalizado",
       "lastTransmissionDate": "última data de transmissão",
       "firstTransmissionDate": "primeira data de transmissão"
     }
@@ -1357,13 +1405,13 @@
       "lon": "lon",
       "flag": "bandeira",
       "fleet": {
-        "keyword": "fleet",
+        "keyword": "frota",
         "enum": {
           "chile_vms_small_fisheries": "chile_vms_small_fisheries",
           "chile_vms_industry": "chile_vms_industry"
         }
       },
-      "hours": "hours",
+      "hours": "horas",
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
       "distance_from_port_m": "distance_from_port_m",
@@ -1371,12 +1419,12 @@
     }
   },
   "public-chile-fishing-vessels": {
-    "name": "Chile VMS (Fishing Vessels)",
+    "name": "Chile VMS (Embarcações Pesqueiras)",
     "description": "Dataset for VMS Chile (Public)",
     "schema": {
       "id": "id",
       "shipname": "Embarcação",
-      "normalizedShipname": "normalizedShipname",
+      "normalizedShipname": "nome normalizado",
       "lastTransmissionDate": "última data de transmissão",
       "firstTransmissionDate": "primeira data de transmissão"
     }
@@ -1387,7 +1435,7 @@
     "schema": {
       "id": "id",
       "shipname": "Embarcação",
-      "normalizedShipname": "normalizedShipname",
+      "normalizedShipname": "nome normalizado",
       "lastTransmissionDate": "última data de transmissão",
       "firstTransmissionDate": "primeira data de transmissão"
     }
@@ -1400,7 +1448,7 @@
       "lon": "lon",
       "flag": "bandeira",
       "fleet": {
-        "keyword": "fleet",
+        "keyword": "frota",
         "enum": {
           "chile_vms_small_fisheries": "chile_vms_small_fisheries",
           "chile_vms_industry": "chile_vms_industry",
@@ -1424,14 +1472,14 @@
       "lon": "lon",
       "flag": "bandeira",
       "fleet": {
-        "keyword": "fleet",
+        "keyword": "frota",
         "enum": {
           "costarica_vms_avanzados": "costarica_vms_avanzados",
           "costarica_vms_atuneros": "costarica_vms_atuneros",
           "costarica_vms_sardineros": "costarica_vms_sardineros"
         }
       },
-      "hours": "hours",
+      "hours": "horas",
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
       "distance_from_port_m": "distance_from_port_m",
@@ -1445,7 +1493,7 @@
       "id": "id",
       "flag": "bandeira",
       "source": "fonte",
-      "shipname": "shipname",
+      "shipname": "Embarcação",
       "lastTransmissionDate": "última data de transmissão",
       "firstTransmissionDate": "primeira data de transmissão"
     }
@@ -1467,11 +1515,11 @@
       "lat": "lat",
       "lon": "lon",
       "flag": "bandeira",
-      "hours": "hours",
+      "hours": "horas",
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
-          "fishing": "fishing"
+          "fishing": "pesca"
         }
       },
       "vessel_id": "vessel_id",
@@ -1518,7 +1566,7 @@
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
-          "fishing": "fishing",
+          "fishing": "pesca",
           "international traffic": "international traffic",
           "national traffic": "national traffic",
           "tug": "tug",
@@ -1587,34 +1635,34 @@
       "dataset": "dataset",
       "callsign": "callsign",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "Aparelho de pesca",
         "enum": {
           "tuna_purse_seines": "tuna_purse_seines",
           "driftnets": "driftnets",
           "trollers": "trollers",
-          "set_longlines": "set_longlines",
+          "set_longlines": "Espinhel de fundo",
           "purse_seines": "purse_seines",
-          "pots_and_traps": "pots_and_traps",
+          "pots_and_traps": "Armadilhas e potes",
           "other_fishing": "other_fishing",
           "dredge_fishing": "dredge_fishing",
-          "set_gillnets": "set_gillnets",
+          "set_gillnets": "Emalhe de Fundo",
           "fixed_gear": "fixed_gear",
-          "trawlers": "trawlers",
-          "fishing": "fishing",
+          "trawlers": "Arrasto",
+          "fishing": "pesca",
           "seiners": "seiners",
-          "other_purse_seines": "other_purse_seines",
+          "other_purse_seines": "Rede de Cerco",
           "other_seines": "other_seines",
           "squid_jigger": "squid_jigger",
-          "pole_and_line": "pole_and_line",
-          "drifting_longlines": "drifting_longlines"
+          "pole_and_line": "Vara e isca viva",
+          "drifting_longlines": "Espinhel de superfície"
         }
       },
       "msgCount": "msgCount",
       "posCount": "posCount",
-      "shipname": "shipname",
-      "normalized_shipname": "normalized_shipname",
-      "lastTransmissionDate": "lastTransmissionDate",
-      "firstTransmissionDate": "firstTransmissionDate"
+      "shipname": "Embarcação",
+      "normalized_shipname": "Embarcação normalizado",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
     }
   },
   "public-global-carrier-vessels": {
@@ -1627,7 +1675,7 @@
       "msgCount": "msgCount",
       "posCount": "posCount",
       "shipname": "Embarcação",
-      "normalizedShipname": "normalizedShipname",
+      "normalizedShipname": "nome normalizado",
       "lastTransmissionDate": "última data de transmissão",
       "firstTransmissionDate": "primeira data de transmissão"
     }
@@ -1696,7 +1744,7 @@
           "set_gillnets": "Emalhe de Fundo",
           "fixed_gear": "fixed_gear",
           "trawlers": "Arrasto",
-          "fishing": "fishing",
+          "fishing": "pesca",
           "seiners": "seiners",
           "other_purse_seines": "Rede de Cerco",
           "other_seines": "other_seines",
@@ -1734,7 +1782,7 @@
           "set_gillnets": "Emalhe de Fundo",
           "fixed_gear": "fixed_gear",
           "trawlers": "Arrasto",
-          "fishing": "fishing",
+          "fishing": "pesca",
           "seiners": "seiners",
           "other_purse_seines": "Rede de Cerco",
           "other_seines": "other_seines",
@@ -1800,7 +1848,7 @@
       "vessel_type": {
         "keyword": "vessel_type",
         "enum": {
-          "fishing": "fishing",
+          "fishing": "pesca",
           "carrier": "carrier",
           "cargo": "cargo",
           "bunker_or_tanker": "bunker_or_tanker",
@@ -1863,6 +1911,18 @@
       "normalized_shipname": "Embarcação normalizado",
       "lastTransmissionDate": "última data de transmissão",
       "firstTransmissionDate": "primeira data de transmissão"
+    }
+  },
+  "public-global-vessel-insights": {
+    "name": "AIS (Insights)",
+    "description": "Vessel Insights from AIS",
+    "schema": {
+      "gap": "gap",
+      "coverage": "coverage",
+      "portVisit": "portVisit",
+      "apparentFishing": "apparentFishing",
+      "likelyLoitering": "likelyLoitering",
+      "likelyEncounters": "likelyEncounters"
     }
   },
   "public-global-viirs-presence": {
@@ -1938,7 +1998,7 @@
       "lat": "lat",
       "lon": "lon",
       "flag": "bandeira",
-      "hours": "hours",
+      "hours": "horas",
       "geartype": {
         "keyword": "Aparelho de pesca",
         "enum": {
@@ -1977,7 +2037,7 @@
       "lon": "lon",
       "flag": "flag",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "Aparelho de pesca",
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
@@ -1997,7 +2057,7 @@
       "lon": "lon",
       "flag": "flag",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "Aparelho de pesca",
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
@@ -2048,11 +2108,11 @@
       "lat": "lat",
       "lon": "lon",
       "flag": "bandeira",
-      "hours": "hours",
+      "hours": "horas",
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
-          "fishing": "fishing"
+          "fishing": "pesca"
         }
       },
       "vessel_id": "vessel_id",
@@ -2071,7 +2131,7 @@
       "source": "fonte",
       "shipname": "Embarcação",
       "nationalId": "nationalId",
-      "normalizedShipname": "normalizedShipname",
+      "normalizedShipname": "nome normalizado",
       "lastTransmissionDate": "última data de transmissão",
       "firstTransmissionDate": "primeira data de transmissão"
     }
@@ -2086,7 +2146,7 @@
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
-          "fishing": "fishing",
+          "fishing": "pesca",
           "international traffic": "international traffic",
           "national traffic": "national traffic",
           "tug": "tug",
@@ -2102,7 +2162,7 @@
     }
   },
   "public-mpa-all": {
-    "name": "MPAs",
+    "name": "MPAs (WDPA)",
     "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: November 2022. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer.",
     "schema": {}
   },
@@ -2138,21 +2198,21 @@
           "NOR": "NOR"
         }
       },
-      "hours": "hours",
+      "hours": "horas",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "Aparelho de pesca",
         "enum": {
           "dredge_fishing": "dredge_fishing",
-          "drifting_longlines": "drifting_longlines",
-          "fishing": "fishing",
+          "drifting_longlines": "Espinhel de superfície",
+          "fishing": "pesca",
           "fixed_gear": "fixed_gear",
-          "pole_and_line": "pole_and_line",
-          "pots_and_traps": "pots_and_traps",
+          "pole_and_line": "Vara e isca viva",
+          "pots_and_traps": "Armadilhas e potes",
           "purse_seines": "purse_seines",
           "seiners": "seiners",
-          "set_gillnets": "set_gillnets",
-          "set_longlines": "set_longlines",
-          "trawlers": "trawlers",
+          "set_gillnets": "Emalhe de Fundo",
+          "set_longlines": "Espinhel de fundo",
+          "trawlers": "Arrasto",
           "trollers": "trollers"
         }
       },
@@ -2172,25 +2232,25 @@
       "source": "source",
       "callsign": "callsign",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "Aparelho de pesca",
         "enum": {
           "dredge_fishing": "dredge_fishing",
-          "drifting_longlines": "drifting_longlines",
-          "fishing": "fishing",
+          "drifting_longlines": "Espinhel de superfície",
+          "fishing": "pesca",
           "fixed_gear": "fixed_gear",
-          "pole_and_line": "pole_and_line",
-          "pots_and_traps": "pots_and_traps",
+          "pole_and_line": "Vara e isca viva",
+          "pots_and_traps": "Armadilhas e potes",
           "purse_seines": "purse_seines",
           "seiners": "seiners",
-          "set_gillnets": "set_gillnets",
-          "set_longlines": "set_longlines",
-          "trawlers": "trawlers",
+          "set_gillnets": "Emalhe de Fundo",
+          "set_longlines": "Espinhel de fundo",
+          "trawlers": "Arrasto",
           "trollers": "trollers"
         }
       },
-      "shipname": "shipname",
-      "lastTransmissionDate": "lastTransmissionDate",
-      "firstTransmissionDate": "firstTransmissionDate"
+      "shipname": "Embarcação",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
     }
   },
   "public-norway-non-fishing-vessels": {
@@ -2202,25 +2262,25 @@
       "source": "source",
       "callsign": "callsign",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "Aparelho de pesca",
         "enum": {
           "dredge_fishing": "dredge_fishing",
-          "drifting_longlines": "drifting_longlines",
-          "fishing": "fishing",
+          "drifting_longlines": "Espinhel de superfície",
+          "fishing": "pesca",
           "fixed_gear": "fixed_gear",
-          "pole_and_line": "pole_and_line",
-          "pots_and_traps": "pots_and_traps",
+          "pole_and_line": "Vara e isca viva",
+          "pots_and_traps": "Armadilhas e potes",
           "purse_seines": "purse_seines",
           "seiners": "seiners",
-          "set_gillnets": "set_gillnets",
-          "set_longlines": "set_longlines",
-          "trawlers": "trawlers",
+          "set_gillnets": "Emalhe de Fundo",
+          "set_longlines": "Espinhel de fundo",
+          "trawlers": "Arrasto",
           "trollers": "trollers"
         }
       },
-      "shipname": "shipname",
-      "lastTransmissionDate": "lastTransmissionDate",
-      "firstTransmissionDate": "firstTransmissionDate"
+      "shipname": "Embarcação",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
     }
   },
   "public-norway-presence": {
@@ -2231,19 +2291,19 @@
       "lon": "lon",
       "flag": "flag",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "Aparelho de pesca",
         "enum": {
           "dredge_fishing": "dredge_fishing",
-          "drifting_longlines": "drifting_longlines",
-          "fishing": "fishing",
+          "drifting_longlines": "Espinhel de superfície",
+          "fishing": "pesca",
           "fixed_gear": "fixed_gear",
-          "pole_and_line": "pole_and_line",
-          "pots_and_traps": "pots_and_traps",
+          "pole_and_line": "Vara e isca viva",
+          "pots_and_traps": "Armadilhas e potes",
           "purse_seines": "purse_seines",
           "seiners": "seiners",
-          "set_gillnets": "set_gillnets",
-          "set_longlines": "set_longlines",
-          "trawlers": "trawlers",
+          "set_gillnets": "Emalhe de Fundo",
+          "set_longlines": "Espinhel de fundo",
+          "trawlers": "Arrasto",
           "trollers": "trollers"
         }
       },
@@ -2252,7 +2312,7 @@
       "vessel_type": {
         "keyword": "vessel_type",
         "enum": {
-          "fishing": "fishing",
+          "fishing": "pesca",
           "research": "research",
           "kelp trawler": "kelp trawler",
           "other": "other"
@@ -2270,7 +2330,7 @@
       "lat": "lat",
       "lon": "lon",
       "flag": "bandeira",
-      "hours": "hours",
+      "hours": "horas",
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
       "distance_from_port_m": "distance_from_port_m",
@@ -2284,7 +2344,7 @@
       "id": "id",
       "flag": "flag",
       "source": "source",
-      "shipname": "shipname",
+      "shipname": "Embarcação",
       "lastTransmissionDate": "última data de transmissão",
       "firstTransmissionDate": "primeira data de transmissão"
     }
@@ -2296,7 +2356,7 @@
       "id": "id",
       "flag": "flag",
       "source": "source",
-      "geartype": "geartype",
+      "geartype": "Aparelho de pesca",
       "shipname": "Embarcação",
       "lastTransmissionDate": "última data de transmissão",
       "firstTransmissionDate": "primeira data de transmissão"
@@ -2310,7 +2370,7 @@
       "lon": "lon",
       "flag": "bandeira",
       "fleet": {
-        "keyword": "fleet",
+        "keyword": "frota",
         "enum": {
           "industrial": "industrial",
           "artisanal": "artisanal",
@@ -2318,7 +2378,7 @@
           "not defined": "not defined"
         }
       },
-      "hours": "hours",
+      "hours": "horas",
       "origin": {
         "keyword": "origin",
         "enum": {
@@ -2339,7 +2399,7 @@
           "set_gillnets": "Emalhe de Fundo",
           "set_longlines|squid_jigger": "Espinhel de fundo | jigger lula",
           "driftnets|pole_and_line|set_gillnets|set_longlines": "emalhe de superfície | vara e isca viva | emalhe de fundo | espinhel de fundo",
-          "fishing": "fishing",
+          "fishing": "pesca",
           "driftnets|set_gillnets": "emalhe de superfície | emalhe de fundo",
           "fishing|purse_seines": "fishing|purse_seines",
           "drifting_longlines|trawlers": "espinhel de superfície | arrasto"
@@ -2370,7 +2430,7 @@
       "lon": "lon",
       "flag": "bandeira",
       "fleet": {
-        "keyword": "fleet",
+        "keyword": "frota",
         "enum": {
           "industrial": "industrial",
           "artisanal": "artisanal",
@@ -2399,13 +2459,61 @@
           "set_gillnets": "Emalhe de Fundo",
           "set_longlines|squid_jigger": "Espinhel de fundo | jigger lula",
           "driftnets|pole_and_line|set_gillnets|set_longlines": "emalhe de superfície | emalhe de fundo | espinhel de fundo",
-          "fishing": "fishing",
+          "fishing": "pesca",
           "driftnets|set_gillnets": "emalhe de superfície | emalhe de fundo",
           "fishing|purse_seines": "fishing|purse_seines",
           "drifting_longlines|trawlers": "espinhel de superfície | arrasto"
         }
       },
       "vessel_id": "vessel_id"
+    }
+  },
+  "public-png-fishing-effort": {
+    "name": "Papua New Guinea VMS",
+    "description": "Vessel monitoring system (VMS) data is provided by the The National Fisheries Authority of Papua New Guinea. Data is collected using Papua New Guinea's vessel monitoring (VMS) system via satellites, that contains vessel's identifiers and location, and is published on a five-day delay. Global Fishing Watch infers speed and course for each vessel location and analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity”. It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity”, “fishing” or “fishing effort”, as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": {
+        "keyword": "flag",
+        "enum": {
+          "PNG": "PNG",
+          "PHL": "PHL"
+        }
+      },
+      "hours": "horas",
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "public-png-fishing-vessels": {
+    "name": "Papua New Guinea VMS (Fishing Vessels)",
+    "description": "Dataset for VMS Papua New Guinea (Public)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "callsign": "callsign",
+      "shipname": "Embarcação",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
+    }
+  },
+  "public-png-presence": {
+    "name": "Papua New Guinea VMS",
+    "description": "Vessel monitoring system (VMS) data is provided by the The National Fisheries Authority of Papua New Guinea. Data is collected using Papua New Guinea's national VMS  that is provided by the Fisheries Information and Management System (FIMS). VMS data includes vessel identifiers and location, and is published with a five-day delay.\n\nThe activity layer displays a heatmap of vessel presence. The presence is determined by taking two positions per hour per vessel from the positions transmitted by the vessel's VMS.",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
     }
   },
   "public-presence-viirs-match-prototype": {
@@ -2444,7 +2552,7 @@
         }
       },
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "Aparelho de pesca",
         "enum": {
           "unknown": "unknown",
           "reefer": "reefer",
@@ -2458,10 +2566,10 @@
           "fishing|specialized_reefer": "fishing|specialized_reefer",
           "fish_factory|reefer": "fish_factory|reefer",
           "reefer|fish_tender": "reefer|fish_tender",
-          "drifting_longlines": "drifting_longlines",
+          "drifting_longlines": "Espinhel de superfície",
           "tuna_purse_seines": "tuna_purse_seines",
           "Anchored gillnets": "Anchored gillnets",
-          "set_longlines": "set_longlines",
+          "set_longlines": "Espinhel de fundo",
           "fish_tender|purse_seines|supply_vessel": "fish_tender|purse_seines|supply_vessel",
           "purse_seines": "purse_seines",
           "fixed_gear": "fixed_gear",
@@ -2480,7 +2588,7 @@
           "cargo": "cargo",
           "Hand Line Tuna": "Hand Line Tuna",
           "dredge_fishing": "dredge_fishing",
-          "trawlers": "trawlers",
+          "trawlers": "Arrasto",
           "seiners": "seiners",
           "reefer|well_boat": "reefer|well_boat",
           "Stick-Held lift net": "Stick-Held lift net",
@@ -2492,25 +2600,25 @@
           "well_boat|reefer": "well_boat|reefer",
           "well_boat|drifting_longlines|reefer": "well_boat|drifting_longlines|reefer",
           "fish_tender|fishing": "fish_tender|fishing",
-          "pole_and_line": "pole_and_line",
+          "pole_and_line": "Vara e isca viva",
           "purse_seine": "purse_seine",
           "Pole-and-line": "Pole-and-line",
-          "pots_and_traps": "pots_and_traps",
-          "set_gillnets": "set_gillnets",
+          "pots_and_traps": "Armadilhas e potes",
+          "set_gillnets": "Emalhe de Fundo",
           "Oceanic gillnet": "Oceanic gillnet",
           "longline_gigging": "longline_gigging",
           "oil_tanker": "oil_tanker",
           "gigging": "gigging",
-          "fishing": "fishing",
+          "fishing": "pesca",
           "cargo_reefer": "cargo_reefer",
           "reefer|fish_tender|drifting_longlines": "reefer|fish_tender|drifting_longlines",
-          "driftnets|set_gillnets": "driftnets|set_gillnets",
+          "driftnets|set_gillnets": "emalhe de superfície | emalhe de fundo",
           "Purse Seine Group (2 boat) Small Pelagics": "Purse Seine Group (2 boat) Small Pelagics",
           "Cast Nets": "Cast Nets",
           "pots_and_traps|fish_tender": "pots_and_traps|fish_tender",
           "Purse Seine Big Pelagics with one boat": "Purse Seine Big Pelagics with one boat",
           "fish_tender": "fish_tender",
-          "other_purse_seines": "other_purse_seines",
+          "other_purse_seines": "Rede de Cerco",
           "fish_tender|purse_seines": "fish_tender|purse_seines",
           "Longline Tuna": "Longline Tuna",
           "squid_jigger": "squid_jigger"
@@ -2527,7 +2635,7 @@
         "keyword": "shiptype",
         "enum": {
           "unknown": "unknown",
-          "fishing": "fishing",
+          "fishing": "pesca",
           "carrier": "carrier",
           "support": "support"
         }
@@ -2549,11 +2657,43 @@
     }
   },
   "public-protectedseas": {
-    "name": "Protected Seas",
-    "description": "Protected seas",
+    "name": "MPAs (ProtectedSeas)",
+    "description": "Áreas marinhas protegidas (MPAs) são áreas do oceano reservadas para conservação a longo prazo. Estes podem ter diferentes níveis de proteção, e a gama de atividades permitidas ou proibidas dentro de seus limites varia consideravelmente. Fonte: ProtectedSeas Navigator. ProtectedSeas atribui uma pontuação de Nível de Proteção à Pesca (LFP) para cada área com base em uma análise das restrições à extração de vida marinha. Você pode usar o ícone de filtro para explorar as diferentes pontuações LFP, que são: Menos restritivas: Sem restrições de pesca conhecidas; Pouco restritivo: Poucas restrições específicas de espécies ou equipamentos se aplicam; Moderadamente restritivo: Aplicam-se várias restrições específicas de espécies ou equipamentos; Fortemente restritivo: A pesca é praticamente proibida, com poucas exceções; Totalmente restritivo: A pesca é proibida. Veja <a href='https://protectedseas.net/mpa-methods/' target='_blank' rel=noopener'>informações</a> mais detalhadas para esta camada.",
     "schema": {
       "removal_of": {
-        "keyword": "removal_of",
+        "keyword": "Nível de Proteção à Pesca",
+        "enum": {
+          "1": "1. Pouco restritivo",
+          "2": "2. Menos restritivo",
+          "3": "3. Moderadamente restritivo",
+          "4": "4. Fortemente restritivo",
+          "5": "5. Totalmente restritivo"
+        }
+      }
+    }
+  },
+  "public-protectedseas-all": {
+    "name": "Protected Seas all",
+    "description": "Protected seas all",
+    "schema": {
+      "category_name": {
+        "keyword": "category_name",
+        "enum": {
+          "IUCN MPA": "IUCN MPA",
+          "Other": "Outros",
+          "Jurisdictional Authority Area": "Jurisdictional Authority Area",
+          "TBD": "TBD",
+          "Fisheries Management Area": "Fisheries Management Area",
+          "Recreational Area": "Recreational Area",
+          "OECM": "OECM",
+          "Vessel Restricted Area": "Vessel Restricted Area",
+          "Voluntary Conservation Measure Area": "Voluntary Conservation Measure Area",
+          "Vessel Reporting Area": "Vessel Reporting Area",
+          "Water Quality/Human Health Area": "Water Quality/Human Health Area"
+        }
+      },
+      "removal_of_marine_life_is_prohibited": {
+        "keyword": "removal_of_marine_life_is_prohibited",
         "enum": {
           "1": "1",
           "2": "2",
@@ -2567,7 +2707,49 @@
   "public-rfmo": {
     "name": "RFMO",
     "description": "Regional fisheries management organizations (RFMOs) are international bodies formed by countries with a shared interest in managing or conserving fish stocks in a particular region. Some manage all the fish stocks found in a given area, while others focus on specific highly migratory species, notably tuna. The regional fisheries management organization on the Global Fishing Watch map currently includes the five tuna regional fisheries management organizations. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer.",
-    "schema": {}
+    "schema": {
+      "ID": {
+        "keyword": "ID",
+        "enum": {
+          "APFIC": "APFIC",
+          "BOBP-IGO": "BOBP-IGO",
+          "CCAMLR": "CCAMLR",
+          "CCBSP": "CCBSP",
+          "CCSBT": "CCSBT",
+          "CCSBT Primary Area": "CCSBT Primary Area",
+          "COREP": "COREP",
+          "CPPS": "CPPS",
+          "CRFM": "CRFM",
+          "CTMFM": "CTMFM",
+          "FCWC": "FCWC",
+          "FFA": "FFA",
+          "GFCM": "GFCM",
+          "IATTC": "IATTC",
+          "ICCAT": "ICCAT",
+          "ICES": "ICES",
+          "IOTC": "IOTC",
+          "IPHC": "IPHC",
+          "LTA": "LTA",
+          "NAFO": "NAFO",
+          "NAMMCO": "NAMMCO",
+          "NASCO": "NASCO",
+          "NEAFC": "NEAFC",
+          "NPAFC": "NPAFC",
+          "NPFC": "NPFC",
+          "OSPESCA": "OSPESCA",
+          "PERSGA": "PERSGA",
+          "PICES": "PICES",
+          "RECOFI": "RECOFI",
+          "SEAFDEC": "SEAFDEC",
+          "SIOFA": "SIOFA",
+          "SPC": "SPC",
+          "SPRFMO": "SPRFMO",
+          "SRFC": "SRFC",
+          "SWIOFC": "SWIOFC",
+          "WCPFC": "WCPFC"
+        }
+      }
+    }
   },
   "public-tristan-seamounts-200-1618586314138": {
     "name": "Depth: -200 m",

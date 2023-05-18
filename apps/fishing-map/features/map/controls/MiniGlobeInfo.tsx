@@ -39,7 +39,7 @@ const MiniGlobeInfo = ({ viewport }: { viewport: MapCoordinates }) => {
       <div>
         {showDMS
           ? formatcoords(viewport.latitude, viewport.longitude).format('DDMMssX', {
-              latLonSeparator: '',
+              latLonSeparator: ' ',
               decimalPlaces: 2,
             })
           : `${toFixed(viewport.latitude, 4)},${toFixed(viewport.longitude, 4)}`}

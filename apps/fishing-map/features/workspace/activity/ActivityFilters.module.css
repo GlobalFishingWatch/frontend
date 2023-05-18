@@ -81,3 +81,13 @@
   position: absolute;
   right: var(--space-S);
 }
+
+.filtersDisabled {
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+  margin-top: var(--space-M);
+}
+
+.userGuideLink {
+  margin-top: var(--space-S);
+}

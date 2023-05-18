@@ -1,7 +1,5 @@
 import { useCallback, useState, useEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
-import { useAtom, useAtomValue } from 'jotai'
-import { event as uaEvent } from 'react-ga'
 import { Map, MapboxStyle } from 'react-map-gl'
 import { DeckGL, DeckGLRef } from '@deck.gl/react/typed'
 import { MapView } from '@deck.gl/core/typed'
@@ -41,15 +39,20 @@ import MapInfo from 'features/map/controls/MapInfo'
 import MapControls from 'features/map/controls/MapControls'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { getEventLabel } from 'utils/analytics'
-import { selectIsAnalyzing, selectShowTimeComparison } from 'features/analysis/analysis.selectors'
-import { selectIsMarineManagerLocation, isWorkspaceLocation } from 'routes/routes.selectors'
+import { selectShowTimeComparison } from 'features/reports/reports.selectors'
+import {
+  selectIsMarineManagerLocation,
+  selectIsReportLocation,
+  selectIsWorkspaceLocation,
+} from 'routes/routes.selectors'
 import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
 import { useMapLoaded, useSetMapIdleAtom } from 'features/map/map-state.hooks'
 import { useEnvironmentalBreaksUpdate } from 'features/workspace/environmental/environmental.hooks'
 import { mapReadyAtom } from 'features/map/map-state.atom'
-import { selectMapTimeseries } from 'features/analysis/analysis.hooks'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { selectHighlightedTime } from 'features/timebar/timebar.slice'
+import { selectMapTimeseries } from 'features/reports/reports-timeseries.hooks'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import useRulers from './rulers/rulers.hooks'
@@ -65,7 +68,7 @@ const MapDraw = dynamic(() => import(/* webpackChunkName: "MapDraw" */ './MapDra
 const PopupWrapper = dynamic(
   () => import(/* webpackChunkName: "PopupWrapper" */ './popups/PopupWrapper')
 )
-const Hint = dynamic(() => import(/* webpackChunkName: "Hint" */ 'features/hints/Hint'))
+const Hint = dynamic(() => import(/* webpackChunkName: "Hint" */ 'features/help/Hint'))
 
 // TODO: Abstract this away
 const transformRequest: (...args: any[]) => RequestParameters = (url: string) => {
@@ -172,8 +175,8 @@ const MapWrapper = () => {
 
   const currentClickCallback = useMemo(() => {
     const clickEvent = (event: any) => {
-      uaEvent({
-        category: 'Environmental data',
+      trackEvent({
+        category: TrackCategory.EnvironmentalData,
         action: `Click in grid cell`,
         label: getEventLabel(clickedCellLayers ?? []),
       })
@@ -226,8 +229,8 @@ const MapWrapper = () => {
   }, [viewport])
 
   const showTimeComparison = useSelector(selectShowTimeComparison)
-  const isAnalyzing = useSelector(selectIsAnalyzing)
-  const isWorkspace = useSelector(isWorkspaceLocation)
+  const reportLocation = useSelector(selectIsReportLocation)
+  const isWorkspace = useSelector(selectIsWorkspaceLocation)
   const debugOptions = useSelector(selectDebugOptions)
 
   const mapLegends = useMapLegend(style, dataviews, hoveredEvent)
@@ -374,10 +377,10 @@ const MapWrapper = () => {
         </Map>
       )}
       <MapControls onMouseEnter={resetHoverState} mapLoading={debouncedMapLoading} />
-      {isWorkspace && !isAnalyzing && (
+      {isWorkspace && !reportLocation && (
         <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
       )}
-      {isWorkspace && !isAnalyzing && (
+      {isWorkspace && !reportLocation && (
         <Hint id="clickingOnAGridCellToShowVessels" className={styles.helpHintRight} />
       )}
 

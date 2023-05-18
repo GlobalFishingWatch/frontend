@@ -10,18 +10,18 @@
     "commingSoon": "muy pronto!",
     "currentTimeRange": "período actual",
     "dataAndTerminology": "Data and Terminology",
-    "download": "Download",
-    "events": "Events",
+    "download": "Descargar",
+    "events": "Eventos",
     "faq": "FAQ's",
     "faqLink": "https://drive.google.com/file/d/1N4YRJ_yxAObEIWbaYM8l-YDPHS0bKe2N/view?usp=sharing",
-    "feedback": "Feedback",
+    "feedback": "Comentarios",
     "from": "desde",
     "GFW": "GFW",
     "high": "High",
     "historyFor": "historial para",
     "howToGuide": "How to guide",
     "howToGuideLink": "https://drive.google.com/file/d/1q2veC-EEUHWPg_eCplERJzlo8PL3OFZS/view?usp=sharing",
-    "in": "in",
+    "in": "en",
     "info": "info",
     "listedOn": "Listed on",
     "low": "Low",
@@ -30,7 +30,7 @@
     "no": "No",
     "offlineAccess": "acceso sin conexión",
     "offlineAccessEmptyState": "The vessels you save for offline access will appear here.",
-    "other": "Other",
+    "other": "Otro",
     "previous": "anteriones",
     "riskSummary": "Risk Summary",
     "rmfo": "RMFO",
@@ -38,7 +38,7 @@
     "timeRange": "período",
     "to": "hasta",
     "typeToSearch": "Type to search",
-    "unknown": "Unknown",
+    "unknown": "Desconocido",
     "unknownName": "Unknown name",
     "voyage": "Voyage",
     "voyageFrom": "Voyage From",
@@ -70,7 +70,7 @@
     "encounter_other": "encounter",
     "encounterActionWith": "Encounter with {{vessel}} in {{regionName}}",
     "encounterActionWithNoRegion": "Encounter with {{vessel}}",
-    "encounterAnotherVessel": "another vessel",
+    "encounterAnotherVessel": "otra embarcación",
     "end": "End",
     "endDistancePort": "End distance from port",
     "endDistanceShore": "End distance from shore",
@@ -98,7 +98,7 @@
     "internationalWaters": "International Waters",
     "iuu": "iuu",
     "knots": "knots",
-    "loitering": "Loitering",
+    "loitering": "Deriva",
     "loiteringAction": "Loitering in {{regionName}}",
     "maxCoords": "Max coordinates",
     "medianSpeed": "Median Speed",
@@ -113,7 +113,7 @@
     "nSelected_one": "{{count}} selected",
     "nSelected_other": "{{count}} selected",
     "nSelected_plural": "{{count}} selected",
-    "port": "Port",
+    "port": "Puerto",
     "portAction": "Port visit",
     "portAt": "Port visit at {{port}}",
     "portVisitEvents": "Port Visits",
@@ -126,7 +126,7 @@
     "start": "Start",
     "startDistancePort": "Start distance from port",
     "startDistanceShore": "Start distance from shore",
-    "unknown": "Unknown event",
+    "unknown": "Evento desconocido",
     "vesselInvolved": "Vessel involved in the event"
   },
   "events": {
@@ -140,10 +140,11 @@
     "byTypeLoiteringTitle": "{{count}} loitering events",
     "byTypePortVisitTitle": "{{count}} port visits",
     "csvReadmeFile": "README",
-    "download": "Download",
+    "download": "Descargar",
     "downloadAllActivity": "Download entire vessel activity",
     "downloadCurrentActivityFiltered": "Download current vessel activity filtered",
     "encounterEvents": "Encounter Events",
+    "encounteredVesselAuthorization": "Encountered Vessel Authorization",
     "encounterEventsDescription": "Encounters may indicate potential transshipment activity between two vessels that both appear on AIS. Encounters are estimated using AIS data, including distance between the two vessels, vessel speeds, and duration in a given area. <1></1>An encounter is defined as when two vessels, a carrier vessel and encountered fishing vessel, are detected on AIS data as within 500 meters for at least two hours and traveling at a median speed &lt;2 knots, while at least 10 km from a coastal anchorage.",
     "fishingEvents": "Fishing Events",
     "fishingEventsDescription": "When there is a consistent series of AIS points estimated as indicating apparent fishing activity the points are grouped into 'Fishing Events'. <1></1>We analyze the automatic identification system (AIS) data collected from vessels that our research has identified as known or possible commercial fishing vessels, and apply a fishing detection algorithm to determine “apparent fishing activity” based on changes in vessel speed and direction.<3></3>The algorithm classifies each AIS broadcast data point for these vessels as either “apparently fishing” or “not fishing” and shows the former on our fishing activity heat map. You can find more detail in our Technology page: <6>https://globalfishingwatch.org/our-technology/</6> and Dataset page: <10>https://globalfishingwatch.org/datasets-and-code/</10>.",
@@ -162,10 +163,11 @@
     "noHighlitingSettingsMessage": "You've not defined the highlight settings yet. Please click Settings to configure the activity of interest.",
     "noResults": "No events found. Try changing the current filters.",
     "portVisitEvents": "Port Visits",
-    "portVisitEventsDescription": "A port visit occurs when a vessel has a port Entry, Stop or Gap, and Exit event. This means the vessel is within 3 km of an anchorage (Port Entry), and is moving between 0.5 and 0.2 knots (Port Stop), or within an anchorage but has aa gap in AIS transmission for at least 4 hours (Port Gap), and then the vesselt transits more than 4 km outside of the anchorage point (Port Exit). Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate."
+    "portVisitEventsDescription": "A port visit occurs when a vessel has a port Entry, Stop or Gap, and Exit event. This means the vessel is within 3 km of an anchorage (Port Entry), and is moving between 0.5 and 0.2 knots (Port Stop), or within an anchorage but has aa gap in AIS transmission for at least 4 hours (Port Gap), and then the vesselt transits more than 4 km outside of the anchorage point (Port Exit). Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate.",
+    "vesselAuthorization": "Vessel Authorization"
   },
   "layer": {
-    "toggleVisibility": "Toggle layer visibility"
+    "toggleVisibility": "Cambiar la visibilidad de la capa"
   },
   "map": {
     "filters": "Filter events",
@@ -223,7 +225,7 @@
     "reportedCases": "Reported Cases",
     "riskModel": "Risk Model",
     "undeterminedPresenceOnARFMOIUUList": "Unable to determine if the vessel is present on a RFMO IUU list or not",
-    "unknown": "Unknown",
+    "unknown": "Desconocido",
     "vesselWithFlagOnMOU": "Vessel flying under a flag on the {{mou_name}} MOU black or grey list"
   },
   "search": {
@@ -231,7 +233,7 @@
     "activeBefore": "active before",
     "advanced": "advanced",
     "basic": "basic",
-    "callsign": "Callsign",
+    "callsign": "Señal distintiva de llamada",
     "description": "Buscar por nombre de buque o código de identificación (IMO, MMSI, VMS ID, etc…). Puedes restringir tu búsqueda presionando el icono de filtro en la barra superior",
     "flagState": "Flag States",
     "hideIndividual": "HIDE INDIVIDUAL RESULTS",
@@ -245,8 +247,8 @@
     "noTmtResults": "A vessel with these criteria could not be found, due to a timeout in the search function. Please try again.",
     "placeholder": "Search vessels by name, MMSI, IMO",
     "seeVessel": "See Vessel",
-    "shipname": "Name",
-    "title": "Search",
+    "shipname": "Nombre",
+    "title": "Búsqueda",
     "viewIndividual": "VIEW INDIVIDUAL RESULTS"
   },
   "selects": {
@@ -268,11 +270,11 @@
     },
     "enable": "Enable activity highlights",
     "encounters": {
-      "shortTitle": "Encounter",
+      "shortTitle": "Encuentro",
       "title": "Encounter Events"
     },
     "fishingEvents": {
-      "shortTitle": "Fishing",
+      "shortTitle": "Pesca",
       "title": "Fishing Events"
     },
     "gapEvents": {
@@ -285,7 +287,7 @@
     "km": "km",
     "kms": "kms",
     "loiteringEvents": {
-      "shortTitle": "Loitering",
+      "shortTitle": "Deriva",
       "title": "Loitering Events"
     },
     "longerThan": "Longer than",
@@ -309,17 +311,17 @@
   },
   "user": {
     "loggedInAs": "logged in as",
-    "login": "Log in",
+    "login": "Iniciar sesión",
     "notAuthorized": "Only some specific registered users can use this product",
     "notLoggedIn": "Only some specific registered users can use this product. Please log in with your Global Fishing Watch credentials",
     "requestAccess": "Request Access",
-    "switchAccount": "Switch account"
+    "switchAccount": "Cambiar de cuenta"
   },
   "vessel": {
     "aisTransmission_plural": "AIS Transmissions",
     "authorization_plural": "autorizaciones",
     "authorizationRangeHelp": "RFMO authorizations are based on available data. Dates may be approximations where RFMO authorized vessel lists, do not contain specific authorization periods.",
-    "authorizations": "authorizations",
+    "authorizations": "autorizaciones",
     "builtYear": "año de fabricación",
     "builtYear_plural": "años construidos",
     "callsign": "signatura",

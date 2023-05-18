@@ -1,0 +1,41 @@
+.container {
+  padding: 1.5rem var(--space-M);
+  border-bottom: var(--border);
+}
+
+.titleRow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.blockTitle {
+  color: var(--color-primary-blue);
+  line-height: 2.8rem;
+}
+
+.tagsContainer {
+  gap: var(--space-S) var(--space-M);
+  flex-wrap: wrap;
+  display: none;
+}
+
+@media print {
+  .container {
+    page-break-before: always;
+    border-bottom: none;
+  }
+
+  .titleRow {
+    justify-content: initial;
+  }
+
+  .blockTitle::after {
+    content: ' - ';
+  }
+
+  .tagsContainer {
+    display: flex;
+  }
+}

@@ -30,6 +30,12 @@
   height: var(--size-S);
 }
 
+.delete {
+  position: absolute;
+  bottom: 0.4rem;
+  right: 3rem;
+}
+
 .icon {
   position: absolute;
   bottom: 0;
@@ -67,9 +73,8 @@
   border-bottom: 1px solid var(--color-danger-red);
 }
 
-.input[type='search'] {
-  -moz-appearance: none; /* older firefox */
-  -webkit-appearance: none; /* safari, chrome, edge and ie mobile */
+.input[type='search'] { /* older firefox */
+  appearance: none; /* safari, chrome, edge and ie mobile */
   appearance: none; /* rest */
 }
 

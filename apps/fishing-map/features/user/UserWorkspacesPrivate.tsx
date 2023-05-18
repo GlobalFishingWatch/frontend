@@ -5,10 +5,12 @@ import { useSelector } from 'react-redux'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { Workspace } from '@globalfishingwatch/api-types'
 import { WORKSPACE } from 'routes/routes'
-import { WorkspaceCategories } from 'data/workspaces'
+import { WorkspaceCategory } from 'data/workspaces'
 import { selectWorkspaceListStatus } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useViewport from 'features/map/map-viewport.hooks'
+import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
+import { sortByCreationDate } from 'utils/dates'
 import { selectUserWorkspacesPrivate } from './user.selectors'
 import styles from './User.module.css'
 
@@ -41,7 +43,7 @@ function UserWorkspacesPrivate() {
         <label>{t('workspace.privateTitle_other', 'Private workspaces')}</label>
       </div>
       <ul>
-        {workspaces.map((workspace) => {
+        {sortByCreationDate<Workspace>(workspaces).map((workspace) => {
           return (
             <li className={styles.workspace} key={workspace.id}>
               <Link
@@ -49,14 +51,14 @@ function UserWorkspacesPrivate() {
                 to={{
                   type: WORKSPACE,
                   payload: {
-                    category: workspace.category || WorkspaceCategories.FishingActivity,
+                    category: workspace.category || WorkspaceCategory.FishingActivity,
                     workspaceId: workspace.id,
                   },
                   query: {},
                 }}
                 onClick={() => onWorkspaceClick(workspace)}
               >
-                <span className={styles.workspaceTitle}>🔒 {workspace.name}</span>
+                <span className={styles.workspaceTitle}>{getWorkspaceLabel(workspace)}</span>
                 <IconButton icon="arrow-right" />
               </Link>
             </li>

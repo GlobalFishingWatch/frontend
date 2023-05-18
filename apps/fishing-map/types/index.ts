@@ -1,14 +1,32 @@
 import { BaseUrlWorkspace } from '@globalfishingwatch/dataviews-client'
-import { EventType } from '@globalfishingwatch/api-types'
+import { DatasetSubCategory, DataviewCategory, EventType } from '@globalfishingwatch/api-types'
+import {
+  REPORT_VESSELS_GRAPH_GEARTYPE,
+  REPORT_VESSELS_GRAPH_FLAG,
+  REPORT_ACTIVITY_GRAPH_EVOLUTION,
+  REPORT_ACTIVITY_GRAPH_BEFORE_AFTER,
+  REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
+  REPORT_VESSELS_GRAPH_VESSELTYPE,
+} from 'data/config'
 export { Locale } from '@globalfishingwatch/api-types'
 
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
 export type WorkspaceTimeRangeParam = 'start' | 'end'
+
+export type ReportStateProperty =
+  | 'reportActivityGraph'
+  | 'reportAreaBounds'
+  | 'reportAreaSource'
+  | 'reportCategory'
+  | 'reportResultsPerPage'
+  | 'reportTimeComparison'
+  | 'reportVesselFilter'
+  | 'reportVesselGraph'
+  | 'reportVesselPage'
+
 export type WorkspaceStateProperty =
   | 'query'
-  | 'analysis'
-  | 'analysisType'
-  | 'analysisTimeComparison'
+  | 'report'
   | 'readOnly'
   | 'daysFromLatest'
   | 'sidebarOpen'
@@ -20,6 +38,7 @@ export type WorkspaceStateProperty =
   | 'timebarSelectedEnvId'
   | 'bivariateDataviews'
   | 'activityCategory'
+  | ReportStateProperty
 
 export type WorkspaceParam =
   | WorkspaceViewportParam
@@ -28,36 +47,52 @@ export type WorkspaceParam =
 
 export type WorkspaceViewport = Record<WorkspaceViewportParam, number>
 export type WorkspaceTimeRange = Record<WorkspaceTimeRangeParam, string>
-export type WorkspaceAnalysis = {
-  areaId: string
-  sourceId: string
-  datasetId: string
-  bounds?: [number, number, number, number]
-}
-export type WorkspaceAnalysisType = 'evolution' | 'correlation' | 'periodComparison' | 'beforeAfter'
-export type WorkspaceAnalysisTimeComparison = {
+
+export type BivariateDataviews = [string, string]
+export type ReportActivityGraph =
+  | typeof REPORT_ACTIVITY_GRAPH_EVOLUTION
+  | typeof REPORT_ACTIVITY_GRAPH_BEFORE_AFTER
+  | typeof REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON
+
+export type ReportActivityTimeComparison = {
   start: string
   compareStart: string
   duration: number
-  durationType: string
+  durationType: 'days' | 'months'
 }
 
-export type BivariateDataviews = [string, string]
+export enum ReportCategory {
+  Fishing = DatasetSubCategory.Fishing,
+  Presence = DatasetSubCategory.Presence,
+  Detections = DataviewCategory.Detections,
+  Environment = DataviewCategory.Environment,
+}
+
+export type ReportVesselGraph =
+  | typeof REPORT_VESSELS_GRAPH_GEARTYPE
+  | typeof REPORT_VESSELS_GRAPH_VESSELTYPE
+  | typeof REPORT_VESSELS_GRAPH_FLAG
 
 export type WorkspaceActivityCategory = 'fishing' | 'presence'
 export interface WorkspaceState extends BaseUrlWorkspace {
+  bivariateDataviews?: BivariateDataviews
+  daysFromLatest?: number // use latest day as endAt minus the number of days set here
   query?: string
   readOnly?: boolean
-  daysFromLatest?: number // use latest day as endAt minus the number of days set here
+  reportActivityGraph?: ReportActivityGraph
+  reportAreaBounds?: Bbox
+  reportAreaSource?: string
+  reportCategory?: ReportCategory
+  reportTimeComparison?: ReportActivityTimeComparison
+  reportVesselFilter?: string
+  reportVesselGraph?: ReportVesselGraph
+  reportVesselPage?: number
+  reportResultsPerPage?: number
   sidebarOpen?: boolean
-  analysis?: WorkspaceAnalysis
-  analysisType?: WorkspaceAnalysisType
-  analysisTimeComparison?: WorkspaceAnalysisTimeComparison
-  timebarVisualisation?: TimebarVisualisations
-  visibleEvents?: VisibleEvents
   timebarGraph?: TimebarGraphs
   timebarSelectedEnvId?: string
-  bivariateDataviews?: BivariateDataviews
+  timebarVisualisation?: TimebarVisualisations
+  visibleEvents?: VisibleEvents
 }
 
 export type RedirectParam = {

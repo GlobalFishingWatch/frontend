@@ -4,6 +4,7 @@ import { MapView, PickingInfo } from '@deck.gl/core/typed'
 import { useVesselsLayer } from 'layers/vessel/vessels.hooks'
 import { useContextsLayer } from 'layers/context/context.hooks'
 import { useBasemapLayer } from 'layers/basemap/basemap.hooks'
+import { useCustomReferenceLayer } from 'layers/custom-reference/custom-reference.hooks'
 import { useFourwingsLayer, useFourwingsLayerLoaded } from 'layers/fourwings/fourwings.hooks'
 import { useAtom } from 'jotai'
 import { useURLViewport, useViewport } from 'features/map/map-viewport.hooks'
@@ -21,13 +22,15 @@ const MapWrapper = (): React.ReactElement => {
   const vesselsLayer = useVesselsLayer()
   const contextLayer = useContextsLayer()
   const fourwingsLoaded = useFourwingsLayerLoaded()
+  const editableLayer = useCustomReferenceLayer()
   const [hoveredFeatures, setHoveredFeatures] = useAtom(hoveredFeaturesAtom)
   const [clickedFeatures, setClickedFeatures] = useAtom(clickedFeaturesAtom)
 
   const layers = useMemo(
-    () => zIndexSortedArray([basemapLayer, contextLayer, fourwingsLayer, vesselsLayer]),
+    () =>
+      zIndexSortedArray([basemapLayer, contextLayer, fourwingsLayer, vesselsLayer, editableLayer]),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [fourwingsLayer, contextLayer, vesselsLayer, fourwingsLoaded, basemapLayer]
+    [fourwingsLayer, contextLayer, vesselsLayer, fourwingsLoaded, basemapLayer, editableLayer]
   )
 
   const onClick = useCallback(
@@ -116,6 +119,7 @@ const MapWrapper = (): React.ReactElement => {
         onClick={onClick}
         onHover={onHover}
         onViewStateChange={onViewportStateChange}
+        getCursor={editableLayer && editableLayer.getCursor.bind(editableLayer)}
         // this experimental prop reduces memory usage
         _typedArrayManagerProps={{ overAlloc: 1, poolSize: 0 }}
       />

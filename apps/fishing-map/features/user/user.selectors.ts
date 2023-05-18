@@ -1,6 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { orderBy, uniqBy } from 'lodash'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
+import { RootState } from 'reducers'
 import { DatasetStatus, DatasetCategory, UserPermission } from '@globalfishingwatch/api-types'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
@@ -10,11 +11,11 @@ import {
 import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { PRIVATE_SUFIX, USER_SUFIX } from 'data/config'
-import { RootState } from 'store'
 import {
   selectAllVesselGroups,
   selectWorkspaceVesselGroups,
 } from 'features/vessel-groups/vessel-groups.slice'
+import { selectAllReports } from 'features/reports/reports.slice'
 import {
   selectUserStatus,
   selectUserLogged,
@@ -73,6 +74,17 @@ export const selectUserWorkspaces = createSelector(
   (userData, workspaces) => {
     return orderBy(
       workspaces?.filter((workspace) => workspace.ownerId === userData?.id),
+      'createdAt',
+      'desc'
+    )
+  }
+)
+
+export const selectUserReports = createSelector(
+  [(state: RootState) => selectUserData(state), (state: RootState) => selectAllReports(state)],
+  (userData, reports) => {
+    return orderBy(
+      reports?.filter((report) => report.ownerId === userData?.id),
       'createdAt',
       'desc'
     )
