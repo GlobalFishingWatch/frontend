@@ -37,6 +37,7 @@ import { HOME, REPORT, WORKSPACE } from 'routes/routes'
 import { selectReportAreaIds } from 'features/reports/reports.selectors'
 import { resetAreaDetail } from 'features/areas/areas.slice'
 import { QueryParams } from 'types'
+import { resetVesselState } from 'features/vessel/vessel.slice'
 import { useClipboardNotification } from './sidebar.hooks'
 import styles from './SidebarHeader.module.css'
 
@@ -269,12 +270,30 @@ function CloseReportButton() {
   )
 }
 
+function CloseSectionButton() {
+  const dispatch = useAppDispatch()
+  const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
+
+  const onCloseClick = () => {
+    dispatch(resetVesselState())
+  }
+
+  if (!lastVisitedWorkspace) {
+    return null
+  }
+
+  return (
+    <Link className={styles.workspaceLink} to={lastVisitedWorkspace} onClick={onCloseClick}>
+      <IconButton type="border" icon="close" />
+    </Link>
+  )
+}
+
 function SidebarHeader() {
   const readOnly = useSelector(selectReadOnly)
   const locationCategory = useSelector(selectLocationCategory)
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
   const reportLocation = useSelector(selectIsReportLocation)
-  const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
   const showBackToWorkspaceButton = !workspaceLocation
 
   const getSubBrand = useCallback((): SubBrands | undefined => {
@@ -289,14 +308,14 @@ function SidebarHeader() {
         <a href="https://globalfishingwatch.org" className={styles.logoLink}>
           <Logo className={styles.logo} subBrand={getSubBrand()} />
         </a>
-        {reportLocation && !readOnly && <SaveReportButton />}
-        {workspaceLocation && !readOnly && <SaveWorkspaceButton />}
-        {(workspaceLocation || reportLocation) && !readOnly && <ShareWorkspaceButton />}
-        {reportLocation && !readOnly && <CloseReportButton />}
-        {!reportLocation && !readOnly && showBackToWorkspaceButton && lastVisitedWorkspace && (
-          <Link className={styles.workspaceLink} to={lastVisitedWorkspace}>
-            <IconButton type="border" icon="close" />
-          </Link>
+        {!readOnly && (
+          <Fragment>
+            {reportLocation && <SaveReportButton />}
+            {workspaceLocation && <SaveWorkspaceButton />}
+            {(workspaceLocation || reportLocation) && <ShareWorkspaceButton />}
+            {reportLocation && <CloseReportButton />}
+            {!reportLocation && showBackToWorkspaceButton && <CloseSectionButton />}
+          </Fragment>
         )}
       </div>
     </Sticky>

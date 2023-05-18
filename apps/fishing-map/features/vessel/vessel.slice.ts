@@ -120,7 +120,11 @@ export const fetchVesselEventsThunk = createAsyncThunk(
 const vesselSlice = createSlice({
   name: 'vessel',
   initialState,
-  reducers: {},
+  reducers: {
+    resetVesselState: () => {
+      return initialState
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchVesselInfoThunk.pending, (state) => {
       state.info.status = AsyncReducerStatus.Loading
@@ -143,7 +147,6 @@ const vesselSlice = createSlice({
       state.events.status = AsyncReducerStatus.Error
     })
     builder.addCase(HYDRATE, (state, action: any) => {
-      console.log('HYDRATE', state, action)
       return {
         ...state,
         ...action.payload.vessel,
@@ -151,6 +154,8 @@ const vesselSlice = createSlice({
     })
   },
 })
+
+export const { resetVesselState } = vesselSlice.actions
 
 export const selectVesselInfoData = (state: VesselSliceState) => state.vessel.info.data
 export const selectVesselInfoStatus = (state: VesselSliceState) => state.vessel.info.status
