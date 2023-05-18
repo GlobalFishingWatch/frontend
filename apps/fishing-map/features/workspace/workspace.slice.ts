@@ -325,10 +325,10 @@ const workspaceSlice = createSlice({
   initialState,
   reducers: {
     resetWorkspaceSlice: (state) => {
-      state.status = AsyncReducerStatus.Idle
-      state.customStatus = AsyncReducerStatus.Idle
-      state.data = null
-      state.error = {}
+      state.status = initialState.status
+      state.customStatus = initialState.customStatus
+      state.data = initialState.data
+      state.error = initialState.error
     },
     cleanCurrentWorkspaceData: (state) => {
       state.data = null

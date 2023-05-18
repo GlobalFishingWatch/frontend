@@ -384,26 +384,8 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
     setVesselGroupCurrentDataviewIds: (state, action: PayloadAction<string[]>) => {
       state.currentDataviewIds = action.payload
     },
-    resetVesselGroup: (state) => {
-      // Using initialState doesn't work so needs manual reset
-      state.status = AsyncReducerStatus.Idle
-      state.isModalOpen = false
-      state.vesselGroupEditId = undefined
-      state.confirmationMode = 'save'
-      state.currentDataviewIds = undefined
-      state.groupVessels = undefined
-      state.search = {
-        id: 'mmsi',
-        status: AsyncReducerStatus.Idle,
-        vessels: undefined,
-        error: undefined,
-      }
-      state.newSearchVessels = undefined
-      state.workspace = {
-        status: AsyncReducerStatus.Idle,
-        error: undefined,
-        vesselGroups: undefined,
-      }
+    resetVesselGroup: () => {
+      return initialState
     },
   },
   extraReducers(builder) {
