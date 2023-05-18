@@ -271,19 +271,14 @@ function CloseReportButton() {
 }
 
 function CloseSectionButton() {
-  const dispatch = useAppDispatch()
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
-
-  const onCloseClick = () => {
-    dispatch(resetVesselState())
-  }
 
   if (!lastVisitedWorkspace) {
     return null
   }
 
   return (
-    <Link className={styles.workspaceLink} to={lastVisitedWorkspace} onClick={onCloseClick}>
+    <Link className={styles.workspaceLink} to={lastVisitedWorkspace}>
       <IconButton type="border" icon="close" />
     </Link>
   )

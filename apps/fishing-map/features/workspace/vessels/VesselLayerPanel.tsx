@@ -46,6 +46,7 @@ import {
   selectCurrentWorkspaceCategory,
   selectCurrentWorkspaceId,
 } from 'features/workspace/workspace.selectors'
+import { resetVesselState, selectVesselInfoDataId } from 'features/vessel/vessel.slice'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -77,6 +78,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const userPrivateGroups = useSelector(selectPrivateUserGroups)
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const workspaceCategory = useSelector(selectCurrentWorkspaceCategory)
+  const vesselInfoDataId = useSelector(selectVesselInfoDataId)
   const downloadDatasetsSupported = getVesselDatasetsDownloadTrackSupported(
     dataview,
     userData?.permissions
@@ -103,7 +105,10 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   //   setInfoOpen(!infoOpen)
   // }
 
-  const onInfoClick = () => {
+  const onInfoClick = (vesselId: string) => {
+    if (vesselId !== vesselInfoDataId) {
+      dispatch(resetVesselState())
+    }
     // dispatchLocation(
     //   VESSEL,
     //   {
@@ -306,7 +311,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
             vesselDatasetId: dataset?.id,
           },
         }}
-        onClick={onInfoClick}
+        onClick={() => onInfoClick(vesselId)}
       >
         <IconButton
           size="small"

@@ -158,6 +158,7 @@ const vesselSlice = createSlice({
 export const { resetVesselState } = vesselSlice.actions
 
 export const selectVesselInfoData = (state: VesselSliceState) => state.vessel.info.data
+export const selectVesselInfoDataId = (state: VesselSliceState) => state.vessel.info.data?.id
 export const selectVesselInfoStatus = (state: VesselSliceState) => state.vessel.info.status
 export const selectVesselEventsData = (state: VesselSliceState) => state.vessel.events?.data
 export const selectVesselEventsStatus = (state: VesselSliceState) => state.vessel.events?.status
