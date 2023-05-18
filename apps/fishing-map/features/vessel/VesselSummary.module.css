@@ -7,11 +7,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: var(--space-S);
 }
 
 .title {
   font: var(--font-L);
-  margin-bottom: var(--space-S);
 }
 
 .summary {

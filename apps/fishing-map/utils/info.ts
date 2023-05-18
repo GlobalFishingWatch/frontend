@@ -8,14 +8,29 @@ export const upperFirst = (text: string) =>
   text.charAt(0).toUpperCase() + text.substr(1).toLowerCase()
 
 export const formatInfoField = (fieldValue: string, type: string) => {
-  if (!fieldValue && type === 'name') return t('common.unknownVessel', 'Unknown Vessel')
-  if (!fieldValue) return EMPTY_FIELD_PLACEHOLDER
-  if (type === 'name') return fieldValue.replace(/\b(?![LXIVCDM]+\b)([A-Z,Ñ]+)\b/g, upperFirst)
-  if (type === 'fleet') {
-    const fleetClean = fieldValue.replaceAll('_', ' ')
-    return fleetClean.charAt(0).toUpperCase() + fleetClean.slice(1)
+  if (fieldValue) {
+    if (type === 'flag') {
+      return t(`flags:${fieldValue}` as any, fieldValue)
+    }
+    if (type === 'vesselType') {
+      return t(`vessel.vesselTypes.${fieldValue}` as any, fieldValue)
+    }
+    if (type === 'geartype') {
+      return t(`vessel.gearTypes.${fieldValue}` as any, fieldValue)
+    }
+    if (!fieldValue && (type === 'name' || type === 'shipname')) {
+      return t('common.unknownVessel', 'Unknown Vessel')
+    }
+    if (type === 'name' || type === 'shipname') {
+      return fieldValue.replace(/\b(?![LXIVCDM]+\b)([A-Z,Ñ]+)\b/g, upperFirst)
+    }
+    if (type === 'fleet') {
+      const fleetClean = fieldValue.replaceAll('_', ' ')
+      return fleetClean.charAt(0).toUpperCase() + fleetClean.slice(1)
+    }
+    return fieldValue
   }
-  return fieldValue
+  return EMPTY_FIELD_PLACEHOLDER
 }
 
 export const formatNumber = (num: string | number, maximumFractionDigits?: number) => {

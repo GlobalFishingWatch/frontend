@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Icon, IconType } from '@globalfishingwatch/ui-components'
 import { selectVesselEventsFilteredByTimerange } from 'features/vessel/vessel.selectors'
+import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import styles from './VesselActivitySummary.module.css'
 
 export const VesselActivitySummary = () => {
@@ -21,7 +22,7 @@ export const VesselActivitySummary = () => {
           <div className={styles.iconContainer}>
             <Icon icon={`event-legend-${eventType}` as IconType} type="original-colors" />
           </div>
-          <strong>{events.length}</strong>
+          <strong>{formatI18nNumber(events.length)}</strong>
           {t(`event.${eventType}` as any, {
             defaultValue: eventType,
             count: events.length,
