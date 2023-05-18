@@ -44,10 +44,14 @@ const VesselDetail = () => {
       {
         id: 'relatedVessels',
         title: t('vessel.sectionRelatedVessels', 'Related Vessels'),
+        tooltip: t('common.comingSoon', 'Coming soon'),
+        disabled: true,
       },
       {
         id: 'areas',
         title: t('vessel.sectionAreas', 'Areas'),
+        tooltip: t('common.comingSoon', 'Coming soon'),
+        disabled: true,
       },
     ],
     [t]
