@@ -1,13 +1,11 @@
-import { useEffect, useRef, useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { PickingInfo, LayerData, Layer } from '@deck.gl/core/typed'
-import { atom, useSetAtom, useAtom, useAtomValue } from 'jotai'
-import { selectAtom, splitAtom } from 'jotai/utils'
-import { focusAtom } from 'jotai-optics'
-import type { OpticFor } from 'optics-ts'
+import { atom, useSetAtom, useAtomValue } from 'jotai'
+import { selectAtom } from 'jotai/utils'
 import { EventTypes } from '@globalfishingwatch/api-types'
+import { VesselDeckLayersGenerator } from '@globalfishingwatch/layer-composer'
 import { START_TIMESTAMP } from '../../loaders/constants'
-import { VesselEventsLayer } from './VesselEventsLayer'
-import { VesselTrackLayer } from './VesselTrackLayer'
+import { parseEvents } from '../../loaders/vessels/eventsLoader'
 import { VesselLayer } from './VesselLayer'
 
 const dateToMs = (date: string) => {
@@ -15,31 +13,13 @@ const dateToMs = (date: string) => {
 }
 
 interface VesselLayerState {
-  vesselId: string
-  instance: VesselLayer
-  trackDataLoaded: boolean
-  eventsDataLoaded: boolean
-}
-
-const vesselLayerStateAtom = atom<VesselLayerState[]>([
-  {
-    vesselId: 'vesselId',
-    instance: new VesselLayer({}),
-    trackDataLoaded: false,
-    eventsDataLoaded: false,
-  },
-])
-const vesselsAtomsAtom = splitAtom(vesselLayerStateAtom)
-// const focusInstancesAtom = focusAtom(vesselsAtomsAtom, (optic) => optic.prop('instance'))
-
-interface VesselLayerData {
   id: string
-  loaded?: boolean
   instance: VesselLayer
+  loadedLayers: string[]
 }
 
-export const vesselLayersAtom = atom<VesselLayerData[]>([])
-export const vesselLayersSelector = (layers: VesselLayerData[]) => layers
+export const vesselLayersAtom = atom<VesselLayerState[]>([])
+export const vesselLayersSelector = (layers: VesselLayerState[]) => layers
 export const vesselLayersInstancesSelector = atom((get) =>
   get(vesselLayersAtom).map((l) => l.instance)
 )
@@ -47,50 +27,39 @@ export const vesselLayersInstancesSelector = atom((get) =>
 export const selectVesselsLayersAtom = selectAtom(vesselLayersAtom, vesselLayersSelector)
 
 interface globalConfig {
-  start: string
-  end: string
-  hoveredFeatures: PickingInfo[]
-  clickedFeatures: PickingInfo[]
+  start?: string
+  end?: string
+  // hoveredFeatures: PickingInfo[]
+  // clickedFeatures: PickingInfo[]
   highlightedTime?: { start: string; end: string }
   visibleEvents?: EventTypes[]
 }
 
-interface commonGeneratorConfig {
-  id: string
-  color: string
-  visible: boolean
-}
-
-interface vesselGeneratorConfig extends commonGeneratorConfig {
-  vesselId: string
-  eventsUrls: string[]
-  trackUrl: string
-}
-
-export const useVesselsLayers = (
-  vesselGeneratorConfig: vesselGeneratorConfig[],
+export const useVesselLayers = (
+  vesselLayersGenerator: VesselDeckLayersGenerator,
   globalConfig: globalConfig,
-  vesselLayersGeneratorsIds: string[],
   highlightedTime?: { start: string; end: string }
 ) => {
-  const { start, end, hoveredFeatures, clickedFeatures, visibleEvents } = globalConfig
+  const { start, end } = globalConfig
 
   const setVesselLayers = useSetAtom(vesselLayersAtom)
-  const vs = useAtomValue(vesselLayersAtom)
-  let vesselsLayers = useRef([] as VesselLayerData[])
-  const setVesselLoadedAtom = atom(null, (get, set, id: VesselLayerData['id']) => {
-    const layerToUpdate = get(vesselLayersAtom).find((l) => id.includes(l.id))!
-    console.log(
-      '🚀 ~ file: vessel.hooks.ts:81 ~ setVesselLoadedAtom ~ layerToUpdate:',
-      layerToUpdate
-    )
 
-    set(vesselLayersAtom, [
-      ...get(vesselLayersAtom).filter((l) => !id.includes(l.id)),
-      { ...layerToUpdate, loaded: true },
-    ])
-  })
-  const setVesselLoadedState = useSetAtom(setVesselLoadedAtom)
+  const setVesselLoadedState = useSetAtom(
+    atom(null, (get, set, id: VesselLayerState['id']) =>
+      set(vesselLayersAtom, (prevVessels) => {
+        return prevVessels.map((v) => {
+          if (id.includes(v.id)) {
+            return {
+              ...v,
+              loadedLayers: [...v.loadedLayers, id],
+            }
+          }
+          return v
+        })
+      })
+    )
+  )
+
   const onDataLoad = (data: LayerData<any>, context: { propName: string; layer: Layer<any> }) => {
     setVesselLoadedState(context.layer.id)
   }
@@ -104,45 +73,40 @@ export const useVesselsLayers = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [highlightedTime?.end]
   )
-  const startTime = useMemo(() => dateToMs(start) - START_TIMESTAMP, [start])
-  const endTime = useMemo(() => dateToMs(end) - START_TIMESTAMP, [end])
+  const startTime = useMemo(() => (start ? dateToMs(start) - START_TIMESTAMP : undefined), [start])
+  const endTime = useMemo(() => (end ? dateToMs(end) - START_TIMESTAMP : undefined), [end])
   useEffect(() => {
-    vesselGeneratorConfig.forEach((vesselConfig) => {
-      const { vesselId: id, color: themeColor, eventsUrls, trackUrl } = vesselConfig
+    vesselLayersGenerator.ids.forEach((id: string) => {
+      const { eventsData, colors, visibleEvents, trackUrls, eventsUrls } = vesselLayersGenerator
 
       const instance = new VesselLayer({
         id,
         visible: true,
         endTime,
-        trackUrl,
+        trackUrl: trackUrls[id],
         startTime,
-        themeColor,
-        eventsUrls,
+        themeColor: colors[id],
+        eventsUrls: eventsUrls[id],
         onDataLoad,
-        hoveredFeatures,
-        clickedFeatures,
+        // hoveredFeatures,
+        // clickedFeatures,
         highlightEndTime,
         highlightStartTime,
         visibleEvents,
+        eventsResource: eventsData[id]?.length ? parseEvents(eventsData[id]) : [],
       })
-      vesselsLayers.current = [
-        ...vesselsLayers.current.filter((v) => v.id !== id),
-        {
+
+      setVesselLayers((prevVessels) => {
+        const updatedVessels = prevVessels.filter((v) => v.id !== id)
+        updatedVessels.push({
           id,
-          // loaded: vs.find((v) => v.id === id)?.loaded || false,
           instance,
-        },
-      ]
+          loadedLayers: [],
+        })
+        return updatedVessels
+      })
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    vesselLayersGeneratorsIds,
-    start,
-    end,
-    highlightEndTime,
-    highlightStartTime,
-    vs,
-    visibleEvents,
-  ])
-  setVesselLayers(vesselsLayers.current)
+  }, [start, end, highlightEndTime, highlightStartTime, vesselLayersGenerator])
+  return useAtomValue(vesselLayersInstancesSelector)
 }
