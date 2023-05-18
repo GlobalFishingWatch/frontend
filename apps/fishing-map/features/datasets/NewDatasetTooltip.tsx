@@ -10,7 +10,8 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUserDatasetsNotUsed } from 'features/user/user.selectors'
 import { isGuestUser } from 'features/user/user.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { getDatasetIcon } from 'features/datasets/datasets.utils'
+import { getDatasetIcon, getDatasetLabel } from 'features/datasets/datasets.utils'
+import UserGuideLink from 'features/help/UserGuideLink'
 import { useAddDataviewFromDatasetToWorkspace, useAddDataset } from './datasets.hook'
 import styles from './NewDatasetTooltip.module.css'
 import {
@@ -101,7 +102,7 @@ function NewDatasetTooltip({ onSelect, datasetCategory }: NewDatasetTooltipProps
                       style={{ transform: 'translateY(25%)' }}
                     />
                   )}
-                  {dataset.name}
+                  {getDatasetLabel(dataset)}
                 </span>
               </li>
             )
@@ -113,6 +114,13 @@ function NewDatasetTooltip({ onSelect, datasetCategory }: NewDatasetTooltipProps
               : t('dataset.notUploadedYetEnvironment', 'No environment layers uploaded yet')}
           </li>
         )}
+        <div className={styles.userGuideLink}>
+          {datasetCategory === DatasetCategory.Context ? (
+            <UserGuideLink section="uploadReference" />
+          ) : (
+            <UserGuideLink section="uploadEnvironment" />
+          )}
+        </div>
       </ul>
     </div>
   )

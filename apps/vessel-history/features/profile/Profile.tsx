@@ -44,6 +44,7 @@ import { useApp, useAppDispatch } from 'features/app/app.hooks'
 import RiskSummary from 'features/risk-summary/risk-summary'
 import RiskTitle from 'features/risk-title/risk-title'
 import ActivityByType from 'features/activity-by-type/activity-by-type'
+import { IS_STANDALONE_APP } from 'data/config'
 import Info from './components/Info'
 import Activity from './components/activity/Activity'
 import styles from './Profile.module.css'
@@ -120,7 +121,7 @@ const Profile: React.FC = (props): React.ReactElement => {
 
       if (vesselDataset) {
         const trackDatasetId = getRelatedDatasetByType(vesselDataset, DatasetTypes.Tracks)?.id
-        if (trackDatasetId) {
+        if (trackDatasetId || IS_STANDALONE_APP) {
           const eventsRelatedDatasets = getRelatedDatasetsByType(vesselDataset, DatasetTypes.Events)
           const eventsDatasetsId =
             eventsRelatedDatasets && eventsRelatedDatasets?.length
@@ -286,7 +287,9 @@ const Profile: React.FC = (props): React.ReactElement => {
 
   const tabs: Tab[] = useMemo(
     () =>
-      currentProfileIsInsurer
+      IS_STANDALONE_APP
+        ? [infoTab, activityByTypeTab]
+        : currentProfileIsInsurer
         ? [riskSummaryTab, infoTab, activityByTypeTab, mapTab]
         : [infoTab, activityTab, mapTab, riskSummaryTab],
     [currentProfileIsInsurer, riskSummaryTab, infoTab, activityTab, mapTab, activityByTypeTab]

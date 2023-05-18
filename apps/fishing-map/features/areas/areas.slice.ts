@@ -1,6 +1,6 @@
-import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
-import bbox from '@turf/bbox'
+import { PayloadAction, createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { kebabCase, memoize, uniqBy } from 'lodash'
+import { MultiPolygon } from 'geojson'
 import {
   ContextAreaFeature,
   ContextAreaFeatureGeom,
@@ -8,9 +8,8 @@ import {
   EndpointId,
 } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
-import { RootState } from 'store'
+import { wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -29,6 +28,7 @@ export interface Area {
   geometry: ContextAreaFeatureGeom | undefined
   bounds: Bbox | undefined
   name: string
+  properties: Record<any, any>
 }
 export interface DatasetAreaDetail {
   status: AsyncReducerStatus
@@ -43,8 +43,15 @@ export type AreasState = Record<string, DatasetAreas>
 
 const initialState: AreasState = {}
 
-export type AreaKeys = { datasetId: string; areaId: string }
-export type FetchAreaDetailThunkParam = { dataset: Dataset; areaId: string; areaName?: string }
+export type AreaKeyId = string | number
+export type AreaKeys = { datasetId: string; areaId: AreaKeyId }
+export type FetchAreaDetailThunkParam = {
+  dataset: Dataset
+  areaId: AreaKeyId
+  areaName?: string
+  simplify?: number
+}
+
 export const fetchAreaDetailThunk = createAsyncThunk(
   'areas/fetch',
   async (
@@ -52,27 +59,44 @@ export const fetchAreaDetailThunk = createAsyncThunk(
       dataset = {} as Dataset,
       areaId,
       areaName,
+      simplify,
     }: FetchAreaDetailThunkParam = {} as FetchAreaDetailThunkParam,
     { signal }
   ) => {
-    const endpoint = resolveEndpoint(dataset, {
+    const datasetConfig = {
       datasetId: dataset?.id,
       endpoint: EndpointId.ContextFeature,
       params: [{ id: 'id', value: areaId }],
+    }
+    const endpoint = resolveEndpoint(dataset, {
+      ...datasetConfig,
+      query: simplify ? [{ id: 'simplify', value: simplify }] : [],
     })
-    const area = await GFWAPI.fetch<ContextAreaFeature>(endpoint, { signal })
-    const name = areaName || area.properties.value || area.properties.name || area.id
-
+    let area = await GFWAPI.fetch<ContextAreaFeature>(endpoint, { signal })
+    if (!area.geometry) {
+      const endpointNoSimplified = resolveEndpoint(dataset, datasetConfig)
+      area = await GFWAPI.fetch<ContextAreaFeature>(endpointNoSimplified, { signal })
+      if (!area.geometry) {
+        console.warn('Area has no geometry, even calling the endpoint without simplification')
+      }
+    }
+    const bounds = wrapGeometryBbox(area.geometry as MultiPolygon)
+    // Doing this once to avoid recomputing inside turf booleanPointInPolygon for each cell
+    // https://github.com/Turfjs/turf/blob/master/packages/turf-boolean-point-in-polygon/index.ts#L63
+    if (area.geometry) {
+      area.geometry.bbox = bounds
+    }
     return {
-      name,
       id: area.id,
-      bounds: wrapBBoxLongitudes(bbox(area.geometry) as Bbox),
+      name: areaName || area.value || area.properties.value || area.properties.name || area.id,
+      bounds,
       geometry: area.geometry,
+      properties: area.properties,
     }
   },
   {
     condition: ({ dataset, areaId }: FetchAreaDetailThunkParam, { getState }) => {
-      const { areas } = getState() as RootState
+      const { areas } = getState() as { areas: AreasState }
       const fetchStatus = areas[dataset?.id]?.detail?.[areaId]?.status
       if (
         fetchStatus === AsyncReducerStatus.Finished ||
@@ -106,7 +130,7 @@ export const fetchDatasetAreasThunk = createAsyncThunk(
   },
   {
     condition: ({ datasetId }: FetchDatasetAreasThunkParam, { getState }) => {
-      const { areas } = getState() as RootState
+      const { areas } = getState() as { areas: AreasState }
       const fetchStatus = areas[datasetId]?.list?.status
       if (
         fetchStatus === AsyncReducerStatus.Finished ||
@@ -122,7 +146,17 @@ export const fetchDatasetAreasThunk = createAsyncThunk(
 const areasSlice = createSlice({
   name: 'areas',
   initialState,
-  reducers: {},
+  reducers: {
+    resetAreaDetail: (state, action: PayloadAction<{ datasetId: string; areaId: number }>) => {
+      const { datasetId, areaId } = action.payload
+      if (state[datasetId]?.detail?.[areaId]) {
+        state[datasetId].detail[areaId] = {
+          status: AsyncReducerStatus.Idle,
+          data: {} as Area,
+        }
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchAreaDetailThunk.pending, (state, action) => {
       const { dataset, areaId, areaName } = action.meta.arg
@@ -182,13 +216,28 @@ const areasSlice = createSlice({
   },
 })
 
-export const selectAreas = (state: RootState) => state.areas
-export const selectAreaById = memoize((id: string) =>
+export const { resetAreaDetail } = areasSlice.actions
+
+export const selectAreas = (state: { areas: AreasState }) => state.areas
+export const selectDatasetAreaById = memoize((id: string) =>
   createSelector([selectAreas], (areas) => areas?.[id])
 )
 
 export const selectDatasetAreasById = memoize((id: string) =>
-  createSelector([selectAreaById(id)], (area): DatasetAreaList => area?.list)
+  createSelector([selectDatasetAreaById(id)], (area): DatasetAreaList => area?.list)
+)
+
+export const selectDatasetAreaStatus = memoize(
+  ({ datasetId, areaId }: { datasetId: string; areaId: number }) =>
+    createSelector([selectDatasetAreaById(datasetId)], (area): AsyncReducerStatus => {
+      return area?.detail?.[areaId]?.status
+    })
+)
+export const selectDatasetAreaDetail = memoize(
+  ({ datasetId, areaId }: { datasetId: string; areaId: number }) =>
+    createSelector([selectDatasetAreaById(datasetId)], (area): Area => {
+      return area?.detail?.[areaId]?.data
+    })
 )
 
 export default areasSlice.reducer

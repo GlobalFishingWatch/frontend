@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { createPortal } from 'react-dom'
 import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { useTimeCompareTimeDescription } from 'features/analysis/analysisDescription.hooks'
+import { useTimeCompareTimeDescription } from 'features/reports/reports-timecomparison.hooks'
 import styles from './MapLegends.module.css'
 import { AnyLegend, LegendTranslated, useLegendsTranslated } from './map-legends.hooks'
 

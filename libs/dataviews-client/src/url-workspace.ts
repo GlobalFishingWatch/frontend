@@ -259,6 +259,10 @@ export const parseWorkspace = (
     strictNullHandling: true,
     ignoreQueryPrefix: true,
   })
+  if (parsed.analysis) {
+    // Removes old legacy analysis param replaced by reports
+    delete parsed.analysis
+  }
   const parsedWithAbbr = deepReplaceKeys(parsed, ABBREVIATED_TO_PARAMS)
   const parsedDetokenized = deepDetokenizeValues(parsedWithAbbr)
   const urlToObjectTransformation = {

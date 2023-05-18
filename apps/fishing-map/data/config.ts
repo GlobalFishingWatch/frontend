@@ -8,8 +8,10 @@ import { getUTCDateTime } from 'utils/dates'
 export const ROOT_DOM_ELEMENT = '__next'
 
 export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
-export const IS_PRODUCTION =
-  process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'production' || process.env.NODE_ENV === 'production'
+
+export const IS_PRODUCTION_BUILD = process.env.NODE_ENV === 'production'
+export const PUBLIC_WORKSPACE_ENV = process.env.NEXT_PUBLIC_WORKSPACE_ENV
+export const IS_PRODUCTION = PUBLIC_WORKSPACE_ENV === 'production' || IS_PRODUCTION_BUILD
 
 export const REPORT_DAYS_LIMIT =
   typeof process.env.NEXT_PUBLIC_REPORT_DAYS_LIMIT !== 'undefined'
@@ -35,6 +37,15 @@ export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions 
   ? {}
   : { debug: true }
 
+export const REPORT_VESSELS_PER_PAGE = 10
+export const REPORT_SHOW_MORE_VESSELS_PER_PAGE = REPORT_VESSELS_PER_PAGE * 5
+export const REPORT_VESSELS_GRAPH_GEARTYPE = 'geartype'
+export const REPORT_VESSELS_GRAPH_VESSELTYPE = 'vesselType'
+export const REPORT_VESSELS_GRAPH_FLAG = 'flag'
+export const REPORT_ACTIVITY_GRAPH_EVOLUTION = 'evolution'
+export const REPORT_ACTIVITY_GRAPH_BEFORE_AFTER = 'beforeAfter'
+export const REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON = 'periodComparison'
+
 // TODO use it to retrieve it and store in workspace.default in deploy
 export const APP_NAME = 'fishing-map'
 export const PUBLIC_SUFIX = 'public'
@@ -42,12 +53,10 @@ export const FULL_SUFIX = 'full'
 export const USER_SUFIX = 'user'
 export const PRIVATE_SUFIX = 'private'
 
+export const DEFAULT_DATA_DELAY_DAYS = 3
 // used when no url data and no workspace data
-export const LAST_DATA_UPDATE = DateTime.fromObject(
-  { hour: 0, minute: 0, second: 0 },
-  { zone: 'utc' }
-)
-  .minus({ days: 3 })
+const LAST_DATA_UPDATE = DateTime.fromObject({ hour: 0, minute: 0, second: 0 }, { zone: 'utc' })
+  .minus({ days: DEFAULT_DATA_DELAY_DAYS })
   .toISO()
 
 export const DEFAULT_VIEWPORT = {
@@ -57,7 +66,7 @@ export const DEFAULT_VIEWPORT = {
 }
 
 export const DEFAULT_TIME_RANGE = {
-  start: getUTCDateTime(LAST_DATA_UPDATE).minus({ months: 3 }).toISO(),
+  start: getUTCDateTime(LAST_DATA_UPDATE)?.minus({ months: 3 }).toISO(),
   end: LAST_DATA_UPDATE,
 }
 
@@ -84,7 +93,12 @@ export const DEFAULT_WORKSPACE = {
   visibleEvents: 'all',
   timebarGraph: TimebarGraphs.None,
   bivariateDataviews: undefined,
-  analysis: undefined,
+  reportActivityGraph: REPORT_ACTIVITY_GRAPH_EVOLUTION,
+  reportCategory: undefined,
+  reportVesselFilter: '',
+  reportVesselGraph: REPORT_VESSELS_GRAPH_FLAG,
+  reportVesselPage: 0,
+  reportResultsPerPage: REPORT_VESSELS_PER_PAGE,
 }
 
 export const EVENTS_COLORS: Record<string, string> = {
@@ -131,4 +145,4 @@ export const POPUP_CATEGORY_ORDER = [
   DataviewCategory.Context,
 ]
 
-export const FIT_BOUNDS_ANALYSIS_PADDING = 30
+export const FIT_BOUNDS_REPORT_PADDING = 30

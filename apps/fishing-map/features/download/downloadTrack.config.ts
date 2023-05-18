@@ -14,10 +14,10 @@ export const FORMAT_EXTENSION: FormatExtension = {
 export const FORMAT_OPTIONS: ChoiceOption[] = [
   {
     id: Format.Csv,
-    title: 'csv',
+    label: 'csv',
   },
   {
     id: Format.GeoJson,
-    title: 'geojson',
+    label: 'geojson',
   },
 ]

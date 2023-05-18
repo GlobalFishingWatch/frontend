@@ -1,13 +1,14 @@
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
+import { GFWApiClient } from 'http-client/http-client'
 import { UserData } from '@globalfishingwatch/api-types'
 import {
-  GFWAPI,
   getAccessTokenFromUrl,
   removeAccessTokenFromUrl,
   GUEST_USER_TYPE,
 } from '@globalfishingwatch/api-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { RootState } from 'store'
+import { IS_STANDALONE_APP } from 'data/config'
 
 interface UserState {
   logged: boolean
@@ -24,13 +25,16 @@ const initialState: UserState = {
 export const fetchUserThunk = createAsyncThunk(
   'user/fetch',
   async () => {
+    if (IS_STANDALONE_APP) {
+      return null
+    }
     const accessToken = getAccessTokenFromUrl()
     if (accessToken) {
       removeAccessTokenFromUrl()
     }
 
     try {
-      return await GFWAPI.login({ accessToken })
+      return await GFWApiClient.login({ accessToken })
     } catch (e: any) {
       await logoutUserThunk({ redirectTo: 'gfw-login' })
       return undefined
@@ -48,12 +52,12 @@ export const logoutUserThunk = createAsyncThunk(
   'user/logout',
   async ({ redirectTo }: { redirectTo?: 'gfw-login' | 'home' } = { redirectTo: undefined }) => {
     try {
-      await GFWAPI.logout()
+      await GFWApiClient.logout()
     } catch (e: any) {
       console.warn(e)
     }
     if (redirectTo === 'gfw-login') {
-      window.location.href = GFWAPI.getLoginUrl(window.location.toString())
+      window.location.href = GFWApiClient.getLoginUrl(window.location.toString())
     }
     if (redirectTo === 'home') {
       window.location.href = window.location.toString()

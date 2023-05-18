@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { GFWApiClient } from 'http-client/http-client'
 import { ApiEvent } from '@globalfishingwatch/api-types'
 import { SymbolLayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import {
@@ -29,10 +29,12 @@ import { selectHighlightedEvent, selectHighlightedTime, selectMapVoyageTime } fr
 export const selectMapTimeRange = createSelector(
   [selectMapVoyageTime, selectFilters],
   (voyageTime, filters) =>
-    voyageTime ? {
-      start: voyageTime.start ?? filters.start,
-      end: voyageTime.end ?? filters.end,
-    } : undefined
+    voyageTime
+      ? {
+          start: voyageTime.start ?? filters.start,
+          end: voyageTime.end ?? filters.end,
+        }
+      : undefined
 )
 
 export const selectGlobalGeneratorsConfig = createSelector(
@@ -41,7 +43,7 @@ export const selectGlobalGeneratorsConfig = createSelector(
     zoom,
     start: selectMapTimeRange?.start ?? start,
     end: selectMapTimeRange?.end ?? end,
-    token: GFWAPI.getToken(),
+    token: GFWApiClient.getToken(),
   })
 )
 

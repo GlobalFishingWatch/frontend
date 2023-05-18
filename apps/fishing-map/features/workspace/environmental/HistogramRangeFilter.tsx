@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import { BarChart, Bar, ResponsiveContainer } from 'recharts'
 import { useTranslation } from 'react-i18next'
-import { event as uaEvent } from 'react-ga'
 import { Slider } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
@@ -11,7 +10,8 @@ import {
 } from '@globalfishingwatch/api-types'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useDataviewHistogram } from 'features/workspace/environmental/histogram.hooks'
-import { getActivitySources, getEventLabel } from 'utils/analytics'
+import { getEventLabel } from 'utils/analytics'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './HistogramRangeFilter.module.css'
 
 type HistogramRangeFilterProps = {
@@ -62,13 +62,13 @@ function HistogramRangeFilter({ dataview }: HistogramRangeFilterProps) {
           },
         })
       }
-      uaEvent({
-        category: 'Environmental data',
+      trackEvent({
+        category: TrackCategory.EnvironmentalData,
         action: `Filter environmental layer`,
         label: getEventLabel([dataview.name, ...rangeSelected]),
       })
     },
-    [dataview.id, layerRange?.min, layerRange?.max, upsertDataviewInstance]
+    [layerRange?.min, layerRange?.max, dataview.name, dataview.id, upsertDataviewInstance]
   )
 
   return (

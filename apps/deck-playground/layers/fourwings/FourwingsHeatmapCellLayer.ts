@@ -1,5 +1,9 @@
-import { AccessorFunction, DefaultProps } from '@deck.gl/core'
-import { GetPickingInfoParams, PickingInfo } from '@deck.gl/core/typed'
+import {
+  GetPickingInfoParams,
+  PickingInfo,
+  AccessorFunction,
+  DefaultProps,
+} from '@deck.gl/core/typed'
 import { _GeoCellLayer, GeoBoundingBox, _GeoCellLayerProps } from '@deck.gl/geo-layers/typed'
 import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
 import {
@@ -24,7 +28,7 @@ type _FourwingsHeatmapCellLayerProps<DataT> = FourwingsHeatmapLayerProps & {
    *
    * By default, it reads `token` property of data object.
    */
-  getIndex?: AccessorFunction<DataT, string>
+  getIndex?: AccessorFunction<DataT, number>
   cols: number
   rows: number
   tile: Tile2DHeader

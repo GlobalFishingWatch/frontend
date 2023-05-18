@@ -1,5 +1,6 @@
+import { RootState } from 'reducers'
 import { Range } from 'features/timebar/timebar.slice'
-import { AppDispatch, RootState } from 'store'
+import { AppDispatch } from 'store'
 import { QueryParams, WorkspaceViewport } from 'types'
 import { ROUTE_TYPES } from './routes'
 import {

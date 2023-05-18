@@ -10,6 +10,10 @@ import {
   useVesselsLayerInstance,
 } from 'layers/vessel/vessels.hooks'
 import {
+  useUpdateMode,
+  useCustomReferenceMode,
+} from 'layers/custom-reference/custom-reference.hooks'
+import {
   useRemoveContextInLayer,
   useAddContextInLayer,
   useContextsLayerIds,
@@ -24,8 +28,10 @@ function Sidebar() {
   const fourwingsLayerInstance = useFourwingsLayerInstance()
   const vesselsLayerInstance = useVesselsLayerInstance()
   const fourwingsLayerLoaded = useFourwingsLayerLoaded()
+  const editMode = useCustomReferenceMode()
   const vesselIds = useVesselsLayerIds()
   const removeVesselId = useRemoveVesselInLayer()
+  const setMode = useUpdateMode()
   const removeContextId = useRemoveContextInLayer()
   const addContextId = useAddContextInLayer()
   const contextIds = useContextsLayerIds()
@@ -181,6 +187,40 @@ function Sidebar() {
                         {fourwingsResolution === 'high' ? 'lower def' : 'higher def'}
                       </Button>
                     )}
+                  </div>
+                )}
+              </div>
+            )
+          }
+          if (layer.id === 'custom-reference') {
+            return (
+              <div key={layer.id} className={styles.row}>
+                <div className={styles.header}>
+                  <Switch
+                    className={styles.switch}
+                    active={layer.visible}
+                    onClick={() => onLayerVisibilityClick(layer)}
+                  />
+                  <div>custom reference layer</div>
+                </div>
+                {layer.visible && (
+                  <div className={styles.sublayer}>
+                    <div>
+                      <span>Update mode</span>
+                      {editMode && <label>current mode: {editMode}</label>}
+                    </div>
+                    <IconButton
+                      icon="add-polygon"
+                      type="border"
+                      disabled={editMode === 'draw'}
+                      onClick={() => setMode('draw')}
+                    />
+                    <IconButton
+                      icon="edit"
+                      disabled={editMode === 'edit'}
+                      type="border"
+                      onClick={() => setMode('edit')}
+                    />
                   </div>
                 )}
               </div>

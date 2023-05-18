@@ -10,7 +10,7 @@ import getBaseLayer, {
   getBaseInteractionLayer,
 } from '../util/get-base-layers'
 import { getLayerId, getSourceId } from '../util'
-import { TEMPORALGRID_SOURCE_LAYER } from '../config'
+import { TEMPORALGRID_LAYER_INTERACTIVE_SUFIX, TEMPORALGRID_SOURCE_LAYER } from '../config'
 import { Breaks } from '../util/fetch-breaks'
 
 export default function gridded(
@@ -85,14 +85,14 @@ export default function gridded(
     if (config.interactive && timeChunk.active) {
       const interactionLayer = getBaseInteractionLayer(
         config,
-        getLayerId(config.id, timeChunk, 'interaction'),
+        getLayerId(config.id, timeChunk, TEMPORALGRID_LAYER_INTERACTIVE_SUFIX),
         chunkMainLayer.source
       )
 
       chunkLayers.push(interactionLayer)
       const interactionHoverLayer = getBaseInteractionHoverLayer(
         config,
-        getLayerId(config.id, timeChunk, 'interaction_hover'),
+        getLayerId(config.id, timeChunk, `${TEMPORALGRID_LAYER_INTERACTIVE_SUFIX}_hover`),
         chunkMainLayer.source
       )
       chunkLayers.push(interactionHoverLayer)

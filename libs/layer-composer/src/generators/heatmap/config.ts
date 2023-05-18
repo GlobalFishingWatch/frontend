@@ -4,6 +4,7 @@ import { Interval } from './types'
 
 export const TEMPORALGRID_SOURCE_LAYER = 'temporalgrid'
 export const TEMPORALGRID_SOURCE_LAYER_INTERACTIVE = 'temporalgrid_interactive'
+export const TEMPORALGRID_LAYER_INTERACTIVE_SUFIX = 'interaction'
 
 export const API_ENDPOINTS = {
   tiles: '4wings/tile/heatmap/{z}/{x}/{y}',

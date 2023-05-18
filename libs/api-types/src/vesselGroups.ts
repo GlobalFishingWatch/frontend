@@ -12,6 +12,7 @@ export interface VesselGroup {
   public?: boolean
   ownerId?: number
   ownerType?: string
+  createdAt?: string
 }
 
 export type VesselGroupUpsert = Omit<VesselGroup, 'id' | 'public' | 'ownerId' | 'ownerType'>

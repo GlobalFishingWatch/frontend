@@ -12,7 +12,7 @@ type UserContextLayersProps = {
 }
 
 function ContextTooltipSection({ features, showFeaturesDetails = false }: UserContextLayersProps) {
-  const { onAnalysisClick, onDownloadClick } = useContextInteractions()
+  const { onReportClick, onDownloadClick } = useContextInteractions()
 
   const featuresByType = groupBy(features, 'layerId')
   return (
@@ -37,9 +37,10 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
                   id={id}
                   key={`${id}-${index}`}
                   label={label}
+                  feature={feature}
                   showFeaturesDetails={showFeaturesDetails}
                   handleDownloadClick={(e) => onDownloadClick(e, feature)}
-                  handleAnalysisClick={(e) => onAnalysisClick(e, feature)}
+                  handleReportClick={(e) => onReportClick(e, feature)}
                 />
               )
             })}

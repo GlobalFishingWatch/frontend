@@ -728,7 +728,7 @@
   },
   "private-indonesia-presence": {
     "name": "VMS Indonesia (Presence)",
-    "description": "Presence",
+    "description": "Kehadiran",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -1074,6 +1074,54 @@
       "vessel_id": "vessel_id"
     }
   },
+  "private-png-fishing-effort": {
+    "name": "Papua New Guinea VMS",
+    "description": "Vessel monitoring system (VMS) data is provided by the The National Fisheries Authority of Papua New Guinea. Data is collected using Papua New Guinea's vessel monitoring (VMS) system via satellites, that contains vessel's identifiers and location, and is published on a five-day delay. Global Fishing Watch infers speed and course for each vessel location and analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity”. It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity”, “fishing” or “fishing effort”, as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": {
+        "keyword": "flag",
+        "enum": {
+          "PNG": "PNG",
+          "PHL": "PHL"
+        }
+      },
+      "hours": "hours",
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "private-png-fishing-vessels": {
+    "name": "Papua New Guinea VMS (Fishing Vessels)",
+    "description": "Dataset for VMS Papua New Guinea (Private)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "callsign": "callsign",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
+  "private-png-presence": {
+    "name": "Papua New Guinea VMS",
+    "description": "Vessel monitoring system (VMS) data is provided by the The National Fisheries Authority of Papua New Guinea. Data is collected using Papua New Guinea's national VMS  that is provided by the Fisheries Information and Management System (FIMS). VMS data includes vessel identifiers and location, and is published with a five-day delay.\n\nThe activity layer displays a heatmap of vessel presence. The presence is determined by taking two positions per hour per vessel from the positions transmitted by the vessel's VMS.",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
   "proto-global-encounters-events": {
     "name": "Encounter Events. (AIS)",
     "description": "The dataset contains encounter events with authorizations for AIS. [Fishing-Carriers, Carriers-Fishing, Support-Fishing, Fishing-Support]",
@@ -1394,7 +1442,7 @@
   },
   "public-chile-presence": {
     "name": "VMS Chili",
-    "description": "Vessel monitoring system (VMS) data provided by the Chilean government’s fisheries and aquaculture regulator (SERNAPESCA). It is possible to filter Chile’s VMS data for small-scale fishing vessels (<18 meters) and industrial fishing vessels (>18 meters). Note that some vessels are <18 meters but are considered industrial because they were registered in the capture of industrial quotas. SERNAPESCA is also using our map to visualize and track vessel positions for their fleet, including vessels involved in aquaculture. Data is collected using Chile’s VMS via satellites and terrestrial receivers and contains vessel identities, gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms we developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing detection algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing,” and “fishing effort,” as “apparent” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification.",
+    "description": "Data Vessel Monitoring System VMS) disediakan oleh fisheries and aquaculture regulator (SERNAPESCA) pemerintah Chili. Data VMS Chili dapat difilter untuk kapal penangkap ikan skala kecil (&lt;18 meter) dan kapal penangkap ikan industri (&gt; 18 meter). Perhatikan bahwa beberapa kapal berukuran &lt;18 meter tetapi dianggap industri karena terdaftar dalam penangkapan kuota industri. SERNAPESCA juga menggunakan peta kami untuk memvisualisasikan dan melacak posisi kapal untuk armadanya, termasuk kapal yang terlibat dalam akuakultur. Data dikumpulkan menggunakan VMS Chili melalui satelit dan penerima terestrial dan berisi identitas kapal, jenis alat tangkap, lokasi, kecepatan, arah, dan lainnya. Global Fishing Watch menganalisis data ini menggunakan algoritma yang sama dengan yang dkembangkan untuk data Automatic Identification System (AIS) untuk mengidentifikasi aktivitas dan perilaku penangkapan ikan. Algoritma tersebut mengklasifikasikan setiap titik data siaran dari kapal sebagai terlihat sedang memancing atau tidak sedang memancing dan menunjukkan titik data sebelumnya di peta Global Fishing Watch. VMS menyiarkan data dengan sangat berbeda dari AIS dan dapat memberikan ukuran kelengkapan, akurasi dan kualitas yang berbeda. Seiring waktu, algoritma kami akan meningkat di semua format data siaran kami. Algoritma deteksi penangkapan ikan Global Fishing Watch untuk VMS seperti untuk AIS, adalah upaya terbaik secara algoritma untuk mengidentifikasi 'aktivitas penangkapan ikan yang terlihat.' Ada kemungkinan bahwa beberapa aktivitas penangkapan ikan tidak teridentifikasi, atau peta panas dapat menunjukkan aktivitas penangkapan ikan yang terlihat jelas di mana penangkapan ikan sebenarnya tidak terjadi. Untuk alasan ini, Global Fishing Watch mengkualifikasikan istilah 'aktivitas memancing', 'memancing', dan 'upaya penangkapan ikan', sebagai 'terlihat jelas' dan daripada pasti. Setiap / semua informasi Global Fishing Watch tentang 'aktivitas penangkapan ikan yang terlihat' harus dianggap sebagai perkiraan dan harus diandalkan sepenuhnya dengan risiko Anda sendiri. Algoritma deteksi penangkapan ikan Global Fishing Watch dikembangkan dan diuji menggunakan data peristiwa penangkapan ikan aktual yang dikumpulkan oleh pengamat, dikombinasikan dengan analisis ahli dari data pergerakan kapal AIS yang menghasilkan klasifikasi manual dari ribuan peristiwa penangkapan ikan yang diketahui. Global Fishing Watch juga bekerja sama secara ekstensif dengan peneliti akademis melalui program penelitian kami untuk berbagi data klasifikasi aktivitas penangkapan ikan dan klasifikasi otomatis.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -1402,8 +1450,8 @@
       "fleet": {
         "keyword": "fleet",
         "enum": {
-          "chile_vms_small_fisheries": "chile_vms_small_fisheries",
-          "chile_vms_industry": "chile_vms_industry",
+          "chile_vms_small_fisheries": "perikanan kecil",
+          "chile_vms_industry": "industri",
           "chile_vms_aquaculture": "chile_vms_aquaculture",
           "chile_vms_transport": "chile_vms_transport"
         }
@@ -1865,6 +1913,18 @@
       "firstTransmissionDate": "firstTransmissionDate"
     }
   },
+  "public-global-vessel-insights": {
+    "name": "AIS (Insights)",
+    "description": "Vessel Insights from AIS",
+    "schema": {
+      "gap": "gap",
+      "coverage": "coverage",
+      "portVisit": "portVisit",
+      "apparentFishing": "apparentFishing",
+      "likelyLoitering": "likelyLoitering",
+      "likelyEncounters": "likelyEncounters"
+    }
+  },
   "public-global-viirs-presence": {
     "name": "VIIRS",
     "description": "The night lights vessel detections layer, known as visible infrared imaging radiometer suite or VIIRS, shows vessels at sea that satellites have detected by the light they emit at night. Though not exclusively associated with fishing vessels, this activity layer is likely to show vessels associated with activities like squid fishing, which use bright lights and fish at night.The satellite makes a single over-pass across the entire planet every night, detecting lights not obscured by clouds and designed to give at least one observation globally every day. Because the vessels are detected solely based on light emission, we can detect individual vessels and even entire fishing fleets that are not broadcasting automatic identification system (AIS) and so are not represented in the AIS apparent fishing effort layer. Lights from fixed offshore infrastructure and other non-vessel sources are excluded. Global Fishing Watch ingests boat detections processed from low light imaging data collected by the U.S. National Oceanic and Atmospheric Administration (NOAA) VIIRS. The boat detections are processed in near-real time by NOAA’s Earth Observation Group, located in Boulder, Colorado. The data, known as VIIRS boat detections, picks up the presence of fishing vessels using lights to attract catch or to conduct operations at night. More than 85% of the detections are from vessels that lack AIS or Vessel Monitoring System (VMS) transponders. Due to the orbit design of polar orbiting satellites, regions closer to polar will have more over-passes per day, while equatorial regions have only one over-pass daily. Read more about this product, and download the data <a href=\"https://ngdc.noaa.gov/eog/viirs/download_boat.html\" target=\"_blank\" rel=\"noopener\">here</a>.Those using night light detections data should acknowledge the South Atlantic Anomaly (SAA), an area where the Earth's inner Van Allen radiation belt is at its lowest altitude, allowing more energetic particles from space to penetrate. When such particles hit the sensors on a satellite, this can create a false signal which might cause the algorithm to recognize it as a boat presence. A filtration algorithm has been applied but there may still be some mis-identification. The GFW layer includes quality flags (QF), including a filter to show only detections which NOAA has classified as vessels (QF1)",
@@ -2102,7 +2162,7 @@
     }
   },
   "public-mpa-all": {
-    "name": "MPAs",
+    "name": "KKP (WDPA)",
     "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: November 2022. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer.",
     "schema": {}
   },
@@ -2408,6 +2468,54 @@
       "vessel_id": "vessel_id"
     }
   },
+  "public-png-fishing-effort": {
+    "name": "Papua New Guinea VMS",
+    "description": "Vessel monitoring system (VMS) data is provided by the The National Fisheries Authority of Papua New Guinea. Data is collected using Papua New Guinea's vessel monitoring (VMS) system via satellites, that contains vessel's identifiers and location, and is published on a five-day delay. Global Fishing Watch infers speed and course for each vessel location and analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity”. It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity”, “fishing” or “fishing effort”, as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": {
+        "keyword": "flag",
+        "enum": {
+          "PNG": "PNG",
+          "PHL": "PHL"
+        }
+      },
+      "hours": "hours",
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "public-png-fishing-vessels": {
+    "name": "Papua New Guinea VMS (Fishing Vessels)",
+    "description": "Dataset for VMS Papua New Guinea (Public)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "callsign": "callsign",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
+  "public-png-presence": {
+    "name": "Papua New Guinea VMS",
+    "description": "Vessel monitoring system (VMS) data is provided by the The National Fisheries Authority of Papua New Guinea. Data is collected using Papua New Guinea's national VMS  that is provided by the Fisheries Information and Management System (FIMS). VMS data includes vessel identifiers and location, and is published with a five-day delay.\n\nThe activity layer displays a heatmap of vessel presence. The presence is determined by taking two positions per hour per vessel from the positions transmitted by the vessel's VMS.",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
   "public-presence-viirs-match-prototype": {
     "name": "VIIRS Match",
     "description": "The night lights vessel detections layer, known as visible infrared imaging radiometer suite or VIIRS, shows vessels at sea that satellites have detected by the light they emit at night. Though not exclusively associated with fishing vessels, this activity layer is likely to show vessels associated with activities like squid fishing, which use bright lights and fish at night.The satellite makes a single over-pass across the entire planet every night, detecting lights not obscured by clouds and designed to give at least one observation globally every day. Because the vessels are detected solely based on light emission, we can detect individual vessels and even entire fishing fleets that are not broadcasting automatic identification system (AIS) and so are not represented in the AIS apparent fishing effort layer. Lights from fixed offshore infrastructure and other non-vessel sources are excluded. Global Fishing Watch ingests boat detections processed from low light imaging data collected by the U.S. National Oceanic and Atmospheric Administration (NOAA) VIIRS. The boat detections are processed in near-real time by NOAA’s Earth Observation Group, located in Boulder, Colorado. The data, known as VIIRS boat detections, picks up the presence of fishing vessels using lights to attract catch or to conduct operations at night. More than 85% of the detections are from vessels that lack AIS or Vessel Monitoring System (VMS) transponders. Due to the orbit design of polar orbiting satellites, regions closer to polar will have more over-passes per day, while equatorial regions have only one over-pass daily. Read more about this product, and download the data <a href=\"https://ngdc.noaa.gov/eog/viirs/download_boat.html\" target=\"_blank\" rel=\"noopener\">here</a>.Those using night light detections data should acknowledge the South Atlantic Anomaly (SAA), an area where the Earth's inner Van Allen radiation belt is at its lowest altitude, allowing more energetic particles from space to penetrate. When such particles hit the sensors on a satellite, this can create a false signal which might cause the algorithm to recognize it as a boat presence. A filtration algorithm has been applied but there may still be some mis-identification. The GFW layer includes quality flags (QF), including a filter to show only detections which NOAA has classified as vessels (QF1)",
@@ -2427,9 +2535,9 @@
           "namibia_vms": "namibia_vms",
           "indovms": "indovms",
           "mexico_vms": "mexico_vms",
-          "chile_vms_small_fisheries": "chile_vms_small_fisheries",
+          "chile_vms_small_fisheries": "perikanan kecil",
           "peru.historic": "peru.historic",
-          "chile_vms_industry": "chile_vms_industry",
+          "chile_vms_industry": "industri",
           "ais_scored": "ais_scored",
           "AIS": "AIS",
           "panama_vms": "panama_vms",
@@ -2549,11 +2657,43 @@
     }
   },
   "public-protectedseas": {
-    "name": "Protected Seas",
-    "description": "Protected seas",
+    "name": "KKP (ProtectedSeas)",
+    "description": "Marine Protected Areas (MPA) adalah kawasan laut yang dilindungi untuk konservasi jangka panjang. Kawasan Ini dapat memiliki tingkat perlindungan yang berbeda, dan rentang kegiatan yang diperbolehkan atau dilarang dalam batas-batasnya bervariasi. Sumber: ProtectedSeas Navigator. ProtectedSeas menetapkan skor Level of Fishing Protection (LFP) untuk setiap area berdasarkan analisis pembatasan ekstraksi biota laut. Anda dapat menggunakan ikon filter untuk menjelajahi skor LFP yang berbeda, yaitu, Tidak ada batasan: Tidak ada batasan untuk kegiatan penangkapan i; Kurang membatasi: Beberapa pembatasan khusus spesies atau alat tangkap berlaku; Cukup membatasi: Beberapa pembatasan khusus spesies atau alat tangkap berlaku; Sangat membatasi: Penangkapan ikan sebagian besar dilarang, dengan sedikit pengecualian; Paling membatasi: Pelarangan kegiatan penangkapan ikan. Lihat <a href='https://protectedseas.net/mpa-methods/' target='_blank' rel=noopener'>informasi</a> lebih rinci untuk lapisan ini.",
     "schema": {
       "removal_of": {
-        "keyword": "removal_of",
+        "keyword": "Tingkat Perlindungan Penangkapan Ikan",
+        "enum": {
+          "1": "1. Tidak ada batasan ",
+          "2": "2. Kurang membatasi",
+          "3": "3. Cukup membatasi",
+          "4": "4. Sangat membatasi",
+          "5": "5. Paling membatasi"
+        }
+      }
+    }
+  },
+  "public-protectedseas-all": {
+    "name": "Protected Seas all",
+    "description": "Protected seas all",
+    "schema": {
+      "category_name": {
+        "keyword": "category_name",
+        "enum": {
+          "IUCN MPA": "IUCN MPA",
+          "Other": "Lainnya",
+          "Jurisdictional Authority Area": "Jurisdictional Authority Area",
+          "TBD": "TBD",
+          "Fisheries Management Area": "Fisheries Management Area",
+          "Recreational Area": "Recreational Area",
+          "OECM": "OECM",
+          "Vessel Restricted Area": "Vessel Restricted Area",
+          "Voluntary Conservation Measure Area": "Voluntary Conservation Measure Area",
+          "Vessel Reporting Area": "Vessel Reporting Area",
+          "Water Quality/Human Health Area": "Water Quality/Human Health Area"
+        }
+      },
+      "removal_of_marine_life_is_prohibited": {
+        "keyword": "removal_of_marine_life_is_prohibited",
         "enum": {
           "1": "1",
           "2": "2",
@@ -2567,7 +2707,49 @@
   "public-rfmo": {
     "name": "RFMO",
     "description": "Regional fisheries management organizations (RFMOs) are international bodies formed by countries with a shared interest in managing or conserving fish stocks in a particular region. Some manage all the fish stocks found in a given area, while others focus on specific highly migratory species, notably tuna. The regional fisheries management organization on the Global Fishing Watch map currently includes the five tuna regional fisheries management organizations. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer.",
-    "schema": {}
+    "schema": {
+      "ID": {
+        "keyword": "ID",
+        "enum": {
+          "APFIC": "APFIC",
+          "BOBP-IGO": "BOBP-IGO",
+          "CCAMLR": "CCAMLR",
+          "CCBSP": "CCBSP",
+          "CCSBT": "CCSBT",
+          "CCSBT Primary Area": "CCSBT Primary Area",
+          "COREP": "COREP",
+          "CPPS": "CPPS",
+          "CRFM": "CRFM",
+          "CTMFM": "CTMFM",
+          "FCWC": "FCWC",
+          "FFA": "FFA",
+          "GFCM": "GFCM",
+          "IATTC": "IATTC",
+          "ICCAT": "ICCAT",
+          "ICES": "ICES",
+          "IOTC": "IOTC",
+          "IPHC": "IPHC",
+          "LTA": "LTA",
+          "NAFO": "NAFO",
+          "NAMMCO": "NAMMCO",
+          "NASCO": "NASCO",
+          "NEAFC": "NEAFC",
+          "NPAFC": "NPAFC",
+          "NPFC": "NPFC",
+          "OSPESCA": "OSPESCA",
+          "PERSGA": "PERSGA",
+          "PICES": "PICES",
+          "RECOFI": "RECOFI",
+          "SEAFDEC": "SEAFDEC",
+          "SIOFA": "SIOFA",
+          "SPC": "SPC",
+          "SPRFMO": "SPRFMO",
+          "SRFC": "SRFC",
+          "SWIOFC": "SWIOFC",
+          "WCPFC": "WCPFC"
+        }
+      }
+    }
   },
   "public-tristan-seamounts-200-1618586314138": {
     "name": "Depth: -200 m",
