@@ -1,14 +1,14 @@
 import { ResponseError } from '../api-client'
 
 export const parseAPIErrorStatus = (error: ResponseError) => {
-  return error.status || (error as any).code
+  return error.status || (error as any).code || null
 }
 
 export const parseAPIErrorMessage = (error: ResponseError) => {
   if (error.messages?.length) {
     return error.messages[0]?.detail
   }
-  return error.message
+  return error.message || ''
 }
 
 export type ParsedAPIError = { status: number; message: string }

@@ -1,12 +1,14 @@
 import path from 'path'
 import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { Logo } from '@globalfishingwatch/ui-components'
 import { TOKEN_REGEX } from '@globalfishingwatch/dataviews-client'
 import VesselIdentity from 'features/vessel/VesselIdentity'
 import VesselSummary from 'features/vessel/VesselSummary'
 import { wrapper } from 'store'
-import { fetchVesselInfoThunk } from 'features/vessel/vessel.slice'
+import { fetchVesselInfoThunk, selectVesselInfoStatus } from 'features/vessel/vessel.slice'
 import Index from 'pages'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from './styles.module.css'
 
 // This is needed by nx/next builder to run build the standalone next app properly
@@ -53,8 +55,12 @@ export const getServerSideProps = wrapper.getServerSideProps(
 )
 
 const VesselComponent = () => {
+  const infoStatus = useSelector(selectVesselInfoStatus)
+  if (infoStatus !== AsyncReducerStatus.Finished) {
+    return null
+  }
   return (
-    <div className={styles.container}>
+    <div className={styles.container} style={{ opacity: 0 }}>
       <div className={styles.sidebarHeader}>
         <a href="https://globalfishingwatch.org" className={styles.logoLink}>
           <Logo className={styles.logo} />
@@ -73,11 +79,7 @@ const VesselPage = () => {
   useEffect(() => setServer(false), [])
 
   if (isServer) {
-    return (
-      <div style={{ opacity: 0 }}>
-        <VesselComponent />
-      </div>
-    )
+    return <VesselComponent />
   }
 
   return <Index />
