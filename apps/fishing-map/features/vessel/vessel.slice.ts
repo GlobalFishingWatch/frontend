@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { HYDRATE } from 'next-redux-wrapper'
 import { stringify } from 'qs'
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { GFWAPI, ParsedAPIError, parseAPIError } from '@globalfishingwatch/api-client'
 import {
   APIPagination,
   ApiEvent,
@@ -22,10 +22,12 @@ interface VesselState {
   info: {
     status: AsyncReducerStatus
     data: Vessel | null
+    error: ParsedAPIError | null
   }
   events: {
     status: AsyncReducerStatus
     data: ApiEvent[] | null
+    error: ParsedAPIError | null
   }
 }
 
@@ -33,10 +35,12 @@ const initialState: VesselState = {
   info: {
     status: AsyncReducerStatus.Idle,
     data: null,
+    error: null,
   },
   events: {
     status: AsyncReducerStatus.Idle,
     data: null,
+    error: null,
   },
 }
 
@@ -45,11 +49,19 @@ type VesselSliceState = { vessel: VesselState }
 type FetchVesselThunkParams = { vesselId: string; datasetId: string }
 export const fetchVesselInfoThunk = createAsyncThunk(
   'vessel/fetchInfo',
-  async ({ vesselId, datasetId }: FetchVesselThunkParams = {} as FetchVesselThunkParams) => {
-    const vessel = await GFWAPI.fetch<Vessel>(
-      `/vessels/${vesselId}?${stringify({ datasets: [datasetId] })}`
-    )
-    return vessel
+  async (
+    { vesselId, datasetId }: FetchVesselThunkParams = {} as FetchVesselThunkParams,
+    { rejectWithValue }
+  ) => {
+    try {
+      const vessel = await GFWAPI.fetch<Vessel>(
+        `/vessels/${vesselId}?${stringify({ datasets: [datasetId] })}`
+      )
+      return vessel
+    } catch (e: any) {
+      console.warn(e)
+      return rejectWithValue(parseAPIError(e))
+    }
   },
   {
     condition: (params, { getState }) => {
@@ -86,30 +98,35 @@ export const fetchVesselEventsThunk = createAsyncThunk(
   'vessel/fetchEvents',
   async (
     { datasetId, vesselId }: FetchVesselEventsThunkParams = {} as FetchVesselThunkParams,
-    { getState, dispatch }
+    { getState, dispatch, rejectWithValue }
   ) => {
-    let dataset = selectDatasetById(datasetId)(getState() as any)
-    if (!dataset) {
-      const action = await dispatch(fetchDatasetByIdThunk(datasetId))
-      if (fetchDatasetByIdThunk.fulfilled.match(action)) {
-        dataset = action.payload
+    try {
+      let dataset = selectDatasetById(datasetId)(getState() as any)
+      if (!dataset) {
+        const action = await dispatch(fetchDatasetByIdThunk(datasetId))
+        if (fetchDatasetByIdThunk.fulfilled.match(action)) {
+          dataset = action.payload
+        }
       }
-    }
-    const eventsBody = await getEventsBodyFromVesselDataset(dataset, vesselId)
-    const eventPromises = await Promise.allSettled(
-      eventsBody?.map((body) => {
-        return GFWAPI.fetch<APIPagination<ApiEvent>, typeof body>(
-          `/events?${stringify(DEFAULT_PAGINATION_PARAMS)}`,
-          {
-            method: 'POST',
-            body,
-          }
-        )
+      const eventsBody = await getEventsBodyFromVesselDataset(dataset, vesselId)
+      const eventPromises = await Promise.allSettled(
+        eventsBody?.map((body) => {
+          return GFWAPI.fetch<APIPagination<ApiEvent>, typeof body>(
+            `/events?${stringify(DEFAULT_PAGINATION_PARAMS)}`,
+            {
+              method: 'POST',
+              body,
+            }
+          )
+        })
+      )
+      return eventPromises.flatMap((res) => {
+        return res.status === 'fulfilled' ? res.value.entries : []
       })
-    )
-    return eventPromises.flatMap((res) => {
-      return res.status === 'fulfilled' ? res.value.entries : []
-    })
+    } catch (e: any) {
+      console.warn(e)
+      return rejectWithValue(parseAPIError(e))
+    }
   },
   {
     condition: (params, { getState }) => {
@@ -130,23 +147,35 @@ const vesselSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchVesselInfoThunk.pending, (state) => {
       state.info.status = AsyncReducerStatus.Loading
+      state.info.error = null
     })
     builder.addCase(fetchVesselInfoThunk.fulfilled, (state, action) => {
       state.info.status = AsyncReducerStatus.Finished
       state.info.data = action.payload
     })
-    builder.addCase(fetchVesselInfoThunk.rejected, (state) => {
-      state.info.status = AsyncReducerStatus.Error
+    builder.addCase(fetchVesselInfoThunk.rejected, (state, action) => {
+      if (action.error.message === 'Aborted') {
+        state.info.status = AsyncReducerStatus.Idle
+      } else {
+        state.info.status = AsyncReducerStatus.Error
+        state.info.error = action.payload as ParsedAPIError
+      }
     })
     builder.addCase(fetchVesselEventsThunk.pending, (state) => {
       state.events.status = AsyncReducerStatus.Loading
+      state.info.error = null
     })
     builder.addCase(fetchVesselEventsThunk.fulfilled, (state, action) => {
       state.events.status = AsyncReducerStatus.Finished
       state.events.data = action.payload
     })
-    builder.addCase(fetchVesselEventsThunk.rejected, (state) => {
-      state.events.status = AsyncReducerStatus.Error
+    builder.addCase(fetchVesselEventsThunk.rejected, (state, action) => {
+      if (action.error.message === 'Aborted') {
+        state.events.status = AsyncReducerStatus.Idle
+      } else {
+        state.events.status = AsyncReducerStatus.Error
+        state.events.error = action.payload as ParsedAPIError
+      }
     })
     builder.addCase(HYDRATE, (state, action: any) => {
       return {
@@ -162,7 +191,9 @@ export const { resetVesselState } = vesselSlice.actions
 export const selectVesselInfoData = (state: VesselSliceState) => state.vessel.info.data
 export const selectVesselInfoDataId = (state: VesselSliceState) => state.vessel.info.data?.id
 export const selectVesselInfoStatus = (state: VesselSliceState) => state.vessel.info.status
+export const selectVesselInfoError = (state: VesselSliceState) => state.vessel.info.error
 export const selectVesselEventsData = (state: VesselSliceState) => state.vessel.events?.data
 export const selectVesselEventsStatus = (state: VesselSliceState) => state.vessel.events?.status
+export const selectVesselEventsError = (state: VesselSliceState) => state.vessel.events?.error
 
 export default vesselSlice.reducer
