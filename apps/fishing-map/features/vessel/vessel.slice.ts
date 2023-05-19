@@ -86,7 +86,7 @@ export async function getEventsBodyFromVesselDataset(dataset: Dataset, vesselId:
     const eventsParams = {
       vessels: [vesselId],
       datasets: [eventDataset.id],
-      includes,
+      // includes, // TODO remove this when API is fixed
       ...params,
     }
     return eventsParams

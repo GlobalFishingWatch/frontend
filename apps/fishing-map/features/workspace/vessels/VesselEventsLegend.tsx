@@ -104,7 +104,7 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
                 color={color}
               />
               <label className={layerStyles.eventLegendLabel} htmlFor={eventType}>
-                {upperFirst(t(`event.${eventType}` as any, eventType))}
+                {upperFirst(t(`event.${eventType}` as any, eventType) as any)}
               </label>
               <div className={cx(layerStyles.iconWrapper, layerStyles[eventType])}>
                 <div
