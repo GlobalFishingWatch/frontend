@@ -5,6 +5,10 @@
   color: var(--color-danger-red);
 }
 
+.secondary {
+  color: var(--color-secondary-blue);
+}
+
 .cover {
   position: absolute;
   width: 100%;

@@ -9,9 +9,9 @@
   },
   "timerange": {
     "title": "Sélectionnez une plage de temps",
-    "year": "Year",
-    "month": "Month",
-    "day": "Day",
+    "year": "Année",
+    "month": "Mois",
+    "day": "jour",
     "start": "Début",
     "end": "fin",
     "selectAValidDate": "Please select a valid date",

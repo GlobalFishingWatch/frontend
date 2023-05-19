@@ -181,52 +181,52 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawlers": "trawlers",
-          "drifting_longlines": "drifting_longlines",
-          "pole_and_line": "pole_and_line",
+          "trawlers": "Trawlers",
+          "drifting_longlines": "Drifting longlines",
+          "pole_and_line": "Pole and line",
           "line": "line",
-          "pots_and_traps": "pots_and_traps",
+          "pots_and_traps": "Pots and traps",
           "set_longline": "set_longline",
           "fishing": "fishing",
-          "other_purse_seines": "other_purse_seines",
-          "set_gillnets": "set_gillnets"
+          "other_purse_seines": "Other purse seines",
+          "set_gillnets": "Set gillnets"
         }
       },
       "vessel_id": "vessel_id",
       "target_species": {
-        "keyword": "target_species",
+        "keyword": "Target species",
         "enum": {
-          "Sardinha-verdadeira e Bonito-listrado": "Sardinha-verdadeira e Bonito-listrado",
-          "Polvo": "Polvo",
-          "Caranguejo-vermelho": "Caranguejo-vermelho",
-          "Sardinha-verdadeira e Anchova": "Sardinha-verdadeira e Anchova",
-          "peixes diversos": "peixes diversos",
-          "Sardinha-laje": "Sardinha-laje",
-          "Pescada-gó": "Pescada-gó",
-          "Piramutaba e peixes diversos": "Piramutaba e peixes diversos",
-          "Corvina; Pescadas; Castanha e Abrótea": "Corvina; Pescadas; Castanha e Abrótea",
-          "Fundo e Superfície": "Fundo e Superfície",
-          "permissionamento antigo; em processo de conversão": "permissionamento antigo; em processo de conversão",
-          "Tainhas; Anchova e Serras": "Tainhas; Anchova e Serras",
-          "Garoupas; Cherne; Sirigado e outros peixes de fundo": "Garoupas; Cherne; Sirigado e outros peixes de fundo",
-          "Sardinha-verdadeira e Tainha": "Sardinha-verdadeira e Tainha",
-          "Lagostas": "Lagostas",
-          "Espadarte - atuns e afins": "Espadarte - atuns e afins",
-          "Camarão-rosa e peixes diversos": "Camarão-rosa e peixes diversos",
-          "Pescada Amarela": "Pescada Amarela",
-          "Peixe-sapo": "Peixe-sapo",
-          "Piramutaba; Dourada e Gurijuba": "Piramutaba; Dourada e Gurijuba",
-          "Pargo": "Pargo",
-          "Serras": "Serras",
-          "Cavala e Albacorinha": "Cavala e Albacorinha",
-          "Camarão-sete-barbas": "Camarão-sete-barbas",
-          "Bonito-listrado": "Bonito-listrado",
-          "camarões": "camarões",
-          "Abrótea; Galo e Merluza": "Abrótea; Galo e Merluza",
-          "peixes demersais": "peixes demersais",
-          " Camarão-rosa": " Camarão-rosa",
-          "Dourado - atuns e afins": "Dourado - atuns e afins",
-          "Albacoras - atuns e afins": "Albacoras - atuns e afins"
+          "Sardinha-verdadeira e Bonito-listrado": "Brazilian sardine and skipjack tuna",
+          "Polvo": "Octopus",
+          "Caranguejo-vermelho": "Southwest atlantic red crab",
+          "Sardinha-verdadeira e Anchova": "Brazilian sardine and Bluefish",
+          "peixes diversos": "Miscellaneous fish",
+          "Sardinha-laje": "Atlantic thread herring",
+          "Pescada-gó": "King weakfish",
+          "Piramutaba e peixes diversos": "Laulao catfish and miscellaneous fishes",
+          "Corvina; Pescadas; Castanha e Abrótea": "Whitemouth croaker; Weakfishes; Argentine croaker; Brazilian codling",
+          "Fundo e Superfície": "Demersal and surface",
+          "permissionamento antigo; em processo de conversão": "old permission; in the process of conversion ",
+          "Tainhas; Anchova e Serras": "Mullets; Bluefish; Serra Spanish mackerel",
+          "Garoupas; Cherne; Sirigado e outros peixes de fundo": "Groupers; Black grouper; and other demersal fishes",
+          "Sardinha-verdadeira e Tainha": "Brazilian sardine and Gray mullet",
+          "Lagostas": "Lobsters",
+          "Espadarte - atuns e afins": "Swordfish; tuna and tuna like",
+          "Camarão-rosa e peixes diversos": "Pink shrimp and miscellaneous fish",
+          "Pescada Amarela": "Acoupa weakfish",
+          "Peixe-sapo": "Monkfish",
+          "Piramutaba; Dourada e Gurijuba": "Laulao catfish; Kumakuma; Gillbacker sea catfish",
+          "Pargo": "Red snapper",
+          "Serras": "Serra Spanish mackerel",
+          "Cavala e Albacorinha": "Wahoo and blackfin tuna",
+          "Camarão-sete-barbas": "Seabob shrimp",
+          "Bonito-listrado": "Skipjack tuna",
+          "camarões": "Miscellaneous shrimp",
+          "Abrótea; Galo e Merluza": "Brazilian codling; Lookdown; Argentine hake",
+          "peixes demersais": "Demersal fishes",
+          " Camarão-rosa": "Pink shrimp",
+          "Dourado - atuns e afins": "Dolphinfish; Tunas and tuna like",
+          "Albacoras - atuns e afins": "Tunas and tuna like"
         }
       },
       "license_category": {
@@ -252,15 +252,15 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawlers": "trawlers",
-          "drifting_longlines": "drifting_longlines",
-          "pole_and_line": "pole_and_line",
+          "trawlers": "Trawlers",
+          "drifting_longlines": "Drifting longlines",
+          "pole_and_line": "Pole and line",
           "line": "line",
-          "pots_and_traps": "pots_and_traps",
+          "pots_and_traps": "Pots and traps",
           "set_longline": "set_longline",
           "fishing": "fishing",
-          "other_purse_seines": "other_purse_seines",
-          "set_gillnets": "set_gillnets"
+          "other_purse_seines": "Other purse seines",
+          "set_gillnets": "Set gillnets"
         }
       },
       "mainGear": "mainGear",
@@ -271,37 +271,37 @@
       "targetSpecies": {
         "keyword": "targetSpecies",
         "enum": {
-          "Sardinha-verdadeira e Bonito-listrado": "Sardinha-verdadeira e Bonito-listrado",
-          "Polvo": "Polvo",
-          "Caranguejo-vermelho": "Caranguejo-vermelho",
-          "Sardinha-verdadeira e Anchova": "Sardinha-verdadeira e Anchova",
-          "peixes diversos": "peixes diversos",
-          "Sardinha-laje": "Sardinha-laje",
-          "Pescada-gó": "Pescada-gó",
-          "Piramutaba e peixes diversos": "Piramutaba e peixes diversos",
-          "Corvina; Pescadas; Castanha e Abrótea": "Corvina; Pescadas; Castanha e Abrótea",
-          "Fundo e Superfície": "Fundo e Superfície",
-          "permissionamento antigo; em processo de conversão": "permissionamento antigo; em processo de conversão",
-          "Tainhas; Anchova e Serras": "Tainhas; Anchova e Serras",
-          "Garoupas; Cherne; Sirigado e outros peixes de fundo": "Garoupas; Cherne; Sirigado e outros peixes de fundo",
-          "Sardinha-verdadeira e Tainha": "Sardinha-verdadeira e Tainha",
-          "Lagostas": "Lagostas",
-          "Espadarte - atuns e afins": "Espadarte - atuns e afins",
-          "Camarão-rosa e peixes diversos": "Camarão-rosa e peixes diversos",
-          "Pescada Amarela": "Pescada Amarela",
-          "Peixe-sapo": "Peixe-sapo",
-          "Piramutaba; Dourada e Gurijuba": "Piramutaba; Dourada e Gurijuba",
-          "Pargo": "Pargo",
-          "Serras": "Serras",
-          "Cavala e Albacorinha": "Cavala e Albacorinha",
-          "Camarão-sete-barbas": "Camarão-sete-barbas",
-          "Bonito-listrado": "Bonito-listrado",
-          "camarões": "camarões",
-          "Abrótea; Galo e Merluza": "Abrótea; Galo e Merluza",
-          "peixes demersais": "peixes demersais",
-          " Camarão-rosa": " Camarão-rosa",
-          "Dourado - atuns e afins": "Dourado - atuns e afins",
-          "Albacoras - atuns e afins": "Albacoras - atuns e afins"
+          "Sardinha-verdadeira e Bonito-listrado": "Brazilian sardine and skipjack tuna",
+          "Polvo": "Octopus",
+          "Caranguejo-vermelho": "Southwest atlantic red crab",
+          "Sardinha-verdadeira e Anchova": "Brazilian sardine and Bluefish",
+          "peixes diversos": "Miscellaneous fish",
+          "Sardinha-laje": "Atlantic thread herring",
+          "Pescada-gó": "King weakfish",
+          "Piramutaba e peixes diversos": "Laulao catfish and miscellaneous fishes",
+          "Corvina; Pescadas; Castanha e Abrótea": "Whitemouth croaker; Weakfishes; Argentine croaker; Brazilian codling",
+          "Fundo e Superfície": "Demersal and surface",
+          "permissionamento antigo; em processo de conversão": "old permission; in the process of conversion ",
+          "Tainhas; Anchova e Serras": "Mullets; Bluefish; Serra Spanish mackerel",
+          "Garoupas; Cherne; Sirigado e outros peixes de fundo": "Groupers; Black grouper; and other demersal fishes",
+          "Sardinha-verdadeira e Tainha": "Brazilian sardine and Gray mullet",
+          "Lagostas": "Lobsters",
+          "Espadarte - atuns e afins": "Swordfish; tuna and tuna like",
+          "Camarão-rosa e peixes diversos": "Pink shrimp and miscellaneous fish",
+          "Pescada Amarela": "Acoupa weakfish",
+          "Peixe-sapo": "Monkfish",
+          "Piramutaba; Dourada e Gurijuba": "Laulao catfish; Kumakuma; Gillbacker sea catfish",
+          "Pargo": "Red snapper",
+          "Serras": "Serra Spanish mackerel",
+          "Cavala e Albacorinha": "Wahoo and blackfin tuna",
+          "Camarão-sete-barbas": "Seabob shrimp",
+          "Bonito-listrado": "Skipjack tuna",
+          "camarões": "Miscellaneous shrimp",
+          "Abrótea; Galo e Merluza": "Brazilian codling; Lookdown; Argentine hake",
+          "peixes demersais": "Demersal fishes",
+          " Camarão-rosa": "Pink shrimp",
+          "Dourado - atuns e afins": "Dolphinfish; Tunas and tuna like",
+          "Albacoras - atuns e afins": "Tunas and tuna like"
         }
       },
       "licensDescription": "licensDescription",
@@ -320,15 +320,15 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawlers": "trawlers",
-          "drifting_longlines": "drifting_longlines",
-          "pole_and_line": "pole_and_line",
+          "trawlers": "Trawlers",
+          "drifting_longlines": "Drifting longlines",
+          "pole_and_line": "Pole and line",
           "line": "line",
-          "pots_and_traps": "pots_and_traps",
+          "pots_and_traps": "Pots and traps",
           "set_longline": "set_longline",
           "fishing": "fishing",
-          "other_purse_seines": "other_purse_seines",
-          "set_gillnets": "set_gillnets"
+          "other_purse_seines": "Other purse seines",
+          "set_gillnets": "Set gillnets"
         }
       },
       "mainGear": "mainGear",
@@ -339,37 +339,37 @@
       "targetSpecies": {
         "keyword": "targetSpecies",
         "enum": {
-          "Sardinha-verdadeira e Bonito-listrado": "Sardinha-verdadeira e Bonito-listrado",
-          "Polvo": "Polvo",
-          "Caranguejo-vermelho": "Caranguejo-vermelho",
-          "Sardinha-verdadeira e Anchova": "Sardinha-verdadeira e Anchova",
-          "peixes diversos": "peixes diversos",
-          "Sardinha-laje": "Sardinha-laje",
-          "Pescada-gó": "Pescada-gó",
-          "Piramutaba e peixes diversos": "Piramutaba e peixes diversos",
-          "Corvina; Pescadas; Castanha e Abrótea": "Corvina; Pescadas; Castanha e Abrótea",
-          "Fundo e Superfície": "Fundo e Superfície",
-          "permissionamento antigo; em processo de conversão": "permissionamento antigo; em processo de conversão",
-          "Tainhas; Anchova e Serras": "Tainhas; Anchova e Serras",
-          "Garoupas; Cherne; Sirigado e outros peixes de fundo": "Garoupas; Cherne; Sirigado e outros peixes de fundo",
-          "Sardinha-verdadeira e Tainha": "Sardinha-verdadeira e Tainha",
-          "Lagostas": "Lagostas",
-          "Espadarte - atuns e afins": "Espadarte - atuns e afins",
-          "Camarão-rosa e peixes diversos": "Camarão-rosa e peixes diversos",
-          "Pescada Amarela": "Pescada Amarela",
-          "Peixe-sapo": "Peixe-sapo",
-          "Piramutaba; Dourada e Gurijuba": "Piramutaba; Dourada e Gurijuba",
-          "Pargo": "Pargo",
-          "Serras": "Serras",
-          "Cavala e Albacorinha": "Cavala e Albacorinha",
-          "Camarão-sete-barbas": "Camarão-sete-barbas",
-          "Bonito-listrado": "Bonito-listrado",
-          "camarões": "camarões",
-          "Abrótea; Galo e Merluza": "Abrótea; Galo e Merluza",
-          "peixes demersais": "peixes demersais",
-          " Camarão-rosa": " Camarão-rosa",
-          "Dourado - atuns e afins": "Dourado - atuns e afins",
-          "Albacoras - atuns e afins": "Albacoras - atuns e afins"
+          "Sardinha-verdadeira e Bonito-listrado": "Brazilian sardine and skipjack tuna",
+          "Polvo": "Octopus",
+          "Caranguejo-vermelho": "Southwest atlantic red crab",
+          "Sardinha-verdadeira e Anchova": "Brazilian sardine and Bluefish",
+          "peixes diversos": "Miscellaneous fish",
+          "Sardinha-laje": "Atlantic thread herring",
+          "Pescada-gó": "King weakfish",
+          "Piramutaba e peixes diversos": "Laulao catfish and miscellaneous fishes",
+          "Corvina; Pescadas; Castanha e Abrótea": "Whitemouth croaker; Weakfishes; Argentine croaker; Brazilian codling",
+          "Fundo e Superfície": "Demersal and surface",
+          "permissionamento antigo; em processo de conversão": "old permission; in the process of conversion ",
+          "Tainhas; Anchova e Serras": "Mullets; Bluefish; Serra Spanish mackerel",
+          "Garoupas; Cherne; Sirigado e outros peixes de fundo": "Groupers; Black grouper; and other demersal fishes",
+          "Sardinha-verdadeira e Tainha": "Brazilian sardine and Gray mullet",
+          "Lagostas": "Lobsters",
+          "Espadarte - atuns e afins": "Swordfish; tuna and tuna like",
+          "Camarão-rosa e peixes diversos": "Pink shrimp and miscellaneous fish",
+          "Pescada Amarela": "Acoupa weakfish",
+          "Peixe-sapo": "Monkfish",
+          "Piramutaba; Dourada e Gurijuba": "Laulao catfish; Kumakuma; Gillbacker sea catfish",
+          "Pargo": "Red snapper",
+          "Serras": "Serra Spanish mackerel",
+          "Cavala e Albacorinha": "Wahoo and blackfin tuna",
+          "Camarão-sete-barbas": "Seabob shrimp",
+          "Bonito-listrado": "Skipjack tuna",
+          "camarões": "Miscellaneous shrimp",
+          "Abrótea; Galo e Merluza": "Brazilian codling; Lookdown; Argentine hake",
+          "peixes demersais": "Demersal fishes",
+          " Camarão-rosa": "Pink shrimp",
+          "Dourado - atuns e afins": "Dolphinfish; Tunas and tuna like",
+          "Albacoras - atuns e afins": "Tunas and tuna like"
         }
       },
       "licensDescription": "licensDescription",
@@ -429,7 +429,7 @@
   },
   "private-costa-rica-presence": {
     "name": "Costa Rica VMS",
-    "description": "Description pending",
+    "description": "Vessel monitoring system (VMS) data is provided by the National Directorate of Aquatic Spaces of the Ecuadorian Navy. Data is collected using Ecuador's vessel monitoring system via satellites and is published on a seven-day delay containing information on vessels’ identity, location, speed, course, and movement. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -471,7 +471,7 @@
   },
   "private-ecuador-presence": {
     "name": "Ecuador VMS",
-    "description": "Description pending",
+    "description": "Vessel monitoring system (VMS) data is provided by the National Directorate of Aquatic Spaces of the Ecuadorian Navy. Data is collected using Ecuador's vessel monitoring system via satellites and is published on a seven-day delay containing information on vessels’ identity, location, speed, course, and movement. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -692,7 +692,7 @@
   },
   "private-indonesia-pelagic-presence": {
     "name": "Indonesia Pelagic (Pilot)",
-    "description": "Pelagic Presence",
+    "description": "This layer of Global Fishing Watch uses data provided by Rare, Aruna and AP2HI. The data is collected using Pelagic devices that tracks location and speed. The information shown represents the vessel presence. The presence is determined by taking one position per hour transmitted by the vessel's tracking device.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -850,7 +850,7 @@
   },
   "private-norway-fishing-effort": {
     "name": "Norway VMS",
-    "description": "Description pending",
+    "description": "Vessel monitoring system (VMS) data is provided by the National Directorate of Aquatic Spaces of the Ecuadorian Navy. Data is collected using Ecuador's vessel monitoring system via satellites and is published on a seven-day delay containing information on vessels’ identity, location, speed, course, and movement. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -922,7 +922,7 @@
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
-          "carrier": "carrier",
+          "carrier": "Carrier",
           "fishing": "fishing",
           "oil_tanker": "oil_tanker"
         }
@@ -1054,24 +1054,72 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "drifting_longlines": "drifting_longlines",
-          "driftnets|fishing|pole_and_line|set_gillnets|set_longlines": "driftnets|fishing|pole_and_line|set_gillnets|set_longlines",
-          "set_longlines": "set_longlines",
-          "purse_seines": "purse_seines",
+          "drifting_longlines": "Drifting longlines",
+          "driftnets|fishing|pole_and_line|set_gillnets|set_longlines": "Driftnets, pole and line, set gillnets and set longlines",
+          "set_longlines": "Set longlines",
+          "purse_seines": "Purse seines",
           "driftnets|fishing|set_gillnets": "driftnets|fishing|set_gillnets",
-          "trawlers": "trawlers",
-          "drifting_longlines|squid_jiggers": "drifting_longlines|squid_jiggers",
-          "pots_and_traps": "pots_and_traps",
-          "set_gillnets": "set_gillnets",
-          "set_longlines|squid_jigger": "set_longlines|squid_jigger",
-          "driftnets|pole_and_line|set_gillnets|set_longlines": "driftnets|pole_and_line|set_gillnets|set_longlines",
+          "trawlers": "Trawlers",
+          "drifting_longlines|squid_jiggers": "Drifting longlines and squid jiggers",
+          "pots_and_traps": "Pots and traps",
+          "set_gillnets": "Set gillnets",
+          "set_longlines|squid_jigger": "Set longlines and squid jiggers",
+          "driftnets|pole_and_line|set_gillnets|set_longlines": "Driftnets, pole and line, set gillnets and set longlines",
           "fishing": "fishing",
-          "driftnets|set_gillnets": "driftnets|set_gillnets",
-          "fishing|purse_seines": "fishing|purse_seines",
-          "drifting_longlines|trawlers": "drifting_longlines|trawlers"
+          "driftnets|set_gillnets": "Driftnets and set gillnets",
+          "fishing|purse_seines": "Fishing and purse seines",
+          "drifting_longlines|trawlers": "Drifting longlines and trawlers"
         }
       },
       "vessel_id": "vessel_id"
+    }
+  },
+  "private-png-fishing-effort": {
+    "name": "Papua New Guinea VMS",
+    "description": "Vessel monitoring system (VMS) data is provided by the The National Fisheries Authority of Papua New Guinea. Data is collected using Papua New Guinea's vessel monitoring (VMS) system via satellites, that contains vessel's identifiers and location, and is published on a five-day delay. Global Fishing Watch infers speed and course for each vessel location and analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity”. It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity”, “fishing” or “fishing effort”, as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": {
+        "keyword": "flag",
+        "enum": {
+          "PNG": "PNG",
+          "PHL": "PHL"
+        }
+      },
+      "hours": "hours",
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "private-png-fishing-vessels": {
+    "name": "Papua New Guinea VMS (Fishing Vessels)",
+    "description": "Dataset for VMS Papua New Guinea (Private)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "callsign": "callsign",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
+  "private-png-presence": {
+    "name": "Papua New Guinea VMS",
+    "description": "Vessel monitoring system (VMS) data is provided by the The National Fisheries Authority of Papua New Guinea. Data is collected using Papua New Guinea's national VMS  that is provided by the Fisheries Information and Management System (FIMS). VMS data includes vessel identifiers and location, and is published with a five-day delay.\n\nThe activity layer displays a heatmap of vessel presence. The presence is determined by taking two positions per hour per vessel from the positions transmitted by the vessel's VMS.",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
     }
   },
   "proto-global-encounters-events": {
@@ -1105,7 +1153,7 @@
       "flag": "flag",
       "htime": "htime",
       "matched": {
-        "keyword": "matched",
+        "keyword": "Matching",
         "enum": {
           "true": true,
           "false": false
@@ -1198,15 +1246,15 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawlers": "trawlers",
-          "drifting_longlines": "drifting_longlines",
-          "pole_and_line": "pole_and_line",
+          "trawlers": "Trawlers",
+          "drifting_longlines": "Drifting longlines",
+          "pole_and_line": "Pole and line",
           "line": "line",
-          "pots_and_traps": "pots_and_traps",
+          "pots_and_traps": "Pots and traps",
           "set_longline": "set_longline",
           "fishing": "fishing",
-          "other_purse_seines": "other_purse_seines",
-          "set_gillnets": "set_gillnets"
+          "other_purse_seines": "Other purse seines",
+          "set_gillnets": "Set gillnets"
         }
       },
       "vessel_id": "vessel_id",
@@ -1259,15 +1307,15 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "trawlers": "trawlers",
-          "drifting_longlines": "drifting_longlines",
-          "pole_and_line": "pole_and_line",
+          "trawlers": "Trawlers",
+          "drifting_longlines": "Drifting longlines",
+          "pole_and_line": "Pole and line",
           "line": "line",
-          "pots_and_traps": "pots_and_traps",
+          "pots_and_traps": "Pots and traps",
           "set_longline": "set_longline",
           "fishing": "fishing",
-          "other_purse_seines": "other_purse_seines",
-          "set_gillnets": "set_gillnets"
+          "other_purse_seines": "Other purse seines",
+          "set_gillnets": "Set gillnets"
         }
       },
       "mainGear": "mainGear",
@@ -1277,37 +1325,37 @@
       "targetSpecies": {
         "keyword": "targetSpecies",
         "enum": {
-          "Sardinha-verdadeira e Bonito-listrado": "Sardinha-verdadeira e Bonito-listrado",
-          "Polvo": "Polvo",
-          "Caranguejo-vermelho": "Caranguejo-vermelho",
-          "Sardinha-verdadeira e Anchova": "Sardinha-verdadeira e Anchova",
-          "peixes diversos": "peixes diversos",
-          "Sardinha-laje": "Sardinha-laje",
-          "Pescada-gó": "Pescada-gó",
-          "Piramutaba e peixes diversos": "Piramutaba e peixes diversos",
-          "Corvina; Pescadas; Castanha e Abrótea": "Corvina; Pescadas; Castanha e Abrótea",
-          "Fundo e Superfície": "Fundo e Superfície",
-          "permissionamento antigo; em processo de conversão": "permissionamento antigo; em processo de conversão",
-          "Tainhas; Anchova e Serras": "Tainhas; Anchova e Serras",
-          "Garoupas; Cherne; Sirigado e outros peixes de fundo": "Garoupas; Cherne; Sirigado e outros peixes de fundo",
-          "Sardinha-verdadeira e Tainha": "Sardinha-verdadeira e Tainha",
-          "Lagostas": "Lagostas",
-          "Espadarte - atuns e afins": "Espadarte - atuns e afins",
-          "Camarão-rosa e peixes diversos": "Camarão-rosa e peixes diversos",
-          "Pescada Amarela": "Pescada Amarela",
-          "Peixe-sapo": "Peixe-sapo",
-          "Piramutaba; Dourada e Gurijuba": "Piramutaba; Dourada e Gurijuba",
-          "Pargo": "Pargo",
-          "Serras": "Serras",
-          "Cavala e Albacorinha": "Cavala e Albacorinha",
-          "Camarão-sete-barbas": "Camarão-sete-barbas",
-          "Bonito-listrado": "Bonito-listrado",
-          "camarões": "camarões",
-          "Abrótea; Galo e Merluza": "Abrótea; Galo e Merluza",
-          "peixes demersais": "peixes demersais",
-          " Camarão-rosa": " Camarão-rosa",
-          "Dourado - atuns e afins": "Dourado - atuns e afins",
-          "Albacoras - atuns e afins": "Albacoras - atuns e afins"
+          "Sardinha-verdadeira e Bonito-listrado": "Brazilian sardine and skipjack tuna",
+          "Polvo": "Octopus",
+          "Caranguejo-vermelho": "Southwest atlantic red crab",
+          "Sardinha-verdadeira e Anchova": "Brazilian sardine and Bluefish",
+          "peixes diversos": "Miscellaneous fish",
+          "Sardinha-laje": "Atlantic thread herring",
+          "Pescada-gó": "King weakfish",
+          "Piramutaba e peixes diversos": "Laulao catfish and miscellaneous fishes",
+          "Corvina; Pescadas; Castanha e Abrótea": "Whitemouth croaker; Weakfishes; Argentine croaker; Brazilian codling",
+          "Fundo e Superfície": "Demersal and surface",
+          "permissionamento antigo; em processo de conversão": "old permission; in the process of conversion ",
+          "Tainhas; Anchova e Serras": "Mullets; Bluefish; Serra Spanish mackerel",
+          "Garoupas; Cherne; Sirigado e outros peixes de fundo": "Groupers; Black grouper; and other demersal fishes",
+          "Sardinha-verdadeira e Tainha": "Brazilian sardine and Gray mullet",
+          "Lagostas": "Lobsters",
+          "Espadarte - atuns e afins": "Swordfish; tuna and tuna like",
+          "Camarão-rosa e peixes diversos": "Pink shrimp and miscellaneous fish",
+          "Pescada Amarela": "Acoupa weakfish",
+          "Peixe-sapo": "Monkfish",
+          "Piramutaba; Dourada e Gurijuba": "Laulao catfish; Kumakuma; Gillbacker sea catfish",
+          "Pargo": "Red snapper",
+          "Serras": "Serra Spanish mackerel",
+          "Cavala e Albacorinha": "Wahoo and blackfin tuna",
+          "Camarão-sete-barbas": "Seabob shrimp",
+          "Bonito-listrado": "Skipjack tuna",
+          "camarões": "Miscellaneous shrimp",
+          "Abrótea; Galo e Merluza": "Brazilian codling; Lookdown; Argentine hake",
+          "peixes demersais": "Demersal fishes",
+          " Camarão-rosa": "Pink shrimp",
+          "Dourado - atuns e afins": "Dolphinfish; Tunas and tuna like",
+          "Albacoras - atuns e afins": "Tunas and tuna like"
         }
       },
       "lastTransmissionDate": "lastTransmissionDate",
@@ -1394,7 +1442,7 @@
   },
   "public-chile-presence": {
     "name": "Chile VMS",
-    "description": "Vessel monitoring system (VMS) data provided by the Chilean government’s fisheries and aquaculture regulator (SERNAPESCA). It is possible to filter Chile’s VMS data for small-scale fishing vessels (<18 meters) and industrial fishing vessels (>18 meters). Note that some vessels are <18 meters but are considered industrial because they were registered in the capture of industrial quotas. SERNAPESCA is also using our map to visualize and track vessel positions for their fleet, including vessels involved in aquaculture. Data is collected using Chile’s VMS via satellites and terrestrial receivers and contains vessel identities, gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms we developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing detection algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing,” and “fishing effort,” as “apparent” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification.",
+    "description": "Vessel monitoring system (VMS) data provided by the Chilean government’s fisheries and aquaculture regulator (SERNAPESCA). It is possible to filter Chile’s VMS data for small-scale fishing vessels (under 18 meters) and industrial fishing vessels (over 18 meters). Note that some vessels are under 18 meters but are considered industrial because they were registered in the capture of industrial quotas. SERNAPESCA is also using our map to visualize and track vessel positions for their fleet, including vessels involved in aquaculture. Data is collected using Chile’s VMS via satellites and terrestrial receivers and contains vessel identities, gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms we developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing detection algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing,” and “fishing effort,” as “apparent” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -1402,8 +1450,8 @@
       "fleet": {
         "keyword": "fleet",
         "enum": {
-          "chile_vms_small_fisheries": "chile_vms_small_fisheries",
-          "chile_vms_industry": "chile_vms_industry",
+          "chile_vms_small_fisheries": "Small fisheries",
+          "chile_vms_industry": "Industry",
           "chile_vms_aquaculture": "chile_vms_aquaculture",
           "chile_vms_transport": "chile_vms_transport"
         }
@@ -1510,7 +1558,7 @@
   },
   "public-ecuador-presence": {
     "name": "Ecuador VMS",
-    "description": "Description pending",
+    "description": "Vessel monitoring system (VMS) data is provided by the National Directorate of Aquatic Spaces of the Ecuadorian Navy. Data is collected using Ecuador's vessel monitoring system via satellites and is published on a seven-day delay containing information on vessels’ identity, location, speed, course, and movement. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -1589,24 +1637,24 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "tuna_purse_seines": "tuna_purse_seines",
-          "driftnets": "driftnets",
-          "trollers": "trollers",
-          "set_longlines": "set_longlines",
-          "purse_seines": "purse_seines",
-          "pots_and_traps": "pots_and_traps",
-          "other_fishing": "other_fishing",
-          "dredge_fishing": "dredge_fishing",
-          "set_gillnets": "set_gillnets",
-          "fixed_gear": "fixed_gear",
-          "trawlers": "trawlers",
+          "tuna_purse_seines": "Tuna purse seines",
+          "driftnets": "Driftnets",
+          "trollers": "Trollers",
+          "set_longlines": "Set longlines",
+          "purse_seines": "Purse seines",
+          "pots_and_traps": "Pots and traps",
+          "other_fishing": "Other fishing",
+          "dredge_fishing": "Dredge fishing",
+          "set_gillnets": "Set gillnets",
+          "fixed_gear": "Fixed gear",
+          "trawlers": "Trawlers",
           "fishing": "fishing",
-          "seiners": "seiners",
-          "other_purse_seines": "other_purse_seines",
-          "other_seines": "other_seines",
-          "squid_jigger": "squid_jigger",
-          "pole_and_line": "pole_and_line",
-          "drifting_longlines": "drifting_longlines"
+          "seiners": "Seiners",
+          "other_purse_seines": "Other purse seines",
+          "other_seines": "Other seines",
+          "squid_jigger": "Squid jigger",
+          "pole_and_line": "Pole and line",
+          "drifting_longlines": "Drifting longlines"
         }
       },
       "msgCount": "msgCount",
@@ -1723,24 +1771,24 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "tuna_purse_seines": "tuna_purse_seines",
-          "driftnets": "driftnets",
-          "trollers": "trollers",
-          "set_longlines": "set_longlines",
-          "purse_seines": "purse_seines",
-          "pots_and_traps": "pots_and_traps",
-          "other_fishing": "other_fishing",
-          "dredge_fishing": "dredge_fishing",
-          "set_gillnets": "set_gillnets",
-          "fixed_gear": "fixed_gear",
-          "trawlers": "trawlers",
+          "tuna_purse_seines": "Tuna purse seines",
+          "driftnets": "Driftnets",
+          "trollers": "Trollers",
+          "set_longlines": "Set longlines",
+          "purse_seines": "Purse seines",
+          "pots_and_traps": "Pots and traps",
+          "other_fishing": "Other fishing",
+          "dredge_fishing": "Dredge fishing",
+          "set_gillnets": "Set gillnets",
+          "fixed_gear": "Fixed gear",
+          "trawlers": "Trawlers",
           "fishing": "fishing",
-          "seiners": "seiners",
-          "other_purse_seines": "other_purse_seines",
-          "other_seines": "other_seines",
-          "squid_jigger": "squid_jigger",
-          "pole_and_line": "pole_and_line",
-          "drifting_longlines": "drifting_longlines"
+          "seiners": "Seiners",
+          "other_purse_seines": "Other purse seines",
+          "other_seines": "Other seines",
+          "squid_jigger": "Squid jigger",
+          "pole_and_line": "Pole and line",
+          "drifting_longlines": "Drifting longlines"
         }
       },
       "msgCount": "msgCount",
@@ -1801,7 +1849,7 @@
         "keyword": "vessel_type",
         "enum": {
           "fishing": "fishing",
-          "carrier": "carrier",
+          "carrier": "Carrier",
           "cargo": "cargo",
           "bunker_or_tanker": "bunker_or_tanker",
           "passenger": "passenger",
@@ -2114,8 +2162,8 @@
     }
   },
   "public-mpa-all": {
-    "name": "MPAs",
-    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: November 2022. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer.",
+    "name": "MPAs (WDPA)",
+    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer.",
     "schema": {}
   },
   "public-mpa-no-take": {
@@ -2154,18 +2202,18 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "dredge_fishing": "dredge_fishing",
-          "drifting_longlines": "drifting_longlines",
+          "dredge_fishing": "Dredge fishing",
+          "drifting_longlines": "Drifting longlines",
           "fishing": "fishing",
-          "fixed_gear": "fixed_gear",
-          "pole_and_line": "pole_and_line",
-          "pots_and_traps": "pots_and_traps",
-          "purse_seines": "purse_seines",
-          "seiners": "seiners",
-          "set_gillnets": "set_gillnets",
-          "set_longlines": "set_longlines",
-          "trawlers": "trawlers",
-          "trollers": "trollers"
+          "fixed_gear": "Fixed gear",
+          "pole_and_line": "Pole and line",
+          "pots_and_traps": "Pots and traps",
+          "purse_seines": "Purse seines",
+          "seiners": "Seiners",
+          "set_gillnets": "Set gillnets",
+          "set_longlines": "Set longlines",
+          "trawlers": "Trawlers",
+          "trollers": "Trollers"
         }
       },
       "vessel_id": "vessel_id",
@@ -2186,18 +2234,18 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "dredge_fishing": "dredge_fishing",
-          "drifting_longlines": "drifting_longlines",
+          "dredge_fishing": "Dredge fishing",
+          "drifting_longlines": "Drifting longlines",
           "fishing": "fishing",
-          "fixed_gear": "fixed_gear",
-          "pole_and_line": "pole_and_line",
-          "pots_and_traps": "pots_and_traps",
-          "purse_seines": "purse_seines",
-          "seiners": "seiners",
-          "set_gillnets": "set_gillnets",
-          "set_longlines": "set_longlines",
-          "trawlers": "trawlers",
-          "trollers": "trollers"
+          "fixed_gear": "Fixed gear",
+          "pole_and_line": "Pole and line",
+          "pots_and_traps": "Pots and traps",
+          "purse_seines": "Purse seines",
+          "seiners": "Seiners",
+          "set_gillnets": "Set gillnets",
+          "set_longlines": "Set longlines",
+          "trawlers": "Trawlers",
+          "trollers": "Trollers"
         }
       },
       "shipname": "shipname",
@@ -2216,18 +2264,18 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "dredge_fishing": "dredge_fishing",
-          "drifting_longlines": "drifting_longlines",
+          "dredge_fishing": "Dredge fishing",
+          "drifting_longlines": "Drifting longlines",
           "fishing": "fishing",
-          "fixed_gear": "fixed_gear",
-          "pole_and_line": "pole_and_line",
-          "pots_and_traps": "pots_and_traps",
-          "purse_seines": "purse_seines",
-          "seiners": "seiners",
-          "set_gillnets": "set_gillnets",
-          "set_longlines": "set_longlines",
-          "trawlers": "trawlers",
-          "trollers": "trollers"
+          "fixed_gear": "Fixed gear",
+          "pole_and_line": "Pole and line",
+          "pots_and_traps": "Pots and traps",
+          "purse_seines": "Purse seines",
+          "seiners": "Seiners",
+          "set_gillnets": "Set gillnets",
+          "set_longlines": "Set longlines",
+          "trawlers": "Trawlers",
+          "trollers": "Trollers"
         }
       },
       "shipname": "shipname",
@@ -2245,18 +2293,18 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "dredge_fishing": "dredge_fishing",
-          "drifting_longlines": "drifting_longlines",
+          "dredge_fishing": "Dredge fishing",
+          "drifting_longlines": "Drifting longlines",
           "fishing": "fishing",
-          "fixed_gear": "fixed_gear",
-          "pole_and_line": "pole_and_line",
-          "pots_and_traps": "pots_and_traps",
-          "purse_seines": "purse_seines",
-          "seiners": "seiners",
-          "set_gillnets": "set_gillnets",
-          "set_longlines": "set_longlines",
-          "trawlers": "trawlers",
-          "trollers": "trollers"
+          "fixed_gear": "Fixed gear",
+          "pole_and_line": "Pole and line",
+          "pots_and_traps": "Pots and traps",
+          "purse_seines": "Purse seines",
+          "seiners": "Seiners",
+          "set_gillnets": "Set gillnets",
+          "set_longlines": "Set longlines",
+          "trawlers": "Trawlers",
+          "trollers": "Trollers"
         }
       },
       "vessel_id": "vessel_id",
@@ -2341,20 +2389,20 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "drifting_longlines": "drifting_longlines",
-          "driftnets|fishing|pole_and_line|set_gillnets|set_longlines": "driftnets|fishing|pole_and_line|set_gillnets|set_longlines",
-          "set_longlines": "set_longlines",
-          "purse_seines": "purse_seines",
-          "trawlers": "trawlers",
-          "drifting_longlines|squid_jiggers": "drifting_longlines|squid_jiggers",
-          "pots_and_traps": "pots_and_traps",
-          "set_gillnets": "set_gillnets",
-          "set_longlines|squid_jigger": "set_longlines|squid_jigger",
-          "driftnets|pole_and_line|set_gillnets|set_longlines": "driftnets|pole_and_line|set_gillnets|set_longlines",
+          "drifting_longlines": "Drifting longlines",
+          "driftnets|fishing|pole_and_line|set_gillnets|set_longlines": "Driftnets, pole and line, set gillnets and set longlines",
+          "set_longlines": "Set longlines",
+          "purse_seines": "Purse seines",
+          "trawlers": "Trawlers",
+          "drifting_longlines|squid_jiggers": "Drifting longlines and squid jiggers",
+          "pots_and_traps": "Pots and traps",
+          "set_gillnets": "Set gillnets",
+          "set_longlines|squid_jigger": "Set longlines and squid jiggers",
+          "driftnets|pole_and_line|set_gillnets|set_longlines": "Driftnets, pole and line, set gillnets and set longlines",
           "fishing": "fishing",
-          "driftnets|set_gillnets": "driftnets|set_gillnets",
-          "fishing|purse_seines": "fishing|purse_seines",
-          "drifting_longlines|trawlers": "drifting_longlines|trawlers"
+          "driftnets|set_gillnets": "Driftnets and set gillnets",
+          "fishing|purse_seines": "Fishing and purse seines",
+          "drifting_longlines|trawlers": "Drifting longlines and trawlers"
         }
       },
       "vessel_id": "vessel_id",
@@ -2375,7 +2423,7 @@
     }
   },
   "public-peru-presence": {
-    "name": "Peru VMS Presence",
+    "name": "Peru VMS",
     "description": "This layer of Global Fishing Watch uses data provided by the Peruvian Government’s Ministry of Production, Fisheries Sector, (PRODUCE). Permission to include Peruvian Data required that a 10 day delay to publishing was implemented. The data is collected using their Vessel Monitoring System (VMS) via satellites and terrestrial receivers, and contains a vessel’s identity gear type, location, speed, direction and more. The activity layer displays a heatmap of vessel presence. The presence is determined by taking one position per day per vessel from the positions transmitted by VMS. \n",
     "schema": {
       "lat": "lat",
@@ -2422,14 +2470,15 @@
   },
   "public-png-fishing-effort": {
     "name": "Papua New Guinea VMS",
-    "description": "Vessel monitoring system (VMS) data is provided by the The National Fisheries Authority of Papua New Guinea. Data is collected using Papua New Guinea's vessel monitoring (VMS) system via satellites, that contains vessel's identifiers and location, and is published on a two-day delay. Global Fishing Watch infers speed and course for each vessel location and analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity”. It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity”, “fishing” or “fishing effort”, as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques",
+    "description": "Vessel monitoring system (VMS) data is provided by the The National Fisheries Authority of Papua New Guinea. Data is collected using Papua New Guinea's vessel monitoring (VMS) system via satellites, that contains vessel's identifiers and location, and is published on a five-day delay. Global Fishing Watch infers speed and course for each vessel location and analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity”. It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity”, “fishing” or “fishing effort”, as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques",
     "schema": {
       "lat": "lat",
       "lon": "lon",
       "flag": {
         "keyword": "flag",
         "enum": {
-          "PNG": "PNG"
+          "PNG": "PNG",
+          "PHL": "PHL"
         }
       },
       "hours": "hours",
@@ -2455,7 +2504,7 @@
   },
   "public-png-presence": {
     "name": "Papua New Guinea VMS",
-    "description": "Description pending",
+    "description": "Vessel monitoring system (VMS) data is provided by the The National Fisheries Authority of Papua New Guinea. Data is collected using Papua New Guinea's national VMS  that is provided by the Fisheries Information and Management System (FIMS). VMS data includes vessel identifiers and location, and is published with a five-day delay.\n\nThe activity layer displays a heatmap of vessel presence. The presence is determined by taking two positions per hour per vessel from the positions transmitted by the vessel's VMS.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -2486,9 +2535,9 @@
           "namibia_vms": "namibia_vms",
           "indovms": "indovms",
           "mexico_vms": "mexico_vms",
-          "chile_vms_small_fisheries": "chile_vms_small_fisheries",
+          "chile_vms_small_fisheries": "Small fisheries",
           "peru.historic": "peru.historic",
-          "chile_vms_industry": "chile_vms_industry",
+          "chile_vms_industry": "Industry",
           "ais_scored": "ais_scored",
           "AIS": "AIS",
           "panama_vms": "panama_vms",
@@ -2517,14 +2566,14 @@
           "fishing|specialized_reefer": "fishing|specialized_reefer",
           "fish_factory|reefer": "fish_factory|reefer",
           "reefer|fish_tender": "reefer|fish_tender",
-          "drifting_longlines": "drifting_longlines",
-          "tuna_purse_seines": "tuna_purse_seines",
+          "drifting_longlines": "Drifting longlines",
+          "tuna_purse_seines": "Tuna purse seines",
           "Anchored gillnets": "Anchored gillnets",
-          "set_longlines": "set_longlines",
+          "set_longlines": "Set longlines",
           "fish_tender|purse_seines|supply_vessel": "fish_tender|purse_seines|supply_vessel",
-          "purse_seines": "purse_seines",
-          "fixed_gear": "fixed_gear",
-          "other_seines": "other_seines",
+          "purse_seines": "Purse seines",
+          "fixed_gear": "Fixed gear",
+          "other_seines": "Other seines",
           "purse_seine_support": "purse_seine_support",
           "longline": "longline",
           "trawlers|specialized_reefer|fish_factory": "trawlers|specialized_reefer|fish_factory",
@@ -2538,24 +2587,24 @@
           "Fish net/dragnet": "Fish net/dragnet",
           "cargo": "cargo",
           "Hand Line Tuna": "Hand Line Tuna",
-          "dredge_fishing": "dredge_fishing",
-          "trawlers": "trawlers",
-          "seiners": "seiners",
+          "dredge_fishing": "Dredge fishing",
+          "trawlers": "Trawlers",
+          "seiners": "Seiners",
           "reefer|well_boat": "reefer|well_boat",
           "Stick-Held lift net": "Stick-Held lift net",
           "Squid hooking": "Squid hooking",
-          "trollers": "trollers",
+          "trollers": "Trollers",
           "Shrimp net": "Shrimp net",
           "fish_factory": "fish_factory",
           "Basic longline": "Basic longline",
           "well_boat|reefer": "well_boat|reefer",
           "well_boat|drifting_longlines|reefer": "well_boat|drifting_longlines|reefer",
           "fish_tender|fishing": "fish_tender|fishing",
-          "pole_and_line": "pole_and_line",
+          "pole_and_line": "Pole and line",
           "purse_seine": "purse_seine",
           "Pole-and-line": "Pole-and-line",
-          "pots_and_traps": "pots_and_traps",
-          "set_gillnets": "set_gillnets",
+          "pots_and_traps": "Pots and traps",
+          "set_gillnets": "Set gillnets",
           "Oceanic gillnet": "Oceanic gillnet",
           "longline_gigging": "longline_gigging",
           "oil_tanker": "oil_tanker",
@@ -2563,16 +2612,16 @@
           "fishing": "fishing",
           "cargo_reefer": "cargo_reefer",
           "reefer|fish_tender|drifting_longlines": "reefer|fish_tender|drifting_longlines",
-          "driftnets|set_gillnets": "driftnets|set_gillnets",
+          "driftnets|set_gillnets": "Driftnets and set gillnets",
           "Purse Seine Group (2 boat) Small Pelagics": "Purse Seine Group (2 boat) Small Pelagics",
           "Cast Nets": "Cast Nets",
           "pots_and_traps|fish_tender": "pots_and_traps|fish_tender",
           "Purse Seine Big Pelagics with one boat": "Purse Seine Big Pelagics with one boat",
           "fish_tender": "fish_tender",
-          "other_purse_seines": "other_purse_seines",
+          "other_purse_seines": "Other purse seines",
           "fish_tender|purse_seines": "fish_tender|purse_seines",
           "Longline Tuna": "Longline Tuna",
-          "squid_jigger": "squid_jigger"
+          "squid_jigger": "Squid jigger"
         }
       },
       "radiance": {
@@ -2608,17 +2657,17 @@
     }
   },
   "public-protectedseas": {
-    "name": "Protected Seas",
-    "description": "Protected seas (only category IUCN MPA)",
+    "name": "MPAs (ProtectedSeas)",
+    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: ProtectedSeas Navigator. ProtectedSeas assigns a Level of Fishing Protection (LFP) score to each area based on an analysis of restrictions on marine life extraction. You can use the filter icon to explore the different LFP scores, which are, Least restrictive: No known fishing restrictions; Less restrictive: Few species- or gear-specific restrictions apply; Moderately restrictive: Several species- or gear-specific restrictions apply; Heavily restrictive: Fishing is mostly prohibited, with few exceptions; Most restrictive: Fishing is prohibited. See more detailed <a href='https://protectedseas.net/mpa-methods/' target='_blank' rel=noopener'>metadata information</a> for this layer. ",
     "schema": {
-      "removal_of_marine_life_is_prohibited": {
+      "removal_of": {
         "keyword": "Level of Fishing Protection",
         "enum": {
-          "1": "Least restrictive",
-          "2": "Less restrictive",
-          "3": "Moderately restrictive",
-          "4": "Heavily restrictive",
-          "5": "Most restrictive"
+          "1": "1. Least restrictive",
+          "2": "2. Less restrictive",
+          "3": "3. Moderately restrictive",
+          "4": "4. Heavily restrictive",
+          "5": "5. Most restrictive"
         }
       }
     }
@@ -2657,7 +2706,7 @@
   },
   "public-rfmo": {
     "name": "RFMOs",
-    "description": "Regional fisheries management organizations (RFMOs) are international bodies formed by countries with a shared interest in managing or conserving fish stocks in a particular region. Some manage all the fish stocks found in a given area, while others focus on specific highly migratory species, notably tuna. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer.",
+    "description": "Regional fisheries management organizations (RFMOs) are international bodies formed by countries with a shared interest in managing or conserving fish stocks in a particular region. Some manage all the fish stocks found in a given area, while others focus on specific highly migratory species, notably tuna. The regional fisheries management organization on the Global Fishing Watch map currently includes the five tuna regional fisheries management organizations. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer.",
     "schema": {
       "ID": {
         "keyword": "RFMO",

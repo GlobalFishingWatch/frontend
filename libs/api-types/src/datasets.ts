@@ -12,7 +12,7 @@ export type EndpointParamType =
   | 'string'
   | 'date-iso'
   | 'sql'
-  | '4wings-datasets'
+  | '4wings-datasets' // legacy from v2 replaced by type: string, array: true
 
 export interface EndpointParam {
   id: string
@@ -78,7 +78,11 @@ export enum DatasetStatus {
 export type DatasetGeometryType = 'polygons' | 'tracks' | 'points' | 'draw'
 
 export interface DatasetDocumentation {
+  type?: string
+  enable?: boolean
+  status?: 'Active' | 'Deprecated'
   queries?: string[]
+  provider?: string
 }
 
 export interface DatasetConfiguration {
