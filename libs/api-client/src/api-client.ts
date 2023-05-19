@@ -145,9 +145,7 @@ export class GFW_API_CLASS {
 
   getRegisterUrl(callbackUrl: string, { client = 'gfw', locale = '' } = {}) {
     const fallbackLocale =
-      locale ||
-      (typeof localStorage !== 'undefined' ? localStorage.getItem('i18nextLng') : 'en') ||
-      'en'
+      locale || (isClientSide ? localStorage.getItem('i18nextLng') : 'en') || 'en'
     return this.generateUrl(
       `/${API_VERSION}/${AUTH_PATH}/${REGISTER_PATH}?client=${client}&callback=${encodeURIComponent(
         callbackUrl
@@ -159,9 +157,7 @@ export class GFW_API_CLASS {
 
   getLoginUrl(callbackUrl: string, { client = 'gfw', locale = '' } = {}) {
     const fallbackLocale =
-      locale ||
-      (typeof localStorage !== 'undefined' ? localStorage.getItem('i18nextLng') : 'en') ||
-      'en'
+      locale || (isClientSide ? localStorage.getItem('i18nextLng') : 'en') || 'en'
     const callbackUrlEncoded = encodeURIComponent(callbackUrl)
     return this.generateUrl(
       `/${API_VERSION}/${AUTH_PATH}?client=${client}&callback=${callbackUrlEncoded}&locale=${fallbackLocale}`,
@@ -197,10 +193,12 @@ export class GFW_API_CLASS {
 
   setToken(token: string) {
     this.token = token
-    if (token) {
-      localStorage.setItem(this.storageKeys.token, token)
-    } else {
-      localStorage.removeItem(this.storageKeys.token)
+    if (isClientSide) {
+      if (token) {
+        localStorage.setItem(this.storageKeys.token, token)
+      } else {
+        localStorage.removeItem(this.storageKeys.token)
+      }
     }
     if (this.debug) {
       console.log('GFWAPI: updated token with', token)
@@ -213,10 +211,12 @@ export class GFW_API_CLASS {
 
   setRefreshToken(refreshToken: string) {
     this.refreshToken = refreshToken
-    if (refreshToken) {
-      localStorage.setItem(this.storageKeys.refreshToken, refreshToken)
-    } else {
-      localStorage.removeItem(this.storageKeys.refreshToken)
+    if (isClientSide) {
+      if (refreshToken) {
+        localStorage.setItem(this.storageKeys.refreshToken, refreshToken)
+      } else {
+        localStorage.removeItem(this.storageKeys.refreshToken)
+      }
     }
     if (this.debug) {
       console.log('GFWAPI: updated refreshToken with', refreshToken)
@@ -407,8 +407,10 @@ export class GFW_API_CLASS {
               if (this.debug) {
                 console.warn(`GFWAPI: Error fetching ${url}`, e)
               }
-              localStorage.removeItem(this.storageKeys.token)
-              localStorage.removeItem(this.storageKeys.refreshToken)
+              if (isClientSide) {
+                localStorage.removeItem(this.storageKeys.token)
+                localStorage.removeItem(this.storageKeys.refreshToken)
+              }
               e.refreshError = true
               throw parseAPIError(e)
             }
