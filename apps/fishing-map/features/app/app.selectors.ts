@@ -21,6 +21,7 @@ import {
   selectLocationDatasetId,
   selectLocationAreaId,
   selectReportId,
+  selectQueryParam,
 } from 'routes/routes.selectors'
 import {
   Bbox,
@@ -109,6 +110,55 @@ export const selectSearchQuery = createSelector(
   [selectWorkspaceStateProperty('query')],
   (query): string => {
     return query
+  }
+)
+
+export const selectSearchFilters = createSelector(
+  [
+    selectQueryParam('flag'),
+    selectQueryParam('sources'),
+    selectQueryParam('lastTransmissionDate'),
+    selectQueryParam('firstTransmissionDate'),
+    selectQueryParam('mmsi'),
+    selectQueryParam('imo'),
+    selectQueryParam('callsign'),
+    selectQueryParam('owner'),
+    selectQueryParam('codMarinha'),
+    selectQueryParam('geartype'),
+    selectQueryParam('targetSpecies'),
+    selectQueryParam('fleet'),
+    selectQueryParam('origin'),
+  ],
+  (
+    flag,
+    sources,
+    lastTransmissionDate,
+    firstTransmissionDate,
+    mmsi,
+    imo,
+    callsign,
+    owner,
+    codMarinha,
+    geartype,
+    targetSpecies,
+    fleet,
+    origin
+  ) => {
+    return {
+      flag,
+      sources,
+      lastTransmissionDate,
+      firstTransmissionDate,
+      mmsi,
+      imo,
+      callsign,
+      owner,
+      codMarinha,
+      geartype,
+      targetSpecies,
+      fleet,
+      origin,
+    }
   }
 )
 

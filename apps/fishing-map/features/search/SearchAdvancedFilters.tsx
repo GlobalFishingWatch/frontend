@@ -15,7 +15,7 @@ import { showSchemaFilter } from 'features/workspace/activity/ActivitySchemaFilt
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { selectAdvancedSearchDatasets } from 'features/search/search.selectors'
 import { useSearchFiltersConnect } from './search.hook'
-import styles from './SearchFilters.module.css'
+import styles from './SearchAdvancedFilters.module.css'
 
 const schemaFilterIds: SupportedDatasetSchema[] = [
   'fleet',
@@ -37,12 +37,13 @@ const getSearchDataview = (datasets, searchFilters, sources): SchemaFieldDatavie
   }
 }
 
-function SearchFilters() {
+function SearchAdvancedFilters() {
   const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()
   const datasets = useSelector(selectAdvancedSearchDatasets)
   const { searchFilters, setSearchFilters } = useSearchFiltersConnect()
-  const { flag, sources, lastTransmissionDate, firstTransmissionDate } = searchFilters
+  const { flag, sources, lastTransmissionDate, firstTransmissionDate, imo, mmsi, callsign, owner } =
+    searchFilters
 
   const flagOptions = useMemo(getFlags, [])
   const sourceOptions = useMemo(() => {
@@ -70,20 +71,23 @@ function SearchFilters() {
   const schemaFilters = schemaFilterIds.map((id) => getFiltersBySchema(dataview, id))
 
   const onSourceSelect = (filter) => {
-    const newSources = [...(sources || []), filter]
-    setSearchFilters({ sources: newSources })
+    const newSources = [
+      ...(sources || []),
+      { id: filter.id, label: filter.label.props.dataset.name },
+    ]
+    const notCompatibleSchemaFilters = getIncompatibleFilters(newSources)
+    setSearchFilters({ ...notCompatibleSchemaFilters, sources: newSources })
+  }
+
+  const getIncompatibleFilters = (sources) => {
     // Recalculates schemaFilters to validate a new source has valid selection
     // when not valid we need to remove the filter from the search
-    const newDataview = getSearchDataview(datasets, searchFilters, newSources)
+    const newDataview = getSearchDataview(datasets, searchFilters, sources)
     const newSchemaFilters = schemaFilterIds.map((id) => getFiltersBySchema(newDataview, id))
     const notCompatibleSchemaFilters = newSchemaFilters.flatMap(({ id, disabled }) => {
       return disabled && searchFilters[id] !== undefined ? id : []
     })
-    if (notCompatibleSchemaFilters.length) {
-      notCompatibleSchemaFilters.forEach((schema) => {
-        setSearchFilters({ [schema]: undefined })
-      })
-    }
+    return Object.fromEntries(notCompatibleSchemaFilters.map((schema) => [schema, undefined]))
   }
 
   const onInputChange = useCallback(
@@ -98,21 +102,21 @@ function SearchFilters() {
       <InputText
         onChange={onInputChange}
         id="mmsi"
-        value={searchFilters.mmsi || ''}
+        value={mmsi || ''}
         label={t('vessel.mmsi', 'MMSI')}
         inputSize="small"
       />
       <InputText
         onChange={onInputChange}
         id="imo"
-        value={searchFilters.imo || ''}
+        value={imo || ''}
         label={t('vessel.imo', 'IMO')}
         inputSize="small"
       />
       <InputText
         onChange={onInputChange}
         id="callsign"
-        value={searchFilters.callsign || ''}
+        value={callsign || ''}
         label={t('vessel.callsign', 'Callsign')}
         inputSize="small"
       />
@@ -121,8 +125,8 @@ function SearchFilters() {
         placeholder={getPlaceholderBySelections(flag)}
         options={flagOptions}
         selectedOptions={flag}
-        onSelect={(filter) => {
-          setSearchFilters({ flag: [...(flag || []), filter] })
+        onSelect={({ alias, ...rest }) => {
+          setSearchFilters({ flag: [...(flag || []), rest] })
         }}
         onRemove={(_, rest) => {
           setSearchFilters({ flag: rest })
@@ -166,10 +170,12 @@ function SearchFilters() {
           selectedOptions={sources}
           onSelect={onSourceSelect}
           onRemove={(_, rest) => {
-            setSearchFilters({ sources: rest })
+            const notCompatibleSchemaFilters = getIncompatibleFilters(rest)
+            setSearchFilters({ ...notCompatibleSchemaFilters, sources: rest })
           }}
           onCleanClick={() => {
-            setSearchFilters({ sources: undefined })
+            const notCompatibleSchemaFilters = getIncompatibleFilters(sourceOptions)
+            setSearchFilters({ ...notCompatibleSchemaFilters, sources: undefined })
           }}
         />
       )}
@@ -212,7 +218,7 @@ function SearchFilters() {
       <InputText
         onChange={onInputChange}
         id="owner"
-        value={searchFilters.owner || ''}
+        value={owner || ''}
         label={t('vessel.owner', 'Owner')}
         inputSize="small"
       />
@@ -220,4 +226,4 @@ function SearchFilters() {
   )
 }
 
-export default SearchFilters
+export default SearchAdvancedFilters

@@ -1,13 +1,12 @@
 import { useSelector } from 'react-redux'
 import { useCallback } from 'react'
-import { useAppDispatch } from 'features/app/app.hooks'
+import { useLocationConnect } from 'routes/routes.hook'
+import { selectSearchFilters } from 'features/app/app.selectors'
 import {
   SearchFilter,
-  selectSearchFilters,
   selectSearchPagination,
   selectSearchSuggestion,
   selectSearchSuggestionClicked,
-  setFilters,
 } from './search.slice'
 
 export const useSearchConnect = () => {
@@ -19,13 +18,13 @@ export const useSearchConnect = () => {
 
 export const useSearchFiltersConnect = () => {
   const searchFilters = useSelector(selectSearchFilters)
-  const dispatch = useAppDispatch()
+  const { dispatchQueryParams } = useLocationConnect()
 
   const setSearchFilters = useCallback(
     (filter: SearchFilter) => {
-      dispatch(setFilters(filter))
+      dispatchQueryParams(filter)
     },
-    [dispatch]
+    [dispatchQueryParams]
   )
 
   return {

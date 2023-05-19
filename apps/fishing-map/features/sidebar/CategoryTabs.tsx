@@ -109,17 +109,17 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             [styles.current]: locationType === SEARCH,
           })}
         >
-          <Tooltip content={t('search.vessels', 'Search vessels')} placement="right">
-            <Link
-              className={styles.tabContent}
-              to={getLinkToSearch(workspace)}
-              onClick={onSearchClick}
-            >
+          <Link
+            className={styles.tabContent}
+            to={getLinkToSearch(workspace)}
+            onClick={onSearchClick}
+          >
+            <Tooltip content={t('search.vessels', 'Search vessels')} placement="right">
               <span className={styles.tabContent}>
                 <Icon icon="category-search" className={styles.searchIcon} />
               </span>
-            </Link>
-          </Tooltip>
+            </Tooltip>
+          </Link>
         </li>
         {availableCategories?.map((category, index) => (
           <li

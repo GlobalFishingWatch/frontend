@@ -1,5 +1,6 @@
 import { BaseUrlWorkspace } from '@globalfishingwatch/dataviews-client'
 import { DatasetSubCategory, DataviewCategory, EventType } from '@globalfishingwatch/api-types'
+import { AdvancedSearchQueryFieldKey } from '@globalfishingwatch/api-client'
 import {
   REPORT_VESSELS_GRAPH_GEARTYPE,
   REPORT_VESSELS_GRAPH_FLAG,
@@ -8,7 +9,7 @@ import {
   REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
   REPORT_VESSELS_GRAPH_VESSELTYPE,
 } from 'data/config'
-import { SearchType } from 'features/search/search.slice'
+import { SearchFilter, SearchType } from 'features/search/search.slice'
 export { Locale } from '@globalfishingwatch/api-types'
 
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
@@ -27,6 +28,7 @@ export type ReportStateProperty =
 
 export type WorkspaceStateProperty =
   | 'query'
+  | 'sources'
   | 'searchOption'
   | 'report'
   | 'readOnly'
@@ -41,6 +43,7 @@ export type WorkspaceStateProperty =
   | 'bivariateDataviews'
   | 'activityCategory'
   | ReportStateProperty
+  | AdvancedSearchQueryFieldKey
 
 export type WorkspaceParam =
   | WorkspaceViewportParam
@@ -105,7 +108,8 @@ export type RedirectParam = {
 export type QueryParams = Partial<WorkspaceViewport> &
   Partial<WorkspaceTimeRange> &
   WorkspaceState &
-  RedirectParam
+  RedirectParam &
+  SearchFilter
 
 export type MapCoordinates = {
   latitude: number

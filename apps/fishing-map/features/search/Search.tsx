@@ -32,7 +32,6 @@ import {
   fetchVesselSearchThunk,
   cleanVesselSearchResults,
   RESULTS_PER_PAGE,
-  resetFilters,
   setSuggestionClicked,
   SearchFilter,
   selectSearchPagination,
@@ -185,9 +184,23 @@ function Search() {
     })
     addNewDataviewInstances(instances)
     batch(() => {
-      dispatch(resetFilters())
       dispatch(cleanVesselSearchResults())
-      dispatchQueryParams({ query: undefined })
+      dispatchQueryParams({
+        query: undefined,
+        flag: undefined,
+        sources: undefined,
+        lastTransmissionDate: undefined,
+        firstTransmissionDate: undefined,
+        mmsi: undefined,
+        imo: undefined,
+        callsign: undefined,
+        owner: undefined,
+        codMarinha: undefined,
+        geartype: undefined,
+        targetSpecies: undefined,
+        fleet: undefined,
+        origin: undefined,
+      })
     })
     dispatchLocation(WORKSPACE)
   }
