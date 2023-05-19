@@ -1,5 +1,11 @@
 import { EventType } from '@globalfishingwatch/api-types'
 
+export const IDENTITY_FIELD_GROUPS = [
+  ['shipname', 'flag'],
+  ['vesselType', 'geartype'],
+  ['mmsi', 'imo', 'callsign'],
+]
+
 export const EVENTS_INCLUDES_BASE = ['id', 'type', 'start', 'end', 'position']
 export const EVENTS_INCLUDES_REGIONS = ['regions.mpa', 'regions.eez', 'regions.fao', 'regions.rfmo']
 

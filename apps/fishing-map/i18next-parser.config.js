@@ -42,10 +42,9 @@ module.exports = {
   // Whether to use the keys as the default value; ex. "Hello": "Hello", "World": "World"
   // This option takes precedence over the `defaultValue` and `skipDefaultValues` options
   useKeysAsDefaultValue: false,
-  // Whether to ignore default values.
-  skipDefaultValues: false,
-  // Default value to give to empty keys
-  defaultValue: 'missing_translation',
+  defaultValue: function (locale, namespace, key, value) {
+    return 'missing_translation'
+  },
   // Display info about the parsing including some stats
   verbose: true,
 }

@@ -7,13 +7,9 @@ import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import I18nDate from 'features/i18n/i18nDate'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
 import { Locale } from 'types'
+import { IDENTITY_FIELD_GROUPS } from 'features/vessel/vessel.config'
 import styles from './VesselIdentity.module.css'
 
-const IDENTITY_FIELD_GROUPS = [
-  ['shipname', 'flag'],
-  ['vesselType', 'geartype'],
-  ['mmsi', 'imo', 'callsign'],
-]
 const VesselIdentity = () => {
   const { t, i18n } = useTranslation()
   const vessel = useSelector(selectVesselInfoData)

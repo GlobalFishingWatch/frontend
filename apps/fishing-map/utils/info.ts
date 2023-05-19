@@ -7,19 +7,19 @@ export const EMPTY_FIELD_PLACEHOLDER = '---'
 export const upperFirst = (text: string) =>
   text.charAt(0).toUpperCase() + text.substr(1).toLowerCase()
 
-export const formatInfoField = (fieldValue: string, type: string) => {
+export const formatInfoField = (fieldValue: string, type: string, translationFn = t) => {
   if (fieldValue) {
     if (type === 'flag') {
-      return t(`flags:${fieldValue}` as any, fieldValue)
+      return translationFn(`flags:${fieldValue}` as any, fieldValue)
     }
     if (type === 'vesselType') {
-      return t(`vessel.vesselTypes.${fieldValue}` as any, fieldValue)
+      return translationFn(`vessel.vesselTypes.${fieldValue}` as any, fieldValue)
     }
     if (type === 'geartype') {
-      return t(`vessel.gearTypes.${fieldValue}` as any, fieldValue)
+      return translationFn(`vessel.gearTypes.${fieldValue}` as any, fieldValue)
     }
     if (!fieldValue && (type === 'name' || type === 'shipname')) {
-      return t('common.unknownVessel', 'Unknown Vessel')
+      return translationFn('common.unknownVessel', 'Unknown Vessel')
     }
     if (type === 'name' || type === 'shipname') {
       return fieldValue.replace(/\b(?![LXIVCDM]+\b)([A-Z,Ñ]+)\b/g, upperFirst)

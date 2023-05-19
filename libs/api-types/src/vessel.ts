@@ -78,9 +78,9 @@ export interface Vessel {
   vesselType?: VesselType
   years?: number[]
   msgCount?: number
-  vesselRegistryInfo: VesselRegistryInfo[]
-  vesselRegistryOwners: VesselRegistryOwner[]
-  vesselRegistryAuthorizations: VesselRegistryAuthorization[]
+  vesselRegistryInfo?: VesselRegistryInfo[]
+  vesselRegistryOwners?: VesselRegistryOwner[]
+  vesselRegistryAuthorizations?: VesselRegistryAuthorization[]
 }
 
 export interface VesselSearch extends Vessel {
