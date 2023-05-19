@@ -15,8 +15,7 @@ import {
 } from 'features/app/app.selectors'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
-  getActiveDatasetsInActivityDataviews,
-  getActivityDatasetsReportSupported,
+  getDatasetsReportSupported,
   getRelatedDatasetsByType,
 } from 'features/datasets/datasets.utils'
 import { selectReportAreaId, selectReportDatasetId } from 'features/app/app.selectors'
@@ -27,6 +26,7 @@ import { getUTCDateTime } from 'utils/dates'
 import { getReportCategoryFromDataview, getVesselGearOrType } from 'features/reports/reports.utils'
 import { ReportCategory } from 'types'
 import { selectContextAreasDataviews } from 'features/dataviews/dataviews.selectors'
+import { createDeepEqualSelector } from 'utils/selectors'
 import { selectReportVesselsData } from './report.slice'
 
 export const EMPTY_API_VALUES = ['NULL', undefined, '']
@@ -47,6 +47,28 @@ export type ReportVesselWithDatasets = Partial<ReportVessel> &
     trackDataset?: Dataset
   }
 
+export const selectReportDataviewsWithPermissions = createDeepEqualSelector(
+  [selectActiveReportDataviews, selectUserData],
+  (reportDataviews, userData) => {
+    return reportDataviews
+      .map((dataview) => {
+        const supportedDatasets = getDatasetsReportSupported(
+          [dataview],
+          userData?.permissions || []
+        )
+        return {
+          ...dataview,
+          datasets: dataview.datasets.filter((d) => supportedDatasets.includes(d.id)),
+          filter: dataview.config?.filter || [],
+          ...(dataview.config?.['vessel-groups']?.length && {
+            vesselGroups: dataview.config?.['vessel-groups'],
+          }),
+        }
+      })
+      .filter((dataview) => dataview.datasets.length > 0)
+  }
+)
+
 export const selectReportAreaDataview = createSelector(
   [selectContextAreasDataviews, selectReportDatasetId],
   (contextDataviews, datasetId) => {
@@ -65,7 +87,7 @@ export const selectReportAreaIds = createSelector(
 )
 
 export const selectReportActivityFlatten = createSelector(
-  [selectReportVesselsData, selectActiveReportDataviews, selectReportCategory],
+  [selectReportVesselsData, selectReportDataviewsWithPermissions, selectReportCategory],
   (reportDatasets, dataviews, reportCategory): ReportVesselWithMeta[] => {
     if (!dataviews?.length || !reportDatasets?.length) return null
 
@@ -124,8 +146,12 @@ export const selectReportVesselsList = createSelector(
     return Object.values(groupBy(vessels, 'vesselId'))
       .flatMap((vesselActivity) => {
         if (vesselActivity[0]?.category !== reportCategory) return []
-        const infoDataset = datasets.find((d) => vesselActivity[0].dataset === d.id)
-        const trackDatasetId = getRelatedDatasetsByType(infoDataset, DatasetTypes.Tracks)?.[0]?.id
+        const activityDataset = datasets.find((d) => vesselActivity[0].activityDatasetId === d.id)
+        const infoDatasetId = getRelatedDatasetsByType(activityDataset, DatasetTypes.Vessels)?.[0]
+          ?.id
+        const trackDatasetId = getRelatedDatasetsByType(activityDataset, DatasetTypes.Tracks)?.[0]
+          ?.id
+        const infoDataset = datasets.find((d) => d.id === infoDatasetId)
         const trackDataset = datasets.find((d) => d.id === trackDatasetId)
         return {
           dataviewId: vesselActivity[0]?.dataviewId,
@@ -289,16 +315,15 @@ export const selectReportVesselsPagination = createSelector(
 )
 
 export const selectIsReportAllowed = createSelector(
-  [selectWorkspaceStatus, selectActiveReportDataviews, selectUserData],
-  (workspaceStatus, reportDataviews, userData) => {
+  [selectWorkspaceStatus, selectReportDataviewsWithPermissions],
+  (workspaceStatus, reportDataviewsWithPermissions) => {
     if (workspaceStatus !== AsyncReducerStatus.Finished) {
       return false
     }
     const datasetsReportAllowed = uniq(
-      getActivityDatasetsReportSupported(reportDataviews, userData?.permissions)
+      reportDataviewsWithPermissions.flatMap((dv) => dv.datasets.flatMap((ds) => ds.id))
     )
-    const dataviewDatasets = uniq(getActiveDatasetsInActivityDataviews(reportDataviews))
-    return datasetsReportAllowed?.length === dataviewDatasets?.length
+    return datasetsReportAllowed?.length > 0
   }
 )
 
@@ -331,7 +356,7 @@ export const selectTimeComparisonValues = createSelector(
 )
 
 export const selectReportVesselsGraphData = createSelector(
-  [selectReportVesselGraph, selectReportVesselsFiltered, selectActiveReportDataviews],
+  [selectReportVesselGraph, selectReportVesselsFiltered, selectReportDataviewsWithPermissions],
   (reportGraph, vesselsFiltered, dataviews) => {
     if (!vesselsFiltered?.length) return null
 
@@ -368,7 +393,7 @@ export const selectReportVesselsGraphData = createSelector(
 )
 
 export const selectReportVesselsGraphDataGrouped = createSelector(
-  [selectReportVesselsGraphData, selectActiveReportDataviews],
+  [selectReportVesselsGraphData, selectReportDataviewsWithPermissions],
   (reportGraph, dataviews) => {
     if (!reportGraph?.data?.length) return null
     if (reportGraph?.distributionKeys.length <= MAX_CATEGORIES) return reportGraph.data

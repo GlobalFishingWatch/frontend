@@ -98,6 +98,14 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         const resolvedAction = await action
         if (fetchReportsThunk.fulfilled.match(resolvedAction)) {
           workspace = resolvedAction.payload?.[0]?.workspace
+          if (!workspace) {
+            return rejectWithValue({
+              error: {
+                status: 404,
+                message: 'Report workspace not found',
+              },
+            })
+          }
         }
         // TODO fetch report and use the workspace within it
       } else if (workspaceId && workspaceId !== DEFAULT_WORKSPACE_ID) {
@@ -111,7 +119,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       if (gfwUser && ONLY_GFW_STAFF_DATAVIEW_SLUGS.length) {
         // Inject dataviews for gfw staff only
         ONLY_GFW_STAFF_DATAVIEW_SLUGS.forEach((id) => {
-          workspace.dataviewInstances.push({
+          workspace?.dataviewInstances.push({
             id: `${id}-instance`,
             config: {
               visible: false,
@@ -124,7 +132,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       if (workspace) {
         workspace = {
           ...workspace,
-          dataviewInstances: (workspace.dataviewInstances || []).map(
+          dataviewInstances: (workspace?.dataviewInstances || []).map(
             (dv) => parseLegacyDataviewInstanceEndpoint(dv) as DataviewInstance
           ),
         }
@@ -136,7 +144,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
 
       const dataviewIds = [
         ...defaultWorkspaceDataviews,
-        ...(workspace.dataviewInstances || []).map(({ dataviewId }) => dataviewId),
+        ...(workspace?.dataviewInstances || []).map(({ dataviewId }) => dataviewId),
         ...(urlDataviewInstances || []).map(({ dataviewId }) => dataviewId),
       ].filter(Boolean)
 
@@ -154,7 +162,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       let datasets: Dataset[] = []
       if (!signal.aborted) {
         const dataviewInstances: UrlDataviewInstance[] = [
-          ...(workspace.dataviewInstances || []),
+          ...(workspace?.dataviewInstances || []),
           ...(urlDataviewInstances || []),
         ]
         const datasetsIds = getDatasetsInDataviews(dataviews, dataviewInstances, guestUser)
@@ -209,16 +217,16 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       }
 
       const daysFromLatest =
-        selectDaysFromLatest(state) || workspace.state?.daysFromLatest || undefined
+        selectDaysFromLatest(state) || workspace?.state?.daysFromLatest || undefined
       const latestDatasetEndDate = getLatestEndDateFromDatasets(datasets, DatasetCategory.Activity)
       const endAt =
         daysFromLatest !== undefined
           ? getUTCDateTime(latestDatasetEndDate)
-          : getUTCDateTime(workspace.endAt || DEFAULT_TIME_RANGE.end)
+          : getUTCDateTime(workspace?.endAt || DEFAULT_TIME_RANGE.end)
       const startAt =
         daysFromLatest !== undefined
           ? endAt.minus({ days: daysFromLatest })
-          : getUTCDateTime(workspace.startAt || DEFAULT_TIME_RANGE.start)
+          : getUTCDateTime(workspace?.startAt || DEFAULT_TIME_RANGE.start)
 
       return { ...workspace, startAt: startAt.toISO(), endAt: endAt.toISO() }
     } catch (e: any) {
@@ -338,7 +346,7 @@ const workspaceSlice = createSlice({
     removeGFWStaffOnlyDataviews: (state) => {
       if (ONLY_GFW_STAFF_DATAVIEW_SLUGS.length) {
         state.data.dataviewInstances = state.data.dataviewInstances.filter((d) =>
-          ONLY_GFW_STAFF_DATAVIEW_SLUGS.includes(d.dataviewId as number)
+          ONLY_GFW_STAFF_DATAVIEW_SLUGS.includes(d.dataviewId as string)
         )
       }
     },

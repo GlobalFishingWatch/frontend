@@ -318,7 +318,14 @@ export function MultiSelect(props: MultiSelectProps) {
                     {...getItemProps({ item, index })}
                   >
                     {item.label}
-                    {icon && <Icon icon={icon} />}
+                    {
+                      <Icon
+                        icon={icon || 'tick'}
+                        className={cx(styles.icon, {
+                          [styles.visible]: icon,
+                        })}
+                      />
+                    }
                   </li>
                 </Tooltip>
               )

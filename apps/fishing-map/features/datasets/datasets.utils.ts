@@ -189,8 +189,6 @@ export const getDatasetsInDataviews = (
   return uniq([...datasetsFromDataviews, ...datasetsFromDataviewInstances])
 }
 
-const vesselTypeWithOwnDataset = ['fishing', 'carrier', 'support']
-const vesselPrivateOtherDatasetId = 'private-global-presence'
 export type RelatedDatasetByTypeParams = {
   fullDatasetAllowed?: boolean
   vesselType?: VesselType
@@ -198,20 +196,8 @@ export type RelatedDatasetByTypeParams = {
 export const getRelatedDatasetByType = (
   dataset?: Dataset,
   datasetType?: DatasetTypes,
-  { fullDatasetAllowed = false, vesselType } = {} as RelatedDatasetByTypeParams
+  { fullDatasetAllowed = false } = {} as RelatedDatasetByTypeParams
 ) => {
-  if (vesselType && datasetType === DatasetTypes.Tracks) {
-    return dataset?.relatedDatasets?.find((relatedDataset) => {
-      if (relatedDataset.type !== datasetType) {
-        return false
-      }
-      if (vesselTypeWithOwnDataset.includes(vesselType)) {
-        return relatedDataset.id.includes(vesselType)
-      } else {
-        return relatedDataset.id.startsWith(vesselPrivateOtherDatasetId)
-      }
-    })
-  }
   if (fullDatasetAllowed) {
     const fullDataset = dataset?.relatedDatasets?.find(
       (relatedDataset) =>
@@ -289,8 +275,7 @@ export const getActivityDatasetsReportSupported = (
       .filter(
         (d) =>
           permissionDatasetsIds.includes(d.id) &&
-          d.category === DatasetCategory.Activity &&
-          d.subcategory === 'fishing'
+          (d.category === DatasetCategory.Activity || d.category === DatasetCategory.Detections)
       )
       .map((d) => d.id)
   })
@@ -310,6 +295,15 @@ export const getVesselDatasetsDownloadTrackSupported = (
       return checkDatasetDownloadTrackPermission(dataset.datasetId, permissions)
     })
   return datasets
+}
+
+export const getDatasetsReportSupported = (
+  dataviews: UrlDataviewInstance<GeneratorType>[],
+  permissions: UserPermission[] = []
+) => {
+  const dataviewDatasets = getActiveDatasetsInActivityDataviews(dataviews)
+  const datasetsDownloadSupported = getActivityDatasetsReportSupported(dataviews, permissions)
+  return dataviewDatasets.filter((dataset) => datasetsDownloadSupported.includes(dataset))
 }
 
 export const getDatasetsReportNotSupported = (
@@ -586,11 +580,10 @@ export const getFiltersBySchema = (
   const datasetsWithoutSchema = getNotSupportedSchemaFieldsDatasets(dataview, schema)?.length > 0
   const incompatibleFilterSelection = getIncompatibleFilterSelection(dataview, schema)?.length > 0
   const disabled = datasetsWithoutSchema || incompatibleFilterSelection
-
   const datasetId = removeDatasetVersion(getActiveDatasetsInDataview(dataview)?.[0]?.id)
   let label = CONTEXT_DATASETS_SCHEMAS.includes(schema as SupportedContextDatasetSchema)
     ? t(`datasets:${datasetId}.schema.${schema}.keyword`, schema.toString())
-    : t(`vessel.${schema}`, schema)
+    : t(`vessel.${schema}`, { defaultValue: schema, count: 2 }) // We always want to show the plural for the multiselect
   if (schema === 'vessel-groups') {
     label = t('vesselGroup.vesselGroups', 'Vessel Groups')
   }

@@ -49,7 +49,6 @@ import {
   setClickedEvent,
   selectClickedEvent,
   MAX_TOOLTIP_LIST,
-  MAX_VESSELS_LOAD,
   fetchEncounterEventThunk,
   SliceInteractionEvent,
   selectFishingInteractionStatus,
@@ -70,8 +69,8 @@ export const getVesselsInfoConfig = (vessels: ExtendedFeatureVessel[]) => {
     numVessels: vessels.length,
     overflow: vessels.length > MAX_TOOLTIP_LIST,
     overflowNumber: vessels.length - MAX_TOOLTIP_LIST,
-    overflowLoad: vessels.length > MAX_VESSELS_LOAD,
-    overflowLoadNumber: vessels.length - MAX_VESSELS_LOAD,
+    overflowLoad: vessels.length > MAX_TOOLTIP_LIST,
+    overflowLoadNumber: vessels.length - MAX_TOOLTIP_LIST,
   }
 }
 

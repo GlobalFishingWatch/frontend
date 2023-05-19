@@ -229,19 +229,18 @@ function cleanReportPayload(payload: Record<string, any>) {
 }
 
 function cleanReportQuery(query: QueryParams) {
-  const {
-    reportActivityGraph,
-    reportAreaBounds,
-    reportAreaSource,
-    reportCategory,
-    reportResultsPerPage,
-    reportTimeComparison,
-    reportVesselFilter,
-    reportVesselGraph,
-    reportVesselPage,
-    ...rest
-  } = query || {}
-  return rest
+  return {
+    ...query,
+    reportActivityGraph: undefined,
+    reportAreaBounds: undefined,
+    reportAreaSource: undefined,
+    reportCategory: undefined,
+    reportResultsPerPage: undefined,
+    reportTimeComparison: undefined,
+    reportVesselFilter: undefined,
+    reportVesselGraph: undefined,
+    reportVesselPage: undefined,
+  }
 }
 
 function CloseReportButton() {
@@ -271,10 +270,11 @@ function CloseReportButton() {
   return (
     <Link className={styles.workspaceLink} to={linkTo}>
       <IconButton
-        icon="edit"
+        icon="close"
+        type="border"
         className="print-hidden"
         onClick={onCloseClick}
-        tooltip={t('workspace.edit', 'Edit workspace')}
+        tooltip={t('analysis.close', 'Close report and go back to workspace')}
       />
     </Link>
   )

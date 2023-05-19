@@ -4,7 +4,7 @@
     "description": "Dataset for VMS Chile (Public)",
     "schema": {
       "id": "id",
-      "flag": "flag",
+      "flag": "pavillon",
       "fleet": {
         "keyword": "fleet",
         "enum": {
@@ -25,7 +25,7 @@
     "description": "Dataset for VMS Indonesia (Public)",
     "schema": {
       "id": "id",
-      "flag": "flag",
+      "flag": "pavillon",
       "source": "source",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
@@ -36,10 +36,10 @@
     "description": "Dataset for VMS Panama (Public)",
     "schema": {
       "id": "id",
-      "flag": "flag",
-      "length": "length",
+      "flag": "pavillon",
+      "length": "Longueur",
       "source": "source",
-      "geartype": "geartype",
+      "geartype": "type d’engin",
       "shipname": "shipname",
       "vesselType": "vesselType",
       "gross_tonnage": "gross_tonnage",
@@ -53,7 +53,7 @@
     "schema": {
       "id": "id",
       "beam": "beam",
-      "flag": "flag",
+      "flag": "pavillon",
       "fleet": {
         "keyword": "fleet",
         "enum": {
@@ -63,11 +63,11 @@
         }
       },
       "width": "width",
-      "length": "length",
+      "length": "Longueur",
       "origin": {
         "keyword": "origin",
         "enum": {
-          "Peru": "Peru",
+          "Peru": "Pérou",
           "Foreign": "Foreign"
         }
       },
@@ -86,10 +86,10 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
-      "hours": "hours",
+      "flag": "pavillon",
+      "hours": "heures",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "purse_seine": "purse_seine",
           "trawler": "trawler",
@@ -108,12 +108,12 @@
     "schema": {
       "id": "id",
       "imo": "imo",
-      "flag": "flag",
+      "flag": "pavillon",
       "mmsi": "mmsi",
       "source": "source",
-      "callsign": "callsign",
+      "callsign": "indicatifs d'appel",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "purse_seine": "purse_seine",
           "trawler": "trawler",
@@ -132,12 +132,12 @@
     "schema": {
       "id": "id",
       "imo": "imo",
-      "flag": "flag",
+      "flag": "pavillon",
       "mmsi": "mmsi",
       "source": "source",
-      "callsign": "callsign",
+      "callsign": "indicatifs d'appel",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "purse_seine": "purse_seine",
           "trawler": "trawler",
@@ -156,9 +156,9 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "purse_seine": "purse_seine",
           "trawler": "trawler",
@@ -177,18 +177,18 @@
     "name": "VMS Brazil",
     "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as known or possible commercial fishing vessels, and applies a fishing detection algorithm to determine “apparent fishing activity” based on changes in vessel speed and direction. The algorithm classifies each AIS broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. AIS data as broadcast may vary in completeness, accuracy and quality. Also, data collection by satellite or terrestrial receivers may introduce errors through missing or inaccurate data. Global Fishing Watch’s fishing detection algorithm is a best effort mathematically to identify “apparent fishing activity.” As a result, it is possible that some fishing activity is not identified as such by Global Fishing Watch; conversely, Global Fishing Watch may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies designations of vessel fishing activity, including synonyms of the term “fishing activity,” such as “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch is taking steps to make sure fishing activity designations are as accurate as possible. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
     "schema": {
-      "flag": "flag",
+      "flag": "pavillon",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "trawlers": "trawlers",
           "drifting_longlines": "drifting_longlines",
-          "pole_and_line": "pole_and_line",
+          "pole_and_line": "pole_et_ligne",
           "line": "line",
           "pots_and_traps": "pots_and_traps",
           "set_longline": "set_longline",
-          "fishing": "fishing",
-          "other_purse_seines": "other_purse_seines",
+          "fishing": "pêche",
+          "other_purse_seines": "autres_seines de sac",
           "set_gillnets": "set_gillnets"
         }
       },
@@ -246,20 +246,20 @@
     "description": "Fishing Vessels (VMS Brazil)",
     "schema": {
       "id": "id",
-      "flag": "flag",
+      "flag": "pavillon",
       "source": "source",
       "dataset": "dataset",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "trawlers": "trawlers",
           "drifting_longlines": "drifting_longlines",
-          "pole_and_line": "pole_and_line",
+          "pole_and_line": "pole_et_ligne",
           "line": "line",
           "pots_and_traps": "pots_and_traps",
           "set_longline": "set_longline",
-          "fishing": "fishing",
-          "other_purse_seines": "other_purse_seines",
+          "fishing": "pêche",
+          "other_purse_seines": "autres_seines de sac",
           "set_gillnets": "set_gillnets"
         }
       },
@@ -314,20 +314,20 @@
     "description": "Non Fishing Vessels (VMS Brazil)",
     "schema": {
       "id": "id",
-      "flag": "flag",
+      "flag": "pavillon",
       "source": "source",
       "dataset": "dataset",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "trawlers": "trawlers",
           "drifting_longlines": "drifting_longlines",
-          "pole_and_line": "pole_and_line",
+          "pole_and_line": "pole_et_ligne",
           "line": "line",
           "pots_and_traps": "pots_and_traps",
           "set_longline": "set_longline",
-          "fishing": "fishing",
-          "other_purse_seines": "other_purse_seines",
+          "fishing": "pêche",
+          "other_purse_seines": "autres_seines de sac",
           "set_gillnets": "set_gillnets"
         }
       },
@@ -383,11 +383,11 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
-          "fishing": "fishing",
+          "fishing": "pêche",
           "non-fishing": "non-fishing"
         }
       },
@@ -400,7 +400,7 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "vessel_id": "vessel_id",
       "vessel-groups": "vessel-groups"
     }
@@ -411,7 +411,7 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "fleet": {
         "keyword": "fleet",
         "enum": {
@@ -420,7 +420,7 @@
           "costarica_vms_sardineros": "costarica_vms_sardineros"
         }
       },
-      "hours": "hours",
+      "hours": "heures",
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
       "distance_from_port_m": "distance_from_port_m",
@@ -433,7 +433,7 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "fleet": {
         "keyword": "fleet",
         "enum": {
@@ -455,12 +455,12 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
-      "hours": "hours",
+      "flag": "pavillon",
+      "hours": "heures",
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
-          "fishing": "fishing"
+          "fishing": "pêche"
         }
       },
       "vessel_id": "vessel_id",
@@ -475,11 +475,11 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
-          "fishing": "fishing",
+          "fishing": "pêche",
           "international traffic": "international traffic",
           "national traffic": "national traffic",
           "tug": "tug",
@@ -500,13 +500,13 @@
     "schema": {
       "id": "id",
       "imo": "imo",
-      "flag": "flag",
+      "flag": "pavillon",
       "mmsi": "mmsi",
       "source": "source",
       "dataset": "dataset",
-      "callsign": "callsign",
+      "callsign": "indicatifs d'appel",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {}
       },
       "msgCount": "msgCount",
@@ -523,9 +523,9 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
@@ -544,9 +544,9 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
@@ -565,10 +565,10 @@
     "description": "Vessels (Indonesia Aruna)",
     "schema": {
       "id": "id",
-      "flag": "flag",
+      "flag": "pavillon",
       "source": "source",
       "dataset": "dataset",
-      "geartype": "geartype",
+      "geartype": "type d’engin",
       "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
@@ -580,8 +580,8 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
-      "hours": "hours",
+      "flag": "pavillon",
+      "hours": "heures",
       "geartype": {
         "keyword": "type d’engin",
         "enum": {
@@ -618,9 +618,9 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
@@ -639,9 +639,9 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
@@ -660,10 +660,10 @@
     "description": "Vessels (Indonesia AP2HI-IPNLF)",
     "schema": {
       "id": "id",
-      "flag": "flag",
+      "flag": "pavillon",
       "source": "source",
       "dataset": "dataset",
-      "geartype": "geartype",
+      "geartype": "type d’engin",
       "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
@@ -675,9 +675,9 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
@@ -696,9 +696,9 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
@@ -717,10 +717,10 @@
     "description": "Vessels (Indonesia Pelagic)",
     "schema": {
       "id": "id",
-      "flag": "flag",
+      "flag": "pavillon",
       "source": "source",
       "dataset": "dataset",
-      "geartype": "geartype",
+      "geartype": "type d’engin",
       "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
@@ -728,11 +728,11 @@
   },
   "private-indonesia-presence": {
     "name": "VMS Indonesia (Presence)",
-    "description": "Presence",
+    "description": "Présence",
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
@@ -763,9 +763,9 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
@@ -784,9 +784,9 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
@@ -805,10 +805,10 @@
     "description": "Vessels (Indonesia Rare)",
     "schema": {
       "id": "id",
-      "flag": "flag",
+      "flag": "pavillon",
       "source": "source",
       "dataset": "dataset",
-      "geartype": "geartype",
+      "geartype": "type d’engin",
       "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
@@ -820,9 +820,9 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
@@ -839,10 +839,10 @@
     "description": "Pêche côtière navieres",
     "schema": {
       "id": "id",
-      "flag": "flag",
+      "flag": "pavillon",
       "source": "source",
       "dataset": "dataset",
-      "geartype": "geartype",
+      "geartype": "type d’engin",
       "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
@@ -855,12 +855,12 @@
       "lat": "lat",
       "lon": "lon",
       "flag": {
-        "keyword": "flag",
+        "keyword": "pavillon",
         "enum": {
           "NOR": "NOR"
         }
       },
-      "hours": "hours",
+      "hours": "heures",
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
       "vessel-groups": "vessel-groups",
@@ -874,8 +874,8 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
-      "hours": "hours",
+      "flag": "pavillon",
+      "hours": "heures",
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
       "distance_from_port_m": "distance_from_port_m",
@@ -888,10 +888,10 @@
     "schema": {
       "id": "id",
       "imo": "imo",
-      "flag": "flag",
-      "length": "length",
+      "flag": "pavillon",
+      "length": "Longueur",
       "source": "source",
-      "geartype": "geartype",
+      "geartype": "type d’engin",
       "shipname": "shipname",
       "veselType": "veselType",
       "netTonnage": "netTonnage",
@@ -905,9 +905,9 @@
     "description": "Dataset for VMS Panama (Private)",
     "schema": {
       "id": "id",
-      "flag": "flag",
+      "flag": "pavillon",
       "source": "source",
-      "geartype": "geartype",
+      "geartype": "type d’engin",
       "shipname": "shipname",
       "veselType": "veselType",
       "lastTransmissionDate": "lastTransmissionDate",
@@ -918,12 +918,12 @@
     "name": "Vessel Presence Panama VMS",
     "description": "This layer uses the Vessel Monitoring System (VMS) data provided by the Panamanian Authority of Aquatic Resources (ARAP). The data is received by Panama’s VMS system via satellite and contains vessel identities, gear type, location, speed, direction and more. Each point in the carrier vessel data layer represents a position of the carriers, but not all positions are displayed. Carrier vessel positions are displayed once per day. Click on a carrier vessel’s position to view the vessel’s complete track.",
     "schema": {
-      "flag": "flag",
+      "flag": "pavillon",
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
           "carrier": "carrier",
-          "fishing": "fishing",
+          "fishing": "pêche",
           "oil_tanker": "oil_tanker"
         }
       },
@@ -937,7 +937,7 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "fleet": {
         "keyword": "fleet",
         "enum": {
@@ -947,7 +947,7 @@
           "not defined": "not defined"
         }
       },
-      "hours": "hours",
+      "hours": "heures",
       "origin": {
         "keyword": "origin",
         "enum": {
@@ -956,7 +956,7 @@
         }
       },
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "drifting_longlines": "drifting_longlines",
           "driftnets|fishing|pole_and_line|set_gillnets|set_longlines": "driftnets|fishing|pole_and_line|set_gillnets|set_longlines",
@@ -968,7 +968,7 @@
           "set_gillnets": "set_gillnets",
           "set_longlines|squid_jigger": "set_longlines|squid_jigger",
           "driftnets|pole_and_line|set_gillnets|set_longlines": "driftnets|pole_and_line|set_gillnets|set_longlines",
-          "fishing": "fishing",
+          "fishing": "pêche",
           "driftnets|set_gillnets": "driftnets|set_gillnets",
           "fishing|purse_seines": "fishing|purse_seines",
           "drifting_longlines|trawlers": "drifting_longlines|trawlers"
@@ -986,7 +986,7 @@
     "schema": {
       "id": "id",
       "beam": "beam",
-      "flag": "flag",
+      "flag": "pavillon",
       "casco": {
         "keyword": "casco",
         "enum": {
@@ -1007,18 +1007,18 @@
       },
       "ssvid": "ssvid",
       "width": "width",
-      "length": "length",
+      "length": "Longueur",
       "origin": {
         "keyword": "origin",
         "enum": {
-          "Peru": "Peru",
+          "Peru": "Pérou",
           "Foreign": "Foreign"
         }
       },
       "source": "source",
       "regimen": "regimen",
       "capacity": "capacity",
-      "geartype": "geartype",
+      "geartype": "type d’engin",
       "shipname": "shipname",
       "chdSpecies": "chdSpecies",
       "nationalId": "nationalId",
@@ -1034,7 +1034,7 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "fleet": {
         "keyword": "fleet",
         "enum": {
@@ -1052,7 +1052,7 @@
         }
       },
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "drifting_longlines": "drifting_longlines",
           "driftnets|fishing|pole_and_line|set_gillnets|set_longlines": "driftnets|fishing|pole_and_line|set_gillnets|set_longlines",
@@ -1065,13 +1065,61 @@
           "set_gillnets": "set_gillnets",
           "set_longlines|squid_jigger": "set_longlines|squid_jigger",
           "driftnets|pole_and_line|set_gillnets|set_longlines": "driftnets|pole_and_line|set_gillnets|set_longlines",
-          "fishing": "fishing",
+          "fishing": "pêche",
           "driftnets|set_gillnets": "driftnets|set_gillnets",
           "fishing|purse_seines": "fishing|purse_seines",
           "drifting_longlines|trawlers": "drifting_longlines|trawlers"
         }
       },
       "vessel_id": "vessel_id"
+    }
+  },
+  "private-png-fishing-effort": {
+    "name": "Papua New Guinea VMS",
+    "description": "Vessel monitoring system (VMS) data is provided by the The National Fisheries Authority of Papua New Guinea. Data is collected using Papua New Guinea's vessel monitoring (VMS) system via satellites, that contains vessel's identifiers and location, and is published on a five-day delay. Global Fishing Watch infers speed and course for each vessel location and analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity”. It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity”, “fishing” or “fishing effort”, as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": {
+        "keyword": "pavillon",
+        "enum": {
+          "PNG": "PNG",
+          "PHL": "PHL"
+        }
+      },
+      "hours": "heures",
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "private-png-fishing-vessels": {
+    "name": "Papua New Guinea VMS (Fishing Vessels)",
+    "description": "Dataset for VMS Papua New Guinea (Private)",
+    "schema": {
+      "id": "id",
+      "flag": "pavillon",
+      "source": "source",
+      "callsign": "indicatifs d'appel",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
+  "private-png-presence": {
+    "name": "Papua New Guinea VMS",
+    "description": "Vessel monitoring system (VMS) data is provided by the The National Fisheries Authority of Papua New Guinea. Data is collected using Papua New Guinea's national VMS  that is provided by the Fisheries Information and Management System (FIMS). VMS data includes vessel identifiers and location, and is published with a five-day delay.\n\nThe activity layer displays a heatmap of vessel presence. The presence is determined by taking two positions per hour per vessel from the positions transmitted by the vessel's VMS.",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "pavillon",
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "vessel-groups": "vessel-groups",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
     }
   },
   "proto-global-encounters-events": {
@@ -1102,7 +1150,7 @@
       "lat": "lat",
       "lon": "lon",
       "pos": "pos",
-      "flag": "flag",
+      "flag": "pavillon",
       "htime": "htime",
       "matched": {
         "keyword": "matched",
@@ -1122,7 +1170,7 @@
         "keyword": "shiptype",
         "enum": {
           "unknown": "unknown",
-          "fishing": "fishing",
+          "fishing": "pêche",
           "carrier": "carrier",
           "support": "support"
         }
@@ -1154,10 +1202,10 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
-      "hours": "hours",
+      "flag": "pavillon",
+      "hours": "heures",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "purse_seine": "purse_seine",
           "trawler": "trawler",
@@ -1175,10 +1223,10 @@
     "description": "Fishing Vessels (VMS Belize)",
     "schema": {
       "id": "id",
-      "flag": "flag",
+      "flag": "pavillon",
       "source": "source",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "purse_seine": "purse_seine",
           "trawler": "trawler",
@@ -1194,18 +1242,18 @@
     "name": "Brazil VMS",
     "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as known or possible commercial fishing vessels, and applies a fishing detection algorithm to determine “apparent fishing activity” based on changes in vessel speed and direction. The algorithm classifies each AIS broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. AIS data as broadcast may vary in completeness, accuracy and quality. Also, data collection by satellite or terrestrial receivers may introduce errors through missing or inaccurate data. Global Fishing Watch’s fishing detection algorithm is a best effort mathematically to identify “apparent fishing activity.” As a result, it is possible that some fishing activity is not identified as such by Global Fishing Watch; conversely, Global Fishing Watch may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies designations of vessel fishing activity, including synonyms of the term “fishing activity,” such as “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch is taking steps to make sure fishing activity designations are as accurate as possible. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
     "schema": {
-      "flag": "flag",
+      "flag": "pavillon",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "trawlers": "trawlers",
           "drifting_longlines": "drifting_longlines",
-          "pole_and_line": "pole_and_line",
+          "pole_and_line": "pole_et_ligne",
           "line": "line",
           "pots_and_traps": "pots_and_traps",
           "set_longline": "set_longline",
-          "fishing": "fishing",
-          "other_purse_seines": "other_purse_seines",
+          "fishing": "pêche",
+          "other_purse_seines": "autres_seines de sac",
           "set_gillnets": "set_gillnets"
         }
       },
@@ -1253,20 +1301,20 @@
     "description": "Fishing Vessels (VMS Brazil)",
     "schema": {
       "id": "id",
-      "flag": "flag",
+      "flag": "pavillon",
       "source": "source",
       "dataset": "dataset",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "trawlers": "trawlers",
           "drifting_longlines": "drifting_longlines",
-          "pole_and_line": "pole_and_line",
+          "pole_and_line": "pole_et_ligne",
           "line": "line",
           "pots_and_traps": "pots_and_traps",
           "set_longline": "set_longline",
-          "fishing": "fishing",
-          "other_purse_seines": "other_purse_seines",
+          "fishing": "pêche",
+          "other_purse_seines": "autres_seines de sac",
           "set_gillnets": "set_gillnets"
         }
       },
@@ -1333,7 +1381,7 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "vessel_id": "vessel_id",
       "vessel-groups": "vessel-groups"
     }
@@ -1398,12 +1446,12 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "fleet": {
         "keyword": "fleet",
         "enum": {
-          "chile_vms_small_fisheries": "chile_vms_small_fisheries",
-          "chile_vms_industry": "chile_vms_industry",
+          "chile_vms_small_fisheries": "chile_vms_petites_pêcheries",
+          "chile_vms_industry": "industrie du chile_vms_fr",
           "chile_vms_aquaculture": "chile_vms_aquaculture",
           "chile_vms_transport": "chile_vms_transport"
         }
@@ -1422,7 +1470,7 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "fleet": {
         "keyword": "fleet",
         "enum": {
@@ -1431,7 +1479,7 @@
           "costarica_vms_sardineros": "costarica_vms_sardineros"
         }
       },
-      "hours": "hours",
+      "hours": "heures",
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
       "distance_from_port_m": "distance_from_port_m",
@@ -1443,7 +1491,7 @@
     "description": "Dataset for VMS Costa Rica (Public)",
     "schema": {
       "id": "id",
-      "flag": "flag",
+      "flag": "pavillon",
       "source": "source",
       "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
@@ -1466,12 +1514,12 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
-      "hours": "hours",
+      "flag": "pavillon",
+      "hours": "heures",
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
-          "fishing": "fishing"
+          "fishing": "pêche"
         }
       },
       "vessel_id": "vessel_id",
@@ -1485,7 +1533,7 @@
     "description": "Dataset for VMS Ecuador (Public)",
     "schema": {
       "id": "id",
-      "flag": "flag",
+      "flag": "pavillon",
       "source": "source",
       "shipname": "shipname",
       "nationalId": "nationalId",
@@ -1499,7 +1547,7 @@
     "description": "Dataset for VMS Ecuador (Public)",
     "schema": {
       "id": "id",
-      "flag": "flag",
+      "flag": "pavillon",
       "source": "source",
       "shipname": "shipname",
       "nationalId": "nationalId",
@@ -1514,11 +1562,11 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
-          "fishing": "fishing",
+          "fishing": "pêche",
           "international traffic": "international traffic",
           "national traffic": "national traffic",
           "tug": "tug",
@@ -1581,31 +1629,31 @@
     "schema": {
       "id": "id",
       "imo": "imo",
-      "flag": "flag",
+      "flag": "pavillon",
       "mmsi": "mmsi",
       "source": "source",
       "dataset": "dataset",
-      "callsign": "callsign",
+      "callsign": "indicatifs d'appel",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "tuna_purse_seines": "tuna_purse_seines",
-          "driftnets": "driftnets",
+          "driftnets": "filets dérivants",
           "trollers": "trollers",
           "set_longlines": "set_longlines",
           "purse_seines": "purse_seines",
           "pots_and_traps": "pots_and_traps",
-          "other_fishing": "other_fishing",
-          "dredge_fishing": "dredge_fishing",
+          "other_fishing": "autre pêche",
+          "dredge_fishing": "Pêche_dragée",
           "set_gillnets": "set_gillnets",
-          "fixed_gear": "fixed_gear",
+          "fixed_gear": "équipement_fixe",
           "trawlers": "trawlers",
-          "fishing": "fishing",
+          "fishing": "pêche",
           "seiners": "seiners",
-          "other_purse_seines": "other_purse_seines",
+          "other_purse_seines": "autres_seines de sac",
           "other_seines": "other_seines",
-          "squid_jigger": "squid_jigger",
-          "pole_and_line": "pole_and_line",
+          "squid_jigger": "jigger squid",
+          "pole_and_line": "pole_et_ligne",
           "drifting_longlines": "drifting_longlines"
         }
       },
@@ -1683,7 +1731,7 @@
     "schema": {
       "flag": "Drapeau",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "tuna_purse_seines": "tuna_purse_seines",
           "driftnets": "filets dérivants",
@@ -1715,31 +1763,31 @@
     "schema": {
       "id": "id",
       "imo": "imo",
-      "flag": "flag",
+      "flag": "pavillon",
       "mmsi": "mmsi",
       "source": "source",
       "dataset": "dataset",
-      "callsign": "callsign",
+      "callsign": "indicatifs d'appel",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "tuna_purse_seines": "tuna_purse_seines",
-          "driftnets": "driftnets",
+          "driftnets": "filets dérivants",
           "trollers": "trollers",
           "set_longlines": "set_longlines",
           "purse_seines": "purse_seines",
           "pots_and_traps": "pots_and_traps",
-          "other_fishing": "other_fishing",
-          "dredge_fishing": "dredge_fishing",
+          "other_fishing": "autre pêche",
+          "dredge_fishing": "Pêche_dragée",
           "set_gillnets": "set_gillnets",
-          "fixed_gear": "fixed_gear",
+          "fixed_gear": "équipement_fixe",
           "trawlers": "trawlers",
-          "fishing": "fishing",
+          "fishing": "pêche",
           "seiners": "seiners",
-          "other_purse_seines": "other_purse_seines",
+          "other_purse_seines": "autres_seines de sac",
           "other_seines": "other_seines",
-          "squid_jigger": "squid_jigger",
-          "pole_and_line": "pole_and_line",
+          "squid_jigger": "jigger squid",
+          "pole_and_line": "pole_et_ligne",
           "drifting_longlines": "drifting_longlines"
         }
       },
@@ -1795,12 +1843,12 @@
     "name": "AIS",
     "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as carriers. The activity layer displays a heatmap of vessel presence. The presence is determined by taking one position per day per vessel from the positions transmitted by the vessel's AIS.",
     "schema": {
-      "flag": "flag",
+      "flag": "pavillon",
       "vessel_id": "vessel_id",
       "vessel_type": {
         "keyword": "vessel_type",
         "enum": {
-          "fishing": "fishing",
+          "fishing": "pêche",
           "carrier": "carrier",
           "cargo": "cargo",
           "bunker_or_tanker": "bunker_or_tanker",
@@ -1846,13 +1894,13 @@
     "schema": {
       "id": "id",
       "imo": "imo",
-      "flag": "flag",
+      "flag": "pavillon",
       "mmsi": "mmsi",
       "source": "source",
       "dataset": "dataset",
-      "callsign": "callsign",
+      "callsign": "indicatifs d'appel",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "Purse Seine Support Vessel": "Purse Seine Support Vessel"
         }
@@ -1952,7 +2000,7 @@
       "flag": "Drapeau",
       "hours": "heures",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "Purse Seine Group (2 boat) Small Pelagics": "Pilote de la Seine Group (2 bateaux) Petit Pélagique",
           "Purse Seine Group (2 boat) Big Pelagics": "Pilose Seine Group (2 bateaux) Big Pelagics",
@@ -1987,9 +2035,9 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
@@ -2007,9 +2055,9 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
@@ -2029,9 +2077,9 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "gillnets": "gillnets",
           "longline": "longline",
@@ -2059,12 +2107,12 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
-      "hours": "hours",
+      "flag": "pavillon",
+      "hours": "heures",
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
-          "fishing": "fishing"
+          "fishing": "pêche"
         }
       },
       "vessel_id": "vessel_id",
@@ -2079,7 +2127,7 @@
     "description": "Dataset for VMS Mexico (Public)",
     "schema": {
       "id": "id",
-      "flag": "flag",
+      "flag": "pavillon",
       "source": "source",
       "shipname": "shipname",
       "nationalId": "nationalId",
@@ -2094,11 +2142,11 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
-          "fishing": "fishing",
+          "fishing": "pêche",
           "international traffic": "international traffic",
           "national traffic": "national traffic",
           "tug": "tug",
@@ -2114,7 +2162,7 @@
     }
   },
   "public-mpa-all": {
-    "name": "MPAs",
+    "name": "AMPs (WDPA)",
     "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: November 2022. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer.",
     "schema": {}
   },
@@ -2145,20 +2193,20 @@
       "lat": "lat",
       "lon": "lon",
       "flag": {
-        "keyword": "flag",
+        "keyword": "pavillon",
         "enum": {
           "NOR": "NOR"
         }
       },
-      "hours": "hours",
+      "hours": "heures",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
-          "dredge_fishing": "dredge_fishing",
+          "dredge_fishing": "Pêche_dragée",
           "drifting_longlines": "drifting_longlines",
-          "fishing": "fishing",
-          "fixed_gear": "fixed_gear",
-          "pole_and_line": "pole_and_line",
+          "fishing": "pêche",
+          "fixed_gear": "équipement_fixe",
+          "pole_and_line": "pole_et_ligne",
           "pots_and_traps": "pots_and_traps",
           "purse_seines": "purse_seines",
           "seiners": "seiners",
@@ -2180,17 +2228,17 @@
     "description": "Dataset for VMS Norway (Public)",
     "schema": {
       "id": "id",
-      "flag": "flag",
+      "flag": "pavillon",
       "source": "source",
-      "callsign": "callsign",
+      "callsign": "indicatifs d'appel",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
-          "dredge_fishing": "dredge_fishing",
+          "dredge_fishing": "Pêche_dragée",
           "drifting_longlines": "drifting_longlines",
-          "fishing": "fishing",
-          "fixed_gear": "fixed_gear",
-          "pole_and_line": "pole_and_line",
+          "fishing": "pêche",
+          "fixed_gear": "équipement_fixe",
+          "pole_and_line": "pole_et_ligne",
           "pots_and_traps": "pots_and_traps",
           "purse_seines": "purse_seines",
           "seiners": "seiners",
@@ -2210,17 +2258,17 @@
     "description": "Dataset for VMS Norway (Public)",
     "schema": {
       "id": "id",
-      "flag": "flag",
+      "flag": "pavillon",
       "source": "source",
-      "callsign": "callsign",
+      "callsign": "indicatifs d'appel",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
-          "dredge_fishing": "dredge_fishing",
+          "dredge_fishing": "Pêche_dragée",
           "drifting_longlines": "drifting_longlines",
-          "fishing": "fishing",
-          "fixed_gear": "fixed_gear",
-          "pole_and_line": "pole_and_line",
+          "fishing": "pêche",
+          "fixed_gear": "équipement_fixe",
+          "pole_and_line": "pole_et_ligne",
           "pots_and_traps": "pots_and_traps",
           "purse_seines": "purse_seines",
           "seiners": "seiners",
@@ -2241,15 +2289,15 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
-          "dredge_fishing": "dredge_fishing",
+          "dredge_fishing": "Pêche_dragée",
           "drifting_longlines": "drifting_longlines",
-          "fishing": "fishing",
-          "fixed_gear": "fixed_gear",
-          "pole_and_line": "pole_and_line",
+          "fishing": "pêche",
+          "fixed_gear": "équipement_fixe",
+          "pole_and_line": "pole_et_ligne",
           "pots_and_traps": "pots_and_traps",
           "purse_seines": "purse_seines",
           "seiners": "seiners",
@@ -2264,7 +2312,7 @@
       "vessel_type": {
         "keyword": "vessel_type",
         "enum": {
-          "fishing": "fishing",
+          "fishing": "pêche",
           "research": "research",
           "kelp trawler": "kelp trawler",
           "other": "other"
@@ -2294,7 +2342,7 @@
     "description": "Dataset for VMS Panama (Public)",
     "schema": {
       "id": "id",
-      "flag": "flag",
+      "flag": "pavillon",
       "source": "source",
       "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
@@ -2306,9 +2354,9 @@
     "description": "Dataset for VMS Panama - Carriers (Public)",
     "schema": {
       "id": "id",
-      "flag": "flag",
+      "flag": "pavillon",
       "source": "source",
-      "geartype": "geartype",
+      "geartype": "type d’engin",
       "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
@@ -2339,7 +2387,7 @@
         }
       },
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "drifting_longlines": "drifting_longlines",
           "driftnets|fishing|pole_and_line|set_gillnets|set_longlines": "driftnets|fishing|pole_and_line|set_gillnets|set_longlines",
@@ -2351,7 +2399,7 @@
           "set_gillnets": "set_gillnets",
           "set_longlines|squid_jigger": "set_longlines|squid_jigger",
           "driftnets|pole_and_line|set_gillnets|set_longlines": "driftnets|pole_and_line|set_gillnets|set_longlines",
-          "fishing": "fishing",
+          "fishing": "pêche",
           "driftnets|set_gillnets": "driftnets|set_gillnets",
           "fishing|purse_seines": "fishing|purse_seines",
           "drifting_longlines|trawlers": "drifting_longlines|trawlers"
@@ -2380,7 +2428,7 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "fleet": {
         "keyword": "fleet",
         "enum": {
@@ -2398,7 +2446,7 @@
         }
       },
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "drifting_longlines": "drifting_longlines",
           "driftnets|fishing|pole_and_line|set_gillnets|set_longlines": "driftnets|fishing|pole_and_line|set_gillnets|set_longlines",
@@ -2411,7 +2459,7 @@
           "set_gillnets": "set_gillnets",
           "set_longlines|squid_jigger": "set_longlines|squid_jigger",
           "driftnets|pole_and_line|set_gillnets|set_longlines": "driftnets|pole_and_line|set_gillnets|set_longlines",
-          "fishing": "fishing",
+          "fishing": "pêche",
           "driftnets|set_gillnets": "driftnets|set_gillnets",
           "fishing|purse_seines": "fishing|purse_seines",
           "drifting_longlines|trawlers": "drifting_longlines|trawlers"
@@ -2422,17 +2470,18 @@
   },
   "public-png-fishing-effort": {
     "name": "Papua New Guinea VMS",
-    "description": "Vessel monitoring system (VMS) data is provided by the The National Fisheries Authority of Papua New Guinea. Data is collected using Papua New Guinea's vessel monitoring (VMS) system via satellites, that contains vessel's identifiers and location, and is published on a two-day delay. Global Fishing Watch infers speed and course for each vessel location and analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity”. It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity”, “fishing” or “fishing effort”, as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques",
+    "description": "Vessel monitoring system (VMS) data is provided by the The National Fisheries Authority of Papua New Guinea. Data is collected using Papua New Guinea's vessel monitoring (VMS) system via satellites, that contains vessel's identifiers and location, and is published on a five-day delay. Global Fishing Watch infers speed and course for each vessel location and analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity”. It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity”, “fishing” or “fishing effort”, as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques",
     "schema": {
       "lat": "lat",
       "lon": "lon",
       "flag": {
-        "keyword": "flag",
+        "keyword": "pavillon",
         "enum": {
-          "PNG": "PNG"
+          "PNG": "PNG",
+          "PHL": "PHL"
         }
       },
-      "hours": "hours",
+      "hours": "heures",
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
       "vessel-groups": "vessel-groups",
@@ -2445,9 +2494,9 @@
     "description": "Dataset for VMS Papua New Guinea (Public)",
     "schema": {
       "id": "id",
-      "flag": "flag",
+      "flag": "pavillon",
       "source": "source",
-      "callsign": "callsign",
+      "callsign": "indicatifs d'appel",
       "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
@@ -2455,11 +2504,11 @@
   },
   "public-png-presence": {
     "name": "Papua New Guinea VMS",
-    "description": "Description pending",
+    "description": "Vessel monitoring system (VMS) data is provided by the The National Fisheries Authority of Papua New Guinea. Data is collected using Papua New Guinea's national VMS  that is provided by the Fisheries Information and Management System (FIMS). VMS data includes vessel identifiers and location, and is published with a five-day delay.\n\nThe activity layer displays a heatmap of vessel presence. The presence is determined by taking two positions per hour per vessel from the positions transmitted by the vessel's VMS.",
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "flag",
+      "flag": "pavillon",
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
       "vessel-groups": "vessel-groups",
@@ -2475,7 +2524,7 @@
       "lat": "lat",
       "lon": "lon",
       "pos": "pos",
-      "flag": "flag",
+      "flag": "pavillon",
       "htime": "htime",
       "source": {
         "keyword": "source",
@@ -2486,9 +2535,9 @@
           "namibia_vms": "namibia_vms",
           "indovms": "indovms",
           "mexico_vms": "mexico_vms",
-          "chile_vms_small_fisheries": "chile_vms_small_fisheries",
+          "chile_vms_small_fisheries": "chile_vms_petites_pêcheries",
           "peru.historic": "peru.historic",
-          "chile_vms_industry": "chile_vms_industry",
+          "chile_vms_industry": "industrie du chile_vms_fr",
           "ais_scored": "ais_scored",
           "AIS": "AIS",
           "panama_vms": "panama_vms",
@@ -2503,7 +2552,7 @@
         }
       },
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "type d’engin",
         "enum": {
           "unknown": "unknown",
           "reefer": "reefer",
@@ -2523,7 +2572,7 @@
           "set_longlines": "set_longlines",
           "fish_tender|purse_seines|supply_vessel": "fish_tender|purse_seines|supply_vessel",
           "purse_seines": "purse_seines",
-          "fixed_gear": "fixed_gear",
+          "fixed_gear": "équipement_fixe",
           "other_seines": "other_seines",
           "purse_seine_support": "purse_seine_support",
           "longline": "longline",
@@ -2538,7 +2587,7 @@
           "Fish net/dragnet": "Fish net/dragnet",
           "cargo": "cargo",
           "Hand Line Tuna": "Hand Line Tuna",
-          "dredge_fishing": "dredge_fishing",
+          "dredge_fishing": "Pêche_dragée",
           "trawlers": "trawlers",
           "seiners": "seiners",
           "reefer|well_boat": "reefer|well_boat",
@@ -2551,7 +2600,7 @@
           "well_boat|reefer": "well_boat|reefer",
           "well_boat|drifting_longlines|reefer": "well_boat|drifting_longlines|reefer",
           "fish_tender|fishing": "fish_tender|fishing",
-          "pole_and_line": "pole_and_line",
+          "pole_and_line": "pole_et_ligne",
           "purse_seine": "purse_seine",
           "Pole-and-line": "Pole-and-line",
           "pots_and_traps": "pots_and_traps",
@@ -2560,7 +2609,7 @@
           "longline_gigging": "longline_gigging",
           "oil_tanker": "oil_tanker",
           "gigging": "gigging",
-          "fishing": "fishing",
+          "fishing": "pêche",
           "cargo_reefer": "cargo_reefer",
           "reefer|fish_tender|drifting_longlines": "reefer|fish_tender|drifting_longlines",
           "driftnets|set_gillnets": "driftnets|set_gillnets",
@@ -2569,10 +2618,10 @@
           "pots_and_traps|fish_tender": "pots_and_traps|fish_tender",
           "Purse Seine Big Pelagics with one boat": "Purse Seine Big Pelagics with one boat",
           "fish_tender": "fish_tender",
-          "other_purse_seines": "other_purse_seines",
+          "other_purse_seines": "autres_seines de sac",
           "fish_tender|purse_seines": "fish_tender|purse_seines",
           "Longline Tuna": "Longline Tuna",
-          "squid_jigger": "squid_jigger"
+          "squid_jigger": "jigger squid"
         }
       },
       "radiance": {
@@ -2586,7 +2635,7 @@
         "keyword": "shiptype",
         "enum": {
           "unknown": "unknown",
-          "fishing": "fishing",
+          "fishing": "pêche",
           "carrier": "carrier",
           "support": "support"
         }
@@ -2608,17 +2657,17 @@
     }
   },
   "public-protectedseas": {
-    "name": "Protected Seas",
-    "description": "Protected seas (only category IUCN MPA)",
+    "name": "AMPs (ProtectedSeas)",
+    "description": "Les aires marines protégées (AMP) sont des zones océaniques réservées à la conservation à long terme. Celles-ci peuvent avoir différents niveaux de protection et l'éventail des activités autorisées ou interdites à l'intérieur de leurs limites varie considérablement. Source : Navigateur ProtectedSeas. ProtectedSeas attribue un niveau de protection de la pêche (LFP) à chaque zone sur la base d'une analyse des restrictions à l'extraction de la vie marine. Vous pouvez utiliser l'icône de filtre pour explorer les différents scores LFP, qui sont, Le moins restrictif : Aucune restriction de pêche connue ; Moins restrictif : peu de restrictions spécifiques à l'espèce ou à l'engin s'appliquent ; Modérément restrictif : plusieurs restrictions spécifiques à l'espèce ou à l'engin s'appliquent; Fortement restrictif : la pêche est généralement interdite, à quelques exceptions près ; Le plus restrictif : La pêche est interdite. Voir des <a href='https://protectedseas.net/mpa-methods/' target='_blank' rel=noopener'>informations</a> plus détaillées pour cette couche.",
     "schema": {
-      "removal_of_marine_life_is_prohibited": {
-        "keyword": "removal_of_marine_life_is_prohibited",
+      "removal_of": {
+        "keyword": "Niveau de protection de la pêche",
         "enum": {
-          "1": "1",
-          "2": "2",
-          "3": "3",
-          "4": "4",
-          "5": "5"
+          "1": "1. Le moins restrictif",
+          "2": "2. Moins restrictif",
+          "3": "3. Modérément restrictif",
+          "4": "4. Fortement restrictif",
+          "5": "5. Le plus restrictif"
         }
       }
     }
@@ -2631,7 +2680,7 @@
         "keyword": "category_name",
         "enum": {
           "IUCN MPA": "IUCN MPA",
-          "Other": "Other",
+          "Other": "Autres",
           "Jurisdictional Authority Area": "Jurisdictional Authority Area",
           "TBD": "TBD",
           "Fisheries Management Area": "Fisheries Management Area",

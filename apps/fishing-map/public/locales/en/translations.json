@@ -6,6 +6,11 @@
     "beforeAfterRange": "between the {{duration}} before and after {{compareStart}}",
     "change": "Change",
     "clickToFilterBy": "Click to filter by:",
+    "close": "Close report",
+    "createReportHelp": "To explore how activity and environmental data changes over time, you can create a dynamic report containing analysis for any area. Dynamic reports offer a rapid way to access and understand more information about any ocean area, exclusive economic zone, marine protected area or area of interest. Dynamic reports help you understand how much activity is happening in each area, including which vessels and flag States are active.",
+    "createReportHelpLink": "Learn more.",
+    "datasetsNotAllowed": "Vessels are not included from the following sources:",
+    "datasetsNotAllowedAll": "None of your datasets are allowed to be used in reports",
     "disclaimer": "The data shown above should be taken as an estimate.",
     "downloadVesselsList": "Download list (CSV)",
     "error": "There was a problem loading the data, please try refreshing the page",
@@ -229,8 +234,8 @@
       "dataWarningDetail": "This platform uses reference layers (shapefiles) from the World Database on Protected Areas for marine protected areas. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. To see the original reference layers, please visit <a href='http://www.protectedplanet.net'>www.protectedplanet.net</a>. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw oro upload your own reference layer using the '+' icon in the left sidebar. Learn more on our <a href='https://globalfishingwatch.org/tutorials/'>tutorials</a> and <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
     },
     "context-layer-protectedseas": {
-      "dataWarning": "This platform uses MPA (ProtectedSeas) reference layers from ProtectedSeas Navigator",
-      "dataWarningDetail": "This platform uses reference layers (shapefiles) from the ProtectedSeas Navigator for MPAs (ProtectedSeas). The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. To see the original reference layers, please visit <a href='https://mpa.protectedseas.net'>https://mpa.protectedseas.net/</a>. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw oro upload your own reference layer using the '+' icon in the left sidebar. Learn more on our <a href='https://globalfishingwatch.org/tutorials/'>tutorials</a> and <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
+      "dataWarning": "This platform uses MPA reference layers from ProtectedSeas Navigator",
+      "dataWarningDetail": "This platform uses reference layers (shapefiles) from the ProtectedSeas Navigator for MPAs. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. To see the original reference layers, please visit <a href='https://mpa.protectedseas.net'>https://mpa.protectedseas.net/</a>. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw oro upload your own reference layer using the '+' icon in the left sidebar. Learn more on our <a href='https://globalfishingwatch.org/tutorials/'>tutorials</a> and <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
     }
   },
   "download": {
@@ -384,7 +389,7 @@
     "filterOpen": "Open filters",
     "filterValues": "Filter values",
     "flagState_one": "Flag",
-    "flagState_other": "Flag",
+    "flagState_other": "Flags",
     "fleet_other": "Fleets",
     "gearType_other": "Gear types",
     "geometryError": "Some polygons have self-intersections",
@@ -436,7 +441,7 @@
     "description": "Search by vessel name or identification code. You can narrow your search by clicking \"ADVANCED\" in the top menu bar.",
     "mainQueryLabel": "Name, IMO, MMSI or call sign",
     "minCharacters": "Please type at least {{count}} characters",
-    "missingSources": "won’t appear unless you log in",
+    "missingSources": "won't appear unless you <1>log in</1>",
     "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or call sign.",
     "notAllowed": "You don't have permission to search in these datasets.",
     "placeholder": "Type to search for vessels",
@@ -513,9 +518,10 @@
     "firstTransmissionDate": "First transmission date",
     "fishingZone": "Fishing zone",
     "flag": "Flag",
-    "flag_short": "Flag",
+    "flag_other": "Flags",
     "fleet": "Fleet",
     "geartype": "Gear type",
+    "geartype_other": "Gear types",
     "gearType_short": "gear",
     "gearTypes": {
       "dredge_fishing": "Dredge fishing",
@@ -531,7 +537,7 @@
       "other_seines": "Other seines",
       "pole_and_line": "Pole and line",
       "pots_and_traps": "Pots and traps",
-      "purse seine": "Purse Seine",
+      "purse seine": "Purse seine",
       "purse_seine": "Purse Seine",
       "purse_seines": "Purse seine",
       "reefer": "Reefer",
@@ -555,7 +561,7 @@
       "passenger": "Passenger",
       "seismic_vessel": "Seismic vessel",
       "other_non_fishing": "Other",
-      "unknown": "Unknown"
+      "unknown": "Other"
     },
     "grossTonnageRange": "Gross tonnage range",
     "imo": "IMO",
@@ -639,7 +645,7 @@
     "siteDescription": {
       "default": "The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.",
       "fishing-activity": "The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.",
-      "marine-manager": "Marine Manager is a new technology portal to support the effective design, management and monitoring of protected areas."
+      "marine-manager": "The portal provides dynamic interactive data on marine traffic, biology and ocean conditions to support marine protected area design and management."
     },
     "title_other": "Workspaces",
     "update": "Update workspace",

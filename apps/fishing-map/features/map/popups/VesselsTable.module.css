@@ -67,10 +67,6 @@
 }
 
 .vesselsMore {
-  cursor: pointer;
-}
-
-.vesselsMore:disabled {
   cursor: unset;
 }
 

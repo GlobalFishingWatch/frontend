@@ -4,8 +4,8 @@ import {
   WorkspaceCategory,
   DEFAULT_WORKSPACE_ID,
   EEZ_DATAVIEW_SLUG,
-  SAR_DATAVIEW_SLUG,
   MPA_DATAVIEW_SLUG,
+  SAR_DATAVIEW_SLUG,
   RFMO_DATAVIEW_SLUG,
   HIGH_SEAS_DATAVIEW_SLUG,
   BASEMAP_DATAVIEW_SLUG,
@@ -16,9 +16,12 @@ import {
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
   GRATICULES_DATAVIEW_SLUG,
   FAO_AREAS_DATAVIEW_SLUG,
+  PROTECTED_SEAS_DATAVIEW_SLUG,
   MPA_DATAVIEW_INSTANCE_ID,
   EEZ_DATAVIEW_INSTANCE_ID,
   BASEMAP_LABELS_DATAVIEW_SLUG,
+  PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
+  BASEMAP_DATAVIEW_INSTANCE_ID,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 // This id is used for highlighting the dataview with a popup on the right
@@ -60,8 +63,8 @@ const workspace: Workspace<WorkspaceState> = {
         datasets: [
           'public-belize-fishing-effort:v20220304',
           'public-bra-onyxsat-fishing-effort:v20211126',
-          'public-costa-rica-fishing-effort:v20211126',
           'public-chile-fishing-effort:v20211126',
+          'public-costa-rica-fishing-effort:v20211126',
           'public-ecuador-fishing-effort:v20211126',
           'public-indonesia-fishing-effort:v20200320',
           'public-panama-fishing-effort:v20211126',
@@ -128,6 +131,13 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: MPA_DATAVIEW_SLUG,
     },
     {
+      id: PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
+      config: {
+        visible: false,
+      },
+      dataviewId: PROTECTED_SEAS_DATAVIEW_SLUG,
+    },
+    {
       id: 'context-layer-fao-areas',
       config: {
         visible: false,
@@ -150,7 +160,7 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: HIGH_SEAS_DATAVIEW_SLUG,
     },
     {
-      id: 'basemap-labels',
+      id: BASEMAP_DATAVIEW_INSTANCE_ID,
       config: {
         visible: false,
       },

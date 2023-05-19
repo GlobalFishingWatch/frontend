@@ -32,3 +32,11 @@
   margin: 0 0.45rem;
   cursor: default;
 }
+
+.icon {
+  opacity: 0;
+}
+
+.icon.visible {
+  opacity: 1;
+}
