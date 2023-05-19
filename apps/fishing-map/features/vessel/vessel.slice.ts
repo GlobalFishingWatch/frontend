@@ -46,7 +46,9 @@ type FetchVesselThunkParams = { vesselId: string; datasetId: string }
 export const fetchVesselInfoThunk = createAsyncThunk(
   'vessel/fetchInfo',
   async ({ vesselId, datasetId }: FetchVesselThunkParams = {} as FetchVesselThunkParams) => {
-    const vessel = await GFWAPI.fetch<Vessel>(`/vessels/${vesselId}?datasets=${datasetId}`)
+    const vessel = await GFWAPI.fetch<Vessel>(
+      `/vessels/${vesselId}?${stringify({ datasets: [datasetId] })}`
+    )
     return vessel
   },
   {
