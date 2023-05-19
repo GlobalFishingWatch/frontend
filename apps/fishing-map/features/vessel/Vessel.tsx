@@ -1,17 +1,20 @@
 import { useSelector } from 'react-redux'
 import { Fragment, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Tab, Tabs } from '@globalfishingwatch/ui-components'
+import { Spinner, Tab, Tabs } from '@globalfishingwatch/ui-components'
 import { selectVesselId, selectVesselDatasetId } from 'routes/routes.selectors'
 import {
   fetchVesselEventsThunk,
   fetchVesselInfoThunk,
+  selectVesselEventsError,
   selectVesselEventsStatus,
+  selectVesselInfoError,
   selectVesselInfoStatus,
 } from 'features/vessel/vessel.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import VesselSummary from 'features/vessel/VesselSummary'
 import VesselActivity from 'features/vessel/VesselActivity'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import VesselIdentity from './VesselIdentity'
 
 type VesselSection = 'activity' | 'relatedVessels' | 'areas'
@@ -23,13 +26,21 @@ const VesselDetail = () => {
   const vesselId = useSelector(selectVesselId)
   const datasetId = useSelector(selectVesselDatasetId)
   const infoStatus = useSelector(selectVesselInfoStatus)
+  const infoError = useSelector(selectVesselInfoError)
   const eventsStatus = useSelector(selectVesselEventsStatus)
+  const eventsError = useSelector(selectVesselEventsError)
 
   useEffect(() => {
-    if (infoStatus === 'idle') {
+    if (
+      infoStatus === AsyncReducerStatus.Idle ||
+      (infoStatus === AsyncReducerStatus.Error && infoError.status === 401)
+    ) {
       dispatch(fetchVesselInfoThunk({ vesselId, datasetId }))
     }
-    if (eventsStatus === 'idle') {
+    if (
+      eventsStatus === AsyncReducerStatus.Idle ||
+      (eventsStatus === AsyncReducerStatus.Error && eventsError.status === 401)
+    ) {
       dispatch(fetchVesselEventsThunk({ vesselId, datasetId }))
     }
   }, [])
@@ -57,11 +68,21 @@ const VesselDetail = () => {
     [t]
   )
 
+  if (infoStatus === AsyncReducerStatus.Loading) {
+    return <Spinner />
+  }
+
   return (
     <Fragment>
-      <VesselSummary />
-      <VesselIdentity />
-      <Tabs tabs={sectionTabs} activeTab={sectionTabs[0].id} />
+      {infoStatus === AsyncReducerStatus.Finished && (
+        <Fragment>
+          <VesselSummary />
+          <VesselIdentity />
+        </Fragment>
+      )}
+      {eventsStatus === AsyncReducerStatus.Finished && (
+        <Tabs tabs={sectionTabs} activeTab={sectionTabs[0].id} />
+      )}
     </Fragment>
   )
 }
