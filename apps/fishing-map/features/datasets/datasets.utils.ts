@@ -189,8 +189,6 @@ export const getDatasetsInDataviews = (
   return uniq([...datasetsFromDataviews, ...datasetsFromDataviewInstances])
 }
 
-const vesselTypeWithOwnDataset = ['fishing', 'carrier', 'support']
-const vesselPrivateOtherDatasetId = 'private-global-presence'
 export type RelatedDatasetByTypeParams = {
   fullDatasetAllowed?: boolean
   vesselType?: VesselType
@@ -198,20 +196,8 @@ export type RelatedDatasetByTypeParams = {
 export const getRelatedDatasetByType = (
   dataset?: Dataset,
   datasetType?: DatasetTypes,
-  { fullDatasetAllowed = false, vesselType } = {} as RelatedDatasetByTypeParams
+  { fullDatasetAllowed = false } = {} as RelatedDatasetByTypeParams
 ) => {
-  if (vesselType && datasetType === DatasetTypes.Tracks) {
-    return dataset?.relatedDatasets?.find((relatedDataset) => {
-      if (relatedDataset.type !== datasetType) {
-        return false
-      }
-      if (vesselTypeWithOwnDataset.includes(vesselType)) {
-        return relatedDataset.id.includes(vesselType)
-      } else {
-        return relatedDataset.id.startsWith(vesselPrivateOtherDatasetId)
-      }
-    })
-  }
   if (fullDatasetAllowed) {
     const fullDataset = dataset?.relatedDatasets?.find(
       (relatedDataset) =>
