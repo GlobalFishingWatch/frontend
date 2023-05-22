@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { TOKEN_REGEX } from '@globalfishingwatch/dataviews-client'
 import { wrapper } from 'store'
 import { fetchVesselInfoThunk } from 'features/vessel/vessel.slice'
-import Index from 'pages/index.page'
+import Index from 'pages'
 import VesselServerComponent from 'pages/vessel/vessel'
 
 // This is needed by nx/next builder to run build the standalone next app properly

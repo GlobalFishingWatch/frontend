@@ -88,7 +88,7 @@ const nextConfig = {
   experimental: {
     outputFileTracingRoot: join(__dirname, '../../'),
   },
-  pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js'],
+  // pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js'],
   cleanDistDir: true,
   distDir: '.next',
 }
