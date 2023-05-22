@@ -37,7 +37,7 @@ function DatasetFilterSource({ dataview, hideColor }: DatasetFilterSourceProps) 
   }
 
   return (
-    <div className={styles.filter}>
+    <div className={styles.filter} data-test="activity-filters-tags">
       <label>{t('layer.source', 'Sources')}</label>
       <TagList
         tags={sourcesSelected}
@@ -48,6 +48,7 @@ function DatasetFilterSource({ dataview, hideColor }: DatasetFilterSourceProps) 
       />
       {mergedSourceOptions.length > 0 && (
         <TagList
+          testId="activity-filters-tagitem"
           tags={mergedSourceOptions}
           color={hideColor ? null : dataview.config?.color}
           className={styles.mergedTagList}
