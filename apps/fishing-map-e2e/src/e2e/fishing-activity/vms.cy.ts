@@ -10,7 +10,7 @@ describe('vms', () => {
     // Check that all vms layers are available
     cy.getBySelLike('activity-filters-option').contains('AIS')
     cy.getBySelLike('activity-filters-option').contains('Belize VMS')
-    cy.getBySelLike('activity-filters-option').contains('Brazil Open Tuna Presence')
+    cy.getBySelLike('activity-filters-option').contains('Brazil VMS')
     cy.getBySelLike('activity-filters-option').contains('Chile VMS')
     cy.getBySelLike('activity-filters-option').contains('Costa Rica VMS')
     cy.getBySelLike('activity-filters-option').contains('Ecuador VMS')
