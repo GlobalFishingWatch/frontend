@@ -187,7 +187,6 @@ export function getGeneratorConfig(
       }
 
       const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
-      const { url: trackUrl } = resolveDataviewDatasetResource(dataview, [DatasetTypes.Tracks])
       const hasEventData =
         eventsResources?.length && eventsResources.some(({ url }) => resources?.[url]?.data)
       // const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
@@ -209,8 +208,6 @@ export function getGeneratorConfig(
           vesselId,
           type,
           data,
-          eventsUrls: eventsResources.map(({ url }) => url),
-          trackUrl,
           track: generator.data,
           color: dataview.config?.color,
           event: dataview.config?.event,
@@ -220,9 +217,7 @@ export function getGeneratorConfig(
           ...(highlightedEvent && { currentEventId: highlightedEvent.id }),
           ...(highlightedEvents && { currentEventsIds: highlightedEvents }),
         }
-        // we just want one generator per vessel
-        // return [generator, eventsGenerator]
-        return eventsGenerator
+        return [generator, eventsGenerator]
       }
       return generator
     }

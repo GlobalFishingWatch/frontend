@@ -98,7 +98,6 @@ export const useGeneratorsConnect = () => {
   const generatorsConfig = useSelector(selectDefaultMapGeneratorsConfig)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
-  const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
   const sourceTilesLoaded = useMapSourceTiles()
   const updatedGeneratorConfig = useMemo(() => {
     return generatorsConfig.map((generatorConfig, i) => {
@@ -120,7 +119,6 @@ export const useGeneratorsConnect = () => {
       end,
       token: GFWAPI.getToken(),
       locale: i18n.language as Locale,
-      visibleEvents,
     }
     if (showTimeComparison && timeComparisonValues) {
       globalConfig = {
@@ -140,7 +138,6 @@ export const useGeneratorsConnect = () => {
     showTimeComparison,
     timeComparisonValues,
     updatedGeneratorConfig,
-    visibleEvents,
   ])
 }
 
