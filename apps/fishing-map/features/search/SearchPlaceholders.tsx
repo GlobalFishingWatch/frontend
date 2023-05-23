@@ -85,7 +85,7 @@ export function SearchEmptyState({ className = '' }: SearchPlaceholderProps) {
           </Trans>
         </p>
       )}
-      <UserGuideLink section="vesselSearch" />
+      <UserGuideLink section="vesselSearch" className={styles.center} />
     </SearchPlaceholder>
   )
 }

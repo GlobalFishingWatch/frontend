@@ -58,3 +58,7 @@
 .highlighted a {
   text-decoration: underline;
 }
+
+.center {
+  margin: 0 auto;
+}
