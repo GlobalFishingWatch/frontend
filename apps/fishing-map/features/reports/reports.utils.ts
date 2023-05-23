@@ -197,16 +197,6 @@ export const getCommonProperties = (dataviews: UrlDataviewInstance[]) => {
   return commonProperties
 }
 
-export const getVesselGearOrType = (vessel: ReportVesselWithDatasets): string => {
-  if (vessel.geartype) {
-    return t(`vessel.gearTypes.${vessel.geartype}` as any, vessel.geartype)
-  }
-  if (vessel.vesselType) {
-    return t(`vessel.vesselTypes.${vessel.vesselType}` as any, vessel.vesselType)
-  }
-  return EMPTY_FIELD_PLACEHOLDER
-}
-
 export const getReportCategoryFromDataview = (
   dataview: Dataview | UrlDataviewInstance
 ): ReportCategory => {
