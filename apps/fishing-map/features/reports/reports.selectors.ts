@@ -23,10 +23,12 @@ import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUserData } from 'features/user/user.slice'
 import { getUTCDateTime } from 'utils/dates'
-import { getReportCategoryFromDataview, getVesselGearOrType } from 'features/reports/reports.utils'
+import { getReportCategoryFromDataview } from 'features/reports/reports.utils'
 import { ReportCategory } from 'types'
 import { selectContextAreasDataviews } from 'features/dataviews/dataviews.selectors'
 import { createDeepEqualSelector } from 'utils/selectors'
+import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
+import { sortStrings } from 'utils/shared'
 import { selectReportVesselsData } from './report.slice'
 
 export const EMPTY_API_VALUES = ['NULL', undefined, '']
@@ -166,15 +168,14 @@ export const selectReportVesselsList = createSelector(
           flagTranslatedClean: cleanFlagState(
             t(`flags:${vesselActivity[0]?.flag as string}` as any, vesselActivity[0]?.flag)
           ),
-          geartype: t(
-            `vessel.gearTypes.${vesselActivity[0]?.geartype}` as any,
-            vesselActivity[0]?.geartype
-          ),
-          vesselType: t(
-            `vessel.veeselTypes.${vesselActivity[0]?.vesselType}` as any,
-            vesselActivity[0]?.vesselType
-          ),
-          gearOrVesselType: getVesselGearOrType(vesselActivity[0]),
+          geartype: cleanVesselOrGearType({
+            value: vesselActivity[0]?.geartype,
+            property: 'geartype',
+          }),
+          vesselType: cleanVesselOrGearType({
+            value: vesselActivity[0]?.vesselType,
+            property: 'vesselType',
+          }),
           hours: vesselActivity[0]?.hours,
           infoDataset,
           trackDataset,
@@ -214,12 +215,27 @@ export const selectReportVesselsListWithAllInfo = createSelector(
             `vessel.veeselTypes.${vesselActivity[0]?.vesselType}` as any,
             vesselActivity[0]?.vesselType
           ),
-          gearOrVesselType: getVesselGearOrType(vesselActivity[0]),
         }
       })
       .sort((a, b) => b.hours - a.hours)
   }
 )
+
+type CleanVesselOrGearTypeParams = { value: string; property: 'geartype' | 'vesselType' }
+export function cleanVesselOrGearType({ value, property }: CleanVesselOrGearTypeParams) {
+  const valuesClean = value ? value?.split(',').filter(Boolean) : [EMPTY_FIELD_PLACEHOLDER]
+  const valuesCleanTranslated = valuesClean
+    .map((value) => {
+      if (property === 'geartype') {
+        return t(`vessel.gearTypes.${value}` as any, value)
+      }
+      return t(`vessel.vesselTypes.${value}` as any, value)
+    })
+    .sort(sortStrings)
+  return valuesCleanTranslated.length > 1
+    ? valuesCleanTranslated.join('|')
+    : valuesCleanTranslated[0]
+}
 
 export function cleanFlagState(flagState: string) {
   return flagState.replace(/,/g, '')
@@ -229,8 +245,8 @@ const FILTER_PROPERTIES = {
   name: ['shipName'],
   flag: ['flag', 'flagTranslated', 'flagTranslatedClean'],
   mmsi: ['mmsi'],
-  gear: ['gearOrVesselType'],
-  type: ['gearOrVesselType'],
+  gear: ['geartype'],
+  type: ['vesselType'],
 }
 
 export function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: string) {
