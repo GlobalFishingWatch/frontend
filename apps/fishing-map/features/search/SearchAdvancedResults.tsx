@@ -19,7 +19,6 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
 import { Locale } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
-import I18nNumber from 'features/i18n/i18nNumber'
 
 const PINNED_COLUMN = 'shipname'
 
@@ -71,10 +70,10 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
         accessorFn: ({ dataset }: VesselWithDatasets) => <DatasetLabel dataset={dataset} />,
         header: t('vessel.source', 'Source'),
       },
-      {
-        accessorFn: ({ msgCount }: VesselWithDatasets) => <I18nNumber number={msgCount} />,
-        header: t('vessel.transmission_other', 'Transmissions'),
-      },
+      // {
+      //   accessorFn: ({ msgCount }: VesselWithDatasets) => <I18nNumber number={msgCount} />,
+      //   header: t('vessel.transmission_other', 'Transmissions'),
+      // },
       {
         accessorFn: ({ firstTransmissionDate, lastTransmissionDate }: VesselWithDatasets) => (
           <div>
