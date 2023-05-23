@@ -1075,7 +1075,7 @@
     }
   },
   "private-png-fishing-effort": {
-    "name": "Papua New Guinea VMS",
+    "name": "VMS de Papúa Nueva Guinea",
     "description": "Los datos del sistema de seguimiento de embarcaciones (VMS) son proporcionados por la Autoridad Nacional de Pesca de Papúa Nueva Guinea. Los datos se recopilan utilizando el VMS nacional de Papúa Nueva Guinea proporcionado por el Sistema de Gestión e Información Pesquera (FIMS, por sus siglas en inglés). Los datos VMS incluyen los identificadores y la ubicación de las embarcaciones, y se publican con un retraso de cinco días. Global Fishing Watch infiere la velocidad y el rumbo para la ubicación de cada barco y analiza estos datos utilizando los mismos algoritmos desarrollados para el sistema de identificación automática (AIS) para identificar la actividad y los comportamientos de pesca. El algoritmo clasifica cada punto de datos de transmisión de las embarcaciones como pesca aparente o no pesca y muestra el primero en el mapa de actividad pesquera de Global Fishing Watch. VMS transmite datos de manera diferente a AIS y puede brindar diferentes medidas de integridad, precisión y calidad. Global Fishing Watch mejora continuamente sus algoritmos en todos los formatos de datos de transmisión para identificar algorítmicamente la \"actividad de pesca aparente\". Es posible que no se identifique alguna actividad pesquera o que el mapa de calor muestre actividad pesquera aparente cuando en realidad no se está pescando. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” o “esfuerzo pesquero” como aparentes en lugar de ciertos. Cualquier y toda la información de Global Fishing Watch sobre la \"actividad de pesca aparente\" debe considerarse una estimación y debe confiarse únicamente en la discreción del usuario. Los algoritmos de detección de pesca de Global Fishing Watch se desarrollan y prueban utilizando datos de eventos de pesca reales recopilados por observadores y se combinan con análisis expertos de datos de movimiento de embarcaciones AIS, lo que da como resultado la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y mejorar las técnicas de clasificación automatizadas",
     "schema": {
       "lat": "lat",
@@ -1096,8 +1096,8 @@
     }
   },
   "private-png-fishing-vessels": {
-    "name": "Papua New Guinea VMS (Fishing Vessels)",
-    "description": "Dataset for VMS Papua New Guinea (Private)",
+    "name": "VMS de Papúa Nueva Guinea (Buques de pesca)",
+    "description": "VMS de Papúa Nueva Guinea (Buques de pesca)",
     "schema": {
       "id": "id",
       "flag": "bandera",
@@ -1109,7 +1109,7 @@
     }
   },
   "private-png-presence": {
-    "name": "Papua New Guinea VMS",
+    "name": "VMS de Papúa Nueva Guinea",
     "description": "Los datos del sistema de seguimiento de embarcaciones (VMS) son proporcionados por la Autoridad Nacional de Pesca de Papúa Nueva Guinea. Los datos se recopilan utilizando el VMS nacional de Papúa Nueva Guinea proporcionado por el Sistema de gestión e información pesqueras (FIMS, por sus siglas en inglés). Los datos de VMS incluyen los identificadores y la ubicación de las embarcaciones, y se publican con un retraso de cinco días.\n\nLa capa de actividad muestra un mapa de calor de presencia de embarcaciones. La presencia se determina tomando dos posiciones por hora por embarcación a partir de las posiciones transmitidas por el VMS de la embarcación.",
     "schema": {
       "lat": "lat",
@@ -2469,7 +2469,7 @@
     }
   },
   "public-png-fishing-effort": {
-    "name": "Papua New Guinea VMS",
+    "name": "VMS de Papúa Nueva Guinea",
     "description": "Los datos del sistema de seguimiento de embarcaciones (VMS) son proporcionados por la Autoridad Nacional de Pesca de Papúa Nueva Guinea. Los datos se recopilan utilizando el VMS nacional de Papúa Nueva Guinea proporcionado por el Sistema de Gestión e Información Pesquera (FIMS, por sus siglas en inglés). Los datos VMS incluyen los identificadores y la ubicación de las embarcaciones, y se publican con un retraso de cinco días. Global Fishing Watch infiere la velocidad y el rumbo para la ubicación de cada barco y analiza estos datos utilizando los mismos algoritmos desarrollados para el sistema de identificación automática (AIS) para identificar la actividad y los comportamientos de pesca. El algoritmo clasifica cada punto de datos de transmisión de las embarcaciones como pesca aparente o no pesca y muestra el primero en el mapa de actividad pesquera de Global Fishing Watch. VMS transmite datos de manera diferente a AIS y puede brindar diferentes medidas de integridad, precisión y calidad. Global Fishing Watch mejora continuamente sus algoritmos en todos los formatos de datos de transmisión para identificar algorítmicamente la \"actividad de pesca aparente\". Es posible que no se identifique alguna actividad pesquera o que el mapa de calor muestre actividad pesquera aparente cuando en realidad no se está pescando. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” o “esfuerzo pesquero” como aparentes en lugar de ciertos. Cualquier y toda la información de Global Fishing Watch sobre la \"actividad de pesca aparente\" debe considerarse una estimación y debe confiarse únicamente en la discreción del usuario. Los algoritmos de detección de pesca de Global Fishing Watch se desarrollan y prueban utilizando datos de eventos de pesca reales recopilados por observadores y se combinan con análisis expertos de datos de movimiento de embarcaciones AIS, lo que da como resultado la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y mejorar las técnicas de clasificación automatizadas",
     "schema": {
       "lat": "lat",
@@ -2490,8 +2490,8 @@
     }
   },
   "public-png-fishing-vessels": {
-    "name": "Papua New Guinea VMS (Fishing Vessels)",
-    "description": "Dataset for VMS Papua New Guinea (Public)",
+    "name": "VMS de Papúa Nueva Guinea (Buques de pesca)",
+    "description": "Dataset de VMS de Papúa Nueva Guinea (Buques de pesca)",
     "schema": {
       "id": "id",
       "flag": "bandera",
@@ -2503,7 +2503,7 @@
     }
   },
   "public-png-presence": {
-    "name": "Papua New Guinea VMS",
+    "name": "VMS de Papúa Nueva Guinea",
     "description": "Los datos del sistema de seguimiento de embarcaciones (VMS) son proporcionados por la Autoridad Nacional de Pesca de Papúa Nueva Guinea. Los datos se recopilan utilizando el VMS nacional de Papúa Nueva Guinea proporcionado por el Sistema de gestión e información pesqueras (FIMS, por sus siglas en inglés). Los datos de VMS incluyen los identificadores y la ubicación de las embarcaciones, y se publican con un retraso de cinco días.\n\nLa capa de actividad muestra un mapa de calor de presencia de embarcaciones. La presencia se determina tomando dos posiciones por hora por embarcación a partir de las posiciones transmitidas por el VMS de la embarcación.",
     "schema": {
       "lat": "lat",
