@@ -45,7 +45,8 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
         header: t('vessel.flag', 'Flag'),
       },
       {
-        accessorFn: ({ mmsi }: VesselWithDatasets) => mmsi || EMPTY_FIELD_PLACEHOLDER,
+        accessorFn: ({ ssvid, mmsi }: VesselWithDatasets) =>
+          ssvid || mmsi || EMPTY_FIELD_PLACEHOLDER,
         header: t('vessel.mmsi', 'MMSI'),
       },
       {
@@ -57,13 +58,13 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
         header: t('vessel.callsign', 'Callsign'),
       },
       {
-        accessorFn: ({ vesselType }: VesselWithDatasets) =>
-          t(`vessel.vesselTypes.${vesselType}` as any, EMPTY_FIELD_PLACEHOLDER),
+        accessorFn: ({ shiptype }: VesselWithDatasets) =>
+          t(`vessel.vesselTypes.${shiptype.toLowerCase()}` as any, EMPTY_FIELD_PLACEHOLDER),
         header: t('vessel.vesselType', 'Vessel Type'),
       },
       {
         accessorFn: ({ geartype }: VesselWithDatasets) =>
-          t(`vessel.gearTypes.${geartype}` as any, EMPTY_FIELD_PLACEHOLDER),
+          t(`vessel.gearTypes.${geartype.toLowerCase()}` as any, EMPTY_FIELD_PLACEHOLDER),
         header: t('vessel.geartype', 'Gear Type'),
       },
       {

@@ -188,11 +188,11 @@ function VesselsTable({
 
               const vesselType = isPresenceActivity
                 ? `${t(
-                    `vessel.vesselTypes.${vessel.vesselType}` as any,
-                    vessel.vesselType ?? EMPTY_FIELD_PLACEHOLDER
+                    `vessel.vesselTypes.${vessel.shiptype?.toLowerCase()}` as any,
+                    vessel.shiptype ?? EMPTY_FIELD_PLACEHOLDER
                   )}`
                 : `${t(
-                    `vessel.gearTypes.${vessel.geartype}` as any,
+                    `vessel.gearTypes.${vessel.geartype?.toLowerCase()}` as any,
                     vessel.geartype ?? EMPTY_FIELD_PLACEHOLDER
                   )}`
 

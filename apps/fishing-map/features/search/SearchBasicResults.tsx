@@ -43,9 +43,11 @@ function SearchBasicResults({
           flag,
           fleet,
           mmsi,
+          ssvid,
           imo,
           callsign,
           geartype,
+          shiptype,
           origin,
           casco,
           nationalId,
@@ -98,7 +100,7 @@ function SearchBasicResults({
                   </div>
                   <div className={styles.property}>
                     <label>{t('vessel.mmsi', 'MMSI')}</label>
-                    <span>{mmsi || EMPTY_FIELD_PLACEHOLDER}</span>
+                    <span>{ssvid || mmsi || EMPTY_FIELD_PLACEHOLDER}</span>
                   </div>
                   <div className={styles.property}>
                     <label>{t('vessel.imo', 'IMO')}</label>
@@ -109,10 +111,18 @@ function SearchBasicResults({
                     <span>{callsign || EMPTY_FIELD_PLACEHOLDER}</span>
                   </div>
                   <div className={styles.property}>
+                    <label>{t('vessel.vesselType', 'Vessel Type')}</label>
+                    <span>
+                      {geartype !== undefined
+                        ? t(`vessel.vesselTypes.${shiptype.toLowerCase()}` as any, shiptype)
+                        : EMPTY_FIELD_PLACEHOLDER}
+                    </span>
+                  </div>
+                  <div className={styles.property}>
                     <label>{t('vessel.geartype', 'Gear Type')}</label>
                     <span>
                       {geartype !== undefined
-                        ? t(`vessel.gearTypes.${geartype}` as any, EMPTY_FIELD_PLACEHOLDER)
+                        ? t(`vessel.gearTypes.${geartype.toLowerCase()}` as any, geartype)
                         : EMPTY_FIELD_PLACEHOLDER}
                     </span>
                   </div>
