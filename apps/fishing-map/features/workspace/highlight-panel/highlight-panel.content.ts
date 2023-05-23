@@ -22,6 +22,19 @@ export type HighlightPanelConfig = {
 
 const HIGHLIGHT_POPUP_KEY = 'HighlightPopup'
 
+/**
+ * To use as releaseDateTimestamp while the release date is not yet defined.
+ *
+ * Eg:
+ * {
+ *   dataviewInstanceId: 'vms-with-some-country',
+ *   releaseDateTimestamp: NEXT_YEAR,
+ *   localStorageKey: HIGHLIGHT_POPUP_KEY,
+ *   delayed: 1000,
+ *   ...
+ * }
+ *
+ */
 const NEXT_YEAR = Date.now() + 1000 * 60 * 60 * 24 * 365
 
 // To display a new highlight popup, just add a HighlightPanelConfig element to this array.
@@ -58,8 +71,7 @@ const HIGHLIGHT_CONFIGS: HighlightPanelConfig[] = [
   },
   {
     dataviewInstanceId: 'vms-with-png',
-    // TODO: Set to a proper fixed date when release date is defined.
-    releaseDateTimestamp: NEXT_YEAR,
+    releaseDateTimestamp: Date.parse('2023-06-01T00:00:00Z'),
     localStorageKey: HIGHLIGHT_POPUP_KEY,
     delayed: 1000,
     imageUrl: `${PATH_BASENAME}/images/papua_new_guinea-vms.webp`,
