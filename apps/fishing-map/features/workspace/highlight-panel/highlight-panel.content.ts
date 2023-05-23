@@ -117,4 +117,10 @@ const HIGHLIGHT_CONFIG = DISPLAY_LATEST_POPUP ? HIGHLIGHT_CONFIG_LATEST : HIGHLI
 
 export const HIGHLIGHT_DATAVIEW_INSTANCE_ID = HIGHLIGHT_CONFIG.dataviewInstanceId
 
+export const getDataviewInstanceReleaseDate = (instanceId: string) => {
+  return (
+    HIGHLIGHT_CONFIGS.find((c) => c.dataviewInstanceId === instanceId)?.releaseDateTimestamp ||
+    NEXT_YEAR
+  )
+}
 export default HIGHLIGHT_CONFIG
