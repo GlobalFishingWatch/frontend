@@ -69,6 +69,10 @@ const workspace: Workspace<WorkspaceState> = {
           'public-indonesia-fishing-effort:v20200320',
           'public-panama-fishing-effort:v20211126',
           'public-peru-fishing-effort:v20211126',
+          // selected by default only after the release date
+          ...(Date.now() > Date.parse('2023-06-01T00:00:00Z')
+            ? ['public-png-fishing-effort:v20230210']
+            : []),
           'public-norway-fishing-effort:v20220112',
         ],
       },
