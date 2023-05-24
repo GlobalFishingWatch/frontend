@@ -43,7 +43,8 @@ export type ReportVesselWithMeta = ReportVessel & {
   flagTranslated: string
   flagTranslatedClean: string
 }
-export type ReportVesselWithDatasets = Partial<ReportVessel> &
+export type ReportVesselWithDatasets = Pick<ReportVessel, 'vesselId' | 'shipName' | 'hours'> &
+  Partial<ReportVessel> &
   Pick<ReportVesselWithMeta, 'sourceColor'> & {
     infoDataset?: Dataset
     trackDataset?: Dataset
@@ -60,7 +61,7 @@ export const selectReportDataviewsWithPermissions = createDeepEqualSelector(
         )
         return {
           ...dataview,
-          datasets: dataview.datasets.filter((d) => supportedDatasets.includes(d.id)),
+          datasets: dataview.datasets?.filter((d) => supportedDatasets.includes(d.id)),
           filter: dataview.config?.filter || [],
           ...(dataview.config?.['vessel-groups']?.length && {
             vesselGroups: dataview.config?.['vessel-groups'],
@@ -75,7 +76,7 @@ export const selectReportAreaDataview = createSelector(
   [selectContextAreasDataviews, selectReportDatasetId],
   (contextDataviews, datasetId) => {
     const areaDataview = contextDataviews?.find((dataview) => {
-      return dataview.datasets.some((dataset) => dataset.id === datasetId)
+      return dataview.datasets?.some((dataset) => dataset.id === datasetId)
     })
     return areaDataview
   }
@@ -90,7 +91,7 @@ export const selectReportAreaIds = createSelector(
 
 export const selectReportActivityFlatten = createSelector(
   [selectReportVesselsData, selectReportDataviewsWithPermissions, selectReportCategory],
-  (reportDatasets, dataviews, reportCategory): ReportVesselWithMeta[] => {
+  (reportDatasets, dataviews, reportCategory) => {
     if (!dataviews?.length || !reportDatasets?.length) return null
 
     return reportDatasets.flatMap((dataset, index) =>
@@ -122,7 +123,7 @@ export const selectReportActivityFlatten = createSelector(
           } as ReportVesselWithMeta
         })
       })
-    )
+    ) as ReportVesselWithMeta[]
   }
 )
 
@@ -182,12 +183,12 @@ export const selectReportVesselsList = createSelector(
           sourceColor: vesselActivity[0]?.sourceColor,
         } as ReportVesselWithDatasets
       })
-      .sort((a, b) => b.hours - a.hours)
+      .sort((a, b) => (b.hours as number) - (a.hours as number))
   }
 )
 
 export const selectHasReportVessels = createSelector([selectReportVesselsList], (vessels) => {
-  return vessels?.length > 0
+  return vessels!?.length > 0
 })
 
 export const selectReportVesselsListWithAllInfo = createSelector(
@@ -282,15 +283,15 @@ export function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: 
       const uniqMatched = block.includes('|') ? Array.from(new Set([...matched])) : matched
       if (block.startsWith('-')) {
         const uniqMatchedIds = new Set<string>()
-        uniqMatched.forEach(({ vesselId }) => {
+        uniqMatched.forEach(({ vesselId = '' }) => {
           uniqMatchedIds.add(vesselId)
         })
-        return vessels.filter(({ vesselId }) => !uniqMatchedIds.has(vesselId))
+        return vessels.filter(({ vesselId = '' }) => !uniqMatchedIds.has(vesselId))
       } else {
         return uniqMatched
       }
     }, vessels)
-    .sort((a, b) => b.hours - a.hours)
+    .sort((a, b) => (b.hours as number) - (a.hours as number))
 }
 
 export const selectReportVesselsFiltered = createSelector(
@@ -323,9 +324,9 @@ export const selectReportVesselsPagination = createSelector(
       page,
       offset: resultsPerPage * page,
       resultsPerPage: resultsPerPage,
-      resultsNumber: vessels?.length,
-      totalFiltered: allVesselsFiltered?.length,
-      total: allVessels?.length,
+      resultsNumber: vessels!?.length,
+      totalFiltered: allVesselsFiltered!?.length,
+      total: allVessels!?.length,
     }
   }
 )

@@ -115,7 +115,10 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
             const hasDatasets = vessel.infoDataset?.id?.includes(GLOBAL_VESSELS_DATASET_ID)
               ? vessel.infoDataset !== undefined && vessel.trackDataset !== undefined
               : vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
-            const vesselInWorkspace = getVesselInWorkspace(vesselsInWorkspace, vessel.vesselId)
+            const vesselInWorkspace = getVesselInWorkspace(
+              vesselsInWorkspace,
+              vessel.vesselId as string
+            )
             const pinTrackDisabled = !hasDatasets
             const isLastRow = i === vessels.length - 1
             const flag = t(`flags:${vessel.flag as string}` as any, EMPTY_FIELD_PLACEHOLDER)
@@ -128,7 +131,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                   <IconButton
                     icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
                     style={{
-                      color: vesselInWorkspace ? vesselInWorkspace.config.color : '',
+                      color: vesselInWorkspace ? vesselInWorkspace.config?.color : '',
                     }}
                     disabled={pinTrackDisabled}
                     tooltip={

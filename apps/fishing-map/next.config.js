@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const withNx = require('@nx/next/plugins/with-nx')
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
-})
-// const CircularDependencyPlugin = require('circular-dependency-plugin')
 const { join } = require('path')
+const withNx = require('@nx/next/plugins/with-nx')
+// const withBundleAnalyzer = require('@next/bundle-analyzer')({
+//   enabled: process.env.ANALYZE === 'true',
+// })
+// const CircularDependencyPlugin = require('circular-dependency-plugin')
 
 // const { i18n } = require('./next-i18next.config')
 const basePath =
@@ -87,4 +87,10 @@ const nextConfig = {
   distDir: '.next',
 }
 
-module.exports = withBundleAnalyzer(withNx(nextConfig))
+const configWithNx = withNx(nextConfig)
+module.exports = async (...args) => {
+  return {
+    ...(await configWithNx(...args)),
+    //...
+  }
+}

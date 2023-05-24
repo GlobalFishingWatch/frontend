@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
-import { GeoJSONFeature, MapDataEvent } from '@globalfishingwatch/maplibre-gl'
+import { GeoJSONFeature, MapDataEvent, MapGeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
 import {
   ExtendedStyle,
   HeatmapLayerMeta,
@@ -52,7 +52,7 @@ const getGeneratorSourcesIds = (style: ExtendedStyle, sourcesIds: SourcesHookInp
 
 export const useSourceInStyle = (sourcesIds: SourcesHookInput) => {
   const style = useMapStyle()
-  if (!sourcesIds || !sourcesIds.length) {
+  if (!sourcesIds || !sourcesIds.length || !style) {
     return false
   }
   const sourcesIdsList = getGeneratorSourcesIds(style, sourcesIds)
@@ -172,7 +172,7 @@ type DataviewMetadata = {
 }
 
 // Key used to refresh activity graph only when active chunk changes and we can safely ignore the rest of the metadata
-function getGeneratorsMetadataChangeKey(generatorsMetadata: Record<string, HeatmapLayerMeta>) {
+function getGeneratorsMetadataChangeKey(generatorsMetadata: Record<string, HeatmapLayerMeta> = {}) {
   if (!generatorsMetadata) return ''
   return Object.keys(generatorsMetadata)
     .map((key) => {
@@ -253,18 +253,18 @@ export const useMapDataviewFeatures = (
 
   const dataviewFeatures = useMemo(() => {
     const dataviewsFeature = dataviewsMetadata.map(
-      ({ dataviewsId, metadata, filter, generatorSourceId }) => {
+      ({ dataviewsId, metadata, filter = [''], generatorSourceId }) => {
         const sourceLayer = metadata?.sourceLayer || TEMPORALGRID_SOURCE_LAYER_INTERACTIVE
         const chunks = metadata?.timeChunks?.chunks.map(({ active, sourceId, quantizeOffset }) => ({
           active,
           sourceId,
           quantizeOffset,
         }))
-        const chunksFeatures: ChunkFeature[] | null = chunks
-          ? chunks.map(({ active, sourceId, quantizeOffset }) => {
+        const chunksFeatures: ChunkFeature[] = chunks
+          ? chunks.map(({ active, sourceId = '', quantizeOffset }) => {
               const emptyChunkState = {} as TilesAtomSourceState
               const chunkState = sourceTilesLoaded[sourceId] || emptyChunkState
-              let features = null
+              let features = [] as MapGeoJSONFeature[]
               if (chunkState.loaded && !chunkState.error) {
                 if (queryMethod === 'render') {
                   const layer =
@@ -283,19 +283,19 @@ export const useMapDataviewFeatures = (
                 state: chunkState,
               }
             })
-          : null
+          : []
         const sourceId = metadata?.timeChunks?.activeSourceId || generatorSourceId
         const state = chunks
           ? ({
-              loaded: chunksFeatures.every(({ state }) => state.loaded !== false),
-              error: chunksFeatures
+              loaded: chunksFeatures!.every(({ state }) => state.loaded !== false),
+              error: chunksFeatures!
                 .filter(({ state }) => state.error)
                 .map(({ state }) => state.error)
                 .join(','),
             } as TilesAtomSourceState)
           : sourceTilesLoaded[sourceId] || ({} as TilesAtomSourceState)
 
-        let features: GeoJSONFeature[] | null = null
+        let features: GeoJSONFeature[] = []
 
         if (!chunks && state?.loaded && !state?.error) {
           if (queryMethod === 'render') {

@@ -2,6 +2,7 @@ import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolki
 import { memoize, uniqBy, without, kebabCase, uniq } from 'lodash'
 import { stringify } from 'qs'
 import {
+  AnyDatasetConfiguration,
   APIPagination,
   Dataset,
   DatasetCategory,
@@ -178,7 +179,7 @@ export const updateDatasetThunk = createAsyncThunk<
   async (partialDataset, { rejectWithValue }) => {
     try {
       const { id, configuration, ...rest } = partialDataset
-      const { tableName, ...restConfiguration } = configuration
+      const { tableName, ...restConfiguration } = configuration as AnyDatasetConfiguration
       const updatedDataset = await GFWAPI.fetch<Dataset>(`/datasets/${id}`, {
         method: 'PATCH',
         body: { ...rest, configuration: restConfiguration } as any,

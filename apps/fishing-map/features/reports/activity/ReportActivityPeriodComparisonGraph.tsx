@@ -184,14 +184,14 @@ const ReportActivityPeriodComparisonGraph: React.FC<{
       const avgCompare = min[1] + max[1] / 2
       const difference = avgCompare - baseAvg
       const dtStart = getUTCDateTime(date)
-      const dtCompareStart = getUTCDateTime(compareDate)
+      const dtCompareStart = getUTCDateTime(compareDate as string)
       const data = {
         date: dtStart.toMillis(),
         ...{ compareDate: compareDate ? dtCompareStart.toMillis() : {} },
-        rangeDecrease: null,
-        rangeIncrease: null,
+        rangeDecrease: [] as number[],
+        rangeIncrease: [] as number[],
       }
-      if (dtStart.toMillis() < offsetedLastDataUpdate) {
+      if (offsetedLastDataUpdate && dtStart.toMillis() < offsetedLastDataUpdate) {
         data.rangeDecrease = difference <= 0 ? [0, difference] : [0, 0]
         data.rangeIncrease = difference > 0 ? [0, difference] : [0, 0]
       }
@@ -290,7 +290,7 @@ const ReportActivityPeriodComparisonGraph: React.FC<{
             stroke={COLOR_PRIMARY_BLUE}
             strokeWidth={2}
           />
-          {offsetedLastDataUpdate < lastDate && (
+          {offsetedLastDataUpdate && offsetedLastDataUpdate < lastDate && (
             <ReferenceLine x={offsetedLastDataUpdate} stroke={COLOR_PRIMARY_BLUE} />
           )}
         </ComposedChart>

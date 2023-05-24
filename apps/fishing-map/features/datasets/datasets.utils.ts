@@ -78,11 +78,12 @@ export const isPrivateDataset = (dataset: Partial<Dataset>) =>
 const GFW_ONLY_DATASETS = ['private-global-other-vessels:v20201001']
 
 export const isGFWOnlyDataset = (dataset: Partial<Dataset>) =>
-  GFW_ONLY_DATASETS.includes(dataset?.id)
+  GFW_ONLY_DATASETS.includes(dataset?.id || '')
 
 export const GFW_ONLY_SUFFIX = ' - GFW Only'
 
-export const getDatasetLabel = (dataset: { id: string; name?: string }): string => {
+export type GetDatasetLabelParams = { id: string; name?: string }
+export const getDatasetLabel = (dataset = {} as GetDatasetLabelParams): string => {
   const { id, name = '' } = dataset || {}
   if (!id) return name || ''
   const label = getDatasetNameTranslated(dataset)
@@ -91,9 +92,9 @@ export const getDatasetLabel = (dataset: { id: string; name?: string }): string 
   return label
 }
 
-export const getDatasetIcon = (dataset: Dataset): IconType => {
+export const getDatasetIcon = (dataset: Dataset): IconType | null => {
   if (dataset.type === DatasetTypes.UserTracks) return 'track'
-  if (dataset.configuration.geometryType === 'points') return 'dots'
+  if (dataset.configuration?.geometryType === 'points') return 'dots'
   if (dataset.type === DatasetTypes.UserContext) return 'polygons'
   return null
 }
@@ -133,9 +134,9 @@ export const getDatasetTitleByDataview = (
     return datasetTitle
   }
   const sources =
-    dataview.datasets.length > 1
-      ? `(${dataview.datasets.length} ${t('common.sources', 'Sources')})`
-      : `(${getDatasetNameTranslated(dataview.datasets[0])})`
+    dataview.datasets!?.length > 1
+      ? `(${dataview.datasets!?.length} ${t('common.sources', 'Sources')})`
+      : `(${getDatasetNameTranslated(dataview.datasets?.[0] as Dataset)})`
 
   return datasetTitle + ' ' + sources
 }
@@ -220,7 +221,7 @@ export const getRelatedDatasetsByType = (
       (relatedDataset) =>
         relatedDataset.type === datasetType && relatedDataset.id.startsWith(FULL_SUFIX)
     )
-    if (fullDataset.length > 0) {
+    if (fullDataset && fullDataset.length > 0) {
       return fullDataset
     }
   }
@@ -241,10 +242,11 @@ export const getLatestEndDateFromDatasets = (
 ): string => {
   if (!datasets.length) return DEFAULT_TIME_RANGE.end
   const latestDate = datasets.reduce((acc, dataset) => {
+    const endDate = dataset.endDate as string
     if (datasetCategory && dataset.category !== datasetCategory) {
       return acc
     }
-    return dataset.endDate > acc ? dataset.endDate : acc
+    return endDate > acc ? endDate : acc
   }, datasets?.[0].endDate || '')
   return latestDate
 }
@@ -272,7 +274,7 @@ export const getActivityDatasetsReportSupported = (
       }
     )
     return dataview.datasets
-      .filter(
+      ?.filter(
         (d) =>
           permissionDatasetsIds.includes(d.id) &&
           (d.category === DatasetCategory.Activity || d.category === DatasetCategory.Detections)
@@ -320,7 +322,7 @@ export const getActiveActivityDatasetsInDataviews = (
 ) => {
   return dataviews.map((dataview) => {
     const activeDatasets = (dataview?.config?.datasets || []) as string[]
-    return dataview.datasets.filter((dataset) => {
+    return dataview.datasets!.filter((dataset) => {
       return activeDatasets.includes(dataset.id)
     })
   })
@@ -464,7 +466,7 @@ export const getCommonSchemaFieldsInDataview = (
   if (schema === 'flag') {
     return getFlags()
   } else if (schema === 'vessel-groups') {
-    if (activeDatasets.every((d) => d.fieldsAllowed?.includes(schema))) {
+    if (activeDatasets?.every((d) => d.fieldsAllowed?.includes(schema))) {
       const addNewGroup = {
         id: VESSEL_GROUPS_MODAL_ID,
         label: t('vesselGroup.createNewGroup', 'Create new group'),
@@ -477,7 +479,7 @@ export const getCommonSchemaFieldsInDataview = (
   }
   const schemaFields = activeDatasets?.map((d) => d.schema?.[schema]?.enum || [])
   const schemaType = getCommonSchemaTypeInDataview(dataview, schema)
-  const datasetId = removeDatasetVersion(activeDatasets?.[0]?.id)
+  const datasetId = removeDatasetVersion(activeDatasets!?.[0]?.id)
   const commonSchemaFields = schemaFields
     ? intersection(...schemaFields).map((field) => {
         let label =
@@ -517,7 +519,7 @@ export const getSchemaOptionsSelectedInDataview = (
     schema === 'visibleValues' &&
     (dataview.config?.minVisibleValue || dataview.config?.maxVisibleValue)
   ) {
-    const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
+    const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings) as Dataset
     const layerRange = getLayerDatasetRange(dataset)
     const min = dataview.config?.minVisibleValue || layerRange?.min
     const max = dataview.config?.maxVisibleValue || layerRange?.max
@@ -573,14 +575,14 @@ export const getFiltersBySchema = (
   vesselGroups?: MultiSelectOption[]
 ): SchemaFilter => {
   const options = getCommonSchemaFieldsInDataview(dataview, schema, vesselGroups)
-  const type = getCommonSchemaTypeInDataview(dataview, schema)
-  const filterOperator = getSchemaFilterOperationInDataview(dataview, schema)
+  const type = getCommonSchemaTypeInDataview(dataview, schema) as DatasetSchemaType
+  const filterOperator = getSchemaFilterOperationInDataview(dataview, schema) as FilterOperator
   const optionsSelected = getSchemaOptionsSelectedInDataview(dataview, schema, options)
 
-  const datasetsWithoutSchema = getNotSupportedSchemaFieldsDatasets(dataview, schema)?.length > 0
-  const incompatibleFilterSelection = getIncompatibleFilterSelection(dataview, schema)?.length > 0
+  const datasetsWithoutSchema = getNotSupportedSchemaFieldsDatasets(dataview, schema)!?.length > 0
+  const incompatibleFilterSelection = getIncompatibleFilterSelection(dataview, schema)!?.length > 0
   const disabled = datasetsWithoutSchema || incompatibleFilterSelection
-  const datasetId = removeDatasetVersion(getActiveDatasetsInDataview(dataview)?.[0]?.id)
+  const datasetId = removeDatasetVersion(getActiveDatasetsInDataview(dataview)!?.[0]?.id)
   let label = CONTEXT_DATASETS_SCHEMAS.includes(schema as SupportedContextDatasetSchema)
     ? t(`datasets:${datasetId}.schema.${schema}.keyword`, schema.toString())
     : t(`vessel.${schema}`, { defaultValue: schema, count: 2 }) // We always want to show the plural for the multiselect

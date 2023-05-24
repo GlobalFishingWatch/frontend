@@ -64,7 +64,7 @@ function ActivitySchemaFilter({
   onClean,
   onIsOpenChange,
   onSelectOperation,
-}: ActivitySchemaFilterProps): React.ReactElement {
+}: ActivitySchemaFilterProps) {
   const { id, label, type, disabled, options, optionsSelected, filterOperator } = schemaFilter
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
