@@ -48,6 +48,7 @@ import {
 import styles from './Search.module.css'
 
 const MIN_SEARCH_CHARACTERS = 3
+const FIRST_FETCH_FILTERS_TO_IGNORE = ['lastTransmissionDate', 'firstTransmissionDate']
 
 function Search() {
   const { t } = useTranslation()
@@ -67,7 +68,10 @@ function Search() {
   const activeSearchOption = useSelector(selectSearchOption)
   const searchResultsPagination = useSelector(selectSearchPagination)
   const vesselsSelected = useSelector(selectSelectedVessels)
-
+  const hasFilters =
+    Object.entries(searchFilters).filter(([key]) => {
+      return !FIRST_FETCH_FILTERS_TO_IGNORE.includes(key) && searchFilters[key] !== undefined
+    }).length > 0
   const searchDatasets = useSelector(
     activeSearchOption === 'basic' ? selectBasicSearchDatasets : selectAdvancedSearchDatasets
   )
@@ -142,15 +146,18 @@ function Search() {
   }, [searchPagination, searchDatasets, fetchResults, debouncedQuery, searchFilters])
 
   useEffect(() => {
-    if (debouncedQuery && searchDatasets?.length && activeSearchOption === 'basic') {
+    if (
+      searchDatasets?.length &&
+      ((activeSearchOption === 'basic' && debouncedQuery) ||
+        (activeSearchOption === 'advanced' && hasFilters))
+    ) {
       fetchResults({
         query: debouncedQuery,
         datasets: searchDatasets,
-        filters: {},
+        filters: activeSearchOption === 'advanced' ? searchFilters : {},
       })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedQuery, searchFilters, activeSearchOption])
+  }, [debouncedQuery, searchFilters, activeSearchOption, searchDatasets, fetchResults, hasFilters])
 
   useEffect(() => {
     if (debouncedQuery === '') {
