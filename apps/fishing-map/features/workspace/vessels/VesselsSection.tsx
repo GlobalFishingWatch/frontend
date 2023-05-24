@@ -12,7 +12,7 @@ import { isBasicSearchAllowed } from 'features/search/search.selectors'
 import { isGuestUser } from 'features/user/user.slice'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { SEARCH } from 'routes/routes'
+import { WORKSPACE_SEARCH } from 'routes/routes'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import VesselEventsLegend from './VesselEventsLegend'
@@ -33,7 +33,7 @@ function VesselsSection(): React.ReactElement {
       category: TrackCategory.SearchVessel,
       action: 'Click search icon to open search panel',
     })
-    dispatchLocation(SEARCH, {
+    dispatchLocation(WORKSPACE_SEARCH, {
       payload: {
         category: workspace?.category || WorkspaceCategory.FishingActivity,
         workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,

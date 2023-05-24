@@ -146,18 +146,25 @@ function Search() {
   }, [searchPagination, searchDatasets, fetchResults, debouncedQuery, searchFilters])
 
   useEffect(() => {
-    if (
-      searchDatasets?.length &&
-      ((activeSearchOption === 'basic' && debouncedQuery) ||
-        (activeSearchOption === 'advanced' && hasFilters))
-    ) {
+    if (searchDatasets?.length && activeSearchOption === 'basic' && debouncedQuery) {
       fetchResults({
         query: debouncedQuery,
         datasets: searchDatasets,
-        filters: activeSearchOption === 'advanced' ? searchFilters : {},
+        filters: {},
       })
     }
   }, [debouncedQuery, searchFilters, activeSearchOption, searchDatasets, fetchResults, hasFilters])
+
+  useEffect(() => {
+    if (activeSearchOption === 'advanced' && (hasFilters || debouncedQuery)) {
+      fetchResults({
+        query: debouncedQuery,
+        datasets: searchDatasets,
+        filters: searchFilters,
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchDatasets])
 
   useEffect(() => {
     if (debouncedQuery === '') {

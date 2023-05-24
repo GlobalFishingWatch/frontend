@@ -30,7 +30,16 @@ import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { selectShowTimeComparison } from 'features/reports/reports.selectors'
 import { isUserLogged } from 'features/user/user.selectors'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
-import { HOME, WORKSPACE, USER, WORKSPACES_LIST, REPORT, WORKSPACE_REPORT } from 'routes/routes'
+import {
+  HOME,
+  WORKSPACE,
+  USER,
+  WORKSPACES_LIST,
+  REPORT,
+  WORKSPACE_REPORT,
+  SEARCH,
+  WORKSPACE_SEARCH,
+} from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { t } from 'features/i18n/i18n'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -152,7 +161,8 @@ function App(): React.ReactElement {
   const homeNeedsFetch = isHomeLocation && currentWorkspaceId !== DEFAULT_WORKSPACE_ID
   // Checking only when REPORT entrypoint or WORKSPACE_REPORT when workspace is not loaded
   const locationNeedsFetch =
-    isSearchLocation ||
+    locationType === SEARCH ||
+    (locationType === WORKSPACE_SEARCH && currentWorkspaceId !== urlWorkspaceId) ||
     locationType === REPORT ||
     (locationType === WORKSPACE_REPORT && currentWorkspaceId !== urlWorkspaceId)
   const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId

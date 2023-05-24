@@ -16,6 +16,7 @@ export const WORKSPACE = 'WORKSPACE'
 export const WORKSPACES_LIST = 'WORKSPACES_LIST'
 export const USER = 'USER'
 export const SEARCH = 'SEARCH'
+export const WORKSPACE_SEARCH = 'WORKSPACE_SEARCH'
 export const WORKSPACE_REPORT = 'WORKSPACE_REPORT'
 export const REPORT = 'REPORT'
 export const WORKSPACE_ROUTES = [HOME, WORKSPACE]
@@ -27,6 +28,7 @@ export type ROUTE_TYPES =
   | typeof WORKSPACE
   | typeof WORKSPACE_REPORT
   | typeof SEARCH
+  | typeof WORKSPACE_SEARCH
   | typeof REPORT
 
 export const routesMap: RoutesMap = {
@@ -35,6 +37,9 @@ export const routesMap: RoutesMap = {
   },
   [USER]: {
     path: '/user',
+  },
+  [SEARCH]: {
+    path: '/search',
   },
   [REPORT]: {
     path: '/report/:reportId',
@@ -45,7 +50,7 @@ export const routesMap: RoutesMap = {
   [WORKSPACE]: {
     path: '/:category/:workspaceId?',
   },
-  [SEARCH]: {
+  [WORKSPACE_SEARCH]: {
     path: '/:category/:workspaceId/search',
   },
   [WORKSPACE_REPORT]: {
