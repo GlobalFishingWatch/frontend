@@ -40,7 +40,7 @@ const multiSelectOptionToQuery = (value: string | MultiSelectOption<string>[]): 
 const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFieldParams> = {
   shipname: {
     operator: 'LIKE',
-    transformation: (value) => `'%${(value as string).toLocaleUpperCase()}%'`,
+    transformation: (value) => `'${(value as string).toLocaleUpperCase()}'`,
   },
   ssvid: {
     operator: '=',
