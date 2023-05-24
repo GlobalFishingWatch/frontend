@@ -16,7 +16,7 @@ import {
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
   getDatasetsReportSupported,
-  getRelatedDatasetsByType,
+  getRelatedDatasetByType,
 } from 'features/datasets/datasets.utils'
 import { selectReportAreaId, selectReportDatasetId } from 'features/app/app.selectors'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
@@ -144,16 +144,16 @@ export const selectReportVesselsList = createSelector(
   [selectReportActivityFlatten, selectAllDatasets, selectReportCategory],
   (vessels, datasets, reportCategory) => {
     if (!vessels?.length) return null
-
     return Object.values(groupBy(vessels, 'vesselId'))
       .flatMap((vesselActivity) => {
         if (vesselActivity[0]?.category !== reportCategory) return []
         const activityDataset = datasets.find((d) => vesselActivity[0].activityDatasetId === d.id)
-        const infoDatasetId = getRelatedDatasetsByType(activityDataset, DatasetTypes.Vessels)?.[0]
-          ?.id
-        const trackDatasetId = getRelatedDatasetsByType(activityDataset, DatasetTypes.Tracks)?.[0]
-          ?.id
+        const infoDatasetId = getRelatedDatasetByType(activityDataset, DatasetTypes.Vessels)?.id
         const infoDataset = datasets.find((d) => d.id === infoDatasetId)
+        const trackDatasetId = getRelatedDatasetByType(
+          infoDataset || activityDataset,
+          DatasetTypes.Tracks
+        )?.id
         const trackDataset = datasets.find((d) => d.id === trackDatasetId)
         return {
           dataviewId: vesselActivity[0]?.dataviewId,
