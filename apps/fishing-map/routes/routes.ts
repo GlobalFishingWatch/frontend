@@ -39,7 +39,7 @@ export const routesMap: RoutesMap = {
     path: '/user',
   },
   [SEARCH]: {
-    path: '/search',
+    path: '/vessel-search',
   },
   [REPORT]: {
     path: '/report/:reportId',
@@ -51,7 +51,7 @@ export const routesMap: RoutesMap = {
     path: '/:category/:workspaceId?',
   },
   [WORKSPACE_SEARCH]: {
-    path: '/:category/:workspaceId/search',
+    path: '/:category/:workspaceId/vessel-search',
   },
   [WORKSPACE_REPORT]: {
     path: '/:category/:workspaceId/report/:datasetId?/:areaId?',
