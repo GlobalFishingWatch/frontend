@@ -7,7 +7,8 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import SearchAdvancedResults from 'features/search/SearchAdvancedResults'
 import { SearchComponentProps } from 'features/search/SearchBasic'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectSearchStatus, selectSearchStatusCode } from './search.slice'
+import { selectSearchQuery } from 'features/app/app.selectors'
+import { EMPTY_FILTERS, selectSearchStatus, selectSearchStatusCode } from './search.slice'
 import styles from './SearchAdvanced.module.css'
 import SearchAdvancedFilters from './SearchAdvancedFilters'
 import { useSearchConnect } from './search.hook'
@@ -19,36 +20,20 @@ const MIN_SEARCH_CHARACTERS = 3
 function SearchAdvanced({
   onSuggestionClick,
   fetchMoreResults,
-  setSearchQuery,
-  searchQuery,
-  debouncedQuery,
   onConfirm,
+  debouncedQuery,
 }: SearchComponentProps) {
   const { t } = useTranslation()
   const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
   const advancedSearchAllowed = useSelector(isAdvancedSearchAllowed)
   const searchStatus = useSelector(selectSearchStatus)
+  const searchQuery = useSelector(selectSearchQuery)
   const searchStatusCode = useSelector(selectSearchStatusCode)
   const { dispatchQueryParams } = useLocationConnect()
 
   const resetSearchState = useCallback(() => {
-    setSearchQuery('')
-    dispatchQueryParams({
-      flag: undefined,
-      sources: undefined,
-      lastTransmissionDate: undefined,
-      firstTransmissionDate: undefined,
-      ssvid: undefined,
-      imo: undefined,
-      callsign: undefined,
-      owner: undefined,
-      codMarinha: undefined,
-      geartype: undefined,
-      targetSpecies: undefined,
-      fleet: undefined,
-      origin: undefined,
-    })
-  }, [setSearchQuery, dispatchQueryParams])
+    dispatchQueryParams(EMPTY_FILTERS)
+  }, [dispatchQueryParams])
 
   if (!advancedSearchAllowed) {
     return (
@@ -63,7 +48,7 @@ function SearchAdvanced({
   }
 
   const handleSearchQueryChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value)
+    dispatchQueryParams({ query: e.target.value })
   }
 
   return (
@@ -73,7 +58,7 @@ function SearchAdvanced({
           <InputText
             onChange={handleSearchQueryChange}
             id="name"
-            value={searchQuery}
+            value={searchQuery || ''}
             label={t('common.name', 'Name')}
             inputSize="small"
             className={styles.input}

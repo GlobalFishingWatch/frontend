@@ -22,6 +22,24 @@ import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 
 export const RESULTS_PER_PAGE = 20
+export const SSVID_LENGTH = 9
+export const IMO_LENGTH = 7
+export const EMPTY_FILTERS = {
+  query: undefined,
+  flag: undefined,
+  sources: undefined,
+  lastTransmissionDate: '',
+  firstTransmissionDate: '',
+  ssvid: undefined,
+  imo: undefined,
+  callsign: undefined,
+  owner: undefined,
+  codMarinha: undefined,
+  geartype: undefined,
+  targetSpecies: undefined,
+  fleet: undefined,
+  origin: undefined,
+}
 
 export type VesselWithDatasets = Omit<Vessel, 'dataset'> & {
   dataset: Dataset

@@ -34,6 +34,7 @@ import {
   selectWorkspaceWithCurrentState,
   selectReadOnly,
   selectSearchOption,
+  selectSearchQuery,
 } from 'features/app/app.selectors'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { resetSidebarScroll } from 'features/sidebar/Sidebar'
@@ -45,10 +46,11 @@ import { selectReportsStatus } from 'features/reports/reports.slice'
 import { selectCurrentReport } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { HOME, REPORT, WORKSPACE } from 'routes/routes'
-import { SearchType } from 'features/search/search.slice'
+import { EMPTY_FILTERS, IMO_LENGTH, SSVID_LENGTH, SearchType } from 'features/search/search.slice'
 import { resetAreaDetail } from 'features/areas/areas.slice'
 import { selectReportAreaIds } from 'features/reports/reports.selectors'
 import { QueryParams } from 'types'
+import { useSearchFiltersConnect } from 'features/search/search.hook'
 import styles from './SidebarHeader.module.css'
 import { useClipboardNotification } from './sidebar.hooks'
 
@@ -293,6 +295,8 @@ function SidebarHeader() {
   const activeSearchOption = useSelector(selectSearchOption)
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const { dispatchQueryParams } = useLocationConnect()
+  const searchQuery = useSelector(selectSearchQuery)
+  const { searchFilters } = useSearchFiltersConnect()
   const showBackToWorkspaceButton = !isWorkspaceLocation
 
   const getSubBrand = useCallback((): SubBrands | undefined => {
@@ -326,7 +330,25 @@ function SidebarHeader() {
       action: 'Toggle search type to filter results',
       label: option.id,
     })
-    dispatchQueryParams({ searchOption: option.id })
+    let additionalParams = {}
+    if (option.id === 'advanced') {
+      if (searchQuery?.length === SSVID_LENGTH) {
+        additionalParams = { ssvid: searchQuery }
+      } else if (searchQuery?.length === IMO_LENGTH) {
+        additionalParams = { imo: searchQuery }
+      } else {
+        additionalParams = { query: searchQuery }
+      }
+    } else {
+      if (searchQuery) {
+        additionalParams = { query: searchQuery }
+      } else if (searchFilters.ssvid) {
+        additionalParams = { query: searchFilters.ssvid }
+      } else if (searchFilters.imo) {
+        additionalParams = { query: searchFilters.imo }
+      }
+    }
+    dispatchQueryParams({ searchOption: option.id, ...EMPTY_FILTERS, ...additionalParams })
   }
 
   return (

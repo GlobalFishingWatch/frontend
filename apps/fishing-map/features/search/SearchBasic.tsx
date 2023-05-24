@@ -9,6 +9,8 @@ import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import SearchBasicResults from 'features/search/SearchBasicResults'
+import { useLocationConnect } from 'routes/routes.hook'
+import { selectSearchQuery } from 'features/app/app.selectors'
 import {
   selectSearchResults,
   selectSearchStatus,
@@ -33,28 +35,26 @@ const MIN_SEARCH_CHARACTERS = 3
 export type SearchComponentProps = {
   onSuggestionClick?: () => void
   fetchMoreResults?: () => void
-  setSearchQuery?: (query: string) => void
-  searchQuery?: string
-  debouncedQuery?: string
   onConfirm?: () => void
+  debouncedQuery?: string
 }
 
 function SearchBasic({
   onSuggestionClick,
   fetchMoreResults,
-  setSearchQuery,
-  searchQuery,
   debouncedQuery,
 }: SearchComponentProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
+  const searchQuery = useSelector(selectSearchQuery)
   const basicSearchAllowed = useSelector(isBasicSearchAllowed)
   const searchResults = useSelector(selectSearchResults)
   const searchStatus = useSelector(selectSearchStatus)
   const searchStatusCode = useSelector(selectSearchStatusCode)
   const vesselsSelected = useSelector(selectSelectedVessels)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const { dispatchQueryParams } = useLocationConnect()
   const hasMoreResults =
     searchPagination.total !== 0 &&
     searchPagination.total > RESULTS_PER_PAGE &&
@@ -62,7 +62,7 @@ function SearchBasic({
     searchPagination.offset <= searchPagination.total
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value)
+    dispatchQueryParams({ query: e.target.value })
     if (e.target.value !== searchQuery && searchSuggestionClicked) {
       dispatch(setSuggestionClicked(false))
     }
@@ -97,7 +97,7 @@ function SearchBasic({
             <InputText
               {...getInputProps()}
               onChange={onInputChange}
-              value={searchQuery}
+              value={searchQuery || ''}
               autoFocus
               disabled={!basicSearchAllowed}
               className={styles.input}

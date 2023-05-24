@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useEffect, useCallback, useRef } from 'react'
 import { batch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
@@ -37,6 +37,7 @@ import {
   selectSearchPagination,
   selectSearchResults,
   selectSelectedVessels,
+  EMPTY_FILTERS,
 } from './search.slice'
 import { useSearchConnect, useSearchFiltersConnect } from './search.hook'
 import {
@@ -53,11 +54,10 @@ const FIRST_FETCH_FILTERS_TO_IGNORE = ['lastTransmissionDate', 'firstTransmissio
 function Search() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const urlQuery = useSelector(selectSearchQuery)
+  const searchQuery = useSelector(selectSearchQuery)
   const { addNewDataviewInstances } = useDataviewInstancesConnect()
   const basicSearchAllowed = useSelector(isBasicSearchAllowed)
   const advancedSearchAllowed = useSelector(isAdvancedSearchAllowed)
-  const [searchQuery, setSearchQuery] = useState((urlQuery || '') as string)
   const searchResults = useSelector(selectSearchResults)
   const { searchFilters } = useSearchFiltersConnect()
   const { searchPagination, searchSuggestion } = useSearchConnect()
@@ -158,7 +158,7 @@ function Search() {
   useEffect(() => {
     if (activeSearchOption === 'advanced' && (hasFilters || debouncedQuery)) {
       fetchResults({
-        query: debouncedQuery,
+        query: searchQuery,
         datasets: searchDatasets,
         filters: searchFilters,
       })
@@ -177,7 +177,7 @@ function Search() {
   const onSuggestionClick = () => {
     if (searchSuggestion) {
       dispatch(setSuggestionClicked(true))
-      setSearchQuery(searchSuggestion)
+      dispatchQueryParams({ query: searchSuggestion })
     }
   }
 
@@ -199,22 +199,7 @@ function Search() {
     addNewDataviewInstances(instances)
     batch(() => {
       dispatch(cleanVesselSearchResults())
-      dispatchQueryParams({
-        query: undefined,
-        flag: undefined,
-        sources: undefined,
-        lastTransmissionDate: undefined,
-        firstTransmissionDate: undefined,
-        ssvid: undefined,
-        imo: undefined,
-        callsign: undefined,
-        owner: undefined,
-        codMarinha: undefined,
-        geartype: undefined,
-        targetSpecies: undefined,
-        fleet: undefined,
-        origin: undefined,
-      })
+      dispatchQueryParams(EMPTY_FILTERS)
     })
     dispatchLocation(WORKSPACE)
   }
@@ -251,11 +236,9 @@ function Search() {
     <div className={styles.search}>
       <SearchComponent
         onSuggestionClick={onSuggestionClick}
-        setSearchQuery={setSearchQuery}
-        searchQuery={searchQuery}
-        debouncedQuery={debouncedQuery}
         fetchMoreResults={fetchMoreResults}
         onConfirm={onConfirmSearch}
+        debouncedQuery={debouncedQuery}
       />
       <div
         className={cx(styles.footer, styles[activeSearchOption], {
