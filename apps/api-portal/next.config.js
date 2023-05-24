@@ -54,6 +54,7 @@ const nextConfig = {
   output: 'standalone',
   outputFileTracing: true,
   experimental: {
+    appDir: false,
     outputFileTracingRoot: join(__dirname, '../../'),
   },
   cleanDistDir: true,
