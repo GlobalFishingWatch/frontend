@@ -31,7 +31,7 @@ export type SearchType = 'basic' | 'advanced'
 export type SearchFilter = {
   lastTransmissionDate?: string
   firstTransmissionDate?: string
-  mmsi?: string
+  ssvid?: string
   imo?: string
   callsign?: string
   owner?: string
@@ -103,7 +103,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           'origin',
           'lastTransmissionDate',
           'firstTransmissionDate',
-          'mmsi',
+          'ssvid',
           'imo',
           'codMarinha',
         ]

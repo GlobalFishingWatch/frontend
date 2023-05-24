@@ -9,7 +9,7 @@ export type MultiSelectOption<T = any> = {
 
 export type AdvancedSearchQueryFieldKey =
   | 'shipname'
-  | 'mmsi'
+  | 'ssvid'
   | 'imo'
   | 'callsign'
   | 'codMarinha'
@@ -42,7 +42,7 @@ const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFiel
     operator: 'LIKE',
     transformation: (value) => `'%${(value as string).toLocaleUpperCase()}%'`,
   },
-  mmsi: {
+  ssvid: {
     operator: '=',
   },
   codMarinha: {

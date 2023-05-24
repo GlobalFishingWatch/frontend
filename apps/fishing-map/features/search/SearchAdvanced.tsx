@@ -38,7 +38,7 @@ function SearchAdvanced({
       sources: undefined,
       lastTransmissionDate: undefined,
       firstTransmissionDate: undefined,
-      mmsi: undefined,
+      ssvid: undefined,
       imo: undefined,
       callsign: undefined,
       owner: undefined,

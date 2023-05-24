@@ -44,8 +44,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
         header: t('vessel.flag', 'Flag'),
       },
       {
-        accessorFn: ({ ssvid, mmsi }: VesselWithDatasets) =>
-          ssvid || mmsi || EMPTY_FIELD_PLACEHOLDER,
+        accessorFn: ({ ssvid }: VesselWithDatasets) => ssvid || EMPTY_FIELD_PLACEHOLDER,
         header: t('vessel.mmsi', 'MMSI'),
       },
       {

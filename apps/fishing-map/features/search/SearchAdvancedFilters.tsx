@@ -42,8 +42,16 @@ function SearchAdvancedFilters() {
   const { start, end } = useTimerangeConnect()
   const datasets = useSelector(selectAdvancedSearchDatasets)
   const { searchFilters, setSearchFilters } = useSearchFiltersConnect()
-  const { flag, sources, lastTransmissionDate, firstTransmissionDate, imo, mmsi, callsign, owner } =
-    searchFilters
+  const {
+    flag,
+    sources,
+    lastTransmissionDate,
+    firstTransmissionDate,
+    imo,
+    ssvid,
+    callsign,
+    owner,
+  } = searchFilters
 
   const flagOptions = useMemo(getFlags, [])
   const sourceOptions = useMemo(() => {
@@ -101,8 +109,8 @@ function SearchAdvancedFilters() {
     <div className={styles.filters}>
       <InputText
         onChange={onInputChange}
-        id="mmsi"
-        value={mmsi || ''}
+        id="ssvid"
+        value={ssvid || ''}
         label={t('vessel.mmsi', 'MMSI')}
         inputSize="small"
       />
