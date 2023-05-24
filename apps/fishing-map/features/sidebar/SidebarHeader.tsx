@@ -332,9 +332,9 @@ function SidebarHeader() {
     })
     let additionalParams = {}
     if (option.id === 'advanced') {
-      if (searchQuery?.length === SSVID_LENGTH) {
+      if (searchQuery?.length === SSVID_LENGTH && !isNaN(Number(searchQuery))) {
         additionalParams = { ssvid: searchQuery }
-      } else if (searchQuery?.length === IMO_LENGTH) {
+      } else if (searchQuery?.length === IMO_LENGTH && !isNaN(Number(searchQuery))) {
         additionalParams = { imo: searchQuery }
       } else {
         additionalParams = { query: searchQuery }
