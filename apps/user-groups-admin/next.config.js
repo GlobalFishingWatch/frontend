@@ -32,4 +32,10 @@ const nextConfig = {
     process.env.NODE_ENV === 'development',
 }
 
-module.exports = withNx(nextConfig)
+const configWithNx = withNx(nextConfig)
+module.exports = async (...args) => {
+  return {
+    ...(await configWithNx(...args)),
+    //...
+  }
+}

@@ -98,4 +98,10 @@ const withPWA = withPWAConstructor({
   ],
 })
 
-module.exports = withPWA(withNx(nextConfig))
+const configWithNx = withNx(nextConfig)
+module.exports = async (...args) => {
+  return {
+    ...withPWA(await configWithNx(...args)),
+    //...
+  }
+}

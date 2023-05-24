@@ -53,5 +53,10 @@ const nextConfig = {
   // productionBrowserSourceMaps: true,
   // i18n,
 }
-
-module.exports = withNx(nextConfig)
+const configWithNx = withNx(nextConfig)
+module.exports = async (...args) => {
+  return {
+    ...(await configWithNx(...args)),
+    //...
+  }
+}

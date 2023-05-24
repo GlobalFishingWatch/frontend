@@ -1,8 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const withNx = require('@nx/next/plugins/with-nx')
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
-})
 // const CircularDependencyPlugin = require('circular-dependency-plugin')
 
 const IS_PRODUCTION =
@@ -57,10 +54,17 @@ const nextConfig = {
   ...(BASE_PATH && { basePath: BASE_PATH }),
   // productionBrowserSourceMaps: !IS_PRODUCTION,
   experimental: {
+    appDir: false,
     images: {
       unoptimized: true,
     },
   },
 }
 
-module.exports = withBundleAnalyzer(withNx(nextConfig))
+const configWithNx = withNx(nextConfig)
+module.exports = async (...args) => {
+  return {
+    ...(await configWithNx(...args)),
+    //...
+  }
+}

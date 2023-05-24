@@ -70,4 +70,10 @@ const nextConfig = {
   distDir: '.next',
 }
 
-module.exports = withNx(nextConfig)
+const configWithNx = withNx(nextConfig)
+module.exports = async (...args) => {
+  return {
+    ...(await configWithNx(...args)),
+    //...
+  }
+}
