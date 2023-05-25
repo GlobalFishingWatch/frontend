@@ -14,23 +14,37 @@ declare namespace Cypress {
   interface Chainable<Subject> {
     login(email: string, password: string): void
     store(reducerName: string): void
+    getBySel(
+      selector: string,
+      options?: Partial<Loggable & Timeoutable & Withinable & Shadow>
+    ): Cypress.Chainable<JQuery<HTMLElement>>
+    getBySelLike(
+      selector: string,
+      options?: Partial<Loggable & Timeoutable & Withinable & Shadow>
+    ): Cypress.Chainable<JQuery<HTMLElement>>
   }
 }
 
 function loginViaAuthAPI(username: string, password: string) {
   // App landing page redirects to Auth0.
   cy.visit('/')
+
   // This is needed to ensure the cookies are send
   Cypress.Cookies.debug(true)
+
+  // Clear local storage to ensure everything is clean before logging in
+  cy.clearLocalStorage()
+
+  // Close dialog popup
+  cy.get('div[role=dialog] button[type=button][aria-label=close]').click()
+
   // Login on Auth0.
-  cy.origin(Cypress.env('apiAuth'), { args: { username, password } }, ({ username, password }) => {
-    cy.visit(
-      '/v2/auth?client=gfw&callback=http%3A%2F%2Flocalhost%3A3003%2F%3FcallbackUrlStorage%3Dtrue&locale=en'
-    )
-    cy.get('input#email').type(username)
-    cy.get('input#password').type(password, { log: false })
-    cy.get('input[type=submit]').click()
-  })
+  cy.get('a[href*="auth"]', { timeout: 20000 }).click()
+  cy.log(`logging in with ${username}`)
+
+  cy.get('input#email').type(username)
+  cy.get('input#password').type(password, { log: false })
+  cy.get('input[type=submit]').click()
 
   // Ensure API Auth has redirected us back to the app.
   // cy.url().should('equal', 'http://localhost:3003/')
@@ -71,4 +85,37 @@ Cypress.Commands.add('store', (reducerName = '') => {
       return cy.wrap(state, { log: false })
     })
     .then(cb)
+})
+
+Cypress.Commands.add(
+  'getBySel',
+  (
+    selector: string,
+    options?: Partial<Cypress.Loggable & Cypress.Timeoutable & Cypress.Withinable & Cypress.Shadow>
+  ) => {
+    return cy.get(`[data-test=${selector}]`, options)
+  }
+)
+
+Cypress.Commands.add(
+  'getBySelLike',
+  (
+    selector: string,
+    options?: Partial<Cypress.Loggable & Cypress.Timeoutable & Cypress.Withinable & Cypress.Shadow>
+  ) => {
+    return cy.get(`[data-test*=${selector}]`, options)
+  }
+)
+
+Cypress.Commands.overwrite('visit', (originalFn, url, options) => {
+  options = options || {}
+  // Perform basic auth if defined in ENV variables
+  if (Cypress.env('basicAuth') === 'Restricted') {
+    options.auth = {
+      username: Cypress.env('basicAuthUser'),
+      password: Cypress.env('basicAuthPass'),
+    }
+  }
+  // @ts-ignore
+  return originalFn(url, options)
 })

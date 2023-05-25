@@ -8,11 +8,12 @@ interface TagListProps {
   className?: string
   color?: string
   tags: TagItem[]
+  testId?: string
   onRemove?: TagListOnRemove
 }
 
 export function TagList(props: TagListProps) {
-  const { className = '', color, tags = [], onRemove } = props
+  const { className = '', color, tags = [], testId, onRemove } = props
   const onRemoveTag = useCallback(
     (tag: TagItem) => {
       if (onRemove) {
@@ -26,7 +27,7 @@ export function TagList(props: TagListProps) {
   return (
     <ul className={cx(styles.tagList, className)}>
       {tags.map((tag) => (
-        <li key={tag.id}>
+        <li key={tag.id} data-test={`${testId}-${tag.id}`}>
           <Tag
             tooltip={tag.tooltip}
             tooltipPlacement={tag.tooltipPlacement}

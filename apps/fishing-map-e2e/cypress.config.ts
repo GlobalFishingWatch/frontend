@@ -24,8 +24,7 @@ export default defineConfig({
     testIsolation: false,
   },
   env: {
-    apiAuth: 'https://gateway.api.dev.globalfishingwatch.org',
     apiAuthUser: '',
-    apiAuthPassword: '',
+    apiAuthPass: '',
   },
 })
