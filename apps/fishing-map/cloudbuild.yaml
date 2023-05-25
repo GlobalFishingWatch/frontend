@@ -35,7 +35,7 @@ steps:
     script: |
       if [ ! -d "node_modules" ]; then
         apk add git
-        yarn set version 3.3.1
+        yarn set version 3.5.1
         yarn -v
         CYPRESS_CACHE_FOLDER=.cypress-cache yarn install --immutable
         yarn info cypress version > cypress.lock
