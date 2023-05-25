@@ -1,5 +1,5 @@
 import React from 'react'
-import { ClickToComponent } from 'click-to-react-component'
+// import { ClickToComponent } from 'click-to-react-component'
 import { AppProps } from 'next/app'
 import { Provider } from 'react-redux'
 import { RecoilRoot } from 'recoil'
@@ -23,7 +23,7 @@ function CustomApp({ Component, ...rest }: AppProps) {
       </Head>
       <RecoilRoot>
         <Provider store={store}>
-          <ClickToComponent />
+          {/* <ClickToComponent /> */}
           <Component {...props.pageProps} />
         </Provider>
       </RecoilRoot>

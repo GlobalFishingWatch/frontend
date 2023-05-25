@@ -88,7 +88,7 @@ function MapDraw() {
           selectedFeature.geometry.coordinates?.[0]?.[selectedPointIndex]
         )
       : null
-  const allowDeletePoint = selectedFeature?.geometry?.coordinates?.[0]?.length > 4
+  const allowDeletePoint = selectedFeature!?.geometry!?.coordinates!?.[0]!?.length > 4
 
   const onHandleLatitudeChange = useCallback((e) => {
     if (e.target.value) {
@@ -118,7 +118,7 @@ function MapDraw() {
     newPointLongitude !== null ? newPointLongitude : currentPointCoordinates?.[0]
 
   const onConfirmNewPointPosition = useCallback(() => {
-    if (selectedFeature !== null && selectedPointIndex !== null) {
+    if (selectedFeature !== null && selectedFeature !== undefined && selectedPointIndex !== null) {
       const newPointPosition = [editingPointLongitude, editingPointLatitude] as DrawPointPosition
       const newFeature = updateFeaturePointByIndex(
         selectedFeature,
@@ -141,7 +141,7 @@ function MapDraw() {
   ])
 
   const onDeletePoint = useCallback(() => {
-    if (selectedFeature !== null && selectedPointIndex !== null) {
+    if (selectedFeature !== null && selectedFeature !== undefined && selectedPointIndex !== null) {
       const newFeature = removeFeaturePointByIndex(selectedFeature, selectedPointIndex)
       drawControl.add(newFeature)
       setSelectedPointIndex(null)

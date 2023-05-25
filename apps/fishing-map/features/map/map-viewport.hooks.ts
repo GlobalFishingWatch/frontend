@@ -80,7 +80,7 @@ export default function useViewport(): UseViewport {
 
 const boundsState = atom<MiniglobeBounds>({} as MiniglobeBounds)
 
-export function checkEqualBounds(bounds1: MiniglobeBounds, bounds2: MiniglobeBounds) {
+export function checkEqualBounds(bounds1?: MiniglobeBounds, bounds2?: MiniglobeBounds) {
   if (!bounds1 || !bounds2) return false
   return (
     bounds1.north === bounds2.north &&

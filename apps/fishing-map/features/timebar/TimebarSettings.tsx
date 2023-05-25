@@ -68,8 +68,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { timebarSelectedEnvId, dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
   const { timebarGraph, dispatchTimebarGraph } = useTimebarGraphConnect()
-  const timebarGraphEnabled =
-    activeVesselsDataviews && activeVesselsDataviews.length && activeVesselsDataviews.length <= 2
+  const timebarGraphEnabled = activeVesselsDataviews && activeVesselsDataviews!?.length <= 2
 
   const openOptions = () => {
     trackEvent({
@@ -139,7 +138,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                 <Icon
                   SvgIcon={AreaIcon}
                   label={t('common.activity', 'Activity')}
-                  color={activeActivityDataviews[0]?.config.color || COLOR_PRIMARY_BLUE}
+                  color={activeActivityDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
                   disabled={!activeActivityDataviews?.length}
                 />
               }
@@ -153,7 +152,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                 <Icon
                   SvgIcon={AreaIcon}
                   label={t('common.detections', 'Detections')}
-                  color={activeDetectionsDataviews[0]?.config.color || COLOR_PRIMARY_BLUE}
+                  color={activeDetectionsDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
                   disabled={!activeDetectionsDataviews?.length}
                 />
               }
@@ -167,7 +166,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                 <Icon
                   SvgIcon={TracksIcon}
                   label={t('timebarSettings.tracks', 'Tracks')}
-                  color={activeTrackDataviews[0]?.config.color || COLOR_PRIMARY_BLUE}
+                  color={activeTrackDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
                   disabled={!hasTracksData || !activeTrackDataviews?.length}
                 />
               }
@@ -188,7 +187,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                 <Icon
                   SvgIcon={TrackSpeedIcon}
                   label={t('timebarSettings.graphSpeed', 'Vessel Speed')}
-                  color={activeTrackDataviews[0]?.config.color || COLOR_PRIMARY_BLUE}
+                  color={activeTrackDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
                   disabled={!hasTracksData || !activeTrackDataviews?.length || !timebarGraphEnabled}
                 />
               }
@@ -215,7 +214,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                 <Icon
                   SvgIcon={TrackDepthIcon}
                   label={t('timebarSettings.graphDepth', 'Vessel Depth')}
-                  color={activeTrackDataviews[0]?.config.color || COLOR_PRIMARY_BLUE}
+                  color={activeTrackDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
                   disabled={!hasTracksData || !activeTrackDataviews?.length || !timebarGraphEnabled}
                 />
               }
@@ -250,7 +249,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                     <Icon
                       SvgIcon={AreaIcon}
                       label={title}
-                      color={envDataview?.config.color || COLOR_PRIMARY_BLUE}
+                      color={envDataview?.config?.color || COLOR_PRIMARY_BLUE}
                     />
                   }
                   active={

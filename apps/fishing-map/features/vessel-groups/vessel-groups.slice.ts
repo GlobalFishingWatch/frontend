@@ -33,42 +33,42 @@ export type VesselGroupConfirmationMode = 'save' | 'saveAndNavigate'
 
 interface VesselGroupsState extends AsyncReducer<VesselGroup> {
   isModalOpen: boolean
-  vesselGroupEditId: string
-  currentDataviewIds: string[]
+  vesselGroupEditId: string | null
+  currentDataviewIds: string[] | null
   confirmationMode: VesselGroupConfirmationMode
-  groupVessels: VesselGroupVessel[]
+  groupVessels: VesselGroupVessel[] | null
   search: {
     id: IdField
     status: AsyncReducerStatus
-    error: ParsedAPIError
-    vessels: Vessel[]
+    error: ParsedAPIError | null
+    vessels: Vessel[] | null
   }
-  newSearchVessels: Vessel[]
+  newSearchVessels: Vessel[] | null
   workspace: {
     status: AsyncReducerStatus
-    error: ParsedAPIError
-    vesselGroups: VesselGroup[]
+    error: ParsedAPIError | null
+    vesselGroups: VesselGroup[] | null
   }
 }
 
 const initialState: VesselGroupsState = {
   ...asyncInitialState,
   isModalOpen: false,
-  vesselGroupEditId: undefined,
-  currentDataviewIds: undefined,
+  vesselGroupEditId: null,
+  currentDataviewIds: null,
   confirmationMode: 'save',
-  groupVessels: undefined,
+  groupVessels: null,
   search: {
     id: 'mmsi',
     status: AsyncReducerStatus.Idle,
-    vessels: undefined,
-    error: undefined,
+    vessels: null,
+    error: null,
   },
-  newSearchVessels: undefined,
+  newSearchVessels: null,
   workspace: {
     status: AsyncReducerStatus.Idle,
-    error: undefined,
-    vesselGroups: undefined,
+    error: null,
+    vesselGroups: null,
   },
 }
 type VesselGroupSliceState = { vesselGroups: VesselGroupsState }
@@ -116,11 +116,11 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
         ],
       }
       if (idField === 'mmsi') {
-        datasetConfig.query.push({
+        datasetConfig.query?.push({
           id: 'limit',
           value: DEFAULT_PAGINATION_PARAMS.limit,
         })
-        datasetConfig.query.push({
+        datasetConfig.query?.push({
           id: 'offset',
           value: DEFAULT_PAGINATION_PARAMS.offset,
         })
@@ -391,7 +391,7 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
   extraReducers(builder) {
     builder.addCase(searchVesselGroupsVesselsThunk.pending, (state) => {
       state.search.status = AsyncReducerStatus.Loading
-      state.search.vessels = undefined
+      state.search.vessels = null
     })
     builder.addCase(searchVesselGroupsVesselsThunk.fulfilled, (state, action) => {
       state.search.status = AsyncReducerStatus.Finished
@@ -407,7 +407,7 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
     })
     builder.addCase(getVesselInVesselGroupThunk.pending, (state) => {
       state.search.status = AsyncReducerStatus.Loading
-      state.search.vessels = undefined
+      state.search.vessels = null
     })
     builder.addCase(getVesselInVesselGroupThunk.fulfilled, (state, action) => {
       state.search.status = AsyncReducerStatus.Finished
@@ -423,7 +423,7 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
     })
     builder.addCase(fetchWorkspaceVesselGroupsThunk.pending, (state) => {
       state.workspace.status = AsyncReducerStatus.Loading
-      state.workspace.vesselGroups = undefined
+      state.workspace.vesselGroups = null
     })
     builder.addCase(
       fetchWorkspaceVesselGroupsThunk.fulfilled,

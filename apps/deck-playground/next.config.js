@@ -1,8 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const withNx = require('@nrwl/next/plugins/with-nx')
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
-})
+const withNx = require('@nx/next/plugins/with-nx')
 // const CircularDependencyPlugin = require('circular-dependency-plugin')
 
 const IS_PRODUCTION =
@@ -11,7 +8,7 @@ const IS_PRODUCTION =
 const BASE_PATH = process.env.NEXT_PUBLIC_URL || IS_PRODUCTION ? '' : ''
 
 /**
- * @type {import('@nrwl/next/plugins/with-nx').WithNxOptions}
+ * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
  **/
 const nextConfig = {
   // async rewrites() {
@@ -57,10 +54,14 @@ const nextConfig = {
   ...(BASE_PATH && { basePath: BASE_PATH }),
   // productionBrowserSourceMaps: !IS_PRODUCTION,
   experimental: {
-    images: {
-      unoptimized: true,
-    },
+    appDir: false,
   },
 }
 
-module.exports = withBundleAnalyzer(withNx(nextConfig))
+const configWithNx = withNx(nextConfig)
+module.exports = async (...args) => {
+  return {
+    ...(await configWithNx(...args)),
+    //...
+  }
+}

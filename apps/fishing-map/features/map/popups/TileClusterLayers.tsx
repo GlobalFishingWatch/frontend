@@ -122,8 +122,8 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
     )
   }
 
-  const carrierInWorkspace = getVesselInWorkspace(vessels, event?.vessel?.id)
-  const donorInWorkspace = getVesselInWorkspace(vessels, event?.encounter?.vessel?.id)
+  const carrierInWorkspace = getVesselInWorkspace(vessels, event!?.vessel!?.id)
+  const donorInWorkspace = getVesselInWorkspace(vessels, event!?.encounter!?.vessel!?.id)
 
   return (
     <div className={styles.popupSection}>
@@ -149,7 +149,7 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
                           <IconButton
                             icon={carrierInWorkspace ? 'pin-filled' : 'pin'}
                             style={{
-                              color: carrierInWorkspace ? carrierInWorkspace.config.color : '',
+                              color: carrierInWorkspace ? carrierInWorkspace.config?.color : '',
                             }}
                             size="small"
                             tooltip={
@@ -178,7 +178,7 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
                             <IconButton
                               icon={donorInWorkspace ? 'pin-filled' : 'pin'}
                               style={{
-                                color: donorInWorkspace ? donorInWorkspace.config.color : '',
+                                color: donorInWorkspace ? donorInWorkspace.config?.color : '',
                               }}
                               size="small"
                               tooltip={

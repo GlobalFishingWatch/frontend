@@ -56,7 +56,7 @@ function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.
             {filterOperation === EXCLUDE_FILTER_ID && ` (${t('common.excluded', 'Excluded')})`}
             {VESSEL_GROUPS_DAYS_LIMIT > 0 &&
               field === 'vessel-groups' &&
-              duration?.days > VESSEL_GROUPS_DAYS_LIMIT && (
+              duration!?.days > VESSEL_GROUPS_DAYS_LIMIT && (
                 <span className={cx(styles.dataWarning, styles.error)}>
                   {' '}
                   {t(

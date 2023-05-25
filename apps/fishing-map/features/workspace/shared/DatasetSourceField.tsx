@@ -16,7 +16,7 @@ function DatasetFilterSource({ dataview, hideColor }: DatasetFilterSourceProps) 
   const sourcesSelected: TagItem[] = getSourcesSelectedInDataview(dataview)
   const nonVmsSources = sourcesSelected.filter((source) => !source.label.includes('VMS'))
   const vmsSources = sourcesSelected.filter((source) => source.label.includes('VMS'))
-  const dataviewFourWingsSources = dataview.datasets.filter((dataset) =>
+  const dataviewFourWingsSources = dataview.datasets?.filter((dataset) =>
     dataset.type.includes('4wings')
   )
   const hasPrivateDatasets = dataviewWithPrivateDatasets(dataview as UrlDataviewInstance)
@@ -32,7 +32,7 @@ function DatasetFilterSource({ dataview, hideColor }: DatasetFilterSourceProps) 
     ]
   }
 
-  if (dataviewFourWingsSources.length < 2 || !sourcesSelected?.length) {
+  if (dataviewFourWingsSources!?.length < 2 || !sourcesSelected?.length) {
     return null
   }
 
@@ -41,7 +41,7 @@ function DatasetFilterSource({ dataview, hideColor }: DatasetFilterSourceProps) 
       <label>{t('layer.source', 'Sources')}</label>
       <TagList
         tags={sourcesSelected}
-        color={hideColor ? null : dataview.config?.color}
+        color={hideColor ? undefined : dataview.config?.color}
         className={cx(styles.tagList, {
           [styles.hidden]: mergedSourceOptions?.length > 0,
         })}
@@ -49,7 +49,7 @@ function DatasetFilterSource({ dataview, hideColor }: DatasetFilterSourceProps) 
       {mergedSourceOptions.length > 0 && (
         <TagList
           tags={mergedSourceOptions}
-          color={hideColor ? null : dataview.config?.color}
+          color={hideColor ? undefined : dataview.config?.color}
           className={styles.mergedTagList}
         />
       )}

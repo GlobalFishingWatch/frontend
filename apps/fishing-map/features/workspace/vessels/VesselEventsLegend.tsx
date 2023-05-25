@@ -40,7 +40,7 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
     (event: SwitchEvent) => {
       const eventTypeChanged = event.currentTarget.id as EventType
       if (!event.active) {
-        const visibleEvents =
+        const visibleEvents: any =
           currentVisibleEvents === 'all'
             ? allEventTypes.filter((eventType) => eventType !== eventTypeChanged)
             : [...(currentVisibleEvents === 'none' ? [] : currentVisibleEvents), eventTypeChanged]
@@ -54,8 +54,10 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
             : currentVisibleEvents
         const visibleEvents = currentVisibleEventsTypes.filter(
           (eventType) => eventTypeChanged !== eventType
-        )
-        dispatchQueryParams({ visibleEvents: visibleEvents?.length ? visibleEvents : 'none' })
+        ) as EventType[]
+        dispatchQueryParams({
+          visibleEvents: visibleEvents?.length ? visibleEvents : 'none',
+        })
       }
     },
     [dispatchQueryParams, allEventTypes, currentVisibleEvents]
@@ -89,7 +91,7 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
         {eventTypes.map(({ datasetId, eventType, active }) => {
           const color =
             eventType === 'fishing' && tracks.length === 1
-              ? tracks[0].config.color
+              ? tracks[0].config?.color
               : EVENTS_COLORS[eventType]
           return (
             <li

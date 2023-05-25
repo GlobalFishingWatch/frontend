@@ -120,8 +120,8 @@ export const useTimerangeConnect = () => {
   )
   return useMemo(() => {
     return {
-      start: timerangeAtom?.start,
-      end: timerangeAtom?.end,
+      start: timerangeAtom?.start as string,
+      end: timerangeAtom?.end as string,
       timerange: timerangeAtom,
       setTimerange,
       onTimebarChange,

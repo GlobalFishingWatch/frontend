@@ -239,8 +239,8 @@ const TimebarWrapper = () => {
   const onEventClick = useCallback(
     (event: TimebarChartChunk<TrackEventChunkProps>) => {
       setMapCoordinates({
-        latitude: event.props.latitude,
-        longitude: event.props.longitude,
+        latitude: event.props!?.latitude,
+        longitude: event.props!?.longitude,
         zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
       })
     },

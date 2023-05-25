@@ -36,8 +36,7 @@ import { selectDownloadActivityArea } from 'features/download/download.selectors
 import DownloadActivityProductsBanner from 'features/download/DownloadActivityProductsBanner'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import DatasetLabel from 'features/datasets/DatasetLabel'
-import SOURCE_SWITCH_CONTENT from 'features/welcome/SourceSwitch.content'
-import { Locale } from 'types'
+import { getSourceSwitchContentByLng } from 'features/welcome/SourceSwitch.content'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
 import styles from './DownloadModal.module.css'
@@ -59,7 +58,7 @@ import {
 
 function DownloadActivityByVessel() {
   const { t, i18n } = useTranslation()
-  const { disclaimer } = SOURCE_SWITCH_CONTENT[(i18n.language as Locale) || Locale.en]
+  const { disclaimer } = getSourceSwitchContentByLng(i18n.language)
   const dispatch = useAppDispatch()
   const userData = useSelector(selectUserData)
   const dataviews = useSelector(selectActiveHeatmapDataviews)
@@ -78,7 +77,7 @@ function DownloadActivityByVessel() {
   const downloadArea = useSelector(selectDownloadActivityArea)
   const downloadAreaDataview = useSelector(selectDownloadActivityAreaDataview)
   const downloadAreaName =
-    downloadAreaDataview?.config.type === GeneratorType.UserContext
+    downloadAreaDataview?.config?.type === GeneratorType.UserContext
       ? downloadAreaDataview?.datasets?.[0]?.name
       : downloadArea?.data?.name
   const downloadAreaGeometry = downloadArea?.data?.geometry
@@ -124,7 +123,7 @@ function DownloadActivityByVessel() {
       .map((dataview) => {
         const activityDatasets: string[] = (dataview?.config?.datasets || []).filter(
           (id: string) => {
-            return id ? checkDatasetReportPermission(id, userData?.permissions) : false
+            return id ? checkDatasetReportPermission(id, userData!.permissions) : false
           }
         )
         return {
@@ -169,7 +168,7 @@ function DownloadActivityByVessel() {
     const downloadParams: DownloadActivityParams = {
       dateRange: timerange as DateRange,
       geometry: downloadAreaGeometry as Geometry,
-      areaName: downloadAreaName,
+      areaName: downloadAreaName as string,
       dataviews: downloadDataviews,
       format,
       ...(groupBy !== GroupBy.None && { groupBy }),

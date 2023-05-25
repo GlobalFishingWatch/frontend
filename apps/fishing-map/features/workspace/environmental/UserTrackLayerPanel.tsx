@@ -86,9 +86,9 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
     selectResourceByUrl<FeatureCollection>(trackUrl)
   )
   const trackError = trackResource?.status === ResourceStatus.Error
-  const hasRecordIds =
-    dataset.configuration.id &&
-    trackResource?.data?.features?.some((f) => f.properties.id !== NO_RECORD_ID)
+  const hasRecordIds = dataset?.configuration?.id
+    ? trackResource?.data?.features?.some((f) => f.properties?.id !== NO_RECORD_ID)
+    : false
 
   const featuresColoredByField = singleTrack && trackResource?.data && hasRecordIds
 
@@ -178,7 +178,7 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
             [styles.dragging]: isSorting && activeIndex > -1,
           })}
         >
-          {trackResource.data.features
+          {trackResource.data?.features
             .slice(0, seeMoreOpen ? undefined : SEE_MORE_LENGTH)
             .map((feature, index) => {
               return (
@@ -187,15 +187,15 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
                   className={styles.trackColor}
                   style={
                     {
-                      '--color': feature.properties.color,
+                      '--color': feature.properties?.color,
                     } as React.CSSProperties
                   }
                 >
-                  {feature.properties.id}
+                  {feature.properties?.id}
                 </div>
               )
             })}
-          {trackResource.data.features.length > SEE_MORE_LENGTH && (
+          {trackResource.data?.features!?.length > SEE_MORE_LENGTH && (
             <button
               className={cx(styles.link, {
                 [styles.more]: !seeMoreOpen,

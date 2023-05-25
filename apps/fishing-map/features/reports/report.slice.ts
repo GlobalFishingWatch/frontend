@@ -122,13 +122,10 @@ const reportSlice = createSlice({
       state.data = action.payload
       state.dateRangeHash = getDateRangeHash(action.meta.arg.dateRange)
     })
-    builder.addCase(
-      fetchReportVesselsThunk.rejected,
-      (state, action: PayloadAction<AsyncError>) => {
-        state.status = AsyncReducerStatus.Error
-        state.error = action.payload
-      }
-    )
+    builder.addCase(fetchReportVesselsThunk.rejected, (state, action) => {
+      state.status = AsyncReducerStatus.Error
+      state.error = action.payload as AsyncError
+    })
   },
 })
 

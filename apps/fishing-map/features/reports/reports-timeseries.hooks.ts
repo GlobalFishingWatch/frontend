@@ -51,7 +51,7 @@ export function getReportGraphMode(reportActivityGraph: ReportActivityGraph): Re
 }
 
 export interface ReportGraphProps {
-  timeseries: EvolutionGraphData[]
+  timeseries: (EvolutionGraphData & { mode?: ReportGraphMode })[]
   sublayers: ReportSublayerGraph[]
   interval: Interval
   mode?: ReportGraphMode
@@ -120,10 +120,10 @@ export const useFilteredTimeSeries = () => {
       const timeseries = featuresToTimeseries(filteredFeatures, {
         layersWithFeatures,
         showTimeComparison,
-        compareDeltaMillis,
+        compareDeltaMillis: compareDeltaMillis as number,
       })
       setTimeseries(
-        timeseries.map((timeseries) => {
+        timeseries.map((timeseries: any) => {
           timeseries.mode = reportGraphMode
           return timeseries
         })
@@ -140,7 +140,7 @@ export const useFilteredTimeSeries = () => {
 
   const reportGraphMode = getReportGraphMode(reportGraph)
   useLayoutEffect(() => {
-    if (timeseries?.length > 0) {
+    if (timeseries!?.length > 0) {
       setTimeseries([])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

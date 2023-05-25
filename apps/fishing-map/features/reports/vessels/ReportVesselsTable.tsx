@@ -14,12 +14,12 @@ import {
   getDatasetsReportNotSupported,
   getRelatedDatasetsByType,
 } from 'features/datasets/datasets.utils'
-import { getVesselGearOrType } from 'features/reports/reports.utils'
 import ReportVesselsTableFooter from 'features/reports/vessels/ReportVesselsTableFooter'
 import { selectActiveReportDataviews, selectReportCategory } from 'features/app/app.selectors'
 import { ReportCategory } from 'types'
 import { selectUserData } from 'features/user/user.slice'
 import DatasetLabel from 'features/datasets/DatasetLabel'
+import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
 import {
   EMPTY_API_VALUES,
   ReportVesselWithDatasets,
@@ -76,6 +76,8 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
     dispatchQueryParams({ reportVesselFilter, reportVesselPage: 0 })
   }
 
+  const isFishingReport = reportCategory === ReportCategory.Fishing
+
   return (
     <Fragment>
       <div className={styles.tableContainer}>
@@ -100,7 +102,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
           <div className={styles.header}>{t('vessel.mmsi', 'mmsi')}</div>
           <div className={styles.header}>{t('layer.flagState_one', 'Flag state')}</div>
           <div className={styles.header}>
-            {reportCategory === ReportCategory.Fishing
+            {isFishingReport
               ? t('vessel.geartype', 'Gear Type')
               : t('vessel.vessel_type', 'Vessel Type')}
           </div>
@@ -110,14 +112,18 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
               : t('common.detection_other', 'detections')}
           </div>
           {vessels?.map((vessel, i) => {
-            const hasDatasets =
-              vessel.infoDataset !== undefined && vessel.trackDataset !== undefined
-            const vesselInWorkspace = getVesselInWorkspace(vesselsInWorkspace, vessel.vesselId)
+            const hasDatasets = vessel.infoDataset?.id?.includes(GLOBAL_VESSELS_DATASET_ID)
+              ? vessel.infoDataset !== undefined && vessel.trackDataset !== undefined
+              : vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
+            const vesselInWorkspace = getVesselInWorkspace(
+              vesselsInWorkspace,
+              vessel.vesselId as string
+            )
             const pinTrackDisabled = !hasDatasets
             const isLastRow = i === vessels.length - 1
             const flag = t(`flags:${vessel.flag as string}` as any, EMPTY_FIELD_PLACEHOLDER)
             const flagInteractionEnabled = !EMPTY_API_VALUES.includes(vessel.flag)
-            const type = getVesselGearOrType(vessel)
+            const type = isFishingReport ? vessel.geartype : vessel.vesselType
             const typeInteractionEnabled = type !== EMPTY_FIELD_PLACEHOLDER
             return (
               <Fragment key={vessel.vesselId}>
@@ -125,7 +131,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                   <IconButton
                     icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
                     style={{
-                      color: vesselInWorkspace ? vesselInWorkspace.config.color : '',
+                      color: vesselInWorkspace ? vesselInWorkspace.config?.color : '',
                     }}
                     disabled={pinTrackDisabled}
                     tooltip={

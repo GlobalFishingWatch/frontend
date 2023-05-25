@@ -6,7 +6,7 @@ import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 export const getUTCDateTime = (d: string | number) => {
   if (!d || (typeof d !== 'string' && typeof d !== 'number')) {
     console.warn('Not a valid date', d)
-    return
+    return DateTime.utc()
   }
   return typeof d === 'string'
     ? DateTime.fromISO(d, { zone: 'utc' })
@@ -47,5 +47,7 @@ type UserCreatedEntities = Dataset | AppWorkspace | VesselGroup | Report
 
 export const sortByCreationDate = <T>(entities: UserCreatedEntities[]): T[] => {
   if (!entities) return []
-  return entities.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1)) as T[]
+  return entities.sort((a, b) =>
+    (a?.createdAt as string) < (b?.createdAt as string) ? 1 : -1
+  ) as T[]
 }

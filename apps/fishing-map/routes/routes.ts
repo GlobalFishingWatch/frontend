@@ -82,14 +82,18 @@ const routesOptions: Options = {
   },
   onAfterChange: (dispatch: Dispatch<any>, getState: StateGetter, bag: Bag) => {
     // prevent error before the the document is initialized
-    if (typeof window !== 'undefined') {
-      document
+    if (typeof window !== 'undefined' && document! == null) {
+      ;(document as any)
         .querySelector('meta[name="description"]')
-        .setAttribute('content', getState().description)
-      document
+        .setAttribute(
+          'content',
+          getState().description
+        )(document as any)
         .querySelector('meta[property="og:description"]')
-        .setAttribute('content', getState().description)
-      document
+        .setAttribute(
+          'content',
+          getState().description
+        )(document as any)
         .querySelector('meta[name="twitter:description"]')
         .setAttribute('content', getState().description)
     }

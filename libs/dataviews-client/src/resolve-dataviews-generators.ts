@@ -381,10 +381,12 @@ export function getGeneratorConfig(
         const propertyToInclude = (dataset.configuration as EnviromentalDatasetConfiguration)
           ?.propertyToInclude
         if (dataset.category === DatasetCategory.Environment && propertyToInclude) {
-          const { min, max } =
+          const { min = 0, max } =
             (dataset.configuration as EnviromentalDatasetConfiguration)?.propertyToIncludeRange ||
             {}
-          const rampScale = scaleLinear().range([min, max]).domain([0, 1])
+          const rampScale = scaleLinear()
+            .range([min, max || min + 0.00001])
+            .domain([0, 1])
           const numSteps = COLOR_RAMP_DEFAULT_NUM_STEPS
           const steps = [...Array(numSteps)]
             .map((_, i) => i / (numSteps - 1))

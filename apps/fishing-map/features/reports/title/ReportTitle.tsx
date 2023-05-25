@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Fragment } from 'react'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
+import { ContextLayerType, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { Area } from 'features/areas/areas.slice'
 import { selectReportAreaDataview } from 'features/reports/reports.selectors'
 import { getContextAreaLink } from 'features/dataviews/dataviews.utils'
@@ -24,10 +24,13 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   const reportLink = window.location.href
   const name = report
     ? report.name
-    : areaDataview?.config.type === GeneratorType.UserContext
+    : areaDataview?.config?.type === GeneratorType.UserContext
     ? areaDataview?.datasets?.[0]?.name
     : area?.name
-  const linkHref = getContextAreaLink(areaDataview?.config?.layers?.[0]?.id, area)
+  const linkHref = getContextAreaLink(
+    areaDataview?.config?.layers?.[0]?.id as ContextLayerType,
+    area
+  )
   const onPrintClick = () => {
     trackEvent({
       category: TrackCategory.Analysis,
