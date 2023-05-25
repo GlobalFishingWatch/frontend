@@ -55,9 +55,6 @@ const nextConfig = {
   // productionBrowserSourceMaps: !IS_PRODUCTION,
   experimental: {
     appDir: false,
-    images: {
-      unoptimized: true,
-    },
   },
 }
 
