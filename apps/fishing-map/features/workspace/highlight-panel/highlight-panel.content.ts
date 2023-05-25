@@ -82,7 +82,7 @@ const HIGHLIGHT_CONFIGS: HighlightPanelConfig[] = [
         'Vessel monitoring system (VMS) data is provided by the National Fisheries Authority of Papua New Guinea. It is now possible to track the position and activity of all vessels comprising the Fishing Industry Association of Papua New Guinea’s fishing fleet operating in Papua New Guinea’s national waters.',
     },
     es: {
-      title: 'Los datos VMS de Noruega ya están disponibles',
+      title: 'Los datos VMS de Papúa Nueva Guinea ya están disponibles',
       description:
         'Los datos del sistema de monitoreo de embarcaciones (VMS) son proporcionados por la Autoridad Nacional de Pesca de Papúa Nueva Guinea. Ahora es posible rastrear la posición y la actividad de todos los barcos que componen la flota pesquera de la Asociación de la Industria Pesquera de Papúa Nueva Guinea que opera en las aguas nacionales de Papúa Nueva Guinea.',
     },
