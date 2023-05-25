@@ -24,7 +24,7 @@ const VesselServerComponent = () => {
         </a>
       </div>
       <div className={styles.content}>
-        <h1 className={styles.title}>{formatInfoField(vessel?.shipname, 'name', serverT)}</h1>
+        <h1 className={styles.title}>{formatInfoField(vessel!?.shipname, 'name', serverT)}</h1>
         {IDENTITY_FIELD_GROUPS.map((fieldGroup) => (
           <div key={fieldGroup.join()} className={cx(styles.fieldGroup, styles.border)}>
             {/* TODO: make fields more dynamic to account for VMS */}

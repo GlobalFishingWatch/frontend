@@ -57,12 +57,12 @@ const VesselIdentity = () => {
           <div className={styles.twoCells}>
             <label>{t('vessel.transmissionDates', 'Transmission dates')}</label>
             <span>
-              {t('common.from', 'From')} <I18nDate date={vessel?.firstTransmissionDate} />{' '}
-              {t('common.to', 'to')} <I18nDate date={vessel?.lastTransmissionDate} />
+              {t('common.from', 'From')} <I18nDate date={vessel?.firstTransmissionDate as string} />{' '}
+              {t('common.to', 'to')} <I18nDate date={vessel?.lastTransmissionDate as string} />
             </span>
             <TransmissionsTimeline
-              firstTransmissionDate={vessel?.firstTransmissionDate}
-              lastTransmissionDate={vessel?.lastTransmissionDate}
+              firstTransmissionDate={vessel?.firstTransmissionDate as string}
+              lastTransmissionDate={vessel?.lastTransmissionDate as string}
               firstYearOfData={FIRST_YEAR_OF_DATA}
               locale={i18n.language as Locale}
             />

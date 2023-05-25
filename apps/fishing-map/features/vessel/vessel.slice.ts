@@ -101,7 +101,7 @@ export const fetchVesselEventsThunk = createAsyncThunk(
     { getState, dispatch, rejectWithValue }
   ) => {
     try {
-      let dataset = selectDatasetById(datasetId)(getState() as any)
+      let dataset = selectDatasetById(datasetId)(getState() as any) as Dataset
       if (!dataset) {
         const action = await dispatch(fetchDatasetByIdThunk(datasetId))
         if (fetchDatasetByIdThunk.fulfilled.match(action)) {

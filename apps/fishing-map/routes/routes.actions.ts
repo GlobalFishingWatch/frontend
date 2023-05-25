@@ -11,7 +11,7 @@ import {
 
 export interface UpdateQueryParamsAction {
   type: ROUTE_TYPES
-  query: QueryParams
+  query?: QueryParams
   replaceQuery?: boolean
   replaceUrl?: boolean
   payload?: any

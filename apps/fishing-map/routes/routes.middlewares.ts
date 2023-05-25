@@ -34,7 +34,7 @@ export const routerQueryMiddleware: Middleware =
         const redirect =
           replaceUrl ||
           Object.keys(prevQuery)
-            .filter((k) => query[k as keyof QueryParams])
+            .filter((k) => query?.[k as keyof QueryParams])
             .some((key) => REPLACE_URL_PARAMS.includes(key))
         if (redirect === true) {
           newAction.meta = {

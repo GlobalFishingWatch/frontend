@@ -1,4 +1,5 @@
 import path from 'path'
+import { ParsedUrlQuery } from 'querystring'
 import { useEffect, useState } from 'react'
 import VesselServerComponent from 'server/vessel/vessel'
 import { TOKEN_REGEX } from '@globalfishingwatch/dataviews-client'
@@ -19,7 +20,7 @@ path.resolve('./next.config.js')
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) =>
     async ({ params, query }) => {
-      const { vesselId } = params
+      const { vesselId } = params || ({} as ParsedUrlQuery)
       const queryVesselDatasetId = query.vesselDatasetId as string
       const datasetMatchesToken = queryVesselDatasetId.match(TOKEN_REGEX)
       const vesselDatasetId = datasetMatchesToken

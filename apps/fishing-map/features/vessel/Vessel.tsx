@@ -33,13 +33,13 @@ const VesselDetail = () => {
   useEffect(() => {
     if (
       infoStatus === AsyncReducerStatus.Idle ||
-      (infoStatus === AsyncReducerStatus.Error && infoError.status === 401)
+      (infoStatus === AsyncReducerStatus.Error && infoError?.status === 401)
     ) {
       dispatch(fetchVesselInfoThunk({ vesselId, datasetId }))
     }
     if (
       eventsStatus === AsyncReducerStatus.Idle ||
-      (eventsStatus === AsyncReducerStatus.Error && eventsError.status === 401)
+      (eventsStatus === AsyncReducerStatus.Error && eventsError?.status === 401)
     ) {
       dispatch(fetchVesselEventsThunk({ vesselId, datasetId }))
     }
