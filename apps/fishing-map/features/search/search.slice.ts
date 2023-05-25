@@ -12,7 +12,7 @@ import {
   Dataset,
   DatasetTypes,
   Vessel,
-  APIPagination,
+  APIVesselSearchPagination,
   VesselSearch,
   EndpointId,
 } from '@globalfishingwatch/api-types'
@@ -67,12 +67,12 @@ interface SearchState {
   pagination: {
     loading: boolean
     total: number
-    offset: number
+    since: string
   }
 }
 type SearchSliceState = { search: SearchState }
 
-const paginationInitialState = { total: 0, offset: 0, loading: false }
+const paginationInitialState = { total: 0, since: '', loading: false }
 const initialState: SearchState = {
   selectedVessels: [],
   status: AsyncReducerStatus.Idle,
@@ -86,7 +86,7 @@ const initialState: SearchState = {
 
 export type VesselSearchThunk = {
   query: string
-  offset: number
+  since: string
   filters: SearchFilter
   datasets: Dataset[]
   gfwUser?: boolean
@@ -100,7 +100,7 @@ export function checkAdvanceSearchFiltersEnabled(filters: SearchFilter): boolean
 export const fetchVesselSearchThunk = createAsyncThunk(
   'search/fetch',
   async (
-    { query, filters, datasets, offset, gfwUser = false }: VesselSearchThunk,
+    { query, filters, datasets, since, gfwUser = false }: VesselSearchThunk,
     { getState, signal, rejectWithValue }
   ) => {
     const state = getState() as SearchSliceState
@@ -150,18 +150,17 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         params: [],
         query: [
           { id: 'datasets', value: datasets.map((d) => d.id) },
-          // { id: 'limit', value: RESULTS_PER_PAGE },
-          // { id: 'offset', value: offset },
           {
             id: advancedQuery ? 'where' : 'query',
             value: encodeURIComponent(advancedQuery || query),
           },
+          { id: 'since', value: since || '' },
         ],
       }
 
       const url = resolveEndpoint(dataset, datasetConfig)
       if (url) {
-        const searchResults = await GFWAPI.fetch<APIPagination<VesselSearch>>(url, {
+        const searchResults = await GFWAPI.fetch<APIVesselSearchPagination<VesselSearch>>(url, {
           signal,
         })
         // Not removing duplicates for GFWStaff so they can compare other VS fishing vessels
@@ -184,14 +183,15 @@ export const fetchVesselSearchThunk = createAsyncThunk(
 
         return {
           data:
-            offset > 0 && currentResults
+            since && currentResults
               ? currentResults.concat(vesselsWithDataset)
               : vesselsWithDataset,
-          suggestion: searchResults.metadata?.suggestion,
+          // TO DO: switch suggestions with DID YOU MEAN from API
+          // suggestion: searchResults.metadata?.suggestion,
           pagination: {
             loading: false,
             total: searchResults.total,
-            offset: searchResults.nextOffset,
+            since: searchResults.since,
           },
         }
       }
@@ -237,7 +237,7 @@ const searchSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchVesselSearchThunk.pending, (state, action) => {
       state.status = AsyncReducerStatus.Loading
-      state.pagination.loading = action.meta.arg.offset > 0
+      state.pagination.loading = action.meta.arg.since ? true : false
     })
     builder.addCase(fetchVesselSearchThunk.fulfilled, (state, action) => {
       state.status = AsyncReducerStatus.Finished

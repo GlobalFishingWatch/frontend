@@ -86,12 +86,12 @@ function Search() {
         query,
         datasets,
         filters,
-        offset = 0,
+        since,
       }: {
         query: string
         datasets: Dataset[]
         filters: SearchFilter
-        offset?: number
+        since?: string
       }) => {
         if (
           datasets?.length &&
@@ -109,7 +109,7 @@ function Search() {
               query,
               filters,
               datasets: sources,
-              offset,
+              since,
               gfwUser,
             })
           )
@@ -134,16 +134,24 @@ function Search() {
   )
 
   const fetchMoreResults = useCallback(() => {
-    const { offset, total } = searchPagination
-    if (offset && offset <= total && total > RESULTS_PER_PAGE && searchDatasets) {
+    const { since, total } = searchPagination
+    if (since && searchResults?.length < total && total > RESULTS_PER_PAGE && searchDatasets) {
       fetchResults({
         query: debouncedQuery,
         datasets: searchDatasets,
-        filters: searchFilters,
-        offset,
+        filters: activeSearchOption === 'advanced' ? searchFilters : {},
+        since,
       })
     }
-  }, [searchPagination, searchDatasets, fetchResults, debouncedQuery, searchFilters])
+  }, [
+    searchPagination,
+    searchResults,
+    searchDatasets,
+    fetchResults,
+    debouncedQuery,
+    activeSearchOption,
+    searchFilters,
+  ])
 
   useEffect(() => {
     if (searchDatasets?.length && activeSearchOption === 'basic' && debouncedQuery) {

@@ -58,8 +58,8 @@ function SearchBasic({
   const hasMoreResults =
     searchPagination.total !== 0 &&
     searchPagination.total > RESULTS_PER_PAGE &&
-    searchPagination.offset &&
-    searchPagination.offset <= searchPagination.total
+    searchPagination.since &&
+    searchResults?.length < searchPagination.total
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatchQueryParams({ query: e.target.value })
