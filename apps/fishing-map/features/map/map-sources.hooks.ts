@@ -253,7 +253,7 @@ export const useMapDataviewFeatures = (
 
   const dataviewFeatures = useMemo(() => {
     const dataviewsFeature = dataviewsMetadata.map(
-      ({ dataviewsId, metadata, filter = [''], generatorSourceId }) => {
+      ({ dataviewsId, metadata, filter, generatorSourceId }) => {
         const sourceLayer = metadata?.sourceLayer || TEMPORALGRID_SOURCE_LAYER_INTERACTIVE
         const chunks = metadata?.timeChunks?.chunks.map(({ active, sourceId, quantizeOffset }) => ({
           active,
@@ -273,7 +273,10 @@ export const useMapDataviewFeatures = (
                     layers: [layer],
                   })
                 } else {
-                  features = map.querySourceFeatures(sourceId, { sourceLayer, filter })
+                  features = map.querySourceFeatures(sourceId, {
+                    sourceLayer,
+                    filter: filter as string[],
+                  })
                 }
               }
               return {
@@ -301,7 +304,10 @@ export const useMapDataviewFeatures = (
           if (queryMethod === 'render') {
             features = map.queryRenderedFeatures(undefined, { layers: [sourceId] })
           } else {
-            features = map.querySourceFeatures(sourceId, { sourceLayer, filter })
+            features = map.querySourceFeatures(sourceId, {
+              sourceLayer,
+              filter: filter as string[],
+            })
           }
         }
 

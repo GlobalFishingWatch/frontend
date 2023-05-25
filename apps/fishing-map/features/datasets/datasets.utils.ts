@@ -221,7 +221,7 @@ export const getRelatedDatasetsByType = (
       (relatedDataset) =>
         relatedDataset.type === datasetType && relatedDataset.id.startsWith(FULL_SUFIX)
     )
-    if (fullDataset && fullDataset.length > 0) {
+    if (fullDataset!?.length > 0) {
       return fullDataset
     }
   }
@@ -322,7 +322,7 @@ export const getActiveActivityDatasetsInDataviews = (
 ) => {
   return dataviews.map((dataview) => {
     const activeDatasets = (dataview?.config?.datasets || []) as string[]
-    return dataview.datasets!.filter((dataset) => {
+    return dataview.datasets!?.filter((dataset) => {
       return activeDatasets.includes(dataset.id)
     })
   })
