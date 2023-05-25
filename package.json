@@ -216,5 +216,5 @@
       "stylelint --fix"
     ]
   },
-  "packageManager": "yarn@3.3.1"
+  "packageManager": "yarn@3.5.1"
 }
