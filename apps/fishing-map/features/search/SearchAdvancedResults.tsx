@@ -57,12 +57,12 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
       },
       {
         accessorFn: ({ shiptype }: VesselWithDatasets) =>
-          t(`vessel.vesselTypes.${shiptype.toLowerCase()}` as any, EMPTY_FIELD_PLACEHOLDER),
+          t(`vessel.vesselTypes.${shiptype?.toLowerCase()}` as any, EMPTY_FIELD_PLACEHOLDER),
         header: t('vessel.vesselType', 'Vessel Type'),
       },
       {
         accessorFn: ({ geartype }: VesselWithDatasets) =>
-          t(`vessel.gearTypes.${geartype.toLowerCase()}` as any, EMPTY_FIELD_PLACEHOLDER),
+          t(`vessel.gearTypes.${geartype?.toLowerCase()}` as any, EMPTY_FIELD_PLACEHOLDER),
         header: t('vessel.geartype', 'Gear Type'),
       },
       {
@@ -136,7 +136,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
       data={searchResults}
       enableSorting={false}
       enableTopToolbar={false}
-      renderToolbarInternalActions={null}
+      renderToolbarInternalActions={undefined}
       enableColumnFilters={false}
       enablePagination={false}
       enableColumnActions
@@ -145,7 +145,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
       enableStickyHeader
       enableMultiRowSelection
       enableRowSelection
-      onRowSelectionChange={null}
+      onRowSelectionChange={undefined}
       selectAllMode="all"
       getRowId={(row, index) => `${index} - ${row.dataset.id} - ${row.id}`}
       initialState={{ columnPinning: { left: [PINNED_COLUMN] } }}

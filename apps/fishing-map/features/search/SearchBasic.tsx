@@ -34,7 +34,7 @@ const MIN_SEARCH_CHARACTERS = 3
 
 export type SearchComponentProps = {
   onSuggestionClick?: () => void
-  fetchMoreResults?: () => void
+  fetchMoreResults: () => void
   onConfirm?: () => void
   debouncedQuery?: string
 }
@@ -59,7 +59,7 @@ function SearchBasic({
     searchPagination.total !== 0 &&
     searchPagination.total > RESULTS_PER_PAGE &&
     searchPagination.since &&
-    searchResults?.length < searchPagination.total
+    searchResults!?.length < searchPagination.total
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatchQueryParams({ query: e.target.value })
@@ -138,8 +138,8 @@ function SearchBasic({
                   </li>
                 )}
               <SearchBasicResults
-                searchResults={searchResults}
-                highlightedIndex={highlightedIndex}
+                searchResults={searchResults as VesselWithDatasets[]}
+                highlightedIndex={highlightedIndex as number}
                 setHighlightedIndex={setHighlightedIndex}
                 getItemProps={getItemProps}
                 vesselsSelected={vesselsSelected}
