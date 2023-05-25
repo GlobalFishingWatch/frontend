@@ -45,7 +45,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
             {featureByType.map((feature, index) => {
               if (!feature.value) return null
               const { generatorContextLayer, promoteId } = feature
-              const gfw_id = feature.properties.gfw_id || feature.properties[promoteId]
+              const gfw_id = feature.properties.gfw_id || feature.properties[promoteId as string]
               const isGFWLayer =
                 generatorContextLayer === ContextLayerType.MPA ||
                 generatorContextLayer === ContextLayerType.MPARestricted ||
@@ -60,7 +60,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
               if (isGFWLayer) {
                 let id = gfw_id
                 let label = feature.value ?? feature.title
-                let linkHref = undefined
+                let linkHref: string | undefined
                 // ContextLayerType.MPA but enums doesn't work in CRA for now
                 switch (generatorContextLayer) {
                   case ContextLayerType.MPA:

@@ -24,7 +24,9 @@ export function AccessTokenCreate(props: AccessTokenCreateProps) {
     await mutate({
       ...token,
     })
-    nameRef.current.focus()
+    if (nameRef.current) {
+      nameRef.current.focus()
+    }
   }, [mutate, token])
 
   const validationMessage = useMemo(
@@ -32,7 +34,9 @@ export function AccessTokenCreate(props: AccessTokenCreateProps) {
     [error]
   )
   useEffect(() => {
-    nameRef.current.focus()
+    if (nameRef.current) {
+      nameRef.current.focus()
+    }
   }, [])
   return (
     <div className={styles.container}>
@@ -50,7 +54,7 @@ export function AccessTokenCreate(props: AccessTokenCreateProps) {
                 value={token?.name}
                 className={styles.input}
                 onChange={(e) => setToken({ ...token, name: e.target.value })}
-                ref={nameRef}
+                ref={nameRef as any}
               />
             </div>
             <div className={cx([styles.field, styles.fieldsColumn])}>
@@ -68,7 +72,7 @@ export function AccessTokenCreate(props: AccessTokenCreateProps) {
                 disabled={!valid}
                 onClick={create}
                 loading={isSaving}
-                tooltip={valid ? 'Create New Token' : validationMessage}
+                tooltip={valid ? 'Create New Token' : (validationMessage as string)}
               >
                 Create New Token
               </Button>

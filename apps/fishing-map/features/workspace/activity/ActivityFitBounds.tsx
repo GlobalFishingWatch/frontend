@@ -10,7 +10,7 @@ type ActivityFitBoundsProps = {
   loading: boolean
 }
 
-function ActivityFitBounds({ stats, loading }: ActivityFitBoundsProps): React.ReactElement {
+function ActivityFitBounds({ stats, loading }: ActivityFitBoundsProps) {
   const { t } = useTranslation()
   const fitMapBounds = useMapFitBounds()
   const statsBbox = stats && ([stats.minLon, stats.minLat, stats.maxLon, stats.maxLat] as Bbox)

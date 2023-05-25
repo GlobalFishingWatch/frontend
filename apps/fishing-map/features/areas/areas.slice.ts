@@ -72,9 +72,13 @@ export const fetchAreaDetailThunk = createAsyncThunk(
       ...datasetConfig,
       query: simplify ? [{ id: 'simplify', value: simplify }] : [],
     })
+    if (!endpoint) {
+      console.warn('No endpoint found for area detail fetch')
+      return
+    }
     let area = await GFWAPI.fetch<ContextAreaFeature>(endpoint, { signal })
     if (!area.geometry) {
-      const endpointNoSimplified = resolveEndpoint(dataset, datasetConfig)
+      const endpointNoSimplified = resolveEndpoint(dataset, datasetConfig) as string
       area = await GFWAPI.fetch<ContextAreaFeature>(endpointNoSimplified, { signal })
       if (!area.geometry) {
         console.warn('Area has no geometry, even calling the endpoint without simplification')
@@ -159,7 +163,7 @@ const areasSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchAreaDetailThunk.pending, (state, action) => {
-      const { dataset, areaId, areaName } = action.meta.arg
+      const { dataset, areaId, areaName } = action.meta.arg as FetchAreaDetailThunkParam
       const datasetId = dataset?.id
       const area = {
         status: AsyncReducerStatus.Loading,
@@ -177,7 +181,7 @@ const areasSlice = createSlice({
       }
     })
     builder.addCase(fetchAreaDetailThunk.fulfilled, (state, action) => {
-      const { dataset, areaId } = action.meta.arg
+      const { dataset, areaId } = action.meta.arg as FetchAreaDetailThunkParam
       const datasetId = dataset?.id
       state[datasetId].detail[areaId] = {
         status: AsyncReducerStatus.Finished,
@@ -185,7 +189,7 @@ const areasSlice = createSlice({
       }
     })
     builder.addCase(fetchAreaDetailThunk.rejected, (state, action) => {
-      const { dataset, areaId } = action.meta.arg
+      const { dataset, areaId } = action.meta.arg as FetchAreaDetailThunkParam
       const datasetId = dataset?.id
       state[datasetId].detail[areaId].status = AsyncReducerStatus.Error
     })
@@ -194,7 +198,7 @@ const areasSlice = createSlice({
         status: AsyncReducerStatus.Loading,
         data: [],
       }
-      const { datasetId } = action.meta.arg
+      const { datasetId } = action.meta.arg as FetchDatasetAreasThunkParam
       if (state[datasetId]?.list) {
         state[datasetId].list = list
       } else {
@@ -205,13 +209,15 @@ const areasSlice = createSlice({
       }
     })
     builder.addCase(fetchDatasetAreasThunk.fulfilled, (state, action) => {
-      state[action.meta.arg.datasetId].list = {
+      const { datasetId } = action.meta.arg as FetchDatasetAreasThunkParam
+      state[datasetId].list = {
         status: AsyncReducerStatus.Finished,
         data: action.payload,
       }
     })
     builder.addCase(fetchDatasetAreasThunk.rejected, (state, action) => {
-      state[action.meta.arg.datasetId].list.status = AsyncReducerStatus.Error
+      const { datasetId } = action.meta.arg as FetchDatasetAreasThunkParam
+      state[datasetId].list.status = AsyncReducerStatus.Error
     })
   },
 })

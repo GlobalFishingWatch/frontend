@@ -93,6 +93,7 @@ export interface DatasetConfiguration {
   type?: EventTypes
   geometryType?: DatasetGeometryType
   format?: 'geojson'
+  tableName?: string
   documentation?: DatasetDocumentation
   fields?: string[]
   idProperty?: string

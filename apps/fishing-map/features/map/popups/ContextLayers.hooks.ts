@@ -28,7 +28,7 @@ export const getFeatureBounds = (feature: TooltipEventFeature) => {
 }
 
 export const getFeatureAreaId = (feature: TooltipEventFeature) => {
-  return feature.properties.gfw_id || feature.properties[feature.promoteId]
+  return feature.properties.gfw_id || feature.properties[feature.promoteId as string]
 }
 
 export const useHighlightArea = () => {
@@ -49,7 +49,7 @@ export const useHighlightArea = () => {
 }
 
 const getAreaIdFromFeature = (feature: TooltipEventFeature): AreaKeyId => {
-  return feature.properties?.gfw_id || feature.properties?.[feature.promoteId]
+  return feature.properties?.gfw_id || feature.properties?.[feature.promoteId as string]
 }
 
 export const useContextInteractions = () => {
@@ -70,7 +70,7 @@ export const useContextInteractions = () => {
         return
       }
 
-      const datasetId = feature.datasetId
+      const datasetId = feature.datasetId as string
       const dataset = datasets.find((d) => d.id === datasetId)
       if (dataset) {
         const dataview = dataviews.find((dataview) =>

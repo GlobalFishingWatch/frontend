@@ -356,12 +356,12 @@ function NewDataset(): React.ReactElement {
         uaDatasetType = 'reference layer'
       }
       trackEvent({
-        category: uaCategory,
+        category: uaCategory as TrackCategory,
         action: `Confirm ${uaDatasetType} upload`,
         label: onTheFlyGeoJSONFile?.name ?? file.name,
       })
       setLoading(true)
-      const { fields, guessedFields, ...meta } = metadata
+      const { fields, guessedFields, ...meta } = metadata as DatasetMetadata
       const { payload, error: createDatasetError } = await dispatchCreateDataset({
         dataset: {
           ...meta,

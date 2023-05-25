@@ -92,7 +92,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const gfwUser = isGFWUser(state)
     const reportId = selectReportId(state)
     try {
-      let workspace: Workspace<WorkspaceState> = null
+      let workspace: Workspace<any> | null = null
       if (locationType === REPORT) {
         const action = dispatch(fetchReportsThunk([reportId]))
         const resolvedAction = await action
@@ -151,7 +151,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         ...(urlDataviewInstances || []).map(({ dataviewId }) => dataviewId),
       ].filter(Boolean)
 
-      const uniqDataviewIds = uniq(dataviewIds)
+      const uniqDataviewIds = uniq(dataviewIds) as string[]
 
       let dataviews: Dataview[] = []
       if (uniqDataviewIds?.length) {
@@ -187,19 +187,19 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           const infoDatasetConfig = dataviewInstance?.datasetsConfig?.find(
             (dsc) => dsc.endpoint === EndpointId.Vessel
           )
-          const infoDataset: Dataset = datasets.find((d) => d.id === infoDatasetConfig?.datasetId)
-          const trackDatasetId = infoDataset?.relatedDatasets.find(
+          const infoDataset = datasets.find((d) => d.id === infoDatasetConfig?.datasetId) as Dataset
+          const trackDatasetId = infoDataset?.relatedDatasets?.find(
             (rld) => rld.type === DatasetTypes.Tracks
           )?.id
           if (trackDatasetId) {
-            const vesselId = infoDatasetConfig.params.find((p) => p.id === 'vesselId')
+            const vesselId = infoDatasetConfig?.params.find((p) => p.id === 'vesselId')
               ?.value as string
             const trackDatasetConfig = getVesselDataviewInstanceDatasetConfig(vesselId, {
               trackDatasetId,
             })
             return {
               id: dataviewInstance.id,
-              datasetsConfig: [...dataviewInstance.datasetsConfig, ...trackDatasetConfig],
+              datasetsConfig: [...(dataviewInstance.datasetsConfig || []), ...trackDatasetConfig],
             } as UrlDataviewInstance
           }
           return []
@@ -261,7 +261,7 @@ export const saveWorkspaceThunk = createAsyncThunk(
     }: {
       name: string
       createAsPublic: boolean
-      workspace?: AppWorkspace
+      workspace: AppWorkspace
     },
     { dispatch, getState }
   ) => {
@@ -347,7 +347,7 @@ const workspaceSlice = createSlice({
       state.lastVisited = action.payload
     },
     removeGFWStaffOnlyDataviews: (state) => {
-      if (ONLY_GFW_STAFF_DATAVIEW_SLUGS.length) {
+      if (ONLY_GFW_STAFF_DATAVIEW_SLUGS.length && state.data?.dataviewInstances) {
         state.data.dataviewInstances = state.data.dataviewInstances.filter((d) =>
           ONLY_GFW_STAFF_DATAVIEW_SLUGS.includes(d.dataviewId as string)
         )

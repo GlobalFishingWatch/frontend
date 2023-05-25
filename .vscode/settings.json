@@ -34,21 +34,14 @@
   // ----------------------------------------------
   "typescript.updateImportsOnFileMove.enabled": "always",
   "typescript.tsdk": "node_modules/typescript/lib",
-  "editor.rulers": [
-    140
-  ],
+  "editor.rulers": [140],
   "files.exclude": {
     "**/.git": true,
     "**/build": true,
     "**/coverage": true
   },
   "editor.formatOnSave": true, // auto format the file on each save
-  "eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact"
-  ],
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
   "eslint.alwaysShowStatus": true,
   "eslint.format.enable": true,
   "eslint.lintTask.enable": true,
@@ -61,6 +54,7 @@
   "jest.runAllTestsFirst": false,
   "docwriter.hotkey.mac": "⌥ + .",
   "search.exclude": {
+    ".yarn": true,
     "**/dist": true
-}
+  }
 }

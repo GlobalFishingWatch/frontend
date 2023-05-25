@@ -65,7 +65,9 @@ function VesselGroupAddButton({
           }
           dispatch(setNewVesselGroupSearchVessels(vesselsWithDataset))
           dispatch(setVesselGroupsModalOpen(true))
-          onAddToVesselGroup(vesselGroupId)
+          if (onAddToVesselGroup) {
+            onAddToVesselGroup(vesselGroupId)
+          }
         })
       } else {
         console.warn('No related activity datasets founds for', vesselsWithDataset)

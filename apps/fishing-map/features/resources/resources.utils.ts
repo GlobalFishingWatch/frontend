@@ -14,8 +14,8 @@ import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 
 type ThinningConfigParam = { zoom: number; config: ThinningConfig }
 export const trackDatasetConfigsCallback = (
-  thinningConfig = {} as ThinningConfigParam,
-  chunks: { start: string; end: string }[],
+  thinningConfig: ThinningConfigParam | null,
+  chunks: { start: string; end: string }[] | null,
   timebarGraph
 ) => {
   return ([info, track, ...events], dataview: UrlDataviewInstance) => {
@@ -71,7 +71,9 @@ export const trackDatasetConfigsCallback = (
 
       if (chunks) {
         const chunkSetId = getTracksChunkSetId(trackWithThinning)
-        const dataset: Dataset = dataview.datasets.find((d) => d.id === trackWithThinning.datasetId)
+        const dataset = dataview.datasets?.find(
+          (d) => d.id === trackWithThinning.datasetId
+        ) as Dataset
         // Workaround to avoid showing tracks outside the dataset bounds as the AIS data is changing at the end of 2022
         const chunksWithDatasetBounds = chunks.flatMap((chunk) => {
           if (dataset?.endDate && chunk.start >= dataset?.endDate) {

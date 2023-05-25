@@ -102,7 +102,9 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
     })
     resetSidebarScroll()
     dispatch(resetReportData())
-    onClick(e, feature)
+    if (onClick) {
+      onClick(e, feature)
+    }
   }
 
   return (
@@ -111,8 +113,8 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
       to={{
         type: WORKSPACE_REPORT,
         payload: {
-          category: workspace.category || WorkspaceCategory.FishingActivity,
-          workspaceId: workspace.id || DEFAULT_WORKSPACE_ID,
+          category: workspace?.category || WorkspaceCategory.FishingActivity,
+          workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
           datasetId: feature.datasetId,
           areaId,
         },

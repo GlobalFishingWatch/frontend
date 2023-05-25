@@ -133,14 +133,14 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const getVesselTitle = (): ReactNode => {
     if (infoLoading) return t('vessel.loadingInfo', 'Loading vessel info')
     if (infoError) return t('common.unknownVessel', 'Unknown vessel')
-    if (dataview?.datasetsConfig.some((d) => isGFWOnlyDataset({ id: d.datasetId })))
+    if (dataview?.datasetsConfig?.some((d) => isGFWOnlyDataset({ id: d.datasetId })))
       return (
         <Fragment>
           <GFWOnly type="only-icon" />
           {vesselLabel}
         </Fragment>
       )
-    if (dataview?.datasetsConfig.some((d) => isPrivateDataset({ id: d.datasetId })))
+    if (dataview?.datasetsConfig?.some((d) => isPrivateDataset({ id: d.datasetId })))
       return `🔒 ${vesselLabel}`
     return vesselLabel
   }
@@ -309,7 +309,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       setDownloadTrackVessel({
         id: vesselId,
         name: vesselTitle,
-        datasets: trackResource?.dataset.id,
+        datasets: trackResource?.dataset!?.id,
       })
     )
   }

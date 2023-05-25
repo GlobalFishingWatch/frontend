@@ -284,8 +284,8 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
       )
 
       const mainTemporalgridFeature = fishingActivityFeatures[0].temporalgrid
-      const startYear = getUTCDateTime(mainTemporalgridFeature?.visibleStartDate).year
-      const endYear = getUTCDateTime(mainTemporalgridFeature?.visibleEndDate).year
+      const startYear = getUTCDateTime(mainTemporalgridFeature!?.visibleStartDate).year
+      const endYear = getUTCDateTime(mainTemporalgridFeature!?.visibleEndDate).year
       const sublayersVessels: SublayerVessels[] = vesselsBySource.map((sublayerVessels, i) => {
         const activityProperty = activityProperties?.[i] || 'hours'
         return {

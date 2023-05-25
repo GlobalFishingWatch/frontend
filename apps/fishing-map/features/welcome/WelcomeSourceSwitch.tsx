@@ -2,9 +2,8 @@ import { useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Logo } from '@globalfishingwatch/ui-components'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
-import { Locale } from 'types'
 import LanguageToggle from 'features/i18n/LanguageToggle'
-import SOURCE_SWITCH_CONTENT from 'features/welcome/SourceSwitch.content'
+import { getSourceSwitchContentByLng } from 'features/welcome/SourceSwitch.content'
 import styles from './Welcome.module.css'
 
 export const DISABLE_SOURCE_SWITCH_POPUP = 'DisableSourceSwitchPopup'
@@ -12,8 +11,7 @@ export const DISABLE_SOURCE_SWITCH_POPUP = 'DisableSourceSwitchPopup'
 const WelcomeSourceSwitch: React.FC = () => {
   const { t, i18n } = useTranslation()
   const [disabled, setDisabled] = useLocalStorage(DISABLE_SOURCE_SWITCH_POPUP, true)
-  const { title, description } =
-    SOURCE_SWITCH_CONTENT[i18n.language as Locale] || SOURCE_SWITCH_CONTENT[Locale.en]
+  const { title, description } = getSourceSwitchContentByLng(i18n.language)
 
   useEffect(() => {
     if (disabled === true) {

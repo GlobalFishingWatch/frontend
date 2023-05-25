@@ -30,7 +30,7 @@ export const GUESS_COLUMN_DICT: Record<GuessColumn, string[]> = {
 
 export const GUESS_COLUMN_NAMES = Object.entries(GUESS_COLUMN_DICT)
 
-export const guessColumn = (col: GuessColumn, options: string[]) => {
+export const guessColumn = (col: GuessColumn, options: string[] = []) => {
   return options.find((option) => GUESS_COLUMN_DICT[col].includes(option))
 }
 

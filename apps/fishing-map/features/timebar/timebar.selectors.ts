@@ -90,7 +90,7 @@ export const selectTracksData = createSelector(
       const vessel = (resources[infoUrl] as any)?.data
       const shipname =
         trackResource.dataset.type === DatasetTypes.UserTracks
-          ? dataview.datasets[0]?.name
+          ? dataview.datasets!?.[0]?.name
           : getVesselLabel(vessel)
 
       const item: TimebarChartItem = {
@@ -101,7 +101,7 @@ export const selectTracksData = createSelector(
         getHighlighterLabel:
           trackResource.dataset.type === DatasetTypes.UserTracks
             ? getUserTrackHighlighterLabel
-            : null,
+            : undefined,
         getHighlighterIcon:
           trackResource.dataset.type === DatasetTypes.UserTracks ? 'track' : 'vessel',
         props: {
@@ -125,7 +125,7 @@ export const selectHasTracksWithNoData = createSelector([selectTracksData], (tra
 })
 
 const getTrackGraphSpeedHighlighterLabel = ({ value }: HighlighterCallbackFnArgs) =>
-  value ? `${value.value.toFixed(2)} knots` : ''
+  value ? `${value.value?.toFixed(2)} knots` : ''
 const getTrackGraphElevationighlighterLabel = ({ value }: HighlighterCallbackFnArgs) =>
   value ? `${value.value} m` : ''
 
@@ -163,7 +163,7 @@ export const selectTracksGraphData = createSelector(
       ) {
         return { ...trackGraphData, status: ResourceStatus.Error }
       }
-      const graphChunks: TimebarChartChunk[] = graphResource.data.flatMap((segment) => {
+      const graphChunks: TimebarChartChunk[] = graphResource.data!?.flatMap((segment) => {
         if (!segment) {
           return []
         }
@@ -178,7 +178,7 @@ export const selectTracksGraphData = createSelector(
               value,
             }
           }),
-        }
+        } as TimebarChartChunk
       })
 
       trackGraphData.chunks = graphChunks

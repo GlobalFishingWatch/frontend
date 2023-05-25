@@ -35,7 +35,27 @@ export {
   TEMPORALGRID_LAYER_INTERACTIVE_SUFIX,
 } from './heatmap/config'
 
-const GeneratorConfig = {
+export type AnyGeneratorClass =
+  | BackgroundGenerator
+  | BaseMapGenerator
+  | BasemapLabelsGenerator
+  | CartoGenerator
+  | ContextGenerator
+  | GLStyleGenerator
+  | HeatmapGenerator
+  | HeatmapAnimatedGenerator
+  | PolygonsGenerator
+  | RulersGenerator
+  | TileClusterGenerator
+  | TrackGenerator
+  | UserContextGenerator
+  | UserPointsGenerator
+  | VesselEventsGenerator
+  | VesselsEventsShapesGenerator
+
+export type GeneratorsRecord = Record<GeneratorType, AnyGeneratorClass>
+
+const GeneratorConfig: GeneratorsRecord = {
   [GeneratorType.Background]: new BackgroundGenerator(),
   [GeneratorType.Basemap]: new BaseMapGenerator(),
   [GeneratorType.BasemapLabels]: new BasemapLabelsGenerator(),
