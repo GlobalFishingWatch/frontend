@@ -23,10 +23,14 @@ import {
   useDisableHighlightTimeConnect,
   useActivityMetadata,
 } from 'features/timebar/timebar.hooks'
-import { DEFAULT_WORKSPACE, LAST_DATA_UPDATE } from 'data/config'
+import { DEFAULT_WORKSPACE } from 'data/config'
 import { TimebarVisualisations } from 'types'
 import useViewport from 'features/map/map-viewport.hooks'
-import { selectTimebarGraph, selectTimebarVisualisation } from 'features/app/app.selectors'
+import {
+  selectLatestAvailableDataDate,
+  selectTimebarGraph,
+  selectTimebarVisualisation,
+} from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { upperFirst } from 'utils/info'
 import { selectShowTimeComparison } from 'features/reports/reports.selectors'
@@ -140,6 +144,7 @@ const TimebarWrapper = () => {
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const vesselGroupsFiltering = useSelector(selectIsVessselGroupsFiltering)
   const isReportLocation = useSelector(selectIsReportLocation)
+  const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
   const dispatch = useAppDispatch()
 
   const [bookmark, setBookmark] = useState<{ start: string; end: string } | null>(null)
@@ -234,8 +239,8 @@ const TimebarWrapper = () => {
   const onEventClick = useCallback(
     (event: TimebarChartChunk<TrackEventChunkProps>) => {
       setMapCoordinates({
-        latitude: event.props.latitude,
-        longitude: event.props.longitude,
+        latitude: event.props!?.latitude,
+        longitude: event.props!?.longitude,
         zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
       })
     },
@@ -324,7 +329,7 @@ const TimebarWrapper = () => {
         end={internalRange ? internalRange.end : end}
         absoluteStart={DEFAULT_WORKSPACE.availableStart}
         absoluteEnd={DEFAULT_WORKSPACE.availableEnd}
-        latestAvailableDataDate={LAST_DATA_UPDATE}
+        latestAvailableDataDate={latestAvailableDataDate}
         onChange={onChange}
         showLastUpdate={false}
         onMouseMove={onMouseMove}

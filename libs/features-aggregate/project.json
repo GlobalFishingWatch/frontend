@@ -6,7 +6,7 @@
   "tags": [],
   "targets": {
     "start": {
-      "executor": "@nrwl/web:rollup",
+      "executor": "@nx/web:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/features-aggregate",
@@ -15,7 +15,7 @@
         "entryFile": "libs/features-aggregate/src/index.ts",
         "external": ["react/jsx-runtime"],
         "watch": true,
-        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "assets": [
           {
             "glob": "libs/features-aggregate/README.md",
@@ -26,7 +26,7 @@
       }
     },
     "build": {
-      "executor": "@nrwl/rollup:rollup",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/features-aggregate",
@@ -34,7 +34,7 @@
         "project": "libs/features-aggregate/package.json",
         "entryFile": "libs/features-aggregate/src/index.ts",
         "external": ["react/jsx-runtime"],
-        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "assets": [
           {
             "glob": "libs/features-aggregate/README.md",
@@ -50,14 +50,14 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["libs/features-aggregate/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/features-aggregate"],
       "options": {
         "jestConfig": "libs/features-aggregate/jest.config.ts",

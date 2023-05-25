@@ -26,7 +26,6 @@ import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/data
 import { getUTCDateTime } from 'utils/dates'
 
 export const MAX_TOOLTIP_LIST = 5
-export const MAX_VESSELS_LOAD = 150
 
 export type ExtendedFeatureVesselDatasets = Vessel & {
   id: string
@@ -244,9 +243,9 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
           return source
             .flatMap((source) => source)
             .sort((a, b) => b[activityProperty] - a[activityProperty])
-            .slice(0, MAX_VESSELS_LOAD)
         })
         .flatMap((v) => v)
+        .slice(0, MAX_TOOLTIP_LIST)
 
       const topActivityVesselsDatasets = uniqBy(
         topActivityVessels.map(({ dataset }) => dataset),
@@ -285,8 +284,8 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
       )
 
       const mainTemporalgridFeature = fishingActivityFeatures[0].temporalgrid
-      const startYear = getUTCDateTime(mainTemporalgridFeature?.visibleStartDate).year
-      const endYear = getUTCDateTime(mainTemporalgridFeature?.visibleEndDate).year
+      const startYear = getUTCDateTime(mainTemporalgridFeature!?.visibleStartDate).year
+      const endYear = getUTCDateTime(mainTemporalgridFeature!?.visibleEndDate).year
       const sublayersVessels: SublayerVessels[] = vesselsBySource.map((sublayerVessels, i) => {
         const activityProperty = activityProperties?.[i] || 'hours'
         return {
@@ -309,7 +308,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
                 const trackDatasetId = getRelatedDatasetByType(
                   trackFromRelatedDataset,
                   DatasetTypes.Tracks,
-                  { fullDatasetAllowed: !guestUser, vesselType: vesselInfo?.vesselType }
+                  { fullDatasetAllowed: !guestUser }
                 )?.id
                 // if (vesselInfo && !trackDatasetId) {
                 //   console.warn('No track dataset found for dataset:', trackFromRelatedDataset)

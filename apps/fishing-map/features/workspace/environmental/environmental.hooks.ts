@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react'
 import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
 import { useSelector } from 'react-redux'
-import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
+import { COLOR_RAMP_DEFAULT_NUM_STEPS, HeatmapLayerMeta } from '@globalfishingwatch/layer-composer'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import { aggregateFeatures, ChunkFeature } from '@globalfishingwatch/features-aggregate'
@@ -20,7 +20,7 @@ export const useEnvironmentalBreaksUpdate = () => {
   const dataviewFeatures = useMapDataviewFeatures(dataviews)
   const sourcesLoaded = areDataviewsFeatureLoaded(dataviewFeatures)
   const layersFilterHash = dataviews
-    .flatMap(({ config }) => `${config.minVisibleValue}-${config.maxVisibleValue}`)
+    .flatMap(({ config }) => `${config?.minVisibleValue}-${config?.maxVisibleValue}`)
     .join(',')
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
@@ -32,7 +32,7 @@ export const useEnvironmentalBreaksUpdate = () => {
           if (features && features.length) {
             const config = dataviews.find(({ id }) => dataviewsId.includes(id))?.config
             const filteredFeatures = filterFeaturesByBounds(features, bounds)
-            const rawData = aggregateFeatures(filteredFeatures, metadata)
+            const rawData = aggregateFeatures(filteredFeatures, metadata as HeatmapLayerMeta)
             const data = rawData.filter((d) => {
               const matchesMin =
                 config?.minVisibleValue !== undefined ? d >= config?.minVisibleValue : true
@@ -59,7 +59,7 @@ export const useEnvironmentalBreaksUpdate = () => {
               const ckWithAllSteps = [...new Array(COLOR_RAMP_DEFAULT_NUM_STEPS)].map((_, i) => {
                 return ck[i] || 0
               })
-              let cleanBreaks = []
+              let cleanBreaks = [] as number[]
               ckWithAllSteps.forEach((k, i) => {
                 if (i >= 1) {
                   const cleanBreak =

@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { RootState } from 'reducers'
-import { DataviewInstance } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewInstance, Workspace } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_WORKSPACE } from 'data/config'
 import { createDeepEqualSelector } from 'utils/selectors'
 import {
@@ -9,6 +9,10 @@ import {
   selectWorkspaceTimeRange,
   selectWorkspaceViewport,
 } from 'features/workspace/workspace.selectors'
+import {
+  getActiveActivityDatasetsInDataviews,
+  getLatestEndDateFromDatasets,
+} from 'features/datasets/datasets.utils'
 import { Range } from 'features/timebar/timebar.slice'
 import {
   selectUrlViewport,
@@ -32,6 +36,7 @@ import {
 } from 'types'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import {
+  selectActiveDataviewInstancesResolved,
   selectActiveVesselsDataviews,
   selectDataviewInstancesMergedOrdered,
   selectDataviewInstancesResolved,
@@ -64,6 +69,24 @@ export const selectTimeRange = createSelector(
       start: urlTimerange?.start || workspaceTimerange?.start || DEFAULT_TIME_RANGE.start,
       end: urlTimerange?.end || workspaceTimerange?.end || DEFAULT_TIME_RANGE.end,
     } as Range
+  }
+)
+
+export const selectLatestAvailableDataDate = createSelector(
+  [(state) => selectActiveDataviewInstancesResolved(state)],
+  (dataviews) => {
+    const activeDatasets = dataviews.flatMap((dataview) => {
+      if (dataview.category === DataviewCategory.Context) {
+        return []
+      } else if (
+        dataview.category === DataviewCategory.Activity ||
+        dataview.category === DataviewCategory.Detections
+      ) {
+        return getActiveActivityDatasetsInDataviews([dataview]).flat()
+      }
+      return dataview.datasets || []
+    })
+    return getLatestEndDateFromDatasets(activeDatasets)
   }
 )
 
@@ -151,7 +174,7 @@ export const selectReportCategory = createSelector(
     ]
     const categoriesWithActiveDataviews = orderedCategories.map((category) => {
       return dataviews.some((dataview) => {
-        return dataview.config.visible && getReportCategoryFromDataview(dataview) === category
+        return dataview.config?.visible && getReportCategoryFromDataview(dataview) === category
       })
     })
     const firstCategoryActive =
@@ -357,7 +380,7 @@ export const selectWorkspaceWithCurrentState = createSelector(
   ],
   (workspace, viewport, timerange, category, state, dataviewInstances): AppWorkspace => {
     return {
-      ...workspace,
+      ...(workspace || ({} as Workspace)),
       app: APP_NAME,
       category,
       viewport,

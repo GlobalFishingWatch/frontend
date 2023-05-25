@@ -13,7 +13,7 @@ import { isGFWUser } from 'features/user/user.slice'
 import { selectLocationCategory } from 'routes/routes.selectors'
 import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
 import { PUBLIC_SUFIX, ROOT_DOM_ELEMENT, USER_SUFIX } from 'data/config'
-import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/dataviews.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import DetectionsSection from 'features/workspace/detections/DetectionsSection'
@@ -128,8 +128,8 @@ function Workspace() {
 
   return (
     <DndContext onDragEnd={handleDragEnd} modifiers={[restrictToVerticalAxis]}>
-      {(locationCategory === WorkspaceCategories.MarineManager ||
-        locationCategory === WorkspaceCategories.FishingActivity) &&
+      {(locationCategory === WorkspaceCategory.MarineManager ||
+        locationCategory === WorkspaceCategory.FishingActivity) &&
         workspace?.name &&
         workspace?.id !== WIZARD_TEMPLATE_ID &&
         workspace?.id !== DEFAULT_WORKSPACE_ID &&

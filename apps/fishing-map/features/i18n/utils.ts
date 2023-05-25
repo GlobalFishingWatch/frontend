@@ -1,6 +1,6 @@
 import { EXCLUDE_FILTER_ID, FilterOperator } from '@globalfishingwatch/api-types'
 import { MultiSelectOption } from '@globalfishingwatch/ui-components'
-import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { GetDatasetLabelParams, getDatasetLabel } from 'features/datasets/datasets.utils'
 import i18n, { t } from './i18n'
 
 export const getPlaceholderBySelections = (
@@ -27,7 +27,7 @@ export const removeDatasetVersion = (datasetId: string) => {
   return datasetId ? datasetId?.split(':')[0] : ''
 }
 
-export const getDatasetNameTranslated = (dataset: { id: string; name?: string }): string => {
+export const getDatasetNameTranslated = (dataset = {} as GetDatasetLabelParams): string => {
   return t(`datasets:${removeDatasetVersion(dataset?.id)}.name`, dataset?.name || dataset?.id)
 }
 

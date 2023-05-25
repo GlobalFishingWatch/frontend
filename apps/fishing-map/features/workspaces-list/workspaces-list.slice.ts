@@ -17,10 +17,10 @@ import {
 } from 'utils/async-slice'
 import { APP_NAME, DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { WorkspaceState } from 'types'
-import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { getDefaultWorkspace } from 'features/workspace/workspace.slice'
 
-export type AppWorkspace = Workspace<WorkspaceState, WorkspaceCategories>
+export type AppWorkspace = Workspace<WorkspaceState, WorkspaceCategory>
 
 type FetchWorkspacesThunkParams = {
   app?: string

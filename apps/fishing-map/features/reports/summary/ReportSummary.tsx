@@ -40,7 +40,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
   const category = useSelector(selectReportCategory)
   const reportVessels = useSelector(selectReportVesselsNumber)
   const { loading: timeseriesLoading, layersTimeseriesFiltered } = useFilteredTimeSeries()
-  const reportHours = useSelector(selectReportVesselsHours)
+  const reportHours = useSelector(selectReportVesselsHours) as number
   const dataviews = useSelector(selectActiveReportDataviews)
   const reportDateRangeHash = useSelector(selectReportVesselsDateRangeHash)
   const reportOutdated = reportDateRangeHash !== getDateRangeHash(timerange)
@@ -48,7 +48,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
   const commonProperties = useMemo(() => {
     return getCommonProperties(dataviews).filter(
       (property) =>
-        !dataviews[0].config.filters?.[property] || !PROPERTIES_EXCLUDED.includes(property)
+        !dataviews[0].config?.filters![property] || !PROPERTIES_EXCLUDED.includes(property)
     )
   }, [dataviews])
 
@@ -99,7 +99,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
         reportStatus === AsyncReducerStatus.Finished &&
         reportHours)
     ) {
-      const formattedTimeseries = formatEvolutionData(layersTimeseriesFiltered?.[0])
+      const formattedTimeseries = formatEvolutionData(layersTimeseriesFiltered!?.[0])
       const timeseriesHours = sum(formattedTimeseries?.map((t) => sum(t.avg)))
       const timeseriesMaxHours = sum(formattedTimeseries?.map((t) => sum(t.range.map((r) => r[1]))))
       const timeseriesImprecision = ((timeseriesMaxHours - timeseriesHours) / timeseriesHours) * 100
@@ -123,7 +123,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
       }
       const activityUnitLabel =
         category === ReportCategory.Detections
-          ? ''
+          ? t('common.detection', { defaultValue: 'detections', count: Math.floor(reportHours) })
           : `<strong>${t(`common.${activityUnit}`, {
               defaultValue: 'hours',
               count: Math.floor(reportHours),

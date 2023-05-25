@@ -28,7 +28,7 @@ import useMapInstance from 'features/map/map-context.hooks'
 import {
   EEZ_DATAVIEW_INSTANCE_ID,
   MPA_DATAVIEW_INSTANCE_ID,
-  WorkspaceCategories,
+  WorkspaceCategory,
 } from 'data/workspaces'
 import { WORKSPACE } from 'routes/routes'
 import { getEventLabel } from 'utils/analytics'
@@ -56,7 +56,7 @@ function WorkspaceWizard() {
   const { viewport } = useViewport()
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [areasMatching, setAreasMatching] = useState<OceanArea[]>([])
-  const [selectedItem, setSelectedItem] = useState<OceanArea>(null)
+  const [selectedItem, setSelectedItem] = useState<OceanArea | null>(null)
   const searchOceanAreas = useRef<typeof searchOceanAreasType>()
   const [loadingOceanAreas, setLoadingOceanAreas] = useState(false)
   const [inputSearch, setInputSearch] = useState<string>('')
@@ -72,12 +72,14 @@ function WorkspaceWizard() {
   }
 
   const updateMatchingAreas = (inputValue: string) => {
-    const matchingAreas = searchOceanAreas
-      .current(inputValue, {
-        locale: i18n.language as OceanAreaLocale,
-      })
-      .slice(0, MAX_RESULTS_NUMBER)
-    setAreasMatching(matchingAreas)
+    if (searchOceanAreas.current) {
+      const matchingAreas = searchOceanAreas
+        .current(inputValue, {
+          locale: i18n.language as OceanAreaLocale,
+        })
+        .slice(0, MAX_RESULTS_NUMBER)
+      setAreasMatching(matchingAreas)
+    }
   }
 
   const onInputChange = ({ inputValue }: UseComboboxStateChange<OceanArea>) => {
@@ -86,18 +88,18 @@ function WorkspaceWizard() {
       setAreasMatching([])
       fitBounds([-90, -180, 90, 180])
     } else {
-      updateMatchingAreas(inputValue)
+      updateMatchingAreas(inputValue as string)
     }
-    setInputSearch(inputValue)
+    setInputSearch(inputValue as string)
   }
 
   const onSelectResult = ({ selectedItem }: UseComboboxStateChange<OceanArea>) => {
     trackEvent({
       category: TrackCategory.WorkspaceManagement,
       action: 'Uses marine manager workspace wizard',
-      label: getEventLabel([inputSearch, selectedItem.properties.name]),
+      label: getEventLabel([inputSearch, selectedItem?.properties!?.name]),
     })
-    setSelectedItem(selectedItem)
+    setSelectedItem(selectedItem as any)
     setAreasMatching([])
   }
 
@@ -111,7 +113,7 @@ function WorkspaceWizard() {
   }
 
   const onHighlightedIndexChange = ({ highlightedIndex }: UseComboboxStateChange<OceanArea>) => {
-    const highlightedArea = areasMatching[highlightedIndex]
+    const highlightedArea = areasMatching[highlightedIndex as number]
     const bounds = highlightedArea?.properties.bounds
     if (bounds) {
       fitBounds(bounds)
@@ -158,13 +160,13 @@ function WorkspaceWizard() {
 
   const linkTo = useMemo(() => {
     const linkViewport = selectedItem
-      ? getMapCoordinatesFromBounds(map, selectedItem.properties?.bounds)
+      ? getMapCoordinatesFromBounds(map, selectedItem.properties?.bounds as any)
       : viewport
 
     return {
       type: WORKSPACE,
       payload: {
-        category: WorkspaceCategories.MarineManager,
+        category: WorkspaceCategory.MarineManager,
         workspaceId: WIZARD_TEMPLATE_ID,
       },
       query: {

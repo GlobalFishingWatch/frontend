@@ -10,11 +10,16 @@ import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
-import { getVesselGearOrType } from 'features/reports/reports.utils'
+import {
+  getDatasetsReportNotSupported,
+  getRelatedDatasetsByType,
+} from 'features/datasets/datasets.utils'
 import ReportVesselsTableFooter from 'features/reports/vessels/ReportVesselsTableFooter'
-import { selectReportCategory } from 'features/app/app.selectors'
+import { selectActiveReportDataviews, selectReportCategory } from 'features/app/app.selectors'
 import { ReportCategory } from 'types'
+import { selectUserData } from 'features/user/user.slice'
+import DatasetLabel from 'features/datasets/DatasetLabel'
+import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
 import {
   EMPTY_API_VALUES,
   ReportVesselWithDatasets,
@@ -35,6 +40,12 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
   const vessels = useSelector(selectReportVesselsPaginated)
   const vesselsInWorkspace = useSelector(selectActiveTrackDataviews)
   const reportCategory = useSelector(selectReportCategory)
+  const userData = useSelector(selectUserData)
+  const dataviews = useSelector(selectActiveReportDataviews)
+  const datasetsDownloadNotSupported = getDatasetsReportNotSupported(
+    dataviews,
+    userData?.permissions || []
+  )
 
   const onVesselClick = async (
     ev: React.MouseEvent<Element, MouseEvent>,
@@ -65,9 +76,25 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
     dispatchQueryParams({ reportVesselFilter, reportVesselPage: 0 })
   }
 
+  const isFishingReport = reportCategory === ReportCategory.Fishing
+
   return (
     <Fragment>
       <div className={styles.tableContainer}>
+        {datasetsDownloadNotSupported.length > 0 && (
+          <p className={styles.error}>
+            {t(
+              'analysis.datasetsNotAllowed',
+              'Vessels are not included from the following sources:'
+            )}{' '}
+            {datasetsDownloadNotSupported.map((dataset, index) => (
+              <Fragment>
+                <DatasetLabel key={dataset} dataset={{ id: dataset }} />
+                {index < datasetsDownloadNotSupported.length - 1 && ', '}
+              </Fragment>
+            ))}
+          </p>
+        )}
         <div className={styles.vesselsTable}>
           <div className={cx(styles.header, styles.spansFirstTwoColumns)}>
             {t('common.name', 'Name')}
@@ -75,7 +102,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
           <div className={styles.header}>{t('vessel.mmsi', 'mmsi')}</div>
           <div className={styles.header}>{t('layer.flagState_one', 'Flag state')}</div>
           <div className={styles.header}>
-            {reportCategory === ReportCategory.Fishing
+            {isFishingReport
               ? t('vessel.geartype', 'Gear Type')
               : t('vessel.vessel_type', 'Vessel Type')}
           </div>
@@ -85,35 +112,39 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
               : t('common.detection_other', 'detections')}
           </div>
           {vessels?.map((vessel, i) => {
-            const hasDatasets = true
-            // TODO get datasets from the vessel
-            // const hasDatasets = vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
-            const vesselInWorkspace = getVesselInWorkspace(vesselsInWorkspace, vessel.vesselId)
+            const hasDatasets = vessel.infoDataset?.id?.includes(GLOBAL_VESSELS_DATASET_ID)
+              ? vessel.infoDataset !== undefined && vessel.trackDataset !== undefined
+              : vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
+            const vesselInWorkspace = getVesselInWorkspace(
+              vesselsInWorkspace,
+              vessel.vesselId as string
+            )
             const pinTrackDisabled = !hasDatasets
             const isLastRow = i === vessels.length - 1
             const flag = t(`flags:${vessel.flag as string}` as any, EMPTY_FIELD_PLACEHOLDER)
             const flagInteractionEnabled = !EMPTY_API_VALUES.includes(vessel.flag)
-            const type = getVesselGearOrType(vessel)
+            const type = isFishingReport ? vessel.geartype : vessel.vesselType
             const typeInteractionEnabled = type !== EMPTY_FIELD_PLACEHOLDER
             return (
               <Fragment key={vessel.vesselId}>
-                {!pinTrackDisabled && (
-                  <div className={cx({ [styles.border]: !isLastRow }, styles.icon)}>
-                    <IconButton
-                      icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
-                      style={{
-                        color: vesselInWorkspace ? vesselInWorkspace.config.color : '',
-                      }}
-                      tooltip={
-                        vesselInWorkspace
-                          ? t('search.removeVessel', 'Remove vessel')
-                          : t('search.seeVessel', 'See vessel')
-                      }
-                      onClick={(e) => onVesselClick(e, vessel)}
-                      size="small"
-                    />
-                  </div>
-                )}
+                <div className={cx({ [styles.border]: !isLastRow }, styles.icon)}>
+                  <IconButton
+                    icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
+                    style={{
+                      color: vesselInWorkspace ? vesselInWorkspace.config?.color : '',
+                    }}
+                    disabled={pinTrackDisabled}
+                    tooltip={
+                      pinTrackDisabled
+                        ? ''
+                        : vesselInWorkspace
+                        ? t('search.removeVessel', 'Remove vessel')
+                        : t('search.seeVessel', 'See vessel')
+                    }
+                    onClick={(e) => onVesselClick(e, vessel)}
+                    size="small"
+                  />
+                </div>
                 <div className={cx({ [styles.border]: !isLastRow })}>
                   {vessel.sourceColor && (
                     <span

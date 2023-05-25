@@ -10,18 +10,18 @@
     "commingSoon": "coming soon!",
     "currentTimeRange": "current time range",
     "dataAndTerminology": "Data and Terminology",
-    "download": "Download",
-    "events": "Events",
+    "download": "Unduh",
+    "events": "Acara",
     "faq": "FAQ's",
     "faqLink": "https://drive.google.com/file/d/1N4YRJ_yxAObEIWbaYM8l-YDPHS0bKe2N/view?usp=sharing",
-    "feedback": "Feedback",
+    "feedback": "Umpan balik",
     "from": "from",
     "GFW": "GFW",
     "high": "High",
     "historyFor": "history for",
     "howToGuide": "How to guide",
     "howToGuideLink": "https://drive.google.com/file/d/1q2veC-EEUHWPg_eCplERJzlo8PL3OFZS/view?usp=sharing",
-    "in": "in",
+    "in": "di",
     "info": "info",
     "listedOn": "Listed on",
     "low": "Low",
@@ -30,7 +30,7 @@
     "no": "No",
     "offlineAccess": "offline access",
     "offlineAccessEmptyState": "The vessels you save for offline access will appear here.",
-    "other": "Other",
+    "other": "Lainnya",
     "previous": "previous",
     "riskSummary": "Risk Summary",
     "rmfo": "RMFO",
@@ -38,7 +38,7 @@
     "timeRange": "time range",
     "to": "to",
     "typeToSearch": "Type to search",
-    "unknown": "Unknown",
+    "unknown": "Tidak diketahui",
     "unknownName": "Unknown name",
     "voyage": "Voyage",
     "voyageFrom": "Voyage From",
@@ -70,7 +70,7 @@
     "encounter_other": "encounter",
     "encounterActionWith": "Encounter with {{vessel}} in {{regionName}}",
     "encounterActionWithNoRegion": "Encounter with {{vessel}}",
-    "encounterAnotherVessel": "another vessel",
+    "encounterAnotherVessel": "kapal lainnya",
     "end": "End",
     "endDistancePort": "End distance from port",
     "endDistanceShore": "End distance from shore",
@@ -91,29 +91,29 @@
     "gapAction": "Likely Disabling in {{regionName}}",
     "gapEnd": "End of “off” event",
     "gapStart": "start of “off” event",
-    "hourAbbreviated": "{{count}}h",
-    "hourAbbreviated_one": "{{count}}h",
-    "hourAbbreviated_other": "{{count}}h",
-    "hourAbbreviated_plural": "{{count}}h",
+    "hourAbbreviated": "{{count}}jam",
+    "hourAbbreviated_one": "{{count}}jam",
+    "hourAbbreviated_other": "{{count}}jam",
+    "hourAbbreviated_plural": "{{count}}jam",
     "internationalWaters": "International Waters",
     "iuu": "iuu",
     "knots": "knots",
-    "loitering": "Loitering",
+    "loitering": "Berkeliaran",
     "loiteringAction": "Loitering in {{regionName}}",
     "maxCoords": "Max coordinates",
     "medianSpeed": "Median Speed",
     "minCoords": "Min coordinates",
-    "minuteAbbreviated": "{{count}}m",
-    "minuteAbbreviated_one": "{{count}}m",
-    "minuteAbbreviated_other": "{{count}}m",
-    "minuteAbbreviated_plural": "{{count}}m",
+    "minuteAbbreviated": "{{count}}menit",
+    "minuteAbbreviated_one": "{{count}}menit",
+    "minuteAbbreviated_other": "{{count}}menit",
+    "minuteAbbreviated_plural": "{{count}}menit",
     "nextPort": "Next port traveled",
     "noDescription": "No description found",
     "nSelected": "{{count}} selected",
     "nSelected_one": "{{count}} selected",
     "nSelected_other": "{{count}} selected",
     "nSelected_plural": "{{count}} selected",
-    "port": "Port",
+    "port": "Pelabuhan",
     "portAction": "Port visit",
     "portAt": "Port visit at {{port}}",
     "portVisitEvents": "Port Visits",
@@ -126,7 +126,7 @@
     "start": "Start",
     "startDistancePort": "Start distance from port",
     "startDistanceShore": "Start distance from shore",
-    "unknown": "Unknown event",
+    "unknown": "Peristiwa yang tidak diketahui",
     "vesselInvolved": "Vessel involved in the event"
   },
   "events": {
@@ -140,7 +140,7 @@
     "byTypeLoiteringTitle": "{{count}} loitering events",
     "byTypePortVisitTitle": "{{count}} port visits",
     "csvReadmeFile": "README",
-    "download": "Download",
+    "download": "Unduh",
     "downloadAllActivity": "Download entire vessel activity",
     "downloadCurrentActivityFiltered": "Download current vessel activity filtered",
     "encounterEvents": "Encounter Events",
@@ -167,7 +167,7 @@
     "vesselAuthorization": "Vessel Authorization"
   },
   "layer": {
-    "toggleVisibility": "Toggle layer visibility"
+    "toggleVisibility": "Mengubah layer visibilitas"
   },
   "map": {
     "filters": "Filter events",
@@ -225,7 +225,7 @@
     "reportedCases": "Reported Cases",
     "riskModel": "Risk Model",
     "undeterminedPresenceOnARFMOIUUList": "Unable to determine if the vessel is present on a RFMO IUU list or not",
-    "unknown": "Unknown",
+    "unknown": "Tidak diketahui",
     "vesselWithFlagOnMOU": "Vessel flying under a flag on the {{mou_name}} MOU black or grey list"
   },
   "search": {
@@ -234,7 +234,7 @@
     "advanced": "advanced",
     "basic": "basic",
     "callsign": "Callsign",
-    "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar",
+    "description": "Pencarian berdasarkan nama kapal atau kode identifikasi. Anda dapat mempersempit pencarian Anda dengan menekan Lanjutan di bar bagian atas",
     "flagState": "Flag States",
     "hideIndividual": "HIDE INDIVIDUAL RESULTS",
     "IMO": "IMO",
@@ -247,14 +247,14 @@
     "noTmtResults": "A vessel with these criteria could not be found, due to a timeout in the search function. Please try again.",
     "placeholder": "Search vessels by name, MMSI, IMO",
     "seeVessel": "See Vessel",
-    "shipname": "Name",
-    "title": "Search",
+    "shipname": "Nama",
+    "title": "Cari",
     "viewIndividual": "VIEW INDIVIDUAL RESULTS"
   },
   "selects": {
-    "allSelected": "All",
+    "allSelected": "Semua",
     "none": "None",
-    "selected": "selected"
+    "selected": "terpilih"
   },
   "settings": {
     "distance": "DISTANCE TRAVELLED",
@@ -270,11 +270,11 @@
     },
     "enable": "Enable activity highlights",
     "encounters": {
-      "shortTitle": "Encounter",
+      "shortTitle": "Pertemuan",
       "title": "Encounter Events"
     },
     "fishingEvents": {
-      "shortTitle": "Fishing",
+      "shortTitle": "Memancing",
       "title": "Fishing Events"
     },
     "gapEvents": {
@@ -287,7 +287,7 @@
     "km": "km",
     "kms": "kms",
     "loiteringEvents": {
-      "shortTitle": "Loitering",
+      "shortTitle": "Berkeliaran",
       "title": "Loitering Events"
     },
     "longerThan": "Longer than",
@@ -311,11 +311,11 @@
   },
   "user": {
     "loggedInAs": "logged in as",
-    "login": "Log in",
+    "login": "Masuk",
     "notAuthorized": "Only some specific registered users can use this product",
     "notLoggedIn": "Only some specific registered users can use this product. Please log in with your Global Fishing Watch credentials",
     "requestAccess": "Request Access",
-    "switchAccount": "Switch account"
+    "switchAccount": "Ganti akun"
   },
   "vessel": {
     "aisTransmission_plural": "AIS Transmissions",

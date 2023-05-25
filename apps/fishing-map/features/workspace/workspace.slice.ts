@@ -9,6 +9,7 @@ import {
   EndpointId,
   Dataset,
   DatasetTypes,
+  DatasetCategory,
 } from '@globalfishingwatch/api-types'
 import { GFWAPI, FetchOptions, parseAPIError } from '@globalfishingwatch/api-client'
 import {
@@ -33,11 +34,14 @@ import {
   ONLY_GFW_STAFF_DATAVIEW_SLUGS,
   getWorkspaceEnv,
   VESSEL_PRESENCE_DATAVIEW_SLUG,
-  WorkspaceCategories,
+  WorkspaceCategory,
   DEFAULT_WORKSPACE_ID,
 } from 'data/workspaces'
 import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
-import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
+import {
+  getDatasetsInDataviews,
+  getLatestEndDateFromDatasets,
+} from 'features/datasets/datasets.utils'
 import { isGFWUser, isGuestUser } from 'features/user/user.slice'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { getVesselDataviewInstanceDatasetConfig } from 'features/dataviews/dataviews.utils'
@@ -88,12 +92,20 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const gfwUser = isGFWUser(state)
     const reportId = selectReportId(state)
     try {
-      let workspace: Workspace<WorkspaceState> = null
+      let workspace: Workspace<any> | null = null
       if (locationType === REPORT) {
         const action = dispatch(fetchReportsThunk([reportId]))
         const resolvedAction = await action
         if (fetchReportsThunk.fulfilled.match(resolvedAction)) {
           workspace = resolvedAction.payload?.[0]?.workspace
+          if (!workspace) {
+            return rejectWithValue({
+              error: {
+                status: 404,
+                message: 'Report workspace not found',
+              },
+            })
+          }
         }
         // TODO fetch report and use the workspace within it
       } else if (workspaceId && workspaceId !== DEFAULT_WORKSPACE_ID) {
@@ -107,7 +119,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       if (gfwUser && ONLY_GFW_STAFF_DATAVIEW_SLUGS.length) {
         // Inject dataviews for gfw staff only
         ONLY_GFW_STAFF_DATAVIEW_SLUGS.forEach((id) => {
-          workspace.dataviewInstances.push({
+          workspace?.dataviewInstances.push({
             id: `${id}-instance`,
             config: {
               visible: false,
@@ -120,24 +132,11 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       if (workspace) {
         workspace = {
           ...workspace,
-          dataviewInstances: (workspace.dataviewInstances || []).map(
+          dataviewInstances: (workspace?.dataviewInstances || []).map(
             (dv) => parseLegacyDataviewInstanceEndpoint(dv) as DataviewInstance
           ),
         }
-      } else {
-        return
       }
-
-      const daysFromLatest =
-        selectDaysFromLatest(state) || workspace.state?.daysFromLatest || undefined
-      const endAt =
-        daysFromLatest !== undefined
-          ? getUTCDateTime(DEFAULT_TIME_RANGE.end)
-          : getUTCDateTime(workspace.endAt || DEFAULT_TIME_RANGE.end)
-      const startAt =
-        daysFromLatest !== undefined
-          ? endAt.minus({ days: daysFromLatest })
-          : getUTCDateTime(workspace.startAt || DEFAULT_TIME_RANGE.start)
 
       const defaultWorkspaceDataviews = gfwUser
         ? [...DEFAULT_DATAVIEW_SLUGS, VESSEL_PRESENCE_DATAVIEW_SLUG] // Only for gfw users as includes the private-global-presence-tracks dataset
@@ -145,11 +144,11 @@ export const fetchWorkspaceThunk = createAsyncThunk(
 
       const dataviewIds = [
         ...defaultWorkspaceDataviews,
-        ...(workspace.dataviewInstances || []).map(({ dataviewId }) => dataviewId),
+        ...(workspace?.dataviewInstances || []).map(({ dataviewId }) => dataviewId),
         ...(urlDataviewInstances || []).map(({ dataviewId }) => dataviewId),
       ].filter(Boolean)
 
-      const uniqDataviewIds = uniq(dataviewIds)
+      const uniqDataviewIds = uniq(dataviewIds) as string[]
 
       let dataviews: Dataview[] = []
       if (uniqDataviewIds?.length) {
@@ -160,16 +159,17 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           dataviews = payload
         }
       }
-
+      let datasets: Dataset[] = []
       if (!signal.aborted) {
         const dataviewInstances: UrlDataviewInstance[] = [
-          ...(workspace.dataviewInstances || []),
+          ...(workspace?.dataviewInstances || []),
           ...(urlDataviewInstances || []),
         ]
         const datasetsIds = getDatasetsInDataviews(dataviews, dataviewInstances, guestUser)
         const fetchDatasetsAction: any = dispatch(fetchDatasetsByIdsThunk(datasetsIds))
         signal.addEventListener('abort', fetchDatasetsAction.abort)
-        const { error, payload: datasets } = await fetchDatasetsAction
+        const { error, payload } = await fetchDatasetsAction
+        datasets = payload as Dataset[]
 
         // Try to add track for for VMS vessels in case it is logged using the full- datasets
         const vesselDataviewsWithoutTrack = dataviewInstances.filter((dataviewInstance) => {
@@ -184,19 +184,19 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           const infoDatasetConfig = dataviewInstance?.datasetsConfig?.find(
             (dsc) => dsc.endpoint === EndpointId.Vessel
           )
-          const infoDataset: Dataset = datasets.find((d) => d.id === infoDatasetConfig?.datasetId)
-          const trackDatasetId = infoDataset?.relatedDatasets.find(
+          const infoDataset = datasets.find((d) => d.id === infoDatasetConfig?.datasetId) as Dataset
+          const trackDatasetId = infoDataset?.relatedDatasets?.find(
             (rld) => rld.type === DatasetTypes.Tracks
           )?.id
           if (trackDatasetId) {
-            const vesselId = infoDatasetConfig.params.find((p) => p.id === 'vesselId')
+            const vesselId = infoDatasetConfig?.params.find((p) => p.id === 'vesselId')
               ?.value as string
             const trackDatasetConfig = getVesselDataviewInstanceDatasetConfig(vesselId, {
               trackDatasetId,
             })
             return {
               id: dataviewInstance.id,
-              datasetsConfig: [...dataviewInstance.datasetsConfig, ...trackDatasetConfig],
+              datasetsConfig: [...(dataviewInstance.datasetsConfig || []), ...trackDatasetConfig],
             } as UrlDataviewInstance
           }
           return []
@@ -215,6 +215,18 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           return rejectWithValue({ workspace, error: datasets })
         }
       }
+
+      const daysFromLatest =
+        selectDaysFromLatest(state) || workspace?.state?.daysFromLatest || undefined
+      const latestDatasetEndDate = getLatestEndDateFromDatasets(datasets, DatasetCategory.Activity)
+      const endAt =
+        daysFromLatest !== undefined
+          ? getUTCDateTime(latestDatasetEndDate)
+          : getUTCDateTime(workspace?.endAt || DEFAULT_TIME_RANGE.end)
+      const startAt =
+        daysFromLatest !== undefined
+          ? endAt.minus({ days: daysFromLatest })
+          : getUTCDateTime(workspace?.startAt || DEFAULT_TIME_RANGE.start)
 
       return { ...workspace, startAt: startAt.toISO(), endAt: endAt.toISO() }
     } catch (e: any) {
@@ -246,7 +258,7 @@ export const saveWorkspaceThunk = createAsyncThunk(
     }: {
       name: string
       createAsPublic: boolean
-      workspace?: AppWorkspace
+      workspace: AppWorkspace
     },
     { dispatch, getState }
   ) => {
@@ -280,7 +292,7 @@ export const saveWorkspaceThunk = createAsyncThunk(
 
     const workspaceUpdated = await saveWorkspace()
     const locationType = selectLocationType(state)
-    const locationCategory = selectLocationCategory(state) || WorkspaceCategories.FishingActivity
+    const locationCategory = selectLocationCategory(state) || WorkspaceCategory.FishingActivity
     if (workspaceUpdated) {
       dispatch(
         updateLocation(locationType === HOME ? WORKSPACE : locationType, {
@@ -332,9 +344,9 @@ const workspaceSlice = createSlice({
       state.lastVisited = action.payload
     },
     removeGFWStaffOnlyDataviews: (state) => {
-      if (ONLY_GFW_STAFF_DATAVIEW_SLUGS.length) {
+      if (ONLY_GFW_STAFF_DATAVIEW_SLUGS.length && state.data?.dataviewInstances) {
         state.data.dataviewInstances = state.data.dataviewInstances.filter((d) =>
-          ONLY_GFW_STAFF_DATAVIEW_SLUGS.includes(d.dataviewId as number)
+          ONLY_GFW_STAFF_DATAVIEW_SLUGS.includes(d.dataviewId as string)
         )
       }
     },

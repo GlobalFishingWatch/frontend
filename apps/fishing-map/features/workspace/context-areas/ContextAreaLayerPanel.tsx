@@ -4,7 +4,12 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import parse from 'html-react-parser'
 import { uniqBy } from 'lodash'
-import { DatasetTypes, DatasetStatus, DatasetCategory } from '@globalfishingwatch/api-types'
+import {
+  DatasetTypes,
+  DatasetStatus,
+  DatasetCategory,
+  Dataset,
+} from '@globalfishingwatch/api-types'
 import { Tooltip, ColorBarOption, Modal, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_CONTEXT_SOURCE_LAYER, GeneratorType } from '@globalfishingwatch/layer-composer'
@@ -19,7 +24,14 @@ import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import GFWOnly from 'features/user/GFWOnly'
 import { ROOT_DOM_ELEMENT } from 'data/config'
-import { ONLY_GFW_STAFF_DATAVIEW_SLUGS } from 'data/workspaces'
+import {
+  BASEMAP_DATAVIEW_INSTANCE_ID,
+  EEZ_DATAVIEW_INSTANCE_ID,
+  MPA_DATAVIEW_INSTANCE_ID,
+  ONLY_GFW_STAFF_DATAVIEW_SLUGS,
+  PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
+  HIDDEN_DATAVIEW_FILTERS,
+} from 'data/workspaces'
 import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/dataviews.selectors'
 import { useMapDataviewFeatures } from 'features/map/map-sources.hooks'
 import {
@@ -51,18 +63,27 @@ type LayerPanelProps = {
   onToggle?: () => void
 }
 
-const DATAVIEWS_WARNING = ['context-layer-eez', 'context-layer-mpa', 'basemap-labels']
+const DATAVIEWS_WARNING = [
+  EEZ_DATAVIEW_INSTANCE_ID,
+  MPA_DATAVIEW_INSTANCE_ID,
+  BASEMAP_DATAVIEW_INSTANCE_ID,
+  PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
+]
 const LIST_ELEMENT_HEIGHT = 30
 const LIST_ELLIPSIS_HEIGHT = 14
 const LIST_MARGIN_HEIGHT = 10
 const LIST_TITLE_HEIGHT = 22
 
+export type FeaturesOnScreen = { total: number; closest: any[] }
 function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { onReportClick } = useContextInteractions()
   const [filterOpen, setFiltersOpen] = useState(false)
-  const [featuresOnScreen, setFeaturesOnScreen] = useState({ total: 0, closest: [] })
+  const [featuresOnScreen, setFeaturesOnScreen] = useState<FeaturesOnScreen>({
+    total: 0,
+    closest: [],
+  })
   const [colorOpen, setColorOpen] = useState(false)
   const gfwUser = useSelector(isGFWUser)
   const userId = useSelector(selectUserId)
@@ -105,7 +126,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
       })
       setFeaturesOnScreen({
         total: uniqLayerFeatures.length,
-        closest: parseContextFeatures(filteredFeatures, dataset),
+        closest: parseContextFeatures(filteredFeatures, dataset as Dataset),
       })
     }
   }, [dataset, layerActive, layerFeatures?.features, uniqKey, viewport])
@@ -218,7 +239,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           dataview={dataview}
           onToggle={onToggle}
         />
-        {ONLY_GFW_STAFF_DATAVIEW_SLUGS.includes(dataview.dataviewId as number) && (
+        {ONLY_GFW_STAFF_DATAVIEW_SLUGS.includes(dataview.dataviewId as string) && (
           <GFWOnly type="only-icon" style={{ transform: 'none' }} className={styles.gfwIcon} />
         )}
         {title && title.length > 30 ? (
@@ -236,27 +257,29 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
               onClickOutside={closeExpandedContainer}
             />
           )}
-          {layerActive && hasSchemaFilters && (
-            <ExpandedContainer
-              visible={filterOpen}
-              onClickOutside={closeExpandedContainer}
-              component={<Filters dataview={dataview} />}
-            >
-              <div className={styles.filterButtonWrapper}>
-                <IconButton
-                  icon={filterOpen ? 'filter-on' : 'filter-off'}
-                  size="small"
-                  onClick={onToggleFilterOpen}
-                  tooltip={
-                    filterOpen
-                      ? t('layer.filterClose', 'Close filters')
-                      : t('layer.filterOpen', 'Open filters')
-                  }
-                  tooltipPlacement="top"
-                />
-              </div>
-            </ExpandedContainer>
-          )}
+          {layerActive &&
+            hasSchemaFilters &&
+            !HIDDEN_DATAVIEW_FILTERS.includes(dataview.dataviewId as string) && (
+              <ExpandedContainer
+                visible={filterOpen}
+                onClickOutside={closeExpandedContainer}
+                component={<Filters dataview={dataview} />}
+              >
+                <div className={styles.filterButtonWrapper}>
+                  <IconButton
+                    icon={filterOpen ? 'filter-on' : 'filter-off'}
+                    size="small"
+                    onClick={onToggleFilterOpen}
+                    tooltip={
+                      filterOpen
+                        ? t('layer.filterClose', 'Close filters')
+                        : t('layer.filterOpen', 'Open filters')
+                    }
+                    tooltipPlacement="top"
+                  />
+                </div>
+              </ExpandedContainer>
+            )}
           {!isBasemapLabelsDataview && <InfoModal dataview={dataview} />}
           {(isUserLayer || gfwUser) && <Remove dataview={dataview} />}
           {items.length > 1 && (
@@ -332,10 +355,11 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
               </label>
               <ul>
                 {featuresOnScreen.closest.map((feature) => {
-                  const id = feature?.properties?.[uniqKey] || feature?.properties.id || feature?.id
+                  const id =
+                    feature?.properties?.[uniqKey] || feature?.properties!.id || feature?.id
                   let title =
                     feature.properties.value || feature.properties.name || feature.properties.id
-                  if (dataset.configuration?.valueProperties?.length) {
+                  if (dataset?.configuration?.valueProperties?.length) {
                     title = dataset.configuration.valueProperties
                       .flatMap((prop) => feature.properties[prop] || [])
                       .join(', ')

@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { cwd } = require('process')
 const { join } = require('path')
-const withNx = require('@nrwl/next/plugins/with-nx')
+const withNx = require('@nx/next/plugins/with-nx')
 const withPWAConstructor = require('next-pwa')
 const runtimeCaching = require('next-pwa/cache')
 const getStaticPrecacheEntries = require('./utils/staticprecache')
@@ -98,4 +98,10 @@ const withPWA = withPWAConstructor({
   ],
 })
 
-module.exports = withPWA(withNx(nextConfig))
+const configWithNx = withNx(nextConfig)
+module.exports = async (...args) => {
+  return {
+    ...withPWA(await configWithNx(...args)),
+    //...
+  }
+}

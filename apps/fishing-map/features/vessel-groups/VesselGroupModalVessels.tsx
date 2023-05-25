@@ -85,7 +85,7 @@ function VesselGroupVesselRow({
   )
 }
 
-function VesselGroupVessels(): React.ReactElement {
+function VesselGroupVessels() {
   const { t } = useTranslation()
   const vesselGroupSearchVessels = useSelector(selectVesselGroupSearchVessels)
   const newVesselGroupSearchVessels = useSelector(selectNewVesselGroupSearchVessels)
@@ -104,9 +104,9 @@ function VesselGroupVessels(): React.ReactElement {
       const vessels = list === 'search' ? vesselGroupSearchVessels : newVesselGroupSearchVessels
       const action =
         list === 'search' ? setVesselGroupSearchVessels : setNewVesselGroupSearchVessels
-      const index = vessels.findIndex((v) => v.id === vessel.id && v.dataset === vessel.dataset)
+      const index = vessels!.findIndex((v) => v.id === vessel.id && v.dataset === vessel.dataset)
       if (index > -1) {
-        dispatch(action([...vessels.slice(0, index), ...vessels.slice(index + 1)]))
+        dispatch(action([...vessels!.slice(0, index), ...vessels!.slice(index + 1)]))
       }
     },
     [dispatch, newVesselGroupSearchVessels, vesselGroupSearchVessels]
@@ -121,7 +121,7 @@ function VesselGroupVessels(): React.ReactElement {
         <tr>
           <th>{t('vessel.mmsi', 'MMSI')}</th>
           <th>{t('common.name', 'Name')}</th>
-          <th>{t('vessel.flag_short', 'iso3')}</th>
+          <th>{t('vessel.flag', 'flag')}</th>
           <th>{t('vessel.gearType_short', 'gear')}</th>
           <th>{t('vessel.transmissionDates', 'Transmission dates')}</th>
           <th />

@@ -1,9 +1,9 @@
-import { Fragment, useCallback, useState } from 'react'
+import { Fragment } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
-import { IconButton, Modal, Tooltip } from '@globalfishingwatch/ui-components'
+import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { DatasetSubCategory, DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getDetectionsTimestamps } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -14,25 +14,19 @@ import {
 } from 'features/dataviews/dataviews.utils'
 import { getDatasetLabel, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import I18nNumber from 'features/i18n/i18nNumber'
-import {
-  ActivityProperty,
-  ExtendedFeatureVessel,
-  MAX_TOOLTIP_LIST,
-  MAX_VESSELS_LOAD,
-} from 'features/map/map.slice'
+import { ActivityProperty, ExtendedFeatureVessel, MAX_TOOLTIP_LIST } from 'features/map/map.slice'
 import { getEventLabel } from 'utils/analytics'
 import { isGFWUser } from 'features/user/user.slice'
 import { PRESENCE_DATASET_ID, PRESENCE_TRACKS_DATASET_ID } from 'features/datasets/datasets.slice'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
-import { ROOT_DOM_ELEMENT } from 'data/config'
 import { t } from 'features/i18n/i18n'
 import I18nDate from 'features/i18n/i18nDate'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { TimeRangeDates } from 'features/map/controls/MapInfo'
-import GFWOnly from 'features/user/GFWOnly'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getUTCDateTime } from 'utils/dates'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
   TooltipEventFeature,
@@ -95,12 +89,10 @@ export const VesselDetectionTimestamps = ({ vessel }: { vessel: ExtendedFeatureV
 
 function VesselsTable({
   feature,
-  showFullList,
   vesselProperty = 'hours',
   activityType = DatasetSubCategory.Fishing,
 }: {
   feature: TooltipEventFeature
-  showFullList?: boolean
   vesselProperty?: ActivityProperty
   activityType?: DatasetSubCategory
 }) {
@@ -109,28 +101,18 @@ function VesselsTable({
   const gfwUser = useSelector(isGFWUser)
   const vesselsInWorkspace = useSelector(selectActiveTrackDataviews)
 
-  const [modalOpen, setModalOpen] = useState(false)
-
-  const onModalClose = useCallback(() => {
-    setModalOpen(false)
-  }, [setModalOpen])
-
   const interactionAllowed = [...SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION].includes(
     feature.temporalgrid?.sublayerInteractionType || ''
   )
 
-  const title = getVesselTableTitle(feature)
-  const vessels = showFullList
-    ? feature.vesselsInfo?.vessels?.slice(0, MAX_VESSELS_LOAD)
-    : feature.vesselsInfo?.vessels?.slice(0, MAX_TOOLTIP_LIST)
+  const vessels = feature.vesselsInfo?.vessels?.slice(0, MAX_TOOLTIP_LIST)
 
   const hasPinColumn =
-    showFullList ||
-    (interactionAllowed &&
-      feature?.vesselsInfo?.vessels?.some((vessel) => {
-        const hasDatasets = vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
-        return hasDatasets
-      }))
+    interactionAllowed &&
+    feature?.vesselsInfo?.vessels?.some((vessel) => {
+      const hasDatasets = vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
+      return hasDatasets
+    })
 
   const onVesselClick = (
     ev: React.MouseEvent<Element, MouseEvent>,
@@ -177,17 +159,16 @@ function VesselsTable({
       label: getEventLabel([vessel.dataset.id, vessel.id]),
     })
   }
-  const vesselsLoaded = Math.min(MAX_VESSELS_LOAD, feature.vesselsInfo?.numVessels)
   const isHoursProperty = vesselProperty !== 'detections'
   const isPresenceActivity = activityType === DatasetSubCategory.Presence
   return (
     <Fragment>
-      {vessels?.length > 0 && (
-        <table className={cx(styles.vesselsTable, { [styles.fullWidth]: showFullList })}>
+      {vessels!?.length > 0 && (
+        <table className={cx(styles.vesselsTable)}>
           <thead>
             <tr>
               <th colSpan={hasPinColumn ? 2 : 1}>{t('common.vessel_other', 'Vessels')}</th>
-              <th>{t('vessel.flag_short', 'iso3')}</th>
+              <th>{t('vessel.flag', 'flag')}</th>
               <th>
                 {isPresenceActivity ? t('vessel.type', 'Type') : t('vessel.gearType_short', 'Gear')}
               </th>
@@ -202,7 +183,7 @@ function VesselsTable({
             </tr>
           </thead>
           <tbody>
-            {vessels.map((vessel, i) => {
+            {vessels?.map((vessel, i) => {
               const vesselName = formatInfoField(vessel.shipname, 'name')
 
               const vesselType = isPresenceActivity
@@ -215,8 +196,11 @@ function VesselsTable({
                     vessel.geartype ?? EMPTY_FIELD_PLACEHOLDER
                   )}`
 
-              const hasDatasets =
-                vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
+              // Temporary workaround for public-global-all-vessels dataset as we
+              // don't want to show the pin only for that dataset for guest users
+              const hasDatasets = vessel.infoDataset?.id?.includes(GLOBAL_VESSELS_DATASET_ID)
+                ? vessel.infoDataset !== undefined && vessel.trackDataset !== undefined
+                : vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
 
               const vesselInWorkspace = getVesselInWorkspace(vesselsInWorkspace, vessel.id)
 
@@ -229,7 +213,7 @@ function VesselsTable({
                       <IconButton
                         icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
                         style={{
-                          color: vesselInWorkspace ? vesselInWorkspace.config.color : '',
+                          color: vesselInWorkspace ? vesselInWorkspace.config?.color : '',
                         }}
                         tooltip={
                           vesselInWorkspace
@@ -276,47 +260,10 @@ function VesselsTable({
           </tbody>
         </table>
       )}
-      {feature.vesselsInfo && !showFullList && (
-        <Fragment>
-          {feature.vesselsInfo.overflow && (
-            <button
-              className={styles.vesselsMore}
-              disabled={!gfwUser}
-              onClick={() => setModalOpen(true)}
-            >
-              + {feature.vesselsInfo.overflowNumber} {t('common.more', 'more')}
-            </button>
-          )}
-        </Fragment>
-      )}
-      {gfwUser && !showFullList && (
-        <Modal
-          appSelector={ROOT_DOM_ELEMENT}
-          title={
-            <Fragment>
-              {title}
-              <GFWOnly />
-            </Fragment>
-          }
-          isOpen={modalOpen}
-          onClose={onModalClose}
-        >
-          {feature.vesselsInfo && (
-            <div className={styles.modalContainer}>
-              <VesselsTable
-                feature={feature}
-                showFullList={true}
-                vesselProperty={vesselProperty}
-                activityType={activityType}
-              />
-              {vesselsLoaded !== feature.vesselsInfo.numVessels && (
-                <button className={styles.vesselsDisplayed}>
-                  {vesselsLoaded} displayed out of {feature.vesselsInfo.numVessels}
-                </button>
-              )}
-            </div>
-          )}
-        </Modal>
+      {feature.vesselsInfo && feature.vesselsInfo.overflow && (
+        <p className={styles.vesselsMore}>
+          + {feature.vesselsInfo.overflowNumber} {t('common.more', 'more')}
+        </p>
       )}
     </Fragment>
   )

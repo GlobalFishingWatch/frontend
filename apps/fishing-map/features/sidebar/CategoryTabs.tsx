@@ -6,7 +6,7 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { Icon, IconButton, IconType, Tooltip } from '@globalfishingwatch/ui-components'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
-import { WorkspaceCategories } from 'data/workspaces'
+import { WorkspaceCategory } from 'data/workspaces'
 import { HOME, USER, WORKSPACES_LIST } from 'routes/routes'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
 import { selectUserData, isGuestUser } from 'features/user/user.slice'
@@ -37,7 +37,7 @@ type CategoryTabsProps = {
   onMenuClick: () => void
 }
 
-function getLinkToCategory(category: WorkspaceCategories) {
+function getLinkToCategory(category: WorkspaceCategory) {
   return {
     type: WORKSPACES_LIST,
     payload: { workspaceId: undefined, category },
@@ -87,13 +87,13 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             key={category.title}
             className={cx(styles.tab, {
               [styles.current]:
-                locationCategory === (category.title as WorkspaceCategories) ||
+                locationCategory === (category.title as WorkspaceCategory) ||
                 (index === 0 && locationType === HOME),
             })}
           >
             <Link
               className={styles.tabContent}
-              to={getLinkToCategory(category.title as WorkspaceCategories)}
+              to={getLinkToCategory(category.title as WorkspaceCategory)}
               onClick={onCategoryClick}
               title={category.title}
             >

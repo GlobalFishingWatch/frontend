@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { RootState } from 'reducers'
-import { DataviewCategory, Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
+import { DataviewCategory, Dataset, DatasetTypes, Dataview } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance, getGeneratorConfig } from '@globalfishingwatch/dataviews-client'
 import {
   GeneratorType,
@@ -165,7 +165,7 @@ export const selectActiveHeatmapVesselDatasets = createSelector(
       new Set(
         heatmapDataviews.flatMap((dataview) => {
           const activeDatasets = dataview.config?.datasets
-          return dataview.datasets.flatMap((dataset) => {
+          return dataview.datasets?.flatMap((dataset) => {
             if (activeDatasets.includes(dataset.id)) {
               return getRelatedDatasetByType(dataset, DatasetTypes.Vessels)?.id || []
             }
@@ -191,7 +191,7 @@ export const selectActiveEnvironmentalDataviews = createSelector(
 export const selectActiveNonTrackEnvironmentalDataviews = createSelector(
   [selectActiveEnvironmentalDataviews],
   (dataviews) => {
-    return dataviews.filter((dv) => dv.datasets.every((ds) => ds.type !== DatasetTypes.UserTracks))
+    return dataviews.filter((dv) => dv.datasets?.every((ds) => ds.type !== DatasetTypes.UserTracks))
   }
 )
 
@@ -305,7 +305,7 @@ export const selectAllDataviewsInWorkspace = createSelector(
           return dataset || []
         }
       )
-      return { ...dataview, datasets: dataviewDatasets }
+      return { ...dataview, datasets: dataviewDatasets } as Dataview
     })
   }
 )
@@ -314,7 +314,7 @@ export const selectAvailableActivityDataviews = createSelector(
   [selectAllDataviewsInWorkspace],
   (dataviews) => {
     return dataviews?.filter(
-      (d) => d.category === DataviewCategory.Activity && d.datasetsConfig?.length > 0
+      (d) => d.category === DataviewCategory.Activity && d.datasetsConfig!?.length > 0
     )
   }
 )
@@ -323,7 +323,7 @@ export const selectAvailableDetectionsDataviews = createSelector(
   [selectAllDataviewsInWorkspace],
   (dataviews) => {
     return dataviews?.filter(
-      (d) => d.category === DataviewCategory.Detections && d.datasetsConfig?.length > 0
+      (d) => d.category === DataviewCategory.Detections && d.datasetsConfig!?.length > 0
     )
   }
 )
