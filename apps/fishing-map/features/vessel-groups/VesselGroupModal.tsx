@@ -79,7 +79,7 @@ function VesselGroupModal(): React.ReactElement {
   const searchIdField = useSelector(selectVesselGroupSearchId)
   const editingVesselGroupId = useSelector(selectVesselGroupEditId)
   const vesselGroupVessels = useSelector(selectVesselGroupsVessels)
-  const editingVesselGroup = useSelector(selectVesselGroupById(editingVesselGroupId))
+  const editingVesselGroup = useSelector(selectVesselGroupById(editingVesselGroupId as string))
   const searchVesselStatus = useSelector(selectVesselGroupSearchStatus)
   const vesselGroupsStatus = useSelector(selectVesselGroupsStatus)
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
@@ -111,7 +111,7 @@ function VesselGroupModal(): React.ReactElement {
     [dispatch]
   )
   useEffect(() => {
-    if (editingVesselGroup?.vessels?.length > 0) {
+    if (editingVesselGroup && editingVesselGroup.vessels?.length > 0) {
       dispatch(getVesselInVesselGroupThunk({ vesselGroup: editingVesselGroup }))
     }
   }, [dispatch, editingVesselGroup])
@@ -156,7 +156,9 @@ function VesselGroupModal(): React.ReactElement {
 
   const onSearchVesselsClick = useCallback(async () => {
     setShowBackButton(true)
-    dispatchSearchVesselsGroupsThunk(vesselGroupVessels, searchIdField)
+    if (vesselGroupVessels) {
+      dispatchSearchVesselsGroupsThunk(vesselGroupVessels, searchIdField)
+    }
   }, [dispatchSearchVesselsGroupsThunk, vesselGroupVessels, searchIdField])
 
   const getDataviewInstancesWithVesselGroups = useCallback(
@@ -199,7 +201,7 @@ function VesselGroupModal(): React.ReactElement {
       const vessels: VesselGroupVessel[] = vesselGroupSearchVessels.map((vessel) => {
         return {
           vesselId: vessel.id,
-          dataset: vessel.dataset,
+          dataset: vessel.dataset as string,
         }
       })
       let dispatchedAction
@@ -224,7 +226,7 @@ function VesselGroupModal(): React.ReactElement {
         createVesselGroupThunk.fulfilled.match(dispatchedAction)
       ) {
         const dataviewInstances = getDataviewInstancesWithVesselGroups(dispatchedAction.payload.id)
-        if (navigateToWorkspace) {
+        if (navigateToWorkspace && dataviewInstances) {
           if (lastVisitedWorkspace) {
             const { type, ...rest } = lastVisitedWorkspace
             const { query, payload, replaceQuery } = rest
@@ -244,7 +246,7 @@ function VesselGroupModal(): React.ReactElement {
             dispatchQueryParams({ query: undefined })
           }
           resetSidebarScroll()
-        } else if (addToDataviews) {
+        } else if (addToDataviews && dataviewInstances) {
           upsertDataviewInstance(dataviewInstances)
         }
         close()

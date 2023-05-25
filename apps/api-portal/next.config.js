@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { join } = require('path')
-const withNx = require('@nrwl/next/plugins/with-nx')
+const withNx = require('@nx/next/plugins/with-nx')
 // const CircularDependencyPlugin = require('circular-dependency-plugin')
 
 // const { i18n } = require('./next-i18next.config')
@@ -8,7 +8,7 @@ const basePath =
   process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/api-portal' : '')
 
 /**
- * @type {import('@nrwl/next/plugins/with-nx').WithNxOptions}
+ * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
  **/
 const nextConfig = {
   async redirects() {
@@ -54,6 +54,7 @@ const nextConfig = {
   output: 'standalone',
   outputFileTracing: true,
   experimental: {
+    appDir: false,
     outputFileTracingRoot: join(__dirname, '../../'),
   },
   cleanDistDir: true,

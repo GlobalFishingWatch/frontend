@@ -16,17 +16,19 @@ import {
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
   getDatasetsReportSupported,
-  getRelatedDatasetsByType,
+  getRelatedDatasetByType,
 } from 'features/datasets/datasets.utils'
 import { selectReportAreaId, selectReportDatasetId } from 'features/app/app.selectors'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUserData } from 'features/user/user.slice'
 import { getUTCDateTime } from 'utils/dates'
-import { getReportCategoryFromDataview, getVesselGearOrType } from 'features/reports/reports.utils'
+import { getReportCategoryFromDataview } from 'features/reports/reports.utils'
 import { ReportCategory } from 'types'
 import { selectContextAreasDataviews } from 'features/dataviews/dataviews.selectors'
 import { createDeepEqualSelector } from 'utils/selectors'
+import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
+import { sortStrings } from 'utils/shared'
 import { selectReportVesselsData } from './report.slice'
 
 export const EMPTY_API_VALUES = ['NULL', undefined, '']
@@ -41,7 +43,8 @@ export type ReportVesselWithMeta = ReportVessel & {
   flagTranslated: string
   flagTranslatedClean: string
 }
-export type ReportVesselWithDatasets = Partial<ReportVessel> &
+export type ReportVesselWithDatasets = Pick<ReportVessel, 'vesselId' | 'shipName' | 'hours'> &
+  Partial<ReportVessel> &
   Pick<ReportVesselWithMeta, 'sourceColor'> & {
     infoDataset?: Dataset
     trackDataset?: Dataset
@@ -58,7 +61,7 @@ export const selectReportDataviewsWithPermissions = createDeepEqualSelector(
         )
         return {
           ...dataview,
-          datasets: dataview.datasets.filter((d) => supportedDatasets.includes(d.id)),
+          datasets: dataview.datasets?.filter((d) => supportedDatasets.includes(d.id)),
           filter: dataview.config?.filter || [],
           ...(dataview.config?.['vessel-groups']?.length && {
             vesselGroups: dataview.config?.['vessel-groups'],
@@ -73,7 +76,7 @@ export const selectReportAreaDataview = createSelector(
   [selectContextAreasDataviews, selectReportDatasetId],
   (contextDataviews, datasetId) => {
     const areaDataview = contextDataviews?.find((dataview) => {
-      return dataview.datasets.some((dataset) => dataset.id === datasetId)
+      return dataview.datasets?.some((dataset) => dataset.id === datasetId)
     })
     return areaDataview
   }
@@ -88,7 +91,7 @@ export const selectReportAreaIds = createSelector(
 
 export const selectReportActivityFlatten = createSelector(
   [selectReportVesselsData, selectReportDataviewsWithPermissions, selectReportCategory],
-  (reportDatasets, dataviews, reportCategory): ReportVesselWithMeta[] => {
+  (reportDatasets, dataviews, reportCategory) => {
     if (!dataviews?.length || !reportDatasets?.length) return null
 
     return reportDatasets.flatMap((dataset, index) =>
@@ -120,7 +123,7 @@ export const selectReportActivityFlatten = createSelector(
           } as ReportVesselWithMeta
         })
       })
-    )
+    ) as ReportVesselWithMeta[]
   }
 )
 
@@ -142,16 +145,16 @@ export const selectReportVesselsList = createSelector(
   [selectReportActivityFlatten, selectAllDatasets, selectReportCategory],
   (vessels, datasets, reportCategory) => {
     if (!vessels?.length) return null
-
     return Object.values(groupBy(vessels, 'vesselId'))
       .flatMap((vesselActivity) => {
         if (vesselActivity[0]?.category !== reportCategory) return []
         const activityDataset = datasets.find((d) => vesselActivity[0].activityDatasetId === d.id)
-        const infoDatasetId = getRelatedDatasetsByType(activityDataset, DatasetTypes.Vessels)?.[0]
-          ?.id
-        const trackDatasetId = getRelatedDatasetsByType(activityDataset, DatasetTypes.Tracks)?.[0]
-          ?.id
+        const infoDatasetId = getRelatedDatasetByType(activityDataset, DatasetTypes.Vessels)?.id
         const infoDataset = datasets.find((d) => d.id === infoDatasetId)
+        const trackDatasetId = getRelatedDatasetByType(
+          infoDataset || activityDataset,
+          DatasetTypes.Tracks
+        )?.id
         const trackDataset = datasets.find((d) => d.id === trackDatasetId)
         return {
           dataviewId: vesselActivity[0]?.dataviewId,
@@ -166,27 +169,26 @@ export const selectReportVesselsList = createSelector(
           flagTranslatedClean: cleanFlagState(
             t(`flags:${vesselActivity[0]?.flag as string}` as any, vesselActivity[0]?.flag)
           ),
-          geartype: t(
-            `vessel.gearTypes.${vesselActivity[0]?.geartype}` as any,
-            vesselActivity[0]?.geartype
-          ),
-          vesselType: t(
-            `vessel.veeselTypes.${vesselActivity[0]?.vesselType}` as any,
-            vesselActivity[0]?.vesselType
-          ),
-          gearOrVesselType: getVesselGearOrType(vesselActivity[0]),
+          geartype: cleanVesselOrGearType({
+            value: vesselActivity[0]?.geartype,
+            property: 'geartype',
+          }),
+          vesselType: cleanVesselOrGearType({
+            value: vesselActivity[0]?.vesselType,
+            property: 'vesselType',
+          }),
           hours: vesselActivity[0]?.hours,
           infoDataset,
           trackDataset,
           sourceColor: vesselActivity[0]?.sourceColor,
         } as ReportVesselWithDatasets
       })
-      .sort((a, b) => b.hours - a.hours)
+      .sort((a, b) => (b.hours as number) - (a.hours as number))
   }
 )
 
 export const selectHasReportVessels = createSelector([selectReportVesselsList], (vessels) => {
-  return vessels?.length > 0
+  return vessels!?.length > 0
 })
 
 export const selectReportVesselsListWithAllInfo = createSelector(
@@ -214,12 +216,27 @@ export const selectReportVesselsListWithAllInfo = createSelector(
             `vessel.veeselTypes.${vesselActivity[0]?.vesselType}` as any,
             vesselActivity[0]?.vesselType
           ),
-          gearOrVesselType: getVesselGearOrType(vesselActivity[0]),
         }
       })
       .sort((a, b) => b.hours - a.hours)
   }
 )
+
+type CleanVesselOrGearTypeParams = { value: string; property: 'geartype' | 'vesselType' }
+export function cleanVesselOrGearType({ value, property }: CleanVesselOrGearTypeParams) {
+  const valuesClean = value ? value?.split(',').filter(Boolean) : [EMPTY_FIELD_PLACEHOLDER]
+  const valuesCleanTranslated = valuesClean
+    .map((value) => {
+      if (property === 'geartype') {
+        return t(`vessel.gearTypes.${value}` as any, value)
+      }
+      return t(`vessel.vesselTypes.${value}` as any, value)
+    })
+    .sort(sortStrings)
+  return valuesCleanTranslated.length > 1
+    ? valuesCleanTranslated.join('|')
+    : valuesCleanTranslated[0]
+}
 
 export function cleanFlagState(flagState: string) {
   return flagState.replace(/,/g, '')
@@ -229,8 +246,8 @@ const FILTER_PROPERTIES = {
   name: ['shipName'],
   flag: ['flag', 'flagTranslated', 'flagTranslatedClean'],
   mmsi: ['mmsi'],
-  gear: ['gearOrVesselType'],
-  type: ['gearOrVesselType'],
+  gear: ['geartype'],
+  type: ['vesselType'],
 }
 
 export function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: string) {
@@ -266,15 +283,15 @@ export function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: 
       const uniqMatched = block.includes('|') ? Array.from(new Set([...matched])) : matched
       if (block.startsWith('-')) {
         const uniqMatchedIds = new Set<string>()
-        uniqMatched.forEach(({ vesselId }) => {
+        uniqMatched.forEach(({ vesselId = '' }) => {
           uniqMatchedIds.add(vesselId)
         })
-        return vessels.filter(({ vesselId }) => !uniqMatchedIds.has(vesselId))
+        return vessels.filter(({ vesselId = '' }) => !uniqMatchedIds.has(vesselId))
       } else {
         return uniqMatched
       }
     }, vessels)
-    .sort((a, b) => b.hours - a.hours)
+    .sort((a, b) => (b.hours as number) - (a.hours as number))
 }
 
 export const selectReportVesselsFiltered = createSelector(
@@ -307,9 +324,9 @@ export const selectReportVesselsPagination = createSelector(
       page,
       offset: resultsPerPage * page,
       resultsPerPage: resultsPerPage,
-      resultsNumber: vessels?.length,
-      totalFiltered: allVesselsFiltered?.length,
-      total: allVessels?.length,
+      resultsNumber: vessels!?.length,
+      totalFiltered: allVesselsFiltered!?.length,
+      total: allVessels!?.length,
     }
   }
 )

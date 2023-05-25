@@ -95,7 +95,9 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
   const [newDataviewInstanceConfig, setNewDataviewInstanceConfig] = useState<
     UrlDataviewInstance | undefined
   >()
-  const newDataviewInstanceConfigRef = useRef<UrlDataviewInstance>(newDataviewInstanceConfig)
+  const newDataviewInstanceConfigRef = useRef<UrlDataviewInstance | undefined>(
+    newDataviewInstanceConfig
+  )
 
   const dispatch = useAppDispatch()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -222,7 +224,7 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
     const newDataview = { ...dataview, config: { ...dataview.config, ...newDataviewConfig } }
     const incompatibleFilters = Object.keys(newDataview.config?.filters || {}).flatMap((key) => {
       const incompatibleFilterSelection =
-        getIncompatibleFilterSelection(newDataview, key as SupportedDatasetSchema)?.length > 0
+        getIncompatibleFilterSelection(newDataview, key as SupportedDatasetSchema)!?.length > 0
       return incompatibleFilterSelection ? key : []
     })
     if (incompatibleFilters.length) {

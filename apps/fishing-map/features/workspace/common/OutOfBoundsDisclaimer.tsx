@@ -22,9 +22,9 @@ const OutOfTimerangeDisclaimer = ({ dataview }: OutOfTimerangeDisclaimerProps) =
       ? getDatasetsInDataviews([dataview])
       : getActiveDatasetsInActivityDataviews([dataview])
 
-  const dataviewDatasets = dataview.datasets.filter((d) => activeDatasetIds.includes(d.id))
+  const dataviewDatasets = dataview.datasets?.filter((d) => activeDatasetIds.includes(d.id))
 
-  if (dataviewDatasets.length !== 1) {
+  if (dataviewDatasets?.length !== 1) {
     return null
   }
 

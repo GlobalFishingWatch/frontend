@@ -22,6 +22,19 @@ export type HighlightPanelConfig = {
 
 const HIGHLIGHT_POPUP_KEY = 'HighlightPopup'
 
+/**
+ * To use as releaseDateTimestamp while the release date is not yet defined.
+ *
+ * Eg:
+ * {
+ *   dataviewInstanceId: 'vms-with-some-country',
+ *   releaseDateTimestamp: NEXT_YEAR,
+ *   localStorageKey: HIGHLIGHT_POPUP_KEY,
+ *   delayed: 1000,
+ *   ...
+ * }
+ *
+ */
 const NEXT_YEAR = Date.now() + 1000 * 60 * 60 * 24 * 365
 
 // To display a new highlight popup, just add a HighlightPanelConfig element to this array.
@@ -58,8 +71,7 @@ const HIGHLIGHT_CONFIGS: HighlightPanelConfig[] = [
   },
   {
     dataviewInstanceId: 'vms-with-png',
-    // TODO: Set to a proper fixed date when release date is defined.
-    releaseDateTimestamp: NEXT_YEAR,
+    releaseDateTimestamp: Date.parse('2023-06-01T00:00:00Z'),
     localStorageKey: HIGHLIGHT_POPUP_KEY,
     delayed: 1000,
     imageUrl: `${PATH_BASENAME}/images/papua_new_guinea-vms.webp`,
@@ -70,7 +82,7 @@ const HIGHLIGHT_CONFIGS: HighlightPanelConfig[] = [
         'Vessel monitoring system (VMS) data is provided by the National Fisheries Authority of Papua New Guinea. It is now possible to track the position and activity of all vessels comprising the Fishing Industry Association of Papua New Guinea’s fishing fleet operating in Papua New Guinea’s national waters.',
     },
     es: {
-      title: 'Los datos VMS de Noruega ya están disponibles',
+      title: 'Los datos VMS de Papúa Nueva Guinea ya están disponibles',
       description:
         'Los datos del sistema de monitoreo de embarcaciones (VMS) son proporcionados por la Autoridad Nacional de Pesca de Papúa Nueva Guinea. Ahora es posible rastrear la posición y la actividad de todos los barcos que componen la flota pesquera de la Asociación de la Industria Pesquera de Papúa Nueva Guinea que opera en las aguas nacionales de Papúa Nueva Guinea.',
     },
@@ -90,8 +102,8 @@ const HIGHLIGHT_CONFIGS: HighlightPanelConfig[] = [
 const AVAILABLE_HIGHLIGHT_CONFIGS = HIGHLIGHT_CONFIGS
   // sort them by release date descending
   .sort((a, b) => (a.releaseDateTimestamp > b.releaseDateTimestamp ? -1 : 1))
-const HIGHLIGHT_CONFIG_LATEST = AVAILABLE_HIGHLIGHT_CONFIGS.at(0)
-const HIGHLIGHT_CONFIG_PREVIOUS = AVAILABLE_HIGHLIGHT_CONFIGS.at(1)
+const HIGHLIGHT_CONFIG_LATEST = AVAILABLE_HIGHLIGHT_CONFIGS.at(0) as HighlightPanelConfig
+const HIGHLIGHT_CONFIG_PREVIOUS = AVAILABLE_HIGHLIGHT_CONFIGS.at(1) as HighlightPanelConfig
 
 const IS_PRODUCTION_ENV = IS_PRODUCTION_BUILD && PUBLIC_WORKSPACE_ENV === 'production'
 
@@ -99,10 +111,16 @@ const DISPLAY_LATEST_POPUP =
   // Non production environments always show the latest popup
   !IS_PRODUCTION_ENV ||
   // Production displays the latest only after its release date
-  Date.now() >= HIGHLIGHT_CONFIG_LATEST.releaseDateTimestamp
+  Date.now() >= (HIGHLIGHT_CONFIG_LATEST?.releaseDateTimestamp as number)
 
 const HIGHLIGHT_CONFIG = DISPLAY_LATEST_POPUP ? HIGHLIGHT_CONFIG_LATEST : HIGHLIGHT_CONFIG_PREVIOUS
 
-export const HIGHLIGHT_DATAVIEW_INSTANCE_ID = HIGHLIGHT_CONFIG.dataviewInstanceId
+export const HIGHLIGHT_DATAVIEW_INSTANCE_ID = HIGHLIGHT_CONFIG?.dataviewInstanceId
 
+export const getDataviewInstanceReleaseDate = (instanceId: string) => {
+  return (
+    HIGHLIGHT_CONFIGS.find((c) => c.dataviewInstanceId === instanceId)?.releaseDateTimestamp ||
+    NEXT_YEAR
+  )
+}
 export default HIGHLIGHT_CONFIG

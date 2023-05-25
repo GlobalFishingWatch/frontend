@@ -39,7 +39,7 @@ export type DateTimeSeries = {
   compareDate?: string
 }[]
 
-export function useReportAreaCenter(bounds: Bbox) {
+export function useReportAreaCenter(bounds?: Bbox) {
   const map = useMapInstance()
   return useMemo(() => {
     if (!bounds || !map) return null
@@ -54,7 +54,7 @@ export function useReportAreaInViewport() {
   const { viewport } = useViewport()
   const reportAreaIds = useSelector(selectReportAreaIds)
   const area = useSelector(selectDatasetAreaDetail(reportAreaIds))
-  const areaCenter = useReportAreaCenter(area?.bounds)
+  const areaCenter = useReportAreaCenter(area!?.bounds)
   return (
     viewport?.latitude === areaCenter?.latitude &&
     viewport?.longitude === areaCenter?.longitude &&
@@ -66,10 +66,10 @@ export function useFitAreaInViewport() {
   const { setMapCoordinates } = useViewport()
   const reportAreaIds = useSelector(selectReportAreaIds)
   const area = useSelector(selectDatasetAreaDetail(reportAreaIds))
-  const areaCenter = useReportAreaCenter(area?.bounds)
+  const areaCenter = useReportAreaCenter(area!?.bounds)
   const areaInViewport = useReportAreaInViewport()
   return useCallback(() => {
-    if (!areaInViewport) {
+    if (!areaInViewport && areaCenter) {
       setMapCoordinates(areaCenter)
     }
   }, [areaCenter, areaInViewport, setMapCoordinates])

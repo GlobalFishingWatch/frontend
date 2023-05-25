@@ -15,8 +15,8 @@ import { selectUserGroupsPermissions } from 'features/user/user.selectors'
 
 export const selectAllVesselGroupSearchVessels = createSelector(
   [selectVesselGroupSearchVessels, selectNewVesselGroupSearchVessels],
-  (vessels = [], newVessels = []) => {
-    return [...newVessels, ...vessels]
+  (vessels, newVessels) => {
+    return [...(newVessels || []), ...(vessels || [])]
   }
 )
 

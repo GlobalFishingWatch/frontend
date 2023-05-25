@@ -36,7 +36,7 @@
       }
     },
     "compile": {
-      "executor": "@nrwl/next:build",
+      "executor": "@nx/next:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
@@ -55,7 +55,7 @@
       }
     },
     "start": {
-      "executor": "@nrwl/next:server",
+      "executor": "@nx/next:server",
       "options": {
         "buildTarget": "deck-playground:compile",
         "dev": true,
@@ -69,7 +69,7 @@
       }
     },
     "build": {
-      "executor": "@nrwl/next:export",
+      "executor": "@nx/next:export",
       "options": {
         "buildTarget": "deck-playground:compile:production"
       }
@@ -96,7 +96,7 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/deck-playground"],
       "options": {
         "jestConfig": "apps/deck-playground/jest.config.ts",
@@ -104,7 +104,7 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["apps/deck-playground/**/*.{ts,tsx,js,jsx}"]

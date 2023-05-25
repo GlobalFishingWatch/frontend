@@ -1,5 +1,5 @@
 import { dirname } from 'path'
-import { getWorkspaceLayout, joinPathFragments, Tree } from '@nrwl/devkit'
+import { getWorkspaceLayout, joinPathFragments, Tree } from '@nx/devkit'
 import { NormalizedSchema } from './normalize-options'
 
 let isOldNext: boolean

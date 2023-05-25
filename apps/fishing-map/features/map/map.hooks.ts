@@ -255,7 +255,7 @@ export const useClickedEventConnect = () => {
     if (fishingActivityFeatures?.length) {
       dispatch(setHintDismissed('clickingOnAGridCellToShowVessels'))
       const activityProperties = fishingActivityFeatures.map((feature) =>
-        feature.temporalgrid.sublayerInteractionType === 'detections' ? 'detections' : 'hours'
+        feature.temporalgrid?.sublayerInteractionType === 'detections' ? 'detections' : 'hours'
       )
       fishingPromiseRef.current = dispatch(
         fetchFishingActivityInteractionThunk({ fishingActivityFeatures, activityProperties })
