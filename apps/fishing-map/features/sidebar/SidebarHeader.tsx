@@ -46,7 +46,13 @@ import { selectReportsStatus } from 'features/reports/reports.slice'
 import { selectCurrentReport } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { HOME, REPORT, WORKSPACE } from 'routes/routes'
-import { EMPTY_FILTERS, IMO_LENGTH, SSVID_LENGTH, SearchType } from 'features/search/search.slice'
+import {
+  EMPTY_FILTERS,
+  IMO_LENGTH,
+  SSVID_LENGTH,
+  SearchType,
+  cleanVesselSearchResults,
+} from 'features/search/search.slice'
 import { resetAreaDetail } from 'features/areas/areas.slice'
 import { selectReportAreaIds } from 'features/reports/reports.selectors'
 import { QueryParams } from 'types'
@@ -309,6 +315,7 @@ function SidebarHeader() {
     resetSidebarScroll()
     cleanFeatureState('highlight')
     dispatch(resetReportData())
+    dispatch(cleanVesselSearchResults())
   }
 
   const searchOptions: ChoiceOption<SearchType>[] = useMemo(() => {
