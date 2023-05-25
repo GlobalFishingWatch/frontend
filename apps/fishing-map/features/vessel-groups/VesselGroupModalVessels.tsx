@@ -85,7 +85,7 @@ function VesselGroupVesselRow({
   )
 }
 
-function VesselGroupVessels(): React.ReactElement {
+function VesselGroupVessels() {
   const { t } = useTranslation()
   const vesselGroupSearchVessels = useSelector(selectVesselGroupSearchVessels)
   const newVesselGroupSearchVessels = useSelector(selectNewVesselGroupSearchVessels)
@@ -104,9 +104,9 @@ function VesselGroupVessels(): React.ReactElement {
       const vessels = list === 'search' ? vesselGroupSearchVessels : newVesselGroupSearchVessels
       const action =
         list === 'search' ? setVesselGroupSearchVessels : setNewVesselGroupSearchVessels
-      const index = vessels.findIndex((v) => v.id === vessel.id && v.dataset === vessel.dataset)
+      const index = vessels!.findIndex((v) => v.id === vessel.id && v.dataset === vessel.dataset)
       if (index > -1) {
-        dispatch(action([...vessels.slice(0, index), ...vessels.slice(index + 1)]))
+        dispatch(action([...vessels!.slice(0, index), ...vessels!.slice(index + 1)]))
       }
     },
     [dispatch, newVesselGroupSearchVessels, vesselGroupSearchVessels]

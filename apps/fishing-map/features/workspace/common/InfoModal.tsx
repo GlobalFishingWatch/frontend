@@ -104,7 +104,7 @@ const InfoModal = ({
       />
     ) : null
   }
-  const hasLongTitleTab = tabs.some((tab) => tab.title.length > 30)
+  const hasLongTitleTab = tabs.some((tab) => (tab.title as any).length > 30)
 
   let userGuideLink
   if (dataview.category === DataviewCategory.Activity) {

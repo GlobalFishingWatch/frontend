@@ -90,7 +90,7 @@ const setMobileSafeVH = () => {
   document.documentElement.style.setProperty('--vh', `${vh}px`)
 }
 
-function App(): React.ReactElement {
+function App() {
   useAnalytics()
   useReplaceLoginUrl()
   const map = useMapInstance()

@@ -43,14 +43,16 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
   const { start, end } = useSelector(selectTimeRange)
 
   const getDownloadVessels = async (_, done) => {
-    await setAllVesselsWithAllInfoFiltered(
-      getVesselsFiltered(allVesselsWithAllInfo, reportVesselFilter)
-    )
-    trackEvent({
-      category: TrackCategory.Analysis,
-      action: `Download CSV`,
-    })
-    done(true)
+    if (allVesselsWithAllInfo) {
+      await setAllVesselsWithAllInfoFiltered(
+        getVesselsFiltered(allVesselsWithAllInfo, reportVesselFilter) as any
+      )
+      trackEvent({
+        category: TrackCategory.Analysis,
+        action: `Download CSV`,
+      })
+      done(true)
+    }
   }
 
   useEffect(() => {
@@ -97,7 +99,7 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
   const hasLessVesselsThanAPage =
     pagination.page === 0 && pagination?.resultsNumber < pagination?.resultsPerPage
   const isLastPaginationPage =
-    pagination?.offset + pagination?.resultsPerPage >= pagination?.totalFiltered
+    pagination?.offset + pagination?.resultsPerPage >= (pagination?.totalFiltered as number)
 
   return (
     <div className={styles.footer}>
@@ -143,17 +145,17 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
           <span className={cx(styles.noWrap, styles.right)}>
             {reportVesselFilter && (
               <Fragment>
-                <I18nNumber number={allFilteredVessels?.length} /> {t('common.of', 'of')}{' '}
+                <I18nNumber number={allFilteredVessels!?.length} /> {t('common.of', 'of')}{' '}
               </Fragment>
             )}
-            <I18nNumber number={pagination?.total} />{' '}
+            <I18nNumber number={pagination.total} />{' '}
             {t('common.vessel', { count: pagination?.total })}
           </span>
         </Fragment>
       </div>
       <div className={cx(styles.flex, styles.expand)}>
         <VesselGroupAddButton
-          vessels={reportVesselFilter ? allFilteredVessels : allVessels}
+          vessels={reportVesselFilter ? allFilteredVessels : (allVessels as any)}
           showCount={false}
           onAddToVesselGroup={onAddToVesselGroup}
         />

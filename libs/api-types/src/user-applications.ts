@@ -2,7 +2,7 @@ type Narrowable = string | number | boolean | symbol | void | null | undefined
 const tuple = <T extends Narrowable[]>(...args: T) => args
 
 export const USER_APPLICATION_INTENDED_USES = tuple('commercial', 'non-commercial')
-export type UserApplicationIntendedUse = typeof USER_APPLICATION_INTENDED_USES[number]
+export type UserApplicationIntendedUse = (typeof USER_APPLICATION_INTENDED_USES)[number]
 
 export interface UserApiAdditionalInformation {
   intendedUse?: UserApplicationIntendedUse

@@ -7,6 +7,7 @@ import {
   HighlighterCallbackFn,
   HighlighterCallbackFnArgs,
 } from '@globalfishingwatch/timebar'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectActiveActivityDataviewsByVisualisation } from 'features/dataviews/dataviews.selectors'
 import { useStackedActivity } from 'features/timebar/TimebarActivityGraph.hooks'
 import { formatNumber } from 'utils/info'
@@ -18,7 +19,9 @@ import styles from './Timebar.module.css'
 const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisualisations }) => {
   const activeDataviews = useSelector(selectActiveActivityDataviewsByVisualisation(visualisation))
 
-  const { loading, stackedActivity, error } = useStackedActivity(activeDataviews)
+  const { loading, stackedActivity, error } = useStackedActivity(
+    activeDataviews as UrlDataviewInstance[]
+  )
   const style = useMapStyle()
   const mapLegends = useMapLegend(style, activeDataviews)
 
@@ -26,8 +29,8 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
     ({ chunk, value, item }: HighlighterCallbackFnArgs) => {
       if (loading) return t('map.loading', 'Loading')
       if (!value || !value.value) return ''
-      const dataviewId = item.props?.dataviewId
-      const unit = mapLegends.find((l) => l.id === getLegendId(dataviewId))?.unit || ''
+      const dataviewId = item?.props?.dataviewId
+      const unit = mapLegends?.find((l) => l.id === getLegendId(dataviewId))?.unit || ''
       const maxHighlighterFractionDigits =
         visualisation === TimebarVisualisations.Environment ? 2 : undefined
       const labels = [

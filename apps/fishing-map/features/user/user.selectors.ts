@@ -158,6 +158,6 @@ export const selectUserVesselGroups = createSelector(
 export const selectAllVisibleVesselGroups = createSelector(
   [selectUserVesselGroups, selectWorkspaceVesselGroups],
   (vesselGroups = [], workspaceVesselGroups = []) => {
-    return uniqBy([...vesselGroups, ...workspaceVesselGroups], 'id')
+    return uniqBy([...vesselGroups, ...(workspaceVesselGroups || [])], 'id')
   }
 )

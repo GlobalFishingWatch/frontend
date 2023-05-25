@@ -32,7 +32,7 @@ export default function ReportSummaryTags({
   let datasetName = dataset ? getDatasetLabel(dataset) : dataview.name || ''
   if (activityDataview) {
     datasetName =
-      dataset.subcategory === 'presence'
+      dataset?.subcategory === 'presence'
         ? t(`common.presence`, 'Vessel presence')
         : t(`common.apparentFishing`, 'Apparent Fishing Effort')
   }
