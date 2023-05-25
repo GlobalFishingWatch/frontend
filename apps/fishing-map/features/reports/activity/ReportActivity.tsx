@@ -9,13 +9,13 @@ import {
   useFilteredTimeSeries,
 } from 'features/reports/reports-timeseries.hooks'
 import { selectTimeComparisonValues } from 'features/reports/reports.selectors'
-import { Locale, ReportActivityGraph } from 'types'
+import { ReportActivityGraph } from 'types'
 import { selectReportActivityGraph } from 'features/app/app.selectors'
 import ReportActivityPlaceholder from 'features/reports/placeholders/ReportActivityPlaceholder'
 import ReportActivityPeriodComparison from 'features/reports/activity/ReportActivityPeriodComparison'
 import ReportActivityPeriodComparisonGraph from 'features/reports/activity/ReportActivityPeriodComparisonGraph'
 import UserGuideLink from 'features/help/UserGuideLink'
-import SOURCE_SWITCH_CONTENT from 'features/welcome/SourceSwitch.content'
+import { getSourceSwitchContentByLng } from 'features/welcome/SourceSwitch.content'
 import ReportActivityEvolution from './ReportActivityEvolution'
 import ReportActivityBeforeAfter from './ReportActivityBeforeAfter'
 import ReportActivityBeforeAfterGraph from './ReportActivityBeforeAfterGraph'
@@ -27,7 +27,7 @@ export type ReportActivityProps = {
   end: string
 }
 
-const SELECTORS_BY_TYPE: Record<ReportActivityGraph, React.FC> = {
+const SELECTORS_BY_TYPE: Record<ReportActivityGraph, React.FC | null> = {
   evolution: null,
   beforeAfter: ReportActivityBeforeAfter,
   periodComparison: ReportActivityPeriodComparison,
@@ -44,13 +44,16 @@ export default function ReportActivity() {
   const { start, end } = useTimerangeConnect()
   const reportActivityGraph = useSelector(selectReportActivityGraph)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
-  const { disclaimer } = SOURCE_SWITCH_CONTENT[(i18n.language as Locale) || Locale.en]
+  const { disclaimer } = getSourceSwitchContentByLng(i18n.language)
 
   const SelectorsComponent = useMemo(
     () => SELECTORS_BY_TYPE[reportActivityGraph],
     [reportActivityGraph]
   )
-  const GraphComponent = useMemo(() => GRAPH_BY_TYPE[reportActivityGraph], [reportActivityGraph])
+  const GraphComponent = useMemo(
+    () => GRAPH_BY_TYPE[reportActivityGraph] as any,
+    [reportActivityGraph]
+  )
   const { loading, layersTimeseriesFiltered } = useFilteredTimeSeries()
   const reportGraphMode = getReportGraphMode(reportActivityGraph)
   const isSameTimeseriesMode = layersTimeseriesFiltered?.[0]?.mode === reportGraphMode

@@ -29,7 +29,7 @@ function ReportEnvironment() {
               <ReportActivityEvolution
                 start={timerange.start}
                 end={timerange.end}
-                data={layersTimeseriesFiltered?.[index]}
+                data={layersTimeseriesFiltered!?.[index]}
               />
             )}
           </div>

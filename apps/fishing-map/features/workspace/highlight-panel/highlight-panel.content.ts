@@ -102,8 +102,8 @@ const HIGHLIGHT_CONFIGS: HighlightPanelConfig[] = [
 const AVAILABLE_HIGHLIGHT_CONFIGS = HIGHLIGHT_CONFIGS
   // sort them by release date descending
   .sort((a, b) => (a.releaseDateTimestamp > b.releaseDateTimestamp ? -1 : 1))
-const HIGHLIGHT_CONFIG_LATEST = AVAILABLE_HIGHLIGHT_CONFIGS.at(0)
-const HIGHLIGHT_CONFIG_PREVIOUS = AVAILABLE_HIGHLIGHT_CONFIGS.at(1)
+const HIGHLIGHT_CONFIG_LATEST = AVAILABLE_HIGHLIGHT_CONFIGS.at(0) as HighlightPanelConfig
+const HIGHLIGHT_CONFIG_PREVIOUS = AVAILABLE_HIGHLIGHT_CONFIGS.at(1) as HighlightPanelConfig
 
 const IS_PRODUCTION_ENV = IS_PRODUCTION_BUILD && PUBLIC_WORKSPACE_ENV === 'production'
 
@@ -111,11 +111,11 @@ const DISPLAY_LATEST_POPUP =
   // Non production environments always show the latest popup
   !IS_PRODUCTION_ENV ||
   // Production displays the latest only after its release date
-  Date.now() >= HIGHLIGHT_CONFIG_LATEST.releaseDateTimestamp
+  Date.now() >= (HIGHLIGHT_CONFIG_LATEST?.releaseDateTimestamp as number)
 
 const HIGHLIGHT_CONFIG = DISPLAY_LATEST_POPUP ? HIGHLIGHT_CONFIG_LATEST : HIGHLIGHT_CONFIG_PREVIOUS
 
-export const HIGHLIGHT_DATAVIEW_INSTANCE_ID = HIGHLIGHT_CONFIG.dataviewInstanceId
+export const HIGHLIGHT_DATAVIEW_INSTANCE_ID = HIGHLIGHT_CONFIG?.dataviewInstanceId
 
 export const getDataviewInstanceReleaseDate = (instanceId: string) => {
   return (

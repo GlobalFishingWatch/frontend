@@ -66,8 +66,8 @@ function ActivityLayerPanel({
   const guestUser = useSelector(isGuestUser)
   const readOnly = useSelector(selectReadOnly)
   const layerActive = dataview?.config?.visible ?? true
-  const datasetStatsFields = dataview.datasets.flatMap((d) =>
-    Object.entries(d.schema).flatMap(([id, schema]) => (schema.stats ? id : []))
+  const datasetStatsFields = dataview.datasets!?.flatMap((d) =>
+    Object.entries(d.schema || {}).flatMap(([id, schema]) => (schema.stats ? id : []))
   )
 
   const fields = datasetStatsFields?.length > 0 ? datasetStatsFields : DEFAULT_STATS_FIELDS
@@ -75,8 +75,8 @@ function ActivityLayerPanel({
   const { data: stats, isFetching } = useGetStatsByDataviewQuery(
     {
       dataview,
-      timerange: urlTimeRange,
-      fields,
+      timerange: urlTimeRange as any,
+      fields: fields as any,
     },
     {
       skip: guestUser || !urlTimeRange || !layerActive,
@@ -119,7 +119,7 @@ function ActivityLayerPanel({
 
   const onToggleFilterOpen = () => {
     setFiltersOpen(!filterOpen)
-    if (!hintsDismissed.filterActivityLayers) {
+    if (!hintsDismissed?.filterActivityLayers) {
       dispatch(setHintDismissed('filterActivityLayers'))
     }
   }
@@ -270,7 +270,7 @@ function ActivityLayerPanel({
                     }
                   >
                     <div className={activityStyles.help}>
-                      {statsValue > 0 ? (
+                      {statsValue && statsValue > 0 ? (
                         <span>
                           <I18nNumber number={statsValue} />{' '}
                           {stats.type === 'vessels'

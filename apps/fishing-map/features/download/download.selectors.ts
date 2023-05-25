@@ -6,7 +6,7 @@ import { selectDownloadTrackId } from 'features/download/downloadTrack.slice'
 export const selectDownloadActivityArea = createSelector(
   [selectDownloadActivityAreaKey, selectAreas],
   (areaKey, areas): DatasetAreaDetail => {
-    return areas[areaKey.datasetId]?.detail[areaKey.areaId]
+    return areas[areaKey!?.datasetId]!.detail[areaKey!?.areaId]
   }
 )
 

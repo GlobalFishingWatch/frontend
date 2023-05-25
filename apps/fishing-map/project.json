@@ -19,7 +19,7 @@
       }
     },
     "build": {
-      "executor": "@nrwl/next:build",
+      "executor": "@nx/next:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
@@ -49,7 +49,7 @@
       }
     },
     "serve": {
-      "executor": "@nrwl/next:server",
+      "executor": "@nx/next:server",
       "options": {
         "buildTarget": "fishing-map:build",
         "dev": true,
@@ -63,7 +63,7 @@
       }
     },
     "export": {
-      "executor": "@nrwl/next:export",
+      "executor": "@nx/next:export",
       "options": {
         "buildTarget": "fishing-map:build:production"
       }
@@ -90,7 +90,7 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/fishing-map"],
       "options": {
         "jestConfig": "apps/fishing-map/jest.config.ts",
@@ -98,7 +98,7 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["apps/fishing-map/**/*.{ts,tsx,js,jsx}"]

@@ -47,7 +47,7 @@ type GetGeneratorConfigParams = {
   resources: ResourcesState
   rulers: Ruler[]
   debugOptions: DebugOptions
-  timeRange?: Range
+  timeRange: Range
   highlightedTime?: Range
   highlightedEvents?: string[]
   bivariateDataviews?: BivariateDataviews
@@ -75,7 +75,7 @@ const getGeneratorsConfig = ({
       ? dataviews.filter((dataview) => {
           const isHeatmap = dataview.config?.type === GeneratorType.HeatmapAnimated
           return isHeatmap && hasVesselGroupsSelected
-            ? duration?.days <= VESSEL_GROUPS_DAYS_LIMIT
+            ? duration!?.days <= VESSEL_GROUPS_DAYS_LIMIT
             : true
         })
       : dataviews
@@ -101,7 +101,7 @@ const getGeneratorsConfig = ({
     heatmapAnimatedMode = HeatmapAnimatedMode.TimeCompare
   }
 
-  const trackDataviews = dataviewsFiltered.filter((d) => d.config.type === GeneratorType.Track)
+  const trackDataviews = dataviewsFiltered.filter((d) => d.config?.type === GeneratorType.Track)
   const singleTrack = trackDataviews.length === 1
 
   const generatorOptions: DataviewsGeneratorConfigsParams = {
@@ -194,8 +194,17 @@ const selectStaticGeneratorsConfig = createSelector(
     selectDebugOptions,
     selectBivariateDataviews,
     selectShowTimeComparison,
+    selectTimeRange,
   ],
-  (dataviews = [], resources, rulers, debugOptions, bivariateDataviews, showTimeComparison) => {
+  (
+    dataviews = [],
+    resources,
+    rulers,
+    debugOptions,
+    bivariateDataviews,
+    showTimeComparison,
+    timeRange
+  ) => {
     // We don't want highlightedTime here to avoid re-computing on mouse timebar hovering
     return getGeneratorsConfig({
       dataviews,
@@ -204,6 +213,7 @@ const selectStaticGeneratorsConfig = createSelector(
       debugOptions,
       bivariateDataviews,
       showTimeComparison,
+      timeRange,
     })
   }
 )

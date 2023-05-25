@@ -22,7 +22,7 @@
       }
     },
     "compile": {
-      "executor": "@nrwl/next:build",
+      "executor": "@nx/next:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
@@ -34,7 +34,7 @@
       }
     },
     "start": {
-      "executor": "@nrwl/next:server",
+      "executor": "@nx/next:server",
       "options": {
         "buildTarget": "tile-inspector:compile",
         "dev": true,
@@ -48,13 +48,13 @@
       }
     },
     "build": {
-      "executor": "@nrwl/next:export",
+      "executor": "@nx/next:export",
       "options": {
         "buildTarget": "tile-inspector:compile:production"
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/tile-inspector"],
       "options": {
         "jestConfig": "apps/tile-inspector/jest.config.ts",
@@ -62,7 +62,7 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["apps/tile-inspector/**/*.{ts,tsx,js,jsx}"]
