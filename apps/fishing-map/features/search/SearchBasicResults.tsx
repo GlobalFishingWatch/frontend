@@ -114,7 +114,7 @@ function SearchBasicResults({
                     <label>{t('vessel.vesselType', 'Vessel Type')}</label>
                     <span>
                       {geartype !== undefined
-                        ? t(`vessel.vesselTypes.${shiptype.toLowerCase()}` as any, shiptype)
+                        ? t(`vessel.vesselTypes.${shiptype?.toLowerCase()}` as any, shiptype)
                         : EMPTY_FIELD_PLACEHOLDER}
                     </span>
                   </div>

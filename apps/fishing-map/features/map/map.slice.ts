@@ -304,7 +304,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
                   return entry.id === vessel.id
                 })
 
-                const infoDataset = selectDatasetById(vesselInfo?.dataset)(state)
+                const infoDataset = selectDatasetById(vesselInfo?.dataset as string)(state)
                 const trackFromRelatedDataset = infoDataset || vessel.dataset
                 const trackDatasetId = getRelatedDatasetByType(
                   trackFromRelatedDataset,

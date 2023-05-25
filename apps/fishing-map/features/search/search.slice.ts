@@ -154,7 +154,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
             id: advancedQuery ? 'where' : 'query',
             value: encodeURIComponent(advancedQuery || query),
           },
-          { id: 'since', value: since || '' },
+          { id: 'since', value: since },
         ],
       }
 

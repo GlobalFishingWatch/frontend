@@ -74,7 +74,7 @@ function Search() {
     }).length > 0
   const searchDatasets = useSelector(
     activeSearchOption === 'basic' ? selectBasicSearchDatasets : selectAdvancedSearchDatasets
-  )
+  ) as Dataset[]
 
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const promiseRef = useRef<any>()
@@ -86,7 +86,7 @@ function Search() {
         query,
         datasets,
         filters,
-        since,
+        since = '',
       }: {
         query: string
         datasets: Dataset[]
@@ -135,7 +135,7 @@ function Search() {
 
   const fetchMoreResults = useCallback(() => {
     const { since, total } = searchPagination
-    if (since && searchResults?.length < total && total > RESULTS_PER_PAGE && searchDatasets) {
+    if (since && searchResults!?.length < total && total > RESULTS_PER_PAGE && searchDatasets) {
       fetchResults({
         query: debouncedQuery,
         datasets: searchDatasets,

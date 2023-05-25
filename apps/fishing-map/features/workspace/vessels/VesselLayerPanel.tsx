@@ -238,7 +238,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       component={
         <ul className={styles.infoContent}>
           {gfwUser &&
-            infoResource?.data?.vesselRegistryInfo?.length > 0 &&
+            infoResource?.data?.vesselRegistryInfo!?.length > 0 &&
             vesselRegistryFields.map((registryField) => {
               const value =
                 infoResource?.data?.vesselRegistryInfo[0]?.[

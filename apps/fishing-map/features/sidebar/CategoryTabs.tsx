@@ -111,7 +111,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
         >
           <Link
             className={styles.tabContent}
-            to={getLinkToSearch(workspace)}
+            to={getLinkToSearch(workspace as Workspace)}
             onClick={onSearchClick}
           >
             <Tooltip content={t('search.vessels', 'Search vessels')} placement="right">
