@@ -81,6 +81,7 @@ export const useGeneratorsDictionaryConnect = () => {
   const generatorsDictionary = useSelector(selectMapGeneratorsDictionary)
   return useMemo(() => {
     return {
+      ...generatorsDictionary,
       [GeneratorType.Vessels]: {
         ...generatorsDictionary[GeneratorType.Vessels],
         visibleEvents,

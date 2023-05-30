@@ -428,6 +428,7 @@ export function getDataviewsGeneratorsDictionary(
   resources?: DataviewsGeneratorResource
 ): DeckLayersGeneratorDictionary {
   const vesselsDataviews = dataviews.filter((dataview) => isTrackDataview(dataview))
+
   return {
     [GeneratorType.Vessels]: {
       ids: vesselsDataviews.map((dataview) => dataview.id),
@@ -464,6 +465,12 @@ export function getDataviewsGeneratorsDictionary(
         {}
       ),
     },
+    [GeneratorType.Fourwings]: dataviews
+      .filter((dataview) => isHeatmapAnimatedDataview(dataview))
+      .map((dataview) => ({
+        id: dataview.id,
+        dataview,
+      })),
   }
 }
 
