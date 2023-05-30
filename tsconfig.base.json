@@ -20,6 +20,7 @@
       "@globalfishingwatch/api-types": ["libs/api-types/src/index.ts"],
       "@globalfishingwatch/data-transforms": ["libs/data-transforms/src/index.ts"],
       "@globalfishingwatch/dataviews-client": ["libs/dataviews-client/src/index.ts"],
+      "@globalfishingwatch/deck-layers": ["libs/deck-layers/src/index.ts"],
       "@globalfishingwatch/features-aggregate": ["libs/features-aggregate/src/index.ts"],
       "@globalfishingwatch/fourwings-aggregate": ["libs/fourwings-aggregate/src/index.ts"],
       "@globalfishingwatch/i18n-labels": ["libs/i18n-labels/index.ts"],
@@ -31,8 +32,7 @@
       "@globalfishingwatch/react-hooks": ["libs/react-hooks/src/index.ts"],
       "@globalfishingwatch/timebar": ["libs/timebar/src/index.js"],
       "@globalfishingwatch/ui-components": ["libs/ui-components/src/index.ts"],
-      "@globalfishingwatch/ui-components/*": ["libs/ui-components/*"],
-      "@globalfishingwatch/deck-layers": ["libs/deck-layers/src/index.ts"]
+      "@globalfishingwatch/ui-components/*": ["libs/ui-components/*"]
     }
   },
   "files": ["./vendors.d.ts"],

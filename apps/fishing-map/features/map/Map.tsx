@@ -7,6 +7,7 @@ import MemoryStatsComponent from 'next-react-memory-stats'
 import dynamic from 'next/dynamic'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import maplibregl from '@globalfishingwatch/maplibre-gl'
+import { useDeckLayerComposer } from '@globalfishingwatch/deck-layers'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
@@ -20,7 +21,6 @@ import {
   defaultStyleTransformations,
   useDebounce,
   useMemoCompare,
-  useDeckLayerComposer,
 } from '@globalfishingwatch/react-hooks'
 import { ExtendedStyleMeta, GeneratorType, LayerComposer } from '@globalfishingwatch/layer-composer'
 import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
