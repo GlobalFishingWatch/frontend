@@ -41,7 +41,8 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
 const fetchDatasetsFromApi = async (
   ids: string[] = [],
   existingIds: string[] = [],
-  signal: AbortSignal
+  signal: AbortSignal,
+  maxDepth: number = 5
 ) => {
   const uniqIds = ids?.length ? ids.filter((id) => !existingIds.includes(id)) : []
   const datasetsParams = {
@@ -66,8 +67,13 @@ const fetchDatasetsFromApi = async (
   )
   const currentIds = uniq([...existingIds, ...datasets.map((d) => d.id)])
   const uniqRelatedDatasetsIds = without(relatedDatasetsIds, ...currentIds)
-  if (uniqRelatedDatasetsIds.length > 1) {
-    const relatedDatasets = await fetchDatasetsFromApi(uniqRelatedDatasetsIds, currentIds, signal)
+  if (uniqRelatedDatasetsIds.length > 1 && maxDepth > 0) {
+    const relatedDatasets = await fetchDatasetsFromApi(
+      uniqRelatedDatasetsIds,
+      currentIds,
+      signal,
+      maxDepth - 1
+    )
     datasets = uniqBy([...datasets, ...relatedDatasets], 'id')
   }
 
