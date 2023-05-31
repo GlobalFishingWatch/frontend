@@ -7,7 +7,7 @@ import {
 import {
   AnyGeneratorConfig,
   DeckLayersGeneratorDictionary,
-  GeneratorType,
+  DeckLayersGeneratorType,
   GlobalGeneratorConfig,
   VesselDeckLayersGenerator,
 } from '@globalfishingwatch/layer-composer'
@@ -42,7 +42,7 @@ export function useDeckLayerComposer({
   })
 
   const vesselLayers = useVesselLayers(
-    generatorsDictionary[GeneratorType.Vessels] as VesselDeckLayersGenerator,
+    generatorsDictionary[DeckLayersGeneratorType.Vessels] as VesselDeckLayersGenerator,
     globalGeneratorConfig,
     highlightedTime
   )

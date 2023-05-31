@@ -11,6 +11,7 @@ import {
 import {
   ContextLayerType,
   GeneratorType,
+  DeckLayersGeneratorType,
   GlobalGeneratorConfig,
 } from '@globalfishingwatch/layer-composer'
 import {
@@ -81,8 +82,8 @@ export const useGeneratorsDictionaryConnect = () => {
   const generatorsDictionary = useSelector(selectMapGeneratorsDictionary)
   return useMemo(() => {
     return {
-      [GeneratorType.Vessels]: {
-        ...generatorsDictionary[GeneratorType.Vessels],
+      [DeckLayersGeneratorType.Vessels]: {
+        ...generatorsDictionary[DeckLayersGeneratorType.Vessels],
         visibleEvents,
       },
     }
