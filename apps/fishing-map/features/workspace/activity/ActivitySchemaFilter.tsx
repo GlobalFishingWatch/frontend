@@ -7,6 +7,7 @@ import {
   MultiSelectOption,
   Select,
   Slider,
+  SliderRange,
 } from '@globalfishingwatch/ui-components'
 import { EXCLUDE_FILTER_ID, FilterOperator, INCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
@@ -16,7 +17,11 @@ import styles from './ActivityFilters.module.css'
 
 type ActivitySchemaFilterProps = {
   schemaFilter: SchemaFilter
-  onSelect: (filterKey: string, selection: MultiSelectOption | MultiSelectOption[]) => void
+  onSelect: (
+    filterKey: string,
+    selection: MultiSelectOption | MultiSelectOption[],
+    singleValue?: boolean
+  ) => void
   onSelectOperation: (filterKey: string, filterOperator: FilterOperator) => void
   onIsOpenChange?: (open: boolean) => void
   onRemove: (filterKey: string, selection: MultiSelectOption[]) => void
@@ -24,6 +29,14 @@ type ActivitySchemaFilterProps = {
 }
 export const showSchemaFilter = (schemaFilter: SchemaFilter) => {
   return !schemaFilter.disabled && schemaFilter.options && schemaFilter.options.length > 0
+}
+
+export const VALUE_TRANSFORMATIONS_BY_UNIT = {
+  minutes: {
+    in: (v) => v / 60,
+    out: (v) => v * 60,
+    label: t('common.hour_other', 'Hours'),
+  },
 }
 
 export const getFilterOperatorOptions = () => {
@@ -39,22 +52,27 @@ export const getFilterOperatorOptions = () => {
   ] as ChoiceOption[]
 }
 
-const getRangeLimitsBySchema = (schemaFilter: SchemaFilter): [number, number] => {
+const getRangeLimitsBySchema = (schemaFilter: SchemaFilter): number[] => {
   const { options } = schemaFilter
   const optionValues = options.map(({ id }) => parseInt(id)).sort((a, b) => a - b)
-  return [optionValues[0], optionValues[optionValues.length - 1]]
+  return optionValues.length === 1
+    ? optionValues
+    : [optionValues[0], optionValues[optionValues.length - 1]]
 }
 
-const getRangeBySchema = (schemaFilter: SchemaFilter): [number, number] => {
+const getRangeBySchema = (schemaFilter: SchemaFilter): number[] => {
   const { options, optionsSelected } = schemaFilter
 
   const optionValues = options.map(({ id }) => parseInt(id)).sort((a, b) => a - b)
   const rangeValues =
     optionsSelected?.length > 0
-      ? optionsSelected.map(({ id }) => parseInt(id)).sort((a, b) => a - b)
+      ? optionsSelected
+          .map((option) => (Array.isArray(option) ? parseInt(option[0].id) : parseInt(option.id)))
+          .sort((a, b) => a - b)
       : optionValues
-
-  return [rangeValues[0], rangeValues[rangeValues.length - 1]]
+  return optionValues.length === 1
+    ? rangeValues
+    : [rangeValues[0], rangeValues[rangeValues.length - 1]]
 }
 
 function ActivitySchemaFilter({
@@ -65,23 +83,25 @@ function ActivitySchemaFilter({
   onIsOpenChange,
   onSelectOperation,
 }: ActivitySchemaFilterProps) {
-  const { id, label, type, disabled, options, optionsSelected, filterOperator } = schemaFilter
-
+  const { id, label, type, disabled, options, optionsSelected, filterOperator, unit } = schemaFilter
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const onSliderChange = useCallback(
     (rangeSelected) => {
       const filterRange = getRangeLimitsBySchema(schemaFilter)
       if (rangeSelected[0] === filterRange[0] && rangeSelected[1] === filterRange[1]) {
         onClean(id)
+      } else if (!Number.isNaN(rangeSelected)) {
+        const value = unit ? VALUE_TRANSFORMATIONS_BY_UNIT[unit].out(rangeSelected) : rangeSelected
+        onSelect(id, value, true)
       } else {
-        const selection = rangeSelected.map((id) => ({
+        const selection = rangeSelected.flatMap((id) => ({
           id: id.toString(),
           label: id.toString(),
         }))
         onSelect(id, selection)
       }
     },
-    [id, onClean, onSelect, schemaFilter]
+    [id, onClean, onSelect, schemaFilter, unit]
   )
 
   if (!showSchemaFilter(schemaFilter)) {
@@ -90,7 +110,7 @@ function ActivitySchemaFilter({
 
   if (type === 'number') {
     return (
-      <Slider
+      <SliderRange
         className={styles.multiSelect}
         initialRange={getRangeBySchema(schemaFilter)}
         label={label}
@@ -101,7 +121,29 @@ function ActivitySchemaFilter({
         }}
         onChange={onSliderChange}
         histogram
-      ></Slider>
+      />
+    )
+  }
+
+  if (type === 'number-single') {
+    const initialValue = unit
+      ? VALUE_TRANSFORMATIONS_BY_UNIT[unit].in(getRangeBySchema(schemaFilter)[0])
+      : getRangeBySchema(schemaFilter)[0]
+    const maxValue = unit
+      ? VALUE_TRANSFORMATIONS_BY_UNIT[unit].in(getRangeLimitsBySchema(schemaFilter)[0])
+      : getRangeLimitsBySchema(schemaFilter)[0]
+    return (
+      <Slider
+        className={styles.multiSelect}
+        initialValue={initialValue}
+        label={label}
+        config={{
+          steps: [0, maxValue],
+          min: 0,
+          max: maxValue,
+        }}
+        onChange={onSliderChange}
+      />
     )
   }
 

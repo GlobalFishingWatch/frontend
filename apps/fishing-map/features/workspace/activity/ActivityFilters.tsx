@@ -210,7 +210,8 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
 
   const onSelectFilterClick = (
     filterKey: SupportedDatasetSchema,
-    selection: MultiSelectOption | MultiSelectOption[]
+    selection: MultiSelectOption | MultiSelectOption[],
+    singleValue: boolean = false
   ) => {
     if ((selection as MultiSelectOption)?.id === VESSEL_GROUPS_MODAL_ID) {
       dispatch(setVesselGroupsModalOpen(true))
@@ -219,6 +220,8 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
     }
     const filterValues = Array.isArray(selection)
       ? selection.map(({ id }) => id).sort((a, b) => a - b)
+      : singleValue
+      ? selection
       : [...(dataview.config?.filters?.[filterKey] || []), selection.id]
     const newDataviewConfig = {
       filters: {

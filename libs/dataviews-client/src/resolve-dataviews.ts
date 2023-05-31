@@ -330,7 +330,10 @@ export function resolveDataviews(
 
   // resolved array filters to url filters
   dataviewInstancesResolved = dataviewInstancesResolved.map((dataviewInstance) => {
-    if (dataviewInstance.config?.type === GeneratorType.HeatmapAnimated) {
+    if (
+      dataviewInstance.config?.type === GeneratorType.HeatmapAnimated ||
+      dataviewInstance.config?.type === GeneratorType.TileCluster
+    ) {
       const { filters, filterOperators } = dataviewInstance.config
       if (filters) {
         if (filters['vessel-groups']) {
