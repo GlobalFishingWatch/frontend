@@ -73,43 +73,50 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
   }
 })
 
+const fetchDatasetsFromApi = async (
+  ids: string[] = [],
+  existingIds: string[] = [],
+  signal: AbortSignal
+) => {
+  const uniqIds = ids?.length ? ids.filter((id) => !existingIds.includes(id)) : []
+  const datasetsParams = {
+    ...(uniqIds?.length ? { ids: uniqIds } : { 'logged-user': true }),
+    include: 'endpoints',
+    cache: false,
+    ...DEFAULT_PAGINATION_PARAMS,
+  }
+  const initialDatasets = await GFWAPI.fetch<APIPagination<Dataset>>(
+    `/datasets?${stringify(datasetsParams, { arrayFormat: 'comma' })}`,
+    { signal }
+  )
+
+  const mockedDatasets =
+    process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_USE_LOCAL_DATASETS === 'true'
+      ? await import('./datasets.mock')
+      : { default: [] }
+  let datasets = uniqBy([...mockedDatasets.default, ...initialDatasets.entries], 'id')
+
+  const relatedDatasetsIds = uniq(
+    datasets.flatMap((dataset) => dataset.relatedDatasets?.flatMap(({ id }) => id || []) || [])
+  )
+  const currentIds = uniq([...existingIds, ...datasets.map((d) => d.id)])
+  const uniqRelatedDatasetsIds = without(relatedDatasetsIds, ...currentIds)
+  if (uniqRelatedDatasetsIds.length > 1) {
+    const relatedDatasets = await fetchDatasetsFromApi(uniqRelatedDatasetsIds, currentIds, signal)
+    datasets = uniqBy([...datasets, ...relatedDatasets], 'id')
+  }
+
+  return datasets
+}
+
 export const fetchDatasetsByIdsThunk = createAsyncThunk(
   'datasets/fetch',
   async (ids: string[] = [], { signal, rejectWithValue, getState }) => {
     const state = getState() as DatasetsSliceState
     const existingIds = selectIds(state) as string[]
-    const uniqIds = ids?.length ? ids.filter((id) => !existingIds.includes(id)) : []
 
     try {
-      const datasetsParams = {
-        ...(uniqIds?.length ? { ids: uniqIds } : { 'logged-user': true }),
-        include: 'endpoints',
-        cache: false,
-        ...DEFAULT_PAGINATION_PARAMS,
-      }
-      const initialDatasets = await GFWAPI.fetch<APIPagination<Dataset>>(
-        `/datasets?${stringify(datasetsParams, { arrayFormat: 'comma' })}`,
-        { signal }
-      )
-      const relatedDatasetsIds = uniq(
-        initialDatasets.entries.flatMap(
-          (dataset) => dataset.relatedDatasets?.flatMap(({ id }) => id || []) || []
-        )
-      )
-      const uniqRelatedDatasetsIds = without(relatedDatasetsIds, ...existingIds).join(',')
-      const relatedWorkspaceParams = { ...datasetsParams, ids: uniqRelatedDatasetsIds }
-      const relatedDatasets = await GFWAPI.fetch<APIPagination<Dataset[]>>(
-        `/datasets?${stringify(relatedWorkspaceParams, { arrayFormat: 'comma' })}`,
-        { signal }
-      )
-      let datasets = uniqBy([...initialDatasets.entries, ...relatedDatasets.entries], 'id')
-      if (
-        process.env.NODE_ENV === 'development' ||
-        process.env.NEXT_PUBLIC_USE_LOCAL_DATASETS === 'true'
-      ) {
-        const mockedDatasets = await import('./datasets.mock')
-        datasets = uniqBy([...mockedDatasets.default, ...datasets], 'id')
-      }
+      const datasets = await fetchDatasetsFromApi(ids, existingIds, signal)
       return datasets.map(parsePOCsDatasets)
     } catch (e: any) {
       console.warn(e)
