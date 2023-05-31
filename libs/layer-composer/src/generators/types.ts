@@ -581,4 +581,9 @@ export interface VesselDeckLayersGenerator {
   visibleEvents?: EventTypes[]
 }
 
-export type AnyDeckLayersGenerator = VesselDeckLayersGenerator
+export interface FourwingsDeckLayerGenerator {
+  id: string
+  dataview: any
+}
+
+export type AnyDeckLayersGenerator = VesselDeckLayersGenerator | FourwingsDeckLayerGenerator[]

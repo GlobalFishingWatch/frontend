@@ -467,6 +467,12 @@ export function getDataviewsGeneratorsDictionary(
         {}
       ),
     },
+    [DeckLayersGeneratorType.Fourwings]: dataviews
+      .filter((dataview) => isHeatmapAnimatedDataview(dataview))
+      .map((dataview) => ({
+        id: dataview.id,
+        dataview,
+      })),
   }
 }
 
