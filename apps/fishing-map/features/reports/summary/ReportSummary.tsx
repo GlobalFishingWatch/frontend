@@ -48,7 +48,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
   const commonProperties = useMemo(() => {
     return getCommonProperties(dataviews).filter(
       (property) =>
-        !dataviews[0].config?.filters![property] || !PROPERTIES_EXCLUDED.includes(property)
+        !dataviews[0].config?.filters!?.[property] || !PROPERTIES_EXCLUDED.includes(property)
     )
   }, [dataviews])
 
