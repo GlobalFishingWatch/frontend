@@ -94,7 +94,7 @@ function ActivitySchemaFilter({
         const value = unit ? VALUE_TRANSFORMATIONS_BY_UNIT[unit].out(rangeSelected) : rangeSelected
         onSelect(id, value, true)
       } else {
-        const selection = rangeSelected.flatMap((id) => ({
+        const selection = rangeSelected.map((id) => ({
           id: id.toString(),
           label: id.toString(),
         }))

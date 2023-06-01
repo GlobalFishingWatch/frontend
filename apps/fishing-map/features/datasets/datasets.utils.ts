@@ -579,7 +579,7 @@ export const getSchemaFilterUnitInDataview = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema
 ) => {
-  return dataview.datasets?.[0].schema?.[schema]?.unit
+  return dataview.datasets?.[0]?.schema?.[schema]?.unit
 }
 
 export const getSchemaFieldsSelectedInDataview = (
