@@ -72,7 +72,7 @@ export const datasets: Dataset[] = [
     schema: {
       flag: { type: 'string', maxLength: 3, minLength: 3 },
       // duration: { type: 'number', min: 0, max: 3000, unit: 'minutes' },
-      duration: { type: 'number-single', enum: [4320], unit: 'minutes' },
+      duration: { type: 'number-single', min: 120, max: 4320, unit: 'minutes' },
       fields: [],
       event_id: { type: 'string', minLength: 3 },
       event_end: { type: 'string', format: 'date-time' },

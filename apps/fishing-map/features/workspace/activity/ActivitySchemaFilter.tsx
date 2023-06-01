@@ -90,7 +90,7 @@ function ActivitySchemaFilter({
       const filterRange = getRangeLimitsBySchema(schemaFilter)
       if (rangeSelected[0] === filterRange[0] && rangeSelected[1] === filterRange[1]) {
         onClean(id)
-      } else if (!Number.isNaN(rangeSelected)) {
+      } else if (!Array.isArray(rangeSelected) && !Number.isNaN(rangeSelected)) {
         const value = unit ? VALUE_TRANSFORMATIONS_BY_UNIT[unit].out(rangeSelected) : rangeSelected
         onSelect(id, value, true)
       } else {
@@ -129,17 +129,20 @@ function ActivitySchemaFilter({
     const initialValue = unit
       ? VALUE_TRANSFORMATIONS_BY_UNIT[unit].in(getRangeBySchema(schemaFilter)[0])
       : getRangeBySchema(schemaFilter)[0]
-    const maxValue = unit
+    const minValue = unit
       ? VALUE_TRANSFORMATIONS_BY_UNIT[unit].in(getRangeLimitsBySchema(schemaFilter)[0])
       : getRangeLimitsBySchema(schemaFilter)[0]
+    const maxValue = unit
+      ? VALUE_TRANSFORMATIONS_BY_UNIT[unit].in(getRangeLimitsBySchema(schemaFilter)[1])
+      : getRangeLimitsBySchema(schemaFilter)[1]
     return (
       <Slider
         className={styles.multiSelect}
         initialValue={initialValue}
         label={label}
         config={{
-          steps: [0, maxValue],
-          min: 0,
+          steps: [minValue, maxValue],
+          min: minValue,
           max: maxValue,
         }}
         onChange={onSliderChange}

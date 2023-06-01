@@ -149,9 +149,6 @@ export function getGeneratorConfig(
         DatasetTypes.Events
       )
 
-      //TODO console.log('dataview:', dataview)
-      // if (dataview.id === 'encounter-events') dsfgfh
-
       if (!tileClusterDataset || !tileClusterUrl) {
         console.warn('No dataset config for TileCluster generator', dataview)
         return []

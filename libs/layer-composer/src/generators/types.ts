@@ -252,7 +252,7 @@ export interface TileClusterGeneratorConfig extends GeneratorConfig {
   /**
    * Filter the points
    */
-  filters?: any
+  filters?: Record<string, any>
 }
 
 /**

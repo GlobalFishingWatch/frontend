@@ -480,15 +480,23 @@ export const getCommonSchemaFieldsInDataview = (
     }
     return []
   }
-  const schemaFields = activeDatasets?.map((d) => d.schema?.[schema]?.enum || [])
   const schemaType = getCommonSchemaTypeInDataview(dataview, schema)
+  const schemaFields =
+    schemaType === 'number-single'
+      ? [
+          [
+            activeDatasets!?.[0]?.schema?.[schema].min.toString(),
+            activeDatasets!?.[0]?.schema?.[schema].max.toString(),
+          ],
+        ]
+      : activeDatasets?.map((d) => d.schema?.[schema]?.enum || [])
   const datasetId = removeDatasetVersion(activeDatasets!?.[0]?.id)
   const commonSchemaFields = schemaFields
     ? intersection(...schemaFields).map((field) => {
         let label =
-          schemaType === 'number'
+          schemaType === 'number' || schemaType === 'number-single'
             ? field
-            : t(`datasets:${datasetId}.schema.${schema}.enum.${field}`, field.toString())
+            : t(`datasets:${datasetId}.schema.${schema}.enum.${field}`, field!?.toString())
         if (label === field) {
           if (dataview.category !== DataviewCategory.Context) {
             label = t(`vessel.${schema}.${field}`, capitalize(lowerCase(field)))
@@ -498,7 +506,7 @@ export const getCommonSchemaFieldsInDataview = (
             label = t(`vessel.gearTypes.${field}`, capitalize(lowerCase(field)))
           }
         }
-        return { id: field.toString(), label }
+        return { id: field!?.toString(), label }
       })
     : []
   return commonSchemaFields.sort(sortFields)
