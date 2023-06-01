@@ -108,7 +108,7 @@ function ActivitySchemaFilter({
     return null
   }
 
-  if (type === 'number') {
+  if (type === 'range') {
     return (
       <SliderRange
         className={styles.multiSelect}
@@ -125,7 +125,7 @@ function ActivitySchemaFilter({
     )
   }
 
-  if (type === 'number-single') {
+  if (type === 'number') {
     const initialValue = unit
       ? VALUE_TRANSFORMATIONS_BY_UNIT[unit].in(getRangeBySchema(schemaFilter)[0])
       : getRangeBySchema(schemaFilter)[0]

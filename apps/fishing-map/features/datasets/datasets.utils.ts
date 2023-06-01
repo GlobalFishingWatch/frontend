@@ -482,11 +482,11 @@ export const getCommonSchemaFieldsInDataview = (
   }
   const schemaType = getCommonSchemaTypeInDataview(dataview, schema)
   const schemaFields =
-    schemaType === 'number-single'
+    schemaType === 'number'
       ? [
           [
-            activeDatasets!?.[0]?.schema?.[schema].min.toString(),
-            activeDatasets!?.[0]?.schema?.[schema].max.toString(),
+            activeDatasets!?.[0]?.schema?.[schema]?.min?.toString(),
+            activeDatasets!?.[0]?.schema?.[schema]?.max?.toString(),
           ],
         ]
       : activeDatasets?.map((d) => d.schema?.[schema]?.enum || [])
@@ -494,7 +494,7 @@ export const getCommonSchemaFieldsInDataview = (
   const commonSchemaFields = schemaFields
     ? intersection(...schemaFields).map((field) => {
         let label =
-          schemaType === 'number' || schemaType === 'number-single'
+          schemaType === 'range' || schemaType === 'number'
             ? field
             : t(`datasets:${datasetId}.schema.${schema}.enum.${field}`, field!?.toString())
         if (label === field) {
