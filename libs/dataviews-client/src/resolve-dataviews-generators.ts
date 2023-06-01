@@ -148,6 +148,7 @@ export function getGeneratorConfig(
         dataview,
         DatasetTypes.Events
       )
+
       if (!tileClusterDataset || !tileClusterUrl) {
         console.warn('No dataset config for TileCluster generator', dataview)
         return []
