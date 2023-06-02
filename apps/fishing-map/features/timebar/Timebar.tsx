@@ -16,6 +16,7 @@ import {
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { ResourceStatus } from '@globalfishingwatch/api-types'
 import { getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
+import { useVesselLayers } from '@globalfishingwatch/deck-layers'
 import {
   useTimerangeConnect,
   useTimebarVisualisation,
@@ -137,6 +138,8 @@ const TimebarWrapper = () => {
   const { timebarVisualisation } = useTimebarVisualisationConnect()
   const { setMapCoordinates, viewport } = useViewport()
   const timebarGraph = useSelector(selectTimebarGraph)
+  const vessels = useVesselLayers()
+  console.log('🚀 ~ TimebarWrapper ~ vessels:', vessels)
   const tracks = useSelector(selectTracksData)
   const tracksGraphsData = useSelector(selectTracksGraphData)
   const tracksEvents = useSelector(selectTracksEvents)

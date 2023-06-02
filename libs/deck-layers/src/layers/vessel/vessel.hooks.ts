@@ -35,7 +35,8 @@ interface globalConfig {
   visibleEvents?: EventTypes[]
 }
 
-export const useVesselLayers = (
+export const useVesselLayers = () => useAtomValue(vesselLayersInstancesSelector)
+export const useSetVesselLayers = (
   vesselLayersGenerator: VesselDeckLayersGenerator,
   globalConfig: globalConfig,
   highlightedTime?: { start: string; end: string }

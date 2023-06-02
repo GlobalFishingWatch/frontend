@@ -1,7 +1,6 @@
 import {
   useBasemapLayer,
   useContextsLayer,
-  useVesselLayers,
   useFourwingsLayers,
   zIndexSortedArray,
   DeckLayersGeneratorDictionary,
@@ -9,6 +8,7 @@ import {
   DeckLayersGeneratorType,
   VesselDeckLayersGenerator,
   FourwingsDeckLayerGenerator,
+  useSetVesselLayers,
 } from '@globalfishingwatch/deck-layers'
 import { AnyGeneratorConfig, GlobalGeneratorConfig } from '@globalfishingwatch/layer-composer'
 
@@ -42,7 +42,7 @@ export function useDeckLayerComposer({
     datasetId: contextLayersGenerators.length ? contextLayersGenerators[0].datasetId : 'eez',
   })
 
-  const vesselLayers = useVesselLayers(
+  const vesselLayers = useSetVesselLayers(
     generatorsDictionary[DeckLayersGeneratorType.Vessels] as VesselDeckLayersGenerator[],
     globalGeneratorConfig,
     highlightedTime
