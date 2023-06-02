@@ -23,6 +23,7 @@ import {
   HeatmapAnimatedGeneratorConfig,
   Interval,
   DeckLayersGeneratorDictionary,
+  DeckLayersGeneratorType,
 } from '@globalfishingwatch/layer-composer'
 import type {
   ColorRampsIds,
@@ -431,7 +432,7 @@ export function getDataviewsGeneratorsDictionary(
 ): DeckLayersGeneratorDictionary {
   const vesselsDataviews = dataviews.filter((dataview) => isTrackDataview(dataview))
   return {
-    [GeneratorType.Vessels]: {
+    [DeckLayersGeneratorType.Vessels]: {
       ids: vesselsDataviews.map((dataview) => dataview.id),
       colors: vesselsDataviews.reduce(
         (acc, dataview) => ({
@@ -466,6 +467,12 @@ export function getDataviewsGeneratorsDictionary(
         {}
       ),
     },
+    [DeckLayersGeneratorType.Fourwings]: dataviews
+      .filter((dataview) => isHeatmapAnimatedDataview(dataview))
+      .map((dataview) => ({
+        id: dataview.id,
+        dataview,
+      })),
   }
 }
 

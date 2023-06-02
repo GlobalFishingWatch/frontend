@@ -1,33 +1,13 @@
-import { getFourwingsMode } from 'layers/fourwings/fourwings.utils'
-import { useCallback, useEffect } from 'react'
-import { PickingInfo } from '@deck.gl/core/typed'
-import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
-import { useAtomValue } from 'jotai'
-import { useAddVesselInLayer } from 'layers/vessel/vessels.hooks'
-import { hoveredFeaturesAtom, clickedFeaturesAtom } from 'features/map/map-picking.hooks'
-import { useTimerange } from 'features/timebar/timebar.hooks'
-import { useViewport } from 'features/map/map-viewport.hooks'
-import { useMapLayers } from 'features/map/layers.hooks'
-import { FourwingsLayer, FourwingsLayerMode } from './FourwingsLayer'
+import { useEffect, useMemo } from 'react'
+import { PickingInfo, LayerData, Layer } from '@deck.gl/core/typed'
+import { atom, useSetAtom, useAtomValue } from 'jotai'
+import { selectAtom } from 'jotai/utils'
+import { EventTypes } from '@globalfishingwatch/api-types'
+import { FourwingsDeckLayerGenerator } from '@globalfishingwatch/layer-composer'
+import { START_TIMESTAMP } from '../../loaders/constants'
+import { parseEvents } from '../../loaders/vessels/eventsLoader'
+import { FourwingsLayer } from './FourwingsLayer'
 import { FourwingsSublayer } from './fourwings.types'
-
-const dateToMs = (date: string) => {
-  return new Date(date).getTime()
-}
-
-type FourwingsAtom = {
-  highlightedVesselId?: string
-  instance?: FourwingsLayer
-  loaded: boolean
-}
-
-export const fourwingsLayerAtom = atom<FourwingsAtom>({
-  key: 'fourwingsLayer',
-  dangerouslyAllowMutability: true,
-  default: {
-    loaded: false,
-  },
-})
 
 export const FOURWINGS_SUBLAYERS: FourwingsSublayer[] = [
   {
@@ -71,112 +51,98 @@ export const FOURWINGS_SUBLAYERS: FourwingsSublayer[] = [
   },
 ]
 
-export function useFourwingsLayer() {
-  const [{ instance }, updateFourwingsAtom] = useRecoilState(fourwingsLayerAtom)
+const dateToMs = (date: string) => {
+  return new Date(date).getTime()
+}
 
-  const hoveredFeatures: PickingInfo[] = useAtomValue(hoveredFeaturesAtom)
-  const clickedFeatures: PickingInfo[] = useAtomValue(clickedFeaturesAtom)
-  const [mapLayers] = useMapLayers()
-  const [timerange] = useTimerange()
-  const startTime = dateToMs(timerange.start)
-  const endTime = dateToMs(timerange.end)
-  const { viewState } = useViewport()
-  const activityMode: FourwingsLayerMode = getFourwingsMode(viewState.zoom, timerange)
-  const addVesselLayer = useAddVesselInLayer()
+interface FourwingsLayerState {
+  id: string
+  instance: FourwingsLayer
+  loadedLayers: string[]
+}
 
-  const fourwingsMapLayer = mapLayers.find((l) => l.id === 'fourwings')
-  const fourwingsMapLayerVisible = fourwingsMapLayer?.visible
-  const fourwingsMapLayerResolution = fourwingsMapLayer?.resolution
+export const fourwingsLayersAtom = atom<FourwingsLayerState[]>([])
+export const fourwingsLayersSelector = (layers: FourwingsLayerState[]) => layers
+export const fourwingsLayersInstancesSelector = atom((get) =>
+  get(fourwingsLayersAtom).map((l) => l.instance)
+)
 
-  const setAtomProperty = useCallback(
-    (property) => updateFourwingsAtom((state) => ({ ...state, ...property })),
-    [updateFourwingsAtom]
+export const selectFourwingsLayersAtom = selectAtom(fourwingsLayersAtom, fourwingsLayersSelector)
+
+interface globalConfig {
+  start?: string
+  end?: string
+  // hoveredFeatures: PickingInfo[]
+  // clickedFeatures: PickingInfo[]
+  highlightedTime?: { start: string; end: string }
+  visibleEvents?: EventTypes[]
+}
+
+export const useFourwingsLayers = (
+  fourwingsLayersGenerator: FourwingsDeckLayerGenerator[],
+  globalConfig: globalConfig
+) => {
+  const { start, end } = globalConfig
+
+  const setFourwingsLayers = useSetAtom(fourwingsLayersAtom)
+
+  const setFourwingsLoadedState = useSetAtom(
+    atom(null, (get, set, id: FourwingsLayerState['id']) =>
+      set(fourwingsLayersAtom, (prevVessels) => {
+        return prevVessels.map((v) => {
+          if (id.includes(v.id)) {
+            return {
+              ...v,
+              loadedLayers: [...v.loadedLayers, id],
+            }
+          }
+          return v
+        })
+      })
+    )
   )
 
-  const onTileLoad: any = useCallback(
-    (tile, allTilesLoaded) => {
-      setAtomProperty({ loaded: allTilesLoaded })
-    },
-    [setAtomProperty]
-  )
+  const onDataLoad = (data: LayerData<any>, context: { propName: string; layer: Layer<any> }) => {
+    console.log(data, context)
+    // setFourwingsLoadedState(context.layer.id)
+  }
 
-  const onViewportLoad = useCallback(() => {
-    setAtomProperty({ loaded: true })
-  }, [setAtomProperty])
-
-  const onVesselHighlight = useCallback(
-    (id) => {
-      setAtomProperty({ highlightedVesselId: id })
-    },
-    [setAtomProperty]
-  )
-
-  const onVesselClick = useCallback(
-    (id) => {
-      addVesselLayer(id)
-    },
-    [addVesselLayer]
-  )
+  const startTime = useMemo(() => (start ? dateToMs(start) : undefined), [start])
+  console.log('🚀 ~ file: fourwings.hooks.ts:111 ~ start:', start)
+  console.log('🚀 ~ file: fourwings.hooks.ts:252 ~ startTime:', startTime)
+  const endTime = useMemo(() => (end ? dateToMs(end) : undefined), [end])
+  console.log('🚀 ~ file: fourwings.hooks.ts:114 ~ end:', end)
+  console.log('🚀 ~ file: fourwings.hooks.ts:254 ~ endTime:', endTime)
 
   useEffect(() => {
-    if (fourwingsMapLayerVisible) {
-      const fourwingsLayer = new FourwingsLayer({
+    fourwingsLayersGenerator.forEach(({ id, dataview }) => {
+      const instance = new FourwingsLayer({
         minFrame: startTime,
         maxFrame: endTime,
-        mode: activityMode,
+        // mode: activityMode,
+        mode: 'heatmap',
         debug: true,
         sublayers: FOURWINGS_SUBLAYERS,
-        onTileLoad: onTileLoad,
-        onViewportLoad: onViewportLoad,
-        onVesselHighlight: onVesselHighlight,
-        onVesselClick: onVesselClick,
-        resolution: fourwingsMapLayerResolution,
-        hoveredFeatures: hoveredFeatures,
-        clickedFeatures: clickedFeatures,
+        // onTileLoad: onTileLoad,
+        // onViewportLoad: onViewportLoad,
+        // onVesselHighlight: onVesselHighlight,
+        // onVesselClick: onVesselClick,
+        // resolution: fourwingsMapLayerResolution,
+        // hoveredFeatures: hoveredFeatures,
+        // clickedFeatures: clickedFeatures,
       })
-      setAtomProperty({ instance: fourwingsLayer })
-    } else {
-      setAtomProperty({ instance: undefined })
-    }
-  }, [
-    fourwingsMapLayerVisible,
-    startTime,
-    endTime,
-    activityMode,
-    fourwingsMapLayerResolution,
-    onTileLoad,
-    onViewportLoad,
-    setAtomProperty,
-    onVesselHighlight,
-    onVesselClick,
-    clickedFeatures,
-    hoveredFeatures,
-  ])
 
-  return instance
-}
-
-const fourwingsInstanceAtomSelector = selector({
-  key: 'fourwingsInstanceAtomSelector',
-  dangerouslyAllowMutability: true,
-  get: ({ get }) => {
-    return get(fourwingsLayerAtom)?.instance
-  },
-})
-export function useFourwingsLayerInstance() {
-  const instance = useRecoilValue(fourwingsInstanceAtomSelector)
-  return instance
-}
-
-const fourwingsLoadedAtomSelector = selector({
-  key: 'fourwingsLoadedAtomSelector',
-  dangerouslyAllowMutability: true,
-  get: ({ get }) => {
-    return get(fourwingsLayerAtom)?.loaded
-  },
-})
-
-export function useFourwingsLayerLoaded() {
-  const loaded = useRecoilValue(fourwingsLoadedAtomSelector)
-  return loaded
+      setFourwingsLayers((prevVessels) => {
+        const updatedVessels = prevVessels.filter((v) => v.id !== id)
+        updatedVessels.push({
+          id,
+          instance,
+          loadedLayers: [],
+        })
+        return updatedVessels
+      })
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [start, end, fourwingsLayersGenerator])
+  return useAtomValue(fourwingsLayersInstancesSelector)
 }

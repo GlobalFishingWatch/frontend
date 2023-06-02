@@ -28,7 +28,6 @@ export enum GeneratorType {
   UserPoints = 'USER_POINTS',
   VesselEvents = 'VESSEL_EVENTS',
   VesselEventsShapes = 'VESSEL_EVENTS_SHAPES',
-  Vessels = 'VESSELS',
 }
 
 export interface GeneratorFeature {
@@ -567,7 +566,16 @@ export interface VesselsEventsSource extends GeoJSONSourceSpecification {
   id: string
 }
 
-export type DeckLayersGeneratorDictionary = Partial<Record<GeneratorType, AnyDeckLayersGenerator>>
+// DeckGl related types
+
+export enum DeckLayersGeneratorType {
+  Vessels = 'VESSELS',
+  Fourwings = 'FOURWINGS',
+}
+
+export type DeckLayersGeneratorDictionary = Partial<
+  Record<DeckLayersGeneratorType, AnyDeckLayersGenerator>
+>
 export interface VesselDeckLayersGenerator {
   ids: string[]
   colors: Record<string, string>
@@ -577,4 +585,9 @@ export interface VesselDeckLayersGenerator {
   visibleEvents?: EventTypes[]
 }
 
-export type AnyDeckLayersGenerator = VesselDeckLayersGenerator
+export interface FourwingsDeckLayerGenerator {
+  id: string
+  dataview: any
+}
+
+export type AnyDeckLayersGenerator = VesselDeckLayersGenerator | FourwingsDeckLayerGenerator[]

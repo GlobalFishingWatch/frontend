@@ -2,14 +2,16 @@ import {
   useBasemapLayer,
   useContextsLayer,
   useVesselLayers,
+  useFourwingsLayers,
   zIndexSortedArray,
 } from '@globalfishingwatch/deck-layers'
 import {
   AnyGeneratorConfig,
   DeckLayersGeneratorDictionary,
-  GeneratorType,
+  DeckLayersGeneratorType,
   GlobalGeneratorConfig,
   VesselDeckLayersGenerator,
+  FourwingsDeckLayerGenerator,
 } from '@globalfishingwatch/layer-composer'
 
 export function useDeckLayerComposer({
@@ -42,10 +44,17 @@ export function useDeckLayerComposer({
   })
 
   const vesselLayers = useVesselLayers(
-    generatorsDictionary[GeneratorType.Vessels] as VesselDeckLayersGenerator,
+    generatorsDictionary[DeckLayersGeneratorType.Vessels] as VesselDeckLayersGenerator,
     globalGeneratorConfig,
     highlightedTime
   )
 
-  return { layers: zIndexSortedArray([basemapLayer, contextLayer, ...vesselLayers]) }
+  const fourwingsLayers = useFourwingsLayers(
+    generatorsDictionary[DeckLayersGeneratorType.Fourwings] as FourwingsDeckLayerGenerator[],
+    globalGeneratorConfig
+  )
+
+  return {
+    layers: zIndexSortedArray([basemapLayer, contextLayer, ...vesselLayers, ...fourwingsLayers]),
+  }
 }
