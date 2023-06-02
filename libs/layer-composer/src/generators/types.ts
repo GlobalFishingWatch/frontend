@@ -565,29 +565,3 @@ export enum HeatmapAnimatedMode {
 export interface VesselsEventsSource extends GeoJSONSourceSpecification {
   id: string
 }
-
-// DeckGl related types
-
-export enum DeckLayersGeneratorType {
-  Vessels = 'VESSELS',
-  Fourwings = 'FOURWINGS',
-}
-
-export type DeckLayersGeneratorDictionary = Partial<
-  Record<DeckLayersGeneratorType, AnyDeckLayersGenerator>
->
-export interface VesselDeckLayersGenerator {
-  ids: string[]
-  colors: Record<string, string>
-  eventsData: Record<string, ApiEvent[] | []>
-  trackUrls: Record<string, string>
-  eventsUrls: Record<string, string[]>
-  visibleEvents?: EventTypes[]
-}
-
-export interface FourwingsDeckLayerGenerator {
-  id: string
-  dataview: any
-}
-
-export type AnyDeckLayersGenerator = VesselDeckLayersGenerator | FourwingsDeckLayerGenerator[]

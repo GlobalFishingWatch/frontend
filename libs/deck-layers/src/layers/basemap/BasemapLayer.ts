@@ -4,7 +4,12 @@ import { TileLayer } from '@deck.gl/geo-layers'
 import { MVTLayer, TileLayerProps, MVTLayerProps } from '@deck.gl/geo-layers/typed'
 import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
 
-export type BasemapLayerOwnProps = { basemap: 'basemap_default' | 'satellite' }
+export enum BasemapType {
+  Satellite = 'satellite',
+  Default = 'basemap_default',
+  Labels = 'basemap_labels',
+}
+export type BasemapLayerOwnProps = { basemap: BasemapType }
 export type BaseMapLayerProps = TileLayerProps & MVTLayerProps & BasemapLayerOwnProps
 export class BaseMap extends CompositeLayer<BaseMapLayerProps> {
   static layerName = 'ContextLayer'
