@@ -75,25 +75,26 @@ export const useVesselLayers = (
   )
   const startTime = useMemo(() => (start ? dateToMs(start) - START_TIMESTAMP : undefined), [start])
   const endTime = useMemo(() => (end ? dateToMs(end) - START_TIMESTAMP : undefined), [end])
+
   useEffect(() => {
-    vesselLayersGenerator.ids.forEach((id: string) => {
-      const { eventsData, colors, visibleEvents, trackUrls, eventsUrls } = vesselLayersGenerator
+    vesselLayersGenerator.forEach((vesselGenerator: VesselDeckLayersGenerator) => {
+      const { id, eventsData, color, visibleEvents, trackUrl, eventsUrls } = vesselGenerator
 
       const instance = new VesselLayer({
         id,
         visible: true,
         endTime,
-        trackUrl: trackUrls[id],
+        trackUrl,
         startTime,
-        themeColor: colors[id],
-        eventsUrls: eventsUrls[id],
+        themeColor: color,
+        eventsUrls,
         onDataLoad,
         // hoveredFeatures,
         // clickedFeatures,
         highlightEndTime,
         highlightStartTime,
         visibleEvents,
-        eventsResource: eventsData[id]?.length ? parseEvents(eventsData[id]) : [],
+        eventsResource: eventsData?.length ? parseEvents(eventsData) : [],
       })
 
       setVesselLayers((prevVessels) => {

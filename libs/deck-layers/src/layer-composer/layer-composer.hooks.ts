@@ -4,15 +4,13 @@ import {
   useVesselLayers,
   useFourwingsLayers,
   zIndexSortedArray,
-} from '@globalfishingwatch/deck-layers'
-import {
-  AnyGeneratorConfig,
   DeckLayersGeneratorDictionary,
+  BasemapDeckLayerGenerator,
   DeckLayersGeneratorType,
-  GlobalGeneratorConfig,
   VesselDeckLayersGenerator,
   FourwingsDeckLayerGenerator,
-} from '@globalfishingwatch/layer-composer'
+} from '@globalfishingwatch/deck-layers'
+import { AnyGeneratorConfig, GlobalGeneratorConfig } from '@globalfishingwatch/layer-composer'
 
 export function useDeckLayerComposer({
   generatorsDictionary,
@@ -25,11 +23,12 @@ export function useDeckLayerComposer({
   globalGeneratorConfig: GlobalGeneratorConfig
   highlightedTime?: { start: string; end: string }
 }) {
-  const basemap = generatorsConfig.find((generator) => generator.type === 'BASEMAP')?.basemap
-  const visible = generatorsConfig.find((generator) => generator.type === 'BASEMAP')?.visible
+  const basemapGenerator = generatorsConfig.find(
+    (generator) => generator.type === 'BASEMAP'
+  ) as BasemapDeckLayerGenerator
   const basemapLayer = useBasemapLayer({
-    visible,
-    basemap,
+    visible: basemapGenerator?.visible ?? true,
+    basemap: basemapGenerator?.basemap ?? 'default',
   })
 
   const contextLayersGenerators = generatorsConfig.filter(
@@ -44,7 +43,7 @@ export function useDeckLayerComposer({
   })
 
   const vesselLayers = useVesselLayers(
-    generatorsDictionary[DeckLayersGeneratorType.Vessels] as VesselDeckLayersGenerator,
+    generatorsDictionary[DeckLayersGeneratorType.Vessels] as VesselDeckLayersGenerator[],
     globalGeneratorConfig,
     highlightedTime
   )
