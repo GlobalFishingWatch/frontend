@@ -11,7 +11,6 @@ import {
 import {
   ContextLayerType,
   GeneratorType,
-  DeckLayersGeneratorType,
   GlobalGeneratorConfig,
 } from '@globalfishingwatch/layer-composer'
 import {
@@ -22,7 +21,6 @@ import {
 import { DatasetSubCategory, DataviewCategory, Locale } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
-import { selectWorkspaceVisibleEventsArray } from 'features/workspace/workspace.selectors'
 import { selectLocationType } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -78,17 +76,7 @@ export const getVesselsInfoConfig = (vessels: ExtendedFeatureVessel[]) => {
 }
 
 export const useGeneratorsDictionaryConnect = () => {
-  const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
-  const generatorsDictionary = useSelector(selectMapGeneratorsDictionary)
-  return useMemo(() => {
-    return {
-      ...generatorsDictionary,
-      [DeckLayersGeneratorType.Vessels]: {
-        ...generatorsDictionary[DeckLayersGeneratorType.Vessels],
-        visibleEvents,
-      },
-    }
-  }, [generatorsDictionary, visibleEvents])
+  return useSelector(selectMapGeneratorsDictionary)
 }
 
 // This is a convenience hook that returns at the same time the portions of the store we interested in
