@@ -101,7 +101,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
 
     const debugLayers = [
       new PathLayer({
-        id: `tile-boundary-${this.props.tile.id}`,
+        id: `tile-boundary-${this.props.category}-${this.props.tile.id}`,
         data: [
           {
             path: [
@@ -118,7 +118,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         getColor: [255, 0, 0, 100],
       }),
       new TextLayer({
-        id: `tile-id-${this.props.tile.id}`,
+        id: `tile-id-${this.props.category}-${this.props.tile.id}`,
         data: [
           {
             text: this.props.tile.id,

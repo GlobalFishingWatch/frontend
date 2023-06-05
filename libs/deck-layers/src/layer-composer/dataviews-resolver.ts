@@ -1,4 +1,4 @@
-import { DatasetTypes, ApiEvent, Resource } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DatasetTypes, ApiEvent, Resource } from '@globalfishingwatch/api-types'
 import {
   isHeatmapAnimatedDataview,
   isTrackDataview,
@@ -10,6 +10,7 @@ import {
   DeckLayersGeneratorDictionary,
   DeckLayersGeneratorType,
   VesselDeckLayersGenerator,
+  FourwingsDeckLayerGenerator,
 } from '@globalfishingwatch/deck-layers'
 
 type DataviewsGeneratorResource = Record<string, Resource>
@@ -29,11 +30,10 @@ export function getDataviewsGeneratorsDictionary(
   dataviews: UrlDataviewInstance[],
   resources?: DataviewsGeneratorResource
 ): DeckLayersGeneratorDictionary {
-  const vesselsDataviews = dataviews.filter((dataview) => isTrackDataview(dataview))
-  debugger
   return {
-    [DeckLayersGeneratorType.Vessels]: vesselsDataviews.map(
-      (dataview): VesselDeckLayersGenerator => {
+    [DeckLayersGeneratorType.Vessels]: dataviews
+      .filter((dataview) => isTrackDataview(dataview))
+      .map((dataview): VesselDeckLayersGenerator => {
         return {
           id: dataview.id,
           color: dataview.config?.color as string,
@@ -43,29 +43,24 @@ export function getDataviewsGeneratorsDictionary(
             (resources) => resources.url
           ),
         }
-      }
-    ),
+      }),
     [DeckLayersGeneratorType.Fourwings]: dataviews
       .filter((dataview) => isHeatmapAnimatedDataview(dataview))
-      .map((dataview) => {
-        console.log('🚀 ~ file: resolve-dataviews-generators.ts:488 ~ .map ~ dataview:', dataview)
-
-        const { config } = dataview
+      .map((dataview): FourwingsDeckLayerGenerator => {
         return {
           id: dataview.id,
-          category: dataview.category,
+          category: dataview.category as DataviewCategory,
           sublayers: [
             {
               id: dataview.id,
-              datasets: config?.datasets,
+              datasets: dataview.config?.datasets,
               config: {
-                color: config?.color,
-                colorRamp: config?.colorRamp,
-                visible: config?.visible,
+                color: dataview.config?.color as string,
+                colorRamp: dataview.config?.colorRamp,
+                visible: dataview.config?.visible,
               },
             },
           ],
-          dataview,
         }
       }),
   }

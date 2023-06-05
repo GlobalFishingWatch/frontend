@@ -1,12 +1,10 @@
 import { useEffect, useMemo } from 'react'
-import { PickingInfo, LayerData, Layer } from '@deck.gl/core/typed'
+import { LayerData, Layer } from '@deck.gl/core/typed'
 import { atom, useSetAtom, useAtomValue } from 'jotai'
 import { selectAtom } from 'jotai/utils'
 import { groupBy } from 'lodash'
-import { EventTypes } from '@globalfishingwatch/api-types'
-import { FourwingsDeckLayerGenerator } from '@globalfishingwatch/layer-composer'
-import { START_TIMESTAMP } from '../../loaders/constants'
-import { parseEvents } from '../../loaders/vessels/eventsLoader'
+import { DataviewCategory, EventTypes } from '@globalfishingwatch/api-types'
+import { FourwingsDeckLayerGenerator } from '../../layer-composer/types'
 import { FourwingsLayer } from './FourwingsLayer'
 
 const dateToMs = (date: string) => {
@@ -76,8 +74,9 @@ export const useFourwingsLayers = (
         maxFrame: endTime,
         // mode: activityMode,
         mode: 'heatmap',
-        debug: true,
+        debug: false,
         sublayers: groupedLayers[category].flatMap((l) => l.sublayers),
+        category: category as DataviewCategory,
         // onDataLoad: onDataLoad,
         // onTileLoad: onTileLoad,
         // onViewportLoad: onViewportLoad,

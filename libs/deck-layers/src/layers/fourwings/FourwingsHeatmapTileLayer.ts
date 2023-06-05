@@ -18,6 +18,7 @@ import {
   Group,
   GROUP_ORDER,
 } from '@globalfishingwatch/layer-composer'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { TileCell } from '../../loaders/fourwings/fourwingsTileParser'
 import { parseFourWings } from '../../loaders/fourwings/fourwingsLayerLoader'
 import {
@@ -39,6 +40,7 @@ export type _FourwingsHeatmapTileLayerProps = {
   minFrame: number
   maxFrame: number
   zIndex?: number
+  category: DataviewCategory
   sublayers: FourwingsSublayer[]
   onTileLoad?: (tile: Tile2DHeader, allTilesLoaded: boolean) => void
   onViewportLoad?: (tiles: Tile2DHeader[]) => void
@@ -62,6 +64,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 
   initializeState(context: LayerContext): void {
     super.initializeState(context)
+    this.id = `${this.props.category}`
     this.state = {
       ...this.getCacheRange(this.props.minFrame, this.props.maxFrame),
       colorDomain: [],
@@ -206,7 +209,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     return new TileLayerClass(
       this.props,
       this.getSubLayerProps({
-        id: HEATMAP_ID,
+        id: `${this.props.category}-${HEATMAP_ID}`,
         // tileSize: 512,
         colorDomain,
         colorRanges,
@@ -235,7 +238,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 
   getLayerInstance() {
     return this.getSubLayers().find(
-      (l) => l.id === `${FourwingsHeatmapTileLayer.layerName}-${HEATMAP_ID}`
+      (l) => l.id === `${FourwingsHeatmapTileLayer.layerName}-${this.props.category}-${HEATMAP_ID}`
     ) as TileLayer
   }
 
