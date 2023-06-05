@@ -47,9 +47,26 @@ export function getDataviewsGeneratorsDictionary(
     ),
     [DeckLayersGeneratorType.Fourwings]: dataviews
       .filter((dataview) => isHeatmapAnimatedDataview(dataview))
-      .map((dataview) => ({
-        id: dataview.id,
-        dataview,
-      })),
+      .map((dataview) => {
+        console.log('🚀 ~ file: resolve-dataviews-generators.ts:488 ~ .map ~ dataview:', dataview)
+
+        const { config } = dataview
+        return {
+          id: dataview.id,
+          category: dataview.category,
+          sublayers: [
+            {
+              id: dataview.id,
+              datasets: config?.datasets,
+              config: {
+                color: config?.color,
+                colorRamp: config?.colorRamp,
+                visible: config?.visible,
+              },
+            },
+          ],
+          dataview,
+        }
+      }),
   }
 }

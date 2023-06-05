@@ -2,54 +2,12 @@ import { useEffect, useMemo } from 'react'
 import { PickingInfo, LayerData, Layer } from '@deck.gl/core/typed'
 import { atom, useSetAtom, useAtomValue } from 'jotai'
 import { selectAtom } from 'jotai/utils'
+import { groupBy } from 'lodash'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { FourwingsDeckLayerGenerator } from '@globalfishingwatch/layer-composer'
 import { START_TIMESTAMP } from '../../loaders/constants'
 import { parseEvents } from '../../loaders/vessels/eventsLoader'
 import { FourwingsLayer } from './FourwingsLayer'
-import { FourwingsSublayer } from './fourwings.types'
-
-export const FOURWINGS_SUBLAYERS: FourwingsSublayer[] = [
-  {
-    id: 'ais',
-    datasets: ['public-global-fishing-effort:v20201001'],
-    config: {
-      color: '#FF64CE',
-      colorRamp: 'magenta',
-      visible: true,
-    },
-  },
-  {
-    id: 'vms-brazil-and-panama',
-    datasets: [
-      'public-bra-onyxsat-fishing-effort:v20211126',
-      'public-panama-fishing-effort:v20211126',
-    ],
-    config: {
-      color: '#00EEFF',
-      colorRamp: 'sky',
-      visible: true,
-    },
-  },
-  {
-    id: 'vms-chile',
-    datasets: ['public-chile-fishing-effort:v20211126'],
-    config: {
-      color: '#A6FF59',
-      colorRamp: 'green',
-      visible: true,
-    },
-  },
-  {
-    id: 'vms-ecuador',
-    datasets: ['public-ecuador-fishing-effort:v20211126'],
-    config: {
-      color: '#FFAA0D',
-      colorRamp: 'orange',
-      visible: true,
-    },
-  },
-]
 
 const dateToMs = (date: string) => {
   return new Date(date).getTime()
@@ -108,40 +66,39 @@ export const useFourwingsLayers = (
   }
 
   const startTime = useMemo(() => (start ? dateToMs(start) : undefined), [start])
-  console.log('🚀 ~ file: fourwings.hooks.ts:111 ~ start:', start)
-  console.log('🚀 ~ file: fourwings.hooks.ts:252 ~ startTime:', startTime)
   const endTime = useMemo(() => (end ? dateToMs(end) : undefined), [end])
-  console.log('🚀 ~ file: fourwings.hooks.ts:114 ~ end:', end)
-  console.log('🚀 ~ file: fourwings.hooks.ts:254 ~ endTime:', endTime)
 
   useEffect(() => {
-    fourwingsLayersGenerator.forEach(({ id, dataview }) => {
+    const groupedLayers = groupBy(fourwingsLayersGenerator, 'category')
+    Object.keys(groupedLayers).forEach((category) => {
       const instance = new FourwingsLayer({
         minFrame: startTime,
         maxFrame: endTime,
         // mode: activityMode,
         mode: 'heatmap',
         debug: true,
-        sublayers: FOURWINGS_SUBLAYERS,
+        sublayers: groupedLayers[category].flatMap((l) => l.sublayers),
+        // onDataLoad: onDataLoad,
         // onTileLoad: onTileLoad,
         // onViewportLoad: onViewportLoad,
         // onVesselHighlight: onVesselHighlight,
         // onVesselClick: onVesselClick,
-        // resolution: fourwingsMapLayerResolution,
+        // resolution: 'high',
         // hoveredFeatures: hoveredFeatures,
         // clickedFeatures: clickedFeatures,
       })
 
       setFourwingsLayers((prevVessels) => {
-        const updatedVessels = prevVessels.filter((v) => v.id !== id)
+        const updatedVessels = prevVessels.filter((v) => v.id !== category)
         updatedVessels.push({
-          id,
+          id: category,
           instance,
           loadedLayers: [],
         })
         return updatedVessels
       })
     })
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [start, end, fourwingsLayersGenerator])
   return useAtomValue(fourwingsLayersInstancesSelector)
