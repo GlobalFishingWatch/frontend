@@ -2,12 +2,13 @@ import { AccessorFunction, DefaultProps, Position } from '@deck.gl/core/typed'
 import { ScatterplotLayer, ScatterplotLayerProps } from '@deck.gl/layers/typed'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
+
 export type _VesselEventsLayerProps<DataT = any> = {
   eventType?: string
   zIndex?: number
   color: number[]
   filterRange: Array<number>
-  eventsUrls: string[]
+  events: { url?: string; data?: DataT[] }[]
   getShape?: AccessorFunction<DataT, number>
   getPosition?: AccessorFunction<DataT, Position> | Position
   getFilterValue?: AccessorFunction<DataT, number>
@@ -15,7 +16,6 @@ export type _VesselEventsLayerProps<DataT = any> = {
   onEventsDataLoad?: AccessorFunction<DataT, void>
   visibleEvents?: EventTypes[]
   getEventVisibility?: AccessorFunction<DataT, number>
-  eventsResource?: DataT[]
 }
 
 export type VesselEventsLayerProps<DataT = any> = _VesselEventsLayerProps<DataT> &
@@ -25,7 +25,7 @@ const defaultProps: DefaultProps<VesselEventsLayerProps> = {
   filled: { type: 'accessor', value: true },
   opacity: { type: 'accessor', value: 0.8 },
   stroked: { type: 'accessor', value: false },
-  eventsUrls: { type: 'accessor', value: [] },
+  events: { type: 'accessor', value: [] },
   color: { type: 'accessor', value: [255, 255, 255] },
   filterRange: { type: 'accessor', value: [] },
   radiusScale: { type: 'accessor', value: 30 },
@@ -40,7 +40,6 @@ const defaultProps: DefaultProps<VesselEventsLayerProps> = {
   zIndex: { type: 'accessor', value: GROUP_ORDER.indexOf(Group.Point) },
   visibleEvents: { type: 'accessor', value: [] },
   getEventVisibility: { type: 'accessor', value: () => 1 },
-  eventsResource: { type: 'accessor', value: [] },
 }
 
 export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends ScatterplotLayer<

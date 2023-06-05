@@ -2,6 +2,7 @@ import { DataFilterExtension } from '@deck.gl/extensions'
 import { CompositeLayer, Layer, LayersList, LayerProps } from '@deck.gl/core/typed'
 // Layers
 import { ApiEvent, EventVessel, Segment, VesselTrackData } from '@globalfishingwatch/api-types'
+import { API_GATEWAY } from '@globalfishingwatch/deck-layers'
 import { trackLoader } from '../../loaders/vessels/trackLoader'
 import { vesselEventsLoader } from '../../loaders/vessels/eventsLoader'
 import { hexToRgb } from '../../utils/layers'
@@ -31,7 +32,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     return new VesselTrackLayer<Segment[]>(
       this.getSubLayerProps({
         id: `${TRACK_LAYER_PREFIX}-vessel-layer-${this.props.id}`,
-        data: `https://gateway.api.dev.globalfishingwatch.org${this.props.trackUrl}`,
+        data: this.props.trackUrl,
         loaders: [trackLoader],
         widthUnits: 'pixels',
         widthScale: 1,
@@ -66,54 +67,71 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     )
   }
 
-  _getVesselEventsLayer() {
+  _getVesselEventsLayer(): VesselEventsLayer[] {
+    const { visible, id, themeColor, visibleEvents, startTime, endTime } = this.props
     // return one layer with all events if we are consuming the data object from app resources
-    if (this.props.eventsResource) {
-      return [
-        new VesselEventsLayer(
-          this.getSubLayerProps({
-            id: `${EVENTS_LAYER_PREFIX}-${this.props.id}`,
-            data: this.props.eventsResource,
-            pickable: true,
-            startTime: this.props.startTime,
-            endTime: this.props.endTime,
-            color: hexToRgb(this.props.themeColor),
-            visibleEvents: this.props.visibleEvents,
-            getEventVisibility: (d: ApiEvent) =>
-              this.props.visibleEvents?.includes(d.type) ? 1 : 0,
-            updateTriggers: {
-              getEventVisibility: [this.props.visibleEvents],
-            },
-            filterRange: [this.props.startTime, this.props.endTime],
-            extensions: [new DataFilterExtension({ filterSize: 1 })],
-          })
-        ),
-      ]
-    } else {
-      // return one layer per event type if we are fetching events data from deck
-      return this.props.eventsUrls.map((url: string, index: number) => {
+    let layers: VesselEventsLayer[] = []
+    if (this.props.events?.length) {
+      const { eventsUrl, eventsData } = this.props.events.reduce(
+        (acc, event) => {
+          if (event.data) {
+            acc.eventsData.concat(event.data)
+          } else if (event.url) {
+            acc.eventsUrl.push(event.url)
+          }
+          return acc
+        },
+        {
+          eventsUrl: [] as string[],
+          eventsData: [] as any[],
+        }
+      )
+      layers = eventsUrl.map((url: string, index: number) => {
         return new VesselEventsLayer(
           this.getSubLayerProps({
-            id: `${EVENTS_LAYER_PREFIX}-${this.props.id}-${index}`,
-            data: `https://gateway.api.dev.globalfishingwatch.org${url}`,
+            id: `${EVENTS_LAYER_PREFIX}-${id}-${index}`,
+            data: url,
+            visible,
             onDataLoad: this.onSublayerLoad,
             loaders: [vesselEventsLoader],
             pickable: true,
-            startTime: this.props.startTime,
-            endTime: this.props.endTime,
-            color: hexToRgb(this.props.themeColor),
-            visibleEvents: this.props.visibleEvents,
-            getEventVisibility: (d: ApiEvent) =>
-              this.props.visibleEvents?.includes(d.type) ? 1 : 0,
+            startTime: startTime,
+            endTime: endTime,
+            color: hexToRgb(themeColor),
+            visibleEvents: visibleEvents,
+            getEventVisibility: (d: ApiEvent) => (visibleEvents?.includes(d.type) ? 1 : 0),
             updateTriggers: {
-              getEventVisibility: [this.props.visibleEvents],
+              getEventVisibility: [visibleEvents],
             },
-            filterRange: [this.props.startTime, this.props.endTime],
+            filterRange: [startTime, endTime],
             extensions: [new DataFilterExtension({ filterSize: 1 })],
           })
         )
       })
+      if (eventsData?.length) {
+        layers.push(
+          new VesselEventsLayer(
+            this.getSubLayerProps({
+              id: `${EVENTS_LAYER_PREFIX}-${this.props.id}`,
+              data: eventsData,
+              visible,
+              pickable: true,
+              startTime: startTime,
+              endTime: endTime,
+              color: hexToRgb(themeColor),
+              visibleEvents: visibleEvents,
+              getEventVisibility: (d: ApiEvent) => (visibleEvents?.includes(d.type) ? 1 : 0),
+              updateTriggers: {
+                getEventVisibility: [visibleEvents],
+              },
+              filterRange: [startTime, endTime],
+              extensions: [new DataFilterExtension({ filterSize: 1 })],
+            })
+          )
+        )
+      }
     }
+    return layers
   }
 
   renderLayers(): Layer<{}> | LayersList {

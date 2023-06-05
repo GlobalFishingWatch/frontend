@@ -1,11 +1,10 @@
 import { useEffect, useMemo } from 'react'
-import { PickingInfo, LayerData, Layer } from '@deck.gl/core/typed'
+import { LayerData, Layer } from '@deck.gl/core/typed'
 import { atom, useSetAtom, useAtomValue } from 'jotai'
 import { selectAtom } from 'jotai/utils'
 import { EventTypes } from '@globalfishingwatch/api-types'
-import { VesselDeckLayersGenerator } from '@globalfishingwatch/layer-composer'
+import { VesselDeckLayersGenerator } from '@globalfishingwatch/deck-layers'
 import { START_TIMESTAMP } from '../../loaders/constants'
-import { parseEvents } from '../../loaders/vessels/eventsLoader'
 import { VesselLayer } from './VesselLayer'
 
 const dateToMs = (date: string) => {
@@ -37,7 +36,7 @@ interface globalConfig {
 
 export const useVesselLayers = () => useAtomValue(vesselLayersInstancesSelector)
 export const useSetVesselLayers = (
-  vesselLayersGenerator: VesselDeckLayersGenerator,
+  vesselLayersGenerator: VesselDeckLayersGenerator[],
   globalConfig: globalConfig,
   highlightedTime?: { start: string; end: string }
 ) => {
@@ -79,7 +78,7 @@ export const useSetVesselLayers = (
 
   useEffect(() => {
     vesselLayersGenerator.forEach((vesselGenerator: VesselDeckLayersGenerator) => {
-      const { id, eventsData, color, visibleEvents, trackUrl, eventsUrls } = vesselGenerator
+      const { id, color, visibleEvents, trackUrl, events } = vesselGenerator
 
       const instance = new VesselLayer({
         id,
@@ -88,14 +87,14 @@ export const useSetVesselLayers = (
         trackUrl,
         startTime,
         themeColor: color,
-        eventsUrls,
+        events,
         onDataLoad,
         // hoveredFeatures,
         // clickedFeatures,
         highlightEndTime,
         highlightStartTime,
         visibleEvents,
-        eventsResource: eventsData?.length ? parseEvents(eventsData) : [],
+        // eventsResource: eventsData?.length ? parseEvents(eventsData) : [],
       })
 
       setVesselLayers((prevVessels) => {

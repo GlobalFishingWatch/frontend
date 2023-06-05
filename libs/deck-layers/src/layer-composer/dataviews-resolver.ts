@@ -1,4 +1,4 @@
-import { DatasetTypes, ApiEvent, Resource } from '@globalfishingwatch/api-types'
+import { DatasetTypes, Resource } from '@globalfishingwatch/api-types'
 import {
   isHeatmapAnimatedDataview,
   isTrackDataview,
@@ -7,41 +7,37 @@ import {
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import {
+  API_GATEWAY,
   DeckLayersGeneratorDictionary,
   DeckLayersGeneratorType,
   VesselDeckLayersGenerator,
 } from '@globalfishingwatch/deck-layers'
+import { parseEvents } from '../loaders/vessels/eventsLoader'
 
 type DataviewsGeneratorResource = Record<string, Resource>
 
-function getEventsData(
-  dataview: UrlDataviewInstance,
-  resources: DataviewsGeneratorResource
-): ApiEvent[] {
-  const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
-  const hasEventData =
-    eventsResources?.length && eventsResources.some(({ url }) => resources?.[url]?.data)
-  if (!hasEventData) return []
-  return eventsResources.flatMap(({ url }) => (url ? resources?.[url]?.data || [] : []))
-}
-
 export function getDataviewsGeneratorsDictionary(
   dataviews: UrlDataviewInstance[],
-  resources?: DataviewsGeneratorResource
+  resources: DataviewsGeneratorResource
 ): DeckLayersGeneratorDictionary {
   const vesselsDataviews = dataviews.filter((dataview) => isTrackDataview(dataview))
-  debugger
   return {
     [DeckLayersGeneratorType.Vessels]: vesselsDataviews.map(
       (dataview): VesselDeckLayersGenerator => {
         return {
           id: dataview.id,
           color: dataview.config?.color as string,
-          trackUrl: resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)?.url,
-          eventsData: resources ? getEventsData(dataview, resources) : [],
-          eventsUrls: resolveDataviewDatasetResources(dataview, DatasetTypes.Events).map(
-            (resources) => resources.url
-          ),
+          trackUrl: `${API_GATEWAY}${
+            resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)?.url
+          }`,
+          events: resolveDataviewDatasetResources(dataview, DatasetTypes.Events).map((resource) => {
+            const data = resources?.[resource.url]?.data
+            return {
+              url: `${API_GATEWAY}${resource.url}`,
+              // TODO: should we parse events just once?
+              data: data ? parseEvents(data) : [],
+            }
+          }),
         }
       }
     ),
