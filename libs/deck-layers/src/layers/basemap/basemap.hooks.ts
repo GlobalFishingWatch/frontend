@@ -35,7 +35,8 @@ export function useBasemapLayer({
     } else {
       updateAtom({ instance: undefined, loaded: false })
     }
-  }, [visible, basemap, onDataLoad, updateAtom, loaded])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible, basemap])
   return instance
 }
 
