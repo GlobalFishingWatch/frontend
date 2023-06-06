@@ -1,8 +1,8 @@
 import type { NumericArray } from '@math.gl/core'
 import { AccessorFunction, DefaultProps, UpdateParameters } from '@deck.gl/core/typed'
 import { PathLayer, PathLayerProps } from '@deck.gl/layers/typed'
-import { Segment } from '@globalfishingwatch/api-types'
 import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
+import { VesselDeckLayerTrackSegment } from '../../loaders/vessels/trackLoader'
 import { getPathDefaultAccessor, getTimestampsDefaultAccessor } from './vessels.utils'
 
 /** Properties added by VesselTrackLayer. */
@@ -62,7 +62,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
 > {
   static layerName = 'VesselTrackLayer'
   static defaultProps = defaultProps
-  segments!: Segment[]
+  segments!: VesselDeckLayerTrackSegment[]
 
   getShaders() {
     const shaders = super.getShaders()

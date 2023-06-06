@@ -1,7 +1,8 @@
-import { Fragment, memo, useCallback, useState, useMemo } from 'react'
+import { Fragment, memo, useCallback, useState, useMemo, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
+import { minBy, maxBy } from 'lodash'
 import {
   Timebar,
   TimebarTracks,
@@ -44,6 +45,7 @@ import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-gr
 import { getUTCDateTime } from 'utils/dates'
 import { selectIsReportLocation } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import { setHighlightedTime, selectHighlightedTime, Range } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import { selectTracksData, selectTracksGraphData, selectTracksEvents } from './timebar.selectors'
@@ -138,9 +140,7 @@ const TimebarWrapper = () => {
   const { timebarVisualisation } = useTimebarVisualisationConnect()
   const { setMapCoordinates, viewport } = useViewport()
   const timebarGraph = useSelector(selectTimebarGraph)
-  const vessels = useVesselLayers()
-  console.log('🚀 ~ TimebarWrapper ~ vessels:', vessels)
-  const tracks = useSelector(selectTracksData)
+  // const tracks = useSelector(selectTracksData)
   const tracksGraphsData = useSelector(selectTracksGraphData)
   const tracksEvents = useSelector(selectTracksEvents)
   const { isMapDrawing } = useMapDrawConnect()
@@ -149,6 +149,39 @@ const TimebarWrapper = () => {
   const isReportLocation = useSelector(selectIsReportLocation)
   const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
   const dispatch = useAppDispatch()
+  const vessels = useVesselLayers()
+  const [tracks, setVesselTracks] = useState<any>(null)
+  // const [isPending, startTransition] = useTransition()
+
+  useEffect(() => {
+    requestAnimationFrame(() => {
+      const v = vessels[0]
+      if (v) {
+        // const events = v.getVesselEventsData()
+        const track = v.getVesselTrackData()
+        const trackFormatted = track.map((t) => {
+          const start = (minBy(t, 'timestamp') as any)?.timestamp
+          const end = (maxBy(t, 'timestamp') as any)?.timestamp
+          return {
+            start,
+            end,
+            props: { id: '', color: 'red' },
+            values: t.map((v) => ({
+              longitude: v.coordinates[0],
+              latitude: v.coordinates[1],
+              timestamp: v.timestamp,
+            })),
+          }
+        })
+        setVesselTracks([
+          {
+            status: AsyncReducerStatus.Finished,
+            chunks: trackFormatted,
+          },
+        ])
+      }
+    })
+  }, [vessels])
 
   const [bookmark, setBookmark] = useState<{ start: string; end: string } | null>(null)
   const onBookmarkChange = useCallback(
@@ -270,18 +303,18 @@ const TimebarWrapper = () => {
 
   if (!start || !end || isMapDrawing || showTimeComparison) return null
 
-  const loading =
-    tracks?.some(({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading) ||
-    tracksGraphsData?.some(
-      ({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading
-    ) ||
-    tracksEvents?.some(
-      ({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading
-    )
+  const loading = false
+  // tracks?.some(({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading) ||
+  // tracksGraphsData?.some(
+  //   ({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading
+  // ) ||
+  // tracksEvents?.some(
+  //   ({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading
+  // )
 
-  const hasTrackError =
-    tracks?.some(({ status }) => status === ResourceStatus.Error) ||
-    tracksEvents?.some(({ status }) => status === ResourceStatus.Error)
+  const hasTrackError = false
+  // tracks?.some(({ status }) => status === ResourceStatus.Error) ||
+  // tracksEvents?.some(({ status }) => status === ResourceStatus.Error)
 
   const getTracksComponents = () => {
     if (hasTrackError) {

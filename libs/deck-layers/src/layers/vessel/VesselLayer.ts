@@ -2,10 +2,10 @@ import { DataFilterExtension } from '@deck.gl/extensions'
 import { CompositeLayer, Layer, LayersList, LayerProps } from '@deck.gl/core/typed'
 // Layers
 import { ApiEvent, EventVessel, Segment, VesselTrackData } from '@globalfishingwatch/api-types'
-import { API_GATEWAY } from '@globalfishingwatch/deck-layers'
 import { trackLoader } from '../../loaders/vessels/trackLoader'
 import { vesselEventsLoader } from '../../loaders/vessels/eventsLoader'
 import { hexToRgb } from '../../utils/layers'
+import { START_TIMESTAMP } from '../../loaders/constants'
 import { VesselEventsLayer, _VesselEventsLayerProps } from './VesselEventsLayer'
 import { VesselTrackLayer, _VesselTrackLayerProps } from './VesselTrackLayer'
 // Loaders
@@ -170,6 +170,15 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   getVesselTrackData() {
-    return this.getTrackLayer()?.getSegments() || []
+    return (
+      this.getTrackLayer()
+        ?.getSegments()
+        .map(({ waypoints }) =>
+          waypoints.map(({ coordinates, timestamp }) => ({
+            coordinates,
+            timestamp: timestamp + START_TIMESTAMP,
+          }))
+        ) || []
+    )
   }
 }
