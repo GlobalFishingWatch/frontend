@@ -1,4 +1,4 @@
-import { DatasetTypes, Resource } from '@globalfishingwatch/api-types'
+import { DatasetTypes, EventType, Resource } from '@globalfishingwatch/api-types'
 import {
   isHeatmapAnimatedDataview,
   isTrackDataview,
@@ -24,18 +24,23 @@ export function getDataviewsGeneratorsDictionary(
   return {
     [DeckLayersGeneratorType.Vessels]: vesselsDataviews.map(
       (dataview): VesselDeckLayersGenerator => {
+        const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
+        const vesselInfo = (resources[infoUrl] as any)?.data
         return {
           id: dataview.id,
+          name: vesselInfo?.shipname,
           color: dataview.config?.color as string,
           trackUrl: `${API_GATEWAY}${
             resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)?.url
           }`,
           events: resolveDataviewDatasetResources(dataview, DatasetTypes.Events).map((resource) => {
             const data = resources?.[resource.url]?.data
+            const eventType = resource.dataset?.subcategory as EventType
             return {
+              type: eventType,
               url: `${API_GATEWAY}${resource.url}`,
               // TODO: should we parse events just once?
-              data: data ? parseEvents(data) : [],
+              ...(data && { data: parseEvents(data) }),
             }
           }),
         }

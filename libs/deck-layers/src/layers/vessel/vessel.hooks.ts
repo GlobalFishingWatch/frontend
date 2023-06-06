@@ -78,11 +78,12 @@ export const useSetVesselLayers = (
 
   useEffect(() => {
     vesselLayersGenerator.forEach((vesselGenerator: VesselDeckLayersGenerator) => {
-      const { id, color, visibleEvents, trackUrl, events } = vesselGenerator
+      const { id, visible, color, visibleEvents, trackUrl, events, name } = vesselGenerator
 
       const instance = new VesselLayer({
         id,
-        visible: true,
+        visible,
+        name,
         endTime,
         trackUrl,
         startTime,

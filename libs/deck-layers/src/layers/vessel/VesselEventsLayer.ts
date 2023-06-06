@@ -4,11 +4,10 @@ import { EventTypes } from '@globalfishingwatch/api-types'
 import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
 
 export type _VesselEventsLayerProps<DataT = any> = {
-  eventType?: string
+  type: EventTypes
   zIndex?: number
   color: number[]
   filterRange: Array<number>
-  events: { url?: string; data?: DataT[] }[]
   getShape?: AccessorFunction<DataT, number>
   getPosition?: AccessorFunction<DataT, Position> | Position
   getFilterValue?: AccessorFunction<DataT, number>
@@ -25,7 +24,6 @@ const defaultProps: DefaultProps<VesselEventsLayerProps> = {
   filled: { type: 'accessor', value: true },
   opacity: { type: 'accessor', value: 0.8 },
   stroked: { type: 'accessor', value: false },
-  events: { type: 'accessor', value: [] },
   color: { type: 'accessor', value: [255, 255, 255] },
   filterRange: { type: 'accessor', value: [] },
   radiusScale: { type: 'accessor', value: 30 },

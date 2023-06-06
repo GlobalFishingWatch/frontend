@@ -11,12 +11,12 @@ export type _VesselTrackLayerProps<DataT = any> = {
    * The start time of the track in milliseconds
    * @default 0
    */
-  startTime?: number
+  startTime: number
   /**
    * The end time of the track in milliseconds
    * @default 0
    */
-  endTime?: number
+  endTime: number
   /**
    * The start time to highlight the track in milliseconds
    * @default 0

@@ -1,8 +1,7 @@
-import { Fragment, memo, useCallback, useState, useMemo, useEffect } from 'react'
+import { Fragment, memo, useCallback, useState, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
-import { minBy, maxBy } from 'lodash'
 import {
   Timebar,
   TimebarTracks,
@@ -15,9 +14,7 @@ import {
   HighlightedChunks,
 } from '@globalfishingwatch/timebar'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { ResourceStatus } from '@globalfishingwatch/api-types'
 import { getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
-import { useVesselLayers } from '@globalfishingwatch/deck-layers'
 import {
   useTimerangeConnect,
   useTimebarVisualisation,
@@ -45,7 +42,10 @@ import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-gr
 import { getUTCDateTime } from 'utils/dates'
 import { selectIsReportLocation } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { AsyncReducerStatus } from 'utils/async-slice'
+import {
+  useTimebarVesselEvents,
+  useTimebarVesselTracks,
+} from 'features/timebar/timebar-vessel.hooks'
 import { setHighlightedTime, selectHighlightedTime, Range } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import { selectTracksData, selectTracksGraphData, selectTracksEvents } from './timebar.selectors'
@@ -140,48 +140,16 @@ const TimebarWrapper = () => {
   const { timebarVisualisation } = useTimebarVisualisationConnect()
   const { setMapCoordinates, viewport } = useViewport()
   const timebarGraph = useSelector(selectTimebarGraph)
-  // const tracks = useSelector(selectTracksData)
   const tracksGraphsData = useSelector(selectTracksGraphData)
-  const tracksEvents = useSelector(selectTracksEvents)
   const { isMapDrawing } = useMapDrawConnect()
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const vesselGroupsFiltering = useSelector(selectIsVessselGroupsFiltering)
   const isReportLocation = useSelector(selectIsReportLocation)
   const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
   const dispatch = useAppDispatch()
-  const vessels = useVesselLayers()
-  const [tracks, setVesselTracks] = useState<any>(null)
   // const [isPending, startTransition] = useTransition()
-
-  useEffect(() => {
-    requestAnimationFrame(() => {
-      const v = vessels[0]
-      if (v) {
-        // const events = v.getVesselEventsData()
-        const track = v.getVesselTrackData()
-        const trackFormatted = track.map((t) => {
-          const start = (minBy(t, 'timestamp') as any)?.timestamp
-          const end = (maxBy(t, 'timestamp') as any)?.timestamp
-          return {
-            start,
-            end,
-            props: { id: '', color: 'red' },
-            values: t.map((v) => ({
-              longitude: v.coordinates[0],
-              latitude: v.coordinates[1],
-              timestamp: v.timestamp,
-            })),
-          }
-        })
-        setVesselTracks([
-          {
-            status: AsyncReducerStatus.Finished,
-            chunks: trackFormatted,
-          },
-        ])
-      }
-    })
-  }, [vessels])
+  const tracks = useTimebarVesselTracks()
+  const tracksEvents = useTimebarVesselEvents()
 
   const [bookmark, setBookmark] = useState<{ start: string; end: string } | null>(null)
   const onBookmarkChange = useCallback(

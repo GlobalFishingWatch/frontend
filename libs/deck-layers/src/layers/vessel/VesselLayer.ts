@@ -1,16 +1,24 @@
 import { DataFilterExtension } from '@deck.gl/extensions'
 import { CompositeLayer, Layer, LayersList, LayerProps } from '@deck.gl/core/typed'
 // Layers
-import { ApiEvent, EventVessel, Segment, VesselTrackData } from '@globalfishingwatch/api-types'
+import {
+  ApiEvent,
+  EventTypes,
+  EventVessel,
+  Segment,
+  VesselTrackData,
+} from '@globalfishingwatch/api-types'
 import { trackLoader } from '../../loaders/vessels/trackLoader'
 import { vesselEventsLoader } from '../../loaders/vessels/eventsLoader'
 import { hexToRgb } from '../../utils/layers'
 import { START_TIMESTAMP } from '../../loaders/constants'
+import { VesselDeckLayersEvent } from '../../layer-composer/types/vessel'
 import { VesselEventsLayer, _VesselEventsLayerProps } from './VesselEventsLayer'
 import { VesselTrackLayer, _VesselTrackLayerProps } from './VesselTrackLayer'
-// Loaders
+
+export type VesselEventsLayerProps = _VesselEventsLayerProps & { events: VesselDeckLayersEvent[] }
 export type VesselLayerProps = _VesselTrackLayerProps &
-  _VesselEventsLayerProps & { themeColor: string; layersLoaded: string[] }
+  VesselEventsLayerProps & { name: string; themeColor: string; layersLoaded: string[] }
 
 export const TRACK_LAYER_PREFIX = 'track'
 export const EVENTS_LAYER_PREFIX = 'events'
@@ -68,70 +76,30 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   _getVesselEventsLayer(): VesselEventsLayer[] {
-    const { visible, id, themeColor, visibleEvents, startTime, endTime } = this.props
+    const { visible, id, themeColor, visibleEvents, startTime, endTime, name } = this.props
     // return one layer with all events if we are consuming the data object from app resources
-    let layers: VesselEventsLayer[] = []
-    if (this.props.events?.length) {
-      const { eventsUrl, eventsData } = this.props.events.reduce(
-        (acc, event) => {
-          if (event.data) {
-            acc.eventsData.concat(event.data)
-          } else if (event.url) {
-            acc.eventsUrl.push(event.url)
-          }
-          return acc
+    return this.props.events?.map(({ url, type, data }, index) => {
+      return new VesselEventsLayer({
+        id: `${EVENTS_LAYER_PREFIX}-${id}-${index}`,
+        data: url || data,
+        visible,
+        type,
+        name,
+        onDataLoad: this.onSublayerLoad,
+        loaders: [vesselEventsLoader],
+        pickable: true,
+        startTime: startTime,
+        endTime: endTime,
+        color: hexToRgb(themeColor),
+        visibleEvents: visibleEvents,
+        getEventVisibility: (d: ApiEvent) => (visibleEvents?.includes(d.type) ? 1 : 0),
+        updateTriggers: {
+          getEventVisibility: [visibleEvents],
         },
-        {
-          eventsUrl: [] as string[],
-          eventsData: [] as any[],
-        }
-      )
-      layers = eventsUrl.map((url: string, index: number) => {
-        return new VesselEventsLayer(
-          this.getSubLayerProps({
-            id: `${EVENTS_LAYER_PREFIX}-${id}-${index}`,
-            data: url,
-            visible,
-            onDataLoad: this.onSublayerLoad,
-            loaders: [vesselEventsLoader],
-            pickable: true,
-            startTime: startTime,
-            endTime: endTime,
-            color: hexToRgb(themeColor),
-            visibleEvents: visibleEvents,
-            getEventVisibility: (d: ApiEvent) => (visibleEvents?.includes(d.type) ? 1 : 0),
-            updateTriggers: {
-              getEventVisibility: [visibleEvents],
-            },
-            filterRange: [startTime, endTime],
-            extensions: [new DataFilterExtension({ filterSize: 1 })],
-          })
-        )
+        filterRange: [startTime, endTime],
+        extensions: [new DataFilterExtension({ filterSize: 1 }) as any],
       })
-      if (eventsData?.length) {
-        layers.push(
-          new VesselEventsLayer(
-            this.getSubLayerProps({
-              id: `${EVENTS_LAYER_PREFIX}-${this.props.id}`,
-              data: eventsData,
-              visible,
-              pickable: true,
-              startTime: startTime,
-              endTime: endTime,
-              color: hexToRgb(themeColor),
-              visibleEvents: visibleEvents,
-              getEventVisibility: (d: ApiEvent) => (visibleEvents?.includes(d.type) ? 1 : 0),
-              updateTriggers: {
-                getEventVisibility: [visibleEvents],
-              },
-              filterRange: [startTime, endTime],
-              extensions: [new DataFilterExtension({ filterSize: 1 })],
-            })
-          )
-        )
-      }
-    }
-    return layers
+    })
   }
 
   renderLayers(): Layer<{}> | LayersList {
@@ -151,14 +119,18 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     ) as VesselEventsLayer[]
   }
 
+  getVesselName() {
+    return this.props.name
+  }
+
   getVesselsData() {
     return this.getSubLayers().map((l) => l.props.data)
   }
 
-  getVesselEventsData() {
+  getVesselEventsData(type?: EventTypes[]) {
     const events = this.getEventLayers().reduce(
       (acc: ApiEvent[], l: VesselEventsLayer): ApiEvent<EventVessel>[] => {
-        const events = l.props.eventType ? l.props.data : []
+        const events = type ? (type.includes(l.props.type) ? l.props.data : []) : l.props.data
         return [...acc, events] as ApiEvent[]
       },
       []
@@ -166,7 +138,13 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     const sortedEvents: ApiEvent[] = events
       .flat()
       .sort((a, b) => (a.start as number) - (b.start as number))
-    return sortedEvents
+    return sortedEvents.map((e) => ({
+      ...e,
+      start: (e.start as number) + START_TIMESTAMP,
+      ...(e.end && {
+        end: (e.end as number) + START_TIMESTAMP,
+      }),
+    }))
   }
 
   getVesselTrackData() {
