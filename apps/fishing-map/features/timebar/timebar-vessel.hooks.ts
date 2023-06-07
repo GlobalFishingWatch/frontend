@@ -7,6 +7,7 @@ import {
   TimebarChartData,
   TrackEventChunkProps,
 } from '@globalfishingwatch/timebar'
+import { parseTrackEventChunkProps } from 'features/timebar/timebar.utils'
 import { t } from 'features/i18n/i18n'
 
 const getUserTrackHighlighterLabel = ({ chunk }: HighlighterCallbackFnArgs) => {
@@ -28,7 +29,7 @@ export const useTimebarVesselTracks = () => {
             return {
               start,
               end,
-              props: { id: '', color: 'red' },
+              props: { color: vessel.props.themeColor },
               values: t.map((v) => ({
                 longitude: v.coordinates[0],
                 latitude: v.coordinates[1],
@@ -39,6 +40,7 @@ export const useTimebarVesselTracks = () => {
           return {
             status: ResourceStatus.Finished,
             chunks,
+            color: vessel.props.themeColor,
             defaultLabel: vessel.getVesselName() || '',
             getHighlighterLabel: getUserTrackHighlighterLabel,
             getHighlighterIcon: 'vessel',
@@ -51,17 +53,18 @@ export const useTimebarVesselTracks = () => {
   return tracks
 }
 
-const getTrackEventHighlighterLabel = ({ chunk, expanded }: HighlighterCallbackFnArgs) => {
-  if (chunk.cluster) {
-    return `${chunk.props?.descriptionGeneric} (${chunk.cluster.numChunks} ${t(
+const getTrackEventHighlighterLabel = ({ chunk, expanded }: HighlighterCallbackFnArgs): string => {
+  const chunkWithProps = parseTrackEventChunkProps(chunk)
+  if (chunkWithProps.cluster) {
+    return `${chunkWithProps.props?.descriptionGeneric} (${chunkWithProps.cluster.numChunks} ${t(
       'event.events',
       'events'
     )})`
   }
   if (expanded) {
-    return chunk.props?.description
+    return chunkWithProps.props?.description as string
   }
-  return chunk.props?.descriptionGeneric
+  return chunkWithProps.props?.descriptionGeneric as string
 }
 
 export const useTimebarVesselEvents = () => {
@@ -72,11 +75,7 @@ export const useTimebarVesselEvents = () => {
     requestAnimationFrame(() => {
       if (vessels.length) {
         const vesselEvents: TimebarChartData<any> = vessels.map((vessel, index) => {
-          const chunks = vessel.getVesselEventsData().map((e) => ({
-            start: e.start as number,
-            end: e.end as number,
-            type: e.type,
-          }))
+          const chunks = vessel.getVesselEventsData() as any
           return {
             color: vessel.props?.themeColor,
             chunks,

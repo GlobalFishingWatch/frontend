@@ -158,6 +158,7 @@ const getGeneratorsConfig = ({
     return []
   }
 }
+
 export const selectMapGeneratorsDictionary = createSelector(
   [
     selectDataviewInstancesResolvedVisible,
