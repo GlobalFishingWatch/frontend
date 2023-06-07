@@ -21,7 +21,10 @@ export const useTimebarVesselTracks = () => {
   useEffect(() => {
     requestAnimationFrame(() => {
       if (vessels?.length) {
-        const vesselTracks = vessels.map((vessel) => {
+        const vesselTracks = vessels.flatMap((vessel) => {
+          if (!vessel.props.visible) {
+            return []
+          }
           const track = vessel.getVesselTrackData()
           const chunks = track.map((t) => {
             const start = (minBy(t, 'timestamp') as any)?.timestamp
@@ -74,7 +77,10 @@ export const useTimebarVesselEvents = () => {
   useEffect(() => {
     requestAnimationFrame(() => {
       if (vessels.length) {
-        const vesselEvents: TimebarChartData<any> = vessels.map((vessel, index) => {
+        const vesselEvents: TimebarChartData<any> = vessels.flatMap((vessel) => {
+          if (!vessel.props.visible) {
+            return []
+          }
           const chunks = vessel.getVesselEventsData() as any
           return {
             color: vessel.props?.themeColor,

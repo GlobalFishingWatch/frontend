@@ -29,6 +29,7 @@ export function getDataviewsGeneratorsDictionary(
         return {
           id: dataview.id,
           name: vesselInfo?.shipname,
+          visible: dataview.config?.visible ?? true,
           color: dataview.config?.color as string,
           trackUrl: `${API_GATEWAY}${
             resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)?.url

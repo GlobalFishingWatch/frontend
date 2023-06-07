@@ -36,9 +36,6 @@ export const parseTrack = (data: []): VesselDeckLayerTrackSegment[] => {
     segments.map((segment: Segment) => ({
       waypoints: segment.map((point) => ({
         coordinates: [point.longitude!, point.latitude!],
-        // Because timestamps are stored as 32-bit floating numbers, raw unix epoch time can not be used.
-        // You may test the validity of a timestamp by calling Math.fround(t) to check if there would be any loss of precision.
-        // Also deduct start timestamp from each data point to avoid overflow
         timestamp: Math.fround(point.timestamp! - START_TIMESTAMP),
       })),
     })),
@@ -56,18 +53,19 @@ const transformerByField: TransformByField = {
   timestamp: (value: Point['timestamp']) => value! * Math.pow(10, 3),
 }
 
+type ValueArrayToSegmentsFields = FieldTransformKey | 'lonlat'
 export const trackValueArrayToSegments = (
   valueArray: [],
-  fields_: FieldTransformKey[]
+  fields_: ValueArrayToSegmentsFields[]
 ): Segment[] => {
   if (!fields_.length) {
     console.log('No fields provided to trackValueArrayToSegments')
     throw new Error()
   }
 
-  const fields = [...fields_]
-  if ((fields as (FieldTransformKey | 'lonlat')[]).includes('lonlat')) {
-    const llIndex = (fields as (FieldTransformKey | 'lonlat')[]).indexOf('lonlat')
+  const fields = [...fields_] as FieldTransformKey[]
+  if (fields_.includes('lonlat')) {
+    const llIndex = fields_.indexOf('lonlat')
     fields.splice(llIndex, 1, 'longitude', 'latitude')
   }
   const numFields = fields.length

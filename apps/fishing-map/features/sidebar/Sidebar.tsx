@@ -64,16 +64,15 @@ function Sidebar({ onMenuClick }: SidebarProps) {
 
   useEffect(() => {
     if (dataviewsResources?.resources?.length) {
-      const infoResources = dataviewsResources?.resources
-      //   .filter(
-      //   (r) => r.dataset.type === DatasetTypes.Vessels
-      // )
+      const infoResources = dataviewsResources?.resources.filter(
+        (r) => r.dataset.type === DatasetTypes.Vessels
+      )
       infoResources.forEach((resource) => {
         dispatch(
           fetchResourceThunk({
             resource,
             resourceKey: resource.key,
-            parseEventCb: parseTrackEventChunkProps,
+            // parseEventCb: parseTrackEventChunkProps,
             parseUserTrackCb: parseUserTrackCallback,
           })
         )

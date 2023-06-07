@@ -1,4 +1,4 @@
 export interface BaseDeckLayerGenerator {
   id: string
-  visible?: true
+  visible?: boolean
 }
