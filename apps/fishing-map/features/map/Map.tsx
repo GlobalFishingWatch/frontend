@@ -7,7 +7,6 @@ import MemoryStatsComponent from 'next-react-memory-stats'
 import dynamic from 'next/dynamic'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import maplibregl from '@globalfishingwatch/maplibre-gl'
-import { useDeckLayerComposer } from '@globalfishingwatch/deck-layers'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
@@ -29,7 +28,6 @@ import useMapInstance from 'features/map/map-context.hooks'
 import {
   useClickedEventConnect,
   useMapHighlightedEvent,
-  useGeneratorsDictionaryConnect,
   parseMapTooltipEvent,
   useGeneratorsConnect,
   TooltipEventFeature,
@@ -53,6 +51,7 @@ import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { selectHighlightedTime } from 'features/timebar/timebar.slice'
 import { selectMapTimeseries } from 'features/reports/reports-timeseries.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useMapDeckLayers } from 'features/map/map-layers.hooks'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import useRulers from './rulers/rulers.hooks'
@@ -116,8 +115,6 @@ const MapWrapper = () => {
   useEnvironmentalBreaksUpdate()
   const map = useMapInstance()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
-  const generatorsDictionary = useGeneratorsDictionaryConnect()
-  const highlightedTime = useSelector(selectHighlightedTime)
 
   const setMapReady = useSetRecoilState(mapReadyAtom)
   const hasTimeseries = useRecoilValue(selectMapTimeseries)
@@ -135,12 +132,7 @@ const MapWrapper = () => {
     layerComposer
   )
 
-  const { layers } = useDeckLayerComposer({
-    generatorsDictionary,
-    generatorsConfig,
-    globalGeneratorConfig: globalConfig,
-    highlightedTime,
-  })
+  const layers = useMapDeckLayers()
   const allSourcesLoaded = useAllMapSourceTilesLoaded()
 
   const { clickedEvent, dispatchClickedEvent, cancelPendingInteractionRequests } =
@@ -316,9 +308,9 @@ const MapWrapper = () => {
         // discussion for reference https://github.com/visgl/deck.gl/discussions/5793
         layerFilter={({ renderPass }) => renderPass !== 'picking:hover'}
         initialViewState={{
-          longitude: -9,
-          latitude: 42,
-          zoom: 4,
+          longitude: -73.3073372718909,
+          latitude: -42.29868545284379,
+          zoom: 8.044614831699267,
           pitch: 0,
           bearing: 0,
           minZoom: 0,
