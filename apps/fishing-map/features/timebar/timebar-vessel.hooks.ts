@@ -81,7 +81,7 @@ export const useTimebarVesselEvents = () => {
           if (!vessel.props.visible) {
             return []
           }
-          const chunks = vessel.getVesselEventsData() as any
+          const chunks = vessel.getVesselEventsData(vessel.props.visibleEvents) as any
           return {
             color: vessel.props?.themeColor,
             chunks,

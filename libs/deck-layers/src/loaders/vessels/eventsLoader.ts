@@ -24,7 +24,7 @@ export type VesselDeckLayersEventData = Partial<ApiEvent> & {
   type: EventTypes
   coordinates: [number, number]
   start: number
-  endTime: number
+  end: number
   eventShapeIndex: number
 }
 export function parseEvents(events: ApiEvent[]): VesselDeckLayersEventData[] {
@@ -35,7 +35,7 @@ export function parseEvents(events: ApiEvent[]): VesselDeckLayersEventData[] {
       type,
       coordinates: [event.position.lon, event.position.lat],
       start: Math.fround(new Date(start).getTime() - START_TIMESTAMP),
-      endTime: Math.fround(new Date(end).getTime() - START_TIMESTAMP),
+      end: Math.fround(new Date(end).getTime() - START_TIMESTAMP),
       eventShapeIndex: EVENT_TYPES_ORDINALS[type] || 0,
     }
   })
