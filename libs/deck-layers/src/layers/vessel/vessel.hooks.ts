@@ -4,6 +4,7 @@ import { atom, useSetAtom, useAtomValue } from 'jotai'
 import { selectAtom } from 'jotai/utils'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { VesselDeckLayersGenerator } from '@globalfishingwatch/deck-layers'
+import { hexToDeckColor } from '../../utils/colors'
 import { START_TIMESTAMP } from '../../loaders/constants'
 import { VesselLayer } from './VesselLayer'
 
@@ -25,6 +26,7 @@ export const vesselLayersInstancesSelector = atom((get) =>
 
 export const selectVesselsLayersAtom = selectAtom(vesselLayersAtom, vesselLayersSelector)
 
+// TODO this should be moved to a root configuration
 interface globalConfig {
   start?: string
   end?: string
@@ -34,13 +36,19 @@ interface globalConfig {
   visibleEvents?: EventTypes[]
 }
 
+export type VesselDeckLayersParams = {
+  highlightedTime?: { start: string; end: string }
+  highlightEventIds?: string[]
+}
+
 export const useVesselLayers = () => useAtomValue(vesselLayersInstancesSelector)
 export const useSetVesselLayers = (
   vesselLayersGenerator: VesselDeckLayersGenerator[],
   globalConfig: globalConfig,
-  highlightedTime?: { start: string; end: string }
+  params?: VesselDeckLayersParams
 ) => {
   const { start, end } = globalConfig
+  const { highlightedTime, highlightEventIds } = params || {}
 
   const setVesselLayers = useSetAtom(vesselLayersAtom)
   const vesselLayers = useAtomValue(selectVesselsLayersAtom)
@@ -61,7 +69,7 @@ export const useSetVesselLayers = (
     )
   )
 
-  const onDataLoad = (data: LayerData<any>, context: { propName: string; layer: Layer<any> }) => {
+  const onDataLoad = (data: any, context: { propName: string; layer: Layer<any> }) => {
     setVesselLoadedState(context.layer.id)
   }
   const highlightStartTime = useMemo(
@@ -90,13 +98,14 @@ export const useSetVesselLayers = (
           endTime,
           trackUrl,
           startTime,
-          themeColor: color,
+          color: hexToDeckColor(color),
           events,
           onDataLoad,
           // hoveredFeatures,
           // clickedFeatures,
           highlightEndTime,
           highlightStartTime,
+          highlightEventIds,
           visibleEvents,
           // eventsResource: eventsData?.length ? parseEvents(eventsData) : [],
         })

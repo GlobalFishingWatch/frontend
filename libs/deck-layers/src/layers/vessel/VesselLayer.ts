@@ -1,5 +1,5 @@
 import { DataFilterExtension } from '@deck.gl/extensions'
-import { CompositeLayer, Layer, LayersList, LayerProps } from '@deck.gl/core/typed'
+import { CompositeLayer, Layer, LayersList, LayerProps, Color } from '@deck.gl/core/typed'
 // Layers
 import {
   ApiEvent,
@@ -10,15 +10,15 @@ import {
 } from '@globalfishingwatch/api-types'
 import { trackLoader } from '../../loaders/vessels/trackLoader'
 import { VesselDeckLayersEventData, vesselEventsLoader } from '../../loaders/vessels/eventsLoader'
-import { hexToRgb } from '../../utils/layers'
 import { START_TIMESTAMP } from '../../loaders/constants'
 import { VesselDeckLayersEvent } from '../../layer-composer/types/vessel'
-import { VesselEventsLayer, _VesselEventsLayerProps } from './VesselEventsLayer'
+import { deckToHexColor } from '../../utils/colors'
+import { EVENTS_COLORS, VesselEventsLayer, _VesselEventsLayerProps } from './VesselEventsLayer'
 import { VesselTrackLayer, _VesselTrackLayerProps } from './VesselTrackLayer'
 
 export type VesselEventsLayerProps = _VesselEventsLayerProps & { events: VesselDeckLayersEvent[] }
 export type VesselLayerProps = _VesselTrackLayerProps &
-  VesselEventsLayerProps & { name: string; themeColor: string; layersLoaded: string[] }
+  VesselEventsLayerProps & { name: string; color: Color; layersLoaded: string[] }
 
 export const TRACK_LAYER_PREFIX = 'track'
 export const EVENTS_LAYER_PREFIX = 'events'
@@ -58,16 +58,12 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
             ) {
               return [255, 255, 255, 255]
             }
-            return hexToRgb(this.props.themeColor)
+            return this.props.color
           })
         },
         getWidth: 1,
         updateTriggers: {
-          getColor: [
-            this.props.highlightStartTime,
-            this.props.highlightEndTime,
-            this.props.themeColor,
-          ],
+          getColor: [this.props.highlightStartTime, this.props.highlightEndTime, this.props.color],
         },
         startTime: this.props.startTime,
         endTime: this.props.endTime,
@@ -76,7 +72,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   _getVesselEventsLayer(): VesselEventsLayer[] {
-    const { visible, id, themeColor, visibleEvents, startTime, endTime } = this.props
+    const { visible, id, visibleEvents, startTime, endTime, highlightEventIds } = this.props
     // return one layer with all events if we are consuming the data object from app resources
     return this.props.events?.map(({ url, type, data }, index) => {
       return new VesselEventsLayer<VesselDeckLayersEventData[]>({
@@ -90,12 +86,21 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         // name,
         // startTime: startTime,
         // endTime: endTime,
-        color: hexToRgb(themeColor),
         visibleEvents: visibleEvents,
+        getFillColor: (d: any): Color => {
+          if (highlightEventIds?.includes(d.id)) {
+            return EVENTS_COLORS.highlight
+          }
+          return d.type === EventTypes.Fishing ? this.props.color : EVENTS_COLORS[d.type]
+        },
+        // TODO add line border to highlight event
+        // getLineColor: (d: any): Color =>
+        //   d.id === this.props.highlightEventId ? [255, 255, 255, 255] : [0, 0, 0, 0],
         getEventVisibility: (d: VesselDeckLayersEventData) =>
           visibleEvents?.includes(d.type) ? 1 : 0,
         updateTriggers: {
           getEventVisibility: [visibleEvents],
+          getFillColor: [this.props.highlightEventIds],
         },
         radiusMinPixels: 15,
         getFilterValue: (d: VesselDeckLayersEventData) => [d.start, d.end] as any,
@@ -124,6 +129,10 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
 
   getVesselName() {
     return this.props.name
+  }
+
+  getVesselColor() {
+    return deckToHexColor(this.props.color)
   }
 
   getVesselsData() {

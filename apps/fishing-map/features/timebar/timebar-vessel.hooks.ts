@@ -32,7 +32,7 @@ export const useTimebarVesselTracks = () => {
             return {
               start,
               end,
-              props: { color: vessel.props.themeColor },
+              props: { color: vessel.getVesselColor() },
               values: t.map((v) => ({
                 longitude: v.coordinates[0],
                 latitude: v.coordinates[1],
@@ -43,7 +43,7 @@ export const useTimebarVesselTracks = () => {
           return {
             status: ResourceStatus.Finished,
             chunks,
-            color: vessel.props.themeColor,
+            color: vessel.getVesselColor(),
             defaultLabel: vessel.getVesselName() || '',
             getHighlighterLabel: getUserTrackHighlighterLabel,
             getHighlighterIcon: 'vessel',
@@ -83,7 +83,7 @@ export const useTimebarVesselEvents = () => {
           }
           const chunks = vessel.getVesselEventsData(vessel.props.visibleEvents) as any
           return {
-            color: vessel.props?.themeColor,
+            color: vessel.getVesselColor(),
             chunks,
             status: ResourceStatus.Finished,
             defaultLabel: vessel.getVesselName(),
