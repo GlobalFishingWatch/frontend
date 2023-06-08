@@ -2,6 +2,10 @@ import { EventTypes } from '@globalfishingwatch/api-types'
 import { TimebarChartChunk, TrackEventChunkProps } from '@globalfishingwatch/timebar'
 import { getEventColors, getEventDescription } from 'utils/events'
 
+export const getTimebarChunkEventColor = (ev: TimebarChartChunk<TrackEventChunkProps>) => {
+  return ev.type ? getEventColors({ type: ev.type })?.color : 'white'
+}
+
 export const parseTrackEventChunkProps = (
   event: TimebarChartChunk,
   eventKey?: string

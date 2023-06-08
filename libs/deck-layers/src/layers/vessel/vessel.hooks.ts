@@ -78,11 +78,9 @@ export const useSetVesselLayers = (
   const endTime = useMemo(() => (end ? dateToMs(end) - START_TIMESTAMP : undefined), [end])
 
   useEffect(() => {
-    console.log(vesselLayersGenerator)
     const newVesselLayerInstances = vesselLayersGenerator.map(
       (vesselGenerator: VesselDeckLayersGenerator) => {
         const { id, visible, color, visibleEvents, trackUrl, events, name } = vesselGenerator
-        console.log('🚀 ~ useEffect ~ trackUrl:', trackUrl)
         // TODO not load layer data if not visible for first time
         // const alreadyInstanceLayer = vesselLayers.find((v: any) => v.id === id) !== undefined
         const instance = new VesselLayer({
