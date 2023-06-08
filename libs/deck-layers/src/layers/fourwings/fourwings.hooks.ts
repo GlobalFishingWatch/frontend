@@ -2,8 +2,9 @@ import { useEffect, useMemo } from 'react'
 import { LayerData, Layer } from '@deck.gl/core/typed'
 import { atom, useSetAtom, useAtomValue } from 'jotai'
 import { selectAtom } from 'jotai/utils'
-import { groupBy } from 'lodash'
+import { groupBy, indexOf } from 'lodash'
 import { DataviewCategory, EventTypes } from '@globalfishingwatch/api-types'
+import { HEATMAP_GROUP_ORDER } from '@globalfishingwatch/layer-composer'
 import { FourwingsDeckLayerGenerator } from '../../layer-composer/types'
 import { FourwingsLayer } from './FourwingsLayer'
 
@@ -19,8 +20,15 @@ interface FourwingsLayerState {
 
 export const fourwingsLayersAtom = atom<FourwingsLayerState[]>([])
 export const fourwingsLayersSelector = (layers: FourwingsLayerState[]) => layers
+
 export const fourwingsLayersInstancesSelector = atom((get) =>
-  get(fourwingsLayersAtom).map((l) => l.instance)
+  get(fourwingsLayersAtom)
+    .map((l) => l.instance)
+    .sort(
+      (a, b) =>
+        indexOf(HEATMAP_GROUP_ORDER, b.props.category) -
+        indexOf(HEATMAP_GROUP_ORDER, a.props.category)
+    )
 )
 
 export const selectFourwingsLayersAtom = selectAtom(fourwingsLayersAtom, fourwingsLayersSelector)
