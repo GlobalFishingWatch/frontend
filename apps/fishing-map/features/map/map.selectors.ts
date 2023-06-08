@@ -39,7 +39,10 @@ import {
   Range,
 } from 'features/timebar/timebar.slice'
 import { selectBivariateDataviews, selectTimeRange } from 'features/app/app.selectors'
-import { selectMarineManagerDataviewInstanceResolved } from 'features/dataviews/dataviews.slice'
+import {
+  selectDataviewInstancesResolved,
+  selectMarineManagerDataviewInstanceResolved,
+} from 'features/dataviews/dataviews.slice'
 import {
   selectIsMarineManagerLocation,
   selectIsReportLocation,
@@ -158,12 +161,9 @@ const getGeneratorsConfig = ({
     return []
   }
 }
+
 export const selectMapGeneratorsDictionary = createSelector(
-  [
-    selectDataviewInstancesResolvedVisible,
-    selectVisibleResources,
-    selectWorkspaceVisibleEventsArray,
-  ],
+  [selectDataviewInstancesResolved, selectVisibleResources, selectWorkspaceVisibleEventsArray],
   (dataviews = [], resources, visibleEvents): DeckLayersGeneratorDictionary => {
     // Do we inject the visibleEvents at the dataview level ?
     const generatorsDictionary = getDataviewsGeneratorsDictionary(dataviews, resources)

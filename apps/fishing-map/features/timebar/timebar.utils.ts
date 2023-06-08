@@ -1,32 +1,28 @@
-import { ApiEvent } from '@globalfishingwatch/api-types'
-import { TrackEventChunkProps } from '@globalfishingwatch/timebar'
-import { getEventDescription } from 'utils/events'
-import { getUTCDateTime } from 'utils/dates'
+import { EventTypes } from '@globalfishingwatch/api-types'
+import { TimebarChartChunk, TrackEventChunkProps } from '@globalfishingwatch/timebar'
+import { getEventColors, getEventDescription } from 'utils/events'
 
 export const parseTrackEventChunkProps = (
-  event: ApiEvent,
-  eventKey: string
-): ApiEvent & { props: TrackEventChunkProps } => {
-  const { description, descriptionGeneric, color, colorLabels } = getEventDescription({
-    start: event.start as string,
-    end: event.end as string,
-    type: event.type,
-    encounterVesselName: event.encounter?.vessel?.name,
+  event: TimebarChartChunk,
+  eventKey?: string
+): TimebarChartChunk<TrackEventChunkProps> => {
+  const { description, descriptionGeneric } = getEventDescription({
+    start: event.start,
+    end: event.end as number,
+    type: event.type as EventTypes,
+    encounterVesselName: event.encounter?.vessel?.shipname,
     portName: event.port?.name,
   })
+  const { color, colorLabels } = getEventColors({ type: event.type as EventTypes })
 
   return {
     ...event,
-    id: eventKey,
-    start: getUTCDateTime(event.start as string).toMillis(),
-    end: getUTCDateTime(event.end as string).toMillis(),
+    id: eventKey || event.id,
     props: {
       color,
       colorLabels,
       description,
       descriptionGeneric,
-      latitude: event.position.lat,
-      longitude: event.position.lon,
     },
   }
 }

@@ -1,6 +1,6 @@
 import Pbf from 'pbf'
 import { LoaderWithParser } from '@loaders.gl/loader-utils'
-import { Point, Segment, VesselTrackData } from '@globalfishingwatch/api-types'
+import { Point, Segment } from '@globalfishingwatch/api-types'
 import { START_TIMESTAMP } from '../constants'
 
 export const trackLoader: LoaderWithParser = {
@@ -25,17 +25,17 @@ async function parse(arrayBuffer: ArrayBuffer) {
   return parseTrack(data)
 }
 
-export const parseTrack = (data: []) => {
+export type VesselDeckLayerTrackSegment = {
+  waypoints: { coordinates: number[]; timestamp: number }[]
+}
+export const parseTrack = (data: []): VesselDeckLayerTrackSegment[] => {
   // read
   if (!data.length) return []
-  const segments = trackValueArrayToSegments(data, ['lonlat', 'timestamp'])
+  const segments = trackValueArrayToSegments(data, ['longitude', 'latitude', 'timestamp'])
   const formattedSegments = [
     segments.map((segment: Segment) => ({
       waypoints: segment.map((point) => ({
         coordinates: [point.longitude!, point.latitude!],
-        // Because timestamps are stored as 32-bit floating numbers, raw unix epoch time can not be used.
-        // You may test the validity of a timestamp by calling Math.fround(t) to check if there would be any loss of precision.
-        // Also deduct start timestamp from each data point to avoid overflow
         timestamp: Math.fround(point.timestamp! - START_TIMESTAMP),
       })),
     })),
@@ -45,21 +45,27 @@ export const parseTrack = (data: []) => {
 
 export const DEFAULT_NULL_VALUE = -Math.pow(2, 31)
 
-const transformerByField = {
+export type FieldTransformKey = 'latitude' | 'longitude' | 'timestamp'
+export type TransformByField = Record<FieldTransformKey, (value: number) => number>
+const transformerByField: TransformByField = {
   latitude: (value: Point['latitude']) => value! / Math.pow(10, 6),
   longitude: (value: Point['longitude']) => value! / Math.pow(10, 6),
   timestamp: (value: Point['timestamp']) => value! * Math.pow(10, 3),
 }
 
-export const trackValueArrayToSegments = (valueArray: [], fields_: string[]): Segment[] => {
+type ValueArrayToSegmentsFields = FieldTransformKey | 'lonlat'
+export const trackValueArrayToSegments = (
+  valueArray: [],
+  fields_: ValueArrayToSegmentsFields[]
+): Segment[] => {
   if (!fields_.length) {
     console.log('No fields provided to trackValueArrayToSegments')
     throw new Error()
   }
 
-  const fields = [...fields_]
-  if (fields.includes('lonlat')) {
-    const llIndex = fields.indexOf('lonlat')
+  const fields = [...fields_] as FieldTransformKey[]
+  if (fields_.includes('lonlat')) {
+    const llIndex = fields_.indexOf('lonlat')
     fields.splice(llIndex, 1, 'longitude', 'latitude')
   }
   const numFields = fields.length
