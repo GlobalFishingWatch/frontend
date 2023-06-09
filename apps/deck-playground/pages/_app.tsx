@@ -4,7 +4,6 @@ import { FpsView } from 'react-fps'
 import MemoryStatsComponent from 'next-react-memory-stats'
 import { RecoilURLSyncJSONNext } from 'recoil-sync-next'
 import { RecoilRoot } from 'recoil'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import dynamic from 'next/dynamic'
 import { SplitView } from '@globalfishingwatch/ui-components'
 import styles from './App.module.css'
@@ -12,8 +11,6 @@ import styles from './App.module.css'
 import './styles.css'
 import './base.css'
 import './timebar-settings.css'
-
-const queryClient = new QueryClient()
 
 class ErrorBoundary extends Component<{ children: any }, { hasError: boolean }> {
   constructor(props) {
@@ -65,29 +62,27 @@ function CustomApp({ Component, pageProps }: AppProps) {
   return (
     <RecoilRoot>
       <RecoilURLSyncJSONNext location={{ part: 'queryParams' }}>
-        <QueryClientProvider client={queryClient}>
-          <ErrorBoundary>
-            <SplitView
-              showToggle
-              isOpen={sidebarOpen}
-              onToggle={onToggle}
-              aside={<Component {...pageProps} />}
-              main={
-                <div className={styles.main}>
-                  <div className={styles.mapContainer}>
-                    <Map />
-                  </div>
-                  <Timebar />
+        <ErrorBoundary>
+          <SplitView
+            showToggle
+            isOpen={sidebarOpen}
+            onToggle={onToggle}
+            aside={<Component {...pageProps} />}
+            main={
+              <div className={styles.main}>
+                <div className={styles.mapContainer}>
+                  <Map />
                 </div>
-              }
-              asideWidth={asideWidth}
-              showMainLabel="Map"
-              className="split-container"
-            />
-            {showFps && <FpsView bottom="0" left="0" top="auto" />}
-            {showFps && <MemoryStatsComponent />}
-          </ErrorBoundary>
-        </QueryClientProvider>
+                <Timebar />
+              </div>
+            }
+            asideWidth={asideWidth}
+            showMainLabel="Map"
+            className="split-container"
+          />
+          {showFps && <FpsView bottom="0" left="0" top="auto" />}
+          {showFps && <MemoryStatsComponent />}
+        </ErrorBoundary>
       </RecoilURLSyncJSONNext>
     </RecoilRoot>
   )

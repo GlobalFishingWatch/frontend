@@ -7,6 +7,7 @@ import { useBasemapLayer } from 'layers/basemap/basemap.hooks'
 import { useCustomReferenceLayer } from 'layers/custom-reference/custom-reference.hooks'
 import { useFourwingsLayer, useFourwingsLayerLoaded } from 'layers/fourwings/fourwings.hooks'
 import { useAtom } from 'jotai'
+import { ParquetVesselLayer } from 'layers/vessel/VesselParquet'
 import { useURLViewport, useViewport } from 'features/map/map-viewport.hooks'
 import { hoveredFeaturesAtom, clickedFeaturesAtom } from 'features/map/map-picking.hooks'
 import { zIndexSortedArray } from 'utils/layers'
@@ -26,11 +27,17 @@ const MapWrapper = (): React.ReactElement => {
   const [hoveredFeatures, setHoveredFeatures] = useAtom(hoveredFeaturesAtom)
   const [clickedFeatures, setClickedFeatures] = useAtom(clickedFeaturesAtom)
 
+  // const layers = useMemo(
+  //   () =>
+  //     zIndexSortedArray([basemapLayer, contextLayer, fourwingsLayer, vesselsLayer, editableLayer]),
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  //   [fourwingsLayer, contextLayer, vesselsLayer, fourwingsLoaded, basemapLayer, editableLayer]
+  // )
+
   const layers = useMemo(
-    () =>
-      zIndexSortedArray([basemapLayer, contextLayer, fourwingsLayer, vesselsLayer, editableLayer]),
+    () => [basemapLayer, new ParquetVesselLayer()],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [fourwingsLayer, contextLayer, vesselsLayer, fourwingsLoaded, basemapLayer, editableLayer]
+    [basemapLayer]
   )
 
   const onClick = useCallback(
