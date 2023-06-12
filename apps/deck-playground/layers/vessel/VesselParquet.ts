@@ -1,66 +1,104 @@
 import { DataFilterExtension } from '@deck.gl/extensions'
-import { CompositeLayer, Layer, LayersList, LayerProps } from '@deck.gl/core/typed'
+import { CompositeLayer, Layer, LayersList, LayerProps, DefaultProps } from '@deck.gl/core/typed'
+import GL from '@luma.gl/constants'
 // Loaders
 import { parquetLoader } from 'loaders/vessels/parquetLoader'
 import { PathLayer } from '@deck.gl/layers/typed'
 import { Segment } from '@globalfishingwatch/api-types'
 
-export type VesselLayerProps = {}
+export type VesselLayerProps = {
+  startTime: number
+  endTime: number
+  getColor: any
+  getTimestamps: any
+  getPath: any
+}
 
 export const TRACK_LAYER_PREFIX = 'track'
 
-export class ParquetVesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
-  layersLoaded: Layer[] = []
-  layers: Layer[] = []
+const defaultProps: DefaultProps<VesselLayerProps> = {
+  endTime: { type: 'number', value: 0, min: 0 },
+  startTime: { type: 'number', value: 0, min: 0 },
+  getColor: { type: 'accessor', value: () => [255, 255, 255, 100] },
+  getPath: { type: 'accessor', value: [0, 0] },
+  getTimestamps: { type: 'accessor', value: (d) => d },
+}
 
-  onDataLoad: LayerProps['onDataLoad'] = (data, context) => {
-    console.log('data')
-    console.log(data)
+export class ParquetVesselLayer<DataT = any, ExtraProps = {}> extends PathLayer<
+  DataT,
+  Required<VesselLayerProps> & ExtraProps
+> {
+  static layerName = 'VesselTrackLayer'
+  static defaultProps = defaultProps
+
+  getShaders() {
+    const shaders = super.getShaders()
+    shaders.inject = {
+      'vs:#decl': `\
+attribute float instanceTimestamps;
+attribute float instanceNextTimestamps;
+varying float vTime;
+`,
+      // Timestamp of the vertex
+      'vs:#main-end': `\
+vTime = instanceTimestamps + (instanceNextTimestamps - instanceTimestamps) * vPathPosition.y / vPathLength;
+`,
+      'fs:#decl': `\
+uniform float startTime;
+uniform float endTime;
+varying float vTime;
+`,
+      // Drop the segments outside of the time window
+      'fs:#main-start': `\
+if(vTime < startTime || vTime > endTime) {
+discard;
+}
+`,
+    }
+    return shaders
   }
 
-  renderLayers() {
-    return new PathLayer<Segment[]>(
-      this.getSubLayerProps({
-        id: `${TRACK_LAYER_PREFIX}-track-parquet-${this.props.id}`,
-        data: 'http://localhost:8000/track.parquet',
-        loaders: [parquetLoader],
-        widthUnits: 'pixels',
-        widthScale: 1,
-        wrapLongitude: true,
-        jointRounded: true,
-        capRounded: true,
-        onDataLoad: this.onDataLoad,
-        _pathType: 'open',
-        // getPath: (d) => {
+  initializeState() {
+    super.initializeState()
+    const attributeManager = this.getAttributeManager()
+    console.log('🚀 ~ initializeState ~ attributeManager:', attributeManager)
+    attributeManager.addInstanced({
+      timestamps: {
+        size: 1,
+        // Start filling buffer from 1 vertex in
+        vertexOffset: 1,
+        // type: GL.INT,
+        // fp64: this.use64bitPositions(),
+        // transition: ATTRIBUTE_TRANSITION,
+        accessor: 'getTimestamps',
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        // update: (attribute, { data, props, numInstances }) => {
         //   debugger
-        //   return d.waypoints.map((p) => [p.lon, p.lat])
         // },
-        getColor: [255, 255, 255, 255],
-        // return d.waypoints.map((p) => {
-        //   if (
-        //     p.timestamp >= this.props.highlightStartTime &&
-        //     p.timestamp <= this.props.highlightEndTime
-        //   ) {
-        //     return [255, 0, 0, 100]
-        //   }
-        //   return [255, 255, 255, 100]
-        // })
-        // },
-        getWidth: 3,
-        // updateTriggers: {
-        //   getColor: [this.props.highlightStartTime, this.props.highlightEndTime],
-        // },
-        // startTime: this.props.startTime,
-        // endTime: this.props.endTime,
-      })
-    )
+        // noAlloc,
+        shaderAttributes: {
+          instanceTimestamps: {
+            vertexOffset: 0,
+          },
+          instanceNextTimestamps: {
+            vertexOffset: 1,
+          },
+        },
+      },
+    })
   }
 
-  getTrackLayer() {
-    return this.getSubLayers().find((l) => l.id.includes(TRACK_LAYER_PREFIX)) as ParquetVesselLayer
-  }
+  draw(params) {
+    const { startTime, endTime } = this.props
 
-  getVesselTrackData() {
-    return this.getTrackLayer()
+    const attributeManager = this.getAttributeManager()
+
+    params.uniforms = {
+      ...params.uniforms,
+      startTime,
+      endTime,
+    }
+
+    super.draw(params)
   }
 }

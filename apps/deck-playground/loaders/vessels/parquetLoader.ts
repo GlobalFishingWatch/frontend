@@ -16,72 +16,53 @@ export const parquetLoader: LoaderWithParser = {
   parseSync: async (arrayBuffer) => parseTrack(arrayBuffer),
 }
 
+const getSchemaFieldIndex = (schema, fieldName) => {
+  return schema.fields.findIndex((f) => f.name === fieldName)
+}
+
 const parseTrack = (parquetBuffer) => {
-  debugger
   const parquetBytes = new Uint8Array(parquetBuffer)
   const decodedArrowBytes = readParquet(parquetBytes)
   const arrowTable = tableFromIPC(decodedArrowBytes)
 
-  const PATH_DATA = [
-    {
-      path: [
-        [-122.4, 37.7],
-        [-122.5, 37.8],
-        [-122.6, 37.85],
-      ],
-      name: 'Richmond - Millbrae',
-      color: [255, 0, 0],
-    },
-  ]
-  const positions = new Float64Array(PATH_DATA.map((d) => d.path).flat(2))
-  // The color attribute must supply one color for each vertex
-  // [255, 0, 0, 255, 0, 0, 255, 0, 0, ...]
-  const colors = new Uint8Array(PATH_DATA.map((d) => d.path.map((_) => d.color)).flat(2))
-  // The "layout" that tells PathLayer where each path starts
-  const startIndices = new Uint16Array(
-    PATH_DATA.reduce(
-      (acc, d) => {
-        const lastIndex = acc[acc.length - 1]
-        acc.push(lastIndex + d.path.length)
-        return acc
-      },
-      [0]
-    )
-  )
-
-  const exampleData = {
-    length: PATH_DATA.length,
-    startIndices: startIndices, // this is required to render the paths correctly!
-    attributes: {
-      getPath: { value: positions, size: 2 },
-      getColor: { value: colors, size: 3 },
-    },
-  }
-
   try {
-    const segmentIndex = arrowTable.schema.fields.findIndex((f) => f.name === 'seg_id')
-    const latIndex = arrowTable.schema.fields.findIndex((f) => f.name === 'lat')
-    const lonIndex = arrowTable.schema.fields.findIndex((f) => f.name === 'lon')
-    const latColumn = arrowTable.getChildAt(latIndex)
-    const lonColumn = arrowTable.getChildAt(lonIndex)
-    const segmentIndexes = arrowTable
-      .getChildAt(segmentIndex)
-      .data[0].valueOffsets.map((value) => value * 2)
-    const positions = new Float64Array(lonColumn.data[0].length * 2).map((_, i) => {
-      const latLon = i % 2 ? lonColumn : latColumn
-      return latLon.data[0].values[i]
+    const latColumn = arrowTable.getChildAt(getSchemaFieldIndex(arrowTable.schema, 'lat'))
+    const lonColumn = arrowTable.getChildAt(getSchemaFieldIndex(arrowTable.schema, 'lon'))
+    const segColumn = arrowTable.getChildAt(getSchemaFieldIndex(arrowTable.schema, 'seg_id'))
+    const timestampColumn = arrowTable.getChildAt(
+      getSchemaFieldIndex(arrowTable.schema, 'timestamp')
+    )
+    const segmentIndexes = []
+    let currentSegId = ''
+    const positions = new Float64Array(lonColumn.data[0].values.length * 2)
+    // const timestamps = new Float64Array(timestampColumn.data[0].values.map((d) => parseFloat(d)))
+
+    // const instanceNextTimestamps = new Float64Array(timestampColumn.data[0].values.length).map(
+    //   (d, i) => {
+    //     return timestampColumn.get(i + 1)
+    //   }
+    // )
+    lonColumn.data[0].values.forEach((lon, i) => {
+      if (currentSegId !== segColumn.get(i)) {
+        segmentIndexes.push(i * 2)
+        currentSegId = segColumn.get(i)
+      }
+      positions[2 * i] = lon
+      positions[2 * i + 1] = latColumn.get(i)
     })
+
     const data = {
       // Number of geometries
-      length: arrowTable.numRows,
+      length: segmentIndexes.length,
       // Indices into positions where each path starts
       startIndices: segmentIndexes,
       // Flat coordinates array
       attributes: {
         getPath: { value: positions, size: 2 },
+        getTimestamps: { value: timestampColumn.data[0].values, size: 1 },
       },
     }
-    debugger
+
     return data
   } catch (e) {
     console.log('🚀 ~ parseTrack ~ e:', e)

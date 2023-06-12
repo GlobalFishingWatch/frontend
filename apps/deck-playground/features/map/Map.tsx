@@ -5,12 +5,20 @@ import { useVesselsLayer } from 'layers/vessel/vessels.hooks'
 import { useContextsLayer } from 'layers/context/context.hooks'
 import { useBasemapLayer } from 'layers/basemap/basemap.hooks'
 import { useCustomReferenceLayer } from 'layers/custom-reference/custom-reference.hooks'
-import { useFourwingsLayer, useFourwingsLayerLoaded } from 'layers/fourwings/fourwings.hooks'
+import {
+  dateToMs,
+  useFourwingsLayer,
+  useFourwingsLayerLoaded,
+} from 'layers/fourwings/fourwings.hooks'
 import { useAtom } from 'jotai'
 import { ParquetVesselLayer } from 'layers/vessel/VesselParquet'
+import { PathLayer } from '@deck.gl/layers/typed'
+import { parquetLoader } from 'loaders/vessels/parquetLoader'
+import { Segment } from '@globalfishingwatch/api-types'
 import { useURLViewport, useViewport } from 'features/map/map-viewport.hooks'
 import { hoveredFeaturesAtom, clickedFeaturesAtom } from 'features/map/map-picking.hooks'
 import { zIndexSortedArray } from 'utils/layers'
+import { useTimerange } from 'features/timebar/timebar.hooks'
 
 const mapView = new MapView({ repeat: true })
 
@@ -27,6 +35,10 @@ const MapWrapper = (): React.ReactElement => {
   const [hoveredFeatures, setHoveredFeatures] = useAtom(hoveredFeaturesAtom)
   const [clickedFeatures, setClickedFeatures] = useAtom(clickedFeaturesAtom)
 
+  const [timerange] = useTimerange()
+  const startTime = dateToMs(timerange.start) / 1000
+  const endTime = dateToMs(timerange.end) / 1000
+
   // const layers = useMemo(
   //   () =>
   //     zIndexSortedArray([basemapLayer, contextLayer, fourwingsLayer, vesselsLayer, editableLayer]),
@@ -35,9 +47,58 @@ const MapWrapper = (): React.ReactElement => {
   // )
 
   const layers = useMemo(
-    () => [basemapLayer, new ParquetVesselLayer()],
+    () => [
+      basemapLayer,
+      new ParquetVesselLayer<Segment[]>({
+        id: `track-parquet-parquet`,
+        data: 'http://localhost:8000/track.parquet',
+        loaders: [parquetLoader],
+        widthUnits: 'pixels',
+        onDataLoad: (data) => {
+          console.log(data)
+        },
+        startTime: startTime,
+        endTime: endTime,
+        widthScale: 1,
+        wrapLongitude: true,
+        jointRounded: true,
+        capRounded: true,
+        // onDataLoad: this.onDataLoad,
+        // getTimestamp: (d) => {
+        //   console.log(d)
+        //   return d
+        // },
+        _pathType: 'open',
+        // getFilterValue: (d: any) => {
+        //   debugger
+        //   return d.timestamp as any
+        // },
+        // filterRange: [startTime, endTime],
+        // extensions: [new DataFilterExtension({ filterSize: 1 }) as any],
+        // getPath: (d) => {
+        //   return [d.lon, d.lat]
+        // },
+        getColor: [255, 255, 255, 255],
+        // return d.waypoints.map((p) => {
+        //   if (
+        //     p.timestamp >= this.props.highlightStartTime &&
+        //     p.timestamp <= this.props.highlightEndTime
+        //   ) {
+        //     return [255, 0, 0, 100]
+        //   }
+        //   return [255, 255, 255, 100]
+        // })
+        // },
+        getWidth: 3,
+        // updateTriggers: {
+        //   getColor: [startTime, endTime],
+        // },
+        // startTime: this.props.startTime,
+        // endTime: this.props.endTime,
+      }),
+    ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [basemapLayer]
+    [basemapLayer, startTime, endTime]
   )
 
   const onClick = useCallback(
