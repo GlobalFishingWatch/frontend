@@ -34,15 +34,21 @@ const parseTrack = (parquetBuffer) => {
     )
     const segmentIndexes = []
     let currentSegId = ''
-    const positions = new Float32Array(lonColumn.data[0].values.length * 2)
-    const timestamps = new Float32Array(timestampColumn.data[0].values.map((d) => parseFloat(d)))
-    lonColumn.data[0].values.forEach((lon, i) => {
-      if (currentSegId !== segColumn.get(i)) {
-        segmentIndexes.push(i * 2)
-        currentSegId = segColumn.get(i)
-      }
-      positions[2 * i] = lon
-      positions[2 * i + 1] = latColumn.get(i)
+    const dataLength = lonColumn.data.reduce((acc, data) => data.length + acc, 0)
+    const positions = new Float32Array(dataLength * 2)
+    const timestamps = new Float32Array(dataLength)
+    let index = 0
+    lonColumn.data.forEach((eachData) => {
+      eachData.values.forEach((lon) => {
+        if (currentSegId !== segColumn.get(index)) {
+          segmentIndexes.push(index * 2)
+          currentSegId = segColumn.get(index)
+        }
+        positions[2 * index] = lon
+        positions[2 * index + 1] = latColumn.get(index)
+        timestamps[index] = timestampColumn.get(index)
+        index++
+      })
     })
 
     const data = {

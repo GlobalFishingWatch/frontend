@@ -51,7 +51,7 @@ const MapWrapper = (): React.ReactElement => {
       basemapLayer,
       new ParquetVesselLayer<Segment[]>({
         id: `track-parquet-parquet`,
-        data: 'http://localhost:8000/track.parquet',
+        data: 'http://localhost:8000/all-small.parquet',
         loaders: [parquetLoader],
         widthUnits: 'pixels',
         onDataLoad: (data) => {
@@ -78,7 +78,7 @@ const MapWrapper = (): React.ReactElement => {
         // getPath: (d) => {
         //   return [d.lon, d.lat]
         // },
-        getColor: [255, 255, 255, 120],
+        getColor: [255, 255, 255, 10],
         // return d.waypoints.map((p) => {
         //   if (
         //     p.timestamp >= this.props.highlightStartTime &&
