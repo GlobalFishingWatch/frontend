@@ -78,7 +78,7 @@ const MapWrapper = (): React.ReactElement => {
         // getPath: (d) => {
         //   return [d.lon, d.lat]
         // },
-        getColor: [255, 255, 255, 255],
+        getColor: [255, 255, 255, 120],
         // return d.waypoints.map((p) => {
         //   if (
         //     p.timestamp >= this.props.highlightStartTime &&
@@ -89,7 +89,7 @@ const MapWrapper = (): React.ReactElement => {
         //   return [255, 255, 255, 100]
         // })
         // },
-        getWidth: 3,
+        getWidth: 1,
         // updateTriggers: {
         //   getColor: [startTime, endTime],
         // },

@@ -34,14 +34,8 @@ const parseTrack = (parquetBuffer) => {
     )
     const segmentIndexes = []
     let currentSegId = ''
-    const positions = new Float64Array(lonColumn.data[0].values.length * 2)
-    // const timestamps = new Float64Array(timestampColumn.data[0].values.map((d) => parseFloat(d)))
-
-    // const instanceNextTimestamps = new Float64Array(timestampColumn.data[0].values.length).map(
-    //   (d, i) => {
-    //     return timestampColumn.get(i + 1)
-    //   }
-    // )
+    const positions = new Float32Array(lonColumn.data[0].values.length * 2)
+    const timestamps = new Float32Array(timestampColumn.data[0].values.map((d) => parseFloat(d)))
     lonColumn.data[0].values.forEach((lon, i) => {
       if (currentSegId !== segColumn.get(i)) {
         segmentIndexes.push(i * 2)
@@ -59,7 +53,7 @@ const parseTrack = (parquetBuffer) => {
       // Flat coordinates array
       attributes: {
         getPath: { value: positions, size: 2 },
-        getTimestamps: { value: timestampColumn.data[0].values, size: 1 },
+        getTimestamps: { value: timestamps, size: 1 },
       },
     }
 
