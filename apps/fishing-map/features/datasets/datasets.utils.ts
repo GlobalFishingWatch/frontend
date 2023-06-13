@@ -220,14 +220,15 @@ export const getLatestEndDateFromDatasets = (
   datasets: Dataset[],
   datasetCategory?: DatasetCategory
 ): string => {
-  if (!datasets.length) return DEFAULT_TIME_RANGE.end
-  const latestDate = datasets.reduce((acc, dataset) => {
+  const datasetsWithEndDate = datasets.filter((dataset) => dataset.endDate)
+  if (!datasetsWithEndDate.length) return DEFAULT_TIME_RANGE.end
+  const latestDate = datasetsWithEndDate.reduce((acc, dataset) => {
     const endDate = dataset.endDate as string
     if (datasetCategory && dataset.category !== datasetCategory) {
       return acc
     }
-    return endDate > acc ? dataset.endDate : acc
-  }, datasets?.[0].endDate || '')
+    return endDate > acc ? endDate : acc
+  }, datasetsWithEndDate?.[0].endDate || '')
   return latestDate
 }
 
