@@ -245,7 +245,7 @@ function Search() {
       setVesselsSelected(vesselsSelected.filter((vessel) => vessel !== selection))
       return
     }
-    if (selection && selection.dataset && selection.trackDatasetId) {
+    if (selection && (selection.dataset || selection.trackDatasetId)) {
       setVesselsSelected([...vesselsSelected, selection])
     }
   }
@@ -361,7 +361,7 @@ function Search() {
               searchPagination.loading === false ? null : basicSearchAllowed ? (
                 <ul {...getMenuProps()} className={styles.searchResults}>
                   {debouncedQuery && debouncedQuery?.length < MIN_SEARCH_CHARACTERS && (
-                    <li key="suggestion" className={cx(styles.searchSuggestion, styles.red)}>
+                    <li key="min-characters" className={cx(styles.searchSuggestion, styles.red)}>
                       {t('search.minCharacters', {
                         defaultValue: 'Please type at least {{count}} characters',
                         count: MIN_SEARCH_CHARACTERS,
