@@ -31,6 +31,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
 
   renderLayers(): Layer<{}> | LayersList {
     const mode = this.getMode()
+    this.id = `FourwingsLayer-${this.props.category}-${mode}`
     this.layers =
       mode === HEATMAP_ID
         ? [new FourwingsHeatmapTileLayer(this.props)]

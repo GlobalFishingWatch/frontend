@@ -53,6 +53,7 @@ export function getDataviewsGeneratorsDictionary(
         return {
           id: dataview.id,
           category: dataview.category as DataviewCategory,
+          visible: dataview.config?.visible ?? true,
           sublayers: [
             {
               id: dataview.id,

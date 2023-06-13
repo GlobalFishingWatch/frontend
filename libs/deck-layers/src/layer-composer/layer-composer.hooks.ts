@@ -1,7 +1,7 @@
 import {
   useBasemapLayer,
   useContextsLayer,
-  useFourwingsLayers,
+  useSetFourwingsLayers,
   zIndexSortedArray,
   DeckLayersGeneratorDictionary,
   BasemapDeckLayerGenerator,
@@ -48,7 +48,7 @@ export function useDeckLayerComposer({
     highlightedTime
   )
 
-  const fourwingsLayers = useFourwingsLayers(
+  const fourwingsLayers = useSetFourwingsLayers(
     generatorsDictionary[DeckLayersGeneratorType.Fourwings] as FourwingsDeckLayerGenerator[],
     globalGeneratorConfig
   )

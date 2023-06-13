@@ -2,10 +2,10 @@ import { useEffect, useMemo } from 'react'
 import { LayerData, Layer } from '@deck.gl/core/typed'
 import { atom, useSetAtom, useAtomValue } from 'jotai'
 import { selectAtom } from 'jotai/utils'
-import { groupBy, indexOf } from 'lodash'
+import { groupBy } from 'lodash'
 import { DataviewCategory, EventTypes } from '@globalfishingwatch/api-types'
-import { HEATMAP_GROUP_ORDER } from '@globalfishingwatch/layer-composer'
 import { FourwingsDeckLayerGenerator } from '../../layer-composer/types'
+import { sortFourwingsLayers } from '../../utils/sort'
 import { FourwingsLayer } from './FourwingsLayer'
 
 const dateToMs = (date: string) => {
@@ -24,11 +24,7 @@ export const fourwingsLayersSelector = (layers: FourwingsLayerState[]) => layers
 export const fourwingsLayersInstancesSelector = atom((get) =>
   get(fourwingsLayersAtom)
     .map((l) => l.instance)
-    .sort(
-      (a, b) =>
-        indexOf(HEATMAP_GROUP_ORDER, b.props.category) -
-        indexOf(HEATMAP_GROUP_ORDER, a.props.category)
-    )
+    .sort(sortFourwingsLayers)
 )
 
 export const selectFourwingsLayersAtom = selectAtom(fourwingsLayersAtom, fourwingsLayersSelector)
@@ -41,8 +37,9 @@ interface globalConfig {
   highlightedTime?: { start: string; end: string }
   visibleEvents?: EventTypes[]
 }
+export const useFourwingsLayers = () => useAtomValue(fourwingsLayersInstancesSelector)
 
-export const useFourwingsLayers = (
+export const useSetFourwingsLayers = (
   fourwingsLayersGenerator: FourwingsDeckLayerGenerator[],
   globalConfig: globalConfig
 ) => {
@@ -68,7 +65,7 @@ export const useFourwingsLayers = (
 
   const onDataLoad = (data: LayerData<any>, context: { propName: string; layer: Layer<any> }) => {
     console.log(data, context)
-    // setFourwingsLoadedState(context.layer.id)
+    setFourwingsLoadedState(context.layer.id)
   }
 
   const startTime = useMemo(() => (start ? dateToMs(start) : undefined), [start])
@@ -77,33 +74,34 @@ export const useFourwingsLayers = (
   useEffect(() => {
     const groupedLayers = groupBy(fourwingsLayersGenerator, 'category')
     Object.keys(groupedLayers).forEach((category) => {
-      const instance = new FourwingsLayer({
-        minFrame: startTime,
-        maxFrame: endTime,
-        // mode: activityMode,
-        mode: 'heatmap',
-        debug: false,
-        sublayers: groupedLayers[category].flatMap((l) => l.sublayers),
-        category: category as DataviewCategory,
-        // onDataLoad: onDataLoad,
-        // onTileLoad: onTileLoad,
-        // onViewportLoad: onViewportLoad,
-        // onVesselHighlight: onVesselHighlight,
-        // onVesselClick: onVesselClick,
-        // resolution: 'high',
-        // hoveredFeatures: hoveredFeatures,
-        // clickedFeatures: clickedFeatures,
-      })
-
-      setFourwingsLayers((prevVessels) => {
-        const updatedVessels = prevVessels.filter((v) => v.id !== category)
-        updatedVessels.push({
-          id: category,
-          instance,
-          loadedLayers: [],
+      if (groupedLayers[category].some((sublayer) => sublayer.visible)) {
+        const instance = new FourwingsLayer({
+          minFrame: startTime,
+          maxFrame: endTime,
+          // mode: activityMode,
+          mode: 'heatmap',
+          debug: false,
+          sublayers: groupedLayers[category].filter((l) => l.visible).flatMap((l) => l.sublayers),
+          category: category as DataviewCategory,
+          // onDataLoad: onDataLoad,
+          // onTileLoad: onTileLoad,
+          // onViewportLoad: onViewportLoad,
+          // onVesselHighlight: onVesselHighlight,
+          // onVesselClick: onVesselClick,
+          // resolution: 'high',
+          // hoveredFeatures: hoveredFeatures,
+          // clickedFeatures: clickedFeatures,
         })
-        return updatedVessels
-      })
+        setFourwingsLayers((prevVessels) => {
+          const updatedVessels = prevVessels.filter((v) => v.id !== category)
+          updatedVessels.push({
+            id: category,
+            instance,
+            loadedLayers: [],
+          })
+          return updatedVessels
+        })
+      }
     })
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
