@@ -8,6 +8,7 @@ import {
   HighlighterCallbackFnArgs,
 } from '@globalfishingwatch/timebar'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { useFourwingsLayers } from '@globalfishingwatch/deck-layers'
 import { selectActiveActivityDataviewsByVisualisation } from 'features/dataviews/dataviews.selectors'
 import { useStackedActivity } from 'features/timebar/TimebarActivityGraph.hooks'
 import { formatNumber } from 'utils/info'
@@ -22,6 +23,14 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
   const { loading, stackedActivity, error } = useStackedActivity(
     activeDataviews as UrlDataviewInstance[]
   )
+  console.log(
+    '🚀 ~ file: TimebarActivityGraph.tsx:23 ~ TimebarActivityGraph ~ stackedActivity:',
+    stackedActivity
+  )
+  const fourwingsLayers = useFourwingsLayers()
+  fourwingsLayers.forEach((layer) => {
+    console.log('DATA', layer.getData())
+  })
   const style = useMapStyle()
   const mapLegends = useMapLegend(style, activeDataviews)
 

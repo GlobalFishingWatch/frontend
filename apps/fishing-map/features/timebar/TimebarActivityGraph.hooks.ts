@@ -41,6 +41,10 @@ export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
           })
         )
 
+        console.log(
+          '🚀 ~ file: TimebarActivityGraph.hooks.ts:61 ~ dataviewFeaturesFiltered ~ dataviewFeature:',
+          dataviewFeature
+        )
         return {
           ...dataviewFeature,
           chunksFeatures: dataviewFeature.chunksFeatures?.map((chunk) => {
