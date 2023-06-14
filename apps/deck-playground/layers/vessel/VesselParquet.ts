@@ -9,6 +9,8 @@ import { Segment } from '@globalfishingwatch/api-types'
 export type VesselLayerProps = {
   startTime: number
   endTime: number
+  highlightStartTime?: number
+  highlightEndTime?: number
   getColor: any
   getTimestamps: any
   getPath: any
@@ -19,6 +21,8 @@ export const TRACK_LAYER_PREFIX = 'track'
 const defaultProps: DefaultProps<VesselLayerProps> = {
   endTime: { type: 'number', value: 0, min: 0 },
   startTime: { type: 'number', value: 0, min: 0 },
+  highlightStartTime: { type: 'number', value: 0, min: 0 },
+  highlightEndTime: { type: 'number', value: 0, min: 0 },
   getColor: { type: 'accessor', value: () => [255, 255, 255, 100] },
   getPath: { type: 'accessor', value: [0, 0] },
   getTimestamps: { type: 'accessor', value: (d) => d },
@@ -45,6 +49,9 @@ export class ParquetVesselLayer<DataT = any, ExtraProps = {}> extends PathLayer<
       'fs:#decl': `
         uniform float startTime;
         uniform float endTime;
+        uniform float highlightStartTime;
+        uniform float highlightEndTime;
+        uniform vec4 highlightColor;
         varying float vTime;
       `,
       // Drop the segments outside of the time window
@@ -53,6 +60,13 @@ export class ParquetVesselLayer<DataT = any, ExtraProps = {}> extends PathLayer<
           discard;
         }
       `,
+      'fs:DECKGL_FILTER_COLOR': `
+          if (vTime < highlightStartTime || vTime > highlightEndTime) {
+            color = color;
+          } else {
+            color = vec4(highlightColor);
+          }
+        `,
     }
     return shaders
   }
@@ -109,14 +123,16 @@ export class ParquetVesselLayer<DataT = any, ExtraProps = {}> extends PathLayer<
   }
 
   draw(params) {
-    const { startTime, endTime } = this.props
+    const { startTime, endTime, highlightStartTime, highlightEndTime, highlightColor } = this.props
 
     params.uniforms = {
       ...params.uniforms,
       startTime,
       endTime,
+      highlightStartTime,
+      highlightEndTime,
+      highlightColor,
     }
-
     super.draw(params)
   }
 }

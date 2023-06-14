@@ -19,6 +19,7 @@ import { useURLViewport, useViewport } from 'features/map/map-viewport.hooks'
 import { hoveredFeaturesAtom, clickedFeaturesAtom } from 'features/map/map-picking.hooks'
 import { zIndexSortedArray } from 'utils/layers'
 import { useTimerange } from 'features/timebar/timebar.hooks'
+import { useHighlightTimerange } from 'features/timebar/timebar.hooks'
 
 const mapView = new MapView({ repeat: true })
 
@@ -39,6 +40,10 @@ const MapWrapper = (): React.ReactElement => {
   const [timerange] = useTimerange()
   const startTime = dateToMs(timerange.start) / 1000
   const endTime = dateToMs(timerange.end) / 1000
+
+  const [highlightTimerange] = useHighlightTimerange()
+  const highlightStartTime = highlightTimerange?.start && dateToMs(highlightTimerange.start) / 1000
+  const highlightEndTime = highlightTimerange?.end && dateToMs(highlightTimerange?.end) / 1000
 
   // const layers = useMemo(
   //   () =>
@@ -64,6 +69,10 @@ const MapWrapper = (): React.ReactElement => {
         wrapLongitude: true,
         jointRounded: true,
         capRounded: true,
+        highlightStartTime: highlightStartTime || 0,
+        highlightEndTime: highlightEndTime || 0,
+        getColor: [255, 255, 255, 100],
+        highlightColor: [0.0, 1.0, 0.0, 0.4], // to be used as a vec4 in the shader
         // onDataLoad: this.onDataLoad,
         // getTimestamp: (d) => {
         //   console.log(d)
@@ -99,7 +108,7 @@ const MapWrapper = (): React.ReactElement => {
       }),
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [basemapLayer, startTime, endTime]
+    [basemapLayer, startTime, endTime, highlightStartTime, highlightEndTime]
   )
 
   useEffect(() => {
