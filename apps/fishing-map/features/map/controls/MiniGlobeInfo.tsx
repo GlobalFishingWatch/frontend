@@ -31,6 +31,7 @@ const MiniGlobeInfo = ({ viewport }: { viewport: MapCoordinates }) => {
     <div className={styles.miniGlobeInfo} onClick={() => setShowDMS(!showDMS)}>
       <div className={styles.miniGlobeInfoTitle}>
         {oceanAreasReady &&
+          getOceanAreaName &&
           getOceanAreaName(viewport, {
             locale: i18n.language as OceanAreaLocale,
             combineWithEEZ: true,

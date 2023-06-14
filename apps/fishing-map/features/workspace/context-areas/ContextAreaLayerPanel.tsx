@@ -4,7 +4,12 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import parse from 'html-react-parser'
 import { uniqBy } from 'lodash'
-import { DatasetTypes, DatasetStatus, DatasetCategory } from '@globalfishingwatch/api-types'
+import {
+  DatasetTypes,
+  DatasetStatus,
+  DatasetCategory,
+  Dataset,
+} from '@globalfishingwatch/api-types'
 import { Tooltip, ColorBarOption, Modal, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_CONTEXT_SOURCE_LAYER, GeneratorType } from '@globalfishingwatch/layer-composer'
@@ -69,12 +74,16 @@ const LIST_ELLIPSIS_HEIGHT = 14
 const LIST_MARGIN_HEIGHT = 10
 const LIST_TITLE_HEIGHT = 22
 
+export type FeaturesOnScreen = { total: number; closest: any[] }
 function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { onReportClick } = useContextInteractions()
   const [filterOpen, setFiltersOpen] = useState(false)
-  const [featuresOnScreen, setFeaturesOnScreen] = useState({ total: 0, closest: [] })
+  const [featuresOnScreen, setFeaturesOnScreen] = useState<FeaturesOnScreen>({
+    total: 0,
+    closest: [],
+  })
   const [colorOpen, setColorOpen] = useState(false)
   const gfwUser = useSelector(isGFWUser)
   const userId = useSelector(selectUserId)
@@ -117,7 +126,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
       })
       setFeaturesOnScreen({
         total: uniqLayerFeatures.length,
-        closest: parseContextFeatures(filteredFeatures, dataset),
+        closest: parseContextFeatures(filteredFeatures, dataset as Dataset),
       })
     }
   }, [dataset, layerActive, layerFeatures?.features, uniqKey, viewport])
@@ -346,10 +355,11 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
               </label>
               <ul>
                 {featuresOnScreen.closest.map((feature) => {
-                  const id = feature?.properties?.[uniqKey] || feature?.properties.id || feature?.id
+                  const id =
+                    feature?.properties?.[uniqKey] || feature?.properties!.id || feature?.id
                   let title =
                     feature.properties.value || feature.properties.name || feature.properties.id
-                  if (dataset.configuration?.valueProperties?.length) {
+                  if (dataset?.configuration?.valueProperties?.length) {
                     title = dataset.configuration.valueProperties
                       .flatMap((prop) => feature.properties[prop] || [])
                       .join(', ')

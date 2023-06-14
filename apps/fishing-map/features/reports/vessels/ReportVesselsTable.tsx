@@ -19,6 +19,7 @@ import { selectActiveReportDataviews, selectReportCategory } from 'features/app/
 import { ReportCategory } from 'types'
 import { selectUserData } from 'features/user/user.slice'
 import DatasetLabel from 'features/datasets/DatasetLabel'
+import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
 import {
   EMPTY_API_VALUES,
   ReportVesselWithDatasets,
@@ -111,9 +112,13 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
               : t('common.detection_other', 'detections')}
           </div>
           {vessels?.map((vessel, i) => {
-            const hasDatasets =
-              vessel.infoDataset !== undefined && vessel.trackDataset !== undefined
-            const vesselInWorkspace = getVesselInWorkspace(vesselsInWorkspace, vessel.vesselId)
+            const hasDatasets = vessel.infoDataset?.id?.includes(GLOBAL_VESSELS_DATASET_ID)
+              ? vessel.infoDataset !== undefined && vessel.trackDataset !== undefined
+              : vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
+            const vesselInWorkspace = getVesselInWorkspace(
+              vesselsInWorkspace,
+              vessel.vesselId as string
+            )
             const pinTrackDisabled = !hasDatasets
             const isLastRow = i === vessels.length - 1
             const flag = t(`flags:${vessel.flag as string}` as any, EMPTY_FIELD_PLACEHOLDER)
@@ -126,7 +131,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                   <IconButton
                     icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
                     style={{
-                      color: vesselInWorkspace ? vesselInWorkspace.config.color : '',
+                      color: vesselInWorkspace ? vesselInWorkspace.config?.color : '',
                     }}
                     disabled={pinTrackDisabled}
                     tooltip={

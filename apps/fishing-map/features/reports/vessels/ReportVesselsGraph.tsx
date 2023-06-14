@@ -108,8 +108,8 @@ const CustomTick = (props: any) => {
     if (isCategoryInteractive) {
       const vesselFilter = isOtherCategory
         ? cleanFlagState(
-            othersData
-              .flatMap((d) => (EMPTY_API_VALUES.includes(d.name) ? [] : getTickLabel(d.name)))
+            othersData!
+              ?.flatMap((d) => (EMPTY_API_VALUES.includes(d.name) ? [] : getTickLabel(d.name)))
               .join('|')
           )
         : getTickLabel(payload.value)
@@ -122,12 +122,12 @@ const CustomTick = (props: any) => {
 
   const tooltip = isOtherCategory ? (
     <ul>
-      {othersData.slice(0, MAX_OTHER_TOOLTIP_ITEMS).map(({ name, value }) => (
+      {othersData!?.slice(0, MAX_OTHER_TOOLTIP_ITEMS).map(({ name, value }) => (
         <li key={`${name}-${value}`}>{`${getTickLabel(name)}: ${value}`}</li>
       ))}
-      {othersData.length > MAX_OTHER_TOOLTIP_ITEMS && (
+      {othersData!?.length > MAX_OTHER_TOOLTIP_ITEMS && (
         <li>
-          + {othersData.length - MAX_OTHER_TOOLTIP_ITEMS} {t('analysis.others', 'Others')}
+          + {othersData!?.length - MAX_OTHER_TOOLTIP_ITEMS} {t('analysis.others', 'Others')}
         </li>
       )}
     </ul>

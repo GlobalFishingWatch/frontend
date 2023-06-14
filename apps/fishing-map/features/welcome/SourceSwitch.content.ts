@@ -1,11 +1,13 @@
 import { Locale } from 'types'
 
+export type WelcomenContentLangContent = {
+  title: string
+  description: string
+  disclaimer: string
+}
+
 type WelcomeContentLang = {
-  [locale in Locale]?: {
-    title: string
-    description: string
-    disclaimer: string
-  }
+  [locale in Locale]?: WelcomenContentLangContent
 }
 
 const SOURCE_SWITCH_CONTENT: WelcomeContentLang = {
@@ -62,6 +64,10 @@ const SOURCE_SWITCH_CONTENT: WelcomeContentLang = {
       `,
     disclaimer: `Pembaruan pada sumber data di platform Global Fishing Watch. Mulai 1 Januari 2023, Satelit Spire Global telah dimasukkan sehingga dapat mengubah estimasi upaya penangkapan ikan yang terlihat. <a target="_blank" href="https://globalfishingwatch.org/faqs/data-source-updates/">Pelajari lebih lanjut.</a>`,
   },
+}
+
+export const getSourceSwitchContentByLng = (lng: Locale | string) => {
+  return SOURCE_SWITCH_CONTENT[lng || Locale.en]
 }
 
 export default SOURCE_SWITCH_CONTENT

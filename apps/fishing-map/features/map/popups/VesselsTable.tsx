@@ -163,7 +163,7 @@ function VesselsTable({
   const isPresenceActivity = activityType === DatasetSubCategory.Presence
   return (
     <Fragment>
-      {vessels?.length > 0 && (
+      {vessels!?.length > 0 && (
         <table className={cx(styles.vesselsTable)}>
           <thead>
             <tr>
@@ -183,7 +183,7 @@ function VesselsTable({
             </tr>
           </thead>
           <tbody>
-            {vessels.map((vessel, i) => {
+            {vessels?.map((vessel, i) => {
               const vesselName = formatInfoField(vessel.shipname, 'name')
 
               const vesselType = isPresenceActivity
@@ -213,7 +213,7 @@ function VesselsTable({
                       <IconButton
                         icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
                         style={{
-                          color: vesselInWorkspace ? vesselInWorkspace.config.color : '',
+                          color: vesselInWorkspace ? vesselInWorkspace.config?.color : '',
                         }}
                         tooltip={
                           vesselInWorkspace

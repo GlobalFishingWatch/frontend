@@ -69,12 +69,12 @@ export default function useViewport(): UseViewport {
   return { viewport, onViewportChange, setMapCoordinates }
 }
 
-const boundsState = atom<MiniglobeBounds | undefined>({
+const boundsState = atom<MiniglobeBounds>({
   key: 'mapBounds',
   default: undefined,
 })
 
-export function checkEqualBounds(bounds1: MiniglobeBounds, bounds2: MiniglobeBounds) {
+export function checkEqualBounds(bounds1?: MiniglobeBounds, bounds2?: MiniglobeBounds) {
   if (!bounds1 || !bounds2) return false
   return (
     bounds1.north === bounds2.north &&

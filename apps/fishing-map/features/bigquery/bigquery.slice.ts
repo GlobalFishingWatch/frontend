@@ -14,7 +14,7 @@ export type RunCostResponse = {
 
 export type CreateBigQueryDataset = {
   query: string
-  visualisationMode: BigQueryVisualisation
+  visualisationMode: BigQueryVisualisation | null
   name: string
   unit?: string
   ttl?: number
@@ -101,7 +101,7 @@ const bigQuerySlice = createSlice({
   reducers: {
     toggleBigQueryMenu: (state) => {
       state.active = !state.active
-      state.runCostStatus = null
+      state.runCostStatus = AsyncReducerStatus.Idle
     },
   },
   extraReducers: (builder) => {

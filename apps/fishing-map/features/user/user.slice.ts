@@ -32,6 +32,7 @@ export const DEFAULT_GROUP_ID = 'Default'
 export const PRIVATE_SUPPORTED_GROUPS = [
   'Belize',
   'Brazil',
+  'Chile',
   'Costa Rica',
   'Ecuador',
   'Indonesia',
