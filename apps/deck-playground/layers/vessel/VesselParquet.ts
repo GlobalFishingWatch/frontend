@@ -57,6 +57,43 @@ export class ParquetVesselLayer<DataT = any, ExtraProps = {}> extends PathLayer<
     return shaders
   }
 
+  getSegments(): Segment[] {
+    const data = this.props.data as any
+    const segmentsIndex = data.startIndices
+    const positions = data.attributes.positions.value
+    const timestamps = data.attributes.getTimestamps.value
+    const size = data.attributes.positions.size
+    const segments = segmentsIndex.flatMap((segment, i) => {
+      const point = {
+        longitude: positions[segment],
+        latitude: positions[segment + 1],
+        timestamp: timestamps[segment / size],
+        // segment,
+      }
+      if (i === 0) {
+        return point
+      }
+      // Inserts first point of next segment
+      return [
+        point,
+        {
+          longitude: positions[segment + size],
+          latitude: positions[segment + size + 1],
+          timestamp: timestamps[segment / size + 1],
+          // segment: segment + 1,
+        },
+      ]
+    })
+    // Close last segment point
+    segments.push({
+      longitude: positions[positions.length - size],
+      latitude: positions[positions.length - 1],
+      timestamp: timestamps[timestamps.length - 1],
+      // segment: positions.length,
+    })
+    return segments
+  }
+
   initializeState() {
     super.initializeState()
     const attributeManager = this.getAttributeManager()

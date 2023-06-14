@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useMemo, useRef } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { DeckGL, DeckGLRef } from '@deck.gl/react/typed'
 import { MapView, PickingInfo } from '@deck.gl/core/typed'
 import { useVesselsLayer } from 'layers/vessel/vessels.hooks'
@@ -24,6 +24,7 @@ const mapView = new MapView({ repeat: true })
 
 const MapWrapper = (): React.ReactElement => {
   useURLViewport()
+  const [vesselLoaded, setVesselLoaded] = useState(false)
   const { viewState, onViewportStateChange } = useViewport()
   const deckRef = useRef<DeckGLRef>(null)
   const fourwingsLayer = useFourwingsLayer()
@@ -51,11 +52,11 @@ const MapWrapper = (): React.ReactElement => {
       basemapLayer,
       new ParquetVesselLayer<Segment[]>({
         id: `track-parquet-parquet`,
-        data: 'http://localhost:8000/all-small.parquet',
+        data: 'http://localhost:8000/track.parquet',
         loaders: [parquetLoader],
         widthUnits: 'pixels',
         onDataLoad: (data) => {
-          console.log(data)
+          setVesselLoaded(true)
         },
         startTime: startTime,
         endTime: endTime,
@@ -100,6 +101,15 @@ const MapWrapper = (): React.ReactElement => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [basemapLayer, startTime, endTime]
   )
+
+  useEffect(() => {
+    if (vesselLoaded) {
+      const vesselLayer = layers[1] as ParquetVesselLayer<Segment[], {}>
+      const segments = vesselLayer.getSegments()
+      console.log('🚀 ~ useEffect ~ segments:', segments)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vesselLoaded])
 
   const onClick = useCallback(
     (info: PickingInfo) => {
