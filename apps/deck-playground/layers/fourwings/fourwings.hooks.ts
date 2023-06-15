@@ -11,7 +11,7 @@ import { useMapLayers } from 'features/map/layers.hooks'
 import { FourwingsLayer, FourwingsLayerMode } from './FourwingsLayer'
 import { FourwingsSublayer } from './fourwings.types'
 
-const dateToMs = (date: string) => {
+export const dateToMs = (date: string) => {
   return new Date(date).getTime()
 }
 
