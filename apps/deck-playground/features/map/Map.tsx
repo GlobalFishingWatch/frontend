@@ -1,20 +1,31 @@
-import { Fragment, useCallback, useMemo, useRef } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { DeckGL, DeckGLRef } from '@deck.gl/react/typed'
 import { MapView, PickingInfo } from '@deck.gl/core/typed'
 import { useVesselsLayer } from 'layers/vessel/vessels.hooks'
 import { useContextsLayer } from 'layers/context/context.hooks'
 import { useBasemapLayer } from 'layers/basemap/basemap.hooks'
 import { useCustomReferenceLayer } from 'layers/custom-reference/custom-reference.hooks'
-import { useFourwingsLayer, useFourwingsLayerLoaded } from 'layers/fourwings/fourwings.hooks'
+import {
+  dateToMs,
+  useFourwingsLayer,
+  useFourwingsLayerLoaded,
+} from 'layers/fourwings/fourwings.hooks'
 import { useAtom } from 'jotai'
+import { ParquetVesselLayer } from 'layers/vessel/VesselParquet'
+import { PathLayer } from '@deck.gl/layers/typed'
+import { parquetLoader } from 'loaders/vessels/parquetLoader'
+import { Segment } from '@globalfishingwatch/api-types'
 import { useURLViewport, useViewport } from 'features/map/map-viewport.hooks'
 import { hoveredFeaturesAtom, clickedFeaturesAtom } from 'features/map/map-picking.hooks'
 import { zIndexSortedArray } from 'utils/layers'
+import { useTimerange } from 'features/timebar/timebar.hooks'
+import { useHighlightTimerange } from 'features/timebar/timebar.hooks'
 
 const mapView = new MapView({ repeat: true })
 
 const MapWrapper = (): React.ReactElement => {
   useURLViewport()
+  const [vesselLoaded, setVesselLoaded] = useState(false)
   const { viewState, onViewportStateChange } = useViewport()
   const deckRef = useRef<DeckGLRef>(null)
   const fourwingsLayer = useFourwingsLayer()
@@ -26,12 +37,88 @@ const MapWrapper = (): React.ReactElement => {
   const [hoveredFeatures, setHoveredFeatures] = useAtom(hoveredFeaturesAtom)
   const [clickedFeatures, setClickedFeatures] = useAtom(clickedFeaturesAtom)
 
+  const [timerange] = useTimerange()
+  const startTime = dateToMs(timerange.start) / 1000
+  const endTime = dateToMs(timerange.end) / 1000
+
+  const [highlightTimerange] = useHighlightTimerange()
+  const highlightStartTime = highlightTimerange?.start && dateToMs(highlightTimerange.start) / 1000
+  const highlightEndTime = highlightTimerange?.end && dateToMs(highlightTimerange?.end) / 1000
+
+  // const layers = useMemo(
+  //   () =>
+  //     zIndexSortedArray([basemapLayer, contextLayer, fourwingsLayer, vesselsLayer, editableLayer]),
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  //   [fourwingsLayer, contextLayer, vesselsLayer, fourwingsLoaded, basemapLayer, editableLayer]
+  // )
+
   const layers = useMemo(
-    () =>
-      zIndexSortedArray([basemapLayer, contextLayer, fourwingsLayer, vesselsLayer, editableLayer]),
+    () => [
+      basemapLayer,
+      new ParquetVesselLayer<Segment[]>({
+        id: `track-parquet-parquet`,
+        data: 'http://localhost:8000/track.parquet',
+        loaders: [parquetLoader],
+        widthUnits: 'pixels',
+        onDataLoad: (data) => {
+          setVesselLoaded(true)
+        },
+        startTime: startTime,
+        endTime: endTime,
+        widthScale: 1,
+        wrapLongitude: true,
+        jointRounded: true,
+        capRounded: true,
+        highlightStartTime: highlightStartTime || 0,
+        highlightEndTime: highlightEndTime || 0,
+        getColor: [255, 255, 255, 100],
+        highlightColor: [0.0, 1.0, 0.0, 0.4], // to be used as a vec4 in the shader
+        // onDataLoad: this.onDataLoad,
+        // getTimestamp: (d) => {
+        //   console.log(d)
+        //   return d
+        // },
+        _pathType: 'open',
+        // getFilterValue: (d: any) => {
+        //   debugger
+        //   return d.timestamp as any
+        // },
+        // filterRange: [startTime, endTime],
+        // extensions: [new DataFilterExtension({ filterSize: 1 }) as any],
+        // getPath: (d) => {
+        //   return [d.lon, d.lat]
+        // },
+        getColor: [255, 255, 255, 10],
+        // return d.waypoints.map((p) => {
+        //   if (
+        //     p.timestamp >= this.props.highlightStartTime &&
+        //     p.timestamp <= this.props.highlightEndTime
+        //   ) {
+        //     return [255, 0, 0, 100]
+        //   }
+        //   return [255, 255, 255, 100]
+        // })
+        // },
+        getWidth: 1,
+        // updateTriggers: {
+        //   getColor: [startTime, endTime],
+        // },
+        // startTime: this.props.startTime,
+        // endTime: this.props.endTime,
+      }),
+    ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [fourwingsLayer, contextLayer, vesselsLayer, fourwingsLoaded, basemapLayer, editableLayer]
+    [basemapLayer, startTime, endTime, highlightStartTime, highlightEndTime]
   )
+
+  useEffect(() => {
+    if (vesselLoaded) {
+      const vesselLayer = layers[1] as ParquetVesselLayer<Segment[], {}>
+      const segments = vesselLayer.getSegments()
+      console.log('🚀 ~ useEffect ~ segments:', segments)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vesselLoaded])
 
   const onClick = useCallback(
     (info: PickingInfo) => {
