@@ -169,10 +169,10 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
               <div className={cx(styles.activityListContainer, styles.highlightsListContainer)}>
                 {events && events.length > 0 && (
                   <AutoSizer disableWidth={false}>
-                    {({ width, height }) => (
+                    {(params: any) => (
                       <List
-                        width={width}
-                        height={height}
+                        width={params.width}
+                        height={params.height}
                         itemCount={events.length}
                         itemData={events}
                         itemSize={() => 60}
