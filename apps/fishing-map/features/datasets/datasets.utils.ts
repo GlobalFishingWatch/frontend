@@ -28,7 +28,6 @@ import { getDatasetNameTranslated, removeDatasetVersion } from 'features/i18n/ut
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { FileType } from 'features/common/FileDropzone'
 import { getLayerDatasetRange } from 'features/workspace/environmental/HistogramRangeFilter'
-import { TEMPLATE_VESSEL_DATAVIEW_SLUG } from 'data/workspaces'
 import styles from '../vessel-groups/VesselGroupModal.module.css'
 
 export type SupportedDatasetSchema =
@@ -162,34 +161,13 @@ export const getDatasetsInDataviews = (
   if (!dataviews?.length) {
     return []
   }
-  const datasetsFromDataviews = dataviews.flatMap((dataview) =>
-    getDatasetsInDataview(dataview, guestUser)
-  )
-  const datasetsFromDataviewInstances = dataviewInstances.flatMap((dataviewInstance) => {
-    // Needed to check when vessel dataview has included the new datasets
-    // Ex: gfw staff adding a vessel dataview with gaps
-    if (dataviewInstance.dataviewId === TEMPLATE_VESSEL_DATAVIEW_SLUG) {
-      const dataview = dataviews.find(
-        (d) => d.id === dataviewInstance.dataviewId || d.slug === dataviewInstance.dataviewId
-      )
-      if (!dataview?.datasetsConfig) {
-        return []
-      }
-      const availableDatasetIds = dataview.datasetsConfig.map((dsc) => dsc.datasetId)
-      return getDatasetsInDataview(
-        {
-          ...dataviewInstance,
-          datasetsConfig: dataviewInstance.datasetsConfig?.filter((dsc) =>
-            availableDatasetIds.includes(dsc.datasetId)
-          ),
-        },
-        guestUser
-      )
+  const datasets = [...dataviews, ...dataviewInstances].flatMap((dataview) => {
+    if (!dataview.datasetsConfig?.length) {
+      return []
     }
-
-    return getDatasetsInDataview(dataviewInstance, guestUser)
+    return getDatasetsInDataview(dataview, guestUser)
   })
-  return uniq([...datasetsFromDataviews, ...datasetsFromDataviewInstances])
+  return uniq(datasets)
 }
 
 export type RelatedDatasetByTypeParams = {
@@ -242,14 +220,15 @@ export const getLatestEndDateFromDatasets = (
   datasets: Dataset[],
   datasetCategory?: DatasetCategory
 ): string => {
-  if (!datasets.length) return DEFAULT_TIME_RANGE.end
-  const latestDate = datasets.reduce((acc, dataset) => {
+  const datasetsWithEndDate = datasets.filter((dataset) => dataset.endDate)
+  if (!datasetsWithEndDate.length) return DEFAULT_TIME_RANGE.end
+  const latestDate = datasetsWithEndDate.reduce((acc, dataset) => {
     const endDate = dataset.endDate as string
     if (datasetCategory && dataset.category !== datasetCategory) {
       return acc
     }
     return endDate > acc ? endDate : acc
-  }, datasets?.[0].endDate || '')
+  }, datasetsWithEndDate?.[0].endDate || '')
   return latestDate
 }
 
