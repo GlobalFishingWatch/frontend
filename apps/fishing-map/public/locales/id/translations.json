@@ -332,6 +332,8 @@
     "unknown": "Peristiwa yang tidak diketahui"
   },
   "feedback": {
+    "logAnIssue": "Log an issue",
+    "requestAnImprovement": "Request an improvement",
     "descriptionPlaceholder": "Harap sespesifik mungkin.",
     "email": "Alamat email",
     "emailDisclaimer": "Kami hanya akan mengirim email kepada Anda sehubungan dengan umpan balik ini",
