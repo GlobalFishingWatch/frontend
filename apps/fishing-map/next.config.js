@@ -13,6 +13,26 @@ const basePath =
 const IS_PRODUCTION =
   process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'production' || process.env.NODE_ENV === 'production'
 
+function patchWasmModuleImport(config, isServer) {
+  config.experiments = Object.assign(config.experiments || {}, {
+    asyncWebAssembly: true,
+    // syncWebAssembly: true,
+  })
+
+  config.optimization.moduleIds = 'named'
+
+  config.module.rules.push({
+    test: /\.wasm$/,
+    type: 'webassembly/async',
+  })
+
+  // TODO: improve this function -> track https://github.com/vercel/next.js/issues/25852
+  if (isServer) {
+    config.output.webassemblyModuleFilename = './../static/wasm/[modulehash].wasm'
+  } else {
+    config.output.webassemblyModuleFilename = 'static/wasm/[modulehash].wasm'
+  }
+}
 /**
  * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
  **/
@@ -46,7 +66,7 @@ const nextConfig = {
     // See: https://github.com/gregberge/svgr
     svgr: true,
   },
-  webpack: function (config) {
+  webpack: function (config, options) {
     config.resolve.fallback = {
       ...config.resolve.fallback,
       child_process: false,
@@ -69,6 +89,7 @@ const nextConfig = {
     //     cwd: process.cwd(),
     //   })
     // )
+    patchWasmModuleImport(config, options.isServer)
     return config
   },
   // productionBrowserSourceMaps: true,
