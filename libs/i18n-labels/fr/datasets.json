@@ -37,7 +37,7 @@
     "schema": {
       "id": "id",
       "flag": "pavillon",
-      "length": "length",
+      "length": "Longueur",
       "source": "source",
       "geartype": "type d’engin",
       "shipname": "shipname",
@@ -63,11 +63,11 @@
         }
       },
       "width": "width",
-      "length": "length",
+      "length": "Longueur",
       "origin": {
         "keyword": "origin",
         "enum": {
-          "Peru": "Peru",
+          "Peru": "Pérou",
           "Foreign": "Foreign"
         }
       },
@@ -889,7 +889,7 @@
       "id": "id",
       "imo": "imo",
       "flag": "pavillon",
-      "length": "length",
+      "length": "Longueur",
       "source": "source",
       "geartype": "type d’engin",
       "shipname": "shipname",
@@ -1007,11 +1007,11 @@
       },
       "ssvid": "ssvid",
       "width": "width",
-      "length": "length",
+      "length": "Longueur",
       "origin": {
         "keyword": "origin",
         "enum": {
-          "Peru": "Peru",
+          "Peru": "Pérou",
           "Foreign": "Foreign"
         }
       },
