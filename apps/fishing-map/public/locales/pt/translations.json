@@ -332,6 +332,8 @@
     "unknown": "Evento desconhecido"
   },
   "feedback": {
+    "logAnIssue": "Log an issue",
+    "requestAnImprovement": "Request an improvement",
     "descriptionPlaceholder": "Por favor, seja o mais específico possível.",
     "email": "Endereço de e-mail",
     "emailDisclaimer": "Nós somente lhe enviaremos um e-mail em relação a este feedback",
