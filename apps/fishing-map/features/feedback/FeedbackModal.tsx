@@ -30,7 +30,6 @@ type FeedbackData = {
   groups?: string
   role?: string
   feedbackType?: string
-  improvement?: string
   issue?: string
   description?: string
 }
@@ -130,7 +129,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
       }
     }
   })
-  const allFeedbackTypeOptions = [inprovementsOption, issuesOption, ...datasetOptions]
+  const allFeedbackTypeOptions = [issuesOption, ...datasetOptions]
 
   const roleOptions = FEEDBACK_ROLE_IDS.map((roleId) => ({
     id: roleId,
@@ -143,13 +142,12 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
   }))
 
   const onFieldChange = (field: keyof FeedbackData, value: string) => {
-    const shouldResetType =
-      field === 'feedbackType' && value !== inprovementsOption.id && value !== issuesOption.id
+    const shouldResetType = field === 'feedbackType' && value !== issuesOption.id
 
     setFeedbackData({
       ...feedbackData,
       [field]: value,
-      ...(shouldResetType && { improvement: '', issue: '' }),
+      ...(shouldResetType && { issue: '' }),
     })
   }
 
@@ -175,11 +173,8 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
   }
 
   const showDescription =
-    (feedbackData.feedbackType &&
-      feedbackData.feedbackType !== inprovementsOption.id &&
-      feedbackData.feedbackType !== issuesOption.id) ||
-    feedbackData.issue ||
-    feedbackData.improvement
+    (feedbackData.feedbackType && feedbackData.feedbackType !== issuesOption.id) ||
+    feedbackData.issue
 
   return (
     <Modal
@@ -230,18 +225,6 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
                 )}
                 onSelect={(option) => onFieldChange('feedbackType', option.id)}
                 onRemove={() => onFieldChange('feedbackType', '')}
-              />
-            )}
-            {feedbackData.feedbackType === inprovementsOption.id && (
-              <Select
-                label={t('feedback.whichFeature', 'Which feature would you like to improve?')}
-                placeholder={t('selects.placeholder', 'Select an option')}
-                options={featureOptions}
-                selectedOption={featureOptions.find(
-                  (option) => option.id === feedbackData.improvement
-                )}
-                onSelect={(option) => onFieldChange('improvement', option.id)}
-                onRemove={() => onFieldChange('improvement', '')}
               />
             )}
             {feedbackData.feedbackType === issuesOption.id && (

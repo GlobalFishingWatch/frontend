@@ -109,13 +109,28 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           <HelpHub />
         </li>
         <li className={cx(styles.tab, styles.secondary)}>
-          <IconButton
-            // className={cx(styles.tabContent, 'print-hidden')}
-            icon="feedback"
-            onClick={onFeedbackClick}
-            tooltip={t('common.feedback', 'Feedback')}
-            tooltipPlacement="right"
-          />
+          <div className={cx(styles.linksToggle)}>
+            <div className={styles.linksBtn}>
+              <IconButton icon="feedback" />
+            </div>
+            <ul className={styles.links}>
+              <li>
+                <span className={cx(styles.link)} onClick={onFeedbackClick}>
+                  {t('feedback.logAnIssue', 'Log an issue')}
+                </span>
+              </li>
+              <li>
+                <a
+                  href={'https://feedback.globalfishingwatch.org/'}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={cx(styles.link)}
+                >
+                  {t('feedback.requestAnImprovement', 'Request an improvement')}
+                </a>
+              </li>
+            </ul>
+          </div>
         </li>
         <li className={styles.tab}>
           <LanguageToggle />
