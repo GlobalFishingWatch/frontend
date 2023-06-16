@@ -23,7 +23,7 @@ export function getDataviewsGeneratorsDictionary(
   const vesselsDataviews = dataviews.filter((dataview) => isTrackDataview(dataview))
   return {
     [DeckLayersGeneratorType.Vessels]: vesselsDataviews.map(
-      (dataview): VesselDeckLayersGenerator => {
+      (dataview, index): VesselDeckLayersGenerator => {
         const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
         const vesselInfo = (resources[infoUrl] as any)?.data
         return {
@@ -31,9 +31,10 @@ export function getDataviewsGeneratorsDictionary(
           name: vesselInfo?.shipname,
           visible: dataview.config?.visible ?? true,
           color: dataview.config?.color as string,
-          trackUrl: `${API_GATEWAY}${
-            resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)?.url
-          }`,
+          trackUrl: `http://localhost:8001/${2022 - index}.parquet`,
+          // trackUrl: `${API_GATEWAY}${
+          //   resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)?.url
+          // }`,
           events: resolveDataviewDatasetResources(dataview, DatasetTypes.Events).map((resource) => {
             const data = resources?.[resource.url]?.data
             const eventType = resource.dataset?.subcategory as EventType

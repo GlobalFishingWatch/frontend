@@ -71,8 +71,7 @@ const MapWrapper = (): React.ReactElement => {
         capRounded: true,
         highlightStartTime: highlightStartTime || 0,
         highlightEndTime: highlightEndTime || 0,
-        getColor: [255, 255, 255, 100],
-        highlightColor: [0.0, 1.0, 0.0, 0.4], // to be used as a vec4 in the shader
+        highlightColor: [1.0, 1.0, 1.0, 0.4], // to be used as a vec4 in the shader
         // onDataLoad: this.onDataLoad,
         // getTimestamp: (d) => {
         //   console.log(d)

@@ -1,14 +1,8 @@
 import { DataFilterExtension } from '@deck.gl/extensions'
 import { CompositeLayer, Layer, LayersList, LayerProps, Color } from '@deck.gl/core/typed'
 // Layers
-import {
-  ApiEvent,
-  EventTypes,
-  EventVessel,
-  Segment,
-  VesselTrackData,
-} from '@globalfishingwatch/api-types'
-import { trackLoader } from '../../loaders/vessels/trackLoader'
+import { ApiEvent, EventTypes, EventVessel, Segment } from '@globalfishingwatch/api-types'
+import { parquetLoader } from '../../loaders/vessels/trackLoader'
 import { VesselDeckLayersEventData, vesselEventsLoader } from '../../loaders/vessels/eventsLoader'
 import { START_TIMESTAMP } from '../../loaders/constants'
 import { VesselDeckLayersEvent } from '../../layer-composer/types/vessel'
@@ -30,45 +24,31 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   onSublayerLoad: LayerProps['onDataLoad'] = (data, context) => {
     const vesselLayer = context.layer.parent as VesselLayer
     vesselLayer?.layersLoaded?.push(context.layer.id)
-    const isLastLayer = vesselLayer?.layersLoaded.length === vesselLayer?.layers.length - 1
+    const isLastLayer = vesselLayer?.layersLoaded?.length === vesselLayer?.layers.length - 1
     if (isLastLayer) {
       vesselLayer?.props.onDataLoad && vesselLayer?.props?.onDataLoad(data, context)
     }
   }
 
   _getVesselTrackLayer() {
-    return new VesselTrackLayer<Segment[]>(
-      this.getSubLayerProps({
-        id: `${TRACK_LAYER_PREFIX}-vessel-layer-${this.props.id}`,
-        data: this.props.trackUrl,
-        loaders: [trackLoader],
-        widthUnits: 'pixels',
-        widthScale: 1,
-        wrapLongitude: true,
-        jointRounded: true,
-        capRounded: true,
-        onDataLoad: this.onSublayerLoad,
-        getColor: (d: VesselTrackData) => {
-          return d.waypoints.map((p) => {
-            if (
-              this.props.highlightStartTime &&
-              p.timestamp >= this.props.highlightStartTime &&
-              this.props.highlightEndTime &&
-              p.timestamp <= this.props.highlightEndTime
-            ) {
-              return [255, 255, 255, 255]
-            }
-            return this.props.color
-          })
-        },
-        getWidth: 1,
-        updateTriggers: {
-          getColor: [this.props.highlightStartTime, this.props.highlightEndTime, this.props.color],
-        },
-        startTime: this.props.startTime,
-        endTime: this.props.endTime,
-      })
-    )
+    return new VesselTrackLayer<any>({
+      id: `${TRACK_LAYER_PREFIX}-vessel-layer-${this.props.id}`,
+      data: this.props.trackUrl,
+      loaders: [parquetLoader],
+      widthUnits: 'pixels',
+      onDataLoad: this.onSublayerLoad,
+      widthScale: 1,
+      wrapLongitude: true,
+      jointRounded: true,
+      capRounded: true,
+      highlightStartTime: this.props.highlightStartTime,
+      highlightEndTime: this.props.highlightEndTime,
+      startTime: this.props.startTime,
+      endTime: this.props.endTime,
+      _pathType: 'open',
+      getColor: this.props.color,
+      getWidth: 1,
+    })
   }
 
   _getVesselEventsLayer(): VesselEventsLayer[] {
@@ -160,15 +140,6 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   getVesselTrackData() {
-    return (
-      this.getTrackLayer()
-        ?.getSegments()
-        .map(({ waypoints }) =>
-          waypoints.map(({ coordinates, timestamp }) => ({
-            coordinates,
-            timestamp: timestamp + START_TIMESTAMP,
-          }))
-        ) || []
-    )
+    return this.getTrackLayer()?.getSegments()
   }
 }

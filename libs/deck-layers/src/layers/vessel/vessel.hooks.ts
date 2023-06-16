@@ -73,17 +73,20 @@ export const useSetVesselLayers = (
     setVesselLoadedState(context.layer.id)
   }
   const highlightStartTime = useMemo(
-    () => highlightedTime && dateToMs(highlightedTime?.start) - START_TIMESTAMP,
+    () => highlightedTime && dateToMs(highlightedTime?.start) /*- START_TIMESTAMP */,
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [highlightedTime?.start]
   )
   const highlightEndTime = useMemo(
-    () => highlightedTime && dateToMs(highlightedTime?.end) - START_TIMESTAMP,
+    () => highlightedTime && dateToMs(highlightedTime?.end) /*- START_TIMESTAMP */,
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [highlightedTime?.end]
   )
-  const startTime = useMemo(() => (start ? dateToMs(start) - START_TIMESTAMP : undefined), [start])
-  const endTime = useMemo(() => (end ? dateToMs(end) - START_TIMESTAMP : undefined), [end])
+  const startTime = useMemo(
+    () => (start ? dateToMs(start) /*- START_TIMESTAMP */ : undefined),
+    [start]
+  )
+  const endTime = useMemo(() => (end ? dateToMs(end) /*- START_TIMESTAMP */ : undefined), [end])
 
   useEffect(() => {
     const newVesselLayerInstances = vesselLayersGenerator.map(
