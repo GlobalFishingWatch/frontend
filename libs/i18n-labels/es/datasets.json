@@ -12,7 +12,7 @@
           "small_fisheries": "Artesanal"
         }
       },
-      "source": "source",
+      "source": "fuente",
       "shipname": "shipname",
       "normalized_shipname": "normalized_shipname",
       "lastTransmissionDate": "lastTransmissionDate",
@@ -26,7 +26,7 @@
     "schema": {
       "id": "id",
       "flag": "bandera",
-      "source": "source",
+      "source": "fuente",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
     }
@@ -38,7 +38,7 @@
       "id": "id",
       "flag": "bandera",
       "length": "longitud",
-      "source": "source",
+      "source": "fuente",
       "geartype": "geartype",
       "shipname": "shipname",
       "vesselType": "vesselType",
@@ -67,11 +67,11 @@
       "origin": {
         "keyword": "origin",
         "enum": {
-          "Peru": "Peru",
+          "Peru": "Perú",
           "Foreign": "Foreign"
         }
       },
-      "source": "source",
+      "source": "fuente",
       "capacity": "capacity",
       "shipname": "shipname",
       "nationalId": "nationalId",
@@ -110,8 +110,8 @@
       "imo": "imo",
       "flag": "bandera",
       "mmsi": "mmsi",
-      "source": "source",
-      "callsign": "callsign",
+      "source": "fuente",
+      "callsign": "signatura",
       "geartype": {
         "keyword": "geartype",
         "enum": {
@@ -134,8 +134,8 @@
       "imo": "imo",
       "flag": "bandera",
       "mmsi": "mmsi",
-      "source": "source",
-      "callsign": "callsign",
+      "source": "fuente",
+      "callsign": "signatura",
       "geartype": {
         "keyword": "geartype",
         "enum": {
@@ -247,7 +247,7 @@
     "schema": {
       "id": "id",
       "flag": "bandera",
-      "source": "source",
+      "source": "fuente",
       "dataset": "dataset",
       "geartype": {
         "keyword": "geartype",
@@ -315,7 +315,7 @@
     "schema": {
       "id": "id",
       "flag": "bandera",
-      "source": "source",
+      "source": "fuente",
       "dataset": "dataset",
       "geartype": {
         "keyword": "geartype",
@@ -502,9 +502,9 @@
       "imo": "imo",
       "flag": "bandera",
       "mmsi": "mmsi",
-      "source": "source",
+      "source": "fuente",
       "dataset": "dataset",
-      "callsign": "callsign",
+      "callsign": "signatura",
       "geartype": {
         "keyword": "geartype",
         "enum": {}
@@ -566,7 +566,7 @@
     "schema": {
       "id": "id",
       "flag": "bandera",
-      "source": "source",
+      "source": "fuente",
       "dataset": "dataset",
       "geartype": "geartype",
       "shipname": "shipname",
@@ -661,7 +661,7 @@
     "schema": {
       "id": "id",
       "flag": "bandera",
-      "source": "source",
+      "source": "fuente",
       "dataset": "dataset",
       "geartype": "geartype",
       "shipname": "shipname",
@@ -718,7 +718,7 @@
     "schema": {
       "id": "id",
       "flag": "bandera",
-      "source": "source",
+      "source": "fuente",
       "dataset": "dataset",
       "geartype": "geartype",
       "shipname": "shipname",
@@ -806,7 +806,7 @@
     "schema": {
       "id": "id",
       "flag": "bandera",
-      "source": "source",
+      "source": "fuente",
       "dataset": "dataset",
       "geartype": "geartype",
       "shipname": "shipname",
@@ -840,7 +840,7 @@
     "schema": {
       "id": "id",
       "flag": "bandera",
-      "source": "source",
+      "source": "fuente",
       "dataset": "dataset",
       "geartype": "geartype",
       "shipname": "shipname",
@@ -890,7 +890,7 @@
       "imo": "imo",
       "flag": "bandera",
       "length": "longitud",
-      "source": "source",
+      "source": "fuente",
       "geartype": "geartype",
       "shipname": "shipname",
       "veselType": "veselType",
@@ -906,7 +906,7 @@
     "schema": {
       "id": "id",
       "flag": "bandera",
-      "source": "source",
+      "source": "fuente",
       "geartype": "geartype",
       "shipname": "shipname",
       "veselType": "veselType",
@@ -1011,11 +1011,11 @@
       "origin": {
         "keyword": "origin",
         "enum": {
-          "Peru": "Peru",
+          "Peru": "Perú",
           "Foreign": "Foreign"
         }
       },
-      "source": "source",
+      "source": "fuente",
       "regimen": "regimen",
       "capacity": "capacity",
       "geartype": "geartype",
@@ -1101,8 +1101,8 @@
     "schema": {
       "id": "id",
       "flag": "bandera",
-      "source": "source",
-      "callsign": "callsign",
+      "source": "fuente",
+      "callsign": "signatura",
       "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
@@ -1224,7 +1224,7 @@
     "schema": {
       "id": "id",
       "flag": "bandera",
-      "source": "source",
+      "source": "fuente",
       "geartype": {
         "keyword": "geartype",
         "enum": {
@@ -1302,7 +1302,7 @@
     "schema": {
       "id": "id",
       "flag": "bandera",
-      "source": "source",
+      "source": "fuente",
       "dataset": "dataset",
       "geartype": {
         "keyword": "geartype",
@@ -1368,7 +1368,7 @@
     "schema": {
       "id": "id",
       "code": "code",
-      "source": "source",
+      "source": "fuente",
       "shipname": "shipname",
       "normalizedShipname": "normalizedShipname",
       "lastTransmissionDate": "lastTransmissionDate",
@@ -1492,7 +1492,7 @@
     "schema": {
       "id": "id",
       "flag": "bandera",
-      "source": "source",
+      "source": "fuente",
       "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
@@ -1534,7 +1534,7 @@
     "schema": {
       "id": "id",
       "flag": "bandera",
-      "source": "source",
+      "source": "fuente",
       "shipname": "shipname",
       "nationalId": "nationalId",
       "normalized_shipname": "normalized_shipname",
@@ -1548,7 +1548,7 @@
     "schema": {
       "id": "id",
       "flag": "bandera",
-      "source": "source",
+      "source": "fuente",
       "shipname": "shipname",
       "nationalId": "nationalId",
       "normalized_shipname": "normalized_shipname",
@@ -1631,9 +1631,9 @@
       "imo": "imo",
       "flag": "bandera",
       "mmsi": "mmsi",
-      "source": "source",
+      "source": "fuente",
       "dataset": "dataset",
-      "callsign": "callsign",
+      "callsign": "signatura",
       "geartype": {
         "keyword": "geartype",
         "enum": {
@@ -1765,9 +1765,9 @@
       "imo": "imo",
       "flag": "bandera",
       "mmsi": "mmsi",
-      "source": "source",
+      "source": "fuente",
       "dataset": "dataset",
-      "callsign": "callsign",
+      "callsign": "signatura",
       "geartype": {
         "keyword": "geartype",
         "enum": {
@@ -1896,9 +1896,9 @@
       "imo": "imo",
       "flag": "bandera",
       "mmsi": "mmsi",
-      "source": "source",
+      "source": "fuente",
       "dataset": "dataset",
-      "callsign": "callsign",
+      "callsign": "signatura",
       "geartype": {
         "keyword": "geartype",
         "enum": {
@@ -2128,7 +2128,7 @@
     "schema": {
       "id": "id",
       "flag": "bandera",
-      "source": "source",
+      "source": "fuente",
       "shipname": "shipname",
       "nationalId": "nationalId",
       "normalizedShipname": "normalizedShipname",
@@ -2229,8 +2229,8 @@
     "schema": {
       "id": "id",
       "flag": "bandera",
-      "source": "source",
-      "callsign": "callsign",
+      "source": "fuente",
+      "callsign": "signatura",
       "geartype": {
         "keyword": "geartype",
         "enum": {
@@ -2259,8 +2259,8 @@
     "schema": {
       "id": "id",
       "flag": "bandera",
-      "source": "source",
-      "callsign": "callsign",
+      "source": "fuente",
+      "callsign": "signatura",
       "geartype": {
         "keyword": "geartype",
         "enum": {
@@ -2343,7 +2343,7 @@
     "schema": {
       "id": "id",
       "flag": "bandera",
-      "source": "source",
+      "source": "fuente",
       "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
@@ -2355,7 +2355,7 @@
     "schema": {
       "id": "id",
       "flag": "bandera",
-      "source": "source",
+      "source": "fuente",
       "geartype": "geartype",
       "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
@@ -2495,8 +2495,8 @@
     "schema": {
       "id": "id",
       "flag": "bandera",
-      "source": "source",
-      "callsign": "callsign",
+      "source": "fuente",
+      "callsign": "signatura",
       "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
@@ -2527,7 +2527,7 @@
       "flag": "bandera",
       "htime": "htime",
       "source": {
-        "keyword": "source",
+        "keyword": "fuente",
         "enum": {
           "unknown": "unknown",
           "chile_vms_aquaculture": "Acuicultura",

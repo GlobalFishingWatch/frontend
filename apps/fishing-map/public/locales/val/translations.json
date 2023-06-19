@@ -332,6 +332,8 @@
     "unknown": "crwdns6960:0crwdne6960:0"
   },
   "feedback": {
+    "logAnIssue": "crwdns31001:0crwdne31001:0",
+    "requestAnImprovement": "crwdns31003:0crwdne31003:0",
     "descriptionPlaceholder": "crwdns6464:0crwdne6464:0",
     "email": "crwdns5366:0crwdne5366:0",
     "emailDisclaimer": "crwdns6682:0crwdne6682:0",
