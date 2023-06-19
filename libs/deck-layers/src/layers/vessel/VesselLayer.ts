@@ -4,7 +4,6 @@ import { CompositeLayer, Layer, LayersList, LayerProps, Color } from '@deck.gl/c
 import { ApiEvent, EventTypes, EventVessel, Segment } from '@globalfishingwatch/api-types'
 import { parquetLoader } from '../../loaders/vessels/trackLoader'
 import { VesselDeckLayersEventData, vesselEventsLoader } from '../../loaders/vessels/eventsLoader'
-import { START_TIMESTAMP } from '../../loaders/constants'
 import { VesselDeckLayersEvent } from '../../layer-composer/types/vessel'
 import { deckToHexColor } from '../../utils/colors'
 import { EVENTS_COLORS, VesselEventsLayer, _VesselEventsLayerProps } from './VesselEventsLayer'
@@ -130,13 +129,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         return events as ApiEvent[]
       }, [])
       .sort((a, b) => (a.start as number) - (b.start as number))
-    return events.map((e) => ({
-      ...e,
-      start: (e.start as number) + START_TIMESTAMP,
-      ...(e.end && {
-        end: (e.end as number) + START_TIMESTAMP,
-      }),
-    }))
+    return events
   }
 
   getVesselTrackData() {

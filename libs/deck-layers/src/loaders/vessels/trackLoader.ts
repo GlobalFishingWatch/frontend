@@ -78,7 +78,7 @@ const parseTrack = (parquetBuffer: ArrayBuffer): VesselTrackData => {
         }
         positions[data.attributes.getPath.size * index] = lon
         positions[data.attributes.getPath.size * index + 1] = latColumn.get(index)
-        timestamps[index] = timestampColumn?.get(index)
+        timestamps[index] = Number(timestampColumn?.get(index))
         index++
       })
     })

@@ -1,11 +1,10 @@
 import { useEffect, useMemo } from 'react'
-import { LayerData, Layer } from '@deck.gl/core/typed'
+import { Layer } from '@deck.gl/core/typed'
 import { atom, useSetAtom, useAtomValue } from 'jotai'
 import { selectAtom } from 'jotai/utils'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { VesselDeckLayersGenerator } from '@globalfishingwatch/deck-layers'
 import { hexToDeckColor } from '../../utils/colors'
-import { START_TIMESTAMP } from '../../loaders/constants'
 import { VesselLayer } from './VesselLayer'
 
 const dateToMs = (date: string) => {
@@ -73,20 +72,17 @@ export const useSetVesselLayers = (
     setVesselLoadedState(context.layer.id)
   }
   const highlightStartTime = useMemo(
-    () => highlightedTime && dateToMs(highlightedTime?.start) /*- START_TIMESTAMP */,
+    () => highlightedTime && dateToMs(highlightedTime?.start),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [highlightedTime?.start]
   )
   const highlightEndTime = useMemo(
-    () => highlightedTime && dateToMs(highlightedTime?.end) /*- START_TIMESTAMP */,
+    () => highlightedTime && dateToMs(highlightedTime?.end),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [highlightedTime?.end]
   )
-  const startTime = useMemo(
-    () => (start ? dateToMs(start) /*- START_TIMESTAMP */ : undefined),
-    [start]
-  )
-  const endTime = useMemo(() => (end ? dateToMs(end) /*- START_TIMESTAMP */ : undefined), [end])
+  const startTime = useMemo(() => (start ? dateToMs(start) : undefined), [start])
+  const endTime = useMemo(() => (end ? dateToMs(end) : undefined), [end])
 
   useEffect(() => {
     const newVesselLayerInstances = vesselLayersGenerator.map(
