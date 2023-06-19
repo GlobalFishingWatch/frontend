@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import { Map, MapboxStyle } from 'react-map-gl'
 import { DeckGL, DeckGLRef } from '@deck.gl/react/typed'
 import { MapView } from '@deck.gl/core/typed'
-import MemoryStatsComponent from 'next-react-memory-stats'
 import dynamic from 'next/dynamic'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import maplibregl from '@globalfishingwatch/maplibre-gl'
@@ -323,7 +322,7 @@ const MapWrapper = () => {
         // onHover={onHover}
         // onViewStateChange={onViewportStateChange}
       />
-      {style && (
+      {/* {style && (
         <Map
           id="map"
           style={{ ...mapStyles, display: 'none', pointerEvents: 'none' }}
@@ -367,7 +366,7 @@ const MapWrapper = () => {
           {isMapDrawing && <MapDraw />}
           {mapLegends && <MapLegends legends={mapLegends} portalled={portalledLegend} />}
         </Map>
-      )}
+      )} */}
       <MapControls onMouseEnter={resetHoverState} mapLoading={debouncedMapLoading} />
       {isWorkspace && !reportLocation && (
         <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
@@ -375,8 +374,6 @@ const MapWrapper = () => {
       {isWorkspace && !reportLocation && (
         <Hint id="clickingOnAGridCellToShowVessels" className={styles.helpHintRight} />
       )}
-
-      <MemoryStatsComponent />
     </div>
   )
 }
