@@ -79,7 +79,6 @@ const MapWrapper = (): React.ReactElement => {
         // },
         _pathType: 'open',
         // getFilterValue: (d: any) => {
-        //   debugger
         //   return d.timestamp as any
         // },
         // filterRange: [startTime, endTime],
@@ -114,7 +113,6 @@ const MapWrapper = (): React.ReactElement => {
     if (vesselLoaded) {
       const vesselLayer = layers[1] as ParquetVesselLayer<Segment[], {}>
       const segments = vesselLayer.getSegments()
-      console.log('🚀 ~ useEffect ~ segments:', segments)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vesselLoaded])

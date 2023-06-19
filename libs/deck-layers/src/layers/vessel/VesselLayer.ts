@@ -140,6 +140,10 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   getVesselTrackData() {
+    return this.getTrackLayer()?.getData()
+  }
+
+  getVesselTrackSegments() {
     return this.getTrackLayer()?.getSegments()
   }
 }

@@ -25,19 +25,15 @@ export const useTimebarVesselTracks = () => {
           if (!vessel.props.visible) {
             return []
           }
-          const track = vessel.getVesselTrackData()
-          const chunks = track.map((t) => {
-            const start = (minBy(t, 'timestamp') as any)?.timestamp
-            const end = (maxBy(t, 'timestamp') as any)?.timestamp
+          const segments = vessel.getVesselTrackSegments()
+          const chunks = segments?.map((t) => {
+            const start = t[0]?.timestamp
+            const end = t[t.length - 1]?.timestamp
             return {
               start,
               end,
               props: { color: vessel.getVesselColor() },
-              values: t.map((v) => ({
-                longitude: v.coordinates[0],
-                latitude: v.coordinates[1],
-                timestamp: v.timestamp,
-              })),
+              values: t,
             }
           })
           return {

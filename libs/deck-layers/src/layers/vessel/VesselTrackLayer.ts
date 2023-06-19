@@ -3,7 +3,7 @@ import { AccessorFunction, DefaultProps } from '@deck.gl/core/typed'
 import { PathLayer, PathLayerProps } from '@deck.gl/layers/typed'
 import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
 import { Point, Segment } from '@globalfishingwatch/api-types'
-import { VesselTrackData } from '../../loaders/vessels/trackLoader'
+import { TIMESTAMP_MULTIPLIER, VesselTrackData } from '../../loaders/vessels/trackLoader'
 
 /** Properties added by VesselTrackLayer. */
 export type _VesselTrackLayerProps<DataT = any> = {
@@ -146,12 +146,16 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
     const { startTime, endTime, highlightStartTime, highlightEndTime } = this.props
     params.uniforms = {
       ...params.uniforms,
-      startTime: startTime / 1000,
-      endTime: endTime / 1000,
-      highlightStartTime: highlightStartTime ? highlightStartTime / 1000 : 0,
-      highlightEndTime: highlightEndTime ? highlightEndTime / 1000 : 0,
+      startTime: startTime / TIMESTAMP_MULTIPLIER,
+      endTime: endTime / TIMESTAMP_MULTIPLIER,
+      highlightStartTime: highlightStartTime ? highlightStartTime / TIMESTAMP_MULTIPLIER : 0,
+      highlightEndTime: highlightEndTime ? highlightEndTime / TIMESTAMP_MULTIPLIER : 0,
     }
     super.draw(params)
+  }
+
+  getData(): VesselTrackData {
+    return this.props.data as VesselTrackData
   }
 
   getSegments(): Segment[] {
@@ -163,34 +167,26 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
       return []
     }
     const size = data.attributes.positions!?.size
-    const segments = segmentsIndex.flatMap((segment, i) => {
-      const point: Point = {
+    const segments = segmentsIndex.map((segment, i) => {
+      const initialPoint = {
         longitude: positions[segment],
         latitude: positions[segment + 1],
-        timestamp: timestamps[segment / size],
-        // segment,
+        timestamp: timestamps[segment / size] * TIMESTAMP_MULTIPLIER,
       }
-      if (i === 0) {
-        return point
-      }
-      // Inserts first point of next segment
-      return [
-        point,
-        {
-          longitude: positions[segment + size],
-          latitude: positions[segment + size + 1],
-          timestamp: timestamps[segment / size + 1],
-          // segment: segment + 1,
-        },
-      ]
+      const lastPoint =
+        i < segmentsIndex.length - 1
+          ? {
+              longitude: positions[segment + size],
+              latitude: positions[segment + size - 1],
+              timestamp: timestamps[segment + size - 1] * TIMESTAMP_MULTIPLIER,
+            }
+          : {
+              longitude: positions[positions.length - size],
+              latitude: positions[positions.length - 1],
+              timestamp: timestamps[timestamps.length - 1] * TIMESTAMP_MULTIPLIER,
+            }
+      return [initialPoint, lastPoint]
     })
-    // Close last segment point
-    segments.push({
-      longitude: positions[positions.length - size],
-      latitude: positions[positions.length - 1],
-      timestamp: timestamps[timestamps.length - 1],
-      // segment: positions.length,
-    })
-    return [segments]
+    return segments
   }
 }

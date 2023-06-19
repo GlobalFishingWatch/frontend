@@ -3,6 +3,8 @@ import { tableFromIPC, Table, Schema } from 'apache-arrow'
 import { readParquet } from 'parquet-wasm'
 // import { START_TIMESTAMP } from '../constants'
 
+export const TIMESTAMP_MULTIPLIER = 1000
+
 export const parquetLoader: LoaderWithParser = {
   name: 'parquet-track',
   module: 'parquet-track',
@@ -10,7 +12,7 @@ export const parquetLoader: LoaderWithParser = {
   id: 'parquet-track-pbf',
   version: 'latest',
   extensions: ['parquet'],
-  mimeTypes: ['application/x-protobuf', 'application/octet-stream', 'application/protobuf'],
+  mimeTypes: ['application/x-parquet'],
   // worker: false,
   parse: async (arrayBuffer) => parseTrack(arrayBuffer),
   parseSync: async (arrayBuffer) => parseTrack(arrayBuffer),
@@ -80,7 +82,6 @@ const parseTrack = (parquetBuffer: ArrayBuffer): VesselTrackData => {
         index++
       })
     })
-
     data.length = segmentIndexes.length
     data.startIndices = segmentIndexes
     data.attributes.getPath.value = positions
