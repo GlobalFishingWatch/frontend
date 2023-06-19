@@ -8,7 +8,7 @@
     "clickToFilterBy": "Clique para filtrar por:",
     "close": "Fechar relatório",
     "createReportHelp": "To explore how activity and environmental data changes over time, you can create a dynamic report containing analysis for any area. Dynamic reports offer a rapid way to access and understand more information about any ocean area, exclusive economic zone, marine protected area or area of interest. Dynamic reports help you understand how much activity is happening in each area, including which vessels and flag States are active.",
-    "createReportHelpLink": "Learn more.",
+    "createReportHelpLink": "Saber mais.",
     "datasetsNotAllowed": "As embarcações não estão incluídas nas seguintes fontes:",
     "datasetsNotAllowedAll": "None of your datasets are allowed to be used in reports",
     "disclaimer": "Os dados mostrados acima devem ser tomados como uma estimativa.",
@@ -332,6 +332,8 @@
     "unknown": "Evento desconhecido"
   },
   "feedback": {
+    "logAnIssue": "Adicionar um problema",
+    "requestAnImprovement": "Solicitar uma melhoria",
     "descriptionPlaceholder": "Por favor, seja o mais específico possível.",
     "email": "Endereço de e-mail",
     "emailDisclaimer": "Nós somente lhe enviaremos um e-mail em relação a este feedback",

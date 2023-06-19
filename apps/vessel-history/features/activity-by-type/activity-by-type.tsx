@@ -118,7 +118,7 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
         </div>
         <div className={styles.activityContainer}>
           <AutoSizer disableWidth={true}>
-            {({ width, height }) => (
+            {(params: any) => (
               <List
                 /**
                  * The `key` prop is needed here to force the List clear the cache of row heigths
@@ -126,8 +126,8 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
                  * otherwise the variable row heights are not recalculated inside VariableSizeList
                  */
                 key={`${events.length}-list`}
-                width={width}
-                height={height}
+                width={params.width}
+                height={params.height}
                 itemCount={events.length}
                 itemData={events}
                 itemSize={getRowHeight}

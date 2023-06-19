@@ -7,23 +7,28 @@
     "changelog": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["./changelog.sh vessel-history \"Vessel Viewer\""],
+        "commands": [
+          "./changelog.sh vessel-history \"Vessel Viewer\""
+        ],
         "parallel": false
       }
     },
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx build vessel-history"],
+        "commands": [
+          "nx build vessel-history"
+        ],
         "parallel": false
       }
     },
     "build": {
       "executor": "@nx/next:build",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "defaultConfiguration": "production",
       "options": {
-        "root": "apps/vessel-history",
         "outputPath": "dist/apps/vessel-history"
       },
       "configurations": {
@@ -45,7 +50,9 @@
       "executor": "nx:run-commands",
       "outputs": [],
       "options": {
-        "commands": ["rm -rf dist/apps/vessel-history/public/locales"]
+        "commands": [
+          "rm -rf dist/apps/vessel-history/public/locales"
+        ]
       }
     },
     "serve": {
@@ -70,7 +77,9 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/vessel-history"],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/vessel-history"
+      ],
       "options": {
         "jestConfig": "apps/vessel-history/jest.config.ts",
         "passWithNoTests": true
@@ -78,9 +87,13 @@
     },
     "lint": {
       "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["apps/vessel-history/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "apps/vessel-history/**/*.{ts,tsx,js,jsx}"
+        ]
       }
     }
   },
