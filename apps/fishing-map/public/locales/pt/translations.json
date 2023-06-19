@@ -332,7 +332,7 @@
     "unknown": "Evento desconhecido"
   },
   "feedback": {
-    "logAnIssue": "Adicionar um problema",
+    "logAnIssue": "Reportar um problema",
     "requestAnImprovement": "Solicitar uma melhoria",
     "descriptionPlaceholder": "Por favor, seja o mais específico possível.",
     "email": "Endereço de e-mail",
