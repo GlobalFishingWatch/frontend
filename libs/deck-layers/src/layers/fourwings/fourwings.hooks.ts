@@ -1,5 +1,4 @@
 import { useEffect, useMemo } from 'react'
-import { LayerData, Layer } from '@deck.gl/core/typed'
 import { atom, useSetAtom, useAtomValue } from 'jotai'
 import { selectAtom } from 'jotai/utils'
 import { groupBy } from 'lodash'
@@ -15,7 +14,7 @@ const dateToMs = (date: string) => {
 interface FourwingsLayerState {
   id: string
   instance: FourwingsLayer
-  loadedLayers: string[]
+  loaded: boolean
 }
 
 export const fourwingsLayersAtom = atom<FourwingsLayerState[]>([])
@@ -25,6 +24,14 @@ export const fourwingsLayersInstancesSelector = atom((get) =>
   get(fourwingsLayersAtom)
     .map((l) => l.instance)
     .sort(sortFourwingsLayers)
+)
+
+const fourwingsActivityLayerSelector = atom((get) =>
+  get(fourwingsLayersAtom).find((l) => l.id.includes('activity'))
+)
+
+export const fourwingsLayersLoadedSelector = atom((get) =>
+  get(fourwingsLayersAtom).map((l) => ({ id: l.id, loaded: l.loaded }))
 )
 
 export const selectFourwingsLayersAtom = selectAtom(fourwingsLayersAtom, fourwingsLayersSelector)
@@ -38,6 +45,8 @@ interface globalConfig {
   visibleEvents?: EventTypes[]
 }
 export const useFourwingsLayers = () => useAtomValue(fourwingsLayersInstancesSelector)
+export const useFourwingsLayersLoaded = () => useAtomValue(fourwingsLayersLoadedSelector)
+export const useFourwingsActivityLayer = () => useAtomValue(fourwingsActivityLayerSelector)
 
 export const useSetFourwingsLayers = (
   fourwingsLayersGenerator: FourwingsDeckLayerGenerator[],
@@ -51,10 +60,10 @@ export const useSetFourwingsLayers = (
     atom(null, (get, set, id: FourwingsLayerState['id']) =>
       set(fourwingsLayersAtom, (prevVessels) => {
         return prevVessels.map((v) => {
-          if (id.includes(v.id)) {
+          if (v.id.includes(id)) {
             return {
               ...v,
-              loadedLayers: [...v.loadedLayers, id],
+              loaded: true,
             }
           }
           return v
@@ -63,13 +72,16 @@ export const useSetFourwingsLayers = (
     )
   )
 
-  const onDataLoad = (data: LayerData<any>, context: { propName: string; layer: Layer<any> }) => {
-    console.log(data, context)
-    setFourwingsLoadedState(context.layer.id)
+  const onViewportLoad = (id: string) => {
+    setFourwingsLoadedState(id)
   }
 
   const startTime = useMemo(() => (start ? dateToMs(start) : undefined), [start])
   const endTime = useMemo(() => (end ? dateToMs(end) : undefined), [end])
+  const visibleSubayersIds = useMemo(
+    () => fourwingsLayersGenerator.filter((l) => l.visible).map((l) => l.id),
+    [fourwingsLayersGenerator]
+  )
 
   useEffect(() => {
     const groupedLayers = groupBy(fourwingsLayersGenerator, 'category')
@@ -81,11 +93,10 @@ export const useSetFourwingsLayers = (
           // mode: activityMode,
           mode: 'heatmap',
           debug: false,
+          visibleSubayersIds,
           sublayers: groupedLayers[category].filter((l) => l.visible).flatMap((l) => l.sublayers),
           category: category as DataviewCategory,
-          // onDataLoad: onDataLoad,
-          // onTileLoad: onTileLoad,
-          // onViewportLoad: onViewportLoad,
+          onViewportLoad,
           // onVesselHighlight: onVesselHighlight,
           // onVesselClick: onVesselClick,
           // resolution: 'high',
@@ -97,7 +108,7 @@ export const useSetFourwingsLayers = (
           updatedVessels.push({
             id: category,
             instance,
-            loadedLayers: [],
+            loaded: false,
           })
           return updatedVessels
         })
@@ -105,6 +116,6 @@ export const useSetFourwingsLayers = (
     })
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [start, end, fourwingsLayersGenerator])
+  }, [start, end, visibleSubayersIds])
   return useAtomValue(fourwingsLayersInstancesSelector)
 }
