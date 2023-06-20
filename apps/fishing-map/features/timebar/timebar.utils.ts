@@ -1,5 +1,10 @@
 import { EventTypes } from '@globalfishingwatch/api-types'
-import { TimebarChartChunk, TrackEventChunkProps } from '@globalfishingwatch/timebar'
+import {
+  TimebarChartChunk,
+  TrackEventChunkProps,
+  ActivityTimeseriesFrame,
+} from '@globalfishingwatch/timebar'
+import { TileCell } from '@globalfishingwatch/deck-layers'
 import { getEventColors, getEventDescription } from 'utils/events'
 
 export const parseTrackEventChunkProps = (
@@ -25,4 +30,51 @@ export const parseTrackEventChunkProps = (
       descriptionGeneric,
     },
   }
+}
+
+export function getGraphFromGridCellsData(cells: TileCell[]): ActivityTimeseriesFrame[] {
+  const resultMap: {
+    [timestamp: number]: {
+      [category: string]: number
+    }
+  } = {}
+
+  for (const gridCell of cells) {
+    const { timeseries } = gridCell
+
+    for (const category in timeseries) {
+      const categoryData = timeseries[category]
+
+      for (const timestamp in categoryData) {
+        const value = categoryData[timestamp]
+
+        const numTimestamp = Number(timestamp) // Convert the timestamp to number type
+
+        if (!resultMap[numTimestamp]) {
+          resultMap[numTimestamp] = {}
+        }
+
+        if (!resultMap[numTimestamp][category]) {
+          resultMap[numTimestamp][category] = 0
+        }
+
+        resultMap[numTimestamp][category] += value
+      }
+    }
+  }
+
+  const output: ActivityTimeseriesFrame[] = []
+
+  for (const timestamp in resultMap) {
+    const numTimestamp = Number(timestamp) // Convert the timestamp to number type
+    const dataEntry: ActivityTimeseriesFrame = { date: numTimestamp }
+
+    for (const category in resultMap[timestamp]) {
+      dataEntry[category] = resultMap[timestamp][category]
+    }
+
+    output.push(dataEntry)
+  }
+
+  return output.sort((a, b) => a.date - b.date)
 }
