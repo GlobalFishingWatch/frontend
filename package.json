@@ -15,6 +15,8 @@
   "scripts": {
     "start:fishing-map": "nx start fishing-map",
     "start:vessel-history": "nx start vessel-history",
+    "start:deck-playground": "nx start deck-playground",
+    "start:real-time-prototype": "nx start real-time-prototype",
     "start:tile-inspector": "nx start tile-inspector",
     "run:fishing-map": "nx serve:export fishing-map",
     "run:fourwings-explorer": "nx serve:export fourwings-explorer",

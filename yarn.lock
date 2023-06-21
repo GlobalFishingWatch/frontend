@@ -2551,6 +2551,63 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@globalfishingwatchapp/real-time-prototype@workspace:apps/real-time-prototype":
+  version: 0.0.0-use.local
+  resolution: "@globalfishingwatchapp/real-time-prototype@workspace:apps/real-time-prototype"
+  dependencies:
+    "@deck.gl/core": 8.8.24
+    "@deck.gl/extensions": 8.8.24
+    "@deck.gl/geo-layers": 8.8.24
+    "@deck.gl/layers": 8.8.24
+    "@deck.gl/mesh-layers": 8.8.24
+    "@deck.gl/react": 8.8.24
+    "@globalfishingwatch/linting": 2.0.2
+    "@loaders.gl/core": ^3.2.13
+    "@loaders.gl/csv": ^3.2.13
+    "@loaders.gl/loader-utils": ^3.2.13
+    "@loaders.gl/zip": ^3.2.13
+    "@nebula.gl/edit-modes": ^1.0.4
+    "@nebula.gl/layers": ^1.0.4
+    "@next/eslint-plugin-next": 13.1.6
+    "@recoiljs/refine": ^0.1.1
+    "@tanstack/react-query": ^4.24.4
+    "@testing-library/jest-dom": ^5.16.5
+    "@testing-library/react": 12.1.5
+    "@turf/bbox-polygon": ^6.5.0
+    "@turf/boolean-point-in-polygon": ^6.5.0
+    "@types/lodash": 4.14.191
+    "@types/luxon": ^2.4.0
+    "@types/node": 18.11.19
+    "@types/qs": 6.9.7
+    "@types/react": ^18.2.7
+    "@types/react-dom": ^18.2.4
+    classnames: 2.3.2
+    depcheck: 1.4.3
+    jotai: ^1.13.1
+    lodash: 4.17.21
+    luxon: ^2.5.2
+    next-react-memory-stats: ^1.0.2
+    parquet-wasm: 0.4.0-beta.5
+    prettier: 2.8.3
+    qs: ^6.11.0
+    react: ^18.2.0
+    react-dom: ^18.2.0
+    react-fps: ^1.0.6
+    react-test-renderer: 18.2.0
+    recoil: 0.7.6
+    recoil-sync: ^0.2.0
+    recoil-sync-next: ^0.0.3
+    serve: 14.2.0
+    simple-statistics: ^7.8.2
+    source-map-explorer: 2.5.3
+    stylelint: ^14.16.1
+    stylelint-config-css-modules: ^2.3.0
+    stylelint-config-prettier: ^9.0.4
+    stylelint-config-standard: ^29.0.0
+    typescript: 5.0.4
+  languageName: unknown
+  linkType: soft
+
 "@globalfishingwatchapp/tile-inspector@workspace:apps/tile-inspector":
   version: 0.0.0-use.local
   resolution: "@globalfishingwatchapp/tile-inspector@workspace:apps/tile-inspector"
@@ -3327,6 +3384,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@loaders.gl/csv@npm:^3.2.13":
+  version: 3.4.4
+  resolution: "@loaders.gl/csv@npm:3.4.4"
+  dependencies:
+    "@loaders.gl/loader-utils": 3.4.4
+    "@loaders.gl/schema": 3.4.4
+  checksum: 24250fbc0f1240248172c722d9f53a0e7c659a432e9af2fba96859aff30c76f2b56f28d8db9892cfd58f625351d6f25caabcb9bff59ea04c12be37e2246bf0b0
+  languageName: node
+  linkType: hard
+
 "@loaders.gl/draco@npm:3.4.4":
   version: 3.4.4
   resolution: "@loaders.gl/draco@npm:3.4.4"
@@ -3497,6 +3564,15 @@ __metadata:
     "@loaders.gl/schema": 3.4.4
     fast-xml-parser: ^4.1.3
   checksum: 0a100a4e6b33b3ff6f453c07c50e0b7e839ce7a01abf4cb50679249c1855427186208ebd78b56bf2866d21e7ebd88f2db2723132d485a36c453b6773f96e1d69
+  languageName: node
+  linkType: hard
+
+"@loaders.gl/zip@npm:^3.2.13":
+  version: 3.4.4
+  resolution: "@loaders.gl/zip@npm:3.4.4"
+  dependencies:
+    jszip: ^3.1.5
+  checksum: 0ecb9564b3475fc1368355d62066e12ae516f4d29adf4e17723665a26ff67f7e0898dbd432d666026e30028eeb71e1ad3125b38ef24fd690aec46f84ae4c1cad
   languageName: node
   linkType: hard
 
@@ -18796,7 +18872,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jszip@npm:^3.5.0":
+"jszip@npm:^3.1.5, jszip@npm:^3.5.0":
   version: 3.10.1
   resolution: "jszip@npm:3.10.1"
   dependencies:
