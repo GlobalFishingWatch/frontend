@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { initialize as uaInitialize, set as uaSet, pageview, event as uaEvent } from 'react-ga'
 import {
+  GOOGLE_TAG_MANAGER_ID,
   GOOGLE_UNIVERSAL_ANALYTICS_ID,
   GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS,
   IS_PRODUCTION,
@@ -21,7 +22,7 @@ export const useAnalytics = () => {
   }, [])
 
   useEffect(() => {
-    if (GOOGLE_UNIVERSAL_ANALYTICS_ID) {
+    if (GOOGLE_UNIVERSAL_ANALYTICS_ID || GOOGLE_TAG_MANAGER_ID) {
       pageview(window.location.pathname + window.location.search)
     }
   }, [])

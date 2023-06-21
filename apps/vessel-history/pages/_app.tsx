@@ -5,7 +5,6 @@ import { Provider } from 'react-redux'
 import { RecoilRoot } from 'recoil'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { pageview } from 'lib/gtm'
 import { GOOGLE_TAG_MANAGER_ID } from 'data/config'
 import store from '../store'
 import 'features/i18n/i18n'
@@ -19,14 +18,6 @@ import './styles.css'
 // }
 
 function CustomApp({ Component, pageProps }: AppProps) {
-  const router = useRouter()
-  useEffect(() => {
-    router.events.on('routeChangeComplete', pageview)
-    return () => {
-      router.events.off('routeChangeComplete', pageview)
-    }
-  }, [router.events])
-
   return (
     <RecoilRoot>
       <Provider store={store}>
