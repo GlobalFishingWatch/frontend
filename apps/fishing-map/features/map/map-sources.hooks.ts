@@ -172,23 +172,31 @@ type DataviewMetadata = {
 }
 
 // Key used to refresh activity graph only when active chunk changes and we can safely ignore the rest of the metadata
-function getGeneratorsMetadataChangeKey(generatorsMetadata: Record<string, HeatmapLayerMeta>) {
-  if (!generatorsMetadata) return ''
+function getGeneratorsMetadataChangeKey(
+  style: ExtendedStyle,
+  dataviews: UrlDataviewInstance | UrlDataviewInstance[]
+) {
+  const generatorsMetadata = style?.metadata?.generatorsMetadata
+  const dataviewIds = toArray(dataviews || []).map(({ id }) => id)
+  if (!generatorsMetadata || !dataviewIds?.length) return ''
   return Object.keys(generatorsMetadata)
-    .map((key) => {
+    .flatMap((key) => {
       const metadata = generatorsMetadata[key]
-      const timeChunks = [
-        metadata.timeChunks.activeSourceId,
-        (metadata.timeChunks.chunks || [])
-          .map(({ active, sourceId, quantizeOffset }) => [
-            active,
-            sourceId,
-            quantizeOffset,
-            (metadata.sublayers || []).map((s) => s.id).join(','),
-          ])
-          .join('|'),
-      ].join('-')
-      return [metadata.sourceLayer, timeChunks, metadata.visibleSublayers].join('_')
+      if (metadata.sublayers.some((s) => dataviewIds.includes(s.id))) {
+        const timeChunks = [
+          metadata.timeChunks.activeSourceId,
+          (metadata.timeChunks.chunks || [])
+            .map(({ active, sourceId, quantizeOffset }) => [
+              active,
+              sourceId,
+              quantizeOffset,
+              (metadata.sublayers || []).map((s) => s.id).join(','),
+            ])
+            .join('|'),
+        ].join('-')
+        return [metadata.sourceLayer, timeChunks, metadata.visibleSublayers].join('_')
+      }
+      return []
     })
     .join('+')
 }
@@ -207,7 +215,7 @@ export const useMapDataviewFeatures = (
 
   // Memoized to avoid re-runs on style changes like hovers
   const memoizedDataviews = useMemoCompare(dataviews)
-  const metadataKey = getGeneratorsMetadataChangeKey(style?.metadata?.generatorsMetadata)
+  const metadataKey = getGeneratorsMetadataChangeKey(style, memoizedDataviews)
 
   const dataviewsMetadata = useMemo(() => {
     const dataviewsArray = toArray(memoizedDataviews || [])
