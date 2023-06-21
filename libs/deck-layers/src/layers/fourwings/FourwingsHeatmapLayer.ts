@@ -58,7 +58,7 @@ export const getFillColor = (
   const filteredCellValues = aggregateCell(cell, { minFrame, maxFrame })
   // TODO add more comparison modes
   const cellValueByMode = maxBy(filteredCellValues, 'value')
-  if (!colorDomain || !colorRanges || !cellValueByMode.value) {
+  if (!colorDomain || !colorRanges || !cellValueByMode?.value) {
     return [0, 0, 0, 0]
   }
   const colorIndex = colorDomain.findIndex((d, i) => {
@@ -71,6 +71,7 @@ export const getFillColor = (
 }
 
 export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
+  static layerName = 'FourwingsHeatmapLayer'
   renderLayers() {
     const { data, maxFrame, minFrame, rows, cols, colorDomain, colorRanges } = this.props
     if (!data || !colorDomain || !colorRanges) {
@@ -88,7 +89,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         rows,
         pickable: true,
         stroked: false,
-        getFillColor: (cell) =>
+        getFillColor: (cell: Cell) =>
           getFillColor(cell, { minFrame, maxFrame, colorDomain, colorRanges }),
         updateTriggers: {
           // This tells deck.gl to recalculate fillColor on changes
