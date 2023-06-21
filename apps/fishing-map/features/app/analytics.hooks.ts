@@ -5,7 +5,8 @@ import { selectUserData } from 'features/user/user.slice'
 import { GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS, IS_PRODUCTION } from 'data/config'
 import { selectLocationCategory } from 'routes/routes.selectors'
 
-const GOOGLE_UNIVERSAL_ANALYTICS_ID = process.env.NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID
+export const GOOGLE_UNIVERSAL_ANALYTICS_ID = process.env.NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID
+export const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID || 'GTM-KK5ZFST'
 
 export enum TrackCategory {
   ActivityData = 'Activity data',
@@ -49,7 +50,7 @@ export const useAnalytics = () => {
   }, [])
 
   useEffect(() => {
-    if (GOOGLE_UNIVERSAL_ANALYTICS_ID) {
+    if (GOOGLE_UNIVERSAL_ANALYTICS_ID || GOOGLE_TAG_MANAGER_ID) {
       pageview(window.location.pathname + window.location.search)
     }
   }, [locationCategory])
