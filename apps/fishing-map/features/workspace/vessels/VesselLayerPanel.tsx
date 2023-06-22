@@ -38,6 +38,7 @@ import { selectPrivateUserGroups } from 'features/user/user.selectors'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import GFWOnly from 'features/user/GFWOnly'
 import DatasetLabel from 'features/datasets/DatasetLabel'
+import { useMapVesselLayer } from 'features/map/map-layers.hooks'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -55,6 +56,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
   const resources = useSelector(selectResources)
+  const vesselInstance = useMapVesselLayer(dataview)
   const trackResource = pickTrackResource(dataview, EndpointId.Tracks, resources)
   const infoResource: Resource<Vessel> = useSelector(selectResourceByUrl<Vessel>(infoUrl))
   const { items, attributes, listeners, setNodeRef, setActivatorNodeRef, style } =
@@ -99,12 +101,13 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     }
   }
 
-  const trackLoading = trackResource?.status === ResourceStatus.Loading
+  const vesselTrackData = vesselInstance?.dataStatus.find((l) => l.type === 'track')
+  const trackLoading = vesselTrackData?.status === ResourceStatus.Loading
   const infoLoading = infoResource?.status === ResourceStatus.Loading
   const loading = trackLoading || infoLoading
 
   const infoError = infoResource?.status === ResourceStatus.Error
-  const trackError = trackResource?.status === ResourceStatus.Error
+  const trackError = vesselTrackData?.status === ResourceStatus.Error
 
   const vesselLabel = infoResource?.data ? getVesselLabel(infoResource.data) : ''
   const vesselId =
