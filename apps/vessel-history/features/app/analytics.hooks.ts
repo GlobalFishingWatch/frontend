@@ -28,10 +28,12 @@ export const useAnalytics = () => {
   }, [])
   const { user, logged } = useUser()
   const [trackLogin, setTrackLogin] = useState(true)
+  const [trackGTMLogin, setTrackGTMLogin] = useState(true)
 
   // Set to track login only when the user has logged out
   useEffect(() => {
     !logged && setTrackLogin(true)
+    !logged && setTrackGTMLogin(true)
   }, [logged])
 
   useEffect(() => {
@@ -59,4 +61,19 @@ export const useAnalytics = () => {
       setTrackLogin(false)
     }
   }, [user, trackLogin])
+
+  useEffect(() => {
+    if (user && GOOGLE_TAG_MANAGER_ID && trackGTMLogin && window && window['dataLayer']) {
+      const dataLayer = window['dataLayer'] || []
+      dataLayer.push({
+        event: 'userData',
+        user_country: user.country ?? '',
+        user_group: user.groups ?? '',
+        user_org_type: user.organizationType ?? '',
+        user_organization: user.organization ?? '',
+        user_language: user.language ?? '',
+      })
+      setTrackGTMLogin(false)
+    }
+  }, [user, trackGTMLogin])
 }
