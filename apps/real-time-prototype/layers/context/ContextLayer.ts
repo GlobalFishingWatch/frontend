@@ -39,7 +39,7 @@ export class ContextLayer extends CompositeLayer<ContextLayerProps> {
         getLineColor: CONTEXT_LAYERS_OBJECT[this.props.id].lineColor,
         getFillColor: [0, 0, 0, 0],
         lineWidthMinPixels: 1,
-        pickable: true,
+        // pickable: true,
         onDataLoad: this.props.onDataLoad,
         // We need binary to be false to avoid
         // selecting too many objects

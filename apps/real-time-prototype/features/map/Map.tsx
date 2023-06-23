@@ -5,6 +5,7 @@ import { useBasemapLayer } from 'layers/basemap/basemap.hooks'
 import { useAtom } from 'jotai'
 import { useContextsLayer } from 'layers/context/context.hooks'
 import { useLatestPositionsLayer } from 'layers/latest-positions/latest-positions.hooks'
+import { useTracksLayer } from 'layers/tracks/tracks.hooks'
 import { useURLViewport, useViewport } from 'features/map/map-viewport.hooks'
 import { hoveredFeaturesAtom, clickedFeaturesAtom } from 'features/map/map-picking.hooks'
 import { zIndexSortedArray } from 'utils/layers'
@@ -18,12 +19,13 @@ const MapWrapper = (): React.ReactElement => {
   const deckRef = useRef<DeckGLRef>(null)
   const basemapLayer = useBasemapLayer()
   const contextLayer = useContextsLayer()
+  const tracksLayer = useTracksLayer()
   const latestPositionsLayer = useLatestPositionsLayer()
   const [hoveredFeatures, setHoveredFeatures] = useAtom(hoveredFeaturesAtom)
   const [clickedFeatures, setClickedFeatures] = useAtom(clickedFeaturesAtom)
 
   const layers = useMemo(
-    () => zIndexSortedArray([basemapLayer, latestPositionsLayer, contextLayer]),
+    () => zIndexSortedArray([basemapLayer, tracksLayer, latestPositionsLayer, contextLayer]),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [contextLayer, basemapLayer]
   )
@@ -52,49 +54,38 @@ const MapWrapper = (): React.ReactElement => {
     [setHoveredFeatures, hoveredFeatures]
   )
 
-  const InfoTooltip = ({ features }) => (
-    <div
-      style={{
-        position: 'absolute',
-        color: '#ededed',
-        zIndex: 1,
-        pointerEvents: 'none',
-        left: features[0].x + 20,
-        top: features[0].y,
-        backgroundColor: '#082B37',
-        border: features.length ? '1px solid #ededed' : 'none',
-        padding: features.length ? '3px' : '0px',
-      }}
-    >
-      {features.map((f) => {
-        if (!f.object) return null
-        return (
-          <div key={f.object.mmsi} className={styles.vesselRow}>
-            <div>MMSI: {f.object.mmsi}</div>
-            <div>TIME: {new Date(f.object.timestamp * 1000).toLocaleString()}</div>
-            <div>SPEED: {parseInt(f.object.speed)} knots</div>
-          </div>
-        )
-      })}
-    </div>
-  )
-
-  const AnalisisTooltip = ({ features }) => (
-    <div
-      style={{
-        position: 'absolute',
-        zIndex: 1,
-        pointerEvents: 'none',
-        left: features[0].x,
-        top: features[0].y,
-        backgroundColor: 'white',
-      }}
-    >
-      {features.map((f) => (
-        <p key={f.object?.properties?.value}>{f.object?.properties?.value}</p>
-      ))}
-    </div>
-  )
+  const InfoTooltip = ({ features }) => {
+    const vessels = features
+      .filter((f) => f.object?.mmsi)
+      .sort((a, b) => b.object?.timestamp - a.object?.timestamp)
+    if (vessels.length > 0) {
+      return (
+        <div
+          style={{
+            font: 'var(--font-S)',
+            position: 'absolute',
+            color: '#ededed',
+            zIndex: 1,
+            pointerEvents: 'none',
+            left: features[0].x + 20,
+            top: features[0].y,
+            backgroundColor: '#082B37',
+            padding: '5px',
+          }}
+        >
+          {vessels.length > 3 && <div className={styles.vesselRow}>Latest vessels</div>}
+          {vessels.slice(0, 3).map((f) => (
+            <div key={f.object.mmsi} className={styles.vesselRow}>
+              <div>MMSI: {f.object.mmsi}</div>
+              <div>TIME: {new Date(f.object.timestamp * 1000).toLocaleString()}</div>
+              <div>SPEED: {parseInt(f.object.speed)} knots</div>
+            </div>
+          ))}
+          {vessels.length > 3 && <div className={styles.vesselRow}>...</div>}
+        </div>
+      )
+    }
+  }
 
   return (
     <Fragment>
@@ -115,9 +106,6 @@ const MapWrapper = (): React.ReactElement => {
         _typedArrayManagerProps={{ overAlloc: 1, poolSize: 0 }}
       />
       {hoveredFeatures && hoveredFeatures.length > 0 && <InfoTooltip features={hoveredFeatures} />}
-      {clickedFeatures && clickedFeatures.length > 0 && (
-        <AnalisisTooltip features={clickedFeatures} />
-      )}
     </Fragment>
   )
 }

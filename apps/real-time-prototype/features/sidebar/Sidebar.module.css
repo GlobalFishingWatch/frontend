@@ -36,3 +36,13 @@
   border-radius: 0.5rem;
   margin-right: 0.5rem;
 }
+
+.search {
+  width: 100%;
+  display: flex;
+  gap: 1rem;
+}
+
+.search button {
+  min-width: fit-content;
+}

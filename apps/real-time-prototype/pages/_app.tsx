@@ -6,6 +6,7 @@ import { RecoilURLSyncJSONNext } from 'recoil-sync-next'
 import { RecoilRoot } from 'recoil'
 import dynamic from 'next/dynamic'
 import { SplitView } from '@globalfishingwatch/ui-components'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import styles from './App.module.css'
 
 import './styles.css'
@@ -45,8 +46,16 @@ const Map = dynamic(() => import(/* webpackChunkName: "Map" */ 'features/map/Map
 function CustomApp({ Component, pageProps }: AppProps) {
   const [showFps, setShowFps] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  useEffect(() => {
+    GFWAPI.login({}).then((r) => {
+      debugger
+    })
+    // fetch(`${API_BASE}/last-update`)
+    //   .then((r) => r.json())
+    //   .then((d) => console.log(d))
 
-  useEffect(() => setShowFps(true), [])
+    setShowFps(true)
+  }, [])
 
   const onToggle = useCallback(() => {
     setSidebarOpen(!sidebarOpen)

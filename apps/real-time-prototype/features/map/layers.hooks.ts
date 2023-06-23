@@ -2,7 +2,7 @@ import { mixed } from '@recoiljs/refine'
 import { atom, useRecoilState } from 'recoil'
 import { urlSyncEffect } from 'recoil-sync'
 
-export type MapLayerType = 'contexts' | 'basemap' | 'latest-positions'
+export type MapLayerType = 'contexts' | 'basemap' | 'latest-positions' | 'tracks'
 
 export type MapLayer = {
   id: MapLayerType
@@ -16,6 +16,7 @@ export const mapLayersAtom = atom<MapLayer[]>({
     { id: 'contexts', visible: true },
     { id: 'basemap', visible: true },
     { id: 'latest-positions', visible: true },
+    { id: 'tracks', visible: true },
   ],
   effects: [urlSyncEffect({ refine: mixed(), history: 'replace' })],
 })

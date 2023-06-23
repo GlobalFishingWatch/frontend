@@ -2565,7 +2565,6 @@ __metadata:
     "@loaders.gl/core": ^3.2.13
     "@loaders.gl/csv": ^3.2.13
     "@loaders.gl/loader-utils": ^3.2.13
-    "@loaders.gl/zip": ^3.2.13
     "@nebula.gl/edit-modes": ^1.0.4
     "@nebula.gl/layers": ^1.0.4
     "@next/eslint-plugin-next": 13.1.6
@@ -2600,6 +2599,7 @@ __metadata:
     serve: 14.2.0
     simple-statistics: ^7.8.2
     source-map-explorer: 2.5.3
+    store: 2.0.12
     stylelint: ^14.16.1
     stylelint-config-css-modules: ^2.3.0
     stylelint-config-prettier: ^9.0.4
@@ -3564,15 +3564,6 @@ __metadata:
     "@loaders.gl/schema": 3.4.4
     fast-xml-parser: ^4.1.3
   checksum: 0a100a4e6b33b3ff6f453c07c50e0b7e839ce7a01abf4cb50679249c1855427186208ebd78b56bf2866d21e7ebd88f2db2723132d485a36c453b6773f96e1d69
-  languageName: node
-  linkType: hard
-
-"@loaders.gl/zip@npm:^3.2.13":
-  version: 3.4.4
-  resolution: "@loaders.gl/zip@npm:3.4.4"
-  dependencies:
-    jszip: ^3.1.5
-  checksum: 0ecb9564b3475fc1368355d62066e12ae516f4d29adf4e17723665a26ff67f7e0898dbd432d666026e30028eeb71e1ad3125b38ef24fd690aec46f84ae4c1cad
   languageName: node
   linkType: hard
 
@@ -18872,7 +18863,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jszip@npm:^3.1.5, jszip@npm:^3.5.0":
+"jszip@npm:^3.5.0":
   version: 3.10.1
   resolution: "jszip@npm:3.10.1"
   dependencies:
@@ -25195,6 +25186,13 @@ __metadata:
   version: 1.1.1
   resolution: "stealthy-require@npm:1.1.1"
   checksum: 6805b857a9f3a6a1079fc6652278038b81011f2a5b22cbd559f71a6c02087e6f1df941eb10163e3fdc5391ab5807aa46758d4258547c1f5ede31e6d9bfda8dd3
+  languageName: node
+  linkType: hard
+
+"store@npm:2.0.12":
+  version: 2.0.12
+  resolution: "store@npm:2.0.12"
+  checksum: 4e0fe69f71dc3c99af1b87e87dcb0c81fc979bd38abbcdf66d5705f1c44e6fd5e043056288efd695926c75419adc356873e6792d9b024085a8db51dbdda899ea
   languageName: node
   linkType: hard
 
