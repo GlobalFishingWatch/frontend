@@ -36,7 +36,7 @@
         "commands": [
           "nx clean-locales fishing-map",
           "nx serve i18n-labels",
-          "nx serve fishing-map"
+          "nx serve fishing-map --hostname=0.0.0.0"
         ],
         "parallel": true
       }

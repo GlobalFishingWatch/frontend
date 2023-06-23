@@ -107,13 +107,6 @@ export type QueryParams = Partial<WorkspaceViewport> &
   WorkspaceState &
   RedirectParam
 
-export type MapCoordinates = {
-  latitude: number
-  longitude: number
-  zoom: number
-  transitionDuration?: number
-}
-
 export enum TimebarVisualisations {
   HeatmapActivity = 'heatmap',
   HeatmapDetections = 'heatmapDetections',
@@ -131,3 +124,16 @@ export enum TimebarGraphs {
 
 // minX, minY, maxX, maxY
 export type Bbox = [number, number, number, number]
+
+export type CoordinatePosition = {
+  latitude: number
+  longitude: number
+}
+
+export interface MapCoordinates extends CoordinatePosition {
+  zoom: number
+  transitionDuration?: number
+}
+export interface TrackPosition extends CoordinatePosition {
+  timestamp: number
+}

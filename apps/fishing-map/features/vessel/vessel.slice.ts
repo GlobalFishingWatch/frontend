@@ -9,7 +9,9 @@ import {
   DatasetTypes,
   EventType,
   Vessel,
+  ApiEvents,
 } from '@globalfishingwatch/api-types'
+import { parseEvent } from '@globalfishingwatch/dataviews-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
@@ -121,7 +123,12 @@ export const fetchVesselEventsThunk = createAsyncThunk(
         })
       )
       return eventPromises.flatMap((res) => {
-        return res.status === 'fulfilled' ? res.value.entries : []
+        return res.status === 'fulfilled'
+          ? (res.value as ApiEvents).entries.map((event, index) => {
+              const eventKey = `${vesselId}-${event.type}-${index}`
+              return parseEvent(event, eventKey)
+            })
+          : []
       })
     } catch (e: any) {
       console.warn(e)

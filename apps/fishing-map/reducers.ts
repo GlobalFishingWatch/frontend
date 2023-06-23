@@ -13,6 +13,7 @@ import editorReducer from 'features/editor/editor.slice'
 import hintsReducer from 'features/help/hints.slice'
 import mapReducer from 'features/map/map.slice'
 import modalsReducer from 'features/modals/modals.slice'
+import regionsReducer from 'features/regions/regions.slice'
 import reportReducer from 'features/reports/report.slice'
 import reportsReducer from 'features/reports/reports.slice'
 import resourcesReducer from 'features/resources/resources.slice'
@@ -22,6 +23,7 @@ import timebarReducer from 'features/timebar/timebar.slice'
 import titleReducer from 'routes/title.reducer'
 import userReducer from 'features/user/user.slice'
 import vesselReducer from 'features/vessel/vessel.slice'
+import voyagesReducer from 'features/vessel/voyages/voyages.slice'
 import vesselGroupsReducer from 'features/vessel-groups/vessel-groups.slice'
 import workspaceReducer from 'features/workspace/workspace.slice'
 import workspacesReducer from 'features/workspaces-list/workspaces-list.slice'
@@ -41,6 +43,7 @@ export const rootReducer = combineReducers({
   location: connectedRoutes.reducer,
   map: mapReducer,
   modals: modalsReducer,
+  regions: regionsReducer,
   report: reportReducer,
   reports: reportsReducer,
   resources: resourcesReducer,
@@ -51,6 +54,7 @@ export const rootReducer = combineReducers({
   user: userReducer,
   vessel: vesselReducer,
   vesselGroups: vesselGroupsReducer,
+  voyages: voyagesReducer,
   workspace: workspaceReducer,
   workspaces: workspacesReducer,
 })

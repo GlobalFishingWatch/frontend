@@ -3,6 +3,7 @@ import { selectVesselEventsFilteredByTimerange } from 'features/vessel/vessel.se
 
 export const VesselActivityList = () => {
   const events = useSelector(selectVesselEventsFilteredByTimerange)
+  console.log(events)
   if (!events?.length) return null
   return (
     <ul>

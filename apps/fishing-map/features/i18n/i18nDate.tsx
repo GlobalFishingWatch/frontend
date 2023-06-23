@@ -6,7 +6,7 @@ import { getUTCDateTime } from 'utils/dates'
 import i18n from './i18n'
 
 type Dates = {
-  date: string
+  date: string | number
   format?: DateTimeFormatOptions
 }
 
@@ -36,9 +36,13 @@ export const useI18nDate = (date: string, format = DateTime.DATE_MED) => {
   const { i18n } = useTranslation()
   return formatI18nDate(date, { format, locale: i18n.language as Locale })
 }
+export const useI18nDate2 = (date: string | number, format = DateTime.DATE_MED) => {
+  const { i18n } = useTranslation()
+  return formatI18nDate(date, { format, locale: i18n.language as Locale })
+}
 
 const I18nDate = ({ date, format = DateTime.DATE_MED }: Dates) => {
-  const dateFormatted = useI18nDate(date, format)
+  const dateFormatted = useI18nDate2(date, format)
   return <Fragment>{dateFormatted}</Fragment>
 }
 

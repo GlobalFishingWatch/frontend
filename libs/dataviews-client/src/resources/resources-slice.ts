@@ -37,7 +37,7 @@ export const getTracksChunkSetId = (datasetConfig: DataviewDatasetConfig) => {
   return chunkSetId
 }
 
-const parseEvent = (event: ApiEvent, eventKey: string): ApiEvent => {
+export const parseEvent = (event: ApiEvent, eventKey: string): ApiEvent => {
   return {
     ...event,
     key: eventKey,

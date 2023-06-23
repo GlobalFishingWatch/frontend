@@ -2,10 +2,12 @@ import { EventType } from '@globalfishingwatch/api-types'
 
 export const IDENTITY_FIELD_GROUPS = [
   ['shipname', 'flag'],
-  ['vesselType', 'geartype'],
-  ['mmsi', 'imo', 'callsign'],
+  ['shiptype', 'geartype'],
+  ['ssvid', 'imo', 'callsign'],
+  ['owner'],
+  ['lengthM', 'tonnageGt'],
 ]
-
+export const IDENTITY_FIELDS_INFO_AVAILABLE = ['geartype', 'shiptype']
 export const EVENTS_INCLUDES_BASE = ['id', 'type', 'start', 'end', 'position']
 export const EVENTS_INCLUDES_REGIONS = ['regions.mpa', 'regions.eez', 'regions.fao', 'regions.rfmo']
 
@@ -17,16 +19,17 @@ export const EVENTS_CONFIG_BY_EVENT_TYPE: EventConfigByType = {
     params: {},
   },
   loitering: {
-    includes: [...EVENTS_INCLUDES_BASE],
+    includes: [...EVENTS_INCLUDES_BASE, ...EVENTS_INCLUDES_REGIONS],
     params: {},
   },
   gap: {
-    includes: [...EVENTS_INCLUDES_BASE],
+    includes: [...EVENTS_INCLUDES_BASE, ...EVENTS_INCLUDES_REGIONS],
     params: {},
   },
   port_visit: {
     includes: [
       ...EVENTS_INCLUDES_BASE,
+      ...EVENTS_INCLUDES_REGIONS,
       'port_visit.intermediateAnchorage.name',
       'port_visit.intermediateAnchorage.flag',
     ],
@@ -37,6 +40,7 @@ export const EVENTS_CONFIG_BY_EVENT_TYPE: EventConfigByType = {
   encounter: {
     includes: [
       ...EVENTS_INCLUDES_BASE,
+      ...EVENTS_INCLUDES_REGIONS,
       'encounter.mainVesselAuthorizationStatus',
       'encounter.encounteredVesselAuthorizationStatus',
       'encounter.vessel.id',

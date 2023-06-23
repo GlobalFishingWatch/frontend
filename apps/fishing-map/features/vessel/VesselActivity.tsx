@@ -1,12 +1,18 @@
 import { useTranslation } from 'react-i18next'
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import { Button } from '@globalfishingwatch/ui-components'
 import { VesselActivitySummary } from 'features/vessel/VesselActivitySummary'
 import { VesselActivityList } from 'features/vessel/VesselActivityList'
+import { ActivityByType } from 'features/vessel/activity/activity-by-type/activity-by-type'
+import ActivityByVoyage from 'features/vessel/activity/activity-by-voyage/activity-by-voyage'
 import styles from './VesselActivity.module.css'
+
+type activityModeType = 'voyages' | 'type'
 
 const VesselActivity = () => {
   const { t } = useTranslation()
+  const [activityMode, setActivityMode] = useState<activityModeType>('type')
+
   return (
     <Fragment>
       <div className={styles.summaryContainer}>
@@ -14,12 +20,24 @@ const VesselActivity = () => {
         <VesselActivitySummary />
       </div>
       <div className={styles.activityTitleContainer}>
-        <label>{t('vessel.activityByVoyages', 'Timeline by voyages')}</label>
-        <Button className={styles.actionButton}>
-          {t('vessel.activityGroupByType', 'Group by type')}
+        <label>
+          {activityMode === 'voyages'
+            ? t('vessel.activityByVoyages', 'Timeline by voyages')
+            : t('vessel.activityGroupByType', 'Group by type')}
+        </label>
+        <Button
+          className={styles.actionButton}
+          onClick={(e) =>
+            activityMode === 'type' ? setActivityMode('voyages') : setActivityMode('type')
+          }
+        >
+          {activityMode === 'voyages'
+            ? t('vessel.activityGroupByType', 'Group by type')
+            : t('vessel.activityByVoyages', 'Timeline by voyages')}
         </Button>
       </div>
-      <VesselActivityList />
+      {activityMode === 'type' && <ActivityByType onMoveToMap={function (): void {}} />}
+      {activityMode === 'voyages' && <ActivityByVoyage onMoveToMap={function (): void {}} />}
     </Fragment>
   )
 }

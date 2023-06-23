@@ -65,6 +65,8 @@ export const DEFAULT_VIEWPORT = {
   longitude: 26,
 }
 
+export const DEFAULT_EMPTY_VALUE = ' --- '
+
 export const DEFAULT_TIME_RANGE = {
   start: getUTCDateTime(LAST_DATA_UPDATE)?.minus({ months: 3 }).toISO() as string,
   end: LAST_DATA_UPDATE,

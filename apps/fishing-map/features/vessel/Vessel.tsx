@@ -15,6 +15,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import VesselSummary from 'features/vessel/VesselSummary'
 import VesselActivity from 'features/vessel/VesselActivity'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import VesselIdentity from './VesselIdentity'
 
 type VesselSection = 'activity' | 'relatedVessels' | 'areas'
@@ -31,6 +32,7 @@ const VesselDetail = () => {
   const eventsError = useSelector(selectVesselEventsError)
 
   useEffect(() => {
+    dispatch(fetchRegionsThunk())
     if (
       infoStatus === AsyncReducerStatus.Idle ||
       (infoStatus === AsyncReducerStatus.Error && infoError?.status === 401)

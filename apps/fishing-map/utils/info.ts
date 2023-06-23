@@ -33,6 +33,15 @@ export const formatInfoField = (fieldValue: string, type: string, translationFn 
   return EMPTY_FIELD_PLACEHOLDER
 }
 
+export const formatInfoFieldAdvanced = (vessel: Vessel, field: string, translationFn = t) => {
+  if (field.includes('.')) {
+    const [first, second] = field.split('.')
+    return formatInfoField(vessel?.[first]?.[0]?.[second], second, translationFn)
+  } else {
+    return formatInfoField(vessel?.[field], field, translationFn)
+  }
+}
+
 export const formatNumber = (num: string | number, maximumFractionDigits?: number) => {
   const number = typeof num === 'string' ? parseFloat(num) : num
   return number.toLocaleString(undefined, {

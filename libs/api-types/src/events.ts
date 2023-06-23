@@ -77,6 +77,8 @@ export enum AuthorizationOptions {
   Unmatched = 'unmatched',
 }
 export interface EncounterEvent<Vessel = EventVessel> {
+  encounteredVesselAuthorizationStatus: JSX.Element
+  mainVesselAuthorizationStatus: JSX.Element
   /**
    * Median distance to the other vessel across the encounter, in kilometers
    */

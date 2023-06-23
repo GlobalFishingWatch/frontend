@@ -2,18 +2,22 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Button, Icon, IconButton, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
-import { formatInfoField } from 'utils/info'
-import { selectVesselInfoData } from 'features/vessel/vessel.slice'
+import { formatInfoFieldAdvanced } from 'utils/info'
 import I18nDate from 'features/i18n/i18nDate'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
 import { Locale } from 'types'
-import { IDENTITY_FIELD_GROUPS } from 'features/vessel/vessel.config'
+import {
+  IDENTITY_FIELDS_INFO_AVAILABLE,
+  IDENTITY_FIELD_GROUPS,
+} from 'features/vessel/vessel.config'
+import DataAndTerminology from 'features/vessel/data-and-terminology/DataAndTerminology'
+import { selectVesselInfoDataMerged } from 'features/vessel/vessel.selectors'
 import styles from './VesselIdentity.module.css'
 
 const VesselIdentity = () => {
-  const { t, i18n } = useTranslation()
-  const vessel = useSelector(selectVesselInfoData)
-
+  const { t, i18n } = useTranslation(['translations', 'dataTerminology'])
+  const vessel = useSelector(selectVesselInfoDataMerged)
+  console.log(vessel)
   return (
     <div className={styles.container}>
       <div className={styles.titleContainer}>
@@ -47,8 +51,19 @@ const VesselIdentity = () => {
             {/* TODO: make fields more dynamic to account for VMS */}
             {fieldGroup.map((field) => (
               <div key={field}>
-                <label>{t(`vessel.${field}` as any, field)}</label>
-                {formatInfoField(vessel?.[field], field)}
+                <label>
+                  {t(`vessel.${field}` as any, field)}
+                  {IDENTITY_FIELDS_INFO_AVAILABLE.includes(field) && (
+                    <DataAndTerminology
+                      size="tiny"
+                      type="default"
+                      title={t(`vessel.${field}` as any, field)}
+                    >
+                      {t(`dataTerminology:vessel.${field}`, `${field} field description`)}
+                    </DataAndTerminology>
+                  )}
+                </label>
+                {formatInfoFieldAdvanced(vessel, field)}
               </div>
             ))}
           </div>

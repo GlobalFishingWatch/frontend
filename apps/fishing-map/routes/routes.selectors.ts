@@ -122,6 +122,11 @@ export const selectUrlStartQuery = selectQueryParam<string>('start')
 export const selectUrlEndQuery = selectQueryParam<string>('end')
 export const selectVesselDatasetId = selectQueryParam<string>('vesselDatasetId')
 
+export const selectFullVesselId = createSelector(
+  [selectVesselDatasetId, selectVesselId],
+  (datasetId, vesselId) => vesselId + datasetId
+)
+
 export const selectUrlDataviewInstances =
   selectQueryParam<UrlDataviewInstance[]>('dataviewInstances')
 

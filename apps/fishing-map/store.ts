@@ -73,6 +73,7 @@ export type AppThunk<ReturnType = void> = ThunkAction<
 //   const store = useMemo(() => initializeStore(initialState), [initialState])
 //   return store
 // }
+export type RootState = ReturnType<typeof rootReducer>
 
 export const wrapper = createWrapper<AppStore>(makeStore, {
   debug: false,

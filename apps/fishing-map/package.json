@@ -61,6 +61,8 @@
     "react-ga": "3.3.1",
     "react-i18next": "12.3.0 ",
     "react-sticky-el": "2.0.9",
+    "react-virtualized-auto-sizer": "^1.0.7",
+    "react-window": "^1.8.8",
     "recharts": "2.5.0",
     "recoil": "0.7.6",
     "shpjs": "4.0.4",
