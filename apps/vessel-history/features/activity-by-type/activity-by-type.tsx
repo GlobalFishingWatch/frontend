@@ -87,7 +87,6 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
     },
     [events]
   )
-  console.log(events)
 
   const displayOptions = { displayPortVisitsAsOneEvent: true }
 
@@ -135,7 +134,6 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
               >
                 {({ index, style }) => {
                   const event = events[index]
-                  console.log(event)
                   if (event.group && (event.type !== EventTypes.Gap || !IS_STANDALONE_APP)) {
                     return (
                       <div style={style}>
