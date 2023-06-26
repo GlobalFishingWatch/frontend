@@ -174,7 +174,7 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
                           <span className={styles.rowText}>
                             {formatInfoField(event.encounter?.vessel?.name, 'name')}
                           </span>
-                          {(event.vessel as ExtendedEventVessel).dataset && (
+                          {(event.encounter?.vessel as ExtendedEventVessel).dataset && (
                             <IconButton
                               icon={donorInWorkspace ? 'pin-filled' : 'pin'}
                               style={{
