@@ -2432,7 +2432,7 @@ __metadata:
     react-csv: ^2.2.2
     react-dom: ^18.2.0
     react-dropzone: 14.2.3
-    react-ga: 3.3.1
+    react-ga4: 2.1.0
     react-i18next: 11.18.6
     react-sticky-el: 2.0.9
     react-test-renderer: 18.2.0
@@ -22873,6 +22873,13 @@ __metadata:
     react: ">=16.8.1"
     react-dom: ">=16.8.1"
   checksum: 9ba94152b32b7a3d9968032fd093f3755babcbe76642d465b4058d3f127d3288ae823b5ff165012616dfc84ef65baa6857cf816447a3f937785792e94304c29f
+  languageName: node
+  linkType: hard
+
+"react-ga4@npm:2.1.0":
+  version: 2.1.0
+  resolution: "react-ga4@npm:2.1.0"
+  checksum: f7fb41141418d4ad14756f1126a1e9958db37d4d84ae6cd798043dc03a390b6dba74d69311af0349f0b9580a43bda8930138194ccc29c4100efe446e2d6eb057
   languageName: node
   linkType: hard
 
