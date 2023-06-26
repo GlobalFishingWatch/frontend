@@ -1,14 +1,11 @@
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { initialize as uaInitialize, set as uaSet, event as uaEvent, pageview } from 'react-ga'
+import ReactGA from 'react-ga4'
 import { selectUserData } from 'features/user/user.slice'
-import {
-  GOOGLE_TAG_MANAGER_ID,
-  GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS,
-  GOOGLE_UNIVERSAL_ANALYTICS_ID,
-  IS_PRODUCTION,
-} from 'data/config'
+import { GOOGLE_TAG_MANAGER_ID, GOOGLE_UNIVERSAL_ANALYTICS_ID, IS_PRODUCTION } from 'data/config'
 import { selectLocationCategory } from 'routes/routes.selectors'
+
+const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS = IS_PRODUCTION ? {} : { testMode: true }
 
 export enum TrackCategory {
   ActivityData = 'Activity data',
@@ -32,7 +29,7 @@ export type TrackEventParams = {
   value?: any
 }
 export const trackEvent = ({ category, action, label, value }: TrackEventParams) => {
-  uaEvent({ category, action, label, value })
+  ReactGA.event({ category, action, label, value })
 }
 
 export const useAnalytics = () => {
@@ -41,32 +38,30 @@ export const useAnalytics = () => {
 
   useEffect(() => {
     if (GOOGLE_UNIVERSAL_ANALYTICS_ID) {
-      uaInitialize(GOOGLE_UNIVERSAL_ANALYTICS_ID, {
-        ...GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS,
-      })
+      ReactGA.initialize(GOOGLE_UNIVERSAL_ANALYTICS_ID, GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS)
       // Uncomment to prevent sending hits in non-production envs
       if (!IS_PRODUCTION) {
-        uaSet({ sendHitTask: null })
+        ReactGA.set({ sendHitTask: null })
       }
     }
   }, [])
 
   useEffect(() => {
     if (GOOGLE_UNIVERSAL_ANALYTICS_ID || GOOGLE_TAG_MANAGER_ID) {
-      pageview(window.location.pathname + window.location.search)
+      ReactGA.send({ hitType: 'pageview', page: window.location.pathname + window.location.search })
     }
   }, [locationCategory])
 
   useEffect(() => {
     if (userData && GOOGLE_UNIVERSAL_ANALYTICS_ID) {
-      uaSet({
+      ReactGA.set({
         dimension3: `${JSON.stringify(userData.groups)}` ?? '',
         dimension4: userData.organizationType ?? '',
         dimension5: userData.organization ?? '',
         dimension6: userData.country ?? '',
         dimension7: userData.language ?? '',
       })
-      uaSet({
+      ReactGA.set({
         userProperties: {
           userGroup: userData.groups,
           userOrgType: userData.organizationType,
@@ -75,7 +70,7 @@ export const useAnalytics = () => {
           userLanguage: userData.language,
         },
       })
-      uaEvent({
+      ReactGA.event({
         category: 'User',
         action: 'Login',
       })
