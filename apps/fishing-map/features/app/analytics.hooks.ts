@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import ReactGA from 'react-ga4'
 import { selectUserData } from 'features/user/user.slice'
-import { GOOGLE_TAG_MANAGER_ID, GOOGLE_UNIVERSAL_ANALYTICS_ID, IS_PRODUCTION } from 'data/config'
+import { GOOGLE_TAG_MANAGER_ID, GOOGLE_MEASUREMENT_ID, IS_PRODUCTION } from 'data/config'
 import { selectLocationCategory } from 'routes/routes.selectors'
 
 const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS = IS_PRODUCTION ? {} : { testMode: true }
@@ -37,8 +37,8 @@ export const useAnalytics = () => {
   const locationCategory = useSelector(selectLocationCategory)
 
   useEffect(() => {
-    if (GOOGLE_UNIVERSAL_ANALYTICS_ID) {
-      ReactGA.initialize(GOOGLE_UNIVERSAL_ANALYTICS_ID, GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS)
+    if (GOOGLE_MEASUREMENT_ID) {
+      ReactGA.initialize(GOOGLE_MEASUREMENT_ID, GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS)
       // Uncomment to prevent sending hits in non-production envs
       if (!IS_PRODUCTION) {
         ReactGA.set({ sendHitTask: null })
@@ -47,13 +47,13 @@ export const useAnalytics = () => {
   }, [])
 
   useEffect(() => {
-    if (GOOGLE_UNIVERSAL_ANALYTICS_ID || GOOGLE_TAG_MANAGER_ID) {
+    if (GOOGLE_MEASUREMENT_ID || GOOGLE_TAG_MANAGER_ID) {
       ReactGA.send({ hitType: 'pageview', page: window.location.pathname + window.location.search })
     }
   }, [locationCategory])
 
   useEffect(() => {
-    if (userData && GOOGLE_UNIVERSAL_ANALYTICS_ID) {
+    if (userData && GOOGLE_MEASUREMENT_ID) {
       ReactGA.set({
         dimension3: `${JSON.stringify(userData.groups)}` ?? '',
         dimension4: userData.organizationType ?? '',
