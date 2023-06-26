@@ -111,10 +111,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     }
   }
 
-  getColorDomain = () => {
-    return this.state.colorDomain
-  }
-
   updateColorDomain = () => {
     requestAnimationFrame(() => {
       this.setState({ colorDomain: this.calculateColorDomain() })
@@ -263,5 +259,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       return cells
     }
     return []
+  }
+
+  getColorDomain = () => {
+    return this.state.colorDomain
   }
 }
