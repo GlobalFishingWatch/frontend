@@ -81,4 +81,18 @@ export const useAnalytics = () => {
       })
     }
   }, [userData])
+
+  useEffect(() => {
+    if (userData && GOOGLE_TAG_MANAGER_ID && typeof window !== 'undefined' && window['dataLayer']) {
+      const dataLayer = window['dataLayer'] || []
+      dataLayer.push({
+        event: 'userData',
+        user_country: userData.country ?? '',
+        user_group: userData.groups ?? '',
+        user_org_type: userData.organizationType ?? '',
+        user_organization: userData.organization ?? '',
+        user_language: userData.language ?? '',
+      })
+    }
+  }, [userData])
 }
