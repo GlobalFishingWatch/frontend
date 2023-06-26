@@ -17,7 +17,7 @@ export const latestPositionsAtom = atom<LatestPositionsAtom>({
   },
 })
 
-export function useLatestPositionsLayer() {
+export function useLatestPositionsLayer({ token, lastUpdate }) {
   const [{ instance }, updateAtom] = useRecoilState(latestPositionsAtom)
   const { viewState } = useViewport()
   const [mapLayers] = useMapLayers()
@@ -34,16 +34,18 @@ export function useLatestPositionsLayer() {
   }, [setAtomProperty])
 
   useEffect(() => {
-    if (layerVisible) {
+    if (layerVisible && lastUpdate) {
       const latestPositions = new LatestPositions({
         onDataLoad: onDataLoad,
         zoom: roundedZoom,
+        token,
+        lastUpdate,
       })
       setAtomProperty({ instance: latestPositions })
     } else {
       setAtomProperty({ instance: undefined, loaded: false })
     }
-  }, [layerVisible, updateAtom, onDataLoad, setAtomProperty, roundedZoom])
+  }, [layerVisible, updateAtom, onDataLoad, setAtomProperty, roundedZoom, token, lastUpdate])
   return instance
 }
 

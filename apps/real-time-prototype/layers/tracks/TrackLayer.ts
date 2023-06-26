@@ -1,7 +1,11 @@
 import { CompositeLayer } from '@deck.gl/core/typed'
 import { GeoJsonLayer, GeoJsonLayerProps } from '@deck.gl/layers/typed'
+import { API_BASE } from 'data/config'
+import { GFWLayerProps } from 'features/map/Map'
 
-export class TrackLayer extends CompositeLayer<GeoJsonLayerProps> {
+type TrackLayerProps = GeoJsonLayerProps & GFWLayerProps
+
+export class TrackLayer extends CompositeLayer<TrackLayerProps> {
   static layerName = 'TrackLayer'
   static defaultProps = {}
 
@@ -11,7 +15,15 @@ export class TrackLayer extends CompositeLayer<GeoJsonLayerProps> {
     return [
       new GeoJsonLayer({
         id: `track-layer-${this.props.id}`,
-        data: `./positions/track.geojson`,
+        data: `${API_BASE}/realtime-tracks/${this.props.id}?start-date=${this.props.lastUpdate}&format=lines`,
+        loadOptions: {
+          fetch: {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${this.props.token}`,
+            },
+          },
+        },
         getLineColor: [255, 255, 255, 255],
         getFillColor: [0, 0, 0, 0],
         lineWidthMinPixels: 1,

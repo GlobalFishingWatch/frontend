@@ -3,12 +3,13 @@ import { AppProps } from 'next/app'
 import { FpsView } from 'react-fps'
 import MemoryStatsComponent from 'next-react-memory-stats'
 import { RecoilURLSyncJSONNext } from 'recoil-sync-next'
-import { RecoilRoot } from 'recoil'
 import dynamic from 'next/dynamic'
-import { SplitView } from '@globalfishingwatch/ui-components'
+import { RecoilRoot } from 'recoil'
+import { redirectToLogin, useGFWLogin } from '@globalfishingwatch/react-hooks'
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import { SplitView } from '@globalfishingwatch/ui-components'
+import { API_BASE } from 'data/config'
 import styles from './App.module.css'
-
 import './styles.css'
 import './base.css'
 import './timebar-settings.css'
@@ -45,15 +46,30 @@ const Map = dynamic(() => import(/* webpackChunkName: "Map" */ 'features/map/Map
 
 function CustomApp({ Component, pageProps }: AppProps) {
   const [showFps, setShowFps] = useState(false)
+  const [lastUpdate, setLastUpdate] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(true)
-  useEffect(() => {
-    GFWAPI.login({}).then((r) => {
-      debugger
-    })
-    // fetch(`${API_BASE}/last-update`)
-    //   .then((r) => r.json())
-    //   .then((d) => console.log(d))
 
+  const login = useGFWLogin(GFWAPI)
+  useEffect(() => {
+    if (!login.loading && !login.logged) {
+      redirectToLogin()
+    }
+  }, [login])
+
+  const getLastUpdate = async () => {
+    const lastUpdate = await GFWAPI.fetch<{ lastUpdateDate: string }>(
+      `${API_BASE}/realtime-tracks/last-update`
+    )
+    setLastUpdate(lastUpdate.lastUpdateDate)
+  }
+
+  useEffect(() => {
+    if (login.logged) {
+      getLastUpdate()
+    }
+  }, [login.logged])
+
+  useEffect(() => {
     setShowFps(true)
   }, [])
 
@@ -70,11 +86,11 @@ function CustomApp({ Component, pageProps }: AppProps) {
             showToggle
             isOpen={sidebarOpen}
             onToggle={onToggle}
-            aside={<Component {...pageProps} />}
+            aside={<Component {...pageProps} lastUpdate={lastUpdate} />}
             main={
               <div className={styles.main}>
                 <div className={styles.mapContainer}>
-                  <Map />
+                  <Map lastUpdate={lastUpdate} />
                 </div>
               </div>
             }

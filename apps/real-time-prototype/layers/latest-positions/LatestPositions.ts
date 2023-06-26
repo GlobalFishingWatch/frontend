@@ -1,28 +1,43 @@
-import { CSVLoader } from '@loaders.gl/csv'
-import { IconLayer, IconLayerProps } from '@deck.gl/layers/typed'
-import { CompositeLayer } from '@deck.gl/core/typed'
-import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
+import { IconLayer } from '@deck.gl/layers/typed'
+import { MVTLayer, MVTLayerProps } from '@deck.gl/geo-layers/typed'
+import { Color, CompositeLayer } from '@deck.gl/core/typed'
+import { ckmeans, mean, sample, standardDeviation } from 'simple-statistics'
+import {
+  COLOR_RAMP_DEFAULT_NUM_STEPS,
+  HEATMAP_COLOR_RAMPS,
+  rgbaStringToComponents,
+} from '@globalfishingwatch/layer-composer'
+import { API_BASE } from 'data/config'
+import { GFWLayerProps } from 'features/map/Map'
 
 const ICON_MAPPING = {
-  vessel: { x: 0, y: 0, width: 22, height: 40, mask: true },
+  vessel: { x: 4, y: 0, width: 14, height: 40, mask: true },
   vesselHighlight: { x: 24, y: 0, width: 22, height: 40, mask: false },
   arrow: { x: 6, y: 0, width: 10, height: 30, mask: true },
   circle: { x: 46, y: 0, width: 17, height: 17, mask: true },
 }
+const SWITCH_ZOOM = 7
 
-export type LatestPositionsLayerProps = IconLayerProps & {
-  zoom: number
-}
+export type LatestPositionsLayerProps = MVTLayerProps & GFWLayerProps
 export class LatestPositions extends CompositeLayer<LatestPositionsLayerProps> {
   static layerName = 'LatestPositionsLayer'
-  static defaultProps = {
-    zoom: 0,
-  }
 
-  data = []
+  loadOptions = {
+    fetch: {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${this.props.token}`,
+      },
+    },
+  }
+  colorRange = HEATMAP_COLOR_RAMPS.magenta.map((c) => rgbaStringToComponents(c)).slice(1) as Color[]
+
   initializeState() {
     super.initializeState(this.context)
-    this.data = []
+    this.state = {
+      colorDomain: [],
+    }
+    console.log(this.state)
   }
 
   findVessel(mmsi: string) {
@@ -30,36 +45,103 @@ export class LatestPositions extends CompositeLayer<LatestPositionsLayerProps> {
     return match
   }
 
-  renderLayers() {
-    return new IconLayer({
-      id: 'latest-positions',
-      data: './positions/latest-positions-all.csv',
-      loaders: [CSVLoader],
-      iconAtlas: './positions/vessel-sprite.png',
-      iconMapping: ICON_MAPPING,
-      zIndex: GROUP_ORDER.indexOf(Group.Point),
-      onDataLoad: (d: any) => {
-        this.data = d
-      },
-      getIcon: (d) => (this.props.zoom <= 3 || parseInt(d.speed) === 0 ? 'circle' : 'arrow'),
-      getPosition: (d) => [d.lon, d.lat],
-      getColor: (d) =>
-        parseInt(d.speed) === 0
-          ? [255, 0, 255, 25]
-          : [255, 0, 255, 255 / Math.min(255, Math.max(1, 10 - this.props.zoom))],
-      getSize: (d) =>
-        Math.max(
-          parseInt(d.speed) === 0 ? 1 : 3,
-          Math.min(this.props.zoom * 2, parseInt(d.speed) === 0 ? 7 : 20)
-        ),
-      getAngle: (d) => d.course,
-      pickable: true,
-      getPickingInfo: this.getPickingInfo,
-      updateTriggers: {
-        getIcon: [this.props.zoom],
-        getColor: [this.props.zoom],
-        getSize: [this.props.zoom],
-      },
+  getData() {
+    const layer = this.getSubLayers()[0]
+    if (layer) {
+      const zoom = Math.round(this.context.viewport.zoom)
+      return layer.state.tileset.tiles.flatMap((l) => {
+        return l.zoom === zoom ? l.content : []
+      })
+    }
+  }
+
+  calculateColorDomain = () => {
+    const viewportData = this.getData()
+    if (viewportData?.length > 0) {
+      const cells = viewportData.flatMap((cell) => cell?.properties?.count / 100 || [])
+      const dataSampled = cells.length > 1000 ? sample(cells, 1000, Math.random) : cells
+      if (dataSampled.length > 0) {
+        // filter data to 2 standard deviations from mean to remove outliers
+        const meanValue = mean(dataSampled)
+        const standardDeviationValue = standardDeviation(dataSampled)
+        const upperCut = meanValue + standardDeviationValue * 3
+        const lowerCut = meanValue - standardDeviationValue * 3
+        const dataFiltered = dataSampled.filter((a) => a >= lowerCut && a <= upperCut)
+        const stepsNum = Math.min(dataFiltered.length, COLOR_RAMP_DEFAULT_NUM_STEPS - 1)
+        const result = ckmeans(dataFiltered, stepsNum).map(([clusterFirst]) => {
+          return parseFloat(clusterFirst.toFixed(3))
+        })
+        return result
+      }
+    }
+  }
+
+  _onViewportLoad = () => {
+    requestAnimationFrame(() => {
+      this.setState({ colorDomain: this.calculateColorDomain() })
     })
+  }
+
+  _getFillColor = (cell) => {
+    const { colorDomain } = this.state
+    const { colorRange } = this
+    const count = cell.properties.count / 100
+    if (!colorDomain || !colorRange) {
+      return [0, 0, 0, 0]
+    }
+    const colorIndex = colorDomain.findIndex((d, i) => {
+      if (colorDomain[i + 1]) {
+        return count >= d && count <= colorDomain[i + 1]
+      }
+      return i
+    })
+
+    return colorIndex >= 0 ? colorRange[colorIndex] : [0, 0, 0, 0]
+  }
+
+  renderLayers() {
+    return [
+      new MVTLayer({
+        id: 'latest-positions-heatmap',
+        data: `${API_BASE}4wings/tile-realtime/heatmap/{z}/{x}/{y}?start-date=${this.props.lastUpdate}`,
+        loadOptions: this.loadOptions,
+        maxZoom: SWITCH_ZOOM,
+        binary: false,
+        pickable: true,
+        getFillColor: (cell) => this._getFillColor(cell),
+        onViewportLoad: this._onViewportLoad,
+        updateTriggers: {
+          getFillColor: [this.state.colorDomain],
+        },
+      }),
+      new MVTLayer({
+        id: 'latest-positions-points',
+        data: `${API_BASE}4wings/tile-realtime/position/{z}/{x}/{y}?start-date=${this.props.lastUpdate}`,
+        loadOptions: this.loadOptions,
+        minZoom: SWITCH_ZOOM,
+        maxZoom: 10,
+        binary: false,
+        renderSubLayers: (props) => {
+          return new IconLayer(props, {
+            iconAtlas: './positions/vessel-sprite.png',
+            iconMapping: ICON_MAPPING,
+            getAngle: (d) => d.properties.course,
+            getColor: this.colorRange[3],
+            getIcon: () => 'vessel',
+            getPosition: (d) => d.geometry.coordinates,
+            getSize: 15,
+            pickable: true,
+          })
+        },
+      }),
+    ]
+  }
+
+  filterSubLayer({ layer, viewport }) {
+    if (viewport.zoom <= SWITCH_ZOOM) {
+      return layer.id === 'latest-positions-heatmap'
+    } else {
+      return layer.id === 'latest-positions-points'
+    }
   }
 }

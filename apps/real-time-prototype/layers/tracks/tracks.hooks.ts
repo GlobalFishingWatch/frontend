@@ -18,7 +18,7 @@ export const tracksLayerAtom = atom<TracksAtom>({
   },
 })
 
-export function useTracksLayer() {
+export function useTracksLayer({ token, lastUpdate }) {
   const [{ instance, ids }, updateAtom] = useRecoilState(tracksLayerAtom)
   const [mapLayers] = useMapLayers()
 
@@ -38,13 +38,15 @@ export function useTracksLayer() {
     if (layerVisible) {
       const trackLayer = new TracksLayer({
         ids,
+        token,
+        lastUpdate,
         onDataLoad: onDataLoad,
       })
       setAtomProperty({ instance: trackLayer })
     } else {
       setAtomProperty({ instance: undefined, loaded: false })
     }
-  }, [ids, layerVisible, updateAtom, onDataLoad, setAtomProperty])
+  }, [ids, layerVisible, updateAtom, onDataLoad, setAtomProperty, token, lastUpdate])
 
   return instance
 }

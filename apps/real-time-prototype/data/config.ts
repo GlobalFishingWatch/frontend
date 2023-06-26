@@ -14,5 +14,5 @@ export const CURRENT_YEAR = new Date().getFullYear()
 
 export const DEFAULT_URL_DEBOUNCE = 600
 
-export const API_BASE = 'https://gateway.api.dev.globalfishingwatch.org/prototypes/realtime-tracks'
+export const API_BASE = 'https://gateway.api.dev.globalfishingwatch.org/prototypes/'
 export const API_TOKEN = ''
