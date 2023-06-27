@@ -1,12 +1,12 @@
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { event as uaEvent } from 'react-ga'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
 import { Button, Icon, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
 import { EventTypes } from '@globalfishingwatch/api-types'
+import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import { SETTINGS } from 'routes/routes'
 import {
   RenderedEvent,
@@ -42,8 +42,8 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
   const openModal = useCallback((event: RenderedEvent, index: number) => {
     setSelectedEvent(event)
     setIsOpen(true)
-    uaEvent({
-      category: 'Highlight Events',
+    trackEvent({
+      category: TrackCategory.HighlightEvents,
       action: 'Select one vessel from highlights section',
       label: JSON.stringify({
         position: index,
@@ -54,8 +54,8 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
 
   const onMapClick = useCallback(
     (event: RenderedEvent | Voyage, index: number) => {
-      uaEvent({
-        category: 'Highlight Events',
+      trackEvent({
+        category: TrackCategory.HighlightEvents,
         action: 'Select one vessel from highlights section',
         label: JSON.stringify({
           position: index,
@@ -81,8 +81,8 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
 
   const onSettingsClick = useCallback(() => {
     dispatchLocation(SETTINGS)
-    uaEvent({
-      category: 'Highlight Events',
+    trackEvent({
+      category: TrackCategory.HighlightEvents,
       action: 'Start highlight events configurations',
       label: JSON.stringify({
         page: 'vessel detail',
@@ -106,8 +106,8 @@ const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
 
   useEffect(() => {
     if (countEvents) {
-      uaEvent({
-        category: 'Highlight Events',
+      trackEvent({
+        category: TrackCategory.HighlightEvents,
         action: 'Display highlight events',
         label: JSON.stringify(countEvents),
       })

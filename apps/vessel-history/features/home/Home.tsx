@@ -1,13 +1,13 @@
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { event as uaEvent } from 'react-ga'
 import { redirect } from 'redux-first-router'
 import { DateTime, Interval } from 'luxon'
 import { RelatedVesselSearchMerged, VesselSearch } from '@globalfishingwatch/api-types'
 import { Spinner, IconButton, Button } from '@globalfishingwatch/ui-components'
 import { useNavigatorOnline } from '@globalfishingwatch/react-hooks'
 import { RESULTS_PER_PAGE, TMT_CONTACT_US_URL } from 'data/constants'
+import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
 import { selectAllOfflineVessels } from 'features/vessels/offline-vessels.slice'
@@ -133,8 +133,8 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const onMergeVesselClick = useCallback(() => {
     const parsedSelectedVessels = getListOfSelectedVessels()
     const selectedVessel = parsedSelectedVessels[0]
-    uaEvent({
-      category: 'Search Vessel VV',
+    trackEvent({
+      category: TrackCategory.SearchVesselVV,
       action: 'Merge vessels',
       label: JSON.stringify(selectedVessels),
     })
@@ -148,8 +148,8 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
 
   const onSettingsClick = useCallback(() => {
     dispatchLocation(SETTINGS)
-    uaEvent({
-      category: 'Highlight Events',
+    trackEvent({
+      category: TrackCategory.HighlightEvents,
       action: 'Start highlight events configurations',
       label: JSON.stringify({
         page: 'home',
@@ -162,8 +162,8 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
       const now = DateTime.utc()
       const savedOn = getUTCDateTime(offlineVessel.savedOn)
       const i = Interval.fromDateTimes(savedOn, now)
-      uaEvent({
-        category: 'Offline Access',
+      trackEvent({
+        category: TrackCategory.OfflineAccess,
         action: 'Remove saved vessel for offline view',
         label: JSON.stringify({ page: 'home' }),
         value: Math.floor(i.length('days')),
@@ -221,8 +221,8 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   )
   const hasAccess = logged && authorized
   const onContactUsClick = useCallback(() => {
-    uaEvent({
-      category: 'Search Vessel VV',
+    trackEvent({
+      category: TrackCategory.SearchVesselVV,
       action: 'Click Contact Us ',
       label: JSON.stringify({
         name: query,
