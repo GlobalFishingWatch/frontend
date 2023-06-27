@@ -70,7 +70,7 @@ export const useUser = () => {
     if (logged && !currentProfileView && firstProfileView) {
       updateProfileView(firstProfileView)
     }
-  }, [currentProfileView, dispatch, logged, updateProfileView])
+  }, [availableViews, currentProfileView, dispatch, logged, updateProfileView])
 
   const logout = useCallback(() => {
     trackEvent({

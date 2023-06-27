@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import styles from './Info.module.css'
@@ -15,7 +15,7 @@ const Faq: React.FC<FaqProps> = ({ source = '' }): React.ReactElement => {
       action: "User click on FAQ's",
       label: source,
     })
-  }, [])
+  }, [source])
   return (
     <div>
       <a

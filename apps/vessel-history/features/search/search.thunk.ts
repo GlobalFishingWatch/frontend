@@ -10,7 +10,6 @@ import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import { BASE_DATASET, RESULTS_PER_PAGE, SEARCH_MIN_CHARACTERS } from 'data/constants'
 import { RootState } from 'store'
 import { SearchResults } from 'types'
-import { API_VERSION } from 'data/config'
 import { CachedVesselSearch } from './search.slice'
 
 export const getSerializedQuery = (query: string, advancedSearch?: Record<string, any>) => {
