@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react'
 import ReactGA from 'react-ga4'
-import { GOOGLE_TAG_MANAGER_ID, GOOGLE_MEASUREMENT_ID, IS_PRODUCTION } from 'data/config'
+import {
+  GOOGLE_TAG_MANAGER_ID,
+  GOOGLE_MEASUREMENT_ID,
+  IS_PRODUCTION,
+  WORKSPACE_ENV,
+} from 'data/config'
 import { useUser } from 'features/user/user.hooks'
 
 export const GOOGLE_ANALYTICS_INIT_OPTIONS =
