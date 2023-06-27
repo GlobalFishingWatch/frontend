@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useState } from 'react'
+import { Fragment, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import AutoSizer from 'react-virtualized-auto-sizer'
@@ -10,26 +10,25 @@ import {
   RenderedEvent,
   //selectHighlightEventIds,
 } from 'features/vessel/activity/vessels-activity.selectors'
-import { EventTypeVoyage, Voyage } from 'types/voyage'
 //import useMapEvents from 'features/map/map-events.hooks'
 import useViewport from 'features/map/map-viewport.hooks'
 import ActivityGroup from 'features/vessel/activity/ActivityGroup'
-import DataAndTerminology from 'features/vessel/data-and-terminology/DataAndTerminology'
-import ActivityDataAndTerminology from 'features/vessel/activity/ActivityDataAndTerminology'
-import ActivityItem from 'features/vessel/activity/ActivityItem'
 import ActivityModalContent from 'features/vessel/activity/modals/ActivityModalContent'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { useActivityByType } from './activity-by-type.hook'
 import styles from './activity-by-type.module.css'
+import { selectEventsByType } from './activity-by-type.selectors'
+import ActivityItem from './activity-item'
 
 export interface ActivityByTypeProps {
   onMoveToMap?: () => void
 }
 
 export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) {
-  const { events, toggleEventType } = useActivityByType()
+  const { toggleEventType, eventTypes, expandedGroups } = useActivityByType()
+  const events = useSelector(selectEventsByType)
   const { t } = useTranslation()
-
+  console.log(expandedGroups)
   const [isModalOpen, setIsOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent>()
   const openModal = useCallback((event: RenderedEvent) => {
@@ -48,23 +47,15 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
     [toggleEventType]
   )
   const closeModal = useCallback(() => setIsOpen(false), [])
-  //const { highlightEvent, highlightVoyage } = useMapEvents()
   const { viewport, setMapCoordinates } = useViewport()
-  //const highlightsIds = useSelector(selectHighlightEventIds)
 
   const selectEventOnMap = useCallback(
-    (event: RenderedEvent | Voyage) => {
-      if (event.type === EventTypeVoyage.Voyage) {
-        //highlightVoyage(event)
-      } else {
-        //highlightEvent(event)
-
-        setMapCoordinates({
-          latitude: event.position.lat,
-          longitude: event.position.lon,
-          zoom: viewport.zoom ?? DEFAULT_VIEWPORT.zoom,
-        })
-      }
+    (event: RenderedEvent) => {
+      setMapCoordinates({
+        latitude: event.position.lat,
+        longitude: event.position.lon,
+        zoom: viewport.zoom ?? DEFAULT_VIEWPORT.zoom,
+      })
 
       onMoveToMap()
     },
@@ -81,9 +72,7 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
   )
   console.log(events)
   const displayOptions = { displayPortVisitsAsOneEvent: true }
-  if (!events.length) {
-    return <p>asdasd</p>
-  }
+
   return (
     <div className={styles.activityContainer}>
       <Modal
@@ -94,28 +83,32 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
       >
         {selectedEvent && <ActivityModalContent event={selectedEvent}></ActivityModalContent>}
       </Modal>
-      {events.length &&
-        events.map((event) =>
-          event.group ? (
+      {eventTypes.map((eventType) => (
+        <Fragment>
+          {events[eventType] && (
             <ActivityGroup
-              key={event.type}
-              eventType={event.type}
-              loading={event.loading}
+              key={eventType}
+              eventType={eventType}
+              loading={events[eventType].loading}
               onToggleClick={onToggleEventType}
-              quantity={event.quantity}
-              status={event.status}
+              quantity={events[eventType].quantity}
+              status={events[eventType].status}
             ></ActivityGroup>
-          ) : (
-            <ActivityItem
-              key={event.id}
-              event={event}
-              highlighted={false}
-              onMapClick={selectEventOnMap}
-              onInfoClick={openModal}
-              options={displayOptions}
-            />
-          )
-        )}
+          )}
+          {expandedGroups.includes(eventType) &&
+            events[eventType]?.events.length &&
+            events[eventType]?.events.map((event) => (
+              <ActivityItem
+                key={event.id}
+                event={event}
+                highlighted={false}
+                onMapClick={selectEventOnMap}
+                onInfoClick={openModal}
+                options={displayOptions}
+              />
+            ))}
+        </Fragment>
+      ))}
     </div>
   )
 }

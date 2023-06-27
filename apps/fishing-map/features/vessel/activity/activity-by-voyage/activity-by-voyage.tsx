@@ -9,14 +9,14 @@ import {
 } from 'features/vessel/activity/vessels-activity.selectors'
 import { EventTypeVoyage, Voyage } from 'types/voyage'
 import { t } from 'features/i18n/i18n'
-import useVoyagesConnect from 'features/vessel/voyages/voyages.hook'
+import useVoyagesConnect from 'features/vessel/activity/activity-by-voyage/activity-by-voyage.hook'
 import { selectVesselId } from 'routes/routes.selectors'
 //import useMapEvents from 'features/map/map-events.hooks'
 import useViewport from 'features/map/map-viewport.hooks'
 import ActivityModalContent from 'features/vessel/activity/modals/ActivityModalContent'
 import { DEFAULT_VIEWPORT } from 'data/config'
-import ActivityItem from '../ActivityItem'
 import styles from '../activity-by-type/activity-by-type.module.css'
+import ActivityItem from './activity-item'
 interface ActivityProps {
   onMoveToMap: () => void
 }
@@ -31,17 +31,12 @@ const ActivityByVoyage: React.FC<ActivityProps> = (props): React.ReactElement =>
     setIsOpen(true)
   }, [])
   const closeModal = useCallback(() => setIsOpen(false), [])
-  //const { highlightEvent, highlightVoyage } = useMapEvents()
   const { viewport, setMapCoordinates } = useViewport()
-  //const highlightsIds = useSelector(selectHighlightEventIds)
 
   const selectEventOnMap = useCallback(
     (event: RenderedEvent | Voyage) => {
       if (event.type === EventTypeVoyage.Voyage) {
-        //highlightVoyage(event)
       } else {
-        //highlightEvent(event)
-
         setMapCoordinates({
           latitude: event.position.lat,
           longitude: event.position.lon,
@@ -51,7 +46,7 @@ const ActivityByVoyage: React.FC<ActivityProps> = (props): React.ReactElement =>
 
       props.onMoveToMap()
     },
-    [/*highlightEvent, highlightVoyage,*/ props, setMapCoordinates, viewport.zoom]
+    [props, setMapCoordinates, viewport.zoom]
   )
   return (
     <div className={styles.activityContainer}>
@@ -74,9 +69,6 @@ const ActivityByVoyage: React.FC<ActivityProps> = (props): React.ReactElement =>
                   <ActivityItem
                     key={index}
                     event={event}
-                    highlighted={
-                      event.type !== EventTypeVoyage.Voyage //&& highlightsIds[event.id]
-                    }
                     onToggleClick={toggleVoyage}
                     onMapClick={selectEventOnMap}
                     onInfoClick={openModal}

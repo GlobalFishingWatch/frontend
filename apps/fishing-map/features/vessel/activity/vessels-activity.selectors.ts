@@ -195,13 +195,6 @@ export const selectEventsWithRenderingInfo = createSelector(
           descriptionGeneric = t('dataTerminology:event.fishing')
           break
         case EventTypes.Gap:
-          /*
-            Will split the gaps?
-            description = event.gap.isEventStart ? t('event.gapStart', 'Gap start in {{regionName}}', {
-              regionName: regionDescription,
-            }) : t('event.gapEnd', 'Gap end in {{regionName}}', {
-              regionName: regionDescription,
-            }) */
           description = t('dataTerminology:event.gapAction', 'Likely Disabling in {{regionName}}', {
             regionName: regionDescription,
           })

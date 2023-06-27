@@ -13,7 +13,7 @@ interface EventProps {
   onToggleClick?: (event: RenderedVoyage) => void
 }
 
-const ActivityVoyage: React.FC<EventProps> = ({
+const VoyageGroup: React.FC<EventProps> = ({
   event,
   onMapClick = () => {},
   onToggleClick = () => {},
@@ -86,4 +86,4 @@ const ActivityVoyage: React.FC<EventProps> = ({
   )
 }
 
-export default ActivityVoyage
+export default VoyageGroup

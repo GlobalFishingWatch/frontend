@@ -7,7 +7,7 @@ import { DEFAULT_WORKSPACE } from 'data/config'
 import { getUTCDateTime } from 'utils/dates'
 import { selectFullVesselId } from 'routes/routes.selectors'
 import { selectTimeRange } from 'features/app/app.selectors'
-import { RenderedEvent, selectFilteredEvents } from '../activity/vessels-activity.selectors'
+import { selectFilteredEvents } from '../vessels-activity.selectors'
 
 export const selectFilteredEventsWithSplitPorts = createSelector(
   [selectFilteredEvents],

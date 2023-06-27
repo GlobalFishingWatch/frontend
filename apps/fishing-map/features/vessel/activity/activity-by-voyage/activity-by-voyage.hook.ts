@@ -4,15 +4,15 @@ import { useAppDispatch } from 'features/app/app.hooks'
 //import { selectResourcesLoading } from 'features/resources/resources.slice'
 import { EventTypeVoyage, RenderedVoyage, Voyage } from 'types/voyage'
 import { selectVesselDatasetId, selectVesselId, selectFullVesselId } from 'routes/routes.selectors'
-import { RenderedEvent } from '../activity/vessels-activity.selectors'
+import { RenderedEvent } from '../vessels-activity.selectors'
 import {
   upsertVesselVoyagesExpanded,
   setVesselVoyagesInitialized,
   VoyagesState,
   selectVoyagesInitialized,
   selectVesselVoyages,
-} from './voyages.slice'
-import { selectFilteredEventsByVoyages } from './voyages.selectors'
+} from './activity-by-voyage.slice'
+import { selectFilteredEventsByVoyages } from './activity-by-voyage.selectors'
 
 function useVoyagesConnect() {
   const dispatch = useAppDispatch()

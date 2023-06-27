@@ -1,8 +1,8 @@
 import { Fragment } from 'react'
 import { RenderedEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { EventTypeVoyage, RenderedVoyage, Voyage } from 'types/voyage'
-import ActivityEvent from './ActivityEvent'
-import ActivityVoyage from './activity-by-voyage/ActivityVoyage'
+import ActivityEvent from '../ActivityEvent'
+import VoyageGroup from './voyage-group'
 interface EventProps {
   event: RenderedEvent | RenderedVoyage
   highlighted?: boolean
@@ -25,11 +25,11 @@ const ActivityItem: React.FC<EventProps> = ({
   return (
     <Fragment>
       {event.type === EventTypeVoyage.Voyage && (
-        <ActivityVoyage
+        <VoyageGroup
           event={event}
           onMapClick={onMapClick}
           onToggleClick={onToggleClick}
-        ></ActivityVoyage>
+        ></VoyageGroup>
       )}
       {event.type !== EventTypeVoyage.Voyage && (
         <ActivityEvent
