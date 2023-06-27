@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { snakeCase } from 'lodash'
 import ReactGA from 'react-ga4'
 import {
   GOOGLE_TAG_MANAGER_ID,
@@ -12,18 +13,18 @@ export const GOOGLE_ANALYTICS_INIT_OPTIONS =
   WORKSPACE_ENV === 'production' ? {} : { testMode: true }
 
 export enum TrackCategory {
-  GeneralVVFeatures = 'General VV features',
-  HighlightEvents = 'Highlight Events',
-  OfflineAccess = 'Offline Access',
-  SearchVesselVV = 'Search Vessel VV',
-  User = 'User',
-  VesselDetailActivityByTypeTab = 'Vessel Detail ACTIVITY BY TYPE Tab',
-  VesselDetailActivityOrMapTab = 'Vessel Detail ACTIVITY or MAP Tab',
-  VesselDetailActivityTab = 'Vessel Detail ACTIVITY Tab',
-  VesselDetailInfoTab = 'Vessel Detail INFO Tab',
-  VesselDetailMapTab = 'Vessel Detail MAP Tab',
-  VesselDetailRiskSummaryTab = 'Vessel Detail RISK SUMMARY Tab',
-  VesselDetail = 'Vessel Detail',
+  GeneralVVFeatures = 'general_vv_features',
+  HighlightEvents = 'highlight_events',
+  OfflineAccess = 'offline_access',
+  SearchVesselVV = 'search_vessel_vv',
+  User = 'user',
+  VesselDetailActivityByTypeTab = 'vessel_detail_activity_by_type_tab',
+  VesselDetailActivityOrMapTab = 'vessel_detail_activity_or_map_tab',
+  VesselDetailActivityTab = 'vessel_detail_activity_tab',
+  VesselDetailInfoTab = 'vessel_detail_info_tab',
+  VesselDetailMapTab = 'vessel_detail_map_tab',
+  VesselDetailRiskSummaryTab = 'vessel_detail_risk_summary_tab',
+  VesselDetail = 'vessel_detail',
 }
 
 export type TrackEventParams = {
@@ -34,7 +35,23 @@ export type TrackEventParams = {
 }
 
 export const trackEvent = ({ category, action, label, value }: TrackEventParams) => {
-  ReactGA.event({ category, action, label, value })
+  /**
+   * IMPORTANT
+   *
+   * To send the category and action in snake_case to GA4
+   * it is necessary to use this:
+   * ```
+   * ReactGA.event(name, params)
+   * ```
+   * method signature so they won't be converted to title case.
+   *
+   * https://github.com/codler/react-ga4/issues/15
+   */
+  ReactGA.event(category, {
+    action: snakeCase(action),
+    label,
+    value,
+  })
 }
 
 export const useAnalytics = () => {
