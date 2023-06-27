@@ -1,6 +1,7 @@
+import { DateTime } from 'luxon'
 import { LoaderWithParser } from '@loaders.gl/loader-utils'
 import { ApiEvent, EventTypes } from '@globalfishingwatch/api-types'
-import { START_TIMESTAMP, EVENT_TYPES_ORDINALS } from '../constants'
+// import { START_TIMESTAMP } from '../constants'
 
 export const vesselEventsLoader: LoaderWithParser = {
   name: 'Events',
@@ -24,9 +25,9 @@ export type VesselDeckLayersEventData = Partial<ApiEvent> & {
   type: EventTypes
   coordinates: [number, number]
   start: number
-  endTime: number
-  eventShapeIndex: number
+  end: number
 }
+
 export function parseEvents(events: ApiEvent[]): VesselDeckLayersEventData[] {
   return events?.map((event) => {
     const { position, start, end, type, ...attributes } = event
@@ -34,9 +35,8 @@ export function parseEvents(events: ApiEvent[]): VesselDeckLayersEventData[] {
       ...attributes,
       type,
       coordinates: [event.position.lon, event.position.lat],
-      start: Math.fround(new Date(start).getTime() - START_TIMESTAMP),
-      endTime: Math.fround(new Date(end).getTime() - START_TIMESTAMP),
-      eventShapeIndex: EVENT_TYPES_ORDINALS[type] || 0,
+      start: DateTime.fromISO(start as string, { zone: 'utc' }).toMillis(),
+      end: DateTime.fromISO(end as string, { zone: 'utc' }).toMillis(),
     }
   })
 }

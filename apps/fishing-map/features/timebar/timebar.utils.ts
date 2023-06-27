@@ -7,6 +7,10 @@ import {
 import { TileCell } from '@globalfishingwatch/deck-layers'
 import { getEventColors, getEventDescription } from 'utils/events'
 
+export const getTimebarChunkEventColor = (ev: TimebarChartChunk<TrackEventChunkProps>) => {
+  return ev.type ? getEventColors({ type: ev.type })?.color : 'white'
+}
+
 export const parseTrackEventChunkProps = (
   event: TimebarChartChunk,
   eventKey?: string

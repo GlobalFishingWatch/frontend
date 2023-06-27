@@ -46,7 +46,7 @@ export class BaseMap extends CompositeLayer<BaseMapLayerProps> {
   }
 
   renderLayers() {
-    this.layers = [this._getBathimetryLayer(), this._getLandMassLayer()]
-    return this.layers
+    // this.layers = [this._getBathimetryLayer(), this._getLandMassLayer()]
+    return this._getLandMassLayer()
   }
 }

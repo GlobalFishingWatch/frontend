@@ -1,9 +1,9 @@
 import type { NumericArray } from '@math.gl/core'
-import { AccessorFunction, DefaultProps, UpdateParameters } from '@deck.gl/core/typed'
+import { AccessorFunction, DefaultProps } from '@deck.gl/core/typed'
 import { PathLayer, PathLayerProps } from '@deck.gl/layers/typed'
 import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
-import { VesselDeckLayerTrackSegment } from '../../loaders/vessels/trackLoader'
-import { getPathDefaultAccessor, getTimestampsDefaultAccessor } from './vessels.utils'
+import { Point, Segment } from '@globalfishingwatch/api-types'
+import { TIMESTAMP_MULTIPLIER, VesselTrackData } from '../../loaders/vessels/trackLoader'
 
 /** Properties added by VesselTrackLayer. */
 export type _VesselTrackLayerProps<DataT = any> = {
@@ -27,6 +27,11 @@ export type _VesselTrackLayerProps<DataT = any> = {
    * @default 0
    */
   highlightEndTime?: number
+  // /**
+  //  * Color to be used as a highlight path
+  //  * @default [255, 255, 255, 255]
+  //  */
+  // getHighlightColor?: Accessor<DataT, Color | Color[]>
   /**
    * Ordering index on the layers stack
    */
@@ -41,14 +46,23 @@ export type _VesselTrackLayerProps<DataT = any> = {
   trackUrl?: string
 }
 
+// Example of how to use pass an accesor to the shaders
+// not needed anymore as the highlighted color is fixed
+// const DEFAULT_HIGHLIGHT_COLOR_RGBA = [255, 255, 255, 255] as Color
+
+const DEFAULT_HIGHLIGHT_COLOR_VEC = [1.0, 1.0, 1.0, 1.0]
 const defaultProps: DefaultProps<VesselTrackLayerProps> = {
+  _pathType: 'open',
   endTime: { type: 'number', value: 0, min: 0 },
   startTime: { type: 'number', value: 0, min: 0 },
-  getPath: { type: 'accessor', value: getPathDefaultAccessor },
+  highlightStartTime: { type: 'number', value: 0, min: 0 },
+  highlightEndTime: { type: 'number', value: 0, min: 0 },
+  getPath: { type: 'accessor', value: () => [0, 0] },
+  getTimestamps: { type: 'accessor', value: (d) => d },
   getColor: { type: 'accessor', value: () => [255, 255, 255, 100] },
-  getTimestamps: { type: 'accessor', value: getTimestampsDefaultAccessor },
-  zIndex: { type: 'accessor', value: GROUP_ORDER.indexOf(Group.Point) },
+  // getHighlightColor: { type: 'accessor', value: DEFAULT_HIGHLIGHT_COLOR_RGBA },
   trackUrl: { type: 'accessor', value: '' },
+  zIndex: { type: 'accessor', value: GROUP_ORDER.indexOf(Group.Point) },
 }
 
 /** All properties supported by VesselTrackLayer. */
@@ -58,51 +72,53 @@ export type VesselTrackLayerProps<DataT = any> = _VesselTrackLayerProps<DataT> &
 /** Render paths that represent vessel trips. */
 export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
   DataT,
-  Required<_VesselTrackLayerProps> & ExtraProps
+  Required<VesselTrackLayerProps> & ExtraProps
 > {
   static layerName = 'VesselTrackLayer'
   static defaultProps = defaultProps
-  segments!: VesselDeckLayerTrackSegment[]
 
   getShaders() {
     const shaders = super.getShaders()
     shaders.inject = {
-      'vs:#decl': `\
+      'vs:#decl': `
         attribute float instanceTimestamps;
-        attribute float instanceNextTimestamps;
+        // attribute vec4 instanceHighlightColor;
         varying float vTime;
+        // varying vec4 vHighlightColor;
       `,
       // Timestamp of the vertex
-      'vs:#main-end': `\
-        vTime = instanceTimestamps + (instanceNextTimestamps - instanceTimestamps) * vPathPosition.y / vPathLength;
+      'vs:#main-end': `
+        vTime = instanceTimestamps;
+        // vHighlightColor = vec4(instanceHighlightColor.rgb, instanceHighlightColor.a);
       `,
-      'fs:#decl': `\
+      'fs:#decl': `
         uniform float startTime;
         uniform float endTime;
+        uniform float highlightStartTime;
+        uniform float highlightEndTime;
+        // varying vec4 vHighlightColor;
         varying float vTime;
       `,
       // Drop the segments outside of the time window
-      'fs:#main-start': `\
+      'fs:#main-start': `
         if(vTime < startTime || vTime > endTime) {
           discard;
+        }
+      `,
+      'fs:DECKGL_FILTER_COLOR': `
+        if (vTime < highlightStartTime || vTime > highlightEndTime) {
+          color = color;
+        } else {
+          // color = vHighlightColor;
+          color = vec4(${DEFAULT_HIGHLIGHT_COLOR_VEC.join(',')});
         }
       `,
     }
     return shaders
   }
 
-  getSegments() {
-    return this.segments
-  }
-
-  updateState(params: UpdateParameters<any>) {
-    super.updateState(params)
-    this.segments = params.props.data
-  }
-
   initializeState() {
     super.initializeState()
-    this.segments = []
     const attributeManager = this.getAttributeManager()
     if (attributeManager) {
       attributeManager.addInstanced({
@@ -110,27 +126,67 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
           size: 1,
           accessor: 'getTimestamps',
           shaderAttributes: {
-            instanceTimestamps: {
-              vertexOffset: 0,
-            },
-            instanceNextTimestamps: {
-              vertexOffset: 1,
-            },
+            instanceTimestamps: {},
           },
         },
       })
+      // attributeManager.addInstanced({
+      //   instanceHighlightColor: {
+      //     size: this.props.colorFormat.length,
+      //     type: GL.UNSIGNED_BYTE,
+      //     normalized: true,
+      //     accessor: 'getHighlightColor',
+      //     defaultValue: DEFAULT_HIGHLIGHT_COLOR_RGBA as number[],
+      //   },
+      // })
     }
   }
 
   draw(params: any) {
-    const { startTime, endTime } = this.props
-
+    const { startTime, endTime, highlightStartTime, highlightEndTime } = this.props
     params.uniforms = {
       ...params.uniforms,
-      startTime,
-      endTime,
+      startTime: startTime / TIMESTAMP_MULTIPLIER,
+      endTime: endTime / TIMESTAMP_MULTIPLIER,
+      highlightStartTime: highlightStartTime ? highlightStartTime / TIMESTAMP_MULTIPLIER : 0,
+      highlightEndTime: highlightEndTime ? highlightEndTime / TIMESTAMP_MULTIPLIER : 0,
     }
-
     super.draw(params)
+  }
+
+  getData(): VesselTrackData {
+    return this.props.data as VesselTrackData
+  }
+
+  getSegments(): Segment[] {
+    const data = this.props.data as VesselTrackData
+    const segmentsIndex = data.startIndices
+    const positions = data.attributes?.positions!?.value
+    const timestamps = data.attributes?.getTimestamps?.value
+    if (!positions?.length || !timestamps.length) {
+      return []
+    }
+    const size = data.attributes.positions!?.size
+    const segments = segmentsIndex.map((segment, i) => {
+      const initialPoint = {
+        longitude: positions[segment],
+        latitude: positions[segment + 1],
+        timestamp: timestamps[segment / size] * TIMESTAMP_MULTIPLIER,
+      }
+      const lastPoint =
+        i < segmentsIndex.length - 1
+          ? {
+              longitude: positions[segment + size],
+              latitude: positions[segment + size - 1],
+              timestamp: timestamps[segment + size - 1] * TIMESTAMP_MULTIPLIER,
+            }
+          : {
+              longitude: positions[positions.length - size],
+              latitude: positions[positions.length - 1],
+              timestamp: timestamps[timestamps.length - 1] * TIMESTAMP_MULTIPLIER,
+            }
+      return [initialPoint, lastPoint]
+    })
+    return segments
   }
 }

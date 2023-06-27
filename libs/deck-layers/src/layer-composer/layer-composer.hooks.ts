@@ -9,19 +9,21 @@ import {
   VesselDeckLayersGenerator,
   FourwingsDeckLayerGenerator,
   useSetVesselLayers,
+  VesselDeckLayersParams,
 } from '@globalfishingwatch/deck-layers'
 import { AnyGeneratorConfig, GlobalGeneratorConfig } from '@globalfishingwatch/layer-composer'
 
+export type DeckLayerComposerParams = VesselDeckLayersParams
 export function useDeckLayerComposer({
   generatorsDictionary,
   generatorsConfig,
   globalGeneratorConfig,
-  highlightedTime,
+  params,
 }: {
   generatorsDictionary: DeckLayersGeneratorDictionary
   generatorsConfig: AnyGeneratorConfig[]
   globalGeneratorConfig: GlobalGeneratorConfig
-  highlightedTime?: { start: string; end: string }
+  params: DeckLayerComposerParams
 }) {
   const basemapGenerator = generatorsConfig.find(
     (generator) => generator.type === 'BASEMAP'
@@ -45,7 +47,7 @@ export function useDeckLayerComposer({
   const vesselLayers = useSetVesselLayers(
     generatorsDictionary[DeckLayersGeneratorType.Vessels] as VesselDeckLayersGenerator[],
     globalGeneratorConfig,
-    highlightedTime
+    params
   )
 
   const fourwingsLayers = useSetFourwingsLayers(

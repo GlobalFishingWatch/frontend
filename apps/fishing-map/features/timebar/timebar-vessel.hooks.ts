@@ -25,25 +25,21 @@ export const useTimebarVesselTracks = () => {
           if (!vessel.props.visible) {
             return []
           }
-          const track = vessel.getVesselTrackData()
-          const chunks = track.map((t) => {
-            const start = (minBy(t, 'timestamp') as any)?.timestamp
-            const end = (maxBy(t, 'timestamp') as any)?.timestamp
+          const segments = vessel.getVesselTrackSegments()
+          const chunks = segments?.map((t) => {
+            const start = t[0]?.timestamp
+            const end = t[t.length - 1]?.timestamp
             return {
               start,
               end,
-              props: { color: vessel.props.themeColor },
-              values: t.map((v) => ({
-                longitude: v.coordinates[0],
-                latitude: v.coordinates[1],
-                timestamp: v.timestamp,
-              })),
+              props: { color: vessel.getVesselColor() },
+              values: t,
             }
           })
           return {
             status: ResourceStatus.Finished,
             chunks,
-            color: vessel.props.themeColor,
+            color: vessel.getVesselColor(),
             defaultLabel: vessel.getVesselName() || '',
             getHighlighterLabel: getUserTrackHighlighterLabel,
             getHighlighterIcon: 'vessel',
@@ -81,9 +77,9 @@ export const useTimebarVesselEvents = () => {
           if (!vessel.props.visible) {
             return []
           }
-          const chunks = vessel.getVesselEventsData() as any
+          const chunks = vessel.getVesselEventsData(vessel.props.visibleEvents) as any
           return {
-            color: vessel.props?.themeColor,
+            color: vessel.getVesselColor(),
             chunks,
             status: ResourceStatus.Finished,
             defaultLabel: vessel.getVesselName(),

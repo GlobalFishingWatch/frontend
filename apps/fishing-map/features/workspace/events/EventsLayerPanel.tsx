@@ -27,6 +27,7 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
   const layerActive = dataview?.config?.visible ?? true
   const [filterOpen, setFiltersOpen] = useState(false)
   const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
+  const showSchemaFilters = filtersAllowed.length > 0
   const hasSchemaFilterSelection = filtersAllowed.some(
     (schema) => schema.optionsSelected?.length > 0
   )
@@ -76,7 +77,7 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
-          {layerActive && (
+          {layerActive && showSchemaFilters && (
             <ExpandedContainer
               visible={filterOpen}
               onClickOutside={closeExpandedContainer}
