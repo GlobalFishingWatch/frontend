@@ -83,9 +83,9 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
       const vesselDataviewInstance = getVesselDataviewInstance(
         { id: vessel.id },
         {
-          trackDatasetId: trackDataset?.id,
-          infoDatasetId: infoDataset?.id,
-          ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
+          info: infoDataset?.id,
+          track: trackDataset?.id,
+          ...(eventsDatasetsId.length > 0 && { events: eventsDatasetsId }),
         }
       )
       upsertDataviewInstance(vesselDataviewInstance)
