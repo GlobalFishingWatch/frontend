@@ -1,11 +1,11 @@
-import { RenderedEvent } from 'features/vessel/activity/vessels-activity.selectors'
-import { RenderedVoyage, Voyage } from 'types/voyage'
-import ActivityEvent from '../ActivityEvent'
+import { ActivityEvent } from 'types/activity'
+import EventItem from '../event/Event'
+
 interface EventProps {
-  event: RenderedEvent
+  event: ActivityEvent
   highlighted?: boolean
-  onInfoClick?: (event: RenderedEvent) => void
-  onMapClick?: (event: RenderedEvent | Voyage) => void
+  onInfoClick?: (event: ActivityEvent) => void
+  onMapClick?: (event: ActivityEvent) => void
   options?: {
     displayPortVisitsAsOneEvent: boolean
   }
@@ -19,13 +19,13 @@ const ActivityItem: React.FC<EventProps> = ({
   options = { displayPortVisitsAsOneEvent: false },
 }): React.ReactElement => {
   return (
-    <ActivityEvent
+    <EventItem
       event={event}
       highlighted={highlighted}
       onMapClick={onMapClick}
       onInfoClick={onInfoClick}
       options={options}
-    ></ActivityEvent>
+    ></EventItem>
   )
 }
 

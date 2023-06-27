@@ -1,11 +1,10 @@
 import { useTranslation } from 'react-i18next'
 import { Fragment, useState } from 'react'
 import { Button } from '@globalfishingwatch/ui-components'
-import { VesselActivitySummary } from 'features/vessel/VesselActivitySummary'
-import { VesselActivityList } from 'features/vessel/VesselActivityList'
 import { ActivityByType } from 'features/vessel/activity/activity-by-type/activity-by-type'
 import ActivityByVoyage from 'features/vessel/activity/activity-by-voyage/activity-by-voyage'
 import styles from './VesselActivity.module.css'
+import { VesselActivitySummary } from './summary/VesselActivitySummary'
 
 type activityModeType = 'voyages' | 'type'
 
@@ -27,9 +26,7 @@ const VesselActivity = () => {
         </label>
         <Button
           className={styles.actionButton}
-          onClick={(e) =>
-            activityMode === 'type' ? setActivityMode('voyages') : setActivityMode('type')
-          }
+          onClick={(e) => setActivityMode(activityMode === 'type' ? 'voyages' : 'type')}
         >
           {activityMode === 'voyages'
             ? t('vessel.activityGroupByType', 'Group by type')

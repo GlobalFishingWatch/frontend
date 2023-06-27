@@ -17,7 +17,6 @@ import styles from './VesselIdentity.module.css'
 const VesselIdentity = () => {
   const { t, i18n } = useTranslation(['translations', 'dataTerminology'])
   const vessel = useSelector(selectVesselInfoDataMerged)
-  console.log(vessel)
   return (
     <div className={styles.container}>
       <div className={styles.titleContainer}>

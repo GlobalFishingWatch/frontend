@@ -1,28 +1,28 @@
-import { Fragment } from 'react'
+import { Fragment, useMemo } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { capitalize } from 'lodash'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { Icon, IconButton } from '@globalfishingwatch/ui-components'
-import { RenderedEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import { PortVisitSubEvent } from 'types/activity'
-import ActivityDate from './ActivityDate'
-import styles from './Activity.module.css'
+import { ActivityEvent, PortVisitSubEvent } from 'types/activity'
+import ActivityDate from '../ActivityDate'
+import styles from './Event.module.css'
+import useActivityEventConnect from './event.hook'
 
 interface EventProps {
   classname?: string
-  event: RenderedEvent
+  event: ActivityEvent
   highlighted?: boolean
-  onInfoClick?: (event: RenderedEvent) => void
-  onMapClick?: (event: RenderedEvent) => void
+  onInfoClick?: (event: ActivityEvent) => void
+  onMapClick?: (event: ActivityEvent) => void
   options?: {
     displayPortVisitsAsOneEvent: boolean
   }
 }
 
-const ActivityEventPortVisit: React.FC<EventProps> = ({
+const EventPortVisit: React.FC<EventProps> = ({
   classname = '',
   event,
   highlighted = false,
@@ -31,12 +31,13 @@ const ActivityEventPortVisit: React.FC<EventProps> = ({
   options: { displayPortVisitsAsOneEvent } = { displayPortVisitsAsOneEvent: false },
 }): React.ReactElement => {
   const { t } = useTranslation()
-  if (event.type !== EventTypes.Port) return
+  const { getEventDescription, getEventDurationDescription } = useActivityEventConnect()
+  const durationDescription = useMemo(() => getEventDurationDescription(event), [event])
 
   const isPortEntry = event?.subEvent === PortVisitSubEvent.Entry
   const isPortExit = event?.subEvent === PortVisitSubEvent.Exit
   const isPortVisit = !event?.subEvent
-  const portType = isPortVisit ? null : isPortExit ? 'exited' : 'entered'
+  const portType = isPortVisit ? undefined : isPortExit ? 'exited' : 'entered'
 
   return (
     <Fragment>
@@ -54,8 +55,8 @@ const ActivityEventPortVisit: React.FC<EventProps> = ({
                 <Icon icon="event-port-visit" type="default" />
               </div>
               <div className={styles.eventData}>
-                <label className={styles.date}>{event.durationDescription}</label>
-                <div className={styles.description}>{event.description}</div>
+                <label className={styles.date}>{durationDescription}</label>
+                <div className={styles.description}>{getEventDescription(event)}</div>
               </div>
               <div className={styles.actions}>
                 <IconButton
@@ -86,20 +87,22 @@ const ActivityEventPortVisit: React.FC<EventProps> = ({
                   highlighted ? styles.highlighted : ''
                 )}
               >
-                {event.type === 'port_visit' && <Icon icon="event-port-visit" type="default" />}
+                {event.type === EventTypes.Port && <Icon icon="event-port-visit" type="default" />}
               </div>
               <div className={styles.eventData}>
                 {displayPortVisitsAsOneEvent && (
                   <div className={styles.description}>
                     {t(`event.${portType}PortOn`, `${capitalize(portType)} on {{date}}`, {
-                      date: formatI18nDate(event.timestamp, { format: DateTime.DATETIME_SHORT }),
+                      date: formatI18nDate(event.timestamp ?? 0, {
+                        format: DateTime.DATETIME_SHORT,
+                      }),
                     })}
                   </div>
                 )}
                 {!displayPortVisitsAsOneEvent && (
                   <Fragment>
                     <ActivityDate event={event} />
-                    <div className={styles.description}>{event.description}</div>
+                    <div className={styles.description}>{getEventDescription(event)}</div>
                   </Fragment>
                 )}
               </div>
@@ -126,7 +129,7 @@ const ActivityEventPortVisit: React.FC<EventProps> = ({
   )
 }
 
-export default ActivityEventPortVisit
+export default EventPortVisit
 
 // t('event.enteredPortOn', 'Entered on {{date}}')
 // t('event.exitedPortOn', 'Exited on {{date}}')

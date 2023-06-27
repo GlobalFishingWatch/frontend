@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { camelCase, lowerCase, startCase, upperFirst } from 'lodash'
 import { Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { EventType, EventTypes } from '@globalfishingwatch/api-types'
-import styles from './Activity.module.css'
+import styles from '../event/Event.module.css'
 
 interface ActivityGroupProps {
   eventType: EventType
@@ -14,25 +14,10 @@ interface ActivityGroupProps {
   status: 'expanded' | 'collapsed'
 }
 
-const labelByType = {
-  [EventTypes.Encounter]: '{{count}} encounters',
-  [EventTypes.Fishing]: '{{count}} fishing hours',
-  [EventTypes.Loitering]: '{{count}} loitering events',
-  [EventTypes.Port]: '{{count}} port visits',
-  [EventTypes.Gap]: '{{count}} likely disabling events',
-}
-const loadingByType = {
-  [EventTypes.Encounter]: 'loading encounters',
-  [EventTypes.Fishing]: 'loading fishing events',
-  [EventTypes.Loitering]: 'loading loitering events',
-  [EventTypes.Port]: 'loading port visits',
-  [EventTypes.Gap]: 'loading likely disabling events',
-}
-
 const ActivityGroup: React.FC<ActivityGroupProps> = ({
   eventType,
   loading,
-  onToggleClick = () => { },
+  onToggleClick = () => {},
   quantity,
   status,
 }): React.ReactElement => {
@@ -42,16 +27,16 @@ const ActivityGroup: React.FC<ActivityGroupProps> = ({
     () =>
       loading
         ? t(
-          `events.loading${upperFirst(camelCase(eventType))}Events` as any,
-          loadingByType[eventType] ?? `loading ${lowerCase(startCase(eventType))} events`
-        )
+            `events.loading${upperFirst(camelCase(eventType))}Events` as any,
+            `loading ${lowerCase(startCase(eventType))} events`
+          )
         : t(
-          `events.byType${upperFirst(camelCase(eventType))}Title` as any,
-          labelByType[eventType] ?? `{{count}} ${eventType} events`,
-          {
-            count: quantity,
-          }
-        ),
+            `events.byType${upperFirst(camelCase(eventType))}Title` as any,
+            `{{count}} ${eventType} events`,
+            {
+              count: quantity,
+            }
+          ),
     [eventType, loading, quantity, t]
   )
 

@@ -1,20 +1,14 @@
 import React, { Fragment, useCallback, useMemo, useState } from 'react'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { DateTime } from 'luxon'
 import { Anchorage } from '@globalfishingwatch/api-types'
-import { DEFAULT_EMPTY_VALUE } from 'data/config'
-import { RenderedEvent } from 'features/vessel/activity/vessels-activity.selectors'
-//import { selectPsmaEarliestDateById } from 'features/psma/psma.selectors'
-import { useI18nDate } from 'features/i18n/i18nDate'
-import { PORT_CONFIDENCE } from 'features/vessel/constants'
-//import Faq from 'features/vessel/components/Faq'
+import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
+import { ActivityEvent } from 'types/activity'
 import ActivityModalContentDetails from './ActivityModalContentDetails'
 import ActivityModalContentField from './ActivityModalContentField'
 import styles from './ActivityModalDetails.module.css'
 
 interface ActivityModalContentProps {
-  event: RenderedEvent
+  event: ActivityEvent
 }
 
 const ActivityModalContentDetailsPortVisit: React.FC<ActivityModalContentProps> = (
@@ -35,7 +29,7 @@ const ActivityModalContentDetailsPortVisit: React.FC<ActivityModalContentProps> 
           ', '
         )
       }
-      return DEFAULT_EMPTY_VALUE
+      return EMPTY_FIELD_PLACEHOLDER
     },
     [t]
   )

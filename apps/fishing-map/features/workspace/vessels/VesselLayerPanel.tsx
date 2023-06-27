@@ -275,7 +275,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                 <label>{t(`vessel.${field.id}` as any)}</label>
                 {fieldValues.map((fieldValue, i) => (
                   <span key={field.id + fieldValue}>
-                    {fieldValue ? getFieldValue(field, fieldValue as any) : '---'}
+                    {fieldValue ? getFieldValue(field, fieldValue as any) : EMPTY_FIELD_PLACEHOLDER}
                     {/* Field values separator */}
                     {i < fieldValues.length - 1 ? ', ' : ''}
                     {field.id === 'dataset' && infoOpen && gfwUser && (

@@ -79,11 +79,6 @@
   text-overflow: ellipsis;
 }
 
-.event .eventData .date {
-  font-size: 1rem;
-  line-height: var(--space-S);
-}
-
 .eventData .description {
   font: var(--font-XS);
   margin-top: var(--space-XS);
@@ -239,10 +234,6 @@ button.settingsLink {
 
 .eventLoading {
   margin: 0 var(--space-S);
-}
-
-.aisCoverageContainer {
-  padding-bottom: var(--space-S);
 }
 
 @media only screen and (max-width: 1280px) {

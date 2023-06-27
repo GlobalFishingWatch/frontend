@@ -1,13 +1,14 @@
 import { Fragment } from 'react'
-import { RenderedEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { EventTypeVoyage, RenderedVoyage, Voyage } from 'types/voyage'
-import ActivityEvent from '../ActivityEvent'
+import { ActivityEvent } from 'types/activity'
+import EventItem from '../event/Event'
 import VoyageGroup from './voyage-group'
+
 interface EventProps {
-  event: RenderedEvent | RenderedVoyage
+  event: RenderedVoyage
   highlighted?: boolean
-  onInfoClick?: (event: RenderedEvent) => void
-  onMapClick?: (event: RenderedEvent | Voyage) => void
+  onInfoClick?: (event: ActivityEvent) => void
+  onMapClick?: (event: ActivityEvent | Voyage) => void
   onToggleClick?: (event: RenderedVoyage) => void
   options?: {
     displayPortVisitsAsOneEvent: boolean
@@ -24,22 +25,24 @@ const ActivityItem: React.FC<EventProps> = ({
 }): React.ReactElement => {
   return (
     <Fragment>
-      {event.type === EventTypeVoyage.Voyage && (
-        <VoyageGroup
-          event={event}
-          onMapClick={onMapClick}
-          onToggleClick={onToggleClick}
-        ></VoyageGroup>
-      )}
-      {event.type !== EventTypeVoyage.Voyage && (
-        <ActivityEvent
-          event={event}
-          highlighted={highlighted}
-          onMapClick={onMapClick}
-          onInfoClick={onInfoClick}
-          options={options}
-        ></ActivityEvent>
-      )}
+      <VoyageGroup
+        event={event}
+        onMapClick={onMapClick}
+        onToggleClick={onToggleClick}
+      ></VoyageGroup>
+      {event.events &&
+        event.status !== 'collapsed' &&
+        event.events.length > 0 &&
+        event.events.map((voyageEvent) => (
+          <EventItem
+            key={voyageEvent.id}
+            event={voyageEvent}
+            highlighted={highlighted}
+            onMapClick={onMapClick}
+            onInfoClick={onInfoClick}
+            options={options}
+          ></EventItem>
+        ))}
     </Fragment>
   )
 }

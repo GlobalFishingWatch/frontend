@@ -1,19 +1,22 @@
 import React, { Fragment, useMemo } from 'react'
 import { DateTime } from 'luxon'
 import I18nDate from 'features/i18n/i18nDate'
-import { RenderedEvent } from 'features/vessel/activity/vessels-activity.selectors'
-import styles from './Activity.module.css'
+import { ActivityEvent } from 'types/activity'
+import styles from './ActivityDate.module.css'
+import useActivityEventConnect from './event/event.hook'
 
 interface ActivityDateProps {
-  event: RenderedEvent
+  event: ActivityEvent
   className?: any
 }
 
 const ActivityDate: React.FC<ActivityDateProps> = (props): React.ReactElement => {
   const event = props.event
+  const { getEventDurationDescription } = useActivityEventConnect()
+  const durationDescription = useMemo(() => getEventDurationDescription(event), [event])
 
   const showduration: boolean = useMemo(() => {
-    if (!event.durationDescription) {
+    if (!durationDescription) {
       return false
     }
     return !isNaN(event.end as number)
@@ -24,7 +27,7 @@ const ActivityDate: React.FC<ActivityDateProps> = (props): React.ReactElement =>
       {event.timestamp && (
         <label className={props.className ? props.className : styles.date}>
           <I18nDate date={event.timestamp as number} format={DateTime.DATETIME_SHORT} />
-          {showduration && <span> - {event.durationDescription}</span>}
+          {showduration && <span> - {durationDescription}</span>}
         </label>
       )}
     </Fragment>

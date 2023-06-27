@@ -13,10 +13,10 @@ import {
 } from 'features/vessel/vessel.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import VesselSummary from 'features/vessel/VesselSummary'
-import VesselActivity from 'features/vessel/VesselActivity'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import VesselIdentity from './VesselIdentity'
+import VesselActivity from './activity/VesselActivity'
 
 type VesselSection = 'activity' | 'relatedVessels' | 'areas'
 

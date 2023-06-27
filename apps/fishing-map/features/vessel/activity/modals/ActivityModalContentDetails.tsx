@@ -1,14 +1,14 @@
 import React, { Fragment, useCallback, useMemo } from 'react'
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
-import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import I18nDate from 'features/i18n/i18nDate'
-import { RenderedEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import { ActivityEvent } from 'types/activity'
+import useActivityEventConnect from '../event/event.hook'
 import ActivityModalContentField from './ActivityModalContentField'
 import styles from './ActivityModalDetails.module.css'
 
 interface ActivityModalContentProps {
-  event: RenderedEvent
+  event: ActivityEvent
   startLabel?: string
   endLabel?: string
 }
@@ -18,6 +18,7 @@ const ActivityModalContentDetails: React.FC<ActivityModalContentProps> = (
 ): React.ReactElement => {
   const event = props.event
   const { t } = useTranslation()
+  const { getEventDurationDescription } = useActivityEventConnect()
 
   const extractDistances = useCallback(
     (start?: number, end?: number) => {
@@ -60,10 +61,10 @@ const ActivityModalContentDetails: React.FC<ActivityModalContentProps> = (
             value={<I18nDate date={event.end} format={DateTime.DATETIME_FULL} />}
           />
         )}
-        {event.durationDescription && (
+        {getEventDurationDescription(event) && (
           <ActivityModalContentField
             label={t('event.duration', 'Duration')}
-            value={event.durationDescription}
+            value={getEventDurationDescription(event)}
           />
         )}
       </div>

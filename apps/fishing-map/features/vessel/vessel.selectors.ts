@@ -8,10 +8,12 @@ export const selectVesselEventsFilteredByTimerange = createSelector(
   (events, timerange) => {
     const startMillis = DateTime.fromISO(timerange.start as string, { zone: 'utc' }).toMillis()
     const endMillis = DateTime.fromISO(timerange.end as string, { zone: 'utc' }).toMillis()
-    if (!timerange) return events
-    return events?.filter((event) => {
-      return event.start >= startMillis && event.end <= endMillis
-    })
+    if (!timerange) return events ?? []
+    return (
+      events?.filter((event) => {
+        return event.start >= startMillis && event.end <= endMillis
+      }) || []
+    )
   }
 )
 

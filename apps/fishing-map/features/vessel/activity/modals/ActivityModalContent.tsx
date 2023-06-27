@@ -1,6 +1,6 @@
 import React, { Fragment, useMemo } from 'react'
 import { EventTypes } from '@globalfishingwatch/api-types'
-import { RenderedEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import { ActivityEvent } from 'types/activity'
 import ActivityModalContentDetailsFishing from './ActivityModalContentDetailsFishing'
 import ActivityModalContentDetailsLoitering from './ActivityModalContentDetailsLoitering'
 import ActivityModalContentDetailsEncounter from './ActivityModalContentDetailsEncounter'
@@ -10,7 +10,7 @@ import ActivityModalContentDetailsGap from './ActivityModalContentDetailsGap'
 import ActivityModalContentDetails from './ActivityModalContentDetails'
 
 interface ActivityModalContentProps {
-  event: RenderedEvent
+  event: ActivityEvent
 }
 
 const ActivityModalContent: React.FC<ActivityModalContentProps> = (props): React.ReactElement => {

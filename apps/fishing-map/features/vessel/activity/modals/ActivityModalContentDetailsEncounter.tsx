@@ -3,15 +3,13 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import { EventVessel } from '@globalfishingwatch/api-types'
 import { Spinner } from '@globalfishingwatch/ui-components'
-import { DEFAULT_EMPTY_VALUE } from 'data/config'
-import { RenderedEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import AuthIcon from 'features/vessel/auth-icon/AuthIcon'
 import ActivityModalContentField from './ActivityModalContentField'
 import ActivityModalContentDetails from './ActivityModalContentDetails'
 import styles from './ActivityModalDetails.module.css'
 
 interface ActivityModalContentProps {
-  event: RenderedEvent
+  event: ActivityEvent
 }
 
 const ActivityModalContentDetailsEncounter: React.FC<ActivityModalContentProps> = (

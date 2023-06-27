@@ -1,13 +1,13 @@
 import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
-import { DEFAULT_EMPTY_VALUE } from 'data/config'
-import { RenderedEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
+import { ActivityEvent } from 'types/activity'
 import ActivityModalContentDetails from './ActivityModalContentDetails'
 import ActivityModalContentField from './ActivityModalContentField'
 import styles from './ActivityModalDetails.module.css'
 
 interface ActivityModalContentProps {
-  event: RenderedEvent
+  event: ActivityEvent
 }
 
 const ActivityModalContentDetailsFishing: React.FC<ActivityModalContentProps> = (
@@ -26,7 +26,7 @@ const ActivityModalContentDetailsFishing: React.FC<ActivityModalContentProps> = 
               ? t('event.formatDistanceKm', '{{value}} km', {
                   value: event.fishing?.totalDistanceKm.toFixed(2),
                 })
-              : DEFAULT_EMPTY_VALUE
+              : EMPTY_FIELD_PLACEHOLDER
           }
         />
         <ActivityModalContentField
@@ -36,7 +36,7 @@ const ActivityModalContentDetailsFishing: React.FC<ActivityModalContentProps> = 
               ? t('event.formatSpeedKnots', '{{value}} knots', {
                   value: event.fishing?.averageSpeedKnots.toFixed(2),
                 })
-              : DEFAULT_EMPTY_VALUE
+              : EMPTY_FIELD_PLACEHOLDER
           }
         />
       </div>

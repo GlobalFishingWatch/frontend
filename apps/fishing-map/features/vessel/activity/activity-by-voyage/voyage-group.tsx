@@ -5,7 +5,7 @@ import { DateTime } from 'luxon'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { RenderedVoyage } from 'types/voyage'
-import styles from '../Activity.module.css'
+import styles from '../event/Event.module.css'
 
 interface EventProps {
   event: RenderedVoyage
@@ -19,7 +19,6 @@ const VoyageGroup: React.FC<EventProps> = ({
   onToggleClick = () => {},
 }): React.ReactElement => {
   const { t } = useTranslation()
-
   const voyageLabel = useMemo(() => {
     const parts: string[] = []
 
@@ -34,7 +33,6 @@ const VoyageGroup: React.FC<EventProps> = ({
           format: DateTime.DATE_FULL,
         })}`
       )
-      parts.push(`(${event.eventsQuantity} ${t('common.events', 'Events')})`)
     } else if (!event.to) {
       parts.push(t('event.currentVoyage' as any, 'Ongoing Voyage') as string)
       parts.push(
@@ -49,6 +47,7 @@ const VoyageGroup: React.FC<EventProps> = ({
         })}`
       )
     }
+    parts.push(`(${event.eventsQuantity} ${t('common.events', 'Events')})`)
 
     return parts.join(' ')
   }, [event, t])
@@ -74,7 +73,7 @@ const VoyageGroup: React.FC<EventProps> = ({
         {hasEvents && (
           <div className={styles.actions}>
             <IconButton
-              icon={event.status === 'expanded' ? 'arrow-down' : 'arrow-top'}
+              icon={event.status !== 'expanded' ? 'arrow-down' : 'arrow-top'}
               size="small"
               onClick={onToggle}
             ></IconButton>

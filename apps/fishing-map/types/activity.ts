@@ -1,14 +1,5 @@
-import {
-  ApiEvent,
-  EventAuthorization,
-  EventType,
-  EventTypes,
-  Regions,
-} from '@globalfishingwatch/api-types'
-import { GroupRegions } from 'features/regions/regions.slice'
-import { RenderedEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import { ApiEvent, EventAuthorization, Regions } from '@globalfishingwatch/api-types'
 
-export type ExpandableStatus = 'expanded' | 'collapsed'
 export interface EventVessel {
   id: string
   name: string
@@ -39,37 +30,9 @@ export interface ActivityEvent<Vessel = EventVessel> extends ApiEvent<Vessel> {
   boundingBox: number[]
   distances: Distances
   fishing: Fishing
-  timestamp?: number
-}
-export interface ActivityEventGroup {
-  event_type: EventTypes
-  event_places: GroupRegions[]
-  ocean?: string
-  start: string
-  end: string
-  open: boolean
-  entries: ActivityEvent[]
-}
-
-export interface ActivityEvents {
-  total: number
-  limit?: any
-  groups: ActivityEventGroup[]
-}
-
-export interface OfflineVesselActivity {
-  activities: ActivityEvent[]
-  profileId: string
-  savedOn: string
-}
-
-export interface EventGroup {
-  events: RenderedEvent[]
-  group: boolean
-  loading: boolean
-  quantity?: number
-  status: ExpandableStatus
-  type: EventType
+  timestamp: number
+  color?: string
+  subEvent?: PortVisitSubEvent
 }
 
 export enum PortVisitSubEvent {

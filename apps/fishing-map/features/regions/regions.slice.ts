@@ -7,6 +7,7 @@ import {
   createAsyncSlice,
 } from 'utils/async-slice'
 import { RootState } from 'store'
+import { sortFields } from 'utils/shared'
 
 export type RegionId = string | number
 export enum MarineRegionType {
@@ -27,21 +28,11 @@ export interface Regions {
   id: RegionId
   data: Region[]
 }
-export enum RegionStatus {
-  AsyncReducerStatus,
-}
 export type RegionsState = AsyncReducer<Regions>
-
-export const anyRegion: Region = {
-  id: '0-any',
-  label: 'any',
-}
 
 const initialState: RegionsState = {
   ...asyncInitialState,
 }
-
-const sortRegionAlphabetically = (a: Region, b: Region) => (a.label < b.label ? -1 : 1)
 
 export const fetchRegionsThunk = createAsyncThunk(
   'regions/fetch',
@@ -58,24 +49,15 @@ export const fetchRegionsThunk = createAsyncThunk(
       const result: Regions[] = [
         {
           id: MarineRegionType.eez,
-          data:
-            regions[0]?.status === 'fulfilled'
-              ? regions[0].value.sort(sortRegionAlphabetically)
-              : [],
+          data: regions[0]?.status === 'fulfilled' ? regions[0].value.sort(sortFields) : [],
         },
         {
           id: MarineRegionType.mpa,
-          data:
-            regions[1]?.status === 'fulfilled'
-              ? regions[1].value.sort(sortRegionAlphabetically)
-              : [],
+          data: regions[1]?.status === 'fulfilled' ? regions[1].value.sort(sortFields) : [],
         },
         {
           id: MarineRegionType.rfmo,
-          data:
-            regions[2]?.status === 'fulfilled'
-              ? regions[2].value.sort(sortRegionAlphabetically)
-              : [],
+          data: regions[2]?.status === 'fulfilled' ? regions[2].value.sort(sortFields) : [],
         },
       ]
       return result

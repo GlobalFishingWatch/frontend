@@ -46,7 +46,7 @@ const voyagesSlice = createSlice({
   },
 })
 
-export const selectVesselVoyages = (state: RootState) => state.voyages.voyages
+export const selectExpandedVoyages = (state: RootState) => state.voyages.voyages
 export const selectVoyagesInitialized = (state: RootState) => state.voyages.initialized
 
 export const { setVesselVoyagesInitialized, upsertVesselVoyagesExpanded } = voyagesSlice.actions
