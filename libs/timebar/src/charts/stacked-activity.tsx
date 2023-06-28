@@ -12,7 +12,10 @@ import { useUpdateChartsData } from './chartsData.atom'
 
 const MARGIN_BOTTOM = 20
 const MARGIN_TOP = 5
-
+const getSubLayers = (timeseries: Timeseries) =>
+  Object.keys(timeseries?.[0]).filter((k) => k !== 'frame' && k !== 'date')
+const getDataviewFromId = (dataviews: UrlDataviewInstance[], id: string) =>
+  dataviews.find((d) => d.id === id)
 const getPathContainers = (
   timeseries: Timeseries,
   graphHeight: number,
@@ -26,6 +29,7 @@ const getPathContainers = (
   const stackLayout = stack().keys(subLayers).offset(stackOffsetSilhouette)
 
   const series = stackLayout(timeseries)
+  debugger
   const maxY = max(series, (d) => max(d, (d) => d[1])) as number
   const y = scaleLinear()
     .domain([0, maxY])
@@ -73,15 +77,15 @@ const StackedActivity = ({
     highlighterIconCallback
   )
   useUpdateChartsData('activity', dataAsTimebarChartData)
-  const hasDataviews = dataviews?.length > 0
-
+  const subLayers = getSubLayers(timeseries)
+  const hasSublayers = subLayers?.length > 0
   const pathContainers = useMemo(() => {
     const pathContainers = getPathContainers(timeseries, graphHeight, overallScale)
     return pathContainers
   }, [timeseries, graphHeight, overallScale])
 
   const middleY = graphHeight / 2 - MARGIN_BOTTOM / 2
-
+  debugger
   return (
     <svg width={outerWidth} height={graphHeight}>
       <g
@@ -90,14 +94,17 @@ const StackedActivity = ({
           transition: immediate ? 'none' : `transform ${DEFAULT_CSS_TRANSITION}`,
         }}
       >
-        {hasDataviews &&
+        {hasSublayers &&
           pathContainers &&
           pathContainers.map((pathContainer, sublayerIndex) => {
             return dataviews[sublayerIndex] ? (
               <g key={sublayerIndex} transform={`translate(0, ${middleY})`}>
                 <path
                   d={pathContainer.path || ''}
-                  fill={dataviews[sublayerIndex].config?.color || '#ffffff'}
+                  fill={
+                    getDataviewFromId(dataviews, subLayers[sublayerIndex])?.config?.color ||
+                    '#ffffff'
+                  }
                 />
               </g>
             ) : null
