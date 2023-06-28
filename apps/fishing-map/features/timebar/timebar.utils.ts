@@ -36,7 +36,10 @@ export const parseTrackEventChunkProps = (
   }
 }
 
-export function getGraphFromGridCellsData(cells: TileCell[]): ActivityTimeseriesFrame[] {
+export function getGraphFromGridCellsData(
+  cells: TileCell[],
+  visibleSublayersIds: string[]
+): ActivityTimeseriesFrame[] {
   const resultMap: {
     [timestamp: number]: {
       [category: string]: number
@@ -76,6 +79,12 @@ export function getGraphFromGridCellsData(cells: TileCell[]): ActivityTimeseries
     for (const category in resultMap[timestamp]) {
       dataEntry[category] = resultMap[timestamp][category]
     }
+
+    visibleSublayersIds.forEach((category) => {
+      if (!resultMap[timestamp][category]) {
+        dataEntry[category] = 0
+      }
+    })
 
     output.push(dataEntry)
   }
