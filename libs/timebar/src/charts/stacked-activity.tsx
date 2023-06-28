@@ -18,18 +18,17 @@ const getDataviewFromId = (dataviews: UrlDataviewInstance[], id: string) =>
   dataviews.find((d) => d.id === id)
 const getPathContainers = (
   timeseries: Timeseries,
+  subLayers: string[],
   graphHeight: number,
   overallScale: TimelineScale
 ) => {
   if (!timeseries) return []
-  const subLayers = Object.keys(timeseries?.[0]).filter((k) => k !== 'frame' && k !== 'date')
   const numSubLayers = subLayers.length
   if (!numSubLayers) return []
 
   const stackLayout = stack().keys(subLayers).offset(stackOffsetSilhouette)
 
   const series = stackLayout(timeseries)
-  debugger
   const maxY = max(series, (d) => max(d, (d) => d[1])) as number
   const y = scaleLinear()
     .domain([0, maxY])
@@ -77,15 +76,14 @@ const StackedActivity = ({
     highlighterIconCallback
   )
   useUpdateChartsData('activity', dataAsTimebarChartData)
-  const subLayers = getSubLayers(timeseries)
+  const subLayers = useMemo(() => getSubLayers(timeseries), [timeseries])
   const hasSublayers = subLayers?.length > 0
   const pathContainers = useMemo(() => {
-    const pathContainers = getPathContainers(timeseries, graphHeight, overallScale)
+    const pathContainers = getPathContainers(timeseries, subLayers, graphHeight, overallScale)
     return pathContainers
-  }, [timeseries, graphHeight, overallScale])
+  }, [timeseries, graphHeight, overallScale, subLayers])
 
   const middleY = graphHeight / 2 - MARGIN_BOTTOM / 2
-  debugger
   return (
     <svg width={outerWidth} height={graphHeight}>
       <g
