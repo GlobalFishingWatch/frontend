@@ -44,8 +44,6 @@ function VesselsSection({ lastUpdate }) {
   )
 
   useEffect(() => {
-    console.log('useEffect', sublayerWaitingToLoad, allLoaded)
-
     if (sublayerWaitingToLoad && allLoaded) {
       fitBoundsToSublayer(sublayerWaitingToLoad)
       setSublayerWaitingToLoad('')

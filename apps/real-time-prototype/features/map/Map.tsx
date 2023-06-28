@@ -142,6 +142,7 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
       .filter((f) => f.object?.properties?.mmsi)
       .sort((a, b) => b.object?.properties?.timestamp - a.object?.properties?.timestamp)
     const count = features[0]?.object?.properties?.count
+    const mapWidth = window.innerWidth - 320
     if (vessels.length > 0 || count) {
       return (
         <div
@@ -150,7 +151,8 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
             position: 'absolute',
             zIndex: 1,
             pointerEvents: 'none',
-            left: features[0].x + 20,
+            left: features[0].x <= mapWidth / 2 ? features[0].x + 20 : undefined,
+            right: features[0].x > mapWidth / 2 ? mapWidth - features[0].x + 20 : undefined,
             top: features[0].y,
             backgroundColor: '#ffffff',
             padding: '1rem',
@@ -186,6 +188,7 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
   }
 
   const getCursor = ({ isDragging, isHovering }) => {
+    // TODO: check why this is not working
     if (isHovering) return 'pointer'
     return isDragging ? 'grabbing' : 'grab'
   }
