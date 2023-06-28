@@ -1,29 +1,75 @@
 import { useEffect, useState } from 'react'
-import { initialize as uaInitialize, set as uaSet, pageview, event as uaEvent } from 'react-ga'
+import { snakeCase } from 'lodash'
+import ReactGA from 'react-ga4'
 import {
   GOOGLE_TAG_MANAGER_ID,
-  GOOGLE_UNIVERSAL_ANALYTICS_ID,
-  GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS,
+  GOOGLE_MEASUREMENT_ID,
   IS_PRODUCTION,
+  WORKSPACE_ENV,
 } from 'data/config'
 import { useUser } from 'features/user/user.hooks'
 
+export const GOOGLE_ANALYTICS_INIT_OPTIONS =
+  WORKSPACE_ENV === 'production' ? {} : { testMode: true }
+
+export enum TrackCategory {
+  GeneralVVFeatures = 'general_vv_features',
+  HighlightEvents = 'highlight_events',
+  OfflineAccess = 'offline_access',
+  SearchVesselVV = 'search_vessel_vv',
+  User = 'user',
+  VesselDetailActivityByTypeTab = 'vessel_detail_activity_by_type_tab',
+  VesselDetailActivityOrMapTab = 'vessel_detail_activity_or_map_tab',
+  VesselDetailActivityTab = 'vessel_detail_activity_tab',
+  VesselDetailInfoTab = 'vessel_detail_info_tab',
+  VesselDetailMapTab = 'vessel_detail_map_tab',
+  VesselDetailRiskSummaryTab = 'vessel_detail_risk_summary_tab',
+  VesselDetail = 'vessel_detail',
+}
+
+export type TrackEventParams = {
+  category: TrackCategory
+  action: string
+  label?: string
+  value?: any
+}
+
+export const trackEvent = ({ category, action, label, value }: TrackEventParams) => {
+  /**
+   * IMPORTANT
+   *
+   * To send the category and action in snake_case to GA4
+   * it is necessary to use this:
+   * ```
+   * ReactGA.event(name, params)
+   * ```
+   * method signature so they won't be converted to title case.
+   *
+   * https://github.com/codler/react-ga4/issues/15
+   */
+  ReactGA.event(category, {
+    action: snakeCase(action),
+    label,
+    value,
+  })
+}
+
 export const useAnalytics = () => {
   useEffect(() => {
-    if (GOOGLE_UNIVERSAL_ANALYTICS_ID) {
-      uaInitialize(GOOGLE_UNIVERSAL_ANALYTICS_ID, {
-        ...GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS,
+    if (GOOGLE_MEASUREMENT_ID) {
+      ReactGA.initialize(GOOGLE_MEASUREMENT_ID, {
+        ...GOOGLE_ANALYTICS_INIT_OPTIONS,
       })
       // Uncomment to prevent sending hits in non-production envs
       if (!IS_PRODUCTION) {
-        uaSet({ sendHitTask: null })
+        ReactGA.set({ sendHitTask: null })
       }
     }
   }, [])
 
   useEffect(() => {
-    if (GOOGLE_UNIVERSAL_ANALYTICS_ID || GOOGLE_TAG_MANAGER_ID) {
-      pageview(window.location.pathname + window.location.search)
+    if (GOOGLE_MEASUREMENT_ID || GOOGLE_TAG_MANAGER_ID) {
+      ReactGA.send({ hitType: 'pageview', page: window.location.pathname + window.location.search })
     }
   }, [])
   const { user, logged } = useUser()
@@ -37,15 +83,15 @@ export const useAnalytics = () => {
   }, [logged])
 
   useEffect(() => {
-    if (user && GOOGLE_UNIVERSAL_ANALYTICS_ID && trackLogin) {
-      uaSet({
+    if (user && GOOGLE_MEASUREMENT_ID && trackLogin) {
+      ReactGA.set({
         dimension3: `${JSON.stringify(user.groups)}` ?? '',
         dimension4: user.organizationType ?? '',
         dimension5: user.organization ?? '',
         dimension6: user.country ?? '',
         dimension7: user.language ?? '',
       })
-      uaSet({
+      ReactGA.set({
         userProperties: {
           userGroup: user.groups,
           userOrgType: user.organizationType,
@@ -54,8 +100,8 @@ export const useAnalytics = () => {
           userLanguage: user.language,
         },
       })
-      uaEvent({
-        category: 'User',
+      trackEvent({
+        category: TrackCategory.User,
         action: 'Login',
       })
       setTrackLogin(false)

@@ -1,12 +1,12 @@
 import { Suspense, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { event as uaEvent } from 'react-ga'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
 import { useTranslation } from 'react-i18next'
 import { Modal, Spinner } from '@globalfishingwatch/ui-components'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { DEFAULT_VESSEL_MAP_ZOOM, IS_STANDALONE_APP } from 'data/config'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   RenderedEvent,
   selectHighlightEventIds,
@@ -43,8 +43,8 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
   const onToggleEventType = useCallback(
     (event) => {
       toggleEventType(event)
-      uaEvent({
-        category: 'Vessel Detail ACTIVITY BY TYPE Tab',
+      trackEvent({
+        category: TrackCategory.VesselDetailActivityByTypeTab,
         action: 'View list of events by activity type',
         label: JSON.stringify({ type: event }),
       })
