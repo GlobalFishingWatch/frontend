@@ -13,7 +13,7 @@ function Sidebar({ lastUpdate }) {
       <div className="scrollContainer">
         <SidebarHeader />
         <div className={styles.row}>
-          <label>Last update</label>
+          <label>Last data update</label>
           {lastUpdate ? (
             <Tooltip content={formattedLastUpdate.toLocaleString(DateTime.DATETIME_FULL)}>
               <span>{getTimeAgo(formattedLastUpdate)}</span>

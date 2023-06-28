@@ -2,7 +2,6 @@ import { useCallback, useEffect } from 'react'
 import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
 import { LatestPositions } from 'layers/latest-positions/LatestPositions'
 import { useMapLayers } from 'features/map/layers.hooks'
-import { useViewport } from 'features/map/map-viewport.hooks'
 
 type LatestPositionsAtom = {
   loaded: boolean
@@ -17,13 +16,11 @@ export const latestPositionsAtom = atom<LatestPositionsAtom>({
   },
 })
 
-export function useLatestPositionsLayer({ token, lastUpdate }) {
+export function useLatestPositionsLayer({ token, lastUpdate, vessels }) {
   const [{ instance }, updateAtom] = useRecoilState(latestPositionsAtom)
-  const { viewState } = useViewport()
   const [mapLayers] = useMapLayers()
   const layer = mapLayers.find((l) => l.id === 'latest-positions')
   const layerVisible = layer?.visible
-  const roundedZoom = Math.floor(viewState.zoom)
   const setAtomProperty = useCallback(
     (property) => updateAtom((state) => ({ ...state, ...property })),
     [updateAtom]
@@ -37,15 +34,16 @@ export function useLatestPositionsLayer({ token, lastUpdate }) {
     if (layerVisible && lastUpdate) {
       const latestPositions = new LatestPositions({
         onDataLoad: onDataLoad,
-        zoom: roundedZoom,
         token,
         lastUpdate,
+        vessels,
       })
       setAtomProperty({ instance: latestPositions })
     } else {
       setAtomProperty({ instance: undefined, loaded: false })
     }
-  }, [layerVisible, updateAtom, onDataLoad, setAtomProperty, roundedZoom, token, lastUpdate])
+  }, [layerVisible, updateAtom, onDataLoad, setAtomProperty, token, lastUpdate, vessels])
+
   return instance
 }
 

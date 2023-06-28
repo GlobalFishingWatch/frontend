@@ -34,9 +34,13 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
   const basemapLayer = useBasemapLayer()
   const contextLayer = useContextsLayer()
   const tracksLayer = useTracksLayer({ token: GFWAPI.getToken(), lastUpdate })
-  const latestPositionsLayer = useLatestPositionsLayer({ token: GFWAPI.getToken(), lastUpdate })
+  const { addTrackSublayer, sublayers } = useTracksSublayers()
+  const latestPositionsLayer = useLatestPositionsLayer({
+    token: GFWAPI.getToken(),
+    lastUpdate,
+    vessels: sublayers,
+  })
   const [hoveredFeatures, setHoveredFeatures] = useAtom(hoveredFeaturesAtom)
-  const { addTrackSublayer } = useTracksSublayers()
   const [bounds, setBounds] = useState<MiniglobeBounds>()
   const [currentBasemap, setCurrentBasemap] = useState<BasemapType>(BasemapType.Satellite)
   const [labelsShown, setLabelsShown] = useState<boolean>(true)
@@ -174,7 +178,9 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
                 </div>
                 <div>
                   <label>SPEED</label>
-                  {parseInt(f.object.properties.speed)} knots
+                  {f.object.properties.speed
+                    ? `${f.object.properties.speed.toFixed(1)} knots`
+                    : '---'}
                 </div>
               </div>
             ))}

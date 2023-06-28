@@ -2,23 +2,25 @@ import { IconLayer } from '@deck.gl/layers/typed'
 import { MVTLayer, MVTLayerProps } from '@deck.gl/geo-layers/typed'
 import { Color, CompositeLayer } from '@deck.gl/core/typed'
 import { ckmeans, mean, sample, standardDeviation } from 'simple-statistics'
+import { TrackSublayer } from 'layers/tracks/tracks.hooks'
 import {
   COLOR_RAMP_DEFAULT_NUM_STEPS,
   HEATMAP_COLOR_RAMPS,
+  hexToComponents,
   rgbaStringToComponents,
 } from '@globalfishingwatch/layer-composer'
 import { API_BASE } from 'data/config'
 import { GFWLayerProps } from 'features/map/Map'
 
 const ICON_MAPPING = {
-  vessel: { x: 4, y: 0, width: 14, height: 40, mask: true },
+  vessel: { x: 0, y: 0, width: 22, height: 40, mask: true },
   vesselHighlight: { x: 24, y: 0, width: 22, height: 40, mask: false },
   arrow: { x: 6, y: 0, width: 10, height: 30, mask: true },
   circle: { x: 46, y: 0, width: 17, height: 17, mask: true },
 }
 const SWITCH_ZOOM = 7
 
-export type LatestPositionsLayerProps = MVTLayerProps & GFWLayerProps
+export type LatestPositionsLayerProps = MVTLayerProps & GFWLayerProps & { vessels: TrackSublayer[] }
 export class LatestPositions extends CompositeLayer<LatestPositionsLayerProps> {
   static layerName = 'LatestPositionsLayer'
 
@@ -121,17 +123,41 @@ export class LatestPositions extends CompositeLayer<LatestPositionsLayerProps> {
         maxZoom: 10,
         binary: false,
         pickable: true,
-        renderSubLayers: (props) => {
-          return new IconLayer(props, {
+        updateTriggers: {
+          getColor: [this.props.vessels],
+          getSize: [this.props.vessels],
+        },
+        renderSubLayers: (props) => [
+          new IconLayer(props, {
             iconAtlas: './positions/vessel-sprite.png',
             iconMapping: ICON_MAPPING,
             getAngle: (d) => d.properties.course,
-            getColor: this.colorRange[5],
+            getColor: (d) => {
+              const matchedVessel = this.props.vessels.find((v) => v.id === d.properties.mmsi)
+              return matchedVessel
+                ? (hexToComponents(matchedVessel.color) as Color)
+                : this.colorRange[5]
+            },
             getIcon: () => 'vessel',
             getPosition: (d) => d.geometry.coordinates,
-            getSize: 15,
-          })
-        },
+            getSize: (d) => {
+              const matchedVessel = this.props.vessels.find((v) => v.id === d.properties.mmsi)
+              return matchedVessel ? 25 : 15
+            },
+          }),
+          new IconLayer(props, {
+            id: `${props.id}-highlight`,
+            iconAtlas: './positions/vessel-sprite.png',
+            iconMapping: ICON_MAPPING,
+            getAngle: (d) => d.properties.course,
+            getIcon: () => 'vesselHighlight',
+            getPosition: (d) => d.geometry.coordinates,
+            getSize: (d) => {
+              const matchedVessel = this.props.vessels.find((v) => v.id === d.properties.mmsi)
+              return matchedVessel ? 26 : 0
+            },
+          }),
+        ],
       }),
     ]
   }

@@ -106,8 +106,6 @@ const tracksLayerLoadedAtomSelector = selector({
   key: 'tracksLayerLoadedAtomSelector',
   dangerouslyAllowMutability: true,
   get: ({ get }) => {
-    console.log(get(tracksLayerAtom)?.loaded)
-
     return get(tracksLayerAtom)?.loaded
   },
 })
