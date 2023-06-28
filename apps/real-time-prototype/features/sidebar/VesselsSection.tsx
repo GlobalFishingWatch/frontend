@@ -1,12 +1,12 @@
 import { ChangeEvent, useCallback, useEffect, useState } from 'react'
-import { useTracksLayerInstance, useTracksSublayers } from 'layers/tracks/tracks.hooks'
+import { useTracksSublayers } from 'layers/tracks/tracks.hooks'
 import { WebMercatorViewport } from '@deck.gl/core/typed'
 import { Button, IconButton, InputText, Spinner, Switch } from '@globalfishingwatch/ui-components'
 import { useViewport } from 'features/map/map-viewport.hooks'
 import styles from './Sidebar.module.css'
 
 function VesselsSection({ lastUpdate }) {
-  const [query, setQuery] = useState('412549174')
+  const [query, setQuery] = useState('')
   const [sublayerWaitingToLoad, setSublayerWaitingToLoad] = useState('')
   const { setMapCoordinates } = useViewport()
   const { allLoaded, sublayers, toggleTrackSublayer, addTrackSublayer, removeTrackSublayer } =
