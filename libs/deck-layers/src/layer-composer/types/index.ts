@@ -1,6 +1,6 @@
 import { BasemapDeckLayerGenerator } from './basemap'
 import { VesselDeckLayersGenerator } from './vessel'
-import { FourwingsDeckLayerGenerator } from './fourwings'
+import { FourwingsDataviewCategory, FourwingsDeckLayerGenerator } from './fourwings'
 
 export enum DeckLayersGeneratorType {
   Vessels = 'VESSELS',
@@ -15,4 +15,4 @@ export { BasemapDeckLayerGenerator, VesselDeckLayersGenerator, FourwingsDeckLaye
 export type AnyDeckLayersGenerator =
   | BasemapDeckLayerGenerator
   | VesselDeckLayersGenerator[]
-  | FourwingsDeckLayerGenerator[]
+  | { [key in FourwingsDataviewCategory]: FourwingsDeckLayerGenerator[] }

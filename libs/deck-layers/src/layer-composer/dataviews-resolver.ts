@@ -1,4 +1,4 @@
-import { DatasetTypes, EventType, Resource, DataviewCategory } from '@globalfishingwatch/api-types'
+import { DatasetTypes, EventType, Resource } from '@globalfishingwatch/api-types'
 import {
   isHeatmapAnimatedDataview,
   isTrackDataview,
@@ -11,9 +11,9 @@ import {
   DeckLayersGeneratorDictionary,
   DeckLayersGeneratorType,
   VesselDeckLayersGenerator,
-  FourwingsDeckLayerGenerator,
 } from '@globalfishingwatch/deck-layers'
 import { parseEvents } from '../loaders/vessels/eventsLoader'
+import { FourwingsDataviewCategory, FourwingsDeckLayerGenerator } from './types/fourwings'
 
 type DataviewsGeneratorResource = Record<string, Resource>
 
@@ -49,23 +49,39 @@ export function getDataviewsGeneratorsDictionary(
       }),
     [DeckLayersGeneratorType.Fourwings]: dataviews
       .filter((dataview) => isHeatmapAnimatedDataview(dataview))
-      .map((dataview): FourwingsDeckLayerGenerator => {
-        return {
-          id: dataview.id,
-          category: dataview.category as DataviewCategory,
-          visible: dataview.config?.visible ?? true,
-          sublayers: [
-            {
-              id: dataview.id,
-              datasets: dataview.config?.datasets,
-              config: {
-                color: dataview.config?.color as string,
-                colorRamp: dataview.config?.colorRamp,
-                visible: dataview.config?.visible,
+      .reduce(
+        (acc, dataview): { [key in FourwingsDataviewCategory]: FourwingsDeckLayerGenerator[] } => {
+          const category = dataview.category as FourwingsDataviewCategory | undefined
+          const generator: FourwingsDeckLayerGenerator = {
+            id: dataview.id,
+            category: category!,
+            visible: dataview.config?.visible ?? true,
+            sublayers: [
+              {
+                id: dataview.id,
+                datasets: dataview.config?.datasets,
+                config: {
+                  color: dataview.config?.color as string,
+                  colorRamp: dataview.config?.colorRamp,
+                  visible: dataview.config?.visible,
+                },
               },
-            },
-          ],
-        }
-      }),
+            ],
+          }
+          if (acc[category!]) {
+            return {
+              ...acc,
+              [category!]: [...acc[category!], generator],
+            }
+          } else {
+            return {
+              ...acc,
+              [category!]: [generator],
+            }
+          }
+          // }
+        },
+        {} as { [key in FourwingsDataviewCategory]: FourwingsDeckLayerGenerator[] }
+      ),
   }
 }

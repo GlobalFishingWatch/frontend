@@ -1,6 +1,5 @@
 import { Color, CompositeLayer, Layer, LayersList, PickingInfo } from '@deck.gl/core/typed'
 import { TileLayerProps } from '@deck.gl/geo-layers/typed'
-import { initial } from 'lodash'
 import {
   FourwingsHeatmapTileLayerProps,
   FourwingsHeatmapTileLayer,

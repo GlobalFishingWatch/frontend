@@ -1,11 +1,11 @@
 import { useEffect, useMemo } from 'react'
 import { atom, useSetAtom, useAtomValue } from 'jotai'
 import { selectAtom } from 'jotai/utils'
-import { groupBy } from 'lodash'
 import { DataviewCategory, EventTypes } from '@globalfishingwatch/api-types'
 import { FourwingsDeckLayerGenerator } from '../../layer-composer/types'
 import { sortFourwingsLayers } from '../../utils/sort'
-import { FourwingsLayer } from './FourwingsLayer'
+import { FourwingsLayer, FourwingsLayerProps } from './FourwingsLayer'
+import { FourwingsSublayerId } from './fourwings.types'
 
 const dateToMs = (date: string) => {
   return new Date(date).getTime()
@@ -55,7 +55,7 @@ export const useSetFourwingsLayers = (
   const { start, end } = globalConfig
 
   const setFourwingsLayers = useSetAtom(fourwingsLayersAtom)
-
+  const previousLayers = useAtomValue(fourwingsLayersAtom)
   const setFourwingsLoadedState = useSetAtom(
     atom(null, (get, set, id: FourwingsLayerState['id']) =>
       set(fourwingsLayersAtom, (prevVessels) => {
@@ -72,50 +72,69 @@ export const useSetFourwingsLayers = (
     )
   )
 
-  const onViewportLoad = (id: string) => {
+  const onViewportLoad: FourwingsLayerProps['onViewportLoad'] = (id: string) => {
     setFourwingsLoadedState(id)
   }
 
   const startTime = useMemo(() => (start ? dateToMs(start) : undefined), [start])
   const endTime = useMemo(() => (end ? dateToMs(end) : undefined), [end])
-  const visibleSubayersIds = useMemo(
-    () => fourwingsLayersGenerator.filter((l) => l.visible).map((l) => l.id),
+  const visibleSublayersIds: Record<string, FourwingsSublayerId[]> = useMemo(
+    () =>
+      Object.keys(fourwingsLayersGenerator).reduce(
+        (acc, category) => ({
+          ...acc,
+          [category]: fourwingsLayersGenerator[category].filter((l) => l.visible).map((l) => l.id),
+        }),
+        {}
+      ),
     [fourwingsLayersGenerator]
   )
 
   useEffect(() => {
-    const groupedLayers = groupBy(fourwingsLayersGenerator, 'category')
-    Object.keys(groupedLayers).forEach((category) => {
-      if (groupedLayers[category].some((sublayer) => sublayer.visible)) {
-        const instance = new FourwingsLayer({
-          minFrame: startTime,
-          maxFrame: endTime,
-          // mode: activityMode,
-          mode: 'heatmap',
-          debug: false,
-          visibleSubayersIds,
-          sublayers: groupedLayers[category].filter((l) => l.visible).flatMap((l) => l.sublayers),
-          category: category as DataviewCategory,
-          onViewportLoad,
-          // onVesselHighlight: onVesselHighlight,
-          // onVesselClick: onVesselClick,
-          // resolution: 'high',
-          // hoveredFeatures: hoveredFeatures,
-          // clickedFeatures: clickedFeatures,
-        })
-        setFourwingsLayers((prevVessels) => {
-          const updatedVessels = prevVessels.filter((v) => v.id !== category)
-          updatedVessels.push({
-            id: category,
-            instance,
-            loaded: false,
+    Object.keys(fourwingsLayersGenerator).forEach((category: string) => {
+      if (fourwingsLayersGenerator[category].some((l) => l.visible)) {
+        const previousLayer = previousLayers.length && previousLayers.find((l) => l.id === category)
+        if (
+          previousLayer &&
+          previousLayer.instance.props.visibleSublayersIds === visibleSublayersIds[category]
+        ) {
+          return
+        } else {
+          const instance = new FourwingsLayer({
+            minFrame: startTime,
+            maxFrame: endTime,
+            // mode: activityMode,
+            mode: 'heatmap',
+            debug: false,
+            visibleSublayersIds: visibleSublayersIds[category],
+            sublayers: fourwingsLayersGenerator[category]
+              .filter((l) => l.visible)
+              .flatMap((l) => l.sublayers),
+            category: category as DataviewCategory,
+            onViewportLoad,
+            // onVesselHighlight: onVesselHighlight,
+            // onVesselClick: onVesselClick,
+            // resolution: 'high',
+            // hoveredFeatures: hoveredFeatures,
+            // clickedFeatures: clickedFeatures,
           })
-          return updatedVessels
-        })
+          setFourwingsLayers((prevVessels) => {
+            const updatedVessels = prevVessels.filter((v) => v.id !== category)
+            updatedVessels.push({
+              id: category,
+              instance,
+              loaded: false,
+            })
+            return updatedVessels
+          })
+        }
+      } else {
+        // filterout the layers that are not visible
+        setFourwingsLayers((previousLayers) => previousLayers.filter((l) => l.id !== category))
       }
     })
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [start, end, visibleSubayersIds])
+  }, [startTime, endTime, visibleSublayersIds])
   return useAtomValue(fourwingsLayersInstancesSelector)
 }
