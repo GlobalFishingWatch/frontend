@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import ReactGA from 'react-ga4'
+import { snakeCase } from 'lodash'
 import { selectUserData } from 'features/user/user.slice'
 import { GOOGLE_TAG_MANAGER_ID, GOOGLE_MEASUREMENT_ID, IS_PRODUCTION } from 'data/config'
 import { selectLocationCategory } from 'routes/routes.selectors'
@@ -8,18 +9,18 @@ import { selectLocationCategory } from 'routes/routes.selectors'
 const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS = IS_PRODUCTION ? {} : { testMode: true }
 
 export enum TrackCategory {
-  ActivityData = 'Activity data',
-  Analysis = 'Analysis',
-  DataDownloads = 'Data downloads',
-  EnvironmentalData = 'Environmental data',
-  HelpHints = 'Help hints',
-  I18n = 'Internationalization',
-  ReferenceLayer = 'Reference Layer',
-  Timebar = 'Timebar',
-  Tracks = 'Tracks',
-  SearchVessel = 'Search Vessel',
-  VesselGroups = 'Vessel groups',
-  WorkspaceManagement = 'Workspace Management',
+  ActivityData = 'activity_data',
+  Analysis = 'analysis',
+  DataDownloads = 'data_downloads',
+  EnvironmentalData = 'environmental_data',
+  HelpHints = 'help_hints',
+  I18n = 'internationalization',
+  ReferenceLayer = 'reference_layer',
+  Timebar = 'timebar',
+  Tracks = 'tracks',
+  SearchVessel = 'search_vessel',
+  VesselGroups = 'vessel_groups',
+  WorkspaceManagement = 'workspace_management',
 }
 
 export type TrackEventParams = {
@@ -29,7 +30,17 @@ export type TrackEventParams = {
   value?: any
 }
 export const trackEvent = ({ category, action, label, value }: TrackEventParams) => {
-  ReactGA.event({ category, action, label, value })
+  /**
+   * https://github.com/codler/react-ga4/issues/15
+   * To send the category and action in snake_case to GA4
+   * without be converted to title case is necessary to use:
+   * ReactGA.event(name, params)
+   */
+  ReactGA.event(category, {
+    action: snakeCase(action),
+    label,
+    value,
+  })
 }
 
 export const useAnalytics = () => {
