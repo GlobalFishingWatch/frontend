@@ -1,6 +1,5 @@
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import cx from 'classnames'
-import { event as uaEvent } from 'react-ga'
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import ImageGallery from 'react-image-gallery'
@@ -8,6 +7,7 @@ import { DateTime, Interval } from 'luxon'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
 import { VesselType } from '@globalfishingwatch/api-types'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
+import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import { VesselWithHistory } from 'types'
 import I18nDate, { formatI18nSpecialDate } from 'features/i18n/i18nDate'
 import { selectCurrentOfflineVessel } from 'features/vessels/offline-vessels.selectors'
@@ -71,8 +71,8 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
       const now = DateTime.utc()
       const savedOn = getUTCDateTime(data.savedOn)
       const i = Interval.fromDateTimes(savedOn, now)
-      uaEvent({
-        category: 'Offline Access',
+      trackEvent({
+        category: TrackCategory.OfflineAccess,
         action: 'Remove saved vessel for offline view',
         label: JSON.stringify({ page: 'vessel detail' }),
         value: Math.floor(i.length('days')),
@@ -87,8 +87,8 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
 
   const onSaveClick = async (data: VesselWithHistory) => {
     setLoading(true)
-    uaEvent({
-      category: 'Offline Access',
+    trackEvent({
+      category: TrackCategory.OfflineAccess,
       action: 'Save vessel for offline view',
       label: JSON.stringify({
         gfw: vesselId,
@@ -150,8 +150,8 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   )
 
   const onContactUsClick = useCallback(() => {
-    uaEvent({
-      category: 'Vessel Detail INFO Tab',
+    trackEvent({
+      category: TrackCategory.VesselDetailInfoTab,
       action: 'Click Contact Us ',
       label: JSON.stringify({
         tmtMatchId: vesselTmtId,
