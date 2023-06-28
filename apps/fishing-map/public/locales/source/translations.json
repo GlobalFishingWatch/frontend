@@ -82,6 +82,7 @@
     "category": "Category",
     "comingSoon": "coming soon!",
     "confirm": "Confirm",
+    "confirmLeave": "Are you sure you want to leave without saving your workspace?",
     "context_area_other": "Context areas",
     "continue": "Continue",
     "copiedToClipboard": "The link to share this view has been copied to your clipboard.",
