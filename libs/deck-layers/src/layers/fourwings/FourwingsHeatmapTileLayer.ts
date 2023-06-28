@@ -42,7 +42,7 @@ export type _FourwingsHeatmapTileLayerProps = {
   zIndex?: number
   category: DataviewCategory
   sublayers: FourwingsSublayer[]
-  visibleSubayersIds: FourwingsSublayerId[]
+  visibleSublayersIds: FourwingsSublayerId[]
   onTileLoad?: (tile: Tile2DHeader, allTilesLoaded: boolean) => void
   onViewportLoad?: (string: string) => void
 }
@@ -219,7 +219,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         onTileLoad: this._onTileLoad,
         getTileData: this._getTileData,
         updateTriggers: {
-          getTileData: [cacheKey, this.props.visibleSubayersIds],
+          getTileData: [cacheKey, this.props.visibleSublayersIds],
         },
         onViewportLoad: this._onViewportLoad,
         renderSubLayers: (props: any) => {
