@@ -1,18 +1,22 @@
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, useCallback, useMemo, useRef, useState } from 'react'
 import { DeckGL, DeckGLRef } from '@deck.gl/react/typed'
-import { MapView, PickingInfo } from '@deck.gl/core/typed'
+import { MapView, PickingInfo, WebMercatorViewport } from '@deck.gl/core/typed'
 import { useBasemapLayer } from 'layers/basemap/basemap.hooks'
 import { useAtom } from 'jotai'
 import { useContextsLayer } from 'layers/context/context.hooks'
 import { useLatestPositionsLayer } from 'layers/latest-positions/latest-positions.hooks'
-import { useTracksLayer } from 'layers/tracks/tracks.hooks'
-import { redirectToLogin, useGFWLogin } from '@globalfishingwatch/react-hooks'
+import { useTracksLayer, useTracksSublayers } from 'layers/tracks/tracks.hooks'
+import { BitmapLayer } from '@deck.gl/layers/typed'
+import { TileLayer } from '@deck.gl/geo-layers/typed'
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import { MiniGlobe, MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { useURLViewport, useViewport } from 'features/map/map-viewport.hooks'
-import { hoveredFeaturesAtom, clickedFeaturesAtom } from 'features/map/map-picking.hooks'
-import { zIndexSortedArray } from 'utils/layers'
-import { API_BASE } from 'data/config'
+import { hoveredFeaturesAtom } from 'features/map/map-picking.hooks'
+import { getTimeAgo } from 'utils/dates'
 import styles from './map.module.css'
+
+const API_GATEWAY = 'https://gateway.api.dev.globalfishingwatch.org'
+const API_GATEWAY_VERSION = 'v2'
 
 const mapView = new MapView({ repeat: true })
 
@@ -30,9 +34,57 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
   const tracksLayer = useTracksLayer({ token: GFWAPI.getToken(), lastUpdate })
   const latestPositionsLayer = useLatestPositionsLayer({ token: GFWAPI.getToken(), lastUpdate })
   const [hoveredFeatures, setHoveredFeatures] = useAtom(hoveredFeaturesAtom)
-  const [clickedFeatures, setClickedFeatures] = useAtom(clickedFeaturesAtom)
+  const { addTrackSublayer } = useTracksSublayers()
+  const [bounds, setBounds] = useState<MiniglobeBounds>()
 
-  const layers = [contextLayer, basemapLayer, latestPositionsLayer, tracksLayer]
+  const layers = useMemo(() => {
+    const satellite = new TileLayer({
+      id: 'Satellite',
+      data: `${API_GATEWAY}/${API_GATEWAY_VERSION}/tileset/sat/tile?x={x}&y={y}&z={z}`,
+      loadOptions: {
+        fetch: {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${GFWAPI.getToken()}`,
+          },
+        },
+      },
+      renderSubLayers: (props) => {
+        const { boundingBox } = props.tile
+        const { data, ...rest } = props
+        return new BitmapLayer({
+          ...rest,
+          image: props.data,
+          bounds: [boundingBox[0][0], boundingBox[0][1], boundingBox[1][0], boundingBox[1][1]],
+          tileSize: 256,
+        })
+      },
+    })
+
+    const labels = new TileLayer({
+      id: 'Labels',
+      data: `${API_GATEWAY}/${API_GATEWAY_VERSION}/tileset/nslabels/tile?locale=en&x={x}&y={y}&z={z}`,
+      loadOptions: {
+        fetch: {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${GFWAPI.getToken()}`,
+          },
+        },
+      },
+      renderSubLayers: (props) => {
+        const { boundingBox } = props.tile
+        const { data, ...rest } = props
+        return new BitmapLayer({
+          ...rest,
+          image: props.data,
+          bounds: [boundingBox[0][0], boundingBox[0][1], boundingBox[1][0], boundingBox[1][1]],
+          tileSize: 256,
+        })
+      },
+    })
+    return [basemapLayer, satellite, contextLayer, tracksLayer, latestPositionsLayer, labels]
+  }, [basemapLayer, contextLayer, latestPositionsLayer, tracksLayer])
 
   const onClick = useCallback(
     (info: PickingInfo) => {
@@ -40,10 +92,10 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
         x: info.x,
         y: info.y,
       })
-      if (!clickedFeatures.length && !features.length) return
-      setClickedFeatures(features)
+      if (!features.length) return
+      addTrackSublayer(features[0].object.properties.mmsi)
     },
-    [setClickedFeatures, clickedFeatures]
+    [addTrackSublayer]
   )
 
   const onHover = useCallback(
@@ -57,6 +109,19 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
     },
     [setHoveredFeatures, hoveredFeatures]
   )
+
+  const onViewStateChange = (e) => {
+    onViewportStateChange(e)
+    const viewport = new WebMercatorViewport(e.viewState)
+    const nw = viewport.unproject([0, 0])
+    const se = viewport.unproject([viewport.width, viewport.height])
+    setBounds({
+      north: nw[1],
+      south: se[1],
+      west: nw[0],
+      east: se[0],
+    })
+  }
 
   const InfoTooltip = ({ features }) => {
     const vessels = features
@@ -87,18 +152,20 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
                 </div>
                 <div>
                   <label>TIME</label>
-                  {new Date(f.object.properties.timestamp * 1000).toLocaleString()}
+                  {f.object.properties.timestamp
+                    ? getTimeAgo(f.object.properties.timestamp * 1000)
+                    : '---'}
                 </div>
                 <div>
                   <label>SPEED</label>
-                  {parseInt(f.object.properties.value)} knots
+                  {parseInt(f.object.properties.speed)} knots
                 </div>
               </div>
             ))}
           {vessels && vessels.length > 3 && (
             <div className={styles.vesselRow}>... + {vessels.length - 3} more</div>
           )}
-          {count && `${count / 100} vessels`}
+          {count && `${count / 100} ${count / 100 === 1 ? 'vessel' : 'vessels'}`}
         </div>
       )
     }
@@ -118,11 +185,18 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
         viewState={viewState}
         onClick={onClick}
         onHover={onHover}
-        onViewStateChange={onViewportStateChange}
+        onViewStateChange={onViewStateChange}
         // this experimental prop reduces memory usage
         _typedArrayManagerProps={{ overAlloc: 1, poolSize: 0 }}
       />
       {hoveredFeatures && hoveredFeatures.length > 0 && <InfoTooltip features={hoveredFeatures} />}
+      <div className={styles.controls}>
+        <MiniGlobe
+          size={70}
+          center={{ latitude: viewState.latitude, longitude: viewState.longitude }}
+          bounds={bounds}
+        />
+      </div>
     </Fragment>
   )
 }

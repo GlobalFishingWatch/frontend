@@ -6,7 +6,8 @@
 .row {
   display: flex;
   flex-direction: column;
-  padding: 0.5rem 1rem;
+  padding: 1rem 1rem 2rem;
+  border-bottom: var(--border);
 }
 
 .header {
@@ -17,6 +18,7 @@
 
 .switch {
   margin-right: 0.5rem;
+  min-width: 24px;
 }
 
 .list {
@@ -25,8 +27,23 @@
 }
 
 .sublayer {
+  height: 4rem;
   display: flex;
   align-items: center;
+  border-bottom: var(--border);
+}
+
+.sublayerTitleRow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.sublayerTitle {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: 0.5rem;
 }
 
 .dot {
@@ -41,8 +58,17 @@
   width: 100%;
   display: flex;
   gap: 1rem;
+  margin-top: 1rem;
 }
 
 .search button {
   min-width: fit-content;
+}
+
+.vessels {
+  margin-top: 2rem;
+}
+
+.secondary {
+  color: var(--color-secondary-blue);
 }

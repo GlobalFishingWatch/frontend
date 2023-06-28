@@ -8,3 +8,9 @@
   padding-bottom: 0.5rem;
   border-bottom: var(--border);
 }
+
+.controls {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}

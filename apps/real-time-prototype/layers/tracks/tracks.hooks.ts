@@ -1,10 +1,18 @@
 import { useCallback, useEffect } from 'react'
-import { atom, selector, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
 import { TracksLayer } from 'layers/tracks/TracksLayer'
+import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
 import { useMapLayers } from 'features/map/layers.hooks'
 
+export type TrackSublayer = {
+  id: string
+  active: boolean
+  color: string
+  path?: [number, number][]
+}
+
 type TracksAtom = {
-  ids: string[]
+  sublayers: TrackSublayer[]
   loaded: boolean
   instance?: TracksLayer
 }
@@ -13,13 +21,13 @@ export const tracksLayerAtom = atom<TracksAtom>({
   key: 'tracksLayer',
   dangerouslyAllowMutability: true,
   default: {
-    ids: [],
+    sublayers: [],
     loaded: false,
   },
 })
 
 export function useTracksLayer({ token, lastUpdate }) {
-  const [{ instance, ids }, updateAtom] = useRecoilState(tracksLayerAtom)
+  const [atom, updateAtom] = useRecoilState(tracksLayerAtom)
   const [mapLayers] = useMapLayers()
 
   const layer = mapLayers.find((l) => l.id === 'tracks')
@@ -34,21 +42,43 @@ export function useTracksLayer({ token, lastUpdate }) {
     setAtomProperty({ loaded: true })
   }, [setAtomProperty])
 
+  const onSublayerLoad = useCallback(
+    (id: string, path: any[]) => {
+      setAtomProperty({
+        sublayers: atom.sublayers.map((sublayer) => {
+          if (sublayer.id === id) return { ...sublayer, path }
+          return sublayer
+        }),
+      })
+    },
+    [atom.sublayers, setAtomProperty]
+  )
+
   useEffect(() => {
     if (layerVisible) {
       const trackLayer = new TracksLayer({
-        ids,
+        sublayers: atom.sublayers,
         token,
         lastUpdate,
         onDataLoad: onDataLoad,
+        onSublayerLoad,
       })
       setAtomProperty({ instance: trackLayer })
     } else {
       setAtomProperty({ instance: undefined, loaded: false })
     }
-  }, [ids, layerVisible, updateAtom, onDataLoad, setAtomProperty, token, lastUpdate])
+  }, [
+    layerVisible,
+    updateAtom,
+    onDataLoad,
+    setAtomProperty,
+    token,
+    lastUpdate,
+    onSublayerLoad,
+    atom.sublayers,
+  ])
 
-  return instance
+  return atom.instance
 }
 
 const tracksInstanceAtomSelector = selector({
@@ -64,41 +94,74 @@ export function useTracksLayerInstance() {
   return instance
 }
 
-const tracksLayerIdsAtomSelector = selector({
+const tracksLayerSublayersAtomSelector = selector({
   key: 'tracksLayerIdsAtomSelector',
   dangerouslyAllowMutability: true,
   get: ({ get }) => {
-    return get(tracksLayerAtom)?.ids
+    return get(tracksLayerAtom)?.sublayers
   },
 })
 
-export function useTracksLayerIds() {
-  const instance = useRecoilValue(tracksLayerIdsAtomSelector)
-  return instance
-}
+export function useTracksSublayers() {
+  const sublayers = useRecoilValue(tracksLayerSublayersAtomSelector)
+  const [atom, setTrackLayer] = useRecoilState(tracksLayerAtom)
 
-export function useAddTrackInLayer() {
-  const setTrackLayer = useSetRecoilState(tracksLayerAtom)
-  const addTrackLayer = useCallback(
+  const toggleTrackSublayer = useCallback(
     (id: string) => {
       setTrackLayer((atom) => {
-        return { ...atom, ids: Array.from(new Set([...atom.ids, id])), loaded: false }
+        return {
+          ...atom,
+          sublayers: atom.sublayers.map((sublayer) => {
+            if (sublayer.id === id) return { ...sublayer, active: !sublayer.active }
+            return sublayer
+          }),
+        }
       })
     },
     [setTrackLayer]
   )
-  return addTrackLayer
-}
 
-export function useRemoveTrackInLayer() {
-  const setTrackLayer = useSetRecoilState(tracksLayerAtom)
-  const addTrackLayer = useCallback(
+  const removeTrackSublayer = useCallback(
     (id: string) => {
       setTrackLayer((atom) => {
-        return { ...atom, ids: atom.ids.filter((i) => i !== id) }
+        return { ...atom, sublayers: atom.sublayers.filter((sublayer) => sublayer.id !== id) }
       })
     },
     [setTrackLayer]
   )
-  return addTrackLayer
+
+  const addTrackSublayer = useCallback(
+    (id: string) => {
+      const existingSublayer = atom.sublayers.find((sublayer) => sublayer.id === id)
+      if (existingSublayer) {
+        if (!existingSublayer.active) {
+          toggleTrackSublayer(id)
+        }
+        return
+      }
+      setTrackLayer((atom) => {
+        const sublayers = atom.sublayers || []
+        return {
+          ...atom,
+          sublayers: [
+            ...sublayers,
+            {
+              id,
+              active: true,
+              color: LineColorBarOptions[sublayers.length % LineColorBarOptions.length].value,
+            },
+          ],
+          loaded: false,
+        }
+      })
+    },
+    [atom.sublayers, setTrackLayer, toggleTrackSublayer]
+  )
+
+  return {
+    sublayers,
+    addTrackSublayer,
+    removeTrackSublayer,
+    toggleTrackSublayer,
+  }
 }

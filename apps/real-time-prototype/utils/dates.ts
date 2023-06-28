@@ -15,3 +15,12 @@ export const getTimeRangeDuration = (
     return endDateTime.diff(startDateTime, unit)
   }
 }
+
+export const getTimeAgo = (date: number | DateTime) => {
+  const now = DateTime.local()
+  const past = typeof date === 'number' ? DateTime.fromMillis(date) : date
+  const diff = now.diff(past, ['hours', 'minutes'])
+  if (Math.floor(diff.hours) === 0) return `${Math.floor(diff.minutes)}m ago`
+  if (Math.floor(diff.minutes) === 0) return `${Math.floor(diff.hours)}h ago`
+  return `${Math.floor(diff.hours)}h ${Math.floor(diff.minutes)}m ago`
+}

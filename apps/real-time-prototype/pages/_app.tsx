@@ -1,7 +1,5 @@
 import { useState, useCallback, Component, useEffect } from 'react'
 import { AppProps } from 'next/app'
-import { FpsView } from 'react-fps'
-import MemoryStatsComponent from 'next-react-memory-stats'
 import { RecoilURLSyncJSONNext } from 'recoil-sync-next'
 import dynamic from 'next/dynamic'
 import { RecoilRoot } from 'recoil'
@@ -45,7 +43,6 @@ const Map = dynamic(() => import(/* webpackChunkName: "Map" */ 'features/map/Map
 })
 
 function CustomApp({ Component, pageProps }: AppProps) {
-  const [showFps, setShowFps] = useState(false)
   const [lastUpdate, setLastUpdate] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(true)
 
@@ -58,7 +55,7 @@ function CustomApp({ Component, pageProps }: AppProps) {
 
   const getLastUpdate = async () => {
     const lastUpdate = await GFWAPI.fetch<{ lastUpdateDate: string }>(
-      `${API_BASE}/realtime-tracks/last-update`
+      `${API_BASE}/realtime-tracks/last-update?cache=false`
     )
     setLastUpdate(lastUpdate.lastUpdateDate)
   }
@@ -68,10 +65,6 @@ function CustomApp({ Component, pageProps }: AppProps) {
       getLastUpdate()
     }
   }, [login.logged])
-
-  useEffect(() => {
-    setShowFps(true)
-  }, [])
 
   const onToggle = useCallback(() => {
     setSidebarOpen(!sidebarOpen)
@@ -98,8 +91,6 @@ function CustomApp({ Component, pageProps }: AppProps) {
             showMainLabel="Map"
             className="split-container"
           />
-          {showFps && <FpsView bottom="0" left="0" top="auto" />}
-          {showFps && <MemoryStatsComponent />}
         </ErrorBoundary>
       </RecoilURLSyncJSONNext>
     </RecoilRoot>

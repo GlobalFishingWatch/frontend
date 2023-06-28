@@ -37,7 +37,6 @@ export class LatestPositions extends CompositeLayer<LatestPositionsLayerProps> {
     this.state = {
       colorDomain: [],
     }
-    console.log(this.state)
   }
 
   findVessel(mmsi: string) {
@@ -126,7 +125,7 @@ export class LatestPositions extends CompositeLayer<LatestPositionsLayerProps> {
             iconAtlas: './positions/vessel-sprite.png',
             iconMapping: ICON_MAPPING,
             getAngle: (d) => d.properties.course,
-            getColor: this.colorRange[3],
+            getColor: this.colorRange[5],
             getIcon: () => 'vessel',
             getPosition: (d) => d.geometry.coordinates,
             getSize: 15,
