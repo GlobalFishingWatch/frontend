@@ -22,7 +22,7 @@ function Sidebar({ lastUpdate }) {
             <Spinner size="small" />
           )}
         </div>
-        <VesselsSection />
+        <VesselsSection lastUpdate={lastUpdate} />
         <ContextLayersSection />
       </div>
     </div>

@@ -2555,12 +2555,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@globalfishingwatchapp/real-time-prototype@workspace:apps/real-time-prototype"
   dependencies:
-    "@deck.gl/core": 8.8.24
-    "@deck.gl/extensions": 8.8.24
-    "@deck.gl/geo-layers": 8.8.24
-    "@deck.gl/layers": 8.8.24
-    "@deck.gl/mesh-layers": 8.8.24
-    "@deck.gl/react": 8.8.24
+    "@deck.gl/core": 8.9.19
+    "@deck.gl/extensions": 8.9.19
+    "@deck.gl/geo-layers": 8.9.19
+    "@deck.gl/layers": 8.9.19
+    "@deck.gl/mesh-layers": 8.9.19
+    "@deck.gl/react": 8.9.19
     "@globalfishingwatch/linting": 2.0.2
     "@loaders.gl/core": ^3.2.13
     "@loaders.gl/csv": ^3.2.13

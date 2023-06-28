@@ -1,64 +1,64 @@
-import { ChangeEvent, useState } from 'react'
-import { useLatestPositionsLayerInstance } from 'layers/latest-positions/latest-positions.hooks'
-import { TrackSublayer, useTracksSublayers } from 'layers/tracks/tracks.hooks'
+import { ChangeEvent, useCallback, useEffect, useState } from 'react'
+import { useTracksLayerInstance, useTracksSublayers } from 'layers/tracks/tracks.hooks'
 import { WebMercatorViewport } from '@deck.gl/core/typed'
-import {
-  Button,
-  IconButton,
-  InputText,
-  LineColorBarOptions,
-  Spinner,
-  Switch,
-} from '@globalfishingwatch/ui-components'
+import { Button, IconButton, InputText, Spinner, Switch } from '@globalfishingwatch/ui-components'
 import { useViewport } from 'features/map/map-viewport.hooks'
 import styles from './Sidebar.module.css'
 
-function VesselsSection() {
+function VesselsSection({ lastUpdate }) {
   const [query, setQuery] = useState('412549174')
-  const latestPositionsLayer = useLatestPositionsLayerInstance()
+  const [sublayerWaitingToLoad, setSublayerWaitingToLoad] = useState('')
   const { setMapCoordinates } = useViewport()
-  const { sublayers, toggleTrackSublayer, addTrackSublayer, removeTrackSublayer } =
+  const { allLoaded, sublayers, toggleTrackSublayer, addTrackSublayer, removeTrackSublayer } =
     useTracksSublayers()
+
+  const fitBoundsToSublayer = useCallback(
+    (id: string) => {
+      const sublayer = sublayers.find((sublayer) => sublayer.id === id)
+      if (sublayer) {
+        let minX = 180
+        let maxX = -180
+        let minY = 90
+        let maxY = -90
+        sublayer.path.forEach(([x, y]) => {
+          if (x > maxX) maxX = x
+          if (x < minX) minX = x
+          if (y > maxY) maxY = y
+          if (y < minY) minY = y
+        })
+        const newViewport = new WebMercatorViewport({
+          width: window.innerWidth - 320,
+          height: window.innerHeight,
+        })
+        const { latitude, longitude, zoom } = newViewport.fitBounds(
+          [
+            [minX, minY],
+            [maxX, maxY],
+          ],
+          { padding: 40 }
+        )
+        setMapCoordinates({ latitude, longitude, zoom })
+      }
+    },
+    [setMapCoordinates, sublayers]
+  )
+
+  useEffect(() => {
+    console.log('useEffect', sublayerWaitingToLoad, allLoaded)
+
+    if (sublayerWaitingToLoad && allLoaded) {
+      fitBoundsToSublayer(sublayerWaitingToLoad)
+      setSublayerWaitingToLoad('')
+    }
+  }, [fitBoundsToSublayer, allLoaded, sublayerWaitingToLoad])
 
   const onQueryInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value)
   }
 
   const onSearchVesselClick = () => {
-    const matchedVessel = latestPositionsLayer.findVessel(query)
-    console.log(query, matchedVessel)
-    if (matchedVessel) {
-      setMapCoordinates({
-        latitude: matchedVessel.lat,
-        longitude: matchedVessel.lon,
-        zoom: 8,
-      })
-      addTrackSublayer(matchedVessel.mmsi)
-    }
-  }
-  const fitBoundsToSublayer = (sublayer: TrackSublayer) => {
-    let minX = 180
-    let maxX = -180
-    let minY = 90
-    let maxY = -90
-    sublayer.path.forEach(([x, y]) => {
-      if (x > maxX) maxX = x
-      if (x < minX) minX = x
-      if (y > maxY) maxY = y
-      if (y < minY) minY = y
-    })
-    const newViewport = new WebMercatorViewport({
-      width: window.innerWidth - 320,
-      height: window.innerHeight,
-    })
-    const { latitude, longitude, zoom } = newViewport.fitBounds(
-      [
-        [minX, minY],
-        [maxX, maxY],
-      ],
-      { padding: 40 }
-    )
-    setMapCoordinates({ latitude, longitude, zoom })
+    addTrackSublayer(query)
+    setSublayerWaitingToLoad(query)
   }
 
   return (
@@ -71,13 +71,15 @@ function VesselsSection() {
           value={query}
           onChange={onQueryInputChange}
         />
-        <Button onClick={onSearchVesselClick}>Find in map</Button>
+        <Button disabled={!lastUpdate} onClick={onSearchVesselClick}>
+          Find in map
+        </Button>
       </div>
-      {sublayers?.length > 0 && (
-        <div className={styles.vessels}>
-          <label>Tracks (transmission in last 72 hours)</label>
-          {sublayers.map((sublayer, index) => {
-            const { id, active, path } = sublayer
+      <div className={styles.vessels}>
+        <label>Tracks (transmission in last 72 hours)</label>
+        {sublayers?.length > 0 ? (
+          sublayers.map((sublayer) => {
+            const { id, active, path, color } = sublayer
 
             return (
               <div key={id} className={styles.sublayer}>
@@ -85,7 +87,7 @@ function VesselsSection() {
                   className={styles.switch}
                   active={active}
                   onClick={() => toggleTrackSublayer(id)}
-                  color={LineColorBarOptions[index % LineColorBarOptions.length].value}
+                  color={color}
                   tooltip="Toggle vessel visibility"
                   tooltipPlacement="top"
                 />
@@ -102,7 +104,7 @@ function VesselsSection() {
                     <IconButton
                       size="small"
                       icon="target"
-                      onClick={() => fitBoundsToSublayer(sublayer)}
+                      onClick={() => fitBoundsToSublayer(id)}
                       tooltip="Center map on track"
                       tooltipPlacement="top"
                     />
@@ -117,9 +119,11 @@ function VesselsSection() {
                 </div>
               </div>
             )
-          })}
-        </div>
-      )}
+          })
+        ) : (
+          <span>Search vessels or click on vessel icons on the map to load their tracks</span>
+        )}
+      </div>
     </section>
   )
 }

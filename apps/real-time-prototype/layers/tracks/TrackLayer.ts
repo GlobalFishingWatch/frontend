@@ -32,7 +32,8 @@ export class TrackLayer extends CompositeLayer<TrackLayerProps> {
           },
         },
         loaders: [trackLoader],
-        onDataLoad: (d) => {
+        onDataLoad: (d, c) => {
+          this.props.onDataLoad(d, c)
           this.props.onSublayerLoad(this.props.id, d[0].path)
         },
         getPath: (d) => {

@@ -95,15 +95,26 @@ export function useTracksLayerInstance() {
 }
 
 const tracksLayerSublayersAtomSelector = selector({
-  key: 'tracksLayerIdsAtomSelector',
+  key: 'tracksLayerSublayersAtomSelector',
   dangerouslyAllowMutability: true,
   get: ({ get }) => {
     return get(tracksLayerAtom)?.sublayers
   },
 })
 
+const tracksLayerLoadedAtomSelector = selector({
+  key: 'tracksLayerLoadedAtomSelector',
+  dangerouslyAllowMutability: true,
+  get: ({ get }) => {
+    console.log(get(tracksLayerAtom)?.loaded)
+
+    return get(tracksLayerAtom)?.loaded
+  },
+})
+
 export function useTracksSublayers() {
   const sublayers = useRecoilValue(tracksLayerSublayersAtomSelector)
+  const allLoaded = useRecoilValue(tracksLayerLoadedAtomSelector)
   const [atom, setTrackLayer] = useRecoilState(tracksLayerAtom)
 
   const toggleTrackSublayer = useCallback(
@@ -159,6 +170,7 @@ export function useTracksSublayers() {
   )
 
   return {
+    allLoaded,
     sublayers,
     addTrackSublayer,
     removeTrackSublayer,

@@ -120,6 +120,7 @@ export class LatestPositions extends CompositeLayer<LatestPositionsLayerProps> {
         minZoom: SWITCH_ZOOM,
         maxZoom: 10,
         binary: false,
+        pickable: true,
         renderSubLayers: (props) => {
           return new IconLayer(props, {
             iconAtlas: './positions/vessel-sprite.png',
@@ -129,7 +130,6 @@ export class LatestPositions extends CompositeLayer<LatestPositionsLayerProps> {
             getIcon: () => 'vessel',
             getPosition: (d) => d.geometry.coordinates,
             getSize: 15,
-            pickable: true,
           })
         },
       }),

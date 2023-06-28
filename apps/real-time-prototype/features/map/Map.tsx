@@ -1,4 +1,5 @@
 import { Fragment, useCallback, useMemo, useRef, useState } from 'react'
+import cx from 'classnames'
 import { DeckGL, DeckGLRef } from '@deck.gl/react/typed'
 import { MapView, PickingInfo, WebMercatorViewport } from '@deck.gl/core/typed'
 import { useBasemapLayer } from 'layers/basemap/basemap.hooks'
@@ -9,7 +10,8 @@ import { useTracksLayer, useTracksSublayers } from 'layers/tracks/tracks.hooks'
 import { BitmapLayer } from '@deck.gl/layers/typed'
 import { TileLayer } from '@deck.gl/geo-layers/typed'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { MiniGlobe, MiniglobeBounds } from '@globalfishingwatch/ui-components'
+import { MiniGlobe, MiniglobeBounds, Tooltip } from '@globalfishingwatch/ui-components'
+import { BasemapType } from '@globalfishingwatch/layer-composer'
 import { useURLViewport, useViewport } from 'features/map/map-viewport.hooks'
 import { hoveredFeaturesAtom } from 'features/map/map-picking.hooks'
 import { getTimeAgo } from 'utils/dates'
@@ -36,55 +38,67 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
   const [hoveredFeatures, setHoveredFeatures] = useAtom(hoveredFeaturesAtom)
   const { addTrackSublayer } = useTracksSublayers()
   const [bounds, setBounds] = useState<MiniglobeBounds>()
+  const [currentBasemap, setCurrentBasemap] = useState<BasemapType>(BasemapType.Satellite)
+  const [labelsShown, setLabelsShown] = useState<boolean>(true)
 
   const layers = useMemo(() => {
-    const satellite = new TileLayer({
-      id: 'Satellite',
-      data: `${API_GATEWAY}/${API_GATEWAY_VERSION}/tileset/sat/tile?x={x}&y={y}&z={z}`,
-      loadOptions: {
-        fetch: {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${GFWAPI.getToken()}`,
-          },
-        },
-      },
-      renderSubLayers: (props) => {
-        const { boundingBox } = props.tile
-        const { data, ...rest } = props
-        return new BitmapLayer({
-          ...rest,
-          image: props.data,
-          bounds: [boundingBox[0][0], boundingBox[0][1], boundingBox[1][0], boundingBox[1][1]],
-          tileSize: 256,
-        })
-      },
-    })
+    const satellite =
+      currentBasemap === BasemapType.Satellite
+        ? new TileLayer({
+            id: 'Satellite',
+            data: `${API_GATEWAY}/${API_GATEWAY_VERSION}/tileset/sat/tile?x={x}&y={y}&z={z}`,
+            loadOptions: {
+              fetch: {
+                method: 'GET',
+                headers: {
+                  Authorization: `Bearer ${GFWAPI.getToken()}`,
+                },
+              },
+            },
+            renderSubLayers: (props) => {
+              const { boundingBox } = props.tile
+              const { data, ...rest } = props
+              return new BitmapLayer({
+                ...rest,
+                image: props.data,
+                bounds: [
+                  boundingBox[0][0],
+                  boundingBox[0][1],
+                  boundingBox[1][0],
+                  boundingBox[1][1],
+                ],
+                tileSize: 256,
+              })
+            },
+          })
+        : []
 
-    const labels = new TileLayer({
-      id: 'Labels',
-      data: `${API_GATEWAY}/${API_GATEWAY_VERSION}/tileset/nslabels/tile?locale=en&x={x}&y={y}&z={z}`,
-      loadOptions: {
-        fetch: {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${GFWAPI.getToken()}`,
+    const labels = labelsShown
+      ? new TileLayer({
+          id: 'Labels',
+          data: `${API_GATEWAY}/${API_GATEWAY_VERSION}/tileset/nslabels/tile?locale=en&x={x}&y={y}&z={z}`,
+          loadOptions: {
+            fetch: {
+              method: 'GET',
+              headers: {
+                Authorization: `Bearer ${GFWAPI.getToken()}`,
+              },
+            },
           },
-        },
-      },
-      renderSubLayers: (props) => {
-        const { boundingBox } = props.tile
-        const { data, ...rest } = props
-        return new BitmapLayer({
-          ...rest,
-          image: props.data,
-          bounds: [boundingBox[0][0], boundingBox[0][1], boundingBox[1][0], boundingBox[1][1]],
-          tileSize: 256,
+          renderSubLayers: (props) => {
+            const { boundingBox } = props.tile
+            const { data, ...rest } = props
+            return new BitmapLayer({
+              ...rest,
+              image: props.data,
+              bounds: [boundingBox[0][0], boundingBox[0][1], boundingBox[1][0], boundingBox[1][1]],
+              tileSize: 256,
+            })
+          },
         })
-      },
-    })
+      : []
     return [basemapLayer, satellite, contextLayer, tracksLayer, latestPositionsLayer, labels]
-  }, [basemapLayer, contextLayer, latestPositionsLayer, tracksLayer])
+  }, [basemapLayer, contextLayer, currentBasemap, labelsShown, latestPositionsLayer, tracksLayer])
 
   const onClick = useCallback(
     (info: PickingInfo) => {
@@ -171,6 +185,20 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
     }
   }
 
+  const getCursor = ({ isDragging, isHovering }) => {
+    if (isHovering) return 'pointer'
+    return isDragging ? 'grabbing' : 'grab'
+  }
+
+  const switchBasemap = () => {
+    setCurrentBasemap(
+      currentBasemap === BasemapType.Default ? BasemapType.Satellite : BasemapType.Default
+    )
+  }
+  const switchLabels = () => {
+    setLabelsShown(!labelsShown)
+  }
+
   return (
     <Fragment>
       <DeckGL
@@ -181,6 +209,7 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
         // since we are handling it through pickMultipleObjects
         // discussion for reference https://github.com/visgl/deck.gl/discussions/5793
         layerFilter={({ renderPass }) => renderPass !== 'picking:hover'}
+        getCursor={getCursor}
         controller={true}
         viewState={viewState}
         onClick={onClick}
@@ -196,6 +225,31 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
           center={{ latitude: viewState.latitude, longitude: viewState.longitude }}
           bounds={bounds}
         />
+        <Tooltip
+          content={
+            currentBasemap === BasemapType.Default
+              ? 'Switch to satellite basemap'
+              : 'Switch to default basemap'
+          }
+          placement="left"
+        >
+          <button
+            aria-label={
+              currentBasemap === BasemapType.Default
+                ? 'Switch to satellite basemap'
+                : 'Switch to default basemap'
+            }
+            className={cx(styles.actionButton, styles[currentBasemap])}
+            onClick={switchBasemap}
+          ></button>
+        </Tooltip>
+        <button
+          aria-label={labelsShown ? 'Hide location labels' : 'Show location labels'}
+          className={cx(styles.actionButton, styles.labelsButton)}
+          onClick={switchLabels}
+        >
+          {labelsShown ? 'Hide labels' : 'Show labels'}
+        </button>
       </div>
     </Fragment>
   )

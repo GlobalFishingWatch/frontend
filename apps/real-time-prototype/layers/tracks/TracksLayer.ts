@@ -19,6 +19,7 @@ export class TracksLayer extends CompositeLayer<TracksLayerProps> {
           lastUpdate: this.props.lastUpdate,
           color: sublayer.color,
           onSublayerLoad: this.props.onSublayerLoad,
+          onDataLoad: this.props.onDataLoad,
         })
       }
       return []

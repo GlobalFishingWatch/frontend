@@ -55,7 +55,7 @@ function CustomApp({ Component, pageProps }: AppProps) {
 
   const getLastUpdate = async () => {
     const lastUpdate = await GFWAPI.fetch<{ lastUpdateDate: string }>(
-      `${API_BASE}/realtime-tracks/last-update?cache=false`
+      `${API_BASE}realtime-tracks/last-update?cache=false`
     )
     setLastUpdate(lastUpdate.lastUpdateDate)
   }
