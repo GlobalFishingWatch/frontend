@@ -1,16 +1,15 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
-import { event as uaEvent } from 'react-ga'
 import {
   GFWAPI,
   AdvancedSearchQueryField,
   getAdvancedSearchQuery,
 } from '@globalfishingwatch/api-client'
 import { VesselSearch } from '@globalfishingwatch/api-types'
+import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import { BASE_DATASET, RESULTS_PER_PAGE, SEARCH_MIN_CHARACTERS } from 'data/constants'
 import { RootState } from 'store'
 import { SearchResults } from 'types'
-import { API_VERSION } from 'data/config'
 import { CachedVesselSearch } from './search.slice'
 
 export const getSerializedQuery = (query: string, advancedSearch?: Record<string, any>) => {
@@ -78,7 +77,7 @@ export const fetchData = async (
         offset: json.offset,
         total: json.total,
         searching: false,
-        sources: json.metadata.sources
+        sources: json.metadata.sources,
       }
     })
     .catch((error) => {
@@ -132,15 +131,15 @@ const trackData = (query: any, results: SearchResults | null, actualResults: num
         tmt: vessel.vesselMatchId,
       }
     })
-    uaEvent({
-      category: 'Search Vessel VV',
+    trackEvent({
+      category: TrackCategory.SearchVesselVV,
       action: 'Click Search',
       label: JSON.stringify({ ...query, vessels }),
       value: results?.total,
     })
   } else {
-    uaEvent({
-      category: 'Search Vessel VV',
+    trackEvent({
+      category: TrackCategory.SearchVesselVV,
       action: 'Click Load More',
       label: actualResults.toString(),
       value: results?.total,
@@ -153,7 +152,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
   async ({ query, offset, advancedSearch }: VesselSearchThunk, { signal, rejectWithValue }) => {
     const searchData = await fetchData(query, offset, signal, advancedSearch)
     if (!searchData.success) {
-      return rejectWithValue(searchData.error);
+      return rejectWithValue(searchData.error)
     }
     trackData({ query: query, ...advancedSearch }, searchData, 5)
     return searchData

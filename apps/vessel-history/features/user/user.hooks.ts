@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo } from 'react'
-import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { GFWAPI, getAccessTokenFromUrl } from '@globalfishingwatch/api-client'
+import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import {
   PORT_INSPECTOR_PERMISSION,
   FLRM_PERMISSION,
@@ -70,11 +70,11 @@ export const useUser = () => {
     if (logged && !currentProfileView && firstProfileView) {
       updateProfileView(firstProfileView)
     }
-  }, [currentProfileView, dispatch, logged, updateProfileView])
+  }, [availableViews, currentProfileView, dispatch, logged, updateProfileView])
 
   const logout = useCallback(() => {
-    uaEvent({
-      category: 'General VV features',
+    trackEvent({
+      category: TrackCategory.GeneralVVFeatures,
       action: 'Logout',
     })
     dispatch(logoutUserThunk({ redirectTo: 'home' }))

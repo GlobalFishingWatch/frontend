@@ -1,10 +1,10 @@
 import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
-import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton, Modal } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
+import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import { selectDataviewInstancesByType } from 'features/dataviews/dataviews.selectors'
 import LayerSwitch from 'features/workspace/common/LayerSwitch'
 import EventFilters from 'features/event-filters/EventFilters'
@@ -36,8 +36,8 @@ const MapControls = ({
   const layers = useSelector(selectDataviewInstancesByType(GeneratorType.Context))
   const setModalOpen = useCallback((isOpen) => {
     if (isOpen) {
-      uaEvent({
-        category: 'Vessel Detail ACTIVITY or MAP Tab',
+      trackEvent({
+        category: TrackCategory.VesselDetailActivityOrMapTab,
         action: 'Open filters',
         label: JSON.stringify({ tab: 'MAP' }),
       })
@@ -75,8 +75,8 @@ const MapControls = ({
                 tooltip={t('map.toggleLayers', 'Toggle layers')}
                 onClick={() => {
                   setShowLayersPopup(!showLayersPopup)
-                  uaEvent({
-                    category: 'Vessel Detail MAP Tab',
+                  trackEvent({
+                    category: TrackCategory.VesselDetailMapTab,
                     action: 'Open context layer',
                   })
                 }}

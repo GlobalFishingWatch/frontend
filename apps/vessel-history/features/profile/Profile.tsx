@@ -1,11 +1,11 @@
 import { Fragment, useState, useEffect, useMemo, useCallback } from 'react'
-import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { IconButton, Spinner, Tabs, Tab } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { useNavigatorOnline } from '@globalfishingwatch/react-hooks'
 import { VesselAPISource } from 'types'
+import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import I18nDate from 'features/i18n/i18nDate'
 import {
   selectMergedVesselId,
@@ -187,8 +187,8 @@ const Profile: React.FC = (props): React.ReactElement => {
   const onBackClick = useCallback(() => {
     const params = query ? { replaceQuery: true, query } : {}
     dispatchLocation(HOME, params)
-    uaEvent({
-      category: 'Vessel Detail',
+    trackEvent({
+      category: TrackCategory.VesselDetail,
       action: 'Click to go back to search',
     })
   }, [dispatchLocation, query])
@@ -370,26 +370,26 @@ const Profile: React.FC = (props): React.ReactElement => {
           onTabClick={(tab: Tab) => {
             setActiveTab(tab)
             if (tab.id === 'activity' && !currentProfileIsInsurer) {
-              uaEvent({
-                category: 'Vessel Detail ACTIVITY Tab',
+              trackEvent({
+                category: TrackCategory.VesselDetailActivityTab,
                 action: 'See Activity Tab',
               })
             }
             if (tab.id === 'activity' && currentProfileIsInsurer) {
-              uaEvent({
-                category: 'Vessel Detail ACTIVITY BY TYPE Tab',
+              trackEvent({
+                category: TrackCategory.VesselDetailActivityByTypeTab,
                 action: 'See ACTIVITY BY TYPE Tab',
               })
             }
             if (tab.id === 'risk') {
-              uaEvent({
-                category: 'Vessel Detail RISK SUMMARY Tab',
+              trackEvent({
+                category: TrackCategory.VesselDetailRiskSummaryTab,
                 action: 'See RISK SUMMARY Tab',
               })
             }
             if (tab.id === 'map') {
-              uaEvent({
-                category: 'Vessel Detail MAP Tab',
+              trackEvent({
+                category: TrackCategory.VesselDetailMapTab,
                 action: 'See MAP Tab',
                 label: 'global tab',
               })
