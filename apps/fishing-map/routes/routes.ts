@@ -28,11 +28,11 @@ export type ROUTE_TYPES =
   | typeof WORKSPACE_REPORT
   | typeof REPORT
 
-const MAX_URL_LENGTH_SUPPORTED = 4000
+const MAX_URL_LENGTH_SUPPORTED = 6000
 const confirmLeave = (state, action) => {
   if (
-    state.location.type !== action.type &&
-    state.location.search.length >= MAX_URL_LENGTH_SUPPORTED
+    state.location?.type !== action.type &&
+    state.location?.search?.length >= MAX_URL_LENGTH_SUPPORTED
   ) {
     return t('common.confirmLeave', 'Are you sure you want to leave without saving your workspace?')
   }
@@ -40,7 +40,7 @@ const confirmLeave = (state, action) => {
 
 export const routesMap: RoutesMap = {
   [HOME]: {
-    path: '/',
+    path: '/index',
     confirmLeave,
   },
   [USER]: {
