@@ -28,7 +28,7 @@ export type ROUTE_TYPES =
   | typeof WORKSPACE_REPORT
   | typeof REPORT
 
-const MAX_URL_LENGTH_SUPPORTED = 6000
+const MAX_URL_LENGTH_SUPPORTED = 11000
 const confirmLeave = (state, action) => {
   if (
     state.location?.type !== action.type &&
