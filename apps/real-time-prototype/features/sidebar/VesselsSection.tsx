@@ -52,12 +52,16 @@ function VesselsSection({ lastUpdate }) {
   }, [fitBoundsToSublayer, allLoaded, sublayerWaitingToLoad])
 
   const onQueryInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value)
+    if (e.target.value === '' || Number(e.target.value)) {
+      setQuery(e.target.value)
+    }
   }
 
   const onSearchVesselClick = () => {
-    addTrackSublayer(query)
-    setSublayerWaitingToLoad(query)
+    if (query) {
+      addTrackSublayer(query)
+      setSublayerWaitingToLoad(query)
+    }
   }
 
   return (
