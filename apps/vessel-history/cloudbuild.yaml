@@ -17,7 +17,7 @@ steps:
       tag=${tag:0:32}
       echo $tag > image-tag
       echo COMMIT_SHA: ${COMMIT_SHA}
-      echo _USE_CACHE": $_USE_CACHE
+      echo _USE_CACHE: $_USE_CACHE
       echo {_USE_CACHE}: ${_USE_CACHE}
       echo Tag to use for docker image: $tag
 
