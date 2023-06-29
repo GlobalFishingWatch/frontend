@@ -2559,25 +2559,14 @@ __metadata:
     "@deck.gl/extensions": 8.9.19
     "@deck.gl/geo-layers": 8.9.19
     "@deck.gl/layers": 8.9.19
-    "@deck.gl/mesh-layers": 8.9.19
     "@deck.gl/react": 8.9.19
     "@globalfishingwatch/linting": 2.0.2
-    "@loaders.gl/core": ^3.2.13
-    "@loaders.gl/csv": ^3.2.13
     "@loaders.gl/loader-utils": ^3.2.13
-    "@nebula.gl/edit-modes": ^1.0.4
-    "@nebula.gl/layers": ^1.0.4
     "@next/eslint-plugin-next": 13.1.6
     "@recoiljs/refine": ^0.1.1
-    "@tanstack/react-query": ^4.24.4
-    "@testing-library/jest-dom": ^5.16.5
-    "@testing-library/react": 12.1.5
-    "@turf/bbox-polygon": ^6.5.0
-    "@turf/boolean-point-in-polygon": ^6.5.0
     "@types/lodash": 4.14.191
     "@types/luxon": ^2.4.0
     "@types/node": 18.11.19
-    "@types/qs": 6.9.7
     "@types/react": ^18.2.7
     "@types/react-dom": ^18.2.4
     classnames: 2.3.2
@@ -2585,13 +2574,9 @@ __metadata:
     jotai: ^1.13.1
     lodash: 4.17.21
     luxon: ^2.5.2
-    next-react-memory-stats: ^1.0.2
-    parquet-wasm: 0.4.0-beta.5
     prettier: 2.8.3
-    qs: ^6.11.0
     react: ^18.2.0
     react-dom: ^18.2.0
-    react-fps: ^1.0.6
     react-test-renderer: 18.2.0
     recoil: 0.7.6
     recoil-sync: ^0.2.0
@@ -3381,16 +3366,6 @@ __metadata:
     "@loaders.gl/worker-utils": 3.4.4
     "@probe.gl/log": ^4.0.1
   checksum: 2772aac3570925ce760ab15ba12ecf9f8409b895be0a3809c273cacce86262772d38922f1d17554fb2d8de011920ccf54c100dec6b741b3817310c761505a54b
-  languageName: node
-  linkType: hard
-
-"@loaders.gl/csv@npm:^3.2.13":
-  version: 3.4.4
-  resolution: "@loaders.gl/csv@npm:3.4.4"
-  dependencies:
-    "@loaders.gl/loader-utils": 3.4.4
-    "@loaders.gl/schema": 3.4.4
-  checksum: 24250fbc0f1240248172c722d9f53a0e7c659a432e9af2fba96859aff30c76f2b56f28d8db9892cfd58f625351d6f25caabcb9bff59ea04c12be37e2246bf0b0
   languageName: node
   linkType: hard
 
