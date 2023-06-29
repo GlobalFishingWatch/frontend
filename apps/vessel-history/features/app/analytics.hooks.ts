@@ -4,13 +4,9 @@ import ReactGA from 'react-ga4'
 import {
   GOOGLE_TAG_MANAGER_ID,
   GOOGLE_MEASUREMENT_ID,
-  IS_PRODUCTION,
-  WORKSPACE_ENV,
+  GOOGLE_ANALYTICS_TEST_MODE,
 } from 'data/config'
 import { useUser } from 'features/user/user.hooks'
-
-export const GOOGLE_ANALYTICS_INIT_OPTIONS =
-  WORKSPACE_ENV === 'production' ? {} : { testMode: true }
 
 export enum TrackCategory {
   GeneralVVFeatures = 'general_vv_features',
@@ -57,11 +53,12 @@ export const trackEvent = ({ category, action, label, value }: TrackEventParams)
 export const useAnalytics = () => {
   useEffect(() => {
     if (GOOGLE_MEASUREMENT_ID) {
-      ReactGA.initialize(GOOGLE_MEASUREMENT_ID, {
-        ...GOOGLE_ANALYTICS_INIT_OPTIONS,
-      })
+      ReactGA.initialize(
+        GOOGLE_MEASUREMENT_ID,
+        GOOGLE_ANALYTICS_TEST_MODE ? { testMode: true } : {}
+      )
       // Uncomment to prevent sending hits in non-production envs
-      if (!IS_PRODUCTION) {
+      if (GOOGLE_ANALYTICS_TEST_MODE) {
         ReactGA.set({ sendHitTask: null })
       }
     }
