@@ -14,31 +14,11 @@
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": [
-          "nx build real-time-prototype --parallel",
-          "nx docker-prepare real-time-prototype"
-        ],
+        "commands": ["nx build real-time-prototype --parallel"],
         "parallel": false
       }
     },
-    "docker-prepare": {
-      "executor": "nx:run-commands",
-      "outputs": [],
-      "options": {
-        "commands": [
-          "cp config/entrypoint.sh dist/apps/real-time-prototype",
-          "cp apps/real-time-prototype/nginx.conf dist/apps/real-time-prototype"
-        ]
-      }
-    },
-    "zip": {
-      "executor": "nx:run-commands",
-      "outputs": [],
-      "options": {
-        "commands": ["zip -r dist.zip dist/apps/real-time-prototype/exported/*"]
-      }
-    },
-    "compile": {
+    "build": {
       "executor": "@nx/next:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
@@ -59,21 +39,21 @@
     "start": {
       "executor": "@nx/next:server",
       "options": {
-        "buildTarget": "real-time-prototype:compile",
+        "buildTarget": "real-time-prototype:build",
         "dev": true,
         "port": 3000
       },
       "configurations": {
         "production": {
-          "buildTarget": "real-time-prototype:compile:production",
+          "buildTarget": "real-time-prototype:build:production",
           "dev": false
         }
       }
     },
-    "build": {
+    "export": {
       "executor": "@nx/next:export",
       "options": {
-        "buildTarget": "real-time-prototype:compile:production"
+        "buildTarget": "real-time-prototype:build:production"
       }
     },
     "rename-export": {
@@ -86,7 +66,7 @@
         "parallel": false
       }
     },
-    "serve:export": {
+    "serve:build": {
       "executor": "nx:run-commands",
       "options": {
         "commands": [
