@@ -116,6 +116,7 @@ export const DOWNLOAD_ACTIVITY_PERMISSION = {
   action: 'download',
 }
 
+console.log(process.env)
 export const GOOGLE_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID || 'G-R3PWRQW70G'
 export const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID || 'GTM-KK5ZFST'
 
