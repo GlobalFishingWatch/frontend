@@ -1,25 +1,42 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+const { join } = require('path')
 const withNx = require('@nx/next/plugins/with-nx')
 // const CircularDependencyPlugin = require('circular-dependency-plugin')
 
+const basePath =
+  process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/map' : '')
+
 const IS_PRODUCTION =
   process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'production' || process.env.NODE_ENV === 'production'
-
-const BASE_PATH = process.env.NEXT_PUBLIC_URL || IS_PRODUCTION ? '' : ''
 
 /**
  * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
  **/
 const nextConfig = {
-  // async rewrites() {
-  //   return [
-  //     // Rewrite everything to `pages/index`
-  //     {
-  //       source: '/:any*',
-  //       destination: '/',
-  //     },
-  //   ]
-  // },
+  async rewrites() {
+    return [
+      // Rewrite everything to `pages/index`
+      {
+        source: '/:any*',
+        destination: '/',
+      },
+    ]
+  },
+  async redirects() {
+    return [
+      // Redirect everything in / root to basePath if defined
+      ...(basePath !== ''
+        ? [
+            {
+              source: '/',
+              destination: basePath,
+              basePath: false,
+              permanent: false,
+            },
+          ]
+        : []),
+    ]
+  },
   nx: {
     // Set this to true if you would like to to use SVGR
     // See: https://github.com/gregberge/svgr
@@ -48,18 +65,21 @@ const nextConfig = {
     //     cwd: process.cwd(),
     //   })
     // )
-    config.experiments = {
-      asyncWebAssembly: true,
-      syncWebAssembly: true,
-    }
     return config
   },
   // productionBrowserSourceMaps: true,
-  ...(BASE_PATH && { basePath: BASE_PATH }),
-  // productionBrowserSourceMaps: !IS_PRODUCTION,
+  basePath,
+  productionBrowserSourceMaps: !IS_PRODUCTION,
+  // to deploy on a node server
+  output: 'standalone',
+  outputFileTracing: true,
   experimental: {
-    appDir: false,
+    outputFileTracingRoot: join(__dirname, '../../'),
+    appDir: true,
+    serverActions: true,
   },
+  cleanDistDir: true,
+  distDir: '.next',
 }
 
 const configWithNx = withNx(nextConfig)
