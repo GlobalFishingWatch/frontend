@@ -9,6 +9,7 @@ import { useLatestPositionsLayer } from 'layers/latest-positions/latest-position
 import { useTracksLayer, useTracksSublayers } from 'layers/tracks/tracks.hooks'
 import { BitmapLayer } from '@deck.gl/layers/typed'
 import { TileLayer } from '@deck.gl/geo-layers/typed'
+import uniqBy from 'lodash/uniqBy'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { MiniGlobe, MiniglobeBounds, Tooltip } from '@globalfishingwatch/ui-components'
 import { BasemapType } from '@globalfishingwatch/layer-composer'
@@ -123,7 +124,8 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
         y: info.y,
       })
       if (!hoveredFeatures.length && !features.length) return
-      setHoveredFeatures(features)
+      const uniqFeatures = uniqBy(features, 'value.object.properties.mmsi')
+      setHoveredFeatures(uniqFeatures)
     },
     [setHoveredFeatures, hoveredFeatures]
   )
