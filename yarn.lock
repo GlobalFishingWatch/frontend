@@ -2551,6 +2551,48 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@globalfishingwatchapp/real-time-prototype@workspace:apps/real-time-prototype":
+  version: 0.0.0-use.local
+  resolution: "@globalfishingwatchapp/real-time-prototype@workspace:apps/real-time-prototype"
+  dependencies:
+    "@deck.gl/core": 8.9.19
+    "@deck.gl/extensions": 8.9.19
+    "@deck.gl/geo-layers": 8.9.19
+    "@deck.gl/layers": 8.9.19
+    "@deck.gl/react": 8.9.19
+    "@globalfishingwatch/linting": 2.0.2
+    "@loaders.gl/loader-utils": ^3.2.13
+    "@next/eslint-plugin-next": 13.1.6
+    "@recoiljs/refine": ^0.1.1
+    "@types/lodash": 4.14.191
+    "@types/luxon": ^2.4.0
+    "@types/node": 18.11.19
+    "@types/react": ^18.2.7
+    "@types/react-dom": ^18.2.4
+    classnames: 2.3.2
+    depcheck: 1.4.3
+    jotai: ^1.13.1
+    lodash: 4.17.21
+    luxon: ^2.5.2
+    prettier: 2.8.3
+    react: ^18.2.0
+    react-dom: ^18.2.0
+    react-test-renderer: 18.2.0
+    recoil: 0.7.6
+    recoil-sync: ^0.2.0
+    recoil-sync-next: ^0.0.3
+    serve: 14.2.0
+    simple-statistics: ^7.8.2
+    source-map-explorer: 2.5.3
+    store: 2.0.12
+    stylelint: ^14.16.1
+    stylelint-config-css-modules: ^2.3.0
+    stylelint-config-prettier: ^9.0.4
+    stylelint-config-standard: ^29.0.0
+    typescript: 5.0.4
+  languageName: unknown
+  linkType: soft
+
 "@globalfishingwatchapp/tile-inspector@workspace:apps/tile-inspector":
   version: 0.0.0-use.local
   resolution: "@globalfishingwatchapp/tile-inspector@workspace:apps/tile-inspector"
@@ -25126,6 +25168,13 @@ __metadata:
   version: 1.1.1
   resolution: "stealthy-require@npm:1.1.1"
   checksum: 6805b857a9f3a6a1079fc6652278038b81011f2a5b22cbd559f71a6c02087e6f1df941eb10163e3fdc5391ab5807aa46758d4258547c1f5ede31e6d9bfda8dd3
+  languageName: node
+  linkType: hard
+
+"store@npm:2.0.12":
+  version: 2.0.12
+  resolution: "store@npm:2.0.12"
+  checksum: 4e0fe69f71dc3c99af1b87e87dcb0c81fc979bd38abbcdf66d5705f1c44e6fd5e043056288efd695926c75419adc356873e6792d9b024085a8db51dbdda899ea
   languageName: node
   linkType: hard
 
