@@ -47,6 +47,7 @@ function VesselsSection({ lastUpdate }) {
     if (sublayerWaitingToLoad && allLoaded) {
       fitBoundsToSublayer(sublayerWaitingToLoad)
       setSublayerWaitingToLoad('')
+      setQuery('')
     }
   }, [fitBoundsToSublayer, allLoaded, sublayerWaitingToLoad])
 
