@@ -111,7 +111,7 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
         x: info.x,
         y: info.y,
       })
-      if (!features.length) return
+      if (!features.length || !features[0].object.properties.mmsi) return
       addTrackSublayer(features[0].object.properties.mmsi)
     },
     [addTrackSublayer]
@@ -195,9 +195,8 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
     }
   }
 
-  const getCursor = ({ isDragging, isHovering }) => {
-    // TODO: check why this is not working
-    if (isHovering) return 'pointer'
+  const getCursor = ({ isDragging }) => {
+    if (hoveredFeatures.length && hoveredFeatures[0].object.properties.mmsi) return 'pointer'
     return isDragging ? 'grabbing' : 'grab'
   }
 
