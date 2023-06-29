@@ -52,12 +52,13 @@ export const trackEvent = ({ category, action, label, value }: TrackEventParams)
 
 export const useAnalytics = () => {
   useEffect(() => {
-    if (GOOGLE_MEASUREMENT_ID) {
-      ReactGA.initialize(
-        GOOGLE_MEASUREMENT_ID,
-        GOOGLE_ANALYTICS_TEST_MODE ? { testMode: true } : {}
-      )
-      // Uncomment to prevent sending hits in non-production envs
+    if (GOOGLE_TAG_MANAGER_ID) {
+      ReactGA.initialize(GOOGLE_TAG_MANAGER_ID, {
+        ...(GOOGLE_ANALYTICS_TEST_MODE ? { testMode: true } : {}),
+        gtagUrl: 'https://www.googletagmanager.com/gtm.js',
+      })
+      // Tip: To send hits to GA you'll have to set
+      // NEXT_PUBLIC_WORKSPACE_ENV=production in your .env.local
       if (GOOGLE_ANALYTICS_TEST_MODE) {
         ReactGA.set({ sendHitTask: null })
       }
