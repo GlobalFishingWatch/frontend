@@ -1,6 +1,7 @@
 steps:
   - name: 'gcr.io/kaniko-project/executor:debug'
     env:
+      - 'COMMIT_SHA=$COMMIT_SHA'
       - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
       - 'NEXT_PUBLIC_URL=$_NEXT_PUBLIC_URL'
       - 'NEXT_PUBLIC_API_GATEWAY=$_NEXT_PUBLIC_API_GATEWAY'
@@ -12,11 +13,13 @@ steps:
       - 'NEXT_PUBLIC_FEEDBACK_FORM_FR=$_NEXT_PUBLIC_FEEDBACK_FORM_FR'
     entrypoint: ''
     script: |
-      tag="${COMMIT_SHA};$NEXT_PUBLIC_URL;$NEXT_PUBLIC_API_GATEWAY;$NEXT_PUBLIC_WORKSPACE_ENV;$NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID;$NEXT_PUBLIC_GOOGLE_TAG_MANAGER_KEY;$NEXT_PUBLIC_CARRIER_PORTAL_URL;$NEXT_PUBLIC_LATEST_CARRIER_DATASET_ID;$NEXT_PUBLIC_FEEDBACK_SPREADSHEET_ID;$NEXT_PUBLIC_SPREADSHEET_CLIENT_EMAIL;$NEXT_PUBLIC_SPREADSHEET_PRIVATE_KEY"
-      tag=`echo $tag | md5sum`
+      raw_tag="${COMMIT_SHA};$NEXT_PUBLIC_URL;$NEXT_PUBLIC_API_GATEWAY;$NEXT_PUBLIC_WORKSPACE_ENV;$NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID;$NEXT_PUBLIC_GOOGLE_TAG_MANAGER_KEY;$NEXT_PUBLIC_CARRIER_PORTAL_URL;$NEXT_PUBLIC_LATEST_CARRIER_DATASET_ID;$NEXT_PUBLIC_FEEDBACK_SPREADSHEET_ID;$NEXT_PUBLIC_SPREADSHEET_CLIENT_EMAIL;$NEXT_PUBLIC_SPREADSHEET_PRIVATE_KEY"
+      echo raw_tag=$raw_tag
+
+      tag=`echo $raw_tag | sha256sum`
       tag=${tag:0:32}
       echo $tag > image-tag
-      echo COMMIT_SHA: ${COMMIT_SHA}
+      echo COMMIT_SHA: $COMMIT_SHA
       echo _USE_CACHE: $_USE_CACHE
       echo {_USE_CACHE}: ${_USE_CACHE}
       echo Tag to use for docker image: $tag
@@ -86,12 +89,14 @@ steps:
   - name: 'gcr.io/kaniko-project/executor:debug'
     id: 'build-image'
     waitFor: ['build-app']
+    env:
+      - 'USE_CACHE=$_USE_CACHE'
     entrypoint: ''
     script: |
       tag=`cat image-tag`
       /kaniko/executor \
         --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:${tag} \
-        --cache=$_USE_CACHE \
+        --cache=$USE_CACHE \
         --build-arg \
           APP_NAME=vessel-history \
         --target \
