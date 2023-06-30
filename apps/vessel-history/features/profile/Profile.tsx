@@ -369,6 +369,12 @@ const Profile: React.FC = (props): React.ReactElement => {
           activeTab={activeTab?.id as string}
           onTabClick={(tab: Tab) => {
             setActiveTab(tab)
+            if (tab.id === 'info') {
+              trackEvent({
+                category: TrackCategory.VesselDetailInfoTab,
+                action: 'See Info Tab',
+              })
+            }
             if (tab.id === 'activity' && !currentProfileIsInsurer) {
               trackEvent({
                 category: TrackCategory.VesselDetailActivityTab,
