@@ -141,8 +141,8 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         params: [],
         query: [
           { id: 'datasets', value: datasets.map((d) => d.id) },
-          { id: 'limit', value: RESULTS_PER_PAGE },
-          { id: 'offset', value: offset },
+          // { id: 'limit', value: RESULTS_PER_PAGE },
+          // { id: 'offset', value: offset },
           { id: 'query', value: encodeURIComponent(advancedQuery || query) },
         ],
       }
