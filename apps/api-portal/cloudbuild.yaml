@@ -34,7 +34,6 @@ steps:
   - id: 'build-app'
     waitFor: ['install-yarn']
     name: node:18-alpine
-    entrypoint: yarn
     env:
       - 'NX_BRANCH=$_NX_BRANCH'
       - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
