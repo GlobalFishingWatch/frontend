@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { Fragment, useState } from 'react'
 import { Button } from '@globalfishingwatch/ui-components'
-import { ActivityByType } from 'features/vessel/activity/activity-by-type/activity-by-type'
-import ActivityByVoyage from 'features/vessel/activity/activity-by-voyage/activity-by-voyage'
+import { ActivityByType } from 'features/vessel/activity/activity-by-type/ActivityByType'
+import ActivityByVoyage from 'features/vessel/activity/activity-by-voyage/ActivityByVoyage'
 import styles from './VesselActivity.module.css'
 import { VesselActivitySummary } from './summary/VesselActivitySummary'
 

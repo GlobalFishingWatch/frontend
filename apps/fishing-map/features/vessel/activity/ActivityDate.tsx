@@ -25,10 +25,10 @@ const ActivityDate: React.FC<ActivityDateProps> = (props): React.ReactElement =>
   return (
     <Fragment>
       {event.timestamp && (
-        <label className={props.className ? props.className : styles.date}>
+        <span className={props.className ? props.className : styles.date}>
           <I18nDate date={event.timestamp as number} format={DateTime.DATETIME_SHORT} />
           {showduration && <span> - {durationDescription}</span>}
-        </label>
+        </span>
       )}
     </Fragment>
   )

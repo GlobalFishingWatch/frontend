@@ -4,7 +4,7 @@ import { EventType, EventTypes } from '@globalfishingwatch/api-types'
 
 export const useActivityByType = () => {
   //const eventsLoading = useSelector(selectEventResourcesLoading)
-  const [expandedGroups, setExpandedGroups] = useState<EventType[]>([])
+  const [expandedGroup, setExpandedGroup] = useState<EventType | null>(null)
   const eventTypes = [
     EventTypes.Encounter,
     EventTypes.Fishing,
@@ -15,14 +15,15 @@ export const useActivityByType = () => {
 
   const toggleEventType = useCallback(
     (type: EventType) => {
-      expandedGroups.includes(type) ? setExpandedGroups([]) : setExpandedGroups([type])
+      expandedGroup === type ? setExpandedGroup(null) : setExpandedGroup(type)
     },
-    [expandedGroups]
+    [expandedGroup]
   )
 
   return {
     eventTypes,
-    expandedGroups,
+    expandedGroup,
+    expandedGroups: ['asdsad'],
     toggleEventType,
   }
 }

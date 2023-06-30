@@ -12,7 +12,6 @@ import styles from './Event.module.css'
 interface EventProps {
   classname?: string
   event: ActivityEvent
-  highlighted?: boolean
   onInfoClick?: (event: ActivityEvent) => void
   onMapClick?: (event: ActivityEvent) => void
   options?: {
@@ -23,7 +22,6 @@ interface EventProps {
 const EventItem: React.FC<EventProps> = ({
   classname = '',
   event,
-  highlighted = false,
   onInfoClick = () => {},
   onMapClick = () => {},
   options = { displayPortVisitsAsOneEvent: false },
@@ -33,12 +31,7 @@ const EventItem: React.FC<EventProps> = ({
     <Fragment>
       <div className={cx(styles.event, classname)}>
         <div
-          className={cx(
-            styles.eventIcon,
-            styles[event.type],
-            styles[getEncounterStatus(event)],
-            highlighted ? styles.highlighted : ''
-          )}
+          className={cx(styles.eventIcon, styles[event.type], styles[getEncounterStatus(event)])}
         >
           {event.type === EventTypes.Encounter && <Icon icon="event-encounter" type="default" />}
           {event.type === EventTypes.Loitering && <Icon icon="event-loitering" type="default" />}
@@ -61,9 +54,7 @@ const EventItem: React.FC<EventProps> = ({
       <div className={styles.divider}></div>
     </Fragment>
   ) : (
-    <ActivityEventPortVisit
-      {...{ classname, event, highlighted, onInfoClick, onMapClick, options }}
-    />
+    <ActivityEventPortVisit {...{ classname, event, onInfoClick, onMapClick, options }} />
   )
 }
 

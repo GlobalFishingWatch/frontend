@@ -15,7 +15,7 @@ import { DEFAULT_VIEWPORT } from 'data/config'
 import { ActivityEvent } from 'types/activity'
 import styles from '../activity-by-type/activity-by-type.module.css'
 import useActivityEventConnect from '../event/event.hook'
-import ActivityItem from './activity-item'
+import ActivityItem from './ActivityItem'
 import { selectVoyagesByVessel } from './activity-by-voyage.selectors'
 interface ActivityProps {
   onMoveToMap: () => void

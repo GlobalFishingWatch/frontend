@@ -11,7 +11,7 @@ interface ActivityGroupProps {
   loading: boolean
   onToggleClick?: (type: EventType) => void
   quantity: number
-  status: 'expanded' | 'collapsed'
+  expanded: boolean
 }
 
 const ActivityGroup: React.FC<ActivityGroupProps> = ({
@@ -19,7 +19,7 @@ const ActivityGroup: React.FC<ActivityGroupProps> = ({
   loading,
   onToggleClick = () => {},
   quantity,
-  status,
+  expanded,
 }): React.ReactElement => {
   const { t } = useTranslation()
 
@@ -45,11 +45,10 @@ const ActivityGroup: React.FC<ActivityGroupProps> = ({
     () => (hasEvents ? onToggleClick(eventType) : {}),
     [eventType, hasEvents, onToggleClick]
   )
+  console.log(expanded)
   return (
     <Fragment>
-      <div
-        className={cx(styles.event, styles.eventGroup, { [styles.open]: status === 'expanded' })}
-      >
+      <div className={cx(styles.event, styles.eventGroup, { [styles.open]: expanded })}>
         <div className={styles.eventData} onClick={onToggle}>
           <div className={cx(styles.eventIcon, styles[eventType])}>
             {eventType === EventTypes.Encounter && <Icon icon="event-encounter" type="default" />}
@@ -64,7 +63,7 @@ const ActivityGroup: React.FC<ActivityGroupProps> = ({
         {hasEvents && (
           <div className={styles.actions}>
             <IconButton
-              icon={status === 'expanded' ? 'arrow-top' : 'arrow-down'}
+              icon={expanded ? 'arrow-top' : 'arrow-down'}
               size="small"
               onClick={onToggle}
             ></IconButton>

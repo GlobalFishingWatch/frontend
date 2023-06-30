@@ -31,8 +31,7 @@ const EventPortVisit: React.FC<EventProps> = ({
   options: { displayPortVisitsAsOneEvent } = { displayPortVisitsAsOneEvent: false },
 }): React.ReactElement => {
   const { t } = useTranslation()
-  const { getEventDescription, getEventDurationDescription } = useActivityEventConnect()
-  const durationDescription = useMemo(() => getEventDurationDescription(event), [event])
+  const { getEventDescription } = useActivityEventConnect()
 
   const isPortEntry = event?.subEvent === PortVisitSubEvent.Entry
   const isPortExit = event?.subEvent === PortVisitSubEvent.Exit
@@ -45,17 +44,11 @@ const EventPortVisit: React.FC<EventProps> = ({
         <Fragment>
           <div className={styles.displayPortVisitsAsOneEvent}>
             <div className={cx(styles.event, classname)}>
-              <div
-                className={cx(
-                  styles.eventIcon,
-                  styles[event.type],
-                  highlighted ? styles.highlighted : ''
-                )}
-              >
+              <div className={cx(styles.eventIcon, 'port_visit')}>
                 <Icon icon="event-port-visit" type="default" />
               </div>
               <div className={styles.eventData}>
-                <label className={styles.date}>{durationDescription}</label>
+                <ActivityDate event={event} />
                 <div className={styles.description}>{getEventDescription(event)}</div>
               </div>
               <div className={styles.actions}>

@@ -74,6 +74,7 @@ export interface Vessel {
   posCount?: number
   registeredGearType?: string
   shipname: string
+  shiptype?: string
   type?: string
   vesselType?: VesselType
   years?: number[]

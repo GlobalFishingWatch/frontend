@@ -1,12 +1,11 @@
 import { Fragment } from 'react'
-import { EventTypeVoyage, RenderedVoyage, Voyage } from 'types/voyage'
+import { RenderedVoyage, Voyage } from 'types/voyage'
 import { ActivityEvent } from 'types/activity'
 import EventItem from '../event/Event'
-import VoyageGroup from './voyage-group'
+import VoyageGroup from './VoyageGroup'
 
 interface EventProps {
   event: RenderedVoyage
-  highlighted?: boolean
   onInfoClick?: (event: ActivityEvent) => void
   onMapClick?: (event: ActivityEvent | Voyage) => void
   onToggleClick?: (event: RenderedVoyage) => void
@@ -17,7 +16,6 @@ interface EventProps {
 
 const ActivityItem: React.FC<EventProps> = ({
   event,
-  highlighted = false,
   onInfoClick = () => {},
   onMapClick = () => {},
   onToggleClick = () => {},
@@ -37,7 +35,6 @@ const ActivityItem: React.FC<EventProps> = ({
           <EventItem
             key={voyageEvent.id}
             event={voyageEvent}
-            highlighted={highlighted}
             onMapClick={onMapClick}
             onInfoClick={onInfoClick}
             options={options}

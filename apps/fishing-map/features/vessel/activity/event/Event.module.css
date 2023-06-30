@@ -45,8 +45,7 @@
 }
 
 .displayPortVisitsAsOneEvent .eventIcon.port_visit_exited,
-.displayPortVisitsAsOneEvent .eventIcon.port_visit_entered,
-.displayPortVisitsAsOneEvent:not(.port_visit_entered) .divider {
+.displayPortVisitsAsOneEvent .eventIcon.port_visit_entered {
   opacity: 0;
   height: 0;
   margin-top: 0;

@@ -13,7 +13,6 @@ interface EventProps {
 
 const ActivityItem: React.FC<EventProps> = ({
   event,
-  highlighted = false,
   onInfoClick = () => {},
   onMapClick = () => {},
   options = { displayPortVisitsAsOneEvent: false },
@@ -21,7 +20,6 @@ const ActivityItem: React.FC<EventProps> = ({
   return (
     <EventItem
       event={event}
-      highlighted={highlighted}
       onMapClick={onMapClick}
       onInfoClick={onInfoClick}
       options={options}

@@ -21,7 +21,7 @@ const VesselSummary = () => {
     return t('vessel.summary', {
       defaultValue:
         'The <strong>{{vesselType}}</strong> vessel flagged by <strong>{{vesselFlag}}</strong> had <strong>{{events}}</strong> events in <strong>{{voyages}}</strong> voyages between <strong>{{timerangeStart}}</strong> and <strong>{{timerangeEnd}}</strong>.',
-      vesselType: formatInfoField(vessel?.vesselType as string, 'vesselType').toLowerCase(),
+      vesselType: formatInfoField(vessel?.shiptype as string, 'vesselType').toLowerCase(),
       vesselFlag: formatInfoField(vessel?.flag as string, 'flag'),
       events: formatI18nNumber(events?.length as number),
       voyages: 15, // TODO: calculate voyages

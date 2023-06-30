@@ -1,11 +1,11 @@
-import { Fragment, useCallback, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
 import { useTranslation } from 'react-i18next'
 import { Modal, Spinner } from '@globalfishingwatch/ui-components'
-import { EventTypes } from '@globalfishingwatch/api-types'
+import { EventType, EventTypes } from '@globalfishingwatch/api-types'
 
 //import useMapEvents from 'features/map/map-events.hooks'
 import useViewport from 'features/map/map-viewport.hooks'
@@ -16,15 +16,15 @@ import useActivityEventConnect from '../event/event.hook'
 import { useActivityByType } from './activity-by-type.hook'
 import styles from './activity-by-type.module.css'
 import { selectEventsByType } from './activity-by-type.selectors'
-import ActivityItem from './activity-item'
-import ActivityGroup from './activity-group'
+import ActivityItem from './ActivityItem'
+import ActivityGroup from './ActivityGroup'
 
 export interface ActivityByTypeProps {
   onMoveToMap?: () => void
 }
 
 export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) {
-  const { toggleEventType, eventTypes, expandedGroups } = useActivityByType()
+  const { toggleEventType, eventTypes, expandedGroup } = useActivityByType()
   const events = useSelector(selectEventsByType)
   const { t } = useTranslation()
   const { getEventDescription } = useActivityEventConnect()
@@ -61,16 +61,31 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
     [onMoveToMap, setMapCoordinates, viewport.zoom]
   )
 
+  const getEventTypeHeight = (eventType: EventType) => {
+    return eventType === EventTypes.Port ? 60 : 51
+  }
+
+  const getContainerHeight = (eventType: EventType) => {
+    return getEventTypeHeight(eventType) * 10 // create a frame of 10 events
+  }
+
   const getRowHeight = useCallback(
     (index: number) => {
-      const event = events[index]
-      const height =
-        !event.group && event?.type === EventTypes.Port ? (event?.subEvent ? 35 : 44) : 60
+      if (!expandedGroup) return 0
+      const height = getEventTypeHeight(expandedGroup)
       return height
     },
-    [events]
+    [expandedGroup]
   )
+
   const displayOptions = { displayPortVisitsAsOneEvent: true }
+
+  const listOfEvents = useMemo(() => {
+    if (!expandedGroup) {
+      return []
+    }
+    return events[expandedGroup]?.events
+  }, [events, expandedGroup])
 
   return (
     <div className={styles.activityContainer}>
@@ -90,21 +105,50 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
               loading={events[eventType].loading}
               onToggleClick={onToggleEventType}
               quantity={events[eventType].quantity}
-              status={events[eventType].status}
+              expanded={expandedGroup === eventType}
             ></ActivityGroup>
           )}
-          {expandedGroups.includes(eventType) &&
+          {false &&
+            expandedGroup === eventType &&
             events[eventType]?.events.length &&
             events[eventType]?.events.map((event) => (
               <ActivityItem
                 key={event.id}
                 event={event}
-                highlighted={false}
                 onMapClick={selectEventOnMap}
                 onInfoClick={openModal}
                 options={displayOptions}
               />
             ))}
+          {expandedGroup === eventType && events[eventType]?.events.length && (
+            <AutoSizer disableHeight={true}>
+              {({ width, height }) => (
+                <List
+                  key={`${events[eventType]?.events.length}-list`}
+                  width={width as number}
+                  height={getContainerHeight(eventType)}
+                  itemCount={events[eventType]?.events.length}
+                  itemData={events[eventType]?.events}
+                  itemSize={getRowHeight}
+                >
+                  {({ index, style }) => {
+                    const event = events[eventType].events[index]
+                    return (
+                      <div style={style}>
+                        <ActivityItem
+                          key={event.id}
+                          event={event}
+                          onMapClick={selectEventOnMap}
+                          onInfoClick={openModal}
+                          options={displayOptions}
+                        />
+                      </div>
+                    )
+                  }}
+                </List>
+              )}
+            </AutoSizer>
+          )}
         </Fragment>
       ))}
     </div>
