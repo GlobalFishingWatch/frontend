@@ -82,6 +82,9 @@ function Sidebar() {
 
   const fourwingsMode = fourwingsLayerInstance?.getMode()
   const fourwingsResolution = fourwingsLayerInstance?.getResolution()
+
+  return null
+
   return (
     <div className={styles.container}>
       <div className="scrollContainer">

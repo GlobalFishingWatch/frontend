@@ -131,8 +131,8 @@ function VesselsTable({
       vessel.trackDataset?.id?.includes(PRESENCE_TRACKS_DATASET_ID)
     ) {
       vesselDataviewInstance = getPresenceVesselDataviewInstance(vessel, {
-        trackDatasetId: vessel.trackDataset?.id,
-        infoDatasetId: vessel.infoDataset?.id,
+        info: vessel.infoDataset?.id,
+        track: vessel.trackDataset?.id,
       })
     } else {
       const vesselEventsDatasets = getRelatedDatasetsByType(
@@ -145,9 +145,9 @@ function VesselsTable({
           : []
 
       vesselDataviewInstance = getVesselDataviewInstance(vessel, {
-        trackDatasetId: vessel.trackDataset?.id,
-        infoDatasetId: vessel.infoDataset?.id,
-        ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
+        info: vessel.infoDataset?.id,
+        track: vessel.trackDataset?.id,
+        ...(eventsDatasetsId.length > 0 && { events: eventsDatasetsId }),
       })
     }
 

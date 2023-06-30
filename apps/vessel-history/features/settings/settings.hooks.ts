@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { capitalize } from 'lodash'
 import { MultiSelectOption } from '@globalfishingwatch/ui-components'
+import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.selectors'
 import { Region, anyRegion } from 'features/regions/regions.slice'
 import flags from 'data/flags'
@@ -30,8 +30,8 @@ export const useSettingsConnect = () => {
     }
     if (settingType !== 'portVisits') {
       const setting = newSettings[settingType as keyof Settings] as SettingsEvents
-      uaEvent({
-        category: 'Highlight Events',
+      trackEvent({
+        category: TrackCategory.HighlightEvents,
         action: `Configure ${settingType} events highlights`,
         label: JSON.stringify({
           eez: setting.eezs?.[0] === '0-any' ? 'any' : setting.eezs?.length || 0,
@@ -43,8 +43,8 @@ export const useSettingsConnect = () => {
         }),
       })
     } else {
-      uaEvent({
-        category: 'Highlight Events',
+      trackEvent({
+        category: TrackCategory.HighlightEvents,
         action: `Configure ${settingType} events highlights`,
         label: JSON.stringify({
           flags:
@@ -62,7 +62,7 @@ export const useSettingsConnect = () => {
   const setSettingOptions = (section: string, field: string, values: Region[]) => {
     const key = section as keyof Settings
     const newSettings = {
-      ...settings[key] as SettingsEvents,
+      ...(settings[key] as SettingsEvents),
       [field]: values.map((v) => v.id),
     }
     mergeSettings(section, newSettings)
@@ -71,7 +71,7 @@ export const useSettingsConnect = () => {
   const setSetting = (section: string, field: string, value: number) => {
     const key = section as keyof Settings
     const newSettings: SettingsEvents = {
-      ...settings[key] as SettingsEvents,
+      ...(settings[key] as SettingsEvents),
       [field]: value >= 0 ? value : undefined,
     }
     mergeSettings(section, newSettings)
@@ -120,15 +120,15 @@ export const useSettingsRegionsConnect = (section: SettingEventSectionName) => {
       currentSelected: MultiSelectOption<string, string>[],
       field: string
     ) => {
-      selected === anyOption ?
-        // when ANY is selected the rest are deselected
-        setSettingOptions(section, field, [selected]) :
-        // when other than ANY is selected
-        setSettingOptions(section, field, [
-          // then ANY should be deselected
-          ...currentSelected.filter((option) => option !== anyOption),
-          selected,
-        ])
+      selected === anyOption
+        ? // when ANY is selected the rest are deselected
+          setSettingOptions(section, field, [selected])
+        : // when other than ANY is selected
+          setSettingOptions(section, field, [
+            // then ANY should be deselected
+            ...currentSelected.filter((option) => option !== anyOption),
+            selected,
+          ])
     },
     [section, setSettingOptions, anyOption]
   )

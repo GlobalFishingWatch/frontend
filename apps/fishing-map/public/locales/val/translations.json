@@ -82,6 +82,7 @@
     "category": "crwdns7761:0crwdne7761:0",
     "comingSoon": "crwdns5448:0crwdne5448:0",
     "confirm": "crwdns3324:0crwdne3324:0",
+    "confirmLeave": "crwdns31037:0crwdne31037:0",
     "context_area_other": "crwdns8927:0crwdne8927:0",
     "continue": "crwdns26540:0crwdne26540:0",
     "copiedToClipboard": "crwdns3570:0crwdne3570:0",
@@ -332,6 +333,8 @@
     "unknown": "crwdns6960:0crwdne6960:0"
   },
   "feedback": {
+    "logAnIssue": "crwdns31001:0crwdne31001:0",
+    "requestAnImprovement": "crwdns31003:0crwdne31003:0",
     "descriptionPlaceholder": "crwdns6464:0crwdne6464:0",
     "email": "crwdns5366:0crwdne5366:0",
     "emailDisclaimer": "crwdns6682:0crwdne6682:0",

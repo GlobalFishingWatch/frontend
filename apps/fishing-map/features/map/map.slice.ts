@@ -60,6 +60,7 @@ type MapState = {
   hovered: SliceInteractionEvent | null
   isDrawing: boolean
   fishingStatus: AsyncReducerStatus
+  currentFishingRequestId: string
   apiEventStatus: AsyncReducerStatus
 }
 
@@ -68,6 +69,7 @@ const initialState: MapState = {
   hovered: null,
   isDrawing: false,
   fishingStatus: AsyncReducerStatus.Idle,
+  currentFishingRequestId: '',
   apiEventStatus: AsyncReducerStatus.Idle,
 }
 
@@ -468,9 +470,11 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchFishingActivityInteractionThunk.pending, (state, action) => {
       state.fishingStatus = AsyncReducerStatus.Loading
+      state.currentFishingRequestId = action.meta.requestId
     })
     builder.addCase(fetchFishingActivityInteractionThunk.fulfilled, (state, action) => {
       state.fishingStatus = AsyncReducerStatus.Finished
+      state.currentFishingRequestId = ''
       if (!state.clicked || !state.clicked.features || !action.payload) return
 
       action.payload.vessels.forEach((sublayerVessels) => {
@@ -484,7 +488,10 @@ const slice = createSlice({
     })
     builder.addCase(fetchFishingActivityInteractionThunk.rejected, (state, action) => {
       if (action.error.message === 'Aborted') {
-        state.fishingStatus = AsyncReducerStatus.Idle
+        state.fishingStatus =
+          state.currentFishingRequestId !== action.meta.requestId
+            ? AsyncReducerStatus.Loading
+            : AsyncReducerStatus.Idle
       } else {
         state.fishingStatus = AsyncReducerStatus.Error
       }

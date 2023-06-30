@@ -1,8 +1,8 @@
 import React, { Fragment, useCallback, useMemo, useState } from 'react'
-import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { Authorization } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
+import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import { I18nSpecialDate } from 'features/i18n/i18nDate'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { VesselFieldLabel } from 'types/vessel'
@@ -27,8 +27,8 @@ const AuthorizationsField: React.FC<ListItemProps> = ({
   const openModal = useCallback(() => {
     if (authorizations.length > 0) {
       setModalOpen(true)
-      uaEvent({
-        category: 'Vessel Detail INFO Tab',
+      trackEvent({
+        category: TrackCategory.VesselDetailInfoTab,
         action: 'Vessel detail INFO tab is open and user click in the history by each field',
         label: JSON.stringify({ [label]: authorizations.length }),
       })

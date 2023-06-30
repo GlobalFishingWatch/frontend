@@ -7,7 +7,12 @@ import {
   MultiSelectOnChange,
   MultiSelectOption,
 } from '@globalfishingwatch/ui-components'
-import { DatasetTypes, EXCLUDE_FILTER_ID, FilterOperator } from '@globalfishingwatch/api-types'
+import {
+  DatasetTypes,
+  DataviewCategory,
+  EXCLUDE_FILTER_ID,
+  FilterOperator,
+} from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
@@ -205,7 +210,8 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
 
   const onSelectFilterClick = (
     filterKey: SupportedDatasetSchema,
-    selection: MultiSelectOption | MultiSelectOption[]
+    selection: MultiSelectOption | MultiSelectOption[],
+    singleValue: boolean = false
   ) => {
     if ((selection as MultiSelectOption)?.id === VESSEL_GROUPS_MODAL_ID) {
       dispatch(setVesselGroupsModalOpen(true))
@@ -214,6 +220,8 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
     }
     const filterValues = Array.isArray(selection)
       ? selection.map(({ id }) => id).sort((a, b) => a - b)
+      : singleValue
+      ? selection
       : [...(dataview.config?.filters?.[filterKey] || []), selection.id]
     const newDataviewConfig = {
       filters: {
@@ -362,7 +370,9 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
           })}
         </p>
       )}
-      <UserGuideLink section="activityFilters" className={styles.userGuideLink} />
+      {dataview.category === DataviewCategory.Activity && (
+        <UserGuideLink section="activityFilters" className={styles.userGuideLink} />
+      )}
     </Fragment>
   )
 }

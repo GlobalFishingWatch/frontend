@@ -42,7 +42,7 @@ steps:
 
   - id: 'docker-prepare'
     waitFor: ['build-app']
-    name: node:14
+    name: node:18-alpine
     entrypoint: yarn
     args: ['nx', 'docker-prepare', 'user-groups-admin']
 

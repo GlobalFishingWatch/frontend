@@ -48,6 +48,10 @@ const nextConfig = {
     //     cwd: process.cwd(),
     //   })
     // )
+    config.experiments = {
+      asyncWebAssembly: true,
+      syncWebAssembly: true,
+    }
     return config
   },
   // productionBrowserSourceMaps: true,

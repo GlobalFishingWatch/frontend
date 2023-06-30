@@ -1592,7 +1592,7 @@
     "schema": {}
   },
   "public-eez-boundaries": {
-    "name": "EEZs",
+    "name": "EEZ boundaries",
     "description": "EEZs boundaries are shown as solid lines for '200 NM', 'Treaty', 'Median line', 'Joint regime', 'Connection Line', 'Unilateral claim (undisputed)' and dashed lines for 'Joint regime', 'Unsettled', 'Unsettled median line' based on the 'LINE_TYPE' field. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer",
     "schema": {}
   },
@@ -1837,6 +1837,29 @@
       "event_start": "event_start",
       "event_vessels": "event_vessels",
       "event_mean_position": "event_mean_position"
+    }
+  },
+  "public-global-other-vessels": {
+    "name": "AIS (Other Vessels)",
+    "description": "Other vessels from AIS",
+    "schema": {
+      "id": "id",
+      "imo": "imo",
+      "flag": "flag",
+      "mmsi": "mmsi",
+      "source": "source",
+      "dataset": "dataset",
+      "callsign": "callsign",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {}
+      },
+      "msgCount": "msgCount",
+      "posCount": "posCount",
+      "shipname": "shipname",
+      "normalized_shipname": "normalized_shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
     }
   },
   "public-global-presence": {
