@@ -22,6 +22,11 @@ export interface DataviewConfig<Type = any> {
   dynamicBreaks?: boolean
   maxZoom?: number
   layers?: DataviewContexLayerConfig[]
+  /** Vessel datasets */
+  info?: string
+  track?: string
+  events?: string[]
+  /*****************/
   [key: string]: any
 }
 

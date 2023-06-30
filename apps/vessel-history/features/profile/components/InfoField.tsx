@@ -1,7 +1,7 @@
 import React, { ReactNode, useCallback, useMemo, useState } from 'react'
 import cx from 'classnames'
-import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
+import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import I18nDate from 'features/i18n/i18nDate'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { Iuu, ValueItem } from 'types'
@@ -48,8 +48,8 @@ const InfoField: React.FC<ListItemProps> = ({
   const openModal = useCallback(() => {
     if (valuesHistory.length > 0) {
       setModalOpen(true)
-      uaEvent({
-        category: 'Vessel Detail INFO Tab',
+      trackEvent({
+        category: TrackCategory.VesselDetailInfoTab,
         action: 'Vessel detail INFO tab is open and user click in the history by each field',
         label: JSON.stringify({ [label]: valuesHistory.length }),
       })

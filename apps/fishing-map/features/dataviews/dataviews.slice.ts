@@ -14,6 +14,7 @@ import {
   DataviewInstance,
   Dataview,
   APIPagination,
+  DataviewDatasetConfig,
 } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import {
@@ -41,6 +42,10 @@ import {
 } from 'features/resources/resources.slice'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { MARINE_MANAGER_DATAVIEWS } from 'data/default-workspaces/marine-manager'
+import {
+  getVesselDataviewInstanceDatasetConfig,
+  VESSEL_DATAVIEW_INSTANCE_PREFIX,
+} from 'features/dataviews/dataviews.utils'
 import { trackDatasetConfigsCallback } from '../resources/resources.utils'
 
 export const fetchDataviewByIdThunk = createAsyncThunk(
@@ -211,7 +216,31 @@ export const selectAllDataviewInstancesResolved = createSelector(
   [selectDataviewInstancesMergedOrdered, selectAllDataviews, selectAllDatasets],
   (dataviewInstances, dataviews, datasets): UrlDataviewInstance[] | undefined => {
     if (!dataviewInstances) return
-    const dataviewInstancesResolved = resolveDataviews(dataviewInstances, dataviews, datasets)
+    const dataviewInstancesWithDatasetConfig = dataviewInstances.map((dataviewInstance) => {
+      if (
+        dataviewInstance.id.startsWith(VESSEL_DATAVIEW_INSTANCE_PREFIX) &&
+        !dataviewInstance.datasetsConfig?.length &&
+        dataviewInstance.config?.info
+      ) {
+        const vesselId = dataviewInstance.id.split(VESSEL_DATAVIEW_INSTANCE_PREFIX)[1]
+        // New way to resolve datasetConfig for vessels to avoid storing all
+        // the datasetConfig in the instance and save url string characters
+        const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
+          vesselId,
+          dataviewInstance.config
+        )
+        return {
+          ...dataviewInstance,
+          datasetsConfig,
+        }
+      }
+      return dataviewInstance
+    })
+    const dataviewInstancesResolved = resolveDataviews(
+      dataviewInstancesWithDatasetConfig,
+      dataviews,
+      datasets
+    )
     return dataviewInstancesResolved
   }
 )

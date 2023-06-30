@@ -78,10 +78,10 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
           <div className={styles.activityContainer}>
             {events && events.length > 0 ? (
               <AutoSizer disableWidth={true}>
-                {({ width, height }) => (
+                {(params: any) => (
                   <List
-                    width={width}
-                    height={height}
+                    width={params.width}
+                    height={params.height}
                     itemCount={events.length}
                     itemData={events}
                     itemSize={() => 60}
