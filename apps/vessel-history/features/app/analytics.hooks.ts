@@ -1,16 +1,13 @@
 import { useEffect, useState } from 'react'
 import { snakeCase } from 'lodash'
 import ReactGA from 'react-ga4'
+import { InitOptions } from 'react-ga4/types/ga4'
 import {
   GOOGLE_TAG_MANAGER_ID,
   GOOGLE_MEASUREMENT_ID,
-  IS_PRODUCTION,
-  WORKSPACE_ENV,
+  GOOGLE_ANALYTICS_TEST_MODE,
 } from 'data/config'
 import { useUser } from 'features/user/user.hooks'
-
-export const GOOGLE_ANALYTICS_INIT_OPTIONS =
-  WORKSPACE_ENV === 'production' ? {} : { testMode: true }
 
 export enum TrackCategory {
   GeneralVVFeatures = 'general_vv_features',
@@ -47,21 +44,32 @@ export const trackEvent = ({ category, action, label, value }: TrackEventParams)
    *
    * https://github.com/codler/react-ga4/issues/15
    */
-  ReactGA.event(category, {
-    action: snakeCase(action),
-    label,
+  ReactGA.event(snakeCase(action), {
+    category: snakeCase(category),
+    label: label,
     value,
   })
 }
 
 export const useAnalytics = () => {
   useEffect(() => {
+    const config: InitOptions[] = []
+    const initGtagOptions: any = {
+      ...(GOOGLE_ANALYTICS_TEST_MODE ? { testMode: true } : {}),
+    }
+    if (GOOGLE_TAG_MANAGER_ID) {
+      config.push({ trackingId: GOOGLE_TAG_MANAGER_ID })
+      initGtagOptions.gtagUrl = 'https://www.googletagmanager.com/gtm.js'
+    }
     if (GOOGLE_MEASUREMENT_ID) {
-      ReactGA.initialize(GOOGLE_MEASUREMENT_ID, {
-        ...GOOGLE_ANALYTICS_INIT_OPTIONS,
-      })
-      // Uncomment to prevent sending hits in non-production envs
-      if (!IS_PRODUCTION) {
+      config.push({ trackingId: GOOGLE_MEASUREMENT_ID })
+    }
+
+    if (config.length > 0) {
+      ReactGA.initialize(config, initGtagOptions)
+      // Tip: To send hits to GA you'll have to set
+      // GOOGLE_ANALYTICS_TEST_MODE=false in your .env.local
+      if (GOOGLE_ANALYTICS_TEST_MODE) {
         ReactGA.set({ sendHitTask: null })
       }
     }
@@ -74,31 +82,20 @@ export const useAnalytics = () => {
   }, [])
   const { user, logged } = useUser()
   const [trackLogin, setTrackLogin] = useState(true)
-  const [trackGTMLogin, setTrackGTMLogin] = useState(true)
 
   // Set to track login only when the user has logged out
   useEffect(() => {
     !logged && setTrackLogin(true)
-    !logged && setTrackGTMLogin(true)
   }, [logged])
 
   useEffect(() => {
-    if (user && GOOGLE_MEASUREMENT_ID && trackLogin) {
+    if (user && (GOOGLE_MEASUREMENT_ID || GOOGLE_TAG_MANAGER_ID) && trackLogin) {
       ReactGA.set({
-        dimension3: `${JSON.stringify(user.groups)}` ?? '',
-        dimension4: user.organizationType ?? '',
-        dimension5: user.organization ?? '',
-        dimension6: user.country ?? '',
-        dimension7: user.language ?? '',
-      })
-      ReactGA.set({
-        userProperties: {
-          userGroup: user.groups,
-          userOrgType: user.organizationType,
-          userOrganization: user.organization,
-          userCountry: user.country,
-          userLanguage: user.language,
-        },
+        user_country: user.country ?? '',
+        user_group: user.groups ?? '',
+        user_org_type: user.organizationType ?? '',
+        user_organization: user.organization ?? '',
+        user_language: user.language ?? '',
       })
       trackEvent({
         category: TrackCategory.User,
@@ -107,19 +104,4 @@ export const useAnalytics = () => {
       setTrackLogin(false)
     }
   }, [user, trackLogin])
-
-  useEffect(() => {
-    if (user && GOOGLE_TAG_MANAGER_ID && trackGTMLogin && window && window['dataLayer']) {
-      const dataLayer = window['dataLayer'] || []
-      dataLayer.push({
-        event: 'userData',
-        user_country: user.country ?? '',
-        user_group: user.groups ?? '',
-        user_org_type: user.organizationType ?? '',
-        user_organization: user.organization ?? '',
-        user_language: user.language ?? '',
-      })
-      setTrackGTMLogin(false)
-    }
-  }, [user, trackGTMLogin])
 }
