@@ -44,19 +44,28 @@ export const trackEvent = ({ category, action, label, value }: TrackEventParams)
    * https://github.com/codler/react-ga4/issues/15
    */
   ReactGA.event(category, {
-    action: snakeCase(action),
-    label,
+    event_action: snakeCase(action),
+    event_label: label,
     value,
   })
 }
 
 export const useAnalytics = () => {
   useEffect(() => {
+    const config = []
+    const initGtagOptions: any = {
+      ...(GOOGLE_ANALYTICS_TEST_MODE ? { testMode: true } : {}),
+    }
     if (GOOGLE_TAG_MANAGER_ID) {
-      ReactGA.initialize(GOOGLE_TAG_MANAGER_ID, {
-        ...(GOOGLE_ANALYTICS_TEST_MODE ? { testMode: true } : {}),
-        gtagUrl: 'https://www.googletagmanager.com/gtm.js',
-      })
+      config.push({ trackingId: GOOGLE_TAG_MANAGER_ID })
+      initGtagOptions.gtagUrl = 'https://www.googletagmanager.com/gtm.js'
+    }
+    if (GOOGLE_MEASUREMENT_ID) {
+      config.push({ trackingId: GOOGLE_MEASUREMENT_ID })
+    }
+
+    if (config.length > 0) {
+      ReactGA.initialize(config, initGtagOptions)
       // Tip: To send hits to GA you'll have to set
       // NEXT_PUBLIC_WORKSPACE_ENV=production in your .env.local
       if (GOOGLE_ANALYTICS_TEST_MODE) {

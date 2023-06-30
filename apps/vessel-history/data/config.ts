@@ -114,12 +114,10 @@ export const DOWNLOAD_ACTIVITY_PERMISSION = {
   action: 'download',
 }
 
-console.log(process.env)
 export const GOOGLE_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID || 'G-R3PWRQW70G'
 export const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID || 'GTM-KK5ZFST'
-export const GOOGLE_ANALYTICS_TEST_MODE = !(
-  process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'production' || process.env.NODE_ENV === 'production'
-)
+export const GOOGLE_ANALYTICS_TEST_MODE =
+  process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_TEST_MODE || false
 
 export const FEEDBACK_EN = process.env.NEXT_PUBLIC_FEEDBACK_FORM_EN
 export const FEEDBACK_FR = process.env.NEXT_PUBLIC_FEEDBACK_FORM_FR
