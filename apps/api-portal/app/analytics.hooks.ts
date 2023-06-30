@@ -51,7 +51,8 @@ export const useAnalytics = (
     useMemo(() => {
       const config: InitOptions[] = []
       const initGtagOptions: any = {
-        ...(GOOGLE_ANALYTICS_DEBUG_MODE ? { testMode: true } : {}),
+        // Debug Mode enables the usage of Debug View in Google Analytics > Admin
+        ...(GOOGLE_ANALYTICS_DEBUG_MODE ? { debug_mode: 1 } : {}),
       }
       if (GOOGLE_TAG_MANAGER_ID) {
         config.push({ trackingId: GOOGLE_TAG_MANAGER_ID })
