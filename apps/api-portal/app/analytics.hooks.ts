@@ -6,7 +6,7 @@ import { UserData } from '@globalfishingwatch/api-types'
 import {
   GOOGLE_TAG_MANAGER_ID,
   GOOGLE_MEASUREMENT_ID,
-  GOOGLE_ANALYTICS_TEST_MODE,
+  GOOGLE_ANALYTICS_DEBUG_MODE,
 } from 'components/data/config'
 
 export enum TrackCategory {
@@ -45,11 +45,13 @@ export const useAnalytics = (
   logged: boolean,
   isLoading: boolean
 ) => {
+  const [trackLogin, setTrackLogin] = useState(true)
+
   const { config, initGtagOptions }: { config: InitOptions[]; initGtagOptions: any } =
     useMemo(() => {
       const config: InitOptions[] = []
       const initGtagOptions: any = {
-        ...(GOOGLE_ANALYTICS_TEST_MODE ? { testMode: true } : {}),
+        ...(GOOGLE_ANALYTICS_DEBUG_MODE ? { testMode: true } : {}),
       }
       if (GOOGLE_TAG_MANAGER_ID) {
         config.push({ trackingId: GOOGLE_TAG_MANAGER_ID })
@@ -64,11 +66,8 @@ export const useAnalytics = (
   useEffect(() => {
     if (config.length > 0) {
       ReactGA.initialize(config, initGtagOptions)
-      // Tip: To send hits to GA you'll have to set
-      // GOOGLE_ANALYTICS_TEST_MODE=false in your .env.local
-      if (GOOGLE_ANALYTICS_TEST_MODE) {
-        ReactGA.set({ sendHitTask: null })
-      }
+      // Tip: Uncomment this to prevent sending hits to GA
+      // ReactGA.set({ sendHitTask: null })
     }
   }, [config, initGtagOptions])
 
@@ -77,8 +76,6 @@ export const useAnalytics = (
       ReactGA.send({ hitType: 'pageview', page: window.location.pathname + window.location.search })
     }
   }, [config.length])
-  // const { data: user, authorized: logged } = useUser()
-  const [trackLogin, setTrackLogin] = useState(true)
 
   // Set to track login only when the user has logged out
   useEffect(() => {
