@@ -81,31 +81,20 @@ export const useAnalytics = () => {
   }, [])
   const { user, logged } = useUser()
   const [trackLogin, setTrackLogin] = useState(true)
-  const [trackGTMLogin, setTrackGTMLogin] = useState(true)
 
   // Set to track login only when the user has logged out
   useEffect(() => {
     !logged && setTrackLogin(true)
-    !logged && setTrackGTMLogin(true)
   }, [logged])
 
   useEffect(() => {
-    if (user && GOOGLE_MEASUREMENT_ID && trackLogin) {
+    if (user && (GOOGLE_MEASUREMENT_ID || GOOGLE_TAG_MANAGER_ID) && trackLogin) {
       ReactGA.set({
-        dimension3: `${JSON.stringify(user.groups)}` ?? '',
-        dimension4: user.organizationType ?? '',
-        dimension5: user.organization ?? '',
-        dimension6: user.country ?? '',
-        dimension7: user.language ?? '',
-      })
-      ReactGA.set({
-        userProperties: {
-          userGroup: user.groups,
-          userOrgType: user.organizationType,
-          userOrganization: user.organization,
-          userCountry: user.country,
-          userLanguage: user.language,
-        },
+        user_country: user.country ?? '',
+        user_group: user.groups ?? '',
+        user_org_type: user.organizationType ?? '',
+        user_organization: user.organization ?? '',
+        user_language: user.language ?? '',
       })
       trackEvent({
         category: TrackCategory.User,
@@ -114,19 +103,4 @@ export const useAnalytics = () => {
       setTrackLogin(false)
     }
   }, [user, trackLogin])
-
-  useEffect(() => {
-    if (user && GOOGLE_TAG_MANAGER_ID && trackGTMLogin && window && window['dataLayer']) {
-      const dataLayer = window['dataLayer'] || []
-      dataLayer.push({
-        event: 'userData',
-        user_country: user.country ?? '',
-        user_group: user.groups ?? '',
-        user_org_type: user.organizationType ?? '',
-        user_organization: user.organization ?? '',
-        user_language: user.language ?? '',
-      })
-      setTrackGTMLogin(false)
-    }
-  }, [user, trackGTMLogin])
 }
