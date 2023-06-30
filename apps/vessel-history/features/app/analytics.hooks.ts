@@ -5,7 +5,7 @@ import { InitOptions } from 'react-ga4/types/ga4'
 import {
   GOOGLE_TAG_MANAGER_ID,
   GOOGLE_MEASUREMENT_ID,
-  GOOGLE_ANALYTICS_TEST_MODE,
+  GOOGLE_ANALYTICS_DEBUG_MODE,
 } from 'data/config'
 import { useUser } from 'features/user/user.hooks'
 
@@ -55,7 +55,8 @@ export const useAnalytics = () => {
   useEffect(() => {
     const config: InitOptions[] = []
     const initGtagOptions: any = {
-      ...(GOOGLE_ANALYTICS_TEST_MODE ? { testMode: true } : {}),
+      // Debug Mode enables the usage of Debug View in Google Analytics > Admin
+      ...(GOOGLE_ANALYTICS_DEBUG_MODE ? { debug_mode: 1 } : {}),
     }
     if (GOOGLE_TAG_MANAGER_ID) {
       config.push({ trackingId: GOOGLE_TAG_MANAGER_ID })
@@ -67,11 +68,8 @@ export const useAnalytics = () => {
 
     if (config.length > 0) {
       ReactGA.initialize(config, initGtagOptions)
-      // Tip: To send hits to GA you'll have to set
-      // GOOGLE_ANALYTICS_TEST_MODE=false in your .env.local
-      if (GOOGLE_ANALYTICS_TEST_MODE) {
-        ReactGA.set({ sendHitTask: null })
-      }
+      // Tip: Uncomment this to prevent sending hits to GA
+      // ReactGA.set({ sendHitTask: null })
     }
   }, [])
 
