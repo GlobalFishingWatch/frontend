@@ -1,10 +1,10 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
 import { useTranslation } from 'react-i18next'
-import { Modal, Spinner } from '@globalfishingwatch/ui-components'
+import { Modal } from '@globalfishingwatch/ui-components'
 import { EventType, EventTypes } from '@globalfishingwatch/api-types'
 
 //import useMapEvents from 'features/map/map-events.hooks'

@@ -1,9 +1,7 @@
 import { useCallback, useState } from 'react'
 import { EventType, EventTypes } from '@globalfishingwatch/api-types'
-//import { selectEventResourcesLoading } from 'features/resources/resources.selectors'
 
 export const useActivityByType = () => {
-  //const eventsLoading = useSelector(selectEventResourcesLoading)
   const [expandedGroup, setExpandedGroup] = useState<EventType | null>(null)
   const eventTypes = [
     EventTypes.Encounter,

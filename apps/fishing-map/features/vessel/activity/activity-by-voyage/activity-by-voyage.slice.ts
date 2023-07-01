@@ -1,5 +1,4 @@
-import { createAsyncThunk, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { createAsyncSlice } from 'utils/async-slice'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'store'
 import { RenderedVoyage } from 'types/voyage'
 
