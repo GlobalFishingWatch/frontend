@@ -45,7 +45,6 @@ const ActivityGroup: React.FC<ActivityGroupProps> = ({
     () => (hasEvents ? onToggleClick(eventType) : {}),
     [eventType, hasEvents, onToggleClick]
   )
-  console.log(expanded)
   return (
     <Fragment>
       <div className={cx(styles.event, styles.eventGroup, { [styles.open]: expanded })}>

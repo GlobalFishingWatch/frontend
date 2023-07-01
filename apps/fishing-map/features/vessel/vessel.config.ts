@@ -1,11 +1,28 @@
 import { EventType } from '@globalfishingwatch/api-types'
 
-export const IDENTITY_FIELD_GROUPS = [
-  ['shipname', 'flag'],
-  ['shiptype', 'geartype'],
-  ['ssvid', 'imo', 'callsign'],
-  ['owner'],
-  ['lengthM', 'tonnageGt'],
+export type VesselRenderField = {
+  value: string
+  label: string
+}
+export const IDENTITY_FIELD_GROUPS: VesselRenderField[][] = [
+  [
+    { value: 'shipname', label: 'shipname' },
+    { value: 'flag', label: 'flag' },
+  ],
+  [
+    { value: 'shiptype', label: 'shiptype' },
+    { value: 'geartype', label: 'geartype' },
+  ],
+  [
+    { value: 'ssvid', label: 'mmsi' },
+    { value: 'imo', label: 'imo' },
+    { value: 'callsign', label: 'callsign' },
+  ],
+  [{ value: 'vesselRegistryOwners.owner', label: 'owner' }],
+  [
+    { value: 'vesselRegistryInfo.lengthM', label: 'length' },
+    { value: 'vesselRegistryInfo.tonnageGt', label: 'grossTonnage' },
+  ],
 ]
 export const IDENTITY_FIELDS_INFO_AVAILABLE = ['geartype', 'shiptype']
 export const EVENTS_INCLUDES_BASE = ['id', 'type', 'start', 'end', 'position']

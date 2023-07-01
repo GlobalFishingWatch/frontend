@@ -573,6 +573,7 @@
       "other_non_fishing": "Other",
       "unknown": "Unknown"
     },
+    "grossTonnage": "Gross Tonnage",
     "grossTonnageRange": "Gross Tonnage range",
     "identity": "Identity",
     "identityCopy": "Copy identity values",

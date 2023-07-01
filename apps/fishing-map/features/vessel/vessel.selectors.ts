@@ -18,11 +18,16 @@ export const selectVesselEventsFilteredByTimerange = createSelector(
 )
 
 export const selectVesselInfoDataMerged = createSelector([selectVesselInfoData], (vesselInfo) => {
-  const vesselInfoMerged = {
-    ...vesselInfo,
-    ...vesselInfo?.vesselRegistryInfo?.[0],
-    ...vesselInfo?.vesselRegistryOwners?.[0],
+  if (!vesselInfo) {
+    return null
   }
-
-  return vesselInfoMerged
+  return {
+    ...vesselInfo,
+    firstTransmissionDate: vesselInfo?.firstTransmissionDate || '',
+    // Make sure to have the lastest in the first position
+    vesselRegistryInfo:
+      vesselInfo?.vesselRegistryInfo?.sort(
+        (a, b) => Number(b.latestVesselInfo) - Number(a.latestVesselInfo)
+      ) || [],
+  }
 })

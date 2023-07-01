@@ -12,11 +12,14 @@ export const formatInfoField = (fieldValue: string, type: string, translationFn 
     if (type === 'flag') {
       return translationFn(`flags:${fieldValue}` as any, fieldValue)
     }
-    if (type === 'vesselType') {
-      return translationFn(`vessel.vesselTypes.${fieldValue}` as any, fieldValue)
+    if (type === 'shiptype' || type === 'vesselType') {
+      return translationFn(
+        `vessel.vesselTypes.${fieldValue.toLocaleLowerCase()}` as any,
+        fieldValue
+      )
     }
     if (type === 'geartype') {
-      return translationFn(`vessel.gearTypes.${fieldValue}` as any, fieldValue)
+      return translationFn(`vessel.gearTypes.${fieldValue.toLocaleLowerCase()}` as any, fieldValue)
     }
     if (!fieldValue && (type === 'name' || type === 'shipname')) {
       return translationFn('common.unknownVessel', 'Unknown Vessel')
@@ -31,15 +34,6 @@ export const formatInfoField = (fieldValue: string, type: string, translationFn 
     return fieldValue
   }
   return EMPTY_FIELD_PLACEHOLDER
-}
-
-export const formatInfoFieldAdvanced = (vessel: Vessel, field: string, translationFn = t) => {
-  if (field.includes('.')) {
-    const [first, second] = field.split('.')
-    return formatInfoField(vessel?.[first]?.[0]?.[second], second, translationFn)
-  } else {
-    return formatInfoField(vessel?.[field], field, translationFn)
-  }
 }
 
 export const formatNumber = (num: string | number, maximumFractionDigits?: number) => {
