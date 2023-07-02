@@ -26,10 +26,10 @@ export interface Fishing {
 }
 
 export interface ActivityEvent<Vessel = EventVessel> extends ApiEvent<Vessel> {
-  regions: Regions
-  boundingBox: number[]
-  distances: Distances
-  fishing: Fishing
+  regions?: Regions
+  boundingBox?: number[]
+  distances?: Distances
+  fishing?: Fishing
   timestamp: number
   color?: string
   subEvent?: PortVisitSubEvent

@@ -44,18 +44,19 @@ function useActivityEventConnect() {
             return values.join(', ')
         }
       }
-      const regionsDescription = (['mpa', 'eez', 'rfmo'] as (keyof Regions)[])
+      const regionsDescription = (['eez', 'rfmo', 'mpa'] as (keyof Regions)[])
         // use only regions with values
         .filter((regionType) => event?.regions && event?.regions[regionType]?.length > 0)
         // retrieve its corresponding names
-        .map(
-          (regionType) =>
-            `${getRegionNamesByType(
-              regionType,
-              event?.regions[regionType]
-                .map((regionId) => `${regionId}`)
-                .filter((x: string) => x.length > 0)
-            )}`
+        .map((regionType) =>
+          event?.regions && event?.regions[regionType]
+            ? `${getRegionNamesByType(
+                regionType,
+                event?.regions[regionType]
+                  .map((regionId) => `${regionId}`)
+                  .filter((x: string) => x.length > 0)
+              )}`
+            : ''
         )
         // combine all the regions with commas
         .join(', ')

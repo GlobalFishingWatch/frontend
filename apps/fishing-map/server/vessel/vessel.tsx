@@ -5,7 +5,7 @@ import { Logo } from '@globalfishingwatch/ui-components'
 import { selectVesselInfoData, selectVesselInfoStatus } from 'features/vessel/vessel.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { IDENTITY_FIELD_GROUPS } from 'features/vessel/vessel.config'
-import { formatInfoField } from 'utils/info'
+import { formatAdvancedInfoField, formatInfoField } from 'utils/info'
 import styles from './styles.module.css'
 
 const VesselServerComponent = () => {
@@ -29,9 +29,9 @@ const VesselServerComponent = () => {
           <div key={fieldGroup.join()} className={cx(styles.fieldGroup, styles.border)}>
             {/* TODO: make fields more dynamic to account for VMS */}
             {fieldGroup.map((field) => (
-              <div key={field}>
-                <label>{serverT(`vessel.${field}` as any, field)}</label>
-                {formatInfoField(vessel?.[field], field, serverT)}
+              <div key={field.value}>
+                <label>{serverT(`vessel.${field.label}` as any, field.label)}</label>
+                {vessel ? formatAdvancedInfoField(vessel, field, serverT) : ''}
               </div>
             ))}
           </div>

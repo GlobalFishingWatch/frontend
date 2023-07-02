@@ -3,7 +3,7 @@ import { RootState } from 'store'
 import { RenderedVoyage } from 'types/voyage'
 
 export interface VoyagesState {
-  voyages: Record<number, RenderedVoyage | undefined>
+  voyages: Record<number, RenderedVoyage>
   initialized: boolean
 }
 const initialState: VoyagesState = {
@@ -15,9 +15,9 @@ const voyagesSlice = createSlice({
   name: 'voyages',
   initialState,
   reducers: {
-    upsertVesselVoyagesExpanded: (state, action: PayloadAction<RenderedVoyage | undefined>) => {
+    upsertVesselVoyagesExpanded: (state, action: PayloadAction<RenderedVoyage>) => {
       const voyage = action.payload
-      if (state.voyages[voyage.timestamp]) {
+      if (voyage && state.voyages[voyage.timestamp]) {
         state.voyages[voyage.timestamp].status =
           state.voyages[voyage.timestamp].status === 'expanded' ? 'collapsed' : 'expanded'
       } else {

@@ -2,32 +2,21 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Button, Icon, IconButton, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
-import { Vessel } from '@globalfishingwatch/api-types'
 import I18nDate from 'features/i18n/i18nDate'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
 import { Locale } from 'types'
 import {
   IDENTITY_FIELDS_INFO_AVAILABLE,
   IDENTITY_FIELD_GROUPS,
-  VesselRenderField,
 } from 'features/vessel/vessel.config'
 import DataAndTerminology from 'features/vessel/data-and-terminology/DataAndTerminology'
 import { selectVesselInfoDataMerged } from 'features/vessel/vessel.selectors'
-import { formatInfoField } from 'utils/info'
+import { formatAdvancedInfoField } from 'utils/info'
 import styles from './VesselIdentity.module.css'
 
 const VesselIdentity = () => {
   const { t, i18n } = useTranslation(['translations', 'dataTerminology'])
   const vessel = useSelector(selectVesselInfoDataMerged)
-
-  const formatInfoFieldAdvanced = (vessel: Vessel, field: VesselRenderField, translationFn = t) => {
-    if (field.value.includes('.')) {
-      const [first, second] = field.value.split('.')
-      return formatInfoField(vessel?.[first]?.[0]?.[second], second, translationFn)
-    } else {
-      return formatInfoField(vessel?.[field.value], field.value, translationFn)
-    }
-  }
 
   return (
     <div className={styles.container}>
@@ -78,7 +67,7 @@ const VesselIdentity = () => {
                       </DataAndTerminology>
                     )}
                   </label>
-                  {formatInfoFieldAdvanced(vessel, field)}
+                  {formatAdvancedInfoField(vessel, field)}
                 </div>
               ))}
             </div>

@@ -1,5 +1,6 @@
 import { Vessel } from '@globalfishingwatch/api-types'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
+import { VesselRenderField } from 'features/vessel/vessel.config'
 import { t } from '../features/i18n/i18n'
 
 export const EMPTY_FIELD_PLACEHOLDER = '---'
@@ -34,6 +35,19 @@ export const formatInfoField = (fieldValue: string, type: string, translationFn 
     return fieldValue
   }
   return EMPTY_FIELD_PLACEHOLDER
+}
+
+export const formatAdvancedInfoField = (
+  vessel: Vessel,
+  field: VesselRenderField,
+  translationFn = t
+) => {
+  if (field.value.includes('.')) {
+    const [first, second] = field.value.split('.')
+    return formatInfoField(vessel?.[first]?.[0]?.[second], second, translationFn)
+  } else {
+    return formatInfoField(vessel?.[field.value], field.value, translationFn)
+  }
 }
 
 export const formatNumber = (num: string | number, maximumFractionDigits?: number) => {
