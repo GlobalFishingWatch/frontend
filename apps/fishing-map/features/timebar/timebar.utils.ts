@@ -36,58 +36,48 @@ export const parseTrackEventChunkProps = (
   }
 }
 
-export function getGraphFromGridCellsData(
-  cells: TileCell[],
-  visibleSublayersIds: string[]
-): ActivityTimeseriesFrame[] {
-  const resultMap: {
-    [timestamp: number]: {
-      [category: string]: number
-    }
-  } = {}
-
-  for (const gridCell of cells) {
-    const { timeseries } = gridCell
-
-    for (const category in timeseries) {
-      const categoryData = timeseries[category]
-
-      for (const timestamp in categoryData) {
-        const value = categoryData[timestamp]
-
-        const numTimestamp = Number(timestamp) // Convert the timestamp to number type
-
-        if (!resultMap[numTimestamp]) {
-          resultMap[numTimestamp] = {}
-        }
-
-        if (!resultMap[numTimestamp][category]) {
-          resultMap[numTimestamp][category] = 0
-        }
-
-        resultMap[numTimestamp][category] += value
-      }
-    }
-  }
-
-  const output: ActivityTimeseriesFrame[] = []
-
-  for (const timestamp in resultMap) {
-    const numTimestamp = Number(timestamp) // Convert the timestamp to number type
-    const dataEntry: ActivityTimeseriesFrame = { date: numTimestamp }
-
-    for (const category in resultMap[timestamp]) {
-      dataEntry[category] = resultMap[timestamp][category]
-    }
-
-    visibleSublayersIds.forEach((category) => {
-      if (!resultMap[timestamp][category]) {
-        dataEntry[category] = 0
-      }
+const getSublayersAggregateTimeseriesFromGridCellsData = (cells: TileCell[]) => {
+  const result: Record<string, Record<number, number>> = {}
+  const timestamps = new Set<number>()
+  cells.forEach((cell) => {
+    const { timeseries } = cell
+    Object.keys(timeseries).forEach((sublayer) => {
+      const sublayerData = timeseries[sublayer]
+      Object.keys(sublayerData).forEach((timestamp) => {
+        // Extract the unique timestamps from the timeseries
+        timestamps.add(parseInt(timestamp))
+        const value = sublayerData[timestamp]
+        if (!result[sublayer]) result[sublayer] = {}
+        if (!result[sublayer][timestamp]) result[sublayer][timestamp] = 0
+        result[sublayer][timestamp] += value
+      })
     })
+  })
+  return { timeseries: result, timestamps }
+}
 
-    output.push(dataEntry)
+function getGraphDataFromSublayersTimeseries(
+  timeseries: Record<string, Record<number, number>>,
+  timestamps: Set<number>
+): ActivityTimeseriesFrame[] {
+  const result: ActivityTimeseriesFrame[] = []
+  // Iterate over each timestamp and create timeseries frames
+  for (const timestamp of Array.from(timestamps)) {
+    const frame: ActivityTimeseriesFrame = { date: timestamp }
+
+    for (const key in timeseries) {
+      const data = timeseries[key]
+      frame[key] = data[timestamp] || 0
+    }
+
+    result.push(frame)
   }
 
-  return output.sort((a, b) => a.date - b.date)
+  return result
+}
+
+export function getGraphFromGridCellsData(cells: TileCell[]): ActivityTimeseriesFrame[] {
+  const { timeseries, timestamps } = getSublayersAggregateTimeseriesFromGridCellsData(cells)
+  debugger
+  return getGraphDataFromSublayersTimeseries(timeseries, timestamps).sort((a, b) => a.date - b.date)
 }

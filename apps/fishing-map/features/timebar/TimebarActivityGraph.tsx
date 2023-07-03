@@ -24,7 +24,7 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
 
   const getActivityHighlighterLabel: HighlighterCallbackFn = useCallback(
     ({ chunk, value, item }: HighlighterCallbackFnArgs) => {
-      if (loading) return t('map.loading', 'Loading')
+      // if (loading) return t('map.loading', 'Loading')
       if (!value || !value.value) return ''
       const dataviewId = item?.props?.dataviewId
       const unit = mapLegends?.find((l) => l.id === getLegendId(dataviewId))?.unit || ''
@@ -41,7 +41,8 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
 
       return labels.join(' ')
     },
-    [loading, mapLegends, visualisation]
+    // [loading, mapLegends, visualisation]
+    [mapLegends, visualisation]
   )
 
   // if (error) {
