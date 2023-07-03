@@ -1,12 +1,14 @@
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import ReactGA from 'react-ga4'
+import { InitOptions } from 'react-ga4/types/ga4'
 import { snakeCase } from 'lodash'
 import { selectUserData } from 'features/user/user.slice'
-import { GOOGLE_TAG_MANAGER_ID, GOOGLE_MEASUREMENT_ID, IS_PRODUCTION } from 'data/config'
+import { GOOGLE_TAG_MANAGER_ID, GOOGLE_MEASUREMENT_ID } from 'data/config'
 import { selectLocationCategory } from 'routes/routes.selectors'
 
-const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS = IS_PRODUCTION ? {} : { testMode: true }
+export const GOOGLE_ANALYTICS_TEST_MODE =
+  (process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_TEST_MODE || 'false').toLowerCase() === 'true'
 
 export enum TrackCategory {
   ActivityData = 'activity_data',
@@ -16,9 +18,10 @@ export enum TrackCategory {
   HelpHints = 'help_hints',
   I18n = 'internationalization',
   ReferenceLayer = 'reference_layer',
+  SearchVessel = 'search_vessel',
   Timebar = 'timebar',
   Tracks = 'tracks',
-  SearchVessel = 'search_vessel',
+  User = 'user',
   VesselGroups = 'vessel_groups',
   WorkspaceManagement = 'workspace_management',
 }
@@ -36,22 +39,35 @@ export const trackEvent = ({ category, action, label, value }: TrackEventParams)
    * without be converted to title case is necessary to use:
    * ReactGA.event(name, params)
    */
-  ReactGA.event(category, {
-    action: snakeCase(action),
-    label,
+  ReactGA.event(snakeCase(action), {
+    category: snakeCase(category),
+    label: label,
     value,
   })
 }
 
 export const useAnalytics = () => {
-  const userData = useSelector(selectUserData)
+  const user = useSelector(selectUserData)
   const locationCategory = useSelector(selectLocationCategory)
 
   useEffect(() => {
+    const config: InitOptions[] = []
+    const initGtagOptions: any = {
+      ...(GOOGLE_ANALYTICS_TEST_MODE ? { testMode: true } : {}),
+    }
+    if (GOOGLE_TAG_MANAGER_ID) {
+      config.push({ trackingId: GOOGLE_TAG_MANAGER_ID })
+      initGtagOptions.gtagUrl = 'https://www.googletagmanager.com/gtm.js'
+    }
     if (GOOGLE_MEASUREMENT_ID) {
-      ReactGA.initialize(GOOGLE_MEASUREMENT_ID, GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS)
-      // Uncomment to prevent sending hits in non-production envs
-      if (!IS_PRODUCTION) {
+      config.push({ trackingId: GOOGLE_MEASUREMENT_ID })
+    }
+
+    if (config.length > 0) {
+      ReactGA.initialize(config, initGtagOptions)
+      // Tip: To send hits to GA you'll have to set
+      // GOOGLE_ANALYTICS_TEST_MODE=false in your .env.local
+      if (GOOGLE_ANALYTICS_TEST_MODE) {
         ReactGA.set({ sendHitTask: null })
       }
     }
@@ -64,41 +80,18 @@ export const useAnalytics = () => {
   }, [locationCategory])
 
   useEffect(() => {
-    if (userData && GOOGLE_MEASUREMENT_ID) {
+    if (user && (GOOGLE_MEASUREMENT_ID || GOOGLE_TAG_MANAGER_ID)) {
       ReactGA.set({
-        dimension3: `${JSON.stringify(userData.groups)}` ?? '',
-        dimension4: userData.organizationType ?? '',
-        dimension5: userData.organization ?? '',
-        dimension6: userData.country ?? '',
-        dimension7: userData.language ?? '',
+        user_country: user.country ?? '',
+        user_group: user.groups ?? '',
+        user_org_type: user.organizationType ?? '',
+        user_organization: user.organization ?? '',
+        user_language: user.language ?? '',
       })
-      ReactGA.set({
-        userProperties: {
-          userGroup: userData.groups,
-          userOrgType: userData.organizationType,
-          userOrganization: userData.organization,
-          userCountry: userData.country,
-          userLanguage: userData.language,
-        },
-      })
-      ReactGA.event({
-        category: 'User',
+      trackEvent({
+        category: TrackCategory.User,
         action: 'Login',
       })
     }
-  }, [userData])
-
-  useEffect(() => {
-    if (userData && GOOGLE_TAG_MANAGER_ID && typeof window !== 'undefined' && window['dataLayer']) {
-      const dataLayer = window['dataLayer'] || []
-      dataLayer.push({
-        event: 'userData',
-        user_country: userData.country ?? '',
-        user_group: userData.groups ?? '',
-        user_org_type: userData.organizationType ?? '',
-        user_organization: userData.organization ?? '',
-        user_language: userData.language ?? '',
-      })
-    }
-  }, [userData])
+  }, [user])
 }
