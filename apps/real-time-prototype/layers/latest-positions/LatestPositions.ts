@@ -9,7 +9,7 @@ import {
   hexToComponents,
   rgbaStringToComponents,
 } from '@globalfishingwatch/layer-composer'
-import { API_BASE } from 'data/config'
+import { API_BASE, BASE_PATH } from 'data/config'
 import { GFWLayerProps } from 'features/map/Map'
 
 const ICON_MAPPING = {
@@ -129,7 +129,7 @@ export class LatestPositions extends CompositeLayer<LatestPositionsLayerProps> {
         },
         renderSubLayers: (props) => [
           new IconLayer(props, {
-            iconAtlas: './positions/vessel-sprite.png',
+            iconAtlas: `${BASE_PATH}/positions/vessel-sprite.png`,
             iconMapping: ICON_MAPPING,
             getAngle: (d) => d.properties.course,
             getColor: (d) => {
@@ -147,7 +147,7 @@ export class LatestPositions extends CompositeLayer<LatestPositionsLayerProps> {
           }),
           new IconLayer(props, {
             id: `${props.id}-highlight`,
-            iconAtlas: './positions/vessel-sprite.png',
+            iconAtlas: `${BASE_PATH}/positions/vessel-sprite.png`,
             iconMapping: ICON_MAPPING,
             getAngle: (d) => d.properties.course,
             getIcon: () => 'vesselHighlight',
