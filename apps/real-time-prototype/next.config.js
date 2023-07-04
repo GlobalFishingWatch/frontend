@@ -3,11 +3,8 @@ const { join } = require('path')
 const withNx = require('@nx/next/plugins/with-nx')
 // const CircularDependencyPlugin = require('circular-dependency-plugin')
 
-const basePath =
-  process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/map' : '')
-
-const IS_PRODUCTION =
-  process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'production' || process.env.NODE_ENV === 'production'
+const IS_PRODUCTION = process.env.NODE_ENV === 'production'
+const basePath = IS_PRODUCTION ? '/map' : ''
 
 /**
  * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
