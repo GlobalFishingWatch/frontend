@@ -1,11 +1,13 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 // import { appWithTranslation } from 'next-i18next'
-import { ClickToComponent } from 'click-to-react-component'
+// import { ClickToComponent } from 'click-to-react-component'
 import { AppProps } from 'next/app'
 import { Provider } from 'react-redux'
 import { RecoilRoot } from 'recoil'
 // import dynamic from 'next/dynamic'
 // import { useEffect, useState } from 'react'
+import MemoryStatsComponent from 'next-react-memory-stats'
+import { FpsView } from 'react-fps'
 import Head from 'next/head'
 import store from '../store'
 
@@ -27,6 +29,9 @@ function CustomApp({ Component, pageProps }: AppProps) {
   //   }
   // }, [root])
 
+  const [showFps, setShowFps] = useState(false)
+  useEffect(() => setShowFps(true), [])
+
   return (
     <React.StrictMode>
       <Head>
@@ -35,8 +40,10 @@ function CustomApp({ Component, pageProps }: AppProps) {
       </Head>
       <RecoilRoot>
         <Provider store={store}>
-          <ClickToComponent />
+          {/* <ClickToComponent /> */}
           <Component {...pageProps} />
+          {showFps && <FpsView bottom="10rem" left="39rem" top="auto" />}
+          {showFps && <MemoryStatsComponent />}
         </Provider>
       </RecoilRoot>
     </React.StrictMode>

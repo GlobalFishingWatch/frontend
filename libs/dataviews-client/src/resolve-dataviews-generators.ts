@@ -22,8 +22,6 @@ import {
   HeatmapAnimatedMode,
   HeatmapAnimatedGeneratorConfig,
   Interval,
-  DeckLayersGeneratorDictionary,
-  DeckLayersGeneratorType,
 } from '@globalfishingwatch/layer-composer'
 import type {
   ColorRampsIds,
@@ -412,67 +410,6 @@ export function getGeneratorConfig(
     default: {
       return generator
     }
-  }
-}
-
-function getEventsData(
-  dataview: UrlDataviewInstance,
-  resources: DataviewsGeneratorResource
-): ApiEvent[] {
-  const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
-  const hasEventData =
-    eventsResources?.length && eventsResources.some(({ url }) => resources?.[url]?.data)
-  if (!hasEventData) return []
-  return eventsResources.flatMap(({ url }) => (url ? resources?.[url]?.data || [] : []))
-}
-
-export function getDataviewsGeneratorsDictionary(
-  dataviews: UrlDataviewInstance[],
-  resources?: DataviewsGeneratorResource
-): DeckLayersGeneratorDictionary {
-  const vesselsDataviews = dataviews.filter((dataview) => isTrackDataview(dataview))
-  return {
-    [DeckLayersGeneratorType.Vessels]: {
-      ids: vesselsDataviews.map((dataview) => dataview.id),
-      colors: vesselsDataviews.reduce(
-        (acc, dataview) => ({
-          ...acc,
-          [dataview.id]: dataview.config!.color!,
-        }),
-        {}
-      ),
-      eventsData: resources
-        ? vesselsDataviews.reduce(
-            (acc, dataview) => ({
-              ...acc,
-              [dataview.id]: getEventsData(dataview, resources),
-            }),
-            {}
-          )
-        : {},
-      trackUrls: vesselsDataviews.reduce(
-        (acc, dataview) => ({
-          ...acc,
-          [dataview.id]: resolveDataviewDatasetResource(dataview, [DatasetTypes.Tracks])?.url,
-        }),
-        {}
-      ),
-      eventsUrls: vesselsDataviews.reduce(
-        (acc, dataview) => ({
-          ...acc,
-          [dataview.id]: resolveDataviewDatasetResources(dataview, DatasetTypes.Events).map(
-            (resources) => resources.url
-          ),
-        }),
-        {}
-      ),
-    },
-    [DeckLayersGeneratorType.Fourwings]: dataviews
-      .filter((dataview) => isHeatmapAnimatedDataview(dataview))
-      .map((dataview) => ({
-        id: dataview.id,
-        dataview,
-      })),
   }
 }
 

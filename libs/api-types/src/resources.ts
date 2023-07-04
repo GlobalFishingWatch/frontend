@@ -26,14 +26,6 @@ export type Segment = Point[]
 
 export type TrackResourceData = Segment[]
 
-export type TrackWaypoints = {
-  coordinates: [number, number]
-  timestamp: number
-}
-export type VesselTrackData = {
-  waypoints: TrackWaypoints[]
-}
-
 export enum ResourceStatus {
   Idle = 'idle',
   Aborted = 'aborted',

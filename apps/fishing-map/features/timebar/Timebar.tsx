@@ -14,7 +14,6 @@ import {
   HighlightedChunks,
 } from '@globalfishingwatch/timebar'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { ResourceStatus } from '@globalfishingwatch/api-types'
 import { getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
 import {
   useTimerangeConnect,
@@ -22,6 +21,7 @@ import {
   useTimebarVisualisationConnect,
   useDisableHighlightTimeConnect,
   useActivityMetadata,
+  useHighlightedEventsConnect,
 } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { TimebarVisualisations } from 'types'
@@ -43,6 +43,11 @@ import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-gr
 import { getUTCDateTime } from 'utils/dates'
 import { selectIsReportLocation } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import {
+  useTimebarVesselEvents,
+  useTimebarVesselTracks,
+} from 'features/timebar/timebar-vessel.hooks'
+import { getTimebarChunkEventColor } from 'features/timebar/timebar.utils'
 import { setHighlightedTime, selectHighlightedTime, Range } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import { selectTracksData, selectTracksGraphData, selectTracksEvents } from './timebar.selectors'
@@ -52,12 +57,11 @@ import styles from './Timebar.module.css'
 const ZOOM_LEVEL_TO_FOCUS_EVENT = 5
 
 const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents }) => {
-  // const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const timebarVisualisation = useSelector(selectTimebarVisualisation)
   const highlightedTime = useSelector(selectHighlightedTime)
   const onHighlightChunks = useCallback(
     (chunks: HighlightedChunks) => {
-      if (chunks && chunks.tracksEvents && chunks.tracksEvents.length) {
+      if (chunks?.tracksEvents?.length) {
         dispatchHighlightedEvents(chunks.tracksEvents)
       } else {
         dispatchHighlightedEvents(undefined)
@@ -131,21 +135,22 @@ const TimebarWrapper = () => {
   const { t, ready, i18n } = useTranslation()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
   const { start, end, onTimebarChange } = useTimerangeConnect()
-  // const { highlightedEvents } = useHighlightedEventsConnect()
-  const [highlightedEvents, dispatchHighlightedEvents] = useState([])
+  const { highlightedEvents, dispatchHighlightedEvents } = useHighlightedEventsConnect()
+  // const [highlightedEvents, dispatchHighlightedEvents] = useState([])
   const { dispatchDisableHighlightedTime } = useDisableHighlightTimeConnect()
   const { timebarVisualisation } = useTimebarVisualisationConnect()
   const { setMapCoordinates, viewport } = useViewport()
   const timebarGraph = useSelector(selectTimebarGraph)
-  const tracks = useSelector(selectTracksData)
   const tracksGraphsData = useSelector(selectTracksGraphData)
-  const tracksEvents = useSelector(selectTracksEvents)
   const { isMapDrawing } = useMapDrawConnect()
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const vesselGroupsFiltering = useSelector(selectIsVessselGroupsFiltering)
   const isReportLocation = useSelector(selectIsReportLocation)
   const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
   const dispatch = useAppDispatch()
+  // const [isPending, startTransition] = useTransition()
+  const tracks = useTimebarVesselTracks()
+  const tracksEvents = useTimebarVesselEvents()
 
   const [bookmark, setBookmark] = useState<{ start: string; end: string } | null>(null)
   const onBookmarkChange = useCallback(
@@ -238,11 +243,13 @@ const TimebarWrapper = () => {
   const { zoom } = viewport
   const onEventClick = useCallback(
     (event: TimebarChartChunk<TrackEventChunkProps>) => {
-      setMapCoordinates({
-        latitude: event.props!?.latitude,
-        longitude: event.props!?.longitude,
-        zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
-      })
+      if (event?.coordinates) {
+        setMapCoordinates({
+          latitude: event?.coordinates?.[1],
+          longitude: event.coordinates?.[0],
+          zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
+        })
+      }
     },
     [setMapCoordinates, zoom]
   )
@@ -267,18 +274,18 @@ const TimebarWrapper = () => {
 
   if (!start || !end || isMapDrawing || showTimeComparison) return null
 
-  const loading =
-    tracks?.some(({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading) ||
-    tracksGraphsData?.some(
-      ({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading
-    ) ||
-    tracksEvents?.some(
-      ({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading
-    )
+  const loading = false
+  // tracks?.some(({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading) ||
+  // tracksGraphsData?.some(
+  //   ({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading
+  // ) ||
+  // tracksEvents?.some(
+  //   ({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading
+  // )
 
-  const hasTrackError =
-    tracks?.some(({ status }) => status === ResourceStatus.Error) ||
-    tracksEvents?.some(({ status }) => status === ResourceStatus.Error)
+  const hasTrackError = false
+  // tracks?.some(({ status }) => status === ResourceStatus.Error) ||
+  // tracksEvents?.some(({ status }) => status === ResourceStatus.Error)
 
   const getTracksComponents = () => {
     if (hasTrackError) {
@@ -312,6 +319,7 @@ const TimebarWrapper = () => {
             <TimebarTracksEvents
               data={tracksEvents}
               highlightedEventsIds={highlightedEvents}
+              getEventColor={getTimebarChunkEventColor}
               onEventClick={onEventClick}
             />
           </Fragment>

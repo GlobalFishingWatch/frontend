@@ -6,16 +6,24 @@ import {
   GlGeneratorConfig,
   HeatmapAnimatedMode,
   Ruler,
-  DeckLayersGeneratorDictionary,
 } from '@globalfishingwatch/layer-composer'
 import {
   getDataviewsGeneratorConfigs,
-  getDataviewsGeneratorsDictionary,
   UrlDataviewInstance,
   DataviewsGeneratorConfigsParams,
   isMergedAnimatedGenerator,
 } from '@globalfishingwatch/dataviews-client'
-import { selectWorkspaceError, selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
+import {
+  DeckLayersGeneratorDictionary,
+  DeckLayersGeneratorType,
+  VesselDeckLayersGenerator,
+  getDataviewsGeneratorsDictionary,
+} from '@globalfishingwatch/deck-layers'
+import {
+  selectWorkspaceError,
+  selectWorkspaceStatus,
+  selectWorkspaceVisibleEventsArray,
+} from 'features/workspace/workspace.selectors'
 import {
   selectDataviewInstancesResolvedVisible,
   selectDefaultBasemapGenerator,
@@ -31,7 +39,10 @@ import {
   Range,
 } from 'features/timebar/timebar.slice'
 import { selectBivariateDataviews, selectTimeRange } from 'features/app/app.selectors'
-import { selectMarineManagerDataviewInstanceResolved } from 'features/dataviews/dataviews.slice'
+import {
+  selectDataviewInstancesResolved,
+  selectMarineManagerDataviewInstanceResolved,
+} from 'features/dataviews/dataviews.slice'
 import {
   selectIsMarineManagerLocation,
   selectIsReportLocation,
@@ -150,10 +161,22 @@ const getGeneratorsConfig = ({
     return []
   }
 }
+
 export const selectMapGeneratorsDictionary = createSelector(
-  [selectDataviewInstancesResolvedVisible, selectVisibleResources],
-  (dataviews = [], resources): DeckLayersGeneratorDictionary => {
-    return getDataviewsGeneratorsDictionary(dataviews, resources)
+  [selectDataviewInstancesResolved, selectVisibleResources, selectWorkspaceVisibleEventsArray],
+  (dataviews = [], resources, visibleEvents): DeckLayersGeneratorDictionary => {
+    // Do we inject the visibleEvents at the dataview level ?
+    const generatorsDictionary = getDataviewsGeneratorsDictionary(dataviews, resources)
+    const vesselGenerators = generatorsDictionary[
+      DeckLayersGeneratorType.Vessels
+    ] as VesselDeckLayersGenerator[]
+    return {
+      ...generatorsDictionary,
+      [DeckLayersGeneratorType.Vessels]: vesselGenerators.map((generator) => ({
+        ...generator,
+        visibleEvents,
+      })),
+    }
   }
 )
 

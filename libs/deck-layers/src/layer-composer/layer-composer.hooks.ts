@@ -1,35 +1,36 @@
 import {
   useBasemapLayer,
   useContextsLayer,
-  useVesselLayers,
   useFourwingsLayers,
   zIndexSortedArray,
-} from '@globalfishingwatch/deck-layers'
-import {
-  AnyGeneratorConfig,
   DeckLayersGeneratorDictionary,
+  BasemapDeckLayerGenerator,
   DeckLayersGeneratorType,
-  GlobalGeneratorConfig,
   VesselDeckLayersGenerator,
   FourwingsDeckLayerGenerator,
-} from '@globalfishingwatch/layer-composer'
+  useSetVesselLayers,
+  VesselDeckLayersParams,
+} from '@globalfishingwatch/deck-layers'
+import { AnyGeneratorConfig, GlobalGeneratorConfig } from '@globalfishingwatch/layer-composer'
 
+export type DeckLayerComposerParams = VesselDeckLayersParams
 export function useDeckLayerComposer({
   generatorsDictionary,
   generatorsConfig,
   globalGeneratorConfig,
-  highlightedTime,
+  params,
 }: {
   generatorsDictionary: DeckLayersGeneratorDictionary
   generatorsConfig: AnyGeneratorConfig[]
   globalGeneratorConfig: GlobalGeneratorConfig
-  highlightedTime?: { start: string; end: string }
+  params: DeckLayerComposerParams
 }) {
-  const basemap = generatorsConfig.find((generator) => generator.type === 'BASEMAP')?.basemap
-  const visible = generatorsConfig.find((generator) => generator.type === 'BASEMAP')?.visible
+  const basemapGenerator = generatorsConfig.find(
+    (generator) => generator.type === 'BASEMAP'
+  ) as BasemapDeckLayerGenerator
   const basemapLayer = useBasemapLayer({
-    visible,
-    basemap,
+    visible: basemapGenerator?.visible ?? true,
+    basemap: basemapGenerator?.basemap ?? 'default',
   })
 
   const contextLayersGenerators = generatorsConfig.filter(
@@ -43,10 +44,10 @@ export function useDeckLayerComposer({
     datasetId: contextLayersGenerators.length ? contextLayersGenerators[0].datasetId : 'eez',
   })
 
-  const vesselLayers = useVesselLayers(
-    generatorsDictionary[DeckLayersGeneratorType.Vessels] as VesselDeckLayersGenerator,
+  const vesselLayers = useSetVesselLayers(
+    generatorsDictionary[DeckLayersGeneratorType.Vessels] as VesselDeckLayersGenerator[],
     globalGeneratorConfig,
-    highlightedTime
+    params
   )
 
   const fourwingsLayers = useFourwingsLayers(

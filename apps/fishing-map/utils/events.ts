@@ -6,11 +6,25 @@ import { EVENTS_COLORS } from 'data/config'
 import { getUTCDateTime } from './dates'
 
 type EventProps = {
-  start: string
-  end: string
+  start: number
+  end: number
   type: EventTypes
   encounterVesselName?: string
   portName?: string
+}
+
+export const getEventColors = ({ type }: { type: EventProps['type'] }) => {
+  const colorKey = type
+  // TODO not supporting authorization status yet
+  // if (event.type === 'encounter' && showAuthorizationStatus) {
+  //   colorKey = `${colorKey}${event.encounter?.authorizationStatus}`
+  // }
+  const color = EVENTS_COLORS[colorKey]
+  const colorLabels = EVENTS_COLORS[`${colorKey}Labels`]
+  return {
+    color,
+    colorLabels,
+  }
 }
 
 export const getEventDescription = ({
@@ -91,17 +105,7 @@ export const getEventDescription = ({
       descriptionGeneric = t('event.unknown', 'Unknown event')
   }
 
-  const colorKey = type
-  // TODO not supporting authorization status yet
-  // if (event.type === 'encounter' && showAuthorizationStatus) {
-  //   colorKey = `${colorKey}${event.encounter?.authorizationStatus}`
-  // }
-  const color = EVENTS_COLORS[colorKey]
-  const colorLabels = EVENTS_COLORS[`${colorKey}Labels`]
-
   return {
-    color,
-    colorLabels,
     description,
     descriptionGeneric,
   }

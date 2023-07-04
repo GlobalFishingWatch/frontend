@@ -71,8 +71,7 @@ const MapWrapper = (): React.ReactElement => {
         capRounded: true,
         highlightStartTime: highlightStartTime || 0,
         highlightEndTime: highlightEndTime || 0,
-        getColor: [255, 255, 255, 100],
-        highlightColor: [0.0, 1.0, 0.0, 0.4], // to be used as a vec4 in the shader
+        highlightColor: [1.0, 1.0, 1.0, 0.4], // to be used as a vec4 in the shader
         // onDataLoad: this.onDataLoad,
         // getTimestamp: (d) => {
         //   console.log(d)
@@ -80,7 +79,6 @@ const MapWrapper = (): React.ReactElement => {
         // },
         _pathType: 'open',
         // getFilterValue: (d: any) => {
-        //   debugger
         //   return d.timestamp as any
         // },
         // filterRange: [startTime, endTime],
@@ -115,7 +113,6 @@ const MapWrapper = (): React.ReactElement => {
     if (vesselLoaded) {
       const vesselLayer = layers[1] as ParquetVesselLayer<Segment[], {}>
       const segments = vesselLayer.getSegments()
-      console.log('🚀 ~ useEffect ~ segments:', segments)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vesselLoaded])
