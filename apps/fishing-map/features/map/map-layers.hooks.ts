@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux'
 import { useMemo } from 'react'
-import { useDeckLayerComposer, useVesselLayers } from '@globalfishingwatch/deck-layers'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { useDeckLayerComposer } from '@globalfishingwatch/deck-layers'
 import { useGeneratorsConnect, useGeneratorsDictionaryConnect } from 'features/map/map.hooks'
 import { selectHighlightedTime } from 'features/timebar/timebar.slice'
 import { useHighlightedEventsConnect } from 'features/timebar/timebar.hooks'
@@ -25,11 +24,4 @@ export const useMapDeckLayers = () => {
   })
 
   return layers
-}
-
-export const useMapVesselLayer = (dataview: UrlDataviewInstance) => {
-  const vesselLayers = useVesselLayers()
-  return useMemo(() => {
-    return vesselLayers.find((d) => d.id === dataview.id)
-  }, [dataview, vesselLayers])
 }

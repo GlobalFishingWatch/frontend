@@ -17,6 +17,7 @@ import {
   pickTrackResource,
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
+import { useMapVesselLayer } from '@globalfishingwatch/deck-layers'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselLabel } from 'utils/info'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -38,7 +39,6 @@ import { selectPrivateUserGroups } from 'features/user/user.selectors'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import GFWOnly from 'features/user/GFWOnly'
 import DatasetLabel from 'features/datasets/DatasetLabel'
-import { useMapVesselLayer } from 'features/map/map-layers.hooks'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -56,7 +56,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
   const resources = useSelector(selectResources)
-  const vesselInstance = useMapVesselLayer(dataview)
+  const vesselInstance = useMapVesselLayer(dataview.id)
   const trackResource = pickTrackResource(dataview, EndpointId.Tracks, resources)
   const infoResource: Resource<Vessel> = useSelector(selectResourceByUrl<Vessel>(infoUrl))
   const { items, attributes, listeners, setNodeRef, setActivatorNodeRef, style } =

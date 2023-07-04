@@ -125,3 +125,10 @@ export const useSetVesselLayers = (
   }, [start, end, highlightEndTime, highlightStartTime, vesselLayersGenerator])
   return useAtomValue(vesselLayersInstancesSelector)
 }
+
+export const useMapVesselLayer = (layerId: string) => {
+  const vesselLayers = useVesselLayers()
+  return useMemo(() => {
+    return vesselLayers.find((d) => d.id === layerId)
+  }, [layerId, vesselLayers])
+}
