@@ -55,11 +55,18 @@ export const selectTrackChunksConfig = createSelector(
 
     if (delta.as('years') > 2) return null
 
+    // Returning always one single chunk with whole year trying to get advance of cache
+    return [
+      {
+        start: startDT.startOf('year').toISO(),
+        end: endDT.endOf('year').toISO(),
+      },
+    ]
+
     const bufferedStart = startDT.minus({ month: 1 })
     const bufferedEnd = endDT.plus({ month: 1 })
 
     const chunks = [] as { start: string; end: string }[]
-
     YEARS.forEach((year) => {
       const yearStart = DateTime.fromObject({ year }, { zone: 'utc' })
       const yearEnd = DateTime.fromObject({ year: year + 1 }, { zone: 'utc' })

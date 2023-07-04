@@ -6,7 +6,7 @@ import {
   GetCellCoordinatesParams,
   generateUniqueId,
   getCellCoordinates,
-} from 'loaders/fourwings/fourwingsTileParser'
+} from '../../loaders/fourwings/fourwingsTileParser'
 import { aggregateCell, FourwingsHeatmapLayerProps } from './FourwingsHeatmapLayer'
 
 const defaultProps: DefaultProps<FourwingsHeatmapCellLayerProps> = {

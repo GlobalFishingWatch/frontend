@@ -7,16 +7,7 @@ import {
   DefaultProps,
 } from '@deck.gl/core/typed'
 import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
-import { parseFourWings } from 'loaders/fourwings/fourwingsLayerLoader'
 import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
-import { aggregateCell, FourwingsHeatmapLayer } from 'layers/fourwings/FourwingsHeatmapLayer'
-import {
-  ACTIVITY_SWITCH_ZOOM_LEVEL,
-  aggregateCellTimeseries,
-  asyncAwaitMS,
-  getDataUrlByChunk,
-} from 'layers/fourwings/fourwings.utils'
-import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
 import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
 import { TileLoadProps } from '@deck.gl/geo-layers/typed/tile-layer/types'
 import {
@@ -27,6 +18,15 @@ import {
   Group,
   GROUP_ORDER,
 } from '@globalfishingwatch/layer-composer'
+import { TileCell } from '../../loaders/fourwings/fourwingsTileParser'
+import { parseFourWings } from '../../loaders/fourwings/fourwingsLayerLoader'
+import {
+  ACTIVITY_SWITCH_ZOOM_LEVEL,
+  aggregateCellTimeseries,
+  asyncAwaitMS,
+  getDataUrlByChunk,
+} from './fourwings.utils'
+import { aggregateCell, FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
 import { HEATMAP_ID } from './FourwingsLayer'
 import { Chunk, getChunkBuffer, getChunksByInterval, getInterval } from './fourwings.config'
 import { FourwingsSublayer, FourwingsSublayerId } from './fourwings.types'

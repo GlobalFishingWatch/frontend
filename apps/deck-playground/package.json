@@ -14,17 +14,9 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "dependencies": {
-    "@deck.gl/core": "8.8.24",
-    "@deck.gl/extensions": "8.8.24",
-    "@deck.gl/geo-layers": "8.8.24",
-    "@deck.gl/layers": "8.8.24",
-    "@deck.gl/mesh-layers": "8.8.24",
-    "@deck.gl/react": "8.8.24",
     "@loaders.gl/core": "^3.2.13",
     "@loaders.gl/loader-utils": "^3.2.13",
     "@loaders.gl/mvt": "^3.2.13",
-    "@nebula.gl/edit-modes": "^1.0.4",
-    "@nebula.gl/layers": "^1.0.4",
     "@recoiljs/refine": "^0.1.1",
     "@tanstack/react-query": "^4.24.4",
     "@testing-library/jest-dom": "^5.16.5",

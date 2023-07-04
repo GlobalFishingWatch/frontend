@@ -11,7 +11,6 @@ import { MVTLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
 import { IconLayer, TextLayer } from '@deck.gl/layers/typed'
 import { MVTWorkerLoader } from '@loaders.gl/mvt'
 import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
-import { ACTIVITY_SWITCH_ZOOM_LEVEL, getDateRangeParam } from 'layers/fourwings/fourwings.utils'
 import { groupBy, orderBy } from 'lodash'
 import { Feature } from 'geojson'
 import bboxPolygon from '@turf/bbox-polygon'
@@ -21,6 +20,7 @@ import {
   Group,
   GROUP_ORDER,
 } from '@globalfishingwatch/layer-composer'
+import { ACTIVITY_SWITCH_ZOOM_LEVEL, getDateRangeParam } from './fourwings.utils'
 import { FourwingsColorRamp } from './FourwingsLayer'
 
 export type _FourwingsPositionsTileLayerProps<DataT = any> = {

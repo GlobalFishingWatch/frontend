@@ -17,6 +17,7 @@ import {
   pickTrackResource,
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
+import { useMapVesselLayer } from '@globalfishingwatch/deck-layers'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselLabel } from 'utils/info'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -55,6 +56,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
   const resources = useSelector(selectResources)
+  const vesselInstance = useMapVesselLayer(dataview.id)
   const trackResource = pickTrackResource(dataview, EndpointId.Tracks, resources)
   const infoResource: Resource<Vessel> = useSelector(selectResourceByUrl<Vessel>(infoUrl))
   const { items, attributes, listeners, setNodeRef, setActivatorNodeRef, style } =
@@ -99,12 +101,13 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     }
   }
 
-  const trackLoading = trackResource?.status === ResourceStatus.Loading
+  const vesselTrackData = vesselInstance?.dataStatus.find((l) => l.type === 'track')
+  const trackLoading = vesselTrackData?.status === ResourceStatus.Loading
   const infoLoading = infoResource?.status === ResourceStatus.Loading
   const loading = trackLoading || infoLoading
 
   const infoError = infoResource?.status === ResourceStatus.Error
-  const trackError = trackResource?.status === ResourceStatus.Error
+  const trackError = vesselTrackData?.status === ResourceStatus.Error
 
   const vesselLabel = infoResource?.data ? getVesselLabel(infoResource.data) : ''
   const vesselId =

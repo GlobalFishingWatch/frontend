@@ -42,6 +42,7 @@ import {
 } from 'features/reports/reports.selectors'
 import {
   selectDefaultMapGeneratorsConfig,
+  selectMapGeneratorsDictionary,
   WORKSPACES_POINTS_TYPE,
   WORKSPACE_GENERATOR_ID,
 } from './map.selectors'
@@ -74,6 +75,10 @@ export const getVesselsInfoConfig = (vessels: ExtendedFeatureVessel[]) => {
   }
 }
 
+export const useGeneratorsDictionaryConnect = () => {
+  return useSelector(selectMapGeneratorsDictionary)
+}
+
 // This is a convenience hook that returns at the same time the portions of the store we interested in
 // as well as the functions we need to update the same portions
 export const useGeneratorsConnect = () => {
@@ -83,7 +88,6 @@ export const useGeneratorsConnect = () => {
   const generatorsConfig = useSelector(selectDefaultMapGeneratorsConfig)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
-
   const sourceTilesLoaded = useMapSourceTiles()
   const updatedGeneratorConfig = useMemo(() => {
     return generatorsConfig.map((generatorConfig, i) => {

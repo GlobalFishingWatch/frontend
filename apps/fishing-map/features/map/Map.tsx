@@ -1,6 +1,8 @@
-import { useCallback, useState, useEffect, useMemo } from 'react'
+import { useCallback, useState, useEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { Map, MapboxStyle } from 'react-map-gl'
+import { DeckGL, DeckGLRef } from '@deck.gl/react/typed'
+import { MapView } from '@deck.gl/core/typed'
 import dynamic from 'next/dynamic'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import maplibregl from '@globalfishingwatch/maplibre-gl'
@@ -45,8 +47,10 @@ import { useMapLoaded, useSetMapIdleAtom } from 'features/map/map-state.hooks'
 import { useEnvironmentalBreaksUpdate } from 'features/workspace/environmental/environmental.hooks'
 import { mapReadyAtom } from 'features/map/map-state.atom'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
+import { selectHighlightedTime } from 'features/timebar/timebar.slice'
 import { selectMapTimeseries } from 'features/reports/reports-timeseries.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useMapDeckLayers } from 'features/map/map-layers.hooks'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import useRulers from './rulers/rulers.hooks'
@@ -96,15 +100,22 @@ const layerComposer = new LayerComposer({
 const mapStyles = {
   width: '100%',
   height: '100%',
+  position: 'relative',
 }
 
 const MapWrapper = () => {
+  ///////////////////////////////////////
+  // DECK related code
+  const deckRef = useRef<DeckGLRef>(null)
+  const mapView = new MapView({ repeat: true, controller: true })
+  ////////////////////////////////////////
   // Used it only once here to attach the listener only once
   useSetMapIdleAtom()
   useMapSourceTilesLoadedAtom()
   useEnvironmentalBreaksUpdate()
   const map = useMapInstance()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
+
   const setMapReady = useSetRecoilState(mapReadyAtom)
   const hasTimeseries = useRecoilValue(selectMapTimeseries)
   const { isMapDrawing } = useMapDrawConnect()
@@ -120,6 +131,8 @@ const MapWrapper = () => {
     defaultStyleTransformations,
     layerComposer
   )
+
+  const layers = useMapDeckLayers()
   const allSourcesLoaded = useAllMapSourceTilesLoaded()
 
   const { clickedEvent, dispatchClickedEvent, cancelPendingInteractionRequests } =
@@ -284,10 +297,36 @@ const MapWrapper = () => {
 
   return (
     <div className={styles.container}>
-      {style && (
+      <DeckGL
+        id="deckgl"
+        ref={deckRef}
+        views={mapView}
+        layers={layers}
+        style={mapStyles}
+        // This avoids performing the default picking
+        // since we are handling it through pickMultipleObjects
+        // discussion for reference https://github.com/visgl/deck.gl/discussions/5793
+        layerFilter={({ renderPass }) => renderPass !== 'picking:hover'}
+        initialViewState={{
+          longitude: -73.3073372718909,
+          latitude: -42.29868545284379,
+          zoom: 8.044614831699267,
+          pitch: 0,
+          bearing: 0,
+          minZoom: 0,
+          maxZoom: 20,
+          minPitch: 0,
+          maxPitch: 60,
+        }}
+        controller={true}
+        // onClick={onClick}
+        // onHover={onHover}
+        // onViewStateChange={onViewportStateChange}
+      />
+      {/* {style && (
         <Map
           id="map"
-          style={mapStyles}
+          style={{ ...mapStyles, display: 'none', pointerEvents: 'none' }}
           keyboard={!isMapDrawing}
           zoom={viewport.zoom}
           mapLib={maplibregl}
@@ -295,18 +334,19 @@ const MapWrapper = () => {
           longitude={viewport.longitude}
           pitch={debugOptions.extruded ? 40 : 0}
           bearing={0}
-          onMove={reportLocation && !hasTimeseries ? undefined : onViewportChange}
+          // onMove={isAnalyzing && !hasTimeseries ? undefined : onViewportChange}
           mapStyle={style as MapboxStyle}
           transformRequest={transformRequest}
           onResize={setMapBounds}
-          cursor={rulersEditing ? rulesCursor : getCursor()}
+          // cursor={rulersEditing ? rulesCursor : getCursor()}
           interactiveLayerIds={interactiveLayerIds}
-          onClick={isMapDrawing || isMarineManagerLocation ? undefined : currentClickCallback}
-          onMouseEnter={onMouseMove}
-          onMouseMove={onMouseMove}
-          onLoad={onLoadCallback}
-          onError={handleError}
-          onMouseOut={resetHoverState}
+          // onClick={isMapDrawing || isMarineManagerLocation ? undefined : currentClickCallback}
+          // onMouseEnter={onMouseMove}
+          // onMouseMove={onMouseMove}
+          // onMouseLeave={resetHoverState}
+          // onLoad={onLoadCallback}
+          // onError={handleError}
+          // onMouseOut={resetHoverState}
         >
           {clickedEvent && (
             <PopupWrapper
@@ -327,7 +367,7 @@ const MapWrapper = () => {
           {isMapDrawing && <MapDraw />}
           {mapLegends && <MapLegends legends={mapLegends} portalled={portalledLegend} />}
         </Map>
-      )}
+      )} */}
       <MapControls onMouseEnter={resetHoverState} mapLoading={debouncedMapLoading} />
       {isWorkspace && !reportLocation && (
         <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />

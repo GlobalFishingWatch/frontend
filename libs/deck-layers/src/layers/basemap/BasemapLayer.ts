@@ -1,15 +1,21 @@
 import { BitmapLayer } from '@deck.gl/layers/typed'
-import { CompositeLayer } from '@deck.gl/core/typed'
+import { CompositeLayer, Layer } from '@deck.gl/core/typed'
 import { TileLayer } from '@deck.gl/geo-layers'
 import { MVTLayer, TileLayerProps, MVTLayerProps } from '@deck.gl/geo-layers/typed'
 import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
 
-export type BaseMapLayerProps = TileLayerProps & MVTLayerProps
+export enum BasemapType {
+  Satellite = 'satellite',
+  Default = 'basemap_default',
+  Labels = 'basemap_labels',
+}
+export type BasemapLayerOwnProps = { basemap: BasemapType }
+export type BaseMapLayerProps = TileLayerProps & MVTLayerProps & BasemapLayerOwnProps
 export class BaseMap extends CompositeLayer<BaseMapLayerProps> {
   static layerName = 'ContextLayer'
   static defaultProps = {}
 
-  layers = []
+  layers: Layer[] = []
 
   _getBathimetryLayer() {
     return new TileLayer({
@@ -45,8 +51,36 @@ export class BaseMap extends CompositeLayer<BaseMapLayerProps> {
     })
   }
 
+  _getSatelliteLayer() {
+    return new TileLayer({
+      id: 'basemap-satellite',
+      data: 'https://gateway.api.dev.globalfishingwatch.org/v2/tileset/sat/tile?x={x}&y={y}&z={z}',
+      minZoom: 0,
+      maxZoom: 9,
+      onDataLoad: this.props.onDataLoad,
+      zIndex: GROUP_ORDER.indexOf(Group.Basemap),
+      tileSize: 256,
+      renderSubLayers: (props) => {
+        const {
+          bbox: { west, south, east, north },
+        } = props.tile
+        return new BitmapLayer(props, {
+          data: null,
+          image: props.data,
+          bounds: [west, south, east, north],
+        })
+      },
+    })
+  }
+
+  _getBasemap() {
+    return this.props.basemap === 'basemap_default'
+      ? this._getLandMassLayer()
+      : this._getSatelliteLayer()
+  }
+
   renderLayers() {
-    this.layers = [this._getBathimetryLayer(), this._getLandMassLayer()]
+    this.layers = [this._getBathimetryLayer(), this._getBasemap()]
     return this.layers
   }
 }

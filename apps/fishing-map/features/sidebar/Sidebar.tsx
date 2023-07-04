@@ -16,6 +16,7 @@ import { fetchUserVesselGroupsThunk } from 'features/vessel-groups/vessel-groups
 import { useAppDispatch } from 'features/app/app.hooks'
 import Report from 'features/reports/Report'
 import { selectDataviewsResources } from 'features/dataviews/dataviews.slice'
+import { DatasetTypes } from '../../../../libs/api-types/src/datasets'
 import styles from './Sidebar.module.css'
 import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
@@ -63,12 +64,15 @@ function Sidebar({ onMenuClick }: SidebarProps) {
 
   useEffect(() => {
     if (dataviewsResources?.resources?.length) {
-      dataviewsResources.resources.forEach((resource) => {
+      const infoResources = dataviewsResources?.resources.filter(
+        (r) => r.dataset.type === DatasetTypes.Vessels
+      )
+      infoResources.forEach((resource) => {
         dispatch(
           fetchResourceThunk({
             resource,
             resourceKey: resource.key,
-            parseEventCb: parseTrackEventChunkProps,
+            // parseEventCb: parseTrackEventChunkProps,
             parseUserTrackCb: parseUserTrackCallback,
           })
         )
