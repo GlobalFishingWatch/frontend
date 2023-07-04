@@ -28,6 +28,7 @@ export function getDataviewsGeneratorsDictionary(
         const vesselInfo = (resources[infoUrl] as any)?.data
         return {
           id: dataview.id,
+          type: DeckLayersGeneratorType.Vessels,
           name: vesselInfo?.shipname,
           visible: dataview.config?.visible ?? true,
           color: dataview.config?.color as string,
@@ -52,6 +53,7 @@ export function getDataviewsGeneratorsDictionary(
       .map((dataview) => ({
         id: dataview.id,
         dataview,
+        type: DeckLayersGeneratorType.Fourwings,
       })),
   }
 }

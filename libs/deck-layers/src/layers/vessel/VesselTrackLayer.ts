@@ -2,7 +2,7 @@ import type { NumericArray } from '@math.gl/core'
 import { AccessorFunction, DefaultProps } from '@deck.gl/core/typed'
 import { PathLayer, PathLayerProps } from '@deck.gl/layers/typed'
 import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
-import { Point, Segment } from '@globalfishingwatch/api-types'
+import { Segment } from '@globalfishingwatch/api-types'
 import { TIMESTAMP_MULTIPLIER, VesselTrackData } from '../../loaders/vessels/trackLoader'
 
 /** Properties added by VesselTrackLayer. */

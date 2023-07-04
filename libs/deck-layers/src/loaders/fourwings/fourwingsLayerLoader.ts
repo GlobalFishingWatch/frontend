@@ -11,13 +11,13 @@ import {
   FEATURE_ROW_INDEX,
 } from '../constants'
 
-function readData(_, data, pbf) {
+function readData(_: any, data: any, pbf: any) {
   data.push(pbf.readPackedVarint())
 }
 
 export type BBox = [number, number, number, number]
 
-const getDate = (day) => {
+const getDate = (day: any) => {
   return day * 1000 * 60 * 60 * 24
 }
 
@@ -65,7 +65,7 @@ const getCellTimeseries = (intArrays: FourwingsRawData[], params: ParseFourwings
             if (v > 0) {
               const date = getDate(Math.ceil(i / sublayerCount) + startFrame)
               if (date >= minFrame - bufferMs && date <= maxFrame + bufferMs) {
-                acc[i % sublayerCount][date] = v / 100
+                ;(acc as any)[i % sublayerCount][date] = v / 100
               }
             }
             return acc
@@ -96,7 +96,7 @@ const getCellTimeseries = (intArrays: FourwingsRawData[], params: ParseFourwings
   return Object.keys(cells).map((cellId) => {
     return {
       index: parseInt(cellId),
-      timeseries: cells[cellId],
+      timeseries: cells[cellId as any],
     }
   })
 }

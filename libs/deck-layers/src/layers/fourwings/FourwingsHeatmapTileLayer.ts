@@ -86,7 +86,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   calculateColorDomain = () => {
     const { maxFrame, minFrame } = this.props
     const viewportData = this.getData()
-    if (viewportData?.length > 0) {
+    if (viewportData?.length && viewportData?.length > 0) {
       const cells = viewportData.flatMap((cell) => {
         return aggregateCell(cell, { minFrame, maxFrame })
       })
@@ -105,6 +105,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         return parseFloat(clusterFirst.toFixed(3))
       })
     }
+    return []
   }
 
   getColorDomain = () => {
@@ -117,30 +118,30 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     })
   }
 
-  _onTileLoad = (tile) => {
+  _onTileLoad = (tile: any) => {
     const allTilesLoaded = this.getLayerInstance().state.tileset.tiles.every(
-      (tile) => tile.isLoaded === true
+      (tile: any) => tile.isLoaded === true
     )
     if (this.props.onTileLoad) {
       this.props.onTileLoad(tile, allTilesLoaded)
     }
   }
 
-  _onViewportLoad = (tiles) => {
+  _onViewportLoad = (tiles: any) => {
     this.updateColorDomain()
     if (this.props.onViewportLoad) {
       this.props.onViewportLoad(tiles)
     }
   }
 
-  _fetchTileData = async (tile: TileLoadProps) => {
+  _fetchTileData: any = async (tile: TileLoadProps) => {
     const { minFrame, maxFrame, sublayers } = this.props
     const datasets = sublayers.map((sublayer) => sublayer.datasets.join(','))
-    const promises = this._getChunks(minFrame, maxFrame).map(async (chunk) => {
+    const getChunkData: any = async (chunk: any) => {
       // if (cache[chunk]) {
       //   return Promise.resolve(cache[chunk])
       // }
-      const response = await fetch(getDataUrlByChunk({ tile, chunk, datasets }), {
+      const response = await fetch(getDataUrlByChunk({ tile, chunk, datasets }) as string, {
         signal: tile.signal,
       })
       if (tile.signal?.aborted || response.status !== 200) {
@@ -150,12 +151,13 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       // return parseFourWings(await response.arrayBuffer(), {
       //   sublayers: this.props.sublayers,
       // })
-    })
+    }
+    const promises = this._getChunks(minFrame, maxFrame).map(getChunkData)
     if (tile.signal?.aborted) {
       throw new Error('tile aborted')
     }
     // TODO decide what to do when a chunk load fails
-    const data: ArrayBuffer[] = (await Promise.allSettled(promises)).flatMap((d) => {
+    const data: any[] = (await Promise.allSettled(promises)).flatMap((d) => {
       return d.status === 'fulfilled' && d.value !== undefined ? d.value : []
     })
     if (!data.length) {
@@ -172,7 +174,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 
   _getTileData: TileLayerProps['getTileData'] = async (tile) => {
     // waiting when zoom changes to avoid loading tiles for intermidiate zoom levels
-    if (tile.zoom !== Math.round(this.getLayerInstance().internalState?.viewport.zoom)) {
+    if (tile.zoom !== Math.round(this.getLayerInstance().internalState?.viewport?.zoom as number)) {
       await asyncAwaitMS(500)
     }
     if (tile.signal?.aborted) {
@@ -244,10 +246,11 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     if (layer) {
       const zoom = Math.round(this.context.viewport.zoom)
       const offset = this.props.resolution === 'high' ? 1 : 0
-      return layer.getSubLayers().flatMap((l: FourwingsHeatmapLayer) => {
+      return layer.getSubLayers().flatMap((l: any) => {
         return l.props.tile.zoom === zoom + offset ? (l.getData() as TileCell[]) : []
       })
     }
+    return []
   }
 
   getTimeseries() {
