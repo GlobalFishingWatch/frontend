@@ -1,9 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
-import { event as uaEvent } from 'react-ga'
 import { GFWApiClient } from 'http-client/http-client'
 import { AdvancedSearchQueryField, getAdvancedSearchQuery } from '@globalfishingwatch/api-client'
 import { VesselSearch } from '@globalfishingwatch/api-types'
+import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import { BASE_DATASET, RESULTS_PER_PAGE, SEARCH_MIN_CHARACTERS } from 'data/constants'
 import { RootState } from 'store'
 import { SearchResults } from 'types'
@@ -131,15 +131,15 @@ const trackData = (query: any, results: SearchResults | null, actualResults: num
         tmt: vessel.vesselMatchId,
       }
     })
-    uaEvent({
-      category: 'Search Vessel VV',
+    trackEvent({
+      category: TrackCategory.SearchVesselVV,
       action: 'Click Search',
       label: JSON.stringify({ ...query, vessels }),
       value: results?.total,
     })
   } else {
-    uaEvent({
-      category: 'Search Vessel VV',
+    trackEvent({
+      category: TrackCategory.SearchVesselVV,
       action: 'Click Load More',
       label: actualResults.toString(),
       value: results?.total,

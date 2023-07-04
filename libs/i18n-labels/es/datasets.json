@@ -1839,6 +1839,29 @@
       "event_mean_position": "event_mean_position"
     }
   },
+  "public-global-other-vessels": {
+    "name": "AIS (Other Vessels)",
+    "description": "Other vessels from AIS",
+    "schema": {
+      "id": "id",
+      "imo": "imo",
+      "flag": "bandera",
+      "mmsi": "mmsi",
+      "source": "fuente",
+      "dataset": "dataset",
+      "callsign": "signatura",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {}
+      },
+      "msgCount": "msgCount",
+      "posCount": "posCount",
+      "shipname": "shipname",
+      "normalized_shipname": "normalized_shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "public-global-presence": {
     "name": "AIS",
     "description": "Global Fishing Watch utiliza datos sobre la identidad, el tipo, la ubicación, la velocidad, y otros datos que son emitidos a través del Sistema de Identificación Automática (AIS) y recolectados a través de satélites y receptores terrestres. El AIS fue desarrollado para la prevención de colisión/esquivación. La capa de actividad muestra un mapa de calor de la presencia de buques. La presencia se determina tomando una posición al hora por buque a partir de las posiciones transmitidas por el AIS de la buque.",

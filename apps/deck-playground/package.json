@@ -14,9 +14,8 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "dependencies": {
-    "@loaders.gl/core": "^3.2.13",
-    "@loaders.gl/loader-utils": "^3.2.13",
-    "@loaders.gl/mvt": "^3.2.13",
+    "@nebula.gl/edit-modes": "^1.0.4",
+    "@nebula.gl/layers": "^1.0.4",
     "@recoiljs/refine": "^0.1.1",
     "@tanstack/react-query": "^4.24.4",
     "@testing-library/jest-dom": "^5.16.5",

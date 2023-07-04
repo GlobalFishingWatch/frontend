@@ -259,9 +259,9 @@ function Search() {
           ? eventsRelatedDatasets.map((d) => d.id)
           : []
       const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
-        trackDatasetId: vessel.trackDatasetId as string,
-        infoDatasetId: vessel.dataset.id,
-        ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
+        info: vessel.dataset.id,
+        track: vessel.trackDatasetId as string,
+        ...(eventsDatasetsId.length > 0 && { events: eventsDatasetsId }),
       })
       return vesselDataviewInstance
     })
