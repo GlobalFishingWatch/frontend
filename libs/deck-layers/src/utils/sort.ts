@@ -1,11 +1,11 @@
 import { indexOf } from 'lodash'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { FourwingsLayer } from '@globalfishingwatch/deck-layers'
+import { FourwingsDataviewCategory } from '../layer-composer/types/fourwings'
 
-export const HEATMAP_GROUP_ORDER: DataviewCategory[] = [
-  DataviewCategory.Activity,
-  DataviewCategory.Detections,
-  DataviewCategory.Environment,
+export const HEATMAP_GROUP_ORDER: FourwingsDataviewCategory[] = [
+  FourwingsDataviewCategory.Activity,
+  FourwingsDataviewCategory.Detections,
+  FourwingsDataviewCategory.Environment,
 ]
 
 export const sortFourwingsLayers = (a: FourwingsLayer, b: FourwingsLayer) =>

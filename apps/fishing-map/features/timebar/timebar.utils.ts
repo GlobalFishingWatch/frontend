@@ -78,6 +78,5 @@ function getGraphDataFromSublayersTimeseries(
 
 export function getGraphFromGridCellsData(cells: TileCell[]): ActivityTimeseriesFrame[] {
   const { timeseries, timestamps } = getSublayersAggregateTimeseriesFromGridCellsData(cells)
-  debugger
   return getGraphDataFromSublayersTimeseries(timeseries, timestamps).sort((a, b) => a.date - b.date)
 }

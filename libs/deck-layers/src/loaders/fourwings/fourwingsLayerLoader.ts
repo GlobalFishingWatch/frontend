@@ -2,7 +2,7 @@ import Pbf from 'pbf'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import { CONFIG_BY_INTERVAL } from '../../utils/time'
 import { getChunkBuffer } from '../../layers/fourwings/fourwings.config'
-import { FourwingsDatasetId, FourwingsSublayer } from '../../layers/fourwings/fourwings.types'
+import { FourwingsDatasetId, FourwingsDeckSublayer } from '../../layers/fourwings/fourwings.types'
 import {
   CELL_END_INDEX,
   CELL_NUM_INDEX,
@@ -60,7 +60,7 @@ const getCellTimeseries = (intArrays: FourwingsRawData[], params: ParseFourwings
         indexInCell = 0
         const timeseries = intArray.slice(startIndex + CELL_VALUES_START_INDEX, endIndex).reduce(
           // eslint-disable-next-line no-loop-func
-          (acc, v, i) => {
+          (acc: any, v, i) => {
             if (v > 0) {
               const timestamp = CONFIG_BY_INTERVAL[interval].getTime(
                 Math.ceil(i / sublayerCount) + startFrame
@@ -93,6 +93,7 @@ const getCellTimeseries = (intArrays: FourwingsRawData[], params: ParseFourwings
       }
     }
   }
+
   return Object.keys(cells).map((cellId) => {
     return {
       index: parseInt(cellId),
@@ -121,7 +122,7 @@ export type ParseFourwingsParams = {
   minFrame: number
   maxFrame: number
   interval: Interval
-  sublayers: FourwingsSublayer[]
+  sublayers: FourwingsDeckSublayer[]
 }
 
 export const parseFourWings = async (

@@ -1,4 +1,4 @@
-import { FourwingsSublayer } from '../../layers/fourwings/fourwings.types'
+import { FourwingsDeckSublayer } from '../../layers/fourwings/fourwings.types'
 import { BaseDeckLayerGenerator } from './base'
 
 export enum FourwingsDataviewCategory {
@@ -6,7 +6,8 @@ export enum FourwingsDataviewCategory {
   Activity = 'activity',
   Detections = 'detections',
 }
-export interface FourwingsDeckLayerGenerator extends BaseDeckLayerGenerator {
-  category: FourwingsDataviewCategory
-  sublayers: FourwingsSublayer[]
+
+export interface FourwingsDeckLayerGenerator extends Omit<BaseDeckLayerGenerator, 'id'> {
+  id: FourwingsDataviewCategory
+  sublayers: FourwingsDeckSublayer[]
 }

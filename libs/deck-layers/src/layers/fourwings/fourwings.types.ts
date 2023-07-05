@@ -4,9 +4,10 @@ export type * from '../../loaders/fourwings/fourwingsTileParser'
 export type FourwingsSublayerId = string
 export type FourwingsDatasetId = string
 
-export interface FourwingsSublayer {
+export interface FourwingsDeckSublayer {
   id: FourwingsSublayerId
   datasets: FourwingsDatasetId[]
+  visible: boolean
   config: {
     color: string
     colorRamp: ColorRampsIds

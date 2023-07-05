@@ -18,9 +18,9 @@ import {
   Group,
   GROUP_ORDER,
 } from '@globalfishingwatch/layer-composer'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { TileCell } from '../../loaders/fourwings/fourwingsTileParser'
 import { parseFourWings } from '../../loaders/fourwings/fourwingsLayerLoader'
+import { FourwingsDataviewCategory } from '../../layer-composer/types/fourwings'
 import {
   ACTIVITY_SWITCH_ZOOM_LEVEL,
   aggregateCellTimeseries,
@@ -30,7 +30,7 @@ import {
 import { aggregateCell, FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
 import { HEATMAP_ID } from './FourwingsLayer'
 import { Chunk, getChunkBuffer, getChunksByInterval, getInterval } from './fourwings.config'
-import { FourwingsSublayer, FourwingsSublayerId } from './fourwings.types'
+import { FourwingsDeckSublayer, FourwingsSublayerId } from './fourwings.types'
 
 export type FourwingsLayerResolution = 'default' | 'high'
 export type _FourwingsHeatmapTileLayerProps = {
@@ -40,9 +40,8 @@ export type _FourwingsHeatmapTileLayerProps = {
   minFrame: number
   maxFrame: number
   zIndex?: number
-  category: DataviewCategory
-  sublayers: FourwingsSublayer[]
-  visibleSublayersIds: FourwingsSublayerId[]
+  category: FourwingsDataviewCategory
+  sublayers: FourwingsDeckSublayer[]
   onTileLoad?: (tile: Tile2DHeader, allTilesLoaded: boolean) => void
   onViewportLoad?: (string: string) => void
 }
@@ -109,6 +108,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         return parseFloat(clusterFirst.toFixed(3))
       })
     }
+    return []
   }
 
   updateColorDomain = () => {
@@ -135,7 +135,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 
   _fetchTileData: any = async (tile: TileLoadProps) => {
     const { minFrame, maxFrame, sublayers } = this.props
-    const datasets = sublayers.map((sublayer) => sublayer.datasets.join(','))
+    const visibleSublayers = sublayers.filter((sublayer) => sublayer.visible)
+    const datasets = visibleSublayers.map((sublayer) => sublayer.datasets.join(','))
+    console.log('🚀 ~ _fetchTileData:any= ~ datasets:', datasets)
     const getChunkData: any = async (chunk: any) => {
       // if (cache[chunk]) {
       //   return Promise.resolve(cache[chunk])
@@ -162,12 +164,14 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     if (!data.length) {
       return null
     }
+
     const mergeChunkDataCells = await parseFourWings(data, {
-      sublayers,
+      sublayers: visibleSublayers,
       minFrame,
       maxFrame,
       interval: getInterval(minFrame, maxFrame),
     })
+
     return mergeChunkDataCells
   }
 
@@ -204,7 +208,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     const { colorDomain, colorRanges } = this.state
     const chunks = this._getChunks(minFrame, maxFrame)
     const cacheKey = this._getTileDataCacheKey(minFrame, maxFrame, chunks)
-
+    // TODO review this to avoid rerendering when sublayers change
+    const visibleSublayersIds = this.props.sublayers.filter((s) => s.visible).join(',')
     return new TileLayerClass(
       this.props,
       this.getSubLayerProps({
@@ -220,7 +225,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         onTileLoad: this._onTileLoad,
         getTileData: this._getTileData,
         updateTriggers: {
-          getTileData: [cacheKey, this.props.visibleSublayersIds],
+          getTileData: [cacheKey /*visibleSublayersIds*/],
         },
         onViewportLoad: this._onViewportLoad,
         renderSubLayers: (props: any) => {
