@@ -2316,6 +2316,7 @@ __metadata:
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.7
     "@popperjs/core": 2.10.2
     "@reduxjs/toolkit": ^1.9.3
+    "@rollup/plugin-wasm": ^6.1.3
     "@svgr/rollup": 8.0.1
     "@svgr/webpack": ^6.1.2
     "@testing-library/react": 13.4.0
@@ -5187,6 +5188,18 @@ __metadata:
   peerDependencies:
     rollup: ^1.20.0 || ^2.0.0
   checksum: b2f1618ee5526d288e2f8ae328dcb326e20e8dc8bd1f60d3e14d6708a5832e4aa44811f7d493f4aed2deeadca86e3b6b0503cd39bf50cfb4b595bb9da027fad0
+  languageName: node
+  linkType: hard
+
+"@rollup/plugin-wasm@npm:^6.1.3":
+  version: 6.1.3
+  resolution: "@rollup/plugin-wasm@npm:6.1.3"
+  peerDependencies:
+    rollup: ^1.20.0||^2.0.0||^3.0.0
+  peerDependenciesMeta:
+    rollup:
+      optional: true
+  checksum: d8dc7e13fc842f2acf0cf4fe1aa983014e72e01206017ec9494010d1edf18f2363bcc5b67b2830f5657aab13d9ca0a271c662fa502d750c9ca7c1b4606ce868f
   languageName: node
   linkType: hard
 

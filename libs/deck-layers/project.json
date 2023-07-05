@@ -5,26 +5,6 @@
   "projectType": "library",
   "tags": [],
   "targets": {
-    "start": {
-      "executor": "@nx/web:rollup",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/deck-layers",
-        "tsConfig": "libs/deck-layers/tsconfig.lib.json",
-        "project": "libs/deck-layers/package.json",
-        "entryFile": "libs/deck-layers/src/index.ts",
-        "external": ["react/jsx-runtime"],
-        "watch": true,
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "assets": [
-          {
-            "glob": "libs/deck-layers/README.md",
-            "input": ".",
-            "output": "."
-          }
-        ]
-      }
-    },
     "build": {
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
@@ -32,21 +12,18 @@
         "outputPath": "dist/libs/deck-layers",
         "tsConfig": "libs/deck-layers/tsconfig.lib.json",
         "project": "libs/deck-layers/package.json",
+        "extractCss": false,
         "entryFile": "libs/deck-layers/src/index.ts",
         "external": ["react/jsx-runtime"],
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
+        "rollupConfig": "libs/deck-layers/rollup.config.js",
         "assets": [
           {
             "glob": "libs/deck-layers/README.md",
             "input": ".",
             "output": "."
           }
-        ]
-      },
-      "configurations": {
-        "local": {
-          "outputPath": "libs/deck-layers/dist"
-        }
+        ],
+        "styles": "libs/deck-layers/src/base.css"
       }
     },
     "lint": {
