@@ -127,7 +127,7 @@ export const selectVoyagesByVessel = createSelector(
     const voyagesVisible = filteredEventsByVoyages.map((event) => {
       return {
         ...event,
-        status: expandedVoyages[event.timestamp]?.status ?? 'collapsed',
+        status: expandedVoyages.includes(event.timestamp) ? 'expanded' : 'collapsed',
       } as RenderedVoyage
     })
     return voyagesVisible

@@ -3,15 +3,15 @@ import { useTranslation } from 'react-i18next'
 import { Anchorage } from '@globalfishingwatch/api-types'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { ActivityEvent } from 'types/activity'
-import ActivityModalContentDetails from './ActivityModalContentDetails'
-import ActivityModalContentField from './ActivityModalContentField'
-import styles from './ActivityModalDetails.module.css'
+import ActivityContentDetails from './ActivityContentDetails'
+import ActivityContentField from './ActivityContentField'
+import styles from './ActivityDetails.module.css'
 
-interface ActivityModalContentProps {
+interface ActivityContentProps {
   event: ActivityEvent
 }
 
-const ActivityModalContentDetailsPortVisit: React.FC<ActivityModalContentProps> = (
+const ActivityContentDetailsPortVisit: React.FC<ActivityContentProps> = (
   props
 ): React.ReactElement => {
   const event = props.event
@@ -64,10 +64,10 @@ const ActivityModalContentDetailsPortVisit: React.FC<ActivityModalContentProps> 
   return (
     <Fragment>
       <div className={styles.row}>
-        <ActivityModalContentField label={t('event.port', 'Port')} value={ports} />
-        <ActivityModalContentField label={t('event.psma', 'PSMA')} value={'psmaDescription'} />
+        <ActivityContentField label={t('event.port', 'Port')} value={ports} />
+        <ActivityContentField label={t('event.psma', 'PSMA')} value={'psmaDescription'} />
       </div>
-      <ActivityModalContentDetails event={event} />
+      <ActivityContentDetails event={event} />
 
       {false && [2, 3, 4].includes(confidenceLevel) && showHelp && (
         <div className={styles.help}>
@@ -108,4 +108,4 @@ const ActivityModalContentDetailsPortVisit: React.FC<ActivityModalContentProps> 
   )
 }
 
-export default ActivityModalContentDetailsPortVisit
+export default ActivityContentDetailsPortVisit

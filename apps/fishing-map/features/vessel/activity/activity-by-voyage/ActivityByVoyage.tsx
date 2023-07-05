@@ -5,13 +5,14 @@ import { selectEventsLoading } from 'features/vessel/activity/vessels-activity.s
 import { EventTypeVoyage, Voyage } from 'types/voyage'
 import useVoyagesConnect from 'features/vessel/activity/activity-by-voyage/activity-by-voyage.hook'
 import useViewport from 'features/map/map-viewport.hooks'
-import ActivityModalContent from 'features/vessel/activity/modals/ActivityModalContent'
+import ActivityModalContent from 'features/vessel/activity/event-details/ActivityContent'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { ActivityEvent } from 'types/activity'
-import styles from '../activity-by-type/activity-by-type.module.css'
 import useActivityEventConnect from '../event/event.hook'
+import styles from '../activity-by-type/activity-by-type.module.css'
 import ActivityItem from './ActivityItem'
 import { selectVoyagesByVessel } from './activity-by-voyage.selectors'
+
 interface ActivityProps {
   onMoveToMap: () => void
 }

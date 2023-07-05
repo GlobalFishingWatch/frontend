@@ -2,15 +2,15 @@ import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { ActivityEvent } from 'types/activity'
-import ActivityModalContentDetails from './ActivityModalContentDetails'
-import ActivityModalContentField from './ActivityModalContentField'
-import styles from './ActivityModalDetails.module.css'
+import ActivityContentDetails from './ActivityContentDetails'
+import ActivityContentField from './ActivityContentField'
+import styles from './ActivityDetails.module.css'
 
-interface ActivityModalContentProps {
+interface ActivityContentProps {
   event: ActivityEvent
 }
 
-const ActivityModalContentDetailsFishing: React.FC<ActivityModalContentProps> = (
+const ActivityContentDetailsFishing: React.FC<ActivityContentProps> = (
   props
 ): React.ReactElement => {
   const event = props.event
@@ -19,7 +19,7 @@ const ActivityModalContentDetailsFishing: React.FC<ActivityModalContentProps> = 
   return (
     <Fragment>
       <div className={styles.row}>
-        <ActivityModalContentField
+        <ActivityContentField
           label={t('event.distance', 'Distance')}
           value={
             event.fishing?.totalDistanceKm
@@ -29,7 +29,7 @@ const ActivityModalContentDetailsFishing: React.FC<ActivityModalContentProps> = 
               : EMPTY_FIELD_PLACEHOLDER
           }
         />
-        <ActivityModalContentField
+        <ActivityContentField
           label={t('event.avgSpeed', 'Avg Speed')}
           value={
             event.fishing?.averageSpeedKnots
@@ -40,9 +40,9 @@ const ActivityModalContentDetailsFishing: React.FC<ActivityModalContentProps> = 
           }
         />
       </div>
-      <ActivityModalContentDetails event={event} />
+      <ActivityContentDetails event={event} />
     </Fragment>
   )
 }
 
-export default ActivityModalContentDetailsFishing
+export default ActivityContentDetailsFishing

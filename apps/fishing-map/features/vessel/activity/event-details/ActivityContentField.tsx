@@ -1,9 +1,9 @@
 import React, { Fragment, ReactNode } from 'react'
 import cx from 'classnames'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import styles from './ActivityModalContentField.module.css'
+import styles from './ActivityContentField.module.css'
 
-interface ActivityModalContentFieldProps {
+interface ActivityContentFieldProps {
   className?: string
   label: string
   value: string | ReactNode
@@ -11,13 +11,13 @@ interface ActivityModalContentFieldProps {
   onValueClick?: () => void
 }
 
-const ActivityModalContentField: React.FC<ActivityModalContentFieldProps> = ({
+const ActivityContentField: React.FC<ActivityContentFieldProps> = ({
   className,
   label,
   value,
   onHelpClick,
   onValueClick,
-}: ActivityModalContentFieldProps): React.ReactElement => {
+}: ActivityContentFieldProps): React.ReactElement => {
   return (
     <Fragment>
       <div className={cx(className, styles.field)}>
@@ -39,4 +39,4 @@ const ActivityModalContentField: React.FC<ActivityModalContentFieldProps> = ({
   )
 }
 
-export default ActivityModalContentField
+export default ActivityContentField

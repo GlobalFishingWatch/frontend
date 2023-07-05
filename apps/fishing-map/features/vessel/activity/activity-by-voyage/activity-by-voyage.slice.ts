@@ -3,12 +3,10 @@ import { RootState } from 'store'
 import { RenderedVoyage } from 'types/voyage'
 
 export interface VoyagesState {
-  voyages: Record<number, RenderedVoyage>
-  initialized: boolean
+  voyages: number[]
 }
 const initialState: VoyagesState = {
-  voyages: {},
-  initialized: false,
+  voyages: [],
 }
 
 const voyagesSlice = createSlice({
@@ -17,37 +15,18 @@ const voyagesSlice = createSlice({
   reducers: {
     upsertVesselVoyagesExpanded: (state, action: PayloadAction<RenderedVoyage>) => {
       const voyage = action.payload
-      if (voyage && state.voyages[voyage.timestamp]) {
-        state.voyages[voyage.timestamp].status =
-          state.voyages[voyage.timestamp].status === 'expanded' ? 'collapsed' : 'expanded'
+      const index = state.voyages.indexOf(voyage.timestamp)
+      if (index === -1) {
+        state.voyages.push(voyage.timestamp)
       } else {
-        state.voyages[voyage.timestamp] = {
-          ...voyage,
-          status: 'expanded',
-        }
+        state.voyages.splice(index, 1)
       }
-    },
-    setVesselVoyagesInitialized: (state, action: PayloadAction<Record<string, boolean>>) => {
-      const entries = Object.entries(action.payload)
-
-      entries
-        .map(([id, initialized]) => ({
-          id,
-          updates: {
-            ...(state.voyages[id] ?? {}),
-            initialized,
-          },
-        }))
-        .forEach(({ id, updates }) => {
-          state.voyages[id] = updates as any
-        })
     },
   },
 })
 
 export const selectExpandedVoyages = (state: RootState) => state.voyages.voyages
-export const selectVoyagesInitialized = (state: RootState) => state.voyages.initialized
 
-export const { setVesselVoyagesInitialized, upsertVesselVoyagesExpanded } = voyagesSlice.actions
+export const { upsertVesselVoyagesExpanded } = voyagesSlice.actions
 
 export default voyagesSlice.reducer

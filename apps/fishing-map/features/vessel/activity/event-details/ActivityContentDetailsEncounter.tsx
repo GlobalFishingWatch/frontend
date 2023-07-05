@@ -5,15 +5,15 @@ import { EventVessel } from '@globalfishingwatch/api-types'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import AuthIcon from 'features/vessel/auth-icon/AuthIcon'
 import { ActivityEvent } from 'types/activity'
-import ActivityModalContentField from './ActivityModalContentField'
-import ActivityModalContentDetails from './ActivityModalContentDetails'
-import styles from './ActivityModalDetails.module.css'
+import ActivityContentField from './ActivityContentField'
+import ActivityContentDetails from './ActivityContentDetails'
+import styles from './ActivityDetails.module.css'
 
-interface ActivityModalContentProps {
+interface ActivityContentProps {
   event: ActivityEvent
 }
 
-const ActivityModalContentDetailsEncounter: React.FC<ActivityModalContentProps> = (
+const ActivityContentDetailsEncounter: React.FC<ActivityContentProps> = (
   props
 ): React.ReactElement => {
   const event = props.event
@@ -26,7 +26,7 @@ const ActivityModalContentDetailsEncounter: React.FC<ActivityModalContentProps> 
     <Fragment>
       {relatedVessel && (
         <div className={styles.row}>
-          <ActivityModalContentField
+          <ActivityContentField
             label={t('vessel.encounteredVessel', 'Encountered Vessel')}
             value={
               <span>
@@ -35,16 +35,16 @@ const ActivityModalContentDetailsEncounter: React.FC<ActivityModalContentProps> 
               </span>
             }
           />
-          <ActivityModalContentField label={t('vessel.flag', 'Flag')} value={relatedVessel.flag} />
+          <ActivityContentField label={t('vessel.flag', 'Flag')} value={relatedVessel.flag} />
         </div>
       )}
 
-      <ActivityModalContentDetails event={event} />
+      <ActivityContentDetails event={event} />
 
       {event.encounter && (
         <Fragment>
           {event.encounter.mainVesselAuthorizationStatus && (
-            <ActivityModalContentField
+            <ActivityContentField
               label={t('events.vesselAuthorization', 'Vessel Authorization')}
               value={
                 <span className={styles.authorizationStatuses}>
@@ -55,7 +55,7 @@ const ActivityModalContentDetailsEncounter: React.FC<ActivityModalContentProps> 
             />
           )}
           {event.encounter.encounteredVesselAuthorizationStatus && (
-            <ActivityModalContentField
+            <ActivityContentField
               label={t('events.encounteredVesselAuthorization', 'Encountered Vessel Authorization')}
               value={
                 <span className={styles.authorizationStatuses}>
@@ -71,4 +71,4 @@ const ActivityModalContentDetailsEncounter: React.FC<ActivityModalContentProps> 
   )
 }
 
-export default ActivityModalContentDetailsEncounter
+export default ActivityContentDetailsEncounter

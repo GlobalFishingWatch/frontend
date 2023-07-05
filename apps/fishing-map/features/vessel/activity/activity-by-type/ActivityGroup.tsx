@@ -40,7 +40,7 @@ const ActivityGroup: React.FC<ActivityGroupProps> = ({
     [eventType, loading, quantity, t]
   )
 
-  const hasEvents = useMemo(() => quantity > 0, [quantity])
+  const hasEvents = quantity > 0
   const onToggle = useCallback(
     () => (hasEvents ? onToggleClick(eventType) : {}),
     [eventType, hasEvents, onToggleClick]

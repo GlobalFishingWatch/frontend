@@ -9,14 +9,14 @@ import { EventType, EventTypes } from '@globalfishingwatch/api-types'
 
 //import useMapEvents from 'features/map/map-events.hooks'
 import useViewport from 'features/map/map-viewport.hooks'
-import ActivityModalContent from 'features/vessel/activity/modals/ActivityModalContent'
+import ActivityModalContent from 'features/vessel/activity/event-details/ActivityContent'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { ActivityEvent } from 'types/activity'
 import useActivityEventConnect from '../event/event.hook'
+import EventItem from '../event/Event'
 import { useActivityByType } from './activity-by-type.hook'
 import styles from './activity-by-type.module.css'
 import { selectEventsByType } from './activity-by-type.selectors'
-import ActivityItem from './ActivityItem'
 import ActivityGroup from './ActivityGroup'
 
 export interface ActivityByTypeProps {
@@ -24,7 +24,7 @@ export interface ActivityByTypeProps {
 }
 
 export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) {
-  const { toggleEventType, eventTypes, expandedGroup } = useActivityByType()
+  const { toggleEventType, expandedGroup } = useActivityByType()
   const events = useSelector(selectEventsByType)
   const { t } = useTranslation()
   const { getEventDescription } = useActivityEventConnect()
@@ -80,13 +80,6 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
 
   const displayOptions = { displayPortVisitsAsOneEvent: true }
 
-  const listOfEvents = useMemo(() => {
-    if (!expandedGroup) {
-      return []
-    }
-    return events[expandedGroup]?.events
-  }, [events, expandedGroup])
-
   return (
     <div className={styles.activityContainer}>
       <Modal
@@ -97,7 +90,13 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
       >
         {selectedEvent && <ActivityModalContent event={selectedEvent}></ActivityModalContent>}
       </Modal>
-      {eventTypes.map((eventType) => (
+      {[
+        EventTypes.Encounter,
+        EventTypes.Fishing,
+        EventTypes.Loitering,
+        EventTypes.Port,
+        EventTypes.Gap,
+      ].map((eventType) => (
         <Fragment key={eventType}>
           {events[eventType] && (
             <ActivityGroup
@@ -108,19 +107,7 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
               expanded={expandedGroup === eventType}
             ></ActivityGroup>
           )}
-          {false &&
-            expandedGroup === eventType &&
-            events[eventType]?.events.length &&
-            events[eventType]?.events.map((event) => (
-              <ActivityItem
-                key={event.id}
-                event={event}
-                onMapClick={selectEventOnMap}
-                onInfoClick={openModal}
-                options={displayOptions}
-              />
-            ))}
-          {expandedGroup === eventType && events[eventType]?.events.length && (
+          {expandedGroup === eventType && events[eventType]?.events.length > 0 && (
             <AutoSizer disableHeight={true}>
               {({ width, height }) => (
                 <List
@@ -135,13 +122,12 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
                     const event = events[eventType].events[index]
                     return (
                       <div style={style}>
-                        <ActivityItem
-                          key={event.id}
+                        <EventItem
                           event={event}
                           onMapClick={selectEventOnMap}
                           onInfoClick={openModal}
                           options={displayOptions}
-                        />
+                        ></EventItem>
                       </div>
                     )
                   }}

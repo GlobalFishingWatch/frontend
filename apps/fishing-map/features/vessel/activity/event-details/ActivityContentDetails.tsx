@@ -4,18 +4,16 @@ import { useTranslation } from 'react-i18next'
 import I18nDate from 'features/i18n/i18nDate'
 import { ActivityEvent } from 'types/activity'
 import useActivityEventConnect from '../event/event.hook'
-import ActivityModalContentField from './ActivityModalContentField'
-import styles from './ActivityModalDetails.module.css'
+import ActivityContentField from './ActivityContentField'
+import styles from './ActivityDetails.module.css'
 
-interface ActivityModalContentProps {
+interface ActivityContentProps {
   event: ActivityEvent
   startLabel?: string
   endLabel?: string
 }
 
-const ActivityModalContentDetails: React.FC<ActivityModalContentProps> = (
-  props
-): React.ReactElement => {
+const ActivityContentDetails: React.FC<ActivityContentProps> = (props): React.ReactElement => {
   const event = props.event
   const { t } = useTranslation()
   const { getEventDurationDescription } = useActivityEventConnect()
@@ -51,18 +49,18 @@ const ActivityModalContentDetails: React.FC<ActivityModalContentProps> = (
   return (
     <Fragment>
       <div className={styles.row}>
-        <ActivityModalContentField
+        <ActivityContentField
           label={props.startLabel ? props.startLabel : t('event.start', 'Start')}
           value={<I18nDate date={event.start} format={DateTime.DATETIME_FULL} />}
         />
         {!!event.end && (
-          <ActivityModalContentField
+          <ActivityContentField
             label={props.endLabel ? props.endLabel : t('event.end', 'End')}
             value={<I18nDate date={event.end} format={DateTime.DATETIME_FULL} />}
           />
         )}
         {getEventDurationDescription(event) && (
-          <ActivityModalContentField
+          <ActivityContentField
             label={t('event.duration', 'Duration')}
             value={getEventDurationDescription(event)}
           />
@@ -72,4 +70,4 @@ const ActivityModalContentDetails: React.FC<ActivityModalContentProps> = (
   )
 }
 
-export default ActivityModalContentDetails
+export default ActivityContentDetails
