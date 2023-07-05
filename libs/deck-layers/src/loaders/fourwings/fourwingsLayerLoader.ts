@@ -1,7 +1,8 @@
 import Pbf from 'pbf'
 import { Interval } from '@globalfishingwatch/layer-composer'
+import { CONFIG_BY_INTERVAL } from '../../utils/time'
 import { getChunkBuffer } from '../../layers/fourwings/fourwings.config'
-import { FourwingsDatasetId, FourwingsSublayer } from '../../layers/fourwings/fourwings.types'
+import { FourwingsDatasetId, FourwingsDeckSublayer } from '../../layers/fourwings/fourwings.types'
 import {
   CELL_END_INDEX,
   CELL_NUM_INDEX,
@@ -16,10 +17,6 @@ function readData(_: any, data: any, pbf: any) {
 }
 
 export type BBox = [number, number, number, number]
-
-const getDate = (day: any) => {
-  return day * 1000 * 60 * 60 * 24
-}
 
 export type GetTimeseriesParams = {
   startFrame: number
@@ -51,7 +48,9 @@ const getCellTimeseries = (intArrays: FourwingsRawData[], params: ParseFourwings
         cellNum = value
       } else if (indexInCell === CELL_START_INDEX) {
         startFrame = value
+        // startFrame = getDateInIntervalResolution(value, interval)
       } else if (indexInCell === CELL_END_INDEX) {
+        // endFrame = getDateInIntervalResolution(value, interval)
         endFrame = value
         endIndex =
           startIndex + CELL_VALUES_START_INDEX + (endFrame - startFrame + 1) * sublayerCount
@@ -61,11 +60,13 @@ const getCellTimeseries = (intArrays: FourwingsRawData[], params: ParseFourwings
         indexInCell = 0
         const timeseries = intArray.slice(startIndex + CELL_VALUES_START_INDEX, endIndex).reduce(
           // eslint-disable-next-line no-loop-func
-          (acc, v, i) => {
+          (acc: any, v, i) => {
             if (v > 0) {
-              const date = getDate(Math.ceil(i / sublayerCount) + startFrame)
-              if (date >= minFrame - bufferMs && date <= maxFrame + bufferMs) {
-                ;(acc as any)[i % sublayerCount][date] = v / 100
+              const timestamp = CONFIG_BY_INTERVAL[interval].getTime(
+                Math.ceil(i / sublayerCount) + startFrame
+              )
+              if (timestamp >= minFrame - bufferMs && timestamp <= maxFrame + bufferMs) {
+                acc[i % sublayerCount][timestamp] = v / 100
               }
             }
             return acc
@@ -121,7 +122,7 @@ export type ParseFourwingsParams = {
   minFrame: number
   maxFrame: number
   interval: Interval
-  sublayers: FourwingsSublayer[]
+  sublayers: FourwingsDeckSublayer[]
 }
 
 export const parseFourWings = async (
@@ -133,27 +134,33 @@ export const parseFourWings = async (
   const cols = data[0]?.[FEATURE_COL_INDEX]
 
   return new Promise((resolve) => {
-    const worker =
-      typeof window !== 'undefined'
-        ? new Worker(new URL('./worker.ts', import.meta.url))
-        : undefined
-    if (worker) {
-      worker.onmessage = (event: MessageEvent<Cell[]>) => {
-        resolve({
-          cols,
-          rows,
-          cells: event.data,
-        })
-      }
+    // const worker =
+    //   typeof window !== 'undefined'
+    //     ? new Worker(new URL('./worker.ts', import.meta.url))
+    //     : undefined
+    // if (worker) {
+    //   console.log('USING WORKER')
+    //   worker.onmessage = (event: MessageEvent<Cell[]>) => {
+    //     resolve({
+    //       cols,
+    //       rows,
+    //       cells: event.data,
+    //     })
+    //   }
 
-      worker.postMessage({ data, ...params })
-    } else {
-      resolve({
-        cols,
-        rows,
-        cells: getCellTimeseries(data, params),
-      })
-    }
+    //   worker.postMessage({ data, ...params })
+    // } else {
+    //   resolve({
+    //     cols,
+    //     rows,
+    //     cells: getCellTimeseries(data, params),
+    //   })
+    // }
+    resolve({
+      cols,
+      rows,
+      cells: getCellTimeseries(data, params),
+    })
   })
 }
 // export const combineChunkTimeseries = (

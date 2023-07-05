@@ -7,7 +7,7 @@ import TimelineContext, { TimelineScale } from '../../timelineContext'
 import {
   TimebarChartData,
   TimebarChartChunk,
-  Timeseries,
+  ActivityTimeseriesFrame,
   TimebarChartItem,
   TimebarChartValue,
   HighlighterCallback,
@@ -172,17 +172,17 @@ export const useSortedChartData = (data: TimebarChartData<any>, type?: 'byType' 
 }
 
 export const useTimeseriesToChartData = (
-  data: Timeseries,
+  data: ActivityTimeseriesFrame[],
   dataviews: UrlDataviewInstance[],
   highlighterCallback?: HighlighterCallback,
   highlighterIconCallback?: HighlighterCallback
 ): TimebarChartData => {
   if (!data || !data.length || !dataviews?.length) return []
-  return dataviews.map((dataview, i) => {
+  return dataviews.map((dataview) => {
     const values: TimebarChartValue[] = data.map((frame) => {
       return {
         timestamp: frame.date,
-        value: frame[i],
+        value: frame[dataview.id],
       }
     })
     const chunk: TimebarChartChunk = {

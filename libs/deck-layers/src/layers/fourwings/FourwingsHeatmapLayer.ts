@@ -71,6 +71,7 @@ export const getFillColor = (
 }
 
 export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
+  static layerName = 'FourwingsHeatmapLayer'
   renderLayers() {
     const { data, maxFrame, minFrame, rows, cols, colorDomain, colorRanges } = this.props
     if (!data || !colorDomain || !colorRanges) {
@@ -88,7 +89,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         rows,
         pickable: true,
         stroked: false,
-        getFillColor: (cell: any) =>
+        getFillColor: (cell: Cell) =>
           getFillColor(cell, { minFrame, maxFrame, colorDomain, colorRanges }),
         updateTriggers: {
           // This tells deck.gl to recalculate fillColor on changes
@@ -101,7 +102,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
 
     const debugLayers = [
       new PathLayer({
-        id: `tile-boundary-${this.props.tile.id}`,
+        id: `tile-boundary-${this.props.category}-${this.props.tile.id}`,
         data: [
           {
             path: [
@@ -118,7 +119,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         getColor: [255, 0, 0, 100],
       }),
       new TextLayer({
-        id: `tile-id-${this.props.tile.id}`,
+        id: `tile-id-${this.props.category}-${this.props.tile.id}`,
         data: [
           {
             text: this.props.tile.id,

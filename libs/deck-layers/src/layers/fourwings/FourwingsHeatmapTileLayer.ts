@@ -20,6 +20,7 @@ import {
 } from '@globalfishingwatch/layer-composer'
 import { TileCell } from '../../loaders/fourwings/fourwingsTileParser'
 import { parseFourWings } from '../../loaders/fourwings/fourwingsLayerLoader'
+import { FourwingsDataviewCategory } from '../../layer-composer/types/fourwings'
 import {
   ACTIVITY_SWITCH_ZOOM_LEVEL,
   aggregateCellTimeseries,
@@ -29,7 +30,7 @@ import {
 import { aggregateCell, FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
 import { HEATMAP_ID } from './FourwingsLayer'
 import { Chunk, getChunkBuffer, getChunksByInterval, getInterval } from './fourwings.config'
-import { FourwingsSublayer, FourwingsSublayerId } from './fourwings.types'
+import { FourwingsDeckSublayer, FourwingsSublayerId } from './fourwings.types'
 
 export type FourwingsLayerResolution = 'default' | 'high'
 export type _FourwingsHeatmapTileLayerProps = {
@@ -39,9 +40,10 @@ export type _FourwingsHeatmapTileLayerProps = {
   minFrame: number
   maxFrame: number
   zIndex?: number
-  sublayers: FourwingsSublayer[]
+  category: FourwingsDataviewCategory
+  sublayers: FourwingsDeckSublayer[]
   onTileLoad?: (tile: Tile2DHeader, allTilesLoaded: boolean) => void
-  onViewportLoad?: (tiles: Tile2DHeader[]) => void
+  onViewportLoad?: (string: string) => void
 }
 
 export type FourwingsHeatmapTileLayerProps = _FourwingsHeatmapTileLayerProps & TileLayerProps
@@ -62,6 +64,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 
   initializeState(context: LayerContext): void {
     super.initializeState(context)
+    this.id = `${this.props.category}`
     this.state = {
       ...this.getCacheRange(this.props.minFrame, this.props.maxFrame),
       colorDomain: [],
@@ -108,40 +111,38 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     return []
   }
 
-  getColorDomain = () => {
-    return this.state.colorDomain
-  }
-
   updateColorDomain = () => {
     requestAnimationFrame(() => {
       this.setState({ colorDomain: this.calculateColorDomain() })
     })
   }
 
-  _onTileLoad = (tile: any) => {
+  _onTileLoad = (tile: Tile2DHeader) => {
     const allTilesLoaded = this.getLayerInstance().state.tileset.tiles.every(
-      (tile: any) => tile.isLoaded === true
+      (tile: Tile2DHeader) => tile.isLoaded === true
     )
     if (this.props.onTileLoad) {
       this.props.onTileLoad(tile, allTilesLoaded)
     }
   }
 
-  _onViewportLoad = (tiles: any) => {
+  _onViewportLoad = (tiles: Tile2DHeader[]) => {
     this.updateColorDomain()
     if (this.props.onViewportLoad) {
-      this.props.onViewportLoad(tiles)
+      this.props.onViewportLoad(this.id)
     }
   }
 
   _fetchTileData: any = async (tile: TileLoadProps) => {
     const { minFrame, maxFrame, sublayers } = this.props
-    const datasets = sublayers.map((sublayer) => sublayer.datasets.join(','))
+    const visibleSublayers = sublayers.filter((sublayer) => sublayer.visible)
+    const datasets = visibleSublayers.map((sublayer) => sublayer.datasets.join(','))
+    console.log('🚀 ~ _fetchTileData:any= ~ datasets:', datasets)
     const getChunkData: any = async (chunk: any) => {
       // if (cache[chunk]) {
       //   return Promise.resolve(cache[chunk])
       // }
-      const response = await fetch(getDataUrlByChunk({ tile, chunk, datasets }) as string, {
+      const response = await fetch(getDataUrlByChunk({ tile, chunk, datasets })!, {
         signal: tile.signal,
       })
       if (tile.signal?.aborted || response.status !== 200) {
@@ -163,18 +164,21 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     if (!data.length) {
       return null
     }
+
     const mergeChunkDataCells = await parseFourWings(data, {
-      sublayers,
+      sublayers: visibleSublayers,
       minFrame,
       maxFrame,
       interval: getInterval(minFrame, maxFrame),
     })
+
     return mergeChunkDataCells
   }
 
   _getTileData: TileLayerProps['getTileData'] = async (tile) => {
     // waiting when zoom changes to avoid loading tiles for intermidiate zoom levels
-    if (tile.zoom !== Math.round(this.getLayerInstance().internalState?.viewport?.zoom as number)) {
+    const zoomLevel = this.getLayerInstance()?.internalState?.viewport?.zoom
+    if (zoomLevel && tile.zoom !== Math.round(zoomLevel)) {
       await asyncAwaitMS(500)
     }
     if (tile.signal?.aborted) {
@@ -204,11 +208,12 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     const { colorDomain, colorRanges } = this.state
     const chunks = this._getChunks(minFrame, maxFrame)
     const cacheKey = this._getTileDataCacheKey(minFrame, maxFrame, chunks)
-
+    // TODO review this to avoid rerendering when sublayers change
+    const visibleSublayersIds = this.props.sublayers.filter((s) => s.visible).join(',')
     return new TileLayerClass(
       this.props,
       this.getSubLayerProps({
-        id: HEATMAP_ID,
+        id: `${this.props.category}-${HEATMAP_ID}`,
         // tileSize: 512,
         colorDomain,
         colorRanges,
@@ -220,7 +225,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         onTileLoad: this._onTileLoad,
         getTileData: this._getTileData,
         updateTriggers: {
-          getTileData: [cacheKey],
+          getTileData: [cacheKey /*visibleSublayersIds*/],
         },
         onViewportLoad: this._onViewportLoad,
         renderSubLayers: (props: any) => {
@@ -237,7 +242,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 
   getLayerInstance() {
     return this.getSubLayers().find(
-      (l) => l.id === `${FourwingsHeatmapTileLayer.layerName}-${HEATMAP_ID}`
+      (l) => l.id === `${FourwingsHeatmapTileLayer.layerName}-${this.props.category}-${HEATMAP_ID}`
     ) as TileLayer
   }
 
@@ -260,5 +265,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       return cells
     }
     return []
+  }
+
+  getColorDomain = () => {
+    return this.state.colorDomain
   }
 }

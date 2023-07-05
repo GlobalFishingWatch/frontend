@@ -1,55 +1,11 @@
 import { useEffect, useMemo } from 'react'
-import { PickingInfo, LayerData, Layer } from '@deck.gl/core/typed'
 import { atom, useSetAtom, useAtomValue } from 'jotai'
 import { selectAtom } from 'jotai/utils'
 import { EventTypes } from '@globalfishingwatch/api-types'
-import { FourwingsDeckLayerGenerator } from '@globalfishingwatch/deck-layers'
-import { START_TIMESTAMP } from '../../loaders/constants'
-import { parseEvents } from '../../loaders/vessels/eventsLoader'
+import { FourwingsDeckLayerGenerator } from '../../layer-composer/types'
+import { sortFourwingsLayers } from '../../utils/sort'
+import { FourwingsDataviewCategory } from '../../layer-composer/types/fourwings'
 import { FourwingsLayer } from './FourwingsLayer'
-import { FourwingsSublayer } from './fourwings.types'
-
-export const FOURWINGS_SUBLAYERS: FourwingsSublayer[] = [
-  {
-    id: 'ais',
-    datasets: ['public-global-fishing-effort:v20201001'],
-    config: {
-      color: '#FF64CE',
-      colorRamp: 'magenta',
-      visible: true,
-    },
-  },
-  {
-    id: 'vms-brazil-and-panama',
-    datasets: [
-      'public-bra-onyxsat-fishing-effort:v20211126',
-      'public-panama-fishing-effort:v20211126',
-    ],
-    config: {
-      color: '#00EEFF',
-      colorRamp: 'sky',
-      visible: true,
-    },
-  },
-  {
-    id: 'vms-chile',
-    datasets: ['public-chile-fishing-effort:v20211126'],
-    config: {
-      color: '#A6FF59',
-      colorRamp: 'green',
-      visible: true,
-    },
-  },
-  {
-    id: 'vms-ecuador',
-    datasets: ['public-ecuador-fishing-effort:v20211126'],
-    config: {
-      color: '#FFAA0D',
-      colorRamp: 'orange',
-      visible: true,
-    },
-  },
-]
 
 const dateToMs = (date: string) => {
   return new Date(date).getTime()
@@ -58,13 +14,18 @@ const dateToMs = (date: string) => {
 interface FourwingsLayerState {
   id: string
   instance: FourwingsLayer
-  loadedLayers: string[]
+  loaded: boolean
 }
 
 export const fourwingsLayersAtom = atom<FourwingsLayerState[]>([])
 export const fourwingsLayersSelector = (layers: FourwingsLayerState[]) => layers
-export const fourwingsLayersInstancesSelector = atom((get) =>
-  get(fourwingsLayersAtom).map((l) => l.instance)
+
+export const fourwingsLayersSortedSelector = atom((get) =>
+  get(fourwingsLayersAtom).sort((a, b) => sortFourwingsLayers(a.instance, b.instance))
+)
+
+export const fourwingsLayersLoadedSelector = atom((get) =>
+  get(fourwingsLayersAtom).map((l) => ({ id: l.id, loaded: l.loaded }))
 )
 
 export const selectFourwingsLayersAtom = selectAtom(fourwingsLayersAtom, fourwingsLayersSelector)
@@ -77,23 +38,30 @@ interface globalConfig {
   highlightedTime?: { start: string; end: string }
   visibleEvents?: EventTypes[]
 }
+export const useFourwingsLayers = (id: FourwingsDataviewCategory) => {
+  const layers = useAtomValue(fourwingsLayersSortedSelector)
+  if (id) {
+    return layers.filter((l) => l.id === id)
+  }
+  return layers
+}
 
-export const useFourwingsLayers = (
-  fourwingsLayersGenerator: FourwingsDeckLayerGenerator[],
+export const useSetFourwingsLayers = (
+  fourwingsLayerGenerators: FourwingsDeckLayerGenerator[],
   globalConfig: globalConfig
 ) => {
   const { start, end } = globalConfig
 
   const setFourwingsLayers = useSetAtom(fourwingsLayersAtom)
-
+  const previousLayers = useAtomValue(fourwingsLayersAtom)
   const setFourwingsLoadedState = useSetAtom(
     atom(null, (get, set, id: FourwingsLayerState['id']) =>
       set(fourwingsLayersAtom, (prevVessels) => {
         return prevVessels.map((v) => {
-          if (id.includes(v.id)) {
+          if (v.id.includes(id)) {
             return {
               ...v,
-              loadedLayers: [...v.loadedLayers, id],
+              loaded: true,
             }
           }
           return v
@@ -102,47 +70,49 @@ export const useFourwingsLayers = (
     )
   )
 
-  const onDataLoad = (data: LayerData<any>, context: { propName: string; layer: Layer<any> }) => {
-    console.log(data, context)
-    // setFourwingsLoadedState(context.layer.id)
+  const onViewportLoad: any = (id: string) => {
+    setFourwingsLoadedState(id)
   }
 
   const startTime = useMemo(() => (start ? dateToMs(start) : undefined), [start])
-  console.log('🚀 ~ file: fourwings.hooks.ts:111 ~ start:', start)
-  console.log('🚀 ~ file: fourwings.hooks.ts:252 ~ startTime:', startTime)
   const endTime = useMemo(() => (end ? dateToMs(end) : undefined), [end])
-  console.log('🚀 ~ file: fourwings.hooks.ts:114 ~ end:', end)
-  console.log('🚀 ~ file: fourwings.hooks.ts:254 ~ endTime:', endTime)
 
   useEffect(() => {
-    fourwingsLayersGenerator.forEach(({ id, dataview }) => {
-      const instance = new FourwingsLayer({
-        minFrame: startTime,
-        maxFrame: endTime,
-        // mode: activityMode,
-        mode: 'heatmap',
-        debug: true,
-        sublayers: FOURWINGS_SUBLAYERS,
-        // onTileLoad: onTileLoad,
-        // onViewportLoad: onViewportLoad,
-        // onVesselHighlight: onVesselHighlight,
-        // onVesselClick: onVesselClick,
-        // resolution: fourwingsMapLayerResolution,
-        // hoveredFeatures: hoveredFeatures,
-        // clickedFeatures: clickedFeatures,
-      })
-
-      setFourwingsLayers((prevVessels) => {
-        const updatedVessels = prevVessels.filter((v) => v.id !== id)
-        updatedVessels.push({
-          id,
-          instance,
-          loadedLayers: [],
+    fourwingsLayerGenerators.forEach(({ id, sublayers }) => {
+      if (sublayers.some((l) => l.visible)) {
+        // const previousLayer = previousLayers.length && previousLayers.find((l) => l.id === id)
+        const instance = new FourwingsLayer({
+          minFrame: startTime,
+          maxFrame: endTime,
+          // mode: activityMode,
+          mode: 'heatmap',
+          debug: false,
+          sublayers,
+          category: id,
+          onViewportLoad,
+          // onVesselHighlight: onVesselHighlight,
+          // onVesselClick: onVesselClick,
+          // resolution: 'high',
+          // hoveredFeatures: hoveredFeatures,
+          // clickedFeatures: clickedFeatures,
         })
-        return updatedVessels
-      })
+        setFourwingsLayers((prevVessels) => {
+          const updatedVessels = prevVessels.filter((v) => v.id !== id)
+          updatedVessels.push({
+            id,
+            instance,
+            loaded: false,
+          })
+          return updatedVessels
+        })
+      } else {
+        // filterout the layers that are not visible
+        setFourwingsLayers((previousLayers) => previousLayers.filter((l) => l.id !== id))
+      }
     })
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [start, end, fourwingsLayersGenerator])
-  return useAtomValue(fourwingsLayersInstancesSelector)
+  }, [startTime, endTime, fourwingsLayerGenerators])
+  // TODO memoize this to avoid re-renders
+  return useAtomValue(fourwingsLayersSortedSelector).map((l) => l.instance)
 }

@@ -7,9 +7,8 @@ import {
   HighlighterCallbackFn,
   HighlighterCallbackFnArgs,
 } from '@globalfishingwatch/timebar'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectActiveActivityDataviewsByVisualisation } from 'features/dataviews/dataviews.selectors'
-import { useStackedActivity } from 'features/timebar/TimebarActivityGraph.hooks'
+import { useHeatmapActivityGraph } from 'features/timebar/TimebarActivityGraph.hooks'
 import { formatNumber } from 'utils/info'
 import { useMapStyle } from 'features/map/map-style.hooks'
 import { TimebarVisualisations } from 'types'
@@ -18,16 +17,14 @@ import styles from './Timebar.module.css'
 
 const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisualisations }) => {
   const activeDataviews = useSelector(selectActiveActivityDataviewsByVisualisation(visualisation))
+  const { loading, heatmapActivity } = useHeatmapActivityGraph()
 
-  const { loading, stackedActivity, error } = useStackedActivity(
-    activeDataviews as UrlDataviewInstance[]
-  )
   const style = useMapStyle()
   const mapLegends = useMapLegend(style, activeDataviews)
 
   const getActivityHighlighterLabel: HighlighterCallbackFn = useCallback(
     ({ chunk, value, item }: HighlighterCallbackFnArgs) => {
-      if (loading) return t('map.loading', 'Loading')
+      // if (loading) return t('map.loading', 'Loading')
       if (!value || !value.value) return ''
       const dataviewId = item?.props?.dataviewId
       const unit = mapLegends?.find((l) => l.id === getLegendId(dataviewId))?.unit || ''
@@ -44,26 +41,27 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
 
       return labels.join(' ')
     },
-    [loading, mapLegends, visualisation]
+    // [loading, mapLegends, visualisation]
+    [mapLegends, visualisation]
   )
 
-  if (error) {
-    return (
-      <div className={styles.error}>
-        {t(
-          'analysis.error',
-          'There was a problem loading the data, please try refreshing the page'
-        )}
-      </div>
-    )
-  }
-  if (!stackedActivity || !stackedActivity.length || !activeDataviews?.length) return null
+  // if (error) {
+  //   return (
+  //     <div className={styles.error}>
+  //       {t(
+  //         'analysis.error',
+  //         'There was a problem loading the data, please try refreshing the page'
+  //       )}
+  //     </div>
+  //   )
+  // }
+  if (!heatmapActivity || !heatmapActivity.length || !activeDataviews?.length) return null
 
   return (
     <div className={cx({ [styles.loading]: loading })}>
       <TimebarStackedActivity
         key="stackedActivity"
-        timeseries={stackedActivity}
+        timeseries={heatmapActivity}
         dataviews={activeDataviews}
         highlighterCallback={getActivityHighlighterLabel}
         highlighterIconCallback="heatmap"
