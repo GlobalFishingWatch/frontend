@@ -4,6 +4,7 @@ import { selectAtom } from 'jotai/utils'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { FourwingsDeckLayerGenerator } from '../../layer-composer/types'
 import { sortFourwingsLayers } from '../../utils/sort'
+import { FourwingsDataviewCategory } from '../../layer-composer/types/fourwings'
 import { FourwingsLayer } from './FourwingsLayer'
 
 const dateToMs = (date: string) => {
@@ -19,14 +20,8 @@ interface FourwingsLayerState {
 export const fourwingsLayersAtom = atom<FourwingsLayerState[]>([])
 export const fourwingsLayersSelector = (layers: FourwingsLayerState[]) => layers
 
-export const fourwingsLayersInstancesSelector = atom((get) =>
-  get(fourwingsLayersAtom)
-    .map((l) => l.instance)
-    .sort(sortFourwingsLayers)
-)
-
-const fourwingsActivityLayerSelector = atom((get) =>
-  get(fourwingsLayersAtom).find((l) => l.id.includes('activity'))
+export const fourwingsLayersSortedSelector = atom((get) =>
+  get(fourwingsLayersAtom).sort((a, b) => sortFourwingsLayers(a.instance, b.instance))
 )
 
 export const fourwingsLayersLoadedSelector = atom((get) =>
@@ -43,9 +38,13 @@ interface globalConfig {
   highlightedTime?: { start: string; end: string }
   visibleEvents?: EventTypes[]
 }
-export const useFourwingsLayers = () => useAtomValue(fourwingsLayersInstancesSelector)
-export const useFourwingsLayersLoaded = () => useAtomValue(fourwingsLayersLoadedSelector)
-export const useFourwingsActivityLayer = () => useAtomValue(fourwingsActivityLayerSelector)
+export const useFourwingsLayers = (id: FourwingsDataviewCategory) => {
+  const layers = useAtomValue(fourwingsLayersSortedSelector)
+  if (id) {
+    return layers.filter((l) => l.id === id)
+  }
+  return layers
+}
 
 export const useSetFourwingsLayers = (
   fourwingsLayerGenerators: FourwingsDeckLayerGenerator[],
@@ -114,5 +113,6 @@ export const useSetFourwingsLayers = (
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startTime, endTime, fourwingsLayerGenerators])
-  return useAtomValue(fourwingsLayersInstancesSelector)
+  // TODO memoize this to avoid re-renders
+  return useAtomValue(fourwingsLayersSortedSelector).map((l) => l.instance)
 }

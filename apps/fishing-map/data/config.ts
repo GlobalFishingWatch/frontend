@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
 import { DataviewCategory, ThinningConfig } from '@globalfishingwatch/api-types'
 import { ThinningLevels, THINNING_LEVELS } from '@globalfishingwatch/api-client'
+// import { FourwingsDataviewCategory } from '@globalfishingwatch/deck-layers'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import { getUTCDateTime } from 'utils/dates'
 
@@ -144,3 +145,10 @@ export const POPUP_CATEGORY_ORDER = [
 ]
 
 export const FIT_BOUNDS_REPORT_PADDING = 30
+
+// TODO import types from deck-layers library
+export const DECK_CATEGORY_BY_TIMEBAR_VISUALIZATION = {
+  [TimebarVisualisations.HeatmapActivity]: 'activity',
+  [TimebarVisualisations.HeatmapDetections]: 'detections',
+  [TimebarVisualisations.Environment]: 'environment',
+}
