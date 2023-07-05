@@ -9,5 +9,18 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
+  },
+  "peerDependencies": {
+    "@deck.gl/core": "^8.9.19",
+    "@deck.gl/extensions": "^8.9.19",
+    "@deck.gl/geo-layers": "^8.9.19",
+    "@deck.gl/layers": "^8.9.19",
+    "@deck.gl/mesh-layers": "^8.9.19",
+    "@deck.gl/react": "^8.9.19",
+    "@globalfishingwatch/api-types": "latest",
+    "@globalfishingwatch/dataviews-client": "latest",
+    "@globalfishingwatch/layer-composer": "latest",
+    "@globalfishingwatch/react-hooks": "latest",
+    "luxon": "^3.x"
   }
 }
