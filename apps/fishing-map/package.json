@@ -64,7 +64,7 @@
     "recoil": "0.7.7",
     "shpjs": "4.0.4",
     "simple-statistics": "^7.8.2",
-    "typescript": "5.0.4",
+    "typescript": "5.1.6",
     "web-vitals": "^3.1.1"
   },
   "devDependencies": {

@@ -34,7 +34,7 @@
     "recoil-sync": "^0.2.0",
     "recoil-sync-next": "^0.0.3",
     "transit-js": "^0.8.874",
-    "typescript": "5.0.4",
+    "typescript": "5.1.6",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
