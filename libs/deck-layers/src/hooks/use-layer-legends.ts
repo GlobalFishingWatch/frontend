@@ -39,6 +39,6 @@ export interface LayerMetadataLegendBivariate extends LayerMetadataLegend {
 export type LegendLayer = LayerMetadataLegend & UILayer
 export type LegendLayerBivariate = LayerMetadataLegendBivariate & UILayer
 
-export const useHeatmapLegends = (dataviews, hoveredEvent) => {
-  useMemo(() => {}, [dataviews, hoveredEvent])
-}
+// export const useHeatmapLegends = (dataviews, hoveredEvent) => {
+//   useMemo(() => {}, [dataviews, hoveredEvent])
+// }

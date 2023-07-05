@@ -1,6 +1,6 @@
 import { Interval } from '@globalfishingwatch/layer-composer'
 import { getChunkBuffer } from '../../layers/fourwings/fourwings.config'
-import { FourwingsSublayer } from '../../layers/fourwings/fourwings.types'
+import { FourwingsDeckSublayer } from '../../layers/fourwings/fourwings.types'
 import {
   CELL_NUM_INDEX,
   CELL_START_INDEX,
@@ -14,7 +14,7 @@ export type ParseFourwingsParams = {
   minFrame: number
   maxFrame: number
   interval: Interval
-  sublayers: FourwingsSublayer[]
+  sublayers: FourwingsDeckSublayer[]
 }
 
 const getDate = (day: any) => {

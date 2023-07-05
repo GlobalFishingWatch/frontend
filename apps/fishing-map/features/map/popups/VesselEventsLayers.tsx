@@ -54,8 +54,8 @@ function VesselEventsTooltipSection({
             )}
             {featureByType.map((feature, index) => {
               const { description } = getEventDescription({
-                start: feature.properties.start,
-                end: feature.properties.end,
+                start: feature.properties.start as any,
+                end: feature.properties.end as any,
                 type: feature.properties.type as EventTypes,
                 encounterVesselName: feature.properties.encounterVesselName,
               })

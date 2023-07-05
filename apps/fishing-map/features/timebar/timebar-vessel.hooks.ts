@@ -45,7 +45,7 @@ export const useTimebarVesselTracks = () => {
             getHighlighterIcon: 'vessel',
           }
         })
-        setVesselTracks(vesselTracks)
+        setVesselTracks(vesselTracks as any)
       }
     })
   }, [vessels])

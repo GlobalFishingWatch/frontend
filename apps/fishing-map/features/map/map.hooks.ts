@@ -21,6 +21,7 @@ import {
 import { DatasetSubCategory, DataviewCategory, Locale } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
+import { AnyDeckLayersGenerator } from '@globalfishingwatch/deck-layers'
 import { selectLocationType } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -92,12 +93,13 @@ export const useGeneratorsConnect = () => {
   const updatedGeneratorConfig = useMemo(() => {
     return generatorsConfig.map((generatorConfig, i) => {
       if (generatorConfig.type === GeneratorType.Polygons) {
+        // TODO fix this any
         return {
           ...generatorConfig,
-          opacity: sourceTilesLoaded[generatorConfig.id]?.loaded ? 1 : 0,
-        }
+          visible: sourceTilesLoaded[generatorConfig.id]?.loaded ? 1 : 0,
+        } as any
       }
-      return generatorConfig
+      return generatorConfig as AnyDeckLayersGenerator
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [generatorsConfig, sourceTilesLoaded])

@@ -6,7 +6,7 @@ import { TileCell } from '../../loaders/fourwings/fourwingsTileParser'
 import { getUTCDateTime } from '../../utils/dates'
 import { Chunk } from './fourwings.config'
 import { FourwingsLayerMode } from './FourwingsLayer'
-import { FourwingsSublayer } from './fourwings.types'
+import { FourwingsDeckSublayer } from './fourwings.types'
 
 export function asyncAwaitMS(millisec: any) {
   return new Promise((resolve) => {
@@ -56,7 +56,7 @@ type GetDataUrlByChunk = {
     id: string
   }
   chunk: Chunk
-  datasets: FourwingsSublayer['datasets']
+  datasets: FourwingsDeckSublayer['datasets']
 }
 
 const API_BASE_URL =
@@ -129,7 +129,7 @@ export const filterCellsByBounds = (cells: TileCell[], bounds: Bounds) => {
   })
 }
 
-export const aggregateCellTimeseries = (cells: TileCell[], sublayers: FourwingsSublayer[]) => {
+export const aggregateCellTimeseries = (cells: TileCell[], sublayers: FourwingsDeckSublayer[]) => {
   if (!cells) {
     return []
   }

@@ -8,9 +8,9 @@ export enum DeckLayersGeneratorType {
   Fourwings = 'FOURWINGS',
 }
 
-export { FourwingsDataviewCategory }
+export type { FourwingsDataviewCategory }
 
-export {
+export type {
   BasemapDeckLayerGenerator,
   ContextDeckLayerGenerator,
   VesselDeckLayersGenerator,

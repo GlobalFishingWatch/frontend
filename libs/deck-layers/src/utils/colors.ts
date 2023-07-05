@@ -25,6 +25,6 @@ function componentToHex(c: number) {
   return hex.length === 1 ? '0' + hex : hex
 }
 
-export const deckToHexColor = ([r, g, b]: Color) => {
+export const deckToHexColor = ([r, g, b]: any) => {
   return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b)
 }
