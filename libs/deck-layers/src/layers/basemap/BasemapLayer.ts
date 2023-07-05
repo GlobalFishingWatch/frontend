@@ -1,21 +1,24 @@
 import { BitmapLayer } from '@deck.gl/layers/typed'
-import { CompositeLayer, Layer } from '@deck.gl/core/typed'
-import { TileLayer } from '@deck.gl/geo-layers'
-import { MVTLayer, TileLayerProps, MVTLayerProps } from '@deck.gl/geo-layers/typed'
+import { CompositeLayer } from '@deck.gl/core/typed'
+import { TileLayer as TileLayerWrongTyping } from '@deck.gl/geo-layers'
+// import { TileLayer } from '@deck.gl/geo-layers/typed'
+import { MVTLayer, MVTLayerProps } from '@deck.gl/geo-layers/typed'
 import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
+
+const TileLayer = TileLayerWrongTyping as any
 
 export enum BasemapType {
   Satellite = 'satellite',
   Default = 'basemap_default',
   Labels = 'basemap_labels',
 }
-export type BasemapLayerOwnProps = { basemap: BasemapType }
-export type BaseMapLayerProps = TileLayerProps & MVTLayerProps & BasemapLayerOwnProps
+export type BasemapLayerOwnProps = { basemap: BasemapType; zIndex: number }
+export type BaseMapLayerProps = MVTLayerProps & BasemapLayerOwnProps
 export class BaseMap extends CompositeLayer<BaseMapLayerProps> {
   static layerName = 'ContextLayer'
   static defaultProps = {}
 
-  layers: Layer[] = []
+  layers: (typeof TileLayer | MVTLayer<BaseMapLayerProps>)[] = []
 
   _getBathimetryLayer() {
     return new TileLayer({
@@ -26,12 +29,12 @@ export class BaseMap extends CompositeLayer<BaseMapLayerProps> {
       onDataLoad: this.props.onDataLoad,
       zIndex: GROUP_ORDER.indexOf(Group.Basemap),
       tileSize: 256,
-      renderSubLayers: (props) => {
+      renderSubLayers: (props: any) => {
         const {
           bbox: { west, south, east, north },
-        } = props.tile
+        } = props.tile as any
         return new BitmapLayer(props, {
-          data: null,
+          data: undefined,
           image: props.data,
           bounds: [west, south, east, north],
         })
@@ -40,7 +43,7 @@ export class BaseMap extends CompositeLayer<BaseMapLayerProps> {
   }
 
   _getLandMassLayer() {
-    return new MVTLayer({
+    return new MVTLayer<BaseMapLayerProps>({
       id: 'basemap-landmass',
       minZoom: 0,
       maxZoom: 8,
@@ -60,12 +63,12 @@ export class BaseMap extends CompositeLayer<BaseMapLayerProps> {
       onDataLoad: this.props.onDataLoad,
       zIndex: GROUP_ORDER.indexOf(Group.Basemap),
       tileSize: 256,
-      renderSubLayers: (props) => {
+      renderSubLayers: (props: any) => {
         const {
           bbox: { west, south, east, north },
         } = props.tile
         return new BitmapLayer(props, {
-          data: null,
+          data: undefined,
           image: props.data,
           bounds: [west, south, east, north],
         })

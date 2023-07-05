@@ -1,11 +1,10 @@
 import { useEffect, useMemo } from 'react'
-import { Layer } from '@deck.gl/core/typed'
 import { atom, useSetAtom, useAtomValue } from 'jotai'
 import { selectAtom } from 'jotai/utils'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { VesselDeckLayersGenerator } from '@globalfishingwatch/deck-layers'
 import { hexToDeckColor } from '../../utils/colors'
-import { VesselLayer } from './VesselLayer'
+import { VesselLayer, VesselDataStatus } from './VesselLayer'
 
 const dateToMs = (date: string) => {
   return new Date(date).getTime()
@@ -14,7 +13,7 @@ const dateToMs = (date: string) => {
 interface VesselLayerState {
   id: string
   instance: VesselLayer
-  loadedLayers: string[]
+  dataStatus: VesselDataStatus[]
 }
 
 export const vesselLayersAtom = atom<VesselLayerState[]>([])
@@ -40,7 +39,8 @@ export type VesselDeckLayersParams = {
   highlightEventIds?: string[]
 }
 
-export const useVesselLayers = () => useAtomValue(vesselLayersInstancesSelector)
+export const useVesselLayers = () => useAtomValue(selectVesselsLayersAtom)
+export const useVesselLayerInstances = () => useAtomValue(vesselLayersInstancesSelector)
 export const useSetVesselLayers = (
   vesselLayersGenerator: VesselDeckLayersGenerator[],
   globalConfig: globalConfig,
@@ -53,24 +53,27 @@ export const useSetVesselLayers = (
   const vesselLayers = useAtomValue(selectVesselsLayersAtom)
 
   const setVesselLoadedState = useSetAtom(
-    atom(null, (get, set, id: VesselLayerState['id']) =>
-      set(vesselLayersAtom, (prevVessels) => {
-        return prevVessels.map((v) => {
-          if (id.includes(v.id)) {
-            return {
-              ...v,
-              loadedLayers: [...v.loadedLayers, id],
+    atom(
+      null,
+      (
+        get,
+        set,
+        { id, dataStatus }: { id: VesselLayerState['id']; dataStatus: VesselDataStatus[] }
+      ) =>
+        set(vesselLayersAtom, (prevVessels) => {
+          return prevVessels.map((v) => {
+            if (id.includes(v.id)) {
+              return {
+                ...v,
+                dataStatus,
+              }
             }
-          }
-          return v
+            return v
+          })
         })
-      })
     )
   )
 
-  const onDataLoad = (data: any, context: { propName: string; layer: Layer<any> }) => {
-    setVesselLoadedState(context.layer.id)
-  }
   const highlightStartTime = useMemo(
     () => highlightedTime && dateToMs(highlightedTime?.start),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -99,7 +102,7 @@ export const useSetVesselLayers = (
           startTime,
           color: hexToDeckColor(color),
           events,
-          onDataLoad,
+          onVesselDataLoad: (dataStatus) => setVesselLoadedState({ id, dataStatus }),
           // hoveredFeatures,
           // clickedFeatures,
           highlightEndTime,
@@ -111,7 +114,7 @@ export const useSetVesselLayers = (
         return {
           id,
           instance,
-          loadedLayers: vesselLayers.find((v: any) => v.id === id)?.loadedLayers || [],
+          dataStatus: vesselLayers.find((v: any) => v.id === id)?.dataStatus || [],
         }
       }
     )
@@ -120,4 +123,11 @@ export const useSetVesselLayers = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [start, end, highlightEndTime, highlightStartTime, vesselLayersGenerator])
   return useAtomValue(vesselLayersInstancesSelector)
+}
+
+export const useMapVesselLayer = (layerId: string) => {
+  const vesselLayers = useVesselLayers()
+  return useMemo(() => {
+    return vesselLayers.find((d) => d.id === layerId)
+  }, [layerId, vesselLayers])
 }

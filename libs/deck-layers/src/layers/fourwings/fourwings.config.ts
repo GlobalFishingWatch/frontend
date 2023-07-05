@@ -42,8 +42,8 @@ export const LIMITS_BY_INTERVAL: Record<
 export const getInterval = (start: number, end: number): Interval => {
   const duration = Duration.fromMillis(end - start)
   const validIntervals = Object.entries(LIMITS_BY_INTERVAL).flatMap(([interval, limits]) => {
-    if (!limits) return interval
-    return Math.round(duration.as(limits.unit)) <= limits.value ? interval : []
+    if (!limits) return interval as Interval
+    return Math.round(duration.as(limits.unit)) <= limits.value ? (interval as Interval) : []
   })
   return validIntervals[0]
 }
@@ -117,6 +117,9 @@ export const CHUNKS_BUFFER = 0
 
 export const getChunkBuffer = (interval: Interval) => {
   const { buffer, unit } = LIMITS_BY_INTERVAL[interval] || {}
+  if (!unit) {
+    throw new Error(`No buffer for interval: ${interval}`)
+  }
   return Duration.fromObject({ [unit]: buffer }).toMillis()
 }
 

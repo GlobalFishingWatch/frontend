@@ -36,7 +36,7 @@ export type _FourwingsPositionsTileLayerProps<DataT = any> = {
   onColorRampUpdate: (colorRamp: FourwingsColorRamp) => void
   onVesselHighlight?: (vesselId: string) => void
   onVesselClick?: (vesselId: string) => void
-  onViewportLoad?: (tiles) => void
+  onViewportLoad?: (tiles: any) => void
 }
 
 export type FourwingsPositionsTileLayerProps = _FourwingsPositionsTileLayerProps & TileLayerProps
@@ -92,12 +92,13 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       })
       return { colorDomain: steps, colorRange }
     }
+    return { colorDomain: [], colorRange: [] }
   }
 
   getFillColor(d: Feature): Color {
     const { highlightedVesselId } = this.state
     const { colorDomain, colorRange } = this.state.colorScale
-    const colorIndex = colorDomain.findIndex((domain, i) => {
+    const colorIndex = colorDomain.findIndex((domain: any, i: number) => {
       if (colorDomain[i + 1]) {
         return d.properties?.value > domain && d.properties?.value <= colorDomain[i + 1]
       }
@@ -105,7 +106,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     })
     const color = colorIndex >= 0 ? colorRange[colorIndex] : [0, 0, 0, 0]
     if (highlightedVesselId) {
-      if (d.properties.vesselId === highlightedVesselId) return color
+      if (d.properties?.vesselId === highlightedVesselId) return color
       else return [color[0], color[1], color[2], 0]
     }
     return color
@@ -114,7 +115,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   getHighlightColor(d: Feature): Color {
     const { highlightedVesselId } = this.state
     if (highlightedVesselId) {
-      if (d.properties.vesselId === highlightedVesselId) return [255, 255, 255, 255]
+      if (d.properties?.vesselId === highlightedVesselId) return [255, 255, 255, 255]
       else return [255, 255, 255, 0]
     }
     return [255, 255, 255, 120]
@@ -130,34 +131,34 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
 
   getLineColor(d: Feature): Color {
     const { highlightedVesselId } = this.state
-    return highlightedVesselId && d.properties.vesselId === highlightedVesselId
+    return highlightedVesselId && d.properties?.vesselId === highlightedVesselId
       ? [255, 255, 255, 255]
       : [0, 0, 0, 0]
   }
 
   getRadius(d: Feature): number {
     const { highlightedVesselId } = this.state
-    return highlightedVesselId && d.properties.vesselId === highlightedVesselId ? 5 : 3
+    return highlightedVesselId && d.properties?.vesselId === highlightedVesselId ? 5 : 3
   }
 
   getSize(d: Feature): number {
     const { highlightedVesselId } = this.state
-    return highlightedVesselId && d.properties.vesselId === highlightedVesselId ? 15 : 8
+    return highlightedVesselId && d.properties?.vesselId === highlightedVesselId ? 15 : 8
   }
 
   getVesselLabel = (d: Feature) => {
-    const label = d.properties.name || d.properties.vesselId
+    const label = d.properties?.name || d.properties?.vesselId
     return label.length <= MAX_LABEL_LENGTH ? label : `${label.slice(0, MAX_LABEL_LENGTH)}...`
   }
 
-  onViewportLoad = (tiles) => {
+  onViewportLoad = (tiles: any) => {
     const positions = orderBy(
-      tiles.flatMap((tile) => tile.dataInWGS84),
+      tiles.flatMap((tile: any) => tile.dataInWGS84),
       'properties.htime'
     ).filter(Boolean)
     const positionsByVessel = groupBy(positions, 'properties.vesselId')
-    const allPositions = []
-    const lastPositions = []
+    const allPositions: any[] = []
+    const lastPositions: any[] = []
     Object.keys(positionsByVessel)
       .filter((p) => p !== 'undefined')
       .forEach((vesselId) => {
@@ -180,10 +181,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
 
   updateState() {
     const clickedVesselId = this.props?.clickedFeatures.flatMap(
-      (f) => f.sourceLayer.id === 'FourwingsPositionsTileLayer' && f.object?.properties?.vesselId
+      (f) => f.sourceLayer?.id === 'FourwingsPositionsTileLayer' && f.object?.properties?.vesselId
     )
     const highlightedVesselId = this.props?.hoveredFeatures.flatMap(
-      (f) => f.sourceLayer.id === 'FourwingsPositionsTileLayer' && f.object?.properties?.vesselId
+      (f) => f.sourceLayer?.id === 'FourwingsPositionsTileLayer' && f.object?.properties?.vesselId
     )
     if (highlightedVesselId && highlightedVesselId[0]) {
       this.setState({
@@ -194,7 +195,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         highlightedVesselId: undefined,
       })
     }
-    if (clickedVesselId[0]) {
+    if (clickedVesselId[0] && this.props.onVesselClick) {
       this.props.onVesselClick(clickedVesselId[0])
     }
   }
@@ -242,10 +243,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         iconAtlas: '/vessel-sprite.png',
         iconMapping: ICON_MAPPING,
         getIcon: () => 'rect',
-        getPosition: (d) => d.geometry.coordinates,
-        getColor: (d) => this.getFillColor(d),
-        getSize: (d) => this.getSize(d),
-        getAngle: (d) => d.properties.bearing,
+        getPosition: (d: any) => d.geometry.coordinates,
+        getColor: (d: any) => this.getFillColor(d),
+        getSize: (d: any) => this.getSize(d),
+        getAngle: (d: any) => d.properties.bearing,
         pickable: true,
         getPickingInfo: this.getPickingInfo,
         updateTriggers: {
@@ -253,7 +254,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           getSize: [highlightedVesselId],
         },
       }),
-      new IconLayer(this.props, {
+      new IconLayer(this.props as any, {
         id: 'lastPositions',
         data: lastPositions,
         iconAtlas: '/vessel-sprite.png',
@@ -274,9 +275,9 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         iconMapping: ICON_MAPPING,
         getIcon: () => 'vessel',
         getSize: 19,
-        getPosition: (d) => d.geometry.coordinates,
-        getAngle: (d) => d.properties.bearing,
-        getColor: (d) => this.getFillColor(d),
+        getPosition: (d: any) => d.geometry.coordinates,
+        getAngle: (d: any) => d.properties.bearing,
+        getColor: (d: any) => this.getFillColor(d),
         pickable: true,
         getPickingInfo: this.getPickingInfo,
         updateTriggers: {
@@ -324,7 +325,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     const positions = this.getPositionsData()
     const viewportBounds = this.context.viewport.getBounds()
     const viewportPolygon = bboxPolygon(viewportBounds)
-    const positionsInViewport = positions.filter((position) =>
+    const positionsInViewport = positions.filter((position: any) =>
       booleanPointInPolygon(position, viewportPolygon)
     )
     return positionsInViewport

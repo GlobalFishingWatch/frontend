@@ -20,7 +20,6 @@ import {
   selectActiveDetectionsDataviews,
   selectActiveNonTrackEnvironmentalDataviews,
 } from 'features/dataviews/dataviews.selectors'
-import store from 'store'
 import { updateUrlTimerange } from 'routes/routes.actions'
 import { selectIsReportLocation, selectUrlTimeRange } from 'routes/routes.selectors'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
@@ -29,6 +28,7 @@ import useMapInstance from 'features/map/map-context.hooks'
 import { BIG_QUERY_PREFIX } from 'features/dataviews/dataviews.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useFitAreaInViewport } from 'features/reports/reports.hooks'
+import store from '../../store'
 import {
   Range,
   changeSettings,

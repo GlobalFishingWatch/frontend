@@ -192,7 +192,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
             const vesselId = infoDatasetConfig?.params.find((p) => p.id === 'vesselId')
               ?.value as string
             const trackDatasetConfig = getVesselDataviewInstanceDatasetConfig(vesselId, {
-              trackDatasetId,
+              track: trackDatasetId,
             })
             return {
               id: dataviewInstance.id,

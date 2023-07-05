@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 import cx from 'classnames'
-import { event as uaEvent } from 'react-ga'
 import { IconButton } from '@globalfishingwatch/ui-components'
+import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import ActivityEvent from 'features/profile/components/activity/ActivityEvent'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { Voyage } from 'types/voyage'
@@ -28,8 +28,8 @@ export function RiskIndicator({
   const hasEvents = events && events.length > 0
   const onToggle = useCallback(() => {
     if (section) {
-      uaEvent({
-        category: 'Vessel Detail RISK SUMMARY Tab',
+      trackEvent({
+        category: TrackCategory.VesselDetailRiskSummaryTab,
         action: `View list of events or details of a risk indicator`,
         label: JSON.stringify({ section }),
       })

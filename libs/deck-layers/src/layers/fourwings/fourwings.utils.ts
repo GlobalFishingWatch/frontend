@@ -1,15 +1,14 @@
 import { stringify } from 'qs'
-import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
 import { TileIndex } from '@deck.gl/geo-layers/typed/tile-layer/types'
 import { DateTime } from 'luxon'
 import { Feature } from 'geojson'
-import { TimebarRange } from 'features/timebar/timebar.hooks'
-import { getUTCDateTime } from 'utils/dates'
+import { TileCell } from '../../loaders/fourwings/fourwingsTileParser'
+import { getUTCDateTime } from '../../utils/dates'
 import { Chunk } from './fourwings.config'
 import { FourwingsLayerMode } from './FourwingsLayer'
 import { FourwingsSublayer } from './fourwings.types'
 
-export function asyncAwaitMS(millisec) {
+export function asyncAwaitMS(millisec: any) {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve('')
@@ -41,7 +40,7 @@ export function getURLFromTemplate(
   let url = template
   for (const key of Object.keys(index)) {
     const regex = new RegExp(`{${key}}`, 'g')
-    url = url.replace(regex, String(index[key]))
+    url = url.replace(regex, String((index as any)[key]))
   }
 
   // Back-compatible support for {-y}
@@ -98,7 +97,10 @@ export const getDateRangeParam = (minFrame: number, maxFrame: number) => {
 
 export const ACTIVITY_SWITCH_ZOOM_LEVEL = 9
 
-export function getFourwingsMode(zoom: number, timerange: TimebarRange): FourwingsLayerMode {
+export function getFourwingsMode(
+  zoom: number,
+  timerange: { start: string; end: string }
+): FourwingsLayerMode {
   const duration = getUTCDateTime(timerange?.end).diff(getUTCDateTime(timerange?.start), 'days')
   return zoom >= ACTIVITY_SWITCH_ZOOM_LEVEL && duration.days < 30 ? 'positions' : 'heatmap'
 }
@@ -135,7 +137,7 @@ export const aggregateCellTimeseries = (cells: TileCell[], sublayers: FourwingsS
   // [{index:number, timeseries: {id: {frame:value, ...}  }}]
   // What we want for the timebar is
   // [{date: date, 0:number, 1:number ...}, ...]
-  const timeseries = cells.reduce((acc, { timeseries }) => {
+  const timeseries = cells.reduce((acc: any, { timeseries }) => {
     if (!timeseries) {
       return acc
     }
@@ -143,7 +145,7 @@ export const aggregateCellTimeseries = (cells: TileCell[], sublayers: FourwingsS
       const sublayerTimeseries = timeseries[sublayer.id]
       if (sublayerTimeseries) {
         const frames = Object.keys(sublayerTimeseries)
-        frames.forEach((frame) => {
+        frames.forEach((frame: any) => {
           if (!acc[frame]) {
             // We populate the frame with 0s for all the sublayers
             acc[frame] = Object.fromEntries(sublayers.map((key, index) => [index, 0]))
@@ -158,7 +160,7 @@ export const aggregateCellTimeseries = (cells: TileCell[], sublayers: FourwingsS
   return Object.entries(timeseries)
     .map(([frame, values]) => ({
       date: parseInt(frame),
-      ...values,
+      ...(values as any),
     }))
     .sort((a, b) => a.date - b.date)
 }
@@ -172,7 +174,7 @@ export const aggregatePositionsTimeseries = (positions: Feature[]) => {
     return []
   }
   const timeseries = positions.reduce((acc, position) => {
-    const { htime, value } = position.properties
+    const { htime, value } = position.properties as any
     const activityStart = getMillisFromHtime(htime)
     if (acc[activityStart]) {
       acc[activityStart] += value

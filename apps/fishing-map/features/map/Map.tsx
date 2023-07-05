@@ -100,6 +100,7 @@ const layerComposer = new LayerComposer({
 const mapStyles = {
   width: '100%',
   height: '100%',
+  position: 'relative',
 }
 
 const MapWrapper = () => {

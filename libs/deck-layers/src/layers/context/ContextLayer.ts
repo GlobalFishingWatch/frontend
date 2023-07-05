@@ -2,7 +2,8 @@ import { CompositeLayer, Color, PickingInfo, Layer } from '@deck.gl/core/typed'
 import { MVTLayer, MVTLayerProps, TileLayerProps } from '@deck.gl/geo-layers/typed'
 import { Feature } from 'geojson'
 import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
-import { getPickedFeatureToHighlight, hexToRgb } from '../../utils/layers'
+import { getPickedFeatureToHighlight } from '../../utils/layers'
+import { hexToRgb } from '../../utils/colors'
 import { API_PATH } from './context.config'
 
 export type ContextLayerProps = TileLayerProps &
@@ -56,7 +57,7 @@ export class ContextLayer extends CompositeLayer<ContextLayerProps> {
       data: `${API_PATH}/${this.props.datasetId}/user-context-layer-v1/{z}/{x}/{y}`,
       zIndex: GROUP_ORDER.indexOf(Group.OutlinePolygonsHighlighted),
       getFillColor: [0, 0, 0, 0],
-      getLineColor: (d) => this.getLineColor(d),
+      getLineColor: (d: any) => this.getLineColor(d),
       lineWidthMinPixels: 1,
       binary: true,
       uniqueIdProperty: 'gfw_id',
@@ -73,7 +74,7 @@ export class ContextLayer extends CompositeLayer<ContextLayerProps> {
       data: `${API_PATH}/${this.props.datasetId}/user-context-layer-v1/{z}/{x}/{y}`,
       zIndex: GROUP_ORDER.indexOf(Group.OutlinePolygonsFill),
       getLineColor: [255, 255, 255, 0],
-      getFillColor: (d) => this.getFillColor(d),
+      getFillColor: (d: any) => this.getFillColor(d),
       lineWidthMinPixels: 1,
       binary: true,
       uniqueIdProperty: 'gfw_id',

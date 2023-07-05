@@ -30,7 +30,6 @@ export type _VesselEventsLayerProps<DataT = any> = {
   getFilterValue: AccessorFunction<DataT, number>
   getPickingInfo?: AccessorFunction<DataT, string>
   onEventsDataLoad?: AccessorFunction<DataT, void>
-  getEventVisibility?: AccessorFunction<DataT, number>
 }
 
 export type VesselEventsLayerProps<DataT = any> = _VesselEventsLayerProps<DataT> &
@@ -55,7 +54,6 @@ const defaultProps: DefaultProps<VesselEventsLayerProps> = {
   getPickingInfo: { type: 'accessor', value: ({ info }) => info },
   zIndex: { type: 'accessor', value: GROUP_ORDER.indexOf(Group.Point) },
   visibleEvents: { type: 'accessor', value: [] },
-  getEventVisibility: { type: 'accessor', value: () => 1 },
 }
 
 export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends ScatterplotLayer<
@@ -74,10 +72,6 @@ export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends Scatterplot
           size: 1,
           accessor: 'getShape',
         },
-        instanceEventsVisibility: {
-          size: 1,
-          accessor: 'getEventVisibility',
-        },
       })
     }
   }
@@ -88,27 +82,21 @@ export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends Scatterplot
       inject: {
         'vs:#decl': `
           attribute float instanceShapes;
-          attribute float instanceEventsVisibility;
           attribute float instanceId;
           varying float vShape;
-          varying float vVisibility;
         `,
         'vs:#main-end': `
           vShape = instanceShapes;
-          vVisibility = instanceEventsVisibility;
         `,
         'fs:#decl': `
           uniform mat3 hueTransform;
           varying float vShape;
-          varying float vVisibility;
           const int SHAPE_SQUARE = 0;
           const int SHAPE_DIAMOND = 1;
         `,
         'fs:DECKGL_FILTER_COLOR': `
           vec2 uv = abs(geometry.uv);
           int shape = int(vShape);
-          int visible = int(vVisibility);
-          if (visible == 0) discard;
           if (shape == SHAPE_SQUARE) {
             if (uv.x > 0.7 || uv.y > 0.7) discard;
           } else if (shape == SHAPE_DIAMOND) {

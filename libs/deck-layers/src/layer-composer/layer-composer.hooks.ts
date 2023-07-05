@@ -10,8 +10,10 @@ import {
   FourwingsDeckLayerGenerator,
   useSetVesselLayers,
   VesselDeckLayersParams,
+  AnyDeckLayersGenerator,
+  ContextDeckLayerGenerator,
 } from '@globalfishingwatch/deck-layers'
-import { AnyGeneratorConfig, GlobalGeneratorConfig } from '@globalfishingwatch/layer-composer'
+import { GlobalGeneratorConfig } from '@globalfishingwatch/layer-composer'
 
 export type DeckLayerComposerParams = VesselDeckLayersParams
 export function useDeckLayerComposer({
@@ -21,12 +23,12 @@ export function useDeckLayerComposer({
   params,
 }: {
   generatorsDictionary: DeckLayersGeneratorDictionary
-  generatorsConfig: AnyGeneratorConfig[]
+  generatorsConfig: AnyDeckLayersGenerator[]
   globalGeneratorConfig: GlobalGeneratorConfig
   params: DeckLayerComposerParams
 }) {
   const basemapGenerator = generatorsConfig.find(
-    (generator) => generator.type === 'BASEMAP'
+    (generator: any) => generator.type === 'BASEMAP'
   ) as BasemapDeckLayerGenerator
   const basemapLayer = useBasemapLayer({
     visible: basemapGenerator?.visible ?? true,
@@ -34,15 +36,15 @@ export function useDeckLayerComposer({
   })
 
   const contextLayersGenerators = generatorsConfig.filter(
-    (generator) => generator.type === 'CONTEXT'
-  )
+    (generator: any) => generator.type === 'CONTEXT'
+  ) as ContextDeckLayerGenerator[]
 
   const contextLayer = useContextsLayer({
     visible: contextLayersGenerators.length ? true : false,
     id: contextLayersGenerators.length ? contextLayersGenerators[0].id : '',
     color: contextLayersGenerators.length ? contextLayersGenerators[0].color : 'red',
     datasetId: contextLayersGenerators.length ? contextLayersGenerators[0].datasetId : 'eez',
-  })
+  } as any)
 
   const vesselLayers = useSetVesselLayers(
     generatorsDictionary[DeckLayersGeneratorType.Vessels] as VesselDeckLayersGenerator[],

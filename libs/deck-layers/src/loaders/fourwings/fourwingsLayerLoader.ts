@@ -12,7 +12,7 @@ import {
   FEATURE_ROW_INDEX,
 } from '../constants'
 
-function readData(_, data, pbf) {
+function readData(_: any, data: any, pbf: any) {
   data.push(pbf.readPackedVarint())
 }
 
@@ -96,7 +96,7 @@ const getCellTimeseries = (intArrays: FourwingsRawData[], params: ParseFourwings
   return Object.keys(cells).map((cellId) => {
     return {
       index: parseInt(cellId),
-      timeseries: cells[cellId],
+      timeseries: cells[cellId as any],
     }
   })
 }

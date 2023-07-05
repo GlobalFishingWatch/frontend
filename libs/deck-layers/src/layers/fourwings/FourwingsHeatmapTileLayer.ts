@@ -133,10 +133,10 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     }
   }
 
-  _fetchTileData = async (tile: TileLoadProps) => {
+  _fetchTileData: any = async (tile: TileLoadProps) => {
     const { minFrame, maxFrame, sublayers } = this.props
     const datasets = sublayers.map((sublayer) => sublayer.datasets.join(','))
-    const promises = this._getChunks(minFrame, maxFrame).map(async (chunk) => {
+    const getChunkData: any = async (chunk: any) => {
       // if (cache[chunk]) {
       //   return Promise.resolve(cache[chunk])
       // }
@@ -150,12 +150,13 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       // return parseFourWings(await response.arrayBuffer(), {
       //   sublayers: this.props.sublayers,
       // })
-    })
+    }
+    const promises = this._getChunks(minFrame, maxFrame).map(getChunkData)
     if (tile.signal?.aborted) {
       throw new Error('tile aborted')
     }
     // TODO decide what to do when a chunk load fails
-    const data: ArrayBuffer[] = (await Promise.allSettled(promises)).flatMap((d) => {
+    const data: any[] = (await Promise.allSettled(promises)).flatMap((d) => {
       return d.status === 'fulfilled' && d.value !== undefined ? d.value : []
     })
     if (!data.length) {
@@ -245,7 +246,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     if (layer) {
       const zoom = Math.round(this.context.viewport.zoom)
       const offset = this.props.resolution === 'high' ? 1 : 0
-      return layer.getSubLayers().flatMap((l: FourwingsHeatmapLayer) => {
+      return layer.getSubLayers().flatMap((l: any) => {
         return l.props.tile.zoom === zoom + offset ? (l.getData() as TileCell[]) : []
       })
     }

@@ -1,5 +1,9 @@
-import { AccessorFunction, DefaultProps } from '@deck.gl/core'
-import { GetPickingInfoParams, PickingInfo } from '@deck.gl/core/typed'
+import {
+  AccessorFunction,
+  DefaultProps,
+  GetPickingInfoParams,
+  PickingInfo,
+} from '@deck.gl/core/typed'
 import { _GeoCellLayer, GeoBoundingBox, _GeoCellLayerProps } from '@deck.gl/geo-layers/typed'
 import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
 import {
@@ -57,7 +61,7 @@ export default class FourwingsHeatmapCellLayer<DataT = any, ExtraProps = {}> ext
       _normalize: false,
       positionFormat: 'XY',
       getPolygon: (x: DataT, objectInfo) => {
-        const cellIndex = getIndex(x, objectInfo)
+        const cellIndex: any = getIndex(x, objectInfo)
         const uniqueId = generateUniqueId(tile.index.x, tile.index.y, cellIndex)
         const params: GetCellCoordinatesParams = {
           id: uniqueId,

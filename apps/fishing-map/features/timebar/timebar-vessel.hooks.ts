@@ -21,26 +21,26 @@ export const useTimebarVesselTracks = () => {
   useEffect(() => {
     requestAnimationFrame(() => {
       if (vessels?.length) {
-        const vesselTracks = vessels.flatMap((vessel) => {
-          if (!vessel.props.visible) {
+        const vesselTracks = vessels.flatMap(({ instance }) => {
+          if (!instance.props.visible) {
             return []
           }
-          const segments = vessel.getVesselTrackSegments()
+          const segments = instance.getVesselTrackSegments()
           const chunks = segments?.map((t) => {
             const start = t[0]?.timestamp
             const end = t[t.length - 1]?.timestamp
             return {
               start,
               end,
-              props: { color: vessel.getVesselColor() },
+              props: { color: instance.getVesselColor() },
               values: t,
             }
           })
           return {
             status: ResourceStatus.Finished,
             chunks,
-            color: vessel.getVesselColor(),
-            defaultLabel: vessel.getVesselName() || '',
+            color: instance.getVesselColor(),
+            defaultLabel: instance.getVesselName() || '',
             getHighlighterLabel: getUserTrackHighlighterLabel,
             getHighlighterIcon: 'vessel',
           }
@@ -73,16 +73,16 @@ export const useTimebarVesselEvents = () => {
   useEffect(() => {
     requestAnimationFrame(() => {
       if (vessels.length) {
-        const vesselEvents: TimebarChartData<any> = vessels.flatMap((vessel) => {
-          if (!vessel.props.visible) {
+        const vesselEvents: TimebarChartData<any> = vessels.flatMap(({ instance, dataStatus }) => {
+          if (!instance.props.visible) {
             return []
           }
-          const chunks = vessel.getVesselEventsData(vessel.props.visibleEvents) as any
+          const chunks = instance.getVesselEventsData(instance.props.visibleEvents) as any
           return {
-            color: vessel.getVesselColor(),
+            color: instance.getVesselColor(),
             chunks,
-            status: ResourceStatus.Finished,
-            defaultLabel: vessel.getVesselName(),
+            status: dataStatus.find((s) => s.type === 'track')?.status,
+            defaultLabel: instance.getVesselName(),
             getHighlighterLabel: getTrackEventHighlighterLabel,
             getHighlighterIcon: 'vessel',
           }

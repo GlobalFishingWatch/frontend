@@ -17,7 +17,7 @@ export type ParseFourwingsParams = {
   sublayers: FourwingsSublayer[]
 }
 
-const getDate = (day) => {
+const getDate = (day: any) => {
   return day * 1000 * 60 * 60 * 24
 }
 
@@ -56,7 +56,7 @@ const getCellTimeseries = (params: ParseFourwingsParams): Cell[] => {
             if (v > 0) {
               const date = getDate(Math.ceil(i / sublayerCount) + startFrame)
               if (date >= minFrame - bufferMs && date <= maxFrame + bufferMs) {
-                acc[i % sublayerCount][date] = v / 100
+                ;(acc as any)[i % sublayerCount][date] = v / 100
               }
             }
             return acc
@@ -87,7 +87,7 @@ const getCellTimeseries = (params: ParseFourwingsParams): Cell[] => {
   return Object.keys(cells).map((cellId) => {
     return {
       index: parseInt(cellId),
-      timeseries: cells[cellId],
+      timeseries: cells[cellId as any],
     }
   })
 }

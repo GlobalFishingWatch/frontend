@@ -82,6 +82,7 @@
     "category": "Category",
     "comingSoon": "Coming soon",
     "confirm": "Confirm",
+    "confirmLeave": "Are you sure you want to leave without saving your workspace?",
     "context_area_other": "Reference layers",
     "continue": "Continue",
     "copiedToClipboard": "The link to share this workspace has been copied to your clipboard.",
@@ -332,6 +333,8 @@
     "unknown": "Unknown event"
   },
   "feedback": {
+    "logAnIssue": "Log an issue",
+    "requestAnImprovement": "Request an improvement",
     "descriptionPlaceholder": "Please be as specific as possible.",
     "email": "E-mail address",
     "emailDisclaimer": "We will only email you in relation to this feedback",

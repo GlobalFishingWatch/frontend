@@ -50,7 +50,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   }
 
   getData() {
-    return this.layers && this.layers[0]?.getData()
+    return this.layers?.[0].getData()
   }
 
   getMode() {
@@ -62,10 +62,10 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   }
 
   getColorDomain() {
-    return this.layers && this.layers[0]?.getColorDomain()
+    return this.layers?.[0]?.getColorDomain()
   }
 
   getTimeseries() {
-    return this.layers && this.layers[0]?.getTimeseries()
+    return this.layers?.[0]?.getTimeseries()
   }
 }

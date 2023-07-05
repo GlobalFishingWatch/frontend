@@ -1839,6 +1839,29 @@
       "event_mean_position": "crwdns30115:0crwdne30115:0"
     }
   },
+  "public-global-other-vessels": {
+    "name": "crwdns31005:0crwdne31005:0",
+    "description": "crwdns31007:0crwdne31007:0",
+    "schema": {
+      "id": "crwdns31009:0crwdne31009:0",
+      "imo": "crwdns31011:0crwdne31011:0",
+      "flag": "crwdns31013:0crwdne31013:0",
+      "mmsi": "crwdns31015:0crwdne31015:0",
+      "source": "crwdns31017:0crwdne31017:0",
+      "dataset": "crwdns31019:0crwdne31019:0",
+      "callsign": "crwdns31021:0crwdne31021:0",
+      "geartype": {
+        "keyword": "crwdns31023:0crwdne31023:0",
+        "enum": {}
+      },
+      "msgCount": "crwdns31025:0crwdne31025:0",
+      "posCount": "crwdns31027:0crwdne31027:0",
+      "shipname": "crwdns31029:0crwdne31029:0",
+      "normalized_shipname": "crwdns31031:0crwdne31031:0",
+      "lastTransmissionDate": "crwdns31033:0crwdne31033:0",
+      "firstTransmissionDate": "crwdns31035:0crwdne31035:0"
+    }
+  },
   "public-global-presence": {
     "name": "crwdns25804:0crwdne25804:0",
     "description": "crwdns26360:0crwdne26360:0",
