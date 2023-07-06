@@ -31,11 +31,11 @@
     "react-redux": "^8.0.5",
     "react-virtualized-auto-sizer": "^1.0.20",
     "react-window": "^1.8.8",
-    "recoil": "0.7.6",
+    "recoil": "0.7.7",
     "redux": "^4.2.1",
     "redux-first-router": "^2.1.5",
     "redux-first-router-link": "^2.1.1",
-    "typescript": "5.0.4",
+    "typescript": "5.1.6",
     "uuid": "9.0.0"
   },
   "devDependencies": {
@@ -46,8 +46,6 @@
     "@types/luxon": "^2.4.0",
     "@types/node": "18.11.19",
     "@types/qs": "6.9.7",
-    "@types/react": "^18.2.7",
-    "@types/react-dom": "^18.2.4",
     "@types/react-virtualized-auto-sizer": "^1.0.1",
     "@types/react-window": "^1.8.5",
     "@types/redux-first-router": "2.1.8",

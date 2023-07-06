@@ -11,8 +11,6 @@ export const WORKSPACE_ENV =
   (process.env.NEXT_PUBLIC_WORKSPACE_ENV as WorkspaceEnv) ||
   (process.env.NODE_ENV as WorkspaceEnv) ||
   'production'
-export const IS_PRODUCTION =
-  process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'production' || process.env.NODE_ENV === 'production'
 
 export const FLY_EFFECTS = {
   noFly: 0, // just change the center
@@ -118,6 +116,8 @@ export const DOWNLOAD_ACTIVITY_PERMISSION = {
 
 export const GOOGLE_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID || 'G-R3PWRQW70G'
 export const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID || 'GTM-KK5ZFST'
+export const GOOGLE_ANALYTICS_DEBUG_MODE =
+  (process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_DEBUG_MODE || 'false').toLowerCase() === 'true'
 
 export const FEEDBACK_EN = process.env.NEXT_PUBLIC_FEEDBACK_FORM_EN
 export const FEEDBACK_FR = process.env.NEXT_PUBLIC_FEEDBACK_FORM_FR

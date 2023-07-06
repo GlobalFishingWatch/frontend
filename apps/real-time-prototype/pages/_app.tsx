@@ -79,13 +79,15 @@ function CustomApp({ Component, pageProps }: AppProps) {
             showToggle
             isOpen={sidebarOpen}
             onToggle={onToggle}
-            aside={<Component {...pageProps} lastUpdate={lastUpdate} />}
+            aside={login.logged ? <Component {...pageProps} lastUpdate={lastUpdate} /> : null}
             main={
-              <div className={styles.main}>
-                <div className={styles.mapContainer}>
-                  <Map lastUpdate={lastUpdate} />
+              login.logged && (
+                <div className={styles.main}>
+                  <div className={styles.mapContainer}>
+                    <Map lastUpdate={lastUpdate} />
+                  </div>
                 </div>
-              </div>
+              )
             }
             asideWidth={asideWidth}
             showMainLabel="Map"

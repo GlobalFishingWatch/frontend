@@ -34,11 +34,11 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-fps": "^1.0.6",
-    "recoil": "0.7.6",
+    "recoil": "0.7.7",
     "recoil-sync": "^0.2.0",
     "recoil-sync-next": "^0.0.3",
     "simple-statistics": "^7.8.2",
-    "typescript": "5.0.4"
+    "typescript": "5.1.6"
   },
   "devDependencies": {
     "@globalfishingwatch/linting": "2.0.2",
@@ -48,8 +48,6 @@
     "@types/luxon": "^2.4.0",
     "@types/node": "18.11.19",
     "@types/qs": "6.9.7",
-    "@types/react": "^18.2.7",
-    "@types/react-dom": "^18.2.4",
     "depcheck": "1.4.3",
     "prettier": "2.8.3",
     "react-test-renderer": "18.2.0",
