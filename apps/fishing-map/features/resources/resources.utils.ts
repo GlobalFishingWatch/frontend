@@ -1,21 +1,18 @@
 import { FeatureCollection } from 'geojson'
-import { maxBy, minBy } from 'lodash'
 import {
-  Dataset,
   DataviewDatasetConfigParam,
   EndpointId,
   ThinningConfig,
 } from '@globalfishingwatch/api-types'
-import { getTracksChunkSetId, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
 import { hasDatasetConfigVesselData } from 'features/datasets/datasets.utils'
 import { TimebarGraphs } from 'types'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 
-type ThinningConfigParam = { zoom: number; config: ThinningConfig }
+type ThinningConfigParam = { config: ThinningConfig }
 export const trackDatasetConfigsCallback = (
   thinningConfig: ThinningConfigParam | null,
-  chunks: { start: string; end: string }[] | null,
   timebarGraph
 ) => {
   return ([info, track, ...events], dataview: UrlDataviewInstance) => {
@@ -40,77 +37,13 @@ export const trackDatasetConfigsCallback = (
         } else {
           trackGraph.query = [...graphQuery, fieldsQuery]
         }
-        const chunksMinRange = chunks ? minBy(chunks, 'start')?.start : null
-        const chunksMaxRange = chunks ? maxBy(chunks, 'end')?.end : null
-        if (chunksMinRange && chunksMaxRange) {
-          trackGraph.query = [
-            ...trackGraph.query,
-            {
-              id: 'start-date',
-              value: chunksMinRange,
-            },
-            {
-              id: 'end-date',
-              value: chunksMaxRange,
-            },
-          ]
-        }
       }
 
       const trackWithThinning = {
         ...track,
         query: [...(track.query || []), ...thinningQuery],
-        metadata: {
-          zoom: thinningConfig?.zoom || 12,
-        },
       }
 
-      // Generate one infoconfig per chunk (if specified)
-      // TODO move this in dataviews-client/get-resources, since merging back tracks together is done by the generic slice anyways
-      let allTracks = [trackWithThinning]
-
-      if (chunks) {
-        const chunkSetId = getTracksChunkSetId(trackWithThinning)
-        const dataset = dataview.datasets?.find(
-          (d) => d.id === trackWithThinning.datasetId
-        ) as Dataset
-        // Workaround to avoid showing tracks outside the dataset bounds as the AIS data is changing at the end of 2022
-        const chunksWithDatasetBounds = chunks.flatMap((chunk) => {
-          if (dataset?.endDate && chunk.start >= dataset?.endDate) {
-            return []
-          }
-          return {
-            start:
-              dataset?.startDate && chunk.start <= dataset?.startDate
-                ? dataset?.startDate
-                : chunk.start,
-            end: dataset?.endDate && chunk.end >= dataset?.endDate ? dataset?.endDate : chunk.end,
-          }
-        })
-        allTracks = chunksWithDatasetBounds.map((chunk) => {
-          const trackChunk = {
-            ...trackWithThinning,
-            query: [
-              ...(trackWithThinning.query || []),
-              {
-                id: 'start-date',
-                value: chunk.start,
-              },
-              {
-                id: 'end-date',
-                value: chunk.end,
-              },
-            ],
-            metadata: {
-              ...(trackWithThinning.metadata || {}),
-              chunkSetId,
-              chunkSetNum: chunks.length,
-            },
-          }
-
-          return trackChunk
-        })
-      }
       const allEvents = events.map((event) => ({
         ...event,
         query: [
@@ -126,7 +59,7 @@ export const trackDatasetConfigsCallback = (
       const vesselData = hasDatasetConfigVesselData(info)
 
       return [
-        ...allTracks,
+        trackWithThinning,
         ...allEvents,
         ...(vesselData ? [info] : []),
         ...(trackGraph ? [trackGraph] : []),

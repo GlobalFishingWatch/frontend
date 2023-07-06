@@ -36,10 +36,7 @@ import {
 import { AsyncReducerStatus, AsyncError, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { createDeepEqualSelector } from 'utils/selectors'
-import {
-  selectTrackThinningConfig,
-  selectTrackChunksConfig,
-} from 'features/resources/resources.slice'
+import { selectTrackThinningConfig } from 'features/resources/resources.slice'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { MARINE_MANAGER_DATAVIEWS } from 'data/default-workspaces/marine-manager'
 import {
@@ -266,12 +263,11 @@ export const selectDataviewsResources = createSelector(
   [
     selectAllDataviewInstancesResolved,
     selectTrackThinningConfig,
-    selectTrackChunksConfig,
     selectWorkspaceStateProperty('timebarGraph'),
   ],
-  (dataviewInstances, thinningConfig, chunks, timebarGraph) => {
+  (dataviewInstances, thinningConfig, timebarGraph) => {
     const callbacks: GetDatasetConfigsCallbacks = {
-      tracks: trackDatasetConfigsCallback(thinningConfig, chunks, timebarGraph),
+      tracks: trackDatasetConfigsCallback(thinningConfig, timebarGraph),
     }
     return getResources(dataviewInstances || [], callbacks)
   }
