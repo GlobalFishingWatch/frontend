@@ -44,10 +44,12 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   onSublayerLoad: LayerProps['onDataLoad'] = (data, context) => {
+    // TODO handle when no data
     const layer = context.layer as Layer<{ type: VesselDataType }>
     this.updateDataStatus(layer.props.type, ResourceStatus.Finished)
   }
 
+  // TODO reset when loader fails
   onSublayerError = (dataType: VesselDataStatus['type'], error: any) => {
     console.warn(`Error loading ${dataType} in ${this.props.id} layer`, error)
     this.updateDataStatus(dataType, ResourceStatus.Error)
@@ -58,13 +60,15 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       this.getSubLayerProps({
         id: TRACK_LAYER_TYPE,
         visible: this.props.visible,
+        // TODO reset data when url changes
+        // TODO should we pass the url and load data when no visible?
         data: this.props.trackUrl,
         type: TRACK_LAYER_TYPE,
         loaders: [parquetLoader],
         widthUnits: 'pixels',
         onDataLoad: this.onSublayerLoad,
         // TODO debug when data loading throws an error this is not triggered
-        onError: (error: any) => this.updateDataStatus(TRACK_LAYER_TYPE, error),
+        onError: (error: any) => this.onSublayerError(TRACK_LAYER_TYPE, error),
         widthScale: 1,
         wrapLongitude: true,
         jointRounded: true,
