@@ -10,7 +10,7 @@ const dateToMs = (date: string) => {
   return new Date(date).getTime()
 }
 
-interface VesselLayerState {
+export type VesselLayerState = {
   id: string
   instance: VesselLayer
   dataStatus: VesselDataStatus[]
