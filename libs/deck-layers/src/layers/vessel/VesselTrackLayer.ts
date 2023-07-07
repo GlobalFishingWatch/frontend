@@ -181,23 +181,24 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
       return []
     }
     const size = data.attributes.positions!?.size
-    const segments = segmentsIndex.map((segment, i) => {
+    const segments = segmentsIndex.map((segment, i, segments) => {
       const initialPoint = {
         longitude: positions[segment],
         latitude: positions[segment + 1],
         timestamp: timestamps[segment / size] * TIMESTAMP_MULTIPLIER,
       }
+      const nextSegmentIndex = segments[i + 1]
       const lastPoint =
-        i < segmentsIndex.length - 1
+        i === segmentsIndex.length - 1
           ? {
-              longitude: positions[segment + size],
-              latitude: positions[segment + size - 1],
-              timestamp: timestamps[segment + size - 1] * TIMESTAMP_MULTIPLIER,
+              longitude: positions[positions.length - size],
+              latitude: positions[positions.length - size + 1],
+              timestamp: timestamps[timestamps.length - 1] * TIMESTAMP_MULTIPLIER,
             }
           : {
-              longitude: positions[positions.length - size],
-              latitude: positions[positions.length - 1],
-              timestamp: timestamps[timestamps.length - 1] * TIMESTAMP_MULTIPLIER,
+              longitude: positions[nextSegmentIndex],
+              latitude: positions[nextSegmentIndex + 1],
+              timestamp: timestamps[nextSegmentIndex / size - 1] * TIMESTAMP_MULTIPLIER,
             }
       return [initialPoint, lastPoint]
     })
