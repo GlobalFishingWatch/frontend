@@ -88,7 +88,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         this.getSubLayerProps({
           id: chunkId,
           visible: this.props.visible,
-          data: this.props.visible ? trackUrl.toString() : '',
+          data: trackUrl.toString(),
           type: TRACK_LAYER_TYPE,
           loaders: [parquetLoader],
           _pathType: 'open',
@@ -117,12 +117,12 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       return []
     }
     // return one layer with all events if we are consuming the data object from app resources
-    return this.props.events?.flatMap(({ url, type, data }) => {
+    return this.props.events?.flatMap(({ url, type }) => {
       const visible = visibleEvents?.includes(type)
       return new VesselEventsLayer<VesselDeckLayersEventData[]>(
         this.getSubLayerProps({
           id: type,
-          data: visible ? url || data : '',
+          data: url,
           visible,
           type,
           onDataChange: this.oSublayerDataChange,
