@@ -32,7 +32,7 @@ interface globalConfig {
   highlightedTime?: { start: string; end: string }
   visibleEvents?: EventTypes[]
 }
-export const useFourwingsLayers = (id: FourwingsDataviewCategory) => {
+export const useFourwingsLayers = (id?: FourwingsDataviewCategory) => {
   const layers = useAtomValue(fourwingsLayersSortedSelector)
   if (id) {
     return layers.filter((l) => l.id === id)

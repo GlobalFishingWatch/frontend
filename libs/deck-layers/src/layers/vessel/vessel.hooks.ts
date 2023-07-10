@@ -69,6 +69,7 @@ export const useSetVesselLayers = (
             if (id.includes(v.id)) {
               return {
                 ...v,
+                loaded: dataStatus.every((d) => d.status === 'finished'),
                 dataStatus,
               }
             }
@@ -118,6 +119,7 @@ export const useSetVesselLayers = (
         return {
           id,
           layerInstance,
+          loaded: false,
           dataStatus: vesselLayers.find((v: any) => v.id === id)?.dataStatus || [],
         }
       }

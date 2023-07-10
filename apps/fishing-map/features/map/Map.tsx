@@ -2,7 +2,7 @@ import { useCallback, useState, useEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { Map, MapboxStyle } from 'react-map-gl'
 import { DeckGL, DeckGLRef } from '@deck.gl/react/typed'
-import { LayerList, MapView } from '@deck.gl/core/typed'
+import { LayersList, MapView } from '@deck.gl/core/typed'
 import dynamic from 'next/dynamic'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import maplibregl from '@globalfishingwatch/maplibre-gl'
@@ -50,7 +50,7 @@ import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { selectHighlightedTime } from 'features/timebar/timebar.slice'
 import { selectMapTimeseries } from 'features/reports/reports-timeseries.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { useMapDeckLayers } from 'features/map/map-layers.hooks'
+import { useMapDeckLayers, useMapLayersLoaded } from 'features/map/map-layers.hooks'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import useRulers from './rulers/rulers.hooks'
@@ -132,7 +132,7 @@ const MapWrapper = () => {
     layerComposer
   )
 
-  const layers: LayerList = useMapDeckLayers()
+  const layers: LayersList = useMapDeckLayers()
   const allSourcesLoaded = useAllMapSourceTilesLoaded()
 
   const { clickedEvent, dispatchClickedEvent, cancelPendingInteractionRequests } =
@@ -228,7 +228,8 @@ const MapWrapper = () => {
   const mapLegends = useMapLegend(style, dataviews, hoveredEvent)
   const portalledLegend = !showTimeComparison
 
-  const mapLoaded = useMapLoaded()
+  // const mapLoaded = useMapLoaded()
+  const mapLoaded = useMapLayersLoaded()
   const tilesClusterLoaded = useMapClusterTilesLoaded()
 
   const getCursor = useCallback(() => {
