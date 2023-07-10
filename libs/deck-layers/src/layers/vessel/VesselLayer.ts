@@ -54,30 +54,37 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   _getVesselTrackLayer() {
-    return new VesselTrackLayer<any, { type: VesselDataType }>(
-      this.getSubLayerProps({
-        id: TRACK_LAYER_TYPE,
-        visible: this.props.visible,
-        data: this.props.trackUrl,
-        type: TRACK_LAYER_TYPE,
-        loaders: [parquetLoader],
-        widthUnits: 'pixels',
-        onDataLoad: this.onSublayerLoad,
-        // TODO debug when data loading throws an error this is not triggered
-        onError: (error: any) => this.updateDataStatus(TRACK_LAYER_TYPE, error),
-        widthScale: 1,
-        wrapLongitude: true,
-        jointRounded: true,
-        capRounded: true,
-        highlightStartTime: this.props.highlightStartTime,
-        highlightEndTime: this.props.highlightEndTime,
-        startTime: this.props.startTime,
-        endTime: this.props.endTime,
-        _pathType: 'open',
-        getColor: this.props.color,
-        getWidth: 1,
-      })
-    )
+    const { visible, trackUrl, startTime, highlightStartTime, endTime, highlightEndTime, color } =
+      this.props
+    if (!visible) {
+      return []
+    }
+    return [
+      new VesselTrackLayer<any, { type: VesselDataType }>(
+        this.getSubLayerProps({
+          id: TRACK_LAYER_TYPE,
+          visible,
+          data: trackUrl,
+          type: TRACK_LAYER_TYPE,
+          loaders: [parquetLoader],
+          widthUnits: 'pixels',
+          onDataLoad: this.onSublayerLoad,
+          // TODO debug when data loading throws an error this is not triggered
+          onError: (error: any) => this.updateDataStatus(TRACK_LAYER_TYPE, error),
+          widthScale: 1,
+          wrapLongitude: true,
+          jointRounded: true,
+          capRounded: true,
+          highlightStartTime,
+          highlightEndTime,
+          startTime,
+          endTime,
+          _pathType: 'open',
+          getColor: color,
+          getWidth: 1,
+        })
+      ),
+    ]
   }
 
   _getVesselEventsLayer(): VesselEventsLayer[] {
@@ -120,7 +127,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   renderLayers(): Layer<{}> | LayersList {
-    this.layers = [this._getVesselTrackLayer(), ...this._getVesselEventsLayer()]
+    this.layers = [...this._getVesselTrackLayer(), ...this._getVesselEventsLayer()]
     if (!this.dataStatus.length) {
       this.dataStatus = this.layers.map((l) => ({
         type: l.props.type,
