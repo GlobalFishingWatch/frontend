@@ -24,7 +24,6 @@ export const useAnalytics = (
     debugMode: GOOGLE_ANALYTICS_DEBUG_MODE,
     googleMeasurementId: GOOGLE_MEASUREMENT_ID,
     googleTagManagerId: GOOGLE_TAG_MANAGER_ID,
-    gtagUrl: 'https://www.googletagmanager.com/gtm.js',
     isLoading,
     logged,
     user,
