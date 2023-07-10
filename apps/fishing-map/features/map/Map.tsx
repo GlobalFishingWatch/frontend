@@ -2,7 +2,7 @@ import { useCallback, useState, useEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { Map, MapboxStyle } from 'react-map-gl'
 import { DeckGL, DeckGLRef } from '@deck.gl/react/typed'
-import { MapView } from '@deck.gl/core/typed'
+import { LayerList, MapView } from '@deck.gl/core/typed'
 import dynamic from 'next/dynamic'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import maplibregl from '@globalfishingwatch/maplibre-gl'
@@ -132,7 +132,7 @@ const MapWrapper = () => {
     layerComposer
   )
 
-  const layers = useMapDeckLayers()
+  const layers: LayerList = useMapDeckLayers()
   const allSourcesLoaded = useAllMapSourceTilesLoaded()
 
   const { clickedEvent, dispatchClickedEvent, cancelPendingInteractionRequests } =
@@ -303,10 +303,16 @@ const MapWrapper = () => {
         views={mapView}
         layers={layers}
         style={mapStyles}
-        // This avoids performing the default picking
-        // since we are handling it through pickMultipleObjects
-        // discussion for reference https://github.com/visgl/deck.gl/discussions/5793
-        layerFilter={({ renderPass }) => renderPass !== 'picking:hover'}
+        layerFilter={({ renderPass, layer }) => {
+          // This avoids performing the default picking
+          // since we are handling it through pickMultipleObjects
+          // discussion for reference https://github.com/visgl/deck.gl/discussions/5793
+          if (renderPass === 'picking:hover') {
+            // if (!loadedLayers.includes(layer.id) || renderPass === 'picking:hover') {
+            return false
+          }
+          return true
+        }}
         initialViewState={{
           longitude: -73.3073372718909,
           latitude: -42.29868545284379,

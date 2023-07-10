@@ -1,4 +1,3 @@
-import { minBy, maxBy } from 'lodash'
 import { useEffect, useState } from 'react'
 import { ResourceStatus } from '@globalfishingwatch/api-types'
 import { useVesselLayers } from '@globalfishingwatch/deck-layers'
@@ -21,26 +20,26 @@ export const useTimebarVesselTracks = () => {
   useEffect(() => {
     requestAnimationFrame(() => {
       if (vessels?.length) {
-        const vesselTracks = vessels.flatMap(({ instance }) => {
-          if (!instance.props.visible) {
+        const vesselTracks = vessels.flatMap(({ layerInstance }) => {
+          if (!layerInstance.props.visible) {
             return []
           }
-          const segments = instance.getVesselTrackSegments()
+          const segments = layerInstance.getVesselTrackSegments()
           const chunks = segments?.map((t) => {
             const start = t[0]?.timestamp
             const end = t[t.length - 1]?.timestamp
             return {
               start,
               end,
-              props: { color: instance.getVesselColor() },
+              props: { color: layerInstance.getVesselColor() },
               values: t,
             }
           })
           return {
             status: ResourceStatus.Finished,
             chunks,
-            color: instance.getVesselColor(),
-            defaultLabel: instance.getVesselName() || '',
+            color: layerInstance.getVesselColor(),
+            defaultLabel: layerInstance.getVesselName() || '',
             getHighlighterLabel: getUserTrackHighlighterLabel,
             getHighlighterIcon: 'vessel',
           }
@@ -73,20 +72,24 @@ export const useTimebarVesselEvents = () => {
   useEffect(() => {
     requestAnimationFrame(() => {
       if (vessels.length) {
-        const vesselEvents: TimebarChartData<any> = vessels.flatMap(({ instance, dataStatus }) => {
-          if (!instance.props.visible) {
-            return []
+        const vesselEvents: TimebarChartData<any> = vessels.flatMap(
+          ({ layerInstance, dataStatus }) => {
+            if (!layerInstance.props.visible) {
+              return []
+            }
+            const chunks = layerInstance.getVesselEventsData(
+              layerInstance.props.visibleEvents
+            ) as any
+            return {
+              color: layerInstance.getVesselColor(),
+              chunks,
+              status: dataStatus.find((s) => s.type === 'track')?.status,
+              defaultLabel: layerInstance.getVesselName(),
+              getHighlighterLabel: getTrackEventHighlighterLabel,
+              getHighlighterIcon: 'vessel',
+            }
           }
-          const chunks = instance.getVesselEventsData(instance.props.visibleEvents) as any
-          return {
-            color: instance.getVesselColor(),
-            chunks,
-            status: dataStatus.find((s) => s.type === 'track')?.status,
-            defaultLabel: instance.getVesselName(),
-            getHighlighterLabel: getTrackEventHighlighterLabel,
-            getHighlighterIcon: 'vessel',
-          }
-        })
+        )
         setVesselEvents(vesselEvents)
       }
     })

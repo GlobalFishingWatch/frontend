@@ -10,7 +10,7 @@ export const useHeatmapActivityGraph = () => {
   const fourwingsCategory = DECK_CATEGORY_BY_TIMEBAR_VISUALIZATION[timebarVisualisation]
   const fourwingsActivityLayer = useFourwingsLayers(fourwingsCategory)
   const loading = fourwingsActivityLayer?.some((layer) => !layer.loaded)
-  const cellsData: TileCell[] = fourwingsActivityLayer?.[0]?.instance?.getData()
+  const cellsData: TileCell[] = fourwingsActivityLayer?.[0]?.layerInstance?.getData()
 
   const heatmapActivity = cellsData?.length ? getGraphFromGridCellsData(cellsData) || [] : []
   return { loading, heatmapActivity }
