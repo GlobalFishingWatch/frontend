@@ -3,10 +3,9 @@ import {
   trackEvent as trackEventBase,
   useAnalytics as useAnalyticsBase,
 } from '@globalfishingwatch/react-hooks'
-import { selectUserData } from 'features/user/user.slice'
-import { GOOGLE_TAG_MANAGER_ID, GOOGLE_MEASUREMENT_ID } from 'data/config'
+import { GOOGLE_MEASUREMENT_ID, GOOGLE_TAG_MANAGER_ID } from 'data/config'
+import { isUserLogged, selectUserData } from 'features/user/user.slice'
 import { selectLocationCategory } from 'routes/routes.selectors'
-import { isUserLogged } from 'features/user/user.selectors'
 
 export const GOOGLE_ANALYTICS_DEBUG_MODE =
   (process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_TEST_MODE || 'false').toLowerCase() === 'true'
