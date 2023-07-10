@@ -10,12 +10,14 @@ import { useTracksLayer, useTracksSublayers } from 'layers/tracks/tracks.hooks'
 import { BitmapLayer } from '@deck.gl/layers/typed'
 import { TileLayer } from '@deck.gl/geo-layers/typed'
 import uniqBy from 'lodash/uniqBy'
+import { DateTime } from 'luxon'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { MiniGlobe, MiniglobeBounds, Tooltip } from '@globalfishingwatch/ui-components'
 import { BasemapType } from '@globalfishingwatch/layer-composer'
 import { useURLViewport, useViewport } from 'features/map/map-viewport.hooks'
 import { hoveredFeaturesAtom } from 'features/map/map-picking.hooks'
 import { getTimeAgo } from 'utils/dates'
+import { getCoordinatesLabel } from 'utils/coordinates'
 import styles from './map.module.css'
 
 const API_GATEWAY = 'https://gateway.api.dev.globalfishingwatch.org'
@@ -45,6 +47,7 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
   const [bounds, setBounds] = useState<MiniglobeBounds>()
   const [currentBasemap, setCurrentBasemap] = useState<BasemapType>(BasemapType.Satellite)
   const [labelsShown, setLabelsShown] = useState<boolean>(true)
+  const [cursorPosition, setCursorPosition] = useState<number[] | undefined>()
 
   const layers = useMemo(() => {
     const satellite =
@@ -119,10 +122,12 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
 
   const onHover = useCallback(
     (info: PickingInfo) => {
+      console.log('info:', info)
       const features = deckRef?.current?.pickMultipleObjects({
         x: info.x,
         y: info.y,
       })
+      setCursorPosition(info.coordinate)
       if (!hoveredFeatures.length && !features.length) return
       const uniqFeatures = uniqBy(features, 'value.object.properties.mmsi')
       setHoveredFeatures(uniqFeatures)
@@ -144,12 +149,17 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
   }
 
   const InfoTooltip = ({ features }) => {
+    console.log('features:', features)
     const vessels = features
       .filter((f) => f.object?.properties?.mmsi)
       .sort((a, b) => b.object?.properties?.timestamp - a.object?.properties?.timestamp)
     const count = features[0]?.object?.properties?.count
+    const points = features
+      .filter((f) => f.object?.timestamp)
+      .sort((a, b) => b.object?.timestamp - a.object?.timestamp)
+    console.log('points:', points)
     const mapWidth = window.innerWidth - 320
-    if (vessels.length > 0 || count) {
+    if (vessels.length > 0 || points.length > 0 || count) {
       return (
         <div
           style={{
@@ -190,13 +200,29 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
             <div className={styles.vesselRow}>... + {vessels.length - 3} more</div>
           )}
           {count && `${count / 100} ${count / 100 === 1 ? 'vessel' : 'vessels'}`}
+          {points.length > 0 && (
+            <div>
+              <p>
+                <div className={styles.dot} style={{ color: points[0].sourceLayer.props.color }} />
+                {points[0].sourceLayer.id}
+              </p>
+              <p>{getCoordinatesLabel(points[0].object.coordinates)}</p>
+              <p>
+                {`${DateTime.fromMillis(points[0].object.timestamp, { zone: 'utc' }).toLocaleString(
+                  DateTime.DATETIME_FULL
+                )} (${getTimeAgo(
+                  DateTime.fromMillis(points[0].object.timestamp, { zone: 'utc' })
+                )})`}
+              </p>
+            </div>
+          )}
         </div>
       )
     }
   }
 
   const getCursor = ({ isDragging }) => {
-    if (hoveredFeatures.length && hoveredFeatures[0].object.properties.mmsi) return 'pointer'
+    if (hoveredFeatures.length && hoveredFeatures[0].object.properties?.mmsi) return 'pointer'
     return isDragging ? 'grabbing' : 'grab'
   }
 
@@ -261,6 +287,7 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
           {labelsShown ? 'Hide labels' : 'Show labels'}
         </button>
       </div>
+      <div className={styles.info}>{cursorPosition && getCoordinatesLabel(cursorPosition)}</div>
     </Fragment>
   )
 }

@@ -20,7 +20,8 @@ function VesselsSection({ lastUpdate }) {
         let maxX = -180
         let minY = 90
         let maxY = -90
-        sublayer.path.forEach(([x, y]) => {
+        sublayer.data[0].forEach(({ coordinates }) => {
+          const [x, y] = coordinates
           if (x > maxX) maxX = x
           if (x < minX) minX = x
           if (y > maxY) maxY = y
@@ -82,7 +83,7 @@ function VesselsSection({ lastUpdate }) {
         <label>Tracks (transmission in last 72 hours)</label>
         {sublayers?.length > 0 ? (
           sublayers.map((sublayer) => {
-            const { id, active, path, color } = sublayer
+            const { id, active, data, color } = sublayer
 
             return (
               <div key={id} className={styles.sublayer}>
@@ -97,13 +98,13 @@ function VesselsSection({ lastUpdate }) {
                 <div className={styles.sublayerTitleRow}>
                   <h3 className={styles.sublayerTitle}>
                     {id}
-                    {path ? (
-                      <span className={styles.secondary}>({path.length})</span>
+                    {data?.[0].length > 1 ? (
+                      <span className={styles.secondary}>({data[0].length})</span>
                     ) : (
                       <Spinner size="tiny" />
                     )}
                   </h3>
-                  {active && path && (
+                  {active && data?.[0].length > 1 && (
                     <IconButton
                       size="small"
                       icon="target"

@@ -8,7 +8,10 @@ export type TrackSublayer = {
   id: string
   active: boolean
   color: string
-  path?: [number, number][]
+  data?: {
+    coordinates: [number, number]
+    timestamp: number
+  }[][]
 }
 
 type TracksAtom = {
@@ -43,10 +46,10 @@ export function useTracksLayer({ token, lastUpdate }) {
   }, [setAtomProperty])
 
   const onSublayerLoad = useCallback(
-    (id: string, path: any[]) => {
+    (id: string, data: any[]) => {
       setAtomProperty({
         sublayers: atom.sublayers.map((sublayer) => {
-          if (sublayer.id === id) return { ...sublayer, path }
+          if (sublayer.id === id) return { ...sublayer, data }
           return sublayer
         }),
       })
