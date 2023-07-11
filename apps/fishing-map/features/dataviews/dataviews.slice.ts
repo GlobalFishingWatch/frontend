@@ -160,20 +160,22 @@ const { slice: dataviewsSlice, entityAdapter } = createAsyncSlice<DataviewsState
       entityAdapter.addOne(state, action.payload)
     },
   },
+  selectId: (dataview) => dataview.slug,
 })
 
 export const { addDataviewEntity } = dataviewsSlice.actions
-export const { selectAll, selectById, selectIds } = entityAdapter.getSelectors<DataviewsSliceState>(
-  (state) => state.dataviews
+export const { selectAll, selectById, selectIds } = entityAdapter.getSelectors(
+  (state: DataviewsSliceState) => state.dataviews
 )
 
 export function selectAllDataviews(state: DataviewsSliceState) {
   return selectAll(state)
 }
 
-export const selectDataviewById = memoize((id: number) =>
-  createSelector([(state: DataviewsSliceState) => state], (state) => selectById(state, id))
-)
+export const selectDataviewBySlug = (id: string) =>
+  createSelector([(state: DataviewsSliceState) => state], (state) => {
+    return selectById(state, id)
+  })
 
 export const selectDataviewsStatus = (state: DataviewsSliceState) => state.dataviews.status
 
