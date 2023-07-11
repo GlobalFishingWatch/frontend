@@ -30,6 +30,9 @@
   height: 4rem;
   display: flex;
   align-items: center;
+}
+
+.sublayer:not(:last-child) {
   border-bottom: var(--border);
 }
 

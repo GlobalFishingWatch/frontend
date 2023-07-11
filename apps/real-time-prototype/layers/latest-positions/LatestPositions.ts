@@ -11,6 +11,7 @@ import {
 } from '@globalfishingwatch/layer-composer'
 import { API_BASE, BASE_PATH } from 'data/config'
 import { GFWLayerProps } from 'features/map/Map'
+import { GFWAPI } from '../../../../libs/api-client/src/api-client'
 
 const ICON_MAPPING = {
   vessel: { x: 0, y: 0, width: 22, height: 40, mask: true },
@@ -106,6 +107,7 @@ export class LatestPositions extends CompositeLayer<LatestPositionsLayerProps> {
       new MVTLayer({
         id: 'latest-positions-heatmap',
         data: `${API_BASE}4wings/tile-realtime/heatmap/{z}/{x}/{y}?start-date=${this.props.lastUpdate}`,
+        fetchFunc: GFWAPI.fetch,
         loadOptions: this.loadOptions,
         maxZoom: SWITCH_ZOOM,
         binary: false,
@@ -120,6 +122,7 @@ export class LatestPositions extends CompositeLayer<LatestPositionsLayerProps> {
       new MVTLayer({
         id: 'latest-positions-points',
         data: `${API_BASE}4wings/tile-realtime/position/{z}/{x}/{y}?start-date=${this.props.lastUpdate}`,
+        fetchFunc: GFWAPI.fetch,
         loadOptions: this.loadOptions,
         minZoom: SWITCH_ZOOM,
         maxZoom: 10,

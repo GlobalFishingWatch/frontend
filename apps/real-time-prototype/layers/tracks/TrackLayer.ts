@@ -6,6 +6,7 @@ import { ScatterplotLayerProps } from '@deck.gl/layers/typed'
 import { RGBAColor } from '@deck.gl/core'
 import { TrackPoint } from 'layers/tracks/tracks.hooks'
 import { hexToComponents } from '@globalfishingwatch/layer-composer'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { API_BASE } from 'data/config'
 import { GFWLayerProps } from 'features/map/Map'
 import { trackLoader } from './track.loader'
@@ -57,6 +58,7 @@ export class TrackLayer extends CompositeLayer<TrackLayerProps> {
       new TripsLayer({
         id: `track-layer-${this.props.id}`,
         data: `${API_BASE}/realtime-tracks/${this.props.id}?start-date=${this.props.lastUpdate}&format=points`,
+        fetchFunc: GFWAPI.fetch,
         loadOptions: {
           fetch: {
             method: 'GET',
