@@ -36,7 +36,7 @@ function VesselsSection({ lastUpdate }) {
             [minX, minY],
             [maxX, maxY],
           ],
-          { padding: 40 }
+          { padding: 40, maxZoom: 20 }
         )
         setMapCoordinates({ latitude, longitude, zoom })
       }
@@ -98,13 +98,13 @@ function VesselsSection({ lastUpdate }) {
                 <div className={styles.sublayerTitleRow}>
                   <h3 className={styles.sublayerTitle}>
                     {id}
-                    {data?.[0].length > 1 ? (
+                    {data?.[0].length > 0 ? (
                       <span className={styles.secondary}>({data[0].length})</span>
                     ) : (
                       <Spinner size="tiny" />
                     )}
                   </h3>
-                  {active && data?.[0].length > 1 && (
+                  {active && data?.[0].length > 0 && (
                     <IconButton
                       size="small"
                       icon="target"

@@ -10,13 +10,12 @@ import { useTracksLayer, useTracksSublayers } from 'layers/tracks/tracks.hooks'
 import { BitmapLayer } from '@deck.gl/layers/typed'
 import { TileLayer } from '@deck.gl/geo-layers/typed'
 import uniqBy from 'lodash/uniqBy'
-import { DateTime } from 'luxon'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { MiniGlobe, MiniglobeBounds, Tooltip } from '@globalfishingwatch/ui-components'
 import { BasemapType } from '@globalfishingwatch/layer-composer'
 import { useURLViewport, useViewport } from 'features/map/map-viewport.hooks'
 import { hoveredFeaturesAtom } from 'features/map/map-picking.hooks'
-import { getTimeAgo } from 'utils/dates'
+import { getDateLabel } from 'utils/dates'
 import { getCoordinatesLabel } from 'utils/coordinates'
 import styles from './map.module.css'
 
@@ -28,9 +27,10 @@ const mapView = new MapView({ repeat: true })
 export type GFWLayerProps = {
   token: string
   lastUpdate: string
+  showLatestPositions: boolean
 }
 
-const MapWrapper = ({ lastUpdate }): React.ReactElement => {
+const MapWrapper = ({ lastUpdate, showLatestPositions }): React.ReactElement => {
   useURLViewport()
   const { viewState, onViewportStateChange } = useViewport()
   const deckRef = useRef<DeckGLRef>(null)
@@ -42,6 +42,7 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
     token: GFWAPI.getToken(),
     lastUpdate,
     vessels: sublayers,
+    showLatestPositions,
   })
   const [hoveredFeatures, setHoveredFeatures] = useAtom(hoveredFeaturesAtom)
   const [bounds, setBounds] = useState<MiniglobeBounds>()
@@ -105,6 +106,7 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
           },
         })
       : []
+
     return [basemapLayer, satellite, contextLayer, tracksLayer, latestPositionsLayer, labels]
   }, [basemapLayer, contextLayer, currentBasemap, labelsShown, latestPositionsLayer, tracksLayer])
 
@@ -115,21 +117,24 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
         y: info.y,
       })
       if (!features.length || !features[0].object.properties.mmsi) return
-      addTrackSublayer(features[0].object.properties.mmsi)
+      features.forEach((feature) => {
+        if (feature.object.properties.mmsi) {
+          addTrackSublayer(feature.object.properties.mmsi)
+        }
+      })
     },
     [addTrackSublayer]
   )
 
   const onHover = useCallback(
     (info: PickingInfo) => {
-      console.log('info:', info)
       const features = deckRef?.current?.pickMultipleObjects({
         x: info.x,
         y: info.y,
       })
       setCursorPosition(info.coordinate)
       if (!hoveredFeatures.length && !features.length) return
-      const uniqFeatures = uniqBy(features, 'value.object.properties.mmsi')
+      const uniqFeatures = uniqBy(features, 'object.properties.mmsi')
       setHoveredFeatures(uniqFeatures)
     },
     [setHoveredFeatures, hoveredFeatures]
@@ -149,7 +154,6 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
   }
 
   const InfoTooltip = ({ features }) => {
-    console.log('features:', features)
     const vessels = features
       .filter((f) => f.object?.properties?.mmsi)
       .sort((a, b) => b.object?.properties?.timestamp - a.object?.properties?.timestamp)
@@ -157,7 +161,6 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
     const points = features
       .filter((f) => f.object?.timestamp)
       .sort((a, b) => b.object?.timestamp - a.object?.timestamp)
-    console.log('points:', points)
     const mapWidth = window.innerWidth - 320
     if (vessels.length > 0 || points.length > 0 || count) {
       return (
@@ -174,7 +177,9 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
             padding: '1rem',
           }}
         >
-          {vessels && vessels.length > 3 && <div className={styles.vesselRow}>Latest vessels</div>}
+          {vessels && vessels.length > 3 && (
+            <label className={styles.vesselRow}>Latest vessels</label>
+          )}
           {vessels &&
             vessels.slice(0, 3).map((f) => (
               <div key={f.object?.properties?.mmsi} className={styles.vesselRow}>
@@ -185,7 +190,7 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
                 <div>
                   <label>TIME</label>
                   {f.object.properties.timestamp
-                    ? getTimeAgo(f.object.properties.timestamp * 1000)
+                    ? getDateLabel(f.object.properties.timestamp * 1000)
                     : '---'}
                 </div>
                 <div>
@@ -207,13 +212,7 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
                 {points[0].sourceLayer.id}
               </p>
               <p>{getCoordinatesLabel(points[0].object.coordinates)}</p>
-              <p>
-                {`${DateTime.fromMillis(points[0].object.timestamp, { zone: 'utc' }).toLocaleString(
-                  DateTime.DATETIME_FULL
-                )} (${getTimeAgo(
-                  DateTime.fromMillis(points[0].object.timestamp, { zone: 'utc' })
-                )})`}
-              </p>
+              <p>{getDateLabel(points[0].object.timestamp)}</p>
             </div>
           )}
         </div>

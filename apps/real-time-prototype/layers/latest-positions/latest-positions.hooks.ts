@@ -16,7 +16,7 @@ export const latestPositionsAtom = atom<LatestPositionsAtom>({
   },
 })
 
-export function useLatestPositionsLayer({ token, lastUpdate, vessels }) {
+export function useLatestPositionsLayer({ token, lastUpdate, vessels, showLatestPositions }) {
   const [{ instance }, updateAtom] = useRecoilState(latestPositionsAtom)
   const [mapLayers] = useMapLayers()
   const layer = mapLayers.find((l) => l.id === 'latest-positions')
@@ -37,12 +37,22 @@ export function useLatestPositionsLayer({ token, lastUpdate, vessels }) {
         token,
         lastUpdate,
         vessels,
+        showLatestPositions,
       })
       setAtomProperty({ instance: latestPositions })
     } else {
       setAtomProperty({ instance: undefined, loaded: false })
     }
-  }, [layerVisible, updateAtom, onDataLoad, setAtomProperty, token, lastUpdate, vessels])
+  }, [
+    layerVisible,
+    updateAtom,
+    onDataLoad,
+    setAtomProperty,
+    token,
+    lastUpdate,
+    vessels,
+    showLatestPositions,
+  ])
 
   return instance
 }

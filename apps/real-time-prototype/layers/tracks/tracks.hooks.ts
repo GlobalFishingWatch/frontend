@@ -4,14 +4,16 @@ import { TracksLayer } from 'layers/tracks/TracksLayer'
 import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
 import { useMapLayers } from 'features/map/layers.hooks'
 
+export type TrackPoint = {
+  coordinates: [number, number]
+  timestamp: number
+}
+
 export type TrackSublayer = {
   id: string
   active: boolean
   color: string
-  data?: {
-    coordinates: [number, number]
-    timestamp: number
-  }[][]
+  data?: TrackPoint[][]
 }
 
 type TracksAtom = {

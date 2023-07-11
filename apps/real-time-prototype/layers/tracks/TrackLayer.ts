@@ -1,10 +1,10 @@
-import { Color, CompositeLayer } from '@deck.gl/core/typed'
+import { Color, CompositeLayer, LayersList } from '@deck.gl/core/typed'
 import { TripsLayer } from '@deck.gl/geo-layers/typed'
 import { TripsLayerProps } from '@deck.gl/geo-layers/typed/trips-layer/trips-layer'
 import { ScatterplotLayer } from '@deck.gl/layers'
-import { ScatterplotLayerProps, TextLayer } from '@deck.gl/layers/typed'
-import { Position, RGBAColor } from '@deck.gl/core'
-import { DateTime } from 'luxon'
+import { ScatterplotLayerProps } from '@deck.gl/layers/typed'
+import { RGBAColor } from '@deck.gl/core'
+import { TrackPoint } from 'layers/tracks/tracks.hooks'
 import { hexToComponents } from '@globalfishingwatch/layer-composer'
 import { API_BASE } from 'data/config'
 import { GFWLayerProps } from 'features/map/Map'
@@ -32,6 +32,28 @@ export class TrackLayer extends CompositeLayer<TrackLayerProps> {
 
   renderLayers() {
     return [
+      new ScatterplotLayer<TrackPoint>({
+        id: `track-layer-${this.props.id}-points`,
+        data: this.state.data?.[0],
+        filled: true,
+        getPosition: (d) => d.coordinates,
+        pickable: true,
+        radiusUnits: 'pixels',
+        // getRadius: 3,
+        getRadius: (d, context) => {
+          const latestTime = context.data[context.data.length - 1].timestamp
+          const maxTimeDifference = latestTime - context.data[0].timestamp
+          return 4 - ((latestTime - d.timestamp) / maxTimeDifference) * 3
+        },
+        getFillColor: (d, context) => {
+          const latestTime = context.data[context.data.length - 1].timestamp
+          const maxTimeDifference = latestTime - context.data[0].timestamp
+          return [
+            ...hexToComponents(this.props.color),
+            255 - ((latestTime - d.timestamp) / maxTimeDifference) * 255,
+          ] as RGBAColor
+        },
+      }),
       new TripsLayer({
         id: `track-layer-${this.props.id}`,
         data: `${API_BASE}/realtime-tracks/${this.props.id}?start-date=${this.props.lastUpdate}&format=points`,
@@ -59,19 +81,6 @@ export class TrackLayer extends CompositeLayer<TrackLayerProps> {
         trailLength: LENGTH_IN_MILLIS,
         currentTime: LENGTH_IN_MILLIS,
       }),
-      new ScatterplotLayer({
-        id: `track-layer-${this.props.id}-points`,
-        data: this.state.data?.[0],
-        filled: true,
-        opacity: 0.1,
-        getPosition: (d) => d.coordinates,
-        pickable: true,
-        radiusUnits: 'pixels',
-        getRadius: 3,
-        getFillColor: () => {
-          return hexToComponents(this.props.color) as RGBAColor
-        },
-      }),
-    ]
+    ] as LayersList
   }
 }

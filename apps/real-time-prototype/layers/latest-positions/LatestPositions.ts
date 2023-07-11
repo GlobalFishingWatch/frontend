@@ -20,7 +20,8 @@ const ICON_MAPPING = {
 }
 const SWITCH_ZOOM = 7
 
-export type LatestPositionsLayerProps = MVTLayerProps & GFWLayerProps & { vessels: TrackSublayer[] }
+export type LatestPositionsLayerProps = MVTLayerProps &
+  GFWLayerProps & { vessels: TrackSublayer[]; showLatestPositions: boolean }
 export class LatestPositions extends CompositeLayer<LatestPositionsLayerProps> {
   static layerName = 'LatestPositionsLayer'
 
@@ -108,6 +109,7 @@ export class LatestPositions extends CompositeLayer<LatestPositionsLayerProps> {
         loadOptions: this.loadOptions,
         maxZoom: SWITCH_ZOOM,
         binary: false,
+        visible: this.props.showLatestPositions,
         pickable: true,
         getFillColor: (cell) => this._getFillColor(cell),
         onViewportLoad: this._onViewportLoad,
@@ -125,7 +127,7 @@ export class LatestPositions extends CompositeLayer<LatestPositionsLayerProps> {
         pickable: true,
         updateTriggers: {
           getColor: [this.props.vessels],
-          getSize: [this.props.vessels],
+          getSize: [this.props.vessels, this.props.showLatestPositions],
         },
         renderSubLayers: (props) => [
           new IconLayer(props, {
@@ -142,7 +144,8 @@ export class LatestPositions extends CompositeLayer<LatestPositionsLayerProps> {
             getPosition: (d) => d.geometry.coordinates,
             getSize: (d) => {
               const matchedVessel = this.props.vessels.find((v) => v.id === d.properties.mmsi)
-              return matchedVessel ? 25 : 15
+              if (matchedVessel) return 25
+              return this.props.showLatestPositions ? 15 : 0
             },
           }),
           new IconLayer(props, {

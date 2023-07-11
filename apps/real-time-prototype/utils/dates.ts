@@ -26,3 +26,9 @@ export const getTimeAgo = (date: number | DateTime) => {
   if (Math.floor(diff.minutes) === 0) return `${Math.floor(diff.hours)}h ago`
   return `${Math.floor(diff.hours)}h ${Math.floor(diff.minutes)}m ago`
 }
+
+export const getDateLabel = (date: number) => {
+  return `${DateTime.fromMillis(date, { zone: 'utc' }).toLocaleString(
+    DateTime.DATETIME_FULL
+  )} (${getTimeAgo(DateTime.fromMillis(date, { zone: 'utc' }))})`
+}

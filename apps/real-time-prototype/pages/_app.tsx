@@ -45,6 +45,7 @@ const Map = dynamic(() => import(/* webpackChunkName: "Map" */ 'features/map/Map
 function CustomApp({ Component, pageProps }: AppProps) {
   const [lastUpdate, setLastUpdate] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [showLatestPositions, setShowLatestPositions] = useState(true)
 
   const login = useGFWLogin(GFWAPI)
   useEffect(() => {
@@ -79,12 +80,21 @@ function CustomApp({ Component, pageProps }: AppProps) {
             showToggle
             isOpen={sidebarOpen}
             onToggle={onToggle}
-            aside={login.logged ? <Component {...pageProps} lastUpdate={lastUpdate} /> : null}
+            aside={
+              login.logged ? (
+                <Component
+                  {...pageProps}
+                  lastUpdate={lastUpdate}
+                  showLatestPositions={showLatestPositions}
+                  setShowLatestPositions={setShowLatestPositions}
+                />
+              ) : null
+            }
             main={
               login.logged && (
                 <div className={styles.main}>
                   <div className={styles.mapContainer}>
-                    <Map lastUpdate={lastUpdate} />
+                    <Map lastUpdate={lastUpdate} showLatestPositions={showLatestPositions} />
                   </div>
                 </div>
               )
