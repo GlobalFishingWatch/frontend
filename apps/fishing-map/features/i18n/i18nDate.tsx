@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { DateTime, DateTimeFormatOptions } from 'luxon'
 import { useTranslation } from 'react-i18next'
 import { Locale } from 'types'
-import { getUTCDateTime } from 'utils/dates'
+import { SupportedDateType, getUTCDateTime } from 'utils/dates'
 import i18n from './i18n'
 
 type Dates = {
@@ -19,7 +19,7 @@ type formatI18DateParams = {
 export const UTC_SUFFIX = 'UTC'
 
 export const formatI18nDate = (
-  date: string | number,
+  date: SupportedDateType,
   {
     format = DateTime.DATE_MED,
     locale = i18n.language as Locale,
@@ -32,12 +32,7 @@ export const formatI18nDate = (
   }`
 }
 
-/*export const useI18nDate = (date: string, format = DateTime.DATE_MED) => {
-  const { i18n } = useTranslation()
-  return formatI18nDate(date, { format, locale: i18n.language as Locale })
-}
-*/
-export const useI18nDate = (date: string | number, format = DateTime.DATE_MED) => {
+export const useI18nDate = (date: SupportedDateType, format = DateTime.DATE_MED) => {
   const { i18n } = useTranslation()
   return formatI18nDate(date, { format, locale: i18n.language as Locale })
 }

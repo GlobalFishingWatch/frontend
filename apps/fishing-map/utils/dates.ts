@@ -3,7 +3,8 @@ import { Interval } from '@globalfishingwatch/layer-composer'
 import { Dataset, Report, VesselGroup } from '@globalfishingwatch/api-types'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 
-export const getUTCDateTime = (d: string | number) => {
+export type SupportedDateType = string | number
+export const getUTCDateTime = (d: SupportedDateType) => {
   if (!d || (typeof d !== 'string' && typeof d !== 'number')) {
     console.warn('Not a valid date', d)
     return DateTime.utc()
