@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
-import { uniqBy, memoize } from 'lodash'
+import { uniqBy } from 'lodash'
 import { stringify } from 'qs'
 import {
   mergeWorkspaceUrlDataviewInstances,
@@ -172,10 +172,11 @@ export function selectAllDataviews(state: DataviewsSliceState) {
   return selectAll(state)
 }
 
-export const selectDataviewBySlug = (id: string) =>
-  createSelector([(state: DataviewsSliceState) => state], (state) => {
-    return selectById(state, id)
+export function selectDataviewBySlug(slug: string) {
+  return createSelector([selectAllDataviews], (dataviews) => {
+    return dataviews?.find((d) => d.slug === slug)
   })
+}
 
 export const selectDataviewsStatus = (state: DataviewsSliceState) => state.dataviews.status
 

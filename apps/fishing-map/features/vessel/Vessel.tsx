@@ -15,6 +15,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import VesselSummary from 'features/vessel/VesselSummary'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
+import { selectRegionsDatasets } from 'features/regions/regions.selectors'
 import VesselIdentity from './VesselIdentity'
 import VesselActivity from './activity/VesselActivity'
 
@@ -30,9 +31,16 @@ const VesselDetail = () => {
   const infoError = useSelector(selectVesselInfoError)
   const eventsStatus = useSelector(selectVesselEventsStatus)
   const eventsError = useSelector(selectVesselEventsError)
+  const regionsDatasets = useSelector(selectRegionsDatasets)
+  console.log('🚀 ~ VesselDetail ~ regionsDatasets:', regionsDatasets)
 
   useEffect(() => {
-    dispatch(fetchRegionsThunk())
+    if (Object.values(regionsDatasets).every((d) => d)) {
+      dispatch(fetchRegionsThunk(regionsDatasets))
+    }
+  }, [dispatch, regionsDatasets])
+
+  useEffect(() => {
     if (
       infoStatus === AsyncReducerStatus.Idle ||
       (infoStatus === AsyncReducerStatus.Error && infoError?.status === 401)
@@ -45,7 +53,8 @@ const VesselDetail = () => {
     ) {
       dispatch(fetchVesselEventsThunk({ vesselId, datasetId }))
     }
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [datasetId, dispatch, vesselId])
 
   const sectionTabs: Tab<VesselSection>[] = useMemo(
     () => [
