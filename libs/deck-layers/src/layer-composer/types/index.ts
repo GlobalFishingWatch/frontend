@@ -1,4 +1,3 @@
-import { FourwingsLayer, BaseMap, ContextLayer, VesselLayer } from '@globalfishingwatch/deck-layers'
 import { BasemapDeckLayerGenerator } from './basemap'
 import { ContextDeckLayerGenerator } from './context'
 import { VesselDeckLayersGenerator } from './vessel'

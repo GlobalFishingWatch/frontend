@@ -5,6 +5,7 @@ import { DeckGL, DeckGLRef } from '@deck.gl/react/typed'
 import { LayersList, MapView } from '@deck.gl/core/typed'
 import dynamic from 'next/dynamic'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { ViewStateChangeParameters } from '@deck.gl/core/typed/controllers/controller'
 import maplibregl from '@globalfishingwatch/maplibre-gl'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
@@ -51,7 +52,7 @@ import { selectHighlightedTime } from 'features/timebar/timebar.slice'
 import { selectMapTimeseries } from 'features/reports/reports-timeseries.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useMapDeckLayers, useMapLayersLoaded } from 'features/map/map-layers.hooks'
-import useViewport, { useMapBounds } from './map-viewport.hooks'
+import { useMapBounds, useVieportAtom, ViewState } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import useRulers from './rulers/rulers.hooks'
 import {
@@ -212,7 +213,7 @@ const MapWrapper = () => {
     cleanFeatureState('hover')
   }, [cleanFeatureState])
 
-  const { viewport, onViewportChange } = useViewport()
+  const [viewport, setViewport] = useVieportAtom()
 
   const { setMapBounds } = useMapBounds()
   useEffect(() => {
@@ -314,17 +315,8 @@ const MapWrapper = () => {
           }
           return true
         }}
-        initialViewState={{
-          longitude: -73.3073372718909,
-          latitude: -42.29868545284379,
-          zoom: 8.044614831699267,
-          pitch: 0,
-          bearing: 0,
-          minZoom: 0,
-          maxZoom: 20,
-          minPitch: 0,
-          maxPitch: 60,
-        }}
+        viewState={viewport}
+        onViewStateChange={({ viewState }: ViewStateChangeParameters) => setViewport(viewState)}
         controller={true}
         // onClick={onClick}
         // onHover={onHover}

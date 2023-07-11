@@ -3,6 +3,9 @@ import { fitBounds } from '@math.gl/web-mercator'
 import { atom, useRecoilState } from 'recoil'
 import { debounce } from 'lodash'
 import { ViewStateChangeEvent } from 'react-map-gl'
+import { useAtom, atom as jotaiAtom, useSetAtom } from 'jotai'
+import { selectAtom } from 'jotai/utils'
+import { DeckGLRef } from '@deck.gl/react/typed'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { LngLatBounds, Map } from '@globalfishingwatch/maplibre-gl'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
@@ -15,6 +18,36 @@ import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
 import { useMapReady } from 'features/map/map-state.hooks'
 import store from '../../store'
 import useMapInstance from './map-context.hooks'
+
+export type ViewState = {
+  longitude: number
+  latitude: number
+  zoom: number
+  pitch: number
+  bearing: number
+  minZoom: number
+  maxZoom: number
+  minPitch: number
+  maxPitch: number
+}
+const viewStateAtom = jotaiAtom<ViewState>({
+  longitude: -73.3073372718909,
+  latitude: -42.29868545284379,
+  zoom: 8.044614831699267,
+  pitch: 0,
+  bearing: 0,
+  minZoom: 0,
+  maxZoom: 20,
+  minPitch: 0,
+  maxPitch: 60,
+})
+export const viewStateAtomSelector = (viewState: ViewState) => viewState
+export const selectViewState = selectAtom(viewStateAtom, viewStateAtomSelector)
+
+export function useVieportAtom() {
+  const [viewstate, setViewstate] = useAtom(viewStateAtom)
+  return [viewstate, setViewstate] as const
+}
 
 type ViewportKeys = 'latitude' | 'longitude' | 'zoom'
 type ViewportProps = Record<ViewportKeys, number>
