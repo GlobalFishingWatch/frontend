@@ -15,7 +15,7 @@ import { BasemapType, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
-import { useMapBounds, useVieportAtom } from 'features/map/map-viewport.hooks'
+import { useMapBounds, useViewStateAtom } from 'features/map/map-viewport.hooks'
 import { selectIsReportLocation, selectIsWorkspaceLocation } from 'routes/routes.selectors'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
 import setInlineStyles from 'utils/dom'
@@ -66,10 +66,11 @@ const MapControls = ({
     }
   }, [])
 
-  const [viewport, setViewport] = useVieportAtom()
-  const { latitude, longitude, zoom } = viewport
+  const [viewState, setViewState] = useViewStateAtom()
+  const { latitude, longitude, zoom } = viewState
 
   const { bounds } = useMapBounds()
+
   const center = useMemo(
     () => ({
       latitude,
@@ -81,12 +82,12 @@ const MapControls = ({
   const debouncedOptions = useDebounce(options, 16)
 
   const onZoomInClick = useCallback(() => {
-    setViewport({ ...viewport, zoom: zoom + 1 })
-  }, [viewport, setViewport, zoom])
+    setViewState({ ...viewState, zoom: zoom + 1 })
+  }, [viewState, setViewState, zoom])
 
   const onZoomOutClick = useCallback(() => {
-    setViewport({ ...viewport, zoom: Math.max(1, zoom - 1) })
-  }, [viewport, setViewport, zoom])
+    setViewState({ ...viewState, zoom: Math.max(1, zoom - 1) })
+  }, [viewState, setViewState, zoom])
 
   const onScreenshotClick = useCallback(() => {
     dispatchQueryParams({ sidebarOpen: true })
@@ -156,7 +157,7 @@ const MapControls = ({
             bounds={debouncedOptions.bounds}
             center={debouncedOptions.center}
           />
-          {miniGlobeHovered && <MiniGlobeInfo viewport={viewport} />}
+          {miniGlobeHovered && <MiniGlobeInfo viewport={viewState} />}
         </div>
         <div className={cx('print-hidden', styles.controlsNested)}>
           {extendedControls && <MapSearch />}
