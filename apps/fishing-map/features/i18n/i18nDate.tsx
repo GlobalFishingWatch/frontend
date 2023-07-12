@@ -8,6 +8,7 @@ import i18n from './i18n'
 type Dates = {
   date: string | number
   format?: DateTimeFormatOptions
+  showUTCLabel?: boolean
 }
 
 type formatI18DateParams = {
@@ -32,13 +33,17 @@ export const formatI18nDate = (
   }`
 }
 
-export const useI18nDate = (date: SupportedDateType, format = DateTime.DATE_MED) => {
+export const useI18nDate = (
+  date: SupportedDateType,
+  format = DateTime.DATE_MED,
+  showUTCLabel = false
+) => {
   const { i18n } = useTranslation()
-  return formatI18nDate(date, { format, locale: i18n.language as Locale })
+  return formatI18nDate(date, { format, locale: i18n.language as Locale, showUTCLabel })
 }
 
-const I18nDate = ({ date, format = DateTime.DATE_MED }: Dates) => {
-  const dateFormatted = useI18nDate(date, format)
+const I18nDate = ({ date, format = DateTime.DATE_MED, showUTCLabel = false }: Dates) => {
+  const dateFormatted = useI18nDate(date, format, showUTCLabel)
   return <Fragment>{dateFormatted}</Fragment>
 }
 

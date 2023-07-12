@@ -6,6 +6,11 @@
   position: relative;
 }
 
+.date {
+  font-size: 1rem;
+  line-height: var(--space-S);
+}
+
 .event .eventData {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -47,25 +52,6 @@
 
 .eventIcon svg {
   display: inline-block;
-}
-
-.eventIcon .eventCount {
-  position: absolute;
-  top: -5px;
-  right: 2px;
-  height: 18px;
-  width: 18px;
-  opacity: 1;
-  color: #163f89;
-  font-family: Roboto, 'Courier New', Courier, monospace;
-  font-size: 14px;
-  letter-spacing: 0;
-  line-height: 18px;
-  text-align: center;
-  border-radius: 50%;
-  overflow: hidden;
-  background: #fff;
-  box-shadow: 0 0 2px #163f89;
 }
 
 .event .actions {

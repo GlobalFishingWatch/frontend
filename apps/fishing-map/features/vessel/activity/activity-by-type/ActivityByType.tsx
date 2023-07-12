@@ -86,7 +86,6 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
       const maxHeight = window.innerHeight - groupsWithDataLength * HEADER_HEIGHT
       const eventsHeight = events.length * EVENT_HEIGHT
       const height = Math.min(eventsHeight, maxHeight)
-      console.log('🚀 ~ getContainerHeight ~ height:', height)
       return height
     },
     [groupsWithDataLength]
@@ -114,6 +113,7 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
           const expanded = expandedType === eventType
           return (
             <ActivityGroup
+              key={eventType}
               eventType={eventType}
               onToggleClick={onToggleExpandedType}
               quantity={activityEvents.length}
