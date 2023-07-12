@@ -1,11 +1,10 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useRef, useEffect } from 'react'
 import { fitBounds } from '@math.gl/web-mercator'
 import { atom, useRecoilState } from 'recoil'
 import { debounce } from 'lodash'
 import { ViewStateChangeEvent } from 'react-map-gl'
-import { useAtom, atom as jotaiAtom, useSetAtom } from 'jotai'
-import { selectAtom } from 'jotai/utils'
-import { DeckGLRef } from '@deck.gl/react/typed'
+import { useAtom, atom as jotaiAtom, useAtomValue, Atom } from 'jotai'
+import { MapView, WebMercatorViewport } from '@deck.gl/core/typed'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { LngLatBounds, Map } from '@globalfishingwatch/maplibre-gl'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
@@ -15,7 +14,6 @@ import { updateUrlViewport } from 'routes/routes.actions'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { selectViewport } from 'features/app/app.selectors'
 import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
-import { useMapReady } from 'features/map/map-state.hooks'
 import store from '../../store'
 import useMapInstance from './map-context.hooks'
 
@@ -29,24 +27,73 @@ export type ViewState = {
   maxZoom: number
   minPitch: number
   maxPitch: number
+  transitionDuration?: number
+}
+const getUrlViewstateNumericParam = (key: string) => {
+  if (typeof window === 'undefined') return null
+  const urlParam = new URLSearchParams(window.location.search).get(key)
+  return urlParam ? parseFloat(urlParam) : null
 }
 const viewStateAtom = jotaiAtom<ViewState>({
-  longitude: -73.3073372718909,
-  latitude: -42.29868545284379,
-  zoom: 8.044614831699267,
+  longitude: getUrlViewstateNumericParam('longitude') || DEFAULT_VIEWPORT.longitude,
+  latitude: getUrlViewstateNumericParam('latitude') || DEFAULT_VIEWPORT.latitude,
+  zoom: getUrlViewstateNumericParam('zoom') || DEFAULT_VIEWPORT.zoom,
   pitch: 0,
   bearing: 0,
   minZoom: 0,
   maxZoom: 20,
   minPitch: 0,
   maxPitch: 60,
+  transitionDuration: 1000,
 })
-export const viewStateAtomSelector = (viewState: ViewState) => viewState
-export const selectViewState = selectAtom(viewStateAtom, viewStateAtomSelector)
 
-export function useVieportAtom() {
+export const miniGlobeBoundsAtom: Atom<MiniglobeBounds | undefined> = jotaiAtom(undefined)
+
+const viewportAtom: Atom<WebMercatorViewport> = jotaiAtom(
+  (get) => new WebMercatorViewport(get(viewStateAtom))
+)
+export const boundsAtom: Atom<MiniglobeBounds> = jotaiAtom((get): MiniglobeBounds => {
+  const viewport = get(viewportAtom)
+  const wn = viewport.unproject([0, 0])
+  const es = viewport.unproject([viewport.width, viewport.height])
+  return {
+    north: wn[1],
+    south: es[1],
+    west: wn[0],
+    east: es[0],
+  }
+})
+
+export const useMapBounds = (): { bounds: MiniglobeBounds } => ({
+  bounds: useAtomValue(boundsAtom),
+})
+
+export const useViewstate = () => useAtomValue(viewStateAtom)
+
+export function useViewStateAtom() {
   const [viewstate, setViewstate] = useAtom(viewStateAtom)
   return [viewstate, setViewstate] as const
+}
+
+const mapViewAtom: Atom<MapView> = jotaiAtom(new MapView({ repeat: true, controller: true }))
+export function useMapViewAtom(): MapView {
+  return useAtomValue(mapViewAtom)
+}
+const URL_VIEWPORT_DEBOUNCED_TIME = 1000
+
+export const useUpdateViewStateUrlParams = () => {
+  const viewState = useAtomValue(viewStateAtom)
+  const updateUrlViewportDebounced = debounce(
+    store.dispatch(updateUrlViewport),
+    URL_VIEWPORT_DEBOUNCED_TIME
+  )
+  useEffect(() => {
+    const { longitude, latitude, zoom } = viewState
+    updateUrlViewportDebounced({ longitude, latitude, zoom })
+    return () => {
+      updateUrlViewportDebounced.cancel()
+    }
+  }, [viewState, updateUrlViewportDebounced])
 }
 
 type ViewportKeys = 'latitude' | 'longitude' | 'zoom'
@@ -56,8 +103,6 @@ type UseViewport = {
   onViewportChange: (e: ViewStateChangeEvent) => void
   setMapCoordinates: (viewport: ViewportProps) => void
 }
-
-const URL_VIEWPORT_DEBOUNCED_TIME = 1000
 
 const viewportState = atom<MapCoordinates>({
   key: 'mapViewport',
@@ -102,11 +147,6 @@ export default function useViewport(): UseViewport {
   return { viewport, onViewportChange, setMapCoordinates }
 }
 
-const boundsState = atom<MiniglobeBounds>({
-  key: 'mapBounds',
-  default: undefined,
-})
-
 export function checkEqualBounds(bounds1?: MiniglobeBounds, bounds2?: MiniglobeBounds) {
   if (!bounds1 || !bounds2) return false
   return (
@@ -124,29 +164,6 @@ export function mglToMiniGlobeBounds(mglBounds: LngLatBounds) {
     west: mglBounds.getWest() as number,
     east: mglBounds.getEast() as number,
   }
-}
-
-export function useMapBounds() {
-  const map = useMapInstance()
-  const mapReady = useMapReady()
-  const [bounds, setBounds] = useRecoilState(boundsState)
-
-  const setMapBounds = useCallback(() => {
-    if (map) {
-      const rawBounds = map.getBounds()
-      if (rawBounds) {
-        setBounds(mglToMiniGlobeBounds(rawBounds))
-      }
-    }
-  }, [map, setBounds])
-
-  useEffect(() => {
-    if (mapReady) {
-      setMapBounds()
-    }
-  }, [mapReady, setMapBounds])
-
-  return { bounds, setMapBounds }
 }
 
 type FitBoundsParams = {

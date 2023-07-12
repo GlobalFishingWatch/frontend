@@ -1,12 +1,11 @@
 import { useCallback, useState, useEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
-import { Map, MapboxStyle } from 'react-map-gl'
 import { DeckGL, DeckGLRef } from '@deck.gl/react/typed'
 import { LayersList, MapView } from '@deck.gl/core/typed'
+import { useSetAtom } from 'jotai'
 import dynamic from 'next/dynamic'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { ViewStateChangeParameters } from '@deck.gl/core/typed/controllers/controller'
-import maplibregl from '@globalfishingwatch/maplibre-gl'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
@@ -33,7 +32,6 @@ import {
   TooltipEventFeature,
 } from 'features/map/map.hooks'
 import { selectActiveTemporalgridDataviews } from 'features/dataviews/dataviews.selectors'
-import MapInfo from 'features/map/controls/MapInfo'
 import MapControls from 'features/map/controls/MapControls'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { getEventLabel } from 'utils/analytics'
@@ -52,7 +50,12 @@ import { selectHighlightedTime } from 'features/timebar/timebar.slice'
 import { selectMapTimeseries } from 'features/reports/reports-timeseries.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useMapDeckLayers, useMapLayersLoaded } from 'features/map/map-layers.hooks'
-import { useMapBounds, useVieportAtom, ViewState } from './map-viewport.hooks'
+import {
+  useViewStateAtom,
+  useMapViewAtom,
+  useUpdateViewStateUrlParams,
+  useViewstate,
+} from './map-viewport.hooks'
 import styles from './Map.module.css'
 import useRulers from './rulers/rulers.hooks'
 import {
@@ -108,7 +111,15 @@ const MapWrapper = () => {
   ///////////////////////////////////////
   // DECK related code
   const deckRef = useRef<DeckGLRef>(null)
-  const mapView = new MapView({ repeat: true, controller: true })
+  const mapView = useMapViewAtom()
+  const [viewState, setViewState] = useViewStateAtom()
+  const onViewStateChange = useCallback(
+    ({ viewState }: ViewStateChangeParameters) => {
+      setViewState(viewState)
+    },
+    [viewState, setViewState]
+  )
+  useUpdateViewStateUrlParams()
   ////////////////////////////////////////
   // Used it only once here to attach the listener only once
   useSetMapIdleAtom()
@@ -213,14 +224,6 @@ const MapWrapper = () => {
     cleanFeatureState('hover')
   }, [cleanFeatureState])
 
-  const [viewport, setViewport] = useVieportAtom()
-
-  const { setMapBounds } = useMapBounds()
-  useEffect(() => {
-    setMapBounds()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewport])
-
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const reportLocation = useSelector(selectIsReportLocation)
   const isWorkspace = useSelector(selectIsWorkspaceLocation)
@@ -315,12 +318,11 @@ const MapWrapper = () => {
           }
           return true
         }}
-        viewState={viewport}
-        onViewStateChange={({ viewState }: ViewStateChangeParameters) => setViewport(viewState)}
+        viewState={viewState}
+        onViewStateChange={onViewStateChange}
         controller={true}
         // onClick={onClick}
         // onHover={onHover}
-        // onViewStateChange={onViewportStateChange}
       />
       {/* {style && (
         <Map
