@@ -31,6 +31,20 @@ export class TrackLayer extends CompositeLayer<TrackLayerProps> {
     }
   }
 
+  getRadius: any = (d: TrackPoint, context: any) => {
+    const latestTime = context.data[context.data.length - 1].timestamp
+    const maxTimeDifference = latestTime - context.data[0].timestamp
+    return 4 - ((latestTime - d.timestamp) / maxTimeDifference) * 3
+  }
+  getFillColor: any = (d: TrackPoint, context: any) => {
+    const latestTime = context.data[context.data.length - 1].timestamp
+    const maxTimeDifference = latestTime - context.data[0].timestamp
+    return [
+      ...hexToComponents(this.props.color),
+      255 - ((latestTime - d.timestamp) / maxTimeDifference) * 255,
+    ] as RGBAColor
+  }
+
   renderLayers() {
     return [
       new ScatterplotLayer<TrackPoint>({
@@ -40,19 +54,8 @@ export class TrackLayer extends CompositeLayer<TrackLayerProps> {
         getPosition: (d) => d.coordinates,
         pickable: true,
         radiusUnits: 'pixels',
-        getRadius: (d: TrackPoint, context) => {
-          const latestTime = context.data[context.data.length - 1].timestamp
-          const maxTimeDifference = latestTime - context.data[0].timestamp
-          return 4 - ((latestTime - d.timestamp) / maxTimeDifference) * 3
-        },
-        getFillColor: (d: TrackPoint, context) => {
-          const latestTime = context.data[context.data.length - 1].timestamp
-          const maxTimeDifference = latestTime - context.data[0].timestamp
-          return [
-            ...hexToComponents(this.props.color),
-            255 - ((latestTime - d.timestamp) / maxTimeDifference) * 255,
-          ] as RGBAColor
-        },
+        getRadius: this.getRadius,
+        getFillColor: this.getFillColor,
       }),
       new TripsLayer({
         id: `track-layer-${this.props.id}`,

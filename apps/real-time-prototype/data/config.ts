@@ -10,4 +10,5 @@ export const DEFAULT_VIEWPORT = {
   longitude: 26,
 }
 
+export const DEFAULT_URL_DEBOUNCE = 600
 export const API_BASE = 'https://gateway.api.dev.globalfishingwatch.org/prototypes/'
