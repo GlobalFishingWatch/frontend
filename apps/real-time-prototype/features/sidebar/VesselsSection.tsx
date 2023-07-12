@@ -1,5 +1,6 @@
-import { ChangeEvent, useCallback, useEffect, useState } from 'react'
-import { useTracksSublayers } from 'layers/tracks/tracks.hooks'
+import { ChangeEvent, Fragment, useCallback, useEffect, useState } from 'react'
+import { saveAs } from 'file-saver'
+import { TrackPoint, useTracksSublayers } from 'layers/tracks/tracks.hooks'
 import { WebMercatorViewport } from '@deck.gl/core/typed'
 import { Button, IconButton, InputText, Spinner, Switch } from '@globalfishingwatch/ui-components'
 import { useViewport } from 'features/map/map-viewport.hooks'
@@ -65,6 +66,22 @@ function VesselsSection({ lastUpdate }) {
     }
   }
 
+  const onDownloadClick = (id: string, data: TrackPoint[][]) => {
+    const geojson = {
+      type: 'FeatureCollection',
+      features: data[0].map(({ coordinates, timestamp }) => ({
+        type: 'Feature',
+        properties: { timestamp },
+        geometry: {
+          type: 'Point',
+          coordinates,
+        },
+      })),
+    }
+    const blob = new Blob([JSON.stringify(geojson)], { type: 'text/plain;charset=utf-8' })
+    saveAs(blob, id + '.geo.json')
+  }
+
   return (
     <section className={styles.row} key={'vessels'}>
       <p>VESSELS</p>
@@ -104,13 +121,22 @@ function VesselsSection({ lastUpdate }) {
                     )}
                   </h3>
                   {active && data?.[0].length > 0 && (
-                    <IconButton
-                      size="small"
-                      icon="target"
-                      onClick={() => fitBoundsToSublayer(id)}
-                      tooltip="Center map on track"
-                      tooltipPlacement="top"
-                    />
+                    <Fragment>
+                      <IconButton
+                        size="small"
+                        icon="target"
+                        onClick={() => fitBoundsToSublayer(id)}
+                        tooltip="Center map on track"
+                        tooltipPlacement="top"
+                      />
+                      <IconButton
+                        size="small"
+                        icon="download"
+                        onClick={() => onDownloadClick(id, data)}
+                        tooltip="Download track"
+                        tooltipPlacement="top"
+                      />
+                    </Fragment>
                   )}
                   <IconButton
                     size="small"
