@@ -10,13 +10,13 @@ import {
   IDENTITY_FIELD_GROUPS,
 } from 'features/vessel/vessel.config'
 import DataAndTerminology from 'features/vessel/data-and-terminology/DataAndTerminology'
-import { selectVesselInfoDataMerged } from 'features/vessel/vessel.selectors'
+import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { formatAdvancedInfoField } from 'utils/info'
 import styles from './VesselIdentity.module.css'
 
 const VesselIdentity = () => {
   const { t, i18n } = useTranslation(['translations', 'dataTerminology'])
-  const vessel = useSelector(selectVesselInfoDataMerged)
+  const vessel = useSelector(selectVesselInfoData)
 
   return (
     <div className={styles.container}>

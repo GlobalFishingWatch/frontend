@@ -32,7 +32,6 @@ const VesselDetail = () => {
   const eventsStatus = useSelector(selectVesselEventsStatus)
   const eventsError = useSelector(selectVesselEventsError)
   const regionsDatasets = useSelector(selectRegionsDatasets)
-  console.log('🚀 ~ VesselDetail ~ regionsDatasets:', regionsDatasets)
 
   useEffect(() => {
     if (Object.values(regionsDatasets).every((d) => d)) {

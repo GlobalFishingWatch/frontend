@@ -1,35 +1,28 @@
-import { Fragment } from 'react'
+import React, { Fragment } from 'react'
 import cx from 'classnames'
 import { Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { getEncounterStatus } from 'features/vessel/activity/vessels-activity.utils'
-import { ActivityEvent } from 'types/activity'
-import ActivityDate from '../ActivityDate'
+import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import ActivityDate from './ActivityDate'
 import ActivityEventPortVisit from './EventPortVisit'
 import useActivityEventConnect from './event.hook'
 import styles from './Event.module.css'
 
 interface EventProps {
   classname?: string
+  style?: React.CSSProperties
   event: ActivityEvent
   onInfoClick?: (event: ActivityEvent) => void
   onMapClick?: (event: ActivityEvent) => void
-  options?: {
-    displayPortVisitsAsOneEvent: boolean
-  }
 }
 
-const EventItem: React.FC<EventProps> = ({
-  classname = '',
-  event,
-  onInfoClick = () => {},
-  onMapClick = () => {},
-  options = { displayPortVisitsAsOneEvent: false },
-}): React.ReactElement => {
+const EventItem: React.FC<EventProps> = (props): React.ReactElement => {
+  const { classname = '', event, style, onInfoClick = () => {}, onMapClick = () => {} } = props
   const { getEventDescription } = useActivityEventConnect()
   return event.type !== EventTypes.Port ? (
     <Fragment>
-      <div className={cx(styles.event, classname)}>
+      <li className={cx(styles.event, classname)} style={style}>
         <div
           className={cx(styles.eventIcon, styles[event.type], styles[getEncounterStatus(event)])}
         >
@@ -50,11 +43,10 @@ const EventItem: React.FC<EventProps> = ({
             onClick={() => onMapClick(event)}
           ></IconButton>
         </div>
-      </div>
-      <div className={styles.divider}></div>
+      </li>
     </Fragment>
   ) : (
-    <ActivityEventPortVisit {...{ classname, event, onInfoClick, onMapClick, options }} />
+    <ActivityEventPortVisit {...props} />
   )
 }
 

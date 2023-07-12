@@ -1,10 +1,8 @@
-import React, { Fragment, useCallback, useState } from 'react'
+import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDispatch } from 'react-redux'
 import { EventVessel } from '@globalfishingwatch/api-types'
-import { Spinner } from '@globalfishingwatch/ui-components'
-import AuthIcon from 'features/vessel/auth-icon/AuthIcon'
-import { ActivityEvent } from 'types/activity'
+import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import AuthIcon from './AuthIcon'
 import ActivityContentField from './ActivityContentField'
 import ActivityContentDetails from './ActivityContentDetails'
 import styles from './ActivityDetails.module.css'
@@ -19,8 +17,6 @@ const ActivityContentDetailsEncounter: React.FC<ActivityContentProps> = (
   const event = props.event
   const relatedVessel = event.encounter?.vessel as EventVessel
   const { t } = useTranslation()
-  const dispatch = useDispatch()
-  const [profileLoading, setProfileLoading] = useState(false)
 
   return (
     <Fragment>
@@ -28,12 +24,7 @@ const ActivityContentDetailsEncounter: React.FC<ActivityContentProps> = (
         <div className={styles.row}>
           <ActivityContentField
             label={t('vessel.encounteredVessel', 'Encountered Vessel')}
-            value={
-              <span>
-                {relatedVessel.name}{' '}
-                {profileLoading && <Spinner size="tiny" className={styles.profileLoader}></Spinner>}
-              </span>
-            }
+            value={<span>{relatedVessel.name} </span>}
           />
           <ActivityContentField label={t('vessel.flag', 'Flag')} value={relatedVessel.flag} />
         </div>

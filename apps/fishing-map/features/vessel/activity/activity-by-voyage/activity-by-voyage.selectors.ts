@@ -1,13 +1,30 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { DateTime, Interval } from 'luxon'
+import { DateTime } from 'luxon'
 import { EventTypes } from '@globalfishingwatch/api-types'
-import { ActivityEvent, PortVisitSubEvent } from 'types/activity'
-import { Voyage, EventTypeVoyage, RenderedVoyage } from 'types/voyage'
-import { DEFAULT_WORKSPACE } from 'data/config'
-import { getUTCDateTime } from 'utils/dates'
+import {
+  ActivityEvent,
+  PortVisitSubEvent,
+} from 'features/vessel/activity/vessels-activity.selectors'
 import { selectTimeRange } from 'features/app/app.selectors'
 import { selectFilteredEvents } from '../vessels-activity.selectors'
-import { selectExpandedVoyages } from './activity-by-voyage.slice'
+
+export enum EventTypeVoyage {
+  Voyage = 'voyage',
+}
+
+export interface Voyage {
+  from?: ActivityEvent
+  to?: ActivityEvent
+  type: EventTypeVoyage
+  start: number
+  end: number
+  timestamp: number
+}
+
+export interface RenderedVoyage extends Voyage {
+  eventsQuantity: number
+  events: ActivityEvent[]
+}
 
 export const selectFilteredEventsWithSplitPorts = createSelector(
   [selectFilteredEvents],
@@ -82,7 +99,7 @@ export const selectVoyages = createSelector(
 const getVoyagesWithEventsInside = (
   events: ActivityEvent[],
   voyages: Voyage[]
-): (ActivityEvent | RenderedVoyage)[] => {
+): RenderedVoyage[] => {
   const filteredVoyages: RenderedVoyage[] = voyages.map((voyage) => {
     return {
       ...voyage,
@@ -117,19 +134,10 @@ const getVoyagesWithEventsInside = (
 }
 
 export const selectVoyagesByVessel = createSelector(
-  [selectFilteredEventsWithSplitPorts, selectVoyages, selectExpandedVoyages],
-  (eventsList, voyages, expandedVoyages) => {
-    const hasVoyages = voyages.length > 0
-    if (!hasVoyages) return eventsList as ActivityEvent[]
+  [selectFilteredEventsWithSplitPorts, selectVoyages],
+  (eventsList, voyages) => {
+    if (!voyages.length) return eventsList as ActivityEvent[]
 
-    const filteredEventsByVoyages = getVoyagesWithEventsInside(eventsList, voyages)
-
-    const voyagesVisible = filteredEventsByVoyages.map((event) => {
-      return {
-        ...event,
-        status: expandedVoyages.includes(event.timestamp) ? 'expanded' : 'collapsed',
-      } as RenderedVoyage
-    })
-    return voyagesVisible
+    return getVoyagesWithEventsInside(eventsList, voyages)
   }
 )

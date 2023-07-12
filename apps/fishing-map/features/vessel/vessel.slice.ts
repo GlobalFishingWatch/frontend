@@ -59,7 +59,15 @@ export const fetchVesselInfoThunk = createAsyncThunk(
       const vessel = await GFWAPI.fetch<Vessel>(
         `/vessels/${vesselId}?${stringify({ datasets: [datasetId] })}`
       )
-      return vessel
+      return {
+        ...vessel,
+        firstTransmissionDate: vessel?.firstTransmissionDate || '',
+        // Make sure to have the lastest in the first position
+        vesselRegistryInfo:
+          vessel?.vesselRegistryInfo?.sort(
+            (a, b) => Number(b.latestVesselInfo) - Number(a.latestVesselInfo)
+          ) || [],
+      }
     } catch (e: any) {
       console.warn(e)
       return rejectWithValue(parseAPIError(e))

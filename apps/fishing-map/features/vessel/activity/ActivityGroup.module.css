@@ -1,0 +1,38 @@
+.eventGroup {
+  margin-left: unset;
+  width: 100%;
+  padding-left: var(--space-M);
+  border-top: var(--border);
+  background: var(--gradient);
+  cursor: pointer;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  min-height: 6rem;
+}
+
+.actions {
+  margin-left: auto;
+  display: flex;
+}
+
+.title {
+  font: var(--font-XS);
+  margin-top: var(--space-XS);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  flex: 1;
+  text-transform: uppercase;
+}
+
+.open .description {
+  color: var(--color-promary-blue);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+}

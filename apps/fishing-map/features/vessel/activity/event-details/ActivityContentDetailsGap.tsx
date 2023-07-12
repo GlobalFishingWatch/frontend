@@ -1,8 +1,6 @@
 import React, { Fragment, useMemo } from 'react'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.selectors'
-import { ActivityEvent } from 'types/activity'
+import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import useActivityEventConnect from '../event/event.hook'
 import ActivityContentDetails from './ActivityContentDetails'
 import ActivityContentField from './ActivityContentField'
@@ -22,7 +20,7 @@ const ActivityContentDetailsGap: React.FC<ActivityContentProps> = (props): React
       onRegions: event.gap?.onPosition ? getEventRegionDescription(event.gap?.onPosition) : null,
       offRegions: event.gap?.offPosition ? getEventRegionDescription(event.gap.offPosition) : null,
     }
-  }, [event])
+  }, [event.gap?.offPosition, event.gap?.onPosition, getEventRegionDescription])
 
   return (
     <Fragment>

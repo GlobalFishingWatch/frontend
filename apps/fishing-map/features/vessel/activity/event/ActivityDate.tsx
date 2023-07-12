@@ -1,9 +1,9 @@
 import React, { Fragment, useMemo } from 'react'
 import { DateTime } from 'luxon'
 import I18nDate from 'features/i18n/i18nDate'
-import { ActivityEvent } from 'types/activity'
+import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import useActivityEventConnect from 'features/vessel/activity/event/event.hook'
 import styles from './ActivityDate.module.css'
-import useActivityEventConnect from './event/event.hook'
 
 interface ActivityDateProps {
   event: ActivityEvent
@@ -13,14 +13,17 @@ interface ActivityDateProps {
 const ActivityDate: React.FC<ActivityDateProps> = (props): React.ReactElement => {
   const event = props.event
   const { getEventDurationDescription } = useActivityEventConnect()
-  const durationDescription = useMemo(() => getEventDurationDescription(event), [event])
+  const durationDescription = useMemo(
+    () => getEventDurationDescription(event),
+    [event, getEventDurationDescription]
+  )
 
   const showduration: boolean = useMemo(() => {
     if (!durationDescription) {
       return false
     }
     return !isNaN(event.end as number)
-  }, [event])
+  }, [durationDescription, event?.end])
 
   return (
     <Fragment>

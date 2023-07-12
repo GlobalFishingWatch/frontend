@@ -1,27 +1,30 @@
-import { Fragment, useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import { RenderedVoyage } from 'types/voyage'
-import styles from '../event/Event.module.css'
+import { RenderedVoyage } from 'features/vessel/activity/activity-by-voyage/activity-by-voyage.selectors'
+import styles from '../ActivityGroup.module.css'
 
 interface EventProps {
   event: RenderedVoyage
+  expanded: boolean
+  children: React.ReactNode
   onMapClick?: (event: RenderedVoyage) => void
   onToggleClick?: (event: RenderedVoyage) => void
 }
 
 const VoyageGroup: React.FC<EventProps> = ({
   event,
+  children,
+  expanded = false,
   onMapClick = () => {},
   onToggleClick = () => {},
 }): React.ReactElement => {
   const { t } = useTranslation()
   const voyageLabel = useMemo(() => {
     const parts: string[] = []
-
     if (event.from && event.to) {
       parts.push(
         `${t('common.from', 'from')} ${formatI18nDate(event.start ?? 0, {
@@ -52,36 +55,31 @@ const VoyageGroup: React.FC<EventProps> = ({
     return parts.join(' ')
   }, [event, t])
 
-  const hasEvents = useMemo(() => event.eventsQuantity > 0, [event.eventsQuantity])
+  const hasEvents = event.eventsQuantity > 0
+
   const onToggle = useCallback(
     () => (hasEvents ? onToggleClick(event) : {}),
     [hasEvents, onToggleClick, event]
   )
+
   const onMap = useCallback(
     () => (hasEvents ? onMapClick(event) : {}),
     [hasEvents, onMapClick, event]
   )
 
   return (
-    <Fragment>
-      <div
-        className={cx(styles.event, styles.voyage, { [styles.open]: event.status === 'expanded' })}
-      >
-        <div className={styles.eventData} onClick={onToggle}>
-          <div className={styles.description}>{voyageLabel}</div>
-        </div>
+    <li className={cx(styles.eventGroup, { [styles.open]: expanded })}>
+      <div className={styles.header} onClick={onToggle}>
+        <p className={styles.title}>{voyageLabel}</p>
         {hasEvents && (
           <div className={styles.actions}>
-            <IconButton
-              icon={event.status !== 'expanded' ? 'arrow-down' : 'arrow-top'}
-              size="small"
-              onClick={onToggle}
-            ></IconButton>
-            <IconButton icon="view-on-map" size="small" onClick={onMap}></IconButton>
+            <IconButton size="small" icon={expanded ? 'arrow-top' : 'arrow-down'} />
+            <IconButton icon="view-on-map" size="small" onClick={onMap} />
           </div>
         )}
       </div>
-    </Fragment>
+      {children && <ul className={styles.content}>{children}</ul>}
+    </li>
   )
 }
 

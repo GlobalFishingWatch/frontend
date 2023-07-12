@@ -8,9 +8,7 @@ import {
   selectIsUserLocation,
   selectIsVesselLocation,
   selectIsWorkspacesListLocation,
-  selectLocationType,
 } from 'routes/routes.selectors'
-import { USER, WORKSPACES_LIST } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
 import { isUserLogged, selectUserGroupsPermissions } from 'features/user/user.selectors'

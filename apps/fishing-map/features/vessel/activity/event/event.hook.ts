@@ -5,9 +5,9 @@ import { useSelector } from 'react-redux'
 import { EventTypes, GapPosition, Regions } from '@globalfishingwatch/api-types'
 import { EMPTY_API_VALUES } from 'features/reports/reports.selectors'
 import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.slice'
-import { ActivityEvent } from 'types/activity'
 import { getUTCDateTime } from 'utils/dates'
 import { getEEZName } from 'utils/region-name-transform'
+import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 
 function useActivityEventConnect() {
   const { t } = useTranslation()

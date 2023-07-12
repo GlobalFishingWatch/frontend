@@ -1,11 +1,22 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { resolveDataviewDatasetResources } from '@globalfishingwatch/dataviews-client'
 import { DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
+import { ApiEvent } from '@globalfishingwatch/api-types'
 import { EVENTS_COLORS } from 'data/config'
-import { ActivityEvent } from 'types/activity'
 import { selectResources } from 'features/resources/resources.slice'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import { selectVesselEventsFilteredByTimerange } from '../vessel.selectors'
+
+export enum PortVisitSubEvent {
+  Exit = 'exit',
+  Entry = 'entry',
+}
+
+export interface ActivityEvent extends ApiEvent {
+  color?: string
+  timestamp: number
+  subEvent?: PortVisitSubEvent
+}
 
 export const selectEventsResources = createSelector(
   [selectActiveTrackDataviews, selectResources],
@@ -21,7 +32,7 @@ export const selectEventsResources = createSelector(
 )
 
 export const selectEventsLoading = createSelector([selectEventsResources], (resources) =>
-  resources.map((resource) => resource?.status).includes(ResourceStatus.Loading)
+  resources.some((resource) => resource?.status === ResourceStatus.Loading)
 )
 
 export const selectEventsWithRenderingInfo = createSelector(
