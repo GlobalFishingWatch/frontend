@@ -26,10 +26,7 @@ const EventItem: React.FC<EventProps> = (props): React.ReactElement => {
         <div
           className={cx(styles.eventIcon, styles[event.type], styles[getEncounterStatus(event)])}
         >
-          {event.type === EventTypes.Encounter && <Icon icon="event-encounter" type="default" />}
-          {event.type === EventTypes.Loitering && <Icon icon="event-loitering" type="default" />}
-          {event.type === EventTypes.Fishing && <Icon icon="event-fishing" type="default" />}
-          {event.type === EventTypes.Gap && <Icon icon="transmissions-off" type="default" />}
+          <Icon icon={`event-${event.type}`} />
         </div>
         <div className={styles.eventData}>
           <ActivityDate event={event} />

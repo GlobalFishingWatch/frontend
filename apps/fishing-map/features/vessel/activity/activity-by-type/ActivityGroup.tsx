@@ -34,11 +34,7 @@ const ActivityGroup: React.FC<ActivityGroupProps> = ({
       <li className={cx(styles.eventGroup, { [styles.open]: expanded })}>
         <div className={styles.header} onClick={onToggle}>
           <div className={cx(styles.eventIcon, styles[eventType])}>
-            {eventType === EventTypes.Encounter && <Icon icon="event-encounter" type="default" />}
-            {eventType === EventTypes.Loitering && <Icon icon="event-loitering" type="default" />}
-            {eventType === EventTypes.Fishing && <Icon icon="event-fishing" type="default" />}
-            {eventType === EventTypes.Port && <Icon icon="event-port-visit" type="default" />}
-            {eventType === EventTypes.Gap && <Icon icon="transmissions-off" type="default" />}
+            <Icon icon={`event-${eventType}`} />
           </div>
           <p className={styles.title}>
             {t(

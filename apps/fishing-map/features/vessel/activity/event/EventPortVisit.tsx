@@ -41,7 +41,7 @@ const EventPortVisit: React.FC<EventProps> = ({
       <div style={style}>
         <div className={cx(styles.event, classname)}>
           <div className={cx(styles.eventIcon, 'port_visit')}>
-            <Icon icon="event-port-visit" type="default" />
+            <Icon icon="event-port_visit" type="default" />
           </div>
           <div className={styles.eventData}>
             <ActivityDate event={event} />
@@ -70,7 +70,7 @@ const EventPortVisit: React.FC<EventProps> = ({
             highlighted ? styles.highlighted : ''
           )}
         >
-          {event.type === EventTypes.Port && <Icon icon="event-port-visit" type="default" />}
+          <Icon icon={`event-${event.type}`} type="default" />
         </div>
         <div className={styles.eventData}>
           <div className={styles.description}>
