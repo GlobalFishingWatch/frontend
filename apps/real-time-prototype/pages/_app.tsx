@@ -10,7 +10,6 @@ import { API_BASE } from 'data/config'
 import styles from './App.module.css'
 import './styles.css'
 import './base.css'
-import './timebar-settings.css'
 
 class ErrorBoundary extends Component<{ children: any }, { hasError: boolean }> {
   constructor(props) {

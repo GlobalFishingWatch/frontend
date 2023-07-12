@@ -86,6 +86,7 @@ const MapWrapper = ({ lastUpdate, showLatestPositions }): React.ReactElement => 
       ? new TileLayer({
           id: 'Labels',
           data: `${API_GATEWAY}/${API_GATEWAY_VERSION}/tileset/nslabels/tile?locale=en&x={x}&y={y}&z={z}`,
+          zoomOffset: 1,
           loadOptions: {
             fetch: {
               method: 'GET',

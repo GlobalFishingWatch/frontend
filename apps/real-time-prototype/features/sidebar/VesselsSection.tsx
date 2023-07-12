@@ -84,7 +84,6 @@ function VesselsSection({ lastUpdate }) {
         {sublayers?.length > 0 ? (
           sublayers.map((sublayer) => {
             const { id, active, data, color } = sublayer
-
             return (
               <div key={id} className={styles.sublayer}>
                 <Switch

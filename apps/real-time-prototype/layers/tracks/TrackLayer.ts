@@ -40,13 +40,12 @@ export class TrackLayer extends CompositeLayer<TrackLayerProps> {
         getPosition: (d) => d.coordinates,
         pickable: true,
         radiusUnits: 'pixels',
-        // getRadius: 3,
-        getRadius: (d, context) => {
+        getRadius: (d: TrackPoint, context) => {
           const latestTime = context.data[context.data.length - 1].timestamp
           const maxTimeDifference = latestTime - context.data[0].timestamp
           return 4 - ((latestTime - d.timestamp) / maxTimeDifference) * 3
         },
-        getFillColor: (d, context) => {
+        getFillColor: (d: TrackPoint, context) => {
           const latestTime = context.data[context.data.length - 1].timestamp
           const maxTimeDifference = latestTime - context.data[0].timestamp
           return [
