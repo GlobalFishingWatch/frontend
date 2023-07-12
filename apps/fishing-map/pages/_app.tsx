@@ -43,7 +43,7 @@ function CustomApp({ Component, pageProps }: AppProps) {
           {/* <ClickToComponent /> */}
           <Component {...pageProps} />
           {showFps && <FpsView bottom="10rem" left="39rem" top="auto" />}
-          {showFps && <MemoryStatsComponent />}
+          {showFps && <MemoryStatsComponent corner="bottomRight" />}
         </Provider>
       </RecoilRoot>
     </React.StrictMode>
