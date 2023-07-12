@@ -13,7 +13,7 @@
 .header {
   display: flex;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-block: 0.5rem;
 }
 
 .switch {
@@ -30,6 +30,9 @@
   height: 4rem;
   display: flex;
   align-items: center;
+}
+
+.sublayer:not(:last-child) {
   border-bottom: var(--border);
 }
 
