@@ -90,9 +90,7 @@ const VesselDetail = () => {
           <VesselIdentity />
         </Fragment>
       )}
-      {eventsStatus === AsyncReducerStatus.Finished && (
-        <Tabs tabs={sectionTabs} activeTab={sectionTabs[0].id} />
-      )}
+      <Tabs tabs={sectionTabs} activeTab={sectionTabs[0].id} />
     </Fragment>
   )
 }

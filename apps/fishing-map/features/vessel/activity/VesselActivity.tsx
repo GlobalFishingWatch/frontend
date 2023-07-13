@@ -4,7 +4,8 @@ import { useSelector } from 'react-redux'
 import { Button, Spinner } from '@globalfishingwatch/ui-components'
 import { ActivityByType } from 'features/vessel/activity/activity-by-type/ActivityByType'
 import ActivityByVoyage from 'features/vessel/activity/activity-by-voyage/ActivityByVoyage'
-import { selectEventsLoading } from 'features/vessel/activity/vessels-activity.selectors'
+import { selectVesselEventsStatus } from 'features/vessel/vessel.slice'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from './VesselActivity.module.css'
 import { VesselActivitySummary } from './summary/VesselActivitySummary'
 
@@ -13,8 +14,16 @@ type activityModeType = 'voyages' | 'type'
 const VesselActivity = () => {
   const { t } = useTranslation()
   const [activityMode, setActivityMode] = useState<activityModeType>('type')
-  const eventsLoading = useSelector(selectEventsLoading)
+  const eventsStatus = useSelector(selectVesselEventsStatus)
+  const eventsLoading = eventsStatus === AsyncReducerStatus.Loading
 
+  if (eventsLoading) {
+    return (
+      <div className={styles.placeholder}>
+        <Spinner />
+      </div>
+    )
+  }
   return (
     <Fragment>
       <div className={styles.summaryContainer}>
@@ -36,7 +45,11 @@ const VesselActivity = () => {
             : t('vessel.activityByVoyages', 'Timeline by voyages')}
         </Button>
       </div>
-      {eventsLoading && <Spinner />}
+      {eventsLoading && (
+        <div className={styles.placeholder}>
+          <Spinner />
+        </div>
+      )}
       {!eventsLoading && activityMode === 'type' && <ActivityByType />}
       {!eventsLoading && activityMode === 'voyages' && <ActivityByVoyage />}
     </Fragment>

@@ -18,23 +18,6 @@ export interface ActivityEvent extends ApiEvent {
   subEvent?: PortVisitSubEvent
 }
 
-export const selectEventsResources = createSelector(
-  [selectActiveTrackDataviews, selectResources],
-  (trackDataviews, resources) => {
-    return trackDataviews.flatMap((dataview) => {
-      return resolveDataviewDatasetResources(dataview, DatasetTypes.Events).flatMap(
-        (eventResource) => {
-          return resources[eventResource.url] || []
-        }
-      )
-    })
-  }
-)
-
-export const selectEventsLoading = createSelector([selectEventsResources], (resources) =>
-  resources.some((resource) => resource?.status === ResourceStatus.Loading)
-)
-
 export const selectEventsWithRenderingInfo = createSelector(
   [selectVesselEventsFilteredByTimerange],
   (events) => {
