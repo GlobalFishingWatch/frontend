@@ -13,10 +13,6 @@ import styles from './activity-by-type.module.css'
 import { selectEventsByType } from './activity-by-type.selectors'
 import ActivityGroup from './ActivityGroup'
 
-export interface ActivityByTypeProps {
-  onMoveToMap?: () => void
-}
-
 const EVENTS_ODER = [
   EventTypes.Encounter,
   EventTypes.Fishing,
@@ -27,7 +23,7 @@ const EVENTS_ODER = [
 const HEADER_HEIGHT = 60
 const EVENT_HEIGHT = 50
 
-export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) {
+export function ActivityByType() {
   const activityGroups = useSelector(selectEventsByType)
   const containerRef = useRef<any>()
   const [expandedType, toggleExpandedType] = useActivityByType()
@@ -35,7 +31,7 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
   const [selectedEvent, setSelectedEvent] = useState<ActivityEvent>()
 
   const onInfoClick = useCallback((event: ActivityEvent) => {
-    setSelectedEvent(event)
+    setSelectedEvent((state) => (state?.id === event.id ? undefined : event))
   }, [])
 
   const scrollBottom = useCallback(() => {
@@ -67,10 +63,8 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
         longitude: event.position.lon,
         zoom: viewport.zoom ?? DEFAULT_VIEWPORT.zoom,
       })
-
-      onMoveToMap()
     },
-    [onMoveToMap, setMapCoordinates, viewport.zoom]
+    [setMapCoordinates, viewport.zoom]
   )
 
   const groupsWithDataLength = EVENTS_ODER.filter((eventType) => activityGroups[eventType]).length
