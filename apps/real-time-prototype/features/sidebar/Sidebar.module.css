@@ -87,6 +87,7 @@
   top: 3.2rem;
   right: 0;
   width: max-content;
+  z-index: 1;
 }
 
 .downloadOption {

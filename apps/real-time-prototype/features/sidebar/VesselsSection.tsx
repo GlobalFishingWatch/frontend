@@ -11,7 +11,7 @@ import styles from './Sidebar.module.css'
 
 function VesselsSection({ lastUpdate }) {
   const [query, setQuery] = useState('')
-  const [showDownloadOptions, setShowDownloadOptions] = useState(false)
+  const [showDownloadOptions, setShowDownloadOptions] = useState('')
   const [sublayerWaitingToLoad, setSublayerWaitingToLoad] = useState('')
   const { setMapCoordinates } = useViewport()
   const { allLoaded, sublayers, toggleTrackSublayer, addTrackSublayer, removeTrackSublayer } =
@@ -124,6 +124,7 @@ function VesselsSection({ lastUpdate }) {
         {sublayers?.length > 0 ? (
           sublayers.map((sublayer) => {
             const { id, active, data, color } = sublayer
+            const downloadOptionsOpen = showDownloadOptions === id
             return (
               <div key={id} className={styles.sublayer}>
                 <Switch
@@ -155,13 +156,17 @@ function VesselsSection({ lastUpdate }) {
                       <div className={styles.downloadOptionsContainer}>
                         <IconButton
                           size="small"
-                          icon={showDownloadOptions ? 'close' : 'download'}
-                          onClick={() => setShowDownloadOptions(!showDownloadOptions)}
-                          tooltip={showDownloadOptions ? 'Close' : 'Download track'}
+                          icon={downloadOptionsOpen ? 'close' : 'download'}
+                          onClick={() =>
+                            downloadOptionsOpen
+                              ? setShowDownloadOptions('')
+                              : setShowDownloadOptions(id)
+                          }
+                          tooltip={downloadOptionsOpen ? 'Close' : 'Download track'}
                           tooltipPlacement="top"
                           className={styles.downloadOptionsButton}
                         />
-                        {showDownloadOptions && (
+                        {downloadOptionsOpen && (
                           <div className={styles.downloadOptionsList}>
                             <div
                               onClick={() => onDownloadClick(id, data, 'csv')}
