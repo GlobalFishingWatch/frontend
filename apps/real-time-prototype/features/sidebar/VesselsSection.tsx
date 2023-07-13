@@ -3,11 +3,15 @@ import { saveAs } from 'file-saver'
 import { TrackPoint, useTracksSublayers } from 'layers/tracks/tracks.hooks'
 import { WebMercatorViewport } from '@deck.gl/core/typed'
 import { Button, IconButton, InputText, Spinner, Switch } from '@globalfishingwatch/ui-components'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { useViewport } from 'features/map/map-viewport.hooks'
+import { API_BASE } from 'data/config'
+import { convertToTrackCSV } from 'utils/coordinates'
 import styles from './Sidebar.module.css'
 
 function VesselsSection({ lastUpdate }) {
   const [query, setQuery] = useState('')
+  const [showDownloadOptions, setShowDownloadOptions] = useState(false)
   const [sublayerWaitingToLoad, setSublayerWaitingToLoad] = useState('')
   const { setMapCoordinates } = useViewport()
   const { allLoaded, sublayers, toggleTrackSublayer, addTrackSublayer, removeTrackSublayer } =
@@ -66,19 +70,38 @@ function VesselsSection({ lastUpdate }) {
     }
   }
 
-  const onDownloadClick = (id: string, data: TrackPoint[][]) => {
-    const geojson = {
-      type: 'FeatureCollection',
-      features: data[0].map(({ coordinates, timestamp }) => ({
-        type: 'Feature',
-        properties: { timestamp },
-        geometry: {
-          type: 'Point',
-          coordinates,
-        },
-      })),
+  const onDownloadClick = async (
+    id: string,
+    data: TrackPoint[][],
+    format: 'points' | 'lines' | 'csv' = 'csv'
+  ) => {
+    let formatData: any = data
+
+    if (format === 'csv') {
+      formatData = convertToTrackCSV(data[0])
+      const blob = new Blob([formatData], { type: 'text/plain;charset=utf-8' })
+      saveAs(blob, id + '.csv')
+      return
     }
-    const blob = new Blob([JSON.stringify(geojson)], { type: 'text/plain;charset=utf-8' })
+
+    if (format === 'lines') {
+      formatData = await GFWAPI.fetch(
+        `${API_BASE}/realtime-tracks/${id}?start-date=${lastUpdate}&format=lines`
+      )
+    } else {
+      formatData = {
+        type: 'FeatureCollection',
+        features: data[0].map(({ coordinates, timestamp }) => ({
+          type: 'Feature',
+          properties: { timestamp },
+          geometry: {
+            type: 'Point',
+            coordinates,
+          },
+        })),
+      }
+    }
+    const blob = new Blob([JSON.stringify(formatData)], { type: 'text/plain;charset=utf-8' })
     saveAs(blob, id + '.geo.json')
   }
 
@@ -129,13 +152,38 @@ function VesselsSection({ lastUpdate }) {
                         tooltip="Center map on track"
                         tooltipPlacement="top"
                       />
-                      <IconButton
-                        size="small"
-                        icon="download"
-                        onClick={() => onDownloadClick(id, data)}
-                        tooltip="Download track"
-                        tooltipPlacement="top"
-                      />
+                      <div className={styles.downloadOptionsContainer}>
+                        <IconButton
+                          size="small"
+                          icon={showDownloadOptions ? 'close' : 'download'}
+                          onClick={() => setShowDownloadOptions(!showDownloadOptions)}
+                          tooltip={showDownloadOptions ? 'Close' : 'Download track'}
+                          tooltipPlacement="top"
+                          className={styles.downloadOptionsButton}
+                        />
+                        {showDownloadOptions && (
+                          <div className={styles.downloadOptionsList}>
+                            <div
+                              onClick={() => onDownloadClick(id, data, 'csv')}
+                              className={styles.downloadOption}
+                            >
+                              CSV
+                            </div>
+                            <div
+                              onClick={() => onDownloadClick(id, data, 'points')}
+                              className={styles.downloadOption}
+                            >
+                              GeoJSON Points
+                            </div>
+                            <div
+                              onClick={() => onDownloadClick(id, data, 'lines')}
+                              className={styles.downloadOption}
+                            >
+                              GeoJSON Line
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </Fragment>
                   )}
                   <IconButton
