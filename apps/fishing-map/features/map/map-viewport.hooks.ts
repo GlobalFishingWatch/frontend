@@ -3,7 +3,7 @@ import { fitBounds } from '@math.gl/web-mercator'
 import { atom, useRecoilState } from 'recoil'
 import { debounce } from 'lodash'
 import { ViewStateChangeEvent } from 'react-map-gl'
-import { useAtom, atom as jotaiAtom, useAtomValue, Atom } from 'jotai'
+import { useAtom, atom as jotaiAtom, useAtomValue, Atom, useSetAtom } from 'jotai'
 import { MapView, WebMercatorViewport } from '@deck.gl/core/typed'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { LngLatBounds, Map } from '@globalfishingwatch/maplibre-gl'
@@ -19,13 +19,13 @@ export type ViewState = {
   longitude: number
   latitude: number
   zoom: number
-  pitch: number
-  bearing: number
-  minZoom: number
-  maxZoom: number
-  minPitch: number
-  maxPitch: number
-  transitionDuration?: number
+  // pitch: number
+  // bearing: number
+  // minZoom: number
+  // maxZoom: number
+  // minPitch: number
+  // maxPitch: number
+  // transitionDuration?: number
 }
 const getUrlViewstateNumericParam = (key: string) => {
   if (typeof window === 'undefined') return null
@@ -36,13 +36,6 @@ const viewStateAtom = jotaiAtom<ViewState>({
   longitude: getUrlViewstateNumericParam('longitude') || DEFAULT_VIEWPORT.longitude,
   latitude: getUrlViewstateNumericParam('latitude') || DEFAULT_VIEWPORT.latitude,
   zoom: getUrlViewstateNumericParam('zoom') || DEFAULT_VIEWPORT.zoom,
-  pitch: 0,
-  bearing: 0,
-  minZoom: 0,
-  maxZoom: 20,
-  minPitch: 0,
-  maxPitch: 60,
-  transitionDuration: 1000,
 })
 
 export const miniGlobeBoundsAtom: Atom<MiniglobeBounds | undefined> = jotaiAtom(undefined)
@@ -65,8 +58,8 @@ export const boundsAtom: Atom<MiniglobeBounds> = jotaiAtom((get): MiniglobeBound
 export const useMapBounds = (): { bounds: MiniglobeBounds } => ({
   bounds: useAtomValue(boundsAtom),
 })
-
-export const useViewstate = () => useAtomValue(viewStateAtom)
+export const useViewstateValue = () => useAtomValue(viewStateAtom)
+export const useSetViewstate = () => useSetAtom(viewStateAtom)
 
 export function useViewStateAtom() {
   const [viewstate, setViewstate] = useAtom(viewStateAtom)
