@@ -23,7 +23,7 @@ import {
 import { ExtendedStyleMeta, GeneratorType, LayerComposer } from '@globalfishingwatch/layer-composer'
 import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
-import useMapInstance from 'features/map/map-context.hooks'
+import useMapInstance, { useSetMapInstance } from 'features/map/map-context.hooks'
 import {
   useClickedEventConnect,
   useMapHighlightedEvent,
@@ -50,12 +50,7 @@ import { selectHighlightedTime } from 'features/timebar/timebar.slice'
 import { selectMapTimeseries } from 'features/reports/reports-timeseries.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useMapDeckLayers, useMapLayersLoaded } from 'features/map/map-layers.hooks'
-import {
-  useViewStateAtom,
-  useMapViewAtom,
-  useUpdateViewStateUrlParams,
-  useViewstate,
-} from './map-viewport.hooks'
+import { useViewStateAtom, useMapViewAtom, useUpdateViewStateUrlParams } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import useRulers from './rulers/rulers.hooks'
 import {
@@ -111,6 +106,7 @@ const MapWrapper = () => {
   ///////////////////////////////////////
   // DECK related code
   const deckRef = useRef<DeckGLRef>(null)
+  useSetMapInstance(deckRef)
   const mapView = useMapViewAtom()
   const [viewState, setViewState] = useViewStateAtom()
   const onViewStateChange = useCallback(
@@ -303,11 +299,14 @@ const MapWrapper = () => {
   return (
     <div className={styles.container}>
       <DeckGL
-        id="deckgl"
+        id="map"
         ref={deckRef}
         views={mapView}
         layers={layers}
         style={mapStyles}
+        // more info about preserveDrawingBuffer
+        // https://github.com/visgl/deck.gl/issues/4436#issuecomment-610472868
+        glOptions={{ preserveDrawingBuffer: true }}
         layerFilter={({ renderPass, layer }) => {
           // This avoids performing the default picking
           // since we are handling it through pickMultipleObjects

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { saveAs } from 'file-saver'
 import setInlineStyles from 'utils/dom'
+import { useMap } from 'features/map/map-context.hooks'
 
 export const useDownloadDomElementAsImage = (
   domElement: HTMLElement | undefined,
@@ -13,6 +14,7 @@ export const useDownloadDomElementAsImage = (
   const [previewImageLoading, setPreviewImageLoading] = useState(false)
   const [finished, setFinished] = useState<boolean>(false)
   const html2canvasRef = useRef<any>(null)
+  const map = useMap()
 
   const getCanvas = useCallback(async () => {
     if (!html2canvasRef.current) {
@@ -44,13 +46,14 @@ export const useDownloadDomElementAsImage = (
   const generatePreviewImage = useCallback(async () => {
     try {
       setPreviewImageLoading(true)
+      map?.redraw(true)
       const canvas = await getCanvas()
       setPreviewImage(canvas.toDataURL())
       setPreviewImageLoading(false)
     } catch (e: any) {
       setPreviewImageLoading(false)
     }
-  }, [getCanvas])
+  }, [getCanvas, map])
 
   const downloadImage = useCallback(
     async (fileName = `GFW-fishingmap-${new Date().toLocaleString()}.png`) => {
