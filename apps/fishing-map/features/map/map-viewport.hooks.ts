@@ -1,4 +1,4 @@
-import { useCallback, useRef, useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { fitBounds } from '@math.gl/web-mercator'
 import { atom, useRecoilState } from 'recoil'
 import { debounce } from 'lodash'
@@ -7,7 +7,6 @@ import { useAtom, atom as jotaiAtom, useAtomValue, Atom } from 'jotai'
 import { MapView, WebMercatorViewport } from '@deck.gl/core/typed'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { LngLatBounds, Map } from '@globalfishingwatch/maplibre-gl'
-import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { Bbox, MapCoordinates } from 'types'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { updateUrlViewport } from 'routes/routes.actions'
@@ -15,7 +14,6 @@ import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { selectViewport } from 'features/app/app.selectors'
 import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
 import store from '../../store'
-import useMapInstance from './map-context.hooks'
 
 export type ViewState = {
   longitude: number
@@ -195,18 +193,32 @@ export const getMapCoordinatesFromBounds = (
   })
   return { latitude, longitude, zoom }
 }
+
+function convertToTupleBoundingBox(flatBoundingBox: Bbox): [[number, number], [number, number]] {
+  if (flatBoundingBox.length !== 4) {
+    throw new Error('Invalid flat bounding box')
+  }
+
+  const topLeft: [number, number] = [flatBoundingBox[0], flatBoundingBox[1]]
+  const bottomRight: [number, number] = [flatBoundingBox[2], flatBoundingBox[3]]
+
+  return [topLeft, bottomRight]
+}
+
 export function useMapFitBounds() {
-  const map = useMapInstance()
-  const { setMapCoordinates } = useViewport()
-
-  const fitMapBounds = useCallback(
+  const Viewport = useAtomValue(viewportAtom)
+  const [viewState, setViewState] = useViewStateAtom()
+  const fitBounds = useCallback(
     (bounds: Bbox, params: FitBoundsParams = {}) => {
-      const wrapBbox = wrapBBoxLongitudes(bounds)
-      const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(map, wrapBbox, params)
-      setMapCoordinates({ latitude, longitude, zoom: Math.max(0, zoom) })
+      const newViewport = Viewport.fitBounds(convertToTupleBoundingBox(bounds), params)
+      setViewState({
+        ...viewState,
+        latitude: newViewport.latitude,
+        longitude: newViewport.longitude,
+        zoom: newViewport.zoom,
+      })
     },
-    [map, setMapCoordinates]
+    [Viewport, viewState, setViewState]
   )
-
-  return fitMapBounds
+  return fitBounds
 }
