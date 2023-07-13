@@ -41,11 +41,13 @@ import {
 } from 'features/resources/resources.slice'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { MARINE_MANAGER_DATAVIEWS } from 'data/default-workspaces/marine-manager'
+import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
+import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { trackDatasetConfigsCallback } from '../resources/resources.utils'
 
 export const fetchDataviewByIdThunk = createAsyncThunk(
   'dataviews/fetchById',
-  async (id: number, { rejectWithValue }) => {
+  async (id: Dataview['id'] | Dataview['slug'], { rejectWithValue }) => {
     try {
       const dataview = await GFWAPI.fetch<Dataview>(`/dataviews/${id}`)
       return dataview
@@ -232,6 +234,24 @@ export const selectMarineManagerDataviewInstanceResolved = createSelector(
   }
 )
 
+export const selectVesselProfileDataviewInstanceResolved = createSelector(
+  [selectAllDataviews, selectAllDatasets, selectVesselInfoData],
+  (dataviews, datasets, vessel): UrlDataviewInstance[] | undefined => {
+    if (!dataviews.length || !datasets.length || !vessel) return undefined
+    const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
+      trackDatasetId: vessel.trackDatasetId,
+      infoDatasetId: vessel.dataset,
+      ...(vessel?.eventsDatasetsId?.length && { eventsDatasetsId: vessel?.eventsDatasetsId }),
+    })
+    const dataviewInstancesResolved = resolveDataviews(
+      [vesselDataviewInstance],
+      dataviews,
+      datasets
+    )
+    return dataviewInstancesResolved
+  }
+)
+
 /**
  * Calls getResources to prepare track dataviews' datasetConfigs.
  * Injects app-specific logic by using getResources's callback
@@ -239,6 +259,21 @@ export const selectMarineManagerDataviewInstanceResolved = createSelector(
 export const selectDataviewsResources = createSelector(
   [
     selectAllDataviewInstancesResolved,
+    selectTrackThinningConfig,
+    selectTrackChunksConfig,
+    selectWorkspaceStateProperty('timebarGraph'),
+  ],
+  (dataviewInstances, thinningConfig, chunks, timebarGraph) => {
+    const callbacks: GetDatasetConfigsCallbacks = {
+      tracks: trackDatasetConfigsCallback(thinningConfig, chunks, timebarGraph),
+    }
+    return getResources(dataviewInstances || [], callbacks)
+  }
+)
+
+export const selectVesselProfileDataviewsResources = createSelector(
+  [
+    selectVesselProfileDataviewInstanceResolved,
     selectTrackThinningConfig,
     selectTrackChunksConfig,
     selectWorkspaceStateProperty('timebarGraph'),

@@ -36,7 +36,7 @@ export const ENVIRONMENTAL_LAYER_PREFIX = 'environment-'
 export const CONTEXT_LAYER_PREFIX = 'context-'
 export const VESSEL_DATAVIEW_INSTANCE_PREFIX = 'vessel-'
 
-type VesselInstanceDatasets = {
+export type VesselInstanceDatasets = {
   trackDatasetId?: string
   infoDatasetId?: string
   eventsDatasetsId?: string[]

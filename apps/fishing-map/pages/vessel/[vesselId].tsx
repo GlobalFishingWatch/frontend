@@ -22,7 +22,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     async ({ params, query }) => {
       const { vesselId } = params || ({} as ParsedUrlQuery)
       const queryVesselDatasetId = query.vesselDatasetId as string
-      const datasetMatchesToken = queryVesselDatasetId.match(TOKEN_REGEX)
+      const datasetMatchesToken = queryVesselDatasetId?.match(TOKEN_REGEX)
       const vesselDatasetId = datasetMatchesToken
         ? query[`tk[${datasetMatchesToken[1]}]`]
         : queryVesselDatasetId

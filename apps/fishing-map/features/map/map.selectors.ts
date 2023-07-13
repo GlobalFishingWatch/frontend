@@ -29,9 +29,13 @@ import {
   Range,
 } from 'features/timebar/timebar.slice'
 import { selectBivariateDataviews, selectTimeRange } from 'features/app/app.selectors'
-import { selectMarineManagerDataviewInstanceResolved } from 'features/dataviews/dataviews.slice'
+import {
+  selectMarineManagerDataviewInstanceResolved,
+  selectVesselProfileDataviewInstanceResolved,
+} from 'features/dataviews/dataviews.slice'
 import {
   selectIsVesselLocation,
+  selectIsWorkspaceVesselLocation,
   selectIsMarineManagerLocation,
   selectIsReportLocation,
   selectIsWorkspaceLocation,
@@ -305,6 +309,30 @@ export const selectMarineManagerGenerators = createSelector(
     }
   }
 )
+
+export const selectMapVesselProfileGenerators = createSelector(
+  [
+    selectDefaultBasemapGenerator,
+    selectVesselProfileDataviewInstanceResolved,
+    selectVisibleResources,
+  ],
+  (basemapGenerator, vesselProfileDataviewInstances, resources): AnyGeneratorConfig[] => {
+    const generators: AnyGeneratorConfig[] = [basemapGenerator]
+    if (vesselProfileDataviewInstances?.length) {
+      // TODO Debug why events are not working
+      const vesselProfileGenerators = getDataviewsGeneratorConfigs(
+        vesselProfileDataviewInstances,
+        {},
+        resources
+      )
+      if (vesselProfileGenerators?.length) {
+        generators.push(...vesselProfileGenerators)
+      }
+    }
+    return generators
+  }
+)
+
 export const selectMapWorkspacesListGenerators = createSelector(
   [selectDefaultBasemapGenerator, selectWorkspacesListGenerator, selectMarineManagerGenerators],
   (basemapGenerator, workspaceGenerator, marineManagerGenerators): AnyGeneratorConfig[] => {
@@ -317,30 +345,39 @@ export const selectMapWorkspacesListGenerators = createSelector(
   }
 )
 
+export const selectShowWorkspaceDetail = createSelector(
+  [selectIsWorkspaceLocation, selectIsReportLocation, selectIsWorkspaceVesselLocation],
+  (isWorkspacelLocation, isReportLocation, isVesselLocation) => {
+    return isWorkspacelLocation || isReportLocation || isVesselLocation
+  }
+)
+
 export const selectDefaultMapGeneratorsConfig = createSelector(
   [
     selectWorkspaceError,
     selectWorkspaceStatus,
-    selectIsWorkspaceLocation,
+    selectShowWorkspaceDetail,
     selectIsVesselLocation,
-    selectIsReportLocation,
     selectDefaultBasemapGenerator,
     selectMapGeneratorsConfig,
     selectMapWorkspacesListGenerators,
+    selectMapVesselProfileGenerators,
   ],
   (
     workspaceError,
     workspaceStatus,
-    isWorkspacelLocation,
+    showWorkspaceDetail,
     isVesselLocation,
-    isReportLocation,
     basemapGenerator,
     workspaceGenerators = [] as AnyGeneratorConfig[],
-    workspaceListGenerators
+    workspaceListGenerators,
+    vesselProfileGenerators
   ): AnyGeneratorConfig[] => {
-    const showWorkspaceDetail = isWorkspacelLocation || isReportLocation || isVesselLocation
     if (workspaceError.status === 401 || workspaceStatus === AsyncReducerStatus.Loading) {
       return [basemapGenerator]
+    }
+    if (isVesselLocation) {
+      return vesselProfileGenerators
     }
     if (showWorkspaceDetail) {
       return workspaceStatus !== AsyncReducerStatus.Finished
