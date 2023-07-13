@@ -2341,6 +2341,8 @@ __metadata:
     "@nx/js": 16.4.3
     "@nx/linter": 16.4.3
     "@nx/next": 16.4.3
+    "@nx/nx-darwin-arm64": 16.4.3
+    "@nx/nx-linux-x64-gnu": 16.4.3
     "@nx/plugin": 16.4.3
     "@nx/react": 16.4.3
     "@nx/rollup": 16.4.3
