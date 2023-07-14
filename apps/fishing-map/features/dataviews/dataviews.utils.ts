@@ -89,7 +89,7 @@ const vesselDataviewInstanceTemplate = (dataviewSlug: Dataview['slug']) => {
 export const getVesselDataviewInstance = (
   vessel: { id: string },
   datasets: VesselInstanceDatasets
-): UrlDataviewInstance<GeneratorType> => {
+): DataviewInstance<GeneratorType> => {
   const vesselDataviewInstance = {
     id: `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
     ...vesselDataviewInstanceTemplate(TEMPLATE_VESSEL_DATAVIEW_SLUG),
