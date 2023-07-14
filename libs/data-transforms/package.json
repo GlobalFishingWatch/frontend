@@ -4,6 +4,7 @@
   "license": "MIT",
   "description": "Utils to decode various data formats",
   "dependencies": {
+    "luxon": "^3.3.0",
     "papaparse": "5.3.2"
   },
   "peerDependencies": {

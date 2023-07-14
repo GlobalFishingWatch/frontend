@@ -9,7 +9,8 @@
     "packages": [
       "apps/*",
       "linting",
-      "libs/i18n-labels"
+      "libs/i18n-labels",
+      "libs/data-transforms"
     ]
   },
   "scripts": {
