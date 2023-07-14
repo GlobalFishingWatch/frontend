@@ -22,7 +22,7 @@ import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { EVENTS_CONFIG_BY_EVENT_TYPE } from 'features/vessel/vessel.config'
 import { VesselInstanceDatasets } from 'features/dataviews/dataviews.utils'
-import { fetchDataviewByIdThunk } from 'features/dataviews/dataviews.slice'
+import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { TEMPLATE_VESSEL_DATAVIEW_SLUG } from 'data/workspaces'
 
 export const DEFAULT_VESSEL_DATASET_ID = 'public-global-all-vessels:latest'
@@ -67,7 +67,7 @@ export const fetchVesselInfoThunk = createAsyncThunk(
       const action = await dispatch(fetchDatasetByIdThunk(datasetId))
       const dataset = action.payload as Dataset
       // Datasets and dataview needed to mock follow the structure of the map and resolve the generators
-      dispatch(fetchDataviewByIdThunk(TEMPLATE_VESSEL_DATAVIEW_SLUG))
+      dispatch(fetchDataviewsByIdsThunk([TEMPLATE_VESSEL_DATAVIEW_SLUG]))
       const trackDatasetId = getRelatedDatasetsByType(dataset, DatasetTypes.Tracks)?.[0]?.id || ''
       const eventsDatasetsId =
         getRelatedDatasetsByType(dataset, DatasetTypes.Events)?.map((d) => d.id) || []

@@ -16,7 +16,7 @@ import VesselSummary from 'features/vessel/VesselSummary'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import { selectRegionsDatasets } from 'features/regions/regions.selectors'
-import { useFetchVesselProfileDataviewResources } from 'features/resources/resources.hooks'
+import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import VesselIdentity from './VesselIdentity'
 import VesselActivity from './activity/VesselActivity'
 
@@ -24,7 +24,7 @@ type VesselSection = 'activity' | 'relatedVessels' | 'areas'
 
 const VesselDetail = () => {
   const { t } = useTranslation()
-  useFetchVesselProfileDataviewResources()
+  useFetchDataviewResources()
   const dispatch = useAppDispatch()
   const vesselId = useSelector(selectVesselId)
   const datasetId = useSelector(selectVesselDatasetId)
@@ -47,12 +47,12 @@ const VesselDetail = () => {
     ) {
       dispatch(fetchVesselInfoThunk({ vesselId, datasetId }))
     }
-    if (
-      eventsStatus === AsyncReducerStatus.Idle ||
-      (eventsStatus === AsyncReducerStatus.Error && eventsError?.status === 401)
-    ) {
-      dispatch(fetchVesselEventsThunk({ vesselId, datasetId }))
-    }
+    // if (
+    //   eventsStatus === AsyncReducerStatus.Idle ||
+    //   (eventsStatus === AsyncReducerStatus.Error && eventsError?.status === 401)
+    // ) {
+    //   dispatch(fetchVesselEventsThunk({ vesselId, datasetId }))
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [datasetId, dispatch, vesselId])
 

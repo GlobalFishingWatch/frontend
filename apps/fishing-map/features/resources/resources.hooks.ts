@@ -1,9 +1,6 @@
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import {
-  selectDataviewsResources,
-  selectVesselProfileDataviewsResources,
-} from 'features/dataviews/dataviews.slice'
+import { selectDataviewsResources } from 'features/dataviews/dataviews.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { parseTrackEventChunkProps } from 'features/timebar/timebar.utils'
@@ -28,10 +25,5 @@ export const useFetchResources = (resources) => {
 }
 export const useFetchDataviewResources = () => {
   const dataviewsResources = useSelector(selectDataviewsResources)
-  useFetchResources(dataviewsResources?.resources)
-}
-
-export const useFetchVesselProfileDataviewResources = () => {
-  const dataviewsResources = useSelector(selectVesselProfileDataviewsResources)
   useFetchResources(dataviewsResources?.resources)
 }

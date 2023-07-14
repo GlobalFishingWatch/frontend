@@ -29,10 +29,7 @@ import {
   Range,
 } from 'features/timebar/timebar.slice'
 import { selectBivariateDataviews, selectTimeRange } from 'features/app/app.selectors'
-import {
-  selectMarineManagerDataviewInstanceResolved,
-  selectVesselProfileDataviewInstanceResolved,
-} from 'features/dataviews/dataviews.slice'
+import { selectMarineManagerDataviewInstanceResolved } from 'features/dataviews/dataviews.slice'
 import {
   selectIsVesselLocation,
   selectIsWorkspaceVesselLocation,
@@ -310,29 +307,6 @@ export const selectMarineManagerGenerators = createSelector(
   }
 )
 
-export const selectMapVesselProfileGenerators = createSelector(
-  [
-    selectDefaultBasemapGenerator,
-    selectVesselProfileDataviewInstanceResolved,
-    selectVisibleResources,
-  ],
-  (basemapGenerator, vesselProfileDataviewInstances, resources): AnyGeneratorConfig[] => {
-    const generators: AnyGeneratorConfig[] = [basemapGenerator]
-    if (vesselProfileDataviewInstances?.length) {
-      // TODO Debug why events are not working
-      const vesselProfileGenerators = getDataviewsGeneratorConfigs(
-        vesselProfileDataviewInstances,
-        {},
-        resources
-      )
-      if (vesselProfileGenerators?.length) {
-        generators.push(...vesselProfileGenerators)
-      }
-    }
-    return generators
-  }
-)
-
 export const selectMapWorkspacesListGenerators = createSelector(
   [selectDefaultBasemapGenerator, selectWorkspacesListGenerator, selectMarineManagerGenerators],
   (basemapGenerator, workspaceGenerator, marineManagerGenerators): AnyGeneratorConfig[] => {
@@ -361,7 +335,6 @@ export const selectDefaultMapGeneratorsConfig = createSelector(
     selectDefaultBasemapGenerator,
     selectMapGeneratorsConfig,
     selectMapWorkspacesListGenerators,
-    selectMapVesselProfileGenerators,
   ],
   (
     workspaceError,
@@ -369,20 +342,17 @@ export const selectDefaultMapGeneratorsConfig = createSelector(
     showWorkspaceDetail,
     isVesselLocation,
     basemapGenerator,
-    workspaceGenerators = [] as AnyGeneratorConfig[],
-    workspaceListGenerators,
-    vesselProfileGenerators
+    mapGenerators = [] as AnyGeneratorConfig[],
+    workspaceListGenerators
   ): AnyGeneratorConfig[] => {
+    if (isVesselLocation) {
+      return [basemapGenerator, ...mapGenerators]
+    }
     if (workspaceError.status === 401 || workspaceStatus === AsyncReducerStatus.Loading) {
       return [basemapGenerator]
     }
-    if (isVesselLocation) {
-      return vesselProfileGenerators
-    }
     if (showWorkspaceDetail) {
-      return workspaceStatus !== AsyncReducerStatus.Finished
-        ? [basemapGenerator]
-        : workspaceGenerators
+      return workspaceStatus !== AsyncReducerStatus.Finished ? [basemapGenerator] : mapGenerators
     }
     return workspaceListGenerators
   }

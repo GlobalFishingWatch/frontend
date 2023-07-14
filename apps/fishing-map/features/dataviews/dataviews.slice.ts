@@ -29,6 +29,7 @@ import {
 } from 'features/workspace/workspace.selectors'
 import {
   selectIsMarineManagerLocation,
+  selectIsVesselLocation,
   selectUrlDataviewInstances,
   selectUrlDataviewInstancesOrder,
 } from 'routes/routes.selectors'
@@ -213,9 +214,33 @@ export const selectDataviewInstancesMergedOrdered = createSelector(
 )
 
 export const selectAllDataviewInstancesResolved = createSelector(
-  [selectDataviewInstancesMergedOrdered, selectAllDataviews, selectAllDatasets],
-  (dataviewInstances, dataviews, datasets): UrlDataviewInstance[] | undefined => {
-    if (!dataviewInstances) return
+  [
+    selectDataviewInstancesMergedOrdered,
+    selectAllDataviews,
+    selectAllDatasets,
+    selectIsVesselLocation,
+    selectVesselInfoData,
+  ],
+  (
+    mapDataviewInstances,
+    dataviews,
+    datasets,
+    isVesselLocation,
+    vessel
+  ): UrlDataviewInstance[] | undefined => {
+    const vesselDataviewInstance =
+      isVesselLocation && vessel
+        ? [
+            getVesselDataviewInstance(vessel, {
+              trackDatasetId: vessel.trackDatasetId,
+              infoDatasetId: vessel.dataset,
+              ...(vessel?.eventsDatasetsId?.length && {
+                eventsDatasetsId: vessel?.eventsDatasetsId,
+              }),
+            }),
+          ]
+        : []
+    const dataviewInstances = isVesselLocation ? vesselDataviewInstance : mapDataviewInstances
     const dataviewInstancesResolved = resolveDataviews(dataviewInstances, dataviews, datasets)
     return dataviewInstancesResolved
   }
@@ -234,24 +259,6 @@ export const selectMarineManagerDataviewInstanceResolved = createSelector(
   }
 )
 
-export const selectVesselProfileDataviewInstanceResolved = createSelector(
-  [selectAllDataviews, selectAllDatasets, selectVesselInfoData],
-  (dataviews, datasets, vessel): UrlDataviewInstance[] | undefined => {
-    if (!dataviews.length || !datasets.length || !vessel) return undefined
-    const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
-      trackDatasetId: vessel.trackDatasetId,
-      infoDatasetId: vessel.dataset,
-      ...(vessel?.eventsDatasetsId?.length && { eventsDatasetsId: vessel?.eventsDatasetsId }),
-    })
-    const dataviewInstancesResolved = resolveDataviews(
-      [vesselDataviewInstance],
-      dataviews,
-      datasets
-    )
-    return dataviewInstancesResolved
-  }
-)
-
 /**
  * Calls getResources to prepare track dataviews' datasetConfigs.
  * Injects app-specific logic by using getResources's callback
@@ -259,21 +266,6 @@ export const selectVesselProfileDataviewInstanceResolved = createSelector(
 export const selectDataviewsResources = createSelector(
   [
     selectAllDataviewInstancesResolved,
-    selectTrackThinningConfig,
-    selectTrackChunksConfig,
-    selectWorkspaceStateProperty('timebarGraph'),
-  ],
-  (dataviewInstances, thinningConfig, chunks, timebarGraph) => {
-    const callbacks: GetDatasetConfigsCallbacks = {
-      tracks: trackDatasetConfigsCallback(thinningConfig, chunks, timebarGraph),
-    }
-    return getResources(dataviewInstances || [], callbacks)
-  }
-)
-
-export const selectVesselProfileDataviewsResources = createSelector(
-  [
-    selectVesselProfileDataviewInstanceResolved,
     selectTrackThinningConfig,
     selectTrackChunksConfig,
     selectWorkspaceStateProperty('timebarGraph'),

@@ -111,16 +111,25 @@ export const trackDatasetConfigsCallback = (
           return trackChunk
         })
       }
-      const allEvents = events.map((event) => ({
-        ...event,
-        query: [
-          ...(Object.entries(DEFAULT_PAGINATION_PARAMS).map(([id, value]) => ({
-            id,
-            value,
-          })) as DataviewDatasetConfigParam[]),
-          ...event?.query,
-        ],
-      }))
+      const allEvents = events.map((event) => {
+        const hasPaginationAdded = Object.keys(DEFAULT_PAGINATION_PARAMS).every((id) =>
+          event.query.map((q) => q.id).includes(id)
+        )
+        if (hasPaginationAdded) {
+          // Pagination already included, not needed to add it
+          return event
+        }
+        return {
+          ...event,
+          query: [
+            ...(Object.entries(DEFAULT_PAGINATION_PARAMS).map(([id, value]) => ({
+              id,
+              value,
+            })) as DataviewDatasetConfigParam[]),
+            ...event?.query,
+          ],
+        }
+      })
       // Clean resources when mandatory vesselId is missing
       // needed for vessels with no info datasets (zebraX)
       const vesselData = hasDatasetConfigVesselData(info)
