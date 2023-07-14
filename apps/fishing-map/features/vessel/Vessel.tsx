@@ -4,10 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Spinner, Tab, Tabs } from '@globalfishingwatch/ui-components'
 import { selectVesselId, selectVesselDatasetId } from 'routes/routes.selectors'
 import {
-  fetchVesselEventsThunk,
   fetchVesselInfoThunk,
-  selectVesselEventsError,
-  selectVesselEventsStatus,
   selectVesselInfoError,
   selectVesselInfoStatus,
 } from 'features/vessel/vessel.slice'
@@ -30,8 +27,6 @@ const VesselDetail = () => {
   const datasetId = useSelector(selectVesselDatasetId)
   const infoStatus = useSelector(selectVesselInfoStatus)
   const infoError = useSelector(selectVesselInfoError)
-  const eventsStatus = useSelector(selectVesselEventsStatus)
-  const eventsError = useSelector(selectVesselEventsError)
   const regionsDatasets = useSelector(selectRegionsDatasets)
 
   useEffect(() => {
@@ -47,12 +42,6 @@ const VesselDetail = () => {
     ) {
       dispatch(fetchVesselInfoThunk({ vesselId, datasetId }))
     }
-    // if (
-    //   eventsStatus === AsyncReducerStatus.Idle ||
-    //   (eventsStatus === AsyncReducerStatus.Error && eventsError?.status === 401)
-    // ) {
-    //   dispatch(fetchVesselEventsThunk({ vesselId, datasetId }))
-    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [datasetId, dispatch, vesselId])
 

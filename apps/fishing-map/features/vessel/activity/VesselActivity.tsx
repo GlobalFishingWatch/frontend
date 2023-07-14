@@ -4,8 +4,7 @@ import { useSelector } from 'react-redux'
 import { Button, Spinner } from '@globalfishingwatch/ui-components'
 import { ActivityByType } from 'features/vessel/activity/activity-by-type/ActivityByType'
 import ActivityByVoyage from 'features/vessel/activity/activity-by-voyage/ActivityByVoyage'
-import { selectVesselEventsStatus } from 'features/vessel/vessel.slice'
-import { AsyncReducerStatus } from 'utils/async-slice'
+import { selectVesselEventsLoading } from 'features/vessel/activity/vessels-activity.selectors'
 import styles from './VesselActivity.module.css'
 import { VesselActivitySummary } from './summary/VesselActivitySummary'
 
@@ -14,8 +13,7 @@ type activityModeType = 'voyages' | 'type'
 const VesselActivity = () => {
   const { t } = useTranslation()
   const [activityMode, setActivityMode] = useState<activityModeType>('type')
-  const eventsStatus = useSelector(selectVesselEventsStatus)
-  const eventsLoading = eventsStatus === AsyncReducerStatus.Loading
+  const eventsLoading = useSelector(selectVesselEventsLoading)
 
   if (eventsLoading) {
     return (
