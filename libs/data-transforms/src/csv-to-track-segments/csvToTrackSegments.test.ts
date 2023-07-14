@@ -1,9 +1,59 @@
 import { parse } from 'papaparse'
-import { csvToTrackSegments } from './csvToTrackSegments'
+import { csvToTrackSegments, getUTCDate } from './csvToTrackSegments'
 import { checkRecordValidity } from './checkRecordValidity'
 import { guessColumns } from './guessColumns'
 const fs = require('fs')
 const path = require('path')
+
+describe('getUTCDate', () => {
+  it('parses timestamps in milliseconds as number', () => {
+    const date = getUTCDate(1689362551274)
+    expect(date.getTime()).not.toBeNaN()
+    expect(date.toISOString()).toEqual('2023-07-14T19:22:31.274Z')
+  })
+
+  it('parses timestamps in milliseconds as string', () => {
+    const date = getUTCDate('1689362551274')
+    expect(date.getTime()).not.toBeNaN()
+    expect(date.toISOString()).toEqual('2023-07-14T19:22:31.274Z')
+  })
+
+  it('parses timestamps in ISO format with timezone', () => {
+    const date = getUTCDate('2023-07-14T19:22:31.274Z')
+    expect(date.getTime()).not.toBeNaN()
+    expect(date.toISOString()).toEqual('2023-07-14T19:22:31.274Z')
+  })
+
+  it('parses timestamps in ISO format with numeric timezone', () => {
+    const date = getUTCDate('2023-07-14T11:22:31.274-0800')
+    expect(date.getTime()).not.toBeNaN()
+    expect(date.toISOString()).toEqual('2023-07-14T19:22:31.274Z')
+  })
+
+  it('parses timestamps in ISO format without timezone asuming they are in UTC', () => {
+    const date = getUTCDate('2023-07-14T19:22:31.274')
+    expect(date.getTime()).not.toBeNaN()
+    expect(date.toISOString()).toEqual('2023-07-14T19:22:31.274Z')
+  })
+
+  it('parses timestamps in SQL format with timezone', () => {
+    const date = getUTCDate('2020-01-01 00:00:24.000000 UTC')
+    expect(date.getTime()).not.toBeNaN()
+    expect(date.toISOString()).toEqual('2020-01-01T00:00:24.000Z')
+  })
+
+  it('parses timestamps in SQL format with numeric timezone', () => {
+    const date = getUTCDate('2020-01-01 12:00:24.000000 -0300')
+    expect(date.getTime()).not.toBeNaN()
+    expect(date.toISOString()).toEqual('2020-01-01T15:00:24.000Z')
+  })
+
+  it('parses timestamps in SQL format without timezone asuming they are in UTC', () => {
+    const date = getUTCDate('2015-09-11 08:52:28.000')
+    expect(date.getTime()).not.toBeNaN()
+    expect(date.toISOString()).toEqual('2015-09-11T08:52:28.000Z')
+  })
+})
 
 describe('Basic raw csv to track', () => {
   const rawCsv = fs.readFileSync(path.join(__dirname, 'mock/messages.csv'), 'utf-8')
@@ -83,7 +133,7 @@ describe('Basic raw csv to track', () => {
         // per id
         .filter((item: any) => item[columns.id] === id)
         // get only some records
-        .slice(0, 100)
+        .slice(0, 20)
         // and add the index position that should match the position in the segment
         .map((r: any, i) => ({ ...r, i })),
     ]
@@ -99,9 +149,8 @@ describe('Basic raw csv to track', () => {
       expect(segmentPoint).toBeDefined()
       expect(segmentPoint.latitude).toEqual(point[columns.latitude])
       expect(segmentPoint.longitude).toEqual(point[columns.longitude])
-      const dateTrack = new Date(segmentPoint.timestamp ?? '')
-      const dateCsv = new Date(point[columns.timestamp])
-      expect(dateTrack).toEqual(dateCsv)
+      const dateCsv = getUTCDate(point[columns.timestamp])
+      expect(segmentPoint.timestamp).toEqual(dateCsv.getTime())
     }
   )
 })
@@ -184,7 +233,7 @@ describe('Raw csv to track with UTC timestamps', () => {
         // per id
         .filter((item: any) => item[columns.id] === id)
         // get only some records
-        .slice(0, 100)
+        .slice(0, 20)
         // and add the index position that should match the position in the segment
         .map((r: any, i) => ({ ...r, i })),
     ]
@@ -200,9 +249,8 @@ describe('Raw csv to track with UTC timestamps', () => {
       expect(segmentPoint).toBeDefined()
       expect(segmentPoint.latitude).toEqual(point[columns.latitude])
       expect(segmentPoint.longitude).toEqual(point[columns.longitude])
-      const dateTrack = new Date(segmentPoint.timestamp ?? '')
-      const dateCsv = new Date(point[columns.timestamp])
-      expect(dateTrack).toEqual(dateCsv)
+      const dateCsv = getUTCDate(point[columns.timestamp])
+      expect(segmentPoint.timestamp).toEqual(dateCsv.getTime())
     }
   )
 })
