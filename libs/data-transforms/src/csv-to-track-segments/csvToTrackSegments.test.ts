@@ -144,7 +144,7 @@ describe('Basic raw csv to track', () => {
     (point: any) => {
       const i = point.i
       const segment = getSegmentById(point[columns.id])
-      const segmentPoint = segment[i] //.find((s) => s.timestamp === point.timestamp) ?? {}
+      const segmentPoint = segment[i]
 
       expect(segmentPoint).toBeDefined()
       expect(segmentPoint.latitude).toEqual(point[columns.latitude])
@@ -244,7 +244,7 @@ describe('Raw csv to track with UTC timestamps', () => {
     (point: any) => {
       const i = point.i
       const segment = getSegmentById(point[columns.id])
-      const segmentPoint = segment[i] //.find((s) => s.timestamp === point.timestamp) ?? {}
+      const segmentPoint = segment[i]
 
       expect(segmentPoint).toBeDefined()
       expect(segmentPoint.latitude).toEqual(point[columns.latitude])
