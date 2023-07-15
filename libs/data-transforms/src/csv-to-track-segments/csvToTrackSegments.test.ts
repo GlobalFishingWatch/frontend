@@ -53,6 +53,11 @@ describe('getUTCDate', () => {
     expect(date.getTime()).not.toBeNaN()
     expect(date.toISOString()).toEqual('2015-09-11T08:52:28.000Z')
   })
+
+  it('parses invalid timestamp to an Invalid Date object', () => {
+    const date = getUTCDate('This Is Not a Formatted Date')
+    expect(date.getTime()).toBeNaN()
+  })
 })
 
 describe('Basic raw csv to track', () => {
