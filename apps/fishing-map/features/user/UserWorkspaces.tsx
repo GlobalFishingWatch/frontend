@@ -36,7 +36,7 @@ function UserWorkspaces() {
     AppWorkspace | undefined
   >()
   // const [workspaceTemplates, setWorkspaceTemplates] = useState<string[] | undefined>()
-  const { setViewState } = useViewStateAtom()
+  const { viewState, setViewState } = useViewStateAtom()
   // const defaultWorkspace = useSelector(selectDefaultWorkspace)
   const workspaces = useSelector(selectUserWorkspaces)
   // const userGroups = useSelector(selectUserGroups)
@@ -123,10 +123,10 @@ function UserWorkspaces() {
   const onWorkspaceClick = useCallback(
     (workspace: AppWorkspace) => {
       if (workspace.viewport) {
-        setViewState(workspace.viewport)
+        setViewState({ ...viewState, ...workspace.viewport })
       }
     },
-    [setViewState]
+    [viewState, setViewState]
   )
 
   const onDeleteClick = useCallback(

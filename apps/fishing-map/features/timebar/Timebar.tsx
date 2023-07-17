@@ -245,13 +245,14 @@ const TimebarWrapper = () => {
     (event: TimebarChartChunk<TrackEventChunkProps>) => {
       if (event?.coordinates) {
         setViewState({
+          ...viewState,
           latitude: event?.coordinates?.[1],
           longitude: event.coordinates?.[0],
           zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
         })
       }
     },
-    [setViewState, zoom]
+    [viewState, setViewState, zoom]
   )
 
   const showGraph = useMemo(() => {

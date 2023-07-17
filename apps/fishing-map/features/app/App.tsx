@@ -25,7 +25,7 @@ import {
 import { fetchUserThunk } from 'features/user/user.slice'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { useSetViewstate, useMapFitBounds } from 'features/map/map-viewport.hooks'
+import { useViewStateAtom, useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { selectShowTimeComparison } from 'features/reports/reports.selectors'
 import { isUserLogged } from 'features/user/user.selectors'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
@@ -134,7 +134,7 @@ function App() {
   }, [])
 
   const fitMapBounds = useMapFitBounds()
-  const setViewState = useSetViewstate()
+  const { viewState, setViewState } = useViewStateAtom()
   const { setTimerange } = useTimerangeConnect()
 
   const locationType = useSelector(selectLocationType)
@@ -164,7 +164,7 @@ function App() {
         const workspace = resolvedAction.payload as Workspace
         const vs = urlViewport || workspace?.viewport
         if (vs && !isReportLocation) {
-          setViewState(vs)
+          setViewState({ ...viewState, vs })
         }
         if (!urlTimeRange && workspace?.startAt && workspace?.endAt) {
           setTimerange({
@@ -197,7 +197,7 @@ function App() {
       if (reportAreaBounds) {
         fitMapBounds(reportAreaBounds, { padding: FIT_BOUNDS_REPORT_PADDING })
       } else {
-        setViewState({ latitude: 0, longitude: 0, zoom: 0 })
+        setViewState({ ...viewState, latitude: 0, longitude: 0, zoom: 0 })
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

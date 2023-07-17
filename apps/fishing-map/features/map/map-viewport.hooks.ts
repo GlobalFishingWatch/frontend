@@ -55,13 +55,7 @@ export const useViewstateValue = () => useAtomValue(viewStateAtom)
 export const useSetViewstate = () => useSetAtom(viewStateAtom)
 
 export function useViewStateAtom() {
-  const [viewState, _setViewState] = useAtom(viewStateAtom)
-  const setViewState = useCallback(
-    (newViewSate: Partial<ViewState>) => {
-      _setViewState(() => ({ ...viewState, ...newViewSate }))
-    },
-    [viewState, _setViewState]
-  )
+  const [viewState, setViewState] = useAtom(viewStateAtom)
   return { viewState, setViewState }
 }
 
@@ -148,7 +142,7 @@ function convertToTupleBoundingBox(flatBoundingBox: Bbox): [[number, number], [n
 
 export function useMapFitBounds() {
   const Viewport = useAtomValue(viewportAtom)
-  const [viewState, setViewState] = useViewStateAtom()
+  const { setViewState, viewState } = useViewStateAtom()
   const fitBounds = useCallback(
     (bounds: Bbox, params: FitBoundsParams = {}) => {
       const newViewport = Viewport.fitBounds(convertToTupleBoundingBox(bounds), params)

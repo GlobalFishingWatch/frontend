@@ -52,7 +52,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const { dispatchClickedEvent } = useClickedEventConnect()
   const locationType = useSelector(selectLocationType)
-  const { setViewState } = useViewStateAtom()
+  const { viewState, setViewState } = useViewStateAtom()
   const locationCategory = useSelector(selectLocationCategory)
   const availableCategories = useSelector(selectAvailableWorkspacesCategories)
   const userData = useSelector(selectUserData)
@@ -69,10 +69,10 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   }, [dispatch, userData])
 
   const onCategoryClick = useCallback(() => {
-    setViewState(DEFAULT_WORKSPACE_LIST_VIEWPORT)
+    setViewState({ ...viewState, ...DEFAULT_WORKSPACE_LIST_VIEWPORT })
     dispatchClickedEvent(null)
     cleanFeatureState('highlight')
-  }, [setViewState, cleanFeatureState, dispatchClickedEvent])
+  }, [viewState, setViewState, cleanFeatureState, dispatchClickedEvent])
 
   return (
     <Fragment>

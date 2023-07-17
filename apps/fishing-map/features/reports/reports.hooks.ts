@@ -63,16 +63,16 @@ export function useReportAreaInViewport() {
 }
 
 export function useFitAreaInViewport() {
-  const { setViewState } = useViewStateAtom()
+  const { viewState, setViewState } = useViewStateAtom()
   const reportAreaIds = useSelector(selectReportAreaIds)
   const area = useSelector(selectDatasetAreaDetail(reportAreaIds))
   const areaCenter = useReportAreaCenter(area!?.bounds)
   const areaInViewport = useReportAreaInViewport()
   return useCallback(() => {
     if (!areaInViewport && areaCenter) {
-      setViewState(areaCenter)
+      setViewState({ ...viewState, ...areaCenter })
     }
-  }, [areaCenter, areaInViewport, setViewState])
+  }, [areaCenter, areaInViewport, viewState, setViewState])
 }
 
 export function useReportAreaHighlight(areaId: string, sourceId: string) {

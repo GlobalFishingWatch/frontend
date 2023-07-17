@@ -16,17 +16,17 @@ import styles from './User.module.css'
 
 function UserWorkspacesPrivate() {
   const { t } = useTranslation()
-  const { setViewState } = useViewStateAtom()
+  const { viewState, setViewState } = useViewStateAtom()
   const workspaces = useSelector(selectUserWorkspacesPrivate)
   const workspacesStatus = useSelector(selectWorkspaceListStatus)
 
   const onWorkspaceClick = useCallback(
     (workspace: Workspace) => {
       if (workspace.viewport) {
-        setViewState(workspace.viewport)
+        setViewState({ ...viewState, ...workspace.viewport })
       }
     },
-    [setViewState]
+    [viewState, setViewState]
   )
 
   const loading =

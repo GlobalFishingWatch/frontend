@@ -20,7 +20,7 @@ import WorkspaceWizard from './WorkspaceWizard'
 
 function WorkspacesList() {
   const { t, i18n } = useTranslation()
-  const { setViewState } = useViewStateAtom()
+  const { viewState, setViewState } = useViewStateAtom()
   const locationCategory = useSelector(selectLocationCategory)
   const highlightedWorkspaces = useSelector(selectCurrentHighlightedWorkspaces)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
@@ -29,10 +29,10 @@ function WorkspacesList() {
   const onWorkspaceClick = useCallback(
     (workspace: HighlightedWorkspaceMerged) => {
       if (workspace.viewport) {
-        setViewState(workspace.viewport)
+        setViewState({ ...viewState, ...workspace.viewport })
       }
     },
-    [setViewState]
+    [viewState, setViewState]
   )
 
   if (highlightedWorkspacesStatus === AsyncReducerStatus.Finished && !validCategory) {

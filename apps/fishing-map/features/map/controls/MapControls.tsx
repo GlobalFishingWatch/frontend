@@ -66,7 +66,7 @@ const MapControls = ({
     }
   }, [])
 
-  const [viewState, setViewState] = useViewStateAtom()
+  const { viewState, setViewState } = useViewStateAtom()
   const { latitude, longitude, zoom } = viewState
 
   const { bounds } = useMapBounds()

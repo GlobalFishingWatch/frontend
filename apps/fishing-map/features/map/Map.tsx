@@ -116,10 +116,10 @@ const MapWrapper = () => {
   const { viewState, setViewState } = useViewStateAtom()
   const onViewStateChange = useCallback(
     (params: ViewStateChangeParameters) => {
-      const viewState = params.viewState as ViewState
-      setViewState(viewState)
+      const newViewState = params.viewState as ViewState
+      setViewState({ ...viewState, ...newViewState })
     },
-    [setViewState]
+    [viewState, setViewState]
   )
   useUpdateViewStateUrlParams()
   ////////////////////////////////////////

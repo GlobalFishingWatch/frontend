@@ -84,7 +84,7 @@ export const useGeneratorsDictionaryConnect = () => {
 // as well as the functions we need to update the same portions
 export const useGeneratorsConnect = () => {
   const { start, end } = useTimerangeConnect()
-  const { viewstate } = useViewStateAtom()
+  const { viewState } = useViewStateAtom()
   const { i18n } = useTranslation()
   const generatorsConfig = useSelector(selectDefaultMapGeneratorsConfig)
   const showTimeComparison = useSelector(selectShowTimeComparison)
@@ -106,7 +106,7 @@ export const useGeneratorsConnect = () => {
 
   return useMemo(() => {
     let globalConfig: GlobalGeneratorConfig = {
-      zoom: viewstate.zoom,
+      zoom: viewState.zoom,
       start,
       end,
       token: GFWAPI.getToken(),
@@ -123,7 +123,7 @@ export const useGeneratorsConnect = () => {
       globalConfig,
     }
   }, [
-    viewstate.zoom,
+    viewState.zoom,
     start,
     end,
     i18n.language,
@@ -142,7 +142,7 @@ export const useClickedEventConnect = () => {
   const apiEventStatus = useSelector(selectApiEventStatus)
   const { dispatchLocation } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(map)
-  const { setViewstate } = useViewStateAtom()
+  const { viewState, setViewState } = useViewStateAtom()
   const tilesClusterLoaded = useMapClusterTilesLoaded()
   const fishingPromiseRef = useRef<any>()
   const presencePromiseRef = useRef<any>()
@@ -186,7 +186,7 @@ export const useClickedEventConnect = () => {
         )
         const { latitude, longitude, zoom } = workspace.properties
         if (latitude && longitude && zoom) {
-          setViewstate({ latitude, longitude, zoom })
+          setViewState({ ...viewState, latitude, longitude, zoom })
         }
         return
       }
@@ -200,7 +200,8 @@ export const useClickedEventConnect = () => {
       const longitude = lng || lon
       if (count > 1) {
         if (tilesClusterLoaded && lat && longitude) {
-          setMapCoordinates({
+          setViewState({
+            ...viewState,
             latitude: lat,
             longitude,
             zoom: expansionZoom,
