@@ -61,7 +61,7 @@ import {
   fetchBQEventThunk,
   SliceExtendedFeature,
 } from './map.slice'
-import useViewport from './map-viewport.hooks'
+import { useViewStateAtom } from './map-viewport.hooks'
 
 export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = ['activity', 'detections']
 
@@ -84,7 +84,7 @@ export const useGeneratorsDictionaryConnect = () => {
 // as well as the functions we need to update the same portions
 export const useGeneratorsConnect = () => {
   const { start, end } = useTimerangeConnect()
-  const { viewport } = useViewport()
+  const { viewstate } = useViewStateAtom()
   const { i18n } = useTranslation()
   const generatorsConfig = useSelector(selectDefaultMapGeneratorsConfig)
   const showTimeComparison = useSelector(selectShowTimeComparison)
@@ -106,7 +106,7 @@ export const useGeneratorsConnect = () => {
 
   return useMemo(() => {
     let globalConfig: GlobalGeneratorConfig = {
-      zoom: viewport.zoom,
+      zoom: viewstate.zoom,
       start,
       end,
       token: GFWAPI.getToken(),
@@ -123,7 +123,7 @@ export const useGeneratorsConnect = () => {
       globalConfig,
     }
   }, [
-    viewport.zoom,
+    viewstate.zoom,
     start,
     end,
     i18n.language,
@@ -142,7 +142,7 @@ export const useClickedEventConnect = () => {
   const apiEventStatus = useSelector(selectApiEventStatus)
   const { dispatchLocation } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(map)
-  const { setMapCoordinates } = useViewport()
+  const { setViewstate } = useViewStateAtom()
   const tilesClusterLoaded = useMapClusterTilesLoaded()
   const fishingPromiseRef = useRef<any>()
   const presencePromiseRef = useRef<any>()
@@ -186,7 +186,7 @@ export const useClickedEventConnect = () => {
         )
         const { latitude, longitude, zoom } = workspace.properties
         if (latitude && longitude && zoom) {
-          setMapCoordinates({ latitude, longitude, zoom })
+          setViewstate({ latitude, longitude, zoom })
         }
         return
       }

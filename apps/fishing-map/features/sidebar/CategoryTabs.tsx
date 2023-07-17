@@ -13,7 +13,7 @@ import { selectUserData, isGuestUser } from 'features/user/user.slice'
 import { useClickedEventConnect } from 'features/map/map.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
-import useViewport from 'features/map/map-viewport.hooks'
+import { useViewStateAtom } from 'features/map/map-viewport.hooks'
 // import HelpModal from 'features/help/HelpModal'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import WhatsNew from 'features/sidebar/WhatsNew'
@@ -52,7 +52,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const { dispatchClickedEvent } = useClickedEventConnect()
   const locationType = useSelector(selectLocationType)
-  const { setMapCoordinates } = useViewport()
+  const { setViewState } = useViewStateAtom()
   const locationCategory = useSelector(selectLocationCategory)
   const availableCategories = useSelector(selectAvailableWorkspacesCategories)
   const userData = useSelector(selectUserData)
@@ -69,10 +69,10 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   }, [dispatch, userData])
 
   const onCategoryClick = useCallback(() => {
-    setMapCoordinates(DEFAULT_WORKSPACE_LIST_VIEWPORT)
+    setViewState(DEFAULT_WORKSPACE_LIST_VIEWPORT)
     dispatchClickedEvent(null)
     cleanFeatureState('highlight')
-  }, [setMapCoordinates, cleanFeatureState, dispatchClickedEvent])
+  }, [setViewState, cleanFeatureState, dispatchClickedEvent])
 
   return (
     <Fragment>

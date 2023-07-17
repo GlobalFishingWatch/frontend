@@ -25,7 +25,7 @@ import {
 } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { TimebarVisualisations } from 'types'
-import useViewport from 'features/map/map-viewport.hooks'
+import { useViewStateAtom } from 'features/map/map-viewport.hooks'
 import {
   selectLatestAvailableDataDate,
   selectTimebarGraph,
@@ -139,7 +139,7 @@ const TimebarWrapper = () => {
   // const [highlightedEvents, dispatchHighlightedEvents] = useState([])
   const { dispatchDisableHighlightedTime } = useDisableHighlightTimeConnect()
   const { timebarVisualisation } = useTimebarVisualisationConnect()
-  const { setMapCoordinates, viewport } = useViewport()
+  const { setViewState, viewState } = useViewStateAtom()
   const timebarGraph = useSelector(selectTimebarGraph)
   const tracksGraphsData = useSelector(selectTracksGraphData)
   const { isMapDrawing } = useMapDrawConnect()
@@ -240,18 +240,18 @@ const TimebarWrapper = () => {
     [start, end]
   )
 
-  const { zoom } = viewport
+  const { zoom } = viewState
   const onEventClick = useCallback(
     (event: TimebarChartChunk<TrackEventChunkProps>) => {
       if (event?.coordinates) {
-        setMapCoordinates({
+        setViewState({
           latitude: event?.coordinates?.[1],
           longitude: event.coordinates?.[0],
           zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
         })
       }
     },
-    [setMapCoordinates, zoom]
+    [setViewState, zoom]
   )
 
   const showGraph = useMemo(() => {

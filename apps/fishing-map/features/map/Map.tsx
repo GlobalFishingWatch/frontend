@@ -50,7 +50,12 @@ import { selectHighlightedTime } from 'features/timebar/timebar.slice'
 import { selectMapTimeseries } from 'features/reports/reports-timeseries.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useMapDeckLayers, useMapLayersLoaded } from 'features/map/map-layers.hooks'
-import { useViewStateAtom, useMapViewAtom, useUpdateViewStateUrlParams } from './map-viewport.hooks'
+import {
+  useViewStateAtom,
+  useMapViewAtom,
+  useUpdateViewStateUrlParams,
+  ViewState,
+} from './map-viewport.hooks'
 import styles from './Map.module.css'
 import useRulers from './rulers/rulers.hooks'
 import {
@@ -108,12 +113,13 @@ const MapWrapper = () => {
   const deckRef = useRef<DeckGLRef>(null)
   useSetMapInstance(deckRef)
   const mapView = useMapViewAtom()
-  const [viewState, setViewState] = useViewStateAtom()
+  const { viewState, setViewState } = useViewStateAtom()
   const onViewStateChange = useCallback(
-    ({ viewState }: ViewStateChangeParameters) => {
+    (params: ViewStateChangeParameters) => {
+      const viewState = params.viewState as ViewState
       setViewState(viewState)
     },
-    [viewState, setViewState]
+    [setViewState]
   )
   useUpdateViewStateUrlParams()
   ////////////////////////////////////////
