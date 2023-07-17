@@ -344,6 +344,15 @@
     "seeInCVP": "See in Carrier Vessel Portal",
     "unknown": "Unknown event"
   },
+  "eventInfo": {
+    "start": "start",
+    "end": "end",
+    "duration": "duration",
+    "distanceFromShoreKm": "distanceFromShoreKm",
+    "distanceFromPortKm": "distanceFromPortKm",
+    "speed": "speed",
+    "authorization": "authorization"
+  },
   "feedback": {
     "descriptionPlaceholder": "Please be as specific as possible.",
     "email": "E-mail address",

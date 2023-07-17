@@ -42,11 +42,11 @@ export const formatAdvancedInfoField = (
   field: VesselRenderField,
   translationFn = t
 ) => {
-  if (field.value.includes('.')) {
-    const [first, second] = field.value.split('.')
+  if (field.key.includes('.')) {
+    const [first, second] = field.key.split('.')
     return formatInfoField(vessel?.[first]?.[0]?.[second], second, translationFn)
   } else {
-    return formatInfoField(vessel?.[field.value], field.value, translationFn)
+    return formatInfoField(vessel?.[field.key], field.key, translationFn)
   }
 }
 

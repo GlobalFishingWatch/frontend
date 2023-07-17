@@ -4,7 +4,7 @@ import { event as uaEvent } from 'react-ga'
 import { Virtuoso } from 'react-virtuoso'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import useViewport from 'features/map/map-viewport.hooks'
-import ActivityModalContent from 'features/vessel/activity/event-details/ActivityContent'
+import EventDetail from 'features/vessel/activity/event/EventDetail'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import EventItem from '../event/Event'
@@ -109,7 +109,7 @@ export function ActivityByType() {
                       onInfoClick={onInfoClick}
                     >
                       {selectedEvent?.id === activityEvents[index]?.id && (
-                        <ActivityModalContent event={selectedEvent}></ActivityModalContent>
+                        <EventDetail event={selectedEvent} />
                       )}
                     </EventItem>
                   )}

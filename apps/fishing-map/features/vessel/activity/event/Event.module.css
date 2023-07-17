@@ -1,72 +1,49 @@
 .event {
-  height: 40px;
-  display: flex;
-  align-items: center;
-  padding: 0 var(--space-S);
+  padding: var(--space-XS) var(--space-S) var(--space-XS) var(--space-M);
   position: relative;
 }
 
-.date {
-  font-size: 1rem;
-  line-height: var(--space-S);
+.event::after {
+  content: '';
+  position: absolute;
+  left: 6rem;
+  bottom: 0;
+  height: 0.1rem;
+  width: calc(100% - 6rem);
+  background-color: var(--color-border);
 }
 
-.event .eventData {
+.header {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.eventData {
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.eventData .description {
-  font: var(--font-XS);
-  margin-top: var(--space-XS);
+.description {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
   flex: 1;
 }
 
-.eventIcon {
-  position: relative;
-  width: 31px;
-  margin: 0 9px 0 0;
-  height: 31px;
-  border: 1px solid rgba(34, 68, 126, 0.1);
-  border-radius: 15.5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: none;
-}
-
-.eventIcon.fishing {
-  background-color: #fff;
-}
-
-.eventIcon.encounter {
-  background-color: #fae9a0;
-}
-
-.eventIcon.loitering {
-  background-color: #ddbef0;
-}
-
-.eventIcon svg {
-  display: inline-block;
-}
-
-.event .actions {
+.actions {
   margin-left: auto;
   display: flex;
 }
 
-.event .actions.oneIcon {
+.actions.oneIcon {
   min-width: 28px;
 }
 
-.eventIcon.port_visit {
-  background-color: #9ef;
-}
-
-.eventIcon.gap {
-  background-color: #f7b500;
+.detailContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-S) var(--space-M);
+  padding-left: var(--space-L);
+  padding-block: var(--space-S);
 }

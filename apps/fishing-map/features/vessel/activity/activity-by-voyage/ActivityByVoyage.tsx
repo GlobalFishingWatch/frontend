@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { eventsToBbox } from '@globalfishingwatch/data-transforms'
 import { RenderedVoyage } from 'features/vessel/activity/activity-by-voyage/activity-by-voyage.selectors'
 import useViewport from 'features/map/map-viewport.hooks'
-import ActivityModalContent from 'features/vessel/activity/event-details/ActivityContent'
+import EventDetail from 'features/vessel/activity/event/EventDetail'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import VoyageGroup from 'features/vessel/activity/activity-by-voyage/VoyageGroup'
 import EventItem from 'features/vessel/activity/event/Event'
@@ -66,9 +66,7 @@ const ActivityByVoyage = () => {
                     onMapClick={selectEventOnMap}
                     onInfoClick={onInfoClick}
                   >
-                    {selectedEvent?.id === event?.id && (
-                      <ActivityModalContent event={event}></ActivityModalContent>
-                    )}
+                    {selectedEvent?.id === event?.id && <EventDetail event={event} />}
                   </EventItem>
                 ))}
             </VoyageGroup>

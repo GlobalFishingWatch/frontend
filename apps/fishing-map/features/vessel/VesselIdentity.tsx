@@ -51,10 +51,10 @@ const VesselIdentity = () => {
             <div key={index} className={cx(styles.fieldGroup, styles.border)}>
               {/* TODO: make fields more dynamic to account for VMS */}
               {fieldGroup.map((field) => (
-                <div key={field.value}>
+                <div key={field.key}>
                   <label>
                     {t(`vessel.${field.label}` as any, field.label)}
-                    {IDENTITY_FIELDS_INFO_AVAILABLE.includes(field.value) && (
+                    {IDENTITY_FIELDS_INFO_AVAILABLE.includes(field.key) && (
                       <DataAndTerminology
                         size="tiny"
                         type="default"

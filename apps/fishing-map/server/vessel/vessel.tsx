@@ -29,7 +29,7 @@ const VesselServerComponent = () => {
           <div key={fieldGroup.join()} className={cx(styles.fieldGroup, styles.border)}>
             {/* TODO: make fields more dynamic to account for VMS */}
             {fieldGroup.map((field) => (
-              <div key={field.value}>
+              <div key={field.key}>
                 <label>{serverT(`vessel.${field.label}` as any, field.label)}</label>
                 {vessel ? formatAdvancedInfoField(vessel, field, serverT) : ''}
               </div>

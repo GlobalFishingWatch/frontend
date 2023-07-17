@@ -232,8 +232,8 @@ export const selectAllDataviewInstancesResolved = createSelector(
       isVesselLocation && vessel
         ? [
             getVesselDataviewInstance(vessel, {
+              // infoDatasetId: vessel.dataset,
               trackDatasetId: vessel.trackDatasetId,
-              infoDatasetId: vessel.dataset,
               ...(vessel?.eventsDatasetsId?.length && {
                 eventsDatasetsId: vessel?.eventsDatasetsId,
               }),

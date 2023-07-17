@@ -2,8 +2,9 @@ import { Fragment, useCallback } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { camelCase, upperFirst } from 'lodash'
-import { Icon, IconButton } from '@globalfishingwatch/ui-components'
-import { EventType, EventTypes } from '@globalfishingwatch/api-types'
+import { IconButton } from '@globalfishingwatch/ui-components'
+import { EventType } from '@globalfishingwatch/api-types'
+import EventIcon from 'features/vessel/activity/event/EventIcon'
 import styles from '../ActivityGroup.module.css'
 
 interface ActivityGroupProps {
@@ -33,9 +34,7 @@ const ActivityGroup: React.FC<ActivityGroupProps> = ({
     <Fragment>
       <li className={cx(styles.eventGroup, { [styles.open]: expanded })}>
         <div className={styles.header} onClick={onToggle}>
-          <div className={cx(styles.eventIcon, styles[eventType])}>
-            <Icon icon={`event-${eventType}`} />
-          </div>
+          <EventIcon type={eventType} />
           <p className={styles.title}>
             {t(
               `events.byType${upperFirst(camelCase(eventType))}Title` as any,

@@ -2,16 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { HYDRATE } from 'next-redux-wrapper'
 import { stringify } from 'qs'
 import { GFWAPI, ParsedAPIError, parseAPIError } from '@globalfishingwatch/api-client'
-import {
-  APIPagination,
-  ApiEvent,
-  Dataset,
-  DatasetTypes,
-  EventType,
-  Vessel,
-  ApiEvents,
-} from '@globalfishingwatch/api-types'
-import { parseEvent } from '@globalfishingwatch/dataviews-client'
+import { Dataset, DatasetTypes, Vessel } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   fetchDatasetByIdThunk,
@@ -19,8 +10,6 @@ import {
   selectDatasetById,
 } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
-import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
-import { EVENTS_CONFIG_BY_EVENT_TYPE } from 'features/vessel/vessel.config'
 import { VesselInstanceDatasets } from 'features/dataviews/dataviews.utils'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { TEMPLATE_VESSEL_DATAVIEW_SLUG } from 'data/workspaces'
@@ -92,28 +81,6 @@ export const fetchVesselInfoThunk = createAsyncThunk(
     },
   }
 )
-
-export async function getEventsBodyFromVesselDataset(dataset: Dataset, vesselId: string) {
-  const eventsDatasetIds = getRelatedDatasetsByType(dataset, DatasetTypes.Events)?.map((e) => e.id)
-  const eventDatasetsParams = {
-    ids: eventsDatasetIds?.join(','),
-    ...DEFAULT_PAGINATION_PARAMS,
-  }
-  const eventsDatasets = await GFWAPI.fetch<APIPagination<Dataset>>(
-    `/datasets?${stringify(eventDatasetsParams)}`
-  ).then((res) => res.entries)
-  return eventsDatasets?.map((eventDataset) => {
-    const { params, includes } =
-      EVENTS_CONFIG_BY_EVENT_TYPE[eventDataset.subcategory as EventType] || {}
-    const eventsParams = {
-      vessels: [vesselId],
-      datasets: [eventDataset.id],
-      includes,
-      ...params,
-    }
-    return eventsParams
-  })
-}
 
 const vesselSlice = createSlice({
   name: 'vessel',

@@ -184,10 +184,6 @@ export const dataviews: Dataview[] = [
             id: 'vessels',
             value: '',
           },
-          {
-            id: 'summary',
-            value: true,
-          },
           // {
           //   id: 'includes',
           //   value: [
@@ -213,10 +209,6 @@ export const dataviews: Dataview[] = [
           {
             id: 'vessels',
             value: '',
-          },
-          {
-            id: 'summary',
-            value: true,
           },
           // {
           //   id: 'includes',
@@ -247,10 +239,6 @@ export const dataviews: Dataview[] = [
           {
             id: 'encounter-types',
             value: ['carrier-fishing', 'fishing-carrier', 'fishing-support', 'support-fishing'],
-          },
-          {
-            id: 'summary',
-            value: true,
           },
           // {
           //   id: 'includes',
@@ -284,30 +272,25 @@ export const dataviews: Dataview[] = [
             value: '',
           },
           {
-            id: 'summary',
-            value: true,
-          },
-          {
             id: 'confidences',
             value: 4,
           },
-
-          {
-            id: 'includes',
-            value: [
-              'id',
-              'type',
-              'start',
-              'end',
-              'position',
-              'regions.mpa',
-              'regions.eez',
-              'regions.fao',
-              'regions.rfmo',
-              'port_visit.intermediateAnchorage.name',
-              'port_visit.intermediateAnchorage.flag',
-            ],
-          },
+          // {
+          //   id: 'includes',
+          //   value: [
+          //     'id',
+          //     'type',
+          //     'start',
+          //     'end',
+          //     'position',
+          //     'regions.mpa',
+          //     'regions.eez',
+          //     'regions.fao',
+          //     'regions.rfmo',
+          //     'port_visit.intermediateAnchorage.name',
+          //     'port_visit.intermediateAnchorage.flag',
+          //   ],
+          // },
           ...paginationQuery,
         ],
         params: [],
