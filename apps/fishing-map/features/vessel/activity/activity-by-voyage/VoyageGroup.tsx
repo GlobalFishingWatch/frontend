@@ -12,6 +12,7 @@ interface EventProps {
   expanded: boolean
   children: React.ReactNode
   onMapClick?: (event: RenderedVoyage) => void
+  onMapHover?: (event?: RenderedVoyage) => void
   onToggleClick?: (event: RenderedVoyage) => void
 }
 
@@ -20,6 +21,7 @@ const VoyageGroup: React.FC<EventProps> = ({
   children,
   expanded = false,
   onMapClick = () => {},
+  onMapHover = () => {},
   onToggleClick = () => {},
 }): React.ReactElement => {
   const { t } = useTranslation()
@@ -74,7 +76,13 @@ const VoyageGroup: React.FC<EventProps> = ({
         {hasEvents && (
           <div className={styles.actions}>
             <IconButton size="small" icon={expanded ? 'arrow-top' : 'arrow-down'} />
-            <IconButton icon="view-on-map" size="small" onClick={onMap} />
+            <IconButton
+              icon="view-on-map"
+              size="small"
+              onClick={onMap}
+              onMouseEnter={() => onMapHover(event)}
+              onMouseLeave={() => onMapHover(undefined)}
+            />
           </div>
         )}
       </div>

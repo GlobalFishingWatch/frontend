@@ -10,11 +10,15 @@ import EventItem from 'features/vessel/activity/event/Event'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import useExpandedVoyages from 'features/vessel/activity/activity-by-voyage/activity-by-voyage.hook'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
+import { disableHighlightedTime, setHighlightedTime } from 'features/timebar/timebar.slice'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { getUTCDateTime } from 'utils/dates'
 import styles from '../activity-by-type/activity-by-type.module.css'
 import { selectVoyagesByVessel } from './activity-by-voyage.selectors'
 
 const ActivityByVoyage = () => {
   const events = useSelector(selectVoyagesByVessel)
+  const dispatch = useAppDispatch()
   const [selectedEvent, setSelectedEvent] = useState<ActivityEvent>()
   const [expandedVoyages, toggleExpandedVoyage] = useExpandedVoyages()
   const fitBounds = useMapFitBounds()
@@ -33,6 +37,22 @@ const ActivityByVoyage = () => {
     [fitBounds]
   )
 
+  const onMapHover = useCallback(
+    (voyage?: RenderedVoyage | ActivityEvent) => {
+      if (voyage?.start && voyage?.end) {
+        dispatch(
+          setHighlightedTime({
+            start: getUTCDateTime(voyage.start).toISO(),
+            end: getUTCDateTime(voyage.end).toISO(),
+          })
+        )
+      } else {
+        dispatch(disableHighlightedTime())
+      }
+    },
+    [dispatch]
+  )
+
   const selectEventOnMap = useCallback(
     (event: ActivityEvent) => {
       setMapCoordinates({
@@ -44,6 +64,7 @@ const ActivityByVoyage = () => {
     [setMapCoordinates, viewport.zoom]
   )
 
+  console.log('🚀 ~ ActivityByVoyage ~ events:', events)
   return (
     <ul className={styles.activityContainer}>
       {events?.length > 0 &&
@@ -56,6 +77,7 @@ const ActivityByVoyage = () => {
               event={event}
               onToggleClick={toggleExpandedVoyage}
               onMapClick={selectVoyageOnMap}
+              onMapHover={onMapHover}
             >
               {expanded &&
                 event.events.length > 0 &&
@@ -63,6 +85,7 @@ const ActivityByVoyage = () => {
                   <EventItem
                     key={event.id}
                     event={event}
+                    onMapHover={onMapHover}
                     onMapClick={selectEventOnMap}
                     onInfoClick={onInfoClick}
                   >

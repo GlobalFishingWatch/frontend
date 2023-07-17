@@ -128,6 +128,7 @@ const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents }) => {
 
 const TimebarWrapper = () => {
   useTimebarVisualisation()
+  const [isMouseInside, setMouseInside] = useState(false)
   const { t, ready, i18n } = useTranslation()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
   const { start, end, onTimebarChange } = useTimerangeConnect()
@@ -224,6 +225,14 @@ const TimebarWrapper = () => {
     [setInternalRange, onTimebarChange]
   )
 
+  const onMouseEnter = useCallback(() => {
+    setMouseInside(true)
+  }, [])
+
+  const onMouseLeave = useCallback(() => {
+    setMouseInside(false)
+  }, [])
+
   const onTogglePlay = useCallback(
     (isPlaying: boolean) => {
       trackEvent({
@@ -319,9 +328,8 @@ const TimebarWrapper = () => {
       </Fragment>
     )
   }
-
   return (
-    <div className={styles.timebarWrapper}>
+    <div className={styles.timebarWrapper} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
       <Timebar
         enablePlayback={!vesselGroupsFiltering && !isReportLocation}
         labels={labels}
@@ -354,7 +362,9 @@ const TimebarWrapper = () => {
               <TimebarActivityGraph visualisation={timebarVisualisation} />
             )}
             {timebarVisualisation === TimebarVisualisations.Vessel && getTracksComponents()}
-            <TimebarHighlighterWrapper dispatchHighlightedEvents={dispatchHighlightedEvents} />
+            {isMouseInside && (
+              <TimebarHighlighterWrapper dispatchHighlightedEvents={dispatchHighlightedEvents} />
+            )}
           </Fragment>
         ) : null}
       </Timebar>

@@ -7,6 +7,9 @@ import useViewport from 'features/map/map-viewport.hooks'
 import EventDetail from 'features/vessel/activity/event/EventDetail'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { disableHighlightedTime, setHighlightedTime } from 'features/timebar/timebar.slice'
+import { getUTCDateTime } from 'utils/dates'
 import EventItem from '../event/Event'
 import { useActivityByType } from './activity-by-type.hook'
 import styles from './activity-by-type.module.css'
@@ -22,10 +25,12 @@ const EVENTS_ODER = [
 ]
 const HEADER_HEIGHT = 60
 const EVENT_HEIGHT = 50
+const MIN_EVENTS_HEIGHT = 400
 
 export function ActivityByType() {
   const activityGroups = useSelector(selectEventsByType)
   const containerRef = useRef<any>()
+  const dispatch = useAppDispatch()
   const [expandedType, toggleExpandedType] = useActivityByType()
   const { viewport, setMapCoordinates } = useViewport()
   const [selectedEvent, setSelectedEvent] = useState<ActivityEvent>()
@@ -56,6 +61,22 @@ export function ActivityByType() {
     [scrollBottom, toggleExpandedType]
   )
 
+  const onMapHover = useCallback(
+    (event?: ActivityEvent) => {
+      if (event?.start && event?.end) {
+        dispatch(
+          setHighlightedTime({
+            start: getUTCDateTime(event.start).toISO(),
+            end: getUTCDateTime(event.end).toISO(),
+          })
+        )
+      } else {
+        dispatch(disableHighlightedTime())
+      }
+    },
+    [dispatch]
+  )
+
   const selectEventOnMap = useCallback(
     (event: ActivityEvent) => {
       setMapCoordinates({
@@ -74,7 +95,10 @@ export function ActivityByType() {
       EVENTS_ODER.map((eventType) => {
         const events = activityGroups[eventType]
         if (!events) return [eventType, {}]
-        const eventsHeight = events.length * EVENT_HEIGHT
+        let eventsHeight = events.length * EVENT_HEIGHT
+        if (eventsHeight < MIN_EVENTS_HEIGHT) {
+          eventsHeight = MIN_EVENTS_HEIGHT
+        }
         const height = Math.min(eventsHeight, maxHeight)
         return [eventType, { height }]
       })
@@ -105,6 +129,7 @@ export function ActivityByType() {
                   itemContent={(index) => (
                     <EventItem
                       event={activityEvents[index]}
+                      onMapHover={onMapHover}
                       onMapClick={selectEventOnMap}
                       onInfoClick={onInfoClick}
                     >

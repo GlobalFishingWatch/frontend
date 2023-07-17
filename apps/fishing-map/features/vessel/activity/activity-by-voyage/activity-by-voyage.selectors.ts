@@ -92,6 +92,7 @@ export const selectVoyages = createSelector(
       type: EventTypeVoyage.Voyage,
       end: DateTime.fromISO(timeRange.end as string, { zone: 'utc' }).toMillis(),
     } as Voyage)
+
     return voyages.sort((a, b) => (b.start as number) - (a.start as number))
   }
 )
@@ -100,6 +101,9 @@ const getVoyagesWithEventsInside = (
   events: ActivityEvent[],
   voyages: Voyage[]
 ): RenderedVoyage[] => {
+  if (!voyages?.length) {
+    return []
+  }
   const filteredVoyages: RenderedVoyage[] = voyages.map((voyage) => {
     return {
       ...voyage,
@@ -111,6 +115,7 @@ const getVoyagesWithEventsInside = (
       eventsQuantity: 0,
     }
   })
+
   events
     .sort((a, b) => (b.timestamp ?? (b.start as number)) - (a.timestamp ?? (a.start as number)))
     .forEach((event, i) => {
@@ -136,8 +141,6 @@ const getVoyagesWithEventsInside = (
 export const selectVoyagesByVessel = createSelector(
   [selectFilteredEventsWithSplitPorts, selectVoyages],
   (eventsList, voyages) => {
-    if (!voyages.length) return eventsList as ActivityEvent[]
-
     return getVoyagesWithEventsInside(eventsList, voyages)
   }
 )

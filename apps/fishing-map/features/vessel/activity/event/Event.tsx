@@ -12,10 +12,18 @@ interface EventProps {
   children?: React.ReactNode
   onInfoClick?: (event: ActivityEvent) => void
   onMapClick?: (event: ActivityEvent) => void
+  onMapHover?: (event?: ActivityEvent) => void
 }
 
 const ActivityEvent: React.FC<EventProps> = (props): React.ReactElement => {
-  const { event, style, children, onInfoClick = () => {}, onMapClick = () => {} } = props
+  const {
+    event,
+    style,
+    children,
+    onInfoClick = () => {},
+    onMapHover = () => {},
+    onMapClick = () => {},
+  } = props
   const { getEventDescription } = useActivityEventConnect()
   return (
     <li className={styles.event} style={style}>
@@ -27,7 +35,13 @@ const ActivityEvent: React.FC<EventProps> = (props): React.ReactElement => {
         </div>
         <div className={styles.actions}>
           <IconButton icon="info" size="small" onClick={() => onInfoClick(event)}></IconButton>
-          <IconButton icon="target" size="small" onClick={() => onMapClick(event)}></IconButton>
+          <IconButton
+            icon="target"
+            size="small"
+            onMouseEnter={() => onMapHover(event)}
+            onMouseLeave={() => onMapHover(undefined)}
+            onClick={() => onMapClick(event)}
+          ></IconButton>
         </div>
       </div>
       {children && <div className={styles.content}>{children}</div>}
