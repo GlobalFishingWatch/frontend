@@ -1,3 +1,4 @@
+import { get } from 'lodash'
 import { Vessel } from '@globalfishingwatch/api-types'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { VesselRenderField } from 'features/vessel/vessel.config'
@@ -42,12 +43,8 @@ export const formatAdvancedInfoField = (
   field: VesselRenderField,
   translationFn = t
 ) => {
-  if (field.key.includes('.')) {
-    const [first, second] = field.key.split('.')
-    return formatInfoField(vessel?.[first]?.[0]?.[second], second, translationFn)
-  } else {
-    return formatInfoField(vessel?.[field.key], field.key, translationFn)
-  }
+  const key = field.key.includes('.') ? field.key.split('.')[1] : field.key
+  return formatInfoField(get(vessel, field.key), key, translationFn)
 }
 
 export const formatNumber = (num: string | number, maximumFractionDigits?: number) => {

@@ -1,8 +1,14 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { HYDRATE } from 'next-redux-wrapper'
 import { stringify } from 'qs'
 import { GFWAPI, ParsedAPIError, parseAPIError } from '@globalfishingwatch/api-client'
-import { Dataset, DatasetTypes, Vessel } from '@globalfishingwatch/api-types'
+import {
+  Dataset,
+  DatasetTypes,
+  Vessel,
+  VesselCoreInfo,
+  VesselRegistryInfo,
+} from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   fetchDatasetByIdThunk,
@@ -16,6 +22,7 @@ import { TEMPLATE_VESSEL_DATAVIEW_SLUG } from 'data/workspaces'
 
 export const DEFAULT_VESSEL_DATASET_ID = 'public-global-all-vessels:latest'
 
+export type VesselData = VesselCoreInfo & VesselRegistryInfo & VesselInstanceDatasets
 interface VesselState {
   info: {
     status: AsyncReducerStatus
@@ -56,16 +63,21 @@ export const fetchVesselInfoThunk = createAsyncThunk(
       })
       dispatch(fetchDatasetsByIdsThunk(datasetsToFetch))
       const vessel = await GFWAPI.fetch<Vessel>(
-        `/vessels/${vesselId}?${stringify({ datasets: [datasetId] })}`
+        `/prototypes/vessels/${vesselId}?${stringify({ datasets: [datasetId] })}`,
+        { version: '' }
       )
       return {
         ...vessel,
+        coreInfo: {
+          ...vessel.coreInfo,
+          firstTransmissionDate: vessel?.coreInfo?.firstTransmissionDate || '',
+        },
+        infoDatasetId: datasetId,
         trackDatasetId,
         eventsDatasetsId,
-        firstTransmissionDate: vessel?.firstTransmissionDate || '',
         // Make sure to have the lastest in the first position
-        vesselRegistryInfo:
-          vessel?.vesselRegistryInfo?.sort(
+        registryInfo:
+          vessel?.registryInfo?.sort(
             (a, b) => Number(b.latestVesselInfo) - Number(a.latestVesselInfo)
           ) || [],
       }
@@ -118,9 +130,17 @@ const vesselSlice = createSlice({
 
 export const { resetVesselState } = vesselSlice.actions
 
-export const selectVesselInfoData = (state: VesselSliceState) => state.vessel.info.data
-export const selectVesselInfoDataId = (state: VesselSliceState) => state.vessel.info.data?.id
+export const selectVesselInfo = (state: VesselSliceState) => state.vessel.info.data
+export const selectVesselInfoDataId = (state: VesselSliceState) =>
+  state.vessel.info.data?.coreInfo?.id
 export const selectVesselInfoStatus = (state: VesselSliceState) => state.vessel.info.status
 export const selectVesselInfoError = (state: VesselSliceState) => state.vessel.info.error
+
+export const selectVesselInfoData = createSelector([selectVesselInfo], (vesselInfo) => {
+  if (!vesselInfo) return null
+  const info = vesselInfo.registryInfo?.[0] || vesselInfo.coreInfo
+  const { infoDatasetId, trackDatasetId, eventsDatasetsId } = vesselInfo
+  return { ...info, infoDatasetId, trackDatasetId, eventsDatasetsId } as VesselData
+})
 
 export default vesselSlice.reducer

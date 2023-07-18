@@ -17,7 +17,9 @@ import styles from './VesselIdentity.module.css'
 const VesselIdentity = () => {
   const { t, i18n } = useTranslation(['translations', 'dataTerminology'])
   const vessel = useSelector(selectVesselInfoData)
-
+  const transmissionStart = (vessel?.firstTransmissionDate ||
+    vessel?.transmissionDateFrom) as string
+  const transmissionEnd = (vessel?.lastTransmissionDate || vessel?.transmissionDateTo) as string
   return (
     <div className={styles.container}>
       <div className={styles.titleContainer}>
@@ -76,13 +78,12 @@ const VesselIdentity = () => {
             <div className={styles.twoCells}>
               <label>{t('vessel.transmissionDates', 'Transmission dates')}</label>
               <span>
-                {t('common.from', 'From')}{' '}
-                <I18nDate date={vessel?.firstTransmissionDate as string} /> {t('common.to', 'to')}{' '}
-                <I18nDate date={vessel?.lastTransmissionDate as string} />
+                {t('common.from', 'From')} <I18nDate date={transmissionStart} />{' '}
+                {t('common.to', 'to')} <I18nDate date={transmissionEnd} />
               </span>
               <TransmissionsTimeline
-                firstTransmissionDate={vessel?.firstTransmissionDate as string}
-                lastTransmissionDate={vessel?.lastTransmissionDate as string}
+                firstTransmissionDate={transmissionStart}
+                lastTransmissionDate={transmissionEnd}
                 firstYearOfData={FIRST_YEAR_OF_DATA}
                 locale={i18n.language as Locale}
               />

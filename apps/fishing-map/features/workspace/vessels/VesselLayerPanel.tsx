@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 import { Trans, useTranslation } from 'react-i18next'
 import Link from 'redux-first-router-link'
 // import NextLink from 'next/link'
-import { useRouter } from 'next/router'
 import {
   Vessel,
   DatasetTypes,
