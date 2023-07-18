@@ -2223,11 +2223,10 @@ __metadata:
 "@globalfishingwatch/data-transforms@workspace:libs/data-transforms":
   version: 0.0.0-use.local
   resolution: "@globalfishingwatch/data-transforms@workspace:libs/data-transforms"
-  dependencies:
-    luxon: ^3.3.0
-    papaparse: 5.3.2
   peerDependencies:
     lodash: 4.x
+    luxon: 3.x
+    papaparse: 5.x
   languageName: unknown
   linkType: soft
 
@@ -2432,7 +2431,7 @@ __metadata:
     kill-port: ^1.6.1
     lint-staged: 13.1.1
     lodash: 4.17.21
-    luxon: ^2.5.2
+    luxon: ^3.3.0
     mapbox-gl: "npm:empty-npm-package@1.0.0"
     match-sorter: ^6.3.1
     memoize-one: ^6.0.0
@@ -2500,7 +2499,7 @@ __metadata:
     i18next-http-backend: 1.4.5
     i18next-parser: 6.6.0
     lodash: 4.17.21
-    luxon: ^2.5.2
+    luxon: ^3.3.0
     prettier: 2.8.3
     prop-types: ^15.8.1
     qs: ^6.11.0
@@ -2545,7 +2544,7 @@ __metadata:
     depcheck: 1.4.3
     jotai: ^1.13.1
     lodash: 4.17.21
-    luxon: ^2.5.2
+    luxon: ^3.3.0
     next-react-memory-stats: ^1.0.2
     parquet-wasm: 0.4.0-beta.5
     prettier: 2.8.3
@@ -2626,7 +2625,7 @@ __metadata:
     i18next-parser: 6.6.0
     intersection-observer: 0.12.2
     lodash: 4.17.21
-    luxon: ^2.5.2
+    luxon: ^3.3.0
     match-sorter: ^6.3.1
     papaparse: 5.3.2
     prettier: 2.8.3
@@ -2677,7 +2676,7 @@ __metadata:
     d3: ^7.8.2
     depcheck: 1.4.3
     lodash: 4.17.21
-    luxon: ^2.5.2
+    luxon: ^3.3.0
     prettier: 2.8.3
     qs: ^6.11.0
     react: ^18.2.0
@@ -2724,7 +2723,7 @@ __metadata:
     i18next-http-backend: 1.4.5
     i18next-parser: 6.6.0
     lodash: 4.17.21
-    luxon: ^2.5.2
+    luxon: ^3.3.0
     prettier: 2.8.3
     prop-types: ^15.8.1
     qs: ^6.11.0
@@ -2770,7 +2769,7 @@ __metadata:
     depcheck: 1.4.3
     jotai: ^1.13.1
     lodash: 4.17.21
-    luxon: ^2.5.2
+    luxon: ^3.3.0
     prettier: 2.8.3
     react: ^18.2.0
     react-dom: ^18.2.0
@@ -2801,7 +2800,7 @@ __metadata:
     d3-geom: ^0.0.0
     d3-quadtree: ^3.0.1
     d3-scale: ^3.3.0
-    luxon: ^2.5.2
+    luxon: ^3.3.0
     pbf: ^3.2.1
     prop-types: ^15.8.1
     react: ^18.2.0
@@ -19404,13 +19403,6 @@ __metadata:
   version: 1.28.1
   resolution: "luxon@npm:1.28.1"
   checksum: 2c62999adea79645fd1e931d685f61aeb33eda7f39fbf79b84261a233b62f9590f48336654ee9efd405848bd9e13dc7fe087c701b7126187201a88998dc68b04
-  languageName: node
-  linkType: hard
-
-"luxon@npm:^2.5.2":
-  version: 2.5.2
-  resolution: "luxon@npm:2.5.2"
-  checksum: d8b671ffd2ff0b438af862ac11082a81b3aedd9f8b6a4ca636f944224f8dd381125cd4d274ca0a8aedcaf2cfca0fc2ca96fe4cc1b16a28b7af701afb95c0bff8
   languageName: node
   linkType: hard
 

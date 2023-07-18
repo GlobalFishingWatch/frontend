@@ -76,7 +76,7 @@
     "geojson-vt": "^3.2.1",
     "gl-matrix": "3.3.0",
     "lodash": "4.17.21",
-    "luxon": "^2.5.2",
+    "luxon": "^3.3.0",
     "mapbox-gl": "npm:empty-npm-package@1.0.0",
     "match-sorter": "^6.3.1",
     "memoize-one": "^6.0.0",
