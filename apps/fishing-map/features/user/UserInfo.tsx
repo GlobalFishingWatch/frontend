@@ -8,8 +8,8 @@ import { updateLocation } from 'routes/routes.actions'
 import { SUPPORT_EMAIL } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import styles from './User.module.css'
-import { fetchUserThunk, logoutUserThunk, selectUserData } from './user.slice'
-import { isUserLogged, selectUserGroupsClean } from './user.selectors'
+import { fetchUserThunk, logoutUserThunk, selectUserData, isUserLogged } from './user.slice'
+import { selectUserGroupsClean } from './user.selectors'
 
 function UserInfo() {
   const { t } = useTranslation()

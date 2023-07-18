@@ -26,13 +26,6 @@ import {
   USER_GROUP_WORKSPACE,
 } from './user.slice'
 
-export const isUserLogged = createSelector(
-  [selectUserStatus, selectUserLogged],
-  (status, logged) => {
-    return status === AsyncReducerStatus.Finished && logged
-  }
-)
-
 export const hasUserPermission = (permission: UserPermission) =>
   createSelector([selectUserData], (userData): boolean => {
     if (!userData?.permissions) return false

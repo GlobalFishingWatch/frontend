@@ -8,12 +8,11 @@ import {
   selectIsUserLocation,
   selectIsVesselLocation,
   selectIsWorkspacesListLocation,
-  selectLocationType,
 } from 'routes/routes.selectors'
-import { USER, WORKSPACES_LIST } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
-import { isUserLogged, selectUserGroupsPermissions } from 'features/user/user.selectors'
+import { isUserLogged } from 'features/user/user.slice'
+import { selectUserGroupsPermissions } from 'features/user/user.selectors'
 import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
 import { fetchUserVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { useAppDispatch } from 'features/app/app.hooks'

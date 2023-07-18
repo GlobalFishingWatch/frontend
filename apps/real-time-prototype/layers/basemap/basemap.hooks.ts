@@ -1,7 +1,6 @@
 import { useCallback, useEffect } from 'react'
 import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
 import { BaseMap } from 'layers/basemap/BasemapLayer'
-import { useMapLayers } from 'features/map/layers.hooks'
 
 type BasemapAtom = {
   loaded: boolean
@@ -18,9 +17,6 @@ export const basemapLayerAtom = atom<BasemapAtom>({
 
 export function useBasemapLayer() {
   const [{ instance }, updateAtom] = useRecoilState(basemapLayerAtom)
-  const [mapLayers] = useMapLayers()
-  const layer = mapLayers.find((l) => l.id === 'basemap')
-  const layerVisible = layer?.visible
 
   const setAtomProperty = useCallback(
     (property) => updateAtom((state) => ({ ...state, ...property })),
@@ -32,15 +28,11 @@ export function useBasemapLayer() {
   }, [setAtomProperty])
 
   useEffect(() => {
-    if (layerVisible) {
-      const basemapLayer = new BaseMap({
-        onDataLoad: onDataLoad,
-      })
-      setAtomProperty({ instance: basemapLayer })
-    } else {
-      setAtomProperty({ instance: undefined, loaded: false })
-    }
-  }, [layerVisible, updateAtom, onDataLoad, setAtomProperty])
+    const basemapLayer = new BaseMap({
+      onDataLoad: onDataLoad,
+    })
+    setAtomProperty({ instance: basemapLayer })
+  }, [updateAtom, onDataLoad, setAtomProperty])
   return instance
 }
 
