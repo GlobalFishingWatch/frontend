@@ -51,7 +51,7 @@ import styles from './Timebar.module.css'
 
 const ZOOM_LEVEL_TO_FOCUS_EVENT = 5
 
-const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents }) => {
+const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents, showTooltip }) => {
   // const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const timebarVisualisation = useSelector(selectTimebarVisualisation)
   const highlightedTime = useSelector(selectHighlightedTime)
@@ -118,6 +118,7 @@ const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents }) => {
 
   return highlightedTime ? (
     <TimebarHighlighter
+      showTooltip={showTooltip}
       hoverStart={highlightedTime.start}
       hoverEnd={highlightedTime.end}
       onHighlightChunks={onHighlightChunks}
@@ -362,9 +363,10 @@ const TimebarWrapper = () => {
               <TimebarActivityGraph visualisation={timebarVisualisation} />
             )}
             {timebarVisualisation === TimebarVisualisations.Vessel && getTracksComponents()}
-            {isMouseInside && (
-              <TimebarHighlighterWrapper dispatchHighlightedEvents={dispatchHighlightedEvents} />
-            )}
+            <TimebarHighlighterWrapper
+              dispatchHighlightedEvents={dispatchHighlightedEvents}
+              showTooltip={isMouseInside}
+            />
           </Fragment>
         ) : null}
       </Timebar>
