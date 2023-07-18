@@ -8,7 +8,7 @@ import { WORKSPACE } from 'routes/routes'
 import { WorkspaceCategory } from 'data/workspaces'
 import { selectWorkspaceListStatus } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { useViewStateAtom } from 'features/map/map-viewport.hooks'
+import { useSetViewState } from 'features/map/map-viewport.hooks'
 import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
 import { sortByCreationDate } from 'utils/dates'
 import { selectUserWorkspacesPrivate } from './user.selectors'
@@ -16,17 +16,17 @@ import styles from './User.module.css'
 
 function UserWorkspacesPrivate() {
   const { t } = useTranslation()
-  const { viewState, setViewState } = useViewStateAtom()
   const workspaces = useSelector(selectUserWorkspacesPrivate)
   const workspacesStatus = useSelector(selectWorkspaceListStatus)
 
+  const setViewState = useSetViewState()
   const onWorkspaceClick = useCallback(
     (workspace: Workspace) => {
       if (workspace.viewport) {
-        setViewState({ ...viewState, ...workspace.viewport })
+        setViewState(workspace.viewport)
       }
     },
-    [viewState, setViewState]
+    [setViewState]
   )
 
   const loading =

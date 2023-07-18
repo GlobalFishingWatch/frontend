@@ -17,13 +17,14 @@ import {
 import useMapInstance from 'features/map/map-context.hooks'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { Bbox } from 'types'
-import { useViewStateAtom, getMapCoordinatesFromBounds } from 'features/map/map-viewport.hooks'
+import { useSetViewState, useViewStateAtom } from 'features/map/map-viewport.hooks'
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
 import { useHighlightArea } from 'features/map/popups/ContextLayers.hooks'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { getMapCoordinatesFromBounds } from 'features/map/map-bounds.hooks'
 import {
   fetchReportVesselsThunk,
   getDateRangeHash,
@@ -63,16 +64,16 @@ export function useReportAreaInViewport() {
 }
 
 export function useFitAreaInViewport() {
-  const { viewState, setViewState } = useViewStateAtom()
+  const setViewState = useSetViewState()
   const reportAreaIds = useSelector(selectReportAreaIds)
   const area = useSelector(selectDatasetAreaDetail(reportAreaIds))
   const areaCenter = useReportAreaCenter(area!?.bounds)
   const areaInViewport = useReportAreaInViewport()
   return useCallback(() => {
     if (!areaInViewport && areaCenter) {
-      setViewState({ ...viewState, ...areaCenter })
+      setViewState(areaCenter)
     }
-  }, [areaCenter, areaInViewport, viewState, setViewState])
+  }, [areaCenter, areaInViewport, setViewState])
 }
 
 export function useReportAreaHighlight(areaId: string, sourceId: string) {

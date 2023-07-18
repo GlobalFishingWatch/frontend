@@ -25,7 +25,6 @@ import {
 import { fetchUserThunk } from 'features/user/user.slice'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { useMapFitBounds, useSetViewstate } from 'features/map/map-viewport.hooks'
 import { selectShowTimeComparison } from 'features/reports/reports.selectors'
 import { isUserLogged } from 'features/user/user.selectors'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
@@ -37,6 +36,8 @@ import { FIT_BOUNDS_REPORT_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
 import { initializeHints } from 'features/help/hints.slice'
 import AppModals from 'features/modals/Modals'
 import useMapInstance from 'features/map/map-context.hooks'
+import { useMapFitBounds } from 'features/map/map-bounds.hooks'
+import { useSetViewState } from 'features/map/map-viewport.hooks'
 import { useAppDispatch } from './app.hooks'
 import { selectReadOnly, selectReportAreaBounds, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
@@ -134,7 +135,7 @@ function App() {
   }, [])
 
   const fitMapBounds = useMapFitBounds()
-  const setViewState = useSetViewstate()
+  const setViewState = useSetViewState()
   const { setTimerange } = useTimerangeConnect()
 
   const locationType = useSelector(selectLocationType)
@@ -164,7 +165,7 @@ function App() {
         const workspace = resolvedAction.payload as Workspace
         const viewport = urlViewport || workspace?.viewport
         if (viewport && !isReportLocation) {
-          setViewState((vs) => ({ ...vs, viewport }))
+          setViewState(viewport)
         }
         if (!urlTimeRange && workspace?.startAt && workspace?.endAt) {
           setTimerange({
@@ -197,7 +198,7 @@ function App() {
       if (reportAreaBounds) {
         fitMapBounds(reportAreaBounds, { padding: FIT_BOUNDS_REPORT_PADDING })
       } else {
-        setViewState((vs) => ({ ...vs, latitude: 0, longitude: 0, zoom: 0 }))
+        setViewState({ latitude: 0, longitude: 0, zoom: 0 })
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

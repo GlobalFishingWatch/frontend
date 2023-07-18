@@ -9,7 +9,7 @@ import {
 } from '@globalfishingwatch/data-transforms'
 import { Resource, Segment, Vessel } from '@globalfishingwatch/api-types'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { useMapFitBounds } from 'features/map/map-viewport.hooks'
+import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { Bbox } from 'types'
 
 type FitBoundsProps = {

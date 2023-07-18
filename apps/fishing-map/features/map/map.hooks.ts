@@ -61,7 +61,7 @@ import {
   fetchBQEventThunk,
   SliceExtendedFeature,
 } from './map.slice'
-import { useViewStateAtom } from './map-viewport.hooks'
+import { useSetViewState, useViewStateAtom } from './map-viewport.hooks'
 
 export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = ['activity', 'detections']
 
@@ -142,7 +142,7 @@ export const useClickedEventConnect = () => {
   const apiEventStatus = useSelector(selectApiEventStatus)
   const { dispatchLocation } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(map)
-  const { viewState, setViewState } = useViewStateAtom()
+  const setViewState = useSetViewState()
   const tilesClusterLoaded = useMapClusterTilesLoaded()
   const fishingPromiseRef = useRef<any>()
   const presencePromiseRef = useRef<any>()
@@ -186,7 +186,7 @@ export const useClickedEventConnect = () => {
         )
         const { latitude, longitude, zoom } = workspace.properties
         if (latitude && longitude && zoom) {
-          setViewState({ ...viewState, latitude, longitude, zoom })
+          setViewState({ latitude, longitude, zoom })
         }
         return
       }
@@ -201,7 +201,6 @@ export const useClickedEventConnect = () => {
       if (count > 1) {
         if (tilesClusterLoaded && lat && longitude) {
           setViewState({
-            ...viewState,
             latitude: lat,
             longitude,
             zoom: expansionZoom,

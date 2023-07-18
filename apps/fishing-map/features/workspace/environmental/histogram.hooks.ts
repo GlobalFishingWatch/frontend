@@ -11,7 +11,7 @@ import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import { HeatmapLayerMeta } from '@globalfishingwatch/layer-composer'
-import { useMapBounds } from 'features/map/map-viewport.hooks'
+import { useMapBounds } from 'features/map/map-bounds.hooks'
 import { getLayerDatasetRange } from 'features/workspace/environmental/HistogramRangeFilter'
 import { areDataviewsFeatureLoaded, useMapDataviewFeatures } from 'features/map/map-sources.hooks'
 

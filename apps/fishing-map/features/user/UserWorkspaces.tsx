@@ -14,7 +14,7 @@ import {
   updateWorkspaceThunk,
 } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { useViewStateAtom } from 'features/map/map-viewport.hooks'
+import { useSetViewState } from 'features/map/map-viewport.hooks'
 // import {
 //   selectDefaultWorkspace,
 //   selectWorkspacesByUserGroup,
@@ -36,7 +36,7 @@ function UserWorkspaces() {
     AppWorkspace | undefined
   >()
   // const [workspaceTemplates, setWorkspaceTemplates] = useState<string[] | undefined>()
-  const { viewState, setViewState } = useViewStateAtom()
+  const setViewState = useSetViewState()
   // const defaultWorkspace = useSelector(selectDefaultWorkspace)
   const workspaces = useSelector(selectUserWorkspaces)
   // const userGroups = useSelector(selectUserGroups)
@@ -123,10 +123,10 @@ function UserWorkspaces() {
   const onWorkspaceClick = useCallback(
     (workspace: AppWorkspace) => {
       if (workspace.viewport) {
-        setViewState({ ...viewState, ...workspace.viewport })
+        setViewState(workspace.viewport)
       }
     },
-    [viewState, setViewState]
+    [setViewState]
   )
 
   const onDeleteClick = useCallback(

@@ -21,7 +21,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectContextAreasDataviews } from 'features/dataviews/dataviews.selectors'
 import { setClickedEvent } from '../map.slice'
 import { TooltipEventFeature } from '../map.hooks'
-import { useMapFitBounds } from '../map-viewport.hooks'
+import { useMapFitBounds } from '../map-bounds.hooks'
 
 export const getFeatureBounds = (feature: TooltipEventFeature) => {
   return feature.properties.bbox ? parsePropertiesBbox(feature.properties.bbox) : null
