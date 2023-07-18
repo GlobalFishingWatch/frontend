@@ -23,7 +23,7 @@ import { useHighlightTimerange } from 'features/timebar/timebar.hooks'
 
 const mapView = new MapView({ repeat: true })
 
-const MapWrapper = (): React.ReactElement => {
+const MapWrapper = () => {
   useURLViewport()
   const [vesselLoaded, setVesselLoaded] = useState(false)
   const { viewState, onViewportStateChange } = useViewport()
@@ -191,7 +191,7 @@ const MapWrapper = (): React.ReactElement => {
   )
 
   return (
-    <Fragment>
+    <div>
       <DeckGL
         ref={deckRef}
         views={mapView}
@@ -213,7 +213,7 @@ const MapWrapper = (): React.ReactElement => {
       {clickedFeatures && clickedFeatures.length > 0 && (
         <AnalisisTooltip features={clickedFeatures} />
       )}
-    </Fragment>
+    </div>
   )
 }
 

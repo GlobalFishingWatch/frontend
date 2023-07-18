@@ -2220,6 +2220,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@globalfishingwatch/data-transforms@workspace:libs/data-transforms":
+  version: 0.0.0-use.local
+  resolution: "@globalfishingwatch/data-transforms@workspace:libs/data-transforms"
+  peerDependencies:
+    lodash: 4.x
+    luxon: 3.x
+    papaparse: 5.x
+  languageName: unknown
+  linkType: soft
+
 "@globalfishingwatch/fourwings-aggregate@npm:4.2.1":
   version: 4.2.1
   resolution: "@globalfishingwatch/fourwings-aggregate@npm:4.2.1"
@@ -2421,7 +2431,7 @@ __metadata:
     kill-port: ^1.6.1
     lint-staged: 13.1.1
     lodash: 4.17.21
-    luxon: ^2.5.2
+    luxon: ^3.3.0
     mapbox-gl: "npm:empty-npm-package@1.0.0"
     match-sorter: ^6.3.1
     memoize-one: ^6.0.0
@@ -2489,7 +2499,7 @@ __metadata:
     i18next-http-backend: 1.4.5
     i18next-parser: 6.6.0
     lodash: 4.17.21
-    luxon: ^2.5.2
+    luxon: ^3.3.0
     prettier: 2.8.3
     prop-types: ^15.8.1
     qs: ^6.11.0
@@ -2534,7 +2544,7 @@ __metadata:
     depcheck: 1.4.3
     jotai: ^1.13.1
     lodash: 4.17.21
-    luxon: ^2.5.2
+    luxon: ^3.3.0
     next-react-memory-stats: ^1.0.2
     parquet-wasm: 0.4.0-beta.5
     prettier: 2.8.3
@@ -2615,7 +2625,7 @@ __metadata:
     i18next-parser: 6.6.0
     intersection-observer: 0.12.2
     lodash: 4.17.21
-    luxon: ^2.5.2
+    luxon: ^3.3.0
     match-sorter: ^6.3.1
     papaparse: 5.3.2
     prettier: 2.8.3
@@ -2666,7 +2676,7 @@ __metadata:
     d3: ^7.8.2
     depcheck: 1.4.3
     lodash: 4.17.21
-    luxon: ^2.5.2
+    luxon: ^3.3.0
     prettier: 2.8.3
     qs: ^6.11.0
     react: ^18.2.0
@@ -2713,7 +2723,7 @@ __metadata:
     i18next-http-backend: 1.4.5
     i18next-parser: 6.6.0
     lodash: 4.17.21
-    luxon: ^2.5.2
+    luxon: ^3.3.0
     prettier: 2.8.3
     prop-types: ^15.8.1
     qs: ^6.11.0
@@ -2759,7 +2769,7 @@ __metadata:
     depcheck: 1.4.3
     jotai: ^1.13.1
     lodash: 4.17.21
-    luxon: ^2.5.2
+    luxon: ^3.3.0
     prettier: 2.8.3
     react: ^18.2.0
     react-dom: ^18.2.0
@@ -2790,7 +2800,7 @@ __metadata:
     d3-geom: ^0.0.0
     d3-quadtree: ^3.0.1
     d3-scale: ^3.3.0
-    luxon: ^2.5.2
+    luxon: ^3.3.0
     pbf: ^3.2.1
     prop-types: ^15.8.1
     react: ^18.2.0
@@ -19396,10 +19406,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"luxon@npm:^2.5.2":
-  version: 2.5.2
-  resolution: "luxon@npm:2.5.2"
-  checksum: d8b671ffd2ff0b438af862ac11082a81b3aedd9f8b6a4ca636f944224f8dd381125cd4d274ca0a8aedcaf2cfca0fc2ca96fe4cc1b16a28b7af701afb95c0bff8
+"luxon@npm:^3.3.0":
+  version: 3.3.0
+  resolution: "luxon@npm:3.3.0"
+  checksum: 50cf17a0dc155c3dcacbeae8c0b7e80db425e0ba97b9cbdf12a7fc142d841ff1ab1560919f033af46240ed44e2f70c49f76e3422524c7fc8bb8d81ca47c66187
   languageName: node
   linkType: hard
 
