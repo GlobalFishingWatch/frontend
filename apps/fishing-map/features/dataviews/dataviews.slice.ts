@@ -14,6 +14,7 @@ import {
   DataviewInstance,
   Dataview,
   APIPagination,
+  DataviewDatasetConfig,
 } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import {
@@ -44,6 +45,10 @@ import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { MARINE_MANAGER_DATAVIEWS } from 'data/default-workspaces/marine-manager'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
+import {
+  getVesselDataviewInstanceDatasetConfig,
+  VESSEL_DATAVIEW_INSTANCE_PREFIX,
+} from 'features/dataviews/dataviews.utils'
 import { trackDatasetConfigsCallback } from '../resources/resources.utils'
 
 export const fetchDataviewByIdThunk = createAsyncThunk(
@@ -222,26 +227,51 @@ export const selectAllDataviewInstancesResolved = createSelector(
     selectVesselInfoData,
   ],
   (
-    mapDataviewInstances,
+    dataviewInstances,
     dataviews,
     datasets,
     isVesselLocation,
     vessel
   ): UrlDataviewInstance[] | undefined => {
-    const vesselDataviewInstance =
-      isVesselLocation && vessel
+    if (isVesselLocation) {
+      const vesselDataviewInstance = vessel
         ? [
             getVesselDataviewInstance(vessel, {
-              // infoDatasetId: vessel.dataset,
-              trackDatasetId: vessel.trackDatasetId,
-              ...(vessel?.eventsDatasetsId?.length && {
-                eventsDatasetsId: vessel?.eventsDatasetsId,
+              info: vessel.info,
+              track: vessel.track,
+              ...(vessel?.events?.length && {
+                events: vessel?.events,
               }),
             }),
           ]
         : []
-    const dataviewInstances = isVesselLocation ? vesselDataviewInstance : mapDataviewInstances
-    const dataviewInstancesResolved = resolveDataviews(dataviewInstances, dataviews, datasets)
+      return resolveDataviews(vesselDataviewInstance, dataviews, datasets)
+    }
+    const dataviewInstancesWithDatasetConfig = dataviewInstances.map((dataviewInstance) => {
+      if (
+        dataviewInstance.id.startsWith(VESSEL_DATAVIEW_INSTANCE_PREFIX) &&
+        !dataviewInstance.datasetsConfig?.length &&
+        dataviewInstance.config?.info
+      ) {
+        const vesselId = dataviewInstance.id.split(VESSEL_DATAVIEW_INSTANCE_PREFIX)[1]
+        // New way to resolve datasetConfig for vessels to avoid storing all
+        // the datasetConfig in the instance and save url string characters
+        const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
+          vesselId,
+          dataviewInstance.config
+        )
+        return {
+          ...dataviewInstance,
+          datasetsConfig,
+        }
+      }
+      return dataviewInstance
+    })
+    const dataviewInstancesResolved = resolveDataviews(
+      dataviewInstancesWithDatasetConfig,
+      dataviews,
+      datasets
+    )
     return dataviewInstancesResolved
   }
 )

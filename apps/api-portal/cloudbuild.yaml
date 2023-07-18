@@ -12,7 +12,7 @@ steps:
     script: |
       if [ ! -d "node_modules" ]; then
         apk add git
-        yarn set version 3.5.1
+        yarn set version 3.6.1
         yarn -v
         yarn install --immutable
       fi
@@ -34,33 +34,41 @@ steps:
   - id: 'build-app'
     waitFor: ['install-yarn']
     name: node:18-alpine
-    entrypoint: yarn
-    args: ['nx', 'build', 'api-portal', '--parallel']
     env:
       - 'NX_BRANCH=$_NX_BRANCH'
       - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
       - 'NEXT_PUBLIC_API_GATEWAY=$_NEXT_PUBLIC_API_GATEWAY'
       - 'NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=$_NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID'
-      - 'NEXT_PUBLIC_GOOGLE_TAG_MANAGER_KEY=$_NEXT_PUBLIC_GOOGLE_TAG_MANAGER_KEY'
+      - 'NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=$_NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID'
       - 'NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID=$_NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID'
       - 'NEXT_PUBLIC_URL=$_NEXT_PUBLIC_URL'
+    script: |
+      yarn -v
+      yarn nx run api-portal:build --parallel
 
-  - name: 'gcr.io/kaniko-project/executor:v1.6.0'
+      raw_tag="${COMMIT_SHA};$NEXT_PUBLIC_API_GATEWAY;$NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID;$NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID;$NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID;$NEXT_PUBLIC_URL"
+      tag=`echo $raw_tag | sha256sum`
+      tag=${tag:0:64}
+      echo $tag > image-tag
+      echo Docker Image Tag: $tag
+
+  - name: 'gcr.io/kaniko-project/executor:debug'
     id: 'build-image'
     waitFor: ['build-app']
-    args:
-      [
-        '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/api-portal:$COMMIT_SHA',
-        '--cache=true',
-        '--build-arg',
-        'APP_NAME=api-portal',
-        '--target',
-        'production',
-        '-f',
-        './apps/api-portal/Dockerfile',
-        '-c',
-        './dist/apps/api-portal',
-      ]
+    entrypoint: ''
+    script: |
+      tag=`cat image-tag`
+      /kaniko/executor \
+        --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/api-portal:$tag \
+        --cache=true \
+        --build-arg \
+          APP_NAME=api-portal \
+        --target \
+          production \
+        -f \
+          ./apps/api-portal/Dockerfile \
+        -c \
+          ./dist/apps/api-portal
 
   # Deploy to the appropriate environment
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -74,6 +82,7 @@ steps:
       - 'pipefail'
       - '-c'
       - |-
+        tag=`cat image-tag`
         branch_service_name=`echo api-portal-$BRANCH_NAME | sed -r 's,[/\.],-,g' | awk '{print substr(tolower($0),0,62)}'`
         service_name=${_RUN_SERVICE_NAME:-${branch_service_name}}
         gcloud beta run deploy \
@@ -81,7 +90,7 @@ steps:
         --project \
         $_RUN_PROJECT \
         --image \
-        gcr.io/world-fishing-827/github.com/globalfishingwatch/api-portal:$COMMIT_SHA \
+        gcr.io/world-fishing-827/github.com/globalfishingwatch/api-portal:$tag \
         --region \
         $_RUN_REGION \
         --platform managed \

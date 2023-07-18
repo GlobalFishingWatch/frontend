@@ -1,0 +1,61 @@
+.vesselRow {
+  display: flex;
+  gap: var(--space-M);
+}
+
+.vesselRow:not(:last-child) {
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: var(--border);
+}
+
+.controls {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.actionButton {
+  cursor: pointer;
+  border: var(--border-white);
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center center;
+  flex-shrink: 0;
+  width: var(--size-M);
+  color: white;
+  font-size: 1rem;
+  line-height: 1rem;
+  text-transform: uppercase;
+  background-color: var(--color-primary-blue);
+  height: var(--size-M);
+}
+
+.actionButton.basemap_default {
+  background-image: url('../../images/basemap-satellite.jpg');
+}
+
+.actionButton.satellite {
+  background-image: url('../../images/basemap-default.jpg');
+}
+
+.dot {
+  display: inline-block;
+  margin-right: 0.5rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.5rem;
+  background-color: currentcolor;
+}
+
+.info {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  color: var(--color-white);
+  opacity: var(--opacity-secondary);
+}

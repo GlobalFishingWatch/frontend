@@ -7,23 +7,28 @@
     "changelog": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["./changelog.sh fishing-map \"Map\""],
+        "commands": [
+          "./changelog.sh fishing-map \"Map\""
+        ],
         "parallel": false
       }
     },
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx build fishing-map --parallel"],
+        "commands": [
+          "nx build fishing-map --parallel"
+        ],
         "parallel": false
       }
     },
     "build": {
       "executor": "@nx/next:build",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "defaultConfiguration": "production",
       "options": {
-        "root": "apps/fishing-map",
         "outputPath": "dist/apps/fishing-map"
       },
       "configurations": {
@@ -45,7 +50,9 @@
       "executor": "nx:run-commands",
       "outputs": [],
       "options": {
-        "commands": ["rm -rf dist/apps/fishing-map/public/locales"]
+        "commands": [
+          "rm -rf dist/apps/fishing-map/public/locales"
+        ]
       }
     },
     "serve": {
@@ -91,7 +98,9 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/fishing-map"],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/fishing-map"
+      ],
       "options": {
         "jestConfig": "apps/fishing-map/jest.config.ts",
         "passWithNoTests": true
@@ -99,9 +108,13 @@
     },
     "lint": {
       "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["apps/fishing-map/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "apps/fishing-map/**/*.{ts,tsx,js,jsx}"
+        ]
       }
     }
   },

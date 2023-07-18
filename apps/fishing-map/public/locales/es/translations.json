@@ -82,6 +82,7 @@
     "category": "Categoría",
     "comingSoon": "¡próximamente!",
     "confirm": "Confirmar",
+    "confirmLeave": "¿Estás seguro de que quieres irte sin guardar tu espacio de trabajo?",
     "context_area_other": "Areas de contexto",
     "continue": "Continuar",
     "copiedToClipboard": "El enlace para compartir esta vista ha sido copiado al portapapeles.",
@@ -332,6 +333,8 @@
     "unknown": "Evento desconocido"
   },
   "feedback": {
+    "logAnIssue": "Avisar de un error",
+    "requestAnImprovement": "Solicitar una mejora",
     "descriptionPlaceholder": "Por favor sea tan descriptivo como sea posible.",
     "email": "E-mail",
     "emailDisclaimer": "Sólo te enviaremos un correo electrónico en relación a este comentario",

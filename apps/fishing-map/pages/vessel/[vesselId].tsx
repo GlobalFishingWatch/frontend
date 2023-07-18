@@ -3,9 +3,9 @@ import { ParsedUrlQuery } from 'querystring'
 import { useEffect, useState } from 'react'
 import VesselServerComponent from 'server/vessel/vessel'
 import { TOKEN_REGEX } from '@globalfishingwatch/dataviews-client'
-import { wrapper } from 'store'
 import { fetchVesselInfoThunk } from 'features/vessel/vessel.slice'
 import Index from 'pages'
+import { wrapper } from '../../store'
 
 // This is needed by nx/next builder to run build the standalone next app properly
 // https://github.com/nrwl/nx/issues/9017#issuecomment-1140066503

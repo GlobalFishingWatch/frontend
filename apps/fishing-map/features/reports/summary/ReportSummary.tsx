@@ -48,7 +48,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
   const commonProperties = useMemo(() => {
     return getCommonProperties(dataviews).filter(
       (property) =>
-        !dataviews[0].config?.filters![property] || !PROPERTIES_EXCLUDED.includes(property)
+        !dataviews[0].config?.filters!?.[property] || !PROPERTIES_EXCLUDED.includes(property)
     )
   }, [dataviews])
 
@@ -170,10 +170,10 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
           <ReportSummaryPlaceholder />
         )}
       </div>
-      <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
-        <div className={styles.tagsContainer}>
-          {dataviews.length > 0 ? (
-            dataviews?.map((dataview, index) => (
+      {summary ? (
+        <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
+          <div className={styles.tagsContainer}>
+            {dataviews?.map((dataview, index) => (
               <ReportSummaryTags
                 key={dataview.id}
                 dataview={dataview}
@@ -181,12 +181,14 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
                 hiddenProperties={commonProperties}
                 availableFields={FIELDS}
               />
-            ))
-          ) : (
-            <ReportSummaryTagsPlaceholder />
-          )}
+            ))}
+          </div>
+        </Sticky>
+      ) : (
+        <div className={styles.tagsContainer}>
+          <ReportSummaryTagsPlaceholder />
         </div>
-      </Sticky>
+      )}
     </Fragment>
   )
 }

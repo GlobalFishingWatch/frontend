@@ -72,9 +72,9 @@ export const fetchVesselInfoThunk = createAsyncThunk(
           ...vessel.coreInfo,
           firstTransmissionDate: vessel?.coreInfo?.firstTransmissionDate || '',
         },
-        infoDatasetId: datasetId,
-        trackDatasetId,
-        eventsDatasetsId,
+        info: datasetId,
+        track: trackDatasetId,
+        events: eventsDatasetsId,
         // Make sure to have the lastest in the first position
         registryInfo:
           vessel?.registryInfo?.sort(
@@ -138,9 +138,9 @@ export const selectVesselInfoError = (state: VesselSliceState) => state.vessel.i
 
 export const selectVesselInfoData = createSelector([selectVesselInfo], (vesselInfo) => {
   if (!vesselInfo) return null
-  const info = vesselInfo.registryInfo?.[0] || vesselInfo.coreInfo
-  const { infoDatasetId, trackDatasetId, eventsDatasetsId } = vesselInfo
-  return { ...info, infoDatasetId, trackDatasetId, eventsDatasetsId } as VesselData
+  const vessel = vesselInfo.registryInfo?.[0] || vesselInfo.coreInfo
+  const { info, track, events } = vesselInfo
+  return { ...vessel, info, track, events } as VesselData
 })
 
 export default vesselSlice.reducer

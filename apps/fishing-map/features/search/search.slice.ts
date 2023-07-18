@@ -141,8 +141,8 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         params: [],
         query: [
           { id: 'datasets', value: datasets.map((d) => d.id) },
-          { id: 'limit', value: RESULTS_PER_PAGE },
-          { id: 'offset', value: offset },
+          // { id: 'limit', value: RESULTS_PER_PAGE },
+          // { id: 'offset', value: offset },
           { id: 'query', value: encodeURIComponent(advancedQuery || query) },
         ],
       }
@@ -163,7 +163,9 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           const infoDataset = selectDatasetById(vessel.dataset)(state as any)
           if (!infoDataset) return []
 
-          const trackDatasetId = getRelatedDatasetByType(infoDataset, DatasetTypes.Tracks)?.id
+          const trackDatasetId = getRelatedDatasetByType(infoDataset, DatasetTypes.Tracks, {
+            vesselType: vessel?.vesselType,
+          })?.id
           return {
             ...vessel,
             dataset: infoDataset,

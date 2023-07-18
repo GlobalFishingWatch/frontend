@@ -23,12 +23,11 @@ import {
   selectWorkspaceCustomStatus,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
-import { fetchUserThunk } from 'features/user/user.slice'
+import { fetchUserThunk, isUserLogged } from 'features/user/user.slice'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { selectShowTimeComparison } from 'features/reports/reports.selectors'
-import { isUserLogged } from 'features/user/user.selectors'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import {
   HOME,

@@ -1,9 +1,9 @@
-import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { Locale } from 'types'
 import { LocaleLabels } from 'features/i18n/i18n'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './LanguageToggle.module.css'
 
 type LanguageToggleProps = {
@@ -17,8 +17,8 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
 }: LanguageToggleProps) => {
   const { i18n } = useTranslation()
   const toggleLanguage = (lang: Locale) => {
-    uaEvent({
-      category: 'Internationalization',
+    trackEvent({
+      category: TrackCategory.I18n,
       action: `Change language`,
       label: lang,
     })

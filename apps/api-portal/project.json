@@ -7,23 +7,28 @@
     "changelog": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["./changelog.sh api-portal \"API Portal\""],
+        "commands": [
+          "./changelog.sh api-portal \"API Portal\""
+        ],
         "parallel": false
       }
     },
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx build api-portal --parallel"],
+        "commands": [
+          "nx build api-portal --parallel"
+        ],
         "parallel": false
       }
     },
     "build": {
       "executor": "@nx/next:build",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "defaultConfiguration": "production",
       "options": {
-        "root": "apps/api-portal",
         "outputPath": "dist/apps/api-portal"
       },
       "configurations": {
@@ -33,7 +38,9 @@
     "start": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx serve api-portal"],
+        "commands": [
+          "nx serve api-portal"
+        ],
         "parallel": true
       }
     },
@@ -59,14 +66,20 @@
     },
     "lint": {
       "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["apps/api-portal/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "apps/api-portal/**/*.{ts,tsx,js,jsx}"
+        ]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/api-portal"],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/api-portal"
+      ],
       "options": {
         "jestConfig": "apps/api-portal/jest.config.ts",
         "passWithNoTests": true

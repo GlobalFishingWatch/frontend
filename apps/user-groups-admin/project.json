@@ -7,7 +7,9 @@
     "changelog": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["./changelog.sh user-groups-admin \"User groups admin\""],
+        "commands": [
+          "./changelog.sh user-groups-admin \"User groups admin\""
+        ],
         "parallel": false
       }
     },
@@ -33,10 +35,11 @@
     },
     "compile": {
       "executor": "@nx/next:build",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "defaultConfiguration": "production",
       "options": {
-        "root": "apps/user-groups-admin",
         "outputPath": "dist/apps/user-groups-admin"
       },
       "configurations": {
@@ -46,7 +49,9 @@
     "start": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx serve user-groups-admin"],
+        "commands": [
+          "nx serve user-groups-admin"
+        ],
         "parallel": true
       }
     },
@@ -72,14 +77,20 @@
     },
     "lint": {
       "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["apps/user-groups-admin/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "apps/user-groups-admin/**/*.{ts,tsx,js,jsx}"
+        ]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/user-groups-admin"],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/user-groups-admin"
+      ],
       "options": {
         "jestConfig": "apps/user-groups-admin/jest.config.ts",
         "passWithNoTests": true

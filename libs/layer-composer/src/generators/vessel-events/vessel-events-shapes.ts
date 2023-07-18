@@ -1,6 +1,5 @@
 import memoizeOne from 'memoize-one'
 import { FeatureCollection } from 'geojson'
-import { DateTime, Duration } from 'luxon'
 import type {
   LineLayerSpecification,
   SymbolLayerSpecification,
@@ -20,6 +19,7 @@ import {
   filterGeojsonByTimerange,
   filterFeaturesByTimerange,
   groupFeaturesByType,
+  getVesselEventsSegmentsGeojsonMemoizeEqualityCheck,
 } from './vessel-events.utils'
 
 export type GlobalVesselEventsShapesGeneratorConfig =
@@ -212,7 +212,11 @@ class VesselsEventsShapesGenerator {
         }
       ),
       getVesselEventsGeojson: memoizeOne(getVesselEventsGeojson),
-      getVesselEventsSegmentsGeojson: memoizeOne(getVesselEventsSegmentsGeojson),
+      getVesselEventsSegmentsGeojson: memoizeOne(
+        getVesselEventsSegmentsGeojson,
+        // This is a hack needed because the events array mutates constantly in resolve-dataviews-generators
+        getVesselEventsSegmentsGeojsonMemoizeEqualityCheck
+      ),
       filterGeojsonByTimerange: memoizeOne(filterGeojsonByTimerange),
       filterFeaturesByTimerange: memoizeOne(filterFeaturesByTimerange),
       groupFeaturesByType: memoizeOne(groupFeaturesByType),
