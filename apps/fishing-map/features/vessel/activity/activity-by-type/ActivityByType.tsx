@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { event as uaEvent } from 'react-ga'
 import { Virtuoso } from 'react-virtuoso'
 import { EventTypes } from '@globalfishingwatch/api-types'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import useViewport from 'features/map/map-viewport.hooks'
 import EventDetail from 'features/vessel/activity/event/EventDetail'
 import { DEFAULT_VIEWPORT } from 'data/config'
@@ -52,8 +52,8 @@ export function ActivityByType() {
       toggleExpandedType(event)
       setSelectedEvent(undefined)
       scrollBottom()
-      uaEvent({
-        category: 'Vessel Detail ACTIVITY BY TYPE Tab',
+      trackEvent({
+        category: TrackCategory.VesselProfile,
         action: 'View list of events by activity type',
         label: JSON.stringify({ type: event }),
       })

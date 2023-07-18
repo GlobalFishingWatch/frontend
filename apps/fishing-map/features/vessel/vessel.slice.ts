@@ -5,7 +5,7 @@ import { GFWAPI, ParsedAPIError, parseAPIError } from '@globalfishingwatch/api-c
 import {
   Dataset,
   DatasetTypes,
-  Vessel,
+  IdentityVessel,
   VesselCoreInfo,
   VesselRegistryInfo,
 } from '@globalfishingwatch/api-types'
@@ -26,7 +26,7 @@ export type VesselData = VesselCoreInfo & VesselRegistryInfo & VesselInstanceDat
 interface VesselState {
   info: {
     status: AsyncReducerStatus
-    data: (Vessel & VesselInstanceDatasets) | null
+    data: (IdentityVessel & VesselInstanceDatasets) | null
     error: ParsedAPIError | null
   }
 }
@@ -62,7 +62,7 @@ export const fetchVesselInfoThunk = createAsyncThunk(
         return selectDatasetById(id)(state) ? [] : [id]
       })
       dispatch(fetchDatasetsByIdsThunk(datasetsToFetch))
-      const vessel = await GFWAPI.fetch<Vessel>(
+      const vessel = await GFWAPI.fetch<IdentityVessel>(
         `/prototypes/vessels/${vesselId}?${stringify({ datasets: [datasetId] })}`,
         { version: '' }
       )

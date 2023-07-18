@@ -5,6 +5,6 @@ import VesselPage from 'pages/vessel/[vesselId]'
 // https://github.com/nrwl/nx/issues/9017#issuecomment-1140066503
 path.resolve('./next.config.js')
 
-export { getServerSideProps } from 'pages/vessel/[vesselId]'
+// export { getServerSideProps } from 'pages/vessel/[vesselId]'
 
 export default VesselPage
