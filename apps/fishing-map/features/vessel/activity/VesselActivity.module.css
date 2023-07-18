@@ -17,6 +17,6 @@
   color: var(--color-secondary-blue);
 }
 
-.actionButton:not(:disabled):hover {
-  background: var(--color-terthiary-blue);
+.placeholder {
+  height: 40rem;
 }

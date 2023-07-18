@@ -39,7 +39,6 @@ export const makeStore = () => {
           ...state,
           vessel: {
             info: { ...state.vessel.info, data: 'NOT_SERIALIZED' },
-            events: { ...state.vessel.events, data: 'NOT_SERIALIZED' },
           },
           resources: Object.fromEntries(serializedResources),
         }

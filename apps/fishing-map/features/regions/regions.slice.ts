@@ -1,4 +1,5 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
+import { memoize } from 'lodash'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import {
   asyncInitialState,
@@ -9,23 +10,19 @@ import {
 import { RootState } from 'store'
 import { sortFields } from 'utils/shared'
 
-export type RegionId = string | number
-export enum MarineRegionType {
+export enum RegionType {
   eez = 'eez',
   rfmo = 'rfmo',
   mpa = 'mpa',
 }
 
+export type RegionId = string | number
 export interface Region {
-  id: string
+  id: RegionId
   label: string
 }
-export interface GroupRegions {
-  id: RegionId
-  type: MarineRegionType
-}
 export interface Regions {
-  id: RegionId
+  id: RegionType
   data: Region[]
 }
 export type RegionsState = AsyncReducer<Regions>
@@ -34,29 +31,30 @@ const initialState: RegionsState = {
   ...asyncInitialState,
 }
 
+export type FetchRegionsThunkParams = Record<RegionType, string>
 export const fetchRegionsThunk = createAsyncThunk(
   'regions/fetch',
-  async (_, { rejectWithValue }) => {
+  async (regionIds: FetchRegionsThunkParams, { rejectWithValue }) => {
     try {
       const apiUrl = `/datasets`
       const options = {}
       const promises = [
-        GFWAPI.fetch<Region[]>(`${apiUrl}/public-eez-areas/user-context-layer-v1`, options),
-        GFWAPI.fetch<Region[]>(`${apiUrl}/public-mpa-all/user-context-layer-v1`, options),
-        GFWAPI.fetch<Region[]>(`${apiUrl}/public-rfmo/user-context-layer-v1`, options),
+        GFWAPI.fetch<Region[]>(`${apiUrl}/${regionIds.eez}/user-context-layer-v1`, options),
+        GFWAPI.fetch<Region[]>(`${apiUrl}/${regionIds.mpa}/user-context-layer-v1`, options),
+        GFWAPI.fetch<Region[]>(`${apiUrl}/${regionIds.rfmo}/user-context-layer-v1`, options),
       ]
       const regions = await Promise.allSettled(promises)
       const result: Regions[] = [
         {
-          id: MarineRegionType.eez,
+          id: RegionType.eez,
           data: regions[0]?.status === 'fulfilled' ? regions[0].value.sort(sortFields) : [],
         },
         {
-          id: MarineRegionType.mpa,
+          id: RegionType.mpa,
           data: regions[1]?.status === 'fulfilled' ? regions[1].value.sort(sortFields) : [],
         },
         {
-          id: MarineRegionType.rfmo,
+          id: RegionType.rfmo,
           data: regions[2]?.status === 'fulfilled' ? regions[2].value.sort(sortFields) : [],
         },
       ]
@@ -92,5 +90,50 @@ const { slice: regionsSlice, entityAdapter } = createAsyncSlice<RegionsState, Re
   },
 })
 
-export const regionsEntityAdapter = entityAdapter
+const { selectById } = entityAdapter.getSelectors<RegionsState>((regions) => regions)
+
+export const selectRegions = (state: RootState) => {
+  return state.regions
+}
+
+const selectRegionsById = memoize((id: RegionId) =>
+  createSelector([selectRegions], (regions) => {
+    const regionList = selectById(regions, id)
+    return regionList?.data ?? []
+  })
+)
+
+export const selectEEZs = selectRegionsById(RegionType.eez)
+export const selectMPAs = selectRegionsById(RegionType.mpa)
+export const selectRFMOs = selectRegionsById(RegionType.rfmo)
+
+export const selectRegionsStatus = (state: RootState) => state.regions.status
+
+export const selectEezById = memoize((id: RegionId) =>
+  createSelector([selectEEZs], (eezs) => {
+    if (!id || !eezs) {
+      return null
+    }
+    return eezs.find((eez) => eez.id.toString() === id.toString())
+  })
+)
+
+export const selectMPAById = memoize((id: RegionId) =>
+  createSelector([selectMPAs], (mpas) => {
+    if (!id || !mpas) {
+      return null
+    }
+    return mpas.find((eez) => eez.id.toString() === id.toString())
+  })
+)
+
+export const selectRfmoById = memoize((id: RegionId) =>
+  createSelector([selectRFMOs], (rfmos) => {
+    if (!id || !rfmos) {
+      return null
+    }
+    return rfmos.find((rfmo) => rfmo.id.toString() === id.toString())
+  })
+)
+
 export default regionsSlice.reducer

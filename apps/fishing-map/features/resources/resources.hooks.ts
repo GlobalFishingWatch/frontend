@@ -6,12 +6,10 @@ import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { parseTrackEventChunkProps } from 'features/timebar/timebar.utils'
 import { parseUserTrackCallback } from './resources.utils'
 
-export const useFetchDataviewResources = () => {
-  const dataviewsResources = useSelector(selectDataviewsResources)
+export const useFetchResources = (resources) => {
   const dispatch = useAppDispatch()
   useEffect(() => {
-    if (dataviewsResources) {
-      const { resources } = dataviewsResources
+    if (resources?.length) {
       resources.forEach((resource) => {
         dispatch(
           fetchResourceThunk({
@@ -23,5 +21,9 @@ export const useFetchDataviewResources = () => {
         )
       })
     }
-  }, [dispatch, dataviewsResources])
+  }, [dispatch, resources])
+}
+export const useFetchDataviewResources = () => {
+  const dataviewsResources = useSelector(selectDataviewsResources)
+  useFetchResources(dataviewsResources?.resources)
 }

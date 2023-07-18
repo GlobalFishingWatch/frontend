@@ -1,41 +1,18 @@
-import { memoize } from 'lodash'
 import { createSelector } from '@reduxjs/toolkit'
-import { RootState } from 'store'
-import { MarineRegionType, RegionId, regionsEntityAdapter, RegionsState } from './regions.slice'
+import { EEZ_DATAVIEW_SLUG, MPA_DATAVIEW_SLUG, RFMO_DATAVIEW_SLUG } from 'data/workspaces'
+import { selectDataviewBySlug } from 'features/dataviews/dataviews.slice'
 
-const { selectById } = regionsEntityAdapter.getSelectors<RegionsState>((regions) => regions)
-
-export const selectRegions = (state: RootState) => {
-  return state.regions
-}
-
-const selectRegionsById = memoize((id: RegionId) =>
-  createSelector([selectRegions], (regions) => {
-    const regionList = selectById(regions, id)
-    return regionList?.data ?? []
-  })
-)
-
-export const selectEEZs = selectRegionsById(MarineRegionType.eez)
-export const selectMPAs = selectRegionsById(MarineRegionType.mpa)
-export const selectRFMOs = selectRegionsById(MarineRegionType.rfmo)
-
-export const selectRegionsStatus = (state: RootState) => state.regions.status
-
-export const selectEezById = memoize((id: RegionId) =>
-  createSelector([selectEEZs], (eezs) => {
-    if (!id || !eezs) {
-      return null
+export const selectRegionsDatasets = createSelector(
+  [
+    selectDataviewBySlug(EEZ_DATAVIEW_SLUG),
+    selectDataviewBySlug(MPA_DATAVIEW_SLUG),
+    selectDataviewBySlug(RFMO_DATAVIEW_SLUG),
+  ],
+  (eez, mpa, rfmo) => {
+    return {
+      eez: eez?.config?.layers?.[0].dataset as string,
+      mpa: mpa?.config?.layers?.[0].dataset as string,
+      rfmo: rfmo?.config?.layers?.[0].dataset as string,
     }
-    return eezs.find((eez) => eez.id.toString() === id.toString())
-  })
-)
-
-export const selectRfmoById = memoize((id: RegionId) =>
-  createSelector([selectRFMOs], (rfmos) => {
-    if (!id || !rfmos) {
-      return null
-    }
-    return rfmos.find((rfmo) => rfmo.id.toString() === id.toString())
-  })
+  }
 )

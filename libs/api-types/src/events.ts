@@ -155,22 +155,36 @@ export interface GapEvent {
   positionsPerDaySatReception: number
 }
 
+export interface FishingEvent {
+  totalDistanceKm: number
+  averageSpeedKnots: number
+  averageDurationHours: number
+}
+
+export interface Distances {
+  startDistanceFromShoreKm?: number
+  endDistanceFromShoreKm: number
+  startDistanceFromPortKm?: number
+  endDistanceFromPortKm: number
+}
+
 export interface ApiEvent<Vessel = EventVessel> {
+  distances?: Distances
+  encounter?: EncounterEvent<Vessel>
+  end: number | string // Depends on timestamp format API param
+  fishing?: FishingEvent
+  gap?: GapEvent
   id: string
+  key?: string
+  loitering?: LoiteringEvent
+  nextPort?: EventNextPort
+  regions?: Regions
+  port_visit?: PortVisitEvent
+  port?: PortEvent
+  position: PointCoordinate
+  start: number | string // Depends on timestamp format API param
   type: EventTypes
   vessel: Vessel
-  start: number | string // Depends on timestamp format API param
-  end: number | string // Depends on timestamp format API param
-  rfmos: string[]
-  eezs: string[]
-  nextPort?: EventNextPort
-  position: PointCoordinate
-  loitering?: LoiteringEvent
-  encounter?: EncounterEvent<Vessel>
-  gap?: GapEvent
-  port?: PortEvent
-  port_visit?: PortVisitEvent
-  key?: string
 }
 
 export interface ApiEvents<T = ApiEvent> {

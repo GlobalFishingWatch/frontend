@@ -62,6 +62,7 @@ class Timeline extends PureComponent {
       outerWidth: 100,
       outerHeight: 50,
       dragging: null,
+      isMovingInside: false,
     }
     this.graphContainer = null
   }
@@ -200,7 +201,10 @@ class Timeline extends PureComponent {
   }, 16)
 
   notifyMouseLeave = () => {
-    this.throttledMouseMove(null, null, null)
+    if (this.state.isMovingInside) {
+      this.setState({ isMovingInside: false })
+      this.throttledMouseMove(null, null, null)
+    }
   }
 
   onMouseMove = (event) => {
@@ -217,6 +221,9 @@ class Timeline extends PureComponent {
     const isDraggingInner = dragging === DRAG_INNER
     const isDraggingZoomIn = this.isHandlerZoomInValid(x).isValid === true
     const isDraggingZoomOut = this.isHandlerZoomOutValid(x) === true
+    if (isMovingInside || isNodeInside) {
+      this.setState({ isMovingInside: true })
+    }
 
     if (
       (isMovingInside || isNodeInside) &&

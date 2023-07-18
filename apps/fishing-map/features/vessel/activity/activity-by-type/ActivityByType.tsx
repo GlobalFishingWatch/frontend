@@ -1,52 +1,81 @@
-import { Fragment, useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
-import AutoSizer from 'react-virtualized-auto-sizer'
-import { VariableSizeList as List } from 'react-window'
-import { useTranslation } from 'react-i18next'
-import { Modal } from '@globalfishingwatch/ui-components'
-import { EventType, EventTypes } from '@globalfishingwatch/api-types'
-
-//import useMapEvents from 'features/map/map-events.hooks'
+import { Virtuoso } from 'react-virtuoso'
+import { EventTypes } from '@globalfishingwatch/api-types'
 import useViewport from 'features/map/map-viewport.hooks'
-import ActivityModalContent from 'features/vessel/activity/event-details/ActivityContent'
+import EventDetail from 'features/vessel/activity/event/EventDetail'
 import { DEFAULT_VIEWPORT } from 'data/config'
-import { ActivityEvent } from 'types/activity'
-import useActivityEventConnect from '../event/event.hook'
+import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { disableHighlightedTime, setHighlightedTime } from 'features/timebar/timebar.slice'
+import { getUTCDateTime } from 'utils/dates'
 import EventItem from '../event/Event'
 import { useActivityByType } from './activity-by-type.hook'
 import styles from './activity-by-type.module.css'
 import { selectEventsByType } from './activity-by-type.selectors'
 import ActivityGroup from './ActivityGroup'
 
-export interface ActivityByTypeProps {
-  onMoveToMap?: () => void
-}
+const EVENTS_ODER = [
+  EventTypes.Encounter,
+  EventTypes.Fishing,
+  EventTypes.Loitering,
+  EventTypes.Port,
+  EventTypes.Gap,
+]
+const HEADER_HEIGHT = 60
+const EVENT_HEIGHT = 50
+const MIN_EVENTS_HEIGHT = 400
 
-export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) {
-  const { toggleEventType, expandedGroup } = useActivityByType()
-  const events = useSelector(selectEventsByType)
-  const { t } = useTranslation()
-  const { getEventDescription } = useActivityEventConnect()
-  const [isModalOpen, setIsOpen] = useState(false)
+export function ActivityByType() {
+  const activityGroups = useSelector(selectEventsByType)
+  const containerRef = useRef<any>()
+  const dispatch = useAppDispatch()
+  const [expandedType, toggleExpandedType] = useActivityByType()
+  const { viewport, setMapCoordinates } = useViewport()
   const [selectedEvent, setSelectedEvent] = useState<ActivityEvent>()
-  const openModal = useCallback((event: ActivityEvent) => {
-    setSelectedEvent(event)
-    setIsOpen(true)
+
+  const onInfoClick = useCallback((event: ActivityEvent) => {
+    setSelectedEvent((state) => (state?.id === event.id ? undefined : event))
   }, [])
-  const onToggleEventType = useCallback(
+
+  const scrollBottom = useCallback(() => {
+    if (containerRef.current) {
+      requestAnimationFrame(() => {
+        containerRef.current.scrollIntoView(false)
+      })
+    }
+  }, [])
+
+  const onToggleExpandedType = useCallback(
     (event) => {
-      toggleEventType(event)
+      toggleExpandedType(event)
+      setSelectedEvent(undefined)
+      scrollBottom()
       uaEvent({
         category: 'Vessel Detail ACTIVITY BY TYPE Tab',
         action: 'View list of events by activity type',
         label: JSON.stringify({ type: event }),
       })
     },
-    [toggleEventType]
+    [scrollBottom, toggleExpandedType]
   )
-  const closeModal = useCallback(() => setIsOpen(false), [])
-  const { viewport, setMapCoordinates } = useViewport()
+
+  const onMapHover = useCallback(
+    (event?: ActivityEvent) => {
+      if (event?.start && event?.end) {
+        dispatch(
+          setHighlightedTime({
+            start: getUTCDateTime(event.start).toISO(),
+            end: getUTCDateTime(event.end).toISO(),
+          })
+        )
+      } else {
+        dispatch(disableHighlightedTime())
+      }
+    },
+    [dispatch]
+  )
 
   const selectEventOnMap = useCallback(
     (event: ActivityEvent) => {
@@ -55,88 +84,66 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
         longitude: event.position.lon,
         zoom: viewport.zoom ?? DEFAULT_VIEWPORT.zoom,
       })
-
-      onMoveToMap()
     },
-    [onMoveToMap, setMapCoordinates, viewport.zoom]
+    [setMapCoordinates, viewport.zoom]
   )
 
-  const getEventTypeHeight = (eventType: EventType) => {
-    return eventType === EventTypes.Port ? 60 : 51
-  }
-
-  const getContainerHeight = (eventType: EventType) => {
-    return getEventTypeHeight(eventType) * 10 // create a frame of 10 events
-  }
-
-  const getRowHeight = useCallback(
-    (index: number) => {
-      if (!expandedGroup) return 0
-      const height = getEventTypeHeight(expandedGroup)
-      return height
-    },
-    [expandedGroup]
-  )
-
-  const displayOptions = { displayPortVisitsAsOneEvent: true }
+  const groupsWithDataLength = EVENTS_ODER.filter((eventType) => activityGroups[eventType]).length
+  const containerStyle = useMemo(() => {
+    const maxHeight = window.innerHeight - groupsWithDataLength * HEADER_HEIGHT
+    const styleByEvent = Object.fromEntries(
+      EVENTS_ODER.map((eventType) => {
+        const events = activityGroups[eventType]
+        if (!events) return [eventType, {}]
+        let eventsHeight = events.length * EVENT_HEIGHT
+        if (eventsHeight < MIN_EVENTS_HEIGHT) {
+          eventsHeight = MIN_EVENTS_HEIGHT
+        }
+        const height = Math.min(eventsHeight, maxHeight)
+        return [eventType, { height }]
+      })
+    )
+    return styleByEvent
+  }, [activityGroups, groupsWithDataLength])
 
   return (
-    <div className={styles.activityContainer}>
-      <Modal
-        appSelector="__next"
-        title={getEventDescription(selectedEvent)}
-        isOpen={isModalOpen}
-        onClose={closeModal}
-      >
-        {selectedEvent && <ActivityModalContent event={selectedEvent}></ActivityModalContent>}
-      </Modal>
-      {[
-        EventTypes.Encounter,
-        EventTypes.Fishing,
-        EventTypes.Loitering,
-        EventTypes.Port,
-        EventTypes.Gap,
-      ].map((eventType) => (
-        <Fragment key={eventType}>
-          {events[eventType] && (
+    <div className={styles.activityContainer} ref={containerRef}>
+      <ul>
+        {EVENTS_ODER.map((eventType) => {
+          const activityEvents = activityGroups[eventType]
+          if (!activityEvents) return null
+
+          const expanded = expandedType === eventType
+          return (
             <ActivityGroup
+              key={eventType}
               eventType={eventType}
-              loading={events[eventType].loading}
-              onToggleClick={onToggleEventType}
-              quantity={events[eventType].quantity}
-              expanded={expandedGroup === eventType}
-            ></ActivityGroup>
-          )}
-          {expandedGroup === eventType && events[eventType]?.events.length > 0 && (
-            <AutoSizer disableHeight={true}>
-              {({ width, height }) => (
-                <List
-                  key={`${events[eventType]?.events.length}-list`}
-                  width={width as number}
-                  height={getContainerHeight(eventType)}
-                  itemCount={events[eventType]?.events.length}
-                  itemData={events[eventType]?.events}
-                  itemSize={getRowHeight}
-                >
-                  {({ index, style }) => {
-                    const event = events[eventType].events[index]
-                    return (
-                      <div style={style}>
-                        <EventItem
-                          event={event}
-                          onMapClick={selectEventOnMap}
-                          onInfoClick={openModal}
-                          options={displayOptions}
-                        ></EventItem>
-                      </div>
-                    )
-                  }}
-                </List>
+              onToggleClick={onToggleExpandedType}
+              quantity={activityEvents.length}
+              expanded={expanded}
+            >
+              {expanded && activityEvents.length > 0 && (
+                <Virtuoso
+                  style={containerStyle[eventType]}
+                  totalCount={activityEvents.length}
+                  itemContent={(index) => (
+                    <EventItem
+                      event={activityEvents[index]}
+                      onMapHover={onMapHover}
+                      onMapClick={selectEventOnMap}
+                      onInfoClick={onInfoClick}
+                    >
+                      {selectedEvent?.id === activityEvents[index]?.id && (
+                        <EventDetail event={selectedEvent} />
+                      )}
+                    </EventItem>
+                  )}
+                />
               )}
-            </AutoSizer>
-          )}
-        </Fragment>
-      ))}
+            </ActivityGroup>
+          )
+        })}
+      </ul>
     </div>
   )
 }

@@ -1,61 +1,52 @@
-import { Fragment } from 'react'
-import cx from 'classnames'
-import { Icon, IconButton } from '@globalfishingwatch/ui-components'
-import { EventTypes } from '@globalfishingwatch/api-types'
-import { getEncounterStatus } from 'features/vessel/activity/vessels-activity.utils'
-import { ActivityEvent } from 'types/activity'
-import ActivityDate from '../ActivityDate'
-import ActivityEventPortVisit from './EventPortVisit'
+import React from 'react'
+import { IconButton } from '@globalfishingwatch/ui-components'
+import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import EventIcon from 'features/vessel/activity/event/EventIcon'
+import ActivityDate from './ActivityDate'
 import useActivityEventConnect from './event.hook'
 import styles from './Event.module.css'
 
 interface EventProps {
-  classname?: string
+  style?: React.CSSProperties
   event: ActivityEvent
+  children?: React.ReactNode
   onInfoClick?: (event: ActivityEvent) => void
   onMapClick?: (event: ActivityEvent) => void
-  options?: {
-    displayPortVisitsAsOneEvent: boolean
-  }
+  onMapHover?: (event?: ActivityEvent) => void
 }
 
-const EventItem: React.FC<EventProps> = ({
-  classname = '',
-  event,
-  onInfoClick = () => {},
-  onMapClick = () => {},
-  options = { displayPortVisitsAsOneEvent: false },
-}): React.ReactElement => {
+const ActivityEvent: React.FC<EventProps> = (props): React.ReactElement => {
+  const {
+    event,
+    style,
+    children,
+    onInfoClick = () => {},
+    onMapHover = () => {},
+    onMapClick = () => {},
+  } = props
   const { getEventDescription } = useActivityEventConnect()
-  return event.type !== EventTypes.Port ? (
-    <Fragment>
-      <div className={cx(styles.event, classname)}>
-        <div
-          className={cx(styles.eventIcon, styles[event.type], styles[getEncounterStatus(event)])}
-        >
-          {event.type === EventTypes.Encounter && <Icon icon="event-encounter" type="default" />}
-          {event.type === EventTypes.Loitering && <Icon icon="event-loitering" type="default" />}
-          {event.type === EventTypes.Fishing && <Icon icon="event-fishing" type="default" />}
-          {event.type === EventTypes.Gap && <Icon icon="transmissions-off" type="default" />}
-        </div>
+  return (
+    <li className={styles.event} style={style}>
+      <div className={styles.header}>
+        <EventIcon type={event.type} />
         <div className={styles.eventData}>
           <ActivityDate event={event} />
-          <div className={styles.description}>{getEventDescription(event)}</div>
+          <p className={styles.description}>{getEventDescription(event)}</p>
         </div>
         <div className={styles.actions}>
           <IconButton icon="info" size="small" onClick={() => onInfoClick(event)}></IconButton>
           <IconButton
-            icon="view-on-map"
+            icon="target"
             size="small"
+            onMouseEnter={() => onMapHover(event)}
+            onMouseLeave={() => onMapHover(undefined)}
             onClick={() => onMapClick(event)}
           ></IconButton>
         </div>
       </div>
-      <div className={styles.divider}></div>
-    </Fragment>
-  ) : (
-    <ActivityEventPortVisit {...{ classname, event, onInfoClick, onMapClick, options }} />
+      {children && <div className={styles.content}>{children}</div>}
+    </li>
   )
 }
 
-export default EventItem
+export default ActivityEvent

@@ -1,0 +1,39 @@
+.eventGroup {
+  margin-left: unset;
+  width: 100%;
+  border-top: var(--border);
+  background: var(--gradient);
+}
+
+.header {
+  padding: 0 1.4rem 0 var(--space-M);
+  display: flex;
+  align-items: center;
+  min-height: 6rem;
+  cursor: pointer;
+}
+
+.actions {
+  margin-left: auto;
+  display: flex;
+}
+
+.title {
+  font: var(--font-XS);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  flex: 1;
+  text-transform: uppercase;
+}
+
+.open .description {
+  color: var(--color-promary-blue);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  padding-left: var(--space-M);
+  background: var(--color-white);
+}

@@ -23,7 +23,6 @@ import timebarReducer from 'features/timebar/timebar.slice'
 import titleReducer from 'routes/title.reducer'
 import userReducer from 'features/user/user.slice'
 import vesselReducer from 'features/vessel/vessel.slice'
-import voyagesReducer from 'features/vessel/activity/activity-by-voyage/activity-by-voyage.slice'
 import vesselGroupsReducer from 'features/vessel-groups/vessel-groups.slice'
 import workspaceReducer from 'features/workspace/workspace.slice'
 import workspacesReducer from 'features/workspaces-list/workspaces-list.slice'
@@ -54,7 +53,6 @@ export const rootReducer = combineReducers({
   user: userReducer,
   vessel: vesselReducer,
   vesselGroups: vesselGroupsReducer,
-  voyages: voyagesReducer,
   workspace: workspaceReducer,
   workspaces: workspacesReducer,
 })

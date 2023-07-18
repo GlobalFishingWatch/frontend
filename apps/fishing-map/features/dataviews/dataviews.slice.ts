@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
-import { uniqBy, memoize } from 'lodash'
+import { uniqBy } from 'lodash'
 import { stringify } from 'qs'
 import {
   mergeWorkspaceUrlDataviewInstances,
@@ -29,6 +29,7 @@ import {
 } from 'features/workspace/workspace.selectors'
 import {
   selectIsMarineManagerLocation,
+  selectIsVesselLocation,
   selectUrlDataviewInstances,
   selectUrlDataviewInstancesOrder,
 } from 'routes/routes.selectors'
@@ -41,11 +42,13 @@ import {
 } from 'features/resources/resources.slice'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { MARINE_MANAGER_DATAVIEWS } from 'data/default-workspaces/marine-manager'
+import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
+import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { trackDatasetConfigsCallback } from '../resources/resources.utils'
 
 export const fetchDataviewByIdThunk = createAsyncThunk(
   'dataviews/fetchById',
-  async (id: number, { rejectWithValue }) => {
+  async (id: Dataview['id'] | Dataview['slug'], { rejectWithValue }) => {
     try {
       const dataview = await GFWAPI.fetch<Dataview>(`/dataviews/${id}`)
       return dataview
@@ -160,20 +163,23 @@ const { slice: dataviewsSlice, entityAdapter } = createAsyncSlice<DataviewsState
       entityAdapter.addOne(state, action.payload)
     },
   },
+  selectId: (dataview) => dataview.slug,
 })
 
 export const { addDataviewEntity } = dataviewsSlice.actions
-export const { selectAll, selectById, selectIds } = entityAdapter.getSelectors<DataviewsSliceState>(
-  (state) => state.dataviews
+export const { selectAll, selectById, selectIds } = entityAdapter.getSelectors(
+  (state: DataviewsSliceState) => state.dataviews
 )
 
 export function selectAllDataviews(state: DataviewsSliceState) {
   return selectAll(state)
 }
 
-export const selectDataviewById = memoize((id: number) =>
-  createSelector([(state: DataviewsSliceState) => state], (state) => selectById(state, id))
-)
+export function selectDataviewBySlug(slug: string) {
+  return createSelector([selectAllDataviews], (dataviews) => {
+    return dataviews?.find((d) => d.slug === slug)
+  })
+}
 
 export const selectDataviewsStatus = (state: DataviewsSliceState) => state.dataviews.status
 
@@ -208,9 +214,33 @@ export const selectDataviewInstancesMergedOrdered = createSelector(
 )
 
 export const selectAllDataviewInstancesResolved = createSelector(
-  [selectDataviewInstancesMergedOrdered, selectAllDataviews, selectAllDatasets],
-  (dataviewInstances, dataviews, datasets): UrlDataviewInstance[] | undefined => {
-    if (!dataviewInstances) return
+  [
+    selectDataviewInstancesMergedOrdered,
+    selectAllDataviews,
+    selectAllDatasets,
+    selectIsVesselLocation,
+    selectVesselInfoData,
+  ],
+  (
+    mapDataviewInstances,
+    dataviews,
+    datasets,
+    isVesselLocation,
+    vessel
+  ): UrlDataviewInstance[] | undefined => {
+    const vesselDataviewInstance =
+      isVesselLocation && vessel
+        ? [
+            getVesselDataviewInstance(vessel, {
+              // infoDatasetId: vessel.dataset,
+              trackDatasetId: vessel.trackDatasetId,
+              ...(vessel?.eventsDatasetsId?.length && {
+                eventsDatasetsId: vessel?.eventsDatasetsId,
+              }),
+            }),
+          ]
+        : []
+    const dataviewInstances = isVesselLocation ? vesselDataviewInstance : mapDataviewInstances
     const dataviewInstancesResolved = resolveDataviews(dataviewInstances, dataviews, datasets)
     return dataviewInstancesResolved
   }

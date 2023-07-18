@@ -7,12 +7,12 @@ import { Menu, SplitView } from '@globalfishingwatch/ui-components'
 import { Workspace } from '@globalfishingwatch/api-types'
 import {
   selectIsReportLocation,
-  selectIsVesselLocation,
   selectIsWorkspaceLocation,
   selectLocationType,
   selectUrlTimeRange,
   selectUrlViewport,
   selectWorkspaceId,
+  selectIsWorkspaceVesselLocation,
 } from 'routes/routes.selectors'
 import menuBgImage from 'assets/images/menubg.jpg'
 import { useLocationConnect, useReplaceLoginUrl } from 'routes/routes.hook'
@@ -118,7 +118,7 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isReportLocation = useSelector(selectIsReportLocation)
-  const isVesselLocation = useSelector(selectIsVesselLocation)
+  const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const reportAreaBounds = useSelector(selectReportAreaBounds)
   const isTimeComparisonReport = useSelector(selectShowTimeComparison)
   const narrowSidebar = workspaceLocation
@@ -168,7 +168,7 @@ function App() {
   const homeNeedsFetch = isHomeLocation && currentWorkspaceId !== DEFAULT_WORKSPACE_ID
   // Checking only when REPORT entrypoint or WORKSPACE_REPORT when workspace is not loaded
   const locationNeedsFetch =
-    isVesselLocation ||
+    isWorkspaceVesselLocation ||
     locationType === REPORT ||
     (locationType === WORKSPACE_REPORT && currentWorkspaceId !== urlWorkspaceId)
   const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId

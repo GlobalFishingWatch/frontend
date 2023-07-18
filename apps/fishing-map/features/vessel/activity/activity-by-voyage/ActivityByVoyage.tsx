@@ -1,81 +1,101 @@
-import { Fragment, useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Modal, Spinner } from '@globalfishingwatch/ui-components'
-import { selectEventsLoading } from 'features/vessel/activity/vessels-activity.selectors'
-import { EventTypeVoyage, Voyage } from 'types/voyage'
-import useVoyagesConnect from 'features/vessel/activity/activity-by-voyage/activity-by-voyage.hook'
+import { eventsToBbox } from '@globalfishingwatch/data-transforms'
+import { RenderedVoyage } from 'features/vessel/activity/activity-by-voyage/activity-by-voyage.selectors'
 import useViewport from 'features/map/map-viewport.hooks'
-import ActivityModalContent from 'features/vessel/activity/event-details/ActivityContent'
+import EventDetail from 'features/vessel/activity/event/EventDetail'
 import { DEFAULT_VIEWPORT } from 'data/config'
-import { ActivityEvent } from 'types/activity'
-import useActivityEventConnect from '../event/event.hook'
+import VoyageGroup from 'features/vessel/activity/activity-by-voyage/VoyageGroup'
+import EventItem from 'features/vessel/activity/event/Event'
+import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import useExpandedVoyages from 'features/vessel/activity/activity-by-voyage/activity-by-voyage.hook'
+import { useMapFitBounds } from 'features/map/map-viewport.hooks'
+import { disableHighlightedTime, setHighlightedTime } from 'features/timebar/timebar.slice'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { getUTCDateTime } from 'utils/dates'
 import styles from '../activity-by-type/activity-by-type.module.css'
-import ActivityItem from './ActivityItem'
 import { selectVoyagesByVessel } from './activity-by-voyage.selectors'
 
-interface ActivityProps {
-  onMoveToMap: () => void
-}
-
-const ActivityByVoyage: React.FC<ActivityProps> = (props): React.ReactElement => {
-  const { toggleVoyage } = useVoyagesConnect()
+const ActivityByVoyage = () => {
   const events = useSelector(selectVoyagesByVessel)
-  const eventsLoading = useSelector(selectEventsLoading)
-  const [isModalOpen, setIsOpen] = useState(false)
+  const dispatch = useAppDispatch()
   const [selectedEvent, setSelectedEvent] = useState<ActivityEvent>()
-  const { getEventDescription } = useActivityEventConnect()
-  const openModal = useCallback((event: ActivityEvent) => {
-    setSelectedEvent(event)
-    setIsOpen(true)
+  const [expandedVoyages, toggleExpandedVoyage] = useExpandedVoyages()
+  const fitBounds = useMapFitBounds()
+
+  const onInfoClick = useCallback((event: ActivityEvent) => {
+    setSelectedEvent((state) => (state?.id === event.id ? undefined : event))
   }, [])
-  const closeModal = useCallback(() => setIsOpen(false), [])
+
   const { viewport, setMapCoordinates } = useViewport()
 
-  const selectEventOnMap = useCallback(
-    (event: ActivityEvent | Voyage) => {
-      if (event.type === EventTypeVoyage.Voyage) {
-      } else {
-        setMapCoordinates({
-          latitude: event.position.lat,
-          longitude: event.position.lon,
-          zoom: viewport.zoom ?? DEFAULT_VIEWPORT.zoom,
-        })
-      }
-
-      props.onMoveToMap()
+  const selectVoyageOnMap = useCallback(
+    (voyage: RenderedVoyage) => {
+      const bounds = eventsToBbox(voyage.events)
+      fitBounds(bounds)
     },
-    [props, setMapCoordinates, viewport.zoom]
+    [fitBounds]
   )
 
+  const onMapHover = useCallback(
+    (voyage?: RenderedVoyage | ActivityEvent) => {
+      if (voyage?.start && voyage?.end) {
+        dispatch(
+          setHighlightedTime({
+            start: getUTCDateTime(voyage.start).toISO(),
+            end: getUTCDateTime(voyage.end).toISO(),
+          })
+        )
+      } else {
+        dispatch(disableHighlightedTime())
+      }
+    },
+    [dispatch]
+  )
+
+  const selectEventOnMap = useCallback(
+    (event: ActivityEvent) => {
+      setMapCoordinates({
+        latitude: event.position.lat,
+        longitude: event.position.lon,
+        zoom: viewport.zoom ?? DEFAULT_VIEWPORT.zoom,
+      })
+    },
+    [setMapCoordinates, viewport.zoom]
+  )
+
+  console.log('🚀 ~ ActivityByVoyage ~ events:', events)
   return (
-    <div className={styles.activityContainer}>
-      {eventsLoading && <Spinner className={styles.spinnerFull} />}
-      {!eventsLoading && (
-        <Fragment>
-          <Modal
-            appSelector="__next"
-            title={getEventDescription(selectedEvent)}
-            isOpen={isModalOpen}
-            onClose={closeModal}
-          >
-            {selectedEvent && <ActivityModalContent event={selectedEvent}></ActivityModalContent>}
-          </Modal>
-          <div className={styles.activityContainer}>
-            {events &&
-              events.length &&
-              events.map((event, index) => (
-                <ActivityItem
-                  key={index}
-                  event={event}
-                  onToggleClick={toggleVoyage}
-                  onMapClick={selectEventOnMap}
-                  onInfoClick={openModal}
-                />
-              ))}
-          </div>
-        </Fragment>
-      )}
-    </div>
+    <ul className={styles.activityContainer}>
+      {events?.length > 0 &&
+        events.map((event, index) => {
+          const expanded = expandedVoyages.includes(event.timestamp)
+          return (
+            <VoyageGroup
+              key={index}
+              expanded={expanded}
+              event={event}
+              onToggleClick={toggleExpandedVoyage}
+              onMapClick={selectVoyageOnMap}
+              onMapHover={onMapHover}
+            >
+              {expanded &&
+                event.events.length > 0 &&
+                event.events.map((event) => (
+                  <EventItem
+                    key={event.id}
+                    event={event}
+                    onMapHover={onMapHover}
+                    onMapClick={selectEventOnMap}
+                    onInfoClick={onInfoClick}
+                  >
+                    {selectedEvent?.id === event?.id && <EventDetail event={event} />}
+                  </EventItem>
+                ))}
+            </VoyageGroup>
+          )
+        })}
+    </ul>
   )
 }
 

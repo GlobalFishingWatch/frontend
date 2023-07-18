@@ -2,19 +2,5 @@
   "vessel": {
     "geartype": "For gear type sourced from Global Fishing Watch, additional research and analysis is conducted in addition to using the original AIS data to identify the most likely value. GFW source values are likely gear type of fishing vessel as defined by Global Fishing Watch. The fishing vessels identified by GFW come from the GFW fishing database that were identified using vessel registry databases, reported AIS identity information, and estimated classification using a machine learning algorithm. See more information here:<1>https://globalfishingwatch.org/datasets-and-code-vessel-identity/</1> .\nGear type from \"other\" is taken from RFMO authorized vessel lists and other sources.",
     "vesselType": "For vessel type sourced from Global Fishing Watch, additional research and analysis is conducted in addition to using the original AIS data to identify the most likely value. Vessel types from GFW include fishing vessels, carrier vessels, and support vessels. The vessel classification for fishing vessel is estimated using known registry information in combination with a convolutional neural network used to estimate vessel class. The vessel classification for carrier vessels is estimated using a cumulation of known registry information, manual review, and vessel class. All support vessels in the vessel viewer are considered purse seine support vessels based on internal review. \nVessel type from \"other\" is taken from RFMO authorized vessel lists and other sources of vessel data. Where multiple values are given, this reflects conflicting information or variation in terms used in original sources."
-  },
-  "event": {
-    "encounterActionWith": "Encounter with {{vessel}} in {{regionName}}",
-    "encounterActionWithNoRegion": "Encounter with {{vessel}}",
-    "encounterAnotherVessel": "another vessel",
-    "enteredPortAction": "Entered Port",
-    "enteredPortAt": "Entered Port {{port}}",
-    "enteredPortOn": "Entered on {{date}}",
-    "exitedPortAction": "Exited Port",
-    "exitedPortAt": "Exited Port {{port}}",
-    "exitedPortOn": "Exited on {{date}}",
-    "fishingAction": "Fishing in {{regionName}}",
-    "gapAction": "Likely Disabling in {{regionName}}",
-    "loiteringAction": "Loitering in {{regionName}}"
   }
 }

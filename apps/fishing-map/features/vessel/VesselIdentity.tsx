@@ -10,14 +10,16 @@ import {
   IDENTITY_FIELD_GROUPS,
 } from 'features/vessel/vessel.config'
 import DataAndTerminology from 'features/vessel/data-and-terminology/DataAndTerminology'
-import { selectVesselInfoDataMerged } from 'features/vessel/vessel.selectors'
+import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { formatAdvancedInfoField } from 'utils/info'
 import styles from './VesselIdentity.module.css'
 
 const VesselIdentity = () => {
   const { t, i18n } = useTranslation(['translations', 'dataTerminology'])
-  const vessel = useSelector(selectVesselInfoDataMerged)
-
+  const vessel = useSelector(selectVesselInfoData)
+  const transmissionStart = (vessel?.firstTransmissionDate ||
+    vessel?.transmissionDateFrom) as string
+  const transmissionEnd = (vessel?.lastTransmissionDate || vessel?.transmissionDateTo) as string
   return (
     <div className={styles.container}>
       <div className={styles.titleContainer}>
@@ -51,10 +53,10 @@ const VesselIdentity = () => {
             <div key={index} className={cx(styles.fieldGroup, styles.border)}>
               {/* TODO: make fields more dynamic to account for VMS */}
               {fieldGroup.map((field) => (
-                <div key={field.value}>
+                <div key={field.key}>
                   <label>
                     {t(`vessel.${field.label}` as any, field.label)}
-                    {IDENTITY_FIELDS_INFO_AVAILABLE.includes(field.value) && (
+                    {IDENTITY_FIELDS_INFO_AVAILABLE.includes(field.key) && (
                       <DataAndTerminology
                         size="tiny"
                         type="default"
@@ -76,13 +78,12 @@ const VesselIdentity = () => {
             <div className={styles.twoCells}>
               <label>{t('vessel.transmissionDates', 'Transmission dates')}</label>
               <span>
-                {t('common.from', 'From')}{' '}
-                <I18nDate date={vessel?.firstTransmissionDate as string} /> {t('common.to', 'to')}{' '}
-                <I18nDate date={vessel?.lastTransmissionDate as string} />
+                {t('common.from', 'From')} <I18nDate date={transmissionStart} />{' '}
+                {t('common.to', 'to')} <I18nDate date={transmissionEnd} />
               </span>
               <TransmissionsTimeline
-                firstTransmissionDate={vessel?.firstTransmissionDate as string}
-                lastTransmissionDate={vessel?.lastTransmissionDate as string}
+                firstTransmissionDate={transmissionStart}
+                lastTransmissionDate={transmissionEnd}
                 firstYearOfData={FIRST_YEAR_OF_DATA}
                 locale={i18n.language as Locale}
               />
