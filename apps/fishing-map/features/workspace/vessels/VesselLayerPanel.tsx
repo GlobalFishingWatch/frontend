@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 import { Trans, useTranslation } from 'react-i18next'
 import Link from 'redux-first-router-link'
 // import NextLink from 'next/link'
-import { useRouter } from 'next/router'
 import {
   Vessel,
   DatasetTypes,
@@ -275,7 +274,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                 <label>{t(`vessel.${field.id}` as any)}</label>
                 {fieldValues.map((fieldValue, i) => (
                   <span key={field.id + fieldValue}>
-                    {fieldValue ? getFieldValue(field, fieldValue as any) : '---'}
+                    {fieldValue ? getFieldValue(field, fieldValue as any) : EMPTY_FIELD_PLACEHOLDER}
                     {/* Field values separator */}
                     {i < fieldValues.length - 1 ? ', ' : ''}
                     {field.id === 'dataset' && infoOpen && gfwUser && (

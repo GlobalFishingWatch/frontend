@@ -17,38 +17,38 @@ path.resolve('./next.config.js')
 //   reduxState: Pick<RootState, 'vessel'>
 // }
 
-export const getServerSideProps = wrapper.getServerSideProps(
-  (store) =>
-    async ({ params, query }) => {
-      const { vesselId } = params || ({} as ParsedUrlQuery)
-      const queryVesselDatasetId = query.vesselDatasetId as string
-      const datasetMatchesToken = queryVesselDatasetId.match(TOKEN_REGEX)
-      const vesselDatasetId = datasetMatchesToken
-        ? query[`tk[${datasetMatchesToken[1]}]`]
-        : queryVesselDatasetId
+// export const getServerSideProps = wrapper.getServerSideProps(
+//   (store) =>
+//     async ({ params, query }) => {
+//       const { vesselId } = params || ({} as ParsedUrlQuery)
+//       const queryVesselDatasetId = query.vesselDatasetId as string
+//       const datasetMatchesToken = queryVesselDatasetId?.match(TOKEN_REGEX)
+//       const vesselDatasetId = datasetMatchesToken
+//         ? query[`tk[${datasetMatchesToken[1]}]`]
+//         : queryVesselDatasetId
 
-      await store.dispatch(
-        fetchVesselInfoThunk({
-          vesselId: vesselId as string,
-          datasetId: vesselDatasetId as string,
-        }) as any
-      )
-      // await store.dispatch(
-      //   fetchVesselEventsThunk({
-      //     vesselId: vesselId as string,
-      //     datasetId: vesselDatasetId as string,
-      //   }) as any
-      // )
-      return {
-        props: {
-          params: {
-            ...(params || {}),
-          },
-          reduxState: { vessel: store.getState()?.vessel },
-        },
-      }
-    }
-)
+//       await store.dispatch(
+//         fetchVesselInfoThunk({
+//           vesselId: vesselId as string,
+//           datasetId: vesselDatasetId as string,
+//         }) as any
+//       )
+//       // await store.dispatch(
+//       //   fetchVesselEventsThunk({
+//       //     vesselId: vesselId as string,
+//       //     datasetId: vesselDatasetId as string,
+//       //   }) as any
+//       // )
+//       return {
+//         props: {
+//           params: {
+//             ...(params || {}),
+//           },
+//           reduxState: { vessel: store.getState()?.vessel },
+//         },
+//       }
+//     }
+// )
 
 const VesselPage = (props) => {
   const [isServer, setServer] = useState<boolean>(true)

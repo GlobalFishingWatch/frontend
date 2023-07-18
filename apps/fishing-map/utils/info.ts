@@ -1,5 +1,7 @@
+import { get } from 'lodash'
 import { Vessel } from '@globalfishingwatch/api-types'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
+import { VesselRenderField } from 'features/vessel/vessel.config'
 import { t } from '../features/i18n/i18n'
 
 export const EMPTY_FIELD_PLACEHOLDER = '---'
@@ -12,11 +14,14 @@ export const formatInfoField = (fieldValue: string, type: string, translationFn 
     if (type === 'flag') {
       return translationFn(`flags:${fieldValue}` as any, fieldValue)
     }
-    if (type === 'vesselType') {
-      return translationFn(`vessel.vesselTypes.${fieldValue}` as any, fieldValue)
+    if (type === 'shiptype' || type === 'vesselType') {
+      return translationFn(
+        `vessel.vesselTypes.${fieldValue.toLocaleLowerCase()}` as any,
+        fieldValue
+      )
     }
     if (type === 'geartype') {
-      return translationFn(`vessel.gearTypes.${fieldValue}` as any, fieldValue)
+      return translationFn(`vessel.gearTypes.${fieldValue.toLocaleLowerCase()}` as any, fieldValue)
     }
     if (!fieldValue && (type === 'name' || type === 'shipname')) {
       return translationFn('common.unknownVessel', 'Unknown Vessel')
@@ -31,6 +36,15 @@ export const formatInfoField = (fieldValue: string, type: string, translationFn 
     return fieldValue
   }
   return EMPTY_FIELD_PLACEHOLDER
+}
+
+export const formatAdvancedInfoField = (
+  vessel: Vessel,
+  field: VesselRenderField,
+  translationFn = t
+) => {
+  const key = field.key.includes('.') ? field.key.split('.')[1] : field.key
+  return formatInfoField(get(vessel, field.key), key, translationFn)
 }
 
 export const formatNumber = (num: string | number, maximumFractionDigits?: number) => {

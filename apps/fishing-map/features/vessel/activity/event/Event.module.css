@@ -1,0 +1,49 @@
+.event {
+  padding: var(--space-XS) var(--space-S) var(--space-XS) var(--space-M);
+  position: relative;
+}
+
+.event::after {
+  content: '';
+  position: absolute;
+  left: 6rem;
+  bottom: 0;
+  height: 0.1rem;
+  width: calc(100% - 6rem);
+  background-color: var(--color-border);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.eventData {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.description {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  flex: 1;
+}
+
+.actions {
+  margin-left: auto;
+  display: flex;
+}
+
+.actions.oneIcon {
+  min-width: 28px;
+}
+
+.detailContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-S) var(--space-M);
+  padding-left: var(--space-L);
+  padding-block: var(--space-S);
+}

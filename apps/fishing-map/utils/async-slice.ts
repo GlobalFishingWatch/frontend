@@ -55,6 +55,7 @@ export const createAsyncSlice = <T, U>({
   name = '',
   initialState = {} as T,
   reducers = {},
+  selectId,
   extraReducers,
   thunks = {},
 }: {
@@ -62,6 +63,7 @@ export const createAsyncSlice = <T, U>({
   initialState?: T
   reducers?: ValidateSliceCaseReducers<T, SliceCaseReducers<T>>
   extraReducers?: (builder: ActionReducerMapBuilder<T>) => void
+  selectId?: (entity: U) => string | number
   thunks?: {
     fetchThunk?: any
     fetchByIdThunk?: any
@@ -71,7 +73,7 @@ export const createAsyncSlice = <T, U>({
   }
 }) => {
   const { fetchThunk, fetchByIdThunk, createThunk, updateThunk, deleteThunk } = thunks
-  const entityAdapter = createEntityAdapter<U>()
+  const entityAdapter = createEntityAdapter<U>({ ...(selectId && { selectId }) })
   const slice = createSlice({
     name,
     initialState: entityAdapter.getInitialState({

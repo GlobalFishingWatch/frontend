@@ -1,7 +1,7 @@
 import { Action, AnyAction, ThunkAction, ThunkDispatch, configureStore } from '@reduxjs/toolkit'
 import { createWrapper } from 'next-redux-wrapper'
 import { dataviewStatsApi } from 'queries/stats-api'
-import { RootState, rootReducer } from 'reducers'
+import { rootReducer } from 'reducers'
 import connectedRoutes from 'routes/routes'
 import { routerQueryMiddleware, routerWorkspaceMiddleware } from 'routes/routes.middlewares'
 
@@ -39,7 +39,6 @@ export const makeStore = () => {
           ...state,
           vessel: {
             info: { ...state.vessel.info, data: 'NOT_SERIALIZED' },
-            events: { ...state.vessel.events, data: 'NOT_SERIALIZED' },
           },
           resources: Object.fromEntries(serializedResources),
         }
@@ -73,6 +72,7 @@ export type AppThunk<ReturnType = void> = ThunkAction<
 //   const store = useMemo(() => initializeStore(initialState), [initialState])
 //   return store
 // }
+export type RootState = ReturnType<typeof rootReducer>
 
 export const wrapper = createWrapper<AppStore>(makeStore, {
   debug: false,

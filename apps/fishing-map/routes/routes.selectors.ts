@@ -33,7 +33,17 @@ export const selectIsWorkspaceLocation = createSelector([selectLocationType], (l
 
 export const selectIsVesselLocation = createSelector(
   [selectLocationType],
-  (locationType) => locationType === VESSEL || locationType === WORKSPACE_VESSEL
+  (locationType) => locationType === VESSEL
+)
+
+export const selectIsWorkspaceVesselLocation = createSelector(
+  [selectLocationType],
+  (locationType) => locationType === WORKSPACE_VESSEL
+)
+
+export const selectIsAnyVesselLocation = createSelector(
+  [selectIsVesselLocation, selectIsWorkspaceVesselLocation],
+  (isVesselLocation, isWorkspaceVesselLocation) => isVesselLocation || isWorkspaceVesselLocation
 )
 
 export const selectIsReportLocation = createSelector(
@@ -121,6 +131,11 @@ export const selectUrlMapLongitudeQuery = selectQueryParam<number>('longitude')
 export const selectUrlStartQuery = selectQueryParam<string>('start')
 export const selectUrlEndQuery = selectQueryParam<string>('end')
 export const selectVesselDatasetId = selectQueryParam<string>('vesselDatasetId')
+
+export const selectFullVesselId = createSelector(
+  [selectVesselDatasetId, selectVesselId],
+  (datasetId, vesselId) => vesselId + datasetId
+)
 
 export const selectUrlDataviewInstances =
   selectQueryParam<UrlDataviewInstance[]>('dataviewInstances')

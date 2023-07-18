@@ -92,7 +92,6 @@ export const selectEventsLoading = createSelector([selectEventsResources], (reso
 
 export const selectEventsForTracks = createSelector(
   [selectActiveTrackDataviews, selectResources],
-
   (trackDataviews, resources) => {
     if (Object.keys(resources).length === 0) return []
 
@@ -109,7 +108,6 @@ export const selectEventsForTracks = createSelector(
         if (!url || !resources[url].data) {
           return []
         }
-
         return resources[url].data as ActivityEvent[]
       })
       return { dataview, data: data as ActivityEvent[] }

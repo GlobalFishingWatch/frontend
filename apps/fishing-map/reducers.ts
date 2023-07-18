@@ -13,6 +13,7 @@ import editorReducer from 'features/editor/editor.slice'
 import hintsReducer from 'features/help/hints.slice'
 import mapReducer from 'features/map/map.slice'
 import modalsReducer from 'features/modals/modals.slice'
+import regionsReducer from 'features/regions/regions.slice'
 import reportReducer from 'features/reports/report.slice'
 import reportsReducer from 'features/reports/reports.slice'
 import resourcesReducer from 'features/resources/resources.slice'
@@ -41,6 +42,7 @@ export const rootReducer = combineReducers({
   location: connectedRoutes.reducer,
   map: mapReducer,
   modals: modalsReducer,
+  regions: regionsReducer,
   report: reportReducer,
   reports: reportsReducer,
   resources: resourcesReducer,

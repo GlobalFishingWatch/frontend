@@ -2795,6 +2795,9 @@ __metadata:
     react-i18next: "12.3.0 "
     react-sticky-el: 2.0.9
     react-test-renderer: 18.2.0
+    react-virtualized-auto-sizer: ^1.0.7
+    react-virtuoso: 4.4.0
+    react-window: ^1.8.8
     recharts: 2.5.0
     recoil: 0.7.7
     serve: 14.2.0
@@ -23643,13 +23646,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-virtualized-auto-sizer@npm:^1.0.20":
+"react-virtualized-auto-sizer@npm:^1.0.20, react-virtualized-auto-sizer@npm:^1.0.7":
   version: 1.0.20
   resolution: "react-virtualized-auto-sizer@npm:1.0.20"
   peerDependencies:
     react: ^15.3.0 || ^16.0.0-alpha || ^17.0.0 || ^18.0.0-rc
     react-dom: ^15.3.0 || ^16.0.0-alpha || ^17.0.0 || ^18.0.0-rc
   checksum: 2c616ec7587de64a46aa8c6c301e75fee87eb7a39013f25d940b0fe95eee5e8a8a3c109923e241b427752d71fba80f44cd2c8557750967df0777d99ebd16ba24
+  languageName: node
+  linkType: hard
+
+"react-virtuoso@npm:4.4.0":
+  version: 4.4.0
+  resolution: "react-virtuoso@npm:4.4.0"
+  peerDependencies:
+    react: ">=16 || >=17 || >= 18"
+    react-dom: ">=16 || >=17 || >= 18"
+  checksum: 72dbe50f1325c029c8fef6cffd452aef2b38c2f878ac38ac819eec43d73cfac8822a3ff7116ea1ea1203aa7a7e4e803823a307eed02ea792733b4140ce7baddd
   languageName: node
   linkType: hard
 
