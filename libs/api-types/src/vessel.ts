@@ -16,20 +16,53 @@ export type VesselType =
   | 'bunker_or_tanker'
   | 'support'
 
-export type VesselRegistryInfo = {
+export type VesselInfo = {
   callsign: string
   flag: string
   geartype: string
   imo: string
+  shipname: string
+  nShipname: string
+  shiptype: VesselType
+  ssvid: string
+  sourceCode: string[]
+  transmissionDateFrom: string
+  transmissionDateTo: string
+}
+
+export type VesselTMTInfo = {
+  grossTonnage?: string
+  imageList?: string[]
+  length?: string
+  operator?: string
+  origin?: string
+  owner?: string
+  registeredGearType?: string
+  type?: string
+}
+
+export type VesselCoreInfo = VesselInfo & {
+  id: string
+  firstTransmissionDate: string
+  lastTransmissionDate: string
+  ssvid: string
+  years?: number[]
+  posCount?: number
+  msgCount?: number
+  // VMS Custom data
+  casco?: string
+  fleet?: string
+  depth?: string
+  matricula?: string
+  nationalId?: string
+  vesselType?: string
+}
+
+export type VesselRegistryInfo = VesselInfo & {
   latestVesselInfo: true
   lengthM: number
   matchFields: string
-  nShipname: string
   recordId: string
-  shipname: string
-  shiptype: string
-  sourceCode: string[]
-  ssvid: string
   tonnageGt: number
   transmissionDateFrom: string
   transmissionDateTo: string
@@ -41,6 +74,7 @@ export type VesselRegistryOwner = {
   recordId: string
   sourceCode: string[]
 }
+
 export type VesselRegistryAuthorization = {
   authorizedFrom: string
   authorizedTo: string
@@ -49,39 +83,11 @@ export type VesselRegistryAuthorization = {
 }
 
 export interface Vessel {
-  authorizations?: Authorization[]
-  builtYear?: string
-  callsign?: string
-  casco?: string
-  dataset?: string
-  depth?: string
-  firstTransmissionDate: string
-  flag: string
-  fleet?: string
-  geartype?: string
-  grossTonnage?: string
-  id: string
-  imageList?: string[]
-  imo?: string
-  lastTransmissionDate: string
-  length?: string
-  matricula?: string
-  mmsi?: string
-  nationalId?: string
-  operator?: string
-  origin?: string
-  owner?: string
-  posCount?: number
-  registeredGearType?: string
-  shipname: string
-  shiptype?: string
-  type?: string
-  vesselType?: VesselType
-  years?: number[]
-  msgCount?: number
-  vesselRegistryInfo?: VesselRegistryInfo[]
-  vesselRegistryOwners?: VesselRegistryOwner[]
-  vesselRegistryAuthorizations?: VesselRegistryAuthorization[]
+  dataset: string
+  coreInfo: VesselCoreInfo
+  registryInfo?: VesselRegistryInfo[]
+  registryOwners?: VesselRegistryOwner[]
+  registryAuthorizations?: VesselRegistryAuthorization[]
 }
 
 export interface VesselSearch extends Vessel {
