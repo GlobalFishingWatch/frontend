@@ -13,6 +13,7 @@ import I18nFlag from 'features/i18n/i18nFlag'
 import { formatInfoField, EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { selectVesselsDataviews } from 'features/dataviews/dataviews.slice'
 import { VesselWithDatasets } from 'features/search/search.slice'
+import TrackFootprint from 'features/search/TrackFootprint'
 import { Locale } from '../../../../libs/api-types/src/i18n'
 import { TransmissionsTimeline } from '../../../../libs/ui-components/src/transmissions-timeline'
 import styles from './SearchBasicResults.module.css'
@@ -181,6 +182,7 @@ function SearchBasicResults({
                   )}
                 </div>
               </div>
+              <TrackFootprint vesselId={id} />
             </div>
           </li>
         )
