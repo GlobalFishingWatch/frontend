@@ -1,12 +1,13 @@
 import React from 'react'
 import cx from 'classnames'
 import type { Placement } from 'tippy.js'
+import { TippyProps } from '@tippyjs/react'
 import { Tooltip } from '../tooltip'
 import { Spinner } from '../spinner'
 import { TooltipTypes } from '../types/types'
 import styles from './Button.module.css'
 
-export type ButtonType = 'default' | 'secondary'
+export type ButtonType = 'default' | 'secondary' | 'border-secondary'
 export type ButtonSize = 'tiny' | 'small' | 'default' | 'big' | 'verybig'
 export type HTMLButtonType = 'submit' | 'reset' | 'button' | undefined
 
@@ -26,6 +27,7 @@ export interface ButtonProps {
   href?: string
   target?: string
   htmlType?: HTMLButtonType
+  tooltipProps?: TippyProps
 }
 
 export function Button(props: ButtonProps) {
@@ -45,9 +47,10 @@ export function Button(props: ButtonProps) {
     href,
     target,
     htmlType,
+    tooltipProps,
   } = props
   return (
-    <Tooltip content={tooltip as React.ReactNode} placement={tooltipPlacement}>
+    <Tooltip {...tooltipProps} content={tooltip as React.ReactNode} placement={tooltipPlacement}>
       {href !== undefined && !disabled ? (
         <a
           href={href}
