@@ -1,0 +1,52 @@
+{
+  "analysis": {
+    "print": "Print"
+  },
+  "common": {
+    "and": "and",
+    "dateRange": "between {{start}} and {{end}}",
+    "in": "in"
+  },
+  "dataset": {
+    "hint": "Find out more about the supported formats"
+  },
+  "dataview": {
+    "context-layer-protectedseas": {
+      "dataWarning": "This platform uses MPA (ProtectedSeas) reference layers from ProtectedSeas Navigator",
+      "dataWarningDetail": "This platform uses reference layers (shapefiles) from the ProtectedSeas Navigator for MPAs (ProtectedSeas). The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. To see the original reference layers, please visit <a href='https://mpa.protectedseas.net'>https://mpa.protectedseas.net/</a>. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw oro upload your own reference layer using the '+' icon in the left sidebar. Learn more on our <a href='https://globalfishingwatch.org/tutorials/'>tutorials</a> and <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
+    }
+  },
+  "feedback": {
+    "whichFeature": "Which feature would you like to improve?"
+  },
+  "search": {
+    "minCharacters": "Please type at least {{count}} characters"
+  },
+  "userGuide": {
+    "activityFilters": "Filtering activity layers",
+    "activityFishing": "Activity - fishing",
+    "activityPresence": "Activity - presence",
+    "analysis": "Analyze activity",
+    "detectionsSAR": "Detections SAR",
+    "detectionsVIIRS": "Detections VIIRS",
+    "downloadActivity": "Download data",
+    "uploadEnvironment": "Upload environment layers data",
+    "uploadReference": "Upload reference layers data",
+    "vesselGroups": "Vessel groups",
+    "vesselSearch": "Vessel Search"
+  },
+  "vessel": {
+    "flag_other": "Flags",
+    "geartype_other": "Gear types",
+    "vesselTypes": {
+      "bunker_or_tanker": "Bunker or tanker",
+      "cargo": "Cargo",
+      "carrier": "Carrier",
+      "fishing": "Fishing",
+      "other_non_fishing": "Other",
+      "passenger": "Passenger",
+      "seismic_vessel": "Seismic vessel",
+      "unknown": "Unknown"
+    }
+  }
+}
