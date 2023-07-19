@@ -2,8 +2,9 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { GetItemPropsOptions } from 'downshift'
-import { Fragment } from 'react'
+import { Fragment, useCallback, useState } from 'react'
 import { IconButton } from '@globalfishingwatch/ui-components'
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
@@ -13,6 +14,7 @@ import I18nFlag from 'features/i18n/i18nFlag'
 import { formatInfoField, EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { selectVesselsDataviews } from 'features/dataviews/dataviews.slice'
 import { VesselWithDatasets } from 'features/search/search.slice'
+import TrackFootprint from 'features/search/TrackFootprint'
 import { Locale } from '../../../../libs/api-types/src/i18n'
 import { TransmissionsTimeline } from '../../../../libs/ui-components/src/transmissions-timeline'
 import styles from './SearchBasicResults.module.css'
@@ -34,6 +36,13 @@ function SearchBasicResults({
 }: SearchBasicResultsProps) {
   const { t } = useTranslation()
   const vesselDataviews = useSelector(selectVesselsDataviews)
+  const isSmallScreen = useSmallScreen()
+  const [highlightedYear, setHighlightedYear] = useState<number>()
+
+  const onYearlyHoverCallback = useCallback((year: number) => {
+    setHighlightedYear(year)
+  }, [])
+
   return (
     <Fragment>
       {searchResults?.map((entry, index: number) => {
@@ -55,6 +64,7 @@ function SearchBasicResults({
           dataset,
           firstTransmissionDate,
           lastTransmissionDate,
+          trackDatasetId,
         } = entry
         const isInWorkspace = vesselDataviews?.some(
           (vessel) => vessel.id === `${VESSEL_LAYER_PREFIX}${id}`
@@ -114,7 +124,10 @@ function SearchBasicResults({
                     <label>{t('vessel.vesselType', 'Vessel Type')}</label>
                     <span>
                       {geartype !== undefined
-                        ? t(`vessel.vesselTypes.${shiptype?.toLowerCase()}` as any, shiptype)
+                        ? t(
+                            `vessel.vesselTypes.${shiptype?.toLowerCase()}` as any,
+                            shiptype as string
+                          )
                         : EMPTY_FIELD_PLACEHOLDER}
                     </span>
                   </div>
@@ -176,11 +189,19 @@ function SearchBasicResults({
                         lastTransmissionDate={lastTransmissionDate}
                         firstYearOfData={FIRST_YEAR_OF_DATA}
                         locale={i18n.language as Locale}
+                        yearlyHoverCallback={isSmallScreen ? undefined : onYearlyHoverCallback}
                       />
                     </div>
                   )}
                 </div>
               </div>
+              {!isSmallScreen && (
+                <TrackFootprint
+                  vesselId={id}
+                  trackDatasetId={trackDatasetId}
+                  highlightedYear={highlightedYear}
+                />
+              )}
             </div>
           </li>
         )

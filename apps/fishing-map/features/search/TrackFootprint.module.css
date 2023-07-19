@@ -1,0 +1,19 @@
+.map {
+  position: relative;
+  width: 300px;
+  height: 150px;
+  background: url(../../assets/images/track-footprint-bg.png) no-repeat;
+  background-size: 100% 100%;
+  mix-blend-mode: multiply;
+}
+
+.map > * {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.faint {
+  opacity: 0.2;
+}
