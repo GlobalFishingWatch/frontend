@@ -13,3 +13,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+.faint {
+  opacity: 0.2;
+}

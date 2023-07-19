@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import cx from 'classnames'
 import { geoEqualEarth, geoPath } from 'd3'
 import { FeatureCollection, GeoJsonProperties, Geometry } from 'geojson'
 import { DateTime } from 'luxon'
@@ -24,8 +25,11 @@ const PROJECTION = geoEqualEarth()
 function TrackFootprint({ vesselId, highlightedYear }: TrackFootprintProps) {
   const [trackData, setTrackData] = useState<FeatureCollection<Geometry, GeoJsonProperties>>()
   const [error, setError] = useState(false)
-  const canvasRef = useRef<HTMLCanvasElement | null>(null)
-  const onScreen = useOnScreen(canvasRef)
+  const fullCanvasRef = useRef<HTMLCanvasElement | null>(null)
+  const highlightCanvasRef = useRef<HTMLCanvasElement | null>(null)
+  const onScreen = useOnScreen(fullCanvasRef)
+  const fullContext = fullCanvasRef.current?.getContext('2d')
+  const highlightContext = highlightCanvasRef.current?.getContext('2d')
 
   const fetchData = async (vesselId: string) => {
     const data = await GFWAPI.fetch<any>(
@@ -48,60 +52,70 @@ function TrackFootprint({ vesselId, highlightedYear }: TrackFootprintProps) {
   }, [onScreen, trackData, vesselId])
 
   useEffect(() => {
-    const context = canvasRef.current?.getContext('2d')
-    if (context && trackData) {
-      const path = geoPath(PROJECTION, context)
-      context.clearRect(0, 0, FOOTPRINT_WIDTH, FOOTPRINT_HEIGHT)
-      context.lineCap = 'round'
-      context.lineJoin = 'round'
-      context.lineWidth = 6
-      context.strokeStyle = highlightedYear ? '#42639C22' : '#42639C'
+    if (fullContext && trackData) {
+      const fullPath = geoPath(PROJECTION, fullContext)
+      fullContext.lineCap = 'round'
+      fullContext.lineJoin = 'round'
+      fullContext.lineWidth = 3
+      fullContext.strokeStyle = '#42639C'
       trackData.features.forEach((feature) => {
-        context.beginPath()
-        path(feature)
-        context.stroke()
+        fullContext.beginPath()
+        fullPath(feature)
+        fullContext.stroke()
       })
-
-      if (highlightedYear) {
-        const highlightedYearDateTime = DateTime.fromObject({ year: highlightedYear })
-        const highlightStart = highlightedYearDateTime.toMillis()
-        const highlightEnd = highlightedYearDateTime.plus({ year: 1 }).toMillis()
-        const highlightedTrack = {
-          ...trackData,
-          features: trackData.features.flatMap((feature) => {
-            const featureTimes = feature.properties?.coordinateProperties.times
-            if (
-              featureTimes[featureTimes.length - 1] < highlightStart ||
-              featureTimes[0] > highlightEnd
-            ) {
-              return []
-            }
-            return {
-              ...feature,
-              geometry: {
-                ...feature.geometry,
-                coordinates: (feature.geometry as any).coordinates.filter(
-                  (_, index) =>
-                    featureTimes[index] > highlightStart && featureTimes[index] < highlightEnd
-                ),
-              },
-            }
-          }),
-        }
-
-        context.strokeStyle = '#42639C'
-        highlightedTrack.features.forEach((feature) => {
-          context.beginPath()
-          path(feature)
-          context.stroke()
-        })
-      }
     }
-  }, [highlightedYear, trackData, vesselId])
+  }, [fullContext, trackData, vesselId])
+
+  useEffect(() => {
+    highlightContext?.clearRect(0, 0, FOOTPRINT_WIDTH, FOOTPRINT_HEIGHT)
+    const highlightPath = geoPath(PROJECTION, highlightContext)
+    if (trackData && highlightedYear && highlightContext) {
+      const highlightedYearDateTime = DateTime.fromObject({ year: highlightedYear })
+      const highlightStart = highlightedYearDateTime.toMillis()
+      const highlightEnd = highlightedYearDateTime.plus({ year: 1 }).toMillis()
+      const highlightedTrack = {
+        ...trackData,
+        features: trackData.features.flatMap((feature) => {
+          const featureTimes = feature.properties?.coordinateProperties.times
+          if (
+            featureTimes[featureTimes.length - 1] < highlightStart ||
+            featureTimes[0] > highlightEnd
+          ) {
+            return []
+          }
+          return {
+            ...feature,
+            geometry: {
+              ...feature.geometry,
+              coordinates: (feature.geometry as any).coordinates.filter(
+                (_, index) =>
+                  featureTimes[index] > highlightStart && featureTimes[index] < highlightEnd
+              ),
+            },
+          }
+        }),
+      }
+      highlightContext.lineCap = 'round'
+      highlightContext.lineJoin = 'round'
+      highlightContext.lineWidth = 6
+      highlightContext.strokeStyle = '#42639C'
+      highlightedTrack.features.forEach((feature) => {
+        highlightContext.beginPath()
+        highlightPath(feature)
+        highlightContext.stroke()
+      })
+    }
+  }, [highlightContext, highlightedYear, trackData])
 
   return (
     <div className={styles.map}>
-      <canvas width={FOOTPRINT_WIDTH} height={FOOTPRINT_HEIGHT} ref={canvasRef} />
+      <canvas
+        className={cx({ [styles.faint]: highlightedYear })}
+        width={FOOTPRINT_WIDTH}
+        height={FOOTPRINT_HEIGHT}
+        ref={fullCanvasRef}
+      />
+      <canvas width={FOOTPRINT_WIDTH} height={FOOTPRINT_HEIGHT} ref={highlightCanvasRef} />
       {!trackData && !error && <Spinner size="small" className={styles.spinner} />}
       {error && <Icon icon="warning" type="warning" />}
     </div>
