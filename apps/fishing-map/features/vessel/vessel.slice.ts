@@ -153,7 +153,7 @@ export const selectVesselInfoData = createSelector([selectVesselInfo], (vesselIn
   if (!vesselInfo) return null
   const vessel = vesselInfo.registryInfo?.[0] || vesselInfo.coreInfo
   const { info, track, events } = vesselInfo
-  return { ...vessel, info, track, events } as VesselData
+  return { ...vessel, id: vesselInfo?.coreInfo?.id, info, track, events } as VesselData
 })
 
 export default vesselSlice.reducer

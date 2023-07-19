@@ -64,7 +64,6 @@ const ActivityByVoyage = () => {
     [setMapCoordinates, viewport.zoom]
   )
 
-  console.log('🚀 ~ ActivityByVoyage ~ events:', events)
   return (
     <ul className={styles.activityContainer}>
       {events?.length > 0 &&

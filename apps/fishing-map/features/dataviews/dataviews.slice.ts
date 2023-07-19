@@ -306,7 +306,7 @@ export const selectDataviewsResources = createSelector(
   ],
   (dataviewInstances, thinningConfig, chunks, timebarGraph) => {
     const callbacks: GetDatasetConfigsCallbacks = {
-      tracks: trackDatasetConfigsCallback(thinningConfig, chunks, timebarGraph),
+      track: trackDatasetConfigsCallback(thinningConfig, chunks, timebarGraph),
       events: eventsDatasetConfigsCallback,
       info: infoDatasetConfigsCallback,
     }

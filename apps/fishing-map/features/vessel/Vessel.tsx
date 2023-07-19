@@ -78,7 +78,6 @@ const VesselDetail = () => {
 
   if (infoStatus === AsyncReducerStatus.Error) {
     const hasAuthError = isAuthError(infoError)
-    console.log('🚀 ~ VesselDetail ~ infoError:', infoError)
     return hasAuthError ? (
       <WorkspaceLoginError
         title={

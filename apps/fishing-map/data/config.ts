@@ -68,7 +68,7 @@ export const DEFAULT_TIME_RANGE = {
 }
 
 export const DEFAULT_PAGINATION_PARAMS = {
-  limit: 99999,
+  limit: 999999,
   offset: 0,
 }
 
