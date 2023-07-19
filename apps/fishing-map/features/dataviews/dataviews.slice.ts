@@ -101,7 +101,7 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
       )
 
       return USE_MOCKED_DATAVIEWS
-        ? uniqBy([mockedDataviews, ...dataviewsResponse.entries], 'slug')
+        ? uniqBy([...mockedDataviews, ...dataviewsResponse.entries], 'slug')
         : dataviewsResponse.entries
     } catch (e: any) {
       console.warn(e)
@@ -318,7 +318,6 @@ export const selectDataviewsResources = createSelector(
       events: eventsDatasetConfigsCallback,
       info: infoDatasetConfigsCallback,
     }
-    debugger
     return getResources(dataviewInstances || [], callbacks)
   }
 )

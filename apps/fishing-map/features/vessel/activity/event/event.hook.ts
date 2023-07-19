@@ -2,52 +2,63 @@ import { upperFirst } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { EventTypes, GapPosition, Regions } from '@globalfishingwatch/api-types'
+import { EventTypes, GapPosition, RegionType, Regions } from '@globalfishingwatch/api-types'
 import { EMPTY_API_VALUES } from 'features/reports/reports.selectors'
-import { RegionType, selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.slice'
+import { selectEEZs, selectFAOs, selectMPAs, selectRFMOs } from 'features/regions/regions.slice'
 import { getUTCDateTime } from 'utils/dates'
 import {
   ActivityEvent,
   PortVisitSubEvent,
 } from 'features/vessel/activity/vessels-activity.selectors'
 
-const regionsPriority: (keyof Regions)[] = ['mpa', 'eez', 'rfmo']
+const regionsPriority: RegionType[] = [
+  RegionType.mpa,
+  RegionType.eez,
+  RegionType.rfmo,
+  RegionType.fao,
+]
 function useActivityEventConnect() {
   const { t } = useTranslation()
   const eezs = useSelector(selectEEZs)
   const rfmos = useSelector(selectRFMOs)
   const mpas = useSelector(selectMPAs)
+  const fao = useSelector(selectFAOs)
+
+  const getRegionNamesByType = useCallback(
+    (regionType: keyof Regions, values: string[]) => {
+      if (!values?.length) return []
+      const regions = { eez: eezs, rfmo: rfmos, mpa: mpas, fao }[regionType] || []
+      let labels = values
+      if (regions?.length) {
+        labels = values.flatMap(
+          (id) =>
+            regions
+              .find((region) => region.id?.toString() === id)
+              ?.label?.replace('Exclusive Economic Zone', t('layer.areas.eez', 'EEZ')) || []
+        )
+      }
+      return labels
+    },
+    [eezs, fao, mpas, rfmos, t]
+  )
 
   const getEventRegionDescription = useCallback(
     (event: ActivityEvent | GapPosition) => {
-      const getRegionNamesByType = (regionType: keyof Regions, values: string[]) => {
-        const regions = { eez: eezs, rfmo: rfmos, mpa: mpas }[regionType] || []
-        let label = values
-        if (regions?.length) {
-          label = values.flatMap(
-            (id) =>
-              regions
-                .find((region) => region.id?.toString() === id)
-                ?.label?.replace('Exclusive Economic Zone', t('layer.areas.eez', 'EEZ')) || []
-          )
-        }
-        return label.join(', ')
-      }
-
       const regionsDescription = regionsPriority.reduce((acc, regionType) => {
         // We already have the most prioritized region, so we don't need to look for more
         if (!acc && event?.regions?.[regionType]?.length) {
-          const values = event?.regions[regionType].flatMap((regionId) =>
-            regionId.length ? `${regionId}` : []
-          )
-          return `${getRegionNamesByType(regionType, values)}`
+          const values =
+            event?.regions?.[regionType]?.flatMap((regionId) =>
+              regionId.length ? `${regionId}` : []
+            ) ?? []
+          return `${getRegionNamesByType(regionType, values).join(',')}`
         }
         return acc
       }, '')
 
       return regionsDescription
     },
-    [eezs, mpas, rfmos, t]
+    [getRegionNamesByType]
   )
 
   const getEventDescription = useCallback(
@@ -143,11 +154,17 @@ function useActivityEventConnect() {
 
   return useMemo(
     () => ({
+      getRegionNamesByType,
       getEventDescription,
       getEventDurationDescription,
       getEventRegionDescription,
     }),
-    [getEventDescription, getEventDurationDescription, getEventRegionDescription]
+    [
+      getEventDescription,
+      getEventDurationDescription,
+      getEventRegionDescription,
+      getRegionNamesByType,
+    ]
   )
 }
 
