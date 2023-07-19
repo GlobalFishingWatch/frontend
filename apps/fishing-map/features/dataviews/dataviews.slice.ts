@@ -49,7 +49,11 @@ import {
   getVesselDataviewInstanceDatasetConfig,
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
-import { trackDatasetConfigsCallback } from '../resources/resources.utils'
+import {
+  eventsDatasetConfigsCallback,
+  infoDatasetConfigsCallback,
+  trackDatasetConfigsCallback,
+} from '../resources/resources.utils'
 
 export const fetchDataviewByIdThunk = createAsyncThunk(
   'dataviews/fetchById',
@@ -303,6 +307,8 @@ export const selectDataviewsResources = createSelector(
   (dataviewInstances, thinningConfig, chunks, timebarGraph) => {
     const callbacks: GetDatasetConfigsCallbacks = {
       tracks: trackDatasetConfigsCallback(thinningConfig, chunks, timebarGraph),
+      events: eventsDatasetConfigsCallback,
+      info: infoDatasetConfigsCallback,
     }
     return getResources(dataviewInstances || [], callbacks)
   }

@@ -1,14 +1,15 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { HYDRATE } from 'next-redux-wrapper'
-import { stringify } from 'qs'
 import { GFWAPI, ParsedAPIError, parseAPIError } from '@globalfishingwatch/api-client'
 import {
   Dataset,
   DatasetTypes,
+  EndpointId,
   IdentityVessel,
   VesselCoreInfo,
   VesselRegistryInfo,
 } from '@globalfishingwatch/api-types'
+import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   fetchDatasetByIdThunk,
@@ -62,10 +63,18 @@ export const fetchVesselInfoThunk = createAsyncThunk(
         return selectDatasetById(id)(state) ? [] : [id]
       })
       dispatch(fetchDatasetsByIdsThunk(datasetsToFetch))
-      const vessel = await GFWAPI.fetch<IdentityVessel>(
-        `/prototypes/vessels/${vesselId}?${stringify({ datasets: [datasetId] })}`,
-        { version: '' }
-      )
+      const datasetConfig = {
+        endpoint: EndpointId.Vessel,
+        datasetId: dataset.id,
+        params: [{ id: 'vesselId', value: vesselId }],
+        query: [{ id: 'datasets', value: [datasetId] }],
+      }
+
+      const url = resolveEndpoint(dataset, datasetConfig)
+      if (!url) {
+        return rejectWithValue({ message: 'Error resolving endpoint' })
+      }
+      const vessel = await GFWAPI.fetch<IdentityVessel>(url)
       return {
         ...vessel,
         coreInfo: {

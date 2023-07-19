@@ -18,126 +18,6 @@ export const dataviews: Dataview[] = [
       type: 'TRACK',
       color: '#F95E5E',
     },
-    infoConfig: {
-      fields: [
-        {
-          id: 'flag',
-          type: 'flag',
-          guest: true,
-          mandatory: true,
-        },
-        {
-          id: 'imo',
-          type: 'number',
-          guest: true,
-          mandatory: true,
-        },
-        {
-          id: 'mmsi',
-          type: 'number',
-          guest: true,
-          mandatory: true,
-        },
-        {
-          id: 'ssvid',
-          type: 'number',
-          guest: true,
-          mandatory: true,
-        },
-        {
-          id: 'callsign',
-          type: 'number',
-          guest: true,
-          mandatory: true,
-        },
-        {
-          id: 'registeredGearType',
-          type: 'string',
-          guest: true,
-        },
-        {
-          id: 'widthRange',
-          type: 'string',
-        },
-        {
-          id: 'lengthRange',
-          type: 'string',
-        },
-        {
-          id: 'grossTonnageRange',
-          type: 'string',
-        },
-        {
-          id: 'firstTransmissionDate',
-          type: 'date',
-          guest: true,
-        },
-        {
-          id: 'lastTransmissionDate',
-          type: 'date',
-          guest: true,
-        },
-        {
-          id: 'nationalId',
-          type: 'string',
-        },
-        {
-          id: 'geartype',
-          type: 'fleet',
-          mandatory: true,
-        },
-        {
-          id: 'casco',
-          type: 'string',
-        },
-        {
-          id: 'fleet',
-          type: 'fleet',
-        },
-        {
-          id: 'length',
-          type: 'string',
-        },
-        {
-          id: 'beam',
-          type: 'string',
-        },
-        {
-          id: 'capacity',
-          type: 'string',
-        },
-        {
-          id: 'targetSpecies',
-          type: 'string',
-        },
-        {
-          id: 'mainGear',
-          type: 'string',
-        },
-        {
-          id: 'licenseCode',
-          type: 'string',
-        },
-        {
-          id: 'licensDescription',
-          type: 'string',
-        },
-        {
-          id: 'fishingZone',
-          type: 'string',
-        },
-        {
-          id: 'codMarinha',
-          type: 'string',
-        },
-        {
-          id: 'dataset',
-          type: 'string',
-          guest: true,
-          mandatory: true,
-        },
-      ],
-    },
     category: DataviewCategory.Vessels,
     datasetsConfig: [
       {
@@ -176,7 +56,7 @@ export const dataviews: Dataview[] = [
           },
         ],
         endpoint: 'vessel',
-        datasetId: 'proto-global-vessel-identity:v20230119',
+        datasetId: 'proto-global-vessel-identity:v20230623',
       },
       {
         query: [

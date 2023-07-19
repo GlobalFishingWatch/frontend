@@ -18,6 +18,14 @@ export type GetDatasetConfigsCallbacks = {
     datasetConfigs: DataviewDatasetConfig[],
     dataview?: UrlDataviewInstance
   ) => DataviewDatasetConfig[]
+  info?: (
+    datasetConfigs: DataviewDatasetConfig[],
+    dataview?: UrlDataviewInstance
+  ) => DataviewDatasetConfig[]
+  events?: (
+    datasetConfigs: DataviewDatasetConfig[],
+    dataview?: UrlDataviewInstance
+  ) => DataviewDatasetConfig[]
   activityContext?: (datasetConfigs: DataviewDatasetConfig) => DataviewDatasetConfig
 }
 export const getResources = (
@@ -61,15 +69,24 @@ export const getResources = (
       (datasetConfig) => datasetConfig.query?.find((q) => q.id === 'vessels')?.value
     ) // Loitering
 
-    let preparedDatasetConfigs = [info, track, ...events]
+    let preparedInfoDatasetConfigs = [info]
+    let preparedTrackDatasetConfigs = [track]
+    let preparedEventsDatasetConfigs = events
 
+    if (callbacks.info) {
+      preparedInfoDatasetConfigs = callbacks.info([info], dataview)
+    }
     if (callbacks.tracks) {
-      preparedDatasetConfigs = callbacks.tracks(preparedDatasetConfigs, dataview)
+      preparedTrackDatasetConfigs = callbacks.tracks([track], dataview)
     }
 
     const preparedDataview = {
       ...dataview,
-      datasetsConfig: preparedDatasetConfigs,
+      datasetsConfig: [
+        ...preparedInfoDatasetConfigs,
+        ...preparedTrackDatasetConfigs,
+        ...preparedEventsDatasetConfigs,
+      ],
     }
     return preparedDataview
   })
