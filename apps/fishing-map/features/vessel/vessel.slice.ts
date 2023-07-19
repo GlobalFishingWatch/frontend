@@ -52,43 +52,47 @@ export const fetchVesselInfoThunk = createAsyncThunk(
     try {
       const state = getState() as any
       const action = await dispatch(fetchDatasetByIdThunk(datasetId))
-      const dataset = action.payload as Dataset
-      // Datasets and dataview needed to mock follow the structure of the map and resolve the generators
-      dispatch(fetchDataviewsByIdsThunk([TEMPLATE_VESSEL_DATAVIEW_SLUG]))
-      const trackDatasetId = getRelatedDatasetsByType(dataset, DatasetTypes.Tracks)?.[0]?.id || ''
-      const eventsDatasetsId =
-        getRelatedDatasetsByType(dataset, DatasetTypes.Events)?.map((d) => d.id) || []
-      // When coming from workspace url datasets are already loaded so no need to fetch again
-      const datasetsToFetch = [trackDatasetId, ...eventsDatasetsId].flatMap((id) => {
-        return selectDatasetById(id)(state) ? [] : [id]
-      })
-      dispatch(fetchDatasetsByIdsThunk(datasetsToFetch))
-      const datasetConfig = {
-        endpoint: EndpointId.Vessel,
-        datasetId: dataset.id,
-        params: [{ id: 'vesselId', value: vesselId }],
-        query: [{ id: 'datasets', value: [datasetId] }],
-      }
+      if (fetchDatasetByIdThunk.fulfilled.match(action)) {
+        const dataset = action.payload as Dataset
+        // Datasets and dataview needed to mock follow the structure of the map and resolve the generators
+        dispatch(fetchDataviewsByIdsThunk([TEMPLATE_VESSEL_DATAVIEW_SLUG]))
+        const trackDatasetId = getRelatedDatasetsByType(dataset, DatasetTypes.Tracks)?.[0]?.id || ''
+        const eventsDatasetsId =
+          getRelatedDatasetsByType(dataset, DatasetTypes.Events)?.map((d) => d.id) || []
+        // When coming from workspace url datasets are already loaded so no need to fetch again
+        const datasetsToFetch = [trackDatasetId, ...eventsDatasetsId].flatMap((id) => {
+          return selectDatasetById(id)(state) ? [] : [id]
+        })
+        dispatch(fetchDatasetsByIdsThunk(datasetsToFetch))
+        const datasetConfig = {
+          endpoint: EndpointId.Vessel,
+          datasetId: dataset.id,
+          params: [{ id: 'vesselId', value: vesselId }],
+          query: [{ id: 'datasets', value: [datasetId] }],
+        }
 
-      const url = resolveEndpoint(dataset, datasetConfig)
-      if (!url) {
-        return rejectWithValue({ message: 'Error resolving endpoint' })
-      }
-      const vessel = await GFWAPI.fetch<IdentityVessel>(url)
-      return {
-        ...vessel,
-        coreInfo: {
-          ...vessel.coreInfo,
-          firstTransmissionDate: vessel?.coreInfo?.firstTransmissionDate || '',
-        },
-        info: datasetId,
-        track: trackDatasetId,
-        events: eventsDatasetsId,
-        // Make sure to have the lastest in the first position
-        registryInfo:
-          vessel?.registryInfo?.sort(
-            (a, b) => Number(b.latestVesselInfo) - Number(a.latestVesselInfo)
-          ) || [],
+        const url = resolveEndpoint(dataset, datasetConfig)
+        if (!url) {
+          return rejectWithValue({ message: 'Error resolving endpoint' })
+        }
+        const vessel = await GFWAPI.fetch<IdentityVessel>(url)
+        return {
+          ...vessel,
+          coreInfo: {
+            ...vessel.coreInfo,
+            firstTransmissionDate: vessel?.coreInfo?.firstTransmissionDate || '',
+          },
+          info: datasetId,
+          track: trackDatasetId,
+          events: eventsDatasetsId,
+          // Make sure to have the lastest in the first position
+          registryInfo:
+            vessel?.registryInfo?.sort(
+              (a, b) => Number(b.latestVesselInfo) - Number(a.latestVesselInfo)
+            ) || [],
+        }
+      } else {
+        return rejectWithValue(action.payload)
       }
     } catch (e: any) {
       console.warn(e)
