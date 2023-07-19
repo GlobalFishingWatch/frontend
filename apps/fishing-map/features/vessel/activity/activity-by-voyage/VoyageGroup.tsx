@@ -65,8 +65,16 @@ const VoyageGroup: React.FC<EventProps> = ({
   )
 
   const onMap = useCallback(
-    () => (hasEvents ? onMapClick(event) : {}),
-    [hasEvents, onMapClick, event]
+    (e: React.MouseEvent) => {
+      e.stopPropagation()
+      if (hasEvents) {
+        onMapClick(event)
+      }
+      if (!expanded) {
+        onToggle()
+      }
+    },
+    [hasEvents, expanded, onMapClick, event, onToggle]
   )
 
   return (
