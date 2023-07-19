@@ -12,6 +12,7 @@ import styles from './TrackFootprint.module.css'
 
 type TrackFootprintProps = {
   vesselId: string
+  trackDatasetId?: string
   highlightedYear?: number
 }
 
@@ -22,7 +23,7 @@ const PROJECTION = geoEqualEarth()
   .scale(53.5)
   .translate([FOOTPRINT_WIDTH / 2, FOOTPRINT_HEIGHT / 2])
 
-function TrackFootprint({ vesselId, highlightedYear }: TrackFootprintProps) {
+function TrackFootprint({ vesselId, trackDatasetId, highlightedYear }: TrackFootprintProps) {
   const [trackData, setTrackData] = useState<FeatureCollection<Geometry, GeoJsonProperties>>()
   const [error, setError] = useState(false)
   const fullCanvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -32,14 +33,20 @@ function TrackFootprint({ vesselId, highlightedYear }: TrackFootprintProps) {
   const highlightContext = highlightCanvasRef.current?.getContext('2d')
 
   const fetchData = async (vesselId: string) => {
-    const data = await GFWAPI.fetch<any>(
-      `/vessels/${vesselId}/tracks?binary=true&fields=lonlat%2Ctimestamp&format=valueArray&datasets=public-global-fishing-tracks%3Av20201001&distance-fishing=1000000000&bearing-val-fishing=10000000&change-speed-fishing=5000000&min-accuracy-fishing=3000000&distance-transit=100000000&bearing-val-transit=1000000&change-speed-transit=1000000&min-accuracy-transit=60000`,
-      { responseType: 'vessel' }
-    )
-    if (data.length === 0) {
+    if (!trackDatasetId) {
       setError(true)
       return
     }
+    let data = await GFWAPI.fetch<any>(
+      `/vessels/${vesselId}/tracks?binary=true&fields=lonlat%2Ctimestamp&format=valueArray&datasets=${trackDatasetId}&distance-fishing=1000000000&bearing-val-fishing=10000000&change-speed-fishing=5000000&min-accuracy-fishing=3000000&distance-transit=100000000&bearing-val-transit=1000000&change-speed-transit=1000000&min-accuracy-transit=60000`,
+      { responseType: 'vessel' }
+    )
+    if (data.length === 0) {
+      console.log(data)
+      setError(true)
+      return
+    }
+
     const segments = trackValueArrayToSegments(data, [Field.lonlat, Field.timestamp])
     const geoJson = segmentsToGeoJSON(segments)
     setTrackData(geoJson)

@@ -64,6 +64,7 @@ function SearchBasicResults({
           dataset,
           firstTransmissionDate,
           lastTransmissionDate,
+          trackDatasetId,
         } = entry
         const isInWorkspace = vesselDataviews?.some(
           (vessel) => vessel.id === `${VESSEL_LAYER_PREFIX}${id}`
@@ -191,7 +192,13 @@ function SearchBasicResults({
                   )}
                 </div>
               </div>
-              {!isSmallScreen && <TrackFootprint vesselId={id} highlightedYear={highlightedYear} />}
+              {!isSmallScreen && (
+                <TrackFootprint
+                  vesselId={id}
+                  trackDatasetId={trackDatasetId}
+                  highlightedYear={highlightedYear}
+                />
+              )}
             </div>
           </li>
         )
