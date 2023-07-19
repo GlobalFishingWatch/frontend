@@ -7,7 +7,7 @@
   mix-blend-mode: multiply;
 }
 
-.spinner {
+.map > * {
   position: absolute;
   top: 50%;
   left: 50%;

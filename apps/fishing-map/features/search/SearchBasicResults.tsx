@@ -2,8 +2,9 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { GetItemPropsOptions } from 'downshift'
-import { Fragment } from 'react'
+import { Fragment, useCallback, useState } from 'react'
 import { IconButton } from '@globalfishingwatch/ui-components'
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
@@ -35,6 +36,13 @@ function SearchBasicResults({
 }: SearchBasicResultsProps) {
   const { t } = useTranslation()
   const vesselDataviews = useSelector(selectVesselsDataviews)
+  const isSmallScreen = useSmallScreen()
+  const [highlightedYear, setHighlightedYear] = useState<number>()
+
+  const onYearlyHoverCallback = useCallback((year: number) => {
+    setHighlightedYear(year)
+  }, [])
+
   return (
     <Fragment>
       {searchResults?.map((entry, index: number) => {
@@ -177,12 +185,13 @@ function SearchBasicResults({
                         lastTransmissionDate={lastTransmissionDate}
                         firstYearOfData={FIRST_YEAR_OF_DATA}
                         locale={i18n.language as Locale}
+                        yearlyHoverCallback={!isSmallScreen ? onYearlyHoverCallback : undefined}
                       />
                     </div>
                   )}
                 </div>
               </div>
-              <TrackFootprint vesselId={id} />
+              {!isSmallScreen && <TrackFootprint vesselId={id} highlightedYear={highlightedYear} />}
             </div>
           </li>
         )
