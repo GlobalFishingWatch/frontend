@@ -124,7 +124,10 @@ function SearchBasicResults({
                     <label>{t('vessel.vesselType', 'Vessel Type')}</label>
                     <span>
                       {geartype !== undefined
-                        ? t(`vessel.vesselTypes.${shiptype?.toLowerCase()}` as any, shiptype)
+                        ? t(
+                            `vessel.vesselTypes.${shiptype?.toLowerCase()}` as any,
+                            shiptype as string
+                          )
                         : EMPTY_FIELD_PLACEHOLDER}
                     </span>
                   </div>
@@ -186,7 +189,7 @@ function SearchBasicResults({
                         lastTransmissionDate={lastTransmissionDate}
                         firstYearOfData={FIRST_YEAR_OF_DATA}
                         locale={i18n.language as Locale}
-                        yearlyHoverCallback={!isSmallScreen ? onYearlyHoverCallback : undefined}
+                        yearlyHoverCallback={isSmallScreen ? undefined : onYearlyHoverCallback}
                       />
                     </div>
                   )}

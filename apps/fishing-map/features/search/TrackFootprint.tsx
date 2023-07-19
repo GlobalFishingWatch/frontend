@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 import { geoEqualEarth, geoPath } from 'd3'
 import { FeatureCollection, GeoJsonProperties, Geometry } from 'geojson'
@@ -32,31 +32,34 @@ function TrackFootprint({ vesselId, trackDatasetId, highlightedYear }: TrackFoot
   const fullContext = fullCanvasRef.current?.getContext('2d')
   const highlightContext = highlightCanvasRef.current?.getContext('2d')
 
-  const fetchData = async (vesselId: string) => {
-    if (!trackDatasetId) {
-      setError(true)
-      return
-    }
-    let data = await GFWAPI.fetch<any>(
-      `/vessels/${vesselId}/tracks?binary=true&fields=lonlat%2Ctimestamp&format=valueArray&datasets=${trackDatasetId}&distance-fishing=1000000000&bearing-val-fishing=10000000&change-speed-fishing=5000000&min-accuracy-fishing=3000000&distance-transit=100000000&bearing-val-transit=1000000&change-speed-transit=1000000&min-accuracy-transit=60000`,
-      { responseType: 'vessel' }
-    )
-    if (data.length === 0) {
-      console.log(data)
-      setError(true)
-      return
-    }
+  const fetchData = useCallback(
+    async (vesselId: string) => {
+      if (!trackDatasetId) {
+        setError(true)
+        return
+      }
+      let data = await GFWAPI.fetch<any>(
+        `/vessels/${vesselId}/tracks?binary=true&fields=lonlat%2Ctimestamp&format=valueArray&datasets=${trackDatasetId}&distance-fishing=1000000000&bearing-val-fishing=10000000&change-speed-fishing=5000000&min-accuracy-fishing=3000000&distance-transit=100000000&bearing-val-transit=1000000&change-speed-transit=1000000&min-accuracy-transit=60000`,
+        { responseType: 'vessel' }
+      )
+      if (data.length === 0) {
+        console.log(data)
+        setError(true)
+        return
+      }
 
-    const segments = trackValueArrayToSegments(data, [Field.lonlat, Field.timestamp])
-    const geoJson = segmentsToGeoJSON(segments)
-    setTrackData(geoJson)
-  }
+      const segments = trackValueArrayToSegments(data, [Field.lonlat, Field.timestamp])
+      const geoJson = segmentsToGeoJSON(segments)
+      setTrackData(geoJson)
+    },
+    [trackDatasetId]
+  )
 
   useEffect(() => {
     if (onScreen && !trackData) {
       fetchData(vesselId)
     }
-  }, [onScreen, trackData, vesselId])
+  }, [fetchData, onScreen, trackData, vesselId])
 
   useEffect(() => {
     if (fullContext && trackData) {
