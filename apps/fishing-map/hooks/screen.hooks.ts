@@ -119,9 +119,7 @@ export const useOnScreen = (ref, rootMargin = '0px') => {
       ([entry]) => {
         setIsVisible(entry.isIntersecting)
       },
-      {
-        rootMargin,
-      }
+      { rootMargin }
     )
 
     const currentElement = ref?.current
