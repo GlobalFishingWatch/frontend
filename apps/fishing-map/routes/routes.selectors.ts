@@ -86,6 +86,8 @@ export const selectUrlMapLatitudeQuery = selectQueryParam<number>('latitude')
 export const selectUrlMapLongitudeQuery = selectQueryParam<number>('longitude')
 export const selectUrlStartQuery = selectQueryParam<string>('start')
 export const selectUrlEndQuery = selectQueryParam<string>('end')
+export const selectUrlBufferValueQuery = selectQueryParam<number>('reportBufferValue')
+export const selectUrlBufferUnitQuery = selectQueryParam<string>('reportBufferUnit')
 export const selectUrlDataviewInstances =
   selectQueryParam<UrlDataviewInstance[]>('dataviewInstances')
 
