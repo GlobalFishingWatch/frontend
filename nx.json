@@ -1,5 +1,4 @@
 {
-  "npmScope": "globalfishingwatch",
   "affected": {
     "defaultBase": "develop"
   },
@@ -80,7 +79,8 @@
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
       "!{projectRoot}/tsconfig.spec.json",
       "!{projectRoot}/jest.config.[jt]s",
-      "!{projectRoot}/.eslintrc.js"
+      "!{projectRoot}/.eslintrc.js",
+      "!{projectRoot}/src/test-setup.[jt]s"
     ]
   }
 }

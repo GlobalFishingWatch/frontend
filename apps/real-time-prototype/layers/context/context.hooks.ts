@@ -3,7 +3,6 @@ import { PickingInfo } from '@deck.gl/core/typed'
 import { atom, selector, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { ContextsLayer } from 'layers/context/ContextsLayer'
 import { useAtomValue } from 'jotai'
-import { useMapLayers } from 'features/map/layers.hooks'
 import { hoveredFeaturesAtom, clickedFeaturesAtom } from 'features/map/map-picking.hooks'
 
 type ContextsAtom = {
@@ -23,12 +22,8 @@ export const contextsLayerAtom = atom<ContextsAtom>({
 
 export function useContextsLayer() {
   const [{ instance, ids }, updateAtom] = useRecoilState(contextsLayerAtom)
-  const [mapLayers] = useMapLayers()
   const hoveredFeatures: PickingInfo[] = useAtomValue(hoveredFeaturesAtom)
   const clickedFeatures: PickingInfo[] = useAtomValue(clickedFeaturesAtom)
-
-  const layer = mapLayers.find((l) => l.id === 'contexts')
-  const layerVisible = layer?.visible
 
   const setAtomProperty = useCallback(
     (property) => updateAtom((state) => ({ ...state, ...property })),
@@ -40,18 +35,14 @@ export function useContextsLayer() {
   }, [setAtomProperty])
 
   useEffect(() => {
-    if (layerVisible) {
-      const contextLayer = new ContextsLayer({
-        ids,
-        hoveredFeatures,
-        clickedFeatures,
-        onDataLoad: onDataLoad,
-      })
-      setAtomProperty({ instance: contextLayer })
-    } else {
-      setAtomProperty({ instance: undefined, loaded: false })
-    }
-  }, [ids, layerVisible, updateAtom, onDataLoad, setAtomProperty, hoveredFeatures, clickedFeatures])
+    const contextLayer = new ContextsLayer({
+      ids,
+      hoveredFeatures,
+      clickedFeatures,
+      onDataLoad: onDataLoad,
+    })
+    setAtomProperty({ instance: contextLayer })
+  }, [ids, updateAtom, onDataLoad, setAtomProperty, hoveredFeatures, clickedFeatures])
 
   return instance
 }

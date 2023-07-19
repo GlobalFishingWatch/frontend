@@ -41,7 +41,7 @@
     "react-image-gallery": "^1.2.11",
     "react-virtualized-auto-sizer": "^1.0.20",
     "react-window": "^1.8.8",
-    "recoil": "0.7.6",
+    "recoil": "0.7.7",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
@@ -50,8 +50,6 @@
     "@types/lodash": "^4.14.191",
     "@types/luxon": "^2.4.0",
     "@types/qs": "^6.9.7",
-    "@types/react": "^18.2.7",
-    "@types/react-dom": "^18.2.4",
     "@types/react-image-gallery": "^1.2.0",
     "@types/react-virtualized-auto-sizer": "^1.0.1",
     "@types/react-window": "^1.8.5",
