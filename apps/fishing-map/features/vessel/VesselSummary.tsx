@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { useMemo } from 'react'
 import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { eventsToBbox } from '@globalfishingwatch/data-transforms'
 import { selectTimeRange } from 'features/app/app.selectors'
@@ -11,27 +10,27 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatInfoField } from 'utils/info'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { selectVoyages } from 'features/vessel/activity/activity-by-voyage/activity-by-voyage.selectors'
 import styles from './VesselSummary.module.css'
 
 const VesselSummary = () => {
   const { t } = useTranslation()
   const vessel = useSelector(selectVesselInfoData)
   const events = useSelector(selectVesselEventsFilteredByTimerange)
+  const voyages = useSelector(selectVoyages)
   const timerange = useSelector(selectTimeRange)
   const fitBounds = useMapFitBounds()
 
-  const summary = useMemo(() => {
-    return t('vessel.summary', {
-      defaultValue:
-        'The <strong>{{vesselType}}</strong> vessel flagged by <strong>{{vesselFlag}}</strong> had <strong>{{events}}</strong> events in <strong>{{voyages}}</strong> voyages between <strong>{{timerangeStart}}</strong> and <strong>{{timerangeEnd}}</strong>.',
-      vesselType: formatInfoField(vessel?.shiptype as string, 'vesselType').toLowerCase(),
-      vesselFlag: formatInfoField(vessel?.flag as string, 'flag'),
-      events: formatI18nNumber(events?.length as number),
-      voyages: 15, // TODO: calculate voyages
-      timerangeStart: formatI18nDate(timerange?.start),
-      timerangeEnd: formatI18nDate(timerange?.end),
-    })
-  }, [t, vessel?.shiptype, vessel?.flag, events?.length, timerange?.start, timerange?.end])
+  const summary = t('vessel.summary', {
+    defaultValue:
+      'The <strong>{{vesselType}}</strong> vessel flagged by <strong>{{vesselFlag}}</strong> had <strong>{{events}}</strong> events in <strong>{{voyages}}</strong> voyages between <strong>{{timerangeStart}}</strong> and <strong>{{timerangeEnd}}</strong>.',
+    vesselType: formatInfoField(vessel?.shiptype as string, 'vesselType').toLowerCase(),
+    vesselFlag: formatInfoField(vessel?.flag as string, 'flag'),
+    events: formatI18nNumber(events?.length as number),
+    voyages: formatI18nNumber(voyages?.length as number),
+    timerangeStart: formatI18nDate(timerange?.start),
+    timerangeEnd: formatI18nDate(timerange?.end),
+  })
 
   const onVesselFitBoundsClick = () => {
     const bounds = eventsToBbox(events)
