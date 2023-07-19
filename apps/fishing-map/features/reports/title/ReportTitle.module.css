@@ -16,11 +16,42 @@
 
 .actions {
   white-space: nowrap;
+  display: flex;
+  gap: var(--space-S);
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
 }
 
 .reportLink {
   text-decoration: underline;
   display: none;
+}
+
+.bufferContainer {
+  background-color: white;
+  padding: var(--space-S);
+  box-shadow: var(--box-shadow);
+  border-radius: var(--border-radius);
+}
+
+.bufferTooltipContent {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  gap: var(--space-S);
+  padding: var(--space-S);
+  font: var(--font-M);
+  color: var(--color-primary-blue);
+}
+
+.sliderTrack {
+  height: 2px;
+  width: 100%;
+  align-self: center;
 }
 
 @media print {
