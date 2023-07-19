@@ -19,7 +19,7 @@ import {
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { VesselInstanceDatasets } from 'features/dataviews/dataviews.utils'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
-import { TEMPLATE_VESSEL_DATAVIEW_SLUG } from 'data/workspaces'
+// import { TEMPLATE_VESSEL_DATAVIEW_SLUG } from 'data/workspaces'
 
 export const DEFAULT_VESSEL_DATASET_ID = 'public-global-all-vessels:latest'
 
@@ -55,7 +55,8 @@ export const fetchVesselInfoThunk = createAsyncThunk(
       if (fetchDatasetByIdThunk.fulfilled.match(action)) {
         const dataset = action.payload as Dataset
         // Datasets and dataview needed to mock follow the structure of the map and resolve the generators
-        dispatch(fetchDataviewsByIdsThunk([TEMPLATE_VESSEL_DATAVIEW_SLUG]))
+        // dispatch(fetchDataviewsByIdsThunk([TEMPLATE_VESSEL_DATAVIEW_SLUG]))
+        dispatch(fetchDataviewsByIdsThunk([]))
         const trackDatasetId = getRelatedDatasetsByType(dataset, DatasetTypes.Tracks)?.[0]?.id || ''
         const eventsDatasetsId =
           getRelatedDatasetsByType(dataset, DatasetTypes.Events)?.map((d) => d.id) || []

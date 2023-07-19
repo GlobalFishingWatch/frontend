@@ -71,6 +71,9 @@ export const fetchDataviewByIdThunk = createAsyncThunk(
   }
 )
 
+const USE_MOCKED_DATAVIEWS =
+  process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_USE_LOCAL_DATAVIEWS === 'true'
+let mockedDataviewsImported = false
 export const fetchDataviewsByIdsThunk = createAsyncThunk(
   'dataviews/fetch',
   async (ids: (Dataview['id'] | Dataview['slug'])[], { signal, rejectWithValue, getState }) => {
@@ -78,8 +81,13 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
     const existingIds = selectIds(state) as (number | string)[]
     const uniqIds = ids.filter((id) => !existingIds.includes(id))
 
+    let mockedDataviews = [] as Dataview[]
+    if (USE_MOCKED_DATAVIEWS && !mockedDataviewsImported) {
+      mockedDataviews = await import('./dataviews.mock').then((d) => d.default)
+    }
+
     if (!uniqIds?.length) {
-      return [] as Dataview[]
+      return mockedDataviews
     }
     try {
       const dataviewsParams = {
@@ -91,14 +99,10 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
         `/dataviews?${stringify(dataviewsParams, { arrayFormat: 'comma' })}`,
         { signal }
       )
-      if (
-        process.env.NODE_ENV === 'development' ||
-        process.env.NEXT_PUBLIC_USE_LOCAL_DATAVIEWS === 'true'
-      ) {
-        const mockedDataviews = await import('./dataviews.mock')
-        return uniqBy([...mockedDataviews.default, ...dataviewsResponse.entries], 'id')
-      }
-      return dataviewsResponse.entries
+
+      return USE_MOCKED_DATAVIEWS
+        ? uniqBy([mockedDataviews, ...dataviewsResponse.entries], 'slug')
+        : dataviewsResponse.entries
     } catch (e: any) {
       console.warn(e)
       return rejectWithValue(parseAPIError(e))
@@ -238,18 +242,22 @@ export const selectAllDataviewInstancesResolved = createSelector(
     vessel
   ): UrlDataviewInstance[] | undefined => {
     if (isVesselLocation) {
-      const vesselDataviewInstance = vessel
-        ? [
-            getVesselDataviewInstance(vessel, {
-              info: vessel.info,
-              track: vessel.track,
-              ...(vessel?.events?.length && {
-                events: vessel?.events,
-              }),
-            }),
-          ]
-        : []
-      return resolveDataviews(vesselDataviewInstance, dataviews, datasets)
+      if (!vessel) {
+        return []
+      }
+      const vesselDatasets = {
+        info: vessel.info,
+        track: vessel.track,
+        ...(vessel?.events?.length && {
+          events: vessel?.events,
+        }),
+      }
+      const dataviewInstance = getVesselDataviewInstance(vessel, vesselDatasets)
+      const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
+        vessel.id,
+        vesselDatasets
+      )
+      return resolveDataviews([{ ...dataviewInstance, datasetsConfig }], dataviews, datasets)
     }
     const dataviewInstancesWithDatasetConfig = dataviewInstances.map((dataviewInstance) => {
       if (
@@ -310,6 +318,7 @@ export const selectDataviewsResources = createSelector(
       events: eventsDatasetConfigsCallback,
       info: infoDatasetConfigsCallback,
     }
+    debugger
     return getResources(dataviewInstances || [], callbacks)
   }
 )
