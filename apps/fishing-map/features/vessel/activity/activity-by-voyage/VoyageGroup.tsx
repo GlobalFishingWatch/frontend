@@ -64,7 +64,7 @@ const VoyageGroup: React.FC<EventProps> = ({
     [hasEvents, onToggleClick, event]
   )
 
-  const onMap = useCallback(
+  const handleMapClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation()
       if (hasEvents) {
@@ -79,18 +79,17 @@ const VoyageGroup: React.FC<EventProps> = ({
 
   return (
     <li className={cx(styles.eventGroup, { [styles.open]: expanded })}>
-      <div className={styles.header} onClick={onToggle}>
+      <div
+        className={styles.header}
+        onClick={onToggle}
+        onMouseEnter={() => onMapHover(event)}
+        onMouseLeave={() => onMapHover(undefined)}
+      >
         <p className={styles.title}>{voyageLabel}</p>
         {hasEvents && (
           <div className={styles.actions}>
             <IconButton size="small" icon={expanded ? 'arrow-top' : 'arrow-down'} />
-            <IconButton
-              icon="view-on-map"
-              size="small"
-              onClick={onMap}
-              onMouseEnter={() => onMapHover(event)}
-              onMouseLeave={() => onMapHover(undefined)}
-            />
+            <IconButton icon="target" size="small" onClick={handleMapClick} />
           </div>
         )}
       </div>

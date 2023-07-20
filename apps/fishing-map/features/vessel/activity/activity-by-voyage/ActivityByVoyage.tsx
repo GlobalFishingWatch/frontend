@@ -10,7 +10,11 @@ import EventItem from 'features/vessel/activity/event/Event'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import useExpandedVoyages from 'features/vessel/activity/activity-by-voyage/activity-by-voyage.hook'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
-import { disableHighlightedTime, setHighlightedTime } from 'features/timebar/timebar.slice'
+import {
+  disableHighlightedTime,
+  setHighlightedEvents,
+  setHighlightedTime,
+} from 'features/timebar/timebar.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getUTCDateTime } from 'utils/dates'
 import styles from '../activity-by-type/activity-by-type.module.css'
@@ -37,7 +41,7 @@ const ActivityByVoyage = () => {
     [fitBounds]
   )
 
-  const onMapHover = useCallback(
+  const onVoyageMapHover = useCallback(
     (voyage?: RenderedVoyage | ActivityEvent) => {
       if (voyage?.start && voyage?.end) {
         dispatch(
@@ -48,6 +52,17 @@ const ActivityByVoyage = () => {
         )
       } else {
         dispatch(disableHighlightedTime())
+      }
+    },
+    [dispatch]
+  )
+
+  const onEventMapHover = useCallback(
+    (event: ActivityEvent) => {
+      if (event?.id) {
+        dispatch(setHighlightedEvents([event.id]))
+      } else {
+        dispatch(setHighlightedEvents([]))
       }
     },
     [dispatch]
@@ -76,7 +91,7 @@ const ActivityByVoyage = () => {
               event={event}
               onToggleClick={toggleExpandedVoyage}
               onMapClick={selectVoyageOnMap}
-              onMapHover={onMapHover}
+              onMapHover={onVoyageMapHover}
             >
               {expanded &&
                 event.events.length > 0 &&
@@ -84,7 +99,7 @@ const ActivityByVoyage = () => {
                   <EventItem
                     key={event.id}
                     event={event}
-                    onMapHover={onMapHover}
+                    onMapHover={onEventMapHover}
                     onMapClick={selectEventOnMap}
                     onInfoClick={onInfoClick}
                   >

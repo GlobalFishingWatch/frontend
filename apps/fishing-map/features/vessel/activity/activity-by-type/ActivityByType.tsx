@@ -8,8 +8,7 @@ import EventDetail from 'features/vessel/activity/event/EventDetail'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { disableHighlightedTime, setHighlightedTime } from 'features/timebar/timebar.slice'
-import { getUTCDateTime } from 'utils/dates'
+import { setHighlightedEvents } from 'features/timebar/timebar.slice'
 import EventItem from '../event/Event'
 import { useActivityByType } from './activity-by-type.hook'
 import styles from './activity-by-type.module.css'
@@ -62,16 +61,11 @@ export function ActivityByType() {
   )
 
   const onMapHover = useCallback(
-    (event?: ActivityEvent) => {
-      if (event?.start && event?.end) {
-        dispatch(
-          setHighlightedTime({
-            start: getUTCDateTime(event.start).toISO(),
-            end: getUTCDateTime(event.end).toISO(),
-          })
-        )
+    (event: ActivityEvent) => {
+      if (event?.id) {
+        dispatch(setHighlightedEvents([event.id]))
       } else {
-        dispatch(disableHighlightedTime())
+        dispatch(setHighlightedEvents([]))
       }
     },
     [dispatch]

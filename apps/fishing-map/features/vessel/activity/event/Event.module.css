@@ -1,5 +1,5 @@
 .event {
-  padding: var(--space-XS) var(--space-S) var(--space-XS) var(--space-M);
+  padding: var(--space-XS) 1.5rem var(--space-XS) var(--space-M);
   position: relative;
 }
 

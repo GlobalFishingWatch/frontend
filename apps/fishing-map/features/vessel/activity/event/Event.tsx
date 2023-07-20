@@ -27,7 +27,11 @@ const ActivityEvent: React.FC<EventProps> = (props): React.ReactElement => {
   const { getEventDescription } = useActivityEventConnect()
   return (
     <li className={styles.event} style={style}>
-      <div className={styles.header}>
+      <div
+        className={styles.header}
+        onMouseEnter={() => onMapHover(event)}
+        onMouseLeave={() => onMapHover(undefined)}
+      >
         <EventIcon type={event.type} />
         <div className={styles.eventData}>
           <ActivityDate event={event} />
@@ -35,13 +39,7 @@ const ActivityEvent: React.FC<EventProps> = (props): React.ReactElement => {
         </div>
         <div className={styles.actions}>
           <IconButton icon="info" size="small" onClick={() => onInfoClick(event)}></IconButton>
-          <IconButton
-            icon="target"
-            size="small"
-            onMouseEnter={() => onMapHover(event)}
-            onMouseLeave={() => onMapHover(undefined)}
-            onClick={() => onMapClick(event)}
-          ></IconButton>
+          <IconButton icon="target" size="small" onClick={() => onMapClick(event)}></IconButton>
         </div>
       </div>
       {children && <div className={styles.content}>{children}</div>}
