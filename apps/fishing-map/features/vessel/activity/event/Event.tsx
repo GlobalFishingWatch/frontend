@@ -31,6 +31,7 @@ const ActivityEvent: React.FC<EventProps> = (props): React.ReactElement => {
         className={styles.header}
         onMouseEnter={() => onMapHover(event)}
         onMouseLeave={() => onMapHover(undefined)}
+        onClick={() => onInfoClick(event)}
       >
         <EventIcon type={event.type} />
         <div className={styles.eventData}>
@@ -38,7 +39,7 @@ const ActivityEvent: React.FC<EventProps> = (props): React.ReactElement => {
           <p className={styles.description}>{getEventDescription(event)}</p>
         </div>
         <div className={styles.actions}>
-          <IconButton icon="info" size="small" onClick={() => onInfoClick(event)}></IconButton>
+          <IconButton icon="info" size="small"></IconButton>
           <IconButton icon="target" size="small" onClick={() => onMapClick(event)}></IconButton>
         </div>
       </div>

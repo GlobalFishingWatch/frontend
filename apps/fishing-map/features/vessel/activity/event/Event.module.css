@@ -19,6 +19,10 @@
   cursor: pointer;
 }
 
+.header label {
+  cursor: pointer;
+}
+
 .eventData {
   overflow: hidden;
   text-overflow: ellipsis;

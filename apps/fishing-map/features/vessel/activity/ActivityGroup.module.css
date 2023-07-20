@@ -2,7 +2,7 @@
   margin-left: unset;
   width: 100%;
   border-top: var(--border);
-  background: var(--gradient);
+  background: var(--color-white);
 }
 
 .header {
@@ -11,6 +11,11 @@
   align-items: center;
   min-height: 6rem;
   cursor: pointer;
+}
+
+.eventGroup:last-child,
+.eventGroup.open .header {
+  border-bottom: var(--border);
 }
 
 .actions {
@@ -28,7 +33,7 @@
 }
 
 .open .description {
-  color: var(--color-promary-blue);
+  color: var(--color-primary-blue);
 }
 
 .content {

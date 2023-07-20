@@ -3,7 +3,7 @@
 }
 
 .activityTitleContainer {
-  padding: 0 var(--space-M);
+  padding: var(--space-S) var(--space-M);
   display: flex;
   align-items: center;
   justify-content: space-between;

@@ -24,11 +24,7 @@ const ActivityGroup: React.FC<ActivityGroupProps> = ({
 }): React.ReactElement => {
   const { t } = useTranslation()
 
-  const hasEvents = quantity > 0
-  const onToggle = useCallback(
-    () => (hasEvents ? onToggleClick(eventType) : {}),
-    [eventType, hasEvents, onToggleClick]
-  )
+  const onToggle = useCallback(() => onToggleClick(eventType), [eventType, onToggleClick])
 
   return (
     <Fragment>
@@ -44,11 +40,9 @@ const ActivityGroup: React.FC<ActivityGroupProps> = ({
               }
             )}
           </p>
-          {hasEvents && (
-            <div className={styles.actions}>
-              <IconButton icon={expanded ? 'arrow-top' : 'arrow-down'} size="small"></IconButton>
-            </div>
-          )}
+          <div className={styles.actions}>
+            <IconButton icon={expanded ? 'arrow-top' : 'arrow-down'} size="small"></IconButton>
+          </div>
         </div>
         {children && <div className={styles.content}>{children}</div>}
       </li>
