@@ -130,13 +130,16 @@ function useActivityEventConnect() {
     (event: ActivityEvent) => {
       const durationDiff = getUTCDateTime(event.end as number).diff(
         getUTCDateTime(event.start as number),
-        ['hours', 'minutes']
+        ['days', 'hours', 'minutes']
       )
       const duration = durationDiff.toObject()
 
       const durationDescription =
         event.end > event.start
           ? [
+              duration.days && duration.days > 0
+                ? t('event.dayAbbreviated', '{{count}}d', { count: duration.days })
+                : '',
               duration.hours && duration.hours > 0
                 ? t('event.hourAbbreviated', '{{count}}h', { count: duration.hours })
                 : '',
