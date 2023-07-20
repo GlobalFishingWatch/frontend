@@ -14,8 +14,8 @@ import {
 const regionsPriority: RegionType[] = [
   RegionType.mpa,
   RegionType.eez,
-  RegionType.rfmo,
   RegionType.fao,
+  RegionType.rfmo,
 ]
 function useActivityEventConnect() {
   const { t } = useTranslation()
