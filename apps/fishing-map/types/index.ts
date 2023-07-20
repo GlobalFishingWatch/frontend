@@ -13,8 +13,6 @@ export { Locale } from '@globalfishingwatch/api-types'
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
 export type WorkspaceTimeRangeParam = 'start' | 'end'
 
-export type VesselProfileStateProperty = 'vesselDatasetId'
-
 export type ReportStateProperty =
   | 'reportActivityGraph'
   | 'reportAreaBounds'
@@ -77,6 +75,7 @@ export type ReportVesselGraph =
   | typeof REPORT_VESSELS_GRAPH_FLAG
 
 export type WorkspaceActivityCategory = 'fishing' | 'presence'
+
 export interface WorkspaceState extends BaseUrlWorkspace {
   bivariateDataviews?: BivariateDataviews
   daysFromLatest?: number // use latest day as endAt minus the number of days set here
@@ -98,6 +97,14 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   visibleEvents?: VisibleEvents
 }
 
+export type VesselProfileActivityMode = 'voyages' | 'type'
+export type VesselProfileState = {
+  vesselDatasetId: string
+  vesselActivityMode: VesselProfileActivityMode
+}
+
+export type VesselProfileStateProperty = keyof VesselProfileState
+
 export type RedirectParam = {
   'access-token'?: string
 }
@@ -105,6 +112,7 @@ export type RedirectParam = {
 export type QueryParams = Partial<WorkspaceViewport> &
   Partial<WorkspaceTimeRange> &
   WorkspaceState &
+  Partial<VesselProfileState> &
   RedirectParam
 
 export enum TimebarVisualisations {

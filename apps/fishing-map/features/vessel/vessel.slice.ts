@@ -22,8 +22,6 @@ import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { PROFILE_DATAVIEW_SLUGS } from 'data/workspaces'
 // import { TEMPLATE_VESSEL_DATAVIEW_SLUG } from 'data/workspaces'
 
-export const DEFAULT_VESSEL_DATASET_ID = 'public-global-all-vessels:latest'
-
 export type VesselData = VesselCoreInfo & VesselRegistryInfo & VesselInstanceDatasets
 interface VesselState {
   info: {

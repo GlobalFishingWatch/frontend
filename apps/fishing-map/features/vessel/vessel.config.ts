@@ -1,4 +1,11 @@
 import { RegionType } from '@globalfishingwatch/api-types'
+import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
+import { VesselProfileState } from 'types'
+
+export const DEFAULT_VESSEL_STATE: VesselProfileState = {
+  vesselDatasetId: GLOBAL_VESSELS_DATASET_ID,
+  vesselActivityMode: 'type',
+}
 
 export type VesselRenderField = {
   key: string

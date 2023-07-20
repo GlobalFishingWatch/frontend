@@ -3,7 +3,7 @@ import { Fragment, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Spinner, Tab, Tabs } from '@globalfishingwatch/ui-components'
 import { isAuthError } from '@globalfishingwatch/api-client'
-import { selectVesselId, selectVesselDatasetId } from 'routes/routes.selectors'
+import { selectVesselId } from 'routes/routes.selectors'
 import {
   fetchVesselInfoThunk,
   selectVesselInfoError,
@@ -17,6 +17,7 @@ import { selectRegionsDatasets } from 'features/regions/regions.selectors'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import { ErrorPlaceHolder, WorkspaceLoginError } from 'features/workspace/WorkspaceError'
 import { isGuestUser } from 'features/user/user.slice'
+import { selectVesselDatasetId } from 'features/vessel/vessel.selectors'
 import VesselIdentity from './VesselIdentity'
 import VesselActivity from './activity/VesselActivity'
 
