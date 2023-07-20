@@ -26,7 +26,7 @@ const initialState: RegionsState = {
   ...asyncInitialState,
 }
 
-export type FetchRegionsThunkParams = Record<RegionType, string>
+export type FetchRegionsThunkParams = Omit<Record<RegionType, string>, 'fao'>
 export const fetchRegionsThunk = createAsyncThunk(
   'regions/fetch',
   async (regionIds: FetchRegionsThunkParams, { rejectWithValue }) => {
@@ -37,7 +37,6 @@ export const fetchRegionsThunk = createAsyncThunk(
         GFWAPI.fetch<Region[]>(`${apiUrl}/${regionIds.eez}/user-context-layer-v1`, options),
         GFWAPI.fetch<Region[]>(`${apiUrl}/${regionIds.mpa}/user-context-layer-v1`, options),
         GFWAPI.fetch<Region[]>(`${apiUrl}/${regionIds.rfmo}/user-context-layer-v1`, options),
-        GFWAPI.fetch<Region[]>(`${apiUrl}/${regionIds.fao}/user-context-layer-v1`, options),
       ]
       const regions = await Promise.allSettled(promises)
       const result: Regions[] = [
@@ -51,10 +50,6 @@ export const fetchRegionsThunk = createAsyncThunk(
         },
         {
           id: RegionType.rfmo,
-          data: regions[2]?.status === 'fulfilled' ? regions[2].value.sort(sortFields) : [],
-        },
-        {
-          id: RegionType.fao,
           data: regions[2]?.status === 'fulfilled' ? regions[2].value.sort(sortFields) : [],
         },
       ]
@@ -105,7 +100,6 @@ const selectRegionsById = memoize((id: RegionId) =>
 
 export const selectEEZs = selectRegionsById(RegionType.eez)
 export const selectMPAs = selectRegionsById(RegionType.mpa)
-export const selectFAOs = selectRegionsById(RegionType.fao)
 export const selectRFMOs = selectRegionsById(RegionType.rfmo)
 
 export const selectRegionsStatus = (state: RootState) => state.regions.status

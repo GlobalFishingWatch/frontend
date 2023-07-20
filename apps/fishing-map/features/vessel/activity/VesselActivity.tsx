@@ -25,7 +25,6 @@ const VesselActivity = () => {
   return (
     <Fragment>
       <div className={styles.summaryContainer}>
-        <label>{t('common.summary', 'Summary')}</label>
         <VesselActivitySummary />
       </div>
       <div className={styles.activityTitleContainer}>

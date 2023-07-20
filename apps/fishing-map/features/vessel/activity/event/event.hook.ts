@@ -2,32 +2,26 @@ import { upperFirst } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { EventTypes, GapPosition, RegionType, Regions } from '@globalfishingwatch/api-types'
+import { EventTypes, GapPosition, Regions } from '@globalfishingwatch/api-types'
 import { EMPTY_API_VALUES } from 'features/reports/reports.selectors'
-import { selectEEZs, selectFAOs, selectMPAs, selectRFMOs } from 'features/regions/regions.slice'
+import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.slice'
 import { getUTCDateTime } from 'utils/dates'
 import {
   ActivityEvent,
   PortVisitSubEvent,
 } from 'features/vessel/activity/vessels-activity.selectors'
+import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
 
-const regionsPriority: RegionType[] = [
-  RegionType.mpa,
-  RegionType.eez,
-  RegionType.fao,
-  RegionType.rfmo,
-]
 function useActivityEventConnect() {
   const { t } = useTranslation()
   const eezs = useSelector(selectEEZs)
   const rfmos = useSelector(selectRFMOs)
   const mpas = useSelector(selectMPAs)
-  const fao = useSelector(selectFAOs)
 
   const getRegionNamesByType = useCallback(
     (regionType: keyof Regions, values: string[]) => {
       if (!values?.length) return []
-      const regions = { eez: eezs, rfmo: rfmos, mpa: mpas, fao }[regionType] || []
+      const regions = { eez: eezs, rfmo: rfmos, mpa: mpas }[regionType] || []
       let labels = values
       if (regions?.length) {
         labels = values.flatMap(
@@ -39,12 +33,12 @@ function useActivityEventConnect() {
       }
       return labels
     },
-    [eezs, fao, mpas, rfmos, t]
+    [eezs, mpas, rfmos, t]
   )
 
   const getEventRegionDescription = useCallback(
     (event: ActivityEvent | GapPosition) => {
-      const regionsDescription = regionsPriority.reduce((acc, regionType) => {
+      const regionsDescription = REGIONS_PRIORITY.reduce((acc, regionType) => {
         // We already have the most prioritized region, so we don't need to look for more
         if (!acc && event?.regions?.[regionType]?.length) {
           const values =

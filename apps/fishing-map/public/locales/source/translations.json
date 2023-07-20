@@ -74,6 +74,8 @@
     "analysis": "Create an analysis for this area",
     "analysisNotAvailable": "Toggle an activity or environmenet layer on to analyse it in this area",
     "and": "and",
+    "area_one": "area",
+    "area_other": "areas",
     "apparentFishing": "Apparent Fishing Effort",
     "average": "average",
     "averageAbbreviated": "avg.",
@@ -404,7 +406,9 @@
     "add": "Add layer",
     "areas": {
       "eez": "EEZ",
+      "eez_other": "EEZs",
       "mpa": "MPA",
+      "mpa_other": "MPAs",
       "rfmo": "RFMO",
       "fao": "FAO"
     },

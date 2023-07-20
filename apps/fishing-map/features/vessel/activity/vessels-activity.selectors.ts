@@ -44,3 +44,23 @@ export const selectEventsWithRenderingInfo = createSelector(
 export const selectFilteredEvents = createSelector([selectEventsWithRenderingInfo], (events) =>
   events.sort((a, b) => ((a.timestamp ?? a.start) > (b.timestamp ?? a.start) ? -1 : 1))
 )
+
+export const selectActivityRegions = createSelector([selectFilteredEvents], (events) => {
+  const activityRegions = events.reduce((acc, e) => {
+    Object.entries(e.regions || {}).forEach(([regionType, ids]) => {
+      if (!acc[regionType]) {
+        acc[regionType] = []
+      }
+      ids.forEach((id) => {
+        const index = acc[regionType].findIndex((r) => r.id === id)
+        if (index === -1) {
+          acc[regionType].push({ id, count: 1 })
+        } else {
+          acc[regionType][index].count++
+        }
+      })
+    })
+    return acc
+  }, {})
+  return activityRegions
+})

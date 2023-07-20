@@ -1,3 +1,5 @@
+import { RegionType } from '@globalfishingwatch/api-types'
+
 export type VesselRenderField = {
   key: string
   label: string
@@ -27,4 +29,10 @@ export const IDENTITY_FIELD_GROUPS: VesselRenderField[][] = [
   ],
   [{ key: 'authorization.sourceCode', label: 'authorizations' }],
 ]
-export const IDENTITY_FIELDS_INFO_AVAILABLE = ['geartype', 'shiptype']
+
+export const REGIONS_PRIORITY: RegionType[] = [
+  RegionType.mpa,
+  RegionType.eez,
+  RegionType.fao,
+  RegionType.rfmo,
+]
