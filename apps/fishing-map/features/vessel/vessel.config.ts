@@ -16,10 +16,14 @@ export const IDENTITY_FIELD_GROUPS: VesselRenderField[][] = [
     { key: 'imo', label: 'imo' },
     { key: 'callsign', label: 'callsign' },
   ],
-  [{ key: 'registryOwners[0].owner', label: 'owner' }],
   [
     { key: 'lengthM', label: 'length' },
     { key: 'tonnageGt', label: 'grossTonnage' },
   ],
+  [
+    { key: 'owner.owner', label: 'owner' },
+    { key: 'owner.ownerFlag', label: 'owner flag' },
+  ],
+  [{ key: 'authorization.sourceCode', label: 'authorizations' }],
 ]
 export const IDENTITY_FIELDS_INFO_AVAILABLE = ['geartype', 'shiptype']

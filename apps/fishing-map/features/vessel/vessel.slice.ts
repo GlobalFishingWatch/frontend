@@ -152,7 +152,11 @@ export const selectVesselInfoError = (state: VesselSliceState) => state.vessel.i
 
 export const selectVesselInfoData = createSelector([selectVesselInfo], (vesselInfo) => {
   if (!vesselInfo) return null
-  const vessel = vesselInfo.registryInfo?.[0] || vesselInfo.coreInfo
+  const vessel = {
+    ...(vesselInfo.registryInfo?.[0] || vesselInfo.coreInfo),
+    owner: vesselInfo.registryOwners?.[0],
+    authorization: vesselInfo.registryAuthorizations?.[0],
+  }
   const { info, track, events } = vesselInfo
   return { ...vessel, id: vesselInfo?.coreInfo?.id, info, track, events } as VesselData
 })
