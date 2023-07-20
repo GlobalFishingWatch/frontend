@@ -7,7 +7,7 @@ import {
   IconButton,
   Modal,
 } from '@globalfishingwatch/ui-components'
-import styles from './DataAndTerminology.module.css'
+import styles from './DataTerminology.module.css'
 
 interface ModalProps {
   containerClassName?: string
@@ -18,7 +18,7 @@ interface ModalProps {
   children: React.ReactNode
 }
 
-const DataAndTerminology: React.FC<ModalProps> = ({
+const DataTerminology: React.FC<ModalProps> = ({
   children,
   className,
   containerClassName,
@@ -45,7 +45,7 @@ const DataAndTerminology: React.FC<ModalProps> = ({
         appSelector="__next"
         isOpen={showModal}
         onClose={closeModal}
-        title={title ?? t('common.dataAndTerminology', 'Data and Terminology')}
+        title={title ?? t('common.dataTerminology', 'Data and Terminology')}
         className={cx(styles.container, containerClassName)}
       >
         {children}
@@ -54,4 +54,4 @@ const DataAndTerminology: React.FC<ModalProps> = ({
   )
 }
 
-export default DataAndTerminology
+export default DataTerminology

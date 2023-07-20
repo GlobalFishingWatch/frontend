@@ -1,6 +1,7 @@
 export type VesselRenderField = {
   key: string
   label: string
+  terminologyKey?: string
 }
 export const IDENTITY_FIELD_GROUPS: VesselRenderField[][] = [
   [
@@ -8,8 +9,8 @@ export const IDENTITY_FIELD_GROUPS: VesselRenderField[][] = [
     { key: 'flag', label: 'flag' },
   ],
   [
-    { key: 'shiptype', label: 'shiptype' },
-    { key: 'geartype', label: 'geartype' },
+    { key: 'shiptype', label: 'shiptype', terminologyKey: 'vessel.terminology.shiptype' },
+    { key: 'geartype', label: 'geartype', terminologyKey: 'vessel.terminology.geartype' },
   ],
   [
     { key: 'ssvid', label: 'mmsi' },
