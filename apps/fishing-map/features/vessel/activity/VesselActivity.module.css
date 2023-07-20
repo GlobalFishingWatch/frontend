@@ -1,5 +1,6 @@
 .summaryContainer {
   padding: var(--space-M);
+  position: relative;
 }
 
 .activityTitleContainer {
@@ -11,4 +12,10 @@
 
 .placeholder {
   height: 40rem;
+}
+
+.download {
+  position: absolute;
+  top: var(--space-M);
+  right: var(--space-M);
 }

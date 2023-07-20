@@ -2,9 +2,13 @@ import { useCallback, useMemo } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
+import { useSelector } from 'react-redux'
+import saveAs from 'file-saver'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { RenderedVoyage } from 'features/vessel/activity/activity-by-voyage/activity-by-voyage.selectors'
+import { selectVesselInfoDataId } from 'features/vessel/vessel.slice'
+import { parseEventsToCSV } from 'features/vessel/vessel.utils'
 import styles from '../ActivityGroup.module.css'
 
 interface EventProps {
@@ -25,6 +29,7 @@ const VoyageGroup: React.FC<EventProps> = ({
   onToggleClick = () => {},
 }): React.ReactElement => {
   const { t } = useTranslation()
+  const vesselId = useSelector(selectVesselInfoDataId)
   const voyageLabel = useMemo(() => {
     const parts: string[] = []
     if (event.from && event.to) {
@@ -59,6 +64,14 @@ const VoyageGroup: React.FC<EventProps> = ({
 
   const hasEvents = event.eventsQuantity > 0
 
+  const onDownloadClick = () => {
+    if (event.events.length) {
+      const data = parseEventsToCSV(event.events)
+      const blob = new Blob([data], { type: 'text/plain;charset=utf-8' })
+      saveAs(blob, `${vesselId}-voyage-${event.start}-${event.end}-events.csv`)
+    }
+  }
+
   const onToggle = useCallback(
     () => (hasEvents ? onToggleClick(event) : {}),
     [hasEvents, onToggleClick, event]
@@ -89,6 +102,13 @@ const VoyageGroup: React.FC<EventProps> = ({
         {hasEvents && (
           <div className={styles.actions}>
             <IconButton size="small" icon={expanded ? 'arrow-top' : 'arrow-down'} />
+            <IconButton
+              icon="download"
+              size="medium"
+              onClick={onDownloadClick}
+              tooltip={t('download.dataDownload', 'Download Data')}
+              tooltipPlacement="top"
+            />
             <IconButton icon="target" size="small" onClick={handleMapClick} />
           </div>
         )}

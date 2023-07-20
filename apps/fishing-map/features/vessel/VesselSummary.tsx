@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components'
 import { eventsToBbox } from '@globalfishingwatch/data-transforms'
 import { selectTimeRange } from 'features/app/app.selectors'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
@@ -57,10 +57,6 @@ const VesselSummary = () => {
           vessels={[vessel as any]}
           showCount={false}
         />
-        {/* TODO: create download function */}
-        <Button className={styles.actionButton} size="small" type="border-secondary">
-          {t('download.dataDownload', 'Download Data')} <Icon icon="download" />
-        </Button>
       </div>
     </div>
   )

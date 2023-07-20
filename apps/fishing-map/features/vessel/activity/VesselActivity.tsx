@@ -33,6 +33,9 @@ const VesselActivity = () => {
     <Fragment>
       <div className={styles.summaryContainer}>
         <VesselActivitySummary />
+        <div className={styles.download}>
+          <VesselActivityDownload />
+        </div>
       </div>
       <div className={styles.activityTitleContainer}>
         <label>

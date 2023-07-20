@@ -1,6 +1,7 @@
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { saveAs } from 'file-saver'
 import { Button, Icon, IconButton, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
 import I18nDate from 'features/i18n/i18nDate'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
@@ -9,6 +10,7 @@ import { IDENTITY_FIELD_GROUPS } from 'features/vessel/vessel.config'
 import DataTerminology from 'features/vessel/DataTerminology'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { formatAdvancedInfoField } from 'utils/info'
+import { parseVesselToCSV } from 'features/vessel/vessel.utils'
 import styles from './VesselIdentity.module.css'
 
 const VesselIdentity = () => {
@@ -17,6 +19,15 @@ const VesselIdentity = () => {
   const transmissionStart = (vessel?.firstTransmissionDate ||
     vessel?.transmissionDateFrom) as string
   const transmissionEnd = (vessel?.lastTransmissionDate || vessel?.transmissionDateTo) as string
+
+  const onDownloadClick = () => {
+    if (vessel) {
+      const data = parseVesselToCSV(vessel)
+      const blob = new Blob([data], { type: 'text/plain;charset=utf-8' })
+      saveAs(blob, vessel?.id + '.csv')
+    }
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.titleContainer}>
@@ -26,7 +37,6 @@ const VesselIdentity = () => {
           </label>
         </h3>
         <div className={styles.actionsContainer}>
-          {/* TODO: create functions */}
           <Button
             className={styles.actionButton}
             disabled
@@ -38,10 +48,11 @@ const VesselIdentity = () => {
             {t('vessel.identitySeeHistoric', 'See all historical values')} <Icon icon="download" />
           </Button>
           <IconButton
-            icon="copy"
+            icon="download"
             size="medium"
             type="border"
-            tooltip={t('vessel.identityCopy', 'Copy identity values')}
+            onClick={onDownloadClick}
+            tooltip={t('download.dataDownload', 'Download Data')}
             tooltipPlacement="top"
           />
         </div>
