@@ -30,15 +30,3 @@
   justify-content: flex-end;
   gap: var(--space-S);
 }
-
-.actionsContainer button {
-  height: var(--size-SM);
-  background: none;
-  border-radius: var(--border-radius);
-  border: var(--border);
-  color: var(--color-secondary-blue);
-}
-
-.actionsContainer button:not(:disabled):hover {
-  background: var(--color-terthiary-blue);
-}

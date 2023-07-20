@@ -51,9 +51,14 @@ const VesselSummary = () => {
       <h2 className={styles.summary} dangerouslySetInnerHTML={{ __html: summary }}></h2>
       <div className={styles.actionsContainer}>
         {/* TODO: get info and track datasets for vessel */}
-        <VesselGroupAddButton vessels={[vessel as any]} showCount={false} />
+        <VesselGroupAddButton
+          buttonSize="small"
+          buttonType="border-secondary"
+          vessels={[vessel as any]}
+          showCount={false}
+        />
         {/* TODO: create download function */}
-        <Button className={styles.actionButton}>
+        <Button className={styles.actionButton} size="small" type="border-secondary">
           {t('download.dataDownload', 'Download Data')} <Icon icon="download" />
         </Button>
       </div>

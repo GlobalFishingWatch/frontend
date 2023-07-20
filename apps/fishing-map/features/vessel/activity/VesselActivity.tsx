@@ -34,7 +34,8 @@ const VesselActivity = () => {
             : t('vessel.activityGroupByType', 'Group by type')}
         </label>
         <Button
-          className={styles.actionButton}
+          size="small"
+          type="border-secondary"
           onClick={(e) => setActivityMode(activityMode === 'type' ? 'voyages' : 'type')}
         >
           {activityMode === 'voyages'

@@ -30,6 +30,8 @@ const VesselIdentity = () => {
           <Button
             className={styles.actionButton}
             disabled
+            type="border-secondary"
+            size="small"
             tooltip={t('common.comingSoon', 'Coming Soon!')}
             tooltipPlacement="top"
           >
