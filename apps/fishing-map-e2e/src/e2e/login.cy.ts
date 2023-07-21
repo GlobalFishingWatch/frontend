@@ -4,6 +4,6 @@ describe('Login', function () {
   })
 
   it('shows user info', function () {
-    cy.contains(Cypress.env('apiUserInitials')).should('be.visible')
+    cy.get('a[href*="/user"]').contains(Cypress.env('apiUserInitials')).should('be.visible')
   })
 })

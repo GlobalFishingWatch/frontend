@@ -22,6 +22,10 @@ declare namespace Cypress {
       selector: string,
       options?: Partial<Loggable & Timeoutable & Withinable & Shadow>
     ): Cypress.Chainable<JQuery<HTMLElement>>
+    findClass(
+      selector: string,
+      options?: Partial<Loggable & Timeoutable & Withinable & Shadow>
+    ): Cypress.Chainable<JQuery<HTMLElement>>
   }
 }
 
@@ -35,6 +39,9 @@ function loginViaAuthAPI(username: string, password: string) {
   // Clear local storage to ensure everything is clean before logging in
   cy.clearLocalStorage()
 
+  // Reload the page to see that view if from anonnymous user
+  cy.reload()
+
   // Close dialog popup
   cy.get('div[role=dialog] button[type=button][aria-label=close]').click()
 
@@ -47,7 +54,7 @@ function loginViaAuthAPI(username: string, password: string) {
   cy.get('input[type=submit]').click()
 
   // Ensure API Auth has redirected us back to the app.
-  // cy.url().should('equal', 'http://localhost:3003/')
+  cy.url().should('match', /^http:\/\/localhost:3003/)
 }
 
 Cypress.Commands.add('login', (username: string, password: string) => {
@@ -104,6 +111,17 @@ Cypress.Commands.add(
     options?: Partial<Cypress.Loggable & Cypress.Timeoutable & Cypress.Withinable & Cypress.Shadow>
   ) => {
     return cy.get(`[data-test*=${selector}]`, options)
+  }
+)
+
+// This is usefull to find a class and avoid the react hashes
+Cypress.Commands.add(
+  'findClass',
+  (
+    selector: string,
+    options?: Partial<Cypress.Loggable & Cypress.Timeoutable & Cypress.Withinable & Cypress.Shadow>
+  ) => {
+    return cy.get(`[class^="${selector}"]`, options)
   }
 )
 

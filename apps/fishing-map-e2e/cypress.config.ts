@@ -8,7 +8,7 @@ const cypressJsonConfig = {
   videosFolder: '../../dist/cypress/apps/fishing-map-e2e/videos',
   screenshotsFolder: '../../dist/cypress/apps/fishing-map-e2e/screenshots',
   chromeWebSecurity: false,
-  specPattern: 'src/e2e/**/*.cy.{js,jsx,ts,tsx}',
+  specPattern: ['src/e2e/app.cy.ts', 'src/e2e/login.cy.ts', 'src/e2e/**/*.cy.{js,jsx,ts,tsx}'],
   supportFile: 'src/support/e2e.ts',
 }
 export default defineConfig({
