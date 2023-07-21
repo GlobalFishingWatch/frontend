@@ -48,7 +48,7 @@
     "summaryNoVessels": "<strong>{{sources}} {{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "timeRangeTooLong": "Reports are only supported for time ranges up to one year.",
     "title": "Analysis",
-    "unknown": "Unknown"
+    "unknown": "Other"
   },
   "bigQuery": {
     "aggregateAvg": "Average",
@@ -80,7 +80,7 @@
     "back": "back",
     "cancel": "Cancel",
     "category": "Category",
-    "comingSoon": "Coming soon",
+    "comingSoon": "coming soon!",
     "confirm": "Confirm",
     "confirmLeave": "Are you sure you want to leave without saving your workspace?",
     "context_area_other": "Reference layers",
@@ -96,7 +96,7 @@
     "days_other": "days",
     "description": "Description",
     "detection": "Detections",
-    "detection_one": "Detection",
+    "detection_one": "Detections",
     "detection_other": "Detections",
     "detections": "Detections",
     "dismiss": "Dismiss",
@@ -500,7 +500,7 @@
     "uploadEnvironment": "Upload environment layers",
     "analysis": "Analyze activity",
     "downloadActivity": "Download data",
-    "vesselSearch": "Vessel search",
+    "vesselSearch": "Vessel Search",
     "vesselGroups": "Vessel groups",
     "activityFishing": "Activity - Fishing",
     "activityPresence": "Activity - Presence",
@@ -541,7 +541,7 @@
       "pole_and_line": "Pole and line",
       "pots_and_traps": "Pots and traps",
       "purse seine": "Purse seine",
-      "purse_seine": "Purse Seine",
+      "purse_seine": "Purse seine",
       "purse_seines": "Purse seine",
       "reefer": "Reefer",
       "seiners": "Seiners",
@@ -651,7 +651,7 @@
       "marine-manager": "The portal provides dynamic interactive data on marine traffic, biology and ocean conditions to support marine protected area design and management."
     },
     "title_other": "Workspaces",
-    "update": "Update workspace",
+    "update": "Update",
     "uploadPublic": "Allow other users to see this workspace",
     "uploadPublicDisabled": "This workspace can't be shared publicly because it contains private datasets",
     "user": "User workspace",
