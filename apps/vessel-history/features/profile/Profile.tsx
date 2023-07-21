@@ -140,7 +140,7 @@ const Profile: React.FC = (props): React.ReactElement => {
             .concat((akaVesselProfileIds ?? []).map((akaId) => parseVesselProfileId(akaId)))
             // Now we filter to get only gfw vessels and not repeat the main (from path o query)
             .filter(
-              (akaVessel) => akaVessel.dataset === dataset && akaVessel.id && akaVessel.id !== gfwId
+              (akaVessel) => akaVessel.id !== gfwId && akaVessel.id //&& akaVessel.dataset === dataset
             )
 
           const vesselDataviewInstance = getVesselDataviewInstance(
