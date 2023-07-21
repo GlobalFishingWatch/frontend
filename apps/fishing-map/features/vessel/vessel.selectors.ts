@@ -64,7 +64,7 @@ export const selectVesselEventsFilteredByTimerange = createSelector(
     if (!timerange) return events ?? []
     return (
       events?.filter((event) => {
-        return (event.start as number) >= startMillis && (event.end as number) <= endMillis
+        return (event.end as number) >= startMillis && (event.start as number) <= endMillis
       }) || []
     )
   }
