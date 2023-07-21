@@ -17,6 +17,7 @@ import {
 import { getUTCDateTime } from 'utils/dates'
 
 export {
+  setResource,
   fetchResourceThunk,
   selectResourceByUrl,
   selectResources,
