@@ -7,7 +7,9 @@ import {
   EndpointId,
   IdentityVessel,
   VesselCoreInfo,
+  VesselRegistryAuthorization,
   VesselRegistryInfo,
+  VesselRegistryOwner,
 } from '@globalfishingwatch/api-types'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -22,7 +24,13 @@ import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { PROFILE_DATAVIEW_SLUGS } from 'data/workspaces'
 // import { TEMPLATE_VESSEL_DATAVIEW_SLUG } from 'data/workspaces'
 
-export type VesselData = VesselCoreInfo & VesselRegistryInfo & VesselInstanceDatasets
+export type VesselData = VesselCoreInfo &
+  VesselRegistryInfo &
+  VesselInstanceDatasets & {
+    // TODO decide how to manage these types based on API response format
+    owner?: VesselRegistryOwner
+    authorization?: VesselRegistryAuthorization
+  }
 interface VesselState {
   info: {
     status: AsyncReducerStatus

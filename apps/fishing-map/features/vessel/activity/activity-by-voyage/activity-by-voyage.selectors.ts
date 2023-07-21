@@ -13,6 +13,7 @@ export enum EventTypeVoyage {
 }
 
 export interface Voyage {
+  id: string
   from?: ActivityEvent
   to?: ActivityEvent
   type: EventTypeVoyage
@@ -64,33 +65,39 @@ export const selectVoyages = createSelector(
         (event: ActivityEvent) => event.type === EventTypes.Port && event.id.endsWith('-exit')
       )
       .map((port, index, all) => {
+        const start =
+          index > 0
+            ? all[index - 1].end ?? all[index - 1].start
+            : DateTime.fromISO(timeRange.start as string, { zone: 'utc' }).toMillis()
+
+        // Important: Substracting 1ms to not overlap with range of the previous voyage
+        const end = ((port.end ?? port.start) as number) - 1
         return {
+          id: `${start}-${end}`,
+          start: start,
           ...(index > 0
             ? {
                 from: all[index - 1],
-                start: all[index - 1].end ?? all[index - 1].start,
               }
-            : {
-                start: DateTime.fromISO(timeRange.start as string, { zone: 'utc' }).toMillis(),
-              }),
+            : {}),
           type: EventTypeVoyage.Voyage,
           to: port,
-          // Important: Substracting 1ms to not overlap with range of the previous voyage
-          end: ((port.end ?? port.start) as number) - 1,
-          // Important: Substracting 1ms to not overlap with timestamp port visit events on sorting
-          timestamp: ((port.end ?? port.start) as number) - 1,
+          end,
+          timestamp: end,
         } as Voyage
       })
     if (voyages.length === 0) return []
 
     const last = voyages[voyages.length - 1]
-
+    const lastStart = last.end ?? last.start
+    const lastEnd = DateTime.fromISO(timeRange.end as string, { zone: 'utc' }).toMillis()
     voyages.push({
+      id: `${lastStart}-${lastEnd}`,
       from: last.to,
-      start: last.end ?? last.start,
-      timestamp: DateTime.fromISO(timeRange.end as string, { zone: 'utc' }).toMillis(),
+      start: lastStart,
+      timestamp: lastEnd,
       type: EventTypeVoyage.Voyage,
-      end: DateTime.fromISO(timeRange.end as string, { zone: 'utc' }).toMillis(),
+      end: lastEnd,
     } as Voyage)
 
     return voyages.sort((a, b) => (b.start as number) - (a.start as number))
@@ -142,5 +149,14 @@ export const selectVoyagesByVessel = createSelector(
   [selectFilteredEventsWithSplitPorts, selectVoyages],
   (eventsList, voyages) => {
     return getVoyagesWithEventsInside(eventsList, voyages)
+  }
+)
+
+export const selectEventsWithVoyagesByVessel = createSelector(
+  [selectVoyagesByVessel],
+  (voyages) => {
+    return voyages.flatMap((voyage) => {
+      return voyage.events.map((event) => ({ ...event, voyageId: voyage.id }))
+    })
   }
 )

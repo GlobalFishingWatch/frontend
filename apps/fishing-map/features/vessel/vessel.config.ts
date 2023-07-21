@@ -1,9 +1,9 @@
 import { RegionType } from '@globalfishingwatch/api-types'
-import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
 import { VesselProfileState } from 'types'
 
+const DEFAULT_VESSEL_IDENTITY_ID = 'proto-global-vessel-identity:v20230623'
 export const DEFAULT_VESSEL_STATE: VesselProfileState = {
-  vesselDatasetId: GLOBAL_VESSELS_DATASET_ID,
+  vesselDatasetId: DEFAULT_VESSEL_IDENTITY_ID,
   vesselActivityMode: 'type',
 }
 

@@ -51,8 +51,6 @@ export type VesselRegistryInfo = VesselInfo & {
   transmissionDateFrom: string
   transmissionDateTo: string
   vesselInfoReference: string
-  owner?: VesselRegistryOwner
-  authorization?: VesselRegistryAuthorization
 }
 
 export type VesselRegistryOwner = {
