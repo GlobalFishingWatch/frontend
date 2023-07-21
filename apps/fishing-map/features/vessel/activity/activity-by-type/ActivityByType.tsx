@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Virtuoso } from 'react-virtuoso'
+import { useTranslation } from 'react-i18next'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import useViewport from 'features/map/map-viewport.hooks'
@@ -9,13 +10,13 @@ import { DEFAULT_VIEWPORT } from 'data/config'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setHighlightedEvents } from 'features/timebar/timebar.slice'
-import EventItem from '../event/Event'
+import Event from '../event/Event'
 import { useActivityByType } from './activity-by-type.hook'
 import styles from './activity-by-type.module.css'
 import { selectEventsByType } from './activity-by-type.selectors'
 import ActivityGroup from './ActivityGroup'
 
-const EVENTS_ODER = [
+const EVENTS_ORDER = [
   EventTypes.Encounter,
   EventTypes.Fishing,
   EventTypes.Loitering,
@@ -27,6 +28,7 @@ const EVENT_HEIGHT = 50
 const MIN_EVENTS_HEIGHT = 400
 
 export function ActivityByType() {
+  const { t } = useTranslation()
   const activityGroups = useSelector(selectEventsByType)
   const containerRef = useRef<any>()
   const dispatch = useAppDispatch()
@@ -82,11 +84,11 @@ export function ActivityByType() {
     [setMapCoordinates, viewport.zoom]
   )
 
-  const groupsWithDataLength = EVENTS_ODER.filter((eventType) => activityGroups[eventType]).length
+  const groupsWithDataLength = EVENTS_ORDER.filter((eventType) => activityGroups[eventType]).length
   const containerStyle = useMemo(() => {
     const maxHeight = window.innerHeight - groupsWithDataLength * HEADER_HEIGHT
     const styleByEvent = Object.fromEntries(
-      EVENTS_ODER.map((eventType) => {
+      EVENTS_ORDER.map((eventType) => {
         const events = activityGroups[eventType]
         if (!events) return [eventType, {}]
         let eventsHeight = events.length * EVENT_HEIGHT
@@ -102,42 +104,52 @@ export function ActivityByType() {
 
   return (
     <div className={styles.activityContainer} ref={containerRef}>
-      <ul>
-        {EVENTS_ODER.map((eventType) => {
-          const activityEvents = activityGroups[eventType]
-          if (!activityEvents) return null
+      {Object.keys(activityGroups).length > 0 ? (
+        <ul>
+          {EVENTS_ORDER.map((eventType) => {
+            const activityEvents = activityGroups[eventType]
+            if (!activityEvents) return null
 
-          const expanded = expandedType === eventType
-          return (
-            <ActivityGroup
-              key={eventType}
-              eventType={eventType}
-              onToggleClick={onToggleExpandedType}
-              quantity={activityEvents.length}
-              expanded={expanded}
-            >
-              {expanded && activityEvents.length > 0 && (
-                <Virtuoso
-                  style={containerStyle[eventType]}
-                  totalCount={activityEvents.length}
-                  itemContent={(index) => (
-                    <EventItem
-                      event={activityEvents[index]}
-                      onMapHover={onMapHover}
-                      onMapClick={selectEventOnMap}
-                      onInfoClick={onInfoClick}
-                    >
-                      {selectedEvent?.id === activityEvents[index]?.id && (
-                        <EventDetail event={selectedEvent} />
-                      )}
-                    </EventItem>
-                  )}
-                />
-              )}
-            </ActivityGroup>
-          )
-        })}
-      </ul>
+            const expanded = expandedType === eventType
+            return (
+              <ActivityGroup
+                key={eventType}
+                eventType={eventType}
+                onToggleClick={onToggleExpandedType}
+                quantity={activityEvents.length}
+                expanded={expanded}
+              >
+                {expanded && activityEvents.length > 0 && (
+                  <Virtuoso
+                    style={containerStyle[eventType]}
+                    totalCount={activityEvents.length}
+                    itemContent={(index) => (
+                      <Event
+                        event={activityEvents[index]}
+                        onMapHover={onMapHover}
+                        onMapClick={selectEventOnMap}
+                        onInfoClick={onInfoClick}
+                        className={styles.typeEvent}
+                      >
+                        {selectedEvent?.id === activityEvents[index]?.id && (
+                          <EventDetail event={selectedEvent} />
+                        )}
+                      </Event>
+                    )}
+                  />
+                )}
+              </ActivityGroup>
+            )
+          })}
+        </ul>
+      ) : (
+        <span className={styles.enptyState}>
+          {t(
+            'vessel.noEventsinTimeRange',
+            'There are no events fully contained in your timerange.'
+          )}
+        </span>
+      )}
     </div>
   )
 }

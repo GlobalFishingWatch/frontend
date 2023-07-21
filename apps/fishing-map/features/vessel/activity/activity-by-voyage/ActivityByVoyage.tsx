@@ -1,12 +1,13 @@
 import { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import { eventsToBbox } from '@globalfishingwatch/data-transforms'
 import { RenderedVoyage } from 'features/vessel/activity/activity-by-voyage/activity-by-voyage.selectors'
 import useViewport from 'features/map/map-viewport.hooks'
 import EventDetail from 'features/vessel/activity/event/EventDetail'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import VoyageGroup from 'features/vessel/activity/activity-by-voyage/VoyageGroup'
-import EventItem from 'features/vessel/activity/event/Event'
+import Event from 'features/vessel/activity/event/Event'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import useExpandedVoyages from 'features/vessel/activity/activity-by-voyage/activity-by-voyage.hook'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
@@ -21,7 +22,8 @@ import styles from '../activity-by-type/activity-by-type.module.css'
 import { selectVoyagesByVessel } from './activity-by-voyage.selectors'
 
 const ActivityByVoyage = () => {
-  const events = useSelector(selectVoyagesByVessel)
+  const { t } = useTranslation()
+  const voyages = useSelector(selectVoyagesByVessel)
   const dispatch = useAppDispatch()
   const [selectedEvent, setSelectedEvent] = useState<ActivityEvent>()
   const [expandedVoyages, toggleExpandedVoyage] = useExpandedVoyages()
@@ -81,34 +83,43 @@ const ActivityByVoyage = () => {
 
   return (
     <ul className={styles.activityContainer}>
-      {events?.length > 0 &&
-        events.map((event, index) => {
-          const expanded = expandedVoyages.includes(event.timestamp)
+      {voyages?.length > 0 ? (
+        voyages.map((voyage, index) => {
+          const expanded = expandedVoyages.includes(voyage.timestamp)
           return (
             <VoyageGroup
               key={index}
               expanded={expanded}
-              event={event}
+              voyage={voyage}
               onToggleClick={toggleExpandedVoyage}
               onMapClick={selectVoyageOnMap}
               onMapHover={onVoyageMapHover}
             >
               {expanded &&
-                event.events.length > 0 &&
-                event.events.map((event) => (
-                  <EventItem
+                voyage.events.length > 0 &&
+                voyage.events.map((event) => (
+                  <Event
                     key={event.id}
                     event={event}
                     onMapHover={onEventMapHover}
                     onMapClick={selectEventOnMap}
                     onInfoClick={onInfoClick}
+                    className={styles.voyageEvent}
                   >
                     {selectedEvent?.id === event?.id && <EventDetail event={event} />}
-                  </EventItem>
+                  </Event>
                 ))}
             </VoyageGroup>
           )
-        })}
+        })
+      ) : (
+        <span className={styles.enptyState}>
+          {t(
+            'vessel.noVoyagesinTimeRange',
+            'There are no voyages fully contained in your timerange.'
+          )}
+        </span>
+      )}
     </ul>
   )
 }

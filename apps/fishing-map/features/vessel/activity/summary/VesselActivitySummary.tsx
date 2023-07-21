@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Icon, IconType, Tooltip } from '@globalfishingwatch/ui-components'
+import { EventTypes } from '@globalfishingwatch/api-types'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { selectEventsByType } from 'features/vessel/activity/activity-by-type/activity-by-type.selectors'
 import useActivityEventConnect from 'features/vessel/activity/event/event.hook'
@@ -22,14 +23,14 @@ export const VesselActivitySummary = () => {
         <li>
           {t('vessel.activeIn', 'Active in')}{' '}
           {REGIONS_PRIORITY.map((regionType, index) => {
-            if (activityRegions[regionType]) {
+            if (activityRegions[regionType] && activityRegions[regionType].length !== 0) {
               const tooltipContent = (
                 <ul>
                   {activityRegions[regionType].map(({ id, count }) => {
                     return (
                       <li>
                         {getRegionNamesByType(regionType, [id])[0] || id} ({count}{' '}
-                        {t('common.events', 'events').toLowerCase()})
+                        {t('common.event', { defaultValue: 'events', count })})
                       </li>
                     )
                   })}
@@ -57,6 +58,7 @@ export const VesselActivitySummary = () => {
                 </Tooltip>
               )
             }
+
             return null
           })}
         </li>

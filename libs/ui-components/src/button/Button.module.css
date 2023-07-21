@@ -61,6 +61,10 @@ a.button:visited,
   background-color: var(--color-border);
 }
 
+.button.border-secondary.disabled {
+  background-color: transparent;
+}
+
 .tiny {
   height: var(--size-XS);
 }

@@ -1,8 +1,8 @@
 .eventGroup {
   margin-left: unset;
   width: 100%;
-  border-top: var(--border);
   background: var(--color-white);
+  border-top: var(--border);
 }
 
 .header {
@@ -11,6 +11,7 @@
   align-items: center;
   min-height: 6rem;
   cursor: pointer;
+  border-bottom: 1px solid transparent;
 }
 
 .eventGroup:last-child,
@@ -24,15 +25,18 @@
 }
 
 .title {
-  font: var(--font-XS);
+  font: var(--font-S);
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
   flex: 1;
   text-transform: uppercase;
+  color: var(--color-secondary-blue);
+  transition: color 100ms linear;
 }
 
-.open .description {
+.open .title,
+.eventGroup:hover .title {
   color: var(--color-primary-blue);
 }
 

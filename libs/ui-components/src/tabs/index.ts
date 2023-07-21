@@ -1,3 +1,5 @@
+import { Placement } from '@popperjs/core'
+
 export * from './Tabs'
 
 export interface Tab<ID = string> {
@@ -5,5 +7,6 @@ export interface Tab<ID = string> {
   title: string | React.ReactElement | null
   content?: React.ReactNode | null
   tooltip?: string | null
+  tooltipPlacement?: Placement
   disabled?: boolean
 }

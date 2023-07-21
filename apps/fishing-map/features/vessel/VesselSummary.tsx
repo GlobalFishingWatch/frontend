@@ -23,11 +23,18 @@ const VesselSummary = () => {
 
   const summary = t('vessel.summary', {
     defaultValue:
-      'The <strong>{{vesselType}}</strong> vessel flagged by <strong>{{vesselFlag}}</strong> had <strong>{{events}}</strong> events in <strong>{{voyages}}</strong> voyages between <strong>{{timerangeStart}}</strong> and <strong>{{timerangeEnd}}</strong>.',
+      'The <strong>{{vesselType}}</strong> vessel flagged by <strong>{{vesselFlag}}</strong> {{events}} {{voyages}} between <strong>{{timerangeStart}}</strong> and <strong>{{timerangeEnd}}</strong>.',
     vesselType: formatInfoField(vessel?.shiptype as string, 'vesselType').toLowerCase(),
     vesselFlag: formatInfoField(vessel?.flag as string, 'flag'),
-    events: formatI18nNumber(events?.length as number),
-    voyages: formatI18nNumber(voyages?.length as number),
+    events: `${t('common.had', 'had')} <strong>${formatI18nNumber(
+      events?.length as number
+    )}</strong> ${t('common.event', { defaultValue: 'events', count: events?.length })}`,
+    voyages:
+      voyages?.length !== 0
+        ? `${t('common.in', 'in')} <strong>${formatI18nNumber(
+            voyages?.length as number
+          )}</strong> ${t('vessel.voyage', { defaultValue: 'voyages', count: voyages?.length })}`
+        : '',
     timerangeStart: formatI18nDate(timerange?.start),
     timerangeEnd: formatI18nDate(timerange?.end),
   })

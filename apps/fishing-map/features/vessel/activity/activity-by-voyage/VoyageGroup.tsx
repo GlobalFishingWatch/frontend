@@ -12,7 +12,7 @@ import { parseEventsToCSV } from 'features/vessel/vessel.utils'
 import styles from '../ActivityGroup.module.css'
 
 interface EventProps {
-  event: RenderedVoyage
+  voyage: RenderedVoyage
   expanded: boolean
   children: React.ReactNode
   onMapClick?: (event: RenderedVoyage) => void
@@ -21,7 +21,7 @@ interface EventProps {
 }
 
 const VoyageGroup: React.FC<EventProps> = ({
-  event,
+  voyage,
   children,
   expanded = false,
   onMapClick = () => {},
@@ -32,62 +32,62 @@ const VoyageGroup: React.FC<EventProps> = ({
   const vesselId = useSelector(selectVesselInfoDataId)
   const voyageLabel = useMemo(() => {
     const parts: string[] = []
-    if (event.from && event.to) {
+    if (voyage.from && voyage.to) {
       parts.push(
-        `${t('common.from', 'from')} ${formatI18nDate(event.start ?? 0, {
+        `${t('common.from', 'from')} ${formatI18nDate(voyage.start ?? 0, {
           format: DateTime.DATE_FULL,
         })}`
       )
       parts.push(
-        `${t('common.to', 'to')} ${formatI18nDate(event.end ?? 0, {
+        `${t('common.to', 'to')} ${formatI18nDate(voyage.end ?? 0, {
           format: DateTime.DATE_FULL,
         })}`
       )
-    } else if (!event.to) {
+    } else if (!voyage.to) {
       parts.push(t('event.currentVoyage' as any, 'Ongoing Voyage') as string)
       parts.push(
-        `${t('common.from', 'from')} ${formatI18nDate(event.start ?? 0, {
+        `${t('common.from', 'from')} ${formatI18nDate(voyage.start ?? 0, {
           format: DateTime.DATE_FULL,
         })}`
       )
     } else {
       parts.push(
-        `${t('common.to', 'to')} ${formatI18nDate(event.end ?? 0, {
+        `${t('common.to', 'to')} ${formatI18nDate(voyage.end ?? 0, {
           format: DateTime.DATE_FULL,
         })}`
       )
     }
-    parts.push(`(${event.eventsQuantity} ${t('common.events', 'Events')})`)
+    parts.push(`(${voyage.eventsQuantity} ${t('common.events', 'Events')})`)
 
     return parts.join(' ')
-  }, [event, t])
+  }, [voyage, t])
 
-  const hasEvents = event.eventsQuantity > 0
+  const hasEvents = voyage.eventsQuantity > 0
 
   const onDownloadClick = () => {
-    if (event.events.length) {
-      const data = parseEventsToCSV(event.events)
+    if (voyage.events.length) {
+      const data = parseEventsToCSV(voyage.events)
       const blob = new Blob([data], { type: 'text/plain;charset=utf-8' })
-      saveAs(blob, `${vesselId}-voyage-${event.start}-${event.end}-events.csv`)
+      saveAs(blob, `${vesselId}-voyage-${voyage.start}-${voyage.end}-events.csv`)
     }
   }
 
   const onToggle = useCallback(
-    () => (hasEvents ? onToggleClick(event) : {}),
-    [hasEvents, onToggleClick, event]
+    () => (hasEvents ? onToggleClick(voyage) : {}),
+    [hasEvents, onToggleClick, voyage]
   )
 
   const handleMapClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation()
       if (hasEvents) {
-        onMapClick(event)
+        onMapClick(voyage)
       }
       if (!expanded) {
         onToggle()
       }
     },
-    [hasEvents, expanded, onMapClick, event, onToggle]
+    [hasEvents, expanded, onMapClick, voyage, onToggle]
   )
 
   return (
@@ -95,7 +95,7 @@ const VoyageGroup: React.FC<EventProps> = ({
       <div
         className={styles.header}
         onClick={onToggle}
-        onMouseEnter={() => onMapHover(event)}
+        onMouseEnter={() => onMapHover(voyage)}
         onMouseLeave={() => onMapHover(undefined)}
       >
         <p className={styles.title}>{voyageLabel}</p>
@@ -104,7 +104,7 @@ const VoyageGroup: React.FC<EventProps> = ({
             <IconButton size="small" icon={expanded ? 'arrow-top' : 'arrow-down'} />
             <IconButton
               icon="download"
-              size="medium"
+              size="small"
               onClick={onDownloadClick}
               tooltip={t('download.dataDownload', 'Download Data')}
               tooltipPlacement="top"

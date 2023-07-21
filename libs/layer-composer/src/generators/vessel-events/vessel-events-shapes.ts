@@ -166,7 +166,7 @@ class VesselsEventsShapesGenerator {
           4,
           getExpression(0.75, 0.5),
           9,
-          getExpression(1.5, 1),
+          getExpression(1, 0.75),
         ],
         'icon-image': getExpression(['get', 'shapeHighlight'], ['get', 'shape']),
         'symbol-sort-key': getExpression(

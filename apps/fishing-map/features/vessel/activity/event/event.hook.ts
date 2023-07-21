@@ -102,7 +102,7 @@ function useActivityEventConnect() {
           })
           break
         case EventTypes.Fishing:
-          description = t('event.fishingActionIn', 'Fishing in {{regionName}}', {
+          description = t('event.fishingActionIn', 'Fished in {{regionName}}', {
             regionName: regionDescription,
           })
           break
