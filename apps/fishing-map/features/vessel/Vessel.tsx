@@ -2,7 +2,8 @@ import { useSelector } from 'react-redux'
 import { Fragment, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Spinner, Tab, Tabs } from '@globalfishingwatch/ui-components'
-import { selectVesselId, selectVesselDatasetId } from 'routes/routes.selectors'
+import { isAuthError } from '@globalfishingwatch/api-client'
+import { selectVesselId } from 'routes/routes.selectors'
 import {
   fetchVesselInfoThunk,
   selectVesselInfoError,
@@ -14,6 +15,9 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import { selectRegionsDatasets } from 'features/regions/regions.selectors'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
+import { ErrorPlaceHolder, WorkspaceLoginError } from 'features/workspace/WorkspaceError'
+import { isGuestUser } from 'features/user/user.slice'
+import { selectVesselDatasetId } from 'features/vessel/vessel.selectors'
 import VesselIdentity from './VesselIdentity'
 import VesselActivity from './activity/VesselActivity'
 
@@ -27,6 +31,7 @@ const VesselDetail = () => {
   const datasetId = useSelector(selectVesselDatasetId)
   const infoStatus = useSelector(selectVesselInfoStatus)
   const infoError = useSelector(selectVesselInfoError)
+  const guestUser = useSelector(isGuestUser)
   const regionsDatasets = useSelector(selectRegionsDatasets)
 
   useEffect(() => {
@@ -56,12 +61,14 @@ const VesselDetail = () => {
         id: 'relatedVessels',
         title: t('vessel.sectionRelatedVessels', 'Related Vessels'),
         tooltip: t('common.comingSoon', 'Coming soon'),
+        tooltipPlacement: 'top',
         disabled: true,
       },
       {
         id: 'areas',
         title: t('vessel.sectionAreas', 'Areas'),
         tooltip: t('common.comingSoon', 'Coming soon'),
+        tooltipPlacement: 'top',
         disabled: true,
       },
     ],
@@ -70,6 +77,22 @@ const VesselDetail = () => {
 
   if (infoStatus === AsyncReducerStatus.Loading) {
     return <Spinner />
+  }
+
+  if (infoStatus === AsyncReducerStatus.Error) {
+    const hasAuthError = isAuthError(infoError)
+    return hasAuthError ? (
+      <WorkspaceLoginError
+        title={
+          guestUser
+            ? t('errors.profileLogin', 'Login to see this vessel')
+            : t('errors.privateProfile', "Your account doesn't have permissions to see this vessel")
+        }
+        emailSubject={`Requesting access for ${datasetId}-${vesselId} profile`}
+      />
+    ) : (
+      <ErrorPlaceHolder title={infoError?.message || 'Unexpected error'} />
+    )
   }
 
   return (

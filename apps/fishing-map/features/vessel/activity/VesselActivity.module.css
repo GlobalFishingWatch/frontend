@@ -1,22 +1,21 @@
 .summaryContainer {
   padding: var(--space-M);
+  position: relative;
 }
 
 .activityTitleContainer {
-  padding: 0 var(--space-M);
+  padding: var(--space-S) var(--space-M);
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.actionButton {
-  height: var(--size-SM);
-  background: none;
-  border-radius: var(--border-radius);
-  border: var(--border);
-  color: var(--color-secondary-blue);
-}
-
 .placeholder {
   height: 40rem;
+}
+
+.download {
+  position: absolute;
+  top: var(--space-M);
+  right: var(--space-M);
 }

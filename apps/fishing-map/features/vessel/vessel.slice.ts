@@ -7,7 +7,9 @@ import {
   EndpointId,
   IdentityVessel,
   VesselCoreInfo,
+  VesselRegistryAuthorization,
   VesselRegistryInfo,
+  VesselRegistryOwner,
 } from '@globalfishingwatch/api-types'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -19,11 +21,16 @@ import {
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { VesselInstanceDatasets } from 'features/dataviews/dataviews.utils'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
-import { TEMPLATE_VESSEL_DATAVIEW_SLUG } from 'data/workspaces'
+import { PROFILE_DATAVIEW_SLUGS } from 'data/workspaces'
+// import { TEMPLATE_VESSEL_DATAVIEW_SLUG } from 'data/workspaces'
 
-export const DEFAULT_VESSEL_DATASET_ID = 'public-global-all-vessels:latest'
-
-export type VesselData = VesselCoreInfo & VesselRegistryInfo & VesselInstanceDatasets
+export type VesselData = VesselCoreInfo &
+  VesselRegistryInfo &
+  VesselInstanceDatasets & {
+    // TODO decide how to manage these types based on API response format
+    owner?: VesselRegistryOwner
+    authorization?: VesselRegistryAuthorization
+  }
 interface VesselState {
   info: {
     status: AsyncReducerStatus
@@ -52,43 +59,47 @@ export const fetchVesselInfoThunk = createAsyncThunk(
     try {
       const state = getState() as any
       const action = await dispatch(fetchDatasetByIdThunk(datasetId))
-      const dataset = action.payload as Dataset
-      // Datasets and dataview needed to mock follow the structure of the map and resolve the generators
-      dispatch(fetchDataviewsByIdsThunk([TEMPLATE_VESSEL_DATAVIEW_SLUG]))
-      const trackDatasetId = getRelatedDatasetsByType(dataset, DatasetTypes.Tracks)?.[0]?.id || ''
-      const eventsDatasetsId =
-        getRelatedDatasetsByType(dataset, DatasetTypes.Events)?.map((d) => d.id) || []
-      // When coming from workspace url datasets are already loaded so no need to fetch again
-      const datasetsToFetch = [trackDatasetId, ...eventsDatasetsId].flatMap((id) => {
-        return selectDatasetById(id)(state) ? [] : [id]
-      })
-      dispatch(fetchDatasetsByIdsThunk(datasetsToFetch))
-      const datasetConfig = {
-        endpoint: EndpointId.Vessel,
-        datasetId: dataset.id,
-        params: [{ id: 'vesselId', value: vesselId }],
-        query: [{ id: 'datasets', value: [datasetId] }],
-      }
+      if (fetchDatasetByIdThunk.fulfilled.match(action)) {
+        const dataset = action.payload as Dataset
+        // Datasets and dataview needed to mock follow the structure of the map and resolve the generators
+        dispatch(fetchDataviewsByIdsThunk(PROFILE_DATAVIEW_SLUGS))
+        const trackDatasetId = getRelatedDatasetsByType(dataset, DatasetTypes.Tracks)?.[0]?.id || ''
+        const eventsDatasetsId =
+          getRelatedDatasetsByType(dataset, DatasetTypes.Events)?.map((d) => d.id) || []
+        // When coming from workspace url datasets are already loaded so no need to fetch again
+        const datasetsToFetch = [trackDatasetId, ...eventsDatasetsId].flatMap((id) => {
+          return selectDatasetById(id)(state) ? [] : [id]
+        })
+        dispatch(fetchDatasetsByIdsThunk(datasetsToFetch))
+        const datasetConfig = {
+          endpoint: EndpointId.Vessel,
+          datasetId: dataset.id,
+          params: [{ id: 'vesselId', value: vesselId }],
+          query: [{ id: 'datasets', value: [datasetId] }],
+        }
 
-      const url = resolveEndpoint(dataset, datasetConfig)
-      if (!url) {
-        return rejectWithValue({ message: 'Error resolving endpoint' })
-      }
-      const vessel = await GFWAPI.fetch<IdentityVessel>(url)
-      return {
-        ...vessel,
-        coreInfo: {
-          ...vessel.coreInfo,
-          firstTransmissionDate: vessel?.coreInfo?.firstTransmissionDate || '',
-        },
-        info: datasetId,
-        track: trackDatasetId,
-        events: eventsDatasetsId,
-        // Make sure to have the lastest in the first position
-        registryInfo:
-          vessel?.registryInfo?.sort(
-            (a, b) => Number(b.latestVesselInfo) - Number(a.latestVesselInfo)
-          ) || [],
+        const url = resolveEndpoint(dataset, datasetConfig)
+        if (!url) {
+          return rejectWithValue({ message: 'Error resolving endpoint' })
+        }
+        const vessel = await GFWAPI.fetch<IdentityVessel>(url)
+        return {
+          ...vessel,
+          coreInfo: {
+            ...vessel.coreInfo,
+            firstTransmissionDate: vessel?.coreInfo?.firstTransmissionDate || '',
+          },
+          info: datasetId,
+          track: trackDatasetId,
+          events: eventsDatasetsId,
+          // Make sure to have the lastest in the first position
+          registryInfo:
+            vessel?.registryInfo?.sort(
+              (a, b) => Number(b.latestVesselInfo) - Number(a.latestVesselInfo)
+            ) || [],
+        }
+      } else {
+        return rejectWithValue(action.payload)
       }
     } catch (e: any) {
       console.warn(e)
@@ -147,9 +158,13 @@ export const selectVesselInfoError = (state: VesselSliceState) => state.vessel.i
 
 export const selectVesselInfoData = createSelector([selectVesselInfo], (vesselInfo) => {
   if (!vesselInfo) return null
-  const vessel = vesselInfo.registryInfo?.[0] || vesselInfo.coreInfo
+  const vessel = {
+    ...(vesselInfo.registryInfo?.[0] || vesselInfo.coreInfo),
+    owner: vesselInfo.registryOwners?.[0],
+    authorization: vesselInfo.registryAuthorizations?.[0],
+  }
   const { info, track, events } = vesselInfo
-  return { ...vessel, info, track, events } as VesselData
+  return { ...vessel, id: vesselInfo?.coreInfo?.id, info, track, events } as VesselData
 })
 
 export default vesselSlice.reducer

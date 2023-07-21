@@ -45,6 +45,7 @@ export function Tabs<TabID = string>({
                 className={cx(styles.tabButton, { [styles.tabActive]: tabSelected })}
                 type="secondary"
                 tooltip={tab.tooltip}
+                tooltipPlacement={tab.tooltipPlacement}
                 disabled={tab.disabled}
                 onClick={(e) => onTabClick && onTabClick(tab, e)}
                 size={buttonSize || 'default'}

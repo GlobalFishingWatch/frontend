@@ -130,12 +130,11 @@ export const selectUrlMapLatitudeQuery = selectQueryParam<number>('latitude')
 export const selectUrlMapLongitudeQuery = selectQueryParam<number>('longitude')
 export const selectUrlStartQuery = selectQueryParam<string>('start')
 export const selectUrlEndQuery = selectQueryParam<string>('end')
-export const selectVesselDatasetId = selectQueryParam<string>('vesselDatasetId')
 
-export const selectFullVesselId = createSelector(
-  [selectVesselDatasetId, selectVesselId],
-  (datasetId, vesselId) => vesselId + datasetId
-)
+export const selectVesselDatasetIdQuery = selectQueryParam<string>('vesselDatasetId')
+export const selectVesselActivityModeQuery =
+  selectQueryParam<VesselProfileActivityModeType>('vesselActivityMode')
+export type VesselProfileActivityModeType = 'voyages' | 'type'
 
 export const selectUrlDataviewInstances =
   selectQueryParam<UrlDataviewInstance[]>('dataviewInstances')

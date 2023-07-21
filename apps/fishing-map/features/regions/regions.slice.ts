@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import { RegionType } from '@globalfishingwatch/api-types'
 import {
   asyncInitialState,
   AsyncReducer,
@@ -9,12 +10,6 @@ import {
 } from 'utils/async-slice'
 import { RootState } from 'store'
 import { sortFields } from 'utils/shared'
-
-export enum RegionType {
-  eez = 'eez',
-  rfmo = 'rfmo',
-  mpa = 'mpa',
-}
 
 export type RegionId = string | number
 export interface Region {
@@ -31,7 +26,7 @@ const initialState: RegionsState = {
   ...asyncInitialState,
 }
 
-export type FetchRegionsThunkParams = Record<RegionType, string>
+export type FetchRegionsThunkParams = Omit<Record<RegionType, string>, 'fao'>
 export const fetchRegionsThunk = createAsyncThunk(
   'regions/fetch',
   async (regionIds: FetchRegionsThunkParams, { rejectWithValue }) => {

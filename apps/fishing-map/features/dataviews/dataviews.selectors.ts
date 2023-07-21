@@ -39,7 +39,7 @@ const defaultBasemapDataview = {
 export const selectBasemapDataview = createSelector(
   [(state: RootState) => selectAllDataviews(state)],
   (dataviews) => {
-    const basemapDataview = dataviews.find((d) => d.config.type === GeneratorType.Basemap)
+    const basemapDataview = dataviews.find((d) => d.config?.type === GeneratorType.Basemap)
     return basemapDataview || defaultBasemapDataview
   }
 )

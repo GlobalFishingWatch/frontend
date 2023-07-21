@@ -3,10 +3,18 @@ export interface PointCoordinate {
   lon: number
 }
 
+export enum RegionType {
+  eez = 'eez',
+  rfmo = 'rfmo',
+  mpa = 'mpa',
+  fao = 'fao',
+}
+
 export interface Regions {
-  eez: string[]
-  rfmo: string[]
-  mpa: any[]
+  [RegionType.eez]: string[]
+  [RegionType.rfmo]: string[]
+  [RegionType.mpa]: string[]
+  [RegionType.fao]?: string[]
 }
 
 export interface GapPosition extends PointCoordinate {

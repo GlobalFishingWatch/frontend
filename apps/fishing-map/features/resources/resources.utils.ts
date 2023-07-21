@@ -2,28 +2,34 @@ import { FeatureCollection } from 'geojson'
 import { maxBy, minBy } from 'lodash'
 import {
   Dataset,
+  DataviewDatasetConfig,
   DataviewDatasetConfigParam,
   EndpointId,
   ThinningConfig,
 } from '@globalfishingwatch/api-types'
-import { getTracksChunkSetId, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import {
+  GetDatasetConfigCallback,
+  getTracksChunkSetId,
+  UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
 import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
 import { hasDatasetConfigVesselData } from 'features/datasets/datasets.utils'
 import { TimebarGraphs } from 'types'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 
 type ThinningConfigParam = { zoom: number; config: ThinningConfig }
-export const infoDatasetConfigsCallback = ([info], dataview: UrlDataviewInstance) => {
+
+export const infoDatasetConfigsCallback: GetDatasetConfigCallback = ([info]) => {
   // Clean resources when mandatory vesselId is missing
   // needed for vessels with no info datasets (zebraX)
   const vesselData = hasDatasetConfigVesselData(info)
   return vesselData ? [info] : []
 }
 
-export const eventsDatasetConfigsCallback = (events) => {
+export const eventsDatasetConfigsCallback: GetDatasetConfigCallback = (events) => {
   const allEvents = events.map((event) => {
     const hasPaginationAdded = Object.keys(DEFAULT_PAGINATION_PARAMS).every((id) =>
-      event.query.map((q) => q.id).includes(id)
+      event.query?.map((q) => q.id).includes(id)
     )
     if (hasPaginationAdded) {
       // Pagination already included, not needed to add it
@@ -36,7 +42,7 @@ export const eventsDatasetConfigsCallback = (events) => {
           id,
           value,
         })) as DataviewDatasetConfigParam[]),
-        ...event?.query,
+        ...(event?.query || []),
       ],
     }
   })
@@ -48,7 +54,10 @@ export const trackDatasetConfigsCallback = (
   chunks: { start: string; end: string }[] | null,
   timebarGraph
 ) => {
-  return ([track], dataview: UrlDataviewInstance) => {
+  return (
+    [track]: DataviewDatasetConfig[],
+    dataview: UrlDataviewInstance
+  ): DataviewDatasetConfig[] => {
     if (track?.endpoint === EndpointId.Tracks) {
       const thinningQuery = Object.entries(thinningConfig?.config || []).map(([id, value]) => ({
         id,

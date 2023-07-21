@@ -96,5 +96,14 @@ export const DEFAULT_DATAVIEW_SLUGS = [
   ...TEMPLATE_DATAVIEW_SLUGS,
 ]
 
+export const PROFILE_DATAVIEW_SLUGS = [
+  EEZ_DATAVIEW_SLUG,
+  MPA_DATAVIEW_SLUG,
+  RFMO_DATAVIEW_SLUG,
+  FAO_AREAS_DATAVIEW_SLUG,
+  // TODO enable when mock deletec
+  // TEMPLATE_VESSEL_DATAVIEW_SLUG
+]
+
 export const ONLY_GFW_STAFF_DATAVIEW_SLUGS: string[] = []
 export const HIDDEN_DATAVIEW_FILTERS: string[] = []

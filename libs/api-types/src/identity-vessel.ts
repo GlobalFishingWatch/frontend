@@ -52,6 +52,7 @@ export type VesselRegistryInfo = VesselInfo & {
   transmissionDateTo: string
   vesselInfoReference: string
 }
+
 export type VesselRegistryOwner = {
   owner: string
   ownerFlag: string

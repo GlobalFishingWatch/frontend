@@ -51,12 +51,12 @@ path.resolve('./next.config.js')
 // )
 
 const VesselPage = (props) => {
-  const [isServer, setServer] = useState<boolean>(true)
-  useEffect(() => setServer(false), [])
+  // const [isServer, setServer] = useState<boolean>(true)
+  // useEffect(() => setServer(false), [])
 
-  if (isServer) {
-    return <VesselServerComponent {...props} />
-  }
+  // if (isServer) {
+  //   return <VesselServerComponent {...props} />
+  // }
 
   return <Index />
 }

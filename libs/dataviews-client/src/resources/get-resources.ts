@@ -13,20 +13,15 @@ import {
 } from '../resolve-dataviews'
 import { resolveEndpoint } from '../resolve-endpoint'
 
+export type GetDatasetConfigCallback = (
+  datasetConfig: DataviewDatasetConfig[],
+  dataview?: UrlDataviewInstance
+) => DataviewDatasetConfig[]
+
 export type GetDatasetConfigsCallbacks = {
-  tracks?: (
-    datasetConfigs: DataviewDatasetConfig[],
-    dataview?: UrlDataviewInstance
-  ) => DataviewDatasetConfig[]
-  info?: (
-    datasetConfigs: DataviewDatasetConfig[],
-    dataview?: UrlDataviewInstance
-  ) => DataviewDatasetConfig[]
-  events?: (
-    datasetConfigs: DataviewDatasetConfig[],
-    dataview?: UrlDataviewInstance
-  ) => DataviewDatasetConfig[]
-  activityContext?: (datasetConfigs: DataviewDatasetConfig) => DataviewDatasetConfig
+  track?: GetDatasetConfigCallback
+  info?: GetDatasetConfigCallback
+  events?: GetDatasetConfigCallback
 }
 export const getResources = (
   dataviews: UrlDataviewInstance[],
@@ -73,11 +68,14 @@ export const getResources = (
     let preparedTrackDatasetConfigs = [track]
     let preparedEventsDatasetConfigs = events
 
-    if (callbacks.info) {
+    if (callbacks.info && preparedInfoDatasetConfigs?.length > 0) {
       preparedInfoDatasetConfigs = callbacks.info([info], dataview)
     }
-    if (callbacks.tracks) {
-      preparedTrackDatasetConfigs = callbacks.tracks([track], dataview)
+    if (callbacks.track && preparedTrackDatasetConfigs?.length > 0) {
+      preparedTrackDatasetConfigs = callbacks.track(preparedTrackDatasetConfigs, dataview)
+    }
+    if (callbacks.events && preparedEventsDatasetConfigs?.length > 0) {
+      preparedEventsDatasetConfigs = callbacks.events(preparedEventsDatasetConfigs, dataview)
     }
 
     const preparedDataview = {
@@ -86,7 +84,7 @@ export const getResources = (
         ...preparedInfoDatasetConfigs,
         ...preparedTrackDatasetConfigs,
         ...preparedEventsDatasetConfigs,
-      ],
+      ].filter(Boolean),
     }
     return preparedDataview
   })

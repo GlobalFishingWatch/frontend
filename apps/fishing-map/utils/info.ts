@@ -12,7 +12,7 @@ export const upperFirst = (text: string) =>
 
 export const formatInfoField = (fieldValue: string, type: string, translationFn = t) => {
   if (fieldValue) {
-    if (type === 'flag') {
+    if (type === 'flag' || type === 'ownerFlag') {
       return translationFn(`flags:${fieldValue}` as any, fieldValue)
     }
     if (type === 'shiptype' || type === 'vesselType') {

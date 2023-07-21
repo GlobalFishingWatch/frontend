@@ -1,4 +1,5 @@
 import React from 'react'
+import cx from 'classnames'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import EventIcon from 'features/vessel/activity/event/EventIcon'
@@ -7,7 +8,7 @@ import useActivityEventConnect from './event.hook'
 import styles from './Event.module.css'
 
 interface EventProps {
-  style?: React.CSSProperties
+  className?: string
   event: ActivityEvent
   children?: React.ReactNode
   onInfoClick?: (event: ActivityEvent) => void
@@ -15,33 +16,32 @@ interface EventProps {
   onMapHover?: (event?: ActivityEvent) => void
 }
 
-const ActivityEvent: React.FC<EventProps> = (props): React.ReactElement => {
+const Event: React.FC<EventProps> = (props): React.ReactElement => {
   const {
     event,
-    style,
     children,
+    className = '',
     onInfoClick = () => {},
     onMapHover = () => {},
     onMapClick = () => {},
   } = props
   const { getEventDescription } = useActivityEventConnect()
   return (
-    <li className={styles.event} style={style}>
-      <div className={styles.header}>
+    <li className={cx(styles.event, className)}>
+      <div
+        className={styles.header}
+        onMouseEnter={() => onMapHover(event)}
+        onMouseLeave={() => onMapHover(undefined)}
+        onClick={() => onInfoClick(event)}
+      >
         <EventIcon type={event.type} />
         <div className={styles.eventData}>
           <ActivityDate event={event} />
           <p className={styles.description}>{getEventDescription(event)}</p>
         </div>
         <div className={styles.actions}>
-          <IconButton icon="info" size="small" onClick={() => onInfoClick(event)}></IconButton>
-          <IconButton
-            icon="target"
-            size="small"
-            onMouseEnter={() => onMapHover(event)}
-            onMouseLeave={() => onMapHover(undefined)}
-            onClick={() => onMapClick(event)}
-          ></IconButton>
+          <IconButton icon="info" size="small"></IconButton>
+          <IconButton icon="target" size="small" onClick={() => onMapClick(event)}></IconButton>
         </div>
       </div>
       {children && <div className={styles.content}>{children}</div>}
@@ -49,4 +49,4 @@ const ActivityEvent: React.FC<EventProps> = (props): React.ReactElement => {
   )
 }
 
-export default ActivityEvent
+export default Event

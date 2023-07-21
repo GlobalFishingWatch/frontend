@@ -1,21 +1,15 @@
 .event {
-  padding: var(--space-XS) var(--space-S) var(--space-XS) var(--space-M);
+  padding: var(--space-XS) 1.5rem var(--space-XS) var(--space-M);
   position: relative;
-}
-
-.event::after {
-  content: '';
-  position: absolute;
-  left: 6rem;
-  bottom: 0;
-  height: 0.1rem;
-  width: calc(100% - 6rem);
-  background-color: var(--color-border);
 }
 
 .header {
   display: flex;
   align-items: center;
+  cursor: pointer;
+}
+
+.header label {
   cursor: pointer;
 }
 
