@@ -7,6 +7,7 @@ import {
   Dataset,
   DatasetCategory,
   EndpointId,
+  EndpointParam,
   UploadResponse,
 } from '@globalfishingwatch/api-types'
 import {
@@ -33,11 +34,16 @@ export const PRESENCE_DATASET_ID = 'public-global-presence'
 export const PRESENCE_TRACKS_DATASET_ID = 'private-global-presence-tracks'
 export const DATASETS_USER_SOURCE_ID = 'user'
 export const VESSEL_IDENTITY_ID = 'proto-global-vessel-identity:v20230623'
-const POC_DATASETS_ENDPOINT_PATH_TEMPLATES = {
+
+type POCDatasetTemplate = Record<
+  string,
+  Partial<Record<EndpointId, { pathTemplate?: string; query?: Partial<EndpointParam>[] }>>
+>
+const POC_DATASETS_ENDPOINT_PATH_TEMPLATES: POCDatasetTemplate = {
   [VESSEL_IDENTITY_ID]: {
     [EndpointId.Vessel]: {
-      pathTemplate:
-        'https://gateway.api.staging.globalfishingwatch.org/prototypes/vessels/{{vesselId}}',
+      // pathTemplate:
+      //   'https://gateway.api.staging.globalfishingwatch.org/prototypes/vessels/{{vesselId}}',
       query: [{ id: 'datasets', array: true }],
     },
   },
@@ -52,7 +58,7 @@ const parsePOCsDatasets = (dataset: Dataset) => {
         if (endpointConfig) {
           return {
             ...endpoint,
-            pathTemplate: endpointConfig.pathTemplate,
+            ...endpointConfig,
             query: endpoint.query.map((q) => {
               const queryConfig = endpointConfig.query?.find((qc) => qc.id === q.id)
               if (queryConfig) {
