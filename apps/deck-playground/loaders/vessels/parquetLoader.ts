@@ -65,7 +65,6 @@ const parseTrack = (parquetBuffer) => {
 
     return data
   } catch (e) {
-    console.log('🚀 ~ parseTrack ~ e:', e)
     debugger
   }
 }

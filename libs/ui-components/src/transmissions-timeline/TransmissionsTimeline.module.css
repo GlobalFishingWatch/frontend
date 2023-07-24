@@ -1,10 +1,13 @@
 .timelineContainer {
   width: 100%;
+  position: relative;
   background: var(--color-border);
+  height: 1.4rem;
 }
 
-.highlighted {
+.timerange {
   display: flex;
+  position: absolute;
   justify-content: space-between;
   padding: 0.2rem;
   overflow: hidden;
@@ -12,8 +15,18 @@
   font-size: 1rem;
   line-height: 1rem;
   text-transform: uppercase;
-  color: var(--color-white);
-  background: var(--color-secondary-blue);
+  color: var(--color-secondary-blue);
+  background: var(--color-terthiary-blue);
   white-space: nowrap;
   min-height: 1.4rem;
+}
+
+.timerange:hover,
+.highlighted {
+  color: var(--color-white);
+  background: var(--color-secondary-blue);
+}
+
+.interactive {
+  cursor: pointer;
 }

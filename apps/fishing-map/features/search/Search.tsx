@@ -481,8 +481,12 @@ function Search() {
                                 <I18nDate date={lastTransmissionDate} />
                               </span>
                               <TransmissionsTimeline
-                                firstTransmissionDate={firstTransmissionDate}
-                                lastTransmissionDate={lastTransmissionDate}
+                                dates={[
+                                  {
+                                    start: firstTransmissionDate,
+                                    end: lastTransmissionDate,
+                                  },
+                                ]}
                                 firstYearOfData={FIRST_YEAR_OF_DATA}
                                 locale={i18n.language as Locale}
                               />
