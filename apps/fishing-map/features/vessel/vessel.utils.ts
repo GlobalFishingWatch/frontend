@@ -3,6 +3,10 @@ import { VesselData } from 'features/vessel/vessel.slice'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { getUTCDateTime } from 'utils/dates'
 
+export const getVoyageTimeRange = (events: ActivityEvent[]) => {
+  return { start: events?.[0]?.end, end: events?.[events.length - 1]?.start }
+}
+
 export type CsvConfig = {
   label: string
   accessor: string
@@ -72,7 +76,7 @@ export const EVENTS_CSV_CONFIG: CsvConfig[] = [
     accessor: 'end',
     transform: parseCSVDate,
   },
-  { label: 'voyageId', accessor: 'voyageId' },
+  { label: 'voyage', accessor: 'voyage' },
   { label: 'latitude', accessor: 'position.lat' },
   { label: 'longitude', accessor: 'position.lon' },
   { label: 'portVisitName', accessor: 'port_visit.intermediateAnchorage.name' },

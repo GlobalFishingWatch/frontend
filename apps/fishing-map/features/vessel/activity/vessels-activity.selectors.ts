@@ -1,66 +1,68 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { ResourceStatus } from '@globalfishingwatch/api-types'
+import { groupBy } from 'lodash'
+import { EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
 import { ApiEvent } from '@globalfishingwatch/api-types'
-import { EVENTS_COLORS } from 'data/config'
 import { selectEventsResources, selectVesselEventsFilteredByTimerange } from '../vessel.selectors'
 
-export enum PortVisitSubEvent {
-  Exit = 'exit',
-  Entry = 'entry',
-}
-
+export type ActivityEventSubType = 'entry' | 'exit'
 export interface ActivityEvent extends ApiEvent {
-  color?: string
-  timestamp: number
-  subEvent?: PortVisitSubEvent
+  voyage: number
+  subType?: ActivityEventSubType
 }
 
 export const selectVesselEventsLoading = createSelector([selectEventsResources], (resources) =>
   resources.some((resource) => resource?.status === ResourceStatus.Loading)
 )
 
-export const selectEventsWithRenderingInfo = createSelector(
+export const selectActivityRegions = createSelector(
   [selectVesselEventsFilteredByTimerange],
   (events) => {
-    const eventsWithRenderingInfo: ActivityEvent[] = events.map((event) => {
-      let colorKey = event.type as string
-      if (event.type === 'encounter') {
-        colorKey = `${colorKey}${event.encounter?.authorizationStatus}`
-      }
-      const color = EVENTS_COLORS[colorKey]
-      const colorLabels = EVENTS_COLORS[`${colorKey}Labels`]
-      return {
-        ...event,
-        color,
-        colorLabels,
-        timestamp: event.start as number,
-      }
-    })
-
-    return eventsWithRenderingInfo
+    const activityRegions = events.reduce((acc, e) => {
+      Object.entries(e.regions || {}).forEach(([regionType, ids]) => {
+        if (!acc[regionType]) {
+          acc[regionType] = []
+        }
+        ids.forEach((id) => {
+          const index = acc[regionType].findIndex((r) => r.id === id)
+          if (index === -1) {
+            acc[regionType].push({ id, count: 1 })
+          } else {
+            acc[regionType][index].count++
+          }
+        })
+      })
+      return acc
+    }, {})
+    return activityRegions
   }
 )
 
-export const selectFilteredEvents = createSelector([selectEventsWithRenderingInfo], (events) =>
-  events.sort((a, b) => ((a.timestamp ?? a.start) > (b.timestamp ?? a.start) ? -1 : 1))
+export const selectEventsGroupedByType = createSelector(
+  [selectVesselEventsFilteredByTimerange],
+  (eventsList) => {
+    return groupBy(eventsList, 'type')
+  }
 )
 
-export const selectActivityRegions = createSelector([selectFilteredEvents], (events) => {
-  const activityRegions = events.reduce((acc, e) => {
-    Object.entries(e.regions || {}).forEach(([regionType, ids]) => {
-      if (!acc[regionType]) {
-        acc[regionType] = []
-      }
-      ids.forEach((id) => {
-        const index = acc[regionType].findIndex((r) => r.id === id)
-        if (index === -1) {
-          acc[regionType].push({ id, count: 1 })
-        } else {
-          acc[regionType][index].count++
+export const selectEventsGroupedByVoyages = createSelector(
+  [selectVesselEventsFilteredByTimerange],
+  (eventsList) => {
+    const eventsListWithEntryExitEvents = eventsList.flatMap((event, index) => {
+      if (event.type === EventTypes.Port) {
+        const voyage = eventsList[index + 1]?.voyage
+        if (!voyage) {
+          return event
         }
-      })
+        return [
+          { ...event, subType: 'exit' as ActivityEventSubType },
+          { ...event, voyage, subType: 'entry' as ActivityEventSubType },
+        ]
+      }
+      return event
     })
-    return acc
-  }, {})
-  return activityRegions
+    return groupBy(eventsListWithEntryExitEvents, 'voyage')
+  }
+)
+export const selectVoyagesNumber = createSelector([selectEventsGroupedByVoyages], (voyages) => {
+  return Object.keys(voyages).length
 })

@@ -2,15 +2,17 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Icon, IconType, Tooltip } from '@globalfishingwatch/ui-components'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { selectEventsByType } from 'features/vessel/activity/activity-by-type/activity-by-type.selectors'
 import useActivityEventConnect from 'features/vessel/activity/event/event.hook'
-import { selectActivityRegions } from 'features/vessel/activity/vessels-activity.selectors'
+import {
+  selectActivityRegions,
+  selectEventsGroupedByType,
+} from 'features/vessel/activity/vessels-activity.selectors'
 import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
 import styles from './VesselActivitySummary.module.css'
 
 export const VesselActivitySummary = () => {
   const { t } = useTranslation()
-  const eventsByType = useSelector(selectEventsByType)
+  const eventsByType = useSelector(selectEventsGroupedByType)
   const activityRegions = useSelector(selectActivityRegions)
   const activityRegionsLength = Object.keys(activityRegions).length
   const { getRegionNamesByType } = useActivityEventConnect()

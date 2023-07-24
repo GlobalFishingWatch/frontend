@@ -2,13 +2,16 @@ import { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { eventsToBbox } from '@globalfishingwatch/data-transforms'
-import { RenderedVoyage } from 'features/vessel/activity/activity-by-voyage/activity-by-voyage.selectors'
 import useViewport from 'features/map/map-viewport.hooks'
 import EventDetail from 'features/vessel/activity/event/EventDetail'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import VoyageGroup from 'features/vessel/activity/activity-by-voyage/VoyageGroup'
 import Event from 'features/vessel/activity/event/Event'
-import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import { getVoyageTimeRange } from 'features/vessel/vessel.utils'
+import {
+  ActivityEvent,
+  selectEventsGroupedByVoyages,
+} from 'features/vessel/activity/vessels-activity.selectors'
 import useExpandedVoyages from 'features/vessel/activity/activity-by-voyage/activity-by-voyage.hook'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import {
@@ -19,11 +22,10 @@ import {
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getUTCDateTime } from 'utils/dates'
 import styles from '../activity-by-type/activity-by-type.module.css'
-import { selectVoyagesByVessel } from './activity-by-voyage.selectors'
 
 const ActivityByVoyage = () => {
   const { t } = useTranslation()
-  const voyages = useSelector(selectVoyagesByVessel)
+  const voyages = useSelector(selectEventsGroupedByVoyages)
   const dispatch = useAppDispatch()
   const [selectedEvent, setSelectedEvent] = useState<ActivityEvent>()
   const [expandedVoyages, toggleExpandedVoyage] = useExpandedVoyages()
@@ -36,27 +38,30 @@ const ActivityByVoyage = () => {
   const { viewport, setMapCoordinates } = useViewport()
 
   const selectVoyageOnMap = useCallback(
-    (voyage: RenderedVoyage) => {
-      const bounds = eventsToBbox(voyage.events)
+    (voyageId: ActivityEvent['voyage']) => {
+      const events = voyages[voyageId]
+      const bounds = eventsToBbox(events)
       fitBounds(bounds)
     },
-    [fitBounds]
+    [fitBounds, voyages]
   )
 
   const onVoyageMapHover = useCallback(
-    (voyage?: RenderedVoyage | ActivityEvent) => {
-      if (voyage?.start && voyage?.end) {
+    (voyageId: ActivityEvent['voyage']) => {
+      const events = voyages[voyageId]
+      const { start, end } = getVoyageTimeRange(events)
+      if (start && end) {
         dispatch(
           setHighlightedTime({
-            start: getUTCDateTime(voyage.start).toISO(),
-            end: getUTCDateTime(voyage.end).toISO(),
+            start: getUTCDateTime(start).toISO(),
+            end: getUTCDateTime(end).toISO(),
           })
         )
       } else {
         dispatch(disableHighlightedTime())
       }
     },
-    [dispatch]
+    [dispatch, voyages]
   )
 
   const onEventMapHover = useCallback(
@@ -80,24 +85,25 @@ const ActivityByVoyage = () => {
     },
     [setMapCoordinates, viewport.zoom]
   )
-
+  const voyagesKeys = Object.keys(voyages)
   return (
     <ul className={styles.activityContainer}>
-      {voyages?.length > 0 ? (
-        voyages.map((voyage, index) => {
-          const expanded = expandedVoyages.includes(voyage.timestamp)
+      {voyagesKeys?.length > 0 ? (
+        voyagesKeys.map((voyage, index) => {
+          const events = voyages[voyage]
+          const expanded = expandedVoyages.includes(events[0]?.voyage)
           return (
             <VoyageGroup
               key={index}
               expanded={expanded}
-              voyage={voyage}
+              events={events}
               onToggleClick={toggleExpandedVoyage}
               onMapClick={selectVoyageOnMap}
               onMapHover={onVoyageMapHover}
             >
               {expanded &&
-                voyage.events.length > 0 &&
-                voyage.events.map((event) => (
+                events.length > 0 &&
+                events.map((event) => (
                   <Event
                     key={event.id}
                     event={event}

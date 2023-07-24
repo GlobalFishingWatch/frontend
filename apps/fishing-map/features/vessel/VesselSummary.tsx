@@ -10,14 +10,14 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatInfoField } from 'utils/info'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { selectVoyages } from 'features/vessel/activity/activity-by-voyage/activity-by-voyage.selectors'
+import { selectVoyagesNumber } from 'features/vessel/activity/vessels-activity.selectors'
 import styles from './VesselSummary.module.css'
 
 const VesselSummary = () => {
   const { t } = useTranslation()
   const vessel = useSelector(selectVesselInfoData)
   const events = useSelector(selectVesselEventsFilteredByTimerange)
-  const voyages = useSelector(selectVoyages)
+  const voyages = useSelector(selectVoyagesNumber)
   const timerange = useSelector(selectTimeRange)
   const fitBounds = useMapFitBounds()
 
@@ -30,10 +30,11 @@ const VesselSummary = () => {
       events?.length as number
     )}</strong> ${t('common.event', { defaultValue: 'events', count: events?.length })}`,
     voyages:
-      voyages?.length !== 0
-        ? `${t('common.in', 'in')} <strong>${formatI18nNumber(
-            voyages?.length as number
-          )}</strong> ${t('vessel.voyage', { defaultValue: 'voyages', count: voyages?.length })}`
+      voyages !== 0
+        ? `${t('common.in', 'in')} <strong>${formatI18nNumber(voyages as number)}</strong> ${t(
+            'vessel.voyage',
+            { defaultValue: 'voyages', count: voyages }
+          )}`
         : '',
     timerangeStart: formatI18nDate(timerange?.start),
     timerangeEnd: formatI18nDate(timerange?.end),

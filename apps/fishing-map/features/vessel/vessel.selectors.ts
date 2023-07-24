@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
 import { resolveDataviewDatasetResources } from '@globalfishingwatch/dataviews-client'
-import { ApiEvent, DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
+import { ApiEvent, DatasetTypes, EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
 import { selectTimeRange } from 'features/app/app.selectors'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import { selectResources } from 'features/resources/resources.slice'
@@ -9,6 +9,7 @@ import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { VesselProfileActivityMode, VesselProfileStateProperty } from 'types'
 import { selectQueryParam } from 'routes/routes.selectors'
 import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
+import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 
 export const selectVesselProfileStateProperty = (property: VesselProfileStateProperty) =>
   createSelector([selectQueryParam(property)], (urlProperty) => {
@@ -44,20 +45,43 @@ export const selectEventsResources = createSelector(
 
 export const selectVesselEventsData = createSelector(
   [selectEventsResources, selectVesselInfoData],
-  (trackResources, vessel) => {
-    const vesselProfileEventResources = trackResources?.filter((r) => {
+  (eventsResources, vessel) => {
+    const vesselProfileEventResources = eventsResources?.filter((r) => {
       const isLoaded = r.status === ResourceStatus.Finished
       const isVesselResource = r.datasetConfig?.query?.some(
         (q) => q.id === 'vessels' && q.value === vessel?.id
       )
       return isVesselResource && isLoaded
     })
-    return vesselProfileEventResources?.flatMap((r) => (r.data as ApiEvent[]) || [])
+    return vesselProfileEventResources
+      ?.flatMap((r) => (r.data as ApiEvent[]) || [])
+      .sort((a, b) => (a.start > b.start ? -1 : 1))
+  }
+)
+
+export const selectVesselEventsDataWithVoyages = createSelector(
+  [selectVesselEventsData],
+  (events): ActivityEvent[] => {
+    let voyage = 1
+    return events?.map((event) => {
+      const currentVoyage = voyage
+      if (event.type === EventTypes.Port) {
+        voyage++
+      }
+      return { ...event, voyage: currentVoyage }
+    })
+  }
+)
+
+export const selectOngoingVoyageId = createSelector(
+  [selectVesselEventsDataWithVoyages],
+  (eventsWithVoyages): ActivityEvent['voyage'] => {
+    return eventsWithVoyages[0]?.voyage
   }
 )
 
 export const selectVesselEventsFilteredByTimerange = createSelector(
-  [selectVesselEventsData, selectTimeRange],
+  [selectVesselEventsDataWithVoyages, selectTimeRange],
   (events, timerange) => {
     const startMillis = DateTime.fromISO(timerange.start as string, { zone: 'utc' }).toMillis()
     const endMillis = DateTime.fromISO(timerange.end as string, { zone: 'utc' }).toMillis()

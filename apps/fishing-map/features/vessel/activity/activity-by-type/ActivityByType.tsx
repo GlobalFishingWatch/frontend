@@ -7,13 +7,15 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import useViewport from 'features/map/map-viewport.hooks'
 import EventDetail from 'features/vessel/activity/event/EventDetail'
 import { DEFAULT_VIEWPORT } from 'data/config'
-import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import {
+  ActivityEvent,
+  selectEventsGroupedByType,
+} from 'features/vessel/activity/vessels-activity.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setHighlightedEvents } from 'features/timebar/timebar.slice'
 import Event from '../event/Event'
 import { useActivityByType } from './activity-by-type.hook'
 import styles from './activity-by-type.module.css'
-import { selectEventsByType } from './activity-by-type.selectors'
 import ActivityGroup from './ActivityGroup'
 
 const EVENTS_ORDER = [
@@ -28,7 +30,7 @@ const EVENT_HEIGHT = 56
 
 export function ActivityByType() {
   const { t } = useTranslation()
-  const activityGroups = useSelector(selectEventsByType)
+  const activityGroups = useSelector(selectEventsGroupedByType)
   const containerRef = useRef<any>()
   const dispatch = useAppDispatch()
   const [expandedType, toggleExpandedType] = useActivityByType()

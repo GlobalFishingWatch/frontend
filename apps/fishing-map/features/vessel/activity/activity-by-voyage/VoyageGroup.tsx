@@ -1,27 +1,29 @@
 import { useCallback, useMemo } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { DateTime } from 'luxon'
 import { useSelector } from 'react-redux'
 import saveAs from 'file-saver'
+import { DateTime } from 'luxon'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { formatI18nDate } from 'features/i18n/i18nDate'
-import { RenderedVoyage } from 'features/vessel/activity/activity-by-voyage/activity-by-voyage.selectors'
+import { EventTypes } from '@globalfishingwatch/api-types'
 import { selectVesselInfoDataId } from 'features/vessel/vessel.slice'
-import { parseEventsToCSV } from 'features/vessel/vessel.utils'
+import { getVoyageTimeRange, parseEventsToCSV } from 'features/vessel/vessel.utils'
+import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import { selectOngoingVoyageId } from 'features/vessel/vessel.selectors'
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import styles from '../ActivityGroup.module.css'
 
 interface EventProps {
-  voyage: RenderedVoyage
+  events: ActivityEvent[]
   expanded: boolean
   children: React.ReactNode
-  onMapClick?: (event: RenderedVoyage) => void
-  onMapHover?: (event?: RenderedVoyage) => void
-  onToggleClick?: (event: RenderedVoyage) => void
+  onMapClick?: (voyageId: ActivityEvent['voyage']) => void
+  onMapHover?: (voyageId?: ActivityEvent['voyage']) => void
+  onToggleClick?: (voyageId: ActivityEvent['voyage']) => void
 }
 
 const VoyageGroup: React.FC<EventProps> = ({
-  voyage,
+  events,
   children,
   expanded = false,
   onMapClick = () => {},
@@ -30,64 +32,69 @@ const VoyageGroup: React.FC<EventProps> = ({
 }): React.ReactElement => {
   const { t } = useTranslation()
   const vesselId = useSelector(selectVesselInfoDataId)
+  const ongoingVoyageId = useSelector(selectOngoingVoyageId)
+  const voyageId = events[0]?.voyage
+
   const voyageLabel = useMemo(() => {
     const parts: string[] = []
-    if (voyage.from && voyage.to) {
-      parts.push(
-        `${t('common.from', 'from')} ${formatI18nDate(voyage.start ?? 0, {
-          format: DateTime.DATE_FULL,
-        })}`
-      )
-      parts.push(
-        `${t('common.to', 'to')} ${formatI18nDate(voyage.end ?? 0, {
-          format: DateTime.DATE_FULL,
-        })}`
-      )
-    } else if (!voyage.to) {
+    const firstVoyageEvent = events[events.length - 1]
+    const latestVoyageEvent = events[0]
+    if (voyageId === ongoingVoyageId) {
       parts.push(t('event.currentVoyage' as any, 'Ongoing Voyage') as string)
       parts.push(
-        `${t('common.from', 'from')} ${formatI18nDate(voyage.start ?? 0, {
+        `${t('common.from', 'from')} ${formatI18nDate(firstVoyageEvent.end, {
           format: DateTime.DATE_FULL,
         })}`
       )
     } else {
       parts.push(
-        `${t('common.to', 'to')} ${formatI18nDate(voyage.end ?? 0, {
+        `${t('common.from', 'from')} ${formatI18nDate(firstVoyageEvent.end ?? 0, {
+          format: DateTime.DATE_FULL,
+        })}`
+      )
+      const to =
+        latestVoyageEvent.subType === 'entry' ? latestVoyageEvent.start : latestVoyageEvent.end
+      parts.push(
+        `${t('common.to', 'to')} ${formatI18nDate(to, {
           format: DateTime.DATE_FULL,
         })}`
       )
     }
-    parts.push(`(${voyage.eventsQuantity} ${t('common.events', 'Events')})`)
+
+    parts.push(
+      `(${events.filter((e) => e.type !== EventTypes.Port).length} ${t('common.events', 'Events')})`
+    )
 
     return parts.join(' ')
-  }, [voyage, t])
+  }, [events, ongoingVoyageId, t, voyageId])
 
-  const hasEvents = voyage.eventsQuantity > 0
+  const hasEvents = events.length > 0
 
   const onDownloadClick = () => {
-    if (voyage.events.length) {
-      const data = parseEventsToCSV(voyage.events)
+    if (events.length) {
+      const { start, end } = getVoyageTimeRange(events)
+      const data = parseEventsToCSV(events)
       const blob = new Blob([data], { type: 'text/plain;charset=utf-8' })
-      saveAs(blob, `${vesselId}-voyage-${voyage.start}-${voyage.end}-events.csv`)
+      saveAs(blob, `${vesselId}-voyage-${start}-${end}-events.csv`)
     }
   }
 
   const onToggle = useCallback(
-    () => (hasEvents ? onToggleClick(voyage) : {}),
-    [hasEvents, onToggleClick, voyage]
+    () => (hasEvents ? onToggleClick(voyageId) : {}),
+    [hasEvents, onToggleClick, voyageId]
   )
 
   const handleMapClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation()
       if (hasEvents) {
-        onMapClick(voyage)
+        onMapClick(voyageId)
       }
       if (!expanded) {
         onToggle()
       }
     },
-    [hasEvents, expanded, onMapClick, voyage, onToggle]
+    [hasEvents, expanded, onMapClick, voyageId, onToggle]
   )
 
   return (
@@ -95,7 +102,7 @@ const VoyageGroup: React.FC<EventProps> = ({
       <div
         className={styles.header}
         onClick={onToggle}
-        onMouseEnter={() => onMapHover(voyage)}
+        onMouseEnter={() => onMapHover(voyageId)}
         onMouseLeave={() => onMapHover(undefined)}
       >
         <p className={styles.title}>{voyageLabel}</p>

@@ -6,10 +6,7 @@ import { EventTypes, GapPosition, Regions } from '@globalfishingwatch/api-types'
 import { EMPTY_API_VALUES } from 'features/reports/reports.selectors'
 import { selectEEZs, selectFAOs, selectMPAs, selectRFMOs } from 'features/regions/regions.slice'
 import { getUTCDateTime } from 'utils/dates'
-import {
-  ActivityEvent,
-  PortVisitSubEvent,
-} from 'features/vessel/activity/vessels-activity.selectors'
+import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
 
 function useActivityEventConnect() {
@@ -80,12 +77,7 @@ function useActivityEventConnect() {
           break
         case EventTypes.Port:
           const { name, flag } = event.port_visit?.intermediateAnchorage ?? {}
-          let portType: EventTypes.Port | PortVisitSubEvent = event.type
-          if (event.id.endsWith(PortVisitSubEvent.Exit)) {
-            portType = PortVisitSubEvent.Exit
-          } else if (event.id.endsWith(PortVisitSubEvent.Entry)) {
-            portType = PortVisitSubEvent.Entry
-          }
+          const portType = event.subType || event.type
           const portLabel = name
             ? [name, ...(flag ? [t(`flags:${flag}`, flag.toLocaleUpperCase())] : [])].join(', ')
             : ''
