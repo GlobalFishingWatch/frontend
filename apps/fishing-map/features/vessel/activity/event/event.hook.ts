@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { EventTypes, GapPosition, Regions } from '@globalfishingwatch/api-types'
 import { EMPTY_API_VALUES } from 'features/reports/reports.selectors'
-import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.slice'
+import { selectEEZs, selectFAOs, selectMPAs, selectRFMOs } from 'features/regions/regions.slice'
 import { getUTCDateTime } from 'utils/dates'
 import {
   ActivityEvent,
@@ -17,11 +17,12 @@ function useActivityEventConnect() {
   const eezs = useSelector(selectEEZs)
   const rfmos = useSelector(selectRFMOs)
   const mpas = useSelector(selectMPAs)
+  const faos = useSelector(selectFAOs)
 
   const getRegionNamesByType = useCallback(
     (regionType: keyof Regions, values: string[]) => {
       if (!values?.length) return []
-      const regions = { eez: eezs, rfmo: rfmos, mpa: mpas }[regionType] || []
+      const regions = { eez: eezs, rfmo: rfmos, mpa: mpas, fao: faos }[regionType] || []
       let labels = values
       if (regions?.length) {
         labels = values.flatMap(
@@ -33,7 +34,7 @@ function useActivityEventConnect() {
       }
       return labels
     },
-    [eezs, mpas, rfmos, t]
+    [eezs, faos, mpas, rfmos, t]
   )
 
   const getEventRegionDescription = useCallback(
@@ -45,7 +46,7 @@ function useActivityEventConnect() {
             event?.regions?.[regionType]?.flatMap((regionId) =>
               regionId.length ? `${regionId}` : []
             ) ?? []
-          return `${getRegionNamesByType(regionType, values).join(',')}`
+          return `${getRegionNamesByType(regionType, values).join(', ')}`
         }
         return acc
       }, '')

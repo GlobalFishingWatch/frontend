@@ -24,8 +24,7 @@ const EVENTS_ORDER = [
   EventTypes.Gap,
 ]
 const HEADER_HEIGHT = 60
-const EVENT_HEIGHT = 50
-const MIN_EVENTS_HEIGHT = 400
+const EVENT_HEIGHT = 56
 
 export function ActivityByType() {
   const { t } = useTranslation()
@@ -92,9 +91,6 @@ export function ActivityByType() {
         const events = activityGroups[eventType]
         if (!events) return [eventType, {}]
         let eventsHeight = events.length * EVENT_HEIGHT
-        if (eventsHeight < MIN_EVENTS_HEIGHT) {
-          eventsHeight = MIN_EVENTS_HEIGHT
-        }
         const height = Math.min(eventsHeight, maxHeight)
         return [eventType, { height }]
       })

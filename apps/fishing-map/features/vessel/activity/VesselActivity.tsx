@@ -41,7 +41,7 @@ const VesselActivity = () => {
         <label>
           {activityMode === 'voyages'
             ? t('vessel.activityByVoyages', 'Timeline by voyages')
-            : t('vessel.activityGroupByType', 'Group by type')}
+            : t('vessel.activityByType', 'Activity by type')}
         </label>
         <Button
           size="small"
@@ -50,7 +50,7 @@ const VesselActivity = () => {
         >
           {activityMode === 'voyages'
             ? t('vessel.activityGroupByType', 'Group by type')
-            : t('vessel.activityByVoyages', 'Timeline by voyages')}
+            : t('vessel.activityGroupByVoyages', 'Group by voyages')}
         </Button>
       </div>
       {eventsLoading && (

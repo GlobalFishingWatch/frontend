@@ -1,10 +1,10 @@
 import { Fragment, useCallback } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { camelCase, upperFirst } from 'lodash'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { EventType } from '@globalfishingwatch/api-types'
 import EventIcon from 'features/vessel/activity/event/EventIcon'
+import I18nNumber from 'features/i18n/i18nNumber'
 import styles from '../ActivityGroup.module.css'
 
 interface ActivityGroupProps {
@@ -32,27 +32,17 @@ const ActivityGroup: React.FC<ActivityGroupProps> = ({
         <div className={styles.header} onClick={onToggle}>
           <EventIcon type={eventType} />
           <p className={styles.title}>
-            {t(
-              `events.byType${upperFirst(camelCase(eventType))}Title` as any,
-              `{{count}} ${eventType} events`,
-              {
-                count: quantity,
-              }
-            )}
+            <I18nNumber number={quantity} />{' '}
+            {t(`event.${eventType}` as any, eventType, { count: quantity })}
           </p>
           <div className={styles.actions}>
             <IconButton icon={expanded ? 'arrow-top' : 'arrow-down'} size="small"></IconButton>
           </div>
         </div>
-        {children && <div className={styles.content}>{children}</div>}
+        {children && <ul className={styles.content}>{children}</ul>}
       </li>
     </Fragment>
   )
 }
 
 export default ActivityGroup
-
-// t('events.byTypeEncounterTitle', '{{count}} encounters')
-// t('events.byTypeFishingTitle', '{{count}} fishing hours')
-// t('events.byTypeLoiteringTitle', '{{count}} loitering events')
-// t('events.byTypePortVisitTitle', '{{count}} port visits')

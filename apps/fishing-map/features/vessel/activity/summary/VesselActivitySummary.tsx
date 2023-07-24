@@ -1,8 +1,7 @@
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Icon, IconType, Tooltip } from '@globalfishingwatch/ui-components'
-import { EventTypes } from '@globalfishingwatch/api-types'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { selectEventsByType } from 'features/vessel/activity/activity-by-type/activity-by-type.selectors'
 import useActivityEventConnect from 'features/vessel/activity/event/event.hook'
 import { selectActivityRegions } from 'features/vessel/activity/vessels-activity.selectors'
@@ -26,14 +25,17 @@ export const VesselActivitySummary = () => {
             if (activityRegions[regionType] && activityRegions[regionType].length !== 0) {
               const tooltipContent = (
                 <ul>
-                  {activityRegions[regionType].map(({ id, count }) => {
-                    return (
-                      <li>
-                        {getRegionNamesByType(regionType, [id])[0] || id} ({count}{' '}
-                        {t('common.event', { defaultValue: 'events', count })})
-                      </li>
-                    )
-                  })}
+                  {activityRegions[regionType]
+                    .sort((a, b) => b.count - a.count)
+                    .map(({ id, count }) => {
+                      return (
+                        <li key={id}>
+                          {getRegionNamesByType(regionType, [id])[0] || id} (
+                          {<I18nNumber number={count} />}{' '}
+                          {t('common.event', { defaultValue: 'events', count })})
+                        </li>
+                      )
+                    })}
                 </ul>
               )
               return (
