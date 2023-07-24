@@ -4,6 +4,7 @@ import { VesselProfileState } from 'types'
 const DEFAULT_VESSEL_IDENTITY_ID = 'proto-global-vessel-identity:v20230623'
 export const DEFAULT_VESSEL_STATE: VesselProfileState = {
   vesselDatasetId: DEFAULT_VESSEL_IDENTITY_ID,
+  vesselRegistryIndex: 0,
   vesselActivityMode: 'type',
 }
 

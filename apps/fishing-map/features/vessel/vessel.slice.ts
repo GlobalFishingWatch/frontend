@@ -1,16 +1,7 @@
-import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { HYDRATE } from 'next-redux-wrapper'
 import { GFWAPI, ParsedAPIError, parseAPIError } from '@globalfishingwatch/api-client'
-import {
-  Dataset,
-  DatasetTypes,
-  EndpointId,
-  IdentityVessel,
-  VesselCoreInfo,
-  VesselRegistryAuthorization,
-  VesselRegistryInfo,
-  VesselRegistryOwner,
-} from '@globalfishingwatch/api-types'
+import { Dataset, DatasetTypes, EndpointId, IdentityVessel } from '@globalfishingwatch/api-types'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
@@ -24,13 +15,6 @@ import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { PROFILE_DATAVIEW_SLUGS } from 'data/workspaces'
 // import { TEMPLATE_VESSEL_DATAVIEW_SLUG } from 'data/workspaces'
 
-export type VesselData = VesselCoreInfo &
-  VesselRegistryInfo &
-  VesselInstanceDatasets & {
-    // TODO decide how to manage these types based on API response format
-    owner?: VesselRegistryOwner
-    authorization?: VesselRegistryAuthorization
-  }
 interface VesselState {
   info: {
     status: AsyncReducerStatus
@@ -150,21 +134,21 @@ const vesselSlice = createSlice({
 
 export const { resetVesselState } = vesselSlice.actions
 
-export const selectVesselInfo = (state: VesselSliceState) => state.vessel.info.data
+export const selectVesselInfoData = (state: VesselSliceState) => state.vessel.info.data
 export const selectVesselInfoDataId = (state: VesselSliceState) =>
   state.vessel.info.data?.coreInfo?.id
 export const selectVesselInfoStatus = (state: VesselSliceState) => state.vessel.info.status
 export const selectVesselInfoError = (state: VesselSliceState) => state.vessel.info.error
 
-export const selectVesselInfoData = createSelector([selectVesselInfo], (vesselInfo) => {
-  if (!vesselInfo) return null
-  const vessel = {
-    ...(vesselInfo.registryInfo?.[0] || vesselInfo.coreInfo),
-    owner: vesselInfo.registryOwners?.[0],
-    authorization: vesselInfo.registryAuthorizations?.[0],
-  }
-  const { info, track, events } = vesselInfo
-  return { ...vessel, id: vesselInfo?.coreInfo?.id, info, track, events } as VesselData
-})
+// export const selectVesselInfoData = createSelector([selectVesselInfo], (vesselInfo) => {
+//   if (!vesselInfo) return null
+//   const vessel = {
+//     ...(vesselInfo.registryInfo?.[0] || vesselInfo.coreInfo),
+//     owner: vesselInfo.registryOwners?.[0],
+//     authorization: vesselInfo.registryAuthorizations?.[0],
+//   }
+//   const { info, track, events } = vesselInfo
+//   return { ...vessel, id: vesselInfo?.coreInfo?.id, info, track, events } as VesselData
+// })
 
 export default vesselSlice.reducer

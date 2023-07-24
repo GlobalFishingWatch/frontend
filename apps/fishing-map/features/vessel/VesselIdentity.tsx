@@ -2,29 +2,54 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { saveAs } from 'file-saver'
-import { Button, Icon, IconButton, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
+import {
+  Button,
+  Icon,
+  IconButton,
+  TransmissionsTimeline,
+  TransmissionsTimelineProps,
+} from '@globalfishingwatch/ui-components'
 import I18nDate from 'features/i18n/i18nDate'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
 import { Locale } from 'types'
 import { IDENTITY_FIELD_GROUPS } from 'features/vessel/vessel.config'
 import DataTerminology from 'features/vessel/DataTerminology'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
-import { formatAdvancedInfoField } from 'utils/info'
-import { parseVesselToCSV } from 'features/vessel/vessel.utils'
+import { formatInfoField } from 'utils/info'
+import { getVesselProperty, parseVesselToCSV } from 'features/vessel/vessel.utils'
+import { selectVesselRegistryIndex } from 'features/vessel/vessel.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
 import styles from './VesselIdentity.module.css'
 
 const VesselIdentity = () => {
   const { t, i18n } = useTranslation()
+  const currentRegistryIndex = useSelector(selectVesselRegistryIndex)
+  const { dispatchQueryParams } = useLocationConnect()
   const vessel = useSelector(selectVesselInfoData)
-  const transmissionStart = (vessel?.firstTransmissionDate ||
-    vessel?.transmissionDateFrom) as string
-  const transmissionEnd = (vessel?.lastTransmissionDate || vessel?.transmissionDateTo) as string
+
+  const transmissionStart = getVesselProperty(vessel, {
+    property: 'transmissionDateFrom',
+    registryIndex: currentRegistryIndex,
+  })
+  const transmissionEnd = getVesselProperty(vessel, {
+    property: 'transmissionDateTo',
+    registryIndex: currentRegistryIndex,
+  })
+  const transmissionDates =
+    vessel?.registryInfo?.map((registry) => ({
+      start: registry.transmissionDateFrom,
+      end: registry.transmissionDateTo,
+    })) ?? []
+
+  const onRegistryIndexChange: TransmissionsTimelineProps['onDateClick'] = (dates, index) => {
+    dispatchQueryParams({ vesselRegistryIndex: index })
+  }
 
   const onDownloadClick = () => {
     if (vessel) {
       const data = parseVesselToCSV(vessel)
       const blob = new Blob([data], { type: 'text/plain;charset=utf-8' })
-      saveAs(blob, vessel?.id + '.csv')
+      saveAs(blob, vessel?.coreInfo?.id + '.csv')
     }
   }
 
@@ -76,7 +101,13 @@ const VesselIdentity = () => {
                       </DataTerminology>
                     )}
                   </label>
-                  {formatAdvancedInfoField(vessel, field)}
+                  {formatInfoField(
+                    getVesselProperty(vessel, {
+                      property: field.key as any,
+                      registryIndex: currentRegistryIndex,
+                    }),
+                    field.key
+                  )}
                 </div>
               ))}
             </div>
@@ -89,8 +120,9 @@ const VesselIdentity = () => {
                 {t('common.to', 'to')} <I18nDate date={transmissionEnd} />
               </span>
               <TransmissionsTimeline
-                firstTransmissionDate={transmissionStart}
-                lastTransmissionDate={transmissionEnd}
+                dates={transmissionDates}
+                onDateClick={onRegistryIndexChange}
+                currentDateIndex={currentRegistryIndex}
                 firstYearOfData={FIRST_YEAR_OF_DATA}
                 locale={i18n.language as Locale}
               />

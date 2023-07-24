@@ -100,6 +100,7 @@ export interface WorkspaceState extends BaseUrlWorkspace {
 export type VesselProfileActivityMode = 'voyage' | 'type'
 export type VesselProfileState = {
   vesselDatasetId: string
+  vesselRegistryIndex: number
   vesselActivityMode: VesselProfileActivityMode
 }
 

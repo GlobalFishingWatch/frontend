@@ -5,7 +5,7 @@ import { ApiEvent, DatasetTypes, EventTypes, ResourceStatus } from '@globalfishi
 import { selectTimeRange } from 'features/app/app.selectors'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import { selectResources } from 'features/resources/resources.slice'
-import { selectVesselInfoData } from 'features/vessel/vessel.slice'
+import { selectVesselInfoDataId } from 'features/vessel/vessel.slice'
 import { VesselProfileActivityMode, VesselProfileStateProperty } from 'types'
 import { selectQueryParam } from 'routes/routes.selectors'
 import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
@@ -23,10 +23,17 @@ export const selectVesselDatasetId = createSelector(
     return vesselDatasetId
   }
 )
+
 export const selectVesselActivityMode = createSelector(
   [selectVesselProfileStateProperty('vesselActivityMode')],
   (vesselActivityMode): VesselProfileActivityMode => {
     return vesselActivityMode
+  }
+)
+export const selectVesselRegistryIndex = createSelector(
+  [selectVesselProfileStateProperty('vesselRegistryIndex')],
+  (vesselRegistryIndex): number => {
+    return vesselRegistryIndex
   }
 )
 
@@ -44,12 +51,12 @@ export const selectEventsResources = createSelector(
 )
 
 export const selectVesselEventsData = createSelector(
-  [selectEventsResources, selectVesselInfoData],
-  (eventsResources, vessel) => {
+  [selectEventsResources, selectVesselInfoDataId],
+  (eventsResources, vesselId) => {
     const vesselProfileEventResources = eventsResources?.filter((r) => {
       const isLoaded = r.status === ResourceStatus.Finished
       const isVesselResource = r.datasetConfig?.query?.some(
-        (q) => q.id === 'vessels' && q.value === vessel?.id
+        (q) => q.id === 'vessels' && q.value === vesselId
       )
       return isVesselResource && isLoaded
     })
