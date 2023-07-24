@@ -16,6 +16,8 @@ interface EventProps {
   onMapHover?: (event?: ActivityEvent) => void
 }
 
+export const EVENT_HEIGHT = 56
+
 const Event: React.FC<EventProps> = (props): React.ReactElement => {
   const {
     event,

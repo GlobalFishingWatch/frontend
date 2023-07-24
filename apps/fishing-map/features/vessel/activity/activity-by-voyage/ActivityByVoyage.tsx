@@ -1,12 +1,13 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { GroupedVirtuoso } from 'react-virtuoso'
 import { eventsToBbox } from '@globalfishingwatch/data-transforms'
 import useViewport from 'features/map/map-viewport.hooks'
 import EventDetail from 'features/vessel/activity/event/EventDetail'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import VoyageGroup from 'features/vessel/activity/activity-by-voyage/VoyageGroup'
-import Event from 'features/vessel/activity/event/Event'
+import Event, { EVENT_HEIGHT } from 'features/vessel/activity/event/Event'
 import { getVoyageTimeRange } from 'features/vessel/vessel.utils'
 import {
   ActivityEvent,
@@ -21,6 +22,7 @@ import {
 } from 'features/timebar/timebar.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getUTCDateTime } from 'utils/dates'
+import { getScrollElement } from 'features/sidebar/Sidebar'
 import styles from '../activity-by-type/activity-by-type.module.css'
 
 const ActivityByVoyage = () => {
@@ -85,39 +87,60 @@ const ActivityByVoyage = () => {
     },
     [setMapCoordinates, viewport.zoom]
   )
-  const voyagesKeys = Object.keys(voyages)
+
+  const { events, groupCounts, groups } = useMemo(() => {
+    const eventsExpanded = Object.entries(voyages).map(([voyage, events]) =>
+      expandedVoyages.includes(parseInt(voyage)) ? events : ([] as ActivityEvent[])
+    )
+    return {
+      events: eventsExpanded.flat(),
+      groupCounts: eventsExpanded.map((events) => events.length),
+      groups: Object.keys(voyages),
+    }
+  }, [expandedVoyages, voyages])
+
   return (
     <ul className={styles.activityContainer}>
-      {voyagesKeys?.length > 0 ? (
-        voyagesKeys.map((voyage, index) => {
-          const events = voyages[voyage]
-          const expanded = expandedVoyages.includes(events[0]?.voyage)
-          return (
-            <VoyageGroup
-              key={index}
-              expanded={expanded}
-              events={events}
-              onToggleClick={toggleExpandedVoyage}
-              onMapClick={selectVoyageOnMap}
-              onMapHover={onVoyageMapHover}
-            >
-              {expanded &&
-                events.length > 0 &&
-                events.map((event) => (
-                  <Event
-                    key={event.id}
-                    event={event}
-                    onMapHover={onEventMapHover}
-                    onMapClick={selectEventOnMap}
-                    onInfoClick={onInfoClick}
-                    className={styles.voyageEvent}
-                  >
-                    {selectedEvent?.id === event?.id && <EventDetail event={event} />}
-                  </Event>
-                ))}
-            </VoyageGroup>
-          )
-        })
+      {groupCounts.length > 0 ? (
+        <GroupedVirtuoso
+          useWindowScroll
+          defaultItemHeight={EVENT_HEIGHT}
+          groupCounts={groupCounts}
+          increaseViewportBy={EVENT_HEIGHT * 4}
+          customScrollParent={getScrollElement()}
+          groupContent={(index) => {
+            const events = voyages[groups[index]]
+            if (!events) {
+              return null
+            }
+            const expanded = expandedVoyages.includes(index)
+            return (
+              <VoyageGroup
+                key={index}
+                expanded={expanded}
+                events={events}
+                onToggleClick={toggleExpandedVoyage}
+                onMapClick={selectVoyageOnMap}
+                onMapHover={onVoyageMapHover}
+              />
+            )
+          }}
+          itemContent={(index) => {
+            const event = events[index]
+            return (
+              <Event
+                key={event.id}
+                event={event}
+                onMapHover={onEventMapHover}
+                onMapClick={selectEventOnMap}
+                onInfoClick={onInfoClick}
+                className={styles.voyageEvent}
+              >
+                {selectedEvent?.id === event?.id && <EventDetail event={event} />}
+              </Event>
+            )
+          }}
+        />
       ) : (
         <span className={styles.enptyState}>
           {t(

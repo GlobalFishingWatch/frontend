@@ -12,14 +12,12 @@ interface ActivityGroupProps {
   onToggleClick?: (type: EventType) => void
   quantity: number
   expanded: boolean
-  children: React.ReactNode
 }
 
 const ActivityGroup: React.FC<ActivityGroupProps> = ({
   eventType,
   onToggleClick = () => {},
   quantity,
-  children,
   expanded,
 }): React.ReactElement => {
   const { t } = useTranslation()
@@ -39,7 +37,6 @@ const ActivityGroup: React.FC<ActivityGroupProps> = ({
             <IconButton icon={expanded ? 'arrow-top' : 'arrow-down'} size="small"></IconButton>
           </div>
         </div>
-        {children && <ul className={styles.content}>{children}</ul>}
       </li>
     </Fragment>
   )

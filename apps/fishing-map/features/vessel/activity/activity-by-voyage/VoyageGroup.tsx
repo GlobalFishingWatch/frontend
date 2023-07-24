@@ -16,7 +16,6 @@ import styles from '../ActivityGroup.module.css'
 interface EventProps {
   events: ActivityEvent[]
   expanded: boolean
-  children: React.ReactNode
   onMapClick?: (voyageId: ActivityEvent['voyage']) => void
   onMapHover?: (voyageId?: ActivityEvent['voyage']) => void
   onToggleClick?: (voyageId: ActivityEvent['voyage']) => void
@@ -24,7 +23,6 @@ interface EventProps {
 
 const VoyageGroup: React.FC<EventProps> = ({
   events,
-  children,
   expanded = false,
   onMapClick = () => {},
   onMapHover = () => {},
@@ -33,7 +31,7 @@ const VoyageGroup: React.FC<EventProps> = ({
   const { t } = useTranslation()
   const vesselId = useSelector(selectVesselInfoDataId)
   const ongoingVoyageId = useSelector(selectOngoingVoyageId)
-  const voyageId = events[0]?.voyage
+  const voyageId = events?.[0]?.voyage
 
   const voyageLabel = useMemo(() => {
     const parts: string[] = []
@@ -120,7 +118,6 @@ const VoyageGroup: React.FC<EventProps> = ({
           </div>
         )}
       </div>
-      {children && <ul className={styles.content}>{children}</ul>}
     </li>
   )
 }
