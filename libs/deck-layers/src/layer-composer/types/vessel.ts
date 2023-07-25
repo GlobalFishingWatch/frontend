@@ -1,11 +1,9 @@
 import { EventTypes } from '@globalfishingwatch/api-types'
-import { VesselDeckLayersEventData } from '../../loaders/vessels/eventsLoader'
 import { BaseDeckLayerGenerator } from './base'
 
 export interface VesselDeckLayersEvent {
   type: EventTypes
-  url?: string
-  data?: VesselDeckLayersEventData[] | []
+  url: string
 }
 
 export interface VesselDeckLayersGenerator extends BaseDeckLayerGenerator {

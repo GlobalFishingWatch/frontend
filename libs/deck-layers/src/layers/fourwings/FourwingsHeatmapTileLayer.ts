@@ -137,7 +137,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     const { minFrame, maxFrame, sublayers } = this.props
     const visibleSublayers = sublayers.filter((sublayer) => sublayer.visible)
     const datasets = visibleSublayers.map((sublayer) => sublayer.datasets.join(','))
-    console.log('🚀 ~ _fetchTileData:any= ~ datasets:', datasets)
     const getChunkData: any = async (chunk: any) => {
       // if (cache[chunk]) {
       //   return Promise.resolve(cache[chunk])
