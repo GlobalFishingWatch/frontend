@@ -70,13 +70,13 @@ export function TransmissionsTimeline({
           >
             {timelineWidths[index] > 30 && (
               <Fragment>
-                <span>
+                <span className={styles.dates}>
                   {timelineWidth > 90 && `${startTransmission.toFormat(monthFormat)} `}
                   {timelineWidth > 50
                     ? startTransmission.toFormat('yyyy')
                     : startTransmission.toFormat('yy')}
                 </span>
-                <span>
+                <span className={styles.dates}>
                   {timelineWidth > 90 && `${endTransmission.toFormat(monthFormat)} `}
                   {timelineWidth > 50
                     ? endTransmission.toFormat('yyyy')

@@ -53,19 +53,19 @@ export type VesselRegistryInfo = VesselInfo & {
   vesselInfoReference: string
 }
 
-export type VesselRegistryOwner = {
-  owner: string
-  ownerFlag: string
+export type VesselRegistryProperty = {
+  dateFrom: string
+  dateTo: string
   recordId: string
   sourceCode: string[]
 }
 
-export type VesselRegistryAuthorization = {
-  authorizedFrom: string
-  authorizedTo: string
-  recordId: string
-  sourceCode: string[]
+export type VesselRegistryOwner = VesselRegistryProperty & {
+  name: string
+  flag: string
 }
+
+export type VesselRegistryAuthorization = VesselRegistryProperty
 
 export interface IdentityVessel {
   dataset: string
