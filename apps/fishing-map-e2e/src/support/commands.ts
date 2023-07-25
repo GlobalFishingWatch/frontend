@@ -54,7 +54,6 @@ function loginViaAuthAPI(username: string, password: string) {
   cy.get('input[type=submit]').click()
 
   // Ensure API Auth has redirected us back to the app, in development set your domain in .env
-  //cy.url().should('match', /^http:\/\/localhost:3003/)
   cy.url()
     .should('include', Cypress.env('runningDomain') ?? 'jzzp2ui3wq-uc.a.run.app')
     .should('include', 'access-token=')
