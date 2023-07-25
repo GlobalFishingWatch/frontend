@@ -9,7 +9,7 @@ describe('vms', () => {
     switchLanguage('en')
     // Open the filter popup
     getVmsActivityLayerPanel().find(`[data-test*="activity-layer-panel-btn-filter-vms-"]`).click()
-
+    cy.getBySelLike('activity-filters-input').click()
     // Check that all vms layers are available
     cy.getBySelLike('activity-filters-option').contains('AIS')
     VMS_NAMES.forEach((vms) => {

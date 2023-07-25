@@ -4,7 +4,8 @@ import { nxE2EPreset } from '@nx/cypress/plugins/cypress-preset'
 const cypressJsonConfig = {
   fileServerFolder: '.',
   fixturesFolder: './src/fixtures',
-  video: true,
+  video: false,
+  screenshot: false,
   videosFolder: '../../dist/cypress/apps/fishing-map-e2e/videos',
   screenshotsFolder: '../../dist/cypress/apps/fishing-map-e2e/screenshots',
   chromeWebSecurity: false,

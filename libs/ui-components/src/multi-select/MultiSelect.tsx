@@ -272,6 +272,7 @@ export function MultiSelect(props: MultiSelectProps) {
                 preventKeyAction: isOpen,
               }),
             })}
+            data-test={`${testId}-input`}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             placeholder={
@@ -289,6 +290,7 @@ export function MultiSelect(props: MultiSelectProps) {
               <IconButton
                 icon={isOpen ? 'arrow-top' : 'arrow-down'}
                 size="small"
+                data-test={`${testId}-toggle`}
                 aria-label={'toggle menu'}
                 {...getToggleButtonProps(getDropdownProps({ preventKeyAction: isOpen }))}
               ></IconButton>

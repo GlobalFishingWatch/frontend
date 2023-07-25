@@ -176,8 +176,7 @@ steps:
         CYPRESS_CACHE_FOLDER=.cypress-cache yarn install --immutable
         CYPRESS_BASE_URL=`cat app_url` \
           CYPRESS_CACHE_FOLDER=.cypress-cache \
-          yarn nx run fishing-map-e2e:test --parallel
-        kill $(jobs -p) || true
+          yarn nx run fishing-map-e2e:test-pr --parallel
 
 timeout: 1800s
 options:

@@ -18,11 +18,10 @@
         "parallel": true
       }
     },
-    "test-dev": {
+    "test-pr": {
       "executor": "@nx/cypress:cypress",
       "options": {
         "cypressConfig": "apps/fishing-map-e2e/cypress.config.ts",
-        "baseUrl": "https://user:password@fishing-map.dev.globalfishingwatch.org",
         "testingType": "e2e"
       }
     },
