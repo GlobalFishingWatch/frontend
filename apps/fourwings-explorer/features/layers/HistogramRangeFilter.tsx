@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { BarChart, Bar, ResponsiveContainer } from 'recharts'
-import { Slider } from '@globalfishingwatch/ui-components'
+import { SliderRange } from '@globalfishingwatch/ui-components'
 import { FourwingsAPIDataset } from 'features/datasets/datasets.types'
 import { DatasetLayer, FourwingsLayerConfig, useLayersConfig } from 'features/layers/layers.hooks'
 import { useLayerHistogram } from 'features/map/histogram.hooks'
@@ -64,7 +64,7 @@ function HistogramRangeFilter({ layer }: HistogramRangeFilterProps) {
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <Slider
+      <SliderRange
         className={styles.slider}
         initialRange={[minSliderValue, maxSliderValue]}
         label="filter values"

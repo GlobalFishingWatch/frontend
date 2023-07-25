@@ -1,81 +1,44 @@
-import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { initialize as uaInitialize, set as uaSet, event as uaEvent, pageview } from 'react-ga'
-import { selectUserData } from 'features/user/user.slice'
-import { GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS, IS_PRODUCTION } from 'data/config'
+import {
+  trackEvent as trackEventBase,
+  useAnalytics as useAnalyticsBase,
+} from '@globalfishingwatch/react-hooks'
+import { GOOGLE_MEASUREMENT_ID, GOOGLE_TAG_MANAGER_ID } from 'data/config'
+import { isUserLogged, selectUserData } from 'features/user/user.slice'
 import { selectLocationCategory } from 'routes/routes.selectors'
 
-const GOOGLE_UNIVERSAL_ANALYTICS_ID = process.env.NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID
+export const GOOGLE_ANALYTICS_DEBUG_MODE =
+  (process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_TEST_MODE || 'false').toLowerCase() === 'true'
 
 export enum TrackCategory {
-  ActivityData = 'Activity data',
-  Analysis = 'Analysis',
-  DataDownloads = 'Data downloads',
-  EnvironmentalData = 'Environmental data',
-  HelpHints = 'Help hints',
-  I18n = 'Internationalization',
-  ReferenceLayer = 'Reference Layer',
-  Timebar = 'Timebar',
-  Tracks = 'Tracks',
-  SearchVessel = 'Search Vessel',
-  VesselGroups = 'Vessel groups',
-  WorkspaceManagement = 'Workspace Management',
+  ActivityData = 'activity_data',
+  Analysis = 'analysis',
+  DataDownloads = 'data_downloads',
+  EnvironmentalData = 'environmental_data',
+  HelpHints = 'help_hints',
+  I18n = 'internationalization',
+  ReferenceLayer = 'reference_layer',
+  SearchVessel = 'search_vessel',
+  Timebar = 'timebar',
+  Tracks = 'tracks',
+  User = 'user',
+  VesselGroups = 'vessel_groups',
+  WorkspaceManagement = 'workspace_management',
 }
 
-export type TrackEventParams = {
-  category: TrackCategory
-  action: string
-  label?: string
-  value?: any
-}
-export const trackEvent = ({ category, action, label, value }: TrackEventParams) => {
-  uaEvent({ category, action, label, value })
-}
+export const trackEvent = trackEventBase<TrackCategory>
 
 export const useAnalytics = () => {
-  const userData = useSelector(selectUserData)
+  const user = useSelector(selectUserData)
+  const logged = useSelector(isUserLogged)
   const locationCategory = useSelector(selectLocationCategory)
 
-  useEffect(() => {
-    if (GOOGLE_UNIVERSAL_ANALYTICS_ID) {
-      uaInitialize(GOOGLE_UNIVERSAL_ANALYTICS_ID, {
-        ...GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS,
-      })
-      // Uncomment to prevent sending hits in non-production envs
-      if (!IS_PRODUCTION) {
-        uaSet({ sendHitTask: null })
-      }
-    }
-  }, [])
-
-  useEffect(() => {
-    if (GOOGLE_UNIVERSAL_ANALYTICS_ID) {
-      pageview(window.location.pathname + window.location.search)
-    }
-  }, [locationCategory])
-
-  useEffect(() => {
-    if (userData && GOOGLE_UNIVERSAL_ANALYTICS_ID) {
-      uaSet({
-        dimension3: `${JSON.stringify(userData.groups)}` ?? '',
-        dimension4: userData.organizationType ?? '',
-        dimension5: userData.organization ?? '',
-        dimension6: userData.country ?? '',
-        dimension7: userData.language ?? '',
-      })
-      uaSet({
-        userProperties: {
-          userGroup: userData.groups,
-          userOrgType: userData.organizationType,
-          userOrganization: userData.organization,
-          userCountry: userData.country,
-          userLanguage: userData.language,
-        },
-      })
-      uaEvent({
-        category: 'User',
-        action: 'Login',
-      })
-    }
-  }, [userData])
+  useAnalyticsBase({
+    debugMode: GOOGLE_ANALYTICS_DEBUG_MODE,
+    googleMeasurementId: GOOGLE_MEASUREMENT_ID,
+    googleTagManagerId: GOOGLE_TAG_MANAGER_ID,
+    logged,
+    pageview: locationCategory,
+    user,
+  })
 }

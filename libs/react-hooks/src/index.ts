@@ -1,3 +1,4 @@
+export * from './use-analytics'
 export * from './use-dataviews-layers'
 export * from './use-debounce'
 export * from './use-layer-composer'

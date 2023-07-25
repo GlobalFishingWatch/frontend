@@ -1,5 +1,4 @@
 {
-  "root": "apps/<%= name %>",
   "sourceRoot": "apps/<%= name %>",
   "projectType": "application",
   "targets": {
@@ -25,7 +24,6 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "root": "apps/<%= name %>",
         "outputPath": "dist/apps/<%= name %>"
       },
       "configurations": {

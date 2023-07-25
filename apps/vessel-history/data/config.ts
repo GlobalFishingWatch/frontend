@@ -1,4 +1,3 @@
-import ReactGA from 'react-ga'
 import { DateTime } from 'luxon'
 import { DataviewDatasetConfigParam, ThinningConfig } from '@globalfishingwatch/api-types'
 import { ThinningLevels, THINNING_LEVELS } from '@globalfishingwatch/api-client'
@@ -12,7 +11,7 @@ export const WORKSPACE_ENV =
   (process.env.NEXT_PUBLIC_WORKSPACE_ENV as WorkspaceEnv) ||
   (process.env.NODE_ENV as WorkspaceEnv) ||
   'production'
-export const IS_PRODUCTION = WORKSPACE_ENV === 'production'
+
 export const FLY_EFFECTS = {
   noFly: 0, // just change the center
   softFly: 1, // fly to without effects
@@ -115,11 +114,10 @@ export const DOWNLOAD_ACTIVITY_PERMISSION = {
   action: 'download',
 }
 
-export const GOOGLE_UNIVERSAL_ANALYTICS_ID =
-  process.env.NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID || 'UA-56517380-5'
-export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions = IS_PRODUCTION
-  ? {}
-  : { debug: true }
+export const GOOGLE_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID || 'G-R3PWRQW70G'
+export const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID || 'GTM-KK5ZFST'
+export const GOOGLE_ANALYTICS_DEBUG_MODE =
+  (process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_DEBUG_MODE || 'false').toLowerCase() === 'true'
 
 export const FEEDBACK_EN = process.env.NEXT_PUBLIC_FEEDBACK_FORM_EN
 export const FEEDBACK_FR = process.env.NEXT_PUBLIC_FEEDBACK_FORM_FR

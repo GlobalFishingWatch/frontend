@@ -123,3 +123,6 @@ build
 .local*
 tmp/
 affected-apps
+
+# local parquet files
+*.parquet

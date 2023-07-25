@@ -1,4 +1,6 @@
 import Document, { DocumentContext, Html, Head, Main, NextScript } from 'next/document'
+import Script from 'next/script'
+import { GOOGLE_TAG_MANAGER_ID } from 'data/config'
 import { PATH_BASENAME } from 'routes/routes'
 
 class MyDocument extends Document {
@@ -182,6 +184,14 @@ class MyDocument extends Document {
           <link rel="canonical" href="https://globalfishingwatch.org/map" />
         </Head>
         <body>
+          <noscript
+            dangerouslySetInnerHTML={{
+              __html: `
+                <iframe src="https://www.googletagmanager.com/ns.html?id=${GOOGLE_TAG_MANAGER_ID}"
+                height="0" width="0" style="display:none;visibility:hidden"></iframe>
+              `,
+            }}
+          />
           <Main />
           <NextScript />
         </body>

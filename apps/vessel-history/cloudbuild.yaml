@@ -12,7 +12,7 @@ steps:
     script: |
       if [ ! -d "node_modules" ]; then
         apk add git
-        yarn set version 3.5.1
+        yarn set version 3.6.1
         yarn -v
         yarn install --immutable
       fi
@@ -35,10 +35,13 @@ steps:
     waitFor: ['install-yarn']
     name: node:18-alpine
     env:
+      - 'COMMIT_SHA=$COMMIT_SHA'
       - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
       - 'NEXT_PUBLIC_URL=$_NEXT_PUBLIC_URL'
       - 'NEXT_PUBLIC_API_GATEWAY=$_NEXT_PUBLIC_API_GATEWAY'
-      - 'NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID=$_NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID'
+      - 'NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=$_NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID'
+      - 'NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=$_NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID'
+      - 'NEXT_PUBLIC_GOOGLE_ANALYTICS_DEBUG_MODE=$_NEXT_PUBLIC_GOOGLE_ANALYTICS_DEBUG_MODE'
       - 'NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
       - 'NEXT_PUBLIC_TMT_CONTACT_US_URL=$_NEXT_PUBLIC_TMT_CONTACT_US_URL'
       - 'NEXT_PUBLIC_FEEDBACK_FORM_EN=$_NEXT_PUBLIC_FEEDBACK_FORM_EN'
@@ -48,22 +51,31 @@ steps:
       yarn -v
       yarn nx run vessel-history:build:production --parallel
 
-  - name: 'gcr.io/kaniko-project/executor:v1.6.0'
+      raw_tag="${COMMIT_SHA};$NEXT_PUBLIC_URL;$NEXT_PUBLIC_API_GATEWAY;$NEXT_PUBLIC_WORKSPACE_ENV;$NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID;$NEXT_PUBLIC_GOOGLE_TAG_MANAGER_KEY;$NEXT_PUBLIC_CARRIER_PORTAL_URL;$NEXT_PUBLIC_LATEST_CARRIER_DATASET_ID;$NEXT_PUBLIC_FEEDBACK_SPREADSHEET_ID;$NEXT_PUBLIC_SPREADSHEET_CLIENT_EMAIL;$NEXT_PUBLIC_SPREADSHEET_PRIVATE_KEY"
+      tag=`echo $raw_tag | sha256sum`
+      tag=${tag:0:64}
+      echo $tag > image-tag
+      echo Docker Image Tag: $tag
+
+  - name: 'gcr.io/kaniko-project/executor:debug'
     id: 'build-image'
     waitFor: ['build-app']
-    args:
-      [
-        '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',
-        '--cache=true',
-        '--build-arg',
-        'APP_NAME=vessel-history',
-        '--target',
-        'production',
-        '-f',
-        './apps/vessel-history/Dockerfile',
-        '-c',
-        './dist/apps/vessel-history',
-      ]
+    env:
+      - 'USE_CACHE=$_USE_CACHE'
+    entrypoint: ''
+    script: |
+      tag=`cat image-tag`
+      /kaniko/executor \
+        --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$tag \
+        --cache=$USE_CACHE \
+        --build-arg \
+          APP_NAME=vessel-history \
+        --target \
+          production \
+        -f \
+          ./apps/vessel-history/Dockerfile \
+        -c \
+          ./dist/apps/vessel-history \
 
   # Deploy to the appropriate environment
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -77,6 +89,7 @@ steps:
       - 'pipefail'
       - '-c'
       - |-
+        tag=`cat image-tag`
         branch_service_name=`echo vessel-history-$BRANCH_NAME | sed -r 's,[/\.],-,g' | awk '{print substr(tolower($0),0,62)}'`
         service_name=${_RUN_SERVICE_NAME:-${branch_service_name}}
         gcloud beta run deploy \
@@ -84,7 +97,7 @@ steps:
         --project \
         $_RUN_PROJECT \
         --image \
-        gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA \
+        gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:${tag} \
         --region \
         $_RUN_REGION \
         --platform managed \

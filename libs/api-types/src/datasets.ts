@@ -113,16 +113,17 @@ export type RelatedDataset = {
   type: DatasetTypes
 }
 
-export type DatasetSchemaType = 'number' | 'string' | 'boolean'
+export type DatasetSchemaType = 'range' | 'number' | 'string' | 'boolean'
 
 export type DatasetSchema = {
   type: DatasetSchemaType
   maxLength: number
   minLength: number
   enum: string[]
-  minimum: number
-  maximum: number
+  min: number
+  max: number
   stats?: boolean
+  unit?: string
 }
 
 export enum DatasetCategory {

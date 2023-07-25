@@ -64,9 +64,9 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
     const vesselDataviewInstance: DataviewInstance = getVesselDataviewInstance(
       { id: vessel.vesselId },
       {
-        trackDatasetId: vessel.trackDataset?.id,
-        infoDatasetId: vessel.infoDataset?.id,
-        ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
+        info: vessel.infoDataset?.id,
+        track: vessel.trackDataset?.id,
+        ...(eventsDatasetsId.length > 0 && { events: eventsDatasetsId }),
       }
     )
     upsertDataviewInstance(vesselDataviewInstance)

@@ -4,7 +4,7 @@
     "description": "Dataset for VMS Chile (Public)",
     "schema": {
       "id": "id",
-      "flag": "bandeira",
+      "flag": "flag",
       "fleet": {
         "keyword": "frota",
         "enum": {
@@ -12,7 +12,7 @@
           "small_fisheries": "pequena escala"
         }
       },
-      "source": "fonte",
+      "source": "source",
       "shipname": "Embarcação",
       "normalized_shipname": "Embarcação normalizado",
       "lastTransmissionDate": "última data de transmissão",
@@ -25,8 +25,8 @@
     "description": "Dataset for VMS Indonesia (Public)",
     "schema": {
       "id": "id",
-      "flag": "bandeira",
-      "source": "fonte",
+      "flag": "flag",
+      "source": "source",
       "lastTransmissionDate": "última data de transmissão",
       "firstTransmissionDate": "primeira data de transmissão"
     }
@@ -36,9 +36,9 @@
     "description": "Dataset for VMS Panama (Public)",
     "schema": {
       "id": "id",
-      "flag": "bandeira",
+      "flag": "flag",
       "length": "length",
-      "source": "fonte",
+      "source": "source",
       "geartype": "Aparelho de pesca",
       "shipname": "Embarcação",
       "vesselType": "vesselType",
@@ -53,7 +53,7 @@
     "schema": {
       "id": "id",
       "beam": "beam",
-      "flag": "bandeira",
+      "flag": "flag",
       "fleet": {
         "keyword": "frota",
         "enum": {
@@ -71,7 +71,7 @@
           "Foreign": "Foreign"
         }
       },
-      "source": "fonte",
+      "source": "source",
       "capacity": "capacity",
       "shipname": "Embarcação",
       "nationalId": "nationalId",
@@ -177,7 +177,7 @@
     "name": "VMS Brasil (Esforço de Pesca)",
     "description": "Dados de rastreamento por satélite são fornecidos pela Secretaria de Aquicultura e Pesca. Os dados são coletados do sistema de rastreamento de embarcações pesqueira do Brasil e publicados com atraso de três dias, contendo informações sobre a identidade da embarcação, localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica para transmissão de localização em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações AIS, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada.",
     "schema": {
-      "flag": "bandeira",
+      "flag": "flag",
       "geartype": {
         "keyword": "Aparelho de pesca",
         "enum": {
@@ -187,12 +187,12 @@
           "line": "Linha",
           "pots_and_traps": "Armadilhas e potes",
           "set_longline": "Espinhel de fundo",
-          "fishing": "Pesca",
+          "fishing": "pesca",
           "other_purse_seines": "Rede de Cerco",
           "set_gillnets": "Emalhe de Fundo"
         }
       },
-      "vessel_id": "Identificação da embarcação",
+      "vessel_id": "vessel_id",
       "target_species": {
         "keyword": "Espécie alvo",
         "enum": {
@@ -224,7 +224,7 @@
           "camarões": "Camarões",
           "Abrótea; Galo e Merluza": "Abrótea; Galo e Merluza",
           "peixes demersais": "Peixes demersais",
-          " Camarão-rosa": " Camarão-rosa",
+          " Camarão-rosa": "Camarão-rosa",
           "Dourado - atuns e afins": "Dourado - atuns e afins",
           "Albacoras - atuns e afins": "Albacoras - atuns e afins"
         }
@@ -246,8 +246,8 @@
     "description": "Embarcações de Pesca (VMS Brasil)",
     "schema": {
       "id": "id",
-      "flag": "bandeira",
-      "source": "fonte",
+      "flag": "flag",
+      "source": "source",
       "dataset": "dataset",
       "geartype": {
         "keyword": "Aparelho de pesca",
@@ -264,7 +264,7 @@
         }
       },
       "mainGear": "Petrecho principal",
-      "shipname": "Nome da embarcação",
+      "shipname": "Embarcação",
       "codMarinha": "codMarinha (TIE)",
       "fishingZone": "Área de pesca",
       "licenseCode": "Código da licença",
@@ -314,8 +314,8 @@
     "description": "Embacações não pesqueiras (VMS Brasil)",
     "schema": {
       "id": "id",
-      "flag": "bandeira",
-      "source": "fonte",
+      "flag": "flag",
+      "source": "source",
       "dataset": "dataset",
       "geartype": {
         "keyword": "Aparelho de pesca",
@@ -332,7 +332,7 @@
         }
       },
       "mainGear": "Petrecho principal",
-      "shipname": "Nome da Embarcação",
+      "shipname": "Embarcação",
       "codMarinha": "codMarinha (TIE)",
       "fishingZone": "Área de pesca",
       "licenseCode": "Código da licença",
@@ -378,14 +378,14 @@
     }
   },
   "private-bra-onyxsat-presence": {
-    "name": "VMS Brasil (Presença)",
+    "name": "VMS Brasil (Esforço de Pesca)",
     "description": "Presença (Brasil Privado)",
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "bandeira",
+      "flag": "flag",
       "shiptype": {
-        "keyword": "tipo de embarcação",
+        "keyword": "shiptype",
         "enum": {
           "fishing": "pesca",
           "non-fishing": "não pesqueiro"
@@ -400,18 +400,18 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "bandeira",
+      "flag": "flag",
       "vessel_id": "vessel_id",
       "vessel-groups": "vessel-groups"
     }
   },
   "private-costa-rica-fishing-effort": {
     "name": "Costa Rica VMS",
-    "description": "Dados de rastreamento por satélite são fornecidos pelo Instituto Costarriquenho de Pesca e Aquicultura. Os dados são coletados do sistema de rastreamento de embarcações pesqueira da Costa Rica e publicados com atraso de três dias, contendo informações sobre a localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica as posições em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada",
+    "description": "Description pending",
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "bandeira",
+      "flag": "flag",
       "fleet": {
         "keyword": "frota",
         "enum": {
@@ -455,7 +455,7 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "bandeira",
+      "flag": "flag",
       "hours": "horas",
       "shiptype": {
         "keyword": "shiptype",
@@ -500,9 +500,9 @@
     "schema": {
       "id": "id",
       "imo": "imo",
-      "flag": "bandeira",
+      "flag": "flag",
       "mmsi": "mmsi",
-      "source": "fonte",
+      "source": "source",
       "dataset": "dataset",
       "callsign": "callsign",
       "geartype": {
@@ -580,7 +580,7 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "bandeira",
+      "flag": "flag",
       "hours": "horas",
       "geartype": {
         "keyword": "Aparelho de pesca",
@@ -732,7 +732,7 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "bandeira",
+      "flag": "flag",
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
@@ -820,7 +820,7 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "bandeira",
+      "flag": "flag",
       "geartype": {
         "keyword": "Aparelho de pesca",
         "enum": {
@@ -839,8 +839,8 @@
     "description": "Embarcações",
     "schema": {
       "id": "id",
-      "flag": "bandeira",
-      "source": "fonte",
+      "flag": "flag",
+      "source": "source",
       "dataset": "dataset",
       "geartype": "Aparelho de pesca",
       "shipname": "Embarcação",
@@ -874,7 +874,7 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "bandeira",
+      "flag": "flag",
       "hours": "horas",
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
@@ -888,7 +888,7 @@
     "schema": {
       "id": "id",
       "imo": "imo",
-      "flag": "bandeira",
+      "flag": "flag",
       "length": "length",
       "source": "source",
       "geartype": "Aparelho de pesca",
@@ -905,7 +905,7 @@
     "description": "Dataset for VMS Panama (Private)",
     "schema": {
       "id": "id",
-      "flag": "bandeira",
+      "flag": "flag",
       "source": "source",
       "geartype": "Aparelho de pesca",
       "shipname": "Embarcação",
@@ -937,7 +937,7 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "bandeira",
+      "flag": "flag",
       "fleet": {
         "keyword": "frota",
         "enum": {
@@ -986,7 +986,7 @@
     "schema": {
       "id": "id",
       "beam": "beam",
-      "flag": "bandeira",
+      "flag": "flag",
       "casco": {
         "keyword": "casco",
         "enum": {
@@ -1015,7 +1015,7 @@
           "Foreign": "Foreign"
         }
       },
-      "source": "fonte",
+      "source": "source",
       "regimen": "regimen",
       "capacity": "capacity",
       "geartype": "Aparelho de pesca",
@@ -1034,7 +1034,7 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "bandeira",
+      "flag": "flag",
       "fleet": {
         "keyword": "frota",
         "enum": {
@@ -1055,7 +1055,7 @@
         "keyword": "Aparelho de pesca",
         "enum": {
           "drifting_longlines": "Espinhel de superfície",
-          "driftnets|fishing|pole_and_line|set_gillnets|set_longlines": "emalhe de superfície | pesca | vara e isca viva | emalhe de fundo | espinhel de fundo",
+          "driftnets|fishing|pole_and_line|set_gillnets|set_longlines": "rede de superfície | pesca | vara e isca viva | emalhe de fundo | espinhel de fundo",
           "set_longlines": "Espinhel de fundo",
           "purse_seines": "purse_seines",
           "driftnets|fishing|set_gillnets": "emalhe de superfície | pesca | emalhe de fundo",
@@ -1063,7 +1063,7 @@
           "drifting_longlines|squid_jiggers": "drifting_longlines|squid_jiggers",
           "pots_and_traps": "Armadilhas e potes",
           "set_gillnets": "Emalhe de Fundo",
-          "set_longlines|squid_jigger": "Espinhel de fundo | jigger lula",
+          "set_longlines|squid_jigger": "set_longlines|squid_jigger",
           "driftnets|pole_and_line|set_gillnets|set_longlines": "emalhe de superfície | vara e isca viva | emalhe de fundo | espinhel de fundo",
           "fishing": "pesca",
           "driftnets|set_gillnets": "emalhe de superfície | emalhe de fundo",
@@ -1239,10 +1239,10 @@
     }
   },
   "public-bra-onyxsat-fishing-effort": {
-    "name": "Brazil VMS",
+    "name": "Brasil VMS",
     "description": "Dados de rastreamento por satélite são fornecidos pela Secretaria de Aquicultura e Pesca. Os dados são coletados do sistema de rastreamento de embarcações pesqueira do Brasil e publicados com atraso de três dias, contendo informações sobre a identidade da embarcação, localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica para transmissão de localização em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações AIS, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada.",
     "schema": {
-      "flag": "bandeira",
+      "flag": "flag",
       "geartype": {
         "keyword": "Aparelho de pesca",
         "enum": {
@@ -1297,12 +1297,12 @@
     }
   },
   "public-bra-onyxsat-fishing-vessels": {
-    "name": "VMS Brasil (Embarcações pesqueiras)",
-    "description": "Embarcações pesqueiras (VMS Brasil)",
+    "name": "VMS Brasil (Embarcações de Pesca)",
+    "description": "Embarcações de Pesca (VMS Brasil)",
     "schema": {
       "id": "id",
-      "flag": "bandeira",
-      "source": "fonte",
+      "flag": "flag",
+      "source": "source",
       "dataset": "dataset",
       "geartype": {
         "keyword": "Aparelho de pesca",
@@ -1368,7 +1368,7 @@
     "schema": {
       "id": "id",
       "code": "código",
-      "source": "fonte",
+      "source": "source",
       "shipname": "Embarcação",
       "normalizedShipname": "nome normalizado",
       "lastTransmissionDate": "última data de transmissão",
@@ -1381,7 +1381,7 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "bandeira",
+      "flag": "flag",
       "vessel_id": "vessel_id",
       "vessel-groups": "vessel-groups"
     }
@@ -1403,7 +1403,7 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "bandeira",
+      "flag": "flag",
       "fleet": {
         "keyword": "frota",
         "enum": {
@@ -1446,7 +1446,7 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "bandeira",
+      "flag": "flag",
       "fleet": {
         "keyword": "frota",
         "enum": {
@@ -1466,11 +1466,11 @@
   },
   "public-costa-rica-fishing-effort": {
     "name": "Costa Rica VMS",
-    "description": "Dados de rastreamento por satélite são fornecidos pelo Instituto Costarriquenho de Pesca e Aquicultura. Os dados são coletados do sistema de rastreamento de embarcações pesqueira da Costa Rica e publicados com atraso de três dias, contendo informações sobre a localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica as posições em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada.",
+    "description": "Description pending",
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "bandeira",
+      "flag": "flag",
       "fleet": {
         "keyword": "frota",
         "enum": {
@@ -1491,8 +1491,8 @@
     "description": "Dataset for VMS Costa Rica (Public)",
     "schema": {
       "id": "id",
-      "flag": "bandeira",
-      "source": "fonte",
+      "flag": "flag",
+      "source": "source",
       "shipname": "Embarcação",
       "lastTransmissionDate": "última data de transmissão",
       "firstTransmissionDate": "primeira data de transmissão"
@@ -1514,7 +1514,7 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "bandeira",
+      "flag": "flag",
       "hours": "horas",
       "shiptype": {
         "keyword": "shiptype",
@@ -1533,8 +1533,8 @@
     "description": "Dataset for VMS Ecuador (Public)",
     "schema": {
       "id": "id",
-      "flag": "bandeira",
-      "source": "fonte",
+      "flag": "flag",
+      "source": "source",
       "shipname": "Embarcação",
       "nationalId": "nationalId",
       "normalized_shipname": "Embarcação normalizado",
@@ -1547,8 +1547,8 @@
     "description": "Dataset for VMS Ecuador (Public)",
     "schema": {
       "id": "id",
-      "flag": "bandeira",
-      "source": "fonte",
+      "flag": "flag",
+      "source": "source",
       "shipname": "Embarcação",
       "nationalId": "nationalId",
       "normalized_shipname": "Embarcação normalizado",
@@ -1729,7 +1729,7 @@
     "name": "AIS",
     "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as known or possible commercial fishing vessels, and applies a fishing presence algorithm to determine “apparent fishing activity” based on changes in vessel speed and direction. The algorithm classifies each AIS broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. AIS data as broadcast may vary in completeness, accuracy and quality. Also, data collection by satellite or terrestrial receivers may introduce errors through missing or inaccurate data. Global Fishing Watch’s fishing presence algorithm is a best effort mathematically to identify “apparent fishing activity.” As a result, it is possible that some fishing activity is not identified as such by Global Fishing Watch; conversely, Global Fishing Watch may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies designations of vessel fishing activity, including synonyms of the term “fishing activity,” such as “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch is taking steps to make sure fishing activity designations are as accurate as possible. Global Fishing Watch fishing presence algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
     "schema": {
-      "flag": "bandeira",
+      "flag": "flag",
       "geartype": {
         "keyword": "Aparelho de pesca",
         "enum": {
@@ -1763,9 +1763,9 @@
     "schema": {
       "id": "id",
       "imo": "imo",
-      "flag": "bandeira",
+      "flag": "flag",
       "mmsi": "mmsi",
-      "source": "fonte",
+      "source": "source",
       "dataset": "dataset",
       "callsign": "callsign",
       "geartype": {
@@ -1839,6 +1839,29 @@
       "event_mean_position": "event_mean_position"
     }
   },
+  "public-global-other-vessels": {
+    "name": "AIS (Other Vessels)",
+    "description": "Other vessels from AIS",
+    "schema": {
+      "id": "id",
+      "imo": "imo",
+      "flag": "flag",
+      "mmsi": "mmsi",
+      "source": "source",
+      "dataset": "dataset",
+      "callsign": "callsign",
+      "geartype": {
+        "keyword": "Aparelho de pesca",
+        "enum": {}
+      },
+      "msgCount": "msgCount",
+      "posCount": "posCount",
+      "shipname": "Embarcação",
+      "normalized_shipname": "Embarcação normalizado",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
+    }
+  },
   "public-global-presence": {
     "name": "AIS",
     "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as carriers. The activity layer displays a heatmap of vessel presence. The presence is determined by taking one position per day per vessel from the positions transmitted by the vessel's AIS.",
@@ -1894,9 +1917,9 @@
     "schema": {
       "id": "id",
       "imo": "imo",
-      "flag": "bandeira",
+      "flag": "flag",
       "mmsi": "mmsi",
-      "source": "fonte",
+      "source": "source",
       "dataset": "dataset",
       "callsign": "callsign",
       "geartype": {
@@ -1997,7 +2020,7 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "bandeira",
+      "flag": "flag",
       "hours": "horas",
       "geartype": {
         "keyword": "Aparelho de pesca",
@@ -2077,7 +2100,7 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "bandeira",
+      "flag": "flag",
       "geartype": {
         "keyword": "Aparelho de pesca",
         "enum": {
@@ -2107,7 +2130,7 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "bandeira",
+      "flag": "flag",
       "hours": "horas",
       "shiptype": {
         "keyword": "shiptype",
@@ -2127,8 +2150,8 @@
     "description": "Dataset for VMS Mexico (Public)",
     "schema": {
       "id": "id",
-      "flag": "bandeira",
-      "source": "fonte",
+      "flag": "flag",
+      "source": "source",
       "shipname": "Embarcação",
       "nationalId": "nationalId",
       "normalizedShipname": "nome normalizado",
@@ -2142,7 +2165,7 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "bandeira",
+      "flag": "flag",
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
@@ -2285,7 +2308,7 @@
   },
   "public-norway-presence": {
     "name": "Norway VMS",
-    "description": "Dados do sistema de monitoramento de embarcações são fornecidos pela Diretoria de Pesca da Noruega. Os dados são compilados utilizando o sistema de monitoramento de embarcações da Noruega e publicados com atraso de três dias, contendo informações sobre a identidade da embarcação, localização, velocidade, rumo, e movimentos. A camada de atividade apresenta um mapa de calor com a presença das embarcações. Cada ponto na camada de presença representa a posição de uma embarcação, é apresentada uma posição por hora de cada embarcação. Você pode selecionar uma posição para ver o rastreamento completo da embarcação.",
+    "description": "Description pending",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -2329,7 +2352,7 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "bandeira",
+      "flag": "flag",
       "hours": "horas",
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
@@ -2368,7 +2391,7 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "bandeira",
+      "flag": "flag",
       "fleet": {
         "keyword": "frota",
         "enum": {
@@ -2390,14 +2413,14 @@
         "keyword": "Aparelho de pesca",
         "enum": {
           "drifting_longlines": "Espinhel de superfície",
-          "driftnets|fishing|pole_and_line|set_gillnets|set_longlines": "emalhe de superfície | pesca | vara e isca viva | emalhe de fundo | espinhel de fundo",
+          "driftnets|fishing|pole_and_line|set_gillnets|set_longlines": "rede de superfície | pesca | vara e isca viva | emalhe de fundo | espinhel de fundo",
           "set_longlines": "Espinhel de fundo",
           "purse_seines": "purse_seines",
           "trawlers": "Arrasto",
           "drifting_longlines|squid_jiggers": "drifting_longlines|squid_jiggers",
           "pots_and_traps": "Armadilhas e potes",
           "set_gillnets": "Emalhe de Fundo",
-          "set_longlines|squid_jigger": "Espinhel de fundo | jigger lula",
+          "set_longlines|squid_jigger": "set_longlines|squid_jigger",
           "driftnets|pole_and_line|set_gillnets|set_longlines": "emalhe de superfície | vara e isca viva | emalhe de fundo | espinhel de fundo",
           "fishing": "pesca",
           "driftnets|set_gillnets": "emalhe de superfície | emalhe de fundo",
@@ -2428,7 +2451,7 @@
     "schema": {
       "lat": "lat",
       "lon": "lon",
-      "flag": "bandeira",
+      "flag": "flag",
       "fleet": {
         "keyword": "frota",
         "enum": {
@@ -2449,16 +2472,16 @@
         "keyword": "Aparelho de pesca",
         "enum": {
           "drifting_longlines": "Espinhel de superfície",
-          "driftnets|fishing|pole_and_line|set_gillnets|set_longlines": "emalhe de superfície | pesca | vara e isca viva | emalhe de fundo | espinhel de fundo",
+          "driftnets|fishing|pole_and_line|set_gillnets|set_longlines": "rede de superfície | pesca | vara e isca viva | emalhe de fundo | espinhel de fundo",
           "set_longlines": "Espinhel de fundo",
           "purse_seines": "purse_seines",
-          "driftnets|fishing|set_gillnets": "emalhe de superfície | emalhe de fundo",
+          "driftnets|fishing|set_gillnets": "emalhe de superfície | pesca | emalhe de fundo",
           "trawlers": "Arrasto",
           "drifting_longlines|squid_jiggers": "drifting_longlines|squid_jiggers",
           "pots_and_traps": "Armadilhas e potes",
           "set_gillnets": "Emalhe de Fundo",
-          "set_longlines|squid_jigger": "Espinhel de fundo | jigger lula",
-          "driftnets|pole_and_line|set_gillnets|set_longlines": "emalhe de superfície | emalhe de fundo | espinhel de fundo",
+          "set_longlines|squid_jigger": "set_longlines|squid_jigger",
+          "driftnets|pole_and_line|set_gillnets|set_longlines": "emalhe de superfície | vara e isca viva | emalhe de fundo | espinhel de fundo",
           "fishing": "pesca",
           "driftnets|set_gillnets": "emalhe de superfície | emalhe de fundo",
           "fishing|purse_seines": "fishing|purse_seines",
@@ -2663,11 +2686,11 @@
       "removal_of": {
         "keyword": "Nível de Proteção à Pesca",
         "enum": {
-          "1": "1. Pouco restritivo",
-          "2": "2. Menos restritivo",
-          "3": "3. Moderadamente restritivo",
-          "4": "4. Fortemente restritivo",
-          "5": "5. Totalmente restritivo"
+          "1": "1",
+          "2": "2",
+          "3": "3",
+          "4": "4",
+          "5": "5"
         }
       }
     }

@@ -170,53 +170,55 @@ const getExtendedFeatures = (
 
 let sourcesWithFeatureState: FeatureStateSource[] = []
 
+const isMapReady = (map?: Map) => {
+  return map && map.getStyle()
+}
+
 export const useFeatureState = (map?: Map) => {
   const cleanFeatureState = useCallback(
-    (state: FeatureStates = 'hover') => {
-      if (!map || !map.getStyle() || !map.isStyleLoaded()) {
-        setTimeout(() => cleanFeatureState(state), 200)
-        return
+    (state: FeatureStates = 'hover', sourcesToClean = sourcesWithFeatureState) => {
+      if (isMapReady(map)) {
+        sourcesToClean?.forEach((source: FeatureStateSource) => {
+          const feature = map?.getFeatureState(source)
+          // https://github.com/mapbox/mapbox-gl-js/issues/9461
+          if (map && feature?.hasOwnProperty(state)) {
+            map.removeFeatureState(source, state)
+          }
+        })
       }
-      sourcesWithFeatureState?.forEach((source: FeatureStateSource) => {
-        const feature = map?.getFeatureState(source)
-        // https://github.com/mapbox/mapbox-gl-js/issues/9461
-        if (feature?.hasOwnProperty(state)) {
-          map.removeFeatureState(source, state)
-        }
-      })
     },
     [map]
   )
 
   const updateFeatureState = useCallback(
     (extendedFeatures: FeatureStateSource[], state: FeatureStates = 'hover') => {
-      if (!map || !map.getStyle() || !map.isStyleLoaded()) {
-        setTimeout(() => updateFeatureState(extendedFeatures, state), 200)
-        return
-      }
-      const newSourcesWithClickState: FeatureStateSource[] = extendedFeatures.flatMap((feature) => {
-        if (!map || feature.id === undefined) {
-          return []
-        }
-        map.setFeatureState(
-          {
-            source: feature.source,
-            sourceLayer: feature.sourceLayer,
-            id: feature.id,
-          },
-          { [state]: true }
-        )
+      if (isMapReady(map)) {
+        const newSourcesWithClickState: FeatureStateSource[] = extendedFeatures.flatMap(
+          (feature) => {
+            if (!map || feature.id === undefined) {
+              return []
+            }
+            map.setFeatureState(
+              {
+                source: feature.source,
+                sourceLayer: feature.sourceLayer,
+                id: feature.id,
+              },
+              { [state]: true }
+            )
 
-        // Add source to active feature states
-        return {
-          state,
-          id: feature.id,
-          source: feature.source,
-          sourceLayer: feature.sourceLayer,
-        }
-      })
-      const previousSources = sourcesWithFeatureState.filter((source) => source.state !== state)
-      sourcesWithFeatureState = [...previousSources, ...newSourcesWithClickState]
+            // Add source to active feature states
+            return {
+              state,
+              id: feature.id,
+              source: feature.source,
+              sourceLayer: feature.sourceLayer,
+            }
+          }
+        )
+        const previousSources = sourcesWithFeatureState.filter((source) => source.state !== state)
+        sourcesWithFeatureState = [...previousSources, ...newSourcesWithClickState]
+      }
     },
     [map]
   )

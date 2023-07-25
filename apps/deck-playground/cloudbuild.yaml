@@ -12,7 +12,7 @@ steps:
     script: |
       if [ ! -d "node_modules" ]; then
         apk add git
-        yarn set version 3.5.1
+        yarn set version 3.6.1
         yarn -v
         yarn install --immutable
       fi
@@ -43,7 +43,7 @@ steps:
 
   - id: 'docker-prepare'
     waitFor: ['build-app']
-    name: node:14
+    name: node:18-alpine
     entrypoint: yarn
     args: ['nx', 'docker-prepare', 'deck-playground']
 
