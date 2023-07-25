@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic'
 import { useTranslation } from 'react-i18next'
 import { Menu, SplitView } from '@globalfishingwatch/ui-components'
 import { Workspace } from '@globalfishingwatch/api-types'
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
   selectIsReportLocation,
   selectIsWorkspaceLocation,
@@ -79,6 +80,7 @@ const Main = () => {
   const locationType = useSelector(selectLocationType)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const isTimeComparisonReport = useSelector(selectShowTimeComparison)
+  const isSmallScreen = useSmallScreen()
 
   const isRouteWithTimebar = locationType === VESSEL
   const isWorkspacesRouteWithTimebar =
@@ -91,7 +93,13 @@ const Main = () => {
 
   return (
     <Fragment>
-      <div className={cx(styles.mapContainer, { [styles.withTimebar]: showTimebar })}>
+      <div
+        className={cx(styles.mapContainer, {
+          [styles.withTimebar]: showTimebar,
+          [styles.withSmallScreenSwitch]: isSmallScreen,
+          [styles.withTimebarAndSmallScreenSwitch]: showTimebar && isSmallScreen,
+        })}
+      >
         <Map />
       </div>
       {showTimebar && <Timebar />}

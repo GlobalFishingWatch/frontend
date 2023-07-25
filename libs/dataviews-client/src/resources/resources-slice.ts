@@ -5,7 +5,7 @@ import { Feature, FeatureCollection, LineString } from 'geojson'
 import {
   mergeTrackChunks,
   trackValueArrayToSegments,
-  wrapFeaturesLongitudes,
+  wrapLineStringLongitudes,
 } from '@globalfishingwatch/data-transforms'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import {
@@ -94,7 +94,7 @@ export const fetchResourceThunk = createAsyncThunk(
         // Wrap longitudes
         const wrappedGeoJSON = {
           ...geoJSON,
-          features: wrapFeaturesLongitudes(geoJSON.features as Feature<LineString>[]),
+          features: wrapLineStringLongitudes(geoJSON.features as Feature<LineString>[]),
         }
 
         if (parseUserTrackCb) {
