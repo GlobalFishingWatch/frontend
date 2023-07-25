@@ -12,6 +12,17 @@
   height: calc(calc(var(--vh, 1vh) * 100) - var(--footer-height) - var(--timebar-height));
 }
 
+.withSmallScreenSwitch {
+  height: calc(calc(var(--vh, 1vh) * 100) - var(--footer-height) - var(--switch-height));
+}
+
+.withTimebarAndSmallScreenSwitch {
+  height: calc(
+    calc(var(--vh, 1vh) * 100) - var(--footer-height) - var(--timebar-height-small-screen) -
+      var(--switch-height)
+  );
+}
+
 @page {
   size: 21cm 29.7cm;
   margin: 1cm;

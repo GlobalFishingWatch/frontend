@@ -3,7 +3,9 @@
   --print-height: 10in;
   --color-help: #fff8cd;
   --timebar-height: 7.2rem;
+  --timebar-height-small-screen: 6rem;
   --footer-height: 2.4rem;
+  --switch-height: 4.4rem;
 }
 
 .printing * {
