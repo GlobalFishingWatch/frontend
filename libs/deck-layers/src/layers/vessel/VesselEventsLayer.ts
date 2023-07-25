@@ -1,4 +1,11 @@
-import { AccessorFunction, Color, DefaultProps, Position } from '@deck.gl/core/typed'
+import {
+  AccessorFunction,
+  Color,
+  DefaultProps,
+  Layer,
+  Position,
+  UpdateParameters,
+} from '@deck.gl/core/typed'
 import { ScatterplotLayer, ScatterplotLayerProps } from '@deck.gl/layers/typed'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
@@ -29,7 +36,7 @@ export type _VesselEventsLayerProps<DataT = any> = {
   getPosition?: AccessorFunction<DataT, Position> | Position
   getFilterValue: AccessorFunction<DataT, number>
   getPickingInfo?: AccessorFunction<DataT, string>
-  onEventsDataLoad?: AccessorFunction<DataT, void>
+  onDataChange?: (type: EventTypes, dataChange: string) => void
 }
 
 export type VesselEventsLayerProps<DataT = any> = _VesselEventsLayerProps<DataT> &
@@ -45,6 +52,7 @@ const defaultProps: DefaultProps<VesselEventsLayerProps> = {
   radiusMaxPixels: { type: 'accessor', value: 10 },
   lineWidthMinPixels: { type: 'accessor', value: 1 },
   onDataLoad: { type: 'function', value: () => {} },
+  onDataChange: { type: 'function', value: () => {} },
   getShape: {
     type: 'accessor',
     value: (d) => EVENT_TYPES_ORDINALS[d.type as EventTypes] ?? EVENT_TYPES_ORDINALS.fishing,
@@ -58,7 +66,7 @@ const defaultProps: DefaultProps<VesselEventsLayerProps> = {
 
 export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends ScatterplotLayer<
   DataT,
-  Required<VesselEventsLayerProps> & ExtraProps
+  VesselEventsLayerProps & ExtraProps
 > {
   static layerName = 'VesselEventsLayer'
   static defaultProps = defaultProps
@@ -104,6 +112,14 @@ export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends Scatterplot
           }
         `,
       },
+    }
+  }
+
+  updateState(params: UpdateParameters<Layer<any>>) {
+    super.updateState(params)
+    const { dataChanged } = params.changeFlags
+    if (dataChanged !== false && this.props.onDataChange) {
+      this.props.onDataChange(params.props.type, dataChanged as string)
     }
   }
 

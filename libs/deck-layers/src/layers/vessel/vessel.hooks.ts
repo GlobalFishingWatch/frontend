@@ -45,6 +45,12 @@ export const useVesselLayersLoaded = () =>
     l.dataStatus.some((d) => d.status !== 'finished') ? [] : l.id
   )
 export const useVesselLayerInstances = () => useAtomValue(vesselLayersInstancesSelector)
+export const useMapVesselLayer = (layerId: string) => {
+  const vesselLayers = useVesselLayers()
+  return useMemo(() => {
+    return vesselLayers.find((d) => d.id === layerId)
+  }, [layerId, vesselLayers])
+}
 export const useSetVesselLayers = (
   vesselLayersGenerator: VesselDeckLayersGenerator[],
   globalConfig: globalConfig,
@@ -129,11 +135,4 @@ export const useSetVesselLayers = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [start, end, highlightEndTime, highlightStartTime, vesselLayersGenerator])
   return useAtomValue(vesselLayersInstancesSelector)
-}
-
-export const useMapVesselLayer = (layerId: string) => {
-  const vesselLayers = useVesselLayers()
-  return useMemo(() => {
-    return vesselLayers.find((d) => d.id === layerId)
-  }, [layerId, vesselLayers])
 }

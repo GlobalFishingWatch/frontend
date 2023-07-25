@@ -1,5 +1,5 @@
 import { groupBy } from 'lodash'
-import { DatasetTypes, EventType, Resource } from '@globalfishingwatch/api-types'
+import { DatasetTypes, EventTypes, Resource } from '@globalfishingwatch/api-types'
 import {
   isHeatmapAnimatedDataview,
   isTrackDataview,
@@ -14,7 +14,6 @@ import {
   FourwingsDeckSublayer,
   VesselDeckLayersGenerator,
 } from '@globalfishingwatch/deck-layers'
-import { parseEvents } from '../loaders/vessels/eventsLoader'
 import { FourwingsDataviewCategory, FourwingsDeckLayerGenerator } from './types/fourwings'
 
 type DataviewsGeneratorResource = Record<string, Resource>
@@ -36,13 +35,10 @@ const getVesselDataviewGenerator = (
         resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)?.url
       }`,
       events: resolveDataviewDatasetResources(dataview, DatasetTypes.Events).map((resource) => {
-        const data = resources?.[resource.url]?.data
-        const eventType = resource.dataset?.subcategory as EventType
+        const eventType = resource.dataset?.subcategory as EventTypes
         return {
           type: eventType,
           url: `${API_GATEWAY}${resource.url}`,
-          // TODO: should we parse events just once?
-          ...(data && { data: parseEvents(data) }),
         }
       }),
     }

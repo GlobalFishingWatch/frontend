@@ -56,18 +56,24 @@ import styles from './Timebar.module.css'
 
 const ZOOM_LEVEL_TO_FOCUS_EVENT = 5
 
-const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents }) => {
+const TimebarHighlighterWrapper = () => {
+  const { highlightedEvents, dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const timebarVisualisation = useSelector(selectTimebarVisualisation)
   const highlightedTime = useSelector(selectHighlightedTime)
   const onHighlightChunks = useCallback(
     (chunks: HighlightedChunks) => {
       if (chunks?.tracksEvents?.length) {
-        dispatchHighlightedEvents(chunks.tracksEvents)
+        const hasDifferentEvents = chunks.tracksEvents?.some(
+          (event) => !highlightedEvents?.includes(event)
+        )
+        if (hasDifferentEvents) {
+          dispatchHighlightedEvents(chunks.tracksEvents)
+        }
       } else {
         dispatchHighlightedEvents(undefined)
       }
     },
-    [dispatchHighlightedEvents]
+    [dispatchHighlightedEvents, highlightedEvents]
   )
   const metadata = useActivityMetadata()
 
@@ -135,7 +141,7 @@ const TimebarWrapper = () => {
   const { t, ready, i18n } = useTranslation()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
   const { start, end, onTimebarChange } = useTimerangeConnect()
-  const { highlightedEvents, dispatchHighlightedEvents } = useHighlightedEventsConnect()
+  const { highlightedEvents } = useHighlightedEventsConnect()
   // const [highlightedEvents, dispatchHighlightedEvents] = useState([])
   const { dispatchDisableHighlightedTime } = useDisableHighlightTimeConnect()
   const { timebarVisualisation } = useTimebarVisualisationConnect()
@@ -363,7 +369,7 @@ const TimebarWrapper = () => {
               <TimebarActivityGraph visualisation={timebarVisualisation} />
             )}
             {timebarVisualisation === TimebarVisualisations.Vessel && getTracksComponents()}
-            <TimebarHighlighterWrapper dispatchHighlightedEvents={dispatchHighlightedEvents} />
+            <TimebarHighlighterWrapper />
           </Fragment>
         ) : null}
       </Timebar>

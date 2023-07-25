@@ -113,25 +113,10 @@ export const EVENTS_COLORS: Record<string, string> = {
   fishingLabels: '#163f89',
 }
 
-export const THINNING_LEVEL_BY_ZOOM: Record<
-  number,
-  { user: ThinningConfig; guest: ThinningConfig }
-> = {
-  0: {
-    user: THINNING_LEVELS[ThinningLevels.Insane],
-    guest: THINNING_LEVELS[ThinningLevels.Insane],
-  },
-  3: {
-    user: THINNING_LEVELS[ThinningLevels.VeryAggressive],
-    guest: THINNING_LEVELS[ThinningLevels.VeryAggressive],
-  },
-  6: {
-    user: THINNING_LEVELS[ThinningLevels.Default],
-    guest: THINNING_LEVELS[ThinningLevels.Aggressive],
-  },
+export const THINNING_CONFIG: { user: ThinningConfig; guest: ThinningConfig } = {
+  user: THINNING_LEVELS[ThinningLevels.Default],
+  guest: THINNING_LEVELS[ThinningLevels.Aggressive],
 }
-
-export const THINNING_LEVEL_ZOOMS = Object.keys(THINNING_LEVEL_BY_ZOOM) as unknown as number[]
 
 // Params to use replace instead of push for router history to make navigation easier
 export const REPLACE_URL_PARAMS = ['latitude', 'longitude', 'zoom']

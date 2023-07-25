@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { ResourceStatus } from '@globalfishingwatch/api-types'
-import { useVesselLayers } from '@globalfishingwatch/deck-layers'
+import { VesselLayerState, useVesselLayers } from '@globalfishingwatch/deck-layers'
 import {
   HighlighterCallbackFnArgs,
   TimebarChartData,
@@ -13,9 +13,35 @@ const getUserTrackHighlighterLabel = ({ chunk }: HighlighterCallbackFnArgs) => {
   return chunk.props?.id || null
 }
 
+const getVesselTimebarTrackMemoHash = (vessels: VesselLayerState[]) => {
+  return vessels
+    .flatMap((v) => {
+      const visible = v.instance.props.visible
+      const dataStatus = v.dataStatus
+        .flatMap((s) => (s.type === 'track' && s.status === ResourceStatus.Finished ? s.type : []))
+        .join('|')
+      return [visible, dataStatus].join('-')
+    })
+    .join(',')
+}
+
+const getVesselTimebarEventsMemoHash = (vessels: VesselLayerState[]) => {
+  return vessels
+    .flatMap((v) => {
+      const visible = v.instance.props.visible
+      const visibleEvents = v.instance.props.visibleEvents?.join('|')
+      const dataStatus = v.dataStatus
+        .flatMap((s) => (s.type !== 'track' && s.status === ResourceStatus.Finished ? s.type : []))
+        .join('|')
+      return [visible, visibleEvents, dataStatus].join('-')
+    })
+    .join(',')
+}
+
 export const useTimebarVesselTracks = () => {
   const vessels = useVesselLayers()
   const [tracks, setVesselTracks] = useState<TimebarChartData<any> | null>(null)
+  const tracksMemoHash = getVesselTimebarTrackMemoHash(vessels)
 
   useEffect(() => {
     requestAnimationFrame(() => {
@@ -47,7 +73,8 @@ export const useTimebarVesselTracks = () => {
         setVesselTracks(vesselTracks as any)
       }
     })
-  }, [vessels])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tracksMemoHash])
   return tracks
 }
 
@@ -68,7 +95,7 @@ const getTrackEventHighlighterLabel = ({ chunk, expanded }: HighlighterCallbackF
 export const useTimebarVesselEvents = () => {
   const vessels = useVesselLayers()
   const [events, setVesselEvents] = useState<TimebarChartData<TrackEventChunkProps> | null>(null)
-
+  const tracksMemoHash = getVesselTimebarEventsMemoHash(vessels)
   useEffect(() => {
     requestAnimationFrame(() => {
       if (vessels.length) {
@@ -93,6 +120,7 @@ export const useTimebarVesselEvents = () => {
         setVesselEvents(vesselEvents)
       }
     })
-  }, [vessels])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tracksMemoHash])
   return events
 }

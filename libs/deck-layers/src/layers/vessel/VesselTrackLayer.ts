@@ -1,9 +1,10 @@
 import type { NumericArray } from '@math.gl/core'
-import { AccessorFunction, DefaultProps } from '@deck.gl/core/typed'
+import { AccessorFunction, DefaultProps, Layer, UpdateParameters } from '@deck.gl/core/typed'
 import { PathLayer, PathLayerProps } from '@deck.gl/layers/typed'
 import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
 import { Segment } from '@globalfishingwatch/api-types'
 import { TIMESTAMP_MULTIPLIER, VesselTrackData } from '../../loaders/vessels/trackLoader'
+import { TRACK_LAYER_TYPE } from './VesselLayer'
 
 /** Properties added by VesselTrackLayer. */
 export type _VesselTrackLayerProps<DataT = any> = {
@@ -41,6 +42,10 @@ export type _VesselTrackLayerProps<DataT = any> = {
    */
   getTimestamps?: AccessorFunction<DataT, NumericArray>
   /**
+   * Callback on data changed to update
+   */
+  onDataChange?: (type: typeof TRACK_LAYER_TYPE, dataChange: string) => void
+  /**
    * Track API url accessor.
    */
   trackUrl?: string
@@ -59,6 +64,7 @@ const defaultProps: DefaultProps<VesselTrackLayerProps> = {
   highlightEndTime: { type: 'number', value: 0, min: 0 },
   getPath: { type: 'accessor', value: () => [0, 0] },
   getTimestamps: { type: 'accessor', value: (d) => d },
+  onDataChange: { type: 'function', value: () => {} },
   getColor: { type: 'accessor', value: () => [255, 255, 255, 100] },
   // getHighlightColor: { type: 'accessor', value: DEFAULT_HIGHLIGHT_COLOR_RGBA },
   trackUrl: { type: 'accessor', value: '' },
@@ -72,7 +78,7 @@ export type VesselTrackLayerProps<DataT = any> = _VesselTrackLayerProps<DataT> &
 /** Render paths that represent vessel trips. */
 export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
   DataT,
-  Required<VesselTrackLayerProps> & ExtraProps
+  VesselTrackLayerProps & ExtraProps
 > {
   static layerName = 'VesselTrackLayer'
   static defaultProps = defaultProps
@@ -142,6 +148,14 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
     }
   }
 
+  updateState(params: UpdateParameters<Layer<any>>) {
+    super.updateState(params)
+    const { dataChanged } = params.changeFlags
+    if (dataChanged !== false && this.props.onDataChange) {
+      this.props.onDataChange(params.props.type, dataChanged as string)
+    }
+  }
+
   draw(params: any) {
     const { startTime, endTime, highlightStartTime, highlightEndTime } = this.props
     params.uniforms = {
@@ -167,23 +181,24 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
       return []
     }
     const size = data.attributes.positions!?.size
-    const segments = segmentsIndex.map((segment, i) => {
+    const segments = segmentsIndex.map((segment, i, segments) => {
       const initialPoint = {
         longitude: positions[segment],
         latitude: positions[segment + 1],
         timestamp: timestamps[segment / size] * TIMESTAMP_MULTIPLIER,
       }
+      const nextSegmentIndex = segments[i + 1]
       const lastPoint =
-        i < segmentsIndex.length - 1
+        i === segmentsIndex.length - 1
           ? {
-              longitude: positions[segment + size],
-              latitude: positions[segment + size - 1],
-              timestamp: timestamps[segment + size - 1] * TIMESTAMP_MULTIPLIER,
+              longitude: positions[positions.length - size],
+              latitude: positions[positions.length - size + 1],
+              timestamp: timestamps[timestamps.length - 1] * TIMESTAMP_MULTIPLIER,
             }
           : {
-              longitude: positions[positions.length - size],
-              latitude: positions[positions.length - 1],
-              timestamp: timestamps[timestamps.length - 1] * TIMESTAMP_MULTIPLIER,
+              longitude: positions[nextSegmentIndex],
+              latitude: positions[nextSegmentIndex + 1],
+              timestamp: timestamps[nextSegmentIndex / size - 1] * TIMESTAMP_MULTIPLIER,
             }
       return [initialPoint, lastPoint]
     })
