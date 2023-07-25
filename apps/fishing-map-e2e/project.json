@@ -7,7 +7,7 @@
     "test": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx serve i18n-labels", "nx e2e fishing-map-e2e"],
+        "commands": ["nx serve i18n-labels", "nx e2e fishing-map-e2e --verbose"],
         "parallel": true
       }
     },

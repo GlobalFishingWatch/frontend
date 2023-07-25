@@ -7,7 +7,6 @@ describe('vms', () => {
   it('should include all sources available publicly', () => {
     // Be sure to use english or the names to test will fail
     switchLanguage('en')
-
     // Open the filter popup
     getVmsActivityLayerPanel().find(`[data-test*="activity-layer-panel-btn-filter-vms-"]`).click()
 

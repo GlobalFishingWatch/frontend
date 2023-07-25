@@ -159,7 +159,7 @@ steps:
 
   - id: 'smoke-test-e2e'
     waitFor: ['deploy-cloud-run']
-    name: cypress/included:12.10.0
+    name: cypress/included:12.17.1
     entrypoint: 'bash'
     env:
       - 'CYPRESS_basicAuth=$_BASIC_AUTH'
