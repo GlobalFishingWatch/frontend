@@ -47,6 +47,7 @@ import { ReactComponent as GFWLogo } from '../assets/icons/gfw-logo.svg'
 import { ReactComponent as Graph } from '../assets/icons/graph.svg'
 import { ReactComponent as Heatmap } from '../assets/icons/heatmap.svg'
 import { ReactComponent as Help } from '../assets/icons/help.svg'
+import { ReactComponent as History } from '../assets/icons/history.svg'
 import { ReactComponent as Home } from '../assets/icons/home.svg'
 import { ReactComponent as Info } from '../assets/icons/info.svg'
 import { ReactComponent as Language } from '../assets/icons/language.svg'
@@ -139,6 +140,7 @@ export const IconComponents = {
   graph: Graph,
   heatmap: Heatmap,
   help: Help,
+  history: History,
   home: Home,
   info: Info,
   language: Language,

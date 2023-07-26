@@ -1,5 +1,11 @@
 import { get } from 'lodash'
-import { IdentityVessel, VesselCoreInfo, VesselRegistryInfo } from '@globalfishingwatch/api-types'
+import {
+  IdentityVessel,
+  VesselCoreInfo,
+  VesselRegistryAuthorization,
+  VesselRegistryInfo,
+  VesselRegistryOwner,
+} from '@globalfishingwatch/api-types'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { getUTCDateTime } from 'utils/dates'
 
@@ -17,6 +23,19 @@ export function getVesselProperty<P = string>(
 
 export const getVoyageTimeRange = (events: ActivityEvent[]) => {
   return { start: events?.[0]?.end, end: events?.[events.length - 1]?.start }
+}
+
+export function filterRegistryInfoByDates<I = VesselRegistryAuthorization | VesselRegistryOwner>(
+  registryInfo: I[],
+  dates: { start: string; end: string }
+): I[] {
+  if (!registryInfo?.length) return []
+  const info = registryInfo
+    ?.filter((info: any) => info.dateFrom <= dates.end && info.dateTo >= dates.start)
+    ?.sort((a: any, b: any) => {
+      return a.dateTo > b.dateTo ? -1 : 1
+    })
+  return info
 }
 
 export type CsvConfig = {

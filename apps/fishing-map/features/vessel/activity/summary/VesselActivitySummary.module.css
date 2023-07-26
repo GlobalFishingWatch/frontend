@@ -5,6 +5,10 @@
   color: var(--color-secondary-blue);
 }
 
+.summary {
+  padding-right: var(--space-L);
+}
+
 .eventsCount strong {
   font-weight: 400;
   color: var(--color-primary-blue);

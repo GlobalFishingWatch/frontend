@@ -2,46 +2,48 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { saveAs } from 'file-saver'
-import {
-  Button,
-  Icon,
-  IconButton,
-  TransmissionsTimeline,
-  TransmissionsTimelineProps,
-} from '@globalfishingwatch/ui-components'
-import I18nDate from 'features/i18n/i18nDate'
+import { Fragment } from 'react'
+import { Button, Icon, IconButton, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
+import { VesselRegistryOwner } from '@globalfishingwatch/api-types'
+import I18nDate, { formatI18nDate } from 'features/i18n/i18nDate'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
 import { Locale } from 'types'
-import { IDENTITY_FIELD_GROUPS } from 'features/vessel/vessel.config'
+import { IDENTITY_FIELD_GROUPS, REGISTRY_FIELD_GROUPS } from 'features/vessel/vessel.config'
 import DataTerminology from 'features/vessel/DataTerminology'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
-import { formatInfoField } from 'utils/info'
-import { getVesselProperty, parseVesselToCSV } from 'features/vessel/vessel.utils'
+import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
+import {
+  filterRegistryInfoByDates,
+  getVesselProperty,
+  parseVesselToCSV,
+} from 'features/vessel/vessel.utils'
 import { selectVesselRegistryIndex } from 'features/vessel/vessel.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import styles from './VesselIdentity.module.css'
 
 const VesselIdentity = () => {
   const { t, i18n } = useTranslation()
-  const currentRegistryIndex = useSelector(selectVesselRegistryIndex)
+  const registryIndex = useSelector(selectVesselRegistryIndex)
   const { dispatchQueryParams } = useLocationConnect()
   const vessel = useSelector(selectVesselInfoData)
 
-  const transmissionStart = getVesselProperty(vessel, {
+  const start = getVesselProperty(vessel, {
     property: 'transmissionDateFrom',
-    registryIndex: currentRegistryIndex,
+    registryIndex,
   })
-  const transmissionEnd = getVesselProperty(vessel, {
+
+  const end = getVesselProperty(vessel, {
     property: 'transmissionDateTo',
-    registryIndex: currentRegistryIndex,
+    registryIndex,
   })
+
   const transmissionDates =
     vessel?.registryInfo?.map((registry) => ({
       start: registry.transmissionDateFrom,
       end: registry.transmissionDateTo,
     })) ?? []
 
-  const onRegistryIndexChange: TransmissionsTimelineProps['onDateClick'] = (dates, index) => {
+  const setRegistryIndex = (index: number) => {
     dispatchQueryParams({ vesselRegistryIndex: index })
   }
 
@@ -53,12 +55,21 @@ const VesselIdentity = () => {
     }
   }
 
+  const isLatestInfo = registryIndex === 0
+
   return (
     <div className={styles.container}>
       <div className={styles.titleContainer}>
         <h3>
           <label>
-            {t('vessel.identity', 'Identity')} - {t('vessel.identityLatest', 'Latest values')}
+            {isLatestInfo ? (
+              t('vessel.latestIdentity', 'Latest identity')
+            ) : (
+              <Fragment>
+                {t('vessel.identity', 'Identity')}{' '}
+                {t('common.dateRange', { start: formatI18nDate(start), end: formatI18nDate(end) })}
+              </Fragment>
+            )}
           </label>
         </h3>
         <div className={styles.actionsContainer}>
@@ -70,7 +81,7 @@ const VesselIdentity = () => {
             tooltip={t('common.comingSoon', 'Coming Soon!')}
             tooltipPlacement="top"
           >
-            {t('vessel.identitySeeHistoric', 'See all historical values')} <Icon icon="download" />
+            {t('vessel.identitySeeHistory', 'See identity history')} <Icon icon="history" />
           </Button>
           <IconButton
             icon="download"
@@ -87,45 +98,90 @@ const VesselIdentity = () => {
           {IDENTITY_FIELD_GROUPS.map((fieldGroup, index) => (
             <div key={index} className={cx(styles.fieldGroup, styles.border)}>
               {/* TODO: make fields more dynamic to account for VMS */}
-              {fieldGroup.map((field) => (
-                <div key={field.key}>
-                  <label>
-                    {t(`vessel.${field.label}` as any, field.label)}
-                    {field.terminologyKey && (
-                      <DataTerminology
-                        size="tiny"
-                        type="default"
-                        title={t(`vessel.${field.label}` as any, field.label)}
-                      >
-                        {t(field.terminologyKey as any, field.terminologyKey)}
-                      </DataTerminology>
+              {fieldGroup.map((field) => {
+                return (
+                  <div key={field.key}>
+                    <label>
+                      {t(`vessel.${field.label}` as any, field.label)}
+                      {field.terminologyKey && (
+                        <DataTerminology
+                          size="tiny"
+                          type="default"
+                          title={t(`vessel.${field.label}` as any, field.label)}
+                        >
+                          {t(field.terminologyKey as any, field.terminologyKey)}
+                        </DataTerminology>
+                      )}
+                    </label>
+                    {formatInfoField(
+                      getVesselProperty(vessel, {
+                        property: field.key as any,
+                        registryIndex: registryIndex,
+                      }),
+                      field.label
                     )}
-                  </label>
-                  {formatInfoField(
-                    getVesselProperty(vessel, {
-                      property: field.key as any,
-                      registryIndex: currentRegistryIndex,
-                    }),
-                    field.key
-                  )}
-                </div>
-              ))}
+                  </div>
+                )
+              })}
             </div>
           ))}
+          {REGISTRY_FIELD_GROUPS.map(({ key, label }) => {
+            const filteredRegistryInfo = filterRegistryInfoByDates(vessel[key] || [], {
+              start,
+              end,
+            })
+            return (
+              <div className={cx(styles.fieldGroup, styles.border)}>
+                <div className={styles.threeCells}>
+                  <label>{t(`vessel.${label}` as any, label)}</label>
+                  {filteredRegistryInfo?.length > 0 ? (
+                    <ul>
+                      {filteredRegistryInfo.map((registry) => (
+                        <li>
+                          {key === 'registryOwners' ? (
+                            <Fragment>
+                              {(registry as VesselRegistryOwner).name} (
+                              {formatInfoField((registry as VesselRegistryOwner).flag, 'flag')})
+                            </Fragment>
+                          ) : (
+                            registry.sourceCode.join(',')
+                          )}{' '}
+                          <span className={styles.secondary}>
+                            <I18nDate date={registry.dateFrom} /> -{' '}
+                            <I18nDate date={registry.dateTo} />
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    EMPTY_FIELD_PLACEHOLDER
+                  )}
+                </div>
+              </div>
+            )
+          })}
           <div className={styles.fieldGroup}>
-            <div className={styles.twoCells}>
-              <label>{t('vessel.transmissionDates', 'Transmission dates')}</label>
-              <span>
-                {t('common.from', 'From')} <I18nDate date={transmissionStart} />{' '}
-                {t('common.to', 'to')} <I18nDate date={transmissionEnd} />
-              </span>
-              <TransmissionsTimeline
-                dates={transmissionDates}
-                onDateClick={onRegistryIndexChange}
-                currentDateIndex={currentRegistryIndex}
-                firstYearOfData={FIRST_YEAR_OF_DATA}
-                locale={i18n.language as Locale}
-              />
+            <div className={cx(styles.threeCells)}>
+              <label>{t('vessel.identityHistory' as any, 'Identity history')}</label>
+              <div className={cx(styles.transmission)}>
+                <IconButton
+                  size="small"
+                  icon="arrow-left"
+                  onClick={() => setRegistryIndex(registryIndex - 1)}
+                />
+                <TransmissionsTimeline
+                  dates={transmissionDates}
+                  onDateClick={(dates, index) => setRegistryIndex(index)}
+                  currentDateIndex={registryIndex}
+                  firstYearOfData={FIRST_YEAR_OF_DATA}
+                  locale={i18n.language as Locale}
+                />
+                <IconButton
+                  size="small"
+                  icon="arrow-right"
+                  onClick={() => setRegistryIndex(registryIndex + 1)}
+                />
+              </div>
             </div>
           </div>
         </div>

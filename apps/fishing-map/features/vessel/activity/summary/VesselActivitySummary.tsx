@@ -42,7 +42,7 @@ export const VesselActivitySummary = () => {
   return (
     <div>
       <label>{t('common.summary', 'Summary')}</label>
-      <ul>
+      <ul className={styles.summary}>
         <li>
           {t('vessel.activeIn', 'Active in')}{' '}
           {REGIONS_PRIORITY.map((regionType, index) => {
