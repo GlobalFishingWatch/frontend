@@ -38,9 +38,3 @@
 .secondary {
   color: var(--color-secondary-blue);
 }
-
-.transmission {
-  display: flex;
-  align-items: center;
-  gap: var(--space-S);
-}

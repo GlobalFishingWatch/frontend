@@ -3,11 +3,9 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { saveAs } from 'file-saver'
 import { Fragment } from 'react'
-import { Button, Icon, IconButton, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
+import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { VesselRegistryOwner } from '@globalfishingwatch/api-types'
 import I18nDate from 'features/i18n/i18nDate'
-import { FIRST_YEAR_OF_DATA } from 'data/config'
-import { Locale } from 'types'
 import { IDENTITY_FIELD_GROUPS, REGISTRY_FIELD_GROUPS } from 'features/vessel/vessel.config'
 import DataTerminology from 'features/vessel/DataTerminology'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
@@ -18,13 +16,12 @@ import {
   parseVesselToCSV,
 } from 'features/vessel/vessel.utils'
 import { selectVesselRegistryIndex } from 'features/vessel/vessel.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
+import VesselIdentitySelector from 'features/vessel/VesselIdentitySelector'
 import styles from './VesselIdentity.module.css'
 
 const VesselIdentity = () => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const registryIndex = useSelector(selectVesselRegistryIndex)
-  const { dispatchQueryParams } = useLocationConnect()
   const vessel = useSelector(selectVesselInfoData)
 
   const start = getVesselProperty(vessel, {
@@ -36,16 +33,6 @@ const VesselIdentity = () => {
     property: 'transmissionDateTo',
     registryIndex,
   })
-
-  const transmissionDates =
-    vessel?.registryInfo?.map((registry) => ({
-      start: registry.transmissionDateFrom,
-      end: registry.transmissionDateTo,
-    })) ?? []
-
-  const setRegistryIndex = (index: number) => {
-    dispatchQueryParams({ vesselRegistryIndex: index })
-  }
 
   const onDownloadClick = () => {
     if (vessel) {
@@ -161,29 +148,6 @@ const VesselIdentity = () => {
               </div>
             )
           })}
-          <div className={styles.fieldGroup}>
-            <div className={cx(styles.threeCells)}>
-              <div className={cx(styles.transmission)}>
-                <IconButton
-                  size="small"
-                  icon="arrow-left"
-                  onClick={() => setRegistryIndex(registryIndex - 1)}
-                />
-                <TransmissionsTimeline
-                  dates={transmissionDates}
-                  onDateClick={(dates, index) => setRegistryIndex(index)}
-                  currentDateIndex={registryIndex}
-                  firstYearOfData={FIRST_YEAR_OF_DATA}
-                  locale={i18n.language as Locale}
-                />
-                <IconButton
-                  size="small"
-                  icon="arrow-right"
-                  onClick={() => setRegistryIndex(registryIndex + 1)}
-                />
-              </div>
-            </div>
-          </div>
         </div>
       )}
     </div>
