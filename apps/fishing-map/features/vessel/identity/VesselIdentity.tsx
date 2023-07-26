@@ -112,19 +112,19 @@ const VesselIdentity = () => {
               })}
             </div>
           ))}
-          {REGISTRY_FIELD_GROUPS.map(({ key, label }) => {
+          {REGISTRY_FIELD_GROUPS.map(({ key, label }, index) => {
             const filteredRegistryInfo = filterRegistryInfoByDates(vessel[key] || [], {
               start,
               end,
             })
             return (
-              <div className={styles.fieldGroup}>
+              <div className={styles.fieldGroup} key={index}>
                 <div className={styles.threeCells}>
                   <label>{t(`vessel.${label}` as any, label)}</label>
                   {filteredRegistryInfo?.length > 0 ? (
                     <ul>
-                      {filteredRegistryInfo.map((registry) => (
-                        <li>
+                      {filteredRegistryInfo.map((registry, index) => (
+                        <li key={index}>
                           {key === 'registryOwners' ? (
                             <Fragment>
                               {(registry as VesselRegistryOwner).name} (

@@ -26,6 +26,7 @@ const VesselIdentitySelector = () => {
         const end = formatI18nDate(registry.transmissionDateTo)
         return (
           <li
+            key={index}
             className={cx(styles.icon, { [styles.selected]: index === registryIndex })}
             onClick={() => setRegistryIndex(index)}
           >
