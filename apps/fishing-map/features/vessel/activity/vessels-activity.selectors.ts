@@ -14,26 +14,40 @@ export const selectVesselEventsLoading = createSelector([selectEventsResources],
   resources.some((resource) => resource?.status === ResourceStatus.Loading)
 )
 
-export const selectActivityRegions = createSelector(
+export const selectActivitySummary = createSelector(
   [selectVesselEventsFilteredByTimerange],
   (events) => {
-    const activityRegions = events.reduce((acc, e) => {
-      Object.entries(e.regions || {}).forEach(([regionType, ids]) => {
-        if (!acc[regionType]) {
-          acc[regionType] = []
-        }
-        ids.forEach((id) => {
-          const index = acc[regionType].findIndex((r) => r.id === id)
-          if (index === -1) {
-            acc[regionType].push({ id, count: 1 })
-          } else {
-            acc[regionType][index].count++
+    const { activityRegions, mostVisitedPorts } = events.reduce(
+      (acc, e) => {
+        Object.entries(e.regions || {}).forEach(([regionType, ids]) => {
+          if (!acc.activityRegions[regionType]) {
+            acc.activityRegions[regionType] = []
           }
+          ids.forEach((id) => {
+            const index = acc.activityRegions[regionType].findIndex((r) => r.id === id)
+            if (index === -1) {
+              acc.activityRegions[regionType].push({ id, count: 1 })
+            } else {
+              acc.activityRegions[regionType][index].count++
+            }
+          })
         })
-      })
-      return acc
-    }, {})
-    return activityRegions
+        const portName = e.port_visit?.intermediateAnchorage?.name
+        if (!portName) return acc
+        if (!acc.mostVisitedPorts[portName]) {
+          acc.mostVisitedPorts[portName] = 0
+        }
+        acc.mostVisitedPorts[portName]++
+        return acc
+      },
+      { activityRegions: {}, mostVisitedPorts: {} as Record<string, number> }
+    )
+    return {
+      activityRegions,
+      mostVisitedPorts: Object.entries(mostVisitedPorts)
+        .sort((a, b) => b[1] - a[1])
+        .map(([port, count]) => ({ port, count })),
+    }
   }
 )
 
@@ -63,6 +77,7 @@ export const selectEventsGroupedByVoyages = createSelector(
     return groupBy(eventsListWithEntryExitEvents, 'voyage')
   }
 )
+
 export const selectVoyagesNumber = createSelector([selectEventsGroupedByVoyages], (voyages) => {
   return Object.keys(voyages).length
 })

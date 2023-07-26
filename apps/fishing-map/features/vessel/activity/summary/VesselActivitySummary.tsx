@@ -1,21 +1,43 @@
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useMemo } from 'react'
 import { Icon, IconType, Tooltip } from '@globalfishingwatch/ui-components'
+import { EventTypes } from '@globalfishingwatch/api-types'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import useActivityEventConnect from 'features/vessel/activity/event/event.hook'
 import {
-  selectActivityRegions,
+  selectActivitySummary,
   selectEventsGroupedByType,
 } from 'features/vessel/activity/vessels-activity.selectors'
 import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
 import styles from './VesselActivitySummary.module.css'
 
+const MAX_PORTS = 3
+
 export const VesselActivitySummary = () => {
   const { t } = useTranslation()
   const eventsByType = useSelector(selectEventsGroupedByType)
-  const activityRegions = useSelector(selectActivityRegions)
-  const activityRegionsLength = Object.keys(activityRegions).length
   const { getRegionNamesByType } = useActivityEventConnect()
+  const { activityRegions, mostVisitedPorts } = useSelector(selectActivitySummary)
+  const activityRegionsLength = Object.keys(activityRegions).length
+  const threeMostVisitedPorts = mostVisitedPorts.slice(0, MAX_PORTS)
+  const restMostVisitedPorts = mostVisitedPorts.slice(MAX_PORTS)
+  const restTooltipContent = useMemo(
+    () =>
+      restMostVisitedPorts.length > 0 && (
+        <ul>
+          {restMostVisitedPorts.map(({ port, count }) => {
+            return (
+              <li key={port}>
+                {port} ({<I18nNumber number={count} />}{' '}
+                {t('common.event', { defaultValue: 'events', count })})
+              </li>
+            )
+          })}
+        </ul>
+      ),
+    [restMostVisitedPorts, t]
+  )
 
   return (
     <div>
@@ -77,6 +99,30 @@ export const VesselActivitySummary = () => {
                 defaultValue: eventType,
                 count: events.length,
               })}
+              {eventType === EventTypes.Port && threeMostVisitedPorts.length > 0 && (
+                <span>
+                  (
+                  {threeMostVisitedPorts.map(({ port, count }) => {
+                    return (
+                      <Tooltip
+                        key={port}
+                        content={`${count} ${t('common.event', { defaultValue: 'events', count })}`}
+                      >
+                        <span>{port}</span>
+                      </Tooltip>
+                    )
+                  })}
+                  {restMostVisitedPorts.length > 0 && (
+                    <Tooltip content={restTooltipContent}>
+                      <span>{` ${t('common.and', 'and')} ${restMostVisitedPorts.length} ${t(
+                        'common.more',
+                        'more'
+                      )}`}</span>
+                    </Tooltip>
+                  )}
+                  )
+                </span>
+              )}
             </li>
           )
         })}
