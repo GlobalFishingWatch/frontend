@@ -25,12 +25,16 @@ export type VesselTMTInfo = {
   type?: string
 }
 
-export type VesselCoreInfo = VesselInfo & {
+type IdentityShiptypeByYear = {
+  shiptype: VesselType
+  years: number[]
+}
+export type SelfReportedInfo = VesselInfo & {
   id: string
   firstTransmissionDate: string
   lastTransmissionDate: string
   ssvid: string
-  years?: number[]
+  shiptypesByYear?: IdentityShiptypeByYear[]
   posCount?: number
   msgCount?: number
   // VMS Custom data
@@ -53,23 +57,23 @@ export type VesselRegistryInfo = VesselInfo & {
   vesselInfoReference: string
 }
 
-export type VesselRegistryOwner = {
-  owner: string
-  ownerFlag: string
+export type VesselRegistryProperty = {
+  dateFrom: string
+  dateTo: string
   recordId: string
   sourceCode: string[]
 }
 
-export type VesselRegistryAuthorization = {
-  authorizedFrom: string
-  authorizedTo: string
-  recordId: string
-  sourceCode: string[]
+export type VesselRegistryOwner = VesselRegistryProperty & {
+  name: string
+  flag: string
 }
+
+export type VesselRegistryAuthorization = VesselRegistryProperty
 
 export interface IdentityVessel {
   dataset: string
-  coreInfo: VesselCoreInfo
+  selfReportedInfo: SelfReportedInfo
   registryInfo?: VesselRegistryInfo[]
   registryOwners?: VesselRegistryOwner[]
   registryAuthorizations?: VesselRegistryAuthorization[]

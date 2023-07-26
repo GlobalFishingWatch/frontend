@@ -39,18 +39,18 @@ const VesselActivity = () => {
       </div>
       <div className={styles.activityTitleContainer}>
         <label>
-          {activityMode === 'voyages'
+          {activityMode === 'voyage'
             ? t('vessel.activityByVoyages', 'Timeline by voyages')
-            : t('vessel.activityGroupByType', 'Group by type')}
+            : t('vessel.activityByType', 'Activity by type')}
         </label>
         <Button
           size="small"
           type="border-secondary"
-          onClick={(e) => setActivityMode(activityMode === 'type' ? 'voyages' : 'type')}
+          onClick={(e) => setActivityMode(activityMode === 'type' ? 'voyage' : 'type')}
         >
-          {activityMode === 'voyages'
+          {activityMode === 'voyage'
             ? t('vessel.activityGroupByType', 'Group by type')
-            : t('vessel.activityByVoyages', 'Timeline by voyages')}
+            : t('vessel.activityGroupByVoyages', 'Group by voyages')}
         </Button>
       </div>
       {eventsLoading && (
@@ -59,7 +59,7 @@ const VesselActivity = () => {
         </div>
       )}
       {!eventsLoading && activityMode === 'type' && <ActivityByType />}
-      {!eventsLoading && activityMode === 'voyages' && <ActivityByVoyage />}
+      {!eventsLoading && activityMode === 'voyage' && <ActivityByVoyage />}
     </Fragment>
   )
 }

@@ -245,6 +245,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
       if (!vessel) {
         return []
       }
+      const vesselId = vessel.selfReportedInfo?.id
       const vesselDatasets = {
         info: vessel.info,
         track: vessel.track,
@@ -252,9 +253,9 @@ export const selectAllDataviewInstancesResolved = createSelector(
           events: vessel?.events,
         }),
       }
-      const dataviewInstance = getVesselDataviewInstance(vessel, vesselDatasets)
+      const dataviewInstance = getVesselDataviewInstance({ id: vesselId }, vesselDatasets)
       const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
-        vessel.id,
+        vesselId,
         vesselDatasets
       )
       return resolveDataviews([{ ...dataviewInstance, datasetsConfig }], dataviews, datasets)

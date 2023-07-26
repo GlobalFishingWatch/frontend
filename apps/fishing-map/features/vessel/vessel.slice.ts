@@ -1,16 +1,7 @@
-import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { HYDRATE } from 'next-redux-wrapper'
 import { GFWAPI, ParsedAPIError, parseAPIError } from '@globalfishingwatch/api-client'
-import {
-  Dataset,
-  DatasetTypes,
-  EndpointId,
-  IdentityVessel,
-  VesselCoreInfo,
-  VesselRegistryAuthorization,
-  VesselRegistryInfo,
-  VesselRegistryOwner,
-} from '@globalfishingwatch/api-types'
+import { Dataset, DatasetTypes, EndpointId, IdentityVessel } from '@globalfishingwatch/api-types'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
@@ -24,17 +15,11 @@ import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { PROFILE_DATAVIEW_SLUGS } from 'data/workspaces'
 // import { TEMPLATE_VESSEL_DATAVIEW_SLUG } from 'data/workspaces'
 
-export type VesselData = VesselCoreInfo &
-  VesselRegistryInfo &
-  VesselInstanceDatasets & {
-    // TODO decide how to manage these types based on API response format
-    owner?: VesselRegistryOwner
-    authorization?: VesselRegistryAuthorization
-  }
+type VesselData = IdentityVessel & VesselInstanceDatasets
 interface VesselState {
   info: {
     status: AsyncReducerStatus
-    data: (IdentityVessel & VesselInstanceDatasets) | null
+    data: VesselData | null
     error: ParsedAPIError | null
   }
 }
@@ -85,9 +70,9 @@ export const fetchVesselInfoThunk = createAsyncThunk(
         const vessel = await GFWAPI.fetch<IdentityVessel>(url)
         return {
           ...vessel,
-          coreInfo: {
-            ...vessel.coreInfo,
-            firstTransmissionDate: vessel?.coreInfo?.firstTransmissionDate || '',
+          selfReportedInfo: {
+            ...vessel.selfReportedInfo,
+            firstTransmissionDate: vessel?.selfReportedInfo?.firstTransmissionDate || '',
           },
           info: datasetId,
           track: trackDatasetId,
@@ -97,7 +82,7 @@ export const fetchVesselInfoThunk = createAsyncThunk(
             vessel?.registryInfo?.sort(
               (a, b) => Number(b.latestVesselInfo) - Number(a.latestVesselInfo)
             ) || [],
-        }
+        } as VesselData
       } else {
         return rejectWithValue(action.payload)
       }
@@ -150,21 +135,10 @@ const vesselSlice = createSlice({
 
 export const { resetVesselState } = vesselSlice.actions
 
-export const selectVesselInfo = (state: VesselSliceState) => state.vessel.info.data
+export const selectVesselInfoData = (state: VesselSliceState) => state.vessel.info.data
 export const selectVesselInfoDataId = (state: VesselSliceState) =>
-  state.vessel.info.data?.coreInfo?.id
+  state.vessel.info.data?.selfReportedInfo?.id
 export const selectVesselInfoStatus = (state: VesselSliceState) => state.vessel.info.status
 export const selectVesselInfoError = (state: VesselSliceState) => state.vessel.info.error
-
-export const selectVesselInfoData = createSelector([selectVesselInfo], (vesselInfo) => {
-  if (!vesselInfo) return null
-  const vessel = {
-    ...(vesselInfo.registryInfo?.[0] || vesselInfo.coreInfo),
-    owner: vesselInfo.registryOwners?.[0],
-    authorization: vesselInfo.registryAuthorizations?.[0],
-  }
-  const { info, track, events } = vesselInfo
-  return { ...vessel, id: vesselInfo?.coreInfo?.id, info, track, events } as VesselData
-})
 
 export default vesselSlice.reducer

@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   height: calc(100vh - var(--header-height) - var(--tabs-height));
+  margin-bottom: var(--space-XL);
 }
 
 .voyageEvent:not(:last-child)::after,

@@ -1,7 +1,42 @@
 import { get } from 'lodash'
-import { VesselData } from 'features/vessel/vessel.slice'
+import {
+  IdentityVessel,
+  SelfReportedInfo,
+  VesselRegistryAuthorization,
+  VesselRegistryInfo,
+  VesselRegistryOwner,
+} from '@globalfishingwatch/api-types'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { getUTCDateTime } from 'utils/dates'
+
+type VesselIdentityProperty = keyof SelfReportedInfo | keyof VesselRegistryInfo
+export function getVesselProperty<P = string>(
+  vessel: IdentityVessel | null,
+  { property, registryIndex = 0 }: { property: VesselIdentityProperty; registryIndex?: number }
+): P {
+  if (!vessel) return '' as P
+  if (vessel.registryInfo?.length) {
+    return vessel.registryInfo[registryIndex]?.[property]
+  }
+  return vessel.selfReportedInfo?.[property]
+}
+
+export const getVoyageTimeRange = (events: ActivityEvent[]) => {
+  return { start: events?.[0]?.end, end: events?.[events.length - 1]?.start }
+}
+
+export function filterRegistryInfoByDates<I = VesselRegistryAuthorization | VesselRegistryOwner>(
+  registryInfo: I[],
+  dates: { start: string; end: string }
+): I[] {
+  if (!registryInfo?.length) return []
+  const info = registryInfo
+    ?.filter((info: any) => info.dateFrom <= dates.end && info.dateTo >= dates.start)
+    ?.sort((a: any, b: any) => {
+      return a.dateTo > b.dateTo ? -1 : 1
+    })
+  return info
+}
 
 export type CsvConfig = {
   label: string
@@ -56,7 +91,7 @@ export const VESSEL_CSV_CONFIG: CsvConfig[] = [
   { label: 'authorizationEnd', accessor: 'authorization.authorizedTo', transform: parseCSVDate },
 ]
 
-export const parseVesselToCSV = (vessel: VesselData) => {
+export const parseVesselToCSV = (vessel: IdentityVessel) => {
   return objectArrayToCSV([vessel], VESSEL_CSV_CONFIG)
 }
 
@@ -72,7 +107,7 @@ export const EVENTS_CSV_CONFIG: CsvConfig[] = [
     accessor: 'end',
     transform: parseCSVDate,
   },
-  { label: 'voyageId', accessor: 'voyageId' },
+  { label: 'voyage', accessor: 'voyage' },
   { label: 'latitude', accessor: 'position.lat' },
   { label: 'longitude', accessor: 'position.lon' },
   { label: 'portVisitName', accessor: 'port_visit.intermediateAnchorage.name' },

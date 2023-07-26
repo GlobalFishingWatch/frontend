@@ -4,12 +4,9 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { EventTypes, GapPosition, Regions } from '@globalfishingwatch/api-types'
 import { EMPTY_API_VALUES } from 'features/reports/reports.selectors'
-import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.slice'
+import { selectEEZs, selectFAOs, selectMPAs, selectRFMOs } from 'features/regions/regions.slice'
 import { getUTCDateTime } from 'utils/dates'
-import {
-  ActivityEvent,
-  PortVisitSubEvent,
-} from 'features/vessel/activity/vessels-activity.selectors'
+import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
 
 function useActivityEventConnect() {
@@ -17,11 +14,12 @@ function useActivityEventConnect() {
   const eezs = useSelector(selectEEZs)
   const rfmos = useSelector(selectRFMOs)
   const mpas = useSelector(selectMPAs)
+  const faos = useSelector(selectFAOs)
 
   const getRegionNamesByType = useCallback(
     (regionType: keyof Regions, values: string[]) => {
       if (!values?.length) return []
-      const regions = { eez: eezs, rfmo: rfmos, mpa: mpas }[regionType] || []
+      const regions = { eez: eezs, rfmo: rfmos, mpa: mpas, fao: faos }[regionType] || []
       let labels = values
       if (regions?.length) {
         labels = values.flatMap(
@@ -33,7 +31,7 @@ function useActivityEventConnect() {
       }
       return labels
     },
-    [eezs, mpas, rfmos, t]
+    [eezs, faos, mpas, rfmos, t]
   )
 
   const getEventRegionDescription = useCallback(
@@ -45,7 +43,7 @@ function useActivityEventConnect() {
             event?.regions?.[regionType]?.flatMap((regionId) =>
               regionId.length ? `${regionId}` : []
             ) ?? []
-          return `${getRegionNamesByType(regionType, values).join(',')}`
+          return `${getRegionNamesByType(regionType, values).join(', ')}`
         }
         return acc
       }, '')
@@ -79,12 +77,7 @@ function useActivityEventConnect() {
           break
         case EventTypes.Port:
           const { name, flag } = event.port_visit?.intermediateAnchorage ?? {}
-          let portType: EventTypes.Port | PortVisitSubEvent = event.type
-          if (event.id.endsWith(PortVisitSubEvent.Exit)) {
-            portType = PortVisitSubEvent.Exit
-          } else if (event.id.endsWith(PortVisitSubEvent.Entry)) {
-            portType = PortVisitSubEvent.Entry
-          }
+          const portType = event.subType || event.type
           const portLabel = name
             ? [name, ...(flag ? [t(`flags:${flag}`, flag.toLocaleUpperCase())] : [])].join(', ')
             : ''

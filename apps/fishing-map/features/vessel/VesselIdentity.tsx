@@ -2,30 +2,52 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { saveAs } from 'file-saver'
-import { Button, Icon, IconButton, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
+import { Fragment } from 'react'
+import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
+import { VesselRegistryOwner } from '@globalfishingwatch/api-types'
 import I18nDate from 'features/i18n/i18nDate'
-import { FIRST_YEAR_OF_DATA } from 'data/config'
-import { Locale } from 'types'
-import { IDENTITY_FIELD_GROUPS } from 'features/vessel/vessel.config'
+import { IDENTITY_FIELD_GROUPS, REGISTRY_FIELD_GROUPS } from 'features/vessel/vessel.config'
 import DataTerminology from 'features/vessel/DataTerminology'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
-import { formatAdvancedInfoField } from 'utils/info'
-import { parseVesselToCSV } from 'features/vessel/vessel.utils'
+import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
+import {
+  filterRegistryInfoByDates,
+  getVesselProperty,
+  parseVesselToCSV,
+} from 'features/vessel/vessel.utils'
+import { selectVesselRegistryIndex } from 'features/vessel/vessel.selectors'
+import VesselIdentitySelector from 'features/vessel/VesselIdentitySelector'
 import styles from './VesselIdentity.module.css'
 
 const VesselIdentity = () => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
+  const registryIndex = useSelector(selectVesselRegistryIndex)
   const vessel = useSelector(selectVesselInfoData)
-  const transmissionStart = (vessel?.firstTransmissionDate ||
-    vessel?.transmissionDateFrom) as string
-  const transmissionEnd = (vessel?.lastTransmissionDate || vessel?.transmissionDateTo) as string
+
+  const start = getVesselProperty(vessel, {
+    property: 'transmissionDateFrom',
+    registryIndex,
+  })
+
+  const end = getVesselProperty(vessel, {
+    property: 'transmissionDateTo',
+    registryIndex,
+  })
 
   const onDownloadClick = () => {
     if (vessel) {
       const data = parseVesselToCSV(vessel)
       const blob = new Blob([data], { type: 'text/plain;charset=utf-8' })
-      saveAs(blob, vessel?.id + '.csv')
+      saveAs(blob, vessel?.selfReportedInfo?.id + '.csv')
     }
+  }
+
+  let title = t('vessel.identity.selfReported', 'Self reported identity')
+  if (vessel?.registryInfo?.length) {
+    title =
+      vessel?.registryInfo?.length === 1
+        ? t('vessel.identity.registryIdentity', 'Registry identity')
+        : t('vessel.identity.registryIdentities', 'Registry identities')
   }
 
   return (
@@ -33,10 +55,20 @@ const VesselIdentity = () => {
       <div className={styles.titleContainer}>
         <h3>
           <label>
-            {t('vessel.identity', 'Identity')} - {t('vessel.identityLatest', 'Latest values')}
+            {title} (<I18nDate date={start} /> - <I18nDate date={end} />)
+            <DataTerminology size="tiny" type="default" title={title}>
+              {t('vessel.terminology.registryInfo', 'registry info terminology')}
+            </DataTerminology>
           </label>
         </h3>
         <div className={styles.actionsContainer}>
+          <IconButton
+            icon="download"
+            size="medium"
+            onClick={onDownloadClick}
+            tooltip={t('download.dataDownload', 'Download Data')}
+            tooltipPlacement="top"
+          />
           <Button
             className={styles.actionButton}
             disabled
@@ -45,16 +77,8 @@ const VesselIdentity = () => {
             tooltip={t('common.comingSoon', 'Coming Soon!')}
             tooltipPlacement="top"
           >
-            {t('vessel.identitySeeHistoric', 'See all historical values')} <Icon icon="download" />
+            {t('vessel.identityCalendar', 'See as calendar')} <Icon icon="history" />
           </Button>
-          <IconButton
-            icon="download"
-            size="medium"
-            type="border"
-            onClick={onDownloadClick}
-            tooltip={t('download.dataDownload', 'Download Data')}
-            tooltipPlacement="top"
-          />
         </div>
       </div>
       {vessel && (
@@ -62,40 +86,68 @@ const VesselIdentity = () => {
           {IDENTITY_FIELD_GROUPS.map((fieldGroup, index) => (
             <div key={index} className={cx(styles.fieldGroup, styles.border)}>
               {/* TODO: make fields more dynamic to account for VMS */}
-              {fieldGroup.map((field) => (
-                <div key={field.key}>
-                  <label>
-                    {t(`vessel.${field.label}` as any, field.label)}
-                    {field.terminologyKey && (
-                      <DataTerminology
-                        size="tiny"
-                        type="default"
-                        title={t(`vessel.${field.label}` as any, field.label)}
-                      >
-                        {t(field.terminologyKey as any, field.terminologyKey)}
-                      </DataTerminology>
+              {fieldGroup.map((field) => {
+                return (
+                  <div key={field.key}>
+                    <label>
+                      {t(`vessel.${field.label}` as any, field.label)}
+                      {field.terminologyKey && (
+                        <DataTerminology
+                          size="tiny"
+                          type="default"
+                          title={t(`vessel.${field.label}` as any, field.label)}
+                        >
+                          {t(field.terminologyKey as any, field.terminologyKey)}
+                        </DataTerminology>
+                      )}
+                    </label>
+                    {formatInfoField(
+                      getVesselProperty(vessel, {
+                        property: field.key as any,
+                        registryIndex: registryIndex,
+                      }),
+                      field.label
                     )}
-                  </label>
-                  {formatAdvancedInfoField(vessel, field)}
-                </div>
-              ))}
+                  </div>
+                )
+              })}
             </div>
           ))}
-          <div className={styles.fieldGroup}>
-            <div className={styles.twoCells}>
-              <label>{t('vessel.transmissionDates', 'Transmission dates')}</label>
-              <span>
-                {t('common.from', 'From')} <I18nDate date={transmissionStart} />{' '}
-                {t('common.to', 'to')} <I18nDate date={transmissionEnd} />
-              </span>
-              <TransmissionsTimeline
-                firstTransmissionDate={transmissionStart}
-                lastTransmissionDate={transmissionEnd}
-                firstYearOfData={FIRST_YEAR_OF_DATA}
-                locale={i18n.language as Locale}
-              />
-            </div>
-          </div>
+          {REGISTRY_FIELD_GROUPS.map(({ key, label }) => {
+            const filteredRegistryInfo = filterRegistryInfoByDates(vessel[key] || [], {
+              start,
+              end,
+            })
+            return (
+              <div className={cx(styles.fieldGroup, styles.border)}>
+                <div className={styles.threeCells}>
+                  <label>{t(`vessel.${label}` as any, label)}</label>
+                  {filteredRegistryInfo?.length > 0 ? (
+                    <ul>
+                      {filteredRegistryInfo.map((registry) => (
+                        <li>
+                          {key === 'registryOwners' ? (
+                            <Fragment>
+                              {(registry as VesselRegistryOwner).name} (
+                              {formatInfoField((registry as VesselRegistryOwner).flag, 'flag')})
+                            </Fragment>
+                          ) : (
+                            registry.sourceCode.join(',')
+                          )}{' '}
+                          <span className={styles.secondary}>
+                            <I18nDate date={registry.dateFrom} /> -{' '}
+                            <I18nDate date={registry.dateTo} />
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    EMPTY_FIELD_PLACEHOLDER
+                  )}
+                </div>
+              </div>
+            )
+          })}
         </div>
       )}
     </div>

@@ -1,10 +1,13 @@
 .timelineContainer {
   width: 100%;
+  position: relative;
   background: var(--color-border);
+  height: 1.4rem;
 }
 
-.highlighted {
+.timerange {
   display: flex;
+  position: absolute;
   justify-content: space-between;
   padding: 0.2rem;
   overflow: hidden;
@@ -12,8 +15,35 @@
   font-size: 1rem;
   line-height: 1rem;
   text-transform: uppercase;
-  color: var(--color-white);
+  color: var(--color-secondary-blue);
   background: var(--color-secondary-blue);
   white-space: nowrap;
   min-height: 1.4rem;
+  opacity: 0.6;
+}
+
+.timerange:hover,
+.highlighted {
+  z-index: 1;
+  color: var(--color-white);
+  background: #506ca4;
+  opacity: 1;
+}
+
+.timerange:not(.highlighted):hover {
+  z-index: 2;
+  border-inline: 1px solid white;
+}
+
+.dates {
+  opacity: 0;
+}
+
+.highlighted .dates,
+.timerange:hover .dates {
+  opacity: 1;
+}
+
+.interactive {
+  cursor: pointer;
 }

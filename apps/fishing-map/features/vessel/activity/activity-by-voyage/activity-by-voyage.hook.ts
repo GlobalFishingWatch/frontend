@@ -1,15 +1,13 @@
 import { useCallback, useState } from 'react'
-import { RenderedVoyage } from 'features/vessel/activity/activity-by-voyage/activity-by-voyage.selectors'
 
-function useExpandedVoyages(): [number[], (voyage: RenderedVoyage) => void] {
+// TODO move this to url
+function useExpandedVoyages(): [number[], (voyage: any) => void] {
   const [expandedVoyages, setExpandedVoyages] = useState<number[]>([])
 
-  const toggleVoyage = useCallback((voyage: RenderedVoyage) => {
+  const toggleVoyage = useCallback((voyage) => {
     setExpandedVoyages((voyages) => {
-      const index = voyages.indexOf(voyage.timestamp)
-      return index === -1
-        ? [...voyages, voyage.timestamp]
-        : voyages.filter((v) => v !== voyage.timestamp)
+      const index = voyages.indexOf(voyage)
+      return index === -1 ? [...voyages, voyage] : voyages.filter((v) => v !== voyage)
     })
   }, [])
 

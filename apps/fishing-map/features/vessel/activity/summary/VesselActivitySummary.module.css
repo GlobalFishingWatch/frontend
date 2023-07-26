@@ -5,6 +5,18 @@
   color: var(--color-secondary-blue);
 }
 
+.summary {
+  padding-right: var(--space-L);
+  font: var(--font-M);
+  color: var(--color-secondary-blue);
+  margin-bottom: var(--space-S);
+}
+
+.summary strong {
+  font-weight: 400;
+  color: var(--color-primary-blue);
+}
+
 .eventsCount strong {
   font-weight: 400;
   color: var(--color-primary-blue);
@@ -16,6 +28,6 @@
   justify-content: center;
 }
 
-.area {
+.help {
   cursor: help;
 }

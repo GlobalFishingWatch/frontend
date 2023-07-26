@@ -7,6 +7,7 @@ import {
   DataviewDatasetConfig,
   Dataset,
   Vessel,
+  IdentityVessel,
   DatasetTypes,
   ApiEvent,
   EndpointId,
@@ -179,11 +180,11 @@ export const fetchVesselInfo = async (
     return
   }
   try {
-    const vesselsInfoResponse = await GFWAPI.fetch<APIPagination<Vessel>>(vesselsInfoUrl, {
+    const vesselsInfoResponse = await GFWAPI.fetch<APIPagination<IdentityVessel>>(vesselsInfoUrl, {
       signal,
     })
     // TODO remove entries once the API is stable
-    const vesselsInfoList: Vessel[] =
+    const vesselsInfoList: IdentityVessel[] =
       !vesselsInfoResponse.entries || typeof vesselsInfoResponse.entries === 'function'
         ? vesselsInfoResponse
         : (vesselsInfoResponse as any)?.entries
@@ -299,15 +300,19 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
           vessels: sublayerVessels
             .flatMap((vessels) => {
               return vessels.map((vessel) => {
-                const vesselInfo = vesselsInfo?.find((entry) => {
-                  if (entry.years?.length && startYear && endYear) {
+                const vesselInfo = vesselsInfo?.find((vesselInfo) => {
+                  const vesselInfoId = vesselInfo.selfReportedInfo?.id
+                  const years = vesselInfo?.selfReportedInfo?.shiptypesByYear?.find(
+                    (y) => y.shiptype === vesselInfo.selfReportedInfo?.shiptype
+                  )?.years
+                  if (years?.length && startYear && endYear) {
                     return (
-                      entry.id === vessel.id &&
-                      (entry.years.some((year) => year >= startYear) ||
-                        entry.years.some((year) => year <= endYear))
+                      vesselInfoId === vessel.id &&
+                      (years.some((year) => year >= startYear) ||
+                        years.some((year) => year <= endYear))
                     )
                   }
-                  return entry.id === vessel.id
+                  return vesselInfoId === vessel.id
                 })
                 // TODO remove once relatedDatasets points to this dataset
                 const infoDataset = selectDatasetById(VESSEL_IDENTITY_ID)(state)
@@ -323,8 +328,11 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
                 //   console.warn('and vessel:', vessel)
                 // }
                 const trackDataset = selectDatasetById(trackDatasetId as string)(state)
+                const vesselInfoData = vesselInfo?.selfReportedInfo
+                  ? vesselInfo.selfReportedInfo
+                  : vesselInfo || {}
                 return {
-                  ...vesselInfo,
+                  ...vesselInfoData,
                   ...vessel,
                   infoDataset,
                   trackDataset,

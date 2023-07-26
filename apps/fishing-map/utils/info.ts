@@ -2,7 +2,6 @@ import { get } from 'lodash'
 import { Vessel } from '@globalfishingwatch/api-types'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { VesselRenderField } from 'features/vessel/vessel.config'
-import { VesselData } from 'features/vessel/vessel.slice'
 import { t } from '../features/i18n/i18n'
 
 export const EMPTY_FIELD_PLACEHOLDER = '---'
@@ -40,7 +39,7 @@ export const formatInfoField = (fieldValue: string, type: string, translationFn 
 }
 
 export const formatAdvancedInfoField = (
-  vessel: Vessel | VesselData,
+  vessel: Vessel,
   field: VesselRenderField,
   translationFn = t
 ) => {

@@ -24,9 +24,17 @@
   grid-column: span 2;
 }
 
+.threeCells {
+  grid-column: span 3;
+}
+
 .actionsContainer {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: var(--space-S);
+}
+
+.secondary {
+  color: var(--color-secondary-blue);
 }

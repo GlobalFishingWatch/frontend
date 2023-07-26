@@ -97,9 +97,10 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   visibleEvents?: VisibleEvents
 }
 
-export type VesselProfileActivityMode = 'voyages' | 'type'
+export type VesselProfileActivityMode = 'voyage' | 'type'
 export type VesselProfileState = {
   vesselDatasetId: string
+  vesselRegistryIndex: number
   vesselActivityMode: VesselProfileActivityMode
 }
 

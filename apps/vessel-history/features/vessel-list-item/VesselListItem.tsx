@@ -147,8 +147,12 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
         <div className={styles.vesselItemFooter}>
           {vessel.firstTransmissionDate && vessel.lastTransmissionDate && (
             <TransmissionsTimeline
-              firstTransmissionDate={vessel.firstTransmissionDate}
-              lastTransmissionDate={vessel.lastTransmissionDate}
+              dates={[
+                {
+                  start: vessel.firstTransmissionDate,
+                  end: vessel.lastTransmissionDate,
+                },
+              ]}
               firstYearOfData={FIRST_YEAR_OF_DATA}
               locale={i18n.language as Locale}
             />
