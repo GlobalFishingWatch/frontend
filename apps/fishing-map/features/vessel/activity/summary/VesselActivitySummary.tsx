@@ -52,7 +52,7 @@ export const VesselActivitySummary = () => {
 
   const summary = t('vessel.summary', {
     defaultValue:
-      'The <strong>{{vesselType}}</strong> vessel flagged by <strong>{{vesselFlag}}</strong> {{events}} {{voyages}} between <strong>{{timerangeStart}}</strong> and <strong>{{timerangeEnd}}</strong>.',
+      'The <strong>{{vesselType}}</strong> vessel flagged by <strong>{{vesselFlag}}</strong> {{events}} {{voyages}} between <strong>{{timerangeStart}}</strong> and <strong>{{timerangeEnd}}</strong>',
     vesselType: formatInfoField(
       getVesselProperty(vessel, { property: 'shiptype' }) as string,
       'vesselType'
@@ -74,10 +74,10 @@ export const VesselActivitySummary = () => {
 
   return (
     <div>
-      <h2 className={styles.summary} dangerouslySetInnerHTML={{ __html: summary }}></h2>
-      <ul className={styles.summary}>
-        <li>
-          {t('vessel.activeIn', 'Active in')}{' '}
+      <h2 className={styles.summary}>
+        <span dangerouslySetInnerHTML={{ __html: summary }}></span>
+        <span>
+          {t('common.in', 'in')}{' '}
           {REGIONS_PRIORITY.map((regionType, index) => {
             if (activityRegions[regionType] && activityRegions[regionType].length !== 0) {
               const tooltipContent = (
@@ -117,10 +117,12 @@ export const VesselActivitySummary = () => {
                 </Tooltip>
               )
             }
-
             return null
           })}
-        </li>
+          .
+        </span>
+      </h2>
+      <ul className={styles.summary}>
         {Object.entries(eventsByType).map(([eventType, events]) => {
           return (
             <li key={eventType} className={styles.eventsCount}>

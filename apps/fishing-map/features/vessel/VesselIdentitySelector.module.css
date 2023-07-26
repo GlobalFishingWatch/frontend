@@ -4,6 +4,7 @@
   justify-content: center;
   flex-direction: row-reverse;
   gap: var(--space-S);
+  padding: var(--space-M) 0;
 }
 
 .icon {

@@ -7,6 +7,7 @@
 
 .summary {
   padding-right: var(--space-L);
+  margin-bottom: var(--space-S);
 }
 
 .eventsCount strong {

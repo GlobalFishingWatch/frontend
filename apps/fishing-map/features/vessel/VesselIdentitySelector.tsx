@@ -16,33 +16,29 @@ const VesselIdentitySelector = () => {
     dispatchQueryParams({ vesselRegistryIndex: index })
   }
 
-  if (!vessel?.registryInfo?.length || vessel?.registryInfo?.length === 1) return null
+  if (!vessel?.registryInfo?.length || vessel?.registryInfo?.length <= 1) return null
 
   return (
-    <div className={cx(styles.fieldGroup, styles.border)}>
-      <div className={styles.threeCells}>
-        <ul className={cx(styles.selector)}>
-          {vessel?.registryInfo.map((registry, index) => {
-            const start = getUTCDateTime(registry.transmissionDateFrom).toFormat('yyyy')
-            const end = getUTCDateTime(registry.transmissionDateTo).toFormat('yyyy')
-            return (
-              <Tooltip
-                content={
-                  <span>
-                    {start} - {end}
-                  </span>
-                }
-              >
-                <li
-                  className={cx(styles.icon, { [styles.selected]: index === registryIndex })}
-                  onClick={() => setRegistryIndex(index)}
-                ></li>
-              </Tooltip>
-            )
-          })}
-        </ul>
-      </div>
-    </div>
+    <ul className={cx(styles.selector)}>
+      {vessel?.registryInfo.map((registry, index) => {
+        const start = getUTCDateTime(registry.transmissionDateFrom).toFormat('yyyy')
+        const end = getUTCDateTime(registry.transmissionDateTo).toFormat('yyyy')
+        return (
+          <Tooltip
+            content={
+              <span>
+                {start} - {end}
+              </span>
+            }
+          >
+            <li
+              className={cx(styles.icon, { [styles.selected]: index === registryIndex })}
+              onClick={() => setRegistryIndex(index)}
+            ></li>
+          </Tooltip>
+        )
+      })}
+    </ul>
   )
 }
 
