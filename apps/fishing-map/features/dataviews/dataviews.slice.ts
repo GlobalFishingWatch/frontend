@@ -245,7 +245,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
       if (!vessel) {
         return []
       }
-      const vesselId = vessel.coreInfo?.id
+      const vesselId = vessel.selfReportedInfo?.id
       const vesselDatasets = {
         info: vessel.info,
         track: vessel.track,

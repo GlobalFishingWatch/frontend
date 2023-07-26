@@ -51,7 +51,7 @@ const VesselIdentity = () => {
     if (vessel) {
       const data = parseVesselToCSV(vessel)
       const blob = new Blob([data], { type: 'text/plain;charset=utf-8' })
-      saveAs(blob, vessel?.coreInfo?.id + '.csv')
+      saveAs(blob, vessel?.selfReportedInfo?.id + '.csv')
     }
   }
 

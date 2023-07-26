@@ -1,7 +1,7 @@
 import { get } from 'lodash'
 import {
   IdentityVessel,
-  VesselCoreInfo,
+  SelfReportedInfo,
   VesselRegistryAuthorization,
   VesselRegistryInfo,
   VesselRegistryOwner,
@@ -9,7 +9,7 @@ import {
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { getUTCDateTime } from 'utils/dates'
 
-type VesselIdentityProperty = keyof VesselCoreInfo | keyof VesselRegistryInfo
+type VesselIdentityProperty = keyof SelfReportedInfo | keyof VesselRegistryInfo
 export function getVesselProperty<P = string>(
   vessel: IdentityVessel | null,
   { property, registryIndex = 0 }: { property: VesselIdentityProperty; registryIndex?: number }
@@ -18,7 +18,7 @@ export function getVesselProperty<P = string>(
   if (vessel.registryInfo?.length) {
     return vessel.registryInfo[registryIndex]?.[property]
   }
-  return vessel.coreInfo?.[property]
+  return vessel.selfReportedInfo?.[property]
 }
 
 export const getVoyageTimeRange = (events: ActivityEvent[]) => {

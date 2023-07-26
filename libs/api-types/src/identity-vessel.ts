@@ -25,7 +25,7 @@ export type VesselTMTInfo = {
   type?: string
 }
 
-export type VesselCoreInfo = VesselInfo & {
+export type SelfReportedInfo = VesselInfo & {
   id: string
   firstTransmissionDate: string
   lastTransmissionDate: string
@@ -69,7 +69,7 @@ export type VesselRegistryAuthorization = VesselRegistryProperty
 
 export interface IdentityVessel {
   dataset: string
-  coreInfo: VesselCoreInfo
+  selfReportedInfo: SelfReportedInfo
   registryInfo?: VesselRegistryInfo[]
   registryOwners?: VesselRegistryOwner[]
   registryAuthorizations?: VesselRegistryAuthorization[]
