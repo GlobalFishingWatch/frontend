@@ -12,7 +12,8 @@ export { Locale } from '@globalfishingwatch/api-types'
 
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
 export type WorkspaceTimeRangeParam = 'start' | 'end'
-export type BufferUnit = 'nautical_miles' | 'kilometers'
+export type BufferUnit = 'nautical-miles' | 'kilometers'
+export type BufferUnitOption = { label: string; id: BufferUnit }
 
 export type ReportStateProperty =
   | 'reportActivityGraph'
@@ -24,8 +25,8 @@ export type ReportStateProperty =
   | 'reportVesselFilter'
   | 'reportVesselGraph'
   | 'reportVesselPage'
-  | 'reportBufferValue'
-  | 'reportBufferUnit'
+  | 'buffer-value'
+  | 'buffer-unit'
 
 export type WorkspaceStateProperty =
   | 'query'
@@ -90,8 +91,8 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   reportVesselFilter?: string
   reportVesselGraph?: ReportVesselGraph
   reportVesselPage?: number
-  reportBufferValue?: number
-  reportBufferUnit?: BufferUnit
+  'buffer-value'?: number
+  'buffer-unit'?: BufferUnit
   reportResultsPerPage?: number
   sidebarOpen?: boolean
   timebarGraph?: TimebarGraphs
