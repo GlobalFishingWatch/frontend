@@ -16,7 +16,7 @@
   grid-template-columns: repeat(3, 1fr);
 }
 
-.fieldGroup.border {
+.fieldGroup:not(:last-child) {
   border-bottom: var(--border);
 }
 

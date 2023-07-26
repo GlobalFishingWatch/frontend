@@ -77,6 +77,7 @@ export const VesselActivitySummary = () => {
       <h2 className={styles.summary}>
         <span dangerouslySetInnerHTML={{ __html: summary }}></span>
         <span>
+          {' '}
           {t('common.in', 'in')}{' '}
           {REGIONS_PRIORITY.map((regionType, index) => {
             if (activityRegions[regionType] && activityRegions[regionType].length !== 0) {

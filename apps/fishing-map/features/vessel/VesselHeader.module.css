@@ -1,13 +1,13 @@
 .summaryContainer {
   padding: var(--space-S) var(--space-M);
   border-bottom: var(--border);
+  height: 5.2rem;
 }
 
 .titleContainer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--space-S);
 }
 
 .title {

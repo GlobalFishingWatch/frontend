@@ -5,6 +5,7 @@ import { selectVesselRegistryIndex } from 'features/vessel/vessel.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { getUTCDateTime } from 'utils/dates'
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import styles from './VesselIdentitySelector.module.css'
 
 const VesselIdentitySelector = () => {
@@ -21,21 +22,17 @@ const VesselIdentitySelector = () => {
   return (
     <ul className={cx(styles.selector)}>
       {vessel?.registryInfo.map((registry, index) => {
-        const start = getUTCDateTime(registry.transmissionDateFrom).toFormat('yyyy')
-        const end = getUTCDateTime(registry.transmissionDateTo).toFormat('yyyy')
+        const start = formatI18nDate(registry.transmissionDateFrom)
+        const end = formatI18nDate(registry.transmissionDateTo)
         return (
-          <Tooltip
-            content={
-              <span>
-                {start} - {end}
-              </span>
-            }
+          <li
+            className={cx(styles.icon, { [styles.selected]: index === registryIndex })}
+            onClick={() => setRegistryIndex(index)}
           >
-            <li
-              className={cx(styles.icon, { [styles.selected]: index === registryIndex })}
-              onClick={() => setRegistryIndex(index)}
-            ></li>
-          </Tooltip>
+            <span className={styles.dates}>
+              {start} - {end}
+            </span>
+          </li>
         )
       })}
     </ul>

@@ -1,4 +1,3 @@
-import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { saveAs } from 'file-saver'
@@ -84,7 +83,7 @@ const VesselIdentity = () => {
       {vessel && (
         <div className={styles.fields}>
           {IDENTITY_FIELD_GROUPS.map((fieldGroup, index) => (
-            <div key={index} className={cx(styles.fieldGroup, styles.border)}>
+            <div key={index} className={styles.fieldGroup}>
               {/* TODO: make fields more dynamic to account for VMS */}
               {fieldGroup.map((field) => {
                 return (
@@ -119,7 +118,7 @@ const VesselIdentity = () => {
               end,
             })
             return (
-              <div className={cx(styles.fieldGroup, styles.border)}>
+              <div className={styles.fieldGroup}>
                 <div className={styles.threeCells}>
                   <label>{t(`vessel.${label}` as any, label)}</label>
                   {filteredRegistryInfo?.length > 0 ? (
