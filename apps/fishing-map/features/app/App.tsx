@@ -44,7 +44,7 @@ import styles from './App.module.css'
 import { useAnalytics } from './analytics.hooks'
 
 const Map = dynamic(() => import(/* webpackChunkName: "Map" */ 'features/map/Map'))
-const Timebar = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))
+// const Timebar = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))
 
 declare global {
   interface Window {
@@ -80,7 +80,7 @@ const Main = () => {
       <div className={cx(styles.mapContainer, { [styles.withTimebar]: showTimebar })}>
         <Map />
       </div>
-      {showTimebar && <Timebar />}
+      {/* {showTimebar && <Timebar />} */}
       <Footer />
     </Fragment>
   )

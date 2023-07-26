@@ -15,7 +15,7 @@ import { BasemapType, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
-import { useViewStateAtom } from 'features/map/map-viewport.hooks'
+import { useSetMapCoordinates, useViewStateAtom } from 'features/map/map-viewport.hooks'
 import { selectIsReportLocation, selectIsWorkspaceLocation } from 'routes/routes.selectors'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
 import setInlineStyles from 'utils/dom'
@@ -67,6 +67,7 @@ const MapControls = ({
     }
   }, [])
 
+  const setMapCoordinates = useSetMapCoordinates()
   const { viewState, setViewState } = useViewStateAtom()
   const { latitude, longitude, zoom } = viewState
 
@@ -83,12 +84,13 @@ const MapControls = ({
   const debouncedOptions = useDebounce(options, 16)
 
   const onZoomInClick = useCallback(() => {
-    setViewState({ zoom: zoom + 1 })
-  }, [setViewState, zoom])
+    setMapCoordinates({ zoom: zoom + 1 })
+    // setViewState({ zoom: zoom + 1 })
+  }, [setMapCoordinates, zoom])
 
   const onZoomOutClick = useCallback(() => {
-    setViewState({ zoom: Math.max(1, zoom - 1) })
-  }, [setViewState, zoom])
+    setMapCoordinates({ zoom: zoom - 1 })
+  }, [setMapCoordinates, zoom])
 
   const onScreenshotClick = useCallback(() => {
     dispatchQueryParams({ sidebarOpen: true })

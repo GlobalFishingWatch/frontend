@@ -50,7 +50,13 @@ import { selectMapTimeseries } from 'features/reports/reports-timeseries.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useMapDeckLayers, useMapLayersLoaded } from 'features/map/map-layers.hooks'
 import { MapCoordinates } from 'types'
-import { MAP_VIEW, useViewStateAtom, useUpdateViewStateUrlParams } from './map-viewport.hooks'
+import {
+  MAP_VIEW,
+  useViewStateAtom,
+  useUpdateViewStateUrlParams,
+  useSetViewState,
+  useViewState,
+} from './map-viewport.hooks'
 import styles from './Map.module.css'
 import useRulers from './rulers/rulers.hooks'
 import {
@@ -106,16 +112,27 @@ const MapWrapper = () => {
   ///////////////////////////////////////
   // DECK related code
   const deckRef = useRef<DeckGLRef>(null)
-  console.log('🚀 ~ deckRef:', deckRef)
   useSetMapInstance(deckRef)
-  const [viewState, setViewState] = useState(DEFAULT_VIEWPORT)
+
+  // const [viewState, setViewState] = useState<any>(DEFAULT_VIEWPORT)
+  // const viewState = useRef<any>(DEFAULT_VIEWPORT)
+  const setViewState = useSetViewState()
+  // const [viewState, setViewState] = useState(DEFAULT_VIEWPORT)
   const onViewStateChange = useCallback(
     (params: ViewStateChangeParameters) => {
-      console.log(params)
-      setViewState(params.viewState as MapCoordinates)
+      // const { latitude, longitude, zoom } = params.viewState
+      // viewState.current = { latitude, longitude, zoom }
+      setViewState(params.viewState)
     },
     [setViewState]
   )
+  // const onViewStateChange = useCallback(
+  //   (params: ViewStateChangeParameters) => {
+  //     console.log(params)
+  //     setViewState(params.viewState as MapCoordinates)
+  //   },
+  //   [setViewState]
+  // )
   // useUpdateViewStateUrlParams()
   ////////////////////////////////////////
   // Used it only once here to attach the listener only once
@@ -318,8 +335,11 @@ const MapWrapper = () => {
           }
           return true
         }}
-        viewState={viewState}
+        // viewState={viewState}
+        initialViewState={DEFAULT_VIEWPORT}
         onViewStateChange={onViewStateChange}
+        // viewState={viewState}
+        // onViewStateChange={onViewStateChange}
         controller={true}
         // onClick={onClick}
         // onHover={onHover}

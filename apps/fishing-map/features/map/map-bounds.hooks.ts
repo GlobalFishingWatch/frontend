@@ -1,28 +1,40 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { fitBounds } from '@math.gl/web-mercator'
-import { atom as jotaiAtom, useAtomValue, Atom } from 'jotai'
+import { atom, useAtom } from 'jotai'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { LngLatBounds, Map } from '@globalfishingwatch/maplibre-gl'
 import { Bbox } from 'types'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
-import { useSetViewState, viewportAtom } from 'features/map/map-viewport.hooks'
+import { useMapViewport, useSetViewState } from 'features/map/map-viewport.hooks'
 
-export const boundsAtom: Atom<MiniglobeBounds> = jotaiAtom((get): MiniglobeBounds => {
-  const viewport = get(viewportAtom)
-  const wn = viewport.unproject([0, 0])
-  const es = viewport.unproject([viewport.width, viewport.height])
-  return {
-    north: wn[1],
-    south: es[1],
-    west: wn[0],
-    east: es[0],
-  }
+export const boundsAtom = atom<MiniglobeBounds>({
+  north: 90,
+  south: -90,
+  west: -180,
+  east: 180,
 })
 
-export const useMapBounds = (): { bounds: MiniglobeBounds } => ({
-  bounds: useAtomValue(boundsAtom),
-})
+export const useMapBounds = (): { bounds: MiniglobeBounds } => {
+  const [bounds, setBounds] = useAtom(boundsAtom)
+  const viewport = useMapViewport()
+  console.log('🚀 ~ useMapBounds ~ viewport:', viewport)
+
+  useEffect(() => {
+    if (viewport) {
+      const wn = viewport.unproject([0, 0])
+      const es = viewport.unproject([viewport.width, viewport.height])
+      setBounds({
+        north: wn[1],
+        south: es[1],
+        west: wn[0],
+        east: es[0],
+      })
+    }
+  }, [setBounds, viewport])
+
+  return { bounds }
+}
 
 export function checkEqualBounds(bounds1?: MiniglobeBounds, bounds2?: MiniglobeBounds) {
   if (!bounds1 || !bounds2) return false
@@ -87,7 +99,7 @@ export function convertToTupleBoundingBox(
 }
 
 export function useMapFitBounds() {
-  const viewport = useAtomValue(viewportAtom)
+  const viewport = useMapViewport()
   const setViewState = useSetViewState()
   const fitBounds = useCallback(
     (bounds: Bbox, params: FitBoundsParams = {}) => {

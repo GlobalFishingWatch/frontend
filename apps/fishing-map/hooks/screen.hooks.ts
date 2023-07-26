@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { saveAs } from 'file-saver'
 import setInlineStyles from 'utils/dom'
-import { useMap } from 'features/map/map-context.hooks'
+import { useDeckMap } from 'features/map/map-context.hooks'
 
 export const useDownloadDomElementAsImage = (
   domElement: HTMLElement | undefined,
@@ -14,7 +14,7 @@ export const useDownloadDomElementAsImage = (
   const [previewImageLoading, setPreviewImageLoading] = useState(false)
   const [finished, setFinished] = useState<boolean>(false)
   const html2canvasRef = useRef<any>(null)
-  const map = useMap()
+  const map = useDeckMap()
 
   const getCanvas = useCallback(async () => {
     if (!html2canvasRef.current) {
