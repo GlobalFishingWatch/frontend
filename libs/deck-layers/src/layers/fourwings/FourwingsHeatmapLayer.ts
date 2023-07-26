@@ -90,7 +90,10 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         pickable: true,
         stroked: false,
         getFillColor: (cell: Cell) =>
-          getFillColor(cell, { minFrame, maxFrame, colorDomain, colorRanges }),
+          // TODO check if this needs updating for different resolutions
+          this.props.tile.zoom === Math.round(this.context.viewport.zoom)
+            ? getFillColor(cell, { minFrame, maxFrame, colorDomain, colorRanges })
+            : [0, 0, 0, 0],
         updateTriggers: {
           // This tells deck.gl to recalculate fillColor on changes
           getFillColor: [start, end, colorDomain, colorRanges],
