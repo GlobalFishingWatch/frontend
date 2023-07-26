@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Fragment } from 'react'
@@ -6,11 +6,18 @@ import { Range, getTrackBackground } from 'react-range'
 import { Button, Icon, Choice } from '@globalfishingwatch/ui-components'
 import { ContextLayerType, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { Area } from 'features/areas/areas.slice'
+import {
+  BUFFER_UNIT_OPTIONS,
+  DEFAULT_BUFFER_VALUE,
+  NAUTICAL_MILES,
+} from 'features/reports/reports.constants'
 import { selectReportAreaDataview } from 'features/reports/reports.selectors'
 import { getContextAreaLink } from 'features/dataviews/dataviews.utils'
 import ReportTitlePlaceholder from 'features/reports/placeholders/ReportTitlePlaceholder'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectCurrentReport } from 'features/app/app.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
+import { BufferUnit } from 'types'
 import styles from './ReportTitle.module.css'
 
 type ReportTitleProps = {
@@ -19,20 +26,24 @@ type ReportTitleProps = {
   infoLink?: string
 }
 
-const BufferTooltip = () => {
+const BufferTooltip = ({
+  handleBufferValueChange,
+  defaultValue = 50,
+  activeOption,
+  handleBufferUnitChange,
+  handleConfirmBuffer,
+}) => {
   const STEP = 0.1
   const MIN = -100
   const MAX = 100
-  const [values, setValues] = useState([0, 50])
+  const [values, setValues] = useState([0, defaultValue])
   return (
     <div className={styles.bufferTooltipContent}>
       <Choice
         size="tiny"
-        activeOption="miles"
-        options={[
-          { id: 'miles', label: 'Nautical miles' },
-          { id: 'kilometers', label: 'kilometers' },
-        ]}
+        activeOption={activeOption}
+        onSelect={handleBufferUnitChange}
+        options={BUFFER_UNIT_OPTIONS}
       />
       <Range
         allowOverlap
@@ -41,6 +52,7 @@ const BufferTooltip = () => {
         min={MIN}
         max={MAX}
         onChange={setValues}
+        onFinalChange={handleBufferValueChange}
         renderTrack={({ props, children }) => (
           <div
             onMouseDown={props.onMouseDown}
@@ -87,11 +99,13 @@ const BufferTooltip = () => {
               boxShadow: index === 1 ? '0px 2px 6px #AAA' : 'none',
             }}
           >
-            {index === 1 ? values[index].toFixed(0) : null}
+            {index === 1 ? Math.round(values[index]) : null}
           </div>
         )}
       />
-      <Button size="small">confirm</Button>
+      <Button size="small" onClick={handleConfirmBuffer}>
+        confirm
+      </Button>
     </div>
   )
 }
@@ -100,6 +114,23 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   const { t } = useTranslation()
   const areaDataview = useSelector(selectReportAreaDataview)
   const report = useSelector(selectCurrentReport)
+  const { dispatchQueryParams } = useLocationConnect()
+
+  const [bufferValue, setBufferValue] = useState<number | undefined>(undefined)
+  const [bufferUnit, setBufferUnit] = useState<BufferUnit>(NAUTICAL_MILES)
+  const handleBufferUnitChange = useCallback(
+    (option) => {
+      setBufferUnit(option.id)
+    },
+    [setBufferUnit]
+  )
+  const handleBufferValueChange = useCallback(
+    (values: number[]) => {
+      setBufferValue(Math.round(values[1]))
+    },
+    [setBufferValue]
+  )
+
   const reportLink = window.location.href
   const name = report
     ? report.name
@@ -117,6 +148,16 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     })
     window.print()
   }
+
+  const handleConfirmBuffer = useCallback(() => {
+    dispatchQueryParams({ 'buffer-value': bufferValue, 'buffer-unit': bufferUnit })
+    trackEvent({
+      category: TrackCategory.Analysis,
+      action: `Confirm area buffer`,
+      label: `${bufferValue} ${bufferUnit}`,
+    })
+  }, [bufferValue, bufferUnit, dispatchQueryParams])
+
   return (
     <div className={styles.container}>
       {name ? (
@@ -140,7 +181,15 @@ export default function ReportTitle({ area }: ReportTitleProps) {
               type="border-secondary"
               size="small"
               className={styles.actionButton}
-              tooltip={<BufferTooltip />}
+              tooltip={
+                <BufferTooltip
+                  handleBufferValueChange={handleBufferValueChange}
+                  defaultValue={DEFAULT_BUFFER_VALUE}
+                  activeOption={bufferUnit}
+                  handleBufferUnitChange={handleBufferUnitChange}
+                  handleConfirmBuffer={handleConfirmBuffer}
+                />
+              }
               tooltipPlacement="bottom"
               tooltipProps={{
                 interactive: true,
@@ -150,7 +199,8 @@ export default function ReportTitle({ area }: ReportTitleProps) {
               }}
             >
               <p>{t('analysis.buffer', 'Buffer Area')}</p>
-              <Icon icon="download" type="default" />
+              {bufferValue && <span>{` (${bufferValue})`}</span>}
+              <Icon icon="expand" type="default" />
             </Button>
             <Button
               type="border-secondary"
