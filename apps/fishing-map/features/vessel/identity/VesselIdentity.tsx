@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { saveAs } from 'file-saver'
-import { Fragment } from 'react'
 import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { VesselRegistryOwner } from '@globalfishingwatch/api-types'
 import I18nDate from 'features/i18n/i18nDate'
@@ -16,6 +15,7 @@ import {
 } from 'features/vessel/vessel.utils'
 import { selectVesselRegistryIndex } from 'features/vessel/vessel.selectors'
 import VesselIdentitySelector from 'features/vessel/identity/VesselIdentitySelector'
+import VesselIdentityField from 'features/vessel/identity/VesselIdentityField'
 import styles from './VesselIdentity.module.css'
 
 const VesselIdentity = () => {
@@ -100,13 +100,15 @@ const VesselIdentity = () => {
                         </DataTerminology>
                       )}
                     </label>
-                    {formatInfoField(
-                      getVesselProperty(vessel, {
-                        property: field.key as any,
-                        registryIndex: registryIndex,
-                      }),
-                      field.label
-                    )}
+                    <VesselIdentityField
+                      value={formatInfoField(
+                        getVesselProperty(vessel, {
+                          property: field.key as any,
+                          registryIndex: registryIndex,
+                        }),
+                        field.label
+                      )}
+                    />
                   </div>
                 )
               })}
@@ -123,22 +125,24 @@ const VesselIdentity = () => {
                   <label>{t(`vessel.${label}` as any, label)}</label>
                   {filteredRegistryInfo?.length > 0 ? (
                     <ul>
-                      {filteredRegistryInfo.map((registry, index) => (
-                        <li key={index}>
-                          {key === 'registryOwners' ? (
-                            <Fragment>
-                              {(registry as VesselRegistryOwner).name} (
-                              {formatInfoField((registry as VesselRegistryOwner).flag, 'flag')})
-                            </Fragment>
-                          ) : (
-                            registry.sourceCode.join(',')
-                          )}{' '}
-                          <span className={styles.secondary}>
-                            <I18nDate date={registry.dateFrom} /> -{' '}
-                            <I18nDate date={registry.dateTo} />
-                          </span>
-                        </li>
-                      ))}
+                      {filteredRegistryInfo.map((registry) => {
+                        const value =
+                          key === 'registryOwners'
+                            ? `${(registry as VesselRegistryOwner).name} (${formatInfoField(
+                                (registry as VesselRegistryOwner).flag,
+                                'flag'
+                              )})`
+                            : registry.sourceCode.join(',')
+                        return (
+                          <li key={registry.recordId}>
+                            <VesselIdentityField value={value} log /> {'  '}
+                            <span className={styles.secondary}>
+                              <I18nDate date={registry.dateFrom} /> -{' '}
+                              <I18nDate date={registry.dateTo} />
+                            </span>
+                          </li>
+                        )
+                      })}
                     </ul>
                   ) : (
                     EMPTY_FIELD_PLACEHOLDER
