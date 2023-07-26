@@ -6,9 +6,16 @@
  */
 import { format } from 'd3-format'
 import { DateTime } from 'luxon'
+import { multiPolygon, polygon } from '@turf/helpers'
+import { buffer } from '@turf/turf'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { Dataview, DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
+import {
+  ContextAreaFeature,
+  Dataview,
+  DataviewCategory,
+  EXCLUDE_FILTER_ID,
+} from '@globalfishingwatch/api-types'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { sortStrings } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
@@ -17,9 +24,8 @@ import {
   getSchemaFilterOperationInDataview,
   SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
-import { ReportVesselWithDatasets } from 'features/reports/reports.selectors'
-import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
-import { ReportCategory } from 'types'
+import { BufferUnit, ReportCategory } from 'types'
+import { Area } from 'features/areas/areas.slice'
 
 const arrayToStringTransform = (array: string[]) =>
   `(${array?.map((v: string) => `'${v}'`).join(', ')})`
@@ -203,4 +209,25 @@ export const getReportCategoryFromDataview = (
   return dataview.category === DataviewCategory.Activity
     ? (dataview.datasets?.[0].subcategory as unknown as ReportCategory)
     : (dataview.category as unknown as ReportCategory)
+}
+
+export const getBufferedArea = ({
+  area,
+  value,
+  unit,
+}: {
+  area: Area | undefined
+  value: number
+  unit: BufferUnit
+}): ContextAreaFeature | null => {
+  if (!area?.geometry) return null
+  const areaPolygon =
+    area.geometry.type === 'MultiPolygon'
+      ? (multiPolygon(area.geometry.coordinates!) as any)
+      : area.geometry.type === 'Polygon'
+      ? (polygon(area.geometry.coordinates) as any)
+      : null
+
+  const bufferedArea = areaPolygon ? buffer(areaPolygon, value, { units: unit }) : null
+  return { ...bufferedArea, id: area.id } as ContextAreaFeature
 }

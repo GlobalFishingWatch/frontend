@@ -5,19 +5,21 @@ import { Fragment } from 'react'
 import { Range, getTrackBackground } from 'react-range'
 import { Button, Icon, Choice } from '@globalfishingwatch/ui-components'
 import { ContextLayerType, GeneratorType } from '@globalfishingwatch/layer-composer'
-import { Area } from 'features/areas/areas.slice'
+import { Area, selectDatasetAreaDetail } from 'features/areas/areas.slice'
 import {
   BUFFER_UNIT_OPTIONS,
   DEFAULT_BUFFER_VALUE,
   NAUTICAL_MILES,
 } from 'features/reports/reports.constants'
-import { selectReportAreaDataview } from 'features/reports/reports.selectors'
+import { selectReportAreaDataview, selectReportAreaIds } from 'features/reports/reports.selectors'
 import { getContextAreaLink } from 'features/dataviews/dataviews.utils'
 import ReportTitlePlaceholder from 'features/reports/placeholders/ReportTitlePlaceholder'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectCurrentReport } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { BufferUnit } from 'types'
+import { getBufferedArea } from '../reports.utils'
+import { useReportAreaBuffer } from '../reports.hooks'
 import styles from './ReportTitle.module.css'
 
 type ReportTitleProps = {
@@ -112,12 +114,16 @@ const BufferTooltip = ({
 
 export default function ReportTitle({ area }: ReportTitleProps) {
   const { t } = useTranslation()
+  const { dispatchQueryParams } = useLocationConnect()
   const areaDataview = useSelector(selectReportAreaDataview)
   const report = useSelector(selectCurrentReport)
-  const { dispatchQueryParams } = useLocationConnect()
 
-  const [bufferValue, setBufferValue] = useState<number | undefined>(undefined)
+  const [bufferValue, setBufferValue] = useState<number>(DEFAULT_BUFFER_VALUE)
   const [bufferUnit, setBufferUnit] = useState<BufferUnit>(NAUTICAL_MILES)
+
+  const areaBuffer = useReportAreaBuffer(bufferValue, bufferUnit)
+  console.log('🚀 ~ file: ReportTitle.tsx:126 ~ ReportTitle ~ areaBuffer:', areaBuffer)
+
   const handleBufferUnitChange = useCallback(
     (option) => {
       setBufferUnit(option.id)

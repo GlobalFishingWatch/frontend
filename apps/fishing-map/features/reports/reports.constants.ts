@@ -1,7 +1,7 @@
 import { BufferUnit, BufferUnitOption } from 'types'
 
 export const DEFAULT_BUFFER_VALUE: number = 50
-export const NAUTICAL_MILES: BufferUnit = 'nautical-miles'
+export const NAUTICAL_MILES: BufferUnit = 'nauticalmiles'
 const KILOMETERS: BufferUnit = 'kilometers'
 export const BUFFER_UNIT_OPTIONS: BufferUnitOption[] = [
   { label: 'Nautical miles', id: NAUTICAL_MILES },

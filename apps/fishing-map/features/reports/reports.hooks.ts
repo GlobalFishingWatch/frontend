@@ -16,7 +16,7 @@ import {
 } from 'features/reports/reports.selectors'
 import useMapInstance from 'features/map/map-context.hooks'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
-import { Bbox } from 'types'
+import { Bbox, BufferUnit } from 'types'
 import useViewport, { getMapCoordinatesFromBounds } from 'features/map/map-viewport.hooks'
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { getDownloadReportSupported } from 'features/download/download.utils'
@@ -32,6 +32,7 @@ import {
   selectReportVesselsError,
   selectReportVesselsStatus,
 } from './report.slice'
+import { getBufferedArea } from './reports.utils'
 
 export type DateTimeSeries = {
   date: string
@@ -161,4 +162,16 @@ export function useFetchReportVessel() {
   ])
 
   return useMemo(() => ({ status, data, error }), [status, data, error])
+}
+
+export const useReportAreaBuffer = (value: number, unit: BufferUnit) => {
+  const reportAreaIds = useSelector(selectReportAreaIds)
+  const area = useSelector(selectDatasetAreaDetail(reportAreaIds))
+
+  const areaBuffer = getBufferedArea({
+    area,
+    value,
+    unit,
+  })
+  return areaBuffer
 }
