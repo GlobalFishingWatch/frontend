@@ -31,7 +31,7 @@ export function filterRegistryInfoByDates<I = VesselRegistryAuthorization | Vess
 ): I[] {
   if (!registryInfo?.length) return []
   const info = registryInfo
-    ?.filter((i: any) => i.dateFrom <= dates.end && i.dateTo >= dates.start)
+    ?.filter((info: any) => info.dateFrom <= dates.end && info.dateTo >= dates.start)
     ?.sort((a: any, b: any) => {
       return a.dateTo > b.dateTo ? -1 : 1
     })

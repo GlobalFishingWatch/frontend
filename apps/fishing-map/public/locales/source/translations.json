@@ -607,6 +607,7 @@
     "identity": "Identity",
     "identityHistoric": "Historic values",
     "identityLatest": "Latest values",
+    "identityHistory": "Identity history",
     "identitySeeHistory": "See identity history",
     "identitySeeLatest": "See latest values",
     "imo": "IMO",

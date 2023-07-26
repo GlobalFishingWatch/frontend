@@ -140,15 +140,15 @@ const VesselIdentity = () => {
                         <li>
                           {key === 'registryOwners' ? (
                             <Fragment>
-                              {(registry as VesselRegistryOwner).name} - (
-                              {(registry as VesselRegistryOwner).flag})
+                              {(registry as VesselRegistryOwner).name} (
+                              {formatInfoField((registry as VesselRegistryOwner).flag, 'flag')})
                             </Fragment>
                           ) : (
                             registry.sourceCode.join(',')
-                          )}
+                          )}{' '}
                           <span className={styles.secondary}>
-                            (<I18nDate date={registry.dateFrom} /> -{' '}
-                            <I18nDate date={registry.dateTo} />)
+                            <I18nDate date={registry.dateFrom} /> -{' '}
+                            <I18nDate date={registry.dateTo} />
                           </span>
                         </li>
                       ))}
@@ -161,24 +161,27 @@ const VesselIdentity = () => {
             )
           })}
           <div className={styles.fieldGroup}>
-            <div className={cx(styles.threeCells, styles.transmission)}>
-              <IconButton
-                size="small"
-                icon="arrow-left"
-                onClick={() => setRegistryIndex(registryIndex - 1)}
-              />
-              <TransmissionsTimeline
-                dates={transmissionDates}
-                onDateClick={(dates, index) => setRegistryIndex(index)}
-                currentDateIndex={registryIndex}
-                firstYearOfData={FIRST_YEAR_OF_DATA}
-                locale={i18n.language as Locale}
-              />
-              <IconButton
-                size="small"
-                icon="arrow-right"
-                onClick={() => setRegistryIndex(registryIndex + 1)}
-              />
+            <div className={cx(styles.threeCells)}>
+              <label>{t('vessel.identityHistory' as any, 'Identity history')}</label>
+              <div className={cx(styles.transmission)}>
+                <IconButton
+                  size="small"
+                  icon="arrow-left"
+                  onClick={() => setRegistryIndex(registryIndex - 1)}
+                />
+                <TransmissionsTimeline
+                  dates={transmissionDates}
+                  onDateClick={(dates, index) => setRegistryIndex(index)}
+                  currentDateIndex={registryIndex}
+                  firstYearOfData={FIRST_YEAR_OF_DATA}
+                  locale={i18n.language as Locale}
+                />
+                <IconButton
+                  size="small"
+                  icon="arrow-right"
+                  onClick={() => setRegistryIndex(registryIndex + 1)}
+                />
+              </div>
             </div>
           </div>
         </div>
