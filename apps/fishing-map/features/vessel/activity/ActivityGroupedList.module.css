@@ -1,8 +1,31 @@
+.activityContainer {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--header-height) - var(--tabs-height));
+  margin-bottom: var(--space-XL);
+}
+
+.event::after {
+  content: '';
+  position: absolute;
+  left: 6rem;
+  bottom: 0;
+  height: 0.1rem;
+  width: calc(100% - 6rem);
+  background-color: var(--color-border);
+}
+
+.enptyState {
+  width: 100%;
+  padding: var(--space-L) var(--space-M);
+  text-align: center;
+}
+
 .eventGroup {
   margin-left: unset;
   width: 100%;
   background: var(--color-white);
-  border-top: var(--border);
+  outline: var(--border);
 }
 
 .header {
@@ -11,12 +34,6 @@
   align-items: center;
   min-height: 6rem;
   cursor: pointer;
-  border-bottom: 1px solid transparent;
-}
-
-.eventGroup:last-child,
-.eventGroup.open .header {
-  border-bottom: var(--border);
 }
 
 .actions {

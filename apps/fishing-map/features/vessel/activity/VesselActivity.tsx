@@ -10,7 +10,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { selectVesselActivityMode } from 'features/vessel/vessel.selectors'
 import { VesselProfileActivityMode } from 'types'
 import styles from './VesselActivity.module.css'
-import { VesselActivitySummary } from './summary/VesselActivitySummary'
+import { VesselActivitySummary } from './VesselActivitySummary'
 
 const VesselActivity = () => {
   const { t } = useTranslation()

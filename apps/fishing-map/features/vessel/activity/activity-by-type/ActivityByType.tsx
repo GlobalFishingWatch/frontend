@@ -15,8 +15,8 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { setHighlightedEvents } from 'features/timebar/timebar.slice'
 import { getScrollElement } from 'features/sidebar/Sidebar'
 import Event, { EVENT_HEIGHT } from '../event/Event'
+import styles from '../ActivityGroupedList.module.css'
 import { useActivityByType } from './activity-by-type.hook'
-import styles from './activity-by-type.module.css'
 import ActivityGroup from './ActivityGroup'
 
 const EVENTS_ORDER = [
@@ -122,7 +122,7 @@ export function ActivityByType() {
                 onMapHover={onMapHover}
                 onMapClick={selectEventOnMap}
                 onInfoClick={onInfoClick}
-                className={styles.typeEvent}
+                className={styles.event}
               >
                 {selectedEvent?.id === event?.id && <EventDetail event={selectedEvent} />}
               </Event>

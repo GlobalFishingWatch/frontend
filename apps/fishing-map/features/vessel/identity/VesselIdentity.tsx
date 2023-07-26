@@ -7,7 +7,7 @@ import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { VesselRegistryOwner } from '@globalfishingwatch/api-types'
 import I18nDate from 'features/i18n/i18nDate'
 import { IDENTITY_FIELD_GROUPS, REGISTRY_FIELD_GROUPS } from 'features/vessel/vessel.config'
-import DataTerminology from 'features/vessel/DataTerminology'
+import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import {
@@ -16,7 +16,7 @@ import {
   parseVesselToCSV,
 } from 'features/vessel/vessel.utils'
 import { selectVesselRegistryIndex } from 'features/vessel/vessel.selectors'
-import VesselIdentitySelector from 'features/vessel/VesselIdentitySelector'
+import VesselIdentitySelector from 'features/vessel/identity/VesselIdentitySelector'
 import styles from './VesselIdentity.module.css'
 
 const VesselIdentity = () => {
@@ -150,6 +150,7 @@ const VesselIdentity = () => {
           })}
         </div>
       )}
+      <VesselIdentitySelector />
     </div>
   )
 }

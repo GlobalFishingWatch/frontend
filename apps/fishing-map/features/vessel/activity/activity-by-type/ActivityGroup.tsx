@@ -5,7 +5,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { EventType } from '@globalfishingwatch/api-types'
 import EventIcon from 'features/vessel/activity/event/EventIcon'
 import I18nNumber from 'features/i18n/i18nNumber'
-import styles from '../ActivityGroup.module.css'
+import styles from '../ActivityGroupedList.module.css'
 
 interface ActivityGroupProps {
   eventType: EventType

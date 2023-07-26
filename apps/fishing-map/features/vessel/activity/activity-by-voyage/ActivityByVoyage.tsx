@@ -23,7 +23,7 @@ import {
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getUTCDateTime } from 'utils/dates'
 import { getScrollElement } from 'features/sidebar/Sidebar'
-import styles from '../activity-by-type/activity-by-type.module.css'
+import styles from '../ActivityGroupedList.module.css'
 
 const ActivityByVoyage = () => {
   const { t } = useTranslation()
@@ -134,7 +134,7 @@ const ActivityByVoyage = () => {
                 onMapHover={onEventMapHover}
                 onMapClick={selectEventOnMap}
                 onInfoClick={onInfoClick}
-                className={styles.voyageEvent}
+                className={styles.event}
               >
                 {selectedEvent?.id === event?.id && <EventDetail event={event} />}
               </Event>

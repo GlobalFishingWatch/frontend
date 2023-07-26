@@ -10,7 +10,7 @@ import {
   selectVesselInfoStatus,
 } from 'features/vessel/vessel.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import VesselSummary from 'features/vessel/VesselSummary'
+import VesselHeader from 'features/vessel/VesselHeader'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import { selectRegionsDatasets } from 'features/regions/regions.selectors'
@@ -18,12 +18,12 @@ import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import { ErrorPlaceHolder, WorkspaceLoginError } from 'features/workspace/WorkspaceError'
 import { isGuestUser } from 'features/user/user.slice'
 import { selectVesselDatasetId } from 'features/vessel/vessel.selectors'
-import VesselIdentity from './VesselIdentity'
+import VesselIdentity from './identity/VesselIdentity'
 import VesselActivity from './activity/VesselActivity'
 
 type VesselSection = 'activity' | 'relatedVessels' | 'areas'
 
-const VesselDetail = () => {
+const Vessel = () => {
   const { t } = useTranslation()
   useFetchDataviewResources()
   const dispatch = useAppDispatch()
@@ -99,7 +99,7 @@ const VesselDetail = () => {
     <Fragment>
       {infoStatus === AsyncReducerStatus.Finished && (
         <Fragment>
-          <VesselSummary />
+          <VesselHeader />
           <VesselIdentity />
         </Fragment>
       )}
@@ -108,4 +108,4 @@ const VesselDetail = () => {
   )
 }
 
-export default VesselDetail
+export default Vessel

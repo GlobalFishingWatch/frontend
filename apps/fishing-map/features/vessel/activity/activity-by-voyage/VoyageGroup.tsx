@@ -11,7 +11,7 @@ import { getVoyageTimeRange, parseEventsToCSV } from 'features/vessel/vessel.uti
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { selectOngoingVoyageId } from 'features/vessel/vessel.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import styles from '../ActivityGroup.module.css'
+import styles from '../ActivityGroupedList.module.css'
 
 interface EventProps {
   events: ActivityEvent[]

@@ -8,9 +8,9 @@ import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { formatInfoField } from 'utils/info'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
-import styles from './VesselSummary.module.css'
+import styles from './VesselHeader.module.css'
 
-const VesselSummary = () => {
+const VesselHeader = () => {
   const vessel = useSelector(selectVesselInfoData)
   const events = useSelector(selectVesselEventsFilteredByTimerange)
   const fitBounds = useMapFitBounds()
@@ -45,4 +45,4 @@ const VesselSummary = () => {
   )
 }
 
-export default VesselSummary
+export default VesselHeader
