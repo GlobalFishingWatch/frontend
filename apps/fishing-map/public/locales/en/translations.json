@@ -602,13 +602,14 @@
       "other_non_fishing": "Other",
       "unknown": "Other"
     },
+    "identity": {
+      "selfReported": "Self reported identity",
+      "registryIdentity": "Registry identity",
+      "registryIdentities": "Registry identities",
+      "seeAsCalendar": "See as calendar"
+    },
     "grossTonnage": "Gross Tonnage",
     "grossTonnageRange": "Gross tonnage range",
-    "identity": "Identity",
-    "identityHistoric": "Historic values",
-    "identityLatest": "Latest values",
-    "identitySeeHistoric": "See all historical values",
-    "identitySeeLatest": "See latest values",
     "imo": "IMO",
     "lastTransmissionDate": "Last transmission date",
     "length": "Length",
@@ -635,13 +636,14 @@
     "shipname": "Name",
     "source": "Source",
     "source_short": "Source",
-    "summary": "The <strong>{{vesselType}}</strong> vessel flagged by <strong>{{vesselFlag}}</strong> had <strong>{{events}}</strong> events in <strong>{{voyages}}</strong> voyages between <strong>{{timerangeStart}}</strong> and <strong>{{timerangeEnd}}</strong>.",
+    "summary": "The <strong>{{vesselType}}</strong> vessel flagged by <strong>{{vesselFlag}}</strong> {{events}} {{voyages}} between <strong>{{timerangeStart}}</strong> and <strong>{{timerangeEnd}}</strong>",
     "ssvid": "Ssvid",
     "type": "Type",
     "target_species": "Target species",
     "targetSpecies": "Target species",
     "terminology": {
       "geartype": "For gear type sourced from Global Fishing Watch, additional research and analysis is conducted in addition to using the original AIS data to identify the most likely value. GFW source values are likely gear type of fishing vessel as defined by Global Fishing Watch. The fishing vessels identified by GFW come from the GFW fishing database that were identified using vessel registry databases, reported AIS identity information, and estimated classification using a machine learning algorithm. See more information here:<1>https://globalfishingwatch.org/datasets-and-code-vessel-identity/</1> .\nGear type from \"other\" is taken from RFMO authorized vessel lists and other sources.",
+      "registryInfo": "Vessel registry info",
       "shiptype": "Other help text"
     },
     "trackLogin": "One of your selected sources requires you to <1>log in</1> to see vessel tracks and events",

@@ -602,13 +602,14 @@
       "other_non_fishing": "crwdns40843:0crwdne40843:0",
       "unknown": "crwdns40845:0crwdne40845:0"
     },
+    "identity": {
+      "selfReported": "crwdns48617:0crwdne48617:0",
+      "registryIdentity": "crwdns48619:0crwdne48619:0",
+      "registryIdentities": "crwdns48621:0crwdne48621:0",
+      "seeAsCalendar": "crwdns48623:0crwdne48623:0"
+    },
     "grossTonnage": "crwdns40847:0crwdne40847:0",
     "grossTonnageRange": "crwdns40849:0crwdne40849:0",
-    "identity": "crwdns40851:0crwdne40851:0",
-    "identityHistoric": "crwdns40855:0crwdne40855:0",
-    "identityLatest": "crwdns40857:0crwdne40857:0",
-    "identitySeeHistoric": "crwdns40859:0crwdne40859:0",
-    "identitySeeLatest": "crwdns40861:0crwdne40861:0",
     "imo": "crwdns40863:0crwdne40863:0",
     "lastTransmissionDate": "crwdns40865:0crwdne40865:0",
     "length": "crwdns40867:0crwdne40867:0",
@@ -635,13 +636,14 @@
     "shipname": "crwdns40905:0crwdne40905:0",
     "source": "crwdns40907:0crwdne40907:0",
     "source_short": "crwdns40909:0crwdne40909:0",
-    "summary": "crwdns40911:0{{vesselType}}crwdnd40911:0{{vesselFlag}}crwdnd40911:0{{events}}crwdnd40911:0{{voyages}}crwdnd40911:0{{timerangeStart}}crwdnd40911:0{{timerangeEnd}}crwdne40911:0",
+    "summary": "crwdns48625:0{{vesselType}}crwdnd48625:0{{vesselFlag}}crwdnd48625:0{{events}}crwdnd48625:0{{voyages}}crwdnd48625:0{{timerangeStart}}crwdnd48625:0{{timerangeEnd}}crwdne48625:0",
     "ssvid": "crwdns40913:0crwdne40913:0",
     "type": "crwdns40915:0crwdne40915:0",
     "target_species": "crwdns40917:0crwdne40917:0",
     "targetSpecies": "crwdns40919:0crwdne40919:0",
     "terminology": {
       "geartype": "crwdns48605:0crwdne48605:0",
+      "registryInfo": "crwdns48627:0crwdne48627:0",
       "shiptype": "crwdns48607:0crwdne48607:0"
     },
     "trackLogin": "crwdns40921:0crwdne40921:0",
