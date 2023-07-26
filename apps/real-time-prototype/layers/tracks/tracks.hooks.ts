@@ -2,13 +2,17 @@ import { useCallback, useEffect } from 'react'
 import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
 import { TracksLayer } from 'layers/tracks/TracksLayer'
 import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
-import { useMapLayers } from 'features/map/layers.hooks'
+
+export type TrackPoint = {
+  coordinates: [number, number]
+  timestamp: number
+}
 
 export type TrackSublayer = {
   id: string
   active: boolean
   color: string
-  path?: [number, number][]
+  data?: TrackPoint[][]
 }
 
 type TracksAtom = {
@@ -28,10 +32,6 @@ export const tracksLayerAtom = atom<TracksAtom>({
 
 export function useTracksLayer({ token, lastUpdate }) {
   const [atom, updateAtom] = useRecoilState(tracksLayerAtom)
-  const [mapLayers] = useMapLayers()
-
-  const layer = mapLayers.find((l) => l.id === 'tracks')
-  const layerVisible = layer?.visible
 
   const setAtomProperty = useCallback(
     (property) => updateAtom((state) => ({ ...state, ...property })),
@@ -43,10 +43,10 @@ export function useTracksLayer({ token, lastUpdate }) {
   }, [setAtomProperty])
 
   const onSublayerLoad = useCallback(
-    (id: string, path: any[]) => {
+    (id: string, data: any[]) => {
       setAtomProperty({
         sublayers: atom.sublayers.map((sublayer) => {
-          if (sublayer.id === id) return { ...sublayer, path }
+          if (sublayer.id === id) return { ...sublayer, data }
           return sublayer
         }),
       })
@@ -55,28 +55,15 @@ export function useTracksLayer({ token, lastUpdate }) {
   )
 
   useEffect(() => {
-    if (layerVisible) {
-      const trackLayer = new TracksLayer({
-        sublayers: atom.sublayers,
-        token,
-        lastUpdate,
-        onDataLoad: onDataLoad,
-        onSublayerLoad,
-      })
-      setAtomProperty({ instance: trackLayer })
-    } else {
-      setAtomProperty({ instance: undefined, loaded: false })
-    }
-  }, [
-    layerVisible,
-    updateAtom,
-    onDataLoad,
-    setAtomProperty,
-    token,
-    lastUpdate,
-    onSublayerLoad,
-    atom.sublayers,
-  ])
+    const trackLayer = new TracksLayer({
+      sublayers: atom.sublayers,
+      token,
+      lastUpdate,
+      onDataLoad: onDataLoad,
+      onSublayerLoad,
+    })
+    setAtomProperty({ instance: trackLayer })
+  }, [updateAtom, onDataLoad, setAtomProperty, token, lastUpdate, onSublayerLoad, atom.sublayers])
 
   return atom.instance
 }

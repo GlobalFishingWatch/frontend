@@ -8,14 +8,7 @@ export type ContextsLayerProps = TileLayerProps &
 export class ContextsLayer extends CompositeLayer<ContextsLayerProps> {
   static layerName = 'ContextsLayer'
 
-  layers = this.props?.ids?.map(
-    (id: string) =>
-      new ContextLayer({
-        id,
-        hoveredFeatures: this.props.hoveredFeatures,
-        clickedFeatures: this.props.clickedFeatures,
-      })
-  )
+  layers = this.props?.ids?.map((id: string) => new ContextLayer({ id }))
 
   renderLayers() {
     return this.layers

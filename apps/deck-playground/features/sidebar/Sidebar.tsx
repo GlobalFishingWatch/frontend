@@ -102,7 +102,7 @@ function Sidebar() {
                   <div>Vessels ({vesselIds?.length} loaded)</div>
                 </div>
                 {layer.visible && (
-                  <Fragment>
+                  <div>
                     <ul>
                       {vesselIds?.length > 0 &&
                         vesselIds.map((vessel) => (
@@ -120,7 +120,7 @@ function Sidebar() {
                         LOG VESSELS EVENTS DATA
                       </Button>
                     </div>
-                  </Fragment>
+                  </div>
                 )}
               </div>
             )
