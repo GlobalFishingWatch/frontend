@@ -1,5 +1,5 @@
 .summaryContainer {
-  padding: var(--space-S) var(--space-M) var(--space-M);
+  padding: var(--space-S) var(--space-M);
   border-bottom: var(--border);
 }
 

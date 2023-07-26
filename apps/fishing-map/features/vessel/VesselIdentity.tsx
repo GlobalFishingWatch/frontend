@@ -5,7 +5,7 @@ import { saveAs } from 'file-saver'
 import { Fragment } from 'react'
 import { Button, Icon, IconButton, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
 import { VesselRegistryOwner } from '@globalfishingwatch/api-types'
-import I18nDate, { formatI18nDate } from 'features/i18n/i18nDate'
+import I18nDate from 'features/i18n/i18nDate'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
 import { Locale } from 'types'
 import { IDENTITY_FIELD_GROUPS, REGISTRY_FIELD_GROUPS } from 'features/vessel/vessel.config'
@@ -55,24 +55,33 @@ const VesselIdentity = () => {
     }
   }
 
-  const isLatestInfo = registryIndex === 0
+  let title = t('vessel.identity.selfReported', 'Self reported identity')
+  if (vessel?.registryInfo?.length) {
+    title =
+      vessel?.registryInfo?.length === 1
+        ? t('vessel.identity.registryIdentity', 'Registry identity')
+        : t('vessel.identity.registryIdentities', 'Registry identities')
+  }
 
   return (
     <div className={styles.container}>
       <div className={styles.titleContainer}>
         <h3>
           <label>
-            {isLatestInfo ? (
-              t('vessel.latestIdentity', 'Latest identity')
-            ) : (
-              <Fragment>
-                {t('vessel.identity', 'Identity')}{' '}
-                {t('common.dateRange', { start: formatI18nDate(start), end: formatI18nDate(end) })}
-              </Fragment>
-            )}
+            {title} (<I18nDate date={start} /> - <I18nDate date={end} />)
+            <DataTerminology size="tiny" type="default" title={title}>
+              {t('vessel.terminology.registryInfo', 'registry info terminology')}
+            </DataTerminology>
           </label>
         </h3>
         <div className={styles.actionsContainer}>
+          <IconButton
+            icon="download"
+            size="medium"
+            onClick={onDownloadClick}
+            tooltip={t('download.dataDownload', 'Download Data')}
+            tooltipPlacement="top"
+          />
           <Button
             className={styles.actionButton}
             disabled
@@ -81,16 +90,8 @@ const VesselIdentity = () => {
             tooltip={t('common.comingSoon', 'Coming Soon!')}
             tooltipPlacement="top"
           >
-            {t('vessel.identitySeeHistory', 'See identity history')} <Icon icon="history" />
+            {t('vessel.identityCalendar', 'See as calendar')} <Icon icon="history" />
           </Button>
-          <IconButton
-            icon="download"
-            size="medium"
-            type="border"
-            onClick={onDownloadClick}
-            tooltip={t('download.dataDownload', 'Download Data')}
-            tooltipPlacement="top"
-          />
         </div>
       </div>
       {vessel && (
@@ -162,7 +163,6 @@ const VesselIdentity = () => {
           })}
           <div className={styles.fieldGroup}>
             <div className={cx(styles.threeCells)}>
-              <label>{t('vessel.identityHistory' as any, 'Identity history')}</label>
               <div className={cx(styles.transmission)}>
                 <IconButton
                   size="small"

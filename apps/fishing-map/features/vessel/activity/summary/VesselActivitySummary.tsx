@@ -8,14 +8,25 @@ import useActivityEventConnect from 'features/vessel/activity/event/event.hook'
 import {
   selectActivitySummary,
   selectEventsGroupedByType,
+  selectVoyagesNumber,
 } from 'features/vessel/activity/vessels-activity.selectors'
 import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
+import { getVesselProperty } from 'features/vessel/vessel.utils'
+import { formatInfoField } from 'utils/info'
+import { formatI18nDate } from 'features/i18n/i18nDate'
+import { selectVesselInfoData } from 'features/vessel/vessel.slice'
+import { selectTimeRange } from 'features/app/app.selectors'
+import { selectVesselEventsFilteredByTimerange } from 'features/vessel/vessel.selectors'
 import styles from './VesselActivitySummary.module.css'
 
 const MAX_PORTS = 3
 
 export const VesselActivitySummary = () => {
   const { t } = useTranslation()
+  const vessel = useSelector(selectVesselInfoData)
+  const events = useSelector(selectVesselEventsFilteredByTimerange)
+  const voyages = useSelector(selectVoyagesNumber)
+  const timerange = useSelector(selectTimeRange)
   const eventsByType = useSelector(selectEventsGroupedByType)
   const { getRegionNamesByType } = useActivityEventConnect()
   const { activityRegions, mostVisitedPorts } = useSelector(selectActivitySummary)
@@ -39,9 +50,31 @@ export const VesselActivitySummary = () => {
     [restMostVisitedPorts, t]
   )
 
+  const summary = t('vessel.summary', {
+    defaultValue:
+      'The <strong>{{vesselType}}</strong> vessel flagged by <strong>{{vesselFlag}}</strong> {{events}} {{voyages}} between <strong>{{timerangeStart}}</strong> and <strong>{{timerangeEnd}}</strong>.',
+    vesselType: formatInfoField(
+      getVesselProperty(vessel, { property: 'shiptype' }) as string,
+      'vesselType'
+    ).toLowerCase(),
+    vesselFlag: formatInfoField(getVesselProperty(vessel, { property: 'flag' }) as string, 'flag'),
+    events: `${t('common.had', 'had')} <strong>${formatI18nNumber(
+      events?.length as number
+    )}</strong> ${t('common.event', { defaultValue: 'events', count: events?.length })}`,
+    voyages:
+      voyages !== 0
+        ? `${t('common.in', 'in')} <strong>${formatI18nNumber(voyages as number)}</strong> ${t(
+            'vessel.voyage',
+            { defaultValue: 'voyages', count: voyages }
+          )}`
+        : '',
+    timerangeStart: formatI18nDate(timerange?.start),
+    timerangeEnd: formatI18nDate(timerange?.end),
+  })
+
   return (
     <div>
-      <label>{t('common.summary', 'Summary')}</label>
+      <h2 className={styles.summary} dangerouslySetInnerHTML={{ __html: summary }}></h2>
       <ul className={styles.summary}>
         <li>
           {t('vessel.activeIn', 'Active in')}{' '}

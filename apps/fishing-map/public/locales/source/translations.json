@@ -602,14 +602,14 @@
       "other_non_fishing": "Other",
       "unknown": "Unknown"
     },
+    "identity": {
+      "selfReported": "Self reported identity",
+      "registryIdentity": "Registry identity",
+      "registryIdentities": "Registry identities",
+      "seeAsCalendar": "See as calendar"
+    },
     "grossTonnage": "Gross Tonnage",
     "grossTonnageRange": "Gross Tonnage range",
-    "identity": "Identity",
-    "identityHistoric": "Historic values",
-    "identityLatest": "Latest values",
-    "identityHistory": "Identity history",
-    "identitySeeHistory": "See identity history",
-    "identitySeeLatest": "See latest values",
     "imo": "IMO",
     "lastTransmissionDate": "Last transmission date",
     "length": "Length",
@@ -643,6 +643,7 @@
     "targetSpecies": "Target species",
     "terminology": {
       "geartype": "For gear type sourced from Global Fishing Watch, additional research and analysis is conducted in addition to using the original AIS data to identify the most likely value. GFW source values are likely gear type of fishing vessel as defined by Global Fishing Watch. The fishing vessels identified by GFW come from the GFW fishing database that were identified using vessel registry databases, reported AIS identity information, and estimated classification using a machine learning algorithm. See more information here:<1>https://globalfishingwatch.org/datasets-and-code-vessel-identity/</1> .\nGear type from \"other\" is taken from RFMO authorized vessel lists and other sources.",
+      "registryInfo": "Vessel registry info",
       "shiptype": "For vessel type sourced from Global Fishing Watch, additional research and analysis is conducted in addition to using the original AIS data to identify the most likely value. Vessel types from GFW include fishing vessels, carrier vessels, and support vessels. The vessel classification for fishing vessel is estimated using known registry information in combination with a convolutional neural network used to estimate vessel class. The vessel classification for carrier vessels is estimated using a cumulation of known registry information, manual review, and vessel class. All support vessels in the vessel viewer are considered purse seine support vessels based on internal review. \nVessel type from \"other\" is taken from RFMO authorized vessel lists and other sources of vessel data. Where multiple values are given, this reflects conflicting information or variation in terms used in original sources."
     },
     "trackLogin": "One of your selected sources requires you to <1>login</1> to see vessel tracks and events",
