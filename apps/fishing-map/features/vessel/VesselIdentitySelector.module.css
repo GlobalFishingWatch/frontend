@@ -1,0 +1,25 @@
+.selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row-reverse;
+  gap: var(--space-S);
+  padding: var(--space-M) 0;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.2rem;
+  height: 1.2rem;
+  background-color: var(--color-terthiary-blue);
+  border-radius: 1.2rem;
+  transition: width 150ms ease-out;
+  cursor: pointer;
+}
+
+.icon:hover,
+.selected {
+  background-color: var(--color-secondary-blue);
+}

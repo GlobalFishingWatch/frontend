@@ -25,12 +25,16 @@ export type VesselTMTInfo = {
   type?: string
 }
 
+type IdentityShiptypeByYear = {
+  shiptype: VesselType
+  years: number[]
+}
 export type SelfReportedInfo = VesselInfo & {
   id: string
   firstTransmissionDate: string
   lastTransmissionDate: string
   ssvid: string
-  years?: number[]
+  shiptypesByYear?: IdentityShiptypeByYear[]
   posCount?: number
   msgCount?: number
   // VMS Custom data
