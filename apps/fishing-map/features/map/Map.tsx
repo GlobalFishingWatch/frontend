@@ -5,6 +5,7 @@ import { LayersList } from '@deck.gl/core/typed'
 import dynamic from 'next/dynamic'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { ViewStateChangeParameters } from '@deck.gl/core/typed/controllers/controller'
+import { ViewState } from 'react-map-gl'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
@@ -116,13 +117,13 @@ const MapWrapper = () => {
 
   // const [viewState, setViewState] = useState<any>(DEFAULT_VIEWPORT)
   // const viewState = useRef<any>(DEFAULT_VIEWPORT)
-  const setViewState = useSetViewState()
+  const { viewState, setViewState } = useViewStateAtom()
   // const [viewState, setViewState] = useState(DEFAULT_VIEWPORT)
   const onViewStateChange = useCallback(
     (params: ViewStateChangeParameters) => {
       // const { latitude, longitude, zoom } = params.viewState
       // viewState.current = { latitude, longitude, zoom }
-      setViewState(params.viewState)
+      setViewState(params.viewState as ViewState)
     },
     [setViewState]
   )
@@ -133,7 +134,7 @@ const MapWrapper = () => {
   //   },
   //   [setViewState]
   // )
-  // useUpdateViewStateUrlParams()
+  useUpdateViewStateUrlParams()
   ////////////////////////////////////////
   // Used it only once here to attach the listener only once
   useSetMapIdleAtom()
@@ -335,12 +336,8 @@ const MapWrapper = () => {
           }
           return true
         }}
-        // viewState={viewState}
-        initialViewState={DEFAULT_VIEWPORT}
+        viewState={viewState}
         onViewStateChange={onViewStateChange}
-        // viewState={viewState}
-        // onViewStateChange={onViewStateChange}
-        controller={true}
         // onClick={onClick}
         // onHover={onHover}
       />

@@ -1,8 +1,7 @@
 import { useCallback, useEffect } from 'react'
 import { debounce } from 'lodash'
-import { atom, useAtomValue, Atom, useSetAtom } from 'jotai'
+import { atom, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { MapView } from '@deck.gl/core/typed'
-import WebMercatorViewport from '@math.gl/web-mercator'
 import { MapCoordinates } from 'types'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { updateUrlViewport } from 'routes/routes.actions'
@@ -11,14 +10,18 @@ import { useDeckMap } from 'features/map/map-context.hooks'
 import store from '../../store'
 
 export const viewStateAtom = atom<MapCoordinates>({
-  longitude: getUrlViewstateNumericParam('longitude') || DEFAULT_VIEWPORT.longitude,
-  latitude: getUrlViewstateNumericParam('latitude') || DEFAULT_VIEWPORT.latitude,
-  zoom: getUrlViewstateNumericParam('zoom') || DEFAULT_VIEWPORT.zoom,
+  key: 'localViewport',
+  default: {
+    longitude: getUrlViewstateNumericParam('longitude') || DEFAULT_VIEWPORT.longitude,
+    latitude: getUrlViewstateNumericParam('latitude') || DEFAULT_VIEWPORT.latitude,
+    zoom: getUrlViewstateNumericParam('zoom') || DEFAULT_VIEWPORT.zoom,
+  },
+  effects: [],
 })
 
-export const useViewState = () => useAtomValue(viewStateAtom)
+export const useViewState = () => useRecoilValue(viewStateAtom)
 export const useSetViewState = () => {
-  const setViewState = useSetAtom(viewStateAtom)
+  const setViewState = useSetRecoilState(viewStateAtom)
   return useCallback(
     (coordinates: Partial<MapCoordinates>) => {
       setViewState((prev) => ({ ...prev, ...coordinates }))
@@ -28,8 +31,7 @@ export const useSetViewState = () => {
 }
 
 export function useViewStateAtom() {
-  const viewState = useViewState()
-  const setViewState = useSetViewState()
+  const [viewState, setViewState] = useRecoilState(viewStateAtom)
   return { viewState, setViewState }
 }
 
@@ -58,7 +60,7 @@ export const MAP_VIEW = new MapView({ id: MAP_VIEW_ID, repeat: true, controller:
 const URL_VIEWPORT_DEBOUNCED_TIME = 1000
 
 export const useUpdateViewStateUrlParams = () => {
-  const viewState = useAtomValue(viewStateAtom)
+  const viewState = useRecoilValue(viewStateAtom)
   const updateUrlViewportDebounced = debounce(
     store.dispatch(updateUrlViewport),
     URL_VIEWPORT_DEBOUNCED_TIME

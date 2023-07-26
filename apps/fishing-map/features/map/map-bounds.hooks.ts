@@ -18,7 +18,6 @@ export const boundsAtom = atom<MiniglobeBounds>({
 export const useMapBounds = (): { bounds: MiniglobeBounds } => {
   const [bounds, setBounds] = useAtom(boundsAtom)
   const viewport = useMapViewport()
-  console.log('🚀 ~ useMapBounds ~ viewport:', viewport)
 
   useEffect(() => {
     if (viewport) {
