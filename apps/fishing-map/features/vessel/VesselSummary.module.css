@@ -14,17 +14,6 @@
   font: var(--font-L);
 }
 
-.summary {
-  font: var(--font-M);
-  color: var(--color-secondary-blue);
-  margin-bottom: var(--space-S);
-}
-
-.summary strong {
-  font-weight: 400;
-  color: var(--color-primary-blue);
-}
-
 .actionsContainer {
   display: flex;
   justify-content: flex-end;

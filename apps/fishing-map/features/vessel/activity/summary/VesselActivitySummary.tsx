@@ -97,7 +97,7 @@ export const VesselActivitySummary = () => {
               )
               return (
                 <Tooltip key={regionType} content={tooltipContent}>
-                  <span className={styles.area}>
+                  <span className={styles.help}>
                     {activityRegions[regionType].length}{' '}
                     {t(`layer.areas.${regionType}`, {
                       defaultvalue: regionType,
@@ -137,22 +137,24 @@ export const VesselActivitySummary = () => {
               {eventType === EventTypes.Port && threeMostVisitedPorts.length > 0 && (
                 <span>
                   (
-                  {threeMostVisitedPorts.map(({ port, count }) => {
+                  {threeMostVisitedPorts.map(({ port, count }, index) => {
                     return (
                       <Tooltip
                         key={port}
                         content={`${count} ${t('common.event', { defaultValue: 'events', count })}`}
                       >
-                        <span>{port}</span>
+                        <span className={styles.help}>
+                          {port}
+                          {index < threeMostVisitedPorts.length - 1 ? ', ' : ''}
+                        </span>
                       </Tooltip>
                     )
                   })}
                   {restMostVisitedPorts.length > 0 && (
                     <Tooltip content={restTooltipContent}>
-                      <span>{` ${t('common.and', 'and')} ${restMostVisitedPorts.length} ${t(
-                        'common.more',
-                        'more'
-                      )}`}</span>
+                      <span className={styles.help}>{` ${t('common.and', 'and')} ${
+                        restMostVisitedPorts.length
+                      } ${t('common.more', 'more')}`}</span>
                     </Tooltip>
                   )}
                   )
