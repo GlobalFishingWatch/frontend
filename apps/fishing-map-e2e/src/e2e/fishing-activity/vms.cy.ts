@@ -1,8 +1,15 @@
 import { VMS_NAMES } from '../../constants/vms'
-import { getVmsActivityLayerPanel, switchLanguage } from '../../support/app.po'
+import {
+  afterTestSkip,
+  beforeTestSkip,
+  getVmsActivityLayerPanel,
+  switchLanguage,
+} from '../../support/app.po'
 
 describe('vms', () => {
   beforeEach(() => cy.visit('/'))
+  before(() => beforeTestSkip())
+  afterEach(afterTestSkip)
 
   it('should include all sources available publicly', () => {
     // Be sure to use english or the names to test will fail

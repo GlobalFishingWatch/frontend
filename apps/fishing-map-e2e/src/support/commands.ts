@@ -26,6 +26,10 @@ declare namespace Cypress {
       selector: string,
       options?: Partial<Loggable & Timeoutable & Withinable & Shadow>
     ): Cypress.Chainable<JQuery<HTMLElement>>
+    findByClass(
+      selector: string,
+      options?: Partial<Loggable & Timeoutable & Withinable & Shadow>
+    ): Cypress.Chainable<JQuery<HTMLElement>>
   }
 }
 
@@ -122,6 +126,24 @@ Cypress.Commands.add(
     options?: Partial<Cypress.Loggable & Cypress.Timeoutable & Cypress.Withinable & Cypress.Shadow>
   ) => {
     return cy.get(`[class^="${selector}"]`, options)
+  }
+)
+
+Cypress.Commands.add(
+  'findByClass',
+  { prevSubject: true },
+  (
+    subject: Cypress.Chainable<HTMLElement>,
+    selector: string,
+    options?: Partial<Cypress.Loggable & Cypress.Timeoutable & Cypress.Withinable & Cypress.Shadow>
+  ) => {
+    Cypress.log({
+      name: 'findByClass',
+      displayName: 'FIND BY CLASS',
+      message: [`💸 Try to find elements by class that starts with ${selector} in:`],
+    })
+
+    return cy.wrap(subject).find(`[class^="${selector}"]`, options)
   }
 )
 
