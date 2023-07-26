@@ -71,57 +71,64 @@ export const VesselActivitySummary = () => {
     timerangeStart: formatI18nDate(timerange?.start),
     timerangeEnd: formatI18nDate(timerange?.end),
   })
+  const hasActivityRegionsData = REGIONS_PRIORITY.some(
+    (regionType) => activityRegions[regionType] && activityRegions[regionType].length !== 0
+  )
 
   return (
     <div>
       <h2 className={styles.summary}>
         <span dangerouslySetInnerHTML={{ __html: summary }}></span>
-        <span>
-          {' '}
-          {t('common.in', 'in')}{' '}
-          {REGIONS_PRIORITY.map((regionType, index) => {
-            if (activityRegions[regionType] && activityRegions[regionType].length !== 0) {
-              const tooltipContent = (
-                <ul>
-                  {activityRegions[regionType]
-                    .sort((a, b) => b.count - a.count)
-                    .map(({ id, count }) => {
-                      return (
-                        <li key={id}>
-                          {getRegionNamesByType(regionType, [id])[0] || id} (
-                          {<I18nNumber number={count} />}{' '}
-                          {t('common.event', { defaultValue: 'events', count })})
-                        </li>
-                      )
-                    })}
-                </ul>
-              )
-              return (
-                <Tooltip key={regionType} content={tooltipContent}>
-                  <span className={styles.help}>
-                    {activityRegions[regionType].length}{' '}
-                    {t(`layer.areas.${regionType}`, {
-                      defaultvalue: regionType,
-                      count: activityRegions[regionType].length,
-                    })}
-                    {(regionType === 'fao' || regionType === 'rfmo') && (
-                      <span>
-                        {' '}
-                        {t(`common.area`, {
-                          defaultValue: 'areas',
-                          count: activityRegions[regionType].length,
-                        })}
-                      </span>
-                    )}
-                    {index < activityRegionsLength - 1 && ', '}
-                  </span>
-                </Tooltip>
-              )
-            }
-            return null
-          })}
-          .
-        </span>
+        {hasActivityRegionsData ? (
+          <span>
+            {' '}
+            {t('common.in', 'in')}{' '}
+            {REGIONS_PRIORITY.map((regionType, index) => {
+              if (activityRegions[regionType] && activityRegions[regionType].length !== 0) {
+                const tooltipContent = (
+                  <ul>
+                    {activityRegions[regionType]
+                      .sort((a, b) => b.count - a.count)
+                      .map(({ id, count }) => {
+                        return (
+                          <li key={id}>
+                            {getRegionNamesByType(regionType, [id])[0] || id} (
+                            {<I18nNumber number={count} />}{' '}
+                            {t('common.event', { defaultValue: 'events', count })})
+                          </li>
+                        )
+                      })}
+                  </ul>
+                )
+                return (
+                  <Tooltip key={regionType} content={tooltipContent}>
+                    <span className={styles.help}>
+                      {activityRegions[regionType].length}{' '}
+                      {t(`layer.areas.${regionType}`, {
+                        defaultvalue: regionType,
+                        count: activityRegions[regionType].length,
+                      })}
+                      {(regionType === 'fao' || regionType === 'rfmo') && (
+                        <span>
+                          {' '}
+                          {t(`common.area`, {
+                            defaultValue: 'areas',
+                            count: activityRegions[regionType].length,
+                          })}
+                        </span>
+                      )}
+                      {index < activityRegionsLength - 1 && ', '}
+                    </span>
+                  </Tooltip>
+                )
+              }
+              return null
+            })}
+            .
+          </span>
+        ) : (
+          <span>.</span>
+        )}
       </h2>
       <ul className={styles.summary}>
         {Object.entries(eventsByType).map(([eventType, events]) => {
