@@ -3,17 +3,11 @@ import cx from 'classnames'
 import styles from './VesselIdentityField.module.css'
 
 type VesselIdentityFieldProps = {
-  log?: boolean
   value: string
 }
-const VesselIdentityField = ({ value, log }: VesselIdentityFieldProps) => {
+const VesselIdentityField = ({ value }: VesselIdentityFieldProps) => {
   const prevValue = useRef(value)
   const [highlighted, setHighlighted] = useState(false)
-  if (log) {
-    console.log('value', value)
-    console.log('prevValue', prevValue.current)
-    console.log('🚀 ~ VesselIdentityField ~ highlighted:', highlighted)
-  }
 
   // Needed to remove the class before adding it again in case
   // there is a new value before the timeout is finished
