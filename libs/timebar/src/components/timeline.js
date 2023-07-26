@@ -431,6 +431,7 @@ class Timeline extends PureComponent {
             {/* // TODO separated drag area? */}
             <div
               className={styles.graph}
+              data-test="timeline-graph"
               onMouseDown={(event) => {
                 this.onMouseDown(event, DRAG_INNER)
               }}
