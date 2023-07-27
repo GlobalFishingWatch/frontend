@@ -8,7 +8,7 @@ import {
   selectIsUserLocation,
   selectIsAnyVesselLocation,
   selectIsWorkspacesListLocation,
-  selectIsSearchLocation,
+  selectIsAnySearchLocation,
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
@@ -55,7 +55,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const readOnly = useSelector(selectReadOnly)
   const isUserLocation = useSelector(selectIsUserLocation)
   const isWorkspacesListLocation = useSelector(selectIsWorkspacesListLocation)
-  const isSearchLocation = useSelector(selectIsSearchLocation)
+  const isSearchLocation = useSelector(selectIsAnySearchLocation)
   const isReportLocation = useSelector(selectIsReportLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
   const userLogged = useSelector(isUserLogged)

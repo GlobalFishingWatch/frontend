@@ -7,8 +7,8 @@ import { Menu, SplitView } from '@globalfishingwatch/ui-components'
 import { Workspace } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
+  selectIsAnySearchLocation,
   selectIsReportLocation,
-  selectIsSearchLocation,
   selectIsWorkspaceLocation,
   selectLocationType,
   selectUrlTimeRange,
@@ -126,7 +126,7 @@ function App() {
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
   const reportAreaBounds = useSelector(selectReportAreaBounds)
   const isTimeComparisonReport = useSelector(selectShowTimeComparison)
-  const isSearchLocation = useSelector(selectIsSearchLocation)
+  const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
   const isReportLocation = useSelector(selectIsReportLocation)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const showTimebar = workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished
@@ -174,9 +174,11 @@ function App() {
   const homeNeedsFetch = isHomeLocation && currentWorkspaceId !== DEFAULT_WORKSPACE_ID
   // Checking only when REPORT entrypoint or WORKSPACE_REPORT when workspace is not loaded
   const locationNeedsFetch =
+    isAnySearchLocation ||
     locationType === REPORT ||
     (locationType === WORKSPACE_REPORT && currentWorkspaceId !== urlWorkspaceId)
   const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId
+
   useEffect(() => {
     let action: any
     let actionResolved = false
@@ -248,7 +250,7 @@ function App() {
   let asideWidth = '50%'
   if (readOnly) {
     asideWidth = isReportLocation ? '45%' : '34rem'
-  } else if (isSearchLocation) {
+  } else if (isAnySearchLocation) {
     asideWidth = '100%'
   } else if (workspaceLocation) {
     asideWidth = '39rem'

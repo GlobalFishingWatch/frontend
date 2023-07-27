@@ -22,7 +22,7 @@ import {
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   selectIsReportLocation,
-  selectIsSearchLocation,
+  selectIsAnySearchLocation,
   selectIsWorkspaceLocation,
   selectLocationCategory,
   selectLocationPayload,
@@ -301,7 +301,7 @@ function SidebarHeader() {
   const readOnly = useSelector(selectReadOnly)
   const locationCategory = useSelector(selectLocationCategory)
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
-  const isSearchLocation = useSelector(selectIsSearchLocation)
+  const isSearchLocation = useSelector(selectIsAnySearchLocation)
   const isReportLocation = useSelector(selectIsReportLocation)
   const isSmallScreen = useSmallScreen()
   const activeSearchOption = useSelector(selectSearchOption)
