@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { batch, useSelector } from 'react-redux'
 import { Button, ButtonType, ButtonSize } from '@globalfishingwatch/ui-components'
-import { VesselWithDatasets } from 'features/search/search.slice'
+import { VesselWithDatasetsResolved } from 'features/search/search.slice'
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import { getEventLabel } from 'utils/analytics'
 import {
@@ -27,7 +27,7 @@ function VesselGroupAddButton({
   onAddToVesselGroup,
   buttonClassName = '',
 }: {
-  vessels: (VesselWithDatasets | ReportVesselWithDatasets)[]
+  vessels: (VesselWithDatasetsResolved | ReportVesselWithDatasets)[]
   showCount?: boolean
   buttonSize?: ButtonSize
   buttonType?: ButtonType
@@ -49,9 +49,11 @@ function VesselGroupAddButton({
     async (vesselGroupId?: string) => {
       const vesselsWithDataset = vessels.map((vessel) => ({
         ...vessel,
-        id: (vessel as VesselWithDatasets)?.id || (vessel as ReportVesselWithDatasets)?.vesselId,
+        id:
+          (vessel as VesselWithDatasetsResolved)?.id ||
+          (vessel as ReportVesselWithDatasets)?.vesselId,
         dataset:
-          (vessel as VesselWithDatasets)?.dataset?.id ||
+          (vessel as VesselWithDatasetsResolved)?.dataset?.id ||
           (vessel as ReportVesselWithDatasets)?.infoDataset?.id,
       }))
       if (vesselsWithDataset?.length) {

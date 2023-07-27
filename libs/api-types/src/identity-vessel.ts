@@ -1,6 +1,7 @@
 import { VesselType } from './vessel'
 
 export type VesselInfo = {
+  id: string
   callsign: string
   flag: string
   geartype: string
@@ -30,9 +31,6 @@ type IdentityShiptypeByYear = {
   years: number[]
 }
 export type SelfReportedInfo = VesselInfo & {
-  id: string
-  firstTransmissionDate: string
-  lastTransmissionDate: string
   ssvid: string
   shiptypesByYear?: IdentityShiptypeByYear[]
   posCount?: number
@@ -52,8 +50,6 @@ export type VesselRegistryInfo = VesselInfo & {
   matchFields: string
   recordId: string
   tonnageGt: number
-  transmissionDateFrom: string
-  transmissionDateTo: string
   vesselInfoReference: string
 }
 
@@ -73,7 +69,7 @@ export type VesselRegistryAuthorization = VesselRegistryProperty
 
 export interface IdentityVessel {
   dataset: string
-  selfReportedInfo: SelfReportedInfo
+  selfReportedInfo: SelfReportedInfo[]
   registryInfo?: VesselRegistryInfo[]
   registryOwners?: VesselRegistryOwner[]
   registryAuthorizations?: VesselRegistryAuthorization[]

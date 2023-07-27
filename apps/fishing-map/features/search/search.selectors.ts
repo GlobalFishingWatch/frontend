@@ -10,7 +10,24 @@ import {
 } from 'features/datasets/datasets.utils'
 import { selectAllDataviewsInWorkspace } from 'features/dataviews/dataviews.selectors'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { SearchType } from './search.slice'
+import { SearchType, VesselWithDatasetsResolved, selectSearchResults } from './search.slice'
+
+export const selectVesselSearchResultsResolved = createSelector(
+  [selectSearchResults],
+  (vessels): VesselWithDatasetsResolved[] => {
+    return (vessels || []).map((vessel) => {
+      const vesselData = vessel.registryInfo?.length
+        ? vessel.registryInfo?.[0]
+        : vessel.selfReportedInfo[0]
+      return {
+        ...vesselData,
+        id: vessel.selfReportedInfo[0].id,
+        dataset: vessel.dataset,
+        trackDatasetId: vessel.trackDatasetId,
+      }
+    })
+  }
+)
 
 export const selectSearchDatasetsInWorkspace = createSelector(
   [selectAllDataviewsInWorkspace, selectVesselsDatasets, selectAllDatasets],

@@ -11,10 +11,11 @@ import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import {
   Dataset,
   DatasetTypes,
-  Vessel,
   APIVesselSearchPagination,
-  VesselSearch,
+  IdentityVessel,
   EndpointId,
+  SelfReportedInfo,
+  VesselRegistryInfo,
 } from '@globalfishingwatch/api-types'
 import { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
@@ -41,10 +42,13 @@ export const EMPTY_FILTERS = {
   origin: undefined,
 }
 
-export type VesselWithDatasets = Omit<Vessel, 'dataset'> & {
+export type VesselDatasetInfo = {
   dataset: Dataset
   trackDatasetId?: string
 }
+export type VesselWithDatasets = Omit<IdentityVessel, 'dataset'> & VesselDatasetInfo
+export type VesselWithDatasetsResolved = (SelfReportedInfo | VesselRegistryInfo) & VesselDatasetInfo
+
 export type SearchType = 'basic' | 'advanced'
 export type SearchFilter = {
   lastTransmissionDate?: string
@@ -57,7 +61,7 @@ export type SearchFilter = {
 } & Partial<Record<SupportedDatasetSchema, MultiSelectOption<string>[]>>
 
 interface SearchState {
-  selectedVessels: VesselWithDatasets[]
+  selectedVessels: VesselWithDatasetsResolved[]
   status: AsyncReducerStatus
   statusCode: number | undefined
   data: VesselWithDatasets[] | null
@@ -160,7 +164,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
 
       const url = resolveEndpoint(dataset, datasetConfig)
       if (url) {
-        const searchResults = await GFWAPI.fetch<APIVesselSearchPagination<VesselSearch>>(url, {
+        const searchResults = await GFWAPI.fetch<APIVesselSearchPagination<IdentityVessel>>(url, {
           signal,
         })
         // Not removing duplicates for GFWStaff so they can compare other VS fishing vessels
@@ -174,7 +178,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           if (!infoDataset) return []
 
           const trackDatasetId = getRelatedDatasetByType(infoDataset, DatasetTypes.Tracks, {
-            vesselType: vessel?.shiptype,
+            vesselType: vessel?.selfReportedInfo?.[0]?.shiptype,
           })?.id
           return {
             ...vessel,
@@ -207,16 +211,16 @@ const searchSlice = createSlice({
   name: 'search',
   initialState,
   reducers: {
-    setSelectedVessels: (state, action: PayloadAction<VesselWithDatasets[]>) => {
+    setSelectedVessels: (state, action: PayloadAction<VesselWithDatasetsResolved[]>) => {
       const selection = action.payload
       if (selection.length === 0) {
         state.selectedVessels = []
       }
       if (selection.length === 1) {
-        const selectedIds = state.selectedVessels.map((vessel) => vessel.id)
+        const selectedIds = state.selectedVessels.map((vessel) => vessel?.id)
         const vessel = selection[0]
-        if (selectedIds.includes(vessel.id)) {
-          state.selectedVessels = state.selectedVessels.filter((v) => v.id !== vessel.id)
+        if (selectedIds.includes(vessel?.id)) {
+          state.selectedVessels = state.selectedVessels.filter((v) => v?.id !== vessel?.id)
         } else if (vessel && vessel.dataset && vessel.trackDatasetId) {
           state.selectedVessels = [...state.selectedVessels, vessel]
         }

@@ -4,8 +4,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TransmissionsTimeline } from '@globalfishingwatch/ui-components'
 import {
-  VesselWithDatasets,
-  selectSearchResults,
+  VesselWithDatasetsResolved,
   selectSearchStatus,
   selectSelectedVessels,
   setSelectedVessels,
@@ -19,6 +18,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
 import { Locale } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
+import { selectVesselSearchResultsResolved } from 'features/search/search.selectors'
 
 const PINNED_COLUMN = 'shipname'
 
@@ -26,62 +26,61 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
   const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const searchStatus = useSelector(selectSearchStatus)
-  const searchResults = useSelector(selectSearchResults)
+  const searchResults = useSelector(selectVesselSearchResultsResolved)
   const vesselsSelected = useSelector(selectSelectedVessels)
   const tableContainerRef = useRef<HTMLDivElement>(null)
-  const columns = useMemo((): MRT_ColumnDef<VesselWithDatasets>[] => {
+  const columns = useMemo((): MRT_ColumnDef<VesselWithDatasetsResolved>[] => {
     return [
       {
         accessorKey: PINNED_COLUMN,
-        accessorFn: ({ shipname }: VesselWithDatasets) =>
-          formatInfoField(shipname, 'name') || EMPTY_FIELD_PLACEHOLDER,
+        accessorFn: ({ shipname }) => formatInfoField(shipname, 'name') || EMPTY_FIELD_PLACEHOLDER,
         header: t('common.name', 'Name'),
         enableColumnDragging: false,
         enableColumnActions: false,
       },
       {
-        accessorFn: ({ flag }: VesselWithDatasets) => <I18nFlag iso={flag} />,
+        accessorFn: ({ flag }) => <I18nFlag iso={flag} />,
         header: t('vessel.flag', 'Flag'),
       },
       {
-        accessorFn: ({ ssvid }: VesselWithDatasets) => ssvid || EMPTY_FIELD_PLACEHOLDER,
+        accessorFn: ({ ssvid }) => ssvid || EMPTY_FIELD_PLACEHOLDER,
         header: t('vessel.mmsi', 'MMSI'),
       },
       {
-        accessorFn: ({ imo }: VesselWithDatasets) => imo || EMPTY_FIELD_PLACEHOLDER,
+        accessorFn: ({ imo }) => imo || EMPTY_FIELD_PLACEHOLDER,
         header: t('vessel.imo', 'IMO'),
       },
       {
-        accessorFn: ({ callsign }: VesselWithDatasets) => callsign || EMPTY_FIELD_PLACEHOLDER,
+        accessorFn: ({ callsign }) => callsign || EMPTY_FIELD_PLACEHOLDER,
         header: t('vessel.callsign', 'Callsign'),
       },
       {
-        accessorFn: ({ shiptype }: VesselWithDatasets) =>
+        accessorFn: ({ shiptype }) =>
           t(`vessel.vesselTypes.${shiptype?.toLowerCase()}` as any, EMPTY_FIELD_PLACEHOLDER),
         header: t('vessel.vesselType', 'Vessel Type'),
       },
       {
-        accessorFn: ({ geartype }: VesselWithDatasets) =>
+        accessorFn: ({ geartype }) =>
           t(`vessel.gearTypes.${geartype?.toLowerCase()}` as any, EMPTY_FIELD_PLACEHOLDER),
         header: t('vessel.geartype', 'Gear Type'),
       },
       {
-        accessorFn: ({ dataset }: VesselWithDatasets) => <DatasetLabel dataset={dataset} />,
+        accessorFn: ({ dataset }) => <DatasetLabel dataset={dataset} />,
         header: t('vessel.source', 'Source'),
       },
       // {
-      //   accessorFn: ({ msgCount }: VesselWithDatasets) => <I18nNumber number={msgCount} />,
+      //   accessorFn: ({ msgCount }: VesselWithDatasetsResolved) => <I18nNumber number={msgCount} />,
       //   header: t('vessel.transmission_other', 'Transmissions'),
       // },
       {
-        accessorFn: ({ firstTransmissionDate, lastTransmissionDate }: VesselWithDatasets) => (
+        accessorFn: ({ transmissionDateFrom, transmissionDateTo }: VesselWithDatasetsResolved) => (
           <div>
             <span style={{ font: 'var(--font-XS)' }}>
-              <I18nDate date={firstTransmissionDate} /> - <I18nDate date={lastTransmissionDate} />
+              <I18nDate date={transmissionDateFrom} /> - <I18nDate date={transmissionDateTo} />
             </span>
             <TransmissionsTimeline
-              firstTransmissionDate={firstTransmissionDate}
-              lastTransmissionDate={lastTransmissionDate}
+              firstTransmissionDate={transmissionDateFrom}
+              lastTransmissionDate={transmissionDateTo}
               firstYearOfData={FIRST_YEAR_OF_DATA}
               locale={i18n.language as Locale}
             />
@@ -105,7 +104,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
   }, [fetchMoreResults, searchStatus])
 
   const onSelectHandler = useCallback(
-    (vessels: VesselWithDatasets[]) => {
+    (vessels: VesselWithDatasetsResolved[]) => {
       dispatch(setSelectedVessels(vessels))
     },
     [dispatch]

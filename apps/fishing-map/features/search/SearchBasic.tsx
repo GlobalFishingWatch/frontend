@@ -12,14 +12,13 @@ import SearchBasicResults from 'features/search/SearchBasicResults'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import {
-  selectSearchResults,
   selectSearchStatus,
   selectSearchStatusCode,
   RESULTS_PER_PAGE,
   setSuggestionClicked,
-  VesselWithDatasets,
   selectSelectedVessels,
   setSelectedVessels,
+  VesselWithDatasetsResolved,
 } from './search.slice'
 import styles from './SearchBasic.module.css'
 import { useSearchConnect } from './search.hook'
@@ -28,7 +27,7 @@ import SearchPlaceholder, {
   SearchNoResultsState,
   SearchEmptyState,
 } from './SearchPlaceholders'
-import { isBasicSearchAllowed } from './search.selectors'
+import { isBasicSearchAllowed, selectVesselSearchResultsResolved } from './search.selectors'
 
 const MIN_SEARCH_CHARACTERS = 3
 
@@ -49,7 +48,7 @@ function SearchBasic({
   const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
   const searchQuery = useSelector(selectSearchQuery)
   const basicSearchAllowed = useSelector(isBasicSearchAllowed)
-  const searchResults = useSelector(selectSearchResults)
+  const searchResults = useSelector(selectVesselSearchResultsResolved)
   const searchStatus = useSelector(selectSearchStatus)
   const searchStatusCode = useSelector(selectSearchStatusCode)
   const vesselsSelected = useSelector(selectSelectedVessels)
@@ -88,7 +87,9 @@ function SearchBasic({
 
   return (
     <Downshift
-      onSelect={(selectedItem: VesselWithDatasets) => dispatch(setSelectedVessels([selectedItem]))}
+      onSelect={(selectedItem: VesselWithDatasetsResolved) =>
+        dispatch(setSelectedVessels([selectedItem]))
+      }
       itemToString={(item) => (item ? item.shipname : '')}
     >
       {({ getInputProps, getItemProps, getMenuProps, highlightedIndex, setHighlightedIndex }) => (
@@ -138,7 +139,7 @@ function SearchBasic({
                   </li>
                 )}
               <SearchBasicResults
-                searchResults={searchResults as VesselWithDatasets[]}
+                searchResults={searchResults}
                 highlightedIndex={highlightedIndex as number}
                 setHighlightedIndex={setHighlightedIndex}
                 getItemProps={getItemProps}
