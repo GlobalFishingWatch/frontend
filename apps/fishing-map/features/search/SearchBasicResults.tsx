@@ -101,7 +101,9 @@ function SearchBasicResults({
               <div className={styles.fullWidth}>
                 <div className={styles.name}>
                   <VesselLink vesselId={id} datasetId={dataset?.id}>
-                    {formatInfoField(shipname, 'name') || EMPTY_FIELD_PLACEHOLDER}
+                    <span className={styles.link}>
+                      {formatInfoField(shipname, 'name') || EMPTY_FIELD_PLACEHOLDER}
+                    </span>
                   </VesselLink>
                 </div>
                 <div className={styles.properties}>
@@ -138,7 +140,7 @@ function SearchBasicResults({
                     <label>{t('vessel.geartype', 'Gear Type')}</label>
                     <span>
                       {geartype !== undefined
-                        ? t(`vessel.gearTypes.${geartype.toLowerCase()}` as any, geartype)
+                        ? t(`vessel.gearTypes.${geartype?.toLowerCase()}` as any, geartype)
                         : EMPTY_FIELD_PLACEHOLDER}
                     </span>
                   </div>

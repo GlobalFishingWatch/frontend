@@ -1,5 +1,5 @@
 import { get } from 'lodash'
-import { Vessel } from '@globalfishingwatch/api-types'
+import { IdentityVessel, Vessel } from '@globalfishingwatch/api-types'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { VesselRenderField } from 'features/vessel/vessel.config'
 import { t } from '../features/i18n/i18n'
@@ -54,19 +54,25 @@ export const formatNumber = (num: string | number, maximumFractionDigits?: numbe
   })
 }
 
-export const getVesselLabel = (vessel: ExtendedFeatureVessel | Vessel, withGearType = false) => {
+export const getVesselLabel = (
+  vessel: ExtendedFeatureVessel | IdentityVessel,
+  withGearType = false
+) => {
   if (!vessel) return t('common.unknownVessel', 'Unknown vessel')
-  if (vessel.shipname && vessel.geartype && vessel.flag && withGearType) {
-    return `${formatInfoField(vessel.shipname, 'name')}
-    (${t(`flags:${vessel.flag}`)}, ${t(
-      `vessel.gearTypes.${vessel.geartype}` as any,
+  const vesselInfo = vessel.registryInfo?.length
+    ? vessel.registryInfo?.[0]
+    : vessel.selfReportedInfo[0]
+  if (vesselInfo.shipname && vesselInfo.geartype && vesselInfo.flag && withGearType) {
+    return `${formatInfoField(vesselInfo.shipname, 'name')}
+    (${t(`flags:${vesselInfo.flag}`)}, ${t(
+      `vessel.gearTypes.${vesselInfo.geartype}` as any,
       EMPTY_FIELD_PLACEHOLDER
     )})`
   }
-  if (vessel.shipname) return formatInfoField(vessel.shipname, 'name')
-  if (vessel.registeredGearType) {
+  if (vesselInfo.shipname) return formatInfoField(vesselInfo.shipname, 'name')
+  if (vesselInfo.registeredGearType) {
     return `${t('vessel.unkwownVesselByGeartype', {
-      gearType: vessel.registeredGearType,
+      gearType: vesselInfo.registeredGearType,
     })}`
   }
   return t('common.unknownVessel', 'Unknown vessel')

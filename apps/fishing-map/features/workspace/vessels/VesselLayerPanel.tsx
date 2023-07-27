@@ -126,7 +126,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const infoError = infoResource?.status === ResourceStatus.Error
   const trackError = trackResource?.status === ResourceStatus.Error
 
-  const vesselLabel = infoResource?.data ? getVesselLabel(infoResource.data?.selfReportedInfo) : ''
+  const vesselLabel = infoResource?.data ? getVesselLabel(infoResource.data) : ''
   const vesselId =
     (infoResource?.datasetConfig?.params?.find(
       (p: DataviewDatasetConfigParam) => p.id === 'vesselId'

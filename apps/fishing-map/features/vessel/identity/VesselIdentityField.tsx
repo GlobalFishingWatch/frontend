@@ -23,7 +23,7 @@ const VesselIdentityField = ({ value }: VesselIdentityFieldProps) => {
       setHighlighted(true)
       timer = setTimeout(() => {
         setHighlighted(false)
-      }, 2000)
+      }, 4000)
     }
     prevValue.current = value
     return () => {

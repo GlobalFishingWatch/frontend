@@ -1,10 +1,12 @@
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
-import { selectCurrentWorkspaceCategory } from 'features/workspace/workspace.selectors'
+import {
+  selectCurrentWorkspaceCategory,
+  selectWorkspace,
+} from 'features/workspace/workspace.selectors'
 import { resetVesselState, selectVesselInfoDataId } from 'features/vessel/vessel.slice'
 import { VESSEL, WORKSPACE_VESSEL } from 'routes/routes'
-import { selectWorkspaceId } from 'routes/routes.selectors'
 
 type VesselLinkProps = {
   vesselId: string
@@ -12,7 +14,7 @@ type VesselLinkProps = {
   children: any
 }
 const VesselLink = ({ vesselId, datasetId, children }: VesselLinkProps) => {
-  const workspaceId = useSelector(selectWorkspaceId)
+  const workspace = useSelector(selectWorkspace)
   const vesselInfoDataId = useSelector(selectVesselInfoDataId)
   const workspaceCategory = useSelector(selectCurrentWorkspaceCategory)
   const dispatch = useDispatch()
@@ -25,12 +27,11 @@ const VesselLink = ({ vesselId, datasetId, children }: VesselLinkProps) => {
 
   return (
     <Link
-      // className={styles.workspaceLink}
       to={{
-        type: workspaceId ? WORKSPACE_VESSEL : VESSEL,
+        type: workspace ? WORKSPACE_VESSEL : VESSEL,
         payload: {
           category: workspaceCategory,
-          workspaceId: workspaceId,
+          workspaceId: workspace?.id,
           vesselId,
         },
         query: {

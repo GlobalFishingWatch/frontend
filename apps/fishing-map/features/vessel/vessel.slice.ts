@@ -70,10 +70,6 @@ export const fetchVesselInfoThunk = createAsyncThunk(
         const vessel = await GFWAPI.fetch<IdentityVessel>(url)
         return {
           ...vessel,
-          selfReportedInfo: {
-            ...vessel.selfReportedInfo,
-            firstTransmissionDate: vessel?.selfReportedInfo?.firstTransmissionDate || '',
-          },
           info: datasetId,
           track: trackDatasetId,
           events: eventsDatasetsId,
@@ -137,7 +133,7 @@ export const { resetVesselState } = vesselSlice.actions
 
 export const selectVesselInfoData = (state: VesselSliceState) => state.vessel.info.data
 export const selectVesselInfoDataId = (state: VesselSliceState) =>
-  state.vessel.info.data?.selfReportedInfo?.id
+  state.vessel.info.data?.selfReportedInfo?.[0]?.id
 export const selectVesselInfoStatus = (state: VesselSliceState) => state.vessel.info.status
 export const selectVesselInfoError = (state: VesselSliceState) => state.vessel.info.error
 

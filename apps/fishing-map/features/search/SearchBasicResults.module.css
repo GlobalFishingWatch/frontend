@@ -1,7 +1,6 @@
 .searchResult {
   position: relative;
   padding: var(--space-M);
-  cursor: pointer;
   transition: background-color 150ms linear, box-shadow 150ms linear, border 150ms linear;
   border-bottom: var(--border);
 }
@@ -13,6 +12,7 @@
 }
 
 .selectedIcon {
+  cursor: pointer;
   opacity: 1;
   background: var(--color-terthiary-blue);
   border: none;
@@ -63,6 +63,10 @@
 
 .searchResult:not(.inWorkspace):hover .properties,
 .searchResult:not(.inWorkspace):hover .properties label {
-  cursor: pointer;
   opacity: var(--opacity-primary);
+}
+
+.link {
+  cursor: pointer;
+  text-decoration: underline;
 }
