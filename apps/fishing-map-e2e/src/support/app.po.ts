@@ -11,6 +11,12 @@ export const getTimeline = () => cy.getBySel('timeline-graph')
 
 export const getMapCanvas = () => cy.get('#map canvas')
 
+export const waitForSidebarLoaded = () =>
+  cy
+    .getBySel('sidebar-container', { timeout: 10000 })
+    .findByClass('Sections_container', { timeout: 10000 })
+    .should('exist')
+
 export const waitForMapLoadTiles = (extraDelay?: number) => {
   cy.intercept(API_URL_4WINGS_TILES).as('loadTiles')
   cy.wait('@loadTiles', { requestTimeout: 10000 })

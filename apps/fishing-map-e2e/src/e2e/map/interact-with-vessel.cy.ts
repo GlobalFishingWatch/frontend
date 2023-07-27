@@ -30,12 +30,8 @@ describe('Select a vessel on the apparent fishing effort heat map with AIS sourc
 
   it('should check if the track was added to the timebar', function () {
     getTimeline()
-      .findByClass(`tracks_segment`)
-
-      .then((el) => {
-        console.log('found', el, el.length)
-        // See if at least two segments were added
-        expect(el.length).to.gt(1)
-      })
+      // The tracks request can be heavy
+      .findByClass(`tracks_segment`, { timeout: 20000 })
+      .should('have.length.greaterThan', 4)
   })
 })
