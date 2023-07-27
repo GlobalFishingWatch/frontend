@@ -1,0 +1,12 @@
+.container p {
+  margin-bottom: var(--space-M);
+  font: var(--font-S);
+}
+
+.container a {
+  text-decoration: underline;
+}
+
+.infoButton {
+  vertical-align: text-bottom;
+}

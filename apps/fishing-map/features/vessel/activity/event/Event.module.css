@@ -1,0 +1,43 @@
+.event {
+  padding: var(--space-XS) 1.5rem var(--space-XS) var(--space-M);
+  position: relative;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.header label {
+  cursor: pointer;
+}
+
+.eventData {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.description {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  flex: 1;
+}
+
+.actions {
+  margin-left: auto;
+  display: flex;
+}
+
+.actions.oneIcon {
+  min-width: 28px;
+}
+
+.detailContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-S) var(--space-M);
+  padding-left: var(--space-L);
+  padding-block: var(--space-S);
+}

@@ -4,12 +4,20 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
-import { DatasetSubCategory, DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
+import {
+  DatasetSubCategory,
+  DatasetTypes,
+  DataviewInstance,
+  Resource,
+  ResourceStatus,
+} from '@globalfishingwatch/api-types'
+import { resolveEndpoint, setResource } from '@globalfishingwatch/dataviews-client'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getDetectionsTimestamps } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
   getPresenceVesselDataviewInstance,
   getVesselDataviewInstance,
+  getVesselDataviewInstanceDatasetConfig,
   getVesselInWorkspace,
 } from 'features/dataviews/dataviews.utils'
 import { getDatasetLabel, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
@@ -27,6 +35,7 @@ import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getUTCDateTime } from 'utils/dates'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
+import { useAppDispatch } from 'features/app/app.hooks'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
   TooltipEventFeature,
@@ -97,6 +106,7 @@ function VesselsTable({
   activityType?: DatasetSubCategory
 }) {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const gfwUser = useSelector(isGFWUser)
   const vesselsInWorkspace = useSelector(selectActiveTrackDataviews)
@@ -114,6 +124,29 @@ function VesselsTable({
       return hasDatasets
     })
 
+  const populateVesselInfoResource = (
+    vessel: ExtendedFeatureVessel,
+    vesselDataviewInstance: DataviewInstance
+  ) => {
+    const infoDatasetConfig = getVesselDataviewInstanceDatasetConfig(
+      vessel?.id,
+      vesselDataviewInstance.config || {}
+    )?.find((dc) => dc.datasetId === vessel.infoDataset?.id)
+    if (vessel.infoDataset && infoDatasetConfig) {
+      const url = resolveEndpoint(vessel.infoDataset, infoDatasetConfig)
+      if (url) {
+        const resource: Resource = {
+          url,
+          dataset: vessel.infoDataset,
+          datasetConfig: infoDatasetConfig,
+          dataviewId: vesselDataviewInstance.dataviewId as string,
+          data: vessel,
+          status: ResourceStatus.Finished,
+        }
+        dispatch(setResource(resource))
+      }
+    }
+  }
   const onVesselClick = (
     ev: React.MouseEvent<Element, MouseEvent>,
     vessel: ExtendedFeatureVessel
@@ -152,6 +185,7 @@ function VesselsTable({
     }
 
     upsertDataviewInstance(vesselDataviewInstance)
+    populateVesselInfoResource(vessel, vesselDataviewInstance)
 
     trackEvent({
       category: TrackCategory.Tracks,

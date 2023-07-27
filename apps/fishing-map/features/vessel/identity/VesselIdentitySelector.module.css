@@ -1,0 +1,47 @@
+.selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row-reverse;
+  padding: var(--space-S) 0;
+}
+
+.icon {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  height: 3.2rem;
+  background-color: var(--color-terthiary-blue);
+  border-radius: 1.6rem;
+  transition: all 250ms ease-out;
+  cursor: pointer;
+  border: 1rem solid white;
+  mix-blend-mode: multiply;
+  padding-inline: 0.6rem;
+  grid-template-columns: 0fr;
+}
+
+.icon:hover {
+  border: 0.5rem solid white;
+  grid-template-columns: 1fr;
+}
+
+.icon:hover,
+.selector:not(:has(.icon:hover)) .icon.selected {
+  background-color: var(--color-secondary-blue);
+}
+
+.dates {
+  font: var(--font-XS);
+  color: var(--color-white);
+  opacity: 0;
+  white-space: nowrap;
+  width: 100%;
+  overflow: hidden;
+  transition: opacity 150ms ease-in;
+}
+
+.icon:hover .dates {
+  opacity: 1;
+  transition: opacity 150ms ease-in 200ms;
+}

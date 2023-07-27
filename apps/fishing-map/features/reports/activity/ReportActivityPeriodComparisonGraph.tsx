@@ -21,6 +21,7 @@ import i18n, { t } from 'features/i18n/i18n'
 import { COLOR_GRADIENT, COLOR_PRIMARY_BLUE } from 'features/app/App'
 import { getUTCDateTime } from 'utils/dates'
 import { formatDate, formatTooltipValue, tickFormatter } from 'features/reports/reports.utils'
+import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import styles from './ReportActivityEvolution.module.css'
 
 const DIFFERENCE = 'difference'
@@ -100,7 +101,7 @@ const PeriodComparisonGraphTooltip = (props: any) => {
         <p className={styles.tooltipLabel}>{formatDate(compareDate, timeChunkInterval)}</p>
         <span className={styles.tooltipValue}>
           {difference?.payload.date > offsetedLastDataUpdate ? (
-            '---'
+            EMPTY_FIELD_PLACEHOLDER
           ) : (
             <Fragment>
               <span

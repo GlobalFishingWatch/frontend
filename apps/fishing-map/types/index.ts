@@ -49,6 +49,7 @@ export type WorkspaceParam =
   | WorkspaceViewportParam
   | WorkspaceTimeRangeParam
   | WorkspaceStateProperty
+  | VesselProfileStateProperty
 
 export type WorkspaceViewport = Record<WorkspaceViewportParam, number>
 export type WorkspaceTimeRange = Record<WorkspaceTimeRangeParam, string>
@@ -79,6 +80,7 @@ export type ReportVesselGraph =
   | typeof REPORT_VESSELS_GRAPH_FLAG
 
 export type WorkspaceActivityCategory = 'fishing' | 'presence'
+
 export interface WorkspaceState extends BaseUrlWorkspace {
   bivariateDataviews?: BivariateDataviews
   daysFromLatest?: number // use latest day as endAt minus the number of days set here
@@ -101,6 +103,15 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   visibleEvents?: VisibleEvents
 }
 
+export type VesselProfileActivityMode = 'voyage' | 'type'
+export type VesselProfileState = {
+  vesselDatasetId: string
+  vesselRegistryIndex: number
+  vesselActivityMode: VesselProfileActivityMode
+}
+
+export type VesselProfileStateProperty = keyof VesselProfileState
+
 export type RedirectParam = {
   'access-token'?: string
 }
@@ -108,15 +119,9 @@ export type RedirectParam = {
 export type QueryParams = Partial<WorkspaceViewport> &
   Partial<WorkspaceTimeRange> &
   WorkspaceState &
+  Partial<VesselProfileState> &
   RedirectParam &
   SearchFilter
-
-export type MapCoordinates = {
-  latitude: number
-  longitude: number
-  zoom: number
-  transitionDuration?: number
-}
 
 export enum TimebarVisualisations {
   HeatmapActivity = 'heatmap',
@@ -135,3 +140,16 @@ export enum TimebarGraphs {
 
 // minX, minY, maxX, maxY
 export type Bbox = [number, number, number, number]
+
+export type CoordinatePosition = {
+  latitude: number
+  longitude: number
+}
+
+export interface MapCoordinates extends CoordinatePosition {
+  zoom: number
+  transitionDuration?: number
+}
+export interface TrackPosition extends CoordinatePosition {
+  timestamp: number
+}

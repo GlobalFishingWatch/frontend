@@ -12,21 +12,28 @@ import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataview
 import { IS_PRODUCTION } from 'data/config'
 import { t } from 'features/i18n/i18n'
 export const PATH_BASENAME = process.env.NEXT_PUBLIC_URL || (IS_PRODUCTION ? '/map' : '')
+
 export const HOME = 'HOME'
 export const WORKSPACE = 'WORKSPACE'
 export const WORKSPACES_LIST = 'WORKSPACES_LIST'
 export const USER = 'USER'
 export const SEARCH = 'SEARCH'
 export const WORKSPACE_SEARCH = 'WORKSPACE_SEARCH'
-export const WORKSPACE_REPORT = 'WORKSPACE_REPORT'
+export const VESSEL = 'VESSEL'
+export const WORKSPACE_VESSEL = 'WORKSPACE_VESSEL'
 export const REPORT = 'REPORT'
+export const WORKSPACE_REPORT = 'WORKSPACE_REPORT'
 export const WORKSPACE_ROUTES = [HOME, WORKSPACE]
 export const REPORT_ROUTES = [REPORT, WORKSPACE_REPORT]
+
 export type ROUTE_TYPES =
   | typeof HOME
   | typeof USER
   | typeof WORKSPACES_LIST
   | typeof WORKSPACE
+  | typeof VESSEL
+  | typeof WORKSPACE_VESSEL
+  | typeof REPORT
   | typeof WORKSPACE_REPORT
   | typeof SEARCH
   | typeof WORKSPACE_SEARCH
@@ -56,6 +63,9 @@ export const routesMap: RoutesMap = {
   [REPORT]: {
     path: '/report/:reportId',
   },
+  [VESSEL]: {
+    path: '/vessel/:vesselId',
+  },
   [WORKSPACES_LIST]: {
     path: '/:category',
   },
@@ -65,6 +75,9 @@ export const routesMap: RoutesMap = {
   },
   [WORKSPACE_SEARCH]: {
     path: '/:category/:workspaceId/vessel-search',
+  },
+  [WORKSPACE_VESSEL]: {
+    path: '/:category/:workspaceId/vessel/:vesselId',
   },
   [WORKSPACE_REPORT]: {
     path: '/:category/:workspaceId/report/:datasetId?/:areaId?',

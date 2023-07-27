@@ -1,4 +1,4 @@
-import { PRIVATE_SUFIX } from './config'
+import { PRIVATE_SUFIX, PRIVATE_SUFIX } from './config'
 
 export const GLOBAL_VESSELS_DATASET_ID = 'public-global-all-vessels'
 
@@ -94,6 +94,15 @@ export const DEFAULT_DATAVIEW_SLUGS = [
   FISHING_DATAVIEW_SLUG,
   ...PRESENCE_DATAVIEWS,
   ...TEMPLATE_DATAVIEW_SLUGS,
+]
+
+export const PROFILE_DATAVIEW_SLUGS = [
+  EEZ_DATAVIEW_SLUG,
+  MPA_DATAVIEW_SLUG,
+  RFMO_DATAVIEW_SLUG,
+  FAO_AREAS_DATAVIEW_SLUG,
+  // TODO enable when mock deletec
+  // TEMPLATE_VESSEL_DATAVIEW_SLUG
 ]
 
 export const ONLY_GFW_STAFF_DATAVIEW_SLUGS: string[] = []

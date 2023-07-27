@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { batch, useSelector } from 'react-redux'
-import { Button } from '@globalfishingwatch/ui-components'
+import { Button, ButtonType, ButtonSize } from '@globalfishingwatch/ui-components'
 import { VesselWithDatasets } from 'features/search/search.slice'
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import { getEventLabel } from 'utils/analytics'
@@ -22,11 +22,15 @@ import styles from './VesselGroupAddButton.module.css'
 function VesselGroupAddButton({
   vessels,
   showCount = true,
+  buttonSize = 'default',
+  buttonType = 'secondary',
   onAddToVesselGroup,
   buttonClassName = '',
 }: {
   vessels: (VesselWithDatasets | ReportVesselWithDatasets)[]
   showCount?: boolean
+  buttonSize?: ButtonSize
+  buttonType?: ButtonType
   onAddToVesselGroup?: (vesselGroupId?: string) => void
   buttonClassName?: string
 }) {
@@ -103,7 +107,8 @@ function VesselGroupAddButton({
       <div>
         {hasUserGroupsPermissions && (
           <Button
-            type="secondary"
+            size={buttonSize}
+            type={buttonType}
             className={cx(styles.button, buttonClassName)}
             onClick={toggleVesselGroupsOpen}
             disabled={!vessels?.length || tooManyVessels}

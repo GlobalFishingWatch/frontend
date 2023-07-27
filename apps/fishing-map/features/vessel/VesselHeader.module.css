@@ -1,0 +1,25 @@
+.summaryContainer {
+  padding: var(--space-S) var(--space-M);
+  border-bottom: var(--border);
+  height: 5.2rem;
+}
+
+.titleContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  font: var(--font-L);
+}
+
+.vesselIcon {
+  margin-right: var(--space-XS);
+}
+
+.actionsContainer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-S);
+}

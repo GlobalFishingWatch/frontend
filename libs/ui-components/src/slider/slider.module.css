@@ -44,6 +44,6 @@
 }
 
 .smallSize {
-  width: 3.2rem;
-  height: 3.2rem;
+  width: var(--size-SM);
+  height: var(--size-SM);
 }

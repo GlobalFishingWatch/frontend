@@ -112,9 +112,9 @@ const MapWrapper = () => {
 
   useEffect(() => {
     if (vesselLoaded) {
-      const vesselLayer = layers[1] as ParquetVesselLayer<Segment[], {}>
-      const segments = vesselLayer.getSegments()
-      console.log('🚀 ~ useEffect ~ segments:', segments)
+      // const vesselLayer = layers[1] as ParquetVesselLayer<Segment[], {}>
+      // const segments = vesselLayer.getSegments()
+      // console.log('🚀 ~ useEffect ~ segments:', segments)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vesselLoaded])

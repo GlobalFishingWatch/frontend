@@ -31,6 +31,10 @@ import { ReactComponent as Draw } from '../assets/icons/draw.svg'
 import { ReactComponent as Edit } from '../assets/icons/edit.svg'
 import { ReactComponent as Email } from '../assets/icons/email.svg'
 import { ReactComponent as Encounters } from '../assets/icons/encounters.svg'
+import { ReactComponent as EventLegendEncounter } from '../assets/icons/event-legend-encounter.svg'
+import { ReactComponent as EventLegendFishing } from '../assets/icons/event-legend-fishing.svg'
+import { ReactComponent as EventLegendLoitering } from '../assets/icons/event-legend-loitering.svg'
+import { ReactComponent as EventLegendPort } from '../assets/icons/event-legend-port_visit.svg'
 import { ReactComponent as EventEncounter } from '../assets/icons/event-encounter.svg'
 import { ReactComponent as EventFishing } from '../assets/icons/event-fishing.svg'
 import { ReactComponent as EventLoitering } from '../assets/icons/event-loitering.svg'
@@ -44,6 +48,7 @@ import { ReactComponent as GFWLogo } from '../assets/icons/gfw-logo.svg'
 import { ReactComponent as Graph } from '../assets/icons/graph.svg'
 import { ReactComponent as Heatmap } from '../assets/icons/heatmap.svg'
 import { ReactComponent as Help } from '../assets/icons/help.svg'
+import { ReactComponent as History } from '../assets/icons/history.svg'
 import { ReactComponent as Home } from '../assets/icons/home.svg'
 import { ReactComponent as Info } from '../assets/icons/info.svg'
 import { ReactComponent as Language } from '../assets/icons/language.svg'
@@ -74,8 +79,8 @@ import { ReactComponent as Split } from '../assets/icons/split.svg'
 import { ReactComponent as Target } from '../assets/icons/target.svg'
 import { ReactComponent as Tick } from '../assets/icons/tick.svg'
 import { ReactComponent as Track } from '../assets/icons/track.svg'
-import { ReactComponent as TransmissionsOff } from '../assets/icons/transmissions-off.svg'
-import { ReactComponent as TransmissionsOn } from '../assets/icons/transmissions-on.svg'
+import { ReactComponent as EventGap } from '../assets/icons/event-gap.svg'
+// import { ReactComponent as TransmissionsOn } from '../assets/icons/transmissions-on.svg'
 import { ReactComponent as Upload } from '../assets/icons/upload.svg'
 import { ReactComponent as User } from '../assets/icons/user.svg'
 import { ReactComponent as Vessel } from '../assets/icons/vessel.svg'
@@ -101,8 +106,13 @@ export const IconComponents = {
   'color-picker': ColorPicker,
   'event-encounter': EventEncounter,
   'event-fishing': EventFishing,
+  'event-gap': EventGap,
   'event-loitering': EventLoitering,
-  'event-port-visit': EventPortVisit,
+  'event-legend-encounter': EventLegendEncounter,
+  'event-legend-fishing': EventLegendFishing,
+  'event-legend-loitering': EventLegendLoitering,
+  'event-legend-port_visit': EventLegendPort,
+  'event-port_visit': EventPortVisit,
   'event-port': EventPort,
   'external-link': ExternalLink,
   'filter-off': FilterOff,
@@ -132,6 +142,7 @@ export const IconComponents = {
   graph: Graph,
   heatmap: Heatmap,
   help: Help,
+  history: History,
   home: Home,
   info: Info,
   language: Language,
@@ -160,8 +171,6 @@ export const IconComponents = {
   target: Target,
   tick: Tick,
   track: Track,
-  'transmissions-off': TransmissionsOff,
-  'transmissions-on': TransmissionsOn,
   upload: Upload,
   user: User,
   vessel: Vessel,

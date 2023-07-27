@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo } from 'react'
-import { atom, useRecoilState } from 'recoil'
+import { atom, useAtom } from 'jotai'
 import { debounce } from 'lodash'
 import { DEFAULT_CALLBACK_URL_KEY, usePrevious } from '@globalfishingwatch/react-hooks'
 import {
@@ -21,16 +21,15 @@ import {
   selectActiveNonTrackEnvironmentalDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import { updateUrlTimerange } from 'routes/routes.actions'
-import { selectIsReportLocation, selectUrlTimeRange } from 'routes/routes.selectors'
+import { selectIsReportLocation } from 'routes/routes.selectors'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import useMapInstance from 'features/map/map-context.hooks'
 import { BIG_QUERY_PREFIX } from 'features/dataviews/dataviews.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useFitAreaInViewport } from 'features/reports/reports.hooks'
-import store from '../../store'
+import { DEFAULT_TIME_RANGE } from 'data/config'
 import {
-  Range,
   changeSettings,
   setHighlightedEvents,
   selectHighlightedEvents,
@@ -39,56 +38,67 @@ import {
   disableHighlightedTime,
 } from './timebar.slice'
 
-export const TimeRangeAtom = atom<Range | null>({
-  key: 'timerange',
-  default: null,
-  effects: [
-    ({ trigger, setSelf, onSet }) => {
-      const redirectUrl =
-        typeof window !== 'undefined' ? window.localStorage.getItem(DEFAULT_CALLBACK_URL_KEY) : null
-      const urlTimeRange = selectUrlTimeRange(store.getState() as any)
+const TIMERANGE_DEBOUNCED_TIME = 1000
 
-      if (trigger === 'get') {
-        if (urlTimeRange) {
-          setSelf({
-            ...urlTimeRange,
-          })
-        } else if (redirectUrl) {
-          try {
-            // Workaround to get start and end date from redirect url as the
-            // location reducer isn't ready until initialDispatch
-            const url = new URL(JSON.parse(redirectUrl))
-            const start = url.searchParams.get('start')
-            const end = url.searchParams.get('end')
-            if (start && end) {
-              setSelf({ start, end })
-            }
-          } catch (e: any) {
-            console.warn(e)
-          }
-        }
+const getTimerangeFromUrl = (locationUrl = window.location.toString()) => {
+  try {
+    const url = new URL(locationUrl)
+    const start = url.searchParams.get('start')
+    const end = url.searchParams.get('end')
+    if (start && end) {
+      return { start, end }
+    }
+  } catch (e) {
+    console.warn(e)
+  }
+}
+const timerangeState = atom(DEFAULT_TIME_RANGE)
+timerangeState.onMount = (setAtom) => {
+  // Initializing the atom with the url value until the workspace loads
+  const urlTimerange = getTimerangeFromUrl()
+  if (urlTimerange) {
+    return setAtom(urlTimerange)
+  }
+  const redirectUrl =
+    typeof window !== 'undefined' ? window.localStorage.getItem(DEFAULT_CALLBACK_URL_KEY) : null
+  // Workaround to get start and end date from redirect url as the
+  // location reducer isn't ready until initialDispatch
+  if (redirectUrl) {
+    try {
+      const redirectTimerange = getTimerangeFromUrl(JSON.parse(redirectUrl))
+      if (redirectTimerange) {
+        setAtom(redirectTimerange)
       }
-      const updateTimerangeDebounced = debounce(store.dispatch(updateUrlTimerange), 1000)
-      onSet((timerange) => {
-        if (timerange) {
-          updateTimerangeDebounced({ ...timerange })
-        }
-      })
-    },
-  ],
-})
+    } catch (e: any) {
+      console.warn(e)
+    }
+  }
+}
 
 export const useTimerangeConnect = () => {
-  const [timerange, setTimerange] = useRecoilState(TimeRangeAtom)
+  const [timerangeAtom, setAtomTimerange] = useAtom(timerangeState)
   const dispatch = useAppDispatch()
   const hintsDismissed = useSelector(selectHintsDismissed)
   const reportLocation = useSelector(selectIsReportLocation)
   const fitAreaInViewport = useFitAreaInViewport()
 
+  const updateUrlTimerangeDebounced = useCallback(
+    debounce(dispatch(updateUrlTimerange), TIMERANGE_DEBOUNCED_TIME),
+    []
+  )
+
+  const setTimerange = useCallback(
+    (viewport) => {
+      setAtomTimerange(viewport)
+      updateUrlTimerangeDebounced(viewport)
+    },
+    [setAtomTimerange, updateUrlTimerangeDebounced]
+  )
+
   const onTimebarChange = useCallback(
     (start: string, end: string) => {
       if (
-        (start !== timerange?.start || end !== timerange.end) &&
+        (start !== timerangeAtom?.start || end !== timerangeAtom.end) &&
         !hintsDismissed?.changingTheTimeRange
       ) {
         dispatch(setHintDismissed('changingTheTimeRange'))
@@ -104,19 +114,19 @@ export const useTimerangeConnect = () => {
       hintsDismissed?.changingTheTimeRange,
       reportLocation,
       setTimerange,
-      timerange?.end,
-      timerange?.start,
+      timerangeAtom?.end,
+      timerangeAtom?.start,
     ]
   )
   return useMemo(() => {
     return {
-      start: timerange?.start as string,
-      end: timerange?.end as string,
-      timerange,
+      start: timerangeAtom?.start as string,
+      end: timerangeAtom?.end as string,
+      timerange: timerangeAtom,
       setTimerange,
       onTimebarChange,
     }
-  }, [onTimebarChange, timerange, setTimerange])
+  }, [onTimebarChange, timerangeAtom, setTimerange])
 }
 
 export const useDisableHighlightTimeConnect = () => {

@@ -2,6 +2,8 @@ import { Fragment, ReactNode, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { Trans, useTranslation } from 'react-i18next'
+import Link from 'redux-first-router-link'
+// import NextLink from 'next/link'
 import {
   Vessel,
   DatasetTypes,
@@ -40,6 +42,12 @@ import { selectPrivateUserGroups } from 'features/user/user.selectors'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import GFWOnly from 'features/user/GFWOnly'
 import DatasetLabel from 'features/datasets/DatasetLabel'
+import { WORKSPACE_VESSEL } from 'routes/routes'
+import {
+  selectCurrentWorkspaceCategory,
+  selectCurrentWorkspaceId,
+} from 'features/workspace/workspace.selectors'
+import { resetVesselState, selectVesselInfoDataId } from 'features/vessel/vessel.slice'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -68,7 +76,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
+  const { url: infoUrl, dataset } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
   const resources = useSelector(selectResources)
   const trackResource = pickTrackResource(dataview, EndpointId.Tracks, resources)
   const infoResource: Resource<Vessel> = useSelector(selectResourceByUrl<Vessel>(infoUrl))
@@ -82,6 +90,9 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const [datasetModalOpen, setDatasetModalOpen] = useState(false)
   const gfwUser = useSelector(isGFWUser)
   const userPrivateGroups = useSelector(selectPrivateUserGroups)
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
+  const workspaceCategory = useSelector(selectCurrentWorkspaceCategory)
+  const vesselInfoDataId = useSelector(selectVesselInfoDataId)
   const downloadDatasetsSupported = getVesselDatasetsDownloadTrackSupported(
     dataview,
     userData?.permissions
@@ -103,8 +114,40 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const onToggleColorOpen = () => {
     setColorOpen(!colorOpen)
   }
-  const onToggleInfoOpen = () => {
-    setInfoOpen(!infoOpen)
+
+  // const onToggleInfoOpen = () => {
+  //   setInfoOpen(!infoOpen)
+  // }
+
+  const onInfoClick = (vesselId: string) => {
+    if (vesselId !== vesselInfoDataId) {
+      dispatch(resetVesselState())
+    }
+    // dispatchLocation(
+    //   VESSEL,
+    //   {
+    //     payload: {
+    //       category: workspaceCategory,
+    //       workspaceId: workspaceId,
+    //       datasetId: dataset?.id,
+    //       vesselId,
+    //     },
+    //   },
+    //   { replaceQuery: true }
+    // )
+    // router.replace(
+    //   {
+    //     pathname: '/[category]/[workspace]/vessel/[datasetId]/[vesselId]',
+    //     query: {
+    //       category: workspaceCategory,
+    //       workspace: workspaceId,
+    //       datasetId: dataset?.id,
+    //       vesselId: vesselId,
+    //     },
+    //   },
+    //   undefined,
+    //   { shallow: true }
+    // )
   }
 
   const closeExpandedContainer = () => {
@@ -260,7 +303,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                 <label>{t(`vessel.${field.id}` as any)}</label>
                 {fieldValues.map((fieldValue, i) => (
                   <span key={field.id + fieldValue}>
-                    {fieldValue ? getFieldValue(field, fieldValue as any) : '---'}
+                    {fieldValue ? getFieldValue(field, fieldValue as any) : EMPTY_FIELD_PLACEHOLDER}
                     {/* Field values separator */}
                     {i < fieldValues.length - 1 ? ', ' : ''}
                     {field.id === 'dataset' && infoOpen && gfwUser && (
@@ -283,24 +326,38 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         </ul>
       }
     >
-      <IconButton
-        size="small"
-        icon={infoError ? 'warning' : 'info'}
-        type={infoError ? 'warning' : 'default'}
-        disabled={infoError}
-        tooltip={
-          infoError
-            ? `${t(
-                'errors.vesselLoading',
-                'There was an error loading the vessel details'
-              )} (${vesselId})`
-            : infoOpen
-            ? t('layer.infoClose', 'Hide info')
-            : t('layer.infoOpen', 'Show info')
-        }
-        onClick={onToggleInfoOpen}
-        tooltipPlacement="top"
-      />
+      <Link
+        className={styles.workspaceLink}
+        to={{
+          type: WORKSPACE_VESSEL,
+          payload: {
+            category: workspaceCategory,
+            workspaceId: workspaceId,
+            vesselId,
+          },
+          query: {
+            vesselDatasetId: dataset?.id,
+          },
+        }}
+        onClick={() => onInfoClick(vesselId)}
+      >
+        <IconButton
+          size="small"
+          icon={infoError ? 'warning' : 'info'}
+          type={infoError ? 'warning' : 'default'}
+          disabled={infoError}
+          tooltip={
+            infoError
+              ? `${t(
+                  'errors.vesselLoading',
+                  'There was an error loading the vessel details'
+                )} (${vesselId})`
+              : t('layer.infoOpen', 'Show info')
+          }
+          // onClick={onToggleInfoOpen}
+          tooltipPlacement="top"
+        />
+      </Link>
     </ExpandedContainer>
   )
 

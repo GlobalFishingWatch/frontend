@@ -17,7 +17,7 @@ export const TimeRangeAtom = atom<TimebarRange | null>({
   effects: [
     ({ trigger, setSelf, onSet }) => {
       const redirectUrl =
-        typeof window !== undefined ? window.localStorage.getItem(DEFAULT_CALLBACK_URL_KEY) : null
+        typeof window !== 'undefined' ? window.localStorage.getItem(DEFAULT_CALLBACK_URL_KEY) : null
       const urlTimeRange = selectUrlTimeRange(store.getState() as RootState)
 
       if (trigger === 'get') {

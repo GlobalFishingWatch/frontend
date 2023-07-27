@@ -75,6 +75,7 @@
   /* SIZES */
   --size-XS: 2rem;
   --size-S: 2.8rem;
+  --size-SM: 3.2rem;
   --size-M: 4rem;
   --size-L: 6rem;
   --size-XL: 8rem;
@@ -82,6 +83,7 @@
   --space-S: 1rem;
   --space-M: 2rem;
   --space-L: 4rem;
+  --space-XL: 8rem;
 
   /* SCROLLBARS */
   --scrollbar-track-color: transparent;

@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic'
 import { useTranslation } from 'react-i18next'
 import { Menu, SplitView } from '@globalfishingwatch/ui-components'
 import { Workspace } from '@globalfishingwatch/api-types'
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
   selectIsReportLocation,
   selectIsSearchLocation,
@@ -34,10 +35,10 @@ import {
   WORKSPACE,
   USER,
   WORKSPACES_LIST,
+  VESSEL,
+  WORKSPACE_VESSEL,
   REPORT,
   WORKSPACE_REPORT,
-  SEARCH,
-  WORKSPACE_SEARCH,
 } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { t } from 'features/i18n/i18n'
@@ -76,16 +77,29 @@ export const COLOR_GRADIENT =
 const Main = () => {
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
   const reportLocation = useSelector(selectIsReportLocation)
+  const locationType = useSelector(selectLocationType)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const isTimeComparisonReport = useSelector(selectShowTimeComparison)
+  const isSmallScreen = useSmallScreen()
 
+  const isRouteWithTimebar = locationType === VESSEL
+  const isWorkspacesRouteWithTimebar =
+    workspaceLocation ||
+    locationType === WORKSPACE_VESSEL ||
+    (reportLocation && !isTimeComparisonReport)
   const showTimebar =
-    (workspaceLocation || (reportLocation && !isTimeComparisonReport)) &&
-    workspaceStatus === AsyncReducerStatus.Finished
+    isRouteWithTimebar ||
+    (isWorkspacesRouteWithTimebar && workspaceStatus === AsyncReducerStatus.Finished)
 
   return (
     <Fragment>
-      <div className={cx(styles.mapContainer, { [styles.withTimebar]: showTimebar })}>
+      <div
+        className={cx(styles.mapContainer, {
+          [styles.withTimebar]: showTimebar,
+          [styles.withSmallScreenSwitch]: isSmallScreen,
+          [styles.withTimebarAndSmallScreenSwitch]: showTimebar && isSmallScreen,
+        })}
+      >
         <Map />
       </div>
       {showTimebar && <Timebar />}
@@ -160,8 +174,6 @@ function App() {
   const homeNeedsFetch = isHomeLocation && currentWorkspaceId !== DEFAULT_WORKSPACE_ID
   // Checking only when REPORT entrypoint or WORKSPACE_REPORT when workspace is not loaded
   const locationNeedsFetch =
-    locationType === SEARCH ||
-    (locationType === WORKSPACE_SEARCH && currentWorkspaceId !== urlWorkspaceId) ||
     locationType === REPORT ||
     (locationType === WORKSPACE_REPORT && currentWorkspaceId !== urlWorkspaceId)
   const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId

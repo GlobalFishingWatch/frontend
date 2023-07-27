@@ -1,11 +1,11 @@
-import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
 import { DateTime } from 'luxon'
 import { Feature, FeatureCollection, LineString } from 'geojson'
 import {
   mergeTrackChunks,
   trackValueArrayToSegments,
-  wrapFeaturesLongitudes,
+  wrapLineStringLongitudes,
 } from '@globalfishingwatch/data-transforms'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import {
@@ -37,7 +37,7 @@ export const getTracksChunkSetId = (datasetConfig: DataviewDatasetConfig) => {
   return chunkSetId
 }
 
-const parseEvent = (event: ApiEvent, eventKey: string): ApiEvent => {
+export const parseEvent = (event: ApiEvent, eventKey: string): ApiEvent => {
   return {
     ...event,
     key: eventKey,
@@ -94,7 +94,7 @@ export const fetchResourceThunk = createAsyncThunk(
         // Wrap longitudes
         const wrappedGeoJSON = {
           ...geoJSON,
-          features: wrapFeaturesLongitudes(geoJSON.features as Feature<LineString>[]),
+          features: wrapLineStringLongitudes(geoJSON.features as Feature<LineString>[]),
         }
 
         if (parseUserTrackCb) {
@@ -135,7 +135,12 @@ const getChunkSetChunks = (state: ResourcesState, chunkSetId: string) => {
 export const resourcesSlice = createSlice({
   name: 'resources',
   initialState,
-  reducers: {},
+  reducers: {
+    setResource(state, action: PayloadAction<Resource>) {
+      const key = action.payload.key || action.payload.url
+      state[key] = action.payload
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchResourceThunk.pending, (state, action) => {
       const { resource } = action.meta.arg
@@ -198,6 +203,7 @@ export const resourcesSlice = createSlice({
   },
 })
 
+export const { setResource } = resourcesSlice.actions
 export const selectResources = (state: PartialStoreResources) => state.resources
 export const selectResourceByUrl = memoize(<T = any>(url = '') =>
   createSelector([selectResources], (resources) => resources[url] as Resource<T>)

@@ -1,0 +1,40 @@
+.container {
+  padding: var(--space-M);
+  border-bottom: var(--border);
+}
+
+.titleContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-S);
+}
+
+.fieldGroup {
+  padding: var(--space-S) 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.fieldGroup:not(:last-child) {
+  border-bottom: var(--border);
+}
+
+.twoCells {
+  grid-column: span 2;
+}
+
+.threeCells {
+  grid-column: span 3;
+}
+
+.actionsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-S);
+}
+
+.secondary {
+  color: var(--color-secondary-blue);
+}

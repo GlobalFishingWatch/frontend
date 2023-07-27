@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
-import { uniqBy, memoize } from 'lodash'
+import { uniqBy } from 'lodash'
 import { stringify } from 'qs'
 import {
   mergeWorkspaceUrlDataviewInstances,
@@ -30,6 +30,7 @@ import {
 } from 'features/workspace/workspace.selectors'
 import {
   selectIsMarineManagerLocation,
+  selectIsVesselLocation,
   selectUrlDataviewInstances,
   selectUrlDataviewInstancesOrder,
 } from 'routes/routes.selectors'
@@ -42,15 +43,21 @@ import {
 } from 'features/resources/resources.slice'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { MARINE_MANAGER_DATAVIEWS } from 'data/default-workspaces/marine-manager'
+import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
+import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import {
   getVesselDataviewInstanceDatasetConfig,
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
-import { trackDatasetConfigsCallback } from '../resources/resources.utils'
+import {
+  eventsDatasetConfigsCallback,
+  infoDatasetConfigsCallback,
+  trackDatasetConfigsCallback,
+} from '../resources/resources.utils'
 
 export const fetchDataviewByIdThunk = createAsyncThunk(
   'dataviews/fetchById',
-  async (id: number, { rejectWithValue }) => {
+  async (id: Dataview['id'] | Dataview['slug'], { rejectWithValue }) => {
     try {
       const dataview = await GFWAPI.fetch<Dataview>(`/dataviews/${id}`)
       return dataview
@@ -64,6 +71,9 @@ export const fetchDataviewByIdThunk = createAsyncThunk(
   }
 )
 
+const USE_MOCKED_DATAVIEWS =
+  process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_USE_LOCAL_DATAVIEWS === 'true'
+let mockedDataviewsImported = false
 export const fetchDataviewsByIdsThunk = createAsyncThunk(
   'dataviews/fetch',
   async (ids: (Dataview['id'] | Dataview['slug'])[], { signal, rejectWithValue, getState }) => {
@@ -71,8 +81,13 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
     const existingIds = selectIds(state) as (number | string)[]
     const uniqIds = ids.filter((id) => !existingIds.includes(id))
 
+    let mockedDataviews = [] as Dataview[]
+    if (USE_MOCKED_DATAVIEWS && !mockedDataviewsImported) {
+      mockedDataviews = await import('./dataviews.mock').then((d) => d.default)
+    }
+
     if (!uniqIds?.length) {
-      return [] as Dataview[]
+      return mockedDataviews
     }
     try {
       const dataviewsParams = {
@@ -84,14 +99,10 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
         `/dataviews?${stringify(dataviewsParams, { arrayFormat: 'comma' })}`,
         { signal }
       )
-      if (
-        process.env.NODE_ENV === 'development' ||
-        process.env.NEXT_PUBLIC_USE_LOCAL_DATAVIEWS === 'true'
-      ) {
-        const mockedDataviews = await import('./dataviews.mock')
-        return uniqBy([...mockedDataviews.default, ...dataviewsResponse.entries], 'id')
-      }
-      return dataviewsResponse.entries
+
+      return USE_MOCKED_DATAVIEWS
+        ? uniqBy([...mockedDataviews, ...dataviewsResponse.entries], 'slug')
+        : dataviewsResponse.entries
     } catch (e: any) {
       console.warn(e)
       return rejectWithValue(parseAPIError(e))
@@ -165,20 +176,23 @@ const { slice: dataviewsSlice, entityAdapter } = createAsyncSlice<DataviewsState
       entityAdapter.addOne(state, action.payload)
     },
   },
+  selectId: (dataview) => dataview.slug,
 })
 
 export const { addDataviewEntity } = dataviewsSlice.actions
-export const { selectAll, selectById, selectIds } = entityAdapter.getSelectors<DataviewsSliceState>(
-  (state) => state.dataviews
+export const { selectAll, selectById, selectIds } = entityAdapter.getSelectors(
+  (state: DataviewsSliceState) => state.dataviews
 )
 
 export function selectAllDataviews(state: DataviewsSliceState) {
   return selectAll(state)
 }
 
-export const selectDataviewById = memoize((id: number) =>
-  createSelector([(state: DataviewsSliceState) => state], (state) => selectById(state, id))
-)
+export function selectDataviewBySlug(slug: string) {
+  return createSelector([selectAllDataviews], (dataviews) => {
+    return dataviews?.find((d) => d.slug === slug)
+  })
+}
 
 export const selectDataviewsStatus = (state: DataviewsSliceState) => state.dataviews.status
 
@@ -213,9 +227,39 @@ export const selectDataviewInstancesMergedOrdered = createSelector(
 )
 
 export const selectAllDataviewInstancesResolved = createSelector(
-  [selectDataviewInstancesMergedOrdered, selectAllDataviews, selectAllDatasets],
-  (dataviewInstances, dataviews, datasets): UrlDataviewInstance[] | undefined => {
-    if (!dataviewInstances) return
+  [
+    selectDataviewInstancesMergedOrdered,
+    selectAllDataviews,
+    selectAllDatasets,
+    selectIsVesselLocation,
+    selectVesselInfoData,
+  ],
+  (
+    dataviewInstances,
+    dataviews,
+    datasets,
+    isVesselLocation,
+    vessel
+  ): UrlDataviewInstance[] | undefined => {
+    if (isVesselLocation) {
+      if (!vessel) {
+        return []
+      }
+      const vesselId = vessel.selfReportedInfo?.id
+      const vesselDatasets = {
+        info: vessel.info,
+        track: vessel.track,
+        ...(vessel?.events?.length && {
+          events: vessel?.events,
+        }),
+      }
+      const dataviewInstance = getVesselDataviewInstance({ id: vesselId }, vesselDatasets)
+      const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
+        vesselId,
+        vesselDatasets
+      )
+      return resolveDataviews([{ ...dataviewInstance, datasetsConfig }], dataviews, datasets)
+    }
     const dataviewInstancesWithDatasetConfig = dataviewInstances.map((dataviewInstance) => {
       if (
         dataviewInstance.id.startsWith(VESSEL_DATAVIEW_INSTANCE_PREFIX) &&
@@ -271,7 +315,9 @@ export const selectDataviewsResources = createSelector(
   ],
   (dataviewInstances, thinningConfig, chunks, timebarGraph) => {
     const callbacks: GetDatasetConfigsCallbacks = {
-      tracks: trackDatasetConfigsCallback(thinningConfig, chunks, timebarGraph),
+      track: trackDatasetConfigsCallback(thinningConfig, chunks, timebarGraph),
+      events: eventsDatasetConfigsCallback,
+      info: infoDatasetConfigsCallback,
     }
     return getResources(dataviewInstances || [], callbacks)
   }

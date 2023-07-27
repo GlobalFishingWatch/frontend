@@ -46,13 +46,7 @@ import { selectReportsStatus } from 'features/reports/reports.slice'
 import { selectCurrentReport } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { HOME, REPORT, WORKSPACE } from 'routes/routes'
-import {
-  EMPTY_FILTERS,
-  IMO_LENGTH,
-  SSVID_LENGTH,
-  SearchType,
-  cleanVesselSearchResults,
-} from 'features/search/search.slice'
+import { EMPTY_FILTERS, IMO_LENGTH, SSVID_LENGTH, SearchType } from 'features/search/search.slice'
 import { resetAreaDetail } from 'features/areas/areas.slice'
 import { selectReportAreaIds } from 'features/reports/reports.selectors'
 import { QueryParams } from 'types'
@@ -288,18 +282,29 @@ function CloseReportButton() {
   )
 }
 
+function CloseSectionButton() {
+  const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
+
+  if (!lastVisitedWorkspace) {
+    return null
+  }
+
+  return (
+    <Link className={styles.workspaceLink} to={lastVisitedWorkspace}>
+      <IconButton type="border" icon="close" />
+    </Link>
+  )
+}
+
 function SidebarHeader() {
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)
   const locationCategory = useSelector(selectLocationCategory)
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isSearchLocation = useSelector(selectIsSearchLocation)
   const isReportLocation = useSelector(selectIsReportLocation)
   const isSmallScreen = useSmallScreen()
-  const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
   const activeSearchOption = useSelector(selectSearchOption)
-  const { cleanFeatureState } = useFeatureState(useMapInstance())
   const { dispatchQueryParams } = useLocationConnect()
   const searchQuery = useSelector(selectSearchQuery)
   const { searchFilters } = useSearchFiltersConnect()
@@ -310,13 +315,6 @@ function SidebarHeader() {
     if (locationCategory === WorkspaceCategory.MarineManager) subBrand = SubBrands.MarineManager
     return subBrand
   }, [locationCategory])
-
-  const onCloseClick = () => {
-    resetSidebarScroll()
-    cleanFeatureState('highlight')
-    dispatch(resetReportData())
-    dispatch(cleanVesselSearchResults())
-  }
 
   const searchOptions: ChoiceOption<SearchType>[] = useMemo(() => {
     return [
@@ -364,23 +362,23 @@ function SidebarHeader() {
         <a href="https://globalfishingwatch.org" className={styles.logoLink}>
           <Logo className={styles.logo} subBrand={getSubBrand()} />
         </a>
-        {isReportLocation && !readOnly && <SaveReportButton />}
-        {isWorkspaceLocation && !readOnly && <SaveWorkspaceButton />}
-        {(isWorkspaceLocation || isReportLocation) && !readOnly && <ShareWorkspaceButton />}
-        {isReportLocation && !readOnly && <CloseReportButton />}
-        {isSearchLocation && !readOnly && !isSmallScreen && (
-          <Choice
-            options={searchOptions}
-            activeOption={activeSearchOption}
-            onSelect={onSearchOptionChange}
-            size="small"
-            className={styles.searchOption}
-          />
-        )}
-        {(isReportLocation || showBackToWorkspaceButton) && lastVisitedWorkspace && (
-          <Link className={styles.workspaceLink} to={lastVisitedWorkspace} onClick={onCloseClick}>
-            <IconButton type="border" icon="close" />
-          </Link>
+        {!readOnly && (
+          <Fragment>
+            {isReportLocation && <SaveReportButton />}
+            {isWorkspaceLocation && <SaveWorkspaceButton />}
+            {(isWorkspaceLocation || isReportLocation) && <ShareWorkspaceButton />}
+            {isReportLocation && <CloseReportButton />}
+            {isSearchLocation && !readOnly && !isSmallScreen && (
+              <Choice
+                options={searchOptions}
+                activeOption={activeSearchOption}
+                onSelect={onSearchOptionChange}
+                size="small"
+                className={styles.searchOption}
+              />
+            )}
+            {!isReportLocation && showBackToWorkspaceButton && <CloseSectionButton />}
+          </Fragment>
         )}
       </div>
     </Sticky>

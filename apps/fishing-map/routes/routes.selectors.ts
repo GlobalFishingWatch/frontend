@@ -3,14 +3,18 @@ import { memoize } from 'lodash'
 import { Query, RouteObject } from 'redux-first-router'
 import { RootState } from 'reducers'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { WorkspaceParam } from 'types'
+import { VesselProfileActivityMode, WorkspaceParam } from 'types'
 import { WorkspaceCategory } from 'data/workspaces'
 import {
   REPORT,
   WORKSPACE_REPORT,
   ROUTE_TYPES,
-  SEARCH,
+  VESSEL,
   WORKSPACE_ROUTES,
+  WORKSPACE_VESSEL,
+  SEARCH,
+  USER,
+  WORKSPACES_LIST,
   WORKSPACE_SEARCH,
 } from './routes'
 
@@ -29,9 +33,34 @@ export const selectIsWorkspaceLocation = createSelector([selectLocationType], (l
   WORKSPACE_ROUTES.includes(locationType)
 )
 
+export const selectIsVesselLocation = createSelector(
+  [selectLocationType],
+  (locationType) => locationType === VESSEL
+)
+
+export const selectIsWorkspaceVesselLocation = createSelector(
+  [selectLocationType],
+  (locationType) => locationType === WORKSPACE_VESSEL
+)
+
+export const selectIsAnyVesselLocation = createSelector(
+  [selectIsVesselLocation, selectIsWorkspaceVesselLocation],
+  (isVesselLocation, isWorkspaceVesselLocation) => isVesselLocation || isWorkspaceVesselLocation
+)
+
 export const selectIsReportLocation = createSelector(
   [selectLocationType],
   (locationType) => locationType === REPORT || locationType === WORKSPACE_REPORT
+)
+
+export const selectIsWorkspacesListLocation = createSelector(
+  [selectLocationType],
+  (locationType) => locationType === WORKSPACES_LIST
+)
+
+export const selectIsUserLocation = createSelector(
+  [selectLocationType],
+  (locationType) => locationType === USER
 )
 
 export const selectIsSearchLocation = createSelector(
@@ -66,6 +95,11 @@ export const selectReportId = createSelector(
   (payload) => payload?.reportId
 )
 
+export const selectVesselId = createSelector(
+  [selectLocationPayload],
+  (payload) => payload?.vesselId
+)
+
 export const selectLocationCategory = createSelector(
   [selectLocationPayload],
   (payload) => payload?.category as WorkspaceCategory
@@ -79,6 +113,11 @@ export const selectLocationDatasetId = createSelector(
 export const selectLocationAreaId = createSelector(
   [selectLocationPayload],
   (payload) => payload?.areaId as number
+)
+
+export const selectLocationVesselId = createSelector(
+  [selectLocationPayload],
+  (payload) => payload?.vesselId as string
 )
 
 export const isValidLocationCategory = createSelector(
@@ -98,6 +137,11 @@ export const selectUrlMapLatitudeQuery = selectQueryParam<number>('latitude')
 export const selectUrlMapLongitudeQuery = selectQueryParam<number>('longitude')
 export const selectUrlStartQuery = selectQueryParam<string>('start')
 export const selectUrlEndQuery = selectQueryParam<string>('end')
+
+export const selectVesselDatasetIdQuery = selectQueryParam<string>('vesselDatasetId')
+export const selectVesselActivityModeQuery =
+  selectQueryParam<VesselProfileActivityMode>('vesselActivityMode')
+
 export const selectUrlDataviewInstances =
   selectQueryParam<UrlDataviewInstance[]>('dataviewInstances')
 

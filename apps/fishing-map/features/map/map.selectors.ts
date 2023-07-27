@@ -31,6 +31,8 @@ import {
 import { selectBivariateDataviews, selectTimeRange } from 'features/app/app.selectors'
 import { selectMarineManagerDataviewInstanceResolved } from 'features/dataviews/dataviews.slice'
 import {
+  selectIsVesselLocation,
+  selectIsWorkspaceVesselLocation,
   selectIsMarineManagerLocation,
   selectIsReportLocation,
   selectIsWorkspaceLocation,
@@ -304,6 +306,7 @@ export const selectMarineManagerGenerators = createSelector(
     }
   }
 )
+
 export const selectMapWorkspacesListGenerators = createSelector(
   [selectDefaultBasemapGenerator, selectWorkspacesListGenerator, selectMarineManagerGenerators],
   (basemapGenerator, workspaceGenerator, marineManagerGenerators): AnyGeneratorConfig[] => {
@@ -316,12 +319,19 @@ export const selectMapWorkspacesListGenerators = createSelector(
   }
 )
 
+export const selectShowWorkspaceDetail = createSelector(
+  [selectIsWorkspaceLocation, selectIsReportLocation, selectIsWorkspaceVesselLocation],
+  (isWorkspacelLocation, isReportLocation, isVesselLocation) => {
+    return isWorkspacelLocation || isReportLocation || isVesselLocation
+  }
+)
+
 export const selectDefaultMapGeneratorsConfig = createSelector(
   [
     selectWorkspaceError,
     selectWorkspaceStatus,
-    selectIsWorkspaceLocation,
-    selectIsReportLocation,
+    selectShowWorkspaceDetail,
+    selectIsVesselLocation,
     selectDefaultBasemapGenerator,
     selectMapGeneratorsConfig,
     selectMapWorkspacesListGenerators,
@@ -329,20 +339,20 @@ export const selectDefaultMapGeneratorsConfig = createSelector(
   (
     workspaceError,
     workspaceStatus,
-    isWorkspacelLocation,
-    isReportLocation,
+    showWorkspaceDetail,
+    isVesselLocation,
     basemapGenerator,
-    workspaceGenerators = [] as AnyGeneratorConfig[],
+    mapGenerators = [] as AnyGeneratorConfig[],
     workspaceListGenerators
   ): AnyGeneratorConfig[] => {
-    const showWorkspaceDetail = isWorkspacelLocation || isReportLocation
+    if (isVesselLocation) {
+      return [basemapGenerator, ...mapGenerators]
+    }
     if (workspaceError.status === 401 || workspaceStatus === AsyncReducerStatus.Loading) {
       return [basemapGenerator]
     }
     if (showWorkspaceDetail) {
-      return workspaceStatus !== AsyncReducerStatus.Finished
-        ? [basemapGenerator]
-        : workspaceGenerators
+      return workspaceStatus !== AsyncReducerStatus.Finished ? [basemapGenerator] : mapGenerators
     }
     return workspaceListGenerators
   }

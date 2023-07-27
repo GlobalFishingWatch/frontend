@@ -37,11 +37,11 @@
   flex: none;
 }
 
-.categoryIcon.event-port-visit {
+.categoryIcon.event-port_visit {
   background-color: #9ef;
 }
 
-.categoryIcon.transmissions-off {
+.categoryIcon.event-gap {
   background-color: #f7b500;
 }
 

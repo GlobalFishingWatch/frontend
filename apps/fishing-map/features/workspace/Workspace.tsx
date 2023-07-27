@@ -7,6 +7,7 @@ import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { arrayMove } from '@dnd-kit/sortable'
 import { Spinner, Button, IconButton, Modal, InputText } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
+import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import { selectWorkspaceStatus, selectWorkspace } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { isGFWUser } from 'features/user/user.slice'
@@ -64,6 +65,8 @@ function Workspace() {
       setWorkspaceEditDescription(workspace.description)
     }
   }, [workspace])
+
+  useFetchDataviewResources()
 
   useEffect(() => {
     if (workspaceVesselGroupsIds.length) {

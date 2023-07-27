@@ -48,6 +48,23 @@ a.button:visited,
   background-color: var(--color-border);
 }
 
+.border-secondary {
+  border: var(--border);
+  border-radius: var(--border-radius);
+  color: var(--color-secondary-blue);
+  background-color: transparent;
+}
+
+.border-secondary:not(.disabled):hover,
+.border-secondary:not(.disabled):focus {
+  color: var(--color-primary-blue);
+  background-color: var(--color-border);
+}
+
+.button.border-secondary.disabled {
+  background-color: transparent;
+}
+
 .tiny {
   height: var(--size-XS);
 }

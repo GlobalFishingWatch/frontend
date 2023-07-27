@@ -1,0 +1,21 @@
+.summaryContainer {
+  padding: var(--space-M);
+  position: relative;
+}
+
+.activityTitleContainer {
+  padding: var(--space-S) var(--space-M);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.placeholder {
+  height: 40rem;
+}
+
+.download {
+  position: absolute;
+  top: var(--space-M);
+  right: var(--space-M);
+}

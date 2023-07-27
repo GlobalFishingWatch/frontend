@@ -38,8 +38,8 @@ export const VESSEL_DATAVIEW_INSTANCE_PREFIX = 'vessel-'
 
 // Datasets ids for vessel instances
 export type VesselInstanceDatasets = {
-  info?: string
   track?: string
+  info?: string
   events?: string[]
 }
 

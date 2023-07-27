@@ -3,10 +3,18 @@ export interface PointCoordinate {
   lon: number
 }
 
+export enum RegionType {
+  eez = 'eez',
+  rfmo = 'rfmo',
+  mpa = 'mpa',
+  fao = 'fao',
+}
+
 export interface Regions {
-  eez: string[]
-  rfmo: string[]
-  mpa: any[]
+  [RegionType.eez]: string[]
+  [RegionType.rfmo]: string[]
+  [RegionType.mpa]: string[]
+  [RegionType.fao]?: string[]
 }
 
 export interface GapPosition extends PointCoordinate {
@@ -77,6 +85,8 @@ export enum AuthorizationOptions {
   Unmatched = 'unmatched',
 }
 export interface EncounterEvent<Vessel = EventVessel> {
+  encounteredVesselAuthorizationStatus: JSX.Element
+  mainVesselAuthorizationStatus: JSX.Element
   /**
    * Median distance to the other vessel across the encounter, in kilometers
    */
@@ -153,22 +163,36 @@ export interface GapEvent {
   positionsPerDaySatReception: number
 }
 
+export interface FishingEvent {
+  totalDistanceKm: number
+  averageSpeedKnots: number
+  averageDurationHours: number
+}
+
+export interface Distances {
+  startDistanceFromShoreKm?: number
+  endDistanceFromShoreKm: number
+  startDistanceFromPortKm?: number
+  endDistanceFromPortKm: number
+}
+
 export interface ApiEvent<Vessel = EventVessel> {
+  distances?: Distances
+  encounter?: EncounterEvent<Vessel>
+  end: number | string // Depends on timestamp format API param
+  fishing?: FishingEvent
+  gap?: GapEvent
   id: string
+  key?: string
+  loitering?: LoiteringEvent
+  nextPort?: EventNextPort
+  regions?: Regions
+  port_visit?: PortVisitEvent
+  port?: PortEvent
+  position: PointCoordinate
+  start: number | string // Depends on timestamp format API param
   type: EventTypes
   vessel: Vessel
-  start: number | string // Depends on timestamp format API param
-  end: number | string // Depends on timestamp format API param
-  rfmos: string[]
-  eezs: string[]
-  nextPort?: EventNextPort
-  position: PointCoordinate
-  loitering?: LoiteringEvent
-  encounter?: EncounterEvent<Vessel>
-  gap?: GapEvent
-  port?: PortEvent
-  port_visit?: PortVisitEvent
-  key?: string
 }
 
 export interface ApiEvents<T = ApiEvent> {

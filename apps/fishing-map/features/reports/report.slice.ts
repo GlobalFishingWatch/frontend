@@ -106,11 +106,8 @@ const reportSlice = createSlice({
   name: 'report',
   initialState,
   reducers: {
-    resetReportData: (state) => {
-      state.status = AsyncReducerStatus.Idle
-      state.data = null
-      state.error = null
-      state.dateRangeHash = ''
+    resetReportData: () => {
+      return initialState
     },
     setDateRangeHash: (state, action: PayloadAction<string>) => {
       state.dateRangeHash = action.payload

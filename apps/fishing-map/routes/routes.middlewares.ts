@@ -29,11 +29,13 @@ export const routerQueryMiddleware: Middleware =
           delete newAction.query[ACCESS_TOKEN_STRING]
         }
       }
-      const { query } = action
-      if (query) {
-        const redirect = Object.keys(prevQuery)
-          .filter((k) => query[k as keyof QueryParams])
-          .some((key) => REPLACE_URL_PARAMS.includes(key))
+      const { query, replaceUrl } = action
+      if (query || replaceUrl) {
+        const redirect =
+          replaceUrl ||
+          Object.keys(prevQuery)
+            .filter((k) => query?.[k as keyof QueryParams])
+            .some((key) => REPLACE_URL_PARAMS.includes(key))
         if (redirect === true) {
           newAction.meta = {
             location: {

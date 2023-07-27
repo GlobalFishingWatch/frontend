@@ -3,7 +3,8 @@ export const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 export const ROOT_DOM_ELEMENT = '__next'
 
 export const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID ?? 'GTM-KK5ZFST'
-export const GOOGLE_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID ?? 'G-R3PWRQW70G'
+export const GOOGLE_MEASUREMENT_ID =
+  process.env.NEXT_PUBLIC_NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID ?? 'G-R3PWRQW70G'
 
 // Params to use replace instead of push for router history to make navigation easier
 export const REPLACE_URL_PARAMS = ['latitude', 'longitude', 'zoom']

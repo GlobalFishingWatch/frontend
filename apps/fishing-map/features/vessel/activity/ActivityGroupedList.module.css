@@ -1,0 +1,65 @@
+.activityContainer {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--header-height) - var(--tabs-height));
+  margin-bottom: var(--space-XL);
+}
+
+.event::after {
+  content: '';
+  position: absolute;
+  left: 6rem;
+  bottom: 0;
+  height: 0.1rem;
+  width: calc(100% - 6rem);
+  background-color: var(--color-border);
+}
+
+.enptyState {
+  width: 100%;
+  padding: var(--space-L) var(--space-M);
+  text-align: center;
+}
+
+.eventGroup {
+  margin-left: unset;
+  width: 100%;
+  background: var(--color-white);
+  outline: var(--border);
+}
+
+.header {
+  padding: 0 1.4rem 0 var(--space-M);
+  display: flex;
+  align-items: center;
+  min-height: 6rem;
+  cursor: pointer;
+}
+
+.actions {
+  margin-left: auto;
+  display: flex;
+}
+
+.title {
+  font: var(--font-S);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  flex: 1;
+  text-transform: uppercase;
+  color: var(--color-secondary-blue);
+  transition: color 100ms linear;
+}
+
+.open .title,
+.eventGroup:hover .title {
+  color: var(--color-primary-blue);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  padding-left: var(--space-M);
+  background: var(--color-white);
+}
