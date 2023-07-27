@@ -61,7 +61,7 @@ export const getVesselLabel = (
   if (!vessel) return t('common.unknownVessel', 'Unknown vessel')
   const vesselInfo = vessel.registryInfo?.length
     ? vessel.registryInfo?.[0]
-    : vessel.selfReportedInfo[0]
+    : vessel.selfReportedInfo?.[0]
   if (vesselInfo.shipname && vesselInfo.geartype && vesselInfo.flag && withGearType) {
     return `${formatInfoField(vesselInfo.shipname, 'name')}
     (${t(`flags:${vesselInfo.flag}`)}, ${t(

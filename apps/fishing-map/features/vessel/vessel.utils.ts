@@ -18,7 +18,7 @@ export function getVesselProperty<P = string>(
   if (vessel.registryInfo?.length) {
     return vessel.registryInfo[registryIndex]?.[property]
   }
-  return vessel.selfReportedInfo?.[property]
+  return vessel.selfReportedInfo?.[0]?.[property]
 }
 
 export const getVoyageTimeRange = (events: ActivityEvent[]) => {

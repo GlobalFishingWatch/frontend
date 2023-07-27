@@ -16,7 +16,7 @@ const VesselHeader = () => {
   const vessel = useSelector(selectVesselInfoData)
   const dataviews = useSelector(selectActiveVesselsDataviews)
   const vesselDataview = dataviews.find(
-    ({ id }) => vessel && id.includes(vessel.selfReportedInfo.id)
+    ({ id }) => vessel && id.includes(vessel.selfReportedInfo?.[0].id)
   )
   const events = useSelector(selectVesselEventsFilteredByTimerange)
   const fitBounds = useMapFitBounds()

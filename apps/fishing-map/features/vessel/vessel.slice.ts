@@ -70,6 +70,8 @@ export const fetchVesselInfoThunk = createAsyncThunk(
         const vessel = await GFWAPI.fetch<IdentityVessel>(url)
         return {
           ...vessel,
+          // TODO remove this once the API returns same format for search and get vessel by Id
+          selfReportedInfo: [vessel.selfReportedInfo as any],
           info: datasetId,
           track: trackDatasetId,
           events: eventsDatasetsId,

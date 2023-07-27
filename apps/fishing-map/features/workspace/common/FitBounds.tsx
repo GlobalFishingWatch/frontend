@@ -36,8 +36,8 @@ const FitBounds = ({ className, trackResource, hasError, infoResource }: FitBoun
       } else {
         if (
           infoResource &&
-          (!infoResource.data?.selfReportedInfo?.firstTransmissionDate ||
-            !infoResource.data?.selfReportedInfo?.firstTransmissionDate)
+          (!infoResource.data?.selfReportedInfo?.[0]?.transmissionDateFrom ||
+            !infoResource.data?.selfReportedInfo?.[0]?.transmissionDateTo)
         ) {
           console.warn('transmissionDates not available, cant fit time', infoResource)
           return
@@ -53,10 +53,10 @@ const FitBounds = ({ className, trackResource, hasError, infoResource }: FitBoun
           if (infoResource) {
             setTimerange({
               start: new Date(
-                infoResource.data!?.selfReportedInfo?.firstTransmissionDate
+                infoResource.data!?.selfReportedInfo?.[0]?.transmissionDateFrom
               ).toISOString(),
               end: new Date(
-                infoResource.data!?.selfReportedInfo?.lastTransmissionDate
+                infoResource.data!?.selfReportedInfo?.[0]?.transmissionDateTo
               ).toISOString(),
             })
           } else {
