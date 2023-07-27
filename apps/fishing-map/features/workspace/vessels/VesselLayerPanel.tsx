@@ -132,7 +132,12 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
 
   const TitleComponentContent = () => (
     <Fragment>
-      <span className={cx({ [styles.faded]: infoLoading || infoError })}>{getVesselTitle()}</span>
+      <span
+        className={cx({ [styles.faded]: infoLoading || infoError })}
+        data-test="vessel-layer-vessel-name"
+      >
+        {getVesselTitle()}
+      </span>
       {(infoError || trackError) && (
         <IconButton
           size="small"

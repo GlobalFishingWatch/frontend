@@ -25,6 +25,13 @@ export const waitForMapLoadTiles = (extraDelay?: number) => {
   }
 }
 
+export const verifyTracksInTimebar = (segments?: number) => {
+  getTimeline()
+    // The tracks request can be heavy
+    .findByClass(`tracks_segment`, { timeout: 20000 })
+    .should('have.length.greaterThan', segments ?? 1)
+}
+
 // Remove the popups that blocks the normal use of the map
 export const disablePopups = () => {
   localStorage.setItem('DisableWelcomePopup', 'true')
