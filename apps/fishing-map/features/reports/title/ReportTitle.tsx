@@ -18,7 +18,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectCurrentReport } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { BufferUnit } from 'types'
-import { selectUrlBufferValueQuery } from 'routes/routes.selectors'
+import { selectUrlBufferUnitQuery, selectUrlBufferValueQuery } from 'routes/routes.selectors'
 import styles from './ReportTitle.module.css'
 
 type ReportTitleProps = {
@@ -117,21 +117,22 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   const areaDataview = useSelector(selectReportAreaDataview)
   const report = useSelector(selectCurrentReport)
   const urlBufferValue = useSelector(selectUrlBufferValueQuery)
+  const urlBufferUnit = useSelector(selectUrlBufferUnitQuery)
 
   const [bufferValue, setBufferValue] = useState<number>(urlBufferValue || DEFAULT_BUFFER_VALUE)
-  const [bufferUnit, setBufferUnit] = useState<BufferUnit>(NAUTICAL_MILES)
+  const [bufferUnit, setBufferUnit] = useState<BufferUnit>(urlBufferUnit || NAUTICAL_MILES)
 
   const handleBufferUnitChange = useCallback(
     (option) => {
       setBufferUnit(option.id)
-      dispatchQueryParams({ 'buffer-unit': option.id })
+      dispatchQueryParams({ reportBufferUnit: option.id })
     },
     [setBufferUnit, dispatchQueryParams]
   )
   const handleBufferValueChange = useCallback(
     (values: number[]) => {
       setBufferValue(Math.round(values[1]))
-      dispatchQueryParams({ 'buffer-value': Math.round(values[1]) })
+      dispatchQueryParams({ reportBufferValue: Math.round(values[1]) })
     },
     [setBufferValue, dispatchQueryParams]
   )
@@ -155,7 +156,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   }
 
   const handleConfirmBuffer = useCallback(() => {
-    dispatchQueryParams({ 'buffer-value': bufferValue, 'buffer-unit': bufferUnit })
+    dispatchQueryParams({ reportBufferValue: bufferValue, reportBufferUnit: bufferUnit })
     trackEvent({
       category: TrackCategory.Analysis,
       action: `Confirm area buffer`,
@@ -190,7 +191,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
                 <BufferTooltip
                   handleBufferValueChange={handleBufferValueChange}
                   defaultValue={urlBufferValue || DEFAULT_BUFFER_VALUE}
-                  activeOption={bufferUnit}
+                  activeOption={bufferUnit || NAUTICAL_MILES}
                   handleBufferUnitChange={handleBufferUnitChange}
                   handleConfirmBuffer={handleConfirmBuffer}
                 />

@@ -25,8 +25,8 @@ export type ReportStateProperty =
   | 'reportVesselFilter'
   | 'reportVesselGraph'
   | 'reportVesselPage'
-  | 'buffer-value'
-  | 'buffer-unit'
+  | 'reportBufferValue'
+  | 'reportBufferUnit'
 
 export type WorkspaceStateProperty =
   | 'query'
@@ -91,8 +91,8 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   reportVesselFilter?: string
   reportVesselGraph?: ReportVesselGraph
   reportVesselPage?: number
-  'buffer-value'?: number
-  'buffer-unit'?: BufferUnit
+  reportBufferValue?: number
+  reportBufferUnit?: BufferUnit
   reportResultsPerPage?: number
   sidebarOpen?: boolean
   timebarGraph?: TimebarGraphs
