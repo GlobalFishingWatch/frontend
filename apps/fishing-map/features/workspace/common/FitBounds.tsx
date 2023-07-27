@@ -7,7 +7,7 @@ import {
   filterSegmentsByTimerange,
   geoJSONToSegments,
 } from '@globalfishingwatch/data-transforms'
-import { Resource, Segment, Vessel } from '@globalfishingwatch/api-types'
+import { IdentityVessel, Resource, Segment } from '@globalfishingwatch/api-types'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { Bbox } from 'types'
@@ -15,7 +15,7 @@ import { Bbox } from 'types'
 type FitBoundsProps = {
   hasError: boolean
   trackResource: Resource<Segment[] | FeatureCollection>
-  infoResource?: Resource<Vessel>
+  infoResource?: Resource<IdentityVessel>
   className?: string
 }
 
@@ -36,7 +36,8 @@ const FitBounds = ({ className, trackResource, hasError, infoResource }: FitBoun
       } else {
         if (
           infoResource &&
-          (!infoResource.data?.firstTransmissionDate || !infoResource.data?.firstTransmissionDate)
+          (!infoResource.data?.selfReportedInfo?.firstTransmissionDate ||
+            !infoResource.data?.selfReportedInfo?.firstTransmissionDate)
         ) {
           console.warn('transmissionDates not available, cant fit time', infoResource)
           return
@@ -51,8 +52,12 @@ const FitBounds = ({ className, trackResource, hasError, infoResource }: FitBoun
         ) {
           if (infoResource) {
             setTimerange({
-              start: new Date(infoResource.data!?.firstTransmissionDate).toISOString(),
-              end: new Date(infoResource.data!?.lastTransmissionDate).toISOString(),
+              start: new Date(
+                infoResource.data!?.selfReportedInfo?.firstTransmissionDate
+              ).toISOString(),
+              end: new Date(
+                infoResource.data!?.selfReportedInfo?.lastTransmissionDate
+              ).toISOString(),
             })
           } else {
             let minTimestamp = Number.POSITIVE_INFINITY

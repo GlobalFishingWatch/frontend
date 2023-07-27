@@ -5,7 +5,6 @@ import { Trans, useTranslation } from 'react-i18next'
 import Link from 'redux-first-router-link'
 // import NextLink from 'next/link'
 import {
-  Vessel,
   DatasetTypes,
   ResourceStatus,
   DataviewDatasetConfigParam,
@@ -13,6 +12,7 @@ import {
   EndpointId,
   VesselRegistryInfo,
   DataviewInfoConfigField,
+  IdentityVessel,
 } from '@globalfishingwatch/api-types'
 import { IconButton, Tooltip, ColorBarOption } from '@globalfishingwatch/ui-components'
 import {
@@ -79,7 +79,9 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { url: infoUrl, dataset } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
   const resources = useSelector(selectResources)
   const trackResource = pickTrackResource(dataview, EndpointId.Tracks, resources)
-  const infoResource: Resource<Vessel> = useSelector(selectResourceByUrl<Vessel>(infoUrl))
+  const infoResource: Resource<IdentityVessel> = useSelector(
+    selectResourceByUrl<IdentityVessel>(infoUrl)
+  )
   const { items, attributes, listeners, setNodeRef, setActivatorNodeRef, style } =
     useLayerPanelDataviewSort(dataview.id)
 
@@ -164,7 +166,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const infoError = infoResource?.status === ResourceStatus.Error
   const trackError = trackResource?.status === ResourceStatus.Error
 
-  const vesselLabel = infoResource?.data ? getVesselLabel(infoResource.data) : ''
+  const vesselLabel = infoResource?.data ? getVesselLabel(infoResource.data?.selfReportedInfo) : ''
   const vesselId =
     (infoResource?.datasetConfig?.params?.find(
       (p: DataviewDatasetConfigParam) => p.id === 'vesselId'
@@ -281,10 +283,10 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       component={
         <ul className={styles.infoContent}>
           {gfwUser &&
-            infoResource?.data?.vesselRegistryInfo!?.length > 0 &&
+            infoResource?.data?.registryInfo!?.length > 0 &&
             vesselRegistryFields.map((registryField) => {
               const value =
-                infoResource?.data?.vesselRegistryInfo[0]?.[
+                infoResource?.data?.registryInfo?.[0]?.[
                   registryField.id as keyof VesselRegistryInfo
                 ]
               return (
@@ -295,7 +297,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
               )
             })}
           {infoFields?.map((field: any) => {
-            const value = infoResource?.data?.[field.id as keyof Vessel]
+            const value = infoResource?.data?.[field.id as keyof IdentityVessel]
             if (!value && !field.mandatory) return null
             const fieldValues = Array.isArray(value) ? value : [value]
             return (
