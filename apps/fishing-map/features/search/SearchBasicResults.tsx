@@ -15,6 +15,7 @@ import { formatInfoField, EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { selectVesselsDataviews } from 'features/dataviews/dataviews.slice'
 import TrackFootprint from 'features/search/TrackFootprint'
 import { VesselWithDatasetsResolved } from 'features/search/search.slice'
+import VesselLink from 'features/vessel/VesselLink'
 import { Locale } from '../../../../libs/api-types/src/i18n'
 import styles from './SearchBasicResults.module.css'
 
@@ -99,8 +100,9 @@ function SearchBasicResults({
               />
               <div className={styles.fullWidth}>
                 <div className={styles.name}>
-                  {/* TODO add link to vessel profile here */}
-                  {formatInfoField(shipname, 'name') || EMPTY_FIELD_PLACEHOLDER}
+                  <VesselLink vesselId={id} datasetId={dataset?.id}>
+                    {formatInfoField(shipname, 'name') || EMPTY_FIELD_PLACEHOLDER}
+                  </VesselLink>
                 </div>
                 <div className={styles.properties}>
                   <div className={styles.property}>
