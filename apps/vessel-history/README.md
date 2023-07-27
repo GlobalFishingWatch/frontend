@@ -14,3 +14,6 @@ You can request a token for free on [https://globalfishingwatch.org/our-apis/tok
 ### Documentation
 
 You can access to the api documentation in [https://globalfishingwatch.org/our-apis/documentation](https://globalfishingwatch.org/our-apis/documentation)
+
+## License
+Noncommercial Use Only. The Services are available for noncommercial use only in accordance with the [CC BY-NC 4.0 license](https://creativecommons.org/licenses/by-nc/4.0/), including complying with the attribution requirements set in [Section 3 in API Terms of Use](https://globalfishingwatch.org/our-apis/documentation#terms-of-use).
