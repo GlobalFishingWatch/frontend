@@ -1,94 +1,66 @@
-import React, { Fragment, useLayoutEffect, useRef, useState } from 'react'
-import cx from 'classnames'
+import { Fragment, useLayoutEffect, useRef, useState } from 'react'
 import { DateTime } from 'luxon'
 import { Locale } from '@globalfishingwatch/api-types'
 import styles from './TransmissionsTimeline.module.css'
 
 export const FIRST_YEAR_OF_DATA = 2012
 
-export type TransmissionDatesExtent = {
-  start: string
-  end: string
-}
-
-export type TransmissionsTimelineProps = {
-  dates: TransmissionDatesExtent[]
-  currentDateIndex?: number
-  onDateClick?: (dates: TransmissionDatesExtent, index: number) => void
+type TransmissionsTimelineProps = {
+  firstTransmissionDate: string
+  lastTransmissionDate: string
   firstYearOfData?: number
   locale?: Locale
-  yearlyHoverCallback?: (year?: number) => void
 }
 
 export function TransmissionsTimeline({
-  dates,
-  currentDateIndex,
+  firstTransmissionDate,
+  lastTransmissionDate,
   firstYearOfData = FIRST_YEAR_OF_DATA,
-  onDateClick,
   locale = Locale.en,
-  yearlyHoverCallback,
 }: TransmissionsTimelineProps) {
-  const [timelineWidths, setTimelineWidths] = useState<number[]>([])
-  const containerRef = useRef<HTMLDivElement | null>(null)
+  const [timelineWidth, setTimelineWidth] = useState<number>(0)
+  const transmissionsRef = useRef<HTMLDivElement | null>(null)
+  const start = DateTime.fromISO(firstYearOfData.toString(), { zone: 'utc' })
+  const startTransmission = DateTime.fromISO(firstTransmissionDate, { zone: 'utc' }).setLocale(
+    locale
+  )
+  const endTransmission = DateTime.fromISO(lastTransmissionDate, { zone: 'utc' }).setLocale(locale)
+  const end = DateTime.now().toUTC()
+  const total = end.diff(start).milliseconds
+  const beforeTransmission = startTransmission.diff(start).milliseconds
+  const duringTransmission = endTransmission.diff(startTransmission).milliseconds
+  const beforeWidth = Math.max(0, Math.floor((beforeTransmission / total) * 100))
+  const duringWidth = Math.max(0, Math.floor((duringTransmission / total) * 100))
+  const monthFormat = 'LLL'
 
   useLayoutEffect(() => {
-    const widths = [] as number[]
-    if (containerRef?.current) {
-      containerRef?.current.childNodes.forEach((n: any) => widths.push(n.offsetWidth))
-    }
-    if (widths.length) {
-      setTimelineWidths(widths)
-    }
+    setTimelineWidth(transmissionsRef?.current?.offsetWidth || 0)
   }, [])
 
   return (
-    <div className={styles.timelineContainer} ref={containerRef}>
-      {dates.map(({ start, end }, index) => {
-        const timelineWidth = timelineWidths[index]
-        const startRange = DateTime.fromISO(firstYearOfData.toString(), { zone: 'utc' })
-        const startTransmission = DateTime.fromISO(start, {
-          zone: 'utc',
-        }).setLocale(locale)
-        const endTransmission = DateTime.fromISO(end, { zone: 'utc' }).setLocale(locale)
-        const endRange = DateTime.now().toUTC()
-        const total = endRange.diff(startRange).milliseconds
-        const beforeTransmission = startTransmission.diff(startRange).milliseconds
-        const duringTransmission = endTransmission.diff(startTransmission).milliseconds
-        const beforeWidth = Math.max(0, Math.floor((beforeTransmission / total) * 100))
-        const duringWidth = Math.max(0, Math.floor((duringTransmission / total) * 100))
-        const monthFormat = 'LLL'
-        return (
-          <div
-            className={cx(styles.timerange, {
-              [styles.highlighted]: currentDateIndex ? index === currentDateIndex : index === 0,
-              [styles.interactive]: onDateClick !== undefined,
-            })}
-            style={{ left: `${beforeWidth}%`, width: `${duringWidth}%` }}
-            onClick={() => {
-              if (onDateClick) {
-                onDateClick({ start, end }, index)
-              }
-            }}
-          >
-            {timelineWidths[index] > 30 && (
-              <Fragment>
-                <span className={styles.dates}>
-                  {timelineWidth > 90 && `${startTransmission.toFormat(monthFormat)} `}
-                  {timelineWidth > 50
-                    ? startTransmission.toFormat('yyyy')
-                    : startTransmission.toFormat('yy')}
-                </span>
-                <span className={styles.dates}>
-                  {timelineWidth > 90 && `${endTransmission.toFormat(monthFormat)} `}
-                  {timelineWidth > 50
-                    ? endTransmission.toFormat('yyyy')
-                    : endTransmission.toFormat('yy')}
-                </span>
-              </Fragment>
-            )}
-          </div>
-        )
-      })}
+    <div className={styles.timelineContainer}>
+      <div
+        className={styles.highlighted}
+        style={{ marginLeft: `${beforeWidth}%`, width: `${duringWidth}%` }}
+        ref={transmissionsRef}
+      >
+        {timelineWidth > 30 && (
+          <Fragment>
+            <span>
+              {timelineWidth > 90 && `${startTransmission.toFormat(monthFormat)} `}
+              {timelineWidth > 50
+                ? startTransmission.toFormat('yyyy')
+                : startTransmission.toFormat('yy')}
+            </span>
+            <span>
+              {timelineWidth > 90 && `${endTransmission.toFormat(monthFormat)} `}
+              {timelineWidth > 50
+                ? endTransmission.toFormat('yyyy')
+                : endTransmission.toFormat('yy')}
+            </span>
+          </Fragment>
+        )}
+      </div>
     </div>
   )
 }

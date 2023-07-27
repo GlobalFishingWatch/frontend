@@ -1,4 +1,4 @@
-import { PRIVATE_SUFIX, PRIVATE_SUFIX } from './config'
+import { PRIVATE_SUFIX } from './config'
 
 export const GLOBAL_VESSELS_DATASET_ID = 'public-global-all-vessels'
 

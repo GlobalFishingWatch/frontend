@@ -61,12 +61,8 @@ function VesselGroupVesselRow({
           >
             <div>
               <TransmissionsTimeline
-                dates={[
-                  {
-                    start: firstTransmissionDate,
-                    end: lastTransmissionDate,
-                  },
-                ]}
+                firstTransmissionDate={firstTransmissionDate}
+                lastTransmissionDate={lastTransmissionDate}
                 firstYearOfData={FIRST_YEAR_OF_DATA}
                 locale={i18n.language as Locale}
               />

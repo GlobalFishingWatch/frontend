@@ -75,12 +75,8 @@ const RelatedVesselListItem: React.FC<RelatedVesselListItem> = (props): React.Re
                 )}
               </div>
               <TransmissionsTimeline
-                dates={[
-                  {
-                    start: vessel.firstTransmissionDate,
-                    end: vessel.lastTransmissionDate,
-                  },
-                ]}
+                firstTransmissionDate={vessel.firstTransmissionDate}
+                lastTransmissionDate={vessel.lastTransmissionDate}
                 firstYearOfData={FIRST_YEAR_OF_DATA}
                 locale={i18n.language as Locale}
               />
