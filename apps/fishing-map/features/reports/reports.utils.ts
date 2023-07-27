@@ -8,10 +8,12 @@ import { format } from 'd3-format'
 import { DateTime } from 'luxon'
 import { multiPolygon, polygon } from '@turf/helpers'
 import { buffer } from '@turf/turf'
+import { MultiPolygon } from 'geojson'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   ContextAreaFeature,
+  ContextAreaFeatureGeom,
   Dataview,
   DataviewCategory,
   EXCLUDE_FILTER_ID,
@@ -219,15 +221,15 @@ export const getBufferedArea = ({
   area: Area | undefined
   value: number
   unit: BufferUnit
-}): ContextAreaFeature | null => {
+}): Area | null => {
   if (!area?.geometry) return null
   const areaPolygon =
     area.geometry.type === 'MultiPolygon'
-      ? (multiPolygon(area.geometry.coordinates!) as any)
+      ? multiPolygon(area.geometry.coordinates)
       : area.geometry.type === 'Polygon'
-      ? (polygon(area.geometry.coordinates) as any)
+      ? polygon(area.geometry.coordinates)
       : null
 
-  const bufferedArea = areaPolygon ? buffer(areaPolygon, value, { units: unit }) : null
-  return { ...bufferedArea, id: area.id } as ContextAreaFeature
+  const bufferedGeometry = areaPolygon ? buffer(areaPolygon, value, { units: unit }) : undefined
+  return { ...area, geometry: bufferedGeometry } as Area
 }
