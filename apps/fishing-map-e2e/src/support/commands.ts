@@ -22,6 +22,10 @@ declare namespace Cypress {
       selector: string,
       options?: Partial<Loggable & Timeoutable & Withinable & Shadow>
     ): Cypress.Chainable<JQuery<HTMLElement>>
+    findBySelLike(
+      selector: string,
+      options?: Partial<Loggable & Timeoutable & Withinable & Shadow>
+    ): Cypress.Chainable<JQuery<HTMLElement>>
     getByClass(
       selector: string,
       options?: Partial<Loggable & Timeoutable & Withinable & Shadow>
@@ -144,6 +148,24 @@ Cypress.Commands.add(
     })
 
     return cy.wrap(subject).find(`[class^="${selector}"]`, options)
+  }
+)
+
+Cypress.Commands.add(
+  'findBySelLike',
+  { prevSubject: true },
+  (
+    subject: Cypress.Chainable<HTMLElement>,
+    selector: string,
+    options?: Partial<Cypress.Loggable & Cypress.Timeoutable & Cypress.Withinable & Cypress.Shadow>
+  ) => {
+    Cypress.log({
+      name: 'findBySelLike',
+      displayName: 'FIND BY DATA-TEST (like)',
+      message: [`💸 Try to find elements by data-test that starts with ${selector} in:`],
+    })
+
+    return cy.wrap(subject).find(`[data-test^="${selector}"]`, options)
   }
 )
 
