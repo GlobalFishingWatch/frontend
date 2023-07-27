@@ -5,21 +5,20 @@ import { Fragment } from 'react'
 import { Range, getTrackBackground } from 'react-range'
 import { Button, Icon, Choice } from '@globalfishingwatch/ui-components'
 import { ContextLayerType, GeneratorType } from '@globalfishingwatch/layer-composer'
-import { Area, selectDatasetAreaDetail } from 'features/areas/areas.slice'
+import { Area } from 'features/areas/areas.slice'
 import {
   BUFFER_UNIT_OPTIONS,
   DEFAULT_BUFFER_VALUE,
   NAUTICAL_MILES,
 } from 'features/reports/reports.constants'
-import { selectReportAreaDataview, selectReportAreaIds } from 'features/reports/reports.selectors'
+import { selectReportAreaDataview } from 'features/reports/reports.selectors'
 import { getContextAreaLink } from 'features/dataviews/dataviews.utils'
 import ReportTitlePlaceholder from 'features/reports/placeholders/ReportTitlePlaceholder'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectCurrentReport } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { BufferUnit } from 'types'
-import { getBufferedArea } from '../reports.utils'
-import { useReportAreaBuffer } from '../reports.hooks'
+import { selectUrlBufferValueQuery } from 'routes/routes.selectors'
 import styles from './ReportTitle.module.css'
 
 type ReportTitleProps = {
@@ -30,7 +29,7 @@ type ReportTitleProps = {
 
 const BufferTooltip = ({
   handleBufferValueChange,
-  defaultValue = 50,
+  defaultValue,
   activeOption,
   handleBufferUnitChange,
   handleConfirmBuffer,
@@ -117,24 +116,24 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   const { dispatchQueryParams } = useLocationConnect()
   const areaDataview = useSelector(selectReportAreaDataview)
   const report = useSelector(selectCurrentReport)
+  const urlBufferValue = useSelector(selectUrlBufferValueQuery)
 
-  const [bufferValue, setBufferValue] = useState<number>(DEFAULT_BUFFER_VALUE)
+  const [bufferValue, setBufferValue] = useState<number>(urlBufferValue || DEFAULT_BUFFER_VALUE)
   const [bufferUnit, setBufferUnit] = useState<BufferUnit>(NAUTICAL_MILES)
-
-  const areaBuffer = useReportAreaBuffer(bufferValue, bufferUnit)
-  console.log('🚀 ~ file: ReportTitle.tsx:126 ~ ReportTitle ~ areaBuffer:', areaBuffer)
 
   const handleBufferUnitChange = useCallback(
     (option) => {
       setBufferUnit(option.id)
+      dispatchQueryParams({ 'buffer-unit': option.id })
     },
-    [setBufferUnit]
+    [setBufferUnit, dispatchQueryParams]
   )
   const handleBufferValueChange = useCallback(
     (values: number[]) => {
       setBufferValue(Math.round(values[1]))
+      dispatchQueryParams({ 'buffer-value': Math.round(values[1]) })
     },
-    [setBufferValue]
+    [setBufferValue, dispatchQueryParams]
   )
 
   const reportLink = window.location.href
@@ -190,7 +189,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
               tooltip={
                 <BufferTooltip
                   handleBufferValueChange={handleBufferValueChange}
-                  defaultValue={DEFAULT_BUFFER_VALUE}
+                  defaultValue={urlBufferValue || DEFAULT_BUFFER_VALUE}
                   activeOption={bufferUnit}
                   handleBufferUnitChange={handleBufferUnitChange}
                   handleConfirmBuffer={handleConfirmBuffer}
