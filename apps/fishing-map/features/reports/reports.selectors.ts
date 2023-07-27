@@ -23,12 +23,14 @@ import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUserData } from 'features/user/user.slice'
 import { getUTCDateTime } from 'utils/dates'
-import { getReportCategoryFromDataview } from 'features/reports/reports.utils'
+import { getBufferedArea, getReportCategoryFromDataview } from 'features/reports/reports.utils'
 import { ReportCategory } from 'types'
 import { selectContextAreasDataviews } from 'features/dataviews/dataviews.selectors'
 import { createDeepEqualSelector } from 'utils/selectors'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { sortStrings } from 'utils/shared'
+import { selectAreas } from 'features/areas/areas.slice'
+import { selectUrlBufferUnitQuery, selectUrlBufferValueQuery } from 'routes/routes.selectors'
 import { selectReportVesselsData } from './report.slice'
 
 export const EMPTY_API_VALUES = ['NULL', undefined, '']
@@ -445,5 +447,22 @@ export const selectReportVesselsGraphDataOthers = createSelector(
         if (EMPTY_API_VALUES.includes(b.name)) return -1
         return b.value - a.value
       })
+  }
+)
+
+const selectReportAreaData = createSelector(
+  [selectReportAreaIds, selectAreas],
+  (areaIds, areas) => {
+    if (!areaIds || !areas) return null
+    const { datasetId, areaId } = areaIds
+    return areas?.[datasetId]?.detail?.[areaId]?.data
+  }
+)
+
+export const selectReportAreaBuffer = createSelector(
+  [selectReportAreaData, selectUrlBufferUnitQuery, selectUrlBufferValueQuery],
+  (area, unit, value) => {
+    if (!area || !unit || !value) return null
+    return getBufferedArea({ area, value, unit })
   }
 )
