@@ -35,7 +35,10 @@ import {
   selectIsReportLocation,
   selectIsWorkspaceLocation,
 } from 'routes/routes.selectors'
-import { selectShowTimeComparison } from 'features/reports/reports.selectors'
+import {
+  selectReportAreaBuffer,
+  selectShowTimeComparison,
+} from 'features/reports/reports.selectors'
 import { WorkspaceCategory } from 'data/workspaces'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { BivariateDataviews } from 'types'
@@ -316,6 +319,22 @@ export const selectMapWorkspacesListGenerators = createSelector(
   }
 )
 
+export const selectMapReportGenerators = createSelector(
+  [selectReportAreaBuffer],
+  (reportAreaBuffer) => {
+    if (!reportAreaBuffer) return []
+    return [
+      {
+        type: GeneratorType.Polygons,
+        id: 'report-area-buffer',
+        data: { type: 'FeatureCollection', features: [reportAreaBuffer.geometry] },
+        color: '#f00',
+        visible: true,
+      },
+    ]
+  }
+)
+
 export const selectDefaultMapGeneratorsConfig = createSelector(
   [
     selectWorkspaceError,
@@ -325,6 +344,7 @@ export const selectDefaultMapGeneratorsConfig = createSelector(
     selectDefaultBasemapGenerator,
     selectMapGeneratorsConfig,
     selectMapWorkspacesListGenerators,
+    selectMapReportGenerators,
   ],
   (
     workspaceError,
@@ -333,16 +353,20 @@ export const selectDefaultMapGeneratorsConfig = createSelector(
     isReportLocation,
     basemapGenerator,
     workspaceGenerators = [] as AnyGeneratorConfig[],
-    workspaceListGenerators
+    workspaceListGenerators,
+    mapReportGenerators
   ): AnyGeneratorConfig[] => {
     const showWorkspaceDetail = isWorkspacelLocation || isReportLocation
     if (workspaceError.status === 401 || workspaceStatus === AsyncReducerStatus.Loading) {
       return [basemapGenerator]
     }
     if (showWorkspaceDetail) {
-      return workspaceStatus !== AsyncReducerStatus.Finished
-        ? [basemapGenerator]
-        : workspaceGenerators
+      const generators =
+        workspaceStatus !== AsyncReducerStatus.Finished ? [basemapGenerator] : workspaceGenerators
+      if (isReportLocation) {
+        return [...generators, ...mapReportGenerators]
+      }
+      return generators
     }
     return workspaceListGenerators
   }
