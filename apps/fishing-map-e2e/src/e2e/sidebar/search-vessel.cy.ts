@@ -1,4 +1,4 @@
-import { API_URL_SEARCH_VESSELS, URL_JANUARY_2022 } from '../../constants/urls'
+import { API_URL_SEARCH_VESSELS, URL_YEAR_2018 } from '../../constants/urls'
 import { SEARCH_VESSEL_MMSI, SEARCH_VESSEL_NAME } from '../../constants/vessels'
 import { disablePopups, getTimeline, waitForSidebarLoaded } from '../../support/app.po'
 
@@ -7,7 +7,7 @@ describe('Basic search for a vessel and see it on the map', () => {
     // I need to search as a anonymous user
     cy.clearAllLocalStorage().then(() => {
       disablePopups()
-      cy.visit(URL_JANUARY_2022)
+      cy.visit(URL_YEAR_2018)
     })
   })
 
@@ -40,9 +40,8 @@ describe('Basic search for a vessel and see it on the map', () => {
         .eq(0)
         .findBySelLike('vessel-name')
         .then((vessel) => {
-          const vesselName = vessel.text()
           // Click on the first result
-          cy.getBySel('search-vessels-list').findBySelLike('search-vessels-option-').eq(0).click()
+          cy.getBySel('search-vessels-list').findBySelLike('search-vessels-option').eq(0).click()
           cy.getBySel('search-vessels-add-vessel').click()
           cy.getBySel('sidebar-container').scrollTo('center', { easing: 'linear', duration: 2000 })
           cy.getByClass('LayerPanel_name').contains(vessel.text()).should('exist')
