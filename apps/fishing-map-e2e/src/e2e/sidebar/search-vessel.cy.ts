@@ -2,18 +2,18 @@ import { API_URL_SEARCH_VESSELS, URL_YEAR_2018 } from '../../constants/urls'
 import { SEARCH_VESSEL_MMSI, SEARCH_VESSEL_NAME } from '../../constants/vessels'
 import { disablePopups, getTimeline, waitForSidebarLoaded } from '../../support/app.po'
 
-describe('Basic search for a vessel and see it on the map', () => {
-  before(() => {
+describe('Basic search for a vessel', () => {
+  beforeEach(() => {
     // I need to search as a anonymous user
     cy.clearAllLocalStorage().then(() => {
       disablePopups()
       cy.visit(URL_YEAR_2018)
+      waitForSidebarLoaded()
+      cy.getBySel('search-vessels-open').click()
     })
   })
 
   it('should search for a vessel by name "' + SEARCH_VESSEL_NAME + '" in the sidebar', () => {
-    waitForSidebarLoaded()
-    cy.getBySel('search-vessels-open').click()
     cy.intercept(API_URL_SEARCH_VESSELS).as('searchForVessels')
     cy.getBySel('seach-vessels-basic-input').type(SEARCH_VESSEL_NAME)
 
@@ -46,13 +46,10 @@ describe('Basic search for a vessel and see it on the map', () => {
           cy.getBySel('sidebar-container').scrollTo('center', { easing: 'linear', duration: 2000 })
           cy.getByClass('LayerPanel_name').contains(vessel.text()).should('exist')
         })
+      getTimeline()
+        // The tracks request can be heavy
+        .findByClass('tracks_segment', { timeout: 20000 })
+        .should('have.length.greaterThan', 4)
     }
   )
-
-  it('should see the vessel track in the timebar', () => {
-    getTimeline()
-      // The tracks request can be heavy
-      .findByClass('tracks_segment', { timeout: 20000 })
-      .should('have.length.greaterThan', 4)
-  })
 })
