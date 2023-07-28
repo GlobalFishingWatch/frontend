@@ -25,6 +25,10 @@
   flex: 1;
 }
 
+.description a {
+  text-decoration: underline;
+}
+
 .actions {
   margin-left: auto;
   display: flex;

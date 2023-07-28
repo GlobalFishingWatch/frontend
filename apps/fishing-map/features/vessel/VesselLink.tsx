@@ -8,13 +8,18 @@ import {
 import { resetVesselState, selectVesselInfoDataId } from 'features/vessel/vessel.slice'
 import { VESSEL, WORKSPACE_VESSEL } from 'routes/routes'
 import { selectLocationQuery } from 'routes/routes.selectors'
+import { IDENTITY_VESSEL_DATASET_ID } from 'features/datasets/datasets.mock'
 
 type VesselLinkProps = {
   vesselId: string
-  datasetId: string
+  datasetId?: string
   children: any
 }
-const VesselLink = ({ vesselId, datasetId, children }: VesselLinkProps) => {
+const VesselLink = ({
+  vesselId,
+  datasetId = IDENTITY_VESSEL_DATASET_ID,
+  children,
+}: VesselLinkProps) => {
   const workspace = useSelector(selectWorkspace)
   const query = useSelector(selectLocationQuery)
   const vesselInfoDataId = useSelector(selectVesselInfoDataId)

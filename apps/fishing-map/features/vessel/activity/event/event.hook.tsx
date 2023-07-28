@@ -3,11 +3,12 @@ import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { EventTypes, GapPosition, Regions } from '@globalfishingwatch/api-types'
-import { EMPTY_API_VALUES } from 'features/reports/reports.selectors'
 import { selectEEZs, selectFAOs, selectMPAs, selectRFMOs } from 'features/regions/regions.slice'
 import { getUTCDateTime } from 'utils/dates'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
+import VesselLink from 'features/vessel/VesselLink'
+import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 
 function useActivityEventConnect() {
   const { t } = useTranslation()
@@ -55,60 +56,52 @@ function useActivityEventConnect() {
 
   const getEventDescription = useCallback(
     (event?: ActivityEvent) => {
-      if (!event) return EMPTY_API_VALUES
-      let description = ''
+      if (!event) return EMPTY_FIELD_PLACEHOLDER
       const regionDescription = getEventRegionDescription(event)
       switch (event.type) {
         case EventTypes.Encounter:
-          if (event.encounter) {
-            description = regionDescription
-              ? t('event.encounterActionIn', 'had an encounter with {{vessel}} in {{regionName}}', {
-                  vessel:
-                    event.encounter.vessel.name ??
-                    t('event.encounterAnotherVessel', 'another vessel'),
-                  regionName: regionDescription,
-                })
-              : t('event.encounterActionWithNoRegion', 'Encounter with {{vessel}}', {
-                  vessel:
-                    event.encounter.vessel.name ??
-                    t('event.encounterAnotherVessel', 'another vessel'),
-                })
-          }
-          break
+          if (event.encounter?.vessel) {
+            const { flag, id, name } = event.encounter.vessel
+            console.log('event.encounter.vessel:', event.encounter.vessel)
+            return (
+              // TODO check if we can get the dataset of the vessel encountered, using Identity for now
+              <span>
+                {t('event.encounterAction', 'had an encounter with')}
+                <VesselLink vesselId={id}>
+                  {name} ({formatInfoField(flag, 'flag')})
+                </VesselLink>{' '}
+                {regionDescription && (
+                  <span>
+                    {t('common.in', 'in')} {regionDescription}
+                  </span>
+                )}
+              </span>
+            )
+          } else return ''
         case EventTypes.Port:
           const { name, flag } = event.port_visit?.intermediateAnchorage ?? {}
           const portType = event.subType || event.type
           const portLabel = name
             ? [name, ...(flag ? [t(`flags:${flag}`, flag.toLocaleUpperCase())] : [])].join(', ')
             : ''
-          description = t(
-            `event.port_${portType}ActionIn`,
-            `${upperFirst(portType)} Port {{port}}`,
-            {
-              port: portLabel,
-            }
-          )
-          break
+          return t(`event.port_${portType}ActionIn`, `${upperFirst(portType)} Port {{port}}`, {
+            port: portLabel,
+          })
         case EventTypes.Loitering:
-          description = t('event.loiteringActionIn', 'Loitering in {{regionName}}', {
+          return t('event.loiteringActionIn', 'Loitering in {{regionName}}', {
             regionName: regionDescription,
           })
-          break
         case EventTypes.Fishing:
-          description = t('event.fishingActionIn', 'Fished in {{regionName}}', {
+          return t('event.fishingActionIn', 'Fished in {{regionName}}', {
             regionName: regionDescription,
           })
-          break
         case EventTypes.Gap:
-          description = t('event.gapActionIn', 'Likely Disabling in {{regionName}}', {
+          return t('event.gapActionIn', 'Likely Disabling in {{regionName}}', {
             regionName: regionDescription,
           })
-          break
         default:
-          description = t('event.unknown', 'Unknown event')
+          return t('event.unknown', 'Unknown event')
       }
-
-      return description
     },
     [getEventRegionDescription, t]
   )

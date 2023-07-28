@@ -235,7 +235,7 @@ function VesselsTable({
                 : `${t(
                     `vessel.gearTypes.${getVesselProperty(vessel, {
                       property: 'geartype',
-                    }).toLowerCase()}` as any,
+                    })?.toLowerCase()}` as any,
                     vessel.geartype ?? EMPTY_FIELD_PLACEHOLDER
                   )}`
 
