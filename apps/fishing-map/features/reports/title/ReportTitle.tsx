@@ -58,8 +58,6 @@ const BufferTooltip = ({
         onFinalChange={handleBufferValueChange}
         renderTrack={({ props, children }) => (
           <div
-            onMouseDown={props.onMouseDown}
-            onTouchStart={props.onTouchStart}
             style={{
               ...props.style,
               height: '36px',
@@ -100,6 +98,7 @@ const BufferTooltip = ({
               alignItems: 'center',
               fontSize: '14px',
               boxShadow: index === 1 ? '0px 2px 6px #AAA' : 'none',
+              pointerEvents: index === 1 ? 'auto' : 'none',
             }}
           >
             {index === 1 ? Math.round(values[index]) : null}
