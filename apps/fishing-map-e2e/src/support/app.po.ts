@@ -9,12 +9,27 @@ export const getTimebar = () => cy.getByClass('Timebar_timebarWrapper', { timeou
 
 export const getTimeline = () => cy.getBySel('timeline-graph')
 
+export const getMapCanvas = () => cy.get('#map canvas')
+
+export const waitForSidebarLoaded = () =>
+  cy
+    .getBySel('sidebar-container', { timeout: 10000 })
+    .findByClass('Sections_container', { timeout: 10000 })
+    .should('exist')
+
 export const waitForMapLoadTiles = (extraDelay?: number) => {
   cy.intercept(API_URL_4WINGS_TILES).as('loadTiles')
   cy.wait('@loadTiles', { requestTimeout: 10000 })
   if (extraDelay) {
     cy.wait(extraDelay)
   }
+}
+
+export const verifyTracksInTimebar = (segments?: number) => {
+  getTimeline()
+    // The tracks request can be heavy
+    .findByClass(`tracks_segment`, { timeout: 20000 })
+    .should('have.length.greaterThan', segments ?? 1)
 }
 
 // Remove the popups that blocks the normal use of the map
@@ -33,25 +48,5 @@ export const switchLanguage = (language: string) => {
   if (currentLanguage !== language) {
     localStorage.setItem('i18nextLng', language)
     cy.reload()
-  }
-}
-
-export const beforeTestSkip = () => {
-  if (Cypress.browser.isHeaded) {
-    cy.clearCookie('shouldSkip')
-  } else {
-    cy.getCookie('shouldSkip').then((cookie) => {
-      if (cookie && typeof cookie === 'object' && cookie.value === 'true') {
-        Cypress.runner.stop()
-      }
-    })
-  }
-}
-export const afterTestSkip = function onAfterEach() {
-  if (this.currentTest.state === 'failed') {
-    cy.setCookie('shouldSkip', 'true')
-    //set cookie to skip tests for further specs
-    Cypress.runner.stop()
-    //this will skip tests only for current spec
   }
 }
