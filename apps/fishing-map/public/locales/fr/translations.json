@@ -352,6 +352,8 @@
     "insuficientData": "Veuillez remplir tous les champs obligatoires",
     "intro": "Global Fishing Watch s’efforce constamment d’améliorer ses données. Avec des milliards de positions et des centaines de milliers de navires à réviser, et tout un océan d'activité, nous aurons inévitablement des navires et des activités mal classées. Vos commentaires peuvent nous aider à identifier où nous avons le plus besoin d'améliorer nos données. Nous nous efforcerons de répondre à vos commentaires.",
     "issues": "Problèmes de la plateforme",
+    "marineManagerDatasetsSurvey": "What other datasets would you like to see?",
+    "marineManagerDatasetsSurveyLink": "https://www.surveymonkey.com/r/marinemanagerdata",
     "role": "Rôle",
     "roles": {
       "analyst": "Analyste",
