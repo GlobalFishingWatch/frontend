@@ -24,10 +24,11 @@ export const selectActivitySummary = createSelector(
             acc.activityRegions[regionType] = []
           }
           ids.forEach((id) => {
-            const regionId = regionType === RegionType.fao ? id.split('.')[0] : id
-            const index = acc.activityRegions[regionType].findIndex((r) => r.id === regionId)
+            // Discard FAO areas other than major
+            if (RegionType.fao && id.split('.').length > 1) return
+            const index = acc.activityRegions[regionType].findIndex((r) => r.id === id)
             if (index === -1) {
-              acc.activityRegions[regionType].push({ id: regionId, count: 1 })
+              acc.activityRegions[regionType].push({ id, count: 1 })
             } else {
               acc.activityRegions[regionType][index].count++
             }
