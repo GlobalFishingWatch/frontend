@@ -30,6 +30,7 @@ export const selectVesselActivityMode = createSelector(
     return vesselActivityMode
   }
 )
+
 export const selectVesselRegistryIndex = createSelector(
   [selectVesselProfileStateProperty('vesselRegistryIndex')],
   (vesselRegistryIndex): number => {

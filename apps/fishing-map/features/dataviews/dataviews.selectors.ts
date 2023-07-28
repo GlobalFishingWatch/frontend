@@ -25,7 +25,12 @@ import {
 import { TimebarVisualisations } from 'types'
 import { selectReportCategory, selectTimebarSelectedEnvId } from 'features/app/app.selectors'
 import { createDeepEqualSelector } from 'utils/selectors'
-import { selectIsReportLocation } from 'routes/routes.selectors'
+import {
+  selectIsReportLocation,
+  selectIsWorkspaceVesselLocation,
+  selectVesselId,
+  selectViewOnlyVessel,
+} from 'routes/routes.selectors'
 import { getReportCategoryFromDataview } from 'features/reports/reports.utils'
 
 const defaultBasemapDataview = {
@@ -35,6 +40,13 @@ const defaultBasemapDataview = {
     basemap: BasemapType.Default,
   },
 }
+
+const VESSEL_ONLY_VISIBLE_LAYERS = [
+  GeneratorType.Basemap,
+  GeneratorType.Context,
+  GeneratorType.UserContext,
+  GeneratorType.UserPoints,
+]
 
 export const selectBasemapDataview = createSelector(
   [(state: RootState) => selectAllDataviews(state)],
@@ -59,8 +71,18 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     (state) => selectDataviewInstancesResolved(state),
     (state) => selectIsReportLocation(state),
     (state) => selectReportCategory(state),
+    selectIsWorkspaceVesselLocation,
+    selectViewOnlyVessel,
+    selectVesselId,
   ],
-  (dataviews = [], isReportLocation, reportCategory) => {
+  (
+    dataviews = [],
+    isReportLocation,
+    reportCategory,
+    isWorkspaceVesselLocation,
+    viewOnlyVessel,
+    vesselId
+  ) => {
     if (isReportLocation) {
       return dataviews.filter((dataview) => {
         if (
@@ -72,6 +94,12 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
           )
         }
         return dataview.config?.visible
+      })
+    }
+    if (isWorkspaceVesselLocation && viewOnlyVessel && vesselId !== undefined) {
+      return dataviews.filter(({ id, config }) => {
+        if (VESSEL_ONLY_VISIBLE_LAYERS.includes(config?.type as GeneratorType)) return true
+        return config?.type === GeneratorType.Track && id.includes(vesselId)
       })
     }
     return dataviews.filter((dataview) => dataview.config?.visible)

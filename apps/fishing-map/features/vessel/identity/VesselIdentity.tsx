@@ -125,7 +125,7 @@ const VesselIdentity = () => {
                   <label>{t(`vessel.${label}` as any, label)}</label>
                   {filteredRegistryInfo?.length > 0 ? (
                     <ul>
-                      {filteredRegistryInfo.map((registry) => {
+                      {filteredRegistryInfo.map((registry, index) => {
                         const value =
                           key === 'registryOwners'
                             ? `${(registry as VesselRegistryOwner).name} (${formatInfoField(
@@ -134,7 +134,7 @@ const VesselIdentity = () => {
                               )})`
                             : registry.sourceCode.join(',')
                         return (
-                          <li key={key}>
+                          <li key={`${key}-${index}`}>
                             <VesselIdentityField value={value} /> {'  '}
                             <span className={styles.secondary}>
                               <I18nDate date={registry.dateFrom} /> -{' '}

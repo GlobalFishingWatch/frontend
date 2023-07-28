@@ -53,6 +53,8 @@ import { ReactComponent as Home } from '../assets/icons/home.svg'
 import { ReactComponent as Info } from '../assets/icons/info.svg'
 import { ReactComponent as Language } from '../assets/icons/language.svg'
 import { ReactComponent as Layers } from '../assets/icons/layers.svg'
+import { ReactComponent as LayersOn } from '../assets/icons/layers-on.svg'
+import { ReactComponent as LayersOff } from '../assets/icons/layers-off.svg'
 import { ReactComponent as Logout } from '../assets/icons/logout.svg'
 import { ReactComponent as Magic } from '../assets/icons/magic.svg'
 import { ReactComponent as Menu } from '../assets/icons/menu.svg'
@@ -118,6 +120,8 @@ export const IconComponents = {
   'filter-off': FilterOff,
   'filter-on': FilterOn,
   'gfw-logo': GFWLogo,
+  'layers-on': LayersOn,
+  'layers-off': LayersOff,
   'pin-filled': PinFilled,
   'remove-from-map': RemoveFromMap,
   'view-on-map': ViewOnMap,

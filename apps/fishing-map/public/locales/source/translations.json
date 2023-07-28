@@ -575,6 +575,8 @@
     "geartype": "Gear type",
     "geartype_other": "Gear types",
     "gearType_short": "gear",
+    "showOtherLayers": "Show other layers",
+    "hideOtherLayers": "Hide other layers",
     "gearTypes": {
       "dredge_fishing": "Dredge Fishing",
       "drifting_longlines": "Drifting Longline",

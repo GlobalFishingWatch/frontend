@@ -108,6 +108,7 @@ export type VesselProfileState = {
   vesselDatasetId: string
   vesselRegistryIndex: number
   vesselActivityMode: VesselProfileActivityMode
+  viewOnlyVessel: boolean
 }
 
 export type VesselProfileStateProperty = keyof VesselProfileState
