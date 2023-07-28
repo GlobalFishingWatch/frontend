@@ -34,12 +34,20 @@ const segmentsToGeoJSON = (segments: Segment[]) => {
 
 export default segmentsToGeoJSON
 
-export const geoJSONToSegments = (geoJSON: FeatureCollection): Segment[] => {
+export const geoJSONToSegments = (
+  geoJSON: FeatureCollection,
+  { onlyExtents }: { onlyExtents?: boolean } = {}
+): Segment[] => {
+  console.log('onlyExtents:', onlyExtents)
   return geoJSON.features.map((feature) => {
     const timestamps = feature.properties?.coordinateProperties.times
     const id = feature.properties?.id
     const color = feature.properties?.color
-    const segment = (feature.geometry as LineString).coordinates.map((coordinate, i) => {
+    const coordinates = (feature.geometry as LineString).coordinates
+    const segmentCoordinates = onlyExtents
+      ? [coordinates[0], coordinates[coordinates.length - 1]]
+      : coordinates
+    const segment = segmentCoordinates.map((coordinate, i) => {
       const point: Point = {
         longitude: coordinate[0],
         latitude: coordinate[1],
@@ -51,4 +59,8 @@ export const geoJSONToSegments = (geoJSON: FeatureCollection): Segment[] => {
     segment[0].color = color
     return segment
   })
+}
+
+export const getSegmentExtents = (segments: Segment[]) => {
+  return segments.map((segment) => [segment[0], segment[segment.length - 1]])
 }
