@@ -70,9 +70,9 @@ export const getVesselLabel = (
     )})`
   }
   if (vesselInfo.shipname) return formatInfoField(vesselInfo.shipname, 'name')
-  if (vesselInfo.registeredGearType) {
+  if (vesselInfo.geartype) {
     return `${t('vessel.unkwownVesselByGeartype', {
-      gearType: vesselInfo.registeredGearType,
+      gearType: vesselInfo.geartype,
     })}`
   }
   return t('common.unknownVessel', 'Unknown vessel')
