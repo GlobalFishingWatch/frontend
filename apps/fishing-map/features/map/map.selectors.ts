@@ -329,7 +329,7 @@ export const selectMapReportGenerators = createSelector(
         type: GeneratorType.Polygons,
         id: 'report-area-buffer',
         data: { type: 'FeatureCollection', features: [reportAreaBuffer.geometry] },
-        color: '#f00',
+        color: '#F95E5E',
         visible: true,
         group: Group.OutlinePolygonsHighlighted,
       },
