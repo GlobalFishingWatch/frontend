@@ -552,6 +552,7 @@
     "carrier": "Carrier",
     "casco": "Casco",
     "codMarinha": "Cod Marinha",
+    "close": "Close vessel profile and go back to workspace",
     "dataset": "Source",
     "donor": "Donor vessel",
     "firstTransmissionDate": "First transmission date",

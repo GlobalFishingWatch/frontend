@@ -66,7 +66,7 @@ function useActivityEventConnect() {
             return (
               // TODO check if we can get the dataset of the vessel encountered, using Identity for now
               <span>
-                {t('event.encounterAction', 'had an encounter with')}
+                {t('event.encounterAction', 'had an encounter with')}{' '}
                 <VesselLink vesselId={id}>
                   {name} ({formatInfoField(flag, 'flag')})
                 </VesselLink>{' '}

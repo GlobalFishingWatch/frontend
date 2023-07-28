@@ -28,6 +28,7 @@ import {
   selectLocationPayload,
   selectLocationQuery,
   selectLocationType,
+  selectIsWorkspaceVesselLocation,
 } from 'routes/routes.selectors'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import {
@@ -51,6 +52,7 @@ import { resetAreaDetail } from 'features/areas/areas.slice'
 import { selectReportAreaIds } from 'features/reports/reports.selectors'
 import { QueryParams } from 'types'
 import { useSearchFiltersConnect } from 'features/search/search.hook'
+import { resetVesselState } from 'features/vessel/vessel.slice'
 import styles from './SidebarHeader.module.css'
 import { useClipboardNotification } from './sidebar.hooks'
 
@@ -282,6 +284,36 @@ function CloseReportButton() {
   )
 }
 
+function CloseVesselButton() {
+  const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+  const locationQuery = useSelector(selectLocationQuery)
+  const locationPayload = useSelector(selectLocationPayload)
+
+  const onCloseClick = () => {
+    resetSidebarScroll()
+    dispatch(resetVesselState())
+  }
+
+  const linkTo = {
+    type: WORKSPACE,
+    payload: locationPayload,
+    query: locationQuery,
+  }
+
+  return (
+    <Link className={styles.workspaceLink} to={linkTo}>
+      <IconButton
+        icon="close"
+        type="border"
+        className="print-hidden"
+        onClick={onCloseClick}
+        tooltip={t('vessel.close', 'Close vessel and go back to workspace')}
+      />
+    </Link>
+  )
+}
+
 function CloseSectionButton() {
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
 
@@ -303,6 +335,7 @@ function SidebarHeader() {
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isSearchLocation = useSelector(selectIsAnySearchLocation)
   const isReportLocation = useSelector(selectIsReportLocation)
+  const isVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const isSmallScreen = useSmallScreen()
   const activeSearchOption = useSelector(selectSearchOption)
   const { dispatchQueryParams } = useLocationConnect()
@@ -368,6 +401,7 @@ function SidebarHeader() {
             {isWorkspaceLocation && <SaveWorkspaceButton />}
             {(isWorkspaceLocation || isReportLocation) && <ShareWorkspaceButton />}
             {isReportLocation && <CloseReportButton />}
+            {isVesselLocation && <CloseVesselButton />}
             {isSearchLocation && !readOnly && !isSmallScreen && (
               <Choice
                 options={searchOptions}
@@ -377,7 +411,9 @@ function SidebarHeader() {
                 className={styles.searchOption}
               />
             )}
-            {!isReportLocation && showBackToWorkspaceButton && <CloseSectionButton />}
+            {!isReportLocation && !isVesselLocation && showBackToWorkspaceButton && (
+              <CloseSectionButton />
+            )}
           </Fragment>
         )}
       </div>
