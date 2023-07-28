@@ -4,6 +4,7 @@ import {
   AnyGeneratorConfig,
   GeneratorType,
   GlGeneratorConfig,
+  Group,
   HeatmapAnimatedMode,
   Ruler,
 } from '@globalfishingwatch/layer-composer'
@@ -330,6 +331,7 @@ export const selectMapReportGenerators = createSelector(
         data: { type: 'FeatureCollection', features: [reportAreaBuffer.geometry] },
         color: '#f00',
         visible: true,
+        group: Group.OutlinePolygonsHighlighted,
       },
     ]
   }

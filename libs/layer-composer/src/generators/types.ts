@@ -341,6 +341,10 @@ export interface PolygonsGeneratorConfig extends GeneratorConfig {
    * Sets the opacity for the track line
    */
   opacity?: number
+  /**
+   * Sets the ordering group the polygons belong to
+   */
+  group: Group
 }
 
 export interface VesselEventsGeneratorConfig extends GeneratorConfig {

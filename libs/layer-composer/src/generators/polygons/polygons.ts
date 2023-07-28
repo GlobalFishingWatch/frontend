@@ -59,7 +59,7 @@ class PolygonsGenerator {
       layout: { visibility },
       paint,
       metadata: {
-        group: Group.OutlinePolygons,
+        group: config.group || Group.OutlinePolygons,
         ...(config.metadata || {}),
       },
     }
@@ -78,7 +78,7 @@ class PolygonsGenerator {
       metadata: {
         interactive,
         generatorId: generatorId,
-        group: Group.CustomLayer,
+        group: config.group || Group.CustomLayer,
       },
     }
     return [lineLayer, interactionLayer]
