@@ -6,7 +6,6 @@ import { resolveEndpoint, UrlDataviewInstance } from '@globalfishingwatch/datavi
 import {
   DataviewDatasetConfig,
   Dataset,
-  Vessel,
   IdentityVessel,
   DatasetTypes,
   ApiEvent,
@@ -32,9 +31,8 @@ import { getUTCDateTime } from 'utils/dates'
 
 export const MAX_TOOLTIP_LIST = 5
 
-export type ExtendedFeatureVesselDatasets = Vessel & {
+export type ExtendedFeatureVesselDatasets = IdentityVessel & {
   id: string
-  vessel_id?: string // TODO define how vessel is returned in API
   dataset: Dataset
   infoDataset?: Dataset
   trackDataset?: Dataset
@@ -220,11 +218,10 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
         interactionUrl,
         { signal }
       )
-      // TODO remove once normalized in api between id and vessel_id
       const sublayersVesselsIds = sublayersVesselsIdsResponse.entries.map((sublayer) =>
         sublayer.map((vessel) => {
-          const { id, vessel_id, ...rest } = vessel
-          return { ...rest, id: id || vessel_id }
+          const { id, ...rest } = vessel
+          return { ...rest, id: id }
         })
       )
 
@@ -282,7 +279,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
       )
 
       const infoDatasets = allInfoDatasets.flatMap((datasets) => datasets.flatMap((d) => d || []))
-      const topActivityVesselIds = topActivityVessels.map(({ id, vessel_id }) => id)
+      const topActivityVesselIds = topActivityVessels.map(({ id }) => id)
 
       const vesselsInfo = await fetchVesselInfo(infoDatasets, topActivityVesselIds, signal)
 
@@ -328,15 +325,13 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
                 //   console.warn('and vessel:', vessel)
                 // }
                 const trackDataset = selectDatasetById(trackDatasetId as string)(state)
-                const vesselInfoData = vesselInfo?.selfReportedInfo
-                  ? vesselInfo.selfReportedInfo
-                  : vesselInfo || {}
                 return {
-                  ...vesselInfoData,
                   ...vessel,
+                  ...(vesselInfo || {}),
+                  id: vesselInfo?.selfReportedInfo?.[0]?.id || vessel.id,
                   infoDataset,
                   trackDataset,
-                }
+                } as ExtendedFeatureVessel
               })
             })
             .sort((a, b) => b[activityProperty] - a[activityProperty]),

@@ -36,6 +36,7 @@ import { getUTCDateTime } from 'utils/dates'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { getVesselProperty } from 'features/vessel/vessel.utils'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
   TooltipEventFeature,
@@ -219,15 +220,23 @@ function VesselsTable({
           </thead>
           <tbody>
             {vessels?.map((vessel, i) => {
-              const vesselName = formatInfoField(vessel.shipname, 'name')
+              const vesselName = formatInfoField(
+                getVesselProperty(vessel, { property: 'shipname' }),
+                'name'
+              )
+              const vesselFlag = getVesselProperty(vessel, { property: 'flag' })
 
               const vesselType = isPresenceActivity
                 ? `${t(
-                    `vessel.vesselTypes.${vessel.shiptype?.toLowerCase()}` as any,
+                    `vessel.vesselTypes.${getVesselProperty(vessel, {
+                      property: 'shiptype',
+                    })?.toLowerCase()}` as any,
                     vessel.shiptype ?? EMPTY_FIELD_PLACEHOLDER
                   )}`
                 : `${t(
-                    `vessel.gearTypes.${vessel.geartype?.toLowerCase()}` as any,
+                    `vessel.gearTypes.${getVesselProperty(vessel, {
+                      property: 'geartype',
+                    }).toLowerCase()}` as any,
                     vessel.geartype ?? EMPTY_FIELD_PLACEHOLDER
                   )}`
 
@@ -265,8 +274,8 @@ function VesselsTable({
                   )}
                   <td colSpan={hasPinColumn && pinTrackDisabled ? 2 : 1}>{vesselName}</td>
                   <td className={styles.columnSpace}>
-                    <Tooltip content={t(`flags:${vessel.flag as string}` as any)}>
-                      <span>{vessel.flag || EMPTY_FIELD_PLACEHOLDER}</span>
+                    <Tooltip content={t(`flags:${vesselFlag}` as any)}>
+                      <span>{vesselFlag || EMPTY_FIELD_PLACEHOLDER}</span>
                     </Tooltip>
                   </td>
 
