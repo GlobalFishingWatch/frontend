@@ -22,7 +22,7 @@ export function getVesselProperty<P = string>(
 }
 
 export const getVoyageTimeRange = (events: ActivityEvent[]) => {
-  return { start: events?.[0]?.end, end: events?.[events.length - 1]?.start }
+  return { start: events?.[events.length - 1]?.start, end: events?.[0]?.end }
 }
 
 export function filterRegistryInfoByDates<I = VesselRegistryAuthorization | VesselRegistryOwner>(
