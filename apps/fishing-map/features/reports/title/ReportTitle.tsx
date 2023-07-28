@@ -5,12 +5,14 @@ import { Fragment } from 'react'
 import { Range, getTrackBackground } from 'react-range'
 import { Button, Icon, Choice } from '@globalfishingwatch/ui-components'
 import { ContextLayerType, GeneratorType } from '@globalfishingwatch/layer-composer'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { Area } from 'features/areas/areas.slice'
 import {
   BUFFER_UNIT_OPTIONS,
   DEFAULT_BUFFER_VALUE,
   NAUTICAL_MILES,
 } from 'features/reports/reports.constants'
+import { resetReportData } from 'features/reports/report.slice'
 import { selectReportAreaDataview } from 'features/reports/reports.selectors'
 import { getContextAreaLink } from 'features/dataviews/dataviews.utils'
 import ReportTitlePlaceholder from 'features/reports/placeholders/ReportTitlePlaceholder'
@@ -114,6 +116,7 @@ const BufferTooltip = ({
 export default function ReportTitle({ area }: ReportTitleProps) {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
+  const dispatch = useAppDispatch()
   const areaDataview = useSelector(selectReportAreaDataview)
   const report = useSelector(selectCurrentReport)
   const urlBufferValue = useSelector(selectUrlBufferValueQuery)
@@ -156,13 +159,14 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   }
 
   const handleConfirmBuffer = useCallback(() => {
-    dispatchQueryParams({ reportBufferValue: bufferValue, reportBufferUnit: bufferUnit })
+    // dispatchQueryParams({ reportBufferValue: bufferValue, reportBufferUnit: bufferUnit })
     trackEvent({
       category: TrackCategory.Analysis,
       action: `Confirm area buffer`,
       label: `${bufferValue} ${bufferUnit}`,
     })
-  }, [bufferValue, bufferUnit, dispatchQueryParams])
+    dispatch(resetReportData())
+  }, [bufferValue, bufferUnit, dispatch])
 
   return (
     <div className={styles.container}>

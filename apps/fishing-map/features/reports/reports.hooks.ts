@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataview } from '@globalfishingwatch/api-types'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectTimeRange } from 'features/app/app.selectors'
+import {
+  selectReportBufferUnit,
+  selectReportBufferValue,
+  selectTimeRange,
+} from 'features/app/app.selectors'
 import {
   fetchAreaDetailThunk,
   selectDatasetAreaDetail,
@@ -124,7 +128,8 @@ export function useFetchReportVessel() {
   const error = useSelector(selectReportVesselsError)
   const data = useSelector(selectReportVesselsData)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
-
+  const reportBufferUnit = useSelector(selectReportBufferUnit)
+  const reportBufferValue = useSelector(selectReportBufferValue)
   useEffect(() => {
     const isDifferentDateRange = reportDateRangeHash !== getDateRangeHash(timerange)
     if (
@@ -145,6 +150,8 @@ export function useFetchReportVessel() {
           },
           dateRange: timerange,
           spatialAggregation: true,
+          reportBufferUnit,
+          reportBufferValue,
         })
       )
     }

@@ -10,6 +10,7 @@ import {
   SpatialResolution,
   TemporalResolution,
 } from 'features/download/downloadActivity.config'
+import { BufferUnit } from 'types'
 import { DateRange } from '../download/downloadActivity.slice'
 
 interface ReportState {
@@ -42,6 +43,8 @@ type FetchReportVesselsThunkParams = {
   spatialResolution?: SpatialResolution
   format?: Format.Csv | Format.Json
   spatialAggregation?: boolean
+  reportBufferUnit?: BufferUnit
+  reportBufferValue?: number
 }
 export const fetchReportVesselsThunk = createAsyncThunk(
   'report/vessels',
@@ -58,6 +61,8 @@ export const fetchReportVesselsThunk = createAsyncThunk(
         spatialResolution = SpatialResolution.Low,
         spatialAggregation = true,
         format = Format.Json,
+        reportBufferUnit,
+        reportBufferValue,
       } = params
       const query = stringify(
         {
@@ -75,6 +80,8 @@ export const fetchReportVesselsThunk = createAsyncThunk(
           format: format,
           'region-id': region.id,
           'region-dataset': region.dataset,
+          'buffer-unit': reportBufferUnit,
+          'buffer-value': reportBufferValue,
         },
         { arrayFormat: 'indices' }
       )
