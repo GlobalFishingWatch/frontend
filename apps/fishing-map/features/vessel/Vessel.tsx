@@ -17,7 +17,7 @@ import { selectRegionsDatasets } from 'features/regions/regions.selectors'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import { ErrorPlaceHolder, WorkspaceLoginError } from 'features/workspace/WorkspaceError'
 import { isGuestUser } from 'features/user/user.slice'
-import { selectVesselDatasetId } from 'features/vessel/vessel.selectors'
+import { selectVesselDatasetId } from 'features/vessel/vessel.config.selectors'
 import VesselIdentity from './identity/VesselIdentity'
 import VesselActivity from './activity/VesselActivity'
 

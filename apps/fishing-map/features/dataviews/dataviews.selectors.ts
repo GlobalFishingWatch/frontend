@@ -29,9 +29,9 @@ import {
   selectIsReportLocation,
   selectIsWorkspaceVesselLocation,
   selectVesselId,
-  selectViewOnlyVessel,
 } from 'routes/routes.selectors'
 import { getReportCategoryFromDataview } from 'features/reports/reports.utils'
+import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
 
 const defaultBasemapDataview = {
   id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,

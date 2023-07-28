@@ -7,7 +7,7 @@ import ActivityByVoyage from 'features/vessel/activity/activity-by-voyage/Activi
 import { selectVesselEventsLoading } from 'features/vessel/activity/vessels-activity.selectors'
 import VesselActivityDownload from 'features/vessel/activity/VesselActivityDownload'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectVesselActivityMode } from 'features/vessel/vessel.selectors'
+import { selectVesselActivityMode } from 'features/vessel/vessel.config.selectors'
 import { VesselProfileActivityMode } from 'types'
 import styles from './VesselActivity.module.css'
 import { VesselActivitySummary } from './VesselActivitySummary'

@@ -12,7 +12,7 @@ import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectActiveVesselsDataviews } from 'features/dataviews/dataviews.slice'
 import { COLOR_PRIMARY_BLUE } from 'features/app/App'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectViewOnlyVessel } from 'routes/routes.selectors'
+import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
 import styles from './VesselHeader.module.css'
 
 const VesselHeader = () => {

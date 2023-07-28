@@ -13,7 +13,7 @@ import {
   getVesselProperty,
   parseVesselToCSV,
 } from 'features/vessel/vessel.utils'
-import { selectVesselRegistryIndex } from 'features/vessel/vessel.selectors'
+import { selectVesselRegistryIndex } from 'features/vessel/vessel.config.selectors'
 import VesselIdentitySelector from 'features/vessel/identity/VesselIdentitySelector'
 import VesselIdentityField from 'features/vessel/identity/VesselIdentityField'
 import styles from './VesselIdentity.module.css'

@@ -6,44 +6,7 @@ import { selectTimeRange } from 'features/app/app.selectors'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import { selectResources } from 'features/resources/resources.slice'
 import { selectVesselInfoDataId } from 'features/vessel/vessel.slice'
-import { VesselProfileActivityMode, VesselProfileStateProperty } from 'types'
-import { selectQueryParam } from 'routes/routes.selectors'
-import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
-
-export const selectVesselProfileStateProperty = (property: VesselProfileStateProperty) =>
-  createSelector([selectQueryParam(property)], (urlProperty) => {
-    if (urlProperty !== undefined) return urlProperty
-    return DEFAULT_VESSEL_STATE[property]
-  })
-
-export const selectVesselDatasetId = createSelector(
-  [selectVesselProfileStateProperty('vesselDatasetId')],
-  (vesselDatasetId): string => {
-    return vesselDatasetId
-  }
-)
-
-export const selectVesselActivityMode = createSelector(
-  [selectVesselProfileStateProperty('vesselActivityMode')],
-  (vesselActivityMode): VesselProfileActivityMode => {
-    return vesselActivityMode
-  }
-)
-
-export const selectVesselRegistryIndex = createSelector(
-  [selectVesselProfileStateProperty('vesselRegistryIndex')],
-  (vesselRegistryIndex): number => {
-    return vesselRegistryIndex
-  }
-)
-
-export const selectViewOnlyVessel = createSelector(
-  [selectVesselProfileStateProperty('viewOnlyVessel')],
-  (viewOnlyVessel): boolean => {
-    return viewOnlyVessel
-  }
-)
 
 export const selectEventsResources = createSelector(
   [selectActiveTrackDataviews, selectResources],
