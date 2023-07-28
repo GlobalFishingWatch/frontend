@@ -27,6 +27,5 @@ export default defineConfig({
   env: {
     apiAuthUser: '',
     apiAuthPass: '',
-    FAIL_FAST_ENABLED: true,
   },
 })

@@ -44,7 +44,9 @@ describe('Basic search for a vessel', () => {
           cy.getBySel('search-vessels-list').findBySelLike('search-vessels-option').eq(0).click()
           cy.getBySel('search-vessels-add-vessel').click()
           cy.getBySel('sidebar-container').scrollTo('center', { easing: 'linear', duration: 2000 })
-          cy.getBySel('vessel-layer-vessel-name').contains(vessel.text()).should('exist')
+          cy.getBySel('vessel-layer-vessel-name', { timeout: 10000 })
+            .contains(vessel.text())
+            .should('exist')
         })
       verifyTracksInTimebar(4)
     }
