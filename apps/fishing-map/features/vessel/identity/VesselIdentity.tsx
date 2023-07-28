@@ -134,7 +134,7 @@ const VesselIdentity = () => {
                               )})`
                             : registry.sourceCode.join(',')
                         return (
-                          <li key={registry.recordId}>
+                          <li key={key}>
                             <VesselIdentityField value={value} /> {'  '}
                             <span className={styles.secondary}>
                               <I18nDate date={registry.dateFrom} /> -{' '}

@@ -21,7 +21,7 @@ export const selectVesselSearchResultsResolved = createSelector(
         : vessel.selfReportedInfo[0]
       return {
         ...vesselData,
-        id: vessel.selfReportedInfo[0].id,
+        id: vessel.selfReportedInfo?.[0]?.id,
         dataset: vessel.dataset,
         trackDatasetId: vessel.trackDatasetId,
       }

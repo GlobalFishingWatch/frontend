@@ -43,7 +43,6 @@ function TrackFootprint({ vesselId, trackDatasetId, highlightedYear }: TrackFoot
         { responseType: 'vessel' }
       )
       if (data.length === 0) {
-        console.log(data)
         setError(true)
         return
       }
@@ -56,7 +55,7 @@ function TrackFootprint({ vesselId, trackDatasetId, highlightedYear }: TrackFoot
   )
 
   useEffect(() => {
-    if (onScreen && !trackData) {
+    if (onScreen && !trackData && vesselId) {
       fetchData(vesselId)
     }
   }, [fetchData, onScreen, trackData, vesselId])
@@ -126,7 +125,7 @@ function TrackFootprint({ vesselId, trackDatasetId, highlightedYear }: TrackFoot
         ref={fullCanvasRef}
       />
       <canvas width={FOOTPRINT_WIDTH} height={FOOTPRINT_HEIGHT} ref={highlightCanvasRef} />
-      {!trackData && !error && <Spinner size="small" className={styles.spinner} />}
+      {!trackData && !error && vesselId && <Spinner size="small" className={styles.spinner} />}
       {error && <Icon icon="warning" type="warning" />}
     </div>
   )

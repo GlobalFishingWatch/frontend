@@ -44,6 +44,11 @@
   width: 100%;
 }
 
+.name a {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 .property {
   margin-right: var(--space-M);
   margin-top: var(--space-S);
@@ -64,9 +69,4 @@
 .searchResult:not(.inWorkspace):hover .properties,
 .searchResult:not(.inWorkspace):hover .properties label {
   opacity: var(--opacity-primary);
-}
-
-.link {
-  cursor: pointer;
-  text-decoration: underline;
 }

@@ -25,6 +25,8 @@ const VesselLink = ({ vesselId, datasetId, children }: VesselLinkProps) => {
     }
   }, [dispatch, vesselId, vesselInfoDataId])
 
+  if (!vesselId) return children
+
   return (
     <Link
       to={{

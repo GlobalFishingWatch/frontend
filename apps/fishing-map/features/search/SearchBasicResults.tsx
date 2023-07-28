@@ -101,9 +101,7 @@ function SearchBasicResults({
               <div className={styles.fullWidth}>
                 <div className={styles.name}>
                   <VesselLink vesselId={id} datasetId={dataset?.id}>
-                    <span className={styles.link}>
-                      {formatInfoField(shipname, 'name') || EMPTY_FIELD_PLACEHOLDER}
-                    </span>
+                    {formatInfoField(shipname, 'name') || EMPTY_FIELD_PLACEHOLDER}
                   </VesselLink>
                 </div>
                 <div className={styles.properties}>
