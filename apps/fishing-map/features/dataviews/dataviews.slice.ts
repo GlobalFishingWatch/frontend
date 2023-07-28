@@ -31,6 +31,7 @@ import {
 import {
   selectIsMarineManagerLocation,
   selectIsVesselLocation,
+  selectIsWorkspaceLocation,
   selectUrlDataviewInstances,
   selectUrlDataviewInstancesOrder,
 } from 'routes/routes.selectors'
@@ -197,13 +198,19 @@ export function selectDataviewBySlug(slug: string) {
 export const selectDataviewsStatus = (state: DataviewsSliceState) => state.dataviews.status
 
 export const selectDataviewInstancesMerged = createSelector(
-  [selectWorkspaceStatus, selectWorkspaceDataviewInstances, selectUrlDataviewInstances],
+  [
+    selectIsWorkspaceLocation,
+    selectWorkspaceStatus,
+    selectWorkspaceDataviewInstances,
+    selectUrlDataviewInstances,
+  ],
   (
+    isWorkspaceLocation,
     workspaceStatus,
     workspaceDataviewInstances,
     urlDataviewInstances = []
   ): UrlDataviewInstance[] | undefined => {
-    if (workspaceStatus !== AsyncReducerStatus.Finished) {
+    if (isWorkspaceLocation && workspaceStatus !== AsyncReducerStatus.Finished) {
       return
     }
     const mergedDataviewInstances = mergeWorkspaceUrlDataviewInstances(

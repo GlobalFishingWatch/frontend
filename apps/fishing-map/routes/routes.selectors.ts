@@ -3,7 +3,7 @@ import { memoize } from 'lodash'
 import { Query, RouteObject } from 'redux-first-router'
 import { RootState } from 'reducers'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { VesselProfileActivityMode, WorkspaceParam } from 'types'
+import { WorkspaceParam } from 'types'
 import { WorkspaceCategory } from 'data/workspaces'
 import {
   REPORT,
