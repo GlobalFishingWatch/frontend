@@ -14,6 +14,8 @@ import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import { getEventLabel } from 'utils/analytics'
 import { selectReadOnly } from 'features/app/app.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectLocationCategory } from 'routes/routes.selectors'
+import { WorkspaceCategory } from 'data/workspaces'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import EnvironmentalLayerPanel from './EnvironmentalLayerPanel'
 import UserTrackLayerPanel from './UserTrackLayerPanel'
@@ -25,6 +27,7 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
   const dataviews = useSelector(selectEnvironmentalDataviews)
   const userDatasets = useSelector(selectUserDatasetsByCategory(DatasetCategory.Environment))
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
+  const locationCategory = useSelector(selectLocationCategory)
 
   const onAddClick = useCallback(() => {
     trackEvent({
@@ -107,6 +110,26 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
           </div>
         )}
       </SortableContext>
+      {locationCategory === WorkspaceCategory.MarineManager && (
+        <div className={styles.surveyLink}>
+          <a
+            href={
+              t(
+                'feedback.marineManagerDatasetsSurveyLink',
+                'https://www.surveymonkey.com/r/marinemanagerdata'
+              ) as string
+            }
+            target="_blank"
+            rel="noreferrer"
+            className={styles.link}
+          >
+            {t(
+              'feedback.marineManagerDatasetsSurvey',
+              'What other datasets would you like to see?'
+            )}
+          </a>
+        </div>
+      )}
     </div>
   )
 }
