@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { groupBy } from 'lodash'
-import { EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
+import { EventTypes, RegionType, ResourceStatus } from '@globalfishingwatch/api-types'
 import { ApiEvent } from '@globalfishingwatch/api-types'
 import { selectEventsResources, selectVesselEventsFilteredByTimerange } from '../vessel.selectors'
 
@@ -24,9 +24,10 @@ export const selectActivitySummary = createSelector(
             acc.activityRegions[regionType] = []
           }
           ids.forEach((id) => {
-            const index = acc.activityRegions[regionType].findIndex((r) => r.id === id)
+            const regionId = regionType === RegionType.fao ? id.split('.')[0] : id
+            const index = acc.activityRegions[regionType].findIndex((r) => r.id === regionId)
             if (index === -1) {
-              acc.activityRegions[regionType].push({ id, count: 1 })
+              acc.activityRegions[regionType].push({ id: regionId, count: 1 })
             } else {
               acc.activityRegions[regionType][index].count++
             }
