@@ -7,6 +7,7 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { resetVesselState, selectVesselInfoDataId } from 'features/vessel/vessel.slice'
 import { VESSEL, WORKSPACE_VESSEL } from 'routes/routes'
+import { selectLocationQuery } from 'routes/routes.selectors'
 
 type VesselLinkProps = {
   vesselId: string
@@ -15,6 +16,7 @@ type VesselLinkProps = {
 }
 const VesselLink = ({ vesselId, datasetId, children }: VesselLinkProps) => {
   const workspace = useSelector(selectWorkspace)
+  const query = useSelector(selectLocationQuery)
   const vesselInfoDataId = useSelector(selectVesselInfoDataId)
   const workspaceCategory = useSelector(selectCurrentWorkspaceCategory)
   const dispatch = useDispatch()
@@ -37,6 +39,7 @@ const VesselLink = ({ vesselId, datasetId, children }: VesselLinkProps) => {
           vesselId,
         },
         query: {
+          ...query,
           vesselDatasetId: datasetId,
         },
       }}
