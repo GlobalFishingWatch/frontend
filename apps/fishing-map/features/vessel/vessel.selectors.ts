@@ -38,6 +38,13 @@ export const selectVesselRegistryIndex = createSelector(
   }
 )
 
+export const selectViewOnlyVessel = createSelector(
+  [selectVesselProfileStateProperty('viewOnlyVessel')],
+  (viewOnlyVessel): boolean => {
+    return viewOnlyVessel
+  }
+)
+
 export const selectEventsResources = createSelector(
   [selectActiveTrackDataviews, selectResources],
   (trackDataviews, resources) => {

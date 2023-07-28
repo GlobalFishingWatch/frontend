@@ -5,7 +5,6 @@ import { RootState } from 'reducers'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { VesselProfileActivityMode, WorkspaceParam } from 'types'
 import { WorkspaceCategory } from 'data/workspaces'
-import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
 import {
   REPORT,
   WORKSPACE_REPORT,
@@ -109,14 +108,6 @@ export const selectReportId = createSelector(
 export const selectVesselId = createSelector(
   [selectLocationPayload],
   (payload) => payload?.vesselId
-)
-
-export const selectViewOnlyVessel = createSelector(
-  [selectQueryParam('viewOnlyVessel')],
-  (viewOnlyVessel): boolean => {
-    if (viewOnlyVessel === undefined) return DEFAULT_VESSEL_STATE.viewOnlyVessel
-    return viewOnlyVessel
-  }
 )
 
 export const selectLocationCategory = createSelector(
