@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="8.995" tests="1" failures="0">
+  <testsuite name="Root Suite" timestamp="2023-07-25T15:27:39" tests="0" file="src/e2e/fishing-activity/vms.cy.ts" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="vms" timestamp="2023-07-25T15:27:39" tests="1" time="8.990" failures="0">
+    <testcase name="vms should include all sources available publicly" time="8.661" classname="should include all sources available publicly">
+    </testcase>
+  </testsuite>
+</testsuites>
