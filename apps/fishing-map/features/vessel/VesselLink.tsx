@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
 import {
   selectCurrentWorkspaceCategory,
-  selectWorkspace,
+  selectCurrentWorkspaceId,
 } from 'features/workspace/workspace.selectors'
 import { resetVesselState, selectVesselInfoDataId } from 'features/vessel/vessel.slice'
 import { VESSEL, WORKSPACE_VESSEL } from 'routes/routes'
@@ -14,13 +14,15 @@ type VesselLinkProps = {
   vesselId: string
   datasetId?: string
   children: any
+  onClick?: () => void
 }
 const VesselLink = ({
   vesselId,
   datasetId = IDENTITY_VESSEL_DATASET_ID,
   children,
+  onClick,
 }: VesselLinkProps) => {
-  const workspace = useSelector(selectWorkspace)
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
   const query = useSelector(selectLocationQuery)
   const vesselInfoDataId = useSelector(selectVesselInfoDataId)
   const workspaceCategory = useSelector(selectCurrentWorkspaceCategory)
@@ -30,21 +32,26 @@ const VesselLink = ({
     if (vesselId !== vesselInfoDataId) {
       dispatch(resetVesselState())
     }
-  }, [dispatch, vesselId, vesselInfoDataId])
+    if (onClick) {
+      onClick()
+    }
+  }, [dispatch, onClick, vesselId, vesselInfoDataId])
 
   if (!vesselId) return children
 
   return (
     <Link
       to={{
-        type: workspace ? WORKSPACE_VESSEL : VESSEL,
+        type: workspaceId ? WORKSPACE_VESSEL : VESSEL,
         payload: {
           category: workspaceCategory,
-          workspaceId: workspace?.id,
+          workspaceId: workspaceId,
           vesselId,
         },
         query: {
           ...query,
+          // Clean search url when clicking on vessel link
+          qry: undefined,
           vesselDatasetId: datasetId,
         },
       }}

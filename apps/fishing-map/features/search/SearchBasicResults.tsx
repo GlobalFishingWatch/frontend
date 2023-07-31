@@ -13,8 +13,9 @@ import I18nFlag from 'features/i18n/i18nFlag'
 import { formatInfoField, EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { selectVesselsDataviews } from 'features/dataviews/dataviews.slice'
 import TrackFootprint from 'features/search/TrackFootprint'
-import { VesselWithDatasetsResolved } from 'features/search/search.slice'
+import { VesselWithDatasetsResolved, cleanVesselSearchResults } from 'features/search/search.slice'
 import VesselLink from 'features/vessel/VesselLink'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { Locale } from '../../../../libs/api-types/src/i18n'
 import styles from './SearchBasicResults.module.css'
 
@@ -34,9 +35,14 @@ function SearchBasicResults({
   vesselsSelected,
 }: SearchBasicResultsProps) {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const vesselDataviews = useSelector(selectVesselsDataviews)
   const isSmallScreen = useSmallScreen()
   const [highlightedYear, setHighlightedYear] = useState<number>()
+
+  const onVesselClick = useCallback(() => {
+    dispatch(cleanVesselSearchResults())
+  }, [dispatch])
 
   const onYearHover = useCallback(
     (year: number) => {
@@ -102,7 +108,7 @@ function SearchBasicResults({
               />
               <div className={styles.fullWidth}>
                 <div className={styles.name}>
-                  <VesselLink vesselId={id} datasetId={dataset?.id}>
+                  <VesselLink vesselId={id} datasetId={dataset?.id} onClick={onVesselClick}>
                     {formatInfoField(shipname, 'name') || EMPTY_FIELD_PLACEHOLDER}
                   </VesselLink>
                 </div>
