@@ -5,6 +5,7 @@ import { GetItemPropsOptions } from 'downshift'
 import { Fragment, useCallback, useState } from 'react'
 import { IconButton, YearlyTransmissionsTimeline } from '@globalfishingwatch/ui-components'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
+import { Locale } from '@globalfishingwatch/api-types'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
 import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import i18n from 'features/i18n/i18n'
@@ -16,7 +17,8 @@ import TrackFootprint from 'features/search/TrackFootprint'
 import { VesselWithDatasetsResolved, cleanVesselSearchResults } from 'features/search/search.slice'
 import VesselLink from 'features/vessel/VesselLink'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { Locale } from '../../../../libs/api-types/src/i18n'
+import useAddVesselDataviewInstance from 'features/vessel/vessel.hooks'
+import { selectCurrentWorkspaceId } from 'features/workspace/workspace.selectors'
 import styles from './SearchBasicResults.module.css'
 
 type SearchBasicResultsProps = {
@@ -36,13 +38,21 @@ function SearchBasicResults({
 }: SearchBasicResultsProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
   const vesselDataviews = useSelector(selectVesselsDataviews)
   const isSmallScreen = useSmallScreen()
   const [highlightedYear, setHighlightedYear] = useState<number>()
+  const addVesselDataviewInstance = useAddVesselDataviewInstance()
 
-  const onVesselClick = useCallback(() => {
-    dispatch(cleanVesselSearchResults())
-  }, [dispatch])
+  const onVesselClick = useCallback(
+    (vessel: VesselWithDatasetsResolved) => {
+      if (workspaceId) {
+        addVesselDataviewInstance(vessel)
+      }
+      dispatch(cleanVesselSearchResults())
+    },
+    [addVesselDataviewInstance, dispatch, workspaceId]
+  )
 
   const onYearHover = useCallback(
     (year: number) => {
@@ -108,7 +118,11 @@ function SearchBasicResults({
               />
               <div className={styles.fullWidth}>
                 <div className={styles.name}>
-                  <VesselLink vesselId={id} datasetId={dataset?.id} onClick={onVesselClick}>
+                  <VesselLink
+                    vesselId={id}
+                    datasetId={dataset?.id}
+                    onClick={() => onVesselClick(entry)}
+                  >
                     {formatInfoField(shipname, 'name') || EMPTY_FIELD_PLACEHOLDER}
                   </VesselLink>
                 </div>

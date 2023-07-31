@@ -28,7 +28,7 @@ const VesselLink = ({
   const workspaceCategory = useSelector(selectCurrentWorkspaceCategory)
   const dispatch = useDispatch()
 
-  const onInfoClick = useCallback(() => {
+  const onLinkClick = useCallback(() => {
     if (vesselId !== vesselInfoDataId) {
       dispatch(resetVesselState())
     }
@@ -55,7 +55,7 @@ const VesselLink = ({
           vesselDatasetId: datasetId,
         },
       }}
-      onClick={onInfoClick}
+      onClick={onLinkClick}
     >
       {children}
     </Link>
