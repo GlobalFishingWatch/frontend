@@ -39,7 +39,7 @@ describe('See the creation of analysis for an area', () => {
     cy.getBySel('report-vessels-table').findBySelLike('vessel').should('exist')
   })
 
-  it('Should create an analysis for an EEZ area', () => {
+  it('Should download the vessels from an EEZ area', () => {
     cy.getBySel('download-vessel-table-report').click()
 
     cy.url().then((url) => {
