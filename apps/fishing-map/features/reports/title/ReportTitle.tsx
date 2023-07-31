@@ -42,7 +42,9 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     <div className={styles.container}>
       {name ? (
         <Fragment>
-          <h1 className={styles.title}>{name}</h1>
+          <h1 className={styles.title} data-test="report-title">
+            {name}
+          </h1>
           <a className={styles.reportLink} href={reportLink}>
             {t('analysis.linkToReport', 'Check the dynamic report here')}
           </a>

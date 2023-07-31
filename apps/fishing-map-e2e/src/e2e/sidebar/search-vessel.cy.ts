@@ -1,6 +1,11 @@
 import { API_URL_SEARCH_VESSELS, URL_YEAR_2018 } from '../../constants/urls'
-import { SEARCH_VESSEL_MMSI, SEARCH_VESSEL_NAME } from '../../constants/vessels'
-import { disablePopups, verifyTracksInTimebar, waitForSidebarLoaded } from '../../support/app.po'
+import { SEARCH_VESSEL_MMSI, SEARCH_VESSEL_NAME } from '../../constants/search'
+import {
+  disablePopups,
+  scrollSidebar,
+  verifyTracksInTimebar,
+  waitForSidebarLoaded,
+} from '../../support/app.po'
 
 describe('Basic search for a vessel', () => {
   beforeEach(() => {
@@ -43,12 +48,20 @@ describe('Basic search for a vessel', () => {
           // Click on the first result
           cy.getBySel('search-vessels-list').findBySelLike('search-vessels-option').eq(0).click()
           cy.getBySel('search-vessels-add-vessel').click()
-          cy.getBySel('sidebar-container').scrollTo('center', { easing: 'linear', duration: 2000 })
+          scrollSidebar('center', 2000)
           cy.getBySel('vessel-layer-vessel-name', { timeout: 10000 })
             .contains(vessel.text())
             .should('exist')
         })
       verifyTracksInTimebar(4)
+      /*
+      And AIS as a Source
+ And the chart is present
+ And report vessels graph is present
+ And report vessels table is present
+
+
+      */
     }
   )
 })

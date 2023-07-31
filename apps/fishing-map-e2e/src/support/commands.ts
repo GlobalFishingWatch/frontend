@@ -62,7 +62,21 @@ function loginViaAuthAPI(username: string, password: string) {
   cy.get('input[type=submit]').click()
 
   // Ensure API Auth has redirected us back to the app, in development set your domain in .env
+  cy.intercept('/v2/auth/tokens*').as('requestToken')
   cy.url().should('include', Cypress.config('baseUrl')).should('include', 'access-token=')
+
+  // Validate that we request a token and is saved in the local storage
+  cy.wait('@requestToken', { requestTimeout: 10000 }).then((interception) => {
+    const token = interception.response.body.token
+    cy.getAllLocalStorage().then((result) => {
+      expect(result).to.deep.contain({
+        [Cypress.config('baseUrl')]: {
+          ...localStorage,
+          GFW_API_USER_TOKEN: token,
+        },
+      })
+    })
+  })
 }
 
 Cypress.Commands.add('login', (username: string, password: string) => {
