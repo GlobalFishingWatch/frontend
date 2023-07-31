@@ -22,6 +22,7 @@ export interface SwitchProps {
   tooltipPlacement?: Placement
   className?: string
   size?: SwitchSize
+  testId?: string
 }
 
 export function Switch(props: SwitchProps) {
@@ -35,6 +36,7 @@ export function Switch(props: SwitchProps) {
     tooltip,
     tooltipPlacement = 'top',
     className,
+    testId,
   } = props
 
   const onClickCallback = (event: React.MouseEvent) => {
@@ -53,6 +55,7 @@ export function Switch(props: SwitchProps) {
         type="button"
         role="switch"
         aria-checked={active}
+        {...(testId && { 'data-test': testId })}
         {...(typeof tooltip === 'string' && { 'aria-label': tooltip })}
         onClick={onClickCallback}
         className={cx(

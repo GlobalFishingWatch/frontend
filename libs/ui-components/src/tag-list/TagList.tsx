@@ -27,7 +27,7 @@ export function TagList(props: TagListProps) {
   return (
     <ul className={cx(styles.tagList, className)}>
       {tags.map((tag, index) => (
-        <li key={tag.id || index} data-test={`${testId}-${tag.id}`}>
+        <li key={tag.id || index} {...(testId && { 'data-test': `${testId}-${tag.id}` })}>
           <Tag
             tooltip={tag.tooltip}
             tooltipPlacement={tag.tooltipPlacement}

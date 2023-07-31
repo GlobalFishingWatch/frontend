@@ -2,6 +2,7 @@ import { API_URL_VESSELS, URL_FULL_DATA_AREA } from '../../constants/urls'
 import {
   disablePopups,
   getMapCanvas,
+  scrollSidebar,
   verifyTracksInTimebar,
   waitForMapLoadTiles,
 } from '../../support/app.po'
@@ -17,7 +18,8 @@ describe('Interact with vessels', () => {
     waitForMapLoadTiles(3000) // Give 3 seconds more to paint data on the map
     cy.intercept(API_URL_VESSELS).as('searchForVessels')
     getMapCanvas().click('center')
-    cy.getBySel('sidebar-container').scrollTo('center', { easing: 'linear', duration: 2000 })
+    scrollSidebar('center', 2000)
+
     cy.wait('@searchForVessels', { requestTimeout: 10000 })
     cy.getBySel('vessels-table').find('button').first().click()
 

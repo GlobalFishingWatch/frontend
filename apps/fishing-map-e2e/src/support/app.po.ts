@@ -11,11 +11,10 @@ export const getTimeline = () => cy.getBySel('timeline-graph')
 
 export const getMapCanvas = () => cy.get('#map canvas')
 
+export const getSidebar = () => cy.getBySel('sidebar-container', { timeout: 10000 })
+
 export const waitForSidebarLoaded = () =>
-  cy
-    .getBySel('sidebar-container', { timeout: 10000 })
-    .findByClass('Sections_container', { timeout: 10000 })
-    .should('exist')
+  getSidebar().findByClass('Sections_container', { timeout: 10000 }).should('exist')
 
 export const waitForMapLoadTiles = (extraDelay?: number) => {
   cy.intercept(API_URL_4WINGS_TILES).as('loadTiles')
@@ -50,3 +49,6 @@ export const switchLanguage = (language: string) => {
     cy.reload()
   }
 }
+
+export const scrollSidebar = (position, duration = 0) =>
+  cy.getBySel('sidebar-container').scrollTo(position, { easing: 'linear', duration: duration })
