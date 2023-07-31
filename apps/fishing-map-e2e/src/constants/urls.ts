@@ -11,3 +11,6 @@ export const API_URL_VESSELS = '/v2/vessels*'
 export const API_URL_SEARCH_VESSELS = '/v2/vessels/search*'
 export const API_URL_4WINGS_TILES = '/v2/4wings/tile/heatmap/*/*/*'
 export const API_URL_4WINGS_REPORT = 'v2/4wings/report*'
+
+// CUSTOM API URLS
+export const API_URL_GALAPAGOS_INFO = 'v2/datasets/public-eez-areas/context-layer-v1/8403?'

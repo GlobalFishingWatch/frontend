@@ -1,5 +1,6 @@
 import { defineConfig } from 'cypress'
 import { nxE2EPreset } from '@nx/cypress/plugins/cypress-preset'
+const { stat, rmdir } = require('fs')
 
 const cypressJsonConfig = {
   fileServerFolder: '.',
@@ -9,6 +10,7 @@ const cypressJsonConfig = {
   videosFolder: '../../dist/cypress/apps/fishing-map-e2e/videos',
   screenshotsFolder: '../../dist/cypress/apps/fishing-map-e2e/screenshots',
   chromeWebSecurity: false,
+  trashAssetsBeforeRuns: true,
   specPattern: ['src/e2e/**/*.cy.{js,jsx,ts,tsx}'],
   supportFile: 'src/support/e2e.ts',
 }
@@ -23,6 +25,29 @@ export default defineConfig({
      * More Info: https://docs.cypress.io/guides/references/migration-guide#Test-Isolation
      **/
     testIsolation: false,
+    setupNodeEvents(on, config) {
+      on('task', {
+        deleteFolder(folderName) {
+          console.log('deleting folder %s', folderName)
+
+          return new Promise((resolve, reject) => {
+            stat(folderName, (err, stats) => {
+              if (!err) {
+                rmdir(folderName, { maxRetries: 10, recursive: true }, (removeErr) => {
+                  if (removeErr) {
+                    console.error(removeErr)
+                    return reject(removeErr)
+                  }
+                  resolve(null)
+                })
+              } else {
+                resolve(null)
+              }
+            })
+          })
+        },
+      })
+    },
   },
   env: {
     apiAuthUser: '',

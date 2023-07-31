@@ -52,3 +52,8 @@ export const switchLanguage = (language: string) => {
 
 export const scrollSidebar = (position, duration = 0) =>
   cy.getBySel('sidebar-container').scrollTo(position, { easing: 'linear', duration: duration })
+
+export const deleteDownloadsFolder = () => {
+  const downloadsFolder = Cypress.config('downloadsFolder')
+  cy.task('deleteFolder', downloadsFolder)
+}

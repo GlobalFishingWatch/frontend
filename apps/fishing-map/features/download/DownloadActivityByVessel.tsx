@@ -181,6 +181,7 @@ function DownloadActivityByVessel() {
           <Choice
             options={filteredGroupByOptions}
             size="small"
+            testId="group-vessels-by"
             activeOption={groupBy}
             onSelect={(option) => setGroupBy(option.id as GroupBy)}
           />
@@ -190,6 +191,7 @@ function DownloadActivityByVessel() {
           <Choice
             options={filteredTemporalResolutionOptions}
             size="small"
+            testId="group-time-by"
             activeOption={temporalResolution}
             onSelect={(option) => setTemporalResolution(option.id as TemporalResolution)}
           />
