@@ -53,7 +53,13 @@ export const switchLanguage = (language: string) => {
 export const scrollSidebar = (position, duration = 0) =>
   cy.getBySel('sidebar-container').scrollTo(position, { easing: 'linear', duration: duration })
 
+export const getDownloadsFolderPath = () => Cypress.config('downloadsFolder')
 export const deleteDownloadsFolder = () => {
   const downloadsFolder = Cypress.config('downloadsFolder')
   cy.task('deleteFolder', downloadsFolder)
+}
+
+export const getQueryParam = (url: string, name: string) => {
+  let params = new URLSearchParams(url)
+  return params.get(name)
 }

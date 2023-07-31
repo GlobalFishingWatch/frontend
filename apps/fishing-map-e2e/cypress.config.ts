@@ -5,7 +5,7 @@ const { stat, rmdir } = require('fs')
 const cypressJsonConfig = {
   fileServerFolder: '.',
   fixturesFolder: './src/fixtures',
-  video: false,
+  video: true,
   screenshot: false,
   videosFolder: '../../dist/cypress/apps/fishing-map-e2e/videos',
   screenshotsFolder: '../../dist/cypress/apps/fishing-map-e2e/screenshots',

@@ -2,7 +2,9 @@ import { MAP_POPUP_EEZ_SECTION, SIDEBAR_TOGGLE_EEZ } from '../../constants/butto
 import { SEARCH_EEZ, SEARCH_EEZ_FULL_NAME } from '../../constants/search'
 import {
   disablePopups,
+  getDownloadsFolderPath,
   getMapCanvas,
+  getQueryParam,
   getSidebar,
   scrollSidebar,
   waitForMapLoadTiles,
@@ -44,12 +46,10 @@ describe('See the creation of analysis for an area', () => {
     cy.getBySel('download-vessel-table-report').click()
 
     cy.url().then((url) => {
-      let params = new URLSearchParams(url)
-      const start = params.get('start').replaceAll(':', '_')
-      const end = params.get('end').replaceAll(':', '_')
+      const start = getQueryParam(url, 'start').replaceAll(':', '_')
+      const end = getQueryParam(url, 'end').replaceAll(':', '_')
       //Create the same file name that the component CSVLink is generating
-      const downloadsFolder = Cypress.config('downloadsFolder')
-      cy.readFile(`${downloadsFolder}/${SEARCH_EEZ_FULL_NAME}-${start}-${end}.csv`)
+      cy.readFile(`${getDownloadsFolderPath()}/${SEARCH_EEZ_FULL_NAME}-${start}-${end}.csv`)
     })
   })
 })

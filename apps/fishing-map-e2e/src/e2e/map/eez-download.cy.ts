@@ -9,7 +9,9 @@ import { API_URL_4WINGS_REPORT, API_URL_GALAPAGOS_INFO } from '../../constants/u
 import {
   deleteDownloadsFolder,
   disablePopups,
+  getDownloadsFolderPath,
   getMapCanvas,
+  getQueryParam,
   scrollSidebar,
   waitForMapLoadTiles,
   waitForSidebarLoaded,
@@ -17,7 +19,7 @@ import {
 
 describe('See the creation of analysis for an area', () => {
   before(() => {
-    //cy.login(Cypress.env('apiAuthUser'), Cypress.env('apiAuthPass'))
+    cy.login(Cypress.env('apiAuthUser'), Cypress.env('apiAuthPass'))
   })
   beforeEach(() => {
     deleteDownloadsFolder()
@@ -53,12 +55,10 @@ describe('See the creation of analysis for an area', () => {
 
     //Create the same file name that the component CSVLink is generating
     cy.url().then((url) => {
-      let params = new URLSearchParams(url)
-      const start = params.get('start').replaceAll(':', '_')
-      const end = params.get('end').replaceAll(':', '_')
+      const start = getQueryParam(url, 'start').replaceAll(':', '_')
+      const end = getQueryParam(url, 'end').replaceAll(':', '_')
       //Create the same file name that the component CSVLink is generating
-      const downloadsFolder = Cypress.config('downloadsFolder')
-      cy.readFile(`${downloadsFolder}/${SEARCH_EEZ_FULL_NAME} - ${start},${end}.zip`)
+      cy.readFile(`${getDownloadsFolderPath()}/${SEARCH_EEZ_FULL_NAME} - ${start},${end}.zip`)
     })
   })
 
