@@ -54,14 +54,6 @@ describe('Basic search for a vessel', () => {
             .should('exist')
         })
       verifyTracksInTimebar(4)
-      /*
-      And AIS as a Source
- And the chart is present
- And report vessels graph is present
- And report vessels table is present
-
-
-      */
     }
   )
 })
