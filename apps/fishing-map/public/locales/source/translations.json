@@ -162,7 +162,6 @@
     "sources": "Sources",
     "summary": "Summary",
     "to": "to",
-    "to": "to",
     "tutorials": "Tutorials",
     "unknown": "Unknown",
     "unknownVessel": "Unknown vessel",
@@ -608,6 +607,10 @@
       "trawlers": "Trawler",
       "trollers": "Troller",
       "tuna_purse_seines": "Tuna Purse Seine"
+    },
+    "infoSources": {
+      "registry": "Registry",
+      "self-reported": "Self reported"
     },
     "vesselTypes": {
       "fishing": "Fishing",

@@ -37,21 +37,21 @@
 
 .properties {
   display: flex;
-  justify-content: space-between;
+  column-gap: var(--space-M);
+  row-gap: var(--space-S);
   flex-wrap: wrap;
   opacity: var(--opacity-secondary);
   transition: opacity 150ms linear;
   width: 100%;
 }
 
+.name {
+  margin-bottom: var(--space-S);
+}
+
 .name a {
   cursor: pointer;
   text-decoration: underline;
-}
-
-.property {
-  margin-right: var(--space-M);
-  margin-top: var(--space-S);
 }
 
 .property label {

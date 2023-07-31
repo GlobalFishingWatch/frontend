@@ -6,7 +6,6 @@ import { Fragment, useCallback, useState } from 'react'
 import { IconButton, YearlyTransmissionsTimeline } from '@globalfishingwatch/ui-components'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
-import DatasetLabel from 'features/datasets/DatasetLabel'
 import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import i18n from 'features/i18n/i18n'
 import I18nDate from 'features/i18n/i18nDate'
@@ -64,9 +63,12 @@ function SearchBasicResults({
           shiptype,
           transmissionDateFrom,
           transmissionDateTo,
+          infoSource,
         } = entry
         // TODO decide how we manage VMS properties
         const { fleet, origin, casco, nationalId, matricula } = entry as any
+        const shiptypes = shiptype?.split('|').map((shiptype) => shiptype.toLowerCase())
+        const geartypes = geartype?.split('|').map((geartype) => geartype.toLowerCase())
         const isInWorkspace = vesselDataviews?.some(
           (vessel) => vessel.id === `${VESSEL_LAYER_PREFIX}${id}`
         )
@@ -126,20 +128,17 @@ function SearchBasicResults({
                   <div className={styles.property}>
                     <label>{t('vessel.vesselType', 'Vessel Type')}</label>
                     <span>
-                      {geartype !== undefined
-                        ? t(
-                            `vessel.vesselTypes.${shiptype?.toLowerCase()}` as any,
-                            shiptype as string
-                          )
-                        : EMPTY_FIELD_PLACEHOLDER}
+                      {shiptypes
+                        ?.map((shiptype) => t(`vessel.vesselTypes.${shiptype}` as any, shiptype))
+                        .join(', ') || EMPTY_FIELD_PLACEHOLDER}
                     </span>
                   </div>
                   <div className={styles.property}>
                     <label>{t('vessel.geartype', 'Gear Type')}</label>
                     <span>
-                      {geartype !== undefined
-                        ? t(`vessel.gearTypes.${geartype?.toLowerCase()}` as any, geartype)
-                        : EMPTY_FIELD_PLACEHOLDER}
+                      {geartypes
+                        ?.map((geartype) => t(`vessel.gearTypes.${geartype}` as any, geartype))
+                        .join(', ') || EMPTY_FIELD_PLACEHOLDER}
                     </span>
                   </div>
                   {matricula && (
@@ -172,10 +171,16 @@ function SearchBasicResults({
                       <span>{formatInfoField(origin, 'fleet')}</span>
                     </div>
                   )}
-                  {dataset && (
+                  {/* {dataset && (
                     <div className={styles.property}>
                       <label>{t('vessel.source', 'Source')}</label>
                       <DatasetLabel dataset={dataset} />
+                    </div>
+                  )} */}
+                  {infoSource && (
+                    <div className={styles.property}>
+                      <label>{t('vessel.infoSource', 'Info Source')}</label>
+                      <span>{t(`vessel.infoSources.${infoSource}` as any, infoSource)}</span>
                     </div>
                   )}
                 </div>

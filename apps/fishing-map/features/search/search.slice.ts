@@ -42,9 +42,15 @@ export const EMPTY_FILTERS = {
   origin: undefined,
 }
 
+export enum VesselInfoSourceEnum {
+  Registry = 'registry',
+  SelfReported = 'self-reported',
+}
+
 export type VesselDatasetInfo = {
   dataset: Dataset
   trackDatasetId?: string
+  infoSource?: VesselInfoSourceEnum
 }
 export type VesselWithDatasets = Omit<IdentityVessel, 'dataset'> & VesselDatasetInfo
 export type VesselWithDatasetsResolved = (SelfReportedInfo | VesselRegistryInfo) & VesselDatasetInfo

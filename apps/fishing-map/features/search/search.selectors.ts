@@ -10,21 +10,28 @@ import {
 } from 'features/datasets/datasets.utils'
 import { selectAllDataviewsInWorkspace } from 'features/dataviews/dataviews.selectors'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { SearchType, VesselWithDatasetsResolved, selectSearchResults } from './search.slice'
+import {
+  SearchType,
+  VesselInfoSourceEnum,
+  VesselWithDatasetsResolved,
+  selectSearchResults,
+} from './search.slice'
 
 export const selectVesselSearchResultsResolved = createSelector(
   [selectSearchResults],
   (vessels): VesselWithDatasetsResolved[] => {
     return (vessels || []).map((vessel) => {
-      const vesselData = vessel.registryInfo?.length
-        ? vessel.registryInfo?.[0]
-        : vessel.selfReportedInfo[0]
+      const hasRegistryData = vessel.registryInfo?.length
+      const vesselData = hasRegistryData ? vessel.registryInfo?.[0] : vessel.selfReportedInfo[0]
       return {
         ...vesselData,
+        infoSource: hasRegistryData
+          ? VesselInfoSourceEnum.Registry
+          : VesselInfoSourceEnum.SelfReported,
         id: vessel.selfReportedInfo?.[0]?.id,
         dataset: vessel.dataset,
         trackDatasetId: vessel.trackDatasetId,
-      }
+      } as VesselWithDatasetsResolved
     })
   }
 )
