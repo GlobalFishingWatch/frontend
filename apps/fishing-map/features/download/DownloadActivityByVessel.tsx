@@ -154,11 +154,11 @@ function DownloadActivityByVessel() {
   }
   return (
     <Fragment>
-      <div className={styles.container}>
+      <div className={styles.container} data-test="download-activity-byvessel">
         <div className={styles.info}>
           <div>
             <label>{t('download.area', 'Area')}</label>
-            <Tag>{downloadAreaName || EMPTY_FIELD_PLACEHOLDER}</Tag>
+            <Tag testId="area-name">{downloadAreaName || EMPTY_FIELD_PLACEHOLDER}</Tag>
           </div>
           <div>
             <label>{t('download.timeRange', 'Time Range')}</label>
@@ -212,6 +212,7 @@ function DownloadActivityByVessel() {
           )}
 
           <Button
+            testId="download-button"
             onClick={onDownloadClick}
             loading={downloadLoading || downloadAreaLoading}
             className={styles.downloadBtn}

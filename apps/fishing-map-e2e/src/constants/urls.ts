@@ -10,3 +10,4 @@ export const URL_YEAR_2018 =
 export const API_URL_VESSELS = '/v2/vessels*'
 export const API_URL_SEARCH_VESSELS = '/v2/vessels/search*'
 export const API_URL_4WINGS_TILES = '/v2/4wings/tile/heatmap/*/*/*'
+export const API_URL_4WINGS_REPORT = 'v2/4wings/report*'
