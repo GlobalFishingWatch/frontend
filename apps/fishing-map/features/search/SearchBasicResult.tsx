@@ -25,6 +25,7 @@ import { selectVesselsDataviews } from 'features/dataviews/dataviews.slice'
 import { selectCurrentWorkspaceId } from 'features/workspace/workspace.selectors'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { selectIsSearchLocation } from 'routes/routes.selectors'
 import styles from './SearchBasicResult.module.css'
 
 type SearchBasicResultProps = {
@@ -49,6 +50,7 @@ function SearchBasicResult({
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const vesselDataviews = useSelector(selectVesselsDataviews)
   const isSmallScreen = useSmallScreen()
+  const isSearchLocation = useSelector(selectIsSearchLocation)
   const [highlightedYear, setHighlightedYear] = useState<number>()
   const [trackBbox, setTrackBbox] = useState<Bbox>()
   const addVesselDataviewInstance = useAddVesselDataviewInstance()
@@ -91,15 +93,18 @@ function SearchBasicResult({
         addVesselDataviewInstance(vessel)
       }
       dispatch(cleanVesselSearchResults())
-      if (trackBbox) {
-        fitBounds(trackBbox)
+      if (isSearchLocation) {
+        if (trackBbox) {
+          fitBounds(trackBbox)
+        }
+        setTimerange({ start: transmissionDateFrom, end: transmissionDateTo })
       }
-      setTimerange({ start: transmissionDateFrom, end: transmissionDateTo })
     },
     [
       addVesselDataviewInstance,
       dispatch,
       fitBounds,
+      isSearchLocation,
       setTimerange,
       trackBbox,
       transmissionDateFrom,
