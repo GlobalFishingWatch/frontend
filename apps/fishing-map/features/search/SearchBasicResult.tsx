@@ -120,6 +120,7 @@ function SearchBasicResult({
         [styles.selected]: isSelected,
       })}
       key={`${index} - ${dataset?.id} - ${id}`}
+      data-test={`search-vessels-option-${id}-${index}`}
     >
       <div className={styles.container}>
         <IconButton
@@ -131,7 +132,7 @@ function SearchBasicResult({
           tooltip={tooltip}
         />
         <div className={styles.fullWidth}>
-          <div className={styles.name}>
+          <div className={styles.name} data-test="vessel-name">
             <VesselLink vesselId={id} datasetId={dataset?.id} onClick={() => onVesselClick(vessel)}>
               {formatInfoField(shipname, 'name') || EMPTY_FIELD_PLACEHOLDER}
             </VesselLink>

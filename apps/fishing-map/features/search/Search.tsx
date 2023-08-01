@@ -303,6 +303,7 @@ function Search() {
           className={styles.footerAction}
           onClick={onConfirmSelection}
           disabled={vesselsSelected.length === 0}
+          testId="search-vessels-add-vessel"
         >
           {vesselsSelected.length > 1
             ? t('search.seeVessels', {

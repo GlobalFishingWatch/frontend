@@ -28,6 +28,7 @@ export interface ButtonProps {
   target?: string
   htmlType?: HTMLButtonType
   tooltipProps?: TippyProps
+  testId?: string
 }
 
 export function Button(props: ButtonProps) {
@@ -48,6 +49,7 @@ export function Button(props: ButtonProps) {
     target,
     htmlType,
     tooltipProps,
+    testId,
   } = props
   return (
     <Tooltip {...tooltipProps} content={tooltip as React.ReactNode} placement={tooltipPlacement}>
@@ -76,6 +78,7 @@ export function Button(props: ButtonProps) {
           onClick={(e) => !loading && !disabled && onClick && onClick(e)}
           onMouseEnter={(e) => onMouseEnter && onMouseEnter(e)}
           onMouseLeave={(e) => onMouseLeave && onMouseLeave(e)}
+          {...(testId && { 'data-test': testId })}
           {...(htmlType ? { type: htmlType } : {})}
         >
           {loading ? (

@@ -165,7 +165,9 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
           asyncOnClick={true}
           data={allVesselsWithAllInfoFiltered}
         >
-          <Button>{t('analysis.downloadVesselsList', 'Download csv')}</Button>
+          <Button testId="download-vessel-table-report">
+            {t('analysis.downloadVesselsList', 'Download csv')}
+          </Button>
         </CSVLink>
       </div>
     </div>

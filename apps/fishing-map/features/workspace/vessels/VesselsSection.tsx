@@ -51,6 +51,7 @@ function VesselsSection(): React.ReactElement {
           icon="search"
           type="border"
           size="medium"
+          testId="search-vessels-open"
           disabled={!searchAllowed}
           tooltip={
             searchAllowed

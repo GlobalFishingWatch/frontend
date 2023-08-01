@@ -102,6 +102,7 @@ function SearchBasic({
               autoFocus
               disabled={!basicSearchAllowed}
               className={styles.input}
+              testId="seach-vessels-basic-input"
               type="search"
               loading={
                 searchStatus === AsyncReducerStatus.Loading ||
@@ -116,7 +117,11 @@ function SearchBasic({
           {(searchStatus === AsyncReducerStatus.Loading ||
             searchStatus === AsyncReducerStatus.Aborted) &&
           searchPagination.loading === false ? null : basicSearchAllowed ? (
-            <ul {...getMenuProps()} className={styles.searchResults}>
+            <ul
+              {...getMenuProps()}
+              className={styles.searchResults}
+              data-test="search-vessels-list"
+            >
               {debouncedQuery && debouncedQuery?.length < MIN_SEARCH_CHARACTERS && (
                 <li key="suggestion" className={cx(styles.searchSuggestion, styles.red)}>
                   {t('search.minCharacters', {

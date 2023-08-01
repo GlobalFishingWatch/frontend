@@ -37,9 +37,10 @@ function DatasetFilterSource({ dataview, hideColor }: DatasetFilterSourceProps) 
   }
 
   return (
-    <div className={styles.filter}>
+    <div className={styles.filter} data-test="source-tags">
       <label>{t('layer.source', 'Sources')}</label>
       <TagList
+        testId="source-tag-item"
         tags={sourcesSelected}
         color={hideColor ? undefined : dataview.config?.color}
         className={cx(styles.tagList, {

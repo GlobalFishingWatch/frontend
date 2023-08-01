@@ -368,9 +368,18 @@ class Timeline extends PureComponent {
     this.innerScale = scaleTime()
       .domain([new Date(start), new Date(end)])
       .range([0, innerWidth])
-    const outerStart = this.innerScale.invert(-innerStartPx).toISOString()
-    const outerEnd = this.innerScale.invert(outerWidth - innerStartPx).toISOString()
-
+    let outerStart
+    try {
+      outerStart = this.innerScale.invert(-innerStartPx).toISOString()
+    } catch (e) {
+      console.warn(e)
+    }
+    let outerEnd
+    try {
+      outerEnd = this.innerScale.invert(outerWidth - innerStartPx).toISOString()
+    } catch (e) {
+      console.warn(e)
+    }
     this.outerScale = this.getOuterScale(outerStart, outerEnd, this.state.outerWidth)
     const overallScale = this.getOverallScale(absoluteStart, absoluteEnd, innerWidth)
     const svgTransform = this.getSvgTransform(overallScale, start, end, innerWidth, innerStartPx)
@@ -429,6 +438,7 @@ class Timeline extends PureComponent {
             {/* // TODO separated drag area? */}
             <div
               className={styles.graph}
+              data-test="timeline-graph"
               onMouseDown={(event) => {
                 this.onMouseDown(event, DRAG_INNER)
               }}

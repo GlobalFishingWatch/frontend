@@ -80,7 +80,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
 
   return (
     <Fragment>
-      <div className={styles.tableContainer}>
+      <div className={styles.tableContainer} data-test="report-vessels-table">
         {datasetsDownloadNotSupported.length > 0 && (
           <p className={styles.error}>
             {t(
@@ -127,7 +127,10 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
             const typeInteractionEnabled = type !== EMPTY_FIELD_PLACEHOLDER
             return (
               <Fragment key={vessel.vesselId}>
-                <div className={cx({ [styles.border]: !isLastRow }, styles.icon)}>
+                <div
+                  className={cx({ [styles.border]: !isLastRow }, styles.icon)}
+                  data-test={`vessel-${vessel.vesselId}`}
+                >
                   <IconButton
                     icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
                     style={{
