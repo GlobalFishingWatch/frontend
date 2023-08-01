@@ -98,7 +98,9 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     }
     if (isWorkspaceVesselLocation && viewOnlyVessel && vesselId !== undefined) {
       return dataviews.filter(({ id, config }) => {
-        if (VESSEL_ONLY_VISIBLE_LAYERS.includes(config?.type as GeneratorType)) return true
+        if (VESSEL_ONLY_VISIBLE_LAYERS.includes(config?.type as GeneratorType)) {
+          return config?.visible
+        }
         return config?.type === GeneratorType.Track && id.includes(vesselId)
       })
     }
