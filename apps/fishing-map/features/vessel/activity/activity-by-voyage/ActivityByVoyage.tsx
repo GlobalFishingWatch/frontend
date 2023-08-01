@@ -59,8 +59,11 @@ const ActivityByVoyage = () => {
             end: getUTCDateTime(end).toISO(),
           })
         )
+        const eventIds = events.map((event) => event.id)
+        dispatch(setHighlightedEvents(eventIds))
       } else {
         dispatch(disableHighlightedTime())
+        dispatch(setHighlightedEvents(undefined))
       }
     },
     [dispatch, voyages]
