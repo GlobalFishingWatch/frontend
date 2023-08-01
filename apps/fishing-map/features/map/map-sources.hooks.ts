@@ -277,11 +277,11 @@ export const useMapDataviewFeatures = (
                 if (queryMethod === 'render') {
                   const layer =
                     metadata?.sourceLayer || sourceId + `-${TEMPORALGRID_LAYER_INTERACTIVE_SUFIX}`
-                  features = map.queryRenderedFeatures(undefined, {
+                  features = map?.queryRenderedFeatures(undefined, {
                     layers: [layer],
                   })
                 } else {
-                  features = map.querySourceFeatures(sourceId, {
+                  features = map?.querySourceFeatures(sourceId, {
                     sourceLayer,
                     filter: filter as string[],
                   })
@@ -310,9 +310,9 @@ export const useMapDataviewFeatures = (
 
         if (!chunks && state?.loaded && !state?.error) {
           if (queryMethod === 'render') {
-            features = map.queryRenderedFeatures(undefined, { layers: [sourceId] })
+            features = map?.queryRenderedFeatures(undefined, { layers: [sourceId] })
           } else {
-            features = map.querySourceFeatures(sourceId, {
+            features = map?.querySourceFeatures(sourceId, {
               sourceLayer,
               filter: filter as string[],
             })
