@@ -200,7 +200,7 @@ function VesselGroupModal(): React.ReactElement {
       setButtonLoading(navigateToWorkspace ? 'saveAndNavigate' : 'save')
       const vessels: VesselGroupVessel[] = vesselGroupSearchVessels.map((vessel) => {
         return {
-          vesselId: vessel.id,
+          vesselId: vessel.selfReportedInfo?.[0]?.id,
           dataset: vessel.dataset as string,
         }
       })

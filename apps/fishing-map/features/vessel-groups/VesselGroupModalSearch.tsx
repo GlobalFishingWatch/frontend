@@ -18,7 +18,7 @@ import styles from './VesselGroupModal.module.css'
 
 export type CSV = Record<string, any>[]
 
-function VesselGroupSearch({ onError }: { onError: (string) => void }): React.ReactElement {
+function VesselGroupSearch({ onError }: { onError: (string) => void }) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [searchText, setSearchText] = useState('')

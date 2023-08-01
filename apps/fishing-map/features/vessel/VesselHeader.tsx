@@ -76,7 +76,7 @@ const VesselHeader = () => {
         <VesselGroupAddButton
           buttonSize="small"
           buttonType="border-secondary"
-          vessels={[vessel as any]}
+          vessels={vessel ? [vessel] : []}
           showCount={false}
         />
       </div>

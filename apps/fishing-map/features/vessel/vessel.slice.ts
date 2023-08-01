@@ -15,7 +15,7 @@ import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { PROFILE_DATAVIEW_SLUGS } from 'data/workspaces'
 // import { TEMPLATE_VESSEL_DATAVIEW_SLUG } from 'data/workspaces'
 
-type VesselData = IdentityVessel & VesselInstanceDatasets
+export type VesselData = IdentityVessel & VesselInstanceDatasets
 interface VesselState {
   info: {
     status: AsyncReducerStatus
