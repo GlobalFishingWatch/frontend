@@ -39,6 +39,7 @@ import {
   WORKSPACE_VESSEL,
   REPORT,
   WORKSPACE_REPORT,
+  SEARCH,
 } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { t } from 'features/i18n/i18n'
@@ -83,6 +84,7 @@ const Main = () => {
   const isSmallScreen = useSmallScreen()
 
   const isRouteWithTimebar = locationType === VESSEL
+  const isRouteWithMap = locationType !== SEARCH
   const isWorkspacesRouteWithTimebar =
     workspaceLocation ||
     locationType === WORKSPACE_VESSEL ||
@@ -93,15 +95,17 @@ const Main = () => {
 
   return (
     <Fragment>
-      <div
-        className={cx(styles.mapContainer, {
-          [styles.withTimebar]: showTimebar,
-          [styles.withSmallScreenSwitch]: isSmallScreen,
-          [styles.withTimebarAndSmallScreenSwitch]: showTimebar && isSmallScreen,
-        })}
-      >
-        <Map />
-      </div>
+      {isRouteWithMap && (
+        <div
+          className={cx(styles.mapContainer, {
+            [styles.withTimebar]: showTimebar,
+            [styles.withSmallScreenSwitch]: isSmallScreen,
+            [styles.withTimebarAndSmallScreenSwitch]: showTimebar && isSmallScreen,
+          })}
+        >
+          <Map />
+        </div>
+      )}
       {showTimebar && <Timebar />}
       <Footer />
     </Fragment>
