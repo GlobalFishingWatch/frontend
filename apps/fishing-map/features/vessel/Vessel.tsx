@@ -3,7 +3,11 @@ import { Fragment, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Spinner, Tab, Tabs } from '@globalfishingwatch/ui-components'
 import { isAuthError } from '@globalfishingwatch/api-client'
-import { selectVesselId } from 'routes/routes.selectors'
+import {
+  selectIsWorkspaceVesselLocation,
+  selectVesselId,
+  selectWorkspaceId,
+} from 'routes/routes.selectors'
 import {
   fetchVesselInfoThunk,
   selectVesselInfoError,
@@ -18,6 +22,7 @@ import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import { ErrorPlaceHolder, WorkspaceLoginError } from 'features/workspace/WorkspaceError'
 import { isGuestUser } from 'features/user/user.slice'
 import { selectVesselDatasetId } from 'features/vessel/vessel.config.selectors'
+import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import VesselIdentity from './identity/VesselIdentity'
 import VesselActivity from './activity/VesselActivity'
 
@@ -29,8 +34,10 @@ const Vessel = () => {
   const dispatch = useAppDispatch()
   const vesselId = useSelector(selectVesselId)
   const datasetId = useSelector(selectVesselDatasetId)
+  const urlWorkspaceId = useSelector(selectWorkspaceId)
   const infoStatus = useSelector(selectVesselInfoStatus)
   const infoError = useSelector(selectVesselInfoError)
+  const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const guestUser = useSelector(isGuestUser)
   const regionsDatasets = useSelector(selectRegionsDatasets)
 
@@ -41,14 +48,18 @@ const Vessel = () => {
   }, [dispatch, regionsDatasets])
 
   useEffect(() => {
-    if (
-      infoStatus === AsyncReducerStatus.Idle ||
-      (infoStatus === AsyncReducerStatus.Error && infoError?.status === 401)
-    ) {
-      dispatch(fetchVesselInfoThunk({ vesselId, datasetId }))
+    if (isWorkspaceVesselLocation) {
+      dispatch(fetchWorkspaceThunk(urlWorkspaceId))
+    } else {
+      if (
+        infoStatus === AsyncReducerStatus.Idle ||
+        (infoStatus === AsyncReducerStatus.Error && infoError?.status === 401)
+      ) {
+        dispatch(fetchVesselInfoThunk({ vesselId, datasetId }))
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [datasetId, dispatch, vesselId])
+  }, [datasetId, dispatch, vesselId, urlWorkspaceId])
 
   const sectionTabs: Tab<VesselSection>[] = useMemo(
     () => [

@@ -29,6 +29,16 @@ import SearchPlaceholder from 'features/search/SearchPlaceholders'
 import { WORKSPACE } from 'routes/routes'
 import I18nNumber from 'features/i18n/i18nNumber'
 import {
+  selectIsSearchLocation,
+  selectIsWorkspaceSearchLocation,
+  selectWorkspaceId,
+} from 'routes/routes.selectors'
+import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
+import { fetchDatasetsByIdsThunk, selectDatasetsStatus } from 'features/datasets/datasets.slice'
+import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
+import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
+import { TEMPLATE_VESSEL_DATAVIEW_SLUG } from 'data/workspaces'
+import {
   fetchVesselSearchThunk,
   cleanVesselSearchResults,
   RESULTS_PER_PAGE,
@@ -54,6 +64,7 @@ const FIRST_FETCH_FILTERS_TO_IGNORE = ['lastTransmissionDate', 'firstTransmissio
 function Search() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const urlWorkspaceId = useSelector(selectWorkspaceId)
   const searchQuery = useSelector(selectSearchQuery)
   const { addNewDataviewInstances } = useDataviewInstancesConnect()
   const basicSearchAllowed = useSelector(isBasicSearchAllowed)
@@ -68,6 +79,8 @@ function Search() {
   const activeSearchOption = useSelector(selectSearchOption)
   const searchResultsPagination = useSelector(selectSearchPagination)
   const vesselsSelected = useSelector(selectSelectedVessels)
+  const isSearchLocation = useSelector(selectIsSearchLocation)
+  const isWorkspaceSearchLocation = useSelector(selectIsWorkspaceSearchLocation)
   const hasFilters =
     Object.entries(searchFilters).filter(([key]) => {
       return !FIRST_FETCH_FILTERS_TO_IGNORE.includes(key) && searchFilters[key] !== undefined
@@ -77,7 +90,17 @@ function Search() {
   ) as Dataset[]
 
   const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const datasetsStatus = useSelector(selectDatasetsStatus)
   const promiseRef = useRef<any>()
+
+  useEffect(() => {
+    if (isWorkspaceSearchLocation) {
+      dispatch(fetchWorkspaceThunk(urlWorkspaceId))
+    } else {
+      dispatch(fetchDataviewsByIdsThunk([TEMPLATE_VESSEL_DATAVIEW_SLUG]))
+      dispatch(fetchDatasetsByIdsThunk([DEFAULT_VESSEL_IDENTITY_ID]))
+    }
+  }, [dispatch, isWorkspaceSearchLocation, urlWorkspaceId])
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchResults = useCallback(
@@ -230,7 +253,12 @@ function Search() {
     })
   }, [debouncedQuery, fetchResults, searchDatasets, searchFilters])
 
-  if (workspaceStatus !== AsyncReducerStatus.Finished) {
+  console.log('🚀 ~ Search ~ isWorkspaceSearchLocation:', isWorkspaceSearchLocation)
+  const showWorkspaceSpinner =
+    isWorkspaceSearchLocation && workspaceStatus !== AsyncReducerStatus.Finished
+  const showDatasetsSpinner = isSearchLocation && datasetsStatus !== AsyncReducerStatus.Finished
+  console.log('🚀 ~ Search ~ datasetsStatus:', datasetsStatus)
+  if (showWorkspaceSpinner || showDatasetsSpinner) {
     return (
       <SearchPlaceholder>
         <Spinner />

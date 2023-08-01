@@ -10,7 +10,6 @@ import {
   selectIsAnySearchLocation,
   selectIsReportLocation,
   selectIsWorkspaceLocation,
-  selectIsWorkspaceVesselLocation,
   selectLocationType,
   selectUrlTimeRange,
   selectUrlViewport,
@@ -128,7 +127,6 @@ function App() {
   const reportAreaBounds = useSelector(selectReportAreaBounds)
   const isTimeComparisonReport = useSelector(selectShowTimeComparison)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
-  const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const isReportLocation = useSelector(selectIsReportLocation)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const showTimebar = workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished
@@ -176,8 +174,6 @@ function App() {
   const homeNeedsFetch = isHomeLocation && currentWorkspaceId !== DEFAULT_WORKSPACE_ID
   // Checking only when REPORT entrypoint or WORKSPACE_REPORT when workspace is not loaded
   const locationNeedsFetch =
-    isAnySearchLocation ||
-    isWorkspaceVesselLocation ||
     locationType === REPORT ||
     (locationType === WORKSPACE_REPORT && currentWorkspaceId !== urlWorkspaceId)
   const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId
