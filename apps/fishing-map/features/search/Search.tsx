@@ -7,6 +7,7 @@ import { CSVLink } from 'react-csv'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import { Spinner, Button, IconButton } from '@globalfishingwatch/ui-components'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
+import { isAuthError } from '@globalfishingwatch/api-client'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
@@ -15,7 +16,7 @@ import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { selectSearchOption, selectSearchQuery } from 'features/app/app.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { isGFWUser } from 'features/user/user.slice'
+import { isGFWUser, isGuestUser } from 'features/user/user.slice'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import {
@@ -25,7 +26,7 @@ import {
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import SearchBasic from 'features/search/SearchBasic'
 import SearchAdvanced from 'features/search/SearchAdvanced'
-import SearchPlaceholder from 'features/search/SearchPlaceholders'
+import SearchPlaceholder, { SearchNotAllowed } from 'features/search/SearchPlaceholders'
 import { WORKSPACE } from 'routes/routes'
 import I18nNumber from 'features/i18n/i18nNumber'
 import {
@@ -34,10 +35,15 @@ import {
   selectWorkspaceId,
 } from 'routes/routes.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
-import { fetchDatasetsByIdsThunk, selectDatasetsStatus } from 'features/datasets/datasets.slice'
+import {
+  fetchDatasetsByIdsThunk,
+  selectDatasetsError,
+  selectDatasetsStatus,
+} from 'features/datasets/datasets.slice'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { TEMPLATE_VESSEL_DATAVIEW_SLUG } from 'data/workspaces'
+import { WorkspaceLoginError } from 'features/workspace/WorkspaceError'
 import {
   fetchVesselSearchThunk,
   cleanVesselSearchResults,
@@ -91,6 +97,8 @@ function Search() {
 
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const datasetsStatus = useSelector(selectDatasetsStatus)
+  const guestUser = useSelector(isGuestUser)
+  const datasetError = useSelector(selectDatasetsError)
   const promiseRef = useRef<any>()
 
   useEffect(() => {
@@ -252,6 +260,26 @@ function Search() {
       filters: searchFilters,
     })
   }, [debouncedQuery, fetchResults, searchDatasets, searchFilters])
+
+  const isDatasetError = datasetsStatus === AsyncReducerStatus.Error
+
+  if (isDatasetError) {
+    return isAuthError(datasetError) ? (
+      <WorkspaceLoginError
+        title={
+          guestUser
+            ? t('errors.searchLogin', 'Login to search vessels')
+            : t(
+                'errors.privateSearch',
+                "Your account doesn't have permissions to search on these datasets"
+              )
+        }
+        emailSubject={`Requesting access for searching vessels`}
+      />
+    ) : (
+      <SearchNotAllowed />
+    )
+  }
 
   const showWorkspaceSpinner =
     isWorkspaceSearchLocation && workspaceStatus !== AsyncReducerStatus.Finished
