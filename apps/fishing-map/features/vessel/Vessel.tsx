@@ -50,13 +50,12 @@ const Vessel = () => {
   useEffect(() => {
     if (isWorkspaceVesselLocation) {
       dispatch(fetchWorkspaceThunk(urlWorkspaceId))
-    } else {
-      if (
-        infoStatus === AsyncReducerStatus.Idle ||
-        (infoStatus === AsyncReducerStatus.Error && infoError?.status === 401)
-      ) {
-        dispatch(fetchVesselInfoThunk({ vesselId, datasetId }))
-      }
+    }
+    if (
+      infoStatus === AsyncReducerStatus.Idle ||
+      (infoStatus === AsyncReducerStatus.Error && infoError?.status === 401)
+    ) {
+      dispatch(fetchVesselInfoThunk({ vesselId, datasetId }))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [datasetId, dispatch, vesselId, urlWorkspaceId])
