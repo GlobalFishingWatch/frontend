@@ -109,7 +109,7 @@ export const dataviews: Dataview[] = [
         ],
         params: [],
         endpoint: 'events',
-        datasetId: 'public-global-loitering-events-carriers:v20201001',
+        datasetId: 'public-global-loitering-events:v20201001',
       },
       {
         query: [
