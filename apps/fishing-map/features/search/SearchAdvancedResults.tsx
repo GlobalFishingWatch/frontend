@@ -61,7 +61,9 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
       },
       {
         accessorFn: ({ geartype }) =>
-          t(`vessel.gearTypes.${geartype?.toLowerCase()}` as any, EMPTY_FIELD_PLACEHOLDER),
+          geartype?.map((gear) =>
+            t(`vessel.gearTypes.${gear.toLowerCase()}` as any, EMPTY_FIELD_PLACEHOLDER)
+          ),
         header: t('vessel.geartype', 'Gear Type'),
       },
       {

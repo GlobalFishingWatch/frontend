@@ -4,7 +4,7 @@ export type VesselInfo = {
   id: string
   callsign: string
   flag: string
-  geartype: string
+  geartype: string[]
   imo: string
   shipname: string
   nShipname: string

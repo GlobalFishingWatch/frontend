@@ -9,29 +9,34 @@ export const EMPTY_FIELD_PLACEHOLDER = '---'
 export const upperFirst = (text: string) =>
   text.charAt(0).toUpperCase() + text.substr(1).toLowerCase()
 
-export const formatInfoField = (fieldValue: string, type: string, translationFn = t) => {
+export const formatInfoField = (fieldValue: string | string[], type: string, translationFn = t) => {
   if (fieldValue) {
-    if (type === 'flag' || type === 'ownerFlag') {
-      return translationFn(`flags:${fieldValue}` as any, fieldValue)
-    }
-    if (type === 'shiptype' || type === 'vesselType') {
-      return translationFn(
-        `vessel.vesselTypes.${fieldValue.toLocaleLowerCase()}` as any,
-        fieldValue
-      )
-    }
-    if (type === 'geartype') {
-      return translationFn(`vessel.gearTypes.${fieldValue.toLocaleLowerCase()}` as any, fieldValue)
-    }
-    if (!fieldValue && (type === 'name' || type === 'shipname')) {
-      return translationFn('common.unknownVessel', 'Unknown Vessel')
-    }
-    if (type === 'name' || type === 'shipname') {
-      return fieldValue.replace(/\b(?![LXIVCDM]+\b)([A-Z,Ñ]+)\b/g, upperFirst)
-    }
-    if (type === 'fleet') {
-      const fleetClean = fieldValue.replaceAll('_', ' ')
-      return fleetClean.charAt(0).toUpperCase() + fleetClean.slice(1)
+    if (typeof fieldValue === 'string') {
+      if (type === 'flag' || type === 'ownerFlag') {
+        return translationFn(`flags:${fieldValue}` as any, fieldValue)
+      }
+      if (type === 'shiptype' || type === 'vesselType') {
+        return translationFn(
+          `vessel.vesselTypes.${fieldValue.toLocaleLowerCase()}` as any,
+          fieldValue
+        )
+      }
+      if (!fieldValue && (type === 'name' || type === 'shipname')) {
+        return translationFn('common.unknownVessel', 'Unknown Vessel')
+      }
+      if (type === 'name' || type === 'shipname') {
+        return fieldValue.replace(/\b(?![LXIVCDM]+\b)([A-Z,Ñ]+)\b/g, upperFirst)
+      }
+      if (type === 'fleet') {
+        const fleetClean = fieldValue.replaceAll('_', ' ')
+        return fleetClean.charAt(0).toUpperCase() + fleetClean.slice(1)
+      }
+    } else {
+      if (type === 'geartype') {
+        return fieldValue.map((value) =>
+          translationFn(`vessel.gearTypes.${value.toLocaleLowerCase()}` as any, fieldValue)
+        )
+      }
     }
     return fieldValue
   }
