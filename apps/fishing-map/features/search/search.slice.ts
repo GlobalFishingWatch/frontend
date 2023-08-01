@@ -144,7 +144,10 @@ export const fetchVesselSearchThunk = createAsyncThunk(
             value: query,
           },
           ...andCombinedFields.flatMap((field) => {
-            if (filters[field] && fieldsAllowed.includes(field)) {
+            const isInFieldsAllowed =
+              fieldsAllowed.includes(field) ||
+              fieldsAllowed.includes(`${filters.infoSource}.${field}`)
+            if (filters[field] && isInFieldsAllowed) {
               return {
                 key: field,
                 value: filters[field],
