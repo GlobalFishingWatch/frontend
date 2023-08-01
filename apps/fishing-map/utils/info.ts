@@ -33,9 +33,11 @@ export const formatInfoField = (fieldValue: string | string[], type: string, tra
       }
     } else {
       if (type === 'geartype') {
-        return fieldValue.map((value) =>
-          translationFn(`vessel.gearTypes.${value.toLocaleLowerCase()}` as any, fieldValue)
-        )
+        return fieldValue
+          .map((value) =>
+            translationFn(`vessel.gearTypes.${value.toLocaleLowerCase()}` as any, fieldValue)
+          )
+          .join(', ')
       }
     }
     return fieldValue
