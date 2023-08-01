@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next'
 import { useCallback } from 'react'
 import { useIntersectionObserver } from '@researchgate/react-intersection-observer'
 import { InputText, Spinner } from '@globalfishingwatch/ui-components'
-import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import SearchBasicResultList from 'features/search/SearchBasicResultList'
@@ -22,11 +21,7 @@ import {
 } from './search.slice'
 import styles from './SearchBasic.module.css'
 import { useSearchConnect } from './search.hook'
-import SearchPlaceholder, {
-  SearchNotAllowed,
-  SearchNoResultsState,
-  SearchEmptyState,
-} from './SearchPlaceholders'
+import { SearchNotAllowed, SearchNoResultsState, SearchEmptyState } from './SearchPlaceholders'
 import { isBasicSearchAllowed, selectVesselSearchResultsResolved } from './search.selectors'
 
 const MIN_SEARCH_CHARACTERS = 3
@@ -52,7 +47,6 @@ function SearchBasic({
   const searchStatus = useSelector(selectSearchStatus)
   const searchStatusCode = useSelector(selectSearchStatusCode)
   const vesselsSelected = useSelector(selectSelectedVessels)
-  const workspaceStatus = useSelector(selectWorkspaceStatus)
   const { dispatchQueryParams } = useLocationConnect()
   const hasMoreResults =
     searchPagination.total !== 0 &&
@@ -76,14 +70,6 @@ function SearchBasic({
     [fetchMoreResults]
   )
   const [spinnerRef] = useIntersectionObserver(handleIntersection, { rootMargin: '100px' })
-
-  if (workspaceStatus !== AsyncReducerStatus.Finished) {
-    return (
-      <SearchPlaceholder>
-        <Spinner />
-      </SearchPlaceholder>
-    )
-  }
 
   return (
     <Downshift

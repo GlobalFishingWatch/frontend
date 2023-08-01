@@ -1,6 +1,7 @@
 import { Dataview, DataviewCategory } from '@globalfishingwatch/api-types'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { TEMPLATE_VESSEL_DATAVIEW_SLUG } from 'data/workspaces'
+import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 
 const paginationQuery = Object.entries(DEFAULT_PAGINATION_PARAMS).map(([id, value]) => ({
   id,
@@ -56,7 +57,7 @@ export const dataviews: Dataview[] = [
           },
         ],
         endpoint: 'vessel',
-        datasetId: 'proto-global-vessel-identity:v20230623',
+        datasetId: DEFAULT_VESSEL_IDENTITY_ID,
       },
       {
         query: [
@@ -108,7 +109,7 @@ export const dataviews: Dataview[] = [
         ],
         params: [],
         endpoint: 'events',
-        datasetId: 'public-global-loitering-events-carriers:v20201001',
+        datasetId: 'public-global-loitering-events:v20201001',
       },
       {
         query: [

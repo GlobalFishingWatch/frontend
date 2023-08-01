@@ -29,18 +29,18 @@ import {
   LATEST_CARRIER_DATASET_ID,
   PUBLIC_SUFIX,
 } from 'data/config'
+import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 
 export const PRESENCE_DATASET_ID = 'public-global-presence'
 export const PRESENCE_TRACKS_DATASET_ID = 'private-global-presence-tracks'
 export const DATASETS_USER_SOURCE_ID = 'user'
-export const VESSEL_IDENTITY_ID = 'proto-global-vessel-identity:v20230623'
 
 type POCDatasetTemplate = Record<
   string,
   Partial<Record<EndpointId, { pathTemplate?: string; query?: Partial<EndpointParam>[] }>>
 >
 const POC_DATASETS_ENDPOINT_PATH_TEMPLATES: POCDatasetTemplate = {
-  [VESSEL_IDENTITY_ID]: {
+  [DEFAULT_VESSEL_IDENTITY_ID]: {
     [EndpointId.Vessel]: {
       // pathTemplate:
       //   'https://gateway.api.staging.globalfishingwatch.org/prototypes/vessels/{{vesselId}}',

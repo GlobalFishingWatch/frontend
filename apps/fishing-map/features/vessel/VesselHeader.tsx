@@ -13,6 +13,7 @@ import { selectActiveVesselsDataviews } from 'features/dataviews/dataviews.slice
 import { COLOR_PRIMARY_BLUE } from 'features/app/App'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
+import { selectIsWorkspaceVesselLocation } from 'routes/routes.selectors'
 import styles from './VesselHeader.module.css'
 
 const VesselHeader = () => {
@@ -21,6 +22,7 @@ const VesselHeader = () => {
   const viewOnlyVessel = useSelector(selectViewOnlyVessel)
   const vessel = useSelector(selectVesselInfoData)
   const dataviews = useSelector(selectActiveVesselsDataviews)
+  const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const vesselDataview = dataviews.find(
     ({ id }) => vessel && id.includes(vessel.selfReportedInfo?.[0].id)
   )
@@ -51,16 +53,18 @@ const VesselHeader = () => {
         {formatInfoField(getVesselProperty(vessel, { property: 'flag' }), 'flag')})
       </h1>
       <div className={styles.actionsContainer}>
-        <IconButton
-          icon={viewOnlyVessel ? 'layers-on' : 'layers-off'}
-          tooltip={
-            viewOnlyVessel
-              ? t('vessel.showOtherLayers', 'Show other layers')
-              : t('vessel.hideOtherLayers', 'Hide other layers')
-          }
-          size="small"
-          onClick={setViewOnlyVessel}
-        />
+        {isWorkspaceVesselLocation && (
+          <IconButton
+            icon={viewOnlyVessel ? 'layers-on' : 'layers-off'}
+            tooltip={
+              viewOnlyVessel
+                ? t('vessel.showOtherLayers', 'Show other layers')
+                : t('vessel.hideOtherLayers', 'Hide other layers')
+            }
+            size="small"
+            onClick={setViewOnlyVessel}
+          />
+        )}
         <IconButton
           icon="target"
           tooltip={t('layer.vessel_fit_bounds', 'Center view on vessel track')}
