@@ -148,7 +148,7 @@ function App() {
       console.warn(e)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReportLocation, sidebarOpen, showTimebar, isTimeComparisonReport])
+  }, [isReportLocation, isAnySearchLocation, sidebarOpen, showTimebar, isTimeComparisonReport])
 
   useEffect(() => {
     setMobileSafeVH()
