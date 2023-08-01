@@ -39,7 +39,7 @@ const multiSelectOptionToQuery = (value: string | MultiSelectOption<string>[]): 
 
 const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFieldParams> = {
   shipname: {
-    operator: 'LIKE',
+    operator: '=',
     transformation: (value) => `'${(value as string).toLocaleUpperCase()}'`,
   },
   ssvid: {
@@ -85,13 +85,18 @@ const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFiel
   },
 }
 
-export const getAdvancedSearchQuery = (fields: AdvancedSearchQueryField[]) => {
+export const getAdvancedSearchQuery = (
+  fields: AdvancedSearchQueryField[],
+  { rootObject }: { rootObject?: 'registryInfo' | 'selfReportedInfo' }
+) => {
   const getFieldQuery = (field: AdvancedSearchQueryField) => {
     const params = FIELDS_PARAMS[field.key]
     const value = params?.transformation
       ? params.transformation(field.value as string | MultiSelectOption[])
       : `'${field.value}'`
-    const query = `${field.key} ${params?.operator} ${value}`
+    const query = rootObject
+      ? `${rootObject}.${field.key} ${params?.operator} ${value}`
+      : `${field.key} ${params?.operator} ${value}`
     return query
   }
 

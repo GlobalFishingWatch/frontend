@@ -42,6 +42,7 @@ export type WorkspaceStateProperty =
   | 'timebarSelectedEnvId'
   | 'bivariateDataviews'
   | 'activityCategory'
+  | 'infoSource'
   | ReportStateProperty
   | AdvancedSearchQueryFieldKey
 

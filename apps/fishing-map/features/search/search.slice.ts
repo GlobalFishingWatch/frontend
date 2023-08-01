@@ -17,7 +17,7 @@ import {
   SelfReportedInfo,
   VesselRegistryInfo,
 } from '@globalfishingwatch/api-types'
-import { MultiSelectOption } from '@globalfishingwatch/ui-components'
+import { MultiSelectOption, SelectOption } from '@globalfishingwatch/ui-components'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
@@ -43,8 +43,9 @@ export const EMPTY_FILTERS = {
 }
 
 export enum VesselInfoSourceEnum {
-  Registry = 'registry',
-  SelfReported = 'self-reported',
+  Registry = 'registryInfo',
+  SelfReported = 'selfReportedInfo',
+  All = 'all',
 }
 
 export type VesselDatasetInfo = {
@@ -64,6 +65,7 @@ export type SearchFilter = {
   callsign?: string
   owner?: string
   sources?: MultiSelectOption<string>[]
+  infoSource?: SelectOption<VesselInfoSourceEnum>[]
 } & Partial<Record<SupportedDatasetSchema, MultiSelectOption<string>[]>>
 
 interface SearchState {
@@ -151,7 +153,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
             return []
           }),
         ]
-        advancedQuery = getAdvancedSearchQuery(fields)
+        advancedQuery = getAdvancedSearchQuery(fields, { rootObject: filters.infoSource as any })
       }
 
       const datasetConfig = {

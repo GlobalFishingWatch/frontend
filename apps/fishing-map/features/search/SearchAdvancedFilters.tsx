@@ -1,7 +1,13 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { MultiSelect, InputDate, InputText } from '@globalfishingwatch/ui-components'
+import {
+  MultiSelect,
+  InputDate,
+  InputText,
+  Select,
+  SelectOption,
+} from '@globalfishingwatch/ui-components'
 import { getFlags } from 'utils/flags'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { DEFAULT_WORKSPACE } from 'data/config'
@@ -14,6 +20,7 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { showSchemaFilter } from 'features/workspace/activity/ActivitySchemaFilter'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { selectAdvancedSearchDatasets } from 'features/search/search.selectors'
+import { VesselInfoSourceEnum } from 'features/search/search.slice'
 import { useSearchFiltersConnect } from './search.hook'
 import styles from './SearchAdvancedFilters.module.css'
 
@@ -51,6 +58,7 @@ function SearchAdvancedFilters() {
     ssvid,
     callsign,
     owner,
+    infoSource,
   } = searchFilters
 
   const flagOptions = useMemo(getFlags, [])
@@ -62,6 +70,30 @@ function SearchAdvancedFilters() {
         label: <DatasetLabel dataset={dataset} />,
       }))
   }, [datasets])
+
+  const infoSourceOptions: SelectOption<VesselInfoSourceEnum>[] = useMemo(
+    () => [
+      {
+        id: VesselInfoSourceEnum.All,
+        label: t(`selects.allSelected` as any, 'all'),
+      },
+      {
+        id: VesselInfoSourceEnum.Registry,
+        label: t(
+          `vessel.infoSources.${VesselInfoSourceEnum.Registry}` as any,
+          VesselInfoSourceEnum.Registry
+        ),
+      },
+      {
+        id: VesselInfoSourceEnum.SelfReported,
+        label: t(
+          `vessel.infoSources.${VesselInfoSourceEnum.SelfReported}` as any,
+          VesselInfoSourceEnum.SelfReported
+        ),
+      },
+    ],
+    [t]
+  )
 
   useEffect(() => {
     if (lastTransmissionDate === undefined) {
@@ -141,6 +173,21 @@ function SearchAdvancedFilters() {
         }}
         onCleanClick={() => {
           setSearchFilters({ flag: undefined })
+        }}
+      />
+      <Select
+        label={t('vessel.infoSource', 'Info Source')}
+        placeholder={getPlaceholderBySelections(flag)}
+        options={infoSourceOptions}
+        selectedOption={infoSourceOptions.find(({ id }) => id === infoSource)}
+        onSelect={({ id }) => {
+          setSearchFilters({ infoSource: id })
+        }}
+        onRemove={() => {
+          setSearchFilters({ infoSource: undefined })
+        }}
+        onCleanClick={() => {
+          setSearchFilters({ infoSource: undefined })
         }}
       />
       {schemaFilters.map((schemaFilter) => {

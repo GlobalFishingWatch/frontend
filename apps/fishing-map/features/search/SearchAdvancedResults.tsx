@@ -65,9 +65,14 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
         header: t('vessel.geartype', 'Gear Type'),
       },
       {
-        accessorFn: ({ dataset }) => <DatasetLabel dataset={dataset} />,
-        header: t('vessel.source', 'Source'),
+        accessorFn: ({ infoSource }) =>
+          t(`vessel.infoSources.${infoSource}` as any, infoSource || EMPTY_FIELD_PLACEHOLDER),
+        header: t('vessel.infoSource', 'Info Source'),
       },
+      // {
+      //   accessorFn: ({ dataset }) => <DatasetLabel dataset={dataset} />,
+      //   header: t('vessel.source', 'Source'),
+      // },
       // {
       //   accessorFn: ({ msgCount }: VesselWithDatasetsResolved) => <I18nNumber number={msgCount} />,
       //   header: t('vessel.transmission_other', 'Transmissions'),

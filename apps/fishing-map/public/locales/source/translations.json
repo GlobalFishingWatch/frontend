@@ -608,6 +608,7 @@
       "trollers": "Troller",
       "tuna_purse_seines": "Tuna Purse Seine"
     },
+    "infoSource": "Info Source",
     "infoSources": {
       "registry": "Registry",
       "self-reported": "Self reported"

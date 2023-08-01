@@ -128,6 +128,7 @@ export const selectSearchFilters = createSelector(
     selectQueryParam('targetSpecies'),
     selectQueryParam('fleet'),
     selectQueryParam('origin'),
+    selectQueryParam('infoSource'),
   ],
   (
     flag,
@@ -142,7 +143,8 @@ export const selectSearchFilters = createSelector(
     geartype,
     targetSpecies,
     fleet,
-    origin
+    origin,
+    infoSource
   ) => {
     return {
       flag,
@@ -158,6 +160,7 @@ export const selectSearchFilters = createSelector(
       targetSpecies,
       fleet,
       origin,
+      infoSource,
     }
   }
 )
