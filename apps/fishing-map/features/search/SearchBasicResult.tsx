@@ -24,6 +24,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectVesselsDataviews } from 'features/dataviews/dataviews.slice'
 import { selectCurrentWorkspaceId } from 'features/workspace/workspace.selectors'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import styles from './SearchBasicResult.module.css'
 
 type SearchBasicResultProps = {
@@ -52,28 +53,7 @@ function SearchBasicResult({
   const [trackBbox, setTrackBbox] = useState<Bbox>()
   const addVesselDataviewInstance = useAddVesselDataviewInstance()
   const fitBounds = useMapFitBounds()
-
-  const onVesselClick = useCallback(
-    (vessel: VesselWithDatasetsResolved) => {
-      if (workspaceId) {
-        addVesselDataviewInstance(vessel)
-      }
-      dispatch(cleanVesselSearchResults())
-      if (trackBbox) {
-        fitBounds(trackBbox)
-      }
-    },
-    [addVesselDataviewInstance, dispatch, fitBounds, trackBbox, workspaceId]
-  )
-
-  const onYearHover = useCallback(
-    (year: number) => {
-      if (!isSmallScreen) {
-        setHighlightedYear(year)
-      }
-    },
-    [isSmallScreen]
-  )
+  const { setTimerange } = useTimerangeConnect()
 
   const {
     id,
@@ -92,6 +72,7 @@ function SearchBasicResult({
   } = vessel
   // TODO decide how we manage VMS properties
   const { fleet, origin, casco, nationalId, matricula } = vessel as any
+
   const isInWorkspace = vesselDataviews?.some(
     (vessel) => vessel.id === `${VESSEL_LAYER_PREFIX}${id}`
   )
@@ -103,6 +84,38 @@ function SearchBasicResult({
     tooltip = t('search.vesselSelected', 'Vessel selected')
   }
   const { onClick, ...itemProps } = getItemProps({ item: vessel, index })
+
+  const onVesselClick = useCallback(
+    (vessel: VesselWithDatasetsResolved) => {
+      if (workspaceId) {
+        addVesselDataviewInstance(vessel)
+      }
+      dispatch(cleanVesselSearchResults())
+      if (trackBbox) {
+        fitBounds(trackBbox)
+      }
+      setTimerange({ start: transmissionDateFrom, end: transmissionDateTo })
+    },
+    [
+      addVesselDataviewInstance,
+      dispatch,
+      fitBounds,
+      setTimerange,
+      trackBbox,
+      transmissionDateFrom,
+      transmissionDateTo,
+      workspaceId,
+    ]
+  )
+
+  const onYearHover = useCallback(
+    (year: number) => {
+      if (!isSmallScreen) {
+        setHighlightedYear(year)
+      }
+    },
+    [isSmallScreen]
+  )
 
   const onTrackFootprintLoad = (data: FeatureCollection) => {
     const segments = geoJSONToSegments(data)
