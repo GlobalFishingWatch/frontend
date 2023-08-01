@@ -7,12 +7,14 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { resetVesselState, selectVesselInfoDataId } from 'features/vessel/vessel.slice'
 import { VESSEL, WORKSPACE_VESSEL } from 'routes/routes'
-import { selectLocationQuery } from 'routes/routes.selectors'
+import { selectIsSearchLocation, selectLocationQuery } from 'routes/routes.selectors'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
+import { QueryParams } from 'types'
 
-type VesselLinkProps = {
+export type VesselLinkProps = {
   vesselId: string
   datasetId?: string
+  query?: Partial<Record<keyof QueryParams, string | number>>
   children: any
   onClick?: () => void
 }
@@ -21,9 +23,11 @@ const VesselLink = ({
   datasetId = DEFAULT_VESSEL_IDENTITY_ID,
   children,
   onClick,
+  query,
 }: VesselLinkProps) => {
   const workspaceId = useSelector(selectCurrentWorkspaceId)
-  const query = useSelector(selectLocationQuery)
+  const locationQuery = useSelector(selectLocationQuery)
+  const isSearchLocation = useSelector(selectIsSearchLocation)
   const vesselInfoDataId = useSelector(selectVesselInfoDataId)
   const workspaceCategory = useSelector(selectCurrentWorkspaceCategory)
   const dispatch = useDispatch()
@@ -49,10 +53,11 @@ const VesselLink = ({
           vesselId,
         },
         query: {
-          ...query,
+          ...locationQuery,
           // Clean search url when clicking on vessel link
           qry: undefined,
           vesselDatasetId: datasetId,
+          ...((isSearchLocation && query) || {}),
         },
       }}
       onClick={onLinkClick}
