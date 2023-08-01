@@ -38,7 +38,6 @@ export const geoJSONToSegments = (
   geoJSON: FeatureCollection,
   { onlyExtents }: { onlyExtents?: boolean } = {}
 ): Segment[] => {
-  console.log('onlyExtents:', onlyExtents)
   return geoJSON.features.map((feature) => {
     const timestamps = feature.properties?.coordinateProperties.times
     const id = feature.properties?.id
