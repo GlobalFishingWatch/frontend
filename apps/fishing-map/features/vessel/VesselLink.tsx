@@ -7,7 +7,7 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { resetVesselState, selectVesselInfoDataId } from 'features/vessel/vessel.slice'
 import { VESSEL, WORKSPACE_VESSEL } from 'routes/routes'
-import { selectLocationQuery } from 'routes/routes.selectors'
+import { selectIsStandaloneSearchLocation, selectLocationQuery } from 'routes/routes.selectors'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import { QueryParams } from 'types'
 
@@ -27,6 +27,7 @@ const VesselLink = ({
 }: VesselLinkProps) => {
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const locationQuery = useSelector(selectLocationQuery)
+  const isSearchLocation = useSelector(selectIsStandaloneSearchLocation)
   const vesselInfoDataId = useSelector(selectVesselInfoDataId)
   const workspaceCategory = useSelector(selectCurrentWorkspaceCategory)
   const dispatch = useDispatch()
@@ -45,10 +46,12 @@ const VesselLink = ({
   return (
     <Link
       to={{
-        type: workspaceId ? WORKSPACE_VESSEL : VESSEL,
+        type: isSearchLocation ? VESSEL : WORKSPACE_VESSEL,
         payload: {
-          category: workspaceCategory,
-          workspaceId: workspaceId,
+          ...(!isSearchLocation && {
+            category: workspaceCategory,
+            workspaceId: workspaceId,
+          }),
           vesselId,
         },
         query: {

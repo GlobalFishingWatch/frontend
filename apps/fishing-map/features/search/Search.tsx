@@ -30,7 +30,7 @@ import SearchPlaceholder, { SearchNotAllowed } from 'features/search/SearchPlace
 import { WORKSPACE } from 'routes/routes'
 import I18nNumber from 'features/i18n/i18nNumber'
 import {
-  selectIsSearchLocation,
+  selectIsStandaloneSearchLocation,
   selectIsWorkspaceSearchLocation,
   selectWorkspaceId,
 } from 'routes/routes.selectors'
@@ -85,7 +85,7 @@ function Search() {
   const activeSearchOption = useSelector(selectSearchOption)
   const searchResultsPagination = useSelector(selectSearchPagination)
   const vesselsSelected = useSelector(selectSelectedVessels)
-  const isSearchLocation = useSelector(selectIsSearchLocation)
+  const isSearchLocation = useSelector(selectIsStandaloneSearchLocation)
   const isWorkspaceSearchLocation = useSelector(selectIsWorkspaceSearchLocation)
   const hasFilters =
     Object.entries(searchFilters).filter(([key]) => {

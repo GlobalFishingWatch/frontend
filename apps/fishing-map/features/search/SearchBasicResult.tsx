@@ -25,7 +25,7 @@ import { selectVesselsDataviews } from 'features/dataviews/dataviews.slice'
 import { selectCurrentWorkspaceId } from 'features/workspace/workspace.selectors'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { selectIsSearchLocation } from 'routes/routes.selectors'
+import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
 import styles from './SearchBasicResult.module.css'
 
 type SearchBasicResultProps = {
@@ -50,7 +50,7 @@ function SearchBasicResult({
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const vesselDataviews = useSelector(selectVesselsDataviews)
   const isSmallScreen = useSmallScreen()
-  const isSearchLocation = useSelector(selectIsSearchLocation)
+  const isSearchLocation = useSelector(selectIsStandaloneSearchLocation)
   const [highlightedYear, setHighlightedYear] = useState<number>()
   const [trackBbox, setTrackBbox] = useState<Bbox>()
   const addVesselDataviewInstance = useAddVesselDataviewInstance()

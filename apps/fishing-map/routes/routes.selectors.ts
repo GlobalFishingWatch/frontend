@@ -63,7 +63,7 @@ export const selectIsUserLocation = createSelector(
   (locationType) => locationType === USER
 )
 
-export const selectIsSearchLocation = createSelector(
+export const selectIsStandaloneSearchLocation = createSelector(
   [selectLocationType],
   (locationType) => locationType === SEARCH
 )
@@ -74,7 +74,7 @@ export const selectIsWorkspaceSearchLocation = createSelector(
 )
 
 export const selectIsAnySearchLocation = createSelector(
-  [selectIsSearchLocation, selectIsWorkspaceSearchLocation],
+  [selectIsStandaloneSearchLocation, selectIsWorkspaceSearchLocation],
   (searchLocation, workspaceSearchLocation) => searchLocation || workspaceSearchLocation
 )
 
