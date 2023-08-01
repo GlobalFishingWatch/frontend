@@ -23,6 +23,7 @@ function SearchBasicResultList({
       {searchResults?.map((vessel, index: number) => {
         return (
           <SearchBasicResult
+            key={index}
             vessel={vessel}
             index={index}
             highlightedIndex={highlightedIndex}
