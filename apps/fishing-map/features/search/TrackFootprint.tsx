@@ -14,6 +14,7 @@ type TrackFootprintProps = {
   vesselId: string
   trackDatasetId?: string
   highlightedYear?: number
+  onDataLoad?: (data: FeatureCollection) => void
 }
 
 const FOOTPRINT_WIDTH = 300
@@ -23,7 +24,12 @@ const PROJECTION = geoEqualEarth()
   .scale(53.5)
   .translate([FOOTPRINT_WIDTH / 2, FOOTPRINT_HEIGHT / 2])
 
-function TrackFootprint({ vesselId, trackDatasetId, highlightedYear }: TrackFootprintProps) {
+function TrackFootprint({
+  vesselId,
+  trackDatasetId,
+  highlightedYear,
+  onDataLoad,
+}: TrackFootprintProps) {
   const [trackData, setTrackData] = useState<FeatureCollection<Geometry, GeoJsonProperties>>()
   const [error, setError] = useState(false)
   const fullCanvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -50,8 +56,9 @@ function TrackFootprint({ vesselId, trackDatasetId, highlightedYear }: TrackFoot
       const segments = trackValueArrayToSegments(data, [Field.lonlat, Field.timestamp])
       const geoJson = segmentsToGeoJSON(segments)
       setTrackData(geoJson)
+      if (onDataLoad) onDataLoad(geoJson)
     },
-    [trackDatasetId]
+    [onDataLoad, trackDatasetId]
   )
 
   useEffect(() => {

@@ -8,7 +8,7 @@ import { InputText, Spinner } from '@globalfishingwatch/ui-components'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import SearchBasicResults from 'features/search/SearchBasicResults'
+import SearchBasicResultList from 'features/search/SearchBasicResultList'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import {
@@ -138,7 +138,7 @@ function SearchBasic({
                     ?
                   </li>
                 )}
-              <SearchBasicResults
+              <SearchBasicResultList
                 searchResults={searchResults}
                 highlightedIndex={highlightedIndex as number}
                 setHighlightedIndex={setHighlightedIndex}
