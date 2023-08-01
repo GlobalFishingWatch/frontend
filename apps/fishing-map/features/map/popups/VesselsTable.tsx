@@ -234,12 +234,15 @@ function VesselsTable({
                     })?.toLowerCase()}` as any,
                     vessel.shiptype ?? EMPTY_FIELD_PLACEHOLDER
                   )}`
-                : `${t(
-                    `vessel.gearTypes.${getVesselProperty(vessel, {
-                      property: 'geartype',
-                    })?.toLowerCase()}` as any,
-                    vessel.geartype ?? EMPTY_FIELD_PLACEHOLDER
-                  )}`
+                : getVesselProperty<string[]>(vessel, {
+                    property: 'geartype',
+                  }).map(
+                    (gear) =>
+                      `${t(
+                        `vessel.gearTypes.${gear.toLowerCase()}` as any,
+                        vessel.geartype ?? EMPTY_FIELD_PLACEHOLDER
+                      )}`
+                  )
 
               // Temporary workaround for public-global-all-vessels dataset as we
               // don't want to show the pin only for that dataset for guest users
