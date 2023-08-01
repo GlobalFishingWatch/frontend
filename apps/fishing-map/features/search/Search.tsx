@@ -253,11 +253,10 @@ function Search() {
     })
   }, [debouncedQuery, fetchResults, searchDatasets, searchFilters])
 
-  console.log('🚀 ~ Search ~ isWorkspaceSearchLocation:', isWorkspaceSearchLocation)
   const showWorkspaceSpinner =
     isWorkspaceSearchLocation && workspaceStatus !== AsyncReducerStatus.Finished
   const showDatasetsSpinner = isSearchLocation && datasetsStatus !== AsyncReducerStatus.Finished
-  console.log('🚀 ~ Search ~ datasetsStatus:', datasetsStatus)
+
   if (showWorkspaceSpinner || showDatasetsSpinner) {
     return (
       <SearchPlaceholder>

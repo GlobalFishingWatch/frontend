@@ -20,14 +20,11 @@ import {
   selectEventsDataviews,
   selectActiveTemporalgridDataviews,
 } from 'features/dataviews/dataviews.selectors'
-import {
-  VESSEL_IDENTITY_ID,
-  fetchDatasetByIdThunk,
-  selectDatasetById,
-} from 'features/datasets/datasets.slice'
+import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { isGuestUser } from 'features/user/user.slice'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { getUTCDateTime } from 'utils/dates'
+import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 
 export const MAX_TOOLTIP_LIST = 5
 
@@ -312,7 +309,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
                   return vesselInfoId === vessel.id
                 })
                 // TODO remove once relatedDatasets points to this dataset
-                const infoDataset = selectDatasetById(VESSEL_IDENTITY_ID)(state)
+                const infoDataset = selectDatasetById(DEFAULT_VESSEL_IDENTITY_ID)(state)
                 // const infoDataset = selectDatasetById(vesselInfo?.dataset as string)(state)
                 const trackFromRelatedDataset = infoDataset || vessel.dataset
                 const trackDatasetId = getRelatedDatasetByType(
