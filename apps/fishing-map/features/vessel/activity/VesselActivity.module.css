@@ -12,8 +12,16 @@
   flex: 1;
 }
 
-.placeholder {
-  height: 40rem;
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 20rem;
+}
+
+.error {
+  color: var(--color-danger-secondary-red);
 }
 
 .actions {

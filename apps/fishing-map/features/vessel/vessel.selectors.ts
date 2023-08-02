@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
 import { resolveDataviewDatasetResources } from '@globalfishingwatch/dataviews-client'
-import { ApiEvent, DatasetTypes, EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
+import { ApiEvent, DatasetTypes, EventTypes } from '@globalfishingwatch/api-types'
 import { selectTimeRange, selectVisibleEvents } from 'features/app/app.selectors'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import { selectResources } from 'features/resources/resources.slice'
@@ -21,17 +21,19 @@ export const selectEventsResources = createSelector(
   }
 )
 
-export const selectVesselEventsData = createSelector(
+export const selectVesselEventsResources = createSelector(
   [selectEventsResources, selectVesselInfoDataId],
   (eventsResources, vesselId) => {
-    const vesselProfileEventResources = eventsResources?.filter((r) => {
-      const isLoaded = r.status === ResourceStatus.Finished
-      const isVesselResource = r.datasetConfig?.query?.some(
-        (q) => q.id === 'vessels' && q.value === vesselId
-      )
-      return isVesselResource && isLoaded
+    return eventsResources?.filter((r) => {
+      return r.datasetConfig?.query?.some((q) => q.id === 'vessels' && q.value === vesselId)
     })
-    return vesselProfileEventResources
+  }
+)
+
+export const selectVesselEventsData = createSelector(
+  [selectVesselEventsResources],
+  (eventsResources) => {
+    return eventsResources
       ?.flatMap((r) => (r.data as ApiEvent[]) || [])
       .sort((a, b) => (a.start > b.start ? -1 : 1))
   }

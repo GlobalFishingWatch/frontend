@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { Fragment, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Button, IconButton, Spinner } from '@globalfishingwatch/ui-components'
+import { ResourceStatus } from '@globalfishingwatch/api-types'
 import { ActivityByType } from 'features/vessel/activity/activity-by-type/ActivityByType'
 import ActivityByVoyage from 'features/vessel/activity/activity-by-voyage/ActivityByVoyage'
 import { selectVesselEventsLoading } from 'features/vessel/activity/vessels-activity.selectors'
@@ -13,6 +14,7 @@ import VesselEventsLegend from 'features/workspace/vessels/VesselEventsLegend'
 import { selectVesselsDataviews } from 'features/dataviews/dataviews.slice'
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import { selectVisibleEvents } from 'features/app/app.selectors'
+import { selectVesselEventsResources } from 'features/vessel/vessel.selectors'
 import styles from './VesselActivity.module.css'
 import { VesselActivitySummary } from './VesselActivitySummary'
 
@@ -24,6 +26,7 @@ const VesselActivity = () => {
   const dataviews = useSelector(selectVesselsDataviews)
   const activityMode = useSelector(selectVesselActivityMode)
   const eventsLoading = useSelector(selectVesselEventsLoading)
+  const eventsResources = useSelector(selectVesselEventsResources)
 
   const setActivityMode = (vesselActivityMode: VesselProfileActivityMode) => {
     dispatchQueryParams({ vesselActivityMode })
@@ -36,6 +39,16 @@ const VesselActivity = () => {
     return (
       <div className={styles.placeholder}>
         <Spinner />
+      </div>
+    )
+  }
+  const eventsError = eventsResources.some((resource) => resource.status === ResourceStatus.Error)
+  if (eventsError) {
+    return (
+      <div className={styles.emptyState}>
+        <span className={styles.error}>
+          {t('errors.profileEvents', 'There was an error requesting the vessel events.')}
+        </span>
       </div>
     )
   }

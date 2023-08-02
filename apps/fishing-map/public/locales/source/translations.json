@@ -298,6 +298,7 @@
     "privateView": "This is a private view",
     "privateSearch": "Your account doesn't have permissions to search on these datasets",
     "reportLogin": "Login to see the vessels active in the area",
+    "profileEvents": "There was an error requesting the vessel events.",
     "profileLogin": "Login to see this vessel",
     "requestAccess": "Request access",
     "searchLogin": "Login to search vessels",
