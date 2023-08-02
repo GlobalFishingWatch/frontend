@@ -15,7 +15,7 @@ import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { formatInfoField } from 'utils/info'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
-import { selectTimeRange } from 'features/app/app.selectors'
+import { selectTimeRange, selectVisibleEvents } from 'features/app/app.selectors'
 import { selectVesselEventsFilteredByTimerange } from 'features/vessel/vessel.selectors'
 import styles from './VesselActivitySummary.module.css'
 
@@ -27,6 +27,7 @@ export const VesselActivitySummary = () => {
   const events = useSelector(selectVesselEventsFilteredByTimerange)
   const voyages = useSelector(selectVoyagesNumber)
   const timerange = useSelector(selectTimeRange)
+  const visibleEvents = useSelector(selectVisibleEvents)
   const eventsByType = useSelector(selectEventsGroupedByType)
   const { getRegionNamesByType } = useActivityEventConnect()
   const { activityRegions, mostVisitedPorts } = useSelector(selectActivitySummary)
@@ -62,7 +63,7 @@ export const VesselActivitySummary = () => {
       events?.length as number
     )}</strong> ${t('common.event', { defaultValue: 'events', count: events?.length })}`,
     voyages:
-      voyages !== 0
+      voyages !== 0 && (visibleEvents.includes('port_visit') || visibleEvents === 'all')
         ? `${t('common.in', 'in')} <strong>${formatI18nNumber(voyages as number)}</strong> ${t(
             'vessel.voyage',
             { defaultValue: 'voyages', count: voyages }
