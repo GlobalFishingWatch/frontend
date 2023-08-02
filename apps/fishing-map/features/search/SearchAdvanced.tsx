@@ -7,22 +7,16 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import SearchAdvancedResults from 'features/search/SearchAdvancedResults'
 import { SearchComponentProps } from 'features/search/SearchBasic'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectSearchQuery } from 'features/app/app.selectors'
-import { EMPTY_FILTERS, selectSearchStatus, selectSearchStatusCode } from './search.slice'
+import { selectSearchQuery } from 'features/search/search.config.selectors'
+import { EMPTY_FILTERS } from 'features/search/search.config'
+import { selectSearchStatus, selectSearchStatusCode } from './search.slice'
 import styles from './SearchAdvanced.module.css'
 import SearchAdvancedFilters from './SearchAdvancedFilters'
-import { useSearchConnect } from './search.hook'
+import { useSearchConnect, useSearchFiltersConnect } from './search.hook'
 import SearchPlaceholder, { SearchNoResultsState, SearchEmptyState } from './SearchPlaceholders'
 import { isAdvancedSearchAllowed } from './search.selectors'
 
-const MIN_SEARCH_CHARACTERS = 3
-
-function SearchAdvanced({
-  onSuggestionClick,
-  fetchMoreResults,
-  onConfirm,
-  debouncedQuery,
-}: SearchComponentProps) {
+function SearchAdvanced({ onSuggestionClick, fetchMoreResults, onConfirm }: SearchComponentProps) {
   const { t } = useTranslation()
   const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
   const advancedSearchAllowed = useSelector(isAdvancedSearchAllowed)
@@ -30,6 +24,7 @@ function SearchAdvanced({
   const searchQuery = useSelector(selectSearchQuery)
   const searchStatusCode = useSelector(selectSearchStatusCode)
   const { dispatchQueryParams } = useLocationConnect()
+  const { hasFilters } = useSearchFiltersConnect()
 
   const resetSearchState = useCallback(() => {
     dispatchQueryParams(EMPTY_FILTERS)
@@ -65,14 +60,6 @@ function SearchAdvanced({
             autoFocus
           />
           <SearchAdvancedFilters />
-          {debouncedQuery && debouncedQuery?.length < MIN_SEARCH_CHARACTERS && (
-            <div className={styles.red}>
-              {t('search.minCharacters', {
-                defaultValue: 'Please type at least {{count}} characters',
-                count: MIN_SEARCH_CHARACTERS,
-              })}
-            </div>
-          )}
           {searchQuery &&
             searchSuggestion &&
             searchSuggestion !== searchQuery &&
@@ -92,6 +79,7 @@ function SearchAdvanced({
           <Button
             className={styles.confirmButton}
             onClick={onConfirm}
+            disabled={!hasFilters && !searchQuery}
             loading={
               searchStatus === AsyncReducerStatus.Loading ||
               searchStatus === AsyncReducerStatus.Aborted

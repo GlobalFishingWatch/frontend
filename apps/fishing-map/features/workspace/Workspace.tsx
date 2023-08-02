@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react'
-import dynamic from 'next/dynamic'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DndContext } from '@dnd-kit/core'
@@ -12,7 +11,7 @@ import { selectWorkspaceStatus, selectWorkspace } from 'features/workspace/works
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { isGFWUser } from 'features/user/user.slice'
 import { selectLocationCategory } from 'routes/routes.selectors'
-import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
+import { selectReadOnly } from 'features/app/app.selectors'
 import { PUBLIC_SUFIX, ROOT_DOM_ELEMENT, USER_SUFIX } from 'data/config'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/dataviews.slice'
@@ -35,13 +34,10 @@ import EnvironmentalSection from './environmental/EnvironmentalSection'
 import ContextAreaSection from './context-areas/ContextAreaSection'
 import styles from './Workspace.module.css'
 
-const Search = dynamic(() => import(/* webpackChunkName: "Search" */ 'features/search/Search'))
-
 function Workspace() {
   useHideLegacyActivityCategoryDataviews()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const searchQuery = useSelector(selectSearchQuery)
   const readOnly = useSelector(selectReadOnly)
   const gfwUser = useSelector(isGFWUser)
   const workspace = useSelector(selectWorkspace)
@@ -123,10 +119,6 @@ function Workspace() {
     workspaceVesselGroupsStatus === AsyncReducerStatus.Error
   ) {
     return <WorkspaceError />
-  }
-
-  if (searchQuery !== undefined) {
-    return <Search />
   }
 
   return (

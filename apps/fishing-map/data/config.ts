@@ -79,8 +79,6 @@ export const CURRENT_YEAR = new Date().getFullYear()
 
 export const DEFAULT_WORKSPACE = {
   ...DEFAULT_VIEWPORT,
-  query: undefined,
-  searchOption: 'basic',
   readOnly: false,
   daysFromLatest: undefined,
   sidebarOpen: true,

@@ -20,7 +20,7 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { showSchemaFilter } from 'features/workspace/activity/ActivitySchemaFilter'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { selectAdvancedSearchDatasets } from 'features/search/search.selectors'
-import { VesselInfoSourceEnum } from 'features/search/search.slice'
+import { VesselInfoSourceEnum } from 'features/search/search.config'
 import { useSearchFiltersConnect } from './search.hook'
 import styles from './SearchAdvancedFilters.module.css'
 
@@ -74,22 +74,12 @@ function SearchAdvancedFilters() {
   const infoSourceOptions: SelectOption<VesselInfoSourceEnum>[] = useMemo(
     () => [
       {
-        id: VesselInfoSourceEnum.All,
-        label: t(`selects.allSelected` as any, 'all'),
-      },
-      {
         id: VesselInfoSourceEnum.Registry,
-        label: t(
-          `vessel.infoSources.${VesselInfoSourceEnum.Registry}` as any,
-          VesselInfoSourceEnum.Registry
-        ),
+        label: t(`vessel.infoSources.${VesselInfoSourceEnum.Registry}` as any, 'Registry only'),
       },
       {
         id: VesselInfoSourceEnum.SelfReported,
-        label: t(
-          `vessel.infoSources.${VesselInfoSourceEnum.SelfReported}` as any,
-          VesselInfoSourceEnum.SelfReported
-        ),
+        label: t(`vessel.infoSources.${VesselInfoSourceEnum.SelfReported}` as any, 'Any'),
       },
     ],
     [t]
@@ -111,10 +101,7 @@ function SearchAdvancedFilters() {
   const schemaFilters = schemaFilterIds.map((id) => getFiltersBySchema(dataview, id))
 
   const onSourceSelect = (filter) => {
-    const newSources = [
-      ...(sources || []),
-      { id: filter.id, label: filter.label.props.dataset.name },
-    ]
+    const newSources = [...(sources || []), filter.id]
     const notCompatibleSchemaFilters = getIncompatibleFilters(newSources)
     setSearchFilters({ ...notCompatibleSchemaFilters, sources: newSources })
   }
@@ -162,14 +149,15 @@ function SearchAdvancedFilters() {
       />
       <MultiSelect
         label={t('layer.flagState_other', 'Flag States')}
-        placeholder={getPlaceholderBySelections(flag)}
+        placeholder={getPlaceholderBySelections({ selection: flag, options: flagOptions })}
         options={flagOptions}
-        selectedOptions={flag}
-        onSelect={({ alias, ...rest }) => {
-          setSearchFilters({ flag: [...(flag || []), rest] })
+        selectedOptions={flagOptions.filter((f) => flag?.includes(f.id))}
+        onSelect={({ id }) => {
+          const flags = flag ? [...flag, id] : [id]
+          setSearchFilters({ flag: flags })
         }}
         onRemove={(_, rest) => {
-          setSearchFilters({ flag: rest })
+          setSearchFilters({ flag: rest.map(({ id }) => id) })
         }}
         onCleanClick={() => {
           setSearchFilters({ flag: undefined })
@@ -177,16 +165,16 @@ function SearchAdvancedFilters() {
       />
       <Select
         label={t('vessel.infoSource', 'Info Source')}
-        placeholder={getPlaceholderBySelections(flag)}
+        placeholder={getPlaceholderBySelections({
+          selection: infoSource,
+          options: infoSourceOptions,
+        })}
         options={infoSourceOptions}
         selectedOption={infoSourceOptions.find(({ id }) => id === infoSource)}
         onSelect={({ id }) => {
           setSearchFilters({ infoSource: id })
         }}
         onRemove={() => {
-          setSearchFilters({ infoSource: undefined })
-        }}
-        onCleanClick={() => {
           setSearchFilters({ infoSource: undefined })
         }}
       />
@@ -200,7 +188,10 @@ function SearchAdvancedFilters() {
             key={id}
             disabled={disabled}
             label={t(`vessel.${id}` as any, id)}
-            placeholder={getPlaceholderBySelections(optionsSelected)}
+            placeholder={getPlaceholderBySelections({
+              selection: optionsSelected.map(({ id }) => id),
+              options,
+            })}
             options={options}
             selectedOptions={optionsSelected}
             onSelect={(filter) => {
@@ -220,13 +211,13 @@ function SearchAdvancedFilters() {
       {sourceOptions && sourceOptions.length > 0 && (
         <MultiSelect
           label={t('layer.source_other', 'Sources')}
-          placeholder={getPlaceholderBySelections(sources)}
+          placeholder={getPlaceholderBySelections({ selection: sources, options: sourceOptions })}
           options={sourceOptions}
-          selectedOptions={sources}
+          selectedOptions={sourceOptions.filter((f) => sources?.includes(f.id))}
           onSelect={onSourceSelect}
           onRemove={(_, rest) => {
             const notCompatibleSchemaFilters = getIncompatibleFilters(rest)
-            setSearchFilters({ ...notCompatibleSchemaFilters, sources: rest })
+            setSearchFilters({ ...notCompatibleSchemaFilters, sources: rest.map(({ id }) => id) })
           }}
           onCleanClick={() => {
             const notCompatibleSchemaFilters = getIncompatibleFilters(sourceOptions)

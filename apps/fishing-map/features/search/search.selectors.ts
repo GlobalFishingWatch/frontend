@@ -10,12 +10,8 @@ import {
 } from 'features/datasets/datasets.utils'
 import { selectAllDataviewsInWorkspace } from 'features/dataviews/dataviews.selectors'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import {
-  SearchType,
-  VesselInfoSourceEnum,
-  VesselWithDatasetsResolved,
-  selectSearchResults,
-} from './search.slice'
+import { SearchType, VesselInfoSourceEnum } from 'features/search/search.config'
+import { VesselWithDatasetsResolved, selectSearchResults } from './search.slice'
 
 export const selectVesselSearchResultsResolved = createSelector(
   [selectSearchResults],

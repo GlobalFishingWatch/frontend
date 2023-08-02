@@ -17,36 +17,11 @@ import {
   SelfReportedInfo,
   VesselRegistryInfo,
 } from '@globalfishingwatch/api-types'
-import { MultiSelectOption, SelectOption } from '@globalfishingwatch/ui-components'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
-import { getRelatedDatasetByType, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
-
-export const RESULTS_PER_PAGE = 20
-export const SSVID_LENGTH = 9
-export const IMO_LENGTH = 7
-export const EMPTY_FILTERS = {
-  query: undefined,
-  flag: undefined,
-  sources: undefined,
-  lastTransmissionDate: '',
-  firstTransmissionDate: '',
-  ssvid: undefined,
-  imo: undefined,
-  callsign: undefined,
-  owner: undefined,
-  codMarinha: undefined,
-  geartype: undefined,
-  targetSpecies: undefined,
-  fleet: undefined,
-  origin: undefined,
-}
-
-export enum VesselInfoSourceEnum {
-  Registry = 'registryInfo',
-  SelfReported = 'selfReportedInfo',
-  All = 'all',
-}
+import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
+import { VesselInfoSourceEnum } from 'features/search/search.config'
+import { VesselSearchState } from 'types'
 
 export type VesselDatasetInfo = {
   dataset: Dataset
@@ -56,18 +31,6 @@ export type VesselDatasetInfo = {
 export type VesselWithDatasets = Omit<IdentityVessel, 'dataset'> & VesselDatasetInfo
 export type VesselWithDatasetsResolved = (SelfReportedInfo | VesselRegistryInfo) & VesselDatasetInfo
 
-export type SearchType = 'basic' | 'advanced'
-export type SearchFilter = {
-  lastTransmissionDate?: string
-  firstTransmissionDate?: string
-  ssvid?: string
-  imo?: string
-  callsign?: string
-  owner?: string
-  sources?: MultiSelectOption<string>[]
-  infoSource?: SelectOption<VesselInfoSourceEnum>[]
-} & Partial<Record<SupportedDatasetSchema, MultiSelectOption<string>[]>>
-
 interface SearchState {
   selectedVessels: VesselWithDatasetsResolved[]
   status: AsyncReducerStatus
@@ -75,7 +38,6 @@ interface SearchState {
   data: VesselWithDatasets[] | null
   suggestion: string | null
   suggestionClicked: boolean
-  option: SearchType
   pagination: {
     loading: boolean
     total: number
@@ -93,18 +55,17 @@ const initialState: SearchState = {
   data: null,
   suggestion: null,
   suggestionClicked: false,
-  option: 'basic',
 }
 
 export type VesselSearchThunk = {
   query: string
   since: string
-  filters: SearchFilter
+  filters: VesselSearchState
   datasets: Dataset[]
   gfwUser?: boolean
 }
 
-export function checkAdvanceSearchFiltersEnabled(filters: SearchFilter): boolean {
+export function checkAdvanceSearchFiltersEnabled(filters: VesselSearchState): boolean {
   const { sources, ...rest } = filters
   return Object.values(rest).filter((f) => f !== undefined).length > 0
 }
@@ -138,24 +99,24 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           'codMarinha',
         ]
 
-        const fields: AdvancedSearchQueryField[] = [
-          {
+        const fields: AdvancedSearchQueryField[] = andCombinedFields.flatMap((field) => {
+          const isInFieldsAllowed =
+            fieldsAllowed.includes(field) ||
+            fieldsAllowed.includes(`${filters.infoSource}.${field}`)
+          if (filters[field] && isInFieldsAllowed) {
+            return {
+              key: field,
+              value: filters[field],
+            }
+          }
+          return []
+        })
+        if (query) {
+          fields.push({
             key: 'shipname',
             value: query,
-          },
-          ...andCombinedFields.flatMap((field) => {
-            const isInFieldsAllowed =
-              fieldsAllowed.includes(field) ||
-              fieldsAllowed.includes(`${filters.infoSource}.${field}`)
-            if (filters[field] && isInFieldsAllowed) {
-              return {
-                key: field,
-                value: filters[field],
-              }
-            }
-            return []
-          }),
-        ]
+          })
+        }
         advancedQuery = getAdvancedSearchQuery(fields, { rootObject: filters.infoSource as any })
       }
 

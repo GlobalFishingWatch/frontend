@@ -156,7 +156,10 @@ function ActivitySchemaFilter({
         key={id}
         disabled={disabled}
         label={label}
-        placeholder={getPlaceholderBySelections(optionsSelected)}
+        placeholder={getPlaceholderBySelections({
+          selection: optionsSelected.map(({ id }) => id),
+          options,
+        })}
         options={options}
         selectedOption={optionsSelected?.[0]}
         containerClassName={cx(styles.multiSelect, { [styles.experimental]: id === 'matched' })}
@@ -182,7 +185,11 @@ function ActivitySchemaFilter({
         key={id}
         disabled={disabled}
         label={label}
-        placeholder={getPlaceholderBySelections(optionsSelected, filterOperator)}
+        placeholder={getPlaceholderBySelections({
+          selection: optionsSelected.map(({ id }) => id),
+          options,
+          filterOperator,
+        })}
         options={options}
         selectedOptions={optionsSelected}
         className={styles.multiSelect}

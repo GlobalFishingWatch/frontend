@@ -330,7 +330,10 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
         <MultiSelect
           testId="activity-filters"
           label={t('layer.source_other', 'Sources')}
-          placeholder={getPlaceholderBySelections(sourcesSelected)}
+          placeholder={getPlaceholderBySelections({
+            selection: sourcesSelected.map(({ id }) => id),
+            options: allSourceOptions,
+          })}
           options={allSourceOptions}
           selectedOptions={sourcesSelected}
           onSelect={onSelectSourceClick}

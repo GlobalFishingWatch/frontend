@@ -10,7 +10,6 @@ import {
   setSelectedVessels,
 } from 'features/search/search.slice'
 import { formatInfoField, EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
-import DatasetLabel from 'features/datasets/DatasetLabel'
 import I18nFlag from 'features/i18n/i18nFlag'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { SearchComponentProps } from 'features/search/SearchBasic'

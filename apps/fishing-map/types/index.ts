@@ -1,6 +1,5 @@
 import { BaseUrlWorkspace } from '@globalfishingwatch/dataviews-client'
 import { DatasetSubCategory, DataviewCategory, EventType } from '@globalfishingwatch/api-types'
-import { AdvancedSearchQueryFieldKey } from '@globalfishingwatch/api-client'
 import {
   REPORT_VESSELS_GRAPH_GEARTYPE,
   REPORT_VESSELS_GRAPH_FLAG,
@@ -9,7 +8,7 @@ import {
   REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
   REPORT_VESSELS_GRAPH_VESSELTYPE,
 } from 'data/config'
-import { SearchFilter, SearchType } from 'features/search/search.slice'
+import { SearchType, VesselInfoSourceEnum } from 'features/search/search.config'
 export { Locale } from '@globalfishingwatch/api-types'
 
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
@@ -27,8 +26,6 @@ export type ReportStateProperty =
   | 'reportVesselPage'
 
 export type WorkspaceStateProperty =
-  | 'query'
-  | 'sources'
   | 'searchOption'
   | 'report'
   | 'readOnly'
@@ -44,13 +41,13 @@ export type WorkspaceStateProperty =
   | 'activityCategory'
   | 'infoSource'
   | ReportStateProperty
-  | AdvancedSearchQueryFieldKey
 
 export type WorkspaceParam =
   | WorkspaceViewportParam
   | WorkspaceTimeRangeParam
   | WorkspaceStateProperty
   | VesselProfileStateProperty
+  | VesselSearchStateProperty
 
 export type WorkspaceViewport = Record<WorkspaceViewportParam, number>
 export type WorkspaceTimeRange = Record<WorkspaceTimeRangeParam, string>
@@ -85,8 +82,6 @@ export type WorkspaceActivityCategory = 'fishing' | 'presence'
 export interface WorkspaceState extends BaseUrlWorkspace {
   bivariateDataviews?: BivariateDataviews
   daysFromLatest?: number // use latest day as endAt minus the number of days set here
-  query?: string
-  searchOption?: SearchType
   readOnly?: boolean
   reportActivityGraph?: ReportActivityGraph
   reportAreaBounds?: Bbox
@@ -103,6 +98,27 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   timebarVisualisation?: TimebarVisualisations
   visibleEvents?: VisibleEvents
 }
+
+export type VesselSearchState = {
+  query?: string
+  sources?: string[]
+  searchOption?: SearchType
+  infoSource?: VesselInfoSourceEnum
+  ssvid?: string
+  imo?: string
+  callsign?: string
+  codMarinha?: string
+  flag?: string[]
+  geartype?: string[]
+  targetSpecies?: string
+  lastTransmissionDate?: string
+  firstTransmissionDate?: string
+  owner?: string
+  fleet?: string[]
+  origin?: string
+}
+
+export type VesselSearchStateProperty = keyof VesselSearchState
 
 export type VesselProfileActivityMode = 'voyage' | 'type'
 export type VesselProfileState = {
@@ -123,7 +139,7 @@ export type QueryParams = Partial<WorkspaceViewport> &
   WorkspaceState &
   Partial<VesselProfileState> &
   RedirectParam &
-  SearchFilter
+  VesselSearchState
 
 export enum TimebarVisualisations {
   HeatmapActivity = 'heatmap',

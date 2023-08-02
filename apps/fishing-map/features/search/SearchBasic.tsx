@@ -9,11 +9,11 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import SearchBasicResultList from 'features/search/SearchBasicResultList'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectSearchQuery } from 'features/app/app.selectors'
+import { selectSearchQuery } from 'features/search/search.config.selectors'
+import { RESULTS_PER_PAGE } from 'features/search/search.config'
 import {
   selectSearchStatus,
   selectSearchStatusCode,
-  RESULTS_PER_PAGE,
   setSuggestionClicked,
   selectSelectedVessels,
   setSelectedVessels,

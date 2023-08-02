@@ -31,12 +31,8 @@ import {
   selectIsWorkspaceVesselLocation,
 } from 'routes/routes.selectors'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
-import {
-  selectWorkspaceWithCurrentState,
-  selectReadOnly,
-  selectSearchOption,
-  selectSearchQuery,
-} from 'features/app/app.selectors'
+import { selectWorkspaceWithCurrentState, selectReadOnly } from 'features/app/app.selectors'
+import { selectSearchOption, selectSearchQuery } from 'features/search/search.config.selectors'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { resetSidebarScroll } from 'features/sidebar/Sidebar'
 import useMapInstance from 'features/map/map-context.hooks'
@@ -47,7 +43,7 @@ import { selectReportsStatus } from 'features/reports/reports.slice'
 import { selectCurrentReport } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { HOME, REPORT, WORKSPACE } from 'routes/routes'
-import { EMPTY_FILTERS, IMO_LENGTH, SSVID_LENGTH, SearchType } from 'features/search/search.slice'
+import { EMPTY_FILTERS, IMO_LENGTH, SSVID_LENGTH, SearchType } from 'features/search/search.config'
 import { resetAreaDetail } from 'features/areas/areas.slice'
 import { selectReportAreaIds } from 'features/reports/reports.selectors'
 import { QueryParams } from 'types'

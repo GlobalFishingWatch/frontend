@@ -13,7 +13,6 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
-import { selectSearchOption, selectSearchQuery } from 'features/app/app.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { isGFWUser, isGuestUser } from 'features/user/user.slice'
@@ -44,16 +43,16 @@ import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { TEMPLATE_VESSEL_DATAVIEW_SLUG } from 'data/workspaces'
 import { WorkspaceLoginError } from 'features/workspace/WorkspaceError'
+import { selectSearchOption, selectSearchQuery } from 'features/search/search.config.selectors'
+import { EMPTY_FILTERS, RESULTS_PER_PAGE } from 'features/search/search.config'
+import { VesselSearchState } from 'types'
 import {
   fetchVesselSearchThunk,
   cleanVesselSearchResults,
-  RESULTS_PER_PAGE,
   setSuggestionClicked,
-  SearchFilter,
   selectSearchPagination,
   selectSearchResults,
   selectSelectedVessels,
-  EMPTY_FILTERS,
 } from './search.slice'
 import { useSearchConnect, useSearchFiltersConnect } from './search.hook'
 import {
@@ -65,7 +64,6 @@ import {
 import styles from './Search.module.css'
 
 const MIN_SEARCH_CHARACTERS = 3
-const FIRST_FETCH_FILTERS_TO_IGNORE = ['lastTransmissionDate', 'firstTransmissionDate']
 
 function Search() {
   const { t } = useTranslation()
@@ -76,7 +74,7 @@ function Search() {
   const basicSearchAllowed = useSelector(isBasicSearchAllowed)
   const advancedSearchAllowed = useSelector(isAdvancedSearchAllowed)
   const searchResults = useSelector(selectSearchResults)
-  const { searchFilters } = useSearchFiltersConnect()
+  const { hasFilters, searchFilters } = useSearchFiltersConnect()
   const { searchPagination, searchSuggestion } = useSearchConnect()
   const debouncedQuery = useDebounce(searchQuery, 600)
   const { dispatchQueryParams, dispatchLocation } = useLocationConnect()
@@ -87,10 +85,6 @@ function Search() {
   const vesselsSelected = useSelector(selectSelectedVessels)
   const isSearchLocation = useSelector(selectIsStandaloneSearchLocation)
   const isWorkspaceSearchLocation = useSelector(selectIsWorkspaceSearchLocation)
-  const hasFilters =
-    Object.entries(searchFilters).filter(([key]) => {
-      return !FIRST_FETCH_FILTERS_TO_IGNORE.includes(key) && searchFilters[key] !== undefined
-    }).length > 0
   const searchDatasets = useSelector(
     activeSearchOption === 'basic' ? selectBasicSearchDatasets : selectAdvancedSearchDatasets
   ) as Dataset[]
@@ -121,15 +115,16 @@ function Search() {
       }: {
         query: string
         datasets: Dataset[]
-        filters: SearchFilter
+        filters: VesselSearchState
         since?: string
       }) => {
         if (
           datasets?.length &&
           (activeSearchOption === 'advanced' || query?.length > MIN_SEARCH_CHARACTERS - 1)
         ) {
-          const sourceIds = filters?.sources?.map((source) => source.id)
-          const sources = sourceIds ? datasets.filter(({ id }) => sourceIds.includes(id)) : datasets
+          const sources = filters?.sources
+            ? datasets.filter(({ id }) => filters?.sources?.includes(id))
+            : datasets
           if (promiseRef.current) {
             promiseRef.current.abort()
           }

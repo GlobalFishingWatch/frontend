@@ -21,7 +21,6 @@ import {
   selectLocationDatasetId,
   selectLocationAreaId,
   selectReportId,
-  selectQueryParam,
 } from 'routes/routes.selectors'
 import {
   Bbox,
@@ -50,7 +49,6 @@ import {
 } from 'features/dataviews/dataviews.selectors'
 import { getReportCategoryFromDataview } from 'features/reports/reports.utils'
 import { selectReportById } from 'features/reports/reports.slice'
-import { SearchType } from 'features/search/search.slice'
 
 export const selectViewport = createSelector(
   [selectUrlViewport, selectWorkspaceViewport],
@@ -96,72 +94,6 @@ export const selectReportTimeComparison = createSelector(
   [selectWorkspaceStateProperty('reportTimeComparison')],
   (reportTimeComparison): ReportActivityTimeComparison => {
     return reportTimeComparison
-  }
-)
-
-export const selectSearchOption = createSelector(
-  [selectWorkspaceStateProperty('searchOption')],
-  (query): SearchType => {
-    return query
-  }
-)
-
-export const selectSearchQuery = createSelector(
-  [selectWorkspaceStateProperty('query')],
-  (query): string => {
-    return query
-  }
-)
-
-export const selectSearchFilters = createSelector(
-  [
-    selectQueryParam('flag'),
-    selectQueryParam('sources'),
-    selectQueryParam('lastTransmissionDate'),
-    selectQueryParam('firstTransmissionDate'),
-    selectQueryParam('ssvid'),
-    selectQueryParam('imo'),
-    selectQueryParam('callsign'),
-    selectQueryParam('owner'),
-    selectQueryParam('codMarinha'),
-    selectQueryParam('geartype'),
-    selectQueryParam('targetSpecies'),
-    selectQueryParam('fleet'),
-    selectQueryParam('origin'),
-    selectQueryParam('infoSource'),
-  ],
-  (
-    flag,
-    sources,
-    lastTransmissionDate,
-    firstTransmissionDate,
-    ssvid,
-    imo,
-    callsign,
-    owner,
-    codMarinha,
-    geartype,
-    targetSpecies,
-    fleet,
-    origin,
-    infoSource
-  ) => {
-    return {
-      flag,
-      sources,
-      lastTransmissionDate,
-      firstTransmissionDate,
-      ssvid,
-      imo,
-      callsign,
-      owner,
-      codMarinha,
-      geartype,
-      targetSpecies,
-      fleet,
-      origin,
-      infoSource,
-    }
   }
 )
 
