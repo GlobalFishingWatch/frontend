@@ -10,7 +10,10 @@ import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { isAuthError } from '@globalfishingwatch/api-client'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
+import {
+  selectCurrentWorkspaceId,
+  selectWorkspaceStatus,
+} from 'features/workspace/workspace.selectors'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -26,7 +29,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import SearchBasic from 'features/search/SearchBasic'
 import SearchAdvanced from 'features/search/SearchAdvanced'
 import SearchPlaceholder, { SearchNotAllowed } from 'features/search/SearchPlaceholders'
-import { WORKSPACE } from 'routes/routes'
+import { HOME, WORKSPACE } from 'routes/routes'
 import I18nNumber from 'features/i18n/i18nNumber'
 import {
   selectIsStandaloneSearchLocation,
@@ -69,6 +72,7 @@ function Search() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const urlWorkspaceId = useSelector(selectWorkspaceId)
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
   const searchQuery = useSelector(selectSearchQuery)
   const { addNewDataviewInstances } = useDataviewInstancesConnect()
   const basicSearchAllowed = useSelector(isBasicSearchAllowed)
@@ -218,7 +222,6 @@ function Search() {
   const onConfirmSelection = () => {
     const instances = vesselsSelected.map((vessel) => {
       const eventsRelatedDatasets = getRelatedDatasetsByType(vessel.dataset, DatasetTypes.Events)
-
       const eventsDatasetsId =
         eventsRelatedDatasets && eventsRelatedDatasets?.length
           ? eventsRelatedDatasets.map((d) => d.id)
@@ -235,7 +238,11 @@ function Search() {
       dispatch(cleanVesselSearchResults())
       dispatchQueryParams(EMPTY_FILTERS)
     })
-    dispatchLocation(WORKSPACE)
+    if (workspaceId) {
+      dispatchLocation(WORKSPACE, { payload: { workspaceId } })
+    } else {
+      dispatchLocation(HOME)
+    }
   }
 
   const onAddToVesselGroup = () => {
