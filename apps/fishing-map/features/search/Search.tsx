@@ -226,7 +226,7 @@ function Search() {
       const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
         track: vessel.trackDatasetId as string,
         info: vessel.dataset.id,
-        ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
+        ...(eventsDatasetsId.length > 0 && { events: eventsDatasetsId }),
       })
       return vesselDataviewInstance
     })
