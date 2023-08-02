@@ -23,6 +23,7 @@ import { ReactComponent as TrackDepthIcon } from 'assets/icons/timebar-track-dep
 import { selectHasTracksData } from 'features/timebar/timebar.selectors'
 import { COLOR_PRIMARY_BLUE } from 'features/app/App'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectIsVesselLocation } from 'routes/routes.selectors'
 import {
   useTimebarVisualisationConnect,
   useTimebarGraphConnect,
@@ -63,6 +64,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const activeDetectionsDataviews = useSelector(selectActiveDetectionsDataviews)
   const activeEnvironmentalDataviews = useSelector(selectActiveNonTrackEnvironmentalDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
+  const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
   const hasTracksData = useSelector(selectHasTracksData)
   const activeVesselsDataviews = useSelector(selectActiveVesselsDataviews)
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
@@ -133,34 +135,38 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
         <div className={styles.optionsContainer}>
           <h1>{t('timebarSettings.title', 'Timebar settings')}</h1>
           <div className={styles.radiosContainer}>
-            <Radio
-              label={
-                <Icon
-                  SvgIcon={AreaIcon}
-                  label={t('common.activity', 'Activity')}
-                  color={activeActivityDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
+            {!isStandaloneVesselLocation && (
+              <Fragment>
+                <Radio
+                  label={
+                    <Icon
+                      SvgIcon={AreaIcon}
+                      label={t('common.activity', 'Activity')}
+                      color={activeActivityDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
+                      disabled={!activeActivityDataviews?.length}
+                    />
+                  }
                   disabled={!activeActivityDataviews?.length}
+                  active={timebarVisualisation === TimebarVisualisations.HeatmapActivity}
+                  tooltip={activityTooltipLabel}
+                  onClick={setHeatmapActivityActive}
                 />
-              }
-              disabled={!activeActivityDataviews?.length}
-              active={timebarVisualisation === TimebarVisualisations.HeatmapActivity}
-              tooltip={activityTooltipLabel}
-              onClick={setHeatmapActivityActive}
-            />
-            <Radio
-              label={
-                <Icon
-                  SvgIcon={AreaIcon}
-                  label={t('common.detections', 'Detections')}
-                  color={activeDetectionsDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
+                <Radio
+                  label={
+                    <Icon
+                      SvgIcon={AreaIcon}
+                      label={t('common.detections', 'Detections')}
+                      color={activeDetectionsDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
+                      disabled={!activeDetectionsDataviews?.length}
+                    />
+                  }
                   disabled={!activeDetectionsDataviews?.length}
+                  active={timebarVisualisation === TimebarVisualisations.HeatmapDetections}
+                  tooltip={detectionsTooltipLabel}
+                  onClick={setHeatmapDetectionsActive}
                 />
-              }
-              disabled={!activeDetectionsDataviews?.length}
-              active={timebarVisualisation === TimebarVisualisations.HeatmapDetections}
-              tooltip={detectionsTooltipLabel}
-              onClick={setHeatmapDetectionsActive}
-            />
+              </Fragment>
+            )}
             <Radio
               label={
                 <Icon
