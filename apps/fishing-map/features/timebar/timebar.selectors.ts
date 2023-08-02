@@ -5,6 +5,7 @@ import {
   ResourceStatus,
   TrackResourceData,
   EndpointId,
+  EventType,
 } from '@globalfishingwatch/api-types'
 import {
   resolveDataviewDatasetResource,
@@ -230,7 +231,7 @@ export const selectTracksEvents = createSelector(
         if (visibleEvents === 'all') {
           return true
         }
-        return dataset.configuration?.type && visibleEvents.includes(dataset.configuration?.type)
+        return dataset.subcategory && visibleEvents.includes(dataset.subcategory as EventType)
       })
 
       trackEvents.chunks = eventsResourcesFiltered.flatMap(({ url }) => {

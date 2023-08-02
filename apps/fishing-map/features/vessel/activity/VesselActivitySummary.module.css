@@ -6,7 +6,6 @@
 }
 
 .summary {
-  padding-right: var(--space-L);
   font: var(--font-M);
   color: var(--color-secondary-blue);
   margin-bottom: var(--space-S);

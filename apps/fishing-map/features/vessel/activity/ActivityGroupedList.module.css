@@ -16,6 +16,7 @@
 }
 
 .enptyState {
+  display: block;
   width: 100%;
   padding: var(--space-L) var(--space-M);
   text-align: center;

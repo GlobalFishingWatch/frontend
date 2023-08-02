@@ -651,6 +651,7 @@
     "notMatched": "No data matched",
     "noEventsinTimeRange": "There are no events fully contained in your timerange.",
     "noVoyagesinTimeRange": "There are no voyages fully contained in your timerange.",
+    "noVoyagesWithoutPorts": "Please turn on port visits visibility",
     "origin": "Origin",
     "owner": "Owner",
     "registeredGearType": "Registered Gear Type",

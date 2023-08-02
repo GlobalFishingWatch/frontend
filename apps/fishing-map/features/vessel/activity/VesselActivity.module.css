@@ -1,6 +1,7 @@
 .summaryContainer {
   padding: var(--space-M);
-  position: relative;
+  display: flex;
+  gap: var(--space-S);
 }
 
 .activityTitleContainer {
@@ -8,14 +9,25 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex: 1;
 }
 
 .placeholder {
   height: 40rem;
 }
 
-.download {
-  position: absolute;
-  top: var(--space-M);
-  right: var(--space-M);
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-S);
+}
+
+.eventsLegendOptions {
+  min-width: max-content;
+  background: var(--color-white);
+  padding: var(--space-S);
+}
+
+.arrow {
+  right: 0;
 }

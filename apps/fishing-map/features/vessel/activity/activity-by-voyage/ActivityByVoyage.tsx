@@ -23,12 +23,14 @@ import {
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getUTCDateTime } from 'utils/dates'
 import { getScrollElement } from 'features/sidebar/Sidebar'
+import { selectVisibleEvents } from 'features/app/app.selectors'
 import styles from '../ActivityGroupedList.module.css'
 
 const ActivityByVoyage = () => {
   const { t } = useTranslation()
   const voyages = useSelector(selectEventsGroupedByVoyages)
   const dispatch = useAppDispatch()
+  const visibleEvents = useSelector(selectVisibleEvents)
   const [selectedEvent, setSelectedEvent] = useState<ActivityEvent>()
   const [expandedVoyages, toggleExpandedVoyage] = useExpandedVoyages()
   const fitBounds = useMapFitBounds()
@@ -101,6 +103,14 @@ const ActivityByVoyage = () => {
       groups: Object.keys(voyages),
     }
   }, [expandedVoyages, voyages])
+
+  if (!visibleEvents.includes('port_visit')) {
+    return (
+      <span className={styles.enptyState}>
+        {t('vessel.noVoyagesWithoutPorts', 'Please turn on port visits visibility.')}
+      </span>
+    )
+  }
 
   return (
     <ul className={styles.activityContainer}>
