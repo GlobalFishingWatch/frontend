@@ -389,8 +389,10 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
     setVesselGroupCurrentDataviewIds: (state, action: PayloadAction<string[]>) => {
       state.currentDataviewIds = action.payload
     },
-    resetVesselGroup: () => {
-      return initialState
+    resetVesselGroup: (state) => {
+      // Dont reset async reducer properties as it contains the list of existing vessel gruops
+      const { status, statusId, error, ids, currentRequestIds, entities } = state
+      return { ...initialState, ids, entities, status, statusId, error, currentRequestIds }
     },
   },
   extraReducers(builder) {
