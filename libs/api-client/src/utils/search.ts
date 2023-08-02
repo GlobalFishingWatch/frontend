@@ -25,22 +25,19 @@ export type AdvancedSearchQueryFieldKey =
 
 export type AdvancedSearchQueryField = {
   key: AdvancedSearchQueryFieldKey
-  value: string | MultiSelectOption<string>[] | undefined
+  value: string | string[] | undefined
   combinedWithOR?: boolean
 }
 
 type AdvancedSearchQueryFieldParams = {
   operator: string
-  transformation?: (value: string | MultiSelectOption<string>[]) => string
+  transformation?: (field: AdvancedSearchQueryField, operator: string) => string
 }
-
-const multiSelectOptionToQuery = (value: string | MultiSelectOption<string>[]): string =>
-  `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`
 
 const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFieldParams> = {
   shipname: {
     operator: '=',
-    transformation: (value) => `'${(value as string).toLocaleUpperCase()}'`,
+    transformation: (field) => `'${(field?.value as string).toLocaleUpperCase()}'`,
   },
   ssvid: {
     operator: '=',
@@ -58,24 +55,19 @@ const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFiel
     operator: '=',
   },
   geartype: {
-    operator: 'IN',
-    transformation: multiSelectOptionToQuery,
+    operator: '=',
   },
   targetSpecies: {
-    operator: 'IN',
-    transformation: multiSelectOptionToQuery,
+    operator: '=',
   },
   flag: {
-    operator: 'IN',
-    transformation: multiSelectOptionToQuery,
+    operator: '=',
   },
   fleet: {
-    operator: 'IN',
-    transformation: multiSelectOptionToQuery,
+    operator: '=',
   },
   origin: {
-    operator: 'IN',
-    transformation: multiSelectOptionToQuery,
+    operator: '=',
   },
   lastTransmissionDate: {
     operator: '>=',
@@ -92,12 +84,23 @@ export const getAdvancedSearchQuery = (
   const getFieldQuery = (field: AdvancedSearchQueryField) => {
     const params = FIELDS_PARAMS[field.key]
     const value = params?.transformation
-      ? params.transformation(field.value as string | MultiSelectOption[])
-      : `'${field.value}'`
-    const query = rootObject
-      ? `${rootObject}.${field.key} ${params?.operator} ${value}`
-      : `${field.key} ${params?.operator} ${value}`
-    return query
+      ? params.transformation(field, params.operator)
+      : field.value
+
+    if (!value) {
+      return ''
+    }
+
+    const getFieldValue = (value: string) => {
+      return rootObject
+        ? `${rootObject}.${field.key} ${params?.operator} ${value}`
+        : `${field.key} ${params?.operator} ${value}`
+    }
+    if (Array.isArray(value)) {
+      const filter = value.map((v) => getFieldValue(`'${v}'`)).join(' OR ')
+      return `(${filter})`
+    }
+    return getFieldValue(value)
   }
 
   const [fieldsQueriesCombinedWithOR, fieldsQueriesCombinedWithAND] = partition(
