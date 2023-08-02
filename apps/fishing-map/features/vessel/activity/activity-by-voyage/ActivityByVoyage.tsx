@@ -104,7 +104,7 @@ const ActivityByVoyage = () => {
     }
   }, [expandedVoyages, voyages])
 
-  if (!visibleEvents.includes('port_visit')) {
+  if (visibleEvents !== 'all' && !visibleEvents.includes('port_visit')) {
     return (
       <span className={styles.enptyState}>
         {t('vessel.noVoyagesWithoutPorts', 'Please turn on port visits visibility.')}
