@@ -62,13 +62,14 @@ const VesselIdentity = () => {
         </h3>
         <div className={styles.actionsContainer}>
           <IconButton
+            type="border"
             icon="download"
             size="medium"
             onClick={onDownloadClick}
             tooltip={t('download.dataDownload', 'Download Data')}
             tooltipPlacement="top"
           />
-          <Button
+          {/* <Button
             className={styles.actionButton}
             disabled
             type="border-secondary"
@@ -77,7 +78,7 @@ const VesselIdentity = () => {
             tooltipPlacement="top"
           >
             {t('vessel.identityCalendar', 'See as calendar')} <Icon icon="history" />
-          </Button>
+          </Button> */}
         </div>
       </div>
       {vessel && (

@@ -66,6 +66,7 @@ const VesselHeader = () => {
           />
         )}
         <IconButton
+          type="border"
           icon="target"
           tooltip={t('layer.vessel_fit_bounds', 'Center view on vessel track')}
           size="small"
