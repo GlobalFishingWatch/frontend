@@ -34,6 +34,7 @@ import {
   selectIsWorkspaceLocation,
   selectUrlDataviewInstances,
   selectUrlDataviewInstancesOrder,
+  selectVesselId,
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus, AsyncError, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
@@ -50,6 +51,7 @@ import {
   getVesselDataviewInstanceDatasetConfig,
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
+import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
 import {
   eventsDatasetConfigsCallback,
   infoDatasetConfigsCallback,
@@ -382,8 +384,15 @@ export const selectActiveVesselsDataviews = createDeepEqualSelector(
 )
 
 export const selectActiveTrackDataviews = createDeepEqualSelector(
-  [selectTrackDataviews],
-  (dataviews) => dataviews?.filter((d) => d.config?.visible)
+  [selectTrackDataviews, selectViewOnlyVessel, selectVesselId],
+  (dataviews, viewOnlyVessel, vesselId) => {
+    return dataviews?.filter(({ config, id }) => {
+      if (viewOnlyVessel) {
+        return id === `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vesselId}` && config?.visible
+      }
+      return config?.visible
+    })
+  }
 )
 
 export default dataviewsSlice.reducer
