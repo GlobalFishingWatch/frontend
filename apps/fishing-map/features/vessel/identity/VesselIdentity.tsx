@@ -133,9 +133,10 @@ const VesselIdentity = () => {
                                 'flag'
                               )})`
                             : registry.sourceCode.join(',')
+                        const fieldType = key === 'registryOwners' ? 'owner' : 'authorization'
                         return (
                           <li key={`${key}-${index}`}>
-                            <VesselIdentityField value={value} /> {'  '}
+                            <VesselIdentityField value={formatInfoField(value, fieldType)} /> {'  '}
                             <span className={styles.secondary}>
                               <I18nDate date={registry.dateFrom} /> -{' '}
                               <I18nDate date={registry.dateTo} />
