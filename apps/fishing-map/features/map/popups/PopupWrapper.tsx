@@ -86,7 +86,7 @@ function PopupWrapper({
           {timeCompareTimeDescription && (
             <div className={styles.popupSection}>{timeCompareTimeDescription}</div>
           )}
-          {Object.entries(featureByCategory).map(([featureCategory, features]) => {
+          {Object.entries(featureByCategory)?.map(([featureCategory, features]) => {
             switch (featureCategory) {
               case DataviewCategory.Comparison:
                 return (
@@ -97,7 +97,7 @@ function PopupWrapper({
                   />
                 )
               case DataviewCategory.Activity:
-                return features.map((feature, i) => (
+                return features?.map((feature, i) => (
                   <ActivityTooltipRow
                     key={i + (feature.title as string)}
                     feature={feature}
@@ -105,7 +105,7 @@ function PopupWrapper({
                   />
                 ))
               case DataviewCategory.Detections:
-                return features.map((feature, i) => {
+                return features?.map((feature, i) => {
                   return feature.temporalgrid?.sublayerInteractionType === 'detections' ? (
                     <DetectionsTooltipRow
                       key={i + (feature.title as string)}
