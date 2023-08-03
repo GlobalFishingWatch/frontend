@@ -28,9 +28,9 @@ function VesselGroupVesselRow({
   className = '',
 }: VesselGroupVesselRowProps) {
   const { t, i18n } = useTranslation()
-  const vesselName = formatInfoField(getVesselProperty(vessel, { property: 'shipname' }), 'name')
-  const vesselFlag = getVesselProperty(vessel, { property: 'flag' })
-  const gearType = getVesselProperty(vessel, { property: 'geartype' })
+  const vesselName = formatInfoField(getVesselProperty(vessel, 'shipname'), 'name')
+  const vesselFlag = getVesselProperty(vessel, 'flag')
+  const gearType = getVesselProperty(vessel, 'geartype')
   const vesselGearType = `${t(
     `vessel.gearTypes.${gearType}` as any,
     gearType ?? EMPTY_FIELD_PLACEHOLDER
@@ -92,7 +92,7 @@ function VesselGroupVessels() {
   const groupByKey = [
     ...(vesselGroupSearchVessels || []),
     ...(newVesselGroupSearchVessels || []),
-  ].some((vessel) => getVesselProperty(vessel, { property: 'ssvid' }) !== undefined)
+  ].some((vessel) => getVesselProperty(vessel, 'ssvid') !== undefined)
     ? 'selfReportedInfo[0].mmsi'
     : 'selfReportedInfo[0].id'
   const searchVesselsGrouped = groupBy(vesselGroupSearchVessels, groupByKey)

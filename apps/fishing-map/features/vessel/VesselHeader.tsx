@@ -49,8 +49,8 @@ const VesselHeader = () => {
             d="M15.23.75v6.36l-7.8 7.8-1.58-4.78-4.78-1.59L8.87.75h6.36Z"
           />
         </svg>
-        {formatInfoField(getVesselProperty(vessel, { property: 'shipname' }), 'name')} (
-        {formatInfoField(getVesselProperty(vessel, { property: 'flag' }), 'flag')})
+        {formatInfoField(getVesselProperty(vessel, 'shipname'), 'name')} (
+        {formatInfoField(getVesselProperty(vessel, 'flag'), 'flag')})
       </h1>
       <div className={styles.actionsContainer}>
         {isWorkspaceVesselLocation && (

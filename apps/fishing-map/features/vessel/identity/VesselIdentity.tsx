@@ -23,13 +23,11 @@ const VesselIdentity = () => {
   const registryIndex = useSelector(selectVesselRegistryIndex)
   const vessel = useSelector(selectVesselInfoData)
 
-  const start = getVesselProperty(vessel, {
-    property: 'transmissionDateFrom',
+  const start = getVesselProperty(vessel, 'transmissionDateFrom', {
     registryIndex,
   })
 
-  const end = getVesselProperty(vessel, {
-    property: 'transmissionDateTo',
+  const end = getVesselProperty(vessel, 'transmissionDateTo', {
     registryIndex,
   })
 
@@ -103,8 +101,7 @@ const VesselIdentity = () => {
                     </label>
                     <VesselIdentityField
                       value={formatInfoField(
-                        getVesselProperty(vessel, {
-                          property: field.key as any,
+                        getVesselProperty(vessel, field.key as any, {
                           registryIndex: registryIndex,
                         }),
                         field.label

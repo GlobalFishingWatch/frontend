@@ -221,22 +221,18 @@ function VesselsTable({
           </thead>
           <tbody>
             {vessels?.map((vessel, i) => {
-              const vesselName = formatInfoField(
-                getVesselProperty(vessel, { property: 'shipname' }),
-                'name'
-              )
-              const vesselFlag = getVesselProperty(vessel, { property: 'flag' })
+              const vesselName = formatInfoField(getVesselProperty(vessel, 'shipname'), 'name')
+              const vesselFlag = getVesselProperty(vessel, 'flag')
 
               const vesselType = isPresenceActivity
                 ? `${t(
-                    `vessel.vesselTypes.${getVesselProperty(vessel, {
-                      property: 'shiptype',
-                    })?.toLowerCase()}` as any,
+                    `vessel.vesselTypes.${getVesselProperty(
+                      vessel,
+                      'shiptype'
+                    )?.toLowerCase()}` as any,
                     vessel.shiptype ?? EMPTY_FIELD_PLACEHOLDER
                   )}`
-                : getVesselProperty<string[]>(vessel, {
-                    property: 'geartype',
-                  })?.map(
+                : getVesselProperty<string[]>(vessel, 'geartype')?.map(
                     (gear) =>
                       `${t(
                         `vessel.gearTypes.${gear.toLowerCase()}` as any,

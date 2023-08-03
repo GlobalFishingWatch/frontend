@@ -12,13 +12,17 @@ import { getUTCDateTime } from 'utils/dates'
 type VesselIdentityProperty = keyof SelfReportedInfo | keyof VesselRegistryInfo
 export function getVesselProperty<P = string>(
   vessel: IdentityVessel | null,
-  { property, registryIndex = 0 }: { property: VesselIdentityProperty; registryIndex?: number }
+  property: VesselIdentityProperty,
+  { registryIndex = 0 }: { registryIndex?: number } = {}
 ): P {
   if (!vessel) return '' as P
   if (vessel.registryInfo?.length) {
-    return vessel.registryInfo[registryIndex]?.[property]
+    const registryData = get(vessel.registryInfo[registryIndex], property) as P
+    if (registryData) {
+      return registryData
+    }
   }
-  return vessel.selfReportedInfo?.[0]?.[property]
+  return get(vessel.selfReportedInfo?.[0], property) as P
 }
 
 export const getVoyageTimeRange = (events: ActivityEvent[]) => {
@@ -48,13 +52,18 @@ const parseCSVString = (string: string | number) => {
   return string?.toString()?.replaceAll(',', '-')
 }
 const parseCSVDate = (date: number) => getUTCDateTime(date).toISO()
-const parseCSVList = (value: string[]) => value.join('|')
-export const objectArrayToCSV = (data: unknown[], csvConfig: CsvConfig[]) => {
+const parseCSVList = (value: string[]) => value?.join('|')
+
+export const objectArrayToCSV = (
+  data: unknown[],
+  csvConfig: CsvConfig[],
+  getter = get as (any, path: string) => any
+) => {
   const keys = csvConfig.map((c) => c.label).join(',')
   const values = data.map((event) => {
     return csvConfig
       .map(({ accessor, transform }) => {
-        const value = get(event, accessor)
+        const value = getter(event, accessor)
         const transformedValue = transform ? transform(value) : value
         return transformedValue ? parseCSVString(transformedValue) : ''
       })
@@ -70,29 +79,31 @@ export const VESSEL_CSV_CONFIG: CsvConfig[] = [
   { label: 'ssvid', accessor: 'imo' },
   { label: 'shipname', accessor: 'nShipname' },
   { label: 'shiptype', accessor: 'shiptype' },
+  { label: 'geartype', accessor: 'geartype', transform: parseCSVList },
   { label: 'callsign', accessor: 'callsign' },
   { label: 'lengthM', accessor: 'lengthM' },
   { label: 'tonnageGt', accessor: 'tonnageGt' },
   { label: 'transmissionStart', accessor: 'transmissionDateFrom', transform: parseCSVDate },
   { label: 'transmissionEnd', accessor: 'transmissionDateTo', transform: parseCSVDate },
   { label: 'infoSource', accessor: 'sourceCode', transform: parseCSVList },
-  { label: 'owner', accessor: 'owner.owner' },
-  { label: 'ownerFlag', accessor: 'owner.ownerFlag' },
-  {
-    label: 'authorization',
-    accessor: 'authorization.sourceCode',
-    transform: parseCSVList,
-  },
-  {
-    label: 'authorizationStart',
-    accessor: 'authorization.authorizedFrom',
-    transform: parseCSVDate,
-  },
-  { label: 'authorizationEnd', accessor: 'authorization.authorizedTo', transform: parseCSVDate },
+  // TODO think how to access vessel root properties
+  // { label: 'owner', accessor: 'owner.owner' },
+  // { label: 'ownerFlag', accessor: 'owner.ownerFlag' },
+  // {
+  //   label: 'authorization',
+  //   accessor: 'authorization.sourceCode',
+  //   transform: parseCSVList,
+  // },
+  // {
+  //   label: 'authorizationStart',
+  //   accessor: 'authorization.authorizedFrom',
+  //   transform: parseCSVDate,
+  // },
+  // { label: 'authorizationEnd', accessor: 'authorization.authorizedTo', transform: parseCSVDate },
 ]
 
 export const parseVesselToCSV = (vessel: IdentityVessel) => {
-  return objectArrayToCSV([vessel], VESSEL_CSV_CONFIG)
+  return objectArrayToCSV([vessel], VESSEL_CSV_CONFIG, getVesselProperty)
 }
 
 export const EVENTS_CSV_CONFIG: CsvConfig[] = [
