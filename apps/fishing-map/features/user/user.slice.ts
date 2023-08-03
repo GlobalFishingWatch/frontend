@@ -8,7 +8,10 @@ import {
 import { UserData } from '@globalfishingwatch/api-types'
 import { redirectToLogin } from '@globalfishingwatch/react-hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { removeGFWStaffOnlyDataviews } from 'features/workspace/workspace.slice'
+import {
+  cleanCurrentWorkspaceData,
+  removeGFWStaffOnlyDataviews,
+} from 'features/workspace/workspace.slice'
 
 interface UserState {
   logged: boolean
@@ -85,6 +88,7 @@ export const logoutUserThunk = createAsyncThunk(
   ) => {
     try {
       await GFWAPI.logout()
+      dispatch(cleanCurrentWorkspaceData())
       dispatch(removeGFWStaffOnlyDataviews())
     } catch (e: any) {
       console.warn(e)
