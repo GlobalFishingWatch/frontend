@@ -1,17 +1,21 @@
 .summaryContainer {
   padding: var(--space-S) var(--space-M);
   border-bottom: var(--border);
-  height: 5.2rem;
+  min-height: 5.2rem;
 }
 
 .titleContainer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--space-S);
 }
 
 .title {
   font: var(--font-L);
+  min-width: max-content;
+  flex: 1;
 }
 
 .vesselIcon {

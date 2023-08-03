@@ -55,6 +55,7 @@ const VesselHeader = () => {
       <div className={styles.actionsContainer}>
         {isWorkspaceVesselLocation && (
           <IconButton
+            type="border"
             icon={viewOnlyVessel ? 'layers-on' : 'layers-off'}
             tooltip={
               viewOnlyVessel

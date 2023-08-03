@@ -236,7 +236,7 @@ function VesselsTable({
                   )}`
                 : getVesselProperty<string[]>(vessel, {
                     property: 'geartype',
-                  }).map(
+                  })?.map(
                     (gear) =>
                       `${t(
                         `vessel.gearTypes.${gear.toLowerCase()}` as any,
