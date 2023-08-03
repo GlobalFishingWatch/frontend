@@ -1,6 +1,27 @@
 .event {
   padding: var(--space-XS) 1.5rem var(--space-XS) var(--space-M);
   position: relative;
+  color: var(--color-secondary-blue);
+  transition: color 200ms ease-in;
+}
+
+.actions {
+  opacity: var(--opacity-secondary);
+  transition: opacity 200ms ease-in;
+  margin-left: auto;
+  display: flex;
+}
+
+.actions.oneIcon {
+  min-width: 28px;
+}
+
+.event:hover {
+  color: var(--color-primary-blue);
+}
+
+.event:hover .actions {
+  opacity: var(--opacity-primary);
 }
 
 .header {
@@ -27,15 +48,6 @@
 
 .description a {
   text-decoration: underline;
-}
-
-.actions {
-  margin-left: auto;
-  display: flex;
-}
-
-.actions.oneIcon {
-  min-width: 28px;
 }
 
 .detailContainer {

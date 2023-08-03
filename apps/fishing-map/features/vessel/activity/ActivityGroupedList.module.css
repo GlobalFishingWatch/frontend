@@ -13,6 +13,11 @@
   height: 0.1rem;
   width: calc(100% - 6rem);
   background-color: var(--color-border);
+  transition: background-color 200ms ease-in;
+}
+
+.event:hover::after {
+  background-color: var(--color-border-extra-thick);
 }
 
 .enptyState {

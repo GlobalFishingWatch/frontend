@@ -54,8 +54,9 @@
   --opacity-hover: 0.9;
   --opacity-secondary: 0.75;
   --opacity-terthiary: 0.1;
-  --opacity-border-thick: 0.25;
   --opacity-border: 0.15;
+  --opacity-border-thick: 0.25;
+  --opacity-border-extra-thick: 0.5;
 
   /* SHADOWS */
   --box-shadow: 0 0 1rem 0 rgba(var(--primary-blue-rgb), var(--opacity-border));
@@ -64,6 +65,7 @@
   /* UTILS */
   --color-border: rgba(var(--primary-blue-rgb), var(--opacity-border));
   --color-border-thick: rgba(var(--primary-blue-rgb), var(--opacity-border-thick));
+  --color-border-extra-thick: rgba(var(--primary-blue-rgb), var(--opacity-border-extra-thick));
   --color-veil: rgba(var(--primary-blue-rgb), var(--opacity-secondary));
   --border: 1px solid var(--color-border);
   --border-thick: 1px solid var(--color-border-thick);
