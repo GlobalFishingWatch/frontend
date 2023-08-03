@@ -29,6 +29,7 @@ import {
   selectLocationQuery,
   selectLocationType,
   selectIsWorkspaceVesselLocation,
+  selectIsAnyVesselLocation,
 } from 'routes/routes.selectors'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { selectWorkspaceWithCurrentState, selectReadOnly } from 'features/app/app.selectors'
@@ -42,7 +43,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectReportsStatus } from 'features/reports/reports.slice'
 import { selectCurrentReport } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { HOME, REPORT, WORKSPACE } from 'routes/routes'
+import { HOME, REPORT, ROUTE_TYPES, WORKSPACE } from 'routes/routes'
 import { EMPTY_FILTERS, IMO_LENGTH, SSVID_LENGTH, SearchType } from 'features/search/search.config'
 import { resetAreaDetail } from 'features/areas/areas.slice'
 import { selectReportAreaIds } from 'features/reports/reports.selectors'
@@ -189,20 +190,42 @@ function SaveWorkspaceButton() {
 
 function ShareWorkspaceButton() {
   const { t } = useTranslation()
-  const workspaceLocation = useSelector(selectIsWorkspaceLocation)
-  const shareTitle = workspaceLocation
-    ? t('common.share', 'Share map')
-    : t('analysis.share', 'Share report')
+  const location = useSelector(selectLocationType)
+
+  const shareTitles: Partial<Record<ROUTE_TYPES, string>> = {
+    HOME: t('common.share', 'Share map'),
+    WORKSPACE: t('common.share', 'Share map'),
+    REPORT: t('analysis.share', 'Share report'),
+    WORKSPACE_REPORT: t('analysis.share', 'Share report'),
+    VESSEL: t('vessel.share', 'Share vessel'),
+    WORKSPACE_VESSEL: t('vessel.share', 'Share vessel'),
+  }
 
   const { showClipboardNotification, copyToClipboard } = useClipboardNotification()
 
   const onShareClick = useCallback(() => {
+    const trackEventCategories: Partial<Record<ROUTE_TYPES, TrackCategory>> = {
+      HOME: TrackCategory.WorkspaceManagement,
+      WORKSPACE: TrackCategory.WorkspaceManagement,
+      REPORT: TrackCategory.Analysis,
+      WORKSPACE_REPORT: TrackCategory.Analysis,
+      VESSEL: TrackCategory.VesselProfile,
+      WORKSPACE_VESSEL: TrackCategory.VesselProfile,
+    }
+    const trackEventActions: Partial<Record<ROUTE_TYPES, string>> = {
+      HOME: 'workspace',
+      WORKSPACE: 'workspace',
+      REPORT: 'report',
+      WORKSPACE_REPORT: 'report',
+      VESSEL: 'report',
+      WORKSPACE_VESSEL: 'report',
+    }
     copyToClipboard(window.location.href)
     trackEvent({
-      category: workspaceLocation ? TrackCategory.WorkspaceManagement : TrackCategory.Analysis,
-      action: `Click share ${workspaceLocation ? 'workspace' : 'report'}'}`,
+      category: trackEventCategories[location] as TrackCategory,
+      action: `Click share ${trackEventActions[location]}'}`,
     })
-  }, [copyToClipboard, workspaceLocation])
+  }, [copyToClipboard, location])
 
   return (
     <IconButton
@@ -216,7 +239,7 @@ function ShareWorkspaceButton() {
               'common.copiedToClipboard',
               'The link to share this view has been copied to your clipboard'
             )
-          : shareTitle
+          : shareTitles[location]
       }
       tooltipPlacement="bottom"
     />
@@ -332,6 +355,7 @@ function SidebarHeader() {
   const isSearchLocation = useSelector(selectIsAnySearchLocation)
   const isReportLocation = useSelector(selectIsReportLocation)
   const isVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
+  const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isSmallScreen = useSmallScreen()
   const activeSearchOption = useSelector(selectSearchOption)
   const { dispatchQueryParams } = useLocationConnect()
@@ -395,7 +419,9 @@ function SidebarHeader() {
           <Fragment>
             {isReportLocation && <SaveReportButton />}
             {isWorkspaceLocation && <SaveWorkspaceButton />}
-            {(isWorkspaceLocation || isReportLocation) && <ShareWorkspaceButton />}
+            {(isWorkspaceLocation || isReportLocation || isAnyVesselLocation) && (
+              <ShareWorkspaceButton />
+            )}
             {isReportLocation && <CloseReportButton />}
             {isVesselLocation && <CloseVesselButton />}
             {isSearchLocation && !readOnly && !isSmallScreen && (
