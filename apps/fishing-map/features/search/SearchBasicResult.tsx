@@ -139,10 +139,10 @@ function SearchBasicResult({
       })}
       key={`${index} - ${dataset?.id} - ${id}`}
       data-test={`search-vessels-option-${id}-${index}`}
+      onClick={isInWorkspace ? undefined : onClick}
     >
       <div className={styles.container}>
         <IconButton
-          onClick={isInWorkspace ? undefined : onClick}
           icon={isSelected || isInWorkspace ? 'tick' : undefined}
           type="border"
           className={cx({ [styles.selectedIcon]: isSelected || isInWorkspace })}
