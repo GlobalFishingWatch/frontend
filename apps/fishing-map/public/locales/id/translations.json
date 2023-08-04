@@ -380,6 +380,8 @@
     "insuficientData": "Silahkan isi semua bidang yang wajib",
     "intro": "Global Fishing Watch terus berupaya memperbaiki data kami. Dengan miliaran dan ratusan ribu kapal untuk ditinjau, dan seluruh aktivitas di samudera, kami tentu akan memiliki beberapa kapal dan aktivitas yang salah dalam mengklasifikasikannya. Umpan balik Anda dapat membantu kami mengidentifikasi di mana kami lebih perlu meningkatkan data kami. Kami akan berusaha untuk menanggapi umpan balik Anda.",
     "issues": "Masalah platform",
+    "marineManagerDatasetsSurvey": "What other datasets would you like to see?",
+    "marineManagerDatasetsSurveyLink": "https://www.surveymonkey.com/r/marinemanagerdata",
     "role": "Peran",
     "roles": {
       "analyst": "Analis",
