@@ -125,6 +125,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         datasetId: dataset.id,
         params: [],
         query: [
+          // { id: 'includes', value: ['MATCH_CRITERIA'] },
           { id: 'datasets', value: datasets.map((d) => d.id) },
           {
             id: advancedQuery ? 'where' : 'query',
