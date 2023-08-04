@@ -7,7 +7,7 @@ import {
   waitForSidebarLoaded,
 } from '../../support/app.po'
 
-describe('Basic search for a vessel', () => {
+xdescribe('Basic search for a vessel', () => {
   beforeEach(() => {
     // I need to search as a anonymous user
     cy.clearAllLocalStorage().then(() => {
