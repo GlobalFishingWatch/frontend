@@ -641,6 +641,7 @@
     "lengthRange": "Length range",
     "license_category": "License category",
     "licenseCode": "License code",
+    "linkToVessel": "Check the vessel profile here",
     "loading": "Loading vessel track",
     "loadingInfo": "Loading vessel info",
     "login": "Register and <1>log in</1> to see more details (free, 2 minutes)",
