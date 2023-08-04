@@ -443,7 +443,7 @@
     "advancedDisabled": "Register and <1>log in</1> to use advanced search (free, 2 minutes)",
     "basic": "Basic",
     "close": "Close search",
-    "description": "Search by vessel name or identification code. You can narrow your search by clicking \"ADVANCED\" in the top menu bar.",
+    "description": "Search by vessel name or identification code.",
     "mainQueryLabel": "Name, IMO, MMSI or call sign",
     "minCharacters": "Please type at least {{count}} characters",
     "missingSources": "won't appear unless you <1>log in</1>",
