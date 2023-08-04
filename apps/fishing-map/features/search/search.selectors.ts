@@ -19,11 +19,23 @@ export const selectVesselSearchResultsResolved = createSelector(
     return (vessels || []).map((vessel) => {
       const hasRegistryData = vessel.registryInfo?.length
       const vesselData = hasRegistryData ? vessel.registryInfo?.[0] : vessel.selfReportedInfo[0]
+      // Get first transmission date from all identity sources
+      const transmissionDateFrom = [
+        ...(vessel.registryInfo || [])?.flatMap((r) => r.transmissionDateFrom || []),
+        ...vessel.selfReportedInfo.flatMap((r) => r.transmissionDateFrom || []),
+      ].sort((a, b) => (a < b ? -1 : 1))?.[0]
+      // The same with last transmission date
+      const transmissionDateTo = [
+        ...(vessel.registryInfo || [])?.flatMap((r) => r.transmissionDateTo || []),
+        ...vessel.selfReportedInfo.flatMap((r) => r.transmissionDateTo || []),
+      ].sort((a, b) => (a > b ? -1 : 1))?.[0]
       return {
         ...vesselData,
         infoSource: hasRegistryData
           ? VesselInfoSourceEnum.Registry
           : VesselInfoSourceEnum.SelfReported,
+        transmissionDateFrom,
+        transmissionDateTo,
         id: vessel.selfReportedInfo?.[0]?.id,
         dataset: vessel.dataset,
         trackDatasetId: vessel.trackDatasetId,
