@@ -3,6 +3,7 @@
   position: relative;
   color: var(--color-secondary-blue);
   transition: color 200ms ease-in;
+  page-break-inside: avoid;
 }
 
 .actions {
@@ -56,4 +57,10 @@
   gap: var(--space-S) var(--space-M);
   padding-left: var(--space-L);
   padding-block: var(--space-S);
+}
+
+@media print {
+  .event {
+    margin-left: var(--space-M);
+  }
 }

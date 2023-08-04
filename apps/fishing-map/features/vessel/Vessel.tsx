@@ -28,6 +28,7 @@ import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { useCallbackAfterPaint } from 'hooks/paint.hooks'
 import VesselIdentity from './identity/VesselIdentity'
 import VesselActivity from './activity/VesselActivity'
+import styles from './Vessel.module.css'
 
 type VesselSection = 'activity' | 'relatedVessels' | 'areas'
 
@@ -141,7 +142,9 @@ const Vessel = () => {
           <VesselIdentity />
         </Fragment>
       )}
-      <Tabs tabs={sectionTabs} activeTab={sectionTabs[0].id} />
+      <div className={styles.activityContainer}>
+        <Tabs tabs={sectionTabs} activeTab={sectionTabs[0].id} />
+      </div>
     </Fragment>
   )
 }

@@ -36,3 +36,14 @@
 .contentActive {
   display: block;
 }
+
+@media print {
+  .tab button {
+    padding: var(--space-M);
+    justify-content: flex-start;
+  }
+
+  .tab:not(:has(.tabActive)) {
+    display: none;
+  }
+}

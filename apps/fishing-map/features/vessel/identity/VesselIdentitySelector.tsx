@@ -18,7 +18,7 @@ const VesselIdentitySelector = () => {
   if (!vessel?.registryInfo?.length || vessel?.registryInfo?.length <= 1) return null
 
   return (
-    <ul className={cx(styles.selector)}>
+    <ul className={cx(styles.selector, 'print-hidden')}>
       {vessel?.registryInfo.map((registry, index) => {
         const start = formatI18nDate(registry.transmissionDateFrom)
         const end = formatI18nDate(registry.transmissionDateTo)

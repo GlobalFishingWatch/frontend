@@ -57,6 +57,11 @@ const VesselHeader = () => {
         </svg>
         {formatInfoField(getVesselProperty(vessel, 'shipname'), 'name')} (
         {formatInfoField(getVesselProperty(vessel, 'flag'), 'flag')})
+        <div>
+          <a className={styles.reportLink} href={window.location.href}>
+            {t('vessel.linkToVessel', 'Check the vessel profile here')}
+          </a>
+        </div>
       </h1>
       <div className={styles.actionsContainer}>
         {isWorkspaceVesselLocation && (
@@ -76,18 +81,18 @@ const VesselHeader = () => {
         <IconButton
           className="print-hidden"
           type="border"
-          icon="print"
-          size="small"
-          onClick={onPrintClick}
-        />
-        <IconButton
-          className="print-hidden"
-          type="border"
           icon="target"
           tooltip={t('layer.vessel_fit_bounds', 'Center view on vessel track')}
           size="small"
           disabled={!events?.length}
           onClick={onVesselFitBoundsClick}
+        />
+        <IconButton
+          className="print-hidden"
+          type="border"
+          icon="print"
+          size="small"
+          onClick={onPrintClick}
         />
         {/* TODO: get info and track datasets for vessel */}
         <VesselGroupAddButton
