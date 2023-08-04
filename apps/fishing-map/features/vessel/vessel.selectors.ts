@@ -81,3 +81,10 @@ export const selectVesselEventsFilteredByTimerange = createSelector(
     )
   }
 )
+
+export const selectHasVesselEventsFilteredByTimerange = createSelector(
+  [selectVesselEventsFilteredByTimerange],
+  (events) => {
+    return events?.length > 0
+  }
+)

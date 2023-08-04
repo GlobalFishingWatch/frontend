@@ -14,7 +14,10 @@ import VesselEventsLegend from 'features/workspace/vessels/VesselEventsLegend'
 import { selectVesselsDataviews } from 'features/dataviews/dataviews.slice'
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import { selectVisibleEvents } from 'features/app/app.selectors'
-import { selectVesselEventsResources } from 'features/vessel/vessel.selectors'
+import {
+  selectHasVesselEventsFilteredByTimerange,
+  selectVesselEventsResources,
+} from 'features/vessel/vessel.selectors'
 import styles from './VesselActivity.module.css'
 import { VesselActivitySummary } from './VesselActivitySummary'
 
@@ -23,6 +26,7 @@ const VesselActivity = () => {
   const { dispatchQueryParams } = useLocationConnect()
   const [showEventsLegend, setShowEventsLegend] = useState(false)
   const visibleEvents = useSelector(selectVisibleEvents)
+  const hasEvents = useSelector(selectHasVesselEventsFilteredByTimerange)
   const dataviews = useSelector(selectVesselsDataviews)
   const activityMode = useSelector(selectVesselActivityMode)
   const eventsLoading = useSelector(selectVesselEventsLoading)
@@ -71,6 +75,7 @@ const VesselActivity = () => {
           >
             <IconButton
               className={styles.eventsLegendButton}
+              disabled={!hasEvents}
               size="medium"
               type="border"
               icon={visibleEvents === 'all' ? 'filter-off' : 'filter-on'}
