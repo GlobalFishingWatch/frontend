@@ -122,11 +122,11 @@ function SearchBasicResult({
     [isSmallScreen]
   )
 
-  const onTrackFootprintLoad = (data: FeatureCollection) => {
+  const onTrackFootprintLoad = useCallback((data: FeatureCollection) => {
     const segments = geoJSONToSegments(data)
     const bbox = segments?.length ? segmentsToBbox(segments) : undefined
     setTrackBbox(bbox)
-  }
+  }, [])
 
   return (
     <li
