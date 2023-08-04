@@ -234,7 +234,7 @@
     "advanced": "advanced",
     "basic": "basic",
     "callsign": "Call sign",
-    "description": "Search by vessel name or identification code.",
+    "description": "Search by vessel name or identification code. You can narrow your search by clicking \"ADVANCED\" in the top menu bar.",
     "flagState": "Flags",
     "hideIndividual": "HIDE INDIVIDUAL RESULTS",
     "IMO": "IMO",
