@@ -5,7 +5,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { eventsToBbox } from '@globalfishingwatch/data-transforms'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { selectVesselEventsFilteredByTimerange } from 'features/vessel/vessel.selectors'
-import { selectVesselInfoData } from 'features/vessel/vessel.slice'
+import { selectVesselInfoData, setVesselPrintMode } from 'features/vessel/vessel.slice'
 import { formatInfoField } from 'utils/info'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
@@ -14,10 +14,12 @@ import { COLOR_PRIMARY_BLUE } from 'features/app/App'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
 import { selectIsWorkspaceVesselLocation } from 'routes/routes.selectors'
+import { useAppDispatch } from 'features/app/app.hooks'
 import styles from './VesselHeader.module.css'
 
 const VesselHeader = () => {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
   const viewOnlyVessel = useSelector(selectViewOnlyVessel)
   const vessel = useSelector(selectVesselInfoData)
@@ -32,6 +34,10 @@ const VesselHeader = () => {
   const onVesselFitBoundsClick = () => {
     const bounds = eventsToBbox(events)
     fitBounds(bounds)
+  }
+
+  const onPrintClick = () => {
+    dispatch(setVesselPrintMode(true))
   }
 
   const setViewOnlyVessel = () => {
@@ -55,6 +61,7 @@ const VesselHeader = () => {
       <div className={styles.actionsContainer}>
         {isWorkspaceVesselLocation && (
           <IconButton
+            className="print-hidden"
             type="border"
             icon={viewOnlyVessel ? 'layers-on' : 'layers-off'}
             tooltip={
@@ -67,6 +74,14 @@ const VesselHeader = () => {
           />
         )}
         <IconButton
+          className="print-hidden"
+          type="border"
+          icon="print"
+          size="small"
+          onClick={onPrintClick}
+        />
+        <IconButton
+          className="print-hidden"
           type="border"
           icon="target"
           tooltip={t('layer.vessel_fit_bounds', 'Center view on vessel track')}
@@ -80,6 +95,7 @@ const VesselHeader = () => {
           buttonType="border-secondary"
           vessels={vessel ? [vessel] : []}
           showCount={false}
+          buttonClassName="print-hidden"
         />
       </div>
     </div>

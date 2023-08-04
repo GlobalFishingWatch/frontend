@@ -105,7 +105,7 @@ const VoyageGroup: React.FC<EventProps> = ({
       >
         <p className={styles.title}>{voyageLabel}</p>
         {hasEvents && (
-          <div className={styles.actions}>
+          <div className={cx(styles.actions, 'print-hidden')}>
             <IconButton size="small" icon={expanded ? 'arrow-top' : 'arrow-down'} />
             <IconButton
               icon="download"

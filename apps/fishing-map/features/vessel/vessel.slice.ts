@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { HYDRATE } from 'next-redux-wrapper'
 import { GFWAPI, ParsedAPIError, parseAPIError } from '@globalfishingwatch/api-client'
 import { Dataset, DatasetTypes, EndpointId, IdentityVessel } from '@globalfishingwatch/api-types'
@@ -17,6 +17,7 @@ import { PROFILE_DATAVIEW_SLUGS } from 'data/workspaces'
 
 export type VesselData = IdentityVessel & VesselInstanceDatasets
 interface VesselState {
+  printMode: boolean
   info: {
     status: AsyncReducerStatus
     data: VesselData | null
@@ -25,6 +26,7 @@ interface VesselState {
 }
 
 const initialState: VesselState = {
+  printMode: false,
   info: {
     status: AsyncReducerStatus.Idle,
     data: null,
@@ -99,6 +101,9 @@ const vesselSlice = createSlice({
   name: 'vessel',
   initialState,
   reducers: {
+    setVesselPrintMode: (state, action: PayloadAction<boolean>) => {
+      state.printMode = action.payload
+    },
     resetVesselState: () => {
       return initialState
     },
@@ -129,12 +134,13 @@ const vesselSlice = createSlice({
   },
 })
 
-export const { resetVesselState } = vesselSlice.actions
+export const { setVesselPrintMode, resetVesselState } = vesselSlice.actions
 
 export const selectVesselInfoData = (state: VesselSliceState) => state.vessel.info.data
 export const selectVesselInfoDataId = (state: VesselSliceState) =>
   state.vessel.info.data?.selfReportedInfo?.[0]?.id
 export const selectVesselInfoStatus = (state: VesselSliceState) => state.vessel.info.status
 export const selectVesselInfoError = (state: VesselSliceState) => state.vessel.info.error
+export const selectVesselPrintMode = (state: VesselSliceState) => state.vessel.printMode
 
 export default vesselSlice.reducer

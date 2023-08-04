@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { Fragment, useCallback, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { GroupedVirtuoso } from 'react-virtuoso'
 import { useTranslation } from 'react-i18next'
@@ -14,6 +14,7 @@ import {
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setHighlightedEvents } from 'features/timebar/timebar.slice'
 import { getScrollElement } from 'features/sidebar/Sidebar'
+import { selectVesselPrintMode } from 'features/vessel/vessel.slice'
 import Event, { EVENT_HEIGHT } from '../event/Event'
 import styles from '../ActivityGroupedList.module.css'
 import { useActivityByType } from './activity-by-type.hook'
@@ -30,8 +31,8 @@ const EVENTS_ORDER = [
 export function ActivityByType() {
   const { t } = useTranslation()
   const activityGroups = useSelector(selectEventsGroupedByType)
-  const containerRef = useRef<any>()
   const dispatch = useAppDispatch()
+  const vesselPrintMode = useSelector(selectVesselPrintMode)
   const [expandedType, toggleExpandedType] = useActivityByType()
   const { viewport, setMapCoordinates } = useViewport()
   const [selectedEvent, setSelectedEvent] = useState<ActivityEvent>()
@@ -88,47 +89,99 @@ export function ActivityByType() {
     }
   }, [activityGroups, expandedType])
 
-  return (
-    <ul className={styles.activityContainer} ref={containerRef}>
-      {groupCounts.length > 0 ? (
-        <GroupedVirtuoso
-          useWindowScroll
-          defaultItemHeight={EVENT_HEIGHT}
-          groupCounts={groupCounts}
-          increaseViewportBy={EVENT_HEIGHT * 4}
-          customScrollParent={getScrollElement()}
-          groupContent={(index) => {
-            const eventType = groups[index]
+  const renderedComponent = useMemo(() => {
+    if (vesselPrintMode) {
+      return (
+        <Fragment>
+          {EVENTS_ORDER.map((eventType) => {
             const events = activityGroups[eventType]
             if (!events) {
               return null
             }
             const expanded = expandedType === eventType
             return (
-              <ActivityGroup
-                key={eventType}
-                eventType={eventType}
-                onToggleClick={onToggleExpandedType}
-                quantity={events.length}
-                expanded={expanded}
-              />
+              <Fragment key={eventType}>
+                <ActivityGroup
+                  key={eventType}
+                  eventType={eventType}
+                  onToggleClick={onToggleExpandedType}
+                  quantity={events.length}
+                  expanded={expanded}
+                ></ActivityGroup>
+                {events.map((event) => (
+                  <Event
+                    key={event.id}
+                    event={event}
+                    onMapHover={onMapHover}
+                    onMapClick={selectEventOnMap}
+                    onInfoClick={onInfoClick}
+                    className={styles.event}
+                  />
+                ))}
+              </Fragment>
             )
-          }}
-          itemContent={(index) => {
-            const event = events[index]
-            return (
-              <Event
-                event={event}
-                onMapHover={onMapHover}
-                onMapClick={selectEventOnMap}
-                onInfoClick={onInfoClick}
-                className={styles.event}
-              >
-                {selectedEvent?.id === event?.id && <EventDetail event={selectedEvent} />}
-              </Event>
-            )
-          }}
-        />
+          })}
+        </Fragment>
+      )
+    }
+    return (
+      <GroupedVirtuoso
+        useWindowScroll
+        defaultItemHeight={EVENT_HEIGHT}
+        groupCounts={groupCounts}
+        increaseViewportBy={EVENT_HEIGHT * 4}
+        customScrollParent={getScrollElement()}
+        groupContent={(index) => {
+          const eventType = groups[index]
+          const events = activityGroups[eventType]
+          if (!events) {
+            return null
+          }
+          const expanded = expandedType === eventType
+          return (
+            <ActivityGroup
+              key={eventType}
+              eventType={eventType}
+              onToggleClick={onToggleExpandedType}
+              quantity={events.length}
+              expanded={expanded}
+            />
+          )
+        }}
+        itemContent={(index) => {
+          const event = events[index]
+          return (
+            <Event
+              event={event}
+              onMapHover={onMapHover}
+              onMapClick={selectEventOnMap}
+              onInfoClick={onInfoClick}
+              className={styles.event}
+            >
+              {selectedEvent?.id === event?.id && <EventDetail event={selectedEvent} />}
+            </Event>
+          )
+        }}
+      />
+    )
+  }, [
+    activityGroups,
+    events,
+    expandedType,
+    groupCounts,
+    groups,
+    onInfoClick,
+    onMapHover,
+    onToggleExpandedType,
+    selectEventOnMap,
+    selectedEvent,
+    vesselPrintMode,
+  ])
+
+  return (
+    <ul className={styles.activityContainer}>
+      {groupCounts.length > 0 ? (
+        renderedComponent
       ) : (
         <span className={styles.enptyState}>
           {t(

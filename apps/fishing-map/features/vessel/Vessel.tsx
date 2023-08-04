@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import { Fragment, useEffect, useMemo } from 'react'
+import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Spinner, Tab, Tabs } from '@globalfishingwatch/ui-components'
 import { isAuthError } from '@globalfishingwatch/api-client'
@@ -12,6 +12,8 @@ import {
   fetchVesselInfoThunk,
   selectVesselInfoError,
   selectVesselInfoStatus,
+  selectVesselPrintMode,
+  setVesselPrintMode,
 } from 'features/vessel/vessel.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import VesselHeader from 'features/vessel/VesselHeader'
@@ -23,6 +25,7 @@ import { ErrorPlaceHolder, WorkspaceLoginError } from 'features/workspace/Worksp
 import { isGuestUser } from 'features/user/user.slice'
 import { selectVesselDatasetId } from 'features/vessel/vessel.config.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
+import { useCallbackAfterPaint } from 'hooks/paint.hooks'
 import VesselIdentity from './identity/VesselIdentity'
 import VesselActivity from './activity/VesselActivity'
 
@@ -36,6 +39,7 @@ const Vessel = () => {
   const datasetId = useSelector(selectVesselDatasetId)
   const urlWorkspaceId = useSelector(selectWorkspaceId)
   const infoStatus = useSelector(selectVesselInfoStatus)
+  const vesselPrintMode = useSelector(selectVesselPrintMode)
   const infoError = useSelector(selectVesselInfoError)
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const guestUser = useSelector(isGuestUser)
@@ -59,6 +63,30 @@ const Vessel = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [datasetId, dispatch, vesselId, urlWorkspaceId])
+
+  const vesselPrintCallback = useCallback(() => {
+    window.print()
+  }, [])
+
+  useEffect(() => {
+    const disableVesselPrintMode = () => {
+      dispatch(setVesselPrintMode(false))
+    }
+    window.addEventListener('afterprint', disableVesselPrintMode)
+    return () => {
+      window.removeEventListener('afterprint', disableVesselPrintMode)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useCallbackAfterPaint({
+    callback: vesselPrintCallback,
+    /**
+     * Signal to the hook that we want to capture the frame right after our item list
+     * model is populated.
+     */
+    enabled: vesselPrintMode,
+  })
 
   const sectionTabs: Tab<VesselSection>[] = useMemo(
     () => [

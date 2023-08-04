@@ -11,6 +11,7 @@ interface TabsProps<TabID> {
   onTabClick?: (tab: Tab<TabID>, e: React.MouseEvent) => void
   mountAllTabsOnLoad?: boolean
   tabClassName?: string
+  headerClassName?: string
   buttonSize?: ButtonSize
 }
 
@@ -20,6 +21,7 @@ export function Tabs<TabID = string>({
   onTabClick,
   mountAllTabsOnLoad = false,
   tabClassName = '',
+  headerClassName = '',
   buttonSize = 'default',
 }: TabsProps<TabID>) {
   const activeTabId = activeTab || tabs?.[0]?.id
@@ -29,7 +31,7 @@ export function Tabs<TabID = string>({
   }
   return (
     <div className={styles.container}>
-      <ul className={styles.header} role="tablist">
+      <ul className={cx(styles.header, headerClassName)} role="tablist">
         {tabs.map((tab, index) => {
           const tabSelected = activeTabId === tab.id
           return (

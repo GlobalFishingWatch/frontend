@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import cx from 'classnames'
 import { Fragment, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Button, IconButton, Spinner } from '@globalfishingwatch/ui-components'
@@ -74,7 +75,7 @@ const VesselActivity = () => {
             }
           >
             <IconButton
-              className={styles.eventsLegendButton}
+              className={cx(styles.eventsLegendButton, 'print-hidden')}
               disabled={!hasEvents}
               size="medium"
               type="border"
@@ -92,6 +93,7 @@ const VesselActivity = () => {
             : t('vessel.activityByType', 'Activity by type')}
         </label>
         <Button
+          className="print-hidden"
           size="small"
           type="border-secondary"
           onClick={(e) => setActivityMode(activityMode === 'type' ? 'voyage' : 'type')}

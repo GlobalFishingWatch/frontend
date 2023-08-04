@@ -41,7 +41,7 @@ const Event: React.FC<EventProps> = (props): React.ReactElement => {
           <ActivityDate event={event} />
           <p className={styles.description}>{getEventDescription(event)}</p>
         </div>
-        <div className={styles.actions}>
+        <div className={cx(styles.actions, 'print-hidden')}>
           <IconButton icon="info" size="small"></IconButton>
           <IconButton icon="target" size="small" onClick={() => onMapClick(event)}></IconButton>
         </div>

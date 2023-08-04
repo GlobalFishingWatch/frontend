@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { Fragment, useCallback, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { GroupedVirtuoso } from 'react-virtuoso'
@@ -24,6 +24,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { getUTCDateTime } from 'utils/dates'
 import { getScrollElement } from 'features/sidebar/Sidebar'
 import { selectVisibleEvents } from 'features/app/app.selectors'
+import { selectVesselPrintMode } from 'features/vessel/vessel.slice'
 import styles from '../ActivityGroupedList.module.css'
 
 const ActivityByVoyage = () => {
@@ -31,6 +32,7 @@ const ActivityByVoyage = () => {
   const voyages = useSelector(selectEventsGroupedByVoyages)
   const dispatch = useAppDispatch()
   const visibleEvents = useSelector(selectVisibleEvents)
+  const vesselPrintMode = useSelector(selectVesselPrintMode)
   const [selectedEvent, setSelectedEvent] = useState<ActivityEvent>()
   const [expandedVoyages, toggleExpandedVoyage] = useExpandedVoyages()
   const fitBounds = useMapFitBounds()
@@ -93,16 +95,116 @@ const ActivityByVoyage = () => {
     [setMapCoordinates, viewport.zoom]
   )
 
+  console.log('🚀 ~ const{events,groupCounts,groups}=useMemo ~ voyages:', voyages)
   const { events, groupCounts, groups } = useMemo(() => {
-    const eventsExpanded = Object.entries(voyages).map(([voyage, events]) =>
-      expandedVoyages.includes(parseInt(voyage)) ? events : ([] as ActivityEvent[])
-    )
+    const eventsExpanded = Object.entries(voyages).map(([voyage, events]) => {
+      return expandedVoyages.includes(parseInt(voyage)) ? events : ([] as ActivityEvent[])
+    })
     return {
       events: eventsExpanded.flat(),
       groupCounts: eventsExpanded.map((events) => events.length),
       groups: Object.keys(voyages),
     }
   }, [expandedVoyages, voyages])
+
+  const renderedComponent = useMemo(() => {
+    if (!groupCounts.length) {
+      return (
+        <span className={styles.enptyState}>
+          {t(
+            'vessel.noVoyagesinTimeRange',
+            'There are no voyages fully contained in your timerange.'
+          )}
+        </span>
+      )
+    }
+    if (vesselPrintMode) {
+      return (
+        <Fragment>
+          {Object.entries(voyages).map(([voyage, events]) => {
+            return (
+              <Fragment>
+                <VoyageGroup
+                  key={voyage}
+                  expanded
+                  events={events}
+                  onToggleClick={toggleExpandedVoyage}
+                  onMapClick={selectVoyageOnMap}
+                  onMapHover={onVoyageMapHover}
+                />
+                {events.map((event) => (
+                  <Event
+                    key={event.id}
+                    event={event}
+                    onMapHover={onEventMapHover}
+                    onMapClick={selectEventOnMap}
+                    onInfoClick={onInfoClick}
+                    className={styles.event}
+                  ></Event>
+                ))}
+              </Fragment>
+            )
+          })}
+        </Fragment>
+      )
+    }
+    return (
+      <GroupedVirtuoso
+        useWindowScroll
+        defaultItemHeight={EVENT_HEIGHT}
+        groupCounts={groupCounts}
+        increaseViewportBy={EVENT_HEIGHT * 4}
+        customScrollParent={getScrollElement()}
+        groupContent={(index) => {
+          const events = voyages[groups[index]]
+          if (!events) {
+            return null
+          }
+          const expanded = expandedVoyages.includes(index)
+          return (
+            <VoyageGroup
+              key={index}
+              expanded={expanded}
+              events={events}
+              onToggleClick={toggleExpandedVoyage}
+              onMapClick={selectVoyageOnMap}
+              onMapHover={onVoyageMapHover}
+            />
+          )
+        }}
+        itemContent={(index) => {
+          const event = events[index]
+          return (
+            <Event
+              key={event.id}
+              event={event}
+              onMapHover={onEventMapHover}
+              onMapClick={selectEventOnMap}
+              onInfoClick={onInfoClick}
+              className={styles.event}
+            >
+              {selectedEvent?.id === event?.id && <EventDetail event={event} />}
+            </Event>
+          )
+        }}
+      />
+    )
+  }, [
+    events,
+    expandedVoyages,
+    groupCounts,
+    groups,
+    onEventMapHover,
+    onInfoClick,
+    onVoyageMapHover,
+    selectEventOnMap,
+    selectVoyageOnMap,
+    selectedEvent?.id,
+    t,
+    toggleExpandedVoyage,
+    vesselPrintMode,
+    voyages,
+  ])
 
   if (visibleEvents !== 'all' && !visibleEvents.includes('port_visit')) {
     return (
@@ -112,58 +214,7 @@ const ActivityByVoyage = () => {
     )
   }
 
-  return (
-    <ul className={styles.activityContainer}>
-      {groupCounts.length > 0 ? (
-        <GroupedVirtuoso
-          useWindowScroll
-          defaultItemHeight={EVENT_HEIGHT}
-          groupCounts={groupCounts}
-          increaseViewportBy={EVENT_HEIGHT * 4}
-          customScrollParent={getScrollElement()}
-          groupContent={(index) => {
-            const events = voyages[groups[index]]
-            if (!events) {
-              return null
-            }
-            const expanded = expandedVoyages.includes(index)
-            return (
-              <VoyageGroup
-                key={index}
-                expanded={expanded}
-                events={events}
-                onToggleClick={toggleExpandedVoyage}
-                onMapClick={selectVoyageOnMap}
-                onMapHover={onVoyageMapHover}
-              />
-            )
-          }}
-          itemContent={(index) => {
-            const event = events[index]
-            return (
-              <Event
-                key={event.id}
-                event={event}
-                onMapHover={onEventMapHover}
-                onMapClick={selectEventOnMap}
-                onInfoClick={onInfoClick}
-                className={styles.event}
-              >
-                {selectedEvent?.id === event?.id && <EventDetail event={event} />}
-              </Event>
-            )
-          }}
-        />
-      ) : (
-        <span className={styles.enptyState}>
-          {t(
-            'vessel.noVoyagesinTimeRange',
-            'There are no voyages fully contained in your timerange.'
-          )}
-        </span>
-      )}
-    </ul>
-  )
+  return <ul className={styles.activityContainer}>{renderedComponent}</ul>
 }
 
 export default ActivityByVoyage

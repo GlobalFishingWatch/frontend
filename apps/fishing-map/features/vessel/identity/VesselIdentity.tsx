@@ -63,6 +63,7 @@ const VesselIdentity = () => {
             type="border"
             icon="download"
             size="medium"
+            className="print-hidden"
             onClick={onDownloadClick}
             tooltip={t('download.dataDownload', 'Download Data')}
             tooltipPlacement="top"

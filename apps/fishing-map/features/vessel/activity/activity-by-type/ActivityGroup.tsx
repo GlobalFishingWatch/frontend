@@ -33,7 +33,7 @@ const ActivityGroup: React.FC<ActivityGroupProps> = ({
             <I18nNumber number={quantity} />{' '}
             {t(`event.${eventType}` as any, eventType, { count: quantity })}
           </p>
-          <div className={styles.actions}>
+          <div className={cx(styles.actions, 'print-hidden')}>
             <IconButton icon={expanded ? 'arrow-top' : 'arrow-down'} size="small"></IconButton>
           </div>
         </div>

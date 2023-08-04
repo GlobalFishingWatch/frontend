@@ -23,6 +23,7 @@ const VesselActivityDownload = () => {
     <IconButton
       icon="download"
       size="medium"
+      className="print-hidden"
       type="border"
       disabled={eventsLoading}
       onClick={onDownloadClick}
