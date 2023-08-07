@@ -641,6 +641,7 @@
     "lengthRange": "Rango de eslora",
     "license_category": "Categoría de licencia",
     "licenseCode": "Código de licencia",
+    "linkToVessel": "Check the vessel profile here",
     "loading": "Cargando la trayectoria de la embarcación",
     "loadingInfo": "Cargando información de la embarcación",
     "login": "Necesita <1>iniciar sesión</1> para ver más detalles (gratis y toma 2 minutos)",

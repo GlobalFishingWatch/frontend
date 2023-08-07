@@ -641,6 +641,7 @@
     "lengthRange": "Plage de longueur",
     "license_category": "Catégorie de la licence",
     "licenseCode": "Code licence",
+    "linkToVessel": "Check the vessel profile here",
     "loading": "Chargement de la trajectoire du navire",
     "loadingInfo": "Chargement des informations du navire",
     "login": "Vous devez <1>vous connecter</1> pour voir plus de détails (gratuit, 2 minutes)",
