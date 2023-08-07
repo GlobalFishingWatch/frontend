@@ -628,9 +628,8 @@
       "unknown": "Unknown"
     },
     "identity": {
-      "selfReported": "Self reported identity",
-      "registryIdentity": "Registry identity",
-      "registryIdentities": "Registry identities",
+      "selfReportedInfo": "Self reported identity",
+      "registryInfo": "Registry identities",
       "seeAsCalendar": "See as calendar"
     },
     "grossTonnage": "Gross Tonnage",
