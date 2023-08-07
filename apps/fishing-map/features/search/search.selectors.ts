@@ -10,39 +10,7 @@ import {
 } from 'features/datasets/datasets.utils'
 import { selectAllDataviewsInWorkspace } from 'features/dataviews/dataviews.selectors'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { SearchType, VesselInfoSourceEnum } from 'features/search/search.config'
-import { VesselWithDatasetsResolved, selectSearchResults } from './search.slice'
-
-export const selectVesselSearchResultsResolved = createSelector(
-  [selectSearchResults],
-  (vessels): VesselWithDatasetsResolved[] => {
-    return (vessels || []).map((vessel) => {
-      const hasRegistryData = vessel.registryInfo?.length
-      const vesselData = hasRegistryData ? vessel.registryInfo?.[0] : vessel.selfReportedInfo[0]
-      // Get first transmission date from all identity sources
-      const transmissionDateFrom = [
-        ...(vessel.registryInfo || [])?.flatMap((r) => r.transmissionDateFrom || []),
-        ...vessel.selfReportedInfo.flatMap((r) => r.transmissionDateFrom || []),
-      ].sort((a, b) => (a < b ? -1 : 1))?.[0]
-      // The same with last transmission date
-      const transmissionDateTo = [
-        ...(vessel.registryInfo || [])?.flatMap((r) => r.transmissionDateTo || []),
-        ...vessel.selfReportedInfo.flatMap((r) => r.transmissionDateTo || []),
-      ].sort((a, b) => (a > b ? -1 : 1))?.[0]
-      return {
-        ...vesselData,
-        infoSource: hasRegistryData
-          ? VesselInfoSourceEnum.Registry
-          : VesselInfoSourceEnum.SelfReported,
-        transmissionDateFrom,
-        transmissionDateTo,
-        id: vessel.selfReportedInfo?.[0]?.id,
-        dataset: vessel.dataset,
-        trackDatasetId: vessel.trackDatasetId,
-      } as VesselWithDatasetsResolved
-    })
-  }
-)
+import { SearchType } from 'features/search/search.config'
 
 export const selectSearchDatasetsInWorkspace = createSelector(
   [selectAllDataviewsInWorkspace, selectVesselsDatasets, selectAllDatasets],

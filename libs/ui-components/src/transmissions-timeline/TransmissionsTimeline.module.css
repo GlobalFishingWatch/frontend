@@ -29,6 +29,9 @@
   background: var(--color-secondary-blue);
   white-space: nowrap;
   min-height: 1.4rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .year.highlighted:hover {

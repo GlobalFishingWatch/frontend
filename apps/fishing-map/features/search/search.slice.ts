@@ -29,13 +29,16 @@ export type VesselDatasetInfo = {
   infoSource?: VesselInfoSourceEnum
 }
 export type VesselWithDatasets = Omit<IdentityVessel, 'dataset'> & VesselDatasetInfo
-export type VesselWithDatasetsResolved = (SelfReportedInfo | VesselRegistryInfo) & VesselDatasetInfo
+export type VesselWithDatasetsMerged = {
+  id: string
+} & (SelfReportedInfo | VesselRegistryInfo) &
+  VesselDatasetInfo
 
 interface SearchState {
-  selectedVessels: VesselWithDatasetsResolved[]
+  selectedVessels: VesselWithDatasetsMerged[]
   status: AsyncReducerStatus
   statusCode: number | undefined
-  data: VesselWithDatasets[] | null
+  data: VesselWithDatasets[]
   suggestion: string | null
   suggestionClicked: boolean
   pagination: {
@@ -52,7 +55,7 @@ const initialState: SearchState = {
   status: AsyncReducerStatus.Idle,
   statusCode: undefined,
   pagination: paginationInitialState,
-  data: null,
+  data: [],
   suggestion: null,
   suggestionClicked: false,
 }
@@ -184,7 +187,7 @@ const searchSlice = createSlice({
   name: 'search',
   initialState,
   reducers: {
-    setSelectedVessels: (state, action: PayloadAction<VesselWithDatasetsResolved[]>) => {
+    setSelectedVessels: (state, action: PayloadAction<VesselWithDatasetsMerged[]>) => {
       const selection = action.payload
       if (selection.length === 0) {
         state.selectedVessels = []

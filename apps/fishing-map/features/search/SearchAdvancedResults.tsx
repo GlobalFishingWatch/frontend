@@ -2,9 +2,10 @@ import { useSelector } from 'react-redux'
 import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TransmissionsTimeline } from '@globalfishingwatch/ui-components'
+import { Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
 import {
-  VesselWithDatasetsResolved,
+  VesselWithDatasets,
+  selectSearchResults,
   selectSearchStatus,
   selectSelectedVessels,
   setSelectedVessels,
@@ -17,57 +18,93 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
 import { Locale } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
-import { selectVesselSearchResultsResolved } from 'features/search/search.selectors'
+import {
+  getIdentityVesselMerged,
+  getLatestVesselIdentity,
+  getVesselIdentityProperties,
+  getVesselProperty,
+} from 'features/vessel/vessel.utils'
 
 const PINNED_COLUMN = 'shipname'
+const TOOLTIP_LABEL_CHARACTERS = 25
 
 function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
   const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const searchStatus = useSelector(selectSearchStatus)
-  const searchResults = useSelector(selectVesselSearchResultsResolved)
+  const searchResults = useSelector(selectSearchResults)
   const vesselsSelected = useSelector(selectSelectedVessels)
   const tableContainerRef = useRef<HTMLDivElement>(null)
-  const columns = useMemo((): MRT_ColumnDef<VesselWithDatasetsResolved>[] => {
+  const columns = useMemo((): MRT_ColumnDef<VesselWithDatasets>[] => {
     return [
       {
-        accessorKey: PINNED_COLUMN,
-        accessorFn: ({ shipname }) => formatInfoField(shipname, 'name') || EMPTY_FIELD_PLACEHOLDER,
+        accessorKey: PINNED_COLUMN as any,
+        accessorFn: (vessel) => {
+          const [shipname, ...names] = getVesselIdentityProperties(vessel, 'shipname')
+          const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER
+          const label = names?.length
+            ? `${name} (${t('common.previously', 'Previously')}: ${names
+                .map((name) => formatInfoField(name, 'name'))
+                .join(', ')})`
+            : name
+          return label.length > TOOLTIP_LABEL_CHARACTERS ? (
+            <Tooltip content={label}>
+              <span>{label}</span>
+            </Tooltip>
+          ) : (
+            label
+          )
+        },
         header: t('common.name', 'Name'),
         enableColumnDragging: false,
         enableColumnActions: false,
       },
       {
-        accessorFn: ({ flag }) => <I18nFlag iso={flag} />,
+        accessorFn: (vessel) => <I18nFlag iso={getVesselProperty(vessel, 'flag')} />,
         header: t('vessel.flag', 'Flag'),
       },
       {
-        accessorFn: ({ ssvid }) => ssvid || EMPTY_FIELD_PLACEHOLDER,
+        accessorFn: (vessel) => getVesselProperty(vessel, 'ssvid') || EMPTY_FIELD_PLACEHOLDER,
         header: t('vessel.mmsi', 'MMSI'),
       },
       {
-        accessorFn: ({ imo }) => imo || EMPTY_FIELD_PLACEHOLDER,
+        accessorFn: (vessel) => getVesselProperty(vessel, 'imo') || EMPTY_FIELD_PLACEHOLDER,
         header: t('vessel.imo', 'IMO'),
       },
       {
-        accessorFn: ({ callsign }) => callsign || EMPTY_FIELD_PLACEHOLDER,
+        accessorFn: (vessel) => getVesselProperty(vessel, 'callsign') || EMPTY_FIELD_PLACEHOLDER,
         header: t('vessel.callsign', 'Callsign'),
       },
       {
-        accessorFn: ({ shiptype }) =>
-          t(`vessel.vesselTypes.${shiptype?.toLowerCase()}` as any, EMPTY_FIELD_PLACEHOLDER),
+        accessorFn: (vessel) => {
+          const shiptype = getVesselProperty(vessel, 'shiptype')
+          return t(`vessel.vesselTypes.${shiptype?.toLowerCase()}` as any, EMPTY_FIELD_PLACEHOLDER)
+        },
         header: t('vessel.vesselType', 'Vessel Type'),
       },
       {
-        accessorFn: ({ geartype }) =>
-          geartype?.map((gear) =>
-            t(`vessel.gearTypes.${gear.toLowerCase()}` as any, EMPTY_FIELD_PLACEHOLDER)
-          ),
+        accessorFn: (vessel) => {
+          const geartypes = getVesselProperty<string[]>(vessel, 'geartype')
+          const label = geartypes
+            ?.map((gear) =>
+              t(`vessel.gearTypes.${gear.toLowerCase()}` as any, EMPTY_FIELD_PLACEHOLDER)
+            )
+            .join(', ')
+          return label.length > TOOLTIP_LABEL_CHARACTERS ? (
+            <Tooltip content={label}>
+              <span>{label}</span>
+            </Tooltip>
+          ) : (
+            label
+          )
+        },
         header: t('vessel.geartype', 'Gear Type'),
       },
       {
-        accessorFn: ({ infoSource }) =>
-          t(`vessel.infoSources.${infoSource}` as any, infoSource || EMPTY_FIELD_PLACEHOLDER),
+        accessorFn: (vessel) => {
+          const infoSource = getLatestVesselIdentity(vessel)?.infoSource
+          return t(`vessel.infoSources.${infoSource}` as any, infoSource || EMPTY_FIELD_PLACEHOLDER)
+        },
         header: t('vessel.infoSource', 'Info Source'),
       },
       // {
@@ -79,19 +116,23 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
       //   header: t('vessel.transmission_other', 'Transmissions'),
       // },
       {
-        accessorFn: ({ transmissionDateFrom, transmissionDateTo }: VesselWithDatasetsResolved) => (
-          <div>
-            <span style={{ font: 'var(--font-XS)' }}>
-              <I18nDate date={transmissionDateFrom} /> - <I18nDate date={transmissionDateTo} />
-            </span>
-            <TransmissionsTimeline
-              firstTransmissionDate={transmissionDateFrom}
-              lastTransmissionDate={transmissionDateTo}
-              firstYearOfData={FIRST_YEAR_OF_DATA}
-              locale={i18n.language as Locale}
-            />
-          </div>
-        ),
+        accessorFn: (vessel) => {
+          const transmissionDateFrom = getVesselProperty(vessel, 'transmissionDateFrom')
+          const transmissionDateTo = getVesselProperty(vessel, 'transmissionDateTo')
+          return (
+            <div>
+              <span style={{ font: 'var(--font-XS)' }}>
+                <I18nDate date={transmissionDateFrom} /> - <I18nDate date={transmissionDateTo} />
+              </span>
+              <TransmissionsTimeline
+                firstTransmissionDate={transmissionDateFrom}
+                lastTransmissionDate={transmissionDateTo}
+                firstYearOfData={FIRST_YEAR_OF_DATA}
+                locale={i18n.language as Locale}
+              />
+            </div>
+          )
+        },
         header: t('vessel.transmissionDates', 'Transmission Dates'),
       },
     ]
@@ -110,18 +151,26 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
   }, [fetchMoreResults, searchStatus])
 
   const onSelectHandler = useCallback(
-    (vessels: VesselWithDatasetsResolved[]) => {
-      dispatch(setSelectedVessels(vessels))
+    (vessels: VesselWithDatasets[]) => {
+      const vessesSelected = vessels.map(getIdentityVesselMerged)
+      dispatch(setSelectedVessels(vessesSelected))
     },
     [dispatch]
   )
 
+  const vesselSelectedIds = useMemo(
+    () => vesselsSelected.map((vessel) => vessel.id),
+    [vesselsSelected]
+  )
+
   const rowSelection = useMemo(() => {
-    const selectedIds = vesselsSelected.map((vessel) => vessel.id)
     return Object.fromEntries(
-      (searchResults || []).map((vessel) => [vessel.id, selectedIds.includes(vessel.id)])
+      (searchResults || []).map((vessel, index) => {
+        const id = getVesselProperty(vessel, 'id')
+        return [`${index}-${id}`, vesselSelectedIds.includes(id)]
+      })
     )
-  }, [searchResults, vesselsSelected])
+  }, [searchResults, vesselSelectedIds])
 
   useEffect(() => {
     fetchMoreOnBottomReached()
@@ -149,10 +198,11 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
       enableColumnDragging
       enableStickyHeader
       enableMultiRowSelection
+      enableRowVirtualization
       enableRowSelection
       onRowSelectionChange={undefined}
       selectAllMode="all"
-      getRowId={(row, index) => `${index} - ${row.dataset.id} - ${row.id}`}
+      getRowId={(row, index) => `${index}-${getVesselProperty(row, 'id')}`}
       initialState={{ columnPinning: { left: [PINNED_COLUMN] } }}
       state={{ showProgressBars, rowSelection }}
       muiTablePaperProps={{
@@ -212,7 +262,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
           backgroundColor:
             cell.column.id === 'shipname'
               ? 'var(--color-white)'
-              : vesselsSelected.includes(row.original)
+              : vesselSelectedIds.includes(getVesselProperty(row.original, 'id'))
               ? 'var(--color-terthiary-blue)'
               : 'transparent',
           textAlign: cell.column.id === 'mrt-row-select' ? 'center' : 'left',
@@ -223,7 +273,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
           whiteSpace: 'nowrap',
           maxWidth: '20rem',
           '.Mui-TableHeadCell-Content-Wrapper': { minWidth: '2rem' },
-          padding: '0.5rem',
+          padding: '0.5rem 1.1rem',
         },
       })}
       muiBottomToolbarProps={{ sx: { overflow: 'visible' } }}

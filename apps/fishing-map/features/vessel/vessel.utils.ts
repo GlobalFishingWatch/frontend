@@ -1,4 +1,4 @@
-import { get } from 'lodash'
+import { get, uniq } from 'lodash'
 import {
   IdentityVessel,
   SelfReportedInfo,
@@ -8,24 +8,81 @@ import {
 } from '@globalfishingwatch/api-types'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { getUTCDateTime } from 'utils/dates'
+import { VesselInfoSourceEnum } from 'features/search/search.config'
+import { VesselWithDatasets, VesselWithDatasetsMerged } from 'features/search/search.slice'
+
+export const getVesselIdentities = (
+  vessel: Pick<IdentityVessel, 'registryInfo' | 'selfReportedInfo'>
+): ((SelfReportedInfo | VesselRegistryInfo) & { infoSource: VesselInfoSourceEnum })[] => {
+  return [
+    ...(vessel.registryInfo || []).map((i) => ({
+      ...i,
+      infoSource: VesselInfoSourceEnum.Registry,
+    })),
+    ...(vessel.selfReportedInfo || []).map((i) => ({
+      ...i,
+      infoSource: VesselInfoSourceEnum.SelfReported,
+    })),
+  ].sort((a, b) => (a.transmissionDateTo > b.transmissionDateTo ? -1 : 1))
+}
+
+export const getLatestVesselIdentity = (
+  vessel: Pick<IdentityVessel, 'registryInfo' | 'selfReportedInfo'>
+) => {
+  const allIdentitiesInfo = getVesselIdentities(vessel)
+  return allIdentitiesInfo[0]
+}
 
 type VesselIdentityProperty = keyof SelfReportedInfo | keyof VesselRegistryInfo
 export function getVesselProperty<P = string>(
-  vessel: IdentityVessel | null,
+  vessel: IdentityVessel | VesselWithDatasets | null,
   property: VesselIdentityProperty,
   { registryIndex = 0 }: { registryIndex?: number } = {}
 ): P {
   if (!vessel) return '' as P
-  if (vessel.registryInfo?.length) {
+  if (registryIndex && vessel.registryInfo?.length) {
     const registryData = get(vessel.registryInfo[registryIndex], property) as P
     if (registryData) {
       return registryData
     }
   }
-  return get(vessel.selfReportedInfo?.[0], property) as P
+  const latestVesselData = getLatestVesselIdentity(vessel)
+  return get(latestVesselData, property) as P
 }
 
-export const getVoyageTimeRange = (events: ActivityEvent[]) => {
+export function getVesselIdentityProperties<P = string>(
+  vessel: IdentityVessel | VesselWithDatasets,
+  property: VesselIdentityProperty
+): P[] {
+  if (!vessel) return [] as P[]
+  const allIdentitiesInfo = getVesselIdentities(vessel)
+  return uniq(allIdentitiesInfo.flatMap((i) => i[property] || [])) as P[]
+}
+
+export function getIdentityVesselMerged(vessel: IdentityVessel | VesselWithDatasets) {
+  const vesselData = getLatestVesselIdentity(vessel)
+  // Get first transmission date from all identity sources
+  const transmissionDateFrom = [
+    ...(vessel.registryInfo || [])?.flatMap((r) => r.transmissionDateFrom || []),
+    ...vessel.selfReportedInfo.flatMap((r) => r.transmissionDateFrom || []),
+  ].sort((a, b) => (a < b ? -1 : 1))?.[0]
+  // The same with last transmission date
+  const transmissionDateTo = [
+    ...(vessel.registryInfo || [])?.flatMap((r) => r.transmissionDateTo || []),
+    ...vessel.selfReportedInfo.flatMap((r) => r.transmissionDateTo || []),
+  ].sort((a, b) => (a > b ? -1 : 1))?.[0]
+  const trackDatasetId = (vessel as VesselWithDatasets).trackDatasetId
+  return {
+    ...vesselData,
+    dataset: vessel.dataset,
+    ...(trackDatasetId && { trackDatasetId }),
+    transmissionDateFrom,
+    transmissionDateTo,
+    id: vessel.selfReportedInfo?.[0]?.id,
+  } as VesselWithDatasetsMerged
+}
+
+export function getVoyageTimeRange(events: ActivityEvent[]) {
   return { start: events?.[events.length - 1]?.start, end: events?.[0]?.end }
 }
 

@@ -95,7 +95,6 @@ const ActivityByVoyage = () => {
     [setMapCoordinates, viewport.zoom]
   )
 
-  console.log('🚀 ~ const{events,groupCounts,groups}=useMemo ~ voyages:', voyages)
   const { events, groupCounts, groups } = useMemo(() => {
     const eventsExpanded = Object.entries(voyages).map(([voyage, events]) => {
       return expandedVoyages.includes(parseInt(voyage)) ? events : ([] as ActivityEvent[])

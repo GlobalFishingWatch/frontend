@@ -17,12 +17,13 @@ import {
   setSuggestionClicked,
   selectSelectedVessels,
   setSelectedVessels,
-  VesselWithDatasetsResolved,
+  selectSearchResults,
+  VesselWithDatasetsMerged,
 } from './search.slice'
 import styles from './SearchBasic.module.css'
 import { useSearchConnect } from './search.hook'
 import { SearchNotAllowed, SearchNoResultsState, SearchEmptyState } from './SearchPlaceholders'
-import { isBasicSearchAllowed, selectVesselSearchResultsResolved } from './search.selectors'
+import { isBasicSearchAllowed } from './search.selectors'
 
 const MIN_SEARCH_CHARACTERS = 3
 
@@ -43,7 +44,7 @@ function SearchBasic({
   const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
   const searchQuery = useSelector(selectSearchQuery)
   const basicSearchAllowed = useSelector(isBasicSearchAllowed)
-  const searchResults = useSelector(selectVesselSearchResultsResolved)
+  const searchResults = useSelector(selectSearchResults)
   const searchStatus = useSelector(selectSearchStatus)
   const searchStatusCode = useSelector(selectSearchStatusCode)
   const vesselsSelected = useSelector(selectSelectedVessels)
@@ -73,7 +74,7 @@ function SearchBasic({
 
   return (
     <Downshift
-      onSelect={(selectedItem: VesselWithDatasetsResolved) =>
+      onSelect={(selectedItem: VesselWithDatasetsMerged) =>
         dispatch(setSelectedVessels([selectedItem]))
       }
       itemToString={(item) => (item ? item.shipname : '')}
