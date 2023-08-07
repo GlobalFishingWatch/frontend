@@ -62,7 +62,6 @@ function useActivityEventConnect() {
         case EventTypes.Encounter:
           if (event.encounter?.vessel) {
             const { flag, id, name } = event.encounter.vessel
-            console.log('event.encounter.vessel:', event.encounter.vessel)
             return (
               // TODO check if we can get the dataset of the vessel encountered, using Identity for now
               <span>

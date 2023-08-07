@@ -46,7 +46,7 @@ const VesselLink = ({
   return (
     <Link
       to={{
-        type: isSearchLocation ? VESSEL : WORKSPACE_VESSEL,
+        type: isSearchLocation || !workspaceId ? VESSEL : WORKSPACE_VESSEL,
         payload: {
           ...(!isSearchLocation && {
             category: workspaceCategory,
