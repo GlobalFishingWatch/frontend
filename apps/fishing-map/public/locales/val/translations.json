@@ -628,9 +628,8 @@
       "unknown": "crwdns49773:0crwdne49773:0"
     },
     "identity": {
-      "selfReported": "crwdns49775:0crwdne49775:0",
-      "registryIdentity": "crwdns49777:0crwdne49777:0",
-      "registryIdentities": "crwdns49779:0crwdne49779:0",
+      "selfReportedInfo": "crwdns57527:0crwdne57527:0",
+      "registryInfo": "crwdns57529:0crwdne57529:0",
       "seeAsCalendar": "crwdns49781:0crwdne49781:0"
     },
     "grossTonnage": "crwdns49783:0crwdne49783:0",
