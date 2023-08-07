@@ -16,7 +16,7 @@ import {
   fetchDatasetsByIdsThunk,
   selectDatasetById,
 } from 'features/datasets/datasets.slice'
-import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
+import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { VesselInstanceDatasets } from 'features/dataviews/dataviews.utils'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { PROFILE_DATAVIEW_SLUGS } from 'data/workspaces'
@@ -69,14 +69,6 @@ export const fetchVesselInfoThunk = createAsyncThunk(
         const dataset = action.payload as Dataset
         // Datasets and dataview needed to mock follow the structure of the map and resolve the generators
         dispatch(fetchDataviewsByIdsThunk(PROFILE_DATAVIEW_SLUGS))
-        const trackDatasetId = getRelatedDatasetsByType(dataset, DatasetTypes.Tracks)?.[0]?.id || ''
-        const eventsDatasetsId =
-          getRelatedDatasetsByType(dataset, DatasetTypes.Events)?.map((d) => d.id) || []
-        // When coming from workspace url datasets are already loaded so no need to fetch again
-        const datasetsToFetch = [trackDatasetId, ...eventsDatasetsId].flatMap((id) => {
-          return selectDatasetById(id)(state) ? [] : [id]
-        })
-        dispatch(fetchDatasetsByIdsThunk(datasetsToFetch))
         const datasetConfig = {
           endpoint: EndpointId.Vessel,
           datasetId: dataset.id,
@@ -89,6 +81,18 @@ export const fetchVesselInfoThunk = createAsyncThunk(
           return rejectWithValue({ message: 'Error resolving endpoint' })
         }
         const vessel = await GFWAPI.fetch<IdentityVessel>(url)
+        const identities = getVesselIdentities(vessel)
+        const trackDatasetId =
+          getRelatedDatasetByType(dataset, DatasetTypes.Tracks, {
+            vesselType: identities?.[0]?.shiptype,
+          })?.id || ''
+        const eventsDatasetsId =
+          getRelatedDatasetsByType(dataset, DatasetTypes.Events)?.map((d) => d.id) || []
+        // When coming from workspace url datasets are already loaded so no need to fetch again
+        const datasetsToFetch = [trackDatasetId, ...eventsDatasetsId].flatMap((id) => {
+          return selectDatasetById(id)(state) ? [] : [id]
+        })
+        dispatch(fetchDatasetsByIdsThunk(datasetsToFetch))
         return {
           id: getVesselProperty(vessel, 'id'),
           dataset: dataset,
@@ -97,7 +101,7 @@ export const fetchVesselInfoThunk = createAsyncThunk(
           info: datasetId,
           track: trackDatasetId,
           events: eventsDatasetsId,
-          identities: getVesselIdentities(vessel),
+          identities,
         } as IdentityVesselData
       } else {
         return rejectWithValue(action.payload)
