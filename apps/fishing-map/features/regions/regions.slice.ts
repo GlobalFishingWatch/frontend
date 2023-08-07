@@ -34,10 +34,10 @@ export const fetchRegionsThunk = createAsyncThunk(
       const apiUrl = `/datasets`
       const options = {}
       const promises = [
-        GFWAPI.fetch<Region[]>(`${apiUrl}/${regionIds.eez}/user-context-layer-v1`, options),
-        GFWAPI.fetch<Region[]>(`${apiUrl}/${regionIds.mpa}/user-context-layer-v1`, options),
-        GFWAPI.fetch<Region[]>(`${apiUrl}/${regionIds.rfmo}/user-context-layer-v1`, options),
-        GFWAPI.fetch<Region[]>(`${apiUrl}/${regionIds.fao}/user-context-layer-v1`, options),
+        GFWAPI.fetch<Region[]>(`${apiUrl}/${regionIds.eez}/context-layer-v1`, options),
+        GFWAPI.fetch<Region[]>(`${apiUrl}/${regionIds.mpa}/context-layer-v1`, options),
+        GFWAPI.fetch<Region[]>(`${apiUrl}/${regionIds.rfmo}/context-layer-v1`, options),
+        GFWAPI.fetch<Region[]>(`${apiUrl}/${regionIds.fao}/context-layer-v1`, options),
       ]
       const regions = await Promise.allSettled(promises)
       const result: Regions[] = [

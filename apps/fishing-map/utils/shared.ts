@@ -18,15 +18,21 @@ export type Field = { id: string | number; label: string | number }
 export const sortStrings = (a: string, b: string) => a.localeCompare(b)
 
 export const sortFields = (a: Field, b: Field) => {
-  if (typeof a.label === 'number' || typeof b.label === 'number') {
-    return (a.label as number) - (b.label as number)
+  const aLabel = a.label || a.id
+  const bLabel = b.label || b.id
+
+  if (!aLabel && !bLabel) return 0
+  if (!aLabel) return -1
+  if (!bLabel) return 1
+
+  if (typeof aLabel === 'number' || typeof bLabel === 'number') {
+    return (aLabel as number) - (bLabel as number)
   }
 
-  if (typeof a.label === 'boolean' || typeof b.label === 'boolean') {
+  if (typeof aLabel === 'boolean' || typeof bLabel === 'boolean') {
     return 0
   }
-
-  return a.label.localeCompare(b.label)
+  return aLabel.localeCompare(bLabel)
 }
 
 export const listAsSentence = (list: string[]) => {
