@@ -8,7 +8,11 @@ import { selectVesselEventsFilteredByTimerange } from 'features/vessel/vessel.se
 import { selectVesselInfoData, setVesselPrintMode } from 'features/vessel/vessel.slice'
 import { formatInfoField } from 'utils/info'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
-import { getVesselProperty } from 'features/vessel/vessel.utils'
+import {
+  getIdentityVesselMerged,
+  getLatestVesselIdentity,
+  getVesselProperty,
+} from 'features/vessel/vessel.utils'
 import { selectActiveVesselsDataviews } from 'features/dataviews/dataviews.slice'
 import { COLOR_PRIMARY_BLUE } from 'features/app/App'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -96,7 +100,7 @@ const VesselHeader = () => {
         <VesselGroupAddButton
           buttonSize="small"
           buttonType="border-secondary"
-          vessels={vessel ? [vessel] : []}
+          vessels={vessel ? [getIdentityVesselMerged(vessel)] : []}
           showCount={false}
           buttonClassName="print-hidden"
         />

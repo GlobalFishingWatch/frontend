@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
 import {
-  VesselWithDatasets,
   selectSearchResults,
   selectSearchStatus,
   selectSelectedVessels,
@@ -24,6 +23,7 @@ import {
   getVesselIdentityProperties,
   getVesselProperty,
 } from 'features/vessel/vessel.utils'
+import { IdentityVesselData } from 'features/vessel/vessel.slice'
 
 const PINNED_COLUMN = 'shipname'
 const TOOLTIP_LABEL_CHARACTERS = 25
@@ -35,7 +35,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
   const searchResults = useSelector(selectSearchResults)
   const vesselsSelected = useSelector(selectSelectedVessels)
   const tableContainerRef = useRef<HTMLDivElement>(null)
-  const columns = useMemo((): MRT_ColumnDef<VesselWithDatasets>[] => {
+  const columns = useMemo((): MRT_ColumnDef<IdentityVesselData>[] => {
     return [
       {
         accessorKey: PINNED_COLUMN as any,
@@ -102,8 +102,11 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
       },
       {
         accessorFn: (vessel) => {
-          const infoSource = getLatestVesselIdentity(vessel)?.infoSource
-          return t(`vessel.infoSources.${infoSource}` as any, infoSource || EMPTY_FIELD_PLACEHOLDER)
+          const identitySource = getLatestVesselIdentity(vessel)?.identitySource
+          return t(
+            `vessel.infoSources.${identitySource}` as any,
+            identitySource || EMPTY_FIELD_PLACEHOLDER
+          )
         },
         header: t('vessel.infoSource', 'Info Source'),
       },
@@ -112,7 +115,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
       //   header: t('vessel.source', 'Source'),
       // },
       // {
-      //   accessorFn: ({ msgCount }: VesselWithDatasetsResolved) => <I18nNumber number={msgCount} />,
+      //   accessorFn: ({ msgCount }: VesselLastIdentity) => <I18nNumber number={msgCount} />,
       //   header: t('vessel.transmission_other', 'Transmissions'),
       // },
       {
@@ -151,7 +154,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
   }, [fetchMoreResults, searchStatus])
 
   const onSelectHandler = useCallback(
-    (vessels: VesselWithDatasets[]) => {
+    (vessels: IdentityVesselData[]) => {
       const vessesSelected = vessels.map(getIdentityVesselMerged)
       dispatch(setSelectedVessels(vessesSelected))
     },

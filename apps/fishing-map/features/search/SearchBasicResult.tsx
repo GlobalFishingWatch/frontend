@@ -16,11 +16,7 @@ import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
 import TrackFootprint from 'features/search/TrackFootprint'
-import {
-  VesselWithDatasets,
-  VesselWithDatasetsMerged,
-  cleanVesselSearchResults,
-} from 'features/search/search.slice'
+import { VesselLastIdentity, cleanVesselSearchResults } from 'features/search/search.slice'
 import VesselLink from 'features/vessel/VesselLink'
 import useAddVesselDataviewInstance from 'features/vessel/vessel.hooks'
 import { formatInfoField, EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
@@ -31,15 +27,16 @@ import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
 import { getIdentityVesselMerged, getVesselIdentityProperties } from 'features/vessel/vessel.utils'
+import { IdentityVesselData } from 'features/vessel/vessel.slice'
 import styles from './SearchBasicResult.module.css'
 
 type SearchBasicResultProps = {
-  vessel: VesselWithDatasets
+  vessel: IdentityVesselData
   index: number
   highlightedIndex: number
   setHighlightedIndex: (index: number) => void
-  getItemProps: (options: GetItemPropsOptions<VesselWithDatasetsMerged>) => any
-  vesselsSelected: VesselWithDatasetsMerged[]
+  getItemProps: (options: GetItemPropsOptions<VesselLastIdentity>) => any
+  vesselsSelected: VesselLastIdentity[]
 }
 
 function SearchBasicResult({
@@ -62,7 +59,7 @@ function SearchBasicResult({
   const fitBounds = useMapFitBounds()
   const { setTimerange } = useTimerangeConnect()
 
-  const { dataset, trackDatasetId, infoSource } = vessel
+  const { dataset, track } = vessel
   const vesselData = getIdentityVesselMerged(vessel)
   const {
     id,
@@ -74,6 +71,7 @@ function SearchBasicResult({
     shiptype,
     transmissionDateFrom,
     transmissionDateTo,
+    identitySource,
   } = vesselData
   const [shipname, ...names] = getVesselIdentityProperties(vessel, 'shipname')
   const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER
@@ -94,7 +92,7 @@ function SearchBasicResult({
   const { onClick, ...itemProps } = getItemProps({ item: vesselData, index })
 
   const onVesselClick = useCallback(
-    (vessel: VesselWithDatasetsMerged) => {
+    (vessel: VesselLastIdentity) => {
       if (workspaceId) {
         addVesselDataviewInstance(vessel)
       }
@@ -242,10 +240,10 @@ function SearchBasicResult({
                       <DatasetLabel dataset={dataset} />
                     </div>
                   )} */}
-            {infoSource && (
+            {identitySource && (
               <div className={styles.property}>
                 <label>{t('vessel.infoSource', 'Info Source')}</label>
-                <span>{t(`vessel.infoSources.${infoSource}` as any, infoSource)}</span>
+                <span>{t(`vessel.infoSources.${identitySource}` as string, identitySource)}</span>
               </div>
             )}
           </div>
@@ -272,7 +270,7 @@ function SearchBasicResult({
         {!isSmallScreen && (
           <TrackFootprint
             vesselId={id}
-            trackDatasetId={trackDatasetId}
+            trackDatasetId={track}
             highlightedYear={highlightedYear}
             onDataLoad={onTrackFootprintLoad}
           />

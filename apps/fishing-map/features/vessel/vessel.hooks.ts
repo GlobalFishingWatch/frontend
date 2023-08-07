@@ -3,12 +3,12 @@ import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { VesselWithDatasetsResolved } from 'features/search/search.slice'
+import { VesselLastIdentity } from 'features/search/search.slice'
 
 const useAddVesselDataviewInstance = () => {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const addVesselDataviewInstance = useCallback(
-    (vessel: VesselWithDatasetsResolved) => {
+    (vessel: VesselLastIdentity) => {
       const vesselEventsDatasets = getRelatedDatasetsByType(vessel.dataset, DatasetTypes.Events)
       const eventsDatasetsId =
         vesselEventsDatasets && vesselEventsDatasets?.length
@@ -17,7 +17,7 @@ const useAddVesselDataviewInstance = () => {
 
       const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
         info: vessel.dataset.id,
-        track: vessel.trackDatasetId,
+        track: vessel.track,
         ...(eventsDatasetsId.length > 0 && { events: eventsDatasetsId }),
       })
       upsertDataviewInstance(vesselDataviewInstance)

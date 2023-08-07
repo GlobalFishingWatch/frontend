@@ -14,31 +14,21 @@ import {
   APIVesselSearchPagination,
   IdentityVessel,
   EndpointId,
-  SelfReportedInfo,
-  VesselRegistryInfo,
 } from '@globalfishingwatch/api-types'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
-import { VesselInfoSourceEnum } from 'features/search/search.config'
 import { VesselSearchState } from 'types'
+import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
+import { getVesselIdentities, getVesselProperty } from 'features/vessel/vessel.utils'
 
-export type VesselDatasetInfo = {
-  dataset: Dataset
-  trackDatasetId?: string
-  infoSource?: VesselInfoSourceEnum
-}
-export type VesselWithDatasets = Omit<IdentityVessel, 'dataset'> & VesselDatasetInfo
-export type VesselWithDatasetsMerged = {
-  id: string
-} & (SelfReportedInfo | VesselRegistryInfo) &
-  VesselDatasetInfo
+export type VesselLastIdentity = Omit<IdentityVesselData, 'identities'> & VesselDataIdentity
 
 interface SearchState {
-  selectedVessels: VesselWithDatasetsMerged[]
+  selectedVessels: VesselLastIdentity[]
   status: AsyncReducerStatus
   statusCode: number | undefined
-  data: VesselWithDatasets[]
+  data: IdentityVesselData[]
   suggestion: string | null
   suggestionClicked: boolean
   pagination: {
@@ -157,10 +147,14 @@ export const fetchVesselSearchThunk = createAsyncThunk(
             vesselType: vessel?.selfReportedInfo?.[0]?.shiptype,
           })?.id
           return {
-            ...vessel,
+            id: getVesselProperty(vessel, 'id'),
+            registryOwners: vessel.registryOwners,
+            registryAuthorizations: vessel.registryAuthorizations,
             dataset: infoDataset,
-            trackDatasetId,
-          }
+            info: infoDataset?.id,
+            track: trackDatasetId,
+            identities: getVesselIdentities(vessel),
+          } as IdentityVesselData
         })
 
         return {
@@ -187,7 +181,7 @@ const searchSlice = createSlice({
   name: 'search',
   initialState,
   reducers: {
-    setSelectedVessels: (state, action: PayloadAction<VesselWithDatasetsMerged[]>) => {
+    setSelectedVessels: (state, action: PayloadAction<VesselLastIdentity[]>) => {
       const selection = action.payload
       if (selection.length === 0) {
         state.selectedVessels = []
@@ -197,7 +191,7 @@ const searchSlice = createSlice({
         const vessel = selection[0]
         if (selectedIds.includes(vessel?.id)) {
           state.selectedVessels = state.selectedVessels.filter((v) => v?.id !== vessel?.id)
-        } else if (vessel && vessel.dataset && vessel.trackDatasetId) {
+        } else if (vessel && vessel.dataset && vessel.track) {
           state.selectedVessels = [...state.selectedVessels, vessel]
         }
       } else {

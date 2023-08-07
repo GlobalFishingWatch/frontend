@@ -18,7 +18,7 @@ import {
   selectSelectedVessels,
   setSelectedVessels,
   selectSearchResults,
-  VesselWithDatasetsMerged,
+  VesselLastIdentity,
 } from './search.slice'
 import styles from './SearchBasic.module.css'
 import { useSearchConnect } from './search.hook'
@@ -74,9 +74,7 @@ function SearchBasic({
 
   return (
     <Downshift
-      onSelect={(selectedItem: VesselWithDatasetsMerged) =>
-        dispatch(setSelectedVessels([selectedItem]))
-      }
+      onSelect={(selectedItem: VesselLastIdentity) => dispatch(setSelectedVessels([selectedItem]))}
       itemToString={(item) => (item ? item.shipname : '')}
     >
       {({ getInputProps, getItemProps, getMenuProps, highlightedIndex, setHighlightedIndex }) => (

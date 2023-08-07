@@ -1,14 +1,15 @@
 import { GetItemPropsOptions } from 'downshift'
 import { Fragment } from 'react'
-import { VesselWithDatasets, VesselWithDatasetsMerged } from 'features/search/search.slice'
+import { VesselLastIdentity } from 'features/search/search.slice'
 import SearchBasicResult from 'features/search/SearchBasicResult'
+import { IdentityVesselData } from 'features/vessel/vessel.slice'
 
 type SearchBasicResultListProps = {
-  searchResults: VesselWithDatasets[]
+  searchResults: IdentityVesselData[]
   highlightedIndex: number
   setHighlightedIndex: (index: number) => void
-  getItemProps: (options: GetItemPropsOptions<VesselWithDatasetsMerged>) => any
-  vesselsSelected: VesselWithDatasetsMerged[]
+  getItemProps: (options: GetItemPropsOptions<VesselLastIdentity>) => any
+  vesselsSelected: VesselLastIdentity[]
 }
 
 function SearchBasicResultList({

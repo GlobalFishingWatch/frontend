@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { batch, useSelector } from 'react-redux'
 import { Button, ButtonType, ButtonSize } from '@globalfishingwatch/ui-components'
-import { VesselWithDatasetsResolved } from 'features/search/search.slice'
+import { VesselLastIdentity } from 'features/search/search.slice'
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import { getEventLabel } from 'utils/analytics'
 import {
@@ -17,7 +17,6 @@ import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hoo
 import { selectUserGroupsPermissions } from 'features/user/user.selectors'
 import { ReportVesselWithDatasets } from 'features/reports/reports.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { VesselData } from 'features/vessel/vessel.slice'
 import styles from './VesselGroupAddButton.module.css'
 
 function VesselGroupAddButton({
@@ -28,7 +27,7 @@ function VesselGroupAddButton({
   onAddToVesselGroup,
   buttonClassName = '',
 }: {
-  vessels: (VesselWithDatasetsResolved | ReportVesselWithDatasets | VesselData)[]
+  vessels: (VesselLastIdentity | ReportVesselWithDatasets)[]
   showCount?: boolean
   buttonSize?: ButtonSize
   buttonType?: ButtonType
@@ -50,14 +49,10 @@ function VesselGroupAddButton({
     async (vesselGroupId?: string) => {
       const vesselsWithDataset = vessels.map((vessel) => ({
         ...vessel,
-        id:
-          (vessel as VesselWithDatasetsResolved)?.id ||
-          (vessel as ReportVesselWithDatasets)?.vesselId ||
-          ((vessel as VesselData)?.registryInfo?.[0]?.id as string),
+        id: (vessel as VesselLastIdentity)?.id || (vessel as ReportVesselWithDatasets)?.vesselId,
         dataset:
-          (vessel as VesselWithDatasetsResolved)?.dataset?.id ||
-          (vessel as ReportVesselWithDatasets)?.infoDataset?.id ||
-          (vessel as VesselData)?.info,
+          (vessel as VesselLastIdentity)?.dataset?.id ||
+          (vessel as ReportVesselWithDatasets)?.infoDataset?.id,
       }))
       if (vesselsWithDataset?.length) {
         batch(() => {
