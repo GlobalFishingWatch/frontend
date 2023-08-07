@@ -3,7 +3,7 @@ import { selectQueryParam } from 'routes/routes.selectors'
 import {
   DEFAULT_SEARCH_STATE,
   SearchType,
-  VesselInfoSourceEnum,
+  VesselIdentitySourceEnum,
 } from 'features/search/search.config'
 import { VesselSearchState, VesselSearchStateProperty } from 'types'
 
@@ -29,7 +29,7 @@ export const selectSearchOption = createSelector(
 
 export const selectSearchInfoSource = createSelector(
   [selectVesselSearchStateProperty('infoSource')],
-  (infoSource): VesselInfoSourceEnum => {
+  (infoSource): VesselIdentitySourceEnum => {
     return infoSource
   }
 )

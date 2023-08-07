@@ -8,78 +8,70 @@ import {
 } from '@globalfishingwatch/api-types'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { getUTCDateTime } from 'utils/dates'
-import { VesselInfoSourceEnum } from 'features/search/search.config'
-import { VesselWithDatasets, VesselWithDatasetsMerged } from 'features/search/search.slice'
+import { VesselIdentitySourceEnum } from 'features/search/search.config'
+import { VesselLastIdentity } from 'features/search/search.slice'
+import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
 
 export const getVesselIdentities = (
-  vessel: Pick<IdentityVessel, 'registryInfo' | 'selfReportedInfo'>
-): ((SelfReportedInfo | VesselRegistryInfo) & { infoSource: VesselInfoSourceEnum })[] => {
+  vessel: IdentityVessel | IdentityVesselData
+): VesselDataIdentity[] => {
+  if ((vessel as IdentityVesselData).identities?.length) {
+    return (vessel as IdentityVesselData).identities
+  }
   return [
-    ...(vessel.registryInfo || []).map((i) => ({
+    ...((vessel as IdentityVessel).registryInfo || []).map((i) => ({
       ...i,
-      infoSource: VesselInfoSourceEnum.Registry,
+      identitySource: VesselIdentitySourceEnum.Registry,
     })),
-    ...(vessel.selfReportedInfo || []).map((i) => ({
+    ...((vessel as IdentityVessel).selfReportedInfo || []).map((i) => ({
       ...i,
-      infoSource: VesselInfoSourceEnum.SelfReported,
+      identitySource: VesselIdentitySourceEnum.SelfReported,
     })),
   ].sort((a, b) => (a.transmissionDateTo > b.transmissionDateTo ? -1 : 1))
 }
 
-export const getLatestVesselIdentity = (
-  vessel: Pick<IdentityVessel, 'registryInfo' | 'selfReportedInfo'>
-) => {
+export const getLatestVesselIdentity = (vessel: IdentityVessel | IdentityVesselData) => {
   const allIdentitiesInfo = getVesselIdentities(vessel)
   return allIdentitiesInfo[0]
 }
 
 type VesselIdentityProperty = keyof SelfReportedInfo | keyof VesselRegistryInfo
+
 export function getVesselProperty<P = string>(
-  vessel: IdentityVessel | VesselWithDatasets | null,
+  vessel: IdentityVessel | IdentityVesselData | null,
   property: VesselIdentityProperty,
-  { registryIndex = 0 }: { registryIndex?: number } = {}
+  { identityIndex = 0 }: { identityIndex?: number } = {}
 ): P {
   if (!vessel) return '' as P
-  if (registryIndex && vessel.registryInfo?.length) {
-    const registryData = get(vessel.registryInfo[registryIndex], property) as P
-    if (registryData) {
-      return registryData
-    }
-  }
-  const latestVesselData = getLatestVesselIdentity(vessel)
-  return get(latestVesselData, property) as P
+  const identities = getVesselIdentities(vessel)
+  return get(identities[identityIndex], property) as P
 }
 
 export function getVesselIdentityProperties<P = string>(
-  vessel: IdentityVessel | VesselWithDatasets,
+  vessel: IdentityVessel | IdentityVesselData,
   property: VesselIdentityProperty
 ): P[] {
   if (!vessel) return [] as P[]
-  const allIdentitiesInfo = getVesselIdentities(vessel)
-  return uniq(allIdentitiesInfo.flatMap((i) => i[property] || [])) as P[]
+  const identities = getVesselIdentities(vessel)
+  return uniq(identities.flatMap((i) => i[property] || [])) as P[]
 }
 
-export function getIdentityVesselMerged(vessel: IdentityVessel | VesselWithDatasets) {
+export function getIdentityVesselMerged(vessel: IdentityVessel | IdentityVesselData) {
   const vesselData = getLatestVesselIdentity(vessel)
+  const identities = getVesselIdentities(vessel)
   // Get first transmission date from all identity sources
-  const transmissionDateFrom = [
-    ...(vessel.registryInfo || [])?.flatMap((r) => r.transmissionDateFrom || []),
-    ...vessel.selfReportedInfo.flatMap((r) => r.transmissionDateFrom || []),
-  ].sort((a, b) => (a < b ? -1 : 1))?.[0]
-  // The same with last transmission date
-  const transmissionDateTo = [
-    ...(vessel.registryInfo || [])?.flatMap((r) => r.transmissionDateTo || []),
-    ...vessel.selfReportedInfo.flatMap((r) => r.transmissionDateTo || []),
-  ].sort((a, b) => (a > b ? -1 : 1))?.[0]
-  const trackDatasetId = (vessel as VesselWithDatasets).trackDatasetId
+  const transmissionDateFrom = identities
+    .map((i) => i.transmissionDateFrom)
+    .sort((a, b) => (a < b ? -1 : 1))?.[0]
+  const transmissionDateTo = identities
+    .map((i) => i.transmissionDateTo)
+    .sort((a, b) => (a > b ? -1 : 1))?.[0]
   return {
     ...vesselData,
     dataset: vessel.dataset,
-    ...(trackDatasetId && { trackDatasetId }),
     transmissionDateFrom,
     transmissionDateTo,
-    id: vessel.selfReportedInfo?.[0]?.id,
-  } as VesselWithDatasetsMerged
+  } as VesselLastIdentity
 }
 
 export function getVoyageTimeRange(events: ActivityEvent[]) {
@@ -142,7 +134,8 @@ export const VESSEL_CSV_CONFIG: CsvConfig[] = [
   { label: 'tonnageGt', accessor: 'tonnageGt' },
   { label: 'transmissionStart', accessor: 'transmissionDateFrom', transform: parseCSVDate },
   { label: 'transmissionEnd', accessor: 'transmissionDateTo', transform: parseCSVDate },
-  { label: 'infoSource', accessor: 'sourceCode', transform: parseCSVList },
+  { label: 'identitySource', accessor: 'identitySource' },
+  { label: 'sourceCode', accessor: 'sourceCode', transform: parseCSVList },
   // TODO think how to access vessel root properties
   // { label: 'owner', accessor: 'owner.owner' },
   // { label: 'ownerFlag', accessor: 'owner.ownerFlag' },
@@ -159,7 +152,7 @@ export const VESSEL_CSV_CONFIG: CsvConfig[] = [
   // { label: 'authorizationEnd', accessor: 'authorization.authorizedTo', transform: parseCSVDate },
 ]
 
-export const parseVesselToCSV = (vessel: IdentityVessel) => {
+export const parseVesselToCSV = (vessel: IdentityVesselData) => {
   return objectArrayToCSV([vessel], VESSEL_CSV_CONFIG, getVesselProperty)
 }
 

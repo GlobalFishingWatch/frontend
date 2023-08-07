@@ -1,10 +1,11 @@
-import { IdentityVessel, RegionType } from '@globalfishingwatch/api-types'
+import { RegionType } from '@globalfishingwatch/api-types'
+import { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { VesselProfileState } from 'types'
 
 export const DEFAULT_VESSEL_IDENTITY_ID = 'proto-global-vessel-identity:v20230623'
 export const DEFAULT_VESSEL_STATE: VesselProfileState = {
   vesselDatasetId: DEFAULT_VESSEL_IDENTITY_ID,
-  vesselRegistryIndex: 0,
+  vesselIdentityIndex: 0,
   vesselActivityMode: 'type',
   viewOnlyVessel: false,
 }
@@ -35,7 +36,7 @@ export const IDENTITY_FIELD_GROUPS: VesselRenderField[][] = [
 ]
 
 type VesselRegistryFieldGroup = {
-  key: keyof Pick<IdentityVessel, 'registryOwners' | 'registryAuthorizations'>
+  key: keyof Pick<IdentityVesselData, 'registryOwners' | 'registryAuthorizations'>
   label: string
 }
 export const REGISTRY_FIELD_GROUPS: VesselRegistryFieldGroup[] = [

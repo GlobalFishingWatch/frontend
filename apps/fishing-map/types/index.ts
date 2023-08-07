@@ -8,7 +8,7 @@ import {
   REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
   REPORT_VESSELS_GRAPH_VESSELTYPE,
 } from 'data/config'
-import { SearchType, VesselInfoSourceEnum } from 'features/search/search.config'
+import { SearchType, VesselIdentitySourceEnum } from 'features/search/search.config'
 export { Locale } from '@globalfishingwatch/api-types'
 
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
@@ -103,7 +103,7 @@ export type VesselSearchState = {
   query?: string
   sources?: string[]
   searchOption?: SearchType
-  infoSource?: VesselInfoSourceEnum
+  infoSource?: VesselIdentitySourceEnum
   ssvid?: string
   imo?: string
   callsign?: string
@@ -123,7 +123,7 @@ export type VesselSearchStateProperty = keyof VesselSearchState
 export type VesselProfileActivityMode = 'voyage' | 'type'
 export type VesselProfileState = {
   vesselDatasetId: string
-  vesselRegistryIndex: number
+  vesselIdentityIndex: number
   vesselActivityMode: VesselProfileActivityMode
   viewOnlyVessel: boolean
 }

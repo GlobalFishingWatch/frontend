@@ -13,39 +13,36 @@ import {
   getVesselProperty,
   parseVesselToCSV,
 } from 'features/vessel/vessel.utils'
-import { selectVesselRegistryIndex } from 'features/vessel/vessel.config.selectors'
+import { selectVesselIdentityIndex } from 'features/vessel/vessel.config.selectors'
 import VesselIdentitySelector from 'features/vessel/identity/VesselIdentitySelector'
 import VesselIdentityField from 'features/vessel/identity/VesselIdentityField'
+import { VesselIdentitySourceEnum } from 'features/search/search.config'
 import styles from './VesselIdentity.module.css'
 
 const VesselIdentity = () => {
   const { t } = useTranslation()
-  const registryIndex = useSelector(selectVesselRegistryIndex)
+  const identityIndex = useSelector(selectVesselIdentityIndex)
   const vessel = useSelector(selectVesselInfoData)
 
   const start = getVesselProperty(vessel, 'transmissionDateFrom', {
-    registryIndex,
+    identityIndex,
   })
 
   const end = getVesselProperty(vessel, 'transmissionDateTo', {
-    registryIndex,
+    identityIndex,
   })
 
   const onDownloadClick = () => {
     if (vessel) {
       const data = parseVesselToCSV(vessel)
       const blob = new Blob([data], { type: 'text/plain;charset=utf-8' })
-      saveAs(blob, vessel?.selfReportedInfo?.[0]?.id + '.csv')
+      saveAs(blob, vessel?.id + '.csv')
     }
   }
 
-  let title = t('vessel.identity.selfReported', 'Self reported identity')
-  if (vessel?.registryInfo?.length) {
-    title =
-      vessel?.registryInfo?.length === 1
-        ? t('vessel.identity.registryIdentity', 'Registry identity')
-        : t('vessel.identity.registryIdentities', 'Registry identities')
-  }
+  const identitySource = vessel?.identities[identityIndex]
+    ?.identitySource as VesselIdentitySourceEnum
+  const title = t(`vessel.identity.${identitySource}`, `${identitySource} identity`)
 
   return (
     <div className={styles.container}>
@@ -103,7 +100,7 @@ const VesselIdentity = () => {
                     <VesselIdentityField
                       value={formatInfoField(
                         getVesselProperty(vessel, field.key as any, {
-                          registryIndex: registryIndex,
+                          identityIndex,
                         }),
                         field.label
                       )}

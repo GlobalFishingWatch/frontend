@@ -46,7 +46,7 @@ const BASE_URL_TO_OBJECT_TRANSFORMATION: Dictionary<(value: any) => any> = {
   latitude: (latitude) => parseFloat(latitude),
   longitude: (longitude) => parseFloat(longitude),
   zoom: (zoom) => parseFloat(zoom),
-  vesselRegistryIndex: (index) => parseInt(index),
+  vesselIdentityIndex: (index) => parseInt(index),
   dataviewInstances: (dataviewInstances: UrlDataviewInstance[]) => {
     return dataviewInstances.map(parseDataviewInstance)
   },

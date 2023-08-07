@@ -20,7 +20,7 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { showSchemaFilter } from 'features/workspace/activity/ActivitySchemaFilter'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { selectAdvancedSearchDatasets } from 'features/search/search.selectors'
-import { VesselInfoSourceEnum } from 'features/search/search.config'
+import { VesselIdentitySourceEnum } from 'features/search/search.config'
 import { useSearchFiltersConnect } from './search.hook'
 import styles from './SearchAdvancedFilters.module.css'
 
@@ -71,15 +71,15 @@ function SearchAdvancedFilters() {
       }))
   }, [datasets])
 
-  const infoSourceOptions: SelectOption<VesselInfoSourceEnum>[] = useMemo(
+  const infoSourceOptions: SelectOption<VesselIdentitySourceEnum>[] = useMemo(
     () => [
       {
-        id: VesselInfoSourceEnum.Registry,
-        label: t(`vessel.infoSources.${VesselInfoSourceEnum.Registry}` as any, 'Registry only'),
+        id: VesselIdentitySourceEnum.Registry,
+        label: t(`vessel.infoSources.${VesselIdentitySourceEnum.Registry}` as any, 'Registry only'),
       },
       {
-        id: VesselInfoSourceEnum.SelfReported,
-        label: t(`vessel.infoSources.${VesselInfoSourceEnum.SelfReported}` as any, 'Any'),
+        id: VesselIdentitySourceEnum.SelfReported,
+        label: t(`vessel.infoSources.${VesselIdentitySourceEnum.SelfReported}` as any, 'Any'),
       },
     ],
     [t]

@@ -3,7 +3,7 @@ import { SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import { VesselSearchState } from 'types'
 
 export type SearchType = 'basic' | 'advanced'
-export enum VesselInfoSourceEnum {
+export enum VesselIdentitySourceEnum {
   Registry = 'registryInfo',
   SelfReported = 'selfReportedInfo',
 }
@@ -17,7 +17,7 @@ export type SearchFilterSelections = {
   callsign?: string
   owner?: string
   sources?: MultiSelectOption<string>[]
-  infoSource?: SelectOption<VesselInfoSourceEnum>[]
+  infoSource?: SelectOption<VesselIdentitySourceEnum>[]
 } & Partial<Record<SupportedDatasetSchema, MultiSelectOption<string>[]>>
 
 export const RESULTS_PER_PAGE = 20
@@ -42,6 +42,6 @@ export const EMPTY_FILTERS = {
 
 export const DEFAULT_SEARCH_STATE: VesselSearchState = {
   searchOption: 'basic',
-  infoSource: VesselInfoSourceEnum.SelfReported,
+  infoSource: VesselIdentitySourceEnum.SelfReported,
   ...EMPTY_FILTERS,
 }

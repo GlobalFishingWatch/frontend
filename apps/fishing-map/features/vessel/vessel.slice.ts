@@ -1,7 +1,14 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { HYDRATE } from 'next-redux-wrapper'
 import { GFWAPI, ParsedAPIError, parseAPIError } from '@globalfishingwatch/api-client'
-import { Dataset, DatasetTypes, EndpointId, IdentityVessel } from '@globalfishingwatch/api-types'
+import {
+  Dataset,
+  DatasetTypes,
+  EndpointId,
+  IdentityVessel,
+  SelfReportedInfo,
+  VesselRegistryInfo,
+} from '@globalfishingwatch/api-types'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
@@ -13,14 +20,26 @@ import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { VesselInstanceDatasets } from 'features/dataviews/dataviews.utils'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { PROFILE_DATAVIEW_SLUGS } from 'data/workspaces'
+import { VesselIdentitySourceEnum } from 'features/search/search.config'
+import { getVesselIdentities, getVesselProperty } from 'features/vessel/vessel.utils'
 // import { TEMPLATE_VESSEL_DATAVIEW_SLUG } from 'data/workspaces'
 
-export type VesselData = IdentityVessel & VesselInstanceDatasets
+export type VesselDataIdentity = (SelfReportedInfo | VesselRegistryInfo) & {
+  identitySource: VesselIdentitySourceEnum
+}
+// Merges and plain all the identities of a vessel
+export type IdentityVesselData = {
+  id: string
+  identities: VesselDataIdentity[]
+  dataset: Dataset
+} & VesselInstanceDatasets &
+  Pick<IdentityVessel, 'registryOwners' | 'registryAuthorizations'>
+
 interface VesselState {
   printMode: boolean
   info: {
     status: AsyncReducerStatus
-    data: VesselData | null
+    data: IdentityVesselData | null
     error: ParsedAPIError | null
   }
 }
@@ -71,16 +90,15 @@ export const fetchVesselInfoThunk = createAsyncThunk(
         }
         const vessel = await GFWAPI.fetch<IdentityVessel>(url)
         return {
-          ...vessel,
+          id: getVesselProperty(vessel, 'id'),
+          dataset: dataset,
+          registryOwners: vessel.registryOwners,
+          registryAuthorizations: vessel.registryAuthorizations,
           info: datasetId,
           track: trackDatasetId,
           events: eventsDatasetsId,
-          // Make sure to have the lastest in the first position
-          registryInfo:
-            vessel?.registryInfo?.sort(
-              (a, b) => Number(b.latestVesselInfo) - Number(a.latestVesselInfo)
-            ) || [],
-        } as VesselData
+          identities: getVesselIdentities(vessel),
+        } as IdentityVesselData
       } else {
         return rejectWithValue(action.payload)
       }
@@ -137,8 +155,7 @@ const vesselSlice = createSlice({
 export const { setVesselPrintMode, resetVesselState } = vesselSlice.actions
 
 export const selectVesselInfoData = (state: VesselSliceState) => state.vessel.info.data
-export const selectVesselInfoDataId = (state: VesselSliceState) =>
-  state.vessel.info.data?.selfReportedInfo?.[0]?.id
+export const selectVesselInfoDataId = (state: VesselSliceState) => state.vessel.info?.data?.id
 export const selectVesselInfoStatus = (state: VesselSliceState) => state.vessel.info.status
 export const selectVesselInfoError = (state: VesselSliceState) => state.vessel.info.error
 export const selectVesselPrintMode = (state: VesselSliceState) => state.vessel.printMode
