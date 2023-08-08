@@ -191,7 +191,7 @@ const searchSlice = createSlice({
         const vessel = selection[0]
         if (selectedIds.includes(vessel?.id)) {
           state.selectedVessels = state.selectedVessels.filter((v) => v?.id !== vessel?.id)
-        } else if (vessel && vessel.dataset && vessel.track) {
+        } else if (vessel && vessel.dataset) {
           state.selectedVessels = [...state.selectedVessels, vessel]
         }
       } else {

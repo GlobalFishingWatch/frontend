@@ -15,7 +15,7 @@ import {
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
-import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
+import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { isGFWUser, isGuestUser } from 'features/user/user.slice'
@@ -226,8 +226,11 @@ function Search() {
         eventsRelatedDatasets && eventsRelatedDatasets?.length
           ? eventsRelatedDatasets.map((d) => d.id)
           : []
+      const trackDatasetId = getRelatedDatasetByType(vessel.dataset, DatasetTypes.Tracks, {
+        vesselType: vessel?.shiptype,
+      })?.id
       const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
-        track: vessel.track,
+        track: trackDatasetId,
         info: vessel.dataset.id,
         ...(eventsDatasetsId.length > 0 && { events: eventsDatasetsId }),
       })
