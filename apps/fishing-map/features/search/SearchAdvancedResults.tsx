@@ -19,7 +19,7 @@ import { Locale } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
 import {
   getIdentityVesselMerged,
-  getLatestVesselIdentity,
+  getVesselIdentity,
   getVesselIdentityProperties,
   getVesselProperty,
 } from 'features/vessel/vessel.utils'
@@ -102,7 +102,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
       },
       {
         accessorFn: (vessel) => {
-          const identitySource = getLatestVesselIdentity(vessel)?.identitySource
+          const identitySource = getVesselIdentity(vessel)?.identitySource
           return t(
             `vessel.infoSources.${identitySource}` as any,
             identitySource || EMPTY_FIELD_PLACEHOLDER
@@ -155,7 +155,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
 
   const onSelectHandler = useCallback(
     (vessels: IdentityVesselData[]) => {
-      const vessesSelected = vessels.map(getIdentityVesselMerged)
+      const vessesSelected = vessels.map((vessel) => getIdentityVesselMerged(vessel))
       dispatch(setSelectedVessels(vessesSelected))
     },
     [dispatch]

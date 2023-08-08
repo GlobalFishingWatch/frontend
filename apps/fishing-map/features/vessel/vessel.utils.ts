@@ -11,6 +11,7 @@ import { getUTCDateTime } from 'utils/dates'
 import { VesselIdentitySourceEnum } from 'features/search/search.config'
 import { VesselLastIdentity } from 'features/search/search.slice'
 import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
+import { Range } from 'features/timebar/timebar.slice'
 
 export const getVesselIdentities = (
   vessel: IdentityVessel | IdentityVesselData
@@ -30,9 +31,12 @@ export const getVesselIdentities = (
   ].sort((a, b) => (a.transmissionDateTo > b.transmissionDateTo ? -1 : 1))
 }
 
-export const getLatestVesselIdentity = (vessel: IdentityVessel | IdentityVesselData) => {
+export const getVesselIdentity = (
+  vessel: IdentityVessel | IdentityVesselData,
+  { identityIndex = 0 } = {}
+) => {
   const allIdentitiesInfo = getVesselIdentities(vessel)
-  return allIdentitiesInfo[0]
+  return allIdentitiesInfo[identityIndex]
 }
 
 type VesselIdentityProperty = keyof SelfReportedInfo | keyof VesselRegistryInfo
@@ -57,7 +61,7 @@ export function getVesselIdentityProperties<P = string>(
 }
 
 export function getIdentityVesselMerged(vessel: IdentityVessel | IdentityVesselData) {
-  const vesselData = getLatestVesselIdentity(vessel)
+  const vesselData = getVesselIdentity(vessel)
   const identities = getVesselIdentities(vessel)
   // Get first transmission date from all identity sources
   const transmissionDateFrom = identities
@@ -66,11 +70,34 @@ export function getIdentityVesselMerged(vessel: IdentityVessel | IdentityVesselD
   const transmissionDateTo = identities
     .map((i) => i.transmissionDateTo)
     .sort((a, b) => (a > b ? -1 : 1))?.[0]
+
   return {
     ...vesselData,
     dataset: vessel.dataset,
     transmissionDateFrom,
     transmissionDateTo,
+  } as VesselLastIdentity
+}
+
+type GetCurrentIdentityVesselParams = { identityIndex?: number; timerange?: Range }
+export function getCurrentIdentityVessel(
+  vessel: IdentityVessel | IdentityVesselData,
+  { identityIndex = 0 } = {} as GetCurrentIdentityVesselParams
+) {
+  const vesselData = getVesselIdentity(vessel, { identityIndex })
+  const timerange = {
+    start: vesselData.transmissionDateFrom,
+    end: vesselData.transmissionDateTo,
+  }
+  return {
+    ...vesselData,
+    dataset: vessel.dataset,
+    registryAuthorizations: vessel.registryAuthorizations
+      ? filterRegistryInfoByDates(vessel.registryAuthorizations, timerange)
+      : [],
+    registryOwners: vessel.registryOwners
+      ? filterRegistryInfoByDates(vessel.registryOwners, timerange)
+      : [],
   } as VesselLastIdentity
 }
 
@@ -80,11 +107,11 @@ export function getVoyageTimeRange(events: ActivityEvent[]) {
 
 export function filterRegistryInfoByDates<I = VesselRegistryAuthorization | VesselRegistryOwner>(
   registryInfo: I[],
-  dates: { start: string; end: string }
+  timerange: Range
 ): I[] {
   if (!registryInfo?.length) return []
   const info = registryInfo
-    ?.filter((info: any) => info.dateFrom <= dates.end && info.dateTo >= dates.start)
+    ?.filter((info: any) => info.dateFrom <= timerange.end && info.dateTo >= timerange.start)
     ?.sort((a: any, b: any) => {
       return a.dateTo > b.dateTo ? -1 : 1
     })
@@ -103,16 +130,32 @@ const parseCSVString = (string: string | number) => {
 const parseCSVDate = (date: number) => getUTCDateTime(date).toISO()
 const parseCSVList = (value: string[]) => value?.join('|')
 
+const parseRegistryOwners = (owners: VesselRegistryOwner[]) => {
+  return parseCSVList(
+    owners?.map((owner) => {
+      return `${owner.name}-${owner.flag} (${owner.dateFrom}-${owner.dateTo})`
+    })
+  )
+}
+
+const parseRegistryAuthorizations = (authorizations: VesselRegistryAuthorization[]) => {
+  return parseCSVList(
+    authorizations?.map((authorization) => {
+      return `${authorization.sourceCode} (${authorization.dateFrom}-${authorization.dateTo})`
+    })
+  )
+}
+
 export const objectArrayToCSV = (
   data: unknown[],
   csvConfig: CsvConfig[],
   getter = get as (any, path: string) => any
 ) => {
   const keys = csvConfig.map((c) => c.label).join(',')
-  const values = data.map((event) => {
+  const values = data.map((d) => {
     return csvConfig
       .map(({ accessor, transform }) => {
-        const value = getter(event, accessor)
+        const value = getter(d, accessor)
         const transformedValue = transform ? transform(value) : value
         return transformedValue ? parseCSVString(transformedValue) : ''
       })
@@ -136,24 +179,16 @@ export const VESSEL_CSV_CONFIG: CsvConfig[] = [
   { label: 'transmissionEnd', accessor: 'transmissionDateTo', transform: parseCSVDate },
   { label: 'identitySource', accessor: 'identitySource' },
   { label: 'sourceCode', accessor: 'sourceCode', transform: parseCSVList },
-  // TODO think how to access vessel root properties
-  // { label: 'owner', accessor: 'owner.owner' },
-  // { label: 'ownerFlag', accessor: 'owner.ownerFlag' },
-  // {
-  //   label: 'authorization',
-  //   accessor: 'authorization.sourceCode',
-  //   transform: parseCSVList,
-  // },
-  // {
-  //   label: 'authorizationStart',
-  //   accessor: 'authorization.authorizedFrom',
-  //   transform: parseCSVDate,
-  // },
-  // { label: 'authorizationEnd', accessor: 'authorization.authorizedTo', transform: parseCSVDate },
+  { label: 'owner', accessor: 'registryOwners', transform: parseRegistryOwners },
+  {
+    label: 'authorization',
+    accessor: 'registryAuthorizations',
+    transform: parseRegistryAuthorizations,
+  },
 ]
 
-export const parseVesselToCSV = (vessel: IdentityVesselData) => {
-  return objectArrayToCSV([vessel], VESSEL_CSV_CONFIG, getVesselProperty)
+export const parseVesselToCSV = (vessel: VesselLastIdentity) => {
+  return objectArrayToCSV([vessel], VESSEL_CSV_CONFIG)
 }
 
 export const EVENTS_CSV_CONFIG: CsvConfig[] = [

@@ -8,11 +8,7 @@ import { IDENTITY_FIELD_GROUPS, REGISTRY_FIELD_GROUPS } from 'features/vessel/ve
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
-import {
-  filterRegistryInfoByDates,
-  getVesselProperty,
-  parseVesselToCSV,
-} from 'features/vessel/vessel.utils'
+import { getCurrentIdentityVessel, parseVesselToCSV } from 'features/vessel/vessel.utils'
 import { selectVesselIdentityIndex } from 'features/vessel/vessel.config.selectors'
 import VesselIdentitySelector from 'features/vessel/identity/VesselIdentitySelector'
 import VesselIdentityField from 'features/vessel/identity/VesselIdentityField'
@@ -22,25 +18,21 @@ import styles from './VesselIdentity.module.css'
 const VesselIdentity = () => {
   const { t } = useTranslation()
   const identityIndex = useSelector(selectVesselIdentityIndex)
-  const vessel = useSelector(selectVesselInfoData)
+  const vesselData = useSelector(selectVesselInfoData)
 
-  const start = getVesselProperty(vessel, 'transmissionDateFrom', {
-    identityIndex,
-  })
-
-  const end = getVesselProperty(vessel, 'transmissionDateTo', {
+  const vesselIdentity = getCurrentIdentityVessel(vesselData, {
     identityIndex,
   })
 
   const onDownloadClick = () => {
-    if (vessel) {
-      const data = parseVesselToCSV(vessel)
+    if (vesselIdentity) {
+      const data = parseVesselToCSV(vesselIdentity)
       const blob = new Blob([data], { type: 'text/plain;charset=utf-8' })
-      saveAs(blob, vessel?.id + '.csv')
+      saveAs(blob, `${vesselIdentity?.shipname}-${vesselIdentity?.flag}.csv`)
     }
   }
 
-  const identitySource = vessel?.identities[identityIndex]
+  const identitySource = vesselData?.identities[identityIndex]
     ?.identitySource as VesselIdentitySourceEnum
   const title = t(`vessel.identity.${identitySource}`, `${identitySource} identity`)
 
@@ -49,7 +41,8 @@ const VesselIdentity = () => {
       <div className={styles.titleContainer}>
         <h3>
           <label>
-            {title} (<I18nDate date={start} /> - <I18nDate date={end} />)
+            {title} (<I18nDate date={vesselIdentity.transmissionDateFrom} /> -{' '}
+            <I18nDate date={vesselIdentity.transmissionDateTo} />)
             <DataTerminology size="tiny" type="default" title={title}>
               {t('vessel.terminology.registryInfo', 'registry info terminology')}
             </DataTerminology>
@@ -77,7 +70,7 @@ const VesselIdentity = () => {
           </Button> */}
         </div>
       </div>
-      {vessel && (
+      {vesselIdentity && (
         <div className={styles.fields}>
           {IDENTITY_FIELD_GROUPS.map((fieldGroup, index) => (
             <div key={index} className={styles.fieldGroup}>
@@ -98,12 +91,7 @@ const VesselIdentity = () => {
                       )}
                     </label>
                     <VesselIdentityField
-                      value={formatInfoField(
-                        getVesselProperty(vessel, field.key as any, {
-                          identityIndex,
-                        }),
-                        field.label
-                      )}
+                      value={formatInfoField(vesselIdentity[field.key], field.label)}
                     />
                   </div>
                 )
@@ -111,10 +99,8 @@ const VesselIdentity = () => {
             </div>
           ))}
           {REGISTRY_FIELD_GROUPS.map(({ key, label }, index) => {
-            const filteredRegistryInfo = filterRegistryInfoByDates(vessel[key] || [], {
-              start,
-              end,
-            })
+            const filteredRegistryInfo = vesselIdentity[key]
+            if (!filteredRegistryInfo) return null
             return (
               <div className={styles.fieldGroup} key={index}>
                 <div className={styles.threeCells}>
