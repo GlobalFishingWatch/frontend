@@ -36,22 +36,15 @@ export type IdentityVesselData = {
 } & VesselInstanceDatasets &
   Pick<IdentityVessel, 'registryOwners' | 'registryAuthorizations'>
 
-type VesselInfoState = Record<
-  string,
-  {
+type VesselInfoEntry = {
     status: AsyncReducerStatus
     data: IdentityVesselData | null
     error: ParsedAPIError | null
   }
->
+type VesselInfoState = Record<string, VesselInfoEntry>
 
 type VesselState = { printMode: boolean } | VesselInfoState
 
-const vesselInfoInitialState = {
-  status: AsyncReducerStatus.Idle,
-  data: null,
-  error: null,
-}
 const initialState: VesselState = {
   printMode: false,
 }
@@ -136,11 +129,11 @@ const vesselSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchVesselInfoThunk.pending, (state, action) => {
       const vesselId = action.meta?.arg?.vesselId as string
-      if (!state[vesselId]) {
-        state[vesselId] = { ...vesselInfoInitialState }
+      state[vesselId] = {
+        status: AsyncReducerStatus.Loading,
+        data: {},
+        error: null,
       }
-      state[vesselId].status = AsyncReducerStatus.Loading
-      state[vesselId].error = null
     })
     builder.addCase(fetchVesselInfoThunk.fulfilled, (state, action) => {
       const vesselId = action.meta?.arg?.vesselId as string
@@ -169,9 +162,12 @@ export const { setVesselPrintMode, resetVesselState } = vesselSlice.actions
 
 export const selectVessel = (state: VesselSliceState) => {
   const vesselId = selectVesselId(state as any) as string
-  return state.vessel[vesselId]
+  return state.vessel[vesselId] as VesselInfoEntry
 }
-export const selectVesselInfoData = createSelector([selectVessel], (vessel) => vessel?.data)
+export const selectVesselInfoData = createSelector(
+  [selectVessel],
+  (vessel) => vessel?.data as IdentityVesselData
+)
 export const selectVesselInfoDataId = createSelector([selectVessel], (vessel) => vessel?.data?.id)
 export const selectVesselInfoStatus = createSelector([selectVessel], (vessel) => vessel?.status)
 export const selectVesselInfoError = createSelector([selectVessel], (vessel) => vessel?.error)

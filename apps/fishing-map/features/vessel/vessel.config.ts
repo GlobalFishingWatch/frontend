@@ -1,4 +1,5 @@
 import { RegionType } from '@globalfishingwatch/api-types'
+import { VesselIdentitySourceEnum } from 'features/search/search.config'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { VesselProfileState } from 'types'
 
@@ -6,6 +7,7 @@ export const DEFAULT_VESSEL_IDENTITY_ID = 'proto-global-vessel-identity:v2023062
 export const DEFAULT_VESSEL_STATE: VesselProfileState = {
   vesselDatasetId: DEFAULT_VESSEL_IDENTITY_ID,
   vesselIdentityIndex: 0,
+  vesselIdentitySource: VesselIdentitySourceEnum.Registry,
   vesselActivityMode: 'type',
   viewOnlyVessel: false,
 }

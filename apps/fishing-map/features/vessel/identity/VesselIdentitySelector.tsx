@@ -1,13 +1,18 @@
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import { selectVesselIdentityIndex } from 'features/vessel/vessel.config.selectors'
+import {
+  selectVesselIdentityIndex,
+  selectVesselIdentitySource,
+} from 'features/vessel/vessel.config.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { formatI18nDate } from 'features/i18n/i18nDate'
+import { getVesselIdentities } from 'features/vessel/vessel.utils'
 import styles from './VesselIdentitySelector.module.css'
 
 const VesselIdentitySelector = () => {
   const vessel = useSelector(selectVesselInfoData)
+  const identitySource = useSelector(selectVesselIdentitySource)
   const identityIndex = useSelector(selectVesselIdentityIndex)
   const { dispatchQueryParams } = useLocationConnect()
 
@@ -15,11 +20,13 @@ const VesselIdentitySelector = () => {
     dispatchQueryParams({ vesselIdentityIndex: index })
   }
 
-  if (!vessel?.identities?.length || vessel?.identities?.length <= 1) return null
+  const identities = getVesselIdentities(vessel, { identitySource })
+
+  if (!identities?.length || identities?.length <= 1) return null
 
   return (
     <ul className={cx(styles.selector, 'print-hidden')}>
-      {vessel?.identities.map((registry, index) => {
+      {identities.map((registry, index) => {
         const start = formatI18nDate(registry.transmissionDateFrom)
         const end = formatI18nDate(registry.transmissionDateTo)
         return (

@@ -124,6 +124,7 @@ export type VesselProfileActivityMode = 'voyage' | 'type'
 export type VesselProfileState = {
   vesselDatasetId: string
   vesselIdentityIndex: number
+  vesselIdentitySource: VesselIdentitySourceEnum
   vesselActivityMode: VesselProfileActivityMode
   viewOnlyVessel: boolean
 }

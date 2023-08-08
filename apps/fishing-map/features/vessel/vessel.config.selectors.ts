@@ -2,6 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { VesselProfileActivityMode, VesselProfileStateProperty } from 'types'
 import { selectQueryParam } from 'routes/routes.selectors'
 import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
+import { VesselIdentitySourceEnum } from 'features/search/search.config'
 
 export const selectVesselProfileStateProperty = (property: VesselProfileStateProperty) =>
   createSelector([selectQueryParam(property)], (urlProperty) => {
@@ -27,6 +28,13 @@ export const selectVesselIdentityIndex = createSelector(
   [selectVesselProfileStateProperty('vesselIdentityIndex')],
   (vesselIdentityIndex): number => {
     return vesselIdentityIndex
+  }
+)
+
+export const selectVesselIdentitySource = createSelector(
+  [selectVesselProfileStateProperty('vesselIdentitySource')],
+  (vesselIdentitySource): VesselIdentitySourceEnum => {
+    return vesselIdentitySource
   }
 )
 

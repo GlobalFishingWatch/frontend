@@ -5,7 +5,7 @@ import { ButtonSize } from '../button/Button'
 import styles from './Tabs.module.css'
 import { Tab } from '.'
 
-interface TabsProps<TabID> {
+export interface TabsProps<TabID = string> {
   tabs: Tab<TabID>[]
   activeTab?: TabID
   onTabClick?: (tab: Tab<TabID>, e: React.MouseEvent) => void

@@ -13,29 +13,31 @@ import { VesselLastIdentity } from 'features/search/search.slice'
 import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
 import { Range } from 'features/timebar/timebar.slice'
 
+type GetVesselIdentityParams = { identityIndex?: number; identitySource?: VesselIdentitySourceEnum }
 export const getVesselIdentities = (
-  vessel: IdentityVessel | IdentityVesselData
+  vessel: IdentityVessel | IdentityVesselData,
+  { identitySource } = {} as Pick<GetVesselIdentityParams, 'identitySource'>
 ): VesselDataIdentity[] => {
-  if ((vessel as IdentityVesselData).identities?.length) {
-    return (vessel as IdentityVesselData).identities
-  }
-  return [
-    ...((vessel as IdentityVessel).registryInfo || []).map((i) => ({
-      ...i,
-      identitySource: VesselIdentitySourceEnum.Registry,
-    })),
-    ...((vessel as IdentityVessel).selfReportedInfo || []).map((i) => ({
-      ...i,
-      identitySource: VesselIdentitySourceEnum.SelfReported,
-    })),
-  ].sort((a, b) => (a.transmissionDateTo > b.transmissionDateTo ? -1 : 1))
+  const identities = (vessel as IdentityVesselData).identities?.length
+    ? (vessel as IdentityVesselData).identities
+    : [
+        ...((vessel as IdentityVessel).registryInfo || []).map((i) => ({
+          ...i,
+          identitySource: VesselIdentitySourceEnum.Registry,
+        })),
+        ...((vessel as IdentityVessel).selfReportedInfo || []).map((i) => ({
+          ...i,
+          identitySource: VesselIdentitySourceEnum.SelfReported,
+        })),
+      ].sort((a, b) => (a.transmissionDateTo > b.transmissionDateTo ? -1 : 1))
+  return identitySource ? identities.filter((i) => i.identitySource === identitySource) : identities
 }
 
 export const getVesselIdentity = (
   vessel: IdentityVessel | IdentityVesselData,
-  { identityIndex = 0 } = {}
+  { identityIndex = 0, identitySource } = {} as GetVesselIdentityParams
 ) => {
-  const allIdentitiesInfo = getVesselIdentities(vessel)
+  const allIdentitiesInfo = getVesselIdentities(vessel, { identitySource })
   return allIdentitiesInfo[identityIndex]
 }
 
@@ -62,32 +64,26 @@ export function getVesselIdentityProperties<P = string>(
 
 export function getIdentityVesselMerged(vessel: IdentityVessel | IdentityVesselData) {
   const vesselData = getVesselIdentity(vessel)
-  const identities = getVesselIdentities(vessel)
-  // Get first transmission date from all identity sources
-  const transmissionDateFrom = identities
-    .map((i) => i.transmissionDateFrom)
-    .sort((a, b) => (a < b ? -1 : 1))?.[0]
-  const transmissionDateTo = identities
-    .map((i) => i.transmissionDateTo)
-    .sort((a, b) => (a > b ? -1 : 1))?.[0]
+  const lastSelfReportedInfo = getVesselIdentities(vessel, {
+    identitySource: VesselIdentitySourceEnum.SelfReported,
+  })[0]
 
   return {
     ...vesselData,
     dataset: vessel.dataset,
-    transmissionDateFrom,
-    transmissionDateTo,
+    transmissionDateFrom: lastSelfReportedInfo?.transmissionDateFrom,
+    transmissionDateTo: lastSelfReportedInfo?.transmissionDateTo,
   } as VesselLastIdentity
 }
 
-type GetCurrentIdentityVesselParams = { identityIndex?: number; timerange?: Range }
 export function getCurrentIdentityVessel(
   vessel: IdentityVessel | IdentityVesselData,
-  { identityIndex = 0 } = {} as GetCurrentIdentityVesselParams
+  { identityIndex = 0, identitySource } = {} as GetVesselIdentityParams
 ) {
-  const vesselData = getVesselIdentity(vessel, { identityIndex })
+  const vesselData = getVesselIdentity(vessel, { identityIndex, identitySource })
   const timerange = {
-    start: vesselData.transmissionDateFrom,
-    end: vesselData.transmissionDateTo,
+    start: vesselData?.transmissionDateFrom,
+    end: vesselData?.transmissionDateTo,
   }
   return {
     ...vesselData,
