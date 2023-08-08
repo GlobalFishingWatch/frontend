@@ -174,10 +174,12 @@ function SearchBasicResult({
             >
               {name}
             </VesselLink>
-            {names?.length > 0 &&
-              ` (${t('common.previously', 'Previously')}: ${names
-                .map((name) => formatInfoField(name, 'name'))
-                .join(', ')})`}
+            <span className={styles.secondary}>
+              {names?.length > 0 &&
+                ` (${t('common.previously', 'Previously')}: ${names
+                  .map((name) => formatInfoField(name, 'name'))
+                  .join(', ')})`}
+            </span>
           </div>
           <div className={styles.properties}>
             <div className={styles.property}>

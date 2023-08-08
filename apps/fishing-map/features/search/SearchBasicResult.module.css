@@ -29,6 +29,10 @@
   cursor: default;
 }
 
+.secondary {
+  color: var(--color-secondary-blue);
+}
+
 .alreadyAddedMsg {
   display: flex;
   align-items: center;
