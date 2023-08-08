@@ -5,6 +5,7 @@ import {
   VesselRegistryAuthorization,
   VesselRegistryInfo,
   VesselRegistryOwner,
+  VesselRegistryProperty,
 } from '@globalfishingwatch/api-types'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { getUTCDateTime } from 'utils/dates'
@@ -76,23 +77,26 @@ export function getIdentityVesselMerged(vessel: IdentityVessel | IdentityVesselD
   } as VesselLastIdentity
 }
 
+function sortVesselRegistryProperties(properties: VesselRegistryProperty[]) {
+  return [...properties].sort((a: any, b: any) => {
+    return a.dateTo > b.dateTo ? -1 : 1
+  })
+}
+
 export function getCurrentIdentityVessel(
   vessel: IdentityVessel | IdentityVesselData,
   { identityIndex = 0, identitySource } = {} as GetVesselIdentityParams
 ) {
   const vesselData = getVesselIdentity(vessel, { identityIndex, identitySource })
-  const timerange = {
-    start: vesselData?.transmissionDateFrom,
-    end: vesselData?.transmissionDateTo,
-  }
+
   return {
     ...vesselData,
     dataset: vessel.dataset,
     registryAuthorizations: vessel.registryAuthorizations
-      ? filterRegistryInfoByDates(vessel.registryAuthorizations, timerange)
+      ? sortVesselRegistryProperties(vessel.registryAuthorizations)
       : [],
     registryOwners: vessel.registryOwners
-      ? filterRegistryInfoByDates(vessel.registryOwners, timerange)
+      ? sortVesselRegistryProperties(vessel.registryOwners)
       : [],
   } as VesselLastIdentity
 }
@@ -101,17 +105,14 @@ export function getVoyageTimeRange(events: ActivityEvent[]) {
   return { start: events?.[events.length - 1]?.start, end: events?.[0]?.end }
 }
 
-export function filterRegistryInfoByDates<I = VesselRegistryAuthorization | VesselRegistryOwner>(
-  registryInfo: I[],
+export function filterRegistryInfoByDates(
+  registryInfo: VesselRegistryProperty[],
   timerange: Range
-): I[] {
+): VesselRegistryProperty[] {
   if (!registryInfo?.length) return []
-  const info = registryInfo
-    ?.filter((info: any) => info.dateFrom <= timerange.end && info.dateTo >= timerange.start)
-    ?.sort((a: any, b: any) => {
-      return a.dateTo > b.dateTo ? -1 : 1
-    })
-  return info
+  return sortVesselRegistryProperties(
+    registryInfo.filter((info) => info.dateFrom <= timerange.end && info.dateTo >= timerange.start)
+  )
 }
 
 export type CsvConfig = {

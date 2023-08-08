@@ -20,6 +20,10 @@
   border-bottom: var(--border);
 }
 
+.twoColumns {
+  grid-template-columns: repeat(2, 1fr);
+}
+
 .twoCells {
   grid-column: span 2;
 }
@@ -37,4 +41,8 @@
 
 .secondary {
   color: var(--color-secondary-blue);
+}
+
+.hidden {
+  display: none;
 }
