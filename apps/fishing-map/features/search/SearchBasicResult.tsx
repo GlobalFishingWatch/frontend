@@ -1,5 +1,5 @@
 import cx from 'classnames'
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { GetItemPropsOptions } from 'downshift'
@@ -23,11 +23,12 @@ import { formatInfoField, EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectVesselsDataviews } from 'features/dataviews/dataviews.slice'
 import { selectCurrentWorkspaceId } from 'features/workspace/workspace.selectors'
-import { useMapFitBounds } from 'features/map/map-viewport.hooks'
+import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
 import { getIdentityVesselMerged, getVesselIdentityProperties } from 'features/vessel/vessel.utils'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
+import useMapInstance from 'features/map/map-context.hooks'
 import styles from './SearchBasicResult.module.css'
 
 type SearchBasicResultProps = {
@@ -48,6 +49,7 @@ function SearchBasicResult({
   vesselsSelected,
 }: SearchBasicResultProps) {
   const { t, i18n } = useTranslation()
+  const map = useMapInstance()
   const dispatch = useAppDispatch()
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const vesselDataviews = useSelector(selectVesselsDataviews)
@@ -90,6 +92,15 @@ function SearchBasicResult({
     tooltip = t('search.vesselSelected', 'Vessel selected')
   }
   const { onClick, ...itemProps } = getItemProps({ item: vesselData, index })
+
+  const vesselQuery = useMemo(() => {
+    const query = { start: transmissionDateFrom, end: transmissionDateTo }
+    if (trackBbox) {
+      const coordinates = getMapCoordinatesFromBounds(map, trackBbox)
+      return { ...query, ...coordinates }
+    }
+    return query
+  }, [map, trackBbox, transmissionDateFrom, transmissionDateTo])
 
   const onVesselClick = useCallback(
     (vessel: VesselLastIdentity) => {
@@ -159,6 +170,7 @@ function SearchBasicResult({
               vesselId={id}
               datasetId={dataset?.id}
               onClick={() => onVesselClick(vesselData)}
+              query={vesselQuery}
             >
               {name}
             </VesselLink>
