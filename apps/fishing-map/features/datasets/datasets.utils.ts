@@ -176,23 +176,11 @@ export type RelatedDatasetByTypeParams = {
   vesselType?: VesselType
 }
 
-const vesselTypeWithOwnDataset = ['fishing', 'carrier', 'support']
 export const getRelatedDatasetByType = (
   dataset?: Dataset,
   datasetType?: DatasetTypes,
-  { fullDatasetAllowed = false, vesselType } = {} as RelatedDatasetByTypeParams
+  { fullDatasetAllowed = false } = {} as RelatedDatasetByTypeParams
 ) => {
-  if (vesselType && datasetType === DatasetTypes.Tracks) {
-    return dataset?.relatedDatasets?.find((relatedDataset) => {
-      if (relatedDataset.type !== datasetType) {
-        return false
-      }
-      const isVesselWithOwnDataset = vesselTypeWithOwnDataset.includes(vesselType.toLowerCase())
-      return isVesselWithOwnDataset
-        ? relatedDataset.id.toLocaleLowerCase().includes(vesselType.toLowerCase())
-        : true
-    })
-  }
   if (fullDatasetAllowed) {
     const fullDataset = dataset?.relatedDatasets?.find(
       (relatedDataset) =>

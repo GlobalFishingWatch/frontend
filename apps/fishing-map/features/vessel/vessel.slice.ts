@@ -37,10 +37,10 @@ export type IdentityVesselData = {
   Pick<IdentityVessel, 'registryOwners' | 'registryAuthorizations'>
 
 type VesselInfoEntry = {
-    status: AsyncReducerStatus
-    data: IdentityVesselData | null
-    error: ParsedAPIError | null
-  }
+  status: AsyncReducerStatus
+  data: IdentityVesselData | null
+  error: ParsedAPIError | null
+}
 type VesselInfoState = Record<string, VesselInfoEntry>
 
 type VesselState = { printMode: boolean } | VesselInfoState
@@ -65,6 +65,15 @@ export const fetchVesselInfoThunk = createAsyncThunk(
         const dataset = action.payload as Dataset
         // Datasets and dataview needed to mock follow the structure of the map and resolve the generators
         dispatch(fetchDataviewsByIdsThunk(PROFILE_DATAVIEW_SLUGS))
+        const trackDatasetId = getRelatedDatasetByType(dataset, DatasetTypes.Tracks)?.id || ''
+        const eventsDatasetsId =
+          getRelatedDatasetsByType(dataset, DatasetTypes.Events)?.map((d) => d.id) || []
+        // When coming from workspace url datasets are already loaded so no need to fetch again
+        const datasetsToFetch = [trackDatasetId, ...eventsDatasetsId].flatMap((id) => {
+          return selectDatasetById(id)(state) ? [] : [id]
+        })
+        dispatch(fetchDatasetsByIdsThunk(datasetsToFetch))
+
         const datasetConfig = {
           endpoint: EndpointId.Vessel,
           datasetId: dataset.id,
@@ -78,17 +87,6 @@ export const fetchVesselInfoThunk = createAsyncThunk(
         }
         const vessel = await GFWAPI.fetch<IdentityVessel>(url)
         const identities = getVesselIdentities(vessel)
-        const trackDatasetId =
-          getRelatedDatasetByType(dataset, DatasetTypes.Tracks, {
-            vesselType: identities?.[0]?.shiptype,
-          })?.id || ''
-        const eventsDatasetsId =
-          getRelatedDatasetsByType(dataset, DatasetTypes.Events)?.map((d) => d.id) || []
-        // When coming from workspace url datasets are already loaded so no need to fetch again
-        const datasetsToFetch = [trackDatasetId, ...eventsDatasetsId].flatMap((id) => {
-          return selectDatasetById(id)(state) ? [] : [id]
-        })
-        dispatch(fetchDatasetsByIdsThunk(datasetsToFetch))
         return {
           id: getVesselProperty(vessel, 'id'),
           dataset: dataset,

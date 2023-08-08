@@ -143,9 +143,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           const infoDataset = selectDatasetById(vessel.dataset)(state as any)
           if (!infoDataset) return []
 
-          const trackDatasetId = getRelatedDatasetByType(infoDataset, DatasetTypes.Tracks, {
-            vesselType: vessel?.selfReportedInfo?.[0]?.shiptype,
-          })?.id
+          const trackDatasetId = getRelatedDatasetByType(infoDataset, DatasetTypes.Tracks)?.id
           return {
             id: getVesselProperty(vessel, 'id'),
             registryOwners: vessel.registryOwners,
