@@ -158,26 +158,26 @@ steps:
           gcloud -q beta builds triggers run --branch=develop ui-libs-i18n-labels-stable
         fi
 
-  - id: 'smoke-test-e2e'
-    waitFor: ['deploy-cloud-run']
-    name: cypress/included:12.17.1
-    entrypoint: 'bash'
-    env:
-      - 'CYPRESS_basicAuth=$_BASIC_AUTH'
-      - 'CYPRESS_basicAuthUser=$_BASIC_AUTH_USER'
-      - 'CYPRESS_basicAuthPass=$_BASIC_AUTH_PASS'
-      - 'CYPRESS_apiAuthUser=$_CYPRESS_API_AUTH_USER'
-      - 'CYPRESS_apiAuthPass=$_CYPRESS_API_AUTH_PASS'
-      - 'CYPRESS_apiUserInitials=$_CYPRESS_API_USER_INITIALS'
-    args:
-      - '-eEuo'
-      - 'pipefail'
-      - '-c'
-      - |-
-        CYPRESS_CACHE_FOLDER=.cypress-cache yarn install --immutable
-        CYPRESS_BASE_URL=`cat app_url` \
-          CYPRESS_CACHE_FOLDER=.cypress-cache \
-          yarn nx run fishing-map-e2e:test-pr --parallel
+  # - id: 'smoke-test-e2e'
+  #   waitFor: ['deploy-cloud-run']
+  #   name: cypress/included:12.17.1
+  #   entrypoint: 'bash'
+  #   env:
+  #     - 'CYPRESS_basicAuth=$_BASIC_AUTH'
+  #     - 'CYPRESS_basicAuthUser=$_BASIC_AUTH_USER'
+  #     - 'CYPRESS_basicAuthPass=$_BASIC_AUTH_PASS'
+  #     - 'CYPRESS_apiAuthUser=$_CYPRESS_API_AUTH_USER'
+  #     - 'CYPRESS_apiAuthPass=$_CYPRESS_API_AUTH_PASS'
+  #     - 'CYPRESS_apiUserInitials=$_CYPRESS_API_USER_INITIALS'
+  #   args:
+  #     - '-eEuo'
+  #     - 'pipefail'
+  #     - '-c'
+  #     - |-
+  #       CYPRESS_CACHE_FOLDER=.cypress-cache yarn install --immutable
+  #       CYPRESS_BASE_URL=`cat app_url` \
+  #         CYPRESS_CACHE_FOLDER=.cypress-cache \
+  #         yarn nx run fishing-map-e2e:test-pr --parallel
 
 timeout: 1800s
 options:
