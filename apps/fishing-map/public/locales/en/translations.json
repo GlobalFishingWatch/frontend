@@ -163,6 +163,7 @@
     "sources": "Sources",
     "summary": "Summary",
     "to": "to",
+    "timerange": "Time range",
     "tutorials": "Tutorials",
     "unknown": "Other",
     "unknownVessel": "Unknown vessel",
