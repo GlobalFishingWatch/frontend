@@ -57,6 +57,7 @@ const Vessel = () => {
       dispatch(fetchWorkspaceThunk(urlWorkspaceId))
     }
     if (
+      !infoStatus ||
       infoStatus === AsyncReducerStatus.Idle ||
       (infoStatus === AsyncReducerStatus.Error && infoError?.status === 401)
     ) {

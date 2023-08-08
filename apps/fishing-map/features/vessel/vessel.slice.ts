@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, PayloadAction, createSelector } from '@reduxjs/toolkit'
 import { HYDRATE } from 'next-redux-wrapper'
 import { GFWAPI, ParsedAPIError, parseAPIError } from '@globalfishingwatch/api-client'
 import {
@@ -22,6 +22,7 @@ import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { PROFILE_DATAVIEW_SLUGS } from 'data/workspaces'
 import { VesselIdentitySourceEnum } from 'features/search/search.config'
 import { getVesselIdentities, getVesselProperty } from 'features/vessel/vessel.utils'
+import { selectVesselId } from 'routes/routes.selectors'
 // import { TEMPLATE_VESSEL_DATAVIEW_SLUG } from 'data/workspaces'
 
 export type VesselDataIdentity = (SelfReportedInfo | VesselRegistryInfo) & {
@@ -35,22 +36,24 @@ export type IdentityVesselData = {
 } & VesselInstanceDatasets &
   Pick<IdentityVessel, 'registryOwners' | 'registryAuthorizations'>
 
-interface VesselState {
-  printMode: boolean
-  info: {
+type VesselInfoState = Record<
+  string,
+  {
     status: AsyncReducerStatus
     data: IdentityVesselData | null
     error: ParsedAPIError | null
   }
-}
+>
 
+type VesselState = { printMode: boolean } | VesselInfoState
+
+const vesselInfoInitialState = {
+  status: AsyncReducerStatus.Idle,
+  data: null,
+  error: null,
+}
 const initialState: VesselState = {
   printMode: false,
-  info: {
-    status: AsyncReducerStatus.Idle,
-    data: null,
-    error: null,
-  },
 }
 
 type VesselSliceState = { vessel: VesselState }
@@ -114,7 +117,7 @@ export const fetchVesselInfoThunk = createAsyncThunk(
   {
     condition: (params, { getState }) => {
       const { vessel } = getState() as VesselSliceState
-      return vessel.info?.status !== AsyncReducerStatus.Loading
+      return vessel?.[params?.vesselId as string]?.status !== AsyncReducerStatus.Loading
     },
   }
 )
@@ -131,20 +134,26 @@ const vesselSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchVesselInfoThunk.pending, (state) => {
-      state.info.status = AsyncReducerStatus.Loading
-      state.info.error = null
+    builder.addCase(fetchVesselInfoThunk.pending, (state, action) => {
+      const vesselId = action.meta?.arg?.vesselId as string
+      if (!state[vesselId]) {
+        state[vesselId] = { ...vesselInfoInitialState }
+      }
+      state[vesselId].status = AsyncReducerStatus.Loading
+      state[vesselId].error = null
     })
     builder.addCase(fetchVesselInfoThunk.fulfilled, (state, action) => {
-      state.info.status = AsyncReducerStatus.Finished
-      state.info.data = action.payload
+      const vesselId = action.meta?.arg?.vesselId as string
+      state[vesselId].status = AsyncReducerStatus.Finished
+      state[vesselId].data = action.payload
     })
     builder.addCase(fetchVesselInfoThunk.rejected, (state, action) => {
+      const vesselId = action.meta?.arg?.vesselId as string
       if (action.error.message === 'Aborted') {
-        state.info.status = AsyncReducerStatus.Idle
+        state[vesselId].status = AsyncReducerStatus.Idle
       } else {
-        state.info.status = AsyncReducerStatus.Error
-        state.info.error = action.payload as ParsedAPIError
+        state[vesselId].status = AsyncReducerStatus.Error
+        state[vesselId].error = action.payload as ParsedAPIError
       }
     })
     builder.addCase(HYDRATE, (state, action: any) => {
@@ -158,10 +167,14 @@ const vesselSlice = createSlice({
 
 export const { setVesselPrintMode, resetVesselState } = vesselSlice.actions
 
-export const selectVesselInfoData = (state: VesselSliceState) => state.vessel.info.data
-export const selectVesselInfoDataId = (state: VesselSliceState) => state.vessel.info?.data?.id
-export const selectVesselInfoStatus = (state: VesselSliceState) => state.vessel.info.status
-export const selectVesselInfoError = (state: VesselSliceState) => state.vessel.info.error
+export const selectVessel = (state: VesselSliceState) => {
+  const vesselId = selectVesselId(state as any) as string
+  return state.vessel[vesselId]
+}
+export const selectVesselInfoData = createSelector([selectVessel], (vessel) => vessel?.data)
+export const selectVesselInfoDataId = createSelector([selectVessel], (vessel) => vessel?.data?.id)
+export const selectVesselInfoStatus = createSelector([selectVessel], (vessel) => vessel?.status)
+export const selectVesselInfoError = createSelector([selectVessel], (vessel) => vessel?.error)
 export const selectVesselPrintMode = (state: VesselSliceState) => state.vessel.printMode
 
 export default vesselSlice.reducer
