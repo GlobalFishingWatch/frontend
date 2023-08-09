@@ -618,7 +618,8 @@
     "infoSource": "crwdns49753:0crwdne49753:0",
     "infoSources": {
       "registry": "crwdns49755:0crwdne49755:0",
-      "self-reported": "crwdns49757:0crwdne49757:0"
+      "self-reported": "crwdns49757:0crwdne49757:0",
+      "both": "crwdns57539:0crwdne57539:0"
     },
     "vesselTypes": {
       "fishing": "crwdns49759:0crwdne49759:0",
