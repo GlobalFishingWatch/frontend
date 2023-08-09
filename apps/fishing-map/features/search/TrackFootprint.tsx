@@ -3,7 +3,8 @@ import cx from 'classnames'
 import { geoEqualEarth, geoPath } from 'd3'
 import { FeatureCollection, GeoJsonProperties, Geometry } from 'geojson'
 import { DateTime } from 'luxon'
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import qs from 'qs'
+import { GFWAPI, THINNING_LEVELS } from '@globalfishingwatch/api-client'
 import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 import { segmentsToGeoJSON, trackValueArrayToSegments } from '@globalfishingwatch/data-transforms'
 import { Field } from '@globalfishingwatch/api-types'
@@ -11,7 +12,7 @@ import { useOnScreen } from 'hooks/screen.hooks'
 import styles from './TrackFootprint.module.css'
 
 type TrackFootprintProps = {
-  vesselId: string
+  vesselIds: string[]
   trackDatasetId?: string
   highlightedYear?: number
   onDataLoad?: (data: FeatureCollection) => void
@@ -24,8 +25,15 @@ const PROJECTION = geoEqualEarth()
   .scale(53.5)
   .translate([FOOTPRINT_WIDTH / 2, FOOTPRINT_HEIGHT / 2])
 
+const TRACK_FOOTPRINT_QUERY = {
+  ...THINNING_LEVELS.Footprint,
+  binary: true,
+  fields: 'lonlat,timestamp',
+  format: 'valueArray',
+}
+
 function TrackFootprint({
-  vesselId,
+  vesselIds,
   trackDatasetId,
   highlightedYear,
   onDataLoad,
@@ -39,21 +47,34 @@ function TrackFootprint({
   const highlightContext = highlightCanvasRef.current?.getContext('2d')
 
   const fetchData = useCallback(
-    async (vesselId: string) => {
+    async (vesselIds: string[]) => {
       if (!trackDatasetId) {
         setError(true)
         return
       }
-      let data = await GFWAPI.fetch<any>(
-        `/vessels/${vesselId}/tracks?binary=true&fields=lonlat%2Ctimestamp&format=valueArray&datasets=${trackDatasetId}&distance-fishing=1000000000&bearing-val-fishing=10000000&change-speed-fishing=5000000&min-accuracy-fishing=3000000&distance-transit=100000000&bearing-val-transit=1000000&change-speed-transit=1000000&min-accuracy-transit=60000`,
-        { responseType: 'vessel' }
-      )
-      if (data.length === 0) {
+      const vesselsData = vesselIds.map((id) => {
+        return GFWAPI.fetch<any>(
+          `/vessels/${id}/tracks?${qs.stringify({
+            ...TRACK_FOOTPRINT_QUERY,
+            datasets: trackDatasetId,
+          })}`,
+          {
+            responseType: 'vessel',
+          }
+        )
+      })
+
+      const promises = await Promise.allSettled(vesselsData)
+      const tracksData = promises.map((d) => (d.status === 'fulfilled' ? d.value : []))
+
+      if (tracksData.length === 0) {
         setError(true)
         return
       }
 
-      const segments = trackValueArrayToSegments(data, [Field.lonlat, Field.timestamp])
+      const segments = tracksData.flatMap((data) =>
+        trackValueArrayToSegments(data, [Field.lonlat, Field.timestamp])
+      )
       const geoJson = segmentsToGeoJSON(segments)
       setTrackData(geoJson)
       if (onDataLoad) onDataLoad(geoJson)
@@ -62,10 +83,10 @@ function TrackFootprint({
   )
 
   useEffect(() => {
-    if (onScreen && !trackData && vesselId) {
-      fetchData(vesselId)
+    if (onScreen && !trackData && vesselIds?.length) {
+      fetchData(vesselIds)
     }
-  }, [fetchData, onScreen, trackData, vesselId])
+  }, [fetchData, onScreen, trackData, vesselIds])
 
   useEffect(() => {
     if (fullContext && trackData) {
@@ -80,7 +101,7 @@ function TrackFootprint({
         fullContext.stroke()
       })
     }
-  }, [fullContext, trackData, vesselId])
+  }, [fullContext, trackData, vesselIds])
 
   useEffect(() => {
     highlightContext?.clearRect(0, 0, FOOTPRINT_WIDTH, FOOTPRINT_HEIGHT)
@@ -132,7 +153,9 @@ function TrackFootprint({
         ref={fullCanvasRef}
       />
       <canvas width={FOOTPRINT_WIDTH} height={FOOTPRINT_HEIGHT} ref={highlightCanvasRef} />
-      {!trackData && !error && vesselId && <Spinner size="small" className={styles.spinner} />}
+      {!trackData && !error && vesselIds?.length && (
+        <Spinner size="small" className={styles.spinner} />
+      )}
       {error && <Icon icon="warning" type="warning" />}
     </div>
   )

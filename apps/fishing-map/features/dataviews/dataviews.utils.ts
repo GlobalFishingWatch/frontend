@@ -41,11 +41,12 @@ export type VesselInstanceDatasets = {
   track?: string
   info?: string
   events?: string[]
+  relatedVesselIds?: string[]
 }
 
 export const getVesselDataviewInstanceDatasetConfig = (
   vesselId: string,
-  { track, info, events }: VesselInstanceDatasets
+  { track, info, events, relatedVesselIds = [] }: VesselInstanceDatasets
 ) => {
   const datasetsConfig: DataviewDatasetConfig[] = []
   if (info) {
@@ -67,7 +68,7 @@ export const getVesselDataviewInstanceDatasetConfig = (
     events.forEach((eventDatasetId) => {
       datasetsConfig.push({
         datasetId: eventDatasetId,
-        query: [{ id: 'vessels', value: vesselId }],
+        query: [{ id: 'vessels', value: [vesselId, ...relatedVesselIds] }],
         params: [],
         endpoint: EndpointId.Events,
       })

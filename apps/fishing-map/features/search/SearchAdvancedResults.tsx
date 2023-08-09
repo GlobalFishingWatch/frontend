@@ -156,8 +156,9 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
 
   const onSelectHandler = useCallback(
     (vessels: IdentityVesselData[]) => {
-      console.log('🚀 ~ SearchAdvancedResults ~ vessels:', vessels)
-      const vessesSelected = vessels.map(getSelfReportedVesselIdentityResolved).filter((v) => v.id)
+      const vessesSelected = vessels
+        .map(getSelfReportedVesselIdentityResolved)
+        .flatMap((v) => v.id || [])
       dispatch(setSelectedVessels(vessesSelected))
     },
     [dispatch]
@@ -224,7 +225,6 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
       muiSelectAllCheckboxProps={({ table }) => ({
         sx: { color: 'var(--color-secondary-blue)' },
         onChange: (_, checked) => {
-          console.log(table.getRowModel().rows)
           onSelectHandler(checked ? table.getRowModel().rows.map(({ original }) => original) : [])
         },
       })}

@@ -27,6 +27,7 @@ import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-v
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
 import {
+  getRelatedIdentityVesselIds,
   getSelfReportedVesselIdentityResolved,
   getVesselIdentityProperties,
 } from 'features/vessel/vessel.utils'
@@ -39,8 +40,8 @@ type SearchBasicResultProps = {
   index: number
   highlightedIndex: number
   setHighlightedIndex: (index: number) => void
-  getItemProps: (options: GetItemPropsOptions<VesselLastIdentity>) => any
-  vesselsSelected: VesselLastIdentity[]
+  getItemProps: (options: GetItemPropsOptions<IdentityVesselData>) => any
+  vesselsSelected: IdentityVesselData[]
 }
 
 function SearchBasicResult({
@@ -81,6 +82,10 @@ function SearchBasicResult({
   const [shipname, ...names] = getVesselIdentityProperties(vessel, 'shipname')
   const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER
 
+  const selfReportedVesselIds = useMemo(() => {
+    return [vessel.id, ...getRelatedIdentityVesselIds(vessel)]
+  }, [vessel])
+
   // TODO decide how we manage VMS properties
   const { fleet, origin, casco, nationalId, matricula } = vessel as any
 
@@ -94,7 +99,7 @@ function SearchBasicResult({
   } else if (isSelected) {
     tooltip = t('search.vesselSelected', 'Vessel selected')
   }
-  const { onClick, ...itemProps } = getItemProps({ item: vesselData, index })
+  const { onClick, ...itemProps } = getItemProps({ item: vessel, index })
 
   const vesselQuery = useMemo(() => {
     const query = { start: transmissionDateFrom, end: transmissionDateTo }
@@ -286,7 +291,7 @@ function SearchBasicResult({
         </div>
         {!isSmallScreen && (
           <TrackFootprint
-            vesselId={id}
+            vesselIds={selfReportedVesselIds}
             trackDatasetId={track}
             highlightedYear={highlightedYear}
             onDataLoad={onTrackFootprintLoad}

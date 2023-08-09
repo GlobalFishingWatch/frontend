@@ -50,6 +50,10 @@ import { selectSearchOption, selectSearchQuery } from 'features/search/search.co
 import { EMPTY_FILTERS, RESULTS_PER_PAGE } from 'features/search/search.config'
 import { VesselSearchState } from 'types'
 import {
+  getRelatedIdentityVesselIds,
+  getSelfReportedVesselIdentityResolved,
+} from 'features/vessel/vessel.utils'
+import {
   fetchVesselSearchThunk,
   cleanVesselSearchResults,
   setSuggestionClicked,
@@ -231,6 +235,7 @@ function Search() {
         track: trackDatasetId,
         info: vessel.dataset.id,
         ...(eventsDatasetsId.length > 0 && { events: eventsDatasetsId }),
+        relatedVesselIds: getRelatedIdentityVesselIds(vessel),
       })
       return vesselDataviewInstance
     })
@@ -352,7 +357,7 @@ function Search() {
           </CSVLink>
         )}
         <VesselGroupAddButton
-          vessels={vesselsSelected}
+          vessels={vesselsSelected.map(getSelfReportedVesselIdentityResolved)}
           onAddToVesselGroup={onAddToVesselGroup}
           showCount={false}
           buttonClassName={cx(styles.footerAction, styles.vesselGroupButton)}

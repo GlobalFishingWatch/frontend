@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, PayloadAction, createSelector } from '@reduxjs/toolkit'
 import { uniqBy } from 'lodash'
 import {
   GFWAPI,
@@ -26,7 +26,7 @@ import { VesselIdentitySourceEnum } from 'features/search/search.config'
 export type VesselLastIdentity = Omit<IdentityVesselData, 'identities'> & VesselDataIdentity
 
 interface SearchState {
-  selectedVessels: VesselLastIdentity[]
+  selectedVessels: string[]
   status: AsyncReducerStatus
   statusCode: number | undefined
   data: IdentityVesselData[]
@@ -187,17 +187,16 @@ const searchSlice = createSlice({
   name: 'search',
   initialState,
   reducers: {
-    setSelectedVessels: (state, action: PayloadAction<VesselLastIdentity[]>) => {
+    setSelectedVessels: (state, action: PayloadAction<string[]>) => {
       const selection = action.payload
       if (selection.length === 0) {
         state.selectedVessels = []
       }
       if (selection.length === 1) {
-        const selectedIds = state.selectedVessels.map((vessel) => vessel?.id)
         const vessel = selection[0]
-        if (selectedIds.includes(vessel?.id)) {
-          state.selectedVessels = state.selectedVessels.filter((v) => v?.id !== vessel?.id)
-        } else if (vessel && vessel.dataset) {
+        if (state.selectedVessels.includes(vessel)) {
+          state.selectedVessels = state.selectedVessels.filter((id) => id !== vessel)
+        } else {
           state.selectedVessels = [...state.selectedVessels, vessel]
         }
       } else {
@@ -253,6 +252,12 @@ export const selectSearchSuggestion = (state: SearchSliceState) => state.search.
 export const selectSearchSuggestionClicked = (state: SearchSliceState) =>
   state.search.suggestionClicked
 export const selectSearchPagination = (state: SearchSliceState) => state.search.pagination
-export const selectSelectedVessels = (state: SearchSliceState) => state.search.selectedVessels
+export const selectSelectedVesselsIds = (state: SearchSliceState) => state.search.selectedVessels
+export const selectSelectedVessels = createSelector(
+  [selectSearchResults, selectSelectedVesselsIds],
+  (searchResults, vesselsSelectedIds) => {
+    return searchResults.filter((vessel) => vesselsSelectedIds.includes(vessel.id))
+  }
+)
 
 export default searchSlice.reducer

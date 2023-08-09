@@ -1,6 +1,7 @@
 import { ThinningConfig } from '@globalfishingwatch/api-types'
 
 export enum ThinningLevels {
+  Footprint = 'Footprint',
   Insane = 'Insane',
   VeryAggressive = 'VeryAggressive',
   Aggressive = 'aggressive',
@@ -8,6 +9,16 @@ export enum ThinningLevels {
 }
 
 export const THINNING_LEVELS: Record<ThinningLevels, ThinningConfig> = {
+  [ThinningLevels.Footprint]: {
+    'distance-fishing': 1000000000,
+    'bearing-val-fishing': 10000000,
+    'change-speed-fishing': 5000000,
+    'min-accuracy-fishing': 3000000,
+    'distance-transit': 100000000,
+    'bearing-val-transit': 1000000,
+    'change-speed-transit': 1000000,
+    'min-accuracy-transit': 60000,
+  },
   [ThinningLevels.Insane]: {
     'distance-fishing': 10,
     'bearing-val-fishing': 20,

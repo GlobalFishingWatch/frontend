@@ -56,11 +56,22 @@ export function getVesselProperty<P = string>(
 
 export function getVesselIdentityProperties<P = string>(
   vessel: IdentityVessel | IdentityVesselData,
-  property: VesselIdentityProperty
+  property: VesselIdentityProperty,
+  { identitySource } = {} as GetVesselIdentityParams
 ): P[] {
   if (!vessel) return [] as P[]
-  const identities = getVesselIdentities(vessel)
+  const identities = getVesselIdentities(vessel, { identitySource })
   return uniq(identities.flatMap((i) => i[property] || [])) as P[]
+}
+
+export function getRelatedIdentityVesselIds(vessel: IdentityVessel | IdentityVesselData): string[] {
+  if (!vessel) return [] as string[]
+  const identities = getVesselIdentities(vessel, {
+    identitySource: VesselIdentitySourceEnum.SelfReported,
+  })
+  return identities
+    .filter((i) => i.matchFields === 'SEVERAL_FIELDS' && i.id !== identities[0].id)
+    .flatMap((i) => i.id || [])
 }
 
 export function getSelfReportedVesselIdentityResolved(vessel: IdentityVessel | IdentityVesselData) {

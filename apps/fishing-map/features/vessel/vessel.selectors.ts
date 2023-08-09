@@ -25,9 +25,14 @@ export const selectVesselEventsResources = createSelector(
   [selectEventsResources, selectSelfReportedVesselIds],
   (eventsResources, vesselIds) => {
     return eventsResources?.filter((r) => {
-      return r.datasetConfig?.query?.some(
-        (q) => q.id === 'vessels' && vesselIds?.includes(q.value as string)
-      )
+      return r.datasetConfig?.query?.some((q) => {
+        if (q.id === 'vessels') {
+          return Array.isArray(q.value)
+            ? q.value.some((v) => vesselIds?.includes(v))
+            : vesselIds?.includes(q.value as string)
+        }
+        return false
+      })
     })
   }
 )

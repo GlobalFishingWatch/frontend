@@ -192,7 +192,7 @@ const VesselIdentity = () => {
                       const fieldType = key === 'registryOwners' ? 'owner' : 'authorization'
                       return (
                         <li
-                          key={`${key}-${index}`}
+                          key={`${value}-${index}`}
                           className={cx({
                             [styles.twoCells]: key === 'registryOwners',
                             [styles.hidden]: !registryOverlapsTimeRange,

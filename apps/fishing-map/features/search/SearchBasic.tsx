@@ -11,6 +11,8 @@ import SearchBasicResultList from 'features/search/SearchBasicResultList'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { RESULTS_PER_PAGE } from 'features/search/search.config'
+import { IdentityVesselData } from 'features/vessel/vessel.slice'
+import { getVesselProperty } from 'features/vessel/vessel.utils'
 import {
   selectSearchStatus,
   selectSearchStatusCode,
@@ -18,7 +20,6 @@ import {
   selectSelectedVessels,
   setSelectedVessels,
   selectSearchResults,
-  VesselLastIdentity,
 } from './search.slice'
 import styles from './SearchBasic.module.css'
 import { useSearchConnect } from './search.hook'
@@ -74,8 +75,10 @@ function SearchBasic({
 
   return (
     <Downshift
-      onSelect={(selectedItem: VesselLastIdentity) => dispatch(setSelectedVessels([selectedItem]))}
-      itemToString={(item) => (item ? item.shipname : '')}
+      onSelect={(selectedItem: IdentityVesselData) =>
+        dispatch(setSelectedVessels([selectedItem.id]))
+      }
+      itemToString={(item) => (item ? getVesselProperty(item, 'shipname') : '')}
     >
       {({ getInputProps, getItemProps, getMenuProps, highlightedIndex, setHighlightedIndex }) => (
         <div className={styles.scrollContainer}>

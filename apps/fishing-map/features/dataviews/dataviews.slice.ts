@@ -52,7 +52,7 @@ import {
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
-import { VesselIdentitySourceEnum } from 'features/search/search.config'
+import { getRelatedIdentityVesselIds } from 'features/vessel/vessel.utils'
 import {
   eventsDatasetConfigsCallback,
   infoDatasetConfigsCallback,
@@ -255,27 +255,22 @@ export const selectAllDataviewInstancesResolved = createSelector(
       if (!vessel || !vessel.identities) {
         return []
       }
-      const vesselIds = vessel.identities
-        .filter((i) => i.identitySource === VesselIdentitySourceEnum.SelfReported)
-        .map((i) => i.id)
-
+      const vesselId = vessel.id
       const vesselDatasets = {
         info: vessel.info,
         track: vessel.track,
         ...(vessel?.events?.length && {
           events: vessel?.events,
         }),
+        relatedVesselIds: getRelatedIdentityVesselIds(vessel),
       }
 
-      const dataviewInstances = vesselIds.map((vesselId) => {
-        const dataviewInstance = getVesselDataviewInstance({ id: vesselId }, vesselDatasets)
-        const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
-          vesselId,
-          vesselDatasets
-        )
-        return { ...dataviewInstance, datasetsConfig }
-      })
-      return resolveDataviews(dataviewInstances, dataviews, datasets)
+      const dataviewInstance = getVesselDataviewInstance({ id: vesselId }, vesselDatasets)
+      const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
+        vesselId,
+        vesselDatasets
+      )
+      return resolveDataviews([{ ...dataviewInstance, datasetsConfig }], dataviews, datasets)
     }
     const dataviewInstancesWithDatasetConfig = dataviewInstances.map((dataviewInstance) => {
       if (
