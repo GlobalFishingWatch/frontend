@@ -289,7 +289,7 @@ function SearchBasicResult({
             {transmissionDateFrom && transmissionDateTo && (
               <div className={cx(styles.property, styles.fullWidth)}>
                 <span>
-                  {formatI18nNumber(messagesCounter)}{' '}
+                  {messagesCounter && messagesCounter > 0 && formatI18nNumber(messagesCounter)}{' '}
                   {t('vessel.transmission_other', 'transmissions')} {t('common.from', 'from')}{' '}
                   <I18nDate date={transmissionDateFrom} /> {t('common.to', 'to')}{' '}
                   <I18nDate date={transmissionDateTo} />

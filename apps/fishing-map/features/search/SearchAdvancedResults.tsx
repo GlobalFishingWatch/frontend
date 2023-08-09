@@ -129,7 +129,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
             identitySource: VesselIdentitySourceEnum.SelfReported,
           })
           const messagesCounter = vesselSelfReportedIdentities.reduce((acc, identity) => {
-            return acc + identity.messagesCounter
+            return identity.messagesCounter ? acc + identity.messagesCounter : acc
           }, 0)
           return <I18nNumber number={messagesCounter} />
         },

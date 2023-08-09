@@ -89,7 +89,7 @@ export function getSelfReportedVesselIdentityResolved(vessel: IdentityVessel | I
     .sort((a, b) => (a > b ? -1 : 1))?.[0]
 
   const messagesCounter = vesselSelfReportedIdentities.reduce((acc, identity) => {
-    return acc + identity.messagesCounter
+    return identity.messagesCounter ? acc + identity.messagesCounter : acc
   }, 0)
 
   return {

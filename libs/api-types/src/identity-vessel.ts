@@ -37,7 +37,7 @@ export type SelfReportedInfo = VesselInfo & {
   ssvid: string
   shiptypesByYear?: IdentityShiptypeByYear[]
   posCount?: number
-  msgCount?: number
+  messagesCounter?: number
   matchFields?: SelfReportedMatchFields
   // VMS Custom data
   casco?: string
