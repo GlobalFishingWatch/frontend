@@ -33,6 +33,8 @@ import {
 } from 'features/vessel/vessel.utils'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
 import useMapInstance from 'features/map/map-context.hooks'
+import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { VesselIdentitySourceEnum } from 'features/search/search.config'
 import styles from './SearchBasicResult.module.css'
 
 type SearchBasicResultProps = {
@@ -77,10 +79,24 @@ function SearchBasicResult({
     shiptype,
     transmissionDateFrom,
     transmissionDateTo,
-    identitySource,
+    messagesCounter,
   } = vesselData
   const [shipname, ...names] = getVesselIdentityProperties(vessel, 'shipname')
   const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER
+
+  const identitySource = useMemo(() => {
+    const hasRegistryIdentity = vessel.identities.some(
+      ({ identitySource }) => identitySource === VesselIdentitySourceEnum.Registry
+    )
+    const hasSelfReportedIdentity = vessel.identities.some(
+      ({ identitySource }) => identitySource === VesselIdentitySourceEnum.SelfReported
+    )
+    if (hasRegistryIdentity && hasSelfReportedIdentity)
+      return t('vessel.infoSources.both', 'Registry and self reported')
+    if (hasRegistryIdentity) return t('vessel.infoSources.registry', 'Registry')
+    if (hasSelfReportedIdentity) return t('vessel.infoSources.self-reported', 'Self reported')
+    return ''
+  }, [t, vessel.identities])
 
   const selfReportedVesselIds = useMemo(() => {
     return [vessel.id, ...getRelatedIdentityVesselIds(vessel)]
@@ -265,7 +281,7 @@ function SearchBasicResult({
             {identitySource && (
               <div className={styles.property}>
                 <label>{t('vessel.infoSource', 'Info Source')}</label>
-                <span>{t(`vessel.infoSources.${identitySource}` as string, identitySource)}</span>
+                <span>{identitySource}</span>
               </div>
             )}
           </div>
@@ -273,7 +289,8 @@ function SearchBasicResult({
             {transmissionDateFrom && transmissionDateTo && (
               <div className={cx(styles.property, styles.fullWidth)}>
                 <span>
-                  {t('common.active', 'Active')} {t('common.from', 'from')}{' '}
+                  {formatI18nNumber(messagesCounter)}{' '}
+                  {t('vessel.transmission_other', 'transmissions')} {t('common.from', 'from')}{' '}
                   <I18nDate date={transmissionDateFrom} /> {t('common.to', 'to')}{' '}
                   <I18nDate date={transmissionDateTo} />
                 </span>

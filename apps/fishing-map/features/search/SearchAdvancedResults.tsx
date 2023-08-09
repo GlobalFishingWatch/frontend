@@ -19,12 +19,13 @@ import { Locale } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
 import {
   getSelfReportedVesselIdentityResolved,
-  getVesselIdentity,
+  getVesselIdentities,
   getVesselIdentityProperties,
   getVesselProperty,
 } from 'features/vessel/vessel.utils'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { VesselIdentitySourceEnum } from 'features/search/search.config'
+import I18nNumber from 'features/i18n/i18nNumber'
 
 const PINNED_COLUMN = 'shipname'
 const TOOLTIP_LABEL_CHARACTERS = 25
@@ -103,11 +104,18 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
       },
       {
         accessorFn: (vessel) => {
-          const identitySource = getVesselIdentity(vessel)?.identitySource
-          return t(
-            `vessel.infoSources.${identitySource}` as any,
-            identitySource || EMPTY_FIELD_PLACEHOLDER
+          const hasRegistryIdentity = vessel.identities.some(
+            ({ identitySource }) => identitySource === VesselIdentitySourceEnum.Registry
           )
+          const hasSelfReportedIdentity = vessel.identities.some(
+            ({ identitySource }) => identitySource === VesselIdentitySourceEnum.SelfReported
+          )
+          if (hasRegistryIdentity && hasSelfReportedIdentity)
+            return t('vessel.infoSources.both', 'Registry and self reported')
+          if (hasRegistryIdentity) return t('vessel.infoSources.registry', 'Registry')
+          if (hasSelfReportedIdentity) return t('vessel.infoSources.self-reported', 'Self reported')
+
+          return EMPTY_FIELD_PLACEHOLDER
         },
         header: t('vessel.infoSource', 'Info Source'),
       },
@@ -115,10 +123,18 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
       //   accessorFn: ({ dataset }) => <DatasetLabel dataset={dataset} />,
       //   header: t('vessel.source', 'Source'),
       // },
-      // {
-      //   accessorFn: ({ msgCount }: VesselLastIdentity) => <I18nNumber number={msgCount} />,
-      //   header: t('vessel.transmission_other', 'Transmissions'),
-      // },
+      {
+        accessorFn: (vessel) => {
+          const vesselSelfReportedIdentities = getVesselIdentities(vessel, {
+            identitySource: VesselIdentitySourceEnum.SelfReported,
+          })
+          const messagesCounter = vesselSelfReportedIdentities.reduce((acc, identity) => {
+            return acc + identity.messagesCounter
+          }, 0)
+          return <I18nNumber number={messagesCounter} />
+        },
+        header: t('vessel.transmission_other', 'Transmissions'),
+      },
       {
         accessorFn: (vessel) => {
           const transmissionDateFrom = getVesselProperty(vessel, 'transmissionDateFrom')

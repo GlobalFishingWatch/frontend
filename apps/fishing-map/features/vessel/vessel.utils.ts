@@ -88,11 +88,16 @@ export function getSelfReportedVesselIdentityResolved(vessel: IdentityVessel | I
     ?.flatMap((r) => r.transmissionDateTo || [])
     .sort((a, b) => (a > b ? -1 : 1))?.[0]
 
+  const messagesCounter = vesselSelfReportedIdentities.reduce((acc, identity) => {
+    return acc + identity.messagesCounter
+  }, 0)
+
   return {
     ...vesselData,
     dataset: vessel.dataset,
     transmissionDateFrom,
     transmissionDateTo,
+    messagesCounter,
   } as VesselLastIdentity
 }
 
