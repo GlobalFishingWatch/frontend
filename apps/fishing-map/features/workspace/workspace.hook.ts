@@ -16,9 +16,11 @@ const createDataviewsInstances = (
   newDataviewInstances: Partial<UrlDataviewInstance>[],
   currentDataviewInstances: UrlDataviewInstance[] = []
 ): UrlDataviewInstance[] => {
+  const currentColors = currentDataviewInstances.flatMap((dv) => dv.config?.color || [])
   return newDataviewInstances.map((dataview) => {
     if (dataview.config?.colorCyclingType) {
-      const nextColor = getNextColor(dataview.config.colorCyclingType, currentDataviewInstances)
+      const nextColor = getNextColor(dataview.config.colorCyclingType, currentColors)
+      currentColors.push(nextColor.value)
       const { colorCyclingType, ...config } = dataview.config
       const dataviewWithColor = {
         ...dataview,
@@ -72,15 +74,11 @@ export const mergeDataviewIntancesToUpsert = (
   return dataviewInstances
 }
 
-const getNextColor = (
-  colorCyclingType: ColorCyclingType,
-  currentDataviews: UrlDataviewInstance[] | undefined
-) => {
+const getNextColor = (colorCyclingType: ColorCyclingType, currentColors: string[] | undefined) => {
   const palette = colorCyclingType === 'fill' ? FillColorBarOptions : LineColorBarOptions
-  if (!currentDataviews) {
+  if (!currentColors) {
     return palette[0]
   }
-  const currentColors = currentDataviews.map((dv) => dv.config?.color).filter(Boolean)
   let minRepeat = Number.POSITIVE_INFINITY
   const availableColors: (ColorBarOption & { num: number })[] = palette.map((color) => {
     const num = currentColors.filter((c) => c === color.value).length
