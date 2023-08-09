@@ -24,7 +24,7 @@ export const formatInfoField = (fieldValue: string | string[], type: string, tra
       if (!fieldValue && (type === 'name' || type === 'shipname')) {
         return translationFn('common.unknownVessel', 'Unknown Vessel')
       }
-      if (type === 'name' || type === 'shipname' || type === 'owner') {
+      if (type === 'name' || type === 'shipname' || type === 'owner' || type === 'port') {
         return fieldValue.replace(
           /\b(?![LXIVCDM]+\b)([A-Z,ÁÉÍÓÚÑÜÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÇ]+)\b/g,
           upperFirst

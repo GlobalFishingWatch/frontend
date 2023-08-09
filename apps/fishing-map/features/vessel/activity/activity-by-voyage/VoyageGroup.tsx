@@ -40,28 +40,33 @@ const VoyageGroup: React.FC<EventProps> = ({
     if (voyageId === ongoingVoyageId) {
       parts.push(t('event.currentVoyage' as any, 'Ongoing Voyage') as string)
       parts.push(
-        `${t('common.from', 'from')} ${formatI18nDate(firstVoyageEvent.end, {
-          format: DateTime.DATE_FULL,
-        })}`
+        `${t('common.from', 'from')} ${
+          firstVoyageEvent.port_visit?.intermediateAnchorage?.name
+        } (${formatI18nDate(firstVoyageEvent.end, {
+          format: DateTime.DATE_MED,
+        })})`
       )
     } else {
+      const voyageEnd = latestVoyageEvent.port_visit?.intermediateAnchorage?.name
+      const portCount = events.filter((e) => e.type !== EventTypes.Port).length
+      parts.push(`${portCount} ${t('common.event', { defaultValue: 'Events', count: portCount })}`)
       parts.push(
-        `${t('common.from', 'from')} ${formatI18nDate(firstVoyageEvent.end ?? 0, {
-          format: DateTime.DATE_FULL,
-        })}`
+        `${voyageEnd ? t('common.between', 'between') : t('common.from', 'from')} ${
+          firstVoyageEvent.port_visit?.intermediateAnchorage?.name
+        } (${formatI18nDate(firstVoyageEvent.end ?? 0, {
+          format: DateTime.DATE_MED,
+        })})`
       )
-      const to =
-        latestVoyageEvent.subType === 'entry' ? latestVoyageEvent.start : latestVoyageEvent.end
-      parts.push(
-        `${t('common.to', 'to')} ${formatI18nDate(to, {
-          format: DateTime.DATE_FULL,
-        })}`
-      )
+      if (voyageEnd) {
+        const to =
+          latestVoyageEvent.subType === 'entry' ? latestVoyageEvent.start : latestVoyageEvent.end
+        parts.push(
+          `${t('common.and', 'and')} ${voyageEnd} (${formatI18nDate(to, {
+            format: DateTime.DATE_MED,
+          })})`
+        )
+      }
     }
-
-    parts.push(
-      `(${events.filter((e) => e.type !== EventTypes.Port).length} ${t('common.events', 'Events')})`
-    )
 
     return parts.join(' ')
   }, [events, ongoingVoyageId, t, voyageId])

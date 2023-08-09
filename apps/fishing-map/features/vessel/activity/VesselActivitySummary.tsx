@@ -150,7 +150,10 @@ export const VesselActivitySummary = () => {
                     return (
                       <Tooltip
                         key={port}
-                        content={`${count} ${t('common.event', { defaultValue: 'events', count })}`}
+                        content={`${count} ${t('event.port_visit', {
+                          defaultValue: 'port visit',
+                          count,
+                        })}`}
                       >
                         <span className={styles.help}>
                           {port}

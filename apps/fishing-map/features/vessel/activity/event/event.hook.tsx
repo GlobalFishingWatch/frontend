@@ -83,8 +83,8 @@ function useActivityEventConnect() {
           const portLabel = name
             ? [name, ...(flag ? [t(`flags:${flag}`, flag.toLocaleUpperCase())] : [])].join(', ')
             : ''
-          return t(`event.port_${portType}ActionIn`, `${upperFirst(portType)} Port {{port}}`, {
-            port: portLabel,
+          return t(`event.port_${portType}ActionIn`, `${portType} Port {{port}}`, {
+            port: formatInfoField(portLabel, 'port'),
           })
         case EventTypes.Loitering:
           return t('event.loiteringActionIn', 'Loitering in {{regionName}}', {
