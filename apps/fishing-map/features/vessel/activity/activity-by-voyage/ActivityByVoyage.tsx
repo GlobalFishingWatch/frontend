@@ -159,7 +159,7 @@ const ActivityByVoyage = () => {
           if (!events) {
             return null
           }
-          const expanded = expandedVoyages.includes(index)
+          const expanded = expandedVoyages.includes(index + 1)
           return (
             <VoyageGroup
               key={index}
