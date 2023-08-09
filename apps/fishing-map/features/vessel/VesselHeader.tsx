@@ -72,6 +72,7 @@ const VesselHeader = () => {
                 ? t('vessel.showOtherLayers', 'Show other layers')
                 : t('vessel.hideOtherLayers', 'Hide other layers')
             }
+            tooltipPlacement="bottom"
             size="small"
             onClick={setViewOnlyVessel}
           />
@@ -81,6 +82,7 @@ const VesselHeader = () => {
           type="border"
           icon="target"
           tooltip={t('layer.vessel_fit_bounds', 'Center view on vessel track')}
+          tooltipPlacement="bottom"
           size="small"
           disabled={!events?.length}
           onClick={onVesselFitBoundsClick}
@@ -89,6 +91,8 @@ const VesselHeader = () => {
           className="print-hidden"
           type="border"
           icon="print"
+          tooltip={t('vessel.print', 'Print or save as PDF')}
+          tooltipPlacement="bottom"
           size="small"
           onClick={onPrintClick}
         />

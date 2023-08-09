@@ -67,7 +67,7 @@ function useActivityEventConnect() {
               <span>
                 {t('event.encounterAction', 'had an encounter with')}{' '}
                 <VesselLink vesselId={id}>
-                  {name} ({formatInfoField(flag, 'flag')})
+                  {formatInfoField(name, 'name')} ({formatInfoField(flag, 'flag')})
                 </VesselLink>{' '}
                 {regionDescription && (
                   <span>
@@ -83,7 +83,7 @@ function useActivityEventConnect() {
           const portLabel = name
             ? [name, ...(flag ? [t(`flags:${flag}`, flag.toLocaleUpperCase())] : [])].join(', ')
             : ''
-          return t(`event.port_${portType}ActionIn`, `${portType} Port {{port}}`, {
+          return t(`event.port_${portType}ActionIn`, `${portType} {{port}}`, {
             port: formatInfoField(portLabel, 'port'),
           })
         case EventTypes.Loitering:

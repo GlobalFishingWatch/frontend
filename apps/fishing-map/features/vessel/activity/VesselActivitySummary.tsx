@@ -156,7 +156,7 @@ export const VesselActivitySummary = () => {
                         })}`}
                       >
                         <span className={styles.help}>
-                          {port}
+                          {formatInfoField(port, 'port')}
                           {index < threeMostVisitedPorts.length - 1 ? ', ' : ''}
                         </span>
                       </Tooltip>
