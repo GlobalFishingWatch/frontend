@@ -618,7 +618,8 @@
     "infoSource": "Info Source",
     "infoSources": {
       "registry": "Registry",
-      "self-reported": "Self reported"
+      "self-reported": "Self reported",
+      "both": "Registry and self reported"
     },
     "vesselTypes": {
       "fishing": "Pesca",
