@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { saveAs } from 'file-saver'
 import { Fragment, useEffect, useMemo } from 'react'
+import { uniq } from 'lodash'
 import { IconButton, Tab, Tabs, TabsProps } from '@globalfishingwatch/ui-components'
 import { VesselRegistryOwner, VesselRegistryProperty } from '@globalfishingwatch/api-types'
 import I18nDate, { formatI18nDate } from 'features/i18n/i18nDate'
@@ -91,9 +92,9 @@ const VesselIdentity = () => {
       },
       {
         id: VesselIdentitySourceEnum.SelfReported,
-        title: `${t('vessel.infoSources.selfReported', 'Self Reported')} (${selfReportedIdentities
-          .map((i) => i.sourceCode.join(','))
-          .join(',')})`,
+        title: `${t('vessel.infoSources.selfReported', 'Self Reported')} (${uniq(
+          selfReportedIdentities.flatMap((i) => i.sourceCode)
+        ).join(',')})`,
         disabled: selfReportedIdentities.length === 0,
       },
     ],

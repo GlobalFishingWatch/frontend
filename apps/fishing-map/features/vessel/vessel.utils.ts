@@ -47,10 +47,7 @@ type VesselIdentityProperty = keyof SelfReportedInfo | keyof VesselRegistryInfo
 export function getVesselProperty<P = string>(
   vessel: IdentityVessel | IdentityVesselData | null,
   property: VesselIdentityProperty,
-  {
-    identityIndex = 0,
-    identitySource = VesselIdentitySourceEnum.Registry,
-  }: GetVesselIdentityParams = {}
+  { identityIndex = 0, identitySource } = {} as GetVesselIdentityParams
 ): P {
   if (!vessel) return '' as P
   const identities = getVesselIdentities(vessel, { identitySource })

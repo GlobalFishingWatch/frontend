@@ -30,11 +30,15 @@ type IdentityShiptypeByYear = {
   shiptype: VesselType
   years: number[]
 }
+
+type SelfReportedMatchFields = 'ID_MATCH_ONLY' | 'SEVERAL_FIELDS'
+
 export type SelfReportedInfo = VesselInfo & {
   ssvid: string
   shiptypesByYear?: IdentityShiptypeByYear[]
   posCount?: number
   msgCount?: number
+  matchFields?: SelfReportedMatchFields
   // VMS Custom data
   casco?: string
   fleet?: string

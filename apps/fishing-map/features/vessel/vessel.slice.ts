@@ -78,15 +78,30 @@ export const fetchVesselInfoThunk = createAsyncThunk(
           endpoint: EndpointId.Vessel,
           datasetId: dataset.id,
           params: [{ id: 'vesselId', value: vesselId }],
-          query: [{ id: 'datasets', value: [datasetId] }],
+          query: [
+            // { id: 'match-fields', value: 'SEVERAL_FIELDS' },
+            {
+              id: 'includes',
+              value: ['POTENTIAL_RELATED_SELF_REPORTED_INFO'],
+            },
+            {
+              id: 'datasets',
+              value: [datasetId],
+            },
+          ],
         }
-
         const url = resolveEndpoint(dataset, datasetConfig)
         if (!url) {
           return rejectWithValue({ message: 'Error resolving endpoint' })
         }
         const vessel = await GFWAPI.fetch<IdentityVessel>(url)
-        const identities = getVesselIdentities(vessel)
+        const identities = getVesselIdentities(vessel).filter(
+          // TODO remove once the match-fields works in the API
+          (i) =>
+            i.identitySource === VesselIdentitySourceEnum.SelfReported
+              ? i.matchFields === 'SEVERAL_FIELDS'
+              : true
+        )
         return {
           id: getVesselProperty(vessel, 'id'),
           dataset: dataset,
@@ -167,6 +182,11 @@ export const selectVesselInfoData = createSelector(
   (vessel) => vessel?.data as IdentityVesselData
 )
 export const selectVesselInfoDataId = createSelector([selectVessel], (vessel) => vessel?.data?.id)
+export const selectSelfReportedVesselIds = createSelector([selectVessel], (vessel) =>
+  vessel?.data?.identities
+    .filter((i) => i.identitySource === VesselIdentitySourceEnum.SelfReported)
+    .map((i) => i.id)
+)
 export const selectVesselInfoStatus = createSelector([selectVessel], (vessel) => vessel?.status)
 export const selectVesselInfoError = createSelector([selectVessel], (vessel) => vessel?.error)
 export const selectVesselPrintMode = (state: VesselSliceState) => state.vessel.printMode

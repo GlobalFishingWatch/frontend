@@ -5,7 +5,7 @@ import { ApiEvent, DatasetTypes, EventTypes } from '@globalfishingwatch/api-type
 import { selectTimeRange, selectVisibleEvents } from 'features/app/app.selectors'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import { selectResources } from 'features/resources/resources.slice'
-import { selectVesselInfoDataId } from 'features/vessel/vessel.slice'
+import { selectSelfReportedVesselIds } from 'features/vessel/vessel.slice'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 
 export const selectEventsResources = createSelector(
@@ -22,10 +22,12 @@ export const selectEventsResources = createSelector(
 )
 
 export const selectVesselEventsResources = createSelector(
-  [selectEventsResources, selectVesselInfoDataId],
-  (eventsResources, vesselId) => {
+  [selectEventsResources, selectSelfReportedVesselIds],
+  (eventsResources, vesselIds) => {
     return eventsResources?.filter((r) => {
-      return r.datasetConfig?.query?.some((q) => q.id === 'vessels' && q.value === vesselId)
+      return r.datasetConfig?.query?.some(
+        (q) => q.id === 'vessels' && vesselIds?.includes(q.value as string)
+      )
     })
   }
 )
