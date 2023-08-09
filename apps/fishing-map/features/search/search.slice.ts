@@ -140,7 +140,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         // Not removing duplicates for GFWStaff so they can compare other VS fishing vessels
         const uniqSearchResults = gfwUser
           ? searchResults.entries
-          : uniqBy(searchResults.entries, 'id')
+          : uniqBy(searchResults.entries, 'selfReportedInfo[0].id')
 
         const vesselsWithDataset = uniqSearchResults.flatMap((vessel) => {
           if (!vessel) return []
