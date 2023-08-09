@@ -10,12 +10,14 @@ import {
   selectVesselIdentityIndex,
   selectVesselIdentitySource,
 } from 'features/vessel/vessel.config.selectors'
+import { selectTimeRange } from 'features/app/app.selectors'
 
 const VesselActivityDownload = () => {
   const { t } = useTranslation()
   const vesselData = useSelector(selectVesselInfoData)
   const identityIndex = useSelector(selectVesselIdentityIndex)
   const identitySource = useSelector(selectVesselIdentitySource)
+  const timerange = useSelector(selectTimeRange)
   const eventsLoading = useSelector(selectVesselEventsLoading)
   const events = useSelector(selectVesselEventsFilteredByTimerange)
 
@@ -27,7 +29,10 @@ const VesselActivityDownload = () => {
       `${getVesselProperty(vesselData, 'shipname', {
         identityIndex,
         identitySource,
-      })}(${getVesselProperty(vesselData, 'flag', { identityIndex, identitySource })})-events.csv`
+      })}(${getVesselProperty(vesselData, 'flag', {
+        identityIndex,
+        identitySource,
+      })})-events-${timerange?.start}-${timerange?.end}.csv`
     )
   }
 
