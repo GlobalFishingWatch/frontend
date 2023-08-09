@@ -67,7 +67,7 @@ export const selectEventsGroupedByVoyages = createSelector(
       if (event.type === EventTypes.Port) {
         const voyage = eventsList[index + 1]?.voyage
         if (!voyage) {
-          return event
+          return { ...event, subType: 'exit' as ActivityEventSubType }
         }
         return [
           { ...event, subType: 'exit' as ActivityEventSubType },
