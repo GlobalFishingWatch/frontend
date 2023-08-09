@@ -25,6 +25,8 @@ import VesselIdentityField from 'features/vessel/identity/VesselIdentityField'
 import { VesselIdentitySourceEnum } from 'features/search/search.config'
 import { useLocationConnect } from 'routes/routes.hook'
 import { VesselLastIdentity } from 'features/search/search.slice'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { selectIsVesselLocation } from 'routes/routes.selectors'
 import styles from './VesselIdentity.module.css'
 
 const VesselIdentity = () => {
@@ -32,7 +34,9 @@ const VesselIdentity = () => {
   const vesselData = useSelector(selectVesselInfoData)
   const identityIndex = useSelector(selectVesselIdentityIndex)
   const identitySource = useSelector(selectVesselIdentitySource)
+  const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
   const { dispatchQueryParams } = useLocationConnect()
+  const { setTimerange } = useTimerangeConnect()
 
   const vesselIdentity = getCurrentIdentityVessel(vesselData, {
     identityIndex,
@@ -41,6 +45,13 @@ const VesselIdentity = () => {
 
   const onTabClick: TabsProps<VesselIdentitySourceEnum>['onTabClick'] = (tab) => {
     dispatchQueryParams({ vesselIdentityIndex: 0, vesselIdentitySource: tab.id })
+  }
+
+  const onTimeRangeClick = () => {
+    setTimerange({
+      start: vesselIdentity.transmissionDateFrom,
+      end: vesselIdentity.transmissionDateTo,
+    })
   }
 
   const onDownloadClick = () => {
@@ -108,11 +119,21 @@ const VesselIdentity = () => {
         <div className={styles.titleContainer}>
           <h3>
             <label>{t(`common.timerange`, 'Time range')}</label>
-            <VesselIdentityField
-              value={`${formatI18nDate(vesselIdentity.transmissionDateFrom)} - ${formatI18nDate(
-                vesselIdentity.transmissionDateTo
-              )}`}
-            />
+            <div className={styles.timerange}>
+              <VesselIdentityField
+                value={`${formatI18nDate(vesselIdentity.transmissionDateFrom)} - ${formatI18nDate(
+                  vesselIdentity.transmissionDateTo
+                )}`}
+              />
+              {isStandaloneVesselLocation && (
+                <IconButton
+                  size="small"
+                  icon="fit-to-timerange"
+                  tooltip={t('timebar.fitOnThisDates', 'Fit time range to these dates')}
+                  onClick={onTimeRangeClick}
+                />
+              )}
+            </div>
           </h3>
           <div className={styles.actionsContainer}>
             <IconButton

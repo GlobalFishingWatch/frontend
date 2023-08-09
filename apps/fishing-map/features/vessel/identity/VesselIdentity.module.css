@@ -46,3 +46,8 @@
 .hidden {
   display: none;
 }
+
+.timerange {
+  display: flex;
+  align-items: center;
+}

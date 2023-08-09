@@ -44,6 +44,7 @@ import { ReactComponent as ExternalLink } from '../assets/icons/external-link.sv
 import { ReactComponent as Feedback } from '../assets/icons/feedback.svg'
 import { ReactComponent as FilterOff } from '../assets/icons/filter-off.svg'
 import { ReactComponent as FilterOn } from '../assets/icons/filter-on.svg'
+import { ReactComponent as FitToTimeRange } from '../assets/icons/fit-to-timerange.svg'
 import { ReactComponent as GFWLogo } from '../assets/icons/gfw-logo.svg'
 import { ReactComponent as Graph } from '../assets/icons/graph.svg'
 import { ReactComponent as Heatmap } from '../assets/icons/heatmap.svg'
@@ -119,6 +120,7 @@ export const IconComponents = {
   'external-link': ExternalLink,
   'filter-off': FilterOff,
   'filter-on': FilterOn,
+  'fit-to-timerange': FitToTimeRange,
   'gfw-logo': GFWLogo,
   'layers-on': LayersOn,
   'layers-off': LayersOff,

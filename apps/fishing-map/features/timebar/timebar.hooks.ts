@@ -88,9 +88,9 @@ export const useTimerangeConnect = () => {
   )
 
   const setTimerange = useCallback(
-    (viewport) => {
-      setAtomTimerange(viewport)
-      updateUrlTimerangeDebounced(viewport)
+    (timerange) => {
+      setAtomTimerange(timerange)
+      updateUrlTimerangeDebounced(timerange)
     },
     [setAtomTimerange, updateUrlTimerangeDebounced]
   )
