@@ -301,7 +301,6 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
           boxShadow:
             cell.column.id === 'shipname' ? '5px 0 5px -3px var(--color-terthiary-blue)' : '',
           whiteSpace: 'nowrap',
-          maxWidth: '20rem',
           '.Mui-TableHeadCell-Content-Wrapper': { minWidth: '2rem' },
           padding: '0.5rem 1.1rem',
         },
