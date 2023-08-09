@@ -317,6 +317,8 @@
     "workspaceNotFound": "La vue demandée n'a pas été trouvée"
   },
   "event": {
+    "afterExiting": "after exiting",
+    "beforeEntering": "before entering",
     "dayAbbreviated_one": "{{count}}j",
     "dayAbbreviated_other": "{{count}}j",
     "dayAbbreviated": "{{count}}j",
@@ -657,6 +659,7 @@
     "noVoyagesWithoutPorts": "Please turn on port visits visibility",
     "origin": "Origine",
     "owner": "Owner",
+    "print": "Imprimer ou enregistrer au format PDF",
     "registeredGearType": "Type d’engin enregistré",
     "sectionActivity": "Activité",
     "sectionRelatedVessels": "Related vessels",

@@ -317,6 +317,8 @@
     "workspaceNotFound": "The workspace you requested was not found."
   },
   "event": {
+    "afterExiting": "after exiting",
+    "beforeEntering": "before entering",
     "dayAbbreviated_one": "{{count}}d",
     "dayAbbreviated_other": "{{count}}d",
     "dayAbbreviated": "{{count}}d",
@@ -657,6 +659,7 @@
     "noVoyagesWithoutPorts": "Please turn on port visits visibility",
     "origin": "Origin",
     "owner": "Owner",
+    "print": "Print or save as PDF",
     "registeredGearType": "Registered gear type",
     "sectionActivity": "Activity",
     "sectionRelatedVessels": "Related vessels",

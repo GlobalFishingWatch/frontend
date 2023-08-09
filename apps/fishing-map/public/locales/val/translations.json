@@ -317,6 +317,8 @@
     "workspaceNotFound": "crwdns49227:0crwdne49227:0"
   },
   "event": {
+    "afterExiting": "crwdns57533:0crwdne57533:0",
+    "beforeEntering": "crwdns57535:0crwdne57535:0",
     "dayAbbreviated_one": "crwdns49229:0{{count}}crwdne49229:0",
     "dayAbbreviated_other": "crwdns49231:0{{count}}crwdne49231:0",
     "dayAbbreviated": "crwdns49233:0{{count}}crwdne49233:0",
@@ -657,6 +659,7 @@
     "noVoyagesWithoutPorts": "crwdns49823:0crwdne49823:0",
     "origin": "crwdns49825:0crwdne49825:0",
     "owner": "crwdns49827:0crwdne49827:0",
+    "print": "crwdns57537:0crwdne57537:0",
     "registeredGearType": "crwdns49829:0crwdne49829:0",
     "sectionActivity": "crwdns49831:0crwdne49831:0",
     "sectionRelatedVessels": "crwdns49833:0crwdne49833:0",

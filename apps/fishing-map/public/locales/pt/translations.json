@@ -317,6 +317,8 @@
     "workspaceNotFound": "A visualização solicitada não foi encontrada"
   },
   "event": {
+    "afterExiting": "after exiting",
+    "beforeEntering": "before entering",
     "dayAbbreviated_one": "{{count}}d",
     "dayAbbreviated_other": "{{count}}d",
     "dayAbbreviated": "{{count}}d",
@@ -657,6 +659,7 @@
     "noVoyagesWithoutPorts": "Please turn on port visits visibility",
     "origin": "Origem",
     "owner": "Owner",
+    "print": "Imprima ou salve como PDF",
     "registeredGearType": "Tipo de petrecho registrado",
     "sectionActivity": "Atividade",
     "sectionRelatedVessels": "Related vessels",
