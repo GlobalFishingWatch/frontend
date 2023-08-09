@@ -317,6 +317,8 @@
     "workspaceNotFound": "Tampilan yang Anda minta tidak ditemukan"
   },
   "event": {
+    "afterExiting": "after exiting",
+    "beforeEntering": "before entering",
     "dayAbbreviated_one": "{{count}}hari",
     "dayAbbreviated_other": "{{count}}hari",
     "dayAbbreviated": "{{count}}hari",
@@ -657,6 +659,7 @@
     "noVoyagesWithoutPorts": "Please turn on port visits visibility",
     "origin": "Asal",
     "owner": "Owner",
+    "print": "Cetak atau simpan sebagai PDF",
     "registeredGearType": "Jenis Peralatan Terdaftar",
     "sectionActivity": "Aktivitas",
     "sectionRelatedVessels": "Related vessels",
