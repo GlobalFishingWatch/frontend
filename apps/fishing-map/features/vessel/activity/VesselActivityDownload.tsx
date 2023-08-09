@@ -3,20 +3,32 @@ import { useSelector } from 'react-redux'
 import saveAs from 'file-saver'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { selectVesselEventsLoading } from 'features/vessel/activity/vessels-activity.selectors'
-import { selectVesselInfoDataId } from 'features/vessel/vessel.slice'
-import { parseEventsToCSV } from 'features/vessel/vessel.utils'
+import { selectVesselInfoData } from 'features/vessel/vessel.slice'
+import { getVesselProperty, parseEventsToCSV } from 'features/vessel/vessel.utils'
 import { selectVesselEventsFilteredByTimerange } from 'features/vessel/vessel.selectors'
+import {
+  selectVesselIdentityIndex,
+  selectVesselIdentitySource,
+} from 'features/vessel/vessel.config.selectors'
 
 const VesselActivityDownload = () => {
   const { t } = useTranslation()
-  const vesselId = useSelector(selectVesselInfoDataId)
+  const vesselData = useSelector(selectVesselInfoData)
+  const identityIndex = useSelector(selectVesselIdentityIndex)
+  const identitySource = useSelector(selectVesselIdentitySource)
   const eventsLoading = useSelector(selectVesselEventsLoading)
   const events = useSelector(selectVesselEventsFilteredByTimerange)
 
   const onDownloadClick = () => {
     const data = parseEventsToCSV(events)
     const blob = new Blob([data], { type: 'text/plain;charset=utf-8' })
-    saveAs(blob, `${vesselId}-events.csv`)
+    saveAs(
+      blob,
+      `${getVesselProperty(vesselData, 'shipname', {
+        identityIndex,
+        identitySource,
+      })}(${getVesselProperty(vesselData, 'flag', { identityIndex, identitySource })})-events.csv`
+    )
   }
 
   return (
