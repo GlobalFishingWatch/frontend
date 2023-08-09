@@ -21,6 +21,7 @@ import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { VesselSearchState } from 'types'
 import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
 import { getVesselIdentities, getVesselProperty } from 'features/vessel/vessel.utils'
+import { VesselIdentitySourceEnum } from 'features/search/search.config'
 
 export type VesselLastIdentity = Omit<IdentityVesselData, 'identities'> & VesselDataIdentity
 
@@ -118,7 +119,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         datasetId: dataset.id,
         params: [],
         query: [
-          // { id: 'includes', value: ['MATCH_CRITERIA'] },
+          { id: 'includes', value: ['MATCH_CRITERIA'] },
           { id: 'datasets', value: datasets.map((d) => d.id) },
           {
             id: advancedQuery ? 'where' : 'query',
@@ -126,6 +127,9 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           },
           { id: 'since', value: since },
         ],
+      }
+      if (!advancedQuery) {
+        // datasetConfig.query.push({ id: 'match-fields', value: 'SEVERAL_FIELDS' })
       }
 
       const url = resolveEndpoint(dataset, datasetConfig)
@@ -145,9 +149,13 @@ export const fetchVesselSearchThunk = createAsyncThunk(
 
           const trackDatasetId = getRelatedDatasetByType(infoDataset, DatasetTypes.Tracks)?.id
           return {
-            id: getVesselProperty(vessel, 'id'),
-            registryOwners: vessel.registryOwners,
-            registryAuthorizations: vessel.registryAuthorizations,
+            id: getVesselProperty(vessel, 'id', {
+              identitySource: VesselIdentitySourceEnum.SelfReported,
+            }),
+            ...(vessel.registryOwners && { registryOwners: vessel.registryOwners }),
+            ...(vessel.registryAuthorizations && {
+              registryAuthorizations: vessel.registryAuthorizations,
+            }),
             dataset: infoDataset,
             info: infoDataset?.id,
             track: trackDatasetId,

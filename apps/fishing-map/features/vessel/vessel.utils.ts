@@ -63,17 +63,25 @@ export function getVesselIdentityProperties<P = string>(
   return uniq(identities.flatMap((i) => i[property] || [])) as P[]
 }
 
-export function getIdentityVesselMerged(vessel: IdentityVessel | IdentityVesselData) {
-  const vesselData = getVesselIdentity(vessel)
-  const lastSelfReportedInfo = getVesselIdentities(vessel, {
+export function getSelfReportedVesselIdentityResolved(vessel: IdentityVessel | IdentityVesselData) {
+  const vesselSelfReportedIdentities = getVesselIdentities(vessel, {
     identitySource: VesselIdentitySourceEnum.SelfReported,
-  })[0]
+  })
+  const vesselData = vesselSelfReportedIdentities[0]
+  // Get first transmission date from all identity sources
+  const transmissionDateFrom = vesselSelfReportedIdentities
+    ?.flatMap((r) => r.transmissionDateFrom || [])
+    .sort((a, b) => (a < b ? -1 : 1))?.[0]
+  // The same with last transmission date
+  const transmissionDateTo = vesselSelfReportedIdentities
+    ?.flatMap((r) => r.transmissionDateTo || [])
+    .sort((a, b) => (a > b ? -1 : 1))?.[0]
 
   return {
     ...vesselData,
     dataset: vessel.dataset,
-    transmissionDateFrom: lastSelfReportedInfo?.transmissionDateFrom,
-    transmissionDateTo: lastSelfReportedInfo?.transmissionDateTo,
+    transmissionDateFrom,
+    transmissionDateTo,
   } as VesselLastIdentity
 }
 

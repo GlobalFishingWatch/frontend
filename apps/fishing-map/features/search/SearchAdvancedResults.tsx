@@ -18,12 +18,13 @@ import { FIRST_YEAR_OF_DATA } from 'data/config'
 import { Locale } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
 import {
-  getIdentityVesselMerged,
+  getSelfReportedVesselIdentityResolved,
   getVesselIdentity,
   getVesselIdentityProperties,
   getVesselProperty,
 } from 'features/vessel/vessel.utils'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
+import { VesselIdentitySourceEnum } from 'features/search/search.config'
 
 const PINNED_COLUMN = 'shipname'
 const TOOLTIP_LABEL_CHARACTERS = 25
@@ -47,7 +48,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
                 .map((name) => formatInfoField(name, 'name'))
                 .join(', ')})`
             : name
-          return label.length > TOOLTIP_LABEL_CHARACTERS ? (
+          return label?.length > TOOLTIP_LABEL_CHARACTERS ? (
             <Tooltip content={label}>
               <span>{label}</span>
             </Tooltip>
@@ -90,7 +91,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
               t(`vessel.gearTypes.${gear.toLowerCase()}` as any, EMPTY_FIELD_PLACEHOLDER)
             )
             .join(', ')
-          return label.length > TOOLTIP_LABEL_CHARACTERS ? (
+          return label?.length > TOOLTIP_LABEL_CHARACTERS ? (
             <Tooltip content={label}>
               <span>{label}</span>
             </Tooltip>
@@ -155,7 +156,8 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
 
   const onSelectHandler = useCallback(
     (vessels: IdentityVesselData[]) => {
-      const vessesSelected = vessels.map((vessel) => getIdentityVesselMerged(vessel))
+      console.log('🚀 ~ SearchAdvancedResults ~ vessels:', vessels)
+      const vessesSelected = vessels.map(getSelfReportedVesselIdentityResolved).filter((v) => v.id)
       dispatch(setSelectedVessels(vessesSelected))
     },
     [dispatch]
@@ -169,8 +171,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
   const rowSelection = useMemo(() => {
     return Object.fromEntries(
       (searchResults || []).map((vessel, index) => {
-        const id = getVesselProperty(vessel, 'id')
-        return [`${index}-${id}`, vesselSelectedIds.includes(id)]
+        return [`${index}-${vessel.id}`, vesselSelectedIds.includes(vessel.id)]
       })
     )
   }, [searchResults, vesselSelectedIds])
@@ -202,10 +203,14 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
       enableStickyHeader
       enableMultiRowSelection
       enableRowVirtualization
-      enableRowSelection
+      enableRowSelection={(row) =>
+        row.original.identities.some(
+          (i) => i.identitySource === VesselIdentitySourceEnum.SelfReported
+        )
+      }
       onRowSelectionChange={undefined}
       selectAllMode="all"
-      getRowId={(row, index) => `${index}-${getVesselProperty(row, 'id')}`}
+      getRowId={(row, index) => `${index}-${row.id}`}
       initialState={{ columnPinning: { left: [PINNED_COLUMN] } }}
       state={{ showProgressBars, rowSelection }}
       muiTablePaperProps={{
@@ -218,8 +223,10 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
       }}
       muiSelectAllCheckboxProps={({ table }) => ({
         sx: { color: 'var(--color-secondary-blue)' },
-        onChange: (_, checked) =>
-          onSelectHandler(checked ? table.getRowModel().rows.map(({ original }) => original) : []),
+        onChange: (_, checked) => {
+          console.log(table.getRowModel().rows)
+          onSelectHandler(checked ? table.getRowModel().rows.map(({ original }) => original) : [])
+        },
       })}
       muiSelectCheckboxProps={{
         sx: {
@@ -229,7 +236,11 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
         },
       }}
       muiTableBodyRowProps={({ row }) => ({
-        onClick: () => onSelectHandler([row.original]),
+        onClick: () => {
+          if (row.getCanSelect()) {
+            onSelectHandler([row.original])
+          }
+        },
         sx: {
           backgroundColor: 'transparent',
           cursor: 'pointer',

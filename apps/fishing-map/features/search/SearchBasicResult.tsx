@@ -26,7 +26,10 @@ import { selectCurrentWorkspaceId } from 'features/workspace/workspace.selectors
 import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
-import { getIdentityVesselMerged, getVesselIdentityProperties } from 'features/vessel/vessel.utils'
+import {
+  getSelfReportedVesselIdentityResolved,
+  getVesselIdentityProperties,
+} from 'features/vessel/vessel.utils'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
 import useMapInstance from 'features/map/map-context.hooks'
 import styles from './SearchBasicResult.module.css'
@@ -62,7 +65,7 @@ function SearchBasicResult({
   const { setTimerange } = useTimerangeConnect()
 
   const { dataset, track } = vessel
-  const vesselData = getIdentityVesselMerged(vessel)
+  const vesselData = getSelfReportedVesselIdentityResolved(vessel)
   const {
     id,
     flag,

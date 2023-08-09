@@ -226,9 +226,7 @@ function Search() {
         eventsRelatedDatasets && eventsRelatedDatasets?.length
           ? eventsRelatedDatasets.map((d) => d.id)
           : []
-      const trackDatasetId = getRelatedDatasetByType(vessel.dataset, DatasetTypes.Tracks, {
-        vesselType: vessel?.shiptype,
-      })?.id
+      const trackDatasetId = getRelatedDatasetByType(vessel.dataset, DatasetTypes.Tracks)?.id
       const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
         track: trackDatasetId,
         info: vessel.dataset.id,
