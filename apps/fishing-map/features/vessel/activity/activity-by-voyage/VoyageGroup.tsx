@@ -47,21 +47,25 @@ const VoyageGroup: React.FC<EventProps> = ({
         })})`
       )
     } else {
+      const voyageStart = firstVoyageEvent.port_visit?.intermediateAnchorage?.name
       const voyageEnd = latestVoyageEvent.port_visit?.intermediateAnchorage?.name
       const portCount = events.filter((e) => e.type !== EventTypes.Port).length
       parts.push(`${portCount} ${t('common.event', { defaultValue: 'Events', count: portCount })}`)
-      parts.push(
-        `${voyageEnd ? t('common.between', 'between') : t('common.from', 'from')} ${
-          firstVoyageEvent.port_visit?.intermediateAnchorage?.name
-        } (${formatI18nDate(firstVoyageEvent.end ?? 0, {
-          format: DateTime.DATE_MED,
-        })})`
-      )
+      voyageStart &&
+        parts.push(
+          `${
+            voyageEnd ? t('common.between', 'between') : t('event.afterExiting', 'after exiting')
+          } ${voyageStart} (${formatI18nDate(firstVoyageEvent.end ?? 0, {
+            format: DateTime.DATE_MED,
+          })})`
+        )
       if (voyageEnd) {
         const to =
           latestVoyageEvent.subType === 'entry' ? latestVoyageEvent.start : latestVoyageEvent.end
         parts.push(
-          `${t('common.and', 'and')} ${voyageEnd} (${formatI18nDate(to, {
+          `${
+            voyageStart ? t('common.and', 'and') : t('event.beforeEntering', 'before entering')
+          } ${voyageEnd} (${formatI18nDate(to, {
             format: DateTime.DATE_MED,
           })})`
         )
