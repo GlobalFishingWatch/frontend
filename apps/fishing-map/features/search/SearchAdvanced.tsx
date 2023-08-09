@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux'
 import { Trans, useTranslation } from 'react-i18next'
 import { ChangeEvent, useCallback } from 'react'
 import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components'
+import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import SearchAdvancedResults from 'features/search/SearchAdvancedResults'
@@ -25,6 +26,7 @@ function SearchAdvanced({ onSuggestionClick, fetchMoreResults, onConfirm }: Sear
   const searchStatusCode = useSelector(selectSearchStatusCode)
   const { dispatchQueryParams } = useLocationConnect()
   const { hasFilters } = useSearchFiltersConnect()
+  const ref = useEventKeyListener(['Enter'], onConfirm)
 
   const resetSearchState = useCallback(() => {
     dispatchQueryParams(EMPTY_FILTERS)
@@ -49,7 +51,7 @@ function SearchAdvanced({ onSuggestionClick, fetchMoreResults, onConfirm }: Sear
   return (
     <div className={styles.advancedLayout}>
       <div className={styles.form}>
-        <div className={styles.formFields}>
+        <div className={styles.formFields} ref={ref}>
           <InputText
             onChange={handleSearchQueryChange}
             id="name"
