@@ -152,6 +152,7 @@
     "or": "ou",
     "partnerSites": "Sites de parceiros",
     "presence": "Presença",
+    "previously": "Previously",
     "report": "Relatório",
     "reports": "Relatórios",
     "resetHelpHints": "Mostrar novamente todas as dicas de ajuda",
@@ -162,6 +163,7 @@
     "sources": "Fontes",
     "summary": "Summary",
     "to": "para",
+    "timerange": "Time range",
     "tutorials": "Tutoriais",
     "unknown": "Desconhecido",
     "unknownVessel": "Embarcação desconhecida",
@@ -627,9 +629,8 @@
       "unknown": "Desconhecido"
     },
     "identity": {
-      "selfReported": "Self reported identity",
-      "registryIdentity": "Registry identity",
-      "registryIdentities": "Registry identities",
+      "selfReportedInfo": "Self reported identity",
+      "registryInfo": "Registry identities",
       "seeAsCalendar": "See as calendar"
     },
     "grossTonnage": "Gross Tonnage",
