@@ -1,13 +1,27 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import {
+  Ref,
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react'
 import cx from 'classnames'
 import styles from './VesselIdentityField.module.css'
 
 type VesselIdentityFieldProps = {
   value: string
+  className?: string
 }
-const VesselIdentityField = ({ value }: VesselIdentityFieldProps) => {
+const VesselIdentityField = (
+  { value, className = '' }: VesselIdentityFieldProps,
+  forwardedRef: Ref<HTMLSpanElement>
+) => {
   const prevValue = useRef(value)
   const [highlighted, setHighlighted] = useState(false)
+  const ref = useRef<HTMLSpanElement>(null)
+  useImperativeHandle(forwardedRef, () => ref.current as HTMLSpanElement)
 
   // Needed to remove the class before adding it again in case
   // there is a new value before the timeout is finished
@@ -31,7 +45,11 @@ const VesselIdentityField = ({ value }: VesselIdentityFieldProps) => {
     }
   }, [value])
 
-  return <span className={cx(styles.value, { [styles.highlight]: highlighted })}>{value}</span>
+  return (
+    <span ref={ref} className={cx(styles.value, { [styles.highlight]: highlighted }, className)}>
+      {value}
+    </span>
+  )
 }
 
-export default VesselIdentityField
+export default forwardRef<HTMLSpanElement, VesselIdentityFieldProps>(VesselIdentityField)

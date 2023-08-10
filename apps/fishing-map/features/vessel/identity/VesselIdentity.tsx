@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { saveAs } from 'file-saver'
 import { Fragment, useEffect, useMemo } from 'react'
 import { uniq } from 'lodash'
-import { IconButton, Tab, Tabs, TabsProps } from '@globalfishingwatch/ui-components'
+import { IconButton, Tab, Tabs, TabsProps, Tooltip } from '@globalfishingwatch/ui-components'
 import { VesselRegistryOwner, VesselRegistryProperty } from '@globalfishingwatch/api-types'
 import I18nDate, { formatI18nDate } from 'features/i18n/i18nDate'
 import { IDENTITY_FIELD_GROUPS, REGISTRY_FIELD_GROUPS } from 'features/vessel/vessel.config'
@@ -27,6 +27,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { VesselLastIdentity } from 'features/search/search.slice'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectIsVesselLocation } from 'routes/routes.selectors'
+import { useRegionTranslationsById } from 'features/regions/regions.hooks'
 import styles from './VesselIdentity.module.css'
 
 const VesselIdentity = () => {
@@ -35,6 +36,7 @@ const VesselIdentity = () => {
   const identityIndex = useSelector(selectVesselIdentityIndex)
   const identitySource = useSelector(selectVesselIdentitySource)
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
+  const { getRegionTranslationsById } = useRegionTranslationsById()
   const { dispatchQueryParams } = useLocationConnect()
   const { setTimerange } = useTimerangeConnect()
 
@@ -214,27 +216,37 @@ const VesselIdentity = () => {
                     </label>
                     {allRegistryInfo.map((registry, index) => {
                       const registryOverlapsTimeRange = filteredRegistryInfo.includes(registry)
-                      const value =
-                        key === 'registryOwners'
-                          ? `${(registry as VesselRegistryOwner).name} (${formatInfoField(
-                              (registry as VesselRegistryOwner).flag,
-                              'flag'
-                            )})`
-                          : registry.sourceCode.join(',')
                       const fieldType = key === 'registryOwners' ? 'owner' : 'authorization'
+                      let Component = <VesselIdentityField value="" />
+                      if (registryOverlapsTimeRange) {
+                        if (fieldType === 'owner') {
+                          const value = `${
+                            (registry as VesselRegistryOwner).name
+                          } (${formatInfoField((registry as VesselRegistryOwner).flag, 'flag')})`
+                          Component = <VesselIdentityField value={value} />
+                        } else {
+                          const sourceTranslations = registry.sourceCode
+                            .map(getRegionTranslationsById)
+                            .join(',')
+                          Component = (
+                            <Tooltip content={sourceTranslations}>
+                              <VesselIdentityField
+                                className={styles.help}
+                                value={formatInfoField(registry.sourceCode.join(','), fieldType)}
+                              />
+                            </Tooltip>
+                          )
+                        }
+                      }
                       return (
                         <li
-                          key={`${value}-${index}`}
+                          key={`${registry.recordId}-${index}`}
                           className={cx({
                             [styles.twoCells]: key === 'registryOwners',
                             [styles.hidden]: !registryOverlapsTimeRange,
                           })}
                         >
-                          <VesselIdentityField
-                            value={
-                              registryOverlapsTimeRange ? formatInfoField(value, fieldType) : ''
-                            }
-                          />{' '}
+                          {Component}{' '}
                           <span className={styles.secondary}>
                             <I18nDate date={registry.dateFrom} /> -{' '}
                             <I18nDate date={registry.dateTo} />
