@@ -622,7 +622,6 @@
     "saveAndFilter": "Save and filter workspace",
     "saveForLater": "Save for later",
     "saveForLaterTooltip": "You'll find the group in the activity layers filters or your user panel button",
-    "timeRangeLimit": "Supported only for time ranges shorter than 3 months",
     "tooManyVessels_one": "Maximum number of vessels is {{count}}",
     "tooManyVessels_other": "Maximum number of vessels is {{count}}",
     "uploadPublic": "Allow other users to see this vessel group when you share a workspace",
