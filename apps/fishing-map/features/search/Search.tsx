@@ -368,12 +368,10 @@ function Search() {
           disabled={vesselsSelected.length === 0}
           testId="search-vessels-add-vessel"
         >
-          {vesselsSelected.length > 1
-            ? t('search.seeVessels', {
-                defaultValue: 'See vessels',
-                count: vesselsSelected.length,
-              })
-            : t('search.seeVessel', 'See vessel')}
+          {t('search.seeVesselsOnMap', {
+            defaultValue: 'See vessels on map',
+            count: vesselsSelected.length,
+          })}
         </Button>
       </div>
     </div>
