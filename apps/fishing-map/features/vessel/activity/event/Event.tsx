@@ -4,7 +4,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import EventIcon from 'features/vessel/activity/event/EventIcon'
 import ActivityDate from './ActivityDate'
-import useActivityEventConnect from './event.hook'
+import { useActivityEventTranslations } from './event.hook'
 import styles from './Event.module.css'
 
 interface EventProps {
@@ -27,7 +27,7 @@ const Event: React.FC<EventProps> = (props): React.ReactElement => {
     onMapHover = () => {},
     onMapClick = () => {},
   } = props
-  const { getEventDescription } = useActivityEventConnect()
+  const { getEventDescription } = useActivityEventTranslations()
   return (
     <li className={cx(styles.event, className)}>
       <div

@@ -4,7 +4,6 @@ import { useMemo } from 'react'
 import { Icon, IconType, Tooltip } from '@globalfishingwatch/ui-components'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
-import useActivityEventConnect from 'features/vessel/activity/event/event.hook'
 import {
   selectActivitySummary,
   selectEventsGroupedByType,
@@ -17,6 +16,7 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { selectTimeRange, selectVisibleEvents } from 'features/app/app.selectors'
 import { selectVesselEventsFilteredByTimerange } from 'features/vessel/vessel.selectors'
+import { useRegionNamesByType } from 'features/regions/regions.hooks'
 import styles from './VesselActivitySummary.module.css'
 
 const MAX_PORTS = 3
@@ -29,7 +29,7 @@ export const VesselActivitySummary = () => {
   const timerange = useSelector(selectTimeRange)
   const visibleEvents = useSelector(selectVisibleEvents)
   const eventsByType = useSelector(selectEventsGroupedByType)
-  const { getRegionNamesByType } = useActivityEventConnect()
+  const { getRegionNamesByType } = useRegionNamesByType()
   const { activityRegions, mostVisitedPorts } = useSelector(selectActivitySummary)
   const activityRegionsLength = Object.keys(activityRegions).length
   const threeMostVisitedPorts = mostVisitedPorts.slice(0, MAX_PORTS)
