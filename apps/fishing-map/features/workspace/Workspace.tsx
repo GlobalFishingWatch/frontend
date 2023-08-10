@@ -65,11 +65,13 @@ function Workspace() {
     }
   }, [workspace])
 
+  const workspaceVesselGroupsIdsHash = workspaceVesselGroupsIds.join(',')
   useEffect(() => {
     if (workspaceVesselGroupsIds.length) {
       dispatch(fetchWorkspaceVesselGroupsThunk(workspaceVesselGroupsIds))
     }
-  }, [workspaceVesselGroupsIds, dispatch])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [workspaceVesselGroupsIdsHash, dispatch])
 
   const handleDragEnd = useCallback(
     (event) => {
