@@ -483,7 +483,7 @@ export const getCommonSchemaFieldsInDataview = (
           }
           if (schema === 'geartype') {
             // There is an fixed list of gearTypes independant of the dataset
-            label = t(`vessel.gearTypes.${field}`, capitalize(lowerCase(field)))
+            label = t(`vessel.gearTypes.${field?.toLowerCase()}`, capitalize(lowerCase(field)))
           }
         }
         return { id: field!?.toString(), label }

@@ -209,7 +209,7 @@ export const selectReportVesselsListWithAllInfo = createSelector(
             t(`flags:${vesselActivity[0]?.flag as string}` as any, vesselActivity[0]?.flag)
           ),
           geartype: t(
-            `vessel.gearTypes.${vesselActivity[0]?.geartype}` as any,
+            `vessel.gearTypes.${vesselActivity[0]?.geartype?.toLowerCase()}` as any,
             vesselActivity[0]?.geartype
           ),
           vesselType: t(
@@ -228,9 +228,9 @@ export function cleanVesselOrGearType({ value, property }: CleanVesselOrGearType
   const valuesCleanTranslated = valuesClean
     .map((value) => {
       if (property === 'geartype') {
-        return t(`vessel.gearTypes.${value}` as any, value)
+        return t(`vessel.gearTypes.${value?.toLowerCase()}` as any, value)
       }
-      return t(`vessel.vesselTypes.${value}` as any, value)
+      return t(`vessel.vesselTypes.${value?.toLowerCase()}` as any, value)
     })
     .sort(sortStrings)
   return valuesCleanTranslated.length > 1

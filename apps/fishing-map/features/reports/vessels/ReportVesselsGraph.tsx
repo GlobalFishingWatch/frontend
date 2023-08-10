@@ -88,9 +88,9 @@ const CustomTick = (props: any) => {
     if (EMPTY_API_VALUES.includes(label)) return t('analysis.unknown', 'Unknown')
     switch (selectedReportVesselGraph) {
       case 'geartype':
-        return `${t(`vessel.gearTypes.${label}` as any, label)}`
+        return `${t(`vessel.gearTypes.${label?.toLowerCase()}` as any, label)}`
       case 'vesselType':
-        return `${t(`vessel.vesselTypes.${label}` as any, label)}`
+        return `${t(`vessel.vesselTypes.${label?.toLowerCase()}` as any, label)}`
       case 'flag':
         return t(`flags:${label}` as any, label)
       default:

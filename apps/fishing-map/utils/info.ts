@@ -16,10 +16,7 @@ export const formatInfoField = (fieldValue: string | string[], type: string, tra
         return translationFn(`flags:${fieldValue}` as any, fieldValue)
       }
       if (type === 'shiptype' || type === 'vesselType') {
-        return translationFn(
-          `vessel.vesselTypes.${fieldValue.toLocaleLowerCase()}` as any,
-          fieldValue
-        )
+        return translationFn(`vessel.vesselTypes.${fieldValue?.toLowerCase()}` as any, fieldValue)
       }
       if (!fieldValue && (type === 'name' || type === 'shipname')) {
         return translationFn('common.unknownVessel', 'Unknown Vessel')
@@ -73,11 +70,11 @@ export const getVesselLabel = (
     : vessel?.selfReportedInfo?.[0]
   if (!vesselInfo) return t('common.unknownVessel', 'Unknown vessel')
   if (vesselInfo.shipname && vesselInfo.geartype && vesselInfo.flag && withGearType) {
+    const gearTypes = vesselInfo.geartype
+      ?.map((gear) => t(`vessel.gearTypes.${gear.toLowerCase()}`))
+      .join(',')
     return `${formatInfoField(vesselInfo.shipname, 'name')}
-    (${t(`flags:${vesselInfo.flag}`)}, ${t(
-      `vessel.gearTypes.${vesselInfo.geartype}` as any,
-      EMPTY_FIELD_PLACEHOLDER
-    )})`
+    (${t(`flags:${vesselInfo.flag}`)}, ${gearTypes || EMPTY_FIELD_PLACEHOLDER})`
   }
   if (vesselInfo.shipname) return formatInfoField(vesselInfo.shipname, 'name')
   if (vesselInfo.geartype) {

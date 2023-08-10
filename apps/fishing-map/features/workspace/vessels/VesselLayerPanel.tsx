@@ -192,10 +192,10 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       const fieldValueSplit = fieldValue.split('|')
       if (fieldValueSplit.length > 1) {
         return fieldValueSplit
-          .map((field) => t(`vessel.gearTypes.${field}` as any, field))
+          .map((field) => t(`vessel.gearTypes.${field?.toLowerCase()}` as any, field))
           .join(', ')
       }
-      return t(`vessel.gearTypes.${fieldValue}` as any, fieldValue)
+      return t(`vessel.gearTypes.${fieldValue?.toLowerCase()}` as any, fieldValue)
     }
     if (field.id === 'mmsi') {
       return (
