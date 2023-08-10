@@ -1,39 +1,16 @@
-import { upperFirst } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
-import { EventTypes, GapPosition, Regions } from '@globalfishingwatch/api-types'
-import { selectEEZs, selectFAOs, selectMPAs, selectRFMOs } from 'features/regions/regions.slice'
+import { EventTypes, GapPosition } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from 'utils/dates'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
 import VesselLink from 'features/vessel/VesselLink'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
+import { useRegionNamesByType } from 'features/regions/regions.hooks'
 
-function useActivityEventConnect() {
+export function useActivityEventTranslations() {
   const { t } = useTranslation()
-  const eezs = useSelector(selectEEZs)
-  const rfmos = useSelector(selectRFMOs)
-  const mpas = useSelector(selectMPAs)
-  const faos = useSelector(selectFAOs)
-
-  const getRegionNamesByType = useCallback(
-    (regionType: keyof Regions, values: string[]) => {
-      if (!values?.length) return []
-      const regions = { eez: eezs, rfmo: rfmos, mpa: mpas, fao: faos }[regionType] || []
-      let labels = values
-      if (regions?.length) {
-        labels = values.flatMap(
-          (id) =>
-            regions
-              .find((region) => region.id?.toString() === id)
-              ?.label?.replace('Exclusive Economic Zone', t('layer.areas.eez', 'EEZ')) || []
-        )
-      }
-      return labels
-    },
-    [eezs, faos, mpas, rfmos, t]
-  )
+  const { getRegionNamesByType } = useRegionNamesByType()
 
   const getEventRegionDescription = useCallback(
     (event: ActivityEvent | GapPosition) => {
@@ -136,18 +113,10 @@ function useActivityEventConnect() {
 
   return useMemo(
     () => ({
-      getRegionNamesByType,
       getEventDescription,
       getEventDurationDescription,
       getEventRegionDescription,
     }),
-    [
-      getEventDescription,
-      getEventDurationDescription,
-      getEventRegionDescription,
-      getRegionNamesByType,
-    ]
+    [getEventDescription, getEventDurationDescription, getEventRegionDescription]
   )
 }
-
-export default useActivityEventConnect

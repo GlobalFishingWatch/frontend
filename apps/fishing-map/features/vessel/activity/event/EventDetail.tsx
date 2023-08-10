@@ -5,7 +5,7 @@ import { DateTime } from 'luxon'
 import { EventType, EventTypes } from '@globalfishingwatch/api-types'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import useActivityEventConnect from 'features/vessel/activity/event/event.hook'
+import { useActivityEventTranslations } from 'features/vessel/activity/event/event.hook'
 import { VesselRenderField } from 'features/vessel/vessel.config'
 import styles from './Event.module.css'
 
@@ -38,7 +38,7 @@ const FIELDS_BY_TYPE: Record<EventType, VesselRenderField[]> = {
 
 const ActivityContent = ({ event }: ActivityContentProps) => {
   const { t } = useTranslation()
-  const { getEventDurationDescription } = useActivityEventConnect()
+  const { getEventDurationDescription } = useActivityEventTranslations()
   const fields = useMemo(() => {
     return FIELDS_BY_TYPE[event.type] || []
   }, [event])
