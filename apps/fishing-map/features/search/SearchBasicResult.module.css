@@ -59,7 +59,9 @@
 }
 
 .property label {
-  line-height: 1;
+  height: 1rem;
+  display: flex;
+  align-items: center;
 }
 
 .property span {

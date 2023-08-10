@@ -40,11 +40,13 @@ export const IDENTITY_FIELD_GROUPS: VesselRenderField[][] = [
 type VesselRegistryFieldGroup = {
   key: keyof Pick<IdentityVesselData, 'registryOwners' | 'registryAuthorizations'>
   label: string
+  terminologyKey?: string
 }
 export const REGISTRY_FIELD_GROUPS: VesselRegistryFieldGroup[] = [
   {
     key: 'registryOwners',
     label: 'owner',
+    terminologyKey: 'vessel.terminology.owner',
   },
   {
     key: 'registryAuthorizations',

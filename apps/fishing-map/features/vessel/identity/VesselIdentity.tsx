@@ -186,7 +186,7 @@ const VesselIdentity = () => {
               </div>
             ))}
             {identitySource === VesselIdentitySourceEnum.Registry &&
-              REGISTRY_FIELD_GROUPS.map(({ key, label }, index) => {
+              REGISTRY_FIELD_GROUPS.map(({ key, label, terminologyKey }, index) => {
                 const allRegistryInfo = vesselIdentity[key]
                 if (!allRegistryInfo) return null
                 const timerange = {
@@ -200,7 +200,18 @@ const VesselIdentity = () => {
                 if (!filteredRegistryInfo) return null
                 return allRegistryInfo?.length > 0 ? (
                   <ul className={cx(styles.fieldGroup, styles.twoColumns)}>
-                    <label className={styles.twoCells}>{t(`vessel.${label}` as any, label)}</label>
+                    <label className={styles.twoCells}>
+                      {t(`vessel.${label}` as any, label)}
+                      {terminologyKey && (
+                        <DataTerminology
+                          size="tiny"
+                          type="default"
+                          title={t(`vessel.${label}` as any, label)}
+                        >
+                          {t(terminologyKey as any, terminologyKey)}
+                        </DataTerminology>
+                      )}
+                    </label>
                     {allRegistryInfo.map((registry, index) => {
                       const registryOverlapsTimeRange = filteredRegistryInfo.includes(registry)
                       const value =

@@ -35,6 +35,7 @@ import { IdentityVesselData } from 'features/vessel/vessel.slice'
 import useMapInstance from 'features/map/map-context.hooks'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { VesselIdentitySourceEnum } from 'features/search/search.config'
+import DataTerminology from 'features/vessel/identity/DataTerminology'
 import styles from './SearchBasicResult.module.css'
 
 type SearchBasicResultProps = {
@@ -280,7 +281,16 @@ function SearchBasicResult({
                   )} */}
             {identitySource && (
               <div className={styles.property}>
-                <label>{t('vessel.infoSource', 'Info Source')}</label>
+                <label>
+                  {t('vessel.infoSource', 'Info Source')}
+                  <DataTerminology
+                    size="tiny"
+                    type="default"
+                    title={t('vessel.infoSource', 'Info Source')}
+                  >
+                    {t('vessel.terminology.infoSource', 'Info source terminology')}
+                  </DataTerminology>
+                </label>
                 <span>{identitySource}</span>
               </div>
             )}
