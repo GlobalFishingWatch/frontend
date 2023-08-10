@@ -678,7 +678,9 @@
     "terminology": {
       "geartype": "crwdns49857:0crwdne49857:0",
       "registryInfo": "crwdns49859:0crwdne49859:0",
-      "shiptype": "crwdns49861:0crwdne49861:0"
+      "shiptype": "crwdns49861:0crwdne49861:0",
+      "owner": "crwdns57541:0crwdne57541:0",
+      "infoSource": "crwdns57543:0crwdne57543:0"
     },
     "tonnageGt": "crwdns49863:0crwdne49863:0",
     "trackLogin": "crwdns49865:0crwdne49865:0",
