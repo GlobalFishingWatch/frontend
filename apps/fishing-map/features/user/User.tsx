@@ -48,6 +48,7 @@ function User() {
       {
         id: UserTab.Workspaces,
         title: t('workspace.title_other', 'Workspaces'),
+        testId: 'user-workspace',
         content: (
           <Fragment>
             <UserWorkspacesPrivate />

@@ -220,12 +220,13 @@ function UserWorkspaces() {
                     loading={workspace.id === workspacesStatusId && deleteLoading}
                     tooltip={t('workspace.remove', 'Remove workspace')}
                     onClick={() => onDeleteClick(workspace)}
+                    testId="remove-workspace-button"
                   />
                 </li>
               )
             })
           ) : (
-            <div className={styles.placeholder}>
+            <div className={styles.placeholder} data-test="user-workspaces">
               {t('workspace.emptyState', 'Your workspaces will appear here')}
             </div>
           )}
