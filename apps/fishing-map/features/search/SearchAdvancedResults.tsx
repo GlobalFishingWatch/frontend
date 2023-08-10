@@ -29,7 +29,6 @@ import I18nNumber from 'features/i18n/i18nNumber'
 
 const PINNED_COLUMN = 'shipname'
 const TOOLTIP_LABEL_CHARACTERS = 25
-
 function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
   const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
@@ -40,6 +39,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
   const columns = useMemo((): MRT_ColumnDef<IdentityVesselData>[] => {
     return [
       {
+        id: 'shipname',
         accessorKey: PINNED_COLUMN as any,
         accessorFn: (vessel) => {
           const [shipname, ...names] = getVesselIdentityProperties(vessel, 'shipname')
@@ -62,22 +62,27 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
         enableColumnActions: false,
       },
       {
+        id: 'flag',
         accessorFn: (vessel) => <I18nFlag iso={getVesselProperty(vessel, 'flag')} />,
         header: t('vessel.flag', 'Flag'),
       },
       {
+        id: 'ssvid',
         accessorFn: (vessel) => getVesselProperty(vessel, 'ssvid') || EMPTY_FIELD_PLACEHOLDER,
         header: t('vessel.mmsi', 'MMSI'),
       },
       {
+        id: 'imo',
         accessorFn: (vessel) => getVesselProperty(vessel, 'imo') || EMPTY_FIELD_PLACEHOLDER,
         header: t('vessel.imo', 'IMO'),
       },
       {
+        id: 'callsign',
         accessorFn: (vessel) => getVesselProperty(vessel, 'callsign') || EMPTY_FIELD_PLACEHOLDER,
         header: t('vessel.callsign', 'Callsign'),
       },
       {
+        id: 'shiptype',
         accessorFn: (vessel) => {
           const shiptype = getVesselProperty(vessel, 'shiptype')
           return t(`vessel.vesselTypes.${shiptype?.toLowerCase()}` as any, EMPTY_FIELD_PLACEHOLDER)
@@ -85,6 +90,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
         header: t('vessel.vesselType', 'Vessel Type'),
       },
       {
+        id: 'geartype',
         accessorFn: (vessel) => {
           const geartypes = getVesselProperty<string[]>(vessel, 'geartype')
           const label = geartypes
@@ -103,6 +109,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
         header: t('vessel.geartype', 'Gear Type'),
       },
       {
+        id: 'infoDource',
         accessorFn: (vessel) => {
           const hasRegistryIdentity = vessel.identities.some(
             ({ identitySource }) => identitySource === VesselIdentitySourceEnum.Registry
@@ -119,11 +126,8 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
         },
         header: t('vessel.infoSource', 'Info Source'),
       },
-      // {
-      //   accessorFn: ({ dataset }) => <DatasetLabel dataset={dataset} />,
-      //   header: t('vessel.source', 'Source'),
-      // },
       {
+        id: 'transmissionCount',
         accessorFn: (vessel) => {
           const vesselSelfReportedIdentities = getVesselIdentities(vessel, {
             identitySource: VesselIdentitySourceEnum.SelfReported,
@@ -136,6 +140,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
         header: t('vessel.transmission_other', 'Transmissions'),
       },
       {
+        id: 'transmissionDates',
         accessorFn: (vessel) => {
           const transmissionDateFrom = getVesselProperty(vessel, 'transmissionDateFrom')
           const transmissionDateTo = getVesselProperty(vessel, 'transmissionDateTo')
@@ -268,6 +273,13 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
       })}
       muiTableProps={{
         style: {
+          ['--header-ssvid-size' as any]: 100,
+          ['--header-imo-size' as any]: 100,
+          ['--header-callsign-size' as any]: 100,
+          ['--col-ssvid-size' as any]: 100,
+          ['--col-imo-size' as any]: 100,
+          ['--col-callsign-size' as any]: 100,
+          ['--header-mrt_row_select-size' as any]: 10,
           ['--col-mrt_row_select-size' as any]: 10,
           ['--header-mrt_row_select-size' as any]: 10,
         },
