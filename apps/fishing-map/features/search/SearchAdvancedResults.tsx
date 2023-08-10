@@ -120,7 +120,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
           if (hasRegistryIdentity && hasSelfReportedIdentity)
             return t('vessel.infoSources.both', 'Registry and self reported')
           if (hasRegistryIdentity) return t('vessel.infoSources.registry', 'Registry')
-          if (hasSelfReportedIdentity) return t('vessel.infoSources.self-reported', 'Self reported')
+          if (hasSelfReportedIdentity) return t('vessel.infoSources.selfReported', 'Self reported')
 
           return EMPTY_FIELD_PLACEHOLDER
         },
