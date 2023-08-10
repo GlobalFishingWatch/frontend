@@ -28,7 +28,6 @@ import { getDatasetNameTranslated, removeDatasetVersion } from 'features/i18n/ut
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { FileType } from 'features/common/FileDropzone'
 import { getLayerDatasetRange } from 'features/workspace/environmental/HistogramRangeFilter'
-import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import styles from '../vessel-groups/VesselGroupModal.module.css'
 
 export type SupportedDatasetSchema =
@@ -77,7 +76,7 @@ export const getFileTypes = (datasetGeometryType) =>
 export const isPrivateDataset = (dataset: Partial<Dataset>) =>
   !(dataset?.id || '').startsWith(`${PUBLIC_SUFIX}-`)
 
-const GFW_ONLY_DATASETS = ['private-global-other-vessels:v20201001', DEFAULT_VESSEL_IDENTITY_ID]
+const GFW_ONLY_DATASETS = ['private-global-other-vessels:v20201001']
 
 export const isGFWOnlyDataset = (dataset: Partial<Dataset>) =>
   GFW_ONLY_DATASETS.includes(dataset?.id || '')

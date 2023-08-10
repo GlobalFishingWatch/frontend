@@ -3,7 +3,7 @@ import { VesselIdentitySourceEnum } from 'features/search/search.config'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { VesselProfileState } from 'types'
 
-export const DEFAULT_VESSEL_IDENTITY_ID = 'proto-global-vessel-identity:v20230623'
+export const DEFAULT_VESSEL_IDENTITY_ID = 'public-global-vessel-identity:v20230623'
 export const DEFAULT_VESSEL_STATE: VesselProfileState = {
   vesselDatasetId: DEFAULT_VESSEL_IDENTITY_ID,
   vesselIdentityIndex: 0,
