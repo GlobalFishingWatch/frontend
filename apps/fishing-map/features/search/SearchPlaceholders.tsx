@@ -1,4 +1,5 @@
 import cx from 'classnames'
+import parse from 'html-react-parser'
 import { useSelector } from 'react-redux'
 import { Trans, useTranslation } from 'react-i18next'
 import { Tooltip } from '@globalfishingwatch/ui-components'
@@ -73,7 +74,7 @@ export function SearchEmptyState({ className = '' }: SearchPlaceholderProps) {
         </p>
       )}
       {guestUser && noGuestDatasets?.length > 0 && (
-        <p className={styles.description}>
+        <p className={cx(styles.description, styles.center)}>
           <Tooltip content={noGuestDatasets.join(', ')}>
             <span className={styles.bold}>
               {noGuestDatasets.length} {t('common.sources', 'Sources')}
@@ -85,7 +86,10 @@ export function SearchEmptyState({ className = '' }: SearchPlaceholderProps) {
           </Trans>
         </p>
       )}
-      <UserGuideLink section="vesselSearch" className={styles.center} />
+      <p className={styles.highlighted}>
+        {parse(t('search.learnMore', 'Learn more about how vessel identity work'))}
+      </p>
+      <UserGuideLink section="vesselSearch" className={cx(styles.userGuide, styles.center)} />
     </SearchPlaceholder>
   )
 }

@@ -52,7 +52,7 @@
   padding: var(--space-XS) var(--space-S);
   border-radius: var(--border-radius);
   width: max-content;
-  margin: var(--space-L) auto;
+  margin: var(--space-M) auto;
 }
 
 .highlighted a {
@@ -61,4 +61,8 @@
 
 .center {
   margin: 0 auto;
+}
+
+.userGuide {
+  margin-top: var(--space-M);
 }
