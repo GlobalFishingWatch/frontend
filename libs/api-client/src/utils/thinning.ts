@@ -15,9 +15,9 @@ export const THINNING_LEVELS: Record<ThinningLevels, ThinningConfig> = {
     'change-speed-fishing': 5000000,
     'min-accuracy-fishing': 3000000,
     'distance-transit': 100000000,
-    'bearing-val-transit': 1000000,
+    'bearing-val-transit': 100000,
     'change-speed-transit': 1000000,
-    'min-accuracy-transit': 60000,
+    'min-accuracy-transit': 6000,
   },
   [ThinningLevels.Insane]: {
     'distance-fishing': 10,

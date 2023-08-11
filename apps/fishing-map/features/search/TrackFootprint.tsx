@@ -4,6 +4,9 @@ import { geoEqualEarth, geoPath } from 'd3'
 import { FeatureCollection, GeoJsonProperties, Geometry } from 'geojson'
 import { DateTime } from 'luxon'
 import qs from 'qs'
+import area from '@turf/area'
+import bbox from '@turf/bbox'
+import bboxPolygon from '@turf/bbox-polygon'
 import { GFWAPI, THINNING_LEVELS } from '@globalfishingwatch/api-client'
 import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 import { segmentsToGeoJSON, trackValueArrayToSegments } from '@globalfishingwatch/data-transforms'
@@ -20,6 +23,7 @@ type TrackFootprintProps = {
 
 const FOOTPRINT_WIDTH = 300
 const FOOTPRINT_HEIGHT = 150
+const MAX_SMALL_AREA_M = 2000000000000
 
 const PROJECTION = geoEqualEarth()
   .scale(53.5)
@@ -40,6 +44,7 @@ function TrackFootprint({
 }: TrackFootprintProps) {
   const [trackData, setTrackData] = useState<FeatureCollection<Geometry, GeoJsonProperties>>()
   const [error, setError] = useState(false)
+  const [isSmallFootprint, setIsSmallFootprint] = useState(false)
   const fullCanvasRef = useRef<HTMLCanvasElement | null>(null)
   const highlightCanvasRef = useRef<HTMLCanvasElement | null>(null)
   const onScreen = useOnScreen(fullCanvasRef)
@@ -75,8 +80,9 @@ function TrackFootprint({
       const segments = tracksData.flatMap((data) =>
         trackValueArrayToSegments(data, [Field.lonlat, Field.timestamp])
       )
-      const geoJson = segmentsToGeoJSON(segments)
+      const geoJson = segmentsToGeoJSON(segments.filter((s) => s.length > 1))
       setTrackData(geoJson)
+      if (area(bboxPolygon(bbox(geoJson))) < MAX_SMALL_AREA_M) setIsSmallFootprint(true)
       if (onDataLoad) onDataLoad(geoJson)
     },
     [onDataLoad, trackDatasetId]
@@ -93,7 +99,7 @@ function TrackFootprint({
       const fullPath = geoPath(PROJECTION, fullContext)
       fullContext.lineCap = 'round'
       fullContext.lineJoin = 'round'
-      fullContext.lineWidth = 3
+      fullContext.lineWidth = isSmallFootprint ? 12 : 2
       fullContext.strokeStyle = '#42639C'
       trackData.features.forEach((feature) => {
         fullContext.beginPath()
@@ -101,7 +107,7 @@ function TrackFootprint({
         fullContext.stroke()
       })
     }
-  }, [fullContext, trackData, vesselIds])
+  }, [fullContext, isSmallFootprint, trackData, vesselIds])
 
   useEffect(() => {
     highlightContext?.clearRect(0, 0, FOOTPRINT_WIDTH, FOOTPRINT_HEIGHT)
@@ -134,7 +140,7 @@ function TrackFootprint({
       }
       highlightContext.lineCap = 'round'
       highlightContext.lineJoin = 'round'
-      highlightContext.lineWidth = 6
+      highlightContext.lineWidth = 4
       highlightContext.strokeStyle = '#42639C'
       highlightedTrack.features.forEach((feature) => {
         highlightContext.beginPath()
