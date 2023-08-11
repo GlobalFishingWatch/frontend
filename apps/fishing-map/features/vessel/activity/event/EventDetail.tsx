@@ -30,7 +30,11 @@ const FIELDS_BY_TYPE: Record<EventType, VesselRenderField[]> = {
     ...DISTANCES_FIELDS,
     { key: 'fishing.averageSpeedKnots', label: 'averageSpeedKnots' },
   ],
-  [EventTypes.Port]: BASE_FIELDS,
+  [EventTypes.Port]: [
+    { key: 'start', label: 'port_entry' },
+    { key: 'end', label: 'port_exit' },
+    { key: 'duration', label: 'duration' },
+  ],
   [EventTypes.Encounter]: [
     { key: 'encounter.vessel.name', label: 'encounteredVesselName' },
     { key: 'encounter.vessel.flag', label: 'flag' },

@@ -43,7 +43,7 @@ module.exports = {
   // This option takes precedence over the `defaultValue` and `skipDefaultValues` options
   useKeysAsDefaultValue: false,
   defaultValue: function (locale, namespace, key, value) {
-    return 'missing_translation'
+    return value
   },
   // Display info about the parsing including some stats
   verbose: true,
