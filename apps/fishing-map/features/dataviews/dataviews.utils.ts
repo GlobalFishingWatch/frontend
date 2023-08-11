@@ -58,9 +58,10 @@ export const getVesselDataviewInstanceDatasetConfig = (
     })
   }
   if (track) {
+    const vesselIds = relatedVesselIds ? [vesselId, ...relatedVesselIds].join(',') : vesselId
     datasetsConfig.push({
       datasetId: track,
-      params: [{ id: 'vesselId', value: vesselId }],
+      params: [{ id: 'vesselId', value: vesselIds }],
       endpoint: EndpointId.Tracks,
     })
   }
