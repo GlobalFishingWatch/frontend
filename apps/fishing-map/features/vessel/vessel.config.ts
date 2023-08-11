@@ -9,7 +9,7 @@ export const DEFAULT_VESSEL_STATE: VesselProfileState = {
   vesselIdentityIndex: 0,
   vesselIdentitySource: VesselIdentitySourceEnum.Registry,
   vesselActivityMode: 'type',
-  viewOnlyVessel: false,
+  viewOnlyVessel: true,
 }
 
 export type VesselRenderField<Key = string> = {
