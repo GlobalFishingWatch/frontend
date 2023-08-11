@@ -7,6 +7,7 @@ import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selecto
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useActivityEventTranslations } from 'features/vessel/activity/event/event.hook'
 import { VesselRenderField } from 'features/vessel/vessel.config'
+import { formatInfoField } from 'utils/info'
 import styles from './Event.module.css'
 
 interface ActivityContentProps {
@@ -31,10 +32,12 @@ const FIELDS_BY_TYPE: Record<EventType, VesselRenderField[]> = {
   ],
   [EventTypes.Port]: BASE_FIELDS,
   [EventTypes.Encounter]: [
-    ...BASE_FIELDS,
-    { key: 'encounter.medianSpeedKnots', label: 'medianSpeedKnots' },
+    { key: 'encounter.vessel.name', label: 'encounteredVesselName' },
+    { key: 'encounter.vessel.flag', label: 'flag' },
     { key: 'encounter.vessel.ssvid', label: 'ssvid' },
     { key: 'encounter.vessel.type', label: 'type' },
+    ...BASE_FIELDS,
+    { key: 'encounter.medianSpeedKnots', label: 'medianSpeedKnots' },
   ],
   [EventTypes.Loitering]: [
     ...BASE_FIELDS,
@@ -69,7 +72,11 @@ const ActivityContent = ({ event }: ActivityContentProps) => {
     ) {
       return parseFloat(value).toFixed(2)
     } else if (field.key.includes('vessel.type')) {
-      return `${t(`vessel.vesselTypes.${value}` as any, value)}`
+      return t(`vessel.vesselTypes.${value}` as string, value)
+    } else if (field.key.includes('name')) {
+      return formatInfoField(value, 'name')
+    } else if (field.key.includes('flag')) {
+      return formatInfoField(value, 'flag')
     }
     return value
   }
@@ -81,7 +88,7 @@ const ActivityContent = ({ event }: ActivityContentProps) => {
         if (!value) return null
         return (
           <li key={field.key} className={styles.detail}>
-            <label>{(t(`eventInfo.${field.label}` as any), field.label)}</label>
+            <label>{t(`eventInfo.${field.label}` as string, field.label)}</label>
             <span>{value}</span>
           </li>
         )

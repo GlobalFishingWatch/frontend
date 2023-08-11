@@ -4,7 +4,10 @@ import { EventTypes, RegionType, ResourceStatus } from '@globalfishingwatch/api-
 import { ApiEvent } from '@globalfishingwatch/api-types'
 import { selectEventsResources, selectVesselEventsFilteredByTimerange } from '../vessel.selectors'
 
-export type ActivityEventSubType = 'entry' | 'exit'
+export enum ActivityEventSubType {
+  Entry = 'port_entry',
+  Exit = 'port_exit',
+}
 export interface ActivityEvent extends ApiEvent {
   voyage: number
   subType?: ActivityEventSubType
@@ -67,11 +70,11 @@ export const selectEventsGroupedByVoyages = createSelector(
       if (event.type === EventTypes.Port) {
         const voyage = eventsList[index + 1]?.voyage
         if (!voyage) {
-          return { ...event, subType: 'exit' as ActivityEventSubType }
+          return { ...event, subType: ActivityEventSubType.Exit }
         }
         return [
-          { ...event, subType: 'exit' as ActivityEventSubType },
-          { ...event, voyage, subType: 'entry' as ActivityEventSubType },
+          { ...event, subType: ActivityEventSubType.Exit },
+          { ...event, voyage, subType: ActivityEventSubType.Entry },
         ]
       }
       return event

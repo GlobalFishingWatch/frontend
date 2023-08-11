@@ -1,7 +1,10 @@
 import React, { Fragment } from 'react'
 import { DateTime } from 'luxon'
 import I18nDate from 'features/i18n/i18nDate'
-import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import {
+  ActivityEvent,
+  ActivityEventSubType,
+} from 'features/vessel/activity/vessels-activity.selectors'
 import { useActivityEventTranslations } from 'features/vessel/activity/event/event.hook'
 import styles from './Event.module.css'
 
@@ -13,7 +16,7 @@ const ActivityDate: React.FC<ActivityDateProps> = ({ event }): React.ReactElemen
   const { getEventDurationDescription } = useActivityEventTranslations()
 
   const durationDescription = event.subType ? '' : getEventDurationDescription(event)
-  const date = event.subType === 'exit' ? event.end : event.start
+  const date = event.subType === ActivityEventSubType.Exit ? event.end : event.start
 
   return (
     <Fragment>

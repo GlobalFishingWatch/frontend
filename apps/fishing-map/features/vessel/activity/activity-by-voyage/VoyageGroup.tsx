@@ -8,7 +8,10 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { selectVesselInfoDataId } from 'features/vessel/vessel.slice'
 import { getVoyageTimeRange, parseEventsToCSV } from 'features/vessel/vessel.utils'
-import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import {
+  ActivityEvent,
+  ActivityEventSubType,
+} from 'features/vessel/activity/vessels-activity.selectors'
 import { selectOngoingVoyageId } from 'features/vessel/vessel.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import styles from '../ActivityGroupedList.module.css'
@@ -61,7 +64,9 @@ const VoyageGroup: React.FC<EventProps> = ({
         )
       if (voyageEnd) {
         const to =
-          latestVoyageEvent.subType === 'entry' ? latestVoyageEvent.start : latestVoyageEvent.end
+          latestVoyageEvent.subType === ActivityEventSubType.Entry
+            ? latestVoyageEvent.start
+            : latestVoyageEvent.end
         parts.push(
           `${
             voyageStart ? t('common.and', 'and') : t('event.beforeEntering', 'before entering')

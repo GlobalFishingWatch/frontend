@@ -60,7 +60,7 @@ export function useActivityEventTranslations() {
           const portLabel = name
             ? [name, ...(flag ? [t(`flags:${flag}`, flag.toLocaleUpperCase())] : [])].join(', ')
             : ''
-          return t(`event.port_${portType}ActionIn`, `${portType} {{port}}`, {
+          return t(`event.${portType}ActionIn`, `${portType} {{port}}`, {
             port: formatInfoField(portLabel, 'port'),
           })
         case EventTypes.Loitering:
