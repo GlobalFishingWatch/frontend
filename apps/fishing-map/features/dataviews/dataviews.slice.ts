@@ -243,19 +243,20 @@ export const selectAllDataviewInstancesResolved = createSelector(
     selectAllDatasets,
     selectIsVesselLocation,
     selectVesselInfoData,
+    selectVesselId,
   ],
   (
     dataviewInstances,
     dataviews,
     datasets,
     isVesselLocation,
-    vessel
+    vessel,
+    urlVesselId
   ): UrlDataviewInstance[] | undefined => {
     if (isVesselLocation) {
       if (!vessel || !vessel.identities) {
         return []
       }
-      const vesselId = vessel.id
       const vesselDatasets = {
         info: vessel.info,
         track: vessel.track,
@@ -265,9 +266,9 @@ export const selectAllDataviewInstancesResolved = createSelector(
         relatedVesselIds: getRelatedIdentityVesselIds(vessel),
       }
 
-      const dataviewInstance = getVesselDataviewInstance({ id: vesselId }, vesselDatasets)
+      const dataviewInstance = getVesselDataviewInstance({ id: urlVesselId }, vesselDatasets)
       const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
-        vesselId,
+        urlVesselId,
         vesselDatasets
       )
       return resolveDataviews([{ ...dataviewInstance, datasetsConfig }], dataviews, datasets)
