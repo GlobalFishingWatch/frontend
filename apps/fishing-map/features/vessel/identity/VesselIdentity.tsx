@@ -161,7 +161,7 @@ const VesselIdentity = () => {
         </div>
         {vesselIdentity && (
           <div className={styles.fields}>
-            {IDENTITY_FIELD_GROUPS.map((fieldGroup, index) => (
+            {IDENTITY_FIELD_GROUPS[identitySource].map((fieldGroup, index) => (
               <div key={index} className={styles.fieldGroup}>
                 {/* TODO: make fields more dynamic to account for VMS */}
                 {fieldGroup.map((field) => {

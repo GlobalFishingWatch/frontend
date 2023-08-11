@@ -17,7 +17,8 @@ export type VesselRenderField<Key = string> = {
   label: string
   terminologyKey?: string
 }
-export const IDENTITY_FIELD_GROUPS: VesselRenderField[][] = [
+
+const COMMON_FIELD_GROUPS = [
   [
     { key: 'shipname', label: 'shipname' },
     { key: 'flag', label: 'flag' },
@@ -31,11 +32,18 @@ export const IDENTITY_FIELD_GROUPS: VesselRenderField[][] = [
     { key: 'imo', label: 'imo' },
     { key: 'callsign', label: 'callsign' },
   ],
-  [
-    { key: 'lengthM', label: 'length' },
-    { key: 'tonnageGt', label: 'grossTonnage' },
-  ],
 ]
+
+export const IDENTITY_FIELD_GROUPS: Record<VesselIdentitySourceEnum, VesselRenderField[][]> = {
+  [VesselIdentitySourceEnum.SelfReported]: COMMON_FIELD_GROUPS,
+  [VesselIdentitySourceEnum.Registry]: [
+    ...COMMON_FIELD_GROUPS,
+    [
+      { key: 'lengthM', label: 'length' },
+      { key: 'tonnageGt', label: 'grossTonnage' },
+    ],
+  ],
+}
 
 type VesselRegistryFieldGroup = {
   key: keyof Pick<IdentityVesselData, 'registryOwners' | 'registryAuthorizations'>
