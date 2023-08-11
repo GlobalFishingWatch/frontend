@@ -4,6 +4,8 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
 import {
+  VesselLastIdentity,
+  cleanVesselSearchResults,
   selectSearchResults,
   selectSearchStatus,
   selectSelectedVessels,
@@ -26,6 +28,11 @@ import {
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { VesselIdentitySourceEnum } from 'features/search/search.config'
 import I18nNumber from 'features/i18n/i18nNumber'
+import VesselLink from 'features/vessel/VesselLink'
+import { selectCurrentWorkspaceId } from 'features/workspace/workspace.selectors'
+import useAddVesselDataviewInstance from 'features/vessel/vessel.hooks'
+import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 
 const PINNED_COLUMN = 'shipname'
 const TOOLTIP_LABEL_CHARACTERS = 25
@@ -36,6 +43,24 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
   const searchResults = useSelector(selectSearchResults)
   const vesselsSelected = useSelector(selectSelectedVessels)
   const tableContainerRef = useRef<HTMLDivElement>(null)
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
+  const addVesselDataviewInstance = useAddVesselDataviewInstance()
+  const isSearchLocation = useSelector(selectIsStandaloneSearchLocation)
+  const { setTimerange } = useTimerangeConnect()
+
+  const onVesselClick = useCallback(
+    (vessel: VesselLastIdentity) => {
+      if (workspaceId) {
+        addVesselDataviewInstance(vessel)
+      }
+      dispatch(cleanVesselSearchResults())
+      if (isSearchLocation) {
+        setTimerange({ start: vessel.transmissionDateFrom, end: vessel.transmissionDateTo })
+      }
+    },
+    [addVesselDataviewInstance, dispatch, isSearchLocation, setTimerange, workspaceId]
+  )
+
   const columns = useMemo((): MRT_ColumnDef<IdentityVesselData>[] => {
     return [
       {
@@ -43,18 +68,30 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
         accessorKey: PINNED_COLUMN as any,
         accessorFn: (vessel) => {
           const [shipname, ...names] = getVesselIdentityProperties(vessel, 'shipname')
+          const vesselData = getSelfReportedVesselIdentityResolved(vessel)
+          const { id, transmissionDateFrom, transmissionDateTo, dataset } = vesselData
           const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER
           const label = names?.length
             ? `${name} (${t('common.previously', 'Previously')}: ${names
                 .map((name) => formatInfoField(name, 'name'))
                 .join(', ')})`
             : name
-          return label?.length > TOOLTIP_LABEL_CHARACTERS ? (
-            <Tooltip content={label}>
-              <span>{label}</span>
-            </Tooltip>
-          ) : (
-            label
+          const vesselQuery = { start: transmissionDateFrom, end: transmissionDateTo }
+          return (
+            <VesselLink
+              vesselId={id}
+              datasetId={dataset?.id}
+              onClick={() => onVesselClick(vesselData)}
+              query={vesselQuery}
+            >
+              {label?.length > TOOLTIP_LABEL_CHARACTERS ? (
+                <Tooltip content={label}>
+                  <span>{label}</span>
+                </Tooltip>
+              ) : (
+                label
+              )}
+            </VesselLink>
           )
         },
         header: t('common.name', 'Name'),
@@ -315,6 +352,10 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
           whiteSpace: 'nowrap',
           '.Mui-TableHeadCell-Content-Wrapper': { minWidth: '2rem' },
           padding: '0.5rem 1.1rem',
+          ' a': {
+            cursor: 'pointer',
+            textDecoration: 'underline',
+          },
         },
       })}
       muiBottomToolbarProps={{ sx: { overflow: 'visible' } }}
