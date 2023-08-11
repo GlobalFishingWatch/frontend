@@ -27,12 +27,20 @@ const FIELDS_BY_TYPE: Record<EventType, VesselRenderField[]> = {
   [EventTypes.Fishing]: [
     ...BASE_FIELDS,
     ...DISTANCES_FIELDS,
-    { key: 'fishing.averageSpeedKnots', label: 'speed' },
-    { key: 'fishing.vesselAuthorizationStatus', label: 'authorization' },
+    { key: 'fishing.averageSpeedKnots', label: 'averageSpeedKnots' },
   ],
   [EventTypes.Port]: BASE_FIELDS,
-  [EventTypes.Encounter]: BASE_FIELDS,
-  [EventTypes.Loitering]: BASE_FIELDS,
+  [EventTypes.Encounter]: [
+    ...BASE_FIELDS,
+    { key: 'encounter.medianSpeedKnots', label: 'medianSpeedKnots' },
+    { key: 'encounter.vessel.ssvid', label: 'ssvid' },
+    { key: 'encounter.vessel.type', label: 'type' },
+  ],
+  [EventTypes.Loitering]: [
+    ...BASE_FIELDS,
+    { key: 'loitering.totalDistanceKm', label: 'totalDistanceKm' },
+    { key: 'loitering.averageSpeedKnots', label: 'averageSpeedKnots' },
+  ],
   [EventTypes.Gap]: BASE_FIELDS,
 }
 
@@ -47,11 +55,21 @@ const ActivityContent = ({ event }: ActivityContentProps) => {
   }
 
   const getEventFieldValue = (event: ActivityEvent, field: VesselRenderField) => {
-    const value = get(event, field.key)
+    const value = get(event, field.key, '')
+    if (!value) {
+      return value
+    }
     if (field.key === 'start' || field.key === 'end') {
       return formatI18nDate(value, { format: DateTime.DATETIME_FULL })
     } else if (field.key === 'duration') {
       return getEventDurationDescription(event)
+    } else if (
+      field.key.toLowerCase().includes('distance') ||
+      field.key.toLowerCase().includes('speed')
+    ) {
+      return parseFloat(value).toFixed(2)
+    } else if (field.key.includes('vessel.type')) {
+      return t(`vessel.vesselTypes.${value}` as any, value)
     }
     return value
   }
