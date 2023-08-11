@@ -44,7 +44,6 @@ function TrackFootprint({
 }: TrackFootprintProps) {
   const [trackData, setTrackData] = useState<FeatureCollection<Geometry, GeoJsonProperties>>()
   const [error, setError] = useState(false)
-  const [isSmallFootprint, setIsSmallFootprint] = useState(false)
   const fullCanvasRef = useRef<HTMLCanvasElement | null>(null)
   const highlightCanvasRef = useRef<HTMLCanvasElement | null>(null)
   const onScreen = useOnScreen(fullCanvasRef)
@@ -82,7 +81,6 @@ function TrackFootprint({
       )
       const geoJson = segmentsToGeoJSON(segments.filter((s) => s.length > 1))
       setTrackData(geoJson)
-      if (area(bboxPolygon(bbox(geoJson))) < MAX_SMALL_AREA_M) setIsSmallFootprint(true)
       if (onDataLoad) onDataLoad(geoJson)
     },
     [onDataLoad, trackDatasetId]
@@ -96,6 +94,7 @@ function TrackFootprint({
 
   useEffect(() => {
     if (fullContext && trackData) {
+      const isSmallFootprint = area(bboxPolygon(bbox(trackData))) < MAX_SMALL_AREA_M
       const fullPath = geoPath(PROJECTION, fullContext)
       fullContext.lineCap = 'round'
       fullContext.lineJoin = 'round'
@@ -107,7 +106,7 @@ function TrackFootprint({
         fullContext.stroke()
       })
     }
-  }, [fullContext, isSmallFootprint, trackData, vesselIds])
+  }, [fullContext, trackData, vesselIds])
 
   useEffect(() => {
     highlightContext?.clearRect(0, 0, FOOTPRINT_WIDTH, FOOTPRINT_HEIGHT)
