@@ -166,21 +166,18 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
       {
         id: 'transmissionCount',
         accessorFn: (vessel) => {
-          const vesselSelfReportedIdentities = getVesselIdentities(vessel, {
-            identitySource: VesselIdentitySourceEnum.SelfReported,
-          })
-          const messagesCounter = vesselSelfReportedIdentities.reduce((acc, identity) => {
-            return identity.messagesCounter ? acc + identity.messagesCounter : acc
-          }, 0)
-          return <I18nNumber number={messagesCounter} />
+          const { messagesCounter } = getSelfReportedVesselIdentityResolved(vessel)
+          if (messagesCounter) {
+            return <I18nNumber number={messagesCounter} />
+          }
         },
         header: t('vessel.transmission_other', 'Transmissions'),
       },
       {
         id: 'transmissionDates',
         accessorFn: (vessel) => {
-          const transmissionDateFrom = getVesselProperty(vessel, 'transmissionDateFrom')
-          const transmissionDateTo = getVesselProperty(vessel, 'transmissionDateTo')
+          const { transmissionDateFrom, transmissionDateTo } =
+            getSelfReportedVesselIdentityResolved(vessel)
           return (
             <div>
               <span style={{ font: 'var(--font-XS)' }}>
