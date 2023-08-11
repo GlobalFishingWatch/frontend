@@ -361,12 +361,17 @@
   },
   "eventInfo": {
     "authorization": "authorization",
+    "averageSpeedKnots": "avg speed (knots)",
     "distanceFromPortKm": "distanceFromPortKm",
     "distanceFromShoreKm": "distanceFromShoreKm",
     "duration": "durasi",
     "end": "akhir",
+    "medianSpeedKnots": "median speed (knots)",
     "speed": "speed",
-    "start": "mulai"
+    "ssvid": "ssvid",
+    "start": "mulai",
+    "totalDistanceKm": "total distance (km)",
+    "type": "shiptype"
   },
   "feedback": {
     "descriptionPlaceholder": "Harap sespesifik mungkin.",
@@ -487,13 +492,13 @@
     "descriptionSmallScreens": "An advanced search with flters is available on bigger screens.",
     "downloadSelected": "Download CSV of selected vessels",
     "downloadTable": "Download CSV of vessels on table",
+    "learnMore": "Learn more about our identity work <a href='https://globalfishingwatch.org/research-project-vessel-identity/' target='_blank'>here</a>.",
     "mainQueryLabel": "Nama, IMO atau MMSI",
     "minCharacters_one": "Please type at least {{count}} character",
     "minCharacters_other": "Harap masukkan setidaknya {{count}} karakter",
     "missingSources": "tidak akan muncul apabila Anda belum <1>masuk</1>",
     "noResults": "Tidak dapat menemukan kapal yang Anda cari? Coba gunakan MMSI, IMO atau Callsign",
     "notAllowed": "Dataset yang tersedia tidak memiliki izin untuk pencarian kapal",
-    "learnMore": "Learn more about our identity work <a href='https://globalfishingwatch.org/research-project-vessel-identity/' target='_blank'>here</a>.",
     "placeholder": "Ketik untuk mencari kapal",
     "removeVessel": "Hapus kapal",
     "result_one": "result",

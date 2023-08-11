@@ -361,12 +361,17 @@
   },
   "eventInfo": {
     "authorization": "crwdns49319:0crwdne49319:0",
+    "averageSpeedKnots": "crwdns57659:0crwdne57659:0",
     "distanceFromPortKm": "crwdns49315:0crwdne49315:0",
     "distanceFromShoreKm": "crwdns49313:0crwdne49313:0",
     "duration": "crwdns49311:0crwdne49311:0",
     "end": "crwdns49309:0crwdne49309:0",
+    "medianSpeedKnots": "crwdns57661:0crwdne57661:0",
     "speed": "crwdns49317:0crwdne49317:0",
-    "start": "crwdns49307:0crwdne49307:0"
+    "ssvid": "crwdns57663:0crwdne57663:0",
+    "start": "crwdns49307:0crwdne49307:0",
+    "totalDistanceKm": "crwdns57665:0crwdne57665:0",
+    "type": "crwdns57667:0crwdne57667:0"
   },
   "feedback": {
     "descriptionPlaceholder": "crwdns49325:0crwdne49325:0",
@@ -487,13 +492,13 @@
     "descriptionSmallScreens": "crwdns49523:0crwdne49523:0",
     "downloadSelected": "crwdns49525:0crwdne49525:0",
     "downloadTable": "crwdns49527:0crwdne49527:0",
+    "learnMore": "crwdns49541:0crwdne49541:0",
     "mainQueryLabel": "crwdns49531:0crwdne49531:0",
     "minCharacters_one": "crwdns57553:0{{count}}crwdne57553:0",
     "minCharacters_other": "crwdns57555:0{{count}}crwdne57555:0",
     "missingSources": "crwdns49535:0crwdne49535:0",
     "noResults": "crwdns49537:0crwdne49537:0",
     "notAllowed": "crwdns49539:0crwdne49539:0",
-    "learnMore": "crwdns49541:0crwdne49541:0",
     "placeholder": "crwdns49543:0crwdne49543:0",
     "removeVessel": "crwdns49551:0crwdne49551:0",
     "result_one": "crwdns49547:0crwdne49547:0",
