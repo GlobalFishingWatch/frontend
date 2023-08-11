@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import cx from 'classnames'
 import { geoEqualEarth, geoPath } from 'd3'
 import { FeatureCollection, GeoJsonProperties, Geometry } from 'geojson'
@@ -11,7 +11,7 @@ import { GFWAPI, THINNING_LEVELS } from '@globalfishingwatch/api-client'
 import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 import { segmentsToGeoJSON, trackValueArrayToSegments } from '@globalfishingwatch/data-transforms'
 import { Field } from '@globalfishingwatch/api-types'
-import { useOnScreen } from 'hooks/screen.hooks'
+import { useOnScreen, useScreenDPI } from 'hooks/screen.hooks'
 import styles from './TrackFootprint.module.css'
 
 type TrackFootprintProps = {
@@ -24,10 +24,6 @@ type TrackFootprintProps = {
 const FOOTPRINT_WIDTH = 300
 const FOOTPRINT_HEIGHT = 150
 const MAX_SMALL_AREA_M = 2000000000000
-
-const PROJECTION = geoEqualEarth()
-  .scale(53.5)
-  .translate([FOOTPRINT_WIDTH / 2, FOOTPRINT_HEIGHT / 2])
 
 const TRACK_FOOTPRINT_QUERY = {
   ...THINNING_LEVELS.Footprint,
@@ -47,8 +43,21 @@ function TrackFootprint({
   const fullCanvasRef = useRef<HTMLCanvasElement | null>(null)
   const highlightCanvasRef = useRef<HTMLCanvasElement | null>(null)
   const onScreen = useOnScreen(fullCanvasRef)
+  const screenDPI = useScreenDPI()
+  const isHighDensityDisplay = screenDPI && screenDPI >= 96
+  const densityMultiplier = isHighDensityDisplay ? 2 : 1
+  const footprintWidth = FOOTPRINT_WIDTH * densityMultiplier
+  const footprintHeight = FOOTPRINT_HEIGHT * densityMultiplier
   const fullContext = fullCanvasRef.current?.getContext('2d')
   const highlightContext = highlightCanvasRef.current?.getContext('2d')
+
+  const projection = useMemo(
+    () =>
+      geoEqualEarth()
+        .scale(isHighDensityDisplay ? 107 : 53.5)
+        .translate([footprintWidth / 2, footprintHeight / 2]),
+    [footprintHeight, footprintWidth, isHighDensityDisplay]
+  )
 
   const fetchData = useCallback(
     async (vesselIds: string[]) => {
@@ -95,10 +104,10 @@ function TrackFootprint({
   useEffect(() => {
     if (fullContext && trackData) {
       const isSmallFootprint = area(bboxPolygon(bbox(trackData))) < MAX_SMALL_AREA_M
-      const fullPath = geoPath(PROJECTION, fullContext)
+      const fullPath = geoPath(projection, fullContext)
       fullContext.lineCap = 'round'
       fullContext.lineJoin = 'round'
-      fullContext.lineWidth = isSmallFootprint ? 12 : 2
+      fullContext.lineWidth = isSmallFootprint ? 12 * densityMultiplier : 2 * densityMultiplier
       fullContext.strokeStyle = '#42639C'
       trackData.features.forEach((feature) => {
         fullContext.beginPath()
@@ -106,11 +115,11 @@ function TrackFootprint({
         fullContext.stroke()
       })
     }
-  }, [fullContext, trackData, vesselIds])
+  }, [densityMultiplier, fullContext, isHighDensityDisplay, projection, trackData, vesselIds])
 
   useEffect(() => {
-    highlightContext?.clearRect(0, 0, FOOTPRINT_WIDTH, FOOTPRINT_HEIGHT)
-    const highlightPath = geoPath(PROJECTION, highlightContext)
+    highlightContext?.clearRect(0, 0, footprintWidth, footprintHeight)
+    const highlightPath = geoPath(projection, highlightContext)
     if (trackData && highlightedYear && highlightContext) {
       const highlightedYearDateTime = DateTime.fromObject({ year: highlightedYear })
       const highlightStart = highlightedYearDateTime.toMillis()
@@ -139,7 +148,7 @@ function TrackFootprint({
       }
       highlightContext.lineCap = 'round'
       highlightContext.lineJoin = 'round'
-      highlightContext.lineWidth = 4
+      highlightContext.lineWidth = 4 * densityMultiplier
       highlightContext.strokeStyle = '#42639C'
       highlightedTrack.features.forEach((feature) => {
         highlightContext.beginPath()
@@ -147,17 +156,30 @@ function TrackFootprint({
         highlightContext.stroke()
       })
     }
-  }, [highlightContext, highlightedYear, trackData])
+  }, [
+    densityMultiplier,
+    footprintHeight,
+    footprintWidth,
+    highlightContext,
+    highlightedYear,
+    projection,
+    trackData,
+  ])
 
   return (
     <div className={styles.map}>
       <canvas
-        className={cx({ [styles.faint]: highlightedYear })}
-        width={FOOTPRINT_WIDTH}
-        height={FOOTPRINT_HEIGHT}
+        className={cx(styles.canvas, { [styles.faint]: highlightedYear })}
+        width={footprintWidth}
+        height={footprintHeight}
         ref={fullCanvasRef}
       />
-      <canvas width={FOOTPRINT_WIDTH} height={FOOTPRINT_HEIGHT} ref={highlightCanvasRef} />
+      <canvas
+        className={styles.canvas}
+        width={footprintWidth}
+        height={footprintHeight}
+        ref={highlightCanvasRef}
+      />
       {!trackData && !error && vesselIds?.length && (
         <Spinner size="small" className={styles.spinner} />
       )}
