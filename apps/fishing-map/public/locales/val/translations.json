@@ -505,6 +505,7 @@
     "result_other": "crwdns49549:0crwdne49549:0",
     "seeing": "crwdns49529:0crwdne49529:0",
     "seeVessel": "crwdns49555:0crwdne49555:0",
+    "seeVesselsOnMap": "crwdns57705:0crwdne57705:0",
     "seeVesselsOnMap_one": "crwdns57557:0{{count}}crwdne57557:0",
     "seeVesselsOnMap_other": "crwdns57559:0{{count}}crwdne57559:0",
     "selectVessel": "crwdns49553:0crwdne49553:0",
