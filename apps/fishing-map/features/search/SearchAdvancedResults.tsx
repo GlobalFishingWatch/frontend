@@ -20,7 +20,7 @@ import { FIRST_YEAR_OF_DATA } from 'data/config'
 import { Locale } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
 import {
-  getSelfReportedVesselIdentityResolved,
+  getSearchIdentityResolved,
   getVesselIdentityProperties,
   getVesselProperty,
 } from 'features/vessel/vessel.utils'
@@ -67,7 +67,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
         accessorKey: PINNED_COLUMN as any,
         accessorFn: (vessel) => {
           const [shipname, ...names] = getVesselIdentityProperties(vessel, 'shipname')
-          const vesselData = getSelfReportedVesselIdentityResolved(vessel)
+          const vesselData = getSearchIdentityResolved(vessel)
           const { id, transmissionDateFrom, transmissionDateTo, dataset } = vesselData
           const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER
           const label = names?.length
@@ -165,7 +165,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
       {
         id: 'transmissionCount',
         accessorFn: (vessel) => {
-          const { messagesCounter } = getSelfReportedVesselIdentityResolved(vessel)
+          const { messagesCounter } = getSearchIdentityResolved(vessel)
           if (messagesCounter) {
             return <I18nNumber number={messagesCounter} />
           }
@@ -175,8 +175,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
       {
         id: 'transmissionDates',
         accessorFn: (vessel) => {
-          const { transmissionDateFrom, transmissionDateTo } =
-            getSelfReportedVesselIdentityResolved(vessel)
+          const { transmissionDateFrom, transmissionDateTo } = getSearchIdentityResolved(vessel)
           return (
             <div>
               <span style={{ font: 'var(--font-XS)' }}>
@@ -210,9 +209,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
 
   const onSelectHandler = useCallback(
     (vessels: IdentityVesselData[]) => {
-      const vessesSelected = vessels
-        .map(getSelfReportedVesselIdentityResolved)
-        .flatMap((v) => v.id || [])
+      const vessesSelected = vessels.map(getSearchIdentityResolved).flatMap((v) => v.id || [])
       dispatch(setSelectedVessels(vessesSelected))
     },
     [dispatch]

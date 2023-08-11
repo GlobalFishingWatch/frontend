@@ -51,7 +51,7 @@ import { EMPTY_FILTERS, RESULTS_PER_PAGE } from 'features/search/search.config'
 import { VesselSearchState } from 'types'
 import {
   getRelatedIdentityVesselIds,
-  getSelfReportedVesselIdentityResolved,
+  getSearchIdentityResolved,
 } from 'features/vessel/vessel.utils'
 import {
   fetchVesselSearchThunk,
@@ -357,7 +357,7 @@ function Search() {
           </CSVLink>
         )}
         <VesselGroupAddButton
-          vessels={vesselsSelected.map(getSelfReportedVesselIdentityResolved)}
+          vessels={vesselsSelected.map(getSearchIdentityResolved)}
           onAddToVesselGroup={onAddToVesselGroup}
           showCount={false}
           buttonClassName={cx(styles.footerAction, styles.vesselGroupButton)}

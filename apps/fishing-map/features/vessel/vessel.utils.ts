@@ -44,6 +44,16 @@ export const getVesselIdentity = (
 
 type VesselIdentityProperty = keyof SelfReportedInfo | keyof VesselRegistryInfo
 
+function getLatestIdentityPrioritised(vessel: IdentityVessel | IdentityVesselData) {
+  const latestRegistryIdentity = getVesselIdentity(vessel, {
+    identitySource: VesselIdentitySourceEnum.Registry,
+  })
+  const latestSelfReportesIdentity = getVesselIdentity(vessel, {
+    identitySource: VesselIdentitySourceEnum.SelfReported,
+  })
+  return latestRegistryIdentity || latestSelfReportesIdentity
+}
+
 export function getVesselProperty<P = string>(
   vessel: IdentityVessel | IdentityVesselData | null,
   property: VesselIdentityProperty,
@@ -51,15 +61,7 @@ export function getVesselProperty<P = string>(
 ): P {
   if (!vessel) return '' as P
   if (!identitySource) {
-    const latestRegistryIdentity = getVesselIdentity(vessel, {
-      identitySource: VesselIdentitySourceEnum.Registry,
-      identityIndex,
-    })
-    const latestSelfReportesIdentity = getVesselIdentity(vessel, {
-      identitySource: VesselIdentitySourceEnum.SelfReported,
-      identityIndex,
-    })
-    return get(latestRegistryIdentity || latestSelfReportesIdentity, property) as P
+    return get(getLatestIdentityPrioritised(vessel), property) as P
   }
   const identities = getVesselIdentities(vessel, { identitySource })
   return get(identities[identityIndex], property) as P
@@ -85,11 +87,11 @@ export function getRelatedIdentityVesselIds(vessel: IdentityVessel | IdentityVes
     .flatMap((i) => i.id || [])
 }
 
-export function getSelfReportedVesselIdentityResolved(vessel: IdentityVessel | IdentityVesselData) {
+export function getSearchIdentityResolved(vessel: IdentityVessel | IdentityVesselData) {
   const vesselSelfReportedIdentities = getVesselIdentities(vessel, {
     identitySource: VesselIdentitySourceEnum.SelfReported,
   })
-  const vesselData = vesselSelfReportedIdentities[0]
+  const vesselData = getLatestIdentityPrioritised(vessel)
   // Get first transmission date from all identity sources
   const transmissionDateFrom = vesselSelfReportedIdentities
     ?.flatMap((r) => r.transmissionDateFrom || [])
@@ -105,6 +107,7 @@ export function getSelfReportedVesselIdentityResolved(vessel: IdentityVessel | I
 
   return {
     ...vesselData,
+    id: vesselSelfReportedIdentities?.[0].id,
     dataset: vessel.dataset,
     transmissionDateFrom,
     transmissionDateTo,

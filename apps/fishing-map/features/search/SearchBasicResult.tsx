@@ -28,7 +28,7 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
 import {
   getRelatedIdentityVesselIds,
-  getSelfReportedVesselIdentityResolved,
+  getSearchIdentityResolved,
   getVesselIdentityProperties,
 } from 'features/vessel/vessel.utils'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
@@ -69,7 +69,7 @@ function SearchBasicResult({
   const { setTimerange } = useTimerangeConnect()
 
   const { dataset, track } = vessel
-  const vesselData = getSelfReportedVesselIdentityResolved(vessel)
+  const vesselData = getSearchIdentityResolved(vessel)
   const {
     id,
     flag,
