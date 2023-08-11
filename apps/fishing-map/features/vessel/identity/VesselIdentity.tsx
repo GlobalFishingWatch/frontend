@@ -220,9 +220,10 @@ const VesselIdentity = () => {
                       let Component = <VesselIdentityField value="" />
                       if (registryOverlapsTimeRange) {
                         if (fieldType === 'owner') {
-                          const value = `${
-                            (registry as VesselRegistryOwner).name
-                          } (${formatInfoField((registry as VesselRegistryOwner).flag, 'flag')})`
+                          const value = `${formatInfoField(
+                            (registry as VesselRegistryOwner).name,
+                            'owner'
+                          )} (${formatInfoField((registry as VesselRegistryOwner).flag, 'flag')})`
                           Component = <VesselIdentityField value={value} />
                         } else {
                           const sourceTranslations = registry.sourceCode
