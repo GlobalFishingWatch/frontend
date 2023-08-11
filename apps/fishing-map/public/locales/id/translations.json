@@ -369,6 +369,8 @@
     "end": "akhir",
     "flag": "flag",
     "medianSpeedKnots": "median speed (knots)",
+    "port_entry": "Port entry",
+    "port_exit": "Port exit",
     "speed": "speed",
     "ssvid": "ssvid",
     "start": "mulai",
