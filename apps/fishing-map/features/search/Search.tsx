@@ -370,7 +370,7 @@ function Search() {
         >
           {t('search.seeVesselsOnMap', {
             defaultValue: 'See vessels on map',
-            count: vesselsSelected.length,
+            ...(vesselsSelected.length !== 0 && { count: vesselsSelected.length }),
           })}
         </Button>
       </div>
