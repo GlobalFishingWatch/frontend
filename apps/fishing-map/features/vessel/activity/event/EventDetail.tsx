@@ -69,7 +69,7 @@ const ActivityContent = ({ event }: ActivityContentProps) => {
     ) {
       return parseFloat(value).toFixed(2)
     } else if (field.key.includes('vessel.type')) {
-      return t(`vessel.vesselTypes.${value}` as any, value)
+      return `${t(`vessel.vesselTypes.${value}` as any, value)}`
     }
     return value
   }
