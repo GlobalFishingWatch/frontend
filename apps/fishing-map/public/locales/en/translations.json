@@ -361,12 +361,17 @@
   },
   "eventInfo": {
     "authorization": "authorization",
+    "averageSpeedKnots": "avg speed (knots)",
     "distanceFromPortKm": "distanceFromPortKm",
     "distanceFromShoreKm": "distanceFromShoreKm",
     "duration": "Duration",
     "end": "End",
+    "medianSpeedKnots": "median speed (knots)",
     "speed": "speed",
-    "start": "Start"
+    "ssvid": "ssvid",
+    "start": "Start",
+    "totalDistanceKm": "total distance (km)",
+    "type": "shiptype"
   },
   "feedback": {
     "descriptionPlaceholder": "Please be as specific as possible.",
@@ -487,13 +492,13 @@
     "descriptionSmallScreens": "An advanced search with flters is available on bigger screens.",
     "downloadSelected": "Download CSV of selected vessels",
     "downloadTable": "Download CSV of vessels on table",
+    "learnMore": "Learn more about our identity work <a href='https://globalfishingwatch.org/research-project-vessel-identity/' target='_blank'>here</a>.",
     "mainQueryLabel": "Name, IMO, MMSI or call sign",
     "minCharacters_one": "Please type at least {{count}} character",
     "minCharacters_other": "Please type at least {{count}} characters",
     "missingSources": "won't appear unless you <1>log in</1>",
     "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or call sign.",
     "notAllowed": "You don't have permission to search in these datasets.",
-    "learnMore": "Learn more about our identity work <a href='https://globalfishingwatch.org/research-project-vessel-identity/' target='_blank'>here</a>.",
     "placeholder": "Type to search for vessels",
     "removeVessel": "Remove vessel",
     "result_one": "result",
