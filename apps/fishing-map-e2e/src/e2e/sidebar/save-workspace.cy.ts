@@ -6,7 +6,7 @@ import {
 } from '../../support/app.po'
 import { WORKSPACE_NAME } from '../../constants/workspace'
 
-describe('Create a new workspace', () => {
+describe('Save a workspace', () => {
   before(() => {
     cy.login(Cypress.env('apiAuthUser'), Cypress.env('apiAuthPass'))
   })
@@ -17,7 +17,7 @@ describe('Create a new workspace', () => {
     waitForMapLoadTiles()
   })
 
-  it('Should save a workspace', () => {
+  it('Should create a workspace', () => {
     cy.getBySel('save-workspace-button').click()
     cy.getBySel('create-workspace-inpunt').clear()
     cy.getBySel('create-workspace-inpunt').type(WORKSPACE_NAME)
