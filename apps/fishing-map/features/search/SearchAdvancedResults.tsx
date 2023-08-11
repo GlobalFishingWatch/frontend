@@ -21,7 +21,6 @@ import { Locale } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
 import {
   getSelfReportedVesselIdentityResolved,
-  getVesselIdentities,
   getVesselIdentityProperties,
   getVesselProperty,
 } from 'features/vessel/vessel.utils'
@@ -195,7 +194,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
         header: t('vessel.transmissionDates', 'Transmission Dates'),
       },
     ]
-  }, [i18n.language, t])
+  }, [i18n.language, onVesselClick, t])
 
   const fetchMoreOnBottomReached = useCallback(() => {
     if (tableContainerRef.current) {

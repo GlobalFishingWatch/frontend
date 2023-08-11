@@ -50,6 +50,17 @@ export function getVesselProperty<P = string>(
   { identityIndex = 0, identitySource } = {} as GetVesselIdentityParams
 ): P {
   if (!vessel) return '' as P
+  if (!identitySource) {
+    const latestRegistryIdentity = getVesselIdentity(vessel, {
+      identitySource: VesselIdentitySourceEnum.Registry,
+      identityIndex,
+    })
+    const latestSelfReportesIdentity = getVesselIdentity(vessel, {
+      identitySource: VesselIdentitySourceEnum.SelfReported,
+      identityIndex,
+    })
+    return get(latestRegistryIdentity || latestSelfReportesIdentity, property) as P
+  }
   const identities = getVesselIdentities(vessel, { identitySource })
   return get(identities[identityIndex], property) as P
 }
