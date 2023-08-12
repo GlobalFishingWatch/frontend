@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import {
+  Dataset,
   DatasetSubCategory,
   DatasetTypes,
   DataviewInstance,
@@ -37,6 +38,8 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
+import VesselLink from 'features/vessel/VesselLink'
+import { VesselDataviewInstanceParams } from 'features/vessel/vessel.hooks'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
   TooltipEventFeature,
@@ -247,6 +250,11 @@ function VesselsTable({
                 : vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
 
               const vesselInWorkspace = getVesselInWorkspace(vesselsInWorkspace, vessel.id)
+              const vesselLink: VesselDataviewInstanceParams = {
+                id: vessel.id,
+                dataset: vessel.infoDataset as Dataset,
+                track: vessel.trackDataset?.id,
+              }
 
               const pinTrackDisabled = !interactionAllowed || !hasDatasets
               const detectionsTimestamps = getDetectionsTimestamps(vessel)
@@ -273,7 +281,13 @@ function VesselsTable({
                     </td>
                   )}
                   <td colSpan={hasPinColumn && pinTrackDisabled ? 2 : 1} data-test="vessel-name">
-                    {vesselName}
+                    {vesselName !== EMPTY_FIELD_PLACEHOLDER ? (
+                      <VesselLink className={styles.link} vessel={vesselLink}>
+                        {vesselName}
+                      </VesselLink>
+                    ) : (
+                      vesselName
+                    )}
                   </td>
                   <td className={styles.columnSpace}>
                     <Tooltip content={t(`flags:${vesselFlag}` as any)}>
