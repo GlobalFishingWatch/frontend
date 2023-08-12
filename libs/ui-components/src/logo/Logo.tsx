@@ -5,7 +5,7 @@ import styles from './Logo.module.css'
 export enum SubBrands {
   MarineManager = 'Marine Manager',
   CarrierVessels = 'Carrier Vessels',
-  PortLabeler = 'Port Labeler'
+  PortLabeler = 'Port Labeler',
 }
 
 export type LogoTypes = 'default' | 'invert'
@@ -16,7 +16,7 @@ interface LogoProps {
   className?: string
 }
 
-export function Logo(props: LogoProps) {
+export const Logo = (props: LogoProps) => {
   const { type = 'default', subBrand = '', className } = props
   return (
     <svg

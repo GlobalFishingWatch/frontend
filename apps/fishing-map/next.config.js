@@ -1,6 +1,9 @@
+/** @type {import('next').NextConfig} */
 /* eslint-disable @typescript-eslint/no-var-requires */
+
 const { join } = require('path')
 const withNx = require('@nx/next/plugins/with-nx')
+const million = require('million/compiler')
 // const withBundleAnalyzer = require('@next/bundle-analyzer')({
 //   enabled: process.env.ANALYZE === 'true',
 // })
@@ -88,9 +91,9 @@ const nextConfig = {
 }
 
 const configWithNx = withNx(nextConfig)
+const millionConfig = { auto: true }
+
 module.exports = async (...args) => {
-  return {
-    ...(await configWithNx(...args)),
-    //...
-  }
+  const nextConfig = await configWithNx(...args)
+  return million.next(nextConfig, millionConfig)
 }
