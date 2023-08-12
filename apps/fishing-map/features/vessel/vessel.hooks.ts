@@ -1,14 +1,18 @@
 import { useCallback } from 'react'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
-import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
+import {
+  VesselInstanceDatasets,
+  getVesselDataviewInstance,
+} from 'features/dataviews/dataviews.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { VesselLastIdentity } from 'features/search/search.slice'
+
+export type VesselDataviewInstanceParams = { id: string; dataset: Dataset } & VesselInstanceDatasets
 
 const useAddVesselDataviewInstance = () => {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const addVesselDataviewInstance = useCallback(
-    (vessel: VesselLastIdentity) => {
+    (vessel: VesselDataviewInstanceParams) => {
       const vesselEventsDatasets = getRelatedDatasetsByType(vessel.dataset, DatasetTypes.Events)
       const eventsDatasetsId =
         vesselEventsDatasets && vesselEventsDatasets?.length

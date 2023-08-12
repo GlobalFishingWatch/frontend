@@ -29,7 +29,6 @@ import { VesselIdentitySourceEnum } from 'features/search/search.config'
 import I18nNumber from 'features/i18n/i18nNumber'
 import VesselLink from 'features/vessel/VesselLink'
 import { selectCurrentWorkspaceId } from 'features/workspace/workspace.selectors'
-import useAddVesselDataviewInstance from 'features/vessel/vessel.hooks'
 import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 
@@ -43,21 +42,17 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
   const vesselsSelected = useSelector(selectSelectedVessels)
   const tableContainerRef = useRef<HTMLDivElement>(null)
   const workspaceId = useSelector(selectCurrentWorkspaceId)
-  const addVesselDataviewInstance = useAddVesselDataviewInstance()
   const isSearchLocation = useSelector(selectIsStandaloneSearchLocation)
   const { setTimerange } = useTimerangeConnect()
 
   const onVesselClick = useCallback(
     (vessel: VesselLastIdentity) => {
-      if (workspaceId) {
-        addVesselDataviewInstance(vessel)
-      }
       dispatch(cleanVesselSearchResults())
       if (isSearchLocation) {
         setTimerange({ start: vessel.transmissionDateFrom, end: vessel.transmissionDateTo })
       }
     },
-    [addVesselDataviewInstance, dispatch, isSearchLocation, setTimerange, workspaceId]
+    [dispatch, isSearchLocation, setTimerange]
   )
 
   const columns = useMemo((): MRT_ColumnDef<IdentityVesselData>[] => {
@@ -68,7 +63,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
         accessorFn: (vessel) => {
           const [shipname, ...names] = getVesselIdentityProperties(vessel, 'shipname')
           const vesselData = getSearchIdentityResolved(vessel)
-          const { id, transmissionDateFrom, transmissionDateTo, dataset } = vesselData
+          const { transmissionDateFrom, transmissionDateTo } = vesselData
           const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER
           const label = names?.length
             ? `${name} (${t('common.previously', 'Previously')}: ${names
@@ -78,8 +73,8 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
           const vesselQuery = { start: transmissionDateFrom, end: transmissionDateTo }
           return (
             <VesselLink
-              vesselId={id}
-              datasetId={dataset?.id}
+              vessel={vesselData}
+              addDataviewInstance={!!workspaceId}
               onClick={() => onVesselClick(vesselData)}
               query={vesselQuery}
             >
@@ -193,7 +188,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
         header: t('vessel.transmissionDates', 'Transmission Dates'),
       },
     ]
-  }, [i18n.language, onVesselClick, t])
+  }, [i18n.language, onVesselClick, t, workspaceId])
 
   const fetchMoreOnBottomReached = useCallback(() => {
     if (tableContainerRef.current) {
