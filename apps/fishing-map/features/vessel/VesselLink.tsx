@@ -17,6 +17,7 @@ export type VesselLinkProps = {
   query?: Partial<Record<keyof QueryParams, string | number>>
   children: any
   onClick?: () => void
+  className?: string
 }
 const VesselLink = ({
   vesselId,
@@ -24,6 +25,7 @@ const VesselLink = ({
   children,
   onClick,
   query,
+  className = '',
 }: VesselLinkProps) => {
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const locationQuery = useSelector(selectLocationQuery)
@@ -45,6 +47,7 @@ const VesselLink = ({
 
   return (
     <Link
+      className={className}
       to={{
         type: isSearchLocation || !workspaceId ? VESSEL : WORKSPACE_VESSEL,
         payload: {
