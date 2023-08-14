@@ -162,7 +162,7 @@ const VesselIdentity = () => {
         {vesselIdentity && (
           <div className={styles.fields}>
             {IDENTITY_FIELD_GROUPS[identitySource].map((fieldGroup, index) => (
-              <div key={index} className={styles.fieldGroup}>
+              <div key={index} className={cx(styles.fieldGroupContainer, styles.fieldGroup)}>
                 {/* TODO: make fields more dynamic to account for VMS */}
                 {fieldGroup.map((field) => {
                   return (
@@ -200,8 +200,8 @@ const VesselIdentity = () => {
                   timerange
                 )
                 if (!filteredRegistryInfo) return null
-                return allRegistryInfo?.length > 0 ? (
-                  <ul className={cx(styles.fieldGroup, styles.twoColumns)}>
+                return (
+                  <div className={styles.fieldGroupContainer}>
                     <label className={styles.twoCells}>
                       {t(`vessel.${label}` as any, label)}
                       {terminologyKey && (
@@ -214,50 +214,60 @@ const VesselIdentity = () => {
                         </DataTerminology>
                       )}
                     </label>
-                    {allRegistryInfo.map((registry, index) => {
-                      const registryOverlapsTimeRange = filteredRegistryInfo.includes(registry)
-                      const fieldType = key === 'registryOwners' ? 'owner' : 'authorization'
-                      let Component = <VesselIdentityField value="" />
-                      if (registryOverlapsTimeRange) {
-                        if (fieldType === 'owner') {
-                          const value = `${formatInfoField(
-                            (registry as VesselRegistryOwner).name,
-                            'owner'
-                          )} (${formatInfoField((registry as VesselRegistryOwner).flag, 'flag')})`
-                          Component = <VesselIdentityField value={value} />
-                        } else {
-                          const sourceTranslations = registry.sourceCode
-                            .map(getRegionTranslationsById)
-                            .join(',')
-                          Component = (
-                            <Tooltip content={sourceTranslations}>
-                              <VesselIdentityField
-                                className={styles.help}
-                                value={formatInfoField(registry.sourceCode.join(','), fieldType)}
-                              />
-                            </Tooltip>
+                    {allRegistryInfo?.length > 0 ? (
+                      <ul className={cx(styles.fieldGroup, styles.twoColumns)}>
+                        {allRegistryInfo.map((registry, index) => {
+                          const registryOverlapsTimeRange = filteredRegistryInfo.includes(registry)
+                          const fieldType = key === 'registryOwners' ? 'owner' : 'authorization'
+                          let Component = <VesselIdentityField value="" />
+                          if (registryOverlapsTimeRange) {
+                            if (fieldType === 'owner') {
+                              const value = `${formatInfoField(
+                                (registry as VesselRegistryOwner).name,
+                                'owner'
+                              )} (${formatInfoField(
+                                (registry as VesselRegistryOwner).flag,
+                                'flag'
+                              )})`
+                              Component = <VesselIdentityField value={value} />
+                            } else {
+                              const sourceTranslations = registry.sourceCode
+                                .map(getRegionTranslationsById)
+                                .join(',')
+                              Component = (
+                                <Tooltip content={sourceTranslations}>
+                                  <VesselIdentityField
+                                    className={styles.help}
+                                    value={formatInfoField(
+                                      registry.sourceCode.join(','),
+                                      fieldType
+                                    )}
+                                  />
+                                </Tooltip>
+                              )
+                            }
+                          }
+                          return (
+                            <li
+                              key={`${registry.recordId}-${index}`}
+                              className={cx({
+                                [styles.twoCells]: key === 'registryOwners',
+                                [styles.hidden]: !registryOverlapsTimeRange,
+                              })}
+                            >
+                              {Component}{' '}
+                              <span className={styles.secondary}>
+                                <I18nDate date={registry.dateFrom} /> -{' '}
+                                <I18nDate date={registry.dateTo} />
+                              </span>
+                            </li>
                           )
-                        }
-                      }
-                      return (
-                        <li
-                          key={`${registry.recordId}-${index}`}
-                          className={cx({
-                            [styles.twoCells]: key === 'registryOwners',
-                            [styles.hidden]: !registryOverlapsTimeRange,
-                          })}
-                        >
-                          {Component}{' '}
-                          <span className={styles.secondary}>
-                            <I18nDate date={registry.dateFrom} /> -{' '}
-                            <I18nDate date={registry.dateTo} />
-                          </span>
-                        </li>
-                      )
-                    })}
-                  </ul>
-                ) : (
-                  EMPTY_FIELD_PLACEHOLDER
+                        })}
+                      </ul>
+                    ) : (
+                      EMPTY_FIELD_PLACEHOLDER
+                    )}
+                  </div>
                 )
               })}
           </div>

@@ -10,14 +10,17 @@
   margin-bottom: var(--space-S);
 }
 
-.fieldGroup {
+.fieldGroupContainer {
   padding: var(--space-S) 0;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
 }
 
-.fieldGroup:not(:last-child) {
+.fieldGroupContainer:not(:last-child) {
   border-bottom: var(--border);
+}
+
+.fieldGroup {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .twoColumns {
