@@ -152,7 +152,10 @@ const vesselSlice = createSlice({
     builder.addCase(fetchVesselInfoThunk.fulfilled, (state, action) => {
       const vesselId = action.meta?.arg?.vesselId as string
       state[vesselId].status = AsyncReducerStatus.Finished
-      state[vesselId].data = action.payload
+      state[vesselId].data = {
+        ...action.payload,
+        id: vesselId,
+      }
     })
     builder.addCase(fetchVesselInfoThunk.rejected, (state, action) => {
       const vesselId = action.meta?.arg?.vesselId as string
