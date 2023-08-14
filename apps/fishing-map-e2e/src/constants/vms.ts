@@ -1,6 +1,5 @@
 export const VMS_NAMES = [
   'Belize VMS',
-  'Brazil Open Tuna Presence',
   'Chile VMS',
   'Costa Rica VMS',
   'Ecuador VMS',
