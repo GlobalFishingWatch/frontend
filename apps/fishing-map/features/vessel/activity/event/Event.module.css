@@ -59,6 +59,10 @@
   padding-block: var(--space-S);
 }
 
+.region {
+  cursor: help;
+}
+
 @media print {
   .event {
     margin-left: var(--space-M);
