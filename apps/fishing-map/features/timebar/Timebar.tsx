@@ -22,6 +22,7 @@ import {
   useTimebarVisualisationConnect,
   useDisableHighlightTimeConnect,
   useActivityMetadata,
+  useHighlightedEventsConnect,
 } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { TimebarVisualisations } from 'types'
@@ -133,8 +134,7 @@ const TimebarWrapper = () => {
   const { t, ready, i18n } = useTranslation()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
   const { start, end, onTimebarChange } = useTimerangeConnect()
-  // const { highlightedEvents } = useHighlightedEventsConnect()
-  const [highlightedEvents, dispatchHighlightedEvents] = useState([])
+  const { highlightedEvents, dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const { dispatchDisableHighlightedTime } = useDisableHighlightTimeConnect()
   const { timebarVisualisation } = useTimebarVisualisationConnect()
   const { setMapCoordinates, viewport } = useViewport()
