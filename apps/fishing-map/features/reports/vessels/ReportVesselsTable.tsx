@@ -117,7 +117,6 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
             const vesselLink: VesselDataviewInstanceParams = {
               id: vessel.vesselId,
               dataset: vessel.infoDataset as Dataset,
-              track: vessel.trackDataset?.id,
             }
             const hasDatasets = vessel.infoDataset?.id?.includes(GLOBAL_VESSELS_DATASET_ID)
               ? vessel.infoDataset !== undefined && vessel.trackDataset !== undefined

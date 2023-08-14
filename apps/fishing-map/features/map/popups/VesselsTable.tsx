@@ -253,7 +253,6 @@ function VesselsTable({
               const vesselLink: VesselDataviewInstanceParams = {
                 id: vessel.id,
                 dataset: vessel.infoDataset as Dataset,
-                track: vessel.trackDataset?.id,
               }
 
               const pinTrackDisabled = !interactionAllowed || !hasDatasets
@@ -282,7 +281,7 @@ function VesselsTable({
                   )}
                   <td colSpan={hasPinColumn && pinTrackDisabled ? 2 : 1} data-test="vessel-name">
                     {vesselName !== EMPTY_FIELD_PLACEHOLDER ? (
-                      <VesselLink className={styles.link} vessel={vesselLink}>
+                      <VesselLink className={styles.link} vessel={vesselLink} addDataviewInstance>
                         {vesselName}
                       </VesselLink>
                     ) : (
