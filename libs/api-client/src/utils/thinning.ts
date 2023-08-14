@@ -10,14 +10,14 @@ export enum ThinningLevels {
 
 export const THINNING_LEVELS: Record<ThinningLevels, ThinningConfig> = {
   [ThinningLevels.Footprint]: {
-    'distance-fishing': 1000000000,
-    'bearing-val-fishing': 10000000,
-    'change-speed-fishing': 5000000,
-    'min-accuracy-fishing': 3000000,
-    'distance-transit': 100000000,
-    'bearing-val-transit': 100000,
-    'change-speed-transit': 1000000,
-    'min-accuracy-transit': 6000,
+    'distance-fishing': 1000,
+    'bearing-val-fishing': 200,
+    'change-speed-fishing': 5000,
+    'min-accuracy-fishing': 5000,
+    'distance-transit': 1000,
+    'bearing-val-transit': 200,
+    'change-speed-transit': 5000,
+    'min-accuracy-transit': 5000,
   },
   [ThinningLevels.Insane]: {
     'distance-fishing': 10,
