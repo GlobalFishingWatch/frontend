@@ -41,14 +41,21 @@ function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.
 
   const valuesAreRangeOfNumbers =
     valuesSelected.length > 1 &&
-    valuesSelected.every((value) => !isNaN(value[0]?.label) && !isNaN(parseFloat(value[0]?.label)))
+    valuesSelected.every((value) => {
+      const label = Array.isArray(value) ? value[0]?.label : value.label
+      return !isNaN(label) && !isNaN(parseFloat(label))
+    })
 
   const valuesIsNumber = Number(valuesSelected[0]?.label)
 
   if (valuesAreRangeOfNumbers) {
-    const range = `${formatSliderNumber(valuesSelected[0][0]?.label)} - ${formatSliderNumber(
-      valuesSelected[valuesSelected.length - 1][0]?.label
-    )}`
+    const label = Array.isArray(valuesSelected[0])
+      ? valuesSelected[0][0]?.label
+      : valuesSelected[0]?.label
+    const label2 = Array.isArray(valuesSelected[valuesSelected.length - 1])
+      ? valuesSelected[valuesSelected.length - 1][0]?.label
+      : valuesSelected[valuesSelected.length - 1]?.label
+    const range = `${formatSliderNumber(label)} - ${formatSliderNumber(label2)}`
     valuesSelected = [
       {
         id: range,
