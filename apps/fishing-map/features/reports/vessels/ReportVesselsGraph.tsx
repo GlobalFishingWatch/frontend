@@ -178,7 +178,7 @@ export default function ReportVesselsGraph() {
   const selectedReportVesselGraph = useSelector(selectReportVesselGraph)
   return (
     <Fragment>
-      <div className={styles.graph}>
+      <div className={styles.graph} data-test="report-vessels-graph">
         {data ? (
           <ResponsiveContainer width="100%" height="100%">
             <BarChart

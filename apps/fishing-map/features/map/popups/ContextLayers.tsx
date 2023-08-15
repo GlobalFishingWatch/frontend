@@ -38,7 +38,10 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
             className={styles.layerIcon}
             style={{ color: featureByType[0].color }}
           />
-          <div className={styles.popupSectionContent}>
+          <div
+            className={styles.popupSectionContent}
+            data-test={`context-tooltip-section-${featureByType[0].datasetId}`}
+          >
             {showFeaturesDetails && (
               <h3 className={styles.popupSectionTitle}>{featureByType[0].title}</h3>
             )}

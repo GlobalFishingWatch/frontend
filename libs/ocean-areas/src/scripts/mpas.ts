@@ -2,11 +2,14 @@ import fs from 'fs/promises'
 import path from 'path'
 import { uniqBy } from 'lodash'
 import mpaData from '../data/source/top1000mpa.json'
+import manualUpdates from '../data/source/manual-updates.json'
+
+const features = [...mpaData.features, ...manualUpdates.features]
 
 async function start() {
   try {
     const mpas = uniqBy(
-      mpaData.features.map((f) => {
+      features.map((f) => {
         return {
           type: 'Feature',
           geometry: f.geometry,

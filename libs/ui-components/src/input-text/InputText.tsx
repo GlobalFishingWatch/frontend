@@ -19,6 +19,7 @@ type InputTextProps = React.InputHTMLAttributes<HTMLInputElement> & {
   inputSize?: InputSize
   inputKey?: string
   loading?: boolean
+  testId?: string
   onCleanButtonClick?: (e: React.MouseEvent<Element>) => void
 }
 
@@ -35,6 +36,7 @@ function InputTextComponent(props: InputTextProps, forwardedRef: Ref<HTMLInputEl
     inputSize = 'default',
     inputKey = defaultKey,
     loading = false,
+    testId,
     onCleanButtonClick,
     ...rest
   } = props
@@ -54,7 +56,14 @@ function InputTextComponent(props: InputTextProps, forwardedRef: Ref<HTMLInputEl
           {label}
         </label>
       )}
-      <input className={styles.input} key={inputKey} ref={inputRef} type={type} {...inputProps} />
+      <input
+        className={styles.input}
+        key={inputKey}
+        ref={inputRef}
+        type={type}
+        {...(testId && { 'data-test': testId })}
+        {...inputProps}
+      />
       {loading && <Spinner size="tiny" className={styles.spinner} />}
       {!loading && onCleanButtonClick && inputProps.value && (
         <IconButton

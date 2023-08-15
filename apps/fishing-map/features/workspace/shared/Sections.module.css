@@ -59,3 +59,8 @@
 .link {
   text-decoration: underline;
 }
+
+.surveyLink {
+  padding: var(--space-M) var(--space-S);
+  color: var(--color-secondary-blue);
+}

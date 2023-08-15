@@ -346,6 +346,7 @@ function Search() {
                   disabled={!basicSearchAllowed}
                   className={styles.input}
                   type="search"
+                  testId="seach-vessels-basic-input"
                   loading={
                     searchStatus === AsyncReducerStatus.Loading ||
                     searchStatus === AsyncReducerStatus.Aborted
@@ -359,7 +360,11 @@ function Search() {
               {(searchStatus === AsyncReducerStatus.Loading ||
                 searchStatus === AsyncReducerStatus.Aborted) &&
               searchPagination.loading === false ? null : basicSearchAllowed ? (
-                <ul {...getMenuProps()} className={styles.searchResults}>
+                <ul
+                  {...getMenuProps()}
+                  className={styles.searchResults}
+                  data-test="search-vessels-list"
+                >
                   {debouncedQuery && debouncedQuery?.length < MIN_SEARCH_CHARACTERS && (
                     <li key="min-characters" className={cx(styles.searchSuggestion, styles.red)}>
                       {t('search.minCharacters', {
@@ -411,9 +416,10 @@ function Search() {
                           [styles.inWorkspace]: isInWorkspace,
                           [styles.selected]: isSelected,
                         })}
+                        data-test={`search-vessels-option-${id}-${index}`}
                         key={`${id}-${index}`}
                       >
-                        <div className={styles.name}>
+                        <div className={styles.name} data-test="vessel-name">
                           {formatInfoField(shipname, 'name') || EMPTY_FIELD_PLACEHOLDER}
                         </div>
                         <div className={styles.properties}>
@@ -544,7 +550,11 @@ function Search() {
               vessels={vesselsSelected}
               onAddToVesselGroup={onAddToVesselGroup}
             />
-            <Button className={styles.footerAction} onClick={onConfirmSelection}>
+            <Button
+              className={styles.footerAction}
+              onClick={onConfirmSelection}
+              testId="search-vessels-add-vessel"
+            >
               {vesselsSelected.length > 1
                 ? t('search.seeVessels', {
                     defaultValue: 'See vessels',

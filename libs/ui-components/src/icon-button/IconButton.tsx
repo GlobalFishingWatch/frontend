@@ -34,6 +34,7 @@ export interface IconButtonProps {
   children?: React.ReactNode
   style?: CSSProperties
   htmlType?: HTMLButtonType
+  testId?: string
 }
 
 const warningVarColor =
@@ -58,6 +59,7 @@ function IconButtonComponent(props: IconButtonProps, ref: Ref<HTMLButtonElement>
     children,
     style,
     htmlType,
+    testId,
     ...rest
   } = props
   let spinnerColor
@@ -80,8 +82,9 @@ function IconButtonComponent(props: IconButtonProps, ref: Ref<HTMLButtonElement>
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         type={htmlType ?? 'button'}
-        {...(typeof tooltip === 'string' && { 'aria-label': tooltip })}
         style={style}
+        {...(typeof tooltip === 'string' && { 'aria-label': tooltip })}
+        {...(testId && { 'data-test': testId })}
         {...rest}
       >
         {loading ? (
