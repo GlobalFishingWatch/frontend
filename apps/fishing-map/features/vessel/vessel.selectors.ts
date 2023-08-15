@@ -75,6 +75,13 @@ export const selectVesselEventsData = createSelector(
   }
 )
 
+export const selectVesselTrackResourcesLoading = createSelector(
+  [selectVesselTrackResources],
+  (trackResources) => {
+    return trackResources.some((r) => r.status === ResourceStatus.Loading)
+  }
+)
+
 export const selectVesselTracksData = createSelector(
   [selectVesselTrackResources],
   (trackResources) => {
