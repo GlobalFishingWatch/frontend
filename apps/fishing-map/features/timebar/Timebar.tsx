@@ -50,7 +50,7 @@ import { selectTracksData, selectTracksGraphData, selectTracksEvents } from './t
 import TimebarActivityGraph from './TimebarActivityGraph'
 import styles from './Timebar.module.css'
 
-const ZOOM_LEVEL_TO_FOCUS_EVENT = 5
+export const ZOOM_LEVEL_TO_FOCUS_EVENT = 5
 
 const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents, showTooltip }) => {
   // const { dispatchHighlightedEvents } = useHighlightedEventsConnect()

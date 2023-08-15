@@ -26,6 +26,7 @@ import { getScrollElement } from 'features/sidebar/Sidebar'
 import { selectVisibleEvents } from 'features/app/app.selectors'
 import { selectVesselPrintMode } from 'features/vessel/vessel.slice'
 import { useDebouncedDispatchHighlightedEvent } from 'features/map/map.hooks'
+import { ZOOM_LEVEL_TO_FOCUS_EVENT } from 'features/timebar/Timebar'
 import styles from '../ActivityGroupedList.module.css'
 
 const ActivityByVoyage = () => {
@@ -95,10 +96,11 @@ const ActivityByVoyage = () => {
 
   const selectEventOnMap = useCallback(
     (event: ActivityEvent) => {
+      const zoom = viewport.zoom ?? DEFAULT_VIEWPORT.zoom
       setMapCoordinates({
         latitude: event.position.lat,
         longitude: event.position.lon,
-        zoom: viewport.zoom ?? DEFAULT_VIEWPORT.zoom,
+        zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
       })
     },
     [setMapCoordinates, viewport.zoom]
