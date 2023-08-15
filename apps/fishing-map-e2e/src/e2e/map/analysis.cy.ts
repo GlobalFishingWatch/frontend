@@ -29,6 +29,7 @@ describe('See the creation of analysis for an area', () => {
     cy.getBySel(MAP_POPUP_EEZ_SECTION, { timeout: 10000 }).findBySelLike('open-analysis').click()
   })
 
+  //MAP-1218
   it('Should create an analysis for an EEZ area', () => {
     getSidebar().findBySelLike('report-title').contains(SEARCH_EEZ_FULL_NAME)
     cy.getBySel('source-tags').findBySelLike('source-tag-item').contains('AIS')
