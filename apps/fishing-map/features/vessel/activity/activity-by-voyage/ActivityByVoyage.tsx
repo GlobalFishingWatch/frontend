@@ -25,6 +25,7 @@ import { getUTCDateTime } from 'utils/dates'
 import { getScrollElement } from 'features/sidebar/Sidebar'
 import { selectVisibleEvents } from 'features/app/app.selectors'
 import { selectVesselPrintMode } from 'features/vessel/vessel.slice'
+import { useDebouncedDispatchHighlightedEvent } from 'features/map/map.hooks'
 import styles from '../ActivityGroupedList.module.css'
 
 const ActivityByVoyage = () => {
@@ -52,6 +53,8 @@ const ActivityByVoyage = () => {
     [fitBounds, voyages]
   )
 
+  const dispatchSetHighlightedEvents = useDebouncedDispatchHighlightedEvent()
+
   const onVoyageMapHover = useCallback(
     (voyageId: ActivityEvent['voyage']) => {
       const events = voyages[voyageId]
@@ -64,13 +67,13 @@ const ActivityByVoyage = () => {
           })
         )
         const eventIds = events.map((event) => event.id)
-        dispatch(setHighlightedEvents(eventIds))
+        dispatchSetHighlightedEvents(eventIds)
       } else {
         dispatch(disableHighlightedTime())
-        dispatch(setHighlightedEvents(undefined))
+        dispatchSetHighlightedEvents(undefined)
       }
     },
-    [dispatch, voyages]
+    [dispatchSetHighlightedEvents, dispatch, voyages]
   )
 
   const onEventMapHover = useCallback(

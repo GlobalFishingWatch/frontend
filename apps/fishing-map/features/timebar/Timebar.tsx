@@ -61,6 +61,7 @@ const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents, showTooltip }) =
       if (chunks && chunks.tracksEvents && chunks.tracksEvents.length) {
         dispatchHighlightedEvents(chunks.tracksEvents)
       } else {
+        // TODO review this as it is triggered on every timebar change
         dispatchHighlightedEvents(undefined)
       }
     },
