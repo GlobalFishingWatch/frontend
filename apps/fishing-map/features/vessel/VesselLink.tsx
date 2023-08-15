@@ -10,7 +10,8 @@ import { VESSEL, WORKSPACE_VESSEL } from 'routes/routes'
 import { selectIsStandaloneSearchLocation, selectLocationQuery } from 'routes/routes.selectors'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import { QueryParams, TimebarVisualisations } from 'types'
-import useAddVesselDataviewInstance, {
+import {
+  useAddVesselDataviewInstance,
   VesselDataviewInstanceParams,
 } from 'features/vessel/vessel.hooks'
 
