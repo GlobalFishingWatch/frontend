@@ -41,10 +41,12 @@ const DownloadPopupButton: React.FC<DownloadPopupButtonProps> = ({
   const datasetsReportSupported = datasetsReportAllowed?.length > 0
   return (
     <LoginButtonWrapper
-      tooltip={t(
-        'download.activityLogin',
-        'Register and login to download activity (free, 2 minutes)'
-      )}
+      tooltip={
+        t(
+          'download.activityLogin',
+          'Register and login to download activity (free, 2 minutes)'
+        ) as string
+      }
     >
       <IconButton
         icon="download"

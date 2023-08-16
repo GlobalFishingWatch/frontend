@@ -21,19 +21,19 @@ export default function ReportVesselsGraphSelector() {
   const options: ChoiceOption[] = [
     {
       id: REPORT_VESSELS_GRAPH_FLAG,
-      label: t('analysis.groupByFlag', 'by flag'),
+      label: t('analysis.groupByFlag', 'by flag') as string,
     },
     ...(reportCategory !== ReportCategory.Fishing
       ? [
           {
             id: REPORT_VESSELS_GRAPH_VESSELTYPE,
-            label: t('analysis.groupByVesseltype', 'by vessel type'),
+            label: t('analysis.groupByVesseltype', 'by vessel type') as string,
           },
         ]
       : []),
     {
       id: REPORT_VESSELS_GRAPH_GEARTYPE,
-      label: t('analysis.groupByGeartype', 'by gear type'),
+      label: t('analysis.groupByGeartype', 'by gear type') as string,
     },
   ]
 

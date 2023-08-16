@@ -89,8 +89,11 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
         setLoading(false)
         setError(
           error.status === 422 && error.message?.includes('duplicated')
-            ? t('analysis.errorDuplicatedName', 'There is already a report with the same name')
-            : t('analysis.errorMessage', 'Something went wrong')
+            ? (t(
+                'analysis.errorDuplicatedName',
+                'There is already a report with the same name'
+              ) as string)
+            : (t('analysis.errorMessage', 'Something went wrong') as string)
         )
       }
     }
@@ -108,7 +111,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
       <InputText
         inputSize="small"
         value={name}
-        label={t('common.name', 'Name')}
+        label={t('common.name', 'Name') as string}
         className={styles.input}
         onChange={(e) => setName(e.target.value)}
         autoFocus

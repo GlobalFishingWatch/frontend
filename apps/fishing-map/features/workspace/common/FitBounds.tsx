@@ -46,7 +46,7 @@ const FitBounds = ({ className, trackResource, hasError, infoResource }: FitBoun
             t(
               'layer.vessel_fit_bounds_out_of_timerange',
               'The track has no activity in your selected timerange. Change timerange to fit this track?'
-            )
+            ) as string
           )
         ) {
           if (infoResource) {

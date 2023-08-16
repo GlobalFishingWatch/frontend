@@ -163,14 +163,14 @@ function Workspace() {
                   value={workspaceEditName}
                   className={styles.input}
                   inputSize="small"
-                  label={t('common.name', 'Name')}
+                  label={t('common.name', 'Name') as string}
                   onChange={(e) => setWorkspaceEditName(e.target.value)}
                 />
                 <InputText
                   value={workspaceEditDescription}
                   className={styles.input}
                   inputSize="small"
-                  label={t('common.description', 'Description')}
+                  label={t('common.description', 'Description') as string}
                   onChange={(e) => setWorkspaceEditDescription(e.target.value)}
                 />
               </div>

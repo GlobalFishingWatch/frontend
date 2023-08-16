@@ -241,7 +241,10 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                 (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.UserContext
               )
 
-              const title = t(`datasets:${dataset?.id}.name` as any, dataset?.name || dataset?.id)
+              const title = t(
+                `datasets:${dataset?.id}.name` as any,
+                (dataset?.name || dataset?.id) as string
+              )
               return (
                 <Radio
                   key={envDataview.id}

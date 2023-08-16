@@ -165,7 +165,7 @@ function NewWorkspaceModal({
       <InputText
         inputSize="small"
         value={name}
-        label={t('common.name', 'Name')}
+        label={t('common.name', 'Name') as string}
         className={styles.input}
         onChange={(e) => setName(e.target.value)}
         autoFocus

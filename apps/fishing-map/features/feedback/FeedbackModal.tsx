@@ -191,12 +191,12 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
               <Fragment>
                 <InputText
                   value={feedbackData.name || ''}
-                  placeholder={t('common.name', 'Name')}
+                  placeholder={t('common.name', 'Name') as string}
                   onChange={({ target }) => onFieldChange('name', target.value)}
                 />
                 <InputText
                   value={feedbackData.email || ''}
-                  placeholder={t('feedback.email', 'E-mail address')}
+                  placeholder={t('feedback.email', 'E-mail address') as string}
                   onChange={({ target }) => onFieldChange('email', target.value)}
                 />
                 <span className={styles.emailDisclaimer}>
@@ -208,8 +208,8 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
               </Fragment>
             )}
             <Select
-              label={t('feedback.role', 'Role')}
-              placeholder={t('selects.placeholder', 'Select an option')}
+              label={t('feedback.role', 'Role') as string}
+              placeholder={t('selects.placeholder', 'Select an option') as string}
               options={roleOptions}
               selectedOption={roleOptions.find((option) => option.id === feedbackData.role)}
               onSelect={(option) => onFieldChange('role', option.id)}
@@ -217,8 +217,8 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
             />
             {feedbackData.role && (
               <Select
-                label={t('feedback.type', 'What are you providing feedback for?')}
-                placeholder={t('selects.placeholder', 'Select an option')}
+                label={t('feedback.type', 'What are you providing feedback for?') as string}
+                placeholder={t('selects.placeholder', 'Select an option') as string}
                 options={allFeedbackTypeOptions}
                 selectedOption={allFeedbackTypeOptions.find(
                   (option) => option.id === feedbackData.feedbackType
@@ -229,8 +229,8 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
             )}
             {feedbackData.feedbackType === issuesOption.id && (
               <Select
-                label={t('feedback.whatIssue', 'Where are you having an issue?')}
-                placeholder={t('selects.placeholder', 'Select an option')}
+                label={t('feedback.whatIssue', 'Where are you having an issue?') as string}
+                placeholder={t('selects.placeholder', 'Select an option') as string}
                 options={featureOptions}
                 selectedOption={featureOptions.find((option) => option.id === feedbackData.issue)}
                 onSelect={(option) => onFieldChange('issue', option.id)}
@@ -245,10 +245,12 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
                 onChange={({ target }) => onFieldChange('description', target.value)}
                 value={feedbackData.description || ''}
                 className={styles.textarea}
-                placeholder={t(
-                  'feedback.descriptionPlaceholder',
-                  'Please be as specific as possible.'
-                )}
+                placeholder={
+                  t(
+                    'feedback.descriptionPlaceholder',
+                    'Please be as specific as possible.'
+                  ) as string
+                }
               ></textarea>
             </div>
           )}

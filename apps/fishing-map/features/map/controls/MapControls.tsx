@@ -197,8 +197,8 @@ const MapControls = ({
                 <button
                   aria-label={
                     currentBasemap === BasemapType.Default
-                      ? t('map.change_basemap_satellite', 'Switch to satellite basemap')
-                      : t('map.change_basemap_default', 'Switch to default basemap')
+                      ? (t('map.change_basemap_satellite', 'Switch to satellite basemap') as string)
+                      : (t('map.change_basemap_default', 'Switch to default basemap') as string)
                   }
                   className={cx(styles.basemapSwitcher, styles[currentBasemap])}
                   onClick={switchBasemap}

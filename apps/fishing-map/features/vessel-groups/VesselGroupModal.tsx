@@ -139,7 +139,7 @@ function VesselGroupModal(): React.ReactElement {
         t(
           'vesselGroup.confirmAbort',
           'You will lose any changes made in this vessel group. Are you sure?'
-        )
+        ) as string
       )
       if (confirmed) {
         if (action === 'back') {
@@ -303,7 +303,7 @@ function VesselGroupModal(): React.ReactElement {
         <div className={styles.parameters}>
           <InputText
             id="groupName"
-            label={t('vesselGroup.groupName', 'Group name')}
+            label={t('vesselGroup.groupName', 'Group name') as string}
             type={'text'}
             value={groupName}
             onChange={onGroupNameChange}
@@ -313,7 +313,7 @@ function VesselGroupModal(): React.ReactElement {
             !hasVesselGroupsVessels && (
               <Select
                 key="IDfield"
-                label={t('vesselGroup.idField', 'ID field')}
+                label={t('vesselGroup.idField', 'ID field') as string}
                 options={ID_COLUMNS_OPTIONS}
                 selectedOption={ID_COLUMNS_OPTIONS.find((o) => o.id === searchIdField)}
                 onSelect={onIdFieldChange}

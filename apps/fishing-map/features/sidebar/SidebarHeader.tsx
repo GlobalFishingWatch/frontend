@@ -85,7 +85,9 @@ function SaveReportButton() {
 
   return (
     <Fragment>
-      <LoginButtonWrapper tooltip={t('workspace.saveLogin', 'You need to login to save views')}>
+      <LoginButtonWrapper
+        tooltip={t('workspace.saveLogin', 'You need to login to save views') as string}
+      >
         <IconButton
           icon={showClipboardNotification ? 'tick' : 'save'}
           size="medium"
@@ -145,7 +147,9 @@ function SaveWorkspaceButton() {
 
   return (
     <Fragment>
-      <LoginButtonWrapper tooltip={t('workspace.saveLogin', 'You need to login to save views')}>
+      <LoginButtonWrapper
+        tooltip={t('workspace.saveLogin', 'You need to login to save views') as string}
+      >
         <IconButton
           icon={showClipboardNotification ? 'tick' : 'save'}
           size="medium"

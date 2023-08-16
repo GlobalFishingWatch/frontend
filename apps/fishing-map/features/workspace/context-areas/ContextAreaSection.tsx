@@ -74,10 +74,12 @@ function ContextAreaSection(): React.ReactElement {
         {!readOnly && (
           <Fragment>
             <LoginButtonWrapper
-              tooltip={t(
-                'layer.drawPolygonLogin',
-                'Register and login to draw a layer (free, 2 minutes)'
-              )}
+              tooltip={
+                t(
+                  'layer.drawPolygonLogin',
+                  'Register and login to draw a layer (free, 2 minutes)'
+                ) as string
+              }
             >
               <IconButton
                 icon="draw"

@@ -113,14 +113,14 @@ function EditDataset(): React.ReactElement {
         <InputText
           inputSize="small"
           value={metadata?.name !== undefined ? metadata.name : dataset?.name}
-          label={t('common.name', 'Name')}
+          label={t('common.name', 'Name') as string}
           className={styles.input}
           onChange={(e) => onDatasetFieldChange({ name: e.target.value })}
         />
         <InputText
           value={metadata?.description !== undefined ? metadata.description : dataset?.description}
           inputSize="small"
-          label={t('common.description', 'Description')}
+          label={t('common.description', 'Description') as string}
           className={styles.input}
           onChange={(e) => onDatasetFieldChange({ description: e.target.value })}
         />
@@ -129,7 +129,7 @@ function EditDataset(): React.ReactElement {
             disabled
             value={metadata?.propertyToInclude ?? ''}
             inputSize="small"
-            label={t('dataset.featuresNameField', 'Features name field')}
+            label={t('dataset.featuresNameField', 'Features name field') as string}
             className={styles.input}
           />
         )}
@@ -159,7 +159,7 @@ function EditDataset(): React.ReactElement {
             <InputText
               value={metadata?.propertyToInclude}
               inputSize="small"
-              label={t('dataset.colorByValue', 'Color features by value')}
+              label={t('dataset.colorByValue', 'Color features by value') as string}
               className={cx(styles.input, styles.inputFullWidth)}
               onChange={(e) => onDatasetFieldChange({ propertyToInclude: e.target.value })}
             />
@@ -168,8 +168,8 @@ function EditDataset(): React.ReactElement {
               type="number"
               step="0.1"
               value={min}
-              label={t('common.min', 'Min')}
-              placeholder={t('common.min', 'Min')}
+              label={t('common.min', 'Min') as string}
+              placeholder={t('common.min', 'Min') as string}
               className={styles.mediumInput}
               onChange={(e) =>
                 onDatasetFieldChange({
@@ -184,8 +184,8 @@ function EditDataset(): React.ReactElement {
               inputSize="small"
               type="number"
               step="0.1"
-              label={t('common.max', 'Max')}
-              placeholder={t('common.max', 'Max')}
+              label={t('common.max', 'Max') as string}
+              placeholder={t('common.max', 'Max') as string}
               value={max}
               className={styles.mediumInput}
               onChange={(e) =>

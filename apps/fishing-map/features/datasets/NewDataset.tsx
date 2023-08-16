@@ -147,7 +147,7 @@ function NewDataset(): React.ReactElement {
                 t(
                   'errors.datasetShapefileMultiple',
                   'Shapefiles containing multiple components (multiple file names) are not supported yet'
-                )
+                ) as string
               )
               return
             } else {
@@ -163,7 +163,7 @@ function NewDataset(): React.ReactElement {
                   t(
                     'errors.uploadShapefileComponents',
                     'Error reading shapefile: must contain files with *.shp, *.shx, *.dbf and *.prj extensions.'
-                  )
+                  ) as string
                 )
               } else {
                 geojson = expandedShp
@@ -172,7 +172,9 @@ function NewDataset(): React.ReactElement {
           } catch (e: any) {
             setFileData(undefined)
             setError(
-              t('errors.uploadShapefile', 'Error reading shapefile: {{error}}', { error: e })
+              t('errors.uploadShapefile', 'Error reading shapefile: {{error}}', {
+                error: e,
+              }) as string
             )
           }
         } else if (isCSV) {
@@ -195,11 +197,13 @@ function NewDataset(): React.ReactElement {
               )
             } catch (e) {
               setFileData(undefined)
-              setError(t('errors.uploadCsv', 'Error reading CSV: {{error}}', { error: e }))
+              setError(
+                t('errors.uploadCsv', 'Error reading CSV: {{error}}', { error: e }) as string
+              )
             }
           } else {
             setFileData(undefined)
-            setError(t('errors.missingLatLng', 'No latitude or longitude fields found'))
+            setError(t('errors.missingLatLng', 'No latitude or longitude fields found') as string)
           }
           // geojson = JSON.parse(fileData)
         } else {
@@ -208,7 +212,9 @@ function NewDataset(): React.ReactElement {
             geojson = JSON.parse(fileData)
           } catch (e: any) {
             setFileData(undefined)
-            setError(t('errors.uploadGeojson', 'Error reading GeoJSON: {{error}}', { error: e }))
+            setError(
+              t('errors.uploadGeojson', 'Error reading GeoJSON: {{error}}', { error: e }) as string
+            )
           }
         }
 
@@ -244,7 +250,9 @@ function NewDataset(): React.ReactElement {
           }))
         } else if (error === '') {
           setFileData(undefined)
-          setError(t('errors.datasetNotValid', 'It seems to be something wrong with your file'))
+          setError(
+            t('errors.datasetNotValid', 'It seems to be something wrong with your file') as string
+          )
         }
       }
       setLoading(false)

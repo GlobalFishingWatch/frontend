@@ -81,13 +81,13 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
       <InputText
         inputSize="small"
         value={metadata.name}
-        label={t('common.name', 'Name')}
+        label={t('common.name', 'Name') as string}
         className={styles.input}
         onChange={(e) => onDatasetFieldChange({ name: e.target.value })}
       />
       <InputText
         inputSize="small"
-        label={t('common.description', 'Description')}
+        label={t('common.description', 'Description') as string}
         className={styles.input}
         onChange={(e) => onDatasetFieldChange({ description: e.target.value })}
       />
@@ -95,10 +95,10 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
         <Select
           label={
             datasetGeometryType === 'points'
-              ? t('dataset.pointsNameField', 'Field to name each point')
-              : t('dataset.featuresNameField', 'Field to name each area')
+              ? (t('dataset.pointsNameField', 'Field to name each point') as string)
+              : (t('dataset.featuresNameField', 'Field to name each area') as string)
           }
-          placeholder={t('selects.placeholder', 'Select an option')}
+          placeholder={t('selects.placeholder', 'Select an option') as string}
           options={fieldsOptions}
           className={styles.input}
           selectedOption={fieldsOptions?.find(
@@ -119,7 +119,7 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
           </label>
           <Select
             className={styles.selectShort}
-            placeholder={t('selects.placeholder', 'Select an option')}
+            placeholder={t('selects.placeholder', 'Select an option') as string}
             containerClassName={styles.selectContainer}
             options={fieldsOptions}
             selectedOption={fieldsOptions.find(
@@ -147,7 +147,7 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
             type="number"
             step="0.1"
             value={min}
-            placeholder={t('common.min', 'Min')}
+            placeholder={t('common.min', 'Min') as string}
             className={cx(styles.shortInput, styles.noLabelInput)}
             onChange={(e) =>
               onDatasetFieldChange({
@@ -164,7 +164,7 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
             inputSize="small"
             type="number"
             step="0.1"
-            placeholder={t('common.max', 'Max')}
+            placeholder={t('common.max', 'Max') as string}
             value={max}
             className={cx(styles.shortInput, styles.noLabelInput)}
             onChange={(e) =>
@@ -182,8 +182,8 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
         <Fragment>
           <div className={cx(styles.multipleSelectContainer, styles.input)}>
             <Select
-              label={t('dataset.latitudeNameField', 'Latitude field')}
-              placeholder={t('selects.placeholder', 'Select an option')}
+              label={t('dataset.latitudeNameField', 'Latitude field') as string}
+              placeholder={t('selects.placeholder', 'Select an option') as string}
               options={fieldsOptions}
               selectedOption={fieldsOptions.find(
                 ({ id }) => id === metadata.configuration?.latitude
@@ -196,8 +196,8 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
               }}
             />
             <Select
-              label={t('dataset.longitudeNameField', 'Longitude field')}
-              placeholder={t('selects.placeholder', 'Select an option')}
+              label={t('dataset.longitudeNameField', 'Longitude field') as string}
+              placeholder={t('selects.placeholder', 'Select an option') as string}
               options={fieldsOptions}
               selectedOption={fieldsOptions.find(
                 ({ id }) => id === metadata.configuration?.longitude
@@ -211,8 +211,8 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
             />
           </div>
           <Select
-            label={t('dataset.timeNameField', 'Time field')}
-            placeholder={t('selects.placeholder', 'Select an option')}
+            label={t('dataset.timeNameField', 'Time field') as string}
+            placeholder={t('selects.placeholder', 'Select an option') as string}
             className={styles.input}
             options={fieldsOptions}
             selectedOption={fieldsOptions.find(
@@ -231,7 +231,7 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
                 'common.optional',
                 'Optional'
               )})`}
-              placeholder={t('selects.placeholder', 'Select an option')}
+              placeholder={t('selects.placeholder', 'Select an option') as string}
               options={fieldsOptions.filter(
                 (option) =>
                   option.id !== metadata.configuration?.longitude &&

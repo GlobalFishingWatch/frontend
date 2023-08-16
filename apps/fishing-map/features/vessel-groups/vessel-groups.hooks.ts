@@ -15,7 +15,7 @@ export const useVesselGroupsOptions = () => {
       label: t('vesselGroup.label', `{{name}} ({{count}} IDs)`, {
         name: getVesselGroupLabel(vesselGroup),
         count: vesselGroup.vessels.length,
-      }),
+      }) as string,
     }))
     return vesselGroupsOptions
   }, [t, vesselGroups])

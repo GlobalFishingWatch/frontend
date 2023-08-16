@@ -92,11 +92,11 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
     () => [
       {
         id: 'days',
-        label: t('common.days_other'),
+        label: t('common.days_other') as string,
       },
       {
         id: 'months',
-        label: t('common.months_other'),
+        label: t('common.months_other') as string,
       },
     ],
     [t]
@@ -145,7 +145,7 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
           t(
             'analysis.errorPeriodComparisonDateRange',
             'Date range error. Comparison start must be after baseline start.'
-          )
+          ) as string
         )
       } else {
         setErrorMsg('')

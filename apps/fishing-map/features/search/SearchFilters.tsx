@@ -93,7 +93,7 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
     <div className={cx(className)}>
       {sourceOptions && sourceOptions.length > 0 && (
         <MultiSelect
-          label={t('layer.source_other', 'Sources')}
+          label={t('layer.source_other', 'Sources') as string}
           placeholder={getPlaceholderBySelections(sources)}
           options={sourceOptions}
           selectedOptions={sources}
@@ -116,7 +116,7 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
           <MultiSelect
             key={id}
             disabled={disabled}
-            label={t(`vessel.${id}` as any, id)}
+            label={t(`vessel.${id}` as any, id) as string}
             placeholder={getPlaceholderBySelections(optionsSelected)}
             options={options}
             selectedOptions={optionsSelected}
@@ -136,7 +136,7 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
         )
       })}
       <MultiSelect
-        label={t('layer.flagState_other', 'Flag States')}
+        label={t('layer.flagState_other', 'Flag States') as string}
         placeholder={getPlaceholderBySelections(flag)}
         options={flagOptions}
         selectedOptions={flag}
@@ -156,7 +156,7 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
           value={lastTransmissionDate}
           max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
           min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
-          label={t('common.active_after', 'Active after')}
+          label={t('common.active_after', 'Active after') as string}
           onChange={(e) => {
             if (e.target.value !== lastTransmissionDate) {
               setSearchFilters({ lastTransmissionDate: e.target.value })
@@ -174,7 +174,7 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
           value={firstTransmissionDate}
           max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
           min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
-          label={t('common.active_before', 'Active Before')}
+          label={t('common.active_before', 'Active Before') as string}
           onChange={(e) => {
             if (e.target.value !== firstTransmissionDate) {
               setSearchFilters({ firstTransmissionDate: e.target.value })

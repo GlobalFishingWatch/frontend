@@ -341,7 +341,7 @@ function Search() {
                   {...getInputProps()}
                   onChange={onInputChange}
                   value={searchQuery}
-                  label={t('search.mainQueryLabel', 'Name, IMO or MMSI')}
+                  label={t('search.mainQueryLabel', 'Name, IMO or MMSI') as string}
                   autoFocus
                   disabled={!basicSearchAllowed}
                   className={styles.input}
@@ -351,7 +351,7 @@ function Search() {
                     searchStatus === AsyncReducerStatus.Loading ||
                     searchStatus === AsyncReducerStatus.Aborted
                   }
-                  placeholder={t('search.placeholder', 'Type to search vessels')}
+                  placeholder={t('search.placeholder', 'Type to search vessels') as string}
                 />
                 {activeSearchOption === 'advanced' && searchDatasets && (
                   <SearchFilters className={styles.filters} datasets={searchDatasets} />

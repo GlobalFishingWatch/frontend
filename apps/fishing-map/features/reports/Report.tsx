@@ -122,7 +122,7 @@ function ActivityReport({ reportName }: { reportName: string }) {
                     'Click Update to see the vessels active in the area<br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
                   start: formatI18nDate(timerange?.start),
                   end: formatI18nDate(timerange?.end),
-                }),
+                }) as string,
               }}
             />
             <Button onClick={() => dispatch(setDateRangeHash(''))}>
@@ -184,7 +184,7 @@ function ActivityReport({ reportName }: { reportName: string }) {
           errorMessage = t(
             'analysis.errorConcurrentReport',
             'You cannot perform more than one concurrent report'
-          )
+          ) as string
         }
         return (
           <ReportVesselsPlaceholder>
@@ -259,19 +259,19 @@ export default function Report() {
   const categoryTabs: Tab<ReportCategory>[] = [
     {
       id: ReportCategory.Fishing,
-      title: t('common.fishing', 'Fishing'),
+      title: t('common.fishing', 'Fishing') as string,
     },
     {
       id: ReportCategory.Presence,
-      title: t('common.presence', 'Presence'),
+      title: t('common.presence', 'Presence') as string,
     },
     {
       id: ReportCategory.Detections,
-      title: t('common.detections', 'Detections'),
+      title: t('common.detections', 'Detections') as string,
     },
     {
       id: ReportCategory.Environment,
-      title: t('common.environment', 'Environment'),
+      title: t('common.environment', 'Environment') as string,
     },
   ]
   const filteredCategoryTabs = categoryTabs.flatMap((tab) => {

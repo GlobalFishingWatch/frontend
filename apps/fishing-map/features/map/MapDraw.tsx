@@ -285,7 +285,7 @@ function MapDraw() {
                 type="number"
                 inputSize="small"
                 value={editingPointLatitude}
-                label={t('common.latitude', 'Latitude')}
+                label={t('common.latitude', 'Latitude') as string}
                 onChange={onHandleLatitudeChange}
                 className={styles.shortInput}
               />
@@ -294,7 +294,7 @@ function MapDraw() {
                 type="number"
                 className={styles.shortInput}
                 value={editingPointLongitude}
-                label={t('common.longitude', 'longitude')}
+                label={t('common.longitude', 'longitude') as string}
                 onChange={onHandleLongitudeChange}
                 inputSize="small"
               />
@@ -343,7 +343,7 @@ function MapDraw() {
           </div>
         )}
         <InputText
-          label={t('layer.name', 'Layer name')}
+          label={t('layer.name', 'Layer name') as string}
           labelClassName={styles.layerLabel}
           value={layerName}
           onChange={onInputChange}

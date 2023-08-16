@@ -39,7 +39,7 @@ export function getSupportedGroupByOptions(
       }
     }
     return option
-  })
+  }) as ChoiceOption[]
 }
 
 export function getSupportedTemporalResolutions(start: string, end: string): ChoiceOption[] {
@@ -72,5 +72,5 @@ export function getSupportedTemporalResolutions(start: string, end: string): Cho
       }
     }
     return option
-  })
+  }) as ChoiceOption[]
 }

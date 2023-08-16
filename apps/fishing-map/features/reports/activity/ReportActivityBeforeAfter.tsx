@@ -85,7 +85,7 @@ export default function ReportActivityBeforeAfter() {
       <div className={styles.timeSelection}>
         <div className={styles.dateWrapper}>
           <InputDate
-            label={t('analysis.beforeAfterDate', 'date')}
+            label={t('analysis.beforeAfterDate', 'date') as string}
             onChange={trackAndChangeDate}
             value={timeComparison?.compareStart}
             min={MIN_DATE}
@@ -94,7 +94,7 @@ export default function ReportActivityBeforeAfter() {
         </div>
         <div className={styles.durationWrapper}>
           <InputText
-            label={t('analysis.periodComparisonDuration', 'duration')}
+            label={t('analysis.periodComparisonDuration', 'duration') as string}
             value={timeComparison?.duration}
             type="number"
             onChange={trackAndChangeDuration}

@@ -52,7 +52,7 @@ function UserWorkspaces() {
 
   const onEditClick = useCallback(
     async (workspace: AppWorkspace) => {
-      const name = prompt(t('workspace.nameInput', 'Workspace name'), workspace.name)
+      const name = prompt(t('workspace.nameInput', 'Workspace name') as string, workspace.name)
       if (name) {
         await dispatch(updateWorkspaceThunk({ id: workspace.id, name }))
       }
@@ -175,7 +175,7 @@ function UserWorkspaces() {
       </div>
       {workspaceTemplateSelected && (
         <NewWorkspaceModal
-          title={t('workspace.new', 'New workspace')}
+          title={t('workspace.new', 'New workspace') as string}
           isOpen={workspaceTemplateSelected !== undefined}
           onClose={closeWorkspaceCreate}
           onFinish={onWorkspaceCreateFinish}

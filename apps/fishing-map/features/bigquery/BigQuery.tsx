@@ -125,8 +125,8 @@ const BigQueryMenu: React.FC = () => {
           onChange={(e) => setName(e.target.value)}
         />
         <Select
-          label={t('bigQuery.visualiationMode', 'Visualisation mode')}
-          placeholder={t('selects.placeholder', 'Select an option')}
+          label={t('bigQuery.visualiationMode', 'Visualisation mode') as string}
+          placeholder={t('selects.placeholder', 'Select an option') as string}
           options={VisualisationOptions}
           containerClassName={styles.input}
           selectedOption={currentVisualisationMode}
@@ -137,8 +137,8 @@ const BigQueryMenu: React.FC = () => {
         {visualisationMode === '4wings' && (
           <Fragment>
             <Select
-              label={t('bigQuery.aggregationMode', 'Aggregation mode *')}
-              placeholder={t('selects.placeholder', 'Select an option')}
+              label={t('bigQuery.aggregationMode', 'Aggregation mode *') as string}
+              placeholder={t('selects.placeholder', 'Select an option') as string}
               options={AggregationOptions}
               containerClassName={styles.input}
               selectedOption={AggregationOptions.find(({ id }) => id === aggregationOperation)}

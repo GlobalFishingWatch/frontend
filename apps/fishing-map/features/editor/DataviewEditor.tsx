@@ -178,7 +178,7 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
       />
       <Select
         label={`${t('common.category', 'Category')} *`}
-        placeholder={t('selects.placeholder', 'Select an option')}
+        placeholder={t('selects.placeholder', 'Select an option') as string}
         options={categoryOptions}
         className={styles.input}
         selectedOption={categoryOptions.find(({ id }) => id === dataview.category)}
@@ -205,7 +205,7 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
           placeholder={
             dataviewDatasets.length > 0
               ? dataviewDatasets.map(({ id }) => id).join(', ')
-              : t('selects.placeholder', 'Select an option')
+              : (t('selects.placeholder', 'Select an option') as string)
           }
           options={datasetsOptions}
           selectedOptions={dataviewDatasets}
@@ -294,7 +294,7 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
               {!dataview.config?.static && (
                 <Select
                   label="Temporal resolution"
-                  placeholder={t('selects.placeholder', 'Select an option')}
+                  placeholder={t('selects.placeholder', 'Select an option') as string}
                   options={temporalResolutionOptions}
                   containerClassName={styles.input2Columns}
                   direction="top"
