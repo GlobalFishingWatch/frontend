@@ -58,6 +58,7 @@ export type SupportedContextDatasetSchema = 'removal_of'
 export type SupportedEventsDatasetSchema = 'duration'
 
 const CONTEXT_DATASETS_SCHEMAS: SupportedContextDatasetSchema[] = ['removal_of']
+const SINGLE_SELECTION_SCHEMAS: SupportedDatasetSchema[] = ['vessel-groups']
 
 export type SchemaFieldDataview =
   | UrlDataviewInstance
@@ -535,6 +536,10 @@ export const getSchemaOptionsSelectedInDataview = (
     ]
   }
 
+  if (SINGLE_SELECTION_SCHEMAS.includes(schema)) {
+    return options?.filter((option) => dataview.config?.filters?.[schema]?.id === option.id)
+  }
+
   return options?.filter((option) =>
     dataview.config?.filters?.[schema]?.map((o) => o.toString())?.includes(option.id)
   )
@@ -552,6 +557,10 @@ export const getSchemaFilterOperationInDataview = (
     return
   }
   return dataview.config?.filterOperators?.[schema] || INCLUDE_FILTER_ID
+}
+
+const getSchemaFilterSingleSelection = (schema: SupportedDatasetSchema) => {
+  return SINGLE_SELECTION_SCHEMAS.includes(schema)
 }
 
 export const getSchemaFilterUnitInDataview = (
@@ -580,6 +589,7 @@ export type SchemaFilter = {
   optionsSelected: ReturnType<typeof getCommonSchemaFieldsInDataview>
   filterOperator: FilterOperator
   unit?: string
+  singleSelection?: boolean
 }
 export const getFiltersBySchema = (
   dataview: SchemaFieldDataview,
@@ -588,6 +598,7 @@ export const getFiltersBySchema = (
 ): SchemaFilter => {
   const options = getCommonSchemaFieldsInDataview(dataview, schema, vesselGroups)
   const type = getCommonSchemaTypeInDataview(dataview, schema) as DatasetSchemaType
+  const singleSelection = getSchemaFilterSingleSelection(schema)
   const filterOperator = getSchemaFilterOperationInDataview(dataview, schema) as FilterOperator
   const optionsSelected = getSchemaOptionsSelectedInDataview(dataview, schema, options)
   const unit = getSchemaFilterUnitInDataview(dataview, schema)
@@ -599,10 +610,20 @@ export const getFiltersBySchema = (
     ? t(`datasets:${datasetId}.schema.${schema}.keyword`, schema.toString())
     : t(`vessel.${schema}`, { defaultValue: schema, count: 2 }) // We always want to show the plural for the multiselect
   if (schema === 'vessel-groups') {
-    label = t('vesselGroup.vesselGroups', 'Vessel Groups')
+    label = t('vesselGroup.vesselGroup', 'Vessel Group')
   }
 
-  return { id: schema, label, unit, disabled, options, optionsSelected, type, filterOperator }
+  return {
+    id: schema,
+    label,
+    unit,
+    disabled,
+    options,
+    optionsSelected,
+    type,
+    filterOperator,
+    singleSelection,
+  }
 }
 
 export const getSchemaFiltersInDataview = (

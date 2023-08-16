@@ -337,7 +337,7 @@ export function resolveDataviews(
       const { filters, filterOperators } = dataviewInstance.config
       if (filters) {
         if (filters['vessel-groups']) {
-          dataviewInstance.config['vessel-groups'] = filters['vessel-groups'].join(',')
+          dataviewInstance.config['vessel-groups'] = filters['vessel-groups'].id
         }
         const sqlFilters = Object.keys(filters)
           .filter((key) => key !== 'vessel-groups')

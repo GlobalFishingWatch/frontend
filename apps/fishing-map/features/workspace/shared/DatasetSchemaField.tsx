@@ -30,7 +30,9 @@ function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.
     vesselGroupsOptions
   )
 
-  let valuesSelected = schemaFieldSelected.sort((a, b) => a.label - b.label)
+  let valuesSelected = Array.isArray(schemaFieldSelected)
+    ? schemaFieldSelected.sort((a, b) => a.label - b.label)
+    : schemaFieldSelected
 
   const valuesAreRangeOfNumbers =
     valuesSelected.length > 1 &&
