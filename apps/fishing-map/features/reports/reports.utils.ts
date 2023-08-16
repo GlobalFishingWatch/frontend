@@ -17,9 +17,9 @@ import {
   getSchemaFilterOperationInDataview,
   SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
-import { ReportVesselWithDatasets } from 'features/reports/reports.selectors'
-import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { ReportCategory } from 'types'
+
+const ALWAYS_SHOWN_FILTERS = ['vessel-groups']
 
 const arrayToStringTransform = (array: string[]) =>
   `(${array?.map((v: string) => `'${v}'`).join(', ')})`
@@ -104,12 +104,13 @@ const getSerializedDatasets = (dataview: UrlDataviewInstance) => {
 }
 
 const getSerializedFilterFields = (dataview: UrlDataviewInstance, filterKey: string): string => {
-  return dataview.config?.filters?.[filterKey]?.slice().sort(sortStrings).join(', ')
+  const values = dataview.config?.filters?.[filterKey]
+  return Array.isArray(values) ? values?.slice().sort(sortStrings).join(', ') : values
 }
 
 export const FIELDS = [
   ['geartype', 'layer.gearType_other', 'Gear types'],
-  ['vessel-groups', 'vesselGroup.vesselGroups', 'Vessel Groups'],
+  ['vessel-groups', 'vesselGroup.vesselGroup', 'Vessel Group'],
   ['origin', 'vessel.origin', 'Origin'],
   ['vessel_type', 'vessel.vesselType_other', 'Vessel types'],
 ]
@@ -164,7 +165,8 @@ export const getCommonProperties = (dataviews: UrlDataviewInstance[]) => {
         dataviews?.every((dataview) => {
           const genericFilterFields = getSerializedFilterFields(dataview, filterKey)
           return genericFilterFields === firstDataviewGenericFilterFields
-        })
+        }) &&
+        !ALWAYS_SHOWN_FILTERS.includes(filterKey)
       ) {
         const keyLabelField = FIELDS.find((field) => field[0] === filterKey)
         const keyLabel = keyLabelField
