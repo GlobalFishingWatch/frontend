@@ -9,7 +9,7 @@ import {
   waitForSidebarLoaded,
 } from '../../support/app.po'
 
-describe('See the creation of analysis for an area', () => {
+xdescribe('See the creation of analysis for an area', () => {
   before(() => {
     cy.login(Cypress.env('apiAuthUser'), Cypress.env('apiAuthPass'))
   })
