@@ -18,6 +18,7 @@ xdescribe('Basic search for a vessel', () => {
     })
   })
 
+  //MAP-1217
   it('should search for a vessel by name "' + SEARCH_VESSEL_NAME + '" in the sidebar', () => {
     cy.intercept(API_URL_SEARCH_VESSELS).as('searchForVessels')
     cy.getBySel('seach-vessels-basic-input').type(SEARCH_VESSEL_NAME)

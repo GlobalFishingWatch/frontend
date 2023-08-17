@@ -7,6 +7,7 @@ xdescribe('vms', () => {
     disablePopups()
   })
 
+  //MAP-1215
   it('should include all sources available publicly', () => {
     // Be sure to use english or the names to test will fail
     switchLanguage('en')

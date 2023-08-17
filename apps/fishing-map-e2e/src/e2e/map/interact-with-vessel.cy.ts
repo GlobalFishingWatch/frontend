@@ -13,6 +13,7 @@ xdescribe('Interact with vessels', () => {
     disablePopups()
   })
 
+  //MAP-1216
   it('Select a vessel on the apparent fishing effort heat map with AIS source', () => {
     cy.log('should pin a vessel from a cell in the map')
     waitForMapLoadTiles(3000) // Give 3 seconds more to paint data on the map

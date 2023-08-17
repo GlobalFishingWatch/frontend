@@ -1,3 +1,4 @@
+import { API_VERSION } from '@globalfishingwatch/api-client'
 import {
   Dataset,
   DatasetTypes,
@@ -31,10 +32,15 @@ export const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDataset
         const queryArray = Array.isArray(query.value)
           ? (query.value as string[])
           : [query.value as string]
-        queryArray.forEach((queryArrItem, i) => {
-          const queryArrId = `${query.id}[${i}]`
-          resolvedQuery.set(queryArrId, queryArrItem)
-        })
+        // TODO check if we can remove this once map only uses v3 in dev and pro
+        if (API_VERSION === 'v3') {
+          queryArray.forEach((queryArrItem, i) => {
+            const queryArrId = `${query.id}[${i}]`
+            resolvedQuery.set(queryArrId, queryArrItem)
+          })
+        } else {
+          resolvedQuery.set(query.id, queryArray.join(','))
+        }
       } else {
         resolvedQuery.set(query.id, query.value.toString())
       }
