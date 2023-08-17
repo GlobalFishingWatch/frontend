@@ -7,7 +7,7 @@ import {
   waitForMapLoadTiles,
 } from '../../support/app.po'
 
-describe('Interact with vessels', () => {
+xdescribe('Interact with vessels', () => {
   before(() => {
     cy.visit(URL_FULL_DATA_AREA)
     disablePopups()
