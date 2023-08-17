@@ -1,7 +1,7 @@
 import { VMS_NAMES } from '../../constants/vms'
 import { disablePopups, getVmsActivityLayerPanel, switchLanguage } from '../../support/app.po'
 
-xdescribe('vms', () => {
+describe('vms', () => {
   beforeEach(() => {
     cy.visit('/')
     disablePopups()
