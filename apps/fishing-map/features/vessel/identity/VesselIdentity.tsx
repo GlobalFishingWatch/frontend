@@ -201,7 +201,7 @@ const VesselIdentity = () => {
                 )
                 if (!filteredRegistryInfo) return null
                 return (
-                  <div className={styles.fieldGroupContainer}>
+                  <div className={styles.fieldGroupContainer} key={key}>
                     <label className={styles.twoCells}>
                       {t(`vessel.${label}` as any, label)}
                       {terminologyKey && (
