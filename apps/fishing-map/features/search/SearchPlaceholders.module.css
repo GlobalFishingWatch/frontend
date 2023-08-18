@@ -48,9 +48,10 @@
 }
 
 .highlighted {
-  background: var(--color-terthiary-blue);
-  padding: var(--space-XS) var(--space-S);
-  border-radius: var(--border-radius);
+  background-color: var(--color-help-yellow);
+  padding: var(--space-XS) 1.5rem;
+  border-radius: 2rem;
+  border-bottom: var(--border);
   width: max-content;
   margin: var(--space-M) auto;
 }
