@@ -12,9 +12,11 @@ import {
   selectEventsGroupedByType,
 } from 'features/vessel/activity/vessels-activity.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { setHighlightedEvents } from 'features/timebar/timebar.slice'
+import { setHighlightedEvents, setHighlightedTime } from 'features/timebar/timebar.slice'
 import { getScrollElement } from 'features/sidebar/Sidebar'
 import { selectVesselPrintMode } from 'features/vessel/vessel.slice'
+import { getUTCDateTime } from 'utils/dates'
+import { ZOOM_LEVEL_TO_FOCUS_EVENT } from 'features/timebar/Timebar'
 import Event, { EVENT_HEIGHT } from '../event/Event'
 import styles from '../ActivityGroupedList.module.css'
 import { useActivityByType } from './activity-by-type.hook'
@@ -57,6 +59,12 @@ export function ActivityByType() {
   const onMapHover = useCallback(
     (event: ActivityEvent) => {
       if (event?.id) {
+        dispatch(
+          setHighlightedTime({
+            start: getUTCDateTime(event.start).toISO(),
+            end: getUTCDateTime(event.end).toISO(),
+          })
+        )
         dispatch(setHighlightedEvents([event.id]))
       } else {
         dispatch(setHighlightedEvents([]))
@@ -67,10 +75,11 @@ export function ActivityByType() {
 
   const selectEventOnMap = useCallback(
     (event: ActivityEvent) => {
+      const zoom = viewport.zoom ?? DEFAULT_VIEWPORT.zoom
       setMapCoordinates({
         latitude: event.position.lat,
         longitude: event.position.lon,
-        zoom: viewport.zoom ?? DEFAULT_VIEWPORT.zoom,
+        zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
       })
     },
     [setMapCoordinates, viewport.zoom]

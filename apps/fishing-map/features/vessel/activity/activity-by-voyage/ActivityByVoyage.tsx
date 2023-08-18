@@ -25,6 +25,8 @@ import { getUTCDateTime } from 'utils/dates'
 import { getScrollElement } from 'features/sidebar/Sidebar'
 import { selectVisibleEvents } from 'features/app/app.selectors'
 import { selectVesselPrintMode } from 'features/vessel/vessel.slice'
+import { useDebouncedDispatchHighlightedEvent } from 'features/map/map.hooks'
+import { ZOOM_LEVEL_TO_FOCUS_EVENT } from 'features/timebar/Timebar'
 import styles from '../ActivityGroupedList.module.css'
 
 const ActivityByVoyage = () => {
@@ -52,6 +54,8 @@ const ActivityByVoyage = () => {
     [fitBounds, voyages]
   )
 
+  const dispatchSetHighlightedEvents = useDebouncedDispatchHighlightedEvent()
+
   const onVoyageMapHover = useCallback(
     (voyageId: ActivityEvent['voyage']) => {
       const events = voyages[voyageId]
@@ -64,18 +68,24 @@ const ActivityByVoyage = () => {
           })
         )
         const eventIds = events.map((event) => event.id)
-        dispatch(setHighlightedEvents(eventIds))
+        dispatchSetHighlightedEvents(eventIds)
       } else {
         dispatch(disableHighlightedTime())
-        dispatch(setHighlightedEvents(undefined))
+        dispatchSetHighlightedEvents(undefined)
       }
     },
-    [dispatch, voyages]
+    [dispatchSetHighlightedEvents, dispatch, voyages]
   )
 
   const onEventMapHover = useCallback(
     (event: ActivityEvent) => {
       if (event?.id) {
+        dispatch(
+          setHighlightedTime({
+            start: getUTCDateTime(event.start).toISO(),
+            end: getUTCDateTime(event.end).toISO(),
+          })
+        )
         dispatch(setHighlightedEvents([event.id]))
       } else {
         dispatch(setHighlightedEvents([]))
@@ -86,10 +96,11 @@ const ActivityByVoyage = () => {
 
   const selectEventOnMap = useCallback(
     (event: ActivityEvent) => {
+      const zoom = viewport.zoom ?? DEFAULT_VIEWPORT.zoom
       setMapCoordinates({
         latitude: event.position.lat,
         longitude: event.position.lon,
-        zoom: viewport.zoom ?? DEFAULT_VIEWPORT.zoom,
+        zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
       })
     },
     [setMapCoordinates, viewport.zoom]

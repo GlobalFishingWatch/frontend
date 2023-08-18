@@ -65,29 +65,22 @@ function TrackFootprint({
         setError(true)
         return
       }
-      const vesselsData = vesselIds.map((id) => {
-        return GFWAPI.fetch<any>(
-          `/vessels/${id}/tracks?${qs.stringify({
-            ...TRACK_FOOTPRINT_QUERY,
-            datasets: trackDatasetId,
-          })}`,
-          {
-            responseType: 'vessel',
-          }
-        )
-      })
+      const vesselData = await GFWAPI.fetch<any>(
+        `/vessels/${vesselIds}/tracks?${qs.stringify({
+          ...TRACK_FOOTPRINT_QUERY,
+          datasets: trackDatasetId,
+        })}`,
+        {
+          responseType: 'vessel',
+        }
+      )
 
-      const promises = await Promise.allSettled(vesselsData)
-      const tracksData = promises.map((d) => (d.status === 'fulfilled' ? d.value : []))
-
-      if (tracksData.length === 0) {
+      if (vesselData.length === 0) {
         setError(true)
         return
       }
 
-      const segments = tracksData.flatMap((data) =>
-        trackValueArrayToSegments(data, [Field.lonlat, Field.timestamp])
-      )
+      const segments = trackValueArrayToSegments(vesselData, [Field.lonlat, Field.timestamp])
       const geoJson = segmentsToGeoJSON(segments.filter((s) => s.length > 1))
       setTrackData(geoJson)
       if (onDataLoad) onDataLoad(geoJson)

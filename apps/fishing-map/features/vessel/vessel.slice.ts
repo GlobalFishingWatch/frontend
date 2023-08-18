@@ -145,14 +145,17 @@ const vesselSlice = createSlice({
       const vesselId = action.meta?.arg?.vesselId as string
       state[vesselId] = {
         status: AsyncReducerStatus.Loading,
-        data: {},
+        data: null,
         error: null,
       }
     })
     builder.addCase(fetchVesselInfoThunk.fulfilled, (state, action) => {
       const vesselId = action.meta?.arg?.vesselId as string
       state[vesselId].status = AsyncReducerStatus.Finished
-      state[vesselId].data = action.payload
+      state[vesselId].data = {
+        ...action.payload,
+        id: vesselId,
+      }
     })
     builder.addCase(fetchVesselInfoThunk.rejected, (state, action) => {
       const vesselId = action.meta?.arg?.vesselId as string
@@ -185,7 +188,7 @@ export const selectVesselInfoData = createSelector(
 export const selectVesselInfoDataId = createSelector([selectVessel], (vessel) => vessel?.data?.id)
 export const selectSelfReportedVesselIds = createSelector([selectVessel], (vessel) =>
   vessel?.data?.identities
-    .filter((i) => i.identitySource === VesselIdentitySourceEnum.SelfReported)
+    ?.filter((i) => i.identitySource === VesselIdentitySourceEnum.SelfReported)
     .map((i) => i.id)
 )
 export const selectVesselInfoStatus = createSelector([selectVessel], (vessel) => vessel?.status)

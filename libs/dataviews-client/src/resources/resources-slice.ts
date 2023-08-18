@@ -26,8 +26,9 @@ export interface PartialStoreResources {
 const initialState: ResourcesState = {}
 
 export const getVesselIdFromDatasetConfig = (datasetConfig: DataviewDatasetConfig) => {
-  return (datasetConfig?.query?.find((q) => q.id === 'vessels')?.value ||
+  const vesselIds = (datasetConfig?.query?.find((q) => q.id === 'vessels')?.value ||
     datasetConfig?.params?.find((q) => q.id === 'vesselId')?.value) as string
+  return Array.isArray(vesselIds) ? vesselIds.join(',') : vesselIds
 }
 
 export const getTracksChunkSetId = (datasetConfig: DataviewDatasetConfig) => {

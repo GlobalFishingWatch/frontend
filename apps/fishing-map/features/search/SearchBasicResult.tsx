@@ -18,7 +18,6 @@ import I18nFlag from 'features/i18n/i18nFlag'
 import TrackFootprint from 'features/search/TrackFootprint'
 import { VesselLastIdentity, cleanVesselSearchResults } from 'features/search/search.slice'
 import VesselLink from 'features/vessel/VesselLink'
-import useAddVesselDataviewInstance from 'features/vessel/vessel.hooks'
 import { formatInfoField, EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectVesselsDataviews } from 'features/dataviews/dataviews.slice'
@@ -27,6 +26,7 @@ import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-v
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
 import {
+  getCurrentIdentityVessel,
   getRelatedIdentityVesselIds,
   getSearchIdentityResolved,
   getVesselIdentityProperties,
@@ -64,7 +64,6 @@ function SearchBasicResult({
   const isSearchLocation = useSelector(selectIsStandaloneSearchLocation)
   const [highlightedYear, setHighlightedYear] = useState<number>()
   const [trackBbox, setTrackBbox] = useState<Bbox>()
-  const addVesselDataviewInstance = useAddVesselDataviewInstance()
   const fitBounds = useMapFitBounds()
   const { setTimerange } = useTimerangeConnect()
 
@@ -129,9 +128,6 @@ function SearchBasicResult({
 
   const onVesselClick = useCallback(
     (vessel: VesselLastIdentity) => {
-      if (workspaceId) {
-        addVesselDataviewInstance(vessel)
-      }
       dispatch(cleanVesselSearchResults())
       if (isSearchLocation) {
         if (trackBbox) {
@@ -141,7 +137,6 @@ function SearchBasicResult({
       }
     },
     [
-      addVesselDataviewInstance,
       dispatch,
       fitBounds,
       isSearchLocation,
@@ -149,7 +144,6 @@ function SearchBasicResult({
       trackBbox,
       transmissionDateFrom,
       transmissionDateTo,
-      workspaceId,
     ]
   )
 
@@ -192,8 +186,8 @@ function SearchBasicResult({
         <div className={styles.fullWidth}>
           <div className={styles.name} data-test="vessel-name">
             <VesselLink
-              vesselId={id}
-              datasetId={dataset?.id}
+              vessel={getCurrentIdentityVessel(vessel)}
+              addDataviewInstance={!!workspaceId}
               onClick={() => onVesselClick(vesselData)}
               query={vesselQuery}
             >

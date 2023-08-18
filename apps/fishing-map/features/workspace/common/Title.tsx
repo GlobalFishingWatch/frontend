@@ -12,21 +12,24 @@ type TitleProps = {
   classNameActive: string
   title: string | ReactNode
   onToggle?: () => void
+  toggleVisibility?: boolean
 }
 
 const Title = (props: TitleProps, ref: Ref<HTMLHeadingElement>) => {
-  const { dataview, className, classNameActive, title, onToggle } = props
+  const { dataview, className, classNameActive, title, onToggle, toggleVisibility = true } = props
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const layerActive = dataview?.config?.visible ?? true
   const datasetIcon = dataview?.datasets?.[0] && getDatasetIcon(dataview?.datasets?.[0])
 
   const onToggleLayerActive = () => {
-    upsertDataviewInstance({
-      id: dataview.id,
-      config: {
-        visible: !layerActive,
-      },
-    })
+    if (toggleVisibility) {
+      upsertDataviewInstance({
+        id: dataview.id,
+        config: {
+          visible: !layerActive,
+        },
+      })
+    }
     if (onToggle) {
       onToggle()
     }

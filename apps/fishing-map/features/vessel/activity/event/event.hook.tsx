@@ -1,12 +1,14 @@
 import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { EventTypes, GapPosition } from '@globalfishingwatch/api-types'
+import { EventTypes, GapPosition, Regions } from '@globalfishingwatch/api-types'
+import { Tooltip } from '@globalfishingwatch/ui-components'
 import { getUTCDateTime } from 'utils/dates'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
 import VesselLink from 'features/vessel/VesselLink'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { useRegionNamesByType } from 'features/regions/regions.hooks'
+import styles from './Event.module.css'
 
 export function useActivityEventTranslations() {
   const { t } = useTranslation()
@@ -14,7 +16,7 @@ export function useActivityEventTranslations() {
 
   const getEventRegionDescription = useCallback(
     (event: ActivityEvent | GapPosition) => {
-      const regionsDescription = REGIONS_PRIORITY.reduce((acc, regionType) => {
+      const mainRegionDescription = REGIONS_PRIORITY.reduce((acc, regionType) => {
         // We already have the most prioritized region, so we don't need to look for more
         if (!acc && event?.regions?.[regionType]?.length) {
           const values =
@@ -25,16 +27,31 @@ export function useActivityEventTranslations() {
         }
         return acc
       }, '')
-
-      return regionsDescription
+      let allRegionsDescriptionBlocks: string[] = []
+      if (event.regions) {
+        Object.entries(event.regions).forEach(
+          ([regionType, regions]: [keyof Regions, string[]]) => {
+            if (!regions.length) return
+            allRegionsDescriptionBlocks.push(
+              `${t(`layer.areas.${regionType}`)}: ${getRegionNamesByType(regionType, regions).join(
+                ', '
+              )}`
+            )
+          }
+        )
+      }
+      return {
+        mainRegionDescription,
+        allRegionsDescription: allRegionsDescriptionBlocks.map((block) => <div>{block}</div>),
+      }
     },
-    [getRegionNamesByType]
+    [getRegionNamesByType, t]
   )
 
   const getEventDescription = useCallback(
     (event?: ActivityEvent) => {
       if (!event) return EMPTY_FIELD_PLACEHOLDER
-      const regionDescription = getEventRegionDescription(event)
+      const { mainRegionDescription, allRegionsDescription } = getEventRegionDescription(event)
       switch (event.type) {
         case EventTypes.Encounter:
           if (event.encounter?.vessel) {
@@ -46,10 +63,13 @@ export function useActivityEventTranslations() {
                 <VesselLink vesselId={id}>
                   {formatInfoField(name, 'name')} ({formatInfoField(flag, 'flag')})
                 </VesselLink>{' '}
-                {regionDescription && (
-                  <span>
-                    {t('common.in', 'in')} {regionDescription}
-                  </span>
+                {mainRegionDescription && (
+                  <Tooltip content={allRegionsDescription}>
+                    <span className={styles.region}>
+                      {t('common.in', 'in')} {mainRegionDescription}
+                      {allRegionsDescription ? '...' : ''}
+                    </span>
+                  </Tooltip>
                 )}
               </span>
             )
@@ -64,17 +84,44 @@ export function useActivityEventTranslations() {
             port: formatInfoField(portLabel, 'port'),
           })
         case EventTypes.Loitering:
-          return t('event.loiteringActionIn', 'Loitering in {{regionName}}', {
-            regionName: regionDescription,
-          })
+          return (
+            mainRegionDescription && (
+              <Tooltip content={allRegionsDescription}>
+                <span className={styles.region}>
+                  {t('event.loiteringActionIn', 'Loitering in {{regionName}}', {
+                    regionName: mainRegionDescription,
+                  })}
+                  {allRegionsDescription ? '...' : ''}
+                </span>
+              </Tooltip>
+            )
+          )
         case EventTypes.Fishing:
-          return t('event.fishingActionIn', 'Fished in {{regionName}}', {
-            regionName: regionDescription,
-          })
+          return (
+            mainRegionDescription && (
+              <Tooltip content={allRegionsDescription}>
+                <span className={styles.region}>
+                  {t('event.fishingActionIn', 'Fished in {{regionName}}', {
+                    regionName: mainRegionDescription,
+                  })}
+                  {allRegionsDescription ? '...' : ''}
+                </span>
+              </Tooltip>
+            )
+          )
         case EventTypes.Gap:
-          return t('event.gapActionIn', 'Likely Disabling in {{regionName}}', {
-            regionName: regionDescription,
-          })
+          return (
+            mainRegionDescription && (
+              <Tooltip content={allRegionsDescription}>
+                <span className={styles.region}>
+                  {t('event.gapActionIn', 'Likely Disabling in {{regionName}}', {
+                    regionName: mainRegionDescription,
+                  })}
+                  {allRegionsDescription ? '...' : ''}
+                </span>
+              </Tooltip>
+            )
+          )
         default:
           return t('event.unknown', 'Unknown event')
       }

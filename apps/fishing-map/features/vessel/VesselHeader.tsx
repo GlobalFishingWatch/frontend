@@ -4,7 +4,10 @@ import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { eventsToBbox } from '@globalfishingwatch/data-transforms'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
-import { selectVesselEventsFilteredByTimerange } from 'features/vessel/vessel.selectors'
+import {
+  selectVesselEventsFilteredByTimerange,
+  selectVesselTrackResourcesLoading,
+} from 'features/vessel/vessel.selectors'
 import { selectVesselInfoData, setVesselPrintMode } from 'features/vessel/vessel.slice'
 import { formatInfoField } from 'utils/info'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
@@ -22,6 +25,7 @@ const VesselHeader = () => {
   const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
   const viewOnlyVessel = useSelector(selectViewOnlyVessel)
+  const vesselTrackLoading = useSelector(selectVesselTrackResourcesLoading)
   const vessel = useSelector(selectVesselInfoData)
   const dataviews = useSelector(selectActiveVesselsDataviews)
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
@@ -84,7 +88,8 @@ const VesselHeader = () => {
           tooltip={t('layer.vessel_fit_bounds', 'Center view on vessel track')}
           tooltipPlacement="bottom"
           size="small"
-          disabled={!events?.length}
+          loading={vesselTrackLoading}
+          disabled={!events?.length || vesselTrackLoading}
           onClick={onVesselFitBoundsClick}
         />
         <IconButton

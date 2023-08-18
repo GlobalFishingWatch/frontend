@@ -22,6 +22,7 @@ import {
   useTimebarVisualisationConnect,
   useDisableHighlightTimeConnect,
   useActivityMetadata,
+  useHighlightedEventsConnect,
 } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { TimebarVisualisations } from 'types'
@@ -49,7 +50,7 @@ import { selectTracksData, selectTracksGraphData, selectTracksEvents } from './t
 import TimebarActivityGraph from './TimebarActivityGraph'
 import styles from './Timebar.module.css'
 
-const ZOOM_LEVEL_TO_FOCUS_EVENT = 5
+export const ZOOM_LEVEL_TO_FOCUS_EVENT = 5
 
 const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents, showTooltip }) => {
   // const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
@@ -60,6 +61,7 @@ const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents, showTooltip }) =
       if (chunks && chunks.tracksEvents && chunks.tracksEvents.length) {
         dispatchHighlightedEvents(chunks.tracksEvents)
       } else {
+        // TODO review this as it is triggered on every timebar change
         dispatchHighlightedEvents(undefined)
       }
     },
@@ -133,8 +135,7 @@ const TimebarWrapper = () => {
   const { t, ready, i18n } = useTranslation()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
   const { start, end, onTimebarChange } = useTimerangeConnect()
-  // const { highlightedEvents } = useHighlightedEventsConnect()
-  const [highlightedEvents, dispatchHighlightedEvents] = useState([])
+  const { highlightedEvents, dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const { dispatchDisableHighlightedTime } = useDisableHighlightTimeConnect()
   const { timebarVisualisation } = useTimebarVisualisationConnect()
   const { setMapCoordinates, viewport } = useViewport()

@@ -1,24 +1,36 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
 import { resolveDataviewDatasetResources } from '@globalfishingwatch/dataviews-client'
-import { ApiEvent, DatasetTypes, EventTypes } from '@globalfishingwatch/api-types'
+import {
+  ApiEvent,
+  DatasetTypes,
+  EventTypes,
+  ResourceStatus,
+  Segment,
+} from '@globalfishingwatch/api-types'
 import { selectTimeRange, selectVisibleEvents } from 'features/app/app.selectors'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import { selectResources } from 'features/resources/resources.slice'
 import { selectSelfReportedVesselIds } from 'features/vessel/vessel.slice'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 
-export const selectEventsResources = createSelector(
-  [selectActiveTrackDataviews, selectResources],
-  (trackDataviews, resources) => {
+export const selectResourcesByType = (type: DatasetTypes) =>
+  createSelector([selectActiveTrackDataviews, selectResources], (trackDataviews, resources) => {
     return trackDataviews?.flatMap((dataview) => {
-      return resolveDataviewDatasetResources(dataview, DatasetTypes.Events).flatMap(
-        (eventResource) => {
-          return resources[eventResource.url] || []
-        }
-      )
+      return resolveDataviewDatasetResources(dataview, type).flatMap((eventResource) => {
+        return resources[eventResource.url] || []
+      })
     })
-  }
+  })
+
+export const selectEventsResources = createSelector(
+  [selectResourcesByType(DatasetTypes.Events)],
+  (events) => events
+)
+
+export const selectTrackResources = createSelector(
+  [selectResourcesByType(DatasetTypes.Tracks)],
+  (events) => events
 )
 
 export const selectVesselEventsResources = createSelector(
@@ -37,12 +49,45 @@ export const selectVesselEventsResources = createSelector(
   }
 )
 
+export const selectVesselTrackResources = createSelector(
+  [selectTrackResources, selectSelfReportedVesselIds],
+  (trackResources, vesselIds) => {
+    return trackResources?.filter((r) => {
+      return r.datasetConfig?.params?.some((param) => {
+        if (param.id === 'vesselId') {
+          const paramVesselIds = (param.value as string).includes(',')
+            ? (param.value as string).split(',')
+            : [param.value as string]
+          return paramVesselIds.some((v) => vesselIds?.includes(v))
+        }
+        return false
+      })
+    })
+  }
+)
+
 export const selectVesselEventsData = createSelector(
   [selectVesselEventsResources],
   (eventsResources) => {
     return eventsResources
       ?.flatMap((r) => (r.data as ApiEvent[]) || [])
       .sort((a, b) => (a.start > b.start ? -1 : 1))
+  }
+)
+
+export const selectVesselTrackResourcesLoading = createSelector(
+  [selectVesselTrackResources],
+  (trackResources) => {
+    return trackResources.some((r) => r.status === ResourceStatus.Loading)
+  }
+)
+
+export const selectVesselTracksData = createSelector(
+  [selectVesselTrackResources],
+  (trackResources) => {
+    return trackResources.flatMap((r) =>
+      r.status === ResourceStatus.Finished ? (r.data as Segment[]) || [] : []
+    )
   }
 )
 

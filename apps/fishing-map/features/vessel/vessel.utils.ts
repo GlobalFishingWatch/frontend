@@ -19,6 +19,9 @@ export const getVesselIdentities = (
   vessel: IdentityVessel | IdentityVesselData,
   { identitySource } = {} as Pick<GetVesselIdentityParams, 'identitySource'>
 ): VesselDataIdentity[] => {
+  if (!vessel) {
+    return [] as VesselDataIdentity[]
+  }
   const identities = (vessel as IdentityVesselData).identities?.length
     ? (vessel as IdentityVesselData).identities
     : [
@@ -107,8 +110,8 @@ export function getSearchIdentityResolved(vessel: IdentityVessel | IdentityVesse
 
   return {
     ...vesselData,
-    id: vesselSelfReportedIdentities?.[0].id,
-    dataset: vessel.dataset,
+    id: vesselSelfReportedIdentities?.[0]?.id,
+    dataset: vessel?.dataset,
     transmissionDateFrom,
     transmissionDateTo,
     messagesCounter,

@@ -156,7 +156,9 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         className={cx({ [styles.faded]: infoLoading || infoError })}
         data-test="vessel-layer-vessel-name"
       >
-        {getVesselTitle()}
+        <VesselLink className={styles.link} vesselId={vesselId} datasetId={dataset?.id}>
+          {getVesselTitle()}
+        </VesselLink>
       </span>
       {(infoError || trackError) && (
         <IconButton
@@ -176,6 +178,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       className={styles.name}
       classNameActive={styles.active}
       dataview={dataview}
+      toggleVisibility={false}
     />
   )
 

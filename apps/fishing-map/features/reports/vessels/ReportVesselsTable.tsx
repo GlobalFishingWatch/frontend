@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { Fragment } from 'react'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
+import { Dataset, DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { getVesselDataviewInstance, getVesselInWorkspace } from 'features/dataviews/dataviews.utils'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
@@ -20,6 +20,8 @@ import { ReportCategory } from 'types'
 import { selectUserData } from 'features/user/user.slice'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
+import VesselLink from 'features/vessel/VesselLink'
+import { VesselDataviewInstanceParams } from 'features/vessel/vessel.hooks'
 import {
   EMPTY_API_VALUES,
   ReportVesselWithDatasets,
@@ -112,6 +114,10 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
               : t('common.detection_other', 'detections')}
           </div>
           {vessels?.map((vessel, i) => {
+            const vesselLink: VesselDataviewInstanceParams = {
+              id: vessel.vesselId,
+              dataset: vessel.infoDataset as Dataset,
+            }
             const hasDatasets = vessel.infoDataset?.id?.includes(GLOBAL_VESSELS_DATASET_ID)
               ? vessel.infoDataset !== undefined && vessel.trackDataset !== undefined
               : vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
@@ -155,7 +161,9 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                       style={{ backgroundColor: vessel.sourceColor }}
                     ></span>
                   )}
-                  {formatInfoField(vessel.shipName, 'name')}
+                  <VesselLink className={styles.link} vessel={vesselLink} addDataviewInstance>
+                    {formatInfoField(vessel.shipName, 'name')}
+                  </VesselLink>
                 </div>
                 <div className={cx({ [styles.border]: !isLastRow })}>
                   <span>{vessel.mmsi || EMPTY_FIELD_PLACEHOLDER}</span>

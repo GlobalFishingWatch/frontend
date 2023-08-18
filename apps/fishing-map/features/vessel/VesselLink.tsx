@@ -9,20 +9,30 @@ import { resetVesselState, selectVesselInfoDataId } from 'features/vessel/vessel
 import { VESSEL, WORKSPACE_VESSEL } from 'routes/routes'
 import { selectIsStandaloneSearchLocation, selectLocationQuery } from 'routes/routes.selectors'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
-import { QueryParams } from 'types'
+import { QueryParams, TimebarVisualisations } from 'types'
+import {
+  useAddVesselDataviewInstance,
+  VesselDataviewInstanceParams,
+} from 'features/vessel/vessel.hooks'
 
 export type VesselLinkProps = {
-  vesselId: string
+  vesselId?: string
   datasetId?: string
-  query?: Partial<Record<keyof QueryParams, string | number>>
+  vessel?: VesselDataviewInstanceParams
   children: any
   onClick?: () => void
+  className?: string
+  addDataviewInstance?: boolean
+  query?: Partial<Record<keyof QueryParams, string | number>>
 }
 const VesselLink = ({
-  vesselId,
-  datasetId = DEFAULT_VESSEL_IDENTITY_ID,
+  vesselId: vesselIdProp,
+  datasetId,
+  vessel,
   children,
   onClick,
+  className = '',
+  addDataviewInstance = false,
   query,
 }: VesselLinkProps) => {
   const workspaceId = useSelector(selectCurrentWorkspaceId)
@@ -30,21 +40,36 @@ const VesselLink = ({
   const isSearchLocation = useSelector(selectIsStandaloneSearchLocation)
   const vesselInfoDataId = useSelector(selectVesselInfoDataId)
   const workspaceCategory = useSelector(selectCurrentWorkspaceCategory)
+  const addVesselDataviewInstance = useAddVesselDataviewInstance()
   const dispatch = useDispatch()
+  const vesselId = vesselIdProp || vessel?.id
+  const vesselDatasetId = datasetId || vessel?.dataset?.id || DEFAULT_VESSEL_IDENTITY_ID
 
   const onLinkClick = useCallback(() => {
+    if (vessel && addDataviewInstance) {
+      addVesselDataviewInstance(vessel)
+    }
     if (vesselId !== vesselInfoDataId) {
       dispatch(resetVesselState())
     }
     if (onClick) {
       onClick()
     }
-  }, [dispatch, onClick, vesselId, vesselInfoDataId])
+  }, [
+    addDataviewInstance,
+    addVesselDataviewInstance,
+    dispatch,
+    onClick,
+    vessel,
+    vesselId,
+    vesselInfoDataId,
+  ])
 
   if (!vesselId) return children
 
   return (
     <Link
+      className={className}
       to={{
         type: isSearchLocation || !workspaceId ? VESSEL : WORKSPACE_VESSEL,
         payload: {
@@ -58,7 +83,8 @@ const VesselLink = ({
           ...locationQuery,
           // Clean search url when clicking on vessel link
           qry: undefined,
-          vesselDatasetId: datasetId,
+          timebarVisualisation: TimebarVisualisations.Vessel,
+          vesselDatasetId,
           ...(query || {}),
         },
       }}

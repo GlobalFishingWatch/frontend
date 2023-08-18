@@ -32,6 +32,7 @@ import {
   selectIsMarineManagerLocation,
   selectIsVesselLocation,
   selectIsWorkspaceLocation,
+  selectIsWorkspaceVesselLocation,
   selectUrlDataviewInstances,
   selectUrlDataviewInstancesOrder,
   selectVesselId,
@@ -388,10 +389,10 @@ export const selectActiveVesselsDataviews = createDeepEqualSelector(
 )
 
 export const selectActiveTrackDataviews = createDeepEqualSelector(
-  [selectTrackDataviews, selectViewOnlyVessel, selectVesselId],
-  (dataviews, viewOnlyVessel, vesselId) => {
+  [selectTrackDataviews, selectIsWorkspaceVesselLocation, selectViewOnlyVessel, selectVesselId],
+  (dataviews, isVesselLocation, viewOnlyVessel, vesselId) => {
     return dataviews?.filter(({ config, id }) => {
-      if (viewOnlyVessel) {
+      if (isVesselLocation && viewOnlyVessel) {
         return id === `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vesselId}` && config?.visible
       }
       return config?.visible

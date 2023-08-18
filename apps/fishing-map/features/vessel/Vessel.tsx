@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Spinner, Tab, Tabs } from '@globalfishingwatch/ui-components'
 import { isAuthError } from '@globalfishingwatch/api-client'
 import {
+  selectIsVesselLocation,
   selectIsWorkspaceVesselLocation,
   selectVesselId,
   selectWorkspaceId,
@@ -26,6 +27,7 @@ import { isGuestUser } from 'features/user/user.slice'
 import { selectVesselDatasetId } from 'features/vessel/vessel.config.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { useCallbackAfterPaint } from 'hooks/paint.hooks'
+import { useVesselFitBounds } from 'features/vessel/vessel.hooks'
 import VesselIdentity from './identity/VesselIdentity'
 import VesselActivity from './activity/VesselActivity'
 import styles from './Vessel.module.css'
@@ -34,7 +36,6 @@ type VesselSection = 'activity' | 'relatedVessels' | 'areas'
 
 const Vessel = () => {
   const { t } = useTranslation()
-  useFetchDataviewResources()
   const dispatch = useAppDispatch()
   const vesselId = useSelector(selectVesselId)
   const datasetId = useSelector(selectVesselDatasetId)
@@ -42,9 +43,12 @@ const Vessel = () => {
   const infoStatus = useSelector(selectVesselInfoStatus)
   const vesselPrintMode = useSelector(selectVesselPrintMode)
   const infoError = useSelector(selectVesselInfoError)
+  const isVesselLocation = useSelector(selectIsVesselLocation)
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
-  const guestUser = useSelector(isGuestUser)
   const regionsDatasets = useSelector(selectRegionsDatasets)
+  const guestUser = useSelector(isGuestUser)
+  useVesselFitBounds(isVesselLocation)
+  useFetchDataviewResources()
 
   useEffect(() => {
     if (Object.values(regionsDatasets).every((d) => d)) {
