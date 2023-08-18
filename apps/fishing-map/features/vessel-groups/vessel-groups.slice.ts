@@ -233,10 +233,10 @@ export const getVesselInVesselGroupThunk = createAsyncThunk(
 
 export const fetchWorkspaceVesselGroupsThunk = createAsyncThunk(
   'workspace-vessel-groups/fetch',
-  async (ids: string[] = [], { signal, rejectWithValue }) => {
+  async (groups: VesselGroup[] = [], { signal, rejectWithValue }) => {
     try {
       const vesselGroupsParams = {
-        ...(ids?.length && { ids }),
+        ...(groups?.length && { ids: groups.map((g) => g.id).join(',') }),
         cache: false,
         ...DEFAULT_PAGINATION_PARAMS,
       }
