@@ -133,18 +133,18 @@ const ActivityByVoyage = () => {
         <Fragment>
           {Object.entries(voyages).map(([voyage, events]) => {
             return (
-              <Fragment>
+              <Fragment key={voyage}>
                 <VoyageGroup
-                  key={voyage}
+                  key={`${voyage}-group`}
                   expanded
                   events={events}
                   onToggleClick={toggleExpandedVoyage}
                   onMapClick={selectVoyageOnMap}
                   onMapHover={onVoyageMapHover}
                 />
-                {events.map((event) => (
+                {events.map((event, index) => (
                   <Event
-                    key={event.id}
+                    key={`${voyage}-${index}-${event.id}`}
                     event={event}
                     onMapHover={onEventMapHover}
                     onMapClick={selectEventOnMap}

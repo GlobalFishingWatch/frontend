@@ -42,7 +42,9 @@ export function useActivityEventTranslations() {
       }
       return {
         mainRegionDescription,
-        allRegionsDescription: allRegionsDescriptionBlocks.map((block) => <div>{block}</div>),
+        allRegionsDescription: allRegionsDescriptionBlocks.map((block, index) => (
+          <div key={index}>{block}</div>
+        )),
       }
     },
     [getRegionNamesByType, t]

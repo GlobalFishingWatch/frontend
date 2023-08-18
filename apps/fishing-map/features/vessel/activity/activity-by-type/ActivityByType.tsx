@@ -111,15 +111,15 @@ export function ActivityByType() {
             return (
               <Fragment key={eventType}>
                 <ActivityGroup
-                  key={eventType}
+                  key={`${eventType}-group`}
                   eventType={eventType}
                   onToggleClick={onToggleExpandedType}
                   quantity={events.length}
                   expanded={expanded}
-                ></ActivityGroup>
-                {events.map((event) => (
+                />
+                {events.map((event, index) => (
                   <Event
-                    key={event.id}
+                    key={`${eventType}-${index}-${event.id}`}
                     event={event}
                     onMapHover={onMapHover}
                     onMapClick={selectEventOnMap}
