@@ -3,6 +3,7 @@ import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Spinner, Tab, Tabs } from '@globalfishingwatch/ui-components'
 import { isAuthError } from '@globalfishingwatch/api-client'
+import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import {
   selectIsVesselLocation,
   selectIsWorkspaceVesselLocation,
@@ -28,6 +29,8 @@ import { selectVesselDatasetId } from 'features/vessel/vessel.config.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { useCallbackAfterPaint } from 'hooks/paint.hooks'
 import { useVesselFitBounds } from 'features/vessel/vessel.hooks'
+import useMapInstance from 'features/map/map-context.hooks'
+import { useClickedEventConnect } from 'features/map/map.hooks'
 import VesselIdentity from './identity/VesselIdentity'
 import VesselActivity from './activity/VesselActivity'
 import styles from './Vessel.module.css'
@@ -47,6 +50,9 @@ const Vessel = () => {
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const regionsDatasets = useSelector(selectRegionsDatasets)
   const guestUser = useSelector(isGuestUser)
+  const map = useMapInstance()
+  const { cleanFeatureState } = useFeatureState(map)
+  const { dispatchClickedEvent, cancelPendingInteractionRequests } = useClickedEventConnect()
   useVesselFitBounds(isVesselLocation)
   useFetchDataviewResources()
 
@@ -82,6 +88,13 @@ const Vessel = () => {
     return () => {
       window.removeEventListener('afterprint', disableVesselPrintMode)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    cleanFeatureState('click')
+    dispatchClickedEvent(null)
+    cancelPendingInteractionRequests()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
