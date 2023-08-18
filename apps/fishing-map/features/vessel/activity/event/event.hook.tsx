@@ -69,7 +69,7 @@ export function useActivityEventTranslations() {
                   <Tooltip content={allRegionsDescription}>
                     <span className={styles.region}>
                       {t('common.in', 'in')} {mainRegionDescription}
-                      {allRegionsDescription ? '...' : ''}
+                      {allRegionsDescription ? <span className="print-hidden">...</span> : ''}
                     </span>
                   </Tooltip>
                 )}
@@ -93,7 +93,7 @@ export function useActivityEventTranslations() {
                   {t('event.loiteringActionIn', 'Loitering in {{regionName}}', {
                     regionName: mainRegionDescription,
                   })}
-                  {allRegionsDescription ? '...' : ''}
+                  {allRegionsDescription ? <span className="print-hidden">...</span> : ''}
                 </span>
               </Tooltip>
             )
@@ -106,7 +106,7 @@ export function useActivityEventTranslations() {
                   {t('event.fishingActionIn', 'Fished in {{regionName}}', {
                     regionName: mainRegionDescription,
                   })}
-                  {allRegionsDescription ? '...' : ''}
+                  {allRegionsDescription ? <span className="print-hidden">...</span> : ''}
                 </span>
               </Tooltip>
             )
@@ -119,7 +119,7 @@ export function useActivityEventTranslations() {
                   {t('event.gapActionIn', 'Likely Disabling in {{regionName}}', {
                     regionName: mainRegionDescription,
                   })}
-                  {allRegionsDescription ? '...' : ''}
+                  {allRegionsDescription ? <span className="print-hidden">...</span> : ''}
                 </span>
               </Tooltip>
             )
