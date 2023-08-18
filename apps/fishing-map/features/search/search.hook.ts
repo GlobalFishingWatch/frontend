@@ -16,7 +16,11 @@ export const useSearchConnect = () => {
   return { searchPagination, searchSuggestion, searchSuggestionClicked }
 }
 
-const FIRST_FETCH_FILTERS_TO_IGNORE = ['lastTransmissionDate', 'firstTransmissionDate']
+const FIRST_FETCH_FILTERS_TO_IGNORE = [
+  'lastTransmissionDate',
+  'firstTransmissionDate',
+  'infoSource',
+]
 
 export const useSearchFiltersConnect = () => {
   const searchFilters = useSelector(selectSearchFilters)
