@@ -1,3 +1,7 @@
+.placeholder {
+  padding-block: var(--space-XL);
+}
+
 .summaryContainer {
   padding: var(--space-M);
   display: flex;
