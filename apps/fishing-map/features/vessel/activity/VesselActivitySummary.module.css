@@ -1,3 +1,7 @@
+.container {
+  flex: 1;
+}
+
 .eventsCount {
   display: flex;
   align-items: center;

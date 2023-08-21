@@ -77,7 +77,7 @@ export const VesselActivitySummary = () => {
   )
 
   return (
-    <div>
+    <div className={styles.container}>
       <h2 className={styles.summary}>
         <span dangerouslySetInnerHTML={{ __html: summary }}></span>
         {hasActivityRegionsData ? (
