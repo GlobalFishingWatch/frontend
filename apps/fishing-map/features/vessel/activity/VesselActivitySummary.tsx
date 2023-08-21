@@ -30,25 +30,29 @@ export const VesselActivitySummary = () => {
   const visibleEvents = useSelector(selectVisibleEvents)
   const eventsByType = useSelector(selectEventsGroupedByType)
   const { getRegionNamesByType } = useRegionNamesByType()
-  const { activityRegions, mostVisitedPorts } = useSelector(selectActivitySummary)
+  const { activityRegions, mostVisitedPortCountries } = useSelector(selectActivitySummary)
   const activityRegionsLength = Object.keys(activityRegions).length
-  const threeMostVisitedPorts = mostVisitedPorts.slice(0, MAX_PORTS)
-  const restMostVisitedPorts = mostVisitedPorts.slice(MAX_PORTS)
+  const threeMostVisitedPortCountries = mostVisitedPortCountries.slice(0, MAX_PORTS)
+  const restMostVisitedPortCountries = mostVisitedPortCountries.slice(MAX_PORTS)
   const restTooltipContent = useMemo(
     () =>
-      restMostVisitedPorts.length > 0 && (
+      restMostVisitedPortCountries.length > 0 && (
         <ul>
-          {restMostVisitedPorts.map(({ port, count }) => {
+          {restMostVisitedPortCountries.map(({ flag, count }) => {
             return (
-              <li key={port}>
-                {port} ({<I18nNumber number={count} />}{' '}
-                {t('common.event', { defaultValue: 'events', count })})
+              <li key={flag}>
+                {formatInfoField(flag, 'flag')} ({<I18nNumber number={count} />}{' '}
+                {t('event.port_visit', {
+                  defaultValue: 'port visit',
+                  count,
+                })}
+                )
               </li>
             )
           })}
         </ul>
       ),
-    [restMostVisitedPorts, t]
+    [restMostVisitedPortCountries, t]
   )
 
   const summary = t('vessel.summary', {
@@ -143,29 +147,29 @@ export const VesselActivitySummary = () => {
                 defaultValue: eventType,
                 count: events.length,
               })}
-              {eventType === EventTypes.Port && threeMostVisitedPorts.length > 0 && (
+              {eventType === EventTypes.Port && threeMostVisitedPortCountries.length > 0 && (
                 <span>
                   (
-                  {threeMostVisitedPorts.map(({ port, count }, index) => {
+                  {threeMostVisitedPortCountries.map(({ flag, count }, index) => {
                     return (
                       <Tooltip
-                        key={port}
+                        key={flag}
                         content={`${count} ${t('event.port_visit', {
                           defaultValue: 'port visit',
                           count,
                         })}`}
                       >
                         <span className={styles.help}>
-                          {formatInfoField(port, 'port')}
-                          {index < threeMostVisitedPorts.length - 1 ? ', ' : ''}
+                          {formatInfoField(flag, 'flag')}
+                          {index < threeMostVisitedPortCountries.length - 1 ? ', ' : ''}
                         </span>
                       </Tooltip>
                     )
                   })}
-                  {restMostVisitedPorts.length > 0 && (
+                  {restMostVisitedPortCountries.length > 0 && (
                     <Tooltip content={restTooltipContent}>
                       <span className={styles.help}>{` ${t('common.and', 'and')} ${
-                        restMostVisitedPorts.length
+                        restMostVisitedPortCountries.length
                       } ${t('common.more', 'more')}`}</span>
                     </Tooltip>
                   )}

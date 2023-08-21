@@ -20,7 +20,7 @@ export const selectVesselEventsLoading = createSelector([selectEventsResources],
 export const selectActivitySummary = createSelector(
   [selectVesselEventsFilteredByTimerange],
   (events) => {
-    const { activityRegions, mostVisitedPorts } = events.reduce(
+    const { activityRegions, mostVisitedPortCountries } = events.reduce(
       (acc, e) => {
         Object.entries(e.regions || {}).forEach(([regionType, ids]) => {
           if (!acc.activityRegions[regionType]) {
@@ -37,21 +37,21 @@ export const selectActivitySummary = createSelector(
             }
           })
         })
-        const portName = e.port_visit?.intermediateAnchorage?.name
-        if (!portName) return acc
-        if (!acc.mostVisitedPorts[portName]) {
-          acc.mostVisitedPorts[portName] = 0
+        const portFlag = e.port_visit?.intermediateAnchorage?.flag
+        if (!portFlag) return acc
+        if (!acc.mostVisitedPortCountries[portFlag]) {
+          acc.mostVisitedPortCountries[portFlag] = 0
         }
-        acc.mostVisitedPorts[portName]++
+        acc.mostVisitedPortCountries[portFlag]++
         return acc
       },
-      { activityRegions: {}, mostVisitedPorts: {} as Record<string, number> }
+      { activityRegions: {}, mostVisitedPortCountries: {} as Record<string, number> }
     )
     return {
       activityRegions,
-      mostVisitedPorts: Object.entries(mostVisitedPorts)
+      mostVisitedPortCountries: Object.entries(mostVisitedPortCountries)
         .sort((a, b) => b[1] - a[1])
-        .map(([port, count]) => ({ port, count })),
+        .map(([flag, count]) => ({ flag, count })),
     }
   }
 )
