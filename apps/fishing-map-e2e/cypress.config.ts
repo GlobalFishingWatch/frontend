@@ -1,18 +1,19 @@
 import { defineConfig } from 'cypress'
 import { nxE2EPreset } from '@nx/cypress/plugins/cypress-preset'
 const { stat, rmdir } = require('fs')
+const decompress = require('decompress')
 
 const cypressJsonConfig = {
   fileServerFolder: '.',
   fixturesFolder: './src/fixtures',
   video: true,
-  screenshot: false,
   videosFolder: '../../dist/cypress/apps/fishing-map-e2e/videos',
   screenshotsFolder: '../../dist/cypress/apps/fishing-map-e2e/screenshots',
   chromeWebSecurity: false,
   trashAssetsBeforeRuns: true,
   specPattern: ['src/e2e/**/*.cy.{js,jsx,ts,tsx}'],
   supportFile: 'src/support/e2e.ts',
+  numTestsKeptInMemory: 5,
 }
 export default defineConfig({
   e2e: {
@@ -46,6 +47,9 @@ export default defineConfig({
             })
           })
         },
+
+        unzipping: ({ path, file }) =>
+          decompress(path + file, path + 'unzip/' + file.replace('.zip', '')),
       })
     },
   },

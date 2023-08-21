@@ -172,6 +172,7 @@ function DownloadActivityByVessel() {
           <Choice
             options={VESSEL_FORMAT_OPTIONS}
             size="small"
+            testId="report-format"
             activeOption={format}
             onSelect={(option) => setFormat(option.id as Format)}
           />
@@ -214,7 +215,7 @@ function DownloadActivityByVessel() {
           )}
 
           <Button
-            testId="download-button"
+            testId="download-activity-vessel-button"
             onClick={onDownloadClick}
             loading={downloadLoading || downloadAreaLoading}
             className={styles.downloadBtn}
