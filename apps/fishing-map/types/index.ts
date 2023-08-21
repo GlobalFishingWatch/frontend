@@ -119,11 +119,14 @@ export type VesselSearchState = {
 }
 
 export type VesselSearchStateProperty = keyof VesselSearchState
-
+export type VesselSection = 'activity' | 'relatedVessels' | 'areas'
+export type VesselAreaSubsection = 'fao' | 'eez' | 'mpa' | 'rfmo'
 export type VesselProfileActivityMode = 'voyage' | 'type'
 export type VesselProfileState = {
   vesselDatasetId: string
   vesselIdentityIndex: number
+  vesselSection: VesselSection
+  vesselArea: VesselAreaSubsection
   vesselIdentitySource: VesselIdentitySourceEnum
   vesselActivityMode: VesselProfileActivityMode
   viewOnlyVessel: boolean

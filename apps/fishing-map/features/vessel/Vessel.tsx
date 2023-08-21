@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import { Fragment, useCallback, useEffect, useMemo } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Spinner, Tab, Tabs } from '@globalfishingwatch/ui-components'
 import { isAuthError } from '@globalfishingwatch/api-client'
@@ -25,22 +25,25 @@ import { selectRegionsDatasets } from 'features/regions/regions.selectors'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import { ErrorPlaceHolder, WorkspaceLoginError } from 'features/workspace/WorkspaceError'
 import { isGuestUser } from 'features/user/user.slice'
-import { selectVesselDatasetId } from 'features/vessel/vessel.config.selectors'
+import { selectVesselDatasetId, selectVesselSection } from 'features/vessel/vessel.config.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { useCallbackAfterPaint } from 'hooks/paint.hooks'
 import { useVesselFitBounds } from 'features/vessel/vessel.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useClickedEventConnect } from 'features/map/map.hooks'
+import VesselAreas from 'features/vessel/areas/VesselAreas'
+import { useLocationConnect } from 'routes/routes.hook'
+import { VesselSection } from 'types'
 import VesselIdentity from './identity/VesselIdentity'
 import VesselActivity from './activity/VesselActivity'
 import styles from './Vessel.module.css'
 
-type VesselSection = 'activity' | 'relatedVessels' | 'areas'
-
 const Vessel = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { dispatchQueryParams } = useLocationConnect()
   const vesselId = useSelector(selectVesselId)
+  const vesselSection = useSelector(selectVesselSection)
   const datasetId = useSelector(selectVesselDatasetId)
   const urlWorkspaceId = useSelector(selectWorkspaceId)
   const infoStatus = useSelector(selectVesselInfoStatus)
@@ -55,6 +58,29 @@ const Vessel = () => {
   const { dispatchClickedEvent, cancelPendingInteractionRequests } = useClickedEventConnect()
   useVesselFitBounds(isVesselLocation)
   useFetchDataviewResources()
+
+  const sectionTabs: Tab<VesselSection>[] = useMemo(
+    () => [
+      {
+        id: 'activity',
+        title: t('vessel.sectionActivity', 'activity'),
+        content: <VesselActivity />,
+      },
+      {
+        id: 'areas',
+        title: t('vessel.sectionAreas', 'Areas'),
+        content: <VesselAreas />,
+      },
+      {
+        id: 'relatedVessels',
+        title: t('vessel.sectionRelatedVessels', 'Related Vessels'),
+        tooltip: t('common.comingSoon', 'Coming soon'),
+        tooltipPlacement: 'top',
+        disabled: true,
+      },
+    ],
+    [t]
+  )
 
   useEffect(() => {
     if (Object.values(regionsDatasets).every((d) => d)) {
@@ -107,30 +133,9 @@ const Vessel = () => {
     enabled: vesselPrintMode,
   })
 
-  const sectionTabs: Tab<VesselSection>[] = useMemo(
-    () => [
-      {
-        id: 'activity',
-        title: t('vessel.sectionActivity', 'activity'),
-        content: <VesselActivity />,
-      },
-      {
-        id: 'relatedVessels',
-        title: t('vessel.sectionRelatedVessels', 'Related Vessels'),
-        tooltip: t('common.comingSoon', 'Coming soon'),
-        tooltipPlacement: 'top',
-        disabled: true,
-      },
-      {
-        id: 'areas',
-        title: t('vessel.sectionAreas', 'Areas'),
-        tooltip: t('common.comingSoon', 'Coming soon'),
-        tooltipPlacement: 'top',
-        disabled: true,
-      },
-    ],
-    [t]
-  )
+  const changeTab = (tab: Tab<VesselSection>) => {
+    dispatchQueryParams({ vesselSection: tab.id })
+  }
 
   if (infoStatus === AsyncReducerStatus.Loading) {
     return <Spinner />
@@ -161,7 +166,7 @@ const Vessel = () => {
         </Fragment>
       )}
       <div className={styles.activityContainer}>
-        <Tabs tabs={sectionTabs} activeTab={sectionTabs[0].id} />
+        <Tabs tabs={sectionTabs} activeTab={vesselSection} onTabClick={changeTab} />
       </div>
     </Fragment>
   )

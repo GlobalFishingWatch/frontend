@@ -388,6 +388,11 @@ export const selectActiveVesselsDataviews = createDeepEqualSelector(
   (dataviews) => dataviews?.filter((d) => d.config?.visible)
 )
 
+export const selectVesselProfileDataview = createDeepEqualSelector(
+  [selectActiveVesselsDataviews, selectVesselInfoData],
+  (dataviews, vessel) => dataviews.find(({ id }) => vessel && id.includes(vessel.id))
+)
+
 export const selectActiveTrackDataviews = createDeepEqualSelector(
   [selectTrackDataviews, selectIsWorkspaceVesselLocation, selectViewOnlyVessel, selectVesselId],
   (dataviews, isVesselLocation, viewOnlyVessel, vesselId) => {

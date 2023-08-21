@@ -1,5 +1,10 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { VesselProfileActivityMode, VesselProfileStateProperty } from 'types'
+import {
+  VesselAreaSubsection,
+  VesselProfileActivityMode,
+  VesselProfileStateProperty,
+  VesselSection,
+} from 'types'
 import { selectQueryParam } from 'routes/routes.selectors'
 import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
 import { VesselIdentitySourceEnum } from 'features/search/search.config'
@@ -35,6 +40,20 @@ export const selectVesselIdentitySource = createSelector(
   [selectVesselProfileStateProperty('vesselIdentitySource')],
   (vesselIdentitySource): VesselIdentitySourceEnum => {
     return vesselIdentitySource
+  }
+)
+
+export const selectVesselSection = createSelector(
+  [selectVesselProfileStateProperty('vesselSection')],
+  (vesselSection): VesselSection => {
+    return vesselSection
+  }
+)
+
+export const selectVesselAreaSubsection = createSelector(
+  [selectVesselProfileStateProperty('vesselArea')],
+  (vesselArea): VesselAreaSubsection => {
+    return vesselArea
   }
 )
 

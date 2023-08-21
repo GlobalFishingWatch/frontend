@@ -1,0 +1,57 @@
+.placeholder {
+  padding-block: var(--space-XL);
+}
+
+.container {
+  padding: var(--space-M);
+}
+
+.titleContainer {
+  display: flex;
+  align-items: center;
+}
+
+.title {
+  flex: 1;
+}
+
+.areaList {
+  margin-top: var(--space-S);
+  margin-bottom: var(--space-XL);
+}
+
+.areaContainer {
+  width: 20rem;
+  height: 3rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.area {
+  width: 150px;
+}
+
+.count {
+  font: var(--font-S);
+  fill: var(--color-secondary-blue);
+}
+
+.tooltipContainer {
+  background-color: var(--color-white);
+  border: var(--border);
+  padding: var(--space-S);
+}
+
+.tooltipValue {
+  color: var(--color-secondary-blue);
+}
+
+.tooltipValueDot {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.5rem;
+  display: inline-flex;
+  border: var(--border);
+  background-color: currentcolor;
+  margin-right: 0.5rem;
+}

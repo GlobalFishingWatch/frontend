@@ -9,6 +9,8 @@ export const DEFAULT_VESSEL_STATE: VesselProfileState = {
   vesselIdentityIndex: 0,
   vesselIdentitySource: VesselIdentitySourceEnum.Registry,
   vesselActivityMode: 'type',
+  vesselSection: 'activity',
+  vesselArea: 'fao',
   viewOnlyVessel: true,
 }
 

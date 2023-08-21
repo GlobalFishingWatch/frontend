@@ -12,7 +12,7 @@ import { selectVesselInfoData, setVesselPrintMode } from 'features/vessel/vessel
 import { formatInfoField } from 'utils/info'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { getCurrentIdentityVessel, getVesselProperty } from 'features/vessel/vessel.utils'
-import { selectActiveVesselsDataviews } from 'features/dataviews/dataviews.slice'
+import { selectVesselProfileDataview } from 'features/dataviews/dataviews.slice'
 import { COLOR_PRIMARY_BLUE } from 'features/app/App'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
@@ -27,9 +27,8 @@ const VesselHeader = () => {
   const viewOnlyVessel = useSelector(selectViewOnlyVessel)
   const vesselTrackLoading = useSelector(selectVesselTrackResourcesLoading)
   const vessel = useSelector(selectVesselInfoData)
-  const dataviews = useSelector(selectActiveVesselsDataviews)
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
-  const vesselDataview = dataviews.find(({ id }) => vessel && id.includes(vessel.id))
+  const vesselDataview = useSelector(selectVesselProfileDataview)
   const events = useSelector(selectVesselEventsFilteredByTimerange)
   const fitBounds = useMapFitBounds()
 
