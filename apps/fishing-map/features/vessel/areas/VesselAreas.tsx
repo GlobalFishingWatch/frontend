@@ -26,6 +26,7 @@ import { selectVesselProfileDataview } from 'features/dataviews/dataviews.slice'
 import { useRegionNamesByType } from 'features/regions/regions.hooks'
 import { EVENTS_COLORS } from 'data/config'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { selectVesselEventsFilteredByTimerange } from 'features/vessel/vessel.selectors'
 import styles from './VesselAreas.module.css'
 
 const AreaTick = ({ y, payload }: any) => {
@@ -63,6 +64,7 @@ const AreaTooltip = ({ payload }: any) => {
 const VesselAreas = () => {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
+  const events = useSelector(selectVesselEventsFilteredByTimerange)
   const vesselArea = useSelector(selectVesselAreaSubsection)
   const visibleEvents = useSelector(selectVisibleEvents)
   const eventsGrouped = useSelector(selectEventsGroupedByArea)
@@ -170,6 +172,13 @@ const VesselAreas = () => {
               </BarChart>
             </ResponsiveContainer>
           </div>
+        ) : events.length === 0 ? (
+          <span className={styles.enptyState}>
+            {t(
+              'vessel.noEventsinTimeRange',
+              'There are no events fully contained in your timerange.'
+            )}
+          </span>
         ) : (
           <span className={styles.enptyState}>
             {t('vessel.noEventsIn', {

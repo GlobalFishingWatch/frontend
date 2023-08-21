@@ -12,10 +12,9 @@ import {
   selectEventsGroupedByType,
 } from 'features/vessel/activity/vessels-activity.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { setHighlightedEvents, setHighlightedTime } from 'features/timebar/timebar.slice'
+import { setHighlightedEvents } from 'features/timebar/timebar.slice'
 import { getScrollElement } from 'features/sidebar/Sidebar'
 import { selectVesselPrintMode } from 'features/vessel/vessel.slice'
-import { getUTCDateTime } from 'utils/dates'
 import { ZOOM_LEVEL_TO_FOCUS_EVENT } from 'features/timebar/Timebar'
 import Event, { EVENT_HEIGHT } from '../event/Event'
 import styles from '../ActivityGroupedList.module.css'
