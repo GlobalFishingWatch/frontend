@@ -675,6 +675,7 @@
     "nationalId": "Identifiant national",
     "noEventsinTimeRange": "There are no events fully contained in your timerange.",
     "notMatched": "Aucune donnée correspondante",
+    "noEventsIn": "No event in your timerange happened in any {{regionType}}",
     "noVoyagesinTimeRange": "There are no voyages fully contained in your timerange.",
     "noVoyagesWithoutPorts": "Please turn on port visits visibility",
     "origin": "Origine",
