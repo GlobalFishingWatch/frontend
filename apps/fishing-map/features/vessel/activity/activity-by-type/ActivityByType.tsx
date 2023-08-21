@@ -59,12 +59,6 @@ export function ActivityByType() {
   const onMapHover = useCallback(
     (event: ActivityEvent) => {
       if (event?.id) {
-        dispatch(
-          setHighlightedTime({
-            start: getUTCDateTime(event.start).toISO(),
-            end: getUTCDateTime(event.end).toISO(),
-          })
-        )
         dispatch(setHighlightedEvents([event.id]))
       } else {
         dispatch(setHighlightedEvents([]))
