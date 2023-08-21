@@ -104,8 +104,8 @@ export function getSearchIdentityResolved(vessel: IdentityVessel | IdentityVesse
     ?.flatMap((r) => r.transmissionDateTo || [])
     .sort((a, b) => (a > b ? -1 : 1))?.[0]
 
-  const messagesCounter = vesselSelfReportedIdentities.reduce((acc, identity) => {
-    return identity.messagesCounter ? acc + identity.messagesCounter : acc
+  const positionsCounter = vesselSelfReportedIdentities.reduce((acc, identity) => {
+    return identity.positionsCounter ? acc + identity.positionsCounter : acc
   }, 0)
 
   return {
@@ -114,7 +114,7 @@ export function getSearchIdentityResolved(vessel: IdentityVessel | IdentityVesse
     dataset: vessel?.dataset,
     transmissionDateFrom,
     transmissionDateTo,
-    messagesCounter,
+    positionsCounter,
   } as VesselLastIdentity
 }
 

@@ -160,9 +160,9 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
       {
         id: 'transmissionCount',
         accessorFn: (vessel) => {
-          const { messagesCounter } = getSearchIdentityResolved(vessel)
-          if (messagesCounter) {
-            return <I18nNumber number={messagesCounter} />
+          const { positionsCounter } = getSearchIdentityResolved(vessel)
+          if (positionsCounter) {
+            return <I18nNumber number={positionsCounter} />
           }
         },
         header: t('vessel.transmission_other', 'Transmissions'),

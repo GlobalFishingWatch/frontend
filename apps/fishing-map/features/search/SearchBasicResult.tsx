@@ -79,7 +79,7 @@ function SearchBasicResult({
     shiptype,
     transmissionDateFrom,
     transmissionDateTo,
-    messagesCounter,
+    positionsCounter,
   } = vesselData
   const [shipname, ...names] = getVesselIdentityProperties(vessel, 'shipname')
   const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER
@@ -293,7 +293,7 @@ function SearchBasicResult({
             {transmissionDateFrom && transmissionDateTo && (
               <div className={cx(styles.property, styles.fullWidth)}>
                 <span>
-                  {messagesCounter && messagesCounter > 0 && formatI18nNumber(messagesCounter)}{' '}
+                  {positionsCounter && positionsCounter > 0 && formatI18nNumber(positionsCounter)}{' '}
                   {t('vessel.transmission_other', 'transmissions')} {t('common.from', 'from')}{' '}
                   <I18nDate date={transmissionDateFrom} /> {t('common.to', 'to')}{' '}
                   <I18nDate date={transmissionDateTo} />

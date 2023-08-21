@@ -27,7 +27,7 @@ import { selectVesselId } from 'routes/routes.selectors'
 
 export type VesselDataIdentity = (SelfReportedInfo | VesselRegistryInfo) & {
   identitySource: VesselIdentitySourceEnum
-  messagesCounter?: number
+  positionsCounter?: number
 }
 // Merges and plain all the identities of a vessel
 export type IdentityVesselData = {
