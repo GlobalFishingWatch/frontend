@@ -128,47 +128,56 @@ const VesselAreas = () => {
         />
       </div>
       <div className={styles.areaList}>
-        <div style={{ height: eventsGrouped.length * 40 }}>
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart layout="vertical" data={eventsGrouped} margin={{ right: 20 }}>
-              <YAxis
-                interval={0}
-                axisLine={false}
-                tickLine={false}
-                type="category"
-                dataKey="region"
-                width={200}
-                tick={<AreaTick />}
-              />
-              <XAxis type="number" hide />
-              <RechartsTooltip content={<AreaTooltip />} />
-              {eventTypes?.map(
-                (eventType, index) =>
-                  eventType && (
-                    <Bar
-                      key={eventType}
-                      dataKey={eventType}
-                      barSize={15}
-                      stackId="a"
-                      fill={
-                        eventType === 'fishing'
-                          ? vesselDataview?.config?.color
-                          : EVENTS_COLORS[eventType]
-                      }
-                    >
-                      {index === eventTypes.length - 1 && (
-                        <LabelList
-                          position="right"
-                          valueAccessor={(entry) => formatI18nNumber(entry.total)}
-                          className={styles.count}
-                        />
-                      )}
-                    </Bar>
-                  )
-              )}
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+        {eventsGrouped.length > 0 ? (
+          <div style={{ height: eventsGrouped.length * 40 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart layout="vertical" data={eventsGrouped} margin={{ right: 20 }}>
+                <YAxis
+                  interval={0}
+                  axisLine={false}
+                  tickLine={false}
+                  type="category"
+                  dataKey="region"
+                  width={200}
+                  tick={<AreaTick />}
+                />
+                <XAxis type="number" hide />
+                <RechartsTooltip content={<AreaTooltip />} />
+                {eventTypes?.map(
+                  (eventType, index) =>
+                    eventType && (
+                      <Bar
+                        key={eventType}
+                        dataKey={eventType}
+                        barSize={15}
+                        stackId="a"
+                        fill={
+                          eventType === 'fishing'
+                            ? vesselDataview?.config?.color
+                            : EVENTS_COLORS[eventType]
+                        }
+                      >
+                        {index === eventTypes.length - 1 && (
+                          <LabelList
+                            position="right"
+                            valueAccessor={(entry) => formatI18nNumber(entry.total)}
+                            className={styles.count}
+                          />
+                        )}
+                      </Bar>
+                    )
+                )}
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        ) : (
+          <span className={styles.enptyState}>
+            {t('vessel.noEventsIn', {
+              defaultValue: 'No event in your timerange happened in any {{regionType}}',
+              regionType: t(`layer.areas.${vesselArea}`, vesselArea),
+            })}
+          </span>
+        )}
       </div>
     </div>
   )

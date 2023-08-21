@@ -55,3 +55,10 @@
   background-color: currentcolor;
   margin-right: 0.5rem;
 }
+
+.enptyState {
+  display: block;
+  width: 100%;
+  padding: var(--space-L) var(--space-M);
+  text-align: center;
+}
