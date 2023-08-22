@@ -5,6 +5,10 @@
   margin-bottom: var(--space-XL);
 }
 
+.activityContainer div[data-virtuoso-scroller='true'] > div:first-child {
+  top: 104px !important;
+}
+
 .event::after {
   content: '';
   position: absolute;
