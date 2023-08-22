@@ -10,7 +10,8 @@ export const DEFAULT_VESSEL_STATE: VesselProfileState = {
   vesselIdentitySource: VesselIdentitySourceEnum.Registry,
   vesselActivityMode: 'type',
   vesselSection: 'activity',
-  vesselArea: 'fao',
+  vesselArea: 'eez',
+  vesselRelated: 'encounters',
   viewOnlyVessel: true,
 }
 

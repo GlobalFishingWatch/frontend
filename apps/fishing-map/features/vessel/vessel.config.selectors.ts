@@ -3,6 +3,7 @@ import {
   VesselAreaSubsection,
   VesselProfileActivityMode,
   VesselProfileStateProperty,
+  VesselRelatedSubsection,
   VesselSection,
 } from 'types'
 import { selectQueryParam } from 'routes/routes.selectors'
@@ -54,6 +55,13 @@ export const selectVesselAreaSubsection = createSelector(
   [selectVesselProfileStateProperty('vesselArea')],
   (vesselArea): VesselAreaSubsection => {
     return vesselArea
+  }
+)
+
+export const selectVesselRelatedSubsection = createSelector(
+  [selectVesselProfileStateProperty('vesselRelated')],
+  (vesselRelated): VesselRelatedSubsection => {
+    return vesselRelated
   }
 )
 

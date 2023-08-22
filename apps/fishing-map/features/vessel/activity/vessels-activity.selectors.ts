@@ -1,9 +1,19 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { groupBy } from 'lodash'
-import { EventTypes, RegionType, ResourceStatus } from '@globalfishingwatch/api-types'
+import {
+  EncounterEvent,
+  EventTypes,
+  RegionType,
+  ResourceStatus,
+  Vessel,
+} from '@globalfishingwatch/api-types'
 import { ApiEvent } from '@globalfishingwatch/api-types'
 import { selectVesselAreaSubsection } from 'features/vessel/vessel.config.selectors'
-import { selectEventsResources, selectVesselEventsFilteredByTimerange } from '../vessel.selectors'
+import {
+  selectEventsResources,
+  selectVesselEventsByType,
+  selectVesselEventsFilteredByTimerange,
+} from '../vessel.selectors'
 
 export enum ActivityEventSubType {
   Entry = 'port_entry',
@@ -93,6 +103,24 @@ export const selectEventsGroupedByArea = createSelector(
     return Object.entries(regionCounts)
       .map(([region, counts]) => ({ region, ...(counts || {}) }))
       .sort((a, b) => b.total - a.total)
+  }
+)
+export const selectEventsGroupedByEncounteredVessel = createSelector(
+  [selectVesselEventsByType(EventTypes.Encounter)],
+  (encounters) => {
+    const vesselCounts: Record<string, EncounterEvent<Vessel> & { encounters: number }> =
+      encounters.reduce((acc, event) => {
+        const encounteredVessel = event.encounter?.vessel
+        if (encounteredVessel) {
+          if (!acc[encounteredVessel.id]) {
+            acc[encounteredVessel.id] = { ...encounteredVessel, encounters: 1 }
+          } else {
+            acc[encounteredVessel.id].encounters++
+          }
+        }
+        return acc
+      }, {})
+    return Object.values(vesselCounts).sort((a, b) => b.encounters - a.encounters)
   }
 )
 

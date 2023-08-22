@@ -140,3 +140,8 @@ export const selectHasVesselEventsFilteredByTimerange = createSelector(
     return events?.length > 0
   }
 )
+
+export const selectVesselEventsByType = (type: EventTypes) =>
+  createSelector([selectVesselEventsFilteredByTimerange], (events) => {
+    return events.filter((event) => event.type === type)
+  })

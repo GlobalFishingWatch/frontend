@@ -32,6 +32,7 @@ import { useVesselFitBounds } from 'features/vessel/vessel.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useClickedEventConnect } from 'features/map/map.hooks'
 import VesselAreas from 'features/vessel/areas/VesselAreas'
+import RelatedVessels from 'features/vessel/related-vessels/RelatedVessels'
 import { useLocationConnect } from 'routes/routes.hook'
 import { VesselSection } from 'types'
 import VesselIdentity from './identity/VesselIdentity'
@@ -74,9 +75,7 @@ const Vessel = () => {
       {
         id: 'relatedVessels',
         title: t('vessel.sectionRelatedVessels', 'Related Vessels'),
-        tooltip: t('common.comingSoon', 'Coming soon'),
-        tooltipPlacement: 'top',
-        disabled: true,
+        content: <RelatedVessels />,
       },
     ],
     [t]

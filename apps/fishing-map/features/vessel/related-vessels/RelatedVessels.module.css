@@ -1,0 +1,50 @@
+.placeholder {
+  padding-block: var(--space-XL);
+}
+
+.container {
+  padding: var(--space-M);
+}
+
+.titleContainer {
+  display: flex;
+  align-items: center;
+}
+
+.title {
+  flex: 1;
+}
+
+.vesselsList {
+  margin-top: var(--space-S);
+  margin-bottom: var(--space-XL);
+}
+
+.vesselContainer {
+  width: 25rem;
+  height: 3rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.vesselContainer a {
+  text-decoration: underline;
+}
+
+.count {
+  font: var(--font-S);
+  fill: var(--color-secondary-blue);
+}
+
+.tooltipContainer {
+  background-color: var(--color-white);
+  border: var(--border);
+  padding: var(--space-S);
+}
+
+.enptyState {
+  display: block;
+  width: 100%;
+  padding: var(--space-L) var(--space-M);
+  text-align: center;
+}
