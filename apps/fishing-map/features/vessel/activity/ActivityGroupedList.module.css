@@ -9,6 +9,10 @@
   top: 104px !important;
 }
 
+.activityContainer div[data-test-id='virtuoso-item-list'] > div:first-child {
+  z-index: 0 !important;
+}
+
 .event::after {
   content: '';
   position: absolute;
