@@ -4,6 +4,13 @@
   min-height: 5.2rem;
 }
 
+.sticky {
+  margin-top: 51px;
+  background-color: var(--color-white);
+  border-top: var(--border);
+  z-index: 2;
+}
+
 .titleContainer {
   display: flex;
   align-items: center;
