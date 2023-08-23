@@ -31,20 +31,9 @@ import SearchAdvanced from 'features/search/SearchAdvanced'
 import SearchPlaceholder, { SearchNotAllowed } from 'features/search/SearchPlaceholders'
 import { HOME, WORKSPACE } from 'routes/routes'
 import I18nNumber from 'features/i18n/i18nNumber'
-import {
-  selectIsStandaloneSearchLocation,
-  selectIsWorkspaceSearchLocation,
-  selectWorkspaceId,
-} from 'routes/routes.selectors'
+import { selectWorkspaceId } from 'routes/routes.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
-import {
-  fetchDatasetsByIdsThunk,
-  selectDatasetsError,
-  selectDatasetsStatus,
-} from 'features/datasets/datasets.slice'
-import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
-import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
-import { TEMPLATE_VESSEL_DATAVIEW_SLUG } from 'data/workspaces'
+import { selectDatasetsError, selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import { WorkspaceLoginError } from 'features/workspace/WorkspaceError'
 import { selectSearchOption, selectSearchQuery } from 'features/search/search.config.selectors'
 import { EMPTY_FILTERS, RESULTS_PER_PAGE } from 'features/search/search.config'
@@ -91,8 +80,6 @@ function Search() {
   const activeSearchOption = useSelector(selectSearchOption)
   const searchResultsPagination = useSelector(selectSearchPagination)
   const vesselsSelected = useSelector(selectSelectedVessels)
-  const isSearchLocation = useSelector(selectIsStandaloneSearchLocation)
-  const isWorkspaceSearchLocation = useSelector(selectIsWorkspaceSearchLocation)
   const searchDatasets = useSelector(
     activeSearchOption === 'basic' ? selectBasicSearchDatasets : selectAdvancedSearchDatasets
   ) as Dataset[]
@@ -104,13 +91,8 @@ function Search() {
   const promiseRef = useRef<any>()
 
   useEffect(() => {
-    if (isWorkspaceSearchLocation) {
-      dispatch(fetchWorkspaceThunk(urlWorkspaceId))
-    } else {
-      dispatch(fetchDataviewsByIdsThunk([TEMPLATE_VESSEL_DATAVIEW_SLUG]))
-      dispatch(fetchDatasetsByIdsThunk([DEFAULT_VESSEL_IDENTITY_ID]))
-    }
-  }, [dispatch, isWorkspaceSearchLocation, urlWorkspaceId])
+    dispatch(fetchWorkspaceThunk(urlWorkspaceId))
+  }, [dispatch, urlWorkspaceId])
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchResults = useCallback(
@@ -269,9 +251,10 @@ function Search() {
     })
   }, [debouncedQuery, fetchResults, searchDatasets, searchFilters])
 
+  const isWorkspaceError = workspaceStatus === AsyncReducerStatus.Error
   const isDatasetError = datasetsStatus === AsyncReducerStatus.Error
 
-  if (isDatasetError) {
+  if (isWorkspaceError || isDatasetError) {
     return isAuthError(datasetError) ? (
       <WorkspaceLoginError
         title={
@@ -289,9 +272,8 @@ function Search() {
     )
   }
 
-  const showWorkspaceSpinner =
-    isWorkspaceSearchLocation && workspaceStatus !== AsyncReducerStatus.Finished
-  const showDatasetsSpinner = isSearchLocation && datasetsStatus !== AsyncReducerStatus.Finished
+  const showWorkspaceSpinner = workspaceStatus !== AsyncReducerStatus.Finished
+  const showDatasetsSpinner = datasetsStatus !== AsyncReducerStatus.Finished
 
   if (showWorkspaceSpinner || showDatasetsSpinner) {
     return (
