@@ -14,6 +14,7 @@ import {
 } from 'features/vessel/activity/vessels-activity.selectors'
 import { selectOngoingVoyageId } from 'features/vessel/vessel.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import styles from '../ActivityGroupedList.module.css'
 
 interface EventProps {
@@ -34,6 +35,7 @@ const VoyageGroup: React.FC<EventProps> = ({
   const { t } = useTranslation()
   const vesselId = useSelector(selectVesselInfoDataId)
   const ongoingVoyageId = useSelector(selectOngoingVoyageId)
+  const { start, end } = useTimerangeConnect()
   const voyageId = events?.[0]?.voyage
 
   const voyageLabel = useMemo(() => {
@@ -53,32 +55,18 @@ const VoyageGroup: React.FC<EventProps> = ({
       const voyageStart = firstVoyageEvent.port_visit?.intermediateAnchorage?.name
       const voyageEnd = latestVoyageEvent.port_visit?.intermediateAnchorage?.name
       const portCount = events.filter((e) => e.type !== EventTypes.Port).length
+      const startDate = voyageStart ? firstVoyageEvent.end : start
+      const endDate = voyageEnd ? latestVoyageEvent.start : end
       parts.push(`${portCount} ${t('common.event', { defaultValue: 'Events', count: portCount })}`)
-      voyageStart &&
-        parts.push(
-          `${
-            voyageEnd ? t('common.between', 'between') : t('event.afterExiting', 'after exiting')
-          } ${voyageStart} (${formatI18nDate(firstVoyageEvent.end ?? 0, {
-            format: DateTime.DATE_MED,
-          })})`
-        )
-      if (voyageEnd) {
-        const to =
-          latestVoyageEvent.subType === ActivityEventSubType.Entry
-            ? latestVoyageEvent.start
-            : latestVoyageEvent.end
-        parts.push(
-          `${
-            voyageStart ? t('common.and', 'and') : t('event.beforeEntering', 'before entering')
-          } ${voyageEnd} (${formatI18nDate(to, {
-            format: DateTime.DATE_MED,
-          })})`
-        )
-      }
+      parts.push(t('common.between', 'between'))
+      parts.push(formatI18nDate(startDate, { format: DateTime.DATE_MED }))
+      if (voyageStart) parts.push(`(${voyageStart})`)
+      parts.push(t('common.and', 'and'))
+      parts.push(formatI18nDate(endDate, { format: DateTime.DATE_MED }))
+      if (voyageEnd) parts.push(`(${voyageEnd})`)
     }
-
     return parts.join(' ')
-  }, [events, ongoingVoyageId, t, voyageId])
+  }, [end, events, ongoingVoyageId, start, t, voyageId])
 
   const hasEvents = events.length > 0
 

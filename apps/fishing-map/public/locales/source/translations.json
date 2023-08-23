@@ -317,8 +317,8 @@
     "workspaceNotFound": "The view you request was not found"
   },
   "event": {
-    "afterExiting": "after exiting",
-    "beforeEntering": "before entering",
+    "after": "after",
+    "before": "before",
     "dayAbbreviated": "{{count}}d",
     "dayAbbreviated_one": "{{count}}d",
     "dayAbbreviated_other": "{{count}}d",
