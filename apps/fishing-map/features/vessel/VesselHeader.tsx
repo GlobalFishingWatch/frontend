@@ -2,12 +2,18 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import Sticky from 'react-sticky-el'
+import { useMemo } from 'react'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { eventsToBbox } from '@globalfishingwatch/data-transforms'
+import {
+  Bbox,
+  eventsToBbox,
+  filterSegmentsByTimerange,
+  segmentsToBbox,
+} from '@globalfishingwatch/data-transforms'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import {
   selectVesselEventsFilteredByTimerange,
-  selectVesselEventsResourcesLoading,
+  selectVesselTracksData,
 } from 'features/vessel/vessel.selectors'
 import { selectVesselInfoData, setVesselPrintMode } from 'features/vessel/vessel.slice'
 import { formatInfoField } from 'utils/info'
@@ -19,6 +25,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
 import { selectIsWorkspaceVesselLocation } from 'routes/routes.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import styles from './VesselHeader.module.css'
 
 const VesselHeader = () => {
@@ -26,16 +33,29 @@ const VesselHeader = () => {
   const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
   const viewOnlyVessel = useSelector(selectViewOnlyVessel)
-  const vesselEventsLoading = useSelector(selectVesselEventsResourcesLoading)
+  const vesselTrack = useSelector(selectVesselTracksData)
   const vessel = useSelector(selectVesselInfoData)
+  const { start, end } = useTimerangeConnect()
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const vesselDataview = useSelector(selectVesselProfileDataview)
   const events = useSelector(selectVesselEventsFilteredByTimerange)
   const fitBounds = useMapFitBounds()
 
+  const bounds = useMemo(() => {
+    let bounds: Bbox | undefined
+    if (events?.length) {
+      bounds = eventsToBbox(events)
+    } else if (vesselTrack?.length) {
+      const filteredSegments = filterSegmentsByTimerange(vesselTrack, { start, end })
+      bounds = filteredSegments?.length ? segmentsToBbox(filteredSegments) : undefined
+    }
+    return bounds
+  }, [end, events, start, vesselTrack])
+
   const onVesselFitBoundsClick = () => {
-    const bounds = eventsToBbox(events)
-    fitBounds(bounds)
+    if (bounds) {
+      fitBounds(bounds)
+    }
   }
 
   const onPrintClick = () => {
@@ -89,8 +109,7 @@ const VesselHeader = () => {
             tooltip={t('layer.vessel_fit_bounds', 'Center view on vessel track')}
             tooltipPlacement="bottom"
             size="small"
-            loading={vesselEventsLoading}
-            disabled={!events?.length || vesselEventsLoading}
+            disabled={!bounds}
             onClick={onVesselFitBoundsClick}
           />
           <IconButton
