@@ -48,7 +48,7 @@ import { getVesselDataviewInstanceDatasetConfig } from 'features/dataviews/datav
 import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
 import { getUTCDateTime } from 'utils/dates'
 import { fetchReportsThunk } from 'features/reports/reports.slice'
-import { selectWorkspaceStatus } from './workspace.selectors'
+import { selectCurrentWorkspaceId, selectWorkspaceStatus } from './workspace.selectors'
 
 type LastWorkspaceVisited = { type: ROUTE_TYPES; payload: any; query: any; replaceQuery?: boolean }
 
@@ -239,7 +239,12 @@ export const fetchWorkspaceThunk = createAsyncThunk(
   },
   {
     condition: (workspaceId, { getState }) => {
-      const workspaceStatus = selectWorkspaceStatus(getState() as any)
+      const rootState = getState() as any
+      if (!workspaceId || workspaceId === DEFAULT_WORKSPACE_ID) {
+        const currentWorkspaceId = selectCurrentWorkspaceId(rootState)
+        return DEFAULT_WORKSPACE_ID !== currentWorkspaceId
+      }
+      const workspaceStatus = selectWorkspaceStatus(rootState)
       // Fetched already in progress, don't need to re-fetch
       return workspaceStatus !== AsyncReducerStatus.Loading
     },
