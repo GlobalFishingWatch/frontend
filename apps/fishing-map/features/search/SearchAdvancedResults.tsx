@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux'
 import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import { uniq } from 'lodash'
 import { Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
 import {
   VesselLastIdentity,
@@ -31,6 +32,7 @@ import VesselLink from 'features/vessel/VesselLink'
 import { selectCurrentWorkspaceId } from 'features/workspace/workspace.selectors'
 import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import styles from './SearchBasicResult.module.css'
 
 const PINNED_COLUMN = 'shipname'
 const TOOLTIP_LABEL_CHARACTERS = 25
@@ -65,11 +67,12 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
           const vesselData = getSearchIdentityResolved(vessel)
           const { transmissionDateFrom, transmissionDateTo } = vesselData
           const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER
-          const label = names?.length
-            ? `${name} (${t('common.previously', 'Previously')}: ${names
-                .map((name) => formatInfoField(name, 'name'))
-                .join(', ')})`
-            : name
+          const previousNames =
+            names?.length &&
+            `(${t('common.previously', 'Previously')}: ${names
+              .map((name) => formatInfoField(name, 'name'))
+              .join(', ')})`
+          const label = `${name} ${previousNames}`
           const vesselQuery = { start: transmissionDateFrom, end: transmissionDateTo }
           return (
             <VesselLink
@@ -78,13 +81,11 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
               onClick={() => onVesselClick(vesselData)}
               query={vesselQuery}
             >
-              {label?.length > TOOLTIP_LABEL_CHARACTERS ? (
-                <Tooltip content={label}>
-                  <span>{label}</span>
-                </Tooltip>
-              ) : (
-                label
-              )}
+              <Tooltip content={label?.length > TOOLTIP_LABEL_CHARACTERS && label}>
+                <span>
+                  {name} <span className={styles.secondary}>{previousNames}</span>
+                </span>
+              </Tooltip>
             </VesselLink>
           )
         },
@@ -142,16 +143,26 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
       {
         id: 'infoDource',
         accessorFn: (vessel) => {
-          const hasRegistryIdentity = vessel.identities.some(
+          const registryIdentities = vessel.identities.filter(
             ({ identitySource }) => identitySource === VesselIdentitySourceEnum.Registry
           )
-          const hasSelfReportedIdentity = vessel.identities.some(
+          const selfReportedIdentities = vessel.identities.filter(
             ({ identitySource }) => identitySource === VesselIdentitySourceEnum.SelfReported
           )
-          if (hasRegistryIdentity && hasSelfReportedIdentity)
-            return t('vessel.infoSources.both', 'Registry and self reported')
-          if (hasRegistryIdentity) return t('vessel.infoSources.registry', 'Registry')
-          if (hasSelfReportedIdentity) return t('vessel.infoSources.selfReported', 'Self reported')
+          const selfReportedIdentitiesSources = uniq(
+            selfReportedIdentities.flatMap(({ sourceCode }) => sourceCode)
+          )
+          if (registryIdentities.length && selfReportedIdentities.length)
+            return `${t(
+              'vessel.infoSources.both',
+              'Registry and self reported'
+            )} (${selfReportedIdentitiesSources.join(', ')})`
+          if (registryIdentities.length) return t('vessel.infoSources.registry', 'Registry')
+          if (selfReportedIdentities.length)
+            return `${t(
+              'vessel.infoSources.selfReported',
+              'Self reported'
+            )} (${selfReportedIdentitiesSources.join(', ')})`
 
           return EMPTY_FIELD_PLACEHOLDER
         },
@@ -303,10 +314,12 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
           ['--header-callsign-size' as any]: 100,
           ['--col-ssvid-size' as any]: 100,
           ['--col-imo-size' as any]: 100,
+          ['--col-infoDource-size' as any]: 250,
           ['--col-callsign-size' as any]: 100,
           ['--header-mrt_row_select-size' as any]: 10,
           ['--col-mrt_row_select-size' as any]: 10,
           ['--header-mrt_row_select-size' as any]: 10,
+          ['--header-infoDource-size' as any]: 250,
         },
       }}
       muiTableHeadCellProps={(cell) => ({

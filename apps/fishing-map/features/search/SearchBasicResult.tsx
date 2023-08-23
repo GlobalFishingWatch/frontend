@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { GetItemPropsOptions } from 'downshift'
 import { FeatureCollection } from 'geojson'
+import { uniq } from 'lodash'
 import { Locale } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
@@ -85,17 +86,27 @@ function SearchBasicResult({
   const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER
 
   const identitySource = useMemo(() => {
-    const hasRegistryIdentity = vessel.identities.some(
+    const registryIdentities = vessel.identities.filter(
       ({ identitySource }) => identitySource === VesselIdentitySourceEnum.Registry
     )
-    const hasSelfReportedIdentity = vessel.identities.some(
+    const selfReportedIdentities = vessel.identities.filter(
       ({ identitySource }) => identitySource === VesselIdentitySourceEnum.SelfReported
     )
-    if (hasRegistryIdentity && hasSelfReportedIdentity)
-      return t('vessel.infoSources.both', 'Registry and self reported')
-    if (hasRegistryIdentity) return t('vessel.infoSources.registry', 'Registry')
-    if (hasSelfReportedIdentity) return t('vessel.infoSources.selfReported', 'Self reported')
-    return ''
+    const selfReportedIdentitiesSources = uniq(
+      selfReportedIdentities.flatMap(({ sourceCode }) => sourceCode)
+    )
+    if (registryIdentities.length && selfReportedIdentities.length)
+      return `${t(
+        'vessel.infoSources.both',
+        'Registry and self reported'
+      )} (${selfReportedIdentitiesSources.join(', ')})`
+    if (registryIdentities.length) return t('vessel.infoSources.registry', 'Registry')
+    if (selfReportedIdentities.length)
+      return `${t(
+        'vessel.infoSources.selfReported',
+        'Self reported'
+      )} (${selfReportedIdentitiesSources.join(', ')})`
+    return EMPTY_FIELD_PLACEHOLDER
   }, [t, vessel.identities])
 
   const selfReportedVesselIds = useMemo(() => {
