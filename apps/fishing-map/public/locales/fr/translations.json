@@ -317,8 +317,8 @@
     "workspaceNotFound": "La vue demandée n'a pas été trouvée"
   },
   "event": {
-    "afterExiting": "after exiting",
-    "beforeEntering": "before entering",
+    "after": "after",
+    "before": "before",
     "dayAbbreviated": "{{count}}j",
     "dayAbbreviated_one": "{{count}}j",
     "dayAbbreviated_other": "{{count}}j",
