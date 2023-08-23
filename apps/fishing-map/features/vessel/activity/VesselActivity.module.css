@@ -33,13 +33,3 @@
   flex-direction: column;
   gap: var(--space-S);
 }
-
-.eventsLegendOptions {
-  min-width: max-content;
-  background: var(--color-white);
-  padding: var(--space-S);
-}
-
-.arrow {
-  right: 0;
-}

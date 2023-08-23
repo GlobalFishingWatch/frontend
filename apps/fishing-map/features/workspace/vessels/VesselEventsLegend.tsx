@@ -44,7 +44,9 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
           currentVisibleEvents === 'all'
             ? allEventTypes.filter((eventType) => eventType !== eventTypeChanged)
             : [...(currentVisibleEvents === 'none' ? [] : currentVisibleEvents), eventTypeChanged]
-        dispatchQueryParams({ visibleEvents })
+        dispatchQueryParams({
+          visibleEvents: visibleEvents?.length === allEventTypes.length ? 'all' : visibleEvents,
+        })
       } else {
         const currentVisibleEventsTypes =
           currentVisibleEvents === 'all'

@@ -27,6 +27,7 @@ import { useRegionNamesByType } from 'features/regions/regions.hooks'
 import { EVENTS_COLORS } from 'data/config'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { selectVesselEventsFilteredByTimerange } from 'features/vessel/vessel.selectors'
+import VesselActivityFilter from 'features/vessel/activity/VesselActivityFilter'
 import styles from './VesselAreas.module.css'
 
 const AreaTick = ({ y, payload }: any) => {
@@ -128,6 +129,7 @@ const VesselAreas = () => {
           activeOption={vesselArea}
           onSelect={changeVesselArea}
         />
+        <VesselActivityFilter />
       </div>
       <div className={styles.areaList}>
         {eventsGrouped.length > 0 ? (
