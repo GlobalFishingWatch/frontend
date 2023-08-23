@@ -3,10 +3,7 @@ import { useSelector } from 'react-redux'
 import { useCallback, useMemo } from 'react'
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, LabelList } from 'recharts'
 import { Choice, ChoiceOption, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
-import {
-  selectEventsGroupedByEncounteredVessel,
-  selectVesselEventsLoading,
-} from 'features/vessel/activity/vessels-activity.selectors'
+import { selectEventsGroupedByEncounteredVessel } from 'features/vessel/activity/vessels-activity.selectors'
 import { VesselRelatedSubsection } from 'types'
 import { selectVesselRelatedSubsection } from 'features/vessel/vessel.config.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -14,6 +11,7 @@ import { EVENTS_COLORS } from 'data/config'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { formatInfoField } from 'utils/info'
 import VesselLink from 'features/vessel/VesselLink'
+import { selectVesselEventsResourcesLoading } from 'features/vessel/vessel.selectors'
 import styles from './RelatedVessels.module.css'
 
 const VesselTick = ({ y, index }: any) => {
@@ -38,7 +36,7 @@ const RelatedVessels = () => {
   const { dispatchQueryParams } = useLocationConnect()
   const encountersByVessel = useSelector(selectEventsGroupedByEncounteredVessel)
   const vesselRelatedSubsection = useSelector(selectVesselRelatedSubsection)
-  const eventsLoading = useSelector(selectVesselEventsLoading)
+  const eventsLoading = useSelector(selectVesselEventsResourcesLoading)
 
   const relatedOptions: ChoiceOption<VesselRelatedSubsection>[] = useMemo(
     () => [

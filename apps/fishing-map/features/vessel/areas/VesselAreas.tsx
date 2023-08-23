@@ -13,10 +13,7 @@ import {
 } from 'recharts'
 import { Choice, ChoiceOption, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 import { RegionType } from '@globalfishingwatch/api-types'
-import {
-  selectEventsGroupedByArea,
-  selectVesselEventsLoading,
-} from 'features/vessel/activity/vessels-activity.selectors'
+import { selectEventsGroupedByArea } from 'features/vessel/activity/vessels-activity.selectors'
 import { selectVisibleEvents } from 'features/app/app.selectors'
 import { VesselAreaSubsection } from 'types'
 import { selectVesselAreaSubsection } from 'features/vessel/vessel.config.selectors'
@@ -26,7 +23,10 @@ import { selectVesselProfileDataview } from 'features/dataviews/dataviews.slice'
 import { useRegionNamesByType } from 'features/regions/regions.hooks'
 import { EVENTS_COLORS } from 'data/config'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { selectVesselEventsFilteredByTimerange } from 'features/vessel/vessel.selectors'
+import {
+  selectVesselEventsFilteredByTimerange,
+  selectVesselEventsResourcesLoading,
+} from 'features/vessel/vessel.selectors'
 import VesselActivityFilter from 'features/vessel/activity/VesselActivityFilter'
 import styles from './VesselAreas.module.css'
 
@@ -69,7 +69,7 @@ const VesselAreas = () => {
   const vesselArea = useSelector(selectVesselAreaSubsection)
   const visibleEvents = useSelector(selectVisibleEvents)
   const eventsGrouped = useSelector(selectEventsGroupedByArea)
-  const eventsLoading = useSelector(selectVesselEventsLoading)
+  const eventsLoading = useSelector(selectVesselEventsResourcesLoading)
   const vesselDataview = useSelector(selectVesselProfileDataview)
   const eventDatasets =
     vesselDataview && uniqBy(getEventsDatasetsInDataview(vesselDataview), 'subcategory')
