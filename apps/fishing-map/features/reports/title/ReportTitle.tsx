@@ -158,7 +158,6 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   }
 
   const handleConfirmBuffer = useCallback(() => {
-    // dispatchQueryParams({ reportBufferValue: bufferValue, reportBufferUnit: bufferUnit })
     trackEvent({
       category: TrackCategory.Analysis,
       action: `Confirm area buffer`,
@@ -177,40 +176,35 @@ export default function ReportTitle({ area }: ReportTitleProps) {
           </a>
 
           <div className={styles.actions}>
-            {linkHref && (
-              <a target="_blank" rel="noopener noreferrer" href={linkHref}>
-                {/* <IconButton icon="info" tooltip={t('common.learnMore', 'Learn more')} /> */}
-                <Button type="border-secondary" size="small" className={styles.actionButton}>
-                  <p>{t('common.learnMore', 'Learn more')}</p>
-                  <Icon icon="info" type="default" />
-                </Button>
-              </a>
-            )}
-            <Button
-              type="border-secondary"
-              size="small"
-              className={styles.actionButton}
-              tooltip={
-                <BufferTooltip
-                  handleBufferValueChange={handleBufferValueChange}
-                  defaultValue={urlBufferValue || DEFAULT_BUFFER_VALUE}
-                  activeOption={bufferUnit || NAUTICAL_MILES}
-                  handleBufferUnitChange={handleBufferUnitChange}
-                  handleConfirmBuffer={handleConfirmBuffer}
-                />
-              }
-              tooltipPlacement="bottom"
-              tooltipProps={{
-                interactive: true,
-                trigger: 'click',
-                delay: 0,
-                className: styles.bufferContainer,
-              }}
-            >
-              <p>{t('analysis.buffer', 'Buffer Area')}</p>
-              {bufferValue && <span>{` (${bufferValue})`}</span>}
-              <Icon icon="expand" type="default" />
-            </Button>
+            {/* https://atomiks.github.io/tippyjs/v6/accessibility/#interactivity */}
+            {/* 👇 extra div needed to allow element to be keyboard accessible */}
+            <div>
+              <Button
+                type="border-secondary"
+                size="small"
+                className={styles.actionButton}
+                tooltip={
+                  <BufferTooltip
+                    handleBufferValueChange={handleBufferValueChange}
+                    defaultValue={urlBufferValue || DEFAULT_BUFFER_VALUE}
+                    activeOption={bufferUnit || NAUTICAL_MILES}
+                    handleBufferUnitChange={handleBufferUnitChange}
+                    handleConfirmBuffer={handleConfirmBuffer}
+                  />
+                }
+                tooltipPlacement="bottom"
+                tooltipProps={{
+                  interactive: true,
+                  trigger: 'click',
+                  delay: 0,
+                  className: styles.bufferContainer,
+                }}
+              >
+                <p>{t('analysis.buffer', 'Buffer Area')}</p>
+                {bufferValue && <span>{` (${bufferValue})`}</span>}
+                <Icon icon="expand" type="default" />
+              </Button>
+            </div>
             <Button
               type="border-secondary"
               size="small"
