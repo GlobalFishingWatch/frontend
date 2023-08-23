@@ -12,6 +12,7 @@ import { VesselProfileActivityMode } from 'types'
 import {
   selectVesselEventsResources,
   selectVesselEventsResourcesLoading,
+  selectVesselHasEventsDatasets,
 } from 'features/vessel/vessel.selectors'
 import VesselActivityFilter from 'features/vessel/activity/VesselActivityFilter'
 import styles from './VesselActivity.module.css'
@@ -21,6 +22,7 @@ const VesselActivity = () => {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const activityMode = useSelector(selectVesselActivityMode)
+  const hasEventsDataset = useSelector(selectVesselHasEventsDatasets)
   const eventsLoading = useSelector(selectVesselEventsResourcesLoading)
   const eventsResources = useSelector(selectVesselEventsResources)
 
@@ -35,6 +37,15 @@ const VesselActivity = () => {
       </div>
     )
   }
+
+  if (!hasEventsDataset) {
+    return (
+      <div className={styles.emptyState}>
+        <p>{t('vessel.noActivityData', 'There are no activity information for this vessel')}</p>
+      </div>
+    )
+  }
+
   const eventsError = eventsResources.some((resource) => resource.status === ResourceStatus.Error)
   if (eventsError) {
     return (
@@ -45,6 +56,7 @@ const VesselActivity = () => {
       </div>
     )
   }
+
   return (
     <Fragment>
       <div className={styles.summaryContainer}>

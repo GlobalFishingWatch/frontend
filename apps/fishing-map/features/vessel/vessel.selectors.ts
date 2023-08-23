@@ -13,6 +13,21 @@ import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import { selectResources } from 'features/resources/resources.slice'
 import { selectSelfReportedVesselIds } from 'features/vessel/vessel.slice'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import { selectVesselDatasetId } from 'features/vessel/vessel.config.selectors'
+import { selectAllDatasets } from 'features/datasets/datasets.slice'
+import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
+
+export const selectVesselDataset = createSelector(
+  [selectVesselDatasetId, selectAllDatasets],
+  (vesselDatasetId, datasets) => {
+    return datasets?.find((d) => d.id === vesselDatasetId)
+  }
+)
+
+export const selectVesselHasEventsDatasets = createSelector([selectVesselDataset], (dataset) => {
+  const vesselEventsDatasets = getRelatedDatasetsByType(dataset, DatasetTypes.Events)
+  return vesselEventsDatasets ? vesselEventsDatasets.length > 0 : false
+})
 
 export const selectResourcesByType = (type: DatasetTypes) =>
   createSelector([selectActiveTrackDataviews, selectResources], (trackDataviews, resources) => {

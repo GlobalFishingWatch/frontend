@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Spinner, Tab, Tabs } from '@globalfishingwatch/ui-components'
 import { isAuthError } from '@globalfishingwatch/api-client'
@@ -35,6 +35,7 @@ import VesselAreas from 'features/vessel/areas/VesselAreas'
 import RelatedVessels from 'features/vessel/related-vessels/RelatedVessels'
 import { useLocationConnect } from 'routes/routes.hook'
 import { VesselSection } from 'types'
+import { selectVesselHasEventsDatasets } from 'features/vessel/vessel.selectors'
 import VesselIdentity from './identity/VesselIdentity'
 import VesselActivity from './activity/VesselActivity'
 import styles from './Vessel.module.css'
@@ -49,6 +50,7 @@ const Vessel = () => {
   const urlWorkspaceId = useSelector(selectWorkspaceId)
   const infoStatus = useSelector(selectVesselInfoStatus)
   const vesselPrintMode = useSelector(selectVesselPrintMode)
+  const hasEventsDataset = useSelector(selectVesselHasEventsDatasets)
   const infoError = useSelector(selectVesselInfoError)
   const isVesselLocation = useSelector(selectIsVesselLocation)
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
@@ -71,14 +73,16 @@ const Vessel = () => {
         id: 'areas',
         title: t('vessel.sectionAreas', 'Areas'),
         content: <VesselAreas />,
+        disabled: !hasEventsDataset,
       },
       {
         id: 'relatedVessels',
         title: t('vessel.sectionRelatedVessels', 'Related Vessels'),
         content: <RelatedVessels />,
+        disabled: !hasEventsDataset,
       },
     ],
-    [t]
+    [t, hasEventsDataset]
   )
 
   useEffect(() => {
