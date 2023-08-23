@@ -12,7 +12,7 @@ import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import {
-  filterRegistryInfoByDates,
+  filterRegistryInfoByDateAndSSVID,
   getCurrentIdentityVessel,
   parseVesselToCSV,
 } from 'features/vessel/vessel.utils'
@@ -66,12 +66,17 @@ const VesselIdentity = () => {
         ...vesselIdentity,
         registryAuthorizations:
           vesselIdentity.registryAuthorizations &&
-          filterRegistryInfoByDates(vesselIdentity.registryAuthorizations, timerange),
+          filterRegistryInfoByDateAndSSVID(
+            vesselIdentity.registryAuthorizations,
+            timerange,
+            vesselIdentity.ssvid
+          ),
         registryOwners:
           vesselIdentity.registryOwners &&
-          (filterRegistryInfoByDates(
+          (filterRegistryInfoByDateAndSSVID(
             vesselIdentity.registryOwners,
-            timerange
+            timerange,
+            vesselIdentity.ssvid
           ) as VesselRegistryOwner[]),
       }
       const data = parseVesselToCSV(filteredVesselIdentity)
@@ -195,9 +200,10 @@ const VesselIdentity = () => {
                   start: vesselIdentity.transmissionDateFrom,
                   end: vesselIdentity.transmissionDateTo,
                 }
-                const filteredRegistryInfo = filterRegistryInfoByDates(
+                const filteredRegistryInfo = filterRegistryInfoByDateAndSSVID(
                   vesselIdentity[key] as VesselRegistryProperty[],
-                  timerange
+                  timerange,
+                  vesselIdentity.ssvid
                 )
                 if (!filteredRegistryInfo) return null
                 return (

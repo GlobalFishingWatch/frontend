@@ -62,6 +62,7 @@ export type VesselRegistryProperty = {
   dateTo: string
   recordId: string
   sourceCode: string[]
+  ssvid: string
 }
 
 export type VesselRegistryOwner = VesselRegistryProperty & {
