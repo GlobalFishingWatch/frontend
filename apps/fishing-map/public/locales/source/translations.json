@@ -673,6 +673,7 @@
     "matricula": "Matricula",
     "mmsi": "MMSI",
     "nationalId": "National Id",
+    "noActivityData": "There are no activity information for this vessel",
     "noEventsinTimeRange": "There are no events fully contained in your timerange.",
     "noEncountersInTimeRange": "There are no encounters fully contained in your timerange.",
     "notMatched": "No data matched",
