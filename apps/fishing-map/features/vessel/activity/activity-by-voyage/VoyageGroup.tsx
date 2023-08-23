@@ -8,11 +8,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { selectVesselInfoDataId } from 'features/vessel/vessel.slice'
 import { getVoyageTimeRange, parseEventsToCSV } from 'features/vessel/vessel.utils'
-import {
-  ActivityEvent,
-  ActivityEventSubType,
-} from 'features/vessel/activity/vessels-activity.selectors'
-import { selectOngoingVoyageId } from 'features/vessel/vessel.selectors'
+import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import styles from '../ActivityGroupedList.module.css'
@@ -34,7 +30,6 @@ const VoyageGroup: React.FC<EventProps> = ({
 }): React.ReactElement => {
   const { t } = useTranslation()
   const vesselId = useSelector(selectVesselInfoDataId)
-  const ongoingVoyageId = useSelector(selectOngoingVoyageId)
   const { start, end } = useTimerangeConnect()
   const voyageId = events?.[0]?.voyage
 
@@ -42,31 +37,24 @@ const VoyageGroup: React.FC<EventProps> = ({
     const parts: string[] = []
     const firstVoyageEvent = events[events.length - 1]
     const latestVoyageEvent = events[0]
-    if (voyageId === ongoingVoyageId) {
-      parts.push(t('event.currentVoyage' as any, 'Ongoing Voyage') as string)
-      parts.push(
-        `${t('common.from', 'from')} ${
-          firstVoyageEvent.port_visit?.intermediateAnchorage?.name
-        } (${formatI18nDate(firstVoyageEvent.end, {
-          format: DateTime.DATE_MED,
-        })})`
-      )
-    } else {
-      const voyageStart = firstVoyageEvent.port_visit?.intermediateAnchorage?.name
-      const voyageEnd = latestVoyageEvent.port_visit?.intermediateAnchorage?.name
-      const portCount = events.filter((e) => e.type !== EventTypes.Port).length
-      const startDate = voyageStart ? firstVoyageEvent.end : start
-      const endDate = voyageEnd ? latestVoyageEvent.start : end
-      parts.push(`${portCount} ${t('common.event', { defaultValue: 'Events', count: portCount })}`)
-      parts.push(t('common.between', 'between'))
-      parts.push(formatI18nDate(startDate, { format: DateTime.DATE_MED }))
-      if (voyageStart) parts.push(`(${voyageStart})`)
-      parts.push(t('common.and', 'and'))
-      parts.push(formatI18nDate(endDate, { format: DateTime.DATE_MED }))
-      if (voyageEnd) parts.push(`(${voyageEnd})`)
+    const voyageStart = firstVoyageEvent.port_visit?.intermediateAnchorage?.name
+    const voyageEnd = latestVoyageEvent.port_visit?.intermediateAnchorage?.name
+    const startDate = voyageStart ? firstVoyageEvent.end : start
+    const endDate = voyageEnd ? latestVoyageEvent.start : end
+    const eventCount = events.filter((e) => e.type !== EventTypes.Port).length
+    parts.push(`${eventCount} ${t('common.event', { defaultValue: 'Events', count: eventCount })}`)
+    parts.push(t('common.between', 'between'))
+    parts.push(formatI18nDate(startDate, { format: DateTime.DATE_MED }))
+    if (voyageStart) {
+      parts.push(`(${voyageStart})`)
+    }
+    parts.push(t('common.and', 'and'))
+    parts.push(formatI18nDate(endDate, { format: DateTime.DATE_MED }))
+    if (voyageEnd) {
+      parts.push(`(${voyageEnd})`)
     }
     return parts.join(' ')
-  }, [end, events, ongoingVoyageId, start, t, voyageId])
+  }, [end, events, start, t])
 
   const hasEvents = events.length > 0
 

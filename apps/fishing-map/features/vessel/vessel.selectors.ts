@@ -113,13 +113,6 @@ export const selectVesselEventsDataWithVoyages = createSelector(
   }
 )
 
-export const selectOngoingVoyageId = createSelector(
-  [selectVesselEventsDataWithVoyages],
-  (eventsWithVoyages): ActivityEvent['voyage'] => {
-    return eventsWithVoyages[0]?.voyage
-  }
-)
-
 export const selectVesselEventsFilteredByTimerange = createSelector(
   [selectVesselEventsDataWithVoyages, selectTimeRange],
   (events, timerange) => {
