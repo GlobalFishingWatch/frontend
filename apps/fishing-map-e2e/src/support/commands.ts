@@ -158,7 +158,7 @@ Cypress.Commands.add(
     Cypress.log({
       name: 'findByClass',
       displayName: 'FIND BY CLASS',
-      message: [`💸 Try to find elements by class that starts with ${selector} in:`],
+      message: [`Try to find elements by class that starts with ${selector} in:`],
     })
 
     return cy.wrap(subject).find(`[class^="${selector}"]`, options)
@@ -176,7 +176,7 @@ Cypress.Commands.add(
     Cypress.log({
       name: 'findBySelLike',
       displayName: 'FIND BY DATA-TEST (like)',
-      message: [`💸 Try to find elements by data-test that starts with ${selector} in:`],
+      message: [`Try to find elements by data-test that starts with ${selector} in:`],
     })
 
     return cy.wrap(subject).find(`[data-test^="${selector}"]`, options)
