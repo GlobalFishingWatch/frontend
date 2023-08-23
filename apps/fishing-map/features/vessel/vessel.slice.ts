@@ -96,13 +96,15 @@ export const fetchVesselInfoThunk = createAsyncThunk(
           return rejectWithValue({ message: 'Error resolving endpoint' })
         }
         const vessel = await GFWAPI.fetch<IdentityVessel>(url)
-        const identities = getVesselIdentities(vessel).filter(
+        const allIdentities = getVesselIdentities(vessel)
+        const filteredIdentities = allIdentities.filter(
           // TODO remove once the match-fields works in the API
           (i) =>
             i.identitySource === VesselIdentitySourceEnum.SelfReported
               ? i.matchFields === 'SEVERAL_FIELDS'
               : true
         )
+        const identities = filteredIdentities.length ? filteredIdentities : allIdentities
         return {
           id: getVesselProperty(vessel, 'id'),
           dataset: dataset,
