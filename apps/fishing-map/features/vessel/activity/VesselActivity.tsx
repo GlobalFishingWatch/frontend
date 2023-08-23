@@ -5,12 +5,14 @@ import { Button, Spinner } from '@globalfishingwatch/ui-components'
 import { ResourceStatus } from '@globalfishingwatch/api-types'
 import { ActivityByType } from 'features/vessel/activity/activity-by-type/ActivityByType'
 import ActivityByVoyage from 'features/vessel/activity/activity-by-voyage/ActivityByVoyage'
-import { selectVesselEventsLoading } from 'features/vessel/activity/vessels-activity.selectors'
 import VesselActivityDownload from 'features/vessel/activity/VesselActivityDownload'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectVesselActivityMode } from 'features/vessel/vessel.config.selectors'
 import { VesselProfileActivityMode } from 'types'
-import { selectVesselEventsResources } from 'features/vessel/vessel.selectors'
+import {
+  selectVesselEventsResources,
+  selectVesselEventsResourcesLoading,
+} from 'features/vessel/vessel.selectors'
 import VesselActivityFilter from 'features/vessel/activity/VesselActivityFilter'
 import styles from './VesselActivity.module.css'
 import { VesselActivitySummary } from './VesselActivitySummary'
@@ -19,7 +21,7 @@ const VesselActivity = () => {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const activityMode = useSelector(selectVesselActivityMode)
-  const eventsLoading = useSelector(selectVesselEventsLoading)
+  const eventsLoading = useSelector(selectVesselEventsResourcesLoading)
   const eventsResources = useSelector(selectVesselEventsResources)
 
   const setActivityMode = (vesselActivityMode: VesselProfileActivityMode) => {

@@ -24,10 +24,6 @@ export interface ActivityEvent extends ApiEvent {
   subType?: ActivityEventSubType
 }
 
-export const selectVesselEventsLoading = createSelector([selectEventsResources], (resources) =>
-  resources.some((resource) => resource?.status === ResourceStatus.Loading)
-)
-
 export const selectActivitySummary = createSelector(
   [selectVesselEventsFilteredByTimerange],
   (events) => {

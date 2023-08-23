@@ -2,10 +2,12 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import saveAs from 'file-saver'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { selectVesselEventsLoading } from 'features/vessel/activity/vessels-activity.selectors'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { getVesselProperty, parseEventsToCSV } from 'features/vessel/vessel.utils'
-import { selectVesselEventsFilteredByTimerange } from 'features/vessel/vessel.selectors'
+import {
+  selectVesselEventsFilteredByTimerange,
+  selectVesselEventsResourcesLoading,
+} from 'features/vessel/vessel.selectors'
 import {
   selectVesselIdentityIndex,
   selectVesselIdentitySource,
@@ -18,7 +20,7 @@ const VesselActivityDownload = () => {
   const identityIndex = useSelector(selectVesselIdentityIndex)
   const identitySource = useSelector(selectVesselIdentitySource)
   const timerange = useSelector(selectTimeRange)
-  const eventsLoading = useSelector(selectVesselEventsLoading)
+  const eventsLoading = useSelector(selectVesselEventsResourcesLoading)
   const events = useSelector(selectVesselEventsFilteredByTimerange)
 
   const onDownloadClick = () => {

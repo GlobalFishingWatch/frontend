@@ -7,7 +7,7 @@ import { eventsToBbox } from '@globalfishingwatch/data-transforms'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import {
   selectVesselEventsFilteredByTimerange,
-  selectVesselTrackResourcesLoading,
+  selectVesselEventsResourcesLoading,
 } from 'features/vessel/vessel.selectors'
 import { selectVesselInfoData, setVesselPrintMode } from 'features/vessel/vessel.slice'
 import { formatInfoField } from 'utils/info'
@@ -26,7 +26,7 @@ const VesselHeader = () => {
   const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
   const viewOnlyVessel = useSelector(selectViewOnlyVessel)
-  const vesselTrackLoading = useSelector(selectVesselTrackResourcesLoading)
+  const vesselEventsLoading = useSelector(selectVesselEventsResourcesLoading)
   const vessel = useSelector(selectVesselInfoData)
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const vesselDataview = useSelector(selectVesselProfileDataview)
@@ -89,8 +89,8 @@ const VesselHeader = () => {
             tooltip={t('layer.vessel_fit_bounds', 'Center view on vessel track')}
             tooltipPlacement="bottom"
             size="small"
-            loading={vesselTrackLoading}
-            disabled={!events?.length || vesselTrackLoading}
+            loading={vesselEventsLoading}
+            disabled={!events?.length || vesselEventsLoading}
             onClick={onVesselFitBoundsClick}
           />
           <IconButton
