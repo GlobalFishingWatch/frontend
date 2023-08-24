@@ -22,12 +22,10 @@ import VesselLink from 'features/vessel/VesselLink'
 import { formatInfoField, EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectVesselsDataviews } from 'features/dataviews/dataviews.slice'
-import { selectCurrentWorkspaceId } from 'features/workspace/workspace.selectors'
 import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
 import {
-  getCurrentIdentityVessel,
   getRelatedIdentityVesselIds,
   getSearchIdentityResolved,
   getVesselIdentityProperties,
@@ -59,7 +57,6 @@ function SearchBasicResult({
   const { t, i18n } = useTranslation()
   const map = useMapInstance()
   const dispatch = useAppDispatch()
-  const workspaceId = useSelector(selectCurrentWorkspaceId)
   const vesselDataviews = useSelector(selectVesselsDataviews)
   const isSmallScreen = useSmallScreen()
   const isSearchLocation = useSelector(selectIsStandaloneSearchLocation)
@@ -197,7 +194,7 @@ function SearchBasicResult({
         <div className={styles.fullWidth}>
           <div className={styles.name} data-test="vessel-name">
             <VesselLink
-              vessel={getCurrentIdentityVessel(vessel)}
+              vessel={getSearchIdentityResolved(vessel)}
               onClick={() => onVesselClick(vesselData)}
               query={vesselQuery}
             >
