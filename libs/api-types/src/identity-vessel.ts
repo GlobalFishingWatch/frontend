@@ -1,5 +1,18 @@
 import { VesselType } from './vessel'
 
+export enum SourceCode {
+  Ais = 'AIS',
+  Belize = 'VMS Belize',
+  Brazil = 'VMS Brazil Onyxsat',
+  Chile = 'VMS Chile',
+  CostaRica = 'VMS Costa Rica',
+  Ecuador = 'VMS Ecuador',
+  Indonesia = 'VMS Indonesia',
+  Norway = 'VMS Norway',
+  Papua = 'VMS PNG',
+  Peru = 'VMS Peru',
+}
+
 export type VesselInfo = {
   id: string
   callsign: string
@@ -10,7 +23,7 @@ export type VesselInfo = {
   nShipname: string
   shiptype: VesselType
   ssvid: string
-  sourceCode: string[]
+  sourceCode: SourceCode[]
   transmissionDateFrom: string
   transmissionDateTo: string
 }
