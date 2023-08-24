@@ -1,6 +1,7 @@
 import {
   disablePopups,
   getWorkspace,
+  switchLanguage,
   waitForMapLoadTiles,
   waitForSidebarLoaded,
 } from '../../support/app.po'
@@ -17,15 +18,13 @@ describe('Save a workspace', () => {
     waitForMapLoadTiles()
   })
 
-  it('Should create a workspace', () => {
+  it('Should create and delete a workspace', () => {
+    switchLanguage('en')
     cy.getBySel('save-workspace-button').click()
-    cy.getBySel('create-workspace-inpunt').clear()
-    cy.getBySel('create-workspace-inpunt').type(WORKSPACE_NAME)
+    cy.getBySel('create-workspace-input').clear()
+    cy.getBySel('create-workspace-input').type(WORKSPACE_NAME)
     cy.getBySel('create-workspace-button').click()
     getWorkspace().should('contain', WORKSPACE_NAME)
-  })
-
-  it('Should delete a workspace', () => {
     cy.get('a[href*="/user"]').contains(Cypress.env('apiUserInitials')).click()
     cy.getBySel('user-workspace').click()
     cy.get('a[href*="/fishing-activity"]').contains(WORKSPACE_NAME)

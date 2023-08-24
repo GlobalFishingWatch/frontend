@@ -165,7 +165,7 @@ function NewWorkspaceModal({
         value={name}
         label={t('common.name', 'Name')}
         className={styles.input}
-        testId="create-workspace-inpunt"
+        testId="create-workspace-input"
         onChange={(e) => setName(e.target.value)}
         autoFocus
       />
