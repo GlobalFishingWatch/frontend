@@ -186,22 +186,23 @@ const VesselIdentity = () => {
               <div key={index} className={cx(styles.fieldGroupContainer, styles.fieldGroup)}>
                 {/* TODO: make fields more dynamic to account for VMS */}
                 {fieldGroup.map((field) => {
+                  const label = field.label || field.key
                   return (
                     <div key={field.key}>
                       <label>
-                        {t(`vessel.${field.label}` as any, field.label)}
+                        {t(`vessel.${label}` as any, label)}
                         {field.terminologyKey && (
                           <DataTerminology
                             size="tiny"
                             type="default"
-                            title={t(`vessel.${field.label}` as any, field.label)}
+                            title={t(`vessel.${label}`, label) as string}
                           >
                             {t(field.terminologyKey as any, field.terminologyKey)}
                           </DataTerminology>
                         )}
                       </label>
                       <VesselIdentityField
-                        value={formatInfoField(vesselIdentity[field.key], field.label)}
+                        value={formatInfoField(vesselIdentity[field.key], label)}
                       />
                     </div>
                   )

@@ -33,14 +33,21 @@ const VesselServerComponent = () => {
         {IDENTITY_FIELD_GROUPS[identitySource].map((fieldGroup) => (
           <div key={fieldGroup.join()} className={cx(styles.fieldGroup, styles.border)}>
             {/* TODO: make fields more dynamic to account for VMS */}
-            {fieldGroup.map((field) => (
-              <div key={field.key}>
-                <label>{serverT(`vessel.${field.label}` as any, field.label)}</label>
-                {vessel
-                  ? formatInfoField(getVesselProperty(vessel, field.key as any), field.key, serverT)
-                  : ''}
-              </div>
-            ))}
+            {fieldGroup.map((field) => {
+              const label = field.label || field.key
+              return (
+                <div key={field.key}>
+                  <label>{serverT(`vessel.${label}` as any, label)}</label>
+                  {vessel
+                    ? formatInfoField(
+                        getVesselProperty(vessel, field.key as any),
+                        field.key,
+                        serverT
+                      )
+                    : ''}
+                </div>
+              )
+            })}
           </div>
         ))}
       </div>

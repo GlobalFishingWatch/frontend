@@ -17,24 +17,17 @@ export const DEFAULT_VESSEL_STATE: VesselProfileState = {
 
 export type VesselRenderField<Key = string> = {
   key: Key
-  label: string
+  label?: string
   terminologyKey?: string
 }
 
 const COMMON_FIELD_GROUPS = [
+  [{ key: 'shipname' }, { key: 'flag' }],
   [
-    { key: 'shipname', label: 'shipname' },
-    { key: 'flag', label: 'flag' },
+    { key: 'shiptype', terminologyKey: 'vessel.terminology.shiptype' },
+    { key: 'geartype', terminologyKey: 'vessel.terminology.geartype' },
   ],
-  [
-    { key: 'shiptype', label: 'shiptype', terminologyKey: 'vessel.terminology.shiptype' },
-    { key: 'geartype', label: 'geartype', terminologyKey: 'vessel.terminology.geartype' },
-  ],
-  [
-    { key: 'ssvid', label: 'mmsi' },
-    { key: 'imo', label: 'imo' },
-    { key: 'callsign', label: 'callsign' },
-  ],
+  [{ key: 'ssvid', label: 'mmsi' }, { key: 'imo' }, { key: 'callsign' }],
 ]
 
 // TODO review private datasets to ensure there are no missing fields
@@ -42,27 +35,16 @@ const COMMON_FIELD_GROUPS = [
 type CustomVMSGroup = Partial<Record<SourceCode, VesselRenderField[][]>>
 export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS: CustomVMSGroup = {
   [SourceCode.Peru]: [
-    [
-      { key: 'fleet', label: 'fleet' },
-      { key: 'nationalId', label: 'nationalId' },
-    ],
-    [
-      { key: 'capacity', label: 'capacity' },
-      { key: 'beam', label: 'beam' },
-      { key: 'origin', label: 'origin' },
-    ],
+    [{ key: 'fleet' }, { key: 'nationalId' }],
+    [{ key: 'capacity' }, { key: 'beam' }, { key: 'origin' }],
   ],
-  [SourceCode.CostaRica]: [[{ key: 'nationalId', label: 'nationalId' }]],
+  [SourceCode.CostaRica]: [[{ key: 'nationalId' }]],
   [SourceCode.Indonesia]: [
-    [{ key: 'widthRange', label: 'widthRange' }],
-    [{ key: 'lengthRange', label: 'lengthRange' }],
-    [{ key: 'grossTonnageRange', label: 'grossTonnageRange' }],
+    [{ key: 'widthRange' }, { key: 'lengthRange' }, { key: 'grossTonnageRange' }],
   ],
   [SourceCode.Brazil]: [
-    [{ key: 'fishingZone', label: 'fishingZone' }],
-    [{ key: 'codMarinha', label: 'codMarinha' }],
-    [{ key: 'mainGear', label: 'mainGear' }],
-    [{ key: 'targetSpecies', label: 'targetSpecies' }],
+    [{ key: 'fishingZone' }, { key: 'codMarinha' }],
+    [{ key: 'mainGear' }, { key: 'targetSpecies' }],
   ],
 }
 
