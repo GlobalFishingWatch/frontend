@@ -52,6 +52,8 @@ import {
   getVesselDataviewInstanceDatasetConfig,
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
+import { selectUserLogged } from 'features/user/user.slice'
+import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
 import { getRelatedIdentityVesselIds } from 'features/vessel/vessel.utils'
 import {
@@ -245,6 +247,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
     selectIsVesselLocation,
     selectVesselInfoData,
     selectVesselId,
+    selectUserLogged,
   ],
   (
     dataviewInstances,
@@ -252,7 +255,8 @@ export const selectAllDataviewInstancesResolved = createSelector(
     datasets,
     isVesselLocation,
     vessel,
-    urlVesselId
+    urlVesselId,
+    loggedUser
   ): UrlDataviewInstance[] | undefined => {
     if (isVesselLocation) {
       if (!vessel || !vessel.identities) {
@@ -283,9 +287,18 @@ export const selectAllDataviewInstancesResolved = createSelector(
         const vesselId = dataviewInstance.id.split(VESSEL_DATAVIEW_INSTANCE_PREFIX)[1]
         // New way to resolve datasetConfig for vessels to avoid storing all
         // the datasetConfig in the instance and save url string characters
+        const config = { ...dataviewInstance.config }
+        // Vessel pined from not logged user but is logged now and the related dataset is available
+        if (loggedUser && !config.track) {
+          const dataset = datasets.find((d) => d.id === config.info)
+          const trackDatasetId = getRelatedDatasetByType(dataset, DatasetTypes.Tracks)?.id
+          if (trackDatasetId) {
+            config.track = trackDatasetId
+          }
+        }
         const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
           vesselId,
-          dataviewInstance.config
+          config
         )
         return {
           ...dataviewInstance,
