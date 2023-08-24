@@ -23,13 +23,16 @@ import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUserData } from 'features/user/user.slice'
 import { getUTCDateTime } from 'utils/dates'
-import { getBufferedArea, getReportCategoryFromDataview } from 'features/reports/reports.utils'
+import {
+  getBufferedAreaFeature,
+  getReportCategoryFromDataview,
+} from 'features/reports/reports.utils'
 import { ReportCategory } from 'types'
 import { selectContextAreasDataviews } from 'features/dataviews/dataviews.selectors'
 import { createDeepEqualSelector } from 'utils/selectors'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { sortStrings } from 'utils/shared'
-import { selectAreas } from 'features/areas/areas.slice'
+import { Area, selectAreas } from 'features/areas/areas.slice'
 import { selectUrlBufferUnitQuery, selectUrlBufferValueQuery } from 'routes/routes.selectors'
 import { selectReportVesselsData } from './report.slice'
 
@@ -463,6 +466,26 @@ export const selectReportAreaBuffer = createSelector(
   [selectReportAreaData, selectUrlBufferUnitQuery, selectUrlBufferValueQuery],
   (area, unit, value) => {
     if (!area || !unit || !value) return null
-    return getBufferedArea({ area, value, unit })
+    const bufferedArea = getBufferedAreaFeature({ area, value, unit }) as Area
+    if (bufferedArea?.bounds && bufferedArea?.geometry) {
+      // bbox is needed inside feature geometry to computeTimeseries
+      // fishing-map/features/reports/reports-timeseries.hooks.ts
+      bufferedArea.geometry.bbox = bufferedArea.bounds
+    }
+    return bufferedArea
+  }
+)
+
+export const selectReportArea = createSelector(
+  [
+    selectReportAreaData,
+    selectUrlBufferUnitQuery,
+    selectUrlBufferValueQuery,
+    selectReportAreaBuffer,
+  ],
+  (area, unit, value, bufferedArea) => {
+    if (!area) return null
+    if (!unit || !value) return area
+    return bufferedArea
   }
 )
