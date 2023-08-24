@@ -5,9 +5,17 @@ import { saveAs } from 'file-saver'
 import { Fragment, useEffect, useMemo } from 'react'
 import { uniq } from 'lodash'
 import { IconButton, Tab, Tabs, TabsProps, Tooltip } from '@globalfishingwatch/ui-components'
-import { VesselRegistryOwner, VesselRegistryProperty } from '@globalfishingwatch/api-types'
+import {
+  SourceCode,
+  VesselRegistryOwner,
+  VesselRegistryProperty,
+} from '@globalfishingwatch/api-types'
 import I18nDate, { formatI18nDate } from 'features/i18n/i18nDate'
-import { IDENTITY_FIELD_GROUPS, REGISTRY_FIELD_GROUPS } from 'features/vessel/vessel.config'
+import {
+  CUSTOM_VMS_IDENTITY_FIELD_GROUPS,
+  IDENTITY_FIELD_GROUPS,
+  REGISTRY_FIELD_GROUPS,
+} from 'features/vessel/vessel.config'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
@@ -119,6 +127,14 @@ const VesselIdentity = () => {
     [registryDisabled, selfReportedIdentities, t]
   )
 
+  const identityFields = useMemo(() => {
+    const source = vesselIdentity.sourceCode?.[0] as SourceCode
+    const customIdentityFields = CUSTOM_VMS_IDENTITY_FIELD_GROUPS[source]
+    return customIdentityFields?.length
+      ? [...IDENTITY_FIELD_GROUPS[identitySource], ...customIdentityFields]
+      : IDENTITY_FIELD_GROUPS[identitySource]
+  }, [identitySource, vesselIdentity?.sourceCode])
+
   return (
     <Fragment>
       <Tabs tabs={identityTabs} activeTab={identitySource} onTabClick={onTabClick} />
@@ -166,7 +182,7 @@ const VesselIdentity = () => {
         </div>
         {vesselIdentity && (
           <div className={styles.fields}>
-            {IDENTITY_FIELD_GROUPS[identitySource].map((fieldGroup, index) => (
+            {identityFields?.map((fieldGroup, index) => (
               <div key={index} className={cx(styles.fieldGroupContainer, styles.fieldGroup)}>
                 {/* TODO: make fields more dynamic to account for VMS */}
                 {fieldGroup.map((field) => {
