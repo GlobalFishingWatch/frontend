@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { useCallback, useMemo } from 'react'
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, LabelList } from 'recharts'
 import { Choice, ChoiceOption, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
+import { Dataset } from '@globalfishingwatch/api-types'
 import { selectEventsGroupedByEncounteredVessel } from 'features/vessel/activity/vessels-activity.selectors'
 import { VesselRelatedSubsection } from 'types'
 import { selectVesselRelatedSubsection } from 'features/vessel/vessel.config.selectors'
@@ -11,11 +12,15 @@ import { EVENTS_COLORS } from 'data/config'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { formatInfoField } from 'utils/info'
 import VesselLink from 'features/vessel/VesselLink'
-import { selectVesselEventsResourcesLoading } from 'features/vessel/vessel.selectors'
+import {
+  selectVesselDataset,
+  selectVesselEventsResourcesLoading,
+} from 'features/vessel/vessel.selectors'
 import styles from './RelatedVessels.module.css'
 
 const VesselTick = ({ y, index }: any) => {
   const encountersByVessel = useSelector(selectEventsGroupedByEncounteredVessel)
+  const vesselDataset = useSelector(selectVesselDataset) as Dataset
   const { id, name, flag } = encountersByVessel[index] as any
   const nameLabel = formatInfoField(name, 'name')
   const flagLabel = formatInfoField(flag, 'flag')
@@ -24,7 +29,7 @@ const VesselTick = ({ y, index }: any) => {
     <foreignObject x={0} y={y - 12} className={styles.vesselContainer}>
       <Tooltip content={fullLabel.length > 30 && fullLabel}>
         <span>
-          <VesselLink vesselId={id}>{nameLabel}</VesselLink> ({flagLabel})
+          <VesselLink vessel={{ id, dataset: vesselDataset }}>{nameLabel}</VesselLink> ({flagLabel})
         </span>
       </Tooltip>
     </foreignObject>

@@ -31,11 +31,11 @@ import {
 import { selectBivariateDataviews, selectTimeRange } from 'features/app/app.selectors'
 import { selectMarineManagerDataviewInstanceResolved } from 'features/dataviews/dataviews.slice'
 import {
-  selectIsVesselLocation,
-  selectIsWorkspaceVesselLocation,
   selectIsMarineManagerLocation,
   selectIsReportLocation,
+  selectIsVesselLocation,
   selectIsWorkspaceLocation,
+  selectIsWorkspaceVesselLocation,
 } from 'routes/routes.selectors'
 import { selectShowTimeComparison } from 'features/reports/reports.selectors'
 import { WorkspaceCategory } from 'data/workspaces'
@@ -346,7 +346,7 @@ export const selectDefaultMapGeneratorsConfig = createSelector(
     workspaceListGenerators
   ): AnyGeneratorConfig[] => {
     if (isVesselLocation) {
-      return [basemapGenerator, ...mapGenerators]
+      return mapGenerators.length ? mapGenerators : [basemapGenerator]
     }
     if (workspaceError.status === 401 || workspaceStatus === AsyncReducerStatus.Loading) {
       return [basemapGenerator]

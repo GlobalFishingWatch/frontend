@@ -29,10 +29,9 @@ import {
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
 import {
+  selectIsAnyVesselLocation,
   selectIsMarineManagerLocation,
-  selectIsVesselLocation,
   selectIsWorkspaceLocation,
-  selectIsWorkspaceVesselLocation,
   selectUrlDataviewInstances,
   selectUrlDataviewInstancesOrder,
   selectVesselId,
@@ -244,7 +243,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
     selectDataviewInstancesMergedOrdered,
     selectAllDataviews,
     selectAllDatasets,
-    selectIsVesselLocation,
+    selectIsAnyVesselLocation,
     selectVesselInfoData,
     selectVesselId,
     selectUserLogged,
@@ -258,6 +257,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
     urlVesselId,
     loggedUser
   ): UrlDataviewInstance[] | undefined => {
+    const allDataviewInstances = [...dataviewInstances]
     if (isVesselLocation) {
       if (!vessel || !vessel.identities) {
         return []
@@ -276,9 +276,9 @@ export const selectAllDataviewInstancesResolved = createSelector(
         urlVesselId,
         vesselDatasets
       )
-      return resolveDataviews([{ ...dataviewInstance, datasetsConfig }], dataviews, datasets)
+      allDataviewInstances.push({ ...dataviewInstance, datasetsConfig })
     }
-    const dataviewInstancesWithDatasetConfig = dataviewInstances.map((dataviewInstance) => {
+    const dataviewInstancesWithDatasetConfig = allDataviewInstances.map((dataviewInstance) => {
       if (
         dataviewInstance.id.startsWith(VESSEL_DATAVIEW_INSTANCE_PREFIX) &&
         !dataviewInstance.datasetsConfig?.length &&
@@ -407,7 +407,7 @@ export const selectVesselProfileDataview = createDeepEqualSelector(
 )
 
 export const selectActiveTrackDataviews = createDeepEqualSelector(
-  [selectTrackDataviews, selectIsWorkspaceVesselLocation, selectViewOnlyVessel, selectVesselId],
+  [selectTrackDataviews, selectIsAnyVesselLocation, selectViewOnlyVessel, selectVesselId],
   (dataviews, isVesselLocation, viewOnlyVessel, vesselId) => {
     return dataviews?.filter(({ config, id }) => {
       if (isVesselLocation && viewOnlyVessel) {

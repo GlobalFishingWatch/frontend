@@ -77,7 +77,6 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
           return (
             <VesselLink
               vessel={vesselData}
-              addDataviewInstance={!!workspaceId}
               onClick={() => onVesselClick(vesselData)}
               query={vesselQuery}
             >

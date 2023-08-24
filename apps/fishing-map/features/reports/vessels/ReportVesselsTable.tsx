@@ -161,7 +161,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                       style={{ backgroundColor: vessel.sourceColor }}
                     ></span>
                   )}
-                  <VesselLink className={styles.link} vessel={vesselLink} addDataviewInstance>
+                  <VesselLink className={styles.link} vessel={vesselLink}>
                     {formatInfoField(vessel.shipName, 'name')}
                   </VesselLink>
                 </div>

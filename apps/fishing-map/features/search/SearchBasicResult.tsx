@@ -198,7 +198,6 @@ function SearchBasicResult({
           <div className={styles.name} data-test="vessel-name">
             <VesselLink
               vessel={getCurrentIdentityVessel(vessel)}
-              addDataviewInstance={!!workspaceId}
               onClick={() => onVesselClick(vesselData)}
               query={vesselQuery}
             >

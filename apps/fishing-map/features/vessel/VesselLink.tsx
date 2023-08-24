@@ -7,13 +7,14 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { resetVesselState, selectVesselInfoDataId } from 'features/vessel/vessel.slice'
 import { VESSEL, WORKSPACE_VESSEL } from 'routes/routes'
-import { selectIsStandaloneSearchLocation, selectLocationQuery } from 'routes/routes.selectors'
+import {
+  selectIsStandaloneSearchLocation,
+  selectIsVesselLocation,
+  selectLocationQuery,
+} from 'routes/routes.selectors'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import { QueryParams, TimebarVisualisations } from 'types'
-import {
-  useAddVesselDataviewInstance,
-  VesselDataviewInstanceParams,
-} from 'features/vessel/vessel.hooks'
+import { VesselDataviewInstanceParams } from 'features/vessel/vessel.hooks'
 
 export type VesselLinkProps = {
   vesselId?: string
@@ -22,7 +23,6 @@ export type VesselLinkProps = {
   children: any
   onClick?: () => void
   className?: string
-  addDataviewInstance?: boolean
   query?: Partial<Record<keyof QueryParams, string | number>>
 }
 const VesselLink = ({
@@ -32,38 +32,27 @@ const VesselLink = ({
   children,
   onClick,
   className = '',
-  addDataviewInstance = false,
   query,
 }: VesselLinkProps) => {
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const locationQuery = useSelector(selectLocationQuery)
   const isSearchLocation = useSelector(selectIsStandaloneSearchLocation)
+  const isVesselLocation = useSelector(selectIsVesselLocation)
   const vesselInfoDataId = useSelector(selectVesselInfoDataId)
   const workspaceCategory = useSelector(selectCurrentWorkspaceCategory)
-  const addVesselDataviewInstance = useAddVesselDataviewInstance()
   const dispatch = useDispatch()
   const vesselId = vesselIdProp || vessel?.id
   const vesselDatasetId = datasetId || vessel?.dataset?.id || DEFAULT_VESSEL_IDENTITY_ID
+  const standaloneLink = isSearchLocation || isVesselLocation
 
   const onLinkClick = useCallback(() => {
-    if (vessel && addDataviewInstance) {
-      addVesselDataviewInstance(vessel)
-    }
     if (vesselId !== vesselInfoDataId) {
       dispatch(resetVesselState())
     }
     if (onClick) {
       onClick()
     }
-  }, [
-    addDataviewInstance,
-    addVesselDataviewInstance,
-    dispatch,
-    onClick,
-    vessel,
-    vesselId,
-    vesselInfoDataId,
-  ])
+  }, [dispatch, onClick, vesselId, vesselInfoDataId])
 
   if (!vesselId) return children
 
@@ -71,12 +60,13 @@ const VesselLink = ({
     <Link
       className={className}
       to={{
-        type: isSearchLocation || !workspaceId ? VESSEL : WORKSPACE_VESSEL,
+        type: standaloneLink ? VESSEL : WORKSPACE_VESSEL,
         payload: {
-          ...(!isSearchLocation && {
-            category: workspaceCategory,
-            workspaceId: workspaceId,
-          }),
+          ...(!standaloneLink &&
+            workspaceId && {
+              category: workspaceCategory,
+              workspaceId: workspaceId,
+            }),
           vesselId,
         },
         query: {

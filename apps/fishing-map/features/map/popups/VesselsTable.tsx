@@ -281,7 +281,7 @@ function VesselsTable({
                   )}
                   <td colSpan={hasPinColumn && pinTrackDisabled ? 2 : 1} data-test="vessel-name">
                     {vesselName !== EMPTY_FIELD_PLACEHOLDER ? (
-                      <VesselLink className={styles.link} vessel={vesselLink} addDataviewInstance>
+                      <VesselLink className={styles.link} vessel={vesselLink}>
                         {vesselName}
                       </VesselLink>
                     ) : (

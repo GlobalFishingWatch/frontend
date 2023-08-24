@@ -27,7 +27,7 @@ import { selectReportCategory, selectTimebarSelectedEnvId } from 'features/app/a
 import { createDeepEqualSelector } from 'utils/selectors'
 import {
   selectIsReportLocation,
-  selectIsWorkspaceVesselLocation,
+  selectIsAnyVesselLocation,
   selectVesselId,
 } from 'routes/routes.selectors'
 import { getReportCategoryFromDataview } from 'features/reports/reports.utils'
@@ -71,7 +71,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     (state) => selectDataviewInstancesResolved(state),
     (state) => selectIsReportLocation(state),
     (state) => selectReportCategory(state),
-    selectIsWorkspaceVesselLocation,
+    selectIsAnyVesselLocation,
     selectViewOnlyVessel,
     selectVesselId,
   ],
@@ -79,7 +79,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     dataviews = [],
     isReportLocation,
     reportCategory,
-    isWorkspaceVesselLocation,
+    isVesselLocation,
     viewOnlyVessel,
     vesselId
   ) => {
@@ -96,7 +96,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
         return dataview.config?.visible
       })
     }
-    if (isWorkspaceVesselLocation && viewOnlyVessel && vesselId !== undefined) {
+    if (isVesselLocation && viewOnlyVessel && vesselId !== undefined) {
       return dataviews.filter(({ id, config }) => {
         if (VESSEL_ONLY_VISIBLE_LAYERS.includes(config?.type as GeneratorType)) {
           return config?.visible
