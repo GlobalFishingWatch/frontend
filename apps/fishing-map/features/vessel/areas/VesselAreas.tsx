@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useCallback, useMemo } from 'react'
-import { uniqBy } from 'lodash'
 import {
   Bar,
   BarChart,
@@ -13,12 +12,13 @@ import {
 } from 'recharts'
 import { Choice, ChoiceOption, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 import { RegionType } from '@globalfishingwatch/api-types'
-import { selectEventsGroupedByArea } from 'features/vessel/activity/vessels-activity.selectors'
-import { selectVisibleEvents } from 'features/app/app.selectors'
+import {
+  selectVesselEventTypes,
+  selectEventsGroupedByArea,
+} from 'features/vessel/activity/vessels-activity.selectors'
 import { VesselAreaSubsection } from 'types'
 import { selectVesselAreaSubsection } from 'features/vessel/vessel.config.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { getEventsDatasetsInDataview } from 'features/datasets/datasets.utils'
 import { selectVesselProfileDataview } from 'features/dataviews/dataviews.slice'
 import { useRegionNamesByType } from 'features/regions/regions.hooks'
 import { EVENTS_COLORS } from 'data/config'
@@ -67,20 +67,10 @@ const VesselAreas = () => {
   const { dispatchQueryParams } = useLocationConnect()
   const events = useSelector(selectVesselEventsFilteredByTimerange)
   const vesselArea = useSelector(selectVesselAreaSubsection)
-  const visibleEvents = useSelector(selectVisibleEvents)
   const eventsGrouped = useSelector(selectEventsGroupedByArea)
   const eventsLoading = useSelector(selectVesselEventsResourcesLoading)
   const vesselDataview = useSelector(selectVesselProfileDataview)
-  const eventDatasets =
-    vesselDataview && uniqBy(getEventsDatasetsInDataview(vesselDataview), 'subcategory')
-
-  const eventTypes = useMemo(
-    () =>
-      visibleEvents === 'all' || visibleEvents === 'none'
-        ? eventDatasets?.map(({ subcategory }) => subcategory)
-        : visibleEvents,
-    [eventDatasets, visibleEvents]
-  )
+  const eventTypes = useSelector(selectVesselEventTypes)
 
   const areaOptions: ChoiceOption<VesselAreaSubsection>[] = useMemo(
     () => [
@@ -147,30 +137,27 @@ const VesselAreas = () => {
                 />
                 <XAxis type="number" hide />
                 <RechartsTooltip content={<AreaTooltip />} />
-                {eventTypes?.map(
-                  (eventType, index) =>
-                    eventType && (
-                      <Bar
-                        key={eventType}
-                        dataKey={eventType}
-                        barSize={15}
-                        stackId="a"
-                        fill={
-                          eventType === 'fishing'
-                            ? vesselDataview?.config?.color
-                            : EVENTS_COLORS[eventType]
-                        }
-                      >
-                        {index === eventTypes.length - 1 && (
-                          <LabelList
-                            position="right"
-                            valueAccessor={(entry) => formatI18nNumber(entry.total)}
-                            className={styles.count}
-                          />
-                        )}
-                      </Bar>
-                    )
-                )}
+                {eventTypes?.map((eventType, index) => (
+                  <Bar
+                    key={eventType}
+                    dataKey={eventType}
+                    barSize={15}
+                    stackId="a"
+                    fill={
+                      eventType === 'fishing'
+                        ? vesselDataview?.config?.color
+                        : EVENTS_COLORS[eventType]
+                    }
+                  >
+                    {index === eventTypes.length - 1 && (
+                      <LabelList
+                        position="right"
+                        valueAccessor={(entry) => formatI18nNumber(entry.total)}
+                        className={styles.count}
+                      />
+                    )}
+                  </Bar>
+                ))}
               </BarChart>
             </ResponsiveContainer>
           </div>

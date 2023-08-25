@@ -1,7 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { groupBy } from 'lodash'
+import { groupBy, uniqBy } from 'lodash'
 import {
   EncounterEvent,
+  EventType,
   EventTypes,
   RegionType,
   ResourceStatus,
@@ -9,6 +10,9 @@ import {
 } from '@globalfishingwatch/api-types'
 import { ApiEvent } from '@globalfishingwatch/api-types'
 import { selectVesselAreaSubsection } from 'features/vessel/vessel.config.selectors'
+import { selectVisibleEvents } from 'features/app/app.selectors'
+import { getEventsDatasetsInDataview } from 'features/datasets/datasets.utils'
+import { selectVesselProfileDataview } from 'features/dataviews/dataviews.slice'
 import {
   selectEventsResources,
   selectVesselEventsByType,
@@ -70,6 +74,15 @@ export const selectEventsGroupedByType = createSelector(
   }
 )
 
+export const selectVesselEventTypes = createSelector(
+  [selectVesselProfileDataview],
+  (vesselDataview) => {
+    const eventDatasets =
+      vesselDataview && uniqBy(getEventsDatasetsInDataview(vesselDataview), 'subcategory')
+    return eventDatasets?.map(({ subcategory }) => subcategory as EventType) || []
+  }
+)
+
 export const selectEventsGroupedByArea = createSelector(
   [selectVesselEventsFilteredByTimerange, selectVesselAreaSubsection],
   (eventsList, area) => {
@@ -101,6 +114,7 @@ export const selectEventsGroupedByArea = createSelector(
       .sort((a, b) => b.total - a.total)
   }
 )
+
 export const selectEventsGroupedByEncounteredVessel = createSelector(
   [selectVesselEventsByType(EventTypes.Encounter)],
   (encounters) => {
