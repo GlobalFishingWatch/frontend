@@ -58,6 +58,12 @@
   text-decoration: underline;
 }
 
+.advancedName {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .property label {
   height: 1rem;
   display: flex;

@@ -77,6 +77,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
               vessel={vesselData}
               onClick={() => onVesselClick(vesselData)}
               query={vesselQuery}
+              className={styles.advancedName}
             >
               <Tooltip content={label?.length > TOOLTIP_LABEL_CHARACTERS && label}>
                 <span>
@@ -127,20 +128,25 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
               t(`vessel.gearTypes.${gear.toLowerCase()}` as any, EMPTY_FIELD_PLACEHOLDER)
             )
             .join(', ')
-          return label?.length > TOOLTIP_LABEL_CHARACTERS ? (
-            <Tooltip content={label}>
+          return (
+            <Tooltip content={label?.length > TOOLTIP_LABEL_CHARACTERS ? label : ''}>
               <span>{label}</span>
             </Tooltip>
-          ) : (
-            label
           )
         },
         header: t('vessel.geartype', 'Gear Type'),
       },
       {
         id: 'owner',
-        accessorFn: (vessel) =>
-          formatInfoField(getVesselProperty(vessel, 'owner'), 'owner') || EMPTY_FIELD_PLACEHOLDER,
+        accessorFn: (vessel) => {
+          const label =
+            formatInfoField(getVesselProperty(vessel, 'owner'), 'owner') || EMPTY_FIELD_PLACEHOLDER
+          return (
+            <Tooltip content={label?.length > TOOLTIP_LABEL_CHARACTERS ? label : ''}>
+              <span>{label}</span>
+            </Tooltip>
+          )
+        },
         header: t('vessel.owner', 'Owner'),
       },
       {
