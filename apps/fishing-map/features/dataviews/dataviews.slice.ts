@@ -259,24 +259,26 @@ export const selectAllDataviewInstancesResolved = createSelector(
   ): UrlDataviewInstance[] | undefined => {
     const allDataviewInstances = [...dataviewInstances]
     if (isVesselLocation) {
-      if (!vessel || !vessel.identities) {
-        return []
-      }
-      const vesselDatasets = {
-        info: vessel.info,
-        track: vessel.track,
-        ...(vessel?.events?.length && {
-          events: vessel?.events,
-        }),
-        relatedVesselIds: getRelatedIdentityVesselIds(vessel),
-      }
-
-      const dataviewInstance = getVesselDataviewInstance({ id: urlVesselId }, vesselDatasets)
-      const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
-        urlVesselId,
-        vesselDatasets
+      const existingDataviewInstance = allDataviewInstances.find(
+        ({ id }) => urlVesselId && id.includes(urlVesselId)
       )
-      allDataviewInstances.push({ ...dataviewInstance, datasetsConfig })
+      if (!existingDataviewInstance && vessel?.identities) {
+        const vesselDatasets = {
+          info: vessel.info,
+          track: vessel.track,
+          ...(vessel?.events?.length && {
+            events: vessel?.events,
+          }),
+          relatedVesselIds: getRelatedIdentityVesselIds(vessel),
+        }
+
+        const dataviewInstance = getVesselDataviewInstance({ id: urlVesselId }, vesselDatasets)
+        const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
+          urlVesselId,
+          vesselDatasets
+        )
+        allDataviewInstances.push({ ...dataviewInstance, datasetsConfig })
+      }
     }
     const dataviewInstancesWithDatasetConfig = allDataviewInstances.map((dataviewInstance) => {
       if (
