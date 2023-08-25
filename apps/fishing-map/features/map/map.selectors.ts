@@ -346,7 +346,7 @@ export const selectDefaultMapGeneratorsConfig = createSelector(
     workspaceListGenerators
   ): AnyGeneratorConfig[] => {
     if (isVesselLocation) {
-      return mapGenerators.length ? [basemapGenerator, ...mapGenerators] : [basemapGenerator]
+      return mapGenerators.length ? mapGenerators : [basemapGenerator]
     }
     if (workspaceError.status === 401 || workspaceStatus === AsyncReducerStatus.Loading) {
       return [basemapGenerator]
