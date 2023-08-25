@@ -70,7 +70,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
             `(${t('common.previously', 'Previously')}: ${names
               .map((name) => formatInfoField(name, 'name'))
               .join(', ')})`
-          const label = `${name} ${previousNames}`
+          const label = `${name} ${previousNames || ''}`
           const vesselQuery = { start: transmissionDateFrom, end: transmissionDateTo }
           return (
             <VesselLink
@@ -81,7 +81,8 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
             >
               <Tooltip content={label?.length > TOOLTIP_LABEL_CHARACTERS && label}>
                 <span>
-                  {name} <span className={styles.secondary}>{previousNames}</span>
+                  {name}{' '}
+                  {previousNames && <span className={styles.secondary}>{previousNames}</span>}
                 </span>
               </Tooltip>
             </VesselLink>
