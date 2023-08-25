@@ -80,32 +80,32 @@ function VesselGroupAddButton({
     [dispatch, onAddToVesselGroup, vessels]
   )
   return (
-    <TooltipContainer
-      visible={vesselGroupsOpen}
-      onClickOutside={toggleVesselGroupsOpen}
-      component={
-        <ul className={styles.groupOptions}>
-          <li
-            className={cx(styles.groupOption, styles.groupOptionNew)}
-            onClick={() => handleAddToVesselGroupClick()}
-            key="new-group"
-          >
-            {t('vesselGroup.createNewGroup', 'Create new group')}
-          </li>
-          {vesselGroupOptions.map((group) => (
+    hasUserGroupsPermissions && (
+      <TooltipContainer
+        visible={vesselGroupsOpen}
+        onClickOutside={toggleVesselGroupsOpen}
+        component={
+          <ul className={styles.groupOptions}>
             <li
-              className={styles.groupOption}
-              key={group.id}
-              onClick={() => handleAddToVesselGroupClick(group.id)}
+              className={cx(styles.groupOption, styles.groupOptionNew)}
+              onClick={() => handleAddToVesselGroupClick()}
+              key="new-group"
             >
-              {group.label}
+              {t('vesselGroup.createNewGroup', 'Create new group')}
             </li>
-          ))}
-        </ul>
-      }
-    >
-      <div>
-        {hasUserGroupsPermissions && (
+            {vesselGroupOptions.map((group) => (
+              <li
+                className={styles.groupOption}
+                key={group.id}
+                onClick={() => handleAddToVesselGroupClick(group.id)}
+              >
+                {group.label}
+              </li>
+            ))}
+          </ul>
+        }
+      >
+        <div>
           <Button
             size={buttonSize}
             type={buttonType}
@@ -125,9 +125,9 @@ function VesselGroupAddButton({
             {t('vesselGroup.add', 'Add to group')}
             {showCount ? ` (${vessels.length})` : ''}
           </Button>
-        )}
-      </div>
-    </TooltipContainer>
+        </div>
+      </TooltipContainer>
+    )
   )
 }
 
