@@ -68,7 +68,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
           const { transmissionDateFrom, transmissionDateTo } = vesselData
           const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER
           const previousNames =
-            names?.length &&
+            names?.length > 0 &&
             `(${t('common.previously', 'Previously')}: ${names
               .map((name) => formatInfoField(name, 'name'))
               .join(', ')})`

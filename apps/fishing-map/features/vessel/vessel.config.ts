@@ -35,17 +35,18 @@ const COMMON_FIELD_GROUPS = [
 type CustomVMSGroup = Partial<Record<SourceCode, VesselRenderField[][]>>
 export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS: CustomVMSGroup = {
   [SourceCode.Peru]: [
-    [{ key: 'fleet' }, { key: 'nationalId' }],
-    [{ key: 'capacity' }, { key: 'beam' }, { key: 'origin' }],
+    [{ key: 'origin' }, { key: 'fleet' }, { key: 'nationalId' }],
+    [{ key: 'capacity' }, { key: 'beam' }],
   ],
   [SourceCode.CostaRica]: [[{ key: 'nationalId' }]],
   [SourceCode.Indonesia]: [
     [{ key: 'widthRange' }, { key: 'lengthRange' }, { key: 'grossTonnageRange' }],
   ],
   [SourceCode.Brazil]: [
-    [{ key: 'fishingZone' }, { key: 'codMarinha' }],
-    [{ key: 'mainGear' }, { key: 'targetSpecies' }],
+    [{ key: 'fishingZone' }, { key: 'mainGear' }, { key: 'targetSpecies' }],
+    [{ key: 'codMarinha' }],
   ],
+  [SourceCode.Chile]: [[{ key: 'fleet' }]],
 }
 
 export const IDENTITY_FIELD_GROUPS: Record<VesselIdentitySourceEnum, VesselRenderField[][]> = {

@@ -7,7 +7,7 @@ import { t } from '../features/i18n/i18n'
 export const EMPTY_FIELD_PLACEHOLDER = '---'
 
 export const upperFirst = (text: string) =>
-  text.charAt(0).toUpperCase() + text.substr(1).toLowerCase()
+  text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
 
 export const formatInfoField = (fieldValue: string | string[], type: string, translationFn = t) => {
   if (fieldValue) {
@@ -23,7 +23,7 @@ export const formatInfoField = (fieldValue: string | string[], type: string, tra
       }
       if (type === 'name' || type === 'shipname' || type === 'owner' || type === 'port') {
         return fieldValue.replace(
-          /\b(?![LXIVCDM]+\b)([A-Z,ÁÉÍÓÚÑÜÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÇ]+)\b/g,
+          /\b(?![LXIVCDM]+\b)([A-Z,ÁÉÍÓÚÑÜÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÇÅÆØ]+)\b/g,
           upperFirst
         )
       }
