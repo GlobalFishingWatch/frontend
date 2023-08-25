@@ -31,42 +31,37 @@ export type AdvancedSearchQueryField = {
 
 type AdvancedSearchQueryFieldParams = {
   operator: string
-  transformation?: (field: AdvancedSearchQueryField, operator: string) => string
+  transformation?: (field: AdvancedSearchQueryField) => string
 }
+
+const toUpperCaseWithQuotationMarks = (field: AdvancedSearchQueryField) =>
+  `'${(field?.value as string).toUpperCase()}'`
 
 const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFieldParams> = {
   shipname: {
     operator: '=',
-    transformation: (field) => `'${(field?.value as string).toLocaleUpperCase()}'`,
+    transformation: toUpperCaseWithQuotationMarks,
   },
   ssvid: {
     operator: '=',
-  },
-  codMarinha: {
-    operator: '=',
+    transformation: toUpperCaseWithQuotationMarks,
   },
   imo: {
     operator: '=',
+    transformation: toUpperCaseWithQuotationMarks,
   },
   callsign: {
     operator: '=',
+    transformation: toUpperCaseWithQuotationMarks,
   },
   owner: {
     operator: '=',
+    transformation: toUpperCaseWithQuotationMarks,
   },
   geartype: {
     operator: '=',
   },
-  targetSpecies: {
-    operator: '=',
-  },
   flag: {
-    operator: '=',
-  },
-  fleet: {
-    operator: '=',
-  },
-  origin: {
     operator: '=',
   },
   lastTransmissionDate: {
@@ -74,6 +69,19 @@ const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFiel
   },
   firstTransmissionDate: {
     operator: '<=',
+  },
+  // VMS specific
+  codMarinha: {
+    operator: '=',
+  },
+  targetSpecies: {
+    operator: '=',
+  },
+  fleet: {
+    operator: '=',
+  },
+  origin: {
+    operator: '=',
   },
 }
 
@@ -83,15 +91,16 @@ export const getAdvancedSearchQuery = (
 ) => {
   const getFieldQuery = (field: AdvancedSearchQueryField) => {
     const params = FIELDS_PARAMS[field.key]
-    const value = params?.transformation
-      ? params.transformation(field, params.operator)
-      : field.value
+    const value = params?.transformation ? params.transformation(field) : field.value
 
     if (!value) {
       return ''
     }
 
     const getFieldValue = (value: string) => {
+      if (field.key === 'owner') {
+        return `registryOwners.name ${params?.operator} ${value}`
+      }
       return rootObject
         ? `${rootObject}.${field.key} ${params?.operator} ${value}`
         : `${field.key} ${params?.operator} ${value}`

@@ -91,12 +91,14 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           'ssvid',
           'imo',
           'codMarinha',
+          'owner',
         ]
 
         const fields: AdvancedSearchQueryField[] = andCombinedFields.flatMap((field) => {
           const isInFieldsAllowed =
             fieldsAllowed.includes(field) ||
-            fieldsAllowed.includes(`${filters.infoSource}.${field}`)
+            fieldsAllowed.includes(`${filters.infoSource}.${field}`) ||
+            (field === 'owner' && fieldsAllowed.includes('registryOwners.name'))
           if (filters[field] && isInFieldsAllowed) {
             return {
               key: field,
@@ -119,7 +121,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         datasetId: dataset.id,
         params: [],
         query: [
-          { id: 'includes', value: ['MATCH_CRITERIA'] },
+          { id: 'includes', value: ['MATCH_CRITERIA', 'OWNERSHIP'] },
           { id: 'datasets', value: datasets.map((d) => d.id) },
           {
             id: advancedQuery ? 'where' : 'query',

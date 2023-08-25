@@ -59,10 +59,14 @@ function getLatestIdentityPrioritised(vessel: IdentityVessel | IdentityVesselDat
 
 export function getVesselProperty<P = string>(
   vessel: IdentityVessel | IdentityVesselData | null,
-  property: VesselIdentityProperty,
+  property: VesselIdentityProperty | 'owner',
   { identityIndex = 0, identitySource } = {} as GetVesselIdentityParams
 ): P {
   if (!vessel) return '' as P
+  if (property === 'owner') {
+    const latestSSVID = getLatestIdentityPrioritised(vessel).ssvid
+    return vessel.registryOwners?.filter((owner) => owner.ssvid === latestSSVID)?.[0]?.name as P
+  }
   if (!identitySource) {
     return get(getLatestIdentityPrioritised(vessel), property) as P
   }

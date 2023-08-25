@@ -29,7 +29,6 @@ import { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { VesselIdentitySourceEnum } from 'features/search/search.config'
 import I18nNumber from 'features/i18n/i18nNumber'
 import VesselLink from 'features/vessel/VesselLink'
-import { selectCurrentWorkspaceId } from 'features/workspace/workspace.selectors'
 import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import styles from './SearchBasicResult.module.css'
@@ -43,7 +42,6 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
   const searchResults = useSelector(selectSearchResults)
   const vesselsSelected = useSelector(selectSelectedVessels)
   const tableContainerRef = useRef<HTMLDivElement>(null)
-  const workspaceId = useSelector(selectCurrentWorkspaceId)
   const isSearchLocation = useSelector(selectIsStandaloneSearchLocation)
   const { setTimerange } = useTimerangeConnect()
 
@@ -60,7 +58,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
   const columns = useMemo((): MRT_ColumnDef<IdentityVesselData>[] => {
     return [
       {
-        id: 'shipname',
+        id: PINNED_COLUMN,
         accessorKey: PINNED_COLUMN as any,
         accessorFn: (vessel) => {
           const [shipname, ...names] = getVesselIdentityProperties(vessel, 'shipname')
@@ -140,7 +138,13 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
         header: t('vessel.geartype', 'Gear Type'),
       },
       {
-        id: 'infoDource',
+        id: 'owner',
+        accessorFn: (vessel) =>
+          formatInfoField(getVesselProperty(vessel, 'owner'), 'owner') || EMPTY_FIELD_PLACEHOLDER,
+        header: t('vessel.owner', 'Owner'),
+      },
+      {
+        id: 'infoSource',
         accessorFn: (vessel) => {
           const registryIdentities = vessel.identities.filter(
             ({ identitySource }) => identitySource === VesselIdentitySourceEnum.Registry
@@ -181,6 +185,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
         id: 'transmissionDates',
         accessorFn: (vessel) => {
           const { transmissionDateFrom, transmissionDateTo } = getSearchIdentityResolved(vessel)
+          if (!transmissionDateFrom || !transmissionDateTo) return
           return (
             <div>
               <span style={{ font: 'var(--font-XS)' }}>
@@ -198,7 +203,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
         header: t('vessel.transmissionDates', 'Transmission Dates'),
       },
     ]
-  }, [i18n.language, onVesselClick, t, workspaceId])
+  }, [i18n.language, onVesselClick, t])
 
   const fetchMoreOnBottomReached = useCallback(() => {
     if (tableContainerRef.current) {
@@ -313,12 +318,14 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
           ['--header-callsign-size' as any]: 100,
           ['--col-ssvid-size' as any]: 100,
           ['--col-imo-size' as any]: 100,
-          ['--col-infoDource-size' as any]: 250,
+          ['--col-shipname-size' as any]: 250,
+          ['--col-infoSource-size' as any]: 250,
           ['--col-callsign-size' as any]: 100,
           ['--header-mrt_row_select-size' as any]: 10,
           ['--col-mrt_row_select-size' as any]: 10,
           ['--header-mrt_row_select-size' as any]: 10,
-          ['--header-infoDource-size' as any]: 250,
+          ['--header-shipname-size' as any]: 250,
+          ['--header-infoSource-size' as any]: 250,
         },
       }}
       muiTableHeadCellProps={(cell) => ({
@@ -351,6 +358,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
             cell.column.id === 'shipname' ? '5px 0 5px -3px var(--color-terthiary-blue)' : '',
           whiteSpace: 'nowrap',
           '.Mui-TableHeadCell-Content-Wrapper': { minWidth: '2rem' },
+          minHeight: '5rem',
           padding: '0.5rem 1.1rem',
           ' a': {
             cursor: 'pointer',

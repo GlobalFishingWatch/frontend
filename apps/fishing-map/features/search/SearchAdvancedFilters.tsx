@@ -147,6 +147,13 @@ function SearchAdvancedFilters() {
         label={t('vessel.callsign', 'Callsign')}
         inputSize="small"
       />
+      <InputText
+        onChange={onInputChange}
+        id="owner"
+        value={owner || ''}
+        label={t('vessel.owner', 'Owner')}
+        inputSize="small"
+      />
       <MultiSelect
         label={t('layer.flagState_other', 'Flag States')}
         placeholder={getPlaceholderBySelections({ selection: flag, options: flagOptions })}
@@ -261,13 +268,6 @@ function SearchAdvancedFilters() {
           }}
         />
       </div>
-      <InputText
-        onChange={onInputChange}
-        id="owner"
-        value={owner || ''}
-        label={t('vessel.owner', 'Owner')}
-        inputSize="small"
-      />
     </div>
   )
 }

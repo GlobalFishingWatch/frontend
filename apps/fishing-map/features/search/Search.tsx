@@ -146,7 +146,7 @@ function Search() {
       },
       100
     ),
-    [dispatch]
+    [dispatch, activeSearchOption]
   )
 
   const fetchMoreResults = useCallback(() => {
