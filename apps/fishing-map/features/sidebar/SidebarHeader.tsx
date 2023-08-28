@@ -50,6 +50,7 @@ import { selectReportAreaIds } from 'features/reports/reports.selectors'
 import { QueryParams } from 'types'
 import { useSearchFiltersConnect } from 'features/search/search.hook'
 import { resetVesselState } from 'features/vessel/vessel.slice'
+import { cleanVesselSearchResults } from 'features/search/search.slice'
 import styles from './SidebarHeader.module.css'
 import { useClipboardNotification } from './sidebar.hooks'
 
@@ -349,6 +350,7 @@ function CloseSectionButton() {
 
 function SidebarHeader() {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)
   const locationCategory = useSelector(selectLocationCategory)
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
@@ -406,6 +408,7 @@ function SidebarHeader() {
         additionalParams = { query: searchFilters.imo }
       }
     }
+    dispatch(cleanVesselSearchResults())
     dispatchQueryParams({ searchOption: option.id, ...EMPTY_FILTERS, ...additionalParams })
   }
 
