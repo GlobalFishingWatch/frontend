@@ -2,6 +2,7 @@ import { get } from 'lodash'
 import { IdentityVessel, Vessel } from '@globalfishingwatch/api-types'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { VesselRenderField } from 'features/vessel/vessel.config'
+import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { t } from '../features/i18n/i18n'
 
 export const EMPTY_FIELD_PLACEHOLDER = '---'
@@ -9,7 +10,11 @@ export const EMPTY_FIELD_PLACEHOLDER = '---'
 export const upperFirst = (text: string) =>
   text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
 
-export const formatInfoField = (fieldValue: string | string[], type: string, translationFn = t) => {
+export const formatInfoField = (
+  fieldValue: string | string[] | number,
+  type: string,
+  translationFn = t
+) => {
   if (fieldValue) {
     if (typeof fieldValue === 'string') {
       if (type === 'flag' || type === 'ownerFlag') {
@@ -31,7 +36,7 @@ export const formatInfoField = (fieldValue: string | string[], type: string, tra
         const fleetClean = fieldValue.replaceAll('_', ' ')
         return fleetClean.charAt(0).toUpperCase() + fleetClean.slice(1)
       }
-    } else {
+    } else if (Array.isArray(fieldValue)) {
       if (type === 'geartype') {
         return fieldValue
           .map((value) =>
@@ -39,6 +44,8 @@ export const formatInfoField = (fieldValue: string | string[], type: string, tra
           )
           .join(', ')
       }
+    } else {
+      return formatI18nNumber(fieldValue)
     }
     return fieldValue
   }
