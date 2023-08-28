@@ -208,58 +208,29 @@ export const selectDataviewInstancesMerged = createSelector(
     selectWorkspaceStatus,
     selectWorkspaceDataviewInstances,
     selectUrlDataviewInstances,
+    selectIsAnyVesselLocation,
+    selectVesselId,
+    selectVesselInfoData,
   ],
   (
     isWorkspaceLocation,
     workspaceStatus,
     workspaceDataviewInstances,
-    urlDataviewInstances = []
+    urlDataviewInstances = [],
+    isVesselLocation,
+    urlVesselId,
+    vessel
   ): UrlDataviewInstance[] | undefined => {
     if (isWorkspaceLocation && workspaceStatus !== AsyncReducerStatus.Finished) {
       return
     }
-    const mergedDataviewInstances = mergeWorkspaceUrlDataviewInstances(
-      workspaceDataviewInstances as DataviewInstance<any>[],
-      urlDataviewInstances
-    )
-    return mergedDataviewInstances
-  }
-)
-export const selectDataviewInstancesMergedOrdered = createSelector(
-  [selectDataviewInstancesMerged, selectUrlDataviewInstancesOrder],
-  (dataviewInstances = [], dataviewInstancesOrder): UrlDataviewInstance[] => {
-    if (!dataviewInstancesOrder || !dataviewInstancesOrder.length) {
-      return dataviewInstances
-    }
-    const dataviewInstancesOrdered = dataviewInstances.sort(
-      (a, b) => dataviewInstancesOrder.indexOf(a.id) - dataviewInstancesOrder.indexOf(b.id)
-    )
-    return [...dataviewInstancesOrdered]
-  }
-)
-
-export const selectAllDataviewInstancesResolved = createSelector(
-  [
-    selectDataviewInstancesMergedOrdered,
-    selectAllDataviews,
-    selectAllDatasets,
-    selectIsAnyVesselLocation,
-    selectVesselInfoData,
-    selectVesselId,
-    selectUserLogged,
-  ],
-  (
-    dataviewInstances,
-    dataviews,
-    datasets,
-    isVesselLocation,
-    vessel,
-    urlVesselId,
-    loggedUser
-  ): UrlDataviewInstance[] | undefined => {
-    const allDataviewInstances = [...dataviewInstances]
+    const mergedDataviewInstances =
+      mergeWorkspaceUrlDataviewInstances(
+        workspaceDataviewInstances as DataviewInstance<any>[],
+        urlDataviewInstances
+      ) || []
     if (isVesselLocation) {
-      const existingDataviewInstance = allDataviewInstances.find(
+      const existingDataviewInstance = mergedDataviewInstances?.find(
         ({ id }) => urlVesselId && id.includes(urlVesselId)
       )
       if (!existingDataviewInstance && vessel?.identities) {
@@ -277,10 +248,30 @@ export const selectAllDataviewInstancesResolved = createSelector(
           urlVesselId,
           vesselDatasets
         )
-        allDataviewInstances.push({ ...dataviewInstance, datasetsConfig })
+        mergedDataviewInstances.push({ ...dataviewInstance, datasetsConfig })
       }
     }
-    const dataviewInstancesWithDatasetConfig = allDataviewInstances.map((dataviewInstance) => {
+    return mergedDataviewInstances
+  }
+)
+
+export const selectDataviewInstancesMergedOrdered = createSelector(
+  [selectDataviewInstancesMerged, selectUrlDataviewInstancesOrder],
+  (dataviewInstances = [], dataviewInstancesOrder): UrlDataviewInstance[] => {
+    if (!dataviewInstancesOrder || !dataviewInstancesOrder.length) {
+      return dataviewInstances
+    }
+    const dataviewInstancesOrdered = dataviewInstances.sort(
+      (a, b) => dataviewInstancesOrder.indexOf(a.id) - dataviewInstancesOrder.indexOf(b.id)
+    )
+    return [...dataviewInstancesOrdered]
+  }
+)
+
+export const selectAllDataviewInstancesResolved = createSelector(
+  [selectDataviewInstancesMergedOrdered, selectAllDataviews, selectAllDatasets, selectUserLogged],
+  (dataviewInstances, dataviews, datasets, loggedUser): UrlDataviewInstance[] | undefined => {
+    const dataviewInstancesWithDatasetConfig = dataviewInstances.map((dataviewInstance) => {
       if (
         dataviewInstance.id.startsWith(VESSEL_DATAVIEW_INSTANCE_PREFIX) &&
         !dataviewInstance.datasetsConfig?.length &&

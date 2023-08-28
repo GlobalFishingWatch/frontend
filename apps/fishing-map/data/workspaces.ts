@@ -1,3 +1,5 @@
+import { BasemapType, GeneratorType } from '@globalfishingwatch/layer-composer'
+import { DataviewInstance } from '@globalfishingwatch/api-types'
 import { PUBLIC_SUFIX } from './config'
 
 export const GLOBAL_VESSELS_DATASET_ID = 'public-global-all-vessels'
@@ -97,6 +99,7 @@ export const DEFAULT_DATAVIEW_SLUGS = [
 ]
 
 export const PROFILE_DATAVIEW_SLUGS = [
+  BASEMAP_DATAVIEW_SLUG,
   EEZ_DATAVIEW_SLUG,
   MPA_DATAVIEW_SLUG,
   RFMO_DATAVIEW_SLUG,
@@ -106,3 +109,12 @@ export const PROFILE_DATAVIEW_SLUGS = [
 
 export const ONLY_GFW_STAFF_DATAVIEW_SLUGS: string[] = []
 export const HIDDEN_DATAVIEW_FILTERS: string[] = []
+
+export const DEFAULT_BASEMAP_DATAVIEW_INSTANCE: DataviewInstance = {
+  dataviewId: BASEMAP_DATAVIEW_SLUG,
+  id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
+  config: {
+    type: GeneratorType.Basemap,
+    basemap: BasemapType.Default,
+  },
+}
