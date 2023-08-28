@@ -92,12 +92,15 @@ const BigQueryMenu: React.FC = () => {
     const action = await dispatch(
       createBigQueryDatasetThunk({ name, unit, createAsPublic, query, visualisationMode })
     )
-    if (aggregationOperation && createBigQueryDatasetThunk.fulfilled.match(action)) {
+    if (
+      (visualisationMode === '4wings' ? aggregationOperation !== null : true) &&
+      createBigQueryDatasetThunk.fulfilled.match(action)
+    ) {
       const dataset = action.payload.payload as Dataset
       const dataviewInstance =
         visualisationMode === '4wings'
           ? getBigQuery4WingsDataviewInstance(dataset.id, {
-              aggregationOperation,
+              aggregationOperation: aggregationOperation as AggregationOperation,
             })
           : getBigQueryEventsDataviewInstance(dataset.id)
       addNewDataviewInstances([dataviewInstance])
