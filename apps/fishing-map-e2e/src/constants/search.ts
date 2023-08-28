@@ -19,5 +19,3 @@ export const REPORT_CSV_COLUMNS = [
   'Last Transmission Date',
   'Apparent Fishing Hours',
 ]
-
-export const REPORT_CSV_GROUPED_COLUMNS = ['Time Range', 'Vessel IDs', 'Apparent Fishing Hours']

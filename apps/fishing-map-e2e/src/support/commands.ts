@@ -180,7 +180,7 @@ Cypress.Commands.add(
     Cypress.log({
       name: 'findBySel',
       displayName: 'FIND BY DATA-TEST',
-      message: [`💸 Try to find elements by data-test that starts with ${selector} in:`],
+      message: [`💸 Try to find elements by data-test that is equal with ${selector} in:`],
     })
 
     return cy.wrap(subject).find(`[data-test="${selector}"]`, options)

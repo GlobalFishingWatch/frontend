@@ -55,8 +55,7 @@ export const scrollSidebar = (position, duration = 0) =>
 
 export const getDownloadsFolderPath = () => Cypress.config('downloadsFolder')
 export const deleteDownloadsFolder = () => {
-  const downloadsFolder = Cypress.config('downloadsFolder')
-  cy.task('deleteFolder', downloadsFolder)
+  cy.task('deleteFolder', getDownloadsFolderPath())
 }
 
 export const getQueryParam = (url: string, name: string) => {
