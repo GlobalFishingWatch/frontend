@@ -244,12 +244,13 @@ function Search() {
   }
 
   const onConfirmSearch = useCallback(() => {
+    dispatch(cleanVesselSearchResults())
     fetchResults({
       query: debouncedQuery,
       datasets: searchDatasets,
       filters: searchFilters,
     })
-  }, [debouncedQuery, fetchResults, searchDatasets, searchFilters])
+  }, [debouncedQuery, dispatch, fetchResults, searchDatasets, searchFilters])
 
   const isWorkspaceError = workspaceStatus === AsyncReducerStatus.Error
   const isDatasetError = datasetsStatus === AsyncReducerStatus.Error
