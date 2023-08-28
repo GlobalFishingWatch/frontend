@@ -234,7 +234,7 @@
     "advanced": "advanced",
     "basic": "basic",
     "callsign": "Señal distintiva de llamada",
-    "description": "Buscar por nombre de buque o código de identificación (IMO, MMSI, VMS ID, etc…). Puedes restringir tu búsqueda presionando el icono de filtro en la barra superior",
+    "description": "Buscar por nombre de embarcación o código de identificación. Puedes filtrar tu búsqueda presionando \"Avanzada\" en la barra superior.",
     "flagState": "Flag States",
     "hideIndividual": "HIDE INDIVIDUAL RESULTS",
     "IMO": "IMO",
@@ -252,7 +252,7 @@
     "viewIndividual": "VIEW INDIVIDUAL RESULTS"
   },
   "selects": {
-    "allSelected": "todos",
+    "allSelected": "Todos",
     "none": "None",
     "selected": "seleccionado"
   },

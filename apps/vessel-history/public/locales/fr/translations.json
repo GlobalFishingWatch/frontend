@@ -30,7 +30,7 @@
     "no": "No",
     "offlineAccess": "accès hors ligne",
     "offlineAccessEmptyState": "Les navires que vous avez sauvegardés pour un accès hors ligne apparaîtront ici.",
-    "other": "Autre",
+    "other": "Autres",
     "previous": "Précédent",
     "riskSummary": "Risk Summary",
     "rmfo": "RMFO",
@@ -112,7 +112,7 @@
     "nSelected": "{{count}} sélectionnés",
     "nSelected_one": "{{count}} sélectionnés",
     "nSelected_other": "{{count}} sélectionnés",
-    "nSelected_plural": "{{count}} sélectionné",
+    "nSelected_plural": "{{count}} sélectionnés",
     "port": "Port",
     "portAction": "Visites du Port",
     "portAt": "Visite du port à {{port}}",
@@ -162,7 +162,7 @@
     "noHighlights": "Aucun événement trouvé pour vos critères de surbrillance",
     "noHighlitingSettingsMessage": "Vous n’avez pas encore défini les paramètres retenus. Veuillez cliquer sur Paramètres pour configurer l’activité qui vous intéresse.",
     "noResults": "Aucun événement trouvé. Essayez de changer les filtres actuels.",
-    "portVisitEvents": "Visites de Port",
+    "portVisitEvents": "Visites du Port",
     "portVisitEventsDescription": "Une visite de port se produit lorsqu'un navire a une entrée de port, un arrêt ou un Gap et un événement de sortie. Cela signifie que le navire se trouve à moins de 3 km d'un ancrage (ENTRÉE DU PORT), et se déplace entre 0,5 et 0. nœuds (Arrêt DU PORT), ou à l'intérieur d'un ancrage mais a une lacune dans la transmission AIS pendant au moins 4 heures (Port Gap), puis le navire transite plus de 4 km à l'extérieur du point d'ancrage (SORTIE DU PORT). Les ports sont basés sur le jeu de données de Global Fishing Watch, une base de données mondiale sur les mouillages où les navires se réunissent.",
     "vesselAuthorization": "Vessel Authorization"
   },
@@ -234,10 +234,10 @@
     "advanced": "Avancé",
     "basic": "Basique",
     "callsign": "Indicatif",
-    "description": "Recherche par nom de navire ou code d'identification (OMI, MMSI, Indicatif, etc…). Vous pouvez affiner votre recherche en appuyant sur l'icône de filtre dans la barre du haut",
+    "description": "Recherche par nom de navire ou code d'identification . Vous pouvez affiner votre recherche en cliquant sur \"Avancé\" dans la barre supérieure.",
     "flagState": "Etat du pavillon",
     "hideIndividual": "HIDE INDIVIDUAL RESULTS",
-    "IMO": "IMO",
+    "IMO": "OMI",
     "loadMore": "Charger plus",
     "mergeSelectedVessels": "Fusionner les navires sélectionnés",
     "MMSI": "MMSI",
@@ -247,14 +247,14 @@
     "noTmtResults": "A vessel with these criteria could not be found, due to a timeout in the search function. Please try again.",
     "placeholder": "Recherche par Nom, OMI, Indicatif ou MMSI",
     "seeVessel": "Voir le navire",
-    "shipname": "Nom de navire",
-    "title": "Recherche",
+    "shipname": "Nom",
+    "title": "Chercher",
     "viewIndividual": "VIEW INDIVIDUAL RESULTS"
   },
   "selects": {
     "allSelected": "Tous",
     "none": "Aucun",
-    "selected": "slectionns"
+    "selected": "sélectionné"
   },
   "settings": {
     "distance": "DISTANCE VOYÉE",
@@ -300,7 +300,7 @@
       "inputStart": "Visites du port en",
       "inThesePortStates": "Événements dans ces États du port",
       "inThesePortStatesDescription": "Faits saillants tous les {{eventType}} qui peuvent avoir eu lieu dans un État du port. Une visite de port se produit lorsqu'un navire transite vers un mouillage, et l'État du port est attribué en fonction de la zone économique exclusive (ZEE) dans laquelle se trouve le mouillage. Les mouillages sont basés sur l'ensemble de données sur les mouillages de Global Fishing Watch, une base de données mondiale des emplacements de mouillage où les navires se rassemblent : <3>https://globalfishingwatch.org/datasets-and-code-anchorages/</3>\nVeuillez enquêter sur les événements faits saillants plus loin sur la carte.",
-      "shortTitle": "Visites de Port",
+      "shortTitle": "Visites du Port",
       "title": "Visites du Port"
     },
     "rfmos": {
@@ -311,7 +311,7 @@
   },
   "user": {
     "loggedInAs": "S'identifier comme",
-    "login": "S'identifier",
+    "login": "Se connecter",
     "notAuthorized": "Seuls certains utilisateurs enregistrés spécifiques peuvent utiliser ce produit",
     "notLoggedIn": "Seuls certains utilisateurs enregistrés spécilement peuvent utiliser ce produit. Veuillez vous connecter avec vos identifiants Global Fishing Watch",
     "requestAccess": "Demander l'accès",

@@ -180,6 +180,7 @@ function ActivityLayerPanel({
 
   return (
     <div
+      data-test={`activity-layer-panel-${dataview.id}`}
       className={cx(styles.LayerPanel, activityStyles.layerPanel, {
         [styles.expandedContainerOpen]: filterOpen || colorOpen,
         [styles.noBorder]: !showBorder || bivariateDataviews?.[0] === dataview.id,
@@ -219,6 +220,7 @@ function ActivityLayerPanel({
                 >
                   <div className={styles.filterButtonWrapper}>
                     <IconButton
+                      data-test={`activity-layer-panel-btn-filter-${dataview.id}`}
                       icon={filterOpen ? 'filter-on' : 'filter-off'}
                       size="small"
                       onClick={onToggleFilterOpen}

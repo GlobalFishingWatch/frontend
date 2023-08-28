@@ -345,6 +345,8 @@
     "issues": "Platform Issues",
     "logAnIssue": "Log an issue",
     "requestAnImprovement": "Request an improvement",
+    "marineManagerDatasetsSurvey": "What other datasets would you like to see?",
+    "marineManagerDatasetsSurveyLink": "https://www.surveymonkey.com/r/marinemanagerdata",
     "role": "Role",
     "roles": {
       "analyst": "Analyst",

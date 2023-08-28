@@ -110,7 +110,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
       {!readOnly && <CategoryTabs onMenuClick={onMenuClick} />}
       {/* New dataset modal is used in user and workspace pages*/}
       {datasetModal === 'new' && <NewDataset />}
-      <div className="scrollContainer">
+      <div className="scrollContainer" data-test="sidebar-container">
         <SidebarHeader />
         {sidebarComponent}
       </div>

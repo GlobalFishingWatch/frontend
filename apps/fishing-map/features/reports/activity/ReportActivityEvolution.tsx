@@ -121,7 +121,7 @@ export default function ReportActivityGraph({ start, end, data }: ReportActivity
   ]
 
   return (
-    <div className={styles.graph}>
+    <div className={styles.graph} data-test="report-activity-evolution">
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart data={dataFormated} margin={graphMargin}>
           <CartesianGrid vertical={false} />

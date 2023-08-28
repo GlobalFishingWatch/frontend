@@ -65,6 +65,7 @@ interface MultiSelectProps {
   onRemove?: MultiSelectOnChange
   onCleanClick?: (e: React.MouseEvent) => void
   className?: string
+  testId?: string
 }
 
 const getPlaceholderBySelections = (
@@ -111,6 +112,7 @@ export function MultiSelect(props: MultiSelectProps) {
     disabled = false,
     disabledMsg = '',
     onFilterOptions,
+    testId = 'multi-select',
   } = props
 
   const handleRemove = useCallback(
@@ -270,6 +272,7 @@ export function MultiSelect(props: MultiSelectProps) {
                 preventKeyAction: isOpen,
               }),
             })}
+            data-test={`${testId}-input`}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             placeholder={
@@ -287,6 +290,7 @@ export function MultiSelect(props: MultiSelectProps) {
               <IconButton
                 icon={isOpen ? 'arrow-top' : 'arrow-down'}
                 size="small"
+                data-test={`${testId}-toggle`}
                 aria-label={'toggle menu'}
                 {...getToggleButtonProps(getDropdownProps({ preventKeyAction: isOpen }))}
               ></IconButton>
@@ -311,6 +315,7 @@ export function MultiSelect(props: MultiSelectProps) {
               return (
                 <Tooltip key={item.id} content={item.tooltip} placement="top-start">
                   <li
+                    data-test={`${testId}-option-${item.id}`}
                     className={cx(styles.optionItem, {
                       [styles.highlight]: highlight,
                       [item.className || '']: item.className,

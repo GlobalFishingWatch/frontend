@@ -91,10 +91,12 @@ function VesselsTable({
   feature,
   vesselProperty = 'hours',
   activityType = DatasetSubCategory.Fishing,
+  testId = 'vessels-table',
 }: {
   feature: TooltipEventFeature
   vesselProperty?: ActivityProperty
   activityType?: DatasetSubCategory
+  testId?: string
 }) {
   const { t } = useTranslation()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
@@ -164,7 +166,7 @@ function VesselsTable({
   return (
     <Fragment>
       {vessels!?.length > 0 && (
-        <table className={cx(styles.vesselsTable)}>
+        <table className={cx(styles.vesselsTable)} data-test={testId}>
           <thead>
             <tr>
               <th colSpan={hasPinColumn ? 2 : 1}>{t('common.vessel_other', 'Vessels')}</th>
@@ -207,7 +209,7 @@ function VesselsTable({
               const pinTrackDisabled = !interactionAllowed || !hasDatasets
               const detectionsTimestamps = getDetectionsTimestamps(vessel)
               return (
-                <tr key={i}>
+                <tr key={i} data-test={`${testId}-item-${i}`}>
                   {!pinTrackDisabled && (
                     <td className={styles.icon}>
                       <IconButton
@@ -228,7 +230,9 @@ function VesselsTable({
                       />
                     </td>
                   )}
-                  <td colSpan={hasPinColumn && pinTrackDisabled ? 2 : 1}>{vesselName}</td>
+                  <td colSpan={hasPinColumn && pinTrackDisabled ? 2 : 1} data-test="vessel-name">
+                    {vesselName}
+                  </td>
                   <td className={styles.columnSpace}>
                     <Tooltip content={t(`flags:${vessel.flag as string}` as any)}>
                       <span>{vessel.flag || EMPTY_FIELD_PLACEHOLDER}</span>

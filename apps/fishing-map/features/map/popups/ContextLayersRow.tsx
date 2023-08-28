@@ -130,6 +130,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
       <IconButton
         icon="analysis"
         tooltip={t('common.analysis', 'Create an analysis for this area')}
+        testId="open-analysis"
         size="small"
       />
     </Link>

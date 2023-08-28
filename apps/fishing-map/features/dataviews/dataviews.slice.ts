@@ -46,6 +46,8 @@ import {
   getVesselDataviewInstanceDatasetConfig,
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
+import { selectUserLogged } from 'features/user/user.slice'
+import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { trackDatasetConfigsCallback } from '../resources/resources.utils'
 
 export const fetchDataviewByIdThunk = createAsyncThunk(
@@ -213,8 +215,8 @@ export const selectDataviewInstancesMergedOrdered = createSelector(
 )
 
 export const selectAllDataviewInstancesResolved = createSelector(
-  [selectDataviewInstancesMergedOrdered, selectAllDataviews, selectAllDatasets],
-  (dataviewInstances, dataviews, datasets): UrlDataviewInstance[] | undefined => {
+  [selectDataviewInstancesMergedOrdered, selectAllDataviews, selectAllDatasets, selectUserLogged],
+  (dataviewInstances, dataviews, datasets, loggedUser): UrlDataviewInstance[] | undefined => {
     if (!dataviewInstances) return
     const dataviewInstancesWithDatasetConfig = dataviewInstances.map((dataviewInstance) => {
       if (
@@ -225,9 +227,18 @@ export const selectAllDataviewInstancesResolved = createSelector(
         const vesselId = dataviewInstance.id.split(VESSEL_DATAVIEW_INSTANCE_PREFIX)[1]
         // New way to resolve datasetConfig for vessels to avoid storing all
         // the datasetConfig in the instance and save url string characters
+        const config = { ...dataviewInstance.config }
+        // Vessel pined from not logged user but is logged now and the related dataset is available
+        if (loggedUser && !config.track) {
+          const dataset = datasets.find((d) => d.id === config.info)
+          const trackDatasetId = getRelatedDatasetByType(dataset, DatasetTypes.Tracks)?.id
+          if (trackDatasetId) {
+            config.track = trackDatasetId
+          }
+        }
         const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
           vesselId,
-          dataviewInstance.config
+          config
         )
         return {
           ...dataviewInstance,

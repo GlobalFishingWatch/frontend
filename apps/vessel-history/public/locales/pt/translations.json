@@ -98,7 +98,7 @@
     "internationalWaters": "Águas internacionais",
     "iuu": "iuu",
     "knots": "knots",
-    "loitering": "Á deriva",
+    "loitering": "à deriva",
     "loiteringAction": "Á deriva em {{regionName}}",
     "maxCoords": "Max coordinates",
     "medianSpeed": "Velocidade Mediana",
@@ -167,7 +167,7 @@
     "vesselAuthorization": "Vessel Authorization"
   },
   "layer": {
-    "toggleVisibility": "Alterar visibilidade da camada"
+    "toggleVisibility": "Alterar visibilidade de camada"
   },
   "map": {
     "filters": "Filtrar Eventos",
@@ -300,7 +300,7 @@
       "inputStart": "Visitas ao porto em",
       "inThesePortStates": "Eventos nesses portos",
       "inThesePortStatesDescription": "Destaque todos os {{eventType}} que podem ter ocorrido em porto. Uma visita de porto ocorre quando uma embarcação se desloca para um ancoradouro, e o Estado do porto é atribuído com base na Zona Econômica Exclusiva (ZEE), a ancoragem está dentro. Os ancoradouros são baseados no conjunto de dados do GFW, um banco de dados global de locais de ancoragem onde as embarcações se concentram:<3>https://globalfishingwatch. rg/datasets-and-code-anchorages/</3> . Investige os eventos destacados no mapa.",
-      "shortTitle": "Visitas à porto",
+      "shortTitle": "Visitas à Porto",
       "title": "Visitas à Porto"
     },
     "rfmos": {
@@ -321,7 +321,7 @@
     "aisTransmission_plural": "AIS Transmissions",
     "authorization_plural": "authorizations",
     "authorizationRangeHelp": "RFMO authorizations are based on available data. Dates may be approximations where RFMO authorized vessel lists, do not contain specific authorization periods.",
-    "authorizations": "Autorizações",
+    "authorizations": "authorizations",
     "builtYear": "built year",
     "builtYear_plural": "built years",
     "callsign": "callsign",

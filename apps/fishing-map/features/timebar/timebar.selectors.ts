@@ -11,7 +11,7 @@ import {
   resolveDataviewDatasetResources,
   pickTrackResource,
 } from '@globalfishingwatch/dataviews-client'
-import { geoJSONToSegments } from '@globalfishingwatch/data-transforms'
+import { geoJSONToSegments, getSegmentExtents } from '@globalfishingwatch/data-transforms'
 import {
   TimebarChartData,
   TimebarChartChunk,
@@ -69,11 +69,11 @@ export const selectTracksData = createSelector(
         return { ...timebarTrack, status: ResourceStatus.Error }
       }
 
-      const segments: any = (trackResource.data as any)?.features
-        ? geoJSONToSegments(trackResource.data as any)
-        : trackResource.data || []
+      const segmentExtents: any = (trackResource.data as any)?.features
+        ? geoJSONToSegments(trackResource.data as any, { onlyExtents: true })
+        : getSegmentExtents(trackResource.data || [])
 
-      const chunks: TimebarChartChunk[] = segments.map((segment) => {
+      const chunks: TimebarChartChunk[] = segmentExtents.map((segment) => {
         const useOwnColor = trackDataviews.length === 1 && endpointType === EndpointId.UserTracks
         return {
           start: segment[0].timestamp || Number.POSITIVE_INFINITY,
