@@ -2,6 +2,17 @@ import { SEARCH_EEZ_FULL_NAME } from '../../constants/search'
 import { API_URL_4WINGS_REPORT, URL_ONE_MONTH } from '../../constants/urls'
 import { deleteDownloadsFolder, getDownloadsFolderPath, getQueryParam } from '../app.po'
 
+export const REPORT_FORMAT_JSON = 'report-format-json'
+export const REPORT_FORMAT_CSV = 'report-format-csv'
+
+export const GROUPBY_FLAG = 'group-vessels-by-flag'
+export const GROUPBY_MMSI = 'group-vessels-by-mmsi'
+export const GROUPBY_GEAR = 'group-vessels-by-gearType'
+export const GROUPBY_FLAG_GEAR = 'group-vessels-by-flagAndGearType'
+
+export const GROUPBY_DAY = 'group-time-by-daily'
+export const GROUPBY_MONTH = 'group-time-by-monthly'
+
 // Static names and paths used for verifications
 const start = getQueryParam(URL_ONE_MONTH.substring(1), 'start').replaceAll(':', '_')
 const end = getQueryParam(URL_ONE_MONTH.substring(1), 'end').replaceAll(':', '_')

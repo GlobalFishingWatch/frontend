@@ -5,11 +5,9 @@ import {
   GROUPBY_GEAR,
   GROUPBY_MMSI,
   GROUPBY_MONTH,
-  MAP_POPUP_EEZ_SECTION,
   REPORT_FORMAT_CSV,
   REPORT_FORMAT_JSON,
-  SIDEBAR_TOGGLE_EEZ,
-} from '../../constants/buttons'
+} from '../../support/map/eez-download.po'
 import { SEARCH_EEZ, SEARCH_EEZ_FULL_NAME } from '../../constants/search'
 import { API_URL_GALAPAGOS_INFO, URL_ONE_MONTH } from '../../constants/urls'
 import {
@@ -30,6 +28,7 @@ import {
   zipFilename,
   zipPath,
 } from '../../support/map/eez-download.po'
+import { MAP_POPUP_EEZ_SECTION, SIDEBAR_TOGGLE_EEZ } from '../../constants/buttons'
 
 describe('Download reports for an area', () => {
   before(() => {
