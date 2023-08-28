@@ -42,6 +42,6 @@ export const EMPTY_FILTERS = {
 
 export const DEFAULT_SEARCH_STATE: VesselSearchState = {
   searchOption: 'basic',
-  infoSource: VesselIdentitySourceEnum.SelfReported,
+  infoSource: VesselIdentitySourceEnum.Registry,
   ...EMPTY_FILTERS,
 }
