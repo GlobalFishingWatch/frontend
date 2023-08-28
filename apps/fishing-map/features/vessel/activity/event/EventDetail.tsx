@@ -92,7 +92,7 @@ const ActivityContent = ({ event }: ActivityContentProps) => {
         if (!value) return null
         return (
           <li key={field.key} className={styles.detail}>
-            <label>{t(`eventInfo.${field.label}` as string, field.label)}</label>
+            <label>{t(`eventInfo.${field.label}`, field.label || '')}</label>
             <span>{value}</span>
           </li>
         )
