@@ -8,7 +8,7 @@ import {
   getDatasetConfigByDatasetType,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import { DatasetTypes, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
+import { DatasetSchemaItem, DatasetTypes, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -67,7 +67,9 @@ function ActivityLayerPanel({
   const readOnly = useSelector(selectReadOnly)
   const layerActive = dataview?.config?.visible ?? true
   const datasetStatsFields = dataview.datasets!?.flatMap((d) =>
-    Object.entries(d.schema || {}).flatMap(([id, schema]) => (schema.stats ? id : []))
+    Object.entries(d.schema || {}).flatMap(([id, schema]) =>
+      (schema as DatasetSchemaItem).stats ? id : []
+    )
   )
 
   const fields = datasetStatsFields?.length > 0 ? datasetStatsFields : DEFAULT_STATS_FIELDS

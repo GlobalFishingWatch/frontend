@@ -35,9 +35,9 @@ const schemaFilterIds: SupportedDatasetSchema[] = [
 const getSearchDataview = (datasets, searchFilters, sources): SchemaFieldDataview => {
   return {
     config: {
-      datasets: sources?.map(({ id }) => id),
+      datasets: sources?.map((id) => id),
       filters: Object.fromEntries(
-        schemaFilterIds.map((id) => [id, searchFilters[id]?.map((f) => f.id)])
+        schemaFilterIds.map((id) => [id, searchFilters[id]?.map((f) => f)])
       ),
     },
     datasets,
@@ -154,67 +154,6 @@ function SearchAdvancedFilters() {
         label={t('vessel.owner', 'Owner')}
         inputSize="small"
       />
-      <MultiSelect
-        label={t('layer.flagState_other', 'Flag States')}
-        placeholder={getPlaceholderBySelections({ selection: flag, options: flagOptions })}
-        options={flagOptions}
-        selectedOptions={flagOptions.filter((f) => flag?.includes(f.id))}
-        onSelect={({ id }) => {
-          const flags = flag ? [...flag, id] : [id]
-          setSearchFilters({ flag: flags })
-        }}
-        onRemove={(_, rest) => {
-          setSearchFilters({ flag: rest.map(({ id }) => id) })
-        }}
-        onCleanClick={() => {
-          setSearchFilters({ flag: undefined })
-        }}
-      />
-      <Select
-        label={t('vessel.infoSource', 'Info Source')}
-        placeholder={getPlaceholderBySelections({
-          selection: infoSource,
-          options: infoSourceOptions,
-        })}
-        options={infoSourceOptions}
-        selectedOption={infoSourceOptions.find(({ id }) => id === infoSource)}
-        onSelect={({ id }) => {
-          setSearchFilters({ infoSource: id })
-        }}
-        onRemove={() => {
-          setSearchFilters({ infoSource: undefined })
-        }}
-      />
-      {schemaFilters.map((schemaFilter) => {
-        if (!showSchemaFilter(schemaFilter)) {
-          return null
-        }
-        const { id, disabled, options, optionsSelected } = schemaFilter
-        return (
-          <MultiSelect
-            key={id}
-            disabled={disabled}
-            label={t(`vessel.${id}` as any, id)}
-            placeholder={getPlaceholderBySelections({
-              selection: optionsSelected.map(({ id }) => id),
-              options,
-            })}
-            options={options}
-            selectedOptions={optionsSelected}
-            onSelect={(filter) => {
-              setSearchFilters({
-                [id]: [...(searchFilters[id] || []), filter],
-              })
-            }}
-            onRemove={(_, rest) => {
-              setSearchFilters({ [id]: rest })
-            }}
-            onCleanClick={() => {
-              setSearchFilters({ [id]: undefined })
-            }}
-          />
-        )
-      })}
       {sourceOptions && sourceOptions.length > 0 && (
         <MultiSelect
           label={t('layer.source_other', 'Sources')}
@@ -232,6 +171,68 @@ function SearchAdvancedFilters() {
           }}
         />
       )}
+      <Select
+        label={t('vessel.infoSource', 'Info Source')}
+        placeholder={getPlaceholderBySelections({
+          selection: infoSource,
+          options: infoSourceOptions,
+        })}
+        options={infoSourceOptions}
+        selectedOption={infoSourceOptions.find(({ id }) => id === infoSource)}
+        onSelect={({ id }) => {
+          setSearchFilters({ infoSource: id })
+        }}
+        onRemove={() => {
+          setSearchFilters({ infoSource: undefined })
+        }}
+      />
+      <MultiSelect
+        label={t('layer.flagState_other', 'Flag States')}
+        placeholder={getPlaceholderBySelections({ selection: flag, options: flagOptions })}
+        options={flagOptions}
+        selectedOptions={flagOptions.filter((f) => flag?.includes(f.id))}
+        onSelect={({ id }) => {
+          const flags = flag ? [...flag, id] : [id]
+          setSearchFilters({ flag: flags })
+        }}
+        onRemove={(_, rest) => {
+          setSearchFilters({ flag: rest.map(({ id }) => id) })
+        }}
+        onCleanClick={() => {
+          setSearchFilters({ flag: undefined })
+        }}
+      />
+      {infoSource === VesselIdentitySourceEnum.SelfReported &&
+        schemaFilters.map((schemaFilter) => {
+          if (!showSchemaFilter(schemaFilter)) {
+            return null
+          }
+          const { id, disabled, options, optionsSelected } = schemaFilter
+          return (
+            <MultiSelect
+              key={id}
+              disabled={disabled}
+              label={t(`vessel.${id}` as any, id)}
+              placeholder={getPlaceholderBySelections({
+                selection: optionsSelected.map(({ id }) => id),
+                options,
+              })}
+              options={options}
+              selectedOptions={optionsSelected}
+              onSelect={(filter) => {
+                setSearchFilters({
+                  [id]: [...(searchFilters[id] || []), filter.id],
+                })
+              }}
+              onRemove={(_, rest) => {
+                setSearchFilters({ [id]: rest })
+              }}
+              onCleanClick={() => {
+                setSearchFilters({ [id]: undefined })
+              }}
+            />
+          )
+        })}
       <div>
         <InputDate
           value={lastTransmissionDate || ''}

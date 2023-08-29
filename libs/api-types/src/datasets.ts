@@ -119,7 +119,7 @@ export type RelatedDataset = {
 
 export type DatasetSchemaType = 'range' | 'number' | 'string' | 'boolean'
 
-export type DatasetSchema = {
+export type DatasetSchemaItem = {
   type: DatasetSchemaType
   maxLength: number
   minLength: number
@@ -129,6 +129,11 @@ export type DatasetSchema = {
   stats?: boolean
   unit?: string
   singleSelection?: boolean
+}
+
+export type DatasetSchema = {
+  items: Record<string, DatasetSchemaItem>
+  type: DatasetSchemaType
 }
 
 export enum DatasetCategory {
@@ -153,7 +158,7 @@ export interface Dataset {
   alias: string[] | null
   name: string
   description: string
-  schema?: Record<string, DatasetSchema>
+  schema?: Record<string, DatasetSchema | DatasetSchemaItem>
   category?: DatasetCategory
   subcategory?: DatasetSubCategory | EventTypes | string
   source?: string
