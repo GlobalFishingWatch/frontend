@@ -218,11 +218,14 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
       dispatch(setVesselGroupCurrentDataviewIds([dataview.id]))
       return
     }
-    const filterValues = Array.isArray(selection)
-      ? selection.map(({ id }) => id).sort((a, b) => a - b)
-      : singleValue
-      ? selection
-      : [...(dataview.config?.filters?.[filterKey] || []), selection.id]
+    let filterValues: string[]
+    if (Array.isArray(selection)) {
+      filterValues = selection.map(({ id }) => id).sort((a, b) => a - b)
+    } else if (singleValue) {
+      filterValues = [selection.id]
+    } else {
+      filterValues = [...(dataview.config?.filters?.[filterKey] || []), selection.id]
+    }
     const newDataviewConfig = {
       filters: {
         ...(dataview.config?.filters || {}),
@@ -329,7 +332,7 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
       {showSourceFilter && (
         <MultiSelect
           testId="activity-filters"
-          label={t('layer.source_other', 'Sources')}
+          label={t('layer.source_other', 'Sources') as string}
           placeholder={getPlaceholderBySelections({
             selection: sourcesSelected.map(({ id }) => id),
             options: allSourceOptions,

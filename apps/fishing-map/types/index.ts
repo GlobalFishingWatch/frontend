@@ -41,6 +41,7 @@ export type WorkspaceStateProperty =
   | 'activityCategory'
   | 'infoSource'
   | ReportStateProperty
+  | keyof AppParams
 
 export type WorkspaceParam =
   | WorkspaceViewportParam
@@ -140,10 +141,23 @@ export type RedirectParam = {
   'access-token'?: string
 }
 
+export enum UserTab {
+  Info = 'info',
+  Workspaces = 'workspaces',
+  Datasets = 'datasets',
+  Reports = 'reports',
+  VesselGroups = 'vesselGroups',
+}
+
+export type AppParams = {
+  userTab?: UserTab
+}
+
 export type QueryParams = Partial<WorkspaceViewport> &
   Partial<WorkspaceTimeRange> &
   WorkspaceState &
   Partial<VesselProfileState> &
+  AppParams &
   RedirectParam &
   VesselSearchState
 

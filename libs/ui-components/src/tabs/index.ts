@@ -9,4 +9,5 @@ export interface Tab<ID = string> {
   tooltip?: string | null
   tooltipPlacement?: Placement
   disabled?: boolean
+  testId?: string
 }

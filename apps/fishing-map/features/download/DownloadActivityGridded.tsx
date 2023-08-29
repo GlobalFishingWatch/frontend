@@ -198,7 +198,7 @@ function DownloadActivityByVessel() {
 
   return (
     <Fragment>
-      <div className={styles.container}>
+      <div className={styles.container} data-test="download-activity-gridded">
         <div className={styles.info}>
           <div>
             <label>{t('download.area', 'Area')}</label>
@@ -218,6 +218,7 @@ function DownloadActivityByVessel() {
             size="small"
             activeOption={format}
             onSelect={(option) => setFormat(option.id as Format)}
+            testId="report-format"
           />
         </div>
         {(format === Format.Csv || format === Format.Json) && (
@@ -227,6 +228,7 @@ function DownloadActivityByVessel() {
               <Choice
                 options={filteredGroupByOptions}
                 size="small"
+                testId="group-vessels-by"
                 activeOption={groupBy}
                 onSelect={(option) => setGroupBy(option.id as GroupBy)}
               />
@@ -236,6 +238,7 @@ function DownloadActivityByVessel() {
               <Choice
                 options={filteredTemporalResolutionOptions}
                 size="small"
+                testId="group-time-by"
                 activeOption={temporalResolution}
                 onSelect={(option) => setTemporalResolution(option.id as TemporalResolution)}
               />
@@ -247,6 +250,7 @@ function DownloadActivityByVessel() {
           <Choice
             options={filteredSpatialResolutionOptions}
             size="small"
+            testId="group-spatial-by"
             activeOption={spatialResolution}
             onSelect={(option) => setSpatialResolution(option.id as SpatialResolution)}
           />
@@ -268,6 +272,7 @@ function DownloadActivityByVessel() {
             </p>
           )}
           <Button
+            testId="download-activity-gridded-button"
             onClick={onDownloadClick}
             loading={downloadLoading || downloadAreaLoading}
             className={styles.downloadBtn}

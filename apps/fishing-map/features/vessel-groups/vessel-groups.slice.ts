@@ -24,7 +24,7 @@ import {
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { selectAllSearchDatasetsByType } from 'features/search/search.selectors'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
-import { selectDatasetById } from '../datasets/datasets.slice'
+import { fetchDatasetByIdThunk, selectDatasetById } from '../datasets/datasets.slice'
 
 export const MAX_VESSEL_GROUP_VESSELS = 1000
 
@@ -80,18 +80,17 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
     { signal, rejectWithValue, getState }
   ) => {
     const state = getState() as any
-    // const vesselGroupDatasets = uniq(vessels?.flatMap((v) => v.dataset || []))
-    // const allVesselDatasets = selectVesselsDatasets(state)
-    // const advancedSearchDatasets = (selectAllSearchDatasetsByType('advanced')(state) || []).filter(
-    //   (d) =>
-    //     d.status !== DatasetStatus.Deleted && d.alias?.some((alias) => alias.includes(':latest'))
-    // )
-    // const vesselDatasetsByType = idField === 'vesselId' ? allVesselDatasets : advancedSearchDatasets
-    // const searchDatasets = vesselGroupDatasets?.length
-    //   ? vesselDatasetsByType.filter((dataset) => vesselGroupDatasets.includes(dataset.id))
-    //   : vesselDatasetsByType
+    const vesselGroupDatasets = uniq(vessels?.flatMap((v) => v.dataset || []))
     const allVesselDatasets = selectVesselsDatasets(state)
-    const searchDatasets = allVesselDatasets.filter((d) => d.id === DEFAULT_VESSEL_IDENTITY_ID)
+    const advancedSearchDatasets = (selectAllSearchDatasetsByType('advanced')(state) || []).filter(
+      (d) =>
+        d.status !== DatasetStatus.Deleted && d.alias?.some((alias) => alias.includes(':latest'))
+    )
+
+    const vesselDatasetsByType = idField === 'vesselId' ? allVesselDatasets : advancedSearchDatasets
+    const searchDatasets = vesselGroupDatasets?.length
+      ? vesselDatasetsByType.filter((dataset) => vesselGroupDatasets.includes(dataset.id))
+      : vesselDatasetsByType
 
     if (searchDatasets?.length) {
       const dataset = searchDatasets[0]
@@ -180,13 +179,22 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
 
 export const getVesselInVesselGroupThunk = createAsyncThunk(
   'vessel-groups/getVessels',
-  async ({ vesselGroup }: { vesselGroup: VesselGroup }, { signal, rejectWithValue, getState }) => {
+  async (
+    { vesselGroup }: { vesselGroup: VesselGroup },
+    { signal, rejectWithValue, getState, dispatch }
+  ) => {
     const state = getState() as any
     // const datasets = uniq(vesselGroup.vessels.flatMap((v) => v.dataset || []))
     // TODO remove once the api replaces the lecagy old datasets
     const datasets = [DEFAULT_VESSEL_IDENTITY_ID]
-    const dataset = selectDatasetById(DEFAULT_VESSEL_IDENTITY_ID)(state)
-
+    const datasetId = datasets[0]
+    let dataset = selectDatasetById(datasetId)(state)
+    if (!dataset) {
+      const action = await dispatch(fetchDatasetByIdThunk(datasetId))
+      if (fetchDatasetByIdThunk.fulfilled.match(action)) {
+        dataset = action.payload
+      }
+    }
     if (vesselGroup.id && dataset) {
       const datasetConfig: DataviewDatasetConfig = {
         endpoint: EndpointId.VesselList,

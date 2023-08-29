@@ -336,13 +336,18 @@ function CloseVesselButton() {
 
 function CloseSectionButton() {
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
+  const { dispatchQueryParams } = useLocationConnect()
+
+  const onCloseClick = useCallback(() => {
+    dispatchQueryParams({ userTab: undefined })
+  }, [dispatchQueryParams])
 
   if (!lastVisitedWorkspace) {
     return null
   }
 
   return (
-    <Link className={styles.workspaceLink} to={lastVisitedWorkspace}>
+    <Link className={styles.workspaceLink} to={lastVisitedWorkspace} onClick={onCloseClick}>
       <IconButton type="border" icon="close" />
     </Link>
   )
