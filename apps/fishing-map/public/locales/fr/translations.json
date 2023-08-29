@@ -652,6 +652,7 @@
     "grossTonnageRange": "Plage de tonnage brut",
     "hideOtherLayers": "Hide other layers",
     "imo": "OMI",
+    "identityDatesOutOfRange": "The dates of this identity don’t overlap with your current time range",
     "infoSource": "Info Source",
     "infoSources": {
       "both": "Registry and self reported",
@@ -750,7 +751,6 @@
     "saveAndFilter": "Enregistrer et filtrer l'espace de travail",
     "saveForLater": "Enregistrer pour plus tard",
     "saveForLaterTooltip": "Vous trouverez le groupe dans les filtres des calques d'activité ou sur le bouton du panneau utilisateur",
-    "timeRangeLimit": "Pris en charge uniquement pour les plages de temps inférieures à 3 mois",
     "tooManyVessels_one": "Le nombre maximum de navires est de {{count}}",
     "tooManyVessels_other": "Le nombre maximum de navires est de {{count}}",
     "uploadPublic": "Autoriser d'autres utilisateurs à voir ce groupe de navires lorsque vous partagez un espace de travail",
