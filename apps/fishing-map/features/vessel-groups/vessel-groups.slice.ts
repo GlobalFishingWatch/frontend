@@ -24,7 +24,7 @@ import {
 } from 'utils/async-slice'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { selectAllSearchDatasetsByType } from 'features/search/search.selectors'
-import { selectDatasetById } from '../datasets/datasets.slice'
+import { fetchDatasetByIdThunk, selectDatasetById } from '../datasets/datasets.slice'
 
 export const MAX_VESSEL_GROUP_VESSELS = 1000
 
@@ -177,11 +177,20 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
 
 export const getVesselInVesselGroupThunk = createAsyncThunk(
   'vessel-groups/getVessels',
-  async ({ vesselGroup }: { vesselGroup: VesselGroup }, { signal, rejectWithValue, getState }) => {
+  async (
+    { vesselGroup }: { vesselGroup: VesselGroup },
+    { signal, rejectWithValue, getState, dispatch }
+  ) => {
     const state = getState() as any
     const datasets = uniq(vesselGroup.vessels.flatMap((v) => v.dataset || []))
-    const dataset = selectDatasetById(datasets[0])(state)
-
+    const datasetId = datasets[0]
+    let dataset = selectDatasetById(datasetId)(state)
+    if (!dataset) {
+      const action = await dispatch(fetchDatasetByIdThunk(datasetId))
+      if (fetchDatasetByIdThunk.fulfilled.match(action)) {
+        dataset = action.payload
+      }
+    }
     if (vesselGroup.id && dataset) {
       const datasetConfig: DataviewDatasetConfig = {
         endpoint: EndpointId.VesselList,
