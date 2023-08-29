@@ -652,6 +652,7 @@
     "grossTonnageRange": "Intervalo de arqueação bruta",
     "hideOtherLayers": "Hide other layers",
     "imo": "IMO",
+    "identityDatesOutOfRange": "The dates of this identity don’t overlap with your current time range",
     "infoSource": "Info Source",
     "infoSources": {
       "both": "Registry and self reported",
@@ -750,7 +751,6 @@
     "saveAndFilter": "Salvar e filtrar espaço de trabalho",
     "saveForLater": "Salvar para mais tarde",
     "saveForLaterTooltip": "Você encontrará o grupo nos filtros das camadas de atividade ou no botão do painel do usuário",
-    "timeRangeLimit": "Suportado apenas para intervalos de tempo menores que 3 meses",
     "tooManyVessels_one": "O número máximo de embarcações é {{count}}",
     "tooManyVessels_other": "O número máximo de embarcações é {{count}}",
     "uploadPublic": "Permitir que outros usuários vejam este grupo de embarcações quando você compartilhar uma área de trabalho",
