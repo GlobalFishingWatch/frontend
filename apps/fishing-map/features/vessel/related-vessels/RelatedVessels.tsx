@@ -116,12 +116,7 @@ const RelatedVessels = () => {
               tick={<VesselTick />}
             />
             <XAxis type="number" hide />
-            <Bar
-              dataKey="encounters"
-              barSize={15}
-              fill={EVENTS_COLORS.encounter}
-              isAnimationActive={false}
-            >
+            <Bar dataKey="encounters" barSize={15} fill={EVENTS_COLORS.encounter}>
               <LabelList
                 position="right"
                 valueAccessor={(entry) => formatI18nNumber(entry.encounters)}

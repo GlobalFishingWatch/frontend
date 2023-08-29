@@ -70,8 +70,14 @@ const VesselIdentity = () => {
         start: vesselIdentity.transmissionDateFrom,
         end: vesselIdentity.transmissionDateTo,
       }
-      const filteredVesselIdentity: VesselLastIdentity = {
+      const filteredVesselIdentity = {
         ...vesselIdentity,
+        nShipname: formatInfoField(vesselIdentity.shipname, 'shipname'),
+        flag: t(`flags:${vesselIdentity.flag}` as any),
+        shiptype: t(`vessel.vesselTypes.${vesselIdentity.shiptype?.toLowerCase()}` as any),
+        geartype: vesselIdentity.geartype?.map((gear) =>
+          t(`vessel.gearTypes.${gear.toLowerCase()}` as any)
+        ),
         registryAuthorizations:
           vesselIdentity.registryAuthorizations &&
           filterRegistryInfoByDateAndSSVID(
@@ -141,7 +147,7 @@ const VesselIdentity = () => {
       <div className={styles.container}>
         <div className={styles.titleContainer}>
           <h3>
-            <label>{t(`common.timerange`, 'Time range')}</label>
+            <label>{t(`common.date_other`, 'Dates')}</label>
             <div className={styles.timerange}>
               <VesselIdentityField
                 value={`${formatI18nDate(vesselIdentity.transmissionDateFrom)} - ${formatI18nDate(
@@ -153,6 +159,7 @@ const VesselIdentity = () => {
                   size="small"
                   icon="fit-to-timerange"
                   tooltip={t('timebar.fitOnThisDates', 'Fit time range to these dates')}
+                  className="print-hidden"
                   onClick={onTimeRangeClick}
                 />
               )}

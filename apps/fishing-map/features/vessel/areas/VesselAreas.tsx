@@ -146,7 +146,6 @@ const VesselAreas = () => {
             <RechartsTooltip content={<AreaTooltip />} />
             {eventTypes?.map((eventType, index) => (
               <Bar
-                isAnimationActive={false}
                 key={eventType}
                 dataKey={eventType}
                 barSize={15}
