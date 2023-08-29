@@ -106,7 +106,12 @@ function VesselGroupModal(): React.ReactElement {
 
   const dispatchSearchVesselsGroupsThunk = useCallback(
     async (vessels: VesselGroupVessel[], idField: IdField = 'vesselId') => {
-      return dispatch(searchVesselGroupsVesselsThunk({ vessels, idField }))
+      const action = await dispatch(searchVesselGroupsVesselsThunk({ vessels, idField }))
+      if (searchVesselGroupsVesselsThunk.fulfilled.match(action)) {
+        setError('')
+      } else {
+        setError((action.payload as any)?.message || '')
+      }
     },
     [dispatch]
   )
@@ -357,7 +362,7 @@ function VesselGroupModal(): React.ReactElement {
         <UserGuideLink section="vesselGroups" />
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
-          {vesselGroupAPIError && (
+          {vesselGroupAPIError && !error && (
             <span className={styles.errorMsg}>
               {t('errors.genericShort', 'Something went wrong')}
             </span>

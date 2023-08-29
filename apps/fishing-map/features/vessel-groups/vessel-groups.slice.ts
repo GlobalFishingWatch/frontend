@@ -86,6 +86,7 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
       (d) =>
         d.status !== DatasetStatus.Deleted && d.alias?.some((alias) => alias.includes(':latest'))
     )
+
     const vesselDatasetsByType = idField === 'vesselId' ? allVesselDatasets : advancedSearchDatasets
     const searchDatasets = vesselGroupDatasets?.length
       ? vesselDatasetsByType.filter((dataset) => vesselGroupDatasets.includes(dataset.id))

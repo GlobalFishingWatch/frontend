@@ -7,7 +7,7 @@ import { redirectToLogin } from '@globalfishingwatch/react-hooks'
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import EditDataset from 'features/datasets/EditDataset'
 import {
-  fetchDefaultWorkspaceThunk,
+  // fetchDefaultWorkspaceThunk,
   fetchWorkspacesThunk,
 } from 'features/workspaces-list/workspaces-list.slice'
 import { fetchAllDatasetsThunk } from 'features/datasets/datasets.slice'
@@ -17,6 +17,7 @@ import { fetchUserVesselGroupsThunk } from 'features/vessel-groups/vessel-groups
 import { UserTab } from 'types'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectUserTab } from 'routes/routes.selectors'
+import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import styles from './User.module.css'
 import { selectUserData, isUserLogged } from './user.slice'
 import { selectUserGroupsPermissions } from './user.selectors'
@@ -94,7 +95,8 @@ function User() {
   }, [dispatch, userData?.id, userLogged])
 
   useEffect(() => {
-    dispatch(fetchDefaultWorkspaceThunk())
+    dispatch(fetchWorkspaceThunk(''))
+    // dispatch(fetchDefaultWorkspaceThunk())
     dispatch(fetchAllDatasetsThunk())
   }, [dispatch])
 
