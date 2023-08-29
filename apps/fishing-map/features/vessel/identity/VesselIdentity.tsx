@@ -189,8 +189,8 @@ const VesselIdentity = () => {
                   const label = field.label || field.key
                   return (
                     <div key={field.key}>
-                      <label>
-                        {t(`vessel.${label}` as any, label)}
+                      <div className={styles.labelContainer}>
+                        <label>{t(`vessel.${label}` as any, label)}</label>
                         {field.terminologyKey && (
                           <DataTerminology
                             size="tiny"
@@ -200,7 +200,7 @@ const VesselIdentity = () => {
                             {t(field.terminologyKey as any, field.terminologyKey)}
                           </DataTerminology>
                         )}
-                      </label>
+                      </div>
                       <VesselIdentityField
                         value={formatInfoField(vesselIdentity[field.key], label)}
                       />
@@ -225,8 +225,10 @@ const VesselIdentity = () => {
                 if (!filteredRegistryInfo) return null
                 return (
                   <div className={styles.fieldGroupContainer} key={key}>
-                    <label className={styles.twoCells}>
-                      {t(`vessel.${label}` as any, label)}
+                    <div className={styles.labelContainer}>
+                      <label className={styles.twoCells}>
+                        {t(`vessel.${label}` as any, label)}
+                      </label>
                       {terminologyKey && (
                         <DataTerminology
                           size="tiny"
@@ -236,7 +238,7 @@ const VesselIdentity = () => {
                           {t(terminologyKey as any, terminologyKey)}
                         </DataTerminology>
                       )}
-                    </label>
+                    </div>
                     {allRegistryInfo?.length > 0 ? (
                       <ul className={cx(styles.fieldGroup, styles.twoColumns)}>
                         {allRegistryInfo.map((registry, index) => {

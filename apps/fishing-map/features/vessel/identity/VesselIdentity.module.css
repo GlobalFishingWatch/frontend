@@ -58,3 +58,8 @@
 .help {
   cursor: help;
 }
+
+.labelContainer {
+  display: flex;
+  align-items: center;
+}
