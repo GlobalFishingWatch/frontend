@@ -11,6 +11,7 @@ export type AdvancedSearchQueryFieldKey =
   | 'shipname'
   | 'ssvid'
   | 'imo'
+  | 'mmsi'
   | 'callsign'
   | 'codMarinha'
   | 'flag'
@@ -43,6 +44,10 @@ const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFiel
     transformation: toUpperCaseWithQuotationMarks,
   },
   ssvid: {
+    operator: '=',
+    transformation: toUpperCaseWithQuotationMarks,
+  },
+  mmsi: {
     operator: '=',
     transformation: toUpperCaseWithQuotationMarks,
   },

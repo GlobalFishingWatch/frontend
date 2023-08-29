@@ -9,6 +9,7 @@ import {
   SourceCode,
   VesselRegistryOwner,
   VesselRegistryProperty,
+  VesselType,
 } from '@globalfishingwatch/api-types'
 import I18nDate, { formatI18nDate } from 'features/i18n/i18nDate'
 import {
@@ -32,7 +33,6 @@ import VesselIdentitySelector from 'features/vessel/identity/VesselIdentitySelec
 import VesselIdentityField from 'features/vessel/identity/VesselIdentityField'
 import { VesselIdentitySourceEnum } from 'features/search/search.config'
 import { useLocationConnect } from 'routes/routes.hook'
-import { VesselLastIdentity } from 'features/search/search.slice'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectIsVesselLocation } from 'routes/routes.selectors'
 import { useRegionTranslationsById } from 'features/regions/regions.hooks'
@@ -73,10 +73,13 @@ const VesselIdentity = () => {
       const filteredVesselIdentity = {
         ...vesselIdentity,
         nShipname: formatInfoField(vesselIdentity.shipname, 'shipname'),
-        flag: t(`flags:${vesselIdentity.flag}` as any),
-        shiptype: t(`vessel.vesselTypes.${vesselIdentity.shiptype?.toLowerCase()}` as any),
+        flag: t(`flags:${vesselIdentity.flag}`, vesselIdentity.flag),
+        shiptype: t(
+          `vessel.vesselTypes.${vesselIdentity.shiptype?.toLowerCase()}`,
+          vesselIdentity.shiptype
+        ) as VesselType,
         geartype: vesselIdentity.geartype?.map((gear) =>
-          t(`vessel.gearTypes.${gear.toLowerCase()}` as any)
+          t(`vessel.gearTypes.${gear.toLowerCase()}`, gear.toLowerCase())
         ),
         registryAuthorizations:
           vesselIdentity.registryAuthorizations &&

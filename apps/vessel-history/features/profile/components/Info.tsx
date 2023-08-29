@@ -195,7 +195,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
                 <InfoField
                   vesselName={vessel.shipname ?? DEFAULT_EMPTY_VALUE}
                   label={VesselFieldLabel.type}
-                  value={vessel.vesselType}
+                  value={vessel.vesselType as string}
                   valuesHistory={vessel.history.vesselType.byDate}
                   includeFaq={true}
                   helpText={
