@@ -495,7 +495,7 @@
     "descriptionNarrow": "You can narrow your search by clicking \"ADVANCED\" in the top menu bar.",
     "descriptionSmallScreens": "An advanced search with flters is available on bigger screens.",
     "downloadSelected": "Download CSV of selected vessels",
-    "downloadTable": "Download CSV of vessels on table",
+    "downloadDisabled": "Select vessels to download their info",
     "learnMore": "Learn more about our identity work <a href='https://globalfishingwatch.org/research-project-vessel-identity/' target='_blank'>here</a>.",
     "mainQueryLabel": "Nom, OMI ou MMSI",
     "minCharacters_one": "Please type at least {{count}} character",
