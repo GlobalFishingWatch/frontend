@@ -353,7 +353,7 @@ function Search() {
             }`}
           </label>
         )}
-        {activeSearchOption === 'advanced' && searchResults && vesselsSelected.length > 0 && (
+        {activeSearchOption === 'advanced' && searchResults && (
           <CSVLink
             filename={`gfw-search-results-selection.csv`}
             asyncOnClick={true}
@@ -364,14 +364,13 @@ function Search() {
               icon="download"
               type="border"
               size="medium"
+              disabled={vesselsSelected.length <= 0}
               tooltip={
                 vesselsSelected.length
                   ? `${t('search.downloadSelected', 'Download CSV of selected vessels')} (${
                       vesselsSelected.length
                     })`
-                  : `${t('search.downloadTable', 'Download CSV of vessels on table')} (${
-                      searchResults.length
-                    })`
+                  : t('search.downloadDisabled', 'Select vessels to download their info')
               }
               tooltipPlacement="top"
             />
