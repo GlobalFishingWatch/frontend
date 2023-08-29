@@ -24,7 +24,7 @@ import {
 } from 'utils/async-slice'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { selectAllSearchDatasetsByType } from 'features/search/search.selectors'
-import { selectDatasetById } from '../datasets/datasets.slice'
+import { fetchDatasetByIdThunk, selectDatasetById } from '../datasets/datasets.slice'
 
 export const MAX_VESSEL_GROUP_VESSELS = 1000
 
@@ -86,6 +86,7 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
       (d) =>
         d.status !== DatasetStatus.Deleted && d.alias?.some((alias) => alias.includes(':latest'))
     )
+
     const vesselDatasetsByType = idField === 'vesselId' ? allVesselDatasets : advancedSearchDatasets
     const searchDatasets = vesselGroupDatasets?.length
       ? vesselDatasetsByType.filter((dataset) => vesselGroupDatasets.includes(dataset.id))
@@ -177,11 +178,20 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
 
 export const getVesselInVesselGroupThunk = createAsyncThunk(
   'vessel-groups/getVessels',
-  async ({ vesselGroup }: { vesselGroup: VesselGroup }, { signal, rejectWithValue, getState }) => {
+  async (
+    { vesselGroup }: { vesselGroup: VesselGroup },
+    { signal, rejectWithValue, getState, dispatch }
+  ) => {
     const state = getState() as any
     const datasets = uniq(vesselGroup.vessels.flatMap((v) => v.dataset || []))
-    const dataset = selectDatasetById(datasets[0])(state)
-
+    const datasetId = datasets[0]
+    let dataset = selectDatasetById(datasetId)(state)
+    if (!dataset) {
+      const action = await dispatch(fetchDatasetByIdThunk(datasetId))
+      if (fetchDatasetByIdThunk.fulfilled.match(action)) {
+        dataset = action.payload
+      }
+    }
     if (vesselGroup.id && dataset) {
       const datasetConfig: DataviewDatasetConfig = {
         endpoint: EndpointId.VesselList,
@@ -233,10 +243,10 @@ export const getVesselInVesselGroupThunk = createAsyncThunk(
 
 export const fetchWorkspaceVesselGroupsThunk = createAsyncThunk(
   'workspace-vessel-groups/fetch',
-  async (ids: string[] = [], { signal, rejectWithValue }) => {
+  async (groups: VesselGroup[] = [], { signal, rejectWithValue }) => {
     try {
       const vesselGroupsParams = {
-        ...(ids?.length && { ids }),
+        ...(groups?.length && { ids: groups.map((g) => g.id).join(',') }),
         cache: false,
         ...DEFAULT_PAGINATION_PARAMS,
       }

@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import { DataviewCategory, ThinningConfig } from '@globalfishingwatch/api-types'
 import { ThinningLevels, THINNING_LEVELS } from '@globalfishingwatch/api-client'
-import { TimebarGraphs, TimebarVisualisations } from 'types'
+import { TimebarGraphs, TimebarVisualisations, UserTab } from 'types'
 import { getUTCDateTime } from 'utils/dates'
 
 export const ROOT_DOM_ELEMENT = '__next'
@@ -16,11 +16,6 @@ export const REPORT_DAYS_LIMIT =
   typeof process.env.NEXT_PUBLIC_REPORT_DAYS_LIMIT !== 'undefined'
     ? parseInt(process.env.NEXT_PUBLIC_REPORT_DAYS_LIMIT)
     : 366 // 1 year
-
-export const VESSEL_GROUPS_DAYS_LIMIT =
-  typeof process.env.VESSEL_GROUPS_DAYS_LIMIT !== 'undefined'
-    ? parseInt(process.env.VESSEL_GROUPS_DAYS_LIMIT)
-    : 93 // 3 months
 
 // Never actually used?
 export const API_GATEWAY = process.env.API_GATEWAY || process.env.NEXT_PUBLIC_API_GATEWAY || ''
@@ -96,6 +91,7 @@ export const DEFAULT_WORKSPACE = {
   reportVesselGraph: REPORT_VESSELS_GRAPH_FLAG,
   reportVesselPage: 0,
   reportResultsPerPage: REPORT_VESSELS_PER_PAGE,
+  userTab: UserTab.Info,
 }
 
 export const EVENTS_COLORS: Record<string, string> = {
