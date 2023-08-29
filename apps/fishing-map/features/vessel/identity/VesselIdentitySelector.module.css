@@ -45,3 +45,7 @@
   opacity: 1;
   transition: opacity 150ms ease-in 200ms;
 }
+
+.error {
+  color: var(--color-danger-red);
+}
