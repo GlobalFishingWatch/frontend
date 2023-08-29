@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import { DataviewCategory, ThinningConfig } from '@globalfishingwatch/api-types'
 import { ThinningLevels, THINNING_LEVELS } from '@globalfishingwatch/api-client'
-import { TimebarGraphs, TimebarVisualisations } from 'types'
+import { TimebarGraphs, TimebarVisualisations, UserTab } from 'types'
 import { getUTCDateTime } from 'utils/dates'
 
 export const ROOT_DOM_ELEMENT = '__next'
@@ -91,6 +91,7 @@ export const DEFAULT_WORKSPACE = {
   reportVesselGraph: REPORT_VESSELS_GRAPH_FLAG,
   reportVesselPage: 0,
   reportResultsPerPage: REPORT_VESSELS_PER_PAGE,
+  userTab: UserTab.Info,
 }
 
 export const EVENTS_COLORS: Record<string, string> = {
