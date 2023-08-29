@@ -750,7 +750,6 @@
     "saveAndFilter": "Guardar y filtrar mapa",
     "saveForLater": "Guardar para más tarde",
     "saveForLaterTooltip": "Encontrarás el grupo en los filtros de las capas de actividad o en tu panel de usuario",
-    "timeRangeLimit": "Soportado sólo para rangos de tiempo menores de 3 meses",
     "tooManyVessels_one": "El número máximo de embarcaciones es {{count}}",
     "tooManyVessels_other": "El número máximo de embarcaciones es {{count}}",
     "uploadPublic": "Permitir a otros usuarios ver este grupo de embarcaciones cuando comparta un espacio de trabajo",
