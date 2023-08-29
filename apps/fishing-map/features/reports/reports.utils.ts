@@ -6,7 +6,7 @@
  */
 import { format } from 'd3-format'
 import { DateTime } from 'luxon'
-import { multiPolygon, polygon } from '@turf/helpers'
+import { multiPolygon, polygon, point } from '@turf/helpers'
 import { buffer } from '@turf/turf'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -221,6 +221,8 @@ export const getBufferedAreaFeature = ({
       ? multiPolygon(area.geometry.coordinates)
       : area.geometry.type === 'Polygon'
       ? polygon(area.geometry.coordinates)
+      : area.geometry.type === 'Point'
+      ? point(area.geometry.coordinates)
       : null
 
   const bufferedGeometry = areaPolygon ? buffer(areaPolygon, value, { units: unit }) : undefined
