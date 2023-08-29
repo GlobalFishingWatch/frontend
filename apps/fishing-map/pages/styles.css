@@ -43,6 +43,10 @@
   .print-hidden {
     display: none !important;
   }
+
+  .print-only {
+    display: block !important;
+  }
 }
 
 .scrollContainer {

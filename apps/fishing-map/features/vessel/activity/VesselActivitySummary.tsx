@@ -82,6 +82,7 @@ export const VesselActivitySummary = () => {
 
   return (
     <div className={styles.container}>
+      <label className="print-only">{t('vessel.sectionActivity', 'activity')}</label>
       <h2 className={styles.summary}>
         <span dangerouslySetInnerHTML={{ __html: summary }}></span>
         {hasActivityRegionsData ? (

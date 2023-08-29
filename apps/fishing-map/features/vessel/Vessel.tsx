@@ -110,11 +110,16 @@ const Vessel = () => {
   }, [])
 
   useEffect(() => {
+    const enableVesselPrintMode = () => {
+      dispatch(setVesselPrintMode(true))
+    }
     const disableVesselPrintMode = () => {
       dispatch(setVesselPrintMode(false))
     }
+    window.addEventListener('beforeprint', enableVesselPrintMode)
     window.addEventListener('afterprint', disableVesselPrintMode)
     return () => {
+      window.removeEventListener('beforeprint', enableVesselPrintMode)
       window.removeEventListener('afterprint', disableVesselPrintMode)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -169,7 +174,12 @@ const Vessel = () => {
         </Fragment>
       )}
       <div className={styles.activityContainer}>
-        <Tabs tabs={sectionTabs} activeTab={vesselSection} onTabClick={changeTab} />
+        <Tabs
+          tabs={sectionTabs}
+          activeTab={vesselSection}
+          onTabClick={changeTab}
+          mountAllTabsOnLoad
+        />
       </div>
     </Fragment>
   )

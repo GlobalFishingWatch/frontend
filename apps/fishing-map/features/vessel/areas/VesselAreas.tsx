@@ -1,15 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { useCallback, useMemo } from 'react'
-import {
-  Bar,
-  BarChart,
-  ResponsiveContainer,
-  Tooltip as RechartsTooltip,
-  XAxis,
-  YAxis,
-  LabelList,
-} from 'recharts'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Bar, BarChart, Tooltip as RechartsTooltip, XAxis, YAxis, LabelList } from 'recharts'
 import { Choice, ChoiceOption, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 import { RegionType } from '@globalfishingwatch/api-types'
 import {
@@ -71,6 +63,7 @@ const VesselAreas = () => {
   const eventsLoading = useSelector(selectVesselEventsResourcesLoading)
   const vesselDataview = useSelector(selectVesselProfileDataview)
   const eventTypes = useSelector(selectVesselEventTypes)
+  const [graphWidth, setGraphWidth] = useState(window.innerWidth / 2 - 52 - 40)
 
   const areaOptions: ChoiceOption<VesselAreaSubsection>[] = useMemo(
     () => [
@@ -93,6 +86,16 @@ const VesselAreas = () => {
     ],
     [t]
   )
+
+  useEffect(() => {
+    const resizeGraph = () => {
+      setGraphWidth(window.innerWidth / 2 - 52 - 40)
+    }
+    window.addEventListener('resize', resizeGraph)
+    return () => {
+      window.removeEventListener('resize', resizeGraph)
+    }
+  }, [])
 
   const changeVesselArea = useCallback(
     (option: ChoiceOption<VesselAreaSubsection>) => {
@@ -123,44 +126,45 @@ const VesselAreas = () => {
       </div>
       <div className={styles.areaList}>
         {eventsGrouped.length > 0 ? (
-          <div style={{ height: eventsGrouped.length * 40 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart layout="vertical" data={eventsGrouped} margin={{ right: 20 }}>
-                <YAxis
-                  interval={0}
-                  axisLine={false}
-                  tickLine={false}
-                  type="category"
-                  dataKey="region"
-                  width={200}
-                  tick={<AreaTick />}
-                />
-                <XAxis type="number" hide />
-                <RechartsTooltip content={<AreaTooltip />} />
-                {eventTypes?.map((eventType, index) => (
-                  <Bar
-                    key={eventType}
-                    dataKey={eventType}
-                    barSize={15}
-                    stackId="a"
-                    fill={
-                      eventType === 'fishing'
-                        ? vesselDataview?.config?.color
-                        : EVENTS_COLORS[eventType]
-                    }
-                  >
-                    {index === eventTypes.length - 1 && (
-                      <LabelList
-                        position="right"
-                        valueAccessor={(entry) => formatI18nNumber(entry.total)}
-                        className={styles.count}
-                      />
-                    )}
-                  </Bar>
-                ))}
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+          <BarChart
+            width={graphWidth}
+            height={eventsGrouped.length * 40}
+            layout="vertical"
+            data={eventsGrouped}
+            margin={{ right: 20 }}
+          >
+            <YAxis
+              interval={0}
+              axisLine={false}
+              tickLine={false}
+              type="category"
+              dataKey="region"
+              width={200}
+              tick={<AreaTick />}
+            />
+            <XAxis type="number" hide />
+            <RechartsTooltip content={<AreaTooltip />} />
+            {eventTypes?.map((eventType, index) => (
+              <Bar
+                isAnimationActive={false}
+                key={eventType}
+                dataKey={eventType}
+                barSize={15}
+                stackId="a"
+                fill={
+                  eventType === 'fishing' ? vesselDataview?.config?.color : EVENTS_COLORS[eventType]
+                }
+              >
+                {index === eventTypes.length - 1 && (
+                  <LabelList
+                    position="right"
+                    valueAccessor={(entry) => formatI18nNumber(entry.total)}
+                    className={styles.count}
+                  />
+                )}
+              </Bar>
+            ))}
+          </BarChart>
         ) : events.length === 0 ? (
           <span className={styles.enptyState}>
             {t(

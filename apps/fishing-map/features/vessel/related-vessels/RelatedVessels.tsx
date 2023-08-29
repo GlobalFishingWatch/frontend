@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { useCallback, useMemo } from 'react'
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, LabelList } from 'recharts'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Bar, BarChart, XAxis, YAxis, LabelList } from 'recharts'
 import { Choice, ChoiceOption, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 import { Dataset } from '@globalfishingwatch/api-types'
 import { selectEventsGroupedByEncounteredVessel } from 'features/vessel/activity/vessels-activity.selectors'
@@ -42,6 +42,7 @@ const RelatedVessels = () => {
   const encountersByVessel = useSelector(selectEventsGroupedByEncounteredVessel)
   const vesselRelatedSubsection = useSelector(selectVesselRelatedSubsection)
   const eventsLoading = useSelector(selectVesselEventsResourcesLoading)
+  const [graphWidth, setGraphWidth] = useState(window.innerWidth / 2 - 52 - 40)
 
   const relatedOptions: ChoiceOption<VesselRelatedSubsection>[] = useMemo(
     () => [
@@ -67,6 +68,16 @@ const RelatedVessels = () => {
     [dispatchQueryParams]
   )
 
+  useEffect(() => {
+    const resizeGraph = () => {
+      setGraphWidth(window.innerWidth / 2 - 52 - 40)
+    }
+    window.addEventListener('resize', resizeGraph)
+    return () => {
+      window.removeEventListener('resize', resizeGraph)
+    }
+  }, [])
+
   if (eventsLoading) {
     return (
       <div className={styles.placeholder}>
@@ -88,29 +99,36 @@ const RelatedVessels = () => {
       </div>
       <div className={styles.vesselsList}>
         {vesselRelatedSubsection === 'encounters' && encountersByVessel?.length > 0 && (
-          <div style={{ height: encountersByVessel.length * 40 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart layout="vertical" data={encountersByVessel} margin={{ right: 20 }}>
-                <YAxis
-                  interval={0}
-                  axisLine={false}
-                  tickLine={false}
-                  type="category"
-                  dataKey="id"
-                  width={250}
-                  tick={<VesselTick />}
-                />
-                <XAxis type="number" hide />
-                <Bar dataKey="encounters" barSize={15} fill={EVENTS_COLORS.encounter}>
-                  <LabelList
-                    position="right"
-                    valueAccessor={(entry) => formatI18nNumber(entry.encounters)}
-                    className={styles.count}
-                  />
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+          <BarChart
+            width={graphWidth}
+            height={encountersByVessel.length * 40}
+            layout="vertical"
+            data={encountersByVessel}
+            margin={{ right: 20 }}
+          >
+            <YAxis
+              interval={0}
+              axisLine={false}
+              tickLine={false}
+              type="category"
+              dataKey="id"
+              width={250}
+              tick={<VesselTick />}
+            />
+            <XAxis type="number" hide />
+            <Bar
+              dataKey="encounters"
+              barSize={15}
+              fill={EVENTS_COLORS.encounter}
+              isAnimationActive={false}
+            >
+              <LabelList
+                position="right"
+                valueAccessor={(entry) => formatI18nNumber(entry.encounters)}
+                className={styles.count}
+              />
+            </Bar>
+          </BarChart>
         )}
         {vesselRelatedSubsection === 'encounters' &&
           (!encountersByVessel || encountersByVessel.length === 0) && (

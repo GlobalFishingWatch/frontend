@@ -43,7 +43,12 @@
     justify-content: flex-start;
   }
 
-  .tab:not(:has(.tabActive)) {
+  .content {
+    display: block;
+    page-break-after: always;
+  }
+
+  .tab {
     display: none;
   }
 }

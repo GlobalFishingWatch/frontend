@@ -71,7 +71,9 @@ export function Tabs<TabID = string>({
               id={tab.id as unknown as string}
               role="tabpanel"
               aria-expanded={tabSelected}
-              className={cx(styles.content, tabClassName, { [styles.contentActive]: tabSelected })}
+              className={cx(styles.content, tabClassName, {
+                [styles.contentActive]: tabSelected,
+              })}
             >
               {tab.content}
             </div>
