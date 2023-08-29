@@ -750,7 +750,6 @@
     "saveAndFilter": "Simpan dan filter ruang kerja",
     "saveForLater": "Simpan untuk nanti",
     "saveForLaterTooltip": "Kelompok itu bisa ditemukan pada filter lapisan aktivitas atau tombol panel pengguna",
-    "timeRangeLimit": "Hanya mendukung untuk rentang waktu yang lebih pendek dari 3 bulan",
     "tooManyVessels_one": "Jumlah maksimum kapal adalah {{count}}",
     "tooManyVessels_other": "Jumlah maksimum kapal adalah {{count}}",
     "uploadPublic": "Izinkan pengguna lain untuk melihat kelompok kapal ini ketika Anda berbagi ruang kerja",
