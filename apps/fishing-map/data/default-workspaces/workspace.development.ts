@@ -97,11 +97,30 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: VIIRS_MATCH_DATAVIEW_SLUG,
       datasetsConfig: [],
     },
+    // {
+    //   id: 'sar',
+    //   dataviewId: SAR_DATAVIEW_SLUG,
+    //   config: {
+    //     visible: false,
+    //   },
+    // },
     {
-      id: 'sar',
-      dataviewId: SAR_DATAVIEW_SLUG,
+      id: 'sar2',
+      dataviewId: 'sar2',
+      // datasetsConfig: [
+      //   {
+      //     params: [
+      //       {
+      //         id: 'type',
+      //         value: 'heatmap',
+      //       },
+      //     ],
+      //     endpoint: '4wings-tiles',
+      //     datasetId: 'proto-global-sar-presence_v2:v20210924',
+      //   },
+      // ],
       config: {
-        visible: false,
+        visible: true,
       },
     },
     {
