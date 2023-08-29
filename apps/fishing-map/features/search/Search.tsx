@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef } from 'react'
+import { useEffect, useCallback, useRef, useState } from 'react'
 import { batch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
@@ -41,7 +41,9 @@ import { VesselSearchState } from 'types'
 import {
   getRelatedIdentityVesselIds,
   getSearchIdentityResolved,
+  getVesselProperty,
 } from 'features/vessel/vessel.utils'
+import { formatInfoField } from 'utils/info'
 import {
   fetchVesselSearchThunk,
   cleanVesselSearchResults,
@@ -83,6 +85,7 @@ function Search() {
   const searchDatasets = useSelector(
     activeSearchOption === 'basic' ? selectBasicSearchDatasets : selectAdvancedSearchDatasets
   ) as Dataset[]
+  const [vesselsSelectedDownload, setVesselsSelectedDownload] = useState([])
 
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const datasetsStatus = useSelector(selectDatasetsStatus)
@@ -198,6 +201,13 @@ function Search() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedQuery])
 
+  useEffect(() => {
+    // State cleanup needed to avoid sluggist renders when there are lots of vessels
+    if (vesselsSelectedDownload.length) {
+      setVesselsSelectedDownload([])
+    }
+  }, [vesselsSelectedDownload.length])
+
   const onSuggestionClick = () => {
     if (searchSuggestion) {
       dispatch(setSuggestionClicked(true))
@@ -286,6 +296,33 @@ function Search() {
 
   const SearchComponent = activeSearchOption === 'basic' ? SearchBasic : SearchAdvanced
 
+  const getDownloadVessels = async (_, done) => {
+    if (vesselsSelected) {
+      const vesselsParsed = vesselsSelected.map((vessel) => {
+        return {
+          name: formatInfoField(getVesselProperty(vessel, 'shipname'), 'shipname'),
+          ssvid: getVesselProperty(vessel, 'ssvid'),
+          imo: getVesselProperty(vessel, 'imo'),
+          'call sign': getVesselProperty(vessel, 'callsign'),
+          flag: t(`flags:${getVesselProperty(vessel, 'flag')}` as any),
+          'vessel type': t(
+            `vessel.vesselTypes.${getVesselProperty(vessel, 'shiptype')?.toLowerCase()}` as any
+          ),
+          'gear type': getVesselProperty<string[]>(vessel, 'geartype')
+            ?.map((gear) => t(`vessel.gearTypes.${gear.toLowerCase()}` as any))
+            .join(', '),
+          owner: formatInfoField(getVesselProperty(vessel, 'owner'), 'owner'),
+          transmissions: getSearchIdentityResolved(vessel).positionsCounter,
+          'transmissions start': getVesselProperty(vessel, 'transmissionDateFrom'),
+          'transmissions end': getVesselProperty(vessel, 'transmissionDateTo'),
+          dataset: vessel.dataset.id,
+        }
+      })
+      await setVesselsSelectedDownload(vesselsParsed as any)
+      done(true)
+    }
+  }
+
   return (
     <div className={styles.search}>
       <SearchComponent
@@ -316,11 +353,12 @@ function Search() {
             }`}
           </label>
         )}
-        {activeSearchOption === 'advanced' && searchResults && (
+        {activeSearchOption === 'advanced' && searchResults && vesselsSelected.length > 0 && (
           <CSVLink
-            filename={`search-results-${debouncedQuery}.csv`}
+            filename={`gfw-search-results-selection.csv`}
             asyncOnClick={true}
-            data={vesselsSelected.length ? vesselsSelected : searchResults}
+            data={vesselsSelectedDownload}
+            onClick={getDownloadVessels}
           >
             <IconButton
               icon="download"
