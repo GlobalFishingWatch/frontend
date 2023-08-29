@@ -173,14 +173,12 @@ function VesselGroupModal(): React.ReactElement {
           const currentDataviewInstance = urlDataviewInstances?.find(
             (dvi) => dvi.id === currentDataviewId
           )
+
           if (currentDataviewInstance) {
             config = {
               filters: {
                 ...(currentDataviewInstance.config?.filters || {}),
-                'vessel-groups': [
-                  ...(currentDataviewInstance.config?.filters?.['vessel-groups'] || []),
-                  vesselGroupId,
-                ],
+                'vessel-groups': [vesselGroupId],
               },
             }
           }

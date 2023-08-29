@@ -536,10 +536,6 @@ export const getSchemaOptionsSelectedInDataview = (
     ]
   }
 
-  if (SINGLE_SELECTION_SCHEMAS.includes(schema)) {
-    return options?.filter((option) => dataview.config?.filters?.[schema]?.id === option.id)
-  }
-
   return options?.filter((option) =>
     dataview.config?.filters?.[schema]?.map((o) => o.toString())?.includes(option.id)
   )
