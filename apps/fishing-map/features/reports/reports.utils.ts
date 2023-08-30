@@ -8,9 +8,11 @@ import { format } from 'd3-format'
 import { DateTime } from 'luxon'
 import { multiPolygon, polygon, point } from '@turf/helpers'
 import { buffer } from '@turf/turf'
+import { MultiPolygon } from 'geojson'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataview, DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
+import { wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { sortStrings } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
@@ -19,8 +21,9 @@ import {
   getSchemaFilterOperationInDataview,
   SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
-import { BufferUnit, ReportCategory } from 'types'
+import { Bbox, BufferUnit, ReportCategory } from 'types'
 import { Area } from 'features/areas/areas.slice'
+import { DEFAULT_POINT_BUFFER_UNIT, DEFAULT_POINT_BUFFER_VALUE } from './reports.constants'
 
 const arrayToStringTransform = (array: string[]) =>
   `(${array?.map((v: string) => `'${v}'`).join(', ')})`
@@ -228,4 +231,19 @@ export const getBufferedAreaFeature = ({
   const bufferedGeometry = areaPolygon ? buffer(areaPolygon, value, { units: unit }) : undefined
 
   return { ...area, geometry: bufferedGeometry } as Area
+}
+
+export const getPointBufferedBbox = ({
+  area,
+  value = DEFAULT_POINT_BUFFER_VALUE,
+  unit = DEFAULT_POINT_BUFFER_UNIT,
+}): Bbox | undefined => {
+  const bufferedArea = getBufferedAreaFeature({
+    area,
+    value,
+    unit,
+  }) as Area
+  return bufferedArea?.geometry
+    ? wrapGeometryBbox(bufferedArea.geometry as MultiPolygon)
+    : undefined
 }

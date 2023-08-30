@@ -19,11 +19,15 @@ import { selectReportAreaSource } from 'features/app/app.selectors'
 import { selectLocationAreaId } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectContextAreasDataviews } from 'features/dataviews/dataviews.selectors'
+import { getPointBufferedBbox } from 'features/reports/reports.utils'
 import { setClickedEvent } from '../map.slice'
 import { TooltipEventFeature } from '../map.hooks'
 import { useMapFitBounds } from '../map-viewport.hooks'
 
 export const getFeatureBounds = (feature: TooltipEventFeature) => {
+  if (feature?.geometry?.type === 'Point') {
+    return getPointBufferedBbox({ area: feature })
+  }
   return feature.properties.bbox ? parsePropertiesBbox(feature.properties.bbox) : null
 }
 
