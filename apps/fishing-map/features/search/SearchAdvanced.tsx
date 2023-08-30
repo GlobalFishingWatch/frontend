@@ -10,7 +10,12 @@ import { SearchComponentProps } from 'features/search/SearchBasic'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { EMPTY_FILTERS } from 'features/search/search.config'
-import { selectSearchStatus, selectSearchStatusCode } from './search.slice'
+import { useAppDispatch } from 'features/app/app.hooks'
+import {
+  cleanVesselSearchResults,
+  selectSearchStatus,
+  selectSearchStatusCode,
+} from './search.slice'
 import styles from './SearchAdvanced.module.css'
 import SearchAdvancedFilters from './SearchAdvancedFilters'
 import { useSearchConnect, useSearchFiltersConnect } from './search.hook'
@@ -19,6 +24,7 @@ import { isAdvancedSearchAllowed } from './search.selectors'
 
 function SearchAdvanced({ onSuggestionClick, fetchMoreResults, onConfirm }: SearchComponentProps) {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
   const advancedSearchAllowed = useSelector(isAdvancedSearchAllowed)
   const searchStatus = useSelector(selectSearchStatus)
@@ -30,7 +36,8 @@ function SearchAdvanced({ onSuggestionClick, fetchMoreResults, onConfirm }: Sear
 
   const resetSearchState = useCallback(() => {
     dispatchQueryParams(EMPTY_FILTERS)
-  }, [dispatchQueryParams])
+    dispatch(cleanVesselSearchResults())
+  }, [dispatch, dispatchQueryParams])
 
   if (!advancedSearchAllowed) {
     return (
