@@ -11,7 +11,7 @@
         "script": "start"
       }
     },
-    "dist": {
+    "build": {
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
@@ -80,11 +80,10 @@
         "passWithNoTests": true
       }
     },
-    "publish": {
-      "executor": "nx:run-commands",
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
       "options": {
-        "commands": ["nx i18n-labels:publish", "nx i18n-labels:purge"],
-        "parallel": false
+        "access": "public"
       }
     },
     "publish:stable": {
@@ -107,6 +106,13 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": ["PACKAGE_TAG=stable ./libs/i18n-labels/purge_jsdelivr.sh"],
+        "parallel": false
+      }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["nx deploy i18n-labels", "nx purge i18n-labels"],
         "parallel": false
       }
     },

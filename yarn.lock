@@ -2506,6 +2506,7 @@ __metadata:
     "@globalfishingwatch/layer-composer": 10.x
     "@globalfishingwatch/react-hooks": 15.x
     downshift: 6.x
+    luxon: 2.x
     react: ">17.x"
     react-dom: ">17.x"
   languageName: unknown

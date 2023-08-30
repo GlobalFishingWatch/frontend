@@ -14,7 +14,14 @@
         "project": "libs/ui-components/package.json",
         "extractCss": false,
         "entryFile": "libs/ui-components/src/index.ts",
-        "external": ["react/jsx-runtime"],
+        "external": [
+          "react/jsx-runtime",
+          "react",
+          "react-dom",
+          "@globalfishingwatch/layer-composer",
+          "@globalfishingwatch/react-hooks",
+          "luxon"
+        ],
         "rollupConfig": "libs/ui-components/rollup.config.js",
         "assets": [
           {
