@@ -65,7 +65,6 @@ const getRangeLimitsBySchema = (schemaFilter: SchemaFilter): number[] => {
 
 const getRangeBySchema = (schemaFilter: SchemaFilter): number[] => {
   const { options, optionsSelected } = schemaFilter
-
   const optionValues = options.map(({ id }) => parseInt(id)).sort((a, b) => a - b)
   const rangeValues =
     optionsSelected?.length > 0
@@ -142,7 +141,7 @@ function ActivitySchemaFilter({
   if (type === 'number') {
     const initialValue = unit
       ? VALUE_TRANSFORMATIONS_BY_UNIT[unit].in(getRangeBySchema(schemaFilter)[0])
-      : getRangeBySchema(schemaFilter)[0] || 0.5
+      : getRangeBySchema(schemaFilter)[0] || Number(schemaFilter.optionsSelected[0][0].id)
     const minValue = unit
       ? VALUE_TRANSFORMATIONS_BY_UNIT[unit].in(getRangeLimitsBySchema(schemaFilter)[0])
       : getRangeLimitsBySchema(schemaFilter)[0] || 0

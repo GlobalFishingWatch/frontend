@@ -466,8 +466,8 @@ export const getCommonSchemaFieldsInDataview = (
     schemaType === 'number'
       ? [
           [
-            activeDatasets!?.[0]?.schema?.[schema]?.min?.toString(),
-            activeDatasets!?.[0]?.schema?.[schema]?.max?.toString(),
+            activeDatasets!?.[0]?.schema?.[schema]?.min?.toString() || 0,
+            activeDatasets!?.[0]?.schema?.[schema]?.max?.toString() || 1,
           ],
         ]
       : activeDatasets?.map((d) => d.schema?.[schema]?.enum || [])

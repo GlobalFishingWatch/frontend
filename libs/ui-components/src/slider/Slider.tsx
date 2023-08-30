@@ -40,7 +40,7 @@ const borderColor =
 export const formatSliderNumber = (num: number): string => {
   if (num >= 1000) return format('.2s')(num)
   if (num > 9) return format('.0f')(num)
-  return format('.1f')(num)
+  return format('.2f')(num)
 }
 
 export function Slider(props: SliderProps) {
