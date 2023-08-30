@@ -11,3 +11,6 @@ export const DEFAULT_BUFFER_UNIT_OPTION: BufferUnitOption = {
   label: 'Nautical miles',
   id: NAUTICAL_MILES,
 }
+
+export const DEFAULT_POINT_BUFFER_UNIT: BufferUnit = NAUTICAL_MILES
+export const DEFAULT_POINT_BUFFER_VALUE: number = 100
