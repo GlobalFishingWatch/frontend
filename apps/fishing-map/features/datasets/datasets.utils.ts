@@ -596,7 +596,7 @@ export const getCommonSchemaFieldsInDataview = (
   if (schemaType === 'number') {
     const schemaConfig = getDatasetSchemaItem(activeDatasets!?.[0], schema)
     if (schemaConfig) {
-      schemaFields = [[schemaConfig?.min?.toString(), schemaConfig?.max?.toString()]]
+      schemaFields = [[schemaConfig?.min?.toString() || '0', schemaConfig?.max?.toString() || '1']]
     }
   }
   const cleanSchemaFields =
