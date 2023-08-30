@@ -52,6 +52,7 @@ export type SupportedActivityDatasetSchema =
   | 'license_category'
   | 'vessel-groups'
   | 'visibleValues'
+  | 'neural_value'
 
 export type SupportedEnvDatasetSchema = 'type'
 export type SupportedContextDatasetSchema = 'removal_of'
@@ -362,7 +363,7 @@ export const hasDatasetConfigVesselData = (datasetConfig: DataviewDatasetConfig)
 }
 
 export const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatasetSchema) => {
-  if (schema === 'flag' || schema === 'vessel-groups') {
+  if (schema === 'flag' || schema === 'vessel-groups' || schema === 'neural_value') {
     // returning true as the schema fields enum comes from the static list in getFlags()
     return true
   }
@@ -501,6 +502,14 @@ export const getSchemaOptionsSelectedInDataview = (
     return getFlagsByIds(dataview.config?.filters?.flag || [])
   }
   if (schema === 'radiance' && dataview.config?.filters?.[schema]) {
+    return dataview.config?.filters?.[schema]?.map((o) => [
+      {
+        id: o.toString(),
+        label: o.toString(),
+      },
+    ])
+  }
+  if (schema === 'neural_value' && dataview.config?.filters?.[schema]) {
     return dataview.config?.filters?.[schema]?.map((o) => [
       {
         id: o.toString(),

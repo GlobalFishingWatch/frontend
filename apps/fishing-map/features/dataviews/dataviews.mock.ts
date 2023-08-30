@@ -1,4 +1,4 @@
-import { Dataview, DataviewCategory } from '@globalfishingwatch/api-types'
+import { Dataview, DataviewCategory, GREATER_THAN_FILTER_ID } from '@globalfishingwatch/api-types'
 
 export const dataviews: Dataview[] = [
   {
@@ -13,18 +13,13 @@ export const dataviews: Dataview[] = [
       maxZoom: 12,
       datasets: ['proto-global-sar-presence_v2:v20210924'],
       colorRamp: 'lilac',
+      filterOperators: {
+        neural_value: GREATER_THAN_FILTER_ID,
+      },
     },
     filtersConfig: {
-      order: ['matched', 'flag', 'geartype'],
-      incompatibility: {
-        'proto-global-sar-presence_v2:v20210924': [
-          {
-            id: 'matched',
-            value: false,
-            disabled: ['flag', 'geartype'],
-          },
-        ],
-      },
+      order: ['matched', 'flag', 'geartype', 'neural_value'],
+      incompatibility: {},
     },
     category: DataviewCategory.Detections,
     datasetsConfig: [
@@ -37,11 +32,6 @@ export const dataviews: Dataview[] = [
         ],
         endpoint: '4wings-tiles',
         datasetId: 'proto-global-sar-presence_v2:v20210924',
-      },
-      {
-        params: [],
-        endpoint: 'temporal-context-geojson',
-        datasetId: 'public-global-sar-footprints:v20210924',
       },
     ],
     createdAt: '2023-01-16T15:35:41.689Z',

@@ -4,7 +4,11 @@ export type ColorCyclingType = 'fill' | 'line'
 
 export const INCLUDE_FILTER_ID = 'include'
 export const EXCLUDE_FILTER_ID = 'exclude'
-export type FilterOperator = typeof INCLUDE_FILTER_ID | typeof EXCLUDE_FILTER_ID
+export const GREATER_THAN_FILTER_ID = '>'
+export type FilterOperator =
+  | typeof INCLUDE_FILTER_ID
+  | typeof EXCLUDE_FILTER_ID
+  | typeof GREATER_THAN_FILTER_ID
 
 export interface DataviewContexLayerConfig {
   id: string

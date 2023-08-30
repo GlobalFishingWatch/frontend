@@ -28,7 +28,10 @@ type ActivitySchemaFilterProps = {
   onClean: (filterKey: string) => void
 }
 export const showSchemaFilter = (schemaFilter: SchemaFilter) => {
-  return !schemaFilter.disabled && schemaFilter.options && schemaFilter.options.length > 0
+  return (
+    !schemaFilter.disabled &&
+    ((schemaFilter.options && schemaFilter.options.length > 0) || schemaFilter.type !== 'string')
+  )
 }
 
 export const VALUE_TRANSFORMATIONS_BY_UNIT = {
@@ -57,7 +60,7 @@ const getRangeLimitsBySchema = (schemaFilter: SchemaFilter): number[] => {
   const optionValues = options.map(({ id }) => parseInt(id)).sort((a, b) => a - b)
   return optionValues.length === 1
     ? optionValues
-    : [optionValues[0], optionValues[optionValues.length - 1]]
+    : [optionValues[0] || 0, optionValues[optionValues.length - 1] || 1]
 }
 
 const getRangeBySchema = (schemaFilter: SchemaFilter): number[] => {
@@ -102,7 +105,8 @@ function ActivitySchemaFilter({
         onClean(id)
       } else if (!Array.isArray(rangeSelected) && !Number.isNaN(rangeSelected)) {
         const value = unit ? VALUE_TRANSFORMATIONS_BY_UNIT[unit].out(rangeSelected) : rangeSelected
-        onSelect(id, value, true)
+        console.log('value:', value)
+        onSelect(id, { id: value, label: value }, true)
       } else {
         const selection = rangeSelected.map((id) => ({
           id: id.toString(),
@@ -138,13 +142,14 @@ function ActivitySchemaFilter({
   if (type === 'number') {
     const initialValue = unit
       ? VALUE_TRANSFORMATIONS_BY_UNIT[unit].in(getRangeBySchema(schemaFilter)[0])
-      : getRangeBySchema(schemaFilter)[0]
+      : getRangeBySchema(schemaFilter)[0] || 0.5
     const minValue = unit
       ? VALUE_TRANSFORMATIONS_BY_UNIT[unit].in(getRangeLimitsBySchema(schemaFilter)[0])
-      : getRangeLimitsBySchema(schemaFilter)[0]
+      : getRangeLimitsBySchema(schemaFilter)[0] || 0
     const maxValue = unit
       ? VALUE_TRANSFORMATIONS_BY_UNIT[unit].in(getRangeLimitsBySchema(schemaFilter)[1])
-      : getRangeLimitsBySchema(schemaFilter)[1]
+      : getRangeLimitsBySchema(schemaFilter)[1] || 1
+
     return (
       <Slider
         className={styles.multiSelect}
