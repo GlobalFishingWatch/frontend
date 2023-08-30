@@ -10,7 +10,8 @@
       "apps/*",
       "linting",
       "libs/i18n-labels",
-      "libs/data-transforms"
+      "libs/data-transforms",
+      "libs/ui-components"
     ]
   },
   "scripts": {
@@ -185,7 +186,7 @@
     "lint-staged": "13.1.1",
     "mocha": "^10.2.0",
     "next-circular-dependency": "^1.0.1",
-    "ngx-deploy-npm": "^5.0.0",
+    "ngx-deploy-npm": "^7.0.1",
     "nx": "16.3.2",
     "nx-cloud": "16.1.0",
     "prettier": "2.8.3",

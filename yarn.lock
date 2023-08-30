@@ -2756,7 +2756,7 @@ __metadata:
     next: 13.4.8
     next-circular-dependency: ^1.0.1
     next-redux-wrapper: 8.1.0
-    ngx-deploy-npm: ^5.0.0
+    ngx-deploy-npm: ^7.0.1
     node-fetch: 2.6.7
     nx: 16.3.2
     nx-cloud: 16.1.0
@@ -2800,6 +2800,33 @@ __metadata:
     webpack-merge: ^5.8.0
     webpack-sources: 3.2.1
     yarn-deduplicate: ^5.0.0
+  languageName: unknown
+  linkType: soft
+
+"@globalfishingwatch/ui-components@workspace:libs/ui-components":
+  version: 0.0.0-use.local
+  resolution: "@globalfishingwatch/ui-components@workspace:libs/ui-components"
+  dependencies:
+    "@tippyjs/react": 4.2.6
+    "@types/react-modal": ^3.10.5
+    "@types/topojson-client": ^3.0.0
+    countryflag: ^5.0.0
+    d3-format: ^3.1.0
+    d3-geo: ^1.12.0
+    d3-scale: ^3.3.0
+    downshift: 6.1.12
+    match-sorter: ^6.3.1
+    react-modal: ^3.16.1
+    react-range: ^1.8.14
+    topojson-client: ^3.1.0
+    ts-node: ^10.9.1
+  peerDependencies:
+    "@globalfishingwatch/layer-composer": 10.x
+    "@globalfishingwatch/react-hooks": 15.x
+    downshift: 6.x
+    luxon: 2.x
+    react: ">17.x"
+    react-dom: ">17.x"
   languageName: unknown
   linkType: soft
 
@@ -8814,7 +8841,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-modal@npm:^3.16.0":
+"@types/react-modal@npm:^3.10.5, @types/react-modal@npm:^3.16.0":
   version: 3.16.0
   resolution: "@types/react-modal@npm:3.16.0"
   dependencies:
@@ -9028,7 +9055,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/topojson-client@npm:^3.1.1":
+"@types/topojson-client@npm:^3.0.0, @types/topojson-client@npm:^3.1.1":
   version: 3.1.1
   resolution: "@types/topojson-client@npm:3.1.1"
   dependencies:
@@ -13011,7 +13038,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"d3-format@npm:1 - 3, d3-format@npm:3, d3-format@npm:3.1.0":
+"d3-format@npm:1 - 3, d3-format@npm:3, d3-format@npm:3.1.0, d3-format@npm:^3.1.0":
   version: 3.1.0
   resolution: "d3-format@npm:3.1.0"
   checksum: f345ec3b8ad3cab19bff5dead395bd9f5590628eb97a389b1dd89f0b204c7c4fc1d9520f13231c2c7cf14b7c9a8cf10f8ef15bde2befbab41454a569bd706ca2
@@ -13033,6 +13060,15 @@ __metadata:
   dependencies:
     d3-array: 2.5.0 - 3
   checksum: adf82b0c105c0c5951ae0a833d4dfc479a563791ad7938579fa14e1cffd623b469d8aa7a37dc413a327fb6ac56880f3da3f6c43d4abe3c923972dd98f34f37d1
+  languageName: node
+  linkType: hard
+
+"d3-geo@npm:^1.12.0":
+  version: 1.12.1
+  resolution: "d3-geo@npm:1.12.1"
+  dependencies:
+    d3-array: 1
+  checksum: 8ede498e5fce65c127403646f5cc6181a858a1e401e23e2856ce50ad27e6fdf8b49aeb88d2fad02696879d5825a45420ca1b5db9fa9c935ee413fe15b5bc37c4
   languageName: node
   linkType: hard
 
@@ -21196,14 +21232,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ngx-deploy-npm@npm:^5.0.0":
-  version: 5.2.0
-  resolution: "ngx-deploy-npm@npm:5.2.0"
+"ngx-deploy-npm@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "ngx-deploy-npm@npm:7.0.1"
   peerDependencies:
-    "@nrwl/devkit": ^14.0.0 || ^15.0.0
-    "@nrwl/workspace": ^14.0.0 || ^15.0.0
-    nx: ^14.0.0 || ^15.0.0
-  checksum: 4fffb7a49529c83ce7e92e5b850075bde54991e2ef7564d28dc9963feb7b990c11249e806e187b77f38b0c62ccd66539f69b17677bd5ce3876d2fd18df9d2351
+    "@nx/devkit": ^16.0.0
+    tslib: ^2.3.0
+  checksum: ec5f9d930370f7c959a4cd3f9fe46fd16638178432f2645a0113815da64404becb89d5c5b5ff62d0321edff8efa9c59d89b25e1f6d169e0063c97ca0b0e90907
   languageName: node
   linkType: hard
 

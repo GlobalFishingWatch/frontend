@@ -5,7 +5,7 @@
   "projectType": "library",
   "tags": [],
   "targets": {
-    "build": {
+    "dist": {
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
@@ -14,16 +14,41 @@
         "project": "libs/ui-components/package.json",
         "extractCss": false,
         "entryFile": "libs/ui-components/src/index.ts",
-        "external": ["react/jsx-runtime"],
+        "external": [
+          "react/jsx-runtime",
+          "react",
+          "react-dom",
+          "@globalfishingwatch/layer-composer",
+          "@globalfishingwatch/react-hooks",
+          "luxon"
+        ],
         "rollupConfig": "libs/ui-components/rollup.config.js",
         "assets": [
           {
             "glob": "libs/ui-components/README.md",
             "input": ".",
             "output": "."
+          },
+          {
+            "glob": "libs/ui-components/src/header/html",
+            "input": ".",
+            "output": "."
           }
         ],
         "styles": "libs/ui-components/src/base.css"
+      }
+    },
+    "prerender": {
+      "executor": "nx:run-script",
+      "options": {
+        "script": "prerender"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["nx prerender ui-components", "nx dist ui-components"],
+        "parallel": false
       }
     },
     "lint": {
@@ -41,10 +66,11 @@
         "passWithNoTests": true
       }
     },
-    "deploy": {
+    "publish": {
       "executor": "ngx-deploy-npm:deploy",
       "options": {
-        "access": "public"
+        "access": "public",
+        "distFolderPath": "dist/libs/ui-components"
       }
     }
   }
