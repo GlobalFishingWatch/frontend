@@ -5,7 +5,7 @@
   "projectType": "library",
   "tags": [],
   "targets": {
-    "dist": {
+    "build": {
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
@@ -44,13 +44,6 @@
         "script": "prerender"
       }
     },
-    "build": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["nx prerender ui-components", "nx dist ui-components"],
-        "parallel": false
-      }
-    },
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
@@ -66,11 +59,18 @@
         "passWithNoTests": true
       }
     },
-    "publish": {
+    "deploy": {
       "executor": "ngx-deploy-npm:deploy",
       "options": {
         "access": "public",
         "distFolderPath": "dist/libs/ui-components"
+      }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["nx prerender ui-components", "nx deploy ui-components"],
+        "parallel": false
       }
     }
   }

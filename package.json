@@ -8,10 +8,8 @@
   "workspaces": {
     "packages": [
       "apps/*",
-      "linting",
-      "libs/i18n-labels",
-      "libs/data-transforms",
-      "libs/ui-components"
+      "libs/*",
+      "linting"
     ]
   },
   "scripts": {
