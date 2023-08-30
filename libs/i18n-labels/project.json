@@ -81,9 +81,10 @@
       }
     },
     "publish": {
-      "executor": "ngx-deploy-npm:deploy",
+      "executor": "nx:run-commands",
       "options": {
-        "access": "public"
+        "commands": ["nx i18n-labels:publish", "nx i18n-labels:purge"],
+        "parallel": false
       }
     },
     "publish:stable": {
@@ -106,13 +107,6 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": ["PACKAGE_TAG=stable ./libs/i18n-labels/purge_jsdelivr.sh"],
-        "parallel": false
-      }
-    },
-    "publish": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["nx i18n-labels:publish", "nx i18n-labels:purge"],
         "parallel": false
       }
     },
