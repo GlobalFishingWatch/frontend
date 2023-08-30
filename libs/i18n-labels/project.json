@@ -11,7 +11,7 @@
         "script": "start"
       }
     },
-    "build": {
+    "dist": {
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
@@ -109,7 +109,7 @@
         "parallel": false
       }
     },
-    "deploy": {
+    "publish": {
       "executor": "nx:run-commands",
       "options": {
         "commands": ["nx i18n-labels:publish", "nx i18n-labels:purge"],
