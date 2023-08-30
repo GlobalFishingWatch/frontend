@@ -3,7 +3,10 @@ import { VesselIdentitySourceEnum } from 'features/search/search.config'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { VesselProfileState } from 'types'
 
-export const DEFAULT_VESSEL_IDENTITY_ID = 'public-global-vessel-identity-all-shiptypes:v20230623'
+export const DEFAULT_VESSEL_IDENTITY_DATASET = 'public-global-vessel-identity-all-shiptypes'
+export const DEFAULT_VESSEL_IDENTITY_VERSION = 'v20230623'
+export const DEFAULT_VESSEL_IDENTITY_ID = `${DEFAULT_VESSEL_IDENTITY_DATASET}:${DEFAULT_VESSEL_IDENTITY_VERSION}`
+
 export const DEFAULT_VESSEL_STATE: VesselProfileState = {
   vesselDatasetId: DEFAULT_VESSEL_IDENTITY_ID,
   vesselIdentityIndex: 0,

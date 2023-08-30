@@ -21,6 +21,7 @@ import { showSchemaFilter } from 'features/workspace/activity/ActivitySchemaFilt
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { selectAdvancedSearchDatasets } from 'features/search/search.selectors'
 import { VesselIdentitySourceEnum } from 'features/search/search.config'
+import { DEFAULT_VESSEL_IDENTITY_DATASET } from 'features/vessel/vessel.config'
 import { useSearchFiltersConnect } from './search.hook'
 import styles from './SearchAdvancedFilters.module.css'
 
@@ -63,13 +64,17 @@ function SearchAdvancedFilters() {
 
   const flagOptions = useMemo(getFlags, [])
   const sourceOptions = useMemo(() => {
-    return datasets
+    const datasetsFiltered =
+      infoSource === VesselIdentitySourceEnum.Registry
+        ? datasets?.filter((d) => d.id.includes(DEFAULT_VESSEL_IDENTITY_DATASET))
+        : datasets
+    return datasetsFiltered
       ?.sort((a, b) => a.name.localeCompare(b.name))
       .map((dataset) => ({
         id: dataset.id,
         label: <DatasetLabel dataset={dataset} />,
       }))
-  }, [datasets])
+  }, [datasets, infoSource])
 
   const infoSourceOptions: SelectOption<VesselIdentitySourceEnum>[] = useMemo(
     () => [
@@ -154,6 +159,21 @@ function SearchAdvancedFilters() {
         label={t('vessel.owner', 'Owner')}
         inputSize="small"
       />
+      <Select
+        label={t('vessel.infoSource', 'Info Source')}
+        placeholder={getPlaceholderBySelections({
+          selection: infoSource,
+          options: infoSourceOptions,
+        })}
+        options={infoSourceOptions}
+        selectedOption={infoSourceOptions.find(({ id }) => id === infoSource)}
+        onSelect={({ id }) => {
+          setSearchFilters({ infoSource: id })
+        }}
+        onRemove={() => {
+          setSearchFilters({ infoSource: undefined })
+        }}
+      />
       {sourceOptions && sourceOptions.length > 0 && (
         <MultiSelect
           label={t('layer.source_other', 'Sources')}
@@ -171,21 +191,6 @@ function SearchAdvancedFilters() {
           }}
         />
       )}
-      <Select
-        label={t('vessel.infoSource', 'Info Source')}
-        placeholder={getPlaceholderBySelections({
-          selection: infoSource,
-          options: infoSourceOptions,
-        })}
-        options={infoSourceOptions}
-        selectedOption={infoSourceOptions.find(({ id }) => id === infoSource)}
-        onSelect={({ id }) => {
-          setSearchFilters({ infoSource: id })
-        }}
-        onRemove={() => {
-          setSearchFilters({ infoSource: undefined })
-        }}
-      />
       <MultiSelect
         label={t('layer.flagState_other', 'Flag States')}
         placeholder={getPlaceholderBySelections({ selection: flag, options: flagOptions })}

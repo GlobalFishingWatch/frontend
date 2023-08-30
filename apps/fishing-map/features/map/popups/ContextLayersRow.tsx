@@ -89,7 +89,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
             ? ''
             : t(
                 'common.analysisNotAvailable',
-                'Toggle an activity or environmenet layer on to analyse in in this area'
+                'Toggle an activity or environment layer on to analyse in in this area'
               )
         }
       />
