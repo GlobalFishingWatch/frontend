@@ -2,7 +2,9 @@ import { createSelector } from '@reduxjs/toolkit'
 import { groupBy, sum, sumBy, uniq, uniqBy } from 'lodash'
 import { matchSorter } from 'match-sorter'
 import { t } from 'i18next'
+import { MultiPolygon } from 'geojson'
 import { Dataset, DatasetTypes, ReportVessel } from '@globalfishingwatch/api-types'
+import { wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import {
   selectActiveReportDataviews,
   selectReportActivityGraph,
@@ -468,9 +470,10 @@ export const selectReportAreaBuffer = createSelector(
     if (!area || !unit || !value) return null
     const bufferedArea = getBufferedAreaFeature({ area, value, unit }) as Area
     if (bufferedArea?.bounds && bufferedArea?.geometry) {
+      const bounds = wrapGeometryBbox(bufferedArea.geometry as MultiPolygon)
       // bbox is needed inside feature geometry to computeTimeseries
       // fishing-map/features/reports/reports-timeseries.hooks.ts
-      bufferedArea.geometry.bbox = bufferedArea.bounds
+      bufferedArea.geometry.bbox = bounds
     }
     return bufferedArea
   }
