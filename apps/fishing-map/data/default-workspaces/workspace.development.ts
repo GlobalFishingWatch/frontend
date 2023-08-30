@@ -22,6 +22,8 @@ import {
   BASEMAP_LABELS_DATAVIEW_SLUG,
   PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
   BASEMAP_DATAVIEW_INSTANCE_ID,
+  FAO_AREAS_DATAVIEW_INSTANCE_ID,
+  RFMO_DATAVIEW_INSTANCE_ID,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
@@ -142,14 +144,14 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: PROTECTED_SEAS_DATAVIEW_SLUG,
     },
     {
-      id: 'context-layer-fao-areas',
+      id: FAO_AREAS_DATAVIEW_INSTANCE_ID,
       config: {
         visible: false,
       },
       dataviewId: FAO_AREAS_DATAVIEW_SLUG,
     },
     {
-      id: 'context-layer-rfmo',
+      id: RFMO_DATAVIEW_INSTANCE_ID,
       config: {
         color: '#6b67e5',
         visible: false,

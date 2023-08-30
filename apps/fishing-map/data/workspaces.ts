@@ -38,10 +38,12 @@ export const MPA_DATAVIEW_INSTANCE_ID = 'context-layer-mpa'
 export const BASEMAP_DATAVIEW_INSTANCE_ID = 'basemap-labels'
 export const PROTECTEDSEAS_DATAVIEW_INSTANCE_ID = 'context-layer-protectedseas'
 export const RFMO_DATAVIEW_SLUG = 'tuna-rfmo-areas'
+export const RFMO_DATAVIEW_INSTANCE_ID = 'context-layer-rfmo'
 export const HIGH_SEAS_DATAVIEW_SLUG = 'high-seas'
 export const PROTECTED_SEAS_DATAVIEW_SLUG = 'protected-seas'
 export const GRATICULES_DATAVIEW_SLUG = 'graticules'
 export const FAO_AREAS_DATAVIEW_SLUG = 'fao-areas'
+export const FAO_AREAS_DATAVIEW_INSTANCE_ID = 'context-layer-fao-areas'
 
 // Workspaces dataviews
 export const FISHING_DATAVIEW_SLUG = 'apparent-fishing-effort'

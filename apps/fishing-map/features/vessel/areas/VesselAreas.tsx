@@ -20,7 +20,12 @@ import {
   selectVesselEventsResourcesLoading,
 } from 'features/vessel/vessel.selectors'
 import VesselActivityFilter from 'features/vessel/activity/VesselActivityFilter'
+import { selectIsWorkspaceVesselLocation } from 'routes/routes.selectors'
 import styles from './VesselAreas.module.css'
+
+type VesselAreasProps = {
+  updateAreaLayersVisibility: (id: string) => void
+}
 
 const AreaTick = ({ y, payload }: any) => {
   const { getRegionNamesByType } = useRegionNamesByType()
@@ -54,7 +59,7 @@ const AreaTooltip = ({ payload }: any) => {
   )
 }
 
-const VesselAreas = () => {
+const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const events = useSelector(selectVesselEventsFilteredByTimerange)
@@ -63,6 +68,7 @@ const VesselAreas = () => {
   const eventsLoading = useSelector(selectVesselEventsResourcesLoading)
   const vesselDataview = useSelector(selectVesselProfileDataview)
   const eventTypes = useSelector(selectVesselEventTypes)
+  const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const [graphWidth, setGraphWidth] = useState(window.innerWidth / 2 - 52 - 40)
 
   const areaOptions: ChoiceOption<VesselAreaSubsection>[] = useMemo(
@@ -100,8 +106,12 @@ const VesselAreas = () => {
   const changeVesselArea = useCallback(
     (option: ChoiceOption<VesselAreaSubsection>) => {
       dispatchQueryParams({ vesselArea: option.id })
+      // TODO check if we can do this on standalone profile as well
+      if (isWorkspaceVesselLocation) {
+        updateAreaLayersVisibility(option.id)
+      }
     },
-    [dispatchQueryParams]
+    [dispatchQueryParams, isWorkspaceVesselLocation, updateAreaLayersVisibility]
   )
 
   if (eventsLoading) {
@@ -131,7 +141,7 @@ const VesselAreas = () => {
             height={eventsGrouped.length * 40}
             layout="vertical"
             data={eventsGrouped}
-            margin={{ right: 20 }}
+            margin={{ right: 40 }}
           >
             <YAxis
               interval={0}

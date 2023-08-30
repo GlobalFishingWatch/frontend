@@ -25,7 +25,11 @@ import { selectRegionsDatasets } from 'features/regions/regions.selectors'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import { ErrorPlaceHolder, WorkspaceLoginError } from 'features/workspace/WorkspaceError'
 import { isGuestUser } from 'features/user/user.slice'
-import { selectVesselDatasetId, selectVesselSection } from 'features/vessel/vessel.config.selectors'
+import {
+  selectVesselAreaSubsection,
+  selectVesselDatasetId,
+  selectVesselSection,
+} from 'features/vessel/vessel.config.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { useCallbackAfterPaint } from 'hooks/paint.hooks'
 import { useVesselFitBounds } from 'features/vessel/vessel.hooks'
@@ -34,18 +38,51 @@ import { useClickedEventConnect } from 'features/map/map.hooks'
 import VesselAreas from 'features/vessel/areas/VesselAreas'
 import RelatedVessels from 'features/vessel/related-vessels/RelatedVessels'
 import { useLocationConnect } from 'routes/routes.hook'
-import { VesselSection } from 'types'
+import { VesselAreaSubsection, VesselSection } from 'types'
 import { selectVesselHasEventsDatasets } from 'features/vessel/vessel.selectors'
+import {
+  EEZ_DATAVIEW_INSTANCE_ID,
+  FAO_AREAS_DATAVIEW_INSTANCE_ID,
+  MPA_DATAVIEW_INSTANCE_ID,
+  RFMO_DATAVIEW_INSTANCE_ID,
+} from 'data/workspaces'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import VesselIdentity from './identity/VesselIdentity'
 import VesselActivity from './activity/VesselActivity'
 import styles from './Vessel.module.css'
+
+type VesselAreaLayer = {
+  id: VesselAreaSubsection
+  dataviewInstanceId: string
+}
+
+const VESSEL_AREA_LAYERS: VesselAreaLayer[] = [
+  {
+    id: 'eez',
+    dataviewInstanceId: EEZ_DATAVIEW_INSTANCE_ID,
+  },
+  {
+    id: 'fao',
+    dataviewInstanceId: FAO_AREAS_DATAVIEW_INSTANCE_ID,
+  },
+  {
+    id: 'rfmo',
+    dataviewInstanceId: RFMO_DATAVIEW_INSTANCE_ID,
+  },
+  {
+    id: 'mpa',
+    dataviewInstanceId: MPA_DATAVIEW_INSTANCE_ID,
+  },
+]
 
 const Vessel = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const vesselId = useSelector(selectVesselId)
   const vesselSection = useSelector(selectVesselSection)
+  const vesselArea = useSelector(selectVesselAreaSubsection)
   const datasetId = useSelector(selectVesselDatasetId)
   const urlWorkspaceId = useSelector(selectWorkspaceId)
   const infoStatus = useSelector(selectVesselInfoStatus)
@@ -62,6 +99,18 @@ const Vessel = () => {
   useVesselFitBounds(isVesselLocation)
   useFetchDataviewResources()
 
+  const updateAreaLayersVisibility = useCallback(
+    (id?: string) => {
+      upsertDataviewInstance(
+        VESSEL_AREA_LAYERS.map((area) => ({
+          id: area.dataviewInstanceId,
+          config: { visible: area.id === id },
+        }))
+      )
+    },
+    [upsertDataviewInstance]
+  )
+
   const sectionTabs: Tab<VesselSection>[] = useMemo(
     () => [
       {
@@ -72,7 +121,7 @@ const Vessel = () => {
       {
         id: 'areas',
         title: t('vessel.sectionAreas', 'Areas'),
-        content: <VesselAreas />,
+        content: <VesselAreas updateAreaLayersVisibility={updateAreaLayersVisibility} />,
         disabled: !hasEventsDataset,
       },
       {
@@ -82,7 +131,7 @@ const Vessel = () => {
         disabled: !hasEventsDataset,
       },
     ],
-    [t, hasEventsDataset]
+    [t, updateAreaLayersVisibility, hasEventsDataset]
   )
 
   useEffect(() => {
@@ -143,6 +192,7 @@ const Vessel = () => {
 
   const changeTab = (tab: Tab<VesselSection>) => {
     dispatchQueryParams({ vesselSection: tab.id })
+    updateAreaLayersVisibility(tab.id === 'areas' ? vesselArea : undefined)
   }
 
   if (infoStatus === AsyncReducerStatus.Loading) {
