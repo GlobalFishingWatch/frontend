@@ -3,7 +3,9 @@ import { useCallback } from 'react'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectSearchFilters } from 'features/search/search.config.selectors'
 import { VesselSearchState } from 'types'
+import { useAppDispatch } from 'features/app/app.hooks'
 import {
+  cleanVesselSearchResults,
   selectSearchPagination,
   selectSearchSuggestion,
   selectSearchSuggestionClicked,
@@ -24,14 +26,16 @@ const FIRST_FETCH_FILTERS_TO_IGNORE = [
 ]
 
 export const useSearchFiltersConnect = () => {
+  const dispatch = useAppDispatch()
   const searchFilters = useSelector(selectSearchFilters)
   const { dispatchQueryParams } = useLocationConnect()
 
   const setSearchFilters = useCallback(
     (filter: VesselSearchState) => {
       dispatchQueryParams(filter)
+      dispatch(cleanVesselSearchResults())
     },
-    [dispatchQueryParams]
+    [dispatch, dispatchQueryParams]
   )
 
   const hasFilters =
