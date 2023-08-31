@@ -32,7 +32,7 @@ import {
 } from 'features/vessel/vessel.config.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { useCallbackAfterPaint } from 'hooks/paint.hooks'
-import { useVesselFitBounds } from 'features/vessel/vessel.hooks'
+import { useUpdateVesselEventsVisibility, useVesselFitBounds } from 'features/vessel/vessel.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useClickedEventConnect } from 'features/map/map.hooks'
 import VesselAreas from 'features/vessel/areas/VesselAreas'
@@ -97,6 +97,7 @@ const Vessel = () => {
   const { cleanFeatureState } = useFeatureState(map)
   const { dispatchClickedEvent, cancelPendingInteractionRequests } = useClickedEventConnect()
   useVesselFitBounds(isVesselLocation)
+  useUpdateVesselEventsVisibility()
   useFetchDataviewResources()
 
   const updateAreaLayersVisibility = useCallback(

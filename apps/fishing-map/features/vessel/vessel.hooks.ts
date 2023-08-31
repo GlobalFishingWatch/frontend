@@ -5,7 +5,7 @@ import { segmentsToBbox } from '@globalfishingwatch/data-transforms'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
+import { getSearchIdentityResolved, getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectVesselTracksData } from 'features/vessel/vessel.selectors'
@@ -13,6 +13,11 @@ import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { selectUrlTimeRange } from 'routes/routes.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { DEFAULT_TIME_RANGE } from 'data/config'
+import { useVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
+import {
+  selectVesselIdentityIndex,
+  selectVesselIdentitySource,
+} from 'features/vessel/vessel.config.selectors'
 
 export type VesselDataviewInstanceParams = { id: string; dataset: Dataset }
 
@@ -38,6 +43,26 @@ export const useAddVesselDataviewInstance = () => {
   )
 
   return addVesselDataviewInstance
+}
+
+export const useUpdateVesselEventsVisibility = () => {
+  const { setVesselEventVisibility } = useVesselEvents()
+  const vessel = useSelector(selectVesselInfoData)
+  const identityIndex = useSelector(selectVesselIdentityIndex)
+  const identitySource = useSelector(selectVesselIdentitySource)
+
+  useEffect(() => {
+    if (vessel) {
+      const shiptype = getVesselProperty(vessel, 'shiptype', {
+        identityIndex,
+        identitySource,
+      })
+      if (shiptype.toLowerCase() === 'fishing') {
+        setVesselEventVisibility({ event: 'loitering', visible: false })
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vessel])
 }
 
 export const useVesselFitBounds = (enabled: boolean = true) => {
