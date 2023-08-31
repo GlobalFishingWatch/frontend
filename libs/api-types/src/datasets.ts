@@ -128,6 +128,7 @@ export type DatasetSchema = {
   max: number
   stats?: boolean
   unit?: string
+  singleSelection?: boolean
 }
 
 export enum DatasetCategory {

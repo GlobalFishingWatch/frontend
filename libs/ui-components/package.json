@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/ui-components",
-  "version": "12.5.4",
+  "version": "12.6.0",
   "description": "Set of react components to consume on the gfw ecosystem",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
@@ -10,7 +10,7 @@
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
   "scripts": {
-    "prerender": "ts-node -P tsconfig.tsnode.json src/header/render-html.tsx"
+    "prerender": "ts-node -P tsconfig.node.json src/header/render-html.tsx"
   },
   "dependencies": {
     "@tippyjs/react": "4.2.6",
@@ -33,6 +33,7 @@
     "@globalfishingwatch/layer-composer": "10.x",
     "@globalfishingwatch/react-hooks": "15.x",
     "downshift": "6.x",
+    "luxon": "2.x",
     "react": ">17.x",
     "react-dom": ">17.x"
   },

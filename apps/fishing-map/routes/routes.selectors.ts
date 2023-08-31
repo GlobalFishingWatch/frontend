@@ -3,7 +3,7 @@ import { memoize } from 'lodash'
 import { Query, RouteObject } from 'redux-first-router'
 import { RootState } from 'reducers'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { BufferUnit, WorkspaceParam } from 'types'
+import { BufferUnit, WorkspaceParam, UserTab } from 'types'
 import { WorkspaceCategory } from 'data/workspaces'
 import { REPORT, WORKSPACE_REPORT, ROUTE_TYPES, WORKSPACE_ROUTES } from './routes'
 
@@ -81,6 +81,7 @@ export const selectIsMarineManagerLocation = createSelector(
   }
 )
 
+export const selectUserTab = selectQueryParam<UserTab>('userTab')
 export const selectUrlMapZoomQuery = selectQueryParam<number>('zoom')
 export const selectUrlMapLatitudeQuery = selectQueryParam<number>('latitude')
 export const selectUrlMapLongitudeQuery = selectQueryParam<number>('longitude')

@@ -257,9 +257,9 @@ export const selectAllDataviewInstancesResolved = createSelector(
 )
 
 export const selectMarineManagerDataviewInstanceResolved = createSelector(
-  [selectAllDataviews, selectAllDatasets],
-  (dataviews, datasets): UrlDataviewInstance[] | undefined => {
-    if (!dataviews.length || !datasets.length) return []
+  [selectIsMarineManagerLocation, selectAllDataviews, selectAllDatasets],
+  (isMarineManagerLocation, dataviews, datasets): UrlDataviewInstance[] | undefined => {
+    if (!isMarineManagerLocation || !dataviews.length || !datasets.length) return []
     const dataviewInstancesResolved = resolveDataviews(
       MARINE_MANAGER_DATAVIEWS,
       dataviews,

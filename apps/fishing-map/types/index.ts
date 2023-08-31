@@ -43,6 +43,7 @@ export type WorkspaceStateProperty =
   | 'bivariateDataviews'
   | 'activityCategory'
   | ReportStateProperty
+  | keyof AppParams
 
 export type WorkspaceParam =
   | WorkspaceViewportParam
@@ -105,9 +106,22 @@ export type RedirectParam = {
   'access-token'?: string
 }
 
+export enum UserTab {
+  Info = 'info',
+  Workspaces = 'workspaces',
+  Datasets = 'datasets',
+  Reports = 'reports',
+  VesselGroups = 'vesselGroups',
+}
+
+export type AppParams = {
+  userTab?: UserTab
+}
+
 export type QueryParams = Partial<WorkspaceViewport> &
   Partial<WorkspaceTimeRange> &
   WorkspaceState &
+  AppParams &
   RedirectParam
 
 export type MapCoordinates = {

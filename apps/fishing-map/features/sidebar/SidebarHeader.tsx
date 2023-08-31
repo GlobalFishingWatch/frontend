@@ -271,6 +271,7 @@ function CloseReportButton() {
 }
 
 function SidebarHeader() {
+  const { dispatchQueryParams } = useLocationConnect()
   const readOnly = useSelector(selectReadOnly)
   const locationCategory = useSelector(selectLocationCategory)
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
@@ -284,6 +285,10 @@ function SidebarHeader() {
     return subBrand
   }, [locationCategory])
 
+  const onCloseClick = useCallback(() => {
+    dispatchQueryParams({ userTab: undefined })
+  }, [dispatchQueryParams])
+
   return (
     <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
       <div className={styles.sidebarHeader}>
@@ -295,7 +300,7 @@ function SidebarHeader() {
         {(workspaceLocation || reportLocation) && !readOnly && <ShareWorkspaceButton />}
         {reportLocation && !readOnly && <CloseReportButton />}
         {!reportLocation && !readOnly && showBackToWorkspaceButton && lastVisitedWorkspace && (
-          <Link className={styles.workspaceLink} to={lastVisitedWorkspace}>
+          <Link className={styles.workspaceLink} to={lastVisitedWorkspace} onClick={onCloseClick}>
             <IconButton type="border" icon="close" />
           </Link>
         )}

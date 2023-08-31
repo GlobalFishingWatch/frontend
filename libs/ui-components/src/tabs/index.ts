@@ -5,4 +5,5 @@ export interface Tab<ID = string> {
   title: string | React.ReactElement
   content?: React.ReactNode
   disabled?: boolean
+  testId?: string
 }

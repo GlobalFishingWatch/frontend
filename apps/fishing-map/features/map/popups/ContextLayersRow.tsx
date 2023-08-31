@@ -53,6 +53,7 @@ const DownloadPopupButton: React.FC<DownloadPopupButtonProps> = ({
       <IconButton
         icon="download"
         disabled={!guestUser && (!hasAnalysableLayer || !datasetsReportSupported)}
+        testId="download-activity-layers"
         tooltip={
           datasetsReportSupported
             ? t('download.activityAction', 'Download visible activity layers for this area')
