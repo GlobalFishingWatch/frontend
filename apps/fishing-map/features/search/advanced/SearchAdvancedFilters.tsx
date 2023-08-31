@@ -22,7 +22,7 @@ import DatasetLabel from 'features/datasets/DatasetLabel'
 import { selectAdvancedSearchDatasets } from 'features/search/search.selectors'
 import { VesselIdentitySourceEnum } from 'features/search/search.config'
 import { DEFAULT_VESSEL_IDENTITY_DATASET } from 'features/vessel/vessel.config'
-import { useSearchFiltersConnect } from './search.hook'
+import { useSearchFiltersConnect } from 'features/search/search.hook'
 import styles from './SearchAdvancedFilters.module.css'
 
 const schemaFilterIds: SupportedDatasetSchema[] = [

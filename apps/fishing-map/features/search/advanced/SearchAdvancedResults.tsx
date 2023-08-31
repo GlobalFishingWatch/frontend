@@ -15,7 +15,7 @@ import {
 import { formatInfoField, EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import I18nFlag from 'features/i18n/i18nFlag'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { SearchComponentProps } from 'features/search/SearchBasic'
+import { SearchComponentProps } from 'features/search/basic/SearchBasic'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
 import { Locale } from 'types'
@@ -33,7 +33,7 @@ import VesselLink from 'features/vessel/VesselLink'
 import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useSearchFiltersConnect } from 'features/search/search.hook'
-import styles from './SearchBasicResult.module.css'
+import styles from '../basic/SearchBasicResult.module.css'
 
 const PINNED_COLUMN = 'shipname'
 const TOOLTIP_LABEL_CHARACTERS = 25

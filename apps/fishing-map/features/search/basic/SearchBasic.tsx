@@ -7,7 +7,7 @@ import { useIntersectionObserver } from '@researchgate/react-intersection-observ
 import { InputText, Spinner } from '@globalfishingwatch/ui-components'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import SearchBasicResultList from 'features/search/SearchBasicResultList'
+import SearchBasicResultList from 'features/search/basic/SearchBasicResultList'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { RESULTS_PER_PAGE } from 'features/search/search.config'
@@ -20,11 +20,15 @@ import {
   selectSelectedVessels,
   setSelectedVessels,
   selectSearchResults,
-} from './search.slice'
+} from 'features/search/search.slice'
+import { useSearchConnect } from 'features/search/search.hook'
+import {
+  SearchNotAllowed,
+  SearchNoResultsState,
+  SearchEmptyState,
+} from 'features/search/SearchPlaceholders'
+import { isBasicSearchAllowed } from 'features/search/search.selectors'
 import styles from './SearchBasic.module.css'
-import { useSearchConnect } from './search.hook'
-import { SearchNotAllowed, SearchNoResultsState, SearchEmptyState } from './SearchPlaceholders'
-import { isBasicSearchAllowed } from './search.selectors'
 
 const MIN_SEARCH_CHARACTERS = 3
 

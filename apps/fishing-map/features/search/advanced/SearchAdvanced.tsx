@@ -5,8 +5,8 @@ import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components
 import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import SearchAdvancedResults from 'features/search/SearchAdvancedResults'
-import { SearchComponentProps } from 'features/search/SearchBasic'
+import SearchAdvancedResults from 'features/search/advanced/SearchAdvancedResults'
+import { SearchComponentProps } from 'features/search/basic/SearchBasic'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { EMPTY_FILTERS } from 'features/search/search.config'
@@ -15,12 +15,15 @@ import {
   cleanVesselSearchResults,
   selectSearchStatus,
   selectSearchStatusCode,
-} from './search.slice'
-import styles from './SearchAdvanced.module.css'
-import SearchAdvancedFilters from './SearchAdvancedFilters'
-import { useSearchConnect, useSearchFiltersConnect } from './search.hook'
-import SearchPlaceholder, { SearchNoResultsState, SearchEmptyState } from './SearchPlaceholders'
-import { isAdvancedSearchAllowed } from './search.selectors'
+} from 'features/search/search.slice'
+import styles from 'features/search/advanced/SearchAdvanced.module.css'
+import SearchAdvancedFilters from 'features/search/advanced/SearchAdvancedFilters'
+import { useSearchConnect, useSearchFiltersConnect } from 'features/search/search.hook'
+import SearchPlaceholder, {
+  SearchNoResultsState,
+  SearchEmptyState,
+} from 'features/search/SearchPlaceholders'
+import { isAdvancedSearchAllowed } from 'features/search/search.selectors'
 
 function SearchAdvanced({
   onSuggestionClick,

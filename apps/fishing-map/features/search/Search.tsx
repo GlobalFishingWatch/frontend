@@ -13,8 +13,8 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { isGFWUser, isGuestUser } from 'features/user/user.slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import SearchBasic from 'features/search/SearchBasic'
-import SearchAdvanced from 'features/search/SearchAdvanced'
+import SearchBasic from 'features/search/basic/SearchBasic'
+import SearchAdvanced from 'features/search/advanced/SearchAdvanced'
 import SearchPlaceholder, { SearchNotAllowed } from 'features/search/SearchPlaceholders'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { selectWorkspaceId } from 'routes/routes.selectors'
@@ -26,6 +26,7 @@ import { RESULTS_PER_PAGE } from 'features/search/search.config'
 import { VesselSearchState } from 'types'
 import SearchDownload from 'features/search/SearchDownload'
 import SearchActions from 'features/search/SearchActions'
+import { useSearchConnect, useSearchFiltersConnect } from 'features/search/search.hook'
 import {
   fetchVesselSearchThunk,
   cleanVesselSearchResults,
@@ -33,14 +34,13 @@ import {
   selectSearchPagination,
   selectSearchResults,
   selectSelectedVessels,
-} from './search.slice'
-import { useSearchConnect, useSearchFiltersConnect } from './search.hook'
+} from 'features/search/search.slice'
 import {
   selectBasicSearchDatasets,
   selectAdvancedSearchDatasets,
   isBasicSearchAllowed,
   isAdvancedSearchAllowed,
-} from './search.selectors'
+} from 'features/search/search.selectors'
 import styles from './Search.module.css'
 
 const MIN_SEARCH_CHARACTERS = 3

@@ -16,7 +16,7 @@ import { Bbox, geoJSONToSegments, segmentsToBbox } from '@globalfishingwatch/dat
 import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
-import TrackFootprint from 'features/search/TrackFootprint'
+import TrackFootprint from 'features/search/basic/TrackFootprint'
 import { VesselLastIdentity, cleanVesselSearchResults } from 'features/search/search.slice'
 import VesselLink from 'features/vessel/VesselLink'
 import { formatInfoField, EMPTY_FIELD_PLACEHOLDER } from 'utils/info'

@@ -1,6 +1,6 @@
 import { GetItemPropsOptions } from 'downshift'
 import { Fragment } from 'react'
-import SearchBasicResult from 'features/search/SearchBasicResult'
+import SearchBasicResult from 'features/search/basic/SearchBasicResult'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
 
 type SearchBasicResultListProps = {
