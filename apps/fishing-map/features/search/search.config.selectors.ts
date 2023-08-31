@@ -38,8 +38,8 @@ export const selectSearchFilters = createSelector(
   [
     selectVesselSearchStateProperty('flag'),
     selectVesselSearchStateProperty('sources'),
-    selectVesselSearchStateProperty('lastTransmissionDate'),
-    selectVesselSearchStateProperty('firstTransmissionDate'),
+    selectVesselSearchStateProperty('transmissionDateFrom'),
+    selectVesselSearchStateProperty('transmissionDateTo'),
     selectVesselSearchStateProperty('ssvid'),
     selectVesselSearchStateProperty('imo'),
     selectVesselSearchStateProperty('callsign'),
@@ -54,8 +54,8 @@ export const selectSearchFilters = createSelector(
   (
     flag,
     sources,
-    lastTransmissionDate,
-    firstTransmissionDate,
+    transmissionDateFrom,
+    transmissionDateTo,
     ssvid,
     imo,
     callsign,
@@ -70,8 +70,8 @@ export const selectSearchFilters = createSelector(
     return {
       flag,
       sources,
-      lastTransmissionDate,
-      firstTransmissionDate,
+      transmissionDateFrom,
+      transmissionDateTo,
       ssvid,
       imo,
       callsign,

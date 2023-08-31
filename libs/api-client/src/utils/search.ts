@@ -20,8 +20,8 @@ export type AdvancedSearchQueryFieldKey =
   | 'fleet'
   | 'origin'
   // TODO remove camelCase once api are stable
-  | 'lastTransmissionDate'
-  | 'firstTransmissionDate'
+  | 'transmissionDateFrom'
+  | 'transmissionDateTo'
   | 'owner'
 
 export type AdvancedSearchQueryField = {
@@ -35,8 +35,9 @@ type AdvancedSearchQueryFieldParams = {
   transformation?: (field: AdvancedSearchQueryField) => string
 }
 
-const toUpperCaseWithQuotationMarks = (field: AdvancedSearchQueryField) =>
-  `'${(field?.value as string).toUpperCase()}'`
+const toUpperCaseWithQuotationMarks = (field: AdvancedSearchQueryField) => {
+  return `'${field.value}'`.toUpperCase()
+}
 
 const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFieldParams> = {
   shipname: {
@@ -69,11 +70,13 @@ const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFiel
   flag: {
     operator: '=',
   },
-  lastTransmissionDate: {
+  transmissionDateFrom: {
     operator: '>=',
+    transformation: toUpperCaseWithQuotationMarks,
   },
-  firstTransmissionDate: {
+  transmissionDateTo: {
     operator: '<=',
+    transformation: toUpperCaseWithQuotationMarks,
   },
   // VMS specific
   codMarinha: {

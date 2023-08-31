@@ -111,8 +111,8 @@ export type VesselSearchState = {
   flag?: string[]
   geartype?: string[]
   targetSpecies?: string
-  lastTransmissionDate?: string
-  firstTransmissionDate?: string
+  transmissionDateFrom?: string
+  transmissionDateTo?: string
   owner?: string
   fleet?: string[]
   origin?: string

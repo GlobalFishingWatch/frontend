@@ -19,8 +19,8 @@ export const useSearchConnect = () => {
 }
 
 const FIRST_FETCH_FILTERS_TO_IGNORE = [
-  'lastTransmissionDate',
-  'firstTransmissionDate',
+  'transmissionDateFrom',
+  'transmissionDateTo',
   'infoSource',
   'sources',
 ]
