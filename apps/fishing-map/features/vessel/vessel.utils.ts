@@ -45,7 +45,7 @@ export const getVesselIdentity = (
   return allIdentitiesInfo[identityIndex]
 }
 
-type VesselIdentityProperty = keyof SelfReportedInfo | keyof VesselRegistryInfo
+export type VesselIdentityProperty = keyof SelfReportedInfo | keyof VesselRegistryInfo | 'owner'
 
 function getLatestIdentityPrioritised(vessel: IdentityVessel | IdentityVesselData) {
   const latestRegistryIdentity = getVesselIdentity(vessel, {
@@ -59,7 +59,7 @@ function getLatestIdentityPrioritised(vessel: IdentityVessel | IdentityVesselDat
 
 export function getVesselProperty<P = string>(
   vessel: IdentityVessel | IdentityVesselData | null,
-  property: VesselIdentityProperty | 'owner',
+  property: VesselIdentityProperty,
   { identityIndex = 0, identitySource } = {} as GetVesselIdentityParams
 ): P {
   if (!vessel) return '' as P

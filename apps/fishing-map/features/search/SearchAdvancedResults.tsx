@@ -3,7 +3,7 @@ import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { uniq } from 'lodash'
-import { Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
+import { IconButton, Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
 import {
   VesselLastIdentity,
   cleanVesselSearchResults,
@@ -21,6 +21,7 @@ import { FIRST_YEAR_OF_DATA } from 'data/config'
 import { Locale } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
 import {
+  VesselIdentityProperty,
   getSearchIdentityResolved,
   getVesselIdentityProperties,
   getVesselProperty,
@@ -31,10 +32,40 @@ import I18nNumber from 'features/i18n/i18nNumber'
 import VesselLink from 'features/vessel/VesselLink'
 import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { useSearchFiltersConnect } from 'features/search/search.hook'
 import styles from './SearchBasicResult.module.css'
 
 const PINNED_COLUMN = 'shipname'
 const TOOLTIP_LABEL_CHARACTERS = 25
+
+type CellWithFilterProps = {
+  vessel: IdentityVesselData
+  column: VesselIdentityProperty
+  children: React.ReactNode
+}
+function CellWithFilter({ vessel, column, children }: CellWithFilterProps) {
+  const { setSearchFilters } = useSearchFiltersConnect()
+
+  const value = getVesselProperty(vessel, column)
+  const onClick = useCallback(() => {
+    setSearchFilters({ [column]: value })
+  }, [column, setSearchFilters, value])
+
+  return (
+    <div className={styles.cellFilter}>
+      {value && (
+        <IconButton
+          className={styles.cellFilterBtn}
+          size="small"
+          onClick={onClick}
+          icon="filter-off"
+        />
+      )}
+      {children}
+    </div>
+  )
+}
+
 function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
   const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
@@ -94,7 +125,13 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
       },
       {
         id: 'flag',
-        accessorFn: (vessel) => <I18nFlag iso={getVesselProperty(vessel, 'flag')} />,
+        accessorFn: (vessel) => {
+          return (
+            <CellWithFilter vessel={vessel} column="flag">
+              <I18nFlag iso={getVesselProperty(vessel, 'flag')} />
+            </CellWithFilter>
+          )
+        },
         header: t('vessel.flag', 'Flag'),
       },
       {
@@ -116,7 +153,11 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
         id: 'shiptype',
         accessorFn: (vessel) => {
           const shiptype = getVesselProperty(vessel, 'shiptype')
-          return t(`vessel.vesselTypes.${shiptype?.toLowerCase()}` as any, EMPTY_FIELD_PLACEHOLDER)
+          return (
+            <CellWithFilter vessel={vessel} column="shiptype">
+              {t(`vessel.vesselTypes.${shiptype?.toLowerCase()}` as any, EMPTY_FIELD_PLACEHOLDER)}
+            </CellWithFilter>
+          )
         },
         header: t('vessel.vesselType', 'Vessel Type'),
       },
@@ -130,9 +171,11 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
             )
             .join(', ')
           return (
-            <Tooltip content={label?.length > TOOLTIP_LABEL_CHARACTERS ? label : ''}>
-              <span>{label}</span>
-            </Tooltip>
+            <CellWithFilter vessel={vessel} column="geartype">
+              <Tooltip content={label?.length > TOOLTIP_LABEL_CHARACTERS ? label : ''}>
+                <span>{label}</span>
+              </Tooltip>
+            </CellWithFilter>
           )
         },
         header: t('vessel.geartype', 'Gear Type'),
@@ -143,9 +186,11 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
           const label =
             formatInfoField(getVesselProperty(vessel, 'owner'), 'owner') || EMPTY_FIELD_PLACEHOLDER
           return (
-            <Tooltip content={label?.length > TOOLTIP_LABEL_CHARACTERS ? label : ''}>
-              <span>{label}</span>
-            </Tooltip>
+            <CellWithFilter vessel={vessel} column="owner">
+              <Tooltip content={label?.length > TOOLTIP_LABEL_CHARACTERS ? label : ''}>
+                <span>{label}</span>
+              </Tooltip>
+            </CellWithFilter>
           )
         },
         header: t('vessel.owner', 'Owner'),
@@ -296,22 +341,20 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
           onSelectHandler(checked ? table.getRowModel().rows.map(({ original }) => original) : [])
         },
       })}
-      muiSelectCheckboxProps={{
-        sx: {
-          '&.Mui-checked': { color: 'var(--color-secondary-blue)' },
-          color: 'var(--color-secondary-blue)',
-          pointerEvents: 'none',
-        },
-      }}
-      muiTableBodyRowProps={({ row }) => ({
+      muiSelectCheckboxProps={({ row }) => ({
         onClick: () => {
           if (row.getCanSelect()) {
             onSelectHandler([row.original])
           }
         },
         sx: {
+          '&.Mui-checked': { color: 'var(--color-secondary-blue)' },
+          color: 'var(--color-secondary-blue)',
+        },
+      })}
+      muiTableBodyRowProps={({ row }) => ({
+        sx: {
           backgroundColor: 'transparent',
-          cursor: 'pointer',
           ':hover': {
             td: { backgroundColor: 'white' },
             'td ~ td': { backgroundColor: 'var(--color-terthiary-blue)' },
@@ -366,7 +409,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
           whiteSpace: 'nowrap',
           '.Mui-TableHeadCell-Content-Wrapper': { minWidth: '2rem' },
           minHeight: '5rem',
-          padding: '0.5rem 1.1rem',
+          padding: '0 1.1rem',
           ' a': {
             cursor: 'pointer',
             textDecoration: 'underline',
