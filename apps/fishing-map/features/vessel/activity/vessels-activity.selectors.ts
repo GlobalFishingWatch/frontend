@@ -5,16 +5,13 @@ import {
   EventType,
   EventTypes,
   RegionType,
-  ResourceStatus,
   Vessel,
 } from '@globalfishingwatch/api-types'
 import { ApiEvent } from '@globalfishingwatch/api-types'
 import { selectVesselAreaSubsection } from 'features/vessel/vessel.config.selectors'
-import { selectVisibleEvents } from 'features/app/app.selectors'
 import { getEventsDatasetsInDataview } from 'features/datasets/datasets.utils'
 import { selectVesselProfileDataview } from 'features/dataviews/dataviews.slice'
 import {
-  selectEventsResources,
   selectVesselEventsByType,
   selectVesselEventsFilteredByTimerange,
 } from '../vessel.selectors'

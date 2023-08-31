@@ -98,9 +98,10 @@ export const useDataviewInstancesConnect = () => {
   const { dispatchQueryParams } = useLocationConnect()
 
   const removeDataviewInstance = useCallback(
-    (id: string) => {
+    (id: string | string[]) => {
+      const ids = Array.isArray(id) ? id : [id]
       const dataviewInstances = urlDataviewInstances?.filter(
-        (urlDataviewInstance) => urlDataviewInstance.id !== id
+        (urlDataviewInstance) => !ids.includes(urlDataviewInstance.id)
       )
       dispatchQueryParams({ dataviewInstances })
     },

@@ -31,6 +31,7 @@ import {
 import {
   selectIsAnyVesselLocation,
   selectIsMarineManagerLocation,
+  selectIsVesselLocation,
   selectIsWorkspaceLocation,
   selectUrlDataviewInstances,
   selectUrlDataviewInstancesOrder,
@@ -55,6 +56,7 @@ import { selectUserLogged } from 'features/user/user.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
 import { getRelatedIdentityVesselIds } from 'features/vessel/vessel.utils'
+import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
 import {
   eventsDatasetConfigsCallback,
   infoDatasetConfigsCallback,
@@ -209,6 +211,7 @@ export const selectDataviewInstancesMerged = createSelector(
     selectWorkspaceDataviewInstances,
     selectUrlDataviewInstances,
     selectIsAnyVesselLocation,
+    selectIsVesselLocation,
     selectVesselId,
     selectVesselInfoData,
   ],
@@ -217,6 +220,7 @@ export const selectDataviewInstancesMerged = createSelector(
     workspaceStatus,
     workspaceDataviewInstances,
     urlDataviewInstances = [],
+    isAnyVesselLocation,
     isVesselLocation,
     urlVesselId,
     vessel
@@ -229,7 +233,7 @@ export const selectDataviewInstancesMerged = createSelector(
         workspaceDataviewInstances as DataviewInstance<any>[],
         urlDataviewInstances
       ) || []
-    if (isVesselLocation) {
+    if (isAnyVesselLocation) {
       const existingDataviewInstance = mergedDataviewInstances?.find(
         ({ id }) => urlVesselId && id.includes(urlVesselId)
       )
@@ -249,6 +253,13 @@ export const selectDataviewInstancesMerged = createSelector(
           vesselDatasets
         )
         mergedDataviewInstances.push({ ...dataviewInstance, datasetsConfig })
+      }
+      if (isVesselLocation) {
+        VESSEL_PROFILE_DATAVIEWS_INSTANCES.forEach((dataviewInstance) => {
+          if (!mergedDataviewInstances.find(({ id }) => id === dataviewInstance.id)) {
+            mergedDataviewInstances.push({ ...dataviewInstance })
+          }
+        })
       }
     }
     return mergedDataviewInstances
@@ -271,6 +282,9 @@ export const selectDataviewInstancesMergedOrdered = createSelector(
 export const selectAllDataviewInstancesResolved = createSelector(
   [selectDataviewInstancesMergedOrdered, selectAllDataviews, selectAllDatasets, selectUserLogged],
   (dataviewInstances, dataviews, datasets, loggedUser): UrlDataviewInstance[] | undefined => {
+    if (!dataviews?.length || !datasets?.length || !dataviewInstances?.length) {
+      return []
+    }
     const dataviewInstancesWithDatasetConfig = dataviewInstances.map((dataviewInstance) => {
       if (
         dataviewInstance.id.startsWith(VESSEL_DATAVIEW_INSTANCE_PREFIX) &&

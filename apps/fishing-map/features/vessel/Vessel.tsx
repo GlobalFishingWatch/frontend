@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Spinner, Tab, Tabs } from '@globalfishingwatch/ui-components'
 import { isAuthError } from '@globalfishingwatch/api-client'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
+import { Dataview } from '@globalfishingwatch/api-types'
 import {
   selectIsVesselLocation,
   selectIsWorkspaceVesselLocation,
@@ -38,48 +39,23 @@ import { useClickedEventConnect } from 'features/map/map.hooks'
 import VesselAreas from 'features/vessel/areas/VesselAreas'
 import RelatedVessels from 'features/vessel/related-vessels/RelatedVessels'
 import { useLocationConnect } from 'routes/routes.hook'
-import { VesselAreaSubsection, VesselSection } from 'types'
+import { VesselSection } from 'types'
 import { selectVesselHasEventsDatasets } from 'features/vessel/vessel.selectors'
-import {
-  EEZ_DATAVIEW_INSTANCE_ID,
-  FAO_AREAS_DATAVIEW_INSTANCE_ID,
-  MPA_DATAVIEW_INSTANCE_ID,
-  RFMO_DATAVIEW_INSTANCE_ID,
-} from 'data/workspaces'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import VesselIdentity from './identity/VesselIdentity'
-import VesselActivity from './activity/VesselActivity'
+import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
+import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
+import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
+import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
+import { BASEMAP_DATAVIEW_SLUG } from 'data/workspaces'
 import styles from './Vessel.module.css'
-
-type VesselAreaLayer = {
-  id: VesselAreaSubsection
-  dataviewInstanceId: string
-}
-
-const VESSEL_AREA_LAYERS: VesselAreaLayer[] = [
-  {
-    id: 'eez',
-    dataviewInstanceId: EEZ_DATAVIEW_INSTANCE_ID,
-  },
-  {
-    id: 'fao',
-    dataviewInstanceId: FAO_AREAS_DATAVIEW_INSTANCE_ID,
-  },
-  {
-    id: 'rfmo',
-    dataviewInstanceId: RFMO_DATAVIEW_INSTANCE_ID,
-  },
-  {
-    id: 'mpa',
-    dataviewInstanceId: MPA_DATAVIEW_INSTANCE_ID,
-  },
-]
+import VesselActivity from './activity/VesselActivity'
+import VesselIdentity from './identity/VesselIdentity'
 
 const Vessel = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
-  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const { removeDataviewInstance, upsertDataviewInstance } = useDataviewInstancesConnect()
   const vesselId = useSelector(selectVesselId)
   const vesselSection = useSelector(selectVesselSection)
   const vesselArea = useSelector(selectVesselAreaSubsection)
@@ -102,14 +78,18 @@ const Vessel = () => {
 
   const updateAreaLayersVisibility = useCallback(
     (id?: string) => {
-      upsertDataviewInstance(
-        VESSEL_AREA_LAYERS.map((area) => ({
-          id: area.dataviewInstanceId,
-          config: { visible: area.id === id },
-        }))
-      )
+      if (!id) {
+        removeDataviewInstance(VESSEL_PROFILE_DATAVIEWS_INSTANCES.map((d) => d.id))
+      } else {
+        upsertDataviewInstance(
+          VESSEL_PROFILE_DATAVIEWS_INSTANCES.map((d) => ({
+            ...d,
+            config: { visible: id ? d.id.includes(id) : false },
+          }))
+        )
+      }
     },
-    [upsertDataviewInstance]
+    [removeDataviewInstance, upsertDataviewInstance]
   )
 
   const sectionTabs: Tab<VesselSection>[] = useMemo(
@@ -140,6 +120,23 @@ const Vessel = () => {
       dispatch(fetchRegionsThunk(regionsDatasets))
     }
   }, [dispatch, regionsDatasets])
+
+  useEffect(() => {
+    const fetchVesselProfileAreaDatasets = async () => {
+      const vesselProfileDataviews = [
+        BASEMAP_DATAVIEW_SLUG,
+        ...VESSEL_PROFILE_DATAVIEWS_INSTANCES.map((d) => d.dataviewId),
+      ]
+      const { payload } = await dispatch(fetchDataviewsByIdsThunk(vesselProfileDataviews))
+      if (payload) {
+        const datasetsIds = getDatasetsInDataviews(payload as Dataview[])
+        if (datasetsIds?.length) {
+          dispatch(fetchDatasetsByIdsThunk(datasetsIds))
+        }
+      }
+    }
+    fetchVesselProfileAreaDatasets()
+  }, [dispatch])
 
   useEffect(() => {
     if (isWorkspaceVesselLocation) {
