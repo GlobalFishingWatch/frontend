@@ -18,7 +18,7 @@ import WorkspacePointsTooltipSection from 'features/map/popups/WorkspacePointsLa
 import { selectApiEventStatus, selectFishingInteractionStatus } from '../map.slice'
 import styles from './Popup.module.css'
 import ActivityTooltipRow from './ActivityLayers'
-import TileClusterRow from './TileClusterLayers'
+import EncounterTooltipRow from './EncounterTooltipRow'
 import EnvironmentTooltipSection from './EnvironmentLayers'
 import ContextTooltipSection from './ContextLayers'
 import UserContextTooltipSection from './UserContextLayers'
@@ -122,7 +122,7 @@ function PopupWrapper({
                 })
               case DataviewCategory.Events:
                 return (
-                  <TileClusterRow
+                  <EncounterTooltipRow
                     key={featureCategory}
                     features={features}
                     showFeaturesDetails={type === 'click'}
