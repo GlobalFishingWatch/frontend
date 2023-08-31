@@ -31,7 +31,8 @@ const MIN_SEARCH_CHARACTERS = 3
 export type SearchComponentProps = {
   onSuggestionClick?: () => void
   fetchMoreResults: () => void
-  onConfirm?: () => void
+  fetchResults?: () => void
+  cleanResults?: () => void
   debouncedQuery?: string
 }
 

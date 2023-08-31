@@ -242,7 +242,7 @@ function Search() {
       <SearchComponent
         onSuggestionClick={onSuggestionClick}
         fetchMoreResults={fetchMoreResults}
-        onConfirm={onConfirmSearch}
+        fetchResults={onConfirmSearch}
         debouncedQuery={debouncedQuery}
       />
       <div

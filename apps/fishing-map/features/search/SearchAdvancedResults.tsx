@@ -37,19 +37,25 @@ import styles from './SearchBasicResult.module.css'
 
 const PINNED_COLUMN = 'shipname'
 const TOOLTIP_LABEL_CHARACTERS = 25
+const MULTIPLE_SELECTION_FILTERS_COLUMN = ['flag', 'shiptype', 'geartype']
 
 type CellWithFilterProps = {
   vessel: IdentityVesselData
   column: VesselIdentityProperty
   children: React.ReactNode
+  onClick?: () => void
 }
-function CellWithFilter({ vessel, column, children }: CellWithFilterProps) {
+function CellWithFilter({ vessel, column, children, onClick }: CellWithFilterProps) {
   const { setSearchFilters } = useSearchFiltersConnect()
 
   const value = getVesselProperty(vessel, column)
-  const onClick = useCallback(() => {
-    setSearchFilters({ [column]: value })
-  }, [column, setSearchFilters, value])
+  const onFilterClick = useCallback(() => {
+    const filter = MULTIPLE_SELECTION_FILTERS_COLUMN.includes(column) ? [value] : value
+    setSearchFilters({ [column]: filter })
+    if (onClick) {
+      onClick()
+    }
+  }, [column, onClick, setSearchFilters, value])
 
   return (
     <div className={styles.cellFilter}>
@@ -57,7 +63,7 @@ function CellWithFilter({ vessel, column, children }: CellWithFilterProps) {
         <IconButton
           className={styles.cellFilterBtn}
           size="small"
-          onClick={onClick}
+          onClick={onFilterClick}
           icon="filter-off"
         />
       )}
@@ -66,7 +72,7 @@ function CellWithFilter({ vessel, column, children }: CellWithFilterProps) {
   )
 }
 
-function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
+function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchComponentProps) {
   const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const searchStatus = useSelector(selectSearchStatus)
@@ -127,7 +133,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
         id: 'flag',
         accessorFn: (vessel) => {
           return (
-            <CellWithFilter vessel={vessel} column="flag">
+            <CellWithFilter vessel={vessel} column="flag" onClick={fetchResults}>
               <I18nFlag iso={getVesselProperty(vessel, 'flag')} />
             </CellWithFilter>
           )
@@ -154,7 +160,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
         accessorFn: (vessel) => {
           const shiptype = getVesselProperty(vessel, 'shiptype')
           return (
-            <CellWithFilter vessel={vessel} column="shiptype">
+            <CellWithFilter vessel={vessel} column="shiptype" onClick={fetchResults}>
               {t(`vessel.vesselTypes.${shiptype?.toLowerCase()}` as any, EMPTY_FIELD_PLACEHOLDER)}
             </CellWithFilter>
           )
@@ -171,7 +177,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
             )
             .join(', ')
           return (
-            <CellWithFilter vessel={vessel} column="geartype">
+            <CellWithFilter vessel={vessel} column="geartype" onClick={fetchResults}>
               <Tooltip content={label?.length > TOOLTIP_LABEL_CHARACTERS ? label : ''}>
                 <span>{label}</span>
               </Tooltip>
@@ -186,7 +192,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
           const label =
             formatInfoField(getVesselProperty(vessel, 'owner'), 'owner') || EMPTY_FIELD_PLACEHOLDER
           return (
-            <CellWithFilter vessel={vessel} column="owner">
+            <CellWithFilter vessel={vessel} column="owner" onClick={fetchResults}>
               <Tooltip content={label?.length > TOOLTIP_LABEL_CHARACTERS ? label : ''}>
                 <span>{label}</span>
               </Tooltip>
@@ -255,7 +261,7 @@ function SearchAdvancedResults({ fetchMoreResults }: SearchComponentProps) {
         header: t('vessel.transmissionDates', 'Transmission Dates'),
       },
     ]
-  }, [i18n.language, onVesselClick, t])
+  }, [fetchResults, i18n.language, onVesselClick, t])
 
   const fetchMoreOnBottomReached = useCallback(() => {
     if (tableContainerRef.current) {

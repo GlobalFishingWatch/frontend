@@ -22,7 +22,11 @@ import { useSearchConnect, useSearchFiltersConnect } from './search.hook'
 import SearchPlaceholder, { SearchNoResultsState, SearchEmptyState } from './SearchPlaceholders'
 import { isAdvancedSearchAllowed } from './search.selectors'
 
-function SearchAdvanced({ onSuggestionClick, fetchMoreResults, onConfirm }: SearchComponentProps) {
+function SearchAdvanced({
+  onSuggestionClick,
+  fetchMoreResults,
+  fetchResults,
+}: SearchComponentProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
@@ -32,7 +36,7 @@ function SearchAdvanced({ onSuggestionClick, fetchMoreResults, onConfirm }: Sear
   const searchStatusCode = useSelector(selectSearchStatusCode)
   const { dispatchQueryParams } = useLocationConnect()
   const { hasFilters } = useSearchFiltersConnect()
-  const ref = useEventKeyListener(['Enter'], onConfirm)
+  const ref = useEventKeyListener(['Enter'], fetchResults)
 
   const resetSearchState = useCallback(() => {
     dispatchQueryParams(EMPTY_FILTERS)
@@ -87,7 +91,7 @@ function SearchAdvanced({ onSuggestionClick, fetchMoreResults, onConfirm }: Sear
           <IconButton type="border" size="medium" icon="delete" onClick={resetSearchState} />
           <Button
             className={styles.confirmButton}
-            onClick={onConfirm}
+            onClick={fetchResults}
             disabled={!hasFilters && !searchQuery}
             loading={
               searchStatus === AsyncReducerStatus.Loading ||
@@ -103,7 +107,10 @@ function SearchAdvanced({ onSuggestionClick, fetchMoreResults, onConfirm }: Sear
           searchStatus === AsyncReducerStatus.Aborted) &&
         searchPagination.loading === false ? null : (
           <div className={styles.searchResults}>
-            <SearchAdvancedResults fetchMoreResults={fetchMoreResults} />
+            <SearchAdvancedResults
+              fetchResults={fetchResults}
+              fetchMoreResults={fetchMoreResults}
+            />
             {searchStatus === AsyncReducerStatus.Idle && <SearchEmptyState />}
             {searchStatus === AsyncReducerStatus.Finished && searchPagination.total === 0 && (
               <SearchNoResultsState />
