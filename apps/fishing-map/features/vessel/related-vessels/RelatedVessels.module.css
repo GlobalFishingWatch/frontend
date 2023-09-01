@@ -6,13 +6,9 @@
   padding: var(--space-M);
 }
 
-.titleContainer {
-  display: flex;
-  align-items: center;
-}
-
-.title {
-  flex: 1;
+.choice {
+  width: 100%;
+  margin-bottom: var(--space-M);
 }
 
 .vesselsList {
@@ -27,13 +23,27 @@
   text-overflow: ellipsis;
 }
 
+.vesselsList a,
 .vesselContainer a {
   text-decoration: underline;
+}
+
+.ownersList {
+  padding-left: var(--space-M);
+  margin-bottom: var(--space-M);
+}
+
+.vessel {
+  line-height: 4rem;
 }
 
 .count {
   font: var(--font-S);
   fill: var(--color-secondary-blue);
+}
+
+.secondary {
+  color: var(--color-secondary-blue);
 }
 
 .tooltipContainer {
