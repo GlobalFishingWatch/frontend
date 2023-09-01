@@ -25,6 +25,18 @@ const FIRST_FETCH_FILTERS_TO_IGNORE = [
   'sources',
 ]
 
+export const hasFiltersActive = (filters: VesselSearchState): boolean => {
+  return (
+    Object.entries(filters).filter(([key]) => {
+      return (
+        !FIRST_FETCH_FILTERS_TO_IGNORE.includes(key) &&
+        filters[key] !== undefined &&
+        filters[key] !== ''
+      )
+    }).length > 0
+  )
+}
+
 export const useSearchFiltersConnect = () => {
   const dispatch = useAppDispatch()
   const searchFilters = useSelector(selectSearchFilters)
@@ -38,14 +50,7 @@ export const useSearchFiltersConnect = () => {
     [dispatch, dispatchQueryParams]
   )
 
-  const hasFilters =
-    Object.entries(searchFilters).filter(([key]) => {
-      return (
-        !FIRST_FETCH_FILTERS_TO_IGNORE.includes(key) &&
-        searchFilters[key] !== undefined &&
-        searchFilters[key] !== ''
-      )
-    }).length > 0
+  const hasFilters = hasFiltersActive(searchFilters)
 
   return {
     hasFilters,

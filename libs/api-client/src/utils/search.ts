@@ -95,7 +95,7 @@ const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFiel
 
 export const getAdvancedSearchQuery = (
   fields: AdvancedSearchQueryField[],
-  { rootObject }: { rootObject?: 'registryInfo' | 'selfReportedInfo' }
+  { rootObject } = {} as { rootObject?: 'registryInfo' | 'selfReportedInfo' }
 ) => {
   const getFieldQuery = (field: AdvancedSearchQueryField) => {
     const params = FIELDS_PARAMS[field.key]

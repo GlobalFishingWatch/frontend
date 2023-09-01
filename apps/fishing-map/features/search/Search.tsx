@@ -26,7 +26,11 @@ import { RESULTS_PER_PAGE } from 'features/search/search.config'
 import { VesselSearchState } from 'types'
 import SearchDownload from 'features/search/SearchDownload'
 import SearchActions from 'features/search/SearchActions'
-import { useSearchConnect, useSearchFiltersConnect } from 'features/search/search.hook'
+import {
+  hasFiltersActive,
+  useSearchConnect,
+  useSearchFiltersConnect,
+} from 'features/search/search.hook'
 import {
   fetchVesselSearchThunk,
   cleanVesselSearchResults,
@@ -90,10 +94,11 @@ function Search() {
         filters: VesselSearchState
         since?: string
       }) => {
-        if (
-          datasets?.length &&
-          (activeSearchOption === 'advanced' || query?.length > MIN_SEARCH_CHARACTERS - 1)
-        ) {
+        const searchInBasic =
+          activeSearchOption === 'basic' && query?.length > MIN_SEARCH_CHARACTERS - 1
+        const searchInAdvanced =
+          activeSearchOption === 'advanced' && (hasFiltersActive(filters) || query)
+        if (datasets?.length && (searchInAdvanced || searchInBasic)) {
           const sources = filters?.sources
             ? datasets.filter(({ id }) => filters?.sources?.includes(id))
             : datasets
