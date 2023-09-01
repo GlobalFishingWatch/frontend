@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
+import { DateTime } from 'luxon'
 import {
   selectVesselIdentityIndex,
   selectVesselIdentitySource,
@@ -13,16 +14,11 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import styles from './VesselIdentitySelector.module.css'
 
 function isRegistryInTimerange(registry, start, end) {
-  return (
-    // overlaps from the left
-    (registry.transmissionDateFrom >= start && registry.transmissionDateTo <= start) ||
-    // overlaps from the right
-    (registry.transmissionDateTo <= end && registry.transmissionDateFrom >= start) ||
-    // entirely inside
-    (registry.transmissionDateFrom >= start && registry.transmissionDateTo <= end) ||
-    // entirely overlaps
-    (registry.transmissionDateFrom <= start && registry.transmissionDateTo >= end)
-  )
+  const registryStart = DateTime.fromISO(registry.transmissionDateFrom).toMillis()
+  const registryEnd = DateTime.fromISO(registry.transmissionDateTo).toMillis()
+  const timerangeStart = DateTime.fromISO(start).toMillis()
+  const timerangeEnd = DateTime.fromISO(end).toMillis()
+  return Math.max(registryStart, timerangeStart) < Math.min(registryEnd, timerangeEnd)
 }
 
 const VesselIdentitySelector = () => {
