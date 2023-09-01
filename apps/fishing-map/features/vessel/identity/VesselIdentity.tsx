@@ -169,25 +169,23 @@ const VesselIdentity = () => {
               </Tooltip>
             </div>
           )}
-          <div>
-            <div>
-              <label>{t(`common.date_other`, 'Dates')}</label>
-              <div className={styles.timerange}>
-                <VesselIdentityField
-                  value={`${formatI18nDate(vesselIdentity.transmissionDateFrom)} - ${formatI18nDate(
-                    vesselIdentity.transmissionDateTo
-                  )}`}
+          <div className={styles.twoCells}>
+            <label>{t(`common.date_other`, 'Dates')}</label>
+            <div className={styles.timerange}>
+              <VesselIdentityField
+                value={`${formatI18nDate(vesselIdentity.transmissionDateFrom)} - ${formatI18nDate(
+                  vesselIdentity.transmissionDateTo
+                )}`}
+              />
+              {isStandaloneVesselLocation && (
+                <IconButton
+                  size="small"
+                  icon="fit-to-timerange"
+                  tooltip={t('timebar.fitOnThisDates', 'Fit time range to these dates')}
+                  className="print-hidden"
+                  onClick={onTimeRangeClick}
                 />
-                {isStandaloneVesselLocation && (
-                  <IconButton
-                    size="small"
-                    icon="fit-to-timerange"
-                    tooltip={t('timebar.fitOnThisDates', 'Fit time range to these dates')}
-                    className="print-hidden"
-                    onClick={onTimeRangeClick}
-                  />
-                )}
-              </div>
+              )}
             </div>
           </div>
           <div className={styles.actionsContainer}>
