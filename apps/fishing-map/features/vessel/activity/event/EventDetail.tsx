@@ -38,7 +38,7 @@ const FIELDS_BY_TYPE: Record<EventType, VesselRenderField[]> = {
   [EventTypes.Encounter]: [
     { key: 'encounter.vessel.name', label: 'encounteredVesselName' },
     { key: 'encounter.vessel.flag', label: 'flag' },
-    { key: 'encounter.vessel.ssvid', label: 'ssvid' },
+    { key: 'encounter.vessel.ssvid', label: 'mmsi' },
     { key: 'encounter.vessel.type', label: 'type' },
     ...BASE_FIELDS,
     { key: 'encounter.medianSpeedKnots', label: 'medianSpeedKnots' },
