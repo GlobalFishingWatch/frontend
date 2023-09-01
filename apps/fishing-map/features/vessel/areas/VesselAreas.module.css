@@ -12,8 +12,8 @@
   gap: var(--space-S);
 }
 
-.title {
-  flex: 1;
+.choice {
+  width: 100%;
 }
 
 .areaList {

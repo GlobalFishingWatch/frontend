@@ -163,11 +163,11 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
   return (
     <div className={styles.container}>
       <div className={styles.titleContainer}>
-        <label className={styles.title}>{t('vessel.areasTitle', 'Areas with more events')}</label>
         <Choice
           options={areaOptions}
           size="small"
           activeOption={vesselArea}
+          className={styles.choice}
           onSelect={changeVesselArea}
         />
         <VesselActivityFilter />
