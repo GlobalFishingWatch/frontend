@@ -373,6 +373,7 @@
     "port_exit": "Port exit",
     "speed": "speed",
     "ssvid": "ssvid",
+    "mmsi": "MMSI",
     "start": "start",
     "totalDistanceKm": "total distance (km)",
     "type": "shiptype"
