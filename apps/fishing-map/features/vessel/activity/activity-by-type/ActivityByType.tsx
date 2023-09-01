@@ -21,12 +21,12 @@ import styles from '../ActivityGroupedList.module.css'
 import { useActivityByType } from './activity-by-type.hook'
 import ActivityGroup from './ActivityGroup'
 
-const EVENTS_ORDER = [
-  EventTypes.Encounter,
-  EventTypes.Fishing,
-  EventTypes.Loitering,
+export const EVENTS_ORDER = [
   EventTypes.Port,
-  EventTypes.Gap,
+  EventTypes.Fishing,
+  EventTypes.Encounter,
+  EventTypes.Loitering,
+  // EventTypes.Gap,
 ]
 
 export function ActivityByType() {

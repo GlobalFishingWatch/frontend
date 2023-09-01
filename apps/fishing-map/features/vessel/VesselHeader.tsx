@@ -19,7 +19,7 @@ import { selectVesselInfoData, setVesselPrintMode } from 'features/vessel/vessel
 import { formatInfoField } from 'utils/info'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { getCurrentIdentityVessel, getVesselProperty } from 'features/vessel/vessel.utils'
-import { selectVesselProfileDataview } from 'features/dataviews/dataviews.slice'
+import { selectVesselProfileColor } from 'features/dataviews/dataviews.slice'
 import { COLOR_PRIMARY_BLUE } from 'features/app/App'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
@@ -37,7 +37,7 @@ const VesselHeader = () => {
   const vessel = useSelector(selectVesselInfoData)
   const { start, end } = useTimerangeConnect()
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
-  const vesselDataview = useSelector(selectVesselProfileDataview)
+  const vesselColor = useSelector(selectVesselProfileColor)
   const events = useSelector(selectVesselEventsFilteredByTimerange)
   const fitBounds = useMapFitBounds()
 
@@ -76,7 +76,7 @@ const VesselHeader = () => {
         <h1 className={styles.title}>
           <svg className={styles.vesselIcon} width="16" height="16">
             <path
-              fill={vesselDataview?.config?.color || COLOR_PRIMARY_BLUE}
+              fill={vesselColor || COLOR_PRIMARY_BLUE}
               stroke={COLOR_PRIMARY_BLUE}
               strokeOpacity=".5"
               d="M15.23.75v6.36l-7.8 7.8-1.58-4.78-4.78-1.59L8.87.75h6.36Z"

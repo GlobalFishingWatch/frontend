@@ -2,11 +2,22 @@
   flex: 1;
 }
 
-.eventsCount {
+.eventTypeRowContainer {
   display: flex;
   align-items: center;
   gap: var(--space-XS);
   color: var(--color-secondary-blue);
+}
+
+.eventTypeRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+  opacity: 0.5;
+}
+
+.active {
+  opacity: 1;
 }
 
 .summary {
@@ -33,4 +44,11 @@
 
 .help {
   cursor: help;
+}
+
+.fishingIcon {
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 0.6rem;
+  border: var(--border);
 }

@@ -62,7 +62,6 @@ const VesselActivity = () => {
       <div className={styles.summaryContainer}>
         <VesselActivitySummary />
         <div className={styles.actions}>
-          <VesselActivityFilter />
           <VesselActivityDownload />
         </div>
       </div>

@@ -11,7 +11,7 @@ import {
 import { VesselAreaSubsection } from 'types'
 import { selectVesselAreaSubsection } from 'features/vessel/vessel.config.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectVesselProfileDataview } from 'features/dataviews/dataviews.slice'
+import { selectVesselProfileColor } from 'features/dataviews/dataviews.slice'
 import { useRegionNamesByType } from 'features/regions/regions.hooks'
 import { EVENTS_COLORS } from 'data/config'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -65,7 +65,7 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
   const vesselArea = useSelector(selectVesselAreaSubsection)
   const eventsGrouped = useSelector(selectEventsGroupedByArea)
   const eventsLoading = useSelector(selectVesselEventsResourcesLoading)
-  const vesselDataview = useSelector(selectVesselProfileDataview)
+  const vesselColor = useSelector(selectVesselProfileColor)
   const eventTypes = useSelector(selectVesselEventTypes)
   const [graphWidth, setGraphWidth] = useState(window.innerWidth / 2 - 52 - 40)
 
@@ -155,9 +155,7 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
                 dataKey={eventType}
                 barSize={15}
                 stackId="a"
-                fill={
-                  eventType === 'fishing' ? vesselDataview?.config?.color : EVENTS_COLORS[eventType]
-                }
+                fill={eventType === 'fishing' ? vesselColor : EVENTS_COLORS[eventType]}
               >
                 {index === eventTypes.length - 1 && (
                   <LabelList
