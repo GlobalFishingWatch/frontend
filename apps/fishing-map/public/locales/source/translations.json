@@ -681,6 +681,7 @@
     "noEncountersInTimeRange": "There are no encounters fully contained in your timerange.",
     "notMatched": "No data matched",
     "noEventsIn": "No event in your timerange happened in any {{regionType}}",
+    "noOwnersMatch": "We can't find other vessels with this owner",
     "noVoyagesinTimeRange": "There are no voyages fully contained in your timerange.",
     "noVoyagesWithoutPorts": "Please turn on port visits visibility",
     "origin": "Origin",
