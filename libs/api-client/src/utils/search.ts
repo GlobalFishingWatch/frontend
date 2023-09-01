@@ -27,11 +27,13 @@ export type AdvancedSearchQueryFieldKey =
 export type AdvancedSearchQueryField = {
   key: AdvancedSearchQueryFieldKey
   value: string | string[] | undefined
+  operator?: AdvancedSearchOperator
   combinedWithOR?: boolean
 }
 
+type AdvancedSearchOperator = '=' | '>=' | '<=' | 'LIKE'
 type AdvancedSearchQueryFieldParams = {
-  operator: string
+  operator: AdvancedSearchOperator
   transformation?: (field: AdvancedSearchQueryField) => string
 }
 
@@ -106,12 +108,13 @@ export const getAdvancedSearchQuery = (
     }
 
     const getFieldValue = (value: string) => {
+      const operator = field.operator || params.operator || '='
       if (field.key === 'owner') {
-        return `registryOwners.name ${params?.operator} ${value}`
+        return `registryOwners.name ${operator} ${value}`
       }
       return rootObject
-        ? `${rootObject}.${field.key} ${params?.operator} ${value}`
-        : `${field.key} ${params?.operator} ${value}`
+        ? `${rootObject}.${field.key} ${operator} ${value}`
+        : `${field.key} ${operator} ${value}`
     }
     if (Array.isArray(value)) {
       const filter = value.map((v) => getFieldValue(`'${v}'`)).join(' OR ')
