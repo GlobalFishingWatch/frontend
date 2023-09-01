@@ -373,6 +373,7 @@
     "port_exit": "Port exit",
     "speed": "speed",
     "ssvid": "ssvid",
+    "mmsi": "MMSI",
     "start": "Inicio",
     "totalDistanceKm": "total distance (km)",
     "type": "shiptype"
@@ -686,6 +687,7 @@
     "print": "Imprimir o guardar como PDF",
     "relatedVessels": "Related vessels",
     "registeredGearType": "Arte de pesca registrado",
+    "registrySources": "registry sources",
     "sectionActivity": "Actividad",
     "sectionAreas": "Areas",
     "sectionRelatedVessels": "Related vessels",
