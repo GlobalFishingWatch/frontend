@@ -582,6 +582,7 @@
     "capacity": "Capacidade",
     "carrier": "Navio cargueiro",
     "casco": "Casco",
+    "clickToFitMapToEvents": "Center map on the events inside",
     "close": "Close",
     "codMarinha": "Cod Marinha",
     "dataset": "Fonte",
