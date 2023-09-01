@@ -1,7 +1,7 @@
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { useCallback, useMemo } from 'react'
+import { Fragment, useCallback, useMemo } from 'react'
 import { Icon, IconType, Switch, SwitchEvent, Tooltip } from '@globalfishingwatch/ui-components'
 import { EventType, EventTypes } from '@globalfishingwatch/api-types'
 import { EVENTS_COLORS } from '@globalfishingwatch/layer-composer'
@@ -168,16 +168,21 @@ export const VesselActivitySummary = () => {
             eventType === 'fishing' && vesselColor ? vesselColor : EVENTS_COLORS[eventType]
           return (
             <li key={eventType} className={styles.eventTypeRowContainer}>
-              <Switch active={active} onClick={onEventChange} id={eventType} color={color} />
+              <Switch
+                active={active}
+                onClick={onEventChange}
+                id={eventType}
+                color={color}
+                className={styles.eventSwitch}
+              />
               <div className={cx(styles.eventTypeRow, { [styles.active]: active })}>
-                {active && <strong>{formatI18nNumber(events?.length || 0)}</strong>}
+                {active && <strong>{formatI18nNumber(events?.length || 0)} </strong>}
                 {t(`event.${eventType}` as any, {
                   defaultValue: eventType,
                   count: events?.length || 0,
-                })}
+                })}{' '}
                 {eventType === EventTypes.Port && threeMostVisitedPortCountries.length > 0 && (
-                  <span>
-                    (
+                  <Fragment>
                     {threeMostVisitedPortCountries.map(({ flag, count }, index) => {
                       return (
                         <Tooltip
@@ -201,16 +206,15 @@ export const VesselActivitySummary = () => {
                         } ${t('common.more', 'more')}`}</span>
                       </Tooltip>
                     )}
-                    )
-                  </span>
+                  </Fragment>
                 )}
-                <div className={styles.iconContainer}>
+                <span className={styles.iconContainer}>
                   {eventType !== EventTypes.Fishing ? (
                     <Icon icon={`event-legend-${eventType}` as IconType} type="original-colors" />
                   ) : (
                     <div className={styles.fishingIcon} style={{ backgroundColor: color }} />
                   )}
-                </div>
+                </span>
               </div>
             </li>
           )

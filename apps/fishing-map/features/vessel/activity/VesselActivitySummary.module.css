@@ -10,14 +10,15 @@
 }
 
 .eventTypeRow {
-  display: flex;
-  align-items: center;
-  gap: var(--space-XS);
   opacity: 0.5;
 }
 
 .active {
   opacity: 1;
+}
+
+.eventSwitch {
+  flex-shrink: 0;
 }
 
 .summary {
@@ -38,7 +39,7 @@
 
 .iconContainer {
   width: 2rem;
-  display: flex;
+  display: inline-flex;
   justify-content: center;
 }
 
