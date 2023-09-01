@@ -1,6 +1,14 @@
-import { Action, AnyAction, ThunkAction, ThunkDispatch, configureStore } from '@reduxjs/toolkit'
+import {
+  Action,
+  AnyAction,
+  Middleware,
+  ThunkAction,
+  ThunkDispatch,
+  configureStore,
+} from '@reduxjs/toolkit'
 import { createWrapper } from 'next-redux-wrapper'
 import { dataviewStatsApi } from 'queries/stats-api'
+import { vesselSearchApi } from 'queries/search-api'
 import { rootReducer } from 'reducers'
 import connectedRoutes from 'routes/routes'
 import { routerQueryMiddleware, routerWorkspaceMiddleware } from 'routes/routes.middlewares'
@@ -45,6 +53,7 @@ export const makeStore = () => {
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware(defaultMiddlewareOptions).concat(
         dataviewStatsApi.middleware,
+        vesselSearchApi.middleware as Middleware,
         routerQueryMiddleware,
         routerWorkspaceMiddleware,
         routerMiddleware
