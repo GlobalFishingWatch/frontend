@@ -63,3 +63,14 @@
   padding: var(--space-L) var(--space-M);
   text-align: center;
 }
+
+.dataWarning {
+  margin-top: var(--space-M);
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+}
+
+.dataWarningLink {
+  cursor: pointer;
+  text-decoration: underline;
+}
