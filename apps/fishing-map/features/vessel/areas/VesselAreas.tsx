@@ -20,7 +20,6 @@ import {
   selectVesselEventsResourcesLoading,
 } from 'features/vessel/vessel.selectors'
 import VesselActivityFilter from 'features/vessel/activity/VesselActivityFilter'
-import { selectIsWorkspaceVesselLocation } from 'routes/routes.selectors'
 import styles from './VesselAreas.module.css'
 
 type VesselAreasProps = {
@@ -68,7 +67,6 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
   const eventsLoading = useSelector(selectVesselEventsResourcesLoading)
   const vesselDataview = useSelector(selectVesselProfileDataview)
   const eventTypes = useSelector(selectVesselEventTypes)
-  const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const [graphWidth, setGraphWidth] = useState(window.innerWidth / 2 - 52 - 40)
 
   const areaOptions: ChoiceOption<VesselAreaSubsection>[] = useMemo(
@@ -106,12 +104,9 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
   const changeVesselArea = useCallback(
     (option: ChoiceOption<VesselAreaSubsection>) => {
       dispatchQueryParams({ vesselArea: option.id })
-      // TODO check if we can do this on standalone profile as well
-      if (isWorkspaceVesselLocation) {
-        updateAreaLayersVisibility(option.id)
-      }
+      updateAreaLayersVisibility(option.id)
     },
-    [dispatchQueryParams, isWorkspaceVesselLocation, updateAreaLayersVisibility]
+    [dispatchQueryParams, updateAreaLayersVisibility]
   )
 
   if (eventsLoading) {
