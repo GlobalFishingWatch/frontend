@@ -60,15 +60,12 @@ export function Choice({
     updateActiveElementPoperties()
   }, [activeRef, activeOptionId, updateActiveElementPoperties])
 
-  // Workaround to ensure the activeElement has the clientWidth ready
   useEffect(() => {
-    setTimeout(updateActiveElementPoperties, 500)
-    window.addEventListener('resize', updateActiveElementPoperties)
-    return () => {
-      window.removeEventListener('resize', updateActiveElementPoperties)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [options, updateActiveElementPoperties])
+    if (!activeRef.current) return
+    const resizeObserver = new ResizeObserver(updateActiveElementPoperties)
+    resizeObserver.observe(activeRef.current)
+    return () => resizeObserver.disconnect()
+  }, [updateActiveElementPoperties])
 
   return (
     <div className={cx(styles.Choice, className)}>
