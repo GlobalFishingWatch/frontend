@@ -14,7 +14,6 @@ import {
   selectVesselEventsResourcesLoading,
   selectVesselHasEventsDatasets,
 } from 'features/vessel/vessel.selectors'
-import VesselActivityFilter from 'features/vessel/activity/VesselActivityFilter'
 import styles from './VesselActivity.module.css'
 import { VesselActivitySummary } from './VesselActivitySummary'
 

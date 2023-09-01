@@ -1,13 +1,7 @@
 .container {
   padding: var(--space-M);
   border-bottom: var(--border);
-}
-
-.titleContainer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--space-S);
+  position: relative;
 }
 
 .fieldGroupContainer {
@@ -40,6 +34,8 @@
   align-items: center;
   justify-content: flex-end;
   gap: var(--space-S);
+  position: absolute;
+  right: var(--space-M);
 }
 
 .secondary {

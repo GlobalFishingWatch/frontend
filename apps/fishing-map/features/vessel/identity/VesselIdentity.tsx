@@ -127,9 +127,7 @@ const VesselIdentity = () => {
       },
       {
         id: VesselIdentitySourceEnum.SelfReported,
-        title: `${t('vessel.infoSources.selfReported', 'Self Reported')} (${uniq(
-          selfReportedIdentities.flatMap((i) => i.sourceCode)
-        ).join(',')})`,
+        title: uniq(selfReportedIdentities.flatMap((i) => i.sourceCode)).join(','),
         disabled: selfReportedIdentities.length === 0,
       },
     ],
@@ -148,26 +146,41 @@ const VesselIdentity = () => {
     <Fragment>
       <Tabs tabs={identityTabs} activeTab={identitySource} onTabClick={onTabClick} />
       <div className={styles.container}>
-        <div className={styles.titleContainer}>
-          <h3>
-            <label>{t(`common.date_other`, 'Dates')}</label>
-            <div className={styles.timerange}>
-              <VesselIdentityField
-                value={`${formatI18nDate(vesselIdentity.transmissionDateFrom)} - ${formatI18nDate(
-                  vesselIdentity.transmissionDateTo
-                )}`}
-              />
-              {isStandaloneVesselLocation && (
-                <IconButton
-                  size="small"
-                  icon="fit-to-timerange"
-                  tooltip={t('timebar.fitOnThisDates', 'Fit time range to these dates')}
-                  className="print-hidden"
-                  onClick={onTimeRangeClick}
+        <div className={cx(styles.fieldGroup)}>
+          {identitySource === VesselIdentitySourceEnum.Registry && (
+            <div>
+              <label>{t('vessel.registrySources', 'Registry Sources')}</label>
+              <Tooltip content={vesselIdentity?.sourceCode.join(', ')}>
+                <VesselIdentityField
+                  className={styles.help}
+                  value={`${vesselIdentity?.sourceCode.slice(0, 3).join(', ')}${
+                    vesselIdentity?.sourceCode.length > 3 ? '...' : ''
+                  }`}
                 />
-              )}
+              </Tooltip>
             </div>
-          </h3>
+          )}
+          <div>
+            <div>
+              <label>{t(`common.date_other`, 'Dates')}</label>
+              <div className={styles.timerange}>
+                <VesselIdentityField
+                  value={`${formatI18nDate(vesselIdentity.transmissionDateFrom)} - ${formatI18nDate(
+                    vesselIdentity.transmissionDateTo
+                  )}`}
+                />
+                {isStandaloneVesselLocation && (
+                  <IconButton
+                    size="small"
+                    icon="fit-to-timerange"
+                    tooltip={t('timebar.fitOnThisDates', 'Fit time range to these dates')}
+                    className="print-hidden"
+                    onClick={onTimeRangeClick}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
           <div className={styles.actionsContainer}>
             <IconButton
               type="border"
