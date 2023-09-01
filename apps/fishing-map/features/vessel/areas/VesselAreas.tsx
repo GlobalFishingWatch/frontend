@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Bar, BarChart, Tooltip as RechartsTooltip, XAxis, YAxis, LabelList } from 'recharts'
 import { Choice, ChoiceOption, Modal, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 import { RegionType } from '@globalfishingwatch/api-types'
+import { eventsToBbox } from '@globalfishingwatch/data-transforms'
 import {
   selectVesselEventTypes,
   selectEventsGroupedByArea,
@@ -23,6 +24,8 @@ import {
 import VesselActivityFilter from 'features/vessel/activity/VesselActivityFilter'
 import { DATAVIEWS_WARNING } from 'features/workspace/context-areas/ContextAreaLayerPanel'
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
+import { useDebouncedDispatchHighlightedEvent } from 'features/map/map.hooks'
+import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import styles from './VesselAreas.module.css'
 
 type VesselAreasProps = {
@@ -30,13 +33,45 @@ type VesselAreasProps = {
 }
 
 const AreaTick = ({ y, payload }: any) => {
+  const { t } = useTranslation()
   const { getRegionNamesByType } = useRegionNamesByType()
   const vesselArea = useSelector(selectVesselAreaSubsection)
   const areaLabel = getRegionNamesByType(vesselArea as RegionType, [payload.value])[0]
+  const events = useSelector(selectVesselEventsFilteredByTimerange)
+  const dispatchSetHighlightedEvents = useDebouncedDispatchHighlightedEvent()
+  const fitBounds = useMapFitBounds()
+  const areaEvents = events.filter((e) => e.regions?.[vesselArea]?.includes(payload.value))
+
+  const fitBoundsOnEvents = useCallback(() => {
+    const bounds = eventsToBbox(areaEvents)
+    fitBounds(bounds)
+  }, [areaEvents, fitBounds])
+
+  const setHighlightEvents = useCallback(() => {
+    const eventIds = areaEvents.map((event) => event.id)
+    dispatchSetHighlightedEvents(eventIds)
+  }, [areaEvents, dispatchSetHighlightedEvents])
+
+  const resetHighlightedEvents = useCallback(() => {
+    dispatchSetHighlightedEvents()
+  }, [dispatchSetHighlightedEvents])
+
   return (
     <foreignObject x={0} y={y - 12} className={styles.areaContainer}>
-      <Tooltip content={areaLabel?.length > 20 && areaLabel}>
-        <span className={styles.area}>{areaLabel || payload.value}</span>
+      <Tooltip
+        content={`${t(
+          'vessel.clickToFitMapToEvents',
+          'Center map on the events inside'
+        )} ${areaLabel}`}
+      >
+        <span
+          onMouseOver={setHighlightEvents}
+          onMouseOut={resetHighlightedEvents}
+          onClick={fitBoundsOnEvents}
+          className={styles.area}
+        >
+          {areaLabel || payload.value}
+        </span>
       </Tooltip>
     </foreignObject>
   )
