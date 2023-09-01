@@ -1,5 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit'
 import { dataviewStatsApi } from 'queries/stats-api'
+import { vesselSearchApi } from 'queries/search-api'
 import descriptionReducer from 'routes/description.reducer'
 import areasReducer from 'features/areas/areas.slice'
 import bigQueryReducer from 'features/bigquery/bigquery.slice'
@@ -29,6 +30,7 @@ import workspacesReducer from 'features/workspaces-list/workspaces-list.slice'
 
 export const rootReducer = combineReducers({
   [dataviewStatsApi.reducerPath]: dataviewStatsApi.reducer,
+  [vesselSearchApi.reducerPath]: vesselSearchApi.reducer,
   areas: areasReducer,
   bigQuery: bigQueryReducer,
   datasets: datasetsReducer,

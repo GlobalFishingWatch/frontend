@@ -64,9 +64,9 @@ export function getVesselProperty<P = string>(
 ): P {
   if (!vessel) return '' as P
   if (property === 'owner') {
-    const latestSSVID = getLatestIdentityPrioritised(vessel).ssvid
+    const ssvid = getVesselProperty(vessel, 'ssvid', { identityIndex, identitySource })
     return uniq(
-      vessel.registryOwners?.filter((owner) => owner.ssvid === latestSSVID)?.map(({ name }) => name)
+      vessel.registryOwners?.filter((owner) => owner.ssvid === ssvid)?.map(({ name }) => name)
     ).join(', ') as P
   }
   if (!identitySource) {
@@ -82,6 +82,9 @@ export function getVesselIdentityProperties<P = string>(
   { identitySource } = {} as GetVesselIdentityParams
 ): P[] {
   if (!vessel) return [] as P[]
+  if (property === 'owner') {
+    return uniq(vessel.registryOwners?.map(({ name }) => name)) as P[]
+  }
   const identities = getVesselIdentities(vessel, { identitySource })
   return uniq(identities.flatMap((i) => i[property] || [])) as P[]
 }
