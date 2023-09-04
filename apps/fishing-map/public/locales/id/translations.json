@@ -571,10 +571,8 @@
     "vesselSearch": "Pencarian Kapal"
   },
   "vessel": {
-    "activityByType": "Activity by type",
-    "activityByVoyages": "Timeline by voyages",
-    "activityGroupByType": "Group by type",
-    "activityGroupByVoyages": "Group by voyages",
+    "activityByType": "By type",
+    "activityByVoyages": "By voyages",
     "addToWorkspace": "Tambahkan kapal untuk melihat",
     "areasTitle": "Areas with more events",
     "beam": "Beam",
@@ -691,6 +689,7 @@
     "registeredGearType": "Jenis Peralatan Terdaftar",
     "registrySources": "registry sources",
     "sectionActivity": "Aktivitas",
+    "sectionSummary": "Summary",
     "sectionAreas": "Areas",
     "sectionRelatedVessels": "Related vessels",
     "share": "Share vessel",
