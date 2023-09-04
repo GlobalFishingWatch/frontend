@@ -240,28 +240,10 @@ function SearchAdvancedFilters() {
         })}
       <div>
         <InputDate
-          value={transmissionDateFrom || ''}
-          max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
-          min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
-          label={t('common.active_after', 'Active after')}
-          onChange={(e) => {
-            if (e.target.value !== transmissionDateFrom) {
-              setSearchFilters({ transmissionDateFrom: e.target.value })
-            }
-          }}
-          onRemove={() => {
-            if (transmissionDateFrom !== '') {
-              setSearchFilters({ transmissionDateFrom: '' })
-            }
-          }}
-        />
-      </div>
-      <div>
-        <InputDate
           value={transmissionDateTo || ''}
           max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
           min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
-          label={t('common.active_before', 'Active Before')}
+          label={t('common.active_after', 'Active after')}
           onChange={(e) => {
             if (e.target.value !== transmissionDateTo) {
               setSearchFilters({ transmissionDateTo: e.target.value })
@@ -270,6 +252,24 @@ function SearchAdvancedFilters() {
           onRemove={() => {
             if (transmissionDateTo !== '') {
               setSearchFilters({ transmissionDateTo: '' })
+            }
+          }}
+        />
+      </div>
+      <div>
+        <InputDate
+          value={transmissionDateFrom || ''}
+          max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
+          min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
+          label={t('common.active_before', 'Active Before')}
+          onChange={(e) => {
+            if (e.target.value !== transmissionDateFrom) {
+              setSearchFilters({ transmissionDateFrom: e.target.value })
+            }
+          }}
+          onRemove={() => {
+            if (transmissionDateFrom !== '') {
+              setSearchFilters({ transmissionDateFrom: '' })
             }
           }}
         />

@@ -31,7 +31,7 @@ export type AdvancedSearchQueryField = {
   combinedWithOR?: boolean
 }
 
-type AdvancedSearchOperator = '=' | '>=' | '<=' | 'LIKE'
+type AdvancedSearchOperator = '=' | '>' | '<' | 'LIKE'
 type AdvancedSearchQueryFieldParams = {
   operator: AdvancedSearchOperator
   transformation?: (field: AdvancedSearchQueryField) => string
@@ -39,6 +39,10 @@ type AdvancedSearchQueryFieldParams = {
 
 const toUpperCaseWithQuotationMarks = (field: AdvancedSearchQueryField) => {
   return `'${field.value}'`.toUpperCase()
+}
+
+const toUpperCaseWithWildcardsAndQuotationMarks = (field: AdvancedSearchQueryField) => {
+  return `'%${field.value}%'`.toUpperCase()
 }
 
 const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFieldParams> = {
@@ -73,11 +77,11 @@ const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFiel
     operator: '=',
   },
   transmissionDateFrom: {
-    operator: '>=',
+    operator: '<',
     transformation: toUpperCaseWithQuotationMarks,
   },
   transmissionDateTo: {
-    operator: '<=',
+    operator: '>',
     transformation: toUpperCaseWithQuotationMarks,
   },
   // VMS specific
