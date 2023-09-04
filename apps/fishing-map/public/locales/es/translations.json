@@ -655,7 +655,6 @@
     "identityDatesOutOfRange": "The dates of this identity don’t overlap with your current time range",
     "infoSource": "Info Source",
     "infoSources": {
-      "both": "Registry and self reported",
       "registry": "Registry",
       "selfReported": "Self reported"
     },
