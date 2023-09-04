@@ -8,7 +8,6 @@ import {
   Select,
   SelectOption,
 } from '@globalfishingwatch/ui-components'
-import { getFlags } from 'utils/flags'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import {
@@ -29,6 +28,7 @@ import { useSearchFiltersConnect } from 'features/search/search.hook'
 import styles from './SearchAdvancedFilters.module.css'
 
 const schemaFilterIds: SupportedDatasetSchema[] = [
+  'flag',
   'fleet',
   'origin',
   'geartype',
@@ -54,7 +54,6 @@ function SearchAdvancedFilters() {
   const datasets = useSelector(selectAdvancedSearchDatasets)
   const { searchFilters, setSearchFilters } = useSearchFiltersConnect()
   const {
-    flag,
     sources,
     transmissionDateFrom,
     transmissionDateTo,
@@ -65,7 +64,6 @@ function SearchAdvancedFilters() {
     infoSource,
   } = searchFilters
 
-  const flagOptions = useMemo(getFlags, [])
   const sourceOptions = useMemo(() => {
     const datasetsFiltered =
       infoSource === VesselIdentitySourceEnum.Registry
@@ -214,23 +212,7 @@ function SearchAdvancedFilters() {
             }}
           />
         )}
-      <MultiSelect
-        label={t('layer.flagState_other', 'Flag States')}
-        placeholder={getPlaceholderBySelections({ selection: flag, options: flagOptions })}
-        options={flagOptions}
-        selectedOptions={flagOptions.filter((f) => flag?.includes(f.id))}
-        onSelect={({ id }) => {
-          const flags = flag ? [...flag, id] : [id]
-          setSearchFilters({ flag: flags })
-        }}
-        onRemove={(_, rest) => {
-          setSearchFilters({ flag: rest.map(({ id }) => id) })
-        }}
-        onCleanClick={() => {
-          setSearchFilters({ flag: undefined })
-        }}
-      />
-      {infoSource === VesselIdentitySourceEnum.SelfReported &&
+      {(!infoSource || infoSource === VesselIdentitySourceEnum.SelfReported) &&
         schemaFilters.map((schemaFilter) => {
           if (!showSchemaFilter(schemaFilter)) {
             return null

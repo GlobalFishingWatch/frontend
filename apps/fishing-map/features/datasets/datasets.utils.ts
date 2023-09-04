@@ -373,9 +373,12 @@ export const getDatasetSchemaItem = (dataset: Dataset, schema: SupportedDatasetS
 }
 
 export const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatasetSchema) => {
-  if (schema === 'flag' || schema === 'vessel-groups') {
-    // returning true as the schema fields enum comes from the static list in getFlags()
+  if (schema === 'vessel-groups') {
+    // returning true as the schema fields enum comes from the dynamic fetch list passed as props
     return true
+  }
+  if (schema === 'flag') {
+    return dataset.fieldsAllowed.some((f) => f.includes(schema))
   }
   const schemaConfig = getDatasetSchemaItem(dataset, schema)
   return schemaConfig?.enum !== undefined && schemaConfig.enum.length > 0
