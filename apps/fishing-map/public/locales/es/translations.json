@@ -571,10 +571,8 @@
     "vesselSearch": "Búsqueda de Embarcación"
   },
   "vessel": {
-    "activityByType": "Activity by type",
-    "activityByVoyages": "Timeline by voyages",
-    "activityGroupByType": "Group by type",
-    "activityGroupByVoyages": "Group by voyages",
+    "activityByType": "By type",
+    "activityByVoyages": "By voyages",
     "addToWorkspace": "Añadir embarcación a la vista",
     "areasTitle": "Areas with more events",
     "beam": "Manga",
@@ -691,6 +689,7 @@
     "registeredGearType": "Arte de pesca registrado",
     "registrySources": "registry sources",
     "sectionActivity": "Actividad",
+    "sectionSummary": "Summary",
     "sectionAreas": "Areas",
     "sectionRelatedVessels": "Related vessels",
     "share": "Share vessel",
