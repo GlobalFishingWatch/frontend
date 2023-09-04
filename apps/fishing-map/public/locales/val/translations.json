@@ -571,10 +571,8 @@
     "vesselSearch": "crwdns49637:0crwdne49637:0"
   },
   "vessel": {
-    "activityByType": "crwdns49653:0crwdne49653:0",
-    "activityByVoyages": "crwdns49655:0crwdne49655:0",
-    "activityGroupByType": "crwdns49657:0crwdne49657:0",
-    "activityGroupByVoyages": "crwdns49659:0crwdne49659:0",
+    "activityByType": "crwdns59455:0crwdne59455:0",
+    "activityByVoyages": "crwdns59457:0crwdne59457:0",
     "addToWorkspace": "crwdns49651:0crwdne49651:0",
     "areasTitle": "crwdns58191:0crwdne58191:0",
     "beam": "crwdns49661:0crwdne49661:0",
@@ -691,6 +689,7 @@
     "registeredGearType": "crwdns49829:0crwdne49829:0",
     "registrySources": "crwdns59449:0crwdne59449:0",
     "sectionActivity": "crwdns49831:0crwdne49831:0",
+    "sectionSummary": "crwdns59459:0crwdne59459:0",
     "sectionAreas": "crwdns49835:0crwdne49835:0",
     "sectionRelatedVessels": "crwdns49833:0crwdne49833:0",
     "share": "crwdns49837:0crwdne49837:0",
