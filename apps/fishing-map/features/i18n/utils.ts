@@ -25,7 +25,7 @@ export const getPlaceholderBySelections = ({
   const placeholder =
     isSelectionArray && selection.length > 1
       ? `${selection.length} ${t('selects.selected', 'selected')}`
-      : optionSelected?.[0].label
+      : optionSelected?.[0]?.label
 
   if (typeof placeholder === 'string') {
     return placeholder
