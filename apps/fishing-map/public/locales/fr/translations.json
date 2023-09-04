@@ -571,10 +571,8 @@
     "vesselSearch": "Recherche de navire"
   },
   "vessel": {
-    "activityByType": "Activity by type",
-    "activityByVoyages": "Timeline by voyages",
-    "activityGroupByType": "Group by type",
-    "activityGroupByVoyages": "Group by voyages",
+    "activityByType": "By type",
+    "activityByVoyages": "By voyages",
     "addToWorkspace": "Ajouter un navire à la vue",
     "areasTitle": "Areas with more events",
     "beam": "Largeur",
@@ -691,6 +689,7 @@
     "registeredGearType": "Type d’engin enregistré",
     "registrySources": "registry sources",
     "sectionActivity": "Activité",
+    "sectionSummary": "Summary",
     "sectionAreas": "Areas",
     "sectionRelatedVessels": "Related vessels",
     "share": "Share vessel",
