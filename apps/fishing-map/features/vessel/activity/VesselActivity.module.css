@@ -2,18 +2,14 @@
   padding-block: var(--space-XL);
 }
 
-.summaryContainer {
+.activityTitleContainer {
+  page-break-before: always;
   padding: var(--space-M);
-  display: flex;
-  gap: var(--space-S);
+  flex: 1;
 }
 
-.activityTitleContainer {
-  padding: var(--space-S) var(--space-M);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex: 1;
+.choice {
+  width: 100%;
 }
 
 .emptyState {

@@ -99,7 +99,7 @@ div.HintPanel {
 }
 
 .content {
-  padding: 1.5rem;
+  padding: var(--space-SM);
   text-transform: none;
   color: var(--color-primary-blue);
   font: var(--font-S);

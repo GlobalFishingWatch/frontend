@@ -7,6 +7,7 @@ import { selectVesselRelatedSubsection } from 'features/vessel/vessel.config.sel
 import { useLocationConnect } from 'routes/routes.hook'
 import RelatedEncounterVessels from 'features/vessel/related-vessels/RelatedEncounterVessels'
 import RelatedOwnersVessels from 'features/vessel/related-vessels/RelatedOwnersVessels'
+import { VesselActivitySummary } from 'features/vessel/activity/VesselActivitySummary'
 import styles from './RelatedVessels.module.css'
 
 const RelatedVessels = () => {
@@ -37,6 +38,9 @@ const RelatedVessels = () => {
 
   return (
     <div className={styles.container}>
+      <div className="print-hidden">
+        <VesselActivitySummary />
+      </div>
       <Choice
         options={relatedOptions}
         size="small"

@@ -18,7 +18,7 @@
 .input input,
 .input input:placeholder-shown {
   border-radius: 2rem;
-  padding-inline: 1.5rem;
+  padding-inline: var(--space-SM);
   padding-right: var(--size-M);
   background: var(--color-terthiary-blue);
   border-bottom: none;

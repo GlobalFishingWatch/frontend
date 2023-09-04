@@ -25,7 +25,7 @@
 
 .content {
   min-height: 9rem;
-  padding: 1.5rem;
+  padding: var(--space-SM);
 }
 
 .text a {

@@ -10,7 +10,7 @@
 }
 
 .input input {
-  padding: 0 7rem 0 1.5rem;
+  padding: 0 7rem 0 var(--space-SM);
   border-radius: 2rem;
   background: var(--color-terthiary-blue);
   border-bottom: 1px solid var(--color-terthiary-blue);
@@ -21,7 +21,7 @@
 }
 
 .input > *:last-child {
-  right: 1.5rem;
+  right: var(--space-SM);
   bottom: 50%;
   margin: 0;
   transform: translateY(50%);

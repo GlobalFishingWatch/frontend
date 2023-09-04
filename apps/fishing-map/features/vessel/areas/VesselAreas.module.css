@@ -6,12 +6,6 @@
   padding: var(--space-M);
 }
 
-.titleContainer {
-  display: flex;
-  align-items: center;
-  gap: var(--space-S);
-}
-
 .choice {
   width: 100%;
 }

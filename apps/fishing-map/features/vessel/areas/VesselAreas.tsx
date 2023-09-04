@@ -21,7 +21,7 @@ import {
   selectVesselEventsFilteredByTimerange,
   selectVesselEventsResourcesLoading,
 } from 'features/vessel/vessel.selectors'
-import VesselActivityFilter from 'features/vessel/activity/VesselActivityFilter'
+import { VesselActivitySummary } from 'features/vessel/activity/VesselActivitySummary'
 import { DATAVIEWS_WARNING } from 'features/workspace/context-areas/ContextAreaLayerPanel'
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
 import { useDebouncedDispatchHighlightedEvent } from 'features/map/map.hooks'
@@ -162,16 +162,16 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.titleContainer}>
-        <Choice
-          options={areaOptions}
-          size="small"
-          activeOption={vesselArea}
-          className={styles.choice}
-          onSelect={changeVesselArea}
-        />
-        <VesselActivityFilter />
+      <div className="print-hidden">
+        <VesselActivitySummary />
       </div>
+      <Choice
+        options={areaOptions}
+        size="small"
+        activeOption={vesselArea}
+        className={styles.choice}
+        onSelect={changeVesselArea}
+      />
       {areaDataview && DATAVIEWS_WARNING.includes(areaDataview?.id) && (
         <div className={styles.dataWarning}>
           {t(

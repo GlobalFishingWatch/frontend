@@ -47,7 +47,6 @@ import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { BASEMAP_DATAVIEW_SLUG } from 'data/workspaces'
-import styles from './Vessel.module.css'
 import VesselActivity from './activity/VesselActivity'
 import VesselIdentity from './identity/VesselIdentity'
 
@@ -96,7 +95,7 @@ const Vessel = () => {
     () => [
       {
         id: 'activity',
-        title: t('vessel.sectionActivity', 'activity'),
+        title: t('vessel.sectionSummary', 'Summary'),
         content: <VesselActivity />,
       },
       {
@@ -221,14 +220,12 @@ const Vessel = () => {
           <VesselIdentity />
         </Fragment>
       )}
-      <div className={styles.activityContainer}>
-        <Tabs
-          tabs={sectionTabs}
-          activeTab={vesselSection}
-          onTabClick={changeTab}
-          mountAllTabsOnLoad
-        />
-      </div>
+      <Tabs
+        tabs={sectionTabs}
+        activeTab={vesselSection}
+        onTabClick={changeTab}
+        mountAllTabsOnLoad
+      />
     </Fragment>
   )
 }

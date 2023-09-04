@@ -25,6 +25,7 @@ import {
   selectActiveVesselsDataviews,
   selectVesselProfileColor,
 } from 'features/dataviews/dataviews.slice'
+import VesselActivityDownload from 'features/vessel/activity/VesselActivityDownload'
 import styles from './VesselActivitySummary.module.css'
 
 const MAX_PORTS = 3
@@ -100,126 +101,129 @@ export const VesselActivitySummary = () => {
   )
 
   return (
-    <div className={styles.container}>
+    <div className={styles.summaryContainer}>
       <label className="print-only">{t('vessel.sectionActivity', 'activity')}</label>
-      <h2 className={styles.summary}>
-        <span dangerouslySetInnerHTML={{ __html: summary }}></span>
-        {hasActivityRegionsData ? (
-          <span>
-            {' '}
-            {t('common.in', 'in')}{' '}
-            {REGIONS_PRIORITY.map((regionType, index) => {
-              if (activityRegions[regionType] && activityRegions[regionType].length !== 0) {
-                const tooltipContent = (
-                  <ul>
-                    {activityRegions[regionType]
-                      .sort((a, b) => b.count - a.count)
-                      .map(({ id, count }) => {
+      <div>
+        <h2 className={styles.summary}>
+          <span dangerouslySetInnerHTML={{ __html: summary }}></span>
+          {hasActivityRegionsData ? (
+            <span>
+              {' '}
+              {t('common.in', 'in')}{' '}
+              {REGIONS_PRIORITY.map((regionType, index) => {
+                if (activityRegions[regionType] && activityRegions[regionType].length !== 0) {
+                  const tooltipContent = (
+                    <ul>
+                      {activityRegions[regionType]
+                        .sort((a, b) => b.count - a.count)
+                        .map(({ id, count }) => {
+                          return (
+                            <li key={id}>
+                              {getRegionNamesByType(regionType, [id])[0] || id} (
+                              {<I18nNumber number={count} />}{' '}
+                              {t('common.event', { defaultValue: 'events', count })})
+                            </li>
+                          )
+                        })}
+                    </ul>
+                  )
+                  return (
+                    <Tooltip key={regionType} content={tooltipContent}>
+                      <span className={styles.help}>
+                        {activityRegions[regionType].length}{' '}
+                        {t(`layer.areas.${regionType}`, {
+                          defaultvalue: regionType,
+                          count: activityRegions[regionType].length,
+                        })}
+                        {(regionType === 'fao' || regionType === 'rfmo') && (
+                          <span>
+                            {' '}
+                            {t(`common.area`, {
+                              defaultValue: 'areas',
+                              count: activityRegions[regionType].length,
+                            })}
+                          </span>
+                        )}
+                        {index < activityRegionsLength - 1 && ', '}
+                      </span>
+                    </Tooltip>
+                  )
+                }
+                return null
+              })}
+              .
+            </span>
+          ) : (
+            <span>.</span>
+          )}
+        </h2>
+        <ul>
+          {EVENTS_ORDER.map((eventType) => {
+            const events = eventsByType[eventType]
+            const active =
+              visibleEvents === 'all'
+                ? true
+                : visibleEvents === 'none'
+                ? false
+                : visibleEvents.includes(eventType)
+            const color =
+              eventType === 'fishing' && vesselColor ? vesselColor : EVENTS_COLORS[eventType]
+            return (
+              <li key={eventType} className={styles.eventTypeRowContainer}>
+                <Switch
+                  active={active}
+                  onClick={onEventChange}
+                  id={eventType}
+                  color={color}
+                  className={styles.eventSwitch}
+                />
+                <div className={cx(styles.eventTypeRow, { [styles.active]: active })}>
+                  {active && <strong>{formatI18nNumber(events?.length || 0)} </strong>}
+                  {t(`event.${eventType}` as any, {
+                    defaultValue: eventType,
+                    count: events?.length || 0,
+                  })}{' '}
+                  {eventType === EventTypes.Port && threeMostVisitedPortCountries.length > 0 && (
+                    <Fragment>
+                      {threeMostVisitedPortCountries.map(({ flag, count }, index) => {
                         return (
-                          <li key={id}>
-                            {getRegionNamesByType(regionType, [id])[0] || id} (
-                            {<I18nNumber number={count} />}{' '}
-                            {t('common.event', { defaultValue: 'events', count })})
-                          </li>
+                          <Tooltip
+                            key={flag}
+                            content={`${count} ${t('event.port_visit', {
+                              defaultValue: 'port visit',
+                              count,
+                            })}`}
+                          >
+                            <span className={styles.help}>
+                              {formatInfoField(flag, 'flag')}
+                              {index < threeMostVisitedPortCountries.length - 1 ? ', ' : ''}
+                            </span>
+                          </Tooltip>
                         )
                       })}
-                  </ul>
-                )
-                return (
-                  <Tooltip key={regionType} content={tooltipContent}>
-                    <span className={styles.help}>
-                      {activityRegions[regionType].length}{' '}
-                      {t(`layer.areas.${regionType}`, {
-                        defaultvalue: regionType,
-                        count: activityRegions[regionType].length,
-                      })}
-                      {(regionType === 'fao' || regionType === 'rfmo') && (
-                        <span>
-                          {' '}
-                          {t(`common.area`, {
-                            defaultValue: 'areas',
-                            count: activityRegions[regionType].length,
-                          })}
-                        </span>
-                      )}
-                      {index < activityRegionsLength - 1 && ', '}
-                    </span>
-                  </Tooltip>
-                )
-              }
-              return null
-            })}
-            .
-          </span>
-        ) : (
-          <span>.</span>
-        )}
-      </h2>
-      <ul className={styles.summary}>
-        {EVENTS_ORDER.map((eventType) => {
-          const events = eventsByType[eventType]
-          const active =
-            visibleEvents === 'all'
-              ? true
-              : visibleEvents === 'none'
-              ? false
-              : visibleEvents.includes(eventType)
-          const color =
-            eventType === 'fishing' && vesselColor ? vesselColor : EVENTS_COLORS[eventType]
-          return (
-            <li key={eventType} className={styles.eventTypeRowContainer}>
-              <Switch
-                active={active}
-                onClick={onEventChange}
-                id={eventType}
-                color={color}
-                className={styles.eventSwitch}
-              />
-              <div className={cx(styles.eventTypeRow, { [styles.active]: active })}>
-                {active && <strong>{formatI18nNumber(events?.length || 0)} </strong>}
-                {t(`event.${eventType}` as any, {
-                  defaultValue: eventType,
-                  count: events?.length || 0,
-                })}{' '}
-                {eventType === EventTypes.Port && threeMostVisitedPortCountries.length > 0 && (
-                  <Fragment>
-                    {threeMostVisitedPortCountries.map(({ flag, count }, index) => {
-                      return (
-                        <Tooltip
-                          key={flag}
-                          content={`${count} ${t('event.port_visit', {
-                            defaultValue: 'port visit',
-                            count,
-                          })}`}
-                        >
-                          <span className={styles.help}>
-                            {formatInfoField(flag, 'flag')}
-                            {index < threeMostVisitedPortCountries.length - 1 ? ', ' : ''}
-                          </span>
+                      {restMostVisitedPortCountries.length > 0 && (
+                        <Tooltip content={restTooltipContent}>
+                          <span className={styles.help}>{` ${t('common.and', 'and')} ${
+                            restMostVisitedPortCountries.length
+                          } ${t('common.more', 'more')}`}</span>
                         </Tooltip>
-                      )
-                    })}
-                    {restMostVisitedPortCountries.length > 0 && (
-                      <Tooltip content={restTooltipContent}>
-                        <span className={styles.help}>{` ${t('common.and', 'and')} ${
-                          restMostVisitedPortCountries.length
-                        } ${t('common.more', 'more')}`}</span>
-                      </Tooltip>
-                    )}
-                  </Fragment>
-                )}
-                <span className={styles.iconContainer}>
-                  {eventType !== EventTypes.Fishing ? (
-                    <Icon icon={`event-legend-${eventType}` as IconType} type="original-colors" />
-                  ) : (
-                    <div className={styles.fishingIcon} style={{ backgroundColor: color }} />
+                      )}
+                    </Fragment>
                   )}
-                </span>
-              </div>
-            </li>
-          )
-        })}
-      </ul>
+                  <span className={styles.iconContainer}>
+                    {eventType !== EventTypes.Fishing ? (
+                      <Icon icon={`event-legend-${eventType}` as IconType} type="original-colors" />
+                    ) : (
+                      <div className={styles.fishingIcon} style={{ backgroundColor: color }} />
+                    )}
+                  </span>
+                </div>
+              </li>
+            )
+          })}
+        </ul>
+      </div>
+      <VesselActivityDownload />
     </div>
   )
 }

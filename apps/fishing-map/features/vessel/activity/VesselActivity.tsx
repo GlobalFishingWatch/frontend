@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next'
-import { Fragment } from 'react'
+import { Fragment, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { Button, Spinner } from '@globalfishingwatch/ui-components'
+import { Choice, ChoiceOption, Spinner } from '@globalfishingwatch/ui-components'
 import { ResourceStatus } from '@globalfishingwatch/api-types'
 import { ActivityByType } from 'features/vessel/activity/activity-by-type/ActivityByType'
 import ActivityByVoyage from 'features/vessel/activity/activity-by-voyage/ActivityByVoyage'
-import VesselActivityDownload from 'features/vessel/activity/VesselActivityDownload'
+import { VesselActivitySummary } from 'features/vessel/activity/VesselActivitySummary'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectVesselActivityMode } from 'features/vessel/vessel.config.selectors'
 import { VesselProfileActivityMode } from 'types'
@@ -15,7 +15,6 @@ import {
   selectVesselHasEventsDatasets,
 } from 'features/vessel/vessel.selectors'
 import styles from './VesselActivity.module.css'
-import { VesselActivitySummary } from './VesselActivitySummary'
 
 const VesselActivity = () => {
   const { t } = useTranslation()
@@ -25,9 +24,23 @@ const VesselActivity = () => {
   const eventsLoading = useSelector(selectVesselEventsResourcesLoading)
   const eventsResources = useSelector(selectVesselEventsResources)
 
-  const setActivityMode = (vesselActivityMode: VesselProfileActivityMode) => {
-    dispatchQueryParams({ vesselActivityMode })
+  const setActivityMode = (option: ChoiceOption<VesselProfileActivityMode>) => {
+    dispatchQueryParams({ vesselActivityMode: option.id })
   }
+
+  const areaOptions: ChoiceOption<VesselProfileActivityMode>[] = useMemo(
+    () => [
+      {
+        id: 'type',
+        label: t('vessel.activityByType', 'By type'),
+      },
+      {
+        id: 'voyage',
+        label: t('vessel.activityByVoyages', 'By voyages'),
+      },
+    ],
+    [t]
+  )
 
   if (eventsLoading) {
     return (
@@ -58,28 +71,15 @@ const VesselActivity = () => {
 
   return (
     <Fragment>
-      <div className={styles.summaryContainer}>
-        <VesselActivitySummary />
-        <div className={styles.actions}>
-          <VesselActivityDownload />
-        </div>
-      </div>
       <div className={styles.activityTitleContainer}>
-        <label>
-          {activityMode === 'voyage'
-            ? t('vessel.activityByVoyages', 'Timeline by voyages')
-            : t('vessel.activityByType', 'Activity by type')}
-        </label>
-        <Button
-          className="print-hidden"
+        <VesselActivitySummary />
+        <Choice
+          options={areaOptions}
           size="small"
-          type="border-secondary"
-          onClick={(e) => setActivityMode(activityMode === 'type' ? 'voyage' : 'type')}
-        >
-          {activityMode === 'voyage'
-            ? t('vessel.activityGroupByType', 'Group by type')
-            : t('vessel.activityGroupByVoyages', 'Group by voyages')}
-        </Button>
+          activeOption={activityMode}
+          className={styles.choice}
+          onSelect={setActivityMode}
+        />
       </div>
       {eventsLoading && (
         <div className={styles.placeholder}>

@@ -21,15 +21,26 @@
   flex-shrink: 0;
 }
 
+.summaryContainer {
+  display: flex;
+  gap: var(--space-S);
+  margin-bottom: var(--space-M);
+}
+
 .summary {
   font: var(--font-M);
   color: var(--color-secondary-blue);
-  margin-bottom: var(--space-S);
+  margin-bottom: var(--space-M);
 }
 
 .summary strong {
   font-weight: 400;
   color: var(--color-primary-blue);
+}
+
+.title {
+  color: var(--color-primary-blue);
+  margin-bottom: var(--space-SM);
 }
 
 .eventsCount strong {
