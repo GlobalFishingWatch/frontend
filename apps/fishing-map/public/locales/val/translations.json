@@ -655,7 +655,6 @@
     "identityDatesOutOfRange": "crwdns59405:0crwdne59405:0",
     "infoSource": "crwdns49753:0crwdne49753:0",
     "infoSources": {
-      "both": "crwdns57539:0crwdne57539:0",
       "registry": "crwdns49755:0crwdne49755:0",
       "selfReported": "crwdns57567:0crwdne57567:0"
     },
