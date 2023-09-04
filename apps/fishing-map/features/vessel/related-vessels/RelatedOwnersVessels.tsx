@@ -7,9 +7,9 @@ import { Spinner } from '@globalfishingwatch/ui-components'
 import { selectVesselDatasetId } from 'features/vessel/vessel.config.selectors'
 import { getCurrentIdentityVessel, getVesselProperty } from 'features/vessel/vessel.utils'
 import { formatInfoField } from 'utils/info'
-import VesselLink from 'features/vessel/VesselLink'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import I18nDate from 'features/i18n/i18nDate'
+import RelatedVessel from 'features/vessel/related-vessels/RelatedVessel'
 import styles from './RelatedVessels.module.css'
 
 type OwnerVesselsProps = { owner: string; dataset: string; ignoreVessel?: string }
@@ -50,12 +50,7 @@ const OwnerVessels = ({ owner, dataset, ignoreVessel }: OwnerVesselsProps) => {
         const vesselIdentity = getCurrentIdentityVessel(vessel)
         return (
           <li key={vesselIdentity.id} className={styles.vessel}>
-            <VesselLink vesselId={vesselIdentity.id} datasetId={dataset}>
-              {formatInfoField(vesselIdentity.shipname, 'name')}
-            </VesselLink>{' '}
-            <span className={styles.secondary}>
-              ({formatInfoField(vesselIdentity.flag, 'flag')})
-            </span>
+            <RelatedVessel vessel={vesselIdentity} showTooltip />
           </li>
         )
       })}

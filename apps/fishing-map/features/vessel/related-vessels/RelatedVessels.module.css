@@ -18,7 +18,7 @@
 
 .vesselContainer {
   width: 25rem;
-  height: 3rem;
+  height: 4rem;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
