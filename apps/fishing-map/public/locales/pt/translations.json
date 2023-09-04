@@ -571,10 +571,8 @@
     "vesselSearch": "Pesquisar Embarcação"
   },
   "vessel": {
-    "activityByType": "Activity by type",
-    "activityByVoyages": "Timeline by voyages",
-    "activityGroupByType": "Group by type",
-    "activityGroupByVoyages": "Group by voyages",
+    "activityByType": "By type",
+    "activityByVoyages": "By voyages",
     "addToWorkspace": "Adicionar embarcação na visualização",
     "areasTitle": "Areas with more events",
     "beam": "Rede de draga",
@@ -691,6 +689,7 @@
     "registeredGearType": "Tipo de petrecho registrado",
     "registrySources": "registry sources",
     "sectionActivity": "Atividade",
+    "sectionSummary": "Summary",
     "sectionAreas": "Areas",
     "sectionRelatedVessels": "Related vessels",
     "share": "Share vessel",
