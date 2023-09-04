@@ -57,7 +57,7 @@ export const useUpdateVesselEventsVisibility = () => {
         identityIndex,
         identitySource,
       })
-      if (shiptype.toLowerCase() === 'fishing') {
+      if (shiptype?.toLowerCase() === 'fishing') {
         setVesselEventVisibility({ event: 'loitering', visible: false })
       }
     }
