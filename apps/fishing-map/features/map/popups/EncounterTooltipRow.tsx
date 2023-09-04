@@ -20,6 +20,7 @@ import { useCarrierLatestConnect } from 'features/datasets/datasets.hook'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
+import VesselLink from 'features/vessel/VesselLink'
 import useViewport from '../map-viewport.hooks'
 import { ExtendedEventVessel, ExtendedFeatureEvent } from '../map.slice'
 import styles from './Popup.module.css'
@@ -143,7 +144,9 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
                       <p className={styles.rowTitle}>{t('vessel.carrier', 'Carrier')}</p>
                       <div className={styles.centered}>
                         <span className={styles.rowText}>
-                          {formatInfoField(event.vessel?.name, 'name')}
+                          <VesselLink vesselId={event.vessel.id} datasetId={event.vessel.dataset}>
+                            {formatInfoField(event.vessel?.name, 'name')}
+                          </VesselLink>
                         </span>
                         {(event.vessel as ExtendedEventVessel).dataset && (
                           <IconButton
@@ -172,7 +175,12 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
                         <span className={styles.rowTitle}>{t('vessel.donor', 'Donor vessel')}</span>
                         <div className={styles.centered}>
                           <span className={styles.rowText}>
-                            {formatInfoField(event.encounter?.vessel?.name, 'name')}
+                            <VesselLink
+                              vesselId={event.encounter.vessel?.id}
+                              datasetId={event.encounter.vessel?.dataset}
+                            >
+                              {formatInfoField(event.encounter.vessel?.name, 'name')}
+                            </VesselLink>
                           </span>
                           {(event.encounter?.vessel as ExtendedEventVessel).dataset && (
                             <IconButton

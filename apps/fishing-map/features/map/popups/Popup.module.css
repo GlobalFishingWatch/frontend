@@ -198,6 +198,10 @@
   line-height: 1.2;
 }
 
+.rowText a {
+  text-decoration: underline;
+}
+
 .rowActions {
   display: flex;
   flex-wrap: nowrap;

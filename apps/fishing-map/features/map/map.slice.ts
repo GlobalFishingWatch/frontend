@@ -24,6 +24,8 @@ import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/data
 import { isGuestUser } from 'features/user/user.slice'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { getUTCDateTime } from 'utils/dates'
+import { getVesselProperty } from 'features/vessel/vessel.utils'
+import { VesselIdentitySourceEnum } from 'features/search/search.config'
 
 export const MAX_TOOLTIP_LIST = 5
 
@@ -367,7 +369,7 @@ export const fetchEncounterEventThunk = createAsyncThunk<
       const carrierVessel = isACarrierTheMainVessel
         ? clusterEvent.vessel
         : clusterEvent.encounter?.vessel
-      let vesselsInfo: ExtendedEventVessel[] = []
+      let vesselsInfo: IdentityVessel[] = []
       const vesselsDatasets = dataview?.datasets
         ?.flatMap((d) => d.relatedDatasets || [])
         .filter((d) => d?.type === DatasetTypes.Vessels)
@@ -379,23 +381,32 @@ export const fetchEncounterEventThunk = createAsyncThunk<
           endpoint: EndpointId.VesselList,
           params: [],
           query: [
-            { id: 'ids', value: [fishingVessel.id, carrierVessel.id].join(',') },
-            { id: 'datasets', value: vesselsDatasets.map((d) => d.id).join(',') },
+            { id: 'ids', value: [fishingVessel.id, carrierVessel.id] },
+            { id: 'datasets', value: vesselsDatasets.map((d) => d.id) },
           ],
         }
         const vesselsUrl = resolveEndpoint(vesselDataset, vesselsDatasetConfig)
         if (vesselsUrl) {
-          vesselsInfo = await GFWAPI.fetch<APIPagination<ExtendedEventVessel>>(vesselsUrl, {
+          vesselsInfo = await GFWAPI.fetch<APIPagination<IdentityVessel>>(vesselsUrl, {
             signal,
           }).then((r) => r.entries)
         }
       }
-
       if (clusterEvent) {
         const fishingVesselDataset =
-          vesselsInfo.find((v) => v.id === fishingVessel?.id)?.dataset || ''
+          vesselsInfo.find(
+            (v) =>
+              getVesselProperty(v, 'id', {
+                identitySource: VesselIdentitySourceEnum.SelfReported,
+              }) === fishingVessel?.id
+          )?.dataset || ''
         const carrierVesselDataset =
-          vesselsInfo.find((v) => v.id === carrierVessel?.id)?.dataset || ''
+          vesselsInfo.find(
+            (v) =>
+              getVesselProperty(v, 'id', {
+                identitySource: VesselIdentitySourceEnum.SelfReported,
+              }) === carrierVessel?.id
+          )?.dataset || ''
         const carrierExtendedVessel: ExtendedEventVessel = {
           ...(carrierVessel as EventVessel),
           dataset: carrierVesselDataset,
