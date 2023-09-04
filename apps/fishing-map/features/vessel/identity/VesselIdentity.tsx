@@ -159,14 +159,18 @@ const VesselIdentity = () => {
                   {t('vessel.terminology.registryInfo', 'Registry Info')}
                 </DataTerminology>
               </label>
-              <Tooltip content={vesselIdentity?.sourceCode?.join(', ')}>
-                <VesselIdentityField
-                  className={styles.help}
-                  value={`${vesselIdentity?.sourceCode?.slice(0, 3).join(', ')}${
-                    vesselIdentity?.sourceCode?.length > 3 ? '...' : ''
-                  }`}
-                />
-              </Tooltip>
+              {vesselIdentity?.sourceCode ? (
+                <Tooltip content={vesselIdentity?.sourceCode?.join(', ')}>
+                  <VesselIdentityField
+                    className={styles.help}
+                    value={`${vesselIdentity?.sourceCode?.slice(0, 3).join(', ')}${
+                      vesselIdentity?.sourceCode?.length > 3 ? '...' : ''
+                    }`}
+                  />
+                </Tooltip>
+              ) : (
+                EMPTY_FIELD_PLACEHOLDER
+              )}
             </div>
           )}
           <div className={styles.twoCells}>
