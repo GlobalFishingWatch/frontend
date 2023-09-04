@@ -98,10 +98,10 @@ function SearchAdvancedFilters() {
 
   useEffect(() => {
     if (transmissionDateFrom === undefined) {
-      setSearchFilters({ transmissionDateFrom: start?.split('T')[0] })
+      setSearchFilters({ transmissionDateFrom: end?.split('T')[0] })
     }
     if (transmissionDateTo === undefined) {
-      setSearchFilters({ transmissionDateTo: end?.split('T')[0] })
+      setSearchFilters({ transmissionDateTo: start?.split('T')[0] })
     }
   }, [transmissionDateFrom, transmissionDateTo, setSearchFilters, start, end])
 
