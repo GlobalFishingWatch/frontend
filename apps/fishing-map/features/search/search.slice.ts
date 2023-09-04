@@ -113,6 +113,9 @@ export const fetchVesselSearchThunk = createAsyncThunk(
             value: query,
           })
         }
+        if (!fields?.length) {
+          console.warn('No fields to search found or allowed')
+        }
         advancedQuery = getAdvancedSearchQuery(fields, { rootObject: filters.infoSource as any })
       }
 
@@ -125,7 +128,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           { id: 'datasets', value: datasets.map((d) => d.id) },
           {
             id: advancedQuery ? 'where' : 'query',
-            value: encodeURIComponent(advancedQuery || query),
+            value: encodeURIComponent(advancedQuery || query || ''),
           },
           { id: 'since', value: since },
         ],
