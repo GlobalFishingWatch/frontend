@@ -21,7 +21,10 @@ import { showSchemaFilter } from 'features/workspace/activity/ActivitySchemaFilt
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { selectAdvancedSearchDatasets } from 'features/search/search.selectors'
 import { VesselIdentitySourceEnum } from 'features/search/search.config'
-import { DEFAULT_VESSEL_IDENTITY_DATASET } from 'features/vessel/vessel.config'
+import {
+  DEFAULT_VESSEL_IDENTITY_DATASET,
+  DEFAULT_VESSEL_IDENTITY_ID,
+} from 'features/vessel/vessel.config'
 import { useSearchFiltersConnect } from 'features/search/search.hook'
 import styles from './SearchAdvancedFilters.module.css'
 
@@ -80,11 +83,14 @@ function SearchAdvancedFilters() {
     () => [
       {
         id: VesselIdentitySourceEnum.Registry,
-        label: t(`vessel.infoSources.${VesselIdentitySourceEnum.Registry}` as any, 'Registry only'),
+        label: t(`vessel.infoSources.${VesselIdentitySourceEnum.Registry}` as string, 'Registry'),
       },
       {
         id: VesselIdentitySourceEnum.SelfReported,
-        label: t(`vessel.infoSources.${VesselIdentitySourceEnum.SelfReported}` as any, 'Any'),
+        label: t(
+          `vessel.infoSources.${VesselIdentitySourceEnum.SelfReported}` as string,
+          'Self reported'
+        ),
       },
     ],
     [t]
@@ -169,28 +175,45 @@ function SearchAdvancedFilters() {
         selectedOption={infoSourceOptions.find(({ id }) => id === infoSource)}
         onSelect={({ id }) => {
           setSearchFilters({ infoSource: id })
+          if (id === VesselIdentitySourceEnum.Registry) {
+            // This is the only dataset with support for registry so far
+            setSearchFilters({ sources: [DEFAULT_VESSEL_IDENTITY_ID] })
+          } else if (
+            infoSource === VesselIdentitySourceEnum.Registry &&
+            sources?.length === 1 &&
+            sources[0] === DEFAULT_VESSEL_IDENTITY_ID
+          ) {
+            setSearchFilters({ sources: undefined })
+          }
         }}
         onRemove={() => {
           setSearchFilters({ infoSource: undefined })
+          setSearchFilters({ sources: undefined })
+        }}
+        onCleanClick={() => {
+          setSearchFilters({ infoSource: undefined })
+          setSearchFilters({ sources: undefined })
         }}
       />
-      {sourceOptions && sourceOptions.length > 0 && (
-        <MultiSelect
-          label={t('layer.source_other', 'Sources')}
-          placeholder={getPlaceholderBySelections({ selection: sources, options: sourceOptions })}
-          options={sourceOptions}
-          selectedOptions={sourceOptions.filter((f) => sources?.includes(f.id))}
-          onSelect={onSourceSelect}
-          onRemove={(_, rest) => {
-            const notCompatibleSchemaFilters = getIncompatibleFilters(rest)
-            setSearchFilters({ ...notCompatibleSchemaFilters, sources: rest.map(({ id }) => id) })
-          }}
-          onCleanClick={() => {
-            const notCompatibleSchemaFilters = getIncompatibleFilters(sourceOptions)
-            setSearchFilters({ ...notCompatibleSchemaFilters, sources: undefined })
-          }}
-        />
-      )}
+      {infoSource !== VesselIdentitySourceEnum.Registry &&
+        sourceOptions &&
+        sourceOptions.length > 0 && (
+          <MultiSelect
+            label={t('layer.source_other', 'Sources')}
+            placeholder={getPlaceholderBySelections({ selection: sources, options: sourceOptions })}
+            options={sourceOptions}
+            selectedOptions={sourceOptions.filter((f) => sources?.includes(f.id))}
+            onSelect={onSourceSelect}
+            onRemove={(_, rest) => {
+              const notCompatibleSchemaFilters = getIncompatibleFilters(rest)
+              setSearchFilters({ ...notCompatibleSchemaFilters, sources: rest.map(({ id }) => id) })
+            }}
+            onCleanClick={() => {
+              const notCompatibleSchemaFilters = getIncompatibleFilters(sourceOptions)
+              setSearchFilters({ ...notCompatibleSchemaFilters, sources: undefined })
+            }}
+          />
+        )}
       <MultiSelect
         label={t('layer.flagState_other', 'Flag States')}
         placeholder={getPlaceholderBySelections({ selection: flag, options: flagOptions })}
