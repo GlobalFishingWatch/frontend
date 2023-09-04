@@ -18,7 +18,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { SearchComponentProps } from 'features/search/basic/SearchBasic'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
-import { Locale } from 'types'
+import { Locale, VesselSearchState } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
 import {
   VesselIdentityProperty,
@@ -43,19 +43,21 @@ type CellWithFilterProps = {
   vessel: IdentityVesselData
   column: VesselIdentityProperty
   children: React.ReactNode
-  onClick?: () => void
+  onClick?: (params: { query?: string; filters?: VesselSearchState }) => void
 }
 function CellWithFilter({ vessel, column, children, onClick }: CellWithFilterProps) {
-  const { setSearchFilters } = useSearchFiltersConnect()
+  const { setSearchFilters, searchFilters } = useSearchFiltersConnect()
 
   const value = getVesselProperty(vessel, column)
   const onFilterClick = useCallback(() => {
     const filter = MULTIPLE_SELECTION_FILTERS_COLUMN.includes(column) ? [value] : value
     setSearchFilters({ [column]: filter })
     if (onClick) {
-      onClick()
+      onClick({
+        filters: { ...searchFilters, [column]: filter },
+      })
     }
-  }, [column, onClick, setSearchFilters, value])
+  }, [column, onClick, searchFilters, setSearchFilters, value])
 
   return (
     <div className={styles.cellFilter}>

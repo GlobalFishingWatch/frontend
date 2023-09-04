@@ -10,7 +10,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import SearchBasicResultList from 'features/search/basic/SearchBasicResultList'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectSearchQuery } from 'features/search/search.config.selectors'
-import { RESULTS_PER_PAGE } from 'features/search/search.config'
+import { MIN_SEARCH_CHARACTERS, RESULTS_PER_PAGE } from 'features/search/search.config'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import {
@@ -29,8 +29,6 @@ import {
 } from 'features/search/SearchPlaceholders'
 import { isBasicSearchAllowed } from 'features/search/search.selectors'
 import styles from './SearchBasic.module.css'
-
-const MIN_SEARCH_CHARACTERS = 3
 
 export type SearchComponentProps = {
   onSuggestionClick?: () => void

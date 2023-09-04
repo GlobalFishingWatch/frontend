@@ -2,6 +2,8 @@ import { MultiSelectOption, SelectOption } from '@globalfishingwatch/ui-componen
 import { SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import { VesselSearchState } from 'types'
 
+export const MIN_SEARCH_CHARACTERS = 3
+
 export type SearchType = 'basic' | 'advanced'
 export enum VesselIdentitySourceEnum {
   Registry = 'registryInfo',

@@ -1,8 +1,7 @@
-import { useEffect, useCallback, useRef, useState } from 'react'
+import { useEffect, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { debounce } from 'lodash'
 import { Dataset } from '@globalfishingwatch/api-types'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
@@ -11,8 +10,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { isGFWUser, isGuestUser } from 'features/user/user.slice'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { isGuestUser } from 'features/user/user.slice'
 import SearchBasic from 'features/search/basic/SearchBasic'
 import SearchAdvanced from 'features/search/advanced/SearchAdvanced'
 import SearchPlaceholder, { SearchNotAllowed } from 'features/search/SearchPlaceholders'
@@ -22,17 +20,14 @@ import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { selectDatasetsError, selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import { WorkspaceLoginError } from 'features/workspace/WorkspaceError'
 import { selectSearchOption, selectSearchQuery } from 'features/search/search.config.selectors'
-import { RESULTS_PER_PAGE } from 'features/search/search.config'
-import { VesselSearchState } from 'types'
 import SearchDownload from 'features/search/SearchDownload'
 import SearchActions from 'features/search/SearchActions'
 import {
-  hasFiltersActive,
+  useFetchSearchResults,
   useSearchConnect,
   useSearchFiltersConnect,
 } from 'features/search/search.hook'
 import {
-  fetchVesselSearchThunk,
   cleanVesselSearchResults,
   setSuggestionClicked,
   selectSearchPagination,
@@ -45,9 +40,8 @@ import {
   isBasicSearchAllowed,
   isAdvancedSearchAllowed,
 } from 'features/search/search.selectors'
+import { VesselSearchState } from 'types'
 import styles from './Search.module.css'
-
-const MIN_SEARCH_CHARACTERS = 3
 
 function Search() {
   const { t } = useTranslation()
@@ -58,10 +52,9 @@ function Search() {
   const advancedSearchAllowed = useSelector(isAdvancedSearchAllowed)
   const searchResults = useSelector(selectSearchResults)
   const { hasFilters, searchFilters } = useSearchFiltersConnect()
-  const { searchPagination, searchSuggestion } = useSearchConnect()
+  const { searchSuggestion } = useSearchConnect()
   const debouncedQuery = useDebounce(searchQuery, 600)
   const { dispatchQueryParams } = useLocationConnect()
-  const gfwUser = useSelector(isGFWUser)
   const activeSearchOption = useSelector(selectSearchOption)
   const searchResultsPagination = useSelector(selectSearchPagination)
   const vesselsSelected = useSelector(selectSelectedVessels)
@@ -74,87 +67,11 @@ function Search() {
   const datasetsStatus = useSelector(selectDatasetsStatus)
   const guestUser = useSelector(isGuestUser)
   const datasetError = useSelector(selectDatasetsError)
-  const promiseRef = useRef<any>()
+  const { fetchResults, fetchMoreResults } = useFetchSearchResults()
 
   useEffect(() => {
     dispatch(fetchWorkspaceThunk(urlWorkspaceId))
   }, [dispatch, urlWorkspaceId])
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const fetchResults = useCallback(
-    debounce(
-      ({
-        query,
-        datasets,
-        filters,
-        since = '',
-      }: {
-        query: string
-        datasets: Dataset[]
-        filters: VesselSearchState
-        since?: string
-      }) => {
-        const searchInBasic =
-          activeSearchOption === 'basic' && query?.length > MIN_SEARCH_CHARACTERS - 1
-        const searchInAdvanced =
-          activeSearchOption === 'advanced' && (hasFiltersActive(filters) || query)
-        if (datasets?.length && (searchInAdvanced || searchInBasic)) {
-          const sources = filters?.sources
-            ? datasets.filter(({ id }) => filters?.sources?.includes(id))
-            : datasets
-          if (promiseRef.current) {
-            promiseRef.current.abort()
-          }
-          // To ensure the pending action isn't overwritted by the abort above
-          // and we miss the loading intermediate state
-          promiseRef.current = dispatch(
-            fetchVesselSearchThunk({
-              query,
-              filters,
-              datasets: sources,
-              since,
-              gfwUser,
-            })
-          )
-          // TODO: Find a better approach to sync query
-          // and searchPagination.total to track the search in google analytics
-          promiseRef.current.then((data: any) => {
-            const total = data?.payload?.pagination?.total
-            if (total >= 0) {
-              trackEvent({
-                category: TrackCategory.SearchVessel,
-                action: 'Search specific vessel',
-                label: query,
-                value: total,
-              })
-            }
-          })
-        }
-      },
-      100
-    ),
-    [dispatch, activeSearchOption]
-  )
-
-  const fetchMoreResults = useCallback(() => {
-    const { since, total } = searchPagination
-    if (since && searchResults!?.length < total && total > RESULTS_PER_PAGE && searchDatasets) {
-      fetchResults({
-        query: debouncedQuery,
-        datasets: searchDatasets,
-        filters: activeSearchOption === 'advanced' ? searchFilters : {},
-        since,
-      })
-    }
-  }, [
-    searchPagination,
-    searchResults,
-    searchDatasets,
-    fetchResults,
-    debouncedQuery,
-    activeSearchOption,
-    searchFilters,
-  ])
 
   useEffect(() => {
     if (searchDatasets?.length && activeSearchOption === 'basic' && debouncedQuery) {
@@ -199,14 +116,22 @@ function Search() {
     }
   }
 
-  const onConfirmSearch = useCallback(() => {
-    dispatch(cleanVesselSearchResults())
-    fetchResults({
-      query: debouncedQuery,
-      datasets: searchDatasets,
-      filters: searchFilters,
-    })
-  }, [debouncedQuery, dispatch, fetchResults, searchDatasets, searchFilters])
+  const onConfirmSearch = useCallback(
+    (
+      { query = debouncedQuery, filters = searchFilters } = {} as {
+        query?: string
+        filters?: VesselSearchState
+      }
+    ) => {
+      dispatch(cleanVesselSearchResults())
+      fetchResults({
+        query,
+        filters,
+        datasets: searchDatasets,
+      })
+    },
+    [debouncedQuery, dispatch, fetchResults, searchDatasets, searchFilters]
+  )
 
   const isWorkspaceError = workspaceStatus === AsyncReducerStatus.Error
   const isDatasetError = datasetsStatus === AsyncReducerStatus.Error
