@@ -20,8 +20,7 @@ import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { VesselSearchState } from 'types'
 import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
-import { getVesselIdentities, getVesselProperty } from 'features/vessel/vessel.utils'
-import { VesselIdentitySourceEnum } from 'features/search/search.config'
+import { getVesselId, getVesselIdentities } from 'features/vessel/vessel.utils'
 
 export type VesselLastIdentity = Omit<IdentityVesselData, 'identities'> & VesselDataIdentity
 
@@ -156,9 +155,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
 
           const trackDatasetId = getRelatedDatasetByType(infoDataset, DatasetTypes.Tracks)?.id
           return {
-            id: getVesselProperty(vessel, 'id', {
-              identitySource: VesselIdentitySourceEnum.SelfReported,
-            }),
+            id: getVesselId(vessel),
             ...(vessel.registryOwners && { registryOwners: vessel.registryOwners }),
             ...(vessel.registryAuthorizations && {
               registryAuthorizations: vessel.registryAuthorizations,

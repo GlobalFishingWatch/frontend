@@ -57,6 +57,16 @@ function getLatestIdentityPrioritised(vessel: IdentityVessel | IdentityVesselDat
   return latestRegistryIdentity || latestSelfReportesIdentity
 }
 
+export function getVesselId(vessel: IdentityVessel | IdentityVesselData | null) {
+  const selfReportedId = getVesselProperty(vessel, 'id', {
+    identitySource: VesselIdentitySourceEnum.SelfReported,
+  })
+  const identityId = getVesselProperty(vessel, 'id', {
+    identitySource: VesselIdentitySourceEnum.Registry,
+  })
+  return selfReportedId || identityId
+}
+
 export function getVesselProperty<P = string>(
   vessel: IdentityVessel | IdentityVesselData | null,
   property: VesselIdentityProperty,
@@ -119,7 +129,7 @@ export function getSearchIdentityResolved(vessel: IdentityVessel | IdentityVesse
 
   return {
     ...vesselData,
-    id: vesselSelfReportedIdentities?.[0]?.id,
+    id: getVesselId(vessel),
     dataset: vessel?.dataset,
     transmissionDateFrom,
     transmissionDateTo,
