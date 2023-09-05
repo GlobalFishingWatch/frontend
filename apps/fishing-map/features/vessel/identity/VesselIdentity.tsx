@@ -127,7 +127,7 @@ const VesselIdentity = () => {
       },
       {
         id: VesselIdentitySourceEnum.SelfReported,
-        title: uniq(selfReportedIdentities.flatMap((i) => i.sourceCode)).join(','),
+        title: uniq(selfReportedIdentities.flatMap((i) => i.sourceCode)).join(',') || 'AIS',
         disabled: selfReportedIdentities.length === 0,
       },
     ],
