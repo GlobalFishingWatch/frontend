@@ -518,7 +518,8 @@
     "title": "Cari",
     "vesselAlreadyInWorkspace": "Kapal ini sudah ada di ruang kerja Anda",
     "vessels": "Cari kapal",
-    "vesselSelected": "Kapal dipilih"
+    "vesselSelected": "Kapal dipilih",
+    "endDateMustBeAfterStartDate": "The ACTIVE BEFORE date must come after the ACTIVE AFTER date"
   },
   "selects": {
     "allSelected": "Semua",
