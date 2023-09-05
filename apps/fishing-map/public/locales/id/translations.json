@@ -514,6 +514,7 @@
     "seeVesselsOnMap_one": "See {{count}} vessel on map",
     "seeVesselsOnMap_other": "See {{count}} vessels on map",
     "selectVessel": "Select vessel",
+    "serching": "Searching in more than 100K vessels ...",
     "suggestion": "Apakah yang kamu maksud",
     "title": "Cari",
     "vesselAlreadyInWorkspace": "Kapal ini sudah ada di ruang kerja Anda",
