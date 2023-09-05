@@ -108,6 +108,7 @@ function SearchAdvancedFilters() {
   }, [datasets, searchFilters, sources])
 
   const schemaFilters = schemaFilterIds.map((id) => getFiltersBySchema(dataview, id))
+  console.log('🚀 ~ SearchAdvancedFilters ~ schemaFilters:', schemaFilters)
 
   const onSourceSelect = (filter) => {
     const newSources = [...(sources || []), filter.id]
@@ -212,37 +213,36 @@ function SearchAdvancedFilters() {
             }}
           />
         )}
-      {(!infoSource || infoSource === VesselIdentitySourceEnum.SelfReported) &&
-        schemaFilters.map((schemaFilter) => {
-          if (!showSchemaFilter(schemaFilter)) {
-            return null
-          }
-          const { id, disabled, options, optionsSelected } = schemaFilter
-          return (
-            <MultiSelect
-              key={id}
-              disabled={disabled}
-              label={t(`vessel.${id}` as any, id)}
-              placeholder={getPlaceholderBySelections({
-                selection: optionsSelected.map(({ id }) => id),
-                options,
-              })}
-              options={options}
-              selectedOptions={optionsSelected}
-              onSelect={(filter) => {
-                setSearchFilters({
-                  [id]: [...(searchFilters[id] || []), filter.id],
-                })
-              }}
-              onRemove={(_, rest) => {
-                setSearchFilters({ [id]: rest })
-              }}
-              onCleanClick={() => {
-                setSearchFilters({ [id]: undefined })
-              }}
-            />
-          )
-        })}
+      {schemaFilters.map((schemaFilter) => {
+        if (!showSchemaFilter(schemaFilter)) {
+          return null
+        }
+        const { id, disabled, options, optionsSelected } = schemaFilter
+        return (
+          <MultiSelect
+            key={id}
+            disabled={disabled}
+            label={t(`vessel.${id}` as any, id)}
+            placeholder={getPlaceholderBySelections({
+              selection: optionsSelected.map(({ id }) => id),
+              options,
+            })}
+            options={options}
+            selectedOptions={optionsSelected}
+            onSelect={(filter) => {
+              setSearchFilters({
+                [id]: [...(searchFilters[id] || []), filter.id],
+              })
+            }}
+            onRemove={(_, rest) => {
+              setSearchFilters({ [id]: rest })
+            }}
+            onCleanClick={() => {
+              setSearchFilters({ [id]: undefined })
+            }}
+          />
+        )
+      })}
       <div>
         <InputDate
           value={transmissionDateTo || ''}
