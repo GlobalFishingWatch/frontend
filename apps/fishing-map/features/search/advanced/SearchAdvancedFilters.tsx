@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import {
@@ -15,7 +15,6 @@ import {
   SchemaFieldDataview,
   SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { showSchemaFilter } from 'features/workspace/activity/ActivitySchemaFilter'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { selectAdvancedSearchDatasets } from 'features/search/search.selectors'
@@ -50,7 +49,6 @@ const getSearchDataview = (datasets, searchFilters, sources): SchemaFieldDatavie
 
 function SearchAdvancedFilters() {
   const { t } = useTranslation()
-  const { start, end } = useTimerangeConnect()
   const datasets = useSelector(selectAdvancedSearchDatasets)
   const { searchFilters, setSearchFilters, searchFilterErrors } = useSearchFiltersConnect()
   const {
@@ -93,15 +91,6 @@ function SearchAdvancedFilters() {
     ],
     [t]
   )
-
-  useEffect(() => {
-    if (transmissionDateFrom === undefined) {
-      setSearchFilters({ transmissionDateFrom: end?.split('T')[0] })
-    }
-    if (transmissionDateTo === undefined) {
-      setSearchFilters({ transmissionDateTo: start?.split('T')[0] })
-    }
-  }, [transmissionDateFrom, transmissionDateTo, setSearchFilters, start, end])
 
   const dataview = useMemo(() => {
     return getSearchDataview(datasets, searchFilters, sources)
