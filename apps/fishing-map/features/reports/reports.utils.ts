@@ -237,7 +237,7 @@ export const getBufferedAreaFeature = ({
   return { ...area, geometry: bufferedGeometry } as Area
 }
 
-export const getPointBufferedBbox = ({
+export const getBufferedAreaBbox = ({
   area,
   value = DEFAULT_POINT_BUFFER_VALUE,
   unit = DEFAULT_POINT_BUFFER_UNIT,

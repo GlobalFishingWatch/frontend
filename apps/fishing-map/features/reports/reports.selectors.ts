@@ -36,7 +36,7 @@ import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { sortStrings } from 'utils/shared'
 import { Area, selectAreas } from 'features/areas/areas.slice'
 import { selectUrlBufferUnitQuery, selectUrlBufferValueQuery } from 'routes/routes.selectors'
-import { selectReportVesselsData } from './report.slice'
+import { selectReportVesselsData, selectReportPreviewBuffer } from './report.slice'
 
 export const EMPTY_API_VALUES = ['NULL', undefined, '']
 export const MAX_CATEGORIES = 5
@@ -461,6 +461,15 @@ const selectReportAreaData = createSelector(
     if (!areaIds || !areas) return null
     const { datasetId, areaId } = areaIds
     return areas?.[datasetId]?.detail?.[areaId]?.data
+  }
+)
+
+export const selectReportAreaPreviewBuffer = createSelector(
+  [selectReportAreaData, selectReportPreviewBuffer],
+  (area, buffer) => {
+    const { value, unit } = buffer
+    if (!area || !unit || !value) return null
+    return getBufferedAreaFeature({ area, value, unit }) as Area
   }
 )
 

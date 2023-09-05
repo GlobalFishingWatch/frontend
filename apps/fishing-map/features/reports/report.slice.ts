@@ -18,14 +18,20 @@ interface ReportState {
   error: AsyncError | null
   data: ReportVesselsByDataset[] | null
   dateRangeHash: string
+  previewBuffer: PreviewBuffer
 }
-type ReportSliceState = { report: ReportState }
 
+type ReportSliceState = { report: ReportState }
+type PreviewBuffer = {
+  value: number | null
+  unit: BufferUnit | null
+}
 const initialState: ReportState = {
   status: AsyncReducerStatus.Idle,
   error: null,
   data: null,
   dateRangeHash: '',
+  previewBuffer: { value: null, unit: null },
 }
 type ReportRegion = {
   dataset: string
@@ -118,9 +124,13 @@ const reportSlice = createSlice({
       state.data = null
       state.error = null
       state.dateRangeHash = ''
+      state.previewBuffer = { value: null, unit: null }
     },
     setDateRangeHash: (state, action: PayloadAction<string>) => {
       state.dateRangeHash = action.payload
+    },
+    setPreviewBuffer: (state, action: PayloadAction<PreviewBuffer>) => {
+      state.previewBuffer = action.payload
     },
   },
   extraReducers: (builder) => {
@@ -139,12 +149,13 @@ const reportSlice = createSlice({
   },
 })
 
-export const { resetReportData, setDateRangeHash } = reportSlice.actions
+export const { resetReportData, setDateRangeHash, setPreviewBuffer } = reportSlice.actions
 
 export const selectReportSummary = (state: ReportSliceState) => state.report
 export const selectReportVesselsStatus = (state: ReportSliceState) => state.report.status
 export const selectReportVesselsError = (state: ReportSliceState) => state.report.error
 export const selectReportVesselsData = (state: ReportSliceState) => state.report.data
+export const selectReportPreviewBuffer = (state: ReportSliceState) => state.report.previewBuffer
 export const selectReportVesselsDateRangeHash = (state: ReportSliceState) =>
   state.report.dateRangeHash
 
