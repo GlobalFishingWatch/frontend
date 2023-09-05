@@ -518,7 +518,8 @@
     "title": "Chercher",
     "vesselAlreadyInWorkspace": "Ce vaisseau est déjà dans votre vue",
     "vessels": "Rechercher des navires",
-    "vesselSelected": "Navire sélectionné"
+    "vesselSelected": "Navire sélectionné",
+    "endDateMustBeAfterStartDate": "The ACTIVE BEFORE date must come after the ACTIVE AFTER date"
   },
   "selects": {
     "allSelected": "Tous",
