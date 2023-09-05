@@ -518,7 +518,8 @@
     "title": "Búsqueda",
     "vesselAlreadyInWorkspace": "La embarcación ya está agregada en su espacio de trabajo.",
     "vessels": "Buscar embarcaciones",
-    "vesselSelected": "Embarcación seleccionada"
+    "vesselSelected": "Embarcación seleccionada",
+    "endDateMustBeAfterStartDate": "The ACTIVE BEFORE date must come after the ACTIVE AFTER date"
   },
   "selects": {
     "allSelected": "Todos",
