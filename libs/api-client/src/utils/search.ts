@@ -34,15 +34,19 @@ export type AdvancedSearchQueryField = {
 type AdvancedSearchOperator = '=' | '>' | '<' | 'LIKE'
 type AdvancedSearchQueryFieldParams = {
   operator: AdvancedSearchOperator
-  transformation?: (field: AdvancedSearchQueryField) => string
+  transformation?: (field: AdvancedSearchQueryField) => string | string[]
 }
 
 const toUpperCaseWithQuotationMarks = (field: AdvancedSearchQueryField) => {
-  return `'${field.value}'`.toUpperCase()
+  if (!field.value) return ''
+  const transform = (value: string) => `'${value}'`.toUpperCase()
+  return Array.isArray(field.value) ? field.value.map(transform) : transform(field.value)
 }
 
 const toUpperCaseWithWildcardsAndQuotationMarks = (field: AdvancedSearchQueryField) => {
-  return `'%${field.value}%'`.toUpperCase()
+  if (!field.value) return ''
+  const transform = (value: string) => `'%${value}%'`.toUpperCase()
+  return Array.isArray(field.value) ? field.value.map(transform) : transform(field.value)
 }
 
 const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFieldParams> = {
@@ -121,7 +125,9 @@ export const getAdvancedSearchQuery = (
         : `${field.key} ${operator} ${value}`
     }
     if (Array.isArray(value)) {
-      const filter = value.map((v) => getFieldValue(`'${v}'`)).join(' OR ')
+      const filter = value
+        .map((v) => getFieldValue(params.transformation ? v : `'${v}'`))
+        .join(' OR ')
       return `(${filter})`
     }
     return getFieldValue(value)

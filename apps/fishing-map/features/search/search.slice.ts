@@ -100,10 +100,12 @@ export const fetchVesselSearchThunk = createAsyncThunk(
             fieldsAllowed.includes(`${filters.infoSource}.${field}`) ||
             (field === 'owner' && fieldsAllowed.includes('registryOwners.name'))
           if (filters[field] && isInFieldsAllowed) {
-            return {
-              key: field,
-              value: filters[field],
+            let value = filters[field]
+            // Supports searching by multiple values separated by comma in owners
+            if (field === 'owner' && value.includes(', ')) {
+              value = value.split(', ')
             }
+            return { key: field, value }
           }
           return []
         })

@@ -37,7 +37,7 @@ import styles from '../basic/SearchBasicResult.module.css'
 
 const PINNED_COLUMN = 'shipname'
 const TOOLTIP_LABEL_CHARACTERS = 25
-const MULTIPLE_SELECTION_FILTERS_COLUMN = ['flag', 'shiptype', 'geartype']
+const MULTIPLE_SELECTION_FILTERS_COLUMN = ['flag', 'shiptype', 'geartype', 'owner']
 
 type CellWithFilterProps = {
   vessel: IdentityVesselData
@@ -50,7 +50,10 @@ function CellWithFilter({ vessel, column, children, onClick }: CellWithFilterPro
 
   const value = getVesselProperty(vessel, column)
   const onFilterClick = useCallback(() => {
-    const filter = MULTIPLE_SELECTION_FILTERS_COLUMN.includes(column) ? [value] : value
+    let filter: string | string[] = value
+    if (MULTIPLE_SELECTION_FILTERS_COLUMN.includes(column)) {
+      filter = column === 'owner' ? value.split(', ') : [value]
+    }
     setSearchFilters({ [column]: filter })
     if (onClick) {
       onClick({
