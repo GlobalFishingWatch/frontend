@@ -6,6 +6,7 @@ import {
   GlGeneratorConfig,
   Group,
   HeatmapAnimatedMode,
+  PolygonsGeneratorConfig,
   Ruler,
 } from '@globalfishingwatch/layer-composer'
 import {
@@ -39,6 +40,7 @@ import {
 import {
   selectReportAreaBuffer,
   selectShowTimeComparison,
+  selectReportAreaPreviewBuffer,
 } from 'features/reports/reports.selectors'
 import { WorkspaceCategory } from 'data/workspaces'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -299,19 +301,30 @@ export const selectMapWorkspacesListGenerators = createSelector(
 )
 
 export const selectMapReportGenerators = createSelector(
-  [selectReportAreaBuffer],
-  (reportAreaBuffer) => {
-    if (!reportAreaBuffer) return []
-    return [
-      {
+  [selectReportAreaBuffer, selectReportAreaPreviewBuffer],
+  (reportAreaBuffer, reportAreaPreviewBuffer) => {
+    const reportGenerators: PolygonsGeneratorConfig[] = []
+    if (reportAreaBuffer) {
+      reportGenerators.push({
         type: GeneratorType.Polygons,
         id: 'report-area-buffer',
         data: { type: 'FeatureCollection', features: [reportAreaBuffer.geometry] },
+        color: '#FFF',
+        visible: true,
+        group: Group.OutlinePolygonsHighlighted,
+      })
+    }
+    if (reportAreaPreviewBuffer) {
+      reportGenerators.push({
+        type: GeneratorType.Polygons,
+        id: 'report-area-preview-buffer',
+        data: { type: 'FeatureCollection', features: [reportAreaPreviewBuffer.geometry] },
         color: '#F95E5E',
         visible: true,
         group: Group.OutlinePolygonsHighlighted,
-      },
-    ]
+      })
+    }
+    return reportGenerators
   }
 )
 
