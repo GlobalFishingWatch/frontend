@@ -381,7 +381,8 @@ export const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatase
     return dataset.fieldsAllowed.some((f) => f.includes(schema))
   }
   const schemaConfig = getDatasetSchemaItem(dataset, schema)
-  return schemaConfig?.enum !== undefined && schemaConfig.enum.length > 0
+  const schemaEnum = schemaConfig?.enum || schemaConfig?.items?.enum
+  return schemaEnum !== undefined && schemaEnum.length > 0
 }
 
 export const getSupportedSchemaFieldsDatasets = (
@@ -478,9 +479,10 @@ export const getCommonSchemaFieldsInDataview = (
     return []
   }
   const schemaType = getCommonSchemaTypeInDataview(dataview, schema)
-  let schemaFields: string[][] = (activeDatasets || [])?.map(
-    (d) => getDatasetSchemaItem(d, schema)?.enum || []
-  )
+  let schemaFields: string[][] = (activeDatasets || [])?.map((d) => {
+    const schemaItem = getDatasetSchemaItem(d, schema)
+    return schemaItem?.enum || schemaItem?.items?.enum || []
+  })
   if (schemaType === 'number') {
     const schemaConfig = getDatasetSchemaItem(activeDatasets!?.[0], schema)
     if (schemaConfig) {

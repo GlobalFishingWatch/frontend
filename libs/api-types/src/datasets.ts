@@ -129,11 +129,20 @@ export type DatasetSchemaItem = {
   stats?: boolean
   unit?: string
   singleSelection?: boolean
+  items?: { type: DatasetSchemaType; enum: string[] }
 }
 
 export type DatasetSchema = {
-  items: Record<string, DatasetSchemaItem>
   type: DatasetSchemaType
+  maxLength: number
+  minLength: number
+  enum: string[]
+  min: number
+  max: number
+  stats?: boolean
+  unit?: string
+  singleSelection?: boolean
+  items?: Record<string, DatasetSchemaItem>
 }
 
 export enum DatasetCategory {
