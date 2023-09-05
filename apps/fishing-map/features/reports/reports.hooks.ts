@@ -14,6 +14,7 @@ import {
   selectDatasetAreaStatus,
 } from 'features/areas/areas.slice'
 import {
+  selectReportArea,
   selectReportAreaDataview,
   selectReportAreaIds,
   selectReportDataviewsWithPermissions,
@@ -56,21 +57,19 @@ export function useReportAreaCenter(bounds?: Bbox) {
 
 export function useReportAreaInViewport() {
   const { viewport } = useViewport()
-  const reportAreaIds = useSelector(selectReportAreaIds)
-  const area = useSelector(selectDatasetAreaDetail(reportAreaIds))
-  const areaCenter = useReportAreaCenter(area!?.bounds)
+  const area = useSelector(selectReportArea)
+  const bbox = area?.geometry?.bbox || area!?.bounds
+  const areaCenter = useReportAreaCenter(bbox as Bbox)
   return (
-    viewport?.latitude === areaCenter?.latitude &&
-    viewport?.longitude === areaCenter?.longitude &&
-    viewport?.zoom === areaCenter?.zoom
+    viewport?.latitude === areaCenter?.latitude && viewport?.longitude === areaCenter?.longitude
   )
 }
 
 export function useFitAreaInViewport() {
   const { setMapCoordinates } = useViewport()
-  const reportAreaIds = useSelector(selectReportAreaIds)
-  const area = useSelector(selectDatasetAreaDetail(reportAreaIds))
-  const areaCenter = useReportAreaCenter(area!?.bounds)
+  const area = useSelector(selectReportArea)
+  const bbox = area?.geometry?.bbox || area!?.bounds
+  const areaCenter = useReportAreaCenter(bbox as Bbox)
   const areaInViewport = useReportAreaInViewport()
   return useCallback(() => {
     if (!areaInViewport && areaCenter) {
