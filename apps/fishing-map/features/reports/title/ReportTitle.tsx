@@ -2,16 +2,11 @@ import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Fragment } from 'react'
-import { Range, getTrackBackground } from 'react-range'
-import { Button, Icon, Choice } from '@globalfishingwatch/ui-components'
+import { Button, Icon } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { Area } from 'features/areas/areas.slice'
-import {
-  BUFFER_UNIT_OPTIONS,
-  DEFAULT_BUFFER_VALUE,
-  NAUTICAL_MILES,
-} from 'features/reports/reports.constants'
+import { DEFAULT_BUFFER_VALUE, NAUTICAL_MILES } from 'features/reports/reports.constants'
 import { resetReportData, setPreviewBuffer } from 'features/reports/report.slice'
 import { selectReportAreaDataview } from 'features/reports/reports.selectors'
 import ReportTitlePlaceholder from 'features/reports/placeholders/ReportTitlePlaceholder'
@@ -22,95 +17,13 @@ import { Bbox, BufferUnit } from 'types'
 import { selectUrlBufferUnitQuery, selectUrlBufferValueQuery } from 'routes/routes.selectors'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { getBufferedAreaBbox } from '../reports.utils'
+import { BufferButtonTooltip } from './BufferButonTooltip'
 import styles from './ReportTitle.module.css'
 
 type ReportTitleProps = {
   area: Area
   description?: string
   infoLink?: string
-}
-
-const BufferTooltip = ({
-  handleBufferValueChange,
-  defaultValue,
-  activeOption,
-  handleBufferUnitChange,
-  handleConfirmBuffer,
-}) => {
-  const STEP = 0.1
-  const MIN = -100
-  const MAX = 100
-  const [values, setValues] = useState([0, defaultValue])
-  return (
-    <div className={styles.bufferTooltipContent}>
-      <Choice
-        size="tiny"
-        activeOption={activeOption}
-        onSelect={handleBufferUnitChange}
-        options={BUFFER_UNIT_OPTIONS}
-      />
-      <Range
-        allowOverlap
-        values={values}
-        step={STEP}
-        min={MIN}
-        max={MAX}
-        onChange={setValues}
-        onFinalChange={handleBufferValueChange}
-        renderTrack={({ props, children }) => (
-          <div
-            style={{
-              ...props.style,
-              height: '36px',
-              display: 'flex',
-              width: '100%',
-            }}
-          >
-            <div
-              ref={props.ref}
-              style={{
-                height: '2px',
-                width: '100%',
-                borderRadius: '2px',
-                background: getTrackBackground({
-                  values,
-                  colors: ['#ccc', 'red', '#ccc'],
-                  min: MIN,
-                  max: MAX,
-                }),
-                alignSelf: 'center',
-              }}
-            >
-              {children}
-            </div>
-          </div>
-        )}
-        renderThumb={({ props, index }) => (
-          <div
-            {...props}
-            style={{
-              ...props.style,
-              height: index === 1 ? '30px' : '8px',
-              width: index === 1 ? '30px' : '3px',
-              borderRadius: '50px',
-              backgroundColor: index === 1 ? '#FFF' : '#ccc',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              fontSize: '14px',
-              boxShadow: index === 1 ? '0px 2px 6px #AAA' : 'none',
-              pointerEvents: index === 1 ? 'auto' : 'none',
-            }}
-          >
-            {index === 1 ? Math.round(values[index]) : null}
-          </div>
-        )}
-      />
-      <Button size="small" onClick={handleConfirmBuffer}>
-        confirm
-      </Button>
-    </div>
-  )
 }
 
 export default function ReportTitle({ area }: ReportTitleProps) {
@@ -125,6 +38,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
 
   const [bufferValue, setBufferValue] = useState<number>(urlBufferValue || DEFAULT_BUFFER_VALUE)
   const [bufferUnit, setBufferUnit] = useState<BufferUnit>(urlBufferUnit || NAUTICAL_MILES)
+  const [tooltipInstance, setTooltipInstance] = useState<any>(null)
 
   const handleBufferUnitChange = useCallback(
     (option) => {
@@ -157,18 +71,18 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   }
 
   const handleConfirmBuffer = useCallback(() => {
+    tooltipInstance!.hide()
+    // recenter the map on the selected buffer
+    const bounds = getBufferedAreaBbox({ area, value: bufferValue, unit: bufferUnit }) as Bbox
+    fitBounds(bounds)
+    dispatchQueryParams({ reportBufferValue: bufferValue, reportBufferUnit: bufferUnit })
+    dispatch(resetReportData())
     trackEvent({
       category: TrackCategory.Analysis,
       action: `Confirm area buffer`,
       label: `${bufferValue} ${bufferUnit}`,
     })
-    // recenter the map on the selected buffer
-    const bounds = getBufferedAreaBbox({ area, value: bufferValue, unit: bufferUnit }) as Bbox
-    fitBounds(bounds)
-    // update query params
-    dispatchQueryParams({ reportBufferValue: bufferValue, reportBufferUnit: bufferUnit })
-    dispatch(resetReportData())
-  }, [bufferValue, bufferUnit, dispatch, dispatchQueryParams, area, fitBounds])
+  }, [bufferValue, bufferUnit, dispatch, dispatchQueryParams, area, fitBounds, tooltipInstance])
 
   return (
     <div className={styles.container}>
@@ -190,7 +104,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
                 size="small"
                 className={styles.actionButton}
                 tooltip={
-                  <BufferTooltip
+                  <BufferButtonTooltip
                     handleBufferValueChange={handleBufferValueChange}
                     defaultValue={urlBufferValue || DEFAULT_BUFFER_VALUE}
                     activeOption={bufferUnit || NAUTICAL_MILES}
@@ -204,6 +118,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
                   trigger: 'click',
                   delay: 0,
                   className: styles.bufferContainer,
+                  onShow: (instance) => setTooltipInstance(instance),
                 }}
               >
                 <p>{t('analysis.buffer', 'Buffer Area')}</p>

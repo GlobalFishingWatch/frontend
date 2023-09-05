@@ -54,6 +54,26 @@
   align-self: center;
 }
 
+.tooltipArrow,
+.tooltipArrow::before {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: white;
+}
+
+.tooltipArrow {
+  visibility: hidden;
+}
+
+.tooltipArrow::before {
+  visibility: visible;
+  top: -25px;
+  left: -104px;
+  content: '';
+  transform: rotate(45deg);
+}
+
 @media print {
   .actions {
     display: none;
