@@ -6,7 +6,6 @@ import { isAuthError } from '@globalfishingwatch/api-client'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { Dataview } from '@globalfishingwatch/api-types'
 import {
-  selectIsVesselLocation,
   selectIsWorkspaceVesselLocation,
   selectVesselId,
   selectWorkspaceId,
@@ -33,7 +32,7 @@ import {
 } from 'features/vessel/vessel.config.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { useCallbackAfterPaint } from 'hooks/paint.hooks'
-import { useUpdateVesselEventsVisibility, useVesselFitBounds } from 'features/vessel/vessel.hooks'
+import { useUpdateVesselEventsVisibility } from 'features/vessel/vessel.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useClickedEventConnect } from 'features/map/map.hooks'
 import VesselAreas from 'features/vessel/areas/VesselAreas'
@@ -47,6 +46,7 @@ import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { BASEMAP_DATAVIEW_SLUG } from 'data/workspaces'
+import { useVesselFitBounds } from 'features/vessel/vessel-bounds.hooks'
 import VesselActivity from './activity/VesselActivity'
 import VesselIdentity from './identity/VesselIdentity'
 
@@ -64,14 +64,13 @@ const Vessel = () => {
   const vesselPrintMode = useSelector(selectVesselPrintMode)
   const hasEventsDataset = useSelector(selectVesselHasEventsDatasets)
   const infoError = useSelector(selectVesselInfoError)
-  const isVesselLocation = useSelector(selectIsVesselLocation)
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const regionsDatasets = useSelector(selectRegionsDatasets)
   const guestUser = useSelector(isGuestUser)
   const map = useMapInstance()
   const { cleanFeatureState } = useFeatureState(map)
   const { dispatchClickedEvent, cancelPendingInteractionRequests } = useClickedEventConnect()
-  useVesselFitBounds(isVesselLocation)
+  useVesselFitBounds()
   useUpdateVesselEventsVisibility()
   useFetchDataviewResources()
 

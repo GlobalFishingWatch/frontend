@@ -9,6 +9,7 @@ import {
   VesselDataIdentity,
   resetVesselState,
   selectVesselInfoDataId,
+  setVesselFitBoundsOnLoad,
 } from 'features/vessel/vessel.slice'
 import { VESSEL, WORKSPACE_VESSEL } from 'routes/routes'
 import {
@@ -26,6 +27,7 @@ export type VesselLinkProps = {
   identity?: VesselDataIdentity
   children: any
   onClick?: (e: MouseEvent) => void
+  fitBounds?: boolean
   className?: string
   query?: Partial<Record<keyof QueryParams, string | number>>
 }
@@ -35,6 +37,7 @@ const VesselLink = ({
   identity,
   children,
   onClick,
+  fitBounds = true,
   className = '',
   query,
 }: VesselLinkProps) => {
@@ -54,19 +57,16 @@ const VesselLink = ({
       if (vesselId !== vesselInfoDataId) {
         dispatch(resetVesselState())
       }
+      if (fitBounds) {
+        // This needs to happen after dispatch resetVesselState so there is no override
+        dispatch(setVesselFitBoundsOnLoad(true))
+      }
       if (onClick) {
         onClick(e)
       }
     },
-    [dispatch, onClick, vesselId, vesselInfoDataId]
+    [dispatch, fitBounds, onClick, vesselId, vesselInfoDataId]
   )
-  if (identity) {
-    console.log(identity.shipname)
-    console.log({
-      vesselIdentitySource: identity.identitySource,
-      vesselIdentityId: getVesselIdentyId(identity),
-    })
-  }
 
   if (!vesselId) return children
 
