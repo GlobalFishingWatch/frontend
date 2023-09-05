@@ -106,15 +106,15 @@ function SearchAdvanced({
         </div>
       </div>
       <div className={styles.scrollContainer}>
-        {(searchStatus === AsyncReducerStatus.Loading ||
-          searchStatus === AsyncReducerStatus.Aborted) &&
+        {searchStatus === AsyncReducerStatus.Aborted &&
         searchPagination.loading === false ? null : (
           <div className={styles.searchResults}>
             <SearchAdvancedResults
               fetchResults={fetchResults}
               fetchMoreResults={fetchMoreResults}
             />
-            {searchStatus === AsyncReducerStatus.Idle && <SearchEmptyState />}
+            {(searchStatus === AsyncReducerStatus.Idle ||
+              searchStatus === AsyncReducerStatus.Loading) && <SearchEmptyState />}
             {searchStatus === AsyncReducerStatus.Finished && searchPagination.total === 0 && (
               <SearchNoResultsState />
             )}

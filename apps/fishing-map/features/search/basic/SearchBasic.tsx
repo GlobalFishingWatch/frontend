@@ -105,8 +105,7 @@ function SearchBasic({
               )})`}
             />
           </div>
-          {(searchStatus === AsyncReducerStatus.Loading ||
-            searchStatus === AsyncReducerStatus.Aborted) &&
+          {searchStatus === AsyncReducerStatus.Aborted &&
           searchPagination.loading === false ? null : basicSearchAllowed ? (
             <ul
               {...getMenuProps()}
@@ -147,7 +146,8 @@ function SearchBasic({
                 </li>
               )}
 
-              {searchStatus === AsyncReducerStatus.Idle && <SearchEmptyState />}
+              {(searchStatus === AsyncReducerStatus.Idle ||
+                searchStatus === AsyncReducerStatus.Loading) && <SearchEmptyState />}
               {searchStatus === AsyncReducerStatus.Finished && !hasMoreResults && (
                 <SearchNoResultsState />
               )}

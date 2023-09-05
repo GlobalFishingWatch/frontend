@@ -1,11 +1,10 @@
 .emptyState {
+  height: 100%;
+  padding: var(--space-M);
+  color: var(--color-secondary-blue);
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
-  height: calc(100% - var(--header-height));
-  padding: var(--space-M);
-  color: var(--color-secondary-blue);
 }
 
 .emptyState p:not(:last-child) {
@@ -17,7 +16,8 @@
 }
 
 .vesselImage {
-  height: 14rem;
+  mix-blend-mode: multiply;
+  height: 30rem;
   display: block;
   margin: 0 auto;
   margin-bottom: var(--space-L);
@@ -31,11 +31,16 @@
   text-decoration: underline;
 }
 
-.noResultsImage {
-  height: auto;
-  display: block;
-  margin: 0 auto;
-  max-width: 100%;
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.hidden {
+  opacity: 0;
+  transition: opacity 100ms ease-out;
 }
 
 .inlineIcon {
@@ -66,4 +71,18 @@
 
 .userGuide {
   margin-top: var(--space-M);
+}
+
+.spinner {
+  padding-top: var(--space-M);
+  position: absolute;
+  height: auto;
+  bottom: 8rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.hidden .spinner {
+  height: 0;
+  overflow: hidden;
 }
