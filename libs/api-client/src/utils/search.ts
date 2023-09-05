@@ -47,8 +47,8 @@ const toUpperCaseWithWildcardsAndQuotationMarks = (field: AdvancedSearchQueryFie
 
 const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFieldParams> = {
   shipname: {
-    operator: '=',
-    transformation: toUpperCaseWithQuotationMarks,
+    operator: 'LIKE',
+    transformation: toUpperCaseWithWildcardsAndQuotationMarks,
   },
   ssvid: {
     operator: '=',
@@ -67,8 +67,8 @@ const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFiel
     transformation: toUpperCaseWithQuotationMarks,
   },
   owner: {
-    operator: '=',
-    transformation: toUpperCaseWithQuotationMarks,
+    operator: 'LIKE',
+    transformation: toUpperCaseWithWildcardsAndQuotationMarks,
   },
   geartype: {
     operator: '=',
