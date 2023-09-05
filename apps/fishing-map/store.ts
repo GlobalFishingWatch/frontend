@@ -85,7 +85,7 @@ export const wrapper = createWrapper<AppStore>(makeStore, {
   serializeState: (state) => {
     return {
       vessel: state.vessel,
-      // location: { ...state.location, history: state.location.history || null },
+      location: { payload: state.location.payload },
     }
   },
   // deserializeState: (state) => JSON.parse(state),
