@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { Fragment } from 'react'
 import { Range, getTrackBackground } from 'react-range'
 import { Button, Icon, Choice } from '@globalfishingwatch/ui-components'
-import { ContextLayerType, GeneratorType } from '@globalfishingwatch/layer-composer'
+import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { Area } from 'features/areas/areas.slice'
 import {
@@ -12,15 +12,16 @@ import {
   DEFAULT_BUFFER_VALUE,
   NAUTICAL_MILES,
 } from 'features/reports/reports.constants'
-import { resetReportData } from 'features/reports/report.slice'
+import { resetReportData, setPreviewBuffer } from 'features/reports/report.slice'
 import { selectReportAreaDataview } from 'features/reports/reports.selectors'
-import { getContextAreaLink } from 'features/dataviews/dataviews.utils'
 import ReportTitlePlaceholder from 'features/reports/placeholders/ReportTitlePlaceholder'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectCurrentReport } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { BufferUnit } from 'types'
+import { Bbox, BufferUnit } from 'types'
 import { selectUrlBufferUnitQuery, selectUrlBufferValueQuery } from 'routes/routes.selectors'
+import { useMapFitBounds } from 'features/map/map-viewport.hooks'
+import { getBufferedAreaBbox } from '../reports.utils'
 import styles from './ReportTitle.module.css'
 
 type ReportTitleProps = {
@@ -120,6 +121,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   const report = useSelector(selectCurrentReport)
   const urlBufferValue = useSelector(selectUrlBufferValueQuery)
   const urlBufferUnit = useSelector(selectUrlBufferUnitQuery)
+  const fitBounds = useMapFitBounds()
 
   const [bufferValue, setBufferValue] = useState<number>(urlBufferValue || DEFAULT_BUFFER_VALUE)
   const [bufferUnit, setBufferUnit] = useState<BufferUnit>(urlBufferUnit || NAUTICAL_MILES)
@@ -127,16 +129,16 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   const handleBufferUnitChange = useCallback(
     (option) => {
       setBufferUnit(option.id)
-      dispatchQueryParams({ reportBufferUnit: option.id })
+      dispatch(setPreviewBuffer({ value: bufferValue, unit: option.id }))
     },
-    [setBufferUnit, dispatchQueryParams]
+    [setBufferUnit, dispatch, bufferValue]
   )
   const handleBufferValueChange = useCallback(
     (values: number[]) => {
       setBufferValue(Math.round(values[1]))
-      dispatchQueryParams({ reportBufferValue: Math.round(values[1]) })
+      dispatch(setPreviewBuffer({ value: Math.round(values[1]), unit: bufferUnit }))
     },
-    [setBufferValue, dispatchQueryParams]
+    [setBufferValue, dispatch, bufferUnit]
   )
 
   const reportLink = window.location.href
@@ -145,10 +147,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     : areaDataview?.config?.type === GeneratorType.UserContext
     ? areaDataview?.datasets?.[0]?.name
     : area?.name
-  const linkHref = getContextAreaLink(
-    areaDataview?.config?.layers?.[0]?.id as ContextLayerType,
-    area
-  )
+
   const onPrintClick = () => {
     trackEvent({
       category: TrackCategory.Analysis,
@@ -163,8 +162,13 @@ export default function ReportTitle({ area }: ReportTitleProps) {
       action: `Confirm area buffer`,
       label: `${bufferValue} ${bufferUnit}`,
     })
+    // recenter the map on the selected buffer
+    const bounds = getBufferedAreaBbox({ area, value: bufferValue, unit: bufferUnit }) as Bbox
+    fitBounds(bounds)
+    // update query params
+    dispatchQueryParams({ reportBufferValue: bufferValue, reportBufferUnit: bufferUnit })
     dispatch(resetReportData())
-  }, [bufferValue, bufferUnit, dispatch])
+  }, [bufferValue, bufferUnit, dispatch, dispatchQueryParams, area, fitBounds])
 
   return (
     <div className={styles.container}>
@@ -203,7 +207,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
                 }}
               >
                 <p>{t('analysis.buffer', 'Buffer Area')}</p>
-                {bufferValue && <span>{` (${bufferValue})`}</span>}
+                {urlBufferValue && <span>{`(${urlBufferValue} ${urlBufferUnit})`}</span>}
                 <Icon icon="expand" type="default" />
               </Button>
             </div>
