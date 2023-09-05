@@ -52,7 +52,7 @@ function SearchAdvancedFilters() {
   const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()
   const datasets = useSelector(selectAdvancedSearchDatasets)
-  const { searchFilters, setSearchFilters } = useSearchFiltersConnect()
+  const { searchFilters, setSearchFilters, searchFilterErrors } = useSearchFiltersConnect()
   const {
     sources,
     transmissionDateFrom,
@@ -278,6 +278,13 @@ function SearchAdvancedFilters() {
             }
           }}
         />
+      </div>
+      <div className={styles.error}>
+        {searchFilterErrors.date &&
+          t(
+            'search.endDateMustBeAfterStartDate',
+            'The ACTIVE BEFORE date must come after the ACTIVE AFTER date'
+          )}
       </div>
     </div>
   )

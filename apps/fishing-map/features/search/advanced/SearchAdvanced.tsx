@@ -38,7 +38,7 @@ function SearchAdvanced({
   const searchQuery = useSelector(selectSearchQuery)
   const searchStatusCode = useSelector(selectSearchStatusCode)
   const { dispatchQueryParams } = useLocationConnect()
-  const { hasFilters } = useSearchFiltersConnect()
+  const { hasFilters, searchFilterErrors } = useSearchFiltersConnect()
   const ref = useEventKeyListener(['Enter'], fetchResults)
 
   const resetSearchState = useCallback(() => {
@@ -95,7 +95,7 @@ function SearchAdvanced({
           <Button
             className={styles.confirmButton}
             onClick={fetchResults}
-            disabled={!hasFilters && !searchQuery}
+            disabled={(!hasFilters && !searchQuery) || Object.keys(searchFilterErrors).length > 0}
             loading={
               searchStatus === AsyncReducerStatus.Loading ||
               searchStatus === AsyncReducerStatus.Aborted

@@ -55,6 +55,7 @@ export const useSearchFiltersConnect = () => {
   const dispatch = useAppDispatch()
   const searchFilters = useSelector(selectSearchFilters)
   const { dispatchQueryParams } = useLocationConnect()
+  const searchFilterErrors: Record<string, boolean> = {}
 
   const setSearchFilters = useCallback(
     (filter: VesselSearchState) => {
@@ -66,8 +67,17 @@ export const useSearchFiltersConnect = () => {
 
   const hasFilters = hasFiltersActive(searchFilters)
 
+  if (
+    searchFilters.transmissionDateFrom &&
+    searchFilters.transmissionDateTo &&
+    searchFilters.transmissionDateFrom <= searchFilters.transmissionDateTo
+  ) {
+    searchFilterErrors.date = true
+  }
+
   return {
     hasFilters,
+    searchFilterErrors,
     searchFilters,
     setSearchFilters,
   }
