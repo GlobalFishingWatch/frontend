@@ -62,6 +62,10 @@ function CellWithFilter({ vessel, column, children, onClick }: CellWithFilterPro
     }
   }, [column, onClick, searchFilters, setSearchFilters, value])
 
+  const showFilter = value && !searchFilters[column]?.includes(value)
+
+  if (!showFilter) return children
+
   return (
     <div className={styles.cellFilter}>
       {value && (
