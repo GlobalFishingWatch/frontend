@@ -79,6 +79,7 @@ export const BufferButtonTooltip = ({
           </div>
         )}
       />
+      <div data-tippy-arrow className={styles.tooltipArrow}></div>
       <Button size="small" onClick={handleConfirmBuffer}>
         confirm
       </Button>
