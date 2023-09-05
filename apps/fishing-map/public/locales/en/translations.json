@@ -518,7 +518,8 @@
     "title": "Search",
     "vesselAlreadyInWorkspace": "This vessel is already in your workspace",
     "vessels": "Search vessels",
-    "vesselSelected": "Vessel selected"
+    "vesselSelected": "Vessel selected",
+    "endDateMustBeAfterStartDate": "The ACTIVE BEFORE date must come after the ACTIVE AFTER date"
   },
   "selects": {
     "allSelected": "All",
