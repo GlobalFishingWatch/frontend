@@ -14,6 +14,7 @@ import {
   EventVesselTypeEnum,
   APIPagination,
 } from '@globalfishingwatch/api-types'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { AppDispatch } from 'store'
 import {
@@ -25,7 +26,6 @@ import { isGuestUser } from 'features/user/user.slice'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { getUTCDateTime } from 'utils/dates'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
-import { VesselIdentitySourceEnum } from 'features/search/search.config'
 
 export const MAX_TOOLTIP_LIST = 5
 

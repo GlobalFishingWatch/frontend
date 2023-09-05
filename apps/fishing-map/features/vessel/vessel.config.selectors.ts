@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import {
   VesselAreaSubsection,
   VesselProfileActivityMode,
@@ -8,7 +9,6 @@ import {
 } from 'types'
 import { selectQueryParam } from 'routes/routes.selectors'
 import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
-import { VesselIdentitySourceEnum } from 'features/search/search.config'
 
 export const selectVesselProfileStateProperty = (property: VesselProfileStateProperty) =>
   createSelector([selectQueryParam(property)], (urlProperty) => {

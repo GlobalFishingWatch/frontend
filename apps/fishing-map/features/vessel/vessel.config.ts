@@ -1,5 +1,5 @@
 import { RegionType, SourceCode } from '@globalfishingwatch/api-types'
-import { VesselIdentitySourceEnum } from 'features/search/search.config'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { VesselProfileState } from 'types'
 

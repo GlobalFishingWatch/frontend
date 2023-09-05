@@ -1,5 +1,10 @@
 import { VesselType } from './vessel'
 
+export enum VesselIdentitySourceEnum {
+  SelfReported = 'selfReported',
+  Registry = 'registryInfo',
+}
+
 export enum SourceCode {
   Ais = 'AIS',
   Belize = 'VMS Belize',
@@ -85,8 +90,26 @@ export type VesselRegistryOwner = VesselRegistryProperty & {
 
 export type VesselRegistryAuthorization = VesselRegistryProperty
 
+export type VesselIdentitySearchMatch = {
+  property: string
+  value: string
+}
+
+export type VesselIdentitySearchMatchCriteria = {
+  latestVesselInfo: boolean
+  matches: VesselIdentitySearchMatch[]
+  period: {
+    dateFrom: string
+    dateTo: string
+  }
+  property: string
+  reference: string
+  source: VesselIdentitySourceEnum
+}
+
 export interface IdentityVessel {
   dataset: string
+  matchCriteria?: VesselIdentitySearchMatchCriteria[]
   selfReportedInfo: SelfReportedInfo[]
   registryInfo?: VesselRegistryInfo[]
   registryOwners?: VesselRegistryOwner[]

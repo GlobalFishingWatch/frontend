@@ -10,6 +10,7 @@ import {
   VesselRegistryInfo,
 } from '@globalfishingwatch/api-types'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   fetchDatasetByIdThunk,
@@ -20,7 +21,6 @@ import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/data
 import { VesselInstanceDatasets } from 'features/dataviews/dataviews.utils'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { PROFILE_DATAVIEW_SLUGS } from 'data/workspaces'
-import { VesselIdentitySourceEnum } from 'features/search/search.config'
 import { getVesselIdentities, getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectVesselId } from 'routes/routes.selectors'
 // import { TEMPLATE_VESSEL_DATAVIEW_SLUG } from 'data/workspaces'

@@ -8,6 +8,7 @@ import {
   Select,
   SelectOption,
 } from '@globalfishingwatch/ui-components'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import {
@@ -18,7 +19,6 @@ import {
 import { showSchemaFilter } from 'features/workspace/activity/ActivitySchemaFilter'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { selectAdvancedSearchDatasets } from 'features/search/search.selectors'
-import { VesselIdentitySourceEnum } from 'features/search/search.config'
 import {
   DEFAULT_VESSEL_IDENTITY_DATASET,
   DEFAULT_VESSEL_IDENTITY_ID,
@@ -97,7 +97,6 @@ function SearchAdvancedFilters() {
   }, [datasets, searchFilters, sources])
 
   const schemaFilters = schemaFilterIds.map((id) => getFiltersBySchema(dataview, id))
-  console.log('🚀 ~ SearchAdvancedFilters ~ schemaFilters:', schemaFilters)
 
   const onSourceSelect = (filter) => {
     const newSources = [...(sources || []), filter.id]

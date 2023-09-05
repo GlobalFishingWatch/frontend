@@ -11,6 +11,7 @@ import {
   VesselRegistryProperty,
   VesselType,
 } from '@globalfishingwatch/api-types'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import I18nDate, { formatI18nDate } from 'features/i18n/i18nDate'
 import {
   CUSTOM_VMS_IDENTITY_FIELD_GROUPS,
@@ -31,7 +32,6 @@ import {
 } from 'features/vessel/vessel.config.selectors'
 import VesselIdentitySelector from 'features/vessel/identity/VesselIdentitySelector'
 import VesselIdentityField from 'features/vessel/identity/VesselIdentityField'
-import { VesselIdentitySourceEnum } from 'features/search/search.config'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectIsVesselLocation } from 'routes/routes.selectors'

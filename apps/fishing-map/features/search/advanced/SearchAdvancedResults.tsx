@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { uniq } from 'lodash'
 import { IconButton, Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import {
   VesselLastIdentity,
   cleanVesselSearchResults,
@@ -27,7 +28,6 @@ import {
   getVesselProperty,
 } from 'features/vessel/vessel.utils'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
-import { VesselIdentitySourceEnum } from 'features/search/search.config'
 import I18nNumber from 'features/i18n/i18nNumber'
 import VesselLink from 'features/vessel/VesselLink'
 import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'

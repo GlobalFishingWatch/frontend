@@ -1,5 +1,10 @@
 import { BaseUrlWorkspace } from '@globalfishingwatch/dataviews-client'
-import { DatasetSubCategory, DataviewCategory, EventType } from '@globalfishingwatch/api-types'
+import {
+  DatasetSubCategory,
+  DataviewCategory,
+  EventType,
+  VesselIdentitySourceEnum,
+} from '@globalfishingwatch/api-types'
 import {
   REPORT_VESSELS_GRAPH_GEARTYPE,
   REPORT_VESSELS_GRAPH_FLAG,
@@ -8,7 +13,7 @@ import {
   REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
   REPORT_VESSELS_GRAPH_VESSELTYPE,
 } from 'data/config'
-import { SearchType, VesselIdentitySourceEnum } from 'features/search/search.config'
+import { SearchType } from 'features/search/search.config'
 export { Locale } from '@globalfishingwatch/api-types'
 
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'

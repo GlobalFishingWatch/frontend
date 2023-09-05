@@ -13,6 +13,7 @@ import {
   IconButton,
 } from '@globalfishingwatch/ui-components'
 import { Bbox, geoJSONToSegments, segmentsToBbox } from '@globalfishingwatch/data-transforms'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
@@ -33,7 +34,6 @@ import {
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
 import useMapInstance from 'features/map/map-context.hooks'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { VesselIdentitySourceEnum } from 'features/search/search.config'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import styles from './SearchBasicResult.module.css'
 

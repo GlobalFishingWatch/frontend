@@ -7,9 +7,9 @@ import {
   VesselRegistryOwner,
   VesselRegistryProperty,
 } from '@globalfishingwatch/api-types'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { getUTCDateTime } from 'utils/dates'
-import { VesselIdentitySourceEnum } from 'features/search/search.config'
 import { VesselLastIdentity } from 'features/search/search.slice'
 import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
 import { Range } from 'features/timebar/timebar.slice'
