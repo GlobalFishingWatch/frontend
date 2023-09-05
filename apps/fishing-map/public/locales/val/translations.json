@@ -518,7 +518,8 @@
     "title": "crwdns49563:0crwdne49563:0",
     "vesselAlreadyInWorkspace": "crwdns49565:0crwdne49565:0",
     "vessels": "crwdns49567:0crwdne49567:0",
-    "vesselSelected": "crwdns49569:0crwdne49569:0"
+    "vesselSelected": "crwdns49569:0crwdne49569:0",
+    "endDateMustBeAfterStartDate": "crwdns59461:0crwdne59461:0"
   },
   "selects": {
     "allSelected": "crwdns49571:0crwdne49571:0",
