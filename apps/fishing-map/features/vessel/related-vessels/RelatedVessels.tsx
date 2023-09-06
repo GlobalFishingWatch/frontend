@@ -38,6 +38,7 @@ const RelatedVessels = () => {
 
   return (
     <div className={styles.container}>
+      <h2 className="print-only">{t('vessel.sectionRelatedVessel', 'Related vessels')}</h2>
       <div className="print-hidden">
         <VesselActivitySummary />
       </div>

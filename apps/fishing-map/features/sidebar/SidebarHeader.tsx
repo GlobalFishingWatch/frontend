@@ -1,4 +1,5 @@
 import { Fragment, useCallback, useMemo, useState } from 'react'
+import cx from 'classnames'
 import dynamic from 'next/dynamic'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -419,7 +420,7 @@ function SidebarHeader() {
 
   return (
     <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
-      <div className={styles.sidebarHeader}>
+      <div className={cx(styles.sidebarHeader, 'print-hidden')}>
         <a href="https://globalfishingwatch.org" className={styles.logoLink}>
           <Logo className={styles.logo} subBrand={getSubBrand()} />
         </a>

@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { useTranslation } from 'react-i18next'
-import { Menu, SplitView } from '@globalfishingwatch/ui-components'
+import { Logo, Menu, SplitView } from '@globalfishingwatch/ui-components'
 import { Workspace } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
@@ -265,6 +265,9 @@ function App() {
 
   return (
     <Fragment>
+      <a href="https://globalfishingwatch.org" className="print-only">
+        <Logo className={styles.logo} />
+      </a>
       <SplitView
         isOpen={sidebarOpen}
         showToggle={workspaceLocation}
