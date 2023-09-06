@@ -42,7 +42,9 @@ export const getVesselIdentity = (
   { identityId, identitySource } = {} as GetVesselIdentityParams
 ) => {
   const allIdentitiesInfo = getVesselIdentities(vessel, { identitySource })
-  return allIdentitiesInfo.find((i) => getVesselIdentyId(i) === identityId) || allIdentitiesInfo[0]
+  return (
+    allIdentitiesInfo.find((i) => getVesselIdentityId(i) === identityId) || allIdentitiesInfo[0]
+  )
 }
 
 export type VesselIdentityProperty = keyof SelfReportedInfo | keyof VesselRegistryInfo | 'owner'
@@ -84,7 +86,7 @@ export function getBestMatchCriteriaIdentity(vessel: IdentityVessel | IdentityVe
   }
 }
 
-export function getVesselIdentyId(identity: VesselDataIdentity) {
+export function getVesselIdentityId(identity: VesselDataIdentity) {
   return identity.identitySource === VesselIdentitySourceEnum.SelfReported
     ? identity.id
     : (identity as VesselRegistryInfo).vesselInfoReference

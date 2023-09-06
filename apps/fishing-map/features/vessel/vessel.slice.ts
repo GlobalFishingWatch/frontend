@@ -44,9 +44,15 @@ type VesselInfoEntry = {
 }
 type VesselInfoState = Record<string, VesselInfoEntry>
 
-type VesselState = { printMode: boolean } | VesselInfoState
+type VesselState =
+  | {
+      fitBoundsOnLoad: boolean
+      printMode: boolean
+    }
+  | VesselInfoState
 
 const initialState: VesselState = {
+  fitBoundsOnLoad: false,
   printMode: false,
 }
 
@@ -135,6 +141,9 @@ const vesselSlice = createSlice({
   name: 'vessel',
   initialState,
   reducers: {
+    setVesselFitBoundsOnLoad: (state, action: PayloadAction<boolean>) => {
+      state.fitBoundsOnLoad = action.payload
+    },
     setVesselPrintMode: (state, action: PayloadAction<boolean>) => {
       state.printMode = action.payload
     },
@@ -177,7 +186,8 @@ const vesselSlice = createSlice({
   },
 })
 
-export const { setVesselPrintMode, resetVesselState } = vesselSlice.actions
+export const { setVesselFitBoundsOnLoad, setVesselPrintMode, resetVesselState } =
+  vesselSlice.actions
 
 export const selectVessel = (state: VesselSliceState) => {
   const vesselId = selectVesselId(state as any) as string
@@ -195,6 +205,8 @@ export const selectSelfReportedVesselIds = createSelector([selectVessel], (vesse
 )
 export const selectVesselInfoStatus = createSelector([selectVessel], (vessel) => vessel?.status)
 export const selectVesselInfoError = createSelector([selectVessel], (vessel) => vessel?.error)
-export const selectVesselPrintMode = (state: VesselSliceState) => state.vessel.printMode
+export const selectVesselPrintMode = (state: VesselSliceState) => state.vessel.printMode as boolean
+export const selectVesselFitBoundsOnLoad = (state: VesselSliceState) =>
+  state.vessel.fitBoundsOnLoad as boolean
 
 export default vesselSlice.reducer

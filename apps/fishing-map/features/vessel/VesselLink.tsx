@@ -9,6 +9,7 @@ import {
   VesselDataIdentity,
   resetVesselState,
   selectVesselInfoDataId,
+  setVesselFitBoundsOnLoad,
 } from 'features/vessel/vessel.slice'
 import { VESSEL, WORKSPACE_VESSEL } from 'routes/routes'
 import {
@@ -18,7 +19,7 @@ import {
 } from 'routes/routes.selectors'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import { QueryParams, TimebarVisualisations } from 'types'
-import { getVesselIdentyId } from 'features/vessel/vessel.utils'
+import { getVesselIdentityId } from 'features/vessel/vessel.utils'
 
 export type VesselLinkProps = {
   datasetId?: string
@@ -26,6 +27,7 @@ export type VesselLinkProps = {
   identity?: VesselDataIdentity
   children: any
   onClick?: (e: MouseEvent) => void
+  fitBounds?: boolean
   className?: string
   query?: Partial<Record<keyof QueryParams, string | number>>
 }
@@ -35,6 +37,7 @@ const VesselLink = ({
   identity,
   children,
   onClick,
+  fitBounds = true,
   className = '',
   query,
 }: VesselLinkProps) => {
@@ -54,19 +57,16 @@ const VesselLink = ({
       if (vesselId !== vesselInfoDataId) {
         dispatch(resetVesselState())
       }
+      if (fitBounds) {
+        // This needs to happen after dispatch resetVesselState so there is no override
+        dispatch(setVesselFitBoundsOnLoad(true))
+      }
       if (onClick) {
         onClick(e)
       }
     },
-    [dispatch, onClick, vesselId, vesselInfoDataId]
+    [dispatch, fitBounds, onClick, vesselId, vesselInfoDataId]
   )
-  if (identity) {
-    console.log(identity.shipname)
-    console.log({
-      vesselIdentitySource: identity.identitySource,
-      vesselIdentityId: getVesselIdentyId(identity),
-    })
-  }
 
   if (!vesselId) return children
 
@@ -91,7 +91,7 @@ const VesselLink = ({
           vesselDatasetId,
           ...(identity && {
             vesselIdentitySource: identity.identitySource,
-            vesselIdentityId: getVesselIdentyId(identity),
+            vesselIdentityId: getVesselIdentityId(identity),
           }),
           ...(query || {}),
         } as QueryParams,

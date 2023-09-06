@@ -12,7 +12,7 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import {
   getVesselIdentities,
   getVesselIdentity,
-  getVesselIdentyId,
+  getVesselIdentityId,
 } from 'features/vessel/vessel.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import styles from './VesselIdentitySelector.module.css'
@@ -57,12 +57,12 @@ const VesselIdentitySelector = () => {
         {identities.map((identity) => {
           const start = formatI18nDate(identity.transmissionDateFrom)
           const end = formatI18nDate(identity.transmissionDateTo)
-          const identityId = getVesselIdentyId(identity)
+          const identityId = getVesselIdentityId(identity)
           return (
             <li
               key={identityId}
               className={cx(styles.icon, {
-                [styles.selected]: identityId === getVesselIdentyId(currentIdentity),
+                [styles.selected]: identityId === getVesselIdentityId(currentIdentity),
               })}
               onClick={() => setIdentityId(identityId)}
             >
