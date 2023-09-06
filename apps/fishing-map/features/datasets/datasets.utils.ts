@@ -368,7 +368,8 @@ export const hasDatasetConfigVesselData = (datasetConfig: DataviewDatasetConfig)
 export const getDatasetSchemaItem = (dataset: Dataset, schema: SupportedDatasetSchema) => {
   return (
     (dataset?.schema?.[schema] as DatasetSchemaItem) ||
-    (dataset?.schema?.selfReportedInfo as DatasetSchema)?.items?.[schema]
+    (dataset?.schema?.selfReportedInfo as DatasetSchema)?.items?.[schema] ||
+    (dataset?.schema?.selfReportedInfo as DatasetSchema)?.items?.properties?.[schema]
   )
 }
 

@@ -130,6 +130,7 @@ export type DatasetSchemaItem = {
   unit?: string
   singleSelection?: boolean
   items?: { type: DatasetSchemaType; enum: string[] }
+  properties?: Record<string, DatasetSchemaItem>
 }
 
 export type DatasetSchema = {
