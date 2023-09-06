@@ -72,6 +72,7 @@
     "active_after": "crwdns48777:0crwdne48777:0",
     "active_before": "crwdns48779:0crwdne48779:0",
     "activity": "crwdns48781:0crwdne48781:0",
+    "aka": "crwdns59477:0crwdne59477:0",
     "analysis": "crwdns48783:0crwdne48783:0",
     "analysisNotAvailable": "crwdns48785:0crwdne48785:0",
     "and": "crwdns48787:0crwdne48787:0",
@@ -703,6 +704,7 @@
     "summary": "crwdns49847:0{{vesselType}}crwdnd49847:0{{vesselFlag}}crwdnd49847:0{{events}}crwdnd49847:0{{voyages}}crwdnd49847:0{{timerangeStart}}crwdnd49847:0{{timerangeEnd}}crwdne49847:0",
     "target_species": "crwdns49853:0crwdne49853:0",
     "targetSpecies": "crwdns49855:0crwdne49855:0",
+    "title": "crwdns59479:0crwdne59479:0",
     "terminology": {
       "geartype": "crwdns49857:0crwdne49857:0",
       "infoSource": "crwdns57543:0crwdne57543:0",
@@ -782,7 +784,8 @@
     "siteDescription": {
       "default": "crwdns49971:0crwdne49971:0",
       "fishing-activity": "crwdns49973:0crwdne49973:0",
-      "marine-manager": "crwdns49975:0crwdne49975:0"
+      "marine-manager": "crwdns49975:0crwdne49975:0",
+      "search": "crwdns59481:0crwdne59481:0"
     },
     "title_other": "crwdns49977:0crwdne49977:0",
     "update": "crwdns49979:0crwdne49979:0",
