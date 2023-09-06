@@ -40,10 +40,6 @@ const PINNED_COLUMN = 'shipname'
 const TOOLTIP_LABEL_CHARACTERS = 25
 const MULTIPLE_SELECTION_FILTERS_COLUMN = ['flag', 'shiptype', 'geartype', 'owner']
 
-// Needed type to avoid "Type instantiation is excessively deep and possibly infinite" error
-// when using accessorKey: PINNED_COLUMN
-type MaterialReactTableData = IdentityVesselData & { shipname: string }
-
 type CellWithFilterProps = {
   vessel: IdentityVesselData
   column: VesselIdentityProperty
@@ -90,7 +86,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
   const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const searchStatus = useSelector(selectSearchStatus)
-  const searchResults = useSelector(selectSearchResults) as MaterialReactTableData[]
+  const searchResults = useSelector(selectSearchResults)
   const vesselsSelected = useSelector(selectSelectedVessels)
   const tableContainerRef = useRef<HTMLDivElement>(null)
   const isSearchLocation = useSelector(selectIsStandaloneSearchLocation)
@@ -108,12 +104,12 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
     [dispatch, isSearchLocation, setTimerange]
   )
 
-  const columns = useMemo((): MRT_ColumnDef<MaterialReactTableData>[] => {
+  const columns = useMemo((): MRT_ColumnDef<any>[] => {
     return [
       {
         id: PINNED_COLUMN,
         accessorKey: PINNED_COLUMN,
-        accessorFn: (vessel) => {
+        accessorFn: (vessel: IdentityVesselData) => {
           const bestIdentityMatch = getBestMatchCriteriaIdentity(vessel)
           const vesselData = getSearchIdentityResolved(vessel)
           const { shipname } = vesselData
@@ -152,7 +148,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
       },
       {
         id: 'transmissionDates',
-        accessorFn: (vessel) => {
+        accessorFn: (vessel: IdentityVesselData) => {
           const { transmissionDateFrom, transmissionDateTo } = getSearchIdentityResolved(vessel)
           if (!transmissionDateFrom || !transmissionDateTo) return
           return (
@@ -173,7 +169,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
       },
       {
         id: 'flag',
-        accessorFn: (vessel) => {
+        accessorFn: (vessel: IdentityVesselData) => {
           return (
             <CellWithFilter vessel={vessel} column="flag" onClick={fetchResults}>
               <I18nFlag iso={getVesselProperty(vessel, 'flag')} />
@@ -184,22 +180,25 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
       },
       {
         id: 'ssvid',
-        accessorFn: (vessel) => getVesselProperty(vessel, 'ssvid') || EMPTY_FIELD_PLACEHOLDER,
+        accessorFn: (vessel: IdentityVesselData) =>
+          getVesselProperty(vessel, 'ssvid') || EMPTY_FIELD_PLACEHOLDER,
         header: t('vessel.mmsi', 'MMSI'),
       },
       {
         id: 'imo',
-        accessorFn: (vessel) => getVesselProperty(vessel, 'imo') || EMPTY_FIELD_PLACEHOLDER,
+        accessorFn: (vessel: IdentityVesselData) =>
+          getVesselProperty(vessel, 'imo') || EMPTY_FIELD_PLACEHOLDER,
         header: t('vessel.imo', 'IMO'),
       },
       {
         id: 'callsign',
-        accessorFn: (vessel) => getVesselProperty(vessel, 'callsign') || EMPTY_FIELD_PLACEHOLDER,
+        accessorFn: (vessel: IdentityVesselData) =>
+          getVesselProperty(vessel, 'callsign') || EMPTY_FIELD_PLACEHOLDER,
         header: t('vessel.callsign', 'Callsign'),
       },
       {
         id: 'shiptype',
-        accessorFn: (vessel) => {
+        accessorFn: (vessel: IdentityVesselData) => {
           const shiptype = getVesselProperty(vessel, 'shiptype')
           return (
             <CellWithFilter vessel={vessel} column="shiptype" onClick={fetchResults}>
@@ -211,7 +210,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
       },
       {
         id: 'geartype',
-        accessorFn: (vessel) => {
+        accessorFn: (vessel: IdentityVesselData) => {
           const geartypes = getVesselProperty<string[]>(vessel, 'geartype')
           const label = geartypes
             ?.map((gear) =>
@@ -230,7 +229,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
       },
       {
         id: 'owner',
-        accessorFn: (vessel) => {
+        accessorFn: (vessel: IdentityVesselData) => {
           const label =
             formatInfoField(getVesselProperty(vessel, 'owner'), 'owner') || EMPTY_FIELD_PLACEHOLDER
           return (
@@ -245,7 +244,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
       },
       {
         id: 'infoSource',
-        accessorFn: (vessel) => {
+        accessorFn: (vessel: IdentityVesselData) => {
           const registryIdentities = vessel.identities.filter(
             ({ identitySource }) => identitySource === VesselIdentitySourceEnum.Registry
           )
@@ -273,7 +272,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
       },
       {
         id: 'transmissionCount',
-        accessorFn: (vessel) => {
+        accessorFn: (vessel: IdentityVesselData) => {
           const { positionsCounter } = getSearchIdentityResolved(vessel)
           if (positionsCounter) {
             return <I18nNumber number={positionsCounter} />
@@ -332,7 +331,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
   return (
     <MaterialReactTable
       columns={columns}
-      data={searchResults}
+      data={searchResults as any}
       enableSorting={false}
       enableTopToolbar={false}
       renderToolbarInternalActions={undefined}
