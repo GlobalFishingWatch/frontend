@@ -30,7 +30,6 @@ const VesselIdentitySelector = () => {
   const vessel = useSelector(selectVesselInfoData)
   const identitySource = useSelector(selectVesselIdentitySource)
   const identityId = useSelector(selectVesselIdentityId)
-  console.log('🚀 ~ VesselIdentitySelector ~ identityId:', identityId)
   const { dispatchQueryParams } = useLocationConnect()
   const { start, end } = useTimerangeConnect()
 

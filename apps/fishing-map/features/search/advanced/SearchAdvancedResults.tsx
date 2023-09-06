@@ -40,6 +40,10 @@ const PINNED_COLUMN = 'shipname'
 const TOOLTIP_LABEL_CHARACTERS = 25
 const MULTIPLE_SELECTION_FILTERS_COLUMN = ['flag', 'shiptype', 'geartype', 'owner']
 
+// Needed type to avoid "Type instantiation is excessively deep and possibly infinite" error
+// when using accessorKey: PINNED_COLUMN
+type MaterialReactTableData = IdentityVesselData & { shipname: string }
+
 type CellWithFilterProps = {
   vessel: IdentityVesselData
   column: VesselIdentityProperty
@@ -86,7 +90,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
   const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const searchStatus = useSelector(selectSearchStatus)
-  const searchResults = useSelector(selectSearchResults)
+  const searchResults = useSelector(selectSearchResults) as MaterialReactTableData[]
   const vesselsSelected = useSelector(selectSelectedVessels)
   const tableContainerRef = useRef<HTMLDivElement>(null)
   const isSearchLocation = useSelector(selectIsStandaloneSearchLocation)
@@ -104,13 +108,12 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
     [dispatch, isSearchLocation, setTimerange]
   )
 
-  const columns = useMemo((): MRT_ColumnDef<IdentityVesselData>[] => {
+  const columns = useMemo((): MRT_ColumnDef<MaterialReactTableData>[] => {
     return [
       {
         id: PINNED_COLUMN,
-        accessorKey: PINNED_COLUMN as any,
+        accessorKey: PINNED_COLUMN,
         accessorFn: (vessel) => {
-          // TODO use bestIdentityMatch to render info
           const bestIdentityMatch = getBestMatchCriteriaIdentity(vessel)
           const vesselData = getSearchIdentityResolved(vessel)
           const { shipname } = vesselData
