@@ -72,6 +72,7 @@
     "active_after": "Ativo depois de",
     "active_before": "Ativo antes de",
     "activity": "Atividade",
+    "aka": "a.k.a.,",
     "analysis": "Criar uma análise para esta área",
     "analysisNotAvailable": "Alternar entre uma camada de atividade ou de ambiente para analisá-la nesta área",
     "and": "e",
@@ -703,6 +704,7 @@
     "summary": "The <strong>{{vesselType}}</strong> vessel flagged by <strong>{{vesselFlag}}</strong> {{events}} {{voyages}} between <strong>{{timerangeStart}}</strong> and <strong>{{timerangeEnd}}</strong>",
     "target_species": "Espécie alvo",
     "targetSpecies": "Espécie alvo",
+    "title": "Vessel profile",
     "terminology": {
       "geartype": "For gear type sourced from Global Fishing Watch, additional research and analysis is conducted in addition to using the original AIS data to identify the most likely value. GFW source values are likely gear type of fishing vessel as defined by Global Fishing Watch. The fishing vessels identified by GFW come from the GFW fishing database that were identified using vessel registry databases, reported AIS identity information, and estimated classification using a machine learning algorithm. See more information here:<1>https://globalfishingwatch.org/datasets-and-code-vessel-identity/</1> .\nGear type from \"other\" is taken from RFMO authorized vessel lists and other sources.",
       "infoSource": "Info source terminology",
@@ -782,7 +784,8 @@
     "siteDescription": {
       "default": "O mapa do Global Fishing Watch é a primeira plataforma de acesso aberto para visualização e análise do tráfego marítimo e da atividade humana no mar.",
       "fishing-activity": "O mapa do Global Fishing Watch é a primeira plataforma de acesso aberto para visualização e análise do tráfego marítimo e da atividade humana no mar.",
-      "marine-manager": "O Marine Manager é um novo portal tecnológico para apoiar a concepção, gestão e monitoramento eficazes de áreas protegidas."
+      "marine-manager": "O Marine Manager é um novo portal tecnológico para apoiar a concepção, gestão e monitoramento eficazes de áreas protegidas.",
+      "search": "Pesquisa por nome ou código de identificação (IMO, MMSI, VMS ID, etc…). Você pode restringir sua pesquisa pressionando o ícone de filtro na barra superior"
     },
     "title_other": "Espaços de Trabalho",
     "update": "Atualizar",
