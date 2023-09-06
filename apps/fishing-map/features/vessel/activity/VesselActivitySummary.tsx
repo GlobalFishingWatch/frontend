@@ -69,12 +69,7 @@ export const VesselActivitySummary = () => {
 
   const summary = t('vessel.summary', {
     defaultValue:
-      'The <strong>{{vesselType}}</strong> vessel flagged by <strong>{{vesselFlag}}</strong> {{events}} {{voyages}} between <strong>{{timerangeStart}}</strong> and <strong>{{timerangeEnd}}</strong>',
-    vesselType: formatInfoField(
-      getVesselProperty(vessel, 'shiptype') as string,
-      'vesselType'
-    ).toLowerCase(),
-    vesselFlag: formatInfoField(getVesselProperty(vessel, 'flag') as string, 'flag'),
+      '{{events}} {{voyages}} between <strong>{{timerangeStart}}</strong> and <strong>{{timerangeEnd}}</strong>',
     events: `${t('common.had', 'had')} <strong>${formatI18nNumber(
       events?.length as number
     )}</strong> ${t('common.event', { defaultValue: 'events', count: events?.length })}`,
