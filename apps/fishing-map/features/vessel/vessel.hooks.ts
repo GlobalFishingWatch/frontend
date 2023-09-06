@@ -15,7 +15,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { DEFAULT_TIME_RANGE } from 'data/config'
 import { useVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
 import {
-  selectVesselIdentityIndex,
+  selectVesselIdentityId,
   selectVesselIdentitySource,
 } from 'features/vessel/vessel.config.selectors'
 
@@ -48,13 +48,13 @@ export const useAddVesselDataviewInstance = () => {
 export const useUpdateVesselEventsVisibility = () => {
   const { setVesselEventVisibility } = useVesselEvents()
   const vessel = useSelector(selectVesselInfoData)
-  const identityIndex = useSelector(selectVesselIdentityIndex)
+  const identityId = useSelector(selectVesselIdentityId)
   const identitySource = useSelector(selectVesselIdentitySource)
 
   useEffect(() => {
     if (vessel) {
       const shiptype = getVesselProperty(vessel, 'shiptype', {
-        identityIndex,
+        identityId,
         identitySource,
       })
       if (shiptype?.toLowerCase() === 'fishing') {

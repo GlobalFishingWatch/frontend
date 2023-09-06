@@ -9,7 +9,7 @@ import {
   selectVesselEventsResourcesLoading,
 } from 'features/vessel/vessel.selectors'
 import {
-  selectVesselIdentityIndex,
+  selectVesselIdentityId,
   selectVesselIdentitySource,
 } from 'features/vessel/vessel.config.selectors'
 import { selectTimeRange } from 'features/app/app.selectors'
@@ -17,7 +17,7 @@ import { selectTimeRange } from 'features/app/app.selectors'
 const VesselActivityDownload = () => {
   const { t } = useTranslation()
   const vesselData = useSelector(selectVesselInfoData)
-  const identityIndex = useSelector(selectVesselIdentityIndex)
+  const identityId = useSelector(selectVesselIdentityId)
   const identitySource = useSelector(selectVesselIdentitySource)
   const timerange = useSelector(selectTimeRange)
   const eventsLoading = useSelector(selectVesselEventsResourcesLoading)
@@ -29,10 +29,10 @@ const VesselActivityDownload = () => {
     saveAs(
       blob,
       `${getVesselProperty(vesselData, 'shipname', {
-        identityIndex,
+        identityId,
         identitySource,
       })}(${getVesselProperty(vesselData, 'flag', {
-        identityIndex,
+        identityId,
         identitySource,
       })})-events-${timerange?.start}-${timerange?.end}.csv`
     )

@@ -30,10 +30,10 @@ export const selectVesselActivityMode = createSelector(
   }
 )
 
-export const selectVesselIdentityIndex = createSelector(
-  [selectVesselProfileStateProperty('vesselIdentityIndex')],
-  (vesselIdentityIndex): number => {
-    return vesselIdentityIndex
+export const selectVesselIdentityId = createSelector(
+  [selectVesselProfileStateProperty('vesselIdentityId')],
+  (vesselIdentityId): string => {
+    return vesselIdentityId
   }
 )
 

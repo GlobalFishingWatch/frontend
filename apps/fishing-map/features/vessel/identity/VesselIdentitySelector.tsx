@@ -3,13 +3,17 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import {
-  selectVesselIdentityIndex,
+  selectVesselIdentityId,
   selectVesselIdentitySource,
 } from 'features/vessel/vessel.config.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import { getVesselIdentities, getVesselIdentity } from 'features/vessel/vessel.utils'
+import {
+  getVesselIdentities,
+  getVesselIdentity,
+  getVesselIdentyIdBySource,
+} from 'features/vessel/vessel.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import styles from './VesselIdentitySelector.module.css'
 
@@ -25,16 +29,16 @@ const VesselIdentitySelector = () => {
   const { t } = useTranslation()
   const vessel = useSelector(selectVesselInfoData)
   const identitySource = useSelector(selectVesselIdentitySource)
-  const identityIndex = useSelector(selectVesselIdentityIndex)
+  const identityId = useSelector(selectVesselIdentityId)
   const { dispatchQueryParams } = useLocationConnect()
   const { start, end } = useTimerangeConnect()
 
-  const setRegistryIndex = (index: number) => {
-    dispatchQueryParams({ vesselIdentityIndex: index })
+  const setIdentityId = (vesselIdentityId: string) => {
+    dispatchQueryParams({ vesselIdentityId })
   }
 
   const identities = getVesselIdentities(vessel, { identitySource })
-  const currentIdentity = getVesselIdentity(vessel, { identitySource, identityIndex })
+  const currentIdentity = getVesselIdentity(vessel, { identitySource, identityId })
 
   if (!identities?.length || identities?.length <= 1) return null
 
@@ -50,16 +54,18 @@ const VesselIdentitySelector = () => {
         </p>
       )}
       <ul className={cx(styles.selector, 'print-hidden')}>
-        {identities.map((registry, index) => {
-          const start = formatI18nDate(registry.transmissionDateFrom)
-          const end = formatI18nDate(registry.transmissionDateTo)
+        {identities.map((identity) => {
+          const start = formatI18nDate(identity.transmissionDateFrom)
+          const end = formatI18nDate(identity.transmissionDateTo)
+          const identityId = getVesselIdentyIdBySource(identity, identitySource)
           return (
             <li
-              key={index}
+              key={identityId}
               className={cx(styles.icon, {
-                [styles.selected]: index === identityIndex,
+                [styles.selected]:
+                  identityId === getVesselIdentyIdBySource(currentIdentity, identitySource),
               })}
-              onClick={() => setRegistryIndex(index)}
+              onClick={() => setIdentityId(identityId)}
             >
               <span className={styles.dates}>
                 {start} - {end}

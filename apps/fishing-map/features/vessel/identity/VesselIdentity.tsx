@@ -27,7 +27,7 @@ import {
   parseVesselToCSV,
 } from 'features/vessel/vessel.utils'
 import {
-  selectVesselIdentityIndex,
+  selectVesselIdentityId,
   selectVesselIdentitySource,
 } from 'features/vessel/vessel.config.selectors'
 import VesselIdentitySelector from 'features/vessel/identity/VesselIdentitySelector'
@@ -41,7 +41,7 @@ import styles from './VesselIdentity.module.css'
 const VesselIdentity = () => {
   const { t } = useTranslation()
   const vesselData = useSelector(selectVesselInfoData)
-  const identityIndex = useSelector(selectVesselIdentityIndex)
+  const identityId = useSelector(selectVesselIdentityId)
   const identitySource = useSelector(selectVesselIdentitySource)
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
   const { getRegionTranslationsById } = useRegionTranslationsById()
@@ -49,12 +49,12 @@ const VesselIdentity = () => {
   const { setTimerange } = useTimerangeConnect()
 
   const vesselIdentity = getCurrentIdentityVessel(vesselData, {
-    identityIndex,
+    identityId,
     identitySource,
   })
 
   const onTabClick: TabsProps<VesselIdentitySourceEnum>['onTabClick'] = (tab) => {
-    dispatchQueryParams({ vesselIdentityIndex: 0, vesselIdentitySource: tab.id })
+    dispatchQueryParams({ vesselIdentityId: undefined, vesselIdentitySource: tab.id })
   }
 
   const onTimeRangeClick = () => {
@@ -113,7 +113,7 @@ const VesselIdentity = () => {
     if (identitySource === VesselIdentitySourceEnum.Registry && registryDisabled) {
       dispatchQueryParams({
         vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
-        vesselIdentityIndex: 0,
+        vesselIdentityId: undefined,
       })
     }
   }, [dispatchQueryParams, identitySource, registryDisabled])

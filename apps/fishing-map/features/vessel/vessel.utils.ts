@@ -14,7 +14,7 @@ import { VesselLastIdentity } from 'features/search/search.slice'
 import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
 import { Range } from 'features/timebar/timebar.slice'
 
-type GetVesselIdentityParams = { identityIndex?: number; identitySource?: VesselIdentitySourceEnum }
+type GetVesselIdentityParams = { identityId?: string; identitySource?: VesselIdentitySourceEnum }
 export const getVesselIdentities = (
   vessel: IdentityVessel | IdentityVesselData,
   { identitySource } = {} as Pick<GetVesselIdentityParams, 'identitySource'>
@@ -39,10 +39,13 @@ export const getVesselIdentities = (
 
 export const getVesselIdentity = (
   vessel: IdentityVessel | IdentityVesselData,
-  { identityIndex = 0, identitySource } = {} as GetVesselIdentityParams
+  { identityId, identitySource } = {} as GetVesselIdentityParams
 ) => {
   const allIdentitiesInfo = getVesselIdentities(vessel, { identitySource })
-  return allIdentitiesInfo[identityIndex]
+  return (
+    allIdentitiesInfo.find((i) => getVesselIdentyIdBySource(i, identitySource) === identityId) ||
+    allIdentitiesInfo[0]
+  )
 }
 
 export type VesselIdentityProperty = keyof SelfReportedInfo | keyof VesselRegistryInfo | 'owner'
@@ -55,6 +58,14 @@ function getLatestIdentityPrioritised(vessel: IdentityVessel | IdentityVesselDat
     identitySource: VesselIdentitySourceEnum.SelfReported,
   })
   return latestRegistryIdentity || latestSelfReportesIdentity
+}
+export function getVesselIdentyIdBySource(
+  identity: VesselDataIdentity,
+  identitySource: VesselIdentitySourceEnum = VesselIdentitySourceEnum.Registry
+) {
+  return identitySource === VesselIdentitySourceEnum.SelfReported
+    ? identity.id
+    : (identity as VesselRegistryInfo).vesselInfoReference
 }
 
 export function getVesselId(vessel: IdentityVessel | IdentityVesselData | null) {
@@ -70,11 +81,11 @@ export function getVesselId(vessel: IdentityVessel | IdentityVesselData | null) 
 export function getVesselProperty<P = string>(
   vessel: IdentityVessel | IdentityVesselData | null,
   property: VesselIdentityProperty,
-  { identityIndex = 0, identitySource } = {} as GetVesselIdentityParams
+  { identityId, identitySource } = {} as GetVesselIdentityParams
 ): P {
   if (!vessel) return '' as P
   if (property === 'owner') {
-    const ssvid = getVesselProperty(vessel, 'ssvid', { identityIndex, identitySource })
+    const ssvid = getVesselProperty(vessel, 'ssvid', { identityId, identitySource })
     return uniq(
       vessel.registryOwners?.filter((owner) => owner.ssvid === ssvid)?.map(({ name }) => name)
     ).join(', ') as P
@@ -82,8 +93,8 @@ export function getVesselProperty<P = string>(
   if (!identitySource) {
     return get(getLatestIdentityPrioritised(vessel), property) as P
   }
-  const identities = getVesselIdentities(vessel, { identitySource })
-  return get(identities[identityIndex], property) as P
+  const identity = getVesselIdentity(vessel, { identityId, identitySource })
+  return get(identity, property) as P
 }
 
 export function getVesselIdentityProperties<P = string>(
@@ -145,9 +156,9 @@ function sortVesselRegistryProperties(properties: VesselRegistryProperty[]) {
 
 export function getCurrentIdentityVessel(
   vessel: IdentityVessel | IdentityVesselData,
-  { identityIndex = 0, identitySource } = {} as GetVesselIdentityParams
+  { identityId, identitySource } = {} as GetVesselIdentityParams
 ) {
-  const vesselData = getVesselIdentity(vessel, { identityIndex, identitySource })
+  const vesselData = getVesselIdentity(vessel, { identityId, identitySource })
 
   return {
     ...vesselData,
