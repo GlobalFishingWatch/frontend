@@ -26,7 +26,8 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUserData } from 'features/user/user.slice'
 import { getUTCDateTime } from 'utils/dates'
 import {
-  getBufferedAreaFeature,
+  getBufferedArea,
+  getBufferedFeature,
   getReportCategoryFromDataview,
 } from 'features/reports/reports.utils'
 import { ReportCategory } from 'types'
@@ -464,27 +465,35 @@ const selectReportAreaData = createSelector(
   }
 )
 
-export const selectReportAreaPreviewBuffer = createSelector(
+export const selectReportPreviewBufferFeature = createSelector(
   [selectReportAreaData, selectReportPreviewBuffer],
   (area, buffer) => {
     const { value, unit } = buffer
     if (!area || !unit || !value) return null
-    return getBufferedAreaFeature({ area, value, unit }) as Area
+    return getBufferedFeature({ area, value, unit })
   }
 )
 
-export const selectReportAreaBuffer = createSelector(
+export const selectReportBufferArea = createSelector(
   [selectReportAreaData, selectUrlBufferUnitQuery, selectUrlBufferValueQuery],
   (area, unit, value) => {
     if (!area || !unit || !value) return null
-    const bufferedArea = getBufferedAreaFeature({ area, value, unit }) as Area
+    const bufferedArea = getBufferedArea({ area, value, unit }) as Area
     if (bufferedArea?.bounds && bufferedArea?.geometry) {
       const bounds = wrapGeometryBbox(bufferedArea.geometry as MultiPolygon)
-      // bbox is needed inside feature geometry to computeTimeseries
+      // bbox is needed inside Area geometry to computeTimeseries
       // fishing-map/features/reports/reports-timeseries.hooks.ts
       bufferedArea.geometry.bbox = bounds
     }
     return bufferedArea
+  }
+)
+
+export const selectReportBufferFeature = createSelector(
+  [selectReportAreaData, selectUrlBufferUnitQuery, selectUrlBufferValueQuery],
+  (area, unit, value) => {
+    if (!area || !unit || !value) return null
+    return getBufferedFeature({ area, value, unit })
   }
 )
 
@@ -493,7 +502,7 @@ export const selectReportArea = createSelector(
     selectReportAreaData,
     selectUrlBufferUnitQuery,
     selectUrlBufferValueQuery,
-    selectReportAreaBuffer,
+    selectReportBufferArea,
   ],
   (area, unit, value, bufferedArea) => {
     if (!area) return null

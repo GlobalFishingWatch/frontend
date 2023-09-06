@@ -38,9 +38,9 @@ import {
   selectIsWorkspaceLocation,
 } from 'routes/routes.selectors'
 import {
-  selectReportAreaBuffer,
   selectShowTimeComparison,
-  selectReportAreaPreviewBuffer,
+  selectReportPreviewBufferFeature,
+  selectReportBufferFeature,
 } from 'features/reports/reports.selectors'
 import { WorkspaceCategory } from 'data/workspaces'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -301,24 +301,24 @@ export const selectMapWorkspacesListGenerators = createSelector(
 )
 
 export const selectMapReportGenerators = createSelector(
-  [selectReportAreaBuffer, selectReportAreaPreviewBuffer],
-  (reportAreaBuffer, reportAreaPreviewBuffer) => {
+  [selectReportBufferFeature, selectReportPreviewBufferFeature],
+  (reportBufferFeature, reportPreviewBufferFeature) => {
     const reportGenerators: PolygonsGeneratorConfig[] = []
-    if (reportAreaBuffer) {
+    if (reportBufferFeature?.geometry) {
       reportGenerators.push({
         type: GeneratorType.Polygons,
         id: 'report-area-buffer',
-        data: { type: 'FeatureCollection', features: [reportAreaBuffer.geometry] },
+        data: { type: 'FeatureCollection', features: [reportBufferFeature] },
         color: '#FFF',
         visible: true,
         group: Group.OutlinePolygonsHighlighted,
       })
     }
-    if (reportAreaPreviewBuffer) {
+    if (reportPreviewBufferFeature?.geometry) {
       reportGenerators.push({
         type: GeneratorType.Polygons,
         id: 'report-area-preview-buffer',
-        data: { type: 'FeatureCollection', features: [reportAreaPreviewBuffer.geometry] },
+        data: { type: 'FeatureCollection', features: [reportPreviewBufferFeature] },
         color: '#F95E5E',
         visible: true,
         group: Group.OutlinePolygonsHighlighted,

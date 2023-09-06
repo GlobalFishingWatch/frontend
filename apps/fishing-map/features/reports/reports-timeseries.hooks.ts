@@ -147,7 +147,7 @@ export const useFilteredTimeSeries = () => {
   const activityFeaturesLoaded = areDataviewsFeatureLoaded(activityFeatures)
   useEffect(() => {
     if (activityFeaturesLoaded && area?.geometry && areaInViewport) {
-      computeTimeseries(activityFeatures, area?.geometry, reportGraphMode)
+      computeTimeseries(activityFeatures, area?.geometry as Polygon | MultiPolygon, reportGraphMode)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activityFeaturesLoaded, area?.geometry, areaInViewport, reportCategory])

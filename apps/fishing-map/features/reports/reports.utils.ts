@@ -8,7 +8,7 @@ import { format } from 'd3-format'
 import { DateTime } from 'luxon'
 import { multiPolygon, polygon, point } from '@turf/helpers'
 import { buffer } from '@turf/turf'
-import { MultiPolygon } from 'geojson'
+import { Feature, MultiPolygon } from 'geojson'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataview, DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
@@ -213,7 +213,8 @@ export const getReportCategoryFromDataview = (
     : (dataview.category as unknown as ReportCategory)
 }
 
-export const getBufferedAreaFeature = ({
+// Area is needed to generate all report results
+export const getBufferedArea = ({
   area,
   value,
   unit,
@@ -222,6 +223,35 @@ export const getBufferedAreaFeature = ({
   value: number
   unit: BufferUnit
 }): Area | null => {
+  const bufferedFeature = getBufferedFeature({ area, value, unit })
+  return { ...area, geometry: bufferedFeature?.geometry } as Area
+}
+
+export const getBufferedAreaBbox = ({
+  area,
+  value = DEFAULT_POINT_BUFFER_VALUE,
+  unit = DEFAULT_POINT_BUFFER_UNIT,
+}): Bbox | undefined => {
+  const bufferedFeature = getBufferedFeature({
+    area,
+    value,
+    unit,
+  })
+  return bufferedFeature?.geometry
+    ? wrapGeometryBbox(bufferedFeature.geometry as MultiPolygon)
+    : undefined
+}
+
+// Feature is handled to Polygon generator to be displayed on the map
+export const getBufferedFeature = ({
+  area,
+  value,
+  unit,
+}: {
+  area: Area | undefined
+  value: number
+  unit: BufferUnit
+}): Feature | null => {
   if (!area?.geometry) return null
   const areaPolygon =
     area.geometry.type === 'MultiPolygon'
@@ -232,22 +262,5 @@ export const getBufferedAreaFeature = ({
       ? point(area.geometry.coordinates)
       : null
 
-  const bufferedGeometry = areaPolygon ? buffer(areaPolygon, value, { units: unit }) : undefined
-
-  return { ...area, geometry: bufferedGeometry } as Area
-}
-
-export const getBufferedAreaBbox = ({
-  area,
-  value = DEFAULT_POINT_BUFFER_VALUE,
-  unit = DEFAULT_POINT_BUFFER_UNIT,
-}): Bbox | undefined => {
-  const bufferedArea = getBufferedAreaFeature({
-    area,
-    value,
-    unit,
-  }) as Area
-  return bufferedArea?.geometry
-    ? wrapGeometryBbox(bufferedArea.geometry as MultiPolygon)
-    : undefined
+  return areaPolygon ? buffer(areaPolygon, value, { units: unit }) : null
 }
