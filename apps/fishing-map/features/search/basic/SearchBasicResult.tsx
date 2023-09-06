@@ -31,7 +31,6 @@ import {
   getOtherVesselNames,
   getRelatedIdentityVesselIds,
   getSearchIdentityResolved,
-  getVesselIdentityProperties,
 } from 'features/vessel/vessel.utils'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
 import useMapInstance from 'features/map/map-context.hooks'

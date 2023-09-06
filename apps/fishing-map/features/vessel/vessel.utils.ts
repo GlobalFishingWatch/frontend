@@ -65,7 +65,7 @@ export function getMatchCriteriaPrioritised(matchCriteria: IdentityVessel['match
   if (registryMatchCriteria) {
     return registryMatchCriteria
   }
-  return matchCriteria?.find((m) => m.source === VesselIdentitySourceEnum.SelfReported)
+  return matchCriteria?.[0]
 }
 
 export function getBestMatchCriteriaIdentity(vessel: IdentityVessel | IdentityVesselData) {
