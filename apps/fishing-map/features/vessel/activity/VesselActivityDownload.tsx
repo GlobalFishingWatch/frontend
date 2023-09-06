@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux'
 import saveAs from 'file-saver'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
-import { getVesselProperty, parseEventsToCSV } from 'features/vessel/vessel.utils'
+import { getVesselProperty } from 'features/vessel/vessel.utils'
+import { parseEventsToCSV } from 'features/vessel/vessel.download'
 import {
   selectVesselEventsFilteredByTimerange,
   selectVesselEventsResourcesLoading,
