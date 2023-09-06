@@ -6,6 +6,7 @@ import { Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { ReactComponent as VesselSearchImage } from 'assets/images/vessel-search.svg'
+import { ReactComponent as VesselSearchNoSesultsImage } from 'assets/images/vessel-search-no-results.svg'
 import { isGuestUser } from 'features/user/user.slice'
 import { selectSearchDatasetsNotGuestAllowedLabels } from 'features/search/search.selectors'
 import { selectQueryParam } from 'routes/routes.selectors'
@@ -32,7 +33,7 @@ export function SearchNoResultsState({ className = '' }: SearchPlaceholderProps)
   return (
     <SearchPlaceholder className={className}>
       <div className={styles.container}>
-        <VesselSearchImage />
+        <VesselSearchNoSesultsImage />
         <p>
           {t(
             'search.noResults',
@@ -57,7 +58,7 @@ export function SearchEmptyState({ className = '' }: SearchPlaceholderProps) {
       <div className={styles.container}>
         <VesselSearchImage />
         <div className={cx({ [styles.hidden]: searchStatus !== AsyncReducerStatus.Loading })}>
-          {t('search.searching', 'Searching in more than 100K vessels ...')}
+          {t('search.searching', 'Searching more than 100K vessels ...')}
           <Spinner className={styles.spinner} />
         </div>
         <div className={cx({ [styles.hidden]: searchStatus === AsyncReducerStatus.Loading })}>

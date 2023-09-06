@@ -146,8 +146,9 @@ function SearchBasic({
                 </li>
               )}
 
-              {(searchStatus === AsyncReducerStatus.Idle ||
-                searchStatus === AsyncReducerStatus.Loading) && <SearchEmptyState />}
+              {!hasMoreResults &&
+                (searchStatus === AsyncReducerStatus.Idle ||
+                  searchStatus === AsyncReducerStatus.Loading) && <SearchEmptyState />}
               {searchStatus === AsyncReducerStatus.Finished && !hasMoreResults && (
                 <SearchNoResultsState />
               )}

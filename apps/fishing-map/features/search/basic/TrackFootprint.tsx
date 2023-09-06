@@ -89,10 +89,10 @@ function TrackFootprint({
   )
 
   useEffect(() => {
-    if (onScreen && !trackData && vesselIds?.length) {
+    if (onScreen && !trackData && !error && vesselIds?.length) {
       fetchData(vesselIds)
     }
-  }, [fetchData, onScreen, trackData, vesselIds])
+  }, [error, fetchData, onScreen, trackData, vesselIds])
 
   useEffect(() => {
     if (fullContext && trackData) {
