@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import cx from 'classnames'
 import { geoEqualEarth, geoPath } from 'd3'
-import { FeatureCollection, GeoJsonProperties, Geometry } from 'geojson'
+import { Feature, FeatureCollection, GeoJsonProperties, Geometry, LineString } from 'geojson'
 import { DateTime } from 'luxon'
 import qs from 'qs'
 import area from '@turf/area'
@@ -81,7 +81,7 @@ function TrackFootprint({
       }
 
       const segments = trackValueArrayToSegments(vesselData, [Field.lonlat, Field.timestamp])
-      const geoJson = segmentsToGeoJSON(segments.filter((s) => s.length > 1))
+      const geoJson = segmentsToGeoJSON(segments)
       setTrackData(geoJson)
       if (onDataLoad) onDataLoad(geoJson)
     },
@@ -97,14 +97,18 @@ function TrackFootprint({
   useEffect(() => {
     if (fullContext && trackData) {
       const isSmallFootprint = area(bboxPolygon(bbox(trackData))) < MAX_SMALL_AREA_M
-      const fullPath = geoPath(projection, fullContext)
+      const fullPath = geoPath(projection, fullContext).pointRadius(1)
       fullContext.lineCap = 'round'
       fullContext.lineJoin = 'round'
       fullContext.lineWidth = isSmallFootprint ? 12 * densityMultiplier : 2 * densityMultiplier
       fullContext.strokeStyle = '#42639C'
-      trackData.features.forEach((feature) => {
+      trackData.features.forEach((feature: Feature<LineString>) => {
         fullContext.beginPath()
-        fullPath(feature)
+        fullPath(
+          feature.geometry.coordinates.length === 1
+            ? { type: 'Point', coordinates: feature.geometry.coordinates[0] }
+            : feature
+        )
         fullContext.stroke()
       })
     }
