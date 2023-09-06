@@ -21,7 +21,7 @@ export type VesselLinkProps = {
   datasetId?: string
   vessel?: VesselDataviewInstanceParams
   children: any
-  onClick?: () => void
+  onClick?: (e: MouseEvent) => void
   className?: string
   query?: Partial<Record<keyof QueryParams, string | number>>
 }
@@ -45,14 +45,17 @@ const VesselLink = ({
   const vesselDatasetId = datasetId || vessel?.dataset?.id || DEFAULT_VESSEL_IDENTITY_ID
   const standaloneLink = isSearchLocation || isVesselLocation
 
-  const onLinkClick = useCallback(() => {
-    if (vesselId !== vesselInfoDataId) {
-      dispatch(resetVesselState())
-    }
-    if (onClick) {
-      onClick()
-    }
-  }, [dispatch, onClick, vesselId, vesselInfoDataId])
+  const onLinkClick = useCallback(
+    (e) => {
+      if (vesselId !== vesselInfoDataId) {
+        dispatch(resetVesselState())
+      }
+      if (onClick) {
+        onClick(e)
+      }
+    },
+    [dispatch, onClick, vesselId, vesselInfoDataId]
+  )
 
   if (!vesselId) return children
 

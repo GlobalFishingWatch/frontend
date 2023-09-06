@@ -92,8 +92,10 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
   const { setTimerange } = useTimerangeConnect()
 
   const onVesselClick = useCallback(
-    (vessel: VesselLastIdentity) => {
-      dispatch(cleanVesselSearchResults())
+    (e: MouseEvent, vessel: VesselLastIdentity) => {
+      if (!e.ctrlKey && !e.shiftKey && !e.metaKey) {
+        dispatch(cleanVesselSearchResults())
+      }
       if (isSearchLocation) {
         setTimerange({ start: vessel.transmissionDateFrom, end: vessel.transmissionDateTo })
       }
@@ -121,7 +123,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           return (
             <VesselLink
               vessel={vesselData}
-              onClick={() => onVesselClick(vesselData)}
+              onClick={(e) => onVesselClick(e, vesselData)}
               query={vesselQuery}
               className={styles.advancedName}
             >
