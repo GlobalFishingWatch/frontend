@@ -64,8 +64,13 @@
     display: none;
   }
 
+  .option {
+    background: none;
+  }
+
   .option button {
     padding: 0;
+    justify-content: flex-start;
   }
 
   .option:not([aria-checked='true']) {

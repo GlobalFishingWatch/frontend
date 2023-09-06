@@ -64,3 +64,9 @@
   border-radius: 0.6rem;
   border: var(--border);
 }
+
+@media print {
+  .summaryContainer {
+    flex-direction: column;
+  }
+}

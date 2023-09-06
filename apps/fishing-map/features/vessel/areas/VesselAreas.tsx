@@ -162,6 +162,7 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
 
   return (
     <div className={styles.container}>
+      <h2 className="print-only">{t('vessel.sectionAreas', 'areas')}</h2>
       <div className="print-hidden">
         <VesselActivitySummary />
       </div>

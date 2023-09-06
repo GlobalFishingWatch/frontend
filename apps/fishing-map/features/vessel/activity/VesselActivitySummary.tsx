@@ -102,7 +102,7 @@ export const VesselActivitySummary = () => {
 
   return (
     <div className={styles.summaryContainer}>
-      <label className="print-only">{t('vessel.sectionActivity', 'activity')}</label>
+      <h2 className="print-only">{t('vessel.sectionActivity', 'activity')}</h2>
       <div>
         <h2 className={styles.summary}>
           <span dangerouslySetInnerHTML={{ __html: summary }}></span>
@@ -175,7 +175,7 @@ export const VesselActivitySummary = () => {
                   onClick={onEventChange}
                   id={eventType}
                   color={color}
-                  className={styles.eventSwitch}
+                  className={cx(styles.eventSwitch, 'print-hidden')}
                 />
                 <div className={cx(styles.eventTypeRow, { [styles.active]: active })}>
                   {active && <strong>{formatI18nNumber(events?.length || 0)} </strong>}

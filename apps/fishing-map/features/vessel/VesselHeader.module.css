@@ -40,6 +40,7 @@
 }
 
 .reportLink {
+  font: var(--font-M);
   text-decoration: underline;
   display: none;
 }
