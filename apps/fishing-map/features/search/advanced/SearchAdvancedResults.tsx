@@ -92,8 +92,10 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
   const { setTimerange } = useTimerangeConnect()
 
   const onVesselClick = useCallback(
-    (vessel: VesselLastIdentity) => {
-      dispatch(cleanVesselSearchResults())
+    (e: MouseEvent, vessel: VesselLastIdentity) => {
+      if (!e.ctrlKey && !e.shiftKey && !e.metaKey) {
+        dispatch(cleanVesselSearchResults())
+      }
       if (isSearchLocation) {
         setTimerange({ start: vessel.transmissionDateFrom, end: vessel.transmissionDateTo })
       }
@@ -121,7 +123,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           return (
             <VesselLink
               vessel={vesselData}
-              onClick={() => onVesselClick(vesselData)}
+              onClick={(e) => onVesselClick(e, vesselData)}
               query={vesselQuery}
               className={styles.advancedName}
             >
@@ -137,6 +139,27 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         header: t('common.name', 'Name'),
         enableColumnDragging: false,
         enableColumnActions: false,
+      },
+      {
+        id: 'transmissionDates',
+        accessorFn: (vessel) => {
+          const { transmissionDateFrom, transmissionDateTo } = getSearchIdentityResolved(vessel)
+          if (!transmissionDateFrom || !transmissionDateTo) return
+          return (
+            <div>
+              <span style={{ font: 'var(--font-XS)' }}>
+                <I18nDate date={transmissionDateFrom} /> - <I18nDate date={transmissionDateTo} />
+              </span>
+              <TransmissionsTimeline
+                firstTransmissionDate={transmissionDateFrom}
+                lastTransmissionDate={transmissionDateTo}
+                firstYearOfData={FIRST_YEAR_OF_DATA}
+                locale={i18n.language as Locale}
+              />
+            </div>
+          )
+        },
+        header: t('vessel.transmissionDates', 'Transmission Dates'),
       },
       {
         id: 'flag',
@@ -247,27 +270,6 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           }
         },
         header: t('vessel.transmission_other', 'Transmissions'),
-      },
-      {
-        id: 'transmissionDates',
-        accessorFn: (vessel) => {
-          const { transmissionDateFrom, transmissionDateTo } = getSearchIdentityResolved(vessel)
-          if (!transmissionDateFrom || !transmissionDateTo) return
-          return (
-            <div>
-              <span style={{ font: 'var(--font-XS)' }}>
-                <I18nDate date={transmissionDateFrom} /> - <I18nDate date={transmissionDateTo} />
-              </span>
-              <TransmissionsTimeline
-                firstTransmissionDate={transmissionDateFrom}
-                lastTransmissionDate={transmissionDateTo}
-                firstYearOfData={FIRST_YEAR_OF_DATA}
-                locale={i18n.language as Locale}
-              />
-            </div>
-          )
-        },
-        header: t('vessel.transmissionDates', 'Transmission Dates'),
       },
     ]
   }, [fetchResults, i18n.language, onVesselClick, t])

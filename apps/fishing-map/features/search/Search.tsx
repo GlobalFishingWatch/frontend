@@ -75,13 +75,22 @@ function Search() {
 
   useEffect(() => {
     if (searchDatasets?.length && activeSearchOption === 'basic' && debouncedQuery) {
+      dispatch(cleanVesselSearchResults())
       fetchResults({
         query: debouncedQuery,
         datasets: searchDatasets,
         filters: {},
       })
     }
-  }, [debouncedQuery, searchFilters, activeSearchOption, searchDatasets, fetchResults, hasFilters])
+  }, [
+    debouncedQuery,
+    searchFilters,
+    activeSearchOption,
+    searchDatasets,
+    fetchResults,
+    hasFilters,
+    dispatch,
+  ])
 
   useEffect(() => {
     if (activeSearchOption === 'advanced' && (hasFilters || debouncedQuery)) {

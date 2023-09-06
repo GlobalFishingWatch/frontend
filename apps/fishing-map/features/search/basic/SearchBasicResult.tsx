@@ -135,8 +135,10 @@ function SearchBasicResult({
   }, [map, trackBbox, transmissionDateFrom, transmissionDateTo])
 
   const onVesselClick = useCallback(
-    (vessel: VesselLastIdentity) => {
-      dispatch(cleanVesselSearchResults())
+    (e: MouseEvent) => {
+      if (!e.ctrlKey && !e.shiftKey && !e.metaKey) {
+        dispatch(cleanVesselSearchResults())
+      }
       if (isSearchLocation) {
         if (trackBbox) {
           fitBounds(trackBbox)
@@ -181,7 +183,6 @@ function SearchBasicResult({
       })}
       key={`${index} - ${dataset?.id} - ${id}`}
       data-test={`search-vessels-option-${id}-${index}`}
-      onClick={isInWorkspace ? undefined : onClick}
     >
       <div className={styles.container}>
         <IconButton
@@ -190,12 +191,13 @@ function SearchBasicResult({
           className={cx({ [styles.selectedIcon]: isSelected || isInWorkspace })}
           size="tiny"
           tooltip={tooltip}
+          onClick={isInWorkspace ? undefined : onClick}
         />
         <div className={styles.fullWidth}>
           <div className={styles.name} data-test="vessel-name">
             <VesselLink
               vessel={getSearchIdentityResolved(vessel)}
-              onClick={() => onVesselClick(vesselData)}
+              onClick={onVesselClick}
               query={vesselQuery}
             >
               {name}
