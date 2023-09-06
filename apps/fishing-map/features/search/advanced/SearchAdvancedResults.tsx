@@ -139,6 +139,27 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         enableColumnActions: false,
       },
       {
+        id: 'transmissionDates',
+        accessorFn: (vessel) => {
+          const { transmissionDateFrom, transmissionDateTo } = getSearchIdentityResolved(vessel)
+          if (!transmissionDateFrom || !transmissionDateTo) return
+          return (
+            <div>
+              <span style={{ font: 'var(--font-XS)' }}>
+                <I18nDate date={transmissionDateFrom} /> - <I18nDate date={transmissionDateTo} />
+              </span>
+              <TransmissionsTimeline
+                firstTransmissionDate={transmissionDateFrom}
+                lastTransmissionDate={transmissionDateTo}
+                firstYearOfData={FIRST_YEAR_OF_DATA}
+                locale={i18n.language as Locale}
+              />
+            </div>
+          )
+        },
+        header: t('vessel.transmissionDates', 'Transmission Dates'),
+      },
+      {
         id: 'flag',
         accessorFn: (vessel) => {
           return (
@@ -247,27 +268,6 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           }
         },
         header: t('vessel.transmission_other', 'Transmissions'),
-      },
-      {
-        id: 'transmissionDates',
-        accessorFn: (vessel) => {
-          const { transmissionDateFrom, transmissionDateTo } = getSearchIdentityResolved(vessel)
-          if (!transmissionDateFrom || !transmissionDateTo) return
-          return (
-            <div>
-              <span style={{ font: 'var(--font-XS)' }}>
-                <I18nDate date={transmissionDateFrom} /> - <I18nDate date={transmissionDateTo} />
-              </span>
-              <TransmissionsTimeline
-                firstTransmissionDate={transmissionDateFrom}
-                lastTransmissionDate={transmissionDateTo}
-                firstYearOfData={FIRST_YEAR_OF_DATA}
-                locale={i18n.language as Locale}
-              />
-            </div>
-          )
-        },
-        header: t('vessel.transmissionDates', 'Transmission Dates'),
       },
     ]
   }, [fetchResults, i18n.language, onVesselClick, t])
