@@ -14,8 +14,6 @@ import {
   fetchVesselInfoThunk,
   selectVesselInfoError,
   selectVesselInfoStatus,
-  selectVesselPrintMode,
-  setVesselPrintMode,
 } from 'features/vessel/vessel.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import VesselHeader from 'features/vessel/VesselHeader'
@@ -31,7 +29,6 @@ import {
   selectVesselSection,
 } from 'features/vessel/vessel.config.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
-import { useCallbackAfterPaint } from 'hooks/paint.hooks'
 import { useUpdateVesselEventsVisibility } from 'features/vessel/vessel.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useClickedEventConnect } from 'features/map/map.hooks'
@@ -61,7 +58,6 @@ const Vessel = () => {
   const datasetId = useSelector(selectVesselDatasetId)
   const urlWorkspaceId = useSelector(selectWorkspaceId)
   const infoStatus = useSelector(selectVesselInfoStatus)
-  const vesselPrintMode = useSelector(selectVesselPrintMode)
   const hasEventsDataset = useSelector(selectVesselHasEventsDatasets)
   const infoError = useSelector(selectVesselInfoError)
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
@@ -150,41 +146,12 @@ const Vessel = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [datasetId, dispatch, vesselId, urlWorkspaceId])
 
-  const vesselPrintCallback = useCallback(() => {
-    window.print()
-  }, [])
-
-  useEffect(() => {
-    const enableVesselPrintMode = () => {
-      dispatch(setVesselPrintMode(true))
-    }
-    const disableVesselPrintMode = () => {
-      dispatch(setVesselPrintMode(false))
-    }
-    window.addEventListener('beforeprint', enableVesselPrintMode)
-    window.addEventListener('afterprint', disableVesselPrintMode)
-    return () => {
-      window.removeEventListener('beforeprint', enableVesselPrintMode)
-      window.removeEventListener('afterprint', disableVesselPrintMode)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   useEffect(() => {
     cleanFeatureState('click')
     dispatchClickedEvent(null)
     cancelPendingInteractionRequests()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  useCallbackAfterPaint({
-    callback: vesselPrintCallback,
-    /**
-     * Signal to the hook that we want to capture the frame right after our item list
-     * model is populated.
-     */
-    enabled: vesselPrintMode,
-  })
 
   const changeTab = (tab: Tab<VesselSection>) => {
     dispatchQueryParams({ vesselSection: tab.id })

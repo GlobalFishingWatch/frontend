@@ -2,8 +2,13 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import Sticky from 'react-sticky-el'
+import { useCallback, useEffect } from 'react'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { selectVesselInfoData, setVesselPrintMode } from 'features/vessel/vessel.slice'
+import {
+  selectVesselInfoData,
+  selectVesselPrintMode,
+  setVesselPrintMode,
+} from 'features/vessel/vessel.slice'
 import { formatInfoField } from 'utils/info'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import {
@@ -22,6 +27,7 @@ import {
 import { selectIsWorkspaceVesselLocation } from 'routes/routes.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useVesselBounds } from 'features/vessel/vessel-bounds.hooks'
+import { useCallbackAfterPaint } from 'hooks/paint.hooks'
 import styles from './VesselHeader.module.css'
 
 const VesselHeader = () => {
@@ -34,7 +40,37 @@ const VesselHeader = () => {
   const vessel = useSelector(selectVesselInfoData)
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const vesselColor = useSelector(selectVesselProfileColor)
+  const vesselPrintMode = useSelector(selectVesselPrintMode)
   const { vesselBounds, setVesselBounds } = useVesselBounds()
+
+  const vesselPrintCallback = useCallback(() => {
+    window.print()
+  }, [])
+
+  useEffect(() => {
+    const enableVesselPrintMode = () => {
+      dispatch(setVesselPrintMode(true))
+    }
+    const disableVesselPrintMode = () => {
+      dispatch(setVesselPrintMode(false))
+    }
+    window.addEventListener('beforeprint', enableVesselPrintMode)
+    window.addEventListener('afterprint', disableVesselPrintMode)
+    return () => {
+      window.removeEventListener('beforeprint', enableVesselPrintMode)
+      window.removeEventListener('afterprint', disableVesselPrintMode)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useCallbackAfterPaint({
+    callback: vesselPrintCallback,
+    /**
+     * Signal to the hook that we want to capture the frame right after our item list
+     * model is populated.
+     */
+    enabled: vesselPrintMode,
+  })
 
   const shipname = getVesselProperty(vessel, 'shipname', { identityId, identitySource })
   const otherNamesLabel = getOtherVesselNames(vessel, shipname)
