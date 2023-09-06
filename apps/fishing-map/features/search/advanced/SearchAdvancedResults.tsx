@@ -24,8 +24,8 @@ import I18nDate from 'features/i18n/i18nDate'
 import {
   VesselIdentityProperty,
   getBestMatchCriteriaIdentity,
+  getOtherVesselNames,
   getSearchIdentityResolved,
-  getVesselIdentityProperties,
   getVesselProperty,
 } from 'features/vessel/vessel.utils'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
@@ -113,17 +113,10 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           const bestIdentityMatch = getBestMatchCriteriaIdentity(vessel)
           const vesselData = getSearchIdentityResolved(vessel)
           const { shipname } = vesselData
-          const otherNames = getVesselIdentityProperties(vessel, 'shipname').filter(
-            (n) => n !== shipname
-          )
+          const otherNamesLabel = getOtherVesselNames(vessel, shipname)
           const { transmissionDateFrom, transmissionDateTo } = vesselData
           const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER
-          const previousNames =
-            otherNames?.length > 0 &&
-            `(${t('common.aka', 'a.k.a.,')}: ${otherNames
-              .map((name) => formatInfoField(name, 'name'))
-              .join(', ')})`
-          const label = `${name} ${previousNames || ''}`
+          const label = `${name} ${otherNamesLabel || ''}`
           const vesselQuery = { start: transmissionDateFrom, end: transmissionDateTo }
 
           return (
@@ -136,7 +129,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
               <Tooltip content={label?.length > TOOLTIP_LABEL_CHARACTERS && label}>
                 <span>
                   {name}{' '}
-                  {previousNames && <span className={styles.secondary}>{previousNames}</span>}
+                  {otherNamesLabel && <span className={styles.secondary}>{otherNamesLabel}</span>}
                 </span>
               </Tooltip>
             </VesselLink>

@@ -6,11 +6,19 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { selectVesselInfoData, setVesselPrintMode } from 'features/vessel/vessel.slice'
 import { formatInfoField } from 'utils/info'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
-import { getCurrentIdentityVessel, getVesselProperty } from 'features/vessel/vessel.utils'
+import {
+  getCurrentIdentityVessel,
+  getOtherVesselNames,
+  getVesselProperty,
+} from 'features/vessel/vessel.utils'
 import { selectVesselProfileColor } from 'features/dataviews/dataviews.slice'
 import { COLOR_PRIMARY_BLUE } from 'features/app/App'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
+import {
+  selectVesselIdentityId,
+  selectVesselIdentitySource,
+  selectViewOnlyVessel,
+} from 'features/vessel/vessel.config.selectors'
 import { selectIsWorkspaceVesselLocation } from 'routes/routes.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useVesselBounds } from 'features/vessel/vessel-bounds.hooks'
@@ -20,11 +28,16 @@ const VesselHeader = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
+  const identityId = useSelector(selectVesselIdentityId)
+  const identitySource = useSelector(selectVesselIdentitySource)
   const viewOnlyVessel = useSelector(selectViewOnlyVessel)
   const vessel = useSelector(selectVesselInfoData)
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const vesselColor = useSelector(selectVesselProfileColor)
   const { vesselBounds, setVesselBounds } = useVesselBounds()
+
+  const shipname = getVesselProperty(vessel, 'shipname', { identityId, identitySource })
+  const otherNamesLabel = getOtherVesselNames(vessel, shipname)
 
   const onVesselFitBoundsClick = () => {
     if (vesselBounds) {
@@ -56,8 +69,8 @@ const VesselHeader = () => {
               d="M15.23.75v6.36l-7.8 7.8-1.58-4.78-4.78-1.59L8.87.75h6.36Z"
             />
           </svg>
-          {formatInfoField(getVesselProperty(vessel, 'shipname'), 'name')} (
-          {formatInfoField(getVesselProperty(vessel, 'flag'), 'flag')})
+          {formatInfoField(shipname, 'name')}
+          <span className={styles.secondary}>{otherNamesLabel}</span>
           <div>
             <a className={styles.reportLink} href={window.location.href}>
               {t('vessel.linkToVessel', 'Check the vessel profile here')}

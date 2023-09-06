@@ -24,8 +24,8 @@ import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import {
   filterRegistryInfoByDateAndSSVID,
   getCurrentIdentityVessel,
-  parseVesselToCSV,
 } from 'features/vessel/vessel.utils'
+import { parseVesselToCSV } from 'features/vessel/vessel.download'
 import {
   selectVesselIdentityId,
   selectVesselIdentitySource,

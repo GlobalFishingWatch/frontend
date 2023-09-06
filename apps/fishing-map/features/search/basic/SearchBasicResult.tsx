@@ -28,6 +28,7 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
 import {
   getBestMatchCriteriaIdentity,
+  getOtherVesselNames,
   getRelatedIdentityVesselIds,
   getSearchIdentityResolved,
   getVesselIdentityProperties,
@@ -82,7 +83,7 @@ function SearchBasicResult({
     positionsCounter,
   } = vesselData
   const bestIdentityMatch = getBestMatchCriteriaIdentity(vessel)
-  const otherNames = getVesselIdentityProperties(vessel, 'shipname').filter((n) => n !== shipname)
+  const otherNamesLabel = getOtherVesselNames(vessel, shipname)
   const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER
 
   const identitySource = useMemo(() => {
@@ -207,12 +208,7 @@ function SearchBasicResult({
             >
               {name}
             </VesselLink>
-            <span className={styles.secondary}>
-              {otherNames?.length > 0 &&
-                ` (${t('common.aka', 'a.k.a.,')} ${otherNames
-                  .map((name) => formatInfoField(name, 'name'))
-                  .join(', ')})`}
-            </span>
+            <span className={styles.secondary}>{otherNamesLabel}</span>
           </div>
           <div className={styles.properties}>
             <div className={styles.property}>

@@ -29,6 +29,10 @@
   flex: 1;
 }
 
+.secondary {
+  color: var(--color-secondary-blue);
+}
+
 .vesselIcon {
   margin-right: var(--space-XS);
 }
