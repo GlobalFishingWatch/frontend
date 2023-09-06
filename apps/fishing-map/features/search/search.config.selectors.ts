@@ -1,10 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { selectQueryParam } from 'routes/routes.selectors'
-import {
-  DEFAULT_SEARCH_STATE,
-  SearchType,
-  VesselIdentitySourceEnum,
-} from 'features/search/search.config'
+import { DEFAULT_SEARCH_STATE, SearchType } from 'features/search/search.config'
 import { VesselSearchState, VesselSearchStateProperty } from 'types'
 
 export const selectVesselSearchStateProperty = (property: VesselSearchStateProperty) =>
