@@ -72,6 +72,7 @@
     "active_after": "Actif après",
     "active_before": "Actif avant",
     "activity": "Activité",
+    "aka": "a.k.a.,",
     "analysis": "Créer une analyse pour cette zone",
     "analysisNotAvailable": "Activer/désactiver un calque d'activité ou d'environnement pour l'analyser dans cette zone",
     "and": "et",
@@ -703,6 +704,7 @@
     "summary": "The <strong>{{vesselType}}</strong> vessel flagged by <strong>{{vesselFlag}}</strong> {{events}} {{voyages}} between <strong>{{timerangeStart}}</strong> and <strong>{{timerangeEnd}}</strong>",
     "target_species": "Espèces pêchées",
     "targetSpecies": "Espèces pêchées",
+    "title": "Vessel profile",
     "terminology": {
       "geartype": "For gear type sourced from Global Fishing Watch, additional research and analysis is conducted in addition to using the original AIS data to identify the most likely value. GFW source values are likely gear type of fishing vessel as defined by Global Fishing Watch. The fishing vessels identified by GFW come from the GFW fishing database that were identified using vessel registry databases, reported AIS identity information, and estimated classification using a machine learning algorithm. See more information here:<1>https://globalfishingwatch.org/datasets-and-code-vessel-identity/</1> .\nGear type from \"other\" is taken from RFMO authorized vessel lists and other sources.",
       "infoSource": "Info source terminology",
@@ -782,7 +784,8 @@
     "siteDescription": {
       "default": "La carte Global Fishing Watch est la première plate-forme libre d'accès pour la visualisation et l'analyse du trafic maritime et de l'activité humaine en mer.",
       "fishing-activity": "La carte Global Fishing Watch est la première plate-forme libre d'accès pour la visualisation et l'analyse du trafic maritime et de l'activité humaine en mer.",
-      "marine-manager": "Marine Manager est un nouveau portail technologique destiné à soutenir la conception, la gestion et le suivi efficaces des aires protégées."
+      "marine-manager": "Marine Manager est un nouveau portail technologique destiné à soutenir la conception, la gestion et le suivi efficaces des aires protégées.",
+      "search": "Recherche par nom de navire ou code d'identification . Vous pouvez affiner votre recherche en cliquant sur \"Avancé\" dans la barre supérieure."
     },
     "title_other": "Espaces de travail",
     "update": "Mise à jour",
