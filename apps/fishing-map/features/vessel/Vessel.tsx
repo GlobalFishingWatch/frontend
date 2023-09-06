@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Spinner, Tab, Tabs } from '@globalfishingwatch/ui-components'
 import { isAuthError } from '@globalfishingwatch/api-client'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
-import { Dataview } from '@globalfishingwatch/api-types'
+import { Dataview, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import {
   selectIsWorkspaceVesselLocation,
   selectVesselId,
@@ -12,6 +12,7 @@ import {
 } from 'routes/routes.selectors'
 import {
   fetchVesselInfoThunk,
+  selectVesselInfoData,
   selectVesselInfoError,
   selectVesselInfoStatus,
 } from 'features/vessel/vessel.slice'
@@ -44,8 +45,10 @@ import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { BASEMAP_DATAVIEW_SLUG } from 'data/workspaces'
 import { useVesselFitBounds } from 'features/vessel/vessel-bounds.hooks'
+import { getVesselIdentities } from 'features/vessel/vessel.utils'
 import VesselActivity from './activity/VesselActivity'
 import VesselIdentity from './identity/VesselIdentity'
+import styles from './Vessel.module.css'
 
 const Vessel = () => {
   const { t } = useTranslation()
@@ -63,6 +66,11 @@ const Vessel = () => {
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const regionsDatasets = useSelector(selectRegionsDatasets)
   const guestUser = useSelector(isGuestUser)
+  const vesselData = useSelector(selectVesselInfoData)
+  const hasSelfReportedData =
+    getVesselIdentities(vesselData, {
+      identitySource: VesselIdentitySourceEnum.SelfReported,
+    })?.length > 0
   const map = useMapInstance()
   const { cleanFeatureState } = useFeatureState(map)
   const { dispatchClickedEvent, cancelPendingInteractionRequests } = useClickedEventConnect()
@@ -186,12 +194,20 @@ const Vessel = () => {
           <VesselIdentity />
         </Fragment>
       )}
-      <Tabs
-        tabs={sectionTabs}
-        activeTab={vesselSection}
-        onTabClick={changeTab}
-        mountAllTabsOnLoad
-      />
+      {hasSelfReportedData ? (
+        <Tabs
+          tabs={sectionTabs}
+          activeTab={vesselSection}
+          onTabClick={changeTab}
+          mountAllTabsOnLoad
+        />
+      ) : (
+        <div className={styles.placeholder}>
+          <p className={styles.secondary}>
+            {t('vessel.noActivityData', 'There is no activity information for this vessel')}
+          </p>
+        </div>
+      )}
     </Fragment>
   )
 }
