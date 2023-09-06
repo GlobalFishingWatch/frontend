@@ -42,10 +42,7 @@ export const getVesselIdentity = (
   { identityId, identitySource } = {} as GetVesselIdentityParams
 ) => {
   const allIdentitiesInfo = getVesselIdentities(vessel, { identitySource })
-  return (
-    allIdentitiesInfo.find((i) => getVesselIdentyIdBySource(i, identitySource) === identityId) ||
-    allIdentitiesInfo[0]
-  )
+  return allIdentitiesInfo.find((i) => getVesselIdentyId(i) === identityId) || allIdentitiesInfo[0]
 }
 
 export type VesselIdentityProperty = keyof SelfReportedInfo | keyof VesselRegistryInfo | 'owner'
@@ -59,11 +56,36 @@ function getLatestIdentityPrioritised(vessel: IdentityVessel | IdentityVesselDat
   })
   return latestRegistryIdentity || latestSelfReportesIdentity
 }
-export function getVesselIdentyIdBySource(
-  identity: VesselDataIdentity,
-  identitySource: VesselIdentitySourceEnum = VesselIdentitySourceEnum.Registry
-) {
-  return identitySource === VesselIdentitySourceEnum.SelfReported
+
+export function getMatchCriteriaPrioritised(matchCriteria: IdentityVessel['matchCriteria']) {
+  const registryMatchCriteria = matchCriteria?.find(
+    (m) => m.source === VesselIdentitySourceEnum.Registry
+  )
+  if (registryMatchCriteria) {
+    return registryMatchCriteria
+  }
+  return matchCriteria?.find((m) => m.source === VesselIdentitySourceEnum.SelfReported)
+}
+
+export function getBestMatchCriteriaIdentity(vessel: IdentityVessel | IdentityVesselData) {
+  const identities = getVesselIdentities(vessel)
+  const bestMatchCriteria = getMatchCriteriaPrioritised(vessel.matchCriteria)
+  if (bestMatchCriteria) {
+    const bestIdentityMatch = identities.find((i) => {
+      const idToMatch =
+        bestMatchCriteria.source === VesselIdentitySourceEnum.Registry
+          ? (i as VesselRegistryInfo).vesselInfoReference
+          : i.id
+      return idToMatch === bestMatchCriteria.reference
+    })
+    if (bestIdentityMatch) {
+      return bestIdentityMatch
+    }
+  }
+}
+
+export function getVesselIdentyId(identity: VesselDataIdentity) {
+  return identity.identitySource === VesselIdentitySourceEnum.SelfReported
     ? identity.id
     : (identity as VesselRegistryInfo).vesselInfoReference
 }
@@ -124,7 +146,13 @@ export function getSearchIdentityResolved(vessel: IdentityVessel | IdentityVesse
   const vesselSelfReportedIdentities = getVesselIdentities(vessel, {
     identitySource: VesselIdentitySourceEnum.SelfReported,
   })
-  const vesselData = getLatestIdentityPrioritised(vessel)
+  let vesselData = getLatestIdentityPrioritised(vessel)
+  if (vessel?.matchCriteria) {
+    const bestMatchIdentity = getBestMatchCriteriaIdentity(vessel)
+    if (bestMatchIdentity) {
+      vesselData = bestMatchIdentity
+    }
+  }
   // Get first transmission date from all identity sources
   const transmissionDateFrom = vesselSelfReportedIdentities
     ?.flatMap((r) => r.transmissionDateFrom || [])

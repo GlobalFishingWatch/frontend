@@ -5,7 +5,11 @@ import {
   selectCurrentWorkspaceCategory,
   selectCurrentWorkspaceId,
 } from 'features/workspace/workspace.selectors'
-import { resetVesselState, selectVesselInfoDataId } from 'features/vessel/vessel.slice'
+import {
+  VesselDataIdentity,
+  resetVesselState,
+  selectVesselInfoDataId,
+} from 'features/vessel/vessel.slice'
 import { VESSEL, WORKSPACE_VESSEL } from 'routes/routes'
 import {
   selectIsStandaloneSearchLocation,
@@ -14,12 +18,12 @@ import {
 } from 'routes/routes.selectors'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import { QueryParams, TimebarVisualisations } from 'types'
-import { VesselDataviewInstanceParams } from 'features/vessel/vessel.hooks'
+import { getVesselIdentyId } from 'features/vessel/vessel.utils'
 
 export type VesselLinkProps = {
-  vesselId?: string
   datasetId?: string
-  vessel?: VesselDataviewInstanceParams
+  vesselId?: string
+  identity?: VesselDataIdentity
   children: any
   onClick?: (e: MouseEvent) => void
   className?: string
@@ -28,7 +32,7 @@ export type VesselLinkProps = {
 const VesselLink = ({
   vesselId: vesselIdProp,
   datasetId,
-  vessel,
+  identity,
   children,
   onClick,
   className = '',
@@ -41,8 +45,8 @@ const VesselLink = ({
   const vesselInfoDataId = useSelector(selectVesselInfoDataId)
   const workspaceCategory = useSelector(selectCurrentWorkspaceCategory)
   const dispatch = useDispatch()
-  const vesselId = vesselIdProp || vessel?.id
-  const vesselDatasetId = datasetId || vessel?.dataset?.id || DEFAULT_VESSEL_IDENTITY_ID
+  const vesselId = vesselIdProp || identity?.id
+  const vesselDatasetId = datasetId || DEFAULT_VESSEL_IDENTITY_ID
   const standaloneLink = isSearchLocation || isVesselLocation
 
   const onLinkClick = useCallback(
@@ -56,6 +60,13 @@ const VesselLink = ({
     },
     [dispatch, onClick, vesselId, vesselInfoDataId]
   )
+  if (identity) {
+    console.log(identity.shipname)
+    console.log({
+      vesselIdentitySource: identity.identitySource,
+      vesselIdentityId: getVesselIdentyId(identity),
+    })
+  }
 
   if (!vesselId) return children
 
@@ -78,8 +89,12 @@ const VesselLink = ({
           qry: undefined,
           timebarVisualisation: TimebarVisualisations.Vessel,
           vesselDatasetId,
+          ...(identity && {
+            vesselIdentitySource: identity.identitySource,
+            vesselIdentityId: getVesselIdentyId(identity),
+          }),
           ...(query || {}),
-        },
+        } as QueryParams,
       }}
       onClick={onLinkClick}
     >

@@ -35,7 +35,7 @@ export type IdentityVesselData = {
   identities: VesselDataIdentity[]
   dataset: Dataset
 } & VesselInstanceDatasets &
-  Pick<IdentityVessel, 'registryOwners' | 'registryAuthorizations'>
+  Pick<IdentityVessel, 'registryOwners' | 'registryAuthorizations' | 'matchCriteria'>
 
 type VesselInfoEntry = {
   status: AsyncReducerStatus

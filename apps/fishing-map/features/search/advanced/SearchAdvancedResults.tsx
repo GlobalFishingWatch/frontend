@@ -23,6 +23,7 @@ import { Locale, VesselSearchState } from 'types'
 import I18nDate from 'features/i18n/i18nDate'
 import {
   VesselIdentityProperty,
+  getBestMatchCriteriaIdentity,
   getSearchIdentityResolved,
   getVesselIdentityProperties,
   getVesselProperty,
@@ -109,20 +110,26 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         id: PINNED_COLUMN,
         accessorKey: PINNED_COLUMN as any,
         accessorFn: (vessel) => {
-          const [shipname, ...names] = getVesselIdentityProperties(vessel, 'shipname')
+          // TODO use bestIdentityMatch to render info
+          const bestIdentityMatch = getBestMatchCriteriaIdentity(vessel)
           const vesselData = getSearchIdentityResolved(vessel)
+          const { shipname } = vesselData
+          const otherNames = getVesselIdentityProperties(vessel, 'shipname').filter(
+            (n) => n !== shipname
+          )
           const { transmissionDateFrom, transmissionDateTo } = vesselData
           const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER
           const previousNames =
-            names?.length > 0 &&
-            `(${t('common.previously', 'Previously')}: ${names
+            otherNames?.length > 0 &&
+            `(${t('common.aka', 'a.k.a.,')}: ${otherNames
               .map((name) => formatInfoField(name, 'name'))
               .join(', ')})`
           const label = `${name} ${previousNames || ''}`
           const vesselQuery = { start: transmissionDateFrom, end: transmissionDateTo }
+
           return (
             <VesselLink
-              vessel={vesselData}
+              identity={bestIdentityMatch}
               onClick={(e) => onVesselClick(e, vesselData)}
               query={vesselQuery}
               className={styles.advancedName}

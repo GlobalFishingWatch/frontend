@@ -18,7 +18,7 @@ import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
 import TrackFootprint from 'features/search/basic/TrackFootprint'
-import { VesselLastIdentity, cleanVesselSearchResults } from 'features/search/search.slice'
+import { cleanVesselSearchResults } from 'features/search/search.slice'
 import VesselLink from 'features/vessel/VesselLink'
 import { formatInfoField, EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -27,6 +27,7 @@ import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-v
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
 import {
+  getBestMatchCriteriaIdentity,
   getRelatedIdentityVesselIds,
   getSearchIdentityResolved,
   getVesselIdentityProperties,
@@ -70,6 +71,7 @@ function SearchBasicResult({
   const {
     id,
     flag,
+    shipname,
     ssvid,
     imo,
     callsign,
@@ -79,7 +81,8 @@ function SearchBasicResult({
     transmissionDateTo,
     positionsCounter,
   } = vesselData
-  const [shipname, ...names] = getVesselIdentityProperties(vessel, 'shipname')
+  const bestIdentityMatch = getBestMatchCriteriaIdentity(vessel)
+  const otherNames = getVesselIdentityProperties(vessel, 'shipname').filter((n) => n !== shipname)
   const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER
 
   const identitySource = useMemo(() => {
@@ -196,15 +199,16 @@ function SearchBasicResult({
         <div className={styles.fullWidth}>
           <div className={styles.name} data-test="vessel-name">
             <VesselLink
-              vessel={getSearchIdentityResolved(vessel)}
+              identity={bestIdentityMatch}
+              datasetId={dataset?.id}
               onClick={onVesselClick}
               query={vesselQuery}
             >
               {name}
             </VesselLink>
             <span className={styles.secondary}>
-              {names?.length > 0 &&
-                ` (${t('common.previously', 'Previously')}: ${names
+              {otherNames?.length > 0 &&
+                ` (${t('common.aka', 'a.k.a.,')} ${otherNames
                   .map((name) => formatInfoField(name, 'name'))
                   .join(', ')})`}
             </span>

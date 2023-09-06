@@ -57,12 +57,12 @@ export function useActivityEventTranslations() {
       switch (event.type) {
         case EventTypes.Encounter:
           if (event.encounter?.vessel) {
-            const { flag, id, name } = event.encounter.vessel
+            const { flag, id, name, dataset } = event.encounter.vessel
             return (
               // TODO check if we can get the dataset of the vessel encountered, using Identity for now
               <span>
                 {t('event.encounterAction', 'had an encounter with')}{' '}
-                <VesselLink vesselId={id}>
+                <VesselLink vesselId={id} datasetId={dataset}>
                   {formatInfoField(name, 'name')} ({formatInfoField(flag, 'flag')})
                 </VesselLink>{' '}
                 {mainRegionDescription && (

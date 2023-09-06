@@ -156,6 +156,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           const trackDatasetId = getRelatedDatasetByType(infoDataset, DatasetTypes.Tracks)?.id
           return {
             id: getVesselId(vessel),
+            ...(vessel.matchCriteria && { matchCriteria: vessel.matchCriteria }),
             ...(vessel.registryOwners && { registryOwners: vessel.registryOwners }),
             ...(vessel.registryAuthorizations && {
               registryAuthorizations: vessel.registryAuthorizations,

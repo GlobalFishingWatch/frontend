@@ -72,7 +72,7 @@ const RelatedVessel = ({
       )}
       <Tooltip content={showTooltip && fullLabel.length > 30 && fullLabel}>
         <span>
-          <VesselLink className={styles.vessel} vessel={{ id: vessel.id, dataset: vesselDataset }}>
+          <VesselLink className={styles.vessel} vesselId={vessel.id} datasetId={vesselDataset?.id}>
             {nameLabel}
           </VesselLink>{' '}
           <span className={styles.secondary}>({flagLabel})</span>
