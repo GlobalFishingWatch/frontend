@@ -19,7 +19,7 @@ import {
 } from 'routes/routes.selectors'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import { QueryParams, TimebarVisualisations } from 'types'
-import { getVesselIdentyId } from 'features/vessel/vessel.utils'
+import { getVesselIdentityId } from 'features/vessel/vessel.utils'
 
 export type VesselLinkProps = {
   datasetId?: string
@@ -91,7 +91,7 @@ const VesselLink = ({
           vesselDatasetId,
           ...(identity && {
             vesselIdentitySource: identity.identitySource,
-            vesselIdentityId: getVesselIdentyId(identity),
+            vesselIdentityId: getVesselIdentityId(identity),
           }),
           ...(query || {}),
         } as QueryParams,
