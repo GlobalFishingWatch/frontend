@@ -72,6 +72,7 @@
     "active_after": "Activo después de",
     "active_before": "Activo antes de",
     "activity": "Actividad",
+    "aka": "a.k.a.,",
     "analysis": "Crear un análisis para esta área",
     "analysisNotAvailable": "Activa una actividad o capa de referencia para analizarla en este área",
     "and": "y",
@@ -514,11 +515,13 @@
     "seeVesselsOnMap_one": "See {{count}} vessel on map",
     "seeVesselsOnMap_other": "See {{count}} vessels on map",
     "selectVessel": "Select vessel",
+    "serching": "Searching more than 100K vessels ...",
     "suggestion": "Quiso decir",
     "title": "Búsqueda",
     "vesselAlreadyInWorkspace": "La embarcación ya está agregada en su espacio de trabajo.",
     "vessels": "Buscar embarcaciones",
-    "vesselSelected": "Embarcación seleccionada"
+    "vesselSelected": "Embarcación seleccionada",
+    "endDateMustBeAfterStartDate": "The ACTIVE BEFORE date must come after the ACTIVE AFTER date"
   },
   "selects": {
     "allSelected": "Todos",
@@ -571,10 +574,8 @@
     "vesselSearch": "Búsqueda de Embarcación"
   },
   "vessel": {
-    "activityByType": "Activity by type",
-    "activityByVoyages": "Timeline by voyages",
-    "activityGroupByType": "Group by type",
-    "activityGroupByVoyages": "Group by voyages",
+    "activityByType": "By type",
+    "activityByVoyages": "By voyages",
     "addToWorkspace": "Añadir embarcación a la vista",
     "areasTitle": "Areas with more events",
     "beam": "Manga",
@@ -657,7 +658,6 @@
     "identityDatesOutOfRange": "The dates of this identity don’t overlap with your current time range",
     "infoSource": "Info Source",
     "infoSources": {
-      "both": "Registry and self reported",
       "registry": "Registry",
       "selfReported": "Self reported"
     },
@@ -691,6 +691,7 @@
     "registeredGearType": "Arte de pesca registrado",
     "registrySources": "registry sources",
     "sectionActivity": "Actividad",
+    "sectionSummary": "Summary",
     "sectionAreas": "Areas",
     "sectionRelatedVessels": "Related vessels",
     "share": "Share vessel",
@@ -703,6 +704,7 @@
     "summary": "The <strong>{{vesselType}}</strong> vessel flagged by <strong>{{vesselFlag}}</strong> {{events}} {{voyages}} between <strong>{{timerangeStart}}</strong> and <strong>{{timerangeEnd}}</strong>",
     "target_species": "Especies objetivo",
     "targetSpecies": "Especies objetivo",
+    "title": "Vessel profile",
     "terminology": {
       "geartype": "For gear type sourced from Global Fishing Watch, additional research and analysis is conducted in addition to using the original AIS data to identify the most likely value. GFW source values are likely gear type of fishing vessel as defined by Global Fishing Watch. The fishing vessels identified by GFW come from the GFW fishing database that were identified using vessel registry databases, reported AIS identity information, and estimated classification using a machine learning algorithm. See more information here:<1>https://globalfishingwatch.org/datasets-and-code-vessel-identity/</1> .\nGear type from \"other\" is taken from RFMO authorized vessel lists and other sources.",
       "infoSource": "Info source terminology",
@@ -782,7 +784,8 @@
     "siteDescription": {
       "default": "El mapa Global Fishing Watch es la primera plataforma de acceso abierto para la visualización y el análisis del tráfico marítimo y de la actividad humana basada en el comercio marítimo.",
       "fishing-activity": "El mapa Global Fishing Watch es la primera plataforma de acceso abierto para la visualización y el análisis del tráfico marítimo y de la actividad humana basada en el comercio marítimo.",
-      "marine-manager": "Marine Manager es un portal de nueva tecnología para apoyar el diseño, manejo y monitoreo efectivo de áreas protegidas."
+      "marine-manager": "Marine Manager es un portal de nueva tecnología para apoyar el diseño, manejo y monitoreo efectivo de áreas protegidas.",
+      "search": "Buscar por nombre de embarcación o código de identificación. Puedes filtrar tu búsqueda presionando \"Avanzada\" en la barra superior."
     },
     "title_other": "Espacios de trabajo",
     "update": "Actualizar",

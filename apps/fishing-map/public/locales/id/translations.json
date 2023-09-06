@@ -72,6 +72,7 @@
     "active_after": "Aktif setelah",
     "active_before": "Aktif sebelum",
     "activity": "Aktivitas",
+    "aka": "a.k.a.,",
     "analysis": "Buat analisis untuk area ini",
     "analysisNotAvailable": "Alihkan aktivitas atau lapisan lingkungan untuk menganalisisnya di area ini",
     "and": "dan",
@@ -514,11 +515,13 @@
     "seeVesselsOnMap_one": "See {{count}} vessel on map",
     "seeVesselsOnMap_other": "See {{count}} vessels on map",
     "selectVessel": "Select vessel",
+    "serching": "Searching more than 100K vessels ...",
     "suggestion": "Apakah yang kamu maksud",
     "title": "Cari",
     "vesselAlreadyInWorkspace": "Kapal ini sudah ada di ruang kerja Anda",
     "vessels": "Cari kapal",
-    "vesselSelected": "Kapal dipilih"
+    "vesselSelected": "Kapal dipilih",
+    "endDateMustBeAfterStartDate": "The ACTIVE BEFORE date must come after the ACTIVE AFTER date"
   },
   "selects": {
     "allSelected": "Semua",
@@ -571,10 +574,8 @@
     "vesselSearch": "Pencarian Kapal"
   },
   "vessel": {
-    "activityByType": "Activity by type",
-    "activityByVoyages": "Timeline by voyages",
-    "activityGroupByType": "Group by type",
-    "activityGroupByVoyages": "Group by voyages",
+    "activityByType": "By type",
+    "activityByVoyages": "By voyages",
     "addToWorkspace": "Tambahkan kapal untuk melihat",
     "areasTitle": "Areas with more events",
     "beam": "Beam",
@@ -657,7 +658,6 @@
     "identityDatesOutOfRange": "The dates of this identity don’t overlap with your current time range",
     "infoSource": "Info Source",
     "infoSources": {
-      "both": "Registry and self reported",
       "registry": "Registry",
       "selfReported": "Self reported"
     },
@@ -691,6 +691,7 @@
     "registeredGearType": "Jenis Peralatan Terdaftar",
     "registrySources": "registry sources",
     "sectionActivity": "Aktivitas",
+    "sectionSummary": "Summary",
     "sectionAreas": "Areas",
     "sectionRelatedVessels": "Related vessels",
     "share": "Share vessel",
@@ -703,6 +704,7 @@
     "summary": "The <strong>{{vesselType}}</strong> vessel flagged by <strong>{{vesselFlag}}</strong> {{events}} {{voyages}} between <strong>{{timerangeStart}}</strong> and <strong>{{timerangeEnd}}</strong>",
     "target_species": "Spesies target",
     "targetSpecies": "Spesies target",
+    "title": "Vessel profile",
     "terminology": {
       "geartype": "For gear type sourced from Global Fishing Watch, additional research and analysis is conducted in addition to using the original AIS data to identify the most likely value. GFW source values are likely gear type of fishing vessel as defined by Global Fishing Watch. The fishing vessels identified by GFW come from the GFW fishing database that were identified using vessel registry databases, reported AIS identity information, and estimated classification using a machine learning algorithm. See more information here:<1>https://globalfishingwatch.org/datasets-and-code-vessel-identity/</1> .\nGear type from \"other\" is taken from RFMO authorized vessel lists and other sources.",
       "infoSource": "Info source terminology",
@@ -782,7 +784,8 @@
     "siteDescription": {
       "default": "Peta Global Fishing Watch adalah platform akses terbuka pertama untuk visualisasi dan analisis lalu lintas laut dan aktivitas manusia berbasis kapal di laut.",
       "fishing-activity": "Peta Global Fishing Watch adalah platform akses terbuka pertama untuk visualisasi dan analisis lalu lintas laut dan aktivitas manusia berbasis kapal di laut.",
-      "marine-manager": "Marine Manager adalah portal teknologi baru untuk mendukung desain, pengelolaan, dan pemantauan kawasan lindung yang efektif."
+      "marine-manager": "Marine Manager adalah portal teknologi baru untuk mendukung desain, pengelolaan, dan pemantauan kawasan lindung yang efektif.",
+      "search": "Pencarian berdasarkan nama kapal atau kode identifikasi. Anda dapat mempersempit pencarian Anda dengan menekan Lanjutan di bar bagian atas"
     },
     "title_other": "Ruang kerja",
     "update": "Memperbarui",

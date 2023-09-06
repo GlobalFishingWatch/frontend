@@ -72,6 +72,7 @@
     "active_after": "Active after",
     "active_before": "Active before",
     "activity": "Activity",
+    "aka": "a.k.a.,",
     "analysis": "Create an analysis for this area",
     "analysisNotAvailable": "Toggle an activity or environment layer on to create an analysis for this area",
     "and": "and",
@@ -514,11 +515,13 @@
     "seeVesselsOnMap_one": "See {{count}} vessel on map",
     "seeVesselsOnMap_other": "See {{count}} vessels on map",
     "selectVessel": "Select vessel",
+    "serching": "Searching more than 100K vessels ...",
     "suggestion": "Did you mean",
     "title": "Search",
     "vesselAlreadyInWorkspace": "This vessel is already in your workspace",
     "vessels": "Search vessels",
-    "vesselSelected": "Vessel selected"
+    "vesselSelected": "Vessel selected",
+    "endDateMustBeAfterStartDate": "The ACTIVE BEFORE date must come after the ACTIVE AFTER date"
   },
   "selects": {
     "allSelected": "All",
@@ -571,10 +574,8 @@
     "vesselSearch": "Vessel Search"
   },
   "vessel": {
-    "activityByType": "Activity by type",
-    "activityByVoyages": "Timeline by voyages",
-    "activityGroupByType": "Group by type",
-    "activityGroupByVoyages": "Group by voyages",
+    "activityByType": "By type",
+    "activityByVoyages": "By voyages",
     "addToWorkspace": "Add vessel to workspace",
     "areasTitle": "Areas with more events",
     "beam": "Beam",
@@ -657,7 +658,6 @@
     "identityDatesOutOfRange": "The dates of this identity don’t overlap with your current time range",
     "infoSource": "Info Source",
     "infoSources": {
-      "both": "Registry and self reported",
       "registry": "Registry",
       "selfReported": "Self reported"
     },
@@ -691,6 +691,7 @@
     "registeredGearType": "Registered gear type",
     "registrySources": "registry sources",
     "sectionActivity": "Activity",
+    "sectionSummary": "Summary",
     "sectionAreas": "Areas",
     "sectionRelatedVessels": "Related vessels",
     "share": "Share vessel",
@@ -703,6 +704,7 @@
     "summary": "The <strong>{{vesselType}}</strong> vessel flagged by <strong>{{vesselFlag}}</strong> {{events}} {{voyages}} between <strong>{{timerangeStart}}</strong> and <strong>{{timerangeEnd}}</strong>",
     "target_species": "Target species",
     "targetSpecies": "Target species",
+    "title": "Vessel profile",
     "terminology": {
       "geartype": "For gear type sourced from Global Fishing Watch, additional research and analysis is conducted in addition to using the original AIS data to identify the most likely value. GFW source values are likely gear type of fishing vessel as defined by Global Fishing Watch. The fishing vessels identified by GFW come from the GFW fishing database that were identified using vessel registry databases, reported AIS identity information, and estimated classification using a machine learning algorithm. See more information here:<1>https://globalfishingwatch.org/datasets-and-code-vessel-identity/</1> .\nGear type from \"other\" is taken from RFMO authorized vessel lists and other sources.",
       "infoSource": "Info source terminology",
@@ -782,7 +784,8 @@
     "siteDescription": {
       "default": "The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.",
       "fishing-activity": "The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.",
-      "marine-manager": "The portal provides dynamic interactive data on marine traffic, biology and ocean conditions to support marine protected area design and management."
+      "marine-manager": "The portal provides dynamic interactive data on marine traffic, biology and ocean conditions to support marine protected area design and management.",
+      "search": "Search by vessel name or identification code."
     },
     "title_other": "Workspaces",
     "update": "Update",
