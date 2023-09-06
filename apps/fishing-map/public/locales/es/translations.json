@@ -514,7 +514,7 @@
     "seeVesselsOnMap_one": "See {{count}} vessel on map",
     "seeVesselsOnMap_other": "See {{count}} vessels on map",
     "selectVessel": "Select vessel",
-    "serching": "Searching in more than 100K vessels ...",
+    "serching": "Searching more than 100K vessels ...",
     "suggestion": "Quiso decir",
     "title": "Búsqueda",
     "vesselAlreadyInWorkspace": "La embarcación ya está agregada en su espacio de trabajo.",
