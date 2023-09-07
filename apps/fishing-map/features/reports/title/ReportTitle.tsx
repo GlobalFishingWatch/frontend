@@ -123,6 +123,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
                     activeOption={bufferUnit || NAUTICAL_MILES}
                     handleBufferUnitChange={handleBufferUnitChange}
                     handleConfirmBuffer={handleConfirmBuffer}
+                    areaType={area?.geometry?.type}
                   />
                 }
                 tooltipPlacement="bottom"

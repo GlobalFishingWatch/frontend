@@ -6,18 +6,29 @@ import { KILOMETERS, NAUTICAL_MILES } from 'features/reports/reports.constants'
 import { BufferUnit } from 'types'
 import styles from './ReportTitle.module.css'
 
+type BufferButonTooltipProps = {
+  handleBufferValueChange: (values: number[]) => void
+  defaultValue: number
+  activeOption: BufferUnit
+  handleBufferUnitChange: (option: { id: string; label: string }) => void
+  handleConfirmBuffer: () => void
+  areaType: 'Point' | 'Polygon' | 'MultiPolygon' | undefined
+}
+
 export const BufferButtonTooltip = ({
   handleBufferValueChange,
   defaultValue,
   activeOption,
   handleBufferUnitChange,
   handleConfirmBuffer,
-}) => {
+  areaType,
+}: BufferButonTooltipProps) => {
   const { t } = useTranslation()
   const STEP = 0.1
   const MIN = -100
   const MAX = 100
   const [values, setValues] = useState([0, defaultValue])
+  const negativePointBuffer = areaType === 'Point' && values[1] <= 0
   const bufferUnitOptions: ChoiceOption<BufferUnit>[] = useMemo(
     () => [
       { id: NAUTICAL_MILES, label: t('analysis.nauticalmiles', 'nautical miles') },
@@ -91,7 +102,7 @@ export const BufferButtonTooltip = ({
         )}
       />
       <div data-tippy-arrow className={styles.tooltipArrow}></div>
-      <Button size="small" onClick={handleConfirmBuffer}>
+      <Button size="small" onClick={handleConfirmBuffer} disabled={negativePointBuffer}>
         {t('common.confirm', 'Confirm')}
       </Button>
     </div>
