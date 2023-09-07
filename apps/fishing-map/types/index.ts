@@ -13,7 +13,6 @@ export { Locale } from '@globalfishingwatch/api-types'
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
 export type WorkspaceTimeRangeParam = 'start' | 'end'
 export type BufferUnit = 'nauticalmiles' | 'kilometers'
-export type BufferUnitOption = { label: string; id: BufferUnit }
 
 export type ReportStateProperty =
   | 'reportActivityGraph'

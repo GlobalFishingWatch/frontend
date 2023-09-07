@@ -1,8 +1,11 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Range, getTrackBackground } from 'react-range'
-import { Button, Choice } from '@globalfishingwatch/ui-components'
-import { BUFFER_UNIT_OPTIONS } from 'features/reports/reports.constants'
+import { useTranslation } from 'react-i18next'
+import { Button, Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
+import { KILOMETERS, NAUTICAL_MILES } from 'features/reports/reports.constants'
+import { BufferUnit } from 'types'
 import styles from './ReportTitle.module.css'
+
 export const BufferButtonTooltip = ({
   handleBufferValueChange,
   defaultValue,
@@ -10,17 +13,25 @@ export const BufferButtonTooltip = ({
   handleBufferUnitChange,
   handleConfirmBuffer,
 }) => {
+  const { t } = useTranslation()
   const STEP = 0.1
   const MIN = -100
   const MAX = 100
   const [values, setValues] = useState([0, defaultValue])
+  const bufferUnitOptions: ChoiceOption<BufferUnit>[] = useMemo(
+    () => [
+      { id: NAUTICAL_MILES, label: t('analysis.nauticalmiles', 'nautical miles') },
+      { id: KILOMETERS, label: t('analysis.kilometers', 'kilometers') },
+    ],
+    [t]
+  )
   return (
     <div className={styles.bufferTooltipContent}>
       <Choice
         size="tiny"
         activeOption={activeOption}
         onSelect={handleBufferUnitChange}
-        options={BUFFER_UNIT_OPTIONS}
+        options={bufferUnitOptions}
       />
       <Range
         allowOverlap
@@ -81,7 +92,7 @@ export const BufferButtonTooltip = ({
       />
       <div data-tippy-arrow className={styles.tooltipArrow}></div>
       <Button size="small" onClick={handleConfirmBuffer}>
-        confirm
+        {t('common.confirm', 'Confirm')}
       </Button>
     </div>
   )

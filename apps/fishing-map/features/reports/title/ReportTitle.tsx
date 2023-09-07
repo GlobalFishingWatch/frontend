@@ -134,8 +134,12 @@ export default function ReportTitle({ area }: ReportTitleProps) {
                   onShow: (instance) => setTooltipInstance(instance),
                 }}
               >
-                <p>{t('analysis.buffer', 'Buffer Area')}</p>
-                {urlBufferValue && <span>{`(${urlBufferValue} ${urlBufferUnit})`}</span>}
+                {t('analysis.buffer', 'Buffer Area')}
+                {urlBufferValue &&
+                  ` (${urlBufferValue} ${t(
+                    `analysis.${urlBufferUnit}Short` as any,
+                    urlBufferUnit
+                  )})`}
                 <Icon icon="expand" type="default" />
               </Button>
             </div>
