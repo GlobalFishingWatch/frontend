@@ -12,10 +12,8 @@ import {
   selectVoyagesNumber,
 } from 'features/vessel/activity/vessels-activity.selectors'
 import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
-import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { formatInfoField } from 'utils/info'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { selectTimeRange, selectVisibleEvents } from 'features/app/app.selectors'
 import { selectVesselEventsFilteredByTimerange } from 'features/vessel/vessel.selectors'
 import { useRegionNamesByType } from 'features/regions/regions.hooks'
@@ -32,7 +30,6 @@ const MAX_PORTS = 3
 
 export const VesselActivitySummary = () => {
   const { t } = useTranslation()
-  const vessel = useSelector(selectVesselInfoData)
   const events = useSelector(selectVesselEventsFilteredByTimerange)
   const voyages = useSelector(selectVoyagesNumber)
   const timerange = useSelector(selectTimeRange)
@@ -99,7 +96,7 @@ export const VesselActivitySummary = () => {
   return (
     <div className={styles.summaryContainer}>
       <h2 className="print-only">{t('vessel.sectionActivity', 'activity')}</h2>
-      <div>
+      <div className={styles.container}>
         <h2 className={styles.summary}>
           <span dangerouslySetInnerHTML={{ __html: summary }}></span>
           {hasActivityRegionsData ? (

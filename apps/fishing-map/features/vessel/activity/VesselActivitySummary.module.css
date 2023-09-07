@@ -1,5 +1,6 @@
 .container {
   flex: 1;
+  width: 100%;
 }
 
 .eventTypeRowContainer {
@@ -22,6 +23,7 @@
 }
 
 .summaryContainer {
+  width: 100%;
   display: flex;
   gap: var(--space-S);
   margin-bottom: var(--space-M);
