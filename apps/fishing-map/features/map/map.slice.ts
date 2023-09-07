@@ -252,7 +252,6 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
         topActivityVessels.map(({ dataset }) => dataset),
         'id'
       )
-      debugger
       // Grab related dataset to fetch info from and prepare tracks
       const allInfoDatasets = await Promise.all(
         topActivityVesselsDatasets.flatMap(async (dataset) => {
@@ -285,7 +284,6 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
         (feature) => feature.temporalgrid?.sublayerId || ''
       )
 
-      debugger
       const mainTemporalgridFeature = fishingActivityFeatures[0].temporalgrid
       const startYear = getUTCDateTime(mainTemporalgridFeature!?.visibleStartDate).year
       const endYear = getUTCDateTime(mainTemporalgridFeature!?.visibleEndDate).year
