@@ -41,7 +41,7 @@
 .bufferTooltipContent {
   display: flex;
   flex-direction: column;
-  align-items: end;
+  align-items: flex-end;
   gap: var(--space-S);
   padding: var(--space-S);
   font: var(--font-M);
