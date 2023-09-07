@@ -244,9 +244,9 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
           return source
             .flatMap((source) => source)
             .sort((a, b) => b[activityProperty] - a[activityProperty])
+            .slice(0, MAX_TOOLTIP_LIST)
         })
         .flatMap((v) => v)
-        .slice(0, MAX_TOOLTIP_LIST)
 
       const topActivityVesselsDatasets = uniqBy(
         topActivityVessels.map(({ dataset }) => dataset),
