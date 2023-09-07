@@ -90,11 +90,7 @@ const VesselHeader = () => {
   }
 
   return (
-    <Sticky
-      scrollElement=".scrollContainer"
-      className={styles.stickyContainer}
-      stickyClassName={styles.sticky}
-    >
+    <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
       <div className={cx(styles.summaryContainer, styles.titleContainer)}>
         <h1 className={styles.title}>
           <svg className={styles.vesselIcon} width="16" height="16">

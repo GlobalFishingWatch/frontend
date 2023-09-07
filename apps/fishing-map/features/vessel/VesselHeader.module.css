@@ -4,12 +4,8 @@
   min-height: 5.2rem;
 }
 
-.stickyContainer {
-  position: relative;
-  z-index: 2;
-}
-
 .sticky {
+  z-index: 2;
   margin-top: 51px;
   background-color: var(--color-white);
   border-top: var(--border);
