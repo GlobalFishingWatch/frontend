@@ -70,9 +70,10 @@ export const VesselActivitySummary = () => {
   const summary = t('vessel.summary', {
     defaultValue:
       '{{events}} {{voyages}} between <strong>{{timerangeStart}}</strong> and <strong>{{timerangeEnd}}</strong>',
-    events: `${t('common.had', 'had')} <strong>${formatI18nNumber(
-      events?.length as number
-    )}</strong> ${t('common.event', { defaultValue: 'events', count: events?.length })}`,
+    events: `<strong>${formatI18nNumber(events?.length as number)}</strong> ${t('common.event', {
+      defaultValue: 'events',
+      count: events?.length,
+    })}`,
     voyages:
       voyages !== 0 && (visibleEvents.includes('port_visit') || visibleEvents === 'all')
         ? `${t('common.in', 'in')} <strong>${formatI18nNumber(voyages as number)}</strong> ${t(
