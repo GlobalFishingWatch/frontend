@@ -127,12 +127,10 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
         query: {
           ...query,
           reportAreaSource: feature.source,
+          reportBufferUnit: isPointFeature ? DEFAULT_POINT_BUFFER_UNIT : undefined,
+          reportBufferValue: isPointFeature ? DEFAULT_POINT_BUFFER_VALUE : undefined,
           ...(bounds && { reportAreaBounds: bounds }),
           ...(!isSidebarOpen && { sidebarOpen: true }),
-          ...(isPointFeature && {
-            reportBufferUnit: DEFAULT_POINT_BUFFER_UNIT,
-            reportBufferValue: DEFAULT_POINT_BUFFER_VALUE,
-          }),
         },
       }}
       onClick={onReportClick}
