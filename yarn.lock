@@ -3130,7 +3130,7 @@ __metadata:
     react-dropzone: 14.2.3
     react-ga4: 2.1.0
     react-i18next: "12.3.0 "
-    react-sticky-el: 2.0.9
+    react-sticky-el: 2.1.0
     react-test-renderer: 18.2.0
     react-virtualized-auto-sizer: ^1.0.7
     react-virtuoso: 4.5.0
@@ -24844,6 +24844,16 @@ __metadata:
     react: ">=16.3.0"
     react-dom: ">=16.3.0"
   checksum: 9a43e77a30c0dff6700c905765ca440ec2743c850739d2ccef0401e62e00febe95ef830363f08ab7375c5b4eaa9f6fd00c27ef6e3cc53797cdda0c2575768eeb
+  languageName: node
+  linkType: hard
+
+"react-sticky-el@npm:2.1.0":
+  version: 2.1.0
+  resolution: "react-sticky-el@npm:2.1.0"
+  peerDependencies:
+    react: ">=16.3.0"
+    react-dom: ">=16.3.0"
+  checksum: 53f686a15fb74c8589a2b86f76098332b684adcebc2a51a0ef3a64303a045f856aa0ac22647905be2ded85a476c9a5c1d3da237a468a5b3022c60627487ccf50
   languageName: node
   linkType: hard
 
