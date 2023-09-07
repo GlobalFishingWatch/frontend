@@ -1,7 +1,7 @@
 import { VesselType } from './vessel'
 
 export enum VesselIdentitySourceEnum {
-  SelfReported = 'selfReported',
+  SelfReported = 'selfReportedInfo',
   Registry = 'registryInfo',
 }
 

@@ -117,7 +117,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         if (!fields?.length) {
           console.warn('No fields to search found or allowed')
         }
-        advancedQuery = getAdvancedSearchQuery(fields, { rootObject: filters.infoSource as any })
+        advancedQuery = getAdvancedSearchQuery(fields, { rootObject: filters.infoSource })
       }
 
       const datasetConfig = {
