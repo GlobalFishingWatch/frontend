@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { Fragment } from 'react'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
+import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { Area } from 'features/areas/areas.slice'
 import { DEFAULT_BUFFER_VALUE, NAUTICAL_MILES } from 'features/reports/reports.constants'
@@ -16,6 +17,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { Bbox, BufferUnit } from 'types'
 import { selectUrlBufferUnitQuery, selectUrlBufferValueQuery } from 'routes/routes.selectors'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
+import useMapInstance from 'features/map/map-context.hooks'
 import { getBufferedAreaBbox } from '../reports.utils'
 import { BufferButtonTooltip } from './BufferButonTooltip'
 import styles from './ReportTitle.module.css'
@@ -35,6 +37,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   const urlBufferValue = useSelector(selectUrlBufferValueQuery)
   const urlBufferUnit = useSelector(selectUrlBufferUnitQuery)
   const fitBounds = useMapFitBounds()
+  const { cleanFeatureState } = useFeatureState(useMapInstance())
 
   const [bufferValue, setBufferValue] = useState<number>(urlBufferValue || DEFAULT_BUFFER_VALUE)
   const [bufferUnit, setBufferUnit] = useState<BufferUnit>(urlBufferUnit || NAUTICAL_MILES)
@@ -76,13 +79,23 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     const bounds = getBufferedAreaBbox({ area, value: bufferValue, unit: bufferUnit }) as Bbox
     fitBounds(bounds)
     dispatchQueryParams({ reportBufferValue: bufferValue, reportBufferUnit: bufferUnit })
+    cleanFeatureState('highlight')
     dispatch(resetReportData())
     trackEvent({
       category: TrackCategory.Analysis,
       action: `Confirm area buffer`,
       label: `${bufferValue} ${bufferUnit}`,
     })
-  }, [bufferValue, bufferUnit, dispatch, dispatchQueryParams, area, fitBounds, tooltipInstance])
+  }, [
+    tooltipInstance,
+    area,
+    bufferValue,
+    bufferUnit,
+    fitBounds,
+    dispatchQueryParams,
+    cleanFeatureState,
+    dispatch,
+  ])
 
   return (
     <div className={styles.container}>
