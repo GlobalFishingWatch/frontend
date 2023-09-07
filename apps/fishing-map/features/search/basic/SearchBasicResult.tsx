@@ -72,6 +72,7 @@ function SearchBasicResult({
     id,
     flag,
     shipname,
+    nShipname,
     ssvid,
     imo,
     callsign,
@@ -82,7 +83,7 @@ function SearchBasicResult({
     positionsCounter,
   } = vesselData
   const bestIdentityMatch = getBestMatchCriteriaIdentity(vessel)
-  const otherNamesLabel = getOtherVesselNames(vessel, shipname)
+  const otherNamesLabel = getOtherVesselNames(vessel, nShipname)
   const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER
 
   const identitySource = useMemo(() => {

@@ -112,8 +112,8 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         accessorFn: (vessel: IdentityVesselData) => {
           const bestIdentityMatch = getBestMatchCriteriaIdentity(vessel)
           const vesselData = getSearchIdentityResolved(vessel)
-          const { shipname } = vesselData
-          const otherNamesLabel = getOtherVesselNames(vessel, shipname)
+          const { shipname, nShipname } = vesselData
+          const otherNamesLabel = getOtherVesselNames(vessel, nShipname)
           const { transmissionDateFrom, transmissionDateTo } = vesselData
           const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER
           const label = `${name} ${otherNamesLabel || ''}`

@@ -1,4 +1,4 @@
-import { get, uniq } from 'lodash'
+import { get, uniq, uniqBy } from 'lodash'
 import {
   IdentityVessel,
   SelfReportedInfo,
@@ -219,14 +219,15 @@ export function filterRegistryInfoByDateAndSSVID(
   )
 }
 
-export const getOtherVesselNames = (vessel, currentShipname) => {
-  const otherNames = getVesselIdentityProperties(vessel, 'shipname').filter(
-    (n) => n !== currentShipname
+export const getOtherVesselNames = (vessel, currentNShipname) => {
+  const uniqIdentitiesByNormalisedName = uniqBy(getVesselIdentities(vessel), 'nShipname')
+  const otherIdentities = uniqIdentitiesByNormalisedName.filter(
+    (i) => i.nShipname !== currentNShipname
   )
 
-  return otherNames?.length
-    ? `, ${t('common.aka', 'a.k.a.')} ${otherNames
-        .map((name) => formatInfoField(name, 'name'))
+  return otherIdentities?.length
+    ? `, ${t('common.aka', 'a.k.a.')} ${otherIdentities
+        .map((i) => formatInfoField(i.shipname, 'name'))
         .join(', ')}`
     : ''
 }

@@ -73,7 +73,8 @@ const VesselHeader = () => {
   })
 
   const shipname = getVesselProperty(vessel, 'shipname', { identityId, identitySource })
-  const otherNamesLabel = getOtherVesselNames(vessel, shipname)
+  const nShipname = getVesselProperty(vessel, 'nShipname', { identityId, identitySource })
+  const otherNamesLabel = getOtherVesselNames(vessel, nShipname)
 
   const onVesselFitBoundsClick = () => {
     if (vesselBounds) {
