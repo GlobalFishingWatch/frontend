@@ -200,6 +200,7 @@ function SearchBasicResult({
         <div className={styles.fullWidth}>
           <div className={styles.name} data-test="vessel-name">
             <VesselLink
+              vesselId={vesselData.id}
               identity={bestIdentityMatch}
               datasetId={dataset?.id}
               onClick={onVesselClick}
