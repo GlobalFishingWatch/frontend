@@ -177,7 +177,7 @@ function TrackFootprint({
         height={footprintHeight}
         ref={highlightCanvasRef}
       />
-      {!trackData && !error && vesselIds?.length && (
+      {!trackData && !error && vesselIds?.length > 0 && (
         <Spinner size="small" className={styles.spinner} />
       )}
       {error && <Icon icon="warning" type="warning" />}

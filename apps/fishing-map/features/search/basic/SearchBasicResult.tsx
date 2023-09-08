@@ -31,6 +31,7 @@ import {
   getOtherVesselNames,
   getRelatedIdentityVesselIds,
   getSearchIdentityResolved,
+  getVesselIdentities,
 } from 'features/vessel/vessel.utils'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
 import useMapInstance from 'features/map/map-context.hooks'
@@ -111,7 +112,10 @@ function SearchBasicResult({
   }, [t, vessel.identities])
 
   const selfReportedVesselIds = useMemo(() => {
-    return [vessel.id, ...getRelatedIdentityVesselIds(vessel)]
+    const identities = getVesselIdentities(vessel, {
+      identitySource: VesselIdentitySourceEnum.SelfReported,
+    })
+    return identities.map((i) => i.id)
   }, [vessel])
 
   // TODO decide how we manage VMS properties
