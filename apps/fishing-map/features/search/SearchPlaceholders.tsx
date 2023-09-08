@@ -56,7 +56,7 @@ export function SearchEmptyState({ className = '' }: SearchPlaceholderProps) {
   return (
     <SearchPlaceholder className={className}>
       <div className={styles.container}>
-        <VesselSearchImage />
+        <VesselSearchImage className={styles.image} />
         <div className={cx({ [styles.hidden]: searchStatus !== AsyncReducerStatus.Loading })}>
           {t('search.searching', 'Searching more than 100K vessels ...')}
           <Spinner className={styles.spinner} />

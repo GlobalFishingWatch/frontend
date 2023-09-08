@@ -86,3 +86,18 @@
   height: 0;
   overflow: hidden;
 }
+
+@media only screen and (max-width: 420px) {
+  .image {
+    transform: scale(70%);
+    margin-top: var(--space-XL);
+  }
+
+  .highlighted {
+    width: 100%;
+  }
+
+  .userGuide {
+    margin-bottom: var(--space-L);
+  }
+}
