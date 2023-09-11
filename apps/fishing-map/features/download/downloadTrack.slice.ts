@@ -7,6 +7,7 @@ import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { DateRange } from 'features/download/downloadActivity.slice'
 import { getUTCDateTime } from 'utils/dates'
+import { logoutUserThunk } from 'features/user/user.slice'
 import { Format, FORMAT_EXTENSION } from './downloadTrack.config'
 
 type VesselParams = {
@@ -133,6 +134,10 @@ const downloadTrackSlice = createSlice({
           state.rateLimit = rateLimit
         }
       }
+    })
+    builder.addCase(logoutUserThunk.fulfilled, (state) => {
+      state.error = null
+      state.rateLimit = {} as DownloadRateLimit
     })
   },
 })
