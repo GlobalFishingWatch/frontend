@@ -479,7 +479,7 @@ export const selectReportBufferArea = createSelector(
   (area, unit, value) => {
     if (!area || !unit || !value) return null
     const bufferedArea = getBufferedArea({ area, value, unit }) as Area
-    if (bufferedArea?.bounds && bufferedArea?.geometry) {
+    if (bufferedArea?.geometry) {
       const bounds = wrapGeometryBbox(bufferedArea.geometry as MultiPolygon)
       // bbox is needed inside Area geometry to computeTimeseries
       // fishing-map/features/reports/reports-timeseries.hooks.ts
