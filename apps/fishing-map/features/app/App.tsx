@@ -9,6 +9,7 @@ import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
   selectIsAnySearchLocation,
   selectIsReportLocation,
+  selectIsVesselLocation,
   selectIsWorkspaceLocation,
   selectLocationType,
   selectUrlTimeRange,
@@ -128,6 +129,7 @@ function App() {
   const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
+  const vesselLocation = useSelector(selectIsVesselLocation)
   const reportAreaBounds = useSelector(selectReportAreaBounds)
   const isTimeComparisonReport = useSelector(selectShowTimeComparison)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
@@ -272,7 +274,7 @@ function App() {
       </a>
       <SplitView
         isOpen={sidebarOpen}
-        showToggle={workspaceLocation}
+        showToggle={workspaceLocation || vesselLocation}
         onToggle={onToggle}
         aside={<Sidebar onMenuClick={onMenuClick} />}
         main={<Main />}
