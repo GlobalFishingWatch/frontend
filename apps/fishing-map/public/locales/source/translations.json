@@ -272,6 +272,7 @@
     "track": "Vessel Track",
     "trackAction": "Download vessel track",
     "trackLimitExceeded": "You have exceeded the limit of tracks you can download per day ({{limit}})",
+    "trackLogin": "Register and login to download vessel tracks (free, 2 minutes)",
     "trackNotAllowed": "You don't have permissions to download tracks from this source",
     "yearly": "Year",
     "yearlyNotAvailable": "Your time range is shorter than 1 year"

@@ -1,6 +1,8 @@
 import { t } from 'i18next'
 import { useSelector } from 'react-redux'
+import { useState } from 'react'
 import { IconButton } from '@globalfishingwatch/ui-components'
+import LocalStorageLoginLink from 'routes/LoginLink'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getVesselDatasetsDownloadTrackSupported } from 'features/datasets/datasets.utils'
 import {
@@ -8,7 +10,7 @@ import {
   selectDownloadTrackRateLimit,
   setDownloadTrackVessel,
 } from 'features/download/downloadTrack.slice'
-import { selectUserData } from 'features/user/user.slice'
+import { isGuestUser, selectUserData } from 'features/user/user.slice'
 import { VesselLayerPanelProps } from 'features/workspace/vessels/VesselLayerPanel'
 
 type VessselDownloadProps = VesselLayerPanelProps & {
@@ -20,7 +22,9 @@ type VessselDownloadProps = VesselLayerPanelProps & {
 function VesselDownload({ dataview, vesselId, vesselTitle, datasetId }: VessselDownloadProps) {
   const dispatch = useAppDispatch()
   const userData = useSelector(selectUserData)
+  const [isHover, setIsHover] = useState(false)
   const downloadError = useSelector(selectDownloadTrackError)
+  const guestUser = useSelector(isGuestUser)
   const rateLimit = useSelector(selectDownloadTrackRateLimit)
   const downloadDatasetsSupported = getVesselDatasetsDownloadTrackSupported(
     dataview,
@@ -37,6 +41,25 @@ function VesselDownload({ dataview, vesselId, vesselTitle, datasetId }: VessselD
         name: vesselTitle,
         datasets: datasetId,
       })
+    )
+  }
+  if (guestUser) {
+    return (
+      <LocalStorageLoginLink>
+        <IconButton
+          icon={isHover ? 'user' : 'download'}
+          tooltip={
+            t(
+              'download.trackLogin',
+              'Register and login to download vessel tracks (free, 2 minutes)'
+            ) as string
+          }
+          tooltipPlacement="top"
+          onMouseEnter={() => setIsHover(true)}
+          onMouseLeave={() => setIsHover(false)}
+          size="small"
+        />
+      </LocalStorageLoginLink>
     )
   }
 
