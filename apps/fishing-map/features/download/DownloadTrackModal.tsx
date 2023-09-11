@@ -11,6 +11,8 @@ import {
   resetDownloadTrackStatus,
   selectDownloadTrackDataset,
   clearDownloadTrackVessel,
+  selectDownloadTrackError,
+  selectDownloadTrackRateLimit,
 } from 'features/download/downloadTrack.slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
@@ -22,6 +24,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectDownloadTrackModalOpen } from 'features/download/download.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import styles from './DownloadModal.module.css'
 import { Format, FORMAT_OPTIONS } from './downloadTrack.config'
 
@@ -30,6 +33,8 @@ function DownloadTrackModal() {
   const dispatch = useAppDispatch()
   const timeoutRef = useRef<NodeJS.Timeout>()
   const downloadStatus = useSelector(selectDownloadTrackStatus)
+  const downloadError = useSelector(selectDownloadTrackError)
+  const rateLimit = useSelector(selectDownloadTrackRateLimit)
   const [format, setFormat] = useState(FORMAT_OPTIONS[0].id as Format)
   const { timerange } = useTimerangeConnect()
 
@@ -48,8 +53,13 @@ function DownloadTrackModal() {
     }
 
     try {
-      await dispatch(downloadTrackThunk(downloadParams))
-      onClose()
+      const action = await dispatch(downloadTrackThunk(downloadParams))
+      if (downloadTrackThunk.fulfilled.match(action)) {
+        onClose()
+        timeoutRef.current = setTimeout(() => {
+          dispatch(resetDownloadTrackStatus())
+        }, 1000)
+      }
     } catch (e: any) {
       console.warn(e)
     }
@@ -59,14 +69,22 @@ function DownloadTrackModal() {
       action: `Track download`,
       label: downloadTrackName,
     })
-
-    timeoutRef.current = setTimeout(() => {
-      dispatch(resetDownloadTrackStatus())
-    }, 1000)
   }
 
   const onClose = () => {
     dispatch(clearDownloadTrackVessel())
+  }
+
+  let IconText: string | React.ReactNode = t('download.title', 'Download')
+  const hasDownloadError =
+    downloadError !== null && (downloadError.status === 429 || rateLimit?.remaining === 0)
+  if (hasDownloadError) {
+    IconText = t('download.trackLimitExceeded', {
+      defaultValue: 'You have exceeded the limit of tracks you can download per day ({{limit}})',
+      limit: rateLimit?.limit,
+    }) as string
+  } else if (downloadStatus === AsyncReducerStatus.Finished) {
+    IconText = <Icon icon="tick" />
   }
 
   return (
@@ -109,12 +127,17 @@ function DownloadTrackModal() {
             className={styles.downloadBtn}
             onClick={onDownloadClick}
             loading={downloadStatus === AsyncReducerStatus.Loading}
+            disabled={hasDownloadError}
+            tooltip={
+              hasDownloadError && rateLimit.retryAfter
+                ? t('download.quotaReset', {
+                    defaultValue: 'The quota will be reset on {{reset}}',
+                    reset: formatI18nDate(rateLimit.retryAfter),
+                  })
+                : ''
+            }
           >
-            {downloadStatus === AsyncReducerStatus.Finished ? (
-              <Icon icon="tick" />
-            ) : (
-              t('download.title', 'Download')
-            )}
+            {IconText}
           </Button>
         </div>
       </div>

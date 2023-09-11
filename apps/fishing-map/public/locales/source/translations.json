@@ -253,6 +253,7 @@
     "descriptionReport": "You can download a list of the activity or a heat map bitmap for this area in different formats",
     "downloadOptions": "Download options",
     "doYouNeedAnAPI": "Does your application need continuous data?",
+    "quotaReset": "The quota will be reset on {{reset}}",
     "format": "Format",
     "fullDataset": "Do you need the full dataset?",
     "fullTimeRange": "Full time range",
@@ -270,6 +271,7 @@
     "title": "Download",
     "track": "Vessel Track",
     "trackAction": "Download vessel track",
+    "trackLimitExceeded": "You have exceeded the limit of tracks you can download per day ({{limit}})",
     "trackNotAllowed": "You don't have permissions to download tracks from this source",
     "yearly": "Year",
     "yearlyNotAvailable": "Your time range is shorter than 1 year"
