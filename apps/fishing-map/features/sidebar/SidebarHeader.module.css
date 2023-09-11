@@ -1,3 +1,8 @@
+.sidebarHeaderContainer {
+  position: relative;
+  z-index: 1;
+}
+
 .sidebarHeader {
   display: flex;
   align-items: center;
@@ -28,6 +33,25 @@
 
 .searchOption {
   margin-right: var(--space-S);
+}
+
+.lngToggle {
+  width: var(--size-SM);
+  z-index: 2;
+}
+
+.userButton {
+  width: var(--size-SM);
+  height: var(--size-SM);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.userButton:hover {
+  background-color: var(--color-terthiary-blue);
 }
 
 @media print {

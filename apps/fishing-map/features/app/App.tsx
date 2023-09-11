@@ -41,6 +41,7 @@ import {
   REPORT,
   WORKSPACE_REPORT,
   SEARCH,
+  WORKSPACE_SEARCH,
 } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { t } from 'features/i18n/i18n'
@@ -248,6 +249,8 @@ function App() {
   const getSidebarName = useCallback(() => {
     if (locationType === USER) return t('user.title', 'User')
     if (locationType === WORKSPACES_LIST) return t('workspace.title_other', 'Workspaces')
+    if (locationType === SEARCH || locationType === WORKSPACE_SEARCH)
+      return t('search.title', 'Search')
     if (locationType === VESSEL || locationType === WORKSPACE_VESSEL)
       return t('vessel.title', 'Vessel profile')
     if (isReportLocation) return t('analysis.title', 'Analysis')

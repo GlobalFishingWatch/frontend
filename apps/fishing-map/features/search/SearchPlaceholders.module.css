@@ -1,6 +1,5 @@
 .emptyState {
   height: 100%;
-  padding: var(--space-M);
   color: var(--color-secondary-blue);
   display: flex;
   align-items: center;
@@ -13,14 +12,6 @@
 
 .emptyState code {
   font-style: italic;
-}
-
-.vesselImage {
-  mix-blend-mode: multiply;
-  height: 30rem;
-  display: block;
-  margin: 0 auto;
-  margin-bottom: var(--space-L);
 }
 
 .bold {
@@ -36,6 +27,9 @@
   flex-direction: column;
   align-items: center;
   position: relative;
+  padding: var(--space-S);
+  width: 70rem;
+  max-width: calc(100vw - var(--sidebar-tabs-width));
 }
 
 .hidden {
@@ -48,7 +42,6 @@
 }
 
 .description {
-  max-width: 70rem;
   text-align: center;
 }
 
@@ -59,6 +52,7 @@
   border-bottom: var(--border);
   width: max-content;
   margin: var(--space-M) auto;
+  text-align: center;
 }
 
 .highlighted a {
@@ -87,17 +81,9 @@
   overflow: hidden;
 }
 
-@media only screen and (max-width: 420px) {
+@media only screen and (max-width: 767px) {
   .image {
+    transform-origin: bottom;
     transform: scale(70%);
-    margin-top: var(--space-XL);
-  }
-
-  .highlighted {
-    width: 100%;
-  }
-
-  .userGuide {
-    margin-bottom: var(--space-L);
   }
 }

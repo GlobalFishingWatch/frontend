@@ -62,3 +62,9 @@
 .groupOption:not(:last-of-type) {
   border-bottom: var(--border);
 }
+
+@media (max-width: 767px) {
+  .footer {
+    width: calc(100%);
+  }
+}

@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { Spinner } from '@globalfishingwatch/ui-components'
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { selectReadOnly } from 'features/app/app.selectors'
 import {
   selectIsReportLocation,
@@ -53,6 +54,7 @@ export function resetSidebarScroll() {
 function Sidebar({ onMenuClick }: SidebarProps) {
   const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)
+  const isSmallScreen = useSmallScreen()
   const isUserLocation = useSelector(selectIsUserLocation)
   const isWorkspacesListLocation = useSelector(selectIsWorkspacesListLocation)
   const isSearchLocation = useSelector(selectIsAnySearchLocation)
@@ -111,7 +113,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
 
   return (
     <div className={styles.container}>
-      {!readOnly && <CategoryTabs onMenuClick={onMenuClick} />}
+      {!readOnly && !isSmallScreen && <CategoryTabs onMenuClick={onMenuClick} />}
       {/* New dataset modal is used in user and workspace pages*/}
       {datasetModal === 'new' && <NewDataset />}
       <div className="scrollContainer" data-test="sidebar-container">

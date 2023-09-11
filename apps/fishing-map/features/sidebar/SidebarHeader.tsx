@@ -51,6 +51,8 @@ import { QueryParams } from 'types'
 import { useSearchFiltersConnect } from 'features/search/search.hook'
 import { resetVesselState } from 'features/vessel/vessel.slice'
 import { cleanVesselSearchResults } from 'features/search/search.slice'
+import UserButton from 'features/user/UserButton'
+import LanguageToggle from 'features/i18n/LanguageToggle'
 import styles from './SidebarHeader.module.css'
 import { useClipboardNotification } from './sidebar.hooks'
 
@@ -418,7 +420,11 @@ function SidebarHeader() {
   }
 
   return (
-    <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
+    <Sticky
+      scrollElement=".scrollContainer"
+      wrapperClassName={styles.sidebarHeaderContainer}
+      stickyClassName={styles.sticky}
+    >
       <div className={styles.sidebarHeader}>
         <a href="https://globalfishingwatch.org" className={styles.logoLink}>
           <Logo className={styles.logo} subBrand={getSubBrand()} />
@@ -430,6 +436,8 @@ function SidebarHeader() {
             {(isWorkspaceLocation || isReportLocation || isAnyVesselLocation) && (
               <ShareWorkspaceButton />
             )}
+            {isSmallScreen && <LanguageToggle className={styles.lngToggle} position="rightDown" />}
+            {isSmallScreen && <UserButton className={styles.userButton} />}
             {isReportLocation && <CloseReportButton />}
             {isVesselLocation && <CloseVesselButton />}
             {isSearchLocation && !readOnly && !isSmallScreen && (
