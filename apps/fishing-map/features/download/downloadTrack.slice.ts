@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
 import { saveAs } from 'file-saver'
 import { RootState } from 'reducers'
-import { DownloadActivity } from '@globalfishingwatch/api-types'
+import { DownloadRateLimit } from '@globalfishingwatch/api-types'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { DateRange } from 'features/download/downloadActivity.slice'
@@ -20,6 +20,8 @@ export interface DownloadTrackState {
   id: string
   datasets: string
   status: AsyncReducerStatus
+  error: AsyncError | null
+  rateLimit: DownloadRateLimit
 }
 
 const initialState: DownloadTrackState = {
@@ -27,6 +29,8 @@ const initialState: DownloadTrackState = {
   id: '',
   datasets: '',
   status: AsyncReducerStatus.Idle,
+  error: null,
+  rateLimit: {} as DownloadRateLimit,
 }
 
 export type DownloadTrackParams = {
@@ -37,11 +41,21 @@ export type DownloadTrackParams = {
   format: Format
 }
 
+const parseRateLimit = (response: Response) => {
+  return {
+    remaining: parseInt(response.headers.get('Ratelimit-Remaining') || ''),
+    limit: parseInt(response.headers.get('Ratelimit-Limit') || '10'),
+    retryAfter: parseInt(response.headers.get('Retry-After') || '0'),
+    reset: response.headers.get('Ratelimit-Reset'),
+  } as DownloadRateLimit
+}
+
+type RejectValueType = { error: AsyncError; rateLimit?: DownloadRateLimit }
 export const downloadTrackThunk = createAsyncThunk<
-  DownloadActivity,
+  DownloadRateLimit,
   DownloadTrackParams,
   {
-    rejectValue: AsyncError
+    rejectValue: RejectValueType
   }
 >('downloadTrack/create', async (params: DownloadTrackParams, { rejectWithValue }) => {
   try {
@@ -60,19 +74,22 @@ export const downloadTrackThunk = createAsyncThunk<
     const fileName = `${vesselName || vesselId} - ${downloadTrackParams['start-date']},${
       downloadTrackParams['end-date']
     }.${FORMAT_EXTENSION[format]}`
-
-    const createdDownload: any = await GFWAPI.fetch<DownloadActivity>(
+    const rateLimit = await GFWAPI.fetch<Response>(
       `/vessels/${vesselId}/tracks?${stringify(downloadTrackParams)}`,
       {
         method: 'GET',
-        responseType: 'blob',
+        responseType: 'default',
       }
-    ).then((blob) => {
+    ).then(async (response) => {
+      const rateLimit = parseRateLimit(response)
+      const blob = await response.blob()
       saveAs(blob as any, fileName)
+      return rateLimit
     })
-    return createdDownload
+    return rateLimit
   } catch (e: any) {
-    return rejectWithValue(parseAPIError(e))
+    const rateLimit = parseRateLimit(e)
+    return rejectWithValue({ error: parseAPIError(e), rateLimit })
   }
 })
 
@@ -82,6 +99,7 @@ const downloadTrackSlice = createSlice({
   reducers: {
     resetDownloadTrackStatus: (state) => {
       state.status = AsyncReducerStatus.Idle
+      state.error = null
     },
     clearDownloadTrackVessel: (state) => {
       state.id = ''
@@ -98,15 +116,22 @@ const downloadTrackSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(downloadTrackThunk.pending, (state) => {
       state.status = AsyncReducerStatus.Loading
+      state.error = null
     })
-    builder.addCase(downloadTrackThunk.fulfilled, (state) => {
+    builder.addCase(downloadTrackThunk.fulfilled, (state, action) => {
       state.status = AsyncReducerStatus.Finished
+      state.rateLimit = action.payload
     })
     builder.addCase(downloadTrackThunk.rejected, (state, action) => {
       if (action.error.message === 'Aborted') {
         state.status = AsyncReducerStatus.Aborted
       } else {
         state.status = AsyncReducerStatus.Error
+        const { error, rateLimit } = action.payload as RejectValueType
+        state.error = error
+        if (rateLimit) {
+          state.rateLimit = rateLimit
+        }
       }
     })
   },
@@ -119,5 +144,7 @@ export const selectDownloadTrackId = (state: RootState) => state.downloadTrack.i
 export const selectDownloadTrackName = (state: RootState) => state.downloadTrack.name
 export const selectDownloadTrackDataset = (state: RootState) => state.downloadTrack.datasets
 export const selectDownloadTrackStatus = (state: RootState) => state.downloadTrack.status
+export const selectDownloadTrackError = (state: RootState) => state.downloadTrack.error
+export const selectDownloadTrackRateLimit = (state: RootState) => state.downloadTrack.rateLimit
 
 export default downloadTrackSlice.reducer
