@@ -23,7 +23,7 @@ import {
 } from 'features/datasets/datasets.utils'
 import { Bbox, BufferUnit, ReportCategory } from 'types'
 import { Area } from 'features/areas/areas.slice'
-import { DEFAULT_POINT_BUFFER_UNIT, DEFAULT_POINT_BUFFER_VALUE } from './reports.constants'
+import { DEFAULT_POINT_BUFFER_UNIT, DEFAULT_POINT_BUFFER_VALUE } from './reports.config'
 
 const ALWAYS_SHOWN_FILTERS = ['vessel-groups']
 

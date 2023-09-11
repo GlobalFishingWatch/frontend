@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { Range, getTrackBackground } from 'react-range'
 import { useTranslation } from 'react-i18next'
 import { Button, Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
-import { KILOMETERS, NAUTICAL_MILES } from 'features/reports/reports.constants'
+import { KILOMETERS, NAUTICAL_MILES } from 'features/reports/reports.config'
 import { BufferUnit } from 'types'
 import styles from './ReportTitle.module.css'
 

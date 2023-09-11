@@ -23,7 +23,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   DEFAULT_POINT_BUFFER_UNIT,
   DEFAULT_POINT_BUFFER_VALUE,
-} from 'features/reports/reports.constants'
+} from 'features/reports/reports.config'
 import styles from './Popup.module.css'
 
 interface DownloadPopupButtonProps {
