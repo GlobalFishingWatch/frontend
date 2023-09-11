@@ -246,6 +246,8 @@ function App() {
   const getSidebarName = useCallback(() => {
     if (locationType === USER) return t('user.title', 'User')
     if (locationType === WORKSPACES_LIST) return t('workspace.title_other', 'Workspaces')
+    if (locationType === VESSEL || locationType === WORKSPACE_VESSEL)
+      return t('vessel.title', 'Vessel profile')
     if (isReportLocation) return t('analysis.title', 'Analysis')
     return t('common.layerList', 'Layer list')
   }, [locationType, isReportLocation])
