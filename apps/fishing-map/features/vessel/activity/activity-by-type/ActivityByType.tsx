@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { GroupedVirtuoso } from 'react-virtuoso'
 import { useTranslation } from 'react-i18next'
 import { EventTypes } from '@globalfishingwatch/api-types'
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import useViewport from 'features/map/map-viewport.hooks'
 import EventDetail from 'features/vessel/activity/event/EventDetail'
@@ -16,6 +17,7 @@ import { setHighlightedEvents } from 'features/timebar/timebar.slice'
 import { getScrollElement } from 'features/sidebar/Sidebar'
 import { selectVesselPrintMode } from 'features/vessel/vessel.slice'
 import { ZOOM_LEVEL_TO_FOCUS_EVENT } from 'features/timebar/Timebar'
+import { useLocationConnect } from 'routes/routes.hook'
 import Event, { EVENT_HEIGHT } from '../event/Event'
 import styles from '../ActivityGroupedList.module.css'
 import { useActivityByType } from './activity-by-type.hook'
@@ -31,7 +33,9 @@ export const EVENTS_ORDER = [
 
 export function ActivityByType() {
   const { t } = useTranslation()
+  const isSmallScreen = useSmallScreen()
   const activityGroups = useSelector(selectEventsGroupedByType)
+  const { dispatchQueryParams } = useLocationConnect()
   const dispatch = useAppDispatch()
   const vesselPrintMode = useSelector(selectVesselPrintMode)
   const [expandedType, toggleExpandedType] = useActivityByType()
@@ -74,8 +78,9 @@ export function ActivityByType() {
         longitude: event.position.lon,
         zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
       })
+      if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
     },
-    [setMapCoordinates, viewport.zoom]
+    [dispatchQueryParams, isSmallScreen, setMapCoordinates, viewport.zoom]
   )
 
   const { events, groupCounts, groups } = useMemo(() => {

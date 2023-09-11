@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import Sticky from 'react-sticky-el'
 import { useCallback, useEffect } from 'react'
 import { IconButton } from '@globalfishingwatch/ui-components'
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
   selectVesselInfoData,
   selectVesselPrintMode,
@@ -34,6 +35,7 @@ const VesselHeader = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
+  const isSmallScreen = useSmallScreen()
   const identityId = useSelector(selectVesselIdentityId)
   const identitySource = useSelector(selectVesselIdentitySource)
   const viewOnlyVessel = useSelector(selectViewOnlyVessel)
@@ -78,6 +80,7 @@ const VesselHeader = () => {
 
   const onVesselFitBoundsClick = () => {
     if (vesselBounds) {
+      if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
       setVesselBounds(vesselBounds)
     }
   }
@@ -87,6 +90,7 @@ const VesselHeader = () => {
   }
 
   const setViewOnlyVessel = () => {
+    if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
     dispatchQueryParams({ viewOnlyVessel: !viewOnlyVessel })
   }
 

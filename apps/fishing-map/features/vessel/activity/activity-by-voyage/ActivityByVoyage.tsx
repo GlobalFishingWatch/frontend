@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { GroupedVirtuoso } from 'react-virtuoso'
 import { eventsToBbox } from '@globalfishingwatch/data-transforms'
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import useViewport from 'features/map/map-viewport.hooks'
 import EventDetail from 'features/vessel/activity/event/EventDetail'
 import { DEFAULT_VIEWPORT } from 'data/config'
@@ -27,12 +28,16 @@ import { selectVisibleEvents } from 'features/app/app.selectors'
 import { selectVesselPrintMode } from 'features/vessel/vessel.slice'
 import { useDebouncedDispatchHighlightedEvent } from 'features/map/map.hooks'
 import { ZOOM_LEVEL_TO_FOCUS_EVENT } from 'features/timebar/Timebar'
+import { useLocationConnect } from 'routes/routes.hook'
 import styles from '../ActivityGroupedList.module.css'
 
 const ActivityByVoyage = () => {
   const { t } = useTranslation()
   const voyages = useSelector(selectEventsGroupedByVoyages)
   const dispatch = useAppDispatch()
+
+  const isSmallScreen = useSmallScreen()
+  const { dispatchQueryParams } = useLocationConnect()
   const visibleEvents = useSelector(selectVisibleEvents)
   const vesselPrintMode = useSelector(selectVesselPrintMode)
   const [selectedEvent, setSelectedEvent] = useState<ActivityEvent>()
@@ -50,8 +55,9 @@ const ActivityByVoyage = () => {
       const events = voyages[voyageId]
       const bounds = eventsToBbox(events)
       fitBounds(bounds)
+      if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
     },
-    [fitBounds, voyages]
+    [dispatchQueryParams, fitBounds, isSmallScreen, voyages]
   )
 
   const dispatchSetHighlightedEvents = useDebouncedDispatchHighlightedEvent()
@@ -96,8 +102,9 @@ const ActivityByVoyage = () => {
         longitude: event.position.lon,
         zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
       })
+      if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
     },
-    [setMapCoordinates, viewport.zoom]
+    [dispatchQueryParams, isSmallScreen, setMapCoordinates, viewport.zoom]
   )
 
   const { events, groupCounts, groups } = useMemo(() => {
