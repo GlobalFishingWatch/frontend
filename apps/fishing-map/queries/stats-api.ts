@@ -4,7 +4,8 @@ import type { BaseQueryArg, BaseQueryFn } from '@reduxjs/toolkit/dist/query/base
 import type { SerializeQueryArgs } from '@reduxjs/toolkit/dist/query/defaultSerializeQueryArgs'
 import { gfwBaseQuery } from 'queries/base'
 import { uniq } from 'lodash'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { DateTime } from 'luxon'
+import { getDatasetsExtent, type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { StatField, StatFields, StatType } from '@globalfishingwatch/api-types'
 import type { Range } from 'features/timebar/timebar.slice'
 
@@ -38,11 +39,23 @@ export const dataviewStatsApi = createApi({
   endpoints: (builder) => ({
     getStatsByDataview: builder.query<StatFields, FetchDataviewStatsParams>({
       query: ({ dataview, timerange, fields = DEFAULT_STATS_FIELDS }) => {
+        const datasets = dataview.datasets?.filter((dataset) =>
+          dataview.config?.datasets.includes(dataset.id)
+        )
+        const { extentStart, extentEnd } = getDatasetsExtent(datasets)
+        const laterStartDate = DateTime.max(
+          DateTime.fromISO(timerange.start),
+          DateTime.fromISO(extentStart)
+        )
+        const earlierEndDate = DateTime.min(
+          DateTime.fromISO(timerange.end),
+          DateTime.fromISO(extentEnd)
+        )
         const statsParams = {
           datasets: [dataview.config?.datasets?.join(',') || []],
           filters: [dataview.config?.filter] || [],
           'vessel-groups': [dataview.config?.['vessel-groups']] || [],
-          'date-range': [timerange.start, timerange.end].join(','),
+          'date-range': [laterStartDate.toISODate(), earlierEndDate.toISODate()].join(','),
         }
         return {
           url: `?fields=${fields.join(',')}&${stringify(statsParams, {

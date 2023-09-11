@@ -83,7 +83,17 @@ function ActivitySchemaFilter({
   onIsOpenChange,
   onSelectOperation,
 }: ActivitySchemaFilterProps) {
-  const { id, label, type, disabled, options, optionsSelected, filterOperator, unit } = schemaFilter
+  const {
+    id,
+    label,
+    type,
+    disabled,
+    options,
+    optionsSelected,
+    filterOperator,
+    unit,
+    singleSelection,
+  } = schemaFilter
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const onSliderChange = useCallback(
     (rangeSelected) => {
@@ -168,7 +178,7 @@ function ActivitySchemaFilter({
   }
 
   return (
-    <div className={styles.relative}>
+    <div className={cx(styles.relative, styles.multiSelect)}>
       {filterOperator && (
         <Choice
           size="tiny"
@@ -178,19 +188,31 @@ function ActivitySchemaFilter({
           onSelect={(option) => onSelectOperation(id, option.id as FilterOperator)}
         />
       )}
-      <MultiSelect
-        key={id}
-        disabled={disabled}
-        label={label}
-        placeholder={getPlaceholderBySelections(optionsSelected, filterOperator)}
-        options={options}
-        selectedOptions={optionsSelected}
-        className={styles.multiSelect}
-        onSelect={(selection) => onSelect(id, selection)}
-        onRemove={(selection, rest) => onRemove(id, rest)}
-        onIsOpenChange={onIsOpenChange}
-        onCleanClick={() => onClean(id)}
-      />
+      {singleSelection ? (
+        <Select
+          key={id}
+          disabled={disabled}
+          label={label}
+          placeholder={getPlaceholderBySelections(optionsSelected, filterOperator)}
+          options={options}
+          selectedOption={optionsSelected[0]}
+          onSelect={(selection) => onSelect(id, selection, true)}
+          onCleanClick={() => onClean(id)}
+        />
+      ) : (
+        <MultiSelect
+          key={id}
+          disabled={disabled}
+          label={label}
+          placeholder={getPlaceholderBySelections(optionsSelected, filterOperator)}
+          options={options}
+          selectedOptions={optionsSelected}
+          onSelect={(selection) => onSelect(id, selection)}
+          onRemove={(selection, rest) => onRemove(id, rest)}
+          onIsOpenChange={onIsOpenChange}
+          onCleanClick={() => onClean(id)}
+        />
+      )}
     </div>
   )
 }

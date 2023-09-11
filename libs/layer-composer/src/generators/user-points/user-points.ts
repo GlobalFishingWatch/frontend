@@ -36,7 +36,7 @@ class UserPointsGenerator {
       ...baseLayer,
       type: 'circle',
       paint: {
-        'circle-radius': ['interpolate', ['linear'], ['zoom'], 2, 4, 5, 8],
+        'circle-radius': ['interpolate', ['linear'], ['zoom'], 2, 2, 5, 4],
         'circle-stroke-color': DEFAULT_BACKGROUND_COLOR,
         'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 3, 0.1, 5, 0.5],
         'circle-stroke-opacity': 0.5,

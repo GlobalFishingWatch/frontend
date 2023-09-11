@@ -12,16 +12,26 @@ interface TagProps {
   color?: string
   tooltip?: TooltipTypes
   tooltipPlacement?: Placement
+  testId?: string
   onRemove?: (event: React.MouseEvent) => void
 }
 
 export function Tag(props: TagProps) {
-  const { className, children, color, onRemove, tooltip = '', tooltipPlacement = 'auto' } = props
+  const {
+    className,
+    children,
+    color,
+    onRemove,
+    testId,
+    tooltip = '',
+    tooltipPlacement = 'auto',
+  } = props
   return (
     <Tooltip content={tooltip as React.ReactNode} placement={tooltipPlacement}>
       <div
         className={cx(styles.tag, { [styles.withRemove]: onRemove !== undefined }, className)}
         {...(color && { style: { color } })}
+        {...(testId && { 'data-test': `${testId}` })}
       >
         <span className={styles.content}>{children}</span>
         {onRemove !== undefined && (

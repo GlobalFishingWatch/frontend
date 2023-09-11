@@ -196,7 +196,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   }
 
   const infoFields = guestUser
-    ? dataview.infoConfig?.fields.filter((field) => field.guest)
+    ? dataview.infoConfig?.fields?.filter((field) => field.guest)
     : dataview.infoConfig?.fields
 
   const TrackIconComponent = trackLoading ? (

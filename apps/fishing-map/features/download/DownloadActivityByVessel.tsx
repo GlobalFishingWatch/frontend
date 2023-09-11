@@ -154,11 +154,11 @@ function DownloadActivityByVessel() {
   }
   return (
     <Fragment>
-      <div className={styles.container}>
+      <div className={styles.container} data-test="download-activity-byvessel">
         <div className={styles.info}>
           <div>
             <label>{t('download.area', 'Area')}</label>
-            <Tag>{downloadAreaName || EMPTY_FIELD_PLACEHOLDER}</Tag>
+            <Tag testId="area-name">{downloadAreaName || EMPTY_FIELD_PLACEHOLDER}</Tag>
           </div>
           <div>
             <label>{t('download.timeRange', 'Time Range')}</label>
@@ -172,6 +172,7 @@ function DownloadActivityByVessel() {
           <Choice
             options={VESSEL_FORMAT_OPTIONS}
             size="small"
+            testId="report-format"
             activeOption={format}
             onSelect={(option) => setFormat(option.id as Format)}
           />
@@ -181,6 +182,7 @@ function DownloadActivityByVessel() {
           <Choice
             options={filteredGroupByOptions}
             size="small"
+            testId="group-vessels-by"
             activeOption={groupBy}
             onSelect={(option) => setGroupBy(option.id as GroupBy)}
           />
@@ -190,6 +192,7 @@ function DownloadActivityByVessel() {
           <Choice
             options={filteredTemporalResolutionOptions}
             size="small"
+            testId="group-time-by"
             activeOption={temporalResolution}
             onSelect={(option) => setTemporalResolution(option.id as TemporalResolution)}
           />
@@ -212,6 +215,7 @@ function DownloadActivityByVessel() {
           )}
 
           <Button
+            testId="download-activity-vessel-button"
             onClick={onDownloadClick}
             loading={downloadLoading || downloadAreaLoading}
             className={styles.downloadBtn}

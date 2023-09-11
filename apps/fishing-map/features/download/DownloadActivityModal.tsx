@@ -30,6 +30,7 @@ function DownloadActivityModal() {
         id: Downloads.Gridded,
         title: t('download.gridded', 'Gridded activity'),
         content: <DownloadActivityGridded />,
+        testId: 'activity-modal-gridded-activity',
       },
     ]
   }, [t])
