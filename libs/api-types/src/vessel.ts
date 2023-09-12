@@ -1,8 +1,8 @@
 export type DownloadRateLimit = {
-  remaining: number | null
-  limit: number | null
-  reset: string | null
-  retryAfter: number | null
+  remaining: number
+  limit: number
+  reset?: string
+  retryAfter: number
 }
 
 export interface Authorization {
