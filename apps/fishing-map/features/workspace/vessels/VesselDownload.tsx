@@ -9,13 +9,18 @@ import { setDownloadTrackVessel } from 'features/download/downloadTrack.slice'
 import { isGuestUser, selectUserData } from 'features/user/user.slice'
 import { VesselLayerPanelProps } from 'features/workspace/vessels/VesselLayerPanel'
 
-type VessselDownloadProps = VesselLayerPanelProps & {
+type VesselDownloadButtonProps = VesselLayerPanelProps & {
   vesselId: string
   vesselTitle: string
   datasetId: string
 }
 
-function VesselDownload({ dataview, vesselId, vesselTitle, datasetId }: VessselDownloadProps) {
+function VesselDownloadButton({
+  dataview,
+  vesselId,
+  vesselTitle,
+  datasetId,
+}: VesselDownloadButtonProps) {
   const dispatch = useAppDispatch()
   const userData = useSelector(selectUserData)
   const [isHover, setIsHover] = useState(false)
@@ -74,4 +79,4 @@ function VesselDownload({ dataview, vesselId, vesselTitle, datasetId }: VessselD
   )
 }
 
-export default VesselDownload
+export default VesselDownloadButton
