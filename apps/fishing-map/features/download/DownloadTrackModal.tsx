@@ -21,7 +21,6 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { DateRange } from 'features/download/downloadActivity.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import GFWOnly from 'features/user/GFWOnly'
 import { selectDownloadTrackModalOpen } from 'features/download/download.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './DownloadModal.module.css'
@@ -81,7 +80,6 @@ function DownloadTrackModal() {
       title={
         <Fragment>
           {t('download.title', 'Download')} - {t('download.track', 'Vessel Track')}
-          <GFWOnly />
         </Fragment>
       }
       isOpen={downloadModalOpen}
