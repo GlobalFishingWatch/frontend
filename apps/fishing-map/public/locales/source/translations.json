@@ -1,6 +1,7 @@
 {
   "analysis": {
     "activityChange": "Activity change",
+    "around": "around",
     "beforeAfter": "before/after",
     "beforeAfterDate": "date",
     "beforeAfterRange": "between the {{duration}} before and after {{compareStart}}",
@@ -24,7 +25,7 @@
     "groupByGeartype": "by gear type",
     "groupByVesseltype": "by vessel type",
     "kilometers": "kilometers",
-    "kilometers_short": "km",
+    "kilometersShort": "km",
     "linkToReport": "Check the dynamic report here",
     "nauticalmiles": "nautical miles",
     "nauticalmilesShort": "nm",

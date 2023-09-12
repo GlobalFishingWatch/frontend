@@ -81,6 +81,29 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     window.print()
   }
 
+  const handleTooltipHide = useCallback(() => {
+    dispatch(
+      setPreviewBuffer({
+        value: null,
+        unit: null,
+      })
+    )
+  }, [dispatch])
+
+  const handleTooltipShow = useCallback(
+    (instance) => {
+      setTooltipInstance(instance)
+      // This is to create the preview buffer on tooltip show
+      dispatch(
+        setPreviewBuffer({
+          value: urlBufferValue || DEFAULT_BUFFER_VALUE,
+          unit: urlBufferUnit || NAUTICAL_MILES,
+        })
+      )
+    },
+    [dispatch, setTooltipInstance, urlBufferValue, urlBufferUnit]
+  )
+
   const handleConfirmBuffer = useCallback(() => {
     tooltipInstance!.hide()
     // recenter the map on the selected buffer
@@ -116,7 +139,12 @@ export default function ReportTitle({ area }: ReportTitleProps) {
       {name ? (
         <Fragment>
           <h1 className={styles.title} data-test="report-title">
-            {name}
+            {urlBufferValue
+              ? `${urlBufferValue} ${t(`analysis.${urlBufferUnit}` as any, urlBufferUnit)} ${t(
+                  `analysis.around`,
+                  'around'
+                )} ${name}`
+              : name}
           </h1>
           <a className={styles.reportLink} href={reportLink}>
             {t('analysis.linkToReport', 'Check the dynamic report here')}
@@ -146,24 +174,11 @@ export default function ReportTitle({ area }: ReportTitleProps) {
                   trigger: 'click',
                   delay: 0,
                   className: styles.bufferContainer,
-                  onShow: (instance) => {
-                    setTooltipInstance(instance)
-                    // This is to create the preview buffer on tooltip show
-                    dispatch(
-                      setPreviewBuffer({
-                        value: urlBufferValue || DEFAULT_BUFFER_VALUE,
-                        unit: urlBufferUnit || NAUTICAL_MILES,
-                      })
-                    )
-                  },
+                  onHide: handleTooltipHide,
+                  onShow: handleTooltipShow,
                 }}
               >
                 {t('analysis.buffer', 'Buffer Area')}
-                {urlBufferValue &&
-                  ` (${urlBufferValue} ${t(
-                    `analysis.${urlBufferUnit}Short` as any,
-                    urlBufferUnit
-                  )})`}
                 <Icon icon="expand" type="default" />
               </Button>
             </div>
