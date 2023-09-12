@@ -8,13 +8,17 @@ import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { Area } from 'features/areas/areas.slice'
 import { DEFAULT_BUFFER_VALUE, NAUTICAL_MILES } from 'features/reports/reports.config'
-import { resetReportData, setPreviewBuffer } from 'features/reports/report.slice'
+import {
+  resetReportData,
+  selectReportPreviewBuffer,
+  setPreviewBuffer,
+} from 'features/reports/report.slice'
 import { selectReportAreaDataview } from 'features/reports/reports.selectors'
 import ReportTitlePlaceholder from 'features/reports/placeholders/ReportTitlePlaceholder'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectCurrentReport } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { Bbox, BufferUnit } from 'types'
+import { Bbox } from 'types'
 import { selectUrlBufferUnitQuery, selectUrlBufferValueQuery } from 'routes/routes.selectors'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
@@ -34,28 +38,32 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   const dispatch = useAppDispatch()
   const areaDataview = useSelector(selectReportAreaDataview)
   const report = useSelector(selectCurrentReport)
+  const previewBuffer = useSelector(selectReportPreviewBuffer)
   const urlBufferValue = useSelector(selectUrlBufferValueQuery)
   const urlBufferUnit = useSelector(selectUrlBufferUnitQuery)
   const fitBounds = useMapFitBounds()
   const { cleanFeatureState } = useFeatureState(useMapInstance())
 
-  const [bufferValue, setBufferValue] = useState<number>(urlBufferValue || DEFAULT_BUFFER_VALUE)
-  const [bufferUnit, setBufferUnit] = useState<BufferUnit>(urlBufferUnit || NAUTICAL_MILES)
   const [tooltipInstance, setTooltipInstance] = useState<any>(null)
 
   const handleBufferUnitChange = useCallback(
     (option) => {
-      setBufferUnit(option.id)
-      dispatch(setPreviewBuffer({ value: bufferValue, unit: option.id }))
+      dispatch(
+        setPreviewBuffer({ value: previewBuffer.value || DEFAULT_BUFFER_VALUE, unit: option.id })
+      )
     },
-    [setBufferUnit, dispatch, bufferValue]
+    [dispatch, previewBuffer]
   )
   const handleBufferValueChange = useCallback(
     (values: number[]) => {
-      setBufferValue(Math.round(values[1]))
-      dispatch(setPreviewBuffer({ value: Math.round(values[1]), unit: bufferUnit }))
+      dispatch(
+        setPreviewBuffer({
+          value: Math.round(values[1]),
+          unit: previewBuffer.unit || NAUTICAL_MILES,
+        })
+      )
     },
-    [setBufferValue, dispatch, bufferUnit]
+    [previewBuffer, dispatch]
   )
 
   const reportLink = window.location.href
@@ -76,21 +84,27 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   const handleConfirmBuffer = useCallback(() => {
     tooltipInstance!.hide()
     // recenter the map on the selected buffer
-    const bounds = getBufferedAreaBbox({ area, value: bufferValue, unit: bufferUnit }) as Bbox
+    const bounds = getBufferedAreaBbox({
+      area,
+      value: previewBuffer.value!,
+      unit: previewBuffer.unit!,
+    }) as Bbox
     fitBounds(bounds)
-    dispatchQueryParams({ reportBufferValue: bufferValue, reportBufferUnit: bufferUnit })
+    dispatchQueryParams({
+      reportBufferValue: previewBuffer.value!,
+      reportBufferUnit: previewBuffer.unit!,
+    })
     cleanFeatureState('highlight')
     dispatch(resetReportData())
     trackEvent({
       category: TrackCategory.Analysis,
       action: `Confirm area buffer`,
-      label: `${bufferValue} ${bufferUnit}`,
+      label: `${previewBuffer.value} ${previewBuffer.unit}`,
     })
   }, [
     tooltipInstance,
     area,
-    bufferValue,
-    bufferUnit,
+    previewBuffer,
     fitBounds,
     dispatchQueryParams,
     cleanFeatureState,
@@ -120,7 +134,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
                   <BufferButtonTooltip
                     handleBufferValueChange={handleBufferValueChange}
                     defaultValue={urlBufferValue || DEFAULT_BUFFER_VALUE}
-                    activeOption={bufferUnit || NAUTICAL_MILES}
+                    activeOption={urlBufferUnit || NAUTICAL_MILES}
                     handleBufferUnitChange={handleBufferUnitChange}
                     handleConfirmBuffer={handleConfirmBuffer}
                     areaType={area?.geometry?.type}
@@ -132,7 +146,16 @@ export default function ReportTitle({ area }: ReportTitleProps) {
                   trigger: 'click',
                   delay: 0,
                   className: styles.bufferContainer,
-                  onShow: (instance) => setTooltipInstance(instance),
+                  onShow: (instance) => {
+                    setTooltipInstance(instance)
+                    // This is to create the preview buffer on tooltip show
+                    dispatch(
+                      setPreviewBuffer({
+                        value: urlBufferValue || DEFAULT_BUFFER_VALUE,
+                        unit: urlBufferUnit || NAUTICAL_MILES,
+                      })
+                    )
+                  },
                 }}
               >
                 {t('analysis.buffer', 'Buffer Area')}
