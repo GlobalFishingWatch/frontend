@@ -270,6 +270,10 @@
     "title": "crwdns58705:0crwdne58705:0",
     "track": "crwdns58707:0crwdne58707:0",
     "trackAction": "crwdns58709:0crwdne58709:0",
+    "trackLimitExceeded": "crwdns59533:0{{limit}}crwdne59533:0",
+    "trackRemaining_one": "crwdns59535:0{{count}}crwdne59535:0",
+    "trackRemaining_other": "crwdns59537:0{{count}}crwdne59537:0",
+    "trackLogin": "crwdns59539:0crwdne59539:0",
     "trackNotAllowed": "crwdns58711:0crwdne58711:0",
     "yearly": "crwdns58713:0crwdne58713:0",
     "yearlyNotAvailable": "crwdns58715:0crwdne58715:0"
