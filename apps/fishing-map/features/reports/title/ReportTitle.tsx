@@ -162,7 +162,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
                   <BufferButtonTooltip
                     handleBufferValueChange={handleBufferValueChange}
                     defaultValue={urlBufferValue || DEFAULT_BUFFER_VALUE}
-                    activeOption={urlBufferUnit || NAUTICAL_MILES}
+                    activeOption={previewBuffer.unit || NAUTICAL_MILES}
                     handleBufferUnitChange={handleBufferUnitChange}
                     handleConfirmBuffer={handleConfirmBuffer}
                     areaType={area?.geometry?.type}
