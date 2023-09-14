@@ -1,5 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { RootState } from 'reducers'
+import { uniq } from 'lodash'
 import { DataviewCategory, DataviewInstance, Workspace } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_WORKSPACE } from 'data/config'
 import { createDeepEqualSelector } from 'utils/selectors'
@@ -158,29 +159,36 @@ export const selectReportAreaId = createSelector(
   (locationAreaId, report) => (locationAreaId || report?.areaId) as number
 )
 
-export const selectReportCategory = createSelector(
-  [
-    selectWorkspaceStateProperty('reportCategory'),
-    (state) => selectDataviewInstancesResolved(state),
-  ],
-  (reportCategory, dataviews): ReportCategory => {
-    if (reportCategory) {
-      return reportCategory
-    }
+export const selectActiveDataviewsCategories = createSelector(
+  [(state) => selectDataviewInstancesResolved(state)],
+  (dataviews): ReportCategory[] => {
+    return uniq(
+      dataviews.flatMap((d) => (d.config?.visible ? getReportCategoryFromDataview(d) : []))
+    )
+  }
+)
+
+export const selectReportActiveCategories = createSelector(
+  [selectActiveDataviewsCategories],
+  (activeCategories): ReportCategory[] => {
     const orderedCategories = [
       ReportCategory.Fishing,
       ReportCategory.Presence,
       ReportCategory.Detections,
       ReportCategory.Environment,
     ]
-    const categoriesWithActiveDataviews = orderedCategories.map((category) => {
-      return dataviews.some((dataview) => {
-        return dataview.config?.visible && getReportCategoryFromDataview(dataview) === category
-      })
-    })
-    const firstCategoryActive =
-      categoriesWithActiveDataviews.findIndex((active) => active === true) || 0
-    return orderedCategories[firstCategoryActive]
+    return orderedCategories.flatMap((category) =>
+      activeCategories.some((a) => a === category) ? category : []
+    )
+  }
+)
+
+export const selectReportCategory = createSelector(
+  [selectWorkspaceStateProperty('reportCategory'), selectReportActiveCategories],
+  (reportCategory, activeCategories): ReportCategory => {
+    return activeCategories.some((category) => category === reportCategory)
+      ? reportCategory
+      : activeCategories[0]
   }
 )
 

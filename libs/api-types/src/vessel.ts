@@ -1,3 +1,10 @@
+export type DownloadRateLimit = {
+  remaining: number
+  limit: number
+  reset?: string
+  retryAfter: number
+}
+
 export interface Authorization {
   source: string
   startDate: string
