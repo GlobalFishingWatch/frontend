@@ -196,7 +196,7 @@ div.HintPanel {
   }
 }
 
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 800px) {
   .hintTarget {
     display: none;
   }

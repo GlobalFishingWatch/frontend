@@ -81,7 +81,7 @@
   overflow: hidden;
 }
 
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 800px) {
   .image {
     transform-origin: bottom;
     transform: scale(70%);

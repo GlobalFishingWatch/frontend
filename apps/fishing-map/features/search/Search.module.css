@@ -63,7 +63,7 @@
   border-bottom: var(--border);
 }
 
-@media (max-width: 767px) {
+@media (max-width: 800px) {
   .footer {
     width: calc(100%);
   }
