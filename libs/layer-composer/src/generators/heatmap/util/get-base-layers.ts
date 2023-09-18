@@ -1,10 +1,12 @@
 import {
   SymbolLayerSpecification,
-  FilterSpecification,
   FillLayerSpecification,
   LineLayerSpecification,
   FillExtrusionLayerSpecification,
   HeatmapLayerSpecification,
+  DataDrivenPropertyValueSpecification,
+  FormattedSpecification,
+  ExpressionSpecification,
 } from '@globalfishingwatch/maplibre-gl'
 import { ExtendedLayerMeta, Group } from '../../../types'
 import { GeneratorType } from '../../types'
@@ -87,11 +89,16 @@ export function getBaseInteractionHoverLayer(
 }
 
 export function getBaseDebugLabelsLayer(
-  exprPick: FilterSpecification,
+  exprPick: ExpressionSpecification,
   id: string,
   source: string
 ): SymbolLayerSpecification {
-  const exprDebugText = ['case', ['>', exprPick, 0], ['to-string', exprPick], '']
+  const exprDebugText: DataDrivenPropertyValueSpecification<FormattedSpecification> = [
+    'case',
+    ['>', exprPick, 0],
+    ['to-string', exprPick],
+    '',
+  ]
   return {
     id,
     source,

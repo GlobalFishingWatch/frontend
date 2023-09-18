@@ -2,6 +2,8 @@ import memoizeOne from 'memoize-one'
 import { FeatureCollection } from 'geojson'
 import type {
   CircleLayerSpecification,
+  ColorSpecification,
+  DataDrivenPropertyValueSpecification,
   LineLayerSpecification,
   SymbolLayerSpecification,
 } from '@globalfishingwatch/maplibre-gl'
@@ -124,12 +126,23 @@ class VesselsEventsGenerator {
             14,
             [...activeFilter, 2, 3],
           ],
-          'circle-stroke-color': [...activeFilter, activeStrokeColor, strokeColor],
-          'circle-radius': [...activeFilter, 8 * activeIconsSize, 4 * inactiveIconsSize],
-
+          'circle-stroke-color': [
+            ...activeFilter,
+            activeStrokeColor,
+            strokeColor,
+          ] as DataDrivenPropertyValueSpecification<ColorSpecification>,
+          'circle-radius': [
+            ...activeFilter,
+            8 * activeIconsSize,
+            4 * inactiveIconsSize,
+          ] as DataDrivenPropertyValueSpecification<number>,
         },
         layout: {
-          'circle-sort-key': [...activeFilter, 1000, 500]
+          'circle-sort-key': [
+            ...activeFilter,
+            1000,
+            500,
+          ] as DataDrivenPropertyValueSpecification<number>,
         },
         metadata: {
           group: Group.Point,
@@ -149,8 +162,16 @@ class VesselsEventsGenerator {
         layout: {
           'icon-allow-overlap': true,
           'icon-image': ['get', 'icon'],
-          'icon-size': [...activeFilter, 1 * iconsSize, 0],
-          'symbol-sort-key': [...activeFilter, 1000, 500]
+          'icon-size': [
+            ...activeFilter,
+            1 * iconsSize,
+            0,
+          ] as DataDrivenPropertyValueSpecification<number>,
+          'symbol-sort-key': [
+            ...activeFilter,
+            1000,
+            500,
+          ] as DataDrivenPropertyValueSpecification<number>,
         },
         metadata: {
           group: Group.Point,
@@ -175,7 +196,7 @@ class VesselsEventsGenerator {
         },
         paint: {
           'line-color': ['get', 'color'],
-          'line-width': [...activeFilter, 6, 1.5],
+          'line-width': [...activeFilter, 6, 1.5] as DataDrivenPropertyValueSpecification<number>,
           'line-opacity': 1,
         },
         metadata: {
