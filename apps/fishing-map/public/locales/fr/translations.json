@@ -270,6 +270,10 @@
     "title": "Télécharger",
     "track": "Trajectoires de navire",
     "trackAction": "Télécharger la trajectoires du navire",
+    "trackLimitExceeded": "You have already downloaded {{limit}} tracks today, please try again tomorrow",
+    "trackRemaining_one": "You can download {{count}} more track today",
+    "trackRemaining_other": "You can download {{count}} more tracks today",
+    "trackLogin": "Register and login to download vessel tracks (free, 2 minutes)",
     "trackNotAllowed": "Vous n'avez pas la permission de télécharger des trajectoires à partir de cette source",
     "yearly": "Année",
     "yearlyNotAvailable": "Votre plage de temps est inférieure à 1 an"
