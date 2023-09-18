@@ -58,12 +58,19 @@ interface LibConfig {
   baseUrl?: string
 }
 
-const processStatus = (response: Response): Promise<Response> => {
+const processStatus = (
+  response: Response,
+  requestStatus?: ResourceResponseType
+): Promise<Response> => {
   return new Promise(async (resolve, reject) => {
     const { status, statusText } = response
     try {
       if (response.status >= 200 && response.status < 400) {
         return resolve(response)
+      }
+
+      if (requestStatus === 'default') {
+        return reject(response)
       }
       // Compatibility with v1 and v2 errors format
       const errors = {
@@ -303,6 +310,15 @@ export class GFW_API_CLASS {
     refreshRetries = 0,
     waitLogin = true
   ): Promise<T> {
+    const {
+      method = 'GET',
+      body = null,
+      headers = {},
+      responseType = 'json',
+      requestType = 'json',
+      signal,
+      local = false,
+    } = options
     try {
       if (this.logging && waitLogin) {
         // Don't do any request until the login is completed
@@ -317,15 +333,6 @@ export class GFW_API_CLASS {
       }
 
       try {
-        const {
-          method = 'GET',
-          body = null,
-          headers = {},
-          responseType = 'json',
-          requestType = 'json',
-          signal,
-          local = false,
-        } = options
         if (this.debug) {
           console.log(`GFWAPI: Fetching URL: ${url}`)
         }
@@ -350,7 +357,7 @@ export class GFW_API_CLASS {
             ({ body: requestType === 'json' ? JSON.stringify(body) : body } as RequestInit)),
           headers: finalHeaders,
         })
-          .then(processStatus)
+          .then((res) => processStatus(res, responseType))
           .then((res) => {
             switch (responseType) {
               case 'default':
@@ -426,12 +433,19 @@ export class GFW_API_CLASS {
             }
             console.warn(`GFWAPI: Error fetching ${url}`, e)
           }
+          if (responseType === 'default') {
+            throw e
+          }
+
           throw parseAPIError(e)
         }
       }
     } catch (e: any) {
       if (this.debug) {
         console.warn(`GFWAPI: Error fetching ${url}`, e)
+      }
+      if (responseType === 'default') {
+        throw e
       }
       throw parseAPIError(e)
     }

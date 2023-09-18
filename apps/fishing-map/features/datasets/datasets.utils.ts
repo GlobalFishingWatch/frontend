@@ -245,8 +245,16 @@ export const checkDatasetDownloadTrackPermission = (
   datasetId: string,
   permissions: UserPermission[]
 ) => {
-  const permission = { type: 'dataset', value: datasetId, action: 'download-track' }
-  return checkExistPermissionInList(permissions, permission)
+  // TODO make this number dynamic using wildcards like -*
+  const downloadPermissions = [
+    { type: 'dataset', value: datasetId, action: 'download-track' },
+    { type: 'dataset', value: datasetId, action: 'download-track-10' },
+    { type: 'dataset', value: datasetId, action: 'download-track-100' },
+    { type: 'dataset', value: datasetId, action: 'download-track-*' },
+  ]
+  return downloadPermissions.some((permission) =>
+    checkExistPermissionInList(permissions, permission)
+  )
 }
 
 export const getActivityDatasetsReportSupported = (
