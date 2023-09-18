@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/fourwings-aggregate",
-  "version": "4.2.1",
+  "version": "4.3.0",
   "description": "Logic to turn fourwings tiles or cells into meaningful values for the frontend",
   "main": "index.js",
   "typings": "src/index.d.ts",

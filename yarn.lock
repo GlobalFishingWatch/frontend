@@ -2270,7 +2270,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@globalfishingwatch/fourwings-aggregate@4.2.1, @globalfishingwatch/fourwings-aggregate@workspace:libs/fourwings-aggregate":
+"@globalfishingwatch/fourwings-aggregate@npm:4.2.1":
+  version: 4.2.1
+  resolution: "@globalfishingwatch/fourwings-aggregate@npm:4.2.1"
+  checksum: a49d6294f0c422a772c614e008ec8316f1454ee9ca3b60deaca8c55c59cb48075f85eac5d2b6fe8a4e56de491cc4e5189dcb3894d4886c39fdca58f5a7c29e6f
+  languageName: node
+  linkType: hard
+
+"@globalfishingwatch/fourwings-aggregate@workspace:libs/fourwings-aggregate":
   version: 0.0.0-use.local
   resolution: "@globalfishingwatch/fourwings-aggregate@workspace:libs/fourwings-aggregate"
   languageName: unknown
