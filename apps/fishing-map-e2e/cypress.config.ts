@@ -6,7 +6,7 @@ const decompress = require('decompress')
 const cypressJsonConfig = {
   fileServerFolder: '.',
   fixturesFolder: './src/fixtures',
-  video: true,
+  video: false,
   videosFolder: '../../dist/cypress/apps/fishing-map-e2e/videos',
   screenshotsFolder: '../../dist/cypress/apps/fishing-map-e2e/screenshots',
   chromeWebSecurity: false,
