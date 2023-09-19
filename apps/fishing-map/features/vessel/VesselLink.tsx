@@ -30,6 +30,7 @@ export type VesselLinkProps = {
   fitBounds?: boolean
   className?: string
   query?: Partial<Record<keyof QueryParams, string | number>>
+  testId?: string
 }
 const VesselLink = ({
   vesselId: vesselIdProp,
@@ -40,6 +41,7 @@ const VesselLink = ({
   fitBounds = true,
   className = '',
   query,
+  testId,
 }: VesselLinkProps) => {
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const locationQuery = useSelector(selectLocationQuery)
@@ -72,6 +74,7 @@ const VesselLink = ({
 
   return (
     <Link
+      {...(testId && { 'data-test': testId })}
       className={className}
       to={{
         type: standaloneLink ? VESSEL : WORKSPACE_VESSEL,

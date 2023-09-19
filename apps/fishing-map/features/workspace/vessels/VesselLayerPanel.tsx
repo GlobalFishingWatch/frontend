@@ -143,11 +143,13 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
 
   const TitleComponentContent = () => (
     <Fragment>
-      <span
-        className={cx({ [styles.faded]: infoLoading || infoError })}
-        data-test="vessel-layer-vessel-name"
-      >
-        <VesselLink className={styles.link} vesselId={vesselId} datasetId={dataset?.id}>
+      <span className={cx({ [styles.faded]: infoLoading || infoError })}>
+        <VesselLink
+          className={styles.link}
+          vesselId={vesselId}
+          datasetId={dataset?.id}
+          testId="vessel-layer-vessel-name"
+        >
           {getVesselTitle()}
         </VesselLink>
       </span>
