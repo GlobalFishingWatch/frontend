@@ -53,7 +53,9 @@ describe('Basic search for a vessel', () => {
         .findBySelLike('vessel-name')
         .then((vessel) => {
           // Click on the first result
-          cy.getBySel('search-vessels-list').findBySelLike('search-vessels-option').eq(0).click()
+          cy.getBySel('search-vessels-list')
+            .findBySelLike('search-vessels-option-selection-0')
+            .click()
           cy.getBySel('search-vessels-add-vessel').click()
           scrollSidebar('center', 2000)
           cy.getBySel('vessel-layer-vessel-name')
