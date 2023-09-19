@@ -114,7 +114,7 @@
     "nSelected_other": "{{count}} selected",
     "nSelected_plural": "{{count}} selected",
     "port": "Puerto",
-    "portAction": "Port visit",
+    "portAction": "Visita a puerto",
     "portAt": "Port visit at {{port}}",
     "portVisitEvents": "Port Visits",
     "position": "Position",
