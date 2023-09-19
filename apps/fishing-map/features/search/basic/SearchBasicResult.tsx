@@ -195,6 +195,7 @@ function SearchBasicResult({
         <IconButton
           icon={isSelected || isInWorkspace ? 'tick' : undefined}
           type="border"
+          testId={`search-vessels-option-selection-${index}`}
           className={cx({ [styles.selectedIcon]: isSelected || isInWorkspace })}
           size="tiny"
           tooltip={tooltip}

@@ -66,7 +66,7 @@ function loginViaAuthAPI(username: string, password: string) {
   cy.get('input[type=submit]').click()
 
   // Ensure API Auth has redirected us back to the app, in development set your domain in .env
-  cy.intercept('/v2/auth/tokens*').as('requestToken')
+  cy.intercept('/v3/auth/tokens*').as('requestToken')
   cy.url().should('include', Cypress.config('baseUrl')).should('include', 'access-token=')
 
   // Validate that we request a token and is saved in the local storage
