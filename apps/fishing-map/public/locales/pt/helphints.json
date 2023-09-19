@@ -1,0 +1,8 @@
+{
+  "areaSearch": "Pesquise por país, mar ou oceano para se centralizar o mapa em uma área na qual você tem interesse.",
+  "changingTheTimeRange": "Clique e arraste para mudar o intervalo de tempo que você está visualizado na barra de tempo.",
+  "clickingOnAGridCellToShowVessels": "Clique em qualquer célula do grid para mostrar as embarcações mais ativas no intervalo de tempo escolhido.",
+  "filterActivityLayers": "Clique no ícone de filtro para filtrar a atividade usando diferentes critérios disponíveis, incluindo fonte de dados, bandeira e tipos de petrechos de pesca.",
+  "fishingEffortHeatmap": "O mapa mostra um mapa de calor interativo da atividade. As células da grade mais claras são as áreas com mais atividade.",
+  "periodComparisonBaseline": "Selecione uma linha de base para comparar alterações em atividade, por exemplo, até a mesma data no ano passado, ou para comparar a atividade em diferentes épocas do ano."
+}
