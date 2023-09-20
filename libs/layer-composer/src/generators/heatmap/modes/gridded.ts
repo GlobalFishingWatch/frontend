@@ -78,7 +78,7 @@ export default function gridded(
       getLayerId(config.id, timeChunk),
       getSourceId(config.id, timeChunk)
     )
-    chunkMainLayer.paint = paint
+    chunkMainLayer.paint = paint as any
     // only add legend metadata for first time chunk
     const chunkLayers: LayerSpecification[] = [chunkMainLayer]
 

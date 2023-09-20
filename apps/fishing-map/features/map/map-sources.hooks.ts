@@ -1,6 +1,11 @@
 import { useEffect, useMemo } from 'react'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
-import { GeoJSONFeature, MapDataEvent, MapGeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
+import {
+  FilterSpecification,
+  GeoJSONFeature,
+  MapDataEvent,
+  MapGeoJSONFeature,
+} from '@globalfishingwatch/maplibre-gl'
 import {
   ExtendedStyle,
   HeatmapLayerMeta,
@@ -168,7 +173,7 @@ type DataviewMetadata = {
   sourcesId: string[]
   generatorSourceId: string
   dataviewsId: string[]
-  filter?: string[]
+  filter?: FilterSpecification
 }
 
 // Key used to refresh activity graph only when active chunk changes and we can safely ignore the rest of the metadata
@@ -283,7 +288,7 @@ export const useMapDataviewFeatures = (
                 } else {
                   features = map.querySourceFeatures(sourceId, {
                     sourceLayer,
-                    filter: filter as string[],
+                    filter,
                   })
                 }
               }
@@ -314,7 +319,7 @@ export const useMapDataviewFeatures = (
           } else {
             features = map.querySourceFeatures(sourceId, {
               sourceLayer,
-              filter: filter as string[],
+              filter,
             })
           }
         }
