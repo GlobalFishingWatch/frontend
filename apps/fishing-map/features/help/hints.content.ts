@@ -5,12 +5,12 @@ import clickingOnAGridCellToShowVesselsImg from 'assets/images/hints/clickingOnA
 import changingTheTimeRangeImg from 'assets/images/hints/changingTheTimeRange.png'
 import areaSearchImg from 'assets/images/hints/areaSearch.png'
 
-// t('helpHints:fishingEffortHeatmap', 'The map shows an interactive heat map of activity. The lighter grid cells are the areas with more activity.')
-// t('helpHints:filterActivityLayers', 'Click the filter icon to filter activity using different available criteria, including data source, flag and gear types.')
-// t('helpHints:clickingOnAGridCellToShowVessels', 'Click on any grid cell to show the most active vessels in that area over the chosen time range.')
-// t('helpHints:changingTheTimeRange', 'Click and drag to change the time range you are viewing in the time bar.')
-// t('helpHints:periodComparisonBaseline', 'Select a baseline to compare changes in activity e.g. between now and the same date last year, or to compare activity at different times of year.')
-// t('helpHints:areaSearch', 'Search by country, sea or ocean to focus on an area you\'re interested in.')
+// t('helphints:fishingEffortHeatmap', 'The map shows an interactive heat map of activity. The lighter grid cells are the areas with more activity.')
+// t('helphints:filterActivityLayers', 'Click the filter icon to filter activity using different available criteria, including data source, flag and gear types.')
+// t('helphints:clickingOnAGridCellToShowVessels', 'Click on any grid cell to show the most active vessels in that area over the chosen time range.')
+// t('helphints:changingTheTimeRange', 'Click and drag to change the time range you are viewing in the time bar.')
+// t('helphints:periodComparisonBaseline', 'Select a baseline to compare changes in activity e.g. between now and the same date last year, or to compare activity at different times of year.')
+// t('helphints:areaSearch', 'Search by country, sea or ocean to focus on an area you\'re interested in.')
 
 export type HintId =
   | 'fishingEffortHeatmap'

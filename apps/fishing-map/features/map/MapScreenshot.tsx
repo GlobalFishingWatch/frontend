@@ -72,7 +72,7 @@ function MapScreenshot() {
   if (!screenshotImage) return null
 
   // insert the image just below the canvas
-  const canvasDomElement = document.querySelector('.mapboxgl-canvas-container')
+  const canvasDomElement = document.querySelector('.maplibregl-canvas-container')
   if (!canvasDomElement) return null
   const size = isPrintSupported
     ? `${printSize.current?.width.in} ${printSize.current?.height.in}`
