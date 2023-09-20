@@ -7,7 +7,11 @@ import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { Area } from 'features/areas/areas.slice'
-import { DEFAULT_BUFFER_VALUE, NAUTICAL_MILES } from 'features/reports/reports.config'
+import {
+  DEFAULT_BUFFER_OPERATION,
+  DEFAULT_BUFFER_VALUE,
+  NAUTICAL_MILES,
+} from 'features/reports/reports.config'
 import {
   resetReportData,
   selectReportPreviewBuffer,
@@ -19,7 +23,11 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectCurrentReport } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { Bbox } from 'types'
-import { selectUrlBufferUnitQuery, selectUrlBufferValueQuery } from 'routes/routes.selectors'
+import {
+  selectUrlBufferUnitQuery,
+  selectUrlBufferValueQuery,
+  selectUrlBufferOperationQuery,
+} from 'routes/routes.selectors'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
 import { getBufferedAreaBbox } from '../reports.utils'
@@ -41,6 +49,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   const previewBuffer = useSelector(selectReportPreviewBuffer)
   const urlBufferValue = useSelector(selectUrlBufferValueQuery)
   const urlBufferUnit = useSelector(selectUrlBufferUnitQuery)
+  const urlBufferOperation = useSelector(selectUrlBufferOperationQuery)
   const fitBounds = useMapFitBounds()
   const { cleanFeatureState } = useFeatureState(useMapInstance())
 
@@ -49,17 +58,35 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   const handleBufferUnitChange = useCallback(
     (option) => {
       dispatch(
-        setPreviewBuffer({ value: previewBuffer.value || DEFAULT_BUFFER_VALUE, unit: option.id })
+        setPreviewBuffer({
+          unit: option.id,
+          value: previewBuffer.value || DEFAULT_BUFFER_VALUE,
+          operation: previewBuffer.operation || DEFAULT_BUFFER_OPERATION,
+        })
       )
     },
     [dispatch, previewBuffer]
   )
+  const handleBufferOperationChange = useCallback(
+    (option) => {
+      dispatch(
+        setPreviewBuffer({
+          operation: option.id,
+          unit: previewBuffer.unit || NAUTICAL_MILES,
+          value: previewBuffer.value || DEFAULT_BUFFER_VALUE,
+        })
+      )
+    },
+    [dispatch, previewBuffer]
+  )
+
   const handleBufferValueChange = useCallback(
     (values: number[]) => {
       dispatch(
         setPreviewBuffer({
           value: Math.round(values[1]),
           unit: previewBuffer.unit || NAUTICAL_MILES,
+          operation: previewBuffer.operation || DEFAULT_BUFFER_OPERATION,
         })
       )
     },
@@ -84,8 +111,9 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   const handleTooltipHide = useCallback(() => {
     dispatch(
       setPreviewBuffer({
-        value: null,
         unit: null,
+        value: null,
+        operation: null,
       })
     )
   }, [dispatch])
@@ -98,10 +126,11 @@ export default function ReportTitle({ area }: ReportTitleProps) {
         setPreviewBuffer({
           value: urlBufferValue || DEFAULT_BUFFER_VALUE,
           unit: urlBufferUnit || NAUTICAL_MILES,
+          operation: urlBufferOperation || DEFAULT_BUFFER_OPERATION,
         })
       )
     },
-    [dispatch, setTooltipInstance, urlBufferValue, urlBufferUnit]
+    [dispatch, setTooltipInstance, urlBufferValue, urlBufferUnit, urlBufferOperation]
   )
 
   const handleConfirmBuffer = useCallback(() => {
@@ -116,6 +145,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     dispatchQueryParams({
       reportBufferValue: previewBuffer.value!,
       reportBufferUnit: previewBuffer.unit!,
+      reportBufferOperation: previewBuffer.operation!,
     })
     cleanFeatureState('highlight')
     dispatch(resetReportData())
@@ -160,12 +190,14 @@ export default function ReportTitle({ area }: ReportTitleProps) {
                 className={styles.actionButton}
                 tooltip={
                   <BufferButtonTooltip
-                    handleBufferValueChange={handleBufferValueChange}
-                    defaultValue={urlBufferValue || DEFAULT_BUFFER_VALUE}
-                    activeOption={previewBuffer.unit || NAUTICAL_MILES}
-                    handleBufferUnitChange={handleBufferUnitChange}
-                    handleConfirmBuffer={handleConfirmBuffer}
                     areaType={area?.geometry?.type}
+                    activeUnit={previewBuffer.unit || NAUTICAL_MILES}
+                    defaultValue={urlBufferValue || DEFAULT_BUFFER_VALUE}
+                    activeOperation={previewBuffer.operation || DEFAULT_BUFFER_OPERATION}
+                    handleConfirmBuffer={handleConfirmBuffer}
+                    handleBufferUnitChange={handleBufferUnitChange}
+                    handleBufferValueChange={handleBufferValueChange}
+                    handleBufferOperationChange={handleBufferOperationChange}
                   />
                 }
                 tooltipPlacement="bottom"

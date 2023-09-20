@@ -2,26 +2,30 @@ import { useMemo, useState } from 'react'
 import { Range, getTrackBackground } from 'react-range'
 import { useTranslation } from 'react-i18next'
 import { Button, Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
-import { KILOMETERS, NAUTICAL_MILES } from 'features/reports/reports.config'
-import { BufferUnit } from 'types'
+import { KILOMETERS, NAUTICAL_MILES, DISSOLVE, DIFFERENCE } from 'features/reports/reports.config'
+import { BufferOperation, BufferUnit } from 'types'
 import styles from './ReportTitle.module.css'
 
 type BufferButonTooltipProps = {
-  handleBufferValueChange: (values: number[]) => void
-  defaultValue: number
-  activeOption: BufferUnit
-  handleBufferUnitChange: (option: { id: string; label: string }) => void
-  handleConfirmBuffer: () => void
   areaType: 'Point' | 'Polygon' | 'MultiPolygon' | undefined
+  activeUnit: BufferUnit
+  defaultValue: number
+  activeOperation: BufferOperation
+  handleConfirmBuffer: () => void
+  handleBufferUnitChange: (option: { id: string; label: string }) => void
+  handleBufferValueChange: (values: number[]) => void
+  handleBufferOperationChange: (option: { id: BufferOperation; label: string }) => void
 }
 
 export const BufferButtonTooltip = ({
-  handleBufferValueChange,
-  defaultValue,
-  activeOption,
-  handleBufferUnitChange,
-  handleConfirmBuffer,
   areaType,
+  activeUnit,
+  defaultValue,
+  activeOperation,
+  handleConfirmBuffer,
+  handleBufferUnitChange,
+  handleBufferValueChange,
+  handleBufferOperationChange,
 }: BufferButonTooltipProps) => {
   const { t } = useTranslation()
   const STEP = 0.1
@@ -36,11 +40,19 @@ export const BufferButtonTooltip = ({
     ],
     [t]
   )
+  const bufferOperationOptions: ChoiceOption<BufferOperation>[] = useMemo(
+    () => [
+      { id: DISSOLVE, label: 'dissolve' },
+      { id: DIFFERENCE, label: 'difference' },
+    ],
+    [t]
+  )
+
   return (
     <div className={styles.bufferTooltipContent}>
       <Choice
         size="tiny"
-        activeOption={activeOption}
+        activeOption={activeUnit}
         onSelect={handleBufferUnitChange}
         options={bufferUnitOptions}
       />
@@ -100,6 +112,12 @@ export const BufferButtonTooltip = ({
             {index === 1 ? Math.round(values[index]) : null}
           </div>
         )}
+      />
+      <Choice
+        size="tiny"
+        activeOption={activeOperation}
+        onSelect={handleBufferOperationChange}
+        options={bufferOperationOptions}
       />
       <div data-tippy-arrow className={styles.tooltipArrow}></div>
       <Button size="small" onClick={handleConfirmBuffer} disabled={negativePointBuffer}>

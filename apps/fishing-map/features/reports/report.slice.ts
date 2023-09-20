@@ -10,7 +10,7 @@ import {
   SpatialResolution,
   TemporalResolution,
 } from 'features/download/downloadActivity.config'
-import { BufferUnit } from 'types'
+import { BufferOperation, BufferUnit } from 'types'
 import { DateRange } from '../download/downloadActivity.slice'
 
 interface ReportState {
@@ -25,13 +25,14 @@ type ReportSliceState = { report: ReportState }
 type PreviewBuffer = {
   value: number | null
   unit: BufferUnit | null
+  operation: BufferOperation | null
 }
 const initialState: ReportState = {
   status: AsyncReducerStatus.Idle,
   error: null,
   data: null,
   dateRangeHash: '',
-  previewBuffer: { value: null, unit: null },
+  previewBuffer: { value: null, unit: null, operation: null },
 }
 type ReportRegion = {
   dataset: string
@@ -51,6 +52,7 @@ type FetchReportVesselsThunkParams = {
   spatialAggregation?: boolean
   reportBufferUnit?: BufferUnit
   reportBufferValue?: number
+  reportBufferOperation?: BufferOperation
 }
 export const fetchReportVesselsThunk = createAsyncThunk(
   'report/vessels',
@@ -69,6 +71,7 @@ export const fetchReportVesselsThunk = createAsyncThunk(
         format = Format.Json,
         reportBufferUnit,
         reportBufferValue,
+        reportBufferOperation,
       } = params
       const query = stringify(
         {
@@ -88,6 +91,7 @@ export const fetchReportVesselsThunk = createAsyncThunk(
           'region-dataset': region.dataset,
           'buffer-unit': reportBufferUnit,
           'buffer-value': reportBufferValue,
+          'buffer-operation': reportBufferOperation,
         },
         { arrayFormat: 'indices' }
       )
@@ -124,7 +128,7 @@ const reportSlice = createSlice({
       state.data = null
       state.error = null
       state.dateRangeHash = ''
-      state.previewBuffer = { value: null, unit: null }
+      state.previewBuffer = { value: null, unit: null, operation: null }
     },
     setDateRangeHash: (state, action: PayloadAction<string>) => {
       state.dateRangeHash = action.payload
