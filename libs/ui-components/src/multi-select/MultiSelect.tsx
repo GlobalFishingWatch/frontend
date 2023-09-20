@@ -171,12 +171,10 @@ export function MultiSelect(props: MultiSelectProps) {
   const { getDropdownProps } = useMultipleSelection({ selectedItems: selectedOptions })
   const {
     isOpen,
-    openMenu,
     getToggleButtonProps,
     getLabelProps,
     getMenuProps,
     getInputProps,
-    getComboboxProps,
     highlightedIndex,
     selectItem,
     getItemProps,
@@ -190,7 +188,6 @@ export function MultiSelect(props: MultiSelectProps) {
         case useCombobox.stateChangeTypes.ItemClick: {
           return {
             ...changes,
-            isOpen: true, // keep menu open after selection.
             inputValue: '', // don't add the item string as input value at selection.
             highlightedIndex: state.highlightedIndex,
           }
@@ -259,16 +256,10 @@ export function MultiSelect(props: MultiSelectProps) {
           className={cx(styles.placeholderContainer, multiSelectStyles.placeholderContainer, {
             [styles.disabled]: disabled,
           })}
-          {...getComboboxProps()}
         >
           <InputText
             {...getInputProps({
               ...getDropdownProps({
-                onFocus: () => {
-                  if (!isOpen) {
-                    openMenu()
-                  }
-                },
                 preventKeyAction: isOpen,
               }),
             })}

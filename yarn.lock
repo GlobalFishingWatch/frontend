@@ -1617,6 +1617,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:^7.22.15":
+  version: 7.22.15
+  resolution: "@babel/runtime@npm:7.22.15"
+  dependencies:
+    regenerator-runtime: ^0.14.0
+  checksum: 793296df1e41599a935a3d77ec01eb6088410d3fd4dbe4e92f06c6b7bb2f8355024e6d78621a3a35f44e0e23b0b59107f23d585384df4f3123256a1e1492040e
+  languageName: node
+  linkType: hard
+
 "@babel/template@npm:^7.22.5, @babel/template@npm:^7.3.3":
   version: 7.22.5
   resolution: "@babel/template@npm:7.22.5"
@@ -2540,7 +2549,7 @@ __metadata:
     d3-geo: 3.1.0
     d3-scale: ^3.3.0
     d3-shape: 3.2.0
-    downshift: 6.1.12
+    downshift: 8.2.0
     eslint: 8.33.0
     eslint-config-next: 13.1.6
     eslint-config-prettier: 8.6.0
@@ -2663,7 +2672,7 @@ __metadata:
     d3-format: ^3.1.0
     d3-geo: ^1.12.0
     d3-scale: ^3.3.0
-    downshift: 6.1.12
+    downshift: 8.2.0
     match-sorter: ^6.3.1
     react-modal: ^3.16.1
     react-range: ^1.8.14
@@ -2672,7 +2681,7 @@ __metadata:
   peerDependencies:
     "@globalfishingwatch/layer-composer": 10.x
     "@globalfishingwatch/react-hooks": 15.x
-    downshift: 6.x
+    downshift: 8.x
     luxon: 2.x
     react: ">17.x"
     react-dom: ">17.x"
@@ -2806,7 +2815,7 @@ __metadata:
     dayjs: 1.11.7
     decompress: ^4.2.1
     depcheck: 1.4.3
-    downshift: 6.1.12
+    downshift: 8.2.0
     file-saver: 2.0.5
     formatcoords: 1.1.3
     geojson: 0.5.0
@@ -3049,7 +3058,7 @@ __metadata:
     classnames: ^2.3.2
     d3-scale: ^3.3.0
     dexie: ^3.2.3
-    downshift: 6.1.12
+    downshift: 8.2.0
     fake-indexeddb: ^3.1.8
     file-saver: ^2.0.5
     formatcoords: ^1.1.3
@@ -11908,10 +11917,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"compute-scroll-into-view@npm:^1.0.17":
-  version: 1.0.20
-  resolution: "compute-scroll-into-view@npm:1.0.20"
-  checksum: f15fab29221953620735393ac1866541aab0d27d28078bedbba071a291ee9c8cc1a72bee302cf0bc06ed83c5e55afb74ebcbd634a63671ba33cf1fb1c51d3308
+"compute-scroll-into-view@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "compute-scroll-into-view@npm:3.0.3"
+  checksum: 7143869648d4de8ff2cb60eb8e96a21b47948c3210d15d1bfaa7e88de722c7f83f06676b97ebff94831dde0c03e42458ecfbde466747945187ee5c7667c68395
   languageName: node
   linkType: hard
 
@@ -14070,18 +14079,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"downshift@npm:6.1.12":
-  version: 6.1.12
-  resolution: "downshift@npm:6.1.12"
+"downshift@npm:8.2.0":
+  version: 8.2.0
+  resolution: "downshift@npm:8.2.0"
   dependencies:
-    "@babel/runtime": ^7.14.8
-    compute-scroll-into-view: ^1.0.17
-    prop-types: ^15.7.2
-    react-is: ^17.0.2
-    tslib: ^2.3.0
+    "@babel/runtime": ^7.22.15
+    compute-scroll-into-view: ^3.0.3
+    prop-types: ^15.8.1
+    react-is: ^18.2.0
+    tslib: ^2.6.2
   peerDependencies:
     react: ">=16.12.0"
-  checksum: c623dc436f332fefddc332b42ca4a267b3f5b47aaf1372a61212678d7ecbe22698fdb63f61373bcbd3773fa526eb4f210cf7f044cd5642b689dbd37ba27e9aaf
+  checksum: 3bc832dcf604cfda13561afa55a7d9dfb8fca1c33b7083ac3df4b2be6a13360a3c6b594b8f3af35e886d22c8e494d4a8b93f83ab50cf494ca55652bc981e0906
   languageName: node
   linkType: hard
 
@@ -23871,7 +23880,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-is@npm:^17.0.1, react-is@npm:^17.0.2":
+"react-is@npm:^17.0.1":
   version: 17.0.2
   resolution: "react-is@npm:17.0.2"
   checksum: 9d6d111d8990dc98bc5402c1266a808b0459b5d54830bbea24c12d908b536df7883f268a7868cfaedde3dd9d4e0d574db456f84d2e6df9c4526f99bb4b5344d8
@@ -24501,6 +24510,13 @@ __metadata:
   version: 0.13.11
   resolution: "regenerator-runtime@npm:0.13.11"
   checksum: 27481628d22a1c4e3ff551096a683b424242a216fee44685467307f14d58020af1e19660bf2e26064de946bad7eff28950eae9f8209d55723e2d9351e632bbb4
+  languageName: node
+  linkType: hard
+
+"regenerator-runtime@npm:^0.14.0":
+  version: 0.14.0
+  resolution: "regenerator-runtime@npm:0.14.0"
+  checksum: 1c977ad82a82a4412e4f639d65d22be376d3ebdd30da2c003eeafdaaacd03fc00c2320f18120007ee700900979284fc78a9f00da7fb593f6e6eeebc673fba9a3
   languageName: node
   linkType: hard
 
