@@ -47,6 +47,7 @@ export function Tabs<TabID = string>({
                 disabled={tab.disabled}
                 onClick={(e) => onTabClick && onTabClick(tab, e)}
                 size={buttonSize || 'default'}
+                testId={tab.testId}
               >
                 {tab.title}
               </Button>

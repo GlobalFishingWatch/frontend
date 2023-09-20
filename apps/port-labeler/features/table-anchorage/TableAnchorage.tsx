@@ -5,7 +5,13 @@ import { VariableSizeList as List } from 'react-window'
 import { useTranslation } from 'react-i18next'
 import { flags } from '@globalfishingwatch/i18n-labels'
 import { IconButton, Modal, Select, SelectOption } from '@globalfishingwatch/ui-components'
-import { changeAnchoragePort, selectCountries, selectDisplayExtraData, sortPoints, toogleExtraData } from 'features/labeler/labeler.slice'
+import {
+  changeAnchoragePort,
+  selectCountries,
+  selectDisplayExtraData,
+  sortPoints,
+  toogleExtraData,
+} from 'features/labeler/labeler.slice'
 import { useMapBounds } from 'features/map/controls/map-controls.hooks'
 import { PortPosition } from 'types'
 import { selectFilteredPoints } from 'features/labeler/labeler.selectors'
@@ -13,9 +19,7 @@ import styles from './TableAnchorage.module.css'
 import TableHeader from './TableHeader'
 import TableRow from './TableRow'
 
-
 function TableAnchorage() {
-
   const { t } = useTranslation()
   const records = useSelector(selectFilteredPoints)
   const extraColumn = useSelector(selectDisplayExtraData)
@@ -35,55 +39,71 @@ function TableAnchorage() {
 
   const mapBounds = useMapBounds()
 
-  const pointInScreen = useCallback((point: PortPosition) => {
-
-    return mapBounds && mapBounds.north >= point.lat && mapBounds.south <= point.lat
-      && mapBounds.west <= point.lon && mapBounds.east >= point.lon
-  }, [mapBounds])
+  const pointInScreen = useCallback(
+    (point: PortPosition) => {
+      return (
+        mapBounds &&
+        mapBounds.north >= point.lat &&
+        mapBounds.south <= point.lat &&
+        mapBounds.west <= point.lon &&
+        mapBounds.east >= point.lon
+      )
+    },
+    [mapBounds]
+  )
 
   const onSetCountryToChange = useCallback((point: PortPosition) => {
     setAnchorageChangeCountryOpen(point)
   }, [])
 
-  const changeAnchorageCountry = useCallback((newCountry) => {
-    dispatch(changeAnchoragePort({
-      id: anchorageChangeCountryOpen.s2id,
-      iso3: newCountry
-    }))
-    setAnchorageChangeCountryOpen({
-      ...anchorageChangeCountryOpen,
-      iso3: newCountry
-    })
-  }, [anchorageChangeCountryOpen])
+  const changeAnchorageCountry = useCallback(
+    (newCountry) => {
+      dispatch(
+        changeAnchoragePort({
+          id: anchorageChangeCountryOpen.s2id,
+          iso3: newCountry,
+        })
+      )
+      setAnchorageChangeCountryOpen({
+        ...anchorageChangeCountryOpen,
+        iso3: newCountry,
+      })
+    },
+    [anchorageChangeCountryOpen]
+  )
 
   const screenFilteredRecords = useMemo(() => {
-    return records?.filter((record) => (pointInScreen(record)))
+    return records?.filter((record) => pointInScreen(record))
   }, [records, mapBounds])
-
 
   return (
     <div className={styles.table}>
       <div className={styles.head}>
         <TableHeader
-          label={t('common.port', 'Port')} order={orderColumn === 'port' ? orderDirection : ''}
+          label={t('common.port', 'Port')}
+          order={orderColumn === 'port' ? orderDirection : ''}
           onToggle={(order) => onToggleHeader('port', order)}
         />
         <TableHeader
-          label={t('common.subarea', 'Subarea')} order={orderColumn === 'subarea' ? orderDirection : ''}
-          onToggle={(order) => onToggleHeader('subarea', order)} />
+          label={t('common.subarea', 'Subarea')}
+          order={orderColumn === 'subarea' ? orderDirection : ''}
+          onToggle={(order) => onToggleHeader('subarea', order)}
+        />
         <TableHeader
-          label={t('common.anchorage', 'Anchorage')} order={orderColumn === 'anchorage' ? orderDirection : ''}
-          onToggle={(order) => onToggleHeader('anchorage', order)} />
+          label={t('common.anchorage', 'Anchorage')}
+          order={orderColumn === 'anchorage' ? orderDirection : ''}
+          onToggle={(order) => onToggleHeader('anchorage', order)}
+        />
         <TableHeader
-          label={t('common.destination', 'Destination')} order={orderColumn === 'top_destination' ? orderDirection : ''}
-          onToggle={(order) => onToggleHeader('top_destination', order)} />
-        {extraColumn && <TableHeader
-          label={t('common.anchorageId', 'Anchorage ID')} />}
-        {extraColumn && <TableHeader
-          label={t('common.country', 'Country')} />}
+          label={t('common.destination', 'Destination')}
+          order={orderColumn === 'top_destination' ? orderDirection : ''}
+          onToggle={(order) => onToggleHeader('top_destination', order)}
+        />
+        {extraColumn && <TableHeader label={t('common.anchorageId', 'Anchorage ID')} />}
+        {extraColumn && <TableHeader label={t('common.country', 'Country')} />}
         <IconButton
           type="default"
-          icon='more'
+          icon="more"
           tooltip="Toggle extra data"
           tooltipPlacement="bottom"
           className={styles.actionButton}
@@ -94,10 +114,10 @@ function TableAnchorage() {
       {screenFilteredRecords && screenFilteredRecords.length ? (
         <div className={styles.body}>
           <AutoSizer disableWidth={true}>
-            {({ width, height }) => (
+            {(params: any) => (
               <List
-                width={width}
-                height={height}
+                width={params.width}
+                height={params.height}
                 itemCount={screenFilteredRecords.length}
                 itemData={screenFilteredRecords}
                 itemSize={() => 40}
@@ -132,20 +152,25 @@ function TableAnchorage() {
         <div>
           <Select
             options={countries}
-            onRemove={() => { }}
+            onRemove={() => {}}
             placeholder={t('messages.country_selection', 'Select a country')}
-            selectedOption={anchorageChangeCountryOpen ? { id: anchorageChangeCountryOpen.iso3, label: flags[anchorageChangeCountryOpen.iso3] ?? anchorageChangeCountryOpen.iso3 } : undefined}
+            selectedOption={
+              anchorageChangeCountryOpen
+                ? {
+                    id: anchorageChangeCountryOpen.iso3,
+                    label:
+                      flags[anchorageChangeCountryOpen.iso3] ?? anchorageChangeCountryOpen.iso3,
+                  }
+                : undefined
+            }
             onSelect={(selected: SelectOption) => {
               changeAnchorageCountry(selected.id)
-
             }}
           />
         </div>
       </Modal>
     </div>
-
   )
 }
 
 export default TableAnchorage
-

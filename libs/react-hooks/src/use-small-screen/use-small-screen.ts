@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react'
 const DEFAULT_BREAKPOINT = 768
 
 export function useSmallScreen(width = DEFAULT_BREAKPOINT) {
-  const [isSmallScreen, setIsSmallScreen] = useState<boolean | undefined>(false)
+  const [isSmallScreen, setIsSmallScreen] = useState<boolean>(false)
 
   useEffect(() => {
     setIsSmallScreen(window.innerWidth <= width)

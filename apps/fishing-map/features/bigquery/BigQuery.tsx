@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux'
 import { Button, InputText, Select, SwitchRow, Tooltip } from '@globalfishingwatch/ui-components'
 import { Dataset } from '@globalfishingwatch/api-types'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
+import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   getBigQuery4WingsDataviewInstance,
@@ -82,7 +83,7 @@ const BigQueryMenu: React.FC = () => {
     if (fetchBigQueryRunCostThunk.fulfilled.match(action)) {
       setRunCostChecked(true)
     } else {
-      const error = action.payload
+      const error = action.payload as ParsedAPIError
       setError(error.message)
     }
   }
@@ -91,18 +92,21 @@ const BigQueryMenu: React.FC = () => {
     const action = await dispatch(
       createBigQueryDatasetThunk({ name, unit, createAsPublic, query, visualisationMode })
     )
-    if (createBigQueryDatasetThunk.fulfilled.match(action)) {
+    if (
+      (visualisationMode === '4wings' ? aggregationOperation !== null : true) &&
+      createBigQueryDatasetThunk.fulfilled.match(action)
+    ) {
       const dataset = action.payload.payload as Dataset
       const dataviewInstance =
         visualisationMode === '4wings'
           ? getBigQuery4WingsDataviewInstance(dataset.id, {
-              aggregationOperation,
+              aggregationOperation: aggregationOperation as AggregationOperation,
             })
           : getBigQueryEventsDataviewInstance(dataset.id)
       addNewDataviewInstances([dataviewInstance])
       dispatch(toggleBigQueryMenu())
     } else {
-      const error = action.payload
+      const error = action.payload as ParsedAPIError
       setError(error.message)
     }
   }

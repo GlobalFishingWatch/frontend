@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { RootState } from 'reducers'
 import { DatasetCategory, EventType } from '@globalfishingwatch/api-types'
-import { RootState } from 'store'
 import { selectVisibleEvents } from 'features/app/app.selectors'
 import { selectResources } from './resources.slice'
 

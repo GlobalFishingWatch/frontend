@@ -16,7 +16,7 @@ type LayerPanelProps = {
   dataview: UrlDataviewInstance
 }
 
-function ActivityAuxiliaryLayer({ dataview }: LayerPanelProps): React.ReactElement {
+function ActivityAuxiliaryLayer({ dataview }: LayerPanelProps) {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const auxiliarLayerActive = dataview?.config?.auxiliarLayerActive ?? true

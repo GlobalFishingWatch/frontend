@@ -35,8 +35,21 @@
       "@globalfishingwatch/ui-components": ["../../libs/ui-components/src/index.ts"],
       "@globalfishingwatch/ui-components/*": ["../../libs/ui-components/src/*"]
     },
-    "incremental": true
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "strictNullChecks": true
   },
-  "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "next-env.d.ts"],
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx",
+    "next-env.d.ts",
+    "../../dist/apps/api-portal/.next/types/**/*.ts"
+  ],
   "exclude": ["node_modules", "jest.config.ts"]
 }

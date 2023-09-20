@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { kebabCase } from 'lodash'
+import { RootState } from 'reducers'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { fetchDatasetByIdThunk } from 'features/datasets/datasets.slice'
-import { RootState } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 export type BigQueryVisualisation = '4wings' | 'events'
@@ -14,7 +14,7 @@ export type RunCostResponse = {
 
 export type CreateBigQueryDataset = {
   query: string
-  visualisationMode: BigQueryVisualisation
+  visualisationMode: BigQueryVisualisation | null
   name: string
   unit?: string
   ttl?: number
@@ -101,7 +101,7 @@ const bigQuerySlice = createSlice({
   reducers: {
     toggleBigQueryMenu: (state) => {
       state.active = !state.active
-      state.runCostStatus = null
+      state.runCostStatus = AsyncReducerStatus.Idle
     },
   },
   extraReducers: (builder) => {

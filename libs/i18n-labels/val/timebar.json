@@ -1,52 +1,52 @@
 {
   "playback": {
-    "playAnimation": "crwdns10967:0crwdne10967:0",
-    "pauseAnimation": "crwdns10969:0crwdne10969:0",
-    "toogleAnimationLooping": "crwdns10971:0crwdne10971:0",
-    "moveBack": "crwdns10973:0crwdne10973:0",
-    "moveForward": "crwdns10975:0crwdne10975:0",
-    "changeAnimationSpeed": "crwdns10977:0crwdne10977:0"
+    "playAnimation": "crwdns68209:0crwdne68209:0",
+    "pauseAnimation": "crwdns68211:0crwdne68211:0",
+    "toogleAnimationLooping": "crwdns68213:0crwdne68213:0",
+    "moveBack": "crwdns68215:0crwdne68215:0",
+    "moveForward": "crwdns68217:0crwdne68217:0",
+    "changeAnimationSpeed": "crwdns68219:0crwdne68219:0"
   },
   "timerange": {
-    "title": "crwdns10979:0crwdne10979:0",
-    "year": "crwdns27323:0crwdne27323:0",
-    "month": "crwdns27325:0crwdne27325:0",
-    "day": "crwdns27327:0crwdne27327:0",
-    "start": "crwdns10981:0crwdne10981:0",
-    "end": "crwdns10983:0crwdne10983:0",
-    "selectAValidDate": "crwdns27329:0crwdne27329:0",
-    "endBeforeStart": "crwdns27331:0crwdne27331:0",
-    "tooLongForMonths": "crwdns27333:0crwdne27333:0",
-    "tooLongForDays": "crwdns27335:0crwdne27335:0",
-    "last30days": "crwdns10985:0crwdne10985:0",
-    "last3months": "crwdns18470:0crwdne18470:0",
-    "last6months": "crwdns18472:0crwdne18472:0",
-    "lastYear": "crwdns18474:0crwdne18474:0",
-    "done": "crwdns10987:0crwdne10987:0",
-    "errorEarlyStart": "crwdns10989:0crwdne10989:0",
-    "errorLatestEnd": "crwdns10991:0crwdne10991:0",
-    "errorMinRange": "crwdns10993:0crwdne10993:0",
-    "errorMaxRange": "crwdns10995:0crwdne10995:0"
+    "title": "crwdns68221:0crwdne68221:0",
+    "year": "crwdns68223:0crwdne68223:0",
+    "month": "crwdns68225:0crwdne68225:0",
+    "day": "crwdns68227:0crwdne68227:0",
+    "start": "crwdns68229:0crwdne68229:0",
+    "end": "crwdns68231:0crwdne68231:0",
+    "selectAValidDate": "crwdns68233:0crwdne68233:0",
+    "endBeforeStart": "crwdns68235:0crwdne68235:0",
+    "tooLongForMonths": "crwdns68237:0crwdne68237:0",
+    "tooLongForDays": "crwdns68239:0crwdne68239:0",
+    "last30days": "crwdns68241:0crwdne68241:0",
+    "last3months": "crwdns68243:0crwdne68243:0",
+    "last6months": "crwdns68245:0crwdne68245:0",
+    "lastYear": "crwdns68247:0crwdne68247:0",
+    "done": "crwdns68249:0crwdne68249:0",
+    "errorEarlyStart": "crwdns68251:0crwdne68251:0",
+    "errorLatestEnd": "crwdns68253:0crwdne68253:0",
+    "errorMinRange": "crwdns68255:0crwdne68255:0",
+    "errorMaxRange": "crwdns68257:0crwdne68257:0"
   },
   "bookmark": {
-    "goToBookmark": "crwdns10997:0crwdne10997:0",
-    "deleteBookmark": "crwdns10999:0crwdne10999:0"
+    "goToBookmark": "crwdns68259:0crwdne68259:0",
+    "deleteBookmark": "crwdns68261:0crwdne68261:0"
   },
   "trackEvents": {
-    "events": "crwdns11001:0crwdne11001:0"
+    "events": "crwdns68263:0crwdne68263:0"
   },
-  "dragLabel": "crwdns11003:0crwdne11003:0",
-  "lastUpdate": "crwdns11005:0crwdne11005:0",
-  "setBookmark": "crwdns11007:0crwdne11007:0",
+  "dragLabel": "crwdns68265:0crwdne68265:0",
+  "lastUpdate": "crwdns68267:0crwdne68267:0",
+  "setBookmark": "crwdns68269:0crwdne68269:0",
   "intervals": {
-    "hour": "crwdns27337:0crwdne27337:0",
-    "hourTooltip": "crwdns27339:0crwdne27339:0",
-    "day": "crwdns27341:0crwdne27341:0",
-    "dayTooltip": "crwdns27343:0crwdne27343:0",
-    "month": "crwdns27345:0crwdne27345:0",
-    "monthTooltip": "crwdns27347:0crwdne27347:0",
-    "year": "crwdns27349:0crwdne27349:0",
-    "yearTooltip": "crwdns27351:0crwdne27351:0"
+    "hour": "crwdns68271:0crwdne68271:0",
+    "hourTooltip": "crwdns68273:0crwdne68273:0",
+    "day": "crwdns68275:0crwdne68275:0",
+    "dayTooltip": "crwdns68277:0crwdne68277:0",
+    "month": "crwdns68279:0crwdne68279:0",
+    "monthTooltip": "crwdns68281:0crwdne68281:0",
+    "year": "crwdns68283:0crwdne68283:0",
+    "yearTooltip": "crwdns68285:0crwdne68285:0"
   },
-  "zoomTo": "crwdns11019:0crwdne11019:0"
+  "zoomTo": "crwdns68287:0crwdne68287:0"
 }

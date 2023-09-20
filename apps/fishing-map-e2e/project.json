@@ -7,20 +7,26 @@
     "test": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx serve i18n-labels", "nx e2e fishing-map-e2e"],
+        "commands": ["nx serve i18n-labels", "nx e2e fishing-map-e2e --verbose"],
         "parallel": true
       }
     },
-    "test-dev": {
-      "executor": "@nrwl/cypress:cypress",
+    "test:watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["nx serve i18n-labels", "nx e2e fishing-map-e2e --watch"],
+        "parallel": true
+      }
+    },
+    "test-pr": {
+      "executor": "@nx/cypress:cypress",
       "options": {
         "cypressConfig": "apps/fishing-map-e2e/cypress.config.ts",
-        "baseUrl": "https://user:password@fishing-map.dev.globalfishingwatch.org",
         "testingType": "e2e"
       }
     },
     "test-pro": {
-      "executor": "@nrwl/cypress:cypress",
+      "executor": "@nx/cypress:cypress",
       "options": {
         "cypressConfig": "apps/fishing-map-e2e/cypress.config.ts",
         "baseUrl": "https://globalfishingwatch.org/map",
@@ -28,7 +34,7 @@
       }
     },
     "e2e": {
-      "executor": "@nrwl/cypress:cypress",
+      "executor": "@nx/cypress:cypress",
       "options": {
         "cypressConfig": "apps/fishing-map-e2e/cypress.config.ts",
         "devServerTarget": "fishing-map:serve",
@@ -41,7 +47,7 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["apps/fishing-map-e2e/**/*.{js,ts}"]

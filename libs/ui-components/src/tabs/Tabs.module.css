@@ -13,6 +13,7 @@
   flex: 1;
   min-width: auto;
   width: 100%;
+  padding: var(--space-XS);
 }
 
 .tabActive {

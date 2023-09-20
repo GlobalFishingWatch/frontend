@@ -9,15 +9,15 @@ import {
 import { getActivityDatasetsReportSupported } from 'features/datasets/datasets.utils'
 import { isGuestUser, selectUserData } from 'features/user/user.slice'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
-import { REPORT } from 'routes/routes'
-import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
+import { WORKSPACE_REPORT } from 'routes/routes'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { selectLocationAreaId, selectLocationQuery } from 'routes/routes.selectors'
 import { selectSidebarOpen } from 'features/app/app.selectors'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { getFeatureAreaId, getFeatureBounds } from 'features/map/popups/ContextLayers.hooks'
 import { resetSidebarScroll } from 'features/sidebar/Sidebar'
-import { resetReportData } from 'features/reports/reports.slice'
+import { resetReportData } from 'features/reports/report.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './Popup.module.css'
@@ -49,6 +49,7 @@ const DownloadPopupButton: React.FC<DownloadPopupButtonProps> = ({
       <IconButton
         icon="download"
         disabled={!guestUser && (!hasAnalysableLayer || !datasetsReportSupported)}
+        testId="download-activity-layers"
         tooltip={
           datasetsReportSupported
             ? t('download.activityAction', 'Download visible activity layers for this area')
@@ -102,17 +103,19 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
     })
     resetSidebarScroll()
     dispatch(resetReportData())
-    onClick(e, feature)
+    if (onClick) {
+      onClick(e, feature)
+    }
   }
 
   return (
     <Link
       className={styles.workspaceLink}
       to={{
-        type: REPORT,
+        type: WORKSPACE_REPORT,
         payload: {
-          category: workspace.category || WorkspaceCategories.FishingActivity,
-          workspaceId: workspace.id || DEFAULT_WORKSPACE_ID,
+          category: workspace?.category || WorkspaceCategory.FishingActivity,
+          workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
           datasetId: feature.datasetId,
           areaId,
         },
@@ -128,6 +131,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
       <IconButton
         icon="analysis"
         tooltip={t('common.analysis', 'Create an analysis for this area')}
+        testId="open-analysis"
         size="small"
       />
     </Link>

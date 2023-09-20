@@ -24,6 +24,7 @@ export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
   const dataviewFeatures = useMapDataviewFeatures(dataviews)
   const error = hasDataviewsFeatureError(dataviewFeatures)
   const boundsChanged = !checkEqualBounds(bounds, debouncedBounds)
+  const layersSourceHash = dataviewFeatures.map(({ sourceId }) => sourceId).join(',')
   const layersFilterHash = dataviewFeatures
     .flatMap(({ metadata }) => `${metadata?.minVisibleValue}-${metadata?.maxVisibleValue}`)
     .join(',')
@@ -72,7 +73,7 @@ export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
       debouncedSetStackedActivity(dataviewFeatures, debouncedBounds)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataviewFeaturesLoaded, debouncedBounds, isSmallScreen, layersFilterHash])
+  }, [dataviewFeaturesLoaded, debouncedBounds, isSmallScreen, layersSourceHash, layersFilterHash])
 
   return { loading, error, stackedActivity }
 }

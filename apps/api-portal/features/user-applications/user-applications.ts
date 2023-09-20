@@ -65,7 +65,7 @@ export const useCreateUserApplication = () => {
   const { data: user } = useUser()
   const userId = user?.id ?? null
 
-  const isAllowed = checkUserApplicationPermission('create', user.permissions)
+  const isAllowed = checkUserApplicationPermission('create', user!?.permissions)
 
   const [token, setToken] = useState<UserApplicationCreateArguments>(emptyToken)
 

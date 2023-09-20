@@ -82,6 +82,9 @@ function Sidebar() {
 
   const fourwingsMode = fourwingsLayerInstance?.getMode()
   const fourwingsResolution = fourwingsLayerInstance?.getResolution()
+
+  return null
+
   return (
     <div className={styles.container}>
       <div className="scrollContainer">
@@ -99,7 +102,7 @@ function Sidebar() {
                   <div>Vessels ({vesselIds?.length} loaded)</div>
                 </div>
                 {layer.visible && (
-                  <Fragment>
+                  <div>
                     <ul>
                       {vesselIds?.length > 0 &&
                         vesselIds.map((vessel) => (
@@ -117,7 +120,7 @@ function Sidebar() {
                         LOG VESSELS EVENTS DATA
                       </Button>
                     </div>
-                  </Fragment>
+                  </div>
                 )}
               </div>
             )

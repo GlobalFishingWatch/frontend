@@ -13,7 +13,7 @@ import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { selectViewport } from 'features/app/app.selectors'
 import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
 import { useMapReady } from 'features/map/map-state.hooks'
-import store, { RootState } from '../../store'
+import store from '../../store'
 import useMapInstance from './map-context.hooks'
 
 type ViewportKeys = 'latitude' | 'longitude' | 'zoom'
@@ -31,7 +31,7 @@ const viewportState = atom<MapCoordinates>({
   default: DEFAULT_VIEWPORT as MapCoordinates,
   effects: [
     ({ trigger, setSelf, onSet }) => {
-      const viewport = (selectViewport as any)(store.getState() as RootState)
+      const viewport = (selectViewport as any)(store.getState() as any)
 
       if (trigger === 'get') {
         setSelf(viewport)
@@ -69,12 +69,12 @@ export default function useViewport(): UseViewport {
   return { viewport, onViewportChange, setMapCoordinates }
 }
 
-const boundsState = atom<MiniglobeBounds | undefined>({
+const boundsState = atom<MiniglobeBounds>({
   key: 'mapBounds',
   default: undefined,
 })
 
-export function checkEqualBounds(bounds1: MiniglobeBounds, bounds2: MiniglobeBounds) {
+export function checkEqualBounds(bounds1?: MiniglobeBounds, bounds2?: MiniglobeBounds) {
   if (!bounds1 || !bounds2) return false
   return (
     bounds1.north === bounds2.north &&

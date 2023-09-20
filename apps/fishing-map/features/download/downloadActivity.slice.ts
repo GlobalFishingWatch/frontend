@@ -3,9 +3,10 @@ import { Geometry } from 'geojson'
 import { stringify } from 'qs'
 import { saveAs } from 'file-saver'
 import i18next from 'i18next'
-import { DownloadActivity } from '@globalfishingwatch/api-types'
+import { RootState } from 'reducers'
+import { Dataview, DownloadActivity } from '@globalfishingwatch/api-types'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
-import { RootState } from 'store'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { AreaKeys } from 'features/areas/areas.slice'
 import { getUTCDateTime } from 'utils/dates'
@@ -18,11 +19,13 @@ export type DateRange = {
 
 export interface DownloadActivityState {
   areaKey: AreaKeys | undefined
+  areaDataview: Dataview | UrlDataviewInstance | undefined
   status: AsyncReducerStatus
 }
 
 const initialState: DownloadActivityState = {
   areaKey: undefined,
+  areaDataview: undefined,
   status: AsyncReducerStatus.Idle,
 }
 
@@ -110,6 +113,12 @@ const downloadActivitySlice = createSlice({
     setDownloadActivityAreaKey: (state, action: PayloadAction<AreaKeys>) => {
       state.areaKey = action.payload
     },
+    setDownloadActivityAreaDataview: (
+      state,
+      action: PayloadAction<Dataview | UrlDataviewInstance | undefined>
+    ) => {
+      state.areaDataview = action.payload
+    },
     resetDownloadActivityStatus: (state) => {
       state.status = AsyncReducerStatus.Idle
     },
@@ -134,12 +143,15 @@ const downloadActivitySlice = createSlice({
 
 export const {
   setDownloadActivityAreaKey,
+  setDownloadActivityAreaDataview,
   resetDownloadActivityStatus,
   resetDownloadActivityState,
 } = downloadActivitySlice.actions
 
 export const selectDownloadActivityStatus = (state: RootState) => state.downloadActivity.status
 export const selectDownloadActivityAreaKey = (state: RootState) => state.downloadActivity.areaKey
+export const selectDownloadActivityAreaDataview = (state: RootState) =>
+  state.downloadActivity.areaDataview
 
 export const selectDownloadActivityLoading = createSelector(
   [selectDownloadActivityStatus],

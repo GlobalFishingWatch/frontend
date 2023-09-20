@@ -1,11 +1,12 @@
 import { Suspense, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { event as uaEvent } from 'react-ga'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
 import { useTranslation } from 'react-i18next'
 import { Modal, Spinner } from '@globalfishingwatch/ui-components'
-import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
+import { EventTypes } from '@globalfishingwatch/api-types'
+import { DEFAULT_VESSEL_MAP_ZOOM, IS_STANDALONE_APP } from 'data/config'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   RenderedEvent,
   selectHighlightEventIds,
@@ -42,8 +43,8 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
   const onToggleEventType = useCallback(
     (event) => {
       toggleEventType(event)
-      uaEvent({
-        category: 'Vessel Detail ACTIVITY BY TYPE Tab',
+      trackEvent({
+        category: TrackCategory.VesselDetailActivityByTypeTab,
         action: 'View list of events by activity type',
         label: JSON.stringify({ type: event }),
       })
@@ -102,7 +103,7 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
         </Modal>
 
         <div className={styles.heading}>
-          <AisCoverage value={coverage?.percentage} />
+          {!IS_STANDALONE_APP && <AisCoverage value={coverage?.percentage} />}
           <div className={styles.headingButtons}>
             <DataAndTerminology
               containerClassName={styles.dataAndTerminologyContainer}
@@ -117,7 +118,7 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
         </div>
         <div className={styles.activityContainer}>
           <AutoSizer disableWidth={true}>
-            {({ width, height }) => (
+            {(params: any) => (
               <List
                 /**
                  * The `key` prop is needed here to force the List clear the cache of row heigths
@@ -125,15 +126,15 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
                  * otherwise the variable row heights are not recalculated inside VariableSizeList
                  */
                 key={`${events.length}-list`}
-                width={width}
-                height={height}
+                width={params.width}
+                height={params.height}
                 itemCount={events.length}
                 itemData={events}
                 itemSize={getRowHeight}
               >
                 {({ index, style }) => {
                   const event = events[index]
-                  if (event.group)
+                  if (event.group && (event.type !== EventTypes.Gap || !IS_STANDALONE_APP)) {
                     return (
                       <div style={style}>
                         <ActivityGroup
@@ -146,7 +147,7 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
                         ></ActivityGroup>
                       </div>
                     )
-                  else
+                  } else if (event.type !== EventTypes.Gap || !IS_STANDALONE_APP) {
                     return (
                       <div style={style}>
                         <ActivityItem
@@ -159,6 +160,7 @@ export function ActivityByType({ onMoveToMap = () => {} }: ActivityByTypeProps) 
                         />
                       </div>
                     )
+                  }
                 }}
               </List>
             )}

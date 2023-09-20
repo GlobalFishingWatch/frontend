@@ -134,7 +134,7 @@ const getLegendsCompare = (config: GlobalHeatmapAnimatedGeneratorConfig, breaks:
 
     if (config.mode === HeatmapAnimatedMode.Blob) {
       legendRamp = legendRamp.map((legendItem, i) => {
-        let value = null
+        let value: string | null = null
         if (i === 0) value = 'less'
         else if (i === legendRamp.length - 1) value = 'more'
         return [value, legendItem[1]]

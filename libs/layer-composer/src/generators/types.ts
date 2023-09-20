@@ -250,6 +250,10 @@ export interface TileClusterGeneratorConfig extends GeneratorConfig {
    * Event id to highlight on active
    */
   currentEventId?: string
+  /**
+   * Filter the points
+   */
+  filters?: Record<string, any>
 }
 
 /**

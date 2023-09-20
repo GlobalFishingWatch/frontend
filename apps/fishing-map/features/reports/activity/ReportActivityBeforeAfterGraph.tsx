@@ -126,7 +126,7 @@ const ReportActivityBeforeAfterGraph: React.FC<{
           avg: (max[0] + min[0]) / 2,
         },
         {
-          date: getUTCDateTime(compareDate)?.toMillis(),
+          date: getUTCDateTime(compareDate as string)?.toMillis(),
           range: [min[1], max[1]],
           avg: (max[1] + min[1]) / 2,
         },
@@ -138,7 +138,7 @@ const ReportActivityBeforeAfterGraph: React.FC<{
   }, [timeseries])
 
   const ticks = useMemo(() => {
-    if (!timeComparison) {
+    if (!timeComparison || !dtStart) {
       return []
     }
     const finalTicks = [dtStart?.toMillis()]

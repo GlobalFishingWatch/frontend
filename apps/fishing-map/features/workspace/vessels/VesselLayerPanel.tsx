@@ -23,21 +23,15 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
 import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
-import { isGuestUser, isGFWUser, selectUserData } from 'features/user/user.slice'
+import { isGuestUser, isGFWUser } from 'features/user/user.slice'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
-import {
-  getVesselDatasetsDownloadTrackSupported,
-  isGFWOnlyDataset,
-  isPrivateDataset,
-} from 'features/datasets/datasets.utils'
-import { setDownloadTrackVessel } from 'features/download/downloadTrack.slice'
+import { isGFWOnlyDataset, isPrivateDataset } from 'features/datasets/datasets.utils'
 import LocalStorageLoginLink from 'routes/LoginLink'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { selectPrivateUserGroups } from 'features/user/user.selectors'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import GFWOnly from 'features/user/GFWOnly'
 import DatasetLabel from 'features/datasets/DatasetLabel'
+import VesselDownload from 'features/workspace/vessels/VesselDownload'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -45,13 +39,12 @@ import Title from '../common/Title'
 import FitBounds from '../common/FitBounds'
 import InfoModal from '../common/InfoModal'
 
-type LayerPanelProps = {
+export type VesselLayerPanelProps = {
   dataview: UrlDataviewInstance
 }
 
-function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
+function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
   const resources = useSelector(selectResources)
@@ -61,17 +54,10 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     useLayerPanelDataviewSort(dataview.id)
 
   const guestUser = useSelector(isGuestUser)
-  const userData = useSelector(selectUserData)
   const [colorOpen, setColorOpen] = useState(false)
   const [infoOpen, setInfoOpen] = useState(false)
   const [datasetModalOpen, setDatasetModalOpen] = useState(false)
   const gfwUser = useSelector(isGFWUser)
-  const userPrivateGroups = useSelector(selectPrivateUserGroups)
-  const downloadDatasetsSupported = getVesselDatasetsDownloadTrackSupported(
-    dataview,
-    userData?.permissions
-  )
-  const downloadSupported = downloadDatasetsSupported.length > 0
 
   const layerActive = dataview?.config?.visible ?? true
 
@@ -118,21 +104,26 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const getVesselTitle = (): ReactNode => {
     if (infoLoading) return t('vessel.loadingInfo', 'Loading vessel info')
     if (infoError) return t('common.unknownVessel', 'Unknown vessel')
-    if (dataview?.datasetsConfig.some((d) => isGFWOnlyDataset({ id: d.datasetId })))
+    if (dataview?.datasetsConfig?.some((d) => isGFWOnlyDataset({ id: d.datasetId })))
       return (
         <Fragment>
           <GFWOnly type="only-icon" />
           {vesselLabel}
         </Fragment>
       )
-    if (dataview?.datasetsConfig.some((d) => isPrivateDataset({ id: d.datasetId })))
+    if (dataview?.datasetsConfig?.some((d) => isPrivateDataset({ id: d.datasetId })))
       return `🔒 ${vesselLabel}`
     return vesselLabel
   }
 
   const TitleComponentContent = () => (
     <Fragment>
-      <span className={cx({ [styles.faded]: infoLoading || infoError })}>{getVesselTitle()}</span>
+      <span
+        className={cx({ [styles.faded]: infoLoading || infoError })}
+        data-test="vessel-layer-vessel-name"
+      >
+        {getVesselTitle()}
+      </span>
       {(infoError || trackError) && (
         <IconButton
           size="small"
@@ -191,7 +182,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   }
 
   const infoFields = guestUser
-    ? dataview.infoConfig?.fields.filter((field) => field.guest)
+    ? dataview.infoConfig?.fields?.filter((field) => field.guest)
     : dataview.infoConfig?.fields
 
   const TrackIconComponent = trackLoading ? (
@@ -275,16 +266,6 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     </ExpandedContainer>
   )
 
-  const onDownloadClick = () => {
-    dispatch(
-      setDownloadTrackVessel({
-        id: vesselId,
-        name: vesselTitle,
-        datasets: trackResource?.dataset.id,
-      })
-    )
-  }
-
   return (
     <div
       className={cx(styles.LayerPanel, { [styles.expandedContainerOpen]: colorOpen || infoOpen })}
@@ -305,24 +286,12 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           })}
         >
           <Fragment>
-            {(gfwUser || userPrivateGroups?.length > 0) && (
-              <IconButton
-                icon="download"
-                disabled={!downloadSupported}
-                tooltip={
-                  downloadSupported
-                    ? t('download.trackAction', 'Download vessel track')
-                    : t(
-                        'download.trackNotAllowed',
-                        "You don't have permissions to download tracks from this source"
-                      )
-                }
-                tooltipPlacement="top"
-                onClick={onDownloadClick}
-                size="small"
-              />
-            )}
-
+            <VesselDownload
+              dataview={dataview}
+              vesselId={vesselId}
+              vesselTitle={vesselTitle}
+              datasetId={trackResource?.dataset!?.id}
+            />
             <Color
               dataview={dataview}
               open={colorOpen}
@@ -355,4 +324,4 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   )
 }
 
-export default LayerPanel
+export default VesselLayerPanel

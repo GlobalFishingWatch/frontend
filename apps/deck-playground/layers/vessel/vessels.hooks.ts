@@ -27,8 +27,8 @@ export const vesselsLayerAtom = atom<VesselsAtom>({
 export function useVesselsLayer() {
   const [{ instance, ids }, updateAtom] = useRecoilState(vesselsLayerAtom)
   const [mapLayers] = useMapLayers()
-  const [timerange] = useTimerange()
   const [highlightTimerange] = useHighlightTimerange()
+  const [timerange] = useTimerange()
   const startTime = dateToMs(timerange.start)
   const endTime = dateToMs(timerange.end)
   const highlightStartTime = dateToMs(highlightTimerange?.start)

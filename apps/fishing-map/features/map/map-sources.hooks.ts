@@ -1,9 +1,15 @@
 import { useEffect, useMemo } from 'react'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
-import { GeoJSONFeature, MapDataEvent } from '@globalfishingwatch/maplibre-gl'
+import {
+  FilterSpecification,
+  GeoJSONFeature,
+  MapDataEvent,
+  MapGeoJSONFeature,
+} from '@globalfishingwatch/maplibre-gl'
 import {
   ExtendedStyle,
   HeatmapLayerMeta,
+  TEMPORALGRID_LAYER_INTERACTIVE_SUFIX,
   TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
 } from '@globalfishingwatch/layer-composer'
 import {
@@ -51,7 +57,7 @@ const getGeneratorSourcesIds = (style: ExtendedStyle, sourcesIds: SourcesHookInp
 
 export const useSourceInStyle = (sourcesIds: SourcesHookInput) => {
   const style = useMapStyle()
-  if (!sourcesIds || !sourcesIds.length) {
+  if (!sourcesIds || !sourcesIds.length || !style) {
     return false
   }
   const sourcesIdsList = getGeneratorSourcesIds(style, sourcesIds)
@@ -167,27 +173,35 @@ type DataviewMetadata = {
   sourcesId: string[]
   generatorSourceId: string
   dataviewsId: string[]
-  filter?: string[]
+  filter?: FilterSpecification
 }
 
 // Key used to refresh activity graph only when active chunk changes and we can safely ignore the rest of the metadata
-function getGeneratorsMetadataChangeKey(generatorsMetadata: Record<string, HeatmapLayerMeta>) {
-  if (!generatorsMetadata) return ''
+function getGeneratorsMetadataChangeKey(
+  style: ExtendedStyle,
+  dataviews: UrlDataviewInstance | UrlDataviewInstance[]
+) {
+  const generatorsMetadata = style?.metadata?.generatorsMetadata
+  const dataviewIds = toArray(dataviews || []).map(({ id }) => id)
+  if (!generatorsMetadata || !dataviewIds?.length) return ''
   return Object.keys(generatorsMetadata)
-    .map((key) => {
+    .flatMap((key) => {
       const metadata = generatorsMetadata[key]
-      const timeChunks = [
-        metadata.timeChunks.activeSourceId,
-        (metadata.timeChunks.chunks || [])
-          .map(({ active, sourceId, quantizeOffset }) => [
-            active,
-            sourceId,
-            quantizeOffset,
-            (metadata.sublayers || []).map((s) => s.id).join(','),
-          ])
-          .join('|'),
-      ].join('-')
-      return [metadata.sourceLayer, timeChunks, metadata.visibleSublayers].join('_')
+      if (metadata.sublayers.some((s) => dataviewIds.includes(s.id))) {
+        const timeChunks = [
+          metadata.timeChunks.activeSourceId,
+          (metadata.timeChunks.chunks || [])
+            .map(({ active, sourceId, quantizeOffset }) => [
+              active,
+              sourceId,
+              quantizeOffset,
+              (metadata.sublayers || []).map((s) => s.id).join(','),
+            ])
+            .join('|'),
+        ].join('-')
+        return [metadata.sourceLayer, timeChunks, metadata.visibleSublayers].join('_')
+      }
+      return []
     })
     .join('+')
 }
@@ -206,7 +220,7 @@ export const useMapDataviewFeatures = (
 
   // Memoized to avoid re-runs on style changes like hovers
   const memoizedDataviews = useMemoCompare(dataviews)
-  const metadataKey = getGeneratorsMetadataChangeKey(style?.metadata?.generatorsMetadata)
+  const metadataKey = getGeneratorsMetadataChangeKey(style, memoizedDataviews)
 
   const dataviewsMetadata = useMemo(() => {
     const dataviewsArray = toArray(memoizedDataviews || [])
@@ -259,16 +273,23 @@ export const useMapDataviewFeatures = (
           sourceId,
           quantizeOffset,
         }))
-        const chunksFeatures: ChunkFeature[] | null = chunks
-          ? chunks.map(({ active, sourceId, quantizeOffset }) => {
+        const chunksFeatures: ChunkFeature[] = chunks
+          ? chunks.map(({ active, sourceId = '', quantizeOffset }) => {
               const emptyChunkState = {} as TilesAtomSourceState
               const chunkState = sourceTilesLoaded[sourceId] || emptyChunkState
-              let features = null
+              let features = [] as MapGeoJSONFeature[]
               if (chunkState.loaded && !chunkState.error) {
                 if (queryMethod === 'render') {
-                  features = map.queryRenderedFeatures(undefined, { layers: [sourceLayer] })
+                  const layer =
+                    metadata?.sourceLayer || sourceId + `-${TEMPORALGRID_LAYER_INTERACTIVE_SUFIX}`
+                  features = map.queryRenderedFeatures(undefined, {
+                    layers: [layer],
+                  })
                 } else {
-                  features = map.querySourceFeatures(sourceId, { sourceLayer, filter })
+                  features = map.querySourceFeatures(sourceId, {
+                    sourceLayer,
+                    filter,
+                  })
                 }
               }
               return {
@@ -278,25 +299,28 @@ export const useMapDataviewFeatures = (
                 state: chunkState,
               }
             })
-          : null
+          : []
         const sourceId = metadata?.timeChunks?.activeSourceId || generatorSourceId
         const state = chunks
           ? ({
-              loaded: chunksFeatures.every(({ state }) => state.loaded !== false),
-              error: chunksFeatures
+              loaded: chunksFeatures!.every(({ state }) => state.loaded !== false),
+              error: chunksFeatures!
                 .filter(({ state }) => state.error)
                 .map(({ state }) => state.error)
                 .join(','),
             } as TilesAtomSourceState)
           : sourceTilesLoaded[sourceId] || ({} as TilesAtomSourceState)
 
-        let features: GeoJSONFeature[] | null = null
+        let features: GeoJSONFeature[] = []
 
         if (!chunks && state?.loaded && !state?.error) {
           if (queryMethod === 'render') {
             features = map.queryRenderedFeatures(undefined, { layers: [sourceId] })
           } else {
-            features = map.querySourceFeatures(sourceId, { sourceLayer, filter })
+            features = map.querySourceFeatures(sourceId, {
+              sourceLayer,
+              filter,
+            })
           }
         }
 

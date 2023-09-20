@@ -7,7 +7,8 @@ import { selectIsReportLocation, selectLocationType } from 'routes/routes.select
 import { USER, WORKSPACES_LIST } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
-import { isUserLogged, selectUserGroupsPermissions } from 'features/user/user.selectors'
+import { isUserLogged } from 'features/user/user.slice'
+import { selectUserGroupsPermissions } from 'features/user/user.selectors'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { parseTrackEventChunkProps } from 'features/timebar/timebar.utils'
 import { parseUserTrackCallback } from 'features/resources/resources.utils'
@@ -109,7 +110,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
       {!readOnly && <CategoryTabs onMenuClick={onMenuClick} />}
       {/* New dataset modal is used in user and workspace pages*/}
       {datasetModal === 'new' && <NewDataset />}
-      <div className="scrollContainer">
+      <div className="scrollContainer" data-test="sidebar-container">
         <SidebarHeader />
         {sidebarComponent}
       </div>

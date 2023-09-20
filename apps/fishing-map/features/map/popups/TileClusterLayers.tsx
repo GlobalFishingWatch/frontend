@@ -83,9 +83,9 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
       const vesselDataviewInstance = getVesselDataviewInstance(
         { id: vessel.id },
         {
-          trackDatasetId: trackDataset?.id,
-          infoDatasetId: infoDataset?.id,
-          ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
+          info: infoDataset?.id,
+          track: trackDataset?.id,
+          ...(eventsDatasetsId.length > 0 && { events: eventsDatasetsId }),
         }
       )
       upsertDataviewInstance(vesselDataviewInstance)
@@ -122,8 +122,8 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
     )
   }
 
-  const carrierInWorkspace = getVesselInWorkspace(vessels, event?.vessel?.id)
-  const donorInWorkspace = getVesselInWorkspace(vessels, event?.encounter?.vessel?.id)
+  const carrierInWorkspace = getVesselInWorkspace(vessels, event!?.vessel!?.id)
+  const donorInWorkspace = getVesselInWorkspace(vessels, event!?.encounter!?.vessel!?.id)
 
   return (
     <div className={styles.popupSection}>
@@ -149,7 +149,7 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
                           <IconButton
                             icon={carrierInWorkspace ? 'pin-filled' : 'pin'}
                             style={{
-                              color: carrierInWorkspace ? carrierInWorkspace.config.color : '',
+                              color: carrierInWorkspace ? carrierInWorkspace.config?.color : '',
                             }}
                             size="small"
                             tooltip={
@@ -174,11 +174,11 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
                           <span className={styles.rowText}>
                             {formatInfoField(event.encounter?.vessel?.name, 'name')}
                           </span>
-                          {(event.vessel as ExtendedEventVessel).dataset && (
+                          {(event.encounter?.vessel as ExtendedEventVessel).dataset && (
                             <IconButton
                               icon={donorInWorkspace ? 'pin-filled' : 'pin'}
                               style={{
-                                color: donorInWorkspace ? donorInWorkspace.config.color : '',
+                                color: donorInWorkspace ? donorInWorkspace.config?.color : '',
                               }}
                               size="small"
                               tooltip={

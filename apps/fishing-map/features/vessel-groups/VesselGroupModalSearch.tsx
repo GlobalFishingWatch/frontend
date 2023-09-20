@@ -49,7 +49,7 @@ function VesselGroupSearch({ onError }: { onError: (string) => void }): React.Re
       })
       if (data.length) {
         const firstRow = data[0]
-        const columns = Object.keys(firstRow)
+        const columns = Object.keys(firstRow as any)
         let foundIdColumn
         // Try to find a CSV column matching preset ids
         for (let i = 0; i < ID_COLUMN_LOOKUP.length; i++) {
@@ -74,7 +74,7 @@ function VesselGroupSearch({ onError }: { onError: (string) => void }): React.Re
         foundIdColumn = foundIdColumn || columns[0]
 
         if (foundIdColumn) {
-          const groupvessels = data.map((row) => row[foundIdColumn]).join(',')
+          const groupvessels = data.map((row) => row?.[foundIdColumn]).join(',')
           setSearchText(groupvessels)
         }
       }

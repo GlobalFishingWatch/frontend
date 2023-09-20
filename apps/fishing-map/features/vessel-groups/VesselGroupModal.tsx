@@ -34,6 +34,7 @@ import { resetSidebarScroll } from 'features/sidebar/Sidebar'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import UserGuideLink from 'features/help/UserGuideLink'
 import {
   IdField,
   resetVesselGroup,
@@ -78,7 +79,7 @@ function VesselGroupModal(): React.ReactElement {
   const searchIdField = useSelector(selectVesselGroupSearchId)
   const editingVesselGroupId = useSelector(selectVesselGroupEditId)
   const vesselGroupVessels = useSelector(selectVesselGroupsVessels)
-  const editingVesselGroup = useSelector(selectVesselGroupById(editingVesselGroupId))
+  const editingVesselGroup = useSelector(selectVesselGroupById(editingVesselGroupId as string))
   const searchVesselStatus = useSelector(selectVesselGroupSearchStatus)
   const vesselGroupsStatus = useSelector(selectVesselGroupsStatus)
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
@@ -105,12 +106,17 @@ function VesselGroupModal(): React.ReactElement {
 
   const dispatchSearchVesselsGroupsThunk = useCallback(
     async (vessels: VesselGroupVessel[], idField: IdField = 'vesselId') => {
-      return dispatch(searchVesselGroupsVesselsThunk({ vessels, idField }))
+      const action = await dispatch(searchVesselGroupsVesselsThunk({ vessels, idField }))
+      if (searchVesselGroupsVesselsThunk.fulfilled.match(action)) {
+        setError('')
+      } else {
+        setError((action.payload as any)?.message || '')
+      }
     },
     [dispatch]
   )
   useEffect(() => {
-    if (editingVesselGroup?.vessels?.length > 0) {
+    if (editingVesselGroup && editingVesselGroup.vessels?.length > 0) {
       dispatch(getVesselInVesselGroupThunk({ vesselGroup: editingVesselGroup }))
     }
   }, [dispatch, editingVesselGroup])
@@ -155,7 +161,9 @@ function VesselGroupModal(): React.ReactElement {
 
   const onSearchVesselsClick = useCallback(async () => {
     setShowBackButton(true)
-    dispatchSearchVesselsGroupsThunk(vesselGroupVessels, searchIdField)
+    if (vesselGroupVessels) {
+      dispatchSearchVesselsGroupsThunk(vesselGroupVessels, searchIdField)
+    }
   }, [dispatchSearchVesselsGroupsThunk, vesselGroupVessels, searchIdField])
 
   const getDataviewInstancesWithVesselGroups = useCallback(
@@ -170,14 +178,12 @@ function VesselGroupModal(): React.ReactElement {
           const currentDataviewInstance = urlDataviewInstances?.find(
             (dvi) => dvi.id === currentDataviewId
           )
+
           if (currentDataviewInstance) {
             config = {
               filters: {
                 ...(currentDataviewInstance.config?.filters || {}),
-                'vessel-groups': [
-                  ...(currentDataviewInstance.config?.filters?.['vessel-groups'] || []),
-                  vesselGroupId,
-                ],
+                'vessel-groups': [vesselGroupId],
               },
             }
           }
@@ -198,7 +204,7 @@ function VesselGroupModal(): React.ReactElement {
       const vessels: VesselGroupVessel[] = vesselGroupSearchVessels.map((vessel) => {
         return {
           vesselId: vessel.id,
-          dataset: vessel.dataset,
+          dataset: vessel.dataset as string,
         }
       })
       let dispatchedAction
@@ -223,7 +229,7 @@ function VesselGroupModal(): React.ReactElement {
         createVesselGroupThunk.fulfilled.match(dispatchedAction)
       ) {
         const dataviewInstances = getDataviewInstancesWithVesselGroups(dispatchedAction.payload.id)
-        if (navigateToWorkspace) {
+        if (navigateToWorkspace && dataviewInstances) {
           if (lastVisitedWorkspace) {
             const { type, ...rest } = lastVisitedWorkspace
             const { query, payload, replaceQuery } = rest
@@ -243,7 +249,7 @@ function VesselGroupModal(): React.ReactElement {
             dispatchQueryParams({ query: undefined })
           }
           resetSidebarScroll()
-        } else if (addToDataviews) {
+        } else if (addToDataviews && dataviewInstances) {
           upsertDataviewInstance(dataviewInstances)
         }
         close()
@@ -353,9 +359,10 @@ function VesselGroupModal(): React.ReactElement {
         </div>
       )}
       <div className={styles.modalFooter}>
+        <UserGuideLink section="vesselGroups" />
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
-          {vesselGroupAPIError && (
+          {vesselGroupAPIError && !error && (
             <span className={styles.errorMsg}>
               {t('errors.genericShort', 'Something went wrong')}
             </span>

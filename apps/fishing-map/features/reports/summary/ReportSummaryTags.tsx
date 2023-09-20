@@ -32,7 +32,7 @@ export default function ReportSummaryTags({
   let datasetName = dataset ? getDatasetLabel(dataset) : dataview.name || ''
   if (activityDataview) {
     datasetName =
-      dataset.subcategory === 'presence'
+      dataset?.subcategory === 'presence'
         ? t(`common.presence`, 'Vessel presence')
         : t(`common.apparentFishing`, 'Apparent Fishing Effort')
   }
@@ -42,8 +42,8 @@ export default function ReportSummaryTags({
   const areAllPropertiesHidden =
     hiddenProperties?.includes('dataset') &&
     hiddenProperties?.includes('source') &&
-    hiddenProperties?.includes('flag')
-  // && availableFields.every((f) => hiddenProperties?.includes(f[0]))
+    hiddenProperties?.includes('flag') &&
+    availableFields.every((f) => hiddenProperties?.includes(f[0]))
 
   if (areAllPropertiesHidden) {
     // TODO I don't understand that logic

@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import { uniqBy, memoize, without } from 'lodash'
+import { uniqBy, memoize, without, uniq } from 'lodash'
 import { stringify } from 'qs'
+import { GFWApiClient } from 'http-client/http-client'
 import { APIPagination, Dataset, DatasetTypes, RelatedDataset } from '@globalfishingwatch/api-types'
 import {
-  GFWAPI,
   parseAPIError,
   parseAPIErrorMessage,
   parseAPIErrorStatus,
@@ -16,7 +16,7 @@ import {
   AsyncReducerStatus,
 } from 'utils/async-slice'
 import { RootState } from 'store'
-import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
+import { DEFAULT_PAGINATION_PARAMS, IS_STANDALONE_APP } from 'data/config'
 
 export const fetchDatasetByIdThunk = createAsyncThunk<
   Dataset,
@@ -26,7 +26,9 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
   }
 >('datasets/fetchById', async (id: string, { rejectWithValue }) => {
   try {
-    const dataset = await GFWAPI.fetch<Dataset>(`/datasets/${id}?include=endpoints&cache=false`)
+    const dataset = await GFWApiClient.fetch<Dataset>(
+      `/datasets/${id}?include=endpoints&cache=false`
+    )
     return dataset
   } catch (e: any) {
     return rejectWithValue({
@@ -36,45 +38,54 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
   }
 })
 
+const fetchDatasetsFromApi = async (
+  ids: string[] = [],
+  existingIds: string[] = [],
+  signal: AbortSignal,
+  maxDepth: number = 5
+) => {
+  const uniqIds = ids?.length ? ids.filter((id) => !existingIds.includes(id)) : []
+  const datasetsParams = {
+    ...(uniqIds?.length ? { ids: uniqIds } : { 'logged-user': true }),
+    include: 'endpoints',
+    cache: process.env.NODE_ENV !== 'development',
+    ...DEFAULT_PAGINATION_PARAMS,
+  }
+  const initialDatasets = await GFWApiClient.fetch<APIPagination<Dataset>>(
+    `/datasets?${stringify(datasetsParams, { arrayFormat: 'comma' })}`,
+    { signal }
+  )
+
+  const mockedDatasets =
+    process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_USE_LOCAL_DATASETS === 'true'
+      ? await import('./datasets.mock')
+      : { default: [] }
+  let datasets = uniqBy([...mockedDatasets.default, ...initialDatasets.entries], 'id')
+
+  const relatedDatasetsIds = uniq(
+    datasets.flatMap((dataset) => dataset.relatedDatasets?.flatMap(({ id }) => id || []) || [])
+  )
+  const currentIds = uniq([...existingIds, ...datasets.map((d) => d.id)])
+  const uniqRelatedDatasetsIds = without(relatedDatasetsIds, ...currentIds)
+  if (uniqRelatedDatasetsIds.length > 1 && maxDepth > 0) {
+    const relatedDatasets = await fetchDatasetsFromApi(
+      uniqRelatedDatasetsIds,
+      currentIds,
+      signal,
+      maxDepth - 1
+    )
+    datasets = uniqBy([...datasets, ...relatedDatasets], 'id')
+  }
+
+  return datasets
+}
+
 export const fetchDatasetsByIdsThunk = createAsyncThunk(
   'datasets/fetch',
   async (ids: string[] = [], { signal, rejectWithValue, getState }) => {
     const existingIds = selectIds(getState() as RootState) as string[]
-    const uniqIds = ids?.length ? Array.from(new Set([...ids, ...existingIds])) : []
     try {
-      const workspacesParams = {
-        ...(uniqIds?.length && { ids: uniqIds }),
-        include: 'endpoints',
-        cache: process.env.NODE_ENV !== 'development',
-        ...DEFAULT_PAGINATION_PARAMS,
-      }
-      const initialDatasets = await GFWAPI.fetch<APIPagination<Dataset>>(
-        `/datasets?${stringify(workspacesParams, { arrayFormat: 'comma' })}`,
-        { signal }
-      ).then((d) => d.entries)
-      const relatedDatasetsIds = initialDatasets.flatMap(
-        (dataset) => dataset.relatedDatasets?.flatMap(({ id }) => id || []) || []
-      )
-      const uniqRelatedDatasetsIds = without(relatedDatasetsIds, ...ids).join(',')
-      const relatedWorkspaceParams = { ...workspacesParams, ids: uniqRelatedDatasetsIds }
-      // if no ids are specified, then do not get all the datasets
-      const relatedDatasets = relatedWorkspaceParams.ids
-        ? await GFWAPI.fetch<APIPagination<Dataset>>(
-            `/datasets?${stringify(relatedWorkspaceParams, {
-              arrayFormat: 'comma',
-            })}`,
-            { signal }
-          ).then((d) => d.entries)
-        : []
-      let datasets = uniqBy([...initialDatasets, ...relatedDatasets], 'id')
-
-      if (
-        process.env.NODE_ENV === 'development' ||
-        process.env.NEXT_PUBLIC_USE_LOCAL_DATASETS === 'true'
-      ) {
-        const mockedDatasets = await import('./datasets.mock')
-        datasets = uniqBy([...mockedDatasets.default, ...datasets], 'id')
-      }
+      const datasets = await fetchDatasetsFromApi(ids, existingIds, signal)
       return datasets
     } catch (e: any) {
       return rejectWithValue(parseAPIError(e))
@@ -133,35 +144,7 @@ export const {
 } = entityAdapter.getSelectors<RootState>((state) => state.datasets)
 
 export const selectAll = createSelector([baseSelectAll], (datasets) => {
-  const vesselInfo: Dataset[] = datasets
-    .filter((d) => d.category === 'vessel' && d.subcategory === 'info')
-    // Inject Proto Gaps Dataset
-    .map((d) => ({
-      ...d,
-      relatedDatasets: [
-        ...d.relatedDatasets,
-        {
-          id: 'proto-global-gaps-events:v20201001',
-          type: DatasetTypes.Events,
-        },
-      ],
-    }))
-
-  const gaps: Dataset[] = datasets
-    .filter((d) => d.id === 'proto-global-gaps-events:v20201001')
-    // Inject related datasets to Proto Gaps Dataset
-    .map((d) => ({
-      ...d,
-      relatedDatasets: [
-        ...(d.relatedDatasets ?? []),
-        ...vesselInfo.map((vi) => ({ id: vi.id, type: vi.type } as RelatedDataset)),
-      ],
-    }))
-  const result: Dataset[] = datasets.map((dataset) => {
-    const override = [...vesselInfo, ...gaps].find((current) => current.id === dataset.id)
-    return override ?? dataset
-  })
-  return result
+  return datasets
 })
 
 export function selectDatasets(state: RootState) {

@@ -245,7 +245,7 @@ function Search() {
       setVesselsSelected(vesselsSelected.filter((vessel) => vessel !== selection))
       return
     }
-    if (selection && selection.dataset && selection.trackDatasetId) {
+    if (selection && (selection.dataset || selection.trackDatasetId)) {
       setVesselsSelected([...vesselsSelected, selection])
     }
   }
@@ -259,9 +259,9 @@ function Search() {
           ? eventsRelatedDatasets.map((d) => d.id)
           : []
       const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
-        trackDatasetId: vessel.trackDatasetId as string,
-        infoDatasetId: vessel.dataset.id,
-        ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
+        info: vessel.dataset.id,
+        track: vessel.trackDatasetId as string,
+        ...(eventsDatasetsId.length > 0 && { events: eventsDatasetsId }),
       })
       return vesselDataviewInstance
     })
@@ -346,6 +346,7 @@ function Search() {
                   disabled={!basicSearchAllowed}
                   className={styles.input}
                   type="search"
+                  testId="seach-vessels-basic-input"
                   loading={
                     searchStatus === AsyncReducerStatus.Loading ||
                     searchStatus === AsyncReducerStatus.Aborted
@@ -359,9 +360,13 @@ function Search() {
               {(searchStatus === AsyncReducerStatus.Loading ||
                 searchStatus === AsyncReducerStatus.Aborted) &&
               searchPagination.loading === false ? null : basicSearchAllowed ? (
-                <ul {...getMenuProps()} className={styles.searchResults}>
+                <ul
+                  {...getMenuProps()}
+                  className={styles.searchResults}
+                  data-test="search-vessels-list"
+                >
                   {debouncedQuery && debouncedQuery?.length < MIN_SEARCH_CHARACTERS && (
-                    <li key="suggestion" className={cx(styles.searchSuggestion, styles.red)}>
+                    <li key="min-characters" className={cx(styles.searchSuggestion, styles.red)}>
                       {t('search.minCharacters', {
                         defaultValue: 'Please type at least {{count}} characters',
                         count: MIN_SEARCH_CHARACTERS,
@@ -411,9 +416,10 @@ function Search() {
                           [styles.inWorkspace]: isInWorkspace,
                           [styles.selected]: isSelected,
                         })}
+                        data-test={`search-vessels-option-${id}-${index}`}
                         key={`${id}-${index}`}
                       >
-                        <div className={styles.name}>
+                        <div className={styles.name} data-test="vessel-name">
                           {formatInfoField(shipname, 'name') || EMPTY_FIELD_PLACEHOLDER}
                         </div>
                         <div className={styles.properties}>
@@ -544,7 +550,11 @@ function Search() {
               vessels={vesselsSelected}
               onAddToVesselGroup={onAddToVesselGroup}
             />
-            <Button className={styles.footerAction} onClick={onConfirmSelection}>
+            <Button
+              className={styles.footerAction}
+              onClick={onConfirmSelection}
+              testId="search-vessels-add-vessel"
+            >
               {vesselsSelected.length > 1
                 ? t('search.seeVessels', {
                     defaultValue: 'See vessels',

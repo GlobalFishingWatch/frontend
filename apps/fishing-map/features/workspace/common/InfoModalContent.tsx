@@ -36,7 +36,7 @@ const InfoModalContent = ({ dataset }: InfoModalContentProps) => {
          **/}
         {description.length > 0 ? parse(description) : dataset.description}
       </p>
-      {gfwUser && queries?.length > 0 && (
+      {gfwUser && queries!?.length > 0 && (
         <div className={styles.content}>
           <h2 className={styles.subtitle}>
             Queries used

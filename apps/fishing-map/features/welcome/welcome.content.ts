@@ -1,4 +1,4 @@
-import { WorkspaceCategories } from 'data/workspaces'
+import { WorkspaceCategory } from 'data/workspaces'
 import { Locale } from 'types'
 
 type WelcomeContentLang = {
@@ -12,8 +12,8 @@ type WelcomeContent = {
   partnerLink?: string
 } & WelcomeContentLang
 
-const WELCOME_POPUP_CONTENT: { [category in WorkspaceCategories]?: WelcomeContent } = {
-  [WorkspaceCategories.MarineManager]: {
+const WELCOME_POPUP_CONTENT: { [category in WorkspaceCategory]?: WelcomeContent } = {
+  [WorkspaceCategory.MarineManager]: {
     partnerLogo: 'https://globalfishingwatch.org/wp-content/uploads/Logo_DonaBertarelliPH@2x.png',
     partnerLink: 'https://donabertarelli.com/',
     en: {
@@ -57,7 +57,7 @@ const WELCOME_POPUP_CONTENT: { [category in WorkspaceCategories]?: WelcomeConten
       `,
     },
   },
-  [WorkspaceCategories.FishingActivity]: {
+  [WorkspaceCategory.FishingActivity]: {
     en: {
       title: 'Welcome to the Global Fishing Watch Map',
       description: `

@@ -15,8 +15,8 @@ import { useLocationConnect } from 'routes/routes.hook'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import { getDatasetTitleByDataview, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
-import Hint from 'features/hints/Hint'
-import { selectHintsDismissed, setHintDismissed } from 'features/hints/hints.slice'
+import Hint from 'features/help/Hint'
+import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { isGuestUser } from 'features/user/user.slice'
@@ -66,8 +66,8 @@ function ActivityLayerPanel({
   const guestUser = useSelector(isGuestUser)
   const readOnly = useSelector(selectReadOnly)
   const layerActive = dataview?.config?.visible ?? true
-  const datasetStatsFields = dataview.datasets.flatMap((d) =>
-    Object.entries(d.schema).flatMap(([id, schema]) => (schema.stats ? id : []))
+  const datasetStatsFields = dataview.datasets!?.flatMap((d) =>
+    Object.entries(d.schema || {}).flatMap(([id, schema]) => (schema.stats ? id : []))
   )
 
   const fields = datasetStatsFields?.length > 0 ? datasetStatsFields : DEFAULT_STATS_FIELDS
@@ -75,8 +75,8 @@ function ActivityLayerPanel({
   const { data: stats, isFetching } = useGetStatsByDataviewQuery(
     {
       dataview,
-      timerange: urlTimeRange,
-      fields,
+      timerange: urlTimeRange as any,
+      fields: fields as any,
     },
     {
       skip: guestUser || !urlTimeRange || !layerActive,
@@ -119,7 +119,7 @@ function ActivityLayerPanel({
 
   const onToggleFilterOpen = () => {
     setFiltersOpen(!filterOpen)
-    if (!hintsDismissed.filterActivityLayers) {
+    if (!hintsDismissed?.filterActivityLayers) {
       dispatch(setHintDismissed('filterActivityLayers'))
     }
   }
@@ -171,7 +171,7 @@ function ActivityLayerPanel({
       { field: 'target_species', label: t('vessel.target_species', 'Target species') },
       { field: 'license_category', label: t('vessel.license_category', 'License category') },
       { field: 'vessel_type', label: t('vessel.vesselType_other', 'Vessel types') },
-      { field: 'vessel-groups', label: t('vesselGroup.vesselGroups', 'Vessel Groups') },
+      { field: 'vessel-groups', label: t('vesselGroup.vesselGroup', 'Vessel Group') },
     ]
     return fields
   }, [t])
@@ -180,6 +180,7 @@ function ActivityLayerPanel({
 
   return (
     <div
+      data-test={`activity-layer-panel-${dataview.id}`}
       className={cx(styles.LayerPanel, activityStyles.layerPanel, {
         [styles.expandedContainerOpen]: filterOpen || colorOpen,
         [styles.noBorder]: !showBorder || bivariateDataviews?.[0] === dataview.id,
@@ -219,6 +220,7 @@ function ActivityLayerPanel({
                 >
                   <div className={styles.filterButtonWrapper}>
                     <IconButton
+                      data-test={`activity-layer-panel-btn-filter-${dataview.id}`}
                       icon={filterOpen ? 'filter-on' : 'filter-off'}
                       size="small"
                       onClick={onToggleFilterOpen}
@@ -270,7 +272,7 @@ function ActivityLayerPanel({
                     }
                   >
                     <div className={activityStyles.help}>
-                      {statsValue > 0 ? (
+                      {statsValue && statsValue > 0 ? (
                         <span>
                           <I18nNumber number={statsValue} />{' '}
                           {stats.type === 'vessels'

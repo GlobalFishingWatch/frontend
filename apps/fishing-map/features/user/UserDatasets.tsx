@@ -193,7 +193,7 @@ function UserDatasets({ datasetCategory }: UserDatasetsProps) {
         isOpen={infoDataset !== undefined}
         onClose={() => setInfoDataset(undefined)}
       >
-        <InfoModalContent dataset={infoDataset} />
+        {infoDataset && <InfoModalContent dataset={infoDataset} />}
       </Modal>
     </div>
   )

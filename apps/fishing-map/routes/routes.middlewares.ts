@@ -1,10 +1,10 @@
 import { Middleware, Dispatch } from 'redux'
+import { RootState } from 'reducers'
 import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 import { REPLACE_URL_PARAMS } from 'data/config'
 import { setLastWorkspaceVisited } from 'features/workspace/workspace.slice'
-import { RootState } from 'store'
 import { QueryParams } from 'types'
-import { REPORT, routesMap, ROUTE_TYPES, WORKSPACE, WORKSPACE_ROUTES } from './routes'
+import { routesMap, ROUTE_TYPES, WORKSPACE_ROUTES, REPORT_ROUTES } from './routes'
 import { UpdateQueryParamsAction } from './routes.actions'
 
 export const routerQueryMiddleware: Middleware =
@@ -46,27 +46,6 @@ export const routerQueryMiddleware: Middleware =
     }
   }
 
-function cleanReportPayload(params: Record<string, any>) {
-  const { areaId, datasetId, ...rest } = params || {}
-  return rest
-}
-
-function cleanReportQuery(query: QueryParams) {
-  const {
-    reportActivityGraph,
-    reportAreaBounds,
-    reportAreaSource,
-    reportCategory,
-    reportResultsPerPage,
-    reportTimeComparison,
-    reportVesselFilter,
-    reportVesselGraph,
-    reportVesselPage,
-    ...rest
-  } = query || {}
-  return rest
-}
-
 // This middleware is going to save the state of the workspace to back
 export const routerWorkspaceMiddleware: Middleware =
   ({ getState, dispatch }: { getState: () => RootState; dispatch: Dispatch }) =>
@@ -76,33 +55,27 @@ export const routerWorkspaceMiddleware: Middleware =
     // check if action type matches a route type
     const isRouterAction = routesActions.includes(action.type)
     if (isRouterAction) {
-      const { prev } = getState().location
-      const { lastVisited } = getState().workspace
+      const state = getState() as RootState
+      const { prev } = state.location
+      const { lastVisited } = state.workspace
       const routesToSaveWorkspace = Object.keys(routesMap).filter(
         (key) => !WORKSPACE_ROUTES.includes(key)
       )
       const comesFromWorkspacesRoute = WORKSPACE_ROUTES.includes(prev.type)
-      const isReportLocation = action.type === REPORT
-      if (routesToSaveWorkspace.includes(action.type)) {
-        if (isReportLocation) {
-          dispatch(
-            setLastWorkspaceVisited({
-              type: WORKSPACE,
-              query: cleanReportQuery(action.query),
-              payload: cleanReportPayload(action.payload),
-              replaceQuery: true,
-            })
-          )
-        } else if (comesFromWorkspacesRoute && !lastVisited) {
-          dispatch(
-            setLastWorkspaceVisited({
-              type: prev.type as ROUTE_TYPES,
-              query: prev.query,
-              payload: prev.payload,
-              replaceQuery: true,
-            })
-          )
-        }
+      const comesFromReportRoute = REPORT_ROUTES.includes(prev.type)
+      if (
+        routesToSaveWorkspace.includes(action.type) &&
+        (comesFromWorkspacesRoute || comesFromReportRoute) &&
+        !lastVisited
+      ) {
+        dispatch(
+          setLastWorkspaceVisited({
+            type: prev.type as ROUTE_TYPES,
+            query: prev.query,
+            payload: prev.payload,
+            replaceQuery: true,
+          })
+        )
       } else if (WORKSPACE_ROUTES.includes(action.type) && lastVisited) {
         dispatch(setLastWorkspaceVisited(undefined))
       }

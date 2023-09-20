@@ -59,13 +59,16 @@ export const geoJSONTrackToTimebarFeatureSegments = ({ features = [] } = {}) => 
   return graph
 }
 
-export const getLast30Days = (latestAvailableDataDate) => {
-  return getLastX(30, 'day', latestAvailableDataDate)
+export const getLastX = (num, unit, latestAvailableDataDate) => {
+  const latestAvailableDataDateUTC = dayjs(
+    latestAvailableDataDate ? new Date(latestAvailableDataDate) : new Date()
+  ).utc()
+  return {
+    start: latestAvailableDataDateUTC.subtract(num, unit).toISOString(),
+    end: latestAvailableDataDateUTC.toISOString(),
+  }
 }
 
-export const getLastX = (num, unit, latestAvailableDataDate) => {
-  return {
-    start: dayjs(new Date(latestAvailableDataDate)).utc().subtract(num, unit).toISOString(),
-    end: dayjs(new Date(latestAvailableDataDate)).utc().toISOString(),
-  }
+export const getLast30Days = (latestAvailableDataDate) => {
+  return getLastX(30, 'day', latestAvailableDataDate)
 }

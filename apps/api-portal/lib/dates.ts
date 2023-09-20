@@ -20,7 +20,7 @@ export const formatI18nDate = (
     typeof date === 'number'
       ? DateTime.fromMillis(date, { zone: 'utc' })
       : DateTime.fromISO(date, { zone: 'utc' })
-  ).setLocale(locale)
+  ).setLocale(locale as any)
   const formattedDate = tokensFormat
     ? dateTimeDate.toFormat(tokensFormat)
     : dateTimeDate.toLocaleString(format)

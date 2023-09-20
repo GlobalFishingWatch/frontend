@@ -1,0 +1,42 @@
+.link {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+  line-height: 1;
+  width: max-content;
+  height: 3.4rem;
+  border-bottom: var(--border);
+  border-radius: 1.7rem;
+  background-color: var(--color-help-yellow);
+  padding-left: 0.3rem;
+  padding-right: 1.2rem;
+  transition: all 100ms linear;
+  text-transform: initial;
+  white-space: nowrap;
+}
+
+.link:hover {
+  color: var(--color-primary-blue);
+  border-bottom: var(--border-thick);
+}
+
+.icon {
+  background-color: var(--color-terthiary-blue);
+}
+
+.link:hover .icon {
+  opacity: 1;
+}
+
+.label {
+  font: var(--font-XS);
+  cursor: pointer;
+}
+
+@media print {
+  .link {
+    display: none;
+  }
+}

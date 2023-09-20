@@ -1,10 +1,10 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { RootState } from 'reducers'
 import { Workspace, WorkspaceViewport } from '@globalfishingwatch/api-types'
-import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
 import { USER } from 'routes/routes'
 import { selectUserWorkspaces } from 'features/user/user.selectors'
-import { RootState } from 'store'
 import {
   HighlightedWorkspace,
   selectHighlightedWorkspaces,
@@ -21,7 +21,7 @@ export const selectDefaultWorkspace = createSelector(
   }
 )
 
-export const selectWorkspaceByCategory = (category: WorkspaceCategories) => {
+export const selectWorkspaceByCategory = (category: WorkspaceCategory) => {
   return createSelector([selectWorkspaces], (workspaces) => {
     return workspaces.filter((workspace) => workspace.app === category)
   })
@@ -45,7 +45,7 @@ export const selectAvailableWorkspacesCategories = createSelector(
 
 export type HighlightedWorkspaceMerged = HighlightedWorkspace & {
   viewport?: WorkspaceViewport
-  category?: WorkspaceCategories
+  category?: WorkspaceCategory
 }
 
 export const selectCurrentHighlightedWorkspaces = createSelector(
@@ -68,7 +68,7 @@ export const selectCurrentHighlightedWorkspaces = createSelector(
           ...workspace,
           ...(apiWorkspace && {
             viewport: apiWorkspace.viewport,
-            category: apiWorkspace.category as WorkspaceCategories,
+            category: apiWorkspace.category as WorkspaceCategory,
           }),
         }
       })
@@ -79,7 +79,7 @@ type HighlightedMapWorkspace = {
   id: string
   name: string
   viewport?: WorkspaceViewport
-  category?: WorkspaceCategories
+  category?: WorkspaceCategory
 }
 
 export const selectCurrentWorkspacesList = createSelector(

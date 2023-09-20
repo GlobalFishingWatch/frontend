@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import { Fragment, useState } from 'react'
+import React from 'react'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { getLoginUrl, redirectToLogin, useGFWLogin } from '@globalfishingwatch/react-hooks'
 import { Button } from '@globalfishingwatch/ui-components'
@@ -36,7 +37,7 @@ export function Layout({ children }) {
             ) : null}
           </div>
         ) : (
-          children
+          React.cloneElement(children, { login })
         )}
       </div>
     </Fragment>

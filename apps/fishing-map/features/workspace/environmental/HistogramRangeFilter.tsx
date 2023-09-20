@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { BarChart, Bar, ResponsiveContainer } from 'recharts'
 import { useTranslation } from 'react-i18next'
-import { Slider } from '@globalfishingwatch/ui-components'
+import { SliderRange } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   Dataset,
@@ -39,7 +39,7 @@ function HistogramRangeFilter({ dataview }: HistogramRangeFilterProps) {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const histogram = useDataviewHistogram(dataview)
-  const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
+  const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings) as Dataset
   const layerRange = getLayerDatasetRange(dataset)
   const minSliderValue = dataview.config?.minVisibleValue ?? layerRange.min
   const maxSliderValue = dataview.config?.maxVisibleValue ?? layerRange.max
@@ -80,7 +80,7 @@ function HistogramRangeFilter({ dataview }: HistogramRangeFilterProps) {
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <Slider
+      <SliderRange
         className={styles.slider}
         initialRange={[minSliderValue, maxSliderValue]}
         label={t('layer.filterValues', 'Filter values')}

@@ -21,7 +21,7 @@ export const formatI18nNumber = (
   const parsedNumber = number === 'string' ? parseFloat(number) : (number as number)
   try {
     return new Intl.NumberFormat(locale, {
-      maximumFractionDigits: number < 10 ? 2 : 0,
+      maximumFractionDigits: (number as number) < 10 ? 2 : 0,
       ...(typeof options === 'object' && { ...options }),
     }).format(parsedNumber)
   } catch (e: any) {

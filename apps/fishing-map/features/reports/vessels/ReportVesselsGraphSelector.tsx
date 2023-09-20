@@ -46,7 +46,7 @@ export default function ReportVesselsGraphSelector() {
   }
 
   const selectedOption = selectedReportVesselGraph
-    ? options.find((o) => o.id === selectedReportVesselGraph)
+    ? (options.find((o) => o.id === selectedReportVesselGraph) as ChoiceOption)
     : options[0]
 
   return (

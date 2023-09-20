@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
 import { v5 as uuidv5 } from 'uuid'
-import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
+import { GFWApiClient } from 'http-client/http-client'
+import { parseAPIError } from '@globalfishingwatch/api-client'
 import {
   asyncInitialState,
   AsyncReducer,
@@ -64,7 +65,7 @@ export const fetchIndicatorsByIdThunk = createAsyncThunk(
         .map((query) => `${query.id}=${encodeURIComponent(query.value)}`)
         .join('&')
 
-      const result = await GFWAPI.fetch<Indicator>(
+      const result = await GFWApiClient.fetch<Indicator>(
         `/prototype/vessels/indicators?includes=${indicator}&${query}`,
         {
           method: 'POST',

@@ -1,8 +1,8 @@
 import { Ref, forwardRef, useCallback } from 'react'
-import { event as uaEvent } from 'react-ga'
 import cx from 'classnames'
 import { Switch } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import styles from './LayerSwitch.module.css'
 
@@ -22,10 +22,10 @@ const LayerSwitch = (
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const layerActive = [true, 'true', 1].includes((dataview?.config?.visible ?? true) as any)
   const onToggleLayerActive = useCallback(() => {
-    uaEvent({
-      category: 'Vessel Detail MAP Tab',
+    trackEvent({
+      category: TrackCategory.VesselDetailMapTab,
       action: 'Change context layers',
-      label: JSON.stringify({[dataview?.id]: !layerActive})
+      label: JSON.stringify({ [dataview?.id]: !layerActive }),
     })
     upsertDataviewInstance({
       id: dataview.id,

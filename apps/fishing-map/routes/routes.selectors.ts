@@ -1,11 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
 import { Query, RouteObject } from 'redux-first-router'
+import { RootState } from 'reducers'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { RootState } from 'store'
-import { WorkspaceParam } from 'types'
-import { WorkspaceCategories } from 'data/workspaces'
-import { REPORT, ROUTE_TYPES, WORKSPACE_ROUTES } from './routes'
+import { UserTab, WorkspaceParam } from 'types'
+import { WorkspaceCategory } from 'data/workspaces'
+import { REPORT, WORKSPACE_REPORT, ROUTE_TYPES, WORKSPACE_ROUTES } from './routes'
 
 const selectLocation = (state: RootState) => state.location
 export const selectCurrentLocation = createSelector([selectLocation], ({ type, routesMap }) => {
@@ -24,7 +24,7 @@ export const selectIsWorkspaceLocation = createSelector([selectLocationType], (l
 
 export const selectIsReportLocation = createSelector(
   [selectLocationType],
-  (locationType) => locationType === REPORT
+  (locationType) => locationType === REPORT || locationType === WORKSPACE_REPORT
 )
 
 export const selectLocationQuery = createSelector(
@@ -49,9 +49,14 @@ export const selectWorkspaceId = createSelector(
   (payload) => payload?.workspaceId
 )
 
+export const selectReportId = createSelector(
+  [selectLocationPayload],
+  (payload) => payload?.reportId
+)
+
 export const selectLocationCategory = createSelector(
   [selectLocationPayload],
-  (payload) => payload?.category as WorkspaceCategories
+  (payload) => payload?.category as WorkspaceCategory
 )
 
 export const selectLocationDatasetId = createSelector(
@@ -66,16 +71,17 @@ export const selectLocationAreaId = createSelector(
 
 export const isValidLocationCategory = createSelector(
   [selectLocationCategory],
-  (locationCategory) => Object.values(WorkspaceCategories).includes(locationCategory)
+  (locationCategory) => Object.values(WorkspaceCategory).includes(locationCategory)
 )
 
 export const selectIsMarineManagerLocation = createSelector(
   [selectLocationCategory, selectWorkspaceId],
   (category, workspaceId) => {
-    return category === WorkspaceCategories.MarineManager && !workspaceId
+    return category === WorkspaceCategory.MarineManager && !workspaceId
   }
 )
 
+export const selectUserTab = selectQueryParam<UserTab>('userTab')
 export const selectUrlMapZoomQuery = selectQueryParam<number>('zoom')
 export const selectUrlMapLatitudeQuery = selectQueryParam<number>('latitude')
 export const selectUrlMapLongitudeQuery = selectQueryParam<number>('longitude')

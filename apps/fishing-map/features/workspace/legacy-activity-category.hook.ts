@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
 import { selectActivityCategory } from 'features/app/app.selectors'
@@ -21,7 +22,7 @@ export const useHideLegacyActivityCategoryDataviews = () => {
     // When legacy activityCategory is present this hides
     // the dataviewInstances from the category not selected
     if (actionDone.current === false && activityCategory && dataviewInstancesResolved?.length) {
-      let dataviewInstancesToUpdate = []
+      let dataviewInstancesToUpdate = [] as UrlDataviewInstance[]
       if (activityCategory) {
         if (activityCategory === 'fishing') {
           dataviewInstancesToUpdate = dataviewInstancesResolved.filter((dataviewInstance) => {

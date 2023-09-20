@@ -46,6 +46,6 @@ steps:
       - '-c'
       - |-
         AFFECTED_APPS=(`cat affected-apps.txt`)
-        for i in ${AFFECTED_APPS[@]}; do
+        for i in ${AFFECTED_APPS[@]//,/}; do
           [ ! -z "$i" ] && gcloud -q beta builds triggers run --branch=develop ui-${i}-develop
         done

@@ -1,16 +1,15 @@
-import { FeatureCollection } from 'geojson'
 import {
   DataviewDatasetConfigParam,
   EndpointId,
   ThinningConfig,
 } from '@globalfishingwatch/api-types'
 import { getTracksChunkSetId } from '@globalfishingwatch/dataviews-client'
-import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
 import { hasDatasetConfigVesselData } from 'features/datasets/datasets.util'
 import { TimebarGraphs } from 'types'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 
 type ThinningConfigParam = { zoom: number; config: ThinningConfig }
+
 export const trackDatasetConfigsCallback = (
   thinningConfig = {} as ThinningConfigParam,
   chunks: { start: string; end: string }[],

@@ -9,6 +9,7 @@ lerna-debug.log*
 # Env
 .env
 affected-apps.txt
+affected-libs.txt
 config/ssl
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
@@ -122,3 +123,6 @@ build
 .local*
 tmp/
 affected-apps
+
+# local parquet files
+*.parquet

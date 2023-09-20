@@ -22,8 +22,8 @@ export * from './heatmap/util'
 export * from './heatmap/util/get-time-chunks-interval'
 export * from './vessel-events/vessel-events.utils'
 export { TRACK_HIGHLIGHT_SUFFIX } from './track/track'
-export { HEATMAP_COLOR_RAMPS } from './heatmap/colors'
-export { rgbaStringToComponents } from './heatmap/util/colors'
+export { HEATMAP_COLOR_RAMPS, HEATMAP_COLORS_BY_ID } from './heatmap/colors'
+export { rgbaStringToComponents, hexToComponents, rgbaToString } from './heatmap/util/colors'
 export { DEFAULT_BACKGROUND_COLOR } from './background/config'
 export { DEFAULT_CONTEXT_SOURCE_LAYER } from './context/config'
 export { DEFAULT_POINTS_SOURCE_LAYER, MAX_ZOOM_TO_CLUSTER_POINTS } from './tile-cluster/config'
@@ -33,9 +33,30 @@ export {
   DEFAULT_ENVIRONMENT_INTERVALS,
   TEMPORALGRID_SOURCE_LAYER,
   TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
+  TEMPORALGRID_LAYER_INTERACTIVE_SUFIX,
 } from './heatmap/config'
 
-const GeneratorConfig = {
+export type AnyGeneratorClass =
+  | BackgroundGenerator
+  | BaseMapGenerator
+  | BasemapLabelsGenerator
+  | CartoGenerator
+  | ContextGenerator
+  | GLStyleGenerator
+  | HeatmapGenerator
+  | HeatmapAnimatedGenerator
+  | PolygonsGenerator
+  | RulersGenerator
+  | TileClusterGenerator
+  | TrackGenerator
+  | UserContextGenerator
+  | UserPointsGenerator
+  | VesselEventsGenerator
+  | VesselsEventsShapesGenerator
+
+export type GeneratorsRecord = Record<GeneratorType, AnyGeneratorClass>
+
+const GeneratorConfig: GeneratorsRecord = {
   [GeneratorType.Background]: new BackgroundGenerator(),
   [GeneratorType.Basemap]: new BaseMapGenerator(),
   [GeneratorType.BasemapLabels]: new BasemapLabelsGenerator(),

@@ -23,7 +23,7 @@ export const extractPropertiesFromGeojson = (geojson: GeoJSON.FeatureCollection)
 }
 
 export const getPropertyFieldsOptions = (fields: string[]) => {
-  if (!fields) return
+  if (!fields) return [{} as { id: string; label: string }]
   return fields.map((property) => ({
     id: property,
     label: property,
@@ -101,7 +101,7 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
           placeholder={t('selects.placeholder', 'Select an option')}
           options={fieldsOptions}
           className={styles.input}
-          selectedOption={fieldsOptions.find(
+          selectedOption={fieldsOptions?.find(
             ({ id }) => id === metadata.configuration?.propertyToInclude
           )}
           onSelect={(selected) => {

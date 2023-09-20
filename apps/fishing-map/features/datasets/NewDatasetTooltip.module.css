@@ -45,3 +45,7 @@
   color: var(--color-secondary-blue);
   text-decoration: underline;
 }
+
+.userGuideLink {
+  padding: var(--space-M) 0;
+}

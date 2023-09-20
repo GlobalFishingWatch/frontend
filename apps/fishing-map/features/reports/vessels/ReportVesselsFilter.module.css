@@ -27,7 +27,17 @@
 }
 
 @media print {
-  .inputContainer {
+  .inputContainer input {
+    background: none;
+    border-radius: 0;
+    border-bottom: 1px solid black;
+  }
+
+  .inputContainer input:placeholder-shown {
+    display: none;
+  }
+
+  .inputContainer svg {
     display: none;
   }
 }

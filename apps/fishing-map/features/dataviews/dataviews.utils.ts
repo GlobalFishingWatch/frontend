@@ -36,33 +36,34 @@ export const ENVIRONMENTAL_LAYER_PREFIX = 'environment-'
 export const CONTEXT_LAYER_PREFIX = 'context-'
 export const VESSEL_DATAVIEW_INSTANCE_PREFIX = 'vessel-'
 
-type VesselInstanceDatasets = {
-  trackDatasetId?: string
-  infoDatasetId?: string
-  eventsDatasetsId?: string[]
+// Datasets ids for vessel instances
+export type VesselInstanceDatasets = {
+  info?: string
+  track?: string
+  events?: string[]
 }
 
 export const getVesselDataviewInstanceDatasetConfig = (
   vesselId: string,
-  { trackDatasetId, infoDatasetId, eventsDatasetsId }: VesselInstanceDatasets
+  { track, info, events }: VesselInstanceDatasets
 ) => {
   const datasetsConfig: DataviewDatasetConfig[] = []
-  if (infoDatasetId) {
+  if (info) {
     datasetsConfig.push({
-      datasetId: infoDatasetId,
+      datasetId: info,
       params: [{ id: 'vesselId', value: vesselId }],
       endpoint: EndpointId.Vessel,
     })
   }
-  if (trackDatasetId) {
+  if (track) {
     datasetsConfig.push({
-      datasetId: trackDatasetId,
+      datasetId: track,
       params: [{ id: 'vesselId', value: vesselId }],
       endpoint: EndpointId.Tracks,
     })
   }
-  if (eventsDatasetsId) {
-    eventsDatasetsId.forEach((eventDatasetId) => {
+  if (events) {
+    events.forEach((eventDatasetId) => {
       datasetsConfig.push({
         datasetId: eventDatasetId,
         query: [{ id: 'vessels', value: vesselId }],
@@ -74,13 +75,17 @@ export const getVesselDataviewInstanceDatasetConfig = (
   return datasetsConfig
 }
 
-const vesselDataviewInstanceTemplate = (dataviewSlug: Dataview['slug']) => {
+const vesselDataviewInstanceTemplate = (
+  dataviewSlug: Dataview['slug'],
+  datasets: VesselInstanceDatasets
+) => {
   return {
     // TODO find the way to use different vessel dataviews, for example
     // panama and peru doesn't show events and needed a workaround to work with this
     dataviewId: dataviewSlug,
     config: {
       colorCyclingType: 'line' as ColorCyclingType,
+      ...datasets,
     },
   }
 }
@@ -91,8 +96,7 @@ export const getVesselDataviewInstance = (
 ): DataviewInstance<GeneratorType> => {
   const vesselDataviewInstance = {
     id: `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
-    ...vesselDataviewInstanceTemplate(TEMPLATE_VESSEL_DATAVIEW_SLUG),
-    datasetsConfig: getVesselDataviewInstanceDatasetConfig(vessel.id, datasets),
+    ...vesselDataviewInstanceTemplate(TEMPLATE_VESSEL_DATAVIEW_SLUG, datasets),
   }
   return vesselDataviewInstance
 }
@@ -103,8 +107,7 @@ export const getPresenceVesselDataviewInstance = (
 ): DataviewInstance<GeneratorType> => {
   const vesselDataviewInstance = {
     id: `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
-    ...vesselDataviewInstanceTemplate(VESSEL_PRESENCE_DATAVIEW_SLUG),
-    datasetsConfig: getVesselDataviewInstanceDatasetConfig(vessel.id, datasets),
+    ...vesselDataviewInstanceTemplate(VESSEL_PRESENCE_DATAVIEW_SLUG, datasets),
   }
   return vesselDataviewInstance
 }

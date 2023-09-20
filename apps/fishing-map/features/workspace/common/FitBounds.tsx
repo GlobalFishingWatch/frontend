@@ -51,8 +51,8 @@ const FitBounds = ({ className, trackResource, hasError, infoResource }: FitBoun
         ) {
           if (infoResource) {
             setTimerange({
-              start: new Date(infoResource.data?.firstTransmissionDate).toISOString(),
-              end: new Date(infoResource.data?.lastTransmissionDate).toISOString(),
+              start: new Date(infoResource.data!?.firstTransmissionDate).toISOString(),
+              end: new Date(infoResource.data!?.lastTransmissionDate).toISOString(),
             })
           } else {
             let minTimestamp = Number.POSITIVE_INFINITY

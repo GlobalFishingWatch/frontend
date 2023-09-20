@@ -99,6 +99,7 @@ export const selectDataviewInstancesResolved = createSelector(
       dataviews,
       datasets
     )
+
     return dataviewInstancesResolved
   }
 )
@@ -163,6 +164,7 @@ export const selectDataviewsResources = createSelector(
     const callbacks: GetDatasetConfigsCallbacks = {
       tracks: trackDatasetConfigsCallback,
     }
+
     return getResources(dataviewInstances || [], callbacks)
   }
 )
@@ -207,12 +209,16 @@ export const selectActiveTrackDataviews = createSelector([selectTrackDataviews],
 export const selectGetVesselDataviewInstance = createSelector(
   [selectWorkspaceProfileView],
   (profileView) => {
-    const {
-      events_query_params: { start_date },
-    } = APP_PROFILE_VIEWS.filter((v) => v.id === profileView).shift() ?? {
-      events_query_params: { start_date: undefined },
+    const { events_query_params } = APP_PROFILE_VIEWS.filter(
+      (v) => v.id === profileView
+    ).shift() ?? {
+      events_query_params: [],
     }
-    return getVesselDataviewInstanceFactory(DEFAULT_VESSEL_DATAVIEWS[profileView], start_date)
+
+    return getVesselDataviewInstanceFactory(
+      DEFAULT_VESSEL_DATAVIEWS[profileView],
+      events_query_params
+    )
   }
 )
 

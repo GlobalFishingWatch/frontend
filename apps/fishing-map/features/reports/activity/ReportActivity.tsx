@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react'
+import React, { Fragment, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import ReportActivityGraphSelector from 'features/reports/activity/ReportActivityGraphSelector'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
@@ -14,6 +14,8 @@ import { selectReportActivityGraph } from 'features/app/app.selectors'
 import ReportActivityPlaceholder from 'features/reports/placeholders/ReportActivityPlaceholder'
 import ReportActivityPeriodComparison from 'features/reports/activity/ReportActivityPeriodComparison'
 import ReportActivityPeriodComparisonGraph from 'features/reports/activity/ReportActivityPeriodComparisonGraph'
+import UserGuideLink from 'features/help/UserGuideLink'
+import { getSourceSwitchContentByLng } from 'features/welcome/SourceSwitch.content'
 import ReportActivityEvolution from './ReportActivityEvolution'
 import ReportActivityBeforeAfter from './ReportActivityBeforeAfter'
 import ReportActivityBeforeAfterGraph from './ReportActivityBeforeAfterGraph'
@@ -25,7 +27,7 @@ export type ReportActivityProps = {
   end: string
 }
 
-const SELECTORS_BY_TYPE: Record<ReportActivityGraph, React.FC> = {
+const SELECTORS_BY_TYPE: Record<ReportActivityGraph, React.FC | null> = {
   evolution: null,
   beforeAfter: ReportActivityBeforeAfter,
   periodComparison: ReportActivityPeriodComparison,
@@ -38,16 +40,20 @@ const GRAPH_BY_TYPE: Record<ReportActivityGraph, React.FC<ReportActivityProps> |
 
 const emptyGraphData = {} as ReportGraphProps
 export default function ReportActivity() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { start, end } = useTimerangeConnect()
   const reportActivityGraph = useSelector(selectReportActivityGraph)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
+  const { disclaimer } = getSourceSwitchContentByLng(i18n.language)
 
   const SelectorsComponent = useMemo(
     () => SELECTORS_BY_TYPE[reportActivityGraph],
     [reportActivityGraph]
   )
-  const GraphComponent = useMemo(() => GRAPH_BY_TYPE[reportActivityGraph], [reportActivityGraph])
+  const GraphComponent = useMemo(
+    () => GRAPH_BY_TYPE[reportActivityGraph] as any,
+    [reportActivityGraph]
+  )
   const { loading, layersTimeseriesFiltered } = useFilteredTimeSeries()
   const reportGraphMode = getReportGraphMode(reportActivityGraph)
   const isSameTimeseriesMode = layersTimeseriesFiltered?.[0]?.mode === reportGraphMode
@@ -58,7 +64,7 @@ export default function ReportActivity() {
       {showSelectors && (
         <div className={styles.titleRow}>
           <label className={styles.blockTitle}>{t('common.activity', 'Activity')}</label>
-          <ReportActivityGraphSelector />
+          <ReportActivityGraphSelector loading={showPlaceholder} />
         </div>
       )}
       {showPlaceholder ? (
@@ -72,14 +78,17 @@ export default function ReportActivity() {
       )}
       {showSelectors && SelectorsComponent && <SelectorsComponent />}
       {!showPlaceholder && (
-        <p className={styles.disclaimer}>
-          <Trans i18nKey="analysis.disclaimer">
-            The data shown above should be taken as an estimate.
-            <a href="https://globalfishingwatch.org/faqs/" target="_blank" rel="noreferrer">
-              Find out more about Global Fishing Watch analysis tools and methods.
-            </a>
-          </Trans>
-        </p>
+        <Fragment>
+          <div className={styles.disclaimer}>
+            <UserGuideLink section="analysis" />
+            <p>
+              {t('analysis.disclaimer', 'The data shown above should be taken as an estimate.')}
+            </p>
+          </div>
+          <div className={styles.disclaimer}>
+            <p className={styles.disclaimerText} dangerouslySetInnerHTML={{ __html: disclaimer }} />
+          </div>
+        </Fragment>
       )}
     </div>
   )

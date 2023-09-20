@@ -102,10 +102,10 @@ const getEventsByVoyages = (
       ...voyage,
       eventsQuantity: events.filter(
         (event) =>
-          (voyage.start < (event.timestamp ?? event.start) &&
-            voyage.end > (event.timestamp ?? event.start)) ||
-          (voyage.start <= (event.timestamp ?? event.end) &&
-            voyage.end >= (event.timestamp ?? event.end))
+          (voyage.start < (event.timestamp ?? (event.start as number)) &&
+            voyage.end > (event.timestamp ?? (event.start as number))) ||
+          (voyage.start <= (event.timestamp ?? (event.end as number)) &&
+            voyage.end >= (event.timestamp ?? (event.end as number)))
       ).length,
     }))
 

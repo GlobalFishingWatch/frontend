@@ -10,6 +10,7 @@ import Settings from 'features/settings/Settings'
 import { useUser } from 'features/user/user.hooks'
 import { useAnalytics } from 'features/app/analytics.hooks'
 import { useReplaceLoginUrl } from 'routes/routes.hook'
+import { IS_STANDALONE_APP } from 'data/config'
 
 function App() {
   useAnalytics()
@@ -26,7 +27,10 @@ function App() {
   }, [])
 
   const Component = useMemo(() => {
-    if (((loading || minLoading) && !logged && !forceOffline) || (!authorized && !forceOffline)) {
+    if (
+      ((loading || minLoading) && !logged && !forceOffline && !IS_STANDALONE_APP) ||
+      (!authorized && !forceOffline && !IS_STANDALONE_APP)
+    ) {
       return <Splash intro={minLoading} />
     }
     if (locationType === SETTINGS) {

@@ -3,6 +3,9 @@ import type {
   LayerSpecification,
   FillLayerSpecification,
   LineLayerSpecification,
+  DataDrivenPropertyValueSpecification,
+  FormattedSpecification,
+  ExpressionSpecification,
 } from '@globalfishingwatch/maplibre-gl'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '../context/config'
 import { GeneratorType, UserContextGeneratorConfig } from '../types'
@@ -45,8 +48,16 @@ class UserContextGenerator {
     if (config.steps?.length && config.colorRamp) {
       const originalColorRamp = HEATMAP_COLOR_RAMPS[config.colorRamp]
       const legendRamp = zip(config.steps, originalColorRamp)
-      const valueExpression = ['to-number', ['get', config.pickValueAt || 'value']]
-      const colorRamp = ['interpolate', ['linear'], valueExpression, ...flatten(legendRamp)]
+      const valueExpression: ExpressionSpecification = [
+        'to-number',
+        ['get', config.pickValueAt || 'value'],
+      ]
+      const colorRamp: DataDrivenPropertyValueSpecification<FormattedSpecification> = [
+        'interpolate',
+        ['linear'],
+        valueExpression,
+        ...(flatten(legendRamp) as any),
+      ]
       const stepsLayer: FillLayerSpecification = {
         ...baseLayer,
         type: 'fill' as const,
@@ -97,7 +108,7 @@ class UserContextGenerator {
         interactive,
         generatorId: generatorId,
         datasetId: config.datasetId,
-        group: Group.CustomLayer,
+        group: Group.OutlinePolygonsBackground,
       },
     }
     return [lineLayer, interactionLayer]

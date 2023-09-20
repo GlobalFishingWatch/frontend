@@ -23,7 +23,7 @@ export function getSupportedGroupByOptions(
     return []
   }
   const mmsiSupported = vesselDatasets.every((dataset) => {
-    return dataset.schema.mmsi !== undefined
+    return dataset?.schema?.mmsi !== undefined
   })
 
   return options.map((option) => {

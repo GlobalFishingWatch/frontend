@@ -83,7 +83,7 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const fitAreaInViewport = useFitAreaInViewport()
-  const [errorMsg, setErrorMsg] = useState(null)
+  const [errorMsg, setErrorMsg] = useState('')
   const timeComparison = useSelector(selectReportTimeComparison)
   const durationType = timeComparison?.durationType
   const duration = timeComparison?.duration
@@ -148,7 +148,7 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
           )
         )
       } else {
-        setErrorMsg(null)
+        setErrorMsg('')
       }
     },
     [

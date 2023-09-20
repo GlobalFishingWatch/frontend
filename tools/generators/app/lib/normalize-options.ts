@@ -1,6 +1,6 @@
-import { assertValidStyle } from '@nrwl/react'
-import { getWorkspaceLayout, joinPathFragments, names, Tree } from '@nrwl/devkit'
-import { Linter } from '@nrwl/linter'
+import { assertValidStyle } from '@nx/react'
+import { getWorkspaceLayout, joinPathFragments, names, Tree } from '@nx/devkit'
+import { Linter } from '@nx/linter'
 import { Schema } from '../schema'
 
 export interface NormalizedSchema extends Schema {

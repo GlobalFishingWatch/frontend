@@ -1,5 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { DataviewCategory, Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
+import { RootState } from 'reducers'
+import { DataviewCategory, Dataset, DatasetTypes, Dataview } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance, getGeneratorConfig } from '@globalfishingwatch/dataviews-client'
 import {
   GeneratorType,
@@ -7,15 +8,19 @@ import {
   BasemapType,
 } from '@globalfishingwatch/layer-composer'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
+import {
+  getDatasetsInDataviews,
+  getRelatedDatasetByType,
+  isPrivateDataset,
+} from 'features/datasets/datasets.utils'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID, DEFAULT_DATAVIEW_SLUGS } from 'data/workspaces'
-import { RootState } from 'store'
 import {
   selectActiveVesselsDataviews,
   selectAllDataviewInstancesResolved,
   selectDataviewInstancesResolved,
   selectAllDataviews,
+  selectDataviewInstancesMergedOrdered,
 } from 'features/dataviews/dataviews.slice'
 import { TimebarVisualisations } from 'types'
 import { selectReportCategory, selectTimebarSelectedEnvId } from 'features/app/app.selectors'
@@ -52,7 +57,7 @@ export const selectDefaultBasemapGenerator = createSelector(
 export const selectDataviewInstancesResolvedVisible = createSelector(
   [
     (state) => selectDataviewInstancesResolved(state),
-    selectIsReportLocation,
+    (state) => selectIsReportLocation(state),
     (state) => selectReportCategory(state),
   ],
   (dataviews = [], isReportLocation, reportCategory) => {
@@ -125,7 +130,11 @@ export const selectActiveActivityDataviews = createSelector(
 )
 
 export const selectActiveReportActivityDataviews = createSelector(
-  [selectActiveActivityDataviews, selectIsReportLocation, (state) => selectReportCategory(state)],
+  [
+    selectActiveActivityDataviews,
+    (state) => selectIsReportLocation(state),
+    (state) => selectReportCategory(state),
+  ],
   (dataviews, isReportLocation, reportCategory): UrlDataviewInstance[] => {
     if (isReportLocation) {
       return dataviews.filter((dataview) => {
@@ -156,7 +165,7 @@ export const selectActiveHeatmapVesselDatasets = createSelector(
       new Set(
         heatmapDataviews.flatMap((dataview) => {
           const activeDatasets = dataview.config?.datasets
-          return dataview.datasets.flatMap((dataset) => {
+          return dataview.datasets?.flatMap((dataset) => {
             if (activeDatasets.includes(dataset.id)) {
               return getRelatedDatasetByType(dataset, DatasetTypes.Vessels)?.id || []
             }
@@ -182,7 +191,7 @@ export const selectActiveEnvironmentalDataviews = createSelector(
 export const selectActiveNonTrackEnvironmentalDataviews = createSelector(
   [selectActiveEnvironmentalDataviews],
   (dataviews) => {
-    return dataviews.filter((dv) => dv.datasets.every((ds) => ds.type !== DatasetTypes.UserTracks))
+    return dataviews.filter((dv) => dv.datasets?.every((ds) => ds.type !== DatasetTypes.UserTracks))
   }
 )
 
@@ -281,7 +290,7 @@ export const selectActiveDataviews = createSelector(
 export const selectAllDataviewsInWorkspace = createSelector(
   [
     (state: RootState) => selectAllDataviews(state),
-    selectWorkspaceDataviewInstances,
+    (state: RootState) => selectWorkspaceDataviewInstances(state),
     (state: RootState) => selectAllDatasets(state),
   ],
   (dataviews = [], workspaceDataviewInstances, datasets) => {
@@ -301,7 +310,7 @@ export const selectAllDataviewsInWorkspace = createSelector(
           return dataset || []
         }
       )
-      return { ...dataview, datasets: dataviewDatasets }
+      return { ...dataview, datasets: dataviewDatasets } as Dataview
     })
   }
 )
@@ -310,7 +319,7 @@ export const selectAvailableActivityDataviews = createSelector(
   [selectAllDataviewsInWorkspace],
   (dataviews) => {
     return dataviews?.filter(
-      (d) => d.category === DataviewCategory.Activity && d.datasetsConfig?.length > 0
+      (d) => d.category === DataviewCategory.Activity && d.datasetsConfig!?.length > 0
     )
   }
 )
@@ -319,7 +328,15 @@ export const selectAvailableDetectionsDataviews = createSelector(
   [selectAllDataviewsInWorkspace],
   (dataviews) => {
     return dataviews?.filter(
-      (d) => d.category === DataviewCategory.Detections && d.datasetsConfig?.length > 0
+      (d) => d.category === DataviewCategory.Detections && d.datasetsConfig!?.length > 0
     )
+  }
+)
+
+export const selectPrivateDatasetsInWorkspace = createSelector(
+  [(state) => selectDataviewInstancesMergedOrdered(state)],
+  (dataviews) => {
+    const workspaceDatasets = getDatasetsInDataviews(dataviews || [])
+    return workspaceDatasets.filter((dataset) => isPrivateDataset({ id: dataset }))
   }
 )

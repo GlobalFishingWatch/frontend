@@ -9,7 +9,8 @@ import {
 } from '@globalfishingwatch/features-aggregate'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
+import { HeatmapLayerMeta } from '@globalfishingwatch/layer-composer'
 import { useMapBounds } from 'features/map/map-viewport.hooks'
 import { getLayerDatasetRange } from 'features/workspace/environmental/HistogramRangeFilter'
 import { areDataviewsFeatureLoaded, useMapDataviewFeatures } from 'features/map/map-sources.hooks'
@@ -21,7 +22,7 @@ export const useDataviewHistogram = (dataview: UrlDataviewInstance) => {
   const sourcesLoaded = areDataviewsFeatureLoaded(layerFeature)
   const dataset = dataview.datasets?.find(
     (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.UserContext
-  )
+  ) as Dataset
   const [histogram, setHistogram] = useState<any>()
 
   const updateHistogram = useCallback(
@@ -29,7 +30,10 @@ export const useDataviewHistogram = (dataview: UrlDataviewInstance) => {
       const { features } = layerFeature.chunksFeatures?.[0] || ({} as ChunkFeature)
       if (features && features.length) {
         const filteredFeatures = filterFeaturesByBounds(features, bounds)
-        const rawData = aggregateFeatures(filteredFeatures, layerFeature.metadata)
+        const rawData = aggregateFeatures(
+          filteredFeatures,
+          layerFeature.metadata as HeatmapLayerMeta
+        )
         const layerRange = getLayerDatasetRange(dataset)
         const data = rawData.filter((d) => {
           const matchesMin = layerRange.min !== undefined ? d >= layerRange.min : true

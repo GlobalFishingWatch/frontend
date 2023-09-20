@@ -23,55 +23,55 @@ import {
   createAsyncSlice,
 } from 'utils/async-slice'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
-import { RootState } from 'store'
 import { selectAllSearchDatasetsByType } from 'features/search/search.selectors'
-import { selectDatasetById } from '../datasets/datasets.slice'
+import { fetchDatasetByIdThunk, selectDatasetById } from '../datasets/datasets.slice'
 
 export const MAX_VESSEL_GROUP_VESSELS = 1000
 
 export type IdField = 'vesselId' | 'mmsi'
 export type VesselGroupConfirmationMode = 'save' | 'saveAndNavigate'
 
-interface VesselGroupsSliceState extends AsyncReducer<VesselGroup> {
+interface VesselGroupsState extends AsyncReducer<VesselGroup> {
   isModalOpen: boolean
-  vesselGroupEditId: string
-  currentDataviewIds: string[]
+  vesselGroupEditId: string | null
+  currentDataviewIds: string[] | null
   confirmationMode: VesselGroupConfirmationMode
-  groupVessels: VesselGroupVessel[]
+  groupVessels: VesselGroupVessel[] | null
   search: {
     id: IdField
     status: AsyncReducerStatus
-    error: ParsedAPIError
-    vessels: Vessel[]
+    error: ParsedAPIError | null
+    vessels: Vessel[] | null
   }
-  newSearchVessels: Vessel[]
+  newSearchVessels: Vessel[] | null
   workspace: {
     status: AsyncReducerStatus
-    error: ParsedAPIError
-    vesselGroups: VesselGroup[]
+    error: ParsedAPIError | null
+    vesselGroups: VesselGroup[] | null
   }
 }
 
-const initialState: VesselGroupsSliceState = {
+const initialState: VesselGroupsState = {
   ...asyncInitialState,
   isModalOpen: false,
-  vesselGroupEditId: undefined,
-  currentDataviewIds: undefined,
+  vesselGroupEditId: null,
+  currentDataviewIds: null,
   confirmationMode: 'save',
-  groupVessels: undefined,
+  groupVessels: null,
   search: {
     id: 'mmsi',
     status: AsyncReducerStatus.Idle,
-    vessels: undefined,
-    error: undefined,
+    vessels: null,
+    error: null,
   },
-  newSearchVessels: undefined,
+  newSearchVessels: null,
   workspace: {
     status: AsyncReducerStatus.Idle,
-    error: undefined,
-    vesselGroups: undefined,
+    error: null,
+    vesselGroups: null,
   },
 }
+type VesselGroupSliceState = { vesselGroups: VesselGroupsState }
 
 export const searchVesselGroupsVesselsThunk = createAsyncThunk(
   'vessel-groups/searchVessels',
@@ -79,13 +79,14 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
     { vessels, idField }: { vessels: VesselGroupVessel[]; idField: IdField },
     { signal, rejectWithValue, getState }
   ) => {
-    const state = getState() as RootState
+    const state = getState() as any
     const vesselGroupDatasets = uniq(vessels?.flatMap((v) => v.dataset || []))
     const allVesselDatasets = selectVesselsDatasets(state)
     const advancedSearchDatasets = (selectAllSearchDatasetsByType('advanced')(state) || []).filter(
       (d) =>
         d.status !== DatasetStatus.Deleted && d.alias?.some((alias) => alias.includes(':latest'))
     )
+
     const vesselDatasetsByType = idField === 'vesselId' ? allVesselDatasets : advancedSearchDatasets
     const searchDatasets = vesselGroupDatasets?.length
       ? vesselDatasetsByType.filter((dataset) => vesselGroupDatasets.includes(dataset.id))
@@ -116,11 +117,11 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
         ],
       }
       if (idField === 'mmsi') {
-        datasetConfig.query.push({
+        datasetConfig.query?.push({
           id: 'limit',
           value: DEFAULT_PAGINATION_PARAMS.limit,
         })
-        datasetConfig.query.push({
+        datasetConfig.query?.push({
           id: 'offset',
           value: DEFAULT_PAGINATION_PARAMS.offset,
         })
@@ -167,7 +168,8 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
   },
   {
     condition: (_, { getState }) => {
-      const workspaceVesselGroupsStatus = (getState() as RootState).vesselGroups.search.status
+      const workspaceVesselGroupsStatus = (getState() as VesselGroupSliceState).vesselGroups.search
+        .status
       // Fetched already in progress, don't need to re-fetch
       return workspaceVesselGroupsStatus !== AsyncReducerStatus.Loading
     },
@@ -176,11 +178,20 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
 
 export const getVesselInVesselGroupThunk = createAsyncThunk(
   'vessel-groups/getVessels',
-  async ({ vesselGroup }: { vesselGroup: VesselGroup }, { signal, rejectWithValue, getState }) => {
-    const state = getState() as RootState
+  async (
+    { vesselGroup }: { vesselGroup: VesselGroup },
+    { signal, rejectWithValue, getState, dispatch }
+  ) => {
+    const state = getState() as any
     const datasets = uniq(vesselGroup.vessels.flatMap((v) => v.dataset || []))
-    const dataset = selectDatasetById(datasets[0])(state)
-
+    const datasetId = datasets[0]
+    let dataset = selectDatasetById(datasetId)(state)
+    if (!dataset) {
+      const action = await dispatch(fetchDatasetByIdThunk(datasetId))
+      if (fetchDatasetByIdThunk.fulfilled.match(action)) {
+        dataset = action.payload
+      }
+    }
     if (vesselGroup.id && dataset) {
       const datasetConfig: DataviewDatasetConfig = {
         endpoint: EndpointId.VesselList,
@@ -222,7 +233,8 @@ export const getVesselInVesselGroupThunk = createAsyncThunk(
   },
   {
     condition: (_, { getState }) => {
-      const workspaceVesselGroupsStatus = (getState() as RootState).vesselGroups.search.status
+      const workspaceVesselGroupsStatus = (getState() as VesselGroupSliceState).vesselGroups.search
+        .status
       // Fetched already in progress, don't need to re-fetch
       return workspaceVesselGroupsStatus !== AsyncReducerStatus.Loading
     },
@@ -231,10 +243,10 @@ export const getVesselInVesselGroupThunk = createAsyncThunk(
 
 export const fetchWorkspaceVesselGroupsThunk = createAsyncThunk(
   'workspace-vessel-groups/fetch',
-  async (ids: string[] = [], { signal, rejectWithValue }) => {
+  async (groups: VesselGroup[] = [], { signal, rejectWithValue }) => {
     try {
       const vesselGroupsParams = {
-        ...(ids?.length && { ids }),
+        ...(groups?.length && { ids: groups.map((g) => g.id).join(',') }),
         cache: false,
         ...DEFAULT_PAGINATION_PARAMS,
       }
@@ -250,7 +262,8 @@ export const fetchWorkspaceVesselGroupsThunk = createAsyncThunk(
   },
   {
     condition: (_, { getState }) => {
-      const workspaceVesselGroupsStatus = (getState() as RootState).vesselGroups.workspace.status
+      const workspaceVesselGroupsStatus = (getState() as VesselGroupSliceState).vesselGroups
+        .workspace.status
       // Fetched already in progress, don't need to re-fetch
       return workspaceVesselGroupsStatus !== AsyncReducerStatus.Loading
     },
@@ -260,7 +273,11 @@ export const fetchWorkspaceVesselGroupsThunk = createAsyncThunk(
 export const fetchUserVesselGroupsThunk = createAsyncThunk(
   'vessel-groups/fetch',
   async () => {
-    const url = `/vessel-groups?${stringify(DEFAULT_PAGINATION_PARAMS)}`
+    const vesselGroupsParams = {
+      ...DEFAULT_PAGINATION_PARAMS,
+      'logged-user': true,
+    }
+    const url = `/vessel-groups?${stringify(vesselGroupsParams)}`
     const vesselGroups = await GFWAPI.fetch<APIPagination<VesselGroup>>(url)
     return vesselGroups.entries
   },
@@ -343,7 +360,7 @@ export const deleteVesselGroupThunk = createAsyncThunk<
 })
 
 export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
-  VesselGroupsSliceState,
+  VesselGroupsState,
   VesselGroup
 >({
   name: 'vesselGroups',
@@ -381,28 +398,28 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
       // Using initialState doesn't work so needs manual reset
       state.status = AsyncReducerStatus.Idle
       state.isModalOpen = false
-      state.vesselGroupEditId = undefined
+      state.vesselGroupEditId = null
       state.confirmationMode = 'save'
-      state.currentDataviewIds = undefined
-      state.groupVessels = undefined
+      state.currentDataviewIds = null
+      state.groupVessels = null
       state.search = {
         id: 'mmsi',
         status: AsyncReducerStatus.Idle,
-        vessels: undefined,
-        error: undefined,
+        vessels: null,
+        error: null,
       }
-      state.newSearchVessels = undefined
+      state.newSearchVessels = null
       state.workspace = {
         status: AsyncReducerStatus.Idle,
-        error: undefined,
-        vesselGroups: undefined,
+        error: null,
+        vesselGroups: null,
       }
     },
   },
   extraReducers(builder) {
     builder.addCase(searchVesselGroupsVesselsThunk.pending, (state) => {
       state.search.status = AsyncReducerStatus.Loading
-      state.search.vessels = undefined
+      state.search.vessels = null
     })
     builder.addCase(searchVesselGroupsVesselsThunk.fulfilled, (state, action) => {
       state.search.status = AsyncReducerStatus.Finished
@@ -418,7 +435,7 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
     })
     builder.addCase(getVesselInVesselGroupThunk.pending, (state) => {
       state.search.status = AsyncReducerStatus.Loading
-      state.search.vessels = undefined
+      state.search.vessels = null
     })
     builder.addCase(getVesselInVesselGroupThunk.fulfilled, (state, action) => {
       state.search.status = AsyncReducerStatus.Finished
@@ -434,7 +451,7 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
     })
     builder.addCase(fetchWorkspaceVesselGroupsThunk.pending, (state) => {
       state.workspace.status = AsyncReducerStatus.Loading
-      state.workspace.vesselGroups = undefined
+      state.workspace.vesselGroups = null
     })
     builder.addCase(
       fetchWorkspaceVesselGroupsThunk.fulfilled,
@@ -474,31 +491,38 @@ export const {
 } = vesselGroupsSlice.actions
 
 export const { selectAll: selectAllVesselGroups, selectById } =
-  entityAdapter.getSelectors<RootState>((state) => state.vesselGroups)
+  entityAdapter.getSelectors<VesselGroupSliceState>((state) => state.vesselGroups)
 
 export const selectVesselGroupById = memoize((id: string) =>
-  createSelector([(state: RootState) => state], (state) => selectById(state, id))
+  createSelector([(state: VesselGroupSliceState) => state], (state) => selectById(state, id))
 )
 
-export const selectVesselGroupModalOpen = (state: RootState) => state.vesselGroups.isModalOpen
-export const selectVesselGroupsStatus = (state: RootState) => state.vesselGroups.status
-export const selectWorkspaceVesselGroupsStatus = (state: RootState) =>
+export const selectVesselGroupModalOpen = (state: VesselGroupSliceState) =>
+  state.vesselGroups.isModalOpen
+export const selectVesselGroupsStatus = (state: VesselGroupSliceState) => state.vesselGroups.status
+export const selectWorkspaceVesselGroupsStatus = (state: VesselGroupSliceState) =>
   state.vesselGroups.workspace.status
-export const selectWorkspaceVesselGroupsError = (state: RootState) =>
+export const selectWorkspaceVesselGroupsError = (state: VesselGroupSliceState) =>
   state.vesselGroups.workspace.error
-export const selectVesselGroupsVessels = (state: RootState) => state.vesselGroups.groupVessels
-export const selectWorkspaceVesselGroups = (state: RootState) =>
+export const selectVesselGroupsVessels = (state: VesselGroupSliceState) =>
+  state.vesselGroups.groupVessels
+export const selectWorkspaceVesselGroups = (state: VesselGroupSliceState) =>
   state.vesselGroups.workspace.vesselGroups
-export const selectVesselGroupSearchId = (state: RootState) => state.vesselGroups.search.id
-export const selectVesselGroupSearchStatus = (state: RootState) => state.vesselGroups.search.status
-export const selectVesselGroupSearchVessels = (state: RootState) =>
+export const selectVesselGroupSearchId = (state: VesselGroupSliceState) =>
+  state.vesselGroups.search.id
+export const selectVesselGroupSearchStatus = (state: VesselGroupSliceState) =>
+  state.vesselGroups.search.status
+export const selectVesselGroupSearchVessels = (state: VesselGroupSliceState) =>
   state.vesselGroups.search.vessels
-export const selectNewVesselGroupSearchVessels = (state: RootState) =>
+export const selectNewVesselGroupSearchVessels = (state: VesselGroupSliceState) =>
   state.vesselGroups.newSearchVessels
-export const selectVesselGroupsStatusId = (state: RootState) => state.vesselGroups.statusId
-export const selectCurrentDataviewIds = (state: RootState) => state.vesselGroups.currentDataviewIds
-export const selectVesselGroupEditId = (state: RootState) => state.vesselGroups.vesselGroupEditId
-export const selectVesselGroupConfirmationMode = (state: RootState) =>
+export const selectVesselGroupsStatusId = (state: VesselGroupSliceState) =>
+  state.vesselGroups.statusId
+export const selectCurrentDataviewIds = (state: VesselGroupSliceState) =>
+  state.vesselGroups.currentDataviewIds
+export const selectVesselGroupEditId = (state: VesselGroupSliceState) =>
+  state.vesselGroups.vesselGroupEditId
+export const selectVesselGroupConfirmationMode = (state: VesselGroupSliceState) =>
   state.vesselGroups.confirmationMode
 
 export default vesselGroupsSlice.reducer

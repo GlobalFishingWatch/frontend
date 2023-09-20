@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { sum } from 'lodash'
-import { useMemo } from 'react'
+import { Fragment, useMemo } from 'react'
+import Sticky from 'react-sticky-el'
 import { Locale } from '@globalfishingwatch/api-types'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import {
@@ -22,7 +23,7 @@ import ReportSummaryTagsPlaceholder from 'features/reports/placeholders/ReportSu
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { listAsSentence } from 'utils/shared'
 import { ReportCategory } from 'types'
-import { getDateRangeHash, selectReportVesselsDateRangeHash } from 'features/reports/reports.slice'
+import { getDateRangeHash, selectReportVesselsDateRangeHash } from 'features/reports/report.slice'
 import { selectReportVesselsHours, selectReportVesselsNumber } from '../reports.selectors'
 import styles from './ReportSummary.module.css'
 
@@ -31,7 +32,7 @@ type ReportSummaryProps = {
   reportStatus: AsyncReducerStatus
 }
 
-const PROPERTIES_EXCLUDED = ['flag', 'geartype']
+export const PROPERTIES_EXCLUDED = ['flag', 'geartype']
 
 export default function ReportSummary({ activityUnit, reportStatus }: ReportSummaryProps) {
   const { t, i18n } = useTranslation()
@@ -39,7 +40,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
   const category = useSelector(selectReportCategory)
   const reportVessels = useSelector(selectReportVesselsNumber)
   const { loading: timeseriesLoading, layersTimeseriesFiltered } = useFilteredTimeSeries()
-  const reportHours = useSelector(selectReportVesselsHours)
+  const reportHours = useSelector(selectReportVesselsHours) as number
   const dataviews = useSelector(selectActiveReportDataviews)
   const reportDateRangeHash = useSelector(selectReportVesselsDateRangeHash)
   const reportOutdated = reportDateRangeHash !== getDateRangeHash(timerange)
@@ -47,7 +48,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
   const commonProperties = useMemo(() => {
     return getCommonProperties(dataviews).filter(
       (property) =>
-        !dataviews[0].config.filters?.[property] || !PROPERTIES_EXCLUDED.includes(property)
+        !dataviews[0].config?.filters!?.[property] || !PROPERTIES_EXCLUDED.includes(property)
     )
   }, [dataviews])
 
@@ -98,7 +99,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
         reportStatus === AsyncReducerStatus.Finished &&
         reportHours)
     ) {
-      const formattedTimeseries = formatEvolutionData(layersTimeseriesFiltered?.[0])
+      const formattedTimeseries = formatEvolutionData(layersTimeseriesFiltered!?.[0])
       const timeseriesHours = sum(formattedTimeseries?.map((t) => sum(t.avg)))
       const timeseriesMaxHours = sum(formattedTimeseries?.map((t) => sum(t.range.map((r) => r[1]))))
       const timeseriesImprecision = ((timeseriesMaxHours - timeseriesHours) / timeseriesHours) * 100
@@ -122,7 +123,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
       }
       const activityUnitLabel =
         category === ReportCategory.Detections
-          ? ''
+          ? t('common.detection', { defaultValue: 'detections', count: Math.floor(reportHours) })
           : `<strong>${t(`common.${activityUnit}`, {
               defaultValue: 'hours',
               count: Math.floor(reportHours),
@@ -161,27 +162,33 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
   ])
 
   return (
-    <div className={styles.container}>
-      {summary ? (
-        <p className={styles.summary} dangerouslySetInnerHTML={{ __html: summary }}></p>
-      ) : (
-        <ReportSummaryPlaceholder />
-      )}
-      <div className={styles.tagsContainer}>
-        {dataviews.length > 0 ? (
-          dataviews?.map((dataview, index) => (
-            <ReportSummaryTags
-              key={dataview.id}
-              dataview={dataview}
-              index={index}
-              hiddenProperties={commonProperties}
-              availableFields={FIELDS}
-            />
-          ))
+    <Fragment>
+      <div className={styles.summaryContainer}>
+        {summary ? (
+          <p className={styles.summary} dangerouslySetInnerHTML={{ __html: summary }}></p>
         ) : (
-          <ReportSummaryTagsPlaceholder />
+          <ReportSummaryPlaceholder />
         )}
       </div>
-    </div>
+      {summary ? (
+        <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
+          <div className={styles.tagsContainer}>
+            {dataviews?.map((dataview, index) => (
+              <ReportSummaryTags
+                key={dataview.id}
+                dataview={dataview}
+                index={index}
+                hiddenProperties={commonProperties}
+                availableFields={FIELDS}
+              />
+            ))}
+          </div>
+        </Sticky>
+      ) : (
+        <div className={styles.tagsContainer}>
+          <ReportSummaryTagsPlaceholder />
+        </div>
+      )}
+    </Fragment>
   )
 }

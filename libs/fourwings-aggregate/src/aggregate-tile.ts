@@ -290,8 +290,8 @@ export function aggregate(intArray: number[], options: TileAggregationParams) {
     }
   }
 
-  const features = []
-  const featuresInteractive = []
+  const features = [] as any[]
+  const featuresInteractive = [] as any[]
 
   let aggregating: number[][] = Array(sublayerCount).fill([])
   let currentAggregatedValues = Array(sublayerCount).fill(0)
@@ -309,12 +309,12 @@ export function aggregate(intArray: number[], options: TileAggregationParams) {
   let datasetsHighestRealValueIndex
   let realValuesSum = 0
   let literalValuesStr = '['
-  let cumulativeValuesPaddedStrings = []
+  let cumulativeValuesPaddedStrings = [] as any[]
 
   const numRows = intArray[FEATURE_ROW_INDEX]
   const numCols = intArray[FEATURE_COL_INDEX]
 
-  const featureIntArrays = []
+  const featureIntArrays = [] as any[]
   let startFrame = 0
   let endFrame = 0
   let startIndex = 0

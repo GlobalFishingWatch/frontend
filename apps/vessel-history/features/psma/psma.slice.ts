@@ -1,7 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { uniqBy } from 'lodash'
 import { stringify } from 'qs'
-import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
+import { GFWApiClient } from 'http-client/http-client'
+import { parseAPIError } from '@globalfishingwatch/api-client'
 import { APIPagination } from '@globalfishingwatch/api-types'
 import {
   asyncInitialState,
@@ -11,7 +12,7 @@ import {
 } from 'utils/async-slice'
 import { RootState } from 'store'
 import { Psma } from 'types/psma'
-import { API_VERSION, DEFAULT_PAGINATION_PARAMS } from 'data/config'
+import { DEFAULT_PAGINATION_PARAMS, IS_STANDALONE_APP } from 'data/config'
 
 export type PsmaState = AsyncReducer<Psma>
 
@@ -23,10 +24,14 @@ export const fetchPsmaThunk = createAsyncThunk(
   'psma/fetch',
   async (_, { rejectWithValue }) => {
     try {
+      if (IS_STANDALONE_APP) {
+        // TODO: we should add the psma to the available endpoints
+        return []
+      }
       const queryParams = {
         ...DEFAULT_PAGINATION_PARAMS,
       }
-      const psmaResult = await GFWAPI.fetch<APIPagination<Psma>>(
+      const psmaResult = await GFWApiClient.fetch<APIPagination<Psma>>(
         `/psma-countries?${stringify(queryParams, { arrayFormat: 'comma' })}`
       )
       const psma = uniqBy(psmaResult.entries, 'iso3')

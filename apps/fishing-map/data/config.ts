@@ -1,25 +1,21 @@
-import ReactGA from 'react-ga'
 import { DateTime } from 'luxon'
 import { DataviewCategory, ThinningConfig } from '@globalfishingwatch/api-types'
 import { ThinningLevels, THINNING_LEVELS } from '@globalfishingwatch/api-client'
-import { TimebarGraphs, TimebarVisualisations } from 'types'
+import { TimebarGraphs, TimebarVisualisations, UserTab } from 'types'
 import { getUTCDateTime } from 'utils/dates'
 
 export const ROOT_DOM_ELEMENT = '__next'
 
 export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
-export const IS_PRODUCTION =
-  process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'production' || process.env.NODE_ENV === 'production'
+
+export const IS_PRODUCTION_BUILD = process.env.NODE_ENV === 'production'
+export const PUBLIC_WORKSPACE_ENV = process.env.NEXT_PUBLIC_WORKSPACE_ENV
+export const IS_PRODUCTION = PUBLIC_WORKSPACE_ENV === 'production' || IS_PRODUCTION_BUILD
 
 export const REPORT_DAYS_LIMIT =
   typeof process.env.NEXT_PUBLIC_REPORT_DAYS_LIMIT !== 'undefined'
     ? parseInt(process.env.NEXT_PUBLIC_REPORT_DAYS_LIMIT)
     : 366 // 1 year
-
-export const VESSEL_GROUPS_DAYS_LIMIT =
-  typeof process.env.VESSEL_GROUPS_DAYS_LIMIT !== 'undefined'
-    ? parseInt(process.env.VESSEL_GROUPS_DAYS_LIMIT)
-    : 93 // 3 months
 
 // Never actually used?
 export const API_GATEWAY = process.env.API_GATEWAY || process.env.NEXT_PUBLIC_API_GATEWAY || ''
@@ -30,10 +26,8 @@ export const CARRIER_PORTAL_URL =
 export const LATEST_CARRIER_DATASET_ID =
   process.env.NEXT_PUBLIC_LATEST_CARRIER_DATASET_ID || 'carriers:latest'
 
-export const GOOGLE_UNIVERSAL_ANALYTICS_ID = process.env.NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID
-export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions = IS_PRODUCTION
-  ? {}
-  : { debug: true }
+export const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID
+export const GOOGLE_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID
 
 export const REPORT_VESSELS_PER_PAGE = 10
 export const REPORT_SHOW_MORE_VESSELS_PER_PAGE = REPORT_VESSELS_PER_PAGE * 5
@@ -51,12 +45,10 @@ export const FULL_SUFIX = 'full'
 export const USER_SUFIX = 'user'
 export const PRIVATE_SUFIX = 'private'
 
+export const DEFAULT_DATA_DELAY_DAYS = 3
 // used when no url data and no workspace data
-export const LAST_DATA_UPDATE = DateTime.fromObject(
-  { hour: 0, minute: 0, second: 0 },
-  { zone: 'utc' }
-)
-  .minus({ days: 3 })
+const LAST_DATA_UPDATE = DateTime.fromObject({ hour: 0, minute: 0, second: 0 }, { zone: 'utc' })
+  .minus({ days: DEFAULT_DATA_DELAY_DAYS })
   .toISO()
 
 export const DEFAULT_VIEWPORT = {
@@ -66,7 +58,7 @@ export const DEFAULT_VIEWPORT = {
 }
 
 export const DEFAULT_TIME_RANGE = {
-  start: getUTCDateTime(LAST_DATA_UPDATE)?.minus({ months: 3 }).toISO(),
+  start: getUTCDateTime(LAST_DATA_UPDATE)?.minus({ months: 3 }).toISO() as string,
   end: LAST_DATA_UPDATE,
 }
 
@@ -99,6 +91,7 @@ export const DEFAULT_WORKSPACE = {
   reportVesselGraph: REPORT_VESSELS_GRAPH_FLAG,
   reportVesselPage: 0,
   reportResultsPerPage: REPORT_VESSELS_PER_PAGE,
+  userTab: UserTab.Info,
 }
 
 export const EVENTS_COLORS: Record<string, string> = {

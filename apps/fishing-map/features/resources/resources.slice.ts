@@ -27,8 +27,8 @@ export const selectTrackThinningConfig = createSelector(
   [(state) => isGuestUser(state), selectDebugOptions, selectUrlMapZoomQuery],
   (guestUser, { thinning }, currentZoom) => {
     if (!thinning) return null
-    let config: ThinningConfig
-    let selectedZoom: number
+    let config = {} as ThinningConfig
+    let selectedZoom = 0 as number
     for (let i = 0; i < THINNING_LEVEL_ZOOMS.length; i++) {
       const zoom = THINNING_LEVEL_ZOOMS[i]
       if (currentZoom < zoom) break
@@ -58,7 +58,7 @@ export const selectTrackChunksConfig = createSelector(
     const bufferedStart = startDT.minus({ month: 1 })
     const bufferedEnd = endDT.plus({ month: 1 })
 
-    const chunks = []
+    const chunks = [] as { start: string; end: string }[]
 
     YEARS.forEach((year) => {
       const yearStart = DateTime.fromObject({ year }, { zone: 'utc' })

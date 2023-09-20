@@ -125,3 +125,11 @@
 .disabled {
   pointer-events: none;
 }
+
+.icon {
+  opacity: 0;
+}
+
+.icon.visible {
+  opacity: 1;
+}

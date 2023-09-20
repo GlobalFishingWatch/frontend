@@ -1,6 +1,5 @@
-import ReactGA from 'react-ga'
 import { DateTime } from 'luxon'
-import { ThinningConfig } from '@globalfishingwatch/api-types'
+import { DataviewDatasetConfigParam, ThinningConfig } from '@globalfishingwatch/api-types'
 import { ThinningLevels, THINNING_LEVELS } from '@globalfishingwatch/api-client'
 import { AppState } from 'types/redux.types'
 import { TimebarGraphs } from 'types'
@@ -12,7 +11,7 @@ export const WORKSPACE_ENV =
   (process.env.NEXT_PUBLIC_WORKSPACE_ENV as WorkspaceEnv) ||
   (process.env.NODE_ENV as WorkspaceEnv) ||
   'production'
-export const IS_PRODUCTION = WORKSPACE_ENV === 'production'
+
 export const FLY_EFFECTS = {
   noFly: 0, // just change the center
   softFly: 1, // fly to without effects
@@ -115,15 +114,15 @@ export const DOWNLOAD_ACTIVITY_PERMISSION = {
   action: 'download',
 }
 
-export const GOOGLE_UNIVERSAL_ANALYTICS_ID =
-  process.env.NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID || 'UA-56517380-5'
-export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions = IS_PRODUCTION
-  ? {}
-  : { debug: true }
+export const GOOGLE_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID || 'G-R3PWRQW70G'
+export const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID || 'GTM-KK5ZFST'
+export const GOOGLE_ANALYTICS_DEBUG_MODE =
+  (process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_DEBUG_MODE || 'false').toLowerCase() === 'true'
 
 export const FEEDBACK_EN = process.env.NEXT_PUBLIC_FEEDBACK_FORM_EN
 export const FEEDBACK_FR = process.env.NEXT_PUBLIC_FEEDBACK_FORM_FR
-
+export const CUSTOM_ACCESS_TOKEN = process.env.NEXT_PUBLIC_CUSTOM_ACCESS_TOKEN || null
+export const IS_STANDALONE_APP = !!CUSTOM_ACCESS_TOKEN
 export const AIS_DATA_DELAY_DAYS = 3
 export const RISK_SUMMARY_SETTINGS = {
   // Time range to use when calculating indicators
@@ -132,31 +131,63 @@ export const RISK_SUMMARY_SETTINGS = {
     !!process.env.NEXT_PUBLIC_RISK_SUMMARY_SHOW_ICON_EVENTS_COUNT || false,
 }
 
-export const APP_PROFILE_VIEWS = [
+export const DEFAULT_PAGINATION_PARAMS = {
+  limit: 99999,
+  offset: 0,
+}
+
+export interface ProfileView {
+  id: string
+  name: string
+  required_permission?: {
+    type: string
+    value: string
+    action: string
+  }
+  propagate_events_query_params: string[]
+  events_query_params: DataviewDatasetConfigParam[]
+}
+
+export const APP_PROFILE_VIEWS: ProfileView[] = [
   {
     id: 'port-inspector',
     name: 'Port Inspector',
     required_permission: PORT_INSPECTOR_PERMISSION,
     propagate_events_query_params: ['confidences'],
-    events_query_params: {
-      start_date: undefined,
-    },
+    events_query_params: [],
   },
   {
     id: 'insurance-underwriter',
     name: 'Insurance Underwriter',
     required_permission: INSURER_PERMISSION,
     propagate_events_query_params: ['confidences'],
-    events_query_params: {
-      start_date: DateTime.utc().minus({ months: 12 }).toISO(),
-    },
+    events_query_params: [
+      {
+        id: 'start-date',
+        value: DateTime.utc().minus({ months: 12 }).toISO(),
+      },
+    ],
+  },
+  {
+    id: 'standalone',
+    name: 'Standalone App',
+    propagate_events_query_params: ['confidences'],
+    events_query_params: [
+      {
+        id: 'start-date',
+        value: DateTime.local(2012, 1, 1, 0, 0).toISO(),
+      },
+      {
+        id: 'limit',
+        value: DEFAULT_PAGINATION_PARAMS.limit,
+      },
+      {
+        id: 'offset',
+        value: DEFAULT_PAGINATION_PARAMS.offset,
+      },
+    ],
   },
 ]
-
-export const DEFAULT_PAGINATION_PARAMS = {
-  limit: 99999,
-  offset: 0,
-}
 
 export const THINNING_LEVEL_BY_ZOOM: Record<
   number,

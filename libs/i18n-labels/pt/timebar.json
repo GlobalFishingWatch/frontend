@@ -9,9 +9,9 @@
   },
   "timerange": {
     "title": "Selecione um intervalo de tempo",
-    "year": "Year",
-    "month": "Month",
-    "day": "Day",
+    "year": "Ano",
+    "month": "Mês",
+    "day": "Dia",
     "start": "Início",
     "end": "fim",
     "selectAValidDate": "Please select a valid date",
@@ -43,7 +43,7 @@
     "hourTooltip": "See hourly data",
     "day": "day",
     "dayTooltip": "See daily data",
-    "month": "month",
+    "month": "mês",
     "monthTooltip": "See monthly data",
     "year": "year",
     "yearTooltip": "See yearly data"

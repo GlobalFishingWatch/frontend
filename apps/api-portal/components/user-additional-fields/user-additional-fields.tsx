@@ -25,15 +25,15 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
   const { mutate, isLoading: isUpdating, isSuccess, isError } = useUpdateUserAdditionalInformation()
 
   const defaultUserAdditionalInformation: UserApiAdditionalInformation = {
-    apiTerms: user.apiTerms,
-    intendedUse: user.intendedUse,
-    problemToResolve: user.problemToResolve,
-    pullingDataOtherAPIS: user.pullingDataOtherAPIS,
-    whoEndUsers: user.whoEndUsers,
+    apiTerms: user!?.apiTerms,
+    intendedUse: user!?.intendedUse,
+    problemToResolve: user!?.problemToResolve,
+    pullingDataOtherAPIS: user!?.pullingDataOtherAPIS,
+    whoEndUsers: user!?.whoEndUsers,
   }
 
   const [userAdditionalInformation, setUserAdditionalInformation] =
-    useState<UserApiAdditionalInformation>(defaultUserAdditionalInformation)
+    useState<UserApiAdditionalInformation | null>(defaultUserAdditionalInformation)
 
   const [termsOfUseOpened, setTermsOfUseOpened] = useState(false)
   const onTermsOfUseClick: MouseEventHandler = useCallback((event) => {
@@ -41,7 +41,8 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
   }, [])
   const error = useMemo(() => {
     const errors: FieldValidationError<UserApiAdditionalInformation> = {}
-    const { apiTerms, intendedUse, problemToResolve, whoEndUsers } = userAdditionalInformation
+    const { apiTerms, intendedUse, problemToResolve, whoEndUsers } =
+      userAdditionalInformation || ({} as UserApiAdditionalInformation)
 
     if (!intendedUse || !USER_APPLICATION_INTENDED_USES.includes(intendedUse as any)) {
       errors.intendedUse = 'Intended Use is required'
@@ -79,8 +80,8 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
   )
 
   const selectedIntendedUse = useMemo(
-    () => INTENDED_USE_OPTIONS.find(({ id }) => userAdditionalInformation.intendedUse === id),
-    [INTENDED_USE_OPTIONS, userAdditionalInformation.intendedUse]
+    () => INTENDED_USE_OPTIONS.find(({ id }) => userAdditionalInformation?.intendedUse === id),
+    [INTENDED_USE_OPTIONS, userAdditionalInformation?.intendedUse]
   )
 
   const onSelectIntendedUse = useCallback(
@@ -91,7 +92,7 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
   )
   const onRemoveIntendedUse = useCallback(
     (option: SelectOption) => {
-      setUserAdditionalInformation({ ...userAdditionalInformation, intendedUse: null })
+      setUserAdditionalInformation({ ...userAdditionalInformation, intendedUse: undefined })
     },
     [setUserAdditionalInformation, userAdditionalInformation]
   )
@@ -109,7 +110,7 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
       } else {
         setUserAdditionalInformation({
           ...userAdditionalInformation,
-          apiTerms: termsAccepted ? null : new Date().toISOString(),
+          apiTerms: termsAccepted ? undefined : new Date().toISOString(),
         })
       }
     },
@@ -139,7 +140,7 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
           label="Who are your end users? (*)"
           type={'text'}
           maxLength={500}
-          value={userAdditionalInformation.whoEndUsers ?? ''}
+          value={userAdditionalInformation?.whoEndUsers ?? ''}
           className={styles.input}
           onChange={(e) =>
             setUserAdditionalInformation({
@@ -155,7 +156,7 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
           label="What problem are you trying to solve? (*)"
           type={'text'}
           maxLength={500}
-          value={userAdditionalInformation.problemToResolve ?? ''}
+          value={userAdditionalInformation?.problemToResolve ?? ''}
           className={styles.input}
           onChange={(e) =>
             setUserAdditionalInformation({
@@ -171,7 +172,7 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
           label="Are you pulling data from APIs from other organizations?"
           type={'text'}
           maxLength={500}
-          value={userAdditionalInformation.pullingDataOtherAPIS ?? ''}
+          value={userAdditionalInformation?.pullingDataOtherAPIS ?? ''}
           className={styles.input}
           onChange={(e) =>
             setUserAdditionalInformation({
@@ -205,7 +206,11 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
       </div>
       <div className={styles.field}>
         <Button
-          onClick={() => mutate(userAdditionalInformation)}
+          onClick={() => {
+            if (userAdditionalInformation) {
+              mutate(userAdditionalInformation)
+            }
+          }}
           loading={isUpdating}
           className={styles.button}
           disabled={!valid}

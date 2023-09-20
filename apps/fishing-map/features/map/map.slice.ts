@@ -15,7 +15,7 @@ import {
   APIPagination,
 } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { AppDispatch, RootState } from 'store'
+import { AppDispatch } from 'store'
 import {
   selectEventsDataviews,
   selectActiveTemporalgridDataviews,
@@ -26,7 +26,6 @@ import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/data
 import { getUTCDateTime } from 'utils/dates'
 
 export const MAX_TOOLTIP_LIST = 5
-export const MAX_VESSELS_LOAD = 150
 
 export type ExtendedFeatureVesselDatasets = Vessel & {
   id: string
@@ -61,6 +60,7 @@ type MapState = {
   hovered: SliceInteractionEvent | null
   isDrawing: boolean
   fishingStatus: AsyncReducerStatus
+  currentFishingRequestId: string
   apiEventStatus: AsyncReducerStatus
 }
 
@@ -69,6 +69,7 @@ const initialState: MapState = {
   hovered: null,
   isDrawing: false,
   fishingStatus: AsyncReducerStatus.Idle,
+  currentFishingRequestId: '',
   apiEventStatus: AsyncReducerStatus.Idle,
 }
 
@@ -198,7 +199,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
 >(
   'map/fetchFishingActivityInteraction',
   async ({ fishingActivityFeatures, activityProperties }, { getState, signal, dispatch }) => {
-    const state = getState() as RootState
+    const state = getState() as any
     const guestUser = isGuestUser(state)
     const temporalgridDataviews = selectActiveTemporalgridDataviews(state) || []
     if (!fishingActivityFeatures.length) {
@@ -244,7 +245,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
           return source
             .flatMap((source) => source)
             .sort((a, b) => b[activityProperty] - a[activityProperty])
-            .slice(0, MAX_VESSELS_LOAD)
+            .slice(0, MAX_TOOLTIP_LIST)
         })
         .flatMap((v) => v)
 
@@ -285,8 +286,8 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
       )
 
       const mainTemporalgridFeature = fishingActivityFeatures[0].temporalgrid
-      const startYear = getUTCDateTime(mainTemporalgridFeature?.visibleStartDate).year
-      const endYear = getUTCDateTime(mainTemporalgridFeature?.visibleEndDate).year
+      const startYear = getUTCDateTime(mainTemporalgridFeature!?.visibleStartDate).year
+      const endYear = getUTCDateTime(mainTemporalgridFeature!?.visibleEndDate).year
       const sublayersVessels: SublayerVessels[] = vesselsBySource.map((sublayerVessels, i) => {
         const activityProperty = activityProperties?.[i] || 'hours'
         return {
@@ -309,7 +310,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
                 const trackDatasetId = getRelatedDatasetByType(
                   trackFromRelatedDataset,
                   DatasetTypes.Tracks,
-                  !guestUser
+                  { fullDatasetAllowed: !guestUser }
                 )?.id
                 // if (vesselInfo && !trackDatasetId) {
                 //   console.warn('No track dataset found for dataset:', trackFromRelatedDataset)
@@ -340,7 +341,7 @@ export const fetchEncounterEventThunk = createAsyncThunk<
     dispatch: AppDispatch
   }
 >('map/fetchEncounterEvent', async (eventFeature, { signal, getState }) => {
-  const state = getState() as RootState
+  const state = getState() as any
   const eventDataviews = selectEventsDataviews(state) || []
   const dataview = eventDataviews.find((d) => d.id === eventFeature.generatorId)
   const dataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
@@ -428,7 +429,7 @@ export const fetchBQEventThunk = createAsyncThunk<
     dispatch: AppDispatch
   }
 >('map/fetchBQEvent', async (eventFeature, { signal, getState }) => {
-  const state = getState() as RootState
+  const state = getState()
   const eventDataviews = selectEventsDataviews(state) || []
   const dataview = eventDataviews.find((d) => d.id === eventFeature.generatorId)
   const dataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
@@ -469,9 +470,11 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchFishingActivityInteractionThunk.pending, (state, action) => {
       state.fishingStatus = AsyncReducerStatus.Loading
+      state.currentFishingRequestId = action.meta.requestId
     })
     builder.addCase(fetchFishingActivityInteractionThunk.fulfilled, (state, action) => {
       state.fishingStatus = AsyncReducerStatus.Finished
+      state.currentFishingRequestId = ''
       if (!state.clicked || !state.clicked.features || !action.payload) return
 
       action.payload.vessels.forEach((sublayerVessels) => {
@@ -485,7 +488,10 @@ const slice = createSlice({
     })
     builder.addCase(fetchFishingActivityInteractionThunk.rejected, (state, action) => {
       if (action.error.message === 'Aborted') {
-        state.fishingStatus = AsyncReducerStatus.Idle
+        state.fishingStatus =
+          state.currentFishingRequestId !== action.meta.requestId
+            ? AsyncReducerStatus.Loading
+            : AsyncReducerStatus.Idle
       } else {
         state.fishingStatus = AsyncReducerStatus.Error
       }
@@ -529,10 +535,10 @@ const slice = createSlice({
   },
 })
 
-export const selectClickedEvent = (state: RootState) => state.map.clicked
-export const selectIsMapDrawing = (state: RootState) => state.map.isDrawing
-export const selectFishingInteractionStatus = (state: RootState) => state.map.fishingStatus
-export const selectApiEventStatus = (state: RootState) => state.map.apiEventStatus
+export const selectClickedEvent = (state: { map: MapState }) => state.map.clicked
+export const selectIsMapDrawing = (state: { map: MapState }) => state.map.isDrawing
+export const selectFishingInteractionStatus = (state: { map: MapState }) => state.map.fishingStatus
+export const selectApiEventStatus = (state: { map: MapState }) => state.map.apiEventStatus
 
 export const { setClickedEvent, setMapDrawing } = slice.actions
 export default slice.reducer

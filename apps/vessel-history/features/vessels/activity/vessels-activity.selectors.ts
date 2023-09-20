@@ -360,11 +360,11 @@ export const selectEvents = createSelector([selectEventsWithRenderingInfo], (eve
 export const selectFilteredEvents = createSelector(
   [selectEvents, selectFilters, selectWorkspaceProfileView],
   (events, filters, profileView) => {
-    const {
-      events_query_params: { start_date: datasetStartDate },
-    } = APP_PROFILE_VIEWS.filter((v) => v.id === profileView).shift() ?? {
-      events_query_params: { start_date: undefined },
-    }
+    const datasetStartDate =
+      APP_PROFILE_VIEWS.filter((v) => v.id === profileView)
+        .shift()
+        ?.events_query_params.filter((query) => query.id === 'start-date')
+        ?.shift()?.value ?? null
 
     // Need to parse the timerange start and end dates in UTC
     // to not exclude events in the boundaries of the range

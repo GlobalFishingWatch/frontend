@@ -58,8 +58,8 @@ function useVoyagesConnect() {
           (voyage) =>
             voyage !== undefined &&
             // event timestamp or start is inside the voyage
-            voyage.start <= (event.timestamp ?? event.start) &&
-            voyage.end >= (event.timestamp ?? event.start)
+            voyage.start <= (event.timestamp ?? (event.start as number)) &&
+            voyage.end >= (event.timestamp ?? (event.start as number))
         )
       )
     })
@@ -89,8 +89,8 @@ function useVoyagesConnect() {
       return events.find(
         (voyage) =>
           voyage.type === EventTypeVoyage.Voyage &&
-          (event?.timestamp ?? event?.start) >= voyage.start &&
-          (event?.timestamp ?? event?.start) <= voyage.end
+          (event?.timestamp ?? (event?.start as number)) >= voyage.start &&
+          (event?.timestamp ?? (event?.start as number)) <= voyage.end
       ) as RenderedVoyage
     },
     [events]
@@ -101,8 +101,8 @@ function useVoyagesConnect() {
       return eventsList.find(
         (event) =>
           event?.type !== EventTypeVoyage.Voyage &&
-          (event?.timestamp ?? event?.start) >= voyage.start &&
-          (event?.timestamp ?? event?.start) <= voyage.end
+          (event?.timestamp ?? (event?.start as number)) >= voyage.start &&
+          (event?.timestamp ?? (event?.start as number)) <= voyage.end
       ) as RenderedEvent
     },
     [eventsList]

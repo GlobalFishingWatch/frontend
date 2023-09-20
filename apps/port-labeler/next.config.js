@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { join } = require('path')
-const withNx = require('@nrwl/next/plugins/with-nx')
+const withNx = require('@nx/next/plugins/with-nx')
 // const CircularDependencyPlugin = require('circular-dependency-plugin')
 
 // const { i18n } = require('./next-i18next.config')
@@ -8,7 +8,7 @@ const basePath =
   process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/port-labeler' : '')
 
 /**
- * @type {import('@nrwl/next/plugins/with-nx').WithNxOptions}
+ * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
  **/
 const nextConfig = {
   async rewrites() {
@@ -70,4 +70,10 @@ const nextConfig = {
   distDir: '.next',
 }
 
-module.exports = withNx(nextConfig)
+const configWithNx = withNx(nextConfig)
+module.exports = async (...args) => {
+  return {
+    ...(await configWithNx(...args)),
+    //...
+  }
+}

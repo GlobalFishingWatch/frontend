@@ -1,7 +1,26 @@
-import { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
+import type { VectorTileFeature } from '@mapbox/vector-tile'
 import { CELL_VALUES_START_INDEX, VALUE_MULTIPLIER } from './constants'
 import { AggregationOperation } from './types'
 import { getCellValues } from './util'
+
+// Copied from maplibre fork to avoid circular dependencies
+export declare class GeoJSONFeature<P = Record<string, any>> {
+  type: 'Feature'
+  _geometry: GeoJSON.Geometry
+  properties: P
+  id: number | string | undefined
+  _vectorTileFeature: VectorTileFeature
+  constructor(
+    vectorTileFeature: VectorTileFeature,
+    z: number,
+    x: number,
+    y: number,
+    id: string | number | undefined
+  )
+  get geometry(): GeoJSON.Geometry
+  set geometry(g: GeoJSON.Geometry)
+  toJSON(): any
+}
 
 export type TimeseriesFeatureProps = {
   rawValues: string

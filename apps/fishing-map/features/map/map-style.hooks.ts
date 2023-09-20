@@ -8,14 +8,14 @@ export const useMapStyle = () => {
   // Used to ensure the style is refreshed on load finish
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const mapLoaded = useMapLoaded()
+  let style = {} as ExtendedStyle
 
-  if (!map) return null
+  if (!map) return style
 
-  let style: ExtendedStyle
   try {
-    style = map.getStyle()
+    style = map.getStyle() as ExtendedStyle
   } catch (e: any) {
-    return null
+    console.warn(e)
   }
 
   return style

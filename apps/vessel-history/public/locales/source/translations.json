@@ -144,6 +144,7 @@
     "downloadAllActivity": "Download entire vessel activity",
     "downloadCurrentActivityFiltered": "Download current vessel activity filtered",
     "encounterEvents": "Encounter Events",
+    "encounteredVesselAuthorization": "Encountered Vessel Authorization",
     "encounterEventsDescription": "Encounters may indicate potential transshipment activity between two vessels that both appear on AIS. Encounters are estimated using AIS data, including distance between the two vessels, vessel speeds, and duration in a given area. <1></1>An encounter is defined as when two vessels, a carrier vessel and encountered fishing vessel, are detected on AIS data as within 500 meters for at least two hours and traveling at a median speed &lt;2 knots, while at least 10 km from a coastal anchorage.",
     "fishingEvents": "Fishing Events",
     "fishingEventsDescription": "When there is a consistent series of AIS points estimated as indicating apparent fishing activity the points are grouped into 'Fishing Events'. <1></1>We analyze the automatic identification system (AIS) data collected from vessels that our research has identified as known or possible commercial fishing vessels, and apply a fishing detection algorithm to determine “apparent fishing activity” based on changes in vessel speed and direction.<3></3>The algorithm classifies each AIS broadcast data point for these vessels as either “apparently fishing” or “not fishing” and shows the former on our fishing activity heat map. You can find more detail in our Technology page: <6>https://globalfishingwatch.org/our-technology/</6> and Dataset page: <10>https://globalfishingwatch.org/datasets-and-code/</10>.",
@@ -162,7 +163,8 @@
     "noHighlitingSettingsMessage": "You've not defined the highlight settings yet. Please click Settings to configure the activity of interest.",
     "noResults": "No events found. Try changing the current filters.",
     "portVisitEvents": "Port Visits",
-    "portVisitEventsDescription": "A port visit occurs when a vessel has a port Entry, Stop or Gap, and Exit event. This means the vessel is within 3 km of an anchorage (Port Entry), and is moving between 0.5 and 0.2 knots (Port Stop), or within an anchorage but has aa gap in AIS transmission for at least 4 hours (Port Gap), and then the vesselt transits more than 4 km outside of the anchorage point (Port Exit). Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate."
+    "portVisitEventsDescription": "A port visit occurs when a vessel has a port Entry, Stop or Gap, and Exit event. This means the vessel is within 3 km of an anchorage (Port Entry), and is moving between 0.5 and 0.2 knots (Port Stop), or within an anchorage but has aa gap in AIS transmission for at least 4 hours (Port Gap), and then the vesselt transits more than 4 km outside of the anchorage point (Port Exit). Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate.",
+    "vesselAuthorization": "Vessel Authorization"
   },
   "layer": {
     "toggleVisibility": "Toggle layer visibility"

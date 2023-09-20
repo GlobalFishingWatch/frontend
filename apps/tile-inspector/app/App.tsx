@@ -40,7 +40,7 @@ export type Cell = {
 }
 
 const getCellArrays = (intArray: number[], sublayerCount = 1): CellsWrapper => {
-  const cells = []
+  const cells: Cell[] = []
   let cellNum = 0
   let startFrame = 0
   let endFrame = 0

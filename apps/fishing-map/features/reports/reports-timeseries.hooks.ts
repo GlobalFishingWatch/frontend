@@ -6,7 +6,6 @@ import { Interval } from '@globalfishingwatch/layer-composer'
 import {
   selectActiveReportDataviews,
   selectReportActivityGraph,
-  selectReportAreaSource,
   selectReportCategory,
   selectReportTimeComparison,
   selectTimeRange,
@@ -25,11 +24,7 @@ import {
   filterTimeseriesByTimerange,
   removeTimeseriesPadding,
 } from 'features/reports/reports-timeseries.utils'
-import {
-  useFitAreaInViewport,
-  useReportAreaHighlight,
-  useReportAreaInViewport,
-} from 'features/reports/reports.hooks'
+import { useReportAreaInViewport } from 'features/reports/reports.hooks'
 import { selectReportAreaIds, selectShowTimeComparison } from 'features/reports/reports.selectors'
 import { ReportActivityGraph } from 'types'
 
@@ -56,7 +51,7 @@ export function getReportGraphMode(reportActivityGraph: ReportActivityGraph): Re
 }
 
 export interface ReportGraphProps {
-  timeseries: EvolutionGraphData[]
+  timeseries: (EvolutionGraphData & { mode?: ReportGraphMode })[]
   sublayers: ReportSublayerGraph[]
   interval: Interval
   mode?: ReportGraphMode
@@ -95,20 +90,11 @@ export const useFilteredTimeSeries = () => {
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparison = useSelector(selectReportTimeComparison)
   const currentCategoryDataviews = useSelector(selectActiveReportDataviews)
-  const areaSourceId = useSelector(selectReportAreaSource)
   const { start: timebarStart, end: timebarEnd } = useSelector(selectTimeRange)
   const areaInViewport = useReportAreaInViewport()
   const activityFeatures = useMapDataviewFeatures(
     areaInViewport ? currentCategoryDataviews : emptyArray
   )
-  const fitAreaInViewport = useFitAreaInViewport()
-  useReportAreaHighlight(area?.id, areaSourceId)
-
-  // This ensures that the area is in viewport when then area load finishes
-  useEffect(() => {
-    fitAreaInViewport()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [area])
 
   let compareDeltaMillis: number | undefined = undefined
   if (showTimeComparison && timeComparison) {
@@ -134,10 +120,10 @@ export const useFilteredTimeSeries = () => {
       const timeseries = featuresToTimeseries(filteredFeatures, {
         layersWithFeatures,
         showTimeComparison,
-        compareDeltaMillis,
+        compareDeltaMillis: compareDeltaMillis as number,
       })
       setTimeseries(
-        timeseries.map((timeseries) => {
+        timeseries.map((timeseries: any) => {
           timeseries.mode = reportGraphMode
           return timeseries
         })
@@ -154,7 +140,7 @@ export const useFilteredTimeSeries = () => {
 
   const reportGraphMode = getReportGraphMode(reportGraph)
   useLayoutEffect(() => {
-    if (timeseries?.length > 0) {
+    if (timeseries!?.length > 0) {
       setTimeseries([])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

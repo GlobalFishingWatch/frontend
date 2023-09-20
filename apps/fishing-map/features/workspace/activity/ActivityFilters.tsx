@@ -7,7 +7,12 @@ import {
   MultiSelectOnChange,
   MultiSelectOption,
 } from '@globalfishingwatch/ui-components'
-import { DatasetTypes, EXCLUDE_FILTER_ID, FilterOperator } from '@globalfishingwatch/api-types'
+import {
+  DatasetTypes,
+  DataviewCategory,
+  EXCLUDE_FILTER_ID,
+  FilterOperator,
+} from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
@@ -32,6 +37,7 @@ import {
 } from 'features/vessel-groups/vessel-groups.slice'
 import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import { listAsSentence } from 'utils/shared'
+import UserGuideLink from 'features/help/UserGuideLink'
 import styles from './ActivityFilters.module.css'
 import {
   areAllSourcesSelectedInDataview,
@@ -94,7 +100,9 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
   const [newDataviewInstanceConfig, setNewDataviewInstanceConfig] = useState<
     UrlDataviewInstance | undefined
   >()
-  const newDataviewInstanceConfigRef = useRef<UrlDataviewInstance>(newDataviewInstanceConfig)
+  const newDataviewInstanceConfigRef = useRef<UrlDataviewInstance | undefined>(
+    newDataviewInstanceConfig
+  )
 
   const dispatch = useAppDispatch()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -202,16 +210,22 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
 
   const onSelectFilterClick = (
     filterKey: SupportedDatasetSchema,
-    selection: MultiSelectOption | MultiSelectOption[]
+    selection: MultiSelectOption | MultiSelectOption[],
+    singleValue: boolean = false
   ) => {
     if ((selection as MultiSelectOption)?.id === VESSEL_GROUPS_MODAL_ID) {
       dispatch(setVesselGroupsModalOpen(true))
       dispatch(setVesselGroupCurrentDataviewIds([dataview.id]))
       return
     }
-    const filterValues = Array.isArray(selection)
-      ? selection.map(({ id }) => id).sort((a, b) => a - b)
-      : [...(dataview.config?.filters?.[filterKey] || []), selection.id]
+    let filterValues: string[]
+    if (Array.isArray(selection)) {
+      filterValues = selection.map(({ id }) => id).sort((a, b) => a - b)
+    } else if (singleValue) {
+      filterValues = [selection.id]
+    } else {
+      filterValues = [...(dataview.config?.filters?.[filterKey] || []), selection.id]
+    }
     const newDataviewConfig = {
       filters: {
         ...(dataview.config?.filters || {}),
@@ -221,7 +235,7 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
     const newDataview = { ...dataview, config: { ...dataview.config, ...newDataviewConfig } }
     const incompatibleFilters = Object.keys(newDataview.config?.filters || {}).flatMap((key) => {
       const incompatibleFilterSelection =
-        getIncompatibleFilterSelection(newDataview, key as SupportedDatasetSchema)?.length > 0
+        getIncompatibleFilterSelection(newDataview, key as SupportedDatasetSchema)!?.length > 0
       return incompatibleFilterSelection ? key : []
     })
     if (incompatibleFilters.length) {
@@ -317,7 +331,8 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
     <Fragment>
       {showSourceFilter && (
         <MultiSelect
-          label={t('layer.source_other', 'Sources')}
+          testId="activity-filters"
+          label={t('layer.source_other', 'Sources') as string}
           placeholder={getPlaceholderBySelections(sourcesSelected)}
           options={allSourceOptions}
           selectedOptions={sourcesSelected}
@@ -358,6 +373,9 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
             filters: listAsSentence(filtersDisabled.map((filter) => filter.label)),
           })}
         </p>
+      )}
+      {dataview.category === DataviewCategory.Activity && (
+        <UserGuideLink section="activityFilters" className={styles.userGuideLink} />
       )}
     </Fragment>
   )

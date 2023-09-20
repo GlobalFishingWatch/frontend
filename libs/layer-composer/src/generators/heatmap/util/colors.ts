@@ -21,6 +21,11 @@ export const hexToRgbString = (hex: string) => {
   return rgbToRgbString(color)
 }
 
+export const hexToComponents = (hex: string): [number, number, number] => {
+  const { r, g, b } = hexToRgb(hex)
+  return [r, g, b]
+}
+
 export const rgbaStringToObject = (rgba: string) => {
   const [r, g, b, a] = rgba
     .substring(5, rgba.length - 1)

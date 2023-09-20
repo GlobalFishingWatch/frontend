@@ -38,14 +38,17 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
             className={styles.layerIcon}
             style={{ color: featureByType[0].color }}
           />
-          <div className={styles.popupSectionContent}>
+          <div
+            className={styles.popupSectionContent}
+            data-test={`context-tooltip-section-${featureByType[0].datasetId}`}
+          >
             {showFeaturesDetails && (
               <h3 className={styles.popupSectionTitle}>{featureByType[0].title}</h3>
             )}
             {featureByType.map((feature, index) => {
               if (!feature.value) return null
               const { generatorContextLayer, promoteId } = feature
-              const gfw_id = feature.properties.gfw_id || feature.properties[promoteId]
+              const gfw_id = feature.properties.gfw_id || feature.properties[promoteId as string]
               const isGFWLayer =
                 generatorContextLayer === ContextLayerType.MPA ||
                 generatorContextLayer === ContextLayerType.MPARestricted ||
@@ -60,7 +63,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
               if (isGFWLayer) {
                 let id = gfw_id
                 let label = feature.value ?? feature.title
-                let linkHref = undefined
+                let linkHref: string | undefined
                 // ContextLayerType.MPA but enums doesn't work in CRA for now
                 switch (generatorContextLayer) {
                   case ContextLayerType.MPA:

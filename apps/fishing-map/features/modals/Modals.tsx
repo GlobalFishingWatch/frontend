@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { replace } from 'redux-first-router'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Modal } from '@globalfishingwatch/ui-components'
-import { WorkspaceCategories } from 'data/workspaces'
+import { WorkspaceCategory } from 'data/workspaces'
 import { isGFWUser } from 'features/user/user.slice'
 import { DISABLE_WELCOME_POPUP } from 'features/welcome/Welcome'
 import { selectLocationCategory } from 'routes/routes.selectors'
@@ -96,7 +96,7 @@ const AppModals = () => {
   )
 
   const locationIsMarineManager =
-    useSelector(selectLocationCategory) === WorkspaceCategories.MarineManager
+    useSelector(selectLocationCategory) === WorkspaceCategory.MarineManager
 
   useEffect(() => {
     if (locationIsMarineManager) {
@@ -108,8 +108,8 @@ const AppModals = () => {
     locationIsMarineManager ? isFirstTimeVisit : !disabledWelcomePopup
   )
   const welcomePopupContentKey = locationIsMarineManager
-    ? WorkspaceCategories.MarineManager
-    : WorkspaceCategories.FishingActivity
+    ? WorkspaceCategory.MarineManager
+    : WorkspaceCategory.FishingActivity
 
   const [sourceSwitchPopupOpen, setSourceSwitchPopupOpen] = useState(!disabledSourceSwitchPopup)
   return (

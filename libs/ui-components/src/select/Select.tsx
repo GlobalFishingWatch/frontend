@@ -142,9 +142,12 @@ export function Select(props: SelectProps) {
                     {...getItemProps({ item, index })}
                   >
                     {item.label}
-                    {highlight && !itemDisabled && onRemove && (
-                      <Icon icon={selected ? 'close' : 'tick'} />
-                    )}
+                    <Icon
+                      icon={selected ? 'close' : 'tick'}
+                      className={cx(styles.icon, {
+                        [styles.visible]: highlight && !itemDisabled && onRemove,
+                      })}
+                    />
                   </li>
                 </Tooltip>
               )

@@ -15,5 +15,5 @@ export const getSourceId = (baseId: string, timeChunk: TimeChunk) => {
 }
 
 export const getLayerId = (baseId: string, timeChunk: TimeChunk, suffix = '') => {
-  return `${getSourceId(baseId, timeChunk)}-${suffix}`
+  return `${getSourceId(baseId, timeChunk)}${suffix ? `-${suffix}` : ''}`
 }

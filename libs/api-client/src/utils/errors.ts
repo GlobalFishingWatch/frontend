@@ -17,6 +17,6 @@ export const parseAPIError = (error: ResponseError): ParsedAPIError => ({
   message: parseAPIErrorMessage(error),
 })
 
-export function isAuthError(error: Partial<ParsedAPIError>) {
+export function isAuthError(error = {} as Partial<ParsedAPIError> | null) {
   return error?.status === 401 || error?.status === 403
 }

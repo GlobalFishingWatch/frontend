@@ -42,7 +42,7 @@ interface LoginParams {
   accessToken?: string | null
   refreshToken?: string | null
 }
-export type ApiVersion = '' | 'v1' | 'v2'
+export type ApiVersion = '' | 'v1' | 'v2' | 'v3'
 export type FetchOptions<T = BodyInit> = Partial<RequestInit> & {
   version?: ApiVersion
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
@@ -58,12 +58,19 @@ interface LibConfig {
   baseUrl?: string
 }
 
-const processStatus = (response: Response): Promise<Response> => {
+const processStatus = (
+  response: Response,
+  requestStatus?: ResourceResponseType
+): Promise<Response> => {
   return new Promise(async (resolve, reject) => {
     const { status, statusText } = response
     try {
       if (response.status >= 200 && response.status < 400) {
         return resolve(response)
+      }
+
+      if (requestStatus === 'default') {
+        return reject(response)
       }
       // Compatibility with v1 and v2 errors format
       const errors = {
@@ -149,7 +156,7 @@ export class GFW_API_CLASS {
       (typeof localStorage !== 'undefined' ? localStorage.getItem('i18nextLng') : 'en') ||
       'en'
     return this.generateUrl(
-      `/v2/${AUTH_PATH}/${REGISTER_PATH}?client=${client}&callback=${encodeURIComponent(
+      `/${API_VERSION}/${AUTH_PATH}/${REGISTER_PATH}?client=${client}&callback=${encodeURIComponent(
         callbackUrl
       )}&locale=${fallbackLocale}`,
       '',
@@ -164,7 +171,7 @@ export class GFW_API_CLASS {
       'en'
     const callbackUrlEncoded = encodeURIComponent(callbackUrl)
     return this.generateUrl(
-      `/v2/${AUTH_PATH}?client=${client}&callback=${callbackUrlEncoded}&locale=${fallbackLocale}`,
+      `/${API_VERSION}/${AUTH_PATH}?client=${client}&callback=${callbackUrlEncoded}&locale=${fallbackLocale}`,
       '',
       true
     )
@@ -270,7 +277,7 @@ export class GFW_API_CLASS {
     if (isUrlAbsolute(url)) {
       return url
     }
-    if (url.startsWith('/v2/') || url.startsWith('/v1/')) {
+    if (url.startsWith('/v3/') || url.startsWith('/v2/') || url.startsWith('/v1/')) {
       return absolute ? `${this.baseUrl}${url}` : url
     }
     const apiVersion = version ?? this.apiVersion
@@ -303,6 +310,15 @@ export class GFW_API_CLASS {
     refreshRetries = 0,
     waitLogin = true
   ): Promise<T> {
+    const {
+      method = 'GET',
+      body = null,
+      headers = {},
+      responseType = 'json',
+      requestType = 'json',
+      signal,
+      local = false,
+    } = options
     try {
       if (this.logging && waitLogin) {
         // Don't do any request until the login is completed
@@ -317,15 +333,6 @@ export class GFW_API_CLASS {
       }
 
       try {
-        const {
-          method = 'GET',
-          body = null,
-          headers = {},
-          responseType = 'json',
-          requestType = 'json',
-          signal,
-          local = false,
-        } = options
         if (this.debug) {
           console.log(`GFWAPI: Fetching URL: ${url}`)
         }
@@ -349,7 +356,7 @@ export class GFW_API_CLASS {
           ...(body && { body: requestType === 'json' ? JSON.stringify(body) : body }),
           headers: finalHeaders,
         })
-          .then(processStatus)
+          .then((res) => processStatus(res, responseType))
           .then((res) => {
             switch (responseType) {
               case 'default':
@@ -423,12 +430,19 @@ export class GFW_API_CLASS {
             }
             console.warn(`GFWAPI: Error fetching ${url}`, e)
           }
+          if (responseType === 'default') {
+            throw e
+          }
+
           throw parseAPIError(e)
         }
       }
     } catch (e: any) {
       if (this.debug) {
         console.warn(`GFWAPI: Error fetching ${url}`, e)
+      }
+      if (responseType === 'default') {
+        throw e
       }
       throw parseAPIError(e)
     }

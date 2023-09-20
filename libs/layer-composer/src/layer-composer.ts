@@ -1,12 +1,11 @@
 import { SourceSpecification, LayerSpecification } from '@globalfishingwatch/maplibre-gl'
-import Generators from './generators'
+import Generators, { GeneratorsRecord } from './generators'
 import { flatObjectArrays, layersDictToArray } from './utils'
 import {
   Dictionary,
   LayerComposerStyles,
   LayerComposerOptions,
   GeneratorStyles,
-  Generator,
   ExtendedStyle,
   ExtendedStyleMeta,
   GeneratorPromise,
@@ -24,7 +23,7 @@ import { DEFAULT_STYLE } from './config'
 export class LayerComposer {
   glyphs: string
   sprite: string
-  generators: Dictionary<Generator>
+  generators: GeneratorsRecord
   latestGenerated: {
     sourcesStyle: Dictionary<SourceSpecification[]>
     layersStyle: Dictionary<LayerSpecification[]>
@@ -139,7 +138,10 @@ export class LayerComposer {
       ...generatorConfig,
     }
     const generator = this.generators[finalConfig.type]
-    const generatorStyles = this._applyGenericStyle(finalConfig, generator.getStyle(finalConfig))
+    const generatorStyles = this._applyGenericStyle(
+      finalConfig,
+      generator.getStyle(finalConfig as any)
+    )
     return generatorStyles
   }
 

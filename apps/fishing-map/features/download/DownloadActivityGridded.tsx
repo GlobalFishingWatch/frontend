@@ -6,6 +6,7 @@ import area from '@turf/area'
 import type { Placement } from 'tippy.js'
 import { Geometry } from 'geojson'
 import { Icon, Button, Choice, Tag, ChoiceOption } from '@globalfishingwatch/ui-components'
+import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import {
   DownloadActivityParams,
   downloadActivityThunk,
@@ -14,6 +15,7 @@ import {
   selectDownloadActivityFinished,
   selectDownloadActivityError,
   DateRange,
+  selectDownloadActivityAreaDataview,
 } from 'features/download/downloadActivity.slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
@@ -34,9 +36,9 @@ import { selectDownloadActivityArea } from 'features/download/download.selectors
 import DownloadActivityProductsBanner from 'features/download/DownloadActivityProductsBanner'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import DatasetLabel from 'features/datasets/DatasetLabel'
-import SOURCE_SWITCH_CONTENT from 'features/welcome/SourceSwitch.content'
-import { Locale } from 'types'
+import { getSourceSwitchContentByLng } from 'features/welcome/SourceSwitch.content'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import UserGuideLink from 'features/help/UserGuideLink'
 import styles from './DownloadModal.module.css'
 import {
   Format,
@@ -56,7 +58,7 @@ import {
 
 function DownloadActivityByVessel() {
   const { t, i18n } = useTranslation()
-  const { disclaimer } = SOURCE_SWITCH_CONTENT[(i18n.language as Locale) || Locale.en]
+  const { disclaimer } = getSourceSwitchContentByLng(i18n.language)
   const dispatch = useAppDispatch()
   const userData = useSelector(selectUserData)
   const dataviews = useSelector(selectActiveHeatmapDataviews)
@@ -73,7 +75,11 @@ function DownloadActivityByVessel() {
   const [format, setFormat] = useState(GRIDDED_FORMAT_OPTIONS[0].id as Format)
 
   const downloadArea = useSelector(selectDownloadActivityArea)
-  const downloadAreaName = downloadArea?.data?.name
+  const downloadAreaDataview = useSelector(selectDownloadActivityAreaDataview)
+  const downloadAreaName =
+    downloadAreaDataview?.config?.type === GeneratorType.UserContext
+      ? downloadAreaDataview?.datasets?.[0]?.name
+      : downloadArea?.data?.name
   const downloadAreaGeometry = downloadArea?.data?.geometry
   const downloadAreaLoading = downloadArea?.status === AsyncReducerStatus.Loading
 
@@ -117,7 +123,7 @@ function DownloadActivityByVessel() {
       .map((dataview) => {
         const activityDatasets: string[] = (dataview?.config?.datasets || []).filter(
           (id: string) => {
-            return id ? checkDatasetReportPermission(id, userData?.permissions) : false
+            return id ? checkDatasetReportPermission(id, userData!.permissions) : false
           }
         )
         return {
@@ -162,7 +168,7 @@ function DownloadActivityByVessel() {
     const downloadParams: DownloadActivityParams = {
       dateRange: timerange as DateRange,
       geometry: downloadAreaGeometry as Geometry,
-      areaName: downloadAreaName,
+      areaName: downloadAreaName as string,
       dataviews: downloadDataviews,
       format,
       ...(groupBy !== GroupBy.None && { groupBy }),
@@ -192,7 +198,7 @@ function DownloadActivityByVessel() {
 
   return (
     <Fragment>
-      <div className={styles.container}>
+      <div className={styles.container} data-test="download-activity-gridded">
         <div className={styles.info}>
           <div>
             <label>{t('download.area', 'Area')}</label>
@@ -212,6 +218,7 @@ function DownloadActivityByVessel() {
             size="small"
             activeOption={format}
             onSelect={(option) => setFormat(option.id as Format)}
+            testId="report-format"
           />
         </div>
         {(format === Format.Csv || format === Format.Json) && (
@@ -221,6 +228,7 @@ function DownloadActivityByVessel() {
               <Choice
                 options={filteredGroupByOptions}
                 size="small"
+                testId="group-vessels-by"
                 activeOption={groupBy}
                 onSelect={(option) => setGroupBy(option.id as GroupBy)}
               />
@@ -230,6 +238,7 @@ function DownloadActivityByVessel() {
               <Choice
                 options={filteredTemporalResolutionOptions}
                 size="small"
+                testId="group-time-by"
                 activeOption={temporalResolution}
                 onSelect={(option) => setTemporalResolution(option.id as TemporalResolution)}
               />
@@ -241,10 +250,12 @@ function DownloadActivityByVessel() {
           <Choice
             options={filteredSpatialResolutionOptions}
             size="small"
+            testId="group-spatial-by"
             activeOption={spatialResolution}
             onSelect={(option) => setSpatialResolution(option.id as SpatialResolution)}
           />
         </div>
+        <UserGuideLink section="downloadActivity" />
         <div className={styles.footer}>
           {datasetsDownloadNotSupported.length > 0 && (
             <p className={styles.footerLabel}>
@@ -252,26 +263,16 @@ function DownloadActivityByVessel() {
                 'download.datasetsNotAllowed',
                 "You don't have permissions to download the following datasets:"
               )}{' '}
-              {datasetsDownloadNotSupported.map((dataset) => (
-                <DatasetLabel key={dataset} dataset={{ id: dataset }} />
+              {datasetsDownloadNotSupported.map((dataset, index) => (
+                <Fragment>
+                  <DatasetLabel key={dataset} dataset={{ id: dataset }} />
+                  {index < datasetsDownloadNotSupported.length - 1 && ', '}
+                </Fragment>
               ))}
             </p>
           )}
-          {!isDownloadReportSupported ? (
-            <p className={cx(styles.footerLabel, styles.error)}>
-              {t('download.timerangeTooLong', 'The maximum time range is 1 year')}
-            </p>
-          ) : downloadError ? (
-            <p className={cx(styles.footerLabel, styles.error)}>
-              {`${t('analysis.errorMessage', 'Something went wrong')} 🙈`}
-            </p>
-          ) : (
-            <p
-              className={styles.disclaimerContainer}
-              dangerouslySetInnerHTML={{ __html: disclaimer }}
-            />
-          )}
           <Button
+            testId="download-activity-gridded-button"
             onClick={onDownloadClick}
             loading={downloadLoading || downloadAreaLoading}
             className={styles.downloadBtn}
@@ -280,6 +281,20 @@ function DownloadActivityByVessel() {
             {downloadFinished ? <Icon icon="tick" /> : t('download.title', 'Download')}
           </Button>
         </div>
+        {!isDownloadReportSupported ? (
+          <p className={cx(styles.footerLabel, styles.error)}>
+            {t('download.timerangeTooLong', 'The maximum time range is 1 year')}
+          </p>
+        ) : downloadError ? (
+          <p className={cx(styles.footerLabel, styles.error)}>
+            {`${t('analysis.errorMessage', 'Something went wrong')} 🙈`}
+          </p>
+        ) : (
+          <p
+            className={styles.disclaimerContainer}
+            dangerouslySetInnerHTML={{ __html: disclaimer }}
+          />
+        )}
       </div>
       <DownloadActivityProductsBanner format={format} />
     </Fragment>

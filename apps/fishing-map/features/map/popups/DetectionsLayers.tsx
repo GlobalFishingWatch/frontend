@@ -17,7 +17,7 @@ function ViirsMatchTooltipRow({ feature, showFeaturesDetails }: ViirsMatchToolti
   const matchedDetections = matchedVessels
     ? matchedVessels.reduce((acc, vessel) => acc + vessel.detections, 0)
     : 0
-  const featureVesselsFilter = {
+  const featureVesselsFilter: any = {
     ...feature,
     vesselsInfo: {
       ...feature.vesselsInfo,
@@ -43,7 +43,7 @@ function ViirsMatchTooltipRow({ feature, showFeaturesDetails }: ViirsMatchToolti
                 {' - '}
                 <I18nNumber number={notMatchedDetectionsCount} />{' '}
                 {t('vessel.unmatched', 'unmatched')}{' '}
-                <VesselDetectionTimestamps vessel={notMatchedDetection} />
+                {notMatchedDetection && <VesselDetectionTimestamps vessel={notMatchedDetection} />}
               </Fragment>
             )}
           </span>

@@ -18,6 +18,7 @@ import {
   ContextLayerType,
 } from '../generators/types'
 import { TimeChunks } from '../generators/heatmap/util/time-chunks'
+import { GeneratorsRecord } from '../generators'
 
 export interface GeneratorDataviewConfig<T = GeneratorType> extends DataviewConfig<T> {
   colorRamp?: ColorRampsIds
@@ -158,7 +159,7 @@ export interface LayerComposerStyles {
 }
 
 export interface LayerComposerOptions {
-  generators?: { [key: string]: any }
+  generators?: GeneratorsRecord
   version?: number
   glyphs?: string
   sprite?: string

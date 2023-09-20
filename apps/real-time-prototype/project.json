@@ -1,0 +1,97 @@
+{
+  "name": "real-time-prototype",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/real-time-prototype",
+  "projectType": "application",
+  "targets": {
+    "changelog": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["./changelog.sh real-time-prototype \"Map\""],
+        "parallel": false
+      }
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["nx build real-time-prototype --parallel"],
+        "parallel": false
+      }
+    },
+    "build": {
+      "executor": "@nx/next:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/real-time-prototype"
+      },
+      "configurations": {
+        "production": {}
+      }
+    },
+    "clean-locales": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": ["rm -rf dist/apps/real-time-prototype/public/locales"]
+      }
+    },
+    "start": {
+      "executor": "@nx/next:server",
+      "options": {
+        "buildTarget": "real-time-prototype:build",
+        "dev": true,
+        "port": 3000
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "real-time-prototype:build:production",
+          "dev": false
+        }
+      }
+    },
+    "export": {
+      "executor": "@nx/next:export",
+      "options": {
+        "buildTarget": "real-time-prototype:build:production"
+      }
+    },
+    "rename-export": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "rm -rf dist/apps/real-time-prototype/map",
+          "mv dist/apps/real-time-prototype/exported dist/apps/real-time-prototype/map"
+        ],
+        "parallel": false
+      }
+    },
+    "serve:build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx build real-time-prototype --parallel",
+          "nx rename-export real-time-prototype",
+          "serve dist/apps/real-time-prototype"
+        ],
+        "parallel": false
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/apps/real-time-prototype"],
+      "options": {
+        "jestConfig": "apps/real-time-prototype/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/real-time-prototype/**/*.{ts,tsx,js,jsx}"]
+      }
+    }
+  },
+  "tags": []
+}

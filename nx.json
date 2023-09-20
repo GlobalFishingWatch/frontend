@@ -1,17 +1,19 @@
 {
-  "npmScope": "globalfishingwatch",
   "affected": {
     "defaultBase": "develop"
   },
   "tasksRunnerOptions": {
     "default": {
-      "runner": "@nrwl/nx-cloud",
+      "runner": "nx-cloud",
       "options": {
         "cacheableOperations": ["build", "lint", "test", "e2e"],
         "runtimeCacheInputs": [
           "echo $NEXT_PUBLIC_URL",
           "echo $NEXT_PUBLIC_API_GATEWAY",
           "echo $NEXT_PUBLIC_WORKSPACE_ENV",
+          "echo $NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID",
+          "echo $NEXT_PUBLIC_GOOGLE_TAG_MANAGER_KEY",
+          "echo $NEXT_PUBLIC_GOOGLE_ANALYTICS_TEST_MODE",
           "echo $NEXT_PUBLIC_CARRIER_PORTAL_URL",
           "echo $NEXT_PUBLIC_LATEST_CARRIER_DATASET_ID",
           "echo $NEXT_PUBLIC_FEEDBACK_SPREADSHEET_ID",
@@ -25,7 +27,7 @@
     }
   },
   "generators": {
-    "@nrwl/react": {
+    "@nx/react": {
       "application": {
         "style": "css",
         "linter": "eslint",
@@ -39,7 +41,7 @@
         "linter": "eslint"
       }
     },
-    "@nrwl/next": {
+    "@nx/next": {
       "application": {
         "style": "css",
         "linter": "eslint"
@@ -77,7 +79,8 @@
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
       "!{projectRoot}/tsconfig.spec.json",
       "!{projectRoot}/jest.config.[jt]s",
-      "!{projectRoot}/.eslintrc.js"
+      "!{projectRoot}/.eslintrc.js",
+      "!{projectRoot}/src/test-setup.[jt]s"
     ]
   }
 }

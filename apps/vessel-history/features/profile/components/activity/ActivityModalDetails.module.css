@@ -31,3 +31,11 @@
   padding: var(--space-S);
   color: var(--color-secondary-blue);
 }
+
+.authorizationStatuses {
+  text-transform: uppercase;
+  margin-right: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}

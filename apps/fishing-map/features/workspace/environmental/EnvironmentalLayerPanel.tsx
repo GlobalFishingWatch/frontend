@@ -211,7 +211,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
           </div>
         </div>
       )}
-      {layerActive && gfwUser && (
+      {layerActive && (
         <div
           className={cx(styles.properties, styles.drag, {
             [styles.dragging]: isSorting && activeIndex > -1,

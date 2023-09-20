@@ -3,15 +3,17 @@ import { useSelector } from 'react-redux'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataview } from '@globalfishingwatch/api-types'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectLocationDatasetId, selectLocationAreaId } from 'routes/routes.selectors'
-import { selectActiveReportDataviews, selectTimeRange } from 'features/app/app.selectors'
-import { getActiveDatasetsInActivityDataviews } from 'features/datasets/datasets.utils'
+import { selectTimeRange } from 'features/app/app.selectors'
 import {
   fetchAreaDetailThunk,
   selectDatasetAreaDetail,
   selectDatasetAreaStatus,
 } from 'features/areas/areas.slice'
-import { selectReportAreaDataview, selectReportAreaIds } from 'features/reports/reports.selectors'
+import {
+  selectReportAreaDataview,
+  selectReportAreaIds,
+  selectReportDataviewsWithPermissions,
+} from 'features/reports/reports.selectors'
 import useMapInstance from 'features/map/map-context.hooks'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { Bbox } from 'types'
@@ -20,6 +22,8 @@ import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
 import { useHighlightArea } from 'features/map/popups/ContextLayers.hooks'
+import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   fetchReportVesselsThunk,
   getDateRangeHash,
@@ -27,7 +31,7 @@ import {
   selectReportVesselsDateRangeHash,
   selectReportVesselsError,
   selectReportVesselsStatus,
-} from './reports.slice'
+} from './report.slice'
 
 export type DateTimeSeries = {
   date: string
@@ -35,7 +39,7 @@ export type DateTimeSeries = {
   compareDate?: string
 }[]
 
-export function useReportAreaCenter(bounds: Bbox) {
+export function useReportAreaCenter(bounds?: Bbox) {
   const map = useMapInstance()
   return useMemo(() => {
     if (!bounds || !map) return null
@@ -50,7 +54,7 @@ export function useReportAreaInViewport() {
   const { viewport } = useViewport()
   const reportAreaIds = useSelector(selectReportAreaIds)
   const area = useSelector(selectDatasetAreaDetail(reportAreaIds))
-  const areaCenter = useReportAreaCenter(area?.bounds)
+  const areaCenter = useReportAreaCenter(area!?.bounds)
   return (
     viewport?.latitude === areaCenter?.latitude &&
     viewport?.longitude === areaCenter?.longitude &&
@@ -62,10 +66,10 @@ export function useFitAreaInViewport() {
   const { setMapCoordinates } = useViewport()
   const reportAreaIds = useSelector(selectReportAreaIds)
   const area = useSelector(selectDatasetAreaDetail(reportAreaIds))
-  const areaCenter = useReportAreaCenter(area?.bounds)
+  const areaCenter = useReportAreaCenter(area!?.bounds)
   const areaInViewport = useReportAreaInViewport()
   return useCallback(() => {
-    if (!areaInViewport) {
+    if (!areaInViewport && areaCenter) {
       setMapCoordinates(areaCenter)
     }
   }, [areaCenter, areaInViewport, setMapCoordinates])
@@ -99,7 +103,7 @@ export function useFetchReportArea() {
       dispatch(
         fetchAreaDetailThunk({
           dataset: reportAreaDataset,
-          areaId: areaId.toString(),
+          areaId,
           simplify,
         })
       )
@@ -109,40 +113,30 @@ export function useFetchReportArea() {
   return useMemo(() => ({ status, data }), [status, data])
 }
 
-function getReportDataviews(dataviews: UrlDataviewInstance[]) {
-  return dataviews
-    .map((dataview) => {
-      const datasets = getActiveDatasetsInActivityDataviews([dataview])
-      return {
-        datasets: datasets,
-        filter: dataview.config?.filter || [],
-        ...(dataview.config?.['vessel-groups']?.length && {
-          vesselGroups: dataview.config?.['vessel-groups'],
-        }),
-      }
-    })
-    .filter((dataview) => dataview.datasets.length > 0)
-}
-
 export function useFetchReportVessel() {
   const dispatch = useAppDispatch()
   const timerange = useSelector(selectTimeRange)
   const timerangeSupported = getDownloadReportSupported(timerange.start, timerange.end)
   const reportDateRangeHash = useSelector(selectReportVesselsDateRangeHash)
-  const datasetId = useSelector(selectLocationDatasetId)
-  const areaId = useSelector(selectLocationAreaId)
-  const dataviews = useSelector(selectActiveReportDataviews)
+  const { datasetId, areaId } = useSelector(selectReportAreaIds)
+  const reportDataviews = useSelector(selectReportDataviewsWithPermissions)
   const status = useSelector(selectReportVesselsStatus)
   const error = useSelector(selectReportVesselsError)
   const data = useSelector(selectReportVesselsData)
+  const workspaceStatus = useSelector(selectWorkspaceStatus)
 
   useEffect(() => {
-    const reportDataviews = getReportDataviews(dataviews)
     const isDifferentDateRange = reportDateRangeHash !== getDateRangeHash(timerange)
-    if (areaId && reportDataviews?.length && timerangeSupported && isDifferentDateRange) {
+    if (
+      areaId &&
+      reportDataviews?.length &&
+      timerangeSupported &&
+      isDifferentDateRange &&
+      workspaceStatus === AsyncReducerStatus.Finished
+    ) {
       dispatch(
         fetchReportVesselsThunk({
-          datasets: reportDataviews.map(({ datasets }) => datasets.join(',')),
+          datasets: reportDataviews.map(({ datasets }) => datasets.map((d) => d.id).join(',')),
           filters: reportDataviews.map(({ filter }) => filter),
           vesselGroups: reportDataviews.map(({ vesselGroups }) => vesselGroups),
           region: {
@@ -156,7 +150,15 @@ export function useFetchReportVessel() {
     }
     // Avoid re-fetching when timerange changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, areaId, datasetId, dataviews, timerangeSupported, reportDateRangeHash])
+  }, [
+    dispatch,
+    areaId,
+    datasetId,
+    reportDataviews,
+    timerangeSupported,
+    reportDateRangeHash,
+    workspaceStatus,
+  ])
 
   return useMemo(() => ({ status, data, error }), [status, data, error])
 }

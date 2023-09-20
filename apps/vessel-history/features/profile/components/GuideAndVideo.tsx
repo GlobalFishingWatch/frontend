@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo, useState } from 'react'
-import { event as uaEvent } from 'react-ga'
+import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import styles from './Info.module.css'
 
 interface GuideAndVideoProps {
@@ -11,8 +11,8 @@ const GuideAndVideo: React.FC<GuideAndVideoProps> = ({ source = '' }): React.Rea
 
   const trackClick = useCallback(
     (link) => {
-      uaEvent({
-        category: 'General VV features',
+      trackEvent({
+        category: TrackCategory.GeneralVVFeatures,
         action: `User click on ${link}`,
         label: source,
       })

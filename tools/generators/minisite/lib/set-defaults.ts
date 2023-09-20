@@ -1,4 +1,4 @@
-import { readWorkspaceConfiguration, Tree, updateWorkspaceConfiguration } from '@nrwl/devkit'
+import { readWorkspaceConfiguration, Tree, updateWorkspaceConfiguration } from '@nx/devkit'
 import { NormalizedSchema } from './normalize-options'
 
 export function setDefaults(host: Tree, options: NormalizedSchema) {
@@ -9,12 +9,12 @@ export function setDefaults(host: Tree, options: NormalizedSchema) {
   }
 
   workspace.generators = workspace.generators || {}
-  workspace.generators['@nrwl/next'] = workspace.generators['@nrwl/next'] || {}
-  const prev = workspace.generators['@nrwl/next']
+  workspace.generators['@nx/next'] = workspace.generators['@nx/next'] || {}
+  const prev = workspace.generators['@nx/next']
 
   workspace.generators = {
     ...workspace.generators,
-    '@nrwl/next': {
+    '@nx/next': {
       ...prev,
       application: {
         style: options.style,

@@ -18,6 +18,7 @@ interface ChoiceProps {
   onSelect?: (option: ChoiceOption, e: React.MouseEvent) => void
   size?: 'default' | 'small' | 'tiny'
   className?: string
+  testId?: string
 }
 
 export function Choice({
@@ -27,6 +28,7 @@ export function Choice({
   onSelect,
   size = 'default',
   className = '',
+  testId,
 }: ChoiceProps) {
   const activeOptionId = activeOption || options?.[0]?.id
 
@@ -70,7 +72,7 @@ export function Choice({
 
   return (
     <div className={cx(styles.Choice, className)}>
-      <ul className={styles.list} role="radiogroup">
+      <ul className={styles.list} role="radiogroup" {...(testId && { 'data-test': `${testId}` })}>
         {options.map((option, index) => {
           const optionSelected = activeOptionId === option.id
           return (
@@ -90,6 +92,7 @@ export function Choice({
                 tooltip={option.tooltip}
                 tooltipPlacement={option.tooltipPlacement}
                 type="secondary"
+                testId={testId && `${testId}-${option.id}`}
                 onClick={(e) => !option.disabled && onOptionClickHandle(option, e)}
                 size={size}
               >

@@ -1,9 +1,9 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
-import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { InputDate, Modal, Switch } from '@globalfishingwatch/ui-components'
 import { DEFAULT_WORKSPACE } from 'data/config'
+import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import { useApplyFiltersConnect } from './filters.hooks'
 import { availableEventFilters, selectEnd, selectFilter, selectStart } from './filters.slice'
 import styles from './EventFilters.module.css'
@@ -30,8 +30,8 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
 
   const trackAndSetFilter = useCallback(
     (filter: availableEventFilters, value: boolean) => {
-      uaEvent({
-        category: 'Vessel Detail ACTIVITY or MAP Tab',
+      trackEvent({
+        category: TrackCategory.VesselDetailActivityOrMapTab,
         action: 'Click Filter Icon - Event type',
         label: JSON.stringify({ [filter]: value, tab: tab }),
       })
@@ -42,8 +42,8 @@ const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
 
   const trackAndSetDate = useCallback(
     (filter: 'start' | 'end', value?: string) => {
-      uaEvent({
-        category: 'Vessel Detail ACTIVITY or MAP Tab',
+      trackEvent({
+        category: TrackCategory.VesselDetailActivityOrMapTab,
         action: 'Click Filter Icon - Change dates',
         label: JSON.stringify({
           start,

@@ -15,6 +15,12 @@
   line-height: 2.8rem;
 }
 
+.tagsContainer {
+  gap: var(--space-S) var(--space-M);
+  flex-wrap: wrap;
+  display: none;
+}
+
 @media print {
   .container {
     page-break-before: always;
@@ -27,5 +33,9 @@
 
   .blockTitle::after {
     content: ' - ';
+  }
+
+  .tagsContainer {
+    display: flex;
   }
 }

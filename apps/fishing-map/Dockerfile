@@ -41,4 +41,4 @@ ENV PORT 3000
 # next server files are placed
 WORKDIR /app/apps/$APP_NAME
 
-CMD ["node", "server.js"]
+CMD ["node", "--max-http-header-size=40000", "server.js"]

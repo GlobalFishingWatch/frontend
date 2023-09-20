@@ -3,10 +3,9 @@
   "version": "1.4.1",
   "license": "MIT",
   "description": "Utils to decode various data formats",
-  "dependencies": {
-    "papaparse": "5.3.2"
-  },
   "peerDependencies": {
-    "lodash": "4.x"
+    "lodash": "4.x",
+    "luxon": "3.x",
+    "papaparse": "5.x"
   }
 }

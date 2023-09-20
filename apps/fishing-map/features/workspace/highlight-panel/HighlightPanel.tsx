@@ -39,7 +39,9 @@ const HighlightPanel = ({
       if (config.delayed) {
         setTimeout(() => {
           const container = document.querySelector('.scrollContainer')
-          container.scrollTop = 1
+          if (container) {
+            container.scrollTop = 1
+          }
           setVisible(true)
         }, config.delayed)
       } else {

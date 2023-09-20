@@ -1,4 +1,4 @@
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { GFWApiClient } from 'http-client/http-client'
 import { GFWDetail, VesselAPISource, VesselWithHistory } from 'types'
 import { VesselSourceId } from 'types/vessel'
 import { VesselAPIThunk } from '../vessels.slice'
@@ -63,7 +63,7 @@ const vesselThunk: VesselAPIThunk = {
       })
     }
     const url = `/vessels/${id}?datasets=${dataset}`
-    return await GFWAPI.fetch<GFWDetail>(url).then(toVessel)
+    return await GFWApiClient.fetch<GFWDetail>(url).then(toVessel)
   },
 }
 

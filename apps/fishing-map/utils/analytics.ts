@@ -12,6 +12,8 @@ export const getActivityFilters = (filters: Record<string, any> = []) =>
       field,
       value: (filters || {})[field],
     }))
-    .map(({ field, value = [] }) => [field, (value ?? [])?.join(',')].join(': '))
+    .map(({ field, value = [] }) =>
+      Array.isArray(field) ? [field, (value ?? [])?.join(',')].join(': ') : field
+    )
 
 export const getEventLabel = (data: string[]) => data.join('|')

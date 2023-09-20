@@ -90,7 +90,7 @@ export const featuresToTimeseries = (
     const sourceQuantizeOffset = sourceActiveTimeChunk.quantizeOffset
     const sourceInterval = sourceMetadata.timeChunks.interval
     const { values: valuesContainedRaw } = getTimeSeries({
-      features: filteredFeatures.contained || ([] as any),
+      features: (filteredFeatures.contained as any) || ([] as any),
       numSublayers: sourceNumSublayers,
       quantizeOffset: sourceQuantizeOffset,
       aggregationOperation: sourceMetadata.aggregationOperation,

@@ -1,16 +1,11 @@
-import {
-  addProjectConfiguration,
-  joinPathFragments,
-  ProjectConfiguration,
-  Tree,
-} from '@nrwl/devkit'
+import { addProjectConfiguration, joinPathFragments, ProjectConfiguration, Tree } from '@nx/devkit'
 import { NormalizedSchema } from './normalize-options'
 
 export function addProject(host: Tree, options: NormalizedSchema) {
   const targets: Record<string, any> = {}
 
   targets.deploy = {
-    executor: '@nrwl/workspace:run-commands',
+    executor: '@nx/workspace:run-commands',
     options: {
       commands: [
         `nx build ${options.projectName} --parallel`,
@@ -21,7 +16,7 @@ export function addProject(host: Tree, options: NormalizedSchema) {
   }
 
   targets['docker-prepare'] = {
-    executor: '@nrwl/workspace:run-commands',
+    executor: '@nx/workspace:run-commands',
     outputs: [],
     options: {
       commands: [
@@ -32,7 +27,7 @@ export function addProject(host: Tree, options: NormalizedSchema) {
   }
 
   targets.compile = {
-    builder: '@nrwl/next:build',
+    builder: '@nx/next:build',
     outputs: ['{options.outputPath}'],
     defaultConfiguration: 'production',
     options: {
@@ -47,7 +42,7 @@ export function addProject(host: Tree, options: NormalizedSchema) {
   }
 
   targets.start = {
-    executor: '@nrwl/workspace:run-commands',
+    executor: '@nx/workspace:run-commands',
     options: {
       commands: [
         `nx clean-locales ${options.projectName}`,
@@ -59,7 +54,7 @@ export function addProject(host: Tree, options: NormalizedSchema) {
   }
 
   targets['clean-locales'] = {
-    executor: '@nrwl/workspace:run-commands',
+    executor: '@nx/workspace:run-commands',
     outputs: [],
     options: {
       commands: [`rm -rf ${joinPathFragments('dist', options.appProjectRoot)}/public/locales`],
@@ -67,7 +62,7 @@ export function addProject(host: Tree, options: NormalizedSchema) {
   }
 
   targets.serve = {
-    builder: '@nrwl/next:server',
+    builder: '@nx/next:server',
     options: {
       buildTarget: `${options.projectName}:build`,
       dev: true,
@@ -81,7 +76,7 @@ export function addProject(host: Tree, options: NormalizedSchema) {
   }
 
   targets.serve = {
-    executor: '@nrwl/next:server',
+    executor: '@nx/next:server',
     options: {
       buildTarget: `${options.projectName}:compile`,
       dev: true,
@@ -103,14 +98,14 @@ export function addProject(host: Tree, options: NormalizedSchema) {
   }
 
   targets.build = {
-    builder: '@nrwl/next:export',
+    builder: '@nx/next:export',
     options: {
       buildTarget: `${options.projectName}:build:production`,
     },
   }
 
   targets.lint = {
-    executor: '@nrwl/linter:eslint',
+    executor: '@nx/linter:eslint',
     outputs: ['{options.outputFile}'],
     options: {
       lintFilePatterns: [`${options.appProjectRoot}/**/*.{ts,tsx,js,jsx}`],

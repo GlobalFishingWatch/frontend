@@ -14,6 +14,7 @@ import {
   DataviewInstance,
   Dataview,
   APIPagination,
+  DataviewDatasetConfig,
 } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import {
@@ -39,9 +40,14 @@ import {
   selectTrackThinningConfig,
   selectTrackChunksConfig,
 } from 'features/resources/resources.slice'
-import { RootState } from 'store'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { MARINE_MANAGER_DATAVIEWS } from 'data/default-workspaces/marine-manager'
+import {
+  getVesselDataviewInstanceDatasetConfig,
+  VESSEL_DATAVIEW_INSTANCE_PREFIX,
+} from 'features/dataviews/dataviews.utils'
+import { selectUserLogged } from 'features/user/user.slice'
+import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { trackDatasetConfigsCallback } from '../resources/resources.utils'
 
 export const fetchDataviewByIdThunk = createAsyncThunk(
@@ -63,7 +69,7 @@ export const fetchDataviewByIdThunk = createAsyncThunk(
 export const fetchDataviewsByIdsThunk = createAsyncThunk(
   'dataviews/fetch',
   async (ids: (Dataview['id'] | Dataview['slug'])[], { signal, rejectWithValue, getState }) => {
-    const state = getState() as RootState
+    const state = getState() as DataviewsSliceState
     const existingIds = selectIds(state) as (number | string)[]
     const uniqIds = ids.filter((id) => !existingIds.includes(id))
 
@@ -148,9 +154,10 @@ export const updateDataviewThunk = createAsyncThunk<
   }
 )
 
-export type ResourcesState = AsyncReducer<Dataview>
+export type DataviewsState = AsyncReducer<Dataview>
+export type DataviewsSliceState = { dataviews: DataviewsState }
 
-const { slice: dataviewsSlice, entityAdapter } = createAsyncSlice<ResourcesState, Dataview>({
+const { slice: dataviewsSlice, entityAdapter } = createAsyncSlice<DataviewsState, Dataview>({
   name: 'dataview',
   thunks: {
     fetchThunk: fetchDataviewsByIdsThunk,
@@ -166,19 +173,19 @@ const { slice: dataviewsSlice, entityAdapter } = createAsyncSlice<ResourcesState
 })
 
 export const { addDataviewEntity } = dataviewsSlice.actions
-export const { selectAll, selectById, selectIds } = entityAdapter.getSelectors<RootState>(
+export const { selectAll, selectById, selectIds } = entityAdapter.getSelectors<DataviewsSliceState>(
   (state) => state.dataviews
 )
 
-export function selectAllDataviews(state: RootState) {
+export function selectAllDataviews(state: DataviewsSliceState) {
   return selectAll(state)
 }
 
 export const selectDataviewById = memoize((id: number) =>
-  createSelector([(state: RootState) => state], (state) => selectById(state, id))
+  createSelector([(state: DataviewsSliceState) => state], (state) => selectById(state, id))
 )
 
-export const selectDataviewsStatus = (state: RootState) => state.dataviews.status
+export const selectDataviewsStatus = (state: DataviewsSliceState) => state.dataviews.status
 
 export const selectDataviewInstancesMerged = createSelector(
   [selectWorkspaceStatus, selectWorkspaceDataviewInstances, selectUrlDataviewInstances],
@@ -211,18 +218,51 @@ export const selectDataviewInstancesMergedOrdered = createSelector(
 )
 
 export const selectAllDataviewInstancesResolved = createSelector(
-  [selectDataviewInstancesMergedOrdered, selectAllDataviews, selectAllDatasets],
-  (dataviewInstances, dataviews, datasets): UrlDataviewInstance[] | undefined => {
+  [selectDataviewInstancesMergedOrdered, selectAllDataviews, selectAllDatasets, selectUserLogged],
+  (dataviewInstances, dataviews, datasets, loggedUser): UrlDataviewInstance[] | undefined => {
     if (!dataviewInstances) return
-    const dataviewInstancesResolved = resolveDataviews(dataviewInstances, dataviews, datasets)
+    const dataviewInstancesWithDatasetConfig = dataviewInstances.map((dataviewInstance) => {
+      if (
+        dataviewInstance.id.startsWith(VESSEL_DATAVIEW_INSTANCE_PREFIX) &&
+        !dataviewInstance.datasetsConfig?.length &&
+        dataviewInstance.config?.info
+      ) {
+        const vesselId = dataviewInstance.id.split(VESSEL_DATAVIEW_INSTANCE_PREFIX)[1]
+        // New way to resolve datasetConfig for vessels to avoid storing all
+        // the datasetConfig in the instance and save url string characters
+        const config = { ...dataviewInstance.config }
+        // Vessel pined from not logged user but is logged now and the related dataset is available
+        if (loggedUser && !config.track) {
+          const dataset = datasets.find((d) => d.id === config.info)
+          const trackDatasetId = getRelatedDatasetByType(dataset, DatasetTypes.Tracks)?.id
+          if (trackDatasetId) {
+            config.track = trackDatasetId
+          }
+        }
+        const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
+          vesselId,
+          config
+        )
+        return {
+          ...dataviewInstance,
+          datasetsConfig,
+        }
+      }
+      return dataviewInstance
+    })
+    const dataviewInstancesResolved = resolveDataviews(
+      dataviewInstancesWithDatasetConfig,
+      dataviews,
+      datasets
+    )
     return dataviewInstancesResolved
   }
 )
 
 export const selectMarineManagerDataviewInstanceResolved = createSelector(
-  [selectAllDataviews, selectAllDatasets],
-  (dataviews, datasets): UrlDataviewInstance[] | undefined => {
-    if (!dataviews.length || !datasets.length) return []
+  [selectIsMarineManagerLocation, selectAllDataviews, selectAllDatasets],
+  (isMarineManagerLocation, dataviews, datasets): UrlDataviewInstance[] | undefined => {
+    if (!isMarineManagerLocation || !dataviews.length || !datasets.length) return []
     const dataviewInstancesResolved = resolveDataviews(
       MARINE_MANAGER_DATAVIEWS,
       dataviews,
@@ -256,6 +296,13 @@ export const selectDataviewInstancesResolved = createSelector(
   [selectDataviewsResources],
   (dataviewsResources) => {
     return dataviewsResources.dataviews || defaultDataviewResolved
+  }
+)
+
+export const selectActiveDataviewInstancesResolved = createSelector(
+  [selectDataviewInstancesResolved],
+  (dataviewInstances) => {
+    return dataviewInstances.filter((d) => d.config?.visible)
   }
 )
 

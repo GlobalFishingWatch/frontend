@@ -1,3 +1,10 @@
+export type DownloadRateLimit = {
+  remaining: number
+  limit: number
+  reset?: string
+  retryAfter: number
+}
+
 export interface Authorization {
   source: string
   startDate: string
@@ -5,6 +12,16 @@ export interface Authorization {
   originalStartDate: number
   originalEndDate: number
 }
+
+export type VesselType =
+  | 'seismic_vessel'
+  | 'carrier'
+  | 'cargo'
+  | 'passenger'
+  | 'fishing'
+  | 'other_non_fishing'
+  | 'bunker_or_tanker'
+  | 'support'
 
 export interface Vessel {
   authorizations?: Authorization[]
@@ -33,6 +50,7 @@ export interface Vessel {
   registeredGearType?: string
   shipname: string
   type?: string
+  vesselType?: VesselType
   years?: number[]
 }
 

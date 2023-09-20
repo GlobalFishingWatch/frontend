@@ -32,6 +32,15 @@ class TileClusterGenerator {
         Array.isArray(config.eventTypes) ? config.eventTypes.join(',') : config.eventTypes
       )
     }
+
+    if (config.filters?.flag) {
+      url.searchParams.set('flags', config.filters.flag)
+    }
+
+    if (config.filters?.duration) {
+      url.searchParams.set('duration', config.filters.duration)
+    }
+
     url.searchParams.set(
       'max-cluster-zoom',
       (config.maxZoomCluster || MAX_ZOOM_TO_CLUSTER_POINTS).toString()

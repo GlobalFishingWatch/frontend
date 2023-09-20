@@ -39,9 +39,9 @@ export const getSourceMetadata = (style: ExtendedStyle, dataview: UrlDataviewIns
     return { metadata: environmentMetadata, generatorSourceId: dataview.id }
   }
 
-  const generatorSourceId = Array.isArray(dataview.config.layers)
-    ? `${dataview.id}${MULTILAYER_SEPARATOR}${dataview.config.layers[0]?.id}`
-    : `${dataview.id}${MULTILAYER_SEPARATOR}${dataview.config.layers}`
+  const generatorSourceId = Array.isArray(dataview.config?.layers)
+    ? `${dataview.id}${MULTILAYER_SEPARATOR}${dataview.config?.layers[0]?.id}`
+    : `${dataview.id}${MULTILAYER_SEPARATOR}${dataview.config?.layers}`
 
   return {
     metadata: {

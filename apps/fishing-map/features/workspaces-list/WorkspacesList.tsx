@@ -7,7 +7,7 @@ import { Spinner } from '@globalfishingwatch/ui-components'
 import { isValidLocationCategory, selectLocationCategory } from 'routes/routes.selectors'
 import { HOME, WORKSPACE } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import useViewport from 'features/map/map-viewport.hooks'
 import { Locale } from 'types'
 import styles from './WorkspacesList.module.css'
@@ -49,7 +49,7 @@ function WorkspacesList() {
 
   return (
     <div className={styles.container}>
-      {locationCategory === WorkspaceCategories.MarineManager && (
+      {locationCategory === WorkspaceCategory.MarineManager && (
         <Fragment>
           <WorkspaceWizard />
           <label className={styles.listTitle}>{t('common.partnerSites', 'Partner sites')}</label>

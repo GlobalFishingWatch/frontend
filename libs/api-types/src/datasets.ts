@@ -12,7 +12,7 @@ export type EndpointParamType =
   | 'string'
   | 'date-iso'
   | 'sql'
-  | '4wings-datasets'
+  | '4wings-datasets' // legacy from v2 replaced by type: string, array: true
 
 export interface EndpointParam {
   id: string
@@ -78,7 +78,11 @@ export enum DatasetStatus {
 export type DatasetGeometryType = 'polygons' | 'tracks' | 'points' | 'draw'
 
 export interface DatasetDocumentation {
+  type?: string
+  enable?: boolean
+  status?: 'Active' | 'Deprecated'
   queries?: string[]
+  provider?: string
 }
 
 export interface DatasetConfiguration {
@@ -89,6 +93,7 @@ export interface DatasetConfiguration {
   type?: EventTypes
   geometryType?: DatasetGeometryType
   format?: 'geojson'
+  tableName?: string
   documentation?: DatasetDocumentation
   fields?: string[]
   idProperty?: string
@@ -112,16 +117,18 @@ export type RelatedDataset = {
   type: DatasetTypes
 }
 
-export type DatasetSchemaType = 'number' | 'string' | 'boolean'
+export type DatasetSchemaType = 'range' | 'number' | 'string' | 'boolean'
 
 export type DatasetSchema = {
   type: DatasetSchemaType
   maxLength: number
   minLength: number
   enum: string[]
-  minimum: number
-  maximum: number
+  min: number
+  max: number
   stats?: boolean
+  unit?: string
+  singleSelection?: boolean
 }
 
 export enum DatasetCategory {

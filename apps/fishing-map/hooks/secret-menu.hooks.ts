@@ -1,14 +1,14 @@
 import { useEffect, useCallback, useRef } from 'react'
 import { useSelector } from 'react-redux'
+import { RootState } from 'reducers'
 import { isGFWUser } from 'features/user/user.slice'
-import { RootState } from 'store'
 import { useAppDispatch } from 'features/app/app.hooks'
 
 type DebugMenu = [boolean, () => void]
 
 type SecretMenuProps = {
   key: string
-  onToggle: () => void
+  onToggle: () => any
   repeatNumber?: number
   selectMenuActive?: (state: RootState) => boolean
 }

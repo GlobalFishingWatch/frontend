@@ -1,11 +1,11 @@
 import { Fragment, useState, useEffect, useMemo, useCallback } from 'react'
-import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { IconButton, Spinner, Tabs, Tab } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { useNavigatorOnline } from '@globalfishingwatch/react-hooks'
 import { VesselAPISource } from 'types'
+import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import I18nDate from 'features/i18n/i18nDate'
 import {
   selectMergedVesselId,
@@ -44,6 +44,7 @@ import { useApp, useAppDispatch } from 'features/app/app.hooks'
 import RiskSummary from 'features/risk-summary/risk-summary'
 import RiskTitle from 'features/risk-title/risk-title'
 import ActivityByType from 'features/activity-by-type/activity-by-type'
+import { IS_STANDALONE_APP } from 'data/config'
 import Info from './components/Info'
 import Activity from './components/activity/Activity'
 import styles from './Profile.module.css'
@@ -120,7 +121,7 @@ const Profile: React.FC = (props): React.ReactElement => {
 
       if (vesselDataset) {
         const trackDatasetId = getRelatedDatasetByType(vesselDataset, DatasetTypes.Tracks)?.id
-        if (trackDatasetId) {
+        if (trackDatasetId || IS_STANDALONE_APP) {
           const eventsRelatedDatasets = getRelatedDatasetsByType(vesselDataset, DatasetTypes.Events)
           const eventsDatasetsId =
             eventsRelatedDatasets && eventsRelatedDatasets?.length
@@ -187,8 +188,8 @@ const Profile: React.FC = (props): React.ReactElement => {
   const onBackClick = useCallback(() => {
     const params = query ? { replaceQuery: true, query } : {}
     dispatchLocation(HOME, params)
-    uaEvent({
-      category: 'Vessel Detail',
+    trackEvent({
+      category: TrackCategory.VesselDetail,
       action: 'Click to go back to search',
     })
   }, [dispatchLocation, query])
@@ -286,7 +287,9 @@ const Profile: React.FC = (props): React.ReactElement => {
 
   const tabs: Tab[] = useMemo(
     () =>
-      currentProfileIsInsurer
+      IS_STANDALONE_APP
+        ? [infoTab, activityByTypeTab]
+        : currentProfileIsInsurer
         ? [riskSummaryTab, infoTab, activityByTypeTab, mapTab]
         : [infoTab, activityTab, mapTab, riskSummaryTab],
     [currentProfileIsInsurer, riskSummaryTab, infoTab, activityTab, mapTab, activityByTypeTab]
@@ -369,27 +372,33 @@ const Profile: React.FC = (props): React.ReactElement => {
           activeTab={activeTab?.id as string}
           onTabClick={(tab: Tab) => {
             setActiveTab(tab)
+            if (tab.id === 'info') {
+              trackEvent({
+                category: TrackCategory.VesselDetailInfoTab,
+                action: 'See Info Tab',
+              })
+            }
             if (tab.id === 'activity' && !currentProfileIsInsurer) {
-              uaEvent({
-                category: 'Vessel Detail ACTIVITY Tab',
+              trackEvent({
+                category: TrackCategory.VesselDetailActivityTab,
                 action: 'See Activity Tab',
               })
             }
             if (tab.id === 'activity' && currentProfileIsInsurer) {
-              uaEvent({
-                category: 'Vessel Detail ACTIVITY BY TYPE Tab',
+              trackEvent({
+                category: TrackCategory.VesselDetailActivityByTypeTab,
                 action: 'See ACTIVITY BY TYPE Tab',
               })
             }
             if (tab.id === 'risk') {
-              uaEvent({
-                category: 'Vessel Detail RISK SUMMARY Tab',
+              trackEvent({
+                category: TrackCategory.VesselDetailRiskSummaryTab,
                 action: 'See RISK SUMMARY Tab',
               })
             }
             if (tab.id === 'map') {
-              uaEvent({
-                category: 'Vessel Detail MAP Tab',
+              trackEvent({
+                category: TrackCategory.VesselDetailMapTab,
                 action: 'See MAP Tab',
                 label: 'global tab',
               })
