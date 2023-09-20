@@ -65,7 +65,7 @@ const GeneratorConfig: GeneratorsRecord = {
   [GeneratorType.GL]: new GLStyleGenerator(),
   [GeneratorType.Heatmap]: new HeatmapGenerator(),
   [GeneratorType.HeatmapAnimated]: new HeatmapAnimatedGenerator(),
-  [GeneratorType.Points]: new PointsGenerator(),
+  [GeneratorType.Points]: new PointsGenerator() as any,
   [GeneratorType.Polygons]: new PolygonsGenerator(),
   [GeneratorType.Rulers]: new RulersGenerator(),
   [GeneratorType.TileCluster]: new TileClusterGenerator(),

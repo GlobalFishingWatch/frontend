@@ -34,7 +34,7 @@ class PointsGenerator {
   }
 
   _getStyleLayers = (config: GlobalPointsConfig): CircleLayerSpecification[] => {
-    const paint = {
+    const paint: CircleLayerSpecification['paint'] = {
       'circle-color': config.color || DEFAULT_COLOR,
       'circle-radius': ['interpolate', ['linear'], ['zoom'], 3, 4, 8, 8],
       'circle-opacity': config.opacity || 1,
