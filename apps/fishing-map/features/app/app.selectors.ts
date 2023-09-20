@@ -35,6 +35,7 @@ import {
   WorkspaceActivityCategory,
   ReportActivityGraph,
   BufferUnit,
+  BufferOperation,
 } from 'types'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import {
@@ -282,6 +283,13 @@ export const selectReportBufferUnit = createSelector(
   [selectWorkspaceStateProperty('reportBufferUnit')],
   (reportBufferUnit): BufferUnit => {
     return reportBufferUnit
+  }
+)
+
+export const selectReportBufferOperation = createSelector(
+  [selectWorkspaceStateProperty('reportBufferOperation')],
+  (reportBufferOperation): BufferOperation => {
+    return reportBufferOperation
   }
 )
 

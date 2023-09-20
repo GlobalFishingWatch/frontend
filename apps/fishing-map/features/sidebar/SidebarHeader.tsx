@@ -230,6 +230,7 @@ function cleanReportQuery(query: QueryParams) {
     reportVesselPage: undefined,
     reportBufferUnit: undefined,
     reportBufferValue: undefined,
+    reportBufferOperation: undefined,
   }
 }
 

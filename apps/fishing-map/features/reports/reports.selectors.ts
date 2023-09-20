@@ -36,7 +36,11 @@ import { createDeepEqualSelector } from 'utils/selectors'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { sortStrings } from 'utils/shared'
 import { Area, selectAreas } from 'features/areas/areas.slice'
-import { selectUrlBufferUnitQuery, selectUrlBufferValueQuery } from 'routes/routes.selectors'
+import {
+  selectUrlBufferOperationQuery,
+  selectUrlBufferUnitQuery,
+  selectUrlBufferValueQuery,
+} from 'routes/routes.selectors'
 import { selectReportVesselsData, selectReportPreviewBuffer } from './report.slice'
 
 export const EMPTY_API_VALUES = ['NULL', undefined, '']
@@ -468,17 +472,22 @@ const selectReportAreaData = createSelector(
 export const selectReportPreviewBufferFeature = createSelector(
   [selectReportAreaData, selectReportPreviewBuffer],
   (area, buffer) => {
-    const { value, unit } = buffer
-    if (!area || !unit || !value) return null
-    return getBufferedFeature({ area, value, unit })
+    const { value, unit, operation } = buffer
+    if (!area || !unit || !value || !operation) return null
+    return getBufferedFeature({ area, value, unit, operation })
   }
 )
 
 export const selectReportBufferArea = createSelector(
-  [selectReportAreaData, selectUrlBufferUnitQuery, selectUrlBufferValueQuery],
-  (area, unit, value) => {
+  [
+    selectReportAreaData,
+    selectUrlBufferUnitQuery,
+    selectUrlBufferValueQuery,
+    selectUrlBufferOperationQuery,
+  ],
+  (area, unit, value, operation) => {
     if (!area || !unit || !value) return null
-    const bufferedArea = getBufferedArea({ area, value, unit }) as Area
+    const bufferedArea = getBufferedArea({ area, value, unit, operation }) as Area
     if (bufferedArea?.geometry) {
       const bounds = wrapGeometryBbox(bufferedArea.geometry as MultiPolygon)
       // bbox is needed inside Area geometry to computeTimeseries
@@ -490,10 +499,15 @@ export const selectReportBufferArea = createSelector(
 )
 
 export const selectReportBufferFeature = createSelector(
-  [selectReportAreaData, selectUrlBufferUnitQuery, selectUrlBufferValueQuery],
-  (area, unit, value) => {
-    if (!area || !unit || !value) return null
-    return getBufferedFeature({ area, value, unit })
+  [
+    selectReportAreaData,
+    selectUrlBufferUnitQuery,
+    selectUrlBufferValueQuery,
+    selectUrlBufferOperationQuery,
+  ],
+  (area, unit, value, operation) => {
+    if (!area || !unit || !value || !operation) return null
+    return getBufferedFeature({ area, value, unit, operation })
   }
 )
 

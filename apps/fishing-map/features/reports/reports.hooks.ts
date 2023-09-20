@@ -4,6 +4,7 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataview } from '@globalfishingwatch/api-types'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
+  selectReportBufferOperation,
   selectReportBufferUnit,
   selectReportBufferValue,
   selectTimeRange,
@@ -129,6 +130,7 @@ export function useFetchReportVessel() {
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const reportBufferUnit = useSelector(selectReportBufferUnit)
   const reportBufferValue = useSelector(selectReportBufferValue)
+  const reportBufferOperation = useSelector(selectReportBufferOperation)
   useEffect(() => {
     const isDifferentDateRange = reportDateRangeHash !== getDateRangeHash(timerange)
     if (
@@ -151,6 +153,7 @@ export function useFetchReportVessel() {
           spatialAggregation: true,
           reportBufferUnit,
           reportBufferValue,
+          reportBufferOperation,
         })
       )
     }

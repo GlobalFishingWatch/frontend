@@ -21,6 +21,7 @@ import { resetReportData } from 'features/reports/report.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
+  DEFAULT_BUFFER_OPERATION,
   DEFAULT_POINT_BUFFER_UNIT,
   DEFAULT_POINT_BUFFER_VALUE,
 } from 'features/reports/reports.config'
@@ -129,6 +130,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
           reportAreaSource: feature.source,
           reportBufferUnit: isPointFeature ? DEFAULT_POINT_BUFFER_UNIT : undefined,
           reportBufferValue: isPointFeature ? DEFAULT_POINT_BUFFER_VALUE : undefined,
+          reportBufferOperation: isPointFeature ? DEFAULT_BUFFER_OPERATION : undefined,
           ...(bounds && { reportAreaBounds: bounds }),
           ...(!isSidebarOpen && { sidebarOpen: true }),
         },
