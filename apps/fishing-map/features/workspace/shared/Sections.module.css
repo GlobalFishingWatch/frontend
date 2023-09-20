@@ -23,6 +23,12 @@
   padding: var(--space-XS) var(--space-S);
 }
 
+.footerLabel {
+  font: var(--font-S);
+  padding-bottom: var(--space-S);
+  color: var(--color-secondary-blue);
+}
+
 .sectionTitle {
   font: var(--font-S);
   color: var(--color-secondary-blue);

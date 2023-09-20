@@ -214,6 +214,11 @@ export const selectEventsDataviews: (state: any) => UrlDataviewInstance<Generato
     (dataviews) => dataviews
   )
 
+export const selectRealTimeDataviews = createSelector(
+  [selectDataviewInstancesByCategory(DataviewCategory.RealTime)],
+  (dataviews) => dataviews
+)
+
 export const selectActiveEventsDataviews = createSelector(
   [selectDataviewInstancesByCategory(DataviewCategory.Events)],
   (dataviews) => dataviews?.filter((d) => d.config?.visible)

@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
 import { memoize, uniqBy, without, kebabCase, uniq } from 'lodash'
 import { stringify } from 'qs'
+import { DateTime } from 'luxon'
 import {
   AnyDatasetConfiguration,
   APIPagination,
@@ -28,6 +29,7 @@ import {
   LATEST_CARRIER_DATASET_ID,
   PUBLIC_SUFIX,
 } from 'data/config'
+import { SKYLIGHT_ENCOUNTERS_DATASET_ID } from 'features/datasets/datasets.mock'
 
 export const PRESENCE_DATASET_ID = 'public-global-presence'
 export const PRESENCE_TRACKS_DATASET_ID = 'private-global-presence-tracks'
@@ -51,6 +53,27 @@ const parsePOCsDatasets = (dataset: Dataset) => {
     }
     return pocDataset
   }
+  if (dataset.id.includes(SKYLIGHT_ENCOUNTERS_DATASET_ID)) {
+    const endTime = DateTime.now().toUTC()
+    const startTime = endTime.minus({ days: 3 })
+    const endTimeHour = `${endTime.toString().split(':')[0]}:00`
+    const startTimeHour = `${startTime.toString().split(':')[0]}:00`
+    const pocDataset = {
+      ...dataset,
+      endpoints: [
+        {
+          id: EndpointId.ContextGeojson,
+          description: 'Endpoint to retrieve geojson from temporal context layers',
+          downloadable: true,
+          method: 'GET',
+          pathTemplate: `https://gateway.api.dev.globalfishingwatch.org/proto/skylights/geojsons?start-time=${startTimeHour}&end-time=${endTimeHour}`,
+          params: [],
+          query: [],
+        },
+      ],
+    }
+    return pocDataset
+  }
   return dataset
 }
 
@@ -60,7 +83,7 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
   {
     rejectValue: AsyncError
   }
->('datasets/fetchById', async (id: string, { rejectWithValue }) => {
+>('datasets/fetchById', async (id: string, { rejectWithValue }: any) => {
   try {
     const dataset = await GFWAPI.fetch<Dataset>(`/datasets/${id}?include=endpoints&cache=false`)
     return parsePOCsDatasets(dataset)
@@ -95,6 +118,9 @@ const fetchDatasetsFromApi = async (
     process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_USE_LOCAL_DATASETS === 'true'
       ? await import('./datasets.mock')
       : { default: [] }
+  if (mockedDatasets.default?.length) {
+    console.log('using mocked datasets', mockedDatasets.default)
+  }
   let datasets = uniqBy([...mockedDatasets.default, ...initialDatasets.entries], 'id')
 
   const relatedDatasetsIds = uniq(

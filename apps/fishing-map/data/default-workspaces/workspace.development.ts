@@ -23,6 +23,11 @@ import {
   PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
   BASEMAP_DATAVIEW_INSTANCE_ID,
 } from 'data/workspaces'
+import {
+  SKYLIGHT_ENCOUNTERS_DATAVIEW_ID,
+  SKYLIGHT_FISHING_DATAVIEW_ID,
+  SKYLIGHT_LOITERING_DATAVIEW_ID,
+} from 'features/dataviews/dataviews.mock'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
 import { WorkspaceState } from 'types'
@@ -107,6 +112,27 @@ const workspace: Workspace<WorkspaceState> = {
     {
       id: ENCOUNTER_EVENTS_SOURCE_ID,
       dataviewId: CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
+      config: {
+        visible: false,
+      },
+    },
+    {
+      id: SKYLIGHT_ENCOUNTERS_DATAVIEW_ID.toString(),
+      dataviewId: SKYLIGHT_ENCOUNTERS_DATAVIEW_ID,
+      config: {
+        visible: true,
+      },
+    },
+    {
+      id: SKYLIGHT_LOITERING_DATAVIEW_ID.toString(),
+      dataviewId: SKYLIGHT_LOITERING_DATAVIEW_ID,
+      config: {
+        visible: false,
+      },
+    },
+    {
+      id: SKYLIGHT_FISHING_DATAVIEW_ID.toString(),
+      dataviewId: SKYLIGHT_FISHING_DATAVIEW_ID,
       config: {
         visible: false,
       },

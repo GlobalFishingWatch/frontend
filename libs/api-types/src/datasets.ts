@@ -132,6 +132,7 @@ export type DatasetSchema = {
 }
 
 export enum DatasetCategory {
+  RealTime = 'realtime',
   Event = 'event',
   Detections = 'detections',
   Context = 'context',

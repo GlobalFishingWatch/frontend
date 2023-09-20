@@ -9,13 +9,14 @@ import { useDataviewInstancesConnect } from '../workspace.hook'
 type TitleProps = {
   dataview: UrlDataviewInstance
   className: string
-  classNameActive: string
+  classNameActive?: string
   title: string | ReactNode
+  disabled?: boolean
   onToggle?: () => void
 }
 
 const Title = (props: TitleProps, ref: Ref<HTMLHeadingElement>) => {
-  const { dataview, className, classNameActive, title, onToggle } = props
+  const { dataview, className, classNameActive, title, onToggle, disabled } = props
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const layerActive = dataview?.config?.visible ?? true
   const datasetIcon = dataview?.datasets?.[0] && getDatasetIcon(dataview?.datasets?.[0])
@@ -35,7 +36,7 @@ const Title = (props: TitleProps, ref: Ref<HTMLHeadingElement>) => {
     <h3
       ref={ref}
       className={cx(className, { [classNameActive]: layerActive })}
-      onClick={onToggleLayerActive}
+      onClick={disabled ? undefined : onToggleLayerActive}
     >
       <span>
         {datasetIcon && !CONTEXT_LAYERS_DATAVIEWS.includes(dataview.dataviewId as string) && (

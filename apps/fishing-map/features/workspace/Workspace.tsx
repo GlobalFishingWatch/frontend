@@ -30,6 +30,7 @@ import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
 import ActivitySection from './activity/ActivitySection'
 import VesselsSection from './vessels/VesselsSection'
 import EventsSection from './events/EventsSection'
+import RealTimeSection from './realtime/RealTimeSection'
 import EnvironmentalSection from './environmental/EnvironmentalSection'
 import ContextAreaSection from './context-areas/ContextAreaSection'
 import styles from './Workspace.module.css'
@@ -189,6 +190,7 @@ function Workspace() {
       <ActivitySection />
       <DetectionsSection />
       <VesselsSection />
+      <RealTimeSection />
       <EventsSection />
       <EnvironmentalSection />
       <ContextAreaSection />
