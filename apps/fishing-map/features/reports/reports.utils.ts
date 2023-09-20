@@ -7,7 +7,7 @@
 import { format } from 'd3-format'
 import { DateTime } from 'luxon'
 import { multiPolygon, polygon, point } from '@turf/helpers'
-import { buffer } from '@turf/turf'
+import { buffer, difference } from '@turf/turf'
 import { Feature, MultiPolygon } from 'geojson'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -21,9 +21,14 @@ import {
   getSchemaFilterOperationInDataview,
   SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
-import { Bbox, BufferUnit, ReportCategory } from 'types'
+import { Bbox, BufferOperation, BufferUnit, ReportCategory } from 'types'
 import { Area } from 'features/areas/areas.slice'
-import { DEFAULT_POINT_BUFFER_UNIT, DEFAULT_POINT_BUFFER_VALUE } from './reports.config'
+import {
+  DEFAULT_BUFFER_OPERATION,
+  DEFAULT_POINT_BUFFER_UNIT,
+  DEFAULT_POINT_BUFFER_VALUE,
+  DIFFERENCE,
+} from './reports.config'
 
 const ALWAYS_SHOWN_FILTERS = ['vessel-groups']
 
@@ -218,12 +223,14 @@ export const getBufferedArea = ({
   area,
   value,
   unit,
+  operation,
 }: {
   area: Area | undefined
   value: number
   unit: BufferUnit
+  operation: BufferOperation
 }): Area | null => {
-  const bufferedFeature = getBufferedFeature({ area, value, unit })
+  const bufferedFeature = getBufferedFeature({ area, value, unit, operation })
   return { ...area, geometry: bufferedFeature?.geometry } as Area
 }
 
@@ -231,11 +238,13 @@ export const getBufferedAreaBbox = ({
   area,
   value = DEFAULT_POINT_BUFFER_VALUE,
   unit = DEFAULT_POINT_BUFFER_UNIT,
+  operation = DEFAULT_BUFFER_OPERATION,
 }): Bbox | undefined => {
   const bufferedFeature = getBufferedFeature({
     area,
     value,
     unit,
+    operation,
   })
   return bufferedFeature?.geometry
     ? wrapGeometryBbox(bufferedFeature.geometry as MultiPolygon)
@@ -247,10 +256,12 @@ export const getBufferedFeature = ({
   area,
   value,
   unit,
+  operation,
 }: {
   area: Area | undefined
   value: number
   unit: BufferUnit
+  operation: BufferOperation
 }): Feature | null => {
   if (!area?.geometry) return null
   const areaPolygon =
@@ -262,5 +273,9 @@ export const getBufferedFeature = ({
       ? point(area.geometry.coordinates)
       : null
 
-  return areaPolygon ? buffer(areaPolygon, value, { units: unit }) : null
+  return !areaPolygon
+    ? null
+    : operation === DIFFERENCE && areaPolygon?.geometry?.type !== 'Point'
+    ? difference(buffer(areaPolygon, value, { units: unit }), areaPolygon as any)
+    : buffer(areaPolygon, value, { units: unit })
 }
