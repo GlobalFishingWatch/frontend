@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo, Fragment } from 'react'
+import React, { useCallback, useState, useMemo, Fragment, useRef } from 'react'
 import { matchSorter } from 'match-sorter'
 import {
   useMultipleSelection,
@@ -156,6 +156,7 @@ export function MultiSelect(props: MultiSelectProps) {
   )
 
   const [inputValue, setInputValue] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
   const handleFilter = useMemo(
     () =>
       // apply onFilter callback when provided otherwise just use
@@ -193,7 +194,10 @@ export function MultiSelect(props: MultiSelectProps) {
             highlightedIndex: state.highlightedIndex,
           }
         }
+        case useCombobox.stateChangeTypes.InputKeyDownEscape:
         case useCombobox.stateChangeTypes.InputBlur: {
+          setInputValue('')
+          inputRef.current?.blur()
           return {
             ...changes,
             inputValue: '',
@@ -260,9 +264,7 @@ export function MultiSelect(props: MultiSelectProps) {
         >
           <InputText
             {...getInputProps({
-              ...getDropdownProps({
-                preventKeyAction: isOpen,
-              }),
+              ref: inputRef,
             })}
             data-test={`${testId}-input`}
             value={inputValue}
