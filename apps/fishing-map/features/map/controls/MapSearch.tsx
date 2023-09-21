@@ -62,7 +62,6 @@ const MapSearch = () => {
   }
 
   const {
-    getComboboxProps,
     getMenuProps,
     getInputProps,
     getItemProps,
@@ -78,7 +77,7 @@ const MapSearch = () => {
     onSelectedItemChange: onSelectResult,
   })
   return (
-    <div className={styles.container} {...getComboboxProps()}>
+    <div className={styles.container}>
       <IconButton
         {...getToggleButtonProps(togglePropOptions)}
         icon="search"

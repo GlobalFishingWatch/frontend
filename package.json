@@ -69,7 +69,7 @@
     "d3-geo": "3.1.0",
     "d3-scale": "^3.3.0",
     "d3-shape": "3.2.0",
-    "downshift": "6.1.12",
+    "downshift": "8.2.0",
     "file-saver": "2.0.5",
     "geojson": "^0.5.0",
     "geojson-vt": "^3.2.1",

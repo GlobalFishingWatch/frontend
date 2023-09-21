@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo, Fragment } from 'react'
+import React, { useCallback, useState, useMemo, Fragment, useRef } from 'react'
 import { matchSorter } from 'match-sorter'
 import {
   useMultipleSelection,
@@ -156,6 +156,7 @@ export function MultiSelect(props: MultiSelectProps) {
   )
 
   const [inputValue, setInputValue] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
   const handleFilter = useMemo(
     () =>
       // apply onFilter callback when provided otherwise just use
@@ -171,12 +172,10 @@ export function MultiSelect(props: MultiSelectProps) {
   const { getDropdownProps } = useMultipleSelection({ selectedItems: selectedOptions })
   const {
     isOpen,
-    openMenu,
     getToggleButtonProps,
     getLabelProps,
     getMenuProps,
     getInputProps,
-    getComboboxProps,
     highlightedIndex,
     selectItem,
     getItemProps,
@@ -190,12 +189,15 @@ export function MultiSelect(props: MultiSelectProps) {
         case useCombobox.stateChangeTypes.ItemClick: {
           return {
             ...changes,
-            isOpen: true, // keep menu open after selection.
+            isOpen: changes.selectedItem ? state.isOpen : true,
             inputValue: '', // don't add the item string as input value at selection.
             highlightedIndex: state.highlightedIndex,
           }
         }
+        case useCombobox.stateChangeTypes.InputKeyDownEscape:
         case useCombobox.stateChangeTypes.InputBlur: {
+          setInputValue('')
+          inputRef.current?.blur()
           return {
             ...changes,
             inputValue: '',
@@ -259,18 +261,10 @@ export function MultiSelect(props: MultiSelectProps) {
           className={cx(styles.placeholderContainer, multiSelectStyles.placeholderContainer, {
             [styles.disabled]: disabled,
           })}
-          {...getComboboxProps()}
         >
           <InputText
             {...getInputProps({
-              ...getDropdownProps({
-                onFocus: () => {
-                  if (!isOpen) {
-                    openMenu()
-                  }
-                },
-                preventKeyAction: isOpen,
-              }),
+              ref: inputRef,
             })}
             data-test={`${testId}-input`}
             value={inputValue}
