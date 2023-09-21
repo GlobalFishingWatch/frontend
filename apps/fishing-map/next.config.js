@@ -11,7 +11,9 @@ const basePath =
   process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/map' : '')
 
 const IS_PRODUCTION =
-  process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'production' || process.env.NODE_ENV === 'production'
+  process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'production' ||
+  process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'staging' ||
+  process.env.NODE_ENV === 'production'
 
 /**
  * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
@@ -86,7 +88,6 @@ const nextConfig = {
   outputFileTracing: true,
   experimental: {
     outputFileTracingRoot: join(__dirname, '../../'),
-    appDir: true,
     serverActions: true,
   },
   // pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js'],

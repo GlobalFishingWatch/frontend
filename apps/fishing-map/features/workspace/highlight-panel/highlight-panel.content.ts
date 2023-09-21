@@ -1,4 +1,4 @@
-import { IS_PRODUCTION_BUILD, PUBLIC_WORKSPACE_ENV } from 'data/config'
+import { IS_PRODUCTION_BUILD, IS_PRODUCTION_WORKSPACE_ENV } from 'data/config'
 import { PATH_BASENAME } from 'routes/routes'
 import { Locale } from 'types'
 
@@ -105,7 +105,7 @@ const AVAILABLE_HIGHLIGHT_CONFIGS = HIGHLIGHT_CONFIGS
 const HIGHLIGHT_CONFIG_LATEST = AVAILABLE_HIGHLIGHT_CONFIGS.at(0) as HighlightPanelConfig
 const HIGHLIGHT_CONFIG_PREVIOUS = AVAILABLE_HIGHLIGHT_CONFIGS.at(1) as HighlightPanelConfig
 
-const IS_PRODUCTION_ENV = IS_PRODUCTION_BUILD && PUBLIC_WORKSPACE_ENV === 'production'
+const IS_PRODUCTION_ENV = IS_PRODUCTION_BUILD && IS_PRODUCTION_WORKSPACE_ENV
 
 const DISPLAY_LATEST_POPUP =
   // Non production environments always show the latest popup

@@ -175,6 +175,10 @@ ul {
   outline: none;
 }
 
+*:focus-visible {
+  box-shadow: var(--box-shadow-highlight);
+}
+
 *::-webkit-scrollbar-thumb:hover {
   background-color: var(--scrollbar-color-hover);
 }
