@@ -188,6 +188,7 @@ export function MultiSelect(props: MultiSelectProps) {
         case useCombobox.stateChangeTypes.ItemClick: {
           return {
             ...changes,
+            isOpen: changes.selectedItem ? state.isOpen : true,
             inputValue: '', // don't add the item string as input value at selection.
             highlightedIndex: state.highlightedIndex,
           }
