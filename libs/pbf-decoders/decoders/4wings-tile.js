@@ -1,5 +1,5 @@
 /*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars*/
-"use strict";
+
 
 var $protobuf = require("protobufjs/minimal");
 
@@ -115,16 +115,17 @@ $root.tile = (function() {
             while (reader.pos < end) {
                 var tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1:
-                    if (!(message.data && message.data.length))
-                        message.data = [];
-                    if ((tag & 7) === 2) {
-                        var end2 = reader.uint32() + reader.pos;
-                        while (reader.pos < end2)
+                case 1: {
+                        if (!(message.data && message.data.length))
+                            message.data = [];
+                        if ((tag & 7) === 2) {
+                            var end2 = reader.uint32() + reader.pos;
+                            while (reader.pos < end2)
+                                message.data.push(reader.uint32());
+                        } else
                             message.data.push(reader.uint32());
-                    } else
-                        message.data.push(reader.uint32());
-                    break;
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -224,6 +225,21 @@ $root.tile = (function() {
          */
         Tile.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for Tile
+         * @function getTypeUrl
+         * @memberof tile.Tile
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        Tile.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/tile.Tile";
         };
 
         return Tile;
