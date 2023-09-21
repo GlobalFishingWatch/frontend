@@ -10,3 +10,12 @@
 .infoButton {
   vertical-align: text-bottom;
 }
+
+.container h2 {
+  font: var(--font-L);
+}
+
+.container ul {
+  list-style: inside;
+  padding-left: var(--space-M);
+}

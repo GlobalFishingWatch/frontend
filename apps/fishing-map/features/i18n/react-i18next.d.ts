@@ -10,10 +10,12 @@ import 'i18next'
 import type { datasets, flags, timebar } from '@globalfishingwatch/i18n-labels'
 import type translations from '../../public/locales/source/translations.json'
 import type helphints from '../../public/locales/source/helphints.json'
+import type dataTerminology from '../../public/locales/source/data-terminology.json'
 
 interface I18nNamespaces {
   translations: typeof translations
   helphints: typeof helphints
+  'data-terminology': typeof dataTerminology
   datasets: typeof datasets
   timebar: typeof timebar
   flags: typeof flags

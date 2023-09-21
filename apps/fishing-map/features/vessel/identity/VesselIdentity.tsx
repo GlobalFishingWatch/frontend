@@ -155,9 +155,8 @@ const VesselIdentity = () => {
                   size="tiny"
                   type="default"
                   title={t('vessel.registrySources', 'Registry Sources')}
-                >
-                  {t('vessel.terminology.registryInfo', 'Registry Info')}
-                </DataTerminology>
+                  terminologyKey="registryInfo"
+                />
               </label>
               {vesselIdentity?.sourceCode ? (
                 <Tooltip content={vesselIdentity?.sourceCode?.join(', ')}>
@@ -230,9 +229,8 @@ const VesselIdentity = () => {
                             size="tiny"
                             type="default"
                             title={t(`vessel.${label}`, label) as string}
-                          >
-                            {t(field.terminologyKey as any, field.terminologyKey)}
-                          </DataTerminology>
+                            terminologyKey={field.terminologyKey}
+                          />
                         )}
                       </div>
                       <VesselIdentityField
@@ -260,17 +258,14 @@ const VesselIdentity = () => {
                 return (
                   <div className={styles.fieldGroupContainer} key={key}>
                     <div className={styles.labelContainer}>
-                      <label className={styles.twoCells}>
-                        {t(`vessel.${label}` as any, label)}
-                      </label>
+                      <label className={styles.twoCells}>{t(`vessel.${label}`, label || '')}</label>
                       {terminologyKey && (
                         <DataTerminology
                           size="tiny"
                           type="default"
-                          title={t(`vessel.${label}` as any, label)}
-                        >
-                          {t(terminologyKey as any, terminologyKey)}
-                        </DataTerminology>
+                          title={t(`vessel.${label}`, label || '')}
+                          terminologyKey={terminologyKey}
+                        />
                       )}
                     </div>
                     {allRegistryInfo?.length > 0 ? (
