@@ -29,7 +29,6 @@ import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
 import {
   getBestMatchCriteriaIdentity,
   getOtherVesselNames,
-  getRelatedIdentityVesselIds,
   getSearchIdentityResolved,
   getVesselIdentities,
 } from 'features/vessel/vessel.utils'
@@ -296,9 +295,8 @@ function SearchBasicResult({
                     size="tiny"
                     type="default"
                     title={t('vessel.infoSource', 'Info Source')}
-                  >
-                    {t('vessel.terminology.infoSource', 'Info source terminology')}
-                  </DataTerminology>
+                    terminologyKey="registryInfo"
+                  />
                 </label>
                 <span>{identitySource}</span>
               </div>

@@ -1,4 +1,5 @@
 import { Fragment, useCallback, useState } from 'react'
+import htmlParse from 'html-react-parser'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import {
@@ -7,6 +8,7 @@ import {
   IconButton,
   Modal,
 } from '@globalfishingwatch/ui-components'
+import { I18nNamespaces } from 'features/i18n/react-i18next'
 import styles from './DataTerminology.module.css'
 
 interface ModalProps {
@@ -15,18 +17,18 @@ interface ModalProps {
   title?: string
   size?: IconButtonSize
   type?: IconButtonType
-  children: React.ReactNode
+  terminologyKey: keyof I18nNamespaces['data-terminology']
 }
 
 const DataTerminology: React.FC<ModalProps> = ({
-  children,
+  terminologyKey,
   className,
   containerClassName,
   title,
   size = 'default',
   type = 'border',
 }): React.ReactElement => {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['translations', 'data-terminology'])
   const [showModal, setShowModal] = useState(false)
   const closeModal = useCallback(() => setShowModal(false), [setShowModal])
 
@@ -47,8 +49,9 @@ const DataTerminology: React.FC<ModalProps> = ({
         onClose={closeModal}
         title={title ?? t('common.dataTerminology', 'Data and Terminology')}
         className={cx(styles.container, containerClassName)}
+        contentClassName={styles.content}
       >
-        {children}
+        {htmlParse(t(`data-terminology:${terminologyKey}`, terminologyKey))}
       </Modal>
     </Fragment>
   )
