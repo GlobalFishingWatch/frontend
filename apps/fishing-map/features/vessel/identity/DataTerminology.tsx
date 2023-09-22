@@ -49,6 +49,7 @@ const DataTerminology: React.FC<ModalProps> = ({
         onClose={closeModal}
         title={title ?? t('common.dataTerminology', 'Data and Terminology')}
         className={cx(styles.container, containerClassName)}
+        contentClassName={styles.content}
       >
         {htmlParse(t(`data-terminology:${terminologyKey}`, terminologyKey))}
       </Modal>

@@ -1,9 +1,13 @@
-.container p {
-  margin-bottom: var(--space-M);
+.content {
+  padding: var(--space-L);
   font: var(--font-S);
 }
 
-.container a {
+.content p {
+  margin-bottom: var(--space-M);
+}
+
+.content a {
   text-decoration: underline;
 }
 
@@ -11,11 +15,20 @@
   vertical-align: text-bottom;
 }
 
-.container h2 {
+.content h2 {
   font: var(--font-L);
 }
 
-.container ul {
-  list-style: inside;
+.content ul {
   padding-left: var(--space-M);
+  list-style-type: circle;
+}
+
+.content > ul {
+  list-style: disc;
+  margin-bottom: var(--space-M);
+}
+
+.content > *:nth-last-child(1) {
+  padding-bottom: var(--space-XL);
 }
