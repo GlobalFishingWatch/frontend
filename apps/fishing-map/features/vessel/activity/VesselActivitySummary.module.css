@@ -11,6 +11,9 @@
 }
 
 .eventTypeRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
   opacity: 0.5;
 }
 
