@@ -17,6 +17,7 @@ import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hoo
 import { selectUserGroupsPermissions } from 'features/user/user.selectors'
 import { ReportVesselWithDatasets } from 'features/reports/reports.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { IdentityVesselData } from 'features/vessel/vessel.slice'
 import styles from './VesselGroupAddButton.module.css'
 
 function VesselGroupAddButton({
@@ -27,7 +28,7 @@ function VesselGroupAddButton({
   onAddToVesselGroup,
   buttonClassName = '',
 }: {
-  vessels: (VesselLastIdentity | ReportVesselWithDatasets)[]
+  vessels: (VesselLastIdentity | ReportVesselWithDatasets | IdentityVesselData)[]
   showCount?: boolean
   buttonSize?: ButtonSize
   buttonType?: ButtonType

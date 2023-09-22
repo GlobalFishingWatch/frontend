@@ -18,10 +18,7 @@ import {
 } from 'features/vessel-groups/vessel-groups.slice'
 import { HOME, WORKSPACE } from 'routes/routes'
 import { EMPTY_FILTERS } from 'features/search/search.config'
-import {
-  getRelatedIdentityVesselIds,
-  getSearchIdentityResolved,
-} from 'features/vessel/vessel.utils'
+import { getRelatedIdentityVesselIds } from 'features/vessel/vessel.utils'
 import { cleanVesselSearchResults, selectSelectedVessels } from './search.slice'
 import styles from './Search.module.css'
 
@@ -75,7 +72,7 @@ function SearchActions() {
   return (
     <Fragment>
       <VesselGroupAddButton
-        vessels={vesselsSelected.map(getSearchIdentityResolved)}
+        vessels={vesselsSelected}
         onAddToVesselGroup={onAddToVesselGroup}
         showCount={false}
         buttonClassName={cx(styles.footerAction, styles.vesselGroupButton)}

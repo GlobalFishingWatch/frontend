@@ -35,6 +35,7 @@ import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
+import { getVesselId } from 'features/vessel/vessel.utils'
 import {
   IdField,
   resetVesselGroup,
@@ -203,7 +204,7 @@ function VesselGroupModal(): React.ReactElement {
       setButtonLoading(navigateToWorkspace ? 'saveAndNavigate' : 'save')
       const vessels: VesselGroupVessel[] = vesselGroupSearchVessels.map((vessel) => {
         return {
-          vesselId: vessel.selfReportedInfo?.[0]?.id,
+          vesselId: getVesselId(vessel),
           dataset: vessel.dataset as string,
         }
       })

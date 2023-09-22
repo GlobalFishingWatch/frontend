@@ -48,7 +48,7 @@ export const getVesselIdentity = (
 
 export type VesselIdentityProperty = keyof SelfReportedInfo | keyof VesselRegistryInfo | 'owner'
 
-function getLatestIdentityPrioritised(vessel: IdentityVessel | IdentityVesselData) {
+export function getLatestIdentityPrioritised(vessel: IdentityVessel | IdentityVesselData) {
   const latestRegistryIdentity = getVesselIdentity(vessel, {
     identitySource: VesselIdentitySourceEnum.Registry,
   })
