@@ -25,7 +25,7 @@ describe('See the creation of analysis for an area', () => {
     cy.getBySel('map-search-button').click()
     // I need to add a delay because it doesnt work propetly the autocomplete if we type so fast
 
-    cy.getBySel('map-search-input').click().type(SEARCH_EEZ, { delay: 200 })
+    cy.getBySel('map-search-input').type(SEARCH_EEZ, { delay: 200 })
     cy.getBySel('map-search-results').findBySelLike('map-search-result').first().click()
     getMapCanvas().click('center')
     cy.getBySel(MAP_POPUP_EEZ_SECTION, { timeout: 10000 }).findBySelLike('open-analysis').click()
