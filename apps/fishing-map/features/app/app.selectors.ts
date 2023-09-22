@@ -22,6 +22,7 @@ import {
   selectLocationDatasetId,
   selectLocationAreaId,
   selectReportId,
+  selectIsAnyVesselLocation,
 } from 'routes/routes.selectors'
 import {
   Bbox,
@@ -264,8 +265,9 @@ export const selectReportResultsPerPage = createSelector(
 )
 
 export const selectTimebarVisualisation = createSelector(
-  [selectWorkspaceStateProperty('timebarVisualisation')],
-  (timebarVisualisation): TimebarVisualisations => {
+  [selectWorkspaceStateProperty('timebarVisualisation'), selectIsAnyVesselLocation],
+  (timebarVisualisation, isAnyVesselLocation): TimebarVisualisations => {
+    if (isAnyVesselLocation) return TimebarVisualisations.Vessel
     return timebarVisualisation
   }
 )

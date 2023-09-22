@@ -1,3 +1,9 @@
+.tabTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+}
+
 .container {
   padding: var(--space-M);
   border-bottom: var(--border);

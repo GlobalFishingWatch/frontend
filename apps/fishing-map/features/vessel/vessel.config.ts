@@ -1,5 +1,6 @@
 import { RegionType, SourceCode } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { I18nNamespaces } from 'features/i18n/react-i18next'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { VesselProfileState } from 'types'
 
@@ -21,14 +22,14 @@ export const DEFAULT_VESSEL_STATE: VesselProfileState = {
 export type VesselRenderField<Key = string> = {
   key: Key
   label?: string
-  terminologyKey?: string
+  terminologyKey?: keyof I18nNamespaces['data-terminology']
 }
 
-const COMMON_FIELD_GROUPS = [
+const COMMON_FIELD_GROUPS: VesselRenderField[][] = [
   [{ key: 'shipname' }, { key: 'flag' }],
   [
-    { key: 'shiptype', terminologyKey: 'vessel.terminology.shiptype' },
-    { key: 'geartype', terminologyKey: 'vessel.terminology.geartype' },
+    { key: 'shiptype', terminologyKey: 'shiptype' },
+    { key: 'geartype', terminologyKey: 'geartype' },
   ],
   [{ key: 'ssvid', label: 'mmsi' }, { key: 'imo' }, { key: 'callsign' }],
 ]
@@ -63,20 +64,18 @@ export const IDENTITY_FIELD_GROUPS: Record<VesselIdentitySourceEnum, VesselRende
   ],
 }
 
-type VesselRegistryFieldGroup = {
-  key: keyof Pick<IdentityVesselData, 'registryOwners' | 'registryAuthorizations'>
-  label: string
-  terminologyKey?: string
-}
-export const REGISTRY_FIELD_GROUPS: VesselRegistryFieldGroup[] = [
+export const REGISTRY_FIELD_GROUPS: VesselRenderField<
+  keyof Pick<IdentityVesselData, 'registryOwners' | 'registryAuthorizations'>
+>[] = [
   {
     key: 'registryOwners',
     label: 'owner',
-    terminologyKey: 'vessel.terminology.owner',
+    terminologyKey: 'owner',
   },
   {
     key: 'registryAuthorizations',
     label: 'authorization',
+    terminologyKey: 'authorization',
   },
 ]
 

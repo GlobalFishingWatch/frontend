@@ -122,16 +122,40 @@ const VesselIdentity = () => {
     () => [
       {
         id: VesselIdentitySourceEnum.Registry,
-        title: t('vessel.infoSources.registry', 'Registry'),
+        title: (
+          <span className={styles.tabTitle}>
+            {t('vessel.infoSources.registry', 'Registry')}
+            {identitySource === VesselIdentitySourceEnum.Registry && (
+              <DataTerminology
+                size="tiny"
+                type="default"
+                title={t('vessel.infoSources.registry', 'Registry')}
+                terminologyKey="registryInfo"
+              />
+            )}
+          </span>
+        ),
         disabled: registryDisabled,
       },
       {
         id: VesselIdentitySourceEnum.SelfReported,
-        title: uniq(selfReportedIdentities.flatMap((i) => i.sourceCode)).join(',') || 'AIS',
+        title: (
+          <span className={styles.tabTitle}>
+            {uniq(selfReportedIdentities.flatMap((i) => i.sourceCode)).join(',') || 'AIS'}
+            {identitySource === VesselIdentitySourceEnum.SelfReported && (
+              <DataTerminology
+                size="tiny"
+                type="default"
+                title={t('vessel.infoSources.selfReported', 'Self Reported')}
+                terminologyKey="selfReported"
+              />
+            )}
+          </span>
+        ),
         disabled: selfReportedIdentities.length === 0,
       },
     ],
-    [registryDisabled, selfReportedIdentities, t]
+    [identitySource, registryDisabled, selfReportedIdentities, t]
   )
 
   const identityFields = useMemo(() => {
@@ -149,16 +173,7 @@ const VesselIdentity = () => {
         <div className={cx(styles.fieldGroup)}>
           {identitySource === VesselIdentitySourceEnum.Registry && (
             <div>
-              <label>
-                {t('vessel.registrySources', 'Registry Sources')}
-                <DataTerminology
-                  size="tiny"
-                  type="default"
-                  title={t('vessel.registrySources', 'Registry Sources')}
-                >
-                  {t('vessel.terminology.registryInfo', 'Registry Info')}
-                </DataTerminology>
-              </label>
+              <label>{t('vessel.registrySources', 'Registry Sources')}</label>
               {vesselIdentity?.sourceCode ? (
                 <Tooltip content={vesselIdentity?.sourceCode?.join(', ')}>
                   <VesselIdentityField
@@ -230,9 +245,8 @@ const VesselIdentity = () => {
                             size="tiny"
                             type="default"
                             title={t(`vessel.${label}`, label) as string}
-                          >
-                            {t(field.terminologyKey as any, field.terminologyKey)}
-                          </DataTerminology>
+                            terminologyKey={field.terminologyKey}
+                          />
                         )}
                       </div>
                       <VesselIdentityField
@@ -260,17 +274,14 @@ const VesselIdentity = () => {
                 return (
                   <div className={styles.fieldGroupContainer} key={key}>
                     <div className={styles.labelContainer}>
-                      <label className={styles.twoCells}>
-                        {t(`vessel.${label}` as any, label)}
-                      </label>
+                      <label className={styles.twoCells}>{t(`vessel.${label}`, label || '')}</label>
                       {terminologyKey && (
                         <DataTerminology
                           size="tiny"
                           type="default"
-                          title={t(`vessel.${label}` as any, label)}
-                        >
-                          {t(terminologyKey as any, terminologyKey)}
-                        </DataTerminology>
+                          title={t(`vessel.${label}`, label || '')}
+                          terminologyKey={terminologyKey}
+                        />
                       )}
                     </div>
                     {allRegistryInfo?.length > 0 ? (

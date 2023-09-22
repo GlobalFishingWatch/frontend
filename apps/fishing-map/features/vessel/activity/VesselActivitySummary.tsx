@@ -24,6 +24,7 @@ import {
   selectVesselProfileColor,
 } from 'features/dataviews/dataviews.slice'
 import VesselActivityDownload from 'features/vessel/activity/VesselActivityDownload'
+import DataTerminology from 'features/vessel/identity/DataTerminology'
 import styles from './VesselActivitySummary.module.css'
 
 const MAX_PORTS = 3
@@ -171,13 +172,22 @@ export const VesselActivitySummary = () => {
                   className={cx(styles.eventSwitch, 'print-hidden')}
                 />
                 <div className={cx(styles.eventTypeRow, { [styles.active]: active })}>
+                  <span className={styles.iconContainer}>
+                    {eventType !== EventTypes.Fishing ? (
+                      <Icon icon={`event-legend-${eventType}` as IconType} type="original-colors" />
+                    ) : (
+                      <div className={styles.fishingIcon} style={{ backgroundColor: color }} />
+                    )}
+                  </span>
                   {active && <strong>{formatI18nNumber(events?.length || 0)} </strong>}
                   {t(`event.${eventType}` as any, {
                     defaultValue: eventType,
                     count: events?.length || 0,
-                  })}{' '}
+                  })}
+
                   {eventType === EventTypes.Port && threeMostVisitedPortCountries.length > 0 && (
-                    <Fragment>
+                    <span>
+                      (
                       {threeMostVisitedPortCountries.map(({ flag, count }, index) => {
                         return (
                           <Tooltip
@@ -201,15 +211,15 @@ export const VesselActivitySummary = () => {
                           } ${t('common.more', 'more')}`}</span>
                         </Tooltip>
                       )}
-                    </Fragment>
+                      )
+                    </span>
                   )}
-                  <span className={styles.iconContainer}>
-                    {eventType !== EventTypes.Fishing ? (
-                      <Icon icon={`event-legend-${eventType}` as IconType} type="original-colors" />
-                    ) : (
-                      <div className={styles.fishingIcon} style={{ backgroundColor: color }} />
-                    )}
-                  </span>
+                  <DataTerminology
+                    size="tiny"
+                    type="default"
+                    title={t(`event.${eventType}`, eventType)}
+                    terminologyKey={eventType as any}
+                  />
                 </div>
               </li>
             )

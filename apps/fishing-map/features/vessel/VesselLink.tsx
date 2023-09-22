@@ -87,7 +87,6 @@ const VesselLink = ({
           ...locationQuery,
           // Clean search url when clicking on vessel link
           qry: undefined,
-          timebarVisualisation: TimebarVisualisations.Vessel,
           vesselDatasetId,
           ...(identity && {
             vesselIdentitySource: identity.identitySource,
