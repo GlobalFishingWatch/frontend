@@ -295,7 +295,7 @@ function SearchBasicResult({
                     size="tiny"
                     type="default"
                     title={t('vessel.infoSource', 'Info Source')}
-                    terminologyKey="infoSource"
+                    terminologyKey="registryInfo"
                   />
                 </label>
                 <span>{identitySource}</span>

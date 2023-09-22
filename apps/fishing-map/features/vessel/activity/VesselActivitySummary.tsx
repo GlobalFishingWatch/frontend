@@ -24,6 +24,7 @@ import {
   selectVesselProfileColor,
 } from 'features/dataviews/dataviews.slice'
 import VesselActivityDownload from 'features/vessel/activity/VesselActivityDownload'
+import DataTerminology from 'features/vessel/identity/DataTerminology'
 import styles from './VesselActivitySummary.module.css'
 
 const MAX_PORTS = 3
@@ -211,6 +212,12 @@ export const VesselActivitySummary = () => {
                     )}
                   </span>
                 </div>
+                <DataTerminology
+                  size="tiny"
+                  type="default"
+                  title={t(`event.${eventType}`, eventType)}
+                  terminologyKey={eventType as any}
+                />
               </li>
             )
           })}
