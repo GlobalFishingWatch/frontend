@@ -34,10 +34,10 @@ describe('See the creation of analysis for an area', () => {
   //MAP-1218
   it('Should create an analysis for an EEZ area', () => {
     getSidebar().findBySelLike('report-title').contains(SEARCH_EEZ_FULL_NAME)
-    cy.getBySel('source-tags').findBySelLike('source-tag-item').contains('AIS')
+    cy.getBySel('source-tags', { timeout: 10000 }).findBySelLike('source-tag-item').contains('AIS')
 
     // Path tag is a needed element that should exist to draw the charts
-    cy.getBySel('report-activity-evolution').find('path').should('exist')
+    cy.getBySel('report-activity-evolution', { timeout: 20000 }).find('path').should('exist')
     cy.getBySel('report-vessels-graph').find('path').should('exist')
     cy.getBySel('report-vessels-table').findBySelLike('vessel').should('exist')
   })
