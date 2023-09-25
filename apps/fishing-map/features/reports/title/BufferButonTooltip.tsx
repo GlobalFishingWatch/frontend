@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Range, getTrackBackground } from 'react-range'
 import { useTranslation } from 'react-i18next'
-import { Button, Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
+import { Button, Choice, ChoiceOption, IconButton } from '@globalfishingwatch/ui-components'
 import { KILOMETERS, NAUTICAL_MILES, DISSOLVE, DIFFERENCE } from 'features/reports/reports.config'
 import { BufferOperation, BufferUnit } from 'types'
 import styles from './ReportTitle.module.css'
@@ -11,6 +11,7 @@ type BufferButonTooltipProps = {
   activeUnit: BufferUnit
   defaultValue: number
   activeOperation: BufferOperation
+  handleRemoveBuffer: () => void
   handleConfirmBuffer: () => void
   handleBufferUnitChange: (option: { id: string; label: string }) => void
   handleBufferValueChange: (values: number[]) => void
@@ -22,6 +23,7 @@ export const BufferButtonTooltip = ({
   activeUnit,
   defaultValue,
   activeOperation,
+  handleRemoveBuffer,
   handleConfirmBuffer,
   handleBufferUnitChange,
   handleBufferValueChange,
@@ -40,89 +42,111 @@ export const BufferButtonTooltip = ({
     ],
     [t]
   )
-  const bufferOperationOptions: ChoiceOption<BufferOperation>[] = useMemo(
-    () => [
-      { id: DISSOLVE, label: 'dissolve' },
-      { id: DIFFERENCE, label: 'difference' },
-    ],
-    [t]
-  )
+  const bufferOperationOptions: ChoiceOption<BufferOperation>[] = useMemo(() => {
+    if (values[1] <= 0 || areaType === 'Point') {
+      return [{ id: DISSOLVE, label: t('analysis.buffer', 'buffer') }]
+    } else {
+      return [
+        { id: DISSOLVE, label: t('analysis.dissolve', 'dissolve') },
+        { id: DIFFERENCE, label: t('analysis.difference', 'difference') },
+      ]
+    }
+  }, [t, values, areaType])
 
   return (
     <div className={styles.bufferTooltipContent}>
-      <Choice
-        size="tiny"
-        activeOption={activeUnit}
-        onSelect={handleBufferUnitChange}
-        options={bufferUnitOptions}
-      />
-      <Range
-        allowOverlap
-        values={values}
-        step={STEP}
-        min={MIN}
-        max={MAX}
-        onChange={setValues}
-        onFinalChange={handleBufferValueChange}
-        renderTrack={({ props, children }) => (
-          <div
-            style={{
-              ...props.style,
-              height: '36px',
-              display: 'flex',
-              width: '100%',
-            }}
-          >
+      <div className={styles.actionContainer}>
+        <p className={styles.actionLabel}>unit</p>
+        <Choice
+          size="tiny"
+          activeOption={activeUnit}
+          onSelect={handleBufferUnitChange}
+          options={bufferUnitOptions}
+        />
+      </div>
+      <div className={styles.actionContainer}>
+        <p className={styles.actionLabel}>value</p>
+        <Range
+          allowOverlap
+          values={values}
+          step={STEP}
+          min={MIN}
+          max={MAX}
+          onChange={setValues}
+          onFinalChange={handleBufferValueChange}
+          renderTrack={({ props, children }) => (
             <div
-              ref={props.ref}
               style={{
-                height: '2px',
+                ...props.style,
+                height: '36px',
+                display: 'flex',
                 width: '100%',
-                borderRadius: '2px',
-                background: getTrackBackground({
-                  values,
-                  colors: ['#ccc', 'red', '#ccc'],
-                  min: MIN,
-                  max: MAX,
-                }),
-                alignSelf: 'center',
               }}
             >
-              {children}
+              <div
+                ref={props.ref}
+                style={{
+                  height: '2px',
+                  width: '100%',
+                  borderRadius: '2px',
+                  background: getTrackBackground({
+                    values,
+                    colors: ['#ccc', 'red', '#ccc'],
+                    min: MIN,
+                    max: MAX,
+                  }),
+                  alignSelf: 'center',
+                }}
+              >
+                {children}
+              </div>
             </div>
-          </div>
-        )}
-        renderThumb={({ props, index }) => (
-          <div
-            {...props}
-            style={{
-              ...props.style,
-              height: index === 1 ? '30px' : '8px',
-              width: index === 1 ? '30px' : '3px',
-              borderRadius: '50px',
-              backgroundColor: index === 1 ? '#FFF' : '#ccc',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              fontSize: '14px',
-              boxShadow: index === 1 ? '0px 2px 6px #AAA' : 'none',
-              pointerEvents: index === 1 ? 'auto' : 'none',
-            }}
-          >
-            {index === 1 ? Math.round(values[index]) : null}
-          </div>
-        )}
-      />
-      <Choice
-        size="tiny"
-        activeOption={activeOperation}
-        onSelect={handleBufferOperationChange}
-        options={bufferOperationOptions}
-      />
+          )}
+          renderThumb={({ props, index }) => (
+            <div
+              {...props}
+              style={{
+                ...props.style,
+                height: index === 1 ? '30px' : '8px',
+                width: index === 1 ? '30px' : '3px',
+                borderRadius: '50px',
+                backgroundColor: index === 1 ? '#FFF' : '#ccc',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                fontSize: '14px',
+                boxShadow: index === 1 ? '0px 2px 6px #AAA' : 'none',
+                pointerEvents: index === 1 ? 'auto' : 'none',
+              }}
+            >
+              {index === 1 ? Math.round(values[index]) : null}
+            </div>
+          )}
+        />
+      </div>
+      <div className={styles.actionContainer}>
+        <p className={styles.actionLabel}>operation</p>
+        <Choice
+          size="tiny"
+          className={styles.operationChoice}
+          activeOption={activeOperation}
+          onSelect={handleBufferOperationChange}
+          options={bufferOperationOptions}
+        />
+      </div>
       <div data-tippy-arrow className={styles.tooltipArrow}></div>
-      <Button size="small" onClick={handleConfirmBuffer} disabled={negativePointBuffer}>
-        {t('common.confirm', 'Confirm')}
-      </Button>
+      <div className={styles.confirmationContainer}>
+        <IconButton
+          type="border"
+          icon="delete"
+          tooltip={t('analysis.deleteBuffer', 'Delete current buffer')}
+          size="small"
+          onClick={handleRemoveBuffer}
+        />
+        <Button size="small" onClick={handleConfirmBuffer} disabled={negativePointBuffer}>
+          {t('common.confirm', 'Confirm')}
+        </Button>
+      </div>
     </div>
   )
 }

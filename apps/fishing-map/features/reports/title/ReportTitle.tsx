@@ -152,7 +152,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     trackEvent({
       category: TrackCategory.Analysis,
       action: `Confirm area buffer`,
-      label: `${previewBuffer.value} ${previewBuffer.unit}`,
+      label: `${previewBuffer.value} ${previewBuffer.unit} ${previewBuffer.operation}`,
     })
   }, [
     tooltipInstance,
@@ -163,6 +163,17 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     cleanFeatureState,
     dispatch,
   ])
+
+  const handleRemoveBuffer = useCallback(() => {
+    tooltipInstance!.hide()
+    fitBounds(area.bounds as Bbox)
+    dispatchQueryParams({
+      reportBufferValue: undefined,
+      reportBufferUnit: undefined,
+      reportBufferOperation: undefined,
+    })
+    dispatch(resetReportData())
+  }, [dispatch, dispatchQueryParams, tooltipInstance, area, fitBounds])
 
   return (
     <div className={styles.container}>
@@ -194,6 +205,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
                     activeUnit={previewBuffer.unit || NAUTICAL_MILES}
                     defaultValue={urlBufferValue || DEFAULT_BUFFER_VALUE}
                     activeOperation={previewBuffer.operation || DEFAULT_BUFFER_OPERATION}
+                    handleRemoveBuffer={handleRemoveBuffer}
                     handleConfirmBuffer={handleConfirmBuffer}
                     handleBufferUnitChange={handleBufferUnitChange}
                     handleBufferValueChange={handleBufferValueChange}
