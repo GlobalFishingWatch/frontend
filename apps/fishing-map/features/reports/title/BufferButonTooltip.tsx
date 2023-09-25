@@ -142,6 +142,7 @@ export const BufferButtonTooltip = ({
           tooltip={t('analysis.deleteBuffer', 'Delete current buffer')}
           size="small"
           onClick={handleRemoveBuffer}
+          disabled={areaType === 'Point'}
         />
         <Button size="small" onClick={handleConfirmBuffer} disabled={negativePointBuffer}>
           {t('common.confirm', 'Confirm')}
