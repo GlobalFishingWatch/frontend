@@ -48,10 +48,33 @@
   color: var(--color-primary-blue);
 }
 
+.actionContainer {
+  width: 100%;
+  padding-bottom: var(--space-S);
+}
+
+.confirmationContainer {
+  width: 100%;
+  display: flex;
+  align-content: center;
+  justify-content: space-between;
+}
+
+.actionLabel {
+  font: var(--font-XS);
+  color: var(--color-secondary-blue);
+  padding-bottom: var(--space-XS);
+  text-transform: uppercase;
+}
+
 .sliderTrack {
   height: 2px;
   width: 100%;
   align-self: center;
+}
+
+.operationChoice {
+  width: 100%;
 }
 
 .tooltipArrow,
