@@ -9,4 +9,4 @@ export const DIFFERENCE: BufferOperation = 'difference'
 export const DEFAULT_BUFFER_OPERATION: BufferOperation = DISSOLVE
 
 export const DEFAULT_POINT_BUFFER_UNIT: BufferUnit = NAUTICAL_MILES
-export const DEFAULT_POINT_BUFFER_VALUE: number = 100
+export const DEFAULT_POINT_BUFFER_VALUE: number = 5
