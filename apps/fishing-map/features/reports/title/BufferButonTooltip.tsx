@@ -44,11 +44,11 @@ export const BufferButtonTooltip = ({
   )
   const bufferOperationOptions: ChoiceOption<BufferOperation>[] = useMemo(() => {
     if (values[1] <= 0 || areaType === 'Point') {
-      return [{ id: DISSOLVE, label: t('analysis.buffer', 'buffer') }]
+      return [{ id: DISSOLVE, label: t('analysis.buffer', 'Buffer area') }]
     } else {
       return [
-        { id: DISSOLVE, label: t('analysis.dissolve', 'dissolve') },
-        { id: DIFFERENCE, label: t('analysis.difference', 'difference') },
+        { id: DISSOLVE, label: t('analysis.dissolve', 'combined') },
+        { id: DIFFERENCE, label: t('analysis.difference', 'buffer only') },
       ]
     }
   }, [t, values, areaType])
@@ -125,7 +125,7 @@ export const BufferButtonTooltip = ({
         />
       </div>
       <div className={styles.actionContainer}>
-        <p className={styles.actionLabel}>operation</p>
+        <p className={styles.actionLabel}>{t('analysis.bufferOperationLabel', 'Analysis area')}</p>
         <Choice
           size="tiny"
           className={styles.operationChoice}
