@@ -208,14 +208,17 @@ export function getVoyageTimeRange(events: ActivityEvent[]) {
 export function filterRegistryInfoByDateAndSSVID(
   registryInfo: VesselRegistryProperty[],
   timerange: Range,
-  ssvid: string
+  ssvid?: string
 ): VesselRegistryProperty[] {
   if (!registryInfo?.length) return []
   return sortVesselRegistryProperties(
-    registryInfo.filter(
-      (info) =>
-        info.dateFrom <= timerange.end && info.dateTo >= timerange.start && info.ssvid === ssvid
-    )
+    registryInfo.filter((info) => {
+      let conditions = [info.dateFrom <= timerange.end, info.dateTo >= timerange.start]
+      if (ssvid) {
+        conditions = [...conditions, info.ssvid === ssvid]
+      }
+      return conditions.every((c) => Boolean(c))
+    })
   )
 }
 
