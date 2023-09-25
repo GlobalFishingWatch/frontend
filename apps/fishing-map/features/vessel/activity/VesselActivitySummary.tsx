@@ -179,41 +179,42 @@ export const VesselActivitySummary = () => {
                       <div className={styles.fishingIcon} style={{ backgroundColor: color }} />
                     )}
                   </span>
-                  {active && <strong>{formatI18nNumber(events?.length || 0)} </strong>}
-                  {t(`event.${eventType}` as any, {
-                    defaultValue: eventType,
-                    count: events?.length || 0,
-                  })}
-
-                  {eventType === EventTypes.Port && threeMostVisitedPortCountries.length > 0 && (
-                    <span>
-                      (
-                      {threeMostVisitedPortCountries.map(({ flag, count }, index) => {
-                        return (
-                          <Tooltip
-                            key={flag}
-                            content={`${count} ${t('event.port_visit', {
-                              defaultValue: 'port visit',
-                              count,
-                            })}`}
-                          >
-                            <span className={styles.help}>
-                              {formatInfoField(flag, 'flag')}
-                              {index < threeMostVisitedPortCountries.length - 1 ? ', ' : ''}
-                            </span>
+                  <p>
+                    {active && <strong>{formatI18nNumber(events?.length || 0)} </strong>}
+                    {t(`event.${eventType}` as any, {
+                      defaultValue: eventType,
+                      count: events?.length || 0,
+                    })}{' '}
+                    {eventType === EventTypes.Port && threeMostVisitedPortCountries.length > 0 && (
+                      <span>
+                        (
+                        {threeMostVisitedPortCountries.map(({ flag, count }, index) => {
+                          return (
+                            <Tooltip
+                              key={flag}
+                              content={`${count} ${t('event.port_visit', {
+                                defaultValue: 'port visit',
+                                count,
+                              })}`}
+                            >
+                              <span className={styles.help}>
+                                {formatInfoField(flag, 'flag')}
+                                {index < threeMostVisitedPortCountries.length - 1 ? ', ' : ''}
+                              </span>
+                            </Tooltip>
+                          )
+                        })}
+                        {restMostVisitedPortCountries.length > 0 && (
+                          <Tooltip content={restTooltipContent}>
+                            <span className={styles.help}>{` ${t('common.and', 'and')} ${
+                              restMostVisitedPortCountries.length
+                            } ${t('common.more', 'more')}`}</span>
                           </Tooltip>
+                        )}
                         )
-                      })}
-                      {restMostVisitedPortCountries.length > 0 && (
-                        <Tooltip content={restTooltipContent}>
-                          <span className={styles.help}>{` ${t('common.and', 'and')} ${
-                            restMostVisitedPortCountries.length
-                          } ${t('common.more', 'more')}`}</span>
-                        </Tooltip>
-                      )}
-                      )
-                    </span>
-                  )}
+                      </span>
+                    )}
+                  </p>
                   <DataTerminology
                     size="tiny"
                     type="default"
