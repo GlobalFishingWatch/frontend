@@ -85,8 +85,14 @@ export function useReportAreaHighlight(areaId: string, sourceId: string) {
   }, [areaId, sourceId, highlightedArea])
 }
 
+// 0 - 20MB No simplifyTrack
+// 20 - 200MG SIMPLIFY FINE_SIMPLIFY_TOLERANCE
+// > 200 SIMPLIFY COARSE
+export const COARSE_SIMPLIFY_TOLERANCE = 0.1
+export const FINE_SIMPLIFY_TOLERANCE = 0.001
+
 export function getSimplificationByDataview(dataview: UrlDataviewInstance | Dataview) {
-  return dataview?.slug === RFMO_DATAVIEW_SLUG ? 0.1 : 0.001
+  return dataview?.slug === RFMO_DATAVIEW_SLUG ? COARSE_SIMPLIFY_TOLERANCE : FINE_SIMPLIFY_TOLERANCE
 }
 
 export function useFetchReportArea() {
