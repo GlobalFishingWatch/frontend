@@ -273,9 +273,13 @@ export const getBufferedFeature = ({
       ? point(area.geometry.coordinates)
       : null
 
-  return !areaPolygon
+  const bufferedFeature = !areaPolygon
     ? null
     : operation === DIFFERENCE && areaPolygon?.geometry?.type !== 'Point'
     ? difference(buffer(areaPolygon, value, { units: unit }), areaPolygon as any)
     : buffer(areaPolygon, value, { units: unit })
+
+  return bufferedFeature
+    ? { ...bufferedFeature, properties: { label: `Buffered ${area.name}`, ...area.properties } }
+    : null
 }

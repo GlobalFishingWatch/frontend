@@ -44,6 +44,7 @@ import {
   selectDefaultMapGeneratorsConfig,
   WORKSPACES_POINTS_TYPE,
   WORKSPACE_GENERATOR_ID,
+  REPORT_BUFFER_GENERATOR_ID,
 } from './map.selectors'
 import {
   setClickedEvent,
@@ -393,6 +394,15 @@ export const parseMapTooltipFeatures = (
           value: feature.properties.label,
           properties: {},
           category: DataviewCategory.Context,
+        }
+        return tooltipWorkspaceFeature
+      } else if (generatorId === REPORT_BUFFER_GENERATOR_ID) {
+        const tooltipWorkspaceFeature: TooltipEventFeature = {
+          ...baseFeature,
+          category: DataviewCategory.Context,
+          properties: {},
+          value: feature.properties.label,
+          visible: true,
         }
         return tooltipWorkspaceFeature
       }

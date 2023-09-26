@@ -204,6 +204,7 @@ const selectStaticGeneratorsConfig = createSelector(
 
 export const WORKSPACES_POINTS_TYPE = 'workspace'
 export const WORKSPACE_GENERATOR_ID = 'workspace_points'
+export const REPORT_BUFFER_GENERATOR_ID = 'report-area-buffer'
 export const selectWorkspacesListGenerator = createSelector(
   [selectCurrentWorkspacesList],
   (workspaces) => {
@@ -307,11 +308,14 @@ export const selectMapReportGenerators = createSelector(
     if (reportBufferFeature?.geometry) {
       reportGenerators.push({
         type: GeneratorType.Polygons,
-        id: 'report-area-buffer',
+        id: REPORT_BUFFER_GENERATOR_ID,
         data: { type: 'FeatureCollection', features: [reportBufferFeature] },
         color: '#FFF',
         visible: true,
         group: Group.OutlinePolygonsHighlighted,
+        metadata: {
+          interactive: true,
+        },
       })
     }
     if (reportPreviewBufferFeature?.geometry) {
