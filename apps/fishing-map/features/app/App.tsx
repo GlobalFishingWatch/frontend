@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { Menu, SplitView } from '@globalfishingwatch/ui-components'
 import { Workspace } from '@globalfishingwatch/api-types'
 import {
-  selectIsReportLocation,
+  selectIsAnyReportLocation,
   selectIsWorkspaceLocation,
   selectLocationType,
   selectUrlTimeRange,
@@ -65,7 +65,7 @@ export const COLOR_GRADIENT =
 
 const Main = () => {
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
-  const reportLocation = useSelector(selectIsReportLocation)
+  const reportLocation = useSelector(selectIsAnyReportLocation)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const isTimeComparisonReport = useSelector(selectShowTimeComparison)
 
@@ -100,7 +100,7 @@ function App() {
   const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
-  const isReportLocation = useSelector(selectIsReportLocation)
+  const isReportLocation = useSelector(selectIsAnyReportLocation)
   const reportAreaBounds = useSelector(selectReportAreaBounds)
   const isTimeComparisonReport = useSelector(selectShowTimeComparison)
   const narrowSidebar = workspaceLocation

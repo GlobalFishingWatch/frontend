@@ -21,7 +21,7 @@ import {
   selectActiveNonTrackEnvironmentalDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import { updateUrlTimerange } from 'routes/routes.actions'
-import { selectIsReportLocation, selectUrlTimeRange } from 'routes/routes.selectors'
+import { selectIsAnyReportLocation, selectUrlTimeRange } from 'routes/routes.selectors'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import useMapInstance from 'features/map/map-context.hooks'
@@ -82,7 +82,7 @@ export const useTimerangeConnect = () => {
   const [timerange, setTimerange] = useRecoilState(TimeRangeAtom)
   const dispatch = useAppDispatch()
   const hintsDismissed = useSelector(selectHintsDismissed)
-  const reportLocation = useSelector(selectIsReportLocation)
+  const reportLocation = useSelector(selectIsAnyReportLocation)
   const fitAreaInViewport = useFitAreaInViewport()
 
   const onTimebarChange = useCallback(
