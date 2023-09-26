@@ -13,7 +13,7 @@ import { useTimeCompareTimeDescription } from 'features/reports/reports-timecomp
 import DetectionsTooltipRow from 'features/map/popups/DetectionsLayers'
 import UserPointsTooltipSection from 'features/map/popups/UserPointsLayers'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { WORKSPACE_GENERATOR_ID } from 'features/map/map.selectors'
+import { WORKSPACE_GENERATOR_ID, REPORT_BUFFER_GENERATOR_ID } from 'features/map/map.selectors'
 import WorkspacePointsTooltipSection from 'features/map/popups/WorkspacePointsLayers'
 import { selectApiEventStatus, selectFishingInteractionStatus } from '../map.slice'
 import styles from './Popup.module.css'
@@ -24,6 +24,7 @@ import ContextTooltipSection from './ContextLayers'
 import UserContextTooltipSection from './UserContextLayers'
 import VesselEventsLayers from './VesselEventsLayers'
 import ComparisonRow from './ComparisonRow'
+import ReportBufferTooltip from './ReportBufferLayers'
 
 type PopupWrapperProps = {
   event: TooltipEvent | null
@@ -150,6 +151,9 @@ function PopupWrapper({
                 const workspacePointsFeatures = features.filter(
                   (feature) => feature.source === WORKSPACE_GENERATOR_ID
                 )
+                const areaBufferFeatures = features.filter(
+                  (feature) => feature.source === REPORT_BUFFER_GENERATOR_ID
+                )
                 return (
                   <Fragment key={featureCategory}>
                     <UserPointsTooltipSection
@@ -157,6 +161,7 @@ function PopupWrapper({
                       showFeaturesDetails={type === 'click'}
                     />
                     <WorkspacePointsTooltipSection features={workspacePointsFeatures} />
+                    <ReportBufferTooltip features={areaBufferFeatures} />
                     <UserContextTooltipSection
                       features={userContextFeatures}
                       showFeaturesDetails={type === 'click'}
