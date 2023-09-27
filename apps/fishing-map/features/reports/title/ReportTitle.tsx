@@ -30,7 +30,7 @@ import {
 } from 'routes/routes.selectors'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
-import { REPORT_BUFFER_GENERATOR_ID } from 'features/map/map.selectors'
+import { PREVIEW_BUFFER_GENERATOR_ID } from 'features/map/map.config'
 import { getBufferedAreaBbox } from '../reports.utils'
 import { BufferButtonTooltip } from './BufferButonTooltip'
 import styles from './ReportTitle.module.css'
@@ -79,8 +79,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
       )
       cleanFeatureState('highlight')
       const featureState = {
-        source: `${REPORT_BUFFER_GENERATOR_ID}`,
-        sourceLayer: REPORT_BUFFER_GENERATOR_ID,
+        source: PREVIEW_BUFFER_GENERATOR_ID,
         id: area.id,
       }
       updateFeatureState([featureState], 'highlight')

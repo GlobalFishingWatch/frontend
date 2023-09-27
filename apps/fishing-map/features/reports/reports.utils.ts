@@ -280,6 +280,10 @@ export const getBufferedFeature = ({
     : buffer(areaPolygon, value, { units: unit })
 
   return bufferedFeature
-    ? { ...bufferedFeature, properties: { label: `Buffered ${area.name}`, ...area.properties } }
+    ? {
+        ...bufferedFeature,
+        id: area.id,
+        properties: { ...area.properties, label: `Buffered ${area.name}` },
+      }
     : null
 }
