@@ -187,10 +187,17 @@ export default function ReportTitle({ area }: ReportTitleProps) {
       )} ${areaName}`
     }
     if (areaName && urlBufferOperation === 'dissolve') {
+      if (urlBufferValue > 0) {
       return `${areaName} ${t('common.and', 'and')} ${urlBufferValue} ${t(
         `analysis.${urlBufferUnit}` as any,
         urlBufferUnit
       )} ${t('analysis.around', 'around')}`
+      } else {
+        return `${areaName} ${t('common.minus', 'minus')} ${Math.abs(urlBufferValue)} ${t(
+          `analysis.${urlBufferUnit}` as any,
+          urlBufferUnit
+        )}`
+      }
     }
     return ''
   }, [
