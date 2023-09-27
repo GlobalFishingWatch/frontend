@@ -82,11 +82,13 @@ export default function ReportTitle({ area }: ReportTitleProps) {
 
   const handleBufferValueChange = useCallback(
     (values: number[]) => {
+      const value = Math.round(values[1])
+      const operation = value < 0 ? 'dissolve' : previewBuffer.operation || DEFAULT_BUFFER_OPERATION
       dispatch(
         setPreviewBuffer({
-          value: Math.round(values[1]),
+          value,
           unit: previewBuffer.unit || NAUTICAL_MILES,
-          operation: previewBuffer.operation || DEFAULT_BUFFER_OPERATION,
+          operation,
         })
       )
     },
@@ -188,10 +190,10 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     }
     if (areaName && urlBufferOperation === 'dissolve') {
       if (urlBufferValue > 0) {
-      return `${areaName} ${t('common.and', 'and')} ${urlBufferValue} ${t(
-        `analysis.${urlBufferUnit}` as any,
-        urlBufferUnit
-      )} ${t('analysis.around', 'around')}`
+        return `${areaName} ${t('common.and', 'and')} ${urlBufferValue} ${t(
+          `analysis.${urlBufferUnit}` as any,
+          urlBufferUnit
+        )} ${t('analysis.around', 'around')}`
       } else {
         return `${areaName} ${t('common.minus', 'minus')} ${Math.abs(urlBufferValue)} ${t(
           `analysis.${urlBufferUnit}` as any,
