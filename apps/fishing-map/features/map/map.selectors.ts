@@ -45,6 +45,7 @@ import {
 import { WorkspaceCategory } from 'data/workspaces'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { BivariateDataviews } from 'types'
+import { BUFFER_PREVIEW_COLOR } from 'data/config'
 
 type GetGeneratorConfigParams = {
   dataviews: UrlDataviewInstance[] | undefined
@@ -323,7 +324,7 @@ export const selectMapReportGenerators = createSelector(
         type: GeneratorType.Polygons,
         id: 'report-area-preview-buffer',
         data: { type: 'FeatureCollection', features: [reportPreviewBufferFeature] },
-        color: '#F95E5E',
+        color: BUFFER_PREVIEW_COLOR,
         visible: true,
         group: Group.OutlinePolygonsHighlighted,
       })
