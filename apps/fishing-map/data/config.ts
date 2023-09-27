@@ -67,6 +67,8 @@ export const DEFAULT_PAGINATION_PARAMS = {
   offset: 0,
 }
 
+export const BUFFER_PREVIEW_COLOR = '#F95E5E'
+
 export const DEFAULT_ACTIVITY_CATEGORY = 'fishing'
 
 export const FIRST_YEAR_OF_DATA = 2012

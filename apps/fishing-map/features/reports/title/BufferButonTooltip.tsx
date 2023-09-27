@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Button, Choice, ChoiceOption, IconButton } from '@globalfishingwatch/ui-components'
 import { KILOMETERS, NAUTICAL_MILES, DISSOLVE, DIFFERENCE } from 'features/reports/reports.config'
 import { BufferOperation, BufferUnit } from 'types'
+import { BUFFER_PREVIEW_COLOR } from 'data/config'
 import styles from './ReportTitle.module.css'
 
 type BufferButonTooltipProps = {
@@ -91,7 +92,7 @@ export const BufferButtonTooltip = ({
                   borderRadius: '2px',
                   background: getTrackBackground({
                     values,
-                    colors: ['#ccc', 'red', '#ccc'],
+                    colors: ['#ccc', BUFFER_PREVIEW_COLOR, '#ccc'],
                     min: MIN,
                     max: MAX,
                   }),
