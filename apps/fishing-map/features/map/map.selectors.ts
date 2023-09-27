@@ -45,6 +45,12 @@ import {
 import { WorkspaceCategory } from 'data/workspaces'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { BivariateDataviews } from 'types'
+import {
+  PREVIEW_BUFFER_GENERATOR_ID,
+  REPORT_BUFFER_GENERATOR_ID,
+  WORKSPACES_POINTS_TYPE,
+  WORKSPACE_GENERATOR_ID,
+} from './map.config'
 
 type GetGeneratorConfigParams = {
   dataviews: UrlDataviewInstance[] | undefined
@@ -202,9 +208,6 @@ const selectStaticGeneratorsConfig = createSelector(
   }
 )
 
-export const WORKSPACES_POINTS_TYPE = 'workspace'
-export const WORKSPACE_GENERATOR_ID = 'workspace_points'
-export const REPORT_BUFFER_GENERATOR_ID = 'report-area-buffer'
 export const selectWorkspacesListGenerator = createSelector(
   [selectCurrentWorkspacesList],
   (workspaces) => {
@@ -321,11 +324,14 @@ export const selectMapReportGenerators = createSelector(
     if (reportPreviewBufferFeature?.geometry) {
       reportGenerators.push({
         type: GeneratorType.Polygons,
-        id: 'report-area-preview-buffer',
+        id: PREVIEW_BUFFER_GENERATOR_ID,
         data: { type: 'FeatureCollection', features: [reportPreviewBufferFeature] },
         color: '#F95E5E',
         visible: true,
         group: Group.OutlinePolygonsHighlighted,
+        metadata: {
+          interactive: true,
+        },
       })
     }
     return reportGenerators

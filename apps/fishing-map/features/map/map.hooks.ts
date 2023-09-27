@@ -40,12 +40,12 @@ import {
   selectShowTimeComparison,
   selectTimeComparisonValues,
 } from 'features/reports/reports.selectors'
+import { selectDefaultMapGeneratorsConfig } from './map.selectors'
 import {
-  selectDefaultMapGeneratorsConfig,
   WORKSPACES_POINTS_TYPE,
   WORKSPACE_GENERATOR_ID,
   REPORT_BUFFER_GENERATOR_ID,
-} from './map.selectors'
+} from './map.config'
 import {
   setClickedEvent,
   selectClickedEvent,
