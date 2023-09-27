@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Fragment } from 'react'
@@ -94,11 +94,6 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   )
 
   const reportLink = window.location.href
-  const name = report
-    ? report.name
-    : areaDataview?.config?.type === GeneratorType.UserContext
-    ? areaDataview?.datasets?.[0]?.name
-    : area?.name
 
   const onPrintClick = () => {
     trackEvent({
@@ -175,17 +170,46 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     dispatch(resetReportData())
   }, [dispatch, dispatchQueryParams, tooltipInstance, area, fitBounds])
 
+  const reportTitle = useMemo(() => {
+    const areaName = report
+      ? report.name
+      : areaDataview?.config?.type === GeneratorType.UserContext
+      ? areaDataview?.datasets?.[0]?.name
+      : area?.name
+
+    if (!urlBufferValue) {
+      return areaName
+    }
+    if (areaName && urlBufferOperation === 'difference') {
+      return `${urlBufferValue} ${t(`analysis.${urlBufferUnit}` as any, urlBufferUnit)} ${t(
+        `analysis.around`,
+        'around'
+      )} ${areaName}`
+    }
+    if (areaName && urlBufferOperation === 'dissolve') {
+      return `${areaName} ${t('common.and', 'and')} ${urlBufferValue} ${t(
+        `analysis.${urlBufferUnit}` as any,
+        urlBufferUnit
+      )} ${t('analysis.around', 'around')}`
+    }
+    return ''
+  }, [
+    area?.name,
+    areaDataview?.config?.type,
+    areaDataview?.datasets,
+    report,
+    t,
+    urlBufferOperation,
+    urlBufferUnit,
+    urlBufferValue,
+  ])
+
   return (
     <div className={styles.container}>
-      {name ? (
+      {reportTitle ? (
         <Fragment>
           <h1 className={styles.title} data-test="report-title">
-            {urlBufferValue
-              ? `${urlBufferValue} ${t(`analysis.${urlBufferUnit}` as any, urlBufferUnit)} ${t(
-                  `analysis.around`,
-                  'around'
-                )} ${name}`
-              : name}
+            {reportTitle}
           </h1>
           <a className={styles.reportLink} href={reportLink}>
             {t('analysis.linkToReport', 'Check the dynamic report here')}
