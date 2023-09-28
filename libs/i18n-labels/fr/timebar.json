@@ -43,7 +43,7 @@
     "hourTooltip": "See hourly data",
     "day": "Jour",
     "dayTooltip": "See daily data",
-    "month": "Mois",
+    "month": "mois",
     "monthTooltip": "See monthly data",
     "year": "Année",
     "yearTooltip": "See yearly data"

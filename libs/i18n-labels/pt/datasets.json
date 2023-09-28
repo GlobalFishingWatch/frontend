@@ -2718,11 +2718,11 @@
       "removal_of_marine_life_is_prohibited": {
         "keyword": "removal_of_marine_life_is_prohibited",
         "enum": {
-          "1": "1",
-          "2": "2",
-          "3": "3",
-          "4": "4",
-          "5": "5"
+          "1": "1. Pouco restritivo",
+          "2": "2. Menos restritivo",
+          "3": "3. Moderadamente restritivo",
+          "4": "4. Fortemente restritivo",
+          "5": "5. Totalmente restritivo"
         }
       }
     }
