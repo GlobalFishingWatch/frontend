@@ -79,6 +79,7 @@ export const downloadTrackThunk = createAsyncThunk<
       `/vessels/${vesselId}/tracks?${stringify(downloadTrackParams)}`,
       {
         method: 'GET',
+        cache: 'reload',
         responseType: 'default',
       }
     ).then(async (response) => {
