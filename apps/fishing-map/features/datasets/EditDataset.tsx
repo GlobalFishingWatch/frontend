@@ -111,7 +111,6 @@ function EditDataset(): React.ReactElement {
     >
       <div className={styles.datasetConfig}>
         <InputText
-          inputSize="small"
           value={metadata?.name !== undefined ? metadata.name : dataset?.name}
           label={t('common.name', 'Name')}
           className={styles.input}
@@ -119,7 +118,6 @@ function EditDataset(): React.ReactElement {
         />
         <InputText
           value={metadata?.description !== undefined ? metadata.description : dataset?.description}
-          inputSize="small"
           label={t('common.description', 'Description')}
           className={styles.input}
           onChange={(e) => onDatasetFieldChange({ description: e.target.value })}
@@ -128,7 +126,6 @@ function EditDataset(): React.ReactElement {
           <InputText
             disabled
             value={metadata?.propertyToInclude ?? ''}
-            inputSize="small"
             label={t('dataset.featuresNameField', 'Features name field')}
             className={styles.input}
           />
@@ -158,13 +155,11 @@ function EditDataset(): React.ReactElement {
           <div className={styles.row}>
             <InputText
               value={metadata?.propertyToInclude}
-              inputSize="small"
               label={t('dataset.colorByValue', 'Color features by value')}
               className={cx(styles.input, styles.inputFullWidth)}
               onChange={(e) => onDatasetFieldChange({ propertyToInclude: e.target.value })}
             />
             <InputText
-              inputSize="small"
               type="number"
               step="0.1"
               value={min}
@@ -181,7 +176,6 @@ function EditDataset(): React.ReactElement {
               }
             />
             <InputText
-              inputSize="small"
               type="number"
               step="0.1"
               label={t('common.max', 'Max')}
