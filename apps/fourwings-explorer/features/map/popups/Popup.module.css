@@ -97,19 +97,19 @@
   flex-wrap: wrap;
 }
 
-.hover:global(.mapboxgl-popup .mapboxgl-popup-content) {
+.hover:global(.maplibregl-popup .maplibregl-popup-content) {
   background: none;
   pointer-events: none;
 }
 
-.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-top .mapboxgl-popup-tip),
-.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip),
-.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-left .mapboxgl-popup-tip),
-.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-right .mapboxgl-popup-tip),
-.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip),
-.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip),
-.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip),
-.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip) {
+.hover:global(.maplibregl-popup.maplibregl-popup-anchor-top .maplibregl-popup-tip),
+.hover:global(.maplibregl-popup.maplibregl-popup-anchor-bottom .maplibregl-popup-tip),
+.hover:global(.maplibregl-popup.maplibregl-popup-anchor-left .maplibregl-popup-tip),
+.hover:global(.maplibregl-popup.maplibregl-popup-anchor-right .maplibregl-popup-tip),
+.hover:global(.maplibregl-popup.maplibregl-popup-anchor-top-left .maplibregl-popup-tip),
+.hover:global(.maplibregl-popup.maplibregl-popup-anchor-top-right .maplibregl-popup-tip),
+.hover:global(.maplibregl-popup.maplibregl-popup-anchor-bottom-left .maplibregl-popup-tip),
+.hover:global(.maplibregl-popup.maplibregl-popup-anchor-bottom-right .maplibregl-popup-tip) {
   display: none;
   border-width: 0 !important;
   pointer-events: none;

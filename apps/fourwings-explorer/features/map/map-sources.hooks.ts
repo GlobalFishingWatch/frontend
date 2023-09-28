@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { atom, useRecoilValue, useSetRecoilState } from 'recoil'
-import { GeoJSONFeature, MapDataEvent } from '@globalfishingwatch/maplibre-gl'
+import { FilterSpecification, GeoJSONFeature, MapDataEvent } from '@globalfishingwatch/maplibre-gl'
 import {
   DEFAULT_CONTEXT_SOURCE_LAYER,
   ExtendedStyle,
@@ -148,7 +148,7 @@ type LayerMetadata = {
   sourcesId: string[]
   generatorSourceId: string
   layerId: string
-  filter?: string[]
+  filter?: FilterSpecification
 }
 
 export type LayerFeature = BaseLayerFeature & {

@@ -14,8 +14,9 @@ export const GROUPBY_DAY = 'group-time-by-daily'
 export const GROUPBY_MONTH = 'group-time-by-monthly'
 
 // Static names and paths used for verifications
-const start = getQueryParam(URL_ONE_MONTH.substring(1), 'start').replaceAll(':', '_')
-const end = getQueryParam(URL_ONE_MONTH.substring(1), 'end').replaceAll(':', '_')
+// I added a random domain to build a full url
+const start = getQueryParam('https://gfw.com' + URL_ONE_MONTH, 'start').replaceAll(':', '_')
+const end = getQueryParam('https://gfw.com' + URL_ONE_MONTH, 'end').replaceAll(':', '_')
 export const filename = `${SEARCH_EEZ_FULL_NAME} - ${start},${end}`
 export const zipFilename = `${filename}.zip`
 const jsonFilename = `${filename}.json`

@@ -10,7 +10,9 @@ export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
 
 export const IS_PRODUCTION_BUILD = process.env.NODE_ENV === 'production'
 export const PUBLIC_WORKSPACE_ENV = process.env.NEXT_PUBLIC_WORKSPACE_ENV
-export const IS_PRODUCTION = PUBLIC_WORKSPACE_ENV === 'production' || IS_PRODUCTION_BUILD
+export const IS_PRODUCTION_WORKSPACE_ENV =
+  PUBLIC_WORKSPACE_ENV === 'production' || PUBLIC_WORKSPACE_ENV === 'staging'
+export const IS_PRODUCTION = IS_PRODUCTION_WORKSPACE_ENV || IS_PRODUCTION_BUILD
 
 export const REPORT_DAYS_LIMIT =
   typeof process.env.NEXT_PUBLIC_REPORT_DAYS_LIMIT !== 'undefined'
