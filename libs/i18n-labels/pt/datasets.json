@@ -224,7 +224,7 @@
           "camarões": "Camarões",
           "Abrótea; Galo e Merluza": "Abrótea; Galo e Merluza",
           "peixes demersais": "Peixes demersais",
-          " Camarão-rosa": "Camarão-rosa",
+          " Camarão-rosa": " Camarão-rosa",
           "Dourado - atuns e afins": "Dourado - atuns e afins",
           "Albacoras - atuns e afins": "Albacoras - atuns e afins"
         }
@@ -299,7 +299,7 @@
           "camarões": "Camarões",
           "Abrótea; Galo e Merluza": "Abrótea; Galo e Merluza",
           "peixes demersais": "Peixes demersais",
-          " Camarão-rosa": "Camarão-rosa",
+          " Camarão-rosa": " Camarão-rosa",
           "Dourado - atuns e afins": "Dourado - atuns e afins",
           "Albacoras - atuns e afins": "Albacoras - atuns e afins"
         }
@@ -367,7 +367,7 @@
           "camarões": "Camarões",
           "Abrótea; Galo e Merluza": "Abrótea; Galo e Merluza",
           "peixes demersais": "Peixes demersais",
-          " Camarão-rosa": "Camarão-rosa",
+          " Camarão-rosa": " Camarão-rosa",
           "Dourado - atuns e afins": "Dourado - atuns e afins",
           "Albacoras - atuns e afins": "Albacoras - atuns e afins"
         }
@@ -385,7 +385,7 @@
       "lon": "lon",
       "flag": "flag",
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "fishing": "pesca",
           "non-fishing": "não pesqueiro"
@@ -458,7 +458,7 @@
       "flag": "flag",
       "hours": "horas",
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "fishing": "pesca"
         }
@@ -477,7 +477,7 @@
       "lon": "lon",
       "flag": "flag",
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "fishing": "pesca",
           "international traffic": "international traffic",
@@ -734,7 +734,7 @@
       "lon": "lon",
       "flag": "flag",
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "Cast Nets": "Cast Nets",
           "Anchored gillnets": "Anchored gillnets",
@@ -920,7 +920,7 @@
     "schema": {
       "flag": "flag",
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "carrier": "carrier",
           "fishing": "pesca",
@@ -1167,7 +1167,7 @@
         }
       },
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "unknown": "unknown",
           "fishing": "pesca",
@@ -1289,7 +1289,7 @@
           "camarões": "Camarões",
           "Abrótea; Galo e Merluza": "Abrótea; Galo e Merluza",
           "peixes demersais": "Peixes demersais",
-          " Camarão-rosa": "Camarão-rosa",
+          " Camarão-rosa": " Camarão-rosa",
           "Dourado - atuns e afins": "Dourado - atuns e afins",
           "Albacoras - atuns e afins": "Albacoras - atuns e afins"
         }
@@ -1353,7 +1353,7 @@
           "camarões": "Camarões",
           "Abrótea; Galo e Merluza": "Abrótea; Galo e Merluza",
           "peixes demersais": "Peixes demersais",
-          " Camarão-rosa": "Camarão-rosa",
+          " Camarão-rosa": " Camarão-rosa",
           "Dourado - atuns e afins": "Dourado - atuns e afins",
           "Albacoras - atuns e afins": "Albacoras - atuns e afins"
         }
@@ -1517,7 +1517,7 @@
       "flag": "flag",
       "hours": "horas",
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "fishing": "pesca"
         }
@@ -1564,7 +1564,7 @@
       "lon": "lon",
       "flag": "flag",
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "fishing": "pesca",
           "international traffic": "international traffic",
@@ -2133,7 +2133,7 @@
       "flag": "flag",
       "hours": "horas",
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "fishing": "pesca"
         }
@@ -2167,7 +2167,7 @@
       "lon": "lon",
       "flag": "flag",
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "fishing": "pesca",
           "international traffic": "international traffic",
@@ -2655,7 +2655,7 @@
         }
       },
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "unknown": "unknown",
           "fishing": "pesca",
@@ -2686,11 +2686,11 @@
       "removal_of": {
         "keyword": "Nível de Proteção à Pesca",
         "enum": {
-          "1": "1",
-          "2": "2",
-          "3": "3",
-          "4": "4",
-          "5": "5"
+          "1": "1. Pouco restritivo",
+          "2": "2. Menos restritivo",
+          "3": "3. Moderadamente restritivo",
+          "4": "4. Fortemente restritivo",
+          "5": "5. Totalmente restritivo"
         }
       }
     }
@@ -2721,7 +2721,7 @@
           "1": "1",
           "2": "2",
           "3": "3",
-          "4": "4",
+          "4": "4. Fortemente restritivo",
           "5": "5"
         }
       }
