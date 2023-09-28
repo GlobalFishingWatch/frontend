@@ -1169,7 +1169,7 @@
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
-          "unknown": "unknown",
+          "unknown": "Unknown",
           "fishing": "fishing",
           "carrier": "Carrier",
           "support": "Support"
@@ -1878,7 +1878,7 @@
           "passenger": "passenger",
           "seismic_vessel": "seismic_vessel",
           "other_non_fishing": "other_non_fishing",
-          "unknown": "unknown"
+          "unknown": "Unknown"
         }
       },
       "vessel-groups": "vessel-groups"
@@ -2552,7 +2552,7 @@
       "source": {
         "keyword": "source",
         "enum": {
-          "unknown": "unknown",
+          "unknown": "Unknown",
           "chile_vms_aquaculture": "chile_vms_aquaculture",
           "peru.trasat_api": "peru.trasat_api",
           "namibia_vms": "namibia_vms",
@@ -2577,7 +2577,7 @@
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "unknown": "unknown",
+          "unknown": "Unknown",
           "reefer": "reefer",
           "Purse Seine Group (2 boat) Big Pelagics": "Purse Seine Group (2 boat) Big Pelagics",
           "specialized_reefer": "specialized_reefer",
@@ -2657,7 +2657,7 @@
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
-          "unknown": "unknown",
+          "unknown": "Unknown",
           "fishing": "fishing",
           "carrier": "Carrier",
           "support": "Support"
