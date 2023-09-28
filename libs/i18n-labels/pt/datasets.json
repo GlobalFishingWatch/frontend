@@ -385,7 +385,7 @@
       "lon": "lon",
       "flag": "flag",
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "fishing": "pesca",
           "non-fishing": "não pesqueiro"
@@ -407,7 +407,7 @@
   },
   "private-costa-rica-fishing-effort": {
     "name": "Costa Rica VMS",
-    "description": "Description pending",
+    "description": "Dados de rastreamento por satélite são fornecidos pelo Instituto Costarriquenho de Pesca e Aquicultura. Os dados são coletados do sistema de rastreamento de embarcações pesqueira da Costa Rica e publicados com atraso de três dias, contendo informações sobre a localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica as posições em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -429,7 +429,7 @@
   },
   "private-costa-rica-presence": {
     "name": "Vessel Presence Costa Rica VMS",
-    "description": "Description pending",
+    "description": "Dados de rastreamento por satélite são fornecidos pelo Instituto Costarriquenho de Pesca e Aquicultura. Os dados são coletados do sistema de rastreamento de embarcações pesqueira da Costa Rica e publicados com atraso de três dias, contendo informações sobre a localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica as posições em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -451,14 +451,14 @@
   },
   "private-ecuador-fishing-effort": {
     "name": "Ecuador VMS",
-    "description": "Description pending",
+    "description": "Dados de rastreamento por satélite são fornecidos pelo Instituto Costarriquenho de Pesca e Aquicultura. Os dados são coletados do sistema de rastreamento de embarcações pesqueira da Costa Rica e publicados com atraso de três dias, contendo informações sobre a localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica as posições em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada",
     "schema": {
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
       "hours": "horas",
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "fishing": "pesca"
         }
@@ -471,13 +471,13 @@
   },
   "private-ecuador-presence": {
     "name": "Vessel Presence Ecuador VMS",
-    "description": "Description pending",
+    "description": "Dados de rastreamento por satélite são fornecidos pelo Instituto Costarriquenho de Pesca e Aquicultura. Os dados são coletados do sistema de rastreamento de embarcações pesqueira da Costa Rica e publicados com atraso de três dias, contendo informações sobre a localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica as posições em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada",
     "schema": {
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "fishing": "pesca",
           "international traffic": "international traffic",
@@ -734,7 +734,7 @@
       "lon": "lon",
       "flag": "flag",
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "Cast Nets": "Cast Nets",
           "Anchored gillnets": "Anchored gillnets",
@@ -850,7 +850,7 @@
   },
   "private-norway-fishing-effort": {
     "name": "Norway VMS",
-    "description": "Description pending",
+    "description": "Dados de rastreamento por satélite são fornecidos pelo Instituto Costarriquenho de Pesca e Aquicultura. Os dados são coletados do sistema de rastreamento de embarcações pesqueira da Costa Rica e publicados com atraso de três dias, contendo informações sobre a localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica as posições em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -920,7 +920,7 @@
     "schema": {
       "flag": "flag",
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "carrier": "carrier",
           "fishing": "pesca",
@@ -1167,7 +1167,7 @@
         }
       },
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "unknown": "unknown",
           "fishing": "pesca",
@@ -1466,7 +1466,7 @@
   },
   "public-costa-rica-fishing-effort": {
     "name": "Costa Rica VMS",
-    "description": "Description pending",
+    "description": "Dados de rastreamento por satélite são fornecidos pelo Instituto Costarriquenho de Pesca e Aquicultura. Os dados são coletados do sistema de rastreamento de embarcações pesqueira da Costa Rica e publicados com atraso de três dias, contendo informações sobre a localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica as posições em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -1510,14 +1510,14 @@
   },
   "public-ecuador-fishing-effort": {
     "name": "Ecuador VMS",
-    "description": "Description pending",
+    "description": "Dados de rastreamento por satélite são fornecidos pelo Instituto Costarriquenho de Pesca e Aquicultura. Os dados são coletados do sistema de rastreamento de embarcações pesqueira da Costa Rica e publicados com atraso de três dias, contendo informações sobre a localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica as posições em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada",
     "schema": {
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
       "hours": "horas",
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "fishing": "pesca"
         }
@@ -1558,13 +1558,13 @@
   },
   "public-ecuador-presence": {
     "name": "Ecuador VMS",
-    "description": "Description pending",
+    "description": "Dados de rastreamento por satélite são fornecidos pelo Instituto Costarriquenho de Pesca e Aquicultura. Os dados são coletados do sistema de rastreamento de embarcações pesqueira da Costa Rica e publicados com atraso de três dias, contendo informações sobre a localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica as posições em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada",
     "schema": {
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "fishing": "pesca",
           "international traffic": "international traffic",
@@ -2126,14 +2126,14 @@
   },
   "public-mexico-fishing-effort": {
     "name": "Mexico VMS",
-    "description": "Description pending",
+    "description": "Dados de rastreamento por satélite são fornecidos pelo Instituto Costarriquenho de Pesca e Aquicultura. Os dados são coletados do sistema de rastreamento de embarcações pesqueira da Costa Rica e publicados com atraso de três dias, contendo informações sobre a localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica as posições em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada",
     "schema": {
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
       "hours": "horas",
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "fishing": "pesca"
         }
@@ -2161,13 +2161,13 @@
   },
   "public-mexico-presence": {
     "name": "Mexico VMS",
-    "description": "Description pending",
+    "description": "Dados de rastreamento por satélite são fornecidos pelo Instituto Costarriquenho de Pesca e Aquicultura. Os dados são coletados do sistema de rastreamento de embarcações pesqueira da Costa Rica e publicados com atraso de três dias, contendo informações sobre a localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica as posições em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada",
     "schema": {
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "fishing": "pesca",
           "international traffic": "international traffic",
@@ -2308,7 +2308,7 @@
   },
   "public-norway-presence": {
     "name": "Norway VMS",
-    "description": "Description pending",
+    "description": "Dados de rastreamento por satélite são fornecidos pelo Instituto Costarriquenho de Pesca e Aquicultura. Os dados são coletados do sistema de rastreamento de embarcações pesqueira da Costa Rica e publicados com atraso de três dias, contendo informações sobre a localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica as posições em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -2655,7 +2655,7 @@
         }
       },
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "unknown": "unknown",
           "fishing": "pesca",
@@ -2689,7 +2689,7 @@
           "1": "1",
           "2": "2",
           "3": "3",
-          "4": "4",
+          "4": "4. Fortemente restritivo",
           "5": "5"
         }
       }
@@ -2721,7 +2721,7 @@
           "1": "1",
           "2": "2",
           "3": "3",
-          "4": "4",
+          "4": "4. Fortemente restritivo",
           "5": "5"
         }
       }
