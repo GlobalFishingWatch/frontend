@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataview } from '@globalfishingwatch/api-types'
+import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectTimeRange } from 'features/app/app.selectors'
 import {
@@ -24,9 +25,11 @@ import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
 import { useHighlightArea } from 'features/map/popups/ContextLayers.hooks'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { LAST_REPORTS_STORAGE_KEY, LastReportStorage } from 'features/reports/reports.config'
 import {
   fetchReportVesselsThunk,
   getDateRangeHash,
+  getReportQuery,
   selectReportVesselsData,
   selectReportVesselsDateRangeHash,
   selectReportVesselsError,
@@ -121,6 +124,7 @@ export function useFetchReportArea() {
 
 export function useFetchReportVessel() {
   const dispatch = useAppDispatch()
+  const [_, setLastReportUrl] = useLocalStorage<LastReportStorage[]>(LAST_REPORTS_STORAGE_KEY, [])
   const timerange = useSelector(selectTimeRange)
   const timerangeSupported = getDownloadReportSupported(timerange.start, timerange.end)
   const reportDateRangeHash = useSelector(selectReportVesselsDateRangeHash)
@@ -131,6 +135,40 @@ export function useFetchReportVessel() {
   const data = useSelector(selectReportVesselsData)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
 
+  const updateWorkspaceReportUrls = useCallback(
+    (reportUrl) => {
+      setLastReportUrl((lastReportUrls) => {
+        const newReportUrl = {
+          reportUrl,
+          workspaceUrl: window.location.href,
+        }
+        if (!lastReportUrls?.length) {
+          return [newReportUrl]
+        }
+        const reportUrlsExists = lastReportUrls.some((report) => report[reportUrl] !== undefined)
+        return reportUrlsExists ? lastReportUrls : [newReportUrl, lastReportUrls[0]]
+      })
+    },
+    [setLastReportUrl]
+  )
+
+  const dispatchFetchReport = useCallback(() => {
+    const params = {
+      datasets: reportDataviews.map(({ datasets }) => datasets.map((d) => d.id).join(',')),
+      filters: reportDataviews.map(({ filter }) => filter),
+      vesselGroups: reportDataviews.map(({ vesselGroups }) => vesselGroups),
+      region: {
+        id: areaId,
+        dataset: datasetId,
+      },
+      dateRange: timerange,
+      spatialAggregation: true,
+    }
+    const query = getReportQuery(params)
+    updateWorkspaceReportUrls(query)
+    dispatch(fetchReportVesselsThunk(params))
+  }, [areaId, datasetId, dispatch, reportDataviews, timerange, updateWorkspaceReportUrls])
+
   useEffect(() => {
     const isDifferentDateRange = reportDateRangeHash !== getDateRangeHash(timerange)
     if (
@@ -140,19 +178,7 @@ export function useFetchReportVessel() {
       isDifferentDateRange &&
       workspaceStatus === AsyncReducerStatus.Finished
     ) {
-      dispatch(
-        fetchReportVesselsThunk({
-          datasets: reportDataviews.map(({ datasets }) => datasets.map((d) => d.id).join(',')),
-          filters: reportDataviews.map(({ filter }) => filter),
-          vesselGroups: reportDataviews.map(({ vesselGroups }) => vesselGroups),
-          region: {
-            id: areaId,
-            dataset: datasetId,
-          },
-          dateRange: timerange,
-          spatialAggregation: true,
-        })
-      )
+      dispatchFetchReport()
     }
     // Avoid re-fetching when timerange changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -166,5 +192,8 @@ export function useFetchReportVessel() {
     workspaceStatus,
   ])
 
-  return useMemo(() => ({ status, data, error }), [status, data, error])
+  return useMemo(
+    () => ({ status, data, error, dispatchFetchReport }),
+    [status, data, error, dispatchFetchReport]
+  )
 }

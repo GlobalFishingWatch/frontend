@@ -1,10 +1,11 @@
-import { Fragment, useCallback, useEffect, useMemo } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useRef } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { uniq } from 'lodash'
+import { isEqual, uniq } from 'lodash'
 import { Button, Tab, Tabs } from '@globalfishingwatch/ui-components'
 import { isAuthError } from '@globalfishingwatch/api-client'
+import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
@@ -31,7 +32,7 @@ import {
   useTimebarEnvironmentConnect,
   useTimebarVisualisationConnect,
 } from 'features/timebar/timebar.hooks'
-import { getReportCategoryFromDataview } from 'features/reports/reports.utils'
+import { getReportCategoryFromDataview, parseReportUrl } from 'features/reports/reports.utils'
 import {
   getDateRangeHash,
   resetReportData,
@@ -46,6 +47,7 @@ import { useSetTimeseries } from 'features/reports/reports-timeseries.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
 import DatasetLabel from 'features/datasets/DatasetLabel'
+import { LAST_REPORTS_STORAGE_KEY, LastReportStorage } from 'features/reports/reports.config'
 import {
   useFetchReportArea,
   useFetchReportVessel,
@@ -65,6 +67,7 @@ export type ReportActivityUnit = 'hour' | 'detection'
 function ActivityReport({ reportName }: { reportName: string }) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const [lastReports] = useLocalStorage<LastReportStorage[]>(LAST_REPORTS_STORAGE_KEY, [])
   const reportCategory = useSelector(selectReportCategory)
   const timerange = useSelector(selectTimeRange)
   const reportDataviews = useSelector(selectReportDataviewsWithPermissions)
@@ -80,7 +83,8 @@ function ActivityReport({ reportName }: { reportName: string }) {
     userData?.permissions || []
   )
   const timerangeTooLong = !getDownloadReportSupported(timerange.start, timerange.end)
-  const { status: reportStatus, error: statusError } = useFetchReportVessel()
+  const { status: reportStatus, error: statusError, dispatchFetchReport } = useFetchReportVessel()
+  const dispatchTimeoutRef = useRef<NodeJS.Timeout>()
   const hasVessels = useSelector(selectHasReportVessels)
 
   // TODO get this from datasets config
@@ -92,6 +96,109 @@ function ActivityReport({ reportName }: { reportName: string }) {
   const reportOutdated =
     reportDateRangeHash !== '' && reportDateRangeHash !== getDateRangeHash(timerange)
   const hasAuthError = reportError && isAuthError(statusError)
+
+  const { currentReportUrl } = statusError?.metadata || ({} as { currentReportUrl: string })
+  const lastReport = currentReportUrl
+    ? lastReports.find((report) => {
+        const currentReportParams = parseReportUrl(currentReportUrl)
+        const reportParams = parseReportUrl(report.reportUrl)
+        return isEqual(currentReportParams, reportParams)
+      })
+    : undefined
+  const isSameWorkspaceReport =
+    statusError?.status === 429 && window?.location.href === lastReport?.workspaceUrl
+  useEffect(() => {
+    if (isSameWorkspaceReport) {
+      dispatchTimeoutRef.current = setTimeout(() => {
+        dispatchFetchReport()
+      }, 1000 * 10) // retrying each minute
+    }
+    return () => {
+      if (dispatchTimeoutRef.current) {
+        clearTimeout(dispatchTimeoutRef.current)
+      }
+    }
+  }, [dispatchFetchReport, isSameWorkspaceReport])
+
+  const ReportVesselError = useMemo(() => {
+    if (hasAuthError || guestUser) {
+      return (
+        <ReportVesselsPlaceholder>
+          <div className={styles.cover}>
+            <WorkspaceLoginError
+              title={
+                guestUser
+                  ? t('errors.reportLogin', 'Login to see the vessels active in the area')
+                  : t(
+                      'errors.privateReport',
+                      "Your account doesn't have permissions to see the vessels active in this area"
+                    )
+              }
+              emailSubject={`Requesting access for ${datasetId}-${areaId} report`}
+            />
+          </div>
+        </ReportVesselsPlaceholder>
+      )
+    }
+    if (statusError) {
+      if (statusError.status === 429) {
+        if (isSameWorkspaceReport) {
+          return <ReportVesselsPlaceholder />
+        }
+        return (
+          <ReportVesselsPlaceholder>
+            <div className={styles.cover}>
+              <p className={styles.error}>
+                {t('analysis.errorConcurrentReport', 'There is already a report running')}
+                <p className={styles.link}>
+                  {lastReport && (
+                    <a href={lastReport.workspaceUrl}>
+                      {t('analysis.errorConcurrentReportLink', 'See it')}
+                    </a>
+                  )}
+                </p>
+              </p>
+            </div>
+          </ReportVesselsPlaceholder>
+        )
+      }
+      return (
+        <ReportVesselsPlaceholder>
+          <div className={styles.cover}>
+            <p className={styles.error}>{statusError.message}</p>
+          </div>
+        </ReportVesselsPlaceholder>
+      )
+    }
+    if (!reportDataviews?.length) {
+      return (
+        <p className={styles.error}>
+          {t(
+            'analysis.datasetsNotAllowedAll',
+            'None of your datasets are allowed to be used in reports'
+          )}{' '}
+        </p>
+      )
+    }
+    return (
+      <p className={styles.error}>
+        <span>
+          {t('errors.generic', 'Something went wrong, try again or contact:')}{' '}
+          <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
+        </span>
+      </p>
+    )
+  }, [
+    areaId,
+    datasetId,
+    guestUser,
+    hasAuthError,
+    isSameWorkspaceReport,
+    lastReport,
+    reportDataviews?.length,
+    statusError,
+    t,
+  ])
 
   const ReportComponent = useMemo(() => {
     if (workspaceStatus === AsyncReducerStatus.Loading) {
@@ -159,59 +266,7 @@ function ActivityReport({ reportName }: { reportName: string }) {
       )
     }
     if (reportError || (!reportLoading && !reportDataviews?.length)) {
-      if (hasAuthError || guestUser) {
-        return (
-          <ReportVesselsPlaceholder>
-            <div className={styles.cover}>
-              <WorkspaceLoginError
-                title={
-                  guestUser
-                    ? t('errors.reportLogin', 'Login to see the vessels active in the area')
-                    : t(
-                        'errors.privateReport',
-                        "Your account doesn't have permissions to see the vessels active in this area"
-                      )
-                }
-                emailSubject={`Requesting access for ${datasetId}-${areaId} report`}
-              />
-            </div>
-          </ReportVesselsPlaceholder>
-        )
-      }
-      if (statusError) {
-        let errorMessage = statusError.message
-        if (statusError.status === 429) {
-          errorMessage = t(
-            'analysis.errorConcurrentReport',
-            'You cannot perform more than one concurrent report'
-          )
-        }
-        return (
-          <ReportVesselsPlaceholder>
-            <div className={styles.cover}>
-              <p className={styles.error}>{errorMessage}</p>
-            </div>
-          </ReportVesselsPlaceholder>
-        )
-      }
-      if (!reportDataviews?.length) {
-        return (
-          <p className={styles.error}>
-            {t(
-              'analysis.datasetsNotAllowedAll',
-              'None of your datasets are allowed to be used in reports'
-            )}{' '}
-          </p>
-        )
-      }
-      return (
-        <p className={styles.error}>
-          <span>
-            {t('errors.generic', 'Something went wrong, try again or contact:')}{' '}
-            <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
-          </span>
-        </p>
-      )
+      return ReportVesselError
     }
 
     return <ReportVesselsPlaceholder />
@@ -232,10 +287,7 @@ function ActivityReport({ reportName }: { reportName: string }) {
     activityUnit,
     reportName,
     datasetsDownloadNotSupported,
-    guestUser,
-    statusError,
-    datasetId,
-    areaId,
+    ReportVesselError,
   ])
 
   return (

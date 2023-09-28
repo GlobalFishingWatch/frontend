@@ -5,6 +5,14 @@
   color: var(--color-danger-red);
 }
 
+.link {
+  display: block;
+  width: 100%;
+  text-align: center;
+  color: var(--color-primary-blue);
+  text-decoration: underline;
+}
+
 .secondary {
   color: var(--color-secondary-blue);
 }
