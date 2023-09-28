@@ -2386,7 +2386,7 @@
     }
   },
   "public-peru-fishing-effort": {
-    "name": "VMS Peru",
+    "name": "Peru VMS",
     "description": "Data Vessel Monitoring System (VMS) disediakan oleh Ministry of Production, Fisheries Sector (PRODUCE) Pemerintah Peru. Izin untuk menyertakan Data Peru mengharuskan penundaan penerbitan selama 10 hari. Data dikumpulkan menggunakan vessel monitoring system (VMS) mereka melalui satelit dan penerima terestrial, dan berisi identitas kapal, jenis alat tangkap, lokasi, kecepatan, arah, dan lainnya. Global Fishing Watch menganalisis data ini menggunakan algoritma yang sama dengan yang dkembangkan untuk data Automatic Identification System (AIS) untuk mengidentifikasi aktivitas dan perilaku penangkapan ikan. Algoritma tersebut mengklasifikasikan setiap titik data siaran dari kapal sebagai yang terlihat sedang memancing atau tidak sedang memancing dan menunjukkan titik data sebelumnya pada peta panas aktivitas penangkapan ikan Global Fishing Watch. VMS menyiarkan data dengan sangat berbeda dari AIS dan dapat memberikan ukuran kelengkapan, akurasi dan kualitas yang berbeda. Seiring waktu, algoritma kami akan meningkat di semua format data siaran kami. Algoritma deteksi penangkapan ikan Global Fishing Watch untuk VMS seperti untuk AIS, adalah upaya terbaik secara algoritma untuk mengidentifikasi \"aktivitas penangkapan ikan yang terlihat.\" Ada kemungkinan bahwa beberapa aktivitas penangkapan ikan tidak teridentifikasi, atau peta panas dapat menunjukkan aktivitas penangkapan ikan yang terlihat jelas di mana penangkapan ikan sebenarnya tidak terjadi. Untuk alasan ini, Global Fishing Watch mengkualifikasikan istilah \"aktivitas memancing\", \"memancing\", dan \"upaya penangkapan ikan\", sebagai \"terlihat jelas\" dan daripada pasti. Setiap / semua informasi Global Fishing Watch tentang \"aktivitas penangkapan ikan yang terlihat\" harus dianggap sebagai perkiraan dan harus diandalkan sepenuhnya dengan risiko Anda sendiri. Algoritma deteksi penangkapan ikan Global Fishing Watch dikembangkan dan diuji menggunakan data peristiwa penangkapan ikan aktual yang dikumpulkan oleh pengamat, dikombinasikan dengan analisis ahli dari data pergerakan kapal AIS yang menghasilkan klasifikasi manual dari ribuan peristiwa penangkapan ikan yang diketahui. Global Fishing Watch juga bekerja sama secara ekstensif dengan peneliti akademis melalui program penelitian kami untuk berbagi data klasifikasi aktivitas penangkapan ikan dan klasifikasi otomatis.",
     "schema": {
       "lat": "lat",
@@ -2718,11 +2718,11 @@
       "removal_of_marine_life_is_prohibited": {
         "keyword": "removal_of_marine_life_is_prohibited",
         "enum": {
-          "1": "1",
-          "2": "2",
-          "3": "3",
-          "4": "4",
-          "5": "5"
+          "1": "1. Tidak ada batasan ",
+          "2": "2. Kurang membatasi",
+          "3": "3. Cukup membatasi",
+          "4": "4. Sangat membatasi",
+          "5": "5. Paling membatasi"
         }
       }
     }
