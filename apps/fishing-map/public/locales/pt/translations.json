@@ -381,7 +381,7 @@
     "mmsi": "MMSI",
     "start": "Início",
     "totalDistanceKm": "total distance (km)",
-    "type": "shiptype"
+    "type": "tipo de embarcação"
   },
   "feedback": {
     "descriptionPlaceholder": "Por favor, seja o mais específico possível.",
