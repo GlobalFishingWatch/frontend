@@ -46,6 +46,7 @@ export type ApiVersion = '' | 'v1' | 'v2' | 'v3'
 export type FetchOptions<T = BodyInit> = Partial<RequestInit> & {
   version?: ApiVersion
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+  cache?: RequestCache
   responseType?: ResourceResponseType
   requestType?: ResourceRequestType
   body?: T
@@ -316,6 +317,7 @@ export class GFW_API_CLASS {
       headers = {},
       responseType = 'json',
       requestType = 'json',
+      cache,
       signal,
       local = false,
     } = options
@@ -353,6 +355,7 @@ export class GFW_API_CLASS {
         const data = await fetch(fetchUrl, {
           method,
           signal,
+          ...(cache && { cache }),
           ...(body && { body: requestType === 'json' ? JSON.stringify(body) : body }),
           headers: finalHeaders,
         })
