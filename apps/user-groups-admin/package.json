@@ -25,15 +25,15 @@
     "@next/eslint-plugin-next": "13.5.3",
     "@types/node": "20.7.1",
     "depcheck": "1.4.6",
-    "prettier": "2.8.8",
+    "prettier": "3.0.3",
     "prop-types": "^15.8.1",
     "react-test-renderer": "18.2.0",
     "serve": "14.2.1",
     "source-map-explorer": "2.5.3",
     "stylelint": "^15.10.3",
-    "stylelint-config-css-modules": "^4.1.0",
+    "stylelint-config-css-modules": "^4.3.0",
     "stylelint-config-prettier": "^9.0.5",
-    "stylelint-config-standard": "^29.0.0"
+    "stylelint-config-standard": "^34.0.0"
   },
   "browserslist": [
     ">0.1%",
