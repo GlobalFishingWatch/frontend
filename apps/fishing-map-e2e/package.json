@@ -1,9 +1,9 @@
 {
   "name": "@globalfishingwatchapp/fishing-map-e2e",
-  "version": "1.7.2",
+  "version": "1.8.27",
   "private": true,
   "dependencies": {
-    "@globalfishingwatchapp/fishing-map": "*"
+    "@globalfishingwatchapp/fishing-map": "1.8.27"
   },
   "eslintConfig": {
     "extends": [
