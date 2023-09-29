@@ -74,7 +74,7 @@ export const downloadTrackThunk = createAsyncThunk<
 
     const fileName = `${vesselName || vesselId} - ${downloadTrackParams['start-date']},${
       downloadTrackParams['end-date']
-    }.${FORMAT_EXTENSION[format]}`
+    }`
     const rateLimit = await GFWAPI.fetch<Response>(
       `/vessels/${vesselId}/tracks?${stringify(downloadTrackParams)}`,
       {
@@ -85,7 +85,22 @@ export const downloadTrackThunk = createAsyncThunk<
     ).then(async (response) => {
       const rateLimit = parseRateLimit(response)
       const blob = await response.blob()
-      saveAs(blob as any, fileName)
+
+      const JSZip = await import('jszip').then((module) => module.default)
+      const zip = new JSZip()
+
+      const readme = await GFWAPI.fetch<any>(
+        `${window.location.origin}/tracks-download/README.md`,
+        { responseType: 'blob' }
+      )
+      zip.file(`${fileName}.${FORMAT_EXTENSION[format]}`, blob)
+      zip.file('README.md', readme)
+      zip
+        .generateAsync({ type: 'blob' })
+        .then(function (content) {
+          saveAs(content, `${fileName}.zip`)
+        })
+        .catch((e) => console.warn(e))
       return rateLimit
     })
     return rateLimit
