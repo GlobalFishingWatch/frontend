@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "devDependencies": {
-    "@next/eslint-plugin-next": "13.x",
+    "@next/eslint-plugin-next": "^13.5.3",
     "@typescript-eslint/eslint-plugin": "5.x",
     "@typescript-eslint/parser": "5.x",
     "@typescript-eslint/scope-manager": "5.x",
