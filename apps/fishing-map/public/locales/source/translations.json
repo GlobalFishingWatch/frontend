@@ -19,6 +19,7 @@
     "errorDuplicatedName": "There is already a report with the same name",
     "errorMessage": "Something went wrong",
     "errorPeriodComparisonDateRange": "Date range error. Comparison start must be after baseline start.",
+    "errorTooComplex": "The geometry of the area is too complex to perform a report, try to simplify and upload again.",
     "evolution": "evolution",
     "groupByFlag": "by flag",
     "groupByGeartype": "by gear type",

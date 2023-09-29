@@ -162,6 +162,21 @@ function ActivityReport({ reportName }: { reportName: string }) {
           </ReportVesselsPlaceholder>
         )
       }
+
+      if (statusError.status === 413) {
+        return (
+          <ReportVesselsPlaceholder>
+            <div className={styles.cover}>
+              <p className={styles.error}>
+                {t(
+                  'analysis.errorTooComplex',
+                  'The geometry of the area is too complex to perform a report, try to simplify and upload again.'
+                )}
+              </p>
+            </div>
+          </ReportVesselsPlaceholder>
+        )
+      }
       return (
         <ReportVesselsPlaceholder>
           <div className={styles.cover}>

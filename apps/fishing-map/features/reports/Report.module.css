@@ -3,6 +3,8 @@
   text-align: center;
   padding: 6rem var(--space-L);
   color: var(--color-danger-red);
+  max-width: 50rem;
+  margin: 0 auto;
 }
 
 .link {
