@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
-import { selectIsReportLocation, selectLocationType } from 'routes/routes.selectors'
+import { selectIsAnyReportLocation, selectLocationType } from 'routes/routes.selectors'
 import { USER, WORKSPACES_LIST } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
@@ -49,7 +49,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const readOnly = useSelector(selectReadOnly)
   const searchQuery = useSelector(selectSearchQuery)
   const locationType = useSelector(selectLocationType)
-  const isReportLocation = useSelector(selectIsReportLocation)
+  const isReportLocation = useSelector(selectIsAnyReportLocation)
   const dataviewsResources = useSelector(selectDataviewsResources)
   const userLogged = useSelector(isUserLogged)
   const hasUserGroupsPermissions = useSelector(selectUserGroupsPermissions)

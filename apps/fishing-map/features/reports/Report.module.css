@@ -3,6 +3,16 @@
   text-align: center;
   padding: 6rem var(--space-L);
   color: var(--color-danger-red);
+  max-width: 50rem;
+  margin: 0 auto;
+}
+
+.link {
+  display: block;
+  width: 100%;
+  text-align: center;
+  color: var(--color-primary-blue);
+  text-decoration: underline;
 }
 
 .secondary {

@@ -20,11 +20,8 @@ import { ReportCategory } from 'types'
 import { selectUserData } from 'features/user/user.slice'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
-import {
-  EMPTY_API_VALUES,
-  ReportVesselWithDatasets,
-  selectReportVesselsPaginated,
-} from '../reports.selectors'
+import { EMPTY_API_VALUES } from 'features/reports/reports.config'
+import { ReportVesselWithDatasets, selectReportVesselsPaginated } from '../reports.selectors'
 import { ReportActivityUnit } from '../Report'
 import styles from './ReportVesselsTable.module.css'
 
