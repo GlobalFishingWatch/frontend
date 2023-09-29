@@ -8,6 +8,7 @@ import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { DateRange } from 'features/download/downloadActivity.slice'
 import { getUTCDateTime } from 'utils/dates'
 import { logoutUserThunk } from 'features/user/user.slice'
+import { PATH_BASENAME } from 'routes/routes'
 import { Format, FORMAT_EXTENSION } from './downloadTrack.config'
 
 type VesselParams = {
@@ -90,7 +91,7 @@ export const downloadTrackThunk = createAsyncThunk<
       const zip = new JSZip()
 
       const readme = await GFWAPI.fetch<any>(
-        `${window.location.origin}/tracks-download/README.md`,
+        `${window.location.origin}${PATH_BASENAME}/tracks-download/README.md`,
         { responseType: 'blob' }
       )
       zip.file(`${fileName}.${FORMAT_EXTENSION[format]}`, blob)
