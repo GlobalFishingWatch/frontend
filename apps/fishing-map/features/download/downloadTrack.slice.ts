@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
 import { saveAs } from 'file-saver'
 import { RootState } from 'reducers'
-import { DownloadRateLimit } from '@globalfishingwatch/api-types'
+import { DownloadRateLimit, ThinningConfig } from '@globalfishingwatch/api-types'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { DateRange } from 'features/download/downloadActivity.slice'
@@ -41,6 +41,7 @@ export type DownloadTrackParams = {
   dateRange: DateRange
   datasets: string
   format: Format
+  thinning?: ThinningConfig
 }
 
 const parseRateLimit = (response: Response) => {
@@ -61,16 +62,16 @@ export const downloadTrackThunk = createAsyncThunk<
   }
 >('downloadTrack/create', async (params: DownloadTrackParams, { rejectWithValue }) => {
   try {
-    const { dateRange, datasets, format, vesselId, vesselName } = params
+    const { dateRange, datasets, format, vesselId, vesselName, thinning } = params
     const fromDate = getUTCDateTime(dateRange.start).toString()
     const toDate = getUTCDateTime(dateRange.end).toString()
-
     const downloadTrackParams = {
       'start-date': fromDate,
       'end-date': toDate,
       datasets,
       format,
       fields: 'lonlat,timestamp,speed,course',
+      ...(thinning && { ...thinning }),
     }
 
     const fileName = `${vesselName || vesselId} - ${downloadTrackParams['start-date']},${
