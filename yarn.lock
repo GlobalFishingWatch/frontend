@@ -2750,7 +2750,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@globalfishingwatchapp/fishing-map@workspace:apps/fishing-map":
+"@globalfishingwatchapp/fishing-map-e2e@workspace:apps/fishing-map-e2e":
+  version: 0.0.0-use.local
+  resolution: "@globalfishingwatchapp/fishing-map-e2e@workspace:apps/fishing-map-e2e"
+  dependencies:
+    "@globalfishingwatchapp/fishing-map": "*"
+  languageName: unknown
+  linkType: soft
+
+"@globalfishingwatchapp/fishing-map@*, @globalfishingwatchapp/fishing-map@workspace:apps/fishing-map":
   version: 0.0.0-use.local
   resolution: "@globalfishingwatchapp/fishing-map@workspace:apps/fishing-map"
   dependencies:
