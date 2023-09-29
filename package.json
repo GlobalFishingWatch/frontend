@@ -132,7 +132,7 @@
     "@nx/workspace": "16.9.1",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
     "@svgr/rollup": "8.1.0",
-    "@svgr/webpack": "^6.1.2",
+    "@svgr/webpack": "^8.1.0",
     "@testing-library/react": "13.4.0",
     "@types/color-convert": "^2.0.1",
     "@types/d3": "^7.4.1",
