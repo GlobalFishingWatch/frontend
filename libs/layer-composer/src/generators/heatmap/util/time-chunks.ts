@@ -254,7 +254,7 @@ const getTimeChunks = (
     // use dataset end if chunk ends after dataset
     if (+chunkDataEnd > +toDT(datasetEnd)) {
       // in case the start of the chunk is after the dataset extend the chunk is discarded
-      if (chunkStart.toISODate() >= datasetEnd.split('T')[0]) {
+      if ((chunkStart.toISODate() as string) >= datasetEnd.split('T')[0]) {
         return []
       }
       chunkDataEnd = toDT(datasetEnd)

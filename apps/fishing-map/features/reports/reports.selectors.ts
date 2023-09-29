@@ -360,10 +360,10 @@ export const selectTimeComparisonValues = createSelector(
 
     const end = getUTCDateTime(timeComparison.start)
       .plus({ [timeComparison.durationType]: timeComparison.duration })
-      .toISO()
+      .toISO() as string
     const compareEnd = getUTCDateTime(timeComparison.compareStart)
       .plus({ [timeComparison.durationType]: timeComparison.duration })
-      .toISO()
+      .toISO() as string
 
     return {
       start: timeComparison.start,

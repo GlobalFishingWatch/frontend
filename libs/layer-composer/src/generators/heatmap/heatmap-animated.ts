@@ -160,7 +160,7 @@ const getFinalurl = (
 const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
   mode: HeatmapAnimatedMode.Compare,
   datasetsStart: '2012-01-01T00:00:00.000Z',
-  datasetsEnd: DateTime.now().toUTC().toISO(),
+  datasetsEnd: DateTime.now().toUTC().toISO() as string,
   maxZoom: HEATMAP_DEFAULT_MAX_ZOOM,
   interactive: true,
   aggregationOperation: AggregationOperation.Sum,

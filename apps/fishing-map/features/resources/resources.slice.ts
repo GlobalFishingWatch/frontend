@@ -66,8 +66,8 @@ export const selectTrackChunksConfig = createSelector(
 
       if (+bufferedEnd > +yearStart && +bufferedStart < +yearEnd) {
         chunks.push({
-          start: yearStart.toISO(),
-          end: yearEnd.toISO(),
+          start: yearStart.toISO() as string,
+          end: yearEnd.toISO() as string,
         })
       }
     })

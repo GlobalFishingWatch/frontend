@@ -30,7 +30,7 @@ export const useSetReportTimeComparison = () => {
         // make sure start is properly recalculated again in beforeAfter mode when coming from another mode
         const newStart = getUTCDateTime(timeComparison.compareStart)
           .minus({ [durationType]: duration })
-          .toISO()
+          .toISO() as string
         dispatchQueryParams({
           reportTimeComparison: {
             ...timeComparison,
@@ -56,7 +56,7 @@ export const useSetReportTimeComparison = () => {
       activityType === 'periodComparison'
         ? { years: 1 }
         : { [initialDurationType]: initialDurationValue }
-    const initialStart = getUTCDateTime(baseStart).minus(baseStartMinusOffset).toISO()
+    const initialStart = getUTCDateTime(baseStart).minus(baseStartMinusOffset).toISO() as string
     const initialCompareStart = baseStart
 
     dispatchQueryParams({
@@ -105,7 +105,7 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
     ({ newStart, newCompareStart, newDuration, newDurationType, error }: any) => {
       const compareStart = getUTCDateTime(
         newCompareStart ? newCompareStart : (timeComparison.compareStart as string)
-      ).toISO()
+      ).toISO() as string
 
       const duration = newDuration || timeComparison.duration
       const durationType = newDurationType || timeComparison.durationType
@@ -117,16 +117,16 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
       let start: string
       if (activityType === 'beforeAfter') {
         // In before/after mode, start of 1st period is calculated automatically depending on start of 2nd period (compareStart)
-        start = startFromCompareStart.toISO()
+        start = startFromCompareStart.toISO() as string
       } else {
-        start = getUTCDateTime(newStart ? newStart : timeComparison.start).toISO()
+        start = getUTCDateTime(newStart ? newStart : timeComparison.start).toISO() as string
 
         // If new duration is set, make sure there delta from start to compareStart is >= of new duration
         if (
           newDuration &&
           startFromCompareStart.toMillis() - getUTCDateTime(timeComparison.start).toMillis() <= 0
         ) {
-          start = startFromCompareStart.toISO()
+          start = startFromCompareStart.toISO() as string
         }
       }
 

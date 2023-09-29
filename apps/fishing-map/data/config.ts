@@ -51,7 +51,7 @@ export const DEFAULT_DATA_DELAY_DAYS = 3
 // used when no url data and no workspace data
 const LAST_DATA_UPDATE = DateTime.fromObject({ hour: 0, minute: 0, second: 0 }, { zone: 'utc' })
   .minus({ days: DEFAULT_DATA_DELAY_DAYS })
-  .toISO()
+  .toISO() as string
 
 export const DEFAULT_VIEWPORT = {
   zoom: 1.5,

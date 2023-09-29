@@ -184,8 +184,8 @@ const TimebarWrapper = () => {
           const diff = endDateTime.diff(startDateTime, 'hours')
           if (diff.hours < 1) {
             // To ensure at least 1h range is highlighted
-            const hourStart = startDateTime.minus({ hours: diff.hours / 2 }).toISO()
-            const hourEnd = endDateTime.plus({ hours: diff.hours / 2 }).toISO()
+            const hourStart = startDateTime.minus({ hours: diff.hours / 2 }).toISO() as string
+            const hourEnd = endDateTime.plus({ hours: diff.hours / 2 }).toISO() as string
             dispatch(setHighlightedTime({ start: hourStart, end: hourEnd }))
           } else {
             dispatch(setHighlightedTime({ start, end }))
