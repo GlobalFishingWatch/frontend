@@ -18,6 +18,7 @@
 .durationWrapper {
   display: flex;
   align-items: flex-end;
+  gap: var(--space-XS);
 }
 
 .duration {

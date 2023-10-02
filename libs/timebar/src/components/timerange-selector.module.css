@@ -73,7 +73,9 @@
   color: rgb(22, 63, 137);
   height: 4rem;
   margin: 0;
-  border-bottom: var(--border);
+  background-color: var(--color-white);
+  border-radius: var(--border-radius);
+  border: var(--border);
 }
 
 .input:disabled {
@@ -81,12 +83,9 @@
   cursor: not-allowed;
 }
 
-.input:not(.error):focus {
-  border-bottom: 1px solid var(--color-primary-blue);
-}
-
 .input[type='number']::-webkit-inner-spin-button {
   opacity: 0.5;
+  cursor: pointer;
 }
 
 .error {
@@ -122,6 +121,7 @@
   font-size: var(--timebar-font-size);
   transition: var(--timebar-hover-transition);
   text-transform: uppercase;
+  border-radius: var(--border-radius);
 }
 
 .cta:hover,
@@ -140,15 +140,15 @@
   color: var(--color-primary-blue);
   display: flex;
   line-height: 3.6rem;
-  background: white;
-  border: var(--border);
+  background: var(--color-terthiary-blue);
+  border-bottom: var(--border);
+  padding-left: var(--space-XS);
 }
 
 .lastX:hover,
 .lastX:focus {
-  background: white;
+  background: var(--color-terthiary-blue);
   outline: none;
-  border: 1px solid var(--color-primary-blue);
 }
 
 @media only screen and (max-width: 540px) {

@@ -79,14 +79,12 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
   return (
     <div className={cx(styles.datasetConfig, className)}>
       <InputText
-        inputSize="small"
         value={metadata.name}
         label={t('common.name', 'Name')}
         className={styles.input}
         onChange={(e) => onDatasetFieldChange({ name: e.target.value })}
       />
       <InputText
-        inputSize="small"
         label={t('common.description', 'Description')}
         className={styles.input}
         onChange={(e) => onDatasetFieldChange({ description: e.target.value })}
@@ -143,7 +141,6 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
             }}
           />
           <InputText
-            inputSize="small"
             type="number"
             step="0.1"
             value={min}
@@ -161,7 +158,6 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
             }
           />
           <InputText
-            inputSize="small"
             type="number"
             step="0.1"
             placeholder={t('common.max', 'Max')}

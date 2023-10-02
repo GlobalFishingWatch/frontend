@@ -283,7 +283,6 @@ function MapDraw() {
               <InputText
                 step="0.01"
                 type="number"
-                inputSize="small"
                 value={editingPointLatitude}
                 label={t('common.latitude', 'Latitude')}
                 onChange={onHandleLatitudeChange}
@@ -296,7 +295,6 @@ function MapDraw() {
                 value={editingPointLongitude}
                 label={t('common.longitude', 'longitude')}
                 onChange={onHandleLongitudeChange}
-                inputSize="small"
               />
             </div>
             <div className={styles.popupButtons}>

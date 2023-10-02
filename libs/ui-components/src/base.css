@@ -63,11 +63,12 @@
   --border-white: 1px solid rgba(var(--white-rgb), var(--opacity-border));
   --box-shadow-highlight: 0 0 0.2rem 0.2rem var(--color-highlight-blue);
   --transition: all 150ms ease-out;
-  --border-radius: 0.3rem;
+  --border-radius: 0.4rem;
 
   /* SIZES */
   --size-XS: 2rem;
   --size-S: 2.8rem;
+  --size-SM: 3.2rem;
   --size-M: 4rem;
   --size-L: 6rem;
   --size-XL: 8rem;
