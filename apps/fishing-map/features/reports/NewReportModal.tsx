@@ -106,7 +106,6 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
       onClose={onClose}
     >
       <InputText
-        inputSize="small"
         value={name}
         label={t('common.name', 'Name')}
         className={styles.input}

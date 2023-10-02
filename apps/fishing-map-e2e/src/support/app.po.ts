@@ -59,6 +59,7 @@ export const deleteDownloadsFolder = () => {
 }
 
 export const getQueryParam = (url: string, name: string) => {
-  let params = new URLSearchParams(url)
+  const urlComponent = new URL(url)
+  let params = new URLSearchParams(urlComponent.search)
   return params.get(name)
 }

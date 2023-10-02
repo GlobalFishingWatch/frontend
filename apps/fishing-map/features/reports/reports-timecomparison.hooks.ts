@@ -11,12 +11,11 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { getUTCDateTime } from 'utils/dates'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useFitAreaInViewport } from 'features/reports/reports.hooks'
+import { MAX_DAYS_TO_COMPARE, MAX_MONTHS_TO_COMPARE } from 'features/reports/reports.config'
 
 // TODO get this from start and endDate from datasets
 const MIN_DATE = DEFAULT_WORKSPACE.availableStart.slice(0, 10)
 const MAX_DATE = DEFAULT_WORKSPACE.availableEnd.slice(0, 10)
-export const MAX_DAYS_TO_COMPARE = 100
-export const MAX_MONTHS_TO_COMPARE = 12
 
 export const useSetReportTimeComparison = () => {
   const timeComparison = useSelector(selectReportTimeComparison)

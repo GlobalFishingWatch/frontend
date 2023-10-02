@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
-import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { APIPagination, ReportVesselsByDataset } from '@globalfishingwatch/api-types'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { getUTCDateTime } from 'utils/dates'
@@ -13,9 +13,10 @@ import {
 import { BufferOperation, BufferUnit } from 'types'
 import { DateRange } from '../download/downloadActivity.slice'
 
+type ReportStateError = AsyncError<{ currentReportUrl: string }>
 interface ReportState {
   status: AsyncReducerStatus
-  error: AsyncError | null
+  error: ReportStateError | null
   data: ReportVesselsByDataset[] | null
   dateRangeHash: string
   previewBuffer: PreviewBuffer
@@ -54,54 +55,53 @@ type FetchReportVesselsThunkParams = {
   reportBufferValue?: number
   reportBufferOperation?: BufferOperation
 }
+
+export const getReportQuery = (params: FetchReportVesselsThunkParams) => {
+  const {
+    region,
+    datasets,
+    filters,
+    vesselGroups,
+    dateRange,
+    temporalResolution = TemporalResolution.Full,
+    groupBy = GroupBy.Vessel,
+    spatialResolution = SpatialResolution.Low,
+    spatialAggregation = true,
+    format = Format.Json,
+  } = params
+  const query = stringify(
+    {
+      datasets,
+      filters,
+      'vessel-groups': vesselGroups,
+      'temporal-resolution': temporalResolution,
+      'date-range': [
+        getUTCDateTime(dateRange?.start)?.toString(),
+        getUTCDateTime(dateRange?.end)?.toString(),
+      ].join(','),
+      'group-by': groupBy,
+      'spatial-resolution': spatialResolution,
+      'spatial-aggregation': spatialAggregation,
+      format: format,
+      'region-id': region.id,
+      'region-dataset': region.dataset,
+    },
+    { arrayFormat: 'indices' }
+  )
+  return query
+}
 export const fetchReportVesselsThunk = createAsyncThunk(
   'report/vessels',
   async (params: FetchReportVesselsThunkParams, { rejectWithValue }) => {
     try {
-      const {
-        region,
-        datasets,
-        filters,
-        vesselGroups,
-        dateRange,
-        temporalResolution = TemporalResolution.Full,
-        groupBy = GroupBy.Vessel,
-        spatialResolution = SpatialResolution.Low,
-        spatialAggregation = true,
-        format = Format.Json,
-        reportBufferUnit,
-        reportBufferValue,
-        reportBufferOperation,
-      } = params
-      const query = stringify(
-        {
-          datasets,
-          filters,
-          'vessel-groups': vesselGroups,
-          'temporal-resolution': temporalResolution,
-          'date-range': [
-            getUTCDateTime(dateRange?.start)?.toString(),
-            getUTCDateTime(dateRange?.end)?.toString(),
-          ].join(','),
-          'group-by': groupBy,
-          'spatial-resolution': spatialResolution,
-          'spatial-aggregation': spatialAggregation,
-          format: format,
-          'region-id': region.id,
-          'region-dataset': region.dataset,
-          'buffer-unit': reportBufferUnit,
-          'buffer-value': reportBufferValue,
-          'buffer-operation': reportBufferOperation,
-        },
-        { arrayFormat: 'indices' }
-      )
+      const query = getReportQuery(params)
       const vessels = await GFWAPI.fetch<APIPagination<ReportVesselsByDataset>>(
         `/4wings/report?${query}`
       )
       return vessels.entries
     } catch (e) {
       console.warn(e)
-      return rejectWithValue(parseAPIError(e))
+      return rejectWithValue(e)
     }
   },
   {
@@ -148,7 +148,7 @@ const reportSlice = createSlice({
     })
     builder.addCase(fetchReportVesselsThunk.rejected, (state, action) => {
       state.status = AsyncReducerStatus.Error
-      state.error = action.payload as AsyncError
+      state.error = action.payload as ReportStateError
     })
   },
 })
