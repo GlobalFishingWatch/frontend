@@ -157,14 +157,12 @@ function Workspace() {
                 <InputText
                   value={workspaceEditName}
                   className={styles.input}
-                  inputSize="small"
                   label={t('common.name', 'Name')}
                   onChange={(e) => setWorkspaceEditName(e.target.value)}
                 />
                 <InputText
                   value={workspaceEditDescription}
                   className={styles.input}
-                  inputSize="small"
                   label={t('common.description', 'Description')}
                   onChange={(e) => setWorkspaceEditDescription(e.target.value)}
                 />

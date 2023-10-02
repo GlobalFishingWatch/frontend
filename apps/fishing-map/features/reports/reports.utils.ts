@@ -6,9 +6,11 @@
  */
 import { format } from 'd3-format'
 import { DateTime } from 'luxon'
+import { parse } from 'qs'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataview, DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
+import { API_VERSION } from '@globalfishingwatch/api-client'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { sortStrings } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
@@ -205,4 +207,15 @@ export const getReportCategoryFromDataview = (
   return dataview.category === DataviewCategory.Activity
     ? (dataview.datasets?.[0]?.subcategory as unknown as ReportCategory)
     : (dataview.category as unknown as ReportCategory)
+}
+
+export const parseReportUrl = (url: string) => {
+  const reportConfig = parse(url.replace(`/${API_VERSION}/4wings/report?`, ''))
+  return {
+    id: reportConfig['region-id'],
+    dataset: reportConfig['region-dataset'],
+    start: (reportConfig['date-range'] as string)?.split(',')[0],
+    end: (reportConfig['date-range'] as string)?.split(',')[1],
+    datasets: reportConfig.datasets,
+  }
 }

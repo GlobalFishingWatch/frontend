@@ -23,9 +23,11 @@ const AUTH_PATH = 'auth'
 const REGISTER_PATH = 'registration'
 export const GUEST_USER_TYPE = 'guest'
 
+export type V2MetadataError = Record<string, any>
 export interface V2MessageError {
   detail: string
   title: string
+  metadata?: V2MetadataError
 }
 export interface ResponseError {
   status: number

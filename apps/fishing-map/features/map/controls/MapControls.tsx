@@ -18,7 +18,7 @@ import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.sl
 import useViewport, { useMapBounds } from 'features/map/map-viewport.hooks'
 import {
   selectIsAnyVesselLocation,
-  selectIsReportLocation,
+  selectIsAnyReportLocation,
   selectIsWorkspaceLocation,
 } from 'routes/routes.selectors'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
@@ -65,7 +65,7 @@ const MapControls = ({
   } = useDownloadDomElementAsImage(domElement.current, false)
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
-  const reportLocation = useSelector(selectIsReportLocation)
+  const reportLocation = useSelector(selectIsAnyReportLocation)
   const showExtendedControls = isWorkspaceLocation || isVesselLocation || reportLocation
   const showScreenshot = !isVesselLocation && !reportLocation
 

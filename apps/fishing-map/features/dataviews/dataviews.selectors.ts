@@ -22,9 +22,9 @@ import { TimebarVisualisations } from 'types'
 import { selectReportCategory, selectTimebarSelectedEnvId } from 'features/app/app.selectors'
 import { createDeepEqualSelector } from 'utils/selectors'
 import {
-  selectIsReportLocation,
   selectIsAnyVesselLocation,
   selectVesselId,
+  selectIsAnyReportLocation,
 } from 'routes/routes.selectors'
 import { getReportCategoryFromDataview } from 'features/reports/reports.utils'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
@@ -57,7 +57,7 @@ export const selectDefaultBasemapGenerator = createSelector(
 export const selectDataviewInstancesResolvedVisible = createSelector(
   [
     (state) => selectDataviewInstancesResolved(state),
-    (state) => selectIsReportLocation(state),
+    (state) => selectIsAnyReportLocation(state),
     (state) => selectReportCategory(state),
     selectIsAnyVesselLocation,
     selectViewOnlyVessel,
@@ -150,7 +150,7 @@ export const selectActiveActivityDataviews = createSelector(
 export const selectActiveReportActivityDataviews = createSelector(
   [
     selectActiveActivityDataviews,
-    (state) => selectIsReportLocation(state),
+    (state) => selectIsAnyReportLocation(state),
     (state) => selectReportCategory(state),
   ],
   (dataviews, isReportLocation, reportCategory): UrlDataviewInstance[] => {

@@ -122,7 +122,6 @@ const BigQueryMenu: React.FC = () => {
         <InputText
           className={styles.input}
           labelClassName={styles.inputLabel}
-          inputSize="small"
           label="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -152,7 +151,6 @@ const BigQueryMenu: React.FC = () => {
             <InputText
               className={styles.input}
               labelClassName={styles.inputLabel}
-              inputSize="small"
               label="unit"
               value={unit}
               onChange={(e) => setUnit(e.target.value)}

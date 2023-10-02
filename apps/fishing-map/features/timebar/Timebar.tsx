@@ -42,7 +42,7 @@ import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-groups.selectors'
 import { getUTCDateTime } from 'utils/dates'
-import { selectIsReportLocation } from 'routes/routes.selectors'
+import { selectIsAnyReportLocation } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { setHighlightedTime, selectHighlightedTime, Range } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
@@ -146,7 +146,7 @@ const TimebarWrapper = () => {
   const { isMapDrawing } = useMapDrawConnect()
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const vesselGroupsFiltering = useSelector(selectIsVessselGroupsFiltering)
-  const isReportLocation = useSelector(selectIsReportLocation)
+  const isReportLocation = useSelector(selectIsAnyReportLocation)
   const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
   const dispatch = useAppDispatch()
 

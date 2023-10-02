@@ -5,11 +5,11 @@ import { Spinner } from '@globalfishingwatch/ui-components'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { selectReadOnly } from 'features/app/app.selectors'
 import {
-  selectIsReportLocation,
-  selectIsUserLocation,
-  selectIsAnyVesselLocation,
-  selectIsWorkspacesListLocation,
+  selectIsAnyReportLocation,
   selectIsAnySearchLocation,
+  selectIsAnyVesselLocation,
+  selectIsUserLocation,
+  selectIsWorkspacesListLocation,
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
@@ -58,8 +58,8 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const isUserLocation = useSelector(selectIsUserLocation)
   const isWorkspacesListLocation = useSelector(selectIsWorkspacesListLocation)
   const isSearchLocation = useSelector(selectIsAnySearchLocation)
-  const isReportLocation = useSelector(selectIsReportLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
+  const isReportLocation = useSelector(selectIsAnyReportLocation)
   const userLogged = useSelector(isUserLogged)
   const hasUserGroupsPermissions = useSelector(selectUserGroupsPermissions)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)

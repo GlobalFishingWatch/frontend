@@ -79,7 +79,8 @@
 
 .filterOperator {
   position: absolute;
-  right: var(--space-S);
+  right: 0;
+  top: -0.2rem;
 }
 
 .filtersDisabled {

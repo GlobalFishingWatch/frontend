@@ -8,8 +8,8 @@ import { Workspace } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
   selectIsAnySearchLocation,
-  selectIsReportLocation,
   selectIsVesselLocation,
+  selectIsAnyReportLocation,
   selectIsWorkspaceLocation,
   selectLocationType,
   selectUrlTimeRange,
@@ -79,8 +79,8 @@ export const COLOR_GRADIENT =
 
 const Main = () => {
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
-  const reportLocation = useSelector(selectIsReportLocation)
   const locationType = useSelector(selectLocationType)
+  const reportLocation = useSelector(selectIsAnyReportLocation)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const isTimeComparisonReport = useSelector(selectShowTimeComparison)
   const isSmallScreen = useSmallScreen()
@@ -131,10 +131,10 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
   const vesselLocation = useSelector(selectIsVesselLocation)
+  const isReportLocation = useSelector(selectIsAnyReportLocation)
   const reportAreaBounds = useSelector(selectReportAreaBounds)
   const isTimeComparisonReport = useSelector(selectShowTimeComparison)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
-  const isReportLocation = useSelector(selectIsReportLocation)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const showTimebar = workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished
 

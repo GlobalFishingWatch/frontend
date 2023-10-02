@@ -19,9 +19,10 @@ export enum AsyncReducerStatus {
   Error = 'error',
 }
 
-export type AsyncError = {
+export type AsyncError<Metadata = Record<string, any>> = {
   status?: number // HHTP error codes
   message?: string
+  metadata?: Metadata
 }
 
 export type AsyncReducer<T = any> = {

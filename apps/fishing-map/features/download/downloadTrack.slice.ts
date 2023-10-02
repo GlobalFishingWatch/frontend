@@ -2,12 +2,13 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
 import { saveAs } from 'file-saver'
 import { RootState } from 'reducers'
-import { DownloadRateLimit } from '@globalfishingwatch/api-types'
+import { DownloadRateLimit, ThinningConfig } from '@globalfishingwatch/api-types'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { DateRange } from 'features/download/downloadActivity.slice'
 import { getUTCDateTime } from 'utils/dates'
 import { logoutUserThunk } from 'features/user/user.slice'
+import { PATH_BASENAME } from 'routes/routes'
 import { Format, FORMAT_EXTENSION } from './downloadTrack.config'
 
 type VesselParams = {
@@ -40,6 +41,7 @@ export type DownloadTrackParams = {
   dateRange: DateRange
   datasets: string
   format: Format
+  thinning?: ThinningConfig
 }
 
 const parseRateLimit = (response: Response) => {
@@ -60,21 +62,21 @@ export const downloadTrackThunk = createAsyncThunk<
   }
 >('downloadTrack/create', async (params: DownloadTrackParams, { rejectWithValue }) => {
   try {
-    const { dateRange, datasets, format, vesselId, vesselName } = params
+    const { dateRange, datasets, format, vesselId, vesselName, thinning } = params
     const fromDate = getUTCDateTime(dateRange.start).toString()
     const toDate = getUTCDateTime(dateRange.end).toString()
-
     const downloadTrackParams = {
       'start-date': fromDate,
       'end-date': toDate,
       datasets,
       format,
       fields: 'lonlat,timestamp,speed,course',
+      ...(thinning && { ...thinning }),
     }
 
     const fileName = `${vesselName || vesselId} - ${downloadTrackParams['start-date']},${
       downloadTrackParams['end-date']
-    }.${FORMAT_EXTENSION[format]}`
+    }`
     const rateLimit = await GFWAPI.fetch<Response>(
       `/vessels/${vesselId}/tracks?${stringify(downloadTrackParams)}`,
       {
@@ -85,7 +87,22 @@ export const downloadTrackThunk = createAsyncThunk<
     ).then(async (response) => {
       const rateLimit = parseRateLimit(response)
       const blob = await response.blob()
-      saveAs(blob as any, fileName)
+
+      const JSZip = await import('jszip').then((module) => module.default)
+      const zip = new JSZip()
+
+      const readme = await GFWAPI.fetch<any>(
+        `${window.location.origin}${PATH_BASENAME}/tracks-download/README.md`,
+        { responseType: 'blob' }
+      )
+      zip.file(`${fileName}.${FORMAT_EXTENSION[format]}`, blob)
+      zip.file('README.md', readme)
+      zip
+        .generateAsync({ type: 'blob' })
+        .then(function (content) {
+          saveAs(content, `${fileName}.zip`)
+        })
+        .catch((e) => console.warn(e))
       return rateLimit
     })
     return rateLimit

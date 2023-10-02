@@ -17,11 +17,9 @@
 
 .input input,
 .input input:placeholder-shown {
-  border-radius: 2rem;
-  padding-inline: var(--space-SM);
+  border-radius: var(--border-radius);
+  padding-inline: 1.5rem;
   padding-right: var(--size-M);
-  background: var(--color-terthiary-blue);
-  border-bottom: none;
 }
 
 .input label {
@@ -105,6 +103,7 @@
   white-space: nowrap;
   padding-inline: 1rem;
   line-height: 1;
+  border-radius: var(--border-radius);
 }
 
 .confirmBtn.disabled {

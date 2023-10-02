@@ -134,15 +134,18 @@ export const useDataviewInstancesConnect = () => {
 
   const workspaceDataviewInstances = useSelector(selectWorkspaceDataviewInstances)
   const deleteDataviewInstance = useCallback(
-    (id: string) => {
+    (id: string | string[]) => {
+      const ids = Array.isArray(id) ? id : [id]
       const dataviewInstances = (urlDataviewInstances || []).filter(
-        (urlDataviewInstance) => urlDataviewInstance.id !== id
+        (urlDataviewInstance) => !ids.includes(urlDataviewInstance.id)
       )
-      const workspaceDataviewInstance = workspaceDataviewInstances?.find(
-        (dataviewInstance) => dataviewInstance.id === id
+      const workspaceDataviewInstance = workspaceDataviewInstances?.filter((dataviewInstance) =>
+        ids.includes(dataviewInstance.id)
       )
-      if (workspaceDataviewInstance) {
-        dataviewInstances.push({ id, deleted: true })
+      if (workspaceDataviewInstance?.length) {
+        workspaceDataviewInstance.forEach(({ id }) => {
+          dataviewInstances.push({ id, deleted: true })
+        })
       }
       dispatchQueryParams({ dataviewInstances })
     },
