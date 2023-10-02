@@ -447,6 +447,7 @@
     "editPolygonHint": "Click on polygon corners to adjust their coordinates",
     "filterClose": "Close filters",
     "filterOpen": "Open filters",
+    "filtersConfirmAbort": "Do you want to apply the changes made to the layer?",
     "filtersDisabled": "Other filters {{filters}} are available depending on the sources selected",
     "filterValues": "Filter values",
     "flagState_one": "Flag",
