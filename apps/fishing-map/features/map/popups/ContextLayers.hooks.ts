@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { batch, useSelector } from 'react-redux'
-import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
+import { DEFAULT_CONTEXT_SOURCE_LAYER, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { getEventLabel } from 'utils/analytics'
 import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
@@ -9,10 +9,7 @@ import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { parsePropertiesBbox } from 'features/map/map.utils'
 import { AreaKeyId, fetchAreaDetailThunk } from 'features/areas/areas.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import {
-  setDownloadActivityAreaDataview,
-  setDownloadActivityAreaKey,
-} from 'features/download/downloadActivity.slice'
+import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import useMapInstance from 'features/map/map-context.hooks'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectReportAreaSource } from 'features/app/app.selectors'
@@ -80,10 +77,12 @@ export const useContextInteractions = () => {
         const dataview = dataviews.find((dataview) =>
           dataview.datasets?.some((dataset) => dataset.id === datasetId)
         )
-        const areaName = feature.value || feature.title
+        const areaName =
+          dataview?.config?.type === GeneratorType.UserContext
+            ? dataview?.datasets?.[0]?.name
+            : feature.value || feature.title
         batch(() => {
-          dispatch(setDownloadActivityAreaKey({ datasetId, areaId }))
-          dispatch(setDownloadActivityAreaDataview(dataview))
+          dispatch(setDownloadActivityAreaKey({ datasetId, areaId, areaName }))
           dispatch(setClickedEvent(null))
         })
         dispatch(fetchAreaDetailThunk({ dataset, areaId, areaName }))
