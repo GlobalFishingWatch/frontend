@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import Sticky from 'react-sticky-el'
 import { useCallback, useEffect } from 'react'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
   selectVesselInfoData,
@@ -140,15 +140,10 @@ const VesselHeader = () => {
             disabled={!vesselBounds}
             onClick={onVesselFitBoundsClick}
           />
-          <IconButton
-            className="print-hidden"
-            type="border"
-            icon="print"
-            tooltip={t('vessel.print', 'Print or save as PDF')}
-            tooltipPlacement="bottom"
-            size="small"
-            onClick={onPrintClick}
-          />
+          <Button type="border-secondary" size="small" onClick={onPrintClick}>
+            <p>{t('analysis.print ', 'print')}</p>
+            <Icon icon="print" type="default" />
+          </Button>
           {/* TODO: get info and track datasets for vessel */}
           <VesselGroupAddButton
             buttonSize="small"

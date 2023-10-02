@@ -33,6 +33,7 @@
 
 .confirmButton {
   height: 3.2rem;
+  min-width: 15rem;
 }
 
 .scrollContainer {

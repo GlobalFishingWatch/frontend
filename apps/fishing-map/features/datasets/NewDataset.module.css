@@ -63,6 +63,10 @@
   flex-direction: column;
 }
 
+.saveBtn {
+  min-width: 15rem;
+}
+
 .hint {
   color: var(--color-secondary-blue);
   text-decoration: underline;

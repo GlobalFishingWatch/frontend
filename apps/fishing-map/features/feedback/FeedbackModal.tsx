@@ -270,6 +270,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
             disabled={loading || !suficientData}
             onClick={sendFeedback}
             loading={loading}
+            className={styles.cta}
           >
             {t('feedback.send', 'Send')}
           </Button>

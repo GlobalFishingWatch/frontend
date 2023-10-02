@@ -92,6 +92,10 @@
   justify-content: space-between;
 }
 
+.previewFooter button {
+  min-width: 15rem;
+}
+
 .printBtn {
   margin-right: var(--space-S);
 }
