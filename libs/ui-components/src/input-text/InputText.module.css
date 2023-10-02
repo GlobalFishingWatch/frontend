@@ -7,12 +7,9 @@
   font: var(--font-M);
   color: var(--color-primary-blue);
   border-radius: var(--border-radius);
+  background-color: var(--color-terthiary-blue);
   border: var(--border);
   padding: 0 var(--space-XS);
-}
-
-.container label {
-  margin-bottom: var(--space-XS);
 }
 
 .default input {
