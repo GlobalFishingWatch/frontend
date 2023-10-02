@@ -48,8 +48,8 @@ export const BufferButtonTooltip = ({
       return [{ id: DISSOLVE, label: t('analysis.buffer', 'Buffer area') }]
     } else {
       return [
-        { id: DISSOLVE, label: t('analysis.dissolve', 'combined') },
-        { id: DIFFERENCE, label: t('analysis.difference', 'buffer only') },
+        { id: DISSOLVE, label: t('analysis.dissolve', 'dissolve') },
+        { id: DIFFERENCE, label: t('analysis.difference', 'difference') },
       ]
     }
   }, [t, values, areaType])
@@ -57,7 +57,7 @@ export const BufferButtonTooltip = ({
   return (
     <div className={styles.bufferTooltipContent}>
       <div className={styles.actionContainer}>
-        <p className={styles.actionLabel}>unit</p>
+        <label>{t('common.unit', 'unit')}</label>
         <Choice
           size="tiny"
           activeOption={activeUnit}
@@ -66,7 +66,7 @@ export const BufferButtonTooltip = ({
         />
       </div>
       <div className={styles.actionContainer}>
-        <p className={styles.actionLabel}>value</p>
+        <label>{t('common.value', 'value')}</label>
         <Range
           allowOverlap
           values={values}
@@ -126,7 +126,7 @@ export const BufferButtonTooltip = ({
         />
       </div>
       <div className={styles.actionContainer}>
-        <p className={styles.actionLabel}>{t('analysis.bufferOperationLabel', 'Analysis area')}</p>
+        <label>{t('analysis.bufferOperationLabel', 'Analysis area')}</label>
         <Choice
           size="tiny"
           className={styles.operationChoice}
