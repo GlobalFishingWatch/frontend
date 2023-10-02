@@ -19,6 +19,9 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  background: none;
+  border: none;
+  padding: 0;
 }
 
 .input {
@@ -26,6 +29,13 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  background: none;
+  padding: 0;
+}
+
+.placeholderContainer input:focus,
+.input:focus {
+  box-shadow: none;
 }
 
 .iconWarning {

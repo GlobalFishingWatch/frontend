@@ -12,6 +12,7 @@
   padding: 0 var(--space-S);
   text-transform: uppercase;
   line-height: 1;
+  border-radius: var(--border-radius);
 }
 
 .button:focus {
@@ -27,8 +28,7 @@ a.button:visited,
 }
 
 .button.disabled {
-  color: var(--color-secondary-blue);
-  background-color: var(--color-terthiary-blue);
+  background-color: var(--color-secondary-blue);
   cursor: not-allowed;
 }
 
@@ -39,6 +39,11 @@ a.button:visited,
 
 .secondary {
   color: var(--color-secondary-blue);
+  background-color: var(--color-terthiary-blue);
+}
+
+.secondary.disabled {
+  color: rgba(var(--primary-blue-rgb), 0.5);
   background-color: var(--color-terthiary-blue);
 }
 

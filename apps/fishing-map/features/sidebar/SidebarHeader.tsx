@@ -15,7 +15,7 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
-  selectIsReportLocation,
+  selectIsAnyReportLocation,
   selectIsWorkspaceLocation,
   selectLocationCategory,
   selectLocationPayload,
@@ -276,7 +276,7 @@ function SidebarHeader() {
   const readOnly = useSelector(selectReadOnly)
   const locationCategory = useSelector(selectLocationCategory)
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
-  const reportLocation = useSelector(selectIsReportLocation)
+  const reportLocation = useSelector(selectIsAnyReportLocation)
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
   const showBackToWorkspaceButton = !workspaceLocation
 

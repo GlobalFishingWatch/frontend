@@ -163,7 +163,6 @@ function NewWorkspaceModal({
       onClose={onClose}
     >
       <InputText
-        inputSize="small"
         value={name}
         label={t('common.name', 'Name')}
         className={styles.input}

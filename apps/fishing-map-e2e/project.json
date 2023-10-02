@@ -33,6 +33,23 @@
         "testingType": "e2e"
       }
     },
+    "test-staging": {
+      "executor": "@nx/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/fishing-map-e2e/cypress.config.ts",
+        "baseUrl": "https://fishing-map.staging.globalfishingwatch.org/map",
+        "testingType": "e2e"
+      }
+    },
+    "test-staging:watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["nx e2e fishing-map-e2e --watch"],
+        "cypressConfig": "apps/fishing-map-e2e/cypress.config.ts",
+        "baseUrl": "https://fishing-map.staging.globalfishingwatch.org/map",
+        "testingType": "e2e"
+      }
+    },
     "e2e": {
       "executor": "@nx/cypress:cypress",
       "options": {

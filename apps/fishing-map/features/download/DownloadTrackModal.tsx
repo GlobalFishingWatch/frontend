@@ -3,6 +3,7 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Button, Choice, Icon, Tag, Modal } from '@globalfishingwatch/ui-components'
+import { THINNING_LEVELS, ThinningLevels } from '@globalfishingwatch/api-client'
 import {
   DownloadTrackParams,
   selectDownloadTrackStatus,
@@ -23,6 +24,7 @@ import { DateRange } from 'features/download/downloadActivity.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDownloadTrackModalOpen } from 'features/download/download.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { isGFWUser } from 'features/user/user.slice'
 import styles from './DownloadModal.module.css'
 import { Format, FORMAT_OPTIONS } from './downloadTrack.config'
 
@@ -34,6 +36,7 @@ function DownloadTrackModal() {
   const rateLimit = useSelector(selectDownloadTrackRateLimit)
   const [format, setFormat] = useState(FORMAT_OPTIONS[0].id as Format)
   const { timerange } = useTimerangeConnect()
+  const gFWUser = useSelector(isGFWUser)
 
   const downloadTrackId = useSelector(selectDownloadTrackId)
   const downloadModalOpen = useSelector(selectDownloadTrackModalOpen)
@@ -47,6 +50,7 @@ function DownloadTrackModal() {
       dateRange: timerange as DateRange,
       datasets: downloadTrackDataset,
       format,
+      ...(gFWUser ? {} : { thinning: THINNING_LEVELS[ThinningLevels.Default] }),
     }
 
     try {

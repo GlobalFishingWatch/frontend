@@ -170,7 +170,6 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
   return (
     <div className={styles.container}>
       <InputText
-        inputSize="small"
         value={dataview.name}
         label={`${t('common.name', 'Name')} *`}
         className={styles.input}
@@ -238,7 +237,6 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
         <div className={styles.input2Columns}>
           <label>Max zoom level *</label>
           <InputText
-            inputSize="small"
             type="number"
             step="1"
             defaultValue={8}
@@ -258,7 +256,6 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
                 <div className={styles.rangeContainer}>
                   {[...new Array(COLOR_RAMP_DEFAULT_NUM_STEPS)].map((_, i) => (
                     <InputText
-                      inputSize="small"
                       type="number"
                       step="0.1"
                       key={i}

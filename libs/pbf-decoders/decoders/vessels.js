@@ -1,5 +1,5 @@
 /*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars*/
-"use strict";
+
 
 var $protobuf = require("protobufjs/minimal");
 
@@ -115,16 +115,17 @@ $root.vessels = (function() {
             while (reader.pos < end) {
                 var tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1:
-                    if (!(message.data && message.data.length))
-                        message.data = [];
-                    if ((tag & 7) === 2) {
-                        var end2 = reader.uint32() + reader.pos;
-                        while (reader.pos < end2)
+                case 1: {
+                        if (!(message.data && message.data.length))
+                            message.data = [];
+                        if ((tag & 7) === 2) {
+                            var end2 = reader.uint32() + reader.pos;
+                            while (reader.pos < end2)
+                                message.data.push(reader.sint32());
+                        } else
                             message.data.push(reader.sint32());
-                    } else
-                        message.data.push(reader.sint32());
-                    break;
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -224,6 +225,21 @@ $root.vessels = (function() {
          */
         Track.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for Track
+         * @function getTypeUrl
+         * @memberof vessels.Track
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        Track.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/vessels.Track";
         };
 
         return Track;
@@ -378,26 +394,32 @@ $root.vessels = (function() {
             while (reader.pos < end) {
                 var tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1:
-                    message.query = reader.string();
-                    break;
-                case 2:
-                    message.total = reader.uint32();
-                    break;
-                case 3:
-                    message.limit = reader.uint32();
-                    break;
-                case 4:
-                    message.offset = reader.uint32();
-                    break;
-                case 5:
-                    message.nextOffset = reader.uint32();
-                    break;
-                case 6:
-                    if (!(message.entries && message.entries.length))
-                        message.entries = [];
-                    message.entries.push($root.vessels.TilesetVesselInfo.decode(reader, reader.uint32()));
-                    break;
+                case 1: {
+                        message.query = reader.string();
+                        break;
+                    }
+                case 2: {
+                        message.total = reader.uint32();
+                        break;
+                    }
+                case 3: {
+                        message.limit = reader.uint32();
+                        break;
+                    }
+                case 4: {
+                        message.offset = reader.uint32();
+                        break;
+                    }
+                case 5: {
+                        message.nextOffset = reader.uint32();
+                        break;
+                    }
+                case 6: {
+                        if (!(message.entries && message.entries.length))
+                            message.entries = [];
+                        message.entries.push($root.vessels.TilesetVesselInfo.decode(reader, reader.uint32()));
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -544,6 +566,21 @@ $root.vessels = (function() {
          */
         TilesetVesselQuery.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for TilesetVesselQuery
+         * @function getTypeUrl
+         * @memberof vessels.TilesetVesselQuery
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        TilesetVesselQuery.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/vessels.TilesetVesselQuery";
         };
 
         return TilesetVesselQuery;
@@ -718,30 +755,38 @@ $root.vessels = (function() {
             while (reader.pos < end) {
                 var tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1:
-                    message.id = reader.string();
-                    break;
-                case 2:
-                    message.name = reader.string();
-                    break;
-                case 3:
-                    message.end = reader.string();
-                    break;
-                case 4:
-                    message.start = reader.string();
-                    break;
-                case 5:
-                    message.ssvid = reader.string();
-                    break;
-                case 6:
-                    message.callsign = reader.string();
-                    break;
-                case 7:
-                    message.vesselId = reader.string();
-                    break;
-                case 8:
-                    message.tilesetId = reader.string();
-                    break;
+                case 1: {
+                        message.id = reader.string();
+                        break;
+                    }
+                case 2: {
+                        message.name = reader.string();
+                        break;
+                    }
+                case 3: {
+                        message.end = reader.string();
+                        break;
+                    }
+                case 4: {
+                        message.start = reader.string();
+                        break;
+                    }
+                case 5: {
+                        message.ssvid = reader.string();
+                        break;
+                    }
+                case 6: {
+                        message.callsign = reader.string();
+                        break;
+                    }
+                case 7: {
+                        message.vesselId = reader.string();
+                        break;
+                    }
+                case 8: {
+                        message.tilesetId = reader.string();
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -888,6 +933,21 @@ $root.vessels = (function() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
 
+        /**
+         * Gets the default type url for TilesetVesselInfo
+         * @function getTypeUrl
+         * @memberof vessels.TilesetVesselInfo
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        TilesetVesselInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/vessels.TilesetVesselInfo";
+        };
+
         return TilesetVesselInfo;
     })();
 
@@ -996,14 +1056,16 @@ $root.vessels = (function() {
             while (reader.pos < end) {
                 var tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 10:
-                    message.dataset = reader.string();
-                    break;
-                case 11:
-                    if (!(message.results && message.results.length))
-                        message.results = [];
-                    message.results.push($root.vessels.DatasetVesselQuery.decode(reader, reader.uint32()));
-                    break;
+                case 10: {
+                        message.dataset = reader.string();
+                        break;
+                    }
+                case 11: {
+                        if (!(message.results && message.results.length))
+                            message.results = [];
+                        message.results.push($root.vessels.DatasetVesselQuery.decode(reader, reader.uint32()));
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -1117,6 +1179,21 @@ $root.vessels = (function() {
          */
         DatasetVesselV1Query.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for DatasetVesselV1Query
+         * @function getTypeUrl
+         * @memberof vessels.DatasetVesselV1Query
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        DatasetVesselV1Query.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/vessels.DatasetVesselV1Query";
         };
 
         return DatasetVesselV1Query;
@@ -1271,26 +1348,32 @@ $root.vessels = (function() {
             while (reader.pos < end) {
                 var tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1:
-                    message.query = reader.string();
-                    break;
-                case 2:
-                    message.total = reader.uint32();
-                    break;
-                case 3:
-                    message.limit = reader.uint32();
-                    break;
-                case 4:
-                    message.offset = reader.uint32();
-                    break;
-                case 5:
-                    message.nextOffset = reader.uint32();
-                    break;
-                case 6:
-                    if (!(message.entries && message.entries.length))
-                        message.entries = [];
-                    message.entries.push($root.vessels.DatasetVesselInfo.decode(reader, reader.uint32()));
-                    break;
+                case 1: {
+                        message.query = reader.string();
+                        break;
+                    }
+                case 2: {
+                        message.total = reader.uint32();
+                        break;
+                    }
+                case 3: {
+                        message.limit = reader.uint32();
+                        break;
+                    }
+                case 4: {
+                        message.offset = reader.uint32();
+                        break;
+                    }
+                case 5: {
+                        message.nextOffset = reader.uint32();
+                        break;
+                    }
+                case 6: {
+                        if (!(message.entries && message.entries.length))
+                            message.entries = [];
+                        message.entries.push($root.vessels.DatasetVesselInfo.decode(reader, reader.uint32()));
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -1437,6 +1520,21 @@ $root.vessels = (function() {
          */
         DatasetVesselQuery.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for DatasetVesselQuery
+         * @function getTypeUrl
+         * @memberof vessels.DatasetVesselQuery
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        DatasetVesselQuery.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/vessels.DatasetVesselQuery";
         };
 
         return DatasetVesselQuery;
@@ -1665,52 +1763,64 @@ $root.vessels = (function() {
             while (reader.pos < end) {
                 var tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1:
-                    message.id = reader.string();
-                    break;
-                case 2:
-                    message.name = reader.string();
-                    break;
-                case 3:
-                    message.imo = reader.string();
-                    break;
-                case 4:
-                    message.ssvid = reader.string();
-                    break;
-                case 5:
-                    message.vesselId = reader.string();
-                    break;
-                case 6:
-                    message.type = reader.string();
-                    break;
-                case 7:
-                    message.dataset = reader.string();
-                    break;
-                case 8:
-                    if (!(message.authorizations && message.authorizations.length))
-                        message.authorizations = [];
-                    message.authorizations.push($root.vessels.StartEndValue.decode(reader, reader.uint32()));
-                    break;
-                case 9:
-                    if (!(message.extra && message.extra.length))
-                        message.extra = [];
-                    message.extra.push($root.vessels.Extra.decode(reader, reader.uint32()));
-                    break;
-                case 10:
-                    if (!(message.mmsi && message.mmsi.length))
-                        message.mmsi = [];
-                    message.mmsi.push($root.vessels.StartEndValue.decode(reader, reader.uint32()));
-                    break;
-                case 11:
-                    if (!(message.callsign && message.callsign.length))
-                        message.callsign = [];
-                    message.callsign.push($root.vessels.StartEndValue.decode(reader, reader.uint32()));
-                    break;
-                case 12:
-                    if (!(message.flags && message.flags.length))
-                        message.flags = [];
-                    message.flags.push($root.vessels.StartEndValue.decode(reader, reader.uint32()));
-                    break;
+                case 1: {
+                        message.id = reader.string();
+                        break;
+                    }
+                case 2: {
+                        message.name = reader.string();
+                        break;
+                    }
+                case 3: {
+                        message.imo = reader.string();
+                        break;
+                    }
+                case 4: {
+                        message.ssvid = reader.string();
+                        break;
+                    }
+                case 5: {
+                        message.vesselId = reader.string();
+                        break;
+                    }
+                case 6: {
+                        message.type = reader.string();
+                        break;
+                    }
+                case 7: {
+                        message.dataset = reader.string();
+                        break;
+                    }
+                case 8: {
+                        if (!(message.authorizations && message.authorizations.length))
+                            message.authorizations = [];
+                        message.authorizations.push($root.vessels.StartEndValue.decode(reader, reader.uint32()));
+                        break;
+                    }
+                case 9: {
+                        if (!(message.extra && message.extra.length))
+                            message.extra = [];
+                        message.extra.push($root.vessels.Extra.decode(reader, reader.uint32()));
+                        break;
+                    }
+                case 10: {
+                        if (!(message.mmsi && message.mmsi.length))
+                            message.mmsi = [];
+                        message.mmsi.push($root.vessels.StartEndValue.decode(reader, reader.uint32()));
+                        break;
+                    }
+                case 11: {
+                        if (!(message.callsign && message.callsign.length))
+                            message.callsign = [];
+                        message.callsign.push($root.vessels.StartEndValue.decode(reader, reader.uint32()));
+                        break;
+                    }
+                case 12: {
+                        if (!(message.flags && message.flags.length))
+                            message.flags = [];
+                        message.flags.push($root.vessels.StartEndValue.decode(reader, reader.uint32()));
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -1976,6 +2086,21 @@ $root.vessels = (function() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
 
+        /**
+         * Gets the default type url for DatasetVesselInfo
+         * @function getTypeUrl
+         * @memberof vessels.DatasetVesselInfo
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        DatasetVesselInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/vessels.DatasetVesselInfo";
+        };
+
         return DatasetVesselInfo;
     })();
 
@@ -2093,15 +2218,18 @@ $root.vessels = (function() {
             while (reader.pos < end) {
                 var tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1:
-                    message.id = reader.string();
-                    break;
-                case 2:
-                    message.label = reader.string();
-                    break;
-                case 3:
-                    message.value = reader.float();
-                    break;
+                case 1: {
+                        message.id = reader.string();
+                        break;
+                    }
+                case 2: {
+                        message.label = reader.string();
+                        break;
+                    }
+                case 3: {
+                        message.value = reader.float();
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -2206,6 +2334,21 @@ $root.vessels = (function() {
          */
         Extra.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for Extra
+         * @function getTypeUrl
+         * @memberof vessels.Extra
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        Extra.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/vessels.Extra";
         };
 
         return Extra;
@@ -2325,15 +2468,18 @@ $root.vessels = (function() {
             while (reader.pos < end) {
                 var tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1:
-                    message.start = reader.string();
-                    break;
-                case 2:
-                    message.end = reader.string();
-                    break;
-                case 3:
-                    message.value = reader.string();
-                    break;
+                case 1: {
+                        message.start = reader.string();
+                        break;
+                    }
+                case 2: {
+                        message.end = reader.string();
+                        break;
+                    }
+                case 3: {
+                        message.value = reader.string();
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -2438,6 +2584,21 @@ $root.vessels = (function() {
          */
         StartEndValue.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for StartEndValue
+         * @function getTypeUrl
+         * @memberof vessels.StartEndValue
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        StartEndValue.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/vessels.StartEndValue";
         };
 
         return StartEndValue;

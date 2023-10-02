@@ -19,7 +19,9 @@
 
 .textarea {
   color: var(--color-primary-blue);
-  border-bottom: 1px solid var(--color-secondary-blue);
+  padding: var(--space-XS) var(--space-S);
+  border-radius: var(--border-radius);
+  border: var(--border);
   flex: 1;
   resize: none;
 }

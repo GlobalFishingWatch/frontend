@@ -25,7 +25,7 @@ describe('See the creation of analysis for an area', () => {
     cy.getBySel('map-search-button').click()
     // I need to add a delay because it doesnt work propetly the autocomplete if we type so fast
 
-    cy.getBySel('map-search-input').click().type(SEARCH_EEZ, { delay: 200 })
+    cy.getBySel('map-search-input').type(SEARCH_EEZ, { delay: 200 })
     cy.getBySel('map-search-results').findBySelLike('map-search-result').first().click()
     getMapCanvas().click('center')
     cy.getBySel(MAP_POPUP_EEZ_SECTION, { timeout: 10000 }).findBySelLike('open-analysis').click()
@@ -34,10 +34,10 @@ describe('See the creation of analysis for an area', () => {
   //MAP-1218
   it('Should create an analysis for an EEZ area', () => {
     getSidebar().findBySelLike('report-title').contains(SEARCH_EEZ_FULL_NAME)
-    cy.getBySel('source-tags').findBySelLike('source-tag-item').contains('AIS')
+    cy.getBySel('source-tags', { timeout: 10000 }).findBySelLike('source-tag-item').contains('AIS')
 
     // Path tag is a needed element that should exist to draw the charts
-    cy.getBySel('report-activity-evolution').find('path').should('exist')
+    cy.getBySel('report-activity-evolution', { timeout: 20000 }).find('path').should('exist')
     cy.getBySel('report-vessels-graph').find('path').should('exist')
     cy.getBySel('report-vessels-table').findBySelLike('vessel').should('exist')
   })

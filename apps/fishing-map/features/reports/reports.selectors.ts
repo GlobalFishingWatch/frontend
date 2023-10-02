@@ -41,11 +41,12 @@ import {
   selectUrlBufferUnitQuery,
   selectUrlBufferValueQuery,
 } from 'routes/routes.selectors'
+import {
+  EMPTY_API_VALUES,
+  MAX_CATEGORIES,
+  OTHERS_CATEGORY_LABEL,
+} from 'features/reports/reports.config'
 import { selectReportVesselsData, selectReportPreviewBuffer } from './report.slice'
-
-export const EMPTY_API_VALUES = ['NULL', undefined, '']
-export const MAX_CATEGORIES = 5
-export const OTHERS_CATEGORY_LABEL = 'OTHERS'
 
 export type ReportVesselWithMeta = ReportVessel & {
   sourceColor: string
@@ -55,6 +56,7 @@ export type ReportVesselWithMeta = ReportVessel & {
   flagTranslated: string
   flagTranslatedClean: string
 }
+
 export type ReportVesselWithDatasets = Pick<ReportVessel, 'vesselId' | 'shipName' | 'hours'> &
   Partial<ReportVessel> &
   Pick<ReportVesselWithMeta, 'sourceColor'> & {

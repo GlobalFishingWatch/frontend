@@ -9,10 +9,12 @@ import { DateTime } from 'luxon'
 import { multiPolygon, polygon, point } from '@turf/helpers'
 import { buffer, difference } from '@turf/turf'
 import { Feature, MultiPolygon } from 'geojson'
+import { parse } from 'qs'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataview, DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import { wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
+import { API_VERSION } from '@globalfishingwatch/api-client'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { sortStrings } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
@@ -286,4 +288,15 @@ export const getBufferedFeature = ({
         properties: { ...area.properties, label: `Buffered ${area.name}` },
       }
     : null
+}
+
+export const parseReportUrl = (url: string) => {
+  const reportConfig = parse(url.replace(`/${API_VERSION}/4wings/report?`, ''))
+  return {
+    id: reportConfig['region-id'],
+    dataset: reportConfig['region-dataset'],
+    start: (reportConfig['date-range'] as string)?.split(',')[0],
+    end: (reportConfig['date-range'] as string)?.split(',')[1],
+    datasets: reportConfig.datasets,
+  }
 }

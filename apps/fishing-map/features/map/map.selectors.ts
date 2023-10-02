@@ -34,7 +34,7 @@ import { selectBivariateDataviews, selectTimeRange } from 'features/app/app.sele
 import { selectMarineManagerDataviewInstanceResolved } from 'features/dataviews/dataviews.slice'
 import {
   selectIsMarineManagerLocation,
-  selectIsReportLocation,
+  selectIsAnyReportLocation,
   selectIsWorkspaceLocation,
 } from 'routes/routes.selectors'
 import {
@@ -344,7 +344,7 @@ export const selectDefaultMapGeneratorsConfig = createSelector(
     selectWorkspaceError,
     selectWorkspaceStatus,
     selectIsWorkspaceLocation,
-    selectIsReportLocation,
+    selectIsAnyReportLocation,
     selectDefaultBasemapGenerator,
     selectMapGeneratorsConfig,
     selectMapWorkspacesListGenerators,

@@ -141,7 +141,6 @@
   transform: translateX(-1px);
 }
 
-.maplibregl-ctrl-bottom-left .maplibregl-ctrl,
 .maplibregl-ctrl-bottom-left .maplibregl-ctrl {
   margin: 0 0 2.5rem 0.5rem !important;
 }

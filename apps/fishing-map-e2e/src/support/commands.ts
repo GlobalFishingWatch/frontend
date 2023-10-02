@@ -74,7 +74,7 @@ function loginViaAuthAPI(username: string, password: string) {
     const token = interception.response.body.token
     cy.getAllLocalStorage().then((result) => {
       expect(result).to.deep.contain({
-        [Cypress.config('baseUrl')]: {
+        [Cypress.config('baseUrl').replace('/map', '')]: {
           ...localStorage,
           GFW_API_USER_TOKEN: token,
         },
