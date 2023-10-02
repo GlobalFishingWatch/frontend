@@ -71,7 +71,6 @@ function SearchAdvanced({
             id="name"
             value={searchQuery || ''}
             label={t('common.name', 'Name')}
-            inputSize="small"
             className={styles.input}
             autoFocus
           />

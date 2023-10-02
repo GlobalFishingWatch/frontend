@@ -129,28 +129,24 @@ function SearchAdvancedFilters() {
         id="ssvid"
         value={ssvid || ''}
         label={t('vessel.mmsi', 'MMSI')}
-        inputSize="small"
       />
       <InputText
         onChange={onInputChange}
         id="imo"
         value={imo || ''}
         label={t('vessel.imo', 'IMO')}
-        inputSize="small"
       />
       <InputText
         onChange={onInputChange}
         id="callsign"
         value={callsign || ''}
         label={t('vessel.callsign', 'Callsign')}
-        inputSize="small"
       />
       <InputText
         onChange={onInputChange}
         id="owner"
         value={owner || ''}
         label={t('vessel.owner', 'Owner')}
-        inputSize="small"
       />
       <Select
         label={t('vessel.infoSource', 'Info Source')}
