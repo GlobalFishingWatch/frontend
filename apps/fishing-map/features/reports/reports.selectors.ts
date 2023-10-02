@@ -478,6 +478,22 @@ export const selectReportPreviewBufferFeature = createSelector(
   }
 )
 
+export const selectReportAreaName = createSelector(
+  [
+    selectReportAreaData,
+    selectUrlBufferUnitQuery,
+    selectUrlBufferValueQuery,
+    selectUrlBufferOperationQuery,
+  ],
+  (area, unit, value, operation) => {
+    if (!area) return undefined
+    if (!unit || !value || !operation) return area.name
+    if (operation === 'difference') return `${value} ${unit} around ${area.name}`
+    if (operation === 'dissolve' && value > 0) return `${area.name} and ${value} ${unit} around`
+    return `${area.name} minus ${Math.abs(value)} ${unit}`
+  }
+)
+
 export const selectReportBufferArea = createSelector(
   [
     selectReportAreaData,
