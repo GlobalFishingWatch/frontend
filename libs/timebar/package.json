@@ -31,7 +31,7 @@
   "devDependencies": {
     "@mapbox/geojsonhint": "^3.2.0",
     "dayjs": "1.11.10",
-    "geojson-validation": "^0.2.1",
+    "geojson-validation": "^1.0.2",
     "prop-types": "^15.8.1"
   },
   "peerDependencies": {
