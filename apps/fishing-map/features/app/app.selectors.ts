@@ -55,7 +55,7 @@ export const selectViewport = createSelector(
   [selectUrlViewport, selectWorkspaceViewport],
   (urlViewport, workspaceViewport) => {
     return {
-      zoom: urlViewport?.zoom || workspaceViewport!.zoom || (DEFAULT_WORKSPACE.zoom as number),
+      zoom: urlViewport?.zoom || workspaceViewport?.zoom || (DEFAULT_WORKSPACE.zoom as number),
       latitude:
         urlViewport?.latitude ||
         workspaceViewport?.latitude ||
