@@ -170,11 +170,24 @@ export function useFetchReportVessel() {
       },
       dateRange: timerange,
       spatialAggregation: true,
+      reportBufferUnit,
+      reportBufferValue,
+      reportBufferOperation,
     }
     const query = getReportQuery(params)
     updateWorkspaceReportUrls(query)
     dispatch(fetchReportVesselsThunk(params))
-  }, [areaId, datasetId, dispatch, reportDataviews, timerange, updateWorkspaceReportUrls])
+  }, [
+    areaId,
+    datasetId,
+    dispatch,
+    reportBufferOperation,
+    reportBufferUnit,
+    reportBufferValue,
+    reportDataviews,
+    timerange,
+    updateWorkspaceReportUrls,
+  ])
 
   useEffect(() => {
     const isDifferentDateRange = reportDateRangeHash !== getDateRangeHash(timerange)

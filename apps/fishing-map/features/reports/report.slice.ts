@@ -68,6 +68,9 @@ export const getReportQuery = (params: FetchReportVesselsThunkParams) => {
     spatialResolution = SpatialResolution.Low,
     spatialAggregation = true,
     format = Format.Json,
+    reportBufferUnit,
+    reportBufferValue,
+    reportBufferOperation,
   } = params
   const query = stringify(
     {
@@ -85,6 +88,9 @@ export const getReportQuery = (params: FetchReportVesselsThunkParams) => {
       format: format,
       'region-id': region.id,
       'region-dataset': region.dataset,
+      'buffer-unit': reportBufferUnit,
+      'buffer-value': reportBufferValue,
+      'buffer-operation': reportBufferOperation,
     },
     { arrayFormat: 'indices' }
   )
