@@ -214,9 +214,9 @@ function ActivityLayerPanel({
               )}
               {layerActive && showFilters && (
                 <ExpandedContainer
-                  visible={filterOpen}
                   onClickOutside={closeExpandedContainer}
-                  component={<Filters dataview={dataview} />}
+                  visible={filterOpen}
+                  component={<Filters dataview={dataview} onConfirmCallback={onToggleFilterOpen} />}
                 >
                   <div className={styles.filterButtonWrapper}>
                     <IconButton
