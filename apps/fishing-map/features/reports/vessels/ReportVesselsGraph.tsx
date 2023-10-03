@@ -14,10 +14,9 @@ import {
   REPORT_VESSELS_GRAPH_GEARTYPE,
   REPORT_VESSELS_GRAPH_VESSELTYPE,
 } from 'data/config'
+import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/reports/reports.config'
 import {
   cleanFlagState,
-  EMPTY_API_VALUES,
-  OTHERS_CATEGORY_LABEL,
   selectReportDataviewsWithPermissions,
   selectReportVesselsGraphDataGrouped,
   selectReportVesselsGraphDataOthers,

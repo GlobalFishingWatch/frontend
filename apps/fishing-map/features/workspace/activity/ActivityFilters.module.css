@@ -79,15 +79,22 @@
 
 .filterOperator {
   position: absolute;
-  right: var(--space-S);
+  right: 0;
+  top: -0.2rem;
 }
 
 .filtersDisabled {
   font: var(--font-S);
   color: var(--color-secondary-blue);
-  margin-top: var(--space-M);
+  margin-top: var(--space-S);
 }
 
 .userGuideLink {
   margin-top: var(--space-S);
+}
+
+.footer {
+  margin-top: var(--space-S);
+  display: flex;
+  justify-content: flex-end;
 }
