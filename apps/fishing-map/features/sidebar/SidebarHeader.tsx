@@ -65,7 +65,7 @@ function SaveReportButton() {
   }, [])
 
   const onSaveCreateReport = useCallback(
-    (report) => {
+    (report: any) => {
       copyToClipboard(window.location.href)
       dispatchLocation(REPORT, { payload: { reportId: report?.id } })
       onCloseCreateReport()

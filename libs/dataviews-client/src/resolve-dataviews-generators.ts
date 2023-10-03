@@ -121,7 +121,7 @@ export const getDatasetsExtent = (
     extentEnd = format === 'isoString' ? extentEndDate.toISOString() : extentEndDate.getTime()
   }
 
-  return { extentStart, extentEnd }
+  return { extentStart: extentStart as string | number, extentEnd: extentEnd as string | number }
 }
 
 export function getGeneratorConfig(
@@ -458,8 +458,8 @@ export function getMergedHeatmapAnimatedDataview(
     }
     const datasets = config.datasets || datasetsConfig.map((dc) => dc.datasetId)
 
-    const activeDatasets = dataview.datasets.filter((dataset) =>
-      dataview?.config?.datasets?.includes(dataset.id)
+    const activeDatasets = dataview.datasets.filter(
+      (dataset) => dataview?.config?.datasets?.includes(dataset.id)
     )
     const units = uniq(activeDatasets?.map((dataset) => dataset.unit))
     if (units.length > 0 && units.length !== 1) {

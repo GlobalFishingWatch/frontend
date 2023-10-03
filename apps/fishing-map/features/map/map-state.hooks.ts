@@ -14,7 +14,7 @@ export const useSetMapIdleAtom = () => {
     const setIdleState = () => {
       setIdle(true)
     }
-    const resetIdleState = (e) => {
+    const resetIdleState = (e: any) => {
       if (!isInteractionSource(e.sourceId)) {
         setIdle(false)
       }

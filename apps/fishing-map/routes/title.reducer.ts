@@ -6,7 +6,7 @@ import { HOME, REPORT, USER, WORKSPACE, WORKSPACES_LIST, WORKSPACE_REPORT } from
 
 const PREFIX = 'GFW'
 
-const titleReducer = (_, action: PayloadAction<{ category?: string }>) => {
+const titleReducer = (_: any, action: PayloadAction<{ category?: string }>) => {
   const defaultTitle = `${PREFIX} | ${t('common.map', 'Map')}`
   switch (action.type) {
     case HOME:

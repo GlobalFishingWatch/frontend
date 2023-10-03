@@ -15,7 +15,7 @@ interface ChoiceProps {
   options: ChoiceOption[]
   activeOption: string
   disabled?: boolean
-  onSelect?: (option: ChoiceOption, e: React.MouseEvent) => void
+  onSelect?: (option: ChoiceOption<any>, e: React.MouseEvent) => void
   size?: 'default' | 'small' | 'tiny'
   className?: string
   testId?: string

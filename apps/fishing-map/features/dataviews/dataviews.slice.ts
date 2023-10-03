@@ -282,13 +282,13 @@ export const selectDataviewsResources = createSelector(
   ],
   (dataviewInstances, thinningConfig, chunks, timebarGraph) => {
     const callbacks: GetDatasetConfigsCallbacks = {
-      tracks: trackDatasetConfigsCallback(thinningConfig, chunks, timebarGraph),
+      tracks: trackDatasetConfigsCallback(thinningConfig, chunks, timebarGraph) as any,
     }
     return getResources(dataviewInstances || [], callbacks)
   }
 )
 
-const defaultDataviewResolved = []
+const defaultDataviewResolved: UrlDataviewInstance[] = []
 export const selectDataviewInstancesResolved = createSelector(
   [selectDataviewsResources],
   (dataviewsResources) => {

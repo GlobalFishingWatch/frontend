@@ -19,7 +19,7 @@ type ActivitySchemaFilterProps = {
   schemaFilter: SchemaFilter
   onSelect: (
     filterKey: string,
-    selection: MultiSelectOption | MultiSelectOption[],
+    selection: number | MultiSelectOption | MultiSelectOption[],
     singleValue?: boolean
   ) => void
   onSelectOperation: (filterKey: string, filterOperator: FilterOperator) => void
@@ -31,7 +31,13 @@ export const showSchemaFilter = (schemaFilter: SchemaFilter) => {
   return !schemaFilter.disabled && schemaFilter.options && schemaFilter.options.length > 0
 }
 
-export const VALUE_TRANSFORMATIONS_BY_UNIT = {
+export type TransformationUnit = 'minutes'
+type Transformation = {
+  in: (v: any) => number
+  out: (v: any) => number
+  label: string
+}
+export const VALUE_TRANSFORMATIONS_BY_UNIT: Record<TransformationUnit, Transformation> = {
   minutes: {
     in: (v) => v / 60,
     out: (v) => v * 60,
@@ -96,15 +102,17 @@ function ActivitySchemaFilter({
   } = schemaFilter
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const onSliderChange = useCallback(
-    (rangeSelected) => {
+    (rangeSelected: any) => {
       const filterRange = getRangeLimitsBySchema(schemaFilter)
       if (rangeSelected[0] === filterRange[0] && rangeSelected[1] === filterRange[1]) {
         onClean(id)
       } else if (!Array.isArray(rangeSelected) && !Number.isNaN(rangeSelected)) {
-        const value = unit ? VALUE_TRANSFORMATIONS_BY_UNIT[unit].out(rangeSelected) : rangeSelected
+        const value = unit
+          ? VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit].out(rangeSelected)
+          : rangeSelected
         onSelect(id, value, true)
       } else {
-        const selection = rangeSelected.map((id) => ({
+        const selection = rangeSelected.map((id: any) => ({
           id: id.toString(),
           label: id.toString(),
         }))
@@ -137,13 +145,19 @@ function ActivitySchemaFilter({
 
   if (type === 'number') {
     const initialValue = unit
-      ? VALUE_TRANSFORMATIONS_BY_UNIT[unit].in(getRangeBySchema(schemaFilter)[0])
+      ? VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit].in(
+          getRangeBySchema(schemaFilter)[0] as number
+        )
       : getRangeBySchema(schemaFilter)[0]
     const minValue = unit
-      ? VALUE_TRANSFORMATIONS_BY_UNIT[unit].in(getRangeLimitsBySchema(schemaFilter)[0])
+      ? VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit].in(
+          getRangeLimitsBySchema(schemaFilter)[0]
+        )
       : getRangeLimitsBySchema(schemaFilter)[0]
     const maxValue = unit
-      ? VALUE_TRANSFORMATIONS_BY_UNIT[unit].in(getRangeLimitsBySchema(schemaFilter)[1])
+      ? VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit].in(
+          getRangeLimitsBySchema(schemaFilter)[1]
+        )
       : getRangeLimitsBySchema(schemaFilter)[1]
     return (
       <Slider

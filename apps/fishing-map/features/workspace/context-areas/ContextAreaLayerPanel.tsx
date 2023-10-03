@@ -104,7 +104,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     return {
       queryMethod: 'render' as const,
       queryCacheKey: [viewport.latitude, viewport.longitude, viewport.zoom]
-        .map((v) => v.toFixed(3))
+        .map((v) => v?.toFixed(3))
         .join('-'),
     }
   }, [viewport])
@@ -209,7 +209,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     (schema) => schema.optionsSelected?.length > 0
   )
 
-  const handleHoverArea = (feature) => {
+  const handleHoverArea = (feature: any) => {
     const { source, id } = feature
     if (source && id) {
       const featureState = {

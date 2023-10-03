@@ -71,9 +71,9 @@ export const selectTracksData = createSelector(
 
       const segmentExtents: any = (trackResource.data as any)?.features
         ? geoJSONToSegments(trackResource.data as any, { onlyExtents: true })
-        : getSegmentExtents(trackResource.data || [])
+        : getSegmentExtents((trackResource.data as any) || ([] as any))
 
-      const chunks: TimebarChartChunk[] = segmentExtents.map((segment) => {
+      const chunks: TimebarChartChunk[] = segmentExtents.map((segment: any) => {
         const useOwnColor = trackDataviews.length === 1 && endpointType === EndpointId.UserTracks
         return {
           start: segment[0].timestamp || Number.POSITIVE_INFINITY,
@@ -146,10 +146,11 @@ export const selectTracksGraphData = createSelector(
       }
 
       const resourcesQueries = resolveDataviewDatasetResources(dataview, DatasetTypes.Tracks)
-      const resourceQuery = resourcesQueries.find((r) =>
-        r.datasetConfig.query?.find(
-          (q) => q.id === 'fields' && q.value.toString().includes(timebarGraphType)
-        )
+      const resourceQuery = resourcesQueries.find(
+        (r) =>
+          r.datasetConfig.query?.find(
+            (q) => q.id === 'fields' && q.value.toString().includes(timebarGraphType)
+          )
       )
       const graphUrl = resourceQuery?.url
       if (!graphUrl) return trackGraphData

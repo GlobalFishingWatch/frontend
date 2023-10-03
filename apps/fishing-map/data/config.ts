@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import { DataviewCategory, ThinningConfig } from '@globalfishingwatch/api-types'
 import { ThinningLevels, THINNING_LEVELS } from '@globalfishingwatch/api-client'
-import { TimebarGraphs, TimebarVisualisations, UserTab } from 'types'
+import { AppState, TimebarGraphs, TimebarVisualisations, UserTab, WorkspaceState } from 'types'
 import { getUTCDateTime } from 'utils/dates'
 
 export const ROOT_DOM_ELEMENT = '__next'
@@ -74,14 +74,15 @@ export const DEFAULT_ACTIVITY_CATEGORY = 'fishing'
 export const FIRST_YEAR_OF_DATA = 2012
 export const CURRENT_YEAR = new Date().getFullYear()
 
-export const DEFAULT_WORKSPACE = {
+export const AVAILABLE_START = new Date(Date.UTC(FIRST_YEAR_OF_DATA, 0, 1)).toISOString() as string
+export const AVAILABLE_END = new Date(Date.UTC(CURRENT_YEAR, 11, 31)).toISOString() as string
+
+export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   ...DEFAULT_VIEWPORT,
   query: undefined,
   readOnly: false,
   daysFromLatest: undefined,
   sidebarOpen: true,
-  availableStart: new Date(Date.UTC(FIRST_YEAR_OF_DATA, 0, 1)).toISOString(),
-  availableEnd: new Date(Date.UTC(CURRENT_YEAR, 11, 31)).toISOString(),
   dataviewInstances: undefined,
   timebarVisualisation: TimebarVisualisations.HeatmapActivity,
   visibleEvents: 'all',

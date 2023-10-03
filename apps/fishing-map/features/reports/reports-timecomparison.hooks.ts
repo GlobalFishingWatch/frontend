@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { SelectOption } from '@globalfishingwatch/ui-components'
 import { ReportActivityGraph } from 'types'
-import { DEFAULT_WORKSPACE } from 'data/config'
+import { AVAILABLE_START, AVAILABLE_END } from 'data/config'
 import { selectReportActivityGraph, selectReportTimeComparison } from 'features/app/app.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -14,8 +14,8 @@ import { useFitAreaInViewport } from 'features/reports/reports.hooks'
 import { MAX_DAYS_TO_COMPARE, MAX_MONTHS_TO_COMPARE } from 'features/reports/reports.config'
 
 // TODO get this from start and endDate from datasets
-const MIN_DATE = DEFAULT_WORKSPACE.availableStart.slice(0, 10)
-const MAX_DATE = DEFAULT_WORKSPACE.availableEnd.slice(0, 10)
+const MIN_DATE = AVAILABLE_START.slice(0, 10)
+const MAX_DATE = AVAILABLE_END.slice(0, 10)
 
 export const useSetReportTimeComparison = () => {
   const timeComparison = useSelector(selectReportTimeComparison)
@@ -40,8 +40,8 @@ export const useSetReportTimeComparison = () => {
       }
       return
     }
-    const baseStart = timebarStart || DEFAULT_WORKSPACE.availableStart
-    const baseEnd = timebarEnd || DEFAULT_WORKSPACE.availableEnd
+    const baseStart = timebarStart || AVAILABLE_START
+    const baseEnd = timebarEnd || AVAILABLE_END
     const initialDuration = getUTCDateTime(baseEnd).diff(getUTCDateTime(baseStart), [
       'days',
       'months',
@@ -163,7 +163,7 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
   )
 
   const onStartChange = useCallback(
-    (e) => {
+    (e: any) => {
       update({
         newStart: e.target.value,
         error: e.target.validity.rangeOverflow || e.target.validity.rangeUnderflow,
@@ -173,7 +173,7 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
   )
 
   const onCompareStartChange = useCallback(
-    (e) => {
+    (e: any) => {
       update({
         newCompareStart: e.target.value,
         error: e.target.validity.rangeOverflow || e.target.validity.rangeUnderflow,
@@ -183,7 +183,7 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
   )
 
   const onDurationChange = useCallback(
-    (e) => {
+    (e: any) => {
       if (
         (durationType === 'months' && e.target.value > MAX_MONTHS_TO_COMPARE) ||
         (durationType === 'days' && e.target.value > MAX_DAYS_TO_COMPARE)
@@ -195,7 +195,7 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
   )
 
   const onDurationTypeSelect = useCallback(
-    (option) => {
+    (option: SelectOption) => {
       if (option.id === 'months' && duration > MAX_MONTHS_TO_COMPARE) {
         update({ newDurationType: option.id, newDuration: MAX_MONTHS_TO_COMPARE })
       } else {

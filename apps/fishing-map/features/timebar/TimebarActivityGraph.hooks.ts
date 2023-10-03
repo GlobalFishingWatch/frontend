@@ -4,7 +4,7 @@ import { Timeseries } from '@globalfishingwatch/timebar'
 import { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
 import { TimeseriesFeatureProps } from '@globalfishingwatch/fourwings-aggregate'
 import { getDatasetsExtent, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
+import { Bounds, filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import { getTimeseriesFromFeatures } from '@globalfishingwatch/features-aggregate'
 import { checkEqualBounds, useMapBounds } from 'features/map/map-viewport.hooks'
 import { getActiveActivityDatasetsInDataviews } from 'features/datasets/datasets.utils'
@@ -33,7 +33,7 @@ export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSetStackedActivity = useCallback(
-    (dataviewFeatures: DataviewFeature[], bounds) => {
+    (dataviewFeatures: DataviewFeature[], bounds: Bounds) => {
       const dataviewFeaturesFiltered = dataviewFeatures.map((dataviewFeature) => {
         const activeDataviewDatasets = getActiveActivityDatasetsInDataviews(dataviews)
         const dataviewExtents = activeDataviewDatasets.map((dataviewDatasets) =>
@@ -59,7 +59,7 @@ export const useStackedActivity = (dataviews: UrlDataviewInstance[]) => {
           }),
         }
       })
-      const stackedActivity = getTimeseriesFromFeatures(dataviewFeaturesFiltered)
+      const stackedActivity = getTimeseriesFromFeatures(dataviewFeaturesFiltered as any)
       setStackedActivity(stackedActivity)
       setGeneratingStackedActivity(false)
     },

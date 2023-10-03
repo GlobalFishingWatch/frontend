@@ -6,7 +6,12 @@ import {
   resourcesSlice,
 } from '@globalfishingwatch/dataviews-client'
 import { ThinningConfig } from '@globalfishingwatch/api-types'
-import { DEFAULT_WORKSPACE, THINNING_LEVEL_BY_ZOOM, THINNING_LEVEL_ZOOMS } from 'data/config'
+import {
+  AVAILABLE_START,
+  AVAILABLE_END,
+  THINNING_LEVEL_BY_ZOOM,
+  THINNING_LEVEL_ZOOMS,
+} from 'data/config'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { isGuestUser } from 'features/user/user.slice'
 import {
@@ -40,8 +45,8 @@ export const selectTrackThinningConfig = createSelector(
   }
 )
 
-const AVAILABLE_START_YEAR = new Date(DEFAULT_WORKSPACE.availableStart).getFullYear()
-const AVAILABLE_END_YEAR = new Date(DEFAULT_WORKSPACE.availableEnd).getFullYear()
+const AVAILABLE_START_YEAR = new Date(AVAILABLE_START).getFullYear()
+const AVAILABLE_END_YEAR = new Date(AVAILABLE_END).getFullYear()
 const YEARS = range(AVAILABLE_START_YEAR, AVAILABLE_END_YEAR + 1)
 
 export const selectTrackChunksConfig = createSelector(
