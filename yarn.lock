@@ -1593,7 +1593,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.19.4, @babel/runtime@npm:^7.20.6, @babel/runtime@npm:^7.20.7, @babel/runtime@npm:^7.22.15, @babel/runtime@npm:^7.22.5, @babel/runtime@npm:^7.22.6, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.5, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.19.0, @babel/runtime@npm:^7.19.4, @babel/runtime@npm:^7.20.6, @babel/runtime@npm:^7.20.7, @babel/runtime@npm:^7.22.15, @babel/runtime@npm:^7.22.5, @babel/runtime@npm:^7.22.6, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2":
   version: 7.23.1
   resolution: "@babel/runtime@npm:7.23.1"
   dependencies:
@@ -3065,9 +3065,9 @@ __metadata:
     "@types/redux-first-router-link": 1.4.7
     classnames: 2.3.2
     depcheck: 1.4.6
-    i18next: 23.5.1
-    i18next-browser-languagedetector: 7.1.0
-    i18next-http-backend: 2.2.2
+    i18next: 21.10.0
+    i18next-browser-languagedetector: 6.1.8
+    i18next-http-backend: 1.4.5
     i18next-parser: 8.8.0
     lodash: 4.17.21
     luxon: ^3.4.3
@@ -3077,7 +3077,7 @@ __metadata:
     react: ^18.2.0
     react-dom: ^18.2.0
     react-ga4: 2.1.0
-    react-i18next: 13.2.2
+    react-i18next: 11.18.6
     react-redux: ^8.1.2
     react-test-renderer: 18.2.0
     react-virtualized-auto-sizer: ^1.0.20
@@ -3206,9 +3206,9 @@ __metadata:
     file-saver: ^2.0.5
     formatcoords: ^1.1.3
     gl-matrix: 3.4.3
-    i18next: ^23.5.1
-    i18next-browser-languagedetector: ^7.1.0
-    i18next-http-backend: ^2.2.2
+    i18next: ^21.10.0
+    i18next-browser-languagedetector: ^6.1.8
+    i18next-http-backend: ^1.4.5
     i18next-parser: ^8.8.0
     json2csv: ^5.0.7
     lodash: ^4.17.21
@@ -3220,7 +3220,7 @@ __metadata:
     react: ^18.2.0
     react-dom: ^18.2.0
     react-ga4: 2.1.0
-    react-i18next: 13.2.2
+    react-i18next: 11.18.6
     react-image-gallery: ^1.3.0
     react-virtualized-auto-sizer: ^1.0.20
     react-window: ^1.8.9
@@ -12249,6 +12249,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cross-fetch@npm:3.1.5":
+  version: 3.1.5
+  resolution: "cross-fetch@npm:3.1.5"
+  dependencies:
+    node-fetch: 2.6.7
+  checksum: f6b8c6ee3ef993ace6277fd789c71b6acf1b504fd5f5c7128df4ef2f125a429e29cd62dc8c127523f04a5f2fa4771ed80e3f3d9695617f441425045f505cf3bb
+  languageName: node
+  linkType: hard
+
 "cross-fetch@npm:3.1.6":
   version: 3.1.6
   resolution: "cross-fetch@npm:3.1.6"
@@ -17076,7 +17085,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-browser-languagedetector@npm:7.1.0, i18next-browser-languagedetector@npm:^7.1.0":
+"i18next-browser-languagedetector@npm:6.1.8, i18next-browser-languagedetector@npm:^6.1.8":
+  version: 6.1.8
+  resolution: "i18next-browser-languagedetector@npm:6.1.8"
+  dependencies:
+    "@babel/runtime": ^7.19.0
+  checksum: dd84d3c9cb693a70662436b06f5554898815df33b7641249a64876c74c38960f11ef17b4d7f49ee2da7262abe0f3ae73abe7f3a3b435a344d0d07e4ca7cb24c6
+  languageName: node
+  linkType: hard
+
+"i18next-browser-languagedetector@npm:7.1.0":
   version: 7.1.0
   resolution: "i18next-browser-languagedetector@npm:7.1.0"
   dependencies:
@@ -17085,7 +17103,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-http-backend@npm:2.2.2, i18next-http-backend@npm:^2.2.2":
+"i18next-http-backend@npm:1.4.5, i18next-http-backend@npm:^1.4.5":
+  version: 1.4.5
+  resolution: "i18next-http-backend@npm:1.4.5"
+  dependencies:
+    cross-fetch: 3.1.5
+  checksum: 1978a9d7970cc711e96133553e5f3815cf16c3e2f8db7982036f8c913c5a64eb20953e85e0ab48a88ad3c754f51184b67a778655ed65aeaae46430cdc1f673da
+  languageName: node
+  linkType: hard
+
+"i18next-http-backend@npm:2.2.2":
   version: 2.2.2
   resolution: "i18next-http-backend@npm:2.2.2"
   dependencies:
@@ -17121,7 +17148,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:23.5.1, i18next@npm:^23.5.1":
+"i18next@npm:21.10.0, i18next@npm:^21.10.0":
+  version: 21.10.0
+  resolution: "i18next@npm:21.10.0"
+  dependencies:
+    "@babel/runtime": ^7.17.2
+  checksum: f997985e2d4d15a62a0936a82ff6420b97f3f971e776fe685bdd50b4de0cb4dc2198bc75efe6b152844794ebd5040d8060d6d152506a687affad534834836d81
+  languageName: node
+  linkType: hard
+
+"i18next@npm:23.5.1":
   version: 23.5.1
   resolution: "i18next@npm:23.5.1"
   dependencies:
@@ -23919,6 +23955,24 @@ __metadata:
   version: 2.1.0
   resolution: "react-ga4@npm:2.1.0"
   checksum: f7fb41141418d4ad14756f1126a1e9958db37d4d84ae6cd798043dc03a390b6dba74d69311af0349f0b9580a43bda8930138194ccc29c4100efe446e2d6eb057
+  languageName: node
+  linkType: hard
+
+"react-i18next@npm:11.18.6":
+  version: 11.18.6
+  resolution: "react-i18next@npm:11.18.6"
+  dependencies:
+    "@babel/runtime": ^7.14.5
+    html-parse-stringify: ^3.0.1
+  peerDependencies:
+    i18next: ">= 19.0.0"
+    react: ">= 16.8.0"
+  peerDependenciesMeta:
+    react-dom:
+      optional: true
+    react-native:
+      optional: true
+  checksum: 624c0a0313fac4e0d18560b83c99a8bd0a83abc02e5db8d01984e0643ac409d178668aa3a4720d01f7a0d9520d38598dcbff801d6f69a970bae67461de6cd852
   languageName: node
   linkType: hard
 

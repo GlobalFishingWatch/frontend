@@ -14,15 +14,19 @@ export const useApp = () => {
 
   const openFeedback = useCallback(() => {
     if (i18n.language === 'fr') {
-      const url = FEEDBACK_FR + `?usp=pp_url&entry.896676966=${getHref()}&entry.1441570157=${getOperatingSystem()}&entry.374853059=${getBrowser()}&entry.687140445=${getHref()}`
-      window.open(url, '_blank').focus();
+      const url =
+        FEEDBACK_FR +
+        `?usp=pp_url&entry.896676966=${getHref()}&entry.1441570157=${getOperatingSystem()}&entry.374853059=${getBrowser()}&entry.687140445=${getHref()}`
+      window?.open(url, '_blank')?.focus()
     } else {
-      const url = FEEDBACK_EN + `?usp=pp_url&entry.896676966=${getHref()}&entry.1441570157=${getOperatingSystem()}&entry.374853059=${getBrowser()}&entry.331914194=${getHref()}`
-      window.open(url, '_blank').focus();
+      const url =
+        FEEDBACK_EN +
+        `?usp=pp_url&entry.896676966=${getHref()}&entry.1441570157=${getOperatingSystem()}&entry.374853059=${getBrowser()}&entry.331914194=${getHref()}`
+      window?.open(url, '_blank')?.focus()
     }
   }, [i18n.language])
 
   return {
-    openFeedback
+    openFeedback,
   }
 }

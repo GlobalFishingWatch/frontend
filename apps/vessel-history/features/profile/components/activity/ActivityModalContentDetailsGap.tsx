@@ -25,8 +25,8 @@ const ActivityModalContentDetailsGap: React.FC<ActivityModalContentProps> = (
 
   const { onRegions, offRegions } = useMemo(() => {
     return {
-      onRegions: getEventRegionDescription(event.gap.onPosition, eezs, rfmos, mpas),
-      offRegions: getEventRegionDescription(event.gap.offPosition, eezs, rfmos, mpas),
+      onRegions: getEventRegionDescription(event?.gap.onPosition, eezs, rfmos, mpas),
+      offRegions: getEventRegionDescription(event?.gap.offPosition, eezs, rfmos, mpas),
     }
   }, [event, eezs, rfmos, mpas])
 
@@ -41,23 +41,23 @@ const ActivityModalContentDetailsGap: React.FC<ActivityModalContentProps> = (
         <ActivityModalContentField
           label={t('event.disabledDistance', 'Distance between transmissions')}
           value={t('event.formatDistanceKm', '{{value}} km', {
-            value: event.gap.distanceKm?.toFixed(2),
+            value: event?.gap.distanceKm?.toFixed(2),
           })}
         />
         <ActivityModalContentField
           label={t('event.avgEstSpeed', 'Avg est speed')}
           value={t('event.formatSpeedKnots', '{{value}} knots', {
-            value: event.gap.impliedSpeedKnots?.toFixed(2),
+            value: event?.gap.impliedSpeedKnots?.toFixed(2),
           })}
         />
       </div>
       <ActivityModalContentField
         label={t('event.regionsTransmissionOffInvolved', 'location of “off” event')}
-        value={offRegions && offRegions !== '' ? offRegions : t('common.unknown')}
+        value={offRegions && offRegions !== '' ? offRegions : t('common.unknown', 'unknown')}
       />
       <ActivityModalContentField
         label={t('event.regionsTransmissionOnInvolved', 'location of "on" event')}
-        value={onRegions && onRegions !== '' ? onRegions : t('common.unknown')}
+        value={onRegions && onRegions !== '' ? onRegions : t('common.unknown', 'unknown')}
       />
     </Fragment>
   )
