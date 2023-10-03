@@ -19,7 +19,7 @@
     "errorDuplicatedName": "There is already a report with the same name",
     "errorMessage": "Something went wrong",
     "errorPeriodComparisonDateRange": "Date range error. Comparison start must be after baseline start.",
-    "errorTooComplex": "The geometry of the area is too complex to perform a report, try to simplify and upload again.",
+    "errorTooComplex": "We cannot create a dynamic report for this area as the boundary information is complex. Please simplify your area of interest - by uploading a new layer or drawing your layer on the map - and try the report again to resolve.",
     "evolution": "evolution",
     "groupByFlag": "by flag",
     "groupByGeartype": "by gear type",
