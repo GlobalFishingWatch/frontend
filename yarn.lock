@@ -2927,7 +2927,7 @@ __metadata:
     "@dnd-kit/sortable": 7.0.2
     "@dnd-kit/utilities": 3.2.1
     "@globalfishingwatch/linting": 2.0.2
-    "@mapbox/mapbox-gl-draw": ^1.3.0
+    "@mapbox/mapbox-gl-draw": ^1.4.3
     "@math.gl/web-mercator": ^3.6.3
     "@next/eslint-plugin-next": 13.5.3
     "@researchgate/react-intersection-observer": 1.3.5
@@ -4268,9 +4268,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mapbox/mapbox-gl-draw@npm:^1.3.0":
-  version: 1.4.2
-  resolution: "@mapbox/mapbox-gl-draw@npm:1.4.2"
+"@mapbox/mapbox-gl-draw@npm:^1.4.3":
+  version: 1.4.3
+  resolution: "@mapbox/mapbox-gl-draw@npm:1.4.3"
   dependencies:
     "@mapbox/geojson-area": ^0.2.2
     "@mapbox/geojson-extent": ^1.0.1
@@ -4279,7 +4279,7 @@ __metadata:
     hat: 0.0.3
     lodash.isequal: ^4.5.0
     xtend: ^4.0.2
-  checksum: cd010c35b5cf9cc01b34874d0f9f7043ec472434e069cb7a9ed1af09e49651b2b19eac754b16d0b9c673a874171bff8f49fb746ca710a2fbc1b394cee6f2b91c
+  checksum: 5426173bd10f8b181567f73ebbb285175f6e05b09015ba9fba24aea5b056591f5326195091b37cd9df239be1e688ce72ed29f318047b52e130213d640bf269bf
   languageName: node
   linkType: hard
 

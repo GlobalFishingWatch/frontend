@@ -1,4 +1,5 @@
 import { Fragment, useCallback, useMemo, useState } from 'react'
+import { atom, useRecoilState } from 'recoil'
 import cx from 'classnames'
 import kinks from '@turf/kinks'
 import { useTranslation } from 'react-i18next'
@@ -43,12 +44,19 @@ const getAllFeatures = (drawControl: MapboxDraw) => {
   }
 }
 
+const selectedPointIndexAtom = atom<number | null>({
+  key: 'selectedPointIndex',
+  default: null,
+  effects: [],
+})
+
 function MapDraw() {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   const [layerName, setLayerName] = useState<string>('')
   const [createAsPublic, setCreateAsPublic] = useState<boolean>(true)
-  const [selectedPointIndex, setSelectedPointIndex] = useState<number | null>(null)
+  const [selectedPointIndex, setSelectedPointIndex] = useRecoilState(selectedPointIndexAtom)
+  // const [selectedPointIndex, setSelectedPointIndex] = useState<number | null>(null)
   const [newPointLatitude, setNewPointLatitude] = useState<number | string | null>(null)
   const [newPointLongitude, setNewPointLongitude] = useState<number | string | null>(null)
   const { isMapDrawing, dispatchSetMapDrawing } = useMapDrawConnect()
@@ -66,7 +74,8 @@ function MapDraw() {
             currentPoint.geometry.coordinates[0] === lng &&
             currentPoint.geometry.coordinates[1] === lat
         )
-        setSelectedPointIndex(pointIndex > -1 ? pointIndex : null)
+        const selectedPointIndex = pointIndex > -1 ? pointIndex : null
+        setSelectedPointIndex(selectedPointIndex)
       }
     }
   }
