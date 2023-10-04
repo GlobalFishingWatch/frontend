@@ -6,14 +6,19 @@
  */
 import { format } from 'd3-format'
 import { DateTime } from 'luxon'
-import { multiPolygon, polygon, point } from '@turf/helpers'
-import { buffer, difference } from '@turf/turf'
-import { Feature, MultiPolygon } from 'geojson'
+import { polygon, point, featureCollection } from '@turf/helpers'
+import { buffer, difference, dissolve } from '@turf/turf'
+import { Feature, FeatureCollection, MultiPolygon, Polygon, Position } from 'geojson'
 import { parse } from 'qs'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataview, DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
-import { wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
+import {
+  wrapGeometryBbox,
+  wrapMultipolygonFeatureCoordinates,
+  wrapMultipolygonFeatureToPolygon,
+  wrapPolygonFeatureCoordinates,
+} from '@globalfishingwatch/data-transforms'
 import { API_VERSION } from '@globalfishingwatch/api-client'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { sortStrings } from 'utils/shared'
@@ -266,9 +271,14 @@ export const getBufferedFeature = ({
   operation: BufferOperation
 }): Feature | null => {
   if (!area?.geometry) return null
+  const wrapedfc =
+    area.geometry.type === 'MultiPolygon'
+      ? featureCollection(wrapMultipolygonFeatureToPolygon(area))
+      : null
+
   const areaPolygon =
     area.geometry.type === 'MultiPolygon'
-      ? multiPolygon(area.geometry.coordinates)
+      ? dissolve(wrapedfc as FeatureCollection<Polygon>).features[0]
       : area.geometry.type === 'Polygon'
       ? polygon(area.geometry.coordinates)
       : area.geometry.type === 'Point'
@@ -284,6 +294,13 @@ export const getBufferedFeature = ({
   return bufferedFeature
     ? {
         ...bufferedFeature,
+        geometry: {
+          ...bufferedFeature.geometry,
+          coordinates:
+            bufferedFeature.geometry.type === 'MultiPolygon'
+              ? wrapMultipolygonFeatureCoordinates(bufferedFeature as Feature<MultiPolygon>)
+              : wrapPolygonFeatureCoordinates(bufferedFeature as Feature<Polygon>),
+        },
         id: area.id,
         properties: { ...area.properties, label: `Buffered ${area.name}` },
       }
