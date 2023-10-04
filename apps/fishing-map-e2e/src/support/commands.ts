@@ -72,6 +72,8 @@ function loginViaAuthAPI(username: string, password: string) {
   // Validate that we request a token and is saved in the local storage
   cy.wait('@requestToken', { requestTimeout: 10000 }).then((interception) => {
     const token = interception.response.body.token
+    // eslint-disable-next-line
+    cy.wait(1000) // After request the token give a second so it can be added to the localstorage after the resquest is completed
     cy.getAllLocalStorage().then((result) => {
       expect(result).to.deep.contain({
         [Cypress.config('baseUrl').replace('/map', '')]: {

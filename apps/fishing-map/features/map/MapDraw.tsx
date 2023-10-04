@@ -90,7 +90,7 @@ function MapDraw() {
       : null
   const allowDeletePoint = selectedFeature!?.geometry!?.coordinates!?.[0]!?.length > 4
 
-  const onHandleLatitudeChange = useCallback((e) => {
+  const onHandleLatitudeChange = useCallback((e: any) => {
     if (e.target.value) {
       const latitude = parseFloat(e.target.value)
       if (latitude > -90 && latitude < 90) {
@@ -101,7 +101,7 @@ function MapDraw() {
     }
   }, [])
 
-  const onHandleLongitudeChange = useCallback((e) => {
+  const onHandleLongitudeChange = useCallback((e: any) => {
     if (e.target.value) {
       const longitude = parseFloat(e.target.value)
       if (longitude > -180 && longitude < 180) {
@@ -149,7 +149,7 @@ function MapDraw() {
   }, [drawControl, selectedFeature, selectedPointIndex])
 
   const onInputChange = useCallback(
-    (e) => {
+    (e: any) => {
       setLayerName(e.target.value)
     },
     [setLayerName]
@@ -209,7 +209,7 @@ function MapDraw() {
   }, [])
 
   const createDataset = useCallback(
-    async (features: DrawFeature[], name) => {
+    async (features: DrawFeature[], name: string) => {
       if (features && features.length > 0) {
         setLoading(true)
         const { payload, error } = await dispatchCreateDataset({
@@ -230,7 +230,7 @@ function MapDraw() {
   )
 
   const onSaveClick = useCallback(
-    (features) => {
+    (features: any) => {
       if (features && features.length > 0 && layerName) {
         createDataset(features, layerName)
         trackEvent({

@@ -55,10 +55,15 @@ export const selectViewport = createSelector(
   [selectUrlViewport, selectWorkspaceViewport],
   (urlViewport, workspaceViewport) => {
     return {
-      zoom: urlViewport?.zoom || workspaceViewport?.zoom || DEFAULT_WORKSPACE.zoom,
-      latitude: urlViewport?.latitude || workspaceViewport?.latitude || DEFAULT_WORKSPACE.latitude,
+      zoom: urlViewport?.zoom || workspaceViewport?.zoom || (DEFAULT_WORKSPACE.zoom as number),
+      latitude:
+        urlViewport?.latitude ||
+        workspaceViewport?.latitude ||
+        (DEFAULT_WORKSPACE.latitude as number),
       longitude:
-        urlViewport?.longitude || workspaceViewport?.longitude || DEFAULT_WORKSPACE.longitude,
+        urlViewport?.longitude ||
+        workspaceViewport?.longitude ||
+        (DEFAULT_WORKSPACE.longitude as number),
     }
   }
 )
@@ -391,7 +396,7 @@ export const selectWorkspaceWithCurrentState = createSelector(
       ...(workspace || ({} as Workspace)),
       app: APP_NAME,
       category,
-      viewport,
+      viewport: viewport as Workspace['viewport'],
       startAt: timerange.start,
       endAt: timerange.end,
       state,

@@ -1,6 +1,6 @@
 import { Color, CompositeLayer } from '@deck.gl/core/typed'
 import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
-import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
+import { Tile2DHeader } from '@deck.gl/geo-layers/typed/tileset-2d'
 import { maxBy } from 'lodash'
 import { Cell } from 'loaders/fourwings/fourwingsLayerLoader'
 import FourwingsTileCellLayer from 'layers/fourwings/FourwingsHeatmapCellLayer'

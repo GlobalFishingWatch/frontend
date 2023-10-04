@@ -136,7 +136,7 @@ export function useFetchReportVessel() {
   const workspaceStatus = useSelector(selectWorkspaceStatus)
 
   const updateWorkspaceReportUrls = useCallback(
-    (reportUrl) => {
+    (reportUrl: any) => {
       setLastReportUrl((lastReportUrls) => {
         const newReportUrl = {
           reportUrl,
@@ -145,7 +145,7 @@ export function useFetchReportVessel() {
         if (!lastReportUrls?.length) {
           return [newReportUrl]
         }
-        const reportUrlsExists = lastReportUrls.some((report) => report[reportUrl] !== undefined)
+        const reportUrlsExists = lastReportUrls.some((report) => report.reportUrl !== undefined)
         return reportUrlsExists ? lastReportUrls : [newReportUrl, lastReportUrls[0]]
       })
     },
@@ -154,7 +154,7 @@ export function useFetchReportVessel() {
 
   const dispatchFetchReport = useCallback(() => {
     const params = {
-      datasets: reportDataviews.map(({ datasets }) => datasets.map((d) => d.id).join(',')),
+      datasets: reportDataviews.map(({ datasets }) => datasets.map((d: any) => d.id).join(',')),
       filters: reportDataviews.map(({ filter }) => filter),
       vesselGroups: reportDataviews.map(({ vesselGroups }) => vesselGroups),
       region: {

@@ -69,7 +69,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
     upsertDataviewInstance(vesselDataviewInstance)
   }
 
-  const onFilterClick = (reportVesselFilter) => {
+  const onFilterClick = (reportVesselFilter: any) => {
     dispatchQueryParams({ reportVesselFilter, reportVesselPage: 0 })
   }
 

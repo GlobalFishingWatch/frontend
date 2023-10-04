@@ -121,9 +121,11 @@ const CustomTick = (props: any) => {
 
   const tooltip = isOtherCategory ? (
     <ul>
-      {othersData!?.slice(0, MAX_OTHER_TOOLTIP_ITEMS).map(({ name, value }) => (
-        <li key={`${name}-${value}`}>{`${getTickLabel(name)}: ${value}`}</li>
-      ))}
+      {othersData!
+        ?.slice(0, MAX_OTHER_TOOLTIP_ITEMS)
+        .map(({ name, value }) => (
+          <li key={`${name}-${value}`}>{`${getTickLabel(name)}: ${value}`}</li>
+        ))}
       {othersData!?.length > MAX_OTHER_TOOLTIP_ITEMS && (
         <li>
           + {othersData!?.length - MAX_OTHER_TOOLTIP_ITEMS} {t('analysis.others', 'Others')}
@@ -136,7 +138,7 @@ const CustomTick = (props: any) => {
   const label = isOtherCategory ? t('analysis.others', 'Others') : getTickLabel(payload.value)
   const labelChunks = label.split(' ')
   let labelChunksClean = [labelChunks[0]]
-  labelChunks.slice(1).forEach((chunk) => {
+  labelChunks.slice(1).forEach((chunk: any) => {
     let currentChunk = labelChunksClean[labelChunksClean.length - 1]
     if (currentChunk.length + chunk.length >= width / visibleTicksCount / 8) {
       labelChunksClean.push(chunk)
@@ -205,7 +207,7 @@ export default function ReportVesselsGraph() {
                     {index === dataviews.length - 1 && (
                       <LabelList
                         position="top"
-                        valueAccessor={(entry) => formatI18nNumber(entry.value[1])}
+                        valueAccessor={(entry: any) => formatI18nNumber(entry.value[1])}
                       />
                     )}
                   </Bar>

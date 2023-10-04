@@ -9,7 +9,11 @@ import { Header } from './html/Header'
 const readFile = util.promisify(fs.readFile)
 const writeFile = util.promisify(fs.writeFile)
 
-const componentsList = [
+type ComponentItem = {
+  component: React.ReactElement
+  path: string
+}
+const componentsList: ComponentItem[] = [
   { component: <Header />, path: 'src/header/html/header.html' },
   { component: <Header />, path: 'src/header/html/header-no-languages.html' },
   { component: <Header mini />, path: 'src/header/html/header-mini.html' },

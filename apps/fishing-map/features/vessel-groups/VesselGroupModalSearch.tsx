@@ -18,7 +18,7 @@ import styles from './VesselGroupModal.module.css'
 
 export type CSV = Record<string, any>[]
 
-function VesselGroupSearch({ onError }: { onError: (string) => void }): React.ReactElement {
+function VesselGroupSearch({ onError }: { onError: (string: any) => void }): React.ReactElement {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [searchText, setSearchText] = useState('')
@@ -36,7 +36,7 @@ function VesselGroupSearch({ onError }: { onError: (string) => void }): React.Re
     }
   }, [dispatch, debouncedSearchText])
 
-  const onIdsTextareaChange = useCallback((e) => {
+  const onIdsTextareaChange = useCallback((e: any) => {
     setSearchText(e.target.value)
   }, [])
 
@@ -50,7 +50,7 @@ function VesselGroupSearch({ onError }: { onError: (string) => void }): React.Re
       if (data.length) {
         const firstRow = data[0]
         const columns = Object.keys(firstRow as any)
-        let foundIdColumn
+        let foundIdColumn: string | undefined
         // Try to find a CSV column matching preset ids
         for (let i = 0; i < ID_COLUMN_LOOKUP.length; i++) {
           const presetColumn = ID_COLUMN_LOOKUP[i]
@@ -74,7 +74,7 @@ function VesselGroupSearch({ onError }: { onError: (string) => void }): React.Re
         foundIdColumn = foundIdColumn || columns[0]
 
         if (foundIdColumn) {
-          const groupvessels = data.map((row) => row?.[foundIdColumn]).join(',')
+          const groupvessels = data.map((row: any) => row?.[foundIdColumn as string]).join(',')
           setSearchText(groupvessels)
         }
       }

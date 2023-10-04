@@ -33,6 +33,7 @@ export type DownloadActivityParams = {
   dateRange: DateRange
   dataviews: {
     datasets: string[]
+    'vessel-groups': string[]
     filter?: string
   }[]
   geometry: Geometry

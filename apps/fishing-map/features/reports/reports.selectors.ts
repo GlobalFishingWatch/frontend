@@ -244,7 +244,8 @@ export function cleanFlagState(flagState: string) {
   return flagState.replace(/,/g, '')
 }
 
-const FILTER_PROPERTIES = {
+type FilterProperty = 'name' | 'flag' | 'mmsi' | 'gear' | 'type'
+const FILTER_PROPERTIES: Record<FilterProperty, string[]> = {
   name: ['shipName'],
   flag: ['flag', 'flagTranslated', 'flagTranslatedClean'],
   mmsi: ['mmsi'],
@@ -270,8 +271,9 @@ export function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: 
 
   return filterBlocks
     .reduce((vessels, block) => {
-      const propertiesToMatch = block.includes(':') && FILTER_PROPERTIES[block.split(':')[0]]
-      const words = (propertiesToMatch ? block.split(':')[1] : block)
+      const propertiesToMatch =
+        block.includes(':') && FILTER_PROPERTIES[block.split(':')[0] as FilterProperty]
+      const words = (propertiesToMatch ? (block.split(':')[1] as FilterProperty) : block)
         .replace('-', '')
         .split('|')
         .map((word) => word.trim())
@@ -304,7 +306,7 @@ export const selectReportVesselsFiltered = createSelector(
   }
 )
 
-const defaultVesselsList = []
+const defaultVesselsList: ReportVesselWithDatasets[] = []
 export const selectReportVesselsPaginated = createSelector(
   [selectReportVesselsFiltered, selectReportVesselPage, selectReportResultsPerPage],
   (vessels, page = 0, resultsPerPage) => {
@@ -340,7 +342,7 @@ export const selectIsReportAllowed = createSelector(
       return false
     }
     const datasetsReportAllowed = uniq(
-      reportDataviewsWithPermissions.flatMap((dv) => dv.datasets.flatMap((ds) => ds.id))
+      reportDataviewsWithPermissions.flatMap((dv) => dv.datasets.flatMap((ds: any) => ds.id))
     )
     return datasetsReportAllowed?.length > 0
   }
@@ -360,10 +362,10 @@ export const selectTimeComparisonValues = createSelector(
 
     const end = getUTCDateTime(timeComparison.start)
       .plus({ [timeComparison.durationType]: timeComparison.duration })
-      .toISO()
+      .toISO() as string
     const compareEnd = getUTCDateTime(timeComparison.compareStart)
       .plus({ [timeComparison.durationType]: timeComparison.duration })
-      .toISO()
+      .toISO() as string
 
     return {
       start: timeComparison.start,
@@ -394,7 +396,7 @@ export const selectReportVesselsGraphData = createSelector(
     const dataviewIds = dataviews.map((d) => d.id)
     const data = allDistributionKeys
       .flatMap((key) => {
-        const distributionData = { name: key }
+        const distributionData: Record<any, any> = { name: key }
         dataByDataview.forEach(({ id, data }) => {
           distributionData[id] = (data?.[key] || []).length
         })
@@ -404,7 +406,7 @@ export const selectReportVesselsGraphData = createSelector(
       .sort((a, b) => {
         if (EMPTY_API_VALUES.includes(a.name)) return 1
         if (EMPTY_API_VALUES.includes(b.name)) return -1
-        return sum(dataviewIds.map((d) => b[d])) - sum(dataviewIds.map((d) => a[d]))
+        return sum(dataviewIds.map((d: any) => b[d])) - sum(dataviewIds.map((d: any) => a[d]))
       })
 
     return { distributionKeys: data.map((d) => d.name), data }
@@ -422,13 +424,13 @@ export const selectReportVesselsGraphDataGrouped = createSelector(
     const others = {
       name: OTHERS_CATEGORY_LABEL,
       ...Object.fromEntries(
-        dataviewIds.map((dataview) => [dataview, sum(rest.map((key) => key[dataview]))])
+        dataviewIds.map((dataview) => [dataview, sum(rest.map((key: any) => key[dataview]))])
       ),
     }
     return [...top, others]
   }
 )
-const defaultOthersLabel = []
+const defaultOthersLabel: any[] = []
 export const selectReportVesselsGraphDataOthers = createSelector(
   [selectReportVesselsGraphData],
   (reportGraph) => {
