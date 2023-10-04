@@ -35,22 +35,21 @@ steps:
     waitFor: ['install-yarn']
     name: node:18
     env:
+      - 'COMMIT_SHA=$COMMIT_SHA'
       - 'NX_BRANCH=$_NX_BRANCH'
       - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
       - 'NEXT_PUBLIC_API_GATEWAY=$_NEXT_PUBLIC_API_GATEWAY'
       - 'NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=$_NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID'
       - 'NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=$_NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID'
-      - 'NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID=$_NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID'
       - 'NEXT_PUBLIC_URL=$_NEXT_PUBLIC_URL'
     script: |
-      yarn -v
-      yarn nx run api-portal:build --parallel
+        yarn -v
+        yarn nx run api-portal:build --parallel
 
-      raw_tag="${COMMIT_SHA};$NEXT_PUBLIC_API_GATEWAY;$NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID;$NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID;$NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID;$NEXT_PUBLIC_URL"
-      tag=`echo $raw_tag | sha256sum`
-      tag=${tag:0:64}
-      echo $tag > image-tag
-      echo Docker Image Tag: $tag
+        raw_tag="$COMMIT_SHA;$NEXT_PUBLIC_API_GATEWAY;$NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID;$NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID;$NEXT_PUBLIC_URL"
+        tag=`echo $raw_tag | sha256sum | cut -c1-64`
+        echo $tag > image-tag
+        echo Docker Image Tag: $tag
 
   - name: 'gcr.io/kaniko-project/executor:debug'
     id: 'build-image'
