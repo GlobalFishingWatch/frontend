@@ -1,5 +1,5 @@
 import bbox from '@turf/bbox'
-import { LineString } from '@turf/helpers'
+import { LineString, polygon } from '@turf/helpers'
 import { Feature, MultiPolygon, Polygon } from 'geojson'
 
 export type Bbox = [number, number, number, number]
@@ -67,4 +67,27 @@ export function wrapGeometryBbox(geometry: Polygon | MultiPolygon): Bbox {
     })
   }
   return [minX, minY, maxX, maxY]
+}
+
+export const wrapPolygonFeatureCoordinates = (feature: Feature<Polygon>) =>
+  feature.geometry.coordinates.map((coords) => {
+    return coords.map((pair) => (pair[0] < 0 ? [pair[0] + 360, pair[1]] : pair))
+  })
+
+export const wrapMultipolygonFeatureCoordinates = (feature: Feature<MultiPolygon>) =>
+  feature.geometry.coordinates.map((coords) => {
+    return coords.map((pairs) => {
+      return pairs.map((pair) => (pair[0] < 0 ? [pair[0] + 360, pair[1]] : pair))
+    })
+  })
+
+export const wrapMultipolygonFeatureToPolygon = (
+  feature: Feature<MultiPolygon>
+): Feature<Polygon>[] => {
+  return feature.geometry.coordinates.map((coords) => {
+    const c = coords.map((pairs) => {
+      return pairs.map((pair) => (pair[0] < 0 ? [pair[0] + 360, pair[1]] : pair))
+    })
+    return polygon(c)
+  })
 }
