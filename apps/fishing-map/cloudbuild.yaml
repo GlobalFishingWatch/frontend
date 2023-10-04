@@ -138,6 +138,7 @@ steps:
           BASIC_AUTH_PASS=$_BASIC_AUTH_PASS \
           --allow-unauthenticated
         gcloud run services describe $service_name \
+           --project $_RUN_PROJECT \
            --platform managed \
            --region $_RUN_REGION \
            --format 'value(status.url)' > app_url
