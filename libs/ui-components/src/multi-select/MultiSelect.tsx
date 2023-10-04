@@ -65,6 +65,7 @@ interface MultiSelectProps {
   onRemove?: MultiSelectOnChange
   onCleanClick?: (e: React.MouseEvent) => void
   className?: string
+  labelContainerClassName?: string
   testId?: string
 }
 
@@ -105,6 +106,7 @@ export function MultiSelect(props: MultiSelectProps) {
     placeholderDisplayAll = false,
     placeholder,
     className = '',
+    labelContainerClassName = '',
     onSelect,
     onRemove,
     onCleanClick,
@@ -238,7 +240,7 @@ export function MultiSelect(props: MultiSelectProps) {
 
   return (
     <div className={className}>
-      <div className={styles.labelContainer}>
+      <div className={cx(styles.labelContainer, labelContainerClassName)}>
         {label !== undefined && (
           <label {...getLabelProps()} className={cx(styles.label, { [styles.disabled]: disabled })}>
             {label}
