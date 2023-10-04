@@ -355,6 +355,7 @@ function ActivityFilters({
           label={t('layer.source_other', 'Sources') as string}
           placeholder={getPlaceholderBySelections(sourcesSelected)}
           options={allSourceOptions}
+          labelContainerClassName={styles.labelContainer}
           selectedOptions={sourcesSelected}
           onSelect={onSelectSourceClick}
           onIsOpenChange={handleIsOpenChange}

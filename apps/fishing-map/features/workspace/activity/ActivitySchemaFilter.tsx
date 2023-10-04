@@ -196,6 +196,7 @@ function ActivitySchemaFilter({
           placeholder={getPlaceholderBySelections(optionsSelected, filterOperator)}
           options={options}
           selectedOption={optionsSelected[0]}
+          labelContainerClassName={styles.labelContainer}
           onSelect={(selection) => onSelect(id, selection, true)}
           onCleanClick={() => onClean(id)}
         />
@@ -208,6 +209,7 @@ function ActivitySchemaFilter({
           options={options}
           selectedOptions={optionsSelected}
           onSelect={(selection) => onSelect(id, selection)}
+          labelContainerClassName={styles.labelContainer}
           onRemove={(selection, rest) => onRemove(id, rest)}
           onIsOpenChange={onIsOpenChange}
           onCleanClick={() => onClean(id)}
