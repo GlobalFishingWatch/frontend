@@ -57,7 +57,7 @@ export const VesselDetectionTimestamps = ({ vessel }: { vessel: ExtendedFeatureV
   if (!hasDetectionsTimestamps) return null
 
   return hasMultipleDetectionsTimestamps ? (
-    <Tooltip content={t('timebar.fitOnThisDates', 'Fit time range to these dates')}>
+    <Tooltip content={t('timebar.fitOnThisDates', 'Fit time range to these dates') as string}>
       <button
         className={styles.timestampBtn}
         onClick={() => {
