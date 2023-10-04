@@ -29,7 +29,7 @@ steps:
 
   - id: 'build-app'
     waitFor: ['install-yarn']
-    name: node:18-alpine
+    name: node:18
     entrypoint: yarn
     args: ['nx', 'build', 'fourwings-explorer', '--parallel']
     env:
