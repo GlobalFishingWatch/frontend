@@ -7,7 +7,7 @@
     "any": "Any",
     "basicVideo": "Basic video",
     "basicVideoLink": "https://drive.google.com/file/d/18yenS9pva3kF2YGKZcSqdHy8avzRinBP/view?usp=sharing",
-    "commingSoon": "coming soon!",
+    "commingSoon": "segera akan datang!",
     "currentTimeRange": "current time range",
     "dataAndTerminology": "Data and Terminology",
     "download": "Unduh",
@@ -15,7 +15,7 @@
     "faq": "FAQ's",
     "faqLink": "https://drive.google.com/file/d/1N4YRJ_yxAObEIWbaYM8l-YDPHS0bKe2N/view?usp=sharing",
     "feedback": "Umpan balik",
-    "from": "from",
+    "from": "dari",
     "GFW": "GFW",
     "high": "High",
     "historyFor": "history for",
@@ -114,7 +114,7 @@
     "nSelected_other": "{{count}} selected",
     "nSelected_plural": "{{count}} selected",
     "port": "Pelabuhan",
-    "portAction": "Port visit",
+    "portAction": "Kunjungan pelabuhan",
     "portAt": "Port visit at {{port}}",
     "portVisitEvents": "Port Visits",
     "position": "Position",
@@ -253,7 +253,7 @@
   },
   "selects": {
     "allSelected": "Semua",
-    "none": "None",
+    "none": "Tidak ada",
     "selected": "terpilih"
   },
   "settings": {
@@ -283,7 +283,7 @@
     },
     "greaterThan": "Greater than",
     "helpRange": "Should be a value between {{min}} and {{max}}, the value is not required",
-    "hours": "hours",
+    "hours": "jam",
     "km": "km",
     "kms": "kms",
     "loiteringEvents": {

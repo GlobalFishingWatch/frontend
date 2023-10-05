@@ -87,7 +87,7 @@
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
-      "hours": "hours",
+      "hours": "jam",
       "geartype": {
         "keyword": "geartype",
         "enum": {
@@ -420,7 +420,7 @@
           "costarica_vms_sardineros": "costarica_vms_sardineros"
         }
       },
-      "hours": "hours",
+      "hours": "jam",
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
       "distance_from_port_m": "distance_from_port_m",
@@ -456,7 +456,7 @@
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
-      "hours": "hours",
+      "hours": "jam",
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
@@ -581,7 +581,7 @@
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
-      "hours": "hours",
+      "hours": "jam",
       "geartype": {
         "keyword": "geartype",
         "enum": {
@@ -860,7 +860,7 @@
           "NOR": "NOR"
         }
       },
-      "hours": "hours",
+      "hours": "jam",
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
       "vessel-groups": "vessel-groups",
@@ -875,7 +875,7 @@
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
-      "hours": "hours",
+      "hours": "jam",
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
       "distance_from_port_m": "distance_from_port_m",
@@ -947,7 +947,7 @@
           "not defined": "not defined"
         }
       },
-      "hours": "hours",
+      "hours": "jam",
       "origin": {
         "keyword": "origin",
         "enum": {
@@ -1087,7 +1087,7 @@
           "PHL": "PHL"
         }
       },
-      "hours": "hours",
+      "hours": "jam",
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
       "vessel-groups": "vessel-groups",
@@ -1203,7 +1203,7 @@
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
-      "hours": "hours",
+      "hours": "jam",
       "geartype": {
         "keyword": "geartype",
         "enum": {
@@ -1411,7 +1411,7 @@
           "chile_vms_industry": "industri"
         }
       },
-      "hours": "hours",
+      "hours": "jam",
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
       "distance_from_port_m": "distance_from_port_m",
@@ -1479,7 +1479,7 @@
           "costarica_vms_sardineros": "costarica_vms_sardineros"
         }
       },
-      "hours": "hours",
+      "hours": "jam",
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
       "distance_from_port_m": "distance_from_port_m",
@@ -1515,7 +1515,7 @@
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
-      "hours": "hours",
+      "hours": "jam",
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
@@ -2021,7 +2021,7 @@
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
-      "hours": "hours",
+      "hours": "jam",
       "geartype": {
         "keyword": "geartype",
         "enum": {
@@ -2131,7 +2131,7 @@
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
-      "hours": "hours",
+      "hours": "jam",
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
@@ -2221,7 +2221,7 @@
           "NOR": "NOR"
         }
       },
-      "hours": "hours",
+      "hours": "jam",
       "geartype": {
         "keyword": "geartype",
         "enum": {
@@ -2353,7 +2353,7 @@
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
-      "hours": "hours",
+      "hours": "jam",
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
       "distance_from_port_m": "distance_from_port_m",
@@ -2401,7 +2401,7 @@
           "not defined": "not defined"
         }
       },
-      "hours": "hours",
+      "hours": "jam",
       "origin": {
         "keyword": "origin",
         "enum": {
@@ -2504,7 +2504,7 @@
           "PHL": "PHL"
         }
       },
-      "hours": "hours",
+      "hours": "jam",
       "vessel_id": "vessel_id",
       "elevation_m": "elevation_m",
       "vessel-groups": "vessel-groups",
