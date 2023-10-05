@@ -11,7 +11,7 @@ import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import InfoModalContent from 'features/workspace/common/InfoModalContent'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import DatasetLabel from 'features/datasets/DatasetLabel'
-import UserGuideLink from 'features/help/UserGuideLink'
+import UserGuideLink, { UserGuideSection } from 'features/help/UserGuideLink'
 import styles from './InfoModal.module.css'
 
 type InfoModalProps = {
@@ -86,9 +86,10 @@ const InfoModal = ({
     tooltip = t('dataset.importing', 'Dataset is being imported')
   }
   if (datasetError) {
-    tooltip = `${t('errors.uploadError', 'There was an error uploading your dataset')} - ${
-      dataset?.importLogs
-    }`
+    tooltip = `${t(
+      'errors.uploadError',
+      'There was an error uploading your dataset'
+    )} - ${dataset?.importLogs}`
   }
 
   if (dataset?.configuration?.geometryType === 'draw') {
@@ -106,7 +107,7 @@ const InfoModal = ({
   }
   const hasLongTitleTab = tabs.some((tab) => (tab.title as any).length > 30)
 
-  let userGuideLink
+  let userGuideLink: UserGuideSection | undefined
   if (dataview.category === DataviewCategory.Activity) {
     if (dataview.id.includes('presence')) {
       userGuideLink = 'activityPresence'

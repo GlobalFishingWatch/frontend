@@ -357,7 +357,7 @@ export const selectDataviewsResources = createSelector(
   }
 )
 
-const defaultDataviewResolved = []
+const defaultDataviewResolved: UrlDataviewInstance[] = []
 export const selectDataviewInstancesResolved = createSelector(
   [selectDataviewsResources],
   (dataviewsResources) => {

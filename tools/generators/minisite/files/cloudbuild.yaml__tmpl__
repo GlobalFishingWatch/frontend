@@ -29,7 +29,7 @@ steps:
 
   - id: 'build-app'
     waitFor: ['install-yarn']
-    name: node:18-alpine
+    name: node:18
     entrypoint: yarn
     args: ['nx', 'build', '<%= name %>', '--parallel']
     env:
@@ -42,7 +42,7 @@ steps:
 
   - id: 'docker-prepare'
     waitFor: ['build-app']
-    name: node:18-alpine
+    name: node:18
     entrypoint: yarn
     args: ['nx', 'docker-prepare', '<%= name %>']
 

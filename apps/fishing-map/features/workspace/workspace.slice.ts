@@ -48,6 +48,7 @@ import { getVesselDataviewInstanceDatasetConfig } from 'features/dataviews/datav
 import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
 import { getUTCDateTime } from 'utils/dates'
 import { fetchReportsThunk } from 'features/reports/reports.slice'
+import { AppDispatch } from 'store'
 import { selectCurrentWorkspaceId, selectWorkspaceStatus } from './workspace.selectors'
 
 type LastWorkspaceVisited = { type: ROUTE_TYPES; payload: any; query: any; replaceQuery?: boolean }
@@ -84,7 +85,7 @@ export const getDefaultWorkspace = () => {
 
 export const fetchWorkspaceThunk = createAsyncThunk(
   'workspace/fetch',
-  async (workspaceId: string, { signal, dispatch, getState, rejectWithValue }) => {
+  async (workspaceId: string, { signal, dispatch, getState, rejectWithValue }: any) => {
     const state = getState() as any
     const locationType = selectLocationType(state)
     const urlDataviewInstances = selectUrlDataviewInstances(state)
@@ -317,24 +318,23 @@ export const saveWorkspaceThunk = createAsyncThunk(
   }
 )
 
-export const updatedCurrentWorkspaceThunk = createAsyncThunk(
-  'workspace/updatedCurrent',
-  async (workspace: AppWorkspace, { dispatch }) => {
-    const workspaceUpsert = parseUpsertWorkspace(workspace)
-
-    const workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(
-      `/workspaces/${workspace.id}`,
-      {
-        method: 'PATCH',
-        body: workspaceUpsert,
-      } as FetchOptions<WorkspaceUpsert<WorkspaceState>>
-    )
-    if (workspaceUpdated) {
-      dispatch(cleanQueryLocation())
-    }
-    return workspaceUpdated
+export const updatedCurrentWorkspaceThunk = createAsyncThunk<
+  AppWorkspace,
+  AppWorkspace,
+  {
+    dispatch: AppDispatch
   }
-)
+>('workspace/updatedCurrent', async (workspace: AppWorkspace, { dispatch }) => {
+  const workspaceUpsert = parseUpsertWorkspace(workspace)
+  const workspaceUpdated = await GFWAPI.fetch<AppWorkspace>(`/workspaces/${workspace.id}`, {
+    method: 'PATCH',
+    body: workspaceUpsert,
+  } as FetchOptions<WorkspaceUpsert<WorkspaceState>>)
+  if (workspaceUpdated) {
+    dispatch(cleanQueryLocation())
+  }
+  return workspaceUpdated
+})
 
 const workspaceSlice = createSlice({
   name: 'workspace',

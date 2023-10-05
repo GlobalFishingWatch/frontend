@@ -28,8 +28,8 @@ export const infoDatasetConfigsCallback: GetDatasetConfigCallback = ([info]) => 
 
 export const eventsDatasetConfigsCallback: GetDatasetConfigCallback = (events) => {
   const allEvents = events.map((event) => {
-    const hasPaginationAdded = Object.keys(DEFAULT_PAGINATION_PARAMS).every((id) =>
-      event.query?.map((q) => q.id).includes(id)
+    const hasPaginationAdded = Object.keys(DEFAULT_PAGINATION_PARAMS).every(
+      (id) => event.query?.map((q) => q.id).includes(id)
     )
     if (hasPaginationAdded) {
       // Pagination already included, not needed to add it
@@ -52,7 +52,7 @@ export const eventsDatasetConfigsCallback: GetDatasetConfigCallback = (events) =
 export const trackDatasetConfigsCallback = (
   thinningConfig: ThinningConfigParam | null,
   chunks: { start: string; end: string }[] | null,
-  timebarGraph
+  timebarGraph: TimebarGraphs
 ) => {
   return (
     [track]: DataviewDatasetConfig[],

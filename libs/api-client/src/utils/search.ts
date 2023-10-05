@@ -1,8 +1,9 @@
 import { partition } from 'lodash'
 
-export type MultiSelectOption<T = any> = {
-  id: T
-  label: string
+// Copied from ui-components to avoid circular dependencies
+export type MultiSelectOption<ID = any, Label = string | JSX.Element> = {
+  id: ID
+  label: Label
   alias?: string[]
   tooltip?: string
 }

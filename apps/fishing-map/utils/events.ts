@@ -45,7 +45,7 @@ export const getEventDescription = ({
     start: startLabel,
     duration: durationLabel,
   }
-  let description
+  let description: string
   let descriptionGeneric
   switch (type) {
     case EventTypes.Encounter:

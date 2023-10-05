@@ -17,7 +17,7 @@ import {
 
 const PREFIX = 'GFW'
 
-const titleReducer = (_, action: PayloadAction<{ category?: string }>) => {
+const titleReducer = (_: any, action: PayloadAction<{ category?: string }>) => {
   const defaultTitle = `${PREFIX} | ${t('common.map', 'Map')}`
   switch (action.type) {
     case HOME:

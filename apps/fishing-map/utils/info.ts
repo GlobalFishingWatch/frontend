@@ -40,7 +40,10 @@ export const formatInfoField = (
       if (type === 'geartype') {
         return fieldValue
           .map((value) =>
-            translationFn(`vessel.gearTypes.${value.toLocaleLowerCase()}` as any, fieldValue)
+            translationFn(
+              `vessel.gearTypes.${value.toLocaleLowerCase()}` as any,
+              fieldValue as string
+            )
           )
           .join(', ')
       }
@@ -81,7 +84,7 @@ export const getVesselLabel = (
       ?.map((gear) => t(`vessel.gearTypes.${gear.toLowerCase()}`))
       .join(',')
     return `${formatInfoField(vesselInfo.shipname, 'name')}
-    (${t(`flags:${vesselInfo.flag}`)}, ${gearTypes || EMPTY_FIELD_PLACEHOLDER})`
+    (${t(`flags:${vesselInfo.flag}`, vesselInfo.flag)}, ${gearTypes || EMPTY_FIELD_PLACEHOLDER})`
   }
   if (vesselInfo.shipname) return formatInfoField(vesselInfo.shipname, 'name')
   if (vesselInfo.geartype) {

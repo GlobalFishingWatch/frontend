@@ -122,7 +122,7 @@ function VesselGroupModal(): React.ReactElement {
     }
   }, [dispatch, editingVesselGroup])
 
-  const onGroupNameChange = useCallback((e) => {
+  const onGroupNameChange = useCallback((e: any) => {
     setGroupName(e.target.value)
   }, [])
 

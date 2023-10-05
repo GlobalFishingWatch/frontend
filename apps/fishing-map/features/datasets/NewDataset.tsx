@@ -37,7 +37,7 @@ import {
 import styles from './NewDataset.module.css'
 import DatasetConfig, { extractPropertiesFromGeojson } from './DatasetConfig'
 import DatasetTypeSelect from './DatasetTypeSelect'
-import { getFileTypes } from './datasets.utils'
+import { DatasetGeometryTypesSupported, getFileTypes } from './datasets.utils'
 
 export type DatasetMetadata = {
   name: string
@@ -435,7 +435,7 @@ function NewDataset(): React.ReactElement {
             {/* eslint-disable-next-line  */}
             <FileDropzone
               onFileLoaded={onFileLoaded}
-              fileTypes={getFileTypes(datasetGeometryType)}
+              fileTypes={getFileTypes(datasetGeometryType as DatasetGeometryTypesSupported)}
             />
             {fileData && metadata && (
               <DatasetConfig

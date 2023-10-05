@@ -42,7 +42,7 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
   const heatmapDataviews = useSelector(selectActiveHeatmapDataviews)
   const { start, end } = useSelector(selectTimeRange)
 
-  const getDownloadVessels = async (_, done) => {
+  const getDownloadVessels = async (_: any, done: any) => {
     if (allVesselsWithAllInfo) {
       await setAllVesselsWithAllInfoFiltered(
         getVesselsFiltered(allVesselsWithAllInfo, reportVesselFilter) as any

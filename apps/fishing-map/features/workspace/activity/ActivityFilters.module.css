@@ -26,6 +26,10 @@
   opacity: var(--opacity-secondary);
 }
 
+.labelContainer {
+  margin-bottom: 0.4rem;
+}
+
 .actions {
   opacity: 0;
   transition: opacity 150ms linear;
@@ -51,7 +55,9 @@
   top: 0;
   z-index: -1;
   transform: translateY(0);
-  transition: transform 150ms ease-out, opacity 150ms linear;
+  transition:
+    transform 150ms ease-out,
+    opacity 150ms linear;
   opacity: 0;
   border-top: var(--border);
   border-bottom: var(--border);
@@ -86,9 +92,15 @@
 .filtersDisabled {
   font: var(--font-S);
   color: var(--color-secondary-blue);
-  margin-top: var(--space-M);
+  margin-top: var(--space-S);
 }
 
 .userGuideLink {
   margin-top: var(--space-S);
+}
+
+.footer {
+  margin-top: var(--space-S);
+  display: flex;
+  justify-content: flex-end;
 }
