@@ -35,7 +35,7 @@ const parseRegistryAuthorizations = (authorizations: VesselRegistryAuthorization
 export const objectArrayToCSV = (
   data: unknown[],
   csvConfig: CsvConfig[],
-  getter = get as (any, path: string) => any
+  getter = get as (any: any, path: string) => any
 ) => {
   const keys = csvConfig.map((c) => c.label).join(',')
   const values = data.map((d) => {

@@ -51,7 +51,7 @@ path.resolve('./next.config.js')
 //     }
 // )
 
-const VesselPage = (props) => {
+const VesselPage = (props: any) => {
   // const [isServer, setServer] = useState<boolean>(true)
   // useEffect(() => setServer(false), [])
 

@@ -60,14 +60,14 @@ export const selectSearchDatasetsInWorkspaceByType = (type: SearchType) =>
 export const selectBasicSearchDatasets = createSelector(
   [selectSearchDatasetsInWorkspaceByType('basic')],
   (basicSearchDatasets) => {
-    return basicSearchDatasets
+    return basicSearchDatasets as Dataset[]
   }
 )
 
 export const selectAdvancedSearchDatasets = createSelector(
   [selectSearchDatasetsInWorkspaceByType('advanced')],
   (advancedSearchDatasets) => {
-    return advancedSearchDatasets
+    return advancedSearchDatasets as Dataset[]
   }
 )
 

@@ -63,7 +63,7 @@ function CellWithFilter({ vessel, column, children, onClick }: CellWithFilterPro
     }
   }, [column, onClick, searchFilters, setSearchFilters, value])
 
-  const showFilter = value && !searchFilters[column]?.includes(value)
+  const showFilter = value && !(searchFilters as any)[column]?.includes(value)
 
   if (!showFilter) return children
 
@@ -228,7 +228,9 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             formatInfoField(getVesselProperty(vessel, 'owner'), 'owner') || EMPTY_FIELD_PLACEHOLDER
           return (
             <CellWithFilter vessel={vessel} column="owner" onClick={fetchResults}>
-              <Tooltip content={label?.length > TOOLTIP_LABEL_CHARACTERS ? label : ''}>
+              <Tooltip
+                content={(label as string[])?.length > TOOLTIP_LABEL_CHARACTERS ? label : ''}
+              >
                 <span>{label}</span>
               </Tooltip>
             </CellWithFilter>
@@ -339,7 +341,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
       enableRowVirtualization
       enableRowSelection={(row) =>
         row.original.identities.some(
-          (i) => i.identitySource === VesselIdentitySourceEnum.SelfReported
+          (i: any) => i.identitySource === VesselIdentitySourceEnum.SelfReported
         )
       }
       onRowSelectionChange={undefined}

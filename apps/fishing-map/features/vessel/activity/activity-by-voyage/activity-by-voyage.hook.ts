@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react'
 function useExpandedVoyages(): [number[], (voyage: any) => void] {
   const [expandedVoyages, setExpandedVoyages] = useState<number[]>([])
 
-  const toggleVoyage = useCallback((voyage) => {
+  const toggleVoyage = useCallback((voyage: number) => {
     setExpandedVoyages((voyages) => {
       const index = voyages.indexOf(voyage)
       return index === -1 ? [...voyages, voyage] : voyages.filter((v) => v !== voyage)

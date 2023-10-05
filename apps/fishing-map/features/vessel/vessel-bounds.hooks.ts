@@ -42,7 +42,7 @@ export const useVesselBounds = (type?: UseVesselBoundsType) => {
   }, [end, events, start, type, vesselTrack])
 
   const setVesselBounds = useCallback(
-    (bounds) => {
+    (bounds: Bbox) => {
       if (bounds) {
         fitBounds(bounds)
       }

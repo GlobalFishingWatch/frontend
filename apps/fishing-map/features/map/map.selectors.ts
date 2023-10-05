@@ -26,7 +26,7 @@ import { selectRulers } from 'features/map/rulers/rulers.slice'
 import {
   selectHighlightedTime,
   selectHighlightedEvents,
-  Range,
+  TimeRange,
 } from 'features/timebar/timebar.slice'
 import { selectBivariateDataviews, selectTimeRange } from 'features/app/app.selectors'
 import { selectMarineManagerDataviewInstanceResolved } from 'features/dataviews/dataviews.slice'
@@ -47,8 +47,8 @@ type GetGeneratorConfigParams = {
   resources: ResourcesState
   rulers: Ruler[]
   debugOptions: DebugOptions
-  timeRange: Range
-  highlightedTime?: Range
+  timeRange: TimeRange
+  highlightedTime?: TimeRange
   highlightedEvents?: string[]
   bivariateDataviews?: BivariateDataviews
   showTimeComparison?: boolean

@@ -1,5 +1,5 @@
 import { RootState } from 'reducers'
-import { Range } from 'features/timebar/timebar.slice'
+import { TimeRange } from 'features/timebar/timebar.slice'
 import { AppDispatch } from 'store'
 import { QueryParams, WorkspaceViewport } from 'types'
 import { ROUTE_TYPES } from './routes'
@@ -71,7 +71,7 @@ const updateUrlViewport: any = (dispatch: AppDispatch, getState: () => RootState
 }
 
 const updateUrlTimerange: any = (dispatch: AppDispatch, getState: () => RootState) => {
-  return (timerange: Range) => {
+  return (timerange: TimeRange) => {
     const state = getState()
     const location = selectCurrentLocation(state)
     const payload = selectLocationPayload(state)

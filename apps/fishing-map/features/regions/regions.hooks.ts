@@ -14,7 +14,7 @@ export function useRegionTranslationsById() {
       if (!id) return ''
       let translation = ''
       for (let key of Object.values(regionsDatasets)) {
-        const schemaTranslation = t(`datasets:${key}.schema.ID.enum.${id}` as string, '')
+        const schemaTranslation: string = t(`datasets:${key}.schema.ID.enum.${id}` as any, '')
         if (schemaTranslation) {
           translation = schemaTranslation
           break

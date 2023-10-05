@@ -82,7 +82,7 @@ const AreaTooltip = ({ payload }: any) => {
   return (
     <div className={styles.tooltipContainer}>
       <ul>
-        {payload.map(({ value, color, name }) => {
+        {payload.map(({ value, color, name }: any) => {
           return value !== 0 ? (
             <li key={name} className={styles.tooltipValue}>
               <span className={styles.tooltipValueDot} style={{ color }} />
@@ -234,7 +234,7 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
                 {index === eventTypes.length - 1 && (
                   <LabelList
                     position="right"
-                    valueAccessor={(entry) => formatI18nNumber(entry.total)}
+                    valueAccessor={(entry: any) => formatI18nNumber(entry.total)}
                     className={styles.count}
                   />
                 )}

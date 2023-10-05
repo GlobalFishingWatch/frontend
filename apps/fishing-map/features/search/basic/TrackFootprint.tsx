@@ -102,7 +102,7 @@ function TrackFootprint({
       fullContext.lineJoin = 'round'
       fullContext.lineWidth = isSmallFootprint ? 12 * densityMultiplier : 2 * densityMultiplier
       fullContext.strokeStyle = '#42639C'
-      trackData.features.forEach((feature: Feature<LineString>) => {
+      trackData.features.forEach((feature: Feature<any>) => {
         fullContext.beginPath()
         fullPath(
           feature.geometry.coordinates.length === 1
@@ -136,7 +136,7 @@ function TrackFootprint({
             geometry: {
               ...feature.geometry,
               coordinates: (feature.geometry as any).coordinates.filter(
-                (_, index) =>
+                (_: any, index: number) =>
                   featureTimes[index] > highlightStart && featureTimes[index] < highlightEnd
               ),
             },

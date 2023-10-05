@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { groupBy, uniqBy } from 'lodash'
-import { EventType, EventTypes, RegionType, Vessel } from '@globalfishingwatch/api-types'
+import { EventType, EventTypes, RegionType, Regions, Vessel } from '@globalfishingwatch/api-types'
 import { ApiEvent } from '@globalfishingwatch/api-types'
 import { selectVesselAreaSubsection } from 'features/vessel/vessel.config.selectors'
 import { getEventsDatasetsInDataview } from 'features/datasets/datasets.utils'
@@ -24,7 +24,9 @@ export const selectActivitySummary = createSelector(
   (events) => {
     const { activityRegions, mostVisitedPortCountries } = events.reduce(
       (acc, e) => {
-        Object.entries(e.regions || {}).forEach(([regionType, ids]) => {
+        Object.entries<any>(e.regions || ({} as Regions)).forEach((region) => {
+          const regionType = region[0] as RegionType
+          const ids = region[1] as string[]
           if (!acc.activityRegions[regionType]) {
             acc.activityRegions[regionType] = []
           }
@@ -47,7 +49,10 @@ export const selectActivitySummary = createSelector(
         acc.mostVisitedPortCountries[portFlag]++
         return acc
       },
-      { activityRegions: {}, mostVisitedPortCountries: {} as Record<string, number> }
+      {
+        activityRegions: {} as Record<RegionType, { id: string; count: number }[]>,
+        mostVisitedPortCountries: {} as Record<string, number>,
+      }
     )
     return {
       activityRegions,
@@ -98,7 +103,7 @@ export const selectEventsGroupedByArea = createSelector(
         })
         return acc
       },
-      {}
+      {} as Record<string, any>
     )
     return Object.entries(regionCounts)
       .map(([region, counts]) => ({ region, ...(counts || {}) }))
@@ -121,7 +126,7 @@ export const selectEventsGroupedByEncounteredVessel = createSelector(
         }
         return acc
       },
-      {}
+      {} as Record<string, any>
     )
     return Object.values(vesselCounts).sort((a, b) => b.encounters - a.encounters)
   }

@@ -41,6 +41,8 @@
     "@deck.gl/layers": "^8.9.30",
     "@deck.gl/mesh-layers": "^8.9.30",
     "@deck.gl/react": "^8.9.30",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "@globalfishingwatch/map-convert": "github:GlobalFishingWatch/map-convert",
     "@loaders.gl/core": "^3.4.14",
     "@loaders.gl/loader-utils": "^3.4.14",

@@ -13,7 +13,7 @@ function SearchDownload() {
   const vesselsSelected = useSelector(selectSelectedVessels)
   const [vesselsSelectedDownload, setVesselsSelectedDownload] = useState([])
 
-  const getDownloadVessels = async (_, done) => {
+  const getDownloadVessels = async (_: any, done: any) => {
     if (vesselsSelected) {
       const vesselsParsed = vesselsSelected.map((vessel) => {
         return {

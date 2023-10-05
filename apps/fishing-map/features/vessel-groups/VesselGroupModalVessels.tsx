@@ -33,8 +33,8 @@ function VesselGroupVesselRow({
     vessel || ({} as VesselRegistryInfo)
   const vesselName = formatInfoField(shipname, 'name')
   const vesselGearType = `${t(
-    `vessel.gearTypes.${geartype}` as any,
-    geartype ?? EMPTY_FIELD_PLACEHOLDER
+    `vessel.gearTypes.${geartype}` as string,
+    (geartype as any) || EMPTY_FIELD_PLACEHOLDER
   )}`
 
   return (
@@ -95,7 +95,7 @@ function groupSearchVesselsIdentityBy(vessels: IdentityVessel[] | null, groupByK
         ({
           dataset: v.dataset,
           ...getLatestIdentityPrioritised(v),
-        } as VesselGroupDataIdentity)
+        }) as VesselGroupDataIdentity
     ),
     groupByKey
   )
@@ -175,7 +175,9 @@ function VesselGroupVessels() {
                   <VesselGroupVesselRow
                     key={`${vessel?.id}-${vessel.dataset}`}
                     vessel={vessel}
-                    onRemoveClick={(vessel) => onVesselRemoveClick(vessel as Vessel)}
+                    onRemoveClick={(vessel) =>
+                      onVesselRemoveClick(vessel as VesselGroupDataIdentity)
+                    }
                     className={i === vessels.length - 1 ? styles.border : ''}
                   />
                 ))}

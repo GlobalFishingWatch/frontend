@@ -2,7 +2,7 @@ import { Fragment, useCallback, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { GroupedVirtuoso } from 'react-virtuoso'
 import { useTranslation } from 'react-i18next'
-import { EventTypes } from '@globalfishingwatch/api-types'
+import { EventType, EventTypes } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import useViewport from 'features/map/map-viewport.hooks'
@@ -47,7 +47,7 @@ export function ActivityByType() {
   }, [])
 
   const onToggleExpandedType = useCallback(
-    (event) => {
+    (event: EventType) => {
       toggleExpandedType(event)
       setSelectedEvent(undefined)
       trackEvent({
@@ -60,7 +60,7 @@ export function ActivityByType() {
   )
 
   const onMapHover = useCallback(
-    (event: ActivityEvent) => {
+    (event?: ActivityEvent) => {
       if (event?.id) {
         dispatch(setHighlightedEvents([event.id]))
       } else {

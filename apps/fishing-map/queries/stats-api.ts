@@ -7,17 +7,17 @@ import { uniq } from 'lodash'
 import { DateTime } from 'luxon'
 import { getDatasetsExtent, type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { StatField, StatFields, StatType } from '@globalfishingwatch/api-types'
-import type { Range } from 'features/timebar/timebar.slice'
+import type { TimeRange } from 'features/timebar/timebar.slice'
 
 export type FetchDataviewStatsParams = {
-  timerange: Range
+  timerange: TimeRange
   dataview: UrlDataviewInstance
   fields?: StatField[]
 }
 
 interface CustomBaseQueryArg extends BaseQueryArg<BaseQueryFn> {
   dataview: UrlDataviewInstance
-  timerange: Range
+  timerange: TimeRange
 }
 const serializeStatsDataviewKey: SerializeQueryArgs<CustomBaseQueryArg> = ({ queryArgs }) => {
   return [

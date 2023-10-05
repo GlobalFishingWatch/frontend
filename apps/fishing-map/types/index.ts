@@ -94,6 +94,7 @@ export interface WorkspaceState extends BaseUrlWorkspace {
 
 export type VesselSearchState = {
   query?: string
+  shipname?: string
   sources?: string[]
   searchOption?: SearchType
   infoSource?: VesselIdentitySourceEnum

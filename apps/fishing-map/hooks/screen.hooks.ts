@@ -111,7 +111,7 @@ export const useDownloadDomElementAsImage = (
   }
 }
 
-export const useOnScreen = (ref, rootMargin = '0px') => {
+export const useOnScreen = (ref: any, rootMargin = '0px') => {
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {

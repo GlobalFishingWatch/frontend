@@ -14,7 +14,7 @@ import {
   getActiveActivityDatasetsInDataviews,
   getLatestEndDateFromDatasets,
 } from 'features/datasets/datasets.utils'
-import { Range } from 'features/timebar/timebar.slice'
+import { TimeRange } from 'features/timebar/timebar.slice'
 import {
   selectUrlViewport,
   selectLocationCategory,
@@ -75,7 +75,7 @@ export const selectTimeRange = createSelector(
     return {
       start: urlTimerange?.start || workspaceTimerange?.start || DEFAULT_TIME_RANGE.start,
       end: urlTimerange?.end || workspaceTimerange?.end || DEFAULT_TIME_RANGE.end,
-    } as Range
+    } as TimeRange
   }
 )
 

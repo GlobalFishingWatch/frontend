@@ -165,7 +165,7 @@ function SearchBasicResult({
   )
 
   const onYearHover = useCallback(
-    (year: number) => {
+    (year?: number) => {
       if (!isSmallScreen) {
         setHighlightedYear(year)
       }

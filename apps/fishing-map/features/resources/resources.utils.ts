@@ -53,10 +53,10 @@ export const trackDatasetConfigsCallback = (
   thinningConfig: ThinningConfigParam | null,
   chunks: { start: string; end: string }[] | null,
   timebarGraph: TimebarGraphs
-) => {
+): GetDatasetConfigCallback => {
   return (
     [track]: DataviewDatasetConfig[],
-    dataview: UrlDataviewInstance
+    dataview?: UrlDataviewInstance
   ): DataviewDatasetConfig[] => {
     if (track?.endpoint === EndpointId.Tracks) {
       const thinningQuery = Object.entries(thinningConfig?.config || []).map(([id, value]) => ({
@@ -110,7 +110,7 @@ export const trackDatasetConfigsCallback = (
 
       if (chunks) {
         const chunkSetId = getTracksChunkSetId(trackWithThinning)
-        const dataset = dataview.datasets?.find(
+        const dataset = dataview?.datasets?.find(
           (d) => d.id === trackWithThinning.datasetId
         ) as Dataset
         // Workaround to avoid showing tracks outside the dataset bounds as the AIS data is changing at the end of 2022

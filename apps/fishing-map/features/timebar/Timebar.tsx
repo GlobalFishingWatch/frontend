@@ -44,7 +44,7 @@ import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-gr
 import { getUTCDateTime } from 'utils/dates'
 import { selectIsAnyReportLocation } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { setHighlightedTime, selectHighlightedTime, Range } from './timebar.slice'
+import { setHighlightedTime, selectHighlightedTime, TimeRange } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import { selectTracksData, selectTracksGraphData, selectTracksEvents } from './timebar.selectors'
 import TimebarActivityGraph from './TimebarActivityGraph'
@@ -202,7 +202,7 @@ const TimebarWrapper = () => {
     [dispatch, dispatchDisableHighlightedTime]
   )
 
-  const [internalRange, setInternalRange] = useState<Range | null>(null)
+  const [internalRange, setInternalRange] = useState<TimeRange | null>(null)
   const onChange = useCallback(
     (e: any) => {
       const gaActions: Record<string, string> = {

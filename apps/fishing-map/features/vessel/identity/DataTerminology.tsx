@@ -8,7 +8,7 @@ import {
   IconButton,
   Modal,
 } from '@globalfishingwatch/ui-components'
-import { I18nNamespaces } from 'features/i18n/react-i18next'
+import { I18nNamespaces } from 'features/i18n/i18n.types'
 import styles from './DataTerminology.module.css'
 
 interface ModalProps {
@@ -17,7 +17,7 @@ interface ModalProps {
   title?: string
   size?: IconButtonSize
   type?: IconButtonType
-  terminologyKey: keyof I18nNamespaces['data-terminology']
+  terminologyKey: I18nNamespaces['dataTerminology']
 }
 
 const DataTerminology: React.FC<ModalProps> = ({
