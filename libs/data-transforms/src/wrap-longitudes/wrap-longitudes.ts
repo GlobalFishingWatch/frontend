@@ -4,7 +4,10 @@ import { Feature, MultiPolygon, Polygon } from 'geojson'
 
 export type Bbox = [number, number, number, number]
 
+// Used to detect antimeridian issues in dissolve
 export const BUFFERED_ANTIMERIDIAN_LON = 179.5
+// Used to normalize longitudes to avoid antimeridian issues
+export const BUFFERED_ANTIMERIDIAN_NORMALIZED = 180.1
 
 export const wrapBBoxLongitudes = (bbox: Bbox) => {
   // Hack for renderers like mapbox gl or leaflet to fix antimeridian issues
@@ -28,27 +31,6 @@ export const wrapBBoxLongitudes = (bbox: Bbox) => {
   }) as Bbox
 }
 
-export const wrapFeaturesLongitudes = (features: Feature<LineString | Polygon>[]) => {
-  return features.map((feature) => wrapFeatureLongitudes(feature))
-}
-
-export const wrapFeatureLongitudes = (
-  featureData: Feature<LineString | Polygon | MultiPolygon>
-): Feature<LineString | Polygon | MultiPolygon> => {
-  let coordinates = featureData.geometry.coordinates
-  switch (featureData.geometry.type) {
-    case 'LineString':
-      coordinates = wrapLineStringFeatureCoordinates(featureData as Feature<LineString>)
-      return feature(geometry('LineString', coordinates)) as Feature<LineString>
-    case 'Polygon':
-      coordinates = wrapPolygonFeatureCoordinates(featureData as Feature<Polygon>)
-      return feature(geometry('Polygon', coordinates)) as Feature<Polygon>
-    default: // MultiPolygon
-      coordinates = wrapMultipolygonFeatureCoordinates(featureData as Feature<MultiPolygon>)
-      return feature(geometry('MultiPolygon', coordinates)) as Feature<MultiPolygon>
-  }
-}
-
 export function wrapGeometryBbox(geometry: Polygon | MultiPolygon): Bbox {
   let [minX, minY, maxX, maxY] = bbox(geometry)
   if (minX === -180 && maxX === 180) {
@@ -62,6 +44,20 @@ export function wrapGeometryBbox(geometry: Polygon | MultiPolygon): Bbox {
     })
   }
   return [minX, minY, maxX, maxY]
+}
+
+export const wrapFeaturesLongitudes = (features: Feature<LineString | Polygon>[]) => {
+  return features.map((feature) => wrapFeatureLongitudes(feature))
+}
+
+export const normalizeLongitud = (longitude: number) => {
+  if (longitude > BUFFERED_ANTIMERIDIAN_LON) return BUFFERED_ANTIMERIDIAN_NORMALIZED
+  else if (longitude < -BUFFERED_ANTIMERIDIAN_LON) return -BUFFERED_ANTIMERIDIAN_NORMALIZED
+  return longitude
+}
+
+type WrapLongitudesParams = {
+  normalize?: boolean
 }
 
 export const wrapLineStringFeatureCoordinates = (feature: Feature<LineString>) => {
@@ -81,20 +77,42 @@ export const wrapLineStringFeatureCoordinates = (feature: Feature<LineString>) =
   })
 }
 
-export const wrapPolygonFeatureCoordinates = (feature: Feature<Polygon>) => {
+export const wrapPolygonFeatureCoordinates = (
+  feature: Feature<Polygon>,
+  { normalize = true }: WrapLongitudesParams
+) => {
   return feature.geometry.coordinates.map((coords) => {
     return coords.map((pair) => {
-      let lon = pair[0]
-      if (lon > BUFFERED_ANTIMERIDIAN_LON) lon = 180.1
-      else if (lon < -BUFFERED_ANTIMERIDIAN_LON) lon = -180.1
+      const lon = normalize ? normalizeLongitud(pair[0]) : pair[0]
       if (lon < 0) return [lon + 360, pair[1]]
       return pair
     })
   })
 }
 
-export const wrapMultipolygonFeatureCoordinates = (feature: Feature<MultiPolygon>) => {
+export const wrapMultipolygonFeatureCoordinates = (
+  feature: Feature<MultiPolygon>,
+  params: WrapLongitudesParams
+) => {
   return feature.geometry.coordinates.map((coords) => {
-    return wrapPolygonFeatureCoordinates(polygon(coords))
+    return wrapPolygonFeatureCoordinates(polygon(coords), params)
   })
+}
+
+export const wrapFeatureLongitudes = (
+  featureData: Feature<LineString | Polygon | MultiPolygon>,
+  params: WrapLongitudesParams = {}
+): Feature<LineString | Polygon | MultiPolygon> => {
+  let coordinates = featureData.geometry.coordinates
+  switch (featureData.geometry.type) {
+    case 'LineString':
+      coordinates = wrapLineStringFeatureCoordinates(featureData as Feature<LineString>)
+      return feature(geometry('LineString', coordinates)) as Feature<LineString>
+    case 'Polygon':
+      coordinates = wrapPolygonFeatureCoordinates(featureData as Feature<Polygon>, params)
+      return feature(geometry('Polygon', coordinates)) as Feature<Polygon>
+    default: // MultiPolygon
+      coordinates = wrapMultipolygonFeatureCoordinates(featureData as Feature<MultiPolygon>, params)
+      return feature(geometry('MultiPolygon', coordinates)) as Feature<MultiPolygon>
+  }
 }
