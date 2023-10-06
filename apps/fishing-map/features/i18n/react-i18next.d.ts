@@ -5,12 +5,11 @@ import type { datasets, flags, timebar } from '@globalfishingwatch/i18n-labels'
 import type translations from '../../public/locales/source/translations.json'
 import type helphints from '../../public/locales/source/helphints.json'
 
-
-declare module "i18next" {
+declare module 'i18next' {
   // Extend CustomTypeOptions
   interface CustomTypeOptions {
     // custom namespace type, if you changed it
-    defaultNS: "translations";
+    defaultNS: 'translations'
     // custom resources type
     resources: {
       translations: typeof translations
@@ -18,6 +17,6 @@ declare module "i18next" {
       datasets: typeof datasets
       timebar: typeof timebar
       flags: typeof flags
-    };
+    }
   }
 }

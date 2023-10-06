@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { Dataview } from '@globalfishingwatch/api-types'
+import { Dataset, Dataview } from '@globalfishingwatch/api-types'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
@@ -161,7 +161,9 @@ export function useFetchReportVessel() {
 
   const dispatchFetchReport = useCallback(() => {
     const params = {
-      datasets: reportDataviews.map(({ datasets }) => datasets.map((d: any) => d.id).join(',')),
+      datasets: reportDataviews.map(
+        ({ datasets }) => datasets?.map((d: Dataset) => d.id).join(',')
+      ),
       filters: reportDataviews.map(({ filter }) => filter),
       vesselGroups: reportDataviews.map(({ vesselGroups }) => vesselGroups),
       region: {
@@ -200,7 +202,9 @@ export function useFetchReportVessel() {
     ) {
       dispatch(
         fetchReportVesselsThunk({
-          datasets: reportDataviews.map(({ datasets }) => datasets.map((d) => d.id).join(',')),
+          datasets: reportDataviews.map(({ datasets }) =>
+            datasets.map((d: Dataset) => d.id).join(',')
+          ),
           filters: reportDataviews.map(({ filter }) => filter),
           vesselGroups: reportDataviews.map(({ vesselGroups }) => vesselGroups),
           region: {

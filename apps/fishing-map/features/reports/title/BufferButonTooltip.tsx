@@ -14,9 +14,9 @@ type BufferButonTooltipProps = {
   activeOperation: BufferOperation
   handleRemoveBuffer: () => void
   handleConfirmBuffer: () => void
-  handleBufferUnitChange: (option: { id: string; label: string }) => void
+  handleBufferUnitChange: (option: ChoiceOption<BufferUnit>) => void
   handleBufferValueChange: (values: number[]) => void
-  handleBufferOperationChange: (option: { id: BufferOperation; label: string }) => void
+  handleBufferOperationChange: (option: ChoiceOption<BufferOperation>) => void
 }
 
 export const BufferButtonTooltip = ({

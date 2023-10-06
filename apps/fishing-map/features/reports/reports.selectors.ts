@@ -75,14 +75,14 @@ export const selectReportDataviewsWithPermissions = createDeepEqualSelector(
         )
         return {
           ...dataview,
-          datasets: dataview.datasets?.filter((d) => supportedDatasets.includes(d.id)),
+          datasets: dataview.datasets?.filter((d) => supportedDatasets.includes(d.id)) as Dataset[],
           filter: dataview.config?.filter || [],
           ...(dataview.config?.['vessel-groups']?.length && {
             vesselGroups: dataview.config?.['vessel-groups'],
           }),
         }
       })
-      .filter((dataview) => dataview.datasets.length > 0)
+      .filter((dataview) => dataview.datasets!?.length > 0)
   }
 )
 
@@ -354,7 +354,7 @@ export const selectIsReportAllowed = createSelector(
       return false
     }
     const datasetsReportAllowed = uniq(
-      reportDataviewsWithPermissions.flatMap((dv) => dv.datasets.flatMap((ds: any) => ds.id))
+      reportDataviewsWithPermissions.flatMap((dv) => dv.datasets?.flatMap((ds: any) => ds.id))
     )
     return datasetsReportAllowed?.length > 0
   }

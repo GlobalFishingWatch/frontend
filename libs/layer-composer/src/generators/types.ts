@@ -344,7 +344,7 @@ export interface PolygonsGeneratorConfig extends GeneratorConfig {
   /**
    * Sets the ordering group the polygons belong to
    */
-  group: Group
+  group?: Group
 }
 
 export interface VesselEventsGeneratorConfig extends GeneratorConfig {

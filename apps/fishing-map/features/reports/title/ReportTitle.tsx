@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Fragment } from 'react'
-import { Button, Icon } from '@globalfishingwatch/ui-components'
+import { Button, ChoiceOption, Icon } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -22,7 +22,7 @@ import ReportTitlePlaceholder from 'features/reports/placeholders/ReportTitlePla
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectCurrentReport } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { Bbox } from 'types'
+import { Bbox, BufferOperation, BufferUnit } from 'types'
 import {
   selectUrlBufferUnitQuery,
   selectUrlBufferValueQuery,
@@ -57,7 +57,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   const [tooltipInstance, setTooltipInstance] = useState<any>(null)
 
   const handleBufferUnitChange = useCallback(
-    (option) => {
+    (option: ChoiceOption<BufferUnit>) => {
       dispatch(
         setPreviewBuffer({
           unit: option.id,
@@ -69,7 +69,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     [dispatch, previewBuffer]
   )
   const handleBufferOperationChange = useCallback(
-    (option) => {
+    (option: ChoiceOption<BufferOperation>) => {
       dispatch(
         setPreviewBuffer({
           operation: option.id,
@@ -123,7 +123,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   }, [dispatch])
 
   const handleTooltipShow = useCallback(
-    (instance) => {
+    (instance: any) => {
       setTooltipInstance(instance)
       // This is to create the preview buffer on tooltip show
       dispatch(

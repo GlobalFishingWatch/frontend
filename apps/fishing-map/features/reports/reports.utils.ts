@@ -220,18 +220,19 @@ export const getReportCategoryFromDataview = (
     : (dataview.category as unknown as ReportCategory)
 }
 
+type BufferedAreaParams = {
+  area: Area | undefined
+  value: number
+  unit: BufferUnit
+  operation?: BufferOperation
+}
 // Area is needed to generate all report results
 export const getBufferedArea = ({
   area,
   value,
   unit,
   operation,
-}: {
-  area: Area | undefined
-  value: number
-  unit: BufferUnit
-  operation: BufferOperation
-}): Area | null => {
+}: BufferedAreaParams): Area | null => {
   const bufferedFeature = getBufferedFeature({ area, value, unit, operation })
   return { ...area, geometry: bufferedFeature?.geometry } as Area
 }
@@ -241,7 +242,7 @@ export const getBufferedAreaBbox = ({
   value = DEFAULT_POINT_BUFFER_VALUE,
   unit = DEFAULT_POINT_BUFFER_UNIT,
   operation = DEFAULT_BUFFER_OPERATION,
-}): Bbox | undefined => {
+}: BufferedAreaParams): Bbox | undefined => {
   const bufferedFeature = getBufferedFeature({
     area,
     value,
@@ -259,12 +260,7 @@ export const getBufferedFeature = ({
   value,
   unit,
   operation,
-}: {
-  area: Area | undefined
-  value: number
-  unit: BufferUnit
-  operation: BufferOperation
-}): Feature | null => {
+}: BufferedAreaParams): Feature | null => {
   if (!area?.geometry) return null
   const areaPolygon =
     area.geometry.type === 'MultiPolygon'

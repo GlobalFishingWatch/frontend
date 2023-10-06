@@ -1,5 +1,5 @@
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
-import { Feature, Polygon, MultiPolygon } from 'geojson'
+import { Feature, Polygon, MultiPolygon, Point } from 'geojson'
 import { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
 import { Bbox } from '@globalfishingwatch/data-transforms'
 
@@ -32,7 +32,7 @@ function isCellInPolygon(cellGeometry: Polygon, polygon: Polygon) {
 
 export function filterByPolygon(
   layersCells: GeoJSONFeature[][],
-  polygon: Polygon | MultiPolygon
+  polygon: Point | Polygon | MultiPolygon
 ): FilteredPolygons[] {
   const filtered = layersCells.map((layerCells) => {
     return layerCells.reduce(
@@ -62,7 +62,7 @@ export function filterByPolygon(
             type: 'Point' as const,
             coordinates: [(minX + maxX) / 2, (minY + maxY) / 2],
           }
-          const overlaps = booleanPointInPolygon(center, polygon)
+          const overlaps = booleanPointInPolygon(center, polygon as MultiPolygon)
           if (overlaps) {
             acc.overlapping.push(cell as Feature)
           }
