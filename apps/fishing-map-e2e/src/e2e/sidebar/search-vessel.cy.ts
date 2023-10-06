@@ -9,12 +9,15 @@ import {
   waitForSidebarLoaded,
 } from '../../support/app.po'
 
-xdescribe('Basic search for a vessel', () => {
+describe('Basic search for a vessel', () => {
+  before(() => {
+    // I need to search as a anonymous user, the last update of cypress needed to add the eslit coment
+    // eslint-disable-next-line
+    cy.clearAllLocalStorage().then(() => {
+      disablePopups()
+    })
+  })
   beforeEach(() => {
-    // I need to search as a anonymous user
-    cy.clearAllLocalStorage()
-
-    disablePopups()
     cy.visit(URL_YEAR_2018)
     waitForSidebarLoaded()
     cy.getBySel('search-vessels-open').click()
