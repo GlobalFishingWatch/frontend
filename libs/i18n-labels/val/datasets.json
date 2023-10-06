@@ -681,6 +681,16 @@
       "distance_from_shore_m": "crwdns64789:0crwdne64789:0"
     }
   },
+  "private-indonesia-fishing-vessels": {
+    "name": "crwdns69208:0crwdne69208:0",
+    "description": "crwdns69210:0crwdne69210:0",
+    "schema": {
+      "id": "crwdns69212:0crwdne69212:0",
+      "shipname": "crwdns69214:0crwdne69214:0",
+      "lastTransmissionDate": "crwdns69216:0crwdne69216:0",
+      "firstTransmissionDate": "crwdns69218:0crwdne69218:0"
+    }
+  },
   "private-indonesia-ipnlf-fishing-effort": {
     "name": "crwdns64791:0crwdne64791:0",
     "description": "crwdns64793:0crwdne64793:0",
@@ -1245,12 +1255,12 @@
     "description": "crwdns65431:0crwdne65431:0",
     "schema": {
       "id": "crwdns65433:0crwdne65433:0",
-      "flag": "crwdns65435:0crwdne65435:0",
-      "source": "crwdns65437:0crwdne65437:0",
-      "callsign": "crwdns65439:0crwdne65439:0",
-      "shipname": "crwdns65441:0crwdne65441:0",
+      "registryInfo": "crwdns69220:0crwdne69220:0",
+      "registryOwners": "crwdns69222:0crwdne69222:0",
+      "selfReportedInfo": "crwdns69224:0crwdne69224:0",
       "lastTransmissionDate": "crwdns65443:0crwdne65443:0",
-      "firstTransmissionDate": "crwdns65445:0crwdne65445:0"
+      "firstTransmissionDate": "crwdns65445:0crwdne65445:0",
+      "registryAuthorizations": "crwdns69226:0crwdne69226:0"
     }
   },
   "private-png-presence": {
