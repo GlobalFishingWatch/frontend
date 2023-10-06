@@ -8,14 +8,7 @@ import { format } from 'd3-format'
 import { DateTime } from 'luxon'
 import { polygon, featureCollection, multiPolygon } from '@turf/helpers'
 import { bbox, buffer, difference, dissolve } from '@turf/turf'
-import {
-  Feature,
-  FeatureCollection,
-  GeoJsonProperties,
-  MultiPolygon,
-  Polygon,
-  Position,
-} from 'geojson'
+import { Feature, GeoJsonProperties, MultiPolygon, Polygon, Position } from 'geojson'
 import { parse } from 'qs'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -340,7 +333,7 @@ export const getBufferedFeature = ({
   if (!bufferedFeatures.length) return null
 
   const dissolvedBufferedPolygonsFeatures = multiPolygon(
-    featureCollection(bufferedFeatures).features.map((f) => f.geometry.coordinates)
+    dissolve(featureCollection(bufferedFeatures)).features.map((f) => f.geometry.coordinates)
   )
 
   if (operation === DIFFERENCE) {

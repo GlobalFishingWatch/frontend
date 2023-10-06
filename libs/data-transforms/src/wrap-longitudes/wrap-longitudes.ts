@@ -82,11 +82,11 @@ export const wrapLineStringFeatureCoordinates = (feature: Feature<LineString>) =
 }
 
 export const wrapPolygonFeatureCoordinates = (feature: Feature<Polygon>) => {
-  return feature.geometry.coordinates.map((coords, index) => {
+  return feature.geometry.coordinates.map((coords) => {
     return coords.map((pair) => {
       let lon = pair[0]
-      if (lon > BUFFERED_ANTIMERIDIAN_LON) lon = 180
-      else if (lon < -BUFFERED_ANTIMERIDIAN_LON) lon = -180
+      if (lon > BUFFERED_ANTIMERIDIAN_LON) lon = 180.1
+      else if (lon < -BUFFERED_ANTIMERIDIAN_LON) lon = -180.1
       if (lon < 0) return [lon + 360, pair[1]]
       return pair
     })
