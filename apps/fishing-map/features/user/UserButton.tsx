@@ -7,7 +7,7 @@ import LocalStorageLoginLink from 'routes/LoginLink'
 import { USER } from 'routes/routes'
 import { DEFAULT_WORKSPACE_LIST_VIEWPORT } from 'features/sidebar/CategoryTabs'
 
-const UserButton = ({ className = '' }: { className?: string }) => {
+const UserButton = ({ className = '', testId }: { className?: string; testId?: string }) => {
   const { t } = useTranslation()
   const guestUser = useSelector(isGuestUser)
   const userData = useSelector(selectUserData)
@@ -31,7 +31,7 @@ const UserButton = ({ className = '' }: { className?: string }) => {
             replaceQuery: true,
           }}
         >
-          {userData ? initials : <Icon icon="user" className="print-hidden" />}
+          {userData ? initials : <Icon icon="user" className="print-hidden" testId={testId} />}
         </Link>
       )}
     </div>

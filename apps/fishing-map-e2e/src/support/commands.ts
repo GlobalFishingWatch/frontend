@@ -58,7 +58,7 @@ function loginViaAuthAPI(username: string, password: string) {
   cy.get('div[role=dialog] button[type=button][aria-label=close]').click()
 
   // Login on Auth0.
-  cy.get('a[href*="auth"]', { timeout: 20000 }).click()
+  cy.getBySel('sidebar-login-icon', { timeout: 20000 }).click()
   cy.log(`logging in with ${username}`)
 
   cy.get('input#email').type(username)

@@ -13,6 +13,7 @@ import { API_URL_GALAPAGOS_INFO, URL_ONE_MONTH } from '../../constants/urls'
 import {
   deleteDownloadsFolder,
   disablePopups,
+  getDOMTimeout,
   getDownloadsFolderPath,
   getMapCanvas,
   scrollSidebar,
@@ -49,7 +50,7 @@ describe('Download reports for an area', () => {
     cy.getBySel('map-search-results').findBySelLike('map-search-result').first().click()
     getMapCanvas().click('center')
     cy.intercept(API_URL_GALAPAGOS_INFO).as('areaInfo')
-    cy.getBySel(MAP_POPUP_EEZ_SECTION, { timeout: 10000 })
+    cy.getBySel(MAP_POPUP_EEZ_SECTION, getDOMTimeout(10000))
       .findBySelLike('download-activity-layers')
       .click()
     cy.getBySel('download-activity-byvessel')
