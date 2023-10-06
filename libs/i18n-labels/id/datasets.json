@@ -681,6 +681,16 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "private-indonesia-fishing-vessels": {
+    "name": "Indonesia VMS (Fishing Vessels)",
+    "description": "Dataset for VMS Indonesia (Private)",
+    "schema": {
+      "id": "id",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "private-indonesia-ipnlf-fishing-effort": {
     "name": "AP2HI-IPNLF: Indonesia Pelagic",
     "description": "Indonesia AP2HI-IPNLF Fishing Effort",
@@ -1245,12 +1255,12 @@
     "description": "Dataset for VMS Papua New Guinea (Private)",
     "schema": {
       "id": "id",
-      "flag": "flag",
-      "source": "source",
-      "callsign": "callsign",
-      "shipname": "shipname",
+      "registryInfo": "registryInfo",
+      "registryOwners": "registryOwners",
+      "selfReportedInfo": "selfReportedInfo",
       "lastTransmissionDate": "lastTransmissionDate",
-      "firstTransmissionDate": "firstTransmissionDate"
+      "firstTransmissionDate": "firstTransmissionDate",
+      "registryAuthorizations": "registryAuthorizations"
     }
   },
   "private-png-presence": {
