@@ -29,7 +29,7 @@ export const getVesselLabel = (vessel: ExtendedFeatureVessel | Vessel, withGearT
   if (!vessel) return t('common.unknownVessel', 'Unknown vessel')
   if (vessel.shipname && vessel.geartype && vessel.flag && withGearType) {
     return `${formatInfoField(vessel.shipname, 'name')}
-    (${t(`flags:${vessel.flag}`)}, ${t(
+    (${t(`flags:${vessel.flag}`, vessel.flag)}, ${t(
       `vessel.gearTypes.${vessel.geartype}` as any,
       EMPTY_FIELD_PLACEHOLDER
     )})`

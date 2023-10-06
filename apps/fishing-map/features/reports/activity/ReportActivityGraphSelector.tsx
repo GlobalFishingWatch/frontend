@@ -31,7 +31,7 @@ export default function ReportActivityGraphSelector({
     (d) => d.config?.filter === dataviews[0].config?.filter
   )
 
-  const options: ChoiceOption[] = [
+  const options: ChoiceOption<ReportActivityGraph>[] = [
     {
       id: REPORT_ACTIVITY_GRAPH_EVOLUTION,
       label: t('analysis.evolution', 'Evolution'),

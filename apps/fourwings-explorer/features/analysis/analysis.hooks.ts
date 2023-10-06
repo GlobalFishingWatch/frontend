@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react'
-import { Polygon, MultiPolygon, Feature } from 'geojson'
+import { Polygon, MultiPolygon, Feature, Point } from 'geojson'
 import simplify from '@turf/simplify'
 import { atom, useRecoilState } from 'recoil'
 import { useRouter } from 'next/router'
@@ -52,7 +52,7 @@ export const useFilteredTimeSeries = (areaFeature: ContextAreaFeature) => {
   }, [areaFeature])
 
   const computeTimeseries = useCallback(
-    (layersWithFeatures: LayerFeature[], geometry?: Polygon | MultiPolygon) => {
+    (layersWithFeatures: LayerFeature[], geometry?: Point | Polygon | MultiPolygon) => {
       const features = layersWithFeatures.map(({ chunksFeatures }) =>
         chunksFeatures.flatMap(({ active, features }) => (active && features ? features : []))
       )

@@ -46,7 +46,7 @@ export const useActivityByType = () => {
     () =>
       eventsByType.reduce(
         (p, c) => p.concat(c).concat(c.status === 'expanded' ? c.events : []),
-        []
+        [] as any[]
       ),
     [eventsByType]
   )

@@ -23,7 +23,7 @@ import { useMapFitBounds } from '../map-viewport.hooks'
 
 export const getFeatureBounds = (feature: TooltipEventFeature) => {
   if (feature?.geometry?.type === 'Point') {
-    return getBufferedAreaBbox({ area: feature })
+    return getBufferedAreaBbox({ area: feature } as any)
   }
   return feature.properties.bbox ? parsePropertiesBbox(feature.properties.bbox) : null
 }
@@ -74,8 +74,8 @@ export const useContextInteractions = () => {
       const datasetId = feature.datasetId as string
       const dataset = datasets.find((d) => d.id === datasetId)
       if (dataset) {
-        const dataview = dataviews.find((dataview) =>
-          dataview.datasets?.some((dataset) => dataset.id === datasetId)
+        const dataview = dataviews.find(
+          (dataview) => dataview.datasets?.some((dataset) => dataset.id === datasetId)
         )
         const areaName =
           dataview?.config?.type === GeneratorType.UserContext

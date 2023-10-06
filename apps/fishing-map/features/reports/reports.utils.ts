@@ -187,14 +187,14 @@ export const getCommonProperties = (dataviews: UrlDataviewInstance[]) => {
       ) {
         const keyLabelField = FIELDS.find((field) => field[0] === filterKey)
         const keyLabel = keyLabelField
-          ? t(keyLabelField[1], keyLabelField[2]).toLocaleLowerCase()
+          ? t(keyLabelField[1] as any, keyLabelField[2] as string).toLocaleLowerCase()
           : filterKey
 
         const valuesLabel = getSchemaFieldsSelectedInDataview(
           dataviews[0],
           filterKey as SupportedDatasetSchema
         )
-          .map((f) => f.label.toLocaleLowerCase())
+          .map((f: any) => f.label.toLocaleLowerCase())
           .join(', ')
 
         if (getSchemaFilterOperationInDataview(dataviews[0], filterKey) === EXCLUDE_FILTER_ID) {
@@ -224,18 +224,19 @@ export const getReportCategoryFromDataview = (
     : (dataview.category as unknown as ReportCategory)
 }
 
+type BufferedAreaParams = {
+  area: Area | undefined
+  value: number
+  unit: BufferUnit
+  operation?: BufferOperation
+}
 // Area is needed to generate all report results
 export const getBufferedArea = ({
   area,
   value,
   unit,
   operation,
-}: {
-  area: Area | undefined
-  value: number
-  unit: BufferUnit
-  operation: BufferOperation
-}): Area | null => {
+}: BufferedAreaParams): Area | null => {
   const bufferedFeature = getBufferedFeature({ area, value, unit, operation })
   return { ...area, geometry: bufferedFeature?.geometry } as Area
 }
@@ -254,7 +255,7 @@ export const getBufferedAreaBbox = ({
   value = DEFAULT_POINT_BUFFER_VALUE,
   unit = DEFAULT_POINT_BUFFER_UNIT,
   operation = DEFAULT_BUFFER_OPERATION,
-}): Bbox | undefined => {
+}: BufferedAreaParams): Bbox | undefined => {
   const bufferedFeature = getBufferedFeature({
     area,
     value,
@@ -272,12 +273,7 @@ export const getBufferedFeature = ({
   value,
   unit,
   operation,
-}: {
-  area: Area | undefined
-  value: number
-  unit: BufferUnit
-  operation: BufferOperation
-}): Feature | null => {
+}: BufferedAreaParams): Feature | null => {
   if (!area?.geometry) return null
 
   const [minX, , maxX] = area.geometry.bbox || bbox(area.geometry)

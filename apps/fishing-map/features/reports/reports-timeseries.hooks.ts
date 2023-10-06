@@ -3,6 +3,7 @@ import { Polygon, MultiPolygon } from 'geojson'
 import { useSelector } from 'react-redux'
 import { atom, selector, useRecoilState, useSetRecoilState } from 'recoil'
 import { Interval } from '@globalfishingwatch/layer-composer'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   selectActiveReportDataviews,
   selectReportActivityGraph,
@@ -79,7 +80,7 @@ export function useSetTimeseries() {
   return useSetRecoilState(mapTimeseriesAtom)
 }
 
-const emptyArray = []
+const emptyArray: UrlDataviewInstance[] = []
 export const useFilteredTimeSeries = () => {
   const [timeseries, setTimeseries] = useRecoilState(mapTimeseriesAtom)
   const area = useSelector(selectReportArea)

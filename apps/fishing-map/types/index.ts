@@ -29,27 +29,12 @@ export type ReportStateProperty =
   | 'reportBufferUnit'
   | 'reportBufferOperation'
 
-export type WorkspaceStateProperty =
-  | 'query'
-  | 'report'
-  | 'readOnly'
-  | 'daysFromLatest'
-  | 'sidebarOpen'
-  | 'dataviewInstances'
-  | 'dataviewInstancesOrder'
-  | 'timebarVisualisation'
-  | 'visibleEvents'
-  | 'timebarGraph'
-  | 'timebarSelectedEnvId'
-  | 'bivariateDataviews'
-  | 'activityCategory'
-  | ReportStateProperty
-  | keyof AppParams
+export type WorkspaceStateProperty = keyof WorkspaceState
+export type AppStateProperty = keyof AppState
 
-export type WorkspaceParam =
-  | WorkspaceViewportParam
-  | WorkspaceTimeRangeParam
-  | WorkspaceStateProperty
+export type AnyStateProperty = WorkspaceStateProperty | ReportStateProperty | AppStateProperty
+
+export type WorkspaceParam = WorkspaceViewportParam | WorkspaceTimeRangeParam | AnyStateProperty
 
 export type WorkspaceViewport = Record<WorkspaceViewportParam, number>
 export type WorkspaceTimeRange = Record<WorkspaceTimeRangeParam, string>
@@ -116,14 +101,14 @@ export enum UserTab {
   VesselGroups = 'vesselGroups',
 }
 
-export type AppParams = {
+export type AppState = {
   userTab?: UserTab
 }
 
 export type QueryParams = Partial<WorkspaceViewport> &
   Partial<WorkspaceTimeRange> &
   WorkspaceState &
-  AppParams &
+  AppState &
   RedirectParam
 
 export type MapCoordinates = {

@@ -31,7 +31,7 @@ export default function ReportActivityGraph() {
     MAX_DATE,
   } = useReportTimeCompareConnect('periodComparison')
 
-  const trackAndChangeComparisonDate = (date) => {
+  const trackAndChangeComparisonDate = (date: any) => {
     trackEvent({
       category: TrackCategory.Analysis,
       action: `Select comparison date in 'period comparison'`,
@@ -46,7 +46,7 @@ export default function ReportActivityGraph() {
     onCompareStartChange(date)
   }
 
-  const trackAndChangeBaselineDate = (date) => {
+  const trackAndChangeBaselineDate = (date: any) => {
     trackEvent({
       category: TrackCategory.Analysis,
       action: `Select baseline date in 'period comparison'`,
@@ -61,7 +61,7 @@ export default function ReportActivityGraph() {
     onStartChange(date)
   }
 
-  const trackAndChangeDuration = (duration) => {
+  const trackAndChangeDuration = (duration: any) => {
     trackEvent({
       category: TrackCategory.Analysis,
       action: `Select duration in 'period comparison'`,
@@ -76,7 +76,7 @@ export default function ReportActivityGraph() {
     onDurationChange(duration)
   }
 
-  const trackAndChangeDurationType = (duration) => {
+  const trackAndChangeDurationType = (duration: any) => {
     trackEvent({
       category: TrackCategory.Analysis,
       action: `Select duration in 'period comparison'`,

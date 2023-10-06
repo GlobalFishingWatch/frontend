@@ -34,6 +34,7 @@ export type DownloadActivityParams = {
   datasetId: string
   dataviews: {
     datasets: string[]
+    'vessel-groups': string[]
     filter?: string
   }[]
   areaName: string

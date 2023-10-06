@@ -29,7 +29,7 @@ export type ROUTE_TYPES =
   | typeof REPORT
 
 const MAX_URL_LENGTH_SUPPORTED = 11000
-const confirmLeave = (state, action) => {
+const confirmLeave = (state: any, action: any) => {
   if (
     state.location?.type !== action.type &&
     state.location?.search?.length >= MAX_URL_LENGTH_SUPPORTED

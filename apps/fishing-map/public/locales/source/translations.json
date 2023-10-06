@@ -20,12 +20,12 @@
     "dissolve": "combined",
     "downloadVesselsList": "Download list (CSV)",
     "error": "There was a problem loading the data, please try refreshing the page",
-    "errorConcurrentReport": "There is already a report running",
-    "errorConcurrentReportLink": "See it",
+    "errorConcurrentReport": "Your latest report is still being processed",
+    "errorConcurrentReportLink": "See it here",
     "errorDuplicatedName": "There is already a report with the same name",
     "errorMessage": "Something went wrong",
     "errorPeriodComparisonDateRange": "Date range error. Comparison start must be after baseline start.",
-    "errorTooComplex": "The geometry of the area is too complex to perform a report, try to simplify and upload again.",
+    "errorTooComplex": "We cannot create a dynamic report for this area as the boundary information is complex. Please simplify your area of interest - by uploading a new layer or drawing your layer on the map - and try the report again to resolve.",
     "evolution": "evolution",
     "groupByFlag": "by flag",
     "groupByGeartype": "by gear type",
@@ -83,10 +83,12 @@
     "activity": "Activity",
     "analysis": "Create an analysis for this area",
     "analysisNotAvailable": "Toggle an activity or environmenet layer on to analyse it in this area",
+    "and": "and",
     "apparentFishing": "Apparent Fishing Effort",
     "average": "average",
     "averageAbbreviated": "avg.",
     "back": "back",
+    "between": "between",
     "cancel": "Cancel",
     "category": "Category",
     "comingSoon": "coming soon!",
@@ -99,6 +101,7 @@
     "date": "Date",
     "date_one": "Date",
     "date_other": "Dates",
+    "dateRange": "between {{start}} and {{end}}",
     "days": "Day",
     "days_one": "Day",
     "days_other": "days",
@@ -125,6 +128,7 @@
     "hour": "Hour",
     "hour_one": "Hour",
     "hour_other": "hours",
+    "in": "in",
     "include": "Include",
     "latitude": "Latitude",
     "layerList": "Layer list",
@@ -202,6 +206,7 @@
       "geojson": "geojson",
       "shapefile": "compressed shapefile"
     },
+    "hint": "Find out more about the supported formats",
     "importing": "Dataset is being imported",
     "individualIdField": "Individual ID field",
     "latitudeNameField": "Latitude field",
@@ -245,6 +250,10 @@
     "context-layer-mpa": {
       "dataWarning": "This platform uses MPA reference layers from World Database on Protected Areas.",
       "dataWarningDetail": "This platform uses reference layers (shapefiles) from the World Database on Protected Areas for marine protected areas. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. To see the original reference layers, please visit <a href='http://www.protectedplanet.net'>www.protectedplanet.net</a>. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw oro upload your own reference layer using the '+' icon in the left sidebar. Learn more on our <a href='https://globalfishingwatch.org/tutorials/'>tutorials</a> and <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
+    },
+    "context-layer-protectedseas": {
+      "dataWarning": "This platform uses MPA (ProtectedSeas) reference layers from ProtectedSeas Navigator",
+      "dataWarningDetail": "This platform uses reference layers (shapefiles) from the ProtectedSeas Navigator for MPAs (ProtectedSeas). The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. To see the original reference layers, please visit <a href='https://mpa.protectedseas.net'>https://mpa.protectedseas.net/</a>. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw oro upload your own reference layer using the '+' icon in the left sidebar. Learn more on our <a href='https://globalfishingwatch.org/tutorials/'>tutorials</a> and <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
     }
   },
   "download": {
@@ -408,6 +417,7 @@
     "editPolygonHint": "Click on polygon corners to adjust their coordinates",
     "filterClose": "Close filters",
     "filterOpen": "Open filters",
+    "filtersConfirmAbort": "Do you want to apply the changes made to the layer?",
     "filtersDisabled": "Other filters {{filters}} are available depending on the sources selected",
     "filterValues": "Filter values",
     "flagState_one": "Flag",
@@ -444,7 +454,8 @@
     "toggleAllVisibility": "Toggle all layers visibility",
     "type": "Type",
     "vessel_fit_bounds": "Center view on vessel track",
-    "vessel_fit_bounds_out_of_timerange": "The track has no activity in your selected timerange. Change timerange to fit this track?"
+    "vessel_fit_bounds_out_of_timerange": "The track has no activity in your selected timerange. Change timerange to fit this track?",
+    "whichFeature": "Which feature would you like to improve?"
   },
   "map": {
     "captureMap": "Capture map",
@@ -521,7 +532,18 @@
     "title": "User"
   },
   "userGuide": {
-    "title": "User Guide"
+    "title": "User Guide",
+    "activityFilters": "Filtering activity layers",
+    "activityFishing": "Activity - fishing",
+    "activityPresence": "Activity - presence",
+    "analysis": "Analyze activity",
+    "detectionsSAR": "Detections SAR",
+    "detectionsVIIRS": "Detections VIIRS",
+    "downloadActivity": "Download data",
+    "uploadEnvironment": "Upload environment layers data",
+    "uploadReference": "Upload reference layers data",
+    "vesselGroups": "Vessel groups",
+    "vesselSearch": "Vessel Search"
   },
   "vessel": {
     "addToWorkspace": "Add vessel to view",
@@ -536,8 +558,10 @@
     "firstTransmissionDate": "First transmission date",
     "fishingZone": "Fishing zone",
     "flag": "Flag",
+    "flag_other": "Flags",
     "fleet": "Fleet",
     "geartype": "Gear type",
+    "geartype_other": "Gear types",
     "gearType_short": "gear",
     "gearTypes": {
       "dredge_fishing": "Gross Tonnage Dredge Fishing",
@@ -602,6 +626,16 @@
     "unmatched": "unmatched",
     "vessel_type": "Vessel type",
     "vesselType_other": "Vessel types",
+    "vesselTypes": {
+      "bunker_or_tanker": "Bunker or tanker",
+      "cargo": "Cargo",
+      "carrier": "Carrier",
+      "fishing": "Fishing",
+      "other_non_fishing": "Other",
+      "passenger": "Passenger",
+      "seismic_vessel": "Seismic vessel",
+      "unknown": "Unknown"
+    },
     "widthRange": "Width range"
   },
   "vesselGroup": {

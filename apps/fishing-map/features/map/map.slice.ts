@@ -218,7 +218,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
       )
       // TODO remove once normalized in api between id and vessel_id
       const sublayersVesselsIds = sublayersVesselsIdsResponse.entries.map((sublayer) =>
-        sublayer.map((vessel) => {
+        sublayer.map((vessel: any) => {
           const { id, vessel_id, ...rest } = vessel
           return { ...rest, id: id || vessel_id }
         })
@@ -325,7 +325,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
                 }
               })
             })
-            .sort((a, b) => b[activityProperty] - a[activityProperty]),
+            .sort((a: any, b: any) => b[activityProperty] - a[activityProperty]),
         }
       })
 

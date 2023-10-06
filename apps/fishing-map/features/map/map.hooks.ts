@@ -412,7 +412,8 @@ export const parseMapTooltipFeatures = (
     const title = getDatasetTitleByDataview(dataview)
 
     const datasets = getActiveDatasetsInActivityDataviews([dataview])
-    const subcategory = dataview?.datasets?.find(({ id }) => datasets.includes(id))?.subcategory
+    const subcategory = dataview?.datasets?.find(({ id }) => datasets.includes(id))
+      ?.subcategory as DatasetSubCategory
     const tooltipEventFeature: TooltipEventFeature = {
       title,
       type: dataview.config?.type,
