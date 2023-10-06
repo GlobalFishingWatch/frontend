@@ -2,9 +2,9 @@ import { createSelector } from '@reduxjs/toolkit'
 import { groupBy, sum, sumBy, uniq, uniqBy } from 'lodash'
 import { matchSorter } from 'match-sorter'
 import { t } from 'i18next'
-import { MultiPolygon } from 'geojson'
+import { FeatureCollection, MultiPolygon } from 'geojson'
 import { Dataset, DatasetTypes, ReportVessel } from '@globalfishingwatch/api-types'
-import { wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
+import { getGeometryDissolved, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import {
   selectActiveReportDataviews,
   selectReportActivityGraph,
@@ -35,7 +35,7 @@ import { selectContextAreasDataviews } from 'features/dataviews/dataviews.select
 import { createDeepEqualSelector } from 'utils/selectors'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { sortStrings } from 'utils/shared'
-import { Area, selectAreas } from 'features/areas/areas.slice'
+import { Area, AreaGeometry, selectAreas } from 'features/areas/areas.slice'
 import {
   selectUrlBufferOperationQuery,
   selectUrlBufferUnitQuery,
@@ -473,15 +473,6 @@ const selectReportAreaData = createSelector(
   }
 )
 
-export const selectReportPreviewBufferFeature = createSelector(
-  [selectReportAreaData, selectReportPreviewBuffer],
-  (area, buffer) => {
-    const { value, unit, operation } = buffer
-    if (!area || !unit || !value || !operation) return null
-    return getBufferedFeature({ area, value, unit, operation })
-  }
-)
-
 export const selectReportAreaName = createSelector(
   [
     selectReportAreaData,
@@ -498,9 +489,25 @@ export const selectReportAreaName = createSelector(
   }
 )
 
+export const selectReportAreaDissolved = createSelector([selectReportAreaData], (area) => {
+  return {
+    ...area,
+    geometry: getGeometryDissolved(area?.geometry),
+  } as Area<FeatureCollection<AreaGeometry>>
+})
+
+export const selectReportPreviewBufferFeature = createSelector(
+  [selectReportAreaDissolved, selectReportPreviewBuffer],
+  (area, buffer) => {
+    const { value, unit, operation } = buffer
+    if (!area || !unit || !value || !operation) return null
+    return getBufferedFeature({ area, value, unit, operation })
+  }
+)
+
 export const selectReportBufferArea = createSelector(
   [
-    selectReportAreaData,
+    selectReportAreaDissolved,
     selectUrlBufferUnitQuery,
     selectUrlBufferValueQuery,
     selectUrlBufferOperationQuery,
@@ -520,7 +527,7 @@ export const selectReportBufferArea = createSelector(
 
 export const selectReportBufferFeature = createSelector(
   [
-    selectReportAreaData,
+    selectReportAreaDissolved,
     selectUrlBufferUnitQuery,
     selectUrlBufferValueQuery,
     selectUrlBufferOperationQuery,

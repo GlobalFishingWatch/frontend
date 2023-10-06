@@ -1,23 +1,13 @@
-/**
- *
- * @param filters Dataview filters
- * @returns Conditions transformed to apply in the API request and
- *          joined by AND operator
- */
 import { format } from 'd3-format'
 import { DateTime } from 'luxon'
-import { polygon, featureCollection, multiPolygon } from '@turf/helpers'
-import { bbox, buffer, difference, dissolve } from '@turf/turf'
-import { Feature, GeoJsonProperties, MultiPolygon, Polygon, Position } from 'geojson'
+import { featureCollection, multiPolygon } from '@turf/helpers'
+import { difference, dissolve } from '@turf/turf'
+import { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson'
 import { parse } from 'qs'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataview, DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
-import {
-  BUFFERED_ANTIMERIDIAN_LON,
-  wrapFeatureLongitudes,
-  wrapGeometryBbox,
-} from '@globalfishingwatch/data-transforms'
+import { getFeatureBuffer, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import { API_VERSION } from '@globalfishingwatch/api-client'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { sortStrings } from 'utils/shared'
@@ -28,7 +18,7 @@ import {
   SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
 import { Bbox, BufferOperation, BufferUnit, ReportCategory } from 'types'
-import { Area } from 'features/areas/areas.slice'
+import { Area, AreaGeometry } from 'features/areas/areas.slice'
 import {
   DEFAULT_BUFFER_OPERATION,
   DEFAULT_POINT_BUFFER_UNIT,
@@ -225,7 +215,7 @@ export const getReportCategoryFromDataview = (
 }
 
 type BufferedAreaParams = {
-  area: Area | undefined
+  area: Area<FeatureCollection<AreaGeometry>> | undefined
   value: number
   unit: BufferUnit
   operation?: BufferOperation
@@ -240,15 +230,6 @@ export const getBufferedArea = ({
   const bufferedFeature = getBufferedFeature({ area, value, unit, operation })
   return { ...area, geometry: bufferedFeature?.geometry } as Area
 }
-
-// const recursiveDifference = (
-//   polygons: Feature<Polygon | MultiPolygon>[] | Polygon[] | MultiPolygon[]
-// ) => {
-//   return polygons.reduce((acc, currentPolygon) => {
-//     if (!acc) return currentPolygon
-//     return difference(acc, currentPolygon)
-//   }, null)
-// }
 
 export const getBufferedAreaBbox = ({
   area,
@@ -275,56 +256,7 @@ export const getBufferedFeature = ({
   operation,
 }: BufferedAreaParams): Feature | null => {
   if (!area?.geometry) return null
-
-  const [minX, , maxX] = area.geometry.bbox || bbox(area.geometry)
-
-  let wrappedFeatures: Feature<Polygon, GeoJsonProperties>[]
-  if (minX <= -BUFFERED_ANTIMERIDIAN_LON || maxX >= BUFFERED_ANTIMERIDIAN_LON) {
-    if (area.geometry?.type === 'MultiPolygon') {
-      wrappedFeatures = (area as Feature<MultiPolygon>).geometry.coordinates.flatMap((coords) => {
-        return wrapFeatureLongitudes(polygon(coords))
-      }) as Feature<Polygon, GeoJsonProperties>[]
-    } else {
-      wrappedFeatures = [
-        wrapFeatureLongitudes(polygon(area.geometry.coordinates as Position[][])),
-      ] as Feature<Polygon, GeoJsonProperties>[]
-    }
-  } else {
-    if (area.geometry?.type === 'MultiPolygon') {
-      wrappedFeatures = (area as Feature<MultiPolygon>).geometry.coordinates.flatMap((coords) => {
-        return polygon(coords)
-      }) as Feature<Polygon, GeoJsonProperties>[]
-    } else {
-      wrappedFeatures = [polygon(area.geometry.coordinates as Position[][])]
-    }
-  }
-
-  const dissolvedPolygons = dissolve(featureCollection(wrappedFeatures))
-
-  const bufferedFeatures = dissolvedPolygons.features.flatMap((feature) => {
-    const featureBuffer = buffer(feature, value, {
-      units: unit,
-    }) as Feature<Polygon | MultiPolygon>
-
-    if (!featureBuffer) return []
-
-    const [minX, , maxX] = featureBuffer.bbox || bbox(featureBuffer)
-
-    if (featureBuffer.geometry.type === 'MultiPolygon') {
-      return featureBuffer.geometry.coordinates.map((coords) => {
-        const coordsPolygon = polygon(coords)
-        if (minX <= -BUFFERED_ANTIMERIDIAN_LON || maxX >= BUFFERED_ANTIMERIDIAN_LON) {
-          return wrapFeatureLongitudes(coordsPolygon)
-        }
-        return coordsPolygon
-      }) as Feature<Polygon, GeoJsonProperties>[]
-    } else {
-      if (minX <= -BUFFERED_ANTIMERIDIAN_LON || maxX >= BUFFERED_ANTIMERIDIAN_LON) {
-        return wrapFeatureLongitudes(featureBuffer) as Feature<Polygon>
-      }
-      return featureBuffer as Feature<Polygon>
-    }
-  })
+  const bufferedFeatures = getFeatureBuffer(area.geometry.features, { unit, value })
 
   if (!bufferedFeatures.length) return null
 
@@ -333,7 +265,9 @@ export const getBufferedFeature = ({
   )
 
   if (operation === DIFFERENCE) {
-    const multi = multiPolygon(dissolvedPolygons.features.map((f) => f.geometry.coordinates))
+    const multi = multiPolygon(
+      area.geometry.features.map((f) => (f as Feature<Polygon>).geometry.coordinates)
+    )
     return difference(dissolvedBufferedPolygonsFeatures, multi)
   }
 

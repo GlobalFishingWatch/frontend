@@ -2,11 +2,13 @@ import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Fragment } from 'react'
+import { FeatureCollection } from 'geojson'
 import { Button, ChoiceOption, Icon } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
+import { getGeometryDissolved } from '@globalfishingwatch/data-transforms'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { Area } from 'features/areas/areas.slice'
+import { Area, AreaGeometry } from 'features/areas/areas.slice'
 import {
   DEFAULT_BUFFER_OPERATION,
   DEFAULT_BUFFER_VALUE,
@@ -141,7 +143,10 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     tooltipInstance!.hide()
     // recenter the map on the selected buffer
     const bounds = getBufferedAreaBbox({
-      area,
+      area: {
+        ...area,
+        geometry: getGeometryDissolved(area?.geometry),
+      } as Area<FeatureCollection<AreaGeometry>>,
       value: previewBuffer.value!,
       unit: previewBuffer.unit!,
     }) as Bbox
