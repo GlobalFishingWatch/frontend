@@ -11,7 +11,10 @@ import {
   SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
-import { VALUE_TRANSFORMATIONS_BY_UNIT } from 'features/workspace/activity/ActivitySchemaFilter'
+import {
+  TransformationUnit,
+  VALUE_TRANSFORMATIONS_BY_UNIT,
+} from 'features/workspace/activity/ActivitySchemaFilter'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -36,7 +39,7 @@ function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.
 
   const valuesAreRangeOfNumbers =
     valuesSelected.length > 1 &&
-    valuesSelected.every((value) => {
+    valuesSelected.every((value: any) => {
       const label = Array.isArray(value) ? value[0]?.label : value.label
       return !isNaN(label) && !isNaN(parseFloat(label))
     })
@@ -58,14 +61,14 @@ function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.
       },
     ]
   } else if (valuesIsNumber) {
+    const value = VALUE_TRANSFORMATIONS_BY_UNIT[filterUnit as TransformationUnit]
     valuesSelected = [
       {
         id: valuesSelected.id,
-        label: filterUnit
-          ? `${formatSliderNumber(
-              VALUE_TRANSFORMATIONS_BY_UNIT[filterUnit].in(valuesSelected[0]?.label)
-            )} ${VALUE_TRANSFORMATIONS_BY_UNIT[filterUnit].label}`
-          : formatSliderNumber(valuesSelected[0]?.label),
+        label:
+          filterUnit && value
+            ? `${formatSliderNumber(value.in(valuesSelected[0]?.label))} ${value.label}`
+            : formatSliderNumber(valuesSelected[0]?.label),
       },
     ]
   }

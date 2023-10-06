@@ -30,27 +30,15 @@ export type ReportStateProperty =
   | 'reportVesselGraph'
   | 'reportVesselPage'
 
-export type WorkspaceStateProperty =
-  | 'searchOption'
-  | 'report'
-  | 'readOnly'
-  | 'daysFromLatest'
-  | 'sidebarOpen'
-  | 'dataviewInstances'
-  | 'dataviewInstancesOrder'
-  | 'timebarVisualisation'
-  | 'visibleEvents'
-  | 'timebarGraph'
-  | 'timebarSelectedEnvId'
-  | 'bivariateDataviews'
-  | 'activityCategory'
-  | ReportStateProperty
-  | keyof AppParams
+export type WorkspaceStateProperty = keyof WorkspaceState
+export type AppStateProperty = keyof AppState
+
+export type AnyStateProperty = WorkspaceStateProperty | ReportStateProperty | AppStateProperty
 
 export type WorkspaceParam =
   | WorkspaceViewportParam
   | WorkspaceTimeRangeParam
-  | WorkspaceStateProperty
+  | AnyStateProperty
   | VesselProfileStateProperty
   | VesselSearchStateProperty
 
@@ -106,6 +94,7 @@ export interface WorkspaceState extends BaseUrlWorkspace {
 
 export type VesselSearchState = {
   query?: string
+  shipname?: string
   sources?: string[]
   searchOption?: SearchType
   infoSource?: VesselIdentitySourceEnum
@@ -153,7 +142,7 @@ export enum UserTab {
   VesselGroups = 'vesselGroups',
 }
 
-export type AppParams = {
+export type AppState = {
   userTab?: UserTab
 }
 
@@ -161,7 +150,7 @@ export type QueryParams = Partial<WorkspaceViewport> &
   Partial<WorkspaceTimeRange> &
   WorkspaceState &
   Partial<VesselProfileState> &
-  AppParams &
+  AppState &
   RedirectParam &
   VesselSearchState
 

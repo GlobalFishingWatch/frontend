@@ -47,10 +47,13 @@ const MapWrapper: React.FC = (): React.ReactElement => {
   const interactiveLayerIds = useMemoCompare(style?.metadata?.interactiveLayerIds)
   const { eventsLoading, events } = useVoyagesConnect()
 
-  const [clickCoordinates, setClickCoordinates] = useState(null)
+  const [clickCoordinates, setClickCoordinates] = useState<{
+    latitude?: number
+    longitude?: number
+  } | null>(null)
   const onMapClick: any = useMapClick(
     (event) => {
-      setClickCoordinates({ latitude: event.latitude, longitude: event.longitude })
+      setClickCoordinates({ latitude: event?.latitude, longitude: event?.longitude })
       selectVesselEventOnClick(event)
     },
     style?.metadata as ExtendedStyleMeta,
@@ -123,16 +126,20 @@ const MapWrapper: React.FC = (): React.ReactElement => {
               pitch: 0,
               bearing: 0,
             })
-            setTimeout(() => {
-              setMapCoordinates({
-                latitude: map.getCenter().lat,
-                longitude: map.getCenter().lng,
-                zoom: map.getZoom(),
+            setTimeout(
+              () => {
+                setMapCoordinates({
+                  latitude: map.getCenter().lat,
+                  longitude: map.getCenter().lng,
+                  zoom: map.getZoom(),
 
-                pitch: 0,
-                bearing: 0,
-              })
-            }, 1002 + (ENABLE_FLYTO === FLY_EFFECTS.fly ? currentPitch * 10 + currentBearing * 10 : -500))
+                  pitch: 0,
+                  bearing: 0,
+                })
+              },
+              1002 +
+                (ENABLE_FLYTO === FLY_EFFECTS.fly ? currentPitch * 10 + currentBearing * 10 : -500)
+            )
           }, 1)
           map.fire('flyend')
         }
@@ -195,8 +202,8 @@ const MapWrapper: React.FC = (): React.ReactElement => {
             <PopupWrapper
               key={Math.random()}
               layers={clickedLayers}
-              latitude={clickCoordinates.latitude}
-              longitude={clickCoordinates.longitude}
+              latitude={clickCoordinates.latitude as number}
+              longitude={clickCoordinates.longitude as number}
             />
           )}
         </Map>

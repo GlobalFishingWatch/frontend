@@ -7,7 +7,7 @@ import { isGFWUser } from 'features/user/user.slice'
 import GFWOnly from 'features/user/GFWOnly'
 import styles from './InfoModal.module.css'
 
-export const getDatasetQueriesArray = (dataset) => {
+export const getDatasetQueriesArray = (dataset: Dataset) => {
   const rawQueries = dataset?.configuration?.documentation?.queries
   if (!rawQueries) return
   const queries = Array.isArray(rawQueries)

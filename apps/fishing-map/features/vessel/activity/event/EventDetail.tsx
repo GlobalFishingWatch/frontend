@@ -61,7 +61,7 @@ const ActivityContent = ({ event }: ActivityContentProps) => {
     return null
   }
 
-  const getEventFieldValue = (event: ActivityEvent, field: VesselRenderField) => {
+  const getEventFieldValue = (event: ActivityEvent, field: VesselRenderField): string | null => {
     const value = get(event, field.key, '')
     if (!value) {
       return value
@@ -76,13 +76,13 @@ const ActivityContent = ({ event }: ActivityContentProps) => {
     ) {
       return parseFloat(value).toFixed(2)
     } else if (field.key.includes('vessel.type')) {
-      return t(`vessel.vesselTypes.${value}` as string, value)
+      return t(`vessel.vesselTypes.${value}` as string, value as string)
     } else if (field.key.includes('name')) {
-      return formatInfoField(value, 'name')
+      return formatInfoField(value, 'name') as string
     } else if (field.key.includes('flag')) {
-      return formatInfoField(value, 'flag')
+      return formatInfoField(value, 'flag') as string
     }
-    return value
+    return value as string
   }
 
   return (

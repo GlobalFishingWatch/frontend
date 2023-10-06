@@ -17,8 +17,7 @@ import {
   getDataUrlByChunk,
 } from 'layers/fourwings/fourwings.utils'
 import { TileCell } from 'loaders/fourwings/fourwingsTileParser'
-import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
-import { TileLoadProps } from '@deck.gl/geo-layers/typed/tile-layer/types'
+import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/typed/tileset-2d'
 import {
   COLOR_RAMP_DEFAULT_NUM_STEPS,
   HEATMAP_COLOR_RAMPS,

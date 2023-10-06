@@ -67,7 +67,7 @@ const RelatedEncounterVessels = () => {
           <Bar dataKey="encounters" barSize={15} fill={EVENTS_COLORS.encounter}>
             <LabelList
               position="right"
-              valueAccessor={(entry) => formatI18nNumber(entry.encounters)}
+              valueAccessor={(entry: any) => formatI18nNumber(entry.encounters)}
               className={styles.count}
             />
           </Bar>

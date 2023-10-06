@@ -56,7 +56,9 @@ const MapWrapper = (): React.ReactElement => {
   }, [areaLayer, pointsLayer])
   const {
     box,
-    boxTransform, boxHeight, boxWidth,
+    boxTransform,
+    boxHeight,
+    boxWidth,
     onMouseDown,
     onMouseMove,
     onMouseUp,
@@ -75,9 +77,9 @@ const MapWrapper = (): React.ReactElement => {
         zoom={viewport.zoom}
         mapLib={maplibregl}
         mapStyle={style as unknown as MapboxStyle}
-        onMouseDown={(onMouseDown as any)}
-        onMouseMove={(onMouseMove as any)}
-        onMouseUp={(onMouseUp as any)}
+        onMouseDown={onMouseDown as any}
+        onMouseMove={onMouseMove as any}
+        onMouseUp={onMouseUp as any}
         boxZoom={false}
         onMouseEnter={onHover as any}
         onClick={onMapclick as any}
@@ -96,7 +98,6 @@ const MapWrapper = (): React.ReactElement => {
         }}
         className={styles.mapSelection}
       ></div>
-
     </div>
   )
 }

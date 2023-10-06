@@ -8,9 +8,9 @@ import {
   Select,
   SelectOption,
 } from '@globalfishingwatch/ui-components'
-import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { Dataset, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
-import { DEFAULT_WORKSPACE } from 'data/config'
+import { AVAILABLE_START, AVAILABLE_END } from 'data/config'
 import {
   getFiltersBySchema,
   SchemaFieldDataview,
@@ -24,9 +24,10 @@ import {
   DEFAULT_VESSEL_IDENTITY_ID,
 } from 'features/vessel/vessel.config'
 import { useSearchFiltersConnect } from 'features/search/search.hook'
+import { VesselSearchState } from 'types'
 import styles from './SearchAdvancedFilters.module.css'
 
-const schemaFilterIds: SupportedDatasetSchema[] = [
+const schemaFilterIds: (keyof VesselSearchState)[] = [
   'flag',
   'fleet',
   'origin',
@@ -35,12 +36,22 @@ const schemaFilterIds: SupportedDatasetSchema[] = [
   'targetSpecies',
 ]
 
-const getSearchDataview = (datasets, searchFilters, sources): SchemaFieldDataview => {
+const getSearchDataview = (
+  datasets: Dataset[],
+  searchFilters: VesselSearchState,
+  sources?: string[]
+): SchemaFieldDataview => {
   return {
     config: {
       datasets: sources?.map((id) => id),
       filters: Object.fromEntries(
-        schemaFilterIds.map((id) => [id, searchFilters[id]?.map((f) => f)])
+        schemaFilterIds.map((id) => {
+          const filters = searchFilters[id]
+          if (Array.isArray(filters)) {
+            return [id, filters?.map((f) => f)]
+          }
+          return [id, filters]
+        })
       ),
     },
     datasets,
@@ -96,21 +107,23 @@ function SearchAdvancedFilters() {
     return getSearchDataview(datasets, searchFilters, sources)
   }, [datasets, searchFilters, sources])
 
-  const schemaFilters = schemaFilterIds.map((id) => getFiltersBySchema(dataview, id))
+  const schemaFilters = schemaFilterIds.map((id) =>
+    getFiltersBySchema(dataview, id as SupportedDatasetSchema)
+  )
 
-  const onSourceSelect = (filter) => {
+  const onSourceSelect = (filter: any) => {
     const newSources = [...(sources || []), filter.id]
     const notCompatibleSchemaFilters = getIncompatibleFilters(newSources)
     setSearchFilters({ ...notCompatibleSchemaFilters, sources: newSources })
   }
 
-  const getIncompatibleFilters = (sources) => {
+  const getIncompatibleFilters = (sources: any) => {
     // Recalculates schemaFilters to validate a new source has valid selection
     // when not valid we need to remove the filter from the search
     const newDataview = getSearchDataview(datasets, searchFilters, sources)
-    const newSchemaFilters = schemaFilterIds.map((id) => getFiltersBySchema(newDataview, id))
+    const newSchemaFilters = schemaFilterIds.map((id) => getFiltersBySchema(newDataview, id as any))
     const notCompatibleSchemaFilters = newSchemaFilters.flatMap(({ id, disabled }) => {
-      return disabled && searchFilters[id] !== undefined ? id : []
+      return disabled && (searchFilters as any)[id] !== undefined ? id : []
     })
     return Object.fromEntries(notCompatibleSchemaFilters.map((schema) => [schema, undefined]))
   }
@@ -149,7 +162,7 @@ function SearchAdvancedFilters() {
         label={t('vessel.owner', 'Owner')}
       />
       <Select
-        label={t('vessel.infoSource', 'Info Source')}
+        label={t('vessel.infoSource')}
         placeholder={getPlaceholderBySelections({
           selection: infoSource,
           options: infoSourceOptions,
@@ -215,7 +228,7 @@ function SearchAdvancedFilters() {
             selectedOptions={optionsSelected}
             onSelect={(filter) => {
               setSearchFilters({
-                [id]: [...(searchFilters[id] || []), filter.id],
+                [id]: [...((searchFilters as any)[id] || []), filter.id],
               })
             }}
             onRemove={(_, rest) => {
@@ -230,8 +243,8 @@ function SearchAdvancedFilters() {
       <div>
         <InputDate
           value={transmissionDateTo || ''}
-          max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
-          min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
+          max={AVAILABLE_END.slice(0, 10) as string}
+          min={AVAILABLE_START.slice(0, 10) as string}
           label={t('common.active_after', 'Active after')}
           onChange={(e) => {
             if (e.target.value !== transmissionDateTo) {
@@ -248,8 +261,8 @@ function SearchAdvancedFilters() {
       <div>
         <InputDate
           value={transmissionDateFrom || ''}
-          max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
-          min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
+          max={AVAILABLE_END.slice(0, 10) as string}
+          min={AVAILABLE_START.slice(0, 10) as string}
           label={t('common.active_before', 'Active Before')}
           onChange={(e) => {
             if (e.target.value !== transmissionDateFrom) {

@@ -36,6 +36,7 @@ import {
   selectHasChangedSettingsOnce,
   selectHighlightedTime,
   disableHighlightedTime,
+  TimeRange,
 } from './timebar.slice'
 
 const TIMERANGE_DEBOUNCED_TIME = 1000
@@ -88,7 +89,7 @@ export const useTimerangeConnect = () => {
   )
 
   const setTimerange = useCallback(
-    (timerange) => {
+    (timerange: TimeRange) => {
       setAtomTimerange(timerange)
       updateUrlTimerangeDebounced(timerange)
     },

@@ -45,9 +45,7 @@ export const selectWorkspaceState = createSelector(
   }
 )
 
-export const selectWorkspaceStateProperty = (
-  property: WorkspaceStateProperty | VesselProfileStateProperty
-) =>
+export const selectWorkspaceStateProperty = (property: WorkspaceStateProperty) =>
   createSelector(
     [selectQueryParam(property), selectWorkspaceState],
     (urlProperty, workspaceState) => {

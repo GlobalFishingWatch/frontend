@@ -3,7 +3,6 @@ import { uniqBy } from 'lodash'
 import {
   GFWAPI,
   getAdvancedSearchQuery,
-  AdvancedSearchQueryField,
   AdvancedSearchQueryFieldKey,
   parseAPIError,
 } from '@globalfishingwatch/api-client'
@@ -93,16 +92,17 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           'owner',
         ]
 
-        const fields: AdvancedSearchQueryField[] = andCombinedFields.flatMap((field) => {
+        const fields = andCombinedFields.flatMap((field) => {
           const isInFieldsAllowed =
             fieldsAllowed.includes(field) ||
             fieldsAllowed.includes(`${filters.infoSource}.${field}`) ||
             (field === 'owner' && fieldsAllowed.includes('registryOwners.name'))
-          if (filters[field] && isInFieldsAllowed) {
-            let value = filters[field]
+          const filter = (filters as any)[field]
+          if (filter && isInFieldsAllowed) {
+            let value = filter
             // Supports searching by multiple values separated by comma in owners
-            if (field === 'owner' && value.includes(', ')) {
-              value = value.split(', ')
+            if (field === 'owner' && value?.includes(', ')) {
+              value = (value as string).split(', ')
             }
             return { key: field, value }
           }

@@ -14,7 +14,7 @@ import {
   getActiveActivityDatasetsInDataviews,
   getLatestEndDateFromDatasets,
 } from 'features/datasets/datasets.utils'
-import { Range } from 'features/timebar/timebar.slice'
+import { TimeRange } from 'features/timebar/timebar.slice'
 import {
   selectUrlViewport,
   selectLocationCategory,
@@ -56,10 +56,15 @@ export const selectViewport = createSelector(
   [selectUrlViewport, selectWorkspaceViewport],
   (urlViewport, workspaceViewport) => {
     return {
-      zoom: urlViewport?.zoom || workspaceViewport?.zoom || DEFAULT_WORKSPACE.zoom,
-      latitude: urlViewport?.latitude || workspaceViewport?.latitude || DEFAULT_WORKSPACE.latitude,
+      zoom: urlViewport?.zoom || workspaceViewport?.zoom || (DEFAULT_WORKSPACE.zoom as number),
+      latitude:
+        urlViewport?.latitude ||
+        workspaceViewport?.latitude ||
+        (DEFAULT_WORKSPACE.latitude as number),
       longitude:
-        urlViewport?.longitude || workspaceViewport?.longitude || DEFAULT_WORKSPACE.longitude,
+        urlViewport?.longitude ||
+        workspaceViewport?.longitude ||
+        (DEFAULT_WORKSPACE.longitude as number),
     }
   }
 )
@@ -70,7 +75,7 @@ export const selectTimeRange = createSelector(
     return {
       start: urlTimerange?.start || workspaceTimerange?.start || DEFAULT_TIME_RANGE.start,
       end: urlTimerange?.end || workspaceTimerange?.end || DEFAULT_TIME_RANGE.end,
-    } as Range
+    } as TimeRange
   }
 )
 
@@ -386,7 +391,7 @@ export const selectWorkspaceWithCurrentState = createSelector(
       ...(workspace || ({} as Workspace)),
       app: APP_NAME,
       category,
-      viewport,
+      viewport: viewport as Workspace['viewport'],
       startAt: timerange.start,
       endAt: timerange.end,
       state,

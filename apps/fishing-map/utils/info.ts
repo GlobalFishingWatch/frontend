@@ -40,7 +40,7 @@ export const formatInfoField = (
       if (type === 'geartype') {
         return fieldValue
           .map((value) =>
-            translationFn(`vessel.gearTypes.${value.toLocaleLowerCase()}` as any, fieldValue)
+            translationFn(`vessel.gearTypes.${value.toLocaleLowerCase()}` as any, fieldValue as any)
           )
           .join(', ')
       }
@@ -71,7 +71,7 @@ export const formatNumber = (num: string | number, maximumFractionDigits?: numbe
 export const getVesselLabel = (
   vessel: ExtendedFeatureVessel | IdentityVessel,
   withGearType = false
-) => {
+): string => {
   const vesselInfo = vessel?.registryInfo?.length
     ? vessel?.registryInfo?.[0]
     : vessel?.selfReportedInfo?.[0]
@@ -81,9 +81,11 @@ export const getVesselLabel = (
       ?.map((gear) => t(`vessel.gearTypes.${gear.toLowerCase()}`))
       .join(',')
     return `${formatInfoField(vesselInfo.shipname, 'name')}
-    (${t(`flags:${vesselInfo.flag}`)}, ${gearTypes || EMPTY_FIELD_PLACEHOLDER})`
+    (${t(`flags:${vesselInfo.flag}`, vesselInfo.flag)}, ${gearTypes || EMPTY_FIELD_PLACEHOLDER})`
   }
-  if (vesselInfo.shipname) return formatInfoField(vesselInfo.shipname, 'name')
+  if (vesselInfo.shipname) {
+    return formatInfoField(vesselInfo.shipname, 'name') as string
+  }
   if (vesselInfo.geartype) {
     return `${t('vessel.unkwownVesselByGeartype', {
       gearType: vesselInfo.geartype,

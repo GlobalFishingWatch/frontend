@@ -78,9 +78,11 @@ function SearchBasic({
 
   return (
     <Downshift
-      onSelect={(selectedItem: IdentityVesselData) =>
-        dispatch(setSelectedVessels([selectedItem.id]))
-      }
+      onSelect={(selectedItem: IdentityVesselData | null) => {
+        if (selectedItem) {
+          dispatch(setSelectedVessels([selectedItem?.id]))
+        }
+      }}
       itemToString={(item) => (item ? getVesselProperty(item, 'shipname') : '')}
     >
       {({ getInputProps, getItemProps, getMenuProps, highlightedIndex, setHighlightedIndex }) => (

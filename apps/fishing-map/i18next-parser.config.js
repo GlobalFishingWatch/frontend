@@ -39,11 +39,9 @@ module.exports = {
   reactNamespace: false,
   // Whether or not to sort the catalog
   sort: true,
-  // Whether to use the keys as the default value; ex. "Hello": "Hello", "World": "World"
-  // This option takes precedence over the `defaultValue` and `skipDefaultValues` options
-  useKeysAsDefaultValue: false,
+  // Default value to give to empty keys
   defaultValue: function (locale, namespace, key, value) {
-    return value
+    return value || key
   },
   // Display info about the parsing including some stats
   verbose: true,

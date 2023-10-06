@@ -46,7 +46,7 @@ export const getDatasetDescriptionTranslated = (dataset: {
   id: string
   description?: string
 }): string => {
-  return t(`datasets:${removeDatasetVersion(dataset?.id)}.description`, dataset?.description)
+  return t(`datasets:${removeDatasetVersion(dataset?.id)}.description`, dataset?.description || '')
 }
 
 export const getDateFormatString = ({ locale = i18n.language, upper = false } = {}) => {

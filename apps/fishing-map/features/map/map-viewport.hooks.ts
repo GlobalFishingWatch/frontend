@@ -55,7 +55,7 @@ export default function useViewport(): UseViewport {
   )
 
   const setViewport = useCallback(
-    (viewport) => {
+    (viewport: MapCoordinates) => {
       setViewportAtom(viewport)
       updateUrlViewportDebounced(viewport)
     },

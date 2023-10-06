@@ -24,7 +24,7 @@ import {
   useActivityMetadata,
   useHighlightedEventsConnect,
 } from 'features/timebar/timebar.hooks'
-import { DEFAULT_WORKSPACE } from 'data/config'
+import { AVAILABLE_START, AVAILABLE_END } from 'data/config'
 import { TimebarVisualisations } from 'types'
 import useViewport from 'features/map/map-viewport.hooks'
 import {
@@ -44,7 +44,7 @@ import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-gr
 import { getUTCDateTime } from 'utils/dates'
 import { selectIsAnyReportLocation } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { setHighlightedTime, selectHighlightedTime, Range } from './timebar.slice'
+import { setHighlightedTime, selectHighlightedTime, TimeRange } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import { selectTracksData, selectTracksGraphData, selectTracksEvents } from './timebar.selectors'
 import TimebarActivityGraph from './TimebarActivityGraph'
@@ -52,12 +52,12 @@ import styles from './Timebar.module.css'
 
 export const ZOOM_LEVEL_TO_FOCUS_EVENT = 5
 
-const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents, showTooltip }) => {
+const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents, showTooltip }: any) => {
   // const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const timebarVisualisation = useSelector(selectTimebarVisualisation)
   const highlightedTime = useSelector(selectHighlightedTime)
   const onHighlightChunks = useCallback(
-    (chunks: HighlightedChunks) => {
+    (chunks?: HighlightedChunks) => {
       if (chunks && chunks.tracksEvents && chunks.tracksEvents.length) {
         dispatchHighlightedEvents(chunks.tracksEvents)
       } else {
@@ -152,7 +152,7 @@ const TimebarWrapper = () => {
 
   const [bookmark, setBookmark] = useState<{ start: string; end: string } | null>(null)
   const onBookmarkChange = useCallback(
-    (start, end) => {
+    (start: string, end: string) => {
       if (!start || !end) {
         trackEvent({
           category: TrackCategory.Timebar,
@@ -187,8 +187,8 @@ const TimebarWrapper = () => {
           const diff = endDateTime.diff(startDateTime, 'hours')
           if (diff.hours < 1) {
             // To ensure at least 1h range is highlighted
-            const hourStart = startDateTime.minus({ hours: diff.hours / 2 }).toISO()
-            const hourEnd = endDateTime.plus({ hours: diff.hours / 2 }).toISO()
+            const hourStart = startDateTime.minus({ hours: diff.hours / 2 }).toISO() as string
+            const hourEnd = endDateTime.plus({ hours: diff.hours / 2 }).toISO() as string
             dispatch(setHighlightedTime({ start: hourStart, end: hourEnd }))
           } else {
             dispatch(setHighlightedTime({ start, end }))
@@ -202,9 +202,9 @@ const TimebarWrapper = () => {
     [dispatch, dispatchDisableHighlightedTime]
   )
 
-  const [internalRange, setInternalRange] = useState<Range | null>(null)
+  const [internalRange, setInternalRange] = useState<TimeRange | null>(null)
   const onChange = useCallback(
-    (e) => {
+    (e: any) => {
       const gaActions: Record<string, string> = {
         TIME_RANGE_SELECTOR: 'Configure timerange using calendar option',
         ZOOM_IN_BUTTON: 'Zoom In timerange',
@@ -337,8 +337,8 @@ const TimebarWrapper = () => {
         labels={labels}
         start={internalRange ? internalRange.start : start}
         end={internalRange ? internalRange.end : end}
-        absoluteStart={DEFAULT_WORKSPACE.availableStart}
-        absoluteEnd={DEFAULT_WORKSPACE.availableEnd}
+        absoluteStart={AVAILABLE_START}
+        absoluteEnd={AVAILABLE_END}
         latestAvailableDataDate={latestAvailableDataDate}
         onChange={onChange}
         showLastUpdate={false}

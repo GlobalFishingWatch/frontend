@@ -36,6 +36,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectIsVesselLocation } from 'routes/routes.selectors'
 import { useRegionTranslationsById } from 'features/regions/regions.hooks'
+import { VesselLastIdentity } from 'features/search/search.slice'
 import styles from './VesselIdentity.module.css'
 
 const VesselIdentity = () => {
@@ -72,7 +73,7 @@ const VesselIdentity = () => {
       }
       const filteredVesselIdentity = {
         ...vesselIdentity,
-        nShipname: formatInfoField(vesselIdentity.shipname, 'shipname'),
+        nShipname: formatInfoField(vesselIdentity.shipname, 'shipname') as string,
         flag: t(`flags:${vesselIdentity.flag}`, vesselIdentity.flag),
         shiptype: t(
           `vessel.vesselTypes.${vesselIdentity.shiptype?.toLowerCase()}`,
@@ -236,6 +237,7 @@ const VesselIdentity = () => {
                 {/* TODO: make fields more dynamic to account for VMS */}
                 {fieldGroup.map((field) => {
                   const label = field.label || field.key
+                  const key = field.key as keyof VesselLastIdentity
                   return (
                     <div key={field.key}>
                       <div className={styles.labelContainer}>
@@ -250,7 +252,7 @@ const VesselIdentity = () => {
                         )}
                       </div>
                       <VesselIdentityField
-                        value={formatInfoField(vesselIdentity[field.key], label)}
+                        value={formatInfoField(vesselIdentity[key] as string, label) as any}
                       />
                     </div>
                   )
@@ -301,17 +303,19 @@ const VesselIdentity = () => {
                               )})`
                               Component = <VesselIdentityField value={value} />
                             } else {
-                              const sourceTranslations = registry.sourceCode
+                              const sourceTranslations = (registry.sourceCode as any[])
                                 .map(getRegionTranslationsById)
                                 .join(',')
                               Component = (
                                 <Tooltip content={sourceTranslations}>
                                   <VesselIdentityField
                                     className={styles.help}
-                                    value={formatInfoField(
-                                      registry.sourceCode.join(','),
-                                      fieldType
-                                    )}
+                                    value={
+                                      formatInfoField(
+                                        registry.sourceCode.join(','),
+                                        fieldType
+                                      ) as string
+                                    }
                                   />
                                 </Tooltip>
                               )

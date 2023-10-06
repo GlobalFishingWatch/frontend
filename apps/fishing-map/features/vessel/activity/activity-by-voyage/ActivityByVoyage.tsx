@@ -63,14 +63,14 @@ const ActivityByVoyage = () => {
   const dispatchSetHighlightedEvents = useDebouncedDispatchHighlightedEvent()
 
   const onVoyageMapHover = useCallback(
-    (voyageId: ActivityEvent['voyage']) => {
-      const events = voyages[voyageId]
+    (voyageId?: ActivityEvent['voyage']) => {
+      const events = voyages[voyageId as number]
       const { start, end } = getVoyageTimeRange(events)
       if (start && end) {
         dispatch(
           setHighlightedTime({
-            start: getUTCDateTime(start).toISO(),
-            end: getUTCDateTime(end).toISO(),
+            start: getUTCDateTime(start).toISO() as string,
+            end: getUTCDateTime(end).toISO() as string,
           })
         )
         const eventIds = events.map((event) => event.id)
@@ -84,7 +84,7 @@ const ActivityByVoyage = () => {
   )
 
   const onEventMapHover = useCallback(
-    (event: ActivityEvent) => {
+    (event?: ActivityEvent) => {
       if (event?.id) {
         dispatch(setHighlightedEvents([event.id]))
       } else {

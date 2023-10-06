@@ -4,7 +4,8 @@ import appSource from '../public/locales/source/translations.json'
 import flagsEnglish from '../../../libs/i18n-labels/en/flags.json'
 import flagsSource from '../../../libs/i18n-labels/source/flags.json'
 
-const namespaces = {
+type Namespace = { translations: typeof appEnglish; flags: typeof flagsEnglish }
+const namespaces: Namespace = {
   translations: appEnglish,
   flags: flagsEnglish,
 }
@@ -13,8 +14,8 @@ const sourceNamespaces = {
   flags: flagsSource,
 }
 
-export const serverT = (key: string, fallback: string) => {
-  const namespace = key.includes(':') ? key.split(':')[0] : 'translations'
+export const serverT: any = (key: string, fallback: string) => {
+  const namespace = key.includes(':') ? (key.split(':')[0] as keyof Namespace) : 'translations'
   const keyName = key.includes(':') ? key.split(':')[1] : key
 
   return (

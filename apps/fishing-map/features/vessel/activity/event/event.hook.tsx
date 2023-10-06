@@ -29,16 +29,16 @@ export function useActivityEventTranslations() {
       }, '')
       let allRegionsDescriptionBlocks: string[] = []
       if (event.regions) {
-        Object.entries(event.regions).forEach(
-          ([regionType, regions]: [keyof Regions, string[]]) => {
-            if (!regions.length) return
-            allRegionsDescriptionBlocks.push(
-              `${t(`layer.areas.${regionType}`)}: ${getRegionNamesByType(regionType, regions).join(
-                ', '
-              )}`
-            )
-          }
-        )
+        Object.entries(event.regions).forEach((entry) => {
+          const regionType = entry[0] as keyof Regions
+          const regions = entry[1] as string[]
+          if (!regions.length) return
+          allRegionsDescriptionBlocks.push(
+            `${t(`layer.areas.${regionType}`)}: ${getRegionNamesByType(regionType, regions).join(
+              ', '
+            )}`
+          )
+        })
       }
       return {
         mainRegionDescription,

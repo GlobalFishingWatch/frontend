@@ -10,7 +10,7 @@ import { t } from 'features/i18n/i18n'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { VesselLastIdentity } from 'features/search/search.slice'
 import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
-import { Range } from 'features/timebar/timebar.slice'
+import { TimeRange } from 'features/timebar/timebar.slice'
 import { formatInfoField } from 'utils/info'
 
 type GetVesselIdentityParams = { identityId?: string; identitySource?: VesselIdentitySourceEnum }
@@ -46,7 +46,11 @@ export const getVesselIdentity = (
   )
 }
 
-export type VesselIdentityProperty = keyof SelfReportedInfo | keyof VesselRegistryInfo | 'owner'
+export type VesselIdentityProperty =
+  | keyof SelfReportedInfo
+  | keyof VesselRegistryInfo
+  | 'owner'
+  | 'id'
 
 export function getLatestIdentityPrioritised(vessel: IdentityVessel | IdentityVesselData) {
   const latestRegistryIdentity = getVesselIdentity(vessel, {
@@ -130,7 +134,7 @@ export function getVesselIdentityProperties<P = string>(
     return uniq(vessel.registryOwners?.map(({ name }) => name)) as P[]
   }
   const identities = getVesselIdentities(vessel, { identitySource })
-  return uniq(identities.flatMap((i) => i[property] || [])) as P[]
+  return uniq(identities.flatMap((i: any) => i[property] || [])) as P[]
 }
 
 export function getRelatedIdentityVesselIds(vessel: IdentityVessel | IdentityVesselData): string[] {
@@ -207,7 +211,7 @@ export function getVoyageTimeRange(events: ActivityEvent[]) {
 
 export function filterRegistryInfoByDateAndSSVID(
   registryInfo: VesselRegistryProperty[],
-  timerange: Range,
+  timerange: TimeRange,
   ssvid?: string
 ): VesselRegistryProperty[] {
   if (!registryInfo?.length) return []
@@ -222,7 +226,10 @@ export function filterRegistryInfoByDateAndSSVID(
   )
 }
 
-export const getOtherVesselNames = (vessel, currentNShipname) => {
+export const getOtherVesselNames = (
+  vessel: IdentityVessel | IdentityVesselData,
+  currentNShipname: string
+) => {
   const uniqIdentitiesByNormalisedName = uniqBy(getVesselIdentities(vessel), 'nShipname')
   const otherIdentities = uniqIdentitiesByNormalisedName.filter(
     (i) => i.nShipname !== currentNShipname

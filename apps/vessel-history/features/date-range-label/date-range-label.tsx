@@ -28,8 +28,8 @@ export function DateRangeLabel({ className, type }: DateRangeLabelProps) {
     const startDate = endDate.minus(RISK_SUMMARY_SETTINGS.timeRange)
 
     return {
-      start: startDate.toUTC().toISO(),
-      end: endDate.toUTC().toISO(),
+      start: startDate.toUTC().toISO() as string,
+      end: endDate.toUTC().toISO() as string,
     }
   }, [offlineVessel?.savedOn, online])
 

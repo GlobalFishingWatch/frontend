@@ -97,6 +97,8 @@ const nextConfig = {
 
 // @ts-ignore
 const configWithNx = withNx(nextConfig)
+
+// @ts-ignore
 module.exports = async (...args) => {
   return {
     ...(await configWithNx(...args)),

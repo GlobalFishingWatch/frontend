@@ -53,7 +53,7 @@ const VesselLink = ({
   const standaloneLink = isSearchLocation || isVesselLocation
 
   const onLinkClick = useCallback(
-    (e) => {
+    (e: any) => {
       if (vesselId !== vesselInfoDataId) {
         dispatch(resetVesselState())
       }

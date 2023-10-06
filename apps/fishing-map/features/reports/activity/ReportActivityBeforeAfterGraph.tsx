@@ -62,7 +62,7 @@ const formatDateTicks = (tick: number, timeComparison: ReportActivityTimeCompari
   const dtTick = getUTCDateTime(tick)
   const dtStart = getUTCDateTime(timeComparison.compareStart)
   if (tick !== dtStart?.toMillis()) {
-    const diff = dtTick.diff(dtStart, timeComparison.durationType as any).toObject()
+    const diff = dtTick.diff(dtStart, timeComparison.durationType as any).toObject() as any
     const diffValue = Math.round(diff[timeComparison.durationType as any])
     const sign = diffValue > 0 ? '+' : ''
     return [sign, diffValue].join('')
@@ -83,7 +83,7 @@ const formatDateTicks = (tick: number, timeComparison: ReportActivityTimeCompari
 const BeforeAfterGraphTooltip = (props: any) => {
   const { payload, timeChunkInterval } = props
 
-  const avgLineValue = payload?.find((p) => p.name === 'line')
+  const avgLineValue = payload?.find((p: any) => p.name === 'line')
   if (!avgLineValue) return null
 
   const date = getUTCDateTime(avgLineValue.payload.date).setLocale(i18n.language)

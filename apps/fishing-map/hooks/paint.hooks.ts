@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-function runAfterFramePaint(callback) {
+function runAfterFramePaint(callback: () => void) {
   requestAnimationFrame(() => {
     const messageChannel = new MessageChannel()
 
@@ -9,7 +9,13 @@ function runAfterFramePaint(callback) {
   })
 }
 
-export function useCallbackAfterPaint({ callback, enabled }) {
+export function useCallbackAfterPaint({
+  callback,
+  enabled,
+}: {
+  callback: () => void
+  enabled: boolean
+}) {
   useEffect(() => {
     /**
      * Only perform the log when the calling component has signaled it is

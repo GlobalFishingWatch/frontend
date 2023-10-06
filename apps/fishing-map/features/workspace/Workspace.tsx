@@ -73,7 +73,7 @@ function Workspace() {
   }, [workspaceVesselGroupsIdsHash, dispatch])
 
   const handleDragEnd = useCallback(
-    (event) => {
+    (event: any) => {
       const { active, over } = event
       if (active && over && active.id !== over.id) {
         const oldIndex = dataviews.findIndex((d) => d.id === active.id)
@@ -91,7 +91,7 @@ function Workspace() {
   }, [])
 
   const onWorkspaceUpdateClick = useCallback(
-    async (workspaceId) => {
+    async (workspaceId: string) => {
       setEditWorkspaceLoading(true)
       await dispatch(
         updateWorkspaceThunk({

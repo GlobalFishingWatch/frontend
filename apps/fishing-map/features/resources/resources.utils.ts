@@ -28,8 +28,8 @@ export const infoDatasetConfigsCallback: GetDatasetConfigCallback = ([info]) => 
 
 export const eventsDatasetConfigsCallback: GetDatasetConfigCallback = (events) => {
   const allEvents = events.map((event) => {
-    const hasPaginationAdded = Object.keys(DEFAULT_PAGINATION_PARAMS).every((id) =>
-      event.query?.map((q) => q.id).includes(id)
+    const hasPaginationAdded = Object.keys(DEFAULT_PAGINATION_PARAMS).every(
+      (id) => event.query?.map((q) => q.id).includes(id)
     )
     if (hasPaginationAdded) {
       // Pagination already included, not needed to add it
@@ -52,11 +52,11 @@ export const eventsDatasetConfigsCallback: GetDatasetConfigCallback = (events) =
 export const trackDatasetConfigsCallback = (
   thinningConfig: ThinningConfigParam | null,
   chunks: { start: string; end: string }[] | null,
-  timebarGraph
-) => {
+  timebarGraph: TimebarGraphs
+): GetDatasetConfigCallback => {
   return (
     [track]: DataviewDatasetConfig[],
-    dataview: UrlDataviewInstance
+    dataview?: UrlDataviewInstance
   ): DataviewDatasetConfig[] => {
     if (track?.endpoint === EndpointId.Tracks) {
       const thinningQuery = Object.entries(thinningConfig?.config || []).map(([id, value]) => ({
@@ -110,7 +110,7 @@ export const trackDatasetConfigsCallback = (
 
       if (chunks) {
         const chunkSetId = getTracksChunkSetId(trackWithThinning)
-        const dataset = dataview.datasets?.find(
+        const dataset = dataview?.datasets?.find(
           (d) => d.id === trackWithThinning.datasetId
         ) as Dataset
         // Workaround to avoid showing tracks outside the dataset bounds as the AIS data is changing at the end of 2022

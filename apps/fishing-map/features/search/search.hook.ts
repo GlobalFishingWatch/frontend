@@ -44,8 +44,8 @@ export const hasFiltersActive = (filters: VesselSearchState): boolean => {
     Object.entries(filters).filter(([key]) => {
       return (
         !FIRST_FETCH_FILTERS_TO_IGNORE.includes(key) &&
-        filters[key] !== undefined &&
-        filters[key] !== ''
+        filters[key as keyof VesselSearchState] !== undefined &&
+        filters[key as keyof VesselSearchState] !== ''
       )
     }).length > 0
   )

@@ -56,19 +56,19 @@ export const VesselDetectionTimestamps = ({ vessel }: { vessel: ExtendedFeatureV
   const hasMultipleDetectionsTimestamps = hasDetectionsTimestamps && detectionsTimestamps.length > 1
 
   const start = hasDetectionsTimestamps
-    ? getUTCDateTime(detectionsTimestamps[0]).startOf('day').toISO()
+    ? (getUTCDateTime(detectionsTimestamps[0]).startOf('day').toISO() as string)
     : ''
 
   const end = hasDetectionsTimestamps
-    ? getUTCDateTime(detectionsTimestamps[detectionsTimestamps.length - 1])
+    ? (getUTCDateTime(detectionsTimestamps[detectionsTimestamps.length - 1])
         .endOf('day')
-        .toISO()
+        .toISO() as string)
     : ''
 
   if (!hasDetectionsTimestamps) return null
 
   return hasMultipleDetectionsTimestamps ? (
-    <Tooltip content={t('timebar.fitOnThisDates', 'Fit time range to these dates')}>
+    <Tooltip content={t('timebar.fitOnThisDates', 'Fit time range to these dates') as string}>
       <button
         className={styles.timestampBtn}
         onClick={() => {
@@ -88,7 +88,7 @@ export const VesselDetectionTimestamps = ({ vessel }: { vessel: ExtendedFeatureV
         onClick={() => {
           setTimerange({
             start,
-            end: getUTCDateTime(start).endOf('day').toISO(),
+            end: getUTCDateTime(start).endOf('day').toISO() as string,
           })
         }}
       >

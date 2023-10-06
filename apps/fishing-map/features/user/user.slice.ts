@@ -47,7 +47,9 @@ export const PRIVATE_SUPPORTED_GROUPS = [
   'SSF-Ipnlf',
   'SSF-Rare',
 ]
-export const USER_GROUP_WORKSPACE = {
+
+export type UserGroup = 'costa rica' | 'papua new guinea' | 'ssf-aruna' | 'ssf-rare' | 'ssf-ipnlf'
+export const USER_GROUP_WORKSPACE: Record<UserGroup, string> = {
   'costa rica': 'costa_rica',
   'papua new guinea': 'papua_new_guinea',
   'ssf-aruna': 'coastal_fisheries_indonesia',

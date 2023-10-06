@@ -217,7 +217,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
         { signal }
       )
       const sublayersVesselsIds = sublayersVesselsIdsResponse.entries.map((sublayer) =>
-        sublayer.map((vessel) => {
+        sublayer.map((vessel: any) => {
           const { id, ...rest } = vessel
           return { ...rest, id: id }
         })
@@ -329,7 +329,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
                 } as ExtendedFeatureVessel
               })
             })
-            .sort((a, b) => b[activityProperty] - a[activityProperty]),
+            .sort((a: any, b: any) => b[activityProperty] - a[activityProperty]),
         }
       })
       return { vessels: sublayersVessels }

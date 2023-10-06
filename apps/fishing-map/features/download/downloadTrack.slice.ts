@@ -8,8 +8,7 @@ import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { DateRange } from 'features/download/downloadActivity.slice'
 import { getUTCDateTime } from 'utils/dates'
 import { logoutUserThunk } from 'features/user/user.slice'
-import { PATH_BASENAME } from 'routes/routes'
-import { Format, FORMAT_EXTENSION } from './downloadTrack.config'
+import { Format } from './downloadTrack.config'
 
 type VesselParams = {
   name: string
@@ -70,15 +69,14 @@ export const downloadTrackThunk = createAsyncThunk<
       'end-date': toDate,
       datasets,
       format,
-      fields: 'lonlat,timestamp,speed,course',
       ...(thinning && { ...thinning }),
     }
 
     const fileName = `${vesselName || vesselId} - ${downloadTrackParams['start-date']},${
       downloadTrackParams['end-date']
-    }`
+    }.zip`
     const rateLimit = await GFWAPI.fetch<Response>(
-      `/vessels/${vesselId}/tracks?${stringify(downloadTrackParams)}`,
+      `/vessels/${vesselId}/tracks/download?${stringify(downloadTrackParams)}`,
       {
         method: 'GET',
         cache: 'reload',
@@ -87,22 +85,8 @@ export const downloadTrackThunk = createAsyncThunk<
     ).then(async (response) => {
       const rateLimit = parseRateLimit(response)
       const blob = await response.blob()
+      saveAs(blob as any, fileName)
 
-      const JSZip = await import('jszip').then((module) => module.default)
-      const zip = new JSZip()
-
-      const readme = await GFWAPI.fetch<any>(
-        `${window.location.origin}${PATH_BASENAME}/tracks-download/README.md`,
-        { responseType: 'blob' }
-      )
-      zip.file(`${fileName}.${FORMAT_EXTENSION[format]}`, blob)
-      zip.file('README.md', readme)
-      zip
-        .generateAsync({ type: 'blob' })
-        .then(function (content) {
-          saveAs(content, `${fileName}.zip`)
-        })
-        .catch((e) => console.warn(e))
       return rateLimit
     })
     return rateLimit
