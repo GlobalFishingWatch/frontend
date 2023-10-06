@@ -24,6 +24,7 @@ export interface DatasetAreaList {
 }
 
 export interface Area {
+  type: 'Feature'
   id: string
   geometry: ContextAreaFeatureGeom | undefined
   bounds: Bbox | undefined

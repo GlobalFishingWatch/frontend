@@ -1,8 +1,10 @@
 import bbox from '@turf/bbox'
-import { LineString, polygon } from '@turf/helpers'
+import { LineString, feature, geometry, polygon } from '@turf/helpers'
 import { Feature, MultiPolygon, Polygon } from 'geojson'
 
 export type Bbox = [number, number, number, number]
+
+export const BUFFERED_ANTIMERIDIAN_LON = 179.5
 
 export const wrapBBoxLongitudes = (bbox: Bbox) => {
   // Hack for renderers like mapbox gl or leaflet to fix antimeridian issues
@@ -26,32 +28,25 @@ export const wrapBBoxLongitudes = (bbox: Bbox) => {
   }) as Bbox
 }
 
-export const wrapFeaturesLongitudes = (features: Feature<LineString>[]) => {
-  let prevLon: number
-  let lonOffset = 0
-  return features.map((feature) => {
-    return {
-      ...feature,
-      geometry: {
-        ...feature.geometry,
-        coordinates:
-          feature.geometry.type !== 'LineString'
-            ? feature.geometry.coordinates
-            : feature.geometry.coordinates.map((coords) => {
-                const [currentLon, currentLat] = coords
-                if (prevLon) {
-                  if (currentLon - prevLon < -180) {
-                    lonOffset += 360
-                  } else if (currentLon - prevLon > 180) {
-                    lonOffset -= 360
-                  }
-                }
-                prevLon = currentLon
-                return [currentLon + lonOffset, currentLat]
-              }),
-      },
-    }
-  })
+export const wrapFeaturesLongitudes = (features: Feature<LineString | Polygon>[]) => {
+  return features.map((feature) => wrapFeatureLongitudes(feature))
+}
+
+export const wrapFeatureLongitudes = (
+  featureData: Feature<LineString | Polygon | MultiPolygon>
+): Feature<LineString | Polygon | MultiPolygon> => {
+  let coordinates = featureData.geometry.coordinates
+  switch (featureData.geometry.type) {
+    case 'LineString':
+      coordinates = wrapLineStringFeatureCoordinates(featureData as Feature<LineString>)
+      return feature(geometry('LineString', coordinates)) as Feature<LineString>
+    case 'Polygon':
+      coordinates = wrapPolygonFeatureCoordinates(featureData as Feature<Polygon>)
+      return feature(geometry('Polygon', coordinates)) as Feature<Polygon>
+    default: // MultiPolygon
+      coordinates = wrapMultipolygonFeatureCoordinates(featureData as Feature<MultiPolygon>)
+      return feature(geometry('MultiPolygon', coordinates)) as Feature<MultiPolygon>
+  }
 }
 
 export function wrapGeometryBbox(geometry: Polygon | MultiPolygon): Bbox {
@@ -69,25 +64,37 @@ export function wrapGeometryBbox(geometry: Polygon | MultiPolygon): Bbox {
   return [minX, minY, maxX, maxY]
 }
 
-export const wrapPolygonFeatureCoordinates = (feature: Feature<Polygon>) =>
-  feature.geometry.coordinates.map((coords) => {
-    return coords.map((pair) => (pair[0] < 0 ? [pair[0] + 360, pair[1]] : pair))
-  })
-
-export const wrapMultipolygonFeatureCoordinates = (feature: Feature<MultiPolygon>) =>
-  feature.geometry.coordinates.map((coords) => {
-    return coords.map((pairs) => {
-      return pairs.map((pair) => (pair[0] < 0 ? [pair[0] + 360, pair[1]] : pair))
-    })
-  })
-
-export const wrapMultipolygonFeatureToPolygon = (
-  feature: Feature<MultiPolygon>
-): Feature<Polygon>[] => {
+export const wrapLineStringFeatureCoordinates = (feature: Feature<LineString>) => {
+  let prevLon: number
+  let lonOffset = 0
   return feature.geometry.coordinates.map((coords) => {
-    const c = coords.map((pairs) => {
-      return pairs.map((pair) => (pair[0] < 0 ? [pair[0] + 360, pair[1]] : pair))
+    const [currentLon, currentLat] = coords
+    if (prevLon) {
+      if (currentLon - prevLon < -180) {
+        lonOffset += 360
+      } else if (currentLon - prevLon > 180) {
+        lonOffset -= 360
+      }
+    }
+    prevLon = currentLon
+    return [currentLon + lonOffset, currentLat]
+  })
+}
+
+export const wrapPolygonFeatureCoordinates = (feature: Feature<Polygon>) => {
+  return feature.geometry.coordinates.map((coords, index) => {
+    return coords.map((pair) => {
+      let lon = pair[0]
+      if (lon > BUFFERED_ANTIMERIDIAN_LON) lon = 180
+      else if (lon < -BUFFERED_ANTIMERIDIAN_LON) lon = -180
+      if (lon < 0) return [lon + 360, pair[1]]
+      return pair
     })
-    return polygon(c)
+  })
+}
+
+export const wrapMultipolygonFeatureCoordinates = (feature: Feature<MultiPolygon>) => {
+  return feature.geometry.coordinates.map((coords) => {
+    return wrapPolygonFeatureCoordinates(polygon(coords))
   })
 }
