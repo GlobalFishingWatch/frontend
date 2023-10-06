@@ -1,12 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { kebabCase, memoize, uniqBy } from 'lodash'
-import { MultiPolygon } from 'geojson'
-import {
-  ContextAreaFeature,
-  ContextAreaFeatureGeom,
-  Dataset,
-  EndpointId,
-} from '@globalfishingwatch/api-types'
+import { TileContextAreaFeature, Dataset, EndpointId } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import { wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
@@ -77,10 +71,12 @@ export const fetchAreaDetailThunk = createAsyncThunk(
       console.warn('No endpoint found for area detail fetch')
       return
     }
-    let area = await GFWAPI.fetch<ContextAreaFeature>(endpoint, { signal })
+    let area = await GFWAPI.fetch<TileContextAreaFeature<AreaGeometry>>(endpoint, { signal })
     if (!area.geometry) {
       const endpointNoSimplified = resolveEndpoint(dataset, datasetConfig) as string
-      area = await GFWAPI.fetch<ContextAreaFeature>(endpointNoSimplified, { signal })
+      area = await GFWAPI.fetch<TileContextAreaFeature<AreaGeometry>>(endpointNoSimplified, {
+        signal,
+      })
       if (!area.geometry) {
         console.warn('Area has no geometry, even calling the endpoint without simplification')
       }
