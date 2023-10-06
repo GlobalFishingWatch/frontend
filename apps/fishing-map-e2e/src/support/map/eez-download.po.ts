@@ -1,6 +1,12 @@
 import { SEARCH_EEZ_FULL_NAME } from '../../constants/search'
 import { API_URL_4WINGS_REPORT, URL_ONE_MONTH } from '../../constants/urls'
-import { deleteDownloadsFolder, getDownloadsFolderPath, getQueryParam } from '../app.po'
+import {
+  deleteDownloadsFolder,
+  getDOMTimeout,
+  getDownloadsFolderPath,
+  getQueryParam,
+  getRequestTimeout,
+} from '../app.po'
 
 export const REPORT_FORMAT_JSON = 'report-format-json'
 export const REPORT_FORMAT_CSV = 'report-format-csv'
@@ -48,11 +54,11 @@ export const verifyCSV = (attributes: string[]) => {
 export const verifyFileDownload = (file: string, button: string) => {
   cy.intercept(API_URL_4WINGS_REPORT).as('downloadReport')
   cy.getBySel(`download-${button}-button`).should('not.be.disabled').click()
-  // This request takes for me 17s, so I use 30 just in case
-  cy.wait('@downloadReport', { requestTimeout: 40000 })
+  // This request takes for me 17s, so I use 40 just in case
+  cy.wait('@downloadReport', getRequestTimeout(40000))
 
   //Create the same file name that the component CSVLink is generating
-  cy.readFile(file, { timeout: 15000 })
+  cy.readFile(file, getDOMTimeout(15000))
 }
 
 export const validateZipFile = (downloadContainer: string, columns: string[]) => {

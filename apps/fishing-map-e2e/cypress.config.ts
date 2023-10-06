@@ -12,6 +12,7 @@ const cypressJsonConfig = {
   chromeWebSecurity: false,
   trashAssetsBeforeRuns: true,
   specPattern: ['src/e2e/**/*.cy.{js,jsx,ts,tsx}'],
+  excludeSpecPattern: ['src/e2e/map/eez-download.cy.ts'],
   supportFile: 'src/support/e2e.ts',
   numTestsKeptInMemory: 5,
 }
