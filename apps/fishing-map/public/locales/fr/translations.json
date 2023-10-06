@@ -692,7 +692,7 @@
     "noEventsinTimeRange": "There are no events fully contained in your timerange.",
     "noEncountersInTimeRange": "There are no encounters fully contained in your timerange.",
     "notMatched": "Aucune donnée correspondante",
-    "noEventsIn": "No event in your timerange happened in any {{regionType}}",
+    "noEventsIn": "Aucun événement dans votre plage de temps ne s'est produit dans un(e) {{regionType}}",
     "noOwnersMatch": "Nous ne pouvons pas trouver d'autres navires avec ce propriétaire",
     "noVoyagesinTimeRange": "Aucun voyage n'est entièrement contenu dans votre plage de temps.",
     "noVoyagesWithoutPorts": "Veuillez activer la visibilité des visites de port",
@@ -718,13 +718,13 @@
     "targetSpecies": "Espèces pêchées",
     "title": "Profil de navire",
     "terminology": {
-      "geartype": "For gear type sourced from Global Fishing Watch, additional research and analysis is conducted in addition to using the original AIS data to identify the most likely value. GFW source values are likely gear type of fishing vessel as defined by Global Fishing Watch. The fishing vessels identified by GFW come from the GFW fishing database that were identified using vessel registry databases, reported AIS identity information, and estimated classification using a machine learning algorithm. See more information here:<1>https://globalfishingwatch.org/datasets-and-code-vessel-identity/</1> .\nGear type from \"other\" is taken from RFMO authorized vessel lists and other sources.",
-      "infoSource": "Info source terminology",
-      "owner": "Owner terminology",
-      "registryInfo": "Vessel registry info",
-      "shiptype": "For vessel type sourced from Global Fishing Watch, additional research and analysis is conducted in addition to using the original AIS data to identify the most likely value. Vessel types from GFW include fishing vessels, carrier vessels, and support vessels. The vessel classification for fishing vessel is estimated using known registry information in combination with a convolutional neural network used to estimate vessel class. The vessel classification for carrier vessels is estimated using a cumulation of known registry information, manual review, and vessel class. All support vessels in the vessel viewer are considered purse seine support vessels based on internal review. \nVessel type from \"other\" is taken from RFMO authorized vessel lists and other sources of vessel data. Where multiple values are given, this reflects conflicting information or variation in terms used in original sources."
+      "geartype": "Pour les types d'engins provenant de Global Fishing Watch, des recherches et des analyses supplémentaires sont menées en plus de l'utilisation des données AIS originales pour identifier la valeur la plus probable. Les valeurs sources de GFW correspondent probablement au type d'engin du navire de pêche tel que défini par Global Fishing Watch. Les navires de pêche identifiés par GFW proviennent de la base de données de pêche de GFW qui ont été identifiés à l'aide de bases de données de registres de navires, d'informations d'identité AIS déclarées et d'une classification estimée à l'aide d'un algorithme d'apprentissage automatique. Pour plus d'informations, cliquez ici :<1>https://globalfishingwatch.org/datasets-and-code-vessel-identity/</1>.\nLe type d'engin de la catégorie « Autres » provient des listes de navires autorisés par les ORGP et d'autres sources.",
+      "infoSource": "Terminologie de la source d'informations",
+      "owner": "Terminologie du propriétaire",
+      "registryInfo": "Informations de registres de navires",
+      "shiptype": "Pour les types de navires provenant de Global Fishing Watch, des recherches et des analyses supplémentaires sont menées en plus de l'utilisation des données AIS originales pour identifier la valeur la plus probable. Les types de navires de GFW comprennent les navires de pêche, les navires de transport et les navires de soutien. La classification des navires de pêche est estimée à l'aide d'informations de registre connues en combinaison avec un réseau neuronal convolutif utilisé pour estimer la classe des navires. La classification des navires de transport est estimée à l'aide d'un cumul d'informations d'immatriculation connues, d'un examen manuel et de la classe de navire. Tous les navires de soutien dans Vessel Viewer sont considérés comme des navires de soutien pour la pêche à la senne coulissante sur la base d'un examen interne.\nLe type de navire dans la catégorie « Autres » est tiré des listes de navires autorisés par les ORGP et d'autres sources de données sur les navires. Lorsque plusieurs valeurs sont données, cela reflète des informations contradictoires ou des variations dans les termes utilisés dans les sources originales."
     },
-    "tonnageGt": "Tonnage (Gt)",
+    "tonnageGt": "Jauge (tjb)",
     "trackLogin": "Une de vos sources sélectionnées nécessite que vous <1>vous connectez</1> pour voir les trajectoires et les événements du navire",
     "transmission_other": "Transmissions",
     "transmissionDates": "Dates de transmission",
@@ -742,7 +742,7 @@
       "other_non_fishing": "Autres",
       "passenger": "Passager",
       "seismic_vessel": "Navire d'étude sismique",
-      "support": "Support",
+      "support": "Soutien",
       "unknown": "Inconnu"
     },
     "voyage_one": "voyage",
