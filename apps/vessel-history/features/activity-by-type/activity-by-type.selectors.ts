@@ -20,8 +20,12 @@ export const getEventsWithMainPortVisit = (events: RenderedEvent[]): RenderedEve
         return previous
       }
 
-      const portExit = events.find((ev) => ev.id === `${id}-${PortVisitSubEvent.Exit}`)
-      const portEntry = events.find((ev) => ev.id === `${id}-${PortVisitSubEvent.Entry}`)
+      const portExit = events.find(
+        (ev) => ev.id === `${id}-${PortVisitSubEvent.Exit}`
+      ) as RenderedEvent
+      const portEntry = events.find(
+        (ev) => ev.id === `${id}-${PortVisitSubEvent.Entry}`
+      ) as RenderedEvent
       const portVisitEvent: RenderedEvent = { ...(portExit ?? portEntry) }
 
       const { name, flag } = [
@@ -58,12 +62,12 @@ export const getEventsWithMainPortVisit = (events: RenderedEvent[]): RenderedEve
         durationDescription:
           portEntry?.durationDescription ?? portExit?.durationDescription ?? duration
             ? [
-                duration.hours && duration.hours > 0
-                  ? t('event.hourAbbreviated', '{{count}}h', { count: duration.hours })
+                duration?.hours && duration?.hours > 0
+                  ? t('event.hourAbbreviated', '{{count}}h', { count: duration?.hours })
                   : '',
-                duration.minutes && duration.minutes > 0
+                duration?.minutes && duration?.minutes > 0
                   ? t('event.minuteAbbreviated', '{{count}}m', {
-                      count: Math.round(duration.minutes as number),
+                      count: Math.round(duration?.minutes as number),
                     })
                   : '',
               ].join(' ')
@@ -83,7 +87,7 @@ export const getEventsWithMainPortVisit = (events: RenderedEvent[]): RenderedEve
 
       return previous
     },
-    []
+    [] as any[]
   )
 
 export const selectFilteredEventsWithMainPortVisit = createSelector(

@@ -98,7 +98,7 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
     return <DatasetNotFound dataview={dataview} />
   }
 
-  const title = t(`datasets:${dataset?.id}.name` as any, dataset?.name || dataset?.id)
+  const title = t(`datasets:${dataset?.id}.name` as any, dataset?.name || dataset?.id || '')
 
   const TitleComponent = (
     <Title

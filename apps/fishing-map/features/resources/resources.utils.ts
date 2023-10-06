@@ -16,9 +16,9 @@ type ThinningConfigParam = { zoom: number; config: ThinningConfig }
 export const trackDatasetConfigsCallback = (
   thinningConfig: ThinningConfigParam | null,
   chunks: { start: string; end: string }[] | null,
-  timebarGraph
+  timebarGraph: TimebarGraphs
 ) => {
-  return ([info, track, ...events], dataview: UrlDataviewInstance) => {
+  return ([info, track, ...events]: any[], dataview: UrlDataviewInstance) => {
     if (track?.endpoint === EndpointId.Tracks) {
       const thinningQuery = Object.entries(thinningConfig?.config || []).map(([id, value]) => ({
         id,

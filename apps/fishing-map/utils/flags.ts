@@ -7,7 +7,7 @@ export const getFlagById = (id: string, lng = i18n.language): Flag | undefined =
   if (!flag || !lng) return flag
   return {
     ...flag,
-    label: t(`flags:${id}`, { lng }) || flag.label,
+    label: t(`flags:${id}`, { lng, defaultValue: flag.label }),
   }
 }
 
@@ -22,7 +22,7 @@ export const getFlags = (lng = i18n.language): Flag[] =>
     .map((flag) => {
       return {
         ...flag,
-        label: t(`flags:${flag.id}`, { lng }) || flag.label,
+        label: t(`flags:${flag.id}`, { lng, defaultValue: flag.label }) as string,
       }
     })
     .sort((a, b) => a.label.localeCompare(b.label))

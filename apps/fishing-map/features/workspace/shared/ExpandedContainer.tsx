@@ -38,7 +38,7 @@ function ExpandedContainer({
   className = '',
   arrowClassName = '',
 }: ExpandedContainerProps) {
-  const onMount = useCallback(({ popper }) => {
+  const onMount = useCallback(({ popper }: any) => {
     const { y, height } = popper.getBoundingClientRect()
     if (y + height >= window.innerHeight) {
       popper.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })

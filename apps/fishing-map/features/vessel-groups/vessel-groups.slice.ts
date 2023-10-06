@@ -300,8 +300,8 @@ export const createVesselGroupThunk = createAsyncThunk(
       ...vesselGroupCreate,
       vessels: removeDuplicatedVesselGroupvessels(vesselGroupCreate.vessels),
     }
-    const saveVesselGroup = async (vesselGroup: VesselGroupUpsert, tries = 0) => {
-      let vesselGroupUpdated
+    const saveVesselGroup: any = async (vesselGroup: VesselGroupUpsert, tries = 0) => {
+      let vesselGroupUpdated: VesselGroup
       if (tries < 2) {
         try {
           const name = tries > 0 ? vesselGroupUpsert.name + `_${tries}` : vesselGroupUpsert.name

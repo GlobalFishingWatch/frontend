@@ -1,11 +1,11 @@
 import { useEffect, useMemo } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { MultiSelect, InputDate } from '@globalfishingwatch/ui-components'
+import { MultiSelect, InputDate, MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { Dataset } from '@globalfishingwatch/api-types'
 import { getFlags } from 'utils/flags'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
-import { DEFAULT_WORKSPACE } from 'data/config'
+import { AVAILABLE_START, AVAILABLE_END } from 'data/config'
 import {
   getFiltersBySchema,
   SchemaFieldDataview,
@@ -14,6 +14,7 @@ import {
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { showSchemaFilter } from 'features/workspace/activity/ActivitySchemaFilter'
 import DatasetLabel from 'features/datasets/DatasetLabel'
+import { SearchFilter } from 'features/search/search.slice'
 import { useSearchFiltersConnect } from './search.hook'
 import styles from './SearchFilters.module.css'
 
@@ -29,12 +30,21 @@ const schemaFilterIds: SupportedDatasetSchema[] = [
   'targetSpecies',
 ]
 
-const getSearchDataview = (datasets, searchFilters, sources): SchemaFieldDataview => {
+const getSearchDataview = (
+  datasets: Dataset[],
+  searchFilters: SearchFilter,
+  sources: MultiSelectOption[]
+): SchemaFieldDataview => {
   return {
     config: {
       datasets: sources?.map(({ id }) => id),
       filters: Object.fromEntries(
-        schemaFilterIds.map((id) => [id, searchFilters[id]?.map((f) => f.id)])
+        schemaFilterIds.map((id) => {
+          if (typeof searchFilters[id] === 'string') {
+            return [id, searchFilters[id]]
+          }
+          return [id, (searchFilters[id] as MultiSelectOption[])?.map((f) => f.id)]
+        })
       ),
     },
     datasets,
@@ -67,12 +77,12 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
   }, [lastTransmissionDate, firstTransmissionDate, setSearchFilters, start, end])
 
   const dataview = useMemo(() => {
-    return getSearchDataview(datasets, searchFilters, sources)
+    return getSearchDataview(datasets, searchFilters, sources as MultiSelectOption<string>[])
   }, [datasets, searchFilters, sources])
 
   const schemaFilters = schemaFilterIds.map((id) => getFiltersBySchema(dataview, id))
 
-  const onSourceSelect = (filter) => {
+  const onSourceSelect = (filter: MultiSelectOption<string>) => {
     const newSources = [...(sources || []), filter]
     setSearchFilters({ sources: newSources })
     // Recalculates schemaFilters to validate a new source has valid selection
@@ -154,8 +164,8 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
       <div className={styles.row}>
         <InputDate
           value={lastTransmissionDate}
-          max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
-          min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
+          max={AVAILABLE_END.slice(0, 10) as string}
+          min={AVAILABLE_START.slice(0, 10) as string}
           label={t('common.active_after', 'Active after')}
           onChange={(e) => {
             if (e.target.value !== lastTransmissionDate) {
@@ -172,8 +182,8 @@ function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
       <div className={styles.row}>
         <InputDate
           value={firstTransmissionDate}
-          max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
-          min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
+          max={AVAILABLE_END.slice(0, 10) as string}
+          min={AVAILABLE_START.slice(0, 10) as string}
           label={t('common.active_before', 'Active Before')}
           onChange={(e) => {
             if (e.target.value !== firstTransmissionDate) {

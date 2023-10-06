@@ -52,6 +52,10 @@ export type SupportedActivityDatasetSchema =
   | 'license_category'
   | 'vessel-groups'
   | 'visibleValues'
+  | 'callsign'
+  | 'shipname'
+  | 'mmsi'
+  | 'imo'
 
 export type SupportedEnvDatasetSchema = 'type'
 export type SupportedContextDatasetSchema = 'removal_of'
@@ -64,15 +68,18 @@ export type SchemaFieldDataview =
   | UrlDataviewInstance
   | Pick<Dataview, 'category' | 'config' | 'datasets' | 'filtersConfig'>
 
-type DatasetGeometryTypesSupported = Extract<DatasetGeometryType, 'polygons' | 'tracks' | 'points'>
+export type DatasetGeometryTypesSupported = Extract<
+  DatasetGeometryType,
+  'polygons' | 'tracks' | 'points'
+>
 export const FILES_TYPES_BY_GEOMETRY_TYPE: Record<DatasetGeometryTypesSupported, FileType[]> = {
   polygons: ['shapefile', 'geojson'],
   tracks: ['csv'],
   points: ['shapefile', 'geojson', 'csv'],
 }
 
-export const getFileTypes = (datasetGeometryType) =>
-  datasetGeometryType ? FILES_TYPES_BY_GEOMETRY_TYPE[datasetGeometryType] : 'polygons'
+export const getFileTypes = (datasetGeometryType: DatasetGeometryTypesSupported) =>
+  FILES_TYPES_BY_GEOMETRY_TYPE[datasetGeometryType || ('polygons' as DatasetGeometryTypesSupported)]
 
 export const isPrivateDataset = (dataset: Partial<Dataset>) =>
   !(dataset?.id || '').startsWith(`${PUBLIC_SUFIX}-`)
@@ -223,13 +230,16 @@ export const getLatestEndDateFromDatasets = (
 ): string => {
   const datasetsWithEndDate = datasets.filter((dataset) => dataset.endDate)
   if (!datasetsWithEndDate.length) return DEFAULT_TIME_RANGE.end
-  const latestDate = datasetsWithEndDate.reduce((acc, dataset) => {
-    const endDate = dataset.endDate as string
-    if (datasetCategory && dataset.category !== datasetCategory) {
-      return acc
-    }
-    return endDate > acc ? endDate : acc
-  }, datasetsWithEndDate?.[0].endDate || '')
+  const latestDate = datasetsWithEndDate.reduce(
+    (acc, dataset) => {
+      const endDate = dataset.endDate as string
+      if (datasetCategory && dataset.category !== datasetCategory) {
+        return acc
+      }
+      return endDate > acc ? endDate : acc
+    },
+    datasetsWithEndDate?.[0].endDate || ''
+  )
   return latestDate
 }
 
@@ -320,8 +330,8 @@ export const getActiveActivityDatasetsInDataviews = (
 
 export const getEventsDatasetsInDataview = (dataview: UrlDataviewInstance) => {
   const datasetsConfigured = dataview.datasetsConfig
-    ?.filter((datasetConfig) =>
-      datasetConfig.query?.find((q) => q.id === 'vessels' && q.value !== '')
+    ?.filter(
+      (datasetConfig) => datasetConfig.query?.find((q) => q.id === 'vessels' && q.value !== '')
     )
     .map((d) => d.datasetId)
   return (dataview?.datasets || []).filter((dataset) => {
@@ -494,7 +504,7 @@ export const getCommonSchemaFieldsInDataview = (
             label = t(`vessel.gearTypes.${field}`, capitalize(lowerCase(field)))
           }
         }
-        return { id: field!?.toString(), label }
+        return { id: field!?.toString(), label: label as string }
       })
     : []
   return commonSchemaFields.sort(sortFields)
@@ -509,7 +519,7 @@ export const getSchemaOptionsSelectedInDataview = (
     return getFlagsByIds(dataview.config?.filters?.flag || [])
   }
   if (schema === 'radiance' && dataview.config?.filters?.[schema]) {
-    return dataview.config?.filters?.[schema]?.map((o) => [
+    return dataview.config?.filters?.[schema]?.map((o: string) => [
       {
         id: o.toString(),
         label: o.toString(),
@@ -544,8 +554,9 @@ export const getSchemaOptionsSelectedInDataview = (
     ]
   }
 
-  return options?.filter((option) =>
-    dataview.config?.filters?.[schema]?.map((o) => o.toString())?.includes(option.id)
+  return options?.filter(
+    (option) =>
+      dataview.config?.filters?.[schema]?.map((o: string) => o.toString())?.includes(option.id)
   )
 }
 
@@ -610,7 +621,7 @@ export const getFiltersBySchema = (
   const incompatibleFilterSelection = getIncompatibleFilterSelection(dataview, schema)!?.length > 0
   const disabled = datasetsWithoutSchema || incompatibleFilterSelection
   const datasetId = removeDatasetVersion(getActiveDatasetsInDataview(dataview)!?.[0]?.id)
-  let label = CONTEXT_DATASETS_SCHEMAS.includes(schema as SupportedContextDatasetSchema)
+  let label: string = CONTEXT_DATASETS_SCHEMAS.includes(schema as SupportedContextDatasetSchema)
     ? t(`datasets:${datasetId}.schema.${schema}.keyword`, schema.toString())
     : t(`vessel.${schema}`, { defaultValue: schema, count: 2 }) // We always want to show the plural for the multiselect
   if (schema === 'vessel-groups') {

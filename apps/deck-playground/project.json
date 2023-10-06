@@ -4,22 +4,10 @@
   "sourceRoot": "apps/deck-playground",
   "projectType": "application",
   "targets": {
-    "changelog": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          "./changelog.sh deck-playground \"Map\""
-        ],
-        "parallel": false
-      }
-    },
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": [
-          "nx build deck-playground --parallel",
-          "nx docker-prepare deck-playground"
-        ],
+        "commands": ["nx build deck-playground --parallel", "nx docker-prepare deck-playground"],
         "parallel": false
       }
     },
@@ -37,16 +25,12 @@
       "executor": "nx:run-commands",
       "outputs": [],
       "options": {
-        "commands": [
-          "zip -r dist.zip dist/apps/deck-playground/exported/*"
-        ]
+        "commands": ["zip -r dist.zip dist/apps/deck-playground/exported/*"]
       }
     },
     "compile": {
       "executor": "@nx/next:build",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/apps/deck-playground"
@@ -59,9 +43,7 @@
       "executor": "nx:run-commands",
       "outputs": [],
       "options": {
-        "commands": [
-          "rm -rf dist/apps/deck-playground/public/locales"
-        ]
+        "commands": ["rm -rf dist/apps/deck-playground/public/locales"]
       }
     },
     "start": {
@@ -107,9 +89,7 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": [
-        "{workspaceRoot}/coverage/apps/deck-playground"
-      ],
+      "outputs": ["{workspaceRoot}/coverage/apps/deck-playground"],
       "options": {
         "jestConfig": "apps/deck-playground/jest.config.ts",
         "passWithNoTests": true
@@ -117,13 +97,9 @@
     },
     "lint": {
       "executor": "@nx/linter:eslint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
+      "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "apps/deck-playground/**/*.{ts,tsx,js,jsx}"
-        ]
+        "lintFilePatterns": ["apps/deck-playground/**/*.{ts,tsx,js,jsx}"]
       }
     }
   },

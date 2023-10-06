@@ -16,7 +16,6 @@ export type FetchDataviewStatsParams = {
 }
 
 interface CustomBaseQueryArg extends BaseQueryArg<BaseQueryFn> {
-  url: string
   dataview: UrlDataviewInstance
   timerange: Range
 }
@@ -32,24 +31,24 @@ export const DEFAULT_STATS_FIELDS = ['vessel-ids', 'flags']
 // Define a service using a base URL and expected endpoints
 export const dataviewStatsApi = createApi({
   reducerPath: 'dataviewStatsApi',
-  serializeQueryArgs: serializeStatsDataviewKey,
   baseQuery: gfwBaseQuery({
     baseUrl: `/4wings/stats`,
   }),
   endpoints: (builder) => ({
     getStatsByDataview: builder.query<StatFields, FetchDataviewStatsParams>({
+      serializeQueryArgs: serializeStatsDataviewKey,
       query: ({ dataview, timerange, fields = DEFAULT_STATS_FIELDS }) => {
-        const datasets = dataview.datasets?.filter((dataset) =>
-          dataview.config?.datasets.includes(dataset.id)
+        const datasets = dataview.datasets?.filter(
+          (dataset) => dataview.config?.datasets.includes(dataset.id)
         )
         const { extentStart, extentEnd } = getDatasetsExtent(datasets)
         const laterStartDate = DateTime.max(
           DateTime.fromISO(timerange.start),
-          DateTime.fromISO(extentStart)
+          DateTime.fromISO(extentStart as string)
         )
         const earlierEndDate = DateTime.min(
           DateTime.fromISO(timerange.end),
-          DateTime.fromISO(extentEnd)
+          DateTime.fromISO(extentEnd as string)
         )
         const statsParams = {
           datasets: [dataview.config?.datasets?.join(',') || []],

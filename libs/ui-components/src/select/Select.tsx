@@ -18,6 +18,7 @@ interface SelectProps {
   onCleanClick?: (e: React.MouseEvent) => void
   onToggleButtonClick?: (currentSelectedOption?: SelectOption) => void
   containerClassName?: string
+  labelContainerClassName?: string
   className?: string
   direction?: 'bottom' | 'top'
   align?: 'left' | 'right'
@@ -40,6 +41,7 @@ export function Select(props: SelectProps) {
     onRemove,
     onCleanClick,
     containerClassName = '',
+    labelContainerClassName = '',
     className = '',
     direction = 'bottom',
     align = 'left',
@@ -91,7 +93,7 @@ export function Select(props: SelectProps) {
   return (
     <div className={containerClassName}>
       {label && (
-        <label className={styles.label} {...getLabelProps()}>
+        <label className={cx(styles.label, labelContainerClassName)} {...getLabelProps()}>
           {label}
         </label>
       )}

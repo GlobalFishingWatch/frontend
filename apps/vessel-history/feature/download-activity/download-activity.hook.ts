@@ -90,12 +90,12 @@ function useDownloadActivity() {
   const downloadAllEvents = useCallback(async () => {
     const downloadDate = DateTime.now().toFormat('yyyyLLddHHmm')
     const fileName =
-      `vessel-viewer-activity_${vessel.shipname}_${vessel.imo}` +
+      `vessel-viewer-activity_${vessel?.shipname}_${vessel?.imo}` +
       `_${downloadDate}` +
       `_all activity` +
       `.csv`
     downloadEvents(allEvents, fileName)
-  }, [allEvents, downloadEvents, vessel.imo, vessel.shipname])
+  }, [allEvents, downloadEvents, vessel?.imo, vessel?.shipname])
 
   const downloadFilteredEvents = useCallback(async () => {
     const downloadDate = DateTime.now().toFormat('yyyyLLddHHmm')
@@ -119,7 +119,7 @@ function useDownloadActivity() {
             .join(',')
         : ''
     const fileName =
-      `vessel-viewer-activity_${vessel.shipname}_${vessel.imo}` +
+      `vessel-viewer-activity_${vessel?.shipname}_${vessel?.imo}` +
       `_${downloadDate}` +
       `_filtered activity` +
       `${dateRange}` +
@@ -127,7 +127,7 @@ function useDownloadActivity() {
       `.csv`
 
     downloadEvents(eventsList, fileName)
-  }, [downloadEvents, eventsList, filters, filtersUpdated, t, vessel.imo, vessel.shipname])
+  }, [downloadEvents, eventsList, filters, filtersUpdated, t, vessel?.imo, vessel?.shipname])
 
   // TODO define approach to display readme file
   const readmeUrl = useMemo(

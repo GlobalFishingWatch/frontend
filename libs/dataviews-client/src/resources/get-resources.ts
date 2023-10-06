@@ -16,7 +16,8 @@ import { resolveEndpoint } from '../resolve-endpoint'
 export type GetDatasetConfigsCallbacks = {
   tracks?: (
     datasetConfigs: DataviewDatasetConfig[],
-    dataview?: UrlDataviewInstance
+    dataview?: UrlDataviewInstance,
+    params?: any
   ) => DataviewDatasetConfig[]
   activityContext?: (datasetConfigs: DataviewDatasetConfig) => DataviewDatasetConfig
 }

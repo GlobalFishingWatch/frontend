@@ -5,7 +5,7 @@ import {
   DefaultProps,
 } from '@deck.gl/core/typed'
 import { _GeoCellLayer, GeoBoundingBox, _GeoCellLayerProps } from '@deck.gl/geo-layers/typed'
-import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
+import { Tile2DHeader } from '@deck.gl/geo-layers/typed/tileset-2d'
 import {
   GetCellCoordinatesParams,
   generateUniqueId,
