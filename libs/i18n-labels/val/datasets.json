@@ -173,6 +173,45 @@
       "distance_from_shore_m": "crwdns64149:0crwdne64149:0"
     }
   },
+  "private-belize-vessel-identity-fishing": {
+    "name": "crwdns68818:0crwdne68818:0",
+    "description": "crwdns68820:0crwdne68820:0",
+    "schema": {
+      "id": "crwdns68822:0crwdne68822:0",
+      "registryInfo": "crwdns68824:0crwdne68824:0",
+      "registryOwners": "crwdns68826:0crwdne68826:0",
+      "selfReportedInfo": "crwdns68828:0crwdne68828:0",
+      "lastTransmissionDate": "crwdns68830:0crwdne68830:0",
+      "firstTransmissionDate": "crwdns68832:0crwdne68832:0",
+      "registryAuthorizations": "crwdns68834:0crwdne68834:0"
+    }
+  },
+  "private-belize-vessel-identity-non-fishing": {
+    "name": "crwdns68836:0crwdne68836:0",
+    "description": "crwdns68838:0crwdne68838:0",
+    "schema": {
+      "id": "crwdns68840:0crwdne68840:0",
+      "registryInfo": "crwdns68842:0crwdne68842:0",
+      "registryOwners": "crwdns68844:0crwdne68844:0",
+      "selfReportedInfo": "crwdns68846:0crwdne68846:0",
+      "lastTransmissionDate": "crwdns68848:0crwdne68848:0",
+      "firstTransmissionDate": "crwdns68850:0crwdne68850:0",
+      "registryAuthorizations": "crwdns68852:0crwdne68852:0"
+    }
+  },
+  "private-belize-vessel-identity": {
+    "name": "crwdns68854:0crwdne68854:0",
+    "description": "crwdns68856:0crwdne68856:0",
+    "schema": {
+      "id": "crwdns68858:0crwdne68858:0",
+      "registryInfo": "crwdns68860:0crwdne68860:0",
+      "registryOwners": "crwdns68862:0crwdne68862:0",
+      "selfReportedInfo": "crwdns68864:0crwdne68864:0",
+      "lastTransmissionDate": "crwdns68866:0crwdne68866:0",
+      "firstTransmissionDate": "crwdns68868:0crwdne68868:0",
+      "registryAuthorizations": "crwdns68870:0crwdne68870:0"
+    }
+  },
   "private-bra-onyxsat-fishing-effort": {
     "name": "crwdns64151:0crwdne64151:0",
     "description": "crwdns64153:0crwdne64153:0",
@@ -394,6 +433,26 @@
       "vessel_id": "crwdns64495:0crwdne64495:0"
     }
   },
+  "private-bra-onyxsat-vessel-identity-fishing": {
+    "name": "crwdns68872:0crwdne68872:0",
+    "description": "crwdns68874:0crwdne68874:0",
+    "schema": {
+      "id": "crwdns68876:0crwdne68876:0",
+      "selfReportedInfo": "crwdns68878:0crwdne68878:0",
+      "lastTransmissionDate": "crwdns68880:0crwdne68880:0",
+      "firstTransmissionDate": "crwdns68882:0crwdne68882:0"
+    }
+  },
+  "private-bra-onyxsat-vessel-identity-non-fishing": {
+    "name": "crwdns68884:0crwdne68884:0",
+    "description": "crwdns68886:0crwdne68886:0",
+    "schema": {
+      "id": "crwdns68888:0crwdne68888:0",
+      "selfReportedInfo": "crwdns68890:0crwdne68890:0",
+      "lastTransmissionDate": "crwdns68892:0crwdne68892:0",
+      "firstTransmissionDate": "crwdns68894:0crwdne68894:0"
+    }
+  },
   "private-brazil-opentuna-presence": {
     "name": "crwdns64497:0crwdne64497:0",
     "description": "crwdns64499:0crwdne64499:0",
@@ -560,6 +619,16 @@
       "vessel-groups": "crwdns64709:0crwdne64709:0"
     }
   },
+  "private-indonesia-aruna-vessel-identity": {
+    "name": "crwdns68896:0crwdne68896:0",
+    "description": "crwdns68898:0crwdne68898:0",
+    "schema": {
+      "id": "crwdns68900:0crwdne68900:0",
+      "selfReportedInfo": "crwdns68902:0crwdne68902:0",
+      "lastTransmissionDate": "crwdns68904:0crwdne68904:0",
+      "firstTransmissionDate": "crwdns68906:0crwdne68906:0"
+    }
+  },
   "private-indonesia-aruna-vessels": {
     "name": "crwdns64711:0crwdne64711:0",
     "description": "crwdns64713:0crwdne64713:0",
@@ -655,6 +724,19 @@
       "vessel-groups": "crwdns64843:0crwdne64843:0"
     }
   },
+  "private-indonesia-ipnlf-vessel-identity": {
+    "name": "crwdns68908:0crwdne68908:0",
+    "description": "crwdns68910:0crwdne68910:0",
+    "schema": {
+      "id": "crwdns68912:0crwdne68912:0",
+      "registryInfo": "crwdns68914:0crwdne68914:0",
+      "registryOwners": "crwdns68916:0crwdne68916:0",
+      "selfReportedInfo": "crwdns68918:0crwdne68918:0",
+      "lastTransmissionDate": "crwdns68920:0crwdne68920:0",
+      "firstTransmissionDate": "crwdns68922:0crwdne68922:0",
+      "registryAuthorizations": "crwdns68924:0crwdne68924:0"
+    }
+  },
   "private-indonesia-ipnlf-vessels": {
     "name": "crwdns64845:0crwdne64845:0",
     "description": "crwdns64847:0crwdne64847:0",
@@ -710,6 +792,16 @@
       },
       "vessel_id": "crwdns64915:0crwdne64915:0",
       "vessel-groups": "crwdns64917:0crwdne64917:0"
+    }
+  },
+  "private-indonesia-pelagic-vessel-identity": {
+    "name": "crwdns68926:0crwdne68926:0",
+    "description": "crwdns68928:0crwdne68928:0",
+    "schema": {
+      "id": "crwdns68930:0crwdne68930:0",
+      "selfReportedInfo": "crwdns68932:0crwdne68932:0",
+      "lastTransmissionDate": "crwdns68934:0crwdne68934:0",
+      "firstTransmissionDate": "crwdns68936:0crwdne68936:0"
     }
   },
   "private-indonesia-pelagic-vessels": {
@@ -800,6 +892,16 @@
       "vessel-groups": "crwdns65037:0crwdne65037:0"
     }
   },
+  "private-indonesia-rare-vessel-identity": {
+    "name": "crwdns68938:0crwdne68938:0",
+    "description": "crwdns68940:0crwdne68940:0",
+    "schema": {
+      "id": "crwdns68942:0crwdne68942:0",
+      "selfReportedInfo": "crwdns68944:0crwdne68944:0",
+      "lastTransmissionDate": "crwdns68946:0crwdne68946:0",
+      "firstTransmissionDate": "crwdns68948:0crwdne68948:0"
+    }
+  },
   "private-indonesia-rare-vessels": {
     "name": "crwdns65039:0crwdne65039:0",
     "description": "crwdns65041:0crwdne65041:0",
@@ -832,6 +934,19 @@
       },
       "vessel_id": "crwdns65079:0crwdne65079:0",
       "vessel-groups": "crwdns65081:0crwdne65081:0"
+    }
+  },
+  "private-indonesia-zebrax-vessel-identity": {
+    "name": "crwdns68950:0crwdne68950:0",
+    "description": "crwdns68952:0crwdne68952:0",
+    "schema": {
+      "id": "crwdns68954:0crwdne68954:0",
+      "registryInfo": "crwdns68956:0crwdne68956:0",
+      "registryOwners": "crwdns68958:0crwdne68958:0",
+      "selfReportedInfo": "crwdns68960:0crwdne68960:0",
+      "lastTransmissionDate": "crwdns68962:0crwdne68962:0",
+      "firstTransmissionDate": "crwdns68964:0crwdne68964:0",
+      "registryAuthorizations": "crwdns68966:0crwdne68966:0"
     }
   },
   "private-indonesia-zebrax-vessels": {
@@ -929,6 +1044,26 @@
       },
       "vessel_id": "crwdns65209:0crwdne65209:0",
       "vessel-groups": "crwdns65211:0crwdne65211:0"
+    }
+  },
+  "private-panama-vessel-identity-fishing": {
+    "name": "crwdns68968:0crwdne68968:0",
+    "description": "crwdns68970:0crwdne68970:0",
+    "schema": {
+      "id": "crwdns68972:0crwdne68972:0",
+      "selfReportedInfo": "crwdns68974:0crwdne68974:0",
+      "lastTransmissionDate": "crwdns68976:0crwdne68976:0",
+      "firstTransmissionDate": "crwdns68978:0crwdne68978:0"
+    }
+  },
+  "private-panama-vessel-identity-non-fishing": {
+    "name": "crwdns68980:0crwdne68980:0",
+    "description": "crwdns68982:0crwdne68982:0",
+    "schema": {
+      "id": "crwdns68984:0crwdne68984:0",
+      "selfReportedInfo": "crwdns68986:0crwdne68986:0",
+      "lastTransmissionDate": "crwdns68988:0crwdne68988:0",
+      "firstTransmissionDate": "crwdns68990:0crwdne68990:0"
     }
   },
   "private-peru-fishing-effort": {
@@ -1072,6 +1207,16 @@
         }
       },
       "vessel_id": "crwdns65401:0crwdne65401:0"
+    }
+  },
+  "private-peru-vessel-identity-fishing": {
+    "name": "crwdns68992:0crwdne68992:0",
+    "description": "crwdns68994:0crwdne68994:0",
+    "schema": {
+      "id": "crwdns68996:0crwdne68996:0",
+      "selfReportedInfo": "crwdns68998:0crwdne68998:0",
+      "lastTransmissionDate": "crwdns69000:0crwdne69000:0",
+      "firstTransmissionDate": "crwdns69002:0crwdne69002:0"
     }
   },
   "private-png-fishing-effort": {
@@ -1238,6 +1383,32 @@
       "firstTransmissionDate": "crwdns65603:0crwdne65603:0"
     }
   },
+  "public-belize-vessel-identity-fishing": {
+    "name": "crwdns69004:0crwdne69004:0",
+    "description": "crwdns69006:0crwdne69006:0",
+    "schema": {
+      "id": "crwdns69008:0crwdne69008:0",
+      "registryInfo": "crwdns69010:0crwdne69010:0",
+      "registryOwners": "crwdns69012:0crwdne69012:0",
+      "selfReportedInfo": "crwdns69014:0crwdne69014:0",
+      "lastTransmissionDate": "crwdns69016:0crwdne69016:0",
+      "firstTransmissionDate": "crwdns69018:0crwdne69018:0",
+      "registryAuthorizations": "crwdns69020:0crwdne69020:0"
+    }
+  },
+  "public-belize-vessel-identity": {
+    "name": "crwdns69022:0crwdne69022:0",
+    "description": "crwdns69024:0crwdne69024:0",
+    "schema": {
+      "id": "crwdns69026:0crwdne69026:0",
+      "registryInfo": "crwdns69028:0crwdne69028:0",
+      "registryOwners": "crwdns69030:0crwdne69030:0",
+      "selfReportedInfo": "crwdns69032:0crwdne69032:0",
+      "lastTransmissionDate": "crwdns69034:0crwdne69034:0",
+      "firstTransmissionDate": "crwdns69036:0crwdne69036:0",
+      "registryAuthorizations": "crwdns69038:0crwdne69038:0"
+    }
+  },
   "public-bra-onyxsat-fishing-effort": {
     "name": "crwdns65605:0crwdne65605:0",
     "description": "crwdns65607:0crwdne65607:0",
@@ -1362,6 +1533,16 @@
       "firstTransmissionDate": "crwdns65803:0crwdne65803:0"
     }
   },
+  "public-bra-onyxsat-vessel-identity-fishing": {
+    "name": "crwdns69040:0crwdne69040:0",
+    "description": "crwdns69042:0crwdne69042:0",
+    "schema": {
+      "id": "crwdns69044:0crwdne69044:0",
+      "selfReportedInfo": "crwdns69046:0crwdne69046:0",
+      "lastTransmissionDate": "crwdns69048:0crwdne69048:0",
+      "firstTransmissionDate": "crwdns69050:0crwdne69050:0"
+    }
+  },
   "public-brazil-opentuna-fishing-vessels": {
     "name": "crwdns65805:0crwdne65805:0",
     "description": "crwdns65807:0crwdne65807:0",
@@ -1384,6 +1565,19 @@
       "flag": "crwdns65831:0crwdne65831:0",
       "vessel_id": "crwdns65833:0crwdne65833:0",
       "vessel-groups": "crwdns65835:0crwdne65835:0"
+    }
+  },
+  "public-brazil-opentuna-vessel-identity-fishing": {
+    "name": "crwdns69052:0crwdne69052:0",
+    "description": "crwdns69054:0crwdne69054:0",
+    "schema": {
+      "id": "crwdns69056:0crwdne69056:0",
+      "registryInfo": "crwdns69058:0crwdne69058:0",
+      "registryOwners": "crwdns69060:0crwdne69060:0",
+      "selfReportedInfo": "crwdns69062:0crwdne69062:0",
+      "lastTransmissionDate": "crwdns69064:0crwdne69064:0",
+      "firstTransmissionDate": "crwdns69066:0crwdne69066:0",
+      "registryAuthorizations": "crwdns69068:0crwdne69068:0"
     }
   },
   "public-chile-all-vessels": {
@@ -1459,6 +1653,26 @@
       "vessel_id": "crwdns65925:0crwdne65925:0"
     }
   },
+  "public-chile-vessel-identity-fishing": {
+    "name": "crwdns69070:0crwdne69070:0",
+    "description": "crwdns69072:0crwdne69072:0",
+    "schema": {
+      "id": "crwdns69074:0crwdne69074:0",
+      "selfReportedInfo": "crwdns69076:0crwdne69076:0",
+      "lastTransmissionDate": "crwdns69078:0crwdne69078:0",
+      "firstTransmissionDate": "crwdns69080:0crwdne69080:0"
+    }
+  },
+  "public-chile-vessel-identity-non-fishing": {
+    "name": "crwdns69082:0crwdne69082:0",
+    "description": "crwdns69084:0crwdne69084:0",
+    "schema": {
+      "id": "crwdns69086:0crwdne69086:0",
+      "selfReportedInfo": "crwdns69088:0crwdne69088:0",
+      "lastTransmissionDate": "crwdns69090:0crwdne69090:0",
+      "firstTransmissionDate": "crwdns69092:0crwdne69092:0"
+    }
+  },
   "public-cold-water-corals": {
     "name": "crwdns65927:0crwdne65927:0",
     "description": "crwdns65929:0crwdne65929:0",
@@ -1496,6 +1710,16 @@
       "shipname": "crwdns65969:0crwdne65969:0",
       "lastTransmissionDate": "crwdns65971:0crwdne65971:0",
       "firstTransmissionDate": "crwdns65973:0crwdne65973:0"
+    }
+  },
+  "public-costa-rica-vessel-identity-vessels": {
+    "name": "crwdns69094:0crwdne69094:0",
+    "description": "crwdns69096:0crwdne69096:0",
+    "schema": {
+      "id": "crwdns69098:0crwdne69098:0",
+      "selfReportedInfo": "crwdns69100:0crwdne69100:0",
+      "lastTransmissionDate": "crwdns69102:0crwdne69102:0",
+      "firstTransmissionDate": "crwdns69104:0crwdne69104:0"
     }
   },
   "public-dgg_sar_caribe_match_2019": {
@@ -1579,6 +1803,26 @@
       "vessel-groups": "crwdns66075:0crwdne66075:0",
       "distance_from_port_m": "crwdns66077:0crwdne66077:0",
       "distance_from_shore_m": "crwdns66079:0crwdne66079:0"
+    }
+  },
+  "public-ecuador-vessel-identity-fishing": {
+    "name": "crwdns69106:0crwdne69106:0",
+    "description": "crwdns69108:0crwdne69108:0",
+    "schema": {
+      "id": "crwdns69110:0crwdne69110:0",
+      "selfReportedInfo": "crwdns69112:0crwdne69112:0",
+      "lastTransmissionDate": "crwdns69114:0crwdne69114:0",
+      "firstTransmissionDate": "crwdns69116:0crwdne69116:0"
+    }
+  },
+  "public-ecuador-vessel-identity-non-fishing": {
+    "name": "crwdns69118:0crwdne69118:0",
+    "description": "crwdns69120:0crwdne69120:0",
+    "schema": {
+      "id": "crwdns69122:0crwdne69122:0",
+      "selfReportedInfo": "crwdns69124:0crwdne69124:0",
+      "lastTransmissionDate": "crwdns69126:0crwdne69126:0",
+      "firstTransmissionDate": "crwdns69128:0crwdne69128:0"
     }
   },
   "public-eez-areas": {
@@ -2184,6 +2428,16 @@
       "distance_from_shore_m": "crwdns66851:0crwdne66851:0"
     }
   },
+  "public-mexico-vessel-identity-fishing": {
+    "name": "crwdns69130:0crwdne69130:0",
+    "description": "crwdns69132:0crwdne69132:0",
+    "schema": {
+      "id": "crwdns69134:0crwdne69134:0",
+      "selfReportedInfo": "crwdns69136:0crwdne69136:0",
+      "lastTransmissionDate": "crwdns69138:0crwdne69138:0",
+      "firstTransmissionDate": "crwdns69140:0crwdne69140:0"
+    }
+  },
   "public-mpa-all": {
     "name": "crwdns66853:0crwdne66853:0",
     "description": "crwdns66855:0crwdne66855:0",
@@ -2346,6 +2600,29 @@
       "distance_from_shore_m": "crwdns67065:0crwdne67065:0"
     }
   },
+  "public-norway-vessel-identity-fishing": {
+    "name": "crwdns69142:0crwdne69142:0",
+    "description": "crwdns69144:0crwdne69144:0",
+    "schema": {
+      "id": "crwdns69146:0crwdne69146:0",
+      "registryInfo": "crwdns69148:0crwdne69148:0",
+      "registryOwners": "crwdns69150:0crwdne69150:0",
+      "selfReportedInfo": "crwdns69152:0crwdne69152:0",
+      "lastTransmissionDate": "crwdns69154:0crwdne69154:0",
+      "firstTransmissionDate": "crwdns69156:0crwdne69156:0",
+      "registryAuthorizations": "crwdns69158:0crwdne69158:0"
+    }
+  },
+  "public-norway-vessel-identity-non-fishing": {
+    "name": "crwdns69160:0crwdne69160:0",
+    "description": "crwdns69162:0crwdne69162:0",
+    "schema": {
+      "id": "crwdns69164:0crwdne69164:0",
+      "selfReportedInfo": "crwdns69166:0crwdne69166:0",
+      "lastTransmissionDate": "crwdns69168:0crwdne69168:0",
+      "firstTransmissionDate": "crwdns69170:0crwdne69170:0"
+    }
+  },
   "public-panama-fishing-effort": {
     "name": "crwdns67067:0crwdne67067:0",
     "description": "crwdns67069:0crwdne67069:0",
@@ -2383,6 +2660,16 @@
       "shipname": "crwdns67115:0crwdne67115:0",
       "lastTransmissionDate": "crwdns67117:0crwdne67117:0",
       "firstTransmissionDate": "crwdns67119:0crwdne67119:0"
+    }
+  },
+  "public-panama-vessel-identity-fishing": {
+    "name": "crwdns69172:0crwdne69172:0",
+    "description": "crwdns69174:0crwdne69174:0",
+    "schema": {
+      "id": "crwdns69176:0crwdne69176:0",
+      "selfReportedInfo": "crwdns69178:0crwdne69178:0",
+      "lastTransmissionDate": "crwdns69180:0crwdne69180:0",
+      "firstTransmissionDate": "crwdns69182:0crwdne69182:0"
     }
   },
   "public-peru-fishing-effort": {
@@ -2491,6 +2778,16 @@
       "vessel_id": "crwdns67259:0crwdne67259:0"
     }
   },
+  "public-peru-vessel-identity-fishing": {
+    "name": "crwdns69184:0crwdne69184:0",
+    "description": "crwdns69186:0crwdne69186:0",
+    "schema": {
+      "id": "crwdns69188:0crwdne69188:0",
+      "selfReportedInfo": "crwdns69190:0crwdne69190:0",
+      "lastTransmissionDate": "crwdns69192:0crwdne69192:0",
+      "firstTransmissionDate": "crwdns69194:0crwdne69194:0"
+    }
+  },
   "public-png-fishing-effort": {
     "name": "crwdns67261:0crwdne67261:0",
     "description": "crwdns67263:0crwdne67263:0",
@@ -2537,6 +2834,16 @@
       "vessel-groups": "crwdns67319:0crwdne67319:0",
       "distance_from_port_m": "crwdns67321:0crwdne67321:0",
       "distance_from_shore_m": "crwdns67323:0crwdne67323:0"
+    }
+  },
+  "public-png-vessel-identity-fishing": {
+    "name": "crwdns69196:0crwdne69196:0",
+    "description": "crwdns69198:0crwdne69198:0",
+    "schema": {
+      "id": "crwdns69200:0crwdne69200:0",
+      "selfReportedInfo": "crwdns69202:0crwdne69202:0",
+      "lastTransmissionDate": "crwdns69204:0crwdne69204:0",
+      "firstTransmissionDate": "crwdns69206:0crwdne69206:0"
     }
   },
   "public-presence-viirs-match-prototype": {
