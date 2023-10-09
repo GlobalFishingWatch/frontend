@@ -1,7 +1,7 @@
 // PREDEFINED URLS
 const FULL_MAP_PARAMS = 'latitude=0&longitude=0&zoom=0.5'
 export const URL_ONE_MONTH =
-  '/?start=2022-01-01T00%3A00%3A00.000Z&end=2022-01-15T00%3A00%3A00.000Z&dvIn[1][id]=vms-with-png&dvIn[1][cfg][vis]=false'
+  '/?start=2022-01-01T00%3A00%3A00.000Z&end=2022-01-30T00%3A00%3A00.000Z&dvIn[1][id]=vms-with-png&dvIn[1][cfg][vis]=false'
 
 export const URL_FULL_DATA_AREA =
   '/?start=2012-01-01T00%3A00%3A00.000Z&end=2023-12-31T00%3A00%3A00.000Z&latitude=38.52482493227137&longitude=120.93347111612252&zoom=9.708387652927911'
