@@ -1,6 +1,6 @@
 {
   "extends": ["../../.eslintrc.js"],
-  "ignorePatterns": ["!**/*"],
+  "ignorePatterns": ["decoders/4wings-tile.js", "decoders/vessels.js", "!**/*"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
