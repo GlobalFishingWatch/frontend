@@ -6,7 +6,7 @@ import { gfwBaseQuery } from 'queries/base'
 import { uniq } from 'lodash'
 import { DateTime } from 'luxon'
 import { getDatasetsExtent, type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { StatField, StatFields, StatType } from '@globalfishingwatch/api-types'
+import { StatField, StatFields, StatType, StatsParams } from '@globalfishingwatch/api-types'
 import type { TimeRange } from 'features/timebar/timebar.slice'
 
 export type FetchDataviewStatsParams = {
@@ -27,7 +27,7 @@ const serializeStatsDataviewKey: SerializeQueryArgs<CustomBaseQueryArg> = ({ que
   ].join('-')
 }
 
-export const DEFAULT_STATS_FIELDS = ['vessel-ids', 'flags']
+export const DEFAULT_STATS_FIELDS: StatsParams[] = ['VESSEL-IDS', 'FLAGS']
 // Define a service using a base URL and expected endpoints
 export const dataviewStatsApi = createApi({
   reducerPath: 'dataviewStatsApi',
