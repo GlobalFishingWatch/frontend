@@ -50,7 +50,7 @@ export const wrapFeaturesLongitudes = (features: Feature<LineString | Polygon>[]
   return features.map((feature) => wrapFeatureLongitudes(feature))
 }
 
-export const normalizeLongitud = (longitude: number) => {
+export const normalizeLongitude = (longitude: number) => {
   if (longitude > BUFFERED_ANTIMERIDIAN_LON) return BUFFERED_ANTIMERIDIAN_NORMALIZED
   else if (longitude < -BUFFERED_ANTIMERIDIAN_LON) return -BUFFERED_ANTIMERIDIAN_NORMALIZED
   return longitude
@@ -83,7 +83,7 @@ export const wrapPolygonFeatureCoordinates = (
 ) => {
   return feature.geometry.coordinates.map((coords) => {
     return coords.map((pair) => {
-      const lon = normalize ? normalizeLongitud(pair[0]) : pair[0]
+      const lon = normalize ? normalizeLongitude(pair[0]) : pair[0]
       if (lon < 0) return [lon + 360, pair[1]]
       return pair
     })
