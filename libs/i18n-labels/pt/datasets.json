@@ -1255,12 +1255,12 @@
     "description": "Dataset para Papua Nova Guiné VMS (Private)",
     "schema": {
       "id": "id",
-      "registryInfo": "registryInfo",
-      "registryOwners": "registryOwners",
-      "selfReportedInfo": "selfReportedInfo",
+      "flag": "flag",
+      "source": "source",
+      "callsign": "callsign",
+      "shipname": "Embarcação",
       "lastTransmissionDate": "última data de transmissão",
-      "firstTransmissionDate": "primeira data de transmissão",
-      "registryAuthorizations": "registryAuthorizations"
+      "firstTransmissionDate": "primeira data de transmissão"
     }
   },
   "private-png-presence": {
@@ -2673,8 +2673,8 @@
     }
   },
   "public-panama-vessel-identity-fishing": {
-    "name": "Panama VMS (Public Non fishing vessels)",
-    "description": "Dataset for VMS Panama - Carriers (Public)",
+    "name": "Panama VMS (Public Fishing Vessels)",
+    "description": "Dataset for VMS Panama (Public)",
     "schema": {
       "id": "id",
       "selfReportedInfo": "selfReportedInfo",
