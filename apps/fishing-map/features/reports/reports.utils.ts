@@ -1,19 +1,13 @@
-/**
- *
- * @param filters Dataview filters
- * @returns Conditions transformed to apply in the API request and
- *          joined by AND operator
- */
 import { format } from 'd3-format'
 import { DateTime } from 'luxon'
-import { multiPolygon, polygon, point } from '@turf/helpers'
-import { buffer, difference } from '@turf/turf'
-import { Feature, MultiPolygon } from 'geojson'
+import { featureCollection, multiPolygon } from '@turf/helpers'
+import { difference, dissolve } from '@turf/turf'
+import { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson'
 import { parse } from 'qs'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataview, DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
-import { wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
+import { getFeatureBuffer, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import { API_VERSION } from '@globalfishingwatch/api-client'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { sortStrings } from 'utils/shared'
@@ -24,7 +18,7 @@ import {
   SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
 import { Bbox, BufferOperation, BufferUnit, ReportCategory } from 'types'
-import { Area } from 'features/areas/areas.slice'
+import { Area, AreaGeometry } from 'features/areas/areas.slice'
 import {
   DEFAULT_BUFFER_OPERATION,
   DEFAULT_POINT_BUFFER_UNIT,
@@ -221,7 +215,7 @@ export const getReportCategoryFromDataview = (
 }
 
 type BufferedAreaParams = {
-  area: Area | undefined
+  area: Area<FeatureCollection<AreaGeometry>> | undefined
   value: number
   unit: BufferUnit
   operation?: BufferOperation
@@ -262,28 +256,22 @@ export const getBufferedFeature = ({
   operation,
 }: BufferedAreaParams): Feature | null => {
   if (!area?.geometry) return null
-  const areaPolygon =
-    area.geometry.type === 'MultiPolygon'
-      ? multiPolygon(area.geometry.coordinates)
-      : area.geometry.type === 'Polygon'
-      ? polygon(area.geometry.coordinates)
-      : area.geometry.type === 'Point'
-      ? point(area.geometry.coordinates)
-      : null
+  const bufferedFeatures = getFeatureBuffer(area.geometry.features, { unit, value })
 
-  const bufferedFeature = !areaPolygon
-    ? null
-    : operation === DIFFERENCE && areaPolygon?.geometry?.type !== 'Point'
-    ? difference(buffer(areaPolygon, value, { units: unit }), areaPolygon as any)
-    : buffer(areaPolygon, value, { units: unit })
+  if (!bufferedFeatures.length) return null
 
-  return bufferedFeature
-    ? {
-        ...bufferedFeature,
-        id: area.id,
-        properties: { ...area.properties, label: `Buffered ${area.name}` },
-      }
-    : null
+  const dissolvedBufferedPolygonsFeatures = multiPolygon(
+    dissolve(featureCollection(bufferedFeatures)).features.map((f) => f.geometry.coordinates)
+  )
+
+  if (operation === DIFFERENCE) {
+    const multi = multiPolygon(
+      area.geometry.features.map((f) => (f as Feature<Polygon>).geometry.coordinates)
+    )
+    return difference(dissolvedBufferedPolygonsFeatures, multi)
+  }
+
+  return dissolvedBufferedPolygonsFeatures
 }
 
 export const parseReportUrl = (url: string) => {

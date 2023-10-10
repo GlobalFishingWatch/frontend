@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo } from 'react'
-import { Polygon, MultiPolygon, Feature, Point } from 'geojson'
+import { Polygon, MultiPolygon, Point } from 'geojson'
 import simplify from '@turf/simplify'
 import { atom, useRecoilState } from 'recoil'
 import { useRouter } from 'next/router'
 import bbox from '@turf/bbox'
 import { LayerFeature } from '@globalfishingwatch/features-aggregate'
-import { ContextAreaFeature } from '@globalfishingwatch/api-types'
+import { TileContextAreaFeature } from '@globalfishingwatch/api-types'
 import { useGeoTemporalLayers } from 'features/layers/layers.hooks'
 import { useTimerange } from 'features/timebar/timebar.hooks'
 import {
@@ -30,7 +30,7 @@ export type DateTimeSeries = {
   values: number[]
 }[]
 
-export const useFilteredTimeSeries = (areaFeature: ContextAreaFeature) => {
+export const useFilteredTimeSeries = (areaFeature: TileContextAreaFeature) => {
   const {
     query: { areaId },
   } = useRouter()
