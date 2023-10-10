@@ -74,7 +74,7 @@
     "active_after": "Aktif setelah",
     "active_before": "Aktif sebelum",
     "activity": "Aktivitas",
-    "aka": "a.k.a.,",
+    "aka": "juga disebut",
     "analysis": "Buat analisis untuk area ini",
     "analysisNotAvailable": "Alihkan aktivitas atau lapisan lingkungan untuk menganalisisnya di area ini",
     "and": "dan",
@@ -661,7 +661,7 @@
       "trollers": "Tonda",
       "tug": "Kapal tunda",
       "tuna_purse_seines": "Pukat Cincin Tuna",
-      "well_boat": "Well boat"
+      "well_boat": "Well-boat"
     },
     "grossTonnage": "Tonase Kotor",
     "grossTonnageRange": "Rentang Gross Tonnage",
