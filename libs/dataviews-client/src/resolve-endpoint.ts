@@ -62,7 +62,8 @@ export const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDataset
       !resolvedQuery.toString().includes('datasets') &&
       datasetConfig.datasetId
     ) {
-      resolvedQuery.set('datasets', datasetConfig.datasetId)
+      const datasetString = API_VERSION === 'v2' ? 'datasets' : 'datasets[0]'
+      resolvedQuery.set(datasetString, datasetConfig.datasetId)
     }
     url = `${url}?${resolvedQuery.toString()}`
   } else if (
