@@ -1255,12 +1255,12 @@
     "description": "Dataset para Papua Nova Guiné VMS (Private)",
     "schema": {
       "id": "id",
-      "flag": "flag",
-      "source": "source",
-      "callsign": "callsign",
-      "shipname": "Embarcação",
+      "registryInfo": "registryInfo",
+      "registryOwners": "registryOwners",
+      "selfReportedInfo": "selfReportedInfo",
       "lastTransmissionDate": "última data de transmissão",
-      "firstTransmissionDate": "primeira data de transmissão"
+      "firstTransmissionDate": "primeira data de transmissão",
+      "registryAuthorizations": "registryAuthorizations"
     }
   },
   "private-png-presence": {
