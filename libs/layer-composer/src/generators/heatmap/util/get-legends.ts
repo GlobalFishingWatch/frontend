@@ -58,9 +58,9 @@ export const getSublayersBreaks = (config: FetchBreaksParams, breaks: Breaks | u
   const directApiBreaks = isDirectAPIBreaks(config)
   let deltaInterval = end.diff(start, 'days').days / 30
   let baseMultiplier = config.mode === HeatmapAnimatedMode.TimeCompare ? 1 / 10 : 1 / 4
-  if (directApiBreaks && (config.interval === 'day' || config.interval === 'hour')) {
+  if (directApiBreaks && (config.interval === 'DAY' || config.interval === 'HOUR')) {
     deltaInterval =
-      config.interval === 'day' ? end.diff(start, 'day').days : end.diff(start, 'hour').hours
+      config.interval === 'DAY' ? end.diff(start, 'day').days : end.diff(start, 'hour').hours
   }
   const sublayersBreaks = breaks?.map((bre) => {
     return getCleanBreaks(

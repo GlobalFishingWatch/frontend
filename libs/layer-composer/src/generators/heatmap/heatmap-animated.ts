@@ -132,7 +132,7 @@ const getFinalurl = (
   const { datasets, filters, 'vessel-groups': vesselGroups, ...rest } = params
   const finalUrlParams = {
     ...rest,
-    format: 'intArray',
+    format: 'INTARRAY',
     'temporal-aggregation': params.singleFrame === 'true',
     // We want proxy active as default when api tiles auth is required
     proxy: params.proxy !== 'false',
@@ -244,7 +244,7 @@ class HeatmapAnimatedGenerator {
       }
 
       const getDateForInterval = (date: string) =>
-        timeChunks.interval === 'hour'
+        timeChunks.interval === 'HOUR'
           ? date
           : DateTime.fromISO(date as string, { zone: 'utc' }).toISODate()
 

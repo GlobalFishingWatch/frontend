@@ -57,7 +57,7 @@ const formatDateTicks = (tick: number, start: string, timeChunkInterval: Interva
   const diff = TimeInterval.fromDateTimes(startDate, date)
   if (!diff.length('hours') && !diff.length('days')) return ''
 
-  return timeChunkInterval === 'hour'
+  return timeChunkInterval === 'HOUR'
     ? `${diff.length('hours').toFixed()} ${
         diff.length('hours') === 1 ? t('common.hour_one') : t('common.hour_other')
       }`
