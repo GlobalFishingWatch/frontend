@@ -1255,12 +1255,12 @@
     "description": "Dataset for VMS Papua New Guinea (Private)",
     "schema": {
       "id": "id",
-      "flag": "pavillon",
-      "source": "source",
-      "callsign": "indicatifs d'appel",
-      "shipname": "shipname",
+      "registryInfo": "registryInfo",
+      "registryOwners": "registryOwners",
+      "selfReportedInfo": "selfReportedInfo",
       "lastTransmissionDate": "lastTransmissionDate",
-      "firstTransmissionDate": "firstTransmissionDate"
+      "firstTransmissionDate": "firstTransmissionDate",
+      "registryAuthorizations": "registryAuthorizations"
     }
   },
   "private-png-presence": {
