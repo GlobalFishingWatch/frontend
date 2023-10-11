@@ -56,6 +56,7 @@ export const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDataset
         }
       }
     })
+
     // To avoid duplicating query in every config when we already have the datasetId
     if (
       endpoint.query.some((q) => q.id === 'datasets') &&
@@ -64,6 +65,13 @@ export const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDataset
     ) {
       const datasetString = API_VERSION === 'v2' ? 'datasets' : 'datasets[0]'
       resolvedQuery.set(datasetString, datasetConfig.datasetId)
+    } else if (
+      // Also check v3 new single dataset param
+      endpoint.query.some((q) => q.id === 'dataset') &&
+      !resolvedQuery.toString().includes('dataset') &&
+      datasetConfig.datasetId
+    ) {
+      resolvedQuery.set('dataset', datasetConfig.datasetId)
     }
     url = `${url}?${resolvedQuery.toString()}`
   } else if (
