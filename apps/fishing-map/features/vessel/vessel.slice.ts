@@ -92,8 +92,8 @@ export const fetchVesselInfoThunk = createAsyncThunk(
               value: ['POTENTIAL_RELATED_SELF_REPORTED_INFO'],
             },
             {
-              id: 'datasets',
-              value: [datasetId],
+              id: 'dataset',
+              value: datasetId,
             },
           ],
         }

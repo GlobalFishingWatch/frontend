@@ -66,10 +66,13 @@ function TrackFootprint({
         return
       }
       const vesselData = await GFWAPI.fetch<any>(
-        `/vessels/${vesselIds}/tracks?${qs.stringify({
+        `/vessels/${vesselIds}/tracks?${qs.stringify(
+          {
           ...TRACK_FOOTPRINT_QUERY,
-          datasets: trackDatasetId,
-        })}`,
+            dataset: trackDatasetId,
+          },
+          { arrayFormat: 'indices' }
+        )}`,
         {
           responseType: 'vessel',
         }

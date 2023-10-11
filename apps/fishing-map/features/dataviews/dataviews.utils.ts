@@ -53,7 +53,7 @@ export const getVesselDataviewInstanceDatasetConfig = (
     datasetsConfig.push({
       datasetId: info,
       params: [{ id: 'vesselId', value: vesselId }],
-      query: [{ id: 'datasets', value: [info] }],
+      query: [{ id: 'dataset', value: info }],
       endpoint: EndpointId.Vessel,
     })
   }
