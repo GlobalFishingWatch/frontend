@@ -2,11 +2,11 @@ import { useCallback, useMemo } from 'react'
 import { batch, useSelector } from 'react-redux'
 import { DEFAULT_CONTEXT_SOURCE_LAYER, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
+import { getGeometryDissolved } from '@globalfishingwatch/data-transforms'
 import { getEventLabel } from 'utils/analytics'
 import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
-import { parsePropertiesBbox } from 'features/map/map.utils'
 import { AreaKeyId, fetchAreaDetailThunk } from 'features/areas/areas.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
@@ -22,10 +22,11 @@ import { TooltipEventFeature } from '../map.hooks'
 import { useMapFitBounds } from '../map-viewport.hooks'
 
 export const getFeatureBounds = (feature: TooltipEventFeature) => {
-  if (feature?.geometry?.type === 'Point') {
-    return getBufferedAreaBbox({ area: feature } as any)
+  if (feature.geometry) {
+    const geometry = getGeometryDissolved(feature.geometry)
+    const bounds = getBufferedAreaBbox({ area: { geometry } } as any)
+    return bounds
   }
-  return feature.properties.bbox ? parsePropertiesBbox(feature.properties.bbox) : null
 }
 
 export const getFeatureAreaId = (feature: TooltipEventFeature) => {
@@ -99,6 +100,7 @@ export const useContextInteractions = () => {
       const areaId = getFeatureAreaId(feature)
       // Report already does it on page reload but to avoid waiting
       // this moves the map to the same position
+      debugger
       const bounds = getFeatureBounds(feature)
       if (bounds) {
         const boundsParams = {
