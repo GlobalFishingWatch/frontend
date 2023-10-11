@@ -1,16 +1,19 @@
-import { featureCollection, polygon } from '@turf/helpers'
+import { featureCollection, point, polygon } from '@turf/helpers'
 import { bbox, dissolve } from '@turf/turf'
-import { Feature, GeoJsonProperties, MultiPolygon, Polygon, Position } from 'geojson'
+import { Feature, GeoJsonProperties, MultiPolygon, Point, Polygon, Position } from 'geojson'
 import {
   BUFFERED_ANTIMERIDIAN_LON,
   wrapFeatureLongitudes,
 } from '@globalfishingwatch/data-transforms'
 
-export const getGeometryDissolved = (geometry?: Polygon | MultiPolygon) => {
+export const getGeometryDissolved = (geometry?: Point | Polygon | MultiPolygon) => {
   if (!geometry) {
     console.warn('No geometry to dissolve')
     return undefined
   }
+
+  if (geometry.type === 'Point') return featureCollection([point(geometry.coordinates)])
+
   const [minX, , maxX] = geometry.bbox || bbox(geometry)
 
   let wrappedFeatures: Feature<Polygon, GeoJsonProperties>[]
