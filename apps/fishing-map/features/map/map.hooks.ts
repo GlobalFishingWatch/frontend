@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { debounce } from 'lodash'
 import { useTranslation } from 'react-i18next'
-import { Geometry } from 'geojson'
+import { MultiPolygon, Point, Polygon } from 'geojson'
 import {
   InteractionEvent,
   TemporalGridFeature,
@@ -275,7 +275,7 @@ export type TooltipEventFeature = {
   datasetId?: string
   event?: ExtendedFeatureEvent
   generatorContextLayer?: ContextLayerType | null
-  geometry?: Geometry
+  geometry?: Point | Polygon | MultiPolygon
   id?: string
   layerId: string
   promoteId?: string
