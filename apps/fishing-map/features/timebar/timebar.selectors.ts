@@ -30,6 +30,7 @@ import {
 } from 'features/dataviews/dataviews.slice'
 import { getVesselLabel } from 'utils/info'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
+import { TimebarGraphs } from 'types'
 
 const getUserTrackHighlighterLabel = ({ chunk }: HighlighterCallbackFnArgs) => {
   return chunk.props?.id || null
@@ -140,7 +141,7 @@ export const selectTracksGraphData = createSelector(
         chunks: [],
         status: ResourceStatus.Idle,
         getHighlighterLabel:
-          timebarGraphType === 'speed'
+          timebarGraphType === TimebarGraphs.Speed
             ? getTrackGraphSpeedHighlighterLabel
             : getTrackGraphElevationighlighterLabel,
         getHighlighterIcon: 'vessel',

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import cx from 'classnames'
 import { geoEqualEarth, geoPath } from 'd3'
-import { Feature, FeatureCollection, GeoJsonProperties, Geometry, LineString } from 'geojson'
+import { Feature, FeatureCollection, GeoJsonProperties, Geometry } from 'geojson'
 import { DateTime } from 'luxon'
 import qs from 'qs'
 import area from '@turf/area'
@@ -28,8 +28,8 @@ const MAX_SMALL_AREA_M = 2000000000000
 const TRACK_FOOTPRINT_QUERY = {
   ...THINNING_LEVELS.Footprint,
   binary: true,
-  fields: 'lonlat,timestamp',
-  format: 'valueArray',
+  fields: ['LONLAT', 'TIMESTAMP'],
+  format: 'VALUEARRAY',
 }
 
 function TrackFootprint({
@@ -68,7 +68,7 @@ function TrackFootprint({
       const vesselData = await GFWAPI.fetch<any>(
         `/vessels/${vesselIds}/tracks?${qs.stringify(
           {
-          ...TRACK_FOOTPRINT_QUERY,
+            ...TRACK_FOOTPRINT_QUERY,
             dataset: trackDatasetId,
           },
           { arrayFormat: 'indices' }
