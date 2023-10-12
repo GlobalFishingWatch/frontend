@@ -4,6 +4,7 @@ import { Map, MapboxStyle } from 'react-map-gl'
 import maplibregl from '@globalfishingwatch/maplibre-gl'
 import { useLayerComposer, useMapClick, useMemoCompare } from '@globalfishingwatch/react-hooks'
 import { ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
+import { DatasetCategory, DatasetSubCategory, DatasetTypes } from '@globalfishingwatch/api-types'
 import { selectResourcesLoading } from 'features/resources/resources.slice'
 import { selectActiveVesselsDataviews } from 'features/dataviews/dataviews.selectors'
 import { selectVesselById } from 'features/vessels/vessels.slice'
@@ -15,12 +16,14 @@ import useVoyagesConnect from 'features/vessels/voyages/voyages.hook'
 import { EventTypeVoyage } from 'types/voyage'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectFilters } from 'features/event-filters/filters.slice'
+import { getUTCDateTime } from 'utils/dates'
+import { parseVesselProfileId } from 'features/vessels/vessels.utils'
 import { useGeneratorsConnect } from './map.hooks'
 import useMapInstance from './map-context.hooks'
 import useViewport from './map-viewport.hooks'
 import MapControls from './controls/MapControls'
 import useMapEvents from './map-events.hooks'
-import { selectHighlightedEvent } from './map.slice'
+import { selectHighlightedEvent, selectMapVoyageTime } from './map.slice'
 import PopupWrapper from './popups/PopupWrapper'
 import styles from './Map.module.css'
 
@@ -163,6 +166,7 @@ const MapWrapper: React.FC = (): React.ReactElement => {
         //with this change we will center the event in the available map on the screen
         const coordinates = map.project([nextEvent.position.lon, nextEvent.position.lat])
         const offsetCoordinates = map.unproject([coordinates.x, coordinates.y + padding / 2])
+        highlightEvent(nextEvent)
         setMapCoordinates({
           latitude: offsetCoordinates.lat,
           longitude: offsetCoordinates.lng,
@@ -172,8 +176,64 @@ const MapWrapper: React.FC = (): React.ReactElement => {
         })
       }
     },
-    [map, setMapCoordinates]
+    [highlightEvent, map, setMapCoordinates]
   )
+
+  const currentVoyageTime = useSelector(selectMapVoyageTime)
+
+  const viewInGFWMap = useCallback(() => {
+    const start = currentVoyageTime
+      ? `${currentVoyageTime.start.substring(0, 10)}T00%3A00%3A00.000Z`
+      : ''
+    const end = currentVoyageTime
+      ? getUTCDateTime(`${currentVoyageTime.end.substring(0, 10)}`)
+          .plus({ days: 1 })
+          .toISO()
+      : ''
+    const vessels = vessel.id.split('|').map((id) => parseVesselProfileId(id))
+    const vesselsSegments = vessels
+      .map((v, i) => {
+        let eventsCount = 0
+        const datasets = Array.from(new Set(vesselDataview.datasets.map(({ id }) => id)))
+          .map((id) => {
+            const d = vesselDataview.datasets.find((d) => d.id === id)
+            if ([DatasetSubCategory.Info, DatasetSubCategory.Track].includes(d.subcategory))
+              return `dvIn[${i}][cfg][${d.subcategory}]=${id}`
+
+            if ([DatasetCategory.Event].includes(d.category))
+              return `dvIn[${i}][cfg][events][${eventsCount++}]=${id}`
+            return ''
+          })
+          .filter((x) => x)
+
+        return [
+          `dvIn[${i}][id]=vessel-${v.id}`,
+          `dvIn[${i}][dvId]=fishing-map-vessel-track`,
+          ...datasets,
+          `dvIn[${i}][cfg][clr]=%23F95E5E`,
+        ]
+      })
+      .flat()
+    const urlSegments = [
+      `https://globalfishingwatch.org/map/index?`,
+      `start=${start}`,
+      `latitude=${viewport.latitude}`,
+      `longitude=${viewport.longitude}`,
+      `zoom=${viewport.zoom}`,
+      `end=${end}`,
+      ...vesselsSegments,
+      `timebarVisualisation=vessel`,
+    ]
+    const url = urlSegments.join('&')
+    window.open(url)
+  }, [
+    currentVoyageTime,
+    vessel,
+    vesselDataview,
+    viewport.latitude,
+    viewport.longitude,
+    viewport.zoom,
+  ])
 
   return (
     <div className={styles.container}>
@@ -201,7 +261,10 @@ const MapWrapper: React.FC = (): React.ReactElement => {
           )}
         </Map>
       )}
-      <MapControls mapLoading={layerComposerLoading || resourcesLoading}></MapControls>
+      <MapControls
+        mapLoading={layerComposerLoading || resourcesLoading}
+        onViewInGFWMap={viewInGFWMap}
+      ></MapControls>
       <Info onEventChange={onEventChange}></Info>
     </div>
   )
