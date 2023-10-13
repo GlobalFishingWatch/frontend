@@ -32,7 +32,6 @@ import { HighlightedAreaParams, useHighlightArea } from 'features/map/popups/Con
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { LAST_REPORTS_STORAGE_KEY, LastReportStorage } from 'features/reports/reports.config'
-import { useMapReady } from 'features/map/map-state.hooks'
 import {
   fetchReportVesselsThunk,
   getDateRangeHash,
@@ -196,6 +195,7 @@ export function useFetchReportVessel() {
     updateWorkspaceReportUrls,
   ])
 
+  const reportBufferHash = [reportBufferUnit, reportBufferValue, reportBufferOperation].join(',')
   useEffect(() => {
     const isDifferentDateRange = reportDateRangeHash !== getDateRangeHash(timerange)
     if (
@@ -231,6 +231,7 @@ export function useFetchReportVessel() {
     dispatch,
     areaId,
     datasetId,
+    reportBufferHash,
     reportDataviews,
     timerangeSupported,
     reportDateRangeHash,
