@@ -264,6 +264,11 @@ export const getBufferedFeature = ({
   const properties = {
     id: REPORT_BUFFER_FEATURE_ID,
     value: 'buffer',
+    label: t('analysis.bufferedArea', {
+      value,
+      unit,
+      defaultValue: '{{value}} {{unit}} buffered area',
+    }),
   }
   const dissolvedBufferedPolygonsFeatures = multiPolygon(
     dissolve(featureCollection(bufferedFeatures)).features.map((f) => f.geometry.coordinates),

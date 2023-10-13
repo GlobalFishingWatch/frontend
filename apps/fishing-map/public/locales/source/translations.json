@@ -6,6 +6,7 @@
     "beforeAfterDate": "date",
     "beforeAfterRange": "between the {{duration}} before and after {{compareStart}}",
     "buffer": "Buffer area",
+    "bufferedArea": "{{value}} {{unit}} buffered area",
     "bufferOperationLabel": "Analysis area",
     "change": "Change",
     "clickToFilterBy": "Click to filter by:",
