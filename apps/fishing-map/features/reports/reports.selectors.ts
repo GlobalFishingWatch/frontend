@@ -490,9 +490,12 @@ export const selectReportAreaName = createSelector(
 )
 
 export const selectReportAreaDissolved = createSelector([selectReportAreaData], (area) => {
+  if (!area) {
+    return null
+  }
   return {
     ...area,
-    geometry: getGeometryDissolved(area?.geometry),
+    geometry: getGeometryDissolved(area.geometry),
   } as Area<FeatureCollection<AreaGeometry>>
 })
 

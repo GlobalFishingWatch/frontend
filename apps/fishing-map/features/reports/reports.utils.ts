@@ -228,8 +228,9 @@ export const getBufferedArea = ({
   unit,
   operation,
 }: BufferedAreaParams): Area | null => {
+  if (!area) return null
   const bufferedFeature = getBufferedFeature({ area, value, unit, operation })
-  return { ...area, geometry: bufferedFeature?.geometry } as Area
+  return { ...area, id: REPORT_BUFFER_FEATURE_ID, geometry: bufferedFeature?.geometry } as Area
 }
 
 export const getBufferedAreaBbox = ({

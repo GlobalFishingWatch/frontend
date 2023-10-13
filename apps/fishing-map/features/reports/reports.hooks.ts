@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataset, Dataview } from '@globalfishingwatch/api-types'
-import { useLocalStorage } from '@globalfishingwatch/react-hooks'
+import { useLocalStorage, useMemoCompare } from '@globalfishingwatch/react-hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectReportBufferOperation,
@@ -28,10 +28,11 @@ import useViewport, { getMapCoordinatesFromBounds } from 'features/map/map-viewp
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
-import { useHighlightArea } from 'features/map/popups/ContextLayers.hooks'
+import { HighlightedAreaParams, useHighlightArea } from 'features/map/popups/ContextLayers.hooks'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { LAST_REPORTS_STORAGE_KEY, LastReportStorage } from 'features/reports/reports.config'
+import { useMapReady } from 'features/map/map-state.hooks'
 import {
   fetchReportVesselsThunk,
   getDateRangeHash,
@@ -82,12 +83,16 @@ export function useFitAreaInViewport() {
   }, [areaCenter, areaInViewport, setMapCoordinates])
 }
 
-export function useReportAreaHighlight(areaId: string, sourceId: string) {
+export function useReportAreaHighlight(params = {} as HighlightedAreaParams) {
   const highlightedArea = useHighlightArea()
+  const { areaId, sourceId } = useMemoCompare(params)
 
   useEffect(() => {
     if (areaId && sourceId) {
-      highlightedArea({ sourceId, areaId, sourceLayer: '' })
+      // Can't understand why this is needed but it is
+      setTimeout(() => {
+        highlightedArea({ sourceId, areaId, sourceLayer: '' })
+      }, 500)
     }
   }, [areaId, sourceId, highlightedArea])
 }
