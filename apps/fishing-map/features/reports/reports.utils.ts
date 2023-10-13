@@ -24,6 +24,7 @@ import {
   DEFAULT_POINT_BUFFER_UNIT,
   DEFAULT_POINT_BUFFER_VALUE,
   DIFFERENCE,
+  REPORT_BUFFER_FEATURE_ID,
 } from './reports.config'
 
 const ALWAYS_SHOWN_FILTERS = ['vessel-groups']
@@ -260,15 +261,27 @@ export const getBufferedFeature = ({
 
   if (!bufferedFeatures.length) return null
 
+  const properties = {
+    id: REPORT_BUFFER_FEATURE_ID,
+    value: 'buffer',
+  }
   const dissolvedBufferedPolygonsFeatures = multiPolygon(
-    dissolve(featureCollection(bufferedFeatures)).features.map((f) => f.geometry.coordinates)
+    dissolve(featureCollection(bufferedFeatures)).features.map((f) => f.geometry.coordinates),
+    properties
   )
 
   if (operation === DIFFERENCE) {
     const multi = multiPolygon(
       area.geometry.features.map((f) => (f as Feature<Polygon>).geometry.coordinates)
     )
-    return difference(dissolvedBufferedPolygonsFeatures, multi)
+    const diff = difference(dissolvedBufferedPolygonsFeatures, multi)
+    if (diff) {
+      diff.properties = {
+        ...diff.properties,
+        ...properties,
+      }
+    }
+    return diff
   }
 
   return dissolvedBufferedPolygonsFeatures

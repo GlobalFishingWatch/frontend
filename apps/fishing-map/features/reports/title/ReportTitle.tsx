@@ -32,7 +32,6 @@ import {
 } from 'routes/routes.selectors'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
-import { PREVIEW_BUFFER_GENERATOR_ID, REPORT_BUFFER_GENERATOR_ID } from 'features/map/map.config'
 import { getBufferedAreaBbox } from '../reports.utils'
 import { BufferButtonTooltip } from './BufferButonTooltip'
 import styles from './ReportTitle.module.css'
@@ -54,7 +53,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   const urlBufferUnit = useSelector(selectUrlBufferUnitQuery)
   const urlBufferOperation = useSelector(selectUrlBufferOperationQuery)
   const fitBounds = useMapFitBounds()
-  const { cleanFeatureState, updateFeatureState } = useFeatureState(useMapInstance())
+  const { cleanFeatureState } = useFeatureState(useMapInstance())
 
   const [tooltipInstance, setTooltipInstance] = useState<any>(null)
 
@@ -80,13 +79,8 @@ export default function ReportTitle({ area }: ReportTitleProps) {
         })
       )
       cleanFeatureState('highlight')
-      const featureState = {
-        source: PREVIEW_BUFFER_GENERATOR_ID,
-        id: area.id,
-      }
-      updateFeatureState([featureState], 'highlight')
     },
-    [dispatch, previewBuffer, updateFeatureState, cleanFeatureState, area]
+    [dispatch, previewBuffer, cleanFeatureState]
   )
 
   const handleBufferValueChange = useCallback(
@@ -157,11 +151,6 @@ export default function ReportTitle({ area }: ReportTitleProps) {
       reportBufferOperation: previewBuffer.operation!,
     })
     cleanFeatureState('highlight')
-    const featureState = {
-      source: REPORT_BUFFER_GENERATOR_ID,
-      id: area.id,
-    }
-    updateFeatureState([featureState], 'highlight')
     dispatch(resetReportData())
     trackEvent({
       category: TrackCategory.Analysis,
@@ -175,7 +164,6 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     fitBounds,
     dispatchQueryParams,
     cleanFeatureState,
-    updateFeatureState,
     dispatch,
   ])
 

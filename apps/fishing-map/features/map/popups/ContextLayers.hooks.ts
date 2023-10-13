@@ -33,15 +33,20 @@ export const getFeatureAreaId = (feature: TooltipEventFeature) => {
   return feature.properties.gfw_id || feature.properties[feature.promoteId as string]
 }
 
+export type HighlightedAreaParams = {
+  sourceId: string
+  areaId: string
+  sourceLayer?: string
+}
 export const useHighlightArea = () => {
   const { updateFeatureState, cleanFeatureState } = useFeatureState(useMapInstance())
   return useCallback(
-    ({ sourceId, areaId }: { sourceId: string; areaId: string }) => {
+    ({ sourceId, areaId, sourceLayer = DEFAULT_CONTEXT_SOURCE_LAYER }: HighlightedAreaParams) => {
       cleanFeatureState('click')
       cleanFeatureState('highlight')
       const featureState = {
         source: sourceId,
-        sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
+        sourceLayer: sourceLayer !== '' ? sourceLayer : undefined,
         id: areaId,
       }
       updateFeatureState([featureState], 'highlight')

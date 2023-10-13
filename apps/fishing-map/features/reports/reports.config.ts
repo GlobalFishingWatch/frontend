@@ -1,5 +1,6 @@
 import { BufferUnit, BufferOperation } from 'types'
 
+export const REPORT_BUFFER_FEATURE_ID: string = 'buffer'
 export const DEFAULT_BUFFER_VALUE: number = 50
 export const NAUTICAL_MILES: BufferUnit = 'nauticalmiles'
 export const KILOMETERS: BufferUnit = 'kilometers'

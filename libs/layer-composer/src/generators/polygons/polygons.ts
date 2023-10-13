@@ -32,6 +32,8 @@ class PolygonsGenerator {
         id: config.id,
         type: 'geojson',
         data,
+        promoteId: 'id',
+        generateId: true,
       },
     ]
   }

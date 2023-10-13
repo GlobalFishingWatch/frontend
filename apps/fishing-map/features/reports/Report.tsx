@@ -20,6 +20,7 @@ import WorkspaceError, { WorkspaceLoginError } from 'features/workspace/Workspac
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { selectWorkspaceVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
 import {
+  selectHasReportBuffer,
   selectHasReportVessels,
   selectReportDataviewsWithPermissions,
 } from 'features/reports/reports.selectors'
@@ -47,7 +48,12 @@ import { useSetTimeseries } from 'features/reports/reports-timeseries.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
 import DatasetLabel from 'features/datasets/DatasetLabel'
-import { LAST_REPORTS_STORAGE_KEY, LastReportStorage } from 'features/reports/reports.config'
+import {
+  LAST_REPORTS_STORAGE_KEY,
+  LastReportStorage,
+  REPORT_BUFFER_FEATURE_ID,
+} from 'features/reports/reports.config'
+import { REPORT_BUFFER_GENERATOR_ID } from 'features/map/map.config'
 import {
   useFetchReportArea,
   useFetchReportVessel,
@@ -351,14 +357,18 @@ export default function Report() {
     }
   })
   const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const areaSourceId = useSelector(selectReportAreaSource)
   const { data: areaDetail, status } = useFetchReportArea()
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
+  const areaSourceId = useSelector(selectReportAreaSource)
+  const hasReportBuffer = useSelector(selectHasReportBuffer)
 
   const fitAreaInViewport = useFitAreaInViewport()
-  useReportAreaHighlight(areaDetail?.id, areaSourceId)
+  useReportAreaHighlight(
+    hasReportBuffer ? REPORT_BUFFER_FEATURE_ID : areaDetail?.id,
+    hasReportBuffer ? REPORT_BUFFER_GENERATOR_ID : areaSourceId
+  )
 
   // This ensures that the area is in viewport when then area load finishes
   useEffect(() => {

@@ -538,16 +538,18 @@ export const selectReportBufferFeature = createSelector(
   }
 )
 
+export const selectHasReportBuffer = createSelector(
+  [selectUrlBufferUnitQuery, selectUrlBufferValueQuery],
+  (unit, value): Boolean => {
+    return unit !== undefined && value !== undefined
+  }
+)
+
 export const selectReportArea = createSelector(
-  [
-    selectReportAreaData,
-    selectUrlBufferUnitQuery,
-    selectUrlBufferValueQuery,
-    selectReportBufferArea,
-  ],
-  (area, unit, value, bufferedArea) => {
+  [selectReportAreaData, selectHasReportBuffer, selectReportBufferArea],
+  (area, hasReportBuffer, bufferedArea) => {
     if (!area) return null
-    if (!unit || !value) return area
+    if (!hasReportBuffer) return area
     return bufferedArea
   }
 )

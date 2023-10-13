@@ -87,7 +87,7 @@ export function useReportAreaHighlight(areaId: string, sourceId: string) {
 
   useEffect(() => {
     if (areaId && sourceId) {
-      highlightedArea({ sourceId, areaId })
+      highlightedArea({ sourceId, areaId, sourceLayer: '' })
     }
   }, [areaId, sourceId, highlightedArea])
 }
