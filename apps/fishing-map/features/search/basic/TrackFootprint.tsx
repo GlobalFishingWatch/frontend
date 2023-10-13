@@ -29,7 +29,7 @@ const TRACK_FOOTPRINT_QUERY = {
   ...THINNING_LEVELS.Footprint,
   binary: true,
   fields: ['LONLAT', 'TIMESTAMP'],
-  format: 'VALUEARRAY',
+  format: 'VALUE_ARRAY',
 }
 
 function TrackFootprint({
