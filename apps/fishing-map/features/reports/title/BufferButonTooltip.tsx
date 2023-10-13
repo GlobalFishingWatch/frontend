@@ -1,10 +1,12 @@
 import { useMemo, useState } from 'react'
 import { Range, getTrackBackground } from 'react-range'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import { Button, Choice, ChoiceOption, IconButton } from '@globalfishingwatch/ui-components'
 import { KILOMETERS, NAUTICAL_MILES, DISSOLVE, DIFFERENCE } from 'features/reports/reports.config'
 import { BufferOperation, BufferUnit } from 'types'
 import { BUFFER_PREVIEW_COLOR } from 'data/config'
+import { selectReportPreviewBufferFeature } from 'features/reports/reports.selectors'
 import styles from './ReportTitle.module.css'
 
 type BufferButonTooltipProps = {
@@ -35,6 +37,7 @@ export const BufferButtonTooltip = ({
   const MIN = -100
   const MAX = 100
   const [values, setValues] = useState([0, defaultValue])
+  const previewBuffer = useSelector(selectReportPreviewBufferFeature)
   const negativePointBuffer = areaType === 'Point' && values[1] <= 0
   const bufferUnitOptions: ChoiceOption<BufferUnit>[] = useMemo(
     () => [
@@ -145,7 +148,11 @@ export const BufferButtonTooltip = ({
           onClick={handleRemoveBuffer}
           disabled={areaType === 'Point'}
         />
-        <Button size="small" onClick={handleConfirmBuffer} disabled={negativePointBuffer}>
+        <Button
+          size="small"
+          onClick={handleConfirmBuffer}
+          disabled={!previewBuffer || negativePointBuffer}
+        >
           {t('common.confirm', 'Confirm')}
         </Button>
       </div>
