@@ -354,6 +354,7 @@ export const fetchEncounterEventThunk = createAsyncThunk<
       datasetId: dataset.id,
       endpoint: EndpointId.EventsDetail,
       params: [{ id: 'eventId', value: eventFeature.id }],
+      query: [{ id: 'dataset', value: dataset.id }],
     }
     const url = resolveEndpoint(dataset, datasetConfig)
     if (url) {
