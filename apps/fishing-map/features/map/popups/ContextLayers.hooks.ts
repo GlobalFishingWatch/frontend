@@ -100,7 +100,6 @@ export const useContextInteractions = () => {
       const areaId = getFeatureAreaId(feature)
       // Report already does it on page reload but to avoid waiting
       // this moves the map to the same position
-      debugger
       const bounds = getFeatureBounds(feature)
       if (bounds) {
         const boundsParams = {

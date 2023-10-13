@@ -2396,6 +2396,7 @@ __metadata:
     lodash: 4.x
     luxon: 3.x
     papaparse: 5.x
+    turf: 3.x
   languageName: unknown
   linkType: soft
 
