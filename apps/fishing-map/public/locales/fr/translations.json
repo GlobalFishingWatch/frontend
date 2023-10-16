@@ -340,7 +340,7 @@
     "fishing_other": "Événements de pêche",
     "fishingAction": "La pêche a commencé à {{start}} pendant {{duration}}",
     "fishingActionIn": "Pêche en {{regionName}}",
-    "gapActionIn": "Désactivation probable dans {{regionName}}",
+    "gapActionIn": "Désactivation probable dans : {{regionName}}",
     "hourAbbreviated": "{{count}}h",
     "hourAbbreviated_one": "{{count}}h",
     "hourAbbreviated_other": "{{count}}h",
