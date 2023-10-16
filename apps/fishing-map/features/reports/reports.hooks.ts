@@ -1,16 +1,22 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { Dataview } from '@globalfishingwatch/api-types'
-import { useLocalStorage } from '@globalfishingwatch/react-hooks'
+import { Dataset, Dataview } from '@globalfishingwatch/api-types'
+import { useLocalStorage, useMemoCompare } from '@globalfishingwatch/react-hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectTimeRange } from 'features/app/app.selectors'
+import {
+  selectReportBufferOperation,
+  selectReportBufferUnit,
+  selectReportBufferValue,
+  selectTimeRange,
+} from 'features/app/app.selectors'
 import {
   fetchAreaDetailThunk,
   selectDatasetAreaDetail,
   selectDatasetAreaStatus,
 } from 'features/areas/areas.slice'
 import {
+  selectReportArea,
   selectReportAreaDataview,
   selectReportAreaIds,
   selectReportDataviewsWithPermissions,
@@ -22,7 +28,7 @@ import useViewport, { getMapCoordinatesFromBounds } from 'features/map/map-viewp
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
-import { useHighlightArea } from 'features/map/popups/ContextLayers.hooks'
+import { HighlightedAreaParams, useHighlightArea } from 'features/map/popups/ContextLayers.hooks'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { LAST_REPORTS_STORAGE_KEY, LastReportStorage } from 'features/reports/reports.config'
@@ -55,21 +61,19 @@ export function useReportAreaCenter(bounds?: Bbox) {
 
 export function useReportAreaInViewport() {
   const { viewport } = useViewport()
-  const reportAreaIds = useSelector(selectReportAreaIds)
-  const area = useSelector(selectDatasetAreaDetail(reportAreaIds))
-  const areaCenter = useReportAreaCenter(area!?.bounds)
+  const area = useSelector(selectReportArea)
+  const bbox = area?.geometry?.bbox || area!?.bounds
+  const areaCenter = useReportAreaCenter(bbox as Bbox)
   return (
-    viewport?.latitude === areaCenter?.latitude &&
-    viewport?.longitude === areaCenter?.longitude &&
-    viewport?.zoom === areaCenter?.zoom
+    viewport?.latitude === areaCenter?.latitude && viewport?.longitude === areaCenter?.longitude
   )
 }
 
 export function useFitAreaInViewport() {
   const { setMapCoordinates } = useViewport()
-  const reportAreaIds = useSelector(selectReportAreaIds)
-  const area = useSelector(selectDatasetAreaDetail(reportAreaIds))
-  const areaCenter = useReportAreaCenter(area!?.bounds)
+  const area = useSelector(selectReportArea)
+  const bbox = area?.geometry?.bbox || area!?.bounds
+  const areaCenter = useReportAreaCenter(bbox as Bbox)
   const areaInViewport = useReportAreaInViewport()
   return useCallback(() => {
     if (!areaInViewport && areaCenter) {
@@ -78,12 +82,16 @@ export function useFitAreaInViewport() {
   }, [areaCenter, areaInViewport, setMapCoordinates])
 }
 
-export function useReportAreaHighlight(areaId: string, sourceId: string) {
+export function useReportAreaHighlight(params = {} as HighlightedAreaParams) {
   const highlightedArea = useHighlightArea()
+  const { areaId, sourceId } = useMemoCompare(params)
 
   useEffect(() => {
     if (areaId && sourceId) {
-      highlightedArea({ sourceId, areaId })
+      // Can't understand why this is needed but it is
+      setTimeout(() => {
+        highlightedArea({ sourceId, areaId, sourceLayer: '' })
+      }, 500)
     }
   }, [areaId, sourceId, highlightedArea])
 }
@@ -134,6 +142,9 @@ export function useFetchReportVessel() {
   const error = useSelector(selectReportVesselsError)
   const data = useSelector(selectReportVesselsData)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const reportBufferUnit = useSelector(selectReportBufferUnit)
+  const reportBufferValue = useSelector(selectReportBufferValue)
+  const reportBufferOperation = useSelector(selectReportBufferOperation)
 
   const updateWorkspaceReportUrls = useCallback(
     (reportUrl: any) => {
@@ -154,7 +165,9 @@ export function useFetchReportVessel() {
 
   const dispatchFetchReport = useCallback(() => {
     const params = {
-      datasets: reportDataviews.map(({ datasets }) => datasets.map((d: any) => d.id).join(',')),
+      datasets: reportDataviews.map(
+        ({ datasets }) => datasets?.map((d: Dataset) => d.id).join(',')
+      ),
       filters: reportDataviews.map(({ filter }) => filter),
       vesselGroups: reportDataviews.map(({ vesselGroups }) => vesselGroups),
       region: {
@@ -163,12 +176,26 @@ export function useFetchReportVessel() {
       },
       dateRange: timerange,
       spatialAggregation: true,
+      reportBufferUnit,
+      reportBufferValue,
+      reportBufferOperation,
     }
     const query = getReportQuery(params)
     updateWorkspaceReportUrls(query)
     dispatch(fetchReportVesselsThunk(params))
-  }, [areaId, datasetId, dispatch, reportDataviews, timerange, updateWorkspaceReportUrls])
+  }, [
+    areaId,
+    datasetId,
+    dispatch,
+    reportBufferOperation,
+    reportBufferUnit,
+    reportBufferValue,
+    reportDataviews,
+    timerange,
+    updateWorkspaceReportUrls,
+  ])
 
+  const reportBufferHash = [reportBufferUnit, reportBufferValue, reportBufferOperation].join(',')
   useEffect(() => {
     const isDifferentDateRange = reportDateRangeHash !== getDateRangeHash(timerange)
     if (
@@ -178,6 +205,24 @@ export function useFetchReportVessel() {
       isDifferentDateRange &&
       workspaceStatus === AsyncReducerStatus.Finished
     ) {
+      dispatch(
+        fetchReportVesselsThunk({
+          datasets: reportDataviews.map(({ datasets }) =>
+            datasets.map((d: Dataset) => d.id).join(',')
+          ),
+          filters: reportDataviews.map(({ filter }) => filter),
+          vesselGroups: reportDataviews.map(({ vesselGroups }) => vesselGroups),
+          region: {
+            id: areaId,
+            dataset: datasetId,
+          },
+          dateRange: timerange,
+          spatialAggregation: true,
+          reportBufferUnit,
+          reportBufferValue,
+          reportBufferOperation,
+        })
+      )
       dispatchFetchReport()
     }
     // Avoid re-fetching when timerange changes
@@ -186,6 +231,7 @@ export function useFetchReportVessel() {
     dispatch,
     areaId,
     datasetId,
+    reportBufferHash,
     reportDataviews,
     timerangeSupported,
     reportDateRangeHash,

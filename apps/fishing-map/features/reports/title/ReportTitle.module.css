@@ -16,11 +16,78 @@
 
 .actions {
   white-space: nowrap;
+  display: flex;
+  gap: var(--space-S);
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
 }
 
 .reportLink {
   text-decoration: underline;
   display: none;
+}
+
+.bufferContainer {
+  background-color: white;
+  padding: var(--space-S);
+  box-shadow: var(--box-shadow);
+  border-radius: var(--border-radius);
+}
+
+.bufferTooltipContent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-S);
+  padding: var(--space-S);
+  font: var(--font-M);
+  color: var(--color-primary-blue);
+}
+
+.actionContainer {
+  width: 100%;
+  padding-bottom: var(--space-S);
+}
+
+.confirmationContainer {
+  width: 100%;
+  display: flex;
+  align-content: center;
+  justify-content: space-between;
+}
+
+.sliderTrack {
+  height: 2px;
+  width: 100%;
+  align-self: center;
+}
+
+.operationChoice {
+  width: 100%;
+}
+
+.tooltipArrow,
+.tooltipArrow::before {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: white;
+}
+
+.tooltipArrow {
+  visibility: hidden;
+}
+
+.tooltipArrow::before {
+  visibility: visible;
+  top: -25px;
+  left: -104px;
+  content: '';
+  transform: rotate(45deg);
 }
 
 @media print {

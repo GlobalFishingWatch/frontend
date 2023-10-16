@@ -2,7 +2,9 @@ import { createSelector } from '@reduxjs/toolkit'
 import { groupBy, sum, sumBy, uniq, uniqBy } from 'lodash'
 import { matchSorter } from 'match-sorter'
 import { t } from 'i18next'
+import { FeatureCollection, MultiPolygon } from 'geojson'
 import { Dataset, DatasetTypes, ReportVessel } from '@globalfishingwatch/api-types'
+import { getGeometryDissolved, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import {
   selectActiveReportDataviews,
   selectReportActivityGraph,
@@ -23,18 +25,28 @@ import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUserData } from 'features/user/user.slice'
 import { getUTCDateTime } from 'utils/dates'
-import { getReportCategoryFromDataview } from 'features/reports/reports.utils'
+import {
+  getBufferedArea,
+  getBufferedFeature,
+  getReportCategoryFromDataview,
+} from 'features/reports/reports.utils'
 import { ReportCategory } from 'types'
 import { selectContextAreasDataviews } from 'features/dataviews/dataviews.selectors'
 import { createDeepEqualSelector } from 'utils/selectors'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { sortStrings } from 'utils/shared'
+import { Area, AreaGeometry, selectAreas } from 'features/areas/areas.slice'
+import {
+  selectUrlBufferOperationQuery,
+  selectUrlBufferUnitQuery,
+  selectUrlBufferValueQuery,
+} from 'routes/routes.selectors'
 import {
   EMPTY_API_VALUES,
   MAX_CATEGORIES,
   OTHERS_CATEGORY_LABEL,
 } from 'features/reports/reports.config'
-import { selectReportVesselsData } from './report.slice'
+import { selectReportVesselsData, selectReportPreviewBuffer } from './report.slice'
 
 export type ReportVesselWithMeta = ReportVessel & {
   sourceColor: string
@@ -63,14 +75,14 @@ export const selectReportDataviewsWithPermissions = createDeepEqualSelector(
         )
         return {
           ...dataview,
-          datasets: dataview.datasets?.filter((d) => supportedDatasets.includes(d.id)),
+          datasets: dataview.datasets?.filter((d) => supportedDatasets.includes(d.id)) as Dataset[],
           filter: dataview.config?.filter || [],
           ...(dataview.config?.['vessel-groups']?.length && {
             vesselGroups: dataview.config?.['vessel-groups'],
           }),
         }
       })
-      .filter((dataview) => dataview.datasets.length > 0)
+      .filter((dataview) => dataview.datasets!?.length > 0)
   }
 )
 
@@ -342,7 +354,7 @@ export const selectIsReportAllowed = createSelector(
       return false
     }
     const datasetsReportAllowed = uniq(
-      reportDataviewsWithPermissions.flatMap((dv) => dv.datasets.flatMap((ds: any) => ds.id))
+      reportDataviewsWithPermissions.flatMap((dv) => dv.datasets?.flatMap((ds: any) => ds.id))
     )
     return datasetsReportAllowed?.length > 0
   }
@@ -449,5 +461,98 @@ export const selectReportVesselsGraphDataOthers = createSelector(
         if (EMPTY_API_VALUES.includes(b.name)) return -1
         return b.value - a.value
       })
+  }
+)
+
+const selectReportAreaData = createSelector(
+  [selectReportAreaIds, selectAreas],
+  (areaIds, areas) => {
+    if (!areaIds || !areas) return null
+    const { datasetId, areaId } = areaIds
+    return areas?.[datasetId]?.detail?.[areaId]?.data
+  }
+)
+
+export const selectReportAreaName = createSelector(
+  [
+    selectReportAreaData,
+    selectUrlBufferUnitQuery,
+    selectUrlBufferValueQuery,
+    selectUrlBufferOperationQuery,
+  ],
+  (area, unit, value, operation) => {
+    if (!area) return undefined
+    if (!unit || !value || !operation) return area.name
+    if (operation === 'difference') return `${value} ${unit} around ${area.name}`
+    if (operation === 'dissolve' && value > 0) return `${area.name} and ${value} ${unit} around`
+    return `${area.name} minus ${Math.abs(value)} ${unit}`
+  }
+)
+
+export const selectReportAreaDissolved = createSelector([selectReportAreaData], (area) => {
+  if (!area) {
+    return null
+  }
+  return {
+    ...area,
+    geometry: getGeometryDissolved(area.geometry),
+  } as Area<FeatureCollection<AreaGeometry>>
+})
+
+export const selectReportPreviewBufferFeature = createSelector(
+  [selectReportAreaDissolved, selectReportPreviewBuffer],
+  (area, buffer) => {
+    const { value, unit, operation } = buffer
+    if (!area || !unit || !value || !operation) return null
+    return getBufferedFeature({ area, value, unit, operation })
+  }
+)
+
+export const selectReportBufferArea = createSelector(
+  [
+    selectReportAreaDissolved,
+    selectUrlBufferUnitQuery,
+    selectUrlBufferValueQuery,
+    selectUrlBufferOperationQuery,
+  ],
+  (area, unit, value, operation) => {
+    if (!area || !unit || !value) return null
+    const bufferedArea = getBufferedArea({ area, value, unit, operation }) as Area
+    if (bufferedArea?.geometry) {
+      const bounds = wrapGeometryBbox(bufferedArea.geometry as MultiPolygon)
+      // bbox is needed inside Area geometry to computeTimeseries
+      // fishing-map/features/reports/reports-timeseries.hooks.ts
+      bufferedArea.geometry.bbox = bounds
+    }
+    return bufferedArea
+  }
+)
+
+export const selectReportBufferFeature = createSelector(
+  [
+    selectReportAreaDissolved,
+    selectUrlBufferUnitQuery,
+    selectUrlBufferValueQuery,
+    selectUrlBufferOperationQuery,
+  ],
+  (area, unit, value, operation) => {
+    if (!area || !unit || !value || !operation) return null
+    return getBufferedFeature({ area, value, unit, operation })
+  }
+)
+
+export const selectHasReportBuffer = createSelector(
+  [selectUrlBufferUnitQuery, selectUrlBufferValueQuery],
+  (unit, value): Boolean => {
+    return unit !== undefined && value !== undefined
+  }
+)
+
+export const selectReportArea = createSelector(
+  [selectReportAreaData, selectHasReportBuffer, selectReportBufferArea],
+  (area, hasReportBuffer, bufferedArea) => {
+    if (!area) return null
+    if (!hasReportBuffer) return area
+    return bufferedArea
   }
 )

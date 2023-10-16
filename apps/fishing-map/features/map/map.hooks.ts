@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { debounce } from 'lodash'
 import { useTranslation } from 'react-i18next'
-import { Geometry } from 'geojson'
+import { MultiPolygon, Point, Polygon } from 'geojson'
 import {
   InteractionEvent,
   TemporalGridFeature,
@@ -40,11 +40,12 @@ import {
   selectShowTimeComparison,
   selectTimeComparisonValues,
 } from 'features/reports/reports.selectors'
+import { selectDefaultMapGeneratorsConfig } from './map.selectors'
 import {
-  selectDefaultMapGeneratorsConfig,
   WORKSPACES_POINTS_TYPE,
   WORKSPACE_GENERATOR_ID,
-} from './map.selectors'
+  REPORT_BUFFER_GENERATOR_ID,
+} from './map.config'
 import {
   setClickedEvent,
   selectClickedEvent,
@@ -274,7 +275,7 @@ export type TooltipEventFeature = {
   datasetId?: string
   event?: ExtendedFeatureEvent
   generatorContextLayer?: ContextLayerType | null
-  geometry?: Geometry
+  geometry?: Point | Polygon | MultiPolygon
   id?: string
   layerId: string
   promoteId?: string
@@ -393,6 +394,15 @@ export const parseMapTooltipFeatures = (
           value: feature.properties.label,
           properties: {},
           category: DataviewCategory.Context,
+        }
+        return tooltipWorkspaceFeature
+      } else if (generatorId === REPORT_BUFFER_GENERATOR_ID) {
+        const tooltipWorkspaceFeature: TooltipEventFeature = {
+          ...baseFeature,
+          category: DataviewCategory.Context,
+          properties: {},
+          value: feature.properties.label,
+          visible: true,
         }
         return tooltipWorkspaceFeature
       }

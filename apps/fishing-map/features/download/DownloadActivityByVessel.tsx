@@ -2,9 +2,12 @@ import { useMemo, useRef, useState, Fragment } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Geometry } from 'geojson'
 import { Icon, Button, Choice, ChoiceOption, Tag } from '@globalfishingwatch/ui-components'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
+import {
+  selectUrlBufferOperationQuery,
+  selectUrlBufferUnitQuery,
+  selectUrlBufferValueQuery,
+} from 'routes/routes.selectors'
 import {
   DownloadActivityParams,
   downloadActivityThunk,
@@ -13,7 +16,7 @@ import {
   selectDownloadActivityFinished,
   selectDownloadActivityError,
   DateRange,
-  selectDownloadActivityAreaDataview,
+  selectDownloadActivityAreaKey,
 } from 'features/download/downloadActivity.slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
@@ -30,13 +33,12 @@ import {
 } from 'features/datasets/datasets.utils'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectDownloadActivityArea } from 'features/download/download.selectors'
 import DownloadActivityProductsBanner from 'features/download/DownloadActivityProductsBanner'
-import { AsyncReducerStatus } from 'utils/async-slice'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getSourceSwitchContentByLng } from 'features/welcome/SourceSwitch.content'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
+import { AreaKeyId } from 'features/areas/areas.slice'
 import styles from './DownloadModal.module.css'
 import {
   Format,
@@ -69,6 +71,11 @@ function DownloadActivityByVessel() {
   const downloadFinished = useSelector(selectDownloadActivityFinished)
   const [format, setFormat] = useState(VESSEL_FORMAT_OPTIONS[0].id as Format)
   const isDownloadReportSupported = getDownloadReportSupported(start, end)
+  const downloadAreaKey = useSelector(selectDownloadActivityAreaKey)
+
+  const bufferUnit = useSelector(selectUrlBufferUnitQuery)
+  const bufferValue = useSelector(selectUrlBufferValueQuery)
+  const bufferOperation = useSelector(selectUrlBufferOperationQuery)
 
   const filteredGroupByOptions: ChoiceOption[] = useMemo(
     () => getSupportedGroupByOptions(VESSEL_GROUP_BY_OPTIONS, vesselDatasets),
@@ -83,15 +90,6 @@ function DownloadActivityByVessel() {
   const [temporalResolution, setTemporalResolution] = useState(
     filteredTemporalResolutionOptions[0].id as TemporalResolution
   )
-
-  const downloadArea = useSelector(selectDownloadActivityArea)
-  const downloadAreaDataview = useSelector(selectDownloadActivityAreaDataview)
-  const downloadAreaName =
-    downloadAreaDataview?.config?.type === GeneratorType.UserContext
-      ? downloadAreaDataview?.datasets?.[0]?.name
-      : downloadArea?.data?.name
-  const downloadAreaGeometry = downloadArea?.data?.geometry
-  const downloadAreaLoading = downloadArea?.status === AsyncReducerStatus.Loading
 
   const onDownloadClick = async () => {
     const downloadDataviews = dataviews
@@ -116,7 +114,7 @@ function DownloadActivityByVessel() {
       category: TrackCategory.DataDownloads,
       action: `Download ${format.toUpperCase()} file`,
       label: JSON.stringify({
-        regionName: downloadAreaName || EMPTY_FIELD_PLACEHOLDER,
+        regionName: downloadAreaKey?.areaName || EMPTY_FIELD_PLACEHOLDER,
         temporalResolution,
         groupBy,
         sourceNames: dataviews.flatMap((dataview) =>
@@ -126,14 +124,18 @@ function DownloadActivityByVessel() {
     })
 
     const downloadParams: DownloadActivityParams = {
+      areaId: downloadAreaKey?.areaId as AreaKeyId,
+      datasetId: downloadAreaKey?.datasetId as string,
       dateRange: timerange as DateRange,
-      geometry: downloadAreaGeometry as Geometry,
-      areaName: downloadAreaName as string,
+      areaName: downloadAreaKey?.areaName as string,
       dataviews: downloadDataviews,
       format,
       temporalResolution,
       spatialAggregation: true,
       groupBy,
+      bufferUnit,
+      bufferValue,
+      bufferOperation,
     }
     await dispatch(downloadActivityThunk(downloadParams))
 
@@ -141,7 +143,7 @@ function DownloadActivityByVessel() {
       category: TrackCategory.DataDownloads,
       action: `Activity download`,
       label: getEventLabel([
-        downloadAreaName,
+        downloadAreaKey?.areaName || EMPTY_FIELD_PLACEHOLDER,
         ...downloadDataviews
           .map(({ datasets, filters }) => [datasets.join(','), ...getActivityFilters(filters)])
           .flat(),
@@ -158,7 +160,7 @@ function DownloadActivityByVessel() {
         <div className={styles.info}>
           <div>
             <label>{t('download.area', 'Area')}</label>
-            <Tag testId="area-name">{downloadAreaName || EMPTY_FIELD_PLACEHOLDER}</Tag>
+            <Tag testId="area-name">{downloadAreaKey?.areaName || EMPTY_FIELD_PLACEHOLDER}</Tag>
           </div>
           <div>
             <label>{t('download.timeRange', 'Time Range')}</label>
@@ -217,9 +219,9 @@ function DownloadActivityByVessel() {
           <Button
             testId="download-activity-vessel-button"
             onClick={onDownloadClick}
-            loading={downloadLoading || downloadAreaLoading}
+            loading={downloadLoading}
             className={styles.downloadBtn}
-            disabled={!isDownloadReportSupported || downloadAreaLoading}
+            disabled={!isDownloadReportSupported}
           >
             {downloadFinished ? <Icon icon="tick" /> : t('download.title', 'Download')}
           </Button>
