@@ -20,7 +20,7 @@ import I18nFlag from 'features/i18n/i18nFlag'
 import TrackFootprint from 'features/search/basic/TrackFootprint'
 import { cleanVesselSearchResults } from 'features/search/search.slice'
 import VesselLink from 'features/vessel/VesselLink'
-import { formatInfoField, EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
+import { formatInfoField, EMPTY_FIELD_PLACEHOLDER, getVesselGearType } from 'utils/info'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectVesselsDataviews } from 'features/dataviews/dataviews.slice'
 import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-viewport.hooks'
@@ -243,13 +243,7 @@ function SearchBasicResult({
             </div>
             <div className={styles.property}>
               <label>{t('vessel.geartype', 'Gear Type')}</label>
-              <span>
-                {geartype
-                  ?.map((geartype) =>
-                    t(`vessel.gearTypes.${geartype.toLowerCase()}` as any, geartype)
-                  )
-                  .join(', ') || EMPTY_FIELD_PLACEHOLDER}
-              </span>
+              <span>{getVesselGearType({ geartype }) || EMPTY_FIELD_PLACEHOLDER}</span>
             </div>
             {matricula && (
               <div className={styles.property}>

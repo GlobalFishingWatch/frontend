@@ -12,7 +12,12 @@ import {
   ResourceStatus,
 } from '@globalfishingwatch/api-types'
 import { resolveEndpoint, setResource } from '@globalfishingwatch/dataviews-client'
-import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getDetectionsTimestamps } from 'utils/info'
+import {
+  EMPTY_FIELD_PLACEHOLDER,
+  formatInfoField,
+  getDetectionsTimestamps,
+  getVesselGearType,
+} from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
   getVesselDataviewInstance,
@@ -218,13 +223,7 @@ function VesselsTable({
                     )?.toLowerCase()}` as any,
                     vessel.shiptype ?? EMPTY_FIELD_PLACEHOLDER
                   )}`
-                : getVesselProperty<string[]>(vessel, 'geartype')?.map(
-                    (gear) =>
-                      `${t(
-                        `vessel.gearTypes.${gear.toLowerCase()}` as any,
-                        vessel.geartype ?? EMPTY_FIELD_PLACEHOLDER
-                      )}`
-                  )
+                : getVesselGearType({ geartype: getVesselProperty<string[]>(vessel, 'geartype') })
 
               // Temporary workaround for public-global-all-vessels dataset as we
               // don't want to show the pin only for that dataset for guest users

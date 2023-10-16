@@ -20,7 +20,12 @@ import {
   pickTrackResource,
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
-import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselLabel } from 'utils/info'
+import {
+  EMPTY_FIELD_PLACEHOLDER,
+  formatInfoField,
+  getVesselGearType,
+  getVesselLabel,
+} from 'utils/info'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
@@ -179,12 +184,7 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
     if (field.id === 'geartype') {
       if (!fieldValue) return EMPTY_FIELD_PLACEHOLDER
       const fieldValueSplit = fieldValue.split('|')
-      if (fieldValueSplit.length > 1) {
-        return fieldValueSplit
-          .map((field) => t(`vessel.gearTypes.${field?.toLowerCase()}` as any, field))
-          .join(', ')
-      }
-      return t(`vessel.gearTypes.${fieldValue?.toLowerCase()}` as any, fieldValue)
+      return getVesselGearType({ geartype: fieldValueSplit })
     }
     if (field.id === 'mmsi') {
       return (

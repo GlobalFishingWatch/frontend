@@ -33,7 +33,7 @@ import {
 import { ReportCategory } from 'types'
 import { selectContextAreasDataviews } from 'features/dataviews/dataviews.selectors'
 import { createDeepEqualSelector } from 'utils/selectors'
-import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
+import { EMPTY_FIELD_PLACEHOLDER, getVesselGearType } from 'utils/info'
 import { sortStrings } from 'utils/shared'
 import { Area, AreaGeometry, selectAreas } from 'features/areas/areas.slice'
 import {
@@ -222,10 +222,7 @@ export const selectReportVesselsListWithAllInfo = createSelector(
           flagTranslatedClean: cleanFlagState(
             t(`flags:${vesselActivity[0]?.flag as string}` as any, vesselActivity[0]?.flag)
           ),
-          geartype: t(
-            `vessel.gearTypes.${vesselActivity[0]?.geartype?.toLowerCase()}` as any,
-            vesselActivity[0]?.geartype
-          ),
+          geartype: getVesselGearType({ geartype: vesselActivity[0]?.geartype }),
           vesselType: t(
             `vessel.veeselTypes.${vesselActivity[0]?.vesselType}` as any,
             vesselActivity[0]?.vesselType
@@ -242,7 +239,7 @@ export function cleanVesselOrGearType({ value, property }: CleanVesselOrGearType
   const valuesCleanTranslated = valuesClean
     .map((value) => {
       if (property === 'geartype') {
-        return t(`vessel.gearTypes.${value?.toLowerCase()}` as any, value)
+        return getVesselGearType({ geartype: value })
       }
       return t(`vessel.vesselTypes.${value?.toLowerCase()}` as any, value)
     })
