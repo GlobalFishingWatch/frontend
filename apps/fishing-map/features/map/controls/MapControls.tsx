@@ -15,7 +15,7 @@ import { BasemapType, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
-import { useMapBounds, useViewStateAtom } from 'features/map/map-viewport.hooks'
+import { useSetMapCoordinates, useViewStateAtom } from 'features/map/map-viewport.hooks'
 import { selectIsReportLocation, selectIsWorkspaceLocation } from 'routes/routes.selectors'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
 import setInlineStyles from 'utils/dom'
@@ -23,6 +23,7 @@ import { selectScreenshotModalOpen, setModalOpen } from 'features/modals/modals.
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { ROOT_DOM_ELEMENT } from 'data/config'
+import { useMapBounds } from 'features/map/map-bounds.hooks'
 import { isPrintSupported, MAP_IMAGE_DEBOUNCE } from '../MapScreenshot'
 import styles from './MapControls.module.css'
 
@@ -66,6 +67,7 @@ const MapControls = ({
     }
   }, [])
 
+  const setMapCoordinates = useSetMapCoordinates()
   const { viewState, setViewState } = useViewStateAtom()
   const { latitude, longitude, zoom } = viewState
 
@@ -82,12 +84,13 @@ const MapControls = ({
   const debouncedOptions = useDebounce(options, 16)
 
   const onZoomInClick = useCallback(() => {
-    setViewState({ ...viewState, zoom: zoom + 1 })
-  }, [viewState, setViewState, zoom])
+    setMapCoordinates({ zoom: zoom + 1 })
+    // setViewState({ zoom: zoom + 1 })
+  }, [setMapCoordinates, zoom])
 
   const onZoomOutClick = useCallback(() => {
-    setViewState({ ...viewState, zoom: Math.max(1, zoom - 1) })
-  }, [viewState, setViewState, zoom])
+    setMapCoordinates({ zoom: zoom - 1 })
+  }, [setMapCoordinates, zoom])
 
   const onScreenshotClick = useCallback(() => {
     dispatchQueryParams({ sidebarOpen: true })

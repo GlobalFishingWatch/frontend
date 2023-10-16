@@ -10,7 +10,8 @@ import {
   areDataviewsFeatureLoaded,
   useMapDataviewFeatures,
 } from 'features/map/map-sources.hooks'
-import { useViewStateAtom, useMapBounds } from 'features/map/map-viewport.hooks'
+import { useViewStateAtom } from 'features/map/map-viewport.hooks'
+import { useMapBounds } from 'features/map/map-bounds.hooks'
 
 export const useEventsDynamicRamp = (dataview: UrlDataviewInstance) => {
   const { bounds } = useMapBounds()

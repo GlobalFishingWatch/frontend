@@ -1,11 +1,11 @@
 import { useCallback, useState, useEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { DeckGL, DeckGLRef } from '@deck.gl/react/typed'
-import { LayersList, MapView } from '@deck.gl/core/typed'
-import { useSetAtom } from 'jotai'
+import { LayersList } from '@deck.gl/core/typed'
 import dynamic from 'next/dynamic'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { ViewStateChangeParameters } from '@deck.gl/core/typed/controllers/controller'
+import { ViewState } from 'react-map-gl'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
@@ -22,7 +22,7 @@ import {
 } from '@globalfishingwatch/react-hooks'
 import { ExtendedStyleMeta, GeneratorType, LayerComposer } from '@globalfishingwatch/layer-composer'
 import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
-import { POPUP_CATEGORY_ORDER } from 'data/config'
+import { DEFAULT_VIEWPORT, POPUP_CATEGORY_ORDER } from 'data/config'
 import useMapInstance, { useSetMapInstance } from 'features/map/map-context.hooks'
 import {
   useClickedEventConnect,
@@ -50,11 +50,13 @@ import { selectHighlightedTime } from 'features/timebar/timebar.slice'
 import { selectMapTimeseries } from 'features/reports/reports-timeseries.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useMapDeckLayers, useMapLayersLoaded } from 'features/map/map-layers.hooks'
+import { MapCoordinates } from 'types'
 import {
+  MAP_VIEW,
   useViewStateAtom,
-  useMapViewAtom,
   useUpdateViewStateUrlParams,
-  ViewState,
+  useSetViewState,
+  useViewState,
 } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import useRulers from './rulers/rulers.hooks'
@@ -112,15 +114,26 @@ const MapWrapper = () => {
   // DECK related code
   const deckRef = useRef<DeckGLRef>(null)
   useSetMapInstance(deckRef)
-  const mapView = useMapViewAtom()
+
+  // const [viewState, setViewState] = useState<any>(DEFAULT_VIEWPORT)
+  // const viewState = useRef<any>(DEFAULT_VIEWPORT)
   const { viewState, setViewState } = useViewStateAtom()
+  // const [viewState, setViewState] = useState(DEFAULT_VIEWPORT)
   const onViewStateChange = useCallback(
     (params: ViewStateChangeParameters) => {
-      const newViewState = params.viewState as ViewState
-      setViewState({ ...viewState, ...newViewState })
+      // const { latitude, longitude, zoom } = params.viewState
+      // viewState.current = { latitude, longitude, zoom }
+      setViewState(params.viewState as ViewState)
     },
-    [viewState, setViewState]
+    [setViewState]
   )
+  // const onViewStateChange = useCallback(
+  //   (params: ViewStateChangeParameters) => {
+  //     console.log(params)
+  //     setViewState(params.viewState as MapCoordinates)
+  //   },
+  //   [setViewState]
+  // )
   useUpdateViewStateUrlParams()
   ////////////////////////////////////////
   // Used it only once here to attach the listener only once
@@ -307,7 +320,7 @@ const MapWrapper = () => {
       <DeckGL
         id="map"
         ref={deckRef}
-        views={mapView}
+        views={MAP_VIEW}
         layers={layers}
         style={mapStyles}
         // more info about preserveDrawingBuffer
@@ -325,7 +338,6 @@ const MapWrapper = () => {
         }}
         viewState={viewState}
         onViewStateChange={onViewStateChange}
-        controller={true}
         // onClick={onClick}
         // onHover={onHover}
       />

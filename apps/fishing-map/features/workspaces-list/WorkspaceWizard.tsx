@@ -11,11 +11,7 @@ import type {
 import { Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
 import { Dataview } from '@globalfishingwatch/api-types'
 import { t as trans } from 'features/i18n/i18n'
-import {
-  useViewStateAtom,
-  getMapCoordinatesFromBounds,
-  useMapFitBounds,
-} from 'features/map/map-viewport.hooks'
+import { useViewStateAtom } from 'features/map/map-viewport.hooks'
 import {
   MARINE_MANAGER_DATAVIEWS,
   MARINE_MANAGER_DATAVIEWS_INSTANCES,
@@ -34,6 +30,7 @@ import {
 import { WORKSPACE } from 'routes/routes'
 import { getEventLabel } from 'utils/analytics'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-bounds.hooks'
 import styles from './WorkspaceWizard.module.css'
 
 const MAX_RESULTS_NUMBER = 10

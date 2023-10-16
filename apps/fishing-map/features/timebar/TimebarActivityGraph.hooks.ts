@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux'
+import { useMemo } from 'react'
 import { useFourwingsLayers } from '@globalfishingwatch/deck-layers'
 import { TileCell } from '@globalfishingwatch/deck-layers'
 import { selectTimebarVisualisation } from 'features/app/app.selectors'
@@ -12,6 +13,9 @@ export const useHeatmapActivityGraph = () => {
   const loading = fourwingsActivityLayer?.some((layer) => !layer.loaded)
   const cellsData: TileCell[] = fourwingsActivityLayer?.[0]?.layerInstance?.getData()
 
-  const heatmapActivity = cellsData?.length ? getGraphFromGridCellsData(cellsData) || [] : []
-  return { loading, heatmapActivity }
+  const heatmapActivity = useMemo(
+    () => (cellsData?.length ? getGraphFromGridCellsData(cellsData) || [] : []),
+    [cellsData]
+  )
+  return useMemo(() => ({ loading, heatmapActivity }), [loading, heatmapActivity])
 }

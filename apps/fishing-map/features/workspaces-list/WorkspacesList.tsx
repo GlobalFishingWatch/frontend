@@ -8,7 +8,7 @@ import { isValidLocationCategory, selectLocationCategory } from 'routes/routes.s
 import { HOME, WORKSPACE } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
-import { useViewStateAtom } from 'features/map/map-viewport.hooks'
+import { useSetViewState } from 'features/map/map-viewport.hooks'
 import { Locale } from 'types'
 import styles from './WorkspacesList.module.css'
 import {
@@ -20,7 +20,7 @@ import WorkspaceWizard from './WorkspaceWizard'
 
 function WorkspacesList() {
   const { t, i18n } = useTranslation()
-  const { viewState, setViewState } = useViewStateAtom()
+  const setViewState = useSetViewState()
   const locationCategory = useSelector(selectLocationCategory)
   const highlightedWorkspaces = useSelector(selectCurrentHighlightedWorkspaces)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
@@ -29,10 +29,10 @@ function WorkspacesList() {
   const onWorkspaceClick = useCallback(
     (workspace: HighlightedWorkspaceMerged) => {
       if (workspace.viewport) {
-        setViewState({ ...viewState, ...workspace.viewport })
+        setViewState(workspace.viewport)
       }
     },
-    [viewState, setViewState]
+    [setViewState]
   )
 
   if (highlightedWorkspacesStatus === AsyncReducerStatus.Finished && !validCategory) {

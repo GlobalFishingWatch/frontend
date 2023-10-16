@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react'
 import { useRouter } from 'next/router'
-import { uniqBy } from 'lodash'
 import bbox from '@turf/bbox'
 import union from '@turf/union'
 import { Bbox } from '@globalfishingwatch/data-transforms'

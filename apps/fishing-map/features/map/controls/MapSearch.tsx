@@ -12,7 +12,7 @@ import { Bbox } from 'types'
 import Hint from 'features/help/Hint'
 import { setHintDismissed } from 'features/help/hints.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { useMapFitBounds } from '../map-viewport.hooks'
+import { useMapFitBounds } from '../map-bounds.hooks'
 import styles from './MapSearch.module.css'
 
 const MapSearch = () => {
