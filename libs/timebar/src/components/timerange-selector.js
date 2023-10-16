@@ -2,7 +2,12 @@ import React, { Component } from 'react'
 import classNames from 'classnames'
 import { string, func, shape } from 'prop-types'
 import dayjs from 'dayjs'
-import { LIMITS_BY_INTERVAL, getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
+import {
+  LIMITS_BY_INTERVAL,
+  getInterval,
+  INTERVAL_ORDER,
+  Interval,
+} from '@globalfishingwatch/layer-composer'
 import { Select, Tooltip } from '@globalfishingwatch/ui-components'
 import { getTime } from '../utils/internal-utils'
 import { getLastX } from '../utils'
@@ -105,13 +110,16 @@ class TimeRangeSelector extends Component {
   }
 
   getDisabledFields = (startDate, endDate) => {
-    const intervalsToCheck = ['month', 'day']
+    /** @type {Interval[]} */
+    const intervalsToCheck = ['MONTH', 'DAY']
     return intervalsToCheck.reduce((acc, limit) => {
       const limitConfig = LIMITS_BY_INTERVAL[limit]
-      const duration = endDate.diff(startDate, limitConfig.unit)
-      return {
-        ...acc,
-        [limit]: Math.floor(duration) > limitConfig.value,
+      if (limitConfig) {
+        const duration = endDate.diff(startDate, limitConfig.unit)
+        return {
+          ...acc,
+          [limit]: Math.floor(duration) > limitConfig.value,
+        }
       }
     }, {})
   }
