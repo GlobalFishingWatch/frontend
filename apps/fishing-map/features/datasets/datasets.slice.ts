@@ -31,8 +31,6 @@ import {
 } from 'data/config'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 
-export const PRESENCE_DATASET_ID = 'public-global-presence'
-export const PRESENCE_TRACKS_DATASET_ID = 'private-global-presence-tracks'
 export const DATASETS_USER_SOURCE_ID = 'user'
 
 type POCDatasetTemplate = Record<

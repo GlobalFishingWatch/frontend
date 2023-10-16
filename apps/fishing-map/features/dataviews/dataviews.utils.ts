@@ -18,7 +18,6 @@ import {
   FISHING_DATAVIEW_SLUG,
   TEMPLATE_VESSEL_DATAVIEW_SLUG,
   TEMPLATE_USER_TRACK_SLUG,
-  VESSEL_PRESENCE_DATAVIEW_SLUG,
   TEMPLATE_POINTS_DATAVIEW_SLUG,
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
 } from 'data/workspaces'
@@ -100,17 +99,6 @@ export const getVesselDataviewInstance = (
   const vesselDataviewInstance = {
     id: `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
     ...vesselDataviewInstanceTemplate(TEMPLATE_VESSEL_DATAVIEW_SLUG, datasets),
-  }
-  return vesselDataviewInstance
-}
-
-export const getPresenceVesselDataviewInstance = (
-  vessel: { id: string },
-  datasets: VesselInstanceDatasets
-): DataviewInstance<GeneratorType> => {
-  const vesselDataviewInstance = {
-    id: `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
-    ...vesselDataviewInstanceTemplate(VESSEL_PRESENCE_DATAVIEW_SLUG, datasets),
   }
   return vesselDataviewInstance
 }
