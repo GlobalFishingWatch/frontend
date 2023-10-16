@@ -38,15 +38,6 @@ export const filterDatasetByPermissions = (
   return filterDatasetsByUserType(datasetsWithPermissions, isGuest)
 }
 
-export const selectAllSearchDatasetsByType = (type: SearchType) =>
-  createSelector(
-    [selectVesselsDatasets, selectUserData, isGuestUser],
-    (datasets, userData, guestUser) => {
-      if (!userData || !datasets?.length) return
-      return filterDatasetByPermissions(datasets, type, userData, guestUser)
-    }
-  )
-
 export const selectSearchDatasetsInWorkspaceByType = (type: SearchType) =>
   createSelector(
     [selectSearchDatasetsInWorkspace, selectUserData, isGuestUser],

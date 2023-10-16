@@ -22,7 +22,6 @@ import {
   createAsyncSlice,
 } from 'utils/async-slice'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
-import { selectAllSearchDatasetsByType } from 'features/search/search.selectors'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import { fetchDatasetByIdThunk, selectDatasetById } from '../datasets/datasets.slice'
 
@@ -81,16 +80,14 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
   ) => {
     const state = getState() as any
     const vesselGroupDatasets = uniq(vessels?.flatMap((v) => v.dataset || []))
-    const allVesselDatasets = selectVesselsDatasets(state)
-    const advancedSearchDatasets = (selectAllSearchDatasetsByType('advanced')(state) || []).filter(
-      (d) =>
-        d.status !== DatasetStatus.Deleted && d.alias?.some((alias) => alias.includes(':latest'))
+    const allVesselDatasets = (selectVesselsDatasets(state) || []).filter(
+      (d) => d.status !== DatasetStatus.Deleted
+      /*&& d.alias?.some((alias) => alias.includes(':latest'))*/
     )
 
-    const vesselDatasetsByType = idField === 'vesselId' ? allVesselDatasets : advancedSearchDatasets
     const searchDatasets = vesselGroupDatasets?.length
-      ? vesselDatasetsByType.filter((dataset) => vesselGroupDatasets.includes(dataset.id))
-      : vesselDatasetsByType
+      ? allVesselDatasets.filter((dataset) => vesselGroupDatasets.includes(dataset.id))
+      : allVesselDatasets
 
     if (searchDatasets?.length) {
       const dataset = searchDatasets[0]
@@ -100,7 +97,7 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
         `${idField} IN ('${uniqVesselIds.join("','")}')`
       )
       const datasetConfig: DataviewDatasetConfig = {
-        endpoint: idField === 'vesselId' ? EndpointId.VesselList : EndpointId.VesselAdvancedSearch,
+        endpoint: idField === 'vesselId' ? EndpointId.VesselList : EndpointId.VesselSearch,
         datasetId: searchDatasets[0].id,
         params: [],
         query: [
