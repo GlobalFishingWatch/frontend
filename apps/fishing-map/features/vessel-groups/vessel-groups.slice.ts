@@ -254,7 +254,7 @@ export const fetchWorkspaceVesselGroupsThunk = createAsyncThunk(
         ...DEFAULT_PAGINATION_PARAMS,
       }
       const vesselGroups = await GFWAPI.fetch<APIPagination<VesselGroup>>(
-        `/vessel-groups?${stringify(vesselGroupsParams, { arrayFormat: 'comma' })}`,
+        `/vessel-groups?${stringify(vesselGroupsParams, { arrayFormat: 'indices' })}`,
         { signal }
       )
       return vesselGroups.entries as VesselGroup[]
