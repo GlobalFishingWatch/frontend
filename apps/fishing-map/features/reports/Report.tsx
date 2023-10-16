@@ -20,7 +20,9 @@ import WorkspaceError, { WorkspaceLoginError } from 'features/workspace/Workspac
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { selectWorkspaceVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
 import {
+  selectHasReportBuffer,
   selectHasReportVessels,
+  selectReportArea,
   selectReportDataviewsWithPermissions,
 } from 'features/reports/reports.selectors'
 import ReportVesselsPlaceholder from 'features/reports/placeholders/ReportVesselsPlaceholder'
@@ -48,6 +50,8 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { LAST_REPORTS_STORAGE_KEY, LastReportStorage } from 'features/reports/reports.config'
+import { REPORT_BUFFER_GENERATOR_ID } from 'features/map/map.config'
+import { HighlightedAreaParams } from 'features/map/popups/ContextLayers.hooks'
 import {
   useFetchReportArea,
   useFetchReportVessel,
@@ -351,18 +355,28 @@ export default function Report() {
     }
   })
   const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const areaSourceId = useSelector(selectReportAreaSource)
-  const { data: areaDetail, status } = useFetchReportArea()
+  const { status } = useFetchReportArea()
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
+  const areaSourceId = useSelector(selectReportAreaSource)
+  const hasReportBuffer = useSelector(selectHasReportBuffer)
+  const reportArea = useSelector(selectReportArea)
+  const reportAreaHighlight: HighlightedAreaParams = {
+    areaId: reportArea!?.id,
+    sourceId: hasReportBuffer ? REPORT_BUFFER_GENERATOR_ID : areaSourceId,
+  }
 
   const fitAreaInViewport = useFitAreaInViewport()
-  useReportAreaHighlight(areaDetail?.id, areaSourceId)
+  useReportAreaHighlight(
+    status === AsyncReducerStatus.Finished && reportAreaHighlight.areaId
+      ? reportAreaHighlight
+      : undefined
+  )
 
   // This ensures that the area is in viewport when then area load finishes
   useEffect(() => {
-    if (status === AsyncReducerStatus.Finished && areaDetail?.bounds) {
+    if (status === AsyncReducerStatus.Finished && reportArea?.bounds) {
       fitAreaInViewport()
     }
     // Reacting only to the area status and fitting bounds after load
@@ -411,7 +425,7 @@ export default function Report() {
 
   return (
     <Fragment>
-      <ReportTitle area={areaDetail} />
+      {reportArea && <ReportTitle area={reportArea} />}
       {filteredCategoryTabs.length > 1 && (
         <div className={styles.tabContainer}>
           <Tabs
@@ -424,7 +438,7 @@ export default function Report() {
       {reportCategory === ReportCategory.Environment ? (
         <ReportEnvironment />
       ) : (
-        <ActivityReport reportName={areaDetail?.name} />
+        <ActivityReport reportName={reportArea!?.name} />
       )}
     </Fragment>
   )

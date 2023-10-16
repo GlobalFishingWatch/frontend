@@ -1,15 +1,14 @@
 import { createAsyncThunk, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Geometry } from 'geojson'
 import { stringify } from 'qs'
 import { saveAs } from 'file-saver'
-import i18next from 'i18next'
 import { RootState } from 'reducers'
 import { Dataview, DownloadActivity } from '@globalfishingwatch/api-types'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
-import { AreaKeys } from 'features/areas/areas.slice'
+import { AreaKeyId, AreaKeys } from 'features/areas/areas.slice'
 import { getUTCDateTime } from 'utils/dates'
+import { BufferOperation, BufferUnit } from 'types'
 import { Format, GroupBy, SpatialResolution, TemporalResolution } from './downloadActivity.config'
 
 export type DateRange = {
@@ -31,14 +30,18 @@ const initialState: DownloadActivityState = {
 
 export type DownloadActivityParams = {
   dateRange: DateRange
+  areaId: AreaKeyId
+  datasetId: string
   dataviews: {
     datasets: string[]
     'vessel-groups': string[]
     filter?: string
   }[]
-  geometry: Geometry
   areaName: string
   format: Format
+  bufferUnit?: BufferUnit
+  bufferValue?: number
+  bufferOperation?: BufferOperation
   spatialAggregation?: boolean
   spatialResolution?: SpatialResolution
   temporalResolution?: TemporalResolution
@@ -56,15 +59,19 @@ export const downloadActivityThunk = createAsyncThunk<
   async (params: DownloadActivityParams, { getState, rejectWithValue }) => {
     try {
       const {
+        areaId,
+        datasetId,
         spatialAggregation,
         dateRange,
         dataviews,
-        geometry,
         areaName,
         format,
         spatialResolution,
         temporalResolution,
         groupBy,
+        bufferUnit,
+        bufferValue,
+        bufferOperation,
       } = params
       const fromDate = getUTCDateTime(dateRange.start)
       const toDate = getUTCDateTime(dateRange.end)
@@ -78,7 +85,12 @@ export const downloadActivityThunk = createAsyncThunk<
         'spatial-aggregation': spatialAggregation,
         'spatial-resolution': spatialResolution,
         'temporal-resolution': temporalResolution,
+        'region-id': areaId,
+        'region-dataset': datasetId,
         'group-by': groupBy,
+        'buffer-unit': bufferUnit,
+        'buffer-value': bufferValue,
+        'buffer-operation': bufferOperation,
       }
 
       const fileName = `${areaName} - ${downloadActivityParams['date-range']}.${
@@ -89,16 +101,11 @@ export const downloadActivityThunk = createAsyncThunk<
       })}`
 
       const createdDownload: any = await GFWAPI.fetch<DownloadActivity>(downloadUrl, {
-        method: 'POST',
-        body: { geojson: geometry } as any,
         responseType: 'blob',
-        headers: {
-          Authorization: `Bearer ${GFWAPI.getToken()}`,
-          'Content-Language': i18next.language === 'es' ? 'es-ES' : 'en-EN',
-        },
       }).then((blob) => {
         saveAs(blob as any, fileName)
       })
+
       return createdDownload
     } catch (e: any) {
       console.warn(e)
@@ -113,12 +120,6 @@ const downloadActivitySlice = createSlice({
   reducers: {
     setDownloadActivityAreaKey: (state, action: PayloadAction<AreaKeys>) => {
       state.areaKey = action.payload
-    },
-    setDownloadActivityAreaDataview: (
-      state,
-      action: PayloadAction<Dataview | UrlDataviewInstance | undefined>
-    ) => {
-      state.areaDataview = action.payload
     },
     resetDownloadActivityStatus: (state) => {
       state.status = AsyncReducerStatus.Idle
@@ -144,15 +145,12 @@ const downloadActivitySlice = createSlice({
 
 export const {
   setDownloadActivityAreaKey,
-  setDownloadActivityAreaDataview,
   resetDownloadActivityStatus,
   resetDownloadActivityState,
 } = downloadActivitySlice.actions
 
 export const selectDownloadActivityStatus = (state: RootState) => state.downloadActivity.status
 export const selectDownloadActivityAreaKey = (state: RootState) => state.downloadActivity.areaKey
-export const selectDownloadActivityAreaDataview = (state: RootState) =>
-  state.downloadActivity.areaDataview
 
 export const selectDownloadActivityLoading = createSelector(
   [selectDownloadActivityStatus],

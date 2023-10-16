@@ -266,6 +266,9 @@ function cleanReportQuery(query: QueryParams) {
     reportVesselFilter: undefined,
     reportVesselGraph: undefined,
     reportVesselPage: undefined,
+    reportBufferUnit: undefined,
+    reportBufferValue: undefined,
+    reportBufferOperation: undefined,
   }
 }
 

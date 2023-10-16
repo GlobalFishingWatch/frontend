@@ -2673,8 +2673,8 @@
     }
   },
   "public-panama-vessel-identity-fishing": {
-    "name": "Panama VMS (Public Fishing Vessels)",
-    "description": "Dataset for VMS Panama (Public)",
+    "name": "Panama VMS (Public Non fishing vessels)",
+    "description": "Dataset for VMS Panama - Carriers (Public)",
     "schema": {
       "id": "id",
       "selfReportedInfo": "selfReportedInfo",

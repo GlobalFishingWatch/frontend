@@ -14,11 +14,20 @@ import {
   HeatmapLayerMeta,
   TRACK_HIGHLIGHT_SUFFIX,
 } from '@globalfishingwatch/layer-composer'
+import {
+  MAPBOX_GL_DRAW_PREFIX,
+  PREVIEW_BUFFER_GENERATOR_ID,
+  REPORT_BUFFER_GENERATOR_ID,
+} from './map.config'
 
-export const MAPBOX_GL_DRAW_PREFIX = 'mapbox-gl-draw'
 // Don't consider loading states for our interaction layers
 export const isInteractionSource = (sourceId: string) => {
-  return sourceId.includes(TRACK_HIGHLIGHT_SUFFIX) || sourceId.includes(MAPBOX_GL_DRAW_PREFIX)
+  return (
+    sourceId.includes(TRACK_HIGHLIGHT_SUFFIX) ||
+    sourceId.includes(MAPBOX_GL_DRAW_PREFIX) ||
+    sourceId.includes(PREVIEW_BUFFER_GENERATOR_ID) ||
+    sourceId.includes(REPORT_BUFFER_GENERATOR_ID)
+  )
 }
 
 export const getHeatmapSourceMetadata = (style: ExtendedStyle, id: string) => {

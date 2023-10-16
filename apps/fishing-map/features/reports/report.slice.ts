@@ -10,6 +10,7 @@ import {
   SpatialResolution,
   TemporalResolution,
 } from 'features/download/downloadActivity.config'
+import { BufferOperation, BufferUnit } from 'types'
 import { DateRange } from '../download/downloadActivity.slice'
 
 type ReportStateError = AsyncError<{ currentReportUrl: string }>
@@ -18,14 +19,21 @@ interface ReportState {
   error: ReportStateError | null
   data: ReportVesselsByDataset[] | null
   dateRangeHash: string
+  previewBuffer: PreviewBuffer
 }
-type ReportSliceState = { report: ReportState }
 
+type ReportSliceState = { report: ReportState }
+type PreviewBuffer = {
+  value: number | null
+  unit: BufferUnit | null
+  operation: BufferOperation | null
+}
 const initialState: ReportState = {
   status: AsyncReducerStatus.Idle,
   error: null,
   data: null,
   dateRangeHash: '',
+  previewBuffer: { value: null, unit: null, operation: null },
 }
 type ReportRegion = {
   dataset: string
@@ -43,6 +51,9 @@ type FetchReportVesselsThunkParams = {
   spatialResolution?: SpatialResolution
   format?: Format.Csv | Format.Json
   spatialAggregation?: boolean
+  reportBufferUnit?: BufferUnit
+  reportBufferValue?: number
+  reportBufferOperation?: BufferOperation
 }
 
 export const getReportQuery = (params: FetchReportVesselsThunkParams) => {
@@ -57,6 +68,9 @@ export const getReportQuery = (params: FetchReportVesselsThunkParams) => {
     spatialResolution = SpatialResolution.Low,
     spatialAggregation = true,
     format = Format.Json,
+    reportBufferUnit,
+    reportBufferValue,
+    reportBufferOperation,
   } = params
   const query = stringify(
     {
@@ -74,6 +88,9 @@ export const getReportQuery = (params: FetchReportVesselsThunkParams) => {
       format: format,
       'region-id': region.id,
       'region-dataset': region.dataset,
+      'buffer-unit': reportBufferUnit,
+      'buffer-value': reportBufferValue,
+      'buffer-operation': reportBufferOperation,
     },
     { arrayFormat: 'indices' }
   )
@@ -112,11 +129,18 @@ const reportSlice = createSlice({
   name: 'report',
   initialState,
   reducers: {
-    resetReportData: () => {
-      return initialState
+    resetReportData: (state) => {
+      state.status = AsyncReducerStatus.Idle
+      state.data = null
+      state.error = null
+      state.dateRangeHash = ''
+      state.previewBuffer = { value: null, unit: null, operation: null }
     },
     setDateRangeHash: (state, action: PayloadAction<string>) => {
       state.dateRangeHash = action.payload
+    },
+    setPreviewBuffer: (state, action: PayloadAction<PreviewBuffer>) => {
+      state.previewBuffer = action.payload
     },
   },
   extraReducers: (builder) => {
@@ -135,12 +159,13 @@ const reportSlice = createSlice({
   },
 })
 
-export const { resetReportData, setDateRangeHash } = reportSlice.actions
+export const { resetReportData, setDateRangeHash, setPreviewBuffer } = reportSlice.actions
 
 export const selectReportSummary = (state: ReportSliceState) => state.report
 export const selectReportVesselsStatus = (state: ReportSliceState) => state.report.status
 export const selectReportVesselsError = (state: ReportSliceState) => state.report.error
 export const selectReportVesselsData = (state: ReportSliceState) => state.report.data
+export const selectReportPreviewBuffer = (state: ReportSliceState) => state.report.previewBuffer
 export const selectReportVesselsDateRangeHash = (state: ReportSliceState) =>
   state.report.dateRangeHash
 

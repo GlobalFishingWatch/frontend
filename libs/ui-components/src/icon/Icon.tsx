@@ -40,6 +40,7 @@ import { ReactComponent as EventFishing } from '../assets/icons/event-fishing.sv
 import { ReactComponent as EventLoitering } from '../assets/icons/event-loitering.svg'
 import { ReactComponent as EventPort } from '../assets/icons/event-port.svg'
 import { ReactComponent as EventPortVisit } from '../assets/icons/event-port-visit.svg'
+import { ReactComponent as Expand } from '../assets/icons/expand.svg'
 import { ReactComponent as ExternalLink } from '../assets/icons/external-link.svg'
 import { ReactComponent as Feedback } from '../assets/icons/feedback.svg'
 import { ReactComponent as FilterOff } from '../assets/icons/filter-off.svg'
@@ -117,6 +118,7 @@ export const IconComponents = {
   'event-legend-port_visit': EventLegendPort,
   'event-port_visit': EventPortVisit,
   'event-port': EventPort,
+  expand: Expand,
   'external-link': ExternalLink,
   'filter-off': FilterOff,
   'filter-on': FilterOn,

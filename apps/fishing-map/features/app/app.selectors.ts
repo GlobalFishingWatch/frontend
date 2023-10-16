@@ -35,6 +35,8 @@ import {
   VisibleEvents,
   WorkspaceActivityCategory,
   ReportActivityGraph,
+  BufferUnit,
+  BufferOperation,
 } from 'types'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import {
@@ -269,6 +271,27 @@ export const selectReportResultsPerPage = createSelector(
   }
 )
 
+export const selectReportBufferValue = createSelector(
+  [selectWorkspaceStateProperty('reportBufferValue')],
+  (reportBufferValue): number => {
+    return reportBufferValue
+  }
+)
+
+export const selectReportBufferUnit = createSelector(
+  [selectWorkspaceStateProperty('reportBufferUnit')],
+  (reportBufferUnit): BufferUnit => {
+    return reportBufferUnit
+  }
+)
+
+export const selectReportBufferOperation = createSelector(
+  [selectWorkspaceStateProperty('reportBufferOperation')],
+  (reportBufferOperation): BufferOperation => {
+    return reportBufferOperation
+  }
+)
+
 export const selectTimebarVisualisation = createSelector(
   [selectWorkspaceStateProperty('timebarVisualisation'), selectIsAnyVesselLocation],
   (timebarVisualisation, isAnyVesselLocation): TimebarVisualisations => {
@@ -319,6 +342,8 @@ export const selectWorkspaceReportState = createSelector(
     selectReportVesselFilter,
     selectReportVesselGraph,
     selectReportVesselPage,
+    selectReportBufferValue,
+    selectReportBufferUnit,
   ],
   (
     reportActivityGraph,
@@ -329,7 +354,9 @@ export const selectWorkspaceReportState = createSelector(
     reportTimeComparison,
     reportVesselFilter,
     reportVesselGraph,
-    reportVesselPage
+    reportVesselPage,
+    reportBufferValue,
+    reportBufferUnit
   ) => ({
     ...(reportActivityGraph && { reportActivityGraph }),
     ...(reportAreaBounds && { reportAreaBounds }),
@@ -340,6 +367,8 @@ export const selectWorkspaceReportState = createSelector(
     ...(reportVesselFilter && { reportVesselFilter }),
     ...(reportVesselGraph && { reportVesselGraph }),
     ...(reportVesselPage && { reportVesselPage }),
+    ...(reportBufferValue && { reportBufferValue }),
+    ...(reportBufferUnit && { reportBufferUnit }),
   })
 )
 

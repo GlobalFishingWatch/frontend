@@ -99,6 +99,13 @@ export const useMapSourceTilesLoadedAtom = () => {
             [sourceId]: { loaded: true, ...(error && { error }) },
           }
         })
+      } else if (isInteractionSource(sourceId)) {
+        setSourceTilesLoaded((state) => {
+          return {
+            ...state,
+            [sourceId]: { loaded: true },
+          }
+        })
       }
     }
     if (map) {
