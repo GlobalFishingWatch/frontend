@@ -23,6 +23,7 @@ import {
 } from 'utils/async-slice'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
+import { getVesselId } from 'features/vessel/vessel.utils'
 import { fetchDatasetByIdThunk, selectDatasetById } from '../datasets/datasets.slice'
 
 export const MAX_VESSEL_GROUP_VESSELS = 1000
@@ -144,13 +145,17 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
         const searchResultsFiltered =
           idField === 'vesselId'
             ? uniqSearchResults.filter((vessel) => {
-                const vesselId = vessel?.registryInfo?.[0]?.id
+                const vesselId = getVesselId(vessel)
                 return (
-                  vessels.find((v) => v.vesselId === vesselId && v.dataset === vessel.dataset) !==
-                  undefined
+                  vessels.find((v) => {
+                    const isSameVesselid = v.vesselId === vesselId
+                    const isSameDataset = v.dataset ? v.dataset === vessel.dataset : true
+                    return isSameVesselid && isSameDataset
+                  }) !== undefined
                 )
               })
             : uniqSearchResults
+
         return searchResultsFiltered
       } catch (e: any) {
         console.warn(e)
