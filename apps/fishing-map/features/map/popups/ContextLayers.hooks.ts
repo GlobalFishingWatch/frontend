@@ -43,7 +43,6 @@ export const useHighlightArea = () => {
   return useCallback(
     ({ sourceId, areaId, sourceLayer = DEFAULT_CONTEXT_SOURCE_LAYER }: HighlightedAreaParams) => {
       cleanFeatureState('click')
-      cleanFeatureState('highlight')
       const featureState = {
         source: sourceId,
         sourceLayer: sourceLayer !== '' ? sourceLayer : undefined,
