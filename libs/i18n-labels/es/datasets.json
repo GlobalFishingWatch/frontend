@@ -1255,12 +1255,12 @@
     "description": "VMS de Papúa Nueva Guinea (Buques de pesca)",
     "schema": {
       "id": "id",
-      "registryInfo": "registryInfo",
-      "registryOwners": "registryOwners",
-      "selfReportedInfo": "selfReportedInfo",
+      "flag": "bandera",
+      "source": "fuente",
+      "callsign": "signatura",
+      "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
-      "firstTransmissionDate": "firstTransmissionDate",
-      "registryAuthorizations": "registryAuthorizations"
+      "firstTransmissionDate": "firstTransmissionDate"
     }
   },
   "private-png-presence": {
