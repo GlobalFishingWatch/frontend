@@ -85,7 +85,7 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
 
   useEffect(() => {
     if (!isEditingDataview) {
-      dispatch(fetchAllDatasetsThunk())
+      dispatch(fetchAllDatasetsThunk({ onlyUserDatasets: false }))
     }
   }, [dispatch, isEditingDataview])
 
@@ -295,8 +295,8 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
                   options={temporalResolutionOptions}
                   containerClassName={styles.input2Columns}
                   direction="top"
-                  selectedOption={temporalResolutionOptions.find(({ id }) =>
-                    dataview.config?.intervals?.includes(id)
+                  selectedOption={temporalResolutionOptions.find(
+                    ({ id }) => dataview.config?.intervals?.includes(id)
                   )}
                   onSelect={(selected) => {
                     onDataviewConfigChange({ interval: selected.id })
