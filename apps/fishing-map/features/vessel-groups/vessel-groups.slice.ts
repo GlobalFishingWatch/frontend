@@ -3,6 +3,7 @@ import { stringify } from 'qs'
 import { memoize, uniq, uniqBy } from 'lodash'
 import {
   APIPagination,
+  APIVesselSearchPagination,
   DatasetStatus,
   DataviewDatasetConfig,
   EndpointId,
@@ -49,6 +50,30 @@ interface VesselGroupsState extends AsyncReducer<VesselGroup> {
     error: ParsedAPIError | null
     vesselGroups: VesselGroup[] | null
   }
+}
+
+const fetchSearchVessels = async (url: string, { signal, token }: { signal?: AbortSignal, token?: string }) => {
+  const searchResponse = await GFWAPI.fetch<APIVesselSearchPagination<IdentityVessel>>(`${url}${token ? `&since=${token}` : ''}`, {
+    signal,
+  })
+  return searchResponse
+}
+
+const SEARCH_PAGINATION = 25
+const fetchAllSearchVessels = async (url: string, signal: AbortSignal) => {
+  let searchResults = [] as IdentityVessel[]
+  let pendingResults = true
+  let paginationToken = ''
+  while (pendingResults) {
+    const searchResponse = await fetchSearchVessels(url, { signal, token: paginationToken })
+    searchResults = searchResults.concat(searchResponse.entries)
+    if (searchResponse.since && searchResults!?.length < searchResponse.total) {
+      paginationToken = searchResponse.since
+    } else {
+      pendingResults = false
+    }
+  }
+  return searchResults
 }
 
 const initialState: VesselGroupsState = {
@@ -117,11 +142,7 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
       if (idField === 'mmsi') {
         datasetConfig.query?.push({
           id: 'limit',
-          value: DEFAULT_PAGINATION_PARAMS.limit,
-        })
-        datasetConfig.query?.push({
-          id: 'offset',
-          value: DEFAULT_PAGINATION_PARAMS.offset,
+          value: SEARCH_PAGINATION,
         })
       }
       try {
@@ -133,13 +154,10 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
             message: 'Missing search url',
           })
         }
-        const searchResults = await GFWAPI.fetch<APIPagination<IdentityVessel>>(
-          `${url}&cache=false`,
-          { signal }
-        )
+        const searchResults = await fetchAllSearchVessels(`${url}&cache=false`, signal)
         // API returns multiple instances of the same vessel with the same id and dataset
-        const uniqSearchResults = uniqBy(searchResults.entries, (vessel) =>
-          [vessel?.registryInfo?.[0]?.id, vessel.dataset].join(',')
+        const uniqSearchResults = uniqBy(searchResults, (vessel) =>
+          [getVesselId(vessel), vessel.dataset].join(',')
         )
         // Searching could return same vessel id from different datasets so we need to choose the original one
         const searchResultsFiltered =
