@@ -25,7 +25,7 @@ import {
   removeTimeseriesPadding,
 } from 'features/reports/reports-timeseries.utils'
 import { useReportAreaInViewport } from 'features/reports/reports.hooks'
-import { selectReportArea, selectShowTimeComparison } from 'features/reports/reports.selectors'
+import { selectReportArea, selectReportBufferHash, selectShowTimeComparison } from 'features/reports/reports.selectors'
 import { ReportActivityGraph } from 'types'
 
 export interface EvolutionGraphData {
@@ -88,6 +88,7 @@ export const useFilteredTimeSeries = () => {
   const reportCategory = useSelector(selectReportCategory)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparison = useSelector(selectReportTimeComparison)
+  const reportBufferHash = useSelector(selectReportBufferHash)
   const currentCategoryDataviews = useSelector(selectActiveReportDataviews)
   const { start: timebarStart, end: timebarEnd } = useSelector(selectTimeRange)
   const areaInViewport = useReportAreaInViewport()
@@ -144,14 +145,13 @@ export const useFilteredTimeSeries = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reportGraphMode])
-
   const activityFeaturesLoaded = areDataviewsFeatureLoaded(activityFeatures)
   useEffect(() => {
     if (activityFeaturesLoaded && area?.geometry && areaInViewport) {
       computeTimeseries(activityFeatures, area?.geometry as Polygon | MultiPolygon, reportGraphMode)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activityFeaturesLoaded, area?.geometry, areaInViewport, reportCategory])
+  }, [activityFeaturesLoaded, area?.geometry, areaInViewport, reportCategory, reportBufferHash])
 
   const layersTimeseriesFiltered = useMemo(() => {
     if (showTimeComparison) {

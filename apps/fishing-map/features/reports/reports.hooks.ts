@@ -19,6 +19,7 @@ import {
   selectReportArea,
   selectReportAreaDataview,
   selectReportAreaIds,
+  selectReportBufferHash,
   selectReportDataviewsWithPermissions,
 } from 'features/reports/reports.selectors'
 import useMapInstance from 'features/map/map-context.hooks'
@@ -145,6 +146,7 @@ export function useFetchReportVessel() {
   const reportBufferUnit = useSelector(selectReportBufferUnit)
   const reportBufferValue = useSelector(selectReportBufferValue)
   const reportBufferOperation = useSelector(selectReportBufferOperation)
+  const reportBufferHash = useSelector(selectReportBufferHash)
 
   const updateWorkspaceReportUrls = useCallback(
     (reportUrl: any) => {
@@ -195,7 +197,6 @@ export function useFetchReportVessel() {
     updateWorkspaceReportUrls,
   ])
 
-  const reportBufferHash = [reportBufferUnit, reportBufferValue, reportBufferOperation].join(',')
   useEffect(() => {
     const isDifferentDateRange = reportDateRangeHash !== getDateRangeHash(timerange)
     if (

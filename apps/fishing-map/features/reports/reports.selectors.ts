@@ -8,6 +8,9 @@ import { getGeometryDissolved, wrapGeometryBbox } from '@globalfishingwatch/data
 import {
   selectActiveReportDataviews,
   selectReportActivityGraph,
+  selectReportBufferOperation,
+  selectReportBufferUnit,
+  selectReportBufferValue,
   selectReportCategory,
   selectReportResultsPerPage,
   selectReportTimeComparison,
@@ -529,6 +532,17 @@ export const selectReportBufferArea = createSelector(
       bufferedArea.geometry.bbox = bounds
     }
     return bufferedArea
+  }
+)
+
+export const selectReportBufferHash = createSelector(
+  [
+    selectReportBufferOperation,
+    selectReportBufferUnit,
+    selectReportBufferValue,
+  ],
+  (operation, unit, value) => {
+    return [unit, value, operation].filter(Boolean).join(',')
   }
 )
 
