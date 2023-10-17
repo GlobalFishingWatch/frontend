@@ -495,6 +495,10 @@ export const selectReportAreaDissolved = createSelector([selectReportAreaData], 
   }
   return {
     ...area,
+    properties: {
+      ...(area.properties && { ...area.properties }),
+      ...(area.geometry?.type && { originalGeometryType: area.geometry.type }),
+    },
     geometry: getGeometryDissolved(area.geometry),
   } as Area<FeatureCollection<AreaGeometry>>
 })
@@ -536,6 +540,7 @@ export const selectReportBufferFeature = createSelector(
     selectUrlBufferOperationQuery,
   ],
   (area, unit, value, operation) => {
+    console.log('🚀 ~ file: reports.selectors.ts:539 ~ area:', area)
     if (!area || !unit || !value || !operation) return null
     return getBufferedFeature({ area, value, unit, operation })
   }

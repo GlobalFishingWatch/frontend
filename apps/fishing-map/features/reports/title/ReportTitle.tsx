@@ -240,7 +240,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
                 className={styles.actionButton}
                 tooltip={
                   <BufferButtonTooltip
-                    areaType={area?.geometry?.type}
+                    areaType={area?.properties?.originalGeometryType}
                     activeUnit={previewBuffer.unit || NAUTICAL_MILES}
                     defaultValue={urlBufferValue || DEFAULT_BUFFER_VALUE}
                     activeOperation={previewBuffer.operation || DEFAULT_BUFFER_OPERATION}
