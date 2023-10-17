@@ -80,7 +80,7 @@ const VesselIdentity = () => {
           vesselIdentity.shiptype
         ) as VesselType,
         geartype: vesselIdentity.geartype?.map((gear) =>
-          t(`vessel.gearTypes.${gear.toLowerCase()}`, gear.toLowerCase())
+          t(`vessel.gearTypes.${gear?.toLowerCase()}`, gear.toLowerCase())
         ),
         registryAuthorizations:
           vesselIdentity.registryAuthorizations &&

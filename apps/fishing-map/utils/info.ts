@@ -70,7 +70,7 @@ export const getVesselGearType = (
   { geartype } = {} as Pick<VesselDataIdentity, 'geartype'> | { geartype: string }
 ): string => {
   const gearTypes = Array.isArray(geartype) ? geartype : [geartype]
-  return gearTypes?.map((gear) => t(`vessel.gearTypes.${gear.toLowerCase()}`)).join(',')
+  return gearTypes.filter(Boolean)?.map((gear) => t(`vessel.gearTypes.${gear?.toLowerCase()}`)).join(',')
 }
 
 export const getVesselLabel = (
