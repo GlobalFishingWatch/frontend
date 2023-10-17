@@ -127,7 +127,7 @@ function WorkspaceWizard() {
       if (payload) {
         const datasetsIds = getDatasetsInDataviews(payload as Dataview[])
         if (datasetsIds?.length) {
-          dispatch(fetchDatasetsByIdsThunk(datasetsIds))
+          dispatch(fetchDatasetsByIdsThunk({ ids: datasetsIds }))
         }
       }
     }
