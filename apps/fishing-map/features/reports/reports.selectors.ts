@@ -536,11 +536,7 @@ export const selectReportBufferArea = createSelector(
 )
 
 export const selectReportBufferHash = createSelector(
-  [
-    selectReportBufferOperation,
-    selectReportBufferUnit,
-    selectReportBufferValue,
-  ],
+  [selectReportBufferOperation, selectReportBufferUnit, selectReportBufferValue],
   (operation, unit, value) => {
     return [unit, value, operation].filter(Boolean).join(',')
   }
@@ -554,7 +550,6 @@ export const selectReportBufferFeature = createSelector(
     selectUrlBufferOperationQuery,
   ],
   (area, unit, value, operation) => {
-    console.log('🚀 ~ file: reports.selectors.ts:539 ~ area:', area)
     if (!area || !unit || !value || !operation) return null
     return getBufferedFeature({ area, value, unit, operation })
   }
