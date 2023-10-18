@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
+import { point, buffer } from '@turf/turf'
+import booleanIntersects from '@turf/boolean-intersects'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataset, Dataview } from '@globalfishingwatch/api-types'
 import { useLocalStorage, useMemoCompare } from '@globalfishingwatch/react-hooks'
@@ -65,9 +67,14 @@ export function useReportAreaInViewport() {
   const area = useSelector(selectReportArea)
   const bbox = area?.geometry?.bbox || area!?.bounds
   const areaCenter = useReportAreaCenter(bbox as Bbox)
-  return (
-    viewport?.latitude === areaCenter?.latitude && viewport?.longitude === areaCenter?.longitude
-  )
+  const areaCenterPoint = areaCenter && point([areaCenter.longitude, areaCenter.latitude])
+  const viewportCenterPoint = viewport && point([viewport.longitude, viewport.latitude])
+  const areaCenterBuffer = areaCenterPoint && buffer(areaCenterPoint, 1)
+  const intersects =
+    viewportCenterPoint &&
+    areaCenterBuffer &&
+    booleanIntersects(areaCenterBuffer, viewportCenterPoint)
+  return intersects && viewport?.zoom <= areaCenter?.zoom
 }
 
 export function useFitAreaInViewport() {
