@@ -41,7 +41,7 @@ export const dataviewStatsApi = createApi({
         const datasets = dataview.datasets?.filter(
           (dataset) => dataview.config?.datasets.includes(dataset.id)
         )
-        const { extentStart, extentEnd } = getDatasetsExtent(datasets)
+        const { extentStart, extentEnd = new Date().toISOString() } = getDatasetsExtent(datasets)
         const laterStartDate = DateTime.max(
           DateTime.fromISO(timerange.start),
           DateTime.fromISO(extentStart as string)
