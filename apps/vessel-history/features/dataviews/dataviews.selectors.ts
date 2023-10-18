@@ -163,7 +163,7 @@ export const selectDataviewsResources = createSelector(
   [selectDataviewInstancesResolved, selectTrackDatasetConfigsCallback],
   (dataviewInstances, trackDatasetConfigsCallback) => {
     const callbacks: GetDatasetConfigsCallbacks = {
-      tracks: trackDatasetConfigsCallback,
+      track: trackDatasetConfigsCallback,
     }
 
     return getResources(dataviewInstances || [], callbacks)

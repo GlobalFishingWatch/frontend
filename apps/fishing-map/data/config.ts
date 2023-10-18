@@ -22,14 +22,14 @@ export const REPORT_DAYS_LIMIT =
 // Never actually used?
 export const API_GATEWAY = process.env.API_GATEWAY || process.env.NEXT_PUBLIC_API_GATEWAY || ''
 export const CARRIER_PORTAL_API_URL =
-  process.env.NEXT_CARRIER_PORTAL_API_URL || 'https://gateway.api.globalfishingwatch.org'
+  process.env.NEXT_PUBLIC_CARRIER_PORTAL_API_URL || 'https://gateway.api.globalfishingwatch.org'
 export const CARRIER_PORTAL_URL =
   process.env.NEXT_PUBLIC_CARRIER_PORTAL_URL || 'https://carrier-portal.globalfishingwatch.org'
 export const LATEST_CARRIER_DATASET_ID =
   process.env.NEXT_PUBLIC_LATEST_CARRIER_DATASET_ID || 'carriers:latest'
 
 export const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID
-export const GOOGLE_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID
+export const GOOGLE_MEASUREMENT_ID = process.env.NEXT_PUBLIC_NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID
 
 export const REPORT_VESSELS_PER_PAGE = 10
 export const REPORT_SHOW_MORE_VESSELS_PER_PAGE = REPORT_VESSELS_PER_PAGE * 5
@@ -65,7 +65,7 @@ export const DEFAULT_TIME_RANGE = {
 }
 
 export const DEFAULT_PAGINATION_PARAMS = {
-  limit: 99999,
+  limit: 999999,
   offset: 0,
 }
 
@@ -81,7 +81,6 @@ export const AVAILABLE_END = new Date(Date.UTC(CURRENT_YEAR, 11, 31)).toISOStrin
 
 export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   ...DEFAULT_VIEWPORT,
-  query: undefined,
   readOnly: false,
   daysFromLatest: undefined,
   sidebarOpen: true,

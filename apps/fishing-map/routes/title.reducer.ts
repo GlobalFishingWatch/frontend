@@ -2,7 +2,18 @@ import { PayloadAction } from '@reduxjs/toolkit'
 import { lowerCase } from 'lodash'
 import { capitalize } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
-import { HOME, REPORT, USER, WORKSPACE, WORKSPACES_LIST, WORKSPACE_REPORT } from './routes'
+import {
+  HOME,
+  REPORT,
+  SEARCH,
+  USER,
+  VESSEL,
+  WORKSPACE,
+  WORKSPACES_LIST,
+  WORKSPACE_REPORT,
+  WORKSPACE_SEARCH,
+  WORKSPACE_VESSEL,
+} from './routes'
 
 const PREFIX = 'GFW'
 
@@ -11,6 +22,12 @@ const titleReducer = (_: any, action: PayloadAction<{ category?: string }>) => {
   switch (action.type) {
     case HOME:
       return defaultTitle
+    case SEARCH:
+    case WORKSPACE_SEARCH:
+      return `${PREFIX} | ${t('search.title', 'Search')}`
+    case VESSEL:
+    case WORKSPACE_VESSEL:
+      return `${PREFIX} | ${t('vessel.title', 'Vessel profile')}`
     case USER:
       return `${PREFIX} | ${t('user.profile', 'User profile')}`
     case REPORT:

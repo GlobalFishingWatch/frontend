@@ -38,27 +38,30 @@ export const VESSEL_DATAVIEW_INSTANCE_PREFIX = 'vessel-'
 
 // Datasets ids for vessel instances
 export type VesselInstanceDatasets = {
-  info?: string
   track?: string
+  info?: string
   events?: string[]
+  relatedVesselIds?: string[]
 }
 
 export const getVesselDataviewInstanceDatasetConfig = (
   vesselId: string,
-  { track, info, events }: VesselInstanceDatasets
+  { track, info, events, relatedVesselIds = [] }: VesselInstanceDatasets
 ) => {
   const datasetsConfig: DataviewDatasetConfig[] = []
   if (info) {
     datasetsConfig.push({
       datasetId: info,
       params: [{ id: 'vesselId', value: vesselId }],
+      query: [{ id: 'datasets', value: [info] }],
       endpoint: EndpointId.Vessel,
     })
   }
   if (track) {
+    const vesselIds = relatedVesselIds ? [vesselId, ...relatedVesselIds].join(',') : vesselId
     datasetsConfig.push({
       datasetId: track,
-      params: [{ id: 'vesselId', value: vesselId }],
+      params: [{ id: 'vesselId', value: vesselIds }],
       endpoint: EndpointId.Tracks,
     })
   }
@@ -66,7 +69,7 @@ export const getVesselDataviewInstanceDatasetConfig = (
     events.forEach((eventDatasetId) => {
       datasetsConfig.push({
         datasetId: eventDatasetId,
-        query: [{ id: 'vessels', value: vesselId }],
+        query: [{ id: 'vessels', value: [vesselId, ...relatedVesselIds] }],
         params: [],
         endpoint: EndpointId.Events,
       })

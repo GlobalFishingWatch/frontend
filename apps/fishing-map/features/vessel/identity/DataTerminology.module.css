@@ -1,0 +1,34 @@
+.content {
+  padding: var(--space-L);
+  font: var(--font-S);
+}
+
+.content p {
+  margin-bottom: var(--space-M);
+}
+
+.content a {
+  text-decoration: underline;
+}
+
+.infoButton {
+  vertical-align: text-bottom;
+}
+
+.content h2 {
+  font: var(--font-L);
+}
+
+.content ul {
+  padding-left: var(--space-M);
+  list-style-type: circle;
+}
+
+.content > ul {
+  list-style: disc;
+  margin-bottom: var(--space-M);
+}
+
+.content > *:nth-last-child(1) {
+  padding-bottom: var(--space-XL);
+}

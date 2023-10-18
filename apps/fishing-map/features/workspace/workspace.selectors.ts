@@ -1,8 +1,9 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { RootState } from 'reducers'
-import { WorkspaceState, WorkspaceStateProperty } from 'types'
+import { VesselProfileStateProperty, WorkspaceState, WorkspaceStateProperty } from 'types'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { selectQueryParam } from 'routes/routes.selectors'
+import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE, WorkspaceCategory } from 'data/workspaces'
 
 export const selectLastVisitedWorkspace = (state: RootState) => state.workspace.lastVisited
 export const selectWorkspace = (state: RootState) => state.workspace.data
@@ -15,7 +16,7 @@ export const selectCurrentWorkspaceId = createSelector([selectWorkspace], (works
 })
 
 export const selectCurrentWorkspaceCategory = createSelector([selectWorkspace], (workspace) => {
-  return workspace?.category
+  return workspace?.category || WorkspaceCategory.FishingActivity
 })
 
 export const selectIsGFWWorkspace = createSelector([selectWorkspace], (workspace) => {
@@ -34,7 +35,7 @@ export const selectWorkspaceTimeRange = createSelector([selectWorkspace], (works
 })
 
 export const selectWorkspaceDataviewInstances = createSelector([selectWorkspace], (workspace) => {
-  return workspace?.dataviewInstances
+  return workspace?.dataviewInstances || [DEFAULT_BASEMAP_DATAVIEW_INSTANCE]
 })
 
 export const selectWorkspaceState = createSelector(

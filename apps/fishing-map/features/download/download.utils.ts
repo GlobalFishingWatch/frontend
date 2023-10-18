@@ -3,6 +3,7 @@ import { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Dataset } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from 'utils/dates'
 import { REPORT_DAYS_LIMIT } from 'data/config'
+import { getDatasetSchemaItem } from 'features/datasets/datasets.utils'
 import { GroupBy, TemporalResolution, TEMPORAL_RESOLUTION_OPTIONS } from './downloadActivity.config'
 
 export function getDownloadReportSupported(start: string, end: string) {
@@ -23,7 +24,7 @@ export function getSupportedGroupByOptions(
     return []
   }
   const mmsiSupported = vesselDatasets.every((dataset) => {
-    return dataset?.schema?.mmsi !== undefined
+    return getDatasetSchemaItem(dataset, 'mmsi') !== undefined
   })
 
   return options.map((option) => {

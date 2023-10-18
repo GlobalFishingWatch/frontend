@@ -89,7 +89,7 @@ function UserWorkspaces() {
               workspaceId: workspace.id,
             },
           },
-          true
+          { replaceQuery: true }
         )
       }
     },

@@ -211,7 +211,7 @@ export const getReportCategoryFromDataview = (
   dataview: Dataview | UrlDataviewInstance
 ): ReportCategory => {
   return dataview.category === DataviewCategory.Activity
-    ? (dataview.datasets?.[0].subcategory as unknown as ReportCategory)
+    ? (dataview.datasets?.[0]?.subcategory as unknown as ReportCategory)
     : (dataview.category as unknown as ReportCategory)
 }
 

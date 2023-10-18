@@ -12,5 +12,7 @@ export * from './stats'
 export * from './user-applications'
 export * from './user'
 export * from './vessel'
+// TODO merge with vessel once new api is fully integrated
+export * from './identity-vessel'
 export * from './vesselGroups'
 export * from './workspaces'

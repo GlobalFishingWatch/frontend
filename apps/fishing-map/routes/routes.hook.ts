@@ -57,11 +57,16 @@ export const useLocationConnect = () => {
     (
       type: ROUTE_TYPES,
       params = {} as { query?: QueryParams; payload?: Record<string, any> },
-      replaceQuery = false
+      { replaceQuery = false, replaceUrl = false } = {}
     ) => {
       const { query = {}, payload: customPayload = {} } = params
       dispatch(
-        updateLocation(type, { query, payload: { ...payload, ...customPayload }, replaceQuery })
+        updateLocation(type, {
+          query,
+          payload: { ...payload, ...customPayload },
+          replaceQuery,
+          replaceUrl,
+        })
       )
     },
     [dispatch, payload]

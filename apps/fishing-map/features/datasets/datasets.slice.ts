@@ -7,6 +7,7 @@ import {
   Dataset,
   DatasetCategory,
   EndpointId,
+  EndpointParam,
   UploadResponse,
 } from '@globalfishingwatch/api-types'
 import {
@@ -28,22 +29,46 @@ import {
   LATEST_CARRIER_DATASET_ID,
   PUBLIC_SUFIX,
 } from 'data/config'
+import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 
 export const PRESENCE_DATASET_ID = 'public-global-presence'
 export const PRESENCE_TRACKS_DATASET_ID = 'private-global-presence-tracks'
 export const DATASETS_USER_SOURCE_ID = 'user'
-export const EARTH_ENGINE_POC_ID = 'public-ee-poc'
+
+type POCDatasetTemplate = Record<
+  string,
+  Partial<Record<EndpointId, { pathTemplate?: string; query?: Partial<EndpointParam>[] }>>
+>
+const POC_DATASETS_ENDPOINT_PATH_TEMPLATES: POCDatasetTemplate = {
+  [DEFAULT_VESSEL_IDENTITY_ID]: {
+    [EndpointId.Vessel]: {
+      // pathTemplate:
+      //   'https://gateway.api.staging.globalfishingwatch.org/prototypes/vessels/{{vesselId}}',
+      query: [{ id: 'datasets', array: true }],
+    },
+  },
+}
 
 const parsePOCsDatasets = (dataset: Dataset) => {
-  if (dataset.id.includes(EARTH_ENGINE_POC_ID)) {
+  if (Object.keys(POC_DATASETS_ENDPOINT_PATH_TEMPLATES).some((id) => dataset.id === id)) {
     const pocDataset = {
       ...dataset,
       endpoints: dataset.endpoints?.map((endpoint) => {
-        if (endpoint.id === EndpointId.FourwingsTiles) {
+        const endpointConfig = POC_DATASETS_ENDPOINT_PATH_TEMPLATES[dataset.id]?.[endpoint.id]
+        if (endpointConfig) {
           return {
             ...endpoint,
-            pathTemplate:
-              'https://dev-api-4wings-tiler-gee-poc-jzzp2ui3wq-uc.a.run.app/v1/4wings/tile/heatmap/{z}/{x}/{y}',
+            ...endpointConfig,
+            query: endpoint.query.map((q) => {
+              const queryConfig = endpointConfig.query?.find((qc) => qc.id === q.id)
+              if (queryConfig) {
+                return {
+                  ...q,
+                  ...queryConfig,
+                }
+              }
+              return q
+            }),
           }
         }
         return endpoint

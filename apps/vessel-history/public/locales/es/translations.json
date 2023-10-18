@@ -253,7 +253,7 @@
   },
   "selects": {
     "allSelected": "Todos",
-    "none": "Ninguna",
+    "none": "None",
     "selected": "seleccionado"
   },
   "settings": {
@@ -283,7 +283,7 @@
     },
     "greaterThan": "Greater than",
     "helpRange": "Should be a value between {{min}} and {{max}}, the value is not required",
-    "hours": "horas",
+    "hours": "hours",
     "km": "km",
     "kms": "kms",
     "loiteringEvents": {

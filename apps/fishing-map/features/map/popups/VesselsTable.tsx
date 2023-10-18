@@ -4,12 +4,20 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
-import { DatasetSubCategory, DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
+import {
+  DatasetSubCategory,
+  DatasetTypes,
+  DataviewInstance,
+  Resource,
+  ResourceStatus,
+} from '@globalfishingwatch/api-types'
+import { resolveEndpoint, setResource } from '@globalfishingwatch/dataviews-client'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getDetectionsTimestamps } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
   getPresenceVesselDataviewInstance,
   getVesselDataviewInstance,
+  getVesselDataviewInstanceDatasetConfig,
   getVesselInWorkspace,
 } from 'features/dataviews/dataviews.utils'
 import { getDatasetLabel, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
@@ -27,6 +35,9 @@ import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getUTCDateTime } from 'utils/dates'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { getVesselProperty } from 'features/vessel/vessel.utils'
+import VesselLink from 'features/vessel/VesselLink'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
   TooltipEventFeature,
@@ -99,6 +110,7 @@ function VesselsTable({
   testId?: string
 }) {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const gfwUser = useSelector(isGFWUser)
   const vesselsInWorkspace = useSelector(selectActiveTrackDataviews)
@@ -116,6 +128,29 @@ function VesselsTable({
       return hasDatasets
     })
 
+  const populateVesselInfoResource = (
+    vessel: ExtendedFeatureVessel,
+    vesselDataviewInstance: DataviewInstance
+  ) => {
+    const infoDatasetConfig = getVesselDataviewInstanceDatasetConfig(
+      vessel?.id,
+      vesselDataviewInstance.config || {}
+    )?.find((dc) => dc.datasetId === vessel.infoDataset?.id)
+    if (vessel.infoDataset && infoDatasetConfig) {
+      const url = resolveEndpoint(vessel.infoDataset, infoDatasetConfig)
+      if (url) {
+        const resource: Resource = {
+          url,
+          dataset: vessel.infoDataset,
+          datasetConfig: infoDatasetConfig,
+          dataviewId: vesselDataviewInstance.dataviewId as string,
+          data: vessel,
+          status: ResourceStatus.Finished,
+        }
+        dispatch(setResource(resource))
+      }
+    }
+  }
   const onVesselClick = (
     ev: React.MouseEvent<Element, MouseEvent>,
     vessel: ExtendedFeatureVessel
@@ -129,8 +164,8 @@ function VesselsTable({
     let vesselDataviewInstance: DataviewInstance | undefined
     if (
       gfwUser &&
-      vessel.dataset?.id.includes(PRESENCE_DATASET_ID) &&
-      vessel.trackDataset?.id.includes(PRESENCE_TRACKS_DATASET_ID)
+      vessel.dataset?.id?.includes(PRESENCE_DATASET_ID) &&
+      vessel.trackDataset?.id?.includes(PRESENCE_TRACKS_DATASET_ID)
     ) {
       vesselDataviewInstance = getPresenceVesselDataviewInstance(vessel, {
         info: vessel.infoDataset?.id,
@@ -154,6 +189,7 @@ function VesselsTable({
     }
 
     upsertDataviewInstance(vesselDataviewInstance)
+    populateVesselInfoResource(vessel, vesselDataviewInstance)
 
     trackEvent({
       category: TrackCategory.Tracks,
@@ -186,17 +222,24 @@ function VesselsTable({
           </thead>
           <tbody>
             {vessels?.map((vessel, i) => {
-              const vesselName = formatInfoField(vessel.shipname, 'name')
+              const vesselName = formatInfoField(getVesselProperty(vessel, 'shipname'), 'name')
+              const vesselFlag = getVesselProperty(vessel, 'flag')
 
               const vesselType = isPresenceActivity
                 ? `${t(
-                    `vessel.vesselTypes.${vessel.vesselType}` as any,
-                    vessel.vesselType ?? EMPTY_FIELD_PLACEHOLDER
+                    `vessel.vesselTypes.${getVesselProperty(
+                      vessel,
+                      'shiptype'
+                    )?.toLowerCase()}` as any,
+                    vessel.shiptype ?? EMPTY_FIELD_PLACEHOLDER
                   )}`
-                : `${t(
-                    `vessel.gearTypes.${vessel.geartype}` as any,
-                    vessel.geartype ?? EMPTY_FIELD_PLACEHOLDER
-                  )}`
+                : getVesselProperty<string[]>(vessel, 'geartype')?.map(
+                    (gear) =>
+                      `${t(
+                        `vessel.gearTypes.${gear.toLowerCase()}` as any,
+                        vessel.geartype ?? EMPTY_FIELD_PLACEHOLDER
+                      )}`
+                  )
 
               // Temporary workaround for public-global-all-vessels dataset as we
               // don't want to show the pin only for that dataset for guest users
@@ -205,7 +248,6 @@ function VesselsTable({
                 : vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
 
               const vesselInWorkspace = getVesselInWorkspace(vesselsInWorkspace, vessel.id)
-
               const pinTrackDisabled = !interactionAllowed || !hasDatasets
               const detectionsTimestamps = getDetectionsTimestamps(vessel)
               return (
@@ -231,11 +273,21 @@ function VesselsTable({
                     </td>
                   )}
                   <td colSpan={hasPinColumn && pinTrackDisabled ? 2 : 1} data-test="vessel-name">
-                    {vesselName}
+                    {vesselName !== EMPTY_FIELD_PLACEHOLDER ? (
+                      <VesselLink
+                        className={styles.link}
+                        vesselId={vessel.id}
+                        datasetId={vessel.infoDataset?.id}
+                      >
+                        {vesselName}
+                      </VesselLink>
+                    ) : (
+                      vesselName
+                    )}
                   </td>
                   <td className={styles.columnSpace}>
-                    <Tooltip content={t(`flags:${vessel.flag as string}` as any)}>
-                      <span>{vessel.flag || EMPTY_FIELD_PLACEHOLDER}</span>
+                    <Tooltip content={t(`flags:${vesselFlag}` as any)}>
+                      <span>{vesselFlag || EMPTY_FIELD_PLACEHOLDER}</span>
                     </Tooltip>
                   </td>
 

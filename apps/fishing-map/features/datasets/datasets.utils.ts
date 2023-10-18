@@ -17,6 +17,8 @@ import {
   DatasetSubCategory,
   DataviewCategory,
   VesselType,
+  DatasetSchema,
+  DatasetSchemaItem,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
@@ -37,6 +39,7 @@ export type SupportedDatasetSchema =
   | SupportedEventsDatasetSchema
 
 export type SupportedActivityDatasetSchema =
+  | 'mmsi'
   | 'flag'
   | 'geartype'
   | 'fleet'
@@ -182,6 +185,7 @@ export type RelatedDatasetByTypeParams = {
   fullDatasetAllowed?: boolean
   vesselType?: VesselType
 }
+
 export const getRelatedDatasetByType = (
   dataset?: Dataset,
   datasetType?: DatasetTypes,
@@ -379,12 +383,36 @@ export const hasDatasetConfigVesselData = (datasetConfig: DataviewDatasetConfig)
   )
 }
 
+export const getDatasetSchemaItem = (dataset: Dataset, schema: SupportedDatasetSchema) => {
+  const schemaItem = dataset?.schema?.[schema] as DatasetSchemaItem
+  if (schemaItem) {
+    return schemaItem
+  }
+  const selfReportedInfo = dataset?.schema?.selfReportedInfo as DatasetSchema
+  const selfReportedInfoItem = selfReportedInfo?.items?.[schema] as DatasetSchemaItem
+  if (selfReportedInfoItem) {
+    return selfReportedInfoItem
+  }
+  const selfReportedInfoPropertiesItem = (selfReportedInfo?.items?.properties as any)?.[
+    schema
+  ] as DatasetSchemaItem
+  if (selfReportedInfoPropertiesItem) {
+    return selfReportedInfoPropertiesItem
+  }
+  return null
+}
+
 export const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatasetSchema) => {
-  if (schema === 'flag' || schema === 'vessel-groups') {
-    // returning true as the schema fields enum comes from the static list in getFlags()
+  if (schema === 'vessel-groups') {
+    // returning true as the schema fields enum comes from the dynamic fetch list passed as props
     return true
   }
-  return dataset.schema?.[schema]?.enum !== undefined && dataset.schema?.[schema].enum.length > 0
+  if (schema === 'flag') {
+    return dataset.fieldsAllowed.some((f) => f.includes(schema))
+  }
+  const schemaConfig = getDatasetSchemaItem(dataset, schema)
+  const schemaEnum = schemaConfig?.enum || schemaConfig?.items?.enum
+  return schemaEnum !== undefined && schemaEnum.length > 0
 }
 
 export const getSupportedSchemaFieldsDatasets = (
@@ -443,7 +471,9 @@ const getCommonSchemaTypeInDataview = (
     dataview.category === DataviewCategory.Context || dataview.category === DataviewCategory.Events
       ? dataview.datasets
       : dataview?.datasets?.filter((dataset) => dataview.config?.datasets?.includes(dataset.id))
-  const datasetSchemas = activeDatasets?.map((d) => d.schema?.[schema]?.type).filter(Boolean)
+  const datasetSchemas = activeDatasets
+    ?.map((d) => getDatasetSchemaItem(d, schema)?.type)
+    .filter(Boolean)
   return datasetSchemas?.[0]
 }
 
@@ -482,15 +512,16 @@ export const getCommonSchemaFieldsInDataview = (
     return []
   }
   const schemaType = getCommonSchemaTypeInDataview(dataview, schema)
-  const schemaFields =
-    schemaType === 'number'
-      ? [
-          [
-            activeDatasets!?.[0]?.schema?.[schema]?.min?.toString(),
-            activeDatasets!?.[0]?.schema?.[schema]?.max?.toString(),
-          ],
-        ]
-      : activeDatasets?.map((d) => d.schema?.[schema]?.enum || [])
+  let schemaFields: string[][] = (activeDatasets || [])?.map((d) => {
+    const schemaItem = getDatasetSchemaItem(d, schema)
+    return schemaItem?.enum || schemaItem?.items?.enum || []
+  })
+  if (schemaType === 'number') {
+    const schemaConfig = getDatasetSchemaItem(activeDatasets!?.[0], schema)
+    if (schemaConfig) {
+      schemaFields = [[schemaConfig?.min?.toString(), schemaConfig?.max?.toString()]]
+    }
+  }
   const datasetId = removeDatasetVersion(activeDatasets!?.[0]?.id)
   const commonSchemaFields = schemaFields
     ? intersection(...schemaFields).map((field) => {
@@ -504,7 +535,7 @@ export const getCommonSchemaFieldsInDataview = (
           }
           if (schema === 'geartype') {
             // There is an fixed list of gearTypes independant of the dataset
-            label = t(`vessel.gearTypes.${field}`, capitalize(lowerCase(field)))
+            label = t(`vessel.gearTypes.${field?.toLowerCase()}`, capitalize(lowerCase(field)))
           }
         }
         return { id: field!?.toString(), label: label as string }
@@ -559,7 +590,7 @@ export const getSchemaOptionsSelectedInDataview = (
 
   return options?.filter(
     (option) =>
-      dataview.config?.filters?.[schema]?.map((o: string) => o.toString())?.includes(option.id)
+      dataview.config?.filters?.[schema]?.map((o: string) => o?.toString())?.includes(option.id)
   )
 }
 
@@ -585,7 +616,7 @@ export const getSchemaFilterUnitInDataview = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema
 ) => {
-  return dataview.datasets?.[0]?.schema?.[schema]?.unit
+  return getDatasetSchemaItem(dataview.datasets?.[0] as Dataset, schema)?.unit
 }
 
 export const getSchemaFieldsSelectedInDataview = (

@@ -5,7 +5,18 @@ import { RootState } from 'reducers'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { BufferUnit, WorkspaceParam, UserTab, BufferOperation } from 'types'
 import { WorkspaceCategory } from 'data/workspaces'
-import { REPORT, WORKSPACE_REPORT, ROUTE_TYPES, WORKSPACE_ROUTES } from './routes'
+import {
+  REPORT,
+  WORKSPACE_REPORT,
+  ROUTE_TYPES,
+  VESSEL,
+  WORKSPACE_ROUTES,
+  WORKSPACE_VESSEL,
+  SEARCH,
+  USER,
+  WORKSPACES_LIST,
+  WORKSPACE_SEARCH,
+} from './routes'
 
 const selectLocation = (state: RootState) => state.location
 export const selectCurrentLocation = createSelector([selectLocation], ({ type, routesMap }) => {
@@ -22,6 +33,21 @@ export const selectIsWorkspaceLocation = createSelector([selectLocationType], (l
   WORKSPACE_ROUTES.includes(locationType)
 )
 
+export const selectIsVesselLocation = createSelector(
+  [selectLocationType],
+  (locationType) => locationType === VESSEL
+)
+
+export const selectIsWorkspaceVesselLocation = createSelector(
+  [selectLocationType],
+  (locationType) => locationType === WORKSPACE_VESSEL
+)
+
+export const selectIsAnyVesselLocation = createSelector(
+  [selectIsVesselLocation, selectIsWorkspaceVesselLocation],
+  (isVesselLocation, isWorkspaceVesselLocation) => isVesselLocation || isWorkspaceVesselLocation
+)
+
 export const selectIsReportLocation = createSelector(
   [selectLocationType],
   (locationType) => locationType === REPORT
@@ -34,6 +60,31 @@ export const selectIsWorkspaceReportLocation = createSelector(
 export const selectIsAnyReportLocation = createSelector(
   [selectIsReportLocation, selectIsWorkspaceReportLocation],
   (isReportLocation, isWorkspaceReportLocation) => isReportLocation || isWorkspaceReportLocation
+)
+
+export const selectIsWorkspacesListLocation = createSelector(
+  [selectLocationType],
+  (locationType) => locationType === WORKSPACES_LIST
+)
+
+export const selectIsUserLocation = createSelector(
+  [selectLocationType],
+  (locationType) => locationType === USER
+)
+
+export const selectIsStandaloneSearchLocation = createSelector(
+  [selectLocationType],
+  (locationType) => locationType === SEARCH
+)
+
+export const selectIsWorkspaceSearchLocation = createSelector(
+  [selectLocationType],
+  (locationType) => locationType === WORKSPACE_SEARCH
+)
+
+export const selectIsAnySearchLocation = createSelector(
+  [selectIsStandaloneSearchLocation, selectIsWorkspaceSearchLocation],
+  (searchLocation, workspaceSearchLocation) => searchLocation || workspaceSearchLocation
 )
 
 export const selectLocationQuery = createSelector(
@@ -63,6 +114,11 @@ export const selectReportId = createSelector(
   (payload) => payload?.reportId
 )
 
+export const selectVesselId = createSelector(
+  [selectLocationPayload],
+  (payload) => payload?.vesselId
+)
+
 export const selectLocationCategory = createSelector(
   [selectLocationPayload],
   (payload) => payload?.category as WorkspaceCategory
@@ -76,6 +132,11 @@ export const selectLocationDatasetId = createSelector(
 export const selectLocationAreaId = createSelector(
   [selectLocationPayload],
   (payload) => payload?.areaId as number
+)
+
+export const selectLocationVesselId = createSelector(
+  [selectLocationPayload],
+  (payload) => payload?.vesselId as string
 )
 
 export const isValidLocationCategory = createSelector(

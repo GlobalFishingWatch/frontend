@@ -354,7 +354,10 @@ function ActivityFilters({
         <MultiSelect
           testId="activity-filters"
           label={t('layer.source_other', 'Sources') as string}
-          placeholder={getPlaceholderBySelections(sourcesSelected)}
+          placeholder={getPlaceholderBySelections({
+            selection: sourcesSelected.map(({ id }) => id),
+            options: allSourceOptions,
+          })}
           options={allSourceOptions}
           labelContainerClassName={styles.labelContainer}
           selectedOptions={sourcesSelected}

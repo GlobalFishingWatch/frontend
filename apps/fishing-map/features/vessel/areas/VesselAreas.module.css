@@ -1,0 +1,71 @@
+.placeholder {
+  padding-block: var(--space-XL);
+}
+
+.container {
+  padding: var(--space-M);
+}
+
+.choice {
+  width: 100%;
+}
+
+.areaList {
+  margin-top: var(--space-S);
+  margin-bottom: var(--space-XL);
+}
+
+.areaContainer {
+  width: 20rem;
+  height: 3rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.area {
+  cursor: pointer;
+  width: 150px;
+}
+
+.count {
+  font: var(--font-S);
+  fill: var(--color-secondary-blue);
+}
+
+.tooltipContainer {
+  background-color: var(--color-white);
+  border: var(--border);
+  padding: var(--space-S);
+}
+
+.tooltipValue {
+  color: var(--color-secondary-blue);
+}
+
+.tooltipValueDot {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.5rem;
+  display: inline-flex;
+  border: var(--border);
+  background-color: currentcolor;
+  margin-right: 0.5rem;
+}
+
+.enptyState {
+  display: block;
+  width: 100%;
+  padding: var(--space-L) var(--space-M);
+  text-align: center;
+}
+
+.dataWarning {
+  margin-top: var(--space-M);
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+}
+
+.dataWarningLink {
+  cursor: pointer;
+  text-decoration: underline;
+}

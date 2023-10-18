@@ -1,6 +1,6 @@
 import bbox from '@turf/bbox'
 import { LineString, feature, geometry, polygon } from '@turf/helpers'
-import { Feature, MultiPolygon, Polygon } from 'geojson'
+import { Feature, MultiPolygon, Point, Polygon } from 'geojson'
 
 export type Bbox = [number, number, number, number]
 
@@ -29,6 +29,59 @@ export const wrapBBoxLongitudes = (bbox: Bbox) => {
     }
     return coordinate
   }) as Bbox
+}
+
+export const wrapPointLongitudes = (features: Feature<Point>[]) => {
+  let prevLon: number
+  let lonOffset = 0
+  return features.map((feature) => {
+    const [currentLon, currentLat] = feature.geometry.coordinates
+    if (prevLon) {
+      if (currentLon - prevLon < -180) {
+        lonOffset += 360
+      } else if (currentLon - prevLon > 180) {
+        lonOffset -= 360
+      }
+    }
+    prevLon = currentLon
+    const wrappedCoordinates = [currentLon + lonOffset, currentLat]
+    return {
+      ...feature,
+      geometry: {
+        ...feature.geometry,
+        coordinates:
+          feature.geometry.type !== 'Point' ? feature.geometry.coordinates : wrappedCoordinates,
+      },
+    }
+  })
+}
+
+export const wrapLineStringLongitudes = (features: Feature<LineString>[]) => {
+  let prevLon: number
+  let lonOffset = 0
+  return features.map((feature) => {
+    return {
+      ...feature,
+      geometry: {
+        ...feature.geometry,
+        coordinates:
+          feature.geometry.type !== 'LineString'
+            ? feature.geometry.coordinates
+            : feature.geometry.coordinates.map((coords) => {
+                const [currentLon, currentLat] = coords
+                if (prevLon) {
+                  if (currentLon - prevLon < -180) {
+                    lonOffset += 360
+                  } else if (currentLon - prevLon > 180) {
+                    lonOffset -= 360
+                  }
+                }
+                prevLon = currentLon
+                return [currentLon + lonOffset, currentLat]
+              }),
+      },
+    }
+  })
 }
 
 export function wrapGeometryBbox(geometry: Polygon | MultiPolygon): Bbox {

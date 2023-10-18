@@ -14,7 +14,7 @@ import {
   getActiveActivityDatasetsInDataviews,
   getLatestEndDateFromDatasets,
 } from 'features/datasets/datasets.utils'
-import { Range } from 'features/timebar/timebar.slice'
+import { TimeRange } from 'features/timebar/timebar.slice'
 import {
   selectUrlViewport,
   selectLocationCategory,
@@ -22,6 +22,7 @@ import {
   selectLocationDatasetId,
   selectLocationAreaId,
   selectReportId,
+  selectIsAnyVesselLocation,
 } from 'routes/routes.selectors'
 import {
   Bbox,
@@ -76,7 +77,7 @@ export const selectTimeRange = createSelector(
     return {
       start: urlTimerange?.start || workspaceTimerange?.start || DEFAULT_TIME_RANGE.start,
       end: urlTimerange?.end || workspaceTimerange?.end || DEFAULT_TIME_RANGE.end,
-    } as Range
+    } as TimeRange
   }
 )
 
@@ -102,13 +103,6 @@ export const selectReportTimeComparison = createSelector(
   [selectWorkspaceStateProperty('reportTimeComparison')],
   (reportTimeComparison): ReportActivityTimeComparison => {
     return reportTimeComparison
-  }
-)
-
-export const selectSearchQuery = createSelector(
-  [selectWorkspaceStateProperty('query')],
-  (query): string => {
-    return query
   }
 )
 
@@ -299,8 +293,9 @@ export const selectReportBufferOperation = createSelector(
 )
 
 export const selectTimebarVisualisation = createSelector(
-  [selectWorkspaceStateProperty('timebarVisualisation')],
-  (timebarVisualisation): TimebarVisualisations => {
+  [selectWorkspaceStateProperty('timebarVisualisation'), selectIsAnyVesselLocation],
+  (timebarVisualisation, isAnyVesselLocation): TimebarVisualisations => {
+    if (isAnyVesselLocation) return TimebarVisualisations.Vessel
     return timebarVisualisation
   }
 )

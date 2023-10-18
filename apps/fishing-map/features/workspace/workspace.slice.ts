@@ -16,7 +16,7 @@ import {
   parseLegacyDataviewInstanceEndpoint,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import { DEFAULT_TIME_RANGE } from 'data/config'
+import { DEFAULT_TIME_RANGE, PRIVATE_SUFIX } from 'data/config'
 import { WorkspaceState } from 'types'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
@@ -49,7 +49,7 @@ import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook
 import { getUTCDateTime } from 'utils/dates'
 import { fetchReportsThunk } from 'features/reports/reports.slice'
 import { AppDispatch } from 'store'
-import { selectWorkspaceStatus } from './workspace.selectors'
+import { selectCurrentWorkspaceId, selectWorkspaceStatus } from './workspace.selectors'
 
 type LastWorkspaceVisited = { type: ROUTE_TYPES; payload: any; query: any; replaceQuery?: boolean }
 
@@ -116,6 +116,9 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       }
       if ((!workspace && locationType === HOME) || workspaceId === DEFAULT_WORKSPACE_ID) {
         workspace = await getDefaultWorkspace()
+        if (workspace.id.includes(PRIVATE_SUFIX) && guestUser) {
+          return rejectWithValue({ error: { status: 401, message: 'Private workspace' } })
+        }
       }
       if (gfwUser && ONLY_GFW_STAFF_DATAVIEW_SLUGS.length) {
         // Inject dataviews for gfw staff only
@@ -237,7 +240,12 @@ export const fetchWorkspaceThunk = createAsyncThunk(
   },
   {
     condition: (workspaceId, { getState }) => {
-      const workspaceStatus = selectWorkspaceStatus(getState() as any)
+      const rootState = getState() as any
+      if (!workspaceId || workspaceId === DEFAULT_WORKSPACE_ID) {
+        const currentWorkspaceId = selectCurrentWorkspaceId(rootState)
+        return DEFAULT_WORKSPACE_ID !== currentWorkspaceId
+      }
+      const workspaceStatus = selectWorkspaceStatus(rootState)
       // Fetched already in progress, don't need to re-fetch
       return workspaceStatus !== AsyncReducerStatus.Loading
     },
@@ -301,6 +309,7 @@ export const saveWorkspaceThunk = createAsyncThunk(
             category: locationCategory,
             workspaceId: workspaceUpdated.id,
           },
+          query: {},
           replaceQuery: true,
         })
       )
@@ -332,10 +341,10 @@ const workspaceSlice = createSlice({
   initialState,
   reducers: {
     resetWorkspaceSlice: (state) => {
-      state.status = AsyncReducerStatus.Idle
-      state.customStatus = AsyncReducerStatus.Idle
-      state.data = null
-      state.error = {}
+      state.status = initialState.status
+      state.customStatus = initialState.customStatus
+      state.data = initialState.data
+      state.error = initialState.error
     },
     cleanCurrentWorkspaceData: (state) => {
       state.data = null

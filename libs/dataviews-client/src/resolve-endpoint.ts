@@ -23,7 +23,6 @@ export const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDataset
   if (datasetConfig.query) {
     const resolvedQuery = new URLSearchParams()
     datasetConfig.query.forEach((query) => {
-      // if (query)
       const endpointQuery = endpoint.query.find((q) => q.id === query.id)
       if (
         endpointQuery &&
@@ -47,7 +46,14 @@ export const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDataset
           })
         }
       } else {
-        resolvedQuery.set(query.id, query.value.toString())
+        if (Array.isArray(query.value)) {
+          query.value.forEach((queryArrItem, i) => {
+            const queryArrId = `${query.id}[${i}]`
+            resolvedQuery.set(queryArrId, queryArrItem)
+          })
+        } else {
+          resolvedQuery.set(query.id, query.value.toString())
+        }
       }
     })
     // To avoid duplicating query in every config when we already have the datasetId

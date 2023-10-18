@@ -1,3 +1,5 @@
+import { BasemapType, GeneratorType } from '@globalfishingwatch/layer-composer'
+import { DataviewInstance } from '@globalfishingwatch/api-types'
 import { PUBLIC_SUFIX } from './config'
 
 export const GLOBAL_VESSELS_DATASET_ID = 'public-global-all-vessels'
@@ -36,10 +38,12 @@ export const MPA_DATAVIEW_INSTANCE_ID = 'context-layer-mpa'
 export const BASEMAP_DATAVIEW_INSTANCE_ID = 'basemap-labels'
 export const PROTECTEDSEAS_DATAVIEW_INSTANCE_ID = 'context-layer-protectedseas'
 export const RFMO_DATAVIEW_SLUG = 'tuna-rfmo-areas'
+export const RFMO_DATAVIEW_INSTANCE_ID = 'context-layer-rfmo'
 export const HIGH_SEAS_DATAVIEW_SLUG = 'high-seas'
 export const PROTECTED_SEAS_DATAVIEW_SLUG = 'protected-seas'
 export const GRATICULES_DATAVIEW_SLUG = 'graticules'
 export const FAO_AREAS_DATAVIEW_SLUG = 'fao-areas'
+export const FAO_AREAS_DATAVIEW_INSTANCE_ID = 'context-layer-fao-areas'
 
 // Workspaces dataviews
 export const FISHING_DATAVIEW_SLUG = 'apparent-fishing-effort'
@@ -49,7 +53,8 @@ export const SAR_DATAVIEW_SLUG = 'sar'
 export const PRESENCE_DATAVIEW_SLUG = 'presence-activity'
 export const VESSEL_PRESENCE_DATAVIEW_SLUG = 'fishing-map-vessel-presence'
 export const TEMPLATE_USER_TRACK_SLUG = 'user-track'
-export const TEMPLATE_VESSEL_DATAVIEW_SLUG = 'fishing-map-vessel-track'
+// TODO: update 'fishing-map-vessel-track' dataview with the new identity vessel dataset and use it here again
+export const TEMPLATE_VESSEL_DATAVIEW_SLUG = 'fishing-map-identity-vessel' // 'fishing-map-vessel-track'
 export const TEMPLATE_CONTEXT_DATAVIEW_SLUG = 'default-context-layer'
 export const TEMPLATE_POINTS_DATAVIEW_SLUG = 'default-points-layer'
 export const TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG = 'default-environmental-layer'
@@ -95,5 +100,23 @@ export const DEFAULT_DATAVIEW_SLUGS = [
   ...TEMPLATE_DATAVIEW_SLUGS,
 ]
 
+export const PROFILE_DATAVIEW_SLUGS = [
+  BASEMAP_DATAVIEW_SLUG,
+  EEZ_DATAVIEW_SLUG,
+  MPA_DATAVIEW_SLUG,
+  RFMO_DATAVIEW_SLUG,
+  FAO_AREAS_DATAVIEW_SLUG,
+  TEMPLATE_VESSEL_DATAVIEW_SLUG,
+]
+
 export const ONLY_GFW_STAFF_DATAVIEW_SLUGS: string[] = []
 export const HIDDEN_DATAVIEW_FILTERS: string[] = []
+
+export const DEFAULT_BASEMAP_DATAVIEW_INSTANCE: DataviewInstance = {
+  dataviewId: BASEMAP_DATAVIEW_SLUG,
+  id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
+  config: {
+    type: GeneratorType.Basemap,
+    basemap: BasemapType.Default,
+  },
+}

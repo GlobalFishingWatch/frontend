@@ -41,7 +41,7 @@ module.exports = {
   sort: true,
   // Default value to give to empty keys
   defaultValue: function (locale, namespace, key, value) {
-    return value || key;
+    return value || key
   },
   // Display info about the parsing including some stats
   verbose: true,

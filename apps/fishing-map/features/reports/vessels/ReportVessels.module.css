@@ -1,5 +1,5 @@
 .container {
-  padding: 1.5rem var(--space-M);
+  padding: var(--space-SM) var(--space-SM) var(--space-M);
   border-bottom: var(--border);
 }
 

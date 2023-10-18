@@ -22,6 +22,7 @@ import {
   useTimebarVisualisationConnect,
   useDisableHighlightTimeConnect,
   useActivityMetadata,
+  useHighlightedEventsConnect,
 } from 'features/timebar/timebar.hooks'
 import { AVAILABLE_START, AVAILABLE_END } from 'data/config'
 import { TimebarVisualisations } from 'types'
@@ -43,15 +44,15 @@ import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-gr
 import { getUTCDateTime } from 'utils/dates'
 import { selectIsAnyReportLocation } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { setHighlightedTime, selectHighlightedTime, Range } from './timebar.slice'
+import { setHighlightedTime, selectHighlightedTime, TimeRange } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import { selectTracksData, selectTracksGraphData, selectTracksEvents } from './timebar.selectors'
 import TimebarActivityGraph from './TimebarActivityGraph'
 import styles from './Timebar.module.css'
 
-const ZOOM_LEVEL_TO_FOCUS_EVENT = 5
+export const ZOOM_LEVEL_TO_FOCUS_EVENT = 5
 
-const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents }: any) => {
+const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents, showTooltip }: any) => {
   // const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const timebarVisualisation = useSelector(selectTimebarVisualisation)
   const highlightedTime = useSelector(selectHighlightedTime)
@@ -60,6 +61,7 @@ const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents }: any) => {
       if (chunks && chunks.tracksEvents && chunks.tracksEvents.length) {
         dispatchHighlightedEvents(chunks.tracksEvents)
       } else {
+        // TODO review this as it is triggered on every timebar change
         dispatchHighlightedEvents(undefined)
       }
     },
@@ -118,6 +120,7 @@ const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents }: any) => {
 
   return highlightedTime ? (
     <TimebarHighlighter
+      showTooltip={showTooltip}
       hoverStart={highlightedTime.start}
       hoverEnd={highlightedTime.end}
       onHighlightChunks={onHighlightChunks}
@@ -128,11 +131,11 @@ const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents }: any) => {
 
 const TimebarWrapper = () => {
   useTimebarVisualisation()
+  const [isMouseInside, setMouseInside] = useState(false)
   const { t, ready, i18n } = useTranslation()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
   const { start, end, onTimebarChange } = useTimerangeConnect()
-  // const { highlightedEvents } = useHighlightedEventsConnect()
-  const [highlightedEvents, dispatchHighlightedEvents] = useState([])
+  const { highlightedEvents, dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const { dispatchDisableHighlightedTime } = useDisableHighlightTimeConnect()
   const { timebarVisualisation } = useTimebarVisualisationConnect()
   const { setMapCoordinates, viewport } = useViewport()
@@ -199,7 +202,7 @@ const TimebarWrapper = () => {
     [dispatch, dispatchDisableHighlightedTime]
   )
 
-  const [internalRange, setInternalRange] = useState<Range | null>(null)
+  const [internalRange, setInternalRange] = useState<TimeRange | null>(null)
   const onChange = useCallback(
     (e: any) => {
       const gaActions: Record<string, string> = {
@@ -223,6 +226,14 @@ const TimebarWrapper = () => {
     },
     [setInternalRange, onTimebarChange]
   )
+
+  const onMouseEnter = useCallback(() => {
+    setMouseInside(true)
+  }, [])
+
+  const onMouseLeave = useCallback(() => {
+    setMouseInside(false)
+  }, [])
 
   const onTogglePlay = useCallback(
     (isPlaying: boolean) => {
@@ -319,9 +330,8 @@ const TimebarWrapper = () => {
       </Fragment>
     )
   }
-
   return (
-    <div className={styles.timebarWrapper}>
+    <div className={styles.timebarWrapper} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
       <Timebar
         enablePlayback={!vesselGroupsFiltering && !isReportLocation}
         labels={labels}
@@ -354,7 +364,10 @@ const TimebarWrapper = () => {
               <TimebarActivityGraph visualisation={timebarVisualisation} />
             )}
             {timebarVisualisation === TimebarVisualisations.Vessel && getTracksComponents()}
-            <TimebarHighlighterWrapper dispatchHighlightedEvents={dispatchHighlightedEvents} />
+            <TimebarHighlighterWrapper
+              dispatchHighlightedEvents={dispatchHighlightedEvents}
+              showTooltip={isMouseInside}
+            />
           </Fragment>
         ) : null}
       </Timebar>

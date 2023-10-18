@@ -11,11 +11,14 @@
   transform: translateY(-50%);
   cursor: pointer;
   background: var(--background-color);
+  z-index: 0;
 }
 
 .event:hover,
 .event.highlighted {
   background: white;
+  border-color: white;
+  z-index: 1;
 }
 
 .fishing {

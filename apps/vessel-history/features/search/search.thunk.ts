@@ -41,7 +41,7 @@ export const getSerializedQuery = (query: string, advancedSearch?: Record<string
       value: advancedSearch?.firstTransmissionDate,
     },
   ]
-  return getAdvancedSearchQuery(fields)
+  return getAdvancedSearchQuery(fields, {})
 }
 
 export const fetchData = async (

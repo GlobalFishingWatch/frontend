@@ -12,7 +12,7 @@
   transform: translate(var(--space-XS), var(--space-S));
   background: var(--color-primary-blue);
   color: var(--color-white);
-  max-width: 32rem;
+  max-width: var(--sidebar-width);
 }
 
 .click .content,
@@ -23,7 +23,7 @@
 }
 
 .click .content {
-  min-width: 32rem;
+  min-width: var(--sidebar-width);
 }
 
 .click .loading {
@@ -196,6 +196,10 @@
 
 .rowText {
   line-height: 1.2;
+}
+
+.rowText a {
+  text-decoration: underline;
 }
 
 .rowActions {

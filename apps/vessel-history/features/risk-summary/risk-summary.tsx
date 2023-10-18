@@ -191,7 +191,7 @@ export function RiskSummary(props: RiskSummaryProps) {
       )}
       {hasGapsIntentionalDisabling && (
         <RiskSection
-          icon="transmissions-off"
+          icon="event-gap"
           severity="medium"
           title={t('risk.aisDisabling', 'AIS Disabling')}
           titleInfo={<TerminologyAisDisabling />}
@@ -337,7 +337,7 @@ export function RiskSummary(props: RiskSummaryProps) {
       )}
       {hasPortVisitsToNonPSMAPortState && (
         <RiskSection
-          icon="event-port-visit"
+          icon="event-port_visit"
           severity="medium"
           title={t('event.portVisitEvents', 'Port Visits')}
           titleInfo={<TerminologyPortVisitEvents />}
@@ -450,7 +450,7 @@ export function RiskSummary(props: RiskSummaryProps) {
         >
           {!hasGapsIntentionalDisabling && (
             <RiskSection
-              icon="transmissions-off"
+              icon="event-gap"
               className={styles.naSubSection}
               title={t('risk.aisDisabling', 'AIS Disabling')}
               loading={isSectionLoading(IndicatorType.vesselIdentity)}
@@ -588,7 +588,7 @@ export function RiskSummary(props: RiskSummaryProps) {
           )}
           {!hasPortVisitsToNonPSMAPortState && (
             <RiskSection
-              icon="event-port-visit"
+              icon="event-port_visit"
               className={styles.naSubSection}
               title={t('event.portVisitEvents', 'Port Visits')}
               loading={isSectionLoading(IndicatorType.portVisit) || eventsLoading}
