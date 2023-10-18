@@ -25,7 +25,11 @@ import {
   removeTimeseriesPadding,
 } from 'features/reports/reports-timeseries.utils'
 import { useReportAreaInViewport } from 'features/reports/reports.hooks'
-import { selectReportArea, selectReportBufferHash, selectShowTimeComparison } from 'features/reports/reports.selectors'
+import {
+  selectReportArea,
+  selectReportBufferHash,
+  selectShowTimeComparison,
+} from 'features/reports/reports.selectors'
 import { ReportActivityGraph } from 'types'
 
 export interface EvolutionGraphData {
@@ -80,7 +84,6 @@ export function useSetTimeseries() {
   return useSetRecoilState(mapTimeseriesAtom)
 }
 
-const emptyArray: UrlDataviewInstance[] = []
 export const useFilteredTimeSeries = () => {
   const [timeseries, setTimeseries] = useRecoilState(mapTimeseriesAtom)
   const area = useSelector(selectReportArea)
@@ -92,9 +95,7 @@ export const useFilteredTimeSeries = () => {
   const currentCategoryDataviews = useSelector(selectActiveReportDataviews)
   const { start: timebarStart, end: timebarEnd } = useSelector(selectTimeRange)
   const areaInViewport = useReportAreaInViewport()
-  const activityFeatures = useMapDataviewFeatures(
-    areaInViewport ? currentCategoryDataviews : emptyArray
-  )
+  const activityFeatures = useMapDataviewFeatures(currentCategoryDataviews)
 
   let compareDeltaMillis: number | undefined = undefined
   if (showTimeComparison && timeComparison) {
