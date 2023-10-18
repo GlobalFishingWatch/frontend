@@ -381,7 +381,7 @@ export default function Report() {
     }
     // Reacting only to the area status and fitting bounds after load
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status])
+  }, [status, reportArea])
 
   const setTimebarVisualizationByCategory = useCallback(
     (category: ReportCategory) => {

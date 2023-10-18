@@ -2,13 +2,11 @@ import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Fragment } from 'react'
-import { FeatureCollection } from 'geojson'
 import { Button, ChoiceOption, Icon } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
-import { getGeometryDissolved } from '@globalfishingwatch/data-transforms'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { Area, AreaGeometry } from 'features/areas/areas.slice'
+import { Area } from 'features/areas/areas.slice'
 import {
   DEFAULT_BUFFER_OPERATION,
   DEFAULT_BUFFER_VALUE,
@@ -24,15 +22,13 @@ import ReportTitlePlaceholder from 'features/reports/placeholders/ReportTitlePla
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectCurrentReport } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { Bbox, BufferOperation, BufferUnit } from 'types'
+import { BufferOperation, BufferUnit } from 'types'
 import {
   selectUrlBufferUnitQuery,
   selectUrlBufferValueQuery,
   selectUrlBufferOperationQuery,
 } from 'routes/routes.selectors'
-import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
-import { getBufferedAreaBbox } from '../reports.utils'
 import { BufferButtonTooltip } from './BufferButonTooltip'
 import styles from './ReportTitle.module.css'
 
@@ -52,7 +48,6 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   const urlBufferValue = useSelector(selectUrlBufferValueQuery)
   const urlBufferUnit = useSelector(selectUrlBufferUnitQuery)
   const urlBufferOperation = useSelector(selectUrlBufferOperationQuery)
-  const fitBounds = useMapFitBounds()
   const { cleanFeatureState } = useFeatureState(useMapInstance())
 
   const [tooltipInstance, setTooltipInstance] = useState<any>(null)
@@ -133,16 +128,6 @@ export default function ReportTitle({ area }: ReportTitleProps) {
 
   const handleConfirmBuffer = useCallback(() => {
     tooltipInstance!.hide()
-    // recenter the map on the selected buffer
-    const bounds = getBufferedAreaBbox({
-      area: {
-        ...area,
-        geometry: getGeometryDissolved(area?.geometry),
-      } as Area<FeatureCollection<AreaGeometry>>,
-      value: previewBuffer.value!,
-      unit: previewBuffer.unit!,
-    }) as Bbox
-    fitBounds(bounds)
     dispatchQueryParams({
       reportBufferValue: previewBuffer.value!,
       reportBufferUnit: previewBuffer.unit!,
@@ -155,26 +140,17 @@ export default function ReportTitle({ area }: ReportTitleProps) {
       action: `Confirm area buffer`,
       label: `${previewBuffer.value} ${previewBuffer.unit} ${previewBuffer.operation}`,
     })
-  }, [
-    tooltipInstance,
-    area,
-    previewBuffer,
-    fitBounds,
-    dispatchQueryParams,
-    cleanFeatureState,
-    dispatch,
-  ])
+  }, [tooltipInstance, previewBuffer, dispatchQueryParams, cleanFeatureState, dispatch])
 
   const handleRemoveBuffer = useCallback(() => {
     tooltipInstance!.hide()
-    fitBounds(area.bounds as Bbox)
     dispatchQueryParams({
       reportBufferValue: undefined,
       reportBufferUnit: undefined,
       reportBufferOperation: undefined,
     })
     dispatch(resetReportData())
-  }, [dispatch, dispatchQueryParams, tooltipInstance, area, fitBounds])
+  }, [dispatch, dispatchQueryParams, tooltipInstance])
 
   const reportTitle = useMemo(() => {
     const areaName = report
@@ -238,7 +214,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
                 className={styles.actionButton}
                 tooltip={
                   <BufferButtonTooltip
-                    areaType={area?.geometry?.type}
+                    areaType={area?.properties?.originalGeometryType}
                     activeUnit={previewBuffer.unit || NAUTICAL_MILES}
                     defaultValue={urlBufferValue || DEFAULT_BUFFER_VALUE}
                     activeOperation={previewBuffer.operation || DEFAULT_BUFFER_OPERATION}
