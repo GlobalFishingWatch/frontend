@@ -79,7 +79,7 @@ export const fetchVesselInfoThunk = createAsyncThunk(
         const datasetsToFetch = [trackDatasetId, ...eventsDatasetsId].flatMap((id) => {
           return selectDatasetById(id)(state) ? [] : [id]
         })
-        dispatch(fetchDatasetsByIdsThunk(datasetsToFetch))
+        dispatch(fetchDatasetsByIdsThunk({ ids: datasetsToFetch }))
 
         const datasetConfig = {
           endpoint: EndpointId.Vessel,
