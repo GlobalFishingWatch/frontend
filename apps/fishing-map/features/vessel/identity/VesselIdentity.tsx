@@ -74,14 +74,14 @@ const VesselIdentity = () => {
       const filteredVesselIdentity = {
         ...vesselIdentity,
         nShipname: formatInfoField(vesselIdentity.shipname, 'shipname') as string,
-        flag: t(`flags:${vesselIdentity.flag}`, vesselIdentity.flag),
+        flag: t(`flags:${vesselIdentity.flag}`, vesselIdentity.flag) as string,
         shiptype: t(
           `vessel.vesselTypes.${vesselIdentity.shiptype?.toLowerCase()}`,
           vesselIdentity.shiptype
         ) as VesselType,
         geartype: vesselIdentity.geartype?.map((gear) =>
           t(`vessel.gearTypes.${gear?.toLowerCase()}`, gear.toLowerCase())
-        ),
+        ) as string[],
         registryAuthorizations:
           vesselIdentity.registryAuthorizations &&
           filterRegistryInfoByDateAndSSVID(

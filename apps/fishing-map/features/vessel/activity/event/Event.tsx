@@ -39,7 +39,7 @@ const Event: React.FC<EventProps> = (props): React.ReactElement => {
         <EventIcon type={event.type} />
         <div className={styles.eventData}>
           <ActivityDate event={event} />
-          <p className={styles.description}>{getEventDescription(event)}</p>
+          <p className={styles.description}>{getEventDescription(event) as string}</p>
         </div>
         <div className={cx(styles.actions, 'print-hidden')}>
           <IconButton icon="info" size="small"></IconButton>
