@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { CSVLink } from 'react-csv'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { getSearchIdentityResolved, getVesselProperty } from 'features/vessel/vessel.utils'
-import { formatInfoField } from 'utils/info'
+import { formatInfoField, getVesselGearType } from 'utils/info'
 import { selectSearchResults, selectSelectedVessels } from './search.slice'
 
 function SearchDownload() {
@@ -25,9 +25,9 @@ function SearchDownload() {
           'vessel type': t(
             `vessel.vesselTypes.${getVesselProperty(vessel, 'shiptype')?.toLowerCase()}` as any
           ),
-          'gear type': getVesselProperty<string[]>(vessel, 'geartype')
-            ?.map((gear) => t(`vessel.gearTypes.${gear.toLowerCase()}` as any))
-            .join(', '),
+          'gear type': getVesselGearType({
+            geartype: getVesselProperty<string[]>(vessel, 'geartype'),
+          }),
           owner: formatInfoField(getVesselProperty(vessel, 'owner'), 'owner'),
           transmissions: getSearchIdentityResolved(vessel).positionsCounter,
           'transmissions start': getVesselProperty(vessel, 'transmissionDateFrom'),

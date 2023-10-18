@@ -25,7 +25,7 @@ import {
   useHighlightedEventsConnect,
 } from 'features/timebar/timebar.hooks'
 import { AVAILABLE_START, AVAILABLE_END } from 'data/config'
-import { TimebarVisualisations } from 'types'
+import { TimebarGraphs, TimebarVisualisations } from 'types'
 import useViewport from 'features/map/map-viewport.hooks'
 import {
   selectLatestAvailableDataDate,
@@ -78,7 +78,7 @@ const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents, showTooltip }: a
       })
       if (metadata) {
         const interval = metadata.timeChunks.interval
-        if (interval === 'hour') {
+        if (interval === 'HOUR') {
           const HOUR_FORMAT = {
             year: 'numeric',
             month: 'long',
@@ -87,7 +87,7 @@ const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents, showTooltip }: a
             hour: 'numeric',
           }
           return formatI18nDate(timestamp, { format: HOUR_FORMAT, showUTCLabel: true })
-        } else if (interval === 'day') {
+        } else if (interval === 'DAY') {
           const DAY_FORMAT = {
             year: 'numeric',
             month: 'long',
@@ -95,13 +95,13 @@ const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents, showTooltip }: a
             weekday: 'long',
           }
           return formatI18nDate(timestamp, { format: DAY_FORMAT })
-        } else if (interval === 'month') {
+        } else if (interval === 'MONTH') {
           const MONTH_FORMAT = {
             year: 'numeric',
             month: 'long',
           }
           return formatI18nDate(timestamp, { format: MONTH_FORMAT })
-        } else if (interval === 'year') {
+        } else if (interval === 'YEAR') {
           const YEAR_FORMAT = {
             year: 'numeric',
           }
@@ -260,7 +260,7 @@ const TimebarWrapper = () => {
 
   const showGraph = useMemo(() => {
     return (
-      timebarGraph !== 'none' &&
+      timebarGraph !== TimebarGraphs.None &&
       tracksGraphsData &&
       (tracksGraphsData.length === 1 || tracksGraphsData.length === 2)
     )

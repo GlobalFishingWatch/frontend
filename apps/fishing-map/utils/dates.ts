@@ -29,13 +29,13 @@ export const getTimeRangeDuration = (
 export const formatDateForInterval = (date: DateTime, timeChunkInterval: Interval) => {
   let formattedTick = ''
   switch (timeChunkInterval) {
-    case 'year':
+    case 'YEAR':
       formattedTick = date.year.toString()
       break
-    case 'month':
+    case 'MONTH':
       formattedTick = date.toFormat('LLL y')
       break
-    case 'hour':
+    case 'HOUR':
       formattedTick = date.toLocaleString(DateTime.DATETIME_MED)
       break
     default:

@@ -33,7 +33,6 @@ import {
   DEFAULT_DATAVIEW_SLUGS,
   ONLY_GFW_STAFF_DATAVIEW_SLUGS,
   getWorkspaceEnv,
-  VESSEL_PRESENCE_DATAVIEW_SLUG,
   WorkspaceCategory,
   DEFAULT_WORKSPACE_ID,
 } from 'data/workspaces'
@@ -142,12 +141,9 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         }
       }
 
-      const defaultWorkspaceDataviews = gfwUser
-        ? [...DEFAULT_DATAVIEW_SLUGS, VESSEL_PRESENCE_DATAVIEW_SLUG] // Only for gfw users as includes the private-global-presence-tracks dataset
-        : DEFAULT_DATAVIEW_SLUGS
-
       const dataviewIds = [
-        ...defaultWorkspaceDataviews,
+        // Load extra dataviews here when needed for gfwUsers
+        ...DEFAULT_DATAVIEW_SLUGS,
         ...(workspace?.dataviewInstances || []).map(({ dataviewId }) => dataviewId),
         ...(urlDataviewInstances || []).map(({ dataviewId }) => dataviewId),
       ].filter(Boolean)

@@ -3,6 +3,8 @@ import { IdentityVessel, Vessel } from '@globalfishingwatch/api-types'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { VesselRenderField } from 'features/vessel/vessel.config'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { getLatestIdentityPrioritised } from 'features/vessel/vessel.utils'
+import { VesselDataIdentity } from 'features/vessel/vessel.slice'
 import { t } from '../features/i18n/i18n'
 
 export const EMPTY_FIELD_PLACEHOLDER = '---'
@@ -38,11 +40,7 @@ export const formatInfoField = (
       }
     } else if (Array.isArray(fieldValue)) {
       if (type === 'geartype') {
-        return fieldValue
-          .map((value) =>
-            translationFn(`vessel.gearTypes.${value.toLocaleLowerCase()}` as any, fieldValue as any)
-          )
-          .join(', ')
+        return getVesselGearType({ geartype: fieldValue })
       }
     } else {
       return formatI18nNumber(fieldValue)
@@ -68,18 +66,21 @@ export const formatNumber = (num: string | number, maximumFractionDigits?: numbe
   })
 }
 
+export const getVesselGearType = (
+  { geartype } = {} as Pick<VesselDataIdentity, 'geartype'> | { geartype: string }
+): string => {
+  const gearTypes = Array.isArray(geartype) ? geartype : [geartype]
+  return gearTypes.filter(Boolean)?.map((gear) => t(`vessel.gearTypes.${gear?.toLowerCase()}`)).join(',')
+}
+
 export const getVesselLabel = (
   vessel: ExtendedFeatureVessel | IdentityVessel,
   withGearType = false
 ): string => {
-  const vesselInfo = vessel?.registryInfo?.length
-    ? vessel?.registryInfo?.[0]
-    : vessel?.selfReportedInfo?.[0]
+  const vesselInfo = getLatestIdentityPrioritised(vessel)
   if (!vesselInfo) return t('common.unknownVessel', 'Unknown vessel')
   if (vesselInfo.shipname && vesselInfo.geartype && vesselInfo.flag && withGearType) {
-    const gearTypes = vesselInfo.geartype
-      ?.map((gear) => t(`vessel.gearTypes.${gear.toLowerCase()}`))
-      .join(',')
+    const gearTypes = getVesselGearType(vesselInfo)
     return `${formatInfoField(vesselInfo.shipname, 'name')}
     (${t(`flags:${vesselInfo.flag}`, vesselInfo.flag)}, ${gearTypes || EMPTY_FIELD_PLACEHOLDER})`
   }

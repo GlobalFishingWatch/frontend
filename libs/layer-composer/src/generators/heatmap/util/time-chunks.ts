@@ -40,24 +40,24 @@ const getVisibleStartFrame = (rawFrame: number) => {
   return Math.floor(rawFrame)
 }
 
-export const INTERVAL_ORDER: Interval[] = ['hour', 'day', 'month', 'year']
+export const INTERVAL_ORDER: Interval[] = ['HOUR', 'DAY', 'MONTH', 'YEAR']
 export const LIMITS_BY_INTERVAL: Record<
   Interval,
   { unit: keyof DurationLikeObject; value: number } | undefined
 > = {
-  hour: {
+  HOUR: {
     unit: 'days',
     value: 3,
   },
-  day: {
+  DAY: {
     unit: 'months',
     value: 3,
   },
-  month: {
+  MONTH: {
     unit: 'year',
     value: 6,
   },
-  year: undefined,
+  YEAR: undefined,
 }
 
 const checkValidInterval = (interval: Interval, duration: Duration) => {
@@ -69,9 +69,9 @@ const checkValidInterval = (interval: Interval, duration: Duration) => {
 }
 
 export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
-  hour: {
+  HOUR: {
     isValid: (duration: Duration): boolean => {
-      return checkValidInterval('hour', duration)
+      return checkValidInterval('HOUR', duration)
     },
     getFirstChunkStart: (bufferedActiveStart: number): DateTime => {
       return DateTime.fromMillis(bufferedActiveStart, { zone: 'utc' }).startOf('week')
@@ -90,9 +90,9 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
       return new Date(frame * 1000 * 60 * 60)
     },
   },
-  day: {
+  DAY: {
     isValid: (duration: Duration): boolean => {
-      return checkValidInterval('day', duration)
+      return checkValidInterval('DAY', duration)
     },
     getFirstChunkStart: (bufferedActiveStart: number): DateTime => {
       const monthStart = DateTime.fromMillis(bufferedActiveStart, { zone: 'utc' }).startOf('month')
@@ -114,9 +114,9 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
       return new Date(frame * 1000 * 60 * 60 * 24)
     },
   },
-  month: {
+  MONTH: {
     isValid: (duration: Duration): boolean => {
-      return checkValidInterval('month', duration)
+      return checkValidInterval('MONTH', duration)
     },
     getRawFrame: (start: number) => {
       return LuxonInterval.fromDateTimes(
@@ -139,9 +139,9 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
       return chunkStart.plus({ month: 2 })
     },
   },
-  year: {
+  YEAR: {
     isValid: (duration: Duration): boolean => {
-      return checkValidInterval('year', duration)
+      return checkValidInterval('YEAR', duration)
     },
     getRawFrame: (start: number) => {
       return LuxonInterval.fromDateTimes(
@@ -172,7 +172,7 @@ export const getInterval = (
   // Get intervals that are common to all dataset (initial array provided to ensure order from smallest to largest)
   const commonIntervals = intersection(INTERVAL_ORDER, ...availableIntervals)
   const intervals = commonIntervals.filter((interval) => !omitIntervals.includes(interval))
-  const fallbackOption = intervals.length ? intervals[intervals.length - 1] : 'day'
+  const fallbackOption = intervals.length ? intervals[intervals.length - 1] : 'DAY'
   if (!intervals.length) {
     console.warn(
       `no common interval found, using the largest available option (${fallbackOption})`,
@@ -329,7 +329,7 @@ export const getActiveTimeChunks = (
   }
 
   // ignore any start/end time chunk calculation as for the 'month' interval the entire tileset is loaded
-  if (timeChunks.interval === 'month') {
+  if (timeChunks.interval === 'MONTH') {
     const frame = toQuantizedFrame(activeStart, 0, timeChunks.interval)
     const chunk: TimeChunk = {
       quantizeOffset: 0,
@@ -342,7 +342,7 @@ export const getActiveTimeChunks = (
     timeChunks.activeSourceId = chunk.sourceId
     timeChunks.activeChunkFrame = frame
     return timeChunks
-  } else if (timeChunks.interval === 'year') {
+  } else if (timeChunks.interval === 'YEAR') {
     const frame = toQuantizedFrame(activeStart, 0, timeChunks.interval)
     const chunk: TimeChunk = {
       quantizeOffset: 0,

@@ -69,7 +69,8 @@ export const trackDatasetConfigsCallback = (
         trackGraph = { ...track }
         const fieldsQuery = {
           id: 'fields',
-          value: ['timestamp', timebarGraph].join(','),
+          // The api now requieres all params in upperCase
+          value: ['TIMESTAMP', timebarGraph.toUpperCase()],
         }
         const graphQuery = [...(track.query || []), ...thinningQuery]
         const fieldsQueryIndex = graphQuery.findIndex((q) => q.id === 'fields')

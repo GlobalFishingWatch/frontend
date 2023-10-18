@@ -68,7 +68,7 @@ function ActivityLayerPanel({
   const layerActive = dataview?.config?.visible ?? true
   const datasetStatsFields = dataview.datasets!?.flatMap((d) =>
     Object.entries(d.schema || {}).flatMap(([id, schema]) =>
-      (schema as DatasetSchemaItem).stats ? id : []
+      (schema as DatasetSchemaItem).stats ? id.toUpperCase() : []
     )
   )
 

@@ -30,6 +30,7 @@ import { getDatasetNameTranslated, removeDatasetVersion } from 'features/i18n/ut
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { FileType } from 'features/common/FileDropzone'
 import { getLayerDatasetRange } from 'features/workspace/environmental/HistogramRangeFilter'
+import { getVesselGearType } from 'utils/info'
 import styles from '../vessel-groups/VesselGroupModal.module.css'
 
 export type SupportedDatasetSchema =
@@ -535,7 +536,7 @@ export const getCommonSchemaFieldsInDataview = (
           }
           if (schema === 'geartype') {
             // There is an fixed list of gearTypes independant of the dataset
-            label = t(`vessel.gearTypes.${field?.toLowerCase()}`, capitalize(lowerCase(field)))
+            label = getVesselGearType({ geartype: field })
           }
         }
         return { id: field!?.toString(), label: label as string }

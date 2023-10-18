@@ -12,10 +12,14 @@ import {
   ResourceStatus,
 } from '@globalfishingwatch/api-types'
 import { resolveEndpoint, setResource } from '@globalfishingwatch/dataviews-client'
-import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getDetectionsTimestamps } from 'utils/info'
+import {
+  EMPTY_FIELD_PLACEHOLDER,
+  formatInfoField,
+  getDetectionsTimestamps,
+  getVesselGearType,
+} from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
-  getPresenceVesselDataviewInstance,
   getVesselDataviewInstance,
   getVesselDataviewInstanceDatasetConfig,
   getVesselInWorkspace,
@@ -24,8 +28,6 @@ import { getDatasetLabel, getRelatedDatasetsByType } from 'features/datasets/dat
 import I18nNumber from 'features/i18n/i18nNumber'
 import { ActivityProperty, ExtendedFeatureVessel, MAX_TOOLTIP_LIST } from 'features/map/map.slice'
 import { getEventLabel } from 'utils/analytics'
-import { isGFWUser } from 'features/user/user.slice'
-import { PRESENCE_DATASET_ID, PRESENCE_TRACKS_DATASET_ID } from 'features/datasets/datasets.slice'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import { t } from 'features/i18n/i18n'
 import I18nDate from 'features/i18n/i18nDate'
@@ -112,7 +114,6 @@ function VesselsTable({
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
-  const gfwUser = useSelector(isGFWUser)
   const vesselsInWorkspace = useSelector(selectActiveTrackDataviews)
 
   const interactionAllowed = [...SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION].includes(
@@ -162,31 +163,20 @@ function VesselsTable({
     }
 
     let vesselDataviewInstance: DataviewInstance | undefined
-    if (
-      gfwUser &&
-      vessel.dataset?.id?.includes(PRESENCE_DATASET_ID) &&
-      vessel.trackDataset?.id?.includes(PRESENCE_TRACKS_DATASET_ID)
-    ) {
-      vesselDataviewInstance = getPresenceVesselDataviewInstance(vessel, {
-        info: vessel.infoDataset?.id,
-        track: vessel.trackDataset?.id,
-      })
-    } else {
-      const vesselEventsDatasets = getRelatedDatasetsByType(
-        vessel.infoDataset || vessel.dataset,
-        DatasetTypes.Events
-      )
-      const eventsDatasetsId =
-        vesselEventsDatasets && vesselEventsDatasets?.length
-          ? vesselEventsDatasets.map((d) => d.id)
-          : []
+    const vesselEventsDatasets = getRelatedDatasetsByType(
+      vessel.infoDataset || vessel.dataset,
+      DatasetTypes.Events
+    )
+    const eventsDatasetsId =
+      vesselEventsDatasets && vesselEventsDatasets?.length
+        ? vesselEventsDatasets.map((d) => d.id)
+        : []
 
-      vesselDataviewInstance = getVesselDataviewInstance(vessel, {
-        info: vessel.infoDataset?.id,
-        track: vessel.trackDataset?.id,
-        ...(eventsDatasetsId.length > 0 && { events: eventsDatasetsId }),
-      })
-    }
+    vesselDataviewInstance = getVesselDataviewInstance(vessel, {
+      info: vessel.infoDataset?.id,
+      track: vessel.trackDataset?.id,
+      ...(eventsDatasetsId.length > 0 && { events: eventsDatasetsId }),
+    })
 
     upsertDataviewInstance(vesselDataviewInstance)
     populateVesselInfoResource(vessel, vesselDataviewInstance)
@@ -233,13 +223,7 @@ function VesselsTable({
                     )?.toLowerCase()}` as any,
                     vessel.shiptype ?? EMPTY_FIELD_PLACEHOLDER
                   )}`
-                : getVesselProperty<string[]>(vessel, 'geartype')?.map(
-                    (gear) =>
-                      `${t(
-                        `vessel.gearTypes.${gear.toLowerCase()}` as any,
-                        vessel.geartype ?? EMPTY_FIELD_PLACEHOLDER
-                      )}`
-                  )
+                : getVesselGearType({ geartype: getVesselProperty<string[]>(vessel, 'geartype') })
 
               // Temporary workaround for public-global-all-vessels dataset as we
               // don't want to show the pin only for that dataset for guest users

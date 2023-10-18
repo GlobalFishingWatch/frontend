@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { groupBy } from 'lodash'
 import { IconButton, Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
 import { IdentityVessel, Locale, VesselRegistryInfo } from '@globalfishingwatch/api-types'
-import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
+import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselGearType } from 'utils/info'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
 import I18nDate from 'features/i18n/i18nDate'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -29,13 +29,10 @@ function VesselGroupVesselRow({
   className = '',
 }: VesselGroupVesselRowProps) {
   const { t, i18n } = useTranslation()
-  const { shipname, flag, geartype, ssvid, transmissionDateFrom, transmissionDateTo } =
+  const { shipname, flag, ssvid, transmissionDateFrom, transmissionDateTo } =
     vessel || ({} as VesselRegistryInfo)
   const vesselName = formatInfoField(shipname, 'name')
-  const vesselGearType = `${t(
-    `vessel.gearTypes.${geartype}` as string,
-    (geartype as any) || EMPTY_FIELD_PLACEHOLDER
-  )}`
+  const vesselGearType = getVesselGearType(vessel)
 
   return (
     <tr className={className}>

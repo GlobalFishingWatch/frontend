@@ -216,10 +216,12 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
         interactionUrl,
         { signal }
       )
+
       const sublayersVesselsIds = sublayersVesselsIdsResponse.entries.map((sublayer) =>
         sublayer.map((vessel: any) => {
-          const { id, ...rest } = vessel
-          return { ...rest, id: id }
+          const { id, vessel_id, ...rest } = vessel
+          // vessel_id needed for VIIRS layers
+          return { ...rest, id: id || vessel_id }
         })
       )
 
@@ -354,6 +356,7 @@ export const fetchEncounterEventThunk = createAsyncThunk<
       datasetId: dataset.id,
       endpoint: EndpointId.EventsDetail,
       params: [{ id: 'eventId', value: eventFeature.id }],
+      query: [{ id: 'dataset', value: dataset.id }],
     }
     const url = resolveEndpoint(dataset, datasetConfig)
     if (url) {

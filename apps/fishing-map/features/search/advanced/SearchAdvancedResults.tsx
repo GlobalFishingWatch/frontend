@@ -13,7 +13,7 @@ import {
   selectSelectedVessels,
   setSelectedVessels,
 } from 'features/search/search.slice'
-import { formatInfoField, EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
+import { formatInfoField, EMPTY_FIELD_PLACEHOLDER, getVesselGearType } from 'utils/info'
 import I18nFlag from 'features/i18n/i18nFlag'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { SearchComponentProps } from 'features/search/basic/SearchBasic'
@@ -205,12 +205,8 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
       {
         id: 'geartype',
         accessorFn: (vessel: IdentityVesselData) => {
-          const geartypes = getVesselProperty<string[]>(vessel, 'geartype')
-          const label = geartypes
-            ?.map((gear) =>
-              t(`vessel.gearTypes.${gear.toLowerCase()}` as any, EMPTY_FIELD_PLACEHOLDER)
-            )
-            .join(', ')
+          const geartype = getVesselProperty<string[]>(vessel, 'geartype')
+          const label = getVesselGearType({ geartype })
           return (
             <CellWithFilter vessel={vessel} column="geartype" onClick={fetchResults}>
               <Tooltip content={label?.length > TOOLTIP_LABEL_CHARACTERS ? label : ''}>

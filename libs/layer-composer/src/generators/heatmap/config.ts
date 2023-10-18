@@ -15,8 +15,8 @@ export const API_ENDPOINTS = {
 export const HEATMAP_DEFAULT_MAX_ZOOM = 12
 
 // This also defines the priority order, so remember to keep it ascendent
-export const DEFAULT_HEATMAP_INTERVALS: Interval[] = ['hour', 'day', 'month', 'year']
-export const DEFAULT_ENVIRONMENT_INTERVALS: Interval[] = ['month']
+export const DEFAULT_HEATMAP_INTERVALS: Interval[] = ['HOUR', 'DAY', 'MONTH', 'YEAR']
+export const DEFAULT_ENVIRONMENT_INTERVALS: Interval[] = ['MONTH']
 
 export const HEATMAP_MODE_COMBINATION: Record<HeatmapAnimatedMode, SublayerCombinationMode> = {
   [HeatmapAnimatedMode.Single]: SublayerCombinationMode.None,
