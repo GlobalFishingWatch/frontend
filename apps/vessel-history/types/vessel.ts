@@ -1,4 +1,4 @@
-import { RelatedVesselSearchMerged, VesselSearch } from '@globalfishingwatch/api-types'
+import { RelatedVesselSearchMerged, VesselSearch, VesselType } from '@globalfishingwatch/api-types'
 import { ActivityEvent } from 'types/activity'
 
 export type VesselSourceId = {
@@ -7,6 +7,7 @@ export type VesselSourceId = {
 
 export interface OfflineVessel extends RelatedVesselSearchMerged {
   profileId: string
+  vesselType: string | VesselType
   aka?: string[]
   activities?: ActivityEvent[]
   savedOn: string

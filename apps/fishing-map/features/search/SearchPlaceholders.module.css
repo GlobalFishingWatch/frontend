@@ -1,10 +1,9 @@
 .emptyState {
+  height: 100%;
+  color: var(--color-secondary-blue);
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
-  padding: var(--space-M);
-  color: var(--color-secondary-blue);
 }
 
 .emptyState p:not(:last-child) {
@@ -15,13 +14,6 @@
   font-style: italic;
 }
 
-.vesselImage {
-  height: 14rem;
-  display: block;
-  margin: 0 auto;
-  margin-bottom: var(--space-L);
-}
-
 .bold {
   font-weight: 500;
 }
@@ -30,13 +22,68 @@
   text-decoration: underline;
 }
 
-.noResultsImage {
-  height: auto;
-  display: block;
-  margin: 0 auto;
-  max-width: 100%;
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  padding: var(--space-S);
+  width: 70rem;
+  max-width: calc(100vw - var(--sidebar-tabs-width));
+}
+
+.hidden {
+  opacity: 0;
+  transition: opacity 100ms ease-out;
 }
 
 .inlineIcon {
   height: 1em;
+}
+
+.description {
+  text-align: center;
+}
+
+.highlighted {
+  background-color: var(--color-help-yellow);
+  padding: var(--space-XS) 1.5rem;
+  border-radius: 2rem;
+  border-bottom: var(--border);
+  width: max-content;
+  margin: var(--space-M) auto;
+  text-align: center;
+}
+
+.highlighted a {
+  text-decoration: underline;
+}
+
+.center {
+  margin: 0 auto;
+}
+
+.userGuide {
+  margin-top: var(--space-M);
+}
+
+.spinner {
+  padding-top: var(--space-M);
+  position: absolute;
+  height: auto;
+  bottom: 8rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.hidden .spinner {
+  height: 0;
+  overflow: hidden;
+}
+
+@media only screen and (max-width: 800px) {
+  .image {
+    transform-origin: bottom;
+    transform: scale(70%);
+  }
 }

@@ -4,7 +4,7 @@ import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 import { REPLACE_URL_PARAMS } from 'data/config'
 import { setLastWorkspaceVisited } from 'features/workspace/workspace.slice'
 import { QueryParams } from 'types'
-import { routesMap, ROUTE_TYPES, WORKSPACE_ROUTES, REPORT_ROUTES } from './routes'
+import { routesMap, ROUTE_TYPES, WORKSPACE_ROUTES } from './routes'
 import { UpdateQueryParamsAction } from './routes.actions'
 
 export const routerQueryMiddleware: Middleware =
@@ -29,11 +29,13 @@ export const routerQueryMiddleware: Middleware =
           delete newAction.query[ACCESS_TOKEN_STRING]
         }
       }
-      const { query } = action
-      if (query) {
-        const redirect = Object.keys(prevQuery)
-          .filter((k) => query[k as keyof QueryParams])
-          .some((key) => REPLACE_URL_PARAMS.includes(key))
+      const { query, replaceUrl } = action
+      if (query || replaceUrl) {
+        const redirect =
+          replaceUrl ||
+          Object.keys(prevQuery)
+            .filter((k) => query?.[k as keyof QueryParams])
+            .some((key) => REPLACE_URL_PARAMS.includes(key))
         if (redirect === true) {
           newAction.meta = {
             location: {
@@ -62,12 +64,7 @@ export const routerWorkspaceMiddleware: Middleware =
         (key) => !WORKSPACE_ROUTES.includes(key)
       )
       const comesFromWorkspacesRoute = WORKSPACE_ROUTES.includes(prev.type)
-      const comesFromReportRoute = REPORT_ROUTES.includes(prev.type)
-      if (
-        routesToSaveWorkspace.includes(action.type) &&
-        (comesFromWorkspacesRoute || comesFromReportRoute) &&
-        !lastVisited
-      ) {
+      if (routesToSaveWorkspace.includes(action.type) && comesFromWorkspacesRoute && !lastVisited) {
         dispatch(
           setLastWorkspaceVisited({
             type: prev.type as ROUTE_TYPES,

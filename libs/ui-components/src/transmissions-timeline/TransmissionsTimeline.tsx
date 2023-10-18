@@ -1,19 +1,21 @@
-import React, { Fragment, useLayoutEffect, useRef, useState } from 'react'
+import { Fragment, useLayoutEffect, useRef, useState } from 'react'
 import { DateTime } from 'luxon'
 import { Locale } from '@globalfishingwatch/api-types'
 import styles from './TransmissionsTimeline.module.css'
 
+export const FIRST_YEAR_OF_DATA = 2012
+
 type TransmissionsTimelineProps = {
   firstTransmissionDate: string
   lastTransmissionDate: string
-  firstYearOfData: number
+  firstYearOfData?: number
   locale?: Locale
 }
 
 export function TransmissionsTimeline({
   firstTransmissionDate,
   lastTransmissionDate,
-  firstYearOfData,
+  firstYearOfData = FIRST_YEAR_OF_DATA,
   locale = Locale.en,
 }: TransmissionsTimelineProps) {
   const [timelineWidth, setTimelineWidth] = useState<number>(0)
@@ -34,6 +36,7 @@ export function TransmissionsTimeline({
   useLayoutEffect(() => {
     setTimelineWidth(transmissionsRef?.current?.offsetWidth || 0)
   }, [])
+
   return (
     <div className={styles.timelineContainer}>
       <div

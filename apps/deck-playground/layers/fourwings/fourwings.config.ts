@@ -5,38 +5,38 @@ export const CHUNKS_BY_INTERVAL: Record<
   Interval,
   { unit: DateTimeUnit; value: number } | undefined
 > = {
-  hour: {
+  HOUR: {
     unit: 'day',
     value: 20,
   },
-  day: {
+  DAY: {
     unit: 'year',
     value: 1,
   },
-  month: undefined,
-  year: undefined,
+  MONTH: undefined,
+  YEAR: undefined,
 }
 
 export const LIMITS_BY_INTERVAL: Record<
   Interval,
   { unit: keyof DurationLikeObject; value: number; buffer: number } | undefined
 > = {
-  hour: {
+  HOUR: {
     unit: 'days',
     value: 3,
     buffer: 1,
   },
-  day: {
+  DAY: {
     unit: 'months',
     value: 6,
     buffer: 1,
   },
-  month: {
+  MONTH: {
     unit: 'year',
     value: 6,
     buffer: 1,
   },
-  year: undefined,
+  YEAR: undefined,
 }
 
 export const getInterval = (start: number, end: number): Interval => {

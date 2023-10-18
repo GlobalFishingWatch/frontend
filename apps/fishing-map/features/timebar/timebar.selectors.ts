@@ -5,6 +5,7 @@ import {
   ResourceStatus,
   TrackResourceData,
   EndpointId,
+  EventType,
 } from '@globalfishingwatch/api-types'
 import {
   resolveDataviewDatasetResource,
@@ -29,6 +30,7 @@ import {
 } from 'features/dataviews/dataviews.slice'
 import { getVesselLabel } from 'utils/info'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
+import { TimebarGraphs } from 'types'
 
 const getUserTrackHighlighterLabel = ({ chunk }: HighlighterCallbackFnArgs) => {
   return chunk.props?.id || null
@@ -139,7 +141,7 @@ export const selectTracksGraphData = createSelector(
         chunks: [],
         status: ResourceStatus.Idle,
         getHighlighterLabel:
-          timebarGraphType === 'speed'
+          timebarGraphType === TimebarGraphs.Speed
             ? getTrackGraphSpeedHighlighterLabel
             : getTrackGraphElevationighlighterLabel,
         getHighlighterIcon: 'vessel',
@@ -231,7 +233,7 @@ export const selectTracksEvents = createSelector(
         if (visibleEvents === 'all') {
           return true
         }
-        return dataset.configuration?.type && visibleEvents.includes(dataset.configuration?.type)
+        return dataset.subcategory && visibleEvents.includes(dataset.subcategory as EventType)
       })
 
       trackEvents.chunks = eventsResourcesFiltered.flatMap(({ url }) => {

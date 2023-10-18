@@ -2,8 +2,8 @@ import { useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { batch, useSelector } from 'react-redux'
-import { Button } from '@globalfishingwatch/ui-components'
-import { VesselWithDatasets } from 'features/search/search.slice'
+import { Button, ButtonType, ButtonSize } from '@globalfishingwatch/ui-components'
+import { VesselLastIdentity } from 'features/search/search.slice'
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import { getEventLabel } from 'utils/analytics'
 import {
@@ -17,16 +17,23 @@ import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hoo
 import { selectUserGroupsPermissions } from 'features/user/user.selectors'
 import { ReportVesselWithDatasets } from 'features/reports/reports.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { IdentityVesselData } from 'features/vessel/vessel.slice'
 import styles from './VesselGroupAddButton.module.css'
 
 function VesselGroupAddButton({
   vessels,
   showCount = true,
+  buttonSize = 'default',
+  buttonType = 'secondary',
   onAddToVesselGroup,
+  buttonClassName = '',
 }: {
-  vessels: (VesselWithDatasets | ReportVesselWithDatasets)[]
+  vessels: (VesselLastIdentity | ReportVesselWithDatasets | IdentityVesselData)[]
   showCount?: boolean
+  buttonSize?: ButtonSize
+  buttonType?: ButtonType
   onAddToVesselGroup?: (vesselGroupId?: string) => void
+  buttonClassName?: string
 }) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -43,9 +50,9 @@ function VesselGroupAddButton({
     async (vesselGroupId?: string) => {
       const vesselsWithDataset = vessels.map((vessel) => ({
         ...vessel,
-        id: (vessel as VesselWithDatasets)?.id || (vessel as ReportVesselWithDatasets)?.vesselId,
+        id: (vessel as VesselLastIdentity)?.id || (vessel as ReportVesselWithDatasets)?.vesselId,
         dataset:
-          (vessel as VesselWithDatasets)?.dataset?.id ||
+          (vessel as VesselLastIdentity)?.dataset?.id ||
           (vessel as ReportVesselWithDatasets)?.infoDataset?.id,
       }))
       if (vesselsWithDataset?.length) {
@@ -74,35 +81,36 @@ function VesselGroupAddButton({
     [dispatch, onAddToVesselGroup, vessels]
   )
   return (
-    <TooltipContainer
-      visible={vesselGroupsOpen}
-      onClickOutside={toggleVesselGroupsOpen}
-      component={
-        <ul className={styles.groupOptions}>
-          <li
-            className={cx(styles.groupOption, styles.groupOptionNew)}
-            onClick={() => handleAddToVesselGroupClick()}
-            key="new-group"
-          >
-            {t('vesselGroup.createNewGroup', 'Create new group')}
-          </li>
-          {vesselGroupOptions.map((group) => (
+    hasUserGroupsPermissions && (
+      <TooltipContainer
+        visible={vesselGroupsOpen}
+        onClickOutside={toggleVesselGroupsOpen}
+        component={
+          <ul className={styles.groupOptions}>
             <li
-              className={styles.groupOption}
-              key={group.id}
-              onClick={() => handleAddToVesselGroupClick(group.id)}
+              className={cx(styles.groupOption, styles.groupOptionNew)}
+              onClick={() => handleAddToVesselGroupClick()}
+              key="new-group"
             >
-              {group.label}
+              {t('vesselGroup.createNewGroup', 'Create new group')}
             </li>
-          ))}
-        </ul>
-      }
-    >
-      <div>
-        {hasUserGroupsPermissions && (
+            {vesselGroupOptions.map((group) => (
+              <li
+                className={styles.groupOption}
+                key={group.id}
+                onClick={() => handleAddToVesselGroupClick(group.id)}
+              >
+                {group.label}
+              </li>
+            ))}
+          </ul>
+        }
+      >
+        <div>
           <Button
-            type="secondary"
-            className={styles.button}
+            size={buttonSize}
+            type={buttonType}
+            className={cx(styles.button, buttonClassName)}
             onClick={toggleVesselGroupsOpen}
             disabled={!vessels?.length || tooManyVessels}
             tooltip={
@@ -118,9 +126,9 @@ function VesselGroupAddButton({
             {t('vesselGroup.add', 'Add to group')}
             {showCount ? ` (${vessels.length})` : ''}
           </Button>
-        )}
-      </div>
-    </TooltipContainer>
+        </div>
+      </TooltipContainer>
+    )
   )
 }
 

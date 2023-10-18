@@ -7,6 +7,7 @@ import {
   Dataset,
   DatasetCategory,
   EndpointId,
+  EndpointParam,
   UploadResponse,
 } from '@globalfishingwatch/api-types'
 import {
@@ -28,22 +29,44 @@ import {
   LATEST_CARRIER_DATASET_ID,
   PUBLIC_SUFIX,
 } from 'data/config'
+import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 
-export const PRESENCE_DATASET_ID = 'public-global-presence'
-export const PRESENCE_TRACKS_DATASET_ID = 'private-global-presence-tracks'
 export const DATASETS_USER_SOURCE_ID = 'user'
-export const EARTH_ENGINE_POC_ID = 'public-ee-poc'
+
+type POCDatasetTemplate = Record<
+  string,
+  Partial<Record<EndpointId, { pathTemplate?: string; query?: Partial<EndpointParam>[] }>>
+>
+const POC_DATASETS_ENDPOINT_PATH_TEMPLATES: POCDatasetTemplate = {
+  [DEFAULT_VESSEL_IDENTITY_ID]: {
+    [EndpointId.Vessel]: {
+      // pathTemplate:
+      //   'https://gateway.api.staging.globalfishingwatch.org/prototypes/vessels/{{vesselId}}',
+      query: [{ id: 'datasets', array: true }],
+    },
+  },
+}
 
 const parsePOCsDatasets = (dataset: Dataset) => {
-  if (dataset.id.includes(EARTH_ENGINE_POC_ID)) {
+  if (Object.keys(POC_DATASETS_ENDPOINT_PATH_TEMPLATES).some((id) => dataset.id === id)) {
     const pocDataset = {
       ...dataset,
       endpoints: dataset.endpoints?.map((endpoint) => {
-        if (endpoint.id === EndpointId.FourwingsTiles) {
+        const endpointConfig = POC_DATASETS_ENDPOINT_PATH_TEMPLATES[dataset.id]?.[endpoint.id]
+        if (endpointConfig) {
           return {
             ...endpoint,
-            pathTemplate:
-              'https://dev-api-4wings-tiler-gee-poc-jzzp2ui3wq-uc.a.run.app/v1/4wings/tile/heatmap/{z}/{x}/{y}',
+            ...endpointConfig,
+            query: endpoint.query.map((q) => {
+              const queryConfig = endpointConfig.query?.find((qc) => qc.id === q.id)
+              if (queryConfig) {
+                return {
+                  ...q,
+                  ...queryConfig,
+                }
+              }
+              return q
+            }),
           }
         }
         return endpoint
@@ -73,15 +96,25 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
   }
 })
 
+type FetchDatasetsFromApiParams = {
+  ids: string[]
+  existingIds: string[]
+  signal: AbortSignal
+  maxDepth?: number
+  onlyUserDatasets?: boolean
+}
 const fetchDatasetsFromApi = async (
-  ids: string[] = [],
-  existingIds: string[] = [],
-  signal: AbortSignal,
-  maxDepth: number = 5
+  {
+    ids,
+    existingIds,
+    signal,
+    maxDepth = 5,
+    onlyUserDatasets = true,
+  } = {} as FetchDatasetsFromApiParams
 ) => {
   const uniqIds = ids?.length ? ids.filter((id) => !existingIds.includes(id)) : []
   const datasetsParams = {
-    ...(uniqIds?.length ? { ids: uniqIds } : { 'logged-user': true }),
+    ...(uniqIds?.length ? { ids: uniqIds } : { 'logged-user': onlyUserDatasets }),
     include: 'endpoints',
     cache: false,
     ...DEFAULT_PAGINATION_PARAMS,
@@ -103,26 +136,32 @@ const fetchDatasetsFromApi = async (
   const currentIds = uniq([...existingIds, ...datasets.map((d) => d.id)])
   const uniqRelatedDatasetsIds = without(relatedDatasetsIds, ...currentIds)
   if (uniqRelatedDatasetsIds.length > 1 && maxDepth > 0) {
-    const relatedDatasets = await fetchDatasetsFromApi(
-      uniqRelatedDatasetsIds,
-      currentIds,
+    const relatedDatasets = await fetchDatasetsFromApi({
+      ids: uniqRelatedDatasetsIds,
+      existingIds: currentIds,
       signal,
-      maxDepth - 1
-    )
+      maxDepth: maxDepth - 1,
+    })
     datasets = uniqBy([...datasets, ...relatedDatasets], 'id')
   }
 
   return datasets
 }
 
-export const fetchDatasetsByIdsThunk = createAsyncThunk(
+export const fetchDatasetsByIdsThunk = createAsyncThunk<
+  Dataset[],
+  { ids: string[]; onlyUserDatasets?: boolean },
+  {
+    rejectValue: AsyncError
+  }
+>(
   'datasets/fetch',
-  async (ids: string[] = [], { signal, rejectWithValue, getState }) => {
+  async ({ ids, onlyUserDatasets = true }, { signal, rejectWithValue, getState }) => {
     const state = getState() as DatasetsSliceState
     const existingIds = selectIds(state) as string[]
 
     try {
-      const datasets = await fetchDatasetsFromApi(ids, existingIds, signal)
+      const datasets = await fetchDatasetsFromApi({ ids, existingIds, signal, onlyUserDatasets })
       return datasets.map(parsePOCsDatasets)
     } catch (e: any) {
       console.warn(e)
@@ -131,8 +170,14 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
   }
 )
 
-export const fetchAllDatasetsThunk = createAsyncThunk('datasets/all', (_, { dispatch }) => {
-  return dispatch(fetchDatasetsByIdsThunk([]))
+export const fetchAllDatasetsThunk = createAsyncThunk<
+  any,
+  { onlyUserDatasets?: boolean } | undefined,
+  {
+    rejectValue: AsyncError
+  }
+>('datasets/all', ({ onlyUserDatasets } = {}, { dispatch }) => {
+  return dispatch(fetchDatasetsByIdsThunk({ ids: [], onlyUserDatasets }))
 })
 
 export type CreateDataset = { dataset: Partial<Dataset>; file: File; createAsPublic: boolean }

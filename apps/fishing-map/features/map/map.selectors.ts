@@ -28,14 +28,16 @@ import { selectRulers } from 'features/map/rulers/rulers.slice'
 import {
   selectHighlightedTime,
   selectHighlightedEvents,
-  Range,
+  TimeRange,
 } from 'features/timebar/timebar.slice'
 import { selectBivariateDataviews, selectTimeRange } from 'features/app/app.selectors'
 import { selectMarineManagerDataviewInstanceResolved } from 'features/dataviews/dataviews.slice'
 import {
   selectIsMarineManagerLocation,
+  selectIsVesselLocation,
   selectIsAnyReportLocation,
   selectIsWorkspaceLocation,
+  selectIsWorkspaceVesselLocation,
 } from 'routes/routes.selectors'
 import {
   selectShowTimeComparison,
@@ -58,8 +60,8 @@ type GetGeneratorConfigParams = {
   resources: ResourcesState
   rulers: Ruler[]
   debugOptions: DebugOptions
-  timeRange: Range
-  highlightedTime?: Range
+  timeRange: TimeRange
+  highlightedTime?: TimeRange
   highlightedEvents?: string[]
   bivariateDataviews?: BivariateDataviews
   showTimeComparison?: boolean
@@ -293,6 +295,7 @@ export const selectMarineManagerGenerators = createSelector(
     }
   }
 )
+
 export const selectMapWorkspacesListGenerators = createSelector(
   [selectDefaultBasemapGenerator, selectWorkspacesListGenerator, selectMarineManagerGenerators],
   (basemapGenerator, workspaceGenerator, marineManagerGenerators): AnyGeneratorConfig[] => {
@@ -302,6 +305,13 @@ export const selectMapWorkspacesListGenerators = createSelector(
     }
     if (workspaceGenerator) generators.push(workspaceGenerator)
     return generators
+  }
+)
+
+export const selectShowWorkspaceDetail = createSelector(
+  [selectIsWorkspaceLocation, selectIsAnyReportLocation, selectIsWorkspaceVesselLocation],
+  (isWorkspacelLocation, isReportLocation, isVesselLocation) => {
+    return isWorkspacelLocation || isReportLocation || isVesselLocation
   }
 )
 
@@ -343,8 +353,9 @@ export const selectDefaultMapGeneratorsConfig = createSelector(
   [
     selectWorkspaceError,
     selectWorkspaceStatus,
-    selectIsWorkspaceLocation,
+    selectShowWorkspaceDetail,
     selectIsAnyReportLocation,
+    selectIsVesselLocation,
     selectDefaultBasemapGenerator,
     selectMapGeneratorsConfig,
     selectMapWorkspacesListGenerators,
@@ -353,14 +364,17 @@ export const selectDefaultMapGeneratorsConfig = createSelector(
   (
     workspaceError,
     workspaceStatus,
-    isWorkspacelLocation,
+    showWorkspaceDetail,
     isReportLocation,
+    isVesselLocation,
     basemapGenerator,
     workspaceGenerators = [] as AnyGeneratorConfig[],
     workspaceListGenerators,
     mapReportGenerators
   ): AnyGeneratorConfig[] => {
-    const showWorkspaceDetail = isWorkspacelLocation || isReportLocation
+    if (isVesselLocation) {
+      return workspaceGenerators
+    }
     if (workspaceError.status === 401 || workspaceStatus === AsyncReducerStatus.Loading) {
       return [basemapGenerator]
     }

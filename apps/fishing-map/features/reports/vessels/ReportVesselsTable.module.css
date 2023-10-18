@@ -53,3 +53,7 @@
   color: var(--color-secondary-blue);
   margin-bottom: var(--space-S);
 }
+
+.link {
+  text-decoration: underline;
+}

@@ -63,7 +63,7 @@ type LayerPanelProps = {
   onToggle?: () => void
 }
 
-const DATAVIEWS_WARNING = [
+export const DATAVIEWS_WARNING = [
   EEZ_DATAVIEW_INSTANCE_ID,
   MPA_DATAVIEW_INSTANCE_ID,
   BASEMAP_DATAVIEW_INSTANCE_ID,

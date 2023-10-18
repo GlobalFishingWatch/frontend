@@ -47,6 +47,11 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  gap: var(--space-S);
+}
+
+.button {
+  min-width: 15rem;
 }
 
 .shortInput {
@@ -60,10 +65,6 @@
 .input {
   width: 20rem;
   margin-right: var(--space-M);
-}
-
-.button + .button {
-  margin-left: var(--space-M);
 }
 
 .popup {

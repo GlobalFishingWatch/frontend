@@ -3,7 +3,7 @@ export const API_GATEWAY_VERSION =
   process.env.NEXT_PUBLIC_API_VERSION ||
   process.env.REACT_APP_API_GATEWAY_VERSION ||
   process.env.NEXT_PUBLIC_API_GATEWAY_VERSION ||
-  'v2'
+  'v3'
 
 export const API_GATEWAY =
   process.env.API_GATEWAY ||

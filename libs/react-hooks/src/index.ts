@@ -1,6 +1,7 @@
 export * from './use-analytics'
 export * from './use-dataviews-layers'
 export * from './use-debounce'
+export * from './use-event-listener'
 export * from './use-layer-composer'
 export * from './use-local-storage'
 export * from './use-login-redirect'

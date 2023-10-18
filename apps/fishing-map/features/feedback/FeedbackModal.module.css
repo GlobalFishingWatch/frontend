@@ -48,3 +48,7 @@
   display: flex;
   justify-content: flex-end;
 }
+
+.cta {
+  min-width: 15rem;
+}

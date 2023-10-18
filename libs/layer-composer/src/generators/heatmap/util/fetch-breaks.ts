@@ -5,7 +5,7 @@ import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import { HeatmapAnimatedMode } from '../../types'
 import { isUrlAbsolute } from '../../../utils'
 import { Interval } from '../types'
-import { toURLArray } from '.'
+import { toURLArray } from '../../utils'
 
 export type Breaks = number[][]
 
@@ -131,7 +131,7 @@ export default function fetchBreaks(config: FetchBreaksParams): Promise<Breaks> 
   breaksUrl.searchParams.set('temporal-aggregation', 'false')
   breaksUrl.searchParams.set('num-bins', getNumBins(config).toString())
   const groups = getVesselGroupsQuery(config)
-  breaksUrl.searchParams.set('interval', groups ? config.interval : 'month')
+  breaksUrl.searchParams.set('interval', groups ? config.interval : 'MONTH')
   if (groups && config.start && config.end) {
     // TODO debounce the request when this changes
     breaksUrl.searchParams.set('date-range', [config.start, config.end].join(','))
@@ -169,8 +169,8 @@ export default function fetchBreaks(config: FetchBreaksParams): Promise<Breaks> 
       }
       const defaultDatasetKeys = Object.keys(BREAKS_FALLBACK) as DefaultDatasets[]
       const breaks = allDatasets.map((dataset) => {
-        const defaultDataset = defaultDatasetKeys.find((defaultDataset) =>
-          dataset?.includes(defaultDataset)
+        const defaultDataset = defaultDatasetKeys.find(
+          (defaultDataset) => dataset?.includes(defaultDataset)
         )
         return defaultDataset
           ? BREAKS_FALLBACK[defaultDataset]

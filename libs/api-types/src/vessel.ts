@@ -42,6 +42,7 @@ export interface Vessel {
   length?: string
   matricula?: string
   mmsi?: string
+  msgCount?: number
   nationalId?: string
   operator?: string
   origin?: string
@@ -49,8 +50,10 @@ export interface Vessel {
   posCount?: number
   registeredGearType?: string
   shipname: string
+  shiptype?: VesselType
+  source?: string
+  ssvid?: string
   type?: string
-  vesselType?: VesselType
   years?: number[]
 }
 

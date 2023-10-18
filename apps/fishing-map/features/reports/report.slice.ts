@@ -88,9 +88,9 @@ export const getReportQuery = (params: FetchReportVesselsThunkParams) => {
       format: format,
       'region-id': region.id,
       'region-dataset': region.dataset,
-      'buffer-unit': reportBufferUnit,
+      'buffer-unit': reportBufferUnit?.toUpperCase(),
       'buffer-value': reportBufferValue,
-      'buffer-operation': reportBufferOperation,
+      'buffer-operation': reportBufferOperation?.toUpperCase(),
     },
     { arrayFormat: 'indices' }
   )

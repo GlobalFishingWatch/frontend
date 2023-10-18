@@ -10,7 +10,7 @@ import {
 } from 'features/datasets/datasets.utils'
 import { selectAllDataviewsInWorkspace } from 'features/dataviews/dataviews.selectors'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { SearchType } from './search.slice'
+import { SearchType } from 'features/search/search.config'
 
 export const selectSearchDatasetsInWorkspace = createSelector(
   [selectAllDataviewsInWorkspace, selectVesselsDatasets, selectAllDatasets],
@@ -38,20 +38,12 @@ export const filterDatasetByPermissions = (
   return filterDatasetsByUserType(datasetsWithPermissions, isGuest)
 }
 
-export const selectAllSearchDatasetsByType = (type: SearchType) =>
-  createSelector(
-    [selectVesselsDatasets, selectUserData, isGuestUser],
-    (datasets, userData, guestUser) => {
-      if (!userData || !datasets?.length) return
-      return filterDatasetByPermissions(datasets, type, userData, guestUser)
-    }
-  )
-
 export const selectSearchDatasetsInWorkspaceByType = (type: SearchType) =>
   createSelector(
     [selectSearchDatasetsInWorkspace, selectUserData, isGuestUser],
     (datasets, userData, guestUser) => {
       if (!userData || !datasets?.length) return
+
       return filterDatasetByPermissions(datasets, type, userData, guestUser)
     }
   )
@@ -59,14 +51,14 @@ export const selectSearchDatasetsInWorkspaceByType = (type: SearchType) =>
 export const selectBasicSearchDatasets = createSelector(
   [selectSearchDatasetsInWorkspaceByType('basic')],
   (basicSearchDatasets) => {
-    return basicSearchDatasets
+    return basicSearchDatasets as Dataset[]
   }
 )
 
 export const selectAdvancedSearchDatasets = createSelector(
   [selectSearchDatasetsInWorkspaceByType('advanced')],
   (advancedSearchDatasets) => {
-    return advancedSearchDatasets
+    return advancedSearchDatasets as Dataset[]
   }
 )
 

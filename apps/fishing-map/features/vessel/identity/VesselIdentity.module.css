@@ -1,0 +1,67 @@
+.tabTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+}
+
+.container {
+  padding: var(--space-M);
+  border-bottom: var(--border);
+  position: relative;
+}
+
+.fieldGroupContainer {
+  padding: var(--space-S) 0;
+}
+
+.fieldGroupContainer:not(:last-child) {
+  border-bottom: var(--border);
+}
+
+.fieldGroup {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.twoColumns {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.twoCells {
+  grid-column: span 2;
+}
+
+.threeCells {
+  grid-column: span 3;
+}
+
+.actionsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-S);
+  position: absolute;
+  right: var(--space-M);
+}
+
+.secondary {
+  color: var(--color-secondary-blue);
+}
+
+.hidden {
+  display: none;
+}
+
+.timerange {
+  display: flex;
+  align-items: center;
+}
+
+.help {
+  cursor: help;
+}
+
+.labelContainer {
+  display: flex;
+  align-items: center;
+}

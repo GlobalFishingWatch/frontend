@@ -7,6 +7,7 @@ import { Group } from '../../types'
 import { GeneratorType, HeatmapGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { API_GATEWAY } from '../../config'
+import { toURLArray } from '../utils'
 import fetchStats from './util/fetch-stats'
 import {
   HEATMAP_DEFAULT_MAX_ZOOM,
@@ -16,7 +17,6 @@ import {
 import { HEATMAP_COLOR_RAMPS } from './colors'
 import { StatsByZoom } from './types'
 import getBreaks from './util/get-breaks'
-import { toURLArray } from './util'
 
 export type GlobalHeatmapGeneratorConfig = MergedGeneratorConfig<HeatmapGeneratorConfig>
 

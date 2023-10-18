@@ -122,9 +122,7 @@ const TracksEvents = ({
             onMouseLeave={() => {
               updateHoveredEvent(undefined)
             }}
-          >
-            <div className={styles.eventInner} />
-          </div>
+          />
         ))}
       </div>
     ))

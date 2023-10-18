@@ -18,7 +18,6 @@ import {
   FISHING_DATAVIEW_SLUG,
   TEMPLATE_VESSEL_DATAVIEW_SLUG,
   TEMPLATE_USER_TRACK_SLUG,
-  VESSEL_PRESENCE_DATAVIEW_SLUG,
   TEMPLATE_POINTS_DATAVIEW_SLUG,
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
 } from 'data/workspaces'
@@ -38,27 +37,30 @@ export const VESSEL_DATAVIEW_INSTANCE_PREFIX = 'vessel-'
 
 // Datasets ids for vessel instances
 export type VesselInstanceDatasets = {
-  info?: string
   track?: string
+  info?: string
   events?: string[]
+  relatedVesselIds?: string[]
 }
 
 export const getVesselDataviewInstanceDatasetConfig = (
   vesselId: string,
-  { track, info, events }: VesselInstanceDatasets
+  { track, info, events, relatedVesselIds = [] }: VesselInstanceDatasets
 ) => {
   const datasetsConfig: DataviewDatasetConfig[] = []
   if (info) {
     datasetsConfig.push({
       datasetId: info,
       params: [{ id: 'vesselId', value: vesselId }],
+      query: [{ id: 'dataset', value: info }],
       endpoint: EndpointId.Vessel,
     })
   }
   if (track) {
+    const vesselIds = relatedVesselIds ? [vesselId, ...relatedVesselIds].join(',') : vesselId
     datasetsConfig.push({
       datasetId: track,
-      params: [{ id: 'vesselId', value: vesselId }],
+      params: [{ id: 'vesselId', value: vesselIds }],
       endpoint: EndpointId.Tracks,
     })
   }
@@ -66,7 +68,7 @@ export const getVesselDataviewInstanceDatasetConfig = (
     events.forEach((eventDatasetId) => {
       datasetsConfig.push({
         datasetId: eventDatasetId,
-        query: [{ id: 'vessels', value: vesselId }],
+        query: [{ id: 'vessels', value: [vesselId, ...relatedVesselIds] }],
         params: [],
         endpoint: EndpointId.Events,
       })
@@ -97,17 +99,6 @@ export const getVesselDataviewInstance = (
   const vesselDataviewInstance = {
     id: `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
     ...vesselDataviewInstanceTemplate(TEMPLATE_VESSEL_DATAVIEW_SLUG, datasets),
-  }
-  return vesselDataviewInstance
-}
-
-export const getPresenceVesselDataviewInstance = (
-  vessel: { id: string },
-  datasets: VesselInstanceDatasets
-): DataviewInstance<GeneratorType> => {
-  const vesselDataviewInstance = {
-    id: `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
-    ...vesselDataviewInstanceTemplate(VESSEL_PRESENCE_DATAVIEW_SLUG, datasets),
   }
   return vesselDataviewInstance
 }

@@ -2,13 +2,16 @@ import { Fragment, ReactNode, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { Trans, useTranslation } from 'react-i18next'
+// import NextLink from 'next/link'
 import {
-  Vessel,
   DatasetTypes,
   ResourceStatus,
   DataviewDatasetConfigParam,
   Resource,
   EndpointId,
+  VesselRegistryInfo,
+  DataviewInfoConfigField,
+  IdentityVessel,
 } from '@globalfishingwatch/api-types'
 import { IconButton, Tooltip, ColorBarOption } from '@globalfishingwatch/ui-components'
 import {
@@ -17,7 +20,12 @@ import {
   pickTrackResource,
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
-import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselLabel } from 'utils/info'
+import {
+  EMPTY_FIELD_PLACEHOLDER,
+  formatInfoField,
+  getVesselGearType,
+  getVesselLabel,
+} from 'utils/info'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
@@ -32,6 +40,7 @@ import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel
 import GFWOnly from 'features/user/GFWOnly'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
+import VesselLink from 'features/vessel/VesselLink'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -43,13 +52,28 @@ export type VesselLayerPanelProps = {
   dataview: UrlDataviewInstance
 }
 
+const vesselRegistryFields: DataviewInfoConfigField[] = [
+  {
+    id: 'lengthM',
+    type: 'number',
+    mandatory: true,
+  },
+  {
+    id: 'tonnageGt',
+    type: 'number',
+    mandatory: true,
+  },
+]
+
 function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
+  const { url: infoUrl, dataset } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
   const resources = useSelector(selectResources)
   const trackResource = pickTrackResource(dataview, EndpointId.Tracks, resources)
-  const infoResource: Resource<Vessel> = useSelector(selectResourceByUrl<Vessel>(infoUrl))
+  const infoResource: Resource<IdentityVessel> = useSelector(
+    selectResourceByUrl<IdentityVessel>(infoUrl)
+  )
   const { items, attributes, listeners, setNodeRef, setActivatorNodeRef, style } =
     useLayerPanelDataviewSort(dataview.id)
 
@@ -74,9 +98,10 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
   const onToggleColorOpen = () => {
     setColorOpen(!colorOpen)
   }
-  const onToggleInfoOpen = () => {
-    setInfoOpen(!infoOpen)
-  }
+
+  // const onToggleInfoOpen = () => {
+  //   setInfoOpen(!infoOpen)
+  // }
 
   const closeExpandedContainer = () => {
     if (!datasetModalOpen) {
@@ -122,7 +147,9 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
         className={cx({ [styles.faded]: infoLoading || infoError })}
         data-test="vessel-layer-vessel-name"
       >
-        {getVesselTitle()}
+        <VesselLink className={styles.link} vesselId={vesselId} datasetId={dataset?.id}>
+          {getVesselTitle()}
+        </VesselLink>
       </span>
       {(infoError || trackError) && (
         <IconButton
@@ -142,6 +169,7 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
       className={styles.name}
       classNameActive={styles.active}
       dataview={dataview}
+      toggleVisibility={false}
     />
   )
 
@@ -156,12 +184,7 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
     if (field.id === 'geartype') {
       if (!fieldValue) return EMPTY_FIELD_PLACEHOLDER
       const fieldValueSplit = fieldValue.split('|')
-      if (fieldValueSplit.length > 1) {
-        return fieldValueSplit
-          .map((field) => t(`vessel.gearTypes.${field}` as any, field))
-          .join(', ')
-      }
-      return t(`vessel.gearTypes.${fieldValue}` as any, fieldValue)
+      return getVesselGearType({ geartype: fieldValueSplit })
     }
     if (field.id === 'mmsi') {
       return (
@@ -213,8 +236,22 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
       onClickOutside={closeExpandedContainer}
       component={
         <ul className={styles.infoContent}>
+          {gfwUser &&
+            infoResource?.data?.registryInfo!?.length > 0 &&
+            vesselRegistryFields.map((registryField) => {
+              const value =
+                infoResource?.data?.registryInfo?.[0]?.[
+                  registryField.id as keyof VesselRegistryInfo
+                ]
+              return (
+                <li key={registryField.id} className={styles.infoContentItem}>
+                  <label>{t(`vessel.${registryField.id}` as any, registryField.id)}</label>
+                  {value ? getFieldValue(registryField, value as any) : '---'}
+                </li>
+              )
+            })}
           {infoFields?.map((field: any) => {
-            const value = infoResource?.data?.[field.id as keyof Vessel]
+            const value = infoResource?.data?.[field.id as keyof IdentityVessel]
             if (!value && !field.mandatory) return null
             const fieldValues = Array.isArray(value) ? value : [value]
             return (
@@ -222,7 +259,7 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
                 <label>{t(`vessel.${field.id}` as any)}</label>
                 {fieldValues.map((fieldValue, i) => (
                   <span key={field.id + fieldValue}>
-                    {fieldValue ? getFieldValue(field, fieldValue as any) : '---'}
+                    {fieldValue ? getFieldValue(field, fieldValue as any) : EMPTY_FIELD_PLACEHOLDER}
                     {/* Field values separator */}
                     {i < fieldValues.length - 1 ? ', ' : ''}
                     {field.id === 'dataset' && infoOpen && gfwUser && (
@@ -245,24 +282,24 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
         </ul>
       }
     >
-      <IconButton
-        size="small"
-        icon={infoError ? 'warning' : 'info'}
-        type={infoError ? 'warning' : 'default'}
-        disabled={infoError}
-        tooltip={
-          infoError
-            ? `${t(
-                'errors.vesselLoading',
-                'There was an error loading the vessel details'
-              )} (${vesselId})`
-            : infoOpen
-            ? t('layer.infoClose', 'Hide info')
-            : t('layer.infoOpen', 'Show info')
-        }
-        onClick={onToggleInfoOpen}
-        tooltipPlacement="top"
-      />
+      <VesselLink vesselId={vesselId} datasetId={dataset?.id}>
+        <IconButton
+          size="small"
+          icon={infoError ? 'warning' : 'info'}
+          type={infoError ? 'warning' : 'default'}
+          disabled={infoError}
+          tooltip={
+            infoError
+              ? `${t(
+                  'errors.vesselLoading',
+                  'There was an error loading the vessel details'
+                )} (${vesselId})`
+              : t('layer.infoOpen', 'Show info')
+          }
+          // onClick={onToggleInfoOpen}
+          tooltipPlacement="top"
+        />
+      </VesselLink>
     </ExpandedContainer>
   )
 

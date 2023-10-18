@@ -6,7 +6,9 @@ export const DEFAULT_CALLBACK_URL_KEY = 'CallbackUrl'
 export const DEFAULT_CALLBACK_URL_PARAM = 'callbackUrlStorage'
 
 export const setRedirectUrl = (callbackUrlKey: string = DEFAULT_CALLBACK_URL_KEY) => {
-  window.localStorage.setItem(callbackUrlKey, window.location.toString())
+  if (typeof window !== 'undefined') {
+    window.localStorage.setItem(callbackUrlKey, window.location.toString())
+  }
 }
 
 export const getLoginUrl = (callbackUrlParam: string = DEFAULT_CALLBACK_URL_PARAM) => {

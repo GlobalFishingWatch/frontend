@@ -6,14 +6,14 @@
   border: none;
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 800px) {
   .highlightPanel {
     display: none;
   }
 }
 
 .container {
-  width: 32rem;
+  width: var(--sidebar-width);
 }
 
 .img {
@@ -25,7 +25,7 @@
 
 .content {
   min-height: 9rem;
-  padding: 1.5rem;
+  padding: var(--space-SM);
 }
 
 .text a {

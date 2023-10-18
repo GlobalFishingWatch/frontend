@@ -23,7 +23,6 @@ export const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDataset
   if (datasetConfig.query) {
     const resolvedQuery = new URLSearchParams()
     datasetConfig.query.forEach((query) => {
-      // if (query)
       const endpointQuery = endpoint.query.find((q) => q.id === query.id)
       if (
         endpointQuery &&
@@ -47,16 +46,32 @@ export const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDataset
           })
         }
       } else {
-        resolvedQuery.set(query.id, query.value.toString())
+        if (Array.isArray(query.value)) {
+          query.value.forEach((queryArrItem, i) => {
+            const queryArrId = `${query.id}[${i}]`
+            resolvedQuery.set(queryArrId, queryArrItem)
+          })
+        } else {
+          resolvedQuery.set(query.id, query.value.toString())
+        }
       }
     })
+
     // To avoid duplicating query in every config when we already have the datasetId
     if (
       endpoint.query.some((q) => q.id === 'datasets') &&
       !resolvedQuery.toString().includes('datasets') &&
       datasetConfig.datasetId
     ) {
-      resolvedQuery.set('datasets', datasetConfig.datasetId)
+      const datasetString = API_VERSION === 'v2' ? 'datasets' : 'datasets[0]'
+      resolvedQuery.set(datasetString, datasetConfig.datasetId)
+    } else if (
+      // Also check v3 new single dataset param
+      endpoint.query.some((q) => q.id === 'dataset') &&
+      !resolvedQuery.toString().includes('dataset') &&
+      datasetConfig.datasetId
+    ) {
+      resolvedQuery.set('dataset', datasetConfig.datasetId)
     }
     url = `${url}?${resolvedQuery.toString()}`
   } else if (

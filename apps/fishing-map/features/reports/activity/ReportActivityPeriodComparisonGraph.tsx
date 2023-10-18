@@ -21,6 +21,7 @@ import i18n, { t } from 'features/i18n/i18n'
 import { COLOR_GRADIENT, COLOR_PRIMARY_BLUE } from 'features/app/App'
 import { getUTCDateTime } from 'utils/dates'
 import { formatDate, formatTooltipValue, tickFormatter } from 'features/reports/reports.utils'
+import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import styles from './ReportActivityEvolution.module.css'
 
 const DIFFERENCE = 'difference'
@@ -56,7 +57,7 @@ const formatDateTicks = (tick: number, start: string, timeChunkInterval: Interva
   const diff = TimeInterval.fromDateTimes(startDate, date)
   if (!diff.length('hours') && !diff.length('days')) return ''
 
-  return timeChunkInterval === 'hour'
+  return timeChunkInterval === 'HOUR'
     ? `${diff.length('hours').toFixed()} ${
         diff.length('hours') === 1 ? t('common.hour_one') : t('common.hour_other')
       }`
@@ -100,7 +101,7 @@ const PeriodComparisonGraphTooltip = (props: any) => {
         <p className={styles.tooltipLabel}>{formatDate(compareDate, timeChunkInterval)}</p>
         <span className={styles.tooltipValue}>
           {difference?.payload.date > offsetedLastDataUpdate ? (
-            '---'
+            EMPTY_FIELD_PLACEHOLDER
           ) : (
             <Fragment>
               <span

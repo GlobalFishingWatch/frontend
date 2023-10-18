@@ -5,12 +5,13 @@ import { ButtonSize } from '../button/Button'
 import styles from './Tabs.module.css'
 import { Tab } from '.'
 
-interface TabsProps<TabID> {
+export interface TabsProps<TabID = string> {
   tabs: Tab<TabID>[]
   activeTab?: TabID
   onTabClick?: (tab: Tab<TabID>, e: React.MouseEvent) => void
   mountAllTabsOnLoad?: boolean
   tabClassName?: string
+  headerClassName?: string
   buttonSize?: ButtonSize
 }
 
@@ -20,6 +21,7 @@ export function Tabs<TabID = string>({
   onTabClick,
   mountAllTabsOnLoad = false,
   tabClassName = '',
+  headerClassName = '',
   buttonSize = 'default',
 }: TabsProps<TabID>) {
   const activeTabId = activeTab || tabs?.[0]?.id
@@ -29,7 +31,7 @@ export function Tabs<TabID = string>({
   }
   return (
     <div className={styles.container}>
-      <ul className={styles.header} role="tablist">
+      <ul className={cx(styles.header, headerClassName)} role="tablist">
         {tabs.map((tab, index) => {
           const tabSelected = activeTabId === tab.id
           return (
@@ -44,6 +46,8 @@ export function Tabs<TabID = string>({
               <Button
                 className={cx(styles.tabButton, { [styles.tabActive]: tabSelected })}
                 type="secondary"
+                tooltip={tab.tooltip}
+                tooltipPlacement={tab.tooltipPlacement}
                 disabled={tab.disabled}
                 onClick={(e) => onTabClick && onTabClick(tab, e)}
                 size={buttonSize || 'default'}
@@ -68,7 +72,9 @@ export function Tabs<TabID = string>({
               id={tab.id as unknown as string}
               role="tabpanel"
               aria-expanded={tabSelected}
-              className={cx(styles.content, tabClassName, { [styles.contentActive]: tabSelected })}
+              className={cx(styles.content, tabClassName, {
+                [styles.contentActive]: tabSelected,
+              })}
             >
               {tab.content}
             </div>

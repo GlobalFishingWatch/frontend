@@ -7,7 +7,7 @@ import {
   filterSegmentsByTimerange,
   geoJSONToSegments,
 } from '@globalfishingwatch/data-transforms'
-import { Resource, Segment, Vessel } from '@globalfishingwatch/api-types'
+import { IdentityVessel, Resource, Segment } from '@globalfishingwatch/api-types'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { Bbox } from 'types'
@@ -15,7 +15,7 @@ import { Bbox } from 'types'
 type FitBoundsProps = {
   hasError: boolean
   trackResource: Resource<Segment[] | FeatureCollection>
-  infoResource?: Resource<Vessel>
+  infoResource?: Resource<IdentityVessel>
   className?: string
 }
 
@@ -36,7 +36,8 @@ const FitBounds = ({ className, trackResource, hasError, infoResource }: FitBoun
       } else {
         if (
           infoResource &&
-          (!infoResource.data?.firstTransmissionDate || !infoResource.data?.firstTransmissionDate)
+          (!infoResource.data?.selfReportedInfo?.[0]?.transmissionDateFrom ||
+            !infoResource.data?.selfReportedInfo?.[0]?.transmissionDateTo)
         ) {
           console.warn('transmissionDates not available, cant fit time', infoResource)
           return
@@ -46,13 +47,17 @@ const FitBounds = ({ className, trackResource, hasError, infoResource }: FitBoun
             t(
               'layer.vessel_fit_bounds_out_of_timerange',
               'The track has no activity in your selected timerange. Change timerange to fit this track?'
-            )
+            ) as string
           )
         ) {
           if (infoResource) {
             setTimerange({
-              start: new Date(infoResource.data!?.firstTransmissionDate).toISOString(),
-              end: new Date(infoResource.data!?.lastTransmissionDate).toISOString(),
+              start: new Date(
+                infoResource.data!?.selfReportedInfo?.[0]?.transmissionDateFrom
+              ).toISOString(),
+              end: new Date(
+                infoResource.data!?.selfReportedInfo?.[0]?.transmissionDateTo
+              ).toISOString(),
             })
           } else {
             let minTimestamp = Number.POSITIVE_INFINITY

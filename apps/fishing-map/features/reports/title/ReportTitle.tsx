@@ -98,8 +98,6 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     [previewBuffer, dispatch]
   )
 
-  const reportLink = window.location.href
-
   const onPrintClick = () => {
     trackEvent({
       category: TrackCategory.Analysis,
@@ -226,7 +224,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
           <h1 className={styles.title} data-test="report-title">
             {reportTitle}
           </h1>
-          <a className={styles.reportLink} href={reportLink}>
+          <a className={styles.reportLink} href={window.location.href}>
             {t('analysis.linkToReport', 'Check the dynamic report here')}
           </a>
 
