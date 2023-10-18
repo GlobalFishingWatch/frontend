@@ -454,7 +454,7 @@
     }
   },
   "private-brazil-opentuna-presence": {
-    "name": "Brazil VMS",
+    "name": "Brazil Open Tuna Presence",
     "description": "This layer of Global Fishing Watch uses data provided for ATLANTIC'S ALLIANCE FOR SUSTAINABLE TUNA, a group of private brazilian tuna companies that decided to be transparent, more info here. The data is collected using their Vessel Monitoring System (VMS) via satellites, including vessel identification, location, speed and course. The information shown represents the vessel presence.",
     "schema": {
       "lat": "lat",
