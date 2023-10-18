@@ -123,7 +123,7 @@
     "@babel/plugin-transform-react-jsx": "^7.22.15",
     "@babel/preset-react": "^7.22.15",
     "@globalfishingwatch/linting": "2.0.2",
-    "@globalfishingwatch/maplibre-gl": "^3.3.1-gfw.1",
+    "@globalfishingwatch/maplibre-gl": "^3.5.1-gfw.2",
     "@jscutlery/semver": "^3.1.0",
     "@next/bundle-analyzer": "^13.5.3",
     "@next/eslint-plugin-next": "13.5.3",

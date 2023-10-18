@@ -2631,7 +2631,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@globalfishingwatch/layer-composer@workspace:libs/layer-composer"
   dependencies:
-    "@globalfishingwatch/maplibre-gl": ^3.3.1-gfw.1
+    "@globalfishingwatch/maplibre-gl": ^3.5.1-gfw.2
     "@mapbox/tilebelt": ^1.0.2
     "@mapbox/vector-tile": ^1.3.1
     "@turf/great-circle": ^6.5.0
@@ -2696,9 +2696,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@globalfishingwatch/maplibre-gl-style-spec@npm:^19.3.1":
-  version: 19.3.1
-  resolution: "@globalfishingwatch/maplibre-gl-style-spec@npm:19.3.1"
+"@globalfishingwatch/maplibre-gl-style-spec@npm:19.3.2-gfw.1":
+  version: 19.3.2-gfw.1
+  resolution: "@globalfishingwatch/maplibre-gl-style-spec@npm:19.3.2-gfw.1"
   dependencies:
     "@mapbox/jsonlint-lines-primitives": ~2.0.2
     "@mapbox/unitbezier": ^0.0.1
@@ -2710,16 +2710,16 @@ __metadata:
     gl-style-format: dist/gl-style-format.mjs
     gl-style-migrate: dist/gl-style-migrate.mjs
     gl-style-validate: dist/gl-style-validate.mjs
-  checksum: d6d7a1ecffa82edb8bef7425c48ea52e1487603f1c8da6c049525ecb411f3dd6d6bd91ee21e495ebb04d4fda05fa49e496e4eb2584c63a9d589ec40a8cd0c22b
+  checksum: 43ac2699364efc98b03e186a2010a906944e833e79894f251456188f13e58b3cdff0cddbad506f2a85af3d988de24942b1a40c39d12196a3a9b55a8a71460814
   languageName: node
   linkType: hard
 
-"@globalfishingwatch/maplibre-gl@npm:^3.3.1-gfw.1":
-  version: 3.3.1-gfw.1
-  resolution: "@globalfishingwatch/maplibre-gl@npm:3.3.1-gfw.1"
+"@globalfishingwatch/maplibre-gl@npm:^3.5.1-gfw.2":
+  version: 3.5.1-gfw.2
+  resolution: "@globalfishingwatch/maplibre-gl@npm:3.5.1-gfw.2"
   dependencies:
     "@globalfishingwatch/fourwings-aggregate": 4.3.0
-    "@globalfishingwatch/maplibre-gl-style-spec": ^19.3.1
+    "@globalfishingwatch/maplibre-gl-style-spec": 19.3.2-gfw.1
     "@mapbox/geojson-rewind": ^0.5.2
     "@mapbox/jsonlint-lines-primitives": ^2.0.2
     "@mapbox/point-geometry": ^0.1.0
@@ -2728,13 +2728,13 @@ __metadata:
     "@mapbox/unitbezier": ^0.0.1
     "@mapbox/vector-tile": ^1.3.1
     "@mapbox/whoots-js": ^3.1.0
-    "@maplibre/maplibre-gl-style-spec": ^19.3.0
+    "@maplibre/maplibre-gl-style-spec": ^19.3.2
     "@swc/core-linux-x64-gnu": ^1.2.192
-    "@types/geojson": ^7946.0.10
+    "@types/geojson": ^7946.0.11
     "@types/mapbox__point-geometry": ^0.1.2
-    "@types/mapbox__vector-tile": ^1.3.0
-    "@types/pbf": ^3.0.2
-    "@types/supercluster": ^7.1.0
+    "@types/mapbox__vector-tile": ^1.3.1
+    "@types/pbf": ^3.0.3
+    "@types/supercluster": ^7.1.1
     earcut: ^2.2.4
     geojson-vt: ^3.2.1
     gl-matrix: ^3.4.3
@@ -2751,7 +2751,7 @@ __metadata:
   dependenciesMeta:
     "@swc/core-linux-x64-gnu":
       optional: true
-  checksum: ab4b26aea1e6dd9dc3eca60ee8470238d23c3b86172a16ddf31a7d105068f75752ca4232b141c144f13d31d2dcccdea0e196c076e78433e3d3531f038ed9a742
+  checksum: 1c123f106b74fde8f14cada9fd4d99161c88bc1664ebefb10466342abd2c7fd2f1a17415aeb1c3b967da547e5ca5e4b079bc8f268818d96cd3954f9815b50931
   languageName: node
   linkType: hard
 
@@ -2789,7 +2789,7 @@ __metadata:
     "@globalfishingwatch/dataviews-client": 14.x
     "@globalfishingwatch/fourwings-aggregate": 4.x
     "@globalfishingwatch/layer-composer": 10.x
-    "@globalfishingwatch/maplibre-gl": ^3.3.1-gfw.1
+    "@globalfishingwatch/maplibre-gl": ^3.5.1-gfw.2
     lodash: 4.x
     usehooks-ts: ^2.x
   languageName: unknown
@@ -2813,7 +2813,7 @@ __metadata:
     "@emotion/styled": ^11.11.0
     "@globalfishingwatch/linting": 2.0.2
     "@globalfishingwatch/map-convert": "github:GlobalFishingWatch/map-convert"
-    "@globalfishingwatch/maplibre-gl": ^3.3.1-gfw.1
+    "@globalfishingwatch/maplibre-gl": ^3.5.1-gfw.2
     "@jscutlery/semver": ^3.1.0
     "@loaders.gl/core": ^3.4.14
     "@loaders.gl/loader-utils": ^3.4.14
@@ -4531,7 +4531,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@maplibre/maplibre-gl-style-spec@npm:^19.3.0":
+"@maplibre/maplibre-gl-style-spec@npm:^19.3.2":
   version: 19.3.2
   resolution: "@maplibre/maplibre-gl-style-spec@npm:19.3.2"
   dependencies:
@@ -8452,7 +8452,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/geojson@npm:*, @types/geojson@npm:^7946.0.10, @types/geojson@npm:^7946.0.11, @types/geojson@npm:^7946.0.7, @types/geojson@npm:^7946.0.8":
+"@types/geojson@npm:*, @types/geojson@npm:^7946.0.11, @types/geojson@npm:^7946.0.7, @types/geojson@npm:^7946.0.8":
   version: 7946.0.11
   resolution: "@types/geojson@npm:7946.0.11"
   checksum: 93fe7e9c5d16b0a836058ee4b87f8b022d53893d5a8e7ab52c8bf64d12039d076df99f3764c1c4da13abaa1001115fd899330edba4d8d8fa4a4feb162650b22c
@@ -8655,14 +8655,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mapbox__vector-tile@npm:^1.3.0":
-  version: 1.3.1
-  resolution: "@types/mapbox__vector-tile@npm:1.3.1"
+"@types/mapbox__vector-tile@npm:^1.3.1":
+  version: 1.3.2
+  resolution: "@types/mapbox__vector-tile@npm:1.3.2"
   dependencies:
     "@types/geojson": "*"
     "@types/mapbox__point-geometry": "*"
     "@types/pbf": "*"
-  checksum: 43ddc4202432758c8a37816bfc2981681ebdcd3eba19fb788648bb73ac96b47dd54f1f6f842ba0d32a70648f4bc03d37185dfe52618f2dfcbc3e824a94a273af
+  checksum: d3a489f7667c704779d56f1b46b3358532f5323129b508341442e5643f847650d9e295e89ea7d5a9e82d4b786036012ec77899683b08b1a9149180591bd269c0
   languageName: node
   linkType: hard
 
@@ -8804,10 +8804,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/pbf@npm:*, @types/pbf@npm:^3.0.2":
+"@types/pbf@npm:*":
   version: 3.0.3
   resolution: "@types/pbf@npm:3.0.3"
   checksum: db2007e40fecd6c6fb69f2f2bbcb635279333405aaf4fc94e31cb811ebe238bdccdb0ba567b4d31a9c509f7280b64497e4c4e8f9d977805e3997a6228b31e8bc
+  languageName: node
+  linkType: hard
+
+"@types/pbf@npm:^3.0.3":
+  version: 3.0.4
+  resolution: "@types/pbf@npm:3.0.4"
+  checksum: 3a8d82176c154d2f19ef51bedf81f867c6f71dba90bd529d805fc39696a7e29fa6b7cf6d321416fe78aefcd1ca63f101b42dbb30aa75752339cef2c908578fe4
   languageName: node
   linkType: hard
 
@@ -9049,12 +9056,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/supercluster@npm:^7.1.0":
-  version: 7.1.1
-  resolution: "@types/supercluster@npm:7.1.1"
+"@types/supercluster@npm:^7.1.1":
+  version: 7.1.2
+  resolution: "@types/supercluster@npm:7.1.2"
   dependencies:
     "@types/geojson": "*"
-  checksum: 2255432478ab7258c297d5c5da54ce26480088cb92c6e9d06203f43bfd442d089a5e80f808a91f1ddb0d90d7ee55835d8c15d17e5686feb3be0d912faf5967b2
+  checksum: 73880bada5d8bd8e50ea3f16834b88334e649e445fcb505bd8185ab62b840292e8732b83c9d5de43361bf4b0c64b572395c7b70ab281a4acaa462dccacab46a0
   languageName: node
   linkType: hard
 
