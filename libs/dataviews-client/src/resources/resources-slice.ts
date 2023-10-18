@@ -62,51 +62,52 @@ export const fetchResourceThunk = createAsyncThunk(
     const isTrackResource = resource.dataset.type === DatasetTypes.Tracks
     const isUserTrackResource = resource.dataset.type === DatasetTypes.UserTracks
     const isEventsResource = resource.dataset.type === DatasetTypes.Events
-    const responseType =
-      isTrackResource &&
-      resource.datasetConfig.query?.some((q) => q.id === 'binary' && q.value === true)
-        ? 'vessel'
-        : 'json'
+    const isTrackBinary = resource.datasetConfig.query?.some(
+      (q) => q.id === 'binary' && q.value === true
+    )
+    const responseType = isTrackResource && isTrackBinary ? 'vessel' : 'json'
 
     // The urls has the version included so I need to remove them
-    const data = await GFWAPI.fetch(resource.url, { responseType, signal }).then((data: any) => {
-      // TODO Replace with enum?
-      if (isTrackResource) {
-        const fields = (
-          resource.datasetConfig.query?.find((q) => q.id === 'fields')?.value as string
-        ).split(',') as Field[]
+    const data = await GFWAPI.fetch(resource.url, { responseType, signal })
+      .then((data: any) => {
+        if (isTrackResource && isTrackBinary) {
+          const fields = resource.datasetConfig.query?.find((q) => q.id === 'fields')
+            ?.value as Field[]
 
-        const segments = trackValueArrayToSegments(data as any, fields)
-        return segments
-      }
-      // TODO check by eventType when needed
-      if (isEventsResource) {
-        const vesselId =
-          getVesselIdFromDatasetConfig(resource?.datasetConfig) || resource.url.split('/')[3] // grab vesselId from url
-        return (data as ApiEvents).entries.map((event, index) => {
-          const eventKey = `${vesselId}-${event.type}-${index}`
-          return parseEventCb ? parseEventCb(event, eventKey) : parseEvent(event, eventKey)
-        })
-      }
-
-      if (isUserTrackResource) {
-        const geoJSON = data as FeatureCollection
-
-        // Wrap longitudes
-        const wrappedGeoJSON = {
-          ...geoJSON,
-          features: wrapLineStringLongitudes(geoJSON.features as Feature<LineString>[]),
+          const segments = trackValueArrayToSegments(data as any, fields)
+          return segments
+        }
+        // TODO check by eventType when needed
+        if (isEventsResource) {
+          const vesselId =
+            getVesselIdFromDatasetConfig(resource?.datasetConfig) || resource.url.split('/')[3] // grab vesselId from url
+          return (data as ApiEvents).entries.map((event, index) => {
+            const eventKey = `${vesselId}-${event.type}-${index}`
+            return parseEventCb ? parseEventCb(event, eventKey) : parseEvent(event, eventKey)
+          })
         }
 
-        if (parseUserTrackCb) {
-          return parseUserTrackCb(wrappedGeoJSON)
+        if (isUserTrackResource) {
+          const geoJSON = data as FeatureCollection
+
+          // Wrap longitudes
+          const wrappedGeoJSON = {
+            ...geoJSON,
+            features: wrapLineStringLongitudes(geoJSON.features as Feature<LineString>[]),
+          }
+
+          if (parseUserTrackCb) {
+            return parseUserTrackCb(wrappedGeoJSON)
+          }
+
+          return wrappedGeoJSON
         }
 
-        return wrappedGeoJSON
-      }
-
-      return data
-    })
+        return data
+      })
+      .catch((e) => {
+        console.warn(e)
+      })
     return {
       ...resource,
       data,
