@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.2.145](https://github.com/GlobalFishingWatch/frontend/compare/i18n-labels@1.2.144...i18n-labels@1.2.145) (2023-10-18)
+
+
+### Features
+
+* Merge pull request [#2149](https://github.com/GlobalFishingWatch/frontend/issues/2149) from GlobalFishingWatch/fishing-map/search-and-vessel-profile ([bba039a](https://github.com/GlobalFishingWatch/frontend/commit/bba039ae4318f7820ddb5ad7cf1891cf9300e4e0))
+
+
+
 ## [1.2.144](https://github.com/GlobalFishingWatch/frontend/compare/i18n-labels@1.2.143...i18n-labels@1.2.144) (2023-10-17)
 
 
