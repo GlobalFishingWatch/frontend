@@ -317,7 +317,9 @@ export const getContextAreaLink = (
     case ContextLayerType.ProtectedSeas:
       return `https://map.navigatormap.org/site-detail?site_id=${areaIsObject ? area?.id : area}`
     case ContextLayerType.FAO:
-      return `https://www.fao.org/fishery/en/area/${areaIsObject ? area?.properties?.F_CODE : area}`
+      return `https://www.fao.org/fishery/en/area/${
+        areaIsObject ? area?.properties?.F_CODE : area
+      }/en`
     default:
       return undefined
   }
