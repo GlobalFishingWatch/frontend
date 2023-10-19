@@ -124,7 +124,9 @@ export function getVesselProperty<P = string>(
       const combinedSourcesInfoProperty = property === 'geartype' ? 'geartypes' : 'shiptypes'
       const combinedSourcesInfoData = combinedSourcesInfo[combinedSourcesInfoProperty]
       if (combinedSourcesInfoData?.length) {
-        return combinedSourcesInfoData[0].name.toLowerCase() as P
+        return combinedSourcesInfoData
+          .sort((a, b) => b.yearTo - a.yearTo)[0]
+          .name.toLowerCase() as P
       }
     }
   }
