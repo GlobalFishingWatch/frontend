@@ -536,8 +536,6 @@
     "result_other": "crwdns69440:0crwdne69440:0",
     "seeing": "crwdns69442:0crwdne69442:0",
     "seeVessel": "crwdns60387:0crwdne60387:0",
-    "seeVessels_one": "crwdns68661:0crwdne68661:0",
-    "seeVessels_other": "crwdns68663:0crwdne68663:0",
     "seeVesselsOnMap": "crwdns69444:0crwdne69444:0",
     "seeVesselsOnMap_one": "crwdns69446:0{{count}}crwdne69446:0",
     "seeVesselsOnMap_other": "crwdns69448:0{{count}}crwdne69448:0",
