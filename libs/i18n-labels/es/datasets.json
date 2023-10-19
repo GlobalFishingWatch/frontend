@@ -1250,19 +1250,6 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
-  "private-png-fishing-vessels": {
-    "name": "VMS de Papúa Nueva Guinea (Buques de pesca)",
-    "description": "VMS de Papúa Nueva Guinea (Buques de pesca)",
-    "schema": {
-      "id": "id",
-      "registryInfo": "registryInfo",
-      "registryOwners": "registryOwners",
-      "selfReportedInfo": "selfReportedInfo",
-      "lastTransmissionDate": "lastTransmissionDate",
-      "firstTransmissionDate": "firstTransmissionDate",
-      "registryAuthorizations": "registryAuthorizations"
-    }
-  },
   "private-png-presence": {
     "name": "VMS de Papúa Nueva Guinea",
     "description": "Los datos del sistema de seguimiento de embarcaciones (VMS) son proporcionados por la Autoridad Nacional de Pesca de Papúa Nueva Guinea. Los datos se recopilan utilizando el VMS nacional de Papúa Nueva Guinea proporcionado por el Sistema de gestión e información pesqueras (FIMS, por sus siglas en inglés). Los datos de VMS incluyen los identificadores y la ubicación de las embarcaciones, y se publican con un retraso de cinco días.\n\nLa capa de actividad muestra un mapa de calor de presencia de embarcaciones. La presencia se determina tomando dos posiciones por hora por embarcación a partir de las posiciones transmitidas por el VMS de la embarcación.",
