@@ -35,7 +35,10 @@ export type IdentityVesselData = {
   identities: VesselDataIdentity[]
   dataset: Dataset
 } & VesselInstanceDatasets &
-  Pick<IdentityVessel, 'registryOwners' | 'registryAuthorizations' | 'matchCriteria'>
+  Pick<
+    IdentityVessel,
+    'registryOwners' | 'registryAuthorizations' | 'matchCriteria' | 'combinedSourcesInfo'
+  >
 
 type VesselInfoEntry = {
   status: AsyncReducerStatus
@@ -114,6 +117,7 @@ export const fetchVesselInfoThunk = createAsyncThunk(
         return {
           id: getVesselProperty(vessel, 'id'),
           dataset: dataset,
+          combinedSourcesInfo: vessel.combinedSourcesInfo,
           registryOwners: vessel.registryOwners,
           registryAuthorizations: vessel.registryAuthorizations,
           info: datasetId,
