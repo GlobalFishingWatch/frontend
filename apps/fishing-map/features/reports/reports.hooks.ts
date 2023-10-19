@@ -85,20 +85,6 @@ export function useFitAreaInViewport() {
   }, [areaCenter, areaInViewport, setMapCoordinates])
 }
 
-export function useReportAreaHighlight(params = {} as HighlightedAreaParams) {
-  const highlightedArea = useHighlightArea()
-  const { areaId, sourceId } = useMemoCompare(params)
-
-  useEffect(() => {
-    if (areaId && sourceId) {
-      // Can't understand why this is needed but it is
-      setTimeout(() => {
-        highlightedArea({ sourceId, areaId, sourceLayer: '' })
-      }, 500)
-    }
-  }, [areaId, sourceId, highlightedArea])
-}
-
 // 0 - 20MB No simplifyTrack
 // 20 - 200MG SIMPLIFY FINE_SIMPLIFY_TOLERANCE
 // > 200 SIMPLIFY COARSE
