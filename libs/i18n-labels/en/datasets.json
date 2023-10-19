@@ -1250,19 +1250,6 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
-  "private-png-fishing-vessels": {
-    "name": "Papua New Guinea VMS (Fishing Vessels)",
-    "description": "Dataset for VMS Papua New Guinea (Private)",
-    "schema": {
-      "id": "id",
-      "registryInfo": "registryInfo",
-      "registryOwners": "registryOwners",
-      "selfReportedInfo": "selfReportedInfo",
-      "lastTransmissionDate": "lastTransmissionDate",
-      "firstTransmissionDate": "firstTransmissionDate",
-      "registryAuthorizations": "registryAuthorizations"
-    }
-  },
   "private-png-presence": {
     "name": "Papua New Guinea VMS",
     "description": "Vessel monitoring system (VMS) data is provided by the The National Fisheries Authority of Papua New Guinea. Data is collected using Papua New Guinea's national VMS  that is provided by the Fisheries Information and Management System (FIMS). VMS data includes vessel identifiers and location, and is published with a five-day delay.\n\nThe activity layer displays a heatmap of vessel presence. The presence is determined by taking two positions per hour per vessel from the positions transmitted by the vessel's VMS.",
