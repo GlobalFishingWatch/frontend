@@ -536,8 +536,6 @@
     "result_other": "hasil",
     "seeing": "Melihat",
     "seeVessel": "Lihat kapal",
-    "seeVessels_one": "Lihat {{count}} kapal",
-    "seeVessels_other": "Lihat kapal",
     "seeVesselsOnMap": "Lihat {{count}} kapal",
     "seeVesselsOnMap_one": "Lihat {{count}} kapal di peta",
     "seeVesselsOnMap_other": "Lihat {{count}} kapal di peta",
