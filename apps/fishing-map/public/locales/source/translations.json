@@ -746,6 +746,7 @@
     "transmissionDates": "Transmission dates",
     "type": "Type",
     "unkwownVesselByGeartype": "Unknown {{gearType}}",
+    "unknownRegionEvents": "Outside {{regionType}} areas",
     "unmatched": "unmatched",
     "vessel_type": "Vessel type",
     "vesselType": "Vessel type",

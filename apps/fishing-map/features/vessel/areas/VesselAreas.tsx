@@ -9,6 +9,7 @@ import { eventsToBbox } from '@globalfishingwatch/data-transforms'
 import {
   selectVesselEventTypes,
   selectEventsGroupedByArea,
+  UNKNOWN_AREA,
 } from 'features/vessel/activity/vessels-activity.selectors'
 import { VesselAreaSubsection } from 'types'
 import { selectVesselAreaSubsection } from 'features/vessel/vessel.config.selectors'
@@ -102,6 +103,8 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
   const events = useSelector(selectVesselEventsFilteredByTimerange)
   const vesselArea = useSelector(selectVesselAreaSubsection)
   const eventsGrouped = useSelector(selectEventsGroupedByArea)
+  const eventsGroupedWithoutUnknown = eventsGrouped.filter((group) => group.region !== UNKNOWN_AREA)
+  const eventsGroupedUnknown = eventsGrouped.find((group) => group.region === UNKNOWN_AREA)
   const eventsLoading = useSelector(selectVesselEventsResourcesLoading)
   const vesselColor = useSelector(selectVesselProfileColor)
   const eventTypes = useSelector(selectVesselEventTypes)
@@ -204,43 +207,58 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
         </div>
       )}
       <div className={styles.areaList}>
-        {eventsGrouped.length > 0 ? (
-          <BarChart
-            width={graphWidth}
-            height={eventsGrouped.length * 40}
-            layout="vertical"
-            data={eventsGrouped}
-            margin={{ right: 40 }}
-          >
-            <YAxis
-              interval={0}
-              axisLine={false}
-              tickLine={false}
-              type="category"
-              dataKey="region"
-              width={200}
-              tick={<AreaTick />}
-            />
-            <XAxis type="number" hide />
-            <RechartsTooltip content={<AreaTooltip />} />
-            {eventTypes?.map((eventType, index) => (
-              <Bar
-                key={eventType}
-                dataKey={eventType}
-                barSize={15}
-                stackId="a"
-                fill={eventType === 'fishing' ? vesselColor : EVENTS_COLORS[eventType]}
-              >
-                {index === eventTypes.length - 1 && (
-                  <LabelList
-                    position="right"
-                    valueAccessor={(entry: any) => formatI18nNumber(entry.total)}
-                    className={styles.count}
-                  />
-                )}
-              </Bar>
-            ))}
-          </BarChart>
+        {eventsGroupedWithoutUnknown.length > 0 ? (
+          <div>
+            <BarChart
+              width={graphWidth}
+              height={eventsGroupedWithoutUnknown.length * 40}
+              layout="vertical"
+              data={eventsGroupedWithoutUnknown}
+              margin={{ right: 40 }}
+            >
+              <YAxis
+                interval={0}
+                axisLine={false}
+                tickLine={false}
+                type="category"
+                dataKey="region"
+                width={200}
+                tick={<AreaTick />}
+              />
+              <XAxis type="number" hide />
+              <RechartsTooltip content={<AreaTooltip />} />
+              {eventTypes?.map((eventType, index) => (
+                <Bar
+                  key={eventType}
+                  dataKey={eventType}
+                  barSize={15}
+                  stackId="a"
+                  fill={eventType === 'fishing' ? vesselColor : EVENTS_COLORS[eventType]}
+                >
+                  {index === eventTypes.length - 1 && (
+                    <LabelList
+                      position="right"
+                      valueAccessor={(entry: any) => formatI18nNumber(entry.total)}
+                      className={styles.count}
+                    />
+                  )}
+                </Bar>
+              ))}
+            </BarChart>
+            {eventsGroupedUnknown?.total && (
+              <p className={styles.unknownRegionEvents}>
+                <span className={styles.unknownRegionEventsTitle}>
+                  {t('vessel.unknownRegionEvents', {
+                    defaultValue: 'Outside {{regionType}} areas',
+                    regionType: t(`layer.areas.${vesselArea}`, vesselArea),
+                  })}
+                </span>
+                <span className={styles.unknownRegionEventsNumber}>
+                  <I18nNumber number={eventsGroupedUnknown?.total} />
+                </span>
+              </p>
+            )}
+          </div>
         ) : events.length === 0 ? (
           <span className={styles.enptyState}>
             {t(
