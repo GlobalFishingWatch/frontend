@@ -25,9 +25,6 @@ export const formatInfoField = (
       if (type === 'shiptype' || type === 'vesselType') {
         return translationFn(`vessel.vesselTypes.${fieldValue?.toLowerCase()}` as any, fieldValue)
       }
-      if (type === 'geartype') {
-        return getVesselGearType({ geartype: fieldValue }, translationFn)
-      }
       if (!fieldValue && (type === 'name' || type === 'shipname')) {
         return translationFn('common.unknownVessel', 'Unknown Vessel')
       }
@@ -43,7 +40,7 @@ export const formatInfoField = (
       }
     } else if (Array.isArray(fieldValue)) {
       if (type === 'geartype') {
-        return getVesselGearType({ geartype: fieldValue }, translationFn)
+        return getVesselGearType({ geartype: fieldValue })
       }
     } else {
       return formatI18nNumber(fieldValue)
@@ -70,13 +67,12 @@ export const formatNumber = (num: string | number, maximumFractionDigits?: numbe
 }
 
 export const getVesselGearType = (
-  { geartype } = {} as Pick<VesselDataIdentity, 'geartype'> | { geartype: string },
-  translationFn = t
+  { geartype } = {} as Pick<VesselDataIdentity, 'geartype'> | { geartype: string }
 ): string => {
   const gearTypes = Array.isArray(geartype) ? geartype : [geartype]
   return gearTypes
     .filter(Boolean)
-    ?.map((gear) => translationFn(`vessel.gearTypes.${gear?.toLowerCase()}`, gear))
+    ?.map((gear) => t(`vessel.gearTypes.${gear?.toLowerCase()}`, gear))
     .join(',')
 }
 

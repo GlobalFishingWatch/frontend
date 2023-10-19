@@ -117,19 +117,6 @@ export function getVesselProperty<P = string>(
       vessel.registryOwners?.filter((owner) => owner.ssvid === ssvid)?.map(({ name }) => name)
     ).join(', ') as P
   }
-  if (property === 'geartype' || property === 'shiptype') {
-    const vesselId = getVesselProperty(vessel, 'id', { identityId, identitySource })
-    const combinedSourcesInfo = vessel.combinedSourcesInfo?.find((i) => i.vesselId === vesselId)
-    if (combinedSourcesInfo) {
-      const combinedSourcesInfoProperty = property === 'geartype' ? 'geartypes' : 'shiptypes'
-      const combinedSourcesInfoData = combinedSourcesInfo[combinedSourcesInfoProperty]
-      if (combinedSourcesInfoData?.length) {
-        return combinedSourcesInfoData
-          .sort((a, b) => b.yearTo - a.yearTo)[0]
-          .name.toLowerCase() as P
-      }
-    }
-  }
   if (!identitySource) {
     return get(getLatestIdentityPrioritised(vessel), property) as P
   }
@@ -209,7 +196,6 @@ export function getCurrentIdentityVessel(
   return {
     ...vesselData,
     dataset: vessel.dataset,
-    geartype: getVesselProperty(vessel, 'geartype', { identityId, identitySource }),
     registryAuthorizations: vessel.registryAuthorizations
       ? sortVesselRegistryProperties(vessel.registryAuthorizations)
       : [],
