@@ -55,7 +55,7 @@ const VesselIdentity = () => {
   })
 
   const onTabClick: TabsProps<VesselIdentitySourceEnum>['onTabClick'] = (tab) => {
-    dispatchQueryParams({ vesselIdentityId: undefined, vesselIdentitySource: tab.id })
+    dispatchQueryParams({ vesselIdentitySource: tab.id })
   }
 
   const onTimeRangeClick = () => {
@@ -114,7 +114,6 @@ const VesselIdentity = () => {
     if (identitySource === VesselIdentitySourceEnum.Registry && registryDisabled) {
       dispatchQueryParams({
         vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
-        vesselIdentityId: undefined,
       })
     }
   }, [dispatchQueryParams, identitySource, registryDisabled])

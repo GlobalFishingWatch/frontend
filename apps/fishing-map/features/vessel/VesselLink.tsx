@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import {
   selectCurrentWorkspaceCategory,
   selectCurrentWorkspaceId,
@@ -18,7 +19,7 @@ import {
   selectLocationQuery,
 } from 'routes/routes.selectors'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
-import { QueryParams, TimebarVisualisations } from 'types'
+import { QueryParams } from 'types'
 import { getVesselIdentityId } from 'features/vessel/vessel.utils'
 
 export type VesselLinkProps = {
@@ -90,10 +91,14 @@ const VesselLink = ({
           vesselDatasetId,
           ...(identity && {
             vesselIdentitySource: identity.identitySource,
-            vesselIdentityId: getVesselIdentityId(identity),
+            ...(identity.identitySource === VesselIdentitySourceEnum.SelfReported
+              ? {
+                  vesselSelfReportedId: getVesselIdentityId(identity),
+                }
+              : { vesselRegistryId: getVesselIdentityId(identity) }),
           }),
           ...(query || {}),
-        } as QueryParams,
+        },
       }}
       onClick={onLinkClick}
     >
