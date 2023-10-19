@@ -1255,12 +1255,12 @@
     "description": "crwdns65431:0crwdne65431:0",
     "schema": {
       "id": "crwdns65433:0crwdne65433:0",
-      "flag": "crwdns69718:0crwdne69718:0",
-      "source": "crwdns69720:0crwdne69720:0",
-      "callsign": "crwdns69722:0crwdne69722:0",
-      "shipname": "crwdns69724:0crwdne69724:0",
+      "registryInfo": "crwdns69734:0crwdne69734:0",
+      "registryOwners": "crwdns69736:0crwdne69736:0",
+      "selfReportedInfo": "crwdns69738:0crwdne69738:0",
       "lastTransmissionDate": "crwdns65443:0crwdne65443:0",
-      "firstTransmissionDate": "crwdns65445:0crwdne65445:0"
+      "firstTransmissionDate": "crwdns65445:0crwdne65445:0",
+      "registryAuthorizations": "crwdns69740:0crwdne69740:0"
     }
   },
   "private-png-presence": {
@@ -2673,8 +2673,8 @@
     }
   },
   "public-panama-vessel-identity-fishing": {
-    "name": "crwdns69726:0crwdne69726:0",
-    "description": "crwdns69728:0crwdne69728:0",
+    "name": "crwdns69742:0crwdne69742:0",
+    "description": "crwdns69744:0crwdne69744:0",
     "schema": {
       "id": "crwdns69176:0crwdne69176:0",
       "selfReportedInfo": "crwdns69178:0crwdne69178:0",
