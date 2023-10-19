@@ -3,13 +3,12 @@ import { useTranslation } from 'react-i18next'
 import { Logo } from '@globalfishingwatch/ui-components'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Locale } from 'types'
-import { WorkspaceCategory } from 'data/workspaces'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import styles from './Welcome.module.css'
-import WELCOME_POPUP_CONTENT from './welcome.content'
+import WELCOME_POPUP_CONTENT, { WelcomeContentKey } from './welcome.content'
 
 type WelcomeProps = {
-  contentKey: WorkspaceCategory
+  contentKey: WelcomeContentKey
   showDisableCheckbox?: boolean
 }
 

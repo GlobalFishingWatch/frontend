@@ -7,7 +7,11 @@ import { Modal } from '@globalfishingwatch/ui-components'
 import { WorkspaceCategory } from 'data/workspaces'
 import { isGFWUser } from 'features/user/user.slice'
 import { DISABLE_WELCOME_POPUP } from 'features/welcome/Welcome'
-import { selectLocationCategory } from 'routes/routes.selectors'
+import {
+  selectIsAnyVesselLocation,
+  selectIsStandaloneSearchLocation,
+  selectLocationCategory,
+} from 'routes/routes.selectors'
 import { selectReadOnly } from 'features/app/app.selectors'
 import { selectDebugActive, toggleDebugMenu } from 'features/debug/debug.slice'
 import { selectEditorActive, toggleEditorMenu } from 'features/editor/editor.slice'
@@ -20,6 +24,7 @@ import { selectVesselGroupModalOpen } from 'features/vessel-groups/vessel-groups
 import GFWOnly from 'features/user/GFWOnly'
 import { selectAnyAppModalOpen } from 'features/modals/modals.selectors'
 import { DISABLE_SOURCE_SWITCH_POPUP } from 'features/welcome/WelcomeSourceSwitch'
+import { WelcomeContentKey } from 'features/welcome/welcome.content'
 import styles from './Modals.module.css'
 
 const BigQueryMenu = dynamic(
@@ -95,8 +100,10 @@ const AppModals = () => {
     false
   )
 
-  const locationIsMarineManager =
-    useSelector(selectLocationCategory) === WorkspaceCategory.MarineManager
+  const locationCategory = useSelector(selectLocationCategory)
+  const locationIsMarineManager = locationCategory === WorkspaceCategory.MarineManager
+  const locationIsVesselProfile = useSelector(selectIsAnyVesselLocation)
+  const locationIsStandaloneSearch = useSelector(selectIsStandaloneSearchLocation)
 
   useEffect(() => {
     if (locationIsMarineManager) {
@@ -105,11 +112,12 @@ const AppModals = () => {
   }, [locationIsMarineManager])
 
   const [welcomePopupOpen, setWelcomePopupOpen] = useState(
-    locationIsMarineManager ? isFirstTimeVisit : !disabledWelcomePopup
+    locationIsMarineManager || locationIsVesselProfile ? isFirstTimeVisit : !disabledWelcomePopup
   )
-  const welcomePopupContentKey = locationIsMarineManager
-    ? WorkspaceCategory.MarineManager
-    : WorkspaceCategory.FishingActivity
+  const welcomePopupContentKey: WelcomeContentKey =
+    locationIsVesselProfile || locationIsStandaloneSearch
+      ? 'vessel-profile'
+      : locationCategory || WorkspaceCategory.FishingActivity
 
   const [sourceSwitchPopupOpen, setSourceSwitchPopupOpen] = useState(!disabledSourceSwitchPopup)
   return (
