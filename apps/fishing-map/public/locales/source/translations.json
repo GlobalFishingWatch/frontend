@@ -536,8 +536,6 @@
     "result_other": "results",
     "seeing": "Seeing",
     "seeVessel": "See vessel",
-    "seeVessels_one": "See vessel on map",
-    "seeVessels_other": "See vessels on map",
     "seeVesselsOnMap": "See vessel on map",
     "seeVesselsOnMap_one": "See {{count}} vessel on map",
     "seeVesselsOnMap_other": "See {{count}} vessels on map",
