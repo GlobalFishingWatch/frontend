@@ -53,6 +53,7 @@ import { resetVesselState } from 'features/vessel/vessel.slice'
 import { cleanVesselSearchResults } from 'features/search/search.slice'
 import UserButton from 'features/user/UserButton'
 import LanguageToggle from 'features/i18n/LanguageToggle'
+import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
 import styles from './SidebarHeader.module.css'
 import { useClipboardNotification } from './sidebar.hooks'
 
@@ -323,7 +324,10 @@ function CloseVesselButton() {
   const linkTo = {
     type: WORKSPACE,
     payload: locationPayload,
-    query: locationQuery,
+    query: {
+      ...locationQuery,
+      ...DEFAULT_VESSEL_STATE,
+    },
   }
 
   return (
