@@ -95,7 +95,6 @@ const AppModals = () => {
   const downloadTrackId = useSelector(selectDownloadTrackId)
   const anyAppModalOpen = useSelector(selectAnyAppModalOpen)
   const [disabledWelcomePopup] = useLocalStorage(DISABLE_WELCOME_POPUP, false)
-  console.log('disabledWelcomePopup:', disabledWelcomePopup)
   const [disabledSourceSwitchPopup, setDisabledSourceSwitchPopup] = useLocalStorage(
     DISABLE_SOURCE_SWITCH_POPUP,
     false
