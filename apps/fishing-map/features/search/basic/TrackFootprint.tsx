@@ -7,8 +7,9 @@ import qs from 'qs'
 import area from '@turf/area'
 import bbox from '@turf/bbox'
 import bboxPolygon from '@turf/bbox-polygon'
+import { useTranslation } from 'react-i18next'
 import { GFWAPI, THINNING_LEVELS } from '@globalfishingwatch/api-client'
-import { Icon, Spinner } from '@globalfishingwatch/ui-components'
+import { Icon, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 import { segmentsToGeoJSON, trackValueArrayToSegments } from '@globalfishingwatch/data-transforms'
 import { Field } from '@globalfishingwatch/api-types'
 import { useOnScreen, useScreenDPI } from 'hooks/screen.hooks'
@@ -38,6 +39,7 @@ function TrackFootprint({
   highlightedYear,
   onDataLoad,
 }: TrackFootprintProps) {
+  const { t } = useTranslation()
   const [trackData, setTrackData] = useState<FeatureCollection<Geometry, GeoJsonProperties>>()
   const [error, setError] = useState(false)
   const fullCanvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -167,24 +169,26 @@ function TrackFootprint({
   ])
 
   return (
-    <div className={styles.map}>
-      <canvas
-        className={cx(styles.canvas, { [styles.faint]: highlightedYear })}
-        width={footprintWidth}
-        height={footprintHeight}
-        ref={fullCanvasRef}
-      />
-      <canvas
-        className={styles.canvas}
-        width={footprintWidth}
-        height={footprintHeight}
-        ref={highlightCanvasRef}
-      />
-      {!trackData && !error && vesselIds?.length > 0 && (
-        <Spinner size="small" className={styles.spinner} />
-      )}
-      {error && <Icon icon="warning" type="warning" />}
-    </div>
+    <Tooltip content={error && t('vessel.noTrackAvailable', 'There is no track available')}>
+      <div className={styles.map}>
+        <canvas
+          className={cx(styles.canvas, { [styles.faint]: highlightedYear })}
+          width={footprintWidth}
+          height={footprintHeight}
+          ref={fullCanvasRef}
+        />
+        <canvas
+          className={styles.canvas}
+          width={footprintWidth}
+          height={footprintHeight}
+          ref={highlightCanvasRef}
+        />
+        {!trackData && !error && vesselIds?.length > 0 && (
+          <Spinner size="small" className={styles.spinner} />
+        )}
+        {error && <Icon icon="warning" type="warning" />}
+      </div>
+    </Tooltip>
   )
 }
 

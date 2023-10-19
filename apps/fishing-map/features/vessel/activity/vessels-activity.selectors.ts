@@ -79,12 +79,18 @@ export const selectVesselEventTypes = createSelector(
   }
 )
 
+export const UNKNOWN_AREA = 'unknown-area'
+
 export const selectEventsGroupedByArea = createSelector(
   [selectVesselEventsFilteredByTimerange, selectVesselAreaSubsection],
   (eventsList, area) => {
-    const regionCounts: Record<string, Record<'total' | EventTypes, number>> = eventsList.reduce(
+    const regionCounts: Record<
+      string,
+      Record<typeof UNKNOWN_AREA | 'total' | EventTypes, number>
+    > = eventsList.reduce(
       (acc, event) => {
         let eventAreas = event.regions?.[area]
+        if (!eventAreas?.length) eventAreas = [UNKNOWN_AREA]
         if (area === 'fao') {
           eventAreas = eventAreas?.filter((area) => area.split('.').length === 1)
         }

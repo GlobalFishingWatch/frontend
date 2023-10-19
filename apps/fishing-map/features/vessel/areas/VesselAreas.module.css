@@ -69,3 +69,19 @@
   cursor: pointer;
   text-decoration: underline;
 }
+
+.unknownRegionEvents {
+  margin-block: var(--space-S);
+}
+
+.unknownRegionEventsTitle {
+  display: inline-block;
+  width: 20rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.unknownRegionEventsNumber {
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+}

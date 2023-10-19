@@ -30,17 +30,21 @@ export const selectVesselActivityMode = createSelector(
   }
 )
 
-export const selectVesselIdentityId = createSelector(
-  [selectVesselProfileStateProperty('vesselIdentityId')],
-  (vesselIdentityId): string => {
-    return vesselIdentityId
-  }
-)
-
 export const selectVesselIdentitySource = createSelector(
   [selectVesselProfileStateProperty('vesselIdentitySource')],
   (vesselIdentitySource): VesselIdentitySourceEnum => {
     return vesselIdentitySource
+  }
+)
+
+export const selectVesselIdentityId = createSelector(
+  [
+    selectVesselIdentitySource,
+    selectVesselProfileStateProperty('vesselRegistryId'),
+    selectVesselProfileStateProperty('vesselSelfReportedId'),
+  ],
+  (identitySource, registryId, selfReportedId): string => {
+    return identitySource === VesselIdentitySourceEnum.SelfReported ? selfReportedId : registryId
   }
 )
 

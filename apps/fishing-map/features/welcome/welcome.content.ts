@@ -12,7 +12,34 @@ type WelcomeContent = {
   partnerLink?: string
 } & WelcomeContentLang
 
-const WELCOME_POPUP_CONTENT: { [category in WorkspaceCategory]?: WelcomeContent } = {
+export type WelcomeContentKey = WorkspaceCategory | 'vessel-profile'
+
+const WELCOME_POPUP_CONTENT: {
+  [category in WorkspaceCategory | 'vessel-profile']?: WelcomeContent
+} = {
+  'vessel-profile': {
+    partnerLogo: 'https://globalfishingwatch.org/wp-content/uploads/TMT_logo_primary_RGB@2x.png',
+    partnerLink: 'https://www.tm-tracking.org/',
+    en: {
+      title: 'Welcome to Vessel Viewer',
+      description: `<p>Vessel Viewer is an innovative vessel history tool that arms authorities with the information needed to make a rapid assessment of a fishing vessel’s recent operations and compliance.</p>
+      <p>Developed in partnership by Global Fishing Watch and TMT, the tool provides information on a vessel’s identity, fishing activity, port visits and transshipments. This allows users to identify and cross-check relevant, absent or false information about a given vessel and its fishing operations to inform decision-making and operational planning.</p>
+      <p>By helping individuals better understand vessel behavior and providing them with broader analysis of vessel operations, Vessel Viewer supports a range of applications that can help bolster ocean governance.</p>
+      <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-vessel-orange.png">Vessel history tool</h2>
+      <p>Vessel Viewer provides information on a vessel’s identity, fishing activity, port visits, authorizations and transshipments.</p>
+      <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-inspector-orange.png">Vessel profiles</h2>
+      <p>Detailed vessel profiles show identity information alongside tracks and summaries of events that can be interpreted by timeline, location or relationships between vessels.</p>
+      <h2><img src="https://globalfishingwatch.org/wp-content/uploads/GFW_GLOBAL-SEARCH_Orange-1.png">Searching for vessels</h2>
+      <p>Anyone can search for specific vessels across self reported information and over 40 public vessel registries, build custom vessel groups, share links to vessel profiles and save them offline as PDF files.</p>
+      <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-teamwork-orange.png">Partnerships</h2>
+      <p>We have engaged with a range of partners from across the globe—all utilizing the vessel viewer tool for its various applications —including port inspectors, fisheries enforcement, insurance and seafood supply chains. This collaboration allows us to understand how we can empower stakeholders to achieve their goals and improve the tool over time.</p>
+      <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-email-orange.png">Feedback</h2>
+      <p>Help us to improve Vessel Viewer by sending feedback to: <a href="mailto:support@globalfishingwatch.org">support@globalfishingwatch.org</a> </p>
+      <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-graph-orange-1.png">Register for free access to all features</h2>
+      <p>Register for a free Global Fishing Watch <a href="https://gateway.api.globalfishingwatch.org/auth?client=gfw&callback=https://globalfishingwatch.org/marine-manager">account</a> to access advanced analysis features, data downloads and advanced search options. Registration takes two minutes.</p>
+      `,
+    },
+  },
   [WorkspaceCategory.MarineManager]: {
     partnerLogo: 'https://globalfishingwatch.org/wp-content/uploads/Logo_DonaBertarelliPH@2x.png',
     partnerLink: 'https://donabertarelli.com/',

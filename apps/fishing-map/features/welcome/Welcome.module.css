@@ -13,7 +13,8 @@
 }
 
 .partnerLogo {
-  width: 22rem;
+  max-width: 20rem;
+  max-height: 3.2rem;
 }
 
 .title {

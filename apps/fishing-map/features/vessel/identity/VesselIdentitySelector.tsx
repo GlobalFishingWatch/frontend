@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import {
   selectVesselIdentityId,
   selectVesselIdentitySource,
@@ -33,8 +34,12 @@ const VesselIdentitySelector = () => {
   const { dispatchQueryParams } = useLocationConnect()
   const { start, end } = useTimerangeConnect()
 
-  const setIdentityId = (vesselIdentityId: string) => {
-    dispatchQueryParams({ vesselIdentityId })
+  const setIdentityId = (identityId: string) => {
+    if (identitySource === VesselIdentitySourceEnum.SelfReported) {
+      dispatchQueryParams({ vesselSelfReportedId: identityId })
+    } else {
+      dispatchQueryParams({ vesselRegistryId: identityId })
+    }
   }
 
   const identities = getVesselIdentities(vessel, { identitySource })

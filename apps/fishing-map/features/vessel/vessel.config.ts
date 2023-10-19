@@ -10,7 +10,8 @@ export const DEFAULT_VESSEL_IDENTITY_ID = `${DEFAULT_VESSEL_IDENTITY_DATASET}:${
 
 export const DEFAULT_VESSEL_STATE: VesselProfileState = {
   vesselDatasetId: DEFAULT_VESSEL_IDENTITY_ID,
-  vesselIdentityId: undefined,
+  vesselRegistryId: undefined,
+  vesselSelfReportedId: undefined,
   vesselIdentitySource: VesselIdentitySourceEnum.Registry,
   vesselActivityMode: 'type',
   vesselSection: 'activity',

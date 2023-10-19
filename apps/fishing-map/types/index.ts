@@ -127,7 +127,8 @@ export type VesselRelatedSubsection = 'encounters' | 'owners'
 export type VesselProfileActivityMode = 'voyage' | 'type'
 export type VesselProfileState = {
   vesselDatasetId: string
-  vesselIdentityId?: string
+  vesselRegistryId?: string
+  vesselSelfReportedId?: string
   vesselSection: VesselSection
   vesselArea: VesselAreaSubsection
   vesselRelated: VesselRelatedSubsection
