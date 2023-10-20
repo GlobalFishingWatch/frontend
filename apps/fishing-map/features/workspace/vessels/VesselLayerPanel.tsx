@@ -207,7 +207,7 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
           <Fragment>
             <VesselDownload
               dataview={dataview}
-              vesselId={vesselId}
+              vesselIds={[vesselId]}
               vesselTitle={vesselTitle}
               datasetId={trackResource?.dataset!?.id}
             />

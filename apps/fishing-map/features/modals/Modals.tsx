@@ -171,7 +171,7 @@ const AppModals = () => {
         </Modal>
       )}
       {downloadActivityAreaKey && <DownloadActivityModal />}
-      {downloadTrackId && <DownloadTrackModal />}
+      {downloadTrackId?.length > 0 && <DownloadTrackModal />}
       {welcomePopupOpen && !readOnly && (
         <Modal
           header={false}

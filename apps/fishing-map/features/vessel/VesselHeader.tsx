@@ -5,6 +5,7 @@ import Sticky from 'react-sticky-el'
 import { useCallback, useEffect } from 'react'
 import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import {
   selectVesselInfoData,
   selectVesselPrintMode,
@@ -17,7 +18,10 @@ import {
   getOtherVesselNames,
   getVesselProperty,
 } from 'features/vessel/vessel.utils'
-import { selectVesselProfileColor } from 'features/dataviews/dataviews.slice'
+import {
+  selectVesselProfileColor,
+  selectVesselProfileDataview,
+} from 'features/dataviews/dataviews.slice'
 import { COLOR_PRIMARY_BLUE } from 'features/app/App'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
@@ -29,6 +33,7 @@ import { selectIsWorkspaceVesselLocation } from 'routes/routes.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useVesselBounds } from 'features/vessel/vessel-bounds.hooks'
 import { useCallbackAfterPaint } from 'hooks/paint.hooks'
+import VesselDownload from 'features/workspace/vessels/VesselDownload'
 import styles from './VesselHeader.module.css'
 
 const VesselHeader = () => {
@@ -43,6 +48,7 @@ const VesselHeader = () => {
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const vesselColor = useSelector(selectVesselProfileColor)
   const vesselPrintMode = useSelector(selectVesselPrintMode)
+  const vesselProfileDataview = useSelector(selectVesselProfileDataview)
   const { vesselBounds, setVesselBounds } = useVesselBounds()
 
   const vesselPrintCallback = useCallback(() => {
@@ -115,6 +121,16 @@ const VesselHeader = () => {
           </div>
         </h1>
         <div className={styles.actionsContainer}>
+          {vesselProfileDataview && (
+            <VesselDownload
+              dataview={vesselProfileDataview}
+              vesselIds={vessel.identities
+                .filter((i) => i.identitySource === VesselIdentitySourceEnum.SelfReported)
+                .map((i) => i.id)}
+              vesselTitle={shipname}
+              datasetId={vessel.track as string}
+            />
+          )}
           {isWorkspaceVesselLocation && (
             <IconButton
               className="print-hidden"
@@ -140,11 +156,15 @@ const VesselHeader = () => {
             disabled={!vesselBounds}
             onClick={onVesselFitBoundsClick}
           />
-          <Button type="border-secondary" size="small" onClick={onPrintClick}>
+          <Button
+            className="print-hidden"
+            type="border-secondary"
+            size="small"
+            onClick={onPrintClick}
+          >
             <p>{t('analysis.print ', 'print')}</p>
             <Icon icon="print" type="default" />
           </Button>
-          {/* TODO: get info and track datasets for vessel */}
           <VesselGroupAddButton
             buttonSize="small"
             buttonType="border-secondary"

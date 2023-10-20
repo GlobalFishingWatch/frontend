@@ -9,18 +9,32 @@ import {
   Segment,
 } from '@globalfishingwatch/api-types'
 import { selectTimeRange, selectVisibleEvents } from 'features/app/app.selectors'
-import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
+import {
+  selectActiveTrackDataviews,
+  selectDataviewInstancesMerged,
+} from 'features/dataviews/dataviews.slice'
 import { selectResources } from 'features/resources/resources.slice'
 import { selectSelfReportedVesselIds } from 'features/vessel/vessel.slice'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { selectVesselDatasetId } from 'features/vessel/vessel.config.selectors'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
+import { getVesselDataviewInstanceId } from 'features/dataviews/dataviews.utils'
 
 export const selectVesselDataset = createSelector(
   [selectVesselDatasetId, selectAllDatasets],
   (vesselDatasetId, datasets) => {
     return datasets?.find((d) => d.id === vesselDatasetId)
+  }
+)
+
+export const selectVesselProfileDataview = createSelector(
+  [selectDataviewInstancesMerged, selectVesselDatasetId],
+  (dataviews, vesselId) => {
+    const vesselProfileDataview = dataviews?.find(
+      (d) => (d.id as string) === getVesselDataviewInstanceId(vesselId)
+    )
+    return vesselProfileDataview
   }
 )
 

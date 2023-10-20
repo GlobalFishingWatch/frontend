@@ -10,14 +10,14 @@ import { isGuestUser, selectUserData } from 'features/user/user.slice'
 import { VesselLayerPanelProps } from 'features/workspace/vessels/VesselLayerPanel'
 
 type VesselDownloadButtonProps = VesselLayerPanelProps & {
-  vesselId: string
+  vesselIds: string[]
   vesselTitle: string
   datasetId: string
 }
 
 function VesselDownloadButton({
   dataview,
-  vesselId,
+  vesselIds,
   vesselTitle,
   datasetId,
 }: VesselDownloadButtonProps) {
@@ -34,12 +34,13 @@ function VesselDownloadButton({
   const onDownloadClick = () => {
     dispatch(
       setDownloadTrackVessel({
-        id: vesselId,
+        ids: vesselIds,
         name: vesselTitle,
         datasets: datasetId,
       })
     )
   }
+
   if (guestUser) {
     return (
       <LocalStorageLoginLink>
