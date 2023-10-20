@@ -1250,6 +1250,19 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "private-png-fishing-vessels": {
+    "name": "Papua Nova Guiné VMS (Embarcações pesqueiras)",
+    "description": "Dataset for VMS Papua New Guinea (Private)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "callsign": "callsign",
+      "shipname": "Embarcação",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
+    }
+  },
   "private-png-presence": {
     "name": "Papua Nova Guiné VMS",
     "description": "Os dados do sistema de monitoramento de embarcações (VMS) são fornecidos pela Autoridade Pesqueira Nacional de Papua Nova Guiné. Os dados são coletados usando o VMS nacional de Papua Nova Guiné que é fornecido pelo Sistema de Gestão e Informações Pesqueiras (FMIS). Os dados VMS incluem identificadores e localizações das embarcações e são publicados com um atraso de 5 dias.\n\nA camada de atividade apresenta um mapa de calor da presença de embarcações. A presença é determinada tomando duas posições por hora por embarcação a partir das posições transmitidas pelo VMS da embarcação.",
@@ -2660,8 +2673,8 @@
     }
   },
   "public-panama-vessel-identity-fishing": {
-    "name": "Panama VMS (Public Non fishing vessels)",
-    "description": "Dataset for VMS Panama - Carriers (Public)",
+    "name": "Panama VMS (Public Fishing Vessels)",
+    "description": "Dataset for VMS Panama (Public)",
     "schema": {
       "id": "id",
       "selfReportedInfo": "selfReportedInfo",
