@@ -29,7 +29,7 @@ const VesselIdentityCombinedSourceField = ({
         return (
           <li key={index}>
             <VesselIdentityField value={formatInfoField(name, property) as string} />{' '}
-            <span className={styles.secondary}>({dates})</span>
+            {combinedSource?.length > 1 && <span className={styles.secondary}>({dates})</span>}
           </li>
         )
       })}
