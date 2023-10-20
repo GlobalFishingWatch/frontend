@@ -57,7 +57,7 @@ export const VESSEL_CSV_CONFIG: CsvConfig[] = [
   { label: 'ssvid', accessor: 'imo' },
   { label: 'shipname', accessor: 'nShipname' },
   { label: 'shiptype', accessor: 'shiptype' },
-  { label: 'geartype', accessor: 'geartype', transform: parseCSVList },
+  { label: 'geartype', accessor: 'geartype' },
   { label: 'callsign', accessor: 'callsign' },
   { label: 'lengthM', accessor: 'lengthM' },
   { label: 'tonnageGt', accessor: 'tonnageGt' },

@@ -80,8 +80,8 @@ const VesselIdentity = () => {
         ...vesselIdentity,
         nShipname: formatInfoField(vesselIdentity.shipname, 'shipname') as string,
         flag: t(`flags:${vesselIdentity.flag}`, vesselIdentity.flag) as string,
-        shiptype: getVesselShipType(vesselIdentity),
-        geartype: getVesselGearType(vesselIdentity),
+        shiptype: getVesselShipType(vesselIdentity, { joinCharacter: ' -' }), // Can't be commas as it would break the csv format
+        geartype: getVesselGearType(vesselIdentity, { joinCharacter: ' -' }),
         registryAuthorizations:
           vesselIdentity.registryAuthorizations &&
           filterRegistryInfoByDateAndSSVID(
