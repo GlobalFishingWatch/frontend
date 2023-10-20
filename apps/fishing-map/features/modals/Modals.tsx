@@ -19,12 +19,12 @@ import { ROOT_DOM_ELEMENT } from 'data/config'
 import useSecretMenu, { useSecretKeyboardCombo } from 'hooks/secret-menu.hooks'
 import { selectBigQueryActive, toggleBigQueryMenu } from 'features/bigquery/bigquery.slice'
 import { selectDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
-import { selectDownloadTrackId } from 'features/download/downloadTrack.slice'
 import { selectVesselGroupModalOpen } from 'features/vessel-groups/vessel-groups.slice'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectAnyAppModalOpen } from 'features/modals/modals.selectors'
 import { DISABLE_SOURCE_SWITCH_POPUP } from 'features/welcome/WelcomeSourceSwitch'
 import { WelcomeContentKey } from 'features/welcome/welcome.content'
+import { selectDownloadTrackModalOpen } from 'features/download/download.selectors'
 import styles from './Modals.module.css'
 
 const BigQueryMenu = dynamic(
@@ -92,7 +92,7 @@ const AppModals = () => {
   useSecretKeyboardCombo(ResetWorkspaceConfig)
   const downloadActivityAreaKey = useSelector(selectDownloadActivityAreaKey)
   const isVesselGroupModalOpen = useSelector(selectVesselGroupModalOpen)
-  const downloadTrackId = useSelector(selectDownloadTrackId)
+  const downloadTrackModalOpen = useSelector(selectDownloadTrackModalOpen)
   const anyAppModalOpen = useSelector(selectAnyAppModalOpen)
   const [disabledWelcomePopup] = useLocalStorage(DISABLE_WELCOME_POPUP, false)
   const [disabledSourceSwitchPopup, setDisabledSourceSwitchPopup] = useLocalStorage(
@@ -171,7 +171,7 @@ const AppModals = () => {
         </Modal>
       )}
       {downloadActivityAreaKey && <DownloadActivityModal />}
-      {downloadTrackId?.length > 0 && <DownloadTrackModal />}
+      {downloadTrackModalOpen && <DownloadTrackModal />}
       {welcomePopupOpen && !readOnly && (
         <Modal
           header={false}

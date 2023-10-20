@@ -7,7 +7,7 @@ import { THINNING_LEVELS, ThinningLevels } from '@globalfishingwatch/api-client'
 import {
   DownloadTrackParams,
   selectDownloadTrackStatus,
-  selectDownloadTrackId,
+  selectDownloadTrackIds,
   selectDownloadTrackName,
   downloadTrackThunk,
   resetDownloadTrackStatus,
@@ -38,14 +38,14 @@ function DownloadTrackModal() {
   const { timerange } = useTimerangeConnect()
   const gFWUser = useSelector(isGFWUser)
 
-  const downloadTrackId = useSelector(selectDownloadTrackId)
+  const downloadTrackIds = useSelector(selectDownloadTrackIds)
   const downloadModalOpen = useSelector(selectDownloadTrackModalOpen)
   const downloadTrackName = useSelector(selectDownloadTrackName)
   const downloadTrackDataset = useSelector(selectDownloadTrackDataset)
 
   const onDownloadClick = async () => {
     const downloadParams: DownloadTrackParams = {
-      vesselIds: downloadTrackId,
+      vesselIds: downloadTrackIds,
       vesselName: downloadTrackName,
       dateRange: timerange as DateRange,
       dataset: downloadTrackDataset,

@@ -147,7 +147,7 @@ const downloadTrackSlice = createSlice({
 export const { resetDownloadTrackStatus, clearDownloadTrackVessel, setDownloadTrackVessel } =
   downloadTrackSlice.actions
 
-export const selectDownloadTrackId = (state: RootState) => state.downloadTrack.ids
+export const selectDownloadTrackIds = (state: RootState) => state.downloadTrack.ids
 export const selectDownloadTrackName = (state: RootState) => state.downloadTrack.name
 export const selectDownloadTrackDataset = (state: RootState) => state.downloadTrack.datasets
 export const selectDownloadTrackStatus = (state: RootState) => state.downloadTrack.status
