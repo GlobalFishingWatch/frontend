@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
+import { Dataset, DatasetTypes, VesselType } from '@globalfishingwatch/api-types'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -46,11 +46,11 @@ export const useUpdateVesselEventsVisibility = () => {
 
   useEffect(() => {
     if (vessel) {
-      const shiptype = getVesselProperty(vessel, 'shiptype', {
+      const shiptypes = getVesselProperty<VesselType[]>(vessel, 'shiptype', {
         identityId,
         identitySource,
       })
-      if (shiptype?.toLowerCase() === 'fishing') {
+      if (shiptypes?.includes('fishing')) {
         setVesselEventVisibility({ event: 'loitering', visible: false })
       }
     }

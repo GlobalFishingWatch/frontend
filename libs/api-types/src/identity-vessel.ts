@@ -22,11 +22,11 @@ export type VesselInfo = {
   id: string
   callsign: string
   flag: string
-  geartype: string[]
+  geartype: string | string[]
   imo: string
   shipname: string
   nShipname: string
-  shiptype: VesselType
+  shiptype: VesselType | VesselType[]
   ssvid: string
   sourceCode: SourceCode[]
   transmissionDateFrom: string
@@ -107,11 +107,19 @@ export type VesselIdentitySearchMatchCriteria = {
   source: VesselIdentitySourceEnum
 }
 
+export type CombinedSourceInfo = { name: string; source: string; yearFrom: number; yearTo: number }
+export type VesselCombinedSourcesInfo = {
+  vesselId: string
+  geartypes: CombinedSourceInfo[]
+  shiptypes: CombinedSourceInfo[]
+}
+
 export interface IdentityVessel {
+  combinedSourcesInfo: VesselCombinedSourcesInfo[]
   dataset: string
   matchCriteria?: VesselIdentitySearchMatchCriteria[]
-  selfReportedInfo: SelfReportedInfo[]
+  registryAuthorizations?: VesselRegistryAuthorization[]
   registryInfo?: VesselRegistryInfo[]
   registryOwners?: VesselRegistryOwner[]
-  registryAuthorizations?: VesselRegistryAuthorization[]
+  selfReportedInfo: SelfReportedInfo[]
 }

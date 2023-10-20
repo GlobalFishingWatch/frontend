@@ -9,7 +9,6 @@ import {
   SourceCode,
   VesselRegistryOwner,
   VesselRegistryProperty,
-  VesselType,
 } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import I18nDate, { formatI18nDate } from 'features/i18n/i18nDate'
@@ -20,7 +19,12 @@ import {
 } from 'features/vessel/vessel.config'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
-import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
+import {
+  EMPTY_FIELD_PLACEHOLDER,
+  formatInfoField,
+  getVesselGearType,
+  getVesselShipType,
+} from 'utils/info'
 import {
   filterRegistryInfoByDateAndSSVID,
   getCurrentIdentityVessel,
@@ -37,6 +41,7 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectIsVesselLocation } from 'routes/routes.selectors'
 import { useRegionTranslationsById } from 'features/regions/regions.hooks'
 import { VesselLastIdentity } from 'features/search/search.slice'
+import VesselIdentityCombinedSourceField from 'features/vessel/identity/VesselIdentityCombinedSourceField'
 import styles from './VesselIdentity.module.css'
 
 const VesselIdentity = () => {
@@ -75,13 +80,8 @@ const VesselIdentity = () => {
         ...vesselIdentity,
         nShipname: formatInfoField(vesselIdentity.shipname, 'shipname') as string,
         flag: t(`flags:${vesselIdentity.flag}`, vesselIdentity.flag) as string,
-        shiptype: t(
-          `vessel.vesselTypes.${vesselIdentity.shiptype?.toLowerCase()}`,
-          vesselIdentity.shiptype
-        ) as VesselType,
-        geartype: vesselIdentity.geartype?.map((gear) =>
-          t(`vessel.gearTypes.${gear?.toLowerCase()}`, gear.toLowerCase())
-        ) as string[],
+        shiptype: getVesselShipType(vesselIdentity),
+        geartype: getVesselGearType(vesselIdentity),
         registryAuthorizations:
           vesselIdentity.registryAuthorizations &&
           filterRegistryInfoByDateAndSSVID(
@@ -250,9 +250,17 @@ const VesselIdentity = () => {
                           />
                         )}
                       </div>
-                      <VesselIdentityField
-                        value={formatInfoField(vesselIdentity[key] as string, label) as any}
-                      />
+                      {vesselIdentity.combinedSourcesInfo &&
+                      (key === 'shiptype' || key === 'geartype') ? (
+                        <VesselIdentityCombinedSourceField
+                          identity={vesselIdentity}
+                          property={key}
+                        />
+                      ) : (
+                        <VesselIdentityField
+                          value={formatInfoField(vesselIdentity[key] as string, label) as string}
+                        />
+                      )}
                     </div>
                   )
                 })}

@@ -7,6 +7,7 @@ import {
   EndpointId,
   IdentityVessel,
   SelfReportedInfo,
+  VesselCombinedSourcesInfo,
   VesselRegistryInfo,
 } from '@globalfishingwatch/api-types'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
@@ -27,6 +28,7 @@ import { selectVesselId } from 'routes/routes.selectors'
 
 export type VesselDataIdentity = (SelfReportedInfo | VesselRegistryInfo) & {
   identitySource: VesselIdentitySourceEnum
+  combinedSourcesInfo?: VesselCombinedSourcesInfo
   positionsCounter?: number
 }
 // Merges and plain all the identities of a vessel
@@ -35,7 +37,10 @@ export type IdentityVesselData = {
   identities: VesselDataIdentity[]
   dataset: Dataset
 } & VesselInstanceDatasets &
-  Pick<IdentityVessel, 'registryOwners' | 'registryAuthorizations' | 'matchCriteria'>
+  Pick<
+    IdentityVessel,
+    'registryOwners' | 'registryAuthorizations' | 'matchCriteria' | 'combinedSourcesInfo'
+  >
 
 type VesselInfoEntry = {
   status: AsyncReducerStatus
@@ -114,6 +119,7 @@ export const fetchVesselInfoThunk = createAsyncThunk(
         return {
           id: getVesselProperty(vessel, 'id'),
           dataset: dataset,
+          combinedSourcesInfo: vessel.combinedSourcesInfo,
           registryOwners: vessel.registryOwners,
           registryAuthorizations: vessel.registryAuthorizations,
           info: datasetId,
