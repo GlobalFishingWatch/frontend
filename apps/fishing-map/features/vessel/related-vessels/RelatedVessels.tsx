@@ -1,19 +1,21 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useCallback, useMemo } from 'react'
-import { Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
+import { Choice, ChoiceOption, Spinner } from '@globalfishingwatch/ui-components'
 import { VesselRelatedSubsection } from 'types'
 import { selectVesselRelatedSubsection } from 'features/vessel/vessel.config.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import RelatedEncounterVessels from 'features/vessel/related-vessels/RelatedEncounterVessels'
 import RelatedOwnersVessels from 'features/vessel/related-vessels/RelatedOwnersVessels'
 import { VesselActivitySummary } from 'features/vessel/activity/VesselActivitySummary'
+import { selectVesselEventsResourcesLoading } from 'features/vessel/vessel.selectors'
 import styles from './RelatedVessels.module.css'
 
 const RelatedVessels = () => {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const vesselRelatedSubsection = useSelector(selectVesselRelatedSubsection)
+  const eventsLoading = useSelector(selectVesselEventsResourcesLoading)
 
   const relatedOptions: ChoiceOption<VesselRelatedSubsection>[] = useMemo(
     () => [
@@ -35,6 +37,14 @@ const RelatedVessels = () => {
     },
     [dispatchQueryParams]
   )
+
+  if (eventsLoading) {
+    return (
+      <div className={styles.placeholder}>
+        <Spinner />
+      </div>
+    )
+  }
 
   return (
     <div className={styles.container}>
