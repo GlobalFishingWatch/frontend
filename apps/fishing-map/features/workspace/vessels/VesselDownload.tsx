@@ -1,7 +1,7 @@
 import { t } from 'i18next'
 import { useSelector } from 'react-redux'
 import { useState } from 'react'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton, IconButtonType } from '@globalfishingwatch/ui-components'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getVesselDatasetsDownloadTrackSupported } from 'features/datasets/datasets.utils'
@@ -13,6 +13,7 @@ type VesselDownloadButtonProps = VesselLayerPanelProps & {
   vesselIds: string[]
   vesselTitle: string
   datasetId: string
+  iconType?: IconButtonType
 }
 
 function VesselDownloadButton({
@@ -20,6 +21,7 @@ function VesselDownloadButton({
   vesselIds,
   vesselTitle,
   datasetId,
+  iconType = 'default',
 }: VesselDownloadButtonProps) {
   const dispatch = useAppDispatch()
   const userData = useSelector(selectUserData)
@@ -64,6 +66,7 @@ function VesselDownloadButton({
   return (
     <IconButton
       icon="download"
+      type={iconType}
       disabled={!downloadSupported}
       tooltip={
         downloadSupported

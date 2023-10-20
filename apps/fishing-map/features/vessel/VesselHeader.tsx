@@ -129,6 +129,7 @@ const VesselHeader = () => {
                 .map((i) => i.id)}
               vesselTitle={shipname}
               datasetId={vessel.track as string}
+              iconType="border"
             />
           )}
           {isWorkspaceVesselLocation && (
