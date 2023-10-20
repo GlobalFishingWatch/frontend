@@ -23,6 +23,7 @@ import {
   selectHasReportBuffer,
   selectHasReportVessels,
   selectReportArea,
+  selectReportBufferHash,
   selectReportDataviewsWithPermissions,
 } from 'features/reports/reports.selectors'
 import ReportVesselsPlaceholder from 'features/reports/placeholders/ReportVesselsPlaceholder'
@@ -51,13 +52,8 @@ import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { LAST_REPORTS_STORAGE_KEY, LastReportStorage } from 'features/reports/reports.config'
 import { REPORT_BUFFER_GENERATOR_ID } from 'features/map/map.config'
-import { HighlightedAreaParams } from 'features/map/popups/ContextLayers.hooks'
-import {
-  useFetchReportArea,
-  useFetchReportVessel,
-  useFitAreaInViewport,
-  useReportAreaHighlight,
-} from './reports.hooks'
+import { useHighlightArea } from 'features/map/popups/ContextLayers.hooks'
+import { useFetchReportArea, useFetchReportVessel, useFitAreaInViewport } from './reports.hooks'
 import ReportSummary from './summary/ReportSummary'
 import ReportTitle from './title/ReportTitle'
 import ReportActivity from './activity/ReportActivity'
@@ -322,6 +318,7 @@ export default function Report() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const setTimeseries = useSetTimeseries()
+  const highlightArea = useHighlightArea()
   const { dispatchQueryParams } = useLocationConnect()
   const reportCategory = useSelector(selectReportCategory)
   const dataviews = useSelector(selectActiveTemporalgridDataviews)
@@ -362,17 +359,9 @@ export default function Report() {
   const areaSourceId = useSelector(selectReportAreaSource)
   const hasReportBuffer = useSelector(selectHasReportBuffer)
   const reportArea = useSelector(selectReportArea)
-  const reportAreaHighlight: HighlightedAreaParams = {
-    areaId: reportArea!?.id,
-    sourceId: hasReportBuffer ? REPORT_BUFFER_GENERATOR_ID : areaSourceId,
-  }
+  const reportBufferHash = useSelector(selectReportBufferHash)
 
   const fitAreaInViewport = useFitAreaInViewport()
-  useReportAreaHighlight(
-    status === AsyncReducerStatus.Finished && reportAreaHighlight.areaId
-      ? reportAreaHighlight
-      : undefined
-  )
 
   // This ensures that the area is in viewport when then area load finishes
   useEffect(() => {
@@ -382,6 +371,16 @@ export default function Report() {
     // Reacting only to the area status and fitting bounds after load
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, reportArea])
+
+  useEffect(() => {
+    if (status === AsyncReducerStatus.Finished && reportArea?.id) {
+      highlightArea({
+        areaId: reportArea.id,
+        sourceId: hasReportBuffer ? REPORT_BUFFER_GENERATOR_ID : areaSourceId,
+        sourceLayer: hasReportBuffer ? '' : undefined,
+      })
+    }
+  }, [status, reportBufferHash, highlightArea, reportArea, areaSourceId, hasReportBuffer])
 
   const setTimebarVisualizationByCategory = useCallback(
     (category: ReportCategory) => {
