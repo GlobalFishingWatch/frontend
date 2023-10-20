@@ -207,6 +207,7 @@ export function getCurrentIdentityVessel(
   return {
     ...vesselData,
     dataset: vessel.dataset,
+    shiptype: getVesselProperty(vessel, 'shiptype', { identityId, identitySource }),
     geartype: getVesselProperty(vessel, 'geartype', { identityId, identitySource }),
     registryAuthorizations: vessel.registryAuthorizations
       ? sortVesselRegistryProperties(vessel.registryAuthorizations)

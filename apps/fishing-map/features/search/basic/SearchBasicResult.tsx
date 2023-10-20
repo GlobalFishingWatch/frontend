@@ -20,7 +20,12 @@ import I18nFlag from 'features/i18n/i18nFlag'
 import TrackFootprint from 'features/search/basic/TrackFootprint'
 import { cleanVesselSearchResults } from 'features/search/search.slice'
 import VesselLink from 'features/vessel/VesselLink'
-import { formatInfoField, EMPTY_FIELD_PLACEHOLDER, getVesselGearType } from 'utils/info'
+import {
+  formatInfoField,
+  EMPTY_FIELD_PLACEHOLDER,
+  getVesselGearType,
+  getVesselShipType,
+} from 'utils/info'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectVesselsDataviews } from 'features/dataviews/dataviews.slice'
 import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-viewport.hooks'
@@ -235,11 +240,7 @@ function SearchBasicResult({
             </div>
             <div className={styles.property}>
               <label>{t('vessel.vesselType', 'Vessel Type')}</label>
-              <span>
-                {shiptype
-                  ? t(`vessel.vesselTypes.${shiptype.toLowerCase()}` as any, shiptype)
-                  : EMPTY_FIELD_PLACEHOLDER}
-              </span>
+              <span>{shiptype ? getVesselShipType({ shiptype }) : EMPTY_FIELD_PLACEHOLDER}</span>
             </div>
             <div className={styles.property}>
               <label>{t('vessel.geartype', 'Gear Type')}</label>

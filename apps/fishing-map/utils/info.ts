@@ -1,5 +1,5 @@
 import { get } from 'lodash'
-import { IdentityVessel, Vessel } from '@globalfishingwatch/api-types'
+import { IdentityVessel, Vessel, VesselType } from '@globalfishingwatch/api-types'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { VesselRenderField } from 'features/vessel/vessel.config'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -23,7 +23,7 @@ export const formatInfoField = (
         return translationFn(`flags:${fieldValue}` as any, fieldValue)
       }
       if (type === 'shiptype' || type === 'vesselType') {
-        return translationFn(`vessel.vesselTypes.${fieldValue?.toLowerCase()}` as any, fieldValue)
+        return getVesselShipType({ shiptype: fieldValue as VesselType }, translationFn)
       }
       if (type === 'geartype') {
         return getVesselGearType({ geartype: fieldValue }, translationFn)
@@ -44,6 +44,8 @@ export const formatInfoField = (
     } else if (Array.isArray(fieldValue)) {
       if (type === 'geartype') {
         return getVesselGearType({ geartype: fieldValue }, translationFn)
+      } else if (type === 'shiptype') {
+        return getVesselShipType({ shiptype: fieldValue as VesselType[] }, translationFn)
       }
     } else {
       return formatI18nNumber(fieldValue)
@@ -69,6 +71,17 @@ export const formatNumber = (num: string | number, maximumFractionDigits?: numbe
   })
 }
 
+export const getVesselShipType = (
+  { shiptype } = {} as Pick<VesselDataIdentity, 'shiptype'> | { shiptype: VesselType },
+  translationFn = t
+): VesselType => {
+  const shipTypes = Array.isArray(shiptype) ? shiptype : [shiptype]
+  return shipTypes
+    .filter(Boolean)
+    ?.map((shiptype) => translationFn(`vessel.vesselTypes.${shiptype?.toLowerCase()}`, shiptype))
+    .join(', ') as VesselType
+}
+
 export const getVesselGearType = (
   { geartype } = {} as Pick<VesselDataIdentity, 'geartype'> | { geartype: string },
   translationFn = t
@@ -77,7 +90,7 @@ export const getVesselGearType = (
   return gearTypes
     .filter(Boolean)
     ?.map((gear) => translationFn(`vessel.gearTypes.${gear?.toLowerCase()}`, gear))
-    .join(',')
+    .join(', ')
 }
 
 export const getVesselLabel = (
