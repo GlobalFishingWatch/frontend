@@ -46,6 +46,7 @@ const Layout = ({ children }) => {
           content="You need an acccess token to call Global Fishing Watch API endpoints like Vessel search
           or 4wings activity tiles. Read more about API access tokens in our documentation"
         />
+        <meta name="robots" content="noindex" />
         <link rel="icon" href={`${PATH_BASENAME}/favicon.ico`} />
       </Head>
       <main className={styles.main}>

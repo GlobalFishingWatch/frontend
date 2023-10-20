@@ -25,6 +25,19 @@ const nextConfig = {
         : []),
     ]
   },
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'x-robots-tag',
+            value: 'noindex',
+          },
+        ],
+      },
+    ]
+  },
   nx: {
     // Set this to true if you would like to to use SVGR
     // See: https://github.com/gregberge/svgr
