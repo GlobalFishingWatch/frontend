@@ -89,6 +89,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           'transmissionDateTo',
           'ssvid',
           'imo',
+          'callsign',
           'codMarinha',
           'owner',
         ]
@@ -109,6 +110,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           }
           return []
         })
+
         if (query) {
           fields.push({
             key: 'shipname',
