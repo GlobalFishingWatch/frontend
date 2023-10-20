@@ -21,7 +21,8 @@ import { VesselSearchState } from 'types'
 import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
 import { getVesselId, getVesselIdentities } from 'features/vessel/vessel.utils'
 
-export type VesselLastIdentity = Omit<IdentityVesselData, 'identities'> & VesselDataIdentity
+export type VesselLastIdentity = Omit<IdentityVesselData, 'identities' | 'combinedSourcesInfo'> &
+  VesselDataIdentity
 
 interface SearchState {
   selectedVessels: string[]

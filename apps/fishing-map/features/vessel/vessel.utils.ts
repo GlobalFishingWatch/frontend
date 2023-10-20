@@ -105,12 +105,35 @@ export function getVesselId(vessel: IdentityVessel | IdentityVesselData | null) 
   return selfReportedId || identityId
 }
 
+export function getVesselCombinedSource(
+  vessel: IdentityVessel | IdentityVesselData | null,
+  { vesselId } = {} as { vesselId: string }
+) {
+  return vessel?.combinedSourcesInfo?.find((i) => i.vesselId === vesselId)
+}
+
+export function getCombinedSourceProperty(property: 'geartype' | 'shiptype') {
+  return property === 'geartype' ? 'geartypes' : 'shiptypes'
+}
+
+export function getVesselCombinedSourceProperty(
+  vessel: IdentityVessel | IdentityVesselData | null,
+  { vesselId, property } = {} as { vesselId: string; property: 'shiptype' | 'geartype' }
+) {
+  const combinedSource = getVesselCombinedSource(vessel, { vesselId })
+  const combinedSourceProperty = getCombinedSourceProperty(property)
+  return combinedSource?.[combinedSourceProperty]
+}
+
 export function getVesselProperty<P = string>(
   vessel: IdentityVessel | IdentityVesselData | null,
   property: VesselIdentityProperty,
   { identityId, identitySource } = {} as GetVesselIdentityParams
 ): P {
   if (!vessel) return '' as P
+  const identity = identitySource
+    ? getVesselIdentity(vessel, { identityId, identitySource })
+    : getLatestIdentityPrioritised(vessel)
   if (property === 'owner') {
     const ssvid = getVesselProperty(vessel, 'ssvid', { identityId, identitySource })
     return uniq(
@@ -119,19 +142,11 @@ export function getVesselProperty<P = string>(
   }
   if (property === 'geartype' || property === 'shiptype') {
     const vesselId = getVesselProperty(vessel, 'id', { identityId, identitySource })
-    const combinedSourcesInfo = vessel.combinedSourcesInfo?.find((i) => i.vesselId === vesselId)
-    if (combinedSourcesInfo) {
-      const combinedSourcesInfoProperty = property === 'geartype' ? 'geartypes' : 'shiptypes'
-      const combinedSourcesInfoData = combinedSourcesInfo[combinedSourcesInfoProperty]
-      if (combinedSourcesInfoData?.length) {
-        return combinedSourcesInfoData[0].name.toLowerCase() as P
-      }
+    const combinedSourcesInfoData = getVesselCombinedSourceProperty(vessel, { vesselId, property })
+    if (combinedSourcesInfoData?.length) {
+      return combinedSourcesInfoData.map((i) => `${i.name.toLowerCase()}`) as P
     }
   }
-  if (!identitySource) {
-    return get(getLatestIdentityPrioritised(vessel), property) as P
-  }
-  const identity = getVesselIdentity(vessel, { identityId, identitySource })
   return get(identity, property) as P
 }
 
@@ -209,6 +224,7 @@ export function getCurrentIdentityVessel(
     dataset: vessel.dataset,
     shiptype: getVesselProperty(vessel, 'shiptype', { identityId, identitySource }),
     geartype: getVesselProperty(vessel, 'geartype', { identityId, identitySource }),
+    combinedSourcesInfo: getVesselCombinedSource(vessel, { vesselId: vesselData.id }),
     registryAuthorizations: vessel.registryAuthorizations
       ? sortVesselRegistryProperties(vessel.registryAuthorizations)
       : [],

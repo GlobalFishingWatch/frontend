@@ -41,6 +41,7 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectIsVesselLocation } from 'routes/routes.selectors'
 import { useRegionTranslationsById } from 'features/regions/regions.hooks'
 import { VesselLastIdentity } from 'features/search/search.slice'
+import VesselIdentityCombinedSourceField from 'features/vessel/identity/VesselIdentityCombinedSourceField'
 import styles from './VesselIdentity.module.css'
 
 const VesselIdentity = () => {
@@ -249,9 +250,14 @@ const VesselIdentity = () => {
                           />
                         )}
                       </div>
-                      <VesselIdentityField
-                        value={formatInfoField(vesselIdentity[key] as string, label) as any}
-                      />
+                      {vesselIdentity.combinedSourcesInfo &&
+                      (key === 'shiptype' || key === 'geartype') ? (
+                        <VesselIdentityCombinedSourceField identity={vesselIdentity} key={key} />
+                      ) : (
+                        <VesselIdentityField
+                          value={formatInfoField(vesselIdentity[key] as string, label) as string}
+                        />
+                      )}
                     </div>
                   )
                 })}

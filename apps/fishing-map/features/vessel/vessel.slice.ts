@@ -7,6 +7,7 @@ import {
   EndpointId,
   IdentityVessel,
   SelfReportedInfo,
+  VesselCombinedSourcesInfo,
   VesselRegistryInfo,
 } from '@globalfishingwatch/api-types'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
@@ -27,6 +28,7 @@ import { selectVesselId } from 'routes/routes.selectors'
 
 export type VesselDataIdentity = (SelfReportedInfo | VesselRegistryInfo) & {
   identitySource: VesselIdentitySourceEnum
+  combinedSourcesInfo?: VesselCombinedSourcesInfo
   positionsCounter?: number
 }
 // Merges and plain all the identities of a vessel
