@@ -29,7 +29,6 @@ import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { PROFILE_DATAVIEW_SLUGS } from 'data/workspaces'
 import { getVesselIdentities, getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectVesselId } from 'routes/routes.selectors'
-// import { TEMPLATE_VESSEL_DATAVIEW_SLUG } from 'data/workspaces'
 
 export type VesselDataIdentity = (SelfReportedInfo | VesselRegistryInfo) & {
   identitySource: VesselIdentitySourceEnum

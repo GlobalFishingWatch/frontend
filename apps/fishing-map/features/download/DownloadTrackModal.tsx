@@ -45,10 +45,10 @@ function DownloadTrackModal() {
 
   const onDownloadClick = async () => {
     const downloadParams: DownloadTrackParams = {
-      vesselId: downloadTrackId,
+      vesselIds: downloadTrackId,
       vesselName: downloadTrackName,
       dateRange: timerange as DateRange,
-      datasets: downloadTrackDataset,
+      dataset: downloadTrackDataset,
       format,
       ...(gFWUser ? {} : { thinning: THINNING_LEVELS[ThinningLevels.Default] }),
     }

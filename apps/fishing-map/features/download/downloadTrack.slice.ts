@@ -12,13 +12,13 @@ import { Format } from './downloadTrack.config'
 
 type VesselParams = {
   name: string
-  id: string
+  ids: string[]
   datasets: string
 }
 
 export interface DownloadTrackState {
   name: string
-  id: string
+  ids: string[]
   datasets: string
   status: AsyncReducerStatus
   error: AsyncError | null
@@ -27,7 +27,7 @@ export interface DownloadTrackState {
 
 const initialState: DownloadTrackState = {
   name: '',
-  id: '',
+  ids: [],
   datasets: '',
   status: AsyncReducerStatus.Idle,
   error: null,
@@ -35,10 +35,10 @@ const initialState: DownloadTrackState = {
 }
 
 export type DownloadTrackParams = {
-  vesselId: string
+  vesselIds: string[]
   vesselName: string
   dateRange: DateRange
-  datasets: string
+  dataset: string
   format: Format
   thinning?: ThinningConfig
 }
@@ -61,22 +61,22 @@ export const downloadTrackThunk = createAsyncThunk<
   }
 >('downloadTrack/create', async (params: DownloadTrackParams, { rejectWithValue }) => {
   try {
-    const { dateRange, datasets, format, vesselId, vesselName, thinning } = params
+    const { dateRange, dataset, format, vesselIds, vesselName, thinning } = params
     const fromDate = getUTCDateTime(dateRange.start).toString()
     const toDate = getUTCDateTime(dateRange.end).toString()
     const downloadTrackParams = {
       'start-date': fromDate,
       'end-date': toDate,
-      datasets,
+      dataset,
       format,
       ...(thinning && { ...thinning }),
     }
 
-    const fileName = `${vesselName || vesselId} - ${downloadTrackParams['start-date']},${
+    const fileName = `${vesselName || vesselIds?.[0]} - ${downloadTrackParams['start-date']},${
       downloadTrackParams['end-date']
     }.zip`
     const rateLimit = await GFWAPI.fetch<Response>(
-      `/vessels/${vesselId}/tracks/download?${stringify(downloadTrackParams)}`,
+      `/vessels/${vesselIds.join(',')}/tracks/download?${stringify(downloadTrackParams)}`,
       {
         method: 'GET',
         cache: 'reload',
@@ -105,13 +105,13 @@ const downloadTrackSlice = createSlice({
       state.error = null
     },
     clearDownloadTrackVessel: (state) => {
-      state.id = ''
+      state.ids = []
       state.name = ''
       state.datasets = ''
       state.status = AsyncReducerStatus.Idle
     },
     setDownloadTrackVessel: (state, action: PayloadAction<VesselParams>) => {
-      state.id = action.payload.id
+      state.ids = action.payload.ids
       state.name = action.payload.name
       state.datasets = action.payload.datasets
     },
@@ -147,7 +147,7 @@ const downloadTrackSlice = createSlice({
 export const { resetDownloadTrackStatus, clearDownloadTrackVessel, setDownloadTrackVessel } =
   downloadTrackSlice.actions
 
-export const selectDownloadTrackId = (state: RootState) => state.downloadTrack.id
+export const selectDownloadTrackId = (state: RootState) => state.downloadTrack.ids
 export const selectDownloadTrackName = (state: RootState) => state.downloadTrack.name
 export const selectDownloadTrackDataset = (state: RootState) => state.downloadTrack.datasets
 export const selectDownloadTrackStatus = (state: RootState) => state.downloadTrack.status
