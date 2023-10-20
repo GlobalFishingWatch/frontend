@@ -9,8 +9,9 @@ import { t } from '../features/i18n/i18n'
 
 export const EMPTY_FIELD_PLACEHOLDER = '---'
 
-export const upperFirst = (text: string) =>
-  text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
+export const upperFirst = (text: string) => {
+  return text ? text.charAt(0).toUpperCase() + text.slice(1).toLowerCase() : ''
+}
 
 export const formatInfoField = (
   fieldValue: string | string[] | number,
@@ -78,7 +79,9 @@ export const getVesselShipType = (
   const shipTypes = Array.isArray(shiptype) ? shiptype : [shiptype]
   return shipTypes
     .filter(Boolean)
-    ?.map((shiptype) => translationFn(`vessel.vesselTypes.${shiptype?.toLowerCase()}`, shiptype))
+    ?.map((shiptype) =>
+      translationFn(`vessel.vesselTypes.${shiptype?.toLowerCase()}`, upperFirst(shiptype))
+    )
     .join(', ') as VesselType
 }
 
@@ -89,7 +92,7 @@ export const getVesselGearType = (
   const gearTypes = Array.isArray(geartype) ? geartype : [geartype]
   return gearTypes
     .filter(Boolean)
-    ?.map((gear) => translationFn(`vessel.gearTypes.${gear?.toLowerCase()}`, gear))
+    ?.map((gear) => translationFn(`vessel.gearTypes.${gear?.toLowerCase()}`, upperFirst(gear)))
     .join(', ')
 }
 

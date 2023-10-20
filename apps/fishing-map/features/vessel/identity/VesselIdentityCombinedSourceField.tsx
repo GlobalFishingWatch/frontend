@@ -6,17 +6,19 @@ import styles from './VesselIdentity.module.css'
 
 type VesselIdentityCombinedSourceFieldProps = {
   identity: VesselLastIdentity
-  key: 'geartype' | 'shiptype'
+  property: 'geartype' | 'shiptype'
 }
 const VesselIdentityCombinedSourceField = ({
   identity,
-  key,
+  property,
 }: VesselIdentityCombinedSourceFieldProps) => {
-  const sourceKey = getCombinedSourceProperty(key)
+  const sourceKey = getCombinedSourceProperty(property)
   const combinedSource = identity?.combinedSourcesInfo?.[sourceKey]
   if (!combinedSource) {
-    return identity[key] ? (
-      <VesselIdentityField value={formatInfoField(identity[key] as string, key) as string} />
+    return identity[property] ? (
+      <VesselIdentityField
+        value={formatInfoField(identity[property] as string, property) as string}
+      />
     ) : null
   }
   return (
@@ -26,7 +28,7 @@ const VesselIdentityCombinedSourceField = ({
         const dates = yearTo === yearFrom ? yearTo : `${yearFrom} - ${yearTo}`
         return (
           <li key={index}>
-            <VesselIdentityField value={formatInfoField(name, key) as string} />{' '}
+            <VesselIdentityField value={formatInfoField(name, property) as string} />{' '}
             <span className={styles.secondary}>({dates})</span>
           </li>
         )

@@ -252,7 +252,10 @@ const VesselIdentity = () => {
                       </div>
                       {vesselIdentity.combinedSourcesInfo &&
                       (key === 'shiptype' || key === 'geartype') ? (
-                        <VesselIdentityCombinedSourceField identity={vesselIdentity} key={key} />
+                        <VesselIdentityCombinedSourceField
+                          identity={vesselIdentity}
+                          property={key}
+                        />
                       ) : (
                         <VesselIdentityField
                           value={formatInfoField(vesselIdentity[key] as string, label) as string}
