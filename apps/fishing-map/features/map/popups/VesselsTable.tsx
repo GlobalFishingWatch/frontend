@@ -129,6 +129,7 @@ function VesselsTable({
       return hasDatasets
     })
 
+  // This avoid requesting the vessel info again when we alredy requested it for the popup
   const populateVesselInfoResource = (
     vessel: ExtendedFeatureVessel,
     vesselDataviewInstance: DataviewInstance

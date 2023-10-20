@@ -76,7 +76,7 @@ const Vessel = () => {
   const { dispatchClickedEvent, cancelPendingInteractionRequests } = useClickedEventConnect()
   useVesselFitBounds()
   useUpdateVesselEventsVisibility()
-  useFetchDataviewResources()
+  useFetchDataviewResources(infoStatus === AsyncReducerStatus.Finished)
 
   const updateAreaLayersVisibility = useCallback(
     (id?: string) => {

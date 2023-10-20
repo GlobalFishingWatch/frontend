@@ -6,11 +6,13 @@ import {
   DatasetTypes,
   EndpointId,
   IdentityVessel,
+  Resource,
+  ResourceStatus,
   SelfReportedInfo,
   VesselCombinedSourcesInfo,
   VesselRegistryInfo,
 } from '@globalfishingwatch/api-types'
-import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
+import { resolveEndpoint, setResource } from '@globalfishingwatch/dataviews-client'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
@@ -19,7 +21,10 @@ import {
   selectDatasetById,
 } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
-import { VesselInstanceDatasets } from 'features/dataviews/dataviews.utils'
+import {
+  VesselInstanceDatasets,
+  getVesselDataviewInstance,
+} from 'features/dataviews/dataviews.utils'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { PROFILE_DATAVIEW_SLUGS } from 'data/workspaces'
 import { getVesselIdentities, getVesselProperty } from 'features/vessel/vessel.utils'
@@ -91,22 +96,39 @@ export const fetchVesselInfoThunk = createAsyncThunk(
           datasetId: dataset.id,
           params: [{ id: 'vesselId', value: vesselId }],
           query: [
-            // { id: 'match-fields', value: 'SEVERAL_FIELDS' },
-            {
-              id: 'includes',
-              value: ['POTENTIAL_RELATED_SELF_REPORTED_INFO'],
-            },
             {
               id: 'dataset',
               value: datasetId,
             },
           ],
         }
-        const url = resolveEndpoint(dataset, datasetConfig)
+        // Adding the custom query to include the self-reported info but only for the vessel profile
+        // this way we can prepolate the vessel info resouce and avoid requesting the resource again
+        const vesselProfileDatasetConfig = {
+          ...datasetConfig,
+          query: [
+            ...datasetConfig.query,
+            {
+              id: 'includes',
+              value: ['POTENTIAL_RELATED_SELF_REPORTED_INFO'],
+            },
+          ],
+        }
+        const url = resolveEndpoint(dataset, vesselProfileDatasetConfig)
         if (!url) {
           return rejectWithValue({ message: 'Error resolving endpoint' })
         }
         const vessel = await GFWAPI.fetch<IdentityVessel>(url)
+        const resource: Resource = {
+          url: resolveEndpoint(dataset, datasetConfig) as string,
+          dataset: dataset,
+          datasetConfig,
+          dataviewId: getVesselDataviewInstance({ id: vesselId }, {})?.id,
+          data: vessel,
+          status: ResourceStatus.Finished,
+        }
+        dispatch(setResource(resource))
+
         const allIdentities = getVesselIdentities(vessel)
         const filteredIdentities = allIdentities.filter(
           // TODO remove once the match-fields works in the API

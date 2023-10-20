@@ -24,7 +24,9 @@ export const useFetchResources = (resources: Resource[]) => {
     }
   }, [dispatch, resources])
 }
-export const useFetchDataviewResources = () => {
+
+const defaultDataviewResources = [] as Resource<any>[]
+export const useFetchDataviewResources = (ready: boolean = true) => {
   const dataviewsResources = useSelector(selectDataviewsResources)
-  useFetchResources(dataviewsResources?.resources)
+  useFetchResources(ready ? dataviewsResources?.resources : defaultDataviewResources)
 }
