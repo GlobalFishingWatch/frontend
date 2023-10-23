@@ -1252,7 +1252,7 @@
   },
   "private-png-fishing-vessels": {
     "name": "VMS de Papúa Nueva Guinea (Buques de pesca)",
-    "description": "Dataset for VMS Papua New Guinea (Private)",
+    "description": "VMS de Papúa Nueva Guinea (Buques de pesca)",
     "schema": {
       "id": "id",
       "flag": "bandera",
