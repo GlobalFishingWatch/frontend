@@ -1255,12 +1255,12 @@
     "description": "crwdns69806:0crwdne69806:0",
     "schema": {
       "id": "crwdns69808:0crwdne69808:0",
-      "flag": "crwdns69810:0crwdne69810:0",
-      "source": "crwdns69812:0crwdne69812:0",
-      "callsign": "crwdns69814:0crwdne69814:0",
-      "shipname": "crwdns69816:0crwdne69816:0",
+      "registryInfo": "crwdns69822:0crwdne69822:0",
+      "registryOwners": "crwdns69824:0crwdne69824:0",
+      "selfReportedInfo": "crwdns69826:0crwdne69826:0",
       "lastTransmissionDate": "crwdns69818:0crwdne69818:0",
-      "firstTransmissionDate": "crwdns69820:0crwdne69820:0"
+      "firstTransmissionDate": "crwdns69820:0crwdne69820:0",
+      "registryAuthorizations": "crwdns69828:0crwdne69828:0"
     }
   },
   "private-png-presence": {
@@ -1344,6 +1344,55 @@
       },
       "timestamp": "crwdns65545:0crwdne65545:0",
       "vessel_id": "crwdns65547:0crwdne65547:0"
+    }
+  },
+  "public-ais-presence-viirs-match": {
+    "name": "crwdns69830:0crwdne69830:0",
+    "description": "crwdns69832:0crwdne69832:0",
+    "schema": {
+      "cel": "crwdns69834:0crwdne69834:0",
+      "lat": "crwdns69836:0crwdne69836:0",
+      "lon": "crwdns69838:0crwdne69838:0",
+      "pos": "crwdns69840:0crwdne69840:0",
+      "flag": "crwdns69842:0crwdne69842:0",
+      "htime": "crwdns69844:0crwdne69844:0",
+      "matched": {
+        "keyword": "crwdns69846:0crwdne69846:0",
+        "enum": {
+          "true": true,
+          "false": true
+        }
+      },
+      "radiance": {
+        "keyword": "crwdns69852:0crwdne69852:0",
+        "enum": {
+          "0": 0,
+          "10000": 0
+        }
+      },
+      "shiptype": {
+        "keyword": "crwdns69858:0crwdne69858:0",
+        "enum": {
+          "unknown": "crwdns69860:0crwdne69860:0",
+          "fishing": "crwdns69862:0crwdne69862:0",
+          "carrier": "crwdns69864:0crwdne69864:0",
+          "support": "crwdns69866:0crwdne69866:0"
+        }
+      },
+      "detect_id": "crwdns69868:0crwdne69868:0",
+      "qf_detect": {
+        "keyword": "crwdns69870:0crwdne69870:0",
+        "enum": {
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "5": 0,
+          "7": 0,
+          "10": 0
+        }
+      },
+      "timestamp": "crwdns69884:0crwdne69884:0",
+      "vessel_id": "crwdns69886:0crwdne69886:0"
     }
   },
   "public-areas-to-be-avoided-1618836788619": {
@@ -1877,6 +1926,23 @@
     "description": "crwdns66113:0crwdne66113:0",
     "schema": {}
   },
+  "public-global-all-tracks": {
+    "name": "crwdns69888:0crwdne69888:0",
+    "description": "crwdns69890:0crwdne69890:0",
+    "schema": {
+      "lat": "crwdns69892:0crwdne69892:0",
+      "lon": "crwdns69894:0crwdne69894:0",
+      "flag": "crwdns69896:0crwdne69896:0",
+      "night": "crwdns69898:0crwdne69898:0",
+      "speed": "crwdns69900:0crwdne69900:0",
+      "course": "crwdns69902:0crwdne69902:0",
+      "seg_id": "crwdns69904:0crwdne69904:0",
+      "elevation": "crwdns69906:0crwdne69906:0",
+      "timestamp": "crwdns69908:0crwdne69908:0",
+      "distance_from_port": "crwdns69910:0crwdne69910:0",
+      "distance_from_shore": "crwdns69912:0crwdne69912:0"
+    }
+  },
   "public-global-all-vessels": {
     "name": "crwdns66115:0crwdne66115:0",
     "description": "crwdns66117:0crwdne66117:0",
@@ -1961,9 +2027,11 @@
   },
   "public-global-encounters-events": {
     "name": "crwdns66233:0crwdne66233:0",
-    "description": "crwdns66235:0crwdne66235:0",
+    "description": "crwdns69914:0crwdne69914:0",
     "schema": {
+      "flag": "crwdns69916:0crwdne69916:0",
       "fields": "crwdns66237:0crwdne66237:0",
+      "duration": "crwdns69918:0crwdne69918:0",
       "event_id": "crwdns66239:0crwdne66239:0",
       "event_end": "crwdns66241:0crwdne66241:0",
       "vessel_id": "crwdns66243:0crwdne66243:0",
@@ -2125,14 +2193,16 @@
       "vessel_type": {
         "keyword": "crwdns66461:0crwdne66461:0",
         "enum": {
-          "fishing": "crwdns66463:0crwdne66463:0",
           "carrier": "crwdns66465:0crwdne66465:0",
-          "cargo": "crwdns66467:0crwdne66467:0",
-          "bunker_or_tanker": "crwdns66469:0crwdne66469:0",
-          "passenger": "crwdns66471:0crwdne66471:0",
           "seismic_vessel": "crwdns66473:0crwdne66473:0",
-          "other_non_fishing": "crwdns66475:0crwdne66475:0",
-          "unknown": "crwdns66477:0crwdne66477:0"
+          "passenger": "crwdns66471:0crwdne66471:0",
+          "other": "crwdns69920:0crwdne69920:0",
+          "support": "crwdns69922:0crwdne69922:0",
+          "bunker": "crwdns69924:0crwdne69924:0",
+          "gear": "crwdns69926:0crwdne69926:0",
+          "cargo": "crwdns66467:0crwdne66467:0",
+          "fishing": "crwdns66463:0crwdne66463:0",
+          "discrepancy": "crwdns69928:0crwdne69928:0"
         }
       },
       "vessel-groups": "crwdns66479:0crwdne66479:0"
@@ -2144,7 +2214,7 @@
     "schema": {}
   },
   "public-global-sar-presence": {
-    "name": "crwdns66485:0crwdne66485:0",
+    "name": "crwdns69930:0crwdne69930:0",
     "description": "crwdns66487:0crwdne66487:0",
     "schema": {
       "id": "crwdns66489:0crwdne66489:0",
@@ -2152,6 +2222,7 @@
       "lon": "crwdns66493:0crwdne66493:0",
       "pos": "crwdns66495:0crwdne66495:0",
       "cell": "crwdns66497:0crwdne66497:0",
+      "flag": "crwdns69932:0crwdne69932:0",
       "htime": "crwdns66499:0crwdne66499:0",
       "ssvid": "crwdns66501:0crwdne66501:0",
       "matched": {
@@ -2161,8 +2232,65 @@
           "false": true
         }
       },
+      "geartype": {
+        "keyword": "crwdns69934:0crwdne69934:0",
+        "enum": {
+          "dredge_fishing": "crwdns69936:0crwdne69936:0",
+          "seiners": "crwdns69938:0crwdne69938:0",
+          "passenger": "crwdns69940:0crwdne69940:0",
+          "pole_and_line": "crwdns69942:0crwdne69942:0",
+          "cargo_or_tanker": "crwdns69944:0crwdne69944:0",
+          "other": "crwdns69946:0crwdne69946:0",
+          "other_purse_seines": "crwdns69948:0crwdne69948:0",
+          "purse_seine_support": "crwdns69950:0crwdne69950:0",
+          "specialized_reefer": "crwdns69952:0crwdne69952:0",
+          "carrier": "crwdns69954:0crwdne69954:0",
+          "trawlers": "crwdns69956:0crwdne69956:0",
+          "set_gillnets": "crwdns69958:0crwdne69958:0",
+          "squid_jigger": "crwdns69960:0crwdne69960:0",
+          "seismic_vessel": "crwdns69962:0crwdne69962:0",
+          "tug": "crwdns69964:0crwdne69964:0",
+          "bunker": "crwdns69966:0crwdne69966:0",
+          "gear": "crwdns69968:0crwdne69968:0",
+          "purse_seines": "crwdns69970:0crwdne69970:0",
+          "patrol_vessel": "crwdns69972:0crwdne69972:0",
+          "set_longlines": "crwdns69974:0crwdne69974:0",
+          "tuna_purse_seines": "crwdns69976:0crwdne69976:0",
+          "trollers": "crwdns69978:0crwdne69978:0",
+          "drifting_longlines": "crwdns69980:0crwdne69980:0",
+          "pots_and_traps": "crwdns69982:0crwdne69982:0",
+          "non_fishing": "crwdns69984:0crwdne69984:0",
+          "inconclusive": "crwdns69986:0crwdne69986:0",
+          "fixed_gear": "crwdns69988:0crwdne69988:0",
+          "cargo": "crwdns69990:0crwdne69990:0"
+        }
+      },
+      "shiptype": {
+        "keyword": "crwdns69992:0crwdne69992:0",
+        "enum": {
+          "carrier": "crwdns69994:0crwdne69994:0",
+          "seismic_vessel": "crwdns69996:0crwdne69996:0",
+          "passenger": "crwdns69998:0crwdne69998:0",
+          "other": "crwdns70000:0crwdne70000:0",
+          "support": "crwdns70002:0crwdne70002:0",
+          "bunker": "crwdns70004:0crwdne70004:0",
+          "gear": "crwdns70006:0crwdne70006:0",
+          "cargo": "crwdns70008:0crwdne70008:0",
+          "fishing": "crwdns70010:0crwdne70010:0",
+          "discrepancy": "crwdns70012:0crwdne70012:0"
+        }
+      },
       "timestamp": "crwdns66509:0crwdne66509:0",
-      "confidence": "crwdns66511:0crwdne66511:0"
+      "vessel_id": "crwdns70014:0crwdne70014:0",
+      "confidence": "crwdns66511:0crwdne66511:0",
+      "neural_vessel_type": {
+        "keyword": "crwdns70016:0crwdne70016:0",
+        "enum": {
+          "Likely non-fishing": "crwdns70018:0crwdne70018:0",
+          "Likely Fishing": "crwdns70020:0crwdne70020:0",
+          "Unknown": "crwdns70022:0crwdne70022:0"
+        }
+      }
     }
   },
   "public-global-support-vessels": {
