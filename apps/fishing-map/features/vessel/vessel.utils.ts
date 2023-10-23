@@ -217,6 +217,7 @@ export function getCurrentIdentityVessel(
   vessel: IdentityVessel | IdentityVesselData,
   { identityId, identitySource } = {} as GetVesselIdentityParams
 ) {
+  if (!vessel) return {} as VesselLastIdentity
   const vesselData = getVesselIdentity(vessel, { identityId, identitySource })
   return {
     ...vesselData,
