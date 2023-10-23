@@ -28,11 +28,11 @@ export type VesselRenderField<Key = string> = {
 
 const COMMON_FIELD_GROUPS: VesselRenderField[][] = [
   [{ key: 'shipname' }, { key: 'flag' }],
+  [{ key: 'ssvid', label: 'mmsi' }, { key: 'imo' }, { key: 'callsign' }],
   [
     { key: 'shiptype', terminologyKey: 'shiptype' },
     { key: 'geartype', terminologyKey: 'geartype' },
   ],
-  [{ key: 'ssvid', label: 'mmsi' }, { key: 'imo' }, { key: 'callsign' }],
 ]
 
 // TODO review private datasets to ensure there are no missing fields
