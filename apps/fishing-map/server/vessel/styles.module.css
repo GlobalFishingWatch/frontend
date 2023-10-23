@@ -1,10 +1,15 @@
 .container {
   display: flex;
+  flex-direction: column;
   height: 100%;
 }
 
 .content {
   padding: var(--space-XS) var(--space-S);
+}
+
+.secondary {
+  color: var(--color-secondary-blue);
 }
 
 .mapPlaceholder {

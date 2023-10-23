@@ -52,10 +52,16 @@ interface VesselGroupsState extends AsyncReducer<VesselGroup> {
   }
 }
 
-const fetchSearchVessels = async (url: string, { signal, token }: { signal?: AbortSignal, token?: string }) => {
-  const searchResponse = await GFWAPI.fetch<APIVesselSearchPagination<IdentityVessel>>(`${url}${token ? `&since=${token}` : ''}`, {
-    signal,
-  })
+const fetchSearchVessels = async (
+  url: string,
+  { signal, token }: { signal?: AbortSignal; token?: string }
+) => {
+  const searchResponse = await GFWAPI.fetch<APIVesselSearchPagination<IdentityVessel>>(
+    `${url}${token ? `&since=${token}` : ''}`,
+    {
+      signal,
+    }
+  )
   return searchResponse
 }
 
