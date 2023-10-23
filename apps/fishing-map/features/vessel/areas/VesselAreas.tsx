@@ -254,9 +254,23 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
                     regionType: t(`layer.areas.${vesselArea}`, vesselArea),
                   })}
                 </span>
-                <span className={styles.unknownRegionEventsNumber}>
-                  <I18nNumber number={eventsGroupedUnknown?.total} />
-                </span>
+                <Tooltip
+                  content={Object.entries(eventsGroupedUnknown)
+                    .sort((a, b) => (b[1] as number) - (a[1] as number))
+                    .map(([key, value]) => {
+                      if (key === 'total' || key === 'region') return ''
+                      return (
+                        <p>
+                          {t(`event.${key}`, { defaultValue: key, count: value as number })}:{' '}
+                          <I18nNumber number={value} />
+                        </p>
+                      )
+                    })}
+                >
+                  <span className={styles.unknownRegionEventsNumber}>
+                    <I18nNumber number={eventsGroupedUnknown?.total} />
+                  </span>
+                </Tooltip>
               </p>
             )}
           </div>

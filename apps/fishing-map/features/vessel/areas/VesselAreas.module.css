@@ -82,6 +82,7 @@
 }
 
 .unknownRegionEventsNumber {
+  cursor: help;
   font: var(--font-S);
   color: var(--color-secondary-blue);
 }
