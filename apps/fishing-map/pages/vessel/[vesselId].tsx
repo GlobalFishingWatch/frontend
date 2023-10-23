@@ -2,6 +2,7 @@ import path from 'path'
 import { useEffect, useState } from 'react'
 import VesselServerComponent from 'server/vessel/vessel'
 import { TOKEN_REGEX } from '@globalfishingwatch/dataviews-client'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { fetchVesselInfoThunk } from 'features/vessel/vessel.slice'
 import Index from 'pages'
 import { WorkspaceCategory } from 'data/workspaces'
@@ -25,13 +26,21 @@ export const getServerSideProps = wrapper.getServerSideProps(
     async ({ params, query }) => {
       const { vesselId } = params || ({} as VesselPageParams)
       const queryVesselDatasetId = query.vesselDatasetId as string
+      const vesselIdentitySource = query.vesselIdentitySource as VesselIdentitySourceEnum
+      const vesselRegistryId = query.vesselRegistryId as string
+      const vesselSelfReportedId = query.vesselSelfReportedId as string
       const datasetMatchesToken = queryVesselDatasetId?.match(TOKEN_REGEX)
       const vesselDatasetId = datasetMatchesToken
         ? query[`tk[${datasetMatchesToken[1]}]`]
         : queryVesselDatasetId
 
       // TODO we need to grab also identitySource and identityId from url
-      store.dispatch(updateLocation(VESSEL, { payload: { vesselId } }))
+      store.dispatch(
+        updateLocation(VESSEL, {
+          payload: { vesselId },
+          query: { vesselIdentitySource, vesselRegistryId, vesselSelfReportedId },
+        })
+      )
       await store.dispatch(
         fetchVesselInfoThunk({
           vesselId: vesselId as string,
