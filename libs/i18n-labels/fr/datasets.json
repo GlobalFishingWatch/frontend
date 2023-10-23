@@ -1250,19 +1250,6 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
-  "private-png-fishing-vessels": {
-    "name": "Papua New Guinea VMS (Fishing Vessels)",
-    "description": "Dataset for VMS Papua New Guinea (Private)",
-    "schema": {
-      "id": "id",
-      "flag": "pavillon",
-      "source": "source",
-      "callsign": "indicatifs d'appel",
-      "shipname": "shipname",
-      "lastTransmissionDate": "lastTransmissionDate",
-      "firstTransmissionDate": "firstTransmissionDate"
-    }
-  },
   "private-png-presence": {
     "name": "Papua New Guinea VMS",
     "description": "Les données du système de surveillance des navires (VMS) sont fournies par l'Autorité nationale des pêches de Papouasie-Nouvelle-Guinée. Les données sont collectées à l'aide du VMS national de Papouasie-Nouvelle-Guinée fourni par le Système d'information et de gestion des pêches (FIMS). Les données VMS incluent les identifiants et l'emplacement des navires, et sont publiées avec un délai de cinq jours.\n\nLa couche d'activité affiche une carte thermique de la présence des navires. La présence est déterminée en prenant deux positions par heure et par navire à partir des positions transmises par le VMS du navire.",
