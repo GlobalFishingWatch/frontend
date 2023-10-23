@@ -19,6 +19,7 @@ import {
 import { HOME, WORKSPACE } from 'routes/routes'
 import { EMPTY_FILTERS } from 'features/search/search.config'
 import { getRelatedIdentityVesselIds } from 'features/vessel/vessel.utils'
+import { TimebarVisualisations } from 'types'
 import { cleanVesselSearchResults, selectSelectedVessels } from './search.slice'
 import styles from './Search.module.css'
 
@@ -53,9 +54,14 @@ function SearchActions() {
       dispatchQueryParams(EMPTY_FILTERS)
     })
     if (workspaceId) {
-      dispatchLocation(WORKSPACE, { payload: { workspaceId } })
+      dispatchLocation(WORKSPACE, {
+        payload: { workspaceId },
+        query: { timebarVisualisation: TimebarVisualisations.Vessel },
+      })
     } else {
-      dispatchLocation(HOME)
+      dispatchLocation(HOME, {
+        query: { timebarVisualisation: TimebarVisualisations.Vessel },
+      })
     }
   }
 
