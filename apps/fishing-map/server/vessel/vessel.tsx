@@ -6,7 +6,7 @@ import { selectVesselInfoData, selectVesselInfoStatus } from 'features/vessel/ve
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { IDENTITY_FIELD_GROUPS } from 'features/vessel/vessel.config'
 import { formatInfoField } from 'utils/info'
-import { getVesselProperty } from 'features/vessel/vessel.utils'
+import { VesselIdentityProperty, getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectVesselIdentitySource } from 'features/vessel/vessel.config.selectors'
 import styles from './styles.module.css'
 
@@ -35,15 +35,12 @@ const VesselServerComponent = () => {
             {/* TODO: make fields more dynamic to account for VMS */}
             {fieldGroup.map((field) => {
               const label = field.label || field.key
+              const key = field.key as VesselIdentityProperty
               return (
                 <div key={field.key}>
                   <label>{serverT(`vessel.${label}` as any, label)}</label>
                   {vessel
-                    ? formatInfoField(
-                        getVesselProperty(vessel, field.key as any),
-                        field.key,
-                        serverT
-                      )
+                    ? formatInfoField(getVesselProperty(vessel, key), field.key, serverT)
                     : ''}
                 </div>
               )
