@@ -1251,16 +1251,16 @@
     }
   },
   "private-png-fishing-vessels": {
-    "name": "crwdns69782:0crwdne69782:0",
-    "description": "crwdns69784:0crwdne69784:0",
+    "name": "crwdns69804:0crwdne69804:0",
+    "description": "crwdns69806:0crwdne69806:0",
     "schema": {
-      "id": "crwdns69786:0crwdne69786:0",
-      "flag": "crwdns69788:0crwdne69788:0",
-      "source": "crwdns69790:0crwdne69790:0",
-      "callsign": "crwdns69792:0crwdne69792:0",
-      "shipname": "crwdns69794:0crwdne69794:0",
-      "lastTransmissionDate": "crwdns69796:0crwdne69796:0",
-      "firstTransmissionDate": "crwdns69798:0crwdne69798:0"
+      "id": "crwdns69808:0crwdne69808:0",
+      "flag": "crwdns69810:0crwdne69810:0",
+      "source": "crwdns69812:0crwdne69812:0",
+      "callsign": "crwdns69814:0crwdne69814:0",
+      "shipname": "crwdns69816:0crwdne69816:0",
+      "lastTransmissionDate": "crwdns69818:0crwdne69818:0",
+      "firstTransmissionDate": "crwdns69820:0crwdne69820:0"
     }
   },
   "private-png-presence": {
