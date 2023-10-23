@@ -36,6 +36,7 @@ import {
   getOtherVesselNames,
   getSearchIdentityResolved,
   getVesselIdentities,
+  getVesselProperty,
 } from 'features/vessel/vessel.utils'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
 import useMapInstance from 'features/map/map-context.hooks'
@@ -81,12 +82,12 @@ function SearchBasicResult({
     ssvid,
     imo,
     callsign,
-    geartype,
-    shiptype,
     transmissionDateFrom,
     transmissionDateTo,
     positionsCounter,
   } = vesselData
+  const shiptype = getVesselProperty(vessel, 'shiptype')
+  const geartype = getVesselProperty(vessel, 'geartype')
   const bestIdentityMatch = getBestMatchCriteriaIdentity(vessel)
   const otherNamesLabel = getOtherVesselNames(vessel, nShipname)
   const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER

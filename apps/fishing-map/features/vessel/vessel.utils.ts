@@ -216,6 +216,8 @@ export function getSearchIdentityResolved(vessel: IdentityVessel | IdentityVesse
     ...vesselData,
     id: getVesselId(vessel),
     dataset: vessel?.dataset,
+    geartype: getVesselProperty(vessel, 'geartype'),
+    shiptype: getVesselProperty(vessel, 'shiptype'),
     transmissionDateFrom,
     transmissionDateTo,
     positionsCounter,

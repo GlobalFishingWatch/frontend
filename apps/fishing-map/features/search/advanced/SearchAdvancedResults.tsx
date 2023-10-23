@@ -13,7 +13,12 @@ import {
   selectSelectedVessels,
   setSelectedVessels,
 } from 'features/search/search.slice'
-import { formatInfoField, EMPTY_FIELD_PLACEHOLDER, getVesselGearType } from 'utils/info'
+import {
+  formatInfoField,
+  EMPTY_FIELD_PLACEHOLDER,
+  getVesselGearType,
+  getVesselShipType,
+} from 'utils/info'
 import I18nFlag from 'features/i18n/i18nFlag'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { SearchComponentProps } from 'features/search/basic/SearchBasic'
@@ -49,7 +54,7 @@ type CellWithFilterProps = {
 function CellWithFilter({ vessel, column, children, onClick }: CellWithFilterProps) {
   const { setSearchFilters, searchFilters } = useSearchFiltersConnect()
 
-  const value = getVesselProperty(vessel, column)
+  const value = getVesselProperty(vessel, column) as string
   const onFilterClick = useCallback(() => {
     let filter: string | string[] = value
     if (MULTIPLE_SELECTION_FILTERS_COLUMN.includes(column)) {
@@ -194,9 +199,10 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         id: 'shiptype',
         accessorFn: (vessel: IdentityVesselData) => {
           const shiptype = getVesselProperty(vessel, 'shiptype')
+          const label = getVesselShipType({ shiptype })
           return (
             <CellWithFilter vessel={vessel} column="shiptype" onClick={fetchResults}>
-              {t(`vessel.vesselTypes.${shiptype?.toLowerCase()}` as any, EMPTY_FIELD_PLACEHOLDER)}
+              {label || EMPTY_FIELD_PLACEHOLDER}
             </CellWithFilter>
           )
         },
@@ -205,7 +211,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
       {
         id: 'geartype',
         accessorFn: (vessel: IdentityVesselData) => {
-          const geartype = getVesselProperty<string[]>(vessel, 'geartype')
+          const geartype = getVesselProperty(vessel, 'geartype')
           const label = getVesselGearType({ geartype })
           return (
             <CellWithFilter vessel={vessel} column="geartype" onClick={fetchResults}>
