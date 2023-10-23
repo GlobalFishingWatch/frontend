@@ -27,6 +27,7 @@ import { DATAVIEWS_WARNING } from 'features/workspace/context-areas/ContextAreaL
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
 import { useDebouncedDispatchHighlightedEvent } from 'features/map/map.hooks'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
+import { getSidebarContentWidth } from 'features/vessel/vessel.utils'
 import styles from './VesselAreas.module.css'
 
 type VesselAreasProps = {
@@ -108,7 +109,7 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
   const eventsLoading = useSelector(selectVesselEventsResourcesLoading)
   const vesselColor = useSelector(selectVesselProfileColor)
   const eventTypes = useSelector(selectVesselEventTypes)
-  const [graphWidth, setGraphWidth] = useState(window.innerWidth / 2 - 52 - 40)
+  const [graphWidth, setGraphWidth] = useState(getSidebarContentWidth())
   const areaDataview = VESSEL_PROFILE_DATAVIEWS_INSTANCES.find((d) => d.dataviewId === vesselArea)
   const [modalDataWarningOpen, setModalDataWarningOpen] = useState(false)
   const onDataWarningModalClose = useCallback(() => {
@@ -139,7 +140,7 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
 
   useEffect(() => {
     const resizeGraph = () => {
-      setGraphWidth(window.innerWidth / 2 - 52 - 40)
+      setGraphWidth(getSidebarContentWidth())
     }
     window.addEventListener('resize', resizeGraph)
     return () => {

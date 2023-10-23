@@ -47,6 +47,7 @@ function VesselDownloadButton({
     return (
       <LocalStorageLoginLink>
         <IconButton
+          type={iconType}
           icon={isHover ? 'user' : 'download'}
           tooltip={
             t(

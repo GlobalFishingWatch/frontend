@@ -6,6 +6,7 @@ import {
   VesselRegistryProperty,
 } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { DEFAULT_BREAKPOINT } from '@globalfishingwatch/react-hooks'
 import { t } from 'features/i18n/i18n'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { VesselLastIdentity } from 'features/search/search.slice'
@@ -271,4 +272,11 @@ export const getOtherVesselNames = (
         .map((i) => formatInfoField(i.shipname, 'name'))
         .join(', ')}`
     : ''
+}
+
+export const getSidebarContentWidth = () => {
+  const margins = 92
+  return window.innerWidth <= DEFAULT_BREAKPOINT
+    ? window.innerWidth - margins
+    : window.innerWidth / 2 - margins
 }

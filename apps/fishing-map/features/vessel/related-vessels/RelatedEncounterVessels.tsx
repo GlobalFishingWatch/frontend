@@ -8,6 +8,7 @@ import { EVENTS_COLORS } from 'data/config'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { selectVesselEventsResourcesLoading } from 'features/vessel/vessel.selectors'
 import RelatedVessel from 'features/vessel/related-vessels/RelatedVessel'
+import { getSidebarContentWidth } from 'features/vessel/vessel.utils'
 import styles from './RelatedVessels.module.css'
 
 const VesselTick = ({ y, index }: any) => {
@@ -24,11 +25,11 @@ const RelatedEncounterVessels = () => {
   const { t } = useTranslation()
   const encountersByVessel = useSelector(selectEventsGroupedByEncounteredVessel)
   const eventsLoading = useSelector(selectVesselEventsResourcesLoading)
-  const [graphWidth, setGraphWidth] = useState(window.innerWidth / 2 - 52 - 40)
+  const [graphWidth, setGraphWidth] = useState(getSidebarContentWidth())
 
   useEffect(() => {
     const resizeGraph = () => {
-      setGraphWidth(window.innerWidth / 2 - 52 - 40)
+      setGraphWidth(getSidebarContentWidth())
     }
     window.addEventListener('resize', resizeGraph)
     return () => {
