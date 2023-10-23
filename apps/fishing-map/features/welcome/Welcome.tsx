@@ -1,80 +1,102 @@
 import { useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Logo } from '@globalfishingwatch/ui-components'
+import { Logo, Modal } from '@globalfishingwatch/ui-components'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Locale } from 'types'
 import LanguageToggle from 'features/i18n/LanguageToggle'
-import styles from './Welcome.module.css'
+import { ROOT_DOM_ELEMENT } from 'data/config'
 import WELCOME_POPUP_CONTENT, { WelcomeContentKey } from './welcome.content'
+import styles from './Welcome.module.css'
+
+export const DISABLE_WELCOME_POPUP_DICT: Record<WelcomeContentKey, string> = {
+  'fishing-activity': 'WelcomePopup',
+  'marine-manager': 'MarineManagerPopup',
+  'vessel-profile': 'VesselProfilePopup',
+}
 
 type WelcomeProps = {
   contentKey: WelcomeContentKey
-  showDisableCheckbox?: boolean
 }
 
-export const DISABLE_WELCOME_POPUP = 'DisableWelcomePopup'
-
-const Welcome: React.FC<WelcomeProps> = ({ contentKey, showDisableCheckbox }: WelcomeProps) => {
+type WelcomeLocalStorageKey = { visible: boolean; showAgain: boolean }
+const Welcome = ({ contentKey }: WelcomeProps) => {
+  const [welcomePopup, setWelcomePopup] = useLocalStorage<WelcomeLocalStorageKey>(
+    DISABLE_WELCOME_POPUP_DICT[contentKey],
+    { visible: true, showAgain: false }
+  )
   const { t, i18n } = useTranslation()
-  const welcomeModal = WELCOME_POPUP_CONTENT[contentKey]
-  const [disabled, setDisabled] = useLocalStorage(DISABLE_WELCOME_POPUP, true)
 
   useEffect(() => {
-    if (disabled === true) {
-      setDisabled(true)
+    if (!welcomePopup?.visible && welcomePopup?.showAgain) {
+      setWelcomePopup((popup) => ({ visible: true, showAgain: popup.showAgain }))
     }
-  })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const onDisableToggled = useCallback(() => {
-    setDisabled(!disabled)
-  }, [disabled, setDisabled])
+    setWelcomePopup((popup) => ({
+      ...popup,
+      showAgain: !popup.showAgain,
+    }))
+  }, [setWelcomePopup])
 
-  if (!welcomeModal) {
-    console.warn('Missing welcome modal content by category')
+  const welcomeModalContent = WELCOME_POPUP_CONTENT[contentKey]
+  const welcomeModalContentTranslated =
+    welcomeModalContent?.[i18n.language as Locale] || welcomeModalContent?.[Locale.en]
+  if (!welcomePopup?.visible || !welcomeModalContentTranslated) {
+    if (!welcomeModalContentTranslated) {
+      console.warn('Missing every welcome modal content by languages')
+    }
     return null
   }
-  const welcomeModalContent = welcomeModal[i18n.language as Locale] || welcomeModal[Locale.en]
-  if (!welcomeModalContent) {
-    console.warn('Missing every welcome modal content by languages')
-    return null
-  }
 
-  const { partnerLogo, partnerLink } = welcomeModal
-  const { title, description } = welcomeModalContent
+  const { partnerLogo, partnerLink } = welcomeModalContent
+  const { title, description } = welcomeModalContentTranslated
 
   return (
-    <div className={styles.container}>
-      <div className={styles.logos}>
-        <Logo />
-        {partnerLogo && partnerLink && (
-          <a href={partnerLink} target="_blank" rel="noopener noreferrer">
-            <img className={styles.partnerLogo} src={partnerLogo} alt="partner" />
-          </a>
-        )}
-      </div>
-      <div className={styles.headerActions}>
-        {showDisableCheckbox && (
+    <Modal
+      header={false}
+      appSelector={ROOT_DOM_ELEMENT}
+      shouldCloseOnEsc
+      isOpen={welcomePopup?.visible}
+      onClose={() => {
+        setWelcomePopup((popup) => ({
+          visible: false,
+          showAgain: popup.showAgain,
+        }))
+      }}
+    >
+      <div className={styles.container}>
+        <div className={styles.logos}>
+          <Logo />
+          {partnerLogo && partnerLink && (
+            <a href={partnerLink} target="_blank" rel="noopener noreferrer">
+              <img className={styles.partnerLogo} src={partnerLogo} alt="partner" />
+            </a>
+          )}
+        </div>
+        <div className={styles.headerActions}>
           <div className={styles.disableSection}>
             <input
               id="disableWelcomePopup"
               type="checkbox"
               onChange={onDisableToggled}
               className={styles.disableCheckbox}
-              checked={disabled}
+              checked={!welcomePopup?.showAgain}
             />
             <label className={styles.disableLabel} htmlFor="disableWelcomePopup">
               {t('common.welcomePopupDisable', "Don't show again")}
             </label>
           </div>
-        )}
-        <LanguageToggle className={styles.lngToggle} position="rightDown" />
+          <LanguageToggle className={styles.lngToggle} position="rightDown" />
+        </div>
+        <h1 className={styles.title}>{title}</h1>
+        <div
+          className={styles.contentContainer}
+          dangerouslySetInnerHTML={{ __html: description }}
+        ></div>
       </div>
-      <h1 className={styles.title}>{title}</h1>
-      <div
-        className={styles.contentContainer}
-        dangerouslySetInnerHTML={{ __html: description }}
-      ></div>
-    </div>
+    </Modal>
   )
 }
 
