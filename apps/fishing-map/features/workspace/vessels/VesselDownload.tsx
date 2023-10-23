@@ -1,6 +1,6 @@
-import { t } from 'i18next'
 import { useSelector } from 'react-redux'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { IconButton, IconButtonType } from '@globalfishingwatch/ui-components'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -23,6 +23,7 @@ function VesselDownloadButton({
   datasetId,
   iconType = 'default',
 }: VesselDownloadButtonProps) {
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const userData = useSelector(selectUserData)
   const [isHover, setIsHover] = useState(false)

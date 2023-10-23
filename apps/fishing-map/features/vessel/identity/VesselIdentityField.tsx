@@ -8,6 +8,8 @@ import {
   useState,
 } from 'react'
 import cx from 'classnames'
+import { API_LOGIN_REQUIRED } from '@globalfishingwatch/api-types'
+import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
 import styles from './VesselIdentityField.module.css'
 
 type VesselIdentityFieldProps = {
@@ -44,6 +46,10 @@ const VesselIdentityField = (
       if (timer) clearTimeout(timer)
     }
   }, [value])
+
+  if (value.toUpperCase() === API_LOGIN_REQUIRED) {
+    return <VesselIdentityFieldLogin />
+  }
 
   return (
     <span ref={ref} className={cx(styles.value, { [styles.highlight]: highlighted }, className)}>

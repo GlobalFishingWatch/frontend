@@ -86,6 +86,7 @@ export type VesselTMTInfo = {
 }
 
 export type SelfReportedMatchFields = 'ID_MATCH_ONLY' | 'SEVERAL_FIELDS'
+
 export const API_LOGIN_REQUIRED = 'BEARER_TOKEN_REQUIRED'
 export type RegistryLoginMessage = typeof API_LOGIN_REQUIRED
 

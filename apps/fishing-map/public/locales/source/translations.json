@@ -678,6 +678,7 @@
     "hideOtherLayers": "Hide other layers",
     "identityDatesOutOfRange": "The dates of this identity don’t overlap with your current time range",
     "imo": "IMO",
+    "infoLogin": "Register and login to see more details (free, 2 minutes)",
     "infoSource": "Info Source",
     "infoSources": {
       "both": "Registry and self reported",
