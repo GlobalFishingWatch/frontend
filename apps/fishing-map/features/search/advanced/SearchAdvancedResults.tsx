@@ -127,6 +127,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           return (
             <VesselLink
               vesselId={vesselData.id}
+              datasetId={vesselData.dataset?.id}
               identity={bestIdentityMatch}
               onClick={(e) => onVesselClick(e, vesselData)}
               query={vesselQuery}
