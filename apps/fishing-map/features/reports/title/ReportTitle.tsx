@@ -73,9 +73,8 @@ export default function ReportTitle({ area }: ReportTitleProps) {
           value: previewBuffer.value || DEFAULT_BUFFER_VALUE,
         })
       )
-      cleanFeatureState('highlight')
     },
-    [dispatch, previewBuffer, cleanFeatureState]
+    [dispatch, previewBuffer]
   )
 
   const handleBufferValueChange = useCallback(

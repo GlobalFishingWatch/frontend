@@ -88,9 +88,9 @@ export const downloadActivityThunk = createAsyncThunk<
         'region-id': areaId,
         'region-dataset': datasetId,
         'group-by': groupBy,
-        'buffer-unit': bufferUnit,
+        'buffer-unit': bufferUnit?.toUpperCase(),
         'buffer-value': bufferValue,
-        'buffer-operation': bufferOperation,
+        'buffer-operation': bufferOperation?.toUpperCase(),
       }
 
       const fileName = `${areaName} - ${downloadActivityParams['date-range']}.${
