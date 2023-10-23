@@ -23,16 +23,18 @@ const VesselIdentityCombinedSourceField = ({
   }
   return (
     <ul>
-      {combinedSource.map((source, index) => {
-        const { name, yearTo, yearFrom } = source
-        const dates = yearTo === yearFrom ? yearTo : `${yearFrom} - ${yearTo}`
-        return (
-          <li key={index}>
-            <VesselIdentityField value={formatInfoField(name, property) as string} />{' '}
-            {combinedSource?.length > 1 && <span className={styles.secondary}>({dates})</span>}
-          </li>
-        )
-      })}
+      {[...combinedSource]
+        .sort((a, b) => (a.yearTo < b.yearTo ? 1 : -1))
+        .map((source, index) => {
+          const { name, yearTo, yearFrom } = source
+          const dates = yearTo === yearFrom ? yearTo : `${yearFrom} - ${yearTo}`
+          return (
+            <li key={index}>
+              <VesselIdentityField value={formatInfoField(name, property) as string} />{' '}
+              {combinedSource?.length > 1 && <span className={styles.secondary}>({dates})</span>}
+            </li>
+          )
+        })}
     </ul>
   )
 }

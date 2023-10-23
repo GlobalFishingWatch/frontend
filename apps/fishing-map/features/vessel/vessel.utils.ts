@@ -122,7 +122,10 @@ export function getVesselCombinedSourceProperty(
 ) {
   const combinedSource = getVesselCombinedSource(vessel, { vesselId })
   const combinedSourceProperty = getCombinedSourceProperty(property)
-  return combinedSource?.[combinedSourceProperty]
+  const source = combinedSource?.[combinedSourceProperty]
+  if (source) {
+    return [...source].sort((a, b) => (a.yearTo < b.yearTo ? 1 : -1))
+  }
 }
 
 export function getVesselProperty<P = string>(
