@@ -1,3 +1,4 @@
+import type { TFunction } from 'i18next'
 import { VesselLastIdentity } from 'features/search/search.slice'
 import { getCombinedSourceProperty } from 'features/vessel/vessel.utils'
 import VesselIdentityField from 'features/vessel/identity/VesselIdentityField'
@@ -7,17 +8,20 @@ import styles from './VesselIdentity.module.css'
 type VesselIdentityCombinedSourceFieldProps = {
   identity: VesselLastIdentity
   property: 'geartype' | 'shiptype'
+  // Component used in server side rendering
+  translationFn?: TFunction
 }
 const VesselIdentityCombinedSourceField = ({
   identity,
   property,
+  translationFn,
 }: VesselIdentityCombinedSourceFieldProps) => {
   const sourceKey = getCombinedSourceProperty(property)
   const combinedSource = identity?.combinedSourcesInfo?.[sourceKey]
   if (!combinedSource) {
     return identity[property] ? (
       <VesselIdentityField
-        value={formatInfoField(identity[property] as string, property) as string}
+        value={formatInfoField(identity[property] as string, property, translationFn) as string}
       />
     ) : null
   }
@@ -28,7 +32,7 @@ const VesselIdentityCombinedSourceField = ({
         const dates = yearTo === yearFrom ? yearTo : `${yearFrom} - ${yearTo}`
         return (
           <li key={index}>
-            <VesselIdentityField value={formatInfoField(name, property) as string} />{' '}
+            <VesselIdentityField value={formatInfoField(name, property, translationFn) as string} />{' '}
             {combinedSource?.length > 1 && <span className={styles.secondary}>({dates})</span>}
           </li>
         )
