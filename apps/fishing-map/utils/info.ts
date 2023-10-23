@@ -79,10 +79,10 @@ export const getVesselShipType = (
     joinCharacter?: string
     translationFn?: TFunction
   }
-): VesselType | typeof EMPTY_FIELD_PLACEHOLDER => {
+): VesselType => {
   const shipTypes = Array.isArray(shiptype) ? shiptype : [shiptype]
   if (shipTypes.every((shiptype) => shiptype === undefined)) {
-    return EMPTY_FIELD_PLACEHOLDER
+    return EMPTY_FIELD_PLACEHOLDER as VesselType
   }
   return shipTypes
     .filter(Boolean)
