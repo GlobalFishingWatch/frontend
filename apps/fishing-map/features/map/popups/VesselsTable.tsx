@@ -10,6 +10,7 @@ import {
   DataviewInstance,
   Resource,
   ResourceStatus,
+  VesselType,
 } from '@globalfishingwatch/api-types'
 import { resolveEndpoint, setResource } from '@globalfishingwatch/dataviews-client'
 import {
@@ -17,6 +18,7 @@ import {
   formatInfoField,
   getDetectionsTimestamps,
   getVesselGearType,
+  getVesselShipType,
 } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
@@ -217,13 +219,9 @@ function VesselsTable({
               const vesselFlag = getVesselProperty(vessel, 'flag')
 
               const vesselType = isPresenceActivity
-                ? `${t(
-                    `vessel.vesselTypes.${getVesselProperty(
-                      vessel,
-                      'shiptype'
-                    )?.toLowerCase()}` as any,
-                    vessel.shiptype ?? EMPTY_FIELD_PLACEHOLDER
-                  )}`
+                ? getVesselShipType({
+                    shiptype: getVesselProperty<VesselType[]>(vessel, 'shiptype'),
+                  })
                 : getVesselGearType({ geartype: getVesselProperty<string[]>(vessel, 'geartype') })
 
               // Temporary workaround for public-global-all-vessels dataset as we

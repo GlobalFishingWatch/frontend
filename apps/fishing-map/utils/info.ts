@@ -79,8 +79,11 @@ export const getVesselShipType = (
     joinCharacter?: string
     translationFn?: TFunction
   }
-): VesselType => {
+): VesselType | typeof EMPTY_FIELD_PLACEHOLDER => {
   const shipTypes = Array.isArray(shiptype) ? shiptype : [shiptype]
+  if (shipTypes.every((shiptype) => shiptype === undefined)) {
+    return EMPTY_FIELD_PLACEHOLDER
+  }
   return shipTypes
     .filter(Boolean)
     ?.map((shiptype) =>
@@ -97,6 +100,9 @@ export const getVesselGearType = (
   }
 ): string => {
   const gearTypes = Array.isArray(geartype) ? geartype : [geartype]
+  if (gearTypes.every((geartype) => geartype === undefined)) {
+    return EMPTY_FIELD_PLACEHOLDER
+  }
   return gearTypes
     .filter(Boolean)
     ?.map((gear) => translationFn(`vessel.gearTypes.${gear?.toLowerCase()}`, upperFirst(gear)))

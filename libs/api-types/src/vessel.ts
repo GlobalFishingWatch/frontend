@@ -22,6 +22,7 @@ export type VesselType =
   | 'other_non_fishing'
   | 'bunker_or_tanker'
   | 'support'
+  | 'other'
 
 export interface Vessel {
   authorizations?: Authorization[]
