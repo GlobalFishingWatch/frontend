@@ -26,3 +26,8 @@ export type AnyDeckLayersGenerator =
 export type DeckLayersGeneratorDictionary = Partial<
   Record<DeckLayersGeneratorType, AnyDeckLayersGenerator>
 >
+
+export type DeckLayerBaseState = {
+  id: string
+  loaded?: boolean
+}

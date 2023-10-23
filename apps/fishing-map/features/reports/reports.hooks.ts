@@ -17,13 +17,14 @@ import {
 import useMapInstance from 'features/map/map-context.hooks'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { Bbox } from 'types'
-import useViewport, { getMapCoordinatesFromBounds } from 'features/map/map-viewport.hooks'
+import { useSetViewState, useViewStateAtom } from 'features/map/map-viewport.hooks'
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
 import { useHighlightArea } from 'features/map/popups/ContextLayers.hooks'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { getMapCoordinatesFromBounds } from 'features/map/map-bounds.hooks'
 import {
   fetchReportVesselsThunk,
   getDateRangeHash,
@@ -51,28 +52,28 @@ export function useReportAreaCenter(bounds?: Bbox) {
 }
 
 export function useReportAreaInViewport() {
-  const { viewport } = useViewport()
+  const { viewState } = useViewStateAtom()
   const reportAreaIds = useSelector(selectReportAreaIds)
   const area = useSelector(selectDatasetAreaDetail(reportAreaIds))
   const areaCenter = useReportAreaCenter(area!?.bounds)
   return (
-    viewport?.latitude === areaCenter?.latitude &&
-    viewport?.longitude === areaCenter?.longitude &&
-    viewport?.zoom === areaCenter?.zoom
+    viewState?.latitude === areaCenter?.latitude &&
+    viewState?.longitude === areaCenter?.longitude &&
+    viewState?.zoom === areaCenter?.zoom
   )
 }
 
 export function useFitAreaInViewport() {
-  const { setMapCoordinates } = useViewport()
+  const setViewState = useSetViewState()
   const reportAreaIds = useSelector(selectReportAreaIds)
   const area = useSelector(selectDatasetAreaDetail(reportAreaIds))
   const areaCenter = useReportAreaCenter(area!?.bounds)
   const areaInViewport = useReportAreaInViewport()
   return useCallback(() => {
     if (!areaInViewport && areaCenter) {
-      setMapCoordinates(areaCenter)
+      setViewState(areaCenter)
     }
-  }, [areaCenter, areaInViewport, setMapCoordinates])
+  }, [areaCenter, areaInViewport, setViewState])
 }
 
 export function useReportAreaHighlight(areaId: string, sourceId: string) {

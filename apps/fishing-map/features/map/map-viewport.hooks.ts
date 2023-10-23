@@ -1,162 +1,75 @@
 import { useCallback, useEffect } from 'react'
-import { fitBounds } from '@math.gl/web-mercator'
-import { atom, useRecoilState } from 'recoil'
 import { debounce } from 'lodash'
-import { ViewStateChangeEvent } from 'react-map-gl'
-import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
-import { LngLatBounds, Map } from '@globalfishingwatch/maplibre-gl'
-import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
-import { Bbox, MapCoordinates } from 'types'
+import { atom, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { MapView } from '@deck.gl/core/typed'
+import { MapCoordinates } from 'types'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { updateUrlViewport } from 'routes/routes.actions'
-import { FOOTER_HEIGHT } from 'features/footer/Footer'
-import { selectViewport } from 'features/app/app.selectors'
-import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
-import { useMapReady } from 'features/map/map-state.hooks'
+import { getUrlViewstateNumericParam } from 'utils/url'
+import { useDeckMap } from 'features/map/map-context.hooks'
 import store from '../../store'
-import useMapInstance from './map-context.hooks'
 
-type ViewportKeys = 'latitude' | 'longitude' | 'zoom'
-type ViewportProps = Record<ViewportKeys, number>
-type UseViewport = {
-  viewport: MapCoordinates
-  onViewportChange: (e: ViewStateChangeEvent) => void
-  setMapCoordinates: (viewport: ViewportProps) => void
+export const viewStateAtom = atom<MapCoordinates>({
+  key: 'localViewport',
+  default: {
+    longitude: getUrlViewstateNumericParam('longitude') || DEFAULT_VIEWPORT.longitude,
+    latitude: getUrlViewstateNumericParam('latitude') || DEFAULT_VIEWPORT.latitude,
+    zoom: getUrlViewstateNumericParam('zoom') || DEFAULT_VIEWPORT.zoom,
+  },
+  effects: [],
+})
+
+export const useViewState = () => useRecoilValue(viewStateAtom)
+export const useSetViewState = () => {
+  const setViewState = useSetRecoilState(viewStateAtom)
+  return useCallback(
+    (coordinates: Partial<MapCoordinates>) => {
+      setViewState((prev) => ({ ...prev, ...coordinates }))
+    },
+    [setViewState]
+  )
 }
 
+export function useViewStateAtom() {
+  const [viewState, setViewState] = useRecoilState(viewStateAtom)
+  return { viewState, setViewState }
+}
+
+export function useMapViewport() {
+  const deckMap = useDeckMap()
+  return (deckMap as any)?.getViewports().find((v) => v.id === MAP_VIEW_ID)
+}
+
+export function useSetMapCoordinates() {
+  const { viewState, setViewState } = useViewStateAtom()
+  const deckMap = useDeckMap()
+  return useCallback(
+    (coordinates: Partial<MapCoordinates>) => {
+      if (deckMap) {
+        const newViewState = { ...viewState, ...coordinates }
+        deckMap.setProps({ viewState: newViewState })
+        setViewState(newViewState)
+      }
+    },
+    [deckMap, setViewState, viewState]
+  )
+}
+
+export const MAP_VIEW_ID = 'mapViewport'
+export const MAP_VIEW = new MapView({ id: MAP_VIEW_ID, repeat: true, controller: true })
 const URL_VIEWPORT_DEBOUNCED_TIME = 1000
 
-const viewportState = atom<MapCoordinates>({
-  key: 'mapViewport',
-  default: DEFAULT_VIEWPORT as MapCoordinates,
-  effects: [
-    ({ trigger, setSelf, onSet }) => {
-      const viewport = (selectViewport as any)(store.getState() as any)
-
-      if (trigger === 'get') {
-        setSelf(viewport)
-      }
-
-      const updateUrlViewportDebounced = debounce(
-        store.dispatch(updateUrlViewport),
-        URL_VIEWPORT_DEBOUNCED_TIME
-      )
-
-      onSet((viewport) => {
-        const { latitude, longitude, zoom } = viewport as MapCoordinates
-        updateUrlViewportDebounced({ latitude, longitude, zoom })
-      })
-    },
-  ],
-})
-
-export default function useViewport(): UseViewport {
-  const [viewport, setViewport] = useRecoilState(viewportState)
-
-  const setMapCoordinates = useCallback((coordinates: ViewportProps) => {
-    setViewport((viewport) => ({ ...viewport, ...coordinates }))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  const onViewportChange = useCallback((ev: ViewStateChangeEvent) => {
-    const { latitude, longitude, zoom } = ev.viewState
-    if (latitude && longitude && zoom) {
-      setViewport({ latitude, longitude, zoom })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  return { viewport, onViewportChange, setMapCoordinates }
-}
-
-const boundsState = atom<MiniglobeBounds>({
-  key: 'mapBounds',
-  default: undefined,
-})
-
-export function checkEqualBounds(bounds1?: MiniglobeBounds, bounds2?: MiniglobeBounds) {
-  if (!bounds1 || !bounds2) return false
-  return (
-    bounds1.north === bounds2.north &&
-    bounds1.south === bounds2.south &&
-    bounds1.west === bounds2.west &&
-    bounds1.east === bounds2.east
+export const useUpdateViewStateUrlParams = () => {
+  const viewState = useRecoilValue(viewStateAtom)
+  const updateUrlViewportDebounced = debounce(
+    store.dispatch(updateUrlViewport),
+    URL_VIEWPORT_DEBOUNCED_TIME
   )
-}
-
-export function mglToMiniGlobeBounds(mglBounds: LngLatBounds) {
-  return {
-    north: mglBounds.getNorth() as number,
-    south: mglBounds.getSouth() as number,
-    west: mglBounds.getWest() as number,
-    east: mglBounds.getEast() as number,
-  }
-}
-
-export function useMapBounds() {
-  const map = useMapInstance()
-  const mapReady = useMapReady()
-  const [bounds, setBounds] = useRecoilState(boundsState)
-
-  const setMapBounds = useCallback(() => {
-    if (map) {
-      const rawBounds = map.getBounds()
-      if (rawBounds) {
-        setBounds(mglToMiniGlobeBounds(rawBounds))
-      }
-    }
-  }, [map, setBounds])
-
   useEffect(() => {
-    if (mapReady) {
-      setMapBounds()
+    const { longitude, latitude, zoom } = viewState
+    updateUrlViewportDebounced({ longitude, latitude, zoom })
+    return () => {
+      updateUrlViewportDebounced.cancel()
     }
-  }, [mapReady, setMapBounds])
-
-  return { bounds, setMapBounds }
-}
-
-type FitBoundsParams = {
-  mapWidth?: number
-  mapHeight?: number
-  padding?: number
-}
-
-export const getMapCoordinatesFromBounds = (
-  map: Map,
-  bounds: Bbox,
-  params: FitBoundsParams = {}
-) => {
-  const { mapWidth, mapHeight, padding = 60 } = params
-  const width = mapWidth || (map ? parseInt(map.getCanvas().style.width) : window.innerWidth / 2)
-  const height =
-    mapHeight ||
-    (map
-      ? parseInt(map.getCanvas().style.height)
-      : window.innerHeight - TIMEBAR_HEIGHT - FOOTER_HEIGHT)
-  const { latitude, longitude, zoom } = fitBounds({
-    bounds: [
-      [bounds[0], bounds[1]],
-      [bounds[2], bounds[3]],
-    ],
-    width,
-    height,
-    padding,
-  })
-  return { latitude, longitude, zoom }
-}
-export function useMapFitBounds() {
-  const map = useMapInstance()
-  const { setMapCoordinates } = useViewport()
-
-  const fitMapBounds = useCallback(
-    (bounds: Bbox, params: FitBoundsParams = {}) => {
-      const wrapBbox = wrapBBoxLongitudes(bounds)
-      const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(map, wrapBbox, params)
-      setMapCoordinates({ latitude, longitude, zoom: Math.max(0, zoom) })
-    },
-    [map, setMapCoordinates]
-  )
-
-  return fitMapBounds
+  }, [viewState, updateUrlViewportDebounced])
 }

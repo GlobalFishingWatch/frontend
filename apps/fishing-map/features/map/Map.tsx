@@ -1,11 +1,11 @@
 import { useCallback, useState, useEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
-import { Map, MapboxStyle } from 'react-map-gl'
 import { DeckGL, DeckGLRef } from '@deck.gl/react/typed'
-import { MapView } from '@deck.gl/core/typed'
+import { LayersList } from '@deck.gl/core/typed'
 import dynamic from 'next/dynamic'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
-import maplibregl from '@globalfishingwatch/maplibre-gl'
+import { ViewStateChangeParameters } from '@deck.gl/core/typed/controllers/controller'
+import { ViewState } from 'react-map-gl'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
@@ -22,8 +22,8 @@ import {
 } from '@globalfishingwatch/react-hooks'
 import { ExtendedStyleMeta, GeneratorType, LayerComposer } from '@globalfishingwatch/layer-composer'
 import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
-import { POPUP_CATEGORY_ORDER } from 'data/config'
-import useMapInstance from 'features/map/map-context.hooks'
+import { DEFAULT_VIEWPORT, POPUP_CATEGORY_ORDER } from 'data/config'
+import useMapInstance, { useSetMapInstance } from 'features/map/map-context.hooks'
 import {
   useClickedEventConnect,
   useMapHighlightedEvent,
@@ -32,7 +32,6 @@ import {
   TooltipEventFeature,
 } from 'features/map/map.hooks'
 import { selectActiveTemporalgridDataviews } from 'features/dataviews/dataviews.selectors'
-import MapInfo from 'features/map/controls/MapInfo'
 import MapControls from 'features/map/controls/MapControls'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { getEventLabel } from 'utils/analytics'
@@ -50,8 +49,15 @@ import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { selectHighlightedTime } from 'features/timebar/timebar.slice'
 import { selectMapTimeseries } from 'features/reports/reports-timeseries.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { useMapDeckLayers } from 'features/map/map-layers.hooks'
-import useViewport, { useMapBounds } from './map-viewport.hooks'
+import { useMapDeckLayers, useMapLayersLoaded } from 'features/map/map-layers.hooks'
+import { MapCoordinates } from 'types'
+import {
+  MAP_VIEW,
+  useViewStateAtom,
+  useUpdateViewStateUrlParams,
+  useSetViewState,
+  useViewState,
+} from './map-viewport.hooks'
 import styles from './Map.module.css'
 import useRulers from './rulers/rulers.hooks'
 import {
@@ -107,7 +113,28 @@ const MapWrapper = () => {
   ///////////////////////////////////////
   // DECK related code
   const deckRef = useRef<DeckGLRef>(null)
-  const mapView = new MapView({ repeat: true, controller: true })
+  useSetMapInstance(deckRef)
+
+  // const [viewState, setViewState] = useState<any>(DEFAULT_VIEWPORT)
+  // const viewState = useRef<any>(DEFAULT_VIEWPORT)
+  const { viewState, setViewState } = useViewStateAtom()
+  // const [viewState, setViewState] = useState(DEFAULT_VIEWPORT)
+  const onViewStateChange = useCallback(
+    (params: ViewStateChangeParameters) => {
+      // const { latitude, longitude, zoom } = params.viewState
+      // viewState.current = { latitude, longitude, zoom }
+      setViewState(params.viewState as ViewState)
+    },
+    [setViewState]
+  )
+  // const onViewStateChange = useCallback(
+  //   (params: ViewStateChangeParameters) => {
+  //     console.log(params)
+  //     setViewState(params.viewState as MapCoordinates)
+  //   },
+  //   [setViewState]
+  // )
+  useUpdateViewStateUrlParams()
   ////////////////////////////////////////
   // Used it only once here to attach the listener only once
   useSetMapIdleAtom()
@@ -132,7 +159,7 @@ const MapWrapper = () => {
     layerComposer
   )
 
-  const layers = useMapDeckLayers()
+  const layers: LayersList = useMapDeckLayers()
   const allSourcesLoaded = useAllMapSourceTilesLoaded()
 
   const { clickedEvent, dispatchClickedEvent, cancelPendingInteractionRequests } =
@@ -212,14 +239,6 @@ const MapWrapper = () => {
     cleanFeatureState('hover')
   }, [cleanFeatureState])
 
-  const { viewport, onViewportChange } = useViewport()
-
-  const { setMapBounds } = useMapBounds()
-  useEffect(() => {
-    setMapBounds()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewport])
-
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const reportLocation = useSelector(selectIsReportLocation)
   const isWorkspace = useSelector(selectIsWorkspaceLocation)
@@ -228,7 +247,8 @@ const MapWrapper = () => {
   const mapLegends = useMapLegend(style, dataviews, hoveredEvent)
   const portalledLegend = !showTimeComparison
 
-  const mapLoaded = useMapLoaded()
+  // const mapLoaded = useMapLoaded()
+  const mapLoaded = useMapLayersLoaded()
   const tilesClusterLoaded = useMapClusterTilesLoaded()
 
   const getCursor = useCallback(() => {
@@ -298,30 +318,28 @@ const MapWrapper = () => {
   return (
     <div className={styles.container}>
       <DeckGL
-        id="deckgl"
+        id="map"
         ref={deckRef}
-        views={mapView}
+        views={MAP_VIEW}
         layers={layers}
         style={mapStyles}
-        // This avoids performing the default picking
-        // since we are handling it through pickMultipleObjects
-        // discussion for reference https://github.com/visgl/deck.gl/discussions/5793
-        layerFilter={({ renderPass }) => renderPass !== 'picking:hover'}
-        initialViewState={{
-          longitude: -73.3073372718909,
-          latitude: -42.29868545284379,
-          zoom: 8.044614831699267,
-          pitch: 0,
-          bearing: 0,
-          minZoom: 0,
-          maxZoom: 20,
-          minPitch: 0,
-          maxPitch: 60,
+        // more info about preserveDrawingBuffer
+        // https://github.com/visgl/deck.gl/issues/4436#issuecomment-610472868
+        glOptions={{ preserveDrawingBuffer: true }}
+        layerFilter={({ renderPass, layer }) => {
+          // This avoids performing the default picking
+          // since we are handling it through pickMultipleObjects
+          // discussion for reference https://github.com/visgl/deck.gl/discussions/5793
+          if (renderPass === 'picking:hover') {
+            // if (!loadedLayers.includes(layer.id) || renderPass === 'picking:hover') {
+            return false
+          }
+          return true
         }}
-        controller={true}
+        viewState={viewState}
+        onViewStateChange={onViewStateChange}
         // onClick={onClick}
         // onHover={onHover}
-        // onViewStateChange={onViewportStateChange}
       />
       {/* {style && (
         <Map

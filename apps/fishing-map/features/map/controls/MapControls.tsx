@@ -15,7 +15,7 @@ import { BasemapType, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
-import useViewport, { useMapBounds } from 'features/map/map-viewport.hooks'
+import { useSetMapCoordinates, useViewStateAtom } from 'features/map/map-viewport.hooks'
 import { selectIsReportLocation, selectIsWorkspaceLocation } from 'routes/routes.selectors'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
 import setInlineStyles from 'utils/dom'
@@ -23,6 +23,7 @@ import { selectScreenshotModalOpen, setModalOpen } from 'features/modals/modals.
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { ROOT_DOM_ELEMENT } from 'data/config'
+import { useMapBounds } from 'features/map/map-bounds.hooks'
 import { isPrintSupported, MAP_IMAGE_DEBOUNCE } from '../MapScreenshot'
 import styles from './MapControls.module.css'
 
@@ -66,9 +67,12 @@ const MapControls = ({
     }
   }, [])
 
-  const { viewport, setMapCoordinates } = useViewport()
-  const { latitude, longitude, zoom } = viewport
+  const setMapCoordinates = useSetMapCoordinates()
+  const { viewState, setViewState } = useViewStateAtom()
+  const { latitude, longitude, zoom } = viewState
+
   const { bounds } = useMapBounds()
+
   const center = useMemo(
     () => ({
       latitude,
@@ -80,12 +84,13 @@ const MapControls = ({
   const debouncedOptions = useDebounce(options, 16)
 
   const onZoomInClick = useCallback(() => {
-    setMapCoordinates({ latitude, longitude, zoom: zoom + 1 })
-  }, [latitude, longitude, setMapCoordinates, zoom])
+    setMapCoordinates({ zoom: zoom + 1 })
+    // setViewState({ zoom: zoom + 1 })
+  }, [setMapCoordinates, zoom])
 
   const onZoomOutClick = useCallback(() => {
-    setMapCoordinates({ latitude, longitude, zoom: Math.max(1, zoom - 1) })
-  }, [latitude, longitude, setMapCoordinates, zoom])
+    setMapCoordinates({ zoom: zoom - 1 })
+  }, [setMapCoordinates, zoom])
 
   const onScreenshotClick = useCallback(() => {
     dispatchQueryParams({ sidebarOpen: true })
@@ -155,7 +160,7 @@ const MapControls = ({
             bounds={debouncedOptions.bounds}
             center={debouncedOptions.center}
           />
-          {miniGlobeHovered && <MiniGlobeInfo viewport={viewport} />}
+          {miniGlobeHovered && <MiniGlobeInfo viewport={viewState} />}
         </div>
         <div className={cx('print-hidden', styles.controlsNested)}>
           {extendedControls && <MapSearch />}

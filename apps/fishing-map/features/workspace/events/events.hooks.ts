@@ -10,11 +10,12 @@ import {
   areDataviewsFeatureLoaded,
   useMapDataviewFeatures,
 } from 'features/map/map-sources.hooks'
-import useViewport, { useMapBounds } from 'features/map/map-viewport.hooks'
+import { useViewStateAtom } from 'features/map/map-viewport.hooks'
+import { useMapBounds } from 'features/map/map-bounds.hooks'
 
 export const useEventsDynamicRamp = (dataview: UrlDataviewInstance) => {
   const { bounds } = useMapBounds()
-  const { viewport } = useViewport()
+  const { viewState } = useViewStateAtom()
   const dataviewFeatures = useMapDataviewFeatures(dataview)
   const sourcesLoaded = areDataviewsFeatureLoaded(dataviewFeatures)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -39,7 +40,7 @@ export const useEventsDynamicRamp = (dataview: UrlDataviewInstance) => {
     [upsertDataviewInstance]
   )
 
-  const roundZoom = Math.floor(viewport.zoom)
+  const roundZoom = Math.floor(viewState.zoom)
   useEffect(() => {
     const maxZoomCluster = dataview.config?.maxZoomCluster || MAX_ZOOM_TO_CLUSTER_POINTS
     if (sourcesLoaded && roundZoom < maxZoomCluster) {

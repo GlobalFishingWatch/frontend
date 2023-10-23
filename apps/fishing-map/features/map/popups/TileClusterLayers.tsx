@@ -20,7 +20,7 @@ import { useCarrierLatestConnect } from 'features/datasets/datasets.hook'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
-import useViewport from '../map-viewport.hooks'
+import { useViewStateAtom } from '../map-viewport.hooks'
 import { ExtendedEventVessel, ExtendedFeatureEvent } from '../map.slice'
 import styles from './Popup.module.css'
 
@@ -52,7 +52,7 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const datasets = useSelector(selectAllDatasets)
   const { start, end } = useTimerangeConnect()
-  const { viewport } = useViewport()
+  const { viewState } = useViewStateAtom()
   const { carrierLatest, carrierLatestStatus, dispatchFetchLatestCarrier } =
     useCarrierLatestConnect()
   const vessels = useSelector(selectActiveTrackDataviews)
@@ -94,7 +94,7 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
 
   const event = parseEvent(feature.event)
   const linkParams = {
-    ...viewport,
+    ...viewState,
     dataset: carrierLatest?.id,
     ...(event && {
       vessel: event.vessel.id,

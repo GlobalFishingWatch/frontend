@@ -19,6 +19,7 @@ import {
   VesselDeckLayersGenerator,
   getDataviewsGeneratorsDictionary,
 } from '@globalfishingwatch/deck-layers'
+import { createDeepEqualSelector } from 'utils/selectors'
 import {
   selectWorkspaceError,
   selectWorkspaceStatus,
@@ -162,7 +163,7 @@ const getGeneratorsConfig = ({
   }
 }
 
-export const selectMapGeneratorsDictionary = createSelector(
+export const selectMapGeneratorsDictionary = createDeepEqualSelector(
   [selectDataviewInstancesResolved, selectVisibleResources, selectWorkspaceVisibleEventsArray],
   (dataviews = [], resources, visibleEvents): DeckLayersGeneratorDictionary => {
     // Do we inject the visibleEvents at the dataview level ?

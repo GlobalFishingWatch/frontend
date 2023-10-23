@@ -3,6 +3,7 @@ import { atom, useSetAtom, useAtomValue } from 'jotai'
 import { selectAtom } from 'jotai/utils'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { VesselDeckLayersGenerator } from '@globalfishingwatch/deck-layers'
+import { DeckLayerBaseState } from '../../layer-composer/types'
 import { hexToDeckColor } from '../../utils/colors'
 import { VesselLayer, VesselDataStatus } from './VesselLayer'
 
@@ -10,16 +11,15 @@ const dateToMs = (date: string) => {
   return new Date(date).getTime()
 }
 
-export type VesselLayerState = {
-  id: string
-  instance: VesselLayer
+export interface VesselLayerState extends DeckLayerBaseState {
+  layerInstance: VesselLayer
   dataStatus: VesselDataStatus[]
 }
 
 export const vesselLayersAtom = atom<VesselLayerState[]>([])
 export const vesselLayersSelector = (layers: VesselLayerState[]) => layers
 export const vesselLayersInstancesSelector = atom((get) =>
-  get(vesselLayersAtom).map((l) => l.instance)
+  get(vesselLayersAtom).map((l) => l.layerInstance)
 )
 
 export const selectVesselsLayersAtom = selectAtom(vesselLayersAtom, vesselLayersSelector)
@@ -40,6 +40,10 @@ export type VesselDeckLayersParams = {
 }
 
 export const useVesselLayers = () => useAtomValue(selectVesselsLayersAtom)
+export const useVesselLayersLoaded = () =>
+  useAtomValue(selectVesselsLayersAtom).flatMap((l) =>
+    l.dataStatus.some((d) => d.status !== 'finished') ? [] : l.id
+  )
 export const useVesselLayerInstances = () => useAtomValue(vesselLayersInstancesSelector)
 export const useMapVesselLayer = (layerId: string) => {
   const vesselLayers = useVesselLayers()
@@ -71,6 +75,7 @@ export const useSetVesselLayers = (
             if (id.includes(v.id)) {
               return {
                 ...v,
+                loaded: dataStatus.every((d) => d.status === 'finished'),
                 dataStatus,
               }
             }
@@ -99,7 +104,7 @@ export const useSetVesselLayers = (
         const { id, visible, color, visibleEvents, trackUrl, events, name } = vesselGenerator
         // TODO not load layer data if not visible for first time
         // const alreadyInstanceLayer = vesselLayers.find((v: any) => v.id === id) !== undefined
-        const instance = new VesselLayer({
+        const layerInstance: VesselLayer = new VesselLayer({
           id,
           visible,
           name,
@@ -119,7 +124,8 @@ export const useSetVesselLayers = (
         })
         return {
           id,
-          instance,
+          layerInstance,
+          loaded: false,
           dataStatus: vesselLayers.find((v: any) => v.id === id)?.dataStatus || [],
         }
       }

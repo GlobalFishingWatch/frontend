@@ -12,7 +12,7 @@ import {
   areDataviewsFeatureLoaded,
   useMapDataviewFeatures,
 } from 'features/map/map-sources.hooks'
-import { useMapBounds } from 'features/map/map-viewport.hooks'
+import { useMapBounds } from 'features/map/map-bounds.hooks'
 
 export const useEnvironmentalBreaksUpdate = () => {
   const dataviews = useSelector(selectActiveNonTrackEnvironmentalDataviews)

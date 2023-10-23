@@ -11,10 +11,7 @@ import type {
 import { Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
 import { Dataview } from '@globalfishingwatch/api-types'
 import { t as trans } from 'features/i18n/i18n'
-import useViewport, {
-  getMapCoordinatesFromBounds,
-  useMapFitBounds,
-} from 'features/map/map-viewport.hooks'
+import { useViewStateAtom } from 'features/map/map-viewport.hooks'
 import {
   MARINE_MANAGER_DATAVIEWS,
   MARINE_MANAGER_DATAVIEWS_INSTANCES,
@@ -33,6 +30,7 @@ import {
 import { WORKSPACE } from 'routes/routes'
 import { getEventLabel } from 'utils/analytics'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-bounds.hooks'
 import styles from './WorkspaceWizard.module.css'
 
 const MAX_RESULTS_NUMBER = 10
@@ -53,7 +51,7 @@ function WorkspaceWizard() {
   const dispatch = useAppDispatch()
   const fitBounds = useMapFitBounds()
   const map = useMapInstance()
-  const { viewport } = useViewport()
+  const { viewState } = useViewStateAtom()
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [areasMatching, setAreasMatching] = useState<OceanArea[]>([])
   const [selectedItem, setSelectedItem] = useState<OceanArea | null>(null)
@@ -161,7 +159,7 @@ function WorkspaceWizard() {
   const linkTo = useMemo(() => {
     const linkViewport = selectedItem
       ? getMapCoordinatesFromBounds(map, selectedItem.properties?.bounds as any)
-      : viewport
+      : viewState
 
     return {
       type: WORKSPACE,
@@ -186,7 +184,7 @@ function WorkspaceWizard() {
       },
       replaceQuery: true,
     }
-  }, [viewport, map, selectedItem])
+  }, [viewState, map, selectedItem])
 
   const linkLabel = selectedItem
     ? t('workspace.wizard.exploreArea', 'Explore area')
