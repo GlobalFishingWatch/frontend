@@ -5,7 +5,12 @@ import { useSelector } from 'react-redux'
 import { GetItemPropsOptions } from 'downshift'
 import { FeatureCollection } from 'geojson'
 import { uniq } from 'lodash'
-import { Locale } from '@globalfishingwatch/api-types'
+import {
+  API_LOGIN_REQUIRED,
+  GearType,
+  Locale,
+  RegistryLoginMessage,
+} from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
   YearlyTransmissionsTimeline,
@@ -36,11 +41,13 @@ import {
   getOtherVesselNames,
   getSearchIdentityResolved,
   getVesselIdentities,
+  getVesselProperty,
 } from 'features/vessel/vessel.utils'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
 import useMapInstance from 'features/map/map-context.hooks'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
+import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
 import styles from './SearchBasicResult.module.css'
 
 type SearchBasicResultProps = {
@@ -81,12 +88,12 @@ function SearchBasicResult({
     ssvid,
     imo,
     callsign,
-    geartype,
-    shiptype,
     transmissionDateFrom,
     transmissionDateTo,
     positionsCounter,
   } = vesselData
+  const shiptype = getVesselProperty(vessel, 'shiptype')
+  const geartype = getVesselProperty(vessel, 'geartype') as GearType[] | RegistryLoginMessage
   const bestIdentityMatch = getBestMatchCriteriaIdentity(vessel)
   const otherNamesLabel = getOtherVesselNames(vessel, nShipname)
   const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER
@@ -240,11 +247,17 @@ function SearchBasicResult({
             </div>
             <div className={styles.property}>
               <label>{t('vessel.vesselType', 'Vessel Type')}</label>
-              <span>{shiptype ? getVesselShipType({ shiptype }) : EMPTY_FIELD_PLACEHOLDER}</span>
+              <span>{getVesselShipType({ shiptype }) || EMPTY_FIELD_PLACEHOLDER}</span>
             </div>
             <div className={styles.property}>
               <label>{t('vessel.geartype', 'Gear Type')}</label>
-              <span>{getVesselGearType({ geartype }) || EMPTY_FIELD_PLACEHOLDER}</span>
+              <span>
+                {geartype === API_LOGIN_REQUIRED ? (
+                  <VesselIdentityFieldLogin />
+                ) : (
+                  getVesselGearType({ geartype }) || EMPTY_FIELD_PLACEHOLDER
+                )}
+              </span>
             </div>
             {matricula && (
               <div className={styles.property}>

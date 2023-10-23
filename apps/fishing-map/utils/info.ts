@@ -1,6 +1,11 @@
 import { get } from 'lodash'
 import { TFunction } from 'i18next'
-import { IdentityVessel, Vessel, VesselType } from '@globalfishingwatch/api-types'
+import {
+  GearType,
+  IdentityVessel,
+  SelfReportedInfo,
+  VesselType,
+} from '@globalfishingwatch/api-types'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { VesselRenderField } from 'features/vessel/vessel.config'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -25,7 +30,7 @@ export const formatInfoField = (
         return translationFn(`flags:${fieldValue}` as any, fieldValue)
       }
       if (type === 'shiptype' || type === 'vesselType') {
-        return getVesselShipType({ shiptype: fieldValue as VesselType }, { translationFn })
+        return getVesselShipType({ shiptype: fieldValue }, { translationFn })
       }
       if (type === 'geartype') {
         return getVesselGearType({ geartype: fieldValue }, { translationFn })
@@ -45,7 +50,7 @@ export const formatInfoField = (
       }
     } else if (Array.isArray(fieldValue)) {
       if (type === 'geartype') {
-        return getVesselGearType({ geartype: fieldValue }, { translationFn })
+        return getVesselGearType({ geartype: fieldValue as GearType[] }, { translationFn })
       } else if (type === 'shiptype') {
         return getVesselShipType({ shiptype: fieldValue as VesselType[] }, { translationFn })
       }
@@ -58,7 +63,7 @@ export const formatInfoField = (
 }
 
 export const formatAdvancedInfoField = (
-  vessel: Vessel,
+  vessel: IdentityVessel,
   field: VesselRenderField,
   translationFn = t
 ) => {
@@ -74,7 +79,7 @@ export const formatNumber = (num: string | number, maximumFractionDigits?: numbe
 }
 
 export const getVesselShipType = (
-  { shiptype } = {} as Pick<VesselDataIdentity, 'shiptype'> | { shiptype: VesselType },
+  { shiptype } = {} as Pick<SelfReportedInfo, 'shiptype'> | { shiptype: string },
   { joinCharacter = ',', translationFn = t } = {} as {
     joinCharacter?: string
     translationFn?: TFunction
@@ -98,15 +103,15 @@ export const getVesselGearType = (
     joinCharacter?: string
     translationFn?: TFunction
   }
-): string => {
+): GearType => {
   const gearTypes = Array.isArray(geartype) ? geartype : [geartype]
   if (gearTypes.every((geartype) => geartype === undefined)) {
-    return EMPTY_FIELD_PLACEHOLDER
+    return EMPTY_FIELD_PLACEHOLDER as GearType
   }
   return gearTypes
     .filter(Boolean)
     ?.map((gear) => translationFn(`vessel.gearTypes.${gear?.toLowerCase()}`, upperFirst(gear)))
-    .join(joinCharacter)
+    .join(joinCharacter) as GearType
 }
 
 export const getVesselLabel = (

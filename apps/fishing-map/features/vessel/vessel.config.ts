@@ -29,10 +29,6 @@ export type VesselRenderField<Key = string> = {
 const COMMON_FIELD_GROUPS: VesselRenderField[][] = [
   [{ key: 'shipname' }, { key: 'flag' }],
   [{ key: 'ssvid', label: 'mmsi' }, { key: 'imo' }, { key: 'callsign' }],
-  [
-    { key: 'shiptype', terminologyKey: 'shiptype' },
-    { key: 'geartype', terminologyKey: 'geartype' },
-  ],
 ]
 
 // TODO review private datasets to ensure there are no missing fields
@@ -54,11 +50,19 @@ export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS: CustomVMSGroup = {
   [SourceCode.Chile]: [[{ key: 'fleet' }]],
 }
 
+const SELF_REPORTED_FIELD_GROUPS: VesselRenderField[][] = [
+  [
+    { key: 'shiptype', terminologyKey: 'shiptype' },
+    { key: 'geartype', terminologyKey: 'geartype' },
+  ],
+]
+
 export const IDENTITY_FIELD_GROUPS: Record<VesselIdentitySourceEnum, VesselRenderField[][]> = {
-  [VesselIdentitySourceEnum.SelfReported]: COMMON_FIELD_GROUPS,
+  [VesselIdentitySourceEnum.SelfReported]: [...COMMON_FIELD_GROUPS, ...SELF_REPORTED_FIELD_GROUPS],
   [VesselIdentitySourceEnum.Registry]: [
     ...COMMON_FIELD_GROUPS,
     [
+      { key: 'geartype', terminologyKey: 'geartype' },
       { key: 'lengthM', label: 'length' },
       { key: 'tonnageGt', label: 'grossTonnage' },
     ],

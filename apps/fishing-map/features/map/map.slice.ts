@@ -299,14 +299,14 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
               return vessels.map((vessel) => {
                 const vesselInfo = vesselsInfo?.find((vesselInfo) => {
                   const vesselInfoId = vesselInfo.selfReportedInfo?.[0]?.id
-                  const years = vesselInfo?.selfReportedInfo?.[0]?.shiptypesByYear?.find(
-                    (y) => y.shiptype === vesselInfo.selfReportedInfo?.[0]?.shiptype
-                  )?.years
-                  if (years?.length && startYear && endYear) {
+                  const shiptypes = vesselInfo?.combinedSourcesInfo?.find(
+                    (source) => source.vesselId === vesselInfoId
+                  )?.shiptypes
+                  if (shiptypes?.length && startYear && endYear) {
                     return (
                       vesselInfoId === vessel.id &&
-                      (years.some((year) => year >= startYear) ||
-                        years.some((year) => year <= endYear))
+                      (shiptypes.some(({ yearFrom }) => yearFrom >= startYear) ||
+                        shiptypes.some(({ yearTo }) => yearTo <= endYear))
                     )
                   }
                   return vesselInfoId === vessel.id

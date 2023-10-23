@@ -1,9 +1,11 @@
 import { get, uniq, uniqBy } from 'lodash'
 import {
+  GearType,
   IdentityVessel,
   SelfReportedInfo,
   VesselRegistryInfo,
   VesselRegistryProperty,
+  VesselType,
 } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { DEFAULT_BREAKPOINT } from '@globalfishingwatch/react-hooks'
@@ -129,12 +131,21 @@ export function getVesselCombinedSourceProperty(
   }
 }
 
-export function getVesselProperty<P = string>(
+type VesselProperty<P extends VesselIdentityProperty> = P extends 'shiptype'
+  ? VesselType[]
+  : P extends 'geartype'
+  ? GearType[]
+  : P extends number
+  ? number
+  : P extends string
+  ? string
+  : undefined
+export function getVesselProperty<P extends VesselIdentityProperty>(
   vessel: IdentityVessel | IdentityVesselData | null,
-  property: VesselIdentityProperty,
+  property: P,
   { identityId, identitySource } = {} as GetVesselIdentityParams
-): P {
-  if (!vessel) return '' as P
+): VesselProperty<P> {
+  if (!vessel) return '' as VesselProperty<P>
   const identity = identitySource
     ? getVesselIdentity(vessel, { identityId, identitySource })
     : getLatestIdentityPrioritised(vessel)
@@ -142,16 +153,16 @@ export function getVesselProperty<P = string>(
     const ssvid = getVesselProperty(vessel, 'ssvid', { identityId, identitySource })
     return uniq(
       vessel.registryOwners?.filter((owner) => owner.ssvid === ssvid)?.map(({ name }) => name)
-    ).join(', ') as P
+    ).join(', ') as VesselProperty<P>
   }
   if (property === 'geartype' || property === 'shiptype') {
     const vesselId = getVesselProperty(vessel, 'id', { identityId, identitySource })
     const combinedSourcesInfoData = getVesselCombinedSourceProperty(vessel, { vesselId, property })
     if (combinedSourcesInfoData?.length) {
-      return combinedSourcesInfoData.map((i) => `${i.name.toLowerCase()}`) as P
+      return combinedSourcesInfoData.map((i) => `${i.name}`) as VesselProperty<P>
     }
   }
-  return get(identity, property) as P
+  return get<VesselProperty<P>>(identity, property as any)
 }
 
 export function getVesselIdentityProperties<P = string>(
@@ -205,6 +216,8 @@ export function getSearchIdentityResolved(vessel: IdentityVessel | IdentityVesse
     ...vesselData,
     id: getVesselId(vessel),
     dataset: vessel?.dataset,
+    geartype: getVesselProperty(vessel, 'geartype'),
+    shiptype: getVesselProperty(vessel, 'shiptype'),
     transmissionDateFrom,
     transmissionDateTo,
     positionsCounter,

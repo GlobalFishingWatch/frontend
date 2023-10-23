@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import ImageGallery from 'react-image-gallery'
 import { DateTime, Interval } from 'luxon'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
-import { VesselType } from '@globalfishingwatch/api-types'
+import { VesselTypeV2 } from '@globalfishingwatch/api-types'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import { VesselWithHistory } from 'types'
@@ -20,7 +20,6 @@ import {
   selectUrlAkaVesselQuery,
   selectUrlQuery,
   selectVesselId,
-  selectVesselProfileId,
 } from 'routes/routes.selectors'
 import { useUser } from 'features/user/user.hooks'
 import { TMT_CONTACT_US_URL } from 'data/constants'
@@ -98,7 +97,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
     await dispatchCreateOfflineVessel({
       vessel: {
         ...data,
-        vesselType: data.vesselType as VesselType,
+        vesselType: data.vesselType as VesselTypeV2,
         profileId: data.id,
         id: vesselId,
         dataset: vesselDataset,

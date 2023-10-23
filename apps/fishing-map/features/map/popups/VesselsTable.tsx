@@ -10,7 +10,6 @@ import {
   DataviewInstance,
   Resource,
   ResourceStatus,
-  VesselType,
 } from '@globalfishingwatch/api-types'
 import { resolveEndpoint, setResource } from '@globalfishingwatch/dataviews-client'
 import {
@@ -220,9 +219,9 @@ function VesselsTable({
 
               const vesselType = isPresenceActivity
                 ? getVesselShipType({
-                    shiptype: getVesselProperty<VesselType[]>(vessel, 'shiptype'),
+                    shiptype: getVesselProperty(vessel, 'shiptype'),
                   })
-                : getVesselGearType({ geartype: getVesselProperty<string[]>(vessel, 'geartype') })
+                : getVesselGearType({ geartype: getVesselProperty(vessel, 'geartype') })
 
               // Temporary workaround for public-global-all-vessels dataset as we
               // don't want to show the pin only for that dataset for guest users

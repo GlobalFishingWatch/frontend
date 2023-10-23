@@ -1,4 +1,45 @@
-import { VesselType } from './vessel'
+export type VesselType =
+  | 'SEISMIC_VESSEL'
+  | 'CARRIER'
+  | 'CARGO'
+  | 'PASSENGER'
+  | 'FISHING'
+  | 'OTHER_NON_FISHING'
+  | 'BUNKER_OR_TANKER'
+  | 'SUPPORT'
+  | 'OTHER'
+
+export type GearType =
+  | 'BUNKER'
+  | 'CARGO'
+  | 'FISHING'
+  | 'OTHER_PURSE_SEINES'
+  | 'SET_GILLNETS'
+  | 'DRIFTING_LONGLINES'
+  | 'CARRIER'
+  | 'GEAR'
+  | 'TRAWLERS'
+  | 'POTS_AND_TRAPS'
+  | 'PURSE_SEINE_SUPPORT'
+  | 'PASSENGER'
+  | 'SEINERS'
+  | 'NON_FISHING'
+  | 'SET_LONGLINES'
+  | 'DREDGE_FISHING'
+  | 'INCONCLUSIVE'
+  | 'POLE_AND_LINE'
+  | 'OTHER'
+  | 'FIXED_GEAR'
+  | 'OTHER_SEINES'
+  | 'CARGO_OR_TANKER'
+  | 'SQUID_JIGGER'
+  | 'SEISMIC_VESSEL'
+  | 'TROLLERS'
+  | 'SPECIALIZED_REEFER'
+  | 'PATROL_VESSEL'
+  | 'PURSE_SEINES'
+  | 'TUNA_PURSE_SEINES'
+  | 'TUG'
 
 export enum VesselIdentitySourceEnum {
   SelfReported = 'selfReportedInfo',
@@ -22,15 +63,15 @@ export type VesselInfo = {
   id: string
   callsign: string
   flag: string
-  geartype: string | string[]
   imo: string
   shipname: string
   nShipname: string
-  shiptype: VesselType | VesselType[]
   ssvid: string
   sourceCode: SourceCode[]
   transmissionDateFrom: string
   transmissionDateTo: string
+  // For custom VMS or combinedSourceInfo merge simplicity
+  shiptype: VesselType | VesselType[]
 }
 
 export type VesselTMTInfo = {
@@ -44,16 +85,14 @@ export type VesselTMTInfo = {
   type?: string
 }
 
-type IdentityShiptypeByYear = {
-  shiptype: VesselType
-  years: number[]
-}
+export type SelfReportedMatchFields = 'ID_MATCH_ONLY' | 'SEVERAL_FIELDS'
 
-type SelfReportedMatchFields = 'ID_MATCH_ONLY' | 'SEVERAL_FIELDS'
+export const API_LOGIN_REQUIRED = 'BEARER_TOKEN_REQUIRED'
+export type RegistryLoginMessage = typeof API_LOGIN_REQUIRED
 
 export type SelfReportedInfo = VesselInfo & {
   ssvid: string
-  shiptypesByYear?: IdentityShiptypeByYear[]
+  geartype: GearType | GearType[]
   posCount?: number
   positionsCounter?: number
   matchFields?: SelfReportedMatchFields
@@ -67,11 +106,12 @@ export type SelfReportedInfo = VesselInfo & {
 }
 
 export type VesselRegistryInfo = VesselInfo & {
+  geartype: GearType | GearType[] | RegistryLoginMessage
   latestVesselInfo: true
-  lengthM: number
+  lengthM: number | RegistryLoginMessage
   matchFields: string
   recordId: string
-  tonnageGt: number
+  tonnageGt: number | RegistryLoginMessage
   vesselInfoReference: string
 }
 
