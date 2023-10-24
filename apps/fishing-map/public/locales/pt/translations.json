@@ -674,6 +674,8 @@
       "tuna_purse_seines": "Rede de cerco para atuns",
       "well_boat": "Barco de poço"
     },
+    "gfw_geartype": "GFW Gear type",
+    "gfw_shiptype": "GFW Vessel type",
     "grossTonnage": "Tonelagem bruta",
     "grossTonnageRange": "Intervalo de arqueação bruta",
     "hideOtherLayers": "Ocultar outras camadas",
