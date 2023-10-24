@@ -47,7 +47,7 @@ const VesselIdentityField = (
     }
   }, [value])
 
-  if (value.toUpperCase() === API_LOGIN_REQUIRED) {
+  if (typeof value === 'string' && value.toUpperCase() === API_LOGIN_REQUIRED) {
     return <VesselIdentityFieldLogin />
   }
 

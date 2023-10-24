@@ -233,7 +233,13 @@ const VesselIdentity = () => {
               <div key={index} className={cx(styles.fieldGroupContainer, styles.fieldGroup)}>
                 {/* TODO: make fields more dynamic to account for VMS */}
                 {fieldGroup.map((field) => {
-                  const label = field.label || field.key
+                  let label = field.label || field.key
+                  if (
+                    identitySource === VesselIdentitySourceEnum.SelfReported &&
+                    (label === 'geartype' || label === 'shiptype')
+                  ) {
+                    label = 'gfw_' + label
+                  }
                   const key = field.key as keyof VesselLastIdentity
                   return (
                     <div key={field.key}>
