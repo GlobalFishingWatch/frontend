@@ -674,6 +674,8 @@
       "tuna_purse_seines": "crwdns60571:0crwdne60571:0",
       "well_boat": "crwdns69514:0crwdne69514:0"
     },
+    "gfw_geartype": "crwdns70080:0crwdne70080:0",
+    "gfw_shiptype": "crwdns70082:0crwdne70082:0",
     "grossTonnage": "crwdns69516:0crwdne69516:0",
     "grossTonnageRange": "crwdns60589:0crwdne60589:0",
     "hideOtherLayers": "crwdns69518:0crwdne69518:0",
