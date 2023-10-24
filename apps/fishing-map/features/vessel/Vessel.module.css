@@ -6,3 +6,8 @@
 .secondary {
   color: var(--color-secondary-blue);
 }
+
+.headerContainer {
+  position: relative;
+  z-index: 1;
+}

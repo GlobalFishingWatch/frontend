@@ -190,7 +190,9 @@ const Vessel = () => {
     <Fragment>
       {infoStatus === AsyncReducerStatus.Finished && (
         <Fragment>
-          <VesselHeader />
+          <div className={styles.headerContainer}>
+            <VesselHeader />
+          </div>
           <VesselIdentity />
         </Fragment>
       )}
