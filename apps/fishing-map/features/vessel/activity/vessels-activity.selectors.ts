@@ -5,6 +5,7 @@ import { ApiEvent } from '@globalfishingwatch/api-types'
 import { selectVesselAreaSubsection } from 'features/vessel/vessel.config.selectors'
 import { getEventsDatasetsInDataview } from 'features/datasets/datasets.utils'
 import { selectVesselProfileDataview } from 'features/dataviews/dataviews.slice'
+import { getUTCDateTime } from 'utils/dates'
 import {
   selectVesselEventsByType,
   selectVesselEventsFilteredByTimerange,
@@ -22,7 +23,7 @@ export interface ActivityEvent extends ApiEvent {
 export const selectActivitySummary = createSelector(
   [selectVesselEventsFilteredByTimerange],
   (events) => {
-    const { activityRegions, mostVisitedPortCountries } = events.reduce(
+    const { activityRegions, mostVisitedPortCountries, fishingHours } = events.reduce(
       (acc, e) => {
         Object.entries<any>(e.regions || ({} as Regions)).forEach((region) => {
           const regionType = region[0] as RegionType
@@ -41,6 +42,12 @@ export const selectActivitySummary = createSelector(
             }
           })
         })
+        if (e.type === EventTypes.Fishing) {
+          acc.fishingHours += getUTCDateTime(e.end as number).diff(
+            getUTCDateTime(e.start as number),
+            ['hours']
+          ).hours
+        }
         const portFlag = e.port_visit?.intermediateAnchorage?.flag
         if (!portFlag) return acc
         if (!acc.mostVisitedPortCountries[portFlag]) {
@@ -52,6 +59,7 @@ export const selectActivitySummary = createSelector(
       {
         activityRegions: {} as Record<RegionType, { id: string; count: number }[]>,
         mostVisitedPortCountries: {} as Record<string, number>,
+        fishingHours: 0,
       }
     )
     return {
@@ -59,6 +67,7 @@ export const selectActivitySummary = createSelector(
       mostVisitedPortCountries: Object.entries(mostVisitedPortCountries)
         .sort((a, b) => b[1] - a[1])
         .map(([flag, count]) => ({ flag, count })),
+      fishingHours,
     }
   }
 )

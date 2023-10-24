@@ -1,7 +1,7 @@
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { Fragment, useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { Icon, IconType, Switch, SwitchEvent, Tooltip } from '@globalfishingwatch/ui-components'
 import { EventType, EventTypes } from '@globalfishingwatch/api-types'
 import { EVENTS_COLORS } from '@globalfishingwatch/layer-composer'
@@ -19,10 +19,7 @@ import { selectVesselEventsFilteredByTimerange } from 'features/vessel/vessel.se
 import { useRegionNamesByType } from 'features/regions/regions.hooks'
 import { EVENTS_ORDER } from 'features/vessel/activity/activity-by-type/ActivityByType'
 import { useVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
-import {
-  selectActiveVesselsDataviews,
-  selectVesselProfileColor,
-} from 'features/dataviews/dataviews.slice'
+import { selectActiveVesselsDataviews } from 'features/dataviews/dataviews.slice'
 import VesselActivityDownload from 'features/vessel/activity/VesselActivityDownload'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import styles from './VesselActivitySummary.module.css'
@@ -36,11 +33,11 @@ export const VesselActivitySummary = () => {
   const timerange = useSelector(selectTimeRange)
   const visibleEvents = useSelector(selectVisibleEvents)
   const dataviews = useSelector(selectActiveVesselsDataviews)
-  const vesselColor = useSelector(selectVesselProfileColor)
   const { setVesselEventVisibility } = useVesselEvents(dataviews)
   const eventsByType = useSelector(selectEventsGroupedByType)
   const { getRegionNamesByType } = useRegionNamesByType()
-  const { activityRegions, mostVisitedPortCountries } = useSelector(selectActivitySummary)
+  const { activityRegions, mostVisitedPortCountries, fishingHours } =
+    useSelector(selectActivitySummary)
   const activityRegionsLength = Object.keys(activityRegions).length
   const threeMostVisitedPortCountries = mostVisitedPortCountries.slice(0, MAX_PORTS)
   const restMostVisitedPortCountries = mostVisitedPortCountries.slice(MAX_PORTS)
@@ -186,6 +183,12 @@ export const VesselActivitySummary = () => {
                       defaultValue: eventType,
                       count: events?.length || 0,
                     })}{' '}
+                    {eventType === EventTypes.Fishing && (
+                      <span>
+                        (
+                        <I18nNumber number={fishingHours} /> {t('common.hour_other', 'hours')})
+                      </span>
+                    )}
                     {eventType === EventTypes.Port && threeMostVisitedPortCountries.length > 0 && (
                       <span>
                         (
