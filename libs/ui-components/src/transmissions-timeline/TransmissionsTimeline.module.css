@@ -18,6 +18,13 @@
   padding: 0.2rem;
   text-align: center;
   flex: 1;
+  position: relative;
+}
+
+.year::after {
+  content: '';
+  position: absolute;
+  inset: -1rem 0;
 }
 
 .highlighted {

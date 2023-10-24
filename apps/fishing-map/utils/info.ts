@@ -80,7 +80,7 @@ export const formatNumber = (num: string | number, maximumFractionDigits?: numbe
 
 export const getVesselShipType = (
   { shiptype } = {} as Pick<SelfReportedInfo, 'shiptype'> | { shiptype: string },
-  { joinCharacter = ',', translationFn = t } = {} as {
+  { joinCharacter = ', ', translationFn = t } = {} as {
     joinCharacter?: string
     translationFn?: TFunction
   }
