@@ -702,6 +702,7 @@
     "nationalId": "National ID",
     "noActivityData": "There is no activity information for this vessel",
     "noEncountersInTimeRange": "There are no encounters fully contained in your timerange.",
+    "noEncountersVisible": "Please turn on encounter events visibility.",
     "noEventsIn": "No event in your timerange happened in any {{regionType}}",
     "noEventsinTimeRange": "There are no events fully contained in your timerange.",
     "noOwnersMatch": "We can't find other vessels with this owner",
