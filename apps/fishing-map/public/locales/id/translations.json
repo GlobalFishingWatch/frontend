@@ -346,6 +346,7 @@
     "encounter_other": "Pertemuan kapal",
     "encounterAction": "terjadi pertemuan dengan",
     "encounterActionWith": "terjadi pertemuan dengan {{vessel}} mulai dari {{start}} selama {{duration}}",
+    "encounterActionWithVessels": "{{mainVessel}} had an encounter with {{encounterVessel}} starting at {{start}} for {{duration}}",
     "encounterAnotherVessel": "kapal lainnya",
     "events": "peristiwa",
     "fishing": "Memancing",
@@ -678,6 +679,7 @@
     "hideOtherLayers": "Sembunyikan lapisan lain",
     "identityDatesOutOfRange": "Tanggal untuk identitas ini tidak tumpang tindih dengan rentang waktu Anda saat ini",
     "imo": "IMO",
+    "infoLogin": "Register and login to see more details (free, 2 minutes)",
     "infoSource": "Sumber Info",
     "infoSources": {
       "both": "Registry and self reported",
