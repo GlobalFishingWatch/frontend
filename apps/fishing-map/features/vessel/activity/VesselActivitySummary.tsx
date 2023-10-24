@@ -160,15 +160,13 @@ export const VesselActivitySummary = () => {
                 : visibleEvents === 'none'
                 ? false
                 : visibleEvents.includes(eventType)
-            const color =
-              eventType === 'fishing' && vesselColor ? vesselColor : EVENTS_COLORS[eventType]
             return (
               <li key={eventType} className={styles.eventTypeRowContainer}>
                 <Switch
                   active={active}
                   onClick={onEventChange}
                   id={eventType}
-                  color={color}
+                  color={eventType === EventTypes.Fishing ? '#163f89bf' : EVENTS_COLORS[eventType]}
                   className={cx(styles.eventSwitch, 'print-hidden')}
                 />
                 <div className={cx(styles.eventTypeRow, { [styles.active]: active })}>
@@ -176,7 +174,10 @@ export const VesselActivitySummary = () => {
                     {eventType !== EventTypes.Fishing ? (
                       <Icon icon={`event-legend-${eventType}` as IconType} type="original-colors" />
                     ) : (
-                      <div className={styles.fishingIcon} style={{ backgroundColor: color }} />
+                      <div
+                        className={styles.fishingIcon}
+                        style={{ backgroundColor: EVENTS_COLORS[eventType] }}
+                      />
                     )}
                   </span>
                   <p>

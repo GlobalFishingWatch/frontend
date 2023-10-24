@@ -67,7 +67,7 @@
   width: 1.2rem;
   height: 1.2rem;
   border-radius: 0.6rem;
-  border: var(--border);
+  border: var(--border-thick);
 }
 
 @media print {

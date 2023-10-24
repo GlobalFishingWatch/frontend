@@ -70,9 +70,7 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
       <ul className={layerStyles.eventsLegendContainer}>
         {eventTypes.map(({ datasetId, eventType, active }) => {
           const color =
-            eventType === 'fishing' && tracks.length === 1
-              ? tracks[0].config?.color
-              : EVENTS_COLORS[eventType]
+            eventType === 'fishing' && tracks.length === 1 ? '#ffffff' : EVENTS_COLORS[eventType]
           return (
             <li
               key={datasetId}
@@ -83,7 +81,7 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
                 onClick={onEventChange}
                 id={eventType}
                 className={layerStyles.eventsLegendSwitch}
-                color={color}
+                color={EVENTS_COLORS[eventType]}
               />
               <label className={layerStyles.eventLegendLabel} htmlFor={eventType}>
                 {upperFirst(t(`event.${eventType}` as any, eventType) as any)}

@@ -448,6 +448,7 @@ export type AnyGeneratorConfig =
   | TrackGeneratorConfig
   | UserContextGeneratorConfig
   | VesselEventsGeneratorConfig
+  | VesselEventsShapesGeneratorConfig
 
 // ---- Generator specific types
 export enum BasemapType {
