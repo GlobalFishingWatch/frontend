@@ -674,6 +674,8 @@
       "tuna_purse_seines": "Red de cerco atunera",
       "well_boat": "Barco vivero"
     },
+    "gfw_geartype": "GFW Gear type",
+    "gfw_shiptype": "GFW Vessel type",
     "grossTonnage": "Tonelaje",
     "grossTonnageRange": "Rango de tonelaje bruto",
     "hideOtherLayers": "Ocultar otras capas",
