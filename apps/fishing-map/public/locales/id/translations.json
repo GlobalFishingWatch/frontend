@@ -674,6 +674,8 @@
       "tuna_purse_seines": "Pukat Cincin Tuna",
       "well_boat": "Kapal sumur (well-boat)"
     },
+    "gfw_geartype": "GFW Gear type",
+    "gfw_shiptype": "GFW Vessel type",
     "grossTonnage": "Tonase Kotor",
     "grossTonnageRange": "Rentang Gross Tonnage",
     "hideOtherLayers": "Sembunyikan lapisan lain",
