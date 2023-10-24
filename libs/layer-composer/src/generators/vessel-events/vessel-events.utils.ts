@@ -78,10 +78,10 @@ export const getVesselEventsGeojsonMemoizeEqualityCheck = (
   lastArgs: GetVesselEventsGeojsonParams
 ) => {
   return (
-    newArgs?.[0]?.length === lastArgs?.[0]?.length ||
-    newArgs[1] === lastArgs[1] ||
-    newArgs[2] === lastArgs[2] ||
-    newArgs[3] === lastArgs[3] ||
+    newArgs?.[0]?.length === lastArgs?.[0]?.length &&
+    newArgs[1] === lastArgs[1] &&
+    newArgs[2] === lastArgs[2] &&
+    newArgs[3] === lastArgs[3] &&
     newArgs[4] === lastArgs[4]
   )
 }
