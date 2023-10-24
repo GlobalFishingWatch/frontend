@@ -346,6 +346,7 @@
     "encounter_other": "Encounter events",
     "encounterAction": "had an encounter with",
     "encounterActionWith": "had an encounter with {{vessel}} starting at {{start}} for {{duration}}",
+    "encounterActionWithVessels": "{{mainVessel}} had an encounter with {{encounterVessel}} starting at {{start}} for {{duration}}",
     "encounterAnotherVessel": "another vessel",
     "events": "events",
     "fishing": "Fishing event",
@@ -678,6 +679,7 @@
     "hideOtherLayers": "Hide other layers",
     "identityDatesOutOfRange": "The dates of this identity don’t overlap with your current time range",
     "imo": "IMO",
+    "infoLogin": "Register and login to see more details (free, 2 minutes)",
     "infoSource": "Info Source",
     "infoSources": {
       "both": "Registry and self reported",
