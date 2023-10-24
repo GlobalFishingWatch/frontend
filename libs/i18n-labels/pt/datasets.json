@@ -1250,7 +1250,7 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
-  "private-png-fishing-vessels": {
+  "private-png-fishing-identity-vessels": {
     "name": "Papua Nova Guiné VMS (Embarcações pesqueiras)",
     "description": "Papua Nova Guiné VMS (Embarcações pesqueiras)",
     "schema": {
@@ -1261,6 +1261,19 @@
       "lastTransmissionDate": "última data de transmissão",
       "firstTransmissionDate": "primeira data de transmissão",
       "registryAuthorizations": "registryAuthorizations"
+    }
+  },
+  "private-png-fishing-vessels": {
+    "name": "Papua Nova Guiné VMS (Embarcações pesqueiras)",
+    "description": "Papua Nova Guiné VMS (Embarcações pesqueiras)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "callsign": "callsign",
+      "shipname": "Embarcação",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
     }
   },
   "private-png-presence": {
