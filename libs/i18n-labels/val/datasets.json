@@ -1250,17 +1250,30 @@
       "distance_from_shore_m": "crwdns65427:0crwdne65427:0"
     }
   },
+  "private-png-fishing-identity-vessels": {
+    "name": "crwdns70050:0crwdne70050:0",
+    "description": "crwdns70052:0crwdne70052:0",
+    "schema": {
+      "id": "crwdns70054:0crwdne70054:0",
+      "registryInfo": "crwdns70056:0crwdne70056:0",
+      "registryOwners": "crwdns70058:0crwdne70058:0",
+      "selfReportedInfo": "crwdns70060:0crwdne70060:0",
+      "lastTransmissionDate": "crwdns70062:0crwdne70062:0",
+      "firstTransmissionDate": "crwdns70064:0crwdne70064:0",
+      "registryAuthorizations": "crwdns70066:0crwdne70066:0"
+    }
+  },
   "private-png-fishing-vessels": {
     "name": "crwdns69804:0crwdne69804:0",
     "description": "crwdns69806:0crwdne69806:0",
     "schema": {
       "id": "crwdns69808:0crwdne69808:0",
-      "registryInfo": "crwdns70038:0crwdne70038:0",
-      "registryOwners": "crwdns70040:0crwdne70040:0",
-      "selfReportedInfo": "crwdns70042:0crwdne70042:0",
+      "flag": "crwdns70068:0crwdne70068:0",
+      "source": "crwdns70070:0crwdne70070:0",
+      "callsign": "crwdns70072:0crwdne70072:0",
+      "shipname": "crwdns70074:0crwdne70074:0",
       "lastTransmissionDate": "crwdns69818:0crwdne69818:0",
-      "firstTransmissionDate": "crwdns69820:0crwdne69820:0",
-      "registryAuthorizations": "crwdns70044:0crwdne70044:0"
+      "firstTransmissionDate": "crwdns69820:0crwdne69820:0"
     }
   },
   "private-png-presence": {
