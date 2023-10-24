@@ -346,6 +346,7 @@
     "encounter_other": "Événements de rencontre",
     "encounterAction": "a eu une rencontre avec",
     "encounterActionWith": "a eu une rencontre avec {{vessel}} à {{start}} durant {{duration}}",
+    "encounterActionWithVessels": "{{mainVessel}} had an encounter with {{encounterVessel}} starting at {{start}} for {{duration}}",
     "encounterAnotherVessel": "un autre navire",
     "events": "évènements",
     "fishing": "Pêche",
@@ -678,6 +679,7 @@
     "hideOtherLayers": "Masquer autres calques",
     "identityDatesOutOfRange": "Les dates de cette identité ne se chevauchent pas avec votre plage de temps actuelle",
     "imo": "OMI",
+    "infoLogin": "Register and login to see more details (free, 2 minutes)",
     "infoSource": "Source d'info",
     "infoSources": {
       "both": "Registry and self reported",
