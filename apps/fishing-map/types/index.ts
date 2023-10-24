@@ -3,7 +3,9 @@ import {
   DatasetSubCategory,
   DataviewCategory,
   EventType,
+  GearType,
   VesselIdentitySourceEnum,
+  VesselType,
 } from '@globalfishingwatch/api-types'
 import {
   REPORT_VESSELS_GRAPH_GEARTYPE,
@@ -111,7 +113,8 @@ export type VesselSearchState = {
   callsign?: string
   codMarinha?: string
   flag?: string[]
-  geartype?: string[]
+  geartype?: GearType[]
+  shiptype?: VesselType[]
   targetSpecies?: string
   transmissionDateFrom?: string
   transmissionDateTo?: string
