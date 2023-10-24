@@ -346,6 +346,7 @@
     "encounter_other": "Eventos de encontro",
     "encounterAction": "teve um encontro com",
     "encounterActionWith": "teve um encontro com {{vessel}} começando em {{start}} por {{duration}}",
+    "encounterActionWithVessels": "{{mainVessel}} teve um encontro com {{encounterVessel}} começando em {{start}} por {{duration}}",
     "encounterAnotherVessel": "outra embarcação",
     "events": "eventos",
     "fishing": "Pesca",
@@ -678,6 +679,7 @@
     "hideOtherLayers": "Ocultar outras camadas",
     "identityDatesOutOfRange": "As datas desta identidade não se sobrepõem ao seu período atual",
     "imo": "IMO",
+    "infoLogin": "Register and login to see more details (free, 2 minutes)",
     "infoSource": "Fonte de informações",
     "infoSources": {
       "both": "Registry and self reported",
@@ -700,6 +702,7 @@
     "nationalId": "Identificação nacional",
     "noActivityData": "Não há informações de atividade para esta embarcação",
     "noEncountersInTimeRange": "Não há encontros totalmente contidos no seu período.",
+    "noEncountersVisible": "Please turn on encounter events visibility.",
     "noEventsIn": "No seu período, nenhum evento aconteceu em nenhum(a) {{regionType}}",
     "noEventsinTimeRange": "Não há eventos totalmente contidos no seu período.",
     "noOwnersMatch": "Não conseguimos encontrar outras embarcações com este proprietário",

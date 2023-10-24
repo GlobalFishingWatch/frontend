@@ -346,6 +346,7 @@
     "encounter_other": "crwdns69372:0crwdne69372:0",
     "encounterAction": "crwdns60137:0crwdne60137:0",
     "encounterActionWith": "crwdns60139:0{{vessel}}crwdnd60139:0{{start}}crwdnd60139:0{{duration}}crwdne60139:0",
+    "encounterActionWithVessels": "crwdns70032:0{{mainVessel}}crwdnd70032:0{{encounterVessel}}crwdnd70032:0{{start}}crwdnd70032:0{{duration}}crwdne70032:0",
     "encounterAnotherVessel": "crwdns60141:0crwdne60141:0",
     "events": "crwdns60143:0crwdne60143:0",
     "fishing": "crwdns68331:0crwdne68331:0",
@@ -678,6 +679,7 @@
     "hideOtherLayers": "crwdns69518:0crwdne69518:0",
     "identityDatesOutOfRange": "crwdns69520:0crwdne69520:0",
     "imo": "crwdns60591:0crwdne60591:0",
+    "infoLogin": "crwdns70034:0crwdne70034:0",
     "infoSource": "crwdns69522:0crwdne69522:0",
     "infoSources": {
       "both": "crwdns69752:0crwdne69752:0",
@@ -700,6 +702,7 @@
     "nationalId": "crwdns60617:0crwdne60617:0",
     "noActivityData": "crwdns69532:0crwdne69532:0",
     "noEncountersInTimeRange": "crwdns69536:0crwdne69536:0",
+    "noEncountersVisible": "crwdns70036:0crwdne70036:0",
     "noEventsIn": "crwdns69538:0{{regionType}}crwdne69538:0",
     "noEventsinTimeRange": "crwdns69534:0crwdne69534:0",
     "noOwnersMatch": "crwdns69540:0crwdne69540:0",
