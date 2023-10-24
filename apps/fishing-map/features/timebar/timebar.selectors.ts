@@ -215,7 +215,7 @@ export const selectTracksEvents = createSelector(
       const vessel = (resources[infoUrl] as any)?.data
       const shipname = vessel ? getVesselLabel(vessel) : ''
       const trackEvents: TimebarChartItem<TrackEventChunkProps> = {
-        color: dataview.config?.color,
+        color: trackDataviews.length === 1 ? 'white' : dataview.config?.color,
         chunks: [],
         status: ResourceStatus.Idle,
         defaultLabel: shipname,
