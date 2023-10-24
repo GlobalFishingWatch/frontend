@@ -1255,12 +1255,12 @@
     "description": "crwdns69806:0crwdne69806:0",
     "schema": {
       "id": "crwdns69808:0crwdne69808:0",
-      "registryInfo": "crwdns69822:0crwdne69822:0",
-      "registryOwners": "crwdns69824:0crwdne69824:0",
-      "selfReportedInfo": "crwdns69826:0crwdne69826:0",
+      "flag": "crwdns70024:0crwdne70024:0",
+      "source": "crwdns70026:0crwdne70026:0",
+      "callsign": "crwdns70028:0crwdne70028:0",
+      "shipname": "crwdns70030:0crwdne70030:0",
       "lastTransmissionDate": "crwdns69818:0crwdne69818:0",
-      "firstTransmissionDate": "crwdns69820:0crwdne69820:0",
-      "registryAuthorizations": "crwdns69828:0crwdne69828:0"
+      "firstTransmissionDate": "crwdns69820:0crwdne69820:0"
     }
   },
   "private-png-presence": {
