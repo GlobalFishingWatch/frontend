@@ -52,10 +52,16 @@ interface VesselGroupsState extends AsyncReducer<VesselGroup> {
   }
 }
 
-const fetchSearchVessels = async (url: string, { signal, token }: { signal?: AbortSignal, token?: string }) => {
-  const searchResponse = await GFWAPI.fetch<APIVesselSearchPagination<IdentityVessel>>(`${url}${token ? `&since=${token}` : ''}`, {
-    signal,
-  })
+const fetchSearchVessels = async (
+  url: string,
+  { signal, token }: { signal?: AbortSignal; token?: string }
+) => {
+  const searchResponse = await GFWAPI.fetch<APIVesselSearchPagination<IdentityVessel>>(
+    `${url}${token ? `&since=${token}` : ''}`,
+    {
+      signal,
+    }
+  )
   return searchResponse
 }
 
@@ -298,6 +304,7 @@ export const fetchUserVesselGroupsThunk = createAsyncThunk(
   async () => {
     const vesselGroupsParams = {
       ...DEFAULT_PAGINATION_PARAMS,
+      cache: false,
       'logged-user': true,
     }
     const url = `/vessel-groups?${stringify(vesselGroupsParams)}`
