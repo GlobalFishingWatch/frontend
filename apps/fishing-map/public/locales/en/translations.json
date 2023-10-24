@@ -674,6 +674,8 @@
       "tuna_purse_seines": "Tuna purse seine",
       "well_boat": "Well boat"
     },
+    "gfw_geartype": "GFW Gear type",
+    "gfw_shiptype": "GFW Vessel type",
     "grossTonnage": "Gross Tonnage",
     "grossTonnageRange": "Gross tonnage range",
     "hideOtherLayers": "Hide other layers",
