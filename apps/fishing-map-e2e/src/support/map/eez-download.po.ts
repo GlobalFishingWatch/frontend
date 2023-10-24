@@ -8,16 +8,16 @@ import {
   getRequestTimeout,
 } from '../app.po'
 
-export const REPORT_FORMAT_JSON = 'report-format-json'
-export const REPORT_FORMAT_CSV = 'report-format-csv'
+export const REPORT_FORMAT_JSON = 'report-format-JSON'
+export const REPORT_FORMAT_CSV = 'report-format-CSV'
 
-export const GROUPBY_FLAG = 'group-vessels-by-flag'
-export const GROUPBY_MMSI = 'group-vessels-by-mmsi'
-export const GROUPBY_GEAR = 'group-vessels-by-gearType'
-export const GROUPBY_FLAG_GEAR = 'group-vessels-by-flagAndGearType'
+export const GROUPBY_FLAG = 'group-vessels-by-FLAG'
+export const GROUPBY_MMSI = 'group-vessels-by-MMSI'
+export const GROUPBY_GEAR = 'group-vessels-by-GEARTYPE'
+export const GROUPBY_FLAG_GEAR = 'group-vessels-by-FLAGANDGEARTYPE'
 
-export const GROUPBY_DAY = 'group-time-by-daily'
-export const GROUPBY_MONTH = 'group-time-by-monthly'
+export const GROUPBY_DAY = 'group-time-by-DAILY'
+export const GROUPBY_MONTH = 'group-time-by-MONTHLY'
 
 // Static names and paths used for verifications
 // I added a random domain to build a full url
@@ -28,8 +28,8 @@ export const zipFilename = `${filename}.zip`
 const jsonFilename = `${filename}.json`
 export const zipPath = `${getDownloadsFolderPath()}/${zipFilename}`
 export const jsonPath = `${getDownloadsFolderPath()}/${jsonFilename}`
-const DATASET = 'public-global-fishing-effort:v20201001'
-export const folderToUse = '/layer-activity-data-0/public-global-fishing-effort-v20201001'
+const DATASET = 'public-global-fishing-effort:v20231026'
+export const folderToUse = '/layer-activity-data-0/public-global-fishing-effort-v20231026'
 
 export const verifyJson = (attributes: string[]) => {
   cy.readFile(`${getDownloadsFolderPath()}/${jsonFilename}`).then((json) => {

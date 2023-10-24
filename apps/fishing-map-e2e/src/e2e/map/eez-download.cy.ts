@@ -89,7 +89,7 @@ describe('Download reports for an area', () => {
       'download-activity-byvessel',
       [REPORT_FORMAT_CSV, GROUPBY_MMSI, GROUPBY_MONTH],
       'activity-vessel',
-      ['Time Range', 'MMSI', 'Entry Timestamp', 'Exit Timestamp', 'Apparent Fishing Hours']
+      ['Time Range', 'mmsi', 'Entry Timestamp', 'Exit Timestamp', 'Apparent Fishing Hours']
     )
 
     testCsvOptions(
@@ -135,7 +135,7 @@ describe('Download reports for an area', () => {
     testCsvOptions(
       'DOWNLOAD CSV - GROUP BY GEAR TYPE, MONTH AND 0.01',
       'download-activity-gridded',
-      [REPORT_FORMAT_CSV, GROUPBY_GEAR, GROUPBY_MONTH, 'group-spatial-by-high'],
+      [REPORT_FORMAT_CSV, GROUPBY_GEAR, GROUPBY_MONTH, 'group-spatial-by-HIGH'],
       'activity-gridded',
       ['Lat', 'Lon', 'Time Range', 'geartype', 'Vessel IDs', 'Apparent Fishing Hours']
     )
@@ -143,7 +143,7 @@ describe('Download reports for an area', () => {
     testCsvOptions(
       'DOWNLOAD CSV - GROUP BY FLAG, DAY AND 0.1',
       'download-activity-gridded',
-      [REPORT_FORMAT_CSV, GROUPBY_FLAG, GROUPBY_DAY, 'group-spatial-by-low'],
+      [REPORT_FORMAT_CSV, GROUPBY_FLAG, GROUPBY_DAY, 'group-spatial-by-LOW'],
       'activity-gridded',
       ['Lat', 'Lon', 'Time Range', 'flag', 'Vessel IDs', 'Apparent Fishing Hours']
     )
@@ -153,16 +153,16 @@ describe('Download reports for an area', () => {
     testJsonOptions(
       'DOWNLOAD JSON - GROUP BY MMSI, MONTH AND 0.1',
       'download-activity-gridded',
-      [REPORT_FORMAT_JSON, GROUPBY_MMSI, GROUPBY_MONTH, 'group-spatial-by-low'],
+      [REPORT_FORMAT_JSON, GROUPBY_MMSI, GROUPBY_MONTH, 'group-spatial-by-LOW'],
       'activity-gridded',
-      ['date', 'entryTimestamp', 'exitTimestamp', 'hours', 'lat', 'lon', 'MMSI']
+      ['date', 'entryTimestamp', 'exitTimestamp', 'hours', 'lat', 'lon', 'mmsi']
     )
     */
 
     testJsonOptions(
       'DOWNLOAD JSON - GROUP BY FLAG GEAR, DAY AND 0.01',
       'download-activity-gridded',
-      [REPORT_FORMAT_JSON, GROUPBY_FLAG_GEAR, GROUPBY_DAY, 'group-spatial-by-high'],
+      [REPORT_FORMAT_JSON, GROUPBY_FLAG_GEAR, GROUPBY_DAY, 'group-spatial-by-HIGH'],
       'activity-gridded',
       ['date', 'flag', 'geartype', 'hours', 'lat', 'lon', 'vesselIDs']
     )

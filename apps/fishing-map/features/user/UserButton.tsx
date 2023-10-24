@@ -19,7 +19,7 @@ const UserButton = ({ className = '', testId }: { className?: string; testId?: s
       {guestUser ? (
         <Tooltip content={t('common.login', 'Log in')}>
           <LocalStorageLoginLink>
-            <Icon icon="user" />
+            <Icon icon="user" testId={testId} />
           </LocalStorageLoginLink>
         </Tooltip>
       ) : (

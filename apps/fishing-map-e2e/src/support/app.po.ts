@@ -36,6 +36,7 @@ export const disablePopups = () => {
   localStorage.setItem('DisableWelcomePopup', 'true')
   localStorage.setItem('DisableSourceSwitchPopup', 'true')
   localStorage.setItem('HighlightPopup', '"vms-with-png"')
+  localStorage.setItem('WelcomePopup', '{"visible":false,"showAgain":false}')
   localStorage.setItem(
     'hints',
     '{"fishingEffortHeatmap":true,"filterActivityLayers":true,"clickingOnAGridCellToShowVessels":true,"changingTheTimeRange":true,"areaSearch":true,"periodComparisonBaseline":true}'
