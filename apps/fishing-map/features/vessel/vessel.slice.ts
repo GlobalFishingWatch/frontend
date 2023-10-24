@@ -29,6 +29,7 @@ import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { PROFILE_DATAVIEW_SLUGS } from 'data/workspaces'
 import { getVesselIdentities, getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectVesselId } from 'routes/routes.selectors'
+import { isGuestUser } from 'features/user/user.slice'
 
 export type VesselDataIdentity = (SelfReportedInfo | VesselRegistryInfo) & {
   identitySource: VesselIdentitySourceEnum
@@ -77,6 +78,7 @@ export const fetchVesselInfoThunk = createAsyncThunk(
     try {
       const state = getState() as any
       const action = await dispatch(fetchDatasetByIdThunk(datasetId))
+      const guestUser = isGuestUser(state)
       if (fetchDatasetByIdThunk.fulfilled.match(action)) {
         const dataset = action.payload as Dataset
         // Datasets and dataview needed to mock follow the structure of the map and resolve the generators
@@ -112,6 +114,10 @@ export const fetchVesselInfoThunk = createAsyncThunk(
               value: ['POTENTIAL_RELATED_SELF_REPORTED_INFO'],
             },
           ],
+        }
+        if (guestUser) {
+          // This changes the order of the query params to avoid the cache
+          vesselProfileDatasetConfig.query.reverse()
         }
         const url = resolveEndpoint(dataset, vesselProfileDatasetConfig)
         if (!url) {
