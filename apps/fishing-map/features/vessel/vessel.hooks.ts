@@ -47,6 +47,8 @@ export const useUpdateVesselEventsVisibility = () => {
       })
       if (shiptypes?.includes('FISHING')) {
         setVesselEventVisibility({ event: 'loitering', visible: false })
+      } else {
+        setVesselEventVisibility({ event: 'fishing', visible: false })
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
