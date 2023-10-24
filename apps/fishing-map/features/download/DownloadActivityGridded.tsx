@@ -4,9 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import area from '@turf/area'
 import type { Placement } from 'tippy.js'
-import { Geometry } from 'geojson'
 import { Icon, Button, Choice, Tag, ChoiceOption } from '@globalfishingwatch/ui-components'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
+import {
+  selectUrlBufferOperationQuery,
+  selectUrlBufferUnitQuery,
+  selectUrlBufferValueQuery,
+} from 'routes/routes.selectors'
 import {
   DownloadActivityParams,
   downloadActivityThunk,
@@ -15,7 +18,7 @@ import {
   selectDownloadActivityFinished,
   selectDownloadActivityError,
   DateRange,
-  selectDownloadActivityAreaDataview,
+  selectDownloadActivityAreaKey,
 } from 'features/download/downloadActivity.slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
@@ -39,6 +42,7 @@ import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getSourceSwitchContentByLng } from 'features/welcome/SourceSwitch.content'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
+import { AreaKeyId } from 'features/areas/areas.slice'
 import styles from './DownloadModal.module.css'
 import {
   Format,
@@ -75,13 +79,16 @@ function DownloadActivityByVessel() {
   const [format, setFormat] = useState(GRIDDED_FORMAT_OPTIONS[0].id as Format)
 
   const downloadArea = useSelector(selectDownloadActivityArea)
-  const downloadAreaDataview = useSelector(selectDownloadActivityAreaDataview)
-  const downloadAreaName =
-    downloadAreaDataview?.config?.type === GeneratorType.UserContext
-      ? downloadAreaDataview?.datasets?.[0]?.name
-      : downloadArea?.data?.name
+  const downloadAreaKey = useSelector(selectDownloadActivityAreaKey)
+  const downloadAreaName = downloadAreaKey?.areaName
+  const areaId = downloadAreaKey?.areaId as AreaKeyId
+  const datasetId = downloadAreaKey?.datasetId as string
   const downloadAreaGeometry = downloadArea?.data?.geometry
   const downloadAreaLoading = downloadArea?.status === AsyncReducerStatus.Loading
+
+  const bufferUnit = useSelector(selectUrlBufferUnitQuery)
+  const bufferValue = useSelector(selectUrlBufferValueQuery)
+  const bufferOperation = useSelector(selectUrlBufferOperationQuery)
 
   const areaIsTooBigForHighRes = useMemo(() => {
     return downloadAreaGeometry
@@ -166,8 +173,9 @@ function DownloadActivityByVessel() {
     }
 
     const downloadParams: DownloadActivityParams = {
+      areaId,
+      datasetId,
       dateRange: timerange as DateRange,
-      geometry: downloadAreaGeometry as Geometry,
       areaName: downloadAreaName as string,
       dataviews: downloadDataviews,
       format,
@@ -175,6 +183,9 @@ function DownloadActivityByVessel() {
       spatialResolution,
       spatialAggregation: false,
       temporalResolution,
+      bufferUnit,
+      bufferValue,
+      bufferOperation,
     }
     await dispatch(downloadActivityThunk(downloadParams))
 

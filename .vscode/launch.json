@@ -5,6 +5,16 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "type": "node",
+      "request": "launch",
+      "name": "fishing-map",
+      "runtimeExecutable": "nx",
+      "runtimeArgs": ["start", "fishing-map"],
+      "console": "integratedTerminal",
+      "outFiles": ["${workspaceFolder}/**/*.js", "!**/node_modules/**"],
+      "cwd": "${workspaceFolder}/apps/fishing-map"
+    },
+    {
       "name": "Debug CRA Tests - Fishing Map",
       "type": "node",
       "request": "launch",

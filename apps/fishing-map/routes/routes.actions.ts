@@ -1,5 +1,5 @@
 import { RootState } from 'reducers'
-import { Range } from 'features/timebar/timebar.slice'
+import { TimeRange } from 'features/timebar/timebar.slice'
 import { AppDispatch } from 'store'
 import { QueryParams, WorkspaceViewport } from 'types'
 import { ROUTE_TYPES } from './routes'
@@ -11,8 +11,9 @@ import {
 
 export interface UpdateQueryParamsAction {
   type: ROUTE_TYPES
-  query: QueryParams
+  query?: QueryParams
   replaceQuery?: boolean
+  replaceUrl?: boolean
   payload?: any
   prev?: any
   meta?: {
@@ -22,13 +23,21 @@ export interface UpdateQueryParamsAction {
   }
 }
 
-type UpdateLocationOptions = { query?: QueryParams; payload?: any; replaceQuery?: boolean }
+type UpdateLocationOptions = Pick<
+  UpdateQueryParamsAction,
+  'query' | 'payload' | 'replaceQuery' | 'replaceUrl'
+>
 
 export function updateLocation(
   type: ROUTE_TYPES,
-  { query = {}, payload = {}, replaceQuery = false }: UpdateLocationOptions = {}
+  {
+    query = {},
+    payload = {},
+    replaceQuery = false,
+    replaceUrl = false,
+  } = {} as UpdateLocationOptions
 ) {
-  return { type, query, payload, replaceQuery }
+  return { type, query, payload, replaceQuery, replaceUrl }
 }
 
 export function updateQueryParam(query: QueryParams = {}) {
@@ -62,7 +71,7 @@ const updateUrlViewport: any = (dispatch: AppDispatch, getState: () => RootState
 }
 
 const updateUrlTimerange: any = (dispatch: AppDispatch, getState: () => RootState) => {
-  return (timerange: Range) => {
+  return (timerange: TimeRange) => {
     const state = getState()
     const location = selectCurrentLocation(state)
     const payload = selectLocationPayload(state)

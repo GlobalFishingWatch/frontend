@@ -19,7 +19,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
   const featuresByType = groupBy(features, 'layerId')
 
   const trackOnDownloadClick = useCallback(
-    (event, feature) => {
+    (event: any, feature: TooltipEventFeature) => {
       trackEvent({
         category: TrackCategory.DataDownloads,
         action: `Click on polygon, click on download icon`,

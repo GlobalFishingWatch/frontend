@@ -40,10 +40,10 @@ const formatDateTicks = (tick: number, timeChunkInterval: Interval) => {
   const date = DateTime.fromMillis(tick).toUTC().setLocale(LOCALE)
   let formattedTick = ''
   switch (timeChunkInterval) {
-    case 'month':
+    case 'MONTH':
       formattedTick = date.toFormat('LLL y')
       break
-    case 'hour':
+    case 'HOUR':
       formattedTick = date.toLocaleString(DateTime.DATETIME_MED)
       break
     default:
@@ -92,10 +92,10 @@ const AnalysisGraphTooltip = (props: any) => {
     const date = DateTime.fromMillis(label).toUTC().setLocale(LOCALE)
     let formattedLabel = ''
     switch (timeChunkInterval) {
-      case 'month':
+      case 'MONTH':
         formattedLabel = date.toFormat('LLLL y')
         break
-      case 'day':
+      case 'DAY':
         formattedLabel = date.toLocaleString(DateTime.DATE_MED)
         break
       default:

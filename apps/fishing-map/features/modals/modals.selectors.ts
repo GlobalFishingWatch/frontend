@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { WorkspaceCategory } from 'data/workspaces'
 import { selectBigQueryActive } from 'features/bigquery/bigquery.slice'
 import { selectDatasetModal } from 'features/datasets/datasets.slice'
 import { selectDebugActive } from 'features/debug/debug.slice'
@@ -9,6 +10,12 @@ import {
 import { selectEditorActive } from 'features/editor/editor.slice'
 import { selectFeedbackModalOpen, selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import { selectVesselGroupModalOpen } from 'features/vessel-groups/vessel-groups.slice'
+import { WelcomeContentKey } from 'features/welcome/welcome.content'
+import {
+  selectLocationCategory,
+  selectIsAnyVesselLocation,
+  selectIsStandaloneSearchLocation,
+} from 'routes/routes.selectors'
 
 export const selectSecretModals = createSelector(
   [selectDebugActive, selectEditorActive, selectBigQueryActive],
@@ -45,6 +52,15 @@ export const selectAppModals = createSelector(
       downloadTrack: downloadTrackModalOpen,
       downloadActivity: downloadActivityModalOpen,
     }
+  }
+)
+
+export const selectWelcomeModalKey = createSelector(
+  [selectLocationCategory, selectIsAnyVesselLocation, selectIsStandaloneSearchLocation],
+  (locationCategory, isAnyVesselLocation, isStandaloneSearchLocation): WelcomeContentKey => {
+    return isAnyVesselLocation || isStandaloneSearchLocation
+      ? 'vessel-profile'
+      : locationCategory || WorkspaceCategory.FishingActivity
   }
 )
 

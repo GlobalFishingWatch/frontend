@@ -6,7 +6,7 @@ import { resolveEndpoint, UrlDataviewInstance } from '@globalfishingwatch/datavi
 import {
   DataviewDatasetConfig,
   Dataset,
-  Vessel,
+  IdentityVessel,
   DatasetTypes,
   ApiEvent,
   EndpointId,
@@ -14,6 +14,7 @@ import {
   EventVesselTypeEnum,
   APIPagination,
 } from '@globalfishingwatch/api-types'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { AppDispatch } from 'store'
 import {
@@ -24,12 +25,12 @@ import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/data
 import { isGuestUser } from 'features/user/user.slice'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { getUTCDateTime } from 'utils/dates'
+import { getVesselProperty } from 'features/vessel/vessel.utils'
 
 export const MAX_TOOLTIP_LIST = 5
 
-export type ExtendedFeatureVesselDatasets = Vessel & {
+export type ExtendedFeatureVesselDatasets = IdentityVessel & {
   id: string
-  vessel_id?: string // TODO define how vessel is returned in API
   dataset: Dataset
   infoDataset?: Dataset
   trackDataset?: Dataset
@@ -175,11 +176,11 @@ export const fetchVesselInfo = async (
     return
   }
   try {
-    const vesselsInfoResponse = await GFWAPI.fetch<APIPagination<Vessel>>(vesselsInfoUrl, {
+    const vesselsInfoResponse = await GFWAPI.fetch<APIPagination<IdentityVessel>>(vesselsInfoUrl, {
       signal,
     })
     // TODO remove entries once the API is stable
-    const vesselsInfoList: Vessel[] =
+    const vesselsInfoList: IdentityVessel[] =
       !vesselsInfoResponse.entries || typeof vesselsInfoResponse.entries === 'function'
         ? vesselsInfoResponse
         : (vesselsInfoResponse as any)?.entries
@@ -206,7 +207,6 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
       console.warn('fetchInteraction not possible, 0 features')
       return
     }
-
     const { featuresDataviews, fourWingsDataset, datasetConfig } =
       getInteractionEndpointDatasetConfig(fishingActivityFeatures, temporalgridDataviews)
 
@@ -216,10 +216,11 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
         interactionUrl,
         { signal }
       )
-      // TODO remove once normalized in api between id and vessel_id
+
       const sublayersVesselsIds = sublayersVesselsIdsResponse.entries.map((sublayer) =>
-        sublayer.map((vessel) => {
+        sublayer.map((vessel: any) => {
           const { id, vessel_id, ...rest } = vessel
+          // vessel_id needed for VIIRS layers
           return { ...rest, id: id || vessel_id }
         })
       )
@@ -245,6 +246,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
           return source
             .flatMap((source) => source)
             .sort((a, b) => b[activityProperty] - a[activityProperty])
+            .filter((v) => v.id !== null)
             .slice(0, MAX_TOOLTIP_LIST)
         })
         .flatMap((v) => v)
@@ -253,7 +255,6 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
         topActivityVessels.map(({ dataset }) => dataset),
         'id'
       )
-
       // Grab related dataset to fetch info from and prepare tracks
       const allInfoDatasets = await Promise.all(
         topActivityVesselsDatasets.flatMap(async (dataset) => {
@@ -278,7 +279,8 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
       )
 
       const infoDatasets = allInfoDatasets.flatMap((datasets) => datasets.flatMap((d) => d || []))
-      const topActivityVesselIds = topActivityVessels.map(({ id, vessel_id }) => id)
+      const topActivityVesselIds = topActivityVessels.map(({ id }) => id)
+
       const vesselsInfo = await fetchVesselInfo(infoDatasets, topActivityVesselIds, signal)
 
       const sublayersIds = fishingActivityFeatures.map(
@@ -295,15 +297,19 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
           vessels: sublayerVessels
             .flatMap((vessels) => {
               return vessels.map((vessel) => {
-                const vesselInfo = vesselsInfo?.find((entry) => {
-                  if (entry.years?.length && startYear && endYear) {
+                const vesselInfo = vesselsInfo?.find((vesselInfo) => {
+                  const vesselInfoId = vesselInfo.selfReportedInfo?.[0]?.id
+                  const shiptypes = vesselInfo?.combinedSourcesInfo?.find(
+                    (source) => source.vesselId === vesselInfoId
+                  )?.shiptypes
+                  if (shiptypes?.length && startYear && endYear) {
                     return (
-                      entry.id === vessel.id &&
-                      (entry.years.some((year) => year >= startYear) ||
-                        entry.years.some((year) => year <= endYear))
+                      vesselInfoId === vessel.id &&
+                      (shiptypes.some(({ yearFrom }) => yearFrom >= startYear) ||
+                        shiptypes.some(({ yearTo }) => yearTo <= endYear))
                     )
                   }
-                  return entry.id === vessel.id
+                  return vesselInfoId === vessel.id
                 })
                 const infoDataset = selectDatasetById(vesselInfo?.dataset as string)(state)
                 const trackFromRelatedDataset = infoDataset || vessel.dataset
@@ -318,17 +324,17 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
                 // }
                 const trackDataset = selectDatasetById(trackDatasetId as string)(state)
                 return {
-                  ...vesselInfo,
                   ...vessel,
+                  ...(vesselInfo || {}),
+                  id: vesselInfo?.selfReportedInfo?.[0]?.id || vessel.id,
                   infoDataset,
                   trackDataset,
-                }
+                } as ExtendedFeatureVessel
               })
             })
-            .sort((a, b) => b[activityProperty] - a[activityProperty]),
+            .sort((a: any, b: any) => b[activityProperty] - a[activityProperty]),
         }
       })
-
       return { vessels: sublayersVessels }
     }
   }
@@ -351,6 +357,7 @@ export const fetchEncounterEventThunk = createAsyncThunk<
       datasetId: dataset.id,
       endpoint: EndpointId.EventsDetail,
       params: [{ id: 'eventId', value: eventFeature.id }],
+      query: [{ id: 'dataset', value: dataset.id }],
     }
     const url = resolveEndpoint(dataset, datasetConfig)
     if (url) {
@@ -365,7 +372,7 @@ export const fetchEncounterEventThunk = createAsyncThunk<
       const carrierVessel = isACarrierTheMainVessel
         ? clusterEvent.vessel
         : clusterEvent.encounter?.vessel
-      let vesselsInfo: ExtendedEventVessel[] = []
+      let vesselsInfo: IdentityVessel[] = []
       const vesselsDatasets = dataview?.datasets
         ?.flatMap((d) => d.relatedDatasets || [])
         .filter((d) => d?.type === DatasetTypes.Vessels)
@@ -377,23 +384,32 @@ export const fetchEncounterEventThunk = createAsyncThunk<
           endpoint: EndpointId.VesselList,
           params: [],
           query: [
-            { id: 'ids', value: [fishingVessel.id, carrierVessel.id].join(',') },
-            { id: 'datasets', value: vesselsDatasets.map((d) => d.id).join(',') },
+            { id: 'ids', value: [fishingVessel.id, carrierVessel.id] },
+            { id: 'datasets', value: vesselsDatasets.map((d) => d.id) },
           ],
         }
         const vesselsUrl = resolveEndpoint(vesselDataset, vesselsDatasetConfig)
         if (vesselsUrl) {
-          vesselsInfo = await GFWAPI.fetch<APIPagination<ExtendedEventVessel>>(vesselsUrl, {
+          vesselsInfo = await GFWAPI.fetch<APIPagination<IdentityVessel>>(vesselsUrl, {
             signal,
           }).then((r) => r.entries)
         }
       }
-
       if (clusterEvent) {
         const fishingVesselDataset =
-          vesselsInfo.find((v) => v.id === fishingVessel?.id)?.dataset || ''
+          vesselsInfo.find(
+            (v) =>
+              getVesselProperty(v, 'id', {
+                identitySource: VesselIdentitySourceEnum.SelfReported,
+              }) === fishingVessel?.id
+          )?.dataset || ''
         const carrierVesselDataset =
-          vesselsInfo.find((v) => v.id === carrierVessel?.id)?.dataset || ''
+          vesselsInfo.find(
+            (v) =>
+              getVesselProperty(v, 'id', {
+                identitySource: VesselIdentitySourceEnum.SelfReported,
+              }) === carrierVessel?.id
+          )?.dataset || ''
         const carrierExtendedVessel: ExtendedEventVessel = {
           ...(carrierVessel as EventVessel),
           dataset: carrierVesselDataset,

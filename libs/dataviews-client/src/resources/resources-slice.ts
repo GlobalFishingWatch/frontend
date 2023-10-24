@@ -1,11 +1,11 @@
-import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
 import { DateTime } from 'luxon'
 import { Feature, FeatureCollection, LineString } from 'geojson'
 import {
   mergeTrackChunks,
   trackValueArrayToSegments,
-  wrapFeaturesLongitudes,
+  wrapLineStringLongitudes,
 } from '@globalfishingwatch/data-transforms'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import {
@@ -26,8 +26,9 @@ export interface PartialStoreResources {
 const initialState: ResourcesState = {}
 
 export const getVesselIdFromDatasetConfig = (datasetConfig: DataviewDatasetConfig) => {
-  return (datasetConfig?.query?.find((q) => q.id === 'vessels')?.value ||
+  const vesselIds = (datasetConfig?.query?.find((q) => q.id === 'vessels')?.value ||
     datasetConfig?.params?.find((q) => q.id === 'vesselId')?.value) as string
+  return Array.isArray(vesselIds) ? vesselIds.join(',') : vesselIds
 }
 
 export const getTracksChunkSetId = (datasetConfig: DataviewDatasetConfig) => {
@@ -37,7 +38,7 @@ export const getTracksChunkSetId = (datasetConfig: DataviewDatasetConfig) => {
   return chunkSetId
 }
 
-const parseEvent = (event: ApiEvent, eventKey: string): ApiEvent => {
+export const parseEvent = (event: ApiEvent, eventKey: string): ApiEvent => {
   return {
     ...event,
     key: eventKey,
@@ -61,51 +62,52 @@ export const fetchResourceThunk = createAsyncThunk(
     const isTrackResource = resource.dataset.type === DatasetTypes.Tracks
     const isUserTrackResource = resource.dataset.type === DatasetTypes.UserTracks
     const isEventsResource = resource.dataset.type === DatasetTypes.Events
-    const responseType =
-      isTrackResource &&
-      resource.datasetConfig.query?.some((q) => q.id === 'binary' && q.value === true)
-        ? 'vessel'
-        : 'json'
+    const isTrackBinary = resource.datasetConfig.query?.some(
+      (q) => q.id === 'binary' && q.value === true
+    )
+    const responseType = isTrackResource && isTrackBinary ? 'vessel' : 'json'
 
     // The urls has the version included so I need to remove them
-    const data = await GFWAPI.fetch(resource.url, { responseType, signal }).then((data: any) => {
-      // TODO Replace with enum?
-      if (isTrackResource) {
-        const fields = (
-          resource.datasetConfig.query?.find((q) => q.id === 'fields')?.value as string
-        ).split(',') as Field[]
+    const data = await GFWAPI.fetch(resource.url, { responseType, signal })
+      .then((data: any) => {
+        if (isTrackResource && isTrackBinary) {
+          const fields = resource.datasetConfig.query?.find((q) => q.id === 'fields')
+            ?.value as Field[]
 
-        const segments = trackValueArrayToSegments(data as any, fields)
-        return segments
-      }
-      // TODO check by eventType when needed
-      if (isEventsResource) {
-        const vesselId =
-          getVesselIdFromDatasetConfig(resource?.datasetConfig) || resource.url.split('/')[3] // grab vesselId from url
-        return (data as ApiEvents).entries.map((event, index) => {
-          const eventKey = `${vesselId}-${event.type}-${index}`
-          return parseEventCb ? parseEventCb(event, eventKey) : parseEvent(event, eventKey)
-        })
-      }
-
-      if (isUserTrackResource) {
-        const geoJSON = data as FeatureCollection
-
-        // Wrap longitudes
-        const wrappedGeoJSON = {
-          ...geoJSON,
-          features: wrapFeaturesLongitudes(geoJSON.features as Feature<LineString>[]),
+          const segments = trackValueArrayToSegments(data as any, fields)
+          return segments
+        }
+        // TODO check by eventType when needed
+        if (isEventsResource) {
+          const vesselId =
+            getVesselIdFromDatasetConfig(resource?.datasetConfig) || resource.url.split('/')[3] // grab vesselId from url
+          return (data as ApiEvents).entries.map((event, index) => {
+            const eventKey = `${vesselId}-${event.type}-${index}`
+            return parseEventCb ? parseEventCb(event, eventKey) : parseEvent(event, eventKey)
+          })
         }
 
-        if (parseUserTrackCb) {
-          return parseUserTrackCb(wrappedGeoJSON)
+        if (isUserTrackResource) {
+          const geoJSON = data as FeatureCollection
+
+          // Wrap longitudes
+          const wrappedGeoJSON = {
+            ...geoJSON,
+            features: wrapLineStringLongitudes(geoJSON.features as Feature<LineString>[]),
+          }
+
+          if (parseUserTrackCb) {
+            return parseUserTrackCb(wrappedGeoJSON)
+          }
+
+          return wrappedGeoJSON
         }
 
-        return wrappedGeoJSON
-      }
-
-      return data
-    })
+        return data
+      })
+      .catch((e) => {
+        console.warn(e)
+      })
     return {
       ...resource,
       data,
@@ -135,7 +137,12 @@ const getChunkSetChunks = (state: ResourcesState, chunkSetId: string) => {
 export const resourcesSlice = createSlice({
   name: 'resources',
   initialState,
-  reducers: {},
+  reducers: {
+    setResource(state, action: PayloadAction<Resource>) {
+      const key = action.payload.key || action.payload.url
+      state[key] = action.payload
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchResourceThunk.pending, (state, action) => {
       const { resource } = action.meta.arg
@@ -198,6 +205,7 @@ export const resourcesSlice = createSlice({
   },
 })
 
+export const { setResource } = resourcesSlice.actions
 export const selectResources = (state: PartialStoreResources) => state.resources
 export const selectResourceByUrl = memoize(<T = any>(url = '') =>
   createSelector([selectResources], (resources) => resources[url] as Resource<T>)

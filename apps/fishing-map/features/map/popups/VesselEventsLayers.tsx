@@ -57,6 +57,7 @@ function VesselEventsTooltipSection({
                 start: feature.properties.start,
                 end: feature.properties.end,
                 type: feature.properties.type as EventTypes,
+                mainVesselName: feature.properties.vesselName,
                 encounterVesselName: feature.properties.encounterVesselName,
               })
               return (

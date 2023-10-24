@@ -13,7 +13,8 @@
 }
 
 .partnerLogo {
-  width: 22rem;
+  max-width: 20rem;
+  max-height: 3.2rem;
 }
 
 .title {
@@ -47,7 +48,7 @@
   display: flex;
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 800px) {
   .container {
     padding: var(--space-S);
   }

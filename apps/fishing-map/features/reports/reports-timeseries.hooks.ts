@@ -3,6 +3,7 @@ import { Polygon, MultiPolygon } from 'geojson'
 import { useSelector } from 'react-redux'
 import { atom, selector, useRecoilState, useSetRecoilState } from 'recoil'
 import { Interval } from '@globalfishingwatch/layer-composer'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   selectActiveReportDataviews,
   selectReportActivityGraph,
@@ -17,7 +18,6 @@ import {
   hasDataviewsFeatureError,
 } from 'features/map/map-sources.hooks'
 import { getUTCDateTime } from 'utils/dates'
-import { selectDatasetAreaDetail } from 'features/areas/areas.slice'
 import { filterByPolygon } from 'features/reports/reports-geo.utils'
 import {
   featuresToTimeseries,
@@ -25,7 +25,11 @@ import {
   removeTimeseriesPadding,
 } from 'features/reports/reports-timeseries.utils'
 import { useReportAreaInViewport } from 'features/reports/reports.hooks'
-import { selectReportAreaIds, selectShowTimeComparison } from 'features/reports/reports.selectors'
+import {
+  selectReportArea,
+  selectReportBufferHash,
+  selectShowTimeComparison,
+} from 'features/reports/reports.selectors'
 import { ReportActivityGraph } from 'types'
 
 export interface EvolutionGraphData {
@@ -79,16 +83,15 @@ export type DateTimeSeries = {
 export function useSetTimeseries() {
   return useSetRecoilState(mapTimeseriesAtom)
 }
-
-const emptyArray = []
+const emptyArray: UrlDataviewInstance[] = []
 export const useFilteredTimeSeries = () => {
   const [timeseries, setTimeseries] = useRecoilState(mapTimeseriesAtom)
-  const reportAreaIds = useSelector(selectReportAreaIds)
-  const area = useSelector(selectDatasetAreaDetail(reportAreaIds))
+  const area = useSelector(selectReportArea)
   const reportGraph = useSelector(selectReportActivityGraph)
   const reportCategory = useSelector(selectReportCategory)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparison = useSelector(selectReportTimeComparison)
+  const reportBufferHash = useSelector(selectReportBufferHash)
   const currentCategoryDataviews = useSelector(selectActiveReportDataviews)
   const { start: timebarStart, end: timebarEnd } = useSelector(selectTimeRange)
   const areaInViewport = useReportAreaInViewport()
@@ -145,14 +148,13 @@ export const useFilteredTimeSeries = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reportGraphMode])
-
   const activityFeaturesLoaded = areDataviewsFeatureLoaded(activityFeatures)
   useEffect(() => {
     if (activityFeaturesLoaded && area?.geometry && areaInViewport) {
-      computeTimeseries(activityFeatures, area?.geometry, reportGraphMode)
+      computeTimeseries(activityFeatures, area?.geometry as Polygon | MultiPolygon, reportGraphMode)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activityFeaturesLoaded, area?.geometry, areaInViewport, reportCategory])
+  }, [activityFeaturesLoaded, area?.geometry, areaInViewport, reportCategory, reportBufferHash])
 
   const layersTimeseriesFiltered = useMemo(() => {
     if (showTimeComparison) {

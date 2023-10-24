@@ -1,9 +1,8 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, PayloadAction, createSelector } from '@reduxjs/toolkit'
 import { uniqBy } from 'lodash'
 import {
   GFWAPI,
   getAdvancedSearchQuery,
-  AdvancedSearchQueryField,
   AdvancedSearchQueryFieldKey,
   parseAPIError,
 } from '@globalfishingwatch/api-client'
@@ -11,70 +10,54 @@ import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import {
   Dataset,
   DatasetTypes,
-  Vessel,
-  APIPagination,
-  VesselSearch,
+  APIVesselSearchPagination,
+  IdentityVessel,
   EndpointId,
 } from '@globalfishingwatch/api-types'
-import { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
-import { getRelatedDatasetByType, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
+import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
+import { VesselSearchState } from 'types'
+import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
+import { getVesselId, getVesselIdentities } from 'features/vessel/vessel.utils'
 
-export const RESULTS_PER_PAGE = 20
-
-export type VesselWithDatasets = Omit<Vessel, 'dataset'> & {
-  dataset: Dataset
-  trackDatasetId?: string
-}
-export type SearchType = 'basic' | 'advanced'
-export type SearchFilter = {
-  lastTransmissionDate?: string
-  firstTransmissionDate?: string
-  sources?: MultiSelectOption<string>[]
-} & Partial<Record<SupportedDatasetSchema, MultiSelectOption<string>[]>>
+export type VesselLastIdentity = Omit<IdentityVesselData, 'identities'> & VesselDataIdentity
 
 interface SearchState {
+  selectedVessels: string[]
   status: AsyncReducerStatus
   statusCode: number | undefined
-  data: VesselWithDatasets[] | null
+  data: IdentityVesselData[]
   suggestion: string | null
   suggestionClicked: boolean
   pagination: {
     loading: boolean
     total: number
-    offset: number
+    since: string
   }
-  filtersOpen: boolean
-  filters: SearchFilter
 }
 type SearchSliceState = { search: SearchState }
 
-const paginationInitialState = { total: 0, offset: 0, loading: false }
+const paginationInitialState = { total: 0, since: '', loading: false }
 const initialState: SearchState = {
+  selectedVessels: [],
   status: AsyncReducerStatus.Idle,
   statusCode: undefined,
   pagination: paginationInitialState,
-  data: null,
+  data: [],
   suggestion: null,
   suggestionClicked: false,
-  filtersOpen: false,
-  filters: {},
 }
 
 export type VesselSearchThunk = {
   query: string
-  offset: number
-  filters: SearchFilter
+  since: string
+  filters: VesselSearchState
   datasets: Dataset[]
   gfwUser?: boolean
 }
 
-export function checkSearchFiltersEnabled(filters: SearchFilter): boolean {
-  return Object.values(filters).filter((f) => f !== undefined).length > 0
-}
-
-export function checkAdvanceSearchFiltersEnabled(filters: SearchFilter): boolean {
+export function checkAdvanceSearchFiltersEnabled(filters: VesselSearchState): boolean {
   const { sources, ...rest } = filters
   return Object.values(rest).filter((f) => f !== undefined).length > 0
 }
@@ -82,7 +65,7 @@ export function checkAdvanceSearchFiltersEnabled(filters: SearchFilter): boolean
 export const fetchVesselSearchThunk = createAsyncThunk(
   'search/fetch',
   async (
-    { query, filters, datasets, offset, gfwUser = false }: VesselSearchThunk,
+    { query, filters, datasets, since, gfwUser = false }: VesselSearchThunk,
     { getState, signal, rejectWithValue }
   ) => {
     const state = getState() as SearchSliceState
@@ -97,92 +80,110 @@ export const fetchVesselSearchThunk = createAsyncThunk(
 
         const andCombinedFields: AdvancedSearchQueryFieldKey[] = [
           'geartype',
-          'target_species',
+          'targetSpecies',
           'flag',
           'fleet',
           'origin',
-          'lastTransmissionDate',
-          'firstTransmissionDate',
-        ]
-        const orCombinedFields: AdvancedSearchQueryFieldKey[] = [
-          'shipname',
-          'mmsi',
+          'transmissionDateFrom',
+          'transmissionDateTo',
+          'ssvid',
           'imo',
+          'callsign',
           'codMarinha',
+          'owner',
         ]
 
-        const fields: AdvancedSearchQueryField[] = [
-          ...orCombinedFields.flatMap((field) => {
-            if (fieldsAllowed.includes(field)) {
-              return {
-                key: field,
-                value: query,
-                combinedWithOR: true,
-              }
+        const fields = andCombinedFields.flatMap((field) => {
+          const isInFieldsAllowed =
+            fieldsAllowed.includes(field) ||
+            fieldsAllowed.includes(`${filters.infoSource}.${field}`) ||
+            (field === 'owner' && fieldsAllowed.includes('registryOwners.name'))
+          const filter = (filters as any)[field]
+          if (filter && isInFieldsAllowed) {
+            let value = filter
+            // Supports searching by multiple values separated by comma in owners
+            if (field === 'owner' && value?.includes(', ')) {
+              value = (value as string).split(', ')
             }
-            return []
-          }),
-          ...andCombinedFields.flatMap((field) => {
-            if (filters[field] && fieldsAllowed.includes(field)) {
-              return {
-                key: field,
-                value: filters[field],
-              }
-            }
-            return []
-          }),
-        ]
-        advancedQuery = getAdvancedSearchQuery(fields)
+            return { key: field, value }
+          }
+          return []
+        })
+
+        if (query) {
+          fields.push({
+            key: 'shipname',
+            value: query,
+          })
+        }
+        if (!fields?.length) {
+          console.warn('No fields to search found or allowed')
+        }
+        advancedQuery = getAdvancedSearchQuery(fields, { rootObject: filters.infoSource })
       }
 
       const datasetConfig = {
-        endpoint: advancedQuery ? EndpointId.VesselAdvancedSearch : EndpointId.VesselSearch,
+        endpoint: EndpointId.VesselSearch,
         datasetId: dataset.id,
         params: [],
         query: [
+          { id: 'includes', value: ['MATCH_CRITERIA', 'OWNERSHIP'] },
           { id: 'datasets', value: datasets.map((d) => d.id) },
-          { id: 'limit', value: RESULTS_PER_PAGE },
-          { id: 'offset', value: offset },
-          { id: 'query', value: encodeURIComponent(advancedQuery || query) },
+          {
+            id: advancedQuery ? 'where' : 'query',
+            value: encodeURIComponent(advancedQuery || query || ''),
+          },
+          { id: 'since', value: since },
         ],
+      }
+      if (!advancedQuery) {
+        // datasetConfig.query.push({ id: 'match-fields', value: 'SEVERAL_FIELDS' })
       }
 
       const url = resolveEndpoint(dataset, datasetConfig)
       if (url) {
-        const searchResults = await GFWAPI.fetch<APIPagination<VesselSearch>>(url, {
+        const searchResults = await GFWAPI.fetch<APIVesselSearchPagination<IdentityVessel>>(url, {
           signal,
         })
         // Not removing duplicates for GFWStaff so they can compare other VS fishing vessels
         const uniqSearchResults = gfwUser
           ? searchResults.entries
-          : uniqBy(searchResults.entries, 'id')
+          : uniqBy(searchResults.entries, 'selfReportedInfo[0].id')
 
         const vesselsWithDataset = uniqSearchResults.flatMap((vessel) => {
           if (!vessel) return []
-
           const infoDataset = selectDatasetById(vessel.dataset)(state as any)
           if (!infoDataset) return []
 
-          const trackDatasetId = getRelatedDatasetByType(infoDataset, DatasetTypes.Tracks, {
-            vesselType: vessel?.vesselType,
-          })?.id
+          const trackDatasetId = getRelatedDatasetByType(infoDataset, DatasetTypes.Tracks)?.id
           return {
-            ...vessel,
+            id: getVesselId(vessel),
+            ...(vessel.matchCriteria && { matchCriteria: vessel.matchCriteria }),
+            ...(vessel.registryOwners && { registryOwners: vessel.registryOwners }),
+            ...(vessel.registryAuthorizations && {
+              registryAuthorizations: vessel.registryAuthorizations,
+            }),
+            ...(vessel.combinedSourcesInfo && {
+              combinedSourcesInfo: vessel.combinedSourcesInfo,
+            }),
             dataset: infoDataset,
-            trackDatasetId,
-          }
+            info: infoDataset?.id,
+            track: trackDatasetId,
+            identities: getVesselIdentities(vessel),
+          } as IdentityVesselData
         })
 
         return {
           data:
-            offset > 0 && currentResults
+            since && currentResults
               ? currentResults.concat(vesselsWithDataset)
               : vesselsWithDataset,
-          suggestion: searchResults.metadata?.suggestion,
+          // TO DO: switch suggestions with DID YOU MEAN from API
+          // suggestion: searchResults.metadata?.suggestion,
           pagination: {
             loading: false,
             total: searchResults.total,
-            offset: searchResults.nextOffset,
+            since: searchResults.since,
           },
         }
       }
@@ -196,15 +197,21 @@ const searchSlice = createSlice({
   name: 'search',
   initialState,
   reducers: {
-    setFilters: (state, action: PayloadAction<SearchFilter>) => {
-      state.filters = { ...state.filters, ...action.payload }
-    },
-    setFiltersOpen: (state, action: PayloadAction<boolean>) => {
-      state.filtersOpen = action.payload
-    },
-    resetFilters: (state) => {
-      state.filters = initialState.filters
-      state.filtersOpen = initialState.filtersOpen
+    setSelectedVessels: (state, action: PayloadAction<string[]>) => {
+      const selection = action.payload
+      if (selection.length === 0) {
+        state.selectedVessels = []
+      }
+      if (selection.length === 1) {
+        const vessel = selection[0]
+        if (state.selectedVessels.includes(vessel)) {
+          state.selectedVessels = state.selectedVessels.filter((id) => id !== vessel)
+        } else {
+          state.selectedVessels = [...state.selectedVessels, vessel]
+        }
+      } else {
+        state.selectedVessels = selection
+      }
     },
     setSuggestionClicked: (state, action: PayloadAction<boolean>) => {
       state.suggestionClicked = action.payload
@@ -215,12 +222,13 @@ const searchSlice = createSlice({
       state.suggestionClicked = false
       state.data = initialState.data
       state.pagination = paginationInitialState
+      state.selectedVessels = initialState.selectedVessels
     },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchVesselSearchThunk.pending, (state, action) => {
       state.status = AsyncReducerStatus.Loading
-      state.pagination.loading = action.meta.arg.offset > 0
+      state.pagination.loading = action.meta.arg.since ? true : false
     })
     builder.addCase(fetchVesselSearchThunk.fulfilled, (state, action) => {
       state.status = AsyncReducerStatus.Finished
@@ -244,22 +252,22 @@ const searchSlice = createSlice({
   },
 })
 
-export const {
-  setFilters,
-  setFiltersOpen,
-  resetFilters,
-  setSuggestionClicked,
-  cleanVesselSearchResults,
-} = searchSlice.actions
+export const { setSelectedVessels, setSuggestionClicked, cleanVesselSearchResults } =
+  searchSlice.actions
 
 export const selectSearchResults = (state: SearchSliceState) => state.search.data
 export const selectSearchStatus = (state: SearchSliceState) => state.search.status
 export const selectSearchStatusCode = (state: SearchSliceState) => state.search.statusCode
-export const selectSearchFiltersOpen = (state: SearchSliceState) => state.search.filtersOpen
-export const selectSearchFilters = (state: SearchSliceState) => state.search.filters
 export const selectSearchSuggestion = (state: SearchSliceState) => state.search.suggestion
 export const selectSearchSuggestionClicked = (state: SearchSliceState) =>
   state.search.suggestionClicked
 export const selectSearchPagination = (state: SearchSliceState) => state.search.pagination
+export const selectSelectedVesselsIds = (state: SearchSliceState) => state.search.selectedVessels
+export const selectSelectedVessels = createSelector(
+  [selectSearchResults, selectSelectedVesselsIds],
+  (searchResults, vesselsSelectedIds) => {
+    return searchResults.filter((vessel) => vesselsSelectedIds.includes(vessel.id))
+  }
+)
 
 export default searchSlice.reducer

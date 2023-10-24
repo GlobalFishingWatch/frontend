@@ -98,7 +98,7 @@ export default function ReportActivityGraph({ start, end, data }: ReportActivity
     if (start && end && data?.interval) {
       const cleanEnd = DateTime.fromISO(end, { zone: 'utc' })
         .minus({ [data?.interval]: 1 })
-        .toISO()
+        .toISO() as string
       return [new Date(start).getTime(), new Date(cleanEnd).getTime()]
     }
   }, [start, end, data?.interval])

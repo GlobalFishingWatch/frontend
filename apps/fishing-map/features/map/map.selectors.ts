@@ -4,7 +4,9 @@ import {
   AnyGeneratorConfig,
   GeneratorType,
   GlGeneratorConfig,
+  Group,
   HeatmapAnimatedMode,
+  PolygonsGeneratorConfig,
   Ruler,
 } from '@globalfishingwatch/layer-composer'
 import {
@@ -26,27 +28,40 @@ import { selectRulers } from 'features/map/rulers/rulers.slice'
 import {
   selectHighlightedTime,
   selectHighlightedEvents,
-  Range,
+  TimeRange,
 } from 'features/timebar/timebar.slice'
 import { selectBivariateDataviews, selectTimeRange } from 'features/app/app.selectors'
 import { selectMarineManagerDataviewInstanceResolved } from 'features/dataviews/dataviews.slice'
 import {
   selectIsMarineManagerLocation,
+  selectIsVesselLocation,
   selectIsAnyReportLocation,
   selectIsWorkspaceLocation,
+  selectIsWorkspaceVesselLocation,
 } from 'routes/routes.selectors'
-import { selectShowTimeComparison } from 'features/reports/reports.selectors'
+import {
+  selectShowTimeComparison,
+  selectReportPreviewBufferFeature,
+  selectReportBufferFeature,
+} from 'features/reports/reports.selectors'
 import { WorkspaceCategory } from 'data/workspaces'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { BivariateDataviews } from 'types'
+import { BUFFER_PREVIEW_COLOR } from 'data/config'
+import {
+  PREVIEW_BUFFER_GENERATOR_ID,
+  REPORT_BUFFER_GENERATOR_ID,
+  WORKSPACES_POINTS_TYPE,
+  WORKSPACE_GENERATOR_ID,
+} from './map.config'
 
 type GetGeneratorConfigParams = {
   dataviews: UrlDataviewInstance[] | undefined
   resources: ResourcesState
   rulers: Ruler[]
   debugOptions: DebugOptions
-  timeRange: Range
-  highlightedTime?: Range
+  timeRange: TimeRange
+  highlightedTime?: TimeRange
   highlightedEvents?: string[]
   bivariateDataviews?: BivariateDataviews
   showTimeComparison?: boolean
@@ -196,8 +211,6 @@ const selectStaticGeneratorsConfig = createSelector(
   }
 )
 
-export const WORKSPACES_POINTS_TYPE = 'workspace'
-export const WORKSPACE_GENERATOR_ID = 'workspace_points'
 export const selectWorkspacesListGenerator = createSelector(
   [selectCurrentWorkspacesList],
   (workspaces) => {
@@ -282,6 +295,7 @@ export const selectMarineManagerGenerators = createSelector(
     }
   }
 )
+
 export const selectMapWorkspacesListGenerators = createSelector(
   [selectDefaultBasemapGenerator, selectWorkspacesListGenerator, selectMarineManagerGenerators],
   (basemapGenerator, workspaceGenerator, marineManagerGenerators): AnyGeneratorConfig[] => {
@@ -294,33 +308,83 @@ export const selectMapWorkspacesListGenerators = createSelector(
   }
 )
 
+export const selectShowWorkspaceDetail = createSelector(
+  [selectIsWorkspaceLocation, selectIsAnyReportLocation, selectIsWorkspaceVesselLocation],
+  (isWorkspacelLocation, isReportLocation, isVesselLocation) => {
+    return isWorkspacelLocation || isReportLocation || isVesselLocation
+  }
+)
+
+export const selectMapReportGenerators = createSelector(
+  [selectReportBufferFeature, selectReportPreviewBufferFeature],
+  (reportBufferFeature, reportPreviewBufferFeature) => {
+    const reportGenerators: PolygonsGeneratorConfig[] = []
+    if (reportBufferFeature?.geometry) {
+      reportGenerators.push({
+        type: GeneratorType.Polygons,
+        id: REPORT_BUFFER_GENERATOR_ID,
+        data: { type: 'FeatureCollection', features: [reportBufferFeature] },
+        color: '#FFF',
+        visible: true,
+        group: Group.OutlinePolygonsHighlighted,
+        metadata: {
+          interactive: true,
+        },
+      })
+    }
+    if (reportPreviewBufferFeature?.geometry) {
+      reportGenerators.push({
+        type: GeneratorType.Polygons,
+        id: PREVIEW_BUFFER_GENERATOR_ID,
+        data: { type: 'FeatureCollection', features: [reportPreviewBufferFeature] },
+        color: BUFFER_PREVIEW_COLOR,
+        visible: true,
+        group: Group.OutlinePolygonsHighlighted,
+        metadata: {
+          interactive: true,
+        },
+      })
+    }
+    return reportGenerators
+  }
+)
+
 export const selectDefaultMapGeneratorsConfig = createSelector(
   [
     selectWorkspaceError,
     selectWorkspaceStatus,
-    selectIsWorkspaceLocation,
+    selectShowWorkspaceDetail,
     selectIsAnyReportLocation,
+    selectIsVesselLocation,
     selectDefaultBasemapGenerator,
     selectMapGeneratorsConfig,
     selectMapWorkspacesListGenerators,
+    selectMapReportGenerators,
   ],
   (
     workspaceError,
     workspaceStatus,
-    isWorkspacelLocation,
+    showWorkspaceDetail,
     isReportLocation,
+    isVesselLocation,
     basemapGenerator,
     workspaceGenerators = [] as AnyGeneratorConfig[],
-    workspaceListGenerators
+    workspaceListGenerators,
+    mapReportGenerators
   ): AnyGeneratorConfig[] => {
-    const showWorkspaceDetail = isWorkspacelLocation || isReportLocation
+    if (isVesselLocation) {
+      return workspaceGenerators
+    }
     if (workspaceError.status === 401 || workspaceStatus === AsyncReducerStatus.Loading) {
       return [basemapGenerator]
     }
     if (showWorkspaceDetail) {
-      return workspaceStatus !== AsyncReducerStatus.Finished
-        ? [basemapGenerator]
-        : workspaceGenerators
+      const generators =
+        workspaceStatus !== AsyncReducerStatus.Finished ? [basemapGenerator] : workspaceGenerators
+      if (isReportLocation) {
+        return [...generators, ...mapReportGenerators]
+      }
+      return generators
     }
     return workspaceListGenerators
   }

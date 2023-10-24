@@ -16,7 +16,7 @@ import {
   parseLegacyDataviewInstanceEndpoint,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import { DEFAULT_TIME_RANGE } from 'data/config'
+import { DEFAULT_TIME_RANGE, PRIVATE_SUFIX } from 'data/config'
 import { WorkspaceState } from 'types'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
@@ -33,7 +33,6 @@ import {
   DEFAULT_DATAVIEW_SLUGS,
   ONLY_GFW_STAFF_DATAVIEW_SLUGS,
   getWorkspaceEnv,
-  VESSEL_PRESENCE_DATAVIEW_SLUG,
   WorkspaceCategory,
   DEFAULT_WORKSPACE_ID,
 } from 'data/workspaces'
@@ -48,7 +47,8 @@ import { getVesselDataviewInstanceDatasetConfig } from 'features/dataviews/datav
 import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
 import { getUTCDateTime } from 'utils/dates'
 import { fetchReportsThunk } from 'features/reports/reports.slice'
-import { selectWorkspaceStatus } from './workspace.selectors'
+import { AppDispatch } from 'store'
+import { selectCurrentWorkspaceId, selectWorkspaceStatus } from './workspace.selectors'
 
 type LastWorkspaceVisited = { type: ROUTE_TYPES; payload: any; query: any; replaceQuery?: boolean }
 
@@ -84,7 +84,7 @@ export const getDefaultWorkspace = () => {
 
 export const fetchWorkspaceThunk = createAsyncThunk(
   'workspace/fetch',
-  async (workspaceId: string, { signal, dispatch, getState, rejectWithValue }) => {
+  async (workspaceId: string, { signal, dispatch, getState, rejectWithValue }: any) => {
     const state = getState() as any
     const locationType = selectLocationType(state)
     const urlDataviewInstances = selectUrlDataviewInstances(state)
@@ -115,6 +115,9 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       }
       if ((!workspace && locationType === HOME) || workspaceId === DEFAULT_WORKSPACE_ID) {
         workspace = await getDefaultWorkspace()
+        if (workspace.id.includes(PRIVATE_SUFIX) && guestUser) {
+          return rejectWithValue({ error: { status: 401, message: 'Private workspace' } })
+        }
       }
       if (gfwUser && ONLY_GFW_STAFF_DATAVIEW_SLUGS.length) {
         // Inject dataviews for gfw staff only
@@ -138,12 +141,9 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         }
       }
 
-      const defaultWorkspaceDataviews = gfwUser
-        ? [...DEFAULT_DATAVIEW_SLUGS, VESSEL_PRESENCE_DATAVIEW_SLUG] // Only for gfw users as includes the private-global-presence-tracks dataset
-        : DEFAULT_DATAVIEW_SLUGS
-
       const dataviewIds = [
-        ...defaultWorkspaceDataviews,
+        // Load extra dataviews here when needed for gfwUsers
+        ...DEFAULT_DATAVIEW_SLUGS,
         ...(workspace?.dataviewInstances || []).map(({ dataviewId }) => dataviewId),
         ...(urlDataviewInstances || []).map(({ dataviewId }) => dataviewId),
       ].filter(Boolean)
@@ -166,7 +166,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           ...(urlDataviewInstances || []),
         ]
         const datasetsIds = getDatasetsInDataviews(dataviews, dataviewInstances, guestUser)
-        const fetchDatasetsAction: any = dispatch(fetchDatasetsByIdsThunk(datasetsIds))
+        const fetchDatasetsAction: any = dispatch(fetchDatasetsByIdsThunk({ ids: datasetsIds }))
         signal.addEventListener('abort', fetchDatasetsAction.abort)
         const { error, payload } = await fetchDatasetsAction
         datasets = payload as Dataset[]
@@ -236,7 +236,12 @@ export const fetchWorkspaceThunk = createAsyncThunk(
   },
   {
     condition: (workspaceId, { getState }) => {
-      const workspaceStatus = selectWorkspaceStatus(getState() as any)
+      const rootState = getState() as any
+      if (!workspaceId || workspaceId === DEFAULT_WORKSPACE_ID) {
+        const currentWorkspaceId = selectCurrentWorkspaceId(rootState)
+        return DEFAULT_WORKSPACE_ID !== currentWorkspaceId
+      }
+      const workspaceStatus = selectWorkspaceStatus(rootState)
       // Fetched already in progress, don't need to re-fetch
       return workspaceStatus !== AsyncReducerStatus.Loading
     },
@@ -300,6 +305,7 @@ export const saveWorkspaceThunk = createAsyncThunk(
             category: locationCategory,
             workspaceId: workspaceUpdated.id,
           },
+          query: {},
           replaceQuery: true,
         })
       )
@@ -308,34 +314,33 @@ export const saveWorkspaceThunk = createAsyncThunk(
   }
 )
 
-export const updatedCurrentWorkspaceThunk = createAsyncThunk(
-  'workspace/updatedCurrent',
-  async (workspace: AppWorkspace, { dispatch }) => {
-    const workspaceUpsert = parseUpsertWorkspace(workspace)
-
-    const workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(
-      `/workspaces/${workspace.id}`,
-      {
-        method: 'PATCH',
-        body: workspaceUpsert,
-      } as FetchOptions<WorkspaceUpsert<WorkspaceState>>
-    )
-    if (workspaceUpdated) {
-      dispatch(cleanQueryLocation())
-    }
-    return workspaceUpdated
+export const updatedCurrentWorkspaceThunk = createAsyncThunk<
+  AppWorkspace,
+  AppWorkspace,
+  {
+    dispatch: AppDispatch
   }
-)
+>('workspace/updatedCurrent', async (workspace: AppWorkspace, { dispatch }) => {
+  const workspaceUpsert = parseUpsertWorkspace(workspace)
+  const workspaceUpdated = await GFWAPI.fetch<AppWorkspace>(`/workspaces/${workspace.id}`, {
+    method: 'PATCH',
+    body: workspaceUpsert,
+  } as FetchOptions<WorkspaceUpsert<WorkspaceState>>)
+  if (workspaceUpdated) {
+    dispatch(cleanQueryLocation())
+  }
+  return workspaceUpdated
+})
 
 const workspaceSlice = createSlice({
   name: 'workspace',
   initialState,
   reducers: {
     resetWorkspaceSlice: (state) => {
-      state.status = AsyncReducerStatus.Idle
-      state.customStatus = AsyncReducerStatus.Idle
-      state.data = null
-      state.error = {}
+      state.status = initialState.status
+      state.customStatus = initialState.customStatus
+      state.data = initialState.data
+      state.error = initialState.error
     },
     cleanCurrentWorkspaceData: (state) => {
       state.data = null

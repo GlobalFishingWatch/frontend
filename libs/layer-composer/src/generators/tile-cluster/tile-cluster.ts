@@ -3,6 +3,7 @@ import { GeneratorType, TileClusterGeneratorConfig, MergedGeneratorConfig } from
 import { isUrlAbsolute } from '../../utils'
 import { API_GATEWAY } from '../../config'
 import { Group } from '../../types'
+import { addURLSearchParams, toURLArray } from '../utils'
 import { DEFAULT_POINTS_SOURCE_LAYER, MAX_ZOOM_TO_CLUSTER_POINTS } from './config'
 
 export type GlobalTileClusterGeneratorConfig = Required<
@@ -19,22 +20,23 @@ class TileClusterGenerator {
     const tilesUrl = isUrlAbsolute(config.tilesUrl)
       ? config.tilesUrl
       : API_GATEWAY + config.tilesUrl
-    const url = new URL(tilesUrl.replace(/{{/g, '{').replace(/}}/g, '}'))
+    let url = new URL(tilesUrl.replace(/{{/g, '{').replace(/}}/g, '}'))
     if (config.dataset) {
-      url.searchParams.set('datasets', config.dataset)
+      url = addURLSearchParams(url, 'datasets', [config.dataset])
     }
     if (config.start && config.end) {
-      url.searchParams.set('date-range', [config.start, config.end].join(','))
+      url = addURLSearchParams(url, 'date-range', [config.start, config.end])
     }
     if (config.eventTypes) {
-      url.searchParams.set(
+      url = addURLSearchParams(
+        url,
         'types',
-        Array.isArray(config.eventTypes) ? config.eventTypes.join(',') : config.eventTypes
+        Array.isArray(config.eventTypes) ? config.eventTypes : [config.eventTypes]
       )
     }
 
     if (config.filters?.flag) {
-      url.searchParams.set('flags', config.filters.flag)
+      url = addURLSearchParams(url, 'flags', config.filters.flag)
     }
 
     if (config.filters?.duration) {

@@ -1,15 +1,13 @@
-/**
- *
- * @param filters Dataview filters
- * @returns Conditions transformed to apply in the API request and
- *          joined by AND operator
- */
 import { format } from 'd3-format'
 import { DateTime } from 'luxon'
+import { featureCollection, multiPolygon } from '@turf/helpers'
+import { difference, dissolve } from '@turf/turf'
+import { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson'
 import { parse } from 'qs'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataview, DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
+import { getFeatureBuffer, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import { API_VERSION } from '@globalfishingwatch/api-client'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { sortStrings } from 'utils/shared'
@@ -19,7 +17,15 @@ import {
   getSchemaFilterOperationInDataview,
   SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
-import { ReportCategory } from 'types'
+import { Bbox, BufferOperation, BufferUnit, ReportCategory } from 'types'
+import { Area, AreaGeometry } from 'features/areas/areas.slice'
+import {
+  DEFAULT_BUFFER_OPERATION,
+  DEFAULT_POINT_BUFFER_UNIT,
+  DEFAULT_POINT_BUFFER_VALUE,
+  DIFFERENCE,
+  REPORT_BUFFER_FEATURE_ID,
+} from './reports.config'
 
 const ALWAYS_SHOWN_FILTERS = ['vessel-groups']
 
@@ -172,14 +178,14 @@ export const getCommonProperties = (dataviews: UrlDataviewInstance[]) => {
       ) {
         const keyLabelField = FIELDS.find((field) => field[0] === filterKey)
         const keyLabel = keyLabelField
-          ? t(keyLabelField[1], keyLabelField[2]).toLocaleLowerCase()
+          ? t(keyLabelField[1] as any, keyLabelField[2] as string).toLocaleLowerCase()
           : filterKey
 
         const valuesLabel = getSchemaFieldsSelectedInDataview(
           dataviews[0],
           filterKey as SupportedDatasetSchema
         )
-          .map((f) => f.label.toLocaleLowerCase())
+          .map((f: any) => f.label.toLocaleLowerCase())
           .join(', ')
 
         if (getSchemaFilterOperationInDataview(dataviews[0], filterKey) === EXCLUDE_FILTER_ID) {
@@ -205,8 +211,86 @@ export const getReportCategoryFromDataview = (
   dataview: Dataview | UrlDataviewInstance
 ): ReportCategory => {
   return dataview.category === DataviewCategory.Activity
-    ? (dataview.datasets?.[0].subcategory as unknown as ReportCategory)
+    ? (dataview.datasets?.[0]?.subcategory as unknown as ReportCategory)
     : (dataview.category as unknown as ReportCategory)
+}
+
+type BufferedAreaParams = {
+  area: Area<FeatureCollection<AreaGeometry>> | undefined
+  value: number
+  unit: BufferUnit
+  operation?: BufferOperation
+}
+// Area is needed to generate all report results
+export const getBufferedArea = ({
+  area,
+  value,
+  unit,
+  operation,
+}: BufferedAreaParams): Area | null => {
+  if (!area) return null
+  const bufferedFeature = getBufferedFeature({ area, value, unit, operation })
+  return { ...area, id: REPORT_BUFFER_FEATURE_ID, geometry: bufferedFeature?.geometry } as Area
+}
+
+export const getBufferedAreaBbox = ({
+  area,
+  value = DEFAULT_POINT_BUFFER_VALUE,
+  unit = DEFAULT_POINT_BUFFER_UNIT,
+  operation = DEFAULT_BUFFER_OPERATION,
+}: BufferedAreaParams): Bbox | undefined => {
+  const bufferedFeature = getBufferedFeature({
+    area,
+    value,
+    unit,
+    operation,
+  })
+  return bufferedFeature?.geometry
+    ? wrapGeometryBbox(bufferedFeature.geometry as MultiPolygon)
+    : undefined
+}
+
+// Feature is handled to Polygon generator to be displayed on the map
+export const getBufferedFeature = ({
+  area,
+  value,
+  unit,
+  operation,
+}: BufferedAreaParams): Feature | null => {
+  if (!area?.geometry) return null
+  const bufferedFeatures = getFeatureBuffer(area.geometry.features, { unit, value })
+
+  if (!bufferedFeatures.length) return null
+
+  const properties = {
+    id: REPORT_BUFFER_FEATURE_ID,
+    value: 'buffer',
+    label: t('analysis.bufferedArea', {
+      value,
+      unit,
+      defaultValue: '{{value}} {{unit}} buffered area',
+    }),
+  }
+  const dissolvedBufferedPolygonsFeatures = multiPolygon(
+    dissolve(featureCollection(bufferedFeatures)).features.map((f) => f.geometry.coordinates),
+    properties
+  )
+
+  if (operation === DIFFERENCE) {
+    const multi = multiPolygon(
+      area.geometry.features.map((f) => (f as Feature<Polygon>).geometry.coordinates)
+    )
+    const diff = difference(dissolvedBufferedPolygonsFeatures, multi)
+    if (diff) {
+      diff.properties = {
+        ...diff.properties,
+        ...properties,
+      }
+    }
+    return diff
+  }
+
+  return dissolvedBufferedPolygonsFeatures
 }
 
 export const parseReportUrl = (url: string) => {

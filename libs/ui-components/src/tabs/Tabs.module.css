@@ -37,3 +37,19 @@
 .contentActive {
   display: block;
 }
+
+@media print {
+  .tab button {
+    padding: var(--space-M);
+    justify-content: flex-start;
+  }
+
+  .content {
+    display: block;
+    page-break-after: always;
+  }
+
+  .tab {
+    display: none;
+  }
+}

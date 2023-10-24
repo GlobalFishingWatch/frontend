@@ -1,13 +1,13 @@
 import { Locale } from 'types'
 
-export type WelcomenContentLangContent = {
+export type WelcomeContentLangContent = {
   title: string
   description: string
   disclaimer: string
 }
 
 type WelcomeContentLang = {
-  [locale in Locale]?: WelcomenContentLangContent
+  [locale in Locale]: WelcomeContentLangContent
 }
 
 const SOURCE_SWITCH_CONTENT: WelcomeContentLang = {
@@ -67,7 +67,7 @@ const SOURCE_SWITCH_CONTENT: WelcomeContentLang = {
 }
 
 export const getSourceSwitchContentByLng = (lng: Locale | string) => {
-  return SOURCE_SWITCH_CONTENT[lng || Locale.en]
+  return SOURCE_SWITCH_CONTENT[(lng as Locale) || Locale.en]
 }
 
 export default SOURCE_SWITCH_CONTENT

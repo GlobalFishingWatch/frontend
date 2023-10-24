@@ -1,0 +1,13 @@
+.placeholder {
+  text-align: center;
+  padding-block: var(--space-XL);
+}
+
+.secondary {
+  color: var(--color-secondary-blue);
+}
+
+.headerContainer {
+  position: relative;
+  z-index: 1;
+}

@@ -35,7 +35,8 @@
             "output": "."
           }
         ],
-        "styles": "libs/ui-components/src/base.css"
+        "styles": "libs/ui-components/src/base.css",
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "prerender": {

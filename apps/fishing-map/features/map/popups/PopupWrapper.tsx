@@ -13,17 +13,18 @@ import { useTimeCompareTimeDescription } from 'features/reports/reports-timecomp
 import DetectionsTooltipRow from 'features/map/popups/DetectionsLayers'
 import UserPointsTooltipSection from 'features/map/popups/UserPointsLayers'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { WORKSPACE_GENERATOR_ID } from 'features/map/map.selectors'
+import { WORKSPACE_GENERATOR_ID, REPORT_BUFFER_GENERATOR_ID } from 'features/map/map.config'
 import WorkspacePointsTooltipSection from 'features/map/popups/WorkspacePointsLayers'
 import { selectApiEventStatus, selectFishingInteractionStatus } from '../map.slice'
 import styles from './Popup.module.css'
 import ActivityTooltipRow from './ActivityLayers'
-import TileClusterRow from './TileClusterLayers'
+import EncounterTooltipRow from './EncounterTooltipRow'
 import EnvironmentTooltipSection from './EnvironmentLayers'
 import ContextTooltipSection from './ContextLayers'
 import UserContextTooltipSection from './UserContextLayers'
 import VesselEventsLayers from './VesselEventsLayers'
 import ComparisonRow from './ComparisonRow'
+import ReportBufferTooltip from './ReportBufferLayers'
 
 type PopupWrapperProps = {
   event: TooltipEvent | null
@@ -86,7 +87,7 @@ function PopupWrapper({
           {timeCompareTimeDescription && (
             <div className={styles.popupSection}>{timeCompareTimeDescription}</div>
           )}
-          {Object.entries(featureByCategory).map(([featureCategory, features]) => {
+          {Object.entries(featureByCategory)?.map(([featureCategory, features]) => {
             switch (featureCategory) {
               case DataviewCategory.Comparison:
                 return (
@@ -97,7 +98,7 @@ function PopupWrapper({
                   />
                 )
               case DataviewCategory.Activity:
-                return features.map((feature, i) => (
+                return features?.map((feature, i) => (
                   <ActivityTooltipRow
                     key={i + (feature.title as string)}
                     feature={feature}
@@ -105,7 +106,7 @@ function PopupWrapper({
                   />
                 ))
               case DataviewCategory.Detections:
-                return features.map((feature, i) => {
+                return features?.map((feature, i) => {
                   return feature.temporalgrid?.sublayerInteractionType === 'detections' ? (
                     <DetectionsTooltipRow
                       key={i + (feature.title as string)}
@@ -122,7 +123,7 @@ function PopupWrapper({
                 })
               case DataviewCategory.Events:
                 return (
-                  <TileClusterRow
+                  <EncounterTooltipRow
                     key={featureCategory}
                     features={features}
                     showFeaturesDetails={type === 'click'}
@@ -150,6 +151,9 @@ function PopupWrapper({
                 const workspacePointsFeatures = features.filter(
                   (feature) => feature.source === WORKSPACE_GENERATOR_ID
                 )
+                const areaBufferFeatures = features.filter(
+                  (feature) => feature.source === REPORT_BUFFER_GENERATOR_ID
+                )
                 return (
                   <Fragment key={featureCategory}>
                     <UserPointsTooltipSection
@@ -157,6 +161,7 @@ function PopupWrapper({
                       showFeaturesDetails={type === 'click'}
                     />
                     <WorkspacePointsTooltipSection features={workspacePointsFeatures} />
+                    <ReportBufferTooltip features={areaBufferFeatures} />
                     <UserContextTooltipSection
                       features={userContextFeatures}
                       showFeaturesDetails={type === 'click'}

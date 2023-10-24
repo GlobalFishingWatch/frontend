@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import styles from './UserGuideLink.module.css'
 
-type UserGuideSection =
+export type UserGuideSection =
   | 'uploadReference'
   | 'uploadEnvironment'
   | 'analysis'

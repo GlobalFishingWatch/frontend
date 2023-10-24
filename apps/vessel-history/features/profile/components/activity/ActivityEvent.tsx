@@ -45,7 +45,7 @@ const ActivityEvent: React.FC<EventProps> = ({
               {event.type === 'encounter' && <Icon icon="event-encounter" type="default" />}
               {event.type === 'loitering' && <Icon icon="event-loitering" type="default" />}
               {event.type === 'fishing' && <Icon icon="event-fishing" type="default" />}
-              {event.type === 'gap' && <Icon icon="transmissions-off" type="default" />}
+              {event.type === 'gap' && <Icon icon="event-gap" type="default" />}
             </div>
             <div className={styles.eventData}>
               <ActivityDate event={event} />

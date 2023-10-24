@@ -31,10 +31,11 @@ import { selectLastVisitedWorkspace } from 'features/workspace/workspace.selecto
 import { updateLocation } from 'routes/routes.actions'
 import { ROUTE_TYPES } from 'routes/routes'
 import { resetSidebarScroll } from 'features/sidebar/Sidebar'
-import { selectSearchQuery } from 'features/app/app.selectors'
+import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
+import { getVesselId } from 'features/vessel/vessel.utils'
 import {
   IdField,
   resetVesselGroup,
@@ -121,7 +122,7 @@ function VesselGroupModal(): React.ReactElement {
     }
   }, [dispatch, editingVesselGroup])
 
-  const onGroupNameChange = useCallback((e) => {
+  const onGroupNameChange = useCallback((e: any) => {
     setGroupName(e.target.value)
   }, [])
 
@@ -203,7 +204,7 @@ function VesselGroupModal(): React.ReactElement {
       setButtonLoading(navigateToWorkspace ? 'saveAndNavigate' : 'save')
       const vessels: VesselGroupVessel[] = vesselGroupSearchVessels.map((vessel) => {
         return {
-          vesselId: vessel.id,
+          vesselId: getVesselId(vessel),
           dataset: vessel.dataset as string,
         }
       })
@@ -245,8 +246,9 @@ function VesselGroupModal(): React.ReactElement {
               })
             )
           } else if (searchQuery) {
+            // TODO check if is search location and navigate back to workspace
             upsertDataviewInstance(dataviewInstances)
-            dispatchQueryParams({ query: undefined })
+            // dispatchQueryParams({ query: undefined })
           }
           resetSidebarScroll()
         } else if (addToDataviews && dataviewInstances) {

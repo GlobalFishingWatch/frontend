@@ -64,11 +64,12 @@ const cleanDataviewFiltersNotAllowed = (
   vesselGroupOptions: MultiSelectOption[]
 ) => {
   const filters = dataview.config?.filters ? { ...dataview.config.filters } : {}
-  Object.keys(filters).forEach((key: SupportedDatasetSchema) => {
+  Object.keys(filters).forEach((k) => {
+    const key = k as SupportedDatasetSchema
     if (filters[key]) {
       const newFilterOptions = getCommonSchemaFieldsInDataview(dataview, key, vesselGroupOptions)
-      const newFilterSelection = newFilterOptions?.filter((option) =>
-        dataview.config?.filters?.[key]?.includes(option.id)
+      const newFilterSelection = newFilterOptions?.filter(
+        (option) => dataview.config?.filters?.[key]?.includes(option.id)
       )
 
       // We have to remove the key if it is not supported by the datasets selecion
@@ -219,8 +220,8 @@ function ActivityFilters({
   }
 
   const onSelectFilterClick = (
-    filterKey: SupportedDatasetSchema,
-    selection: MultiSelectOption | MultiSelectOption[],
+    filterKey: string | SupportedDatasetSchema,
+    selection: any,
     singleValue: boolean = false
   ) => {
     if ((selection as MultiSelectOption)?.id === VESSEL_GROUPS_MODAL_ID) {
@@ -266,7 +267,7 @@ function ActivityFilters({
   }
 
   const onSelectFilterOperationClick = (
-    filterKey: SupportedDatasetSchema,
+    filterKey: string | SupportedDatasetSchema,
     filterOperator: FilterOperator
   ) => {
     const newDataviewConfig = {
@@ -353,7 +354,10 @@ function ActivityFilters({
         <MultiSelect
           testId="activity-filters"
           label={t('layer.source_other', 'Sources') as string}
-          placeholder={getPlaceholderBySelections(sourcesSelected)}
+          placeholder={getPlaceholderBySelections({
+            selection: sourcesSelected.map(({ id }) => id),
+            options: allSourceOptions,
+          })}
           options={allSourceOptions}
           labelContainerClassName={styles.labelContainer}
           selectedOptions={sourcesSelected}

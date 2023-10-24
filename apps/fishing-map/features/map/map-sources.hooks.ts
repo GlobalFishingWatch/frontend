@@ -37,7 +37,7 @@ type SourcesHookInput = string | string[]
 // TODO: move this to fork and include sourceId in the event for tiles loaded
 type CustomMapDataEvent = MapDataEvent & { sourceId: string; error?: string }
 
-const toArray = (elem) => (Array.isArray(elem) ? elem : [elem])
+const toArray = <T = any>(elem: any): T[] => (Array.isArray(elem) ? elem : [elem])
 
 const getSourcesFromMergedGenerator = (style: ExtendedStyle, mergeId: string) => {
   const meta = getHeatmapSourceMetadata(style, mergeId)
@@ -47,8 +47,8 @@ const getSourcesFromMergedGenerator = (style: ExtendedStyle, mergeId: string) =>
 const getGeneratorSourcesIds = (style: ExtendedStyle, sourcesIds: SourcesHookInput) => {
   const sourcesIdsList = toArray(sourcesIds)
   const sources = sourcesIdsList.flatMap((source) => {
-    if (isMergedAnimatedGenerator(source)) {
-      return getSourcesFromMergedGenerator(style, source)
+    if (isMergedAnimatedGenerator(source as string)) {
+      return getSourcesFromMergedGenerator(style, source as string) as string
     }
     return source
   })
@@ -99,6 +99,13 @@ export const useMapSourceTilesLoadedAtom = () => {
             [sourceId]: { loaded: true, ...(error && { error }) },
           }
         })
+      } else if (isInteractionSource(sourceId)) {
+        setSourceTilesLoaded((state) => {
+          return {
+            ...state,
+            [sourceId]: { loaded: true },
+          }
+        })
       }
     }
     if (map) {
@@ -132,7 +139,7 @@ export const useMapSourceTilesLoaded = (sourcesId: SourcesHookInput) => {
   const sourceTilesLoaded = useMapSourceTiles()
   const sourceInStyle = useSourceInStyle(sourcesId)
   const sourcesIdsList = getGeneratorSourcesIds(style, sourcesId)
-  const allSourcesLoaded = sourcesIdsList.map((source) => sourceTilesLoaded[source]?.loaded)
+  const allSourcesLoaded = sourcesIdsList.map((source: string) => sourceTilesLoaded[source]?.loaded)
   return sourceInStyle && allSourcesLoaded.every((loaded) => loaded)
 }
 
@@ -159,12 +166,12 @@ export type DataviewFeature = LayerFeature & {
 }
 
 export const areDataviewsFeatureLoaded = (dataviews: DataviewFeature | DataviewFeature[]) => {
-  const dataviewsArray: DataviewFeature[] = toArray(dataviews)
+  const dataviewsArray = toArray(dataviews as DataviewFeature)
   return dataviewsArray.length ? dataviewsArray.every(({ state }) => state?.loaded) : false
 }
 
 export const hasDataviewsFeatureError = (dataviews: DataviewFeature | DataviewFeature[]) => {
-  const dataviewsArray: DataviewFeature[] = toArray(dataviews)
+  const dataviewsArray = toArray(dataviews as DataviewFeature)
   return dataviewsArray.length ? dataviewsArray.some(({ state }) => state?.error) : false
 }
 
@@ -182,7 +189,7 @@ function getGeneratorsMetadataChangeKey(
   dataviews: UrlDataviewInstance | UrlDataviewInstance[]
 ) {
   const generatorsMetadata = style?.metadata?.generatorsMetadata
-  const dataviewIds = toArray(dataviews || []).map(({ id }) => id)
+  const dataviewIds = toArray(dataviews || []).map(({ id }: any) => id)
   if (!generatorsMetadata || !dataviewIds?.length) return ''
   return Object.keys(generatorsMetadata)
     .flatMap((key) => {
@@ -240,7 +247,7 @@ export const useMapDataviewFeatures = (
       }
       if (activityDataview) {
         const existingMergedAnimatedDataviewIndex = acc.findIndex(
-          (d) => d.generatorSourceId === generatorSourceId
+          (d: any) => d.generatorSourceId === generatorSourceId
         )
         if (existingMergedAnimatedDataviewIndex >= 0) {
           acc[existingMergedAnimatedDataviewIndex].dataviewsId.push(dataview.id)
@@ -282,11 +289,11 @@ export const useMapDataviewFeatures = (
                 if (queryMethod === 'render') {
                   const layer =
                     metadata?.sourceLayer || sourceId + `-${TEMPORALGRID_LAYER_INTERACTIVE_SUFIX}`
-                  features = map.queryRenderedFeatures(undefined, {
+                  features = map?.queryRenderedFeatures(undefined, {
                     layers: [layer],
                   })
                 } else {
-                  features = map.querySourceFeatures(sourceId, {
+                  features = map?.querySourceFeatures(sourceId, {
                     sourceLayer,
                     filter,
                   })
@@ -315,9 +322,9 @@ export const useMapDataviewFeatures = (
 
         if (!chunks && state?.loaded && !state?.error) {
           if (queryMethod === 'render') {
-            features = map.queryRenderedFeatures(undefined, { layers: [sourceId] })
+            features = map?.queryRenderedFeatures(undefined, { layers: [sourceId] })
           } else {
-            features = map.querySourceFeatures(sourceId, {
+            features = map?.querySourceFeatures(sourceId, {
               sourceLayer,
               filter,
             })

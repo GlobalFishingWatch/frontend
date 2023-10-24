@@ -1,4 +1,5 @@
 export type ReportVessel = {
+  id: string
   callsign: string
   dataset: string
   date: string

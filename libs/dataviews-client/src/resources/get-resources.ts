@@ -13,12 +13,15 @@ import {
 } from '../resolve-dataviews'
 import { resolveEndpoint } from '../resolve-endpoint'
 
+export type GetDatasetConfigCallback = (
+  datasetConfig: DataviewDatasetConfig[],
+  dataview?: UrlDataviewInstance
+) => DataviewDatasetConfig[]
+
 export type GetDatasetConfigsCallbacks = {
-  tracks?: (
-    datasetConfigs: DataviewDatasetConfig[],
-    dataview?: UrlDataviewInstance
-  ) => DataviewDatasetConfig[]
-  activityContext?: (datasetConfigs: DataviewDatasetConfig) => DataviewDatasetConfig
+  track?: GetDatasetConfigCallback
+  info?: GetDatasetConfigCallback
+  events?: GetDatasetConfigCallback
 }
 export const getResources = (
   dataviews: UrlDataviewInstance[],
@@ -61,15 +64,27 @@ export const getResources = (
       (datasetConfig) => datasetConfig.query?.find((q) => q.id === 'vessels')?.value
     ) // Loitering
 
-    let preparedDatasetConfigs = [info, track, ...events]
+    let preparedInfoDatasetConfigs = [info]
+    let preparedTrackDatasetConfigs = [track]
+    let preparedEventsDatasetConfigs = events
 
-    if (callbacks.tracks) {
-      preparedDatasetConfigs = callbacks.tracks(preparedDatasetConfigs, dataview)
+    if (callbacks.info && preparedInfoDatasetConfigs?.length > 0) {
+      preparedInfoDatasetConfigs = callbacks.info([info], dataview)
+    }
+    if (callbacks.track && preparedTrackDatasetConfigs?.length > 0) {
+      preparedTrackDatasetConfigs = callbacks.track(preparedTrackDatasetConfigs, dataview)
+    }
+    if (callbacks.events && preparedEventsDatasetConfigs?.length > 0) {
+      preparedEventsDatasetConfigs = callbacks.events(preparedEventsDatasetConfigs, dataview)
     }
 
     const preparedDataview = {
       ...dataview,
-      datasetsConfig: preparedDatasetConfigs,
+      datasetsConfig: [
+        ...preparedInfoDatasetConfigs,
+        ...preparedTrackDatasetConfigs,
+        ...preparedEventsDatasetConfigs,
+      ].filter(Boolean),
     }
     return preparedDataview
   })

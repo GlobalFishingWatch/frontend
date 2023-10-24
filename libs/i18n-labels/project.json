@@ -62,7 +62,8 @@
             "input": ".",
             "output": "."
           }
-        ]
+        ],
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {
@@ -121,7 +122,7 @@
       "options": {
         "commitMessageFormat": "release: bump ${projectName} to ${version} [skip ci]",
         "releaseAs": "patch",
-        "tagPrefix": "${projectName}@"
+        "tagPrefix": "{projectName}@"
       }
     }
   }

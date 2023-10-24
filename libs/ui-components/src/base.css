@@ -7,12 +7,19 @@
   /* FONTS */
   --font-family: 'Roboto', sans-serif;
   --font-regular: 400;
+  --font-bold: 500;
   --font-XS: var(--font-regular) 1.2rem/1.2rem var(--font-family);
+  --font-XS-bold: var(--font-bold) 1.2rem/1.2rem var(--font-family);
   --font-S: var(--font-regular) 1.4rem/2.2rem var(--font-family);
+  --font-S-bold: var(--font-bold) 1.4rem/2.2rem var(--font-family);
   --font-M: var(--font-regular) 1.6rem/2.4rem var(--font-family);
+  --font-M-bold: var(--font-bold) 1.6rem/2.4rem var(--font-family);
   --font-L: var(--font-regular) 2rem/3rem var(--font-family);
+  --font-L-bold: var(--font-bold) 2rem/3rem var(--font-family);
   --font-XL: var(--font-regular) 2.6rem/4rem var(--font-family);
+  --font-XL-bold: var(--font-bold) 2.6rem/4rem var(--font-family);
   --font-XXL: var(--font-regular) 5rem/6.2rem var(--font-family);
+  --font-XXL-bold: var(--font-bold) 5rem/6.2rem var(--font-family);
 
   /* BASE COLORS */
   --primary-blue-rgb: 22, 63, 137; /* rgb(22, 63, 137) */
@@ -47,8 +54,9 @@
   --opacity-hover: 0.9;
   --opacity-secondary: 0.75;
   --opacity-terthiary: 0.1;
-  --opacity-border-thick: 0.25;
   --opacity-border: 0.15;
+  --opacity-border-thick: 0.25;
+  --opacity-border-extra-thick: 0.5;
 
   /* SHADOWS */
   --box-shadow: 0 0 1rem 0 rgba(var(--primary-blue-rgb), var(--opacity-border));
@@ -57,6 +65,7 @@
   /* UTILS */
   --color-border: rgba(var(--primary-blue-rgb), var(--opacity-border));
   --color-border-thick: rgba(var(--primary-blue-rgb), var(--opacity-border-thick));
+  --color-border-extra-thick: rgba(var(--primary-blue-rgb), var(--opacity-border-extra-thick));
   --color-veil: rgba(var(--primary-blue-rgb), var(--opacity-secondary));
   --border: 1px solid var(--color-border);
   --border-thick: 1px solid var(--color-border-thick);
@@ -74,8 +83,10 @@
   --size-XL: 8rem;
   --space-XS: 0.5rem;
   --space-S: 1rem;
+  --space-SM: 1.5rem;
   --space-M: 2rem;
   --space-L: 4rem;
+  --space-XL: 8rem;
 
   /* SCROLLBARS */
   --scrollbar-track-color: transparent;

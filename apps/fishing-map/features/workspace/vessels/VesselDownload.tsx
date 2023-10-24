@@ -1,7 +1,7 @@
-import { t } from 'i18next'
 import { useSelector } from 'react-redux'
 import { useState } from 'react'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { useTranslation } from 'react-i18next'
+import { IconButton, IconButtonType } from '@globalfishingwatch/ui-components'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getVesselDatasetsDownloadTrackSupported } from 'features/datasets/datasets.utils'
@@ -10,17 +10,20 @@ import { isGuestUser, selectUserData } from 'features/user/user.slice'
 import { VesselLayerPanelProps } from 'features/workspace/vessels/VesselLayerPanel'
 
 type VesselDownloadButtonProps = VesselLayerPanelProps & {
-  vesselId: string
+  vesselIds: string[]
   vesselTitle: string
   datasetId: string
+  iconType?: IconButtonType
 }
 
 function VesselDownloadButton({
   dataview,
-  vesselId,
+  vesselIds,
   vesselTitle,
   datasetId,
+  iconType = 'default',
 }: VesselDownloadButtonProps) {
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const userData = useSelector(selectUserData)
   const [isHover, setIsHover] = useState(false)
@@ -34,16 +37,18 @@ function VesselDownloadButton({
   const onDownloadClick = () => {
     dispatch(
       setDownloadTrackVessel({
-        id: vesselId,
+        ids: vesselIds,
         name: vesselTitle,
         datasets: datasetId,
       })
     )
   }
+
   if (guestUser) {
     return (
       <LocalStorageLoginLink>
         <IconButton
+          type={iconType}
           icon={isHover ? 'user' : 'download'}
           tooltip={
             t(
@@ -63,6 +68,7 @@ function VesselDownloadButton({
   return (
     <IconButton
       icon="download"
+      type={iconType}
       disabled={!downloadSupported}
       tooltip={
         downloadSupported

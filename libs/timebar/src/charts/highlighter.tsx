@@ -193,11 +193,13 @@ const Highlighter = ({
   hoverEnd,
   onHighlightChunks,
   dateCallback,
+  showTooltip = true,
 }: {
   hoverStart: string
   hoverEnd: string
   onHighlightChunks?: (data?: HighlightedChunks) => any
   dateCallback?: HighlighterDateCallback
+  showTooltip?: boolean
 }) => {
   const { graphHeight, tooltipContainer, outerStart, outerEnd } = useContext(TimelineContext)
   const outerScale = useOuterScale()
@@ -238,6 +240,7 @@ const Highlighter = ({
         <div className={styles.highlighterCenter} style={{ left: center - left }} />
       </div>
       {tooltipContainer !== null &&
+        showTooltip &&
         createPortal(
           <div
             className={styles.tooltipContainer}

@@ -1,0 +1,110 @@
+import { useCallback } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import Link from 'redux-first-router-link'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import {
+  selectCurrentWorkspaceCategory,
+  selectCurrentWorkspaceId,
+} from 'features/workspace/workspace.selectors'
+import {
+  VesselDataIdentity,
+  resetVesselState,
+  selectVesselInfoDataId,
+  setVesselFitBoundsOnLoad,
+} from 'features/vessel/vessel.slice'
+import { VESSEL, WORKSPACE_VESSEL } from 'routes/routes'
+import {
+  selectIsStandaloneSearchLocation,
+  selectIsVesselLocation,
+  selectLocationQuery,
+} from 'routes/routes.selectors'
+import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
+import { QueryParams } from 'types'
+import { getVesselIdentityId } from 'features/vessel/vessel.utils'
+
+export type VesselLinkProps = {
+  datasetId?: string
+  vesselId?: string
+  identity?: VesselDataIdentity
+  children: any
+  onClick?: (e: MouseEvent) => void
+  fitBounds?: boolean
+  className?: string
+  query?: Partial<Record<keyof QueryParams, string | number>>
+}
+const VesselLink = ({
+  vesselId: vesselIdProp,
+  datasetId,
+  identity,
+  children,
+  onClick,
+  fitBounds = true,
+  className = '',
+  query,
+}: VesselLinkProps) => {
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
+  const locationQuery = useSelector(selectLocationQuery)
+  const isSearchLocation = useSelector(selectIsStandaloneSearchLocation)
+  const isVesselLocation = useSelector(selectIsVesselLocation)
+  const vesselInfoDataId = useSelector(selectVesselInfoDataId)
+  const workspaceCategory = useSelector(selectCurrentWorkspaceCategory)
+  const dispatch = useDispatch()
+  const vesselId = vesselIdProp || identity?.id
+  const vesselDatasetId = datasetId || DEFAULT_VESSEL_IDENTITY_ID
+  const standaloneLink = isSearchLocation || isVesselLocation
+
+  const onLinkClick = useCallback(
+    (e: any) => {
+      if (vesselId !== vesselInfoDataId) {
+        dispatch(resetVesselState())
+      }
+      if (fitBounds) {
+        // This needs to happen after dispatch resetVesselState so there is no override
+        dispatch(setVesselFitBoundsOnLoad(true))
+      }
+      if (onClick) {
+        onClick(e)
+      }
+    },
+    [dispatch, fitBounds, onClick, vesselId, vesselInfoDataId]
+  )
+
+  if (!vesselId) return children
+
+  return (
+    <Link
+      className={className}
+      to={{
+        type: standaloneLink ? VESSEL : WORKSPACE_VESSEL,
+        payload: {
+          ...(!standaloneLink &&
+            workspaceId && {
+              category: workspaceCategory,
+              workspaceId: workspaceId,
+            }),
+          vesselId,
+        },
+        query: {
+          ...locationQuery,
+          // Clean search url when clicking on vessel link
+          qry: undefined,
+          vesselDatasetId,
+          ...(identity && {
+            vesselIdentitySource: identity.identitySource,
+            ...(identity.identitySource === VesselIdentitySourceEnum.SelfReported
+              ? {
+                  vesselSelfReportedId: getVesselIdentityId(identity),
+                }
+              : { vesselRegistryId: getVesselIdentityId(identity) }),
+          }),
+          ...(query || {}),
+        },
+      }}
+      onClick={onLinkClick}
+    >
+      {children}
+    </Link>
+  )
+}
+
+export default VesselLink

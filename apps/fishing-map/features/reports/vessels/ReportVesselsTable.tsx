@@ -21,6 +21,7 @@ import { selectUserData } from 'features/user/user.slice'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
 import { EMPTY_API_VALUES } from 'features/reports/reports.config'
+import VesselLink from 'features/vessel/VesselLink'
 import { ReportVesselWithDatasets, selectReportVesselsPaginated } from '../reports.selectors'
 import { ReportActivityUnit } from '../Report'
 import styles from './ReportVesselsTable.module.css'
@@ -69,7 +70,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
     upsertDataviewInstance(vesselDataviewInstance)
   }
 
-  const onFilterClick = (reportVesselFilter) => {
+  const onFilterClick = (reportVesselFilter: any) => {
     dispatchQueryParams({ reportVesselFilter, reportVesselPage: 0 })
   }
 
@@ -152,7 +153,13 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                       style={{ backgroundColor: vessel.sourceColor }}
                     ></span>
                   )}
-                  {formatInfoField(vessel.shipName, 'name')}
+                  <VesselLink
+                    className={styles.link}
+                    vesselId={vessel.vesselId}
+                    datasetId={vessel.infoDataset?.id}
+                  >
+                    {formatInfoField(vessel.shipName, 'name')}
+                  </VesselLink>
                 </div>
                 <div className={cx({ [styles.border]: !isLastRow })}>
                   <span>{vessel.mmsi || EMPTY_FIELD_PLACEHOLDER}</span>

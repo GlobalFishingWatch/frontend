@@ -1,7 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { InputDate, InputText, Select } from '@globalfishingwatch/ui-components'
+import { InputDate, InputText, Select, SelectOption } from '@globalfishingwatch/ui-components'
 import { useReportTimeCompareConnect } from 'features/reports/reports-timecomparison.hooks'
 import { selectReportTimeComparison } from 'features/app/app.selectors'
 import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
@@ -28,7 +28,7 @@ export default function ReportActivityBeforeAfter() {
     MAX_DATE,
   } = useReportTimeCompareConnect('beforeAfter')
 
-  const trackAndChangeDate = (date) => {
+  const trackAndChangeDate = (date: any) => {
     trackEvent({
       category: TrackCategory.Analysis,
       action: `Select date in 'before/after'`,
@@ -43,7 +43,7 @@ export default function ReportActivityBeforeAfter() {
     onCompareStartChange(date)
   }
 
-  const trackAndChangeDuration = (duration) => {
+  const trackAndChangeDuration = (duration: any) => {
     trackEvent({
       category: TrackCategory.Analysis,
       action: `Select duration in 'before/after'`,
@@ -60,7 +60,7 @@ export default function ReportActivityBeforeAfter() {
     onDurationChange(duration)
   }
 
-  const trackAndChangeDurationType = (duration) => {
+  const trackAndChangeDurationType = (duration: SelectOption) => {
     trackEvent({
       category: TrackCategory.Analysis,
       action: `Select duration in 'before/after'`,

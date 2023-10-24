@@ -1,12 +1,10 @@
 import { Workspace } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_VIEWPORT } from 'data/config'
+import { BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES } from 'data/default-workspaces/context-layers'
 import {
   WorkspaceCategory,
   DEFAULT_WORKSPACE_ID,
-  EEZ_DATAVIEW_SLUG,
-  MPA_DATAVIEW_SLUG,
   SAR_DATAVIEW_SLUG,
-  RFMO_DATAVIEW_SLUG,
   HIGH_SEAS_DATAVIEW_SLUG,
   BASEMAP_DATAVIEW_SLUG,
   FISHING_DATAVIEW_SLUG,
@@ -15,12 +13,7 @@ import {
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
   GRATICULES_DATAVIEW_SLUG,
-  FAO_AREAS_DATAVIEW_SLUG,
-  PROTECTED_SEAS_DATAVIEW_SLUG,
-  MPA_DATAVIEW_INSTANCE_ID,
-  EEZ_DATAVIEW_INSTANCE_ID,
   BASEMAP_LABELS_DATAVIEW_SLUG,
-  PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
   BASEMAP_DATAVIEW_INSTANCE_ID,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
@@ -28,10 +21,7 @@ import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 // update it here if you want to show it again or go to
 // apps/fishing-map/src/features/workspace/highlight-panel/highlight-panel.content.ts
 // and update the `dataviewInstanceId`
-import {
-  HIGHLIGHT_DATAVIEW_INSTANCE_ID,
-  getDataviewInstanceReleaseDate,
-} from 'features/workspace/highlight-panel/highlight-panel.content'
+import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
 import { WorkspaceState } from 'types'
 
 const workspace: Workspace<WorkspaceState> = {
@@ -72,10 +62,7 @@ const workspace: Workspace<WorkspaceState> = {
           'public-indonesia-fishing-effort:v20200320',
           'public-panama-fishing-effort:v20211126',
           'public-peru-fishing-effort:v20211126',
-          // selected by default only after the release date
-          ...(Date.now() > getDataviewInstanceReleaseDate('vms-with-png')
-            ? ['public-png-fishing-effort:v20230210']
-            : []),
+          'public-png-fishing-effort:v20230210',
           'public-norway-fishing-effort:v20220112',
         ],
       },
@@ -121,44 +108,7 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: GRATICULES_DATAVIEW_SLUG,
     },
-    {
-      id: EEZ_DATAVIEW_INSTANCE_ID,
-      config: {
-        color: '#069688',
-        visible: false,
-      },
-      dataviewId: EEZ_DATAVIEW_SLUG,
-    },
-    {
-      id: MPA_DATAVIEW_INSTANCE_ID,
-      config: {
-        color: '#1AFF6B',
-        visible: false,
-      },
-      dataviewId: MPA_DATAVIEW_SLUG,
-    },
-    {
-      id: PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
-      config: {
-        visible: false,
-      },
-      dataviewId: PROTECTED_SEAS_DATAVIEW_SLUG,
-    },
-    {
-      id: 'context-layer-fao-areas',
-      config: {
-        visible: false,
-      },
-      dataviewId: FAO_AREAS_DATAVIEW_SLUG,
-    },
-    {
-      id: 'context-layer-rfmo',
-      config: {
-        color: '#6b67e5',
-        visible: false,
-      },
-      dataviewId: RFMO_DATAVIEW_SLUG,
-    },
+    ...BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES,
     {
       id: 'context-layer-high-seas',
       config: {
