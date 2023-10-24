@@ -46,7 +46,7 @@ export enum VesselIdentitySourceEnum {
   Registry = 'registryInfo',
 }
 
-export enum SourceCode {
+export enum SelfReportedSource {
   Ais = 'AIS',
   Belize = 'VMS Belize',
   Brazil = 'VMS Brazil Onyxsat',
@@ -67,7 +67,9 @@ export type VesselInfo = {
   shipname: string
   nShipname: string
   ssvid: string
-  sourceCode: SourceCode[]
+  // Workaround until the VMS sources property is normalized to use also sourceCode
+  source: string[]
+  sourceCode: SelfReportedSource[]
   transmissionDateFrom: string
   transmissionDateTo: string
   // For custom VMS or combinedSourceInfo merge simplicity

@@ -5,11 +5,7 @@ import { saveAs } from 'file-saver'
 import { Fragment, useEffect, useMemo } from 'react'
 import { uniq } from 'lodash'
 import { IconButton, Tab, Tabs, TabsProps, Tooltip } from '@globalfishingwatch/ui-components'
-import {
-  SourceCode,
-  VesselRegistryOwner,
-  VesselRegistryProperty,
-} from '@globalfishingwatch/api-types'
+import { VesselRegistryOwner, VesselRegistryProperty } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import I18nDate, { formatI18nDate } from 'features/i18n/i18nDate'
 import {
@@ -141,7 +137,9 @@ const VesselIdentity = () => {
         id: VesselIdentitySourceEnum.SelfReported,
         title: (
           <span className={styles.tabTitle}>
-            {uniq(selfReportedIdentities.flatMap((i) => i.sourceCode)).join(',') || 'AIS'}
+            {uniq(selfReportedIdentities.flatMap((i) => i.sourceCode || i.source || [])).join(
+              ','
+            ) || 'AIS'}
             {identitySource === VesselIdentitySourceEnum.SelfReported && (
               <DataTerminology
                 size="tiny"
@@ -159,7 +157,7 @@ const VesselIdentity = () => {
   )
 
   const identityFields = useMemo(() => {
-    const source = vesselIdentity.sourceCode?.[0] as SourceCode
+    const source = vesselIdentity.sourceCode?.[0]
     const customIdentityFields = CUSTOM_VMS_IDENTITY_FIELD_GROUPS[source]
     return customIdentityFields?.length
       ? [...IDENTITY_FIELD_GROUPS[identitySource], ...customIdentityFields]

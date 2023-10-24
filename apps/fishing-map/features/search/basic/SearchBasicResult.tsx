@@ -106,7 +106,7 @@ function SearchBasicResult({
       ({ identitySource }) => identitySource === VesselIdentitySourceEnum.SelfReported
     )
     const selfReportedIdentitiesSources = uniq(
-      selfReportedIdentities.flatMap(({ sourceCode }) => sourceCode)
+      selfReportedIdentities.flatMap(({ sourceCode, source }) => sourceCode || source || [])
     )
     if (registryIdentities.length && selfReportedIdentities.length)
       return `${t(

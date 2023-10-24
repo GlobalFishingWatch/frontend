@@ -1,4 +1,4 @@
-import { RegionType, SourceCode } from '@globalfishingwatch/api-types'
+import { RegionType, SelfReportedSource } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { I18nNamespaces } from 'features/i18n/i18n.types'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
@@ -33,21 +33,21 @@ const COMMON_FIELD_GROUPS: VesselRenderField[][] = [
 
 // TODO review private datasets to ensure there are no missing fields
 
-type CustomVMSGroup = Partial<Record<SourceCode, VesselRenderField[][]>>
+type CustomVMSGroup = Partial<Record<SelfReportedSource, VesselRenderField[][]>>
 export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS: CustomVMSGroup = {
-  [SourceCode.Peru]: [
+  [SelfReportedSource.Peru]: [
     [{ key: 'origin' }, { key: 'fleet' }, { key: 'nationalId' }],
     [{ key: 'capacity' }, { key: 'beam' }],
   ],
-  [SourceCode.CostaRica]: [[{ key: 'nationalId' }]],
-  [SourceCode.Indonesia]: [
+  [SelfReportedSource.CostaRica]: [[{ key: 'nationalId' }]],
+  [SelfReportedSource.Indonesia]: [
     [{ key: 'widthRange' }, { key: 'lengthRange' }, { key: 'grossTonnageRange' }],
   ],
-  [SourceCode.Brazil]: [
+  [SelfReportedSource.Brazil]: [
     [{ key: 'fishingZone' }, { key: 'mainGear' }, { key: 'targetSpecies' }],
     [{ key: 'codMarinha' }],
   ],
-  [SourceCode.Chile]: [[{ key: 'fleet' }]],
+  [SelfReportedSource.Chile]: [[{ key: 'fleet' }]],
 }
 
 const SELF_REPORTED_FIELD_GROUPS: VesselRenderField[][] = [
