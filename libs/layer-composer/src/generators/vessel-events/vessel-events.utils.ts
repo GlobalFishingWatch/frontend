@@ -108,6 +108,9 @@ export const getVesselEventsGeojson = (
         start: startDT.toISO(),
         end: endDT.toISO(),
         ...(isEncounterEvent && {
+          ...(event.vessel?.name && {
+            vesselName: event.vessel.name,
+          }),
           encounterVesselId: event.encounter?.vessel?.id,
           encounterVesselName: event.encounter?.vessel?.name,
           ...(showAuthorizationStatus && {
