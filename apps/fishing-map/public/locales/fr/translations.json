@@ -674,6 +674,8 @@
       "tuna_purse_seines": "Senne coulissante au thon",
       "well_boat": "Navire vivier"
     },
+    "gfw_geartype": "GFW Gear type",
+    "gfw_shiptype": "GFW Vessel type",
     "grossTonnage": "Jauge brute",
     "grossTonnageRange": "Plage de tonnage brut",
     "hideOtherLayers": "Masquer autres calques",
