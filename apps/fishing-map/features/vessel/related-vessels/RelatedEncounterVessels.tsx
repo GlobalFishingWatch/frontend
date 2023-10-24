@@ -9,6 +9,7 @@ import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { selectVesselEventsResourcesLoading } from 'features/vessel/vessel.selectors'
 import RelatedVessel from 'features/vessel/related-vessels/RelatedVessel'
 import { getSidebarContentWidth } from 'features/vessel/vessel.utils'
+import { selectVisibleEvents } from 'features/app/app.selectors'
 import styles from './RelatedVessels.module.css'
 
 const VesselTick = ({ y, index }: any) => {
@@ -23,6 +24,7 @@ const VesselTick = ({ y, index }: any) => {
 
 const RelatedEncounterVessels = () => {
   const { t } = useTranslation()
+  const visibleEvents = useSelector(selectVisibleEvents)
   const encountersByVessel = useSelector(selectEventsGroupedByEncounteredVessel)
   const eventsLoading = useSelector(selectVesselEventsResourcesLoading)
   const [graphWidth, setGraphWidth] = useState(getSidebarContentWidth())
@@ -75,10 +77,12 @@ const RelatedEncounterVessels = () => {
         </BarChart>
       ) : (
         <span className={styles.enptyState}>
-          {t(
-            'vessel.noEncountersInTimeRange',
-            'There are no encounters fully contained in your timerange.'
-          )}
+          {visibleEvents === 'all' || visibleEvents.includes('encounter')
+            ? t(
+                'vessel.noEncountersInTimeRange',
+                'There are no encounters fully contained in your timerange.'
+              )
+            : t('vessel.noEncountersVisible', 'Please turn on encounter events visibility.')}
         </span>
       )}
     </div>
