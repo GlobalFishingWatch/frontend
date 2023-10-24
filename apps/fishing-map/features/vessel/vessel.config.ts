@@ -62,7 +62,7 @@ export const IDENTITY_FIELD_GROUPS: Record<VesselIdentitySourceEnum, VesselRende
   [VesselIdentitySourceEnum.Registry]: [
     ...COMMON_FIELD_GROUPS,
     [
-      { key: 'geartype', terminologyKey: 'geartype' },
+      { key: 'geartype' },
       { key: 'lengthM', label: 'length' },
       { key: 'tonnageGt', label: 'grossTonnage' },
     ],
