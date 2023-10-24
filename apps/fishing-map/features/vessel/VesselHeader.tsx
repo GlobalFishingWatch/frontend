@@ -13,11 +13,7 @@ import {
 } from 'features/vessel/vessel.slice'
 import { formatInfoField } from 'utils/info'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
-import {
-  getCurrentIdentityVessel,
-  getOtherVesselNames,
-  getVesselProperty,
-} from 'features/vessel/vessel.utils'
+import { getOtherVesselNames, getVesselProperty } from 'features/vessel/vessel.utils'
 import {
   selectVesselProfileColor,
   selectVesselProfileDataview,
@@ -169,7 +165,7 @@ const VesselHeader = () => {
           <VesselGroupAddButton
             buttonSize="small"
             buttonType="border-secondary"
-            vessels={vessel ? [getCurrentIdentityVessel(vessel)] : []}
+            vessels={vessel ? [vessel] : []}
             showCount={false}
             buttonClassName="print-hidden"
           />
