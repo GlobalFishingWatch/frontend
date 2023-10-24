@@ -137,9 +137,7 @@ const VesselIdentity = () => {
         id: VesselIdentitySourceEnum.SelfReported,
         title: (
           <span className={styles.tabTitle}>
-            {uniq(selfReportedIdentities.flatMap((i) => i.sourceCode || i.source || [])).join(
-              ','
-            ) || 'AIS'}
+            {uniq(selfReportedIdentities.flatMap((i) => i.sourceCode || [])).join(',') || 'AIS'}
             {identitySource === VesselIdentitySourceEnum.SelfReported && (
               <DataTerminology
                 size="tiny"

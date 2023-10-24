@@ -67,8 +67,6 @@ export type VesselInfo = {
   shipname: string
   nShipname: string
   ssvid: string
-  // Workaround until the VMS sources property is normalized to use also sourceCode
-  source: string[]
   sourceCode: SelfReportedSource[]
   transmissionDateFrom: string
   transmissionDateTo: string

@@ -251,7 +251,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             ({ identitySource }) => identitySource === VesselIdentitySourceEnum.SelfReported
           )
           const selfReportedIdentitiesSources = uniq(
-            selfReportedIdentities.flatMap(({ sourceCode, source }) => sourceCode || source || [])
+            selfReportedIdentities.flatMap(({ sourceCode }) => sourceCode || [])
           )
           if (registryIdentities.length && selfReportedIdentities.length)
             return `${t(
