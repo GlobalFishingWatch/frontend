@@ -107,9 +107,9 @@ function SearchAdvancedFilters() {
     return getSearchDataview(datasets, searchFilters, sources)
   }, [datasets, searchFilters, sources])
 
-  const schemaFilters = schemaFilterIds.map((id) =>
-    getFiltersBySchema(dataview, id as SupportedDatasetSchema)
-  )
+  const schemaFilters = schemaFilterIds.map((id) => {
+    return getFiltersBySchema(dataview, id as SupportedDatasetSchema)
+  })
 
   const onSourceSelect = (filter: any) => {
     const newSources = [...(sources || []), filter.id]

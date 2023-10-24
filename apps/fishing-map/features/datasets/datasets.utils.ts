@@ -31,6 +31,7 @@ import { getFlags, getFlagsByIds } from 'utils/flags'
 import { FileType } from 'features/common/FileDropzone'
 import { getLayerDatasetRange } from 'features/workspace/environmental/HistogramRangeFilter'
 import { getVesselGearType } from 'utils/info'
+import { getCombinedSourceProperty } from 'features/vessel/vessel.utils'
 import styles from '../vessel-groups/VesselGroupModal.module.css'
 
 export type SupportedDatasetSchema =
@@ -399,6 +400,12 @@ export const getDatasetSchemaItem = (dataset: Dataset, schema: SupportedDatasetS
   ] as DatasetSchemaItem
   if (selfReportedInfoPropertiesItem) {
     return selfReportedInfoPropertiesItem
+  }
+  if (schema === 'geartype' || schema === 'shiptype') {
+    const combinedSourceKey = getCombinedSourceProperty(schema)
+    const combinedSourceSchema = (dataset.schema?.combinedSourcesInfo?.items as DatasetSchemaItem)
+      ?.properties?.[combinedSourceKey]?.items as DatasetSchemaItem
+    return combinedSourceSchema?.properties?.name || null
   }
   return null
 }
