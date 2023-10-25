@@ -1,7 +1,9 @@
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
+import { useTranslation } from 'react-i18next'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { Tooltip } from '@globalfishingwatch/ui-components'
 import {
   selectCurrentWorkspaceCategory,
   selectCurrentWorkspaceId,
@@ -42,6 +44,7 @@ const VesselLink = ({
   className = '',
   query,
 }: VesselLinkProps) => {
+  const { t } = useTranslation()
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const locationQuery = useSelector(selectLocationQuery)
   const isSearchLocation = useSelector(selectIsStandaloneSearchLocation)
@@ -102,7 +105,9 @@ const VesselLink = ({
       }}
       onClick={onLinkClick}
     >
-      {children}
+      <Tooltip content={t('search.seeVessel', 'See vessel')}>
+        <span>{children}</span>
+      </Tooltip>
     </Link>
   )
 }
