@@ -36,8 +36,8 @@ describe('Download reports for an area', () => {
     cy.login(Cypress.env('apiAuthUser'), Cypress.env('apiAuthPass'))
   })
   beforeEach(() => {
-    deleteDownloadsFolder()
     disablePopups()
+    deleteDownloadsFolder()
     cy.visit(URL_ONE_MONTH)
     waitForSidebarLoaded()
     waitForMapLoadTiles()

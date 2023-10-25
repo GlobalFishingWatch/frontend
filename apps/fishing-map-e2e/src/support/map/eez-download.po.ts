@@ -77,7 +77,8 @@ export const testCsvOptions = (
 ) => {
   cy.log(description)
   deleteDownloadsFolder()
-  buttons.forEach((button) => cy.getBySel(container).findBySel(button).click())
+  // We need force because the buttons are covered by the active element
+  buttons.forEach((button) => cy.getBySel(container).findBySel(button).click({ force: true }))
   validateZipFile(downloadContainer, columns)
 }
 
@@ -89,7 +90,7 @@ export const testCsvVesselActivityOptions = (
 ) => {
   cy.log(description)
   deleteDownloadsFolder()
-  buttons.forEach((button) => cy.getBySel(button).click())
+  buttons.forEach((button) => cy.getBySel(button).click({ force: true }))
   validateZipFile(downloadContainer, columns)
 }
 
@@ -102,7 +103,7 @@ export const testJsonOptions = (
 ) => {
   cy.log(description)
   deleteDownloadsFolder()
-  buttons.forEach((button) => cy.getBySel(container).findBySel(button).click())
+  buttons.forEach((button) => cy.getBySel(container).findBySel(button).click({ force: true }))
   verifyFileDownload(jsonPath, downloadContainer)
   verifyJson(columns)
 }
