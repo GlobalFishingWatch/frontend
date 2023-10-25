@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import {
+  API_LOGIN_REQUIRED,
   DatasetSubCategory,
   DatasetTypes,
   DataviewInstance,
@@ -41,6 +42,7 @@ import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import VesselLink from 'features/vessel/VesselLink'
+import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
   TooltipEventFeature,
@@ -273,7 +275,9 @@ function VesselsTable({
                     </Tooltip>
                   </td>
 
-                  <td className={styles.columnSpace}>{vesselType}</td>
+                  <td className={styles.columnSpace}>
+                    {vesselType === API_LOGIN_REQUIRED ? <VesselIdentityFieldLogin /> : vesselType}
+                  </td>
                   {isHoursProperty && (
                     <td className={styles.columnSpace}>
                       <Tooltip content={getDatasetLabel(vessel.infoDataset)}>

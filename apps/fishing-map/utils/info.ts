@@ -1,8 +1,10 @@
 import { get } from 'lodash'
 import { TFunction } from 'i18next'
 import {
+  API_LOGIN_REQUIRED,
   GearType,
   IdentityVessel,
+  RegistryLoginMessage,
   SelfReportedInfo,
   VesselType,
 } from '@globalfishingwatch/api-types'
@@ -79,7 +81,9 @@ export const formatNumber = (num: string | number, maximumFractionDigits?: numbe
 }
 
 export const getVesselShipType = (
-  { shiptype } = {} as Pick<SelfReportedInfo, 'shiptype'> | { shiptype: string },
+  { shiptype } = {} as
+    | Pick<SelfReportedInfo, 'shiptype'>
+    | { shiptype: RegistryLoginMessage | string },
   { joinCharacter = ', ', translationFn = t } = {} as {
     joinCharacter?: string
     translationFn?: TFunction
@@ -103,7 +107,10 @@ export const getVesselGearType = (
     joinCharacter?: string
     translationFn?: TFunction
   }
-): GearType => {
+): GearType | RegistryLoginMessage => {
+  if (geartype === API_LOGIN_REQUIRED) {
+    return geartype as RegistryLoginMessage
+  }
   const gearTypes = Array.isArray(geartype) ? geartype : [geartype]
   if (gearTypes.every((geartype) => geartype === undefined)) {
     return EMPTY_FIELD_PLACEHOLDER as GearType
