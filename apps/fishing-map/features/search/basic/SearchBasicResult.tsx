@@ -5,12 +5,7 @@ import { useSelector } from 'react-redux'
 import { GetItemPropsOptions } from 'downshift'
 import { FeatureCollection } from 'geojson'
 import { uniq } from 'lodash'
-import {
-  API_LOGIN_REQUIRED,
-  GearType,
-  Locale,
-  RegistryLoginMessage,
-} from '@globalfishingwatch/api-types'
+import { API_LOGIN_REQUIRED, Locale } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
   YearlyTransmissionsTimeline,
@@ -93,7 +88,7 @@ function SearchBasicResult({
     positionsCounter,
   } = vesselData
   const shiptype = getVesselProperty(vessel, 'shiptype')
-  const geartype = getVesselProperty(vessel, 'geartype') as GearType[] | RegistryLoginMessage
+  const geartype = getVesselGearType({ geartype: getVesselProperty(vessel, 'geartype') })
   const bestIdentityMatch = getBestMatchCriteriaIdentity(vessel)
   const otherNamesLabel = getOtherVesselNames(vessel, nShipname)
   const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER
@@ -255,7 +250,7 @@ function SearchBasicResult({
                 {geartype === API_LOGIN_REQUIRED ? (
                   <VesselIdentityFieldLogin />
                 ) : (
-                  getVesselGearType({ geartype }) || EMPTY_FIELD_PLACEHOLDER
+                  geartype || EMPTY_FIELD_PLACEHOLDER
                 )}
               </span>
             </div>

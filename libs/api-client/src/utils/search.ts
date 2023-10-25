@@ -17,6 +17,7 @@ export type AdvancedSearchQueryFieldKey =
   | 'codMarinha'
   | 'flag'
   | 'geartype'
+  | 'shiptype'
   | 'targetSpecies'
   | 'fleet'
   | 'origin'
@@ -76,6 +77,9 @@ const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFiel
     transformation: toUpperCaseWithWildcardsAndQuotationMarks,
   },
   geartype: {
+    operator: '=',
+  },
+  shiptype: {
     operator: '=',
   },
   flag: {

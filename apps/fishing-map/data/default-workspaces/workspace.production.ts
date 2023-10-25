@@ -44,7 +44,7 @@ const workspace: Workspace<WorkspaceState> = {
     {
       id: 'fishing-ais',
       config: {
-        datasets: ['public-global-fishing-effort:v20201001'],
+        datasets: ['public-global-fishing-effort:v20231026'],
       },
       dataviewId: FISHING_DATAVIEW_SLUG,
     },
