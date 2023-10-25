@@ -234,7 +234,7 @@
     "advanced": "advanced",
     "basic": "basic",
     "callsign": "Señal distintiva de llamada",
-    "description": "Buscar por nombre de embarcación o código de identificación. Puedes filtrar tu búsqueda presionando \"Avanzada\" en la barra superior.",
+    "description": "Buscar por nombre de embarcación o código de identificación.",
     "flagState": "Flag States",
     "hideIndividual": "HIDE INDIVIDUAL RESULTS",
     "IMO": "IMO",
