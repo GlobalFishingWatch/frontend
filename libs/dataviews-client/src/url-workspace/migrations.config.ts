@@ -81,6 +81,9 @@ export const VMS_LEGACY_VESSELS_DATASETS_DICT = {
   'private-belize-fishing-vessels:v20220304': 'private-belize-vessel-identity-fishing:v20220304',
 }
 
+// Date added: October 2023
+// Release: Vessel Profile
+// Changelog: v2 datasets are not compatible with v3 format responses
 export const ALL_LEGACY_VESSELS_DATASETS_DICT: Record<string, string> = {
   ...AIS_LEGACY_VESSELS_DATASETS_DICT,
   ...VMS_LEGACY_VESSELS_DATASETS_DICT,
