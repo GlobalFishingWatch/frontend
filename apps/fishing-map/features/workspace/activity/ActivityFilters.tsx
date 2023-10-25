@@ -61,13 +61,15 @@ const trackEventCb = debounce((filterKey: string, label: string) => {
 
 const cleanDataviewFiltersNotAllowed = (
   dataview: UrlDataviewInstance,
-  vesselGroupOptions: MultiSelectOption[]
+  vesselGroups: MultiSelectOption[]
 ) => {
   const filters = dataview.config?.filters ? { ...dataview.config.filters } : {}
   Object.keys(filters).forEach((k) => {
     const key = k as SupportedDatasetSchema
     if (filters[key]) {
-      const newFilterOptions = getCommonSchemaFieldsInDataview(dataview, key, vesselGroupOptions)
+      const newFilterOptions = getCommonSchemaFieldsInDataview(dataview, key, {
+        vesselGroups,
+      })
       const newFilterSelection = newFilterOptions?.filter(
         (option) => dataview.config?.filters?.[key]?.includes(option.id)
       )
@@ -139,10 +141,9 @@ function ActivityFilters({
 
   const showSourceFilter = sourceOptions && sourceOptions?.length > 1
 
-  const { filtersAllowed, filtersDisabled } = getSchemaFiltersInDataview(
-    dataview,
-    vesselGroupsOptions
-  )
+  const { filtersAllowed, filtersDisabled } = getSchemaFiltersInDataview(dataview, {
+    vesselGroups: vesselGroupsOptions,
+  })
 
   const onDataviewFilterChange = useCallback(
     (dataviewInstance: UrlDataviewInstance) => {
