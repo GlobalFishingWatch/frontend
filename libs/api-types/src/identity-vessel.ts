@@ -71,7 +71,8 @@ export type VesselInfo = {
   transmissionDateFrom: string
   transmissionDateTo: string
   // For custom VMS or combinedSourceInfo merge simplicity
-  shiptype: VesselType | VesselType[]
+  geartype: GearType[]
+  shiptype: VesselType[]
 }
 
 export type VesselTMTInfo = {

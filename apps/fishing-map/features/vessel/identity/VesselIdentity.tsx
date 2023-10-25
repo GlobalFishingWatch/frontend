@@ -5,11 +5,7 @@ import { saveAs } from 'file-saver'
 import { Fragment, useEffect, useMemo } from 'react'
 import { uniq } from 'lodash'
 import { IconButton, Tab, Tabs, TabsProps, Tooltip } from '@globalfishingwatch/ui-components'
-import {
-  GearType,
-  VesselRegistryOwner,
-  VesselRegistryProperty,
-} from '@globalfishingwatch/api-types'
+import { VesselRegistryOwner, VesselRegistryProperty } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import I18nDate, { formatI18nDate } from 'features/i18n/i18nDate'
 import {
@@ -81,7 +77,7 @@ const VesselIdentity = () => {
         nShipname: formatInfoField(vesselIdentity.shipname, 'shipname') as string,
         flag: t(`flags:${vesselIdentity.flag}`, vesselIdentity.flag) as string,
         shiptype: getVesselShipType(vesselIdentity, { joinCharacter: ' -' }), // Can't be commas as it would break the csv format
-        geartype: getVesselGearType(vesselIdentity, { joinCharacter: ' -' }) as GearType,
+        geartype: getVesselGearType(vesselIdentity, { joinCharacter: ' -' }),
         registryAuthorizations:
           vesselIdentity.registryAuthorizations &&
           filterRegistryInfoByDateAndSSVID(

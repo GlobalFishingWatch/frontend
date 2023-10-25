@@ -73,7 +73,11 @@ export const VESSEL_CSV_CONFIG: CsvConfig[] = [
   },
 ]
 
-export const parseVesselToCSV = (vessel: VesselLastIdentity) => {
+type IdentityVesselCSVDownload = Omit<VesselLastIdentity, 'geartype' | 'shiptype'> & {
+  geartype: string
+  shiptype: string
+}
+export const parseVesselToCSV = (vessel: IdentityVesselCSVDownload) => {
   return objectArrayToCSV([vessel], VESSEL_CSV_CONFIG)
 }
 
