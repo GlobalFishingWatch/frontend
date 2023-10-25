@@ -56,8 +56,8 @@ export const VESSEL_CSV_CONFIG: CsvConfig[] = [
   { label: 'flag', accessor: 'flag' },
   { label: 'ssvid', accessor: 'imo' },
   { label: 'shipname', accessor: 'nShipname' },
-  { label: 'shiptype', accessor: 'shiptype' },
-  { label: 'geartype', accessor: 'geartype' },
+  { label: 'shiptypes', accessor: 'shiptypes' },
+  { label: 'geartypes', accessor: 'geartypes' },
   { label: 'callsign', accessor: 'callsign' },
   { label: 'lengthM', accessor: 'lengthM' },
   { label: 'tonnageGt', accessor: 'tonnageGt' },
@@ -73,9 +73,9 @@ export const VESSEL_CSV_CONFIG: CsvConfig[] = [
   },
 ]
 
-type IdentityVesselCSVDownload = Omit<VesselLastIdentity, 'geartype' | 'shiptype'> & {
-  geartype: string
-  shiptype: string
+type IdentityVesselCSVDownload = Omit<VesselLastIdentity, 'geartypes' | 'shiptypes'> & {
+  geartypes: string
+  shiptypes: string
 }
 export const parseVesselToCSV = (vessel: IdentityVesselCSVDownload) => {
   return objectArrayToCSV([vessel], VESSEL_CSV_CONFIG)

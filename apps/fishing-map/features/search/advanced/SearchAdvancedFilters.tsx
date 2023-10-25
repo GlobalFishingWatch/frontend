@@ -31,8 +31,8 @@ const schemaFilterIds: (keyof VesselSearchState)[] = [
   'flag',
   'fleet',
   'origin',
-  'geartype',
-  'shiptype',
+  'geartypes',
+  'shiptypes',
   'codMarinha',
   'targetSpecies',
 ]

@@ -197,12 +197,12 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         header: t('vessel.callsign', 'Callsign'),
       },
       {
-        id: 'shiptype',
+        id: 'shiptypes',
         accessorFn: (vessel: IdentityVesselData) => {
-          const shiptype = getVesselProperty(vessel, 'shiptype')
-          const label = getVesselShipType({ shiptype })
+          const shiptypes = getVesselProperty(vessel, 'shiptypes')
+          const label = getVesselShipType({ shiptypes })
           return (
-            <CellWithFilter vessel={vessel} column="shiptype" onClick={fetchResults}>
+            <CellWithFilter vessel={vessel} column="shiptypes" onClick={fetchResults}>
               {label || EMPTY_FIELD_PLACEHOLDER}
             </CellWithFilter>
           )
@@ -210,12 +210,12 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         header: t('vessel.vesselType', 'Vessel Type'),
       },
       {
-        id: 'geartype',
+        id: 'geartypes',
         accessorFn: (vessel: IdentityVesselData) => {
-          const geartype = getVesselProperty(vessel, 'geartype')
-          const label = getVesselGearType({ geartype })
+          const geartypes = getVesselProperty(vessel, 'geartypes')
+          const label = getVesselGearType({ geartypes })
           return (
-            <CellWithFilter vessel={vessel} column="geartype" onClick={fetchResults}>
+            <CellWithFilter vessel={vessel} column="geartypes" onClick={fetchResults}>
               <Tooltip content={label?.length > TOOLTIP_LABEL_CHARACTERS ? label : ''}>
                 <span>{label}</span>
               </Tooltip>
