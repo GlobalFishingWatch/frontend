@@ -5,12 +5,12 @@ import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import {
-  API_LOGIN_REQUIRED,
   DatasetSubCategory,
   DatasetTypes,
   DataviewInstance,
   Resource,
   ResourceStatus,
+  VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
 import { resolveEndpoint, setResource } from '@globalfishingwatch/dataviews-client'
 import {
@@ -42,7 +42,6 @@ import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import VesselLink from 'features/vessel/VesselLink'
-import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
   TooltipEventFeature,
@@ -216,14 +215,22 @@ function VesselsTable({
           </thead>
           <tbody>
             {vessels?.map((vessel, i) => {
-              const vesselName = formatInfoField(getVesselProperty(vessel, 'shipname'), 'name')
-              const vesselFlag = getVesselProperty(vessel, 'flag')
+              const getVesselPropertyParams = {
+                identitySource: VesselIdentitySourceEnum.SelfReported,
+              }
+              const vesselName = formatInfoField(
+                getVesselProperty(vessel, 'shipname', getVesselPropertyParams),
+                'name'
+              )
+              const vesselFlag = getVesselProperty(vessel, 'flag', getVesselPropertyParams)
 
               const vesselType = isPresenceActivity
                 ? getVesselShipType({
-                    shiptype: getVesselProperty(vessel, 'shiptype'),
+                    shiptype: getVesselProperty(vessel, 'shiptype', getVesselPropertyParams),
                   })
-                : getVesselGearType({ geartype: getVesselProperty(vessel, 'geartype') })
+                : getVesselGearType({
+                    geartype: getVesselProperty(vessel, 'geartype', getVesselPropertyParams),
+                  })
 
               // Temporary workaround for public-global-all-vessels dataset as we
               // don't want to show the pin only for that dataset for guest users
@@ -262,6 +269,10 @@ function VesselsTable({
                         className={styles.link}
                         vesselId={vessel.id}
                         datasetId={vessel.infoDataset?.id}
+                        query={{
+                          vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
+                          vesselSelfReportedId: vessel.id,
+                        }}
                       >
                         {vesselName}
                       </VesselLink>
@@ -275,9 +286,7 @@ function VesselsTable({
                     </Tooltip>
                   </td>
 
-                  <td className={styles.columnSpace}>
-                    {vesselType === API_LOGIN_REQUIRED ? <VesselIdentityFieldLogin /> : vesselType}
-                  </td>
+                  <td className={styles.columnSpace}>{vesselType}</td>
                   {isHoursProperty && (
                     <td className={styles.columnSpace}>
                       <Tooltip content={getDatasetLabel(vessel.infoDataset)}>

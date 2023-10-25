@@ -10,6 +10,7 @@ import {
   Resource,
   EndpointId,
   IdentityVessel,
+  VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
 import { IconButton, Tooltip, ColorBarOption } from '@globalfishingwatch/ui-components'
 import {
@@ -115,7 +116,15 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
         className={cx({ [styles.faded]: infoLoading || infoError })}
         data-test="vessel-layer-vessel-name"
       >
-        <VesselLink className={styles.link} vesselId={vesselId} datasetId={dataset?.id}>
+        <VesselLink
+          className={styles.link}
+          vesselId={vesselId}
+          datasetId={dataset?.id}
+          query={{
+            vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
+            vesselSelfReportedId: vesselId,
+          }}
+        >
           {getVesselTitle()}
         </VesselLink>
       </span>

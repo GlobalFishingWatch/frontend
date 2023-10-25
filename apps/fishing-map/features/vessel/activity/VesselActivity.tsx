@@ -42,7 +42,7 @@ const VesselActivity = () => {
     [t]
   )
 
-  if (eventsLoading) {
+  if (!eventsResources.length || eventsLoading) {
     return (
       <div className={styles.placeholder}>
         <Spinner />
