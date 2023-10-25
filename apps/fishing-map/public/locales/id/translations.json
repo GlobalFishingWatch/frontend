@@ -598,6 +598,7 @@
   "vessel": {
     "activityByType": "Berdasarkan jenis",
     "activityByVoyages": "Berdasarkan pelayaran",
+    "authorization": "otorisasi",
     "addToWorkspace": "Tambahkan kapal untuk melihat",
     "beam": "Beam",
     "callsign": "Callsign",

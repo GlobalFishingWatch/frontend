@@ -598,6 +598,7 @@
   "vessel": {
     "activityByType": "Por tipo",
     "activityByVoyages": "Por viagens",
+    "authorization": "autorização",
     "addToWorkspace": "Adicionar embarcação na visualização",
     "beam": "Rede de draga",
     "callsign": "Código de chamada",

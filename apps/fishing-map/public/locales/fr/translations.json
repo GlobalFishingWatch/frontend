@@ -598,6 +598,7 @@
   "vessel": {
     "activityByType": "Par type",
     "activityByVoyages": "Par voyages",
+    "authorization": "autorisation",
     "addToWorkspace": "Ajouter un navire à la vue",
     "beam": "Largeur",
     "callsign": "Indicatif",
