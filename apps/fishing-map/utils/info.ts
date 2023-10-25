@@ -1,4 +1,4 @@
-import { get } from 'lodash'
+import { get, uniq } from 'lodash'
 import { TFunction } from 'i18next'
 import {
   API_LOGIN_REQUIRED,
@@ -87,7 +87,7 @@ export const getVesselShipType = (
     translationFn?: TFunction
   }
 ): VesselType => {
-  const shipTypes = Array.isArray(shiptype) ? shiptype : [shiptype]
+  const shipTypes = uniq(Array.isArray(shiptype) ? shiptype : [shiptype])
   if (shipTypes.every((shiptype) => shiptype === undefined)) {
     return EMPTY_FIELD_PLACEHOLDER as VesselType
   }
@@ -109,7 +109,7 @@ export const getVesselGearType = (
   if (geartype === API_LOGIN_REQUIRED) {
     return geartype as RegistryLoginMessage
   }
-  const gearTypes = Array.isArray(geartype) ? geartype : [geartype]
+  const gearTypes = uniq(Array.isArray(geartype) ? geartype : [geartype])
   if (gearTypes.every((geartype) => geartype === undefined)) {
     return EMPTY_FIELD_PLACEHOLDER as GearType
   }

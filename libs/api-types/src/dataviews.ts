@@ -32,7 +32,7 @@ export interface DataviewConfig<Type = any> {
 
 export interface DataviewDatasetConfigParam {
   id: string
-  value: string | number | boolean | string[]
+  value: string | number | boolean | string[] | number[]
 }
 
 export interface DataviewDatasetConfig {
