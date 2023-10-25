@@ -93,6 +93,11 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
         dispatch(setVesselGroupCurrentDataviewIds(dataviewIds))
       }
     })
+    trackEvent({
+      category: TrackCategory.VesselGroups,
+      action: 'add_to_vessel_group',
+      label: 'report',
+    })
   }
 
   const isShowingMore = pagination.resultsPerPage === REPORT_SHOW_MORE_VESSELS_PER_PAGE

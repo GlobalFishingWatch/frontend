@@ -46,6 +46,7 @@ import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { BASEMAP_DATAVIEW_SLUG } from 'data/workspaces'
 import { useVesselFitBounds } from 'features/vessel/vessel-bounds.hooks'
 import { getVesselIdentities } from 'features/vessel/vessel.utils'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import VesselActivity from './activity/VesselActivity'
 import VesselIdentity from './identity/VesselIdentity'
 import styles from './Vessel.module.css'
@@ -108,7 +109,7 @@ const Vessel = () => {
         disabled: !hasEventsDataset,
       },
       {
-        id: 'relatedVessels',
+        id: 'related_vessels',
         title: t('vessel.sectionRelatedVessels', 'Related Vessels'),
         content: <RelatedVessels />,
         disabled: !hasEventsDataset,
@@ -164,6 +165,10 @@ const Vessel = () => {
   const changeTab = (tab: Tab<VesselSection>) => {
     dispatchQueryParams({ vesselSection: tab.id })
     updateAreaLayersVisibility(tab.id === 'areas' ? vesselArea : undefined)
+    trackEvent({
+      category: TrackCategory.VesselProfile,
+      action: `click_${tab.id}_tab`,
+    })
   }
 
   if (infoStatus === AsyncReducerStatus.Loading) {

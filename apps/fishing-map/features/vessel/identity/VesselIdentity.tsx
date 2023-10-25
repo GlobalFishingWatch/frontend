@@ -42,6 +42,7 @@ import { selectIsVesselLocation } from 'routes/routes.selectors'
 import { useRegionTranslationsById } from 'features/regions/regions.hooks'
 import { VesselLastIdentity } from 'features/search/search.slice'
 import VesselIdentityCombinedSourceField from 'features/vessel/identity/VesselIdentityCombinedSourceField'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './VesselIdentity.module.css'
 
 const VesselIdentity = () => {
@@ -61,6 +62,11 @@ const VesselIdentity = () => {
 
   const onTabClick: TabsProps<VesselIdentitySourceEnum>['onTabClick'] = (tab) => {
     dispatchQueryParams({ vesselIdentitySource: tab.id })
+    trackEvent({
+      category: TrackCategory.VesselProfile,
+      action: 'click_vessel_source_tab',
+      label: tab.id,
+    })
   }
 
   const onTimeRangeClick = () => {
@@ -100,6 +106,11 @@ const VesselIdentity = () => {
       const data = parseVesselToCSV(filteredVesselIdentity)
       const blob = new Blob([data], { type: 'text/plain;charset=utf-8' })
       saveAs(blob, `${vesselIdentity?.shipname}-${vesselIdentity?.flag}.csv`)
+      trackEvent({
+        category: TrackCategory.VesselProfile,
+        action: 'vessel_identity_download',
+        label: identitySource,
+      })
     }
   }
 
