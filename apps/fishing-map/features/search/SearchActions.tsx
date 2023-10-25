@@ -20,6 +20,7 @@ import { HOME, WORKSPACE } from 'routes/routes'
 import { EMPTY_FILTERS } from 'features/search/search.config'
 import { getRelatedIdentityVesselIds } from 'features/vessel/vessel.utils'
 import { TimebarVisualisations } from 'types'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { cleanVesselSearchResults, selectSelectedVessels } from './search.slice'
 import styles from './Search.module.css'
 
@@ -72,6 +73,11 @@ function SearchActions() {
       if (dataviewIds?.length) {
         dispatch(setVesselGroupCurrentDataviewIds(dataviewIds))
       }
+    })
+    trackEvent({
+      category: TrackCategory.VesselGroups,
+      action: 'add_to_vessel_group',
+      label: 'search',
     })
   }
 

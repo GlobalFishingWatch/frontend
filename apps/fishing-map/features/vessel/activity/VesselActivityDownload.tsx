@@ -10,10 +10,12 @@ import {
   selectVesselEventsResourcesLoading,
 } from 'features/vessel/vessel.selectors'
 import {
+  selectVesselActivityMode,
   selectVesselIdentityId,
   selectVesselIdentitySource,
 } from 'features/vessel/vessel.config.selectors'
 import { selectTimeRange } from 'features/app/app.selectors'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 
 const VesselActivityDownload = () => {
   const { t } = useTranslation()
@@ -23,6 +25,7 @@ const VesselActivityDownload = () => {
   const timerange = useSelector(selectTimeRange)
   const eventsLoading = useSelector(selectVesselEventsResourcesLoading)
   const events = useSelector(selectVesselEventsFilteredByTimerange)
+  const activityMode = useSelector(selectVesselActivityMode)
 
   const onDownloadClick = () => {
     const data = parseEventsToCSV(events)
@@ -37,6 +40,11 @@ const VesselActivityDownload = () => {
         identitySource,
       })})-events-${timerange?.start}-${timerange?.end}.csv`
     )
+    trackEvent({
+      category: TrackCategory.VesselProfile,
+      action: 'vessel_events_download',
+      label: activityMode,
+    })
   }
 
   return (

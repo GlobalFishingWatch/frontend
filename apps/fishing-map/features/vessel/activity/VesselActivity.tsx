@@ -14,6 +14,7 @@ import {
   selectVesselEventsResourcesLoading,
   selectVesselHasEventsDatasets,
 } from 'features/vessel/vessel.selectors'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './VesselActivity.module.css'
 
 const VesselActivity = () => {
@@ -26,6 +27,10 @@ const VesselActivity = () => {
 
   const setActivityMode = (option: ChoiceOption<VesselProfileActivityMode>) => {
     dispatchQueryParams({ vesselActivityMode: option.id })
+    trackEvent({
+      category: TrackCategory.VesselProfile,
+      action: `click_activity_by_${option.id}_summary_tab`,
+    })
   }
 
   const areaOptions: ChoiceOption<VesselProfileActivityMode>[] = useMemo(

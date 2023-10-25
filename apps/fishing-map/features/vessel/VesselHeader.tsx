@@ -30,6 +30,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { useVesselBounds } from 'features/vessel/vessel-bounds.hooks'
 import { useCallbackAfterPaint } from 'hooks/paint.hooks'
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './VesselHeader.module.css'
 
 const VesselHeader = () => {
@@ -49,6 +50,22 @@ const VesselHeader = () => {
 
   const vesselPrintCallback = useCallback(() => {
     window.print()
+  }, [])
+
+  const trackAction = useCallback((label: 'center_map' | 'print' | 'add_to_group' | 'share') => {
+    if (label === 'add_to_group') {
+      trackEvent({
+        category: TrackCategory.VesselGroups,
+        action: 'add_to_vessel_group',
+        label: 'search',
+      })
+    } else {
+      trackEvent({
+        category: TrackCategory.VesselProfile,
+        action: 'click_vessel_header_actions',
+        label,
+      })
+    }
   }, [])
 
   useEffect(() => {
@@ -84,11 +101,13 @@ const VesselHeader = () => {
     if (vesselBounds) {
       if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
       setVesselBounds(vesselBounds)
+      trackAction('center_map')
     }
   }
 
   const onPrintClick = () => {
     dispatch(setVesselPrintMode(true))
+    trackAction('print')
   }
 
   const setViewOnlyVessel = () => {
@@ -168,6 +187,7 @@ const VesselHeader = () => {
             vessels={vessel ? [vessel] : []}
             showCount={false}
             buttonClassName="print-hidden"
+            onAddToVesselGroup={() => trackAction('add_to_group')}
           />
         </div>
       </div>

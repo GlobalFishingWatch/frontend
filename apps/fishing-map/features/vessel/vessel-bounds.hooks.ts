@@ -32,11 +32,11 @@ export const useVesselBounds = (type?: UseVesselBoundsType) => {
 
   const vesselBounds = useMemo(() => {
     let bounds: Bbox | undefined
-    if (events?.length && (!type || type === 'events')) {
-      bounds = eventsToBbox(events)
-    } else if (vesselTrack?.length && (!type || type === 'track')) {
+    if (vesselTrack?.length && (!type || type === 'track')) {
       const filteredSegments = filterSegmentsByTimerange(vesselTrack, { start, end })
       bounds = filteredSegments?.length ? segmentsToBbox(filteredSegments) : undefined
+    } else if (events?.length && (!type || type === 'events')) {
+      bounds = eventsToBbox(events)
     }
     return bounds
   }, [end, events, start, type, vesselTrack])

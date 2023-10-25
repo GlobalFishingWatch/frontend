@@ -9,6 +9,7 @@ import {
   Modal,
 } from '@globalfishingwatch/ui-components'
 import { I18nNamespaces } from 'features/i18n/i18n.types'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './DataTerminology.module.css'
 
 interface ModalProps {
@@ -32,6 +33,15 @@ const DataTerminology: React.FC<ModalProps> = ({
   const [showModal, setShowModal] = useState(false)
   const closeModal = useCallback(() => setShowModal(false), [setShowModal])
 
+  const onClick = useCallback(() => {
+    setShowModal(true)
+    trackEvent({
+      category: TrackCategory.VesselProfile,
+      action: 'open_vessel_info',
+      label: terminologyKey,
+    })
+  }, [terminologyKey])
+
   return (
     <Fragment>
       <IconButton
@@ -39,9 +49,7 @@ const DataTerminology: React.FC<ModalProps> = ({
         size={size}
         type={type}
         className={cx(styles.infoButton, className)}
-        onClick={(e) => {
-          setShowModal(true)
-        }}
+        onClick={onClick}
       />
       <Modal
         appSelector="__next"

@@ -62,7 +62,19 @@ export function getLatestIdentityPrioritised(vessel: IdentityVessel | IdentityVe
   const latestSelfReportesIdentity = getVesselIdentity(vessel, {
     identitySource: VesselIdentitySourceEnum.SelfReported,
   })
-  return latestRegistryIdentity || latestSelfReportesIdentity
+  const identity = latestRegistryIdentity || latestSelfReportesIdentity
+  const identitySource = latestRegistryIdentity
+    ? VesselIdentitySourceEnum.Registry
+    : VesselIdentitySourceEnum.SelfReported
+  const geartype = getVesselProperty(vessel, 'geartype', {
+    identitySource,
+    identityId: identity?.id,
+  })
+  const shiptype = getVesselProperty(vessel, 'shiptype', {
+    identitySource,
+    identityId: identity?.id,
+  })
+  return { ...identity, geartype, shiptype }
 }
 
 export function getMatchCriteriaPrioritised(matchCriteria: IdentityVessel['matchCriteria']) {
