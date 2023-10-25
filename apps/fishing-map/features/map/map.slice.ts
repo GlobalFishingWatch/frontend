@@ -24,7 +24,6 @@ import {
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { isGuestUser } from 'features/user/user.slice'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
-import { getUTCDateTime } from 'utils/dates'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 
 export const MAX_TOOLTIP_LIST = 5
@@ -287,9 +286,6 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
         (feature) => feature.temporalgrid?.sublayerId || ''
       )
 
-      const mainTemporalgridFeature = fishingActivityFeatures[0].temporalgrid
-      const startYear = getUTCDateTime(mainTemporalgridFeature!?.visibleStartDate).year
-      const endYear = getUTCDateTime(mainTemporalgridFeature!?.visibleEndDate).year
       const sublayersVessels: SublayerVessels[] = vesselsBySource.map((sublayerVessels, i) => {
         const activityProperty = activityProperties?.[i] || 'hours'
         return {
@@ -299,16 +295,6 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
               return vessels.map((vessel) => {
                 const vesselInfo = vesselsInfo?.find((vesselInfo) => {
                   const vesselInfoId = vesselInfo.selfReportedInfo?.[0]?.id
-                  const shiptypes = vesselInfo?.combinedSourcesInfo?.find(
-                    (source) => source.vesselId === vesselInfoId
-                  )?.shiptypes
-                  if (shiptypes?.length && startYear && endYear) {
-                    return (
-                      vesselInfoId === vessel.id &&
-                      (shiptypes.some(({ yearFrom }) => yearFrom >= startYear) ||
-                        shiptypes.some(({ yearTo }) => yearTo <= endYear))
-                    )
-                  }
                   return vesselInfoId === vessel.id
                 })
                 const infoDataset = selectDatasetById(vesselInfo?.dataset as string)(state)
