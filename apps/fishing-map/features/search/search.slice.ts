@@ -79,8 +79,8 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         )
 
         const andCombinedFields: AdvancedSearchQueryFieldKey[] = [
-          'geartype',
-          'shiptype',
+          'geartypes',
+          'shiptypes',
           'targetSpecies',
           'flag',
           'fleet',

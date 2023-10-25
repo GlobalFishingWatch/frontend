@@ -226,10 +226,10 @@ function VesselsTable({
 
               const vesselType = isPresenceActivity
                 ? getVesselShipType({
-                    shiptype: getVesselProperty(vessel, 'shiptype', getVesselPropertyParams),
+                    shiptypes: getVesselProperty(vessel, 'shiptypes', getVesselPropertyParams),
                   })
                 : getVesselGearType({
-                    geartype: getVesselProperty(vessel, 'geartype', getVesselPropertyParams),
+                    geartypes: getVesselProperty(vessel, 'geartypes', getVesselPropertyParams),
                   })
 
               // Temporary workaround for public-global-all-vessels dataset as we

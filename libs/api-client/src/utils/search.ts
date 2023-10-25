@@ -16,8 +16,8 @@ export type AdvancedSearchQueryFieldKey =
   | 'callsign'
   | 'codMarinha'
   | 'flag'
-  | 'geartype'
-  | 'shiptype'
+  | 'geartypes'
+  | 'shiptypes'
   | 'targetSpecies'
   | 'fleet'
   | 'origin'
@@ -76,10 +76,10 @@ const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFiel
     operator: 'LIKE',
     transformation: toUpperCaseWithWildcardsAndQuotationMarks,
   },
-  geartype: {
+  geartypes: {
     operator: '=',
   },
-  shiptype: {
+  shiptypes: {
     operator: '=',
   },
   flag: {

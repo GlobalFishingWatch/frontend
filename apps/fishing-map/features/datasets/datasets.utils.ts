@@ -31,7 +31,6 @@ import { getFlags, getFlagsByIds } from 'utils/flags'
 import { FileType } from 'features/common/FileDropzone'
 import { getLayerDatasetRange } from 'features/workspace/environmental/HistogramRangeFilter'
 import { getVesselGearType } from 'utils/info'
-import { getCombinedSourceProperty } from 'features/vessel/vessel.utils'
 import styles from '../vessel-groups/VesselGroupModal.module.css'
 
 export type SupportedDatasetSchema =
@@ -44,8 +43,10 @@ export type SupportedActivityDatasetSchema =
   | 'mmsi'
   | 'flag'
   | 'geartype'
+  | 'geartypes'
   | 'fleet'
   | 'shiptype'
+  | 'shiptypes'
   | 'origin'
   | 'vessel_type'
   | 'radiance'
@@ -401,10 +402,9 @@ export const getDatasetSchemaItem = (dataset: Dataset, schema: SupportedDatasetS
   if (selfReportedInfoPropertiesItem) {
     return selfReportedInfoPropertiesItem
   }
-  if (schema === 'geartype' || schema === 'shiptype') {
-    const combinedSourceKey = getCombinedSourceProperty(schema)
+  if (schema === 'geartypes' || schema === 'shiptypes') {
     const combinedSourceSchema = (dataset.schema?.combinedSourcesInfo?.items as DatasetSchemaItem)
-      ?.properties?.[combinedSourceKey]?.items as DatasetSchemaItem
+      ?.properties?.[schema]?.items as DatasetSchemaItem
     return combinedSourceSchema?.properties?.name || null
   }
   return null
@@ -541,9 +541,9 @@ export const getCommonSchemaFieldsInDataview = (
           if (dataview.category !== DataviewCategory.Context) {
             label = t(`vessel.${schema}.${field}`, capitalize(lowerCase(field)))
           }
-          if (schema === 'geartype') {
+          if (schema === 'geartypes') {
             // There is an fixed list of gearTypes independant of the dataset
-            label = getVesselGearType({ geartype: field })
+            label = getVesselGearType({ geartypes: field })
           }
         }
         return { id: field!?.toString(), label: label as string }

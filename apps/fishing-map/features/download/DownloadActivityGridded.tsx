@@ -202,7 +202,7 @@ function DownloadActivityByVessel() {
 
     timeoutRef.current = setTimeout(() => {
       dispatch(resetDownloadActivityStatus())
-    }, 1500)
+    }, 3000)
   }
 
   const isDownloadReportSupported = getDownloadReportSupported(start, end)

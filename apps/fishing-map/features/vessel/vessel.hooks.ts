@@ -41,7 +41,7 @@ export const useUpdateVesselEventsVisibility = () => {
   const identityId = useSelector(selectVesselProfileStateProperty('vesselSelfReportedId'))
   useEffect(() => {
     if (vessel) {
-      const shiptypes = getVesselProperty(vessel, 'shiptype', {
+      const shiptypes = getVesselProperty(vessel, 'shiptypes', {
         identityId,
         identitySource: VesselIdentitySourceEnum.SelfReported,
       })

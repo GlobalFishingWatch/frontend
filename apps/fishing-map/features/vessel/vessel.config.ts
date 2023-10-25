@@ -52,8 +52,8 @@ export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS: CustomVMSGroup = {
 
 const SELF_REPORTED_FIELD_GROUPS: VesselRenderField[][] = [
   [
-    { key: 'shiptype', terminologyKey: 'shiptype' },
-    { key: 'geartype', terminologyKey: 'geartype' },
+    { key: 'shiptypes', terminologyKey: 'shiptype' },
+    { key: 'geartypes', terminologyKey: 'geartype' },
   ],
 ]
 
@@ -62,7 +62,7 @@ export const IDENTITY_FIELD_GROUPS: Record<VesselIdentitySourceEnum, VesselRende
   [VesselIdentitySourceEnum.Registry]: [
     ...COMMON_FIELD_GROUPS,
     [
-      { key: 'geartype' },
+      { key: 'geartypes' },
       { key: 'lengthM', label: 'length' },
       { key: 'tonnageGt', label: 'grossTonnage' },
     ],
