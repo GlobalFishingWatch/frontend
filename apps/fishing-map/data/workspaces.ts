@@ -51,7 +51,6 @@ export const VIIRS_MATCH_DATAVIEW_SLUG = 'viirs-match'
 export const SAR_DATAVIEW_SLUG = 'sar'
 export const PRESENCE_DATAVIEW_SLUG = 'presence-activity'
 export const TEMPLATE_USER_TRACK_SLUG = 'user-track'
-// TODO: update 'fishing-map-vessel-track' dataview with the new identity vessel dataset and use it here again
 export const TEMPLATE_VESSEL_DATAVIEW_SLUG = 'fishing-map-vessel-track'
 export const TEMPLATE_CONTEXT_DATAVIEW_SLUG = 'default-context-layer'
 export const TEMPLATE_POINTS_DATAVIEW_SLUG = 'default-points-layer'

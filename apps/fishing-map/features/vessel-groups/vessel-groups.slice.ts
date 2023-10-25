@@ -281,7 +281,7 @@ export const fetchWorkspaceVesselGroupsThunk = createAsyncThunk(
       }
       const vesselGroups = await GFWAPI.fetch<APIPagination<VesselGroup>>(
         `/vessel-groups?${stringify(vesselGroupsParams, { arrayFormat: 'indices' })}`,
-        { signal }
+        { signal, cache: 'reload' }
       )
       return vesselGroups.entries as VesselGroup[]
     } catch (e: any) {
@@ -308,7 +308,7 @@ export const fetchUserVesselGroupsThunk = createAsyncThunk(
       'logged-user': true,
     }
     const url = `/vessel-groups?${stringify(vesselGroupsParams)}`
-    const vesselGroups = await GFWAPI.fetch<APIPagination<VesselGroup>>(url)
+    const vesselGroups = await GFWAPI.fetch<APIPagination<VesselGroup>>(url, { cache: 'reload' })
     return vesselGroups.entries
   },
   {
