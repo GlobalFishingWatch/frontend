@@ -598,8 +598,8 @@
   "vessel": {
     "activityByType": "Par type",
     "activityByVoyages": "Par voyages",
-    "authorization": "autorisation",
     "addToWorkspace": "Ajouter un navire à la vue",
+    "authorization": "autorisation",
     "beam": "Largeur",
     "callsign": "Indicatif",
     "capacity": "Capacité",
@@ -618,6 +618,7 @@
     "geartype": "Type d’engin",
     "geartype_other": "Types d’engin",
     "gearType_short": "engin",
+    "geartypes": "Types d’engin",
     "gearTypes": {
       "bunker": "Bunker ou navire-citerne",
       "bunker_or_tanker": "Navire de soutage",
@@ -717,6 +718,7 @@
     "owner": "Propriétaire",
     "owners": "Owners",
     "registeredGearType": "Type d’engin enregistré",
+    "registryGeartype": "Registry Gear Type",
     "registrySources": "sources de registres",
     "sectionActivity": "Activité",
     "sectionAreas": "Zones",
@@ -726,6 +728,7 @@
     "share": "Partager le navire",
     "shipname": "Nom",
     "shiptype": "Types de navires",
+    "shiptypes": "Ship types",
     "showOtherLayers": "Afficher les autres calques",
     "source": "Source",
     "source_short": "Source",
