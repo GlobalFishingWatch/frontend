@@ -16,6 +16,7 @@ import {
   getVesselIdentityId,
 } from 'features/vessel/vessel.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './VesselIdentitySelector.module.css'
 
 function isRegistryInTimerange(registry: VesselDataIdentity, start: string, end: string) {
@@ -34,16 +35,26 @@ const VesselIdentitySelector = () => {
   const { dispatchQueryParams } = useLocationConnect()
   const { start, end } = useTimerangeConnect()
 
+  const identities = getVesselIdentities(vessel, { identitySource })
+  const currentIdentity = getVesselIdentity(vessel, { identitySource, identityId })
+  const identityIndex = vessel?.identities
+    ?.filter((i) => i.identitySource === identitySource)
+    .findIndex((i) => i.id === currentIdentity.id)
+
   const setIdentityId = (identityId: string) => {
     if (identitySource === VesselIdentitySourceEnum.SelfReported) {
       dispatchQueryParams({ vesselSelfReportedId: identityId })
     } else {
       dispatchQueryParams({ vesselRegistryId: identityId })
     }
+    const start = formatI18nDate(currentIdentity.transmissionDateFrom)
+    const end = formatI18nDate(currentIdentity.transmissionDateTo)
+    trackEvent({
+      category: TrackCategory.VesselProfile,
+      action: `change_timeperiod_${identitySource}_tab`,
+      label: `${identityIndex} | ${start} - ${end}`,
+    })
   }
-
-  const identities = getVesselIdentities(vessel, { identitySource })
-  const currentIdentity = getVesselIdentity(vessel, { identitySource, identityId })
 
   if (!identities?.length || identities?.length <= 1) return null
 

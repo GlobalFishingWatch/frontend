@@ -28,6 +28,7 @@ import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/cont
 import { useDebouncedDispatchHighlightedEvent } from 'features/map/map.hooks'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { getSidebarContentWidth } from 'features/vessel/vessel.utils'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './VesselAreas.module.css'
 
 type VesselAreasProps = {
@@ -152,6 +153,10 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
     (option: ChoiceOption<VesselAreaSubsection>) => {
       dispatchQueryParams({ vesselArea: option.id })
       updateAreaLayersVisibility(option.id)
+      trackEvent({
+        category: TrackCategory.VesselProfile,
+        action: `click_${option.id}_areas_tab`,
+      })
     },
     [dispatchQueryParams, updateAreaLayersVisibility]
   )

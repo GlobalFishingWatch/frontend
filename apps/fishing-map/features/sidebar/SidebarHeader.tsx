@@ -319,6 +319,11 @@ function CloseVesselButton() {
   const onCloseClick = () => {
     resetSidebarScroll()
     dispatch(resetVesselState())
+
+    trackEvent({
+      category: TrackCategory.VesselProfile,
+      action: 'close_vessel_panel',
+    })
   }
 
   const linkTo = {

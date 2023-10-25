@@ -9,6 +9,7 @@ import RelatedEncounterVessels from 'features/vessel/related-vessels/RelatedEnco
 import RelatedOwnersVessels from 'features/vessel/related-vessels/RelatedOwnersVessels'
 import { VesselActivitySummary } from 'features/vessel/activity/VesselActivitySummary'
 import { selectVesselEventsResourcesLoading } from 'features/vessel/vessel.selectors'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './RelatedVessels.module.css'
 
 const RelatedVessels = () => {
@@ -34,6 +35,10 @@ const RelatedVessels = () => {
   const changeVesselRelatedSubsection = useCallback(
     (option: ChoiceOption<VesselRelatedSubsection>) => {
       dispatchQueryParams({ vesselRelated: option.id })
+      trackEvent({
+        category: TrackCategory.VesselProfile,
+        action: `click_${option.id}_related_vessels_tab`,
+      })
     },
     [dispatchQueryParams]
   )

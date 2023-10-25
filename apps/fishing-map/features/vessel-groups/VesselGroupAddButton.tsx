@@ -5,7 +5,6 @@ import { batch, useSelector } from 'react-redux'
 import { Button, ButtonType, ButtonSize } from '@globalfishingwatch/ui-components'
 import { VesselLastIdentity } from 'features/search/search.slice'
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
-import { getEventLabel } from 'utils/analytics'
 import {
   setVesselGroupEditId,
   setNewVesselGroupSearchVessels,
@@ -16,7 +15,6 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { selectUserGroupsPermissions } from 'features/user/user.selectors'
 import { ReportVesselWithDatasets } from 'features/reports/reports.selectors'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
 import styles from './VesselGroupAddButton.module.css'
 
@@ -59,14 +57,6 @@ function VesselGroupAddButton({
         batch(() => {
           if (vesselGroupId) {
             dispatch(setVesselGroupEditId(vesselGroupId))
-            trackEvent({
-              category: TrackCategory.VesselGroups,
-              action: `Use the 'add to vessel group' functionality from report`,
-              label: getEventLabel([
-                vesselsWithDataset.length.toString(),
-                ...vesselsWithDataset.map((vessel) => vessel.id),
-              ]),
-            })
           }
           dispatch(setNewVesselGroupSearchVessels(vesselsWithDataset))
           dispatch(setVesselGroupsModalOpen(true))
