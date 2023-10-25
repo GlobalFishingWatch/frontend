@@ -49,7 +49,7 @@ export const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDataset
         if (Array.isArray(query.value)) {
           query.value.forEach((queryArrItem, i) => {
             const queryArrId = `${query.id}[${i}]`
-            resolvedQuery.set(queryArrId, queryArrItem)
+            resolvedQuery.set(queryArrId, queryArrItem as string)
           })
         } else {
           resolvedQuery.set(query.id, query.value.toString())
