@@ -598,6 +598,7 @@
   "vessel": {
     "activityByType": "By type",
     "activityByVoyages": "By voyages",
+    "authorization": "authorization",
     "addToWorkspace": "Add vessel to view",
     "beam": "Beam",
     "callsign": "Callsign",
