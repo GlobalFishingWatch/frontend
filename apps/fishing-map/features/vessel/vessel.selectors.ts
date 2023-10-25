@@ -69,7 +69,7 @@ export const selectVesselEventsResources = createSelector(
       return r.datasetConfig?.query?.some((q) => {
         if (q.id === 'vessels') {
           return Array.isArray(q.value)
-            ? q.value.some((v) => vesselIds?.includes(v))
+            ? q.value.some((v) => vesselIds?.includes(v as string))
             : vesselIds?.includes(q.value as string)
         }
         return false
