@@ -43,7 +43,7 @@ import styles from '../basic/SearchBasicResult.module.css'
 
 const PINNED_COLUMN = 'shipname'
 const TOOLTIP_LABEL_CHARACTERS = 25
-const MULTIPLE_SELECTION_FILTERS_COLUMN = ['flag', 'shiptype', 'geartype', 'owner']
+const MULTIPLE_SELECTION_FILTERS_COLUMN = ['flag', 'shiptypes', 'geartypes', 'owner']
 
 type CellWithFilterProps = {
   vessel: IdentityVesselData
@@ -53,12 +53,11 @@ type CellWithFilterProps = {
 }
 function CellWithFilter({ vessel, column, children, onClick }: CellWithFilterProps) {
   const { setSearchFilters, searchFilters } = useSearchFiltersConnect()
-
   const value = getVesselProperty(vessel, column) as string
   const onFilterClick = useCallback(() => {
     let filter: string | string[] = value
     if (MULTIPLE_SELECTION_FILTERS_COLUMN.includes(column)) {
-      filter = column === 'owner' ? value.split(', ') : [value]
+      filter = column === 'owner' ? value.split(', ') : Array.isArray(value) ? value : [value]
     }
     setSearchFilters({ [column]: filter })
     if (onClick) {
@@ -197,9 +196,11 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         header: t('vessel.callsign', 'Callsign'),
       },
       {
-        id: 'shiptypes',
+        id: 'gfw_shiptypes',
         accessorFn: (vessel: IdentityVesselData) => {
-          const shiptypes = getVesselProperty(vessel, 'shiptypes')
+          const shiptypes = getVesselProperty(vessel, 'shiptypes', {
+            identitySource: VesselIdentitySourceEnum.SelfReported,
+          })
           const label = getVesselShipType({ shiptypes })
           return (
             <CellWithFilter vessel={vessel} column="shiptypes" onClick={fetchResults}>
@@ -207,7 +208,24 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             </CellWithFilter>
           )
         },
-        header: t('vessel.vesselType', 'Vessel Type'),
+        header: t('vessel.gfw_shiptypes', 'GFW Vessel Type'),
+      },
+      {
+        id: 'gfw_geartypes',
+        accessorFn: (vessel: IdentityVesselData) => {
+          const geartypes = getVesselProperty(vessel, 'geartypes', {
+            identitySource: VesselIdentitySourceEnum.SelfReported,
+          })
+          const label = getVesselGearType({ geartypes })
+          return (
+            <CellWithFilter vessel={vessel} column="geartypes" onClick={fetchResults}>
+              <Tooltip content={label?.length > TOOLTIP_LABEL_CHARACTERS ? label : ''}>
+                <span>{label}</span>
+              </Tooltip>
+            </CellWithFilter>
+          )
+        },
+        header: t('vessel.gfw_geartypes', 'GFW Gear Type'),
       },
       {
         id: 'geartypes',
@@ -222,7 +240,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             </CellWithFilter>
           )
         },
-        header: t('vessel.geartype', 'Gear Type'),
+        header: t('vessel.registryGeartype', 'Registry Gear Type'),
       },
       {
         id: 'owner',

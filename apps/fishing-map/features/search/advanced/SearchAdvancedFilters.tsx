@@ -32,8 +32,8 @@ const schemaFilterIds: (keyof VesselSearchState)[] = [
   'flag',
   'fleet',
   'origin',
-  'geartypes',
   'shiptypes',
+  'geartypes',
   'codMarinha',
   'targetSpecies',
 ]
@@ -264,11 +264,12 @@ function SearchAdvancedFilters() {
           return null
         }
         const { id, disabled, options, optionsSelected } = schemaFilter
+        const translationKey = id === 'shiptypes' ? `gfw_${id}` : id
         return (
           <MultiSelect
             key={id}
             disabled={disabled}
-            label={t(`vessel.${id}` as any, id)}
+            label={t(`vessel.${translationKey}` as any, translationKey)}
             placeholder={getPlaceholderBySelections({
               selection: optionsSelected.map(({ id }) => id),
               options,
