@@ -82,8 +82,8 @@ const VesselIdentity = () => {
         ...vesselIdentity,
         nShipname: formatInfoField(vesselIdentity.shipname, 'shipname') as string,
         flag: t(`flags:${vesselIdentity.flag}`, vesselIdentity.flag) as string,
-        shiptype: getVesselShipType(vesselIdentity, { joinCharacter: ' -' }), // Can't be commas as it would break the csv format
-        geartype: getVesselGearType(vesselIdentity, { joinCharacter: ' -' }),
+        shiptypes: getVesselShipType(vesselIdentity, { joinCharacter: ' -' }), // Can't be commas as it would break the csv format
+        geartypes: getVesselGearType(vesselIdentity, { joinCharacter: ' -' }),
         registryAuthorizations:
           vesselIdentity.registryAuthorizations &&
           filterRegistryInfoByDateAndSSVID(
@@ -245,7 +245,7 @@ const VesselIdentity = () => {
                   let label = field.label || field.key
                   if (
                     identitySource === VesselIdentitySourceEnum.SelfReported &&
-                    (label === 'geartype' || label === 'shiptype')
+                    (label === 'geartypes' || label === 'shiptypes')
                   ) {
                     label = 'gfw_' + label
                   }
@@ -264,7 +264,7 @@ const VesselIdentity = () => {
                         )}
                       </div>
                       {vesselIdentity.combinedSourcesInfo &&
-                      (key === 'shiptype' || key === 'geartype') ? (
+                      (key === 'shiptypes' || key === 'geartypes') ? (
                         <VesselIdentityCombinedSourceField
                           identity={vesselIdentity}
                           property={key}

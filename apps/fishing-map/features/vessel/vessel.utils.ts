@@ -3,6 +3,7 @@ import {
   GearType,
   IdentityVessel,
   SelfReportedInfo,
+  VesselInfo,
   VesselRegistryInfo,
   VesselRegistryProperty,
   VesselType,
@@ -66,15 +67,15 @@ export function getLatestIdentityPrioritised(vessel: IdentityVessel | IdentityVe
   const identitySource = latestRegistryIdentity
     ? VesselIdentitySourceEnum.Registry
     : VesselIdentitySourceEnum.SelfReported
-  const geartype = getVesselProperty(vessel, 'geartype', {
+  const geartypes = getVesselProperty(vessel, 'geartypes', {
     identitySource,
     identityId: identity?.id,
   })
-  const shiptype = getVesselProperty(vessel, 'shiptype', {
+  const shiptypes = getVesselProperty(vessel, 'shiptypes', {
     identitySource,
     identityId: identity?.id,
   })
-  return { ...identity, geartype, shiptype }
+  return { ...identity, geartypes, shiptypes }
 }
 
 export function getMatchCriteriaPrioritised(matchCriteria: IdentityVessel['matchCriteria']) {
@@ -127,25 +128,23 @@ export function getVesselCombinedSource(
   return vessel?.combinedSourcesInfo?.find((i) => i.vesselId === vesselId)
 }
 
-export function getCombinedSourceProperty(property: 'geartype' | 'shiptype') {
-  return property === 'geartype' ? 'geartypes' : 'shiptypes'
-}
-
 export function getVesselCombinedSourceProperty(
   vessel: IdentityVessel | IdentityVesselData | null,
-  { vesselId, property } = {} as { vesselId: string; property: 'shiptype' | 'geartype' }
+  { vesselId, property } = {} as {
+    vesselId: string
+    property: keyof Pick<VesselInfo, 'shiptypes' | 'geartypes'>
+  }
 ) {
   const combinedSource = getVesselCombinedSource(vessel, { vesselId })
-  const combinedSourceProperty = getCombinedSourceProperty(property)
-  const source = combinedSource?.[combinedSourceProperty]
+  const source = combinedSource?.[property]
   if (source) {
     return [...source].sort((a, b) => (a.yearTo < b.yearTo ? 1 : -1))
   }
 }
 
-type VesselProperty<P extends VesselIdentityProperty> = P extends 'shiptype'
+type VesselProperty<P extends VesselIdentityProperty> = P extends 'shiptypes'
   ? VesselType[]
-  : P extends 'geartype'
+  : P extends 'geartypes'
   ? GearType[]
   : P extends number
   ? number
@@ -167,8 +166,11 @@ export function getVesselProperty<P extends VesselIdentityProperty>(
       vessel.registryOwners?.filter((owner) => owner.ssvid === ssvid)?.map(({ name }) => name)
     ).join(', ') as VesselProperty<P>
   }
-  if (property === 'geartype' || property === 'shiptype') {
-    const vesselId = getVesselProperty(vessel, 'id', { identityId, identitySource })
+  if (property === 'geartypes' || property === 'shiptypes') {
+    const vesselId = getVesselProperty(vessel, 'id', {
+      identityId,
+      identitySource: VesselIdentitySourceEnum.SelfReported,
+    })
     const combinedSourcesInfoData = getVesselCombinedSourceProperty(vessel, { vesselId, property })
     if (combinedSourcesInfoData?.length) {
       return combinedSourcesInfoData.map((i) => `${i.name}`) as VesselProperty<P>
@@ -228,8 +230,8 @@ export function getSearchIdentityResolved(vessel: IdentityVessel | IdentityVesse
     ...vesselData,
     id: getVesselId(vessel),
     dataset: vessel?.dataset,
-    geartype: getVesselProperty(vessel, 'geartype'),
-    shiptype: getVesselProperty(vessel, 'shiptype'),
+    geartypes: getVesselProperty(vessel, 'geartypes'),
+    shiptypes: getVesselProperty(vessel, 'shiptypes'),
     transmissionDateFrom,
     transmissionDateTo,
     positionsCounter,
@@ -250,8 +252,8 @@ export function getCurrentIdentityVessel(
   return {
     ...vesselData,
     dataset: vessel.dataset,
-    shiptype: getVesselProperty(vessel, 'shiptype', { identityId, identitySource }),
-    geartype: getVesselProperty(vessel, 'geartype', { identityId, identitySource }),
+    shiptypes: getVesselProperty(vessel, 'shiptypes', { identityId, identitySource }),
+    geartypes: getVesselProperty(vessel, 'geartypes', { identityId, identitySource }),
     combinedSourcesInfo: getVesselCombinedSource(vessel, { vesselId: vesselData?.id }),
     registryAuthorizations: vessel.registryAuthorizations
       ? sortVesselRegistryProperties(vessel.registryAuthorizations)

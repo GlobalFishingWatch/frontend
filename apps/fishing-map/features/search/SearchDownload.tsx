@@ -22,9 +22,9 @@ function SearchDownload() {
           imo: getVesselProperty(vessel, 'imo'),
           'call sign': getVesselProperty(vessel, 'callsign'),
           flag: t(`flags:${getVesselProperty(vessel, 'flag')}` as any),
-          'vessel type': getVesselShipType({ shiptype: getVesselProperty(vessel, 'shiptype') }),
+          'vessel type': getVesselShipType({ shiptypes: getVesselProperty(vessel, 'shiptypes') }),
           'gear type': getVesselGearType({
-            geartype: getVesselProperty(vessel, 'geartype'),
+            geartypes: getVesselProperty(vessel, 'geartypes'),
           }),
           owner: formatInfoField(getVesselProperty(vessel, 'owner'), 'owner'),
           transmissions: getSearchIdentityResolved(vessel).positionsCounter,

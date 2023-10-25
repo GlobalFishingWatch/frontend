@@ -14,6 +14,7 @@ import { AVAILABLE_START, AVAILABLE_END } from 'data/config'
 import {
   getFiltersBySchema,
   SchemaFieldDataview,
+  SchemaFilter,
   SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
 import { showSchemaFilter } from 'features/workspace/activity/ActivitySchemaFilter'
@@ -31,8 +32,8 @@ const schemaFilterIds: (keyof VesselSearchState)[] = [
   'flag',
   'fleet',
   'origin',
-  'geartype',
-  'shiptype',
+  'shiptypes',
+  'geartypes',
   'codMarinha',
   'targetSpecies',
 ]
@@ -44,7 +45,7 @@ const getSearchDataview = (
 ): SchemaFieldDataview => {
   return {
     config: {
-      datasets: sources?.map((id) => id),
+      datasets: sources?.length ? sources?.map((id) => id) : datasets.map((d) => d.id),
       filters: Object.fromEntries(
         schemaFilterIds.map((id) => {
           const filters = searchFilters[id]
@@ -57,6 +58,39 @@ const getSearchDataview = (
     },
     datasets,
   }
+}
+
+type ImcompatibleFilter = { id: keyof VesselSearchState; values: string[] }
+type IncompatibleFilterSelection = {
+  filter: keyof VesselSearchState
+  incompatible: ImcompatibleFilter[]
+}
+const INCOMPATIBLE_FILTER_SELECTION: IncompatibleFilterSelection[] = [
+  {
+    filter: 'shiptypes',
+    incompatible: [{ id: 'infoSource', values: [VesselIdentitySourceEnum.Registry] }],
+  },
+]
+
+const getIncompatibleFiltersBySelection = ({ id, values }: ImcompatibleFilter) => {
+  return INCOMPATIBLE_FILTER_SELECTION.flatMap(({ filter, incompatible }) =>
+    incompatible.some((i) => i.id === id && i.values.some((v) => values.includes(v))) ? filter : []
+  )
+}
+
+const isIncompatibleFilterBySelection = (
+  schemaFilter: SchemaFilter,
+  filters: VesselSearchState
+) => {
+  const { incompatible } =
+    INCOMPATIBLE_FILTER_SELECTION.find(({ filter }) => filter === schemaFilter.id) ||
+    ({} as IncompatibleFilterSelection)
+  if (incompatible && incompatible?.length) {
+    return incompatible.some(({ id, values }) =>
+      values.some((v) => filters[id]?.includes(v as any))
+    )
+  }
+  return false
 }
 
 function SearchAdvancedFilters() {
@@ -109,7 +143,10 @@ function SearchAdvancedFilters() {
   }, [datasets, searchFilters, sources])
 
   const schemaFilters = schemaFilterIds.map((id) => {
-    return getFiltersBySchema(dataview, id as SupportedDatasetSchema)
+    return getFiltersBySchema(dataview, id as SupportedDatasetSchema, {
+      compatibilityOperation:
+        id === 'geartypes' || id === 'shiptypes' || id === 'flag' ? 'some' : 'every',
+    })
   })
 
   const onSourceSelect = (filter: any) => {
@@ -171,7 +208,15 @@ function SearchAdvancedFilters() {
         options={infoSourceOptions}
         selectedOption={infoSourceOptions.find(({ id }) => id === infoSource)}
         onSelect={({ id }) => {
-          setSearchFilters({ infoSource: id })
+          const incompatibleFilters = getIncompatibleFiltersBySelection({
+            id: 'infoSource',
+            values: [id],
+          })
+          const incompatibleQuery = Object.fromEntries(
+            incompatibleFilters.map((s) => [s, undefined])
+          )
+          setSearchFilters({ infoSource: id, ...incompatibleQuery })
+
           if (id === VesselIdentitySourceEnum.Registry) {
             // This is the only dataset with support for registry so far
             setSearchFilters({ sources: [DEFAULT_VESSEL_IDENTITY_ID] })
@@ -212,15 +257,19 @@ function SearchAdvancedFilters() {
           />
         )}
       {schemaFilters.map((schemaFilter) => {
-        if (!showSchemaFilter(schemaFilter)) {
+        if (
+          !showSchemaFilter(schemaFilter) ||
+          isIncompatibleFilterBySelection(schemaFilter, searchFilters)
+        ) {
           return null
         }
         const { id, disabled, options, optionsSelected } = schemaFilter
+        const translationKey = id === 'shiptypes' ? `gfw_${id}` : id
         return (
           <MultiSelect
             key={id}
             disabled={disabled}
-            label={t(`vessel.${id}` as any, id)}
+            label={t(`vessel.${translationKey}` as any, translationKey)}
             placeholder={getPlaceholderBySelections({
               selection: optionsSelected.map(({ id }) => id),
               options,

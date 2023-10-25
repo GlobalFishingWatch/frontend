@@ -16,12 +16,11 @@ export type AdvancedSearchQueryFieldKey =
   | 'callsign'
   | 'codMarinha'
   | 'flag'
-  | 'geartype'
-  | 'shiptype'
+  | 'geartypes'
+  | 'shiptypes'
   | 'targetSpecies'
   | 'fleet'
   | 'origin'
-  // TODO remove camelCase once api are stable
   | 'transmissionDateFrom'
   | 'transmissionDateTo'
   | 'owner'
@@ -76,10 +75,10 @@ const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFiel
     operator: 'LIKE',
     transformation: toUpperCaseWithWildcardsAndQuotationMarks,
   },
-  geartype: {
+  geartypes: {
     operator: '=',
   },
-  shiptype: {
+  shiptypes: {
     operator: '=',
   },
   flag: {
@@ -124,6 +123,9 @@ export const getAdvancedSearchQuery = (
       const operator = field.operator || params.operator || '='
       if (field.key === 'owner') {
         return `registryOwners.name ${operator} ${value}`
+      }
+      if (field.key === 'shiptypes') {
+        return `combinedSourcesInfo.shiptypes.name ${operator} ${value}`
       }
       return rootObject
         ? `${rootObject}.${field.key} ${operator} ${value}`

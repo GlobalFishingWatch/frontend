@@ -48,7 +48,7 @@ const ReportGraphTooltip = (props: any) => {
   let translatedLabel = ''
   if (EMPTY_API_VALUES.includes(label)) translatedLabel = t('common.unknown', 'Unknown')
   else if (type === 'geartype') {
-    translatedLabel = getVesselGearType({ geartype: label })
+    translatedLabel = getVesselGearType({ geartypes: label })
   } else {
     translatedLabel = t(`flags:${label}` as any, label)
   }
@@ -88,7 +88,7 @@ const CustomTick = (props: any) => {
     if (EMPTY_API_VALUES.includes(label)) return t('analysis.unknown', 'Unknown')
     switch (selectedReportVesselGraph) {
       case 'geartype':
-        return getVesselGearType({ geartype: label })
+        return getVesselGearType({ geartypes: label })
       case 'vesselType':
         return `${t(`vessel.vesselTypes.${label?.toLowerCase()}` as any, label)}`
       case 'flag':

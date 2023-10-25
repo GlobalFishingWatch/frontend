@@ -152,7 +152,7 @@ function DownloadActivityByVessel() {
 
     timeoutRef.current = setTimeout(() => {
       dispatch(resetDownloadActivityStatus())
-    }, 1500)
+    }, 3000)
   }
   return (
     <Fragment>

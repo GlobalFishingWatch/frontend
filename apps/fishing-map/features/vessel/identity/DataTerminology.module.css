@@ -11,6 +11,10 @@
   text-decoration: underline;
 }
 
+.content img {
+  max-width: 100%;
+}
+
 .infoButton {
   vertical-align: text-bottom;
 }

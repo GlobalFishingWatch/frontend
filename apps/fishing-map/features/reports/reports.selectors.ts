@@ -3,7 +3,7 @@ import { groupBy, sum, sumBy, uniq, uniqBy } from 'lodash'
 import { matchSorter } from 'match-sorter'
 import { t } from 'i18next'
 import { FeatureCollection, MultiPolygon } from 'geojson'
-import { Dataset, DatasetTypes, GearType, ReportVessel } from '@globalfishingwatch/api-types'
+import { Dataset, DatasetTypes, ReportVessel } from '@globalfishingwatch/api-types'
 import { getGeometryDissolved, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import {
   selectActiveReportDataviews,
@@ -225,7 +225,7 @@ export const selectReportVesselsListWithAllInfo = createSelector(
           flagTranslatedClean: cleanFlagState(
             t(`flags:${vesselActivity[0]?.flag as string}` as any, vesselActivity[0]?.flag)
           ),
-          geartype: getVesselGearType({ geartype: vesselActivity[0]?.geartype }),
+          geartype: getVesselGearType({ geartypes: vesselActivity[0]?.geartype }),
           vesselType: t(
             `vessel.veeselTypes.${vesselActivity[0]?.vesselType}` as any,
             vesselActivity[0]?.vesselType
@@ -242,7 +242,7 @@ export function cleanVesselOrGearType({ value, property }: CleanVesselOrGearType
   const valuesCleanTranslated = valuesClean
     .map((value) => {
       if (property === 'geartype') {
-        return getVesselGearType({ geartype: value as GearType })
+        return getVesselGearType({ geartypes: value })
       }
       return t(`vessel.vesselTypes.${value?.toLowerCase()}` as any, value)
     })
