@@ -598,8 +598,8 @@
   "vessel": {
     "activityByType": "Por tipo",
     "activityByVoyages": "Por viagens",
-    "authorization": "autorização",
     "addToWorkspace": "Adicionar embarcação na visualização",
+    "authorization": "autorização",
     "beam": "Rede de draga",
     "callsign": "Código de chamada",
     "capacity": "Capacidade",
@@ -618,6 +618,7 @@
     "geartype": "Petrechos de pesca",
     "geartype_other": "Petrechos de pesca",
     "gearType_short": "petrecho",
+    "geartypes": "Petrechos de pesca",
     "gearTypes": {
       "bunker": "Bunker ou petroleiro",
       "bunker_or_tanker": "Bunker",
@@ -717,6 +718,7 @@
     "owner": "Proprietário",
     "owners": "Owners",
     "registeredGearType": "Tipo de petrecho registrado",
+    "registryGeartype": "Registry Gear Type",
     "registrySources": "fontes de registro",
     "sectionActivity": "Atividade",
     "sectionAreas": "Áreas",
@@ -726,6 +728,7 @@
     "share": "Compartilhar embarcação",
     "shipname": "Nome",
     "shiptype": "Tipos de embarcação",
+    "shiptypes": "Ship types",
     "showOtherLayers": "Mostrar outras camadas",
     "source": "Fonte",
     "source_short": "Fonte",

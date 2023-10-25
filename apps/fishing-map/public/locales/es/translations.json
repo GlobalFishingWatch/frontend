@@ -598,8 +598,8 @@
   "vessel": {
     "activityByType": "Por tipo",
     "activityByVoyages": "Por viajes",
-    "authorization": "autorización",
     "addToWorkspace": "Añadir embarcación a la vista",
+    "authorization": "autorización",
     "beam": "Manga",
     "callsign": "Señal distintiva de llamada",
     "capacity": "Capacidad",
@@ -618,6 +618,7 @@
     "geartype": "Arte de pesca",
     "geartype_other": "Artes de pesca",
     "gearType_short": "Arte",
+    "geartypes": "Artes de pesca",
     "gearTypes": {
       "bunker": "Aprovisionamiento o petrolero",
       "bunker_or_tanker": "Aprovisionamiento",
@@ -717,6 +718,7 @@
     "owner": "Propietario",
     "owners": "Owners",
     "registeredGearType": "Arte de pesca registrado",
+    "registryGeartype": "Registry Gear Type",
     "registrySources": "Fuentes",
     "sectionActivity": "Actividad",
     "sectionAreas": "Áreas",
@@ -726,6 +728,7 @@
     "share": "Compartir embarcación",
     "shipname": "Nombre",
     "shiptype": "Tipos de embarcaciones",
+    "shiptypes": "Ship types",
     "showOtherLayers": "Mostrar otras capas",
     "source": "Fuente",
     "source_short": "Fuente",
