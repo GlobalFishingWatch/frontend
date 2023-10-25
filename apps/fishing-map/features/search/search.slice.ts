@@ -98,7 +98,10 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           const isInFieldsAllowed =
             fieldsAllowed.includes(field) ||
             fieldsAllowed.includes(`${filters.infoSource}.${field}`) ||
-            (field === 'owner' && fieldsAllowed.includes('registryOwners.name'))
+            (field === 'owner' && fieldsAllowed.includes('registryOwners.name')) ||
+            (field === 'shiptypes' &&
+              fieldsAllowed.includes('combinedSourcesInfo.shiptypes.name')) ||
+            (field === 'geartypes' && fieldsAllowed.includes('combinedSourcesInfo.geartypes.name'))
           const filter = (filters as any)[field]
           if (filter && isInFieldsAllowed) {
             let value = filter
