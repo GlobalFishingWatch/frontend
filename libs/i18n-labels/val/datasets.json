@@ -2331,6 +2331,22 @@
       "firstTransmissionDate": "crwdns66545:0crwdne66545:0"
     }
   },
+  "public-global-vessel-identity": {
+    "name": "crwdns70132:0crwdne70132:0",
+    "description": "crwdns70134:0crwdne70134:0",
+    "schema": {
+      "id": "crwdns70136:0crwdne70136:0",
+      "dataset": "crwdns70138:0crwdne70138:0",
+      "registryInfo": "crwdns70140:0crwdne70140:0",
+      "registryOwners": "crwdns70142:0crwdne70142:0",
+      "selfReportedInfo": "crwdns70144:0crwdne70144:0",
+      "combinedSourcesInfo": "crwdns70146:0crwdne70146:0",
+      "lastTransmissionDate": "crwdns70148:0crwdne70148:0",
+      "firstTransmissionDate": "crwdns70150:0crwdne70150:0",
+      "registryAuthorizations": "crwdns70152:0crwdne70152:0",
+      "registryLastUpdateDate": "crwdns70154:0crwdne70154:0"
+    }
+  },
   "public-global-vessel-insights": {
     "name": "crwdns66547:0crwdne66547:0",
     "description": "crwdns66549:0crwdne66549:0",
@@ -2814,8 +2830,8 @@
     }
   },
   "public-panama-vessel-identity-fishing": {
-    "name": "crwdns70128:0crwdne70128:0",
-    "description": "crwdns70130:0crwdne70130:0",
+    "name": "crwdns70156:0crwdne70156:0",
+    "description": "crwdns70158:0crwdne70158:0",
     "schema": {
       "id": "crwdns69176:0crwdne69176:0",
       "selfReportedInfo": "crwdns69178:0crwdne69178:0",

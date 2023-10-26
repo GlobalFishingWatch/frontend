@@ -1,11 +1,11 @@
 {
   "analysis": {
     "activityChange": "Cambio de actividad",
-    "around": "around",
+    "around": "alrededor de",
     "beforeAfter": "Antes/Después",
     "beforeAfterDate": "fecha",
     "beforeAfterRange": "{{duration}} antes y después del {{compareStart}}",
-    "buffer": "Buffer area",
+    "buffer": "Búfer",
     "bufferedArea": "{{value}} {{unit}} buffered area",
     "bufferOperationLabel": "Analysis area",
     "change": "Cambio",
@@ -532,7 +532,7 @@
     "removeVessel": "Eliminar embarcación",
     "result_one": "resultado",
     "result_other": "resultados",
-    "searching": "Searching more than 100K vessels ...",
+    "searching": "Buscando en más de 100.000 embarcaciones ...",
     "seeing": "Viendo",
     "seeVessel": "Ver embarcación",
     "seeVesselsOnMap": "Ver embarcaciones en el mapa",
