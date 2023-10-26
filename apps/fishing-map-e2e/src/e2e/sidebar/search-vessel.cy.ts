@@ -58,8 +58,6 @@ describe('Basic search for a vessel', () => {
             .click()
           cy.getBySel('search-vessels-add-vessel').click()
           scrollSidebar('center', 2000)
-          console.log(vessel)
-          console.log(vessel.text())
           cy.getBySel('vessel-layer-vessel-name')
             .contains(vessel.text(), getDOMTimeout(10000))
             .should('exist')

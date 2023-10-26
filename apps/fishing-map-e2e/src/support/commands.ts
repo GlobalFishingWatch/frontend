@@ -14,6 +14,9 @@ declare namespace Cypress {
   interface Chainable<Subject> {
     login(email: string, password: string): void
     store(reducerName: string): void
+    forceClick(
+      options?: Partial<Loggable & Timeoutable & Withinable & Shadow>
+    ): Cypress.Chainable<JQuery<HTMLElement>>
     getBySel(
       selector: string,
       options?: Partial<Loggable & Timeoutable & Withinable & Shadow>
@@ -40,6 +43,10 @@ declare namespace Cypress {
     ): Cypress.Chainable<JQuery<HTMLElement>>
   }
 }
+
+Cypress.Commands.add('forceClick', { prevSubject: 'element' }, (subject, options) => {
+  cy.wrap(subject).click({ force: true })
+})
 
 function loginViaAuthAPI(username: string, password: string) {
   // App landing page redirects to Auth0.
