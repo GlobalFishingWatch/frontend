@@ -127,6 +127,9 @@ export const getAdvancedSearchQuery = (
       if (field.key === 'shiptypes') {
         return `combinedSourcesInfo.shiptypes.name ${operator} ${value}`
       }
+      if (rootObject === 'selfReportedInfo' && field.key === 'geartypes') {
+        return `combinedSourcesInfo.geartypes.name ${operator} ${value}`
+      }
       return rootObject
         ? `${rootObject}.${field.key} ${operator} ${value}`
         : `${field.key} ${operator} ${value}`
