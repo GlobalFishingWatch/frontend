@@ -143,6 +143,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                         : t('search.seeVessel', 'See vessel')
                     }
                     onClick={(e) => onVesselClick(e, vessel)}
+                    className="print-hidden"
                     size="small"
                   />
                 </div>
