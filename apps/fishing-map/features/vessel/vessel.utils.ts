@@ -166,7 +166,10 @@ export function getVesselProperty<P extends VesselIdentityProperty>(
       vessel.registryOwners?.filter((owner) => owner.ssvid === ssvid)?.map(({ name }) => name)
     ).join(', ') as VesselProperty<P>
   }
-  if (property === 'geartypes' || property === 'shiptypes') {
+  if (
+    identitySource !== VesselIdentitySourceEnum.Registry &&
+    (property === 'geartypes' || property === 'shiptypes')
+  ) {
     const vesselId = getVesselProperty(vessel, 'id', {
       identityId,
       identitySource: VesselIdentitySourceEnum.SelfReported,

@@ -117,7 +117,7 @@ export type RelatedDataset = {
   type: DatasetTypes
 }
 
-export type DatasetSchemaType = 'range' | 'number' | 'string' | 'boolean'
+export type DatasetSchemaType = 'range' | 'number' | 'string' | 'boolean' | 'array'
 
 export type DatasetSchemaItem = {
   type: DatasetSchemaType

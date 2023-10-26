@@ -19,6 +19,7 @@ import {
   VesselType,
   DatasetSchema,
   DatasetSchemaItem,
+  IdentityVessel,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
@@ -69,6 +70,16 @@ export type SupportedEventsDatasetSchema = 'duration'
 
 const CONTEXT_DATASETS_SCHEMAS: SupportedContextDatasetSchema[] = ['removal_of']
 const SINGLE_SELECTION_SCHEMAS: SupportedDatasetSchema[] = ['vessel-groups']
+
+export type SchemaCompatibilityOperation = 'every' | 'some'
+export type SchemaOriginParam =
+  | keyof Pick<IdentityVessel, 'selfReportedInfo' | 'registryInfo'>
+  | 'all'
+export type GetSchemaInDataviewParams = {
+  vesselGroups?: MultiSelectOption[]
+  compatibilityOperation?: SchemaCompatibilityOperation
+  schemaOrigin?: SchemaOriginParam
+}
 
 export type SchemaFieldDataview =
   | UrlDataviewInstance
@@ -386,27 +397,74 @@ export const hasDatasetConfigVesselData = (datasetConfig: DataviewDatasetConfig)
   )
 }
 
-export const getDatasetSchemaItem = (dataset: Dataset, schema: SupportedDatasetSchema) => {
-  const schemaItem = dataset?.schema?.[schema] as DatasetSchemaItem
-  if (schemaItem) {
-    return schemaItem
+const getSchemaItemByOrigin = (
+  dataset: Dataset,
+  schema: SupportedDatasetSchema,
+  schemaOrigin: Exclude<SchemaOriginParam, 'all'>
+) => {
+  const schemaInfo = dataset?.schema?.[schemaOrigin] as DatasetSchema
+  const schemaInfoItem = schemaInfo?.items?.[schema] as DatasetSchemaItem
+  if (schemaInfoItem) {
+    return schemaInfoItem
   }
-  const selfReportedInfo = dataset?.schema?.selfReportedInfo as DatasetSchema
-  const selfReportedInfoItem = selfReportedInfo?.items?.[schema] as DatasetSchemaItem
-  if (selfReportedInfoItem) {
-    return selfReportedInfoItem
-  }
-  const selfReportedInfoPropertiesItem = (selfReportedInfo?.items?.properties as any)?.[
+  const schemaInfoPropertiesItem = (schemaInfo?.items?.properties as any)?.[
     schema
   ] as DatasetSchemaItem
-  if (selfReportedInfoPropertiesItem) {
-    return selfReportedInfoPropertiesItem
+  if (schemaInfoPropertiesItem) {
+    return schemaInfoPropertiesItem
   }
-  if (schema === 'geartypes' || schema === 'shiptypes') {
+  // combinedSourcesInfo so far only applies for selfReportInfo properties
+  if (schemaOrigin !== 'registryInfo' && (schema === 'geartypes' || schema === 'shiptypes')) {
     const combinedSourceSchema = (dataset.schema?.combinedSourcesInfo?.items as DatasetSchemaItem)
       ?.properties?.[schema]?.items as DatasetSchemaItem
     return combinedSourceSchema?.properties?.name || null
   }
+}
+
+const combineSchemaItems = (schema1: DatasetSchemaItem, schema2: DatasetSchemaItem) => {
+  if (!schema1 || !schema2) {
+    return schema1 || schema2
+  }
+
+  if (schema1.type === 'array' && schema1.type === 'array') {
+    return {
+      type: 'array',
+      items: {
+        type: 'string',
+        enum: uniq([...(schema1.items?.enum || []), ...(schema2.items?.enum || [])]).sort(),
+      },
+    } as DatasetSchemaItem
+  }
+
+  console.warn('schemas not compatible to merge, returing first schema')
+  return schema1 || schema2
+}
+
+export const getDatasetSchemaItem = (
+  dataset: Dataset,
+  schema: SupportedDatasetSchema,
+  schemaOrigin: SchemaOriginParam = 'selfReportedInfo'
+) => {
+  const schemaItem = dataset?.schema?.[schema] as DatasetSchemaItem
+  if (schemaItem) {
+    return schemaItem
+  }
+
+  if (schemaOrigin === 'all') {
+    const selfReportedInfo: DatasetSchemaItem = getDatasetSchemaItem(
+      dataset,
+      schema,
+      'selfReportedInfo'
+    ) as DatasetSchemaItem
+    const registryInfo = getDatasetSchemaItem(dataset, schema, 'registryInfo') as DatasetSchemaItem
+    return combineSchemaItems(selfReportedInfo, registryInfo)
+  } else {
+    const nestedSchemaItem = getSchemaItemByOrigin(dataset, schema, schemaOrigin)
+    if (nestedSchemaItem) {
+      return nestedSchemaItem
+    }
+  }
+
   return null
 }
 
@@ -502,7 +560,11 @@ export const getActiveDatasetsInDataview = (dataview: SchemaFieldDataview) => {
 export const getCommonSchemaFieldsInDataview = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema,
-  { vesselGroups = [], compatibilityOperation = 'every' } = {} as GetSchemaInDataviewParams
+  {
+    vesselGroups = [],
+    compatibilityOperation = 'every',
+    schemaOrigin,
+  } = {} as GetSchemaInDataviewParams
 ): SchemaFieldSelection[] => {
   const activeDatasets = getActiveDatasetsInDataview(dataview)
   if (schema === 'flag') {
@@ -521,7 +583,7 @@ export const getCommonSchemaFieldsInDataview = (
   }
   const schemaType = getCommonSchemaTypeInDataview(dataview, schema)
   let schemaFields: string[][] = (activeDatasets || [])?.map((d) => {
-    const schemaItem = getDatasetSchemaItem(d, schema)
+    const schemaItem = getDatasetSchemaItem(d, schema, schemaOrigin)
     return schemaItem?.enum || schemaItem?.items?.enum || []
   })
   if (schemaType === 'number') {
@@ -653,11 +715,16 @@ export type SchemaFilter = {
 export const getFiltersBySchema = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema,
-  { vesselGroups = [], compatibilityOperation = 'every' } = {} as GetSchemaInDataviewParams
+  {
+    vesselGroups = [],
+    compatibilityOperation = 'every',
+    schemaOrigin,
+  } = {} as GetSchemaInDataviewParams
 ): SchemaFilter => {
   const options = getCommonSchemaFieldsInDataview(dataview, schema, {
     vesselGroups,
     compatibilityOperation,
+    schemaOrigin,
   })
   const type = getCommonSchemaTypeInDataview(dataview, schema) as DatasetSchemaType
   const singleSelection = getSchemaFilterSingleSelection(schema)
@@ -691,11 +758,6 @@ export const getFiltersBySchema = (
   }
 }
 
-type SchemaCompatibilityOperation = 'every' | 'some'
-type GetSchemaInDataviewParams = {
-  vesselGroups?: MultiSelectOption[]
-  compatibilityOperation?: SchemaCompatibilityOperation
-}
 export const getSchemaFiltersInDataview = (
   dataview: SchemaFieldDataview,
   { vesselGroups } = {} as GetSchemaInDataviewParams
