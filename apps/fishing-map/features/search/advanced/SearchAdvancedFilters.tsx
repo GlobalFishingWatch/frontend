@@ -60,6 +60,8 @@ const getSearchDataview = (
   }
 }
 
+const FILTERS_WITH_SHARED_SELECTION_COMPATIBILITY = ['geartypes', 'shiptypes', 'flag']
+
 type ImcompatibleFilter = { id: keyof VesselSearchState; values: string[] }
 type IncompatibleFilterSelection = {
   filter: keyof VesselSearchState
@@ -143,9 +145,12 @@ function SearchAdvancedFilters() {
   }, [datasets, searchFilters, sources])
 
   const schemaFilters = schemaFilterIds.map((id) => {
+    const isSharedSelectionSchema = FILTERS_WITH_SHARED_SELECTION_COMPATIBILITY.includes(id)
     return getFiltersBySchema(dataview, id as SupportedDatasetSchema, {
-      compatibilityOperation:
-        id === 'geartypes' || id === 'shiptypes' || id === 'flag' ? 'some' : 'every',
+      ...(isSharedSelectionSchema && {
+        schemaOrigin: infoSource || 'all',
+        compatibilityOperation: 'some',
+      }),
     })
   })
 
@@ -215,7 +220,7 @@ function SearchAdvancedFilters() {
           const incompatibleQuery = Object.fromEntries(
             incompatibleFilters.map((s) => [s, undefined])
           )
-          setSearchFilters({ infoSource: id, ...incompatibleQuery })
+          setSearchFilters({ infoSource: id, geartypes: undefined, ...incompatibleQuery })
 
           if (id === VesselIdentitySourceEnum.Registry) {
             // This is the only dataset with support for registry so far

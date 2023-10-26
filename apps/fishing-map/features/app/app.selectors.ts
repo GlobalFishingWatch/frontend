@@ -23,6 +23,9 @@ import {
   selectLocationAreaId,
   selectReportId,
   selectIsAnyVesselLocation,
+  selectUrlBufferValueQuery,
+  selectUrlBufferUnitQuery,
+  selectUrlBufferOperationQuery,
 } from 'routes/routes.selectors'
 import {
   Bbox,
@@ -272,23 +275,23 @@ export const selectReportResultsPerPage = createSelector(
 )
 
 export const selectReportBufferValue = createSelector(
-  [selectWorkspaceStateProperty('reportBufferValue')],
-  (reportBufferValue): number => {
-    return reportBufferValue
+  [selectWorkspaceStateProperty('reportBufferValue'), selectUrlBufferValueQuery],
+  (workspaceBufferValue, urlBufferValue): number => {
+    return workspaceBufferValue || urlBufferValue
   }
 )
 
 export const selectReportBufferUnit = createSelector(
-  [selectWorkspaceStateProperty('reportBufferUnit')],
-  (reportBufferUnit): BufferUnit => {
-    return reportBufferUnit
+  [selectWorkspaceStateProperty('reportBufferUnit'), selectUrlBufferUnitQuery],
+  (workspaceBufferUnit, urlBufferUnit): BufferUnit => {
+    return workspaceBufferUnit || urlBufferUnit
   }
 )
 
 export const selectReportBufferOperation = createSelector(
-  [selectWorkspaceStateProperty('reportBufferOperation')],
-  (reportBufferOperation): BufferOperation => {
-    return reportBufferOperation
+  [selectWorkspaceStateProperty('reportBufferOperation'), selectUrlBufferOperationQuery],
+  (workspaceBufferOperation, urlBufferOperation): BufferOperation => {
+    return workspaceBufferOperation || urlBufferOperation
   }
 )
 
@@ -344,6 +347,7 @@ export const selectWorkspaceReportState = createSelector(
     selectReportVesselPage,
     selectReportBufferValue,
     selectReportBufferUnit,
+    selectReportBufferOperation,
   ],
   (
     reportActivityGraph,
@@ -356,7 +360,8 @@ export const selectWorkspaceReportState = createSelector(
     reportVesselGraph,
     reportVesselPage,
     reportBufferValue,
-    reportBufferUnit
+    reportBufferUnit,
+    reportBufferOperation
   ) => ({
     ...(reportActivityGraph && { reportActivityGraph }),
     ...(reportAreaBounds && { reportAreaBounds }),
@@ -369,6 +374,7 @@ export const selectWorkspaceReportState = createSelector(
     ...(reportVesselPage && { reportVesselPage }),
     ...(reportBufferValue && { reportBufferValue }),
     ...(reportBufferUnit && { reportBufferUnit }),
+    ...(reportBufferOperation && { reportBufferOperation }),
   })
 )
 

@@ -19,6 +19,7 @@ import {
   selectWorkspaceCustomStatus,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
+import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   selectIsAnySearchLocation,
@@ -289,6 +290,7 @@ function CloseReportButton() {
     cleanFeatureState('highlight')
     dispatch(resetReportData())
     dispatch(resetAreaDetail(reportAreaIds))
+    dispatch(cleanCurrentWorkspaceStateBufferParams())
   }
 
   const linkTo = {
