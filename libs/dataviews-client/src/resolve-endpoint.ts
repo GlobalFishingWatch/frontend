@@ -1,3 +1,4 @@
+import { API_VERSION } from '@globalfishingwatch/api-client'
 import {
   Dataset,
   DatasetTypes,
@@ -22,28 +23,55 @@ export const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDataset
   if (datasetConfig.query) {
     const resolvedQuery = new URLSearchParams()
     datasetConfig.query.forEach((query) => {
-      // if (query)
       const endpointQuery = endpoint.query.find((q) => q.id === query.id)
-      // TODO: this won't scale, we need another meta in Dataset
-      if (endpointQuery && arrayQueryParams.includes(endpointQuery.type)) {
+      if (
+        endpointQuery &&
+        (endpointQuery.array === true || arrayQueryParams.includes(endpointQuery.type))
+      ) {
         const queryArray = Array.isArray(query.value)
           ? (query.value as string[])
           : [query.value as string]
-        queryArray.forEach((queryArrItem, i) => {
-          const queryArrId = `${query.id}[${i}]`
-          resolvedQuery.set(queryArrId, queryArrItem)
-        })
+
+        // TODO check if we can remove this once map only uses v3 in dev and pro
+        if (
+          endpoint.id === 'list-vessels' &&
+          endpointQuery.id === 'vessel-groups' &&
+          API_VERSION === 'v2'
+        ) {
+          resolvedQuery.set(query.id, queryArray.join(','))
+        } else {
+          queryArray.forEach((queryArrItem, i) => {
+            const queryArrId = `${query.id}[${i}]`
+            resolvedQuery.set(queryArrId, queryArrItem)
+          })
+        }
       } else {
-        resolvedQuery.set(query.id, query.value.toString())
+        if (Array.isArray(query.value)) {
+          query.value.forEach((queryArrItem, i) => {
+            const queryArrId = `${query.id}[${i}]`
+            resolvedQuery.set(queryArrId, queryArrItem)
+          })
+        } else {
+          resolvedQuery.set(query.id, query.value.toString())
+        }
       }
     })
+
     // To avoid duplicating query in every config when we already have the datasetId
     if (
       endpoint.query.some((q) => q.id === 'datasets') &&
       !resolvedQuery.toString().includes('datasets') &&
       datasetConfig.datasetId
     ) {
-      resolvedQuery.set('datasets', datasetConfig.datasetId)
+      const datasetString = API_VERSION === 'v2' ? 'datasets' : 'datasets[0]'
+      resolvedQuery.set(datasetString, datasetConfig.datasetId)
+    } else if (
+      // Also check v3 new single dataset param
+      endpoint.query.some((q) => q.id === 'dataset') &&
+      !resolvedQuery.toString().includes('dataset') &&
+      datasetConfig.datasetId
+    ) {
+      resolvedQuery.set('dataset', datasetConfig.datasetId)
     }
     url = `${url}?${resolvedQuery.toString()}`
   } else if (

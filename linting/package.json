@@ -29,10 +29,10 @@
   },
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "devDependencies": {
-    "@next/eslint-plugin-next": "13.x",
-    "@typescript-eslint/eslint-plugin": "5.x",
-    "@typescript-eslint/parser": "5.x",
-    "@typescript-eslint/scope-manager": "5.x",
+    "@next/eslint-plugin-next": "^13.5.3",
+    "@typescript-eslint/eslint-plugin": "6.x",
+    "@typescript-eslint/parser": "6.x",
+    "@typescript-eslint/scope-manager": "6.x",
     "babel-eslint": "10.x",
     "eslint": "8.x",
     "eslint-config-next": "13.x",
@@ -47,7 +47,7 @@
     "eslint-plugin-react-hooks": "4.x",
     "prettier": "2.x",
     "prettier-eslint": "15.x",
-    "stylelint": "14.x",
+    "stylelint": "15.x",
     "stylelint-config-css-modules": "4.x",
     "stylelint-config-prettier": "9.x",
     "stylelint-config-standard": "29.x"

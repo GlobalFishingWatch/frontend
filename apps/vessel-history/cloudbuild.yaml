@@ -8,11 +8,11 @@ steps:
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
-    name: node:18-alpine
+    name: node:18
     script: |
       if [ ! -d "node_modules" ]; then
         apk add git
-        yarn set version 3.5.1
+        yarn set version 3.6.1
         yarn -v
         yarn install --immutable
       fi
@@ -33,7 +33,7 @@ steps:
 
   - id: 'build-app'
     waitFor: ['install-yarn']
-    name: node:18-alpine
+    name: node:18
     env:
       - 'COMMIT_SHA=$COMMIT_SHA'
       - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
@@ -51,9 +51,8 @@ steps:
       yarn -v
       yarn nx run vessel-history:build:production --parallel
 
-      raw_tag="${COMMIT_SHA};$NEXT_PUBLIC_URL;$NEXT_PUBLIC_API_GATEWAY;$NEXT_PUBLIC_WORKSPACE_ENV;$NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID;$NEXT_PUBLIC_GOOGLE_TAG_MANAGER_KEY;$NEXT_PUBLIC_CARRIER_PORTAL_URL;$NEXT_PUBLIC_LATEST_CARRIER_DATASET_ID;$NEXT_PUBLIC_FEEDBACK_SPREADSHEET_ID;$NEXT_PUBLIC_SPREADSHEET_CLIENT_EMAIL;$NEXT_PUBLIC_SPREADSHEET_PRIVATE_KEY"
-      tag=`echo $raw_tag | sha256sum`
-      tag=${tag:0:64}
+      raw_tag=" $COMMIT_SHA;$NEXT_PUBLIC_URL;$NEXT_PUBLIC_API_GATEWAY;$NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID;$NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID;$NEXT_PUBLIC_GOOGLE_ANALYTICS_DEBUG_MODE;$NEXT_PUBLIC_WORKSPACE_ENV;$NEXT_PUBLIC_TMT_CONTACT_US_URL;$NEXT_PUBLIC_FEEDBACK_FORM_EN;$NEXT_PUBLIC_FEEDBACK_FORM_FR;$NEXT_CUSTOM_ACCESS_TOKEN"
+      tag=`echo $raw_tag | sha256sum | cut -c1-64`
       echo $tag > image-tag
       echo Docker Image Tag: $tag
 

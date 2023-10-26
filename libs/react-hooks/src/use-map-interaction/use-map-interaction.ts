@@ -21,7 +21,12 @@ export type MaplibreGeoJSONFeature = GeoJSONFeature & {
 }
 
 type FeatureStates = 'click' | 'hover' | 'highlight'
-type FeatureStateSource = { source: string; sourceLayer: string; id: string; state?: FeatureStates }
+type FeatureStateSource = {
+  id: string
+  source: string
+  sourceLayer?: string
+  state?: FeatureStates
+}
 
 export const filterUniqueFeatureInteraction = (features: ExtendedFeature[]) => {
   const uniqueLayerIdFeatures: Record<string, string> = {}
@@ -201,8 +206,8 @@ export const useFeatureState = (map?: Map) => {
             map.setFeatureState(
               {
                 source: feature.source,
-                sourceLayer: feature.sourceLayer,
                 id: feature.id,
+                ...(feature.sourceLayer && { sourceLayer: feature.sourceLayer }),
               },
               { [state]: true }
             )

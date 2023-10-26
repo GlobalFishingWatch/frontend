@@ -1,16 +1,18 @@
-import type { MultiPolygon, Polygon } from 'geojson'
+import type { MultiPolygon, Point, Polygon } from 'geojson'
 
-export interface ContextAreaFeatureProperties {
+export interface TileContextAreaFeatureProperties {
   gfw_id: string
   [key: string]: string
 }
 
-export type ContextAreaFeatureGeom = Polygon | MultiPolygon
-export interface ContextAreaFeature<P = ContextAreaFeatureProperties> {
+export interface TileContextAreaFeature<
+  Geometry = Polygon | MultiPolygon | Point,
+  Properties = TileContextAreaFeatureProperties,
+> {
   id: string
   value?: string
   bbox?: [number, number, number, number] | undefined
   type: string
-  geometry: ContextAreaFeatureGeom
-  properties: P
+  geometry: Geometry
+  properties: Properties
 }

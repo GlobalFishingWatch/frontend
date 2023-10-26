@@ -42,3 +42,20 @@
 .actionButton.satellite {
   background-image: url('../../images/basemap-default.jpg');
 }
+
+.dot {
+  display: inline-block;
+  margin-right: 0.5rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.5rem;
+  background-color: currentcolor;
+}
+
+.info {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  color: var(--color-white);
+  opacity: var(--opacity-secondary);
+}

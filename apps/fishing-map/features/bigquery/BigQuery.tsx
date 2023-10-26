@@ -92,12 +92,15 @@ const BigQueryMenu: React.FC = () => {
     const action = await dispatch(
       createBigQueryDatasetThunk({ name, unit, createAsPublic, query, visualisationMode })
     )
-    if (aggregationOperation && createBigQueryDatasetThunk.fulfilled.match(action)) {
+    if (
+      (visualisationMode === '4wings' ? aggregationOperation !== null : true) &&
+      createBigQueryDatasetThunk.fulfilled.match(action)
+    ) {
       const dataset = action.payload.payload as Dataset
       const dataviewInstance =
         visualisationMode === '4wings'
           ? getBigQuery4WingsDataviewInstance(dataset.id, {
-              aggregationOperation,
+              aggregationOperation: aggregationOperation as AggregationOperation,
             })
           : getBigQueryEventsDataviewInstance(dataset.id)
       addNewDataviewInstances([dataviewInstance])
@@ -119,7 +122,6 @@ const BigQueryMenu: React.FC = () => {
         <InputText
           className={styles.input}
           labelClassName={styles.inputLabel}
-          inputSize="small"
           label="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -149,7 +151,6 @@ const BigQueryMenu: React.FC = () => {
             <InputText
               className={styles.input}
               labelClassName={styles.inputLabel}
-              inputSize="small"
               label="unit"
               value={unit}
               onChange={(e) => setUnit(e.target.value)}

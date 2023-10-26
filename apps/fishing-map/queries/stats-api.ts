@@ -4,20 +4,20 @@ import type { BaseQueryArg, BaseQueryFn } from '@reduxjs/toolkit/dist/query/base
 import type { SerializeQueryArgs } from '@reduxjs/toolkit/dist/query/defaultSerializeQueryArgs'
 import { gfwBaseQuery } from 'queries/base'
 import { uniq } from 'lodash'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { StatField, StatFields, StatType } from '@globalfishingwatch/api-types'
-import type { Range } from 'features/timebar/timebar.slice'
+import { DateTime } from 'luxon'
+import { getDatasetsExtent, type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { StatField, StatFields, StatType, StatsParams } from '@globalfishingwatch/api-types'
+import type { TimeRange } from 'features/timebar/timebar.slice'
 
 export type FetchDataviewStatsParams = {
-  timerange: Range
+  timerange: TimeRange
   dataview: UrlDataviewInstance
   fields?: StatField[]
 }
 
 interface CustomBaseQueryArg extends BaseQueryArg<BaseQueryFn> {
-  url: string
   dataview: UrlDataviewInstance
-  timerange: Range
+  timerange: TimeRange
 }
 const serializeStatsDataviewKey: SerializeQueryArgs<CustomBaseQueryArg> = ({ queryArgs }) => {
   return [
@@ -27,22 +27,34 @@ const serializeStatsDataviewKey: SerializeQueryArgs<CustomBaseQueryArg> = ({ que
   ].join('-')
 }
 
-export const DEFAULT_STATS_FIELDS = ['vessel-ids', 'flags']
+export const DEFAULT_STATS_FIELDS: StatsParams[] = ['VESSEL-IDS', 'FLAGS']
 // Define a service using a base URL and expected endpoints
 export const dataviewStatsApi = createApi({
   reducerPath: 'dataviewStatsApi',
-  serializeQueryArgs: serializeStatsDataviewKey,
   baseQuery: gfwBaseQuery({
     baseUrl: `/4wings/stats`,
   }),
   endpoints: (builder) => ({
     getStatsByDataview: builder.query<StatFields, FetchDataviewStatsParams>({
+      serializeQueryArgs: serializeStatsDataviewKey,
       query: ({ dataview, timerange, fields = DEFAULT_STATS_FIELDS }) => {
+        const datasets = dataview.datasets?.filter(
+          (dataset) => dataview.config?.datasets.includes(dataset.id)
+        )
+        const { extentStart, extentEnd = new Date().toISOString() } = getDatasetsExtent(datasets)
+        const laterStartDate = DateTime.max(
+          DateTime.fromISO(timerange.start),
+          DateTime.fromISO(extentStart as string)
+        )
+        const earlierEndDate = DateTime.min(
+          DateTime.fromISO(timerange.end),
+          DateTime.fromISO(extentEnd as string)
+        )
         const statsParams = {
           datasets: [dataview.config?.datasets?.join(',') || []],
           filters: [dataview.config?.filter] || [],
           'vessel-groups': [dataview.config?.['vessel-groups']] || [],
-          'date-range': [timerange.start, timerange.end].join(','),
+          'date-range': [laterStartDate.toISODate(), earlierEndDate.toISODate()].join(','),
         }
         return {
           url: `?fields=${fields.join(',')}&${stringify(statsParams, {

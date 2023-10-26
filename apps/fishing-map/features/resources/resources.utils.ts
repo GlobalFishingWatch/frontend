@@ -1,21 +1,78 @@
 import { FeatureCollection } from 'geojson'
 import {
+  // <<<<<<< HEAD
+  // =======
+  //   Dataset,
+  //   DataviewDatasetConfig,
+  // >>>>>>> develop
   DataviewDatasetConfigParam,
   EndpointId,
   ThinningConfig,
 } from '@globalfishingwatch/api-types'
+// <<<<<<< HEAD
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+// =======
+// import {
+//   GetDatasetConfigCallback,
+//   getTracksChunkSetId,
+//   UrlDataviewInstance,
+// } from '@globalfishingwatch/dataviews-client'
+// >>>>>>> develop
 import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
 import { hasDatasetConfigVesselData } from 'features/datasets/datasets.utils'
 import { TimebarGraphs } from 'types'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 
+// <<<<<<< HEAD
 type ThinningConfigParam = { config: ThinningConfig }
 export const trackDatasetConfigsCallback = (
   thinningConfig: ThinningConfigParam | null,
-  timebarGraph
+  timebarGraph: any
 ) => {
   return ([info, track, ...events], dataview: UrlDataviewInstance) => {
+    // =======
+    // type ThinningConfigParam = { zoom: number; config: ThinningConfig }
+
+    // export const infoDatasetConfigsCallback: GetDatasetConfigCallback = ([info]) => {
+    //   // Clean resources when mandatory vesselId is missing
+    //   // needed for vessels with no info datasets (zebraX)
+    //   const vesselData = hasDatasetConfigVesselData(info)
+    //   return vesselData ? [info] : []
+    // }
+
+    // export const eventsDatasetConfigsCallback: GetDatasetConfigCallback = (events) => {
+    //   const allEvents = events.map((event) => {
+    //     const hasPaginationAdded = Object.keys(DEFAULT_PAGINATION_PARAMS).every(
+    //       (id) => event.query?.map((q) => q.id).includes(id)
+    //     )
+    //     if (hasPaginationAdded) {
+    //       // Pagination already included, not needed to add it
+    //       return event
+    //     }
+    //     return {
+    //       ...event,
+    //       query: [
+    //         ...(Object.entries(DEFAULT_PAGINATION_PARAMS).map(([id, value]) => ({
+    //           id,
+    //           value,
+    //         })) as DataviewDatasetConfigParam[]),
+    //         ...(event?.query || []),
+    //       ],
+    //     }
+    //   })
+    //   return allEvents.filter(Boolean)
+    // }
+
+    // export const trackDatasetConfigsCallback = (
+    //   thinningConfig: ThinningConfigParam | null,
+    //   chunks: { start: string; end: string }[] | null,
+    //   timebarGraph: TimebarGraphs
+    // ): GetDatasetConfigCallback => {
+    //   return (
+    //     [track]: DataviewDatasetConfig[],
+    //     dataview?: UrlDataviewInstance
+    //   ): DataviewDatasetConfig[] => {
+    // >>>>>>> develop
     if (track?.endpoint === EndpointId.Tracks) {
       const thinningQuery = Object.entries(thinningConfig?.config || []).map(([id, value]) => ({
         id,
@@ -27,7 +84,8 @@ export const trackDatasetConfigsCallback = (
         trackGraph = { ...track }
         const fieldsQuery = {
           id: 'fields',
-          value: ['timestamp', timebarGraph].join(','),
+          // The api now requieres all params in upperCase
+          value: ['TIMESTAMP', timebarGraph.toUpperCase()],
         }
         const graphQuery = [...(track.query || []), ...thinningQuery]
         const fieldsQueryIndex = graphQuery.findIndex((q) => q.id === 'fields')
@@ -44,6 +102,7 @@ export const trackDatasetConfigsCallback = (
         query: [...(track.query || []), ...thinningQuery],
       }
 
+      // <<<<<<< HEAD
       const allEvents = events.map((event) => ({
         ...event,
         query: [
@@ -64,8 +123,57 @@ export const trackDatasetConfigsCallback = (
         ...(vesselData ? [info] : []),
         ...(trackGraph ? [trackGraph] : []),
       ]
+      // =======
+      //       // Generate one infoconfig per chunk (if specified)
+      //       // TODO move this in dataviews-client/get-resources, since merging back tracks together is done by the generic slice anyways
+      //       let allTracks = [trackWithThinning]
+
+      //       if (chunks) {
+      //         const chunkSetId = getTracksChunkSetId(trackWithThinning)
+      //         const dataset = dataview?.datasets?.find(
+      //           (d) => d.id === trackWithThinning.datasetId
+      //         ) as Dataset
+      //         // Workaround to avoid showing tracks outside the dataset bounds as the AIS data is changing at the end of 2022
+      //         const chunksWithDatasetBounds = chunks.flatMap((chunk) => {
+      //           if (dataset?.endDate && chunk.start >= dataset?.endDate) {
+      //             return []
+      //           }
+      //           return {
+      //             start:
+      //               dataset?.startDate && chunk.start <= dataset?.startDate
+      //                 ? dataset?.startDate
+      //                 : chunk.start,
+      //             end: dataset?.endDate && chunk.end >= dataset?.endDate ? dataset?.endDate : chunk.end,
+      //           }
+      //         })
+      //         allTracks = chunksWithDatasetBounds.map((chunk) => {
+      //           const trackChunk = {
+      //             ...trackWithThinning,
+      //             query: [
+      //               ...(trackWithThinning.query || []),
+      //               {
+      //                 id: 'start-date',
+      //                 value: chunk.start,
+      //               },
+      //               {
+      //                 id: 'end-date',
+      //                 value: chunk.end,
+      //               },
+      //             ],
+      //             metadata: {
+      //               ...(trackWithThinning.metadata || {}),
+      //               chunkSetId,
+      //               chunkSetNum: chunks.length,
+      //             },
+      //           }
+
+      //           return trackChunk
+      //         })
+      //       }
+      //       return [...allTracks, ...(trackGraph ? [trackGraph] : [])]
+      // >>>>>>> develop
     }
-    return [info, track, ...events].filter(Boolean)
+    return [track].filter(Boolean)
   }
 }
 

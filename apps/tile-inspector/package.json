@@ -16,18 +16,18 @@
     "d3-geom": "^0.0.0",
     "d3-quadtree": "^3.0.1",
     "d3-scale": "^3.3.0",
-    "luxon": "^2.5.2",
+    "luxon": "^3.4.3",
     "pbf": "^3.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
-    "recharts": "2.5.0"
+    "recharts": "2.8.0"
   },
   "devDependencies": {
     "@globalfishingwatch/linting": "2.0.2",
-    "@types/d3-quadtree": "^3.0.2",
-    "@types/d3-scale": "^4.0.3",
-    "@types/luxon": "^2.4.0",
+    "@types/d3-quadtree": "^3.0.3",
+    "@types/d3-scale": "^4.0.5",
+    "@types/luxon": "^3.3.2",
     "prop-types": "^15.8.1"
   },
   "browserslist": [

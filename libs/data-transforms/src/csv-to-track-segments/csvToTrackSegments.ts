@@ -1,4 +1,5 @@
-import { groupBy } from 'lodash'
+import { groupBy, toNumber } from 'lodash'
+import { DateTime, DateTimeOptions } from 'luxon'
 import { Segment } from '@globalfishingwatch/api-types'
 import { Columns } from './types'
 
@@ -6,17 +7,28 @@ type Args = Columns & {
   records: Record<string, any>[]
 }
 
-const getUTCDate = (timestamp: string) => {
-  const date = new Date(timestamp)
-  return new Date(
-    Date.UTC(
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate(),
-      date.getHours(),
-      date.getMinutes()
-    )
-  )
+type DateTimeParseFunction = { (timestamp: string, opts: DateTimeOptions | undefined): DateTime }
+
+export const getUTCDate = (timestamp: string | number) => {
+  // it could receive a timestamp as a string
+  const millis = toNumber(timestamp)
+  if (typeof timestamp === 'number' || !isNaN(millis))
+    return DateTime.fromMillis(millis, { zone: 'utc' }).toJSDate()
+
+  const tryParseMethods: DateTimeParseFunction[] = [
+    DateTime.fromISO,
+    DateTime.fromSQL,
+    DateTime.fromRFC2822,
+  ]
+  let result
+  for (let index = 0; index < tryParseMethods.length; index++) {
+    const parse = tryParseMethods[index]
+    result = parse(timestamp, { zone: 'UTC' })
+    if (result.isValid) {
+      return result.toJSDate()
+    }
+  }
+  return new Date('Invalid Date')
 }
 
 export const NO_RECORD_ID = 'no_id'

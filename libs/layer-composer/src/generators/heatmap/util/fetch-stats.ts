@@ -3,7 +3,7 @@ import { API_GATEWAY } from '../../../config'
 import { isUrlAbsolute } from '../../../utils'
 import { GlobalHeatmapGeneratorConfig } from '../heatmap'
 import { Stats, StatsByZoom } from '../types'
-import { toURLArray } from '.'
+import { toURLArray } from '../../utils'
 
 let controllerCache: AbortController
 export default function fetchStats(config: GlobalHeatmapGeneratorConfig) {

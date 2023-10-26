@@ -1,6 +1,8 @@
 import { uniqBy } from 'lodash'
 import {
   Dataset,
+  DatasetSchema,
+  DatasetSchemaItem,
   DatasetTypes,
   Dataview,
   DataviewDatasetConfig,
@@ -22,6 +24,13 @@ export type UrlDataviewInstance<T = GeneratorType> = Omit<DataviewInstance<T>, '
 export const FILTER_OPERATOR_SQL: Record<FilterOperator, string> = {
   [INCLUDE_FILTER_ID]: 'IN',
   [EXCLUDE_FILTER_ID]: 'NOT IN',
+}
+
+function getDatasetSchemaItem(dataset: Dataset, schema: string) {
+  return (
+    (dataset?.schema?.[schema] as DatasetSchemaItem) ||
+    (dataset?.schema?.selfReportedInfo as DatasetSchema)?.items?.[schema]
+  )
 }
 
 /**
@@ -347,14 +356,15 @@ export function resolveDataviews(
               ? filters[filterKey]
               : [filters[filterKey]]
 
-            const datasetSchema = dataviewInstance.datasets?.find(
-              (d) => d.schema?.[filterKey] !== undefined
-            )?.schema?.[filterKey]
+            const dataset = dataviewInstance.datasets?.find(
+              (d) => getDatasetSchemaItem(d, filterKey) !== undefined
+            )
+            const datasetSchema = getDatasetSchemaItem(dataset as Dataset, filterKey)
 
             if (datasetSchema && datasetSchema.type === 'range') {
-              const minPossible = Number(datasetSchema.enum[0])
+              const minPossible = Number(datasetSchema?.enum[0])
               const minSelected = Number(filterValues[0])
-              const maxPossible = Number(datasetSchema.enum[datasetSchema.enum.length - 1])
+              const maxPossible = Number(datasetSchema?.enum[datasetSchema.enum.length - 1])
               const maxSelected = Number(filterValues[filterValues.length - 1])
               if (minSelected !== minPossible && maxSelected !== maxPossible) {
                 return `${filterKey} >= ${minSelected} AND ${filterKey} <= ${maxSelected}`

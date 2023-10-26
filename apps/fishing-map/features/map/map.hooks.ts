@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { debounce } from 'lodash'
 import { useTranslation } from 'react-i18next'
-import { Geometry } from 'geojson'
+import { MultiPolygon, Point, Polygon } from 'geojson'
 import {
   InteractionEvent,
   TemporalGridFeature,
@@ -41,12 +41,12 @@ import {
   selectShowTimeComparison,
   selectTimeComparisonValues,
 } from 'features/reports/reports.selectors'
+import { selectDefaultMapGeneratorsConfig, selectMapGeneratorsDictionary } from './map.selectors'
 import {
-  selectDefaultMapGeneratorsConfig,
-  selectMapGeneratorsDictionary,
   WORKSPACES_POINTS_TYPE,
   WORKSPACE_GENERATOR_ID,
-} from './map.selectors'
+  REPORT_BUFFER_GENERATOR_ID,
+} from './map.config'
 import {
   setClickedEvent,
   selectClickedEvent,
@@ -182,7 +182,7 @@ export const useClickedEventConnect = () => {
                   workspaceId: workspace.properties.id,
                 },
               },
-          true
+          { replaceQuery: true }
         )
         const { latitude, longitude, zoom } = workspace.properties
         if (latitude && longitude && zoom) {
@@ -280,7 +280,7 @@ export type TooltipEventFeature = {
   datasetId?: string
   event?: ExtendedFeatureEvent
   generatorContextLayer?: ContextLayerType | null
-  geometry?: Geometry
+  geometry?: Point | Polygon | MultiPolygon
   id?: string
   layerId: string
   promoteId?: string
@@ -310,17 +310,24 @@ export type TooltipEvent = {
   features: TooltipEventFeature[]
 }
 
-export const useMapHighlightedEvent = (features?: TooltipEventFeature[]) => {
-  const highlightedEvents = useSelector(selectHighlightedEvents)
+export const useDebouncedDispatchHighlightedEvent = () => {
   const dispatch = useAppDispatch()
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debounceDispatch = useCallback(
-    debounce((eventId?: string) => {
-      dispatch(setHighlightedEvents(eventId ? [eventId] : undefined))
+  return useCallback(
+    debounce((eventIds?: string | string[]) => {
+      let ids: string[] | undefined
+      if (eventIds) {
+        ids = Array.isArray(eventIds) ? eventIds : [eventIds]
+      }
+      dispatch(setHighlightedEvents(ids))
     }, 100),
     []
   )
+}
+
+export const useMapHighlightedEvent = (features?: TooltipEventFeature[]) => {
+  const highlightedEvents = useSelector(selectHighlightedEvents)
+  const debounceDispatch = useDebouncedDispatchHighlightedEvent()
 
   const setHighlightedEventDebounced = useCallback(() => {
     let highlightEvent: string | undefined
@@ -401,6 +408,15 @@ export const parseMapTooltipFeatures = (
           category: DataviewCategory.Context,
         }
         return tooltipWorkspaceFeature
+      } else if (generatorId === REPORT_BUFFER_GENERATOR_ID) {
+        const tooltipWorkspaceFeature: TooltipEventFeature = {
+          ...baseFeature,
+          category: DataviewCategory.Context,
+          properties: {},
+          value: feature.properties.label,
+          visible: true,
+        }
+        return tooltipWorkspaceFeature
       }
       return []
     }
@@ -408,7 +424,8 @@ export const parseMapTooltipFeatures = (
     const title = getDatasetTitleByDataview(dataview)
 
     const datasets = getActiveDatasetsInActivityDataviews([dataview])
-    const subcategory = dataview?.datasets?.find(({ id }) => datasets.includes(id))?.subcategory
+    const subcategory = dataview?.datasets?.find(({ id }) => datasets.includes(id))
+      ?.subcategory as DatasetSubCategory
     const tooltipEventFeature: TooltipEventFeature = {
       title,
       type: dataview.config?.type,

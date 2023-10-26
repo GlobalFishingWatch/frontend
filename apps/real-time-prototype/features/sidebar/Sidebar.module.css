@@ -13,7 +13,7 @@
 .header {
   display: flex;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-block: 0.5rem;
 }
 
 .switch {
@@ -30,6 +30,9 @@
   height: 4rem;
   display: flex;
   align-items: center;
+}
+
+.sublayer:not(:last-child) {
   border-bottom: var(--border);
 }
 
@@ -71,4 +74,32 @@
 
 .secondary {
   color: var(--color-secondary-blue);
+}
+
+.downloadOptionsContainer {
+  position: relative;
+}
+
+.downloadOptionsList {
+  position: absolute;
+  background: var(--color-white);
+  box-shadow: var(--box-shadow);
+  top: 3.2rem;
+  right: 0;
+  width: max-content;
+  z-index: 1;
+}
+
+.downloadOption {
+  cursor: pointer;
+  opacity: var(--opacity-secondary);
+  padding: var(--space-S);
+}
+
+.downloadOption:hover {
+  opacity: var(--opacity-primary);
+}
+
+.downloadOption:not(:last-child) {
+  border-bottom: var(--border);
 }

@@ -12,7 +12,7 @@
   transform: translate(var(--space-XS), var(--space-S));
   background: var(--color-primary-blue);
   color: var(--color-white);
-  max-width: 32rem;
+  max-width: var(--sidebar-width);
 }
 
 .click .content,
@@ -23,7 +23,7 @@
 }
 
 .click .content {
-  min-width: 32rem;
+  min-width: var(--sidebar-width);
 }
 
 .click .loading {
@@ -198,6 +198,10 @@
   line-height: 1.2;
 }
 
+.rowText a {
+  text-decoration: underline;
+}
+
 .rowActions {
   display: flex;
   flex-wrap: nowrap;
@@ -215,19 +219,19 @@
   flex-wrap: wrap;
 }
 
-.hover:global(.mapboxgl-popup .mapboxgl-popup-content) {
+.hover:global(.maplibregl-popup .maplibregl-popup-content) {
   background: none;
   pointer-events: none;
 }
 
-.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-top .mapboxgl-popup-tip),
-.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip),
-.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-left .mapboxgl-popup-tip),
-.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-right .mapboxgl-popup-tip),
-.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip),
-.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip),
-.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip),
-.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip) {
+.hover:global(.maplibregl-popup.maplibregl-popup-anchor-top .maplibregl-popup-tip),
+.hover:global(.maplibregl-popup.maplibregl-popup-anchor-bottom .maplibregl-popup-tip),
+.hover:global(.maplibregl-popup.maplibregl-popup-anchor-left .maplibregl-popup-tip),
+.hover:global(.maplibregl-popup.maplibregl-popup-anchor-right .maplibregl-popup-tip),
+.hover:global(.maplibregl-popup.maplibregl-popup-anchor-top-left .maplibregl-popup-tip),
+.hover:global(.maplibregl-popup.maplibregl-popup-anchor-top-right .maplibregl-popup-tip),
+.hover:global(.maplibregl-popup.maplibregl-popup-anchor-bottom-left .maplibregl-popup-tip),
+.hover:global(.maplibregl-popup.maplibregl-popup-anchor-bottom-right .maplibregl-popup-tip) {
   display: none;
   border-width: 0 !important;
   pointer-events: none;

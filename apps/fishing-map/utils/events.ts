@@ -9,6 +9,7 @@ type EventProps = {
   start: number
   end: number
   type: EventTypes
+  mainVesselName?: string
   encounterVesselName?: string
   portName?: string
 }
@@ -31,6 +32,7 @@ export const getEventDescription = ({
   start,
   end,
   type,
+  mainVesselName,
   encounterVesselName,
   portName,
 }: EventProps) => {
@@ -59,23 +61,36 @@ export const getEventDescription = ({
     start: startLabel,
     duration: durationLabel,
   }
-  let description
+  let description: string
   let descriptionGeneric
   switch (type) {
-    case EventTypes.Encounter:
-      description = t(
-        'event.encounterActionWith',
-        'had an encounter with {{vessel}} starting at {{start}} for {{duration}}',
-        {
-          ...time,
-          vessel: encounterVesselName
-            ? encounterVesselName
-            : t('event.encounterAnotherVessel', 'another vessel'),
-        }
-      )
+    case EventTypes.Encounter: {
+      if (mainVesselName && encounterVesselName) {
+        description = t(
+          'event.encounterActionWithVessels',
+          '{{mainVessel}} had an encounter with {{encounterVessel}} starting at {{start}} for {{duration}}',
+          {
+            ...time,
+            mainVessel: mainVesselName,
+            encounterVessel: encounterVesselName,
+          }
+        )
+      } else {
+        description = t(
+          'event.encounterActionWith',
+          'had an encounter with {{vessel}} starting at {{start}} for {{duration}}',
+          {
+            ...time,
+            vessel: encounterVesselName
+              ? encounterVesselName
+              : t('event.encounterAnotherVessel', 'another vessel'),
+          }
+        )
+      }
 
       descriptionGeneric = t('event.encounter')
       break
+    }
     case EventTypes.Port:
       if (portName) {
         description = t(

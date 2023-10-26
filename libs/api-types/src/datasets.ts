@@ -12,7 +12,7 @@ export type EndpointParamType =
   | 'string'
   | 'date-iso'
   | 'sql'
-  | '4wings-datasets'
+  | '4wings-datasets' // legacy from v2 replaced by type: string, array: true
 
 export interface EndpointParam {
   id: string
@@ -78,7 +78,11 @@ export enum DatasetStatus {
 export type DatasetGeometryType = 'polygons' | 'tracks' | 'points' | 'draw'
 
 export interface DatasetDocumentation {
+  type?: string
+  enable?: boolean
+  status?: 'Active' | 'Deprecated'
   queries?: string[]
+  provider?: string
 }
 
 export interface DatasetConfiguration {
@@ -115,6 +119,20 @@ export type RelatedDataset = {
 
 export type DatasetSchemaType = 'range' | 'number' | 'string' | 'boolean'
 
+export type DatasetSchemaItem = {
+  type: DatasetSchemaType
+  maxLength: number
+  minLength: number
+  enum: string[]
+  min: number
+  max: number
+  stats?: boolean
+  unit?: string
+  singleSelection?: boolean
+  items?: { type: DatasetSchemaType; enum: string[] }
+  properties?: Record<string, DatasetSchemaItem>
+}
+
 export type DatasetSchema = {
   type: DatasetSchemaType
   maxLength: number
@@ -124,6 +142,8 @@ export type DatasetSchema = {
   max: number
   stats?: boolean
   unit?: string
+  singleSelection?: boolean
+  items?: Record<string, DatasetSchemaItem>
 }
 
 export enum DatasetCategory {
@@ -148,7 +168,7 @@ export interface Dataset {
   alias: string[] | null
   name: string
   description: string
-  schema?: Record<string, DatasetSchema>
+  schema?: Record<string, DatasetSchema | DatasetSchemaItem>
   category?: DatasetCategory
   subcategory?: DatasetSubCategory | EventTypes | string
   source?: string

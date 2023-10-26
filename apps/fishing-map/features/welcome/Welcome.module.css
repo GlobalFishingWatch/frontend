@@ -13,7 +13,8 @@
 }
 
 .partnerLogo {
-  width: 22rem;
+  max-width: 20rem;
+  max-height: 2.8rem;
 }
 
 .title {
@@ -47,7 +48,7 @@
   display: flex;
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (width <= 800px) {
   .container {
     padding: var(--space-S);
   }
@@ -57,7 +58,7 @@
   }
 }
 
-@media only screen and (max-width: 520px) {
+@media only screen and (width <= 520px) {
   .lngToggle {
     height: 4rem;
     width: 4rem;
@@ -65,7 +66,7 @@
   }
 }
 
-@media only screen and (min-width: 520px) {
+@media only screen and (width >= 520px) {
   .headerActions {
     position: absolute;
     top: var(--space-M);

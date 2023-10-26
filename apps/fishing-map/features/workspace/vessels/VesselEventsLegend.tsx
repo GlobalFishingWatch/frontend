@@ -10,9 +10,9 @@ import { EVENTS_COLORS } from 'data/config'
 import { selectVisibleEvents } from 'features/app/app.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { getEventsDatasetsInDataview } from 'features/datasets/datasets.utils'
-import { useLocationConnect } from 'routes/routes.hook'
 import { upperFirst } from 'utils/info'
 import { selectActiveVesselsDataviews } from 'features/dataviews/dataviews.slice'
+import { useVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
 import EncounterIcon from '../../../assets/icons/event-encounter.svg'
 import LoiteringIcon from '../../../assets/icons/event-loitering.svg'
 import PortIcon from '../../../assets/icons/event-port.svg'
@@ -25,42 +25,22 @@ type VesselEventsLegendProps = {
 function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.ReactElement | null {
   const { t } = useTranslation()
   const currentVisibleEvents = useSelector(selectVisibleEvents)
-  const { dispatchQueryParams } = useLocationConnect()
+  const { setVesselEventVisibility } = useVesselEvents(dataviews)
   const tracks = useSelector(selectActiveVesselsDataviews)
   const eventDatasets = uniqBy(
     dataviews.flatMap((dataview) => getEventsDatasetsInDataview(dataview)),
     'id'
   )
 
-  const allEventTypes = eventDatasets.flatMap((dataset) => dataset.subcategory || [])
   const showLegend =
     eventDatasets && eventDatasets?.length > 0 && dataviews.some((d) => d.config?.visible)
 
   const onEventChange = useCallback(
     (event: SwitchEvent) => {
       const eventTypeChanged = event.currentTarget.id as EventType
-      if (!event.active) {
-        const visibleEvents: any =
-          currentVisibleEvents === 'all'
-            ? allEventTypes.filter((eventType) => eventType !== eventTypeChanged)
-            : [...(currentVisibleEvents === 'none' ? [] : currentVisibleEvents), eventTypeChanged]
-        dispatchQueryParams({ visibleEvents })
-      } else {
-        const currentVisibleEventsTypes =
-          currentVisibleEvents === 'all'
-            ? allEventTypes
-            : currentVisibleEvents === 'none'
-            ? []
-            : currentVisibleEvents
-        const visibleEvents = currentVisibleEventsTypes.filter(
-          (eventType) => eventTypeChanged !== eventType
-        ) as EventType[]
-        dispatchQueryParams({
-          visibleEvents: visibleEvents?.length ? visibleEvents : 'none',
-        })
-      }
+      setVesselEventVisibility({ event: eventTypeChanged, visible: !event.active })
     },
-    [dispatchQueryParams, allEventTypes, currentVisibleEvents]
+    [setVesselEventVisibility]
   )
 
   const eventTypes = useMemo(() => {
@@ -90,9 +70,7 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
       <ul className={layerStyles.eventsLegendContainer}>
         {eventTypes.map(({ datasetId, eventType, active }) => {
           const color =
-            eventType === 'fishing' && tracks.length === 1
-              ? tracks[0].config?.color
-              : EVENTS_COLORS[eventType]
+            eventType === 'fishing' && tracks.length === 1 ? '#ffffff' : EVENTS_COLORS[eventType]
           return (
             <li
               key={datasetId}
@@ -103,10 +81,10 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
                 onClick={onEventChange}
                 id={eventType}
                 className={layerStyles.eventsLegendSwitch}
-                color={color}
+                color={EVENTS_COLORS[eventType]}
               />
               <label className={layerStyles.eventLegendLabel} htmlFor={eventType}>
-                {upperFirst(t(`event.${eventType}` as any, eventType))}
+                {upperFirst(t(`event.${eventType}` as any, eventType) as any)}
               </label>
               <div className={cx(layerStyles.iconWrapper, layerStyles[eventType])}>
                 <div

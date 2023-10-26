@@ -2,21 +2,28 @@ import { useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { Spinner } from '@globalfishingwatch/ui-components'
-import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
-import { selectIsReportLocation, selectLocationType } from 'routes/routes.selectors'
-import { USER, WORKSPACES_LIST } from 'routes/routes'
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
+import { selectReadOnly } from 'features/app/app.selectors'
+import {
+  selectIsAnyReportLocation,
+  selectIsAnySearchLocation,
+  selectIsAnyVesselLocation,
+  selectIsUserLocation,
+  selectIsWorkspacesListLocation,
+} from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
-import { isUserLogged, selectUserGroupsPermissions } from 'features/user/user.selectors'
-import { fetchResourceThunk } from 'features/resources/resources.slice'
-import { parseTrackEventChunkProps } from 'features/timebar/timebar.utils'
-import { parseUserTrackCallback } from 'features/resources/resources.utils'
+import { isUserLogged } from 'features/user/user.slice'
+import { selectUserGroupsPermissions } from 'features/user/user.selectors'
 import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
 import { fetchUserVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
+import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import Report from 'features/reports/Report'
 import { selectDataviewsResources } from 'features/dataviews/dataviews.slice'
+import { parseUserTrackCallback } from 'features/resources/resources.utils'
 import { DatasetTypes } from '../../../../libs/api-types/src/datasets'
+import VesselDetailWrapper from '../vessel/Vessel'
 import styles from './Sidebar.module.css'
 import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
@@ -37,8 +44,12 @@ type SidebarProps = {
   onMenuClick: () => void
 }
 
+export function getScrollElement() {
+  return document.querySelector('.scrollContainer') as HTMLElement
+}
+
 export function resetSidebarScroll() {
-  const scrollContainer = document.querySelector('.scrollContainer')
+  const scrollContainer = getScrollElement()
   if (scrollContainer) {
     scrollContainer.scrollTo({ top: 0 })
   }
@@ -47,10 +58,13 @@ export function resetSidebarScroll() {
 function Sidebar({ onMenuClick }: SidebarProps) {
   const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)
-  const searchQuery = useSelector(selectSearchQuery)
-  const locationType = useSelector(selectLocationType)
-  const isReportLocation = useSelector(selectIsReportLocation)
+  const isSmallScreen = useSmallScreen()
+  const isUserLocation = useSelector(selectIsUserLocation)
+  const isWorkspacesListLocation = useSelector(selectIsWorkspacesListLocation)
+  const isSearchLocation = useSelector(selectIsAnySearchLocation)
+  const isVesselLocation = useSelector(selectIsAnyVesselLocation)
   const dataviewsResources = useSelector(selectDataviewsResources)
+  const isReportLocation = useSelector(selectIsAnyReportLocation)
   const userLogged = useSelector(isUserLogged)
   const hasUserGroupsPermissions = useSelector(selectUserGroupsPermissions)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
@@ -85,11 +99,15 @@ function Sidebar({ onMenuClick }: SidebarProps) {
       return <Spinner />
     }
 
-    if (locationType === USER) {
+    if (isUserLocation) {
       return <User />
     }
 
-    if (locationType === WORKSPACES_LIST) {
+    if (isVesselLocation) {
+      return <VesselDetailWrapper />
+    }
+
+    if (isWorkspacesListLocation) {
       return highlightedWorkspacesStatus === AsyncReducerStatus.Loading ? (
         <Spinner />
       ) : (
@@ -101,19 +119,27 @@ function Sidebar({ onMenuClick }: SidebarProps) {
       return <Report />
     }
 
-    return <Workspace />
-  }, [userLogged, locationType, isReportLocation, highlightedWorkspacesStatus])
+    if (isSearchLocation) {
+      return <Search />
+    }
 
-  if (searchQuery !== undefined) {
-    return <Search />
-  }
+    return <Workspace />
+  }, [
+    highlightedWorkspacesStatus,
+    isReportLocation,
+    isSearchLocation,
+    isUserLocation,
+    isVesselLocation,
+    isWorkspacesListLocation,
+    userLogged,
+  ])
 
   return (
     <div className={styles.container}>
-      {!readOnly && <CategoryTabs onMenuClick={onMenuClick} />}
+      {!readOnly && !isSmallScreen && <CategoryTabs onMenuClick={onMenuClick} />}
       {/* New dataset modal is used in user and workspace pages*/}
       {datasetModal === 'new' && <NewDataset />}
-      <div className="scrollContainer">
+      <div className="scrollContainer" data-test="sidebar-container">
         <SidebarHeader />
         {sidebarComponent}
       </div>

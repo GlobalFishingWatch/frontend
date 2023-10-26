@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { DatasetAreaDetail, selectAreas } from 'features/areas/areas.slice'
 import { selectDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
-import { selectDownloadTrackId } from 'features/download/downloadTrack.slice'
+import { selectDownloadTrackIds } from 'features/download/downloadTrack.slice'
 
 export const selectDownloadActivityArea = createSelector(
   [selectDownloadActivityAreaKey, selectAreas],
@@ -10,8 +10,8 @@ export const selectDownloadActivityArea = createSelector(
   }
 )
 
-export const selectDownloadTrackModalOpen = createSelector([selectDownloadTrackId], (trackId) => {
-  return trackId !== ''
+export const selectDownloadTrackModalOpen = createSelector([selectDownloadTrackIds], (trackIds) => {
+  return trackIds && trackIds?.length > 0
 })
 
 export const selectDownloadActivityModalOpen = createSelector(

@@ -53,9 +53,7 @@ const nextConfig = {
   // productionBrowserSourceMaps: true,
   ...(BASE_PATH && { basePath: BASE_PATH }),
   // productionBrowserSourceMaps: !IS_PRODUCTION,
-  experimental: {
-    appDir: false,
-  },
+  experimental: {},
 }
 
 const configWithNx = withNx(nextConfig)

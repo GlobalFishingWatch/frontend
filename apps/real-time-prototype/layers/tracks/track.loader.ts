@@ -20,9 +20,9 @@ async function parse(arrayBuffer: ArrayBuffer) {
 
 function parseEvents(data) {
   return [
-    {
-      path: (data.features || []).map((f) => f.geometry.coordinates),
-      timestamps: (data.features || []).map((f) => f.properties.timestamp),
-    },
+    (data.features || []).map((f) => ({
+      coordinates: f.geometry.coordinates,
+      timestamp: f.properties.timestamp,
+    })),
   ]
 }

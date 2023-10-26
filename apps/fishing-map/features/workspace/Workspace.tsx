@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react'
-import dynamic from 'next/dynamic'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DndContext } from '@dnd-kit/core'
@@ -7,11 +6,12 @@ import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { arrayMove } from '@dnd-kit/sortable'
 import { Spinner, Button, IconButton, Modal, InputText } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
+import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import { selectWorkspaceStatus, selectWorkspace } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { isGFWUser } from 'features/user/user.slice'
 import { selectLocationCategory } from 'routes/routes.selectors'
-import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
+import { selectReadOnly } from 'features/app/app.selectors'
 import { PUBLIC_SUFIX, ROOT_DOM_ELEMENT, USER_SUFIX } from 'data/config'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/dataviews.slice'
@@ -34,13 +34,10 @@ import EnvironmentalSection from './environmental/EnvironmentalSection'
 import ContextAreaSection from './context-areas/ContextAreaSection'
 import styles from './Workspace.module.css'
 
-const Search = dynamic(() => import(/* webpackChunkName: "Search" */ 'features/search/Search'))
-
 function Workspace() {
   useHideLegacyActivityCategoryDataviews()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const searchQuery = useSelector(selectSearchQuery)
   const readOnly = useSelector(selectReadOnly)
   const gfwUser = useSelector(isGFWUser)
   const workspace = useSelector(selectWorkspace)
@@ -65,14 +62,18 @@ function Workspace() {
     }
   }, [workspace])
 
+  useFetchDataviewResources()
+
+  const workspaceVesselGroupsIdsHash = workspaceVesselGroupsIds.join(',')
   useEffect(() => {
     if (workspaceVesselGroupsIds.length) {
       dispatch(fetchWorkspaceVesselGroupsThunk(workspaceVesselGroupsIds))
     }
-  }, [workspaceVesselGroupsIds, dispatch])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [workspaceVesselGroupsIdsHash, dispatch])
 
   const handleDragEnd = useCallback(
-    (event) => {
+    (event: any) => {
       const { active, over } = event
       if (active && over && active.id !== over.id) {
         const oldIndex = dataviews.findIndex((d) => d.id === active.id)
@@ -90,7 +91,7 @@ function Workspace() {
   }, [])
 
   const onWorkspaceUpdateClick = useCallback(
-    async (workspaceId) => {
+    async (workspaceId: string) => {
       setEditWorkspaceLoading(true)
       await dispatch(
         updateWorkspaceThunk({
@@ -120,10 +121,6 @@ function Workspace() {
     workspaceVesselGroupsStatus === AsyncReducerStatus.Error
   ) {
     return <WorkspaceError />
-  }
-
-  if (searchQuery !== undefined) {
-    return <Search />
   }
 
   return (
@@ -160,14 +157,12 @@ function Workspace() {
                 <InputText
                   value={workspaceEditName}
                   className={styles.input}
-                  inputSize="small"
                   label={t('common.name', 'Name')}
                   onChange={(e) => setWorkspaceEditName(e.target.value)}
                 />
                 <InputText
                   value={workspaceEditDescription}
                   className={styles.input}
-                  inputSize="small"
                   label={t('common.description', 'Description')}
                   onChange={(e) => setWorkspaceEditDescription(e.target.value)}
                 />

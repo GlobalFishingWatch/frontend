@@ -1,38 +1,38 @@
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { DeckGL, DeckGLRef } from '@deck.gl/react/typed'
 import { MapView, PickingInfo } from '@deck.gl/core/typed'
-import { useVesselsLayer } from 'layers/vessel/vessels.hooks'
-import { useContextsLayer } from 'layers/context/context.hooks'
+// import { useVesselsLayer } from 'layers/vessel/vessels.hooks'
+// import { useContextsLayer } from 'layers/context/context.hooks'
 import { useBasemapLayer } from 'layers/basemap/basemap.hooks'
 import { useCustomReferenceLayer } from 'layers/custom-reference/custom-reference.hooks'
 import {
   dateToMs,
-  useFourwingsLayer,
-  useFourwingsLayerLoaded,
+  // useFourwingsLayer,
+  // useFourwingsLayerLoaded,
 } from 'layers/fourwings/fourwings.hooks'
 import { useAtom } from 'jotai'
 import { ParquetVesselLayer } from 'layers/vessel/VesselParquet'
-import { PathLayer } from '@deck.gl/layers/typed'
+// import { PathLayer } from '@deck.gl/layers/typed'
 import { parquetLoader } from 'loaders/vessels/parquetLoader'
 import { Segment } from '@globalfishingwatch/api-types'
 import { useURLViewport, useViewport } from 'features/map/map-viewport.hooks'
 import { hoveredFeaturesAtom, clickedFeaturesAtom } from 'features/map/map-picking.hooks'
-import { zIndexSortedArray } from 'utils/layers'
+// import { zIndexSortedArray } from 'utils/layers'
 import { useTimerange } from 'features/timebar/timebar.hooks'
 import { useHighlightTimerange } from 'features/timebar/timebar.hooks'
 
 const mapView = new MapView({ repeat: true })
 
-const MapWrapper = (): React.ReactElement => {
+const MapWrapper = () => {
   useURLViewport()
   const [vesselLoaded, setVesselLoaded] = useState(false)
   const { viewState, onViewportStateChange } = useViewport()
   const deckRef = useRef<DeckGLRef>(null)
-  const fourwingsLayer = useFourwingsLayer()
+  // const fourwingsLayer = useFourwingsLayer()
   const basemapLayer = useBasemapLayer()
-  const vesselsLayer = useVesselsLayer()
-  const contextLayer = useContextsLayer()
-  const fourwingsLoaded = useFourwingsLayerLoaded()
+  // const vesselsLayer = useVesselsLayer()
+  // const contextLayer = useContextsLayer()
+  // const fourwingsLoaded = useFourwingsLayerLoaded()
   const editableLayer = useCustomReferenceLayer()
   const [hoveredFeatures, setHoveredFeatures] = useAtom(hoveredFeaturesAtom)
   const [clickedFeatures, setClickedFeatures] = useAtom(clickedFeaturesAtom)
@@ -111,8 +111,8 @@ const MapWrapper = (): React.ReactElement => {
 
   useEffect(() => {
     if (vesselLoaded) {
-      const vesselLayer = layers[1] as ParquetVesselLayer<Segment[], {}>
-      const segments = vesselLayer.getSegments()
+      // const vesselLayer = layers[1] as ParquetVesselLayer<Segment[], {}>
+      // const segments = vesselLayer.getSegments()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vesselLoaded])
@@ -189,7 +189,7 @@ const MapWrapper = (): React.ReactElement => {
   )
 
   return (
-    <Fragment>
+    <div>
       <DeckGL
         ref={deckRef}
         views={mapView}
@@ -211,7 +211,7 @@ const MapWrapper = (): React.ReactElement => {
       {clickedFeatures && clickedFeatures.length > 0 && (
         <AnalisisTooltip features={clickedFeatures} />
       )}
-    </Fragment>
+    </div>
   )
 }
 

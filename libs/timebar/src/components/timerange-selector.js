@@ -2,7 +2,12 @@ import React, { Component } from 'react'
 import classNames from 'classnames'
 import { string, func, shape } from 'prop-types'
 import dayjs from 'dayjs'
-import { LIMITS_BY_INTERVAL, getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
+import {
+  LIMITS_BY_INTERVAL,
+  getInterval,
+  INTERVAL_ORDER,
+  Interval,
+} from '@globalfishingwatch/layer-composer'
 import { Select, Tooltip } from '@globalfishingwatch/ui-components'
 import { getTime } from '../utils/internal-utils'
 import { getLastX } from '../utils'
@@ -75,11 +80,10 @@ class TimeRangeSelector extends Component {
     const { onSubmit } = this.props
     const disabledFields = this.getDisabledFields(start, end)
     // on release, "stick" to day/hour
-
     const newStart = dayjs
       .utc({
         year: start.year(),
-        month: disabledFields.month ? 0 : start.month(),
+        month: disabledFields.month ? 0 : start.month() + 1,
         date: disabledFields.day ? 0 : start.date(),
       })
       .startOf('day')
@@ -87,7 +91,7 @@ class TimeRangeSelector extends Component {
     const newEnd = dayjs
       .utc({
         year: end.year(),
-        month: disabledFields.month ? 0 : end.month(),
+        month: disabledFields.month ? 0 : end.month() + 1,
         date: disabledFields.day ? 0 : end.date(),
       })
       .startOf('day')
@@ -106,13 +110,16 @@ class TimeRangeSelector extends Component {
   }
 
   getDisabledFields = (startDate, endDate) => {
-    const intervalsToCheck = ['month', 'day']
+    /** @type {Interval[]} */
+    const intervalsToCheck = ['MONTH', 'DAY']
     return intervalsToCheck.reduce((acc, limit) => {
       const limitConfig = LIMITS_BY_INTERVAL[limit]
-      const duration = endDate.diff(startDate, limitConfig.unit)
-      return {
-        ...acc,
-        [limit]: Math.floor(duration) > limitConfig.value,
+      if (limitConfig) {
+        const duration = endDate.diff(startDate, limitConfig.unit)
+        return {
+          ...acc,
+          [limit]: Math.floor(duration) > limitConfig.value,
+        }
       }
     }, {})
   }
@@ -120,12 +127,12 @@ class TimeRangeSelector extends Component {
   onStartChange = (e, property) => {
     const startDate = dayjs.utc({
       ...this.state.startInputValues,
-      month: this.state.startInputValues.month - 1,
+      month: this.state.startInputValues.month,
     })
     const currentMonthDays = dayjs
       .utc({
         year: property === 'year' ? e.target.value : startDate.year(),
-        month: property === 'month' ? e.target.value - 1 : startDate.month(),
+        month: property === 'month' ? e.target.value : startDate.month(),
       })
       .daysInMonth()
     const dateHigherThanDaysInMonth = startDate.date() > currentMonthDays
@@ -160,12 +167,12 @@ class TimeRangeSelector extends Component {
   onEndChange = (e, property) => {
     const endDate = dayjs.utc({
       ...this.state.endInputValues,
-      month: this.state.endInputValues.month - 1,
+      month: this.state.endInputValues.month,
     })
     const currentMonthDays = dayjs
       .utc({
         year: property === 'year' ? e.target.value : endDate.year(),
-        month: property === 'month' ? e.target.value - 1 : endDate.month(),
+        month: property === 'month' ? e.target.value : endDate.month(),
       })
       .daysInMonth()
     const dateHigherThanDaysInMonth = endDate.date() > currentMonthDays
@@ -213,7 +220,7 @@ class TimeRangeSelector extends Component {
 
     const startDate = dayjs.utc({
       ...startInputValues,
-      month: startInputValues.month - 1,
+      month: startInputValues.month,
     })
     const startValid =
       Object.values(startInputValids).every((valid) => valid) &&
@@ -221,7 +228,7 @@ class TimeRangeSelector extends Component {
       startDate.isValid()
     const endDate = dayjs.utc({
       ...endInputValues,
-      month: endInputValues.month - 1,
+      month: endInputValues.month,
     })
     const endValid =
       Object.values(endInputValids).every((valid) => valid) &&

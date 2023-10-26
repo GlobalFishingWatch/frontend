@@ -1,5 +1,5 @@
 export type StatType = 'vessels' | 'detections'
-export type StatsParams = 'flags' | 'vessel-ids'
+export type StatsParams = 'FLAGS' | 'VESSEL-IDS'
 
 export type StatField =
   | 'id'

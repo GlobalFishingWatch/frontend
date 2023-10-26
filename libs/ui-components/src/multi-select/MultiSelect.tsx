@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo, Fragment } from 'react'
+import React, { useCallback, useState, useMemo, Fragment, useRef } from 'react'
 import { matchSorter } from 'match-sorter'
 import {
   useMultipleSelection,
@@ -65,6 +65,8 @@ interface MultiSelectProps {
   onRemove?: MultiSelectOnChange
   onCleanClick?: (e: React.MouseEvent) => void
   className?: string
+  labelContainerClassName?: string
+  testId?: string
 }
 
 const getPlaceholderBySelections = (
@@ -104,6 +106,7 @@ export function MultiSelect(props: MultiSelectProps) {
     placeholderDisplayAll = false,
     placeholder,
     className = '',
+    labelContainerClassName = '',
     onSelect,
     onRemove,
     onCleanClick,
@@ -111,6 +114,7 @@ export function MultiSelect(props: MultiSelectProps) {
     disabled = false,
     disabledMsg = '',
     onFilterOptions,
+    testId = 'multi-select',
   } = props
 
   const handleRemove = useCallback(
@@ -154,6 +158,7 @@ export function MultiSelect(props: MultiSelectProps) {
   )
 
   const [inputValue, setInputValue] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
   const handleFilter = useMemo(
     () =>
       // apply onFilter callback when provided otherwise just use
@@ -169,12 +174,10 @@ export function MultiSelect(props: MultiSelectProps) {
   const { getDropdownProps } = useMultipleSelection({ selectedItems: selectedOptions })
   const {
     isOpen,
-    openMenu,
     getToggleButtonProps,
     getLabelProps,
     getMenuProps,
     getInputProps,
-    getComboboxProps,
     highlightedIndex,
     selectItem,
     getItemProps,
@@ -188,12 +191,15 @@ export function MultiSelect(props: MultiSelectProps) {
         case useCombobox.stateChangeTypes.ItemClick: {
           return {
             ...changes,
-            isOpen: true, // keep menu open after selection.
+            isOpen: changes.selectedItem ? state.isOpen : true,
             inputValue: '', // don't add the item string as input value at selection.
             highlightedIndex: state.highlightedIndex,
           }
         }
+        case useCombobox.stateChangeTypes.InputKeyDownEscape:
         case useCombobox.stateChangeTypes.InputBlur: {
+          setInputValue('')
+          inputRef.current?.blur()
           return {
             ...changes,
             inputValue: '',
@@ -234,7 +240,7 @@ export function MultiSelect(props: MultiSelectProps) {
 
   return (
     <div className={className}>
-      <div className={styles.labelContainer}>
+      <div className={cx(styles.labelContainer, labelContainerClassName)}>
         {label !== undefined && (
           <label {...getLabelProps()} className={cx(styles.label, { [styles.disabled]: disabled })}>
             {label}
@@ -257,19 +263,12 @@ export function MultiSelect(props: MultiSelectProps) {
           className={cx(styles.placeholderContainer, multiSelectStyles.placeholderContainer, {
             [styles.disabled]: disabled,
           })}
-          {...getComboboxProps()}
         >
           <InputText
             {...getInputProps({
-              ...getDropdownProps({
-                onFocus: () => {
-                  if (!isOpen) {
-                    openMenu()
-                  }
-                },
-                preventKeyAction: isOpen,
-              }),
+              ref: inputRef,
             })}
+            data-test={`${testId}-input`}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             placeholder={
@@ -287,6 +286,7 @@ export function MultiSelect(props: MultiSelectProps) {
               <IconButton
                 icon={isOpen ? 'arrow-top' : 'arrow-down'}
                 size="small"
+                data-test={`${testId}-toggle`}
                 aria-label={'toggle menu'}
                 {...getToggleButtonProps(getDropdownProps({ preventKeyAction: isOpen }))}
               ></IconButton>
@@ -311,6 +311,7 @@ export function MultiSelect(props: MultiSelectProps) {
               return (
                 <Tooltip key={item.id} content={item.tooltip} placement="top-start">
                   <li
+                    data-test={`${testId}-option-${item.id}`}
                     className={cx(styles.optionItem, {
                       [styles.highlight]: highlight,
                       [item.className || '']: item.className,

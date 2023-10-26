@@ -8,7 +8,7 @@ steps:
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
-    name: node:18-alpine
+    name: node:18
     entrypoint: sh
     args:
       - '-c'
@@ -30,7 +30,7 @@ steps:
 
   - id: 'build-app'
     waitFor: ['install-yarn']
-    name: node:18-alpine
+    name: node:18
     entrypoint: yarn
     args: ['nx', 'build', 'port-labeler', '--parallel']
     env:
@@ -38,9 +38,9 @@ steps:
       - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
       - 'NEXT_PUBLIC_URL=$_NEXT_PUBLIC_URL'
       - 'NEXT_PUBLIC_API_GATEWAY=$_NEXT_PUBLIC_API_GATEWAY'
-      # - 'NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=$_NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID'
-      # - 'NEXT_PUBLIC_GOOGLE_TAG_MANAGER_KEY=$_NEXT_PUBLIC_GOOGLE_TAG_MANAGER_KEY'
-      # - 'NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID=$_NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID'
+      - 'NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=$_NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID'
+      - 'NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=$_NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID'
+      - 'NEXT_PUBLIC_GOOGLE_ANALYTICS_DEBUG_MODE=$_NEXT_PUBLIC_GOOGLE_ANALYTICS_DEBUG_MODE'
 
   - name: 'gcr.io/kaniko-project/executor:v1.6.0'
     id: 'build-image'

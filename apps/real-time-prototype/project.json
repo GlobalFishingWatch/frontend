@@ -4,13 +4,6 @@
   "sourceRoot": "apps/real-time-prototype",
   "projectType": "application",
   "targets": {
-    "changelog": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["./changelog.sh real-time-prototype \"Map\""],
-        "parallel": false
-      }
-    },
     "deploy": {
       "executor": "nx:run-commands",
       "options": {

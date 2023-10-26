@@ -41,7 +41,8 @@
             "input": ".",
             "output": "."
           }
-        ]
+        ],
+        "updateBuildableProjectDepsInPackageJson": true
       },
       "configurations": {
         "local": {
@@ -65,10 +66,11 @@
         "passWithNoTests": true
       }
     },
-    "deploy": {
+    "publish": {
       "executor": "ngx-deploy-npm:deploy",
       "options": {
-        "access": "public"
+        "access": "public",
+        "distFolderPath": "dist/libs/fourwings-aggregate"
       }
     }
   }

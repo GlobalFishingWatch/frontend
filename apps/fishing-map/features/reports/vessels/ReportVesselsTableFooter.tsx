@@ -42,7 +42,7 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
   const heatmapDataviews = useSelector(selectActiveHeatmapDataviews)
   const { start, end } = useSelector(selectTimeRange)
 
-  const getDownloadVessels = async (_, done) => {
+  const getDownloadVessels = async (_: any, done: any) => {
     if (allVesselsWithAllInfo) {
       await setAllVesselsWithAllInfoFiltered(
         getVesselsFiltered(allVesselsWithAllInfo, reportVesselFilter) as any
@@ -92,6 +92,11 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
       if (dataviewIds?.length) {
         dispatch(setVesselGroupCurrentDataviewIds(dataviewIds))
       }
+    })
+    trackEvent({
+      category: TrackCategory.VesselGroups,
+      action: 'add_to_vessel_group',
+      label: 'report',
     })
   }
 
@@ -165,7 +170,9 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
           asyncOnClick={true}
           data={allVesselsWithAllInfoFiltered}
         >
-          <Button>{t('analysis.downloadVesselsList', 'Download csv')}</Button>
+          <Button testId="download-vessel-table-report">
+            {t('analysis.downloadVesselsList', 'Download csv')}
+          </Button>
         </CSVLink>
       </div>
     </div>

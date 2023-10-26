@@ -7,33 +7,33 @@ export enum Downloads {
 }
 
 export enum Format {
-  GeoTIFF = 'tif',
-  Json = 'json',
-  Csv = 'csv',
-  Geopackage = 'geopackage',
+  GeoTIFF = 'TIF',
+  Json = 'JSON',
+  Csv = 'CSV',
+  Geopackage = 'GEOPACKAGE',
 }
 
 export enum GroupBy {
-  None = 'none',
-  Vessel = 'vessel_id',
-  MMSI = 'mmsi',
-  GearType = 'gearType',
-  Flag = 'flag',
-  FlagAndGearType = 'flagAndGearType',
+  None = 'NONE',
+  Vessel = 'VESSEL_ID',
+  MMSI = 'MMSI',
+  GearType = 'GEARTYPE',
+  Flag = 'FLAG',
+  FlagAndGearType = 'FLAGANDGEARTYPE',
 }
 
 export enum TemporalResolution {
-  Full = 'entire',
-  Hourly = 'hourly',
-  Daily = 'daily',
-  Monthly = 'monthly',
-  Yearly = 'yearly',
+  Full = 'ENTIRE',
+  Hourly = 'HOURLY',
+  Daily = 'DAILY',
+  Monthly = 'MONTHLY',
+  Yearly = 'YEARLY',
 }
 
 export enum SpatialResolution {
-  Low = 'low',
-  High = 'high',
-  VeryHigh = 'very-high',
+  Low = 'LOW',
+  High = 'HIGH',
+  VeryHigh = 'VERY-HIGH',
 }
 
 export const GRIDDED_FORMAT_OPTIONS: ChoiceOption[] = [

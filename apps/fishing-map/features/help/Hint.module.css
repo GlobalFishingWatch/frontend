@@ -7,6 +7,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  z-index: 2;
 }
 
 .links {
@@ -98,7 +99,7 @@ div.HintPanel {
 }
 
 .content {
-  padding: 1.5rem;
+  padding: var(--space-SM);
   text-transform: none;
   color: var(--color-primary-blue);
   font: var(--font-S);
@@ -130,8 +131,8 @@ div.HintPanel {
 
 .hintBubble {
   position: absolute;
-  width: 3.2rem;
-  height: 3.2rem;
+  width: var(--size-SM);
+  height: var(--size-SM);
   border-radius: 50%;
   transform: translate(-50%, -50%) scale(0.75);
   background: var(--color-help);
@@ -195,7 +196,7 @@ div.HintPanel {
   }
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (width <= 800px) {
   .hintTarget {
     display: none;
   }

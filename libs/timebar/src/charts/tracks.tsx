@@ -67,6 +67,7 @@ const Tracks = ({ data }: { data: TimebarChartData }) => {
                   <div
                     key={chunk.id}
                     className={styles.segment}
+                    data-test="tracks-segment"
                     style={{
                       backgroundColor: chunk.props?.color || track.color,
                       top: track.props?.segmentsOffsetY ? (track.y || 0) + i : track.y,

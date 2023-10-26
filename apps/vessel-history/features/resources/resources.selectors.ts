@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { Dataset, EventType, EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
+import { ResourceStatus } from '@globalfishingwatch/api-types'
 import { selectVisibleEvents } from 'features/event-filters/filters.selectors'
 import { selectResources } from './resources.slice'
 

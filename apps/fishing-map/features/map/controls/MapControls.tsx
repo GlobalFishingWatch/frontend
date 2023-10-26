@@ -16,7 +16,11 @@ import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
 import { useSetMapCoordinates, useViewStateAtom } from 'features/map/map-viewport.hooks'
-import { selectIsReportLocation, selectIsWorkspaceLocation } from 'routes/routes.selectors'
+import {
+  selectIsAnyVesselLocation,
+  selectIsAnyReportLocation,
+  selectIsWorkspaceLocation,
+} from 'routes/routes.selectors'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
 import setInlineStyles from 'utils/dom'
 import { selectScreenshotModalOpen, setModalOpen } from 'features/modals/modals.slice'
@@ -60,6 +64,11 @@ const MapControls = ({
     previewImageLoading,
     generatePreviewImage,
   } = useDownloadDomElementAsImage(domElement.current, false)
+  const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
+  const isVesselLocation = useSelector(selectIsAnyVesselLocation)
+  const reportLocation = useSelector(selectIsAnyReportLocation)
+  const showExtendedControls = isWorkspaceLocation || isVesselLocation || reportLocation
+  const showScreenshot = !isVesselLocation && !reportLocation
 
   useEffect(() => {
     if (!domElement.current) {
@@ -143,8 +152,7 @@ const MapControls = ({
       },
     })
   }
-  const extendedControls = useSelector(selectIsWorkspaceLocation)
-  const reportLocation = useSelector(selectIsReportLocation)
+
   return (
     <Fragment>
       {modalOpen && <MapScreenshot />}
@@ -163,7 +171,7 @@ const MapControls = ({
           {miniGlobeHovered && <MiniGlobeInfo viewport={viewState} />}
         </div>
         <div className={cx('print-hidden', styles.controlsNested)}>
-          {extendedControls && <MapSearch />}
+          {showExtendedControls && <MapSearch />}
           <IconButton
             icon="plus"
             type="map-tool"
@@ -176,21 +184,23 @@ const MapControls = ({
             tooltip={t('map.zoom_out', 'Zoom out')}
             onClick={onZoomOutClick}
           />
-          {extendedControls && (
+          {showExtendedControls && (
             <Fragment>
-              {!reportLocation && <Rulers />}
-              <IconButton
-                icon="camera"
-                type="map-tool"
-                loading={loading}
-                disabled={mapLoading || loading}
-                tooltip={
-                  mapLoading || loading
-                    ? t('map.mapLoadingWait', 'Please wait until map loads')
-                    : t('map.captureMap', 'Capture map')
-                }
-                onClick={onScreenshotClick}
-              />
+              <Rulers />
+              {showScreenshot && (
+                <IconButton
+                  icon="camera"
+                  type="map-tool"
+                  loading={loading}
+                  disabled={mapLoading || loading}
+                  tooltip={
+                    mapLoading || loading
+                      ? t('map.mapLoadingWait', 'Please wait until map loads')
+                      : t('map.captureMap', 'Capture map')
+                  }
+                  onClick={onScreenshotClick}
+                />
+              )}
               <Tooltip
                 content={
                   currentBasemap === BasemapType.Default

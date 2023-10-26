@@ -1,4 +1,5 @@
 import { Fragment, useCallback, useMemo, useState } from 'react'
+import { atom, useRecoilState } from 'recoil'
 import cx from 'classnames'
 import kinks from '@turf/kinks'
 import { useTranslation } from 'react-i18next'
@@ -43,12 +44,19 @@ const getAllFeatures = (drawControl: MapboxDraw) => {
   }
 }
 
+const selectedPointIndexAtom = atom<number | null>({
+  key: 'selectedPointIndex',
+  default: null,
+  effects: [],
+})
+
 function MapDraw() {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   const [layerName, setLayerName] = useState<string>('')
   const [createAsPublic, setCreateAsPublic] = useState<boolean>(true)
-  const [selectedPointIndex, setSelectedPointIndex] = useState<number | null>(null)
+  const [selectedPointIndex, setSelectedPointIndex] = useRecoilState(selectedPointIndexAtom)
+  // const [selectedPointIndex, setSelectedPointIndex] = useState<number | null>(null)
   const [newPointLatitude, setNewPointLatitude] = useState<number | string | null>(null)
   const [newPointLongitude, setNewPointLongitude] = useState<number | string | null>(null)
   const { isMapDrawing, dispatchSetMapDrawing } = useMapDrawConnect()
@@ -66,7 +74,8 @@ function MapDraw() {
             currentPoint.geometry.coordinates[0] === lng &&
             currentPoint.geometry.coordinates[1] === lat
         )
-        setSelectedPointIndex(pointIndex > -1 ? pointIndex : null)
+        const selectedPointIndex = pointIndex > -1 ? pointIndex : null
+        setSelectedPointIndex(selectedPointIndex)
       }
     }
   }
@@ -90,7 +99,7 @@ function MapDraw() {
       : null
   const allowDeletePoint = selectedFeature!?.geometry!?.coordinates!?.[0]!?.length > 4
 
-  const onHandleLatitudeChange = useCallback((e) => {
+  const onHandleLatitudeChange = useCallback((e: any) => {
     if (e.target.value) {
       const latitude = parseFloat(e.target.value)
       if (latitude > -90 && latitude < 90) {
@@ -101,7 +110,7 @@ function MapDraw() {
     }
   }, [])
 
-  const onHandleLongitudeChange = useCallback((e) => {
+  const onHandleLongitudeChange = useCallback((e: any) => {
     if (e.target.value) {
       const longitude = parseFloat(e.target.value)
       if (longitude > -180 && longitude < 180) {
@@ -149,7 +158,7 @@ function MapDraw() {
   }, [drawControl, selectedFeature, selectedPointIndex])
 
   const onInputChange = useCallback(
-    (e) => {
+    (e: any) => {
       setLayerName(e.target.value)
     },
     [setLayerName]
@@ -209,7 +218,7 @@ function MapDraw() {
   }, [])
 
   const createDataset = useCallback(
-    async (features: DrawFeature[], name) => {
+    async (features: DrawFeature[], name: string) => {
       if (features && features.length > 0) {
         setLoading(true)
         const { payload, error } = await dispatchCreateDataset({
@@ -230,7 +239,7 @@ function MapDraw() {
   )
 
   const onSaveClick = useCallback(
-    (features) => {
+    (features: any) => {
       if (features && features.length > 0 && layerName) {
         createDataset(features, layerName)
         trackEvent({
@@ -283,7 +292,6 @@ function MapDraw() {
               <InputText
                 step="0.01"
                 type="number"
-                inputSize="small"
                 value={editingPointLatitude}
                 label={t('common.latitude', 'Latitude')}
                 onChange={onHandleLatitudeChange}
@@ -296,7 +304,6 @@ function MapDraw() {
                 value={editingPointLongitude}
                 label={t('common.longitude', 'longitude')}
                 onChange={onHandleLongitudeChange}
-                inputSize="small"
               />
             </div>
             <div className={styles.popupButtons}>

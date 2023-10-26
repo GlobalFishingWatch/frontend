@@ -33,15 +33,15 @@ export const getSerializedQuery = (query: string, advancedSearch?: Record<string
       value: advancedSearch?.flags?.map((f: string) => ({ id: f })),
     },
     {
-      key: 'lastTransmissionDate',
+      key: 'lastTransmissionDate' as any,
       value: advancedSearch?.lastTransmissionDate,
     },
     {
-      key: 'firstTransmissionDate',
+      key: 'firstTransmissionDate' as any,
       value: advancedSearch?.firstTransmissionDate,
     },
   ]
-  return getAdvancedSearchQuery(fields)
+  return getAdvancedSearchQuery(fields, {})
 }
 
 export const fetchData = async (

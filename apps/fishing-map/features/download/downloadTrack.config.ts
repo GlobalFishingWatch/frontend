@@ -1,8 +1,8 @@
 import { ChoiceOption } from '@globalfishingwatch/ui-components'
 
 export enum Format {
-  Csv = 'csv',
-  GeoJson = 'geojson',
+  Csv = 'CSV',
+  GeoJson = 'GEOJSON',
 }
 
 export type FormatExtension = Record<Format, string>

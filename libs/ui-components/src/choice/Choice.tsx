@@ -15,9 +15,10 @@ interface ChoiceProps {
   options: ChoiceOption[]
   activeOption: string
   disabled?: boolean
-  onSelect?: (option: ChoiceOption, e: React.MouseEvent) => void
+  onSelect?: (option: ChoiceOption<any>, e: React.MouseEvent) => void
   size?: 'default' | 'small' | 'tiny'
   className?: string
+  testId?: string
 }
 
 export function Choice({
@@ -27,6 +28,7 @@ export function Choice({
   onSelect,
   size = 'default',
   className = '',
+  testId,
 }: ChoiceProps) {
   const activeOptionId = activeOption || options?.[0]?.id
 
@@ -58,19 +60,16 @@ export function Choice({
     updateActiveElementPoperties()
   }, [activeRef, activeOptionId, updateActiveElementPoperties])
 
-  // Workaround to ensure the activeElement has the clientWidth ready
   useEffect(() => {
-    setTimeout(updateActiveElementPoperties, 500)
-    window.addEventListener('resize', updateActiveElementPoperties)
-    return () => {
-      window.removeEventListener('resize', updateActiveElementPoperties)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [options, updateActiveElementPoperties])
+    if (!activeRef.current) return
+    const resizeObserver = new ResizeObserver(updateActiveElementPoperties)
+    resizeObserver.observe(activeRef.current)
+    return () => resizeObserver.disconnect()
+  }, [updateActiveElementPoperties])
 
   return (
     <div className={cx(styles.Choice, className)}>
-      <ul className={styles.list} role="radiogroup">
+      <ul className={styles.list} role="radiogroup" {...(testId && { 'data-test': `${testId}` })}>
         {options.map((option, index) => {
           const optionSelected = activeOptionId === option.id
           return (
@@ -90,6 +89,7 @@ export function Choice({
                 tooltip={option.tooltip}
                 tooltipPlacement={option.tooltipPlacement}
                 type="secondary"
+                testId={testId && `${testId}-${option.id}`}
                 onClick={(e) => !option.disabled && onOptionClickHandle(option, e)}
                 size={size}
               >

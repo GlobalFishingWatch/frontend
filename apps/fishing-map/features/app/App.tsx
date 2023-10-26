@@ -3,10 +3,13 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { useTranslation } from 'react-i18next'
-import { Menu, SplitView } from '@globalfishingwatch/ui-components'
+import { Logo, Menu, SplitView } from '@globalfishingwatch/ui-components'
 import { Workspace } from '@globalfishingwatch/api-types'
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
-  selectIsReportLocation,
+  selectIsAnySearchLocation,
+  selectIsVesselLocation,
+  selectIsAnyReportLocation,
   selectIsWorkspaceLocation,
   selectLocationType,
   selectUrlTimeRange,
@@ -22,13 +25,23 @@ import {
   selectWorkspaceCustomStatus,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
-import { fetchUserThunk } from 'features/user/user.slice'
+import { fetchUserThunk, isUserLogged } from 'features/user/user.slice'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectShowTimeComparison } from 'features/reports/reports.selectors'
-import { isUserLogged } from 'features/user/user.selectors'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
-import { HOME, WORKSPACE, USER, WORKSPACES_LIST, REPORT, WORKSPACE_REPORT } from 'routes/routes'
+import {
+  HOME,
+  WORKSPACE,
+  USER,
+  WORKSPACES_LIST,
+  VESSEL,
+  WORKSPACE_VESSEL,
+  REPORT,
+  WORKSPACE_REPORT,
+  SEARCH,
+  WORKSPACE_SEARCH,
+} from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { t } from 'features/i18n/i18n'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -44,7 +57,7 @@ import styles from './App.module.css'
 import { useAnalytics } from './analytics.hooks'
 
 const Map = dynamic(() => import(/* webpackChunkName: "Map" */ 'features/map/Map'))
-// const Timebar = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))
+const Timebar = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))
 
 declare global {
   interface Window {
@@ -67,20 +80,36 @@ export const COLOR_GRADIENT =
 
 const Main = () => {
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
-  const reportLocation = useSelector(selectIsReportLocation)
+  const locationType = useSelector(selectLocationType)
+  const reportLocation = useSelector(selectIsAnyReportLocation)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const isTimeComparisonReport = useSelector(selectShowTimeComparison)
+  const isSmallScreen = useSmallScreen()
 
+  const isRouteWithTimebar = locationType === VESSEL
+  const isRouteWithMap = locationType !== SEARCH
+  const isWorkspacesRouteWithTimebar =
+    workspaceLocation ||
+    locationType === WORKSPACE_VESSEL ||
+    (reportLocation && !isTimeComparisonReport)
   const showTimebar =
-    (workspaceLocation || (reportLocation && !isTimeComparisonReport)) &&
-    workspaceStatus === AsyncReducerStatus.Finished
+    isRouteWithTimebar ||
+    (isWorkspacesRouteWithTimebar && workspaceStatus === AsyncReducerStatus.Finished)
 
   return (
     <Fragment>
-      <div className={cx(styles.mapContainer, { [styles.withTimebar]: showTimebar })}>
-        <Map />
-      </div>
-      {/* {showTimebar && <Timebar />} */}
+      {isRouteWithMap && (
+        <div
+          className={cx(styles.mapContainer, {
+            [styles.withTimebar]: showTimebar,
+            [styles.withSmallScreenSwitch]: isSmallScreen,
+            [styles.withTimebarAndSmallScreenSwitch]: showTimebar && isSmallScreen,
+          })}
+        >
+          <Map />
+        </div>
+      )}
+      {showTimebar && <Timebar />}
       <Footer />
     </Fragment>
   )
@@ -102,10 +131,11 @@ function App() {
   const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
-  const isReportLocation = useSelector(selectIsReportLocation)
+  const vesselLocation = useSelector(selectIsVesselLocation)
+  const isReportLocation = useSelector(selectIsAnyReportLocation)
   const reportAreaBounds = useSelector(selectReportAreaBounds)
   const isTimeComparisonReport = useSelector(selectShowTimeComparison)
-  const narrowSidebar = workspaceLocation
+  const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const showTimebar = workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished
 
@@ -126,7 +156,7 @@ function App() {
       console.warn(e)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReportLocation, sidebarOpen, showTimebar, isTimeComparisonReport])
+  }, [isReportLocation, isAnySearchLocation, sidebarOpen, showTimebar, isTimeComparisonReport])
 
   useEffect(() => {
     setMobileSafeVH()
@@ -155,6 +185,7 @@ function App() {
     locationType === REPORT ||
     (locationType === WORKSPACE_REPORT && currentWorkspaceId !== urlWorkspaceId)
   const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId
+
   useEffect(() => {
     let action: any
     let actionResolved = false
@@ -219,6 +250,10 @@ function App() {
   const getSidebarName = useCallback(() => {
     if (locationType === USER) return t('user.title', 'User')
     if (locationType === WORKSPACES_LIST) return t('workspace.title_other', 'Workspaces')
+    if (locationType === SEARCH || locationType === WORKSPACE_SEARCH)
+      return t('search.title', 'Search')
+    if (locationType === VESSEL || locationType === WORKSPACE_VESSEL)
+      return t('vessel.title', 'Vessel profile')
     if (isReportLocation) return t('analysis.title', 'Analysis')
     return t('common.layerList', 'Layer list')
   }, [locationType, isReportLocation])
@@ -226,7 +261,9 @@ function App() {
   let asideWidth = '50%'
   if (readOnly) {
     asideWidth = isReportLocation ? '45%' : '34rem'
-  } else if (narrowSidebar) {
+  } else if (isAnySearchLocation) {
+    asideWidth = '100%'
+  } else if (workspaceLocation) {
     asideWidth = '39rem'
   }
 
@@ -236,9 +273,12 @@ function App() {
 
   return (
     <Fragment>
+      <a href="https://globalfishingwatch.org" className="print-only">
+        <Logo className={styles.logo} />
+      </a>
       <SplitView
         isOpen={sidebarOpen}
-        showToggle={workspaceLocation}
+        showToggle={workspaceLocation || vesselLocation}
         onToggle={onToggle}
         aside={<Sidebar onMenuClick={onMenuClick} />}
         main={<Main />}

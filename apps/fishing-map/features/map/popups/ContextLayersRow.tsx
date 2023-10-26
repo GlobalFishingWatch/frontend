@@ -20,6 +20,11 @@ import { resetSidebarScroll } from 'features/sidebar/Sidebar'
 import { resetReportData } from 'features/reports/report.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import {
+  DEFAULT_BUFFER_OPERATION,
+  DEFAULT_POINT_BUFFER_UNIT,
+  DEFAULT_POINT_BUFFER_VALUE,
+} from 'features/reports/reports.config'
 import styles from './Popup.module.css'
 
 interface DownloadPopupButtonProps {
@@ -49,6 +54,7 @@ const DownloadPopupButton: React.FC<DownloadPopupButtonProps> = ({
       <IconButton
         icon="download"
         disabled={!guestUser && (!hasAnalysableLayer || !datasetsReportSupported)}
+        testId="download-activity-layers"
         tooltip={
           datasetsReportSupported
             ? t('download.activityAction', 'Download visible activity layers for this area')
@@ -72,6 +78,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
   const hasAnalysableLayer = useSelector(selectHasReportLayersVisible)
   const workspace = useSelector(selectWorkspace)
   const isSidebarOpen = useSelector(selectSidebarOpen)
+  const isPointFeature = feature?.geometry?.type === 'Point'
   const query = useSelector(selectLocationQuery)
   const bounds = getFeatureBounds(feature)
   const reportAreaId = useSelector(selectLocationAreaId)
@@ -88,7 +95,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
             ? ''
             : t(
                 'common.analysisNotAvailable',
-                'Toggle an activity or environmenet layer on to analyse in in this area'
+                'Toggle an activity or environment layer on to analyse in in this area'
               )
         }
       />
@@ -121,6 +128,9 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
         query: {
           ...query,
           reportAreaSource: feature.source,
+          reportBufferUnit: isPointFeature ? DEFAULT_POINT_BUFFER_UNIT : undefined,
+          reportBufferValue: isPointFeature ? DEFAULT_POINT_BUFFER_VALUE : undefined,
+          reportBufferOperation: isPointFeature ? DEFAULT_BUFFER_OPERATION : undefined,
           ...(bounds && { reportAreaBounds: bounds }),
           ...(!isSidebarOpen && { sidebarOpen: true }),
         },
@@ -130,6 +140,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
       <IconButton
         icon="analysis"
         tooltip={t('common.analysis', 'Create an analysis for this area')}
+        testId="open-analysis"
         size="small"
       />
     </Link>

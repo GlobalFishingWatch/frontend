@@ -20,11 +20,9 @@ import { ReportCategory } from 'types'
 import { selectUserData } from 'features/user/user.slice'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
-import {
-  EMPTY_API_VALUES,
-  ReportVesselWithDatasets,
-  selectReportVesselsPaginated,
-} from '../reports.selectors'
+import { EMPTY_API_VALUES } from 'features/reports/reports.config'
+import VesselLink from 'features/vessel/VesselLink'
+import { ReportVesselWithDatasets, selectReportVesselsPaginated } from '../reports.selectors'
 import { ReportActivityUnit } from '../Report'
 import styles from './ReportVesselsTable.module.css'
 
@@ -72,7 +70,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
     upsertDataviewInstance(vesselDataviewInstance)
   }
 
-  const onFilterClick = (reportVesselFilter) => {
+  const onFilterClick = (reportVesselFilter: any) => {
     dispatchQueryParams({ reportVesselFilter, reportVesselPage: 0 })
   }
 
@@ -80,7 +78,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
 
   return (
     <Fragment>
-      <div className={styles.tableContainer}>
+      <div className={styles.tableContainer} data-test="report-vessels-table">
         {datasetsDownloadNotSupported.length > 0 && (
           <p className={styles.error}>
             {t(
@@ -127,7 +125,10 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
             const typeInteractionEnabled = type !== EMPTY_FIELD_PLACEHOLDER
             return (
               <Fragment key={vessel.vesselId}>
-                <div className={cx({ [styles.border]: !isLastRow }, styles.icon)}>
+                <div
+                  className={cx({ [styles.border]: !isLastRow }, styles.icon)}
+                  data-test={`vessel-${vessel.vesselId}`}
+                >
                   <IconButton
                     icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
                     style={{
@@ -152,7 +153,13 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                       style={{ backgroundColor: vessel.sourceColor }}
                     ></span>
                   )}
-                  {formatInfoField(vessel.shipName, 'name')}
+                  <VesselLink
+                    className={styles.link}
+                    vesselId={vessel.vesselId}
+                    datasetId={vessel.infoDataset?.id}
+                  >
+                    {formatInfoField(vessel.shipName, 'name')}
+                  </VesselLink>
                 </div>
                 <div className={cx({ [styles.border]: !isLastRow })}>
                   <span>{vessel.mmsi || EMPTY_FIELD_PLACEHOLDER}</span>

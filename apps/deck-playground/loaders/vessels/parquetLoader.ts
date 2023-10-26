@@ -1,7 +1,6 @@
-import Pbf from 'pbf'
 import { LoaderWithParser } from '@loaders.gl/loader-utils'
-import { tableFromArrays, tableFromIPC, tableToIPC } from 'apache-arrow'
-import { readParquet, writeParquet, Compression, WriterPropertiesBuilder } from 'parquet-wasm'
+import { tableFromIPC } from 'apache-arrow'
+import { readParquet } from 'parquet-wasm'
 
 export const parquetLoader: LoaderWithParser = {
   name: 'parquet-track',

@@ -9,7 +9,7 @@ import { RecoilRoot } from 'recoil'
 import MemoryStatsComponent from 'next-react-memory-stats'
 import { FpsView } from 'react-fps'
 import Head from 'next/head'
-import store from '../store'
+import { wrapper } from '../store'
 
 import 'features/i18n/i18n'
 import './styles.css'
@@ -17,17 +17,8 @@ import '../../../libs/ui-components/src/base.css'
 import '../../../libs/timebar/src/timebar-settings.css'
 import '@globalfishingwatch/maplibre-gl/dist/maplibre-gl.css'
 
-// function SafeHydrate({ children }) {
-//   return <div suppressHydrationWarning>{typeof window === 'undefined' ? null : children}</div>
-// }
-
-function CustomApp({ Component, pageProps }: AppProps) {
-  // const [root, setRoot] = useState(null)
-  // useEffect(() => {
-  //   if (typeof window.document !== 'undefined') {
-  //     setRoot(document.getElementById('__next'))
-  //   }
-  // }, [root])
+function CustomApp({ Component, ...rest }: AppProps) {
+  const { store, props } = wrapper.useWrappedStore(rest)
 
   const [showFps, setShowFps] = useState(false)
   useEffect(() => setShowFps(true), [])
@@ -41,7 +32,7 @@ function CustomApp({ Component, pageProps }: AppProps) {
       <RecoilRoot>
         <Provider store={store}>
           {/* <ClickToComponent /> */}
-          <Component {...pageProps} />
+          <Component {...props.pageProps} />
           {showFps && <FpsView bottom="10rem" left="39rem" top="auto" />}
           {showFps && <MemoryStatsComponent corner="bottomRight" />}
         </Provider>

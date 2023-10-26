@@ -62,7 +62,6 @@ const MapSearch = () => {
   }
 
   const {
-    getComboboxProps,
     getMenuProps,
     getInputProps,
     getItemProps,
@@ -78,11 +77,12 @@ const MapSearch = () => {
     onSelectedItemChange: onSelectResult,
   })
   return (
-    <div className={styles.container} {...getComboboxProps()}>
+    <div className={styles.container}>
       <IconButton
         {...getToggleButtonProps(togglePropOptions)}
         icon="search"
         type="map-tool"
+        testId="map-search-button"
         tooltip={isOpen ? t('search.close', 'Close search') : t('map.search', 'Search areas')}
         className={cx({ [styles.active]: isOpen })}
       ></IconButton>
@@ -92,14 +92,16 @@ const MapSearch = () => {
         <InputText
           {...getInputProps({ ref: inputRef })}
           className={styles.input}
+          testId="map-search-input"
           placeholder={t('map.search', 'Search areas')}
           value={inputValue}
         />
-        <ul {...getMenuProps()} className={styles.results}>
+        <ul {...getMenuProps()} className={styles.results} data-test="map-search-results">
           {areasMatching?.map((item, index) => (
             <li
               {...getItemProps({ item, index })}
               key={`${item}${index}`}
+              data-test={`map-search-result-${index}`}
               className={cx(styles.result, { [styles.highlighted]: highlightedIndex === index })}
             >
               {item.properties.name}

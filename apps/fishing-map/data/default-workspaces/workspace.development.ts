@@ -1,12 +1,10 @@
 import { Workspace } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_VIEWPORT } from 'data/config'
+import { BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES } from 'data/default-workspaces/context-layers'
 import {
   WorkspaceCategory,
   DEFAULT_WORKSPACE_ID,
-  EEZ_DATAVIEW_SLUG,
-  MPA_DATAVIEW_SLUG,
   SAR_DATAVIEW_SLUG,
-  RFMO_DATAVIEW_SLUG,
   HIGH_SEAS_DATAVIEW_SLUG,
   BASEMAP_DATAVIEW_SLUG,
   FISHING_DATAVIEW_SLUG,
@@ -15,12 +13,7 @@ import {
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
   GRATICULES_DATAVIEW_SLUG,
-  FAO_AREAS_DATAVIEW_SLUG,
-  PROTECTED_SEAS_DATAVIEW_SLUG,
-  MPA_DATAVIEW_INSTANCE_ID,
-  EEZ_DATAVIEW_INSTANCE_ID,
   BASEMAP_LABELS_DATAVIEW_SLUG,
-  PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
   BASEMAP_DATAVIEW_INSTANCE_ID,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
@@ -54,7 +47,7 @@ const workspace: Workspace<WorkspaceState> = {
     {
       id: 'fishing-ais',
       config: {
-        datasets: ['public-global-fishing-effort:v20201001'],
+        datasets: ['public-global-fishing-effort:v20231026'],
       },
       dataviewId: FISHING_DATAVIEW_SLUG,
     },
@@ -118,44 +111,7 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: GRATICULES_DATAVIEW_SLUG,
     },
-    {
-      id: EEZ_DATAVIEW_INSTANCE_ID,
-      config: {
-        color: '#069688',
-        visible: false,
-      },
-      dataviewId: EEZ_DATAVIEW_SLUG,
-    },
-    {
-      id: MPA_DATAVIEW_INSTANCE_ID,
-      config: {
-        color: '#1AFF6B',
-        visible: false,
-      },
-      dataviewId: MPA_DATAVIEW_SLUG,
-    },
-    {
-      id: PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
-      config: {
-        visible: false,
-      },
-      dataviewId: PROTECTED_SEAS_DATAVIEW_SLUG,
-    },
-    {
-      id: 'context-layer-fao-areas',
-      config: {
-        visible: false,
-      },
-      dataviewId: FAO_AREAS_DATAVIEW_SLUG,
-    },
-    {
-      id: 'context-layer-rfmo',
-      config: {
-        color: '#6b67e5',
-        visible: false,
-      },
-      dataviewId: RFMO_DATAVIEW_SLUG,
-    },
+    ...BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES,
     {
       id: 'context-layer-high-seas',
       config: {

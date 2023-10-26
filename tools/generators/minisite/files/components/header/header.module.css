@@ -30,7 +30,7 @@
   margin: 0 auto;
 }
 
-@media (max-width: 767px) {
+@media (width <= 800px) {
   .Header {
     height: auto;
   }

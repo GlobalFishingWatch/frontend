@@ -19,7 +19,7 @@ type ActivitySchemaFilterProps = {
   schemaFilter: SchemaFilter
   onSelect: (
     filterKey: string,
-    selection: MultiSelectOption | MultiSelectOption[],
+    selection: number | MultiSelectOption | MultiSelectOption[],
     singleValue?: boolean
   ) => void
   onSelectOperation: (filterKey: string, filterOperator: FilterOperator) => void
@@ -31,7 +31,13 @@ export const showSchemaFilter = (schemaFilter: SchemaFilter) => {
   return !schemaFilter.disabled && schemaFilter.options && schemaFilter.options.length > 0
 }
 
-export const VALUE_TRANSFORMATIONS_BY_UNIT = {
+export type TransformationUnit = 'minutes'
+type Transformation = {
+  in: (v: any) => number
+  out: (v: any) => number
+  label: string
+}
+export const VALUE_TRANSFORMATIONS_BY_UNIT: Record<TransformationUnit, Transformation> = {
   minutes: {
     in: (v) => v / 60,
     out: (v) => v * 60,
@@ -83,18 +89,30 @@ function ActivitySchemaFilter({
   onIsOpenChange,
   onSelectOperation,
 }: ActivitySchemaFilterProps) {
-  const { id, label, type, disabled, options, optionsSelected, filterOperator, unit } = schemaFilter
+  const {
+    id,
+    label,
+    type,
+    disabled,
+    options,
+    optionsSelected,
+    filterOperator,
+    unit,
+    singleSelection,
+  } = schemaFilter
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const onSliderChange = useCallback(
-    (rangeSelected) => {
+    (rangeSelected: any) => {
       const filterRange = getRangeLimitsBySchema(schemaFilter)
       if (rangeSelected[0] === filterRange[0] && rangeSelected[1] === filterRange[1]) {
         onClean(id)
       } else if (!Array.isArray(rangeSelected) && !Number.isNaN(rangeSelected)) {
-        const value = unit ? VALUE_TRANSFORMATIONS_BY_UNIT[unit].out(rangeSelected) : rangeSelected
+        const value = unit
+          ? VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit].out(rangeSelected)
+          : rangeSelected
         onSelect(id, value, true)
       } else {
-        const selection = rangeSelected.map((id) => ({
+        const selection = rangeSelected.map((id: any) => ({
           id: id.toString(),
           label: id.toString(),
         }))
@@ -127,13 +145,19 @@ function ActivitySchemaFilter({
 
   if (type === 'number') {
     const initialValue = unit
-      ? VALUE_TRANSFORMATIONS_BY_UNIT[unit].in(getRangeBySchema(schemaFilter)[0])
+      ? VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit].in(
+          getRangeBySchema(schemaFilter)[0] as number
+        )
       : getRangeBySchema(schemaFilter)[0]
     const minValue = unit
-      ? VALUE_TRANSFORMATIONS_BY_UNIT[unit].in(getRangeLimitsBySchema(schemaFilter)[0])
+      ? VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit].in(
+          getRangeLimitsBySchema(schemaFilter)[0]
+        )
       : getRangeLimitsBySchema(schemaFilter)[0]
     const maxValue = unit
-      ? VALUE_TRANSFORMATIONS_BY_UNIT[unit].in(getRangeLimitsBySchema(schemaFilter)[1])
+      ? VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit].in(
+          getRangeLimitsBySchema(schemaFilter)[1]
+        )
       : getRangeLimitsBySchema(schemaFilter)[1]
     return (
       <Slider
@@ -156,7 +180,10 @@ function ActivitySchemaFilter({
         key={id}
         disabled={disabled}
         label={label}
-        placeholder={getPlaceholderBySelections(optionsSelected)}
+        placeholder={getPlaceholderBySelections({
+          selection: optionsSelected.map(({ id }) => id),
+          options,
+        })}
         options={options}
         selectedOption={optionsSelected?.[0]}
         containerClassName={cx(styles.multiSelect, { [styles.experimental]: id === 'matched' })}
@@ -168,7 +195,7 @@ function ActivitySchemaFilter({
   }
 
   return (
-    <div className={styles.relative}>
+    <div className={cx(styles.relative, styles.multiSelect)}>
       {filterOperator && (
         <Choice
           size="tiny"
@@ -178,19 +205,41 @@ function ActivitySchemaFilter({
           onSelect={(option) => onSelectOperation(id, option.id as FilterOperator)}
         />
       )}
-      <MultiSelect
-        key={id}
-        disabled={disabled}
-        label={label}
-        placeholder={getPlaceholderBySelections(optionsSelected, filterOperator)}
-        options={options}
-        selectedOptions={optionsSelected}
-        className={styles.multiSelect}
-        onSelect={(selection) => onSelect(id, selection)}
-        onRemove={(selection, rest) => onRemove(id, rest)}
-        onIsOpenChange={onIsOpenChange}
-        onCleanClick={() => onClean(id)}
-      />
+      {singleSelection ? (
+        <Select
+          key={id}
+          disabled={disabled}
+          label={label}
+          placeholder={getPlaceholderBySelections({
+            selection: optionsSelected.map(({ id }) => id),
+            options,
+            filterOperator,
+          })}
+          options={options}
+          selectedOption={optionsSelected[0]}
+          labelContainerClassName={styles.labelContainer}
+          onSelect={(selection) => onSelect(id, selection, true)}
+          onCleanClick={() => onClean(id)}
+        />
+      ) : (
+        <MultiSelect
+          key={id}
+          disabled={disabled}
+          label={label}
+          placeholder={getPlaceholderBySelections({
+            selection: optionsSelected.map(({ id }) => id),
+            options,
+            filterOperator,
+          })}
+          options={options}
+          selectedOptions={optionsSelected}
+          onSelect={(selection) => onSelect(id, selection)}
+          labelContainerClassName={styles.labelContainer}
+          onRemove={(selection, rest) => onRemove(id, rest)}
+          onIsOpenChange={onIsOpenChange}
+          onCleanClick={() => onClean(id)}
+        />
+      )}
     </div>
   )
 }

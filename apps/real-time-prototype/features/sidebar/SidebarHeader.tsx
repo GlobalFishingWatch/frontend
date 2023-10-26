@@ -5,7 +5,7 @@ function SidebarHeader() {
   return (
     <Sticky scrollElement=".scrollContainer">
       <div className={styles.sidebarHeader}>
-        <h1 className={styles.title}>Real Time prototype</h1>
+        <h1 className={styles.title}>Real Time Prototype</h1>
       </div>
     </Sticky>
   )

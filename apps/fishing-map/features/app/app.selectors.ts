@@ -1,5 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { RootState } from 'reducers'
+import { uniq } from 'lodash'
 import { DataviewCategory, DataviewInstance, Workspace } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_WORKSPACE } from 'data/config'
 import { createDeepEqualSelector } from 'utils/selectors'
@@ -13,7 +14,7 @@ import {
   getActiveActivityDatasetsInDataviews,
   getLatestEndDateFromDatasets,
 } from 'features/datasets/datasets.utils'
-import { Range } from 'features/timebar/timebar.slice'
+import { TimeRange } from 'features/timebar/timebar.slice'
 import {
   selectUrlViewport,
   selectLocationCategory,
@@ -21,6 +22,7 @@ import {
   selectLocationDatasetId,
   selectLocationAreaId,
   selectReportId,
+  selectIsAnyVesselLocation,
 } from 'routes/routes.selectors'
 import {
   Bbox,
@@ -33,6 +35,8 @@ import {
   VisibleEvents,
   WorkspaceActivityCategory,
   ReportActivityGraph,
+  BufferUnit,
+  BufferOperation,
 } from 'types'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import {
@@ -54,10 +58,15 @@ export const selectViewport = createSelector(
   [selectUrlViewport, selectWorkspaceViewport],
   (urlViewport, workspaceViewport) => {
     return {
-      zoom: urlViewport?.zoom || workspaceViewport?.zoom || DEFAULT_WORKSPACE.zoom,
-      latitude: urlViewport?.latitude || workspaceViewport?.latitude || DEFAULT_WORKSPACE.latitude,
+      zoom: urlViewport?.zoom || workspaceViewport?.zoom || (DEFAULT_WORKSPACE.zoom as number),
+      latitude:
+        urlViewport?.latitude ||
+        workspaceViewport?.latitude ||
+        (DEFAULT_WORKSPACE.latitude as number),
       longitude:
-        urlViewport?.longitude || workspaceViewport?.longitude || DEFAULT_WORKSPACE.longitude,
+        urlViewport?.longitude ||
+        workspaceViewport?.longitude ||
+        (DEFAULT_WORKSPACE.longitude as number),
     }
   }
 )
@@ -68,7 +77,7 @@ export const selectTimeRange = createSelector(
     return {
       start: urlTimerange?.start || workspaceTimerange?.start || DEFAULT_TIME_RANGE.start,
       end: urlTimerange?.end || workspaceTimerange?.end || DEFAULT_TIME_RANGE.end,
-    } as Range
+    } as TimeRange
   }
 )
 
@@ -94,13 +103,6 @@ export const selectReportTimeComparison = createSelector(
   [selectWorkspaceStateProperty('reportTimeComparison')],
   (reportTimeComparison): ReportActivityTimeComparison => {
     return reportTimeComparison
-  }
-)
-
-export const selectSearchQuery = createSelector(
-  [selectWorkspaceStateProperty('query')],
-  (query): string => {
-    return query
   }
 )
 
@@ -157,29 +159,36 @@ export const selectReportAreaId = createSelector(
   (locationAreaId, report) => (locationAreaId || report?.areaId) as number
 )
 
-export const selectReportCategory = createSelector(
-  [
-    selectWorkspaceStateProperty('reportCategory'),
-    (state) => selectDataviewInstancesResolved(state),
-  ],
-  (reportCategory, dataviews): ReportCategory => {
-    if (reportCategory) {
-      return reportCategory
-    }
+export const selectActiveDataviewsCategories = createSelector(
+  [(state) => selectDataviewInstancesResolved(state)],
+  (dataviews): ReportCategory[] => {
+    return uniq(
+      dataviews.flatMap((d) => (d.config?.visible ? getReportCategoryFromDataview(d) : []))
+    )
+  }
+)
+
+export const selectReportActiveCategories = createSelector(
+  [selectActiveDataviewsCategories],
+  (activeCategories): ReportCategory[] => {
     const orderedCategories = [
       ReportCategory.Fishing,
       ReportCategory.Presence,
       ReportCategory.Detections,
       ReportCategory.Environment,
     ]
-    const categoriesWithActiveDataviews = orderedCategories.map((category) => {
-      return dataviews.some((dataview) => {
-        return dataview.config?.visible && getReportCategoryFromDataview(dataview) === category
-      })
-    })
-    const firstCategoryActive =
-      categoriesWithActiveDataviews.findIndex((active) => active === true) || 0
-    return orderedCategories[firstCategoryActive]
+    return orderedCategories.flatMap((category) =>
+      activeCategories.some((a) => a === category) ? category : []
+    )
+  }
+)
+
+export const selectReportCategory = createSelector(
+  [selectWorkspaceStateProperty('reportCategory'), selectReportActiveCategories],
+  (reportCategory, activeCategories): ReportCategory => {
+    return activeCategories.some((category) => category === reportCategory)
+      ? reportCategory
+      : activeCategories[0]
   }
 )
 
@@ -262,9 +271,31 @@ export const selectReportResultsPerPage = createSelector(
   }
 )
 
+export const selectReportBufferValue = createSelector(
+  [selectWorkspaceStateProperty('reportBufferValue')],
+  (reportBufferValue): number => {
+    return reportBufferValue
+  }
+)
+
+export const selectReportBufferUnit = createSelector(
+  [selectWorkspaceStateProperty('reportBufferUnit')],
+  (reportBufferUnit): BufferUnit => {
+    return reportBufferUnit
+  }
+)
+
+export const selectReportBufferOperation = createSelector(
+  [selectWorkspaceStateProperty('reportBufferOperation')],
+  (reportBufferOperation): BufferOperation => {
+    return reportBufferOperation
+  }
+)
+
 export const selectTimebarVisualisation = createSelector(
-  [selectWorkspaceStateProperty('timebarVisualisation')],
-  (timebarVisualisation): TimebarVisualisations => {
+  [selectWorkspaceStateProperty('timebarVisualisation'), selectIsAnyVesselLocation],
+  (timebarVisualisation, isAnyVesselLocation): TimebarVisualisations => {
+    if (isAnyVesselLocation) return TimebarVisualisations.Vessel
     return timebarVisualisation
   }
 )
@@ -311,6 +342,8 @@ export const selectWorkspaceReportState = createSelector(
     selectReportVesselFilter,
     selectReportVesselGraph,
     selectReportVesselPage,
+    selectReportBufferValue,
+    selectReportBufferUnit,
   ],
   (
     reportActivityGraph,
@@ -321,7 +354,9 @@ export const selectWorkspaceReportState = createSelector(
     reportTimeComparison,
     reportVesselFilter,
     reportVesselGraph,
-    reportVesselPage
+    reportVesselPage,
+    reportBufferValue,
+    reportBufferUnit
   ) => ({
     ...(reportActivityGraph && { reportActivityGraph }),
     ...(reportAreaBounds && { reportAreaBounds }),
@@ -332,6 +367,8 @@ export const selectWorkspaceReportState = createSelector(
     ...(reportVesselFilter && { reportVesselFilter }),
     ...(reportVesselGraph && { reportVesselGraph }),
     ...(reportVesselPage && { reportVesselPage }),
+    ...(reportBufferValue && { reportBufferValue }),
+    ...(reportBufferUnit && { reportBufferUnit }),
   })
 )
 
@@ -383,7 +420,7 @@ export const selectWorkspaceWithCurrentState = createSelector(
       ...(workspace || ({} as Workspace)),
       app: APP_NAME,
       category,
-      viewport,
+      viewport: viewport as Workspace['viewport'],
       startAt: timerange.start,
       endAt: timerange.end,
       state,

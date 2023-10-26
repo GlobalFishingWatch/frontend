@@ -98,7 +98,7 @@ export default function ReportActivityGraph({ start, end, data }: ReportActivity
     if (start && end && data?.interval) {
       const cleanEnd = DateTime.fromISO(end, { zone: 'utc' })
         .minus({ [data?.interval]: 1 })
-        .toISO()
+        .toISO() as string
       return [new Date(start).getTime(), new Date(cleanEnd).getTime()]
     }
   }, [start, end, data?.interval])
@@ -121,7 +121,7 @@ export default function ReportActivityGraph({ start, end, data }: ReportActivity
   ]
 
   return (
-    <div className={styles.graph}>
+    <div className={styles.graph} data-test="report-activity-evolution">
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart data={dataFormated} margin={graphMargin}>
           <CartesianGrid vertical={false} />

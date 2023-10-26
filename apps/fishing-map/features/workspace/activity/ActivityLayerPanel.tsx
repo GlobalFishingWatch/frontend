@@ -8,7 +8,7 @@ import {
   getDatasetConfigByDatasetType,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import { DatasetTypes, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
+import { DatasetSchemaItem, DatasetTypes, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -67,7 +67,9 @@ function ActivityLayerPanel({
   const readOnly = useSelector(selectReadOnly)
   const layerActive = dataview?.config?.visible ?? true
   const datasetStatsFields = dataview.datasets!?.flatMap((d) =>
-    Object.entries(d.schema || {}).flatMap(([id, schema]) => (schema.stats ? id : []))
+    Object.entries(d.schema || {}).flatMap(([id, schema]) =>
+      (schema as DatasetSchemaItem).stats ? id.toUpperCase() : []
+    )
   )
 
   const fields = datasetStatsFields?.length > 0 ? datasetStatsFields : DEFAULT_STATS_FIELDS
@@ -171,7 +173,7 @@ function ActivityLayerPanel({
       { field: 'target_species', label: t('vessel.target_species', 'Target species') },
       { field: 'license_category', label: t('vessel.license_category', 'License category') },
       { field: 'vessel_type', label: t('vessel.vesselType_other', 'Vessel types') },
-      { field: 'vessel-groups', label: t('vesselGroup.vesselGroups', 'Vessel Groups') },
+      { field: 'vessel-groups', label: t('vesselGroup.vesselGroup', 'Vessel Group') },
     ]
     return fields
   }, [t])
@@ -180,6 +182,7 @@ function ActivityLayerPanel({
 
   return (
     <div
+      data-test={`activity-layer-panel-${dataview.id}`}
       className={cx(styles.LayerPanel, activityStyles.layerPanel, {
         [styles.expandedContainerOpen]: filterOpen || colorOpen,
         [styles.noBorder]: !showBorder || bivariateDataviews?.[0] === dataview.id,
@@ -213,12 +216,13 @@ function ActivityLayerPanel({
               )}
               {layerActive && showFilters && (
                 <ExpandedContainer
-                  visible={filterOpen}
                   onClickOutside={closeExpandedContainer}
-                  component={<Filters dataview={dataview} />}
+                  visible={filterOpen}
+                  component={<Filters dataview={dataview} onConfirmCallback={onToggleFilterOpen} />}
                 >
                   <div className={styles.filterButtonWrapper}>
                     <IconButton
+                      data-test={`activity-layer-panel-btn-filter-${dataview.id}`}
                       icon={filterOpen ? 'filter-on' : 'filter-off'}
                       size="small"
                       onClick={onToggleFilterOpen}

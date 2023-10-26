@@ -54,11 +54,11 @@ class Playback extends Component {
     if (byIntervals) {
       const interval = getCurrentInterval(start, end, [intervals])
       const intervalStartMs =
-        interval === 'month'
+        interval === 'MONTH'
           ? dayjs(start).utc().daysInMonth() * MS_IN_INTERVAL.day
           : MS_IN_INTERVAL[interval]
       const intervalEndMs =
-        interval === 'month'
+        interval === 'MONTH'
           ? dayjs(end).utc().daysInMonth() * MS_IN_INTERVAL.day
           : MS_IN_INTERVAL[interval]
       newStartMs = new Date(start).getTime() + intervalStartMs * deltaMultiplicator

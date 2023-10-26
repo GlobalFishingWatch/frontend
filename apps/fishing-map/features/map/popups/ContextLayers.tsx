@@ -19,7 +19,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
   const featuresByType = groupBy(features, 'layerId')
 
   const trackOnDownloadClick = useCallback(
-    (event, feature) => {
+    (event: any, feature: TooltipEventFeature) => {
       trackEvent({
         category: TrackCategory.DataDownloads,
         action: `Click on polygon, click on download icon`,
@@ -38,7 +38,10 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
             className={styles.layerIcon}
             style={{ color: featureByType[0].color }}
           />
-          <div className={styles.popupSectionContent}>
+          <div
+            className={styles.popupSectionContent}
+            data-test={`context-tooltip-section-${featureByType[0].datasetId}`}
+          >
             {showFeaturesDetails && (
               <h3 className={styles.popupSectionTitle}>{featureByType[0].title}</h3>
             )}

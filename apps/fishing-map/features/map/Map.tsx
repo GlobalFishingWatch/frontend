@@ -38,7 +38,7 @@ import { getEventLabel } from 'utils/analytics'
 import { selectShowTimeComparison } from 'features/reports/reports.selectors'
 import {
   selectIsMarineManagerLocation,
-  selectIsReportLocation,
+  selectIsAnyReportLocation,
   selectIsWorkspaceLocation,
 } from 'routes/routes.selectors'
 import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
@@ -240,7 +240,7 @@ const MapWrapper = () => {
   }, [cleanFeatureState])
 
   const showTimeComparison = useSelector(selectShowTimeComparison)
-  const reportLocation = useSelector(selectIsReportLocation)
+  const reportLocation = useSelector(selectIsAnyReportLocation)
   const isWorkspace = useSelector(selectIsWorkspaceLocation)
   const debugOptions = useSelector(selectDebugOptions)
 

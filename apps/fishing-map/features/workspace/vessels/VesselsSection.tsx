@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { SortableContext } from '@dnd-kit/sortable'
 import cx from 'classnames'
 import { useTranslation, Trans } from 'react-i18next'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton, Switch } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectVesselsDataviews } from 'features/dataviews/dataviews.slice'
 import styles from 'features/workspace/shared/Sections.module.css'
@@ -12,36 +12,82 @@ import { isBasicSearchAllowed } from 'features/search/search.selectors'
 import { isGuestUser } from 'features/user/user.slice'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { WORKSPACE_SEARCH } from 'routes/routes'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
+import { selectWorkspace } from 'features/workspace/workspace.selectors'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import VesselEventsLegend from './VesselEventsLegend'
 import VesselLayerPanel from './VesselLayerPanel'
 
 function VesselsSection(): React.ReactElement {
   const { t } = useTranslation()
-  const { dispatchQueryParams } = useLocationConnect()
+  const { dispatchLocation } = useLocationConnect()
   const dataviews = useSelector(selectVesselsDataviews)
+  const workspace = useSelector(selectWorkspace)
   const guestUser = useSelector(isGuestUser)
+  const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const hasVesselsWithNoTrack = useSelector(selectHasTracksWithNoData)
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
   const searchAllowed = useSelector(isBasicSearchAllowed)
+  const someVesselsVisible = dataviews.some((d) => d.config?.visible)
+
+  const onToggleAllVessels = useCallback(() => {
+    upsertDataviewInstance(
+      dataviews.map(({ id }) => ({
+        id: id,
+        config: {
+          visible: !someVesselsVisible,
+        },
+      }))
+    )
+  }, [someVesselsVisible, dataviews, upsertDataviewInstance])
+
+  const onDeleteAllClick = useCallback(() => {
+    deleteDataviewInstance(dataviews.map((d) => d.id))
+  }, [dataviews, deleteDataviewInstance])
 
   const onSearchClick = useCallback(() => {
     trackEvent({
       category: TrackCategory.SearchVessel,
       action: 'Click search icon to open search panel',
     })
-    dispatchQueryParams({ query: '' })
-  }, [dispatchQueryParams])
+    dispatchLocation(WORKSPACE_SEARCH, {
+      payload: {
+        category: workspace?.category || WorkspaceCategory.FishingActivity,
+        workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+      },
+    })
+  }, [dispatchLocation, workspace])
 
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={styles.header}>
+        {dataviews.length > 1 && (
+          <Switch
+            active={someVesselsVisible}
+            onClick={onToggleAllVessels}
+            tooltip={t('layer.toggleAllVisibility', 'Toggle all layers visibility')}
+            tooltipPlacement="top"
+          />
+        )}
         <h2 className={cx('print-hidden', styles.sectionTitle)}>
           {t('common.vessel_other', 'Vessels')}
         </h2>
+        {dataviews.length > 0 && (
+          <IconButton
+            icon="delete"
+            size="medium"
+            tooltip={t('layer.removeAllLayers', 'Remove all layers')}
+            tooltipPlacement="top"
+            className="print-hidden"
+            onClick={onDeleteAllClick}
+          />
+        )}
         <IconButton
           icon="search"
           type="border"
           size="medium"
+          testId="search-vessels-open"
           disabled={!searchAllowed}
           tooltip={
             searchAllowed

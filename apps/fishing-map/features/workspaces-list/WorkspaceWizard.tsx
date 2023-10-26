@@ -125,29 +125,22 @@ function WorkspaceWizard() {
       if (payload) {
         const datasetsIds = getDatasetsInDataviews(payload as Dataview[])
         if (datasetsIds?.length) {
-          dispatch(fetchDatasetsByIdsThunk(datasetsIds))
+          dispatch(fetchDatasetsByIdsThunk({ ids: datasetsIds }))
         }
       }
     }
     fetchMarineManagerData()
   }, [dispatch])
 
-  const {
-    getComboboxProps,
-    getMenuProps,
-    getInputProps,
-    getItemProps,
-    highlightedIndex,
-    inputValue,
-    isOpen,
-  } = useCombobox({
-    selectedItem,
-    items: areasMatching,
-    itemToString: getItemLabel,
-    onInputValueChange: onInputChange,
-    onSelectedItemChange: onSelectResult,
-    onHighlightedIndexChange: onHighlightedIndexChange,
-  })
+  const { getMenuProps, getInputProps, getItemProps, highlightedIndex, inputValue, isOpen } =
+    useCombobox({
+      selectedItem,
+      items: areasMatching,
+      itemToString: getItemLabel,
+      onInputValueChange: onInputChange,
+      onSelectedItemChange: onSelectResult,
+      onHighlightedIndexChange: onHighlightedIndexChange,
+    })
 
   const onInputBlur = () => {
     if (inputValue !== getItemLabel(selectedItem)) {
@@ -191,7 +184,7 @@ function WorkspaceWizard() {
     : t('workspace.wizard.exploreGlobal', 'Explore global')
 
   return (
-    <div className={styles.wizardContainer} {...getComboboxProps()}>
+    <div className={styles.wizardContainer}>
       <div
         className={cx(styles.inputContainer, { [styles.open]: isOpen && areasMatching.length > 0 })}
       >

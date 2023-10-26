@@ -15,7 +15,8 @@ import { MiniGlobe, MiniglobeBounds, Tooltip } from '@globalfishingwatch/ui-comp
 import { BasemapType } from '@globalfishingwatch/layer-composer'
 import { useURLViewport, useViewport } from 'features/map/map-viewport.hooks'
 import { hoveredFeaturesAtom } from 'features/map/map-picking.hooks'
-import { getTimeAgo } from 'utils/dates'
+import { getDateLabel } from 'utils/dates'
+import { getCoordinatesLabel } from 'utils/coordinates'
 import styles from './map.module.css'
 
 const API_GATEWAY = 'https://gateway.api.dev.globalfishingwatch.org'
@@ -26,9 +27,10 @@ const mapView = new MapView({ repeat: true })
 export type GFWLayerProps = {
   token: string
   lastUpdate: string
+  showLatestPositions: boolean
 }
 
-const MapWrapper = ({ lastUpdate }): React.ReactElement => {
+const MapWrapper = ({ lastUpdate, showLatestPositions }): React.ReactElement => {
   useURLViewport()
   const { viewState, onViewportStateChange } = useViewport()
   const deckRef = useRef<DeckGLRef>(null)
@@ -40,11 +42,13 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
     token: GFWAPI.getToken(),
     lastUpdate,
     vessels: sublayers,
+    showLatestPositions,
   })
   const [hoveredFeatures, setHoveredFeatures] = useAtom(hoveredFeaturesAtom)
   const [bounds, setBounds] = useState<MiniglobeBounds>()
   const [currentBasemap, setCurrentBasemap] = useState<BasemapType>(BasemapType.Satellite)
   const [labelsShown, setLabelsShown] = useState<boolean>(true)
+  const [cursorPosition, setCursorPosition] = useState<number[] | undefined>()
 
   const layers = useMemo(() => {
     const satellite =
@@ -82,6 +86,7 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
       ? new TileLayer({
           id: 'Labels',
           data: `${API_GATEWAY}/${API_GATEWAY_VERSION}/tileset/nslabels/tile?locale=en&x={x}&y={y}&z={z}`,
+          zoomOffset: 1,
           loadOptions: {
             fetch: {
               method: 'GET',
@@ -102,6 +107,7 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
           },
         })
       : []
+
     return [basemapLayer, satellite, contextLayer, tracksLayer, latestPositionsLayer, labels]
   }, [basemapLayer, contextLayer, currentBasemap, labelsShown, latestPositionsLayer, tracksLayer])
 
@@ -112,7 +118,11 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
         y: info.y,
       })
       if (!features.length || !features[0].object.properties.mmsi) return
-      addTrackSublayer(features[0].object.properties.mmsi)
+      features.forEach((feature) => {
+        if (feature.object.properties.mmsi) {
+          addTrackSublayer(feature.object.properties.mmsi)
+        }
+      })
     },
     [addTrackSublayer]
   )
@@ -123,8 +133,9 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
         x: info.x,
         y: info.y,
       })
+      setCursorPosition(info.coordinate)
       if (!hoveredFeatures.length && !features.length) return
-      const uniqFeatures = uniqBy(features, 'value.object.properties.mmsi')
+      const uniqFeatures = uniqBy(features, 'object.properties.mmsi')
       setHoveredFeatures(uniqFeatures)
     },
     [setHoveredFeatures, hoveredFeatures]
@@ -148,8 +159,11 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
       .filter((f) => f.object?.properties?.mmsi)
       .sort((a, b) => b.object?.properties?.timestamp - a.object?.properties?.timestamp)
     const count = features[0]?.object?.properties?.count
+    const points = features
+      .filter((f) => f.object?.timestamp)
+      .sort((a, b) => b.object?.timestamp - a.object?.timestamp)
     const mapWidth = window.innerWidth - 320
-    if (vessels.length > 0 || count) {
+    if (vessels.length > 0 || points.length > 0 || count) {
       return (
         <div
           style={{
@@ -164,7 +178,9 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
             padding: '1rem',
           }}
         >
-          {vessels && vessels.length > 3 && <div className={styles.vesselRow}>Latest vessels</div>}
+          {vessels && vessels.length > 3 && (
+            <label className={styles.vesselRow}>Latest vessels</label>
+          )}
           {vessels &&
             vessels.slice(0, 3).map((f) => (
               <div key={f.object?.properties?.mmsi} className={styles.vesselRow}>
@@ -175,7 +191,7 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
                 <div>
                   <label>TIME</label>
                   {f.object.properties.timestamp
-                    ? getTimeAgo(f.object.properties.timestamp * 1000)
+                    ? getDateLabel(f.object.properties.timestamp * 1000)
                     : '---'}
                 </div>
                 <div>
@@ -190,13 +206,23 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
             <div className={styles.vesselRow}>... + {vessels.length - 3} more</div>
           )}
           {count && `${count / 100} ${count / 100 === 1 ? 'vessel' : 'vessels'}`}
+          {points.length > 0 && (
+            <div>
+              <p>
+                <div className={styles.dot} style={{ color: points[0].sourceLayer.props.color }} />
+                {points[0].sourceLayer.id}
+              </p>
+              <p>{getCoordinatesLabel(points[0].object.coordinates)}</p>
+              <p>{getDateLabel(points[0].object.timestamp)}</p>
+            </div>
+          )}
         </div>
       )
     }
   }
 
   const getCursor = ({ isDragging }) => {
-    if (hoveredFeatures.length && hoveredFeatures[0].object.properties.mmsi) return 'pointer'
+    if (hoveredFeatures.length && hoveredFeatures[0].object.properties?.mmsi) return 'pointer'
     return isDragging ? 'grabbing' : 'grab'
   }
 
@@ -261,6 +287,7 @@ const MapWrapper = ({ lastUpdate }): React.ReactElement => {
           {labelsShown ? 'Hide labels' : 'Show labels'}
         </button>
       </div>
+      <div className={styles.info}>{cursorPosition && getCoordinatesLabel(cursorPosition)}</div>
     </Fragment>
   )
 }

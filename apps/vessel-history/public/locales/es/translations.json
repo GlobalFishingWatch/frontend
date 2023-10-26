@@ -7,7 +7,7 @@
     "any": "Any",
     "basicVideo": "Basic video",
     "basicVideoLink": "https://drive.google.com/file/d/18yenS9pva3kF2YGKZcSqdHy8avzRinBP/view?usp=sharing",
-    "commingSoon": "muy pronto!",
+    "commingSoon": "¡próximamente!",
     "currentTimeRange": "período actual",
     "dataAndTerminology": "Data and Terminology",
     "download": "Descargar",
@@ -114,7 +114,7 @@
     "nSelected_other": "{{count}} selected",
     "nSelected_plural": "{{count}} selected",
     "port": "Puerto",
-    "portAction": "Port visit",
+    "portAction": "Visita a puerto",
     "portAt": "Port visit at {{port}}",
     "portVisitEvents": "Port Visits",
     "position": "Position",
@@ -234,7 +234,7 @@
     "advanced": "advanced",
     "basic": "basic",
     "callsign": "Señal distintiva de llamada",
-    "description": "Buscar por nombre de buque o código de identificación (IMO, MMSI, VMS ID, etc…). Puedes restringir tu búsqueda presionando el icono de filtro en la barra superior",
+    "description": "Buscar por nombre de embarcación o código de identificación.",
     "flagState": "Flag States",
     "hideIndividual": "HIDE INDIVIDUAL RESULTS",
     "IMO": "IMO",
@@ -252,8 +252,8 @@
     "viewIndividual": "VIEW INDIVIDUAL RESULTS"
   },
   "selects": {
-    "allSelected": "todos",
-    "none": "None",
+    "allSelected": "Todos",
+    "none": "Ninguna",
     "selected": "seleccionado"
   },
   "settings": {
@@ -283,7 +283,7 @@
     },
     "greaterThan": "Greater than",
     "helpRange": "Should be a value between {{min}} and {{max}}, the value is not required",
-    "hours": "hours",
+    "hours": "horas",
     "km": "km",
     "kms": "kms",
     "loiteringEvents": {

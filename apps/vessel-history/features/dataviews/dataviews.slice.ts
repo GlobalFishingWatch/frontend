@@ -2,11 +2,11 @@ import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { memoize, uniqBy } from 'lodash'
 import { stringify } from 'qs'
 import { GFWApiClient } from 'http-client/http-client'
-import { APIPagination, DatasetTypes, Dataview } from '@globalfishingwatch/api-types'
+import { APIPagination, Dataview } from '@globalfishingwatch/api-types'
 import { parseAPIError } from '@globalfishingwatch/api-client'
 import { AsyncReducer, AsyncReducerStatus, createAsyncSlice } from 'utils/async-slice'
 import { RootState } from 'store'
-import { DEFAULT_PAGINATION_PARAMS, IS_STANDALONE_APP } from 'data/config'
+import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 
 export const fetchDataviewsByIdsThunk = createAsyncThunk(
   'dataviews/fetch',
@@ -42,7 +42,7 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
     condition: (ids: Dataview['slug'][], { getState }) => {
       const { dataviews } = getState() as RootState
       const fetchStatus = dataviews.status
-      const slugs = Object.entries(dataviews.entities).map(([_, dataview]) => dataview.slug)
+      const slugs = Object.entries(dataviews.entities).map(([_, dataview]) => dataview?.slug)
       const allRecordsLoaded = (ids as string[]).every(
         (id) => dataviews.ids.includes(id) || slugs.includes(id)
       )

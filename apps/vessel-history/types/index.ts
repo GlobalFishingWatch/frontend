@@ -133,7 +133,7 @@ export interface VesselWithHistory extends Omit<Vessel, 'vesselType'> {
   history: VesselFieldsHistory
   iuuStatus?: number
   iuuListing?: Iuu
-  vesselType?: string
+  vesselType?: VesselType | string
   forcedLabour?: ForcedLaborRisk[]
 }
 

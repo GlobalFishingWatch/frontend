@@ -62,7 +62,8 @@
             "input": ".",
             "output": "."
           }
-        ]
+        ],
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {
@@ -80,7 +81,7 @@
         "passWithNoTests": true
       }
     },
-    "publish": {
+    "deploy": {
       "executor": "ngx-deploy-npm:deploy",
       "options": {
         "access": "public"
@@ -109,10 +110,10 @@
         "parallel": false
       }
     },
-    "deploy": {
+    "publish": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx i18n-labels:publish", "nx i18n-labels:purge"],
+        "commands": ["nx deploy i18n-labels", "nx purge i18n-labels"],
         "parallel": false
       }
     },
@@ -121,7 +122,7 @@
       "options": {
         "commitMessageFormat": "release: bump ${projectName} to ${version} [skip ci]",
         "releaseAs": "patch",
-        "tagPrefix": "${projectName}@"
+        "tagPrefix": "{projectName}@"
       }
     }
   }

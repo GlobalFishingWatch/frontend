@@ -90,4 +90,10 @@ export const isGuestUser = createSelector([selectUserData], (userData) => {
   return userData?.type === GUEST_USER_TYPE
 })
 
+export const isUserLogged = createSelector(
+  [selectUserStatus, selectUserLogged],
+  (status, logged) => {
+    return status === AsyncReducerStatus.Finished && logged
+  }
+)
 export default userSlice.reducer
