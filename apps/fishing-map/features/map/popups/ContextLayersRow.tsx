@@ -25,6 +25,7 @@ import {
   DEFAULT_POINT_BUFFER_UNIT,
   DEFAULT_POINT_BUFFER_VALUE,
 } from 'features/reports/reports.config'
+import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
 import styles from './Popup.module.css'
 
 interface DownloadPopupButtonProps {
@@ -109,6 +110,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
     })
     resetSidebarScroll()
     dispatch(resetReportData())
+    dispatch(cleanCurrentWorkspaceStateBufferParams())
     if (onClick) {
       onClick(e, feature)
     }
