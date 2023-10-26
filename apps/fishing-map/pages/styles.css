@@ -23,10 +23,6 @@
   display: none !important;
 }
 
-.printing .print-only {
-  display: block !important;
-}
-
 #__next {
   height: 100vh;
   height: calc(var(--vh, 1vh) * 100);
@@ -119,7 +115,9 @@
   font: var(--font-L);
   line-height: 1;
   margin: var(--space-XS);
-  transition: opacity 150ms linear, color 150ms linear;
+  transition:
+    opacity 150ms linear,
+    color 150ms linear;
   z-index: 1;
   top: -2rem;
   right: -2rem;
