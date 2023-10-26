@@ -68,7 +68,7 @@ export const VESSEL_CSV_CONFIG: CsvConfig[] = [
   { label: 'owner', accessor: 'registryOwners', transform: parseRegistryOwners },
   {
     label: 'authorization',
-    accessor: 'registryAuthorizations',
+    accessor: 'registryPublicAuthorizations',
     transform: parseRegistryAuthorizations,
   },
 ]

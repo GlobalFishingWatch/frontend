@@ -78,30 +78,27 @@ const VesselIdentity = () => {
         start: vesselIdentity.transmissionDateFrom,
         end: vesselIdentity.transmissionDateTo,
       }
+      const { registryPublicAuthorizations, registryOwners, ssvid, shipname, flag } = vesselIdentity
       const filteredVesselIdentity = {
         ...vesselIdentity,
-        nShipname: formatInfoField(vesselIdentity.shipname, 'shipname') as string,
-        flag: t(`flags:${vesselIdentity.flag}`, vesselIdentity.flag) as string,
+        nShipname: formatInfoField(shipname, 'shipname') as string,
+        flag: t(`flags:${flag}`, flag) as string,
         shiptypes: getVesselShipType(vesselIdentity, { joinCharacter: ' -' }), // Can't be commas as it would break the csv format
         geartypes: getVesselGearType(vesselIdentity, { joinCharacter: ' -' }),
-        registryAuthorizations:
-          vesselIdentity.registryAuthorizations &&
-          filterRegistryInfoByDateAndSSVID(
-            vesselIdentity.registryAuthorizations,
-            timerange,
-            vesselIdentity.ssvid
-          ),
+        registryPublicAuthorizations:
+          registryPublicAuthorizations &&
+          filterRegistryInfoByDateAndSSVID(registryPublicAuthorizations, timerange, ssvid),
         registryOwners:
-          vesselIdentity.registryOwners &&
+          registryOwners &&
           (filterRegistryInfoByDateAndSSVID(
-            vesselIdentity.registryOwners,
+            registryOwners,
             timerange,
-            vesselIdentity.ssvid
+            ssvid
           ) as VesselRegistryOwner[]),
       }
       const data = parseVesselToCSV(filteredVesselIdentity)
       const blob = new Blob([data], { type: 'text/plain;charset=utf-8' })
-      saveAs(blob, `${vesselIdentity?.shipname}-${vesselIdentity?.flag}.csv`)
+      saveAs(blob, `${shipname}-${flag}.csv`)
       trackEvent({
         category: TrackCategory.VesselProfile,
         action: 'vessel_identity_download',

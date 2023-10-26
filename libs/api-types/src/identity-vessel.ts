@@ -158,7 +158,7 @@ export interface IdentityVessel {
   combinedSourcesInfo: VesselCombinedSourcesInfo[]
   dataset: string
   matchCriteria?: VesselIdentitySearchMatchCriteria[]
-  registryAuthorizations?: VesselRegistryAuthorization[]
+  registryPublicAuthorizations?: VesselRegistryAuthorization[]
   registryInfo?: VesselRegistryInfo[]
   registryOwners?: VesselRegistryOwner[]
   selfReportedInfo: SelfReportedInfo[]
