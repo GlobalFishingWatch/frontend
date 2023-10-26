@@ -1,6 +1,4 @@
-![Publish to npm](https://github.com/GlobalFishingWatch/frontend/workflows/Publish%20packages/badge.svg)
-
-This monorepo hosts frontend packages and applications of the <a href="globalfishingwatch.org/">GlobalFishingWatch</a> ecosystem.
+This monorepo hosts frontend packages and applications of the <a href="https://globalfishingwatch.org/map">GlobalFishingWatch</a> ecosystem.
 
 ## Packages
 
