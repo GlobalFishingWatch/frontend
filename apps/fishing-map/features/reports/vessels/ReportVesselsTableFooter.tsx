@@ -22,6 +22,7 @@ import {
   selectReportVesselsListWithAllInfo,
   selectReportVesselsPagination,
   getVesselsFiltered,
+  ReportVesselWithDatasets,
 } from '../reports.selectors'
 import styles from './ReportVesselsTableFooter.module.css'
 
@@ -33,7 +34,9 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
-  const [allVesselsWithAllInfoFiltered, setAllVesselsWithAllInfoFiltered] = useState([])
+  const [allVesselsWithAllInfoFiltered, setAllVesselsWithAllInfoFiltered] = useState<
+    ReportVesselWithDatasets[]
+  >([])
   const allVesselsWithAllInfo = useSelector(selectReportVesselsListWithAllInfo)
   const allVessels = useSelector(selectReportVesselsList)
   const allFilteredVessels = useSelector(selectReportVesselsFiltered)
@@ -44,8 +47,12 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
 
   const getDownloadVessels = async (_: any, done: any) => {
     if (allVesselsWithAllInfo) {
+      const vessels = getVesselsFiltered(allVesselsWithAllInfo, reportVesselFilter)
       await setAllVesselsWithAllInfoFiltered(
-        getVesselsFiltered(allVesselsWithAllInfo, reportVesselFilter) as any
+        vessels?.map((vessel) => {
+          const { dataviewId, category, sourceColor, flagTranslatedClean, ...rest } = vessel
+          return rest
+        }) as ReportVesselWithDatasets[]
       )
       trackEvent({
         category: TrackCategory.Analysis,

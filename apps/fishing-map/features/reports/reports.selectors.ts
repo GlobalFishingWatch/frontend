@@ -65,6 +65,9 @@ export type ReportVesselWithDatasets = Pick<ReportVessel, 'vesselId' | 'shipName
   Pick<ReportVesselWithMeta, 'sourceColor'> & {
     infoDataset?: Dataset
     trackDataset?: Dataset
+    dataviewId?: string
+    category?: ReportCategory
+    flagTranslatedClean?: string
   }
 
 export const selectReportDataviewsWithPermissions = createDeepEqualSelector(
