@@ -15,6 +15,7 @@ import {
   selectVesselHasEventsDatasets,
 } from 'features/vessel/vessel.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectVesselProfileDataview } from 'features/dataviews/dataviews.slice'
 import styles from './VesselActivity.module.css'
 
 const VesselActivity = () => {
@@ -24,6 +25,9 @@ const VesselActivity = () => {
   const hasEventsDataset = useSelector(selectVesselHasEventsDatasets)
   const eventsLoading = useSelector(selectVesselEventsResourcesLoading)
   const eventsResources = useSelector(selectVesselEventsResources)
+  const vesselProfileDataview = useSelector(selectVesselProfileDataview)
+  const hasVesselEvents =
+    vesselProfileDataview?.config?.events && vesselProfileDataview?.config?.events?.length > 0
 
   const setActivityMode = (option: ChoiceOption<VesselProfileActivityMode>) => {
     dispatchQueryParams({ vesselActivityMode: option.id })
@@ -47,7 +51,7 @@ const VesselActivity = () => {
     [t]
   )
 
-  if (!eventsResources.length || eventsLoading) {
+  if (hasVesselEvents && eventsLoading) {
     return (
       <div className={styles.placeholder}>
         <Spinner />
