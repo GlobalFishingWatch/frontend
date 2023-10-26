@@ -58,12 +58,14 @@ const VesselLink = ({
 
   const onLinkClick = useCallback(
     (e: any) => {
-      if (vesselId !== vesselInfoDataId) {
-        dispatch(resetVesselState())
-      }
-      if (fitBounds) {
-        // This needs to happen after dispatch resetVesselState so there is no override
-        dispatch(setVesselFitBoundsOnLoad(true))
+      if (!e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey) {
+        if (vesselId !== vesselInfoDataId) {
+          dispatch(resetVesselState())
+        }
+        if (fitBounds) {
+          // This needs to happen after dispatch resetVesselState so there is no override
+          dispatch(setVesselFitBoundsOnLoad(true))
+        }
       }
       if (onClick) {
         onClick(e)
