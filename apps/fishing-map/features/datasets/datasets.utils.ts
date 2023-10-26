@@ -19,6 +19,7 @@ import {
   VesselType,
   DatasetSchema,
   DatasetSchemaItem,
+  IdentityVessel,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
@@ -386,22 +387,39 @@ export const hasDatasetConfigVesselData = (datasetConfig: DataviewDatasetConfig)
   )
 }
 
+const getNestedSchemaItem = (
+  dataset: Dataset,
+  schema: SupportedDatasetSchema,
+  nestedSchema: keyof Pick<IdentityVessel, 'selfReportedInfo' | 'registryInfo'>
+) => {
+  const nestedSchemaInfo = dataset?.schema?.[nestedSchema] as DatasetSchema
+  const nestedSchemaInfoItem = nestedSchemaInfo?.items?.[schema] as DatasetSchemaItem
+  if (nestedSchemaInfoItem) {
+    return nestedSchemaInfoItem
+  }
+  const nestedSchemaInfoPropertiesItem = (nestedSchemaInfo?.items?.properties as any)?.[
+    schema
+  ] as DatasetSchemaItem
+  if (nestedSchemaInfoPropertiesItem) {
+    return nestedSchemaInfoPropertiesItem
+  }
+}
 export const getDatasetSchemaItem = (dataset: Dataset, schema: SupportedDatasetSchema) => {
   const schemaItem = dataset?.schema?.[schema] as DatasetSchemaItem
   if (schemaItem) {
     return schemaItem
   }
-  const selfReportedInfo = dataset?.schema?.selfReportedInfo as DatasetSchema
-  const selfReportedInfoItem = selfReportedInfo?.items?.[schema] as DatasetSchemaItem
+
+  const registryInfoItem = getNestedSchemaItem(dataset, schema, 'registryInfo')
+  if (registryInfoItem) {
+    return registryInfoItem
+  }
+
+  const selfReportedInfoItem = getNestedSchemaItem(dataset, schema, 'selfReportedInfo')
   if (selfReportedInfoItem) {
     return selfReportedInfoItem
   }
-  const selfReportedInfoPropertiesItem = (selfReportedInfo?.items?.properties as any)?.[
-    schema
-  ] as DatasetSchemaItem
-  if (selfReportedInfoPropertiesItem) {
-    return selfReportedInfoPropertiesItem
-  }
+
   if (schema === 'geartypes' || schema === 'shiptypes') {
     const combinedSourceSchema = (dataset.schema?.combinedSourcesInfo?.items as DatasetSchemaItem)
       ?.properties?.[schema]?.items as DatasetSchemaItem
