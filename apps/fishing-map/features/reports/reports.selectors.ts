@@ -40,11 +40,6 @@ import { EMPTY_FIELD_PLACEHOLDER, getVesselGearType } from 'utils/info'
 import { sortStrings } from 'utils/shared'
 import { Area, AreaGeometry, selectAreas } from 'features/areas/areas.slice'
 import {
-  selectUrlBufferOperationQuery,
-  selectUrlBufferUnitQuery,
-  selectUrlBufferValueQuery,
-} from 'routes/routes.selectors'
-import {
   EMPTY_API_VALUES,
   MAX_CATEGORIES,
   OTHERS_CATEGORY_LABEL,
@@ -476,9 +471,9 @@ const selectReportAreaData = createSelector(
 export const selectReportAreaName = createSelector(
   [
     selectReportAreaData,
-    selectUrlBufferUnitQuery,
-    selectUrlBufferValueQuery,
-    selectUrlBufferOperationQuery,
+    selectReportBufferUnit,
+    selectReportBufferValue,
+    selectReportBufferOperation,
   ],
   (area, unit, value, operation) => {
     if (!area) return undefined
@@ -515,9 +510,9 @@ export const selectReportPreviewBufferFeature = createSelector(
 export const selectReportBufferArea = createSelector(
   [
     selectReportAreaDissolved,
-    selectUrlBufferUnitQuery,
-    selectUrlBufferValueQuery,
-    selectUrlBufferOperationQuery,
+    selectReportBufferUnit,
+    selectReportBufferValue,
+    selectReportBufferOperation,
   ],
   (area, unit, value, operation) => {
     if (!area || !unit || !value) return null
@@ -542,9 +537,9 @@ export const selectReportBufferHash = createSelector(
 export const selectReportBufferFeature = createSelector(
   [
     selectReportAreaDissolved,
-    selectUrlBufferUnitQuery,
-    selectUrlBufferValueQuery,
-    selectUrlBufferOperationQuery,
+    selectReportBufferUnit,
+    selectReportBufferValue,
+    selectReportBufferOperation,
   ],
   (area, unit, value, operation) => {
     if (!area || !unit || !value || !operation) return null
@@ -553,7 +548,7 @@ export const selectReportBufferFeature = createSelector(
 )
 
 export const selectHasReportBuffer = createSelector(
-  [selectUrlBufferUnitQuery, selectUrlBufferValueQuery],
+  [selectReportBufferUnit, selectReportBufferValue],
   (unit, value): Boolean => {
     return unit !== undefined && value !== undefined
   }
