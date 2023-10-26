@@ -249,18 +249,17 @@ export function getCurrentIdentityVessel(
   { identityId, identitySource } = {} as GetVesselIdentityParams
 ) {
   const vesselData = getVesselIdentity(vessel, { identityId, identitySource })
+  const { dataset, registryPublicAuthorizations, registryOwners } = vessel
   return {
     ...vesselData,
-    dataset: vessel.dataset,
+    dataset,
     shiptypes: getVesselProperty(vessel, 'shiptypes', { identityId, identitySource }),
     geartypes: getVesselProperty(vessel, 'geartypes', { identityId, identitySource }),
     combinedSourcesInfo: getVesselCombinedSource(vessel, { vesselId: vesselData?.id }),
-    registryAuthorizations: vessel.registryAuthorizations
-      ? sortVesselRegistryProperties(vessel.registryAuthorizations)
+    registryPublicAuthorizations: registryPublicAuthorizations
+      ? sortVesselRegistryProperties(registryPublicAuthorizations)
       : [],
-    registryOwners: vessel.registryOwners
-      ? sortVesselRegistryProperties(vessel.registryOwners)
-      : [],
+    registryOwners: registryOwners ? sortVesselRegistryProperties(registryOwners) : [],
   } as VesselLastIdentity
 }
 
