@@ -2,8 +2,9 @@ import { batch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { CSVLink } from 'react-csv'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect } from 'react'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
+import { useStateCallback } from '@globalfishingwatch/react-hooks'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
@@ -34,7 +35,7 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
-  const [allVesselsWithAllInfoFiltered, setAllVesselsWithAllInfoFiltered] = useState<
+  const [allVesselsWithAllInfoFiltered, setAllVesselsWithAllInfoFiltered] = useStateCallback<
     ReportVesselWithDatasets[]
   >([])
   const allVesselsWithAllInfo = useSelector(selectReportVesselsListWithAllInfo)
@@ -48,17 +49,19 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
   const getDownloadVessels = async (_: any, done: any) => {
     if (allVesselsWithAllInfo) {
       const vessels = getVesselsFiltered(allVesselsWithAllInfo, reportVesselFilter)
-      await setAllVesselsWithAllInfoFiltered(
+      setAllVesselsWithAllInfoFiltered(
         vessels?.map((vessel) => {
           const { dataviewId, category, sourceColor, flagTranslatedClean, ...rest } = vessel
           return rest
-        }) as ReportVesselWithDatasets[]
+        }) as ReportVesselWithDatasets[],
+        () => {
+          trackEvent({
+            category: TrackCategory.Analysis,
+            action: `Download CSV`,
+          })
+          done()
+        }
       )
-      trackEvent({
-        category: TrackCategory.Analysis,
-        action: `Download CSV`,
-      })
-      done(true)
     }
   }
 
@@ -67,6 +70,7 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
     if (allVesselsWithAllInfoFiltered.length) {
       setAllVesselsWithAllInfoFiltered([])
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allVesselsWithAllInfoFiltered.length])
 
   const onPrevPageClick = () => {
