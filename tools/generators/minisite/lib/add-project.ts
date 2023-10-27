@@ -93,7 +93,7 @@ export function addProject(host: Tree, options: NormalizedSchema) {
   }
 
   targets.lint = {
-    executor: '@nx/linter:eslint',
+    executor: '@nx/eslint:eslint',
     outputs: ['{options.outputFile}'],
     options: {
       lintFilePatterns: [`${options.appProjectRoot}/**/*.{ts,tsx,js,jsx}`],

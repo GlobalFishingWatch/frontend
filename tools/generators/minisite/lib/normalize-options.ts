@@ -1,6 +1,6 @@
 import { assertValidStyle } from '@nx/react'
 import { getWorkspaceLayout, joinPathFragments, names, Tree } from '@nx/devkit'
-import { Linter } from '@nx/linter'
+import { Linter } from '@nx/eslint'
 import { Schema } from '../schema'
 
 export interface NormalizedSchema extends Schema {
