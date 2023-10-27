@@ -53,12 +53,16 @@ function VesselEventsTooltipSection({
               <h3 className={styles.popupSectionTitle}>{vesselNamesByType[index]}</h3>
             )}
             {featureByType.map((feature, index) => {
+              const { start, end, type, vesselName, encounterVesselName, portName, portFlag } =
+                feature.properties
               const { description } = getEventDescription({
-                start: feature.properties.start,
-                end: feature.properties.end,
-                type: feature.properties.type as EventTypes,
-                mainVesselName: feature.properties.vesselName,
-                encounterVesselName: feature.properties.encounterVesselName,
+                start,
+                end,
+                type: type as EventTypes,
+                mainVesselName: vesselName,
+                encounterVesselName,
+                portName,
+                portFlag,
               })
               return (
                 <div key={index} className={styles.row}>
