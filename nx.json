@@ -4,9 +4,7 @@
   },
   "tasksRunnerOptions": {
     "default": {
-      "runner": "nx-cloud",
       "options": {
-        "cacheableOperations": ["build", "lint", "test", "e2e"],
         "runtimeCacheInputs": [
           "echo $NEXT_PUBLIC_URL",
           "echo $NEXT_PUBLIC_API_GATEWAY",
@@ -20,7 +18,6 @@
           "echo $NEXT_PUBLIC_SPREADSHEET_CLIENT_EMAIL",
           "echo $NEXT_PUBLIC_SPREADSHEET_PRIVATE_KEY"
         ],
-        "accessToken": "NzEyZWVlMmMtZjQ3OS00YzMzLWE2YzAtYjJmMDE1YzcxNjllfHJlYWQtd3JpdGU=",
         "canTrackAnalytics": false,
         "showUsageWarnings": true
       }
@@ -53,7 +50,8 @@
   "targetDefaults": {
     "build": {
       "dependsOn": ["^build"],
-      "inputs": ["production", "^production"]
+      "inputs": ["production", "^production"],
+      "cache": true
     },
     "test-dev": {
       "inputs": ["default", "^production"]
@@ -62,13 +60,16 @@
       "inputs": ["default", "^production"]
     },
     "e2e": {
-      "inputs": ["default", "^production"]
+      "inputs": ["default", "^production"],
+      "cache": true
     },
     "test": {
-      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"]
+      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
+      "cache": true
     },
     "lint": {
-      "inputs": ["default", "{workspaceRoot}/.eslintrc.js"]
+      "inputs": ["default", "{workspaceRoot}/.eslintrc.js"],
+      "cache": true
     }
   },
   "namedInputs": {
@@ -82,5 +83,6 @@
       "!{projectRoot}/.eslintrc.js",
       "!{projectRoot}/src/test-setup.[jt]s"
     ]
-  }
+  },
+  "nxCloudAccessToken": "NzEyZWVlMmMtZjQ3OS00YzMzLWE2YzAtYjJmMDE1YzcxNjllfHJlYWQtd3JpdGU="
 }

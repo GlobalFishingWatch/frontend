@@ -2343,8 +2343,8 @@
       "combinedSourcesInfo": "combinedSourcesInfo",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate",
-      "registryAuthorizations": "registryAuthorizations",
-      "registryLastUpdateDate": "registryLastUpdateDate"
+      "registryLastUpdateDate": "registryLastUpdateDate",
+      "registryPublicAuthorizations": "registryPublicAuthorizations"
     }
   },
   "public-global-vessel-insights": {

@@ -1,4 +1,4 @@
-import { Linter } from '@nx/linter'
+import { Linter } from '@nx/eslint'
 import { SupportedStyles } from '@nx/react'
 
 export interface Schema {

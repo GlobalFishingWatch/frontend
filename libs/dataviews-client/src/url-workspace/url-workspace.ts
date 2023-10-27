@@ -142,11 +142,17 @@ const deepDetokenizeValues = (obj: Dictionary<any>) => {
   return detokenized
 }
 
-export const parseLegacyDataviewInstanceEndpoint = (
+export const parseLegacyDataviewInstanceConfig = (
   dataviewInstance: UrlDataviewInstance
 ): UrlDataviewInstance => {
   return {
     ...dataviewInstance,
+    config: {
+      ...dataviewInstance.config,
+      ...(dataviewInstance?.config?.info && {
+        info: runDatasetMigrations(dataviewInstance?.config?.info),
+      }),
+    },
     ...(dataviewInstance.datasetsConfig && {
       datasetsConfig: dataviewInstance.datasetsConfig.map((dc) => ({
         ...dc,
@@ -175,11 +181,11 @@ const parseDataviewInstance = (dataview: UrlDataviewInstance) => {
   if (vesselGroups) {
     config['vessel-groups'] = vesselGroups
   }
-  return {
-    ...parseLegacyDataviewInstanceEndpoint(dataview),
+  return parseLegacyDataviewInstanceConfig({
+    ...dataview,
     ...(dataviewId && { dataviewId }),
     config,
-  }
+  })
 }
 
 // Extended logic from qs utils decoder to have some keywords parsed

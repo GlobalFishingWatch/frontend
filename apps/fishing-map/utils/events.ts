@@ -3,6 +3,7 @@ import { EventTypes } from '@globalfishingwatch/api-types'
 import { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { EVENTS_COLORS } from 'data/config'
+import { formatInfoField } from 'utils/info'
 import { getUTCDateTime } from './dates'
 
 type EventProps = {
@@ -12,6 +13,7 @@ type EventProps = {
   mainVesselName?: string
   encounterVesselName?: string
   portName?: string
+  portFlag?: string
 }
 
 export const getEventDescription = ({
@@ -21,6 +23,7 @@ export const getEventDescription = ({
   mainVesselName,
   encounterVesselName,
   portName,
+  portFlag,
 }: EventProps) => {
   const startDT = getUTCDateTime(start)
   const endDT = getUTCDateTime(end)
@@ -78,11 +81,15 @@ export const getEventDescription = ({
       break
     }
     case EventTypes.Port:
-      if (portName) {
+      if (portName && portFlag) {
+        const portLabel = [
+          formatInfoField(portName, 'port'),
+          formatInfoField(portFlag, 'flag'),
+        ].join(', ')
         description = t(
           'event.portAt',
           'Docked at {{port}} started at {{start}} for {{duration}}',
-          { ...time, port: portName }
+          { ...time, port: portLabel }
         )
       } else {
         description = t('event.portAction', 'Docked started at {{start}} for {{duration}}', time)

@@ -202,13 +202,14 @@ function SearchBasicResult({
         <IconButton
           icon={isSelected || isInWorkspace ? 'tick' : undefined}
           type="border"
+          testId={`search-vessels-option-selection-${index}`}
           className={cx({ [styles.selectedIcon]: isSelected || isInWorkspace })}
           size="tiny"
           tooltip={tooltip}
           onClick={isInWorkspace ? undefined : onClick}
         />
         <div className={styles.fullWidth}>
-          <div className={styles.name} data-test="vessel-name">
+          <div className={styles.name}>
             <VesselLink
               vesselId={vesselData.id}
               identity={bestIdentityMatch}
@@ -216,6 +217,7 @@ function SearchBasicResult({
               onClick={onVesselClick}
               query={vesselQuery}
               fitBounds={!trackBbox}
+              testId="vessel-name"
             >
               {name}
             </VesselLink>

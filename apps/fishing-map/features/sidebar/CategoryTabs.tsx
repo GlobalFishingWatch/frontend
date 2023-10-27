@@ -176,7 +176,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             [styles.current]: locationType === USER,
           })}
         >
-          <UserButton className={styles.userButton} />
+          <UserButton className={styles.userButton} testId="sidebar-login-icon" />
         </li>
       </ul>
       {modalFeedbackOpen && (

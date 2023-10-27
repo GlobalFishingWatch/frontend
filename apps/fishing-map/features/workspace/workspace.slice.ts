@@ -13,7 +13,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import { GFWAPI, FetchOptions, parseAPIError } from '@globalfishingwatch/api-client'
 import {
-  parseLegacyDataviewInstanceEndpoint,
+  parseLegacyDataviewInstanceConfig,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_TIME_RANGE, PRIVATE_SUFIX } from 'data/config'
@@ -136,7 +136,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         workspace = {
           ...workspace,
           dataviewInstances: (workspace?.dataviewInstances || []).map(
-            (dv) => parseLegacyDataviewInstanceEndpoint(dv) as DataviewInstance
+            (dv) => parseLegacyDataviewInstanceConfig(dv) as DataviewInstance
           ),
         }
       }

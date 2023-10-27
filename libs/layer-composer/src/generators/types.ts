@@ -5,7 +5,7 @@ import {
   GeoJSONSourceSpecification,
 } from '@globalfishingwatch/maplibre-gl'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
-import { Segment, Locale } from '@globalfishingwatch/api-types'
+import { Segment, Locale, Anchorage, EventTypes } from '@globalfishingwatch/api-types'
 import { Group } from '..'
 import { Interval } from './heatmap/types'
 
@@ -474,7 +474,7 @@ export enum ContextLayerType {
 
 export type RawEvent = {
   id: string
-  type: string
+  type: EventTypes
   position: {
     lng?: number
     lon?: number
@@ -494,6 +494,9 @@ export type RawEvent = {
       id: string
       name: string
     }
+  }
+  port_visit?: {
+    intermediateAnchorage: Anchorage
   }
 }
 
