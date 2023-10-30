@@ -79,8 +79,8 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         )
 
         const andCombinedFields: AdvancedSearchQueryFieldKey[] = [
-          'geartype',
-          'shiptype',
+          'geartypes',
+          'shiptypes',
           'targetSpecies',
           'flag',
           'fleet',
@@ -98,7 +98,10 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           const isInFieldsAllowed =
             fieldsAllowed.includes(field) ||
             fieldsAllowed.includes(`${filters.infoSource}.${field}`) ||
-            (field === 'owner' && fieldsAllowed.includes('registryOwners.name'))
+            (field === 'owner' && fieldsAllowed.includes('registryOwners.name')) ||
+            (field === 'shiptypes' &&
+              fieldsAllowed.includes('combinedSourcesInfo.shiptypes.name')) ||
+            (field === 'geartypes' && fieldsAllowed.includes('combinedSourcesInfo.geartypes.name'))
           const filter = (filters as any)[field]
           if (filter && isInFieldsAllowed) {
             let value = filter
@@ -157,16 +160,18 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           if (!infoDataset) return []
 
           const trackDatasetId = getRelatedDatasetByType(infoDataset, DatasetTypes.Tracks)?.id
+          const {
+            matchCriteria,
+            registryOwners,
+            registryPublicAuthorizations,
+            combinedSourcesInfo,
+          } = vessel
           return {
             id: getVesselId(vessel),
-            ...(vessel.matchCriteria && { matchCriteria: vessel.matchCriteria }),
-            ...(vessel.registryOwners && { registryOwners: vessel.registryOwners }),
-            ...(vessel.registryAuthorizations && {
-              registryAuthorizations: vessel.registryAuthorizations,
-            }),
-            ...(vessel.combinedSourcesInfo && {
-              combinedSourcesInfo: vessel.combinedSourcesInfo,
-            }),
+            ...(matchCriteria && { matchCriteria }),
+            ...(registryOwners && { registryOwners }),
+            ...(registryPublicAuthorizations && { registryPublicAuthorizations }),
+            ...(combinedSourcesInfo && { combinedSourcesInfo }),
             dataset: infoDataset,
             info: infoDataset?.id,
             track: trackDatasetId,

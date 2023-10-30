@@ -43,22 +43,28 @@ import styles from '../basic/SearchBasicResult.module.css'
 
 const PINNED_COLUMN = 'shipname'
 const TOOLTIP_LABEL_CHARACTERS = 25
-const MULTIPLE_SELECTION_FILTERS_COLUMN = ['flag', 'shiptype', 'geartype', 'owner']
+const MULTIPLE_SELECTION_FILTERS_COLUMN = ['flag', 'shiptypes', 'geartypes', 'owner']
 
 type CellWithFilterProps = {
   vessel: IdentityVesselData
   column: VesselIdentityProperty
   children: React.ReactNode
+  identitySource?: VesselIdentitySourceEnum
   onClick?: (params: { query?: string; filters?: VesselSearchState }) => void
 }
-function CellWithFilter({ vessel, column, children, onClick }: CellWithFilterProps) {
+function CellWithFilter({
+  vessel,
+  column,
+  children,
+  identitySource,
+  onClick,
+}: CellWithFilterProps) {
   const { setSearchFilters, searchFilters } = useSearchFiltersConnect()
-
-  const value = getVesselProperty(vessel, column) as string
+  const value = getVesselProperty(vessel, column, { identitySource }) as string
   const onFilterClick = useCallback(() => {
     let filter: string | string[] = value
     if (MULTIPLE_SELECTION_FILTERS_COLUMN.includes(column)) {
-      filter = column === 'owner' ? value.split(', ') : [value]
+      filter = column === 'owner' ? value.split(', ') : Array.isArray(value) ? value : [value]
     }
     setSearchFilters({ [column]: filter })
     if (onClick) {
@@ -90,6 +96,7 @@ function CellWithFilter({ vessel, column, children, onClick }: CellWithFilterPro
 function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchComponentProps) {
   const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
+  const { searchFilters } = useSearchFiltersConnect()
   const searchStatus = useSelector(selectSearchStatus)
   const searchResults = useSelector(selectSearchResults)
   const vesselsSelected = useSelector(selectSelectedVessels)
@@ -110,6 +117,72 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
   )
 
   const columns = useMemo((): MRT_ColumnDef<any>[] => {
+    const selfReportedColums: MRT_ColumnDef<any>[] = [
+      {
+        id: 'gfw_shiptypes',
+        accessorFn: (vessel: IdentityVesselData) => {
+          const shiptypes = getVesselProperty(vessel, 'shiptypes', {
+            identitySource: VesselIdentitySourceEnum.SelfReported,
+          })
+          const label = getVesselShipType({ shiptypes })
+          return (
+            <CellWithFilter vessel={vessel} column="shiptypes" onClick={fetchResults}>
+              {label || EMPTY_FIELD_PLACEHOLDER}
+            </CellWithFilter>
+          )
+        },
+        header: t('vessel.gfw_shiptypes', 'GFW Vessel Type'),
+      },
+      {
+        id: 'gfw_geartypes',
+        accessorFn: (vessel: IdentityVesselData) => {
+          const geartypes = getVesselProperty(vessel, 'geartypes', {
+            identitySource: VesselIdentitySourceEnum.SelfReported,
+          })
+          const label = getVesselGearType({ geartypes })
+          return (
+            <CellWithFilter vessel={vessel} column="geartypes" onClick={fetchResults}>
+              <Tooltip content={label?.length > TOOLTIP_LABEL_CHARACTERS ? label : ''}>
+                <span>{label}</span>
+              </Tooltip>
+            </CellWithFilter>
+          )
+        },
+        header: t('vessel.gfw_geartypes', 'GFW Gear Type'),
+      },
+    ]
+    const registryColumns: MRT_ColumnDef<any>[] = [
+      {
+        id: 'geartypes',
+        accessorFn: (vessel: IdentityVesselData) => {
+          const geartypes = getVesselProperty(vessel, 'geartypes', {
+            identitySource: VesselIdentitySourceEnum.Registry,
+          })
+          const label = getVesselGearType({ geartypes })
+          return (
+            <CellWithFilter
+              vessel={vessel}
+              column="geartypes"
+              onClick={fetchResults}
+              identitySource={VesselIdentitySourceEnum.Registry}
+            >
+              <Tooltip content={label?.length > TOOLTIP_LABEL_CHARACTERS ? label : ''}>
+                <span>{label}</span>
+              </Tooltip>
+            </CellWithFilter>
+          )
+        },
+        header: t('vessel.registryGeartype', 'Registry Gear Type'),
+      },
+    ]
+    let columnsByInfoSource = [...selfReportedColums, ...registryColumns]
+    if (searchFilters?.infoSource) {
+      columnsByInfoSource =
+        searchFilters?.infoSource === VesselIdentitySourceEnum.SelfReported
+          ? selfReportedColums
+          : registryColumns
+    }
+
     return [
       {
         id: PINNED_COLUMN,
@@ -196,34 +269,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           getVesselProperty(vessel, 'callsign') || EMPTY_FIELD_PLACEHOLDER,
         header: t('vessel.callsign', 'Callsign'),
       },
-      {
-        id: 'shiptype',
-        accessorFn: (vessel: IdentityVesselData) => {
-          const shiptype = getVesselProperty(vessel, 'shiptype')
-          const label = getVesselShipType({ shiptype })
-          return (
-            <CellWithFilter vessel={vessel} column="shiptype" onClick={fetchResults}>
-              {label || EMPTY_FIELD_PLACEHOLDER}
-            </CellWithFilter>
-          )
-        },
-        header: t('vessel.vesselType', 'Vessel Type'),
-      },
-      {
-        id: 'geartype',
-        accessorFn: (vessel: IdentityVesselData) => {
-          const geartype = getVesselProperty(vessel, 'geartype')
-          const label = getVesselGearType({ geartype })
-          return (
-            <CellWithFilter vessel={vessel} column="geartype" onClick={fetchResults}>
-              <Tooltip content={label?.length > TOOLTIP_LABEL_CHARACTERS ? label : ''}>
-                <span>{label}</span>
-              </Tooltip>
-            </CellWithFilter>
-          )
-        },
-        header: t('vessel.geartype', 'Gear Type'),
-      },
+      ...columnsByInfoSource,
       {
         id: 'owner',
         accessorFn: (vessel: IdentityVesselData) => {
@@ -280,7 +326,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         header: t('vessel.transmission_other', 'Transmissions'),
       },
     ]
-  }, [fetchResults, i18n.language, onVesselClick, t])
+  }, [fetchResults, i18n.language, onVesselClick, searchFilters?.infoSource, t])
 
   const fetchMoreOnBottomReached = useCallback(() => {
     if (tableContainerRef.current) {

@@ -71,8 +71,8 @@ export type VesselInfo = {
   transmissionDateFrom: string
   transmissionDateTo: string
   // For custom VMS or combinedSourceInfo merge simplicity
-  geartype: GearType[]
-  shiptype: VesselType[]
+  geartypes: GearType[]
+  shiptypes: VesselType[]
 }
 
 export type VesselTMTInfo = {
@@ -93,7 +93,6 @@ export type RegistryLoginMessage = typeof API_LOGIN_REQUIRED
 
 export type SelfReportedInfo = VesselInfo & {
   ssvid: string
-  geartype: GearType | GearType[]
   posCount?: number
   positionsCounter?: number
   matchFields?: SelfReportedMatchFields
@@ -107,7 +106,7 @@ export type SelfReportedInfo = VesselInfo & {
 }
 
 export type VesselRegistryInfo = VesselInfo & {
-  geartype: GearType | GearType[] | RegistryLoginMessage
+  geartypes: GearType[] | RegistryLoginMessage
   latestVesselInfo: true
   lengthM: number | RegistryLoginMessage
   matchFields: string
@@ -159,7 +158,7 @@ export interface IdentityVessel {
   combinedSourcesInfo: VesselCombinedSourcesInfo[]
   dataset: string
   matchCriteria?: VesselIdentitySearchMatchCriteria[]
-  registryAuthorizations?: VesselRegistryAuthorization[]
+  registryPublicAuthorizations?: VesselRegistryAuthorization[]
   registryInfo?: VesselRegistryInfo[]
   registryOwners?: VesselRegistryOwner[]
   selfReportedInfo: SelfReportedInfo[]

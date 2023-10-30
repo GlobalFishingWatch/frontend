@@ -1,4 +1,4 @@
-import { get } from 'lodash'
+import { get, uniq } from 'lodash'
 import { TFunction } from 'i18next'
 import {
   API_LOGIN_REQUIRED,
@@ -31,11 +31,11 @@ export const formatInfoField = (
       if (type === 'flag' || type === 'ownerFlag') {
         return translationFn(`flags:${fieldValue}` as any, fieldValue)
       }
-      if (type === 'shiptype' || type === 'vesselType') {
-        return getVesselShipType({ shiptype: fieldValue }, { translationFn })
+      if (type === 'shiptypes' || type === 'vesselType') {
+        return getVesselShipType({ shiptypes: fieldValue }, { translationFn })
       }
-      if (type === 'geartype') {
-        return getVesselGearType({ geartype: fieldValue }, { translationFn })
+      if (type === 'geartypes') {
+        return getVesselGearType({ geartypes: fieldValue }, { translationFn })
       }
       if (!fieldValue && (type === 'name' || type === 'shipname')) {
         return translationFn('common.unknownVessel', 'Unknown Vessel')
@@ -51,10 +51,10 @@ export const formatInfoField = (
         return fleetClean.charAt(0).toUpperCase() + fleetClean.slice(1)
       }
     } else if (Array.isArray(fieldValue)) {
-      if (type === 'geartype') {
-        return getVesselGearType({ geartype: fieldValue as GearType[] }, { translationFn })
-      } else if (type === 'shiptype') {
-        return getVesselShipType({ shiptype: fieldValue as VesselType[] }, { translationFn })
+      if (type === 'geartypes') {
+        return getVesselGearType({ geartypes: fieldValue as GearType[] }, { translationFn })
+      } else if (type === 'shiptypes') {
+        return getVesselShipType({ shiptypes: fieldValue as VesselType[] }, { translationFn })
       }
     } else {
       return formatI18nNumber(fieldValue)
@@ -81,13 +81,13 @@ export const formatNumber = (num: string | number, maximumFractionDigits?: numbe
 }
 
 export const getVesselShipType = (
-  { shiptype } = {} as Pick<SelfReportedInfo, 'shiptype'> | { shiptype: string },
+  { shiptypes: shiptype } = {} as Pick<SelfReportedInfo, 'shiptypes'> | { shiptypes: string },
   { joinCharacter = ', ', translationFn = t } = {} as {
     joinCharacter?: string
     translationFn?: TFunction
   }
 ): VesselType => {
-  const shipTypes = Array.isArray(shiptype) ? shiptype : [shiptype]
+  const shipTypes = uniq(Array.isArray(shiptype) ? shiptype : [shiptype])
   if (shipTypes.every((shiptype) => shiptype === undefined)) {
     return EMPTY_FIELD_PLACEHOLDER as VesselType
   }
@@ -100,7 +100,7 @@ export const getVesselShipType = (
 }
 
 export const getVesselGearType = (
-  { geartype } = {} as Pick<VesselDataIdentity, 'geartype'> | { geartype: string },
+  { geartypes: geartype } = {} as Pick<VesselDataIdentity, 'geartypes'> | { geartypes: string },
   { joinCharacter = ', ', translationFn = t } = {} as {
     joinCharacter?: string
     translationFn?: TFunction
@@ -109,7 +109,7 @@ export const getVesselGearType = (
   if (geartype === API_LOGIN_REQUIRED) {
     return geartype as RegistryLoginMessage
   }
-  const gearTypes = Array.isArray(geartype) ? geartype : [geartype]
+  const gearTypes = uniq(Array.isArray(geartype) ? geartype : [geartype])
   if (gearTypes.every((geartype) => geartype === undefined)) {
     return EMPTY_FIELD_PLACEHOLDER as GearType
   }
@@ -125,7 +125,7 @@ export const getVesselLabel = (
 ): string => {
   const vesselInfo = getLatestIdentityPrioritised(vessel)
   if (!vesselInfo) return t('common.unknownVessel', 'Unknown vessel')
-  if (vesselInfo.shipname && vesselInfo.geartype && vesselInfo.flag && withGearType) {
+  if (vesselInfo.shipname && vesselInfo.geartypes && vesselInfo.flag && withGearType) {
     const gearTypes = getVesselGearType(vesselInfo)
     return `${formatInfoField(vesselInfo.shipname, 'name')}
     (${t(`flags:${vesselInfo.flag}`, vesselInfo.flag)}, ${gearTypes || EMPTY_FIELD_PLACEHOLDER})`
@@ -133,9 +133,9 @@ export const getVesselLabel = (
   if (vesselInfo.shipname) {
     return formatInfoField(vesselInfo.shipname, 'name') as string
   }
-  if (vesselInfo.geartype) {
+  if (vesselInfo.geartypes) {
     return `${t('vessel.unkwownVesselByGeartype', {
-      gearType: getVesselGearType({ geartype: vesselInfo.geartype }),
+      gearType: getVesselGearType({ geartypes: vesselInfo.geartypes }),
     })}`
   }
   return t('common.unknownVessel', 'Unknown vessel')

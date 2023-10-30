@@ -102,6 +102,7 @@ export const getVesselEventsGeojson: GetVesselEventsGeojsonFn = (
   featureCollection.features = trackEventsSorted.flatMap((event: RawEvent) => {
     if (!event) return []
     const isEncounterEvent = event.type === 'encounter'
+    const isPortEvent = event.type === 'port_visit'
     const authorized = event.encounter?.authorized === true
     const authorizationStatus = event?.encounter
       ? event.encounter?.authorizationStatus
@@ -140,6 +141,12 @@ export const getVesselEventsGeojson: GetVesselEventsGeojsonFn = (
           ...(showAuthorizationStatus && {
             authorized,
             authorizationStatus,
+          }),
+        }),
+        ...(isPortEvent && {
+          ...(event.port_visit?.intermediateAnchorage && {
+            portName: event.port_visit?.intermediateAnchorage.name,
+            portFlag: event.port_visit?.intermediateAnchorage.flag,
           }),
         }),
         icon: `${iconsPrefix}${event.type}`,

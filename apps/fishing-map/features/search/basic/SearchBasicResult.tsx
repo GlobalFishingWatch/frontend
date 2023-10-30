@@ -87,8 +87,8 @@ function SearchBasicResult({
     transmissionDateTo,
     positionsCounter,
   } = vesselData
-  const shiptype = getVesselProperty(vessel, 'shiptype')
-  const geartype = getVesselGearType({ geartype: getVesselProperty(vessel, 'geartype') })
+  const shiptypes = getVesselProperty(vessel, 'shiptypes')
+  const geartypes = getVesselGearType({ geartypes: getVesselProperty(vessel, 'geartypes') })
   const bestIdentityMatch = getBestMatchCriteriaIdentity(vessel)
   const otherNamesLabel = getOtherVesselNames(vessel, nShipname)
   const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER
@@ -202,13 +202,14 @@ function SearchBasicResult({
         <IconButton
           icon={isSelected || isInWorkspace ? 'tick' : undefined}
           type="border"
+          testId={`search-vessels-option-selection-${index}`}
           className={cx({ [styles.selectedIcon]: isSelected || isInWorkspace })}
           size="tiny"
           tooltip={tooltip}
           onClick={isInWorkspace ? undefined : onClick}
         />
         <div className={styles.fullWidth}>
-          <div className={styles.name} data-test="vessel-name">
+          <div className={styles.name}>
             <VesselLink
               vesselId={vesselData.id}
               identity={bestIdentityMatch}
@@ -216,6 +217,7 @@ function SearchBasicResult({
               onClick={onVesselClick}
               query={vesselQuery}
               fitBounds={!trackBbox}
+              testId="vessel-name"
             >
               {name}
             </VesselLink>
@@ -242,15 +244,15 @@ function SearchBasicResult({
             </div>
             <div className={styles.property}>
               <label>{t('vessel.vesselType', 'Vessel Type')}</label>
-              <span>{getVesselShipType({ shiptype }) || EMPTY_FIELD_PLACEHOLDER}</span>
+              <span>{getVesselShipType({ shiptypes }) || EMPTY_FIELD_PLACEHOLDER}</span>
             </div>
             <div className={styles.property}>
               <label>{t('vessel.geartype', 'Gear Type')}</label>
               <span>
-                {geartype === API_LOGIN_REQUIRED ? (
+                {geartypes === API_LOGIN_REQUIRED ? (
                   <VesselIdentityFieldLogin />
                 ) : (
-                  geartype || EMPTY_FIELD_PLACEHOLDER
+                  geartypes || EMPTY_FIELD_PLACEHOLDER
                 )}
               </span>
             </div>

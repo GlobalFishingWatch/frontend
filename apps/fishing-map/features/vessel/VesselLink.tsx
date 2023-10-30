@@ -33,6 +33,7 @@ export type VesselLinkProps = {
   fitBounds?: boolean
   className?: string
   query?: Partial<Record<keyof QueryParams, string | number>>
+  testId?: string
 }
 const VesselLink = ({
   vesselId: vesselIdProp,
@@ -43,6 +44,7 @@ const VesselLink = ({
   fitBounds = true,
   className = '',
   query,
+  testId,
 }: VesselLinkProps) => {
   const { t } = useTranslation()
   const workspaceId = useSelector(selectCurrentWorkspaceId)
@@ -58,12 +60,14 @@ const VesselLink = ({
 
   const onLinkClick = useCallback(
     (e: any) => {
-      if (vesselId !== vesselInfoDataId) {
-        dispatch(resetVesselState())
-      }
-      if (fitBounds) {
-        // This needs to happen after dispatch resetVesselState so there is no override
-        dispatch(setVesselFitBoundsOnLoad(true))
+      if (!e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey) {
+        if (vesselId !== vesselInfoDataId) {
+          dispatch(resetVesselState())
+        }
+        if (fitBounds) {
+          // This needs to happen after dispatch resetVesselState so there is no override
+          dispatch(setVesselFitBoundsOnLoad(true))
+        }
       }
       if (onClick) {
         onClick(e)
@@ -76,6 +80,7 @@ const VesselLink = ({
 
   return (
     <Link
+      {...(testId && { 'data-test': testId })}
       className={className}
       to={{
         type: standaloneLink ? VESSEL : WORKSPACE_VESSEL,

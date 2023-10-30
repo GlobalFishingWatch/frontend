@@ -2,6 +2,7 @@ import { MAP_POPUP_EEZ_SECTION, SIDEBAR_TOGGLE_EEZ } from '../../constants/butto
 import { SEARCH_EEZ, SEARCH_EEZ_FULL_NAME } from '../../constants/search'
 import {
   disablePopups,
+  getDOMTimeout,
   getDownloadsFolderPath,
   getMapCanvas,
   getQueryParam,
@@ -18,6 +19,7 @@ describe('See the creation of analysis for an area', () => {
   beforeEach(() => {
     disablePopups()
     cy.visit('/')
+
     waitForSidebarLoaded()
     waitForMapLoadTiles()
     scrollSidebar('bottom', 1000)
@@ -28,16 +30,18 @@ describe('See the creation of analysis for an area', () => {
     cy.getBySel('map-search-input').type(SEARCH_EEZ, { delay: 200 })
     cy.getBySel('map-search-results').findBySelLike('map-search-result').first().click()
     getMapCanvas().click('center')
-    cy.getBySel(MAP_POPUP_EEZ_SECTION, { timeout: 10000 }).findBySelLike('open-analysis').click()
+    cy.getBySel(MAP_POPUP_EEZ_SECTION, getDOMTimeout(10000)).findBySelLike('open-analysis').click()
   })
 
   //MAP-1218
   it('Should create an analysis for an EEZ area', () => {
     getSidebar().findBySelLike('report-title').contains(SEARCH_EEZ_FULL_NAME)
-    cy.getBySel('source-tags', { timeout: 10000 }).findBySelLike('source-tag-item').contains('AIS')
+    cy.getBySel('source-tags', getDOMTimeout(10000))
+      .findBySelLike('source-tag-item')
+      .contains('AIS')
 
     // Path tag is a needed element that should exist to draw the charts
-    cy.getBySel('report-activity-evolution', { timeout: 20000 }).find('path').should('exist')
+    cy.getBySel('report-activity-evolution', getDOMTimeout(20000)).find('path').should('exist')
     cy.getBySel('report-vessels-graph').find('path').should('exist')
     cy.getBySel('report-vessels-table').findBySelLike('vessel').should('exist')
   })

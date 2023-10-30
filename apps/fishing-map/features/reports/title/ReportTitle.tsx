@@ -20,15 +20,16 @@ import {
 import { selectReportAreaDataview } from 'features/reports/reports.selectors'
 import ReportTitlePlaceholder from 'features/reports/placeholders/ReportTitlePlaceholder'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectCurrentReport } from 'features/app/app.selectors'
+import {
+  selectCurrentReport,
+  selectReportBufferOperation,
+  selectReportBufferUnit,
+  selectReportBufferValue,
+} from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { BufferOperation, BufferUnit } from 'types'
-import {
-  selectUrlBufferUnitQuery,
-  selectUrlBufferValueQuery,
-  selectUrlBufferOperationQuery,
-} from 'routes/routes.selectors'
 import useMapInstance from 'features/map/map-context.hooks'
+import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
 import { BufferButtonTooltip } from './BufferButonTooltip'
 import styles from './ReportTitle.module.css'
 
@@ -45,9 +46,9 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   const areaDataview = useSelector(selectReportAreaDataview)
   const report = useSelector(selectCurrentReport)
   const previewBuffer = useSelector(selectReportPreviewBuffer)
-  const urlBufferValue = useSelector(selectUrlBufferValueQuery)
-  const urlBufferUnit = useSelector(selectUrlBufferUnitQuery)
-  const urlBufferOperation = useSelector(selectUrlBufferOperationQuery)
+  const urlBufferValue = useSelector(selectReportBufferValue)
+  const urlBufferUnit = useSelector(selectReportBufferUnit)
+  const urlBufferOperation = useSelector(selectReportBufferOperation)
   const { cleanFeatureState } = useFeatureState(useMapInstance())
 
   const [tooltipInstance, setTooltipInstance] = useState<any>(null)
@@ -149,6 +150,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
       reportBufferOperation: undefined,
     })
     dispatch(resetReportData())
+    dispatch(cleanCurrentWorkspaceStateBufferParams())
   }, [dispatch, dispatchQueryParams, tooltipInstance])
 
   const reportTitle = useMemo(() => {

@@ -1,34 +1,37 @@
-![Publish to npm](https://github.com/GlobalFishingWatch/frontend/workflows/Publish%20packages/badge.svg)
-
-This monorepo hosts frontend packages and applications of the <a href="globalfishingwatch.org/">GlobalFishingWatch</a> ecosystem.
+This monorepo hosts frontend packages and applications of the <a href="https://globalfishingwatch.org/map">GlobalFishingWatch</a> ecosystem.
 
 ## Packages
 
 All of them availables with the `@globalfishingwatch/` prefix:
 
-|                                                 |                                                                                |
-| ----------------------------------------------- | ------------------------------------------------------------------------------ |
-| [api-client](libs/api-client)                   | JS library to simplify GFW API login and resources fetch                       |
-| [api-types](libs/api-types)                     | API typescript schema definitions                                              |
-| [data-transforms](libs/data-transforms)         | Set ot shared tools for data transformations                                   |
-| [dataviews-client](libs/dataviews-client)       | Api-client wrapper to fetch and edit dataviews and associated datasets/data    |
-| [layer-composer](libs/layer-composer)           | Orchestrates various Layer Generators to generate a Mapbox GL Style document   |
-| [ocean-areas](libs/ocean-areas)                 | Small library to get ocean area / eez names by viewport or by text search      |
-| [pbf-decoders](libs/pbf-decoders)               | PBF custom responses parsers                                                   |
-| [react-hooks](libs/react-hooks)                 | Set of hooks to use libraries easily in react                                  |
-| [timebar](libs/timebar)                         | Timebar component, not many more to say                                        |
-| [ui-components](libs/ui-components)             | Reusable atoms components kit                                                  |
-| [fourwings-aggregate](libs/fourwings-aggregate) | Logic to turn fourwings tiles or cells into meaningful values for the frontend |
+|                                                   |                                                                                |
+| ------------------------------------------------- | ------------------------------------------------------------------------------ |
+| [api-client](libs/api-client)                     | JS library to simplify GFW API login and resources fetch                       |
+| [api-types](libs/api-types)                       | API typescript schema definitions                                              |
+| [data-transforms](libs/data-transforms)           | Set ot shared tools for data transformations                                   |
+| [deck-layers-composer](libs/deck-layers-composer) | Deck classes for GFW layers and its react integration                          |
+| [dataviews-client](libs/dataviews-client)         | Api-client wrapper to fetch and edit dataviews and associated datasets/data    |
+| [fourwings-aggregate](libs/fourwings-aggregate)   | Logic to turn fourwings tiles or cells into meaningful values for the frontend |
+| [i18n-labels](libs/i18n-labels)                   | GFW shared translations                                                        |
+| [layer-composer](libs/layer-composer)             | Orchestrates various Layer Generators to generate a Mapbox GL Style document   |
+| [ocean-areas](libs/ocean-areas)                   | Small library to get ocean area / eez names by viewport or by text search      |
+| [pbf-decoders](libs/pbf-decoders)                 | PBF custom responses parsers                                                   |
+| [react-hooks](libs/react-hooks)                   | Set of hooks to use libraries easily in react                                  |
+| [timebar](libs/timebar)                           | Timebar component, not many more to say                                        |
+| [ui-components](libs/ui-components)               | Reusable atoms components kit                                                  |
 
 ## Applications
 
-|                                                     |                                                              |
-| --------------------------------------------------- | ------------------------------------------------------------ |
-| [fishing-map](apps/fishing-map)                     | Version 3.0 of the fishing map project                       |
-| [vessel-history](apps/vessel-history)               | Vessel history app                                           |
-| [temporalgrid-demo](applications/temporalgrid-demo) | CRA to show how new custom mapbox-gl format development goes |
-| [dataviews-editor](applications/dataviews-editor)   | Simple interface to edit dataviews                           |
-| [sandbox](applications/sandbox)                     | Playground to use packages without releasing                 |
+|                                                     |                                        |
+| --------------------------------------------------- | -------------------------------------- |
+| [api-portal](apps/api-portal)                       | Api documentation portal               |
+| [deck-playground](apps/deck-playground)             | Playground for deck layers             |
+| [fishing-map-e2e](apps/fishing-map-e2e)             | Cypress e2e testing for the map        |
+| [fishing-map](apps/fishing-map)                     | Version 3.0 of the fishing map project |
+| [port-labeler](apps/port-labeler)                   | Labeling tool for ports                |
+| [tile-inspector](applications/tile-inspector)       | Debugger for 4wings tiles              |
+| [user-groups-admin](applications/user-groups-admin) | Tool to manage user groups with ease   |
+| [vessel-history](apps/vessel-history)               | Vessel history app                     |
 
 To create a new application using a template with sidebar + map + timebar just run:
 
@@ -66,13 +69,14 @@ The repo is using yarn workspaces so npm is not suported yet, to install yarn [f
 For all packages:
 
 ```bash
-yarn add npm-package -W
+yarn add [package] -W
 ```
 
 Only for a specific package
 
 ```bash
-yarn lerna add npm-package --scope=@scope/my-package
+cd apps/[you-app]
+yarn add [package]
 ```
 
 ### Installation
@@ -109,19 +113,6 @@ TODO
 ### API DOCS
 
 https://gateway.api.dev.globalfishingwatch.org/swagger#/
-
-### Link packages
-
-Go to the package that you want to update
-RUN: yarn link
-
-Go to the root of the monorepo and run
-yarn start:packages
-
-Go to your application and run
-yarn link @globalfishingwatch/{package_folder}
-
-Start your application
 
 ## Docker Compose
 
@@ -182,5 +173,5 @@ _Pending: Add `https://localhost` (or a more meaningful hostname) to the list of
 
 ## Generating release notes for github releases
 
-To generate the release notes you can run `nx changelog <app_or_lib_name>`.
-This feature makes use of [Github REST API](https://docs.github.com/es/rest) to identify Pull Requests labeled with the `<app_or_lib_name>` label to include them in the changelog `What's Changed` section. The rest of PRs that are not identified, will be listed in the `Other changes not labeled with <app_or_lib_name>` section for you to review. It's recommended that you [create a Github Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) and set it to the `GH_PAT` environment variable so it can be used by this tool to have higher rate limits.
+To generate the release notes you can run
+`nx release changelog [version] -i all -p [project] --from @globalfishingwatchapp/[app]@[prev-tag] --tagVersionPrefix @globalfishingwatchapp/[app] --dry-run`.

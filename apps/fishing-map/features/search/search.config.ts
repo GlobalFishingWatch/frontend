@@ -25,6 +25,7 @@ export const IMO_LENGTH = 7
 export const EMPTY_FILTERS = {
   query: undefined,
   flag: undefined,
+  infoSource: undefined,
   sources: undefined,
   lastTransmissionDate: '',
   firstTransmissionDate: '',
@@ -33,7 +34,8 @@ export const EMPTY_FILTERS = {
   callsign: undefined,
   owner: undefined,
   codMarinha: undefined,
-  geartype: undefined,
+  shiptypes: undefined,
+  geartypes: undefined,
   targetSpecies: undefined,
   fleet: undefined,
   origin: undefined,
@@ -41,6 +43,5 @@ export const EMPTY_FILTERS = {
 
 export const DEFAULT_SEARCH_STATE: VesselSearchState = {
   searchOption: 'basic',
-  infoSource: undefined,
   ...EMPTY_FILTERS,
 }

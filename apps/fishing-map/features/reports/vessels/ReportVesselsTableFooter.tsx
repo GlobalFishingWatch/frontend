@@ -1,8 +1,9 @@
 import { batch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
-import { CSVLink } from 'react-csv'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment } from 'react'
+import { unparse as unparseCSV } from 'papaparse'
+import saveAs from 'file-saver'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -22,6 +23,7 @@ import {
   selectReportVesselsListWithAllInfo,
   selectReportVesselsPagination,
   getVesselsFiltered,
+  ReportVesselWithDatasets,
 } from '../reports.selectors'
 import styles from './ReportVesselsTableFooter.module.css'
 
@@ -33,7 +35,6 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
-  const [allVesselsWithAllInfoFiltered, setAllVesselsWithAllInfoFiltered] = useState([])
   const allVesselsWithAllInfo = useSelector(selectReportVesselsListWithAllInfo)
   const allVessels = useSelector(selectReportVesselsList)
   const allFilteredVessels = useSelector(selectReportVesselsFiltered)
@@ -42,25 +43,24 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
   const heatmapDataviews = useSelector(selectActiveHeatmapDataviews)
   const { start, end } = useSelector(selectTimeRange)
 
-  const getDownloadVessels = async (_: any, done: any) => {
-    if (allVesselsWithAllInfo) {
-      await setAllVesselsWithAllInfoFiltered(
-        getVesselsFiltered(allVesselsWithAllInfo, reportVesselFilter) as any
-      )
-      trackEvent({
-        category: TrackCategory.Analysis,
-        action: `Download CSV`,
-      })
-      done(true)
+  const onDownloadVesselsClick = () => {
+    if (allVesselsWithAllInfo?.length) {
+      const vessels = getVesselsFiltered(allVesselsWithAllInfo, reportVesselFilter)?.map(
+        (vessel) => {
+          const { dataviewId, category, sourceColor, flagTranslatedClean, ...rest } = vessel
+          return rest
+        }
+      ) as ReportVesselWithDatasets[]
+      const csv = unparseCSV(vessels)
+      const blob = new Blob([csv], { type: 'text/plain;charset=utf-8' })
+      saveAs(blob, `${reportName}-${start}-${end}.csv`)
     }
-  }
 
-  useEffect(() => {
-    // State cleanup needed to avoid sluggist renders when there are lots of vessels
-    if (allVesselsWithAllInfoFiltered.length) {
-      setAllVesselsWithAllInfoFiltered([])
-    }
-  }, [allVesselsWithAllInfoFiltered.length])
+    trackEvent({
+      category: TrackCategory.Analysis,
+      action: `Download CSV`,
+    })
+  }
 
   const onPrevPageClick = () => {
     dispatchQueryParams({ reportVesselPage: pagination.page - 1 })
@@ -164,16 +164,9 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
           showCount={false}
           onAddToVesselGroup={onAddToVesselGroup}
         />
-        <CSVLink
-          filename={`${reportName}-${start}-${end}.csv`}
-          onClick={getDownloadVessels}
-          asyncOnClick={true}
-          data={allVesselsWithAllInfoFiltered}
-        >
-          <Button testId="download-vessel-table-report">
-            {t('analysis.downloadVesselsList', 'Download csv')}
-          </Button>
-        </CSVLink>
+        <Button testId="download-vessel-table-report" onClick={onDownloadVesselsClick}>
+          {t('analysis.downloadVesselsList', 'Download csv')}
+        </Button>
       </div>
     </div>
   )

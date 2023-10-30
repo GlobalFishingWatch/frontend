@@ -3,7 +3,7 @@ import { groupBy, sum, sumBy, uniq, uniqBy } from 'lodash'
 import { matchSorter } from 'match-sorter'
 import { t } from 'i18next'
 import { FeatureCollection, MultiPolygon } from 'geojson'
-import { Dataset, DatasetTypes, GearType, ReportVessel } from '@globalfishingwatch/api-types'
+import { Dataset, DatasetTypes, ReportVessel } from '@globalfishingwatch/api-types'
 import { getGeometryDissolved, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import {
   selectActiveReportDataviews,
@@ -40,11 +40,6 @@ import { EMPTY_FIELD_PLACEHOLDER, getVesselGearType } from 'utils/info'
 import { sortStrings } from 'utils/shared'
 import { Area, AreaGeometry, selectAreas } from 'features/areas/areas.slice'
 import {
-  selectUrlBufferOperationQuery,
-  selectUrlBufferUnitQuery,
-  selectUrlBufferValueQuery,
-} from 'routes/routes.selectors'
-import {
   EMPTY_API_VALUES,
   MAX_CATEGORIES,
   OTHERS_CATEGORY_LABEL,
@@ -65,6 +60,9 @@ export type ReportVesselWithDatasets = Pick<ReportVessel, 'vesselId' | 'shipName
   Pick<ReportVesselWithMeta, 'sourceColor'> & {
     infoDataset?: Dataset
     trackDataset?: Dataset
+    dataviewId?: string
+    category?: ReportCategory
+    flagTranslatedClean?: string
   }
 
 export const selectReportDataviewsWithPermissions = createDeepEqualSelector(
@@ -225,7 +223,7 @@ export const selectReportVesselsListWithAllInfo = createSelector(
           flagTranslatedClean: cleanFlagState(
             t(`flags:${vesselActivity[0]?.flag as string}` as any, vesselActivity[0]?.flag)
           ),
-          geartype: getVesselGearType({ geartype: vesselActivity[0]?.geartype }),
+          geartype: getVesselGearType({ geartypes: vesselActivity[0]?.geartype }),
           vesselType: t(
             `vessel.veeselTypes.${vesselActivity[0]?.vesselType}` as any,
             vesselActivity[0]?.vesselType
@@ -242,7 +240,7 @@ export function cleanVesselOrGearType({ value, property }: CleanVesselOrGearType
   const valuesCleanTranslated = valuesClean
     .map((value) => {
       if (property === 'geartype') {
-        return getVesselGearType({ geartype: value as GearType })
+        return getVesselGearType({ geartypes: value })
       }
       return t(`vessel.vesselTypes.${value?.toLowerCase()}` as any, value)
     })
@@ -476,9 +474,9 @@ const selectReportAreaData = createSelector(
 export const selectReportAreaName = createSelector(
   [
     selectReportAreaData,
-    selectUrlBufferUnitQuery,
-    selectUrlBufferValueQuery,
-    selectUrlBufferOperationQuery,
+    selectReportBufferUnit,
+    selectReportBufferValue,
+    selectReportBufferOperation,
   ],
   (area, unit, value, operation) => {
     if (!area) return undefined
@@ -515,9 +513,9 @@ export const selectReportPreviewBufferFeature = createSelector(
 export const selectReportBufferArea = createSelector(
   [
     selectReportAreaDissolved,
-    selectUrlBufferUnitQuery,
-    selectUrlBufferValueQuery,
-    selectUrlBufferOperationQuery,
+    selectReportBufferUnit,
+    selectReportBufferValue,
+    selectReportBufferOperation,
   ],
   (area, unit, value, operation) => {
     if (!area || !unit || !value) return null
@@ -542,9 +540,9 @@ export const selectReportBufferHash = createSelector(
 export const selectReportBufferFeature = createSelector(
   [
     selectReportAreaDissolved,
-    selectUrlBufferUnitQuery,
-    selectUrlBufferValueQuery,
-    selectUrlBufferOperationQuery,
+    selectReportBufferUnit,
+    selectReportBufferValue,
+    selectReportBufferOperation,
   ],
   (area, unit, value, operation) => {
     if (!area || !unit || !value || !operation) return null
@@ -553,7 +551,7 @@ export const selectReportBufferFeature = createSelector(
 )
 
 export const selectHasReportBuffer = createSelector(
-  [selectUrlBufferUnitQuery, selectUrlBufferValueQuery],
+  [selectReportBufferUnit, selectReportBufferValue],
   (unit, value): Boolean => {
     return unit !== undefined && value !== undefined
   }

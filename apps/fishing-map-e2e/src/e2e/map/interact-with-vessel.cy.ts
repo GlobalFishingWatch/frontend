@@ -2,6 +2,7 @@ import { API_URL_VESSELS, URL_FULL_DATA_AREA } from '../../constants/urls'
 import {
   disablePopups,
   getMapCanvas,
+  getRequestTimeout,
   scrollSidebar,
   verifyTracksInTimebar,
   waitForMapLoadTiles,
@@ -21,7 +22,7 @@ describe('Interact with vessels', () => {
     getMapCanvas().click('center')
     scrollSidebar('center', 2000)
 
-    cy.wait('@searchForVessels', { requestTimeout: 10000 })
+    cy.wait('@searchForVessels', getRequestTimeout(10000))
     cy.getBySel('vessels-table').find('button').first().click()
 
     cy.log('shoud verify that the vessel was added to the sidebar')

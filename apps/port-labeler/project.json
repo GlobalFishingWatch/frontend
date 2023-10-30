@@ -7,17 +7,13 @@
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": [
-          "nx build port-labeler --parallel"
-        ],
+        "commands": ["nx build port-labeler --parallel"],
         "parallel": false
       }
     },
     "build": {
       "executor": "@nx/next:build",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/apps/port-labeler"
@@ -41,9 +37,7 @@
       "executor": "nx:run-commands",
       "outputs": [],
       "options": {
-        "commands": [
-          "rm -rf dist/apps/port-labeler/public/locales"
-        ]
+        "commands": ["rm -rf dist/apps/port-labeler/public/locales"]
       }
     },
     "serve": {
@@ -67,21 +61,15 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "apps/port-labeler/**/*.{ts,tsx,js,jsx}"
-        ]
+        "lintFilePatterns": ["apps/port-labeler/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": [
-        "{workspaceRoot}/coverage/apps/port-labeler"
-      ],
+      "outputs": ["{workspaceRoot}/coverage/apps/port-labeler"],
       "options": {
         "jestConfig": "apps/port-labeler/jest.config.ts",
         "passWithNoTests": true

@@ -33,6 +33,8 @@ function HelpHub() {
 
   const getUserGuideLink = () => {
     if (i18n.language === 'es') return 'https://globalfishingwatch.org/es/guia-de-usuario/'
+    if (i18n.language === 'fr') return 'https://globalfishingwatch.org/user-guide-french/'
+    if (i18n.language === 'pt') return 'https://globalfishingwatch.org/user-guide-portuguese/'
     return 'https://globalfishingwatch.org/user-guide/'
   }
 

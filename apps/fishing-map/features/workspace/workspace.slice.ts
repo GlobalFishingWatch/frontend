@@ -13,7 +13,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import { GFWAPI, FetchOptions, parseAPIError } from '@globalfishingwatch/api-client'
 import {
-  parseLegacyDataviewInstanceEndpoint,
+  parseLegacyDataviewInstanceConfig,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_TIME_RANGE, PRIVATE_SUFIX } from 'data/config'
@@ -136,7 +136,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         workspace = {
           ...workspace,
           dataviewInstances: (workspace?.dataviewInstances || []).map(
-            (dv) => parseLegacyDataviewInstanceEndpoint(dv) as DataviewInstance
+            (dv) => parseLegacyDataviewInstanceConfig(dv) as DataviewInstance
           ),
         }
       }
@@ -345,6 +345,13 @@ const workspaceSlice = createSlice({
     cleanCurrentWorkspaceData: (state) => {
       state.data = null
     },
+    cleanCurrentWorkspaceStateBufferParams: (state) => {
+      if (state.data?.state) {
+        state.data.state.reportBufferUnit = undefined
+        state.data.state.reportBufferValue = undefined
+        state.data.state.reportBufferOperation = undefined
+      }
+    },
     setLastWorkspaceVisited: (state, action: PayloadAction<LastWorkspaceVisited | undefined>) => {
       state.lastVisited = action.payload
     },
@@ -414,6 +421,7 @@ export const {
   setLastWorkspaceVisited,
   cleanCurrentWorkspaceData,
   removeGFWStaffOnlyDataviews,
+  cleanCurrentWorkspaceStateBufferParams,
 } = workspaceSlice.actions
 
 export default workspaceSlice.reducer

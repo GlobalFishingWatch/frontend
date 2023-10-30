@@ -44,7 +44,7 @@ export type IdentityVesselData = {
 } & VesselInstanceDatasets &
   Pick<
     IdentityVessel,
-    'registryOwners' | 'registryAuthorizations' | 'matchCriteria' | 'combinedSourcesInfo'
+    'registryOwners' | 'registryPublicAuthorizations' | 'matchCriteria' | 'combinedSourcesInfo'
   >
 
 type VesselInfoEntry = {
@@ -148,7 +148,7 @@ export const fetchVesselInfoThunk = createAsyncThunk(
           dataset: dataset,
           combinedSourcesInfo: vessel.combinedSourcesInfo,
           registryOwners: vessel.registryOwners,
-          registryAuthorizations: vessel.registryAuthorizations,
+          registryPublicAuthorizations: vessel.registryPublicAuthorizations,
           info: datasetId,
           track: trackDatasetId,
           events: eventsDatasetsId,

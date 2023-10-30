@@ -1,4 +1,4 @@
-import { EventTypes } from '@globalfishingwatch/api-types'
+import { EventTypes, ApiEvent } from '@globalfishingwatch/api-types'
 import {
   TimebarChartChunk,
   TrackEventChunkProps,
@@ -12,26 +12,50 @@ export const getTimebarChunkEventColor = (ev: TimebarChartChunk<TrackEventChunkP
 }
 
 export const parseTrackEventChunkProps = (
+  // <<<<<<< HEAD
   event: TimebarChartChunk,
+  // event: ApiEvent,
   eventKey?: string
-): TimebarChartChunk<TrackEventChunkProps> => {
+  // ): TimebarChartChunk<TrackEventChunkProps> => {
+): ApiEvent & { props: TrackEventChunkProps } => {
   const { description, descriptionGeneric } = getEventDescription({
     start: event.start,
     end: event.end as number,
     type: event.type as EventTypes,
     encounterVesselName: event.encounter?.vessel?.shipname,
-    portName: event.port?.name,
+    portName: event.port_visit?.intermediateAnchorage?.name,
+    portFlag: event.port_visit?.intermediateAnchorage?.flag,
+    // =======
+    //   event: ApiEvent,
+    //   eventKey: string
+    // ): ApiEvent & { props: TrackEventChunkProps } => {
+    //   const { description, descriptionGeneric, color, colorLabels } = getEventDescription({
+    //     start: event.start as string,
+    //     end: event.end as string,
+    //     type: event.type,
+    //     encounterVesselName: event.encounter?.vessel?.name,
+    //     portName: event.port_visit?.intermediateAnchorage?.name,
+    //     portFlag: event.port_visit?.intermediateAnchorage?.flag,
+    // >>>>>>> develop
   })
   const { color, colorLabels } = getEventColors({ type: event.type as EventTypes })
 
   return {
     ...event,
     id: eventKey || event.id,
+    // =====
+    // start: getUTCDateTime(event.start as string).toMillis(),
+    // end: getUTCDateTime(event.end as string).toMillis(),
+    // >>>>>>> develop
     props: {
       color,
       colorLabels,
       description,
       descriptionGeneric,
+      // =====
+      // latitude: event.position.lat,
+      // longitude: event.position.lon,
+      // >>>>>>> develop
     },
   }
 }
