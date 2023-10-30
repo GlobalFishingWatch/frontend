@@ -1,7 +1,7 @@
-import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { CSVLink } from 'react-csv'
+import { unparse as unparseCSV } from 'papaparse'
+import saveAs from 'file-saver'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { getSearchIdentityResolved, getVesselProperty } from 'features/vessel/vessel.utils'
 import { formatInfoField, getVesselGearType, getVesselShipType } from 'utils/info'
@@ -11,9 +11,8 @@ function SearchDownload() {
   const { t } = useTranslation()
   const searchResults = useSelector(selectSearchResults)
   const vesselsSelected = useSelector(selectSelectedVessels)
-  const [vesselsSelectedDownload, setVesselsSelectedDownload] = useState([])
 
-  const getDownloadVessels = async (_: any, done: any) => {
+  const onDownloadVesselsClick = () => {
     if (vesselsSelected) {
       const vesselsParsed = vesselsSelected.map((vessel) => {
         return {
@@ -33,8 +32,9 @@ function SearchDownload() {
           dataset: vessel.dataset.id,
         }
       })
-      await setVesselsSelectedDownload(vesselsParsed as any)
-      done(true)
+      const csv = unparseCSV(vesselsParsed)
+      const blob = new Blob([csv], { type: 'text/plain;charset=utf-8' })
+      saveAs(blob, `gfw-search-results-selection.csv`)
     }
   }
 
@@ -43,27 +43,21 @@ function SearchDownload() {
   }
 
   return (
-    <CSVLink
-      filename={`gfw-search-results-selection.csv`}
-      asyncOnClick={true}
-      data={vesselsSelectedDownload}
-      onClick={getDownloadVessels}
-    >
-      <IconButton
-        icon="download"
-        type="border"
-        size="medium"
-        disabled={vesselsSelected.length <= 0}
-        tooltip={
-          vesselsSelected.length
-            ? `${t('search.downloadSelected', 'Download CSV of selected vessels')} (${
-                vesselsSelected.length
-              })`
-            : t('search.downloadDisabled', 'Select vessels to download their info')
-        }
-        tooltipPlacement="top"
-      />
-    </CSVLink>
+    <IconButton
+      icon="download"
+      type="border"
+      size="medium"
+      onClick={onDownloadVesselsClick}
+      disabled={vesselsSelected.length <= 0}
+      tooltip={
+        vesselsSelected.length
+          ? `${t('search.downloadSelected', 'Download CSV of selected vessels')} (${
+              vesselsSelected.length
+            })`
+          : t('search.downloadDisabled', 'Select vessels to download their info')
+      }
+      tooltipPlacement="top"
+    />
   )
 }
 
