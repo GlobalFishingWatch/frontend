@@ -46,6 +46,10 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
   const heatmapDataviews = useSelector(selectActiveHeatmapDataviews)
   const { start, end } = useSelector(selectTimeRange)
 
+  const getAllVesselsWithAllInfoFiltered = () => {
+    return allFilteredVessels || ''
+  }
+
   const getDownloadVessels = async (_: any, done: any) => {
     if (allVesselsWithAllInfo) {
       const vessels = getVesselsFiltered(allVesselsWithAllInfo, reportVesselFilter)
@@ -179,7 +183,7 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
           filename={`${reportName}-${start}-${end}.csv`}
           onClick={getDownloadVessels}
           asyncOnClick={true}
-          data={allVesselsWithAllInfoFiltered}
+          data={getAllVesselsWithAllInfoFiltered}
         >
           <Button testId="download-vessel-table-report">
             {t('analysis.downloadVesselsList', 'Download csv')}
