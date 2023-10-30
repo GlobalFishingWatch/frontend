@@ -77,6 +77,7 @@ type IdentityVesselCSVDownload = Omit<VesselLastIdentity, 'geartypes' | 'shiptyp
   geartypes: string
   shiptypes: string
 }
+
 export const parseVesselToCSV = (vessel: IdentityVesselCSVDownload) => {
   return objectArrayToCSV([vessel], VESSEL_CSV_CONFIG)
 }
