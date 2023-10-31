@@ -10,7 +10,7 @@
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace Cypress {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // int-disable-next-line @typescript-eslint/no-unused-vars
   interface Chainable<Subject> {
     login(email: string, password: string): void
     store(reducerName: string): void
@@ -48,10 +48,17 @@ Cypress.Commands.add('forceClick', { prevSubject: 'element' }, (subject, options
   cy.wrap(subject).click({ force: true })
 })
 
+let LOCAL_STORAGE_MEMORY = {
+  token: null,
+}
+
 function loginViaAuthAPI(username: string, password: string) {
   // App landing page redirects to Auth0.
   cy.visit('/')
-
+  if (LOCAL_STORAGE_MEMORY.token) {
+    localStorage.setItem('GFW_API_USER_TOKEN', LOCAL_STORAGE_MEMORY.token)
+    return
+  }
   // This is needed to ensure the cookies are send
   Cypress.Cookies.debug(true)
 
@@ -60,7 +67,9 @@ function loginViaAuthAPI(username: string, password: string) {
 
   // Reload the page to see that view if from anonnymous user
   cy.reload()
-
+  // @TODO: Remove thw wait when the bug in login is fixed "/index bug"
+  // eslint-disable-next-line
+  cy.wait(5000)
   // Close dialog popup
   cy.get('div[role=dialog] button[type=button][aria-label=close]').click()
 
@@ -77,7 +86,7 @@ function loginViaAuthAPI(username: string, password: string) {
   cy.url().should('include', Cypress.config('baseUrl')).should('include', 'access-token=')
 
   // Validate that we request a token and is saved in the local storage
-  cy.wait('@requestToken', { requestTimeout: 10000 }).then((interception) => {
+  cy.wait('@requestToken', { requestTimeout: 30000 }).then((interception) => {
     const token = interception.response.body.token
     // eslint-disable-next-line
     cy.wait(1000) // After request the token give a second so it can be added to the localstorage after the resquest is completed
@@ -89,6 +98,7 @@ function loginViaAuthAPI(username: string, password: string) {
         },
       })
     })
+    LOCAL_STORAGE_MEMORY.token = token
   })
 }
 

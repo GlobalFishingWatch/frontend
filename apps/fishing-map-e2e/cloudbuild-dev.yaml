@@ -1,0 +1,25 @@
+steps:
+  - id: 'smoke-test-e2e-live'
+    waitFor: ['deploy-cloud-run']
+    name: cypress/included:12.17.1
+    entrypoint: 'bash'
+    env:
+      - 'CYPRESS_basicAuth=$_BASIC_AUTH'
+      - 'CYPRESS_basicAuthUser=$_BASIC_AUTH_USER'
+      - 'CYPRESS_basicAuthPass=$_BASIC_AUTH_PASS'
+      - 'CYPRESS_apiAuthUser=$_CYPRESS_API_AUTH_USER'
+      - 'CYPRESS_apiAuthPass=$_CYPRESS_API_AUTH_PASS'
+      - 'CYPRESS_apiUserInitials=$_CYPRESS_API_USER_INITIALS'
+      - 'CYPRESS_BASE_URL=$_CYPRESS_BASE_URL'
+    args:
+      - '-eEuo'
+      - 'pipefail'
+      - '-c'
+      - |-
+        CYPRESS_CACHE_FOLDER=.cypress-cache yarn install --immutable
+          CYPRESS_CACHE_FOLDER=.cypress-cache \
+          yarn nx run fishing-map-e2e:test-live --parallel
+
+timeout: 1800s
+options:
+  machineType: 'E2_HIGHCPU_8'
