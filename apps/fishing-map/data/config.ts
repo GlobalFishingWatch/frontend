@@ -8,6 +8,7 @@ export const ROOT_DOM_ELEMENT = '__next'
 
 export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
 
+export const IS_DEVELOPMENT_ENV = process.env.NODE_ENV === 'development'
 export const IS_PRODUCTION_BUILD = process.env.NODE_ENV === 'production'
 export const PUBLIC_WORKSPACE_ENV = process.env.NEXT_PUBLIC_WORKSPACE_ENV
 export const IS_PRODUCTION_WORKSPACE_ENV =

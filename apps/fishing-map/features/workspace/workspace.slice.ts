@@ -48,7 +48,6 @@ import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook
 import { getUTCDateTime } from 'utils/dates'
 import { fetchReportsThunk } from 'features/reports/reports.slice'
 import { AppDispatch } from 'store'
-import { debugDatasetsInDataviews } from 'features/datasets/datasets.debug'
 import { selectCurrentWorkspaceId, selectWorkspaceStatus } from './workspace.selectors'
 
 type LastWorkspaceVisited = { type: ROUTE_TYPES; payload: any; query: any; replaceQuery?: boolean }
@@ -167,7 +166,6 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           ...(urlDataviewInstances || []),
         ]
         const datasetsIds = getDatasetsInDataviews(dataviews, dataviewInstances, guestUser)
-        debugDatasetsInDataviews(dataviews, datasetsIds)
         const fetchDatasetsAction: any = dispatch(fetchDatasetsByIdsThunk({ ids: datasetsIds }))
         signal.addEventListener('abort', fetchDatasetsAction.abort)
         const { error, payload } = await fetchDatasetsAction

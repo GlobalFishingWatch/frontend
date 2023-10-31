@@ -44,7 +44,7 @@ import {
   selectTrackThinningConfig,
   selectTrackChunksConfig,
 } from 'features/resources/resources.slice'
-import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
+import { DEFAULT_PAGINATION_PARAMS, IS_DEVELOPMENT_ENV } from 'data/config'
 import { MARINE_MANAGER_DATAVIEWS } from 'data/default-workspaces/marine-manager'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
@@ -80,7 +80,7 @@ export const fetchDataviewByIdThunk = createAsyncThunk(
 )
 
 const USE_MOCKED_DATAVIEWS =
-  process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_USE_LOCAL_DATAVIEWS === 'true'
+  IS_DEVELOPMENT_ENV || process.env.NEXT_PUBLIC_USE_LOCAL_DATAVIEWS === 'true'
 let mockedDataviewsImported = false
 export const fetchDataviewsByIdsThunk = createAsyncThunk(
   'dataviews/fetch',
