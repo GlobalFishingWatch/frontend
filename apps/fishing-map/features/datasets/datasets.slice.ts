@@ -29,6 +29,7 @@ import {
   LATEST_CARRIER_DATASET_ID,
   PUBLIC_SUFIX,
 } from 'data/config'
+import { debugRelatedDatasets } from 'features/datasets/datasets.debug'
 
 export const DATASETS_USER_SOURCE_ID = 'user'
 
@@ -132,6 +133,7 @@ const fetchDatasetsFromApi = async (
   const relatedDatasetsIds = uniq(
     datasets.flatMap((dataset) => dataset.relatedDatasets?.flatMap(({ id }) => id || []) || [])
   )
+  debugRelatedDatasets(datasets, relatedDatasetsIds)
   const currentIds = uniq([...existingIds, ...datasets.map((d) => d.id)])
   const uniqRelatedDatasetsIds = without(relatedDatasetsIds, ...currentIds)
   if (uniqRelatedDatasetsIds.length > 1 && maxDepth > 0) {
