@@ -113,7 +113,8 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
     const state = getState() as any
     const vesselGroupDatasets = uniq(vessels?.flatMap((v) => v.dataset || []))
     const allVesselDatasets = (selectVesselsDatasets(state) || []).filter(
-      (d) => d.status !== DatasetStatus.Deleted
+      (d) =>
+        d.status !== DatasetStatus.Deleted && d.configuration?.apiSupportedVersions?.includes('v3')
       /*&& d.alias?.some((alias) => alias.includes(':latest'))*/
     )
 
